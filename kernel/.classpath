@@ -20,5 +20,8 @@
 	<classpathentry combineaccessrules="false" kind="src" path="/dependency"/>
 	<classpathentry kind="lib" path="/thirdparty/jboss/jbossxb/lib/jboss-xml-binding.jar"/>
 	<classpathentry kind="lib" path="/thirdparty/jboss/test/lib/jboss-test.jar"/>
+	<classpathentry kind="lib" path="/thirdparty/apache-xerces/lib/resolver.jar"/>
+	<classpathentry kind="lib" path="/thirdparty/apache-xerces/lib/xercesImpl.jar"/>
+	<classpathentry kind="lib" path="/thirdparty/apache-xerces/lib/xml-apis.jar"/>
 	<classpathentry kind="output" path="output/eclipse-classes"/>
 </classpath>
