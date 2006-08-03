@@ -1,14 +1,10 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <psf version="2.0">
-	<provider id="org.eclipse.team.cvs.core.cvsnature">
-		<project reference="1.0,:extssh:cvs.forge.jboss.com:/cvsroot/jboss,build/mc,build"/>
-		<project reference="1.0,:extssh:cvs.forge.jboss.com:/cvsroot/jboss,container,container"/>
-		<project reference="1.0,:extssh:cvs.forge.jboss.com:/cvsroot/jboss,jboss-dependency,dependency"/>
-		<project reference="1.0,:extssh:cvs.forge.jboss.com:/cvsroot/jboss,jboss-j2se,j2se"/>
-		<project reference="1.0,:extssh:cvs.forge.jboss.com:/cvsroot/jboss,microkernel,kernel"/>
-		<project reference="1.0,:extssh:cvs.forge.jboss.com:/cvsroot/jboss,jboss-mbeans,mbeans"/>
-		<project reference="1.0,:extssh:cvs.forge.jboss.com:/cvsroot/jboss,system2,system"/>
-		<project reference="1.0,:extssh:cvs.forge.jboss.com:/cvsroot/jboss,test,test"/>
-		<project reference="1.0,:extssh:cvs.forge.jboss.com:/cvsroot/jboss,tools,tools"/>
+	<provider id="org.tigris.subversion.subclipse.core.svnnature">
+		<project reference="0.9.3,https://svn.jboss.org/repos/jbossas/projects/microcontainer/trunk/build,build"/>
+		<project reference="0.9.3,https://svn.jboss.org/repos/jbossas/projects/microcontainer/trunk/container,container"/>
+		<project reference="0.9.3,https://svn.jboss.org/repos/jbossas/projects/microcontainer/trunk/dependency,dependency"/>
+		<project reference="0.9.3,https://svn.jboss.org/repos/jbossas/projects/microcontainer/trunk/kernel,kernel"/>
+		<project reference="0.9.3,https://svn.jboss.org/repos/jbossas/projects/microcontainer/trunk/tools,tools"/>
 	</provider>
 </psf>
