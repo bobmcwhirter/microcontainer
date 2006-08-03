@@ -80,10 +80,7 @@
       <module name="container"/>
       <module name="dependency"/>
       <module name="kernel"/>
-      <module name="j2se"/>
-      <module name="mbeans"/>
-      <module name="test"/>
-      <module name="system"/>
+      <module name="aop-mc-int"/>
 
       <!-- Module groups -->
 
@@ -95,7 +92,7 @@
       </group>
 
       <group name="core">
-        <include modules="common, test, container, dependency, kernel, j2se, mbeans, system"/>
+        <include modules="common, container, dependency, kernel, aop-mc-int"/>
       </group>
 
       <group name="default">
