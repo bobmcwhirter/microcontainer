@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<deployment xmlns="urn:jboss:bean-deployer:2.0">
+   <aop:aspect xmlns:aop="urn:jboss:aop-beans:1.0"
+               name="InterceptedAdvice" 
+               class="org.jboss.test.microcontainer.support.MetaDataContextInterceptor"
+               pointcut="execution(* @org.jboss.test.microcontainer.advisor.test.AnnotationWithValue->doSomething(..)) OR execution(* @org.jboss.test.microcontainer.advisor.test.AnnotationWithValue->@org.jboss.test.microcontainer.advisor.test.AnnotationWithValue(..))">
+      <property name="annotation">org.jboss.test.microcontainer.advisor.test.AnnotationWithValue</property>
+   </aop:aspect>
+            
+   <bean name="Intercepted" class="org.jboss.test.microcontainer.advisor.test.SomeBean"/>
+</deployment>

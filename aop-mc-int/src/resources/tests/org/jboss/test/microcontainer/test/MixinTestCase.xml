@@ -1,0 +1,44 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<deployment xmlns="urn:jboss:bean-deployer:2.0">
+
+   <bean name="MBeanServer" class="java.lang.Object">
+      <constructor factoryClass="javax.management.MBeanServerFactory" factoryMethod="createMBeanServer"/>
+   </bean>
+
+   <bean name="Repository" class="org.jboss.aop.microcontainer.integration.AOPKernelRepository">
+      <constructor factoryClass="org.jboss.aop.microcontainer.integration.AOPKernelRepository" factoryMethod="instance"/>
+   </bean>
+
+   <bean name="AspectManager" class="org.jboss.aop.AspectManager">
+      <constructor factoryClass="org.jboss.aop.AspectManager" factoryMethod="instance"/>
+   </bean>
+
+   <bean name="SomeMixin" class="org.jboss.aop.microcontainer.beans.MixinBinding">
+      <property name="classes">@org.jboss.test.microcontainer.support.Test</property>
+      <property name="interfaces">
+         <list elementClass="java.lang.String">
+            <value>org.jboss.test.microcontainer.support.SomeMixin</value>
+         </list>
+      </property>
+      <property name="mixin">org.jboss.test.microcontainer.support.SomeMixinImpl</property>
+      <property name="manager"><inject bean="AspectManager"/></property>
+   </bean>
+
+   <bean name="OtherMixin" class="org.jboss.aop.microcontainer.beans.MixinBinding">
+      <property name="classes">@org.jboss.test.microcontainer.support.Test</property>
+      <property name="interfaces">
+         <list elementClass="java.lang.String">
+            <value>org.jboss.test.microcontainer.support.OtherMixin</value>
+         </list>
+      </property>
+      <property name="mixin">org.jboss.test.microcontainer.support.OtherMixinImpl</property>
+      <property name="manager"><inject bean="AspectManager"/></property>
+   </bean>
+
+   <bean name="Bean" class="org.jboss.test.microcontainer.support.SimpleBeanImpl">
+      <annotation>@org.jboss.test.microcontainer.support.Test</annotation>
+   </bean>
+
+   <bean name="Bean1" class="org.jboss.test.microcontainer.support.SimpleBeanImpl"/>
+</deployment>

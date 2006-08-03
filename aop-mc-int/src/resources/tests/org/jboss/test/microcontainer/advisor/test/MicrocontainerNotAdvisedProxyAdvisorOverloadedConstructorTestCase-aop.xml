@@ -1,0 +1,8 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<aop>
+   <aspect class="org.jboss.test.microcontainer.advisor.test.SingletonAspect" scope="PER_CLASS"/>
+   <bind pointcut="execution(@org.jboss.test.microcontainer.advisor.test.Singleton->new(..))">
+      <advice aspect="org.jboss.test.microcontainer.advisor.test.SingletonAspect" name="constructorAdvice"/>
+   </bind>
+</aop>

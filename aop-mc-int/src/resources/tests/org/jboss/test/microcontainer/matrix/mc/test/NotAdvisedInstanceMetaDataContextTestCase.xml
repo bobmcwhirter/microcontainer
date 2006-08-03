@@ -1,0 +1,21 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<deployment xmlns="urn:jboss:bean-deployer:2.0">
+
+   <bean name="Repository" class="org.jboss.aop.microcontainer.integration.AOPKernelRepository">
+      <constructor factoryClass="org.jboss.aop.microcontainer.integration.AOPKernelRepository" factoryMethod="instance"/>
+   </bean>
+
+   <bean name="NotAdvised" class="org.jboss.test.microcontainer.matrix.Base"/>
+
+   <bean name="ClassAnnotated" class="org.jboss.test.microcontainer.matrix.Base">
+      <annotation>@org.jboss.test.microcontainer.support.Test</annotation>
+   </bean>
+
+   <bean name="PropertyAnnotated" class="org.jboss.test.microcontainer.matrix.Base">
+      <property name="property">10
+         <annotation>@org.jboss.test.microcontainer.support.Test</annotation>
+	   </property>
+   </bean>
+
+</deployment>

@@ -1,0 +1,10 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<aop>
+   <interceptor class="org.jboss.test.microcontainer.support.MetaDataContextInterceptor"/>
+	<annotation expr="class(org.jboss.test.microcontainer.advisor.test.SomeBean)">
+	   @org.jboss.test.microcontainer.advisor.test.AnnotationWithValue(value=10)
+	</annotation>
+	<annotation expr="method(* org.jboss.test.microcontainer.advisor.test.SomeBean->doSomethingElse())">
+	   @org.jboss.test.microcontainer.advisor.test.AnnotationWithValue(value=50)
+	</annotation>
+</aop>

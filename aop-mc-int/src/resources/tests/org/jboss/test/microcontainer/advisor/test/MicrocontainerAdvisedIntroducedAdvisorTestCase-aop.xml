@@ -1,0 +1,15 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<aop>
+   <interceptor class="org.jboss.test.microcontainer.advisor.test.DummyInterceptor"/>
+   <bind pointcut="execution(* org.jboss.test.microcontainer.advisor.test.TestObject->*(..))">
+      <interceptor-ref name="org.jboss.test.microcontainer.advisor.test.DummyInterceptor"/>
+   </bind>
+   <interceptor class="org.jboss.test.microcontainer.advisor.test.TestIntroductionInterceptor"/>
+   <bind pointcut="execution(* @org.jboss.test.microcontainer.advisor.test.TestIntroductionAnnotation->*(..))">
+      <interceptor-ref name="org.jboss.test.microcontainer.advisor.test.TestIntroductionInterceptor"/>
+   </bind>
+   <introduction expr="has(* @org.jboss.test.microcontainer.advisor.test.TestIntroductionAnnotation->*(..))">
+      <interfaces>org.jboss.test.microcontainer.advisor.test.TestIntroductionInterface</interfaces>
+   </introduction>
+</aop>

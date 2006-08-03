@@ -1,0 +1,30 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<deployment xmlns="urn:jboss:bean-deployer:2.0">
+
+   <bean name="Repository" class="org.jboss.aop.microcontainer.integration.AOPKernelRepository">
+      <constructor factoryClass="org.jboss.aop.microcontainer.integration.AOPKernelRepository" factoryMethod="instance"/>
+   </bean>
+
+   <bean name="AspectManager" class="org.jboss.aop.AspectManager">
+      <constructor factoryClass="org.jboss.aop.AspectManager" factoryMethod="instance"/>
+   </bean>
+
+   <beanfactory name="InterceptedAdvice" class="org.jboss.test.microcontainer.advisor.test.TestInterceptor"/>
+
+   <bean name="InterceptedAspect" class="org.jboss.aop.microcontainer.beans.Aspect">
+      <property name="advice"><inject bean="InterceptedAdvice"/></property>
+      <property name="manager"><inject bean="AspectManager"/></property>
+   </bean>
+
+   <bean name="InterceptedBinding" class="org.jboss.aop.microcontainer.beans.AspectBinding">
+      <property name="pointcut">execution(* @org.jboss.test.microcontainer.advisor.test.TestAnnotation->*(..))</property>
+      <property name="aspect"><inject bean="InterceptedAspect" property="definition"/></property>
+      <property name="manager"><inject bean="AspectManager"/></property>
+   </bean>
+
+   <bean name="Test" class="org.jboss.test.microcontainer.advisor.test.UnadvisedTest">
+      <annotation>@org.jboss.test.microcontainer.advisor.test.TestAnnotation</annotation>
+   </bean>
+
+</deployment>

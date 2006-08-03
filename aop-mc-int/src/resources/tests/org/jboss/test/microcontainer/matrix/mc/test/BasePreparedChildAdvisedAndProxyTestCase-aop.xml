@@ -1,0 +1,21 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<aop>
+   <prepare expr="execution(* org.jboss.test.microcontainer.matrix.Base->*(..))"/>
+   
+	<interceptor class="org.jboss.test.microcontainer.matrix.TestInterceptor"/>
+   <bind pointcut="execution(* org.jboss.test.microcontainer.matrix.Child->*(..))">
+      <interceptor-ref name="org.jboss.test.microcontainer.matrix.TestInterceptor"/>
+   </bind>
+   
+   <introduction class="@org.jboss.test.microcontainer.support.Test">
+      <interfaces>org.jboss.test.microcontainer.matrix.ChildInterface</interfaces>
+   </introduction>
+   
+   <bind pointcut="execution(* org.jboss.test.microcontainer.matrix.AnnotatedChild->*(..))">
+      <interceptor-ref name="org.jboss.test.microcontainer.matrix.TestInterceptor"/>
+   </bind>
+   <bind pointcut="execution(* @org.jboss.test.microcontainer.support.Test->*(..))">
+      <interceptor-ref name="org.jboss.test.microcontainer.matrix.TestInterceptor"/>
+   </bind>
+</aop>

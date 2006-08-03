@@ -1,0 +1,18 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<deployment xmlns="urn:jboss:bean-deployer:2.0">
+
+   <bean name="Repository" class="org.jboss.aop.microcontainer.integration.AOPKernelRepository">
+      <constructor factoryClass="org.jboss.aop.microcontainer.integration.AOPKernelRepository" factoryMethod="instance"/>
+   </bean>
+
+   <bean name="Base" class="org.jboss.test.microcontainer.matrix.Base"/>
+
+   <bean name="PlainChild" class="org.jboss.test.microcontainer.matrix.Child"/>
+
+   <bean name="ProxiedChild" class="org.jboss.test.microcontainer.matrix.Child">
+      <annotation>@org.jboss.test.microcontainer.support.Test</annotation>
+   </bean>
+
+   <bean name="AnnotatedChild" class="org.jboss.test.microcontainer.matrix.AnnotatedChild"/>
+</deployment>

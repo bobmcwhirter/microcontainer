@@ -1,0 +1,24 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<deployment xmlns="urn:jboss:bean-deployer:2.0">
+
+   <bean name="Repository" class="org.jboss.aop.microcontainer.integration.AOPKernelRepository">
+      <constructor factoryClass="org.jboss.aop.microcontainer.integration.AOPKernelRepository" factoryMethod="instance"/>
+   </bean>
+
+   <aop:aspect xmlns:aop="urn:jboss:aop-beans:1.0"
+               name="InterceptedAdvice"
+               class="org.jboss.test.microcontainer.support.InterceptorWithNestedAnnotationDependency"
+               pointcut="execution(* @org.jboss.test.microcontainer.support.Test->*(..))">
+      <property name="controller"><inject bean="jboss.kernel:service=KernelController"/></property>
+   </aop:aspect>
+
+    <!-- TODO JBAOP-274 Figure out how to create nested dependencies with beans.xml
+   <bean name="Intercepted" class="org.jboss.test.microcontainer.support.SimpleBeanImpl">
+      <annotation>@org.jboss.test.microcontainer.support.Test</annotation>
+   </bean>
+   -->
+   <bean name="AnnotatedIntercepted" class="org.jboss.test.microcontainer.support.NestedMethodAnnotatedSimpleBeanImpl">
+      <annotation>@org.jboss.test.microcontainer.support.Test</annotation>
+   </bean>
+   </deployment>

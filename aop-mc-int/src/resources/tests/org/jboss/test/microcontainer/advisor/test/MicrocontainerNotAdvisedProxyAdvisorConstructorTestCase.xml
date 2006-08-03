@@ -1,0 +1,22 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<deployment xmlns="urn:jboss:bean-deployer:2.0">
+
+   <bean name="Repository" class="org.jboss.aop.microcontainer.integration.AOPKernelRepository">
+      <constructor factoryClass="org.jboss.aop.microcontainer.integration.AOPKernelRepository" factoryMethod="instance"/>
+   </bean>
+
+	<bean name="One" class="org.jboss.test.microcontainer.advisor.test.some.Pojo">
+	   <annotation>@org.jboss.test.microcontainer.advisor.test.Singleton</annotation>
+	</bean>
+
+	<bean name="Two" class="org.jboss.test.microcontainer.advisor.test.some.Pojo">
+      <annotation>@org.jboss.test.microcontainer.advisor.test.Singleton</annotation>
+	</bean>
+
+	<bean name="Three" class="org.jboss.test.microcontainer.advisor.test.some.Pojo"/>
+
+	<bean name="Four" class="org.jboss.test.microcontainer.advisor.test.another.Pojo">
+      <annotation>@org.jboss.test.microcontainer.advisor.test.Singleton</annotation>
+	</bean>
+</deployment>

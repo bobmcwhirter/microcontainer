@@ -1,0 +1,49 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!-- A prototype xsd schema for javabeans
+$Id$
+ -->
+<xsd:schema xmlns:xsd="http://www.w3.org/2001/XMLSchema"
+   targetNamespace="urn:jboss:aop-beans:1.0"
+   xmlns="urn:jboss:aop-beans:1.0"
+   xmlns:mc="urn:jboss:bean-deployer:2.0"
+   elementFormDefault="qualified"
+   attributeFormDefault="unqualified"
+   version="1.0"
+>
+
+   <xsd:import namespace="urn:jboss:bean-deployer:2.0"/>
+
+   <xsd:annotation>
+      <xsd:documentation>
+         <![CDATA[
+         A schema for constructing aop beans.
+         ]]>
+      </xsd:documentation>
+   </xsd:annotation>
+
+   <xsd:element name="aspect" type="aspectType">
+      <xsd:annotation>
+         <xsd:documentation>
+           <![CDATA[
+           An aspect
+           ]]>
+         </xsd:documentation>
+      </xsd:annotation>
+   </xsd:element>
+   
+   <xsd:complexType name="aspectType">
+      <xsd:annotation>
+         <xsd:documentation>
+           <![CDATA[
+           An aspect
+           ]]>
+         </xsd:documentation>
+      </xsd:annotation>
+      <xsd:complexContent>
+         <xsd:extension base="mc:beanfactoryType">
+            <xsd:attribute name="pointcut" type="xsd:string" use="required"/>
+         </xsd:extension>
+      </xsd:complexContent>
+   </xsd:complexType>
+
+</xsd:schema>

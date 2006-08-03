@@ -1,0 +1,24 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<deployment xmlns="urn:jboss:bean-deployer:2.0">
+
+   <bean name="AspectManager" class="org.jboss.aop.AspectManager">
+      <constructor factoryClass="org.jboss.aop.AspectManager" factoryMethod="instance"/>
+   </bean>
+   
+   <beanfactory name="TestInterceptor" class="org.jboss.test.aop.junit.TestInterceptor"/>
+   
+   <bean name="TestInterceptorAspect" class="org.jboss.aop.microcontainer.beans.Aspect">
+      <property name="advice"><inject bean="TestInterceptor"/></property>
+      <property name="manager"><inject bean="AspectManager"/></property>
+   </bean>
+   
+   <bean name="TestInterceptorBinding" class="org.jboss.aop.microcontainer.beans.AspectBinding">
+      <property name="pointcut">execution(* org.jboss.test.aop.junit.TestIntercepted->*(..))</property>
+      <property name="aspect"><inject bean="TestInterceptorAspect" property="definition"/></property>
+      <property name="manager"><inject bean="AspectManager"/></property>
+   </bean>
+            
+   <bean name="TestIntercepted" class="org.jboss.test.aop.junit.TestIntercepted"/>
+   
+</deployment>

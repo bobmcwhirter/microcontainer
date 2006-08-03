@@ -1,0 +1,20 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<deployment xmlns="urn:jboss:bean-deployer:2.0">
+
+   <bean name="Repository" class="org.jboss.aop.microcontainer.integration.AOPKernelRepository">
+      <constructor factoryClass="org.jboss.aop.microcontainer.integration.AOPKernelRepository" factoryMethod="instance"/>
+   </bean>
+
+   <aop:aspect xmlns:aop="urn:jboss:aop-beans:1.0"
+               name="InterceptedAdvice"
+               class="org.jboss.test.microcontainer.support.InterceptorWithDependency"
+               pointcut="execution(@org.jboss.test.microcontainer.support.Test->new(..))">
+      <property name="simpleBean"><inject bean="Dependency"/></property>
+   </aop:aspect>
+
+   <bean name="Intercepted" class="org.jboss.test.microcontainer.support.SimpleBeanImpl">
+      <annotation>@org.jboss.test.microcontainer.support.Test</annotation>
+   </bean>
+
+</deployment>

@@ -1,0 +1,8 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<aop>
+   <interceptor class="org.jboss.test.microcontainer.advisor.test.DummyInterceptor"/>
+   <bind pointcut="execution(* org.jboss.test.microcontainer.advisor.test.TestObject->*(..))">
+      <interceptor-ref name="org.jboss.test.microcontainer.advisor.test.DummyInterceptor"/>
+   </bind>
+</aop>
