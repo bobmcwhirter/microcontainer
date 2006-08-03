@@ -1,0 +1,90 @@
+<?xml version='1.0' encoding="iso-8859-1"?>
+<!DOCTYPE book PUBLIC "-//OASIS//DTD DocBook XML V4.3CR3//EN"
+                      "../../../../docbook-support/support/docbook-dtd/docbookx.dtd"
+[
+<!ENTITY beaninfo              SYSTEM "modules/beaninfo.xml">
+<!ENTITY bootstrap             SYSTEM "modules/bootstrap.xml">
+<!ENTITY bus                   SYSTEM "modules/bus.xml">
+<!ENTITY classadapter          SYSTEM "modules/classadapter.xml">
+<!ENTITY configuration         SYSTEM "modules/configuration.xml">
+<!ENTITY dependency            SYSTEM "modules/dependency.xml">
+<!ENTITY dependencycontroller  SYSTEM "modules/dependencycontroller.xml">
+<!ENTITY dependencyinfo        SYSTEM "modules/dependencyinfo.xml">
+<!ENTITY deployment            SYSTEM "modules/deployment.xml">
+<!ENTITY events                SYSTEM "modules/events.xml">
+<!ENTITY introduction          SYSTEM "modules/introduction.xml">
+<!ENTITY joinpoint             SYSTEM "modules/joinpoint.xml">
+<!ENTITY kernel                SYSTEM "modules/kernel.xml">
+<!ENTITY metadata              SYSTEM "modules/metadata.xml">
+<!ENTITY registry              SYSTEM "modules/registry.xml">
+<!ENTITY reflection            SYSTEM "modules/reflection.xml">
+]>
+<book lang="en">
+   <bookinfo>
+      <title>JBoss Microcontainer Reference</title>
+      <subtitle>A Reference for Developers</subtitle>
+      <releaseinfo>1.0.2</releaseinfo>
+   </bookinfo>
+    
+   <toc/>
+    
+   <preface id="target" revision="1">
+      <title>Target Audience</title>
+
+      <para>
+      This reference is aimed at microcontainer developers.
+      </para>
+      <para>
+      It aims at describing how the microcontainer is constructed, the
+      design decisions made and how to extend or develop it.
+      </para>
+
+   </preface>
+
+  <preface id="preface" revision="1">
+    <title>Preface</title>
+
+    <para>Commercial development support, production support and training for
+    the JBoss Microcontainer is available through <ulink
+    url="http://www.jboss.com">JBoss Inc.</ulink> The JBoss Microcontainer is
+    a project of the JEMS product suite.</para>
+
+    <para>Authors: <itemizedlist spacing="compact">
+        <listitem>
+          <para>Adrian Brock - JBoss Microcontainer Project Lead and Chief
+          Scientist of JBoss Inc.</para>
+        </listitem>
+      </itemizedlist></para>
+  </preface>
+
+&introduction; 
+
+&reflection; 
+
+&joinpoint; 
+
+&classadapter;
+
+&dependencycontroller;
+
+&dependencyinfo;
+
+&bootstrap; 
+
+&registry; 
+
+&bus; 
+
+&beaninfo; 
+
+&metadata; 
+
+&configuration; 
+
+&dependency; 
+
+&deployment; 
+
+&events; 
+
+</book>

@@ -1,0 +1,10 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<deployment name="SimpleDeployment" xmlns="urn:jboss:bean-deployer:2.0">
+   <bean name="Bean1" class="java.lang.Object"/>
+   <beanfactory name="Bean2" class="java.lang.Object"/>
+   <javabean xmlns="urn:jboss:javabean:1.0" class="org.jboss.test.kernel.deployment.xml.support.TestBeanMetaDataFactory"/>
+   <bean name="Bean3" class="java.lang.Object"/>
+   <beanfactory name="Bean4" class="java.lang.Object"/>
+   <javabean xmlns="urn:jboss:javabean:1.0" class="org.jboss.test.kernel.deployment.xml.support.TestBeanMetaDataFactory1"/>
+</deployment>

@@ -1,0 +1,7 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<beanfactory xmlns="urn:jboss:bean-deployer:2.0" class="Dummy">
+   <supply>Supply1</supply>
+   <supply>Supply2</supply>
+   <supply>Supply3</supply>
+</beanfactory>

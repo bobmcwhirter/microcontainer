@@ -1,0 +1,12 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<deployment xmlns="urn:jboss:bean-deployer:2.0">
+   <bean name="SimpleBean" class="org.jboss.test.kernel.config.support.SimpleBean">
+      <constructor factoryMethod="createSimpleBean">
+         <factory>
+            <javabean xmlns="urn:jboss:javabean:1.0" class="org.jboss.test.kernel.config.support.SimpleBeanFactory"/>
+         </factory>
+         <parameter class="java.lang.Integer">4</parameter>
+      </constructor>
+   </bean>
+</deployment>

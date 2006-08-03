@@ -1,0 +1,14 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<deployment xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+            xsi:schemaLocation="urn:jboss:bean-deployer bean-deployer_1_0.xsd"
+            xmlns="urn:jboss:bean-deployer">
+
+   <bean name="PropertiesBean" class="org.jboss.example.microcontainer.properties.PropertiesBean">
+      <property name="title">JBoss Microcontainer property example</property>
+      <property name="subTitle"><null/></property>
+      <property name="link">http://www.jboss.org</property>
+      <property name="number" class="java.lang.Long">4</property>
+   </bean>
+      
+</deployment>

@@ -1,0 +1,20 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<deployment xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+            xsi:schemaLocation="urn:jboss:bean-deployer bean-deployer_1_0.xsd"
+            xmlns="urn:jboss:bean-deployer">
+
+   <bean name="Integer" class="org.jboss.example.microcontainer.constructor.ConstructorBean">
+      <constructor>
+         <parameter>4</parameter>
+      </constructor>
+   </bean>
+
+   <bean name="StringLong" class="org.jboss.example.microcontainer.constructor.ConstructorBean">
+      <constructor>
+         <parameter>a string</parameter>
+         <parameter class="long">10</parameter>
+      </constructor>
+   </bean>
+      
+</deployment>

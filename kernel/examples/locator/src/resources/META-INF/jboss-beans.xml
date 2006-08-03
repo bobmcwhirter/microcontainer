@@ -1,0 +1,43 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<deployment xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+            xsi:schemaLocation="urn:jboss:bean-deployer bean-deployer_1_0.xsd"
+            xmlns="urn:jboss:bean-deployer">
+
+   <bean name="Simple1" class="org.jboss.example.microcontainer.locator.SimpleBean">
+      <property name="text">Simple1</property>
+   </bean>
+      
+   <bean name="Simple2" class="org.jboss.example.microcontainer.locator.SimpleBean">
+      <property name="text">Simple2</property>
+   </bean>
+      
+   <bean name="HashtableLocator" class="org.jboss.example.microcontainer.locator.HashtableLocator">
+      <constructor factoryMethod="getLocator" factoryClass="org.jboss.example.microcontainer.locator.HashtableLocator"/>
+      <property name="locations">
+         <map class="java.util.Hashtable" keyClass="java.lang.String" valueClass="java.lang.Object">
+            <entry>
+               <key>Simple1</key>
+               <value><inject bean="Simple1"/></value>
+            </entry>
+            <entry>
+               <key>Simple2</key>
+               <value><inject bean="Simple2"/></value>
+            </entry>
+         </map>
+      </property>
+   </bean>
+      
+   <bean name="HashtableLocatorUser" class="org.jboss.example.microcontainer.locator.User">
+      <property name="locator"><inject bean="HashtableLocator"/></property>
+   </bean>
+      
+   <bean name="ControllerLocator" class="org.jboss.example.microcontainer.locator.ControllerLocator">
+      <property name="controller"><inject bean="jboss.kernel:service=KernelController"/></property>
+   </bean>
+      
+   <bean name="ControllerLocatorUser" class="org.jboss.example.microcontainer.locator.User">
+      <property name="locator"><inject bean="ControllerLocator"/></property>
+   </bean>
+
+</deployment>

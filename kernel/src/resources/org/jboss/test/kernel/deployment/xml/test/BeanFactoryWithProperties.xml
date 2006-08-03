@@ -1,0 +1,7 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<beanfactory xmlns="urn:jboss:bean-deployer:2.0" class="Dummy">
+   <property name="Property1"/>
+   <property name="Property2"/>
+   <property name="Property3"/>
+</beanfactory>

@@ -1,0 +1,42 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<chapter id="beaninfo">
+  <title>Describing a Bean</title>
+
+  <para>The BeanInfo provides a description of a POJO. This information allows
+  the microcontainer to know what can be done with the bean.</para>
+
+  <para>This is similar to the BeanInfo provided by the java.beans package but
+  some java environments like J2ME do not include this package because it has
+  dependencies on AWT.</para>
+
+  <sect1 id="beaninfofactory-overview" revision="1">
+    <title>BeanInfoFactory - retrieveing bean descriptions</title>
+
+    <para>The <literal>BeanInfoFactory</literal> is used to create BeanInfos for a given class.
+    <programlisting>BeanInfo getBeanInfo(String className)</programlisting>
+    The default implementation is the IntrospectionBeanInfoFactory which uses
+    reflection.</para>
+  </sect1>
+
+  <sect1 id="beaninfo-overview" revision="1">
+    <title>BeanInfo - information about a bean</title>
+
+    <para>The BeanInfo provides top level information and access to the more
+    detailed information about the bean.</para>
+  </sect1>
+
+  <sect1 id="propertyinfo-overview" revision="1">
+    <title>PropertyInfo - information about a property</title>
+
+    <para>The PropertyInfo describes an property, i.e. something that
+    follows the <programlisting>Type getX(); void setX(Type x)</programlisting>
+    javabean pattern.</para>
+  </sect1>
+
+  <sect1 id="eventinfo-overview" revision="1">
+    <title>EventInfo - information about an event</title>
+
+    <para>The EventInfo describes an event.</para>
+  </sect1>
+
+</chapter>

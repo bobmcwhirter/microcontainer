@@ -1,0 +1,15 @@
+<project name="kernel-component-info">
+   <!-- ============================================================ -->
+   <!-- Microcontainer                                               -->
+   <!-- ============================================================ -->
+
+   <component id="kernel"
+              module="kernel"
+              version="5.0-SNAPSHOT"
+   >
+      <artifact id="jboss-microcontainer.jar"/>
+      <export>
+         <include input="jboss-microcontainer.jar"/>
+      </export>
+   </component>
+</project>

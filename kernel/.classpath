@@ -1,0 +1,25 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<classpath>
+	<classpathentry kind="src" path="src/main"/>
+	<classpathentry kind="lib" path="src/resources"/>
+	<classpathentry output="output/eclipse-classes-tests" kind="src" path="src/tests"/>
+	<classpathentry kind="src" path="examples/lifecycle/src/main"/>
+	<classpathentry kind="src" path="examples/collections/src/main"/>
+	<classpathentry kind="src" path="examples/injection/src/main"/>
+	<classpathentry kind="src" path="examples/properties/src/main"/>
+	<classpathentry kind="src" path="examples/factory/src/main"/>
+	<classpathentry kind="src" path="examples/simple/src/main"/>
+	<classpathentry kind="src" path="examples/constructor/src/main"/>
+	<classpathentry kind="src" path="examples/locator/src/main"/>
+	<classpathentry kind="con" path="org.eclipse.jdt.launching.JRE_CONTAINER"/>
+	<classpathentry kind="lib" path="/thirdparty/apache-log4j/lib/log4j.jar"/>
+	<classpathentry kind="lib" path="/thirdparty/oswego-concurrent/lib/concurrent.jar"/>
+	<classpathentry kind="lib" path="/thirdparty/junit/lib/junit.jar"/>
+	<classpathentry kind="src" path="/test"/>
+	<classpathentry kind="lib" path="/thirdparty/jboss/common/lib/jboss-common.jar"/>
+	<classpathentry kind="src" path="/container"/>
+	<classpathentry combineaccessrules="false" kind="src" path="/dependency"/>
+	<classpathentry kind="lib" path="/thirdparty/apache-xerces/lib/xercesImpl.jar"/>
+	<classpathentry kind="lib" path="/thirdparty/jboss/jbossxb/lib/jboss-xml-binding.jar"/>
+	<classpathentry kind="output" path="output/eclipse-classes"/>
+</classpath>

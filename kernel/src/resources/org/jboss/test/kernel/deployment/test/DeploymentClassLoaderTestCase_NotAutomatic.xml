@@ -1,0 +1,37 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<deployment xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+            xsi:schemaLocation="urn:jboss:bean-deployer bean-deployer_1_0.xsd"
+            xmlns="urn:jboss:bean-deployer">
+
+   <classloader><inject bean="DeploymentClassLoader"/></classloader>
+
+   <bean name="DeploymentConfiguredClassLoader" class="org.jboss.test.kernel.deployment.support.SimpleBeanImpl">
+      <property name="string">String1</property>
+   </bean>
+
+   <bean name="BeanConfiguredClassLoader" class="org.jboss.test.kernel.deployment.support.SimpleBeanImpl">
+      <classloader><inject bean="BeanClassLoader"/></classloader>
+      <property name="string">String1</property>
+   </bean>
+
+   <bean name="NotConfiguredClassLoader" class="org.jboss.test.kernel.deployment.support.SimpleBeanImpl">
+      <classloader><null/></classloader>
+      <property name="string">String1</property>
+   </bean>
+
+   <beanfactory name="FactoryDeploymentConfiguredClassLoader" class="org.jboss.test.kernel.deployment.support.SimpleBeanImpl">
+      <property name="string">String1</property>
+   </beanfactory>
+
+   <beanfactory name="FactoryBeanConfiguredClassLoader" class="org.jboss.test.kernel.deployment.support.SimpleBeanImpl">
+      <classloader><inject bean="BeanClassLoader"/></classloader>
+      <property name="string">String1</property>
+   </beanfactory>
+
+   <beanfactory name="FactoryNotConfiguredClassLoader" class="org.jboss.test.kernel.deployment.support.SimpleBeanImpl">
+      <classloader><null/></classloader>
+      <property name="string">String1</property>
+   </beanfactory>
+
+</deployment>

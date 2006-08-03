@@ -1,0 +1,12 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<deployment xmlns="urn:jboss:bean-deployer:2.0">
+   <bean name="Name2" class="org.jboss.test.kernel.dependency.support.SimpleBeanImpl">
+      <install bean="Name1" method="addSimpleBean">
+         <parameter><this/></parameter>
+      </install>
+      <uninstall bean="Name1" method="removeSimpleBean">
+         <parameter><this/></parameter>
+      </uninstall>
+   </bean>
+</deployment>
