@@ -1,0 +1,15 @@
+<project name="dependency-component-info">
+   <!-- ============================================================ -->
+   <!-- Dependency                                                   -->
+   <!-- ============================================================ -->
+
+   <component id="dependency"
+              module="dependency"
+              version="5.0-SNAPSHOT"
+   >
+      <artifact id="jboss-dependency.jar"/>
+      <export>
+         <include input="jboss-dependency.jar"/>
+      </export>
+   </component>
+</project>
