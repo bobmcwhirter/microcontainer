@@ -3,7 +3,6 @@
 	<classpathentry kind="src" path="src/main"/>
 	<classpathentry kind="src" path="src/tests"/>
 	<classpathentry kind="lib" path="src/resources/tests"/>
-	<classpathentry kind="src" path="/test"/>
 	<classpathentry kind="con" path="org.eclipse.jdt.launching.JRE_CONTAINER"/>
 	<classpathentry kind="lib" path="/thirdparty/apache-log4j/lib/log4j.jar"/>
 	<classpathentry kind="lib" path="/thirdparty/oswego-concurrent/lib/concurrent.jar"/>
@@ -12,9 +11,10 @@
 	<classpathentry combineaccessrules="false" kind="src" path="/kernel"/>
 	<classpathentry combineaccessrules="false" kind="src" path="/container"/>
 	<classpathentry combineaccessrules="false" kind="src" path="/dependency"/>
-	<classpathentry combineaccessrules="false" kind="src" path="/aop"/>
 	<classpathentry kind="lib" path="/thirdparty/trove/lib/trove.jar"/>
 	<classpathentry kind="lib" path="src/resources/schema"/>
 	<classpathentry kind="lib" path="/thirdparty/jboss/jbossxb/lib/jboss-xml-binding.jar"/>
+	<classpathentry kind="lib" path="/thirdparty/jboss/test/lib/jboss-test.jar"/>
+	<classpathentry kind="lib" path="/thirdparty/jboss/aop/lib/jboss-aop-jdk50.jar"/>
 	<classpathentry kind="output" path="output/eclipse-classes"/>
 </classpath>
