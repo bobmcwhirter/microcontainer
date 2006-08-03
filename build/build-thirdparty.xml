@@ -43,23 +43,16 @@
         The repository is in CVS under the module repository.jboss.com whose contents
         are pushed to the http://repository.jboss.com site.
       -->
-
-      <componentref name="apache-bcel" version="5.1"/>
       <componentref name="apache-log4j" version="1.2.8"/>
-      <componentref name="apache-xerces" version="2.7.1"/>
-      <componentref name="dom4j" version="1.5"/>
-	   <componentref name="gnu-getopt" version="1.0.10"/>
       <componentref name="javassist" version="snapshot"/>
       <componentref name="jboss/common" version="snapshot"/>
       <componentref name="jboss/jbossxb" version="snapshot"/>
       <componentref name="jboss/profiler/jvmti" version="1.0.0.CR4"/>
       <componentref name="junit" version="3.8.1"/>
-      <componentref name="jboss/jbossretro" version="snapshot"/>
       <componentref name="jboss/backport-concurrent" version="2.1.0.GA"/>
+      <componentref name="jboss/jbossretro" version="snapshot"/>
+      <componentref name="jboss/test" version="1.0.0.CR1"/>
       <componentref name="oswego-concurrent" version="1.3.4"/>
-      <componentref name="sun-jaf" version="1.0.2"/>
-      <componentref name="trove" version="2.1.1"/>
-
    </build>
 
    <synchronizeinfo/>
