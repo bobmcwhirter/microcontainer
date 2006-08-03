@@ -38,8 +38,8 @@
   <!-- JDK Detection -->
   <available classname="java.lang.StackTraceElement" property="HAVE_JDK_1.4"/>
   <available classname="java.lang.Enum" property="HAVE_JDK_1.5"/>
-  <fail unless="HAVE_JDK_1.4">
-  Unsupported Java version: You need at least JDK1.4 to build JBoss5
+  <fail unless="HAVE_JDK_1.5">
+  Unsupported Java version: You need at least JDK5 to build the Microcontainer
   </fail>
 
   <!-- Setup the project environment. -->
