@@ -1,0 +1,114 @@
+<project name="build-jboss-serialization" default="copyresults">
+
+    <property name="cvs.repository" value=":pserver:anonymous@anoncvs.forge.jboss.com:/cvsroot/jboss"/>
+    <property name="log.dir" value="${basedir}/logbuild/jboss-serialization-testsuite"/>
+    <property name="proj.dir" value="../checkout/jboss-serialization-testsuite/"/>
+    <property environment="env"/>
+
+    <import file="build-common-targets.xml"/>
+
+    <target name="clean" depends="" description="Cleans checkout directory">
+        <antcall target="clean.checkout">
+           <param name="checkout.dir" value="${proj.dir}"/>
+           <param name="artifacts.dir" value="${log.dir}"/>
+        </antcall>
+    </target>
+
+    <target name="getcode" depends="clean" description="Update packages from CVS">
+        <cvs command="co -d jboss-serialization-testsuite jboss-serialization" cvsroot="${cvs.repository}" compressionlevel="3" dest="../checkout" failonerror="true" output="${log.dir}/cvsco.log"/>
+    </target>
+    
+    <target name="build" depends="getcode" description="Build the jbossweb project">
+        <exec executable="ant" resultproperty="build.14.returncode" failonerror="false" output="${log.dir}/build-jdk14.log">
+            <arg line=" -buildfile ${proj.dir}/build.xml compile"/>
+        </exec>
+        <condition property="build.14.success">
+          <equals arg1="${build.14.returncode}" arg2="0"/>
+        </condition>
+        <fail unless="build.14.success">
+          Exit code: ${build.14.returncode}
+          See build-jdk14.log in Build Artifacts for details.
+        </fail> 
+        <exec executable="ant" resultproperty="build.15.returncode" failonerror="false" output="${log.dir}/build-jdk15.log">
+            <arg line=" -buildfile ${proj.dir}/build.xml clean compile"/>
+            <env key="PATH" path="/opt/jdk1.5.0_03/bin:${env.PATH}"/>
+            <env key="JAVA_HOME" path="/opt/jdk1.5.0_03"/>             
+        </exec>
+        <condition property="build.15.success">
+          <equals arg1="${build.15.returncode}" arg2="0"/>
+        </condition>
+        <fail unless="build.15.success">
+          Exit code: ${build.15.returncode}
+          See build-jdk15.log in Build Artifacts for details.
+        </fail>         
+    </target>
+    
+    <target name="runtestsuite" depends="build" description="Runs jboss-serialization tests with different JVM's">   
+        <antcall target="runtests">
+            <param name="jvm.config" value="sun-jdk14"/>
+            <param name="java.home.dir" value="/opt/j2sdk1.4.2_09"/>
+        </antcall>         
+        <antcall target="runtests">
+            <param name="jvm.config" value="sun-jdk15"/>
+            <param name="java.home.dir" value="/opt/jdk1.5.0_03"/>
+        </antcall>
+        <antcall target="runtests">
+            <param name="jvm.config" value="sun-jdk16"/>
+            <param name="java.home.dir" value="/opt/i586/jdk1.6.0-beta"/>
+        </antcall>        
+<!--        <antcall target="runtests">
+            <param name="jvm.config" value="jrockit-jdk14"/>
+            <param name="java.home.dir" value="/opt/jrockit-j2sdk1.4.2_05"/>
+        </antcall>-->
+        <antcall target="runtests">
+            <param name="jvm.config" value="jrockit-jdk15"/>
+            <param name="java.home.dir" value="/opt/jrockit-jdk1.5.0_03"/>
+        </antcall>
+        <antcall target="runtests">
+            <param name="jvm.config" value="ibm-jdk14"/>
+            <param name="java.home.dir" value="/opt/IBMJava2-142"/>
+        </antcall>
+        <antcall target="runtests">
+            <param name="jvm.config" value="ibm-jdk15"/>
+            <param name="java.home.dir" value="/opt/ibm-java2-i386-50"/>
+        </antcall>
+    </target>
+
+    <target name="runtests">
+        <exec executable="ant" resultproperty="tests.returncode" failonerror="false" output="${log.dir}/test-${jvm.config}.log">
+            <arg line=" -buildfile ${proj.dir}/build.xml run-tests -Djvm-config=${jvm.config}"/>
+            <env key="PATH" path="${java.home.dir}/bin:${env.PATH}"/>
+            <env key="JAVA_HOME" path="${java.home.dir}"/>             
+        </exec>       
+        <condition property="tests.success">
+          <equals arg1="${tests.returncode}" arg2="0"/>
+        </condition>
+        <fail unless="tests.success">
+          Exit code: ${tests.returncode}
+          See test-${jvm.config}.log in Build Artifacts for details.
+        </fail>        
+    </target>
+
+    <target name="generatereports" depends="runtestsuite" description="Generates HTML reports">
+        <exec executable="ant" dir="${proj.dir}">
+            <arg line="test-reports"/>
+        </exec>
+    </target>
+
+    <target name="copyresults" depends="generatereports" description="Copies test results to the logbuild directory">
+        <mkdir dir="${log.dir}/results"/>
+        <copy todir="${log.dir}/results">
+           <fileset dir="${proj.dir}/build/test-results"/>
+        </copy>
+        <copy todir="${log.dir}/results">
+           <fileset dir="${proj.dir}/build/test-results/report"/>
+        </copy>
+        <delete dir="${log.dir}/results/report"/>
+        <antcall target="test-build-failure">
+            <param name="fileset.dir" value="${log.dir}/results"/>
+            <param name="fileset.includes" value="TEST-*.xml"/>
+            <param name="error.text" value="errors=&quot;0&quot;"/>
+            <param name="failure.text" value="failures=&quot;0&quot;"/>
+        </antcall>
+    </target>
+</project>

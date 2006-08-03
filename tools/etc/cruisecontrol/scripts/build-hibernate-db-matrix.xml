@@ -1,0 +1,135 @@
+<project name="build-hibernate-db-testsuite" default="copyresults">
+
+    <property name="cvs.repository" value=":pserver:anonymous@cvs.sourceforge.net:/cvsroot/hibernate"/>
+    <property name="log.dir" value="${basedir}/logbuild/hibernate-db-matrix"/>
+    <property name="co.dir" value="hibernate-db-matrix"/>
+    <property name="proj.dir" value="../checkout/${co.dir}"/>
+    <property name="hibernate.properties.file" value="hibernate/hsql.properties"/>
+    <property name="driver.jar" value="${proj.dir}/jdbc/hsqldb.jar"/>
+    <property environment="env"/>
+
+    <path id="project.classpath">
+        <fileset dir="../../svnant/lib/">
+            <include name="*.jar"/>
+        </fileset>
+    </path>
+    
+    <taskdef resource="svntask.properties" classpathref="project.classpath"/>
+    
+    <import file="build-common-targets.xml"/>
+
+    <target name="clean" depends="" description="Cleans checkout directory">
+        <sequential>
+            <antcall target="clean.checkout">
+               <param name="checkout.dir" value="../checkout/${co.dir}"/>
+               <param name="artifacts.dir" value="${log.dir}"/>
+            </antcall>
+            <antcall target="version">
+                <param name="java.home" value="/opt/j2sdk1.4.2_07"/>
+                <param name="ant.home" value="${env.ANT_HOME}"/>
+            </antcall>
+        </sequential>
+    </target>
+
+    <target name="getcode" depends="clean" description="Update packages from CVS">
+        <svn>
+            <checkout url="http://anonhibernate.labs.jboss.com/trunk/Hibernate3/" destPath="../checkout/hibernate-db-matrix"/>
+        </svn> 	     
+    </target>
+
+    <target name="configure.hibernate">
+      <copy file="${hibernate.properties.file}" 
+            tofile="${proj.dir}/etc/hibernate.properties"
+	    overwrite="true"/>
+      <copy file="hibernate/log4j.properties" 
+            tofile="${proj.dir}/etc/log4j.properties"
+	    overwrite="true"/>
+    </target>
+
+    <target name="tests" depends="configure.hibernate" description="Runs the hibernate tests">   
+        <exec executable="ant" failonerror="false"  dir="${proj.dir}"
+	      resultproperty="tests.returncode" output="${log.dir}/tests.log">
+	    <arg line="-Ddriver.jar=${driver.jar}"/>
+	    <arg line="-Dhibernate.test.validatefailureexpected=true"/>
+            <arg line="-lib lib junitreport"/>
+            <env key="PATH" path="/opt/j2sdk1.4.2_07/bin:${env.PATH}"/>
+            <env key="CLASSPATH" path="/opt/jdbc-drivers/db2jcc_license_cu.jar:${env.CLASSPATH}"/>
+            <env key="JAVA_HOME" path="/opt/j2sdk1.4.2_07"/>
+            <env key="ANT_HOME" path="/opt/apache-ant-1.6.5"/>
+        </exec>
+        <condition property="tests.success">
+          <equals arg1="${tests.returncode}" arg2="0"/>
+        </condition>
+        <fail unless="tests.success">
+          Exit code: ${tests.returncode}
+          See tests.log in Build Artifacts for details.
+        </fail>
+    </target>
+
+    <target name="copyresults" depends="tests" description="Copies test results to the logbuild directory">
+        <mkdir dir="${log.dir}/results"/>
+        <copy todir="${log.dir}/results">
+           <fileset dir="${proj.dir}/build/testout"/>
+        </copy>
+        <copy todir="${log.dir}">
+          <fileset dir="${proj.dir}" includes="**/*.log"/>
+        </copy>
+        <copy file="hibernate/hibernate.properties" todir="${log.dir}"/>
+        <antcall target="test-build-failure">
+            <param name="fileset.dir" value="${log.dir}/results"/>
+            <param name="fileset.includes" value="TEST-*.xml"/>
+            <param name="error.text" value="errors=&quot;0&quot;"/>
+            <param name="failure.text" value="failures=&quot;0&quot;"/>
+        </antcall>
+    </target>
+
+   <target name="hsqldb">
+        <antcall target="copyresults">
+            <param name="hibernate.properties.file" value="hibernate/hsql.properties"/>
+            <param name="driver.jar" value="/opt/jdbc-drivers/hsqldb.jar"/>
+        </antcall>
+   </target>
+
+   <target name="timesten">
+        <antcall target="copyresults">
+            <param name="hibernate.properties.file" value="hibernate/timesten.properties"/>
+            <param name="driver.jar" value="/opt/jdbc-drivers/timesten/TimesTen/tt60/lib/classes14.jar"/>
+        </antcall>
+   </target>
+
+   <target name="oracle10">
+        <antcall target="copyresults">
+            <param name="hibernate.properties.file" value="hibernate/oracle10.properties"/>
+            <param name="driver.jar" value="/opt/jdbc-drivers/ojdbc14.jar"/>
+        </antcall>
+   </target>
+
+   <target name="sybase">
+        <antcall target="copyresults">
+            <param name="hibernate.properties.file" value="hibernate/sybase.properties"/>
+            <param name="driver.jar" value="/opt/jdbc-drivers/jConnect-5_5/classes/jconn2.jar"/>
+        </antcall>
+   </target>
+
+   <target name="sqlserver">
+        <antcall target="copyresults">
+            <param name="hibernate.properties.file" value="hibernate/jtds-sqlserver.properties"/>
+            <param name="driver.jar" value="/opt/jdbc-drivers/jtds/jtds-1.2.jar"/>
+        </antcall>
+   </target>
+
+   <target name="mysql">
+        <antcall target="copyresults">
+            <param name="hibernate.properties.file" value="hibernate/mysql.properties"/>
+            <param name="driver.jar" value="/opt/jdbc-drivers/mysql-connector-java-3.1.10-bin.jar"/>
+        </antcall>
+   </target>
+
+   <target name="db2">
+        <antcall target="copyresults">
+            <param name="hibernate.properties.file" value="hibernate/db2.properties"/>
+            <param name="driver.jar" value="/opt/jdbc-drivers/db2jcc.jar"/>
+        </antcall>
+   </target>
+</project>
+

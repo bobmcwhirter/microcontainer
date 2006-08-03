@@ -1,0 +1,295 @@
+<project name="build-jboss-head" default="test">
+
+    <property name="jdk131" value="/opt/jdk1.3.1_13/"/>
+    <property name="jdk142" value="/opt/j2sdk1.4.2_09/"/>
+    <property name="jdk15" value="/opt/jdk1.5.0_03/"/>
+    <property name="jdk16" value="/opt/i586/jdk1.6.0-beta/"/>
+    <property name="java.home.dir" value="${jdk142}"/>
+
+    <property name="jdk15.log" value="compile_jdk15.log"/>
+    <property name="jdk14.log" value="compile_jdk14.log"/>
+    <property name="jdk131.log" value="compile_jdk131.log"/>
+    
+    <!--<property name="jboss.dir" value="${cvs.module}"/>-->
+
+    <property name="build.reports" value="../checkout/${jboss.dir}/testsuite/output/reports"/>
+    <property name="cvs.repository" value=":pserver:anonymous@anoncvs.forge.jboss.com:/cvsroot/jboss"/>
+    <property name="log.dir" value="${basedir}/logbuild/${jboss.dir}"/>   
+
+    <property file="committer-list.properties"/>
+    
+    <property environment="env"/>
+        
+    <import file="build-common.xml"/> 
+
+    <macrodef name="kill-jboss-dead">
+      <sequential>
+        <exec dir="." executable="bash">
+            <arg value="-c"/>
+            <arg value="ps -eaf --columns 1200 | grep run.jar | grep -v grep | awk '{ print $$2; }' | xargs kill"/>
+        </exec>
+        <sleep seconds="10"/>
+        <exec dir="." executable="bash">
+            <arg value="-c"/>
+            <arg value="ps -eaf --columns 1200 | grep run.jar | grep -v grep | awk '{ print $$2; }' | xargs kill -9"/>
+        </exec>
+      </sequential>
+    </macrodef>
+
+    <macrodef name="build">
+       <attribute name="logName" default="compile.log"/>
+       <attribute name="branch" default="${cvs.branch}"/>
+       <attribute name="module" default="${cvs.module}"/>
+       <attribute name="javaHomeDir" default="${java.home.dir}"/>
+       <sequential>
+        <antcall target="version">
+           <param name="java.home" value="@{javaHomeDir}"/>
+           <param name="ant.home" value="${env.ANT_HOME}"/>
+        </antcall>
+        <exec dir="../checkout/${jboss.dir}/build" executable="bash" output="${log.dir}/clean.log">
+            <arg line="build.sh clean"/>
+            <env key="LANG" path=""/>
+        </exec>
+        <exec dir="../checkout/${jboss.dir}/build" executable="bash" failonerror="false" resultproperty="@{logName}-build.returncode" output="${log.dir}/@{logName}">
+            <arg line="build.sh release"/>
+            <env key="JAVA_HOME" path="@{javaHomeDir}"/>
+            <env key="PATH" path="@{javaHomeDir}/bin:${env.PATH}"/>
+            <env key="LANG" path=""/>
+        </exec>
+        <condition property="@{logName}-build.success">
+          <equals arg1="${@{logName}-build.returncode}" arg2="0"/>
+        </condition>
+        <fail unless="@{logName}-build.success">
+          Exit code: ${@{logName}-build.returncode}
+          See @{logName} in Build Artifacts for details.
+        </fail>
+
+        <exec dir="../checkout/${jboss.dir}/testsuite" executable="bash" failonerror="false" resultproperty="@{logName}-testsuite.returncode"  output="${log.dir}/@{logName}" append="true">
+            <arg line="build.sh clean compile"/>
+            <env key="JAVA_HOME" path="@{javaHomeDir}"/>
+            <env key="PATH" path="@{javaHomeDir}/bin:${env.PATH}"/>
+            <env key="LANG" path=""/>
+        </exec>
+        <condition property="@{logName}-testsuite.success">
+          <equals arg1="${@{logName}-testsuite.returncode}" arg2="0"/>
+        </condition>
+        <fail unless="@{logName}-testsuite.success">
+          Exit code: ${@{logName}-testsuite.returncode}
+          See @{logName} in Build Artifacts for details.
+        </fail>
+
+        <delete dir="../checkout/jboss-builds/${jboss.dir}"/>
+        <mkdir dir="../checkout/jboss-builds/${jboss.dir}"/>
+        <copy todir="../checkout/jboss-builds/${jboss.dir}">
+          <fileset dir="../checkout/${jboss.dir}/build/output/"/>
+        </copy>
+      </sequential>
+   </macrodef>
+
+    <macrodef name="buildtestsuite">
+       <attribute name="branch" default="${cvs.branch}"/>
+       <attribute name="module" default="${cvs.module}"/>
+       <attribute name="javaHomeDir" default="${java.home.dir}"/>
+       <sequential>
+        <antcall target="version">
+           <param name="java.home" value="@{javaHomeDir}"/>
+           <param name="ant.home" value="${env.ANT_HOME}"/>
+        </antcall>
+
+        <exec dir="../checkout/${jboss.dir}/build" executable="bash" output="${log.dir}/clean.log">
+            <arg line="build.sh clean -Djavac.source=${javac.source} -Djavac.target=${javac.target}"/>
+        </exec>
+        <exec dir="../checkout/${jboss.dir}/build" executable="bash" failonerror="false" resultproperty="buildbuild.returncode" output="${log.dir}/compile-build.log">
+            <arg line="build.sh release -Djavac.source=${javac.source} -Djavac.target=${javac.target}"/>
+            <env key="JAVA_HOME" path="@{javaHomeDir}"/>
+            <env key="PATH" path="@{javaHomeDir}/bin:${env.PATH}"/>
+            <env key="LANG" path=""/>
+        </exec>
+        <exec dir="../checkout/${jboss.dir}/testsuite" executable="bash" failonerror="false" resultproperty="buildtestsuite.returncode"  output="${log.dir}/compile-testsuite.log">
+            <arg line="build.sh compile -Djavac.source=${javac.source} -Djavac.target=${javac.target}"/>
+            <env key="JAVA_HOME" path="@{javaHomeDir}"/>
+            <env key="PATH" path="@{javaHomeDir}/bin:${env.PATH}"/>
+            <env key="LANG" path=""/>
+        </exec>
+        <antcall target="copylogs">
+           <param name="dest.dir" value="${log.dir}"/>
+           <param name="proj.dir" value="${jboss.dir}"/>
+        </antcall>
+
+        <condition property="buildbuild.success">
+          <equals arg1="${buildbuild.returncode}" arg2="0"/>
+        </condition>
+        <fail unless="buildbuild.success">
+          Exit code: ${buildbuild.returncode}
+          See compile-build.log in Build Artifacts for details.
+        </fail>
+
+        <condition property="buildtestsuite.success">
+          <equals arg1="${buildtestsuite.returncode}" arg2="0"/>
+        </condition>
+        <fail unless="buildtestsuite.success">
+          Exit code: ${buildtestsuite.returncode}
+          See compile-testsuite.log in Build Artifacts for details.
+        </fail>
+      </sequential>
+   </macrodef>
+   
+    <macrodef name="tests">
+       <attribute name="logName" default="tests.log"/>
+       <attribute name="javaHomeDir" default="${java.home.dir}"/>
+       <sequential>
+        <kill-jboss-dead/>
+        <exec executable="ant" dir="../checkout/${jboss.dir}/testsuite" failonerror="false" resultproperty="tests.returncode" output="${log.dir}/@{logName}">
+            <arg line=" -Dnode0=$MYTESTIP_1 -Dnode1=$MYTESTIP_2 clean tests -Djavac.source=${javac.source} -Djavac.target=${javac.target}"/>
+            <env key="JAVA_HOME" path="@{javaHomeDir}"/>
+            <env key="PATH" path="@{javaHomeDir}/bin:${env.PATH}"/>
+        </exec>
+        <antcall target="copylogs">
+           <param name="dest.dir" value="${log.dir}"/>
+           <param name="proj.dir" value="${jboss.dir}"/>
+        </antcall>
+        <condition property="tests.success">
+          <equals arg1="${tests.returncode}" arg2="0"/>
+        </condition>
+        <fail unless="tests.success">
+          Exit code: ${tests.returncode}
+          See tests.log in Build Artifacts for details.
+        </fail>
+       </sequential>
+   </macrodef>	   
+
+    <macrodef name="tests-matrix">
+       <attribute name="logName" default="tests.log"/>
+       <sequential>
+        <kill-jboss-dead/>
+        <property name="jboss.versions.dir" value="/home/cruisecontrol/work/checkout/jboss-versions/"/>
+        <delete>
+          <fileset dir="${jboss.versions.dir}">
+            <include name="3_2_x"/>
+            <include name="4_0_x"/>
+          </fileset>
+        </delete>
+        <copy todir="${jboss.versions.dir}/3_2_x" flatten="true">
+          <fileset dir="../checkout/jboss-3.2.x/build/output">
+            <include name="*/client/*.jar"/>
+          </fileset>
+        </copy>
+        <copy todir="${jboss.versions.dir}/4_0_x" flatten="true">
+          <fileset dir="../checkout/jboss-4.0.x/build/output">
+            <include name="*/client/*.jar"/>
+          </fileset>
+        </copy>
+       
+        <exec executable="ant" dir="../checkout/${jboss.dir}/testsuite" 
+              failonerror="false" resultproperty="tests.returncode" 
+              output="${log.dir}/@{logName}">
+            <arg line="tests-matrix tests-report -Dmatrix-versions=${jboss.versions.dir} -Dnode1=$MYTESTIP_1"/>
+        </exec>
+        <antcall target="copylogs">
+           <param name="dest.dir" value="${log.dir}"/>
+           <param name="proj.dir" value="${jboss.dir}"/>
+        </antcall>
+        <condition property="tests.success">
+          <equals arg1="${tests.returncode}" arg2="0"/>
+        </condition>
+        <fail unless="tests.success">
+          Exit code: ${tests.returncode}
+          See tests.log in Build Artifacts for details.
+        </fail>
+       </sequential>
+   </macrodef>
+
+
+    <target name="clean" depends="" description="Cleans checkout directory">
+        <kill-jboss-dead/>
+        <antcall target="clean.checkout">
+           <param name="checkout.dir" value="../checkout/${jboss.dir}"/>
+           <param name="artifacts.dir" value="${log.dir}"/>
+        </antcall>
+    </target>
+    <!--
+    <target name="checkout" depends="clean">
+	<if>
+	 <equals arg1="${cvs.branch}" arg2="HEAD" />
+	 <then>
+	   <property name="cvs.branch.opt" value=""/>
+	 </then>
+	 <else>
+	   <property name="cvs.branch.opt" value=" -r ${cvs.branch}"/>
+	 </else>
+	</if>
+	<echo message="checking out branch ${cvs.branch} of ${cvs.module}"/>
+        <cvs command="co -P ${cvs.branch.opt} -d ${jboss.dir} ${cvs.module}" cvsroot="${cvs.repository}" compressionlevel="3" quiet="true" failonerror="true" dest="../checkout" 
+output="${log.dir}/cvsco.log"/>
+    </target>
+    -->
+    <target name="checkout" depends="clean" description="Update packages from SVN">
+        <svn>
+            <checkout url="${svn.url}" destPath="../checkout/${jboss.dir}"/>
+        </svn>    
+    </target>
+    
+    
+    <target name="build" depends="checkout">
+      <build logName="${jdk14.log}"/>
+    </target>    
+
+    <target name="test" depends="build-testsuite">
+      <tests javaHomeDir="${jdk.version}"/>
+    </target>
+
+    <target name="test-compatibility" depends="build-testsuite">
+      <tests-matrix/>
+    </target>
+
+    <target name="copyresults" depends="" description="Copies test results to the logbuild directory">
+        <copy todir="${log.dir}/results">
+           <fileset dir="../checkout/${jboss.dir}/testsuite/output/reports/html"/>
+        </copy>
+        <antcall target="test-build-failure-jbossas">
+            <param name="fileset.dir" value="${build.reports}/text/"/>
+            <param name="fileset.includes" value="TESTS-TestSuites.txt"/>
+            <param name="error.text" value="Type:        error"/>
+            <param name="failure.text" value="Type:        failure"/>
+        </antcall>
+    </target>
+    
+    <target name="build-testsuite" depends="checkout">
+      <property name="jboss-3.2-testsuite-jdk" value="${bea-jdk14}"/>
+      <property name="jboss-4.0.4.SP-testsuite-jdk" value="${jdk142}"/>
+      <property name="jboss-4.0-testsuite-1.4-jdk" value="${bea-jdk14}"/>
+      <property name="jboss-4.0-testsuite-1.5-jdk" value="${bea-jdk15}"/>
+      <property name="jboss-4.0-testsuite-1.6-jdk" value="${jdk16}"/>
+      <property name="jboss-3.2-compatibility-matrix-jdk" value="${bea-jdk14}"/>
+      <property name="jboss-4.0-compatibility-matrix-jdk" value="${bea-jdk14}"/>
+      <property name="jboss-head-testsuite-1.4-jdk" value="${bea-jdk14}"/>
+      <property name="jboss-head-testsuite-1.5-jdk" value="${bea-jdk15}"/>
+      <property name="jboss-head-testsuite-1.6-jdk" value="${jdk16}"/>
+      <propertycopy name="jdk.version" from="${jboss.dir}-jdk"/>
+
+      <property name="jboss-3.2-testsuite-jdk-version" value="1.4"/>
+      <property name="jboss-4.0.4.SP-testsuite-jdk-version" value="1.4"/>
+      <property name="jboss-4.0-testsuite-1.4-jdk-version" value="1.4"/>
+      <property name="jboss-4.0-testsuite-1.5-jdk-version" value="1.5"/>
+      <property name="jboss-4.0-testsuite-1.6-jdk-version" value="1.5"/>
+      <property name="jboss-3.2-compatibility-matrix-jdk-version" value="1.4"/>
+      <property name="jboss-4.0-compatibility-matrix-jdk-version" value="1.4"/>
+      <property name="jboss-head-testsuite-1.4-jdk-version" value="1.4"/>
+      <property name="jboss-head-testsuite-1.5-jdk-version" value="1.5"/>
+      <property name="jboss-head-testsuite-1.6-jdk-version" value="1.6"/>
+      <propertycopy name="javac.source" from="${jboss.dir}-jdk-version"/>
+      <propertycopy name="javac.target" from="${jboss.dir}-jdk-version"/>
+
+      <buildtestsuite javaHomeDir="${jdk.version}"/>
+    </target>
+   
+    <target name="build-head-jdks" depends="checkout">
+      <build javaHomeDir="${jdk15}" logName="${jdk15.log}"/>
+    </target>
+    <target name="build-4.0-jdks" depends="build">
+      <build javaHomeDir="${jdk15}" logName="${jdk15.log}"/>
+    </target>
+    <target name="build-3.2-jdks" depends="build">
+      <build javaHomeDir="${jdk131}" logName="${jdk131.log}"/>
+    </target>   
+</project>

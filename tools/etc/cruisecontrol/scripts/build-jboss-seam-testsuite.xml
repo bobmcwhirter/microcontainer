@@ -1,0 +1,158 @@
+<project name="build-jboss-seam-testsuite" default="build">
+
+    <property name="cvs.repository" value=":pserver:anonymous@anoncvs.forge.jboss.com:/cvsroot/jboss"/>
+    <property name="log.dir" value="${basedir}/logbuild/${jboss.dir}"/>
+
+    <property environment="env"/>
+    <import file="build-common-targets.xml"/>
+	
+    <tstamp>
+       <format property="TIMENOW" pattern="yyyy-MM-dd" timezone="GMT"/>
+    </tstamp>
+    
+    <target name="clean" depends="" description="Cleans checkout directory">
+        <sequential>
+            <antcall target="clean.checkout">
+               <param name="checkout.dir" value="../checkout/${jboss.dir}"/>
+               <param name="artifacts.dir" value="${log.dir}"/>
+            </antcall>
+            <antcall target="version">
+               <param name="java.home" value="${env.JAVA_HOME}"/>
+               <param name="ant.home" value="${env.ANT_HOME}"/>
+            </antcall>
+        </sequential>
+    </target>
+
+    <target name="getcode" depends="clean" description="Update packages from CVS">
+        <cvs command="co -d ${jboss.dir} jboss-seam" cvsroot="${cvs.repository}" compressionlevel="3" dest="../checkout" failonerror="true"
+output="${log.dir}/cvsco.log"/>
+    </target>
+
+    <target name="build" depends="getcode" description="Build the jbosscache project">
+        <sequential>
+        <exec executable="ant" resultproperty="build.returncode" failonerror="false" output="${log.dir}/compile.log">
+            <arg line=" -buildfile ../checkout/${jboss.dir}/build.xml dist -Dversion=CVS -Dpatchlevel=${DSTAMP}"/>
+            <env key="PATH" path="/opt/jdk1.5.0_03/bin:${env.PATH}"/>
+            <env key="JAVA_HOME" path="/opt/jdk1.5.0_03"/>
+        </exec>
+        <antcall target="test-target-failure">
+           <param name="failure.property" value="build.success"/>
+           <param name="result.property" value="${build.returncode}"/>
+           <param name="error.message" value="See compile.log in Build Artifacts for details."/>
+        </antcall>
+        </sequential>
+    </target>
+
+    <target name="tests" depends="build" description="Runs the jboss-seam tests">
+        <sequential>
+        <exec executable="ant" resultproperty="tests.returncode" failonerror="false" output="${log.dir}/tests.log">
+            <arg line=" -buildfile ../checkout/${jboss.dir}/build.xml testall"/>
+            <env key="PATH" path="/opt/jdk1.5.0_03/bin:${env.PATH}"/>
+            <env key="JAVA_HOME" path="/opt/jdk1.5.0_03"/>
+        </exec>
+        <mkdir dir="${log.dir}/results/tests"/>
+        <copy todir="${log.dir}/results/tests">
+           <fileset dir="test-output"/>
+        </copy>
+        <delete dir="test-output"/>
+
+        <antcall target="test-target-failure">
+           <param name="failure.property" value="tests.success"/>
+           <param name="result.property" value="${tests.returncode}"/>
+           <param name="error.message" value="Core tests failed. See tests.log in Build Artifacts for details."/>
+        </antcall>
+
+        <exec executable="ant" resultproperty="booking.tests.returncode" failonerror="false" output="${log.dir}/tests.log" append="true">
+            <arg line=" -buildfile ../checkout/${jboss.dir}/examples/booking/build.xml testexample"/>
+            <env key="PATH" path="/opt/jdk1.5.0_03/bin:${env.PATH}"/>
+            <env key="JAVA_HOME" path="/opt/jdk1.5.0_03"/>
+        </exec>
+        <mkdir dir="${log.dir}/results/booking"/>
+        <copy todir="${log.dir}/results/booking">
+           <fileset dir="../checkout/${jboss.dir}/examples/booking/test-output"/>
+        </copy>
+
+        <antcall target="test-target-failure">
+           <param name="failure.property" value="booking.tests.success"/>
+           <param name="result.property" value="${booking.tests.returncode}"/>
+           <param name="error.message" value="Booking example tests failed. See tests.log in Build Artifacts for details."/>
+        </antcall>
+
+        <exec executable="ant" resultproperty="hibernate.tests.returncode" failonerror="true" output="${log.dir}/tests.log" append="true">
+            <arg line=" -buildfile ../checkout/${jboss.dir}/examples/hibernate/build.xml testexample"/>
+            <env key="PATH" path="/opt/jdk1.5.0_03/bin:${env.PATH}"/>
+            <env key="JAVA_HOME" path="/opt/jdk1.5.0_03"/>
+        </exec>
+        <mkdir dir="${log.dir}/results/hibernate"/>
+        <copy todir="${log.dir}/results/hibernate">
+           <fileset dir="../checkout/${jboss.dir}/examples/hibernate/test-output"/>
+        </copy>
+
+        <antcall target="test-target-failure">
+           <param name="failure.property" value="hibernate.tests.success"/>
+           <param name="result.property" value="${hibernate.tests.returncode}"/>
+           <param name="error.message" value="Hibernate example tests failed. See tests.log in Build Artifacts for details."/>
+        </antcall>
+
+        <exec executable="ant" resultproperty="registration.tests.returncode" failonerror="true" output="${log.dir}/tests.log" append="true">
+            <arg line=" -buildfile ../checkout/${jboss.dir}/examples/registration/build.xml testexample"/>
+            <env key="PATH" path="/opt/jdk1.5.0_03/bin:${env.PATH}"/>
+            <env key="JAVA_HOME" path="/opt/jdk1.5.0_03"/>
+        </exec>
+        <mkdir dir="${log.dir}/results/registration"/>
+        <copy todir="${log.dir}/results/registration">
+           <fileset dir="../checkout/${jboss.dir}/examples/registration/test-output"/>
+        </copy>
+
+        <antcall target="test-target-failure">
+           <param name="failure.property" value="registration.tests.success"/>
+           <param name="result.property" value="${registration.tests.returncode}"/>
+           <param name="error.message" value="Registration example tests failed. See tests.log in Build Artifacts for details."/>
+        </antcall>
+
+        </sequential>
+    </target>
+
+    <target name="copyresults" depends="tests" description="Copies test results to the artifacts directory">
+        <copy file="index-jboss-seam.html" tofile="${log.dir}/results/index.html"/>
+        <delete dir="../checkout/jboss-seam-CVS.${DSTAMP}"/>
+        <copy todir="../artifacts/jboss-seam-builds">
+           <fileset dir="../checkout/" includes="jboss-seam-CVS*.*"/>
+        </copy>
+        <delete>
+            <fileset dir="../checkout" includes="jboss-seam-CVS*.*"/>
+        </delete>
+        <exec dir="../artifacts/jboss-seam-builds" executable="bash">
+            <arg value="-c"/>
+            <arg value="rm -f `find -type f -mtime +7`"/>
+        </exec>
+    </target>
+    
+    <target name="test-build-failures" depends="copyresults" description="Tests errors and failures">
+        <antcall target="test-build-failure">
+            <param name="fileset.dir" value="${log.dir}/results/tests"/>
+            <param name="fileset.includes" value="Core.xml"/>
+            <param name="error.text" value="errors=&quot;0&quot;"/>
+            <param name="failure.text" value="failures=&quot;0&quot;"/>
+        </antcall>	
+        <antcall target="test-build-failure">
+            <param name="fileset.dir" value="${log.dir}/results/booking"/>
+            <param name="fileset.includes" value="Booking.xml"/>
+            <param name="error.text" value="errors=&quot;0&quot;"/>
+            <param name="failure.text" value="failures=&quot;0&quot;"/>
+        </antcall>
+        <antcall target="test-build-failure">
+            <param name="fileset.dir" value="${log.dir}/results/hibernate"/>
+            <param name="fileset.includes" value="Booking.xml"/>
+            <param name="error.text" value="errors=&quot;0&quot;"/>
+            <param name="failure.text" value="failures=&quot;0&quot;"/>
+        </antcall>
+        <antcall target="test-build-failure">
+            <param name="fileset.dir" value="${log.dir}/results/registration"/>
+            <param name="fileset.includes" value="Register.xml"/>
+            <param name="error.text" value="errors=&quot;0&quot;"/>
+            <param name="failure.text" value="failures=&quot;0&quot;"/>
+        </antcall>        
+    </target>
+</project>
+

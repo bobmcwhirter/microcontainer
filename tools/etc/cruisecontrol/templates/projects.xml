@@ -1,0 +1,429 @@
+<projects>
+  <defaultproject template=""
+           name=""
+           buildafterfailed="false"
+           modificationset=""
+           modificationset1=""
+           modificationset2=""
+	   buildstatuslogdir=""
+           tag=""
+           quietperiod="420"
+           requiremodification=""
+           scheduleinterval=""
+           fakeModset=""
+           buildfile=""
+           target=""
+           time=""
+           uselogger="false"
+           usedebug="false"
+	   timeout="7200"
+           removeproperties="true"
+           logbuilddirectory=""
+           testResults=""
+           cvsbranch=""
+           cvsmodule=""
+           jbossdir=""
+           svnurl=""
+           emailFrom="qa@jboss.com"
+           emailFailureTo="jboss-development@lists.jboss.org"
+           emailAlwaysTo="qa@jboss.com"
+           skipusers="false"
+           reportWhenFixed="true">
+  </defaultproject>
+
+  
+  <testattributes testMode="no"
+	   skipusers="true"
+  	   emailFrom="qa@jboss.com"
+           emailFailureTo="rrajasekaran@jboss.com"
+           emailAlwaysTo="rrajasekaran@jboss.com">
+  </testattributes>  
+
+  
+  <project template="jbosslabstemplate.vm"
+           name="ejb3-4.0-testsuite"
+           modificationset="ejb3-4.0-testsuite/ejb3"
+           requiremodification="false"
+           time="2200"
+           buildfile="build-ejb3-4.0-testsuite.xml"
+           target="copyresults"
+	   timeout="7200"
+           logbuilddirectory="ejb3-4.0-testsuite"
+           testResults="checkout/ejb3-4.0-testsuite/ejb3/output/reports/TESTS-TestSuites.xml"
+           svnurl="http://anonsvn.jboss.org/repos/jbossas/branches/Branch_4_0"
+           jbossdir="ejb3-4.0-testsuite">
+  </project>
+  
+  
+  <project template="jbosslabstemplate.vm"
+           name="ejb3-head-testsuite"
+           modificationset="ejb3-head-testsuite/ejb3"
+           requiremodification="false"
+           time="2200"
+           buildfile="build-ejb3-head-testsuite.xml"
+           target="copyresults"
+           timeout="7200"
+           logbuilddirectory="ejb3-head-testsuite"
+           testResults="checkout/ejb3-head-testsuite/ejb3/output/reports/TESTS-TestSuites.xml"
+           svnurl="http://anonsvn.jboss.org/repos/jbossas/trunk"
+           jbossdir="ejb3-head-testsuite">
+  </project>  
+   
+    
+  <project template="jbosslabstemplate.vm"
+	   name="jboss-3.2-testsuite"
+	   buildafterfailed="true"
+	   modificationset="jboss-3.2-testsuite"
+	   requiremodification="false"
+	   time="2200"
+	   buildfile="build-jboss-common.xml"
+	   target="test copyresults"
+           timeout="7200"
+	   logbuilddirectory="jboss-3.2-testsuite"
+	   testResults="checkout/jboss-3.2-testsuite/testsuite/output/reports/TESTS-TestSuites.xml"
+	   svnurl="http://anonsvn.jboss.org/repos/jbossas/branches/Branch_3_2"	   
+	   jbossdir="jboss-3.2-testsuite">
+  </project>   
+    
+
+  <project template="jbosslabstemplate.vm"
+           name="jboss-4.0-testsuite-1.4"
+           buildafterfailed="true"
+           modificationset="jboss-4.0-testsuite-1.4"
+	   requiremodification="true"           
+           time="2200"
+           buildfile="build-jboss-common.xml"
+           target="test copyresults"
+           timeout="14400"
+           logbuilddirectory="jboss-4.0-testsuite-1.4"
+           testResults="checkout/jboss-4.0-testsuite-1.4/testsuite/output/reports/TESTS-TestSuites.xml"
+	   svnurl="http://anonsvn.jboss.org/repos/jbossas/branches/Branch_4_0"
+           jbossdir="jboss-4.0-testsuite-1.4">
+  </project>
+  
+  <project template="jbosslabstemplate.vm"
+           name="jboss-4.0-testsuite-1.5"
+           buildafterfailed="true"
+           modificationset="jboss-4.0-testsuite-1.5"
+	   requiremodification="true"           
+           time="2200"
+           buildfile="build-jboss-common.xml"
+           target="test copyresults"
+           timeout="14400"
+           logbuilddirectory="jboss-4.0-testsuite-1.5"
+           testResults="checkout/jboss-4.0-testsuite-1.5/testsuite/output/reports/TESTS-TestSuites.xml"
+	   svnurl="http://anonsvn.jboss.org/repos/jbossas/branches/Branch_4_0"           
+           jbossdir="jboss-4.0-testsuite-1.5">
+  </project>
+  
+  <project template="jbosslabstemplate.vm"
+           name="jboss-4.0-testsuite-1.6"
+           buildafterfailed="true"
+           modificationset="jboss-4.0-testsuite-1.6"
+	   requiremodification="true"           
+           time="2200"
+           buildfile="build-jboss-common.xml"
+           target="test copyresults"
+           timeout="14400"
+           logbuilddirectory="jboss-4.0-testsuite-1.6"
+           testResults="checkout/jboss-4.0-testsuite-1.6/testsuite/output/reports/TESTS-TestSuites.xml"
+	   svnurl="http://anonsvn.jboss.org/repos/jbossas/branches/Branch_4_0"
+           jbossdir="jboss-4.0-testsuite-1.6">
+  </project>  
+
+<!--
+  <project template="projecttemplate.vm"
+           name="jboss-head-testsuite-1.4"
+           buildafterfailed="true"
+           modificationset="jboss-head-testsuite-1.4"
+           requiremodification="false"
+           time="2200"
+           buildfile="build-jboss-common.xml"
+           target="test copyresults"
+           timeout="14400"
+           logbuilddirectory="jboss-head-testsuite-1.4"
+           testResults="checkout/jboss-head-testsuite-1.4/testsuite/output/reports/TESTS-TestSuites.xml"
+           cvsbranch="HEAD"
+           cvsmodule="jboss-head"
+           jbossdir="jboss-head-testsuite-1.4">
+  </project>  
+-->  
+  <project template="jbosslabstemplate.vm"
+           name="jboss-head-testsuite-1.5"
+           buildafterfailed="true"
+           modificationset="jboss-head-testsuite-1.5"
+           requiremodification="false"
+           time="2200"
+           buildfile="build-jboss-common.xml"
+           target="test copyresults"
+           timeout="14400"
+           logbuilddirectory="jboss-head-testsuite-1.5"
+           testResults="checkout/jboss-head-testsuite-1.5/testsuite/output/reports/TESTS-TestSuites.xml"
+	   svnurl="http://anonsvn.jboss.org/repos/jbossas/trunk"
+           jbossdir="jboss-head-testsuite-1.5">
+  </project>
+  
+  <project template="jbosslabstemplate.vm"
+           name="jboss-head-testsuite-1.6"
+           buildafterfailed="true"
+           modificationset="jboss-head-testsuite-1.6"
+           requiremodification="false"
+           time="2200"
+           buildfile="build-jboss-common.xml"
+           target="test copyresults"
+           timeout="14400"
+           logbuilddirectory="jboss-head-testsuite-1.6"
+           testResults="checkout/jboss-head-testsuite-1.6/testsuite/output/reports/TESTS-TestSuites.xml"
+	   svnurl="http://anonsvn.jboss.org/repos/jbossas/trunk"
+           jbossdir="jboss-head-testsuite-1.6">
+  </project>  
+
+  <project template="projecttemplate.vm"
+           name="jbpm.3"
+           modificationset="jbpm.3"
+	   requiremodification="false"
+           time="2200"
+           buildfile="build-jbpm.3.xml"
+           target="copyresults"
+           timeout="3600"
+           logbuilddirectory="jbpm.3"
+           testResults="checkout/jbpm.3/build/test.results.jbpm/xml/TESTS-TestSuites.xml"
+           emailFailureTo="tom.baeyens@jboss.com,qa@jboss.com"
+           emailAlwaysTo="tom.baeyens@jboss.com,qa@jboss.com">
+  </project>   
+  
+
+  <project template="projecttemplate.vm"
+           name="jboss-cache-testsuite"
+           modificationset="jboss-cache-testsuite"
+           requiremodification="false"
+           time="2200"
+           buildfile="build-JBossCache.xml"
+           target="copyresults"
+           timeout="7200"
+           logbuilddirectory="jboss-cache-testsuite"
+           testResults="checkout/jboss-cache-testsuite/output/reports/html/TESTS-TestSuites.xml"
+           cvsbranch="HEAD"
+           emailFailureTo="jboss-development@lists.jboss.org"
+           emailAlwaysTo="dev-jbosscache@jboss.com,qa@jboss.com"
+           jbossdir="jboss-cache-testsuite"
+           skipusers="true">
+  </project>
+ <!-- 
+  <project template="projecttemplate.vm"
+           name="jboss-cache-testsuite-140"
+           modificationset="jboss-cache-testsuite-140"
+           requiremodification="false"
+           time="2200"
+           buildfile="build-JBossCache.xml"
+           target="copyresults"
+           timeout="7200"
+           logbuilddirectory="jboss-cache-testsuite-140"
+           testResults="checkout/jboss-cache-testsuite-140/output/reports/html/TESTS-TestSuites.xml"
+           cvsbranch="Branch_JBossCache_1_4_0"
+           emailFailureTo="jboss-development@lists.jboss.org"
+           emailAlwaysTo="dev-jbosscache@jboss.com,qa@jboss.com"
+           jbossdir="jboss-cache-testsuite-140"
+           skipusers="true">
+  </project>  
+-->
+  <project template="projecttemplate.vm"
+           name="jbosside"
+           modificationset="jbosside"
+           requiremodification="false"
+           scheduleinterval="43200"
+           buildfile="build-jboss-ide.xml"
+           target="copyresults"
+           timeout="7200"
+           logbuilddirectory="jbosside"
+           testResults="scripts/logbuild/jbosside/results/org.jboss.ide.eclipse.tests.xml"
+           emailFailureTo="ide@jboss.com,qa@jboss.com"
+           emailAlwaysTo="ide@jboss.com,qa@jboss.com">
+  </project>
+
+  <project template="projecttemplate.vm"
+           name="jboss-remoting-testsuite-1.4"
+           modificationset="jboss-remoting-testsuite-1.4"
+           requiremodification="false"
+           time="2200"
+           buildfile="build-jboss-remoting.xml"
+           target="copyresults"
+           timeout="7200"
+           logbuilddirectory="jboss-remoting-testsuite-1.4"
+           testResults="checkout/jboss-remoting-testsuite-1.4/output/tests/results/TESTS-TestSuites.xml"
+           jbossdir="jboss-remoting-testsuite-1.4">
+  </project>
+
+  <project template="projecttemplate.vm"
+           name="jboss-remoting-testsuite-1.5"
+           modificationset="jboss-remoting-testsuite-1.5"
+           requiremodification="false"
+           time="2200"
+           buildfile="build-jboss-remoting.xml"
+           target="copyresults"
+           timeout="10800"
+           logbuilddirectory="jboss-remoting-testsuite-1.5"
+           testResults="checkout/jboss-remoting-testsuite-1.5/output/tests/results/TESTS-TestSuites.xml"
+           jbossdir="jboss-remoting-testsuite-1.5">
+  </project>
+  
+  <project template="projecttemplate.vm"
+           name="jboss-remoting-testsuite-1.6"
+           modificationset="jboss-remoting-testsuite-1.6"
+           requiremodification="false"
+           time="2200"
+           buildfile="build-jboss-remoting.xml"
+           target="copyresults"
+           timeout="10800"
+           logbuilddirectory="jboss-remoting-testsuite-1.6"
+           testResults="checkout/jboss-remoting-testsuite-1.6/output/tests/results/TESTS-TestSuites.xml"
+           jbossdir="jboss-remoting-testsuite-1.6">
+  </project>  
+
+  <project template="jbosslabstemplate.vm"
+           name="jbosslabs"
+           modificationset="jbosslabs"
+           requiremodification="false"
+           time="2200"
+           buildfile="build-jbosslabs.xml"
+           target="copyresults"
+           timeout="3600"
+           logbuilddirectory="jbosslabs"
+           testResults="checkout/jbosslabs/jbosswiki/wiki-common/target/test-reports/reports/TESTS-TestSuites.xml"
+           emailFailureTo="qa-internal@jboss.com"
+           emailAlwaysTo="dsicore@jboss.com">
+  </project>
+
+  <project template="jbosslabstemplate.vm"
+           name="microcontainer-head-testsuite"
+           modificationset="microcontainer-head-testsuite/container"
+           modificationset1="microcontainer-head-testsuite/dependency"
+           modificationset2="microcontainer-head-testsuite/kernel"
+           requiremodification="false"
+           time="2200"
+           buildfile="build-microcontainer-head-testsuite.xml"
+           target="copyresults"
+           timeout="7200"
+           logbuilddirectory="microcontainer-head-testsuite"
+           testResults="checkout/microcontainer-head-testsuite/build/reports/TESTS-TestSuites.xml"
+           svnurl="http://anonsvn.jboss.org/repos/jbossas/trunk"
+           jbossdir="microcontainer-head-testsuite">
+  </project>
+
+  <project template="projecttemplate.vm"
+           name="jboss-seam-testsuite"
+           modificationset="jboss-seam-testsuite"
+           requiremodification="false"
+           time="2200"
+           buildfile="build-jboss-seam-testsuite.xml"
+           target="test-build-failures"
+           timeout="7200"
+           logbuilddirectory="jboss-seam-testsuite"
+           testResults="scripts/logbuild/jboss-seam-testsuite/results/tests/Core.xml"
+           emailFailureTo="jboss-development@lists.jboss.org"
+           emailAlwaysTo="qa@jboss.com"
+           jbossdir="jboss-seam-testsuite">
+  </project>
+
+  <project template="jbosslabstemplate.vm"
+           name="committer-list"
+           modificationset="committer-list"
+           requiremodification="true"
+           time="2200"
+           buildfile="build-committer-list.xml"
+           target="build"
+           timeout="3600"
+           logbuilddirectory="committer-list"
+           testResults="checkout/committer-list/output/reports/html/TESTS-TestSuites.xml"           
+           emailFailureTo="qa-internal@jboss.com,"
+           emailAlwaysTo="qa-internal@jboss.com">
+  </project>
+
+  <project template="jbosslabstemplate.vm"
+           name="jboss-3.2-compatibility-matrix"
+           buildafterfailed="true"
+           modificationset="jboss-3.2-compatibility-matrix"
+           requiremodification="false"
+           time="2200"
+           buildfile="build-jboss-common.xml"
+           target="test-compatibility copyresults"
+           timeout="7200"
+           logbuilddirectory="jboss-3.2-compatibility-matrix"
+           testResults="checkout/jboss-3.2-compatibility-matrix/testsuite/output/reports/TESTS-TestSuites.xml"
+           svnurl="http://anonsvn.jboss.org/repos/jbossas/branches/Branch_3_2"
+           jbossdir="jboss-3.2-compatibility-matrix">
+  </project>
+
+  <project template="jbosslabstemplate.vm"
+           name="jboss-4.0-compatibility-matrix"
+           buildafterfailed="true"
+           modificationset="jboss-4.0-compatibility-matrix"
+           requiremodification="false"
+           time="2200"
+           buildfile="build-jboss-common.xml"
+           target="test-compatibility copyresults"
+           timeout="7200"
+           logbuilddirectory="jboss-4.0-compatibility-matrix"
+           testResults="checkout/jboss-4.0-compatibility-matrix/testsuite/output/reports/TESTS-TestSuites.xml"
+           svnurl="http://anonsvn.jboss.org/repos/jbossas/branches/Branch_4_0"	
+           jbossdir="jboss-4.0-compatibility-matrix">
+  </project>
+  
+  <project template="projecttemplate.vm"
+           name="jbossretro-testsuite"
+           buildafterfailed="true"
+           modificationset="jbossretro-testsuite"
+           requiremodification="false"
+           time="2200"
+           buildfile="build-jbossretro-testsuite.xml"
+           target="copyresults"
+           timeout="7200"
+           logbuilddirectory="jbossretro-testsuite"
+           testResults="checkout/jbossretro-testsuite/output/reports/TESTS-TestSuites.xml"
+           jbossdir="jbossretro-testsuite">
+  </project>  
+  
+  <project template="projecttemplate.vm"
+           name="concurrent-testsuite"
+           buildafterfailed="true"
+           modificationset="concurrent-testsuite"
+           requiremodification="false"
+           time="2200"
+           buildfile="build-concurrent-testsuite.xml"
+           target="copyresults"
+           timeout="7200"
+           logbuilddirectory="concurrent-testsuite"
+           testResults="checkout/concurrent-testsuite/output/reports/TESTS-TestSuites.xml"
+           jbossdir="concurrent-testsuite">
+  </project>   
+
+<!--  
+  <project template="projecttemplate.vm"
+           name="aop-head-testsuite"
+           buildafterfailed="true"
+           modificationset="aop-head-testsuite"
+           requiremodification="false"
+           time="2200"
+           buildfile="build-aop-head-testsuite.xml"
+           target="copyresults"
+           timeout="7200"
+           logbuilddirectory="aop-head-testsuite"
+           testResults="checkout/aop-head-testsuite/aop/output/reports/TESTS-TestSuites.xml"
+           jbossdir="aop-head-testsuite">
+  </project>  
+-->  
+  <project template="projecttemplate.vm"
+           name="jboss-serialization-testsuite"
+           buildafterfailed="true"
+           modificationset="jboss-serialization-testsuite"
+           requiremodification="true"
+           time="2200"
+           buildfile="build-jboss-serialization-testsuite.xml"
+           target="copyresults"
+           timeout="7200"
+           logbuilddirectory="jboss-serialization-testsuite"
+           testResults="checkout/jboss-serialization-testsuite/build/test-results/aggrtest.xml"
+           jbossdir="jboss-serialization-testsuite">
+  </project> 
+
+</projects>

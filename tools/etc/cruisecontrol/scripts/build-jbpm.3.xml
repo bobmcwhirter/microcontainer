@@ -1,0 +1,76 @@
+<project name="build-jbpm.3" default="copyresults">
+
+    <property name="cvs.repository" value=":pserver:anonymous@anoncvs.forge.jboss.com:/cvsroot/jbpm"/>
+    <property name="log.dir" value="${basedir}/logbuild/jbpm.3"/>
+    <property environment="env"/>
+
+    <import file="build-common-targets.xml"/>
+
+    <target name="clean" depends="">
+	<sequential>	
+            <antcall target="clean.checkout">
+               <param name="checkout.dir" value="../checkout/jbpm.3"/>
+               <param name="artifacts.dir" value="${log.dir}"/>
+            </antcall>
+            <antcall target="version">
+               <param name="java.home" value="${env.JAVA_HOME}"/>
+               <param name="ant.home" value="${env.ANT_HOME}"/>
+            </antcall>
+        </sequential>
+    </target> 
+    
+    <target name="getcode" depends="clean" description="Update packages from CVS">
+        <cvs command="co -P jbpm.3" cvsroot="${cvs.repository}" compressionlevel="3" dest="../checkout" package="jbpm.3" output="${log.dir}/cvsco.log"/>
+    </target>
+    
+    <target name="get.dependencies" depends="getcode" description="Build the project">	
+        <exec executable="ant" failonerror="true" dir="../checkout/jbpm.3/build" output="${log.dir}/get_dependencies.log">
+            <arg line="get.dependencies"/>
+        </exec> 
+        <exec executable="ant" failonerror="true" dir="../checkout/jbpm.3/build" output="${log.dir}/get_dependencies.log" append="true">
+            <arg line="get.docbook.support"/>
+        </exec>         
+    </target>
+
+    <target name="install" depends="get.dependencies" description="Build the jms project">
+	<sequential>
+        <exec executable="ant" failonerror="false" dir="../checkout/jbpm.3/build" resultproperty="install.returncode"  output="${log.dir}/install_jbpm_ant.log">
+            <arg line="install.jbpm.ant"/>
+        </exec>
+        <antcall target="copylogs">
+           <param name="dest.dir" value="${log.dir}"/>
+           <param name="proj.dir" value="jbpm.3"/>
+        </antcall>
+        <condition property="install.success">
+          <equals arg1="${install.returncode}" arg2="0"/>
+        </condition>
+        <fail unless="install.success">
+          Exit code: ${install.returncode}
+          See install_jbpm_ant.log in Build Artifacts for details.
+        </fail>
+        </sequential>
+    </target>
+    
+    <target name="build" depends="install" description="Build the jms project">
+	<sequential>
+        <exec executable="ant" failonerror="false" dir="../checkout/jbpm.3/build" resultproperty="build.returncode"  output="${log.dir}/build.log">
+            <arg line="build"/>
+        </exec>
+        <antcall target="copylogs">
+           <param name="dest.dir" value="${log.dir}"/>
+           <param name="proj.dir" value="jbpm.3"/>
+        </antcall>
+        <condition property="build.success">
+          <equals arg1="${build.returncode}" arg2="0"/>
+        </condition>
+        <fail unless="build.success">
+          Exit code: ${build.returncode}
+          See build.log in Build Artifacts for details.
+        </fail>
+        </sequential>
+    </target>
+    
+    <target name="copyresults" depends="build" description="Copies test results to the logbuild directory">
+    </target>
+</project>
+

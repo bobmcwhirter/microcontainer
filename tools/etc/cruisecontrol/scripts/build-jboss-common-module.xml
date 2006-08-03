@@ -1,0 +1,37 @@
+<project name="build-jboss-common" default="copyresults">
+
+    <property name="log.dir" value="${basedir}/logbuild/${jboss.dir}"/>
+    <property name="proj.dir" value="../checkout/${jboss.dir}"/>
+    <property environment="env"/>
+  
+    <import file="build-common.xml"/>
+
+    <target name="clean" depends="" description="Cleans checkout directory">
+        <antcall target="clean.checkout">
+           <param name="checkout.dir" value="${proj.dir}"/>
+           <param name="artifacts.dir" value="${log.dir}"/>
+        </antcall>
+    </target>
+
+    <target name="getcode" depends="clean" description="Update packages from CVS">
+        <svn>
+            <checkout url="${svn.url}" destPath="${proj.dir}"/>
+        </svn>    
+    </target>
+
+    <target name="build" depends="getcode" description="Build jboss-common project">
+	<sequential>
+        <exec dir="${proj.dir}" executable="bash" failonerror="false" resultproperty="build.returncode" output="${log.dir}/compile.log">
+            <arg line="build.sh"/>
+        </exec>
+        <condition property="build.success">
+          <equals arg1="${build.returncode}" arg2="0"/>
+        </condition>
+        <fail unless="build.success">
+          Exit code: ${build.returncode}
+          See compile.log in Build Artifacts for details.
+        </fail>
+        </sequential>
+    </target>
+
+</project>

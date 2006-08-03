@@ -1,0 +1,111 @@
+<projects>
+  <defaultproject template=""
+           name=""
+           buildafterfailed="false"
+           modificationset=""
+           modificationset1=""
+           modificationset2=""
+	   buildstatuslogdir=""
+           tag=""
+           quietperiod="420"
+           requiremodification=""
+           scheduleinterval=""
+           fakeModset=""
+           buildfile=""
+           target=""
+           time=""
+           uselogger="false"
+           usedebug="false"
+	   timeout="7200"
+           removeproperties="true"
+           logbuilddirectory=""
+           testResults=""
+           cvsbranch=""
+           cvsmodule=""
+           jbossdir=""           
+           emailFrom="qa@jboss.com"
+           emailFailureTo="jboss-development@lists.jboss.org"
+           emailAlwaysTo="qa@jboss.com"
+           skipusers="false"
+           reportWhenFixed="true">
+  </defaultproject>
+
+  
+   <testattributes testMode="no"
+            skipusers="true"
+            emailFrom="rrajasekaran@jboss.com"
+            emailFailureTo="rrajasekaran@jboss.com"
+            emailAlwaysTo="ryan.campbell@jboss.com">
+   </testattributes>
+ 
+   <project template="jbosslabstemplate.vm"
+            name="jbossweb"
+            modificationset="jbossweb"
+            requiremodification="false"
+            time="2200"
+            buildfile="build-jbossweb.xml"
+            target="runtestsuite"
+            timeout="10800"
+            logbuilddirectory="jbossweb"
+            testResults="checkout/jbossweb/build/testout/TESTS-TestSuites.xml"
+            emailFailureTo="jboss-development@lists.jboss.org,qa@jboss.com"
+            emailAlwaysTo="jboss-development@lists.jboss.org,qa@jboss.com">
+   </project>
+   
+   <project template="jbosslabstemplate.vm"
+            name="jbossweb-windows"
+            modificationset="jbossweb"
+            requiremodification="false"
+            time="2200"
+            buildfile="build-jbossweb-windows.xml"
+            target="runtestsuite"
+            timeout="10800"
+            logbuilddirectory="jbossweb-windows"
+            testResults="checkout/jbossweb/build/testout/TESTS-TestSuites.xml"
+            emailFailureTo="jboss-development@lists.jboss.org,qa@jboss.com"
+            emailAlwaysTo="jboss-development@lists.jboss.org,qa@jboss.com">
+   </project>   
+<!--
+  <project template="projecttemplate.vm"
+           name="jboss-4.0.4.SP-testsuite"
+           buildafterfailed="true"
+           modificationset="jboss-4.0.4.SP-testsuite"
+           tag="JBoss_4_0_4_SP"
+	   requiremodification="true"           
+           scheduleinterval="3600"
+           buildfile="build-jboss-common.xml"
+           target="test copyresults"
+           timeout="14400"
+           logbuilddirectory="jboss-4.0.4.SP-testsuite"
+           testResults="checkout/jboss-4.0.4.SP-testsuite/testsuite/output/reports/TESTS-TestSuites.xml"
+           cvsbranch="JBoss_4_0_4_SP"
+           cvsmodule="jboss-4.0.x"
+           jbossdir="jboss-4.0.4.SP-testsuite">
+  </project>
+
+  <project template="projecttemplate.vm"
+           name="ejb3-4.0-testsuite"
+           modificationset="ejb3-4.0-testsuite/ejb3"
+           requiremodification="false"
+           scheduleinterval="7200"
+           buildfile="build-ejb3-4.0-testsuite.xml"
+           target="copyresults"
+	   timeout="7200"
+           logbuilddirectory="ejb3-4.0-testsuite"
+           testResults="checkout/ejb3-4.0-testsuite/ejb3/output/reports/TESTS-TestSuites.xml">
+  </project>
+-->  
+<!-- 
+   <project template="projecttemplate.vm"
+            name="cruisecontrol"
+            modificationset="cruisecontrol"
+            requiremodification="true"
+            scheduleinterval="900"
+            buildfile="build-cruisecontrol.xml"
+            target="build"
+            timeout="3600"
+            logbuilddirectory="cruisecontrol"
+            emailFailureTo="qa-internal@jboss.com,rrajasekaran@jboss.com"
+            emailAlwaysTo="qa-internal@jboss.com,rrajasekaran@jboss.com">
+   </project>-->
+</projects>

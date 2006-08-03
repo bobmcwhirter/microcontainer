@@ -1,0 +1,228 @@
+<projects>
+  <defaultproject template=""
+           name=""
+           buildafterfailed="false"
+           modificationset=""
+           modificationset1=""
+           modificationset2=""
+	   buildstatuslogdir=""
+           tag=""
+           quietperiod="420"
+           requiremodification=""
+           scheduleinterval=""
+           fakeModset=""
+           buildfile=""
+           target=""
+           time=""
+           uselogger="false"
+           usedebug="false"
+	   timeout="7200"
+           removeproperties="true"
+           logbuilddirectory=""
+           testResults=""
+           cvsbranch=""
+           cvsmodule=""
+           jbossdir=""           
+           emailFrom="qa@jboss.com"
+           emailFailureTo="sebersole@jboss.com"
+           emailAlwaysTo="hibernate-dev@lists.jboss.org"
+           skipusers="false"
+           reportWhenFixed="true">
+  </defaultproject>
+
+  
+  <testattributes testMode="no"
+	   skipusers="true"
+  	   emailFrom="rrajasekaran@jboss.com"
+           emailFailureTo="rrajasekaran@jboss.com"
+           emailAlwaysTo="ryan.campbell@jboss.com">
+  </testattributes>  
+
+  
+  <project template="jbosslabstemplate.vm"
+           name="hibernate-hsqldb-testsuite"
+           modificationset="hibernate-db-matrix"
+           requiremodification="false"
+           time="2200"
+           buildfile="build-hibernate-db-matrix.xml"
+           target="getcode hsqldb"
+           timeout="10800"
+           skipusers="true"
+           logbuilddirectory="hibernate-db-matrix"
+           testResults="checkout/hibernate-db-matrix/build/testout/TESTS-TestSuites.xml">
+  </project>
+  <project template="jbosslabstemplate.vm"
+           name="hibernate-oracle10-testsuite"
+           modificationset="hibernate-db-matrix"
+           requiremodification="false"
+           time="2200"
+           buildfile="build-hibernate-db-matrix.xml"
+           target="getcode oracle10"
+           timeout="10800"
+           skipusers="true"
+           logbuilddirectory="hibernate-db-matrix"
+           testResults="checkout/hibernate-db-matrix/build/testout/TESTS-TestSuites.xml">
+  </project>
+  <project template="jbosslabstemplate.vm"
+           name="hibernate-mysql-testsuite"
+           modificationset="hibernate-db-matrix"
+           requiremodification="false"
+           time="2200"
+           buildfile="build-hibernate-db-matrix.xml"
+           target="getcode mysql"
+           timeout="10800"
+           skipusers="true"
+           logbuilddirectory="hibernate-db-matrix"
+           testResults="checkout/hibernate-db-matrix/build/testout/TESTS-TestSuites.xml">
+  </project>
+  <project template="jbosslabstemplate.vm"
+           name="hibernate-sybase-testsuite"
+           modificationset="hibernate-db-matrix"
+           requiremodification="false"
+           time="2200"
+           buildfile="build-hibernate-db-matrix.xml"
+           target="getcode sybase"
+           timeout="10800"
+           skipusers="true"
+           logbuilddirectory="hibernate-db-matrix"
+           testResults="checkout/hibernate-db-matrix/build/testout/TESTS-TestSuites.xml">
+  </project>
+  <project template="jbosslabstemplate.vm"
+           name="hibernate-sqlserver-jtds-testsuite"
+           modificationset="hibernate-db-matrix"
+           requiremodification="false"
+           time="2200"
+           buildfile="build-hibernate-db-matrix.xml"
+           target="getcode sqlserver"
+           timeout="10800"
+           skipusers="true"
+           logbuilddirectory="hibernate-db-matrix"
+           testResults="checkout/hibernate-db-matrix/build/testout/TESTS-TestSuites.xml">
+  </project>
+  <project template="jbosslabstemplate.vm"
+           name="hibernate-timesten-testsuite"
+           modificationset="hibernate-db-matrix"
+           requiremodification="false"
+           time="2200"
+           buildfile="build-hibernate-db-matrix.xml"
+           target="getcode timesten"
+           timeout="10800"
+           skipusers="true"
+           logbuilddirectory="hibernate-db-matrix"
+           testResults="checkout/hibernate-db-matrix/build/testout/TESTS-TestSuites.xml">
+  </project>
+  
+  <project template="jbosslabstemplate.vm"
+           name="hibernate-db2-testsuite"
+           modificationset="hibernate-db-matrix"
+           requiremodification="false"
+           time="2200"
+           buildfile="build-hibernate-db-matrix.xml"
+           target="getcode db2"
+           timeout="10800"
+           logbuilddirectory="hibernate-db-matrix"
+           skipusers="true"
+           testResults="checkout/hibernate-db-matrix/build/testout/TESTS-TestSuites.xml"
+           emailFailureTo="rajesh.rajasekaran@jboss.com"
+           emailAlwaysTo="ryan.campbell@jboss.com">
+  </project>  
+
+  <project template="projecttemplate.vm"
+           name="jbpm-hsqldb-testsuite"
+           modificationset="jbpm-db-matrix/jbpm.3"
+           requiremodification="false"
+           scheduleinterval="2592000"
+           buildfile="build-jbpm-db-matrix.xml"
+           target="getcode hsqldb"
+           timeout="10800"
+           logbuilddirectory="jbpm-db-matrix"
+           testResults="checkout/jbpm-db-matrix/jbpm.db/build/hsqldb/testresults/xml/TESTS-TestSuites.xml"
+           emailFailureTo="jboss-development@lists.jboss.org"
+           emailAlwaysTo="qa@jboss.com">
+  </project>
+
+  <project template="projecttemplate.vm"
+           name="jbpm-mysql-testsuite"
+           modificationset="jbpm-db-matrix/jbpm.3"
+           requiremodification="false"
+           scheduleinterval="2592000"
+           buildfile="build-jbpm-db-matrix.xml"
+           target="getcode mysql"
+           timeout="10800"
+           logbuilddirectory="jbpm-db-matrix"
+           testResults="checkout/jbpm-db-matrix/jbpm.db/build/mysql/testresults/xml/TESTS-TestSuites.xml"
+           emailFailureTo="jboss-development@lists.jboss.org"
+           emailAlwaysTo="qa@jboss.com">
+  </project>
+  
+  <project template="projecttemplate.vm"
+           name="jbpm-oracle-testsuite"
+           modificationset="jbpm-db-matrix/jbpm.3"
+           requiremodification="false"
+           scheduleinterval="2592000"
+           buildfile="build-jbpm-db-matrix.xml"
+           target="getcode oracle"
+           timeout="10800"
+           logbuilddirectory="jbpm-db-matrix"
+           testResults="checkout/jbpm-db-matrix/jbpm.db/build/oracle/testresults/xml/TESTS-TestSuites.xml"
+           emailFailureTo="jboss-development@lists.jboss.org"
+           emailAlwaysTo="qa@jboss.com">
+  </project>  
+  
+  <project template="projecttemplate.vm"
+           name="jbpm-sybase-testsuite"
+           modificationset="jbpm-db-matrix/jbpm.3"
+           requiremodification="false"
+           scheduleinterval="2592000"
+           buildfile="build-jbpm-db-matrix.xml"
+           target="getcode sybase"
+           timeout="10800"
+           logbuilddirectory="jbpm-db-matrix"
+           testResults="checkout/jbpm-db-matrix/jbpm.db/build/sybase/testresults/xml/TESTS-TestSuites.xml"
+           emailFailureTo="jboss-development@lists.jboss.org"
+           emailAlwaysTo="qa@jboss.com">
+  </project> 
+  
+  <project template="projecttemplate.vm"
+           name="jbpm-db2-testsuite"
+           modificationset="jbpm-db-matrix/jbpm.3"
+           requiremodification="false"
+           scheduleinterval="2592000"
+           buildfile="build-jbpm-db-matrix.xml"
+           target="getcode db2"
+           timeout="18000"
+           logbuilddirectory="jbpm-db-matrix"
+           testResults="checkout/jbpm-db-matrix/jbpm.db/build/db2/testresults/xml/TESTS-TestSuites.xml"
+           emailFailureTo="jboss-development@lists.jboss.org"
+           emailAlwaysTo="qa@jboss.com">
+  </project>  
+  
+  <project template="projecttemplate.vm"
+           name="jbpm-mssql-testsuite"
+           modificationset="jbpm-db-matrix/jbpm.3"
+           requiremodification="false"
+           scheduleinterval="2592000"
+           buildfile="build-jbpm-db-matrix.xml"
+           target="getcode mssql"
+           timeout="10800"
+           logbuilddirectory="jbpm-db-matrix"
+           testResults="checkout/jbpm-db-matrix/jbpm.db/build/mssql/testresults/xml/TESTS-TestSuites.xml"
+           emailFailureTo="jboss-development@lists.jboss.org"
+           emailAlwaysTo="qa@jboss.com">
+  </project>
+
+  <project template="jbosslabstemplate.vm"
+           name="cruisecontrol"
+           modificationset="cruisecontrol"
+           requiremodification="true"
+           scheduleinterval="900"
+           buildfile="build-cruisecontrol.xml"
+           target="build"
+           timeout="3600"
+           logbuilddirectory="cruisecontrol"
+	   svnurl="http://anonsvn.jboss.org/repos/jbossas/trunk/tools/etc/cruisecontrol"           
+           jbossdir="cruisecontrol"           
+           emailFailureTo="qa-internal@jboss.com"
+           emailAlwaysTo="qa-internal@jboss.com">
+  </project>
+</projects>

@@ -1,0 +1,105 @@
+<project name="build-jbosside" default="copyresults">
+
+    <property name="cvs.repository" value=":pserver:anonymous@anoncvs.forge.jboss.com:/cvsroot/jboss"/>
+    <property name="log.dir" value="${basedir}/logbuild/jbosside"/>
+    <property name="releng.root" value="../checkout/jbosside/releng/org.jboss.ide.eclipse.releng"/>
+    <property environment="env"/>
+
+    <import file="build-common-targets.xml"/>
+
+    <taskdef resource="net/sf/antcontrib/antcontrib.properties">
+       <classpath>
+         <pathelement location="/opt/apache-ant-1.6.2/lib/ant-contrib.jar"/>
+       </classpath>
+    </taskdef>
+
+    <target name="clean" depends="" description="Cleans checkout directory">
+        <sequential>   
+            <antcall target="clean.checkout">
+               <param name="checkout.dir" value="../checkout/jbosside"/>
+               <param name="artifacts.dir" value="${log.dir}"/>
+            </antcall>
+            <antcall target="version">
+               <param name="java.home" value="${env.JAVA_HOME}"/>
+               <param name="ant.home" value="/opt/apache-ant-1.6.5"/>
+            </antcall>
+            <mkdir dir="${log.dir}/output"/>
+        </sequential>
+    </target>
+
+    <target name="getcode" depends="clean" description="Update packages from CVS">
+        <cvs command="co jbosside" cvsroot="${cvs.repository}" compressionlevel="3" dest="../checkout" package="jbosside" failonerror="true" output="${log.dir}/cvsco.log"/>
+    </target>
+
+    <target name="customize" depends="getcode" description="Build the project">
+    	<sequential>
+    	    <copy file="/opt/src/jwsdp-1_6-unix.sh" todir="${releng.root}/requirements/jwsdp"/>
+            <exec dir="${releng.root}/requirements/jwsdp" executable="bash">
+	        <arg value="-c"/>
+                <arg value="chmod 755 jwsdp-1_6-unix.sh"/>
+            </exec>    	
+    	    <copy file="customize.properties" todir="${releng.root}"/>
+            <exec executable="ant" resultproperty="customize.returncode" failonerror="false" >
+                <arg line=" -f ${releng.root}/customizeBuild.xml customize"/>
+            </exec>
+           <condition property="customize.success">
+             <equals arg1="${customize.returncode}" arg2="0"/>
+           </condition>
+           <fail unless="customize.success">
+             Exit code: ${customize.returncode}
+             Error executing releng.root/customizeBuild.xml
+           </fail>
+    	</sequential>
+    </target>
+    
+    <target name="build" depends="customize" description="Build the jbosside project">
+        <sequential>
+	<exec dir="${releng.root}/builders" executable="bash" failonerror="false" resultproperty="build.returncode" output="${log.dir}/build-ide.log">
+            <arg line="build-nightly.sh product"/>
+            <env key="PATH" path="/opt/jdk1.5.0_03/bin:/opt/apache-ant-1.6.5/bin:${env.PATH}"/>
+            <env key="ANT_HOME" path="/opt/apache-ant-1.6.5"/>
+            <env key="JAVA_HOME" path="/opt/jdk1.5.0_03"/>
+        </exec>
+	<if>
+	 <equals arg1="${build.returncode}" arg2="0" />
+	 <then>
+	   <echo message="JBossIDE Build successful." />
+	 </then>
+	 <else>
+	   <echo message="JBossIDE Build Failed." />
+           <copy todir="${log.dir}" flatten="true">
+              <fileset dir="${releng.root}/builders/" includes="build.log"/>
+           </copy>
+        <delete dir="${log.dir}/output"/>
+	 </else>
+	</if>
+        <antcall target="copylogs">
+           <param name="dest.dir" value="${log.dir}"/>
+           <param name="proj.dir" value="jbosside"/>
+        </antcall>
+        <condition property="build.success">
+          <equals arg1="${build.returncode}" arg2="0"/>
+        </condition>
+        <fail unless="build.success">
+          Exit code: ${build.returncode}
+          See build.log under Build Artifacts for details.
+        </fail>	
+	</sequential>
+    </target>
+
+    <target name="copyresults" depends="build" description="Copies build logs to the logbuild directory">
+        <mkdir dir="${log.dir}/results"/>
+        <copy todir="${log.dir}/results" flatten="true">
+           <fileset dir="${log.dir}/output/" includes="**/tests/test-results/*.*"/>
+        </copy>
+        <copy file="${log.dir}/results/org.jboss.ide.eclipse.tests.html" tofile="${log.dir}/results/index.html"/>
+        <copy todir="${log.dir}" flatten="true">
+	   <fileset dir="${log.dir}/output/" includes="**/buildResults.html"/>
+	</copy>
+        <copy todir="${log.dir}" flatten="true">
+           <fileset dir="${log.dir}/output/" includes="**/build.log.zip"/>
+        </copy>
+	<delete dir="${log.dir}/output"/>	
+    </target>
+</project>
+

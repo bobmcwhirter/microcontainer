@@ -1,0 +1,20 @@
+  <project name="build-common">
+    <property file="cruisecontrol.properties"/>
+
+    <path id="project.classpath">
+        <fileset dir="../../svnant/lib/">
+            <include name="*.jar"/>
+        </fileset>
+    </path>
+
+    <taskdef resource="net/sf/antcontrib/antcontrib.properties">
+       <classpath>
+         <pathelement location="/opt/apache-ant-1.6.2/lib/ant-contrib.jar"/>
+       </classpath>
+    </taskdef> 
+    
+    <taskdef resource="svntask.properties" classpathref="project.classpath"/>
+    
+    <import file="build-common-targets.xml"/>
+  </project>
+

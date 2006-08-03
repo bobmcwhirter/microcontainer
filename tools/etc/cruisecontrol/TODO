@@ -1,0 +1,8 @@
+
++ don't make scheduled builds do modificatino checks
+
++ We do need to be looking at running the tests with multiple jvms as well in the future. The ibm, sun and jrockit 1.4.x jvms should be the baseline.
++ get modification-set somehow besides cvs log.  Too time/bandwidth consuming
++ port shell scripts to ant
++ add timeouts to antbuilders prevent long builds
++ 

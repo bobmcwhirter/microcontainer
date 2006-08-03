@@ -1,0 +1,84 @@
+<project name="build-jbossretro-testsuite" default="build">
+
+    <property name="cvs.repository" value=":pserver:anonymous@anoncvs.forge.jboss.com:/cvsroot/jboss"/>
+    <property name="log.dir" value="${basedir}/logbuild/${jboss.dir}"/>
+
+    <property environment="env"/>
+    <import file="build-common-targets.xml"/>
+
+    <target name="clean" depends="" description="Cleans checkout directory">
+        <sequential>
+            <antcall target="clean.checkout">
+               <param name="checkout.dir" value="../checkout/${jboss.dir}"/>
+               <param name="artifacts.dir" value="${log.dir}"/>
+            </antcall>
+            <antcall target="version">
+               <param name="java.home" value="${env.JAVA_HOME}"/>
+               <param name="ant.home" value="${env.ANT_HOME}"/>
+            </antcall>
+        </sequential>
+    </target>
+
+    <target name="getcode" depends="clean" description="Update packages from CVS">
+        <cvs command="co -d ${jboss.dir} jbossretro" cvsroot="${cvs.repository}" compressionlevel="3" dest="../checkout" failonerror="true"
+output="${log.dir}/cvsco.log"/>
+    </target>
+
+    <target name="build" depends="getcode" description="Build the jbossretro project">
+        <sequential>
+        <exec executable="ant" resultproperty="build.returncode" failonerror="false" output="${log.dir}/compile.log">
+            <arg line=" -buildfile ../checkout/${jboss.dir}/build.xml dist"/>
+            <env key="PATH" path="/opt/jdk1.5.0_03/bin:${env.PATH}"/>
+            <env key="JAVA_HOME" path="/opt/jdk1.5.0_03"/>
+        </exec>
+        <antcall target="test-target-failure">
+           <param name="failure.property" value="build.success"/>
+           <param name="result.property" value="${build.returncode}"/>
+           <param name="error.message" value="See compile.log in Build Artifacts for details."/>
+        </antcall>
+        </sequential>
+    </target>
+
+    <target name="tests" depends="build" description="Runs the jbossretro tests">
+        <sequential>
+        <exec executable="ant" resultproperty="tests.returncode" failonerror="false" output="${log.dir}/tests.log">
+            <arg line=" -buildfile ../checkout/${jboss.dir}/build.xml tests"/>
+        </exec>
+
+        <antcall target="copylogs">
+           <param name="dest.dir" value="${log.dir}"/>
+           <param name="proj.dir" value="${jboss.dir}"/>
+        </antcall>
+
+        <antcall target="test-target-failure">
+           <param name="failure.property" value="tests.success"/>
+           <param name="result.property" value="${tests.returncode}"/>
+           <param name="error.message" value="Core tests failed. See tests.log in Build Artifacts for details."/>
+        </antcall>
+        </sequential>
+    </target>
+
+    <target name="copyresults" depends="tests" description="Copies test results to the artifacts directory">
+        <junitreport todir="../checkout/${jboss.dir}/output/reports">
+           <fileset dir="../checkout/${jboss.dir}/output/reports">
+              <include name="TEST-*.xml"/>
+           </fileset>
+           <report format="frames"
+              todir="../checkout/${jboss.dir}/output/reports"/>
+        </junitreport>    
+        
+        <mkdir dir="${log.dir}/results"/>
+        <copy todir="${log.dir}/results">
+           <fileset dir="../checkout/${jboss.dir}/output/reports"/>
+        </copy> 
+        
+        <antcall target="test-build-failure">
+            <param name="fileset.dir" value="${log.dir}/results"/>
+            <param name="fileset.includes" value="TEST-*.xml"/>
+            <param name="error.text" value="errors=&quot;0&quot;"/>
+            <param name="failure.text" value="failures=&quot;0&quot;"/>
+        </antcall>         
+    </target>
+
+</project>
+
