@@ -51,6 +51,7 @@ public class ControllerTestSuite extends TestSuite
       suite.addTest(DisabledControllerTestCase.suite());
       suite.addTest(OnDemandDependencyTestCase.suite());
       suite.addTest(RecursiveControllerActionTestCase.suite());
+      suite.addTest(ErrorControllerActionTestCase.suite());
       
       return suite;
    }

@@ -146,7 +146,7 @@ public class AbstractController extends JBossObject implements Controller
          throw new IllegalArgumentException("Null name " + context.toShortString());
 
       if (allContexts.get(name) != null)
-         throw new IllegalStateException("Already installed " + name);
+         throw new IllegalStateException(name + " is already installed.");
 
       install(context, trace);
    }
@@ -349,8 +349,8 @@ public class AbstractController extends JBossObject implements Controller
       {
          log.error("Error installing to " + toState.getStateString() + ": " + context.toShortString(), t);
          uninstallContext(context, ControllerState.NOT_INSTALLED, trace);
-         context.setError(t);
          errorContexts.add(context);
+         context.setError(t);
          return false;
       }
 
@@ -493,21 +493,21 @@ public class AbstractController extends JBossObject implements Controller
    {
       int targetState = states.indexOf(toState);
       if (targetState == -1)
-         log.error("Internal error unknown state " + toState + " states=" + states);
+         log.error("INTERNAL ERROR: unknown state " + toState + " states=" + states, new Exception("STACKTRACE"));
 
-      ControllerState fromState = context.getState();
-      int currentState = states.indexOf(fromState);
-      if (currentState == -1)
-         log.error("Internal error during uninstall current state not found: " + context.toShortString());
-
-      if (targetState > currentState)
+      while (true)
       {
-         log.error("Internal error during uninstall: toState=" + toState + " context=" + context.toShortString());
-         return;
+         ControllerState fromState = context.getState();
+         if (ControllerState.ERROR.equals(fromState))
+            return;
+         int currentState = states.indexOf(fromState);
+         if (currentState == -1)
+            log.error("INTERNAL ERROR: current state not found: " + context.toShortString(), new Exception("STACKTRACE"));
+         if (targetState > currentState)
+            return;
+         else
+            uninstallContext(context, trace);
       }
-
-      for (int i = currentState; i >= targetState; --i)
-         uninstallContext(context, trace);
    }
 
    /**
@@ -527,8 +527,11 @@ public class AbstractController extends JBossObject implements Controller
          log.trace("Uninstalling " + name + " from " + fromState.getStateString());
 
       Set<ControllerContext> fromContexts = contextsByState.get(fromState);
-      if (fromContexts.remove(context) == false)
-         throw new IllegalStateException("Context not found in previous state " + fromState.getStateString() + " context=" + context.toShortString());
+      if (fromContexts == null || fromContexts.remove(context) == false)
+      {
+         log.error("INTERNAL ERROR: context not found in previous state " + fromState.getStateString() + " context=" + context.toShortString(), new Exception("STACKTRACE"));
+         return;
+      }
 
       DependencyInfo dependencies = context.getDependencyInfo();
       Set dependsOnMe = dependencies.getDependsOnMe(null);
