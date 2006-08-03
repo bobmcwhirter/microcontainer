@@ -2,7 +2,6 @@
 <!DOCTYPE project [
    <!ENTITY buildmagic SYSTEM "../tools/etc/buildmagic/buildmagic.ent">
    <!ENTITY libraries SYSTEM "../thirdparty/libraries.ent">
-   <!ENTITY modules SYSTEM "../tools/etc/buildmagic/modules.ent">
    <!ENTITY targets SYSTEM "../tools/etc/buildmagic/targets.ent">
 ]>
 
@@ -71,13 +70,16 @@
       <path refid="apache.log4j.classpath"/>
       <path refid="oswego.concurrent.classpath"/>
       <path refid="junit.junit.classpath"/>
+        <path refid="jboss.aop.classpath"/>
+        <path refid="jboss.common.classpath"/>
+        <path refid="jboss.jbossxb.classpath"/>
+        <path refid="jboss.test.classpath"/>
     </path>
 
     <!-- ======= -->
     <!-- Modules -->
     <!-- ======= -->
 
-    &modules;
 <!-- container -->
 <property name="jboss.container.root" value="${project.root}/container"/>
 <property name="jboss.container.lib" value="${jboss.container.root}/output/lib"/>
