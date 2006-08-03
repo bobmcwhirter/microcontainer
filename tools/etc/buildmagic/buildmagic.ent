@@ -463,46 +463,6 @@ to build define build-bypass.disabled=true.
   </uptodate>
 
 </target>
-<target name="_default:compile-mbean-sources"
-  depends="_buildmagic:mbean-bypass-checker"
-  unless="mbean-bypass.on">
-
-  <taskdef name="jmxdoclet"
-    classname="xdoclet.modules.jmx.JMXDocletTask"
-    classpathref="xdoclet.task.classpath"/>
-
-  <mkdir dir="${build.gen-src}"/>
-
-  <jmxdoclet destdir="${build.gen-src}"
-    excludedtags="@version,@author">
-    <fileset dir="${source.java}"
-      includes="${mbean.includes}"/>
-    <mbeaninterface mergedir="${project.tools}/etc/xdoclet/templates"/>
-  </jmxdoclet>
-
-  <touch file="${mbean-bypass.marker}"/>
-</target>
-<target name="_default:compile-xmbean-sources"
-  depends="_buildmagic:mbean-bypass-checker"
-  unless="mbean-bypass.on">
-
-  <taskdef name="jmxdoclet"
-    classname="xdoclet.modules.jmx.JMXDocletTask"
-    classpathref="xdoclet.task.classpath"/>
-
-  <mkdir dir="${build.gen-src}"/>
-
-  <jmxdoclet destdir="${build.gen-src}"
-    excludedtags="@version,@author">
-    <fileset dir="${source.java}"
-      includes="${mbean.includes}"/>
-    <mbeaninterface mergedir="${project.tools}/etc/xdoclet/templates"/>
-    <jbossxmbean/>
-  </jmxdoclet>
-
-  <touch file="${mbean-bypass.marker}"/>
-</target>
-
 <!-- Compile all module test class files -->
 <target name="_default:compile-test-classes" depends="init" unless="compile.disable">
 
@@ -873,49 +833,6 @@ to build define build-bypass.disabled=true.
 </target>
 
 <target name="todo" depends="docs-todo"/>
-
-<!-- ============== -->
-<!-- JMX MBean Docs -->
-<!-- ============== -->
-
-<target name="jmx-docs" depends="init">
-  <taskdef name="jmxdoclet" classname="xdoclet.modules.jmx.JMXDocletTask" classpathref="xdoclet.task.classpath"/>
-
-  <mkdir dir="${build.jmx-doc}"/>
-  <jmxdoclet
-    destdir="${build.jmx-doc}"
-    force="false"
-    excludedtags="@version,@author">
-    <fileset dir="${source.java}">
-      <include name="**/*.java"/>
-    </fileset>
-    <jbossXmlDoc/>
-  </jmxdoclet>
-
-</target>
-
-<!-- Generate the plain HTML jmx docs -->
-<target name="jmx-docs-html-plain" depends="jmx-docs">
-
-
-  <!-- Force the use of SAXON XSLT -->
-  <property system="true"
-    name="javax.xml.transform.TransformerFactory"
-    value="com.icl.saxon.TransformerFactoryImpl"/>
-
-  <mkdir dir="${build.jmx-api}"/>
-  <style style="${project.thirdparty}/oasis/docbook-xsl/html/docbook.xsl"
-    processor="trax"
-    extension=".html"
-    basedir="${build.jmx-doc}"
-    destdir="${build.jmx-api}">
-    <include name="**/*.xml"/>
-    <param name="quiet" expression="${oasis.docbook.xsl.chunker.quiet}"/>
-    <param name="base.dir" expression="${build.jmx-api}${file.separator}"/>
-  </style>
-
-</target>
-
 
 <!-- ================================================================== -->
 <!-- Cleaning                                                           -->
