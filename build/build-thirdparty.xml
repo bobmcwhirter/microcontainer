@@ -49,7 +49,7 @@
       <componentref name="jboss/jbossxb" version="snapshot"/>
       <componentref name="jboss/profiler/jvmti" version="1.0.0.CR4"/>
       <componentref name="junit" version="3.8.1"/>
-      <componentref name="jboss/aop" version="1.5.1.snapshot" />
+      <componentref name="jboss/aop" version="snapshot" />
       <componentref name="jboss/backport-concurrent" version="2.1.0.GA"/>
       <componentref name="jboss/jbossretro" version="snapshot"/>
       <componentref name="jboss/test" version="1.0.0.CR1"/>

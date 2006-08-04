@@ -2,7 +2,6 @@
 <!DOCTYPE project [
    <!ENTITY buildmagic SYSTEM "../tools/etc/buildmagic/buildmagic.ent">
    <!ENTITY libraries  SYSTEM "../thirdparty/libraries.ent">
-   <!ENTITY modules SYSTEM "../tools/etc/buildmagic/modules.ent">
    <!ENTITY targets SYSTEM "../tools/etc/buildmagic/targets.ent">
 ]>
 
@@ -70,13 +69,13 @@
       <path refid="junit.junit.classpath"/>
       <path refid="apache.log4j.classpath"/>
       <path refid="oswego.concurrent.classpath"/>
+      <path refid="jboss.test.classpath"/>
     </path>
 
     <!-- ======= -->
     <!-- Modules -->
     <!-- ======= -->
 
-    &modules;
 <!-- this -->
 <property name="jboss.this.root" value="${module.root}/output"/>
 <property name="jboss.this.lib" value="${jboss.this.root}/lib"/>
@@ -91,7 +90,6 @@
     <path id="dependentmodule.classpath">
       <path refid="jboss.this.classpath"/>
       <path refid="jboss.common.classpath"/>
-      <path refid="jboss.test.classpath"/>
     </path>
 
     <!-- ===== -->
@@ -130,11 +128,11 @@
   <!-- Archives                                                           -->
   <!-- ================================================================== -->
 
-  <!-- 
+  <!--
      |  Build all jar files.
     -->
   <target name="module-jars" depends="init">
-    
+
     <jar jarfile="${build.lib}/jboss-dependency-test.jar" manifest="${build.etc}/default.mf">
       <fileset dir="${build.classes}"/>
     </jar>

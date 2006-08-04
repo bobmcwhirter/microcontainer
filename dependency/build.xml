@@ -74,6 +74,19 @@
     <path id="dependentmodule.classpath">
     </path>
 
+   <!-- ============================= -->
+   <!-- Paths etc. for the retro task -->
+   <!-- ============================= -->
+   <property name="build.classes.retro" value="${module.output}/classes-retro"/>
+   <property name="build.lib.retro" value="${module.output}/lib14"/>
+   <path id="jbossretro.classpath">
+     <path refid="apache.ant.classpath"/>
+     <path refid="jboss.jbossretro.classpath"/>
+     <path refid="jboss/backport.concurrent.classpath"/>
+     <path refid="javassist.classpath"/>
+   </path>
+
+     
     <!-- ===== -->
     <!-- Tasks -->
     <!-- ===== -->
@@ -101,9 +114,24 @@
   <target name="compile"
 	  description="Compile all source files."
 	  depends="_default:compile-classes,
-              _default:compile-etc"
+              _default:compile-etc,
+              retro"
   />
 
+  <target name="retro">
+    <mkdir dir="${build.lib.retro}"/>
+    <taskdef name="retro" classname="org.jboss.ant.tasks.retro.Retro" classpathref="jbossretro.classpath"/>
+    <retro compilerclasspathref="jbossretro.classpath" destdir="${build.classes.retro}">
+      <classpath refid="jbossretro.classpath"/>
+      <classpath refid="library.classpath"/>
+      <classpath refid="dependentmodule.classpath"/>
+      <classpath>
+        <pathelement path="${build.classes}"/>
+      </classpath>
+      <src path="${build.classes}"/>
+    </retro>      
+  </target> 
+   
   <!-- ================================================================== -->
   <!-- Archives                                                           -->
   <!-- ================================================================== -->
@@ -116,7 +144,9 @@
     <jar jarfile="${build.lib}/jboss-dependency.jar" manifest="${build.etc}/default.mf">
       <fileset dir="${build.classes}"/>
     </jar>
-
+    <jar jarfile="${build.lib.retro}/jboss-dependency14.jar" manifest="${build.etc}/default.mf">
+      <fileset dir="${build.classes.retro}"/>
+    </jar>
   </target>
 
 </project>
