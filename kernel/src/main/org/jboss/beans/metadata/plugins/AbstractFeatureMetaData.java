@@ -103,7 +103,7 @@ public class AbstractFeatureMetaData extends JBossObject implements FeatureMetaD
    protected void addChildren(Set<MetaDataVisitorNode> children)
    {
       if (annotations != null && annotations.size() > 0)
-         annotations.addAll(annotations);
+         children.addAll(annotations);
    }
    
    public void toString(JBossStringBuilder buffer)
