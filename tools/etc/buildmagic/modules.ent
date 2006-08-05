@@ -1,0 +1,42 @@
+<!-- $Id: modules.ent 46261 2006-07-13 22:52:02 +0000 (Thu, 13 Jul 2006) starksm $ -->
+
+<!-- container -->
+<property name="jboss.container.root" value="${project.root}/container"/>
+<property name="jboss.container.lib" value="${jboss.container.root}/output/lib"/>
+<path id="jboss.container.classpath">
+   <fileset dir="${jboss.container.lib}">
+      <include name="jboss-container.jar"/>
+   </fileset>
+</path>
+<!-- dependency -->
+<property name="jboss.dependency.root" value="${project.root}/dependency"/>
+<property name="jboss.dependency.lib" value="${jboss.dependency.root}/output/lib"/>
+<path id="jboss.dependency.classpath">
+   <fileset dir="${jboss.dependency.lib}">
+      <include name="jboss-dependency.jar"/>
+   </fileset>
+</path>
+<!-- kernel -->
+<property name="jboss.kernel.root" value="${project.root}/kernel"/>
+<property name="jboss.kernel.lib" value="${jboss.kernel.root}/output/lib"/>
+<path id="jboss.kernel.classpath">
+   <fileset dir="${jboss.kernel.lib}">
+      <include name="jboss-microcontainer.jar"/>
+   </fileset>
+</path>
+<path id="jboss.kernel-test.classpath">
+   <fileset dir="${jboss.kernel.lib}">
+      <include name="jboss-microcontainer-test.jar"/>
+   </fileset>
+</path>
+<!-- kernel -->
+<property name="jboss.aop-mc-int.root" value="${project.root}/aop-mc-int"/>
+<property name="jboss.aop-mc-int.lib" value="${jboss.aop-mc-int.root}/output/lib"/>
+<path id="jboss.aop-mc-int.classpath">
+   <fileset dir="${jboss.aop-mc-int.lib}">
+      <include name="jboss-aop-mc-int.jar"/>
+   </fileset>
+</path>
+
+
+
