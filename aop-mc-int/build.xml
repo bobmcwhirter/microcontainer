@@ -71,10 +71,10 @@
       <path refid="apache.log4j.classpath"/>
       <path refid="oswego.concurrent.classpath"/>
       <path refid="junit.junit.classpath"/>
-        <path refid="jboss.aop.classpath"/>
-        <path refid="jboss.common.classpath"/>
-        <path refid="jboss.jbossxb.classpath"/>
-        <path refid="jboss.test.classpath"/>
+      <path refid="jboss.aop.classpath"/>
+      <path refid="jboss.common.classpath"/>
+      <path refid="jboss.jbossxb.classpath"/>
+      <path refid="jboss.test.classpath"/>
     </path>
 
     <!-- ======= -->
@@ -88,6 +88,18 @@
       <path refid="jboss.container.classpath"/>
       <path refid="jboss.dependency.classpath"/>
       <path refid="jboss.kernel.classpath"/>
+    </path>
+
+    <!-- ============================= -->
+    <!-- Paths etc. for the retro task -->
+    <!-- ============================= -->
+    <property name="build.classes.retro" value="${module.output}/classes-retro"/>
+    <property name="build.lib.retro" value="${module.output}/lib14"/>
+    <path id="jbossretro.classpath">
+      <path refid="apache.ant.classpath"/>
+      <path refid="jboss.jbossretro.classpath"/>
+      <path refid="jboss/backport.concurrent.classpath"/>
+      <path refid="javassist.classpath"/>
     </path>
 
     <!-- ===== -->
@@ -118,21 +130,42 @@
 	  description="Compile all source files."
 	  depends="_default:compile-classes,
               _default:compile-etc,
-              _default:compile-resources"
+              _default:compile-resources,
+              retro"
   />
+
+  <target name="retro">
+    <mkdir dir="${build.lib.retro}"/>
+    <taskdef name="retro" classname="org.jboss.ant.tasks.retro.Retro" classpathref="jbossretro.classpath"/>
+    <retro compilerclasspathref="jbossretro.classpath" destdir="${build.classes.retro}">
+      <classpath refid="jbossretro.classpath"/>
+      <classpath refid="library.classpath"/>
+      <classpath refid="dependentmodule.classpath"/>
+      <classpath>
+        <pathelement path="${build.classes}"/>
+      </classpath>
+      <src path="${build.classes}"/>
+    </retro>
+  </target>
 
   <!-- ================================================================== -->
   <!-- Archives                                                           -->
   <!-- ================================================================== -->
 
-  <!-- 
+  <!--
      |  Build all jar files.
     -->
   <target name="module-jars" depends="init">
-    
+
     <!-- Build jboss-kernel.jar -->
     <jar jarfile="${build.lib}/${jar.prefix}.jar" manifest="${build.etc}/default.mf">
       <fileset dir="${build.classes}"/>
+      <fileset dir="${build.resources}">
+         <include name="schema/**"/>
+      </fileset>
+    </jar>
+    <jar jarfile="${build.lib.retro}/${jar.prefix}14.jar" manifest="${build.etc}/default.mf">
+      <fileset dir="${build.classes.retro}"/>
       <fileset dir="${build.resources}">
          <include name="schema/**"/>
       </fileset>

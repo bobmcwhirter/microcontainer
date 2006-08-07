@@ -66,6 +66,12 @@
 
     &libraries;
 
+    <path id="jboss.aop50.classpath">
+      <fileset dir="${jboss.aop.lib}">
+         <include name="jboss-aop.jar"/>
+      </fileset>
+    </path>
+
     <!-- The combined library classpath -->
     <path id="library.classpath">
       <path refid="jboss.aop.classpath"/>
@@ -77,14 +83,15 @@
       <path refid="junit.junit.classpath"/>
       <path refid="oswego.concurrent.classpath"/>
       <path refid="trove.trove.classpath"/>
+      <path refid="jboss.aop50.classpath"/>
+      <path refid="jboss.jbossxb.classpath"/>
     </path>
 
     <!-- ======= -->
     <!-- Modules -->
     <!-- ======= -->
 
-    &modules;
-
+	 &modules;
 <!-- this -->
 <property name="jboss.this.root" value="${module.root}/output"/>
 <property name="jboss.this.lib" value="${jboss.this.root}/lib"/>
@@ -97,6 +104,7 @@
 
     <!-- The combined dependant module classpath -->
     <path id="dependentmodule.classpath">
+      <path refid="jboss.common.classpath"/>
       <path refid="jboss.container.classpath"/>
       <path refid="jboss.dependency.classpath"/>
       <path refid="jboss.kernel.classpath"/>
@@ -111,6 +119,7 @@
    <property name="source.java" value="${module.source}/tests"/>
    <property name="javac.target" value="1.5"/>
    <property name="javac.source" value="1.5"/>
+   <property name="build.classes" value="${module.output}/classes-tests"/>
    <property name="build.testlog" value="${module.output}/log"/>
    <property name="build-bypass.disabled" value="true"/>
 
@@ -140,11 +149,11 @@
   <!-- Archives                                                           -->
   <!-- ================================================================== -->
 
-  <!-- 
+  <!--
      |  Build all jar files.
     -->
   <target name="module-jars" depends="init">
-    
+
     <!-- Build the test jar -->
     <jar jarfile="${build.lib}/${jar.prefix}.jar" manifest="${build.etc}/default.mf">
        <fileset dir="${build.classes}"/>
@@ -165,7 +174,7 @@
 
       <antcall target="tests-weave" inheritRefs="true"/>
       <antcall target="tests-no-weave" inheritRefs="true"/>
-      
+
    </target>
 
    <target name="tests-weave" depends="most"
@@ -212,8 +221,6 @@
       description="Execute all tests in the given test directory.">
       <mkdir dir="${build.reports}"/>
       <mkdir dir="${build.testlog}"/>
-      <!-- Remove the test.log so each run has a fresh log -->
-      <delete file="${build.testlog}/test.log"/>
       <junit dir="${module.output}"
          printsummary="yes"
          haltonerror="false"
