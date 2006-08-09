@@ -217,7 +217,16 @@ public class AbstractController extends JBossObject implements Controller
       context.setController(this);
       DependencyInfo dependencies = context.getDependencyInfo();
       if (trace)
-         log.trace("Dependencies for " + name + ": " + dependencies != null ? dependencies.getIDependOn(null) : "null");
+      {
+         String dependsOn = null;
+         if( dependencies != null )
+         {
+            Set set = dependencies.getIDependOn(null);
+            if( set != null )
+               dependsOn = set.toString();
+         }
+         log.trace("Dependencies for " + name + ": " + dependsOn);
+      }
 
       if (incrementState(context, trace))
       {
