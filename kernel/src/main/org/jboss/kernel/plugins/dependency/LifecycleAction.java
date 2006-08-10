@@ -95,9 +95,9 @@ public abstract class LifecycleAction extends KernelControllerContextAction
       String method = getInstallMethod(context);
       List<ParameterMetaData> parameters = getInstallParameters(context);
       MethodJoinpoint joinpoint = null;
+      ClassLoader cl = Configurator.getClassLoader(metaData);
       try
       {
-         ClassLoader cl = Configurator.getClassLoader(metaData);
          joinpoint = configurator.getMethodJoinPoint(info, cl, method, parameters, false, true);
       }
       catch (JoinpointException ignored)
@@ -111,8 +111,21 @@ public abstract class LifecycleAction extends KernelControllerContextAction
          }
          return;
       }
+
+      // Dispatch the joinpoint using the target class loader
       joinpoint.setTarget(target);
-      dispatchJoinPoint(context, joinpoint);
+      ClassLoader tcl = Thread.currentThread().getContextClassLoader();
+      try
+      {
+         if( cl != null )
+            Thread.currentThread().setContextClassLoader(cl);
+         dispatchJoinPoint(context, joinpoint);
+      }
+      finally
+      {
+         if( cl != null )
+            Thread.currentThread().setContextClassLoader(tcl);
+      }
    }
 
    public void uninstallAction(KernelControllerContext context)
@@ -129,11 +142,16 @@ public abstract class LifecycleAction extends KernelControllerContextAction
       String method = getUninstallMethod(context);
       List<ParameterMetaData> parameters = getUninstallParameters(context);
       MethodJoinpoint joinpoint = null;
+      ClassLoader cl = null;
+      ClassLoader tcl = Thread.currentThread().getContextClassLoader();
       try
       {
-         ClassLoader cl = Configurator.getClassLoader(metaData);
+         cl = Configurator.getClassLoader(metaData);
          joinpoint = configurator.getMethodJoinPoint(info, cl, method, parameters, false, true);
          joinpoint.setTarget(target);
+         // Dispatch the joinpoint using the target class loader
+         if( cl != null )
+            Thread.currentThread().setContextClassLoader(cl);
          dispatchJoinPoint(context, joinpoint);
       }
       catch (JoinpointException ignored)
@@ -150,6 +168,11 @@ public abstract class LifecycleAction extends KernelControllerContextAction
       catch (Throwable throwable)
       {
          log.warn("Error during " + method, throwable);
+      }
+      finally
+      {
+         if( cl != null )
+            Thread.currentThread().setContextClassLoader(tcl);         
       }
    }
 }
