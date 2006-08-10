@@ -226,11 +226,20 @@ public class AbstractKernelDeployer
                      DependencyItem item = (DependencyItem) j.next();
                      buffer.append(item.getIDependOn()).append('{').append(item.getWhenRequired().getStateString());
                      buffer.append(':');
-                     ControllerContext other = controller.getContext(item.getIDependOn(), null);
-                     if (other == null)
-                        buffer.append("** NOT FOUND **");
+                     Object iDependOn = item.getIDependOn();
+                     if (iDependOn == null)
+                     {
+                        // FIXME needs to print something better than item.toString()
+                        buffer.append("** UNRESOLVED " + item + " **");
+                     }
                      else
-                        buffer.append(other.getState().getStateString());
+                     {
+                        ControllerContext other = controller.getContext(item.getIDependOn(), null);
+                        if (other == null)
+                           buffer.append("** NOT FOUND **");
+                        else
+                           buffer.append(other.getState().getStateString());
+                     }
                      buffer.append('}');
                      if (j.hasNext())
                         buffer.append(", ");
