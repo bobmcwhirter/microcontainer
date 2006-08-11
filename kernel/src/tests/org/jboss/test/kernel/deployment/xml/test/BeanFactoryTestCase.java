@@ -287,7 +287,7 @@ public class BeanFactoryTestCase extends AbstractXMLTest
       assertNull(factory.getDestroy());
       HashSet<String> expected = new HashSet<String>();
       expected.add("Depends1");
-      assertDepends(expected, factory.getDemands());
+      assertDepends(expected, factory.getDepends());
       assertNull(factory.getSupplies());
       assertNull(factory.getInstalls());
       assertNull(factory.getUninstalls());
@@ -316,7 +316,7 @@ public class BeanFactoryTestCase extends AbstractXMLTest
       expected.add("Depends1");
       expected.add("Depends2");
       expected.add("Depends3");
-      assertDepends(expected, factory.getDemands());
+      assertDepends(expected, factory.getDepends());
       assertNull(factory.getSupplies());
       assertNull(factory.getInstalls());
       assertNull(factory.getUninstalls());

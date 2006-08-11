@@ -32,6 +32,7 @@ import org.jboss.beans.metadata.spi.BeanMetaDataFactory;
 import org.jboss.beans.metadata.spi.ClassLoaderMetaData;
 import org.jboss.beans.metadata.spi.ConstructorMetaData;
 import org.jboss.beans.metadata.spi.DemandMetaData;
+import org.jboss.beans.metadata.spi.DependencyMetaData;
 import org.jboss.beans.metadata.spi.InstallMetaData;
 import org.jboss.beans.metadata.spi.LifecycleMetaData;
 import org.jboss.beans.metadata.spi.MetaDataVisitorNode;
@@ -85,6 +86,9 @@ public class AbstractBeanMetaData extends AbstractFeatureMetaData implements Bea
    
    /** What the bean supplies Set<SupplyMetaData> */
    protected Set<SupplyMetaData> supplies;
+   
+   /** What the bean dependencies Set<DependencyMetaData> */
+   protected Set<DependencyMetaData> depends;
    
    /** The install operations List<InstallMetaData> */
    protected List<InstallMetaData> installs;
@@ -236,6 +240,17 @@ public class AbstractBeanMetaData extends AbstractFeatureMetaData implements Bea
       flushJBossObjectCache();
    }
 
+   /**
+    * Set what the bean depends.
+    * 
+    * @param depends Set<DependencyMetaData>
+    */
+   public void setDepends(Set<DependencyMetaData> depends)
+   {
+      this.depends = depends;
+      flushJBossObjectCache();
+   }
+
    public String getName()
    {
       return name;
@@ -346,6 +361,11 @@ public class AbstractBeanMetaData extends AbstractFeatureMetaData implements Bea
    {
       return supplies;
    }
+   
+   public Set<DependencyMetaData> getDepends()
+   {
+      return depends;
+   }
 
    public List<InstallMetaData> getInstalls()
    {
@@ -400,6 +420,8 @@ public class AbstractBeanMetaData extends AbstractFeatureMetaData implements Bea
          children.addAll(demands);
       if (supplies != null)
          children.addAll(supplies);
+      if (depends != null)
+         children.addAll(depends);
       if (installs != null)
          children.addAll(installs);
       if (uninstalls != null)
@@ -433,6 +455,11 @@ public class AbstractBeanMetaData extends AbstractFeatureMetaData implements Bea
       {
          buffer.append(" supplies=");
          JBossObject.list(buffer, supplies);
+      }
+      if (depends != null)
+      {
+         buffer.append(" depends=");
+         JBossObject.list(buffer, depends);
       }
       if (installs != null)
       {

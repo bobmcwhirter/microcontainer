@@ -28,6 +28,7 @@ import junit.framework.Test;
 import org.jboss.beans.metadata.plugins.AbstractBeanMetaData;
 import org.jboss.beans.metadata.plugins.AbstractDependencyMetaData;
 import org.jboss.beans.metadata.spi.BeanMetaData;
+import org.jboss.beans.metadata.spi.DependencyMetaData;
 import org.jboss.dependency.spi.ControllerContext;
 import org.jboss.dependency.spi.ControllerState;
 import org.jboss.test.kernel.dependency.support.SimpleBeanWithLifecycle;
@@ -79,9 +80,9 @@ public class PlainLifecycleDependencyTestCase extends OldAbstractKernelDependenc
       AbstractBeanMetaData metaData1 = new AbstractBeanMetaData("Name1", SimpleBeanWithLifecycle.class.getName());
       
       AbstractBeanMetaData metaData2 = new AbstractBeanMetaData("Name2", SimpleBeanWithLifecycle.class.getName());
-      HashSet demands = new HashSet();
-      demands.add(new AbstractDependencyMetaData("Name1"));
-      metaData2.setDemands(demands);
+      HashSet<DependencyMetaData> depends = new HashSet<DependencyMetaData>();
+      depends.add(new AbstractDependencyMetaData("Name1"));
+      metaData2.setDepends(depends);
 
       setBeanMetaDatas(new BeanMetaData[] { metaData1, metaData2 });
    }
@@ -111,9 +112,9 @@ public class PlainLifecycleDependencyTestCase extends OldAbstractKernelDependenc
       AbstractBeanMetaData metaData1 = new AbstractBeanMetaData("Name1", SimpleBeanWithLifecycle.class.getName());
       
       AbstractBeanMetaData metaData2 = new AbstractBeanMetaData("Name2", SimpleBeanWithLifecycle.class.getName());
-      HashSet demands = new HashSet();
-      demands.add(new AbstractDependencyMetaData("Name1"));
-      metaData2.setDemands(demands);
+      HashSet<DependencyMetaData> depends = new HashSet<DependencyMetaData>();
+      depends.add(new AbstractDependencyMetaData("Name1"));
+      metaData2.setDepends(depends);
 
       setBeanMetaDatas(new BeanMetaData[] { metaData1, metaData2 });
    }
@@ -180,9 +181,9 @@ public class PlainLifecycleDependencyTestCase extends OldAbstractKernelDependenc
       AbstractBeanMetaData metaData1 = new AbstractBeanMetaData("Name1", SimpleBeanWithLifecycle.class.getName());
       
       AbstractBeanMetaData metaData2 = new AbstractBeanMetaData("Name2", SimpleBeanWithLifecycle.class.getName());
-      HashSet demands = new HashSet();
-      demands.add(new AbstractDependencyMetaData("Name1"));
-      metaData2.setDemands(demands);
+      HashSet<DependencyMetaData> depends = new HashSet<DependencyMetaData>();
+      depends.add(new AbstractDependencyMetaData("Name1"));
+      metaData2.setDepends(depends);
 
       setBeanMetaDatas(new BeanMetaData[] { metaData1, metaData2 });
    }

@@ -325,7 +325,7 @@ public class BeanTestCase extends AbstractXMLTest
       assertNull(bean.getDestroy());
       HashSet<String> expected = new HashSet<String>();
       expected.add("Depends1");
-      assertDepends(expected, bean.getDemands());
+      assertDepends(expected, bean.getDepends());
       assertNull(bean.getSupplies());
       assertNull(bean.getInstalls());
       assertNull(bean.getUninstalls());
@@ -349,7 +349,7 @@ public class BeanTestCase extends AbstractXMLTest
       expected.add("Depends1");
       expected.add("Depends2");
       expected.add("Depends3");
-      assertDepends(expected, bean.getDemands());
+      assertDepends(expected, bean.getDepends());
       assertNull(bean.getSupplies());
       assertNull(bean.getInstalls());
       assertNull(bean.getUninstalls());

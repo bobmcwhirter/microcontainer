@@ -59,7 +59,6 @@ public class AnnotationTestCase extends AbstractXMLTest
       Annotation ann = annotation.getAnnotationInstance();
       assertEquals(Annotation1.class.getName(), ann.annotationType().getName());
       assertTrue(ann instanceof Annotation1);
-      Annotation1 ann1 = (Annotation1)ann;
    }
    
    public void testAnnotationWithAttribute() throws Exception

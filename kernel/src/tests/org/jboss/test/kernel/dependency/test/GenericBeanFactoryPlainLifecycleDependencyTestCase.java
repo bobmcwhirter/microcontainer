@@ -30,6 +30,7 @@ import org.jboss.beans.metadata.plugins.AbstractDependencyMetaData;
 import org.jboss.beans.metadata.plugins.factory.GenericBeanFactory;
 import org.jboss.beans.metadata.plugins.factory.GenericBeanFactoryMetaData;
 import org.jboss.beans.metadata.spi.BeanMetaData;
+import org.jboss.beans.metadata.spi.DependencyMetaData;
 import org.jboss.dependency.spi.ControllerContext;
 import org.jboss.dependency.spi.ControllerState;
 import org.jboss.test.kernel.dependency.support.SimpleBeanWithLifecycle;
@@ -82,9 +83,9 @@ public class GenericBeanFactoryPlainLifecycleDependencyTestCase extends OldAbstr
       AbstractBeanMetaData metaData1 = new AbstractBeanMetaData("Name1", SimpleBeanWithLifecycle.class.getName());
       
       GenericBeanFactoryMetaData metaData2 = new GenericBeanFactoryMetaData("Name2", SimpleBeanWithLifecycle.class.getName());
-      HashSet demands = new HashSet();
-      demands.add(new AbstractDependencyMetaData("Name1"));
-      metaData2.setDemands(demands);
+      HashSet<DependencyMetaData> depends = new HashSet<DependencyMetaData>();
+      depends.add(new AbstractDependencyMetaData("Name1"));
+      metaData2.setDepends(depends);
 
       setBeanMetaDatas(new BeanMetaData[] { metaData1, metaData2 });
    }
@@ -115,9 +116,9 @@ public class GenericBeanFactoryPlainLifecycleDependencyTestCase extends OldAbstr
       AbstractBeanMetaData metaData1 = new AbstractBeanMetaData("Name1", SimpleBeanWithLifecycle.class.getName());
       
       GenericBeanFactoryMetaData metaData2 = new GenericBeanFactoryMetaData("Name2", SimpleBeanWithLifecycle.class.getName());
-      HashSet demands = new HashSet();
-      demands.add(new AbstractDependencyMetaData("Name1"));
-      metaData2.setDemands(demands);
+      HashSet<DependencyMetaData> depends = new HashSet<DependencyMetaData>();
+      depends.add(new AbstractDependencyMetaData("Name1"));
+      metaData2.setDepends(depends);
 
       setBeanMetaDatas(new BeanMetaData[] { metaData1, metaData2 });
    }
@@ -180,9 +181,9 @@ public class GenericBeanFactoryPlainLifecycleDependencyTestCase extends OldAbstr
       AbstractBeanMetaData metaData1 = new AbstractBeanMetaData("Name1", SimpleBeanWithLifecycle.class.getName());
       
       GenericBeanFactoryMetaData metaData2 = new GenericBeanFactoryMetaData("Name2", SimpleBeanWithLifecycle.class.getName());
-      HashSet demands = new HashSet();
-      demands.add(new AbstractDependencyMetaData("Name1"));
-      metaData2.setDemands(demands);
+      HashSet<DependencyMetaData> depends = new HashSet<DependencyMetaData>();
+      depends.add(new AbstractDependencyMetaData("Name1"));
+      metaData2.setDepends(depends);
 
       setBeanMetaDatas(new BeanMetaData[] { metaData1, metaData2 });
    }

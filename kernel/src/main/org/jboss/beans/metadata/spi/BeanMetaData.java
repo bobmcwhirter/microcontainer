@@ -138,6 +138,13 @@ public interface BeanMetaData extends FeatureMetaData
     * @return Set<SupplyMetaData>
     */
    Set<SupplyMetaData> getSupplies();
+   
+   /**
+    * Get what this bean depends.
+    * 
+    * @return Set<DependencyMetaData>
+    */
+   Set<DependencyMetaData> getDepends();
 
    /**
     * Get the installation oeprations.

@@ -49,6 +49,7 @@ import org.jboss.beans.metadata.plugins.StringValueMetaData;
 import org.jboss.beans.metadata.plugins.factory.GenericBeanFactoryMetaData;
 import org.jboss.beans.metadata.spi.BeanMetaDataFactory;
 import org.jboss.beans.metadata.spi.DemandMetaData;
+import org.jboss.beans.metadata.spi.DependencyMetaData;
 import org.jboss.beans.metadata.spi.MetaDataVisitorNode;
 import org.jboss.beans.metadata.spi.ParameterMetaData;
 import org.jboss.beans.metadata.spi.PropertyMetaData;
@@ -650,13 +651,13 @@ public class BeanSchemaBinding
          {
             AbstractBeanMetaData bean = (AbstractBeanMetaData) parent;
             AbstractDependencyMetaData dependency = (AbstractDependencyMetaData) child;
-            Set demands = bean.getDemands();
-            if (demands == null)
+            Set<DependencyMetaData> depends = bean.getDepends();
+            if (depends == null)
             {
-               demands = new HashSet();
-               bean.setDemands(demands);
+               depends = new HashSet<DependencyMetaData>();
+               bean.setDepends(depends);
             }
-            demands.add(dependency);
+            depends.add(dependency);
          }
       });
 
@@ -667,13 +668,13 @@ public class BeanSchemaBinding
          {
             GenericBeanFactoryMetaData bean = (GenericBeanFactoryMetaData) parent;
             AbstractDependencyMetaData dependency = (AbstractDependencyMetaData) child;
-            Set demands = bean.getDemands();
-            if (demands == null)
+            Set<DependencyMetaData> depends = bean.getDepends();
+            if (depends == null)
             {
-               demands = new HashSet();
-               bean.setDemands(demands);
+               depends = new HashSet<DependencyMetaData>();
+               bean.setDepends(depends);
             }
-            demands.add(dependency);
+            depends.add(dependency);
          }
       });
 

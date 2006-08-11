@@ -28,6 +28,7 @@ import javax.xml.namespace.QName;
 
 import org.jboss.beans.metadata.plugins.AbstractBeanMetaData;
 import org.jboss.beans.metadata.plugins.AbstractDependencyMetaData;
+import org.jboss.beans.metadata.spi.DependencyMetaData;
 import org.jboss.xb.binding.sunday.unmarshalling.DefaultElementInterceptor;
 
 /**
@@ -45,12 +46,12 @@ public class BeanDependsInterceptor extends DefaultElementInterceptor
    {
       AbstractBeanMetaData bean = (AbstractBeanMetaData) parent;
       AbstractDependencyMetaData dependency = (AbstractDependencyMetaData) child;
-      Set demands = bean.getDemands();
-      if (demands == null)
+      Set<DependencyMetaData> depends = bean.getDepends();
+      if (depends == null)
       {
-         demands = new HashSet();
-         bean.setDemands(demands);
+         depends = new HashSet<DependencyMetaData>();
+         bean.setDepends(depends);
       }
-      demands.add(dependency);
+      depends.add(dependency);
    }
 }

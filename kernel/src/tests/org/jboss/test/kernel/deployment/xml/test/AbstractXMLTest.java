@@ -189,14 +189,13 @@ public class AbstractXMLTest extends AbstractTestCaseWithSetup
          fail("Expected " + expected + " got " + properties);
    }
    
-   protected void assertDepends(Set<String> expected, Set depends)
+   protected void assertDepends(Set<String> expected, Set<DependencyMetaData> depends)
    {
       assertNotNull(depends);
       assertEquals(expected.size(), depends.size());
       HashSet<String> clonedExpected = new HashSet<String>(expected);
-      for (Iterator i = depends.iterator(); i.hasNext();)
+      for (DependencyMetaData depend : depends)
       {
-         DependencyMetaData depend = (DependencyMetaData) i.next();
          if (clonedExpected.remove(depend.getDependency()) == false)
             fail("Did not expect " + depend + " expected " + expected);
       }
@@ -209,9 +208,8 @@ public class AbstractXMLTest extends AbstractTestCaseWithSetup
       assertNotNull(demands);
       assertEquals(expected.size(), demands.size());
       HashSet<String> clonedExpected = new HashSet<String>(expected);
-      for (Iterator i = demands.iterator(); i.hasNext();)
+      for (DemandMetaData demand : demands)
       {
-         DemandMetaData demand = (DemandMetaData) i.next();
          if (clonedExpected.remove(demand.getDemand()) == false)
             fail("Did not expect " + demand + " expected " + expected);
       }

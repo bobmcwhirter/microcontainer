@@ -27,6 +27,7 @@ import junit.framework.Test;
 
 import org.jboss.beans.metadata.plugins.AbstractBeanMetaData;
 import org.jboss.beans.metadata.plugins.AbstractDependencyMetaData;
+import org.jboss.beans.metadata.spi.DependencyMetaData;
 
 /**
  * DependencyTestCase.
@@ -39,7 +40,7 @@ public class DependencyTestCase extends AbstractXMLTest
    protected AbstractDependencyMetaData getDependency(String name) throws Exception
    {
       AbstractBeanMetaData bean = unmarshalBean(name);
-      Set dependencies = bean.getDemands();
+      Set<DependencyMetaData> dependencies = bean.getDepends();
       assertNotNull(dependencies);
       assertEquals(1, dependencies.size());
       AbstractDependencyMetaData dependency = (AbstractDependencyMetaData) dependencies.iterator().next();
