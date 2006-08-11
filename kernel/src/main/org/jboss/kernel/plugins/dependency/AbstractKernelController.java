@@ -21,7 +21,6 @@
 */
 package org.jboss.kernel.plugins.dependency;
 
-import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
@@ -89,7 +88,7 @@ public class AbstractKernelController extends AbstractController implements Kern
          return null;
    }
 
-   public synchronized ControllerContext getContext(Object name, ControllerState state)
+   public ControllerContext getContext(Object name, ControllerState state)
    {
       ControllerContext context = super.getContext(name, state);
       if (context != null)
@@ -108,57 +107,71 @@ public class AbstractKernelController extends AbstractController implements Kern
       return null;
    }
 
-   public synchronized void addSupplies(KernelControllerContext context)
+   public void addSupplies(KernelControllerContext context)
    {
       BeanMetaData metaData = context.getBeanMetaData();
-      Set supplies = metaData.getSupplies();
+      Set<SupplyMetaData> supplies = metaData.getSupplies();
       if (supplies != null)
       {
          boolean trace = log.isTraceEnabled();
 
          if (supplies.isEmpty() == false)
          {
-            for (Iterator i = supplies.iterator(); i.hasNext();)
+            lockWrite();
+            try
             {
-               SupplyMetaData supplied = (SupplyMetaData) i.next();
-               Object supply = supplied.getSupply();
-               List<KernelControllerContext> list = suppliers.get(supply);
-               if (list == null)
+               for (SupplyMetaData supplied : supplies)
                {
-                  list = CollectionsFactory.createCopyOnWriteList();
-                  suppliers.put(supply, list);
+                  Object supply = supplied.getSupply();
+                  List<KernelControllerContext> list = suppliers.get(supply);
+                  if (list == null)
+                  {
+                     list = CollectionsFactory.createCopyOnWriteList();
+                     suppliers.put(supply, list);
+                  }
+                  list.add(context);
+                  if (trace)
+                     log.trace("Suppliers of " + supply + ": " + list);
                }
-               list.add(context);
-               if (trace)
-                  log.trace("Suppliers of " + supply + ": " + list);
+            }
+            finally
+            {
+               unlockWrite();
             }
          }
       }
    }
 
-   public synchronized void removeSupplies(KernelControllerContext context)
+   public void removeSupplies(KernelControllerContext context)
    {
       BeanMetaData metaData = context.getBeanMetaData();
-      Set supplies = metaData.getSupplies();
+      Set<SupplyMetaData> supplies = metaData.getSupplies();
       if (supplies != null)
       {
          boolean trace = log.isTraceEnabled();
 
          if (supplies.isEmpty() == false)
          {
-            for (Iterator i = supplies.iterator(); i.hasNext();)
+            lockWrite();
+            try
             {
-               SupplyMetaData supplied = (SupplyMetaData) i.next();
-               Object supply = supplied.getSupply();
-               List<KernelControllerContext> list = suppliers.get(supply);
-               if (list != null)
+               for (SupplyMetaData supplied : supplies)
                {
-                  list.remove(context);
-                  if (list.isEmpty())
-                     suppliers.remove(supply);
-                  if (trace)
-                     log.trace("Suppliers of " + supply  + ": " + list);
+                  Object supply = supplied.getSupply();
+                  List<KernelControllerContext> list = suppliers.get(supply);
+                  if (list != null)
+                  {
+                     list.remove(context);
+                     if (list.isEmpty())
+                        suppliers.remove(supply);
+                     if (trace)
+                        log.trace("Suppliers of " + supply  + ": " + list);
+                  }
                }
+            }
+            finally
+            {
+               unlockWrite();
             }
          }
       }
