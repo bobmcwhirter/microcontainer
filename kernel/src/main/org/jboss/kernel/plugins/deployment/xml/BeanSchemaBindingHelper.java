@@ -311,6 +311,16 @@ public class BeanSchemaBindingHelper
    }
 
    /**
+    * Initialize the handlers for the injection type
+    *
+    * @param dependencyType the dependency type
+    */
+   public static void initInjectionHandlers(TypeBinding dependencyType)
+   {
+      dependencyType.setHandler(InjectionHandler.HANDLER);
+   }
+
+   /**
     * Initialize the handlers for the factory type
     * 
     * @param factoryType the factory type

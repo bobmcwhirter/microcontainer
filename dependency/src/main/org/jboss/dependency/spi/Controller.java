@@ -110,4 +110,22 @@ public interface Controller extends JBossInterface
     * @return the states in order
     */
    List<ControllerState> getStates();
+
+   /**
+    * @return all instantiated beans that are instance of this class clazz param
+    */
+   Set getInstantiatedBeans(Class clazz);
+
+   /**
+    * add instantiated bean into beansByClass map
+    * look at all superclasses and interfaces
+    */
+   void addInstantiatedBean(Object bean);
+
+   /**
+    * remove instantiated bean from beansByClass map
+    * look at all superclasses and interfaces
+    */
+   void removeInstantiatedBean(Object bean);
+
 }

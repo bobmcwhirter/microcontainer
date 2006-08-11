@@ -33,7 +33,7 @@ import org.jboss.repository.spi.MetaDataContext;
 
 /**
  * InstantiateAction.
- * 
+ *
  * @author <a href="adrian@jboss.com">Adrian Brock</a>
  * @version $Revision$
  */
@@ -49,25 +49,30 @@ public class InstantiateAction extends KernelControllerContextAction
       BeanInfo info = context.getBeanInfo();
       final Joinpoint joinPoint = configurator.getConstructorJoinPoint(info, metaData.getConstructor(), metaData);
 
-      Object object = dispatchJoinPoint(context, joinPoint); 
+      Object object = dispatchJoinPoint(context, joinPoint);
       context.setTarget(object);
-      
+
       MetaDataContext metaCtx = context.getMetaDataContext();
       if (metaCtx != null)
       {
          metaCtx.setTarget(object);
       }
-      
+
       try
       {
-         if (object != null && context.getBeanInfo() == null)
+         if (object != null)
          {
-            info = configurator.getBeanInfo(object.getClass());
-            context.setBeanInfo(info);
+            if (context.getBeanInfo() == null)
+            {
+               info = configurator.getBeanInfo(object.getClass());
+               context.setBeanInfo(info);
+            }
+
+            if (object instanceof KernelControllerContextAware)
+               ((KernelControllerContextAware) object).setKernelControllerContext(context);
+
+//            controller.addInstantiatedBean(object);
          }
-         
-         if (object != null && object instanceof KernelControllerContextAware)
-            ((KernelControllerContextAware) object).setKernelControllerContext(context);
       }
       catch (Throwable t)
       {
@@ -75,14 +80,21 @@ public class InstantiateAction extends KernelControllerContextAction
          throw t;
       }
    }
-   
+
    public void uninstallAction(KernelControllerContext context)
    {
       try
       {
          Object object = context.getTarget();
-         if (object != null && object instanceof KernelControllerContextAware)
-            ((KernelControllerContextAware) object).unsetKernelControllerContext(context);
+         if (object != null)
+         {
+            if (object instanceof KernelControllerContextAware)
+               ((KernelControllerContextAware) object).unsetKernelControllerContext(context);
+
+//            KernelController controller = (KernelController) context.getController();
+//            controller.removeInstantiatedBean(object);
+         }
+
       }
       catch (Throwable ignored)
       {

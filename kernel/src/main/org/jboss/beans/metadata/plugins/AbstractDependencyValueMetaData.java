@@ -81,16 +81,6 @@ public class AbstractDependencyValueMetaData extends AbstractValueMetaData
    }
 
    /**
-    * Set the value
-    * 
-    * @param value the value
-    */
-   public void setValue(Object value)
-   {
-      super.setValue(value);
-   }
-   
-   /**
     * Get the property
     * 
     * @return the property
@@ -131,7 +121,7 @@ public class AbstractDependencyValueMetaData extends AbstractValueMetaData
       ControllerState state = dependentState;
       if (state == null)
          state = ControllerState.INSTALLED;
-      ControllerContext context = controller.getContext(value, dependentState);
+      ControllerContext context = controller.getContext(value, state);
       if (context == null)
          throw new Error("Should not be here - dependency failed! " + this);
       Object result = context.getTarget();

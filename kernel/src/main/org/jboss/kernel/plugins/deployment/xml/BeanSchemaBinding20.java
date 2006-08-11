@@ -134,6 +134,9 @@ public class BeanSchemaBinding20
    /** The dependency binding */
    public static final QName dependencyTypeQName = new QName(BEAN_DEPLOYER_NS, "dependencyType");
 
+   /** The dependency binding */
+   public static final QName injectionTypeQName = new QName(BEAN_DEPLOYER_NS, "injectionType");
+
    /** The factory binding */
    public static final QName factoryTypeQName = new QName(BEAN_DEPLOYER_NS, "factoryType");
 
@@ -293,6 +296,10 @@ public class BeanSchemaBinding20
       // dependency binding
       TypeBinding dependencyType = schemaBinding.getType(dependencyTypeQName);
       BeanSchemaBindingHelper.initDependencyHandlers(dependencyType);
+
+      // injection binding
+      TypeBinding injectionType = schemaBinding.getType(injectionTypeQName);
+      BeanSchemaBindingHelper.initInjectionHandlers(injectionType);
 
       // factory binding
       TypeBinding factoryType = schemaBinding.getType(factoryTypeQName);

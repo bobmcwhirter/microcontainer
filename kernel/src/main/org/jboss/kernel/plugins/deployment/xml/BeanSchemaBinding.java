@@ -29,23 +29,7 @@ import java.util.Set;
 import javax.xml.namespace.NamespaceContext;
 import javax.xml.namespace.QName;
 
-import org.jboss.beans.metadata.plugins.AbstractArrayMetaData;
-import org.jboss.beans.metadata.plugins.AbstractBeanMetaData;
-import org.jboss.beans.metadata.plugins.AbstractClassLoaderMetaData;
-import org.jboss.beans.metadata.plugins.AbstractCollectionMetaData;
-import org.jboss.beans.metadata.plugins.AbstractConstructorMetaData;
-import org.jboss.beans.metadata.plugins.AbstractDemandMetaData;
-import org.jboss.beans.metadata.plugins.AbstractDependencyMetaData;
-import org.jboss.beans.metadata.plugins.AbstractDependencyValueMetaData;
-import org.jboss.beans.metadata.plugins.AbstractLifecycleMetaData;
-import org.jboss.beans.metadata.plugins.AbstractListMetaData;
-import org.jboss.beans.metadata.plugins.AbstractMapMetaData;
-import org.jboss.beans.metadata.plugins.AbstractParameterMetaData;
-import org.jboss.beans.metadata.plugins.AbstractPropertyMetaData;
-import org.jboss.beans.metadata.plugins.AbstractSetMetaData;
-import org.jboss.beans.metadata.plugins.AbstractSupplyMetaData;
-import org.jboss.beans.metadata.plugins.AbstractValueMetaData;
-import org.jboss.beans.metadata.plugins.StringValueMetaData;
+import org.jboss.beans.metadata.plugins.*;
 import org.jboss.beans.metadata.plugins.factory.GenericBeanFactoryMetaData;
 import org.jboss.beans.metadata.spi.BeanMetaDataFactory;
 import org.jboss.beans.metadata.spi.DemandMetaData;
@@ -55,6 +39,8 @@ import org.jboss.beans.metadata.spi.ParameterMetaData;
 import org.jboss.beans.metadata.spi.PropertyMetaData;
 import org.jboss.beans.metadata.spi.SupplyMetaData;
 import org.jboss.beans.metadata.spi.ValueMetaData;
+import org.jboss.beans.metadata.injection.InjectionMode;
+import org.jboss.beans.metadata.injection.InjectionType;
 import org.jboss.dependency.spi.ControllerMode;
 import org.jboss.dependency.spi.ControllerState;
 import org.jboss.kernel.plugins.deployment.AbstractKernelDeployment;
@@ -159,6 +145,9 @@ public class BeanSchemaBinding
 
    /** The dependency binding */
    private static final QName dependencyTypeQName = new QName(BEAN_DEPLOYER_NS, "dependencyType");
+
+   /** The injection binding */
+   private static final QName injectionTypeQName = new QName(BEAN_DEPLOYER_NS, "injectionType");
 
    /** The inject element name */
    private static final QName injectQName = new QName(BEAN_DEPLOYER_NS, "inject");
@@ -956,6 +945,43 @@ public class BeanSchemaBinding
                throw new IllegalArgumentException("Null or empty bean in injection/factory.");
             return o;
          }
+      });
+
+      // injection binding
+      TypeBinding injectionType = schemaBinding.getType(injectionTypeQName);
+      injectionType.setHandler(new DefaultElementHandler()
+      {
+         public Object startElement(Object parent, QName name, ElementBinding element)
+         {
+            return new AbstractInjectionValueMetaData();
+         }
+
+         public void setParent(Object parent, Object o, QName qName, ElementBinding element, ElementBinding parentElement)
+         {
+            AbstractPropertyMetaData x = (AbstractPropertyMetaData) parent;
+            AbstractInjectionValueMetaData child = (AbstractInjectionValueMetaData) o;
+            child.setPropertyMetaData(x);
+         }
+
+         public void attributes(Object o, QName elementName, ElementBinding element, Attributes attrs, NamespaceContext nsCtx)
+         {
+            AbstractInjectionValueMetaData injection = (AbstractInjectionValueMetaData) o;
+            for (int i = 0; i < attrs.getLength(); ++i)
+            {
+               String localName = attrs.getLocalName(i);
+               if ("bean".equals(localName))
+                  injection.setValue(attrs.getValue(i));
+               else if ("property".equals(localName))
+                  injection.setProperty(attrs.getValue(i));
+               else if ("state".equals(localName))
+                  injection.setDependentState(new ControllerState(attrs.getValue(i)));
+               else if ("injectionMode".equals(localName))
+                  injection.setInjectionMode(new InjectionMode(localName));
+               else if ("injectionType".equals(localName))
+                  injection.setInjectionType(new InjectionType(localName));
+            }
+         }
+
       });
 
       // value binding

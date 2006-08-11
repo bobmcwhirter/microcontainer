@@ -303,6 +303,34 @@ $Id$
       <xsd:attribute name="state" type="controllerStateType" use="optional"/>
    </xsd:complexType>
 
+   <xsd:complexType name="injectionType">
+      <xsd:annotation>
+         <xsd:documentation>
+           <![CDATA[
+           A dependency represents an injection into the bean.
+           They can be used anywhere a string value can appear.
+
+           e.g. Bean instance - "InjectedIntoMe".setSomeProperty("BeanInjected");
+           <bean name="InjectedIntoMe" ...>
+              <property name="someProperty"><inject bean="BeanInjected"/>
+           </bean>
+           <bean name="BeanInjected" .../>
+
+           e.g. Bean property - "InjectedIntoMe".setSomeProperty("BeanInjected".getOtherProperty());
+           <bean name="InjectedIntoMe" ...>
+              <property name="someProperty"><inject bean="BeanInjected" property="otherProperty"/>
+           </bean>
+           <bean name="BeanInjected" .../>
+           ]]>
+         </xsd:documentation>
+      </xsd:annotation>
+      <xsd:attribute name="bean" type="xsd:string" use="optional"/>
+      <xsd:attribute name="property" type="xsd:string" use="optional"/>
+      <xsd:attribute name="state" type="controllerStateType" use="optional"/>
+      <xsd:attribute name="injectionMode" type="xsd:string" use="optional" default="ByType"/>
+      <xsd:attribute name="injectionType" type="xsd:string" use="optional" default="Strict"/>
+   </xsd:complexType>
+
    <xsd:complexType name="factoryType">
       <xsd:annotation>
          <xsd:documentation>
@@ -470,6 +498,7 @@ $Id$
          <xsd:element name="array" type="arrayType"/>
          <xsd:element name="map" type="mapType"/>
          <xsd:element name="inject" type="dependencyType"/>
+         <!--<xsd:element name="inject" type="injectionType"/>-->
          <xsd:element name="null">
             <xsd:complexType/>
          </xsd:element>
