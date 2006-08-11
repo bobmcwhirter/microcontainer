@@ -26,6 +26,7 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
+import java.util.concurrent.locks.ReentrantReadWriteLock;
 
 import org.jboss.dependency.spi.Controller;
 import org.jboss.dependency.spi.ControllerContext;
@@ -33,8 +34,8 @@ import org.jboss.dependency.spi.ControllerMode;
 import org.jboss.dependency.spi.ControllerState;
 import org.jboss.dependency.spi.DependencyInfo;
 import org.jboss.dependency.spi.DependencyItem;
-import org.jboss.util.JBossObject;
 import org.jboss.util.collection.CollectionsFactory;
+import org.jboss.util.JBossObject;
 
 /**
  * Abstract controller.
@@ -44,6 +45,9 @@ import org.jboss.util.collection.CollectionsFactory;
  */
 public class AbstractController extends JBossObject implements Controller
 {
+   /** The lock */
+   private ReentrantReadWriteLock lock = new ReentrantReadWriteLock();
+   
    /** The states in order List<ControllerState> */
    protected List<ControllerState> states = CollectionsFactory.createCopyOnWriteList();
 
@@ -61,7 +65,7 @@ public class AbstractController extends JBossObject implements Controller
 
    /** Whether an on demand context has been enabled */
    protected boolean onDemandEnabled = true;
-
+   
    /**
     * Create an abstract controller
     * 
@@ -80,36 +84,54 @@ public class AbstractController extends JBossObject implements Controller
 
    public void addState(ControllerState state, ControllerState before)
    {
-      if (before == null)
+      lockWrite();
+      try
       {
-         states.add(state);
-      }
-      else
-      {
-         int index = states.indexOf(before);
-         if (index == -1)
-            throw new IllegalStateException(before + " is not a state in the controller.");
-         states.add(index, state);
-      }
+         if (before == null)
+         {
+            states.add(state);
+         }
+         else
+         {
+            int index = states.indexOf(before);
+            if (index == -1)
+               throw new IllegalStateException(before + " is not a state in the controller.");
+            states.add(index, state);
+         }
 
-      contextsByState.put(state, CollectionsFactory.createCopyOnWriteSet());
+         Set<ControllerContext> contexts = CollectionsFactory.createCopyOnWriteSet();
+         contextsByState.put(state, contexts);
+      }
+      finally
+      {
+         unlockWrite();
+      }
    }
 
-   public synchronized ControllerContext getContext(Object name, ControllerState state)
+   public ControllerContext getContext(Object name, ControllerState state)
    {
       if (name == null)
          throw new IllegalArgumentException("Null name");
-      ControllerContext result = allContexts.get(name);
-      if (result != null && state != null)
+      
+      lockRead();
+      try
       {
-         int required = states.indexOf(state);
-         if (required == -1)
-            throw new IllegalArgumentException("Unknown state " + state + " states=" + states);
-         int current = states.indexOf(result.getState());
-         if (current < required)
-            return null;
+         ControllerContext result = allContexts.get(name);
+         if (result != null && state != null)
+         {
+            int required = states.indexOf(state);
+            if (required == -1)
+               throw new IllegalArgumentException("Unknown state " + state + " states=" + states);
+            int current = states.indexOf(result.getState());
+            if (current < required)
+               return null;
+         }
+         return result;
       }
-      return result;
+      finally
+      {
+         unlockRead();
+      }
    }
 
    public ControllerContext getInstalledContext(Object name)
@@ -117,16 +139,24 @@ public class AbstractController extends JBossObject implements Controller
       return getContext(name, ControllerState.INSTALLED);
    }
 
-   public synchronized Set<ControllerContext> getNotInstalled()
+   public Set<ControllerContext> getNotInstalled()
    {
-      Set<ControllerContext> result = new HashSet<ControllerContext>(errorContexts);
-      for (int i = 0; ControllerState.INSTALLED.equals(states.get(i)) == false; ++i)
+      lockWrite();
+      try
       {
-         Set<ControllerContext> stateContexts = contextsByState.get(states.get(i));
-         result.addAll(stateContexts);
+         Set<ControllerContext> result = new HashSet<ControllerContext>(errorContexts);
+         for (int i = 0; ControllerState.INSTALLED.equals(states.get(i)) == false; ++i)
+         {
+            Set<ControllerContext> stateContexts = contextsByState.get(states.get(i));
+            result.addAll(stateContexts);
+         }
+         errorContexts.clear();
+         return result;
       }
-      errorContexts.clear();
-      return result;
+      finally
+      {
+         unlockWrite();
+      }
    }
 
    public List<ControllerState> getStates()
@@ -134,7 +164,7 @@ public class AbstractController extends JBossObject implements Controller
       return states;
    }
 
-   public synchronized void install(ControllerContext context) throws Throwable
+   public void install(ControllerContext context) throws Throwable
    {
       boolean trace = log.isTraceEnabled();
 
@@ -145,13 +175,10 @@ public class AbstractController extends JBossObject implements Controller
       if (name == null)
          throw new IllegalArgumentException("Null name " + context.toShortString());
 
-      if (allContexts.get(name) != null)
-         throw new IllegalStateException(name + " is already installed.");
-
       install(context, trace);
    }
 
-   public synchronized void change(ControllerContext context, ControllerState state) throws Throwable
+   public void change(ControllerContext context, ControllerState state) throws Throwable
    {
       boolean trace = log.isTraceEnabled();
 
@@ -164,7 +191,7 @@ public class AbstractController extends JBossObject implements Controller
       change(context, state, trace);
    }
 
-   public synchronized void enableOnDemand(ControllerContext context) throws Throwable
+   public void enableOnDemand(ControllerContext context) throws Throwable
    {
       boolean trace = log.isTraceEnabled();
 
@@ -174,27 +201,35 @@ public class AbstractController extends JBossObject implements Controller
       enableOnDemand(context, trace);
    }
 
-   public synchronized ControllerContext uninstall(Object name)
+   public ControllerContext uninstall(Object name)
    {
       boolean trace = log.isTraceEnabled();
 
       if (name == null)
          throw new IllegalArgumentException("Null name");
 
-      if (errorContexts.remove(name) && trace)
-         log.trace("Tidied up context in error state: " + name);
+      lockWrite();
+      try
+      {
+         if (errorContexts.remove(name) && trace)
+            log.trace("Tidied up context in error state: " + name);
 
-      ControllerContext context = allContexts.get(name);
-      if (context == null)
-         throw new IllegalStateException("Not installed: " + name);
+         ControllerContext context = allContexts.get(name);
+         if (context == null)
+            throw new IllegalStateException("Not installed: " + name);
 
-      if (trace)
-         log.trace("Uninstalling " + context.toShortString());
+         if (trace)
+            log.trace("Uninstalling " + context.toShortString());
 
-      uninstallContext(context, ControllerState.NOT_INSTALLED, trace);
+         uninstallContext(context, ControllerState.NOT_INSTALLED, trace);
 
-      allContexts.remove(name);
-      return context;
+         allContexts.remove(name);
+         return context;
+      }
+      finally
+      {
+         unlockWrite();
+      }
    }
 
    /**
@@ -206,37 +241,48 @@ public class AbstractController extends JBossObject implements Controller
     */
    protected void install(ControllerContext context, boolean trace) throws Throwable
    {
-      Object name = context.getName();
-
-      if (ControllerMode.AUTOMATIC.equals(context.getMode()))
-         context.setRequiredState(ControllerState.INSTALLED);
-
-      if (trace)
-         log.trace("Installing " + context.toShortString());
-
-      context.setController(this);
-      DependencyInfo dependencies = context.getDependencyInfo();
-      if (trace)
+      lockWrite();
+      try
       {
-         String dependsOn = null;
-         if( dependencies != null )
+         Object name = context.getName();
+
+         if (allContexts.get(name) != null)
+            throw new IllegalStateException(name + " is already installed.");
+
+         if (ControllerMode.AUTOMATIC.equals(context.getMode()))
+            context.setRequiredState(ControllerState.INSTALLED);
+
+         if (trace)
+            log.trace("Installing " + context.toShortString());
+
+         context.setController(this);
+         DependencyInfo dependencies = context.getDependencyInfo();
+         if (trace)
          {
-            Set set = dependencies.getIDependOn(null);
-            if( set != null )
-               dependsOn = set.toString();
+            String dependsOn = null;
+            if( dependencies != null )
+            {
+               Set set = dependencies.getIDependOn(null);
+               if( set != null )
+                  dependsOn = set.toString();
+            }
+            log.trace("Dependencies for " + name + ": " + dependsOn);
          }
-         log.trace("Dependencies for " + name + ": " + dependsOn);
-      }
 
-      if (incrementState(context, trace))
-      {
-         allContexts.put(context.getName(), context);
-         resolveContexts(trace);
+         if (incrementState(context, trace))
+         {
+            allContexts.put(context.getName(), context);
+            resolveContexts(trace);
+         }
+         else
+         {
+            errorContexts.remove(context);
+            throw context.getError();
+         }
       }
-      else
+      finally
       {
-         errorContexts.remove(context);
-         throw context.getError();
+         unlockWrite();
       }
    }
 
@@ -250,33 +296,41 @@ public class AbstractController extends JBossObject implements Controller
     */
    protected void change(ControllerContext context, ControllerState state, boolean trace) throws Throwable
    {
-      ControllerState fromState = context.getState();
-      int currentIndex = states.indexOf(fromState);
-      int requiredIndex = states.indexOf(state);
-      if (requiredIndex == -1)
-         throw new IllegalArgumentException("Unknown state: " + state);
-
-      if (currentIndex == requiredIndex)
+      lockWrite();
+      try
       {
-         if (trace)
-            log.trace("No change required toState=" + state.getStateString() + " " + context.toShortString());
-         return;
-      }
+         ControllerState fromState = context.getState();
+         int currentIndex = states.indexOf(fromState);
+         int requiredIndex = states.indexOf(state);
+         if (requiredIndex == -1)
+            throw new IllegalArgumentException("Unknown state: " + state);
 
-      if (trace)
-         log.trace("Change toState=" + state.getStateString() + " " + context.toShortString());
-
-      context.setRequiredState(state);
-
-      if (currentIndex < requiredIndex)
-         resolveContexts(trace);
-      else
-      {
-         while (currentIndex > requiredIndex)
+         if (currentIndex == requiredIndex)
          {
-            uninstallContext(context, trace);
-            currentIndex = states.indexOf(context.getState());
+            if (trace)
+               log.trace("No change required toState=" + state.getStateString() + " " + context.toShortString());
+            return;
          }
+
+         if (trace)
+            log.trace("Change toState=" + state.getStateString() + " " + context.toShortString());
+
+         context.setRequiredState(state);
+
+         if (currentIndex < requiredIndex)
+            resolveContexts(trace);
+         else
+         {
+            while (currentIndex > requiredIndex)
+            {
+               uninstallContext(context, trace);
+               currentIndex = states.indexOf(context.getState());
+            }
+         }
+      }
+      finally
+      {
+         unlockWrite();
       }
    }
 
@@ -289,25 +343,35 @@ public class AbstractController extends JBossObject implements Controller
     */
    protected void enableOnDemand(ControllerContext context, boolean trace) throws Throwable
    {
-      if (ControllerMode.ON_DEMAND.equals(context.getMode()) == false)
-         throw new IllegalStateException("Context is not ON DEMAND: " + context.toShortString());
+      lockWrite();
+      try
+      {
+         if (ControllerMode.ON_DEMAND.equals(context.getMode()) == false)
+            throw new IllegalStateException("Context is not ON DEMAND: " + context.toShortString());
 
-      if (allContexts.containsKey(context.getName()) == false)
-         throw new IllegalStateException("Unknown context: " + context.toShortString());
+         if (allContexts.containsKey(context.getName()) == false)
+            throw new IllegalStateException("Unknown context: " + context.toShortString());
 
-      // Already done
-      if (ControllerState.INSTALLED.equals(context.getRequiredState()))
-         return;
-      context.setRequiredState(ControllerState.INSTALLED);
+         // Already done
+         if (ControllerState.INSTALLED.equals(context.getRequiredState()))
+            return;
+         context.setRequiredState(ControllerState.INSTALLED);
 
-      if (trace)
-         log.trace("Enable onDemand: " + context.toShortString());
+         if (trace)
+            log.trace("Enable onDemand: " + context.toShortString());
 
-      onDemandEnabled = true;
+         onDemandEnabled = true;
+      }
+      finally
+      {
+         unlockWrite();
+      }
    }
 
    /**
-    * Increment state
+    * Increment state<p>
+    * 
+    * This method must be invoked with the write lock taken.
     * 
     * @param context the context
     * @param trace whether trace is enabled
@@ -323,17 +387,26 @@ public class AbstractController extends JBossObject implements Controller
       if (ControllerState.ERROR.equals(fromState))
       {
          errorContexts.remove(context);
+         Throwable error = null;
+         unlockWrite();
          try
          {
             install(context, ControllerState.ERROR, ControllerState.NOT_INSTALLED);
          }
          catch (Throwable t)
          {
-            log.error("Error during initial installation: " + context.toShortString(), t);
-            context.setError(t);
-            errorContexts.add(context);
-            return false;
-
+            error = t;
+         }
+         finally
+         {
+            lockWrite();
+            if (error != null)
+            {
+               log.error("Error during initial installation: " + context.toShortString(), error);
+               context.setError(error);
+               errorContexts.add(context);
+               return false;
+            }
          }
          Set<ControllerContext> notInstalled = contextsByState.get(ControllerState.NOT_INSTALLED);
          notInstalled.add(context);
@@ -350,17 +423,27 @@ public class AbstractController extends JBossObject implements Controller
       ControllerState toState = states.get(toIndex);
       Set<ControllerContext> toContexts = contextsByState.get(toState);
 
+      unlockWrite();
+      Throwable error = null;
       try
       {
          install(context, fromState, toState);
       }
       catch (Throwable t)
       {
-         log.error("Error installing to " + toState.getStateString() + ": " + context.toShortString(), t);
-         uninstallContext(context, ControllerState.NOT_INSTALLED, trace);
-         errorContexts.add(context);
-         context.setError(t);
-         return false;
+         error = t;
+      }
+      finally
+      {
+         lockWrite();
+         if (error != null)
+         {
+            log.error("Error installing to " + toState.getStateString() + ": " + context.toShortString(), error);
+            uninstallContext(context, ControllerState.NOT_INSTALLED, trace);
+            errorContexts.add(context);
+            context.setError(error);
+            return false;
+         }
       }
 
       if (fromContexts != null)
@@ -370,7 +453,9 @@ public class AbstractController extends JBossObject implements Controller
    }
 
    /**
-    * Resolve unresolved contexts
+    * Resolve unresolved contexts<p>
+    * 
+    * This method must be invoked with the write lock taken
     * 
     * @param trace whether trace is enabled
     */
@@ -414,7 +499,9 @@ public class AbstractController extends JBossObject implements Controller
    }
 
    /**
-    * Resolve contexts
+    * Resolve contexts<p>
+    * 
+    * This method must be invoked with the write lock taken
     * 
     * @param fromState the from state
     * @param toState the to state
@@ -463,7 +550,9 @@ public class AbstractController extends JBossObject implements Controller
    }
 
    /**
-    * Resolve contexts
+    * Resolve contexts<p>
+    * 
+    * This method must be invoked with the write lock taken
     * 
     * @param contexts the contexts
     * @param state the state
@@ -494,6 +583,8 @@ public class AbstractController extends JBossObject implements Controller
    /**
     * Uninstall a context
     * 
+    * This method must be invoked with the write lock taken
+    * 
     * @param context the context to uninstall
     * @param toState the target state
     * @param trace whether trace is enabled
@@ -520,7 +611,9 @@ public class AbstractController extends JBossObject implements Controller
    }
 
    /**
-    * Uninstall a context
+    * Uninstall a context<p>
+    * 
+    * This method must be invoked with the write lock taken
     * 
     * @param context the context to uninstall
     * @param trace whether trace is enabled
@@ -582,6 +675,7 @@ public class AbstractController extends JBossObject implements Controller
       Set<ControllerContext> toContexts = contextsByState.get(toState);
       toContexts.add(context);
 
+      unlockWrite();
       try
       {
          uninstall(context, fromState, toState);
@@ -590,10 +684,16 @@ public class AbstractController extends JBossObject implements Controller
       {
          log.warn("Error uninstalling from " + fromState.getStateString() + ": " + context.toShortString(), t);
       }
+      finally
+      {
+         lockWrite();
+      }
    }
 
    /**
-    * Install a context
+    * Install a context<p>
+    * 
+    * This method must be invoked with NO locks taken
     * 
     * @param context the context
     * @param fromState the from state
@@ -606,7 +706,9 @@ public class AbstractController extends JBossObject implements Controller
    }
 
    /**
-    * Uninstall a context
+    * Uninstall a context<p>
+    * 
+    * This method must be invoked with NO locks taken
     * 
     * @param context the context
     * @param fromState the from state
@@ -618,7 +720,9 @@ public class AbstractController extends JBossObject implements Controller
    }
 
    /**
-    * Whether we should advance the context
+    * Whether we should advance the context<p>
+    * 
+    * This method must be invoked with the write lock taken
     * 
     * @param context the context
     * @return true when we should advance the context
@@ -637,5 +741,37 @@ public class AbstractController extends JBossObject implements Controller
       int requiredIndex = states.indexOf(requiredState);
 
       return fromIndex < requiredIndex;
+   }
+
+   /**
+    * Lock for read
+    */
+   protected void lockRead()
+   {
+      lock.readLock().lock();
+   }
+
+   /**
+    * Unlock for read
+    */
+   protected void unlockRead()
+   {
+      lock.readLock().unlock();
+   }
+
+   /**
+    * Lock for write
+    */
+   protected void lockWrite()
+   {
+      lock.writeLock().lock();
+   }
+
+   /**
+    * Unlock for write
+    */
+   protected void unlockWrite()
+   {
+      lock.writeLock().unlock();
    }
 }
