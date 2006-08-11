@@ -27,9 +27,11 @@ import java.security.PrivilegedAction;
 import java.security.PrivilegedActionException;
 import java.security.PrivilegedExceptionAction;
 
+import org.jboss.beans.metadata.spi.BeanMetaData;
 import org.jboss.dependency.plugins.spi.action.ControllerContextAction;
 import org.jboss.dependency.spi.ControllerContext;
 import org.jboss.joinpoint.spi.Joinpoint;
+import org.jboss.kernel.plugins.config.Configurator;
 import org.jboss.kernel.spi.dependency.KernelControllerContext;
 import org.jboss.logging.Logger;
 
@@ -53,28 +55,42 @@ public class KernelControllerContextAction implements ControllerContextAction
     */
    protected static Object dispatchJoinPoint(final KernelControllerContext context, final Joinpoint joinpoint) throws Throwable
    {
+      BeanMetaData metaData = context.getBeanMetaData();
+      ClassLoader cl = Configurator.getClassLoader(metaData);
       AccessControlContext access = null;
       if (context instanceof AbstractKernelControllerContext)
       {
          AbstractKernelControllerContext theContext = (AbstractKernelControllerContext) context;
          access = theContext.getAccessControlContext();
       }
-      
-      if (access == null)
+
+      // Dispatch with the bean class loader if it exists
+      ClassLoader tcl = Thread.currentThread().getContextClassLoader();
+      try
       {
-         return joinpoint.dispatch();
+         if( cl != null && access == null )
+            Thread.currentThread().setContextClassLoader(cl);
+         if (access == null)
+         {
+            return joinpoint.dispatch();
+         }
+         else
+         {
+            DispatchJoinPoint action = new DispatchJoinPoint(joinpoint);
+            try
+            {
+               return AccessController.doPrivileged(action, access);
+            }
+            catch (PrivilegedActionException e)
+            {
+               throw e.getCause();
+            }
+         }
       }
-      else
+      finally
       {
-         DispatchJoinPoint action = new DispatchJoinPoint(joinpoint);
-         try
-         {
-            return AccessController.doPrivileged(action, access);
-         }
-         catch (PrivilegedActionException e)
-         {
-            throw e.getCause();
-         }
+         if( cl != null && access == null )
+            Thread.currentThread().setContextClassLoader(tcl);
       }
    }
 
