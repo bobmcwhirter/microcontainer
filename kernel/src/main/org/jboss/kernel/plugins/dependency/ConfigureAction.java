@@ -36,6 +36,7 @@ import org.jboss.kernel.spi.dependency.KernelController;
 import org.jboss.kernel.spi.dependency.KernelControllerContext;
 import org.jboss.reflect.spi.*;
 import org.jboss.dependency.spi.ControllerState;
+import org.jboss.dependency.spi.ControllerContext;
 
 /**
  * ConfigureAction.
@@ -139,8 +140,8 @@ public class ConfigureAction extends KernelControllerContextAction
             StringValue beanValue = (StringValue) beanAttribute.getDefaultValue();
             StringValue propertyValue = (StringValue) propertyAttribute.getDefaultValue();
             StringValue stateValue = (StringValue) stateAttribute.getDefaultValue();
-            StringValue modeValue = (StringValue) modeAttribute.getDefaultValue();
-            StringValue typeValue = (StringValue) typeAttribute.getDefaultValue();
+            EnumValue modeValue = (EnumValue) modeAttribute.getDefaultValue();
+            EnumValue typeValue = (EnumValue) typeAttribute.getDefaultValue();
 
             String value = beanValue.getValue();
             String bean = (value != null && value.length() > 0 ? value : null);
@@ -149,31 +150,44 @@ public class ConfigureAction extends KernelControllerContextAction
             ControllerState state = new ControllerState(stateValue.getValue());
             InjectionMode injectionMode = new InjectionMode(modeValue.getValue());
             InjectionType injectionType = new InjectionType(typeValue.getValue());
-            Object result;
+            Object result = null;
             if (bean != null)
             {
-               result = controller.getContext(bean, state);
+               ControllerContext context = controller.getContext(bean, state);
+               if (context != null && context.getTarget() != null)
+               {
+                  result = getResult(controller, context.getTarget(), property);
+               }
             }
             else
             {
+               // check for property
+               if (property != null)
+               {
+                  log.warn("Ignoring property - contextual injection: " + pi);
+               }
+
                if (InjectionMode.BY_TYPE.equals(injectionMode))
                {
                   Set beans = controller.getInstantiatedBeans(pi.getType().getType());
                   int numberOfMatchingBeans = beans.size();
                   if (numberOfMatchingBeans > 1)
                   {
-                     throw new Error("Should not be here, too many matching beans - dependency failed! " + this);
+                     throw new Error("Should not be here, too many matching beans - dependency failed! " + pi);
                   }
                   else if (numberOfMatchingBeans == 0 && InjectionType.STRICT.equals(injectionType))
                   {
-                     throw new Error("Should not be here, no bean matches class type - dependency failed! " + this);
+                     throw new Error("Should not be here, no bean matches class type - dependency failed! " + pi);
                   }
-                  result = getResult(controller, beans.iterator().next(), property);
+                  result = beans.iterator().next();
                }
                else if (InjectionMode.BY_NAME.equals(injectionMode))
                {
-                  Object beanObject = controller.getContext(pi.getName(), state);
-                  result = getResult(controller, beanObject, property);
+                  ControllerContext context = controller.getContext(pi.getName(), state);
+                  if (context != null)
+                  {
+                     result = context.getTarget();
+                  }
                }
                else
                {

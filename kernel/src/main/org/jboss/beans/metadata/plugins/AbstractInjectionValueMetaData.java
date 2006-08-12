@@ -104,6 +104,7 @@ public class AbstractInjectionValueMetaData extends AbstractDependencyValueMetaD
             }
             return null;
          }
+         return beans.iterator().next();
       }
       return super.getValue(info, cl);
    }
@@ -113,6 +114,13 @@ public class AbstractInjectionValueMetaData extends AbstractDependencyValueMetaD
       // determine value
       if (getUnderlyingValue() == null)
       {
+         // check for property
+         if (property != null)
+         {
+            property = null;
+            log.warn("Ignoring property - contextual injection: " + this);
+         }
+         
          if (InjectionMode.BY_NAME.equals(injectionMode))
          {
             setValue(propertyMetaData.getName());
