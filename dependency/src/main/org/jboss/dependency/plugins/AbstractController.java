@@ -57,6 +57,9 @@ public class AbstractController extends JBossObject implements Controller
    /** The contexts by state Map<ControllerState, Set<ControllerContext>> */
    protected Map<ControllerState, Set<ControllerContext>> contextsByState = CollectionsFactory.createConcurrentReaderMap();
 
+   /** The contexts by class Map<Class, Set<ControllerContext>> */
+   protected Map<Class, Set<ControllerContext>> contextsByClass = CollectionsFactory.createConcurrentReaderMap();
+
    /** The error contexts Set<ControllerContext> */
    protected Set<ControllerContext> errorContexts = CollectionsFactory.createCopyOnWriteSet();
 
@@ -775,19 +778,99 @@ public class AbstractController extends JBossObject implements Controller
       lock.writeLock().unlock();
    }
 
-   // todo - already implemented - on another location - forgot to commit ;-(
-
-   public Set getInstantiatedBeans(Class clazz)
+   /**
+    * @return all instantiated contexts whose target is instance of this class clazz param
+    */
+   public Set<ControllerContext> getInstantiatedContexts(Class clazz)
    {
-      return null;
+      lockRead();
+      try
+      {
+         return contextsByClass.get(clazz);
+      }
+      finally
+      {
+         unlockRead();
+      }
    }
 
-   public void addInstantiatedBean(Object bean)
+   /**
+    * add instantiated context into contextsByClass map
+    * look at all target's superclasses and interfaces
+    */
+   public void addInstantiatedContext(ControllerContext context)
    {
+      prepareToTraverse(context, true);
    }
 
-   public void removeInstantiatedBean(Object bean)
+   /**
+    * remove instantiated context from contextsByClass map
+    * look at all target's superclasses and interfaces
+    */
+   public void removeInstantiatedContext(ControllerContext context)
    {
+      prepareToTraverse(context, false);
+   }
+
+   protected void prepareToTraverse(ControllerContext context, boolean addition)
+   {
+      lockWrite();
+      try
+      {
+         Object target = context.getTarget();
+         if (target != null)
+         {
+            traverseBean(context, target.getClass(), addition);
+         }
+      }
+      finally
+      {
+         unlockWrite();
+      }
+   }
+
+   /**
+    * Traverse over target and map it to all its superclasses
+    * and interfaces - using recursion.
+    *
+    * @param context context whose target is instance of clazz
+    * @param clazz current class to map context to
+    */
+   protected void traverseBean(ControllerContext context, Class clazz, boolean addition)
+   {
+      if (clazz == null || clazz == Object.class)
+      {
+         return;
+      }
+      Set<ControllerContext> beans = contextsByClass.get(clazz);
+      if (addition)
+      {
+         if (beans == null)
+         {
+            beans = new HashSet<ControllerContext>();
+            contextsByClass.put(clazz, beans);
+         }
+         beans.add(context);
+      }
+      else
+      {
+         if (beans != null)
+         {
+            beans.remove(context);
+            if (beans.isEmpty())
+            {
+               contextsByClass.remove(clazz);
+            }
+         }
+      }
+      // traverse superclass
+      traverseBean(context, clazz.getSuperclass(), addition);
+      Class[] interfaces = clazz.getInterfaces();
+      // traverse interfaces
+      for(Class intface : interfaces)
+      {
+         traverseBean(context, intface, addition);
+      }
    }
 
 }

@@ -40,7 +40,7 @@ import org.jboss.dependency.spi.ControllerContext;
 
 /**
  * ConfigureAction.
- * 
+ *
  * @author <a href="adrian@jboss.com">Adrian Brock</a>
  * @version $Revision$
  */
@@ -84,10 +84,10 @@ public class ConfigureAction extends KernelControllerContextAction
 
    /**
     * Set the attributes
-    * 
+    *
     * @param context the context
     * @param target the target
-    * @param joinPoints the attribute setter joinpoints 
+    * @param joinPoints the attribute setter joinpoints
     * @param ignoreErrors whether to ignore errors
     * @throws Throwable for any unignored error
     */
@@ -169,17 +169,20 @@ public class ConfigureAction extends KernelControllerContextAction
 
                if (InjectionMode.BY_TYPE.equals(injectionMode))
                {
-                  Set beans = controller.getInstantiatedBeans(pi.getType().getType());
-                  int numberOfMatchingBeans = beans.size();
+                  Set<ControllerContext> contexts = controller.getInstantiatedContexts(pi.getType().getType());
+                  int numberOfMatchingBeans = contexts.size();
                   if (numberOfMatchingBeans > 1)
                   {
-                     throw new Error("Should not be here, too many matching beans - dependency failed! " + pi);
+                     throw new Error("Should not be here, too many matching contexts - dependency failed! " + pi);
                   }
                   else if (numberOfMatchingBeans == 0 && InjectionType.STRICT.equals(injectionType))
                   {
-                     throw new Error("Should not be here, no bean matches class type - dependency failed! " + pi);
+                     throw new Error("Should not be here, no context matches class type - dependency failed! " + pi);
                   }
-                  result = beans.iterator().next();
+                  ControllerContext context = contexts.iterator().next();
+                  // todo - should we do this?
+                  controller.change(context, state);
+                  result = context.getTarget();
                }
                else if (InjectionMode.BY_NAME.equals(injectionMode))
                {

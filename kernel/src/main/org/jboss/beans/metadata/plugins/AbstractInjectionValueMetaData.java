@@ -26,6 +26,8 @@ import java.util.Set;
 import org.jboss.beans.metadata.injection.InjectionMode;
 import org.jboss.beans.metadata.injection.InjectionType;
 import org.jboss.beans.metadata.spi.MetaDataVisitor;
+import org.jboss.dependency.spi.ControllerContext;
+import org.jboss.dependency.spi.ControllerState;
 import org.jboss.kernel.spi.dependency.KernelController;
 import org.jboss.kernel.spi.dependency.KernelControllerContext;
 import org.jboss.reflect.spi.TypeInfo;
@@ -107,21 +109,30 @@ public class AbstractInjectionValueMetaData extends AbstractDependencyValueMetaD
       if (value == null)
       {
          // what else to use here - if not info.getType?
-         Set beans = controller.getInstantiatedBeans(info.getType());
-         int numberOfMatchingBeans = beans.size();
-         if (numberOfMatchingBeans > 1)
+         Set<ControllerContext> contexts = controller.getInstantiatedContexts(info.getType());
+         int numberOfMatchingContexts = contexts.size();
+         if (numberOfMatchingContexts > 1)
          {
-            throw new Error("Should not be here, too many matching beans - dependency failed! " + this);
+            throw new Error("Should not be here, too many matching contexts - dependency failed! " + this);
          }
-         else if (numberOfMatchingBeans == 0)
+         else if (numberOfMatchingContexts == 0)
          {
             if (InjectionType.STRICT.equals(injectionType))
             {
-               throw new Error("Should not be here, no bean matches class type - dependency failed! " + this);
+               throw new Error("Should not be here, no context matches class type - dependency failed! " + this);
             }
+            // we are not 'strict' - can return null
             return null;
          }
-         return beans.iterator().next();
+         ControllerContext context = contexts.iterator().next();
+         // todo - should we do this?
+         ControllerState state = dependentState;
+         if (state == null)
+         {
+            state = ControllerState.INSTALLED;
+         }
+         controller.change(context, state);
+         return context.getTarget();
       }
       return super.getValue(info, cl);
    }
