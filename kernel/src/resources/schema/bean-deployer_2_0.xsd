@@ -321,6 +321,26 @@ $Id$
               <property name="someProperty"><inject bean="BeanInjected" property="otherProperty"/>
            </bean>
            <bean name="BeanInjected" .../>
+
+           e.g. Contextual injection - finding exactly one instance which matches property's class type
+           <bean name="InjectedIntoMe" ...>
+              <property name="transactionManager"><inject/></property>
+           </bean>
+
+           e.g. Contextual injection - finding at most one instance which matches property's class type
+           <bean name="InjectedIntoMe" ...>
+              <property name="transactionManager"><inject type="Loose"/></property>
+           </bean>
+
+           e.g. Contextual injection - finding exactly one instance which matches property's name
+           <bean name="InjectedIntoMe" ...>
+              <property name="transactionManager"><inject mode="ByName"/></property>
+           </bean>
+
+           e.g. Contextual injection - finding at most one instance which matches property's name
+           <bean name="InjectedIntoMe" ...>
+              <property name="transactionManager"><inject mode="ByName" type="Loose"/></property>
+           </bean>
            ]]>
          </xsd:documentation>
       </xsd:annotation>
