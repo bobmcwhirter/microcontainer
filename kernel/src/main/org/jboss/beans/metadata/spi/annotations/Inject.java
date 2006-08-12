@@ -27,6 +27,10 @@ import java.lang.annotation.Retention;
 import java.lang.annotation.RetentionPolicy;
 
 /**
+ * Beans when injected by class type are by default changed to configured
+ * state - if not yet configured.
+ * You can change this behavior by setting state.
+ *
  * @author <a href="mailto:ales.justin@genera-lynx.com">Ales Justin</a>
  */
 @Retention(RetentionPolicy.RUNTIME)

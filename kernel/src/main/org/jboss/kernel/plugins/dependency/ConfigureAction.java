@@ -31,6 +31,7 @@ import org.jboss.beans.metadata.injection.InjectionMode;
 import org.jboss.beans.metadata.injection.InjectionType;
 import org.jboss.joinpoint.spi.TargettedJoinpoint;
 import org.jboss.kernel.Kernel;
+import org.jboss.kernel.plugins.injection.InjectionUtil;
 import org.jboss.kernel.spi.config.KernelConfigurator;
 import org.jboss.kernel.spi.dependency.KernelController;
 import org.jboss.kernel.spi.dependency.KernelControllerContext;
@@ -166,36 +167,15 @@ public class ConfigureAction extends KernelControllerContextAction
                {
                   log.warn("Ignoring property - contextual injection: " + pi);
                }
-
-               if (InjectionMode.BY_TYPE.equals(injectionMode))
-               {
-                  Set<ControllerContext> contexts = controller.getInstantiatedContexts(pi.getType().getType());
-                  int numberOfMatchingBeans = contexts.size();
-                  if (numberOfMatchingBeans > 1)
-                  {
-                     throw new Error("Should not be here, too many matching contexts - dependency failed! " + pi);
-                  }
-                  else if (numberOfMatchingBeans == 0 && InjectionType.STRICT.equals(injectionType))
-                  {
-                     throw new Error("Should not be here, no context matches class type - dependency failed! " + pi);
-                  }
-                  ControllerContext context = contexts.iterator().next();
-                  // todo - should we do this?
-                  controller.change(context, state);
-                  result = context.getTarget();
-               }
-               else if (InjectionMode.BY_NAME.equals(injectionMode))
-               {
-                  ControllerContext context = controller.getContext(pi.getName(), state);
-                  if (context != null)
-                  {
-                     result = context.getTarget();
-                  }
-               }
-               else
-               {
-                  throw new IllegalArgumentException("Illegal injection mode: " + injectionMode);
-               }
+               result = InjectionUtil.resolveInjection(
+                     controller,
+                     pi.getType().getType(),
+                     pi.getName(),
+                     state,
+                     injectionMode,
+                     injectionType,
+                     pi
+               );
             }
             setter.invoke(target, new Object[]{result});
          }

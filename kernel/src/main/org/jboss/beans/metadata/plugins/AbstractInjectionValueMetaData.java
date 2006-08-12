@@ -30,6 +30,7 @@ import org.jboss.dependency.spi.ControllerContext;
 import org.jboss.dependency.spi.ControllerState;
 import org.jboss.kernel.spi.dependency.KernelController;
 import org.jboss.kernel.spi.dependency.KernelControllerContext;
+import org.jboss.kernel.plugins.injection.InjectionUtil;
 import org.jboss.reflect.spi.TypeInfo;
 import org.jboss.util.JBossStringBuilder;
 
@@ -108,31 +109,20 @@ public class AbstractInjectionValueMetaData extends AbstractDependencyValueMetaD
    {
       if (value == null)
       {
-         // what else to use here - if not info.getType?
-         Set<ControllerContext> contexts = controller.getInstantiatedContexts(info.getType());
-         int numberOfMatchingContexts = contexts.size();
-         if (numberOfMatchingContexts > 1)
-         {
-            throw new Error("Should not be here, too many matching contexts - dependency failed! " + this);
-         }
-         else if (numberOfMatchingContexts == 0)
-         {
-            if (InjectionType.STRICT.equals(injectionType))
-            {
-               throw new Error("Should not be here, no context matches class type - dependency failed! " + this);
-            }
-            // we are not 'strict' - can return null
-            return null;
-         }
-         ControllerContext context = contexts.iterator().next();
-         // todo - should we do this?
          ControllerState state = dependentState;
          if (state == null)
          {
             state = ControllerState.INSTALLED;
          }
-         controller.change(context, state);
-         return context.getTarget();
+         // what else to use here - if not info.getType?
+         return InjectionUtil.resolveInjection(
+               controller,
+               info.getType(),
+               propertyMetaData.getName(), // should not be used - value set before, see visit(MDV visitor)
+               state,
+               getInjectionMode(),
+               getInjectionType(),
+               this);
       }
       return super.getValue(info, cl);
    }
