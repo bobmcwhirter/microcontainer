@@ -39,7 +39,7 @@ import org.jboss.util.JBossObject;
 
 /**
  * Abstract controller.
- * 
+ *
  * @author <a href="adrian@jboss.com">Adrian Brock</a>
  * @version $Revision$
  */
@@ -47,7 +47,7 @@ public class AbstractController extends JBossObject implements Controller
 {
    /** The lock */
    private ReentrantReadWriteLock lock = new ReentrantReadWriteLock();
-   
+
    /** The states in order List<ControllerState> */
    protected List<ControllerState> states = CollectionsFactory.createCopyOnWriteList();
 
@@ -65,10 +65,10 @@ public class AbstractController extends JBossObject implements Controller
 
    /** Whether an on demand context has been enabled */
    protected boolean onDemandEnabled = true;
-   
+
    /**
     * Create an abstract controller
-    * 
+    *
     * @throws Exception for any error
     */
    public AbstractController() throws Exception
@@ -112,7 +112,7 @@ public class AbstractController extends JBossObject implements Controller
    {
       if (name == null)
          throw new IllegalArgumentException("Null name");
-      
+
       lockRead();
       try
       {
@@ -234,7 +234,7 @@ public class AbstractController extends JBossObject implements Controller
 
    /**
     * Install a context
-    * 
+    *
     * @param context the context
     * @param trace whether trace is enabled
     * @throws Throwable for any error
@@ -288,7 +288,7 @@ public class AbstractController extends JBossObject implements Controller
 
    /**
     * Change a context's state
-    * 
+    *
     * @param context the context
     * @param state the required state
     * @param trace whether trace is enabled
@@ -336,7 +336,7 @@ public class AbstractController extends JBossObject implements Controller
 
    /**
     * Enable an on demand context
-    * 
+    *
     * @param context the context
     * @param trace whether trace is enabled
     * @throws Throwable for any error
@@ -370,9 +370,9 @@ public class AbstractController extends JBossObject implements Controller
 
    /**
     * Increment state<p>
-    * 
+    *
     * This method must be invoked with the write lock taken.
-    * 
+    *
     * @param context the context
     * @param trace whether trace is enabled
     * @return whether the suceeded
@@ -454,9 +454,9 @@ public class AbstractController extends JBossObject implements Controller
 
    /**
     * Resolve unresolved contexts<p>
-    * 
+    *
     * This method must be invoked with the write lock taken
-    * 
+    *
     * @param trace whether trace is enabled
     */
    protected void resolveContexts(boolean trace)
@@ -500,9 +500,9 @@ public class AbstractController extends JBossObject implements Controller
 
    /**
     * Resolve contexts<p>
-    * 
+    *
     * This method must be invoked with the write lock taken
-    * 
+    *
     * @param fromState the from state
     * @param toState the to state
     * @param trace whether trace is enabled
@@ -551,9 +551,9 @@ public class AbstractController extends JBossObject implements Controller
 
    /**
     * Resolve contexts<p>
-    * 
+    *
     * This method must be invoked with the write lock taken
-    * 
+    *
     * @param contexts the contexts
     * @param state the state
     * @param trace whether trace is enabled
@@ -582,9 +582,9 @@ public class AbstractController extends JBossObject implements Controller
 
    /**
     * Uninstall a context
-    * 
+    *
     * This method must be invoked with the write lock taken
-    * 
+    *
     * @param context the context to uninstall
     * @param toState the target state
     * @param trace whether trace is enabled
@@ -612,9 +612,9 @@ public class AbstractController extends JBossObject implements Controller
 
    /**
     * Uninstall a context<p>
-    * 
+    *
     * This method must be invoked with the write lock taken
-    * 
+    *
     * @param context the context to uninstall
     * @param trace whether trace is enabled
     */
@@ -692,9 +692,9 @@ public class AbstractController extends JBossObject implements Controller
 
    /**
     * Install a context<p>
-    * 
+    *
     * This method must be invoked with NO locks taken
-    * 
+    *
     * @param context the context
     * @param fromState the from state
     * @param toState the toState
@@ -707,9 +707,9 @@ public class AbstractController extends JBossObject implements Controller
 
    /**
     * Uninstall a context<p>
-    * 
+    *
     * This method must be invoked with NO locks taken
-    * 
+    *
     * @param context the context
     * @param fromState the from state
     * @param toState the to state
@@ -721,9 +721,9 @@ public class AbstractController extends JBossObject implements Controller
 
    /**
     * Whether we should advance the context<p>
-    * 
+    *
     * This method must be invoked with the write lock taken
-    * 
+    *
     * @param context the context
     * @return true when we should advance the context
     */
@@ -774,4 +774,20 @@ public class AbstractController extends JBossObject implements Controller
    {
       lock.writeLock().unlock();
    }
+
+   // todo - already implemented - on another location - forgot to commit ;-(
+
+   public Set getInstantiatedBeans(Class clazz)
+   {
+      return null;
+   }
+
+   public void addInstantiatedBean(Object bean)
+   {
+   }
+
+   public void removeInstantiatedBean(Object bean)
+   {
+   }
+
 }
