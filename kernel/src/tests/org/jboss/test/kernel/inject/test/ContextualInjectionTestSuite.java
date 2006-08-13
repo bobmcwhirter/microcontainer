@@ -42,7 +42,7 @@ public class ContextualInjectionTestSuite extends TestSuite
       TestSuite suite = new TestSuite("Contextal injection Tests");
 
       suite.addTest(ParameterContextualInjectionTestCase.suite());
-//      suite.addTest(PropertyContextualInjectionTestCase.suite());
+      suite.addTest(PropertyContextualInjectionTestCase.suite());
 
       return suite;
    }
