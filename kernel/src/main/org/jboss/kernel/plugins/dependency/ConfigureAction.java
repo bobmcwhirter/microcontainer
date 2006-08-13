@@ -26,18 +26,21 @@ import java.util.Set;
 
 import org.jboss.beans.info.spi.BeanInfo;
 import org.jboss.beans.info.spi.PropertyInfo;
-import org.jboss.beans.metadata.spi.BeanMetaData;
 import org.jboss.beans.metadata.injection.InjectionMode;
 import org.jboss.beans.metadata.injection.InjectionType;
+import org.jboss.beans.metadata.spi.BeanMetaData;
+import org.jboss.dependency.spi.ControllerContext;
+import org.jboss.dependency.spi.ControllerState;
 import org.jboss.joinpoint.spi.TargettedJoinpoint;
 import org.jboss.kernel.Kernel;
 import org.jboss.kernel.plugins.injection.InjectionUtil;
 import org.jboss.kernel.spi.config.KernelConfigurator;
 import org.jboss.kernel.spi.dependency.KernelController;
 import org.jboss.kernel.spi.dependency.KernelControllerContext;
-import org.jboss.reflect.spi.*;
-import org.jboss.dependency.spi.ControllerState;
-import org.jboss.dependency.spi.ControllerContext;
+import org.jboss.reflect.spi.AnnotationValue;
+import org.jboss.reflect.spi.EnumValue;
+import org.jboss.reflect.spi.MethodInfo;
+import org.jboss.reflect.spi.StringValue;
 
 /**
  * ConfigureAction.
@@ -59,7 +62,7 @@ public class ConfigureAction extends KernelControllerContextAction
       BeanMetaData metaData = context.getBeanMetaData();
       Set joinPoints = configurator.getPropertySetterJoinPoints(info, metaData);
       setAttributes(context, object, joinPoints, false);
-//      resolveInjections(controller, info, object);
+      resolveInjections(controller, info, object);
    }
 
    public void uninstallAction(KernelControllerContext context)
@@ -75,7 +78,7 @@ public class ConfigureAction extends KernelControllerContextAction
       {
          Set joinPoints = configurator.getPropertyNullerJoinPoints(info, metaData);
          setAttributes(context, object, joinPoints, true);
-//         nullifyInjections(controller, info, object, true);
+         nullifyInjections(controller, info, object, true);
       }
       catch (Throwable t)
       {
@@ -86,9 +89,9 @@ public class ConfigureAction extends KernelControllerContextAction
    /**
     * Set the attributes
     *
-    * @param context the context
-    * @param target the target
-    * @param joinPoints the attribute setter joinpoints
+    * @param context      the context
+    * @param target       the target
+    * @param joinPoints   the attribute setter joinpoints
     * @param ignoreErrors whether to ignore errors
     * @throws Throwable for any unignored error
     */
@@ -125,59 +128,56 @@ public class ConfigureAction extends KernelControllerContextAction
    protected void resolveInjections(KernelController controller, BeanInfo info, Object target) throws Throwable
    {
       Set<PropertyInfo> propertys = info.getProperties();
-      for(PropertyInfo pi : propertys)
+      for (PropertyInfo pi : propertys)
       {
          MethodInfo setter = pi.getSetter();
-         AnnotationValue annotation = setter.getAnnotation("org.jboss.beans.metadata.spi.annotations.Inject");
-         if (annotation != null)
+         if (setter != null)
          {
-            AnnotationInfo annotationInfo = annotation.getAnnotationType();
-            AnnotationAttribute beanAttribute = annotationInfo.getAttribute("bean");
-            AnnotationAttribute propertyAttribute = annotationInfo.getAttribute("property");
-            AnnotationAttribute stateAttribute = annotationInfo.getAttribute("state");
-            AnnotationAttribute modeAttribute = annotationInfo.getAttribute("mode");
-            AnnotationAttribute typeAttribute = annotationInfo.getAttribute("type");
-            // todo - are these right values?
-            StringValue beanValue = (StringValue) beanAttribute.getDefaultValue();
-            StringValue propertyValue = (StringValue) propertyAttribute.getDefaultValue();
-            StringValue stateValue = (StringValue) stateAttribute.getDefaultValue();
-            EnumValue modeValue = (EnumValue) modeAttribute.getDefaultValue();
-            EnumValue typeValue = (EnumValue) typeAttribute.getDefaultValue();
+            AnnotationValue annotation = setter.getAnnotation("org.jboss.beans.metadata.spi.annotations.Inject");
+            if (annotation != null)
+            {
+               StringValue beanValue = (StringValue) annotation.getValue("bean");
+               StringValue propertyValue = (StringValue) annotation.getValue("property");
+               StringValue stateValue = (StringValue) annotation.getValue("state");
+               EnumValue modeValue = (EnumValue) annotation.getValue("mode");
+               EnumValue typeValue = (EnumValue) annotation.getValue("type");
 
-            String value = beanValue.getValue();
-            String bean = (value != null && value.length() > 0 ? value : null);
-            value = propertyValue.getValue();
-            String property = (value != null && value.length() > 0 ? value : null);
-            ControllerState state = new ControllerState(stateValue.getValue());
-            InjectionMode injectionMode = new InjectionMode(modeValue.getValue());
-            InjectionType injectionType = new InjectionType(typeValue.getValue());
-            Object result = null;
-            if (bean != null)
-            {
-               ControllerContext context = controller.getContext(bean, state);
-               if (context != null && context.getTarget() != null)
+               String value = beanValue.getValue();
+               String bean = (value != null && value.length() > 0 ? value : null);
+               value = propertyValue.getValue();
+               String property = (value != null && value.length() > 0 ? value : null);
+               ControllerState state = new ControllerState(stateValue.getValue());
+               InjectionMode injectionMode = new InjectionMode(modeValue.getValue());
+               InjectionType injectionType = new InjectionType(typeValue.getValue());
+
+               Object result = null;
+               if (bean != null)
                {
-                  result = getResult(controller, context.getTarget(), property);
+                  ControllerContext context = controller.getContext(bean, state);
+                  if (context != null && context.getTarget() != null)
+                  {
+                     result = getResult(controller, context.getTarget(), property);
+                  }
                }
-            }
-            else
-            {
-               // check for property
-               if (property != null)
+               else
                {
-                  log.warn("Ignoring property - contextual injection: " + pi);
+                  // check for property
+                  if (property != null)
+                  {
+                     log.warn("Ignoring property - contextual injection: " + pi);
+                  }
+                  result = InjectionUtil.resolveInjection(
+                        controller,
+                        pi.getType().getType(),
+                        pi.getName(),
+                        state,
+                        injectionMode,
+                        injectionType,
+                        pi
+                  );
                }
-               result = InjectionUtil.resolveInjection(
-                     controller,
-                     pi.getType().getType(),
-                     pi.getName(),
-                     state,
-                     injectionMode,
-                     injectionType,
-                     pi
-               );
+               setter.invoke(target, new Object[]{result});
             }
-            setter.invoke(target, new Object[]{result});
          }
       }
    }
@@ -198,26 +198,29 @@ public class ConfigureAction extends KernelControllerContextAction
    protected void nullifyInjections(KernelController controller, BeanInfo info, Object target, boolean ignoreErrors) throws Throwable
    {
       Set<PropertyInfo> propertys = info.getProperties();
-      for(PropertyInfo pi : propertys)
+      for (PropertyInfo pi : propertys)
       {
          MethodInfo setter = pi.getSetter();
-         AnnotationValue annotation = setter.getAnnotation("org.jboss.beans.metadata.spi.annotations.Inject");
-         if (annotation != null)
+         if (setter != null)
          {
-            try
+            AnnotationValue annotation = setter.getAnnotation("org.jboss.beans.metadata.spi.annotations.Inject");
+            if (annotation != null)
             {
-               setter.invoke(target, new Object[]{null});
-            }
-            catch (Throwable t)
-            {
-               if (ignoreErrors)
+               try
                {
-                  if (log.isTraceEnabled())
-                     log.trace("Ignored for " + pi, t);
+                  setter.invoke(target, new Object[]{null});
                }
-               else
+               catch (Throwable t)
                {
-                  throw t;
+                  if (ignoreErrors)
+                  {
+                     if (log.isTraceEnabled())
+                        log.trace("Ignored for " + pi, t);
+                  }
+                  else
+                  {
+                     throw t;
+                  }
                }
             }
          }

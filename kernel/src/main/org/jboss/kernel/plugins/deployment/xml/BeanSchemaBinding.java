@@ -953,14 +953,13 @@ public class BeanSchemaBinding
       {
          public Object startElement(Object parent, QName name, ElementBinding element)
          {
-            return new AbstractInjectionValueMetaData();
-         }
-
-         public void setParent(Object parent, Object o, QName qName, ElementBinding element, ElementBinding parentElement)
-         {
-            AbstractPropertyMetaData x = (AbstractPropertyMetaData) parent;
-            AbstractInjectionValueMetaData child = (AbstractInjectionValueMetaData) o;
-            child.setPropertyMetaData(x);
+            AbstractInjectionValueMetaData vmd = new AbstractInjectionValueMetaData();
+            if (parent instanceof AbstractPropertyMetaData)
+            {
+               AbstractPropertyMetaData x = (AbstractPropertyMetaData) parent;
+               vmd.setPropertyMetaData(x);
+            }
+            return vmd;
          }
 
          public void attributes(Object o, QName elementName, ElementBinding element, Attributes attrs, NamespaceContext nsCtx)
@@ -975,10 +974,10 @@ public class BeanSchemaBinding
                   injection.setProperty(attrs.getValue(i));
                else if ("state".equals(localName))
                   injection.setDependentState(new ControllerState(attrs.getValue(i)));
-               else if ("injectionMode".equals(localName))
-                  injection.setInjectionMode(new InjectionMode(localName));
-               else if ("injectionType".equals(localName))
-                  injection.setInjectionType(new InjectionType(localName));
+               else if ("mode".equals(localName))
+                  injection.setInjectionMode(new InjectionMode(attrs.getValue(i)));
+               else if ("type".equals(localName))
+                  injection.setInjectionType(new InjectionType(attrs.getValue(i)));
             }
          }
 

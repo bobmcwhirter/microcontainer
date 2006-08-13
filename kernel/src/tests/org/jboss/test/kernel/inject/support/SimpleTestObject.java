@@ -19,26 +19,26 @@
 * Software Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA
 * 02110-1301 USA, or see the FSF site: http://www.fsf.org.
 */
-package org.jboss.beans.metadata.spi.annotations;
+package org.jboss.test.kernel.inject.support;
+
+import org.jboss.beans.metadata.spi.annotations.Inject;
 
 /**
  * @author <a href="mailto:ales.justin@gmail.com">Ales Justin</a>
  */
-public enum InjectType
+public class SimpleTestObject implements TesterInterfaceGetter
 {
-   STRICT("Strict"),
-   LOOSE("Loose");
 
-   private String typeString;
+   private TesterInterface testerInterface;
 
-   InjectType(String modeString)
+   public TesterInterface getTesterInterface()
    {
-      this.typeString = modeString;
+      return testerInterface;
    }
 
-   public String toString()
+   public void setTesterInterface(TesterInterface testerInterface)
    {
-      return typeString;
+      this.testerInterface = testerInterface;
    }
 
 }

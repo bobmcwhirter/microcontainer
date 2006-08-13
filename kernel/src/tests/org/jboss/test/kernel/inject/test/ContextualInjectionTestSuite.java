@@ -19,26 +19,31 @@
 * Software Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA
 * 02110-1301 USA, or see the FSF site: http://www.fsf.org.
 */
-package org.jboss.beans.metadata.spi.annotations;
+package org.jboss.test.kernel.inject.test;
+
+import junit.framework.TestSuite;
+import junit.framework.Test;
+import junit.textui.TestRunner;
 
 /**
+ * Contextual injection Test Suite.
+ *
  * @author <a href="mailto:ales.justin@gmail.com">Ales Justin</a>
  */
-public enum InjectType
+public class ContextualInjectionTestSuite extends TestSuite
 {
-   STRICT("Strict"),
-   LOOSE("Loose");
-
-   private String typeString;
-
-   InjectType(String modeString)
+   public static void main(String[] args)
    {
-      this.typeString = modeString;
+      TestRunner.run(ContextualInjectionTestSuite.suite());
    }
 
-   public String toString()
+   public static Test suite()
    {
-      return typeString;
-   }
+      TestSuite suite = new TestSuite("Contextal injection Tests");
 
+      suite.addTest(ParameterContextualInjectionTestCase.suite());
+//      suite.addTest(PropertyContextualInjectionTestCase.suite());
+
+      return suite;
+   }
 }

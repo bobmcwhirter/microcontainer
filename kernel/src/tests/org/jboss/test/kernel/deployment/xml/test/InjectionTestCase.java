@@ -27,6 +27,7 @@ import junit.framework.Test;
 
 import org.jboss.beans.metadata.plugins.AbstractBeanMetaData;
 import org.jboss.beans.metadata.plugins.AbstractDependencyValueMetaData;
+import org.jboss.beans.metadata.plugins.AbstractInjectionValueMetaData;
 import org.jboss.beans.metadata.spi.PropertyMetaData;
 import org.jboss.beans.metadata.spi.ValueMetaData;
 import org.jboss.dependency.spi.ControllerState;
@@ -81,8 +82,8 @@ public class InjectionTestCase extends AbstractXMLTest
    {
       try
       {
-         unmarshalBean("InjectionBadNoBean.xml");
-         fail("Should not be here");
+         AbstractDependencyValueMetaData dependency = getInjection("InjectionBadNoBean.xml");
+         assertNull(dependency.getValue());                  
       }
       catch (Exception expected)
       {

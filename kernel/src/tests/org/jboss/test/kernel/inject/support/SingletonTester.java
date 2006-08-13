@@ -19,26 +19,16 @@
 * Software Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA
 * 02110-1301 USA, or see the FSF site: http://www.fsf.org.
 */
-package org.jboss.beans.metadata.spi.annotations;
+package org.jboss.test.kernel.inject.support;
 
 /**
  * @author <a href="mailto:ales.justin@gmail.com">Ales Justin</a>
  */
-public enum InjectType
+public class SingletonTester implements TesterInterface
 {
-   STRICT("Strict"),
-   LOOSE("Loose");
 
-   private String typeString;
-
-   InjectType(String modeString)
+   public void someMethod()
    {
-      this.typeString = modeString;
-   }
-
-   public String toString()
-   {
-      return typeString;
    }
 
 }

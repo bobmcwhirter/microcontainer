@@ -820,7 +820,7 @@ public class AbstractController extends JBossObject implements Controller
          Object target = context.getTarget();
          if (target != null)
          {
-            traverseBean(context, target.getClass(), addition);
+            traverseBean(context, target.getClass(), addition, log.isTraceEnabled());
          }
       }
       finally
@@ -836,7 +836,7 @@ public class AbstractController extends JBossObject implements Controller
     * @param context context whose target is instance of clazz
     * @param clazz current class to map context to
     */
-   protected void traverseBean(ControllerContext context, Class clazz, boolean addition)
+   protected void traverseBean(ControllerContext context, Class clazz, boolean addition, boolean trace)
    {
       if (clazz == null || clazz == Object.class)
       {
@@ -850,12 +850,20 @@ public class AbstractController extends JBossObject implements Controller
             beans = new HashSet<ControllerContext>();
             contextsByClass.put(clazz, beans);
          }
+         if (trace)
+         {
+            log.trace("Mapping contex " + context + " to class: " + clazz);
+         }
          beans.add(context);
       }
       else
       {
          if (beans != null)
          {
+            if (trace)
+            {
+               log.trace("Removing contex " + context + " to class: " + clazz);
+            }
             beans.remove(context);
             if (beans.isEmpty())
             {
@@ -864,12 +872,12 @@ public class AbstractController extends JBossObject implements Controller
          }
       }
       // traverse superclass
-      traverseBean(context, clazz.getSuperclass(), addition);
+      traverseBean(context, clazz.getSuperclass(), addition, trace);
       Class[] interfaces = clazz.getInterfaces();
       // traverse interfaces
       for(Class intface : interfaces)
       {
-         traverseBean(context, intface, addition);
+         traverseBean(context, intface, addition, trace);
       }
    }
 

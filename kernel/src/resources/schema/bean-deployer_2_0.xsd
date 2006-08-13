@@ -347,8 +347,8 @@ $Id$
       <xsd:attribute name="bean" type="xsd:string" use="optional"/>
       <xsd:attribute name="property" type="xsd:string" use="optional"/>
       <xsd:attribute name="state" type="controllerStateType" use="optional"/>
-      <xsd:attribute name="injectionMode" type="xsd:string" use="optional" default="ByType"/>
-      <xsd:attribute name="injectionType" type="xsd:string" use="optional" default="Strict"/>
+      <xsd:attribute name="mode" type="injectionModeType" use="optional" default="ByType"/>
+      <xsd:attribute name="type" type="injectionTypeType" use="optional" default="Strict"/>
    </xsd:complexType>
 
    <xsd:complexType name="factoryType">
@@ -517,8 +517,7 @@ $Id$
          <xsd:element name="set" type="setType"/>
          <xsd:element name="array" type="arrayType"/>
          <xsd:element name="map" type="mapType"/>
-         <xsd:element name="inject" type="dependencyType"/>
-         <!--<xsd:element name="inject" type="injectionType"/>-->
+         <xsd:element name="inject" type="injectionType"/>
          <xsd:element name="null">
             <xsd:complexType/>
          </xsd:element>
@@ -860,7 +859,40 @@ $Id$
       </xsd:restriction>
    </xsd:simpleType>
 
-   <!-- 
+   <xsd:simpleType name="injectionModeType">
+      <xsd:annotation>
+         <xsd:documentation>
+            <![CDATA[
+            You can set the type of lookup requirement - class type (ByType) or property name (ByName)
+            Valid values include:
+            ByType (default)
+            ByName
+            ]]>
+         </xsd:documentation>
+      </xsd:annotation>
+      <xsd:restriction base="xsd:string">
+         <xsd:whiteSpace value="collapse"/>
+      </xsd:restriction>
+   </xsd:simpleType>
+
+   <xsd:simpleType name="injectionTypeType">
+      <xsd:annotation>
+         <xsd:documentation>
+            <![CDATA[
+            You can set what is the severity of injected bean not found.
+            When set to Strict (default) it will fail, else it will inject null.
+            Valid values include:
+            Strict
+            Loose
+            ]]>
+         </xsd:documentation>
+      </xsd:annotation>
+      <xsd:restriction base="xsd:string">
+         <xsd:whiteSpace value="collapse"/>
+      </xsd:restriction>
+   </xsd:simpleType>
+
+   <!--
      WARN:
      Do not use this in the bean deployer, it won't work!
      FIXME:

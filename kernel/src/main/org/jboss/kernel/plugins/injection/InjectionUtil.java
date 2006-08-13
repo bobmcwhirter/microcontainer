@@ -64,7 +64,11 @@ public final class InjectionUtil
       if (InjectionMode.BY_TYPE.equals(mode))
       {
          Set<ControllerContext> contexts = controller.getInstantiatedContexts(targetClass);
-         int numberOfMatchingBeans = contexts.size();
+         int numberOfMatchingBeans = 0;
+         if (contexts != null)
+         {
+            numberOfMatchingBeans = contexts.size();
+         }
          if (numberOfMatchingBeans > 1)
          {
             throw new Error("Should not be here, too many matching contexts - dependency failed! " + messageObject);

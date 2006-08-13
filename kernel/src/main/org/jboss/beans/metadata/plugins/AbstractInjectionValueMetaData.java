@@ -118,7 +118,7 @@ public class AbstractInjectionValueMetaData extends AbstractDependencyValueMetaD
          return InjectionUtil.resolveInjection(
                controller,
                info.getType(),
-               propertyMetaData.getName(), // should not be used - value set before, see visit(MDV visitor)
+               null, // should not be used - value set before, see visit(MDV visitor)
                state,
                getInjectionMode(),
                getInjectionType(),
@@ -141,6 +141,10 @@ public class AbstractInjectionValueMetaData extends AbstractDependencyValueMetaD
 
          if (InjectionMode.BY_NAME.equals(injectionMode))
          {
+            if (propertyMetaData == null)
+            {
+               throw new IllegalArgumentException("Illegal usage of mode ByName - injection not used with property = " + this);
+            }
             setValue(propertyMetaData.getName());
          }
          else if (InjectionMode.BY_TYPE.equals(injectionMode))
@@ -167,5 +171,7 @@ public class AbstractInjectionValueMetaData extends AbstractDependencyValueMetaD
          buffer.append(" injectionMode=").append(injectionMode);
       if (injectionType != null)
          buffer.append(" injectionType=").append(injectionType);
+      if (propertyMetaData != null)
+         buffer.append(" propertyMetaData=").append(propertyMetaData.getName()); //else overflow - indefinite recursion
    }
 }

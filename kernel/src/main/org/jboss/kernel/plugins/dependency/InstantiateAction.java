@@ -71,7 +71,7 @@ public class InstantiateAction extends KernelControllerContextAction
             if (object instanceof KernelControllerContextAware)
                ((KernelControllerContextAware) object).setKernelControllerContext(context);
 
-//            controller.addInstantiatedContext(context);
+            controller.addInstantiatedContext(context);
          }
       }
       catch (Throwable t)
@@ -91,8 +91,8 @@ public class InstantiateAction extends KernelControllerContextAction
             if (object instanceof KernelControllerContextAware)
                ((KernelControllerContextAware) object).unsetKernelControllerContext(context);
 
-//            KernelController controller = (KernelController) context.getController();
-//            controller.removeInstantiatedContext(context);
+            KernelController controller = (KernelController) context.getController();
+            controller.removeInstantiatedContext(context);
          }
 
       }
