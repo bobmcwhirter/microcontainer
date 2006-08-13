@@ -443,6 +443,7 @@ public class AbstractController extends JBossObject implements Controller
          {
             log.error("Error installing to " + toState.getStateString() + ": " + context.toShortString(), error);
             uninstallContext(context, ControllerState.NOT_INSTALLED, trace);
+            allContexts.remove(context.getName()); //missing if contexts failes during configuration phase
             errorContexts.add(context);
             context.setError(error);
             return false;

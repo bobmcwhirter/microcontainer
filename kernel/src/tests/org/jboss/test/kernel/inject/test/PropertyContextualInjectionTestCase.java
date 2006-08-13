@@ -49,6 +49,8 @@ public class PropertyContextualInjectionTestCase extends MicrocontainerTest
 
    public void testContextualInjection() throws Throwable
    {
+//      enableTrace("org.jboss.kernel");
+//      enableTrace("org.jboss.dependency");
       for(int i = 0; i < PropertyContextualInjectionTestCase.PREFIX.length; i++)
       {
          for(int j = 0; j < PropertyContextualInjectionTestCase.NUMBER.length; j++)
@@ -101,7 +103,8 @@ public class PropertyContextualInjectionTestCase extends MicrocontainerTest
    {
       boolean isMultiple = testCaseName.indexOf("Multiple") >= 0;
       boolean isNull = testCaseName.indexOf("Null") >= 0;
-      return isMultiple || (isNull && isStrict(testCaseName));
+      boolean isName = testCaseName.indexOf("Name") >= 0;
+      return isMultiple || (isNull && isStrict(testCaseName) || (isNull && isName));
    }
 
    private boolean isStrict(String testCaseName)
