@@ -83,7 +83,7 @@ public class PropertyContextualInjectionTestCase extends MicrocontainerTest
          // check if we expect Throwable - e.g. NullTypeStrictTestCase, ...
          if (isThrowableExpected(testCaseName) == false)
          {
-            fail(t.toString());
+            fail("Unexpected injection failure: " + t.toString());
          }
          // get some info about 'failure'
          getLog().info(t);
