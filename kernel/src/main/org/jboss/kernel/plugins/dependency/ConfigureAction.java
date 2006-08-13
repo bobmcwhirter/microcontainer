@@ -133,6 +133,7 @@ public class ConfigureAction extends KernelControllerContextAction
          MethodInfo setter = pi.getSetter();
          if (setter != null)
          {
+            // todo - better annotation handling ... multiple annotaions; alesj
             AnnotationValue annotation = setter.getAnnotation("org.jboss.beans.metadata.spi.annotations.Inject");
             if (annotation != null)
             {
@@ -203,6 +204,7 @@ public class ConfigureAction extends KernelControllerContextAction
          MethodInfo setter = pi.getSetter();
          if (setter != null)
          {
+            // todo - better annotation handling ... multiple annotaions; alesj
             AnnotationValue annotation = setter.getAnnotation("org.jboss.beans.metadata.spi.annotations.Inject");
             if (annotation != null)
             {
