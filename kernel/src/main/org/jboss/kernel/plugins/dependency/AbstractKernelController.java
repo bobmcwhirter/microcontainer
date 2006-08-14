@@ -61,7 +61,7 @@ public class AbstractKernelController extends AbstractController implements Kern
    protected Map<Object, List<KernelControllerContext>> suppliers = CollectionsFactory.createConcurrentReaderMap();
 
    /** The contexts by class Map<Class, Set<ControllerContext>> */
-   protected Map<Class, Set<ControllerContext>> contextsByClass = CollectionsFactory.createConcurrentReaderMap();
+   protected Map<Class, ClassContext> contextsByClass = CollectionsFactory.createConcurrentReaderMap();
 
    /**
     * Create an abstract kernel controller
@@ -217,7 +217,13 @@ public class AbstractKernelController extends AbstractController implements Kern
       lockRead();
       try
       {
-         return contextsByClass.get(clazz);
+         ClassContext classContext = contextsByClass.get(clazz);
+         if (classContext != null)
+         {
+            classContext.used = true;
+            return classContext.contexts;
+         }
+         return null;
       }
       finally
       {
@@ -273,33 +279,34 @@ public class AbstractKernelController extends AbstractController implements Kern
       {
          return;
       }
-      Set<ControllerContext> beans = contextsByClass.get(clazz);
+      ClassContext classContext = contextsByClass.get(clazz);
       if (addition)
       {
-         if (beans == null)
+         if (classContext == null)
          {
-            beans = new HashSet<ControllerContext>();
-            contextsByClass.put(clazz, beans);
+            classContext = new ClassContext();
+            classContext.contexts = new HashSet<ControllerContext>();
+            contextsByClass.put(clazz, classContext);
+         }
+         else if (classContext.used)
+         {
+            log.warn("Additional matching bean - contextual injection already used for class: " + clazz);
          }
          if (trace)
          {
             log.trace("Mapping contex " + context + " to class: " + clazz);
          }
-         beans.add(context);
+         classContext.contexts.add(context);
       }
       else
       {
-         if (beans != null)
+         if (classContext != null)
          {
             if (trace)
             {
                log.trace("Removing contex " + context + " to class: " + clazz);
             }
-            beans.remove(context);
-            if (beans.isEmpty())
-            {
-               contextsByClass.remove(clazz);
-            }
+            classContext.contexts.remove(context);
          }
       }
       // traverse superclass
@@ -310,6 +317,12 @@ public class AbstractKernelController extends AbstractController implements Kern
       {
          traverseBean(context, intface, addition, trace);
       }
+   }
+
+   private class ClassContext
+   {
+      private boolean used;
+      private Set<ControllerContext> contexts;
    }
 
 }
