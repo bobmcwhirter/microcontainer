@@ -21,6 +21,7 @@
 */
 package org.jboss.kernel.plugins.dependency;
 
+import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
@@ -55,8 +56,12 @@ public class AbstractKernelController extends AbstractController implements Kern
 
    /** The emitter delegate */
    protected AbstractEventEmitter emitterDelegate = new AbstractEventEmitter();
+
    /** The supplies */
    protected Map<Object, List<KernelControllerContext>> suppliers = CollectionsFactory.createConcurrentReaderMap();
+
+   /** The contexts by class Map<Class, Set<ControllerContext>> */
+   protected Map<Class, Set<ControllerContext>> contextsByClass = CollectionsFactory.createConcurrentReaderMap();
 
    /**
     * Create an abstract kernel controller
@@ -203,4 +208,108 @@ public class AbstractKernelController extends AbstractController implements Kern
    {
       emitterDelegate.unregisterListener(listener, filter, handback);
    }
+
+   /**
+    * @return all instantiated contexts whose target is instance of this class clazz param
+    */
+   public Set<ControllerContext> getInstantiatedContexts(Class clazz)
+   {
+      lockRead();
+      try
+      {
+         return contextsByClass.get(clazz);
+      }
+      finally
+      {
+         unlockRead();
+      }
+   }
+
+   /**
+    * add instantiated context into contextsByClass map
+    * look at all target's superclasses and interfaces
+    */
+   public void addInstantiatedContext(ControllerContext context)
+   {
+      prepareToTraverse(context, true);
+   }
+
+   /**
+    * remove instantiated context from contextsByClass map
+    * look at all target's superclasses and interfaces
+    */
+   public void removeInstantiatedContext(ControllerContext context)
+   {
+      prepareToTraverse(context, false);
+   }
+
+   protected void prepareToTraverse(ControllerContext context, boolean addition)
+   {
+      lockWrite();
+      try
+      {
+         Object target = context.getTarget();
+         if (target != null)
+         {
+            traverseBean(context, target.getClass(), addition, log.isTraceEnabled());
+         }
+      }
+      finally
+      {
+         unlockWrite();
+      }
+   }
+
+   /**
+    * Traverse over target and map it to all its superclasses
+    * and interfaces - using recursion.
+    *
+    * @param context context whose target is instance of clazz
+    * @param clazz current class to map context to
+    */
+   protected void traverseBean(ControllerContext context, Class clazz, boolean addition, boolean trace)
+   {
+      if (clazz == null || clazz == Object.class)
+      {
+         return;
+      }
+      Set<ControllerContext> beans = contextsByClass.get(clazz);
+      if (addition)
+      {
+         if (beans == null)
+         {
+            beans = new HashSet<ControllerContext>();
+            contextsByClass.put(clazz, beans);
+         }
+         if (trace)
+         {
+            log.trace("Mapping contex " + context + " to class: " + clazz);
+         }
+         beans.add(context);
+      }
+      else
+      {
+         if (beans != null)
+         {
+            if (trace)
+            {
+               log.trace("Removing contex " + context + " to class: " + clazz);
+            }
+            beans.remove(context);
+            if (beans.isEmpty())
+            {
+               contextsByClass.remove(clazz);
+            }
+         }
+      }
+      // traverse superclass
+      traverseBean(context, clazz.getSuperclass(), addition, trace);
+      Class[] interfaces = clazz.getInterfaces();
+      // traverse interfaces
+      for(Class intface : interfaces)
+      {
+         traverseBean(context, intface, addition, trace);
+      }
+   }
+
 }

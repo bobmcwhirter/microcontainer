@@ -57,9 +57,6 @@ public class AbstractController extends JBossObject implements Controller
    /** The contexts by state Map<ControllerState, Set<ControllerContext>> */
    protected Map<ControllerState, Set<ControllerContext>> contextsByState = CollectionsFactory.createConcurrentReaderMap();
 
-   /** The contexts by class Map<Class, Set<ControllerContext>> */
-   protected Map<Class, Set<ControllerContext>> contextsByClass = CollectionsFactory.createConcurrentReaderMap();
-
    /** The error contexts Set<ControllerContext> */
    protected Set<ControllerContext> errorContexts = CollectionsFactory.createCopyOnWriteSet();
 
@@ -778,108 +775,4 @@ public class AbstractController extends JBossObject implements Controller
    {
       lock.writeLock().unlock();
    }
-
-   /**
-    * @return all instantiated contexts whose target is instance of this class clazz param
-    */
-   public Set<ControllerContext> getInstantiatedContexts(Class clazz)
-   {
-      lockRead();
-      try
-      {
-         return contextsByClass.get(clazz);
-      }
-      finally
-      {
-         unlockRead();
-      }
-   }
-
-   /**
-    * add instantiated context into contextsByClass map
-    * look at all target's superclasses and interfaces
-    */
-   public void addInstantiatedContext(ControllerContext context)
-   {
-      prepareToTraverse(context, true);
-   }
-
-   /**
-    * remove instantiated context from contextsByClass map
-    * look at all target's superclasses and interfaces
-    */
-   public void removeInstantiatedContext(ControllerContext context)
-   {
-      prepareToTraverse(context, false);
-   }
-
-   protected void prepareToTraverse(ControllerContext context, boolean addition)
-   {
-      lockWrite();
-      try
-      {
-         Object target = context.getTarget();
-         if (target != null)
-         {
-            traverseBean(context, target.getClass(), addition, log.isTraceEnabled());
-         }
-      }
-      finally
-      {
-         unlockWrite();
-      }
-   }
-
-   /**
-    * Traverse over target and map it to all its superclasses
-    * and interfaces - using recursion.
-    *
-    * @param context context whose target is instance of clazz
-    * @param clazz current class to map context to
-    */
-   protected void traverseBean(ControllerContext context, Class clazz, boolean addition, boolean trace)
-   {
-      if (clazz == null || clazz == Object.class)
-      {
-         return;
-      }
-      Set<ControllerContext> beans = contextsByClass.get(clazz);
-      if (addition)
-      {
-         if (beans == null)
-         {
-            beans = new HashSet<ControllerContext>();
-            contextsByClass.put(clazz, beans);
-         }
-         if (trace)
-         {
-            log.trace("Mapping contex " + context + " to class: " + clazz);
-         }
-         beans.add(context);
-      }
-      else
-      {
-         if (beans != null)
-         {
-            if (trace)
-            {
-               log.trace("Removing contex " + context + " to class: " + clazz);
-            }
-            beans.remove(context);
-            if (beans.isEmpty())
-            {
-               contextsByClass.remove(clazz);
-            }
-         }
-      }
-      // traverse superclass
-      traverseBean(context, clazz.getSuperclass(), addition, trace);
-      Class[] interfaces = clazz.getInterfaces();
-      // traverse interfaces
-      for(Class intface : interfaces)
-      {
-         traverseBean(context, intface, addition, trace);
-      }
-   }
-
 }

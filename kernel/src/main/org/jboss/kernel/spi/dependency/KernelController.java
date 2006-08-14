@@ -21,8 +21,11 @@
 */
 package org.jboss.kernel.spi.dependency;
 
+import java.util.Set;
+
 import org.jboss.beans.metadata.spi.BeanMetaData;
 import org.jboss.dependency.spi.Controller;
+import org.jboss.dependency.spi.ControllerContext;
 import org.jboss.kernel.spi.KernelObject;
 
 /**
@@ -70,4 +73,21 @@ public interface KernelController extends KernelObject, Controller
     * @param context the context
     */
    void removeSupplies(KernelControllerContext context);
+
+   /**
+    * @return all instantiated contexts whose target is instance of this class clazz param
+    */
+   Set<ControllerContext> getInstantiatedContexts(Class clazz);
+
+   /**
+    * add instantiated context into contextsByClass map
+    * look at all target's superclasses and interfaces
+    */
+   void addInstantiatedContext(ControllerContext context);
+
+   /**
+    * remove instantiated context from contextsByClass map
+    * look at all target's superclasses and interfaces
+    */
+   void removeInstantiatedContext(ControllerContext context);
 }

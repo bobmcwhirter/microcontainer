@@ -110,22 +110,4 @@ public interface Controller extends JBossInterface
     * @return the states in order
     */
    List<ControllerState> getStates();
-
-   /**
-    * @return all instantiated contexts whose target is instance of this class clazz param
-    */
-   Set<ControllerContext> getInstantiatedContexts(Class clazz);
-
-   /**
-    * add instantiated context into contextsByClass map
-    * look at all target's superclasses and interfaces
-    */
-   void addInstantiatedContext(ControllerContext context);
-
-   /**
-    * remove instantiated context from contextsByClass map
-    * look at all target's superclasses and interfaces
-    */
-   void removeInstantiatedContext(ControllerContext context);
-
 }
