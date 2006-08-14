@@ -214,16 +214,20 @@
       <copy todir="${module.release}/lib" file="${apache.xerces.lib}/xml-apis.jar"/>
 
       <mkdir dir="${module.release}/lib14"/>
-      <copy todir="${module.release}/lib" file="${build.lib.retro}/jboss-microcontainer14.jar"/>
-      <copy todir="${module.release}/lib" file="${jboss.common.lib}/jboss-common.jar"/>
-      <copy todir="${module.release}/lib" file="${jboss.jbossxb.lib}/jboss-xml-binding.jar"/>
-      <copy todir="${module.release}/lib" file="${jboss.common.lib}/namespace.jar"/>
-      <copy todir="${module.release}/lib" file="${project.root}/aop-mc-int/output/lib14/jboss-aop-mc-int14.jar"/>
-      <copy todir="${module.release}/lib" file="${project.root}/container/output/lib14/jboss-container14.jar"/>
-      <copy todir="${module.release}/lib" file="${project.root}/dependency/output/lib14/jboss-dependency14.jar"/>
-      <copy todir="${module.release}/lib" file="${oswego.concurrent.lib}/concurrent.jar"/>
-      <copy todir="${module.release}/lib" file="${apache.xerces.lib}/xercesImpl.jar"/>
-      <copy todir="${module.release}/lib" file="${apache.xerces.lib}/xml-apis.jar"/>
+      <copy todir="${module.release}/lib14" file="${build.lib.retro}/jboss-microcontainer14.jar"/>
+      <copy todir="${module.release}/lib14" file="${jboss.common.lib}/jboss-common.jar"/>
+      <copy todir="${module.release}/lib14" file="${jboss.jbossxb.lib}/jboss-xml-binding.jar"/>
+      <copy todir="${module.release}/lib14" file="${jboss.common.lib}/namespace.jar"/>
+      <copy todir="${module.release}/lib14" file="${project.root}/aop-mc-int/output/lib14/jboss-aop-mc-int14.jar"/>
+      <copy todir="${module.release}/lib14" file="${project.root}/container/output/lib14/jboss-container14.jar"/>
+      <copy todir="${module.release}/lib14" file="${project.root}/dependency/output/lib14/jboss-dependency14.jar"/>
+      <copy todir="${module.release}/lib14" file="${oswego.concurrent.lib}/concurrent.jar"/>
+      <copy todir="${module.release}/lib14" file="${apache.xerces.lib}/xercesImpl.jar"/>
+      <copy todir="${module.release}/lib14" file="${apache.xerces.lib}/xml-apis.jar"/>
+      <copy todir="${module.release}/lib14" file="${jboss/backport.concurrent.lib}/jboss-backport-concurrent.jar"/>
+      <copy todir="${module.release}/lib14" file="${jboss.jbossretro.lib}/jbossretro-rt.jar"/>
+
+
 
       <copy todir="${module.release}/examples">
          <fileset dir="${module.root}/examples"/>
