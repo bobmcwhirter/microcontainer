@@ -21,10 +21,6 @@
 */
 package org.jboss.test.kernel.inject.support;
 
-import org.jboss.beans.metadata.spi.annotations.Inject;
-import org.jboss.beans.metadata.spi.annotations.InjectMode;
-import org.jboss.beans.metadata.spi.annotations.InjectType;
-
 /**
  * @author <a href="mailto:ales.justin@gmail.com">Ales Justin</a>
  */
