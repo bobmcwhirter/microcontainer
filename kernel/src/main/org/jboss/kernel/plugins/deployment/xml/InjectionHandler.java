@@ -7,14 +7,12 @@ package org.jboss.kernel.plugins.deployment.xml;
 import javax.xml.namespace.NamespaceContext;
 import javax.xml.namespace.QName;
 
-import org.jboss.beans.metadata.injection.InjectionMode;
-import org.jboss.beans.metadata.injection.InjectionType;
+import org.jboss.beans.metadata.plugins.InjectionType;
 import org.jboss.beans.metadata.plugins.AbstractInjectionValueMetaData;
 import org.jboss.beans.metadata.plugins.AbstractPropertyMetaData;
 import org.jboss.dependency.spi.ControllerState;
 import org.jboss.xb.binding.sunday.unmarshalling.DefaultElementHandler;
 import org.jboss.xb.binding.sunday.unmarshalling.ElementBinding;
-import org.jboss.logging.Logger;
 import org.xml.sax.Attributes;
 
 /**
@@ -51,8 +49,6 @@ public class InjectionHandler extends DefaultElementHandler
             injection.setProperty(attrs.getValue(i));
          else if ("state".equals(localName))
             injection.setDependentState(new ControllerState(attrs.getValue(i)));
-         else if ("mode".equals(localName))
-            injection.setInjectionMode(new InjectionMode(attrs.getValue(i)));
          else if ("type".equals(localName))
             injection.setInjectionType(new InjectionType(attrs.getValue(i)));
       }

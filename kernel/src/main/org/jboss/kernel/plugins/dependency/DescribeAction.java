@@ -26,8 +26,10 @@ import java.util.List;
 import java.util.Set;
 
 import org.jboss.beans.info.spi.BeanInfo;
+import org.jboss.beans.metadata.plugins.AbstractSupplyMetaData;
 import org.jboss.beans.metadata.spi.BeanMetaData;
 import org.jboss.beans.metadata.spi.PropertyMetaData;
+import org.jboss.beans.metadata.spi.SupplyMetaData;
 import org.jboss.dependency.plugins.AbstractDependencyItem;
 import org.jboss.dependency.spi.ControllerContext;
 import org.jboss.dependency.spi.ControllerState;
@@ -60,10 +62,19 @@ public class DescribeAction extends KernelControllerContextAction
          BeanInfo info = configurator.getBeanInfo(metaData);
          context.setBeanInfo(info);
 
+         addClassSuppliers(metaData, info);
+
          info = addAnnotations(context, metaData, info);
 
+         DependencyInfo depends = context.getDependencyInfo();
+         // update 'placeholder' item with more info
+         Set updateableItems = depends.getIDependOn(UpdateableDependencyItem.class);
+         for(Iterator it = updateableItems.iterator(); it.hasNext();)
+         {
+            UpdateableDependencyItem updateableItem = (UpdateableDependencyItem) it.next();
+            updateableItem.update(metaData, info);
+         }
          // add custom dependencies (e.g. AOP layer).
-         DependencyInfo depends =   context.getDependencyInfo();
          List dependencies = info.getDependencies();
          if (dependencies != null)
          {
@@ -76,7 +87,7 @@ public class DescribeAction extends KernelControllerContextAction
          }
       }
    }
-   
+
    public void uninstallAction(KernelControllerContext context)
    {
       context.setMetaDataContext(null);
@@ -166,4 +177,32 @@ public class DescribeAction extends KernelControllerContextAction
       
       return metaCtx;
    }
+
+   /**
+    * Adds classes to supply for contextual injection.
+    *
+    * @param metaData
+    * @param info
+    */
+   private void addClassSuppliers(BeanMetaData metaData, BeanInfo info)
+   {
+      traverseBeanClass(metaData, info.getClassInfo().getType());
+   }
+
+   private void traverseBeanClass(BeanMetaData metaData, Class clazz)
+   {
+      if (clazz == null || clazz == Object.class)
+      {
+         return;
+      }
+      Set<SupplyMetaData> supplies = metaData.getSupplies();
+      supplies.add(new AbstractSupplyMetaData(clazz));
+      traverseBeanClass(metaData, clazz.getSuperclass());
+      Class[] intfaces = clazz.getInterfaces();
+      for(Class intface : intfaces)
+      {
+         traverseBeanClass(metaData, intface);
+      }
+   }
+
 }

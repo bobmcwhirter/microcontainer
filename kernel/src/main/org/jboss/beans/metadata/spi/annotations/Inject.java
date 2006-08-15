@@ -43,8 +43,6 @@ public @interface Inject
 
    String state() default "Installed";
 
-   InjectMode mode() default InjectMode.BY_TYPE;
-
-   InjectType type() default InjectType.STRICT;
+   InjectType type() default InjectType.BY_CLASS;
 
 }

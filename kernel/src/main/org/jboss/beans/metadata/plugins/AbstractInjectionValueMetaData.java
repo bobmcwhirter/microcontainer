@@ -21,16 +21,21 @@
 */
 package org.jboss.beans.metadata.plugins;
 
+import java.util.Iterator;
 import java.util.Set;
 
-import org.jboss.beans.metadata.injection.InjectionMode;
-import org.jboss.beans.metadata.injection.InjectionType;
+import org.jboss.beans.info.spi.BeanInfo;
+import org.jboss.beans.info.spi.PropertyInfo;
+import org.jboss.beans.metadata.spi.BeanMetaData;
 import org.jboss.beans.metadata.spi.MetaDataVisitor;
+import org.jboss.dependency.plugins.AbstractDependencyItem;
+import org.jboss.dependency.spi.Controller;
 import org.jboss.dependency.spi.ControllerContext;
 import org.jboss.dependency.spi.ControllerState;
+import org.jboss.dependency.spi.DependencyItem;
+import org.jboss.kernel.plugins.dependency.UpdateableDependencyItem;
 import org.jboss.kernel.spi.dependency.KernelController;
 import org.jboss.kernel.spi.dependency.KernelControllerContext;
-import org.jboss.kernel.plugins.injection.InjectionUtil;
 import org.jboss.reflect.spi.TypeInfo;
 import org.jboss.util.JBossStringBuilder;
 
@@ -41,9 +46,7 @@ import org.jboss.util.JBossStringBuilder;
  */
 public class AbstractInjectionValueMetaData extends AbstractDependencyValueMetaData
 {
-   protected InjectionMode injectionMode = InjectionMode.BY_TYPE;
-
-   protected InjectionType injectionType = InjectionType.STRICT;
+   protected InjectionType injectionType = InjectionType.BY_CLASS;
 
    protected AbstractPropertyMetaData propertyMetaData;
 
@@ -75,16 +78,6 @@ public class AbstractInjectionValueMetaData extends AbstractDependencyValueMetaD
       super(value, property);
    }
 
-   public InjectionMode getInjectionMode()
-   {
-      return injectionMode;
-   }
-
-   public void setInjectionMode(InjectionMode injectionMode)
-   {
-      this.injectionMode = injectionMode;
-   }
-
    public InjectionType getInjectionType()
    {
       return injectionType;
@@ -109,20 +102,29 @@ public class AbstractInjectionValueMetaData extends AbstractDependencyValueMetaD
    {
       if (value == null)
       {
+         // this is by class injection
          ControllerState state = dependentState;
          if (state == null)
          {
             state = ControllerState.INSTALLED;
          }
          // what else to use here - if not info.getType?
-         return InjectionUtil.resolveInjection(
-               controller,
-               info.getType(),
-               null, // should not be used - value set before, see visit(MDV visitor)
-               state,
-               getInjectionMode(),
-               getInjectionType(),
-               this);
+         Set contexts = controller.getInstantiatedContexts(info.getType());
+         int numberOfMatchingBeans = 0;
+         if (contexts != null)
+         {
+            numberOfMatchingBeans = contexts.size();
+         }
+         if (numberOfMatchingBeans != 1)
+         {
+            throw new Error(
+                  "Should not be here, illegas size of matching contexts ("
+                        + numberOfMatchingBeans + ") - dependency failed! " + this);
+         }
+         ControllerContext context = (ControllerContext) contexts.iterator().next();
+         // todo - should we do this?
+         controller.change(context, state);
+         return context.getTarget();
       }
       return super.getValue(info, cl);
    }
@@ -139,26 +141,31 @@ public class AbstractInjectionValueMetaData extends AbstractDependencyValueMetaD
             log.warn("Ignoring property - contextual injection: " + this);
          }
 
-         if (InjectionMode.BY_NAME.equals(injectionMode))
+         if (InjectionType.BY_NAME.equals(injectionType))
          {
             if (propertyMetaData == null)
             {
-               throw new IllegalArgumentException("Illegal usage of mode ByName - injection not used with property = " + this);
+               throw new IllegalArgumentException("Illegal usage of type ByName - injection not used with property = " + this);
             }
             setValue(propertyMetaData.getName());
          }
-         else if (InjectionMode.BY_TYPE.equals(injectionMode))
+         else if (InjectionType.BY_CLASS.equals(injectionType))
          {
             // set controller
-            KernelControllerContext controllerContext = visitor.getControllerContext();
-            controller = (KernelController) controllerContext.getController();
+            KernelControllerContext context = visitor.getControllerContext();
+            controller = (KernelController) context.getController();
+            if (propertyMetaData != null)
+            {
+               DependencyItem item = new PropertyPlaceholderDependencyItem(context.getName(), propertyMetaData.getName());
+               visitor.addDependency(item);
+            }
             visitor.visit(this); // as in AbstractValueMetaData
             // skip AbstractDependencyVMD.visit() - no value defined
             return;
          }
          else
          {
-            throw new IllegalArgumentException("Unknown injection mode=" + injectionMode);
+            throw new IllegalArgumentException("Unknown injection type=" + injectionType);
          }
       }
       super.visit(visitor);
@@ -167,11 +174,74 @@ public class AbstractInjectionValueMetaData extends AbstractDependencyValueMetaD
    public void toString(JBossStringBuilder buffer)
    {
       super.toString(buffer);
-      if (injectionMode != null)
-         buffer.append(" injectionMode=").append(injectionMode);
       if (injectionType != null)
          buffer.append(" injectionType=").append(injectionType);
       if (propertyMetaData != null)
          buffer.append(" propertyMetaData=").append(propertyMetaData.getName()); //else overflow - indefinite recursion
    }
+
+   public class PropertyPlaceholderDependencyItem extends AbstractDependencyItem implements UpdateableDependencyItem
+   {
+      private String propertyName;
+      private Class demandClass;
+
+      public PropertyPlaceholderDependencyItem(Object name, String propertyName)
+      {
+         super(name, null, ControllerState.CONFIGURED, dependentState);
+         this.propertyName = propertyName;
+      }
+
+      public void update(BeanMetaData metaData, BeanInfo info)
+      {
+         Set propertyInfos = info.getProperties();
+         if (propertyInfos != null)
+         {
+            for (Iterator it = propertyInfos.iterator(); it.hasNext();)
+            {
+               PropertyInfo pi = (PropertyInfo) it.next();
+               if (propertyName.equals(pi.getName()))
+               {
+                  demandClass = pi.getType().getType();
+                  break;
+               }
+            }
+         }
+      }
+
+      public boolean resolve(Controller controller)
+      {
+         if (demandClass != null)
+         {
+            ControllerContext context = controller.getInstalledContext(demandClass);
+            if (context != null)
+            {
+               setIDependOn(context.getName());
+               addDependsOnMe(controller, context);
+               setResolved(true);
+            }
+            else
+            {
+               setResolved(false);
+            }
+         }
+         else
+         {
+            setResolved(true);
+         }
+         return isResolved();
+      }
+
+      public void toString(JBossStringBuilder buffer)
+      {
+         super.toString(buffer);
+         buffer.append(" demandClass=").append(demandClass);
+      }
+
+      public void toShortString(JBossStringBuilder buffer)
+      {
+         buffer.append(getName()).append(" demands ").append(demandClass);
+      }
+
+   }
+
 }

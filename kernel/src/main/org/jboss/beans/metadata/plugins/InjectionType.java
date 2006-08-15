@@ -19,7 +19,7 @@
 * Software Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA
 * 02110-1301 USA, or see the FSF site: http://www.fsf.org.
 */
-package org.jboss.beans.metadata.injection;
+package org.jboss.beans.metadata.plugins;
 
 import org.jboss.util.JBossObject;
 import org.jboss.util.JBossStringBuilder;
@@ -27,27 +27,27 @@ import org.jboss.util.JBossStringBuilder;
 /**
  * @author <a href="mailto:ales.justin@genera-lynx.com">Ales Justin</a>
  */
-public class InjectionMode extends JBossObject
+public class InjectionType extends JBossObject
 {
-   /** ByType */
-   public static final InjectionMode BY_TYPE = new InjectionMode("ByType");
+   /** Strict */
+   public static final InjectionType BY_CLASS = new InjectionType("ByClass");
 
-   /** ByName */
-   public static final InjectionMode BY_NAME = new InjectionMode("ByName");
+   /** Loose */
+   public static final InjectionType BY_NAME = new InjectionType("ByName");
 
-   /** The state string */
-   protected final String modeString;
+   /** The type string */
+   protected final String typeString;
 
    /**
     * Create a new state
     *
     * @param modeString the string representation
     */
-   public InjectionMode(String modeString)
+   public InjectionType(String typeString)
    {
-      if (modeString == null)
-         throw new IllegalArgumentException("Null mode string");
-      this.modeString = modeString;
+      if (typeString == null)
+         throw new IllegalArgumentException("Null type string");
+      this.typeString = typeString;
    }
 
    /**
@@ -55,27 +55,27 @@ public class InjectionMode extends JBossObject
     *
     * @return the state string
     */
-   public String getModeString()
+   public String getTypeString()
    {
-      return modeString;
+      return typeString;
    }
 
    public boolean equals(Object object)
    {
-      if (object == null || object instanceof InjectionMode == false)
+      if (object == null || object instanceof InjectionType == false)
          return false;
-      InjectionMode other = (InjectionMode) object;
-      return modeString.equals(other.getModeString());
+      InjectionType other = (InjectionType) object;
+      return typeString.equals(other.getTypeString());
    }
 
    public void toString(JBossStringBuilder buffer)
    {
-      buffer.append(modeString);
+      buffer.append(typeString);
    }
 
    protected int getHashCode()
    {
-      return modeString.hashCode();
+      return typeString.hashCode();
    }
 
 }

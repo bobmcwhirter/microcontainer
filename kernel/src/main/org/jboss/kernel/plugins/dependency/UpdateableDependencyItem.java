@@ -19,21 +19,16 @@
 * Software Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA
 * 02110-1301 USA, or see the FSF site: http://www.fsf.org.
 */
-package org.jboss.test.kernel.inject.support;
+package org.jboss.kernel.plugins.dependency;
 
-import org.jboss.beans.metadata.spi.annotations.Inject;
-import org.jboss.beans.metadata.spi.annotations.InjectType;
+import org.jboss.beans.metadata.spi.BeanMetaData;
+import org.jboss.beans.info.spi.BeanInfo;
+import org.jboss.dependency.spi.DependencyItem;
 
 /**
- * @author <a href="mailto:ales.justin@gmail.com">Ales Justin</a>
+ * @author <a href="mailto:ales.justin@genera-lynx.com">Ales Justin</a>
  */
-public class AnnotatedTypeLooseSimpleTestObject extends AnnotatedSimpleTestObject
+public interface UpdateableDependencyItem extends DependencyItem
 {
-
-   @Inject(type = InjectType.LOOSE)
-   public void setTesterInterface(TesterInterface testerInterface)
-   {
-      this.testerInterface = testerInterface;
-   }
-
+   void update(BeanMetaData metaData, BeanInfo info);
 }

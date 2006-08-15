@@ -34,7 +34,7 @@ public class PropertyContextualInjectionTestCase extends MicrocontainerTest
    private static final String[] PREFIX = new String[]{"", "Ann"};
    private static final String[] NUMBER = new String[]{"Single", "Multiple", "Null"};
    private static final String[] MODE = new String[]{"Type", "Name"};
-   private static final String[] TYPE = new String[]{"Loose", "Strict"};
+   private static final String[] TYPE = new String[]{"Strict"};
    private static final String TEST_CASE_SUFFIX = "TestCase.xml";
 
    public PropertyContextualInjectionTestCase(String name)

@@ -4,10 +4,10 @@
             xsi:schemaLocation="urn:jboss:bean-deployer bean-deployer_1_0.xsd"
             xmlns="urn:jboss:bean-deployer">
 
-   <bean name="duplicateInterface" class="org.jboss.test.kernel.inject.support.DuplicateTester"/>
-
    <bean name="testObject" class="org.jboss.test.kernel.inject.support.SimpleTestObject">
       <property name="testerInterface"><inject/></property>
    </bean>
+
+   <bean name="duplicateInterface" class="org.jboss.test.kernel.inject.support.DuplicateTester"/>
 
 </deployment>

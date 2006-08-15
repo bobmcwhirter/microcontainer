@@ -26,8 +26,8 @@ package org.jboss.beans.metadata.spi.annotations;
  */
 public enum InjectType
 {
-   STRICT("Strict"),
-   LOOSE("Loose");
+   BY_CLASS("ByClass"),
+   BY_NAME("ByName");
 
    private String typeString;
 

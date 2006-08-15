@@ -22,7 +22,7 @@
 package org.jboss.test.kernel.inject.support;
 
 import org.jboss.beans.metadata.spi.annotations.Inject;
-import org.jboss.beans.metadata.spi.annotations.InjectMode;
+import org.jboss.beans.metadata.spi.annotations.InjectType;
 
 /**
  * @author <a href="mailto:ales.justin@gmail.com">Ales Justin</a>
@@ -30,7 +30,7 @@ import org.jboss.beans.metadata.spi.annotations.InjectMode;
 public class AnnotatedNameStrictSimpleTestObject extends AnnotatedSimpleTestObject
 {
 
-   @Inject(mode = InjectMode.BY_NAME)
+   @Inject(type = InjectType.BY_NAME)
    public void setTesterInterface(TesterInterface testerInterface)
    {
       this.testerInterface = testerInterface;

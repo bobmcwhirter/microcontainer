@@ -39,8 +39,7 @@ import org.jboss.beans.metadata.spi.ParameterMetaData;
 import org.jboss.beans.metadata.spi.PropertyMetaData;
 import org.jboss.beans.metadata.spi.SupplyMetaData;
 import org.jboss.beans.metadata.spi.ValueMetaData;
-import org.jboss.beans.metadata.injection.InjectionMode;
-import org.jboss.beans.metadata.injection.InjectionType;
+import org.jboss.beans.metadata.plugins.InjectionType;
 import org.jboss.dependency.spi.ControllerMode;
 import org.jboss.dependency.spi.ControllerState;
 import org.jboss.kernel.plugins.deployment.AbstractKernelDeployment;
@@ -974,8 +973,6 @@ public class BeanSchemaBinding
                   injection.setProperty(attrs.getValue(i));
                else if ("state".equals(localName))
                   injection.setDependentState(new ControllerState(attrs.getValue(i)));
-               else if ("mode".equals(localName))
-                  injection.setInjectionMode(new InjectionMode(attrs.getValue(i)));
                else if ("type".equals(localName))
                   injection.setInjectionType(new InjectionType(attrs.getValue(i)));
             }

@@ -271,19 +271,9 @@ $Id$
               <property name="transactionManager"><inject/></property>
            </bean>
 
-           e.g. Contextual injection - finding at most one instance which matches property's class type
-           <bean name="InjectedIntoMe" ...>
-              <property name="transactionManager"><inject type="Loose"/></property>
-           </bean>
-
            e.g. Contextual injection - finding exactly one instance which matches property's name
            <bean name="InjectedIntoMe" ...>
-              <property name="transactionManager"><inject mode="ByName"/></property>
-           </bean>
-
-           e.g. Contextual injection - finding at most one instance which matches property's name
-           <bean name="InjectedIntoMe" ...>
-              <property name="transactionManager"><inject mode="ByName" type="Loose"/></property>
+              <property name="transactionManager"><inject type="ByName"/></property>
            </bean>
            ]]>
          </xsd:documentation>
@@ -291,8 +281,7 @@ $Id$
       <xsd:attribute name="bean" type="xsd:string" use="optional"/>
       <xsd:attribute name="property" type="xsd:string" use="optional"/>
       <xsd:attribute name="state" type="controllerStateType" use="optional"/>
-      <xsd:attribute name="mode" type="injectionModeType" use="optional" default="ByType"/>
-      <xsd:attribute name="type" type="injectionTypeType" use="optional" default="Strict"/>
+      <xsd:attribute name="type" type="injectionTypeType" use="optional" default="ByClass"/>
    </xsd:complexType>
 
    <xsd:complexType name="parameterType" mixed="true">
@@ -769,31 +758,14 @@ $Id$
       </xsd:restriction>
    </xsd:simpleType>
 
-   <xsd:simpleType name="injectionModeType">
-      <xsd:annotation>
-         <xsd:documentation>
-            <![CDATA[
-            You can set the type of lookup requirement - class type (ByType) or property name (ByName)
-            Valid values include:
-            ByType (default)
-            ByName
-            ]]>
-         </xsd:documentation>
-      </xsd:annotation>
-      <xsd:restriction base="xsd:string">
-         <xsd:whiteSpace value="collapse"/>
-      </xsd:restriction>
-   </xsd:simpleType>
-
    <xsd:simpleType name="injectionTypeType">
       <xsd:annotation>
          <xsd:documentation>
             <![CDATA[
-            You can set what is the severity of injected bean not found.
-            When set to Strict (default) it will fail, else it will inject null.
+            You can set the type of lookup requirement - class type (ByClass) or property name (ByName)
             Valid values include:
-            Strict
-            Loose
+            ByClass (default)
+            ByName
             ]]>
          </xsd:documentation>
       </xsd:annotation>

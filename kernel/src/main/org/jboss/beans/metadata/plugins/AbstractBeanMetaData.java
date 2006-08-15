@@ -359,6 +359,10 @@ public class AbstractBeanMetaData extends AbstractFeatureMetaData implements Bea
    
    public Set<SupplyMetaData> getSupplies()
    {
+      if (supplies == null)
+      {
+         supplies = new HashSet<SupplyMetaData>();
+      }
       return supplies;
    }
    

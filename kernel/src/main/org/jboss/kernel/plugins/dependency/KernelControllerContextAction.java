@@ -21,11 +21,7 @@
 */
 package org.jboss.kernel.plugins.dependency;
 
-import java.security.AccessControlContext;
-import java.security.AccessController;
-import java.security.PrivilegedAction;
-import java.security.PrivilegedActionException;
-import java.security.PrivilegedExceptionAction;
+import java.security.*;
 
 import org.jboss.beans.metadata.spi.BeanMetaData;
 import org.jboss.dependency.plugins.spi.action.ControllerContextAction;
