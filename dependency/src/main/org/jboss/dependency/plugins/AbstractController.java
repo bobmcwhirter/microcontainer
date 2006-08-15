@@ -34,8 +34,8 @@ import org.jboss.dependency.spi.ControllerMode;
 import org.jboss.dependency.spi.ControllerState;
 import org.jboss.dependency.spi.DependencyInfo;
 import org.jboss.dependency.spi.DependencyItem;
-import org.jboss.util.collection.CollectionsFactory;
 import org.jboss.util.JBossObject;
+import org.jboss.util.collection.CollectionsFactory;
 
 /**
  * Abstract controller.
@@ -57,8 +57,8 @@ public class AbstractController extends JBossObject implements Controller
    /** The contexts by state Map<ControllerState, Set<ControllerContext>> */
    protected Map<ControllerState, Set<ControllerContext>> contextsByState = CollectionsFactory.createConcurrentReaderMap();
 
-   /** The error contexts Set<ControllerContext> */
-   protected Set<ControllerContext> errorContexts = CollectionsFactory.createCopyOnWriteSet();
+   /** The error contexts Map<Name, ControllerContext> */
+   protected Map<Object, ControllerContext> errorContexts = CollectionsFactory.createConcurrentReaderMap();
 
    /** The contexts that are currently being installed */
    protected Set<ControllerContext> installing = CollectionsFactory.createCopyOnWriteSet();
@@ -144,13 +144,12 @@ public class AbstractController extends JBossObject implements Controller
       lockWrite();
       try
       {
-         Set<ControllerContext> result = new HashSet<ControllerContext>(errorContexts);
+         Set<ControllerContext> result = new HashSet<ControllerContext>(errorContexts.values());
          for (int i = 0; ControllerState.INSTALLED.equals(states.get(i)) == false; ++i)
          {
             Set<ControllerContext> stateContexts = contextsByState.get(states.get(i));
             result.addAll(stateContexts);
          }
-         errorContexts.clear();
          return result;
       }
       finally
@@ -211,7 +210,7 @@ public class AbstractController extends JBossObject implements Controller
       lockWrite();
       try
       {
-         if (errorContexts.remove(name) && trace)
+         if (errorContexts.remove(name) != null && trace)
             log.trace("Tidied up context in error state: " + name);
 
          ControllerContext context = allContexts.get(name);
@@ -404,7 +403,7 @@ public class AbstractController extends JBossObject implements Controller
             {
                log.error("Error during initial installation: " + context.toShortString(), error);
                context.setError(error);
-               errorContexts.add(context);
+               errorContexts.put(context.getName(), context);
                return false;
             }
          }
@@ -440,7 +439,7 @@ public class AbstractController extends JBossObject implements Controller
          {
             log.error("Error installing to " + toState.getStateString() + ": " + context.toShortString(), error);
             uninstallContext(context, ControllerState.NOT_INSTALLED, trace);
-            errorContexts.add(context);
+            errorContexts.put(context.getName(), context);
             context.setError(error);
             return false;
          }
