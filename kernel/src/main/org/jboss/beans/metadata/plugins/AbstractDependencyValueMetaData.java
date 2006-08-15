@@ -136,7 +136,7 @@ public class AbstractDependencyValueMetaData extends AbstractValueMetaData
       return result;
    }
 
-   public void visit(MetaDataVisitor visitor)
+   public void initialVisit(MetaDataVisitor visitor)
    {
       KernelControllerContext controllerContext = visitor.getControllerContext();
       controller = (KernelController) controllerContext.getController();
@@ -147,7 +147,7 @@ public class AbstractDependencyValueMetaData extends AbstractValueMetaData
       DependencyItem item = new AbstractDependencyItem(name, iDependOn, whenRequired, dependentState);
       visitor.addDependency(item);
 
-      super.visit(visitor);
+      super.initialVisit(visitor);
    }
 
    public void toString(JBossStringBuilder buffer)

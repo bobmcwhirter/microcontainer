@@ -71,10 +71,10 @@ public abstract class AbstractTypeMetaData extends AbstractValueMetaData
       return type;
    }
 
-   public void visit(MetaDataVisitor visitor)
+   public void initialVisit(MetaDataVisitor visitor)
    {
       configurator = visitor.getControllerContext().getKernel().getConfigurator();
-      visitor.visit(this);
+      visitor.initialVisit(this);
    }
 
    /**

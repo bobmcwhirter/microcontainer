@@ -101,12 +101,12 @@ public class AbstractDemandMetaData extends JBossObject implements DemandMetaDat
       return whenRequired;
    }
 
-   public void visit(MetaDataVisitor visitor)
+   public void initialVisit(MetaDataVisitor visitor)
    {
       KernelControllerContext context = visitor.getControllerContext();
       DependencyItem item = new DemandDependencyItem(context.getName());
       visitor.addDependency(item);
-      visitor.visit(this);
+      visitor.initialVisit(this);
    }
    
    public Iterator<? extends MetaDataVisitorNode> getChildren()

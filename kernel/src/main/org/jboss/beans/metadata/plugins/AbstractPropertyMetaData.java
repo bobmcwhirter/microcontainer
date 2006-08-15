@@ -133,10 +133,10 @@ public class AbstractPropertyMetaData extends AbstractFeatureMetaData implements
       flushJBossObjectCache();
    }
    
-   public void visit(MetaDataVisitor visitor)
+   public void initialVisit(MetaDataVisitor visitor)
    {
       visitor.setContextState(ControllerState.CONFIGURED);
-      super.visit(visitor);
+      super.initialVisit(visitor);
    }
 
    public void addChildren(Set<MetaDataVisitorNode> children)

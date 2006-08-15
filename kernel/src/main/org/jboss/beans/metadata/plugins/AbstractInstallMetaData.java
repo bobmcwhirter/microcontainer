@@ -82,7 +82,7 @@ public class AbstractInstallMetaData extends AbstractLifecycleMetaData implement
       return dependentState;
    }
 
-   public void visit(MetaDataVisitor visitor)
+   public void initialVisit(MetaDataVisitor visitor)
    {
       KernelControllerContext context = visitor.getControllerContext();
       if (bean != null)
@@ -90,7 +90,7 @@ public class AbstractInstallMetaData extends AbstractLifecycleMetaData implement
          DependencyItem item = new InstallationDependencyItem(context.getName());
          visitor.addDependency(item);
       }
-      super.visit(visitor);
+      super.initialVisit(visitor);
    }
 
    public void toString(JBossStringBuilder buffer)

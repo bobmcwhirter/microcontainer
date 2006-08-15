@@ -79,9 +79,9 @@ public class AbstractValueMetaData extends JBossObject implements ValueMetaData
       return value;
    }
 
-   public void visit(MetaDataVisitor visitor)
+   public void initialVisit(MetaDataVisitor visitor)
    {
-      visitor.visit(this);
+      visitor.initialVisit(this);
    }
    
    public Iterator<? extends MetaDataVisitorNode> getChildren()

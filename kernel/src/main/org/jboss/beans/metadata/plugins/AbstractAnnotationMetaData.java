@@ -81,9 +81,9 @@ public class AbstractAnnotationMetaData extends JBossObject implements Annotatio
       return ann;
    }
    
-   public void visit(MetaDataVisitor visitor)
+   public void initialVisit(MetaDataVisitor visitor)
    {
-      visitor.visit(this);
+      visitor.initialVisit(this);
    }
    
    public Iterator<? extends MetaDataVisitorNode> getChildren()

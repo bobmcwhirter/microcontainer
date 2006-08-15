@@ -179,11 +179,11 @@ public class AbstractKernelControllerContext extends AbstractControllerContext i
          this.bmd = bmd;
       }
 
-      public void visit(MetaDataVisitorNode node)
+      public void initialVisit(MetaDataVisitorNode node)
       {
       }
 
-      public void revisit(MetaDataVisitorNode node)
+      public void describeVisit(MetaDataVisitorNode node)
       {
       }
 
@@ -232,7 +232,7 @@ public class AbstractKernelControllerContext extends AbstractControllerContext i
        */
       public Object run()
       {
-         bmd.visit(this);
+         bmd.initialVisit(this);
          return null;
       }
       
@@ -241,11 +241,11 @@ public class AbstractKernelControllerContext extends AbstractControllerContext i
        * 
        * @param node the node
        */
-      public void visit(MetaDataVisitorNode node)
+      public void initialVisit(MetaDataVisitorNode node)
       {
          boolean trace = log.isTraceEnabled();
          if (trace)
-            log.trace("Visit node " + node);
+            log.trace("Initial visit node " + node);
          
          // Visit the children of this node
          Iterator children = node.getChildren();
@@ -257,7 +257,7 @@ public class AbstractKernelControllerContext extends AbstractControllerContext i
                MetaDataVisitorNode child = (MetaDataVisitorNode) children.next();
                try
                {
-                  child.visit(this);
+                  child.initialVisit(this);
                }
                finally
                {
@@ -289,7 +289,7 @@ public class AbstractKernelControllerContext extends AbstractControllerContext i
       public Object run()
       {
          visitorNodeStack.push(bmd);
-//         bmd.revisit(this);
+//         bmd.describeVisit(this);
          visitorNodeStack.pop();
          visitorNodeStack = null;
          return null;
@@ -300,11 +300,11 @@ public class AbstractKernelControllerContext extends AbstractControllerContext i
        *
        * @param node the node
        */
-      public void revisit(MetaDataVisitorNode node)
+      public void describeVisit(MetaDataVisitorNode node)
       {
          boolean trace = log.isTraceEnabled();
          if (trace)
-            log.trace("Revisit node " + node);
+            log.trace("Describe visit node " + node);
 
          // Visit the children of this node
          Iterator children = node.getChildren();
@@ -317,7 +317,7 @@ public class AbstractKernelControllerContext extends AbstractControllerContext i
                visitorNodeStack.push(child);
                try
                {
-//                  child.revisit(this);
+//                  child.describeVisit(this);
                }
                finally
                {

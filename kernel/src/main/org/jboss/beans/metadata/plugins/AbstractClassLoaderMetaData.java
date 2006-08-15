@@ -76,10 +76,10 @@ public class AbstractClassLoaderMetaData extends JBossObject implements ClassLoa
       return classloader;
    }
 
-   public void visit(MetaDataVisitor visitor)
+   public void initialVisit(MetaDataVisitor visitor)
    {
       visitor.setContextState(ControllerState.DESCRIBED);
-      visitor.visit(this);
+      visitor.initialVisit(this);
    }
 
    public Iterator<? extends MetaDataVisitorNode> getChildren()

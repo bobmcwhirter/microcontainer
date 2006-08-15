@@ -98,10 +98,10 @@ public class AbstractLifecycleMetaData extends AbstractFeatureMetaData implement
       flushJBossObjectCache();
    }
 
-   public void visit(MetaDataVisitor visitor)
+   public void initialVisit(MetaDataVisitor visitor)
    {
       visitor.setContextState(state);
-      super.visit(visitor);
+      super.initialVisit(visitor);
    }
    
    protected void addChildren(Set<MetaDataVisitorNode> children)

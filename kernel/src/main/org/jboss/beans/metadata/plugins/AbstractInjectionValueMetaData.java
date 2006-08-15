@@ -108,7 +108,7 @@ public class AbstractInjectionValueMetaData extends AbstractDependencyValueMetaD
       return super.getValue(info, cl);
    }
 
-   public void visit(MetaDataVisitor visitor)
+   public void initialVisit(MetaDataVisitor visitor)
    {
       // determine value
       if (getUnderlyingValue() == null)
@@ -138,8 +138,8 @@ public class AbstractInjectionValueMetaData extends AbstractDependencyValueMetaD
                DependencyItem item = new PropertyPlaceholderDependencyItem(context.getName(), propertyMetaData.getName());
                visitor.addDependency(item);
             }
-            visitor.visit(this); // as in AbstractValueMetaData
-            // skip AbstractDependencyVMD.visit() - no value defined
+            visitor.initialVisit(this); // as in AbstractValueMetaData
+            // skip AbstractDependencyVMD.initialVisit() - no value defined
             return;
          }
          else
@@ -147,7 +147,7 @@ public class AbstractInjectionValueMetaData extends AbstractDependencyValueMetaD
             throw new IllegalArgumentException("Unknown injection type=" + injectionType);
          }
       }
-      super.visit(visitor);
+      super.initialVisit(visitor);
    }
 
    public void toString(JBossStringBuilder buffer)

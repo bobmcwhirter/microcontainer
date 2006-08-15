@@ -85,9 +85,9 @@ public class AbstractFeatureMetaData extends JBossObject implements FeatureMetaD
       return annotations;
    }
 
-   public void visit(MetaDataVisitor visitor)
+   public void initialVisit(MetaDataVisitor visitor)
    {
-      visitor.visit(this);
+      visitor.initialVisit(this);
    }
    
    public Iterator<? extends MetaDataVisitorNode> getChildren()

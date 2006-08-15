@@ -68,14 +68,14 @@ public interface MetaDataVisitor
     * 
     * @param node the node
     */
-   void visit(MetaDataVisitorNode node);
+   void initialVisit(MetaDataVisitorNode node);
 
    /**
     * Revisit the node
     *
     * @param node the node
     */
-   void revisit(MetaDataVisitorNode node);
+   void describeVisit(MetaDataVisitorNode node);
 
    /**
     * Current meta data visited branch

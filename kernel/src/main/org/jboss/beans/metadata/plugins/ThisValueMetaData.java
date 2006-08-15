@@ -57,7 +57,7 @@ public class ThisValueMetaData extends AbstractValueMetaData
       return result;
    }
 
-   public void visit(MetaDataVisitor visitor)
+   public void initialVisit(MetaDataVisitor visitor)
    {
       KernelControllerContext controllerContext = visitor.getControllerContext();
       controller = (KernelController) controllerContext.getController();
@@ -67,6 +67,6 @@ public class ThisValueMetaData extends AbstractValueMetaData
       DependencyItem item = new AbstractDependencyItem(value, value, whenRequired, ControllerState.INSTANTIATED);
       visitor.addDependency(item);
 
-      super.visit(visitor);
+      super.initialVisit(visitor);
    }
 }

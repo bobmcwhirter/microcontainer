@@ -36,14 +36,14 @@ public interface MetaDataVisitorNode
     * 
     * @param vistor the visitor
     */
-   public void visit(MetaDataVisitor vistor);
+   public void initialVisit(MetaDataVisitor vistor);
    
    /**
     * Revisit the node
     *
     * @param vistor the visitor
     */
-//   public void revisit(MetaDataVisitor vistor);
+//   public void describeVisit(MetaDataVisitor vistor);
 
    /**
     * Return the child nodes

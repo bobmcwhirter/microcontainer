@@ -77,7 +77,7 @@ public class AbstractDependencyMetaData extends JBossObject implements Dependenc
       return dependency;
    }
 
-   public void visit(MetaDataVisitor visitor)
+   public void initialVisit(MetaDataVisitor visitor)
    {
       KernelControllerContext context = visitor.getControllerContext();
       DependencyItem item = new LifecycleDependencyItem(context.getName(), ControllerState.CREATE);
@@ -85,7 +85,7 @@ public class AbstractDependencyMetaData extends JBossObject implements Dependenc
       item = new LifecycleDependencyItem(context.getName(), ControllerState.START);
       visitor.addDependency(item);
 
-      visitor.visit(this);
+      visitor.initialVisit(this);
    }
    
    public Iterator<? extends MetaDataVisitorNode> getChildren()
