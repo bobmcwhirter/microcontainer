@@ -21,6 +21,8 @@
 */
 package org.jboss.beans.metadata.spi;
 
+import java.util.Stack;
+
 import org.jboss.dependency.spi.ControllerState;
 import org.jboss.dependency.spi.DependencyItem;
 import org.jboss.kernel.spi.dependency.KernelControllerContext;
@@ -67,4 +69,19 @@ public interface MetaDataVisitor
     * @param node the node
     */
    void visit(MetaDataVisitorNode node);
+
+   /**
+    * Revisit the node
+    *
+    * @param node the node
+    */
+   void revisit(MetaDataVisitorNode node);
+
+   /**
+    * Current meta data visited branch
+    *
+    * @return stack of meta data objects in this branch
+    */
+   Stack visitorNodeStack();
+
 }

@@ -89,6 +89,8 @@ public class AbstractKernelController extends AbstractController implements Kern
       List<KernelControllerContext> list = suppliers.get(name);
       if (list != null && list.isEmpty() == false)
          return list.get(0);
+      else if (name instanceof Class)
+         return getContextByClass((Class)name);
       else
          return null;
    }
@@ -212,7 +214,7 @@ public class AbstractKernelController extends AbstractController implements Kern
    /**
     * @return all instantiated contexts whose target is instance of this class clazz param
     */
-   public Set<ControllerContext> getInstantiatedContexts(Class clazz)
+   public Set<KernelControllerContext> getInstantiatedContexts(Class clazz)
    {
       lockRead();
       try
@@ -235,7 +237,7 @@ public class AbstractKernelController extends AbstractController implements Kern
     * add instantiated context into contextsByClass map
     * look at all target's superclasses and interfaces
     */
-   public void addInstantiatedContext(ControllerContext context)
+   public void addInstantiatedContext(KernelControllerContext context)
    {
       prepareToTraverse(context, true);
    }
@@ -244,12 +246,12 @@ public class AbstractKernelController extends AbstractController implements Kern
     * remove instantiated context from contextsByClass map
     * look at all target's superclasses and interfaces
     */
-   public void removeInstantiatedContext(ControllerContext context)
+   public void removeInstantiatedContext(KernelControllerContext context)
    {
       prepareToTraverse(context, false);
    }
 
-   protected void prepareToTraverse(ControllerContext context, boolean addition)
+   protected void prepareToTraverse(KernelControllerContext context, boolean addition)
    {
       lockWrite();
       try
@@ -273,7 +275,7 @@ public class AbstractKernelController extends AbstractController implements Kern
     * @param context context whose target is instance of clazz
     * @param clazz current class to map context to
     */
-   protected void traverseBean(ControllerContext context, Class clazz, boolean addition, boolean trace)
+   protected void traverseBean(KernelControllerContext context, Class clazz, boolean addition, boolean trace)
    {
       if (clazz == null || clazz == Object.class)
       {
@@ -285,7 +287,7 @@ public class AbstractKernelController extends AbstractController implements Kern
          if (classContext == null)
          {
             classContext = new ClassContext();
-            classContext.contexts = new HashSet<ControllerContext>();
+            classContext.contexts = new HashSet<KernelControllerContext>();
             contextsByClass.put(clazz, classContext);
          }
          else if (classContext.used)
@@ -322,7 +324,23 @@ public class AbstractKernelController extends AbstractController implements Kern
    private class ClassContext
    {
       private boolean used;
-      private Set<ControllerContext> contexts;
+      private Set<KernelControllerContext> contexts;
+   }
+
+   private KernelControllerContext getContextByClass(Class clazz)
+   {
+      Set<KernelControllerContext> contexts = getInstantiatedContexts(clazz);
+      int numberOfMatchingBeans = 0;
+      if (contexts != null)
+      {
+         numberOfMatchingBeans = contexts.size();
+      }
+      if (numberOfMatchingBeans != 1)
+      {
+         log.error("Should not be here, illegas size of matching contexts (" + numberOfMatchingBeans + ") - dependency failed! " + clazz);
+         return null;
+      }
+      return contexts.iterator().next();
    }
 
 }

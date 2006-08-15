@@ -39,6 +39,13 @@ public interface MetaDataVisitorNode
    public void visit(MetaDataVisitor vistor);
    
    /**
+    * Revisit the node
+    *
+    * @param vistor the visitor
+    */
+//   public void revisit(MetaDataVisitor vistor);
+
+   /**
     * Return the child nodes
     * 
     * @return Iterator<MetaDataVisitorNode> or null if there aren't any
