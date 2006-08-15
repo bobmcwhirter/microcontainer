@@ -372,7 +372,6 @@ public class AbstractKernelDeployer
     */
    protected void undeployBean(KernelController controller, KernelControllerContext context) throws Throwable
    {
-      if (ControllerState.ERROR.equals(context.getState()) == false)
-         controller.uninstall(context.getName());
+      controller.uninstall(context.getName());
    }
 }
