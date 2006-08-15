@@ -49,7 +49,7 @@ public class PropertyContextualInjectionTestCase extends MicrocontainerTest
 
    public void testContextualInjection() throws Throwable
    {
-//      enableTrace("org.jboss.kernel");
+      enableTrace("org.jboss.kernel.plugins.dependency");
 //      enableTrace("org.jboss.dependency");
       for(int i = 0; i < PropertyContextualInjectionTestCase.PREFIX.length; i++)
       {

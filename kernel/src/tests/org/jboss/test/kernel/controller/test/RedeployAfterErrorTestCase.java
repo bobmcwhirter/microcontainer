@@ -22,30 +22,54 @@
 package org.jboss.test.kernel.controller.test;
 
 import junit.framework.Test;
-import junit.framework.TestSuite;
-import junit.textui.TestRunner;
+
+import org.jboss.dependency.spi.ControllerContext;
+import org.jboss.dependency.spi.ControllerState;
+import org.jboss.kernel.spi.deployment.KernelDeployment;
 
 /**
- * Controller Test Suite.
+ * RedeployAfterErrorTestCase.
  * 
  * @author <a href="adrian@jboss.com">Adrian Brock</a>
- * @version $Revision$
+ * @version $Revision: 1.1 $
  */
-public class ControllerTestSuite extends TestSuite
+public class RedeployAfterErrorTestCase extends AbstractControllerTest
 {
-   public static void main(String[] args)
-   {
-      TestRunner.run(suite());
-   }
-
    public static Test suite()
    {
-      TestSuite suite = new TestSuite("Controller Tests");
+      return suite(RedeployAfterErrorTestCase.class);
+   }
 
-      suite.addTest(AccessControlTestCase.suite());
-      suite.addTest(NoInstantiateTestCase.suite());
-      suite.addTest(RedeployAfterErrorTestCase.suite());
+   public RedeployAfterErrorTestCase(String name) throws Throwable
+   {
+      super(name);
+   }
+
+   public void testRedeployAfterError() throws Throwable
+   {
+      KernelDeployment deployment = deploy("RedeployAfterErrorTestCase_bad.xml");
+      try
+      {
+         ControllerContext context = getControllerContext("Name1", null);
+         assertEquals(ControllerState.ERROR, context.getState());
+         checkThrowable(ClassNotFoundException.class, context.getError());
+      }
+      finally
+      {
+         undeploy(deployment);
+      }
+
+      validate();
       
-      return suite;
+      deployment = deploy("RedeployAfterErrorTestCase_good.xml");
+      try
+      {
+         validate();
+         assertNotNull(getBean("Name1"));
+      }
+      finally
+      {
+         undeploy(deployment);
+      }
    }
 }
