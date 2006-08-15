@@ -113,6 +113,11 @@ public class AbstractDependencyTest extends AbstractTestCaseWithSetup
    {
       assertEquals(expected, context.getState());
    }
+
+   protected void assertNoContext(ControllerContext context) throws Throwable
+   {
+      assertContext(context, ControllerState.ERROR);
+   }
    
    protected void assertUninstall(ControllerContext context) throws Throwable
    {

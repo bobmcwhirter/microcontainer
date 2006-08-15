@@ -518,7 +518,12 @@ public class AbstractController extends JBossObject implements Controller
          {
             ControllerContext context = (ControllerContext) i.next();
             Object name = context.getName();
-            if (installing.add(context) == false)
+            if (fromState.equals(context.getState()) == false)
+            {
+               if (trace)
+                  log.trace("Skipping already installed " + name + " for " + toState.getStateString());
+            }
+            else if (installing.add(context) == false)
             {
                if (trace)
                   log.trace("Already installing " + name + " for " + toState.getStateString());

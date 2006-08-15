@@ -23,8 +23,11 @@ package org.jboss.test.dependency.controller.test;
 
 import junit.framework.Test;
 
+import org.jboss.dependency.plugins.AbstractDependencyItem;
 import org.jboss.dependency.spi.ControllerState;
+import org.jboss.dependency.spi.DependencyItem;
 import org.jboss.test.dependency.controller.support.RecursiveControllerContext;
+import org.jboss.test.dependency.controller.support.TestControllerContext;
 import org.jboss.test.dependency.controller.support.TestDelegate;
 
 /**
@@ -49,101 +52,67 @@ public class RecursiveControllerActionTestCase extends AbstractDependencyTest
    {
       TestDelegate delegate = new TestDelegate("InstallTestRecursive");
       RecursiveControllerContext context = new RecursiveControllerContext(delegate, this);
+
+      TestDelegate other = new TestDelegate("Other");
+      TestControllerContext otherContext = new TestControllerContext(other);
+      DependencyItem item = new AbstractDependencyItem(other.getName(), delegate.getName(), ControllerState.CREATE, ControllerState.CONFIGURED);
+      otherContext.getDependencyInfo().addIDependOn(item);
+      assertInstall(otherContext, ControllerState.CONFIGURED);
+      
       assertInstall(context, ControllerState.INSTALLED);
-      TestDelegate childDelegate = context.child.getDelegate();
-      assertEquals(1, delegate.describeInstallOrder);
-      assertEquals(2, delegate.instantiateInstallOrder);
-      assertEquals(3, delegate.configureInstallOrder);
-      assertEquals(4, delegate.createInstallOrder);
-      assertEquals(5, childDelegate.describeInstallOrder);
-      assertEquals(6, childDelegate.instantiateInstallOrder);
-      assertEquals(7, childDelegate.configureInstallOrder);
-      assertEquals(8, childDelegate.createInstallOrder);
-      assertEquals(9, childDelegate.startInstallOrder);
-      assertEquals(10, childDelegate.installInstallOrder);
-      assertEquals(11, delegate.startInstallOrder);
-      assertEquals(12, delegate.installInstallOrder);
-      assertEquals(-1, delegate.installUninstallOrder);
-      assertEquals(-1, delegate.startUninstallOrder);
-      assertEquals(-1, delegate.createUninstallOrder);
-      assertEquals(-1, delegate.configureUninstallOrder);
-      assertEquals(-1, delegate.instantiateUninstallOrder);
-      assertEquals(-1, delegate.describeUninstallOrder);
+      assertContext(otherContext, ControllerState.INSTALLED);
+      assertContext(context.child, ControllerState.INSTALLED);
    }
    
    public void testUninstall() throws Throwable
    {
       TestDelegate delegate = new TestDelegate("UninstallTestRecursive");
       RecursiveControllerContext context = new RecursiveControllerContext(delegate, this);
+
+      TestDelegate other = new TestDelegate("Other");
+      TestControllerContext otherContext = new TestControllerContext(other);
+      DependencyItem item = new AbstractDependencyItem(other.getName(), delegate.getName(), ControllerState.CREATE, ControllerState.CONFIGURED);
+      otherContext.getDependencyInfo().addIDependOn(item);
+      assertInstall(otherContext, ControllerState.CONFIGURED);
+      
       assertInstall(context, ControllerState.INSTALLED);
-      TestDelegate childDelegate = context.child.getDelegate();
+      assertContext(otherContext, ControllerState.INSTALLED);
+      assertContext(context.child, ControllerState.INSTALLED);
+      
       assertUninstall(context);
       if (context.child.error != null)
          throw context.child.error;
-      assertEquals(1, delegate.describeInstallOrder);
-      assertEquals(2, delegate.instantiateInstallOrder);
-      assertEquals(3, delegate.configureInstallOrder);
-      assertEquals(4, delegate.createInstallOrder);
-      assertEquals(5, childDelegate.describeInstallOrder);
-      assertEquals(6, childDelegate.instantiateInstallOrder);
-      assertEquals(7, childDelegate.configureInstallOrder);
-      assertEquals(8, childDelegate.createInstallOrder);
-      assertEquals(9, childDelegate.startInstallOrder);
-      assertEquals(10, childDelegate.installInstallOrder);
-      assertEquals(11, delegate.startInstallOrder);
-      assertEquals(12, delegate.installInstallOrder);
-      assertEquals(13, delegate.installUninstallOrder);
-      assertEquals(14, delegate.startUninstallOrder);
-      assertEquals(15, childDelegate.installUninstallOrder);
-      assertEquals(16, childDelegate.startUninstallOrder);
-      assertEquals(17, childDelegate.createUninstallOrder);
-      assertEquals(18, childDelegate.configureUninstallOrder);
-      assertEquals(19, childDelegate.instantiateUninstallOrder);
-      assertEquals(20, childDelegate.describeUninstallOrder);
-      assertEquals(21, delegate.createUninstallOrder);
-      assertEquals(22, delegate.configureUninstallOrder);
-      assertEquals(23, delegate.instantiateUninstallOrder);
-      assertEquals(24, delegate.describeUninstallOrder);
+      assertNoContext(context.child);
+      assertUninstall(otherContext);
    }
    
    public void testReinstall() throws Throwable
    {
       TestDelegate delegate = new TestDelegate("ReinstallTestRecursive");
       RecursiveControllerContext context = new RecursiveControllerContext(delegate, this);
+
+      TestDelegate other = new TestDelegate("Other");
+      TestControllerContext otherContext = new TestControllerContext(other);
+      DependencyItem item = new AbstractDependencyItem(other.getName(), delegate.getName(), ControllerState.CREATE, ControllerState.CONFIGURED);
+      otherContext.getDependencyInfo().addIDependOn(item);
+      assertInstall(otherContext, ControllerState.CONFIGURED);
+
       assertInstall(context, ControllerState.INSTALLED);
-      TestDelegate childDelegate = context.child.getDelegate();
+      assertContext(otherContext, ControllerState.INSTALLED);
+      assertContext(context.child, ControllerState.INSTALLED);
+
       assertUninstall(context);
       if (context.child.error != null)
          throw context.child.error;
+      assertNoContext(context.child);
+      assertContext(otherContext, ControllerState.CONFIGURED);
+      
       context = new RecursiveControllerContext(delegate, this);
       assertInstall(context, ControllerState.INSTALLED);
-      TestDelegate childDelegate2 = context.child.getDelegate();
       if (context.child.error != null)
          throw context.child.error;
-      assertEquals(25, delegate.describeInstallOrder);
-      assertEquals(26, delegate.instantiateInstallOrder);
-      assertEquals(27, delegate.configureInstallOrder);
-      assertEquals(28, delegate.createInstallOrder);
-      assertEquals(29, childDelegate2.describeInstallOrder);
-      assertEquals(30, childDelegate2.instantiateInstallOrder);
-      assertEquals(31, childDelegate2.configureInstallOrder);
-      assertEquals(32, childDelegate2.createInstallOrder);
-      assertEquals(33, childDelegate2.startInstallOrder);
-      assertEquals(34, childDelegate2.installInstallOrder);
-      assertEquals(35, delegate.startInstallOrder);
-      assertEquals(36, delegate.installInstallOrder);
-      assertEquals(13, delegate.installUninstallOrder);
-      assertEquals(14, delegate.startUninstallOrder);
-      assertEquals(15, childDelegate.installUninstallOrder);
-      assertEquals(16, childDelegate.startUninstallOrder);
-      assertEquals(17, childDelegate.createUninstallOrder);
-      assertEquals(18, childDelegate.configureUninstallOrder);
-      assertEquals(19, childDelegate.instantiateUninstallOrder);
-      assertEquals(20, childDelegate.describeUninstallOrder);
-      assertEquals(21, delegate.createUninstallOrder);
-      assertEquals(22, delegate.configureUninstallOrder);
-      assertEquals(23, delegate.instantiateUninstallOrder);
-      assertEquals(24, delegate.describeUninstallOrder);
+      assertContext(otherContext, ControllerState.INSTALLED);
+      assertContext(context.child, ControllerState.INSTALLED);
    }
    
    public void installChild(RecursiveControllerContext context) throws Throwable
