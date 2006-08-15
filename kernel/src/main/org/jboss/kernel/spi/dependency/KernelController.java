@@ -79,6 +79,14 @@ public interface KernelController extends KernelObject, Controller
    Set<KernelControllerContext> getInstantiatedContexts(Class clazz);
 
    /**
+    * If zero or multiple instances match class clazz
+    * a warning is issued, but no throwable is thrown
+    *
+    * @return context whose target is instance of this class clazz param or null if zero or multiple such instances
+    */
+   KernelControllerContext getContextByClass(Class clazz);
+
+   /**
     * add instantiated context into contextsByClass map
     * look at all target's superclasses and interfaces
     */

@@ -327,7 +327,13 @@ public class AbstractKernelController extends AbstractController implements Kern
       private Set<KernelControllerContext> contexts;
    }
 
-   private KernelControllerContext getContextByClass(Class clazz)
+   /**
+    * If zero or multiple instances match class clazz
+    * a warning is issued, but no throwable is thrown
+    *
+    * @return context whose target is instance of this class clazz param or null if zero or multiple such instances
+    */
+   public KernelControllerContext getContextByClass(Class clazz)
    {
       Set<KernelControllerContext> contexts = getInstantiatedContexts(clazz);
       int numberOfMatchingBeans = 0;
