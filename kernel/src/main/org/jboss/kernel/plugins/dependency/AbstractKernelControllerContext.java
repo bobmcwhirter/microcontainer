@@ -289,7 +289,7 @@ public class AbstractKernelControllerContext extends AbstractControllerContext i
       public Object run()
       {
          visitorNodeStack.push(bmd);
-         bmd.revisit(this);
+//         bmd.revisit(this);
          visitorNodeStack.pop();
          visitorNodeStack = null;
          return null;
@@ -317,7 +317,7 @@ public class AbstractKernelControllerContext extends AbstractControllerContext i
                visitorNodeStack.push(child);
                try
                {
-//                  child.visit(this);
+//                  child.revisit(this);
                }
                finally
                {

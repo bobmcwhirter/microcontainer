@@ -36,8 +36,8 @@ import org.jboss.dependency.spi.DependencyItem;
 import org.jboss.kernel.plugins.dependency.UpdateableDependencyItem;
 import org.jboss.kernel.spi.dependency.KernelController;
 import org.jboss.kernel.spi.dependency.KernelControllerContext;
-import org.jboss.reflect.spi.TypeInfo;
 import org.jboss.util.JBossStringBuilder;
+import org.jboss.reflect.spi.TypeInfo;
 
 /**
  * Injection value.
@@ -102,28 +102,7 @@ public class AbstractInjectionValueMetaData extends AbstractDependencyValueMetaD
    {
       if (value == null)
       {
-         // this is by class injection
-         ControllerState state = dependentState;
-         if (state == null)
-         {
-            state = ControllerState.INSTALLED;
-         }
-         // what else to use here - if not info.getType?
-         Set contexts = controller.getInstantiatedContexts(info.getType());
-         int numberOfMatchingBeans = 0;
-         if (contexts != null)
-         {
-            numberOfMatchingBeans = contexts.size();
-         }
-         if (numberOfMatchingBeans != 1)
-         {
-            throw new Error(
-                  "Should not be here, illegas size of matching contexts ("
-                        + numberOfMatchingBeans + ") - dependency failed! " + this);
-         }
-         ControllerContext context = (ControllerContext) contexts.iterator().next();
-         // todo - should we do this?
-         controller.change(context, state);
+         ControllerContext context = controller.getInstalledContext(info.getType());
          return context.getTarget();
       }
       return super.getValue(info, cl);
