@@ -92,7 +92,7 @@ public class StringValueMetaData extends AbstractTypeMetaData
       {
          return getClass(visitor, getType());
       }
-      return super.getType(visitor, this);
+      return super.getType(visitor, previous);
    }
 
 }

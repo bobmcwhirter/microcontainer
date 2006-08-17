@@ -98,7 +98,7 @@ public class AbstractCollectionMetaData extends AbstractTypeMetaData implements 
       {
          return getClass(visitor, elementType);
       }
-      return super.getType(visitor, this);
+      return super.getType(visitor, previous);
    }
 
    public boolean add(MetaDataVisitorNode o)

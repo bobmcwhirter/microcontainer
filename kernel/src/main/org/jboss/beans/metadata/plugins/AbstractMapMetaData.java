@@ -204,7 +204,7 @@ public class AbstractMapMetaData extends AbstractTypeMetaData implements Map<Met
             return getClass(visitor, valueType);
          }
       }
-      return super.getType(visitor, this);
+      return super.getType(visitor, previous);
    }
 
    public void toString(JBossStringBuilder buffer)
