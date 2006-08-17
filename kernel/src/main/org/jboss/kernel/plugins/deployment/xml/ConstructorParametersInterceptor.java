@@ -52,6 +52,7 @@ public class ConstructorParametersInterceptor extends DefaultElementInterceptor
          parameters = new ArrayList<ParameterMetaData>();
          constructor.setParameters(parameters);
       }
+      parameter.setIndex(parameters.size());
       parameters.add(parameter);
    }
 }

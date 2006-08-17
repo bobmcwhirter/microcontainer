@@ -42,6 +42,7 @@ public class BeanDestroyInterceptor extends DefaultElementInterceptor
    {
       AbstractBeanMetaData bean = (AbstractBeanMetaData) parent;
       AbstractLifecycleMetaData lifecycle = (AbstractLifecycleMetaData) child;
+      lifecycle.setType("destroy");
       bean.setDestroy(lifecycle);
    }
 }

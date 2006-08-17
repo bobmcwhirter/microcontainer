@@ -42,6 +42,7 @@ public class BeanFactoryStartInterceptor extends DefaultElementInterceptor
    {
       GenericBeanFactoryMetaData bean = (GenericBeanFactoryMetaData) parent;
       AbstractLifecycleMetaData lifecycle = (AbstractLifecycleMetaData) child;
+      lifecycle.setType("start");
       bean.setBeanStart(lifecycle);
    }
 }

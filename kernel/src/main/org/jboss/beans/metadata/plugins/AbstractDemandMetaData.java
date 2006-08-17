@@ -108,7 +108,12 @@ public class AbstractDemandMetaData extends JBossObject implements DemandMetaDat
       visitor.addDependency(item);
       visitor.initialVisit(this);
    }
-   
+
+   public void describeVisit(MetaDataVisitor vistor)
+   {
+      vistor.describeVisit(this);
+   }
+
    public Iterator<? extends MetaDataVisitorNode> getChildren()
    {
       return null;

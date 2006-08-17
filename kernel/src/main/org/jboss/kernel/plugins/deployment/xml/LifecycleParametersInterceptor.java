@@ -52,6 +52,7 @@ public class LifecycleParametersInterceptor extends DefaultElementInterceptor
          parameters = new ArrayList<ParameterMetaData>();
          lifecycle.setParameters(parameters);
       }
+      parameter.setIndex(parameters.size());
       parameters.add(parameter);
    }
 }

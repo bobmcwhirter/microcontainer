@@ -26,6 +26,7 @@ import java.util.Collection;
 import java.util.Iterator;
 
 import org.jboss.beans.info.spi.BeanInfo;
+import org.jboss.beans.metadata.spi.MetaDataVisitor;
 import org.jboss.beans.metadata.spi.MetaDataVisitorNode;
 import org.jboss.beans.metadata.spi.ValueMetaData;
 import org.jboss.joinpoint.spi.Joinpoint;
@@ -44,7 +45,7 @@ public class AbstractCollectionMetaData extends AbstractTypeMetaData implements 
 {
    /** The collection */
    protected ArrayList<MetaDataVisitorNode> collection = new ArrayList<MetaDataVisitorNode>();
-   
+
    /** The element type */
    protected String elementType;
 
@@ -89,6 +90,15 @@ public class AbstractCollectionMetaData extends AbstractTypeMetaData implements 
          result.add(vmd.getValue(elementTypeInfo, cl));
       }
       return result;
+   }
+
+   public Class getType(MetaDataVisitor visitor, MetaDataVisitorNode previous) throws Throwable
+   {
+      if (elementType != null)
+      {
+         return getClass(visitor, elementType);
+      }
+      return super.getType(visitor, this);
    }
 
    public boolean add(MetaDataVisitorNode o)
@@ -150,7 +160,7 @@ public class AbstractCollectionMetaData extends AbstractTypeMetaData implements 
    {
       return collection.toArray();
    }
-   
+
    public <T> T[] toArray(T[] a)
    {
       return collection.toArray(a);
@@ -167,7 +177,7 @@ public class AbstractCollectionMetaData extends AbstractTypeMetaData implements 
       buffer.append(" collection=");
       JBossObject.list(buffer, collection);
    }
-   
+
    /**
     * Create the default collection instance
     * 
@@ -178,7 +188,7 @@ public class AbstractCollectionMetaData extends AbstractTypeMetaData implements 
    {
       return new ArrayList<Object>();
    }
-   
+
    /**
     * Create the collection instance
     * 
@@ -192,10 +202,10 @@ public class AbstractCollectionMetaData extends AbstractTypeMetaData implements 
    protected Collection<Object> getCollectionInstance(TypeInfo info, ClassLoader cl, Class<?> expected) throws Throwable
    {
       TypeInfo typeInfo = getClassInfo(cl);
-      
+
       if (typeInfo != null && typeInfo instanceof ClassInfo == false)
          throw new IllegalArgumentException(typeInfo.getName() + " is not a class");
-      
+
       if (typeInfo != null && ((ClassInfo) typeInfo).isInterface())
          throw new IllegalArgumentException(typeInfo.getName() + " is an interface");
 
@@ -207,7 +217,7 @@ public class AbstractCollectionMetaData extends AbstractTypeMetaData implements 
          // Not a class 
          if (info instanceof ClassInfo == false)
             return null;
-         // Not an interface
+         // Is an interface
          if (((ClassInfo) info).isInterface())
             return null;
          // Type is too general
@@ -216,7 +226,7 @@ public class AbstractCollectionMetaData extends AbstractTypeMetaData implements 
          // Try to use the passed type
          typeInfo = info;
       }
-      
+
       BeanInfo beanInfo = configurator.getBeanInfo(typeInfo);
       Joinpoint constructor = configurator.getConstructorJoinPoint(beanInfo);
       Object result = constructor.dispatch();
@@ -224,7 +234,7 @@ public class AbstractCollectionMetaData extends AbstractTypeMetaData implements 
          throw new ClassCastException(result.getClass() + " is not a " + expected.getName());
       return (Collection<Object>) result;
    }
-   
+
    /**
     * Get the class info for the element type
     *
@@ -236,7 +246,7 @@ public class AbstractCollectionMetaData extends AbstractTypeMetaData implements 
    {
       if (elementType == null)
          return null;
-      
+
       return configurator.getClassInfo(elementType, cl);
    }
 }

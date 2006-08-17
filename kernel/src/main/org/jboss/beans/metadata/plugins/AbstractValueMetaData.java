@@ -23,6 +23,8 @@ package org.jboss.beans.metadata.plugins;
 
 import java.util.Iterator;
 import java.util.Collections;
+import java.util.Stack;
+
 import org.jboss.beans.metadata.spi.MetaDataVisitor;
 import org.jboss.beans.metadata.spi.ValueMetaData;
 import org.jboss.beans.metadata.spi.MetaDataVisitorNode;
@@ -36,7 +38,7 @@ import org.jboss.util.JBossStringBuilder;
  * @author <a href="adrian@jboss.com">Adrian Brock</a>
  * @version $Revision$
  */
-public class AbstractValueMetaData extends JBossObject implements ValueMetaData
+public class AbstractValueMetaData extends JBossObject implements ValueMetaData, TypeProvider
 {
    /** The value */
    protected Object value;
@@ -83,7 +85,26 @@ public class AbstractValueMetaData extends JBossObject implements ValueMetaData
    {
       visitor.initialVisit(this);
    }
-   
+
+   public void describeVisit(MetaDataVisitor vistor)
+   {
+      vistor.describeVisit(this);
+   }
+
+   public Class getType(MetaDataVisitor visitor, MetaDataVisitorNode previous) throws Throwable
+   {
+      Stack visitorNodeStack = visitor.visitorNodeStack();
+      TypeProvider typeProvider = (TypeProvider) visitorNodeStack.pop();
+      try
+      {
+         return typeProvider.getType(visitor, this);
+      }
+      finally
+      {
+         visitorNodeStack.push(typeProvider);
+      }
+   }
+
    public Iterator<? extends MetaDataVisitorNode> getChildren()
    {
       if (value instanceof MetaDataVisitorNode)

@@ -366,7 +366,7 @@ $Id$
            e.g. 
            <bean name="ConstructMe" ...>
               <constructor factoryMethod="someMethod">
-                 <factory/>
+                 <factory>
                     <javabean xmlns="someOtherNamespace" class="com.acme.FactoryClass"/>
                  </factory>
               </constructor>

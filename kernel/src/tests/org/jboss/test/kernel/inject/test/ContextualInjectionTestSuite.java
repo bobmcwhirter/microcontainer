@@ -41,8 +41,8 @@ public class ContextualInjectionTestSuite extends TestSuite
    {
       TestSuite suite = new TestSuite("Contextal injection Tests");
 
-      suite.addTest(ParameterContextualInjectionTestCase.suite());
-      suite.addTest(IllegalParameterContextualInjectionTestCase.suite());
+      suite.addTest(ConstructorContextualInjectionTestCase.suite());
+      suite.addTest(LifecycleContextualInjectionTestCase.suite());
       suite.addTest(PropertyContextualInjectionTestCase.suite());
 
       return suite;

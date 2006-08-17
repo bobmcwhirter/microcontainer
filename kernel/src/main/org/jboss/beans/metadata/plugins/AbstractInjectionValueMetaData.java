@@ -21,23 +21,16 @@
 */
 package org.jboss.beans.metadata.plugins;
 
-import java.util.Iterator;
-import java.util.Set;
-
-import org.jboss.beans.info.spi.BeanInfo;
-import org.jboss.beans.info.spi.PropertyInfo;
-import org.jboss.beans.metadata.spi.BeanMetaData;
 import org.jboss.beans.metadata.spi.MetaDataVisitor;
 import org.jboss.dependency.plugins.AbstractDependencyItem;
 import org.jboss.dependency.spi.Controller;
 import org.jboss.dependency.spi.ControllerContext;
 import org.jboss.dependency.spi.ControllerState;
 import org.jboss.dependency.spi.DependencyItem;
-import org.jboss.kernel.plugins.dependency.UpdateableDependencyItem;
-import org.jboss.kernel.spi.dependency.KernelController;
 import org.jboss.kernel.spi.dependency.KernelControllerContext;
-import org.jboss.util.JBossStringBuilder;
+import org.jboss.kernel.spi.dependency.KernelController;
 import org.jboss.reflect.spi.TypeInfo;
+import org.jboss.util.JBossStringBuilder;
 
 /**
  * Injection value.
@@ -48,6 +41,7 @@ public class AbstractInjectionValueMetaData extends AbstractDependencyValueMetaD
 {
    protected InjectionType injectionType = InjectionType.BY_CLASS;
 
+   /** Simplyifies things with InjectionType.BY_NAME */
    protected AbstractPropertyMetaData propertyMetaData;
 
    /**
@@ -110,7 +104,6 @@ public class AbstractInjectionValueMetaData extends AbstractDependencyValueMetaD
 
    public void initialVisit(MetaDataVisitor visitor)
    {
-      // determine value
       if (getUnderlyingValue() == null)
       {
          // check for property
@@ -128,26 +121,42 @@ public class AbstractInjectionValueMetaData extends AbstractDependencyValueMetaD
             }
             setValue(propertyMetaData.getName());
          }
-         else if (InjectionType.BY_CLASS.equals(injectionType))
+      }
+      // check if was maybe set with by_name
+      if (getUnderlyingValue() != null)
+      {
+         super.initialVisit(visitor);
+      }
+   }
+
+   public void describeVisit(MetaDataVisitor visitor)
+   {
+      if (getUnderlyingValue() == null)
+      {
+         if (InjectionType.BY_CLASS.equals(injectionType))
          {
-            // set controller
             KernelControllerContext context = visitor.getControllerContext();
-            controller = (KernelController) context.getController();
-            if (propertyMetaData != null)
+            controller = (KernelController) context.getController(); // set controller
+            TypeProvider typeProvider = (TypeProvider) visitor.visitorNodeStack().pop();
+            try
             {
-               DependencyItem item = new PropertyPlaceholderDependencyItem(context.getName(), propertyMetaData.getName());
+               DependencyItem item = new ClassContextDependencyItem(context.getName(), typeProvider.getType(visitor, this));
                visitor.addDependency(item);
             }
-            visitor.initialVisit(this); // as in AbstractValueMetaData
-            // skip AbstractDependencyVMD.initialVisit() - no value defined
-            return;
+            catch (Throwable throwable)
+            {
+               throw new Error(throwable);
+            } finally
+            {
+               visitor.visitorNodeStack().push(typeProvider);
+            }
          }
          else
          {
             throw new IllegalArgumentException("Unknown injection type=" + injectionType);
          }
       }
-      super.initialVisit(visitor);
+      super.describeVisit(visitor);
    }
 
    public void toString(JBossStringBuilder buffer)
@@ -159,53 +168,25 @@ public class AbstractInjectionValueMetaData extends AbstractDependencyValueMetaD
          buffer.append(" propertyMetaData=").append(propertyMetaData.getName()); //else overflow - indefinite recursion
    }
 
-   public class PropertyPlaceholderDependencyItem extends AbstractDependencyItem implements UpdateableDependencyItem
+   public class ClassContextDependencyItem extends AbstractDependencyItem
    {
-      private String propertyName;
-      private Class demandClass;
-
-      public PropertyPlaceholderDependencyItem(Object name, String propertyName)
+      public ClassContextDependencyItem(Object name, Class demandClass)
       {
-         super(name, null, ControllerState.CONFIGURED, dependentState);
-         this.propertyName = propertyName;
-      }
-
-      public void update(BeanMetaData metaData, BeanInfo info)
-      {
-         Set propertyInfos = info.getProperties();
-         if (propertyInfos != null)
-         {
-            for (Iterator it = propertyInfos.iterator(); it.hasNext();)
-            {
-               PropertyInfo pi = (PropertyInfo) it.next();
-               if (propertyName.equals(pi.getName()))
-               {
-                  demandClass = pi.getType().getType();
-                  break;
-               }
-            }
-         }
+         super(name, demandClass, ControllerState.INSTANTIATED, dependentState);
       }
 
       public boolean resolve(Controller controller)
       {
-         if (demandClass != null)
+         ControllerContext context = controller.getInstalledContext(getIDependOn());
+         if (context != null)
          {
-            ControllerContext context = controller.getInstalledContext(demandClass);
-            if (context != null)
-            {
-               setIDependOn(context.getName());
-               addDependsOnMe(controller, context);
-               setResolved(true);
-            }
-            else
-            {
-               setResolved(false);
-            }
+            setIDependOn(context.getName());
+            addDependsOnMe(controller, context);
+            setResolved(true);
          }
          else
          {
-            setResolved(true);
+            setResolved(false);
          }
          return isResolved();
       }
@@ -213,12 +194,12 @@ public class AbstractInjectionValueMetaData extends AbstractDependencyValueMetaD
       public void toString(JBossStringBuilder buffer)
       {
          super.toString(buffer);
-         buffer.append(" demandClass=").append(demandClass);
+         buffer.append(" demandClass=").append(getIDependOn());
       }
 
       public void toShortString(JBossStringBuilder buffer)
       {
-         buffer.append(getName()).append(" demands ").append(demandClass);
+         buffer.append(getName()).append(" demands ").append(getIDependOn());
       }
 
    }

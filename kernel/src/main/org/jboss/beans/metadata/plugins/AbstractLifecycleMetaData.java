@@ -29,6 +29,10 @@ import org.jboss.beans.metadata.spi.MetaDataVisitor;
 import org.jboss.beans.metadata.spi.MetaDataVisitorNode;
 import org.jboss.beans.metadata.spi.ParameterMetaData;
 import org.jboss.dependency.spi.ControllerState;
+import org.jboss.kernel.plugins.config.Configurator;
+import org.jboss.kernel.spi.dependency.KernelControllerContext;
+import org.jboss.reflect.spi.ClassInfo;
+import org.jboss.reflect.spi.MethodInfo;
 import org.jboss.util.JBossObject;
 import org.jboss.util.JBossStringBuilder;
 
@@ -42,12 +46,15 @@ public class AbstractLifecycleMetaData extends AbstractFeatureMetaData implement
 {
    /** The state */
    protected ControllerState state;
-   
+
    /** The method name */
    protected String methodName;
-   
+
    /** The paramaters List<ParameterMetaData> */
    protected List<ParameterMetaData> parameters;
+
+   /** The type - create, start, stop, destroy, install */
+   protected String type;
 
    /**
     * Create a new lifecycle meta data
@@ -65,12 +72,12 @@ public class AbstractLifecycleMetaData extends AbstractFeatureMetaData implement
    {
       this.state = state;
    }
-   
+
    public String getMethodName()
    {
       return methodName;
    }
-   
+
    /**
     * Set the method name
     * 
@@ -81,12 +88,12 @@ public class AbstractLifecycleMetaData extends AbstractFeatureMetaData implement
       this.methodName = name;
       flushJBossObjectCache();
    }
-   
+
    public List<ParameterMetaData> getParameters()
    {
       return parameters;
    }
-   
+
    /**
     * Set the parameters
     * 
@@ -98,19 +105,44 @@ public class AbstractLifecycleMetaData extends AbstractFeatureMetaData implement
       flushJBossObjectCache();
    }
 
+   public String getType()
+   {
+      return type;
+   }
+
+   public void setType(String type)
+   {
+      this.type = type;
+   }
+
    public void initialVisit(MetaDataVisitor visitor)
    {
       visitor.setContextState(state);
       super.initialVisit(visitor);
    }
-   
+
    protected void addChildren(Set<MetaDataVisitorNode> children)
    {
       super.addChildren(children);
       if (parameters != null)
          children.addAll(parameters);
    }
-   
+
+   public Class getType(MetaDataVisitor visitor, MetaDataVisitorNode previous) throws Throwable
+   {
+      ParameterMetaData parameter = (ParameterMetaData) previous;
+      KernelControllerContext context = visitor.getControllerContext();
+      String method = (methodName != null ? methodName : type);
+      String[] parameterTypes = Configurator.getParameterTypes(false, parameters);
+      MethodInfo methodInfo = Configurator.findMethodInfo(getClassInfo(context), method, parameterTypes);
+      return applyCollectionOrMapCheck(methodInfo.getParameterTypes()[parameter.getIndex()].getType());
+   }
+
+   protected ClassInfo getClassInfo(KernelControllerContext context) throws Throwable
+   {
+      return context.getBeanInfo().getClassInfo();
+   }
+
    public void toString(JBossStringBuilder buffer)
    {
       if (methodName != null)
@@ -120,7 +152,7 @@ public class AbstractLifecycleMetaData extends AbstractFeatureMetaData implement
       buffer.append(" ");
       super.toString(buffer);
    }
-   
+
    public void toShortString(JBossStringBuilder buffer)
    {
       buffer.append(methodName);

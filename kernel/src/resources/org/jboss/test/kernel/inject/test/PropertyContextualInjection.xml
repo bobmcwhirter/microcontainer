@@ -1,0 +1,49 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<deployment xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+            xsi:schemaLocation="urn:jboss:bean-deployer bean-deployer_1_0.xsd"
+            xmlns="urn:jboss:bean-deployer">
+
+   <bean name="testObject1" class="org.jboss.test.kernel.inject.support.PropertyInjectTestObject">
+      <property name="testerInterface"><inject/></property>
+   </bean>
+
+   <bean name="testObject2" class="org.jboss.test.kernel.inject.support.PropertyInjectTestObject">
+      <property name="duplicateTester"><inject type="ByName"/></property>
+   </bean>
+
+   <bean name="testObject3" class="org.jboss.test.kernel.inject.support.PropertyInjectTestObject">
+      <property name="collection">
+         <list elementClass="org.jboss.test.kernel.inject.support.TesterInterface">
+            <inject/>
+         </list>
+      </property>
+   </bean>
+
+<!--
+   <bean name="testObject4" class="org.jboss.test.kernel.inject.support.PropertyInjectTestObject">
+      <property name="map">
+         <map key="org.jboss.test.kernel.inject.support.TesterInterface" valueClass="org.jboss.test.kernel.inject.support.TesterInterface">
+            <entry>
+               <key><inject/></key>
+               <value><inject/></value>
+            </entry>
+         </map>
+      </property>
+   </bean>
+
+   <bean name="testObject5" class="org.jboss.test.kernel.inject.support.PropertyInjectTestObject">
+      <property name="map">
+         <map>
+            <entry >
+               <key>test</key>
+               <value class="org.jboss.test.kernel.inject.support.TesterInterface"><inject/></value>
+            </entry>
+         </map>
+      </property>
+   </bean>
+-->
+
+   <bean name="duplicateTester" class="org.jboss.test.kernel.inject.support.DuplicateTester"/>
+
+</deployment>

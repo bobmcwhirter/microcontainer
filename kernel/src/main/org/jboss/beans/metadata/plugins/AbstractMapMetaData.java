@@ -21,14 +21,10 @@
 */
 package org.jboss.beans.metadata.plugins;
 
-import java.util.ArrayList;
-import java.util.Collection;
-import java.util.HashMap;
-import java.util.Iterator;
-import java.util.Map;
-import java.util.Set;
+import java.util.*;
 
 import org.jboss.beans.info.spi.BeanInfo;
+import org.jboss.beans.metadata.spi.MetaDataVisitor;
 import org.jboss.beans.metadata.spi.MetaDataVisitorNode;
 import org.jboss.beans.metadata.spi.ValueMetaData;
 import org.jboss.joinpoint.spi.Joinpoint;
@@ -167,7 +163,7 @@ public class AbstractMapMetaData extends AbstractTypeMetaData implements Map<Met
    public void putAll(Map<? extends MetaDataVisitorNode, ? extends MetaDataVisitorNode> t)
    {
       putAll(t);
-      
+
    }
 
    public MetaDataVisitorNode remove(Object key)
@@ -187,9 +183,28 @@ public class AbstractMapMetaData extends AbstractTypeMetaData implements Map<Met
 
    public Iterator<? extends MetaDataVisitorNode> getChildren()
    {
-      ArrayList<MetaDataVisitorNode> children = new ArrayList<MetaDataVisitorNode>(map.keySet());
-      children.addAll(map.values());
+      ArrayList<MetaDataVisitorNode> children = new ArrayList<MetaDataVisitorNode>(keySet());
+      children.addAll(values());
       return children.iterator();
+   }
+
+   public Class getType(MetaDataVisitor visitor, MetaDataVisitorNode previous) throws Throwable
+   {
+      for(MetaDataVisitorNode key : keySet())
+      {
+         if (previous.equals(key) && keyType != null)
+         {
+            return getClass(visitor, keyType);
+         }
+      }
+      for(MetaDataVisitorNode v : values())
+      {
+         if (previous.equals(v) && valueType != null)
+         {
+            return getClass(visitor, valueType);
+         }
+      }
+      return super.getType(visitor, this);
    }
 
    public void toString(JBossStringBuilder buffer)

@@ -27,17 +27,7 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.Set;
 
-import org.jboss.beans.metadata.spi.BeanMetaData;
-import org.jboss.beans.metadata.spi.BeanMetaDataFactory;
-import org.jboss.beans.metadata.spi.ClassLoaderMetaData;
-import org.jboss.beans.metadata.spi.ConstructorMetaData;
-import org.jboss.beans.metadata.spi.DemandMetaData;
-import org.jboss.beans.metadata.spi.DependencyMetaData;
-import org.jboss.beans.metadata.spi.InstallMetaData;
-import org.jboss.beans.metadata.spi.LifecycleMetaData;
-import org.jboss.beans.metadata.spi.MetaDataVisitorNode;
-import org.jboss.beans.metadata.spi.PropertyMetaData;
-import org.jboss.beans.metadata.spi.SupplyMetaData;
+import org.jboss.beans.metadata.spi.*;
 import org.jboss.dependency.spi.ControllerMode;
 import org.jboss.dependency.spi.ControllerState;
 import org.jboss.util.JBossObject;
@@ -403,7 +393,7 @@ public class AbstractBeanMetaData extends AbstractFeatureMetaData implements Bea
    {
       super.addChildren(children);
       if (classLoader != null)
-         children.add( classLoader);
+         children.add(classLoader);
       if (constructor != null)
          children.add(constructor);
       if (properties != null)
@@ -427,7 +417,12 @@ public class AbstractBeanMetaData extends AbstractFeatureMetaData implements Bea
       if (uninstalls != null)
          children.addAll(uninstalls);
    }
-   
+
+   public Class getType(MetaDataVisitor visitor, MetaDataVisitorNode previous) throws Throwable
+   {
+      throw new IllegalArgumentException("Cannot determine inject class type: " + this);
+   }
+
    public void toString(JBossStringBuilder buffer)
    {
       buffer.append("name=").append(name);

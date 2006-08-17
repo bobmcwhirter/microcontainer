@@ -34,12 +34,7 @@ import org.jboss.beans.metadata.plugins.AbstractMapMetaData;
 import org.jboss.beans.metadata.plugins.AbstractParameterMetaData;
 import org.jboss.beans.metadata.plugins.AbstractPropertyMetaData;
 import org.jboss.beans.metadata.plugins.AbstractValueMetaData;
-import org.jboss.beans.metadata.spi.ClassLoaderMetaData;
-import org.jboss.beans.metadata.spi.ConstructorMetaData;
-import org.jboss.beans.metadata.spi.LifecycleMetaData;
-import org.jboss.beans.metadata.spi.ParameterMetaData;
-import org.jboss.beans.metadata.spi.PropertyMetaData;
-import org.jboss.beans.metadata.spi.ValueMetaData;
+import org.jboss.beans.metadata.spi.*;
 import org.jboss.kernel.plugins.bootstrap.basic.KernelConstants;
 import org.jboss.kernel.spi.config.KernelConfigurator;
 

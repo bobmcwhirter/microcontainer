@@ -42,4 +42,12 @@ public interface ParameterMetaData extends FeatureMetaData
     * @return the value.
     */
    ValueMetaData getValue();
+
+   /**
+    * Get the index
+    *
+    * @return index in list
+    */
+   int getIndex();
+   
 }

@@ -26,8 +26,12 @@ import org.jboss.beans.metadata.spi.MetaDataVisitor;
 import org.jboss.dependency.plugins.AbstractDependencyItem;
 import org.jboss.dependency.spi.ControllerState;
 import org.jboss.dependency.spi.DependencyItem;
+import org.jboss.dependency.spi.ControllerContext;
 import org.jboss.kernel.spi.dependency.KernelControllerContext;
+import org.jboss.kernel.spi.dependency.KernelController;
+import org.jboss.kernel.spi.config.KernelConfigurator;
 import org.jboss.util.JBossStringBuilder;
+import org.jboss.reflect.spi.ClassInfo;
 
 /**
  * Metadata for installation.
@@ -50,7 +54,7 @@ public class AbstractInstallMetaData extends AbstractLifecycleMetaData implement
    {
       setState(ControllerState.INSTALLED);
    }
-   
+
    public String getBean()
    {
       return bean;
@@ -65,7 +69,7 @@ public class AbstractInstallMetaData extends AbstractLifecycleMetaData implement
    {
       this.bean = bean;
    }
-   
+
    /**
     * Set the required state of the dependency
     * 
@@ -93,6 +97,26 @@ public class AbstractInstallMetaData extends AbstractLifecycleMetaData implement
       super.initialVisit(visitor);
    }
 
+   protected ClassInfo getClassInfo(KernelControllerContext context) throws Throwable
+   {
+      if (bean != null)
+      {
+         KernelController controller = (KernelController) context.getController();
+         ControllerContext beanContext = controller.getContext(bean, ControllerState.INSTANTIATED);
+         if (beanContext != null)
+         {
+            KernelConfigurator configurator = controller.getKernel().getConfigurator();
+            Object target = beanContext.getTarget();
+            return configurator.getClassInfo(target.getClass());
+         }
+         else
+         {
+            throw new IllegalArgumentException("Cannot determine install bean class: " + this);
+         }
+      }
+      return super.getClassInfo(context);
+   }
+
    public void toString(JBossStringBuilder buffer)
    {
       if (bean != null)
@@ -110,7 +134,7 @@ public class AbstractInstallMetaData extends AbstractLifecycleMetaData implement
       if (methodName != null)
          buffer.append(".").append(methodName);
    }
-   
+
    /**
     * An InstallationDependencyItem.
     */

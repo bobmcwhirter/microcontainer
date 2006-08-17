@@ -23,8 +23,6 @@ package org.jboss.test.kernel.config.test;
 
 import java.util.ArrayList;
 
-import junit.framework.Test;
-
 import org.jboss.beans.metadata.plugins.AbstractBeanMetaData;
 import org.jboss.beans.metadata.plugins.AbstractConstructorMetaData;
 import org.jboss.beans.metadata.plugins.AbstractParameterMetaData;
@@ -34,6 +32,8 @@ import org.jboss.kernel.Kernel;
 import org.jboss.kernel.spi.config.KernelConfigurator;
 import org.jboss.test.kernel.config.support.SimpleBean;
 import org.jboss.test.kernel.config.support.SimpleBeanFactory;
+
+import junit.framework.Test;
 
 /**
  * Factory Test Case.

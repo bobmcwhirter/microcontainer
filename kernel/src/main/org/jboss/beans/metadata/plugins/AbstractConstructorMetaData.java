@@ -21,37 +21,50 @@
 */
 package org.jboss.beans.metadata.plugins;
 
-import java.util.List;
-import java.util.Set;
+import java.util.*;
 
-import org.jboss.beans.metadata.spi.ConstructorMetaData;
-import org.jboss.beans.metadata.spi.MetaDataVisitorNode;
-import org.jboss.beans.metadata.spi.ParameterMetaData;
-import org.jboss.beans.metadata.spi.ValueMetaData;
+import org.jboss.beans.info.spi.BeanInfo;
+import org.jboss.beans.metadata.spi.*;
+import org.jboss.kernel.plugins.config.Configurator;
+import org.jboss.kernel.spi.config.KernelConfigurator;
+import org.jboss.kernel.spi.dependency.KernelControllerContext;
+import org.jboss.reflect.spi.ClassInfo;
+import org.jboss.reflect.spi.ConstructorInfo;
+import org.jboss.reflect.spi.MethodInfo;
 import org.jboss.util.JBossObject;
 import org.jboss.util.JBossStringBuilder;
 
 /**
  * Metadata for construction.
- * 
+ *
  * @author <a href="adrian@jboss.com">Adrian Brock</a>
  * @version $Revision$
  */
 public class AbstractConstructorMetaData extends AbstractFeatureMetaData implements ConstructorMetaData
 {
-   /** The paramaters List<ParameterMetaData> */
+   /**
+    * The paramaters List<ParameterMetaData>
+    */
    protected List<ParameterMetaData> parameters;
 
-   /** The value */
+   /**
+    * The value
+    */
    protected ValueMetaData value;
 
-   /** The factory */
+   /**
+    * The factory
+    */
    protected ValueMetaData factory;
 
-   /** The factory class name */
+   /**
+    * The factory class name
+    */
    protected String factoryClassName;
 
-   /** The factory method */
+   /**
+    * The factory method
+    */
    protected String factoryMethod;
 
    /**
@@ -60,10 +73,10 @@ public class AbstractConstructorMetaData extends AbstractFeatureMetaData impleme
    public AbstractConstructorMetaData()
    {
    }
-   
+
    /**
     * Set the parameters
-    * 
+    *
     * @param parameters List<ParameterMetaData>
     */
    public void setParameters(List<ParameterMetaData> parameters)
@@ -71,10 +84,10 @@ public class AbstractConstructorMetaData extends AbstractFeatureMetaData impleme
       this.parameters = parameters;
       flushJBossObjectCache();
    }
-   
+
    /**
     * Set the value
-    * 
+    *
     * @param value the value
     */
    public void setValue(ValueMetaData value)
@@ -82,10 +95,10 @@ public class AbstractConstructorMetaData extends AbstractFeatureMetaData impleme
       this.value = value;
       flushJBossObjectCache();
    }
-   
+
    /**
     * Set the factory
-    * 
+    *
     * @param factory the factory
     */
    public void setFactory(ValueMetaData factory)
@@ -93,10 +106,10 @@ public class AbstractConstructorMetaData extends AbstractFeatureMetaData impleme
       this.factory = factory;
       flushJBossObjectCache();
    }
-   
+
    /**
     * Set the factory class name
-    * 
+    *
     * @param name the factory class name
     */
    public void setFactoryClass(String name)
@@ -104,10 +117,10 @@ public class AbstractConstructorMetaData extends AbstractFeatureMetaData impleme
       this.factoryClassName = name;
       flushJBossObjectCache();
    }
-   
+
    /**
     * Set the factory method
-    * 
+    *
     * @param name the factory method
     */
    public void setFactoryMethod(String name)
@@ -115,7 +128,7 @@ public class AbstractConstructorMetaData extends AbstractFeatureMetaData impleme
       this.factoryMethod = name;
       flushJBossObjectCache();
    }
-   
+
    public List<ParameterMetaData> getParameters()
    {
       return parameters;
@@ -130,17 +143,17 @@ public class AbstractConstructorMetaData extends AbstractFeatureMetaData impleme
    {
       return factory;
    }
-   
+
    public String getFactoryClass()
    {
       return factoryClassName;
    }
-   
+
    public String getFactoryMethod()
    {
       return factoryMethod;
    }
-   
+
    protected void addChildren(Set<MetaDataVisitorNode> children)
    {
       super.addChildren(children);
@@ -151,7 +164,66 @@ public class AbstractConstructorMetaData extends AbstractFeatureMetaData impleme
       if (factory != null)
          children.add(factory);
    }
-   
+
+   public Class getType(MetaDataVisitor visitor, MetaDataVisitorNode previous) throws Throwable
+   {
+      if (factory != null || factoryClassName != null)
+      {
+         KernelControllerContext context = visitor.getControllerContext();
+         ClassLoader cl = Configurator.getClassLoader(context.getBeanMetaData());
+         KernelConfigurator configurator = context.getKernel().getConfigurator();
+         ClassInfo classInfo;
+         if (factory != null)
+         {
+            Object target = factory.getValue(null, cl);
+            classInfo = configurator.getClassInfo(target.getClass());
+         }
+         else
+         {
+            classInfo = configurator.getClassInfo(factoryClassName, cl);
+         }
+         // should be parameter
+         ParameterMetaData parameter = (ParameterMetaData) previous;
+         String[] parameterTypes = Configurator.getParameterTypes(false, parameters);
+         MethodInfo methodInfo = Configurator.findMethodInfo(classInfo, factoryMethod, parameterTypes);
+         return applyCollectionOrMapCheck(methodInfo.getParameterTypes()[parameter.getIndex()].getType());
+      }
+      else
+      {
+         KernelControllerContext context = visitor.getControllerContext();
+         BeanInfo beanInfo = context.getBeanInfo();
+         // find matching parameter
+         if (previous instanceof ParameterMetaData)
+         {
+            ParameterMetaData parameter = (ParameterMetaData) previous;
+            String[] paramTypes = Configurator.getParameterTypes(false, parameters);
+            ConstructorInfo ci = Configurator.findConstructorInfo(beanInfo.getClassInfo(), paramTypes);
+            return applyCollectionOrMapCheck(ci.getParameterTypes()[parameter.getIndex()].getType());
+         }
+         else
+         {
+            // find all constructors with single value
+            Set<ConstructorInfo> constructors = beanInfo.getConstructors();
+            Set<ConstructorInfo> matchingConstructorInfos = new HashSet<ConstructorInfo>();
+            if (constructors != null)
+            {
+               for (ConstructorInfo ci : constructors)
+               {
+                  if (ci.getParameters() != null && ci.getParameters().length == 1)
+                  {
+                     matchingConstructorInfos.add(ci);
+                  }
+               }
+            }
+            if (matchingConstructorInfos.size() != 1)
+            {
+               throw new IllegalArgumentException("Should not be here - illegal size of matching constructors: " + this);
+            }
+            return applyCollectionOrMapCheck(matchingConstructorInfos.iterator().next().getParameterTypes()[0].getType());
+         }
+      }
+   }
+
    public void toString(JBossStringBuilder buffer)
    {
       buffer.append("parameters=");

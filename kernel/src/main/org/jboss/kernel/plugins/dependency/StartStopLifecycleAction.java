@@ -40,7 +40,7 @@ public class StartStopLifecycleAction extends LifecycleAction
    {
       BeanMetaData metaData = context.getBeanMetaData();
       LifecycleMetaData lifecycle = metaData.getStart();
-      if (lifecycle != null)
+      if (lifecycle != null && lifecycle.getMethodName() != null)
          return lifecycle.getMethodName();
       return "start";
    }
@@ -58,7 +58,7 @@ public class StartStopLifecycleAction extends LifecycleAction
    {
       BeanMetaData metaData = context.getBeanMetaData();
       LifecycleMetaData lifecycle = metaData.getStop();
-      if (lifecycle != null)
+      if (lifecycle != null && lifecycle.getMethodName() != null)
          return lifecycle.getMethodName();
       return "stop";
    }

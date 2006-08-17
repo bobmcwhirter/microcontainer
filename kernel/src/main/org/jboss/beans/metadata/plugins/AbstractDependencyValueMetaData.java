@@ -149,7 +149,7 @@ public class AbstractDependencyValueMetaData extends AbstractValueMetaData
 
       super.initialVisit(visitor);
    }
-
+      
    public void toString(JBossStringBuilder buffer)
    {
       super.toString(buffer);

@@ -63,13 +63,6 @@ public class DescribeAction extends KernelControllerContextAction
          info = addAnnotations(context, metaData, info);
 
          DependencyInfo depends = context.getDependencyInfo();
-         // update 'placeholder' item with more info
-         Set updateableItems = depends.getIDependOn(UpdateableDependencyItem.class);
-         for(Iterator it = updateableItems.iterator(); it.hasNext();)
-         {
-            UpdateableDependencyItem updateableItem = (UpdateableDependencyItem) it.next();
-            updateableItem.update(metaData, info);
-         }
          // add custom dependencies (e.g. AOP layer).
          List dependencies = info.getDependencies();
          if (dependencies != null)

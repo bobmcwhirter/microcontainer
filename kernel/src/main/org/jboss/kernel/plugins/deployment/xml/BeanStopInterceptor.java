@@ -42,6 +42,7 @@ public class BeanStopInterceptor extends DefaultElementInterceptor
    {
       AbstractBeanMetaData bean = (AbstractBeanMetaData) parent;
       AbstractLifecycleMetaData lifecycle = (AbstractLifecycleMetaData) child;
+      lifecycle.setType("stop");
       bean.setStop(lifecycle);
    }
 }

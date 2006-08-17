@@ -23,6 +23,8 @@ package org.jboss.beans.metadata.plugins;
 
 import java.util.Iterator;
 import java.util.Set;
+import java.util.Collection;
+import java.util.Map;
 
 import org.jboss.beans.metadata.spi.AnnotationMetaData;
 import org.jboss.beans.metadata.spi.FeatureMetaData;
@@ -38,7 +40,7 @@ import org.jboss.util.JBossStringBuilder;
  * @author <a href="adrian@jboss.com">Adrian Brock</a>
  * @version $Revision$
  */
-public class AbstractFeatureMetaData extends JBossObject implements FeatureMetaData
+public abstract class AbstractFeatureMetaData extends JBossObject implements FeatureMetaData, TypeProvider
 {
    /** The description */
    protected String description;
@@ -89,7 +91,22 @@ public class AbstractFeatureMetaData extends JBossObject implements FeatureMetaD
    {
       visitor.initialVisit(this);
    }
-   
+
+   public void describeVisit(MetaDataVisitor vistor)
+   {
+      vistor.describeVisit(this);
+   }
+
+   protected Class applyCollectionOrMapCheck(Class clazz) throws Throwable
+   {
+      // todo - some generics check
+      if (Collection.class.isAssignableFrom(clazz) || Map.class.isAssignableFrom(clazz))
+      {
+         throw new IllegalArgumentException("Should not be here - set element/value class type in collection/map: " + this);
+      }
+      return clazz;
+   }
+
    public Iterator<? extends MetaDataVisitorNode> getChildren()
    {
       Set<MetaDataVisitorNode> children = CollectionsFactory.createLazySet();

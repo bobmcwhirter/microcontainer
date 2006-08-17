@@ -23,6 +23,8 @@ package org.jboss.beans.metadata.plugins;
 
 import org.jboss.logging.Logger;
 import org.jboss.reflect.spi.TypeInfo;
+import org.jboss.beans.metadata.spi.MetaDataVisitor;
+import org.jboss.beans.metadata.spi.MetaDataVisitorNode;
 
 /**
  * String value.
@@ -68,19 +70,29 @@ public class StringValueMetaData extends AbstractTypeMetaData
          throw new ClassCastException("value is not a String: " + value);
       super.setValue(value);
    }
-   
+
    public Object getValue(TypeInfo info, ClassLoader cl) throws Throwable
    {
       boolean trace = log.isTraceEnabled();
       if (trace)
          log.trace("getValue value=" + value + " type=" + type + " info=" + info);
-      
+
       TypeInfo typeInfo = getClassInfo(cl);
       if (typeInfo == null)
          typeInfo = info;
       if (typeInfo == null)
          throw new IllegalArgumentException("Unable to determine type for value: " + value);
-         
+
       return typeInfo.convertValue(value);
    }
+
+   public Class getType(MetaDataVisitor visitor, MetaDataVisitorNode previous) throws Throwable
+   {
+      if (getType() != null)
+      {
+         return getClass(visitor, getType());
+      }
+      return super.getType(visitor, this);
+   }
+
 }

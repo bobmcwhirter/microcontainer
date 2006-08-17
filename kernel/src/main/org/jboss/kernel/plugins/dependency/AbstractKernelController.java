@@ -343,7 +343,7 @@ public class AbstractKernelController extends AbstractController implements Kern
       }
       if (numberOfMatchingBeans != 1)
       {
-         log.error("Should not be here, illegas size of matching contexts (" + numberOfMatchingBeans + ") - dependency failed! " + clazz);
+         log.warn("Checking for contextual injection, current matches: " + numberOfMatchingBeans + " - " + clazz);
          return null;
       }
       return contexts.iterator().next();

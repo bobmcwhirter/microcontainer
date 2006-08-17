@@ -43,7 +43,7 @@ public interface MetaDataVisitorNode
     *
     * @param vistor the visitor
     */
-//   public void describeVisit(MetaDataVisitor vistor);
+   public void describeVisit(MetaDataVisitor vistor);
 
    /**
     * Return the child nodes

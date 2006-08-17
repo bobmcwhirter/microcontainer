@@ -82,6 +82,12 @@ public class AbstractClassLoaderMetaData extends JBossObject implements ClassLoa
       visitor.initialVisit(this);
    }
 
+   public void describeVisit(MetaDataVisitor vistor)
+   {
+      // todo - any context setting?
+      vistor.describeVisit(this);
+   }
+
    public Iterator<? extends MetaDataVisitorNode> getChildren()
    {
       if (classloader != null)
@@ -93,7 +99,7 @@ public class AbstractClassLoaderMetaData extends JBossObject implements ClassLoa
    {
       buffer.append("classloader=").append(classloader);
    }
-   
+
    public void toShortString(JBossStringBuilder buffer)
    {
       buffer.append(classloader);

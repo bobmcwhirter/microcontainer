@@ -78,6 +78,11 @@ public class AbstractSupplyMetaData extends JBossObject implements SupplyMetaDat
       visitor.initialVisit(this);
    }
 
+   public void describeVisit(MetaDataVisitor vistor)
+   {
+      vistor.describeVisit(this);
+   }
+
    public Iterator<? extends MetaDataVisitorNode> getChildren()
    {
       return null;

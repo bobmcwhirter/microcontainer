@@ -52,6 +52,7 @@ public class InstallParametersInterceptor extends DefaultElementInterceptor
          parameters = new ArrayList<ParameterMetaData>();
          install.setParameters(parameters);
       }
+      parameter.setIndex(parameters.size());
       parameters.add(parameter);
    }
 }

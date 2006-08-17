@@ -23,6 +23,8 @@ package org.jboss.beans.metadata.plugins;
 
 import org.jboss.beans.metadata.spi.MetaDataVisitor;
 import org.jboss.kernel.spi.config.KernelConfigurator;
+import org.jboss.kernel.spi.dependency.KernelControllerContext;
+import org.jboss.kernel.plugins.config.Configurator;
 import org.jboss.reflect.spi.ClassInfo;
 import org.jboss.util.JBossStringBuilder;
 
@@ -103,9 +105,22 @@ public abstract class AbstractTypeMetaData extends AbstractValueMetaData
     */
    protected ClassInfo getClassInfo(ClassLoader cl) throws Throwable
    {
-      if (type == null)
-         return null;
-      
-      return configurator.getClassInfo(type, cl);
+      return getClassInfo(type, cl);
    }
+
+   protected ClassInfo getClassInfo(String classType, ClassLoader cl) throws Throwable
+   {
+      if (classType == null)
+         return null;
+
+      return configurator.getClassInfo(classType, cl);
+   }
+
+   protected Class getClass(MetaDataVisitor visitor, String classType) throws Throwable
+   {
+      KernelControllerContext context = visitor.getControllerContext();
+      ClassLoader cl = Configurator.getClassLoader(context.getBeanMetaData());
+      return getClassInfo(classType, cl).getType();
+   }
+
 }

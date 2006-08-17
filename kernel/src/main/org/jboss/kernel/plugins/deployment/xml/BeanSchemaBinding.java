@@ -459,6 +459,7 @@ public class BeanSchemaBinding
                parameters = new ArrayList<ParameterMetaData>();
                constructor.setParameters(parameters);
             }
+            parameter.setIndex(parameters.size());
             parameters.add(parameter);
          }
       });
@@ -507,6 +508,7 @@ public class BeanSchemaBinding
          {
             AbstractBeanMetaData bean = (AbstractBeanMetaData) parent;
             AbstractLifecycleMetaData lifecycle = (AbstractLifecycleMetaData) child;
+            lifecycle.setType("create");
             bean.setCreate(lifecycle);
          }
       });
@@ -518,6 +520,7 @@ public class BeanSchemaBinding
          {
             GenericBeanFactoryMetaData bean = (GenericBeanFactoryMetaData) parent;
             AbstractLifecycleMetaData lifecycle = (AbstractLifecycleMetaData) child;
+            lifecycle.setType("create");
             bean.setBeanCreate(lifecycle);
          }
       });
@@ -529,6 +532,7 @@ public class BeanSchemaBinding
          {
             AbstractBeanMetaData bean = (AbstractBeanMetaData) parent;
             AbstractLifecycleMetaData lifecycle = (AbstractLifecycleMetaData) child;
+            lifecycle.setType("start");
             bean.setStart(lifecycle);
          }
       });
@@ -540,6 +544,7 @@ public class BeanSchemaBinding
          {
             GenericBeanFactoryMetaData bean = (GenericBeanFactoryMetaData) parent;
             AbstractLifecycleMetaData lifecycle = (AbstractLifecycleMetaData) child;
+            lifecycle.setType("start");
             bean.setBeanStart(lifecycle);
          }
       });
@@ -551,6 +556,7 @@ public class BeanSchemaBinding
          {
             AbstractBeanMetaData bean = (AbstractBeanMetaData) parent;
             AbstractLifecycleMetaData lifecycle = (AbstractLifecycleMetaData) child;
+            lifecycle.setType("stop");
             bean.setStop(lifecycle);
          }
       });
@@ -562,6 +568,7 @@ public class BeanSchemaBinding
          {
             AbstractBeanMetaData bean = (AbstractBeanMetaData) parent;
             AbstractLifecycleMetaData lifecycle = (AbstractLifecycleMetaData) child;
+            lifecycle.setType("destroy");
             bean.setDestroy(lifecycle);
          }
       });
@@ -600,6 +607,7 @@ public class BeanSchemaBinding
                parameters = new ArrayList<ParameterMetaData>();
                lifecycle.setParameters(parameters);
             }
+            parameter.setIndex(parameters.size());
             parameters.add(parameter);
          }
       });

@@ -40,7 +40,7 @@ public class CreateDestroyLifecycleAction extends LifecycleAction
    {
       BeanMetaData metaData = context.getBeanMetaData();
       LifecycleMetaData lifecycle = metaData.getCreate();
-      if (lifecycle != null)
+      if (lifecycle != null && lifecycle.getMethodName() != null)
          return lifecycle.getMethodName();
       return "create";
    }
@@ -58,7 +58,7 @@ public class CreateDestroyLifecycleAction extends LifecycleAction
    {
       BeanMetaData metaData = context.getBeanMetaData();
       LifecycleMetaData lifecycle = metaData.getDestroy();
-      if (lifecycle != null)
+      if (lifecycle != null && lifecycle.getMethodName() != null)
          return lifecycle.getMethodName();
       return "destroy";
    }

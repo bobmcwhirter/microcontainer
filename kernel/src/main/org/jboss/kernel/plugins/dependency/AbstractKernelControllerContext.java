@@ -45,33 +45,48 @@ import org.jboss.util.JBossStringBuilder;
 
 /**
  * Controller context.
- * 
+ *
  * @author <a href="adrian@jboss.com">Adrian Brock</a>
  * @version $Revision$
  */
 public class AbstractKernelControllerContext extends AbstractControllerContext implements KernelControllerContext
 {
-   /** The default actions */
+   /**
+    * The default actions
+    */
    private static final KernelControllerContextActions actions = KernelControllerContextActions.getInstance();
 
-   /** The no instantiate actions */
+   /**
+    * The no instantiate actions
+    */
    private static final KernelControllerContextActions noInstantiate = KernelControllerContextActions.getNoInstantiate();
-   
-   /** The BeanInfo */
+
+   /**
+    * The BeanInfo
+    */
    protected BeanInfo info;
 
-   /** The meta data */
+   /**
+    * The meta data
+    */
    protected BeanMetaData metaData;
-   
-   /** The access control context */
+
+   /**
+    * The access control context
+    */
    protected AccessControlContext accessContext;
-   
+
+   /**
+    * Did we do a describeVisit
+    */
+   protected boolean isDescribeProcessed;
+
    /**
     * Create an abstract controller context
-    * 
-    * @param info the bean info
+    *
+    * @param info     the bean info
     * @param metaData the meta data
-    * @param target any target object
+    * @param target   any target object
     */
    public AbstractKernelControllerContext(BeanInfo info, BeanMetaData metaData, Object target)
    {
@@ -92,7 +107,7 @@ public class AbstractKernelControllerContext extends AbstractControllerContext i
          throw new IllegalStateException("Context is not installed in controller");
       return controller.getKernel();
    }
-   
+
    public BeanInfo getBeanInfo()
    {
       return info;
@@ -100,12 +115,13 @@ public class AbstractKernelControllerContext extends AbstractControllerContext i
 
    /**
     * Set the bean info
-    * 
+    *
     * @param info the bean info
     */
    public void setBeanInfo(BeanInfo info)
    {
       this.info = info;
+      infoprocessMetaData();
       flushJBossObjectCache();
    }
 
@@ -138,6 +154,18 @@ public class AbstractKernelControllerContext extends AbstractControllerContext i
       AccessController.doPrivileged(visitor);
    }
 
+   /**
+    * Preprocess the metadata for this context
+    */
+   protected void infoprocessMetaData()
+   {
+      if (info == null || isDescribeProcessed)
+         return;
+      DescribedMetaDataVisitor visitor = new DescribedMetaDataVisitor(metaData);
+      AccessController.doPrivileged(visitor);
+      isDescribeProcessed = true;
+   }
+
    public MetaDataContext getMetaDataContext()
    {
       if (info != null)
@@ -153,9 +181,9 @@ public class AbstractKernelControllerContext extends AbstractControllerContext i
 
    /**
     * Get the access control context of the code that created this context.<p>
-    * 
+    * <p/>
     * This will be null when there is no security manager.
-    * 
+    *
     * @return any access control context
     */
    protected AccessControlContext getAccessControlContext()
@@ -165,25 +193,58 @@ public class AbstractKernelControllerContext extends AbstractControllerContext i
 
    protected abstract class AbstractMetaDataVistor implements MetaDataVisitor, PrivilegedAction<Object>
    {
-      /** The current context for when the dependencies are required */
+      /**
+       * The current context for when the dependencies are required
+       */
       protected ControllerState contextState = ControllerState.INSTANTIATED;
 
-      /** The metadata */
+      /**
+       * The metadata
+       */
       protected BeanMetaData bmd;
 
-      /** Visited branch stack */
+      /**
+       * Visited branch stack
+       */
       protected Stack visitorNodeStack;
 
       protected AbstractMetaDataVistor(BeanMetaData bmd)
       {
          this.bmd = bmd;
+         this.visitorNodeStack = new Stack();
       }
 
       public void initialVisit(MetaDataVisitorNode node)
       {
+         visitorNodeStack.push(node);
+         try
+         {
+            internalInitialVisit(node);
+         }
+         finally
+         {
+            visitorNodeStack.pop();
+         }
       }
 
       public void describeVisit(MetaDataVisitorNode node)
+      {
+         visitorNodeStack.push(node);
+         try
+         {
+            internalDescribeVisit(node);
+         }
+         finally
+         {
+            visitorNodeStack.pop();
+         }
+      }
+
+      protected void internalInitialVisit(MetaDataVisitorNode node)
+      {
+      }
+
+      protected void internalDescribeVisit(MetaDataVisitorNode node)
       {
       }
 
@@ -226,27 +287,28 @@ public class AbstractKernelControllerContext extends AbstractControllerContext i
       {
          super(bmd);
       }
-      
+
       /**
        * Visit the bean metadata node, this is the starting point
        */
       public Object run()
       {
          bmd.initialVisit(this);
+         visitorNodeStack = null;
          return null;
       }
-      
+
       /**
        * Visit a node
-       * 
+       *
        * @param node the node
        */
-      public void initialVisit(MetaDataVisitorNode node)
+      protected void internalInitialVisit(MetaDataVisitorNode node)
       {
          boolean trace = log.isTraceEnabled();
          if (trace)
             log.trace("Initial visit node " + node);
-         
+
          // Visit the children of this node
          Iterator children = node.getChildren();
          if (children != null)
@@ -280,7 +342,6 @@ public class AbstractKernelControllerContext extends AbstractControllerContext i
       public DescribedMetaDataVisitor(BeanMetaData bmd)
       {
          super(bmd);
-         this.visitorNodeStack = new Stack();
       }
 
       /**
@@ -288,9 +349,7 @@ public class AbstractKernelControllerContext extends AbstractControllerContext i
        */
       public Object run()
       {
-         visitorNodeStack.push(bmd);
-//         bmd.describeVisit(this);
-         visitorNodeStack.pop();
+         bmd.describeVisit(this);
          visitorNodeStack = null;
          return null;
       }
@@ -300,7 +359,7 @@ public class AbstractKernelControllerContext extends AbstractControllerContext i
        *
        * @param node the node
        */
-      public void describeVisit(MetaDataVisitorNode node)
+      protected void internalDescribeVisit(MetaDataVisitorNode node)
       {
          boolean trace = log.isTraceEnabled();
          if (trace)
@@ -314,15 +373,13 @@ public class AbstractKernelControllerContext extends AbstractControllerContext i
             while (children.hasNext())
             {
                MetaDataVisitorNode child = (MetaDataVisitorNode) children.next();
-               visitorNodeStack.push(child);
                try
                {
-//                  child.describeVisit(this);
+                  child.describeVisit(this);
                }
                finally
                {
                   contextState = restoreState;
-                  visitorNodeStack.pop();
                }
             }
          }

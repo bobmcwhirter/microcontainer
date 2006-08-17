@@ -21,13 +21,16 @@
 */
 package org.jboss.beans.metadata.plugins;
 
+import java.util.Iterator;
 import java.util.Set;
 
+import org.jboss.beans.info.spi.PropertyInfo;
 import org.jboss.beans.metadata.spi.MetaDataVisitor;
 import org.jboss.beans.metadata.spi.MetaDataVisitorNode;
 import org.jboss.beans.metadata.spi.PropertyMetaData;
 import org.jboss.beans.metadata.spi.ValueMetaData;
 import org.jboss.dependency.spi.ControllerState;
+import org.jboss.kernel.spi.dependency.KernelControllerContext;
 import org.jboss.util.JBossStringBuilder;
 
 /**
@@ -36,7 +39,7 @@ import org.jboss.util.JBossStringBuilder;
  * @author <a href="adrian@jboss.com">Adrian Brock</a>
  * @version $Revision$
  */
-public class AbstractPropertyMetaData extends AbstractFeatureMetaData implements PropertyMetaData
+public class AbstractPropertyMetaData extends AbstractFeatureMetaData implements PropertyMetaData, TypeProvider
 {
    /** The property name */
    protected String name;
@@ -100,7 +103,7 @@ public class AbstractPropertyMetaData extends AbstractFeatureMetaData implements
       svmd.setType(type);
       this.value = svmd;
    }
-   
+
    public String getName()
    {
       return name;
@@ -116,7 +119,7 @@ public class AbstractPropertyMetaData extends AbstractFeatureMetaData implements
       this.name = name;
       flushJBossObjectCache();
    }
-   
+
    public ValueMetaData getValue()
    {
       return value;
@@ -132,7 +135,7 @@ public class AbstractPropertyMetaData extends AbstractFeatureMetaData implements
       this.value = value;
       flushJBossObjectCache();
    }
-   
+
    public void initialVisit(MetaDataVisitor visitor)
    {
       visitor.setContextState(ControllerState.CONFIGURED);
@@ -144,7 +147,25 @@ public class AbstractPropertyMetaData extends AbstractFeatureMetaData implements
       if (value != null)
          children.add(value);
    }
-   
+
+   public Class getType(MetaDataVisitor visitor, MetaDataVisitorNode previous) throws Throwable
+   {
+      KernelControllerContext context = visitor.getControllerContext();
+      Set propertyInfos = context.getBeanInfo().getProperties();
+      if (propertyInfos != null)
+      {
+         for(Iterator it = propertyInfos.iterator(); it.hasNext();)
+         {
+            PropertyInfo pi = (PropertyInfo) it.next();
+            if (getName().equals(pi.getName()))
+            {
+               return applyCollectionOrMapCheck(pi.getType().getType());
+            }
+         }
+      }
+      throw new IllegalArgumentException("Should not be here - no matching propertyInfo: " + this);
+   }
+
    public void toString(JBossStringBuilder buffer)
    {
       buffer.append("name=").append(name);
@@ -152,7 +173,7 @@ public class AbstractPropertyMetaData extends AbstractFeatureMetaData implements
          buffer.append(" value=").append(value);
       super.toString(buffer);
    }
-   
+
    public void toShortString(JBossStringBuilder buffer)
    {
       buffer.append(name);
