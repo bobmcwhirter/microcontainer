@@ -1,0 +1,388 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE project [
+   <!ENTITY buildmagic SYSTEM "../tools/etc/buildmagic/buildmagic.ent">
+   <!ENTITY libraries  SYSTEM "../thirdparty/libraries.ent">
+   <!ENTITY targets SYSTEM "../tools/etc/buildmagic/targets.ent">
+]>
+
+<!-- ====================================================================== -->
+<!--                                                                        -->
+<!--  JBoss, the OpenSource J2EE webOS                                      -->
+<!--                                                                        -->
+<!--  Distributable under LGPL license.                                     -->
+<!--  See terms of license at http://www.gnu.org.                           -->
+<!--                                                                        -->
+<!-- ====================================================================== -->
+
+<!-- $Id: build-test.xml 55205 2006-08-04 16:46:15Z kabir.khan@jboss.com $ -->
+
+<project default="main" name="JBoss/Container Tests">
+
+  <!-- ================================================================== -->
+  <!-- Setup                                                              -->
+  <!-- ================================================================== -->
+
+  <!--
+     | Include the common Buildmagic elements.
+     |
+     | This defines several different targets, properties and paths.
+     | It also sets up the basic extention tasks amoung other things.
+   -->
+
+  &buildmagic;
+
+  <!--
+     | Include the normal targets.
+   -->
+  &targets;
+
+  <!-- ================================================================== -->
+  <!-- Configuration                                                      -->
+  <!-- ================================================================== -->
+
+  <!--
+     | Configure the build system.
+     |
+     | This target is invoked by the Buildmagic initialization logic and
+     | should contain module specific configuration elements.
+   -->
+
+  <target name="configure" unless="configure.disable">
+
+    <!-- =================== -->
+    <!-- Basic Configuration -->
+    <!-- =================== -->
+
+    <!-- Module name(s) & version -->
+    <property name="module.name" value="container"/>
+    <property name="module.Name" value="JBoss Container"/>
+    <property name="module.version" value="M1"/>
+
+    <!-- ========= -->
+    <!-- Libraries -->
+    <!-- ========= -->
+
+    &libraries;
+
+    <!-- The combined library classpath -->
+    <path id="library.classpath">
+      <path refid="junit.junit.classpath"/>
+      <path refid="javassist.classpath"/>
+      <path refid="junit4.classpath"/>
+      <path refid="apache.log4j.classpath"/>
+      <path refid="oswego.concurrent.classpath"/>
+      <path refid="osgi.core.classpath" />
+      <path refid="jboss.common.classpath"/>
+      <path refid="jboss.test.classpath"/>
+      <path refid="jboss.profiler.jvmti.classpath"/>
+    </path>
+
+<!-- this -->
+<property name="jboss.this.root" value="${module.root}/output"/>
+<property name="jboss.this.lib" value="${jboss.this.root}/lib"/>
+<path id="jboss.this.classpath">
+   <fileset dir="${jboss.this.lib}">
+      <include name="*.jar"/>
+      <exclude name="${jar.prefix}.jar"/>
+   </fileset>
+</path>
+
+    <!-- The combined dependant module classpath -->
+    <path id="dependentmodule.classpath">
+      <path refid="jboss.this.classpath"/>
+    </path>
+
+    <!-- ===== -->
+    <!-- Tasks -->
+    <!-- ===== -->
+
+   <property name="source.java" value="${module.source}/tests"/>
+   <property name="javac.target" value="1.5"/>
+   <property name="javac.source" value="1.5"/>
+   <property name="build.classes" value="${module.output}/classes-tests"/>
+   <property name="build.testlog" value="${module.output}/log"/>
+   <property name="build-bypass.disabled" value="true"/>
+
+   <call target="_default:task-init"/>
+  	
+    <path id="thirdparty.classpath">
+       <path refid="library.classpath"/>
+       <path refid="dependentmodule.classpath"/>
+    </path>
+    
+    <path id="no.javassist.classpath">
+       <path refid="dependentmodule.classpath"/>
+       <path refid="junit.junit.classpath"/>
+       <path refid="junit4.classpath"/>
+       <path refid="apache.log4j.classpath"/>
+       <path refid="oswego.concurrent.classpath"/>
+       <path refid="osgi.core.classpath"/>
+      <path refid="jboss.profiler.jvmti.classpath"/>
+      <path refid="jboss.test.classpath"/>
+      <path refid="jboss.common.classpath"/>
+    </path>
+
+  </target>
+
+  <!-- ================================================================== -->
+  <!-- Compile                                                            -->
+  <!-- ================================================================== -->
+
+  <!--
+     | Compile everything.
+     |
+     | This target should depend on other compile-* targets for each
+     | different type of compile that needs to be performed, short of
+     | documentation compiles.
+   -->
+
+  <target name="compile"
+	  description="Compile all source files."
+	  depends="_default:compile-classes"
+  />
+   
+  <!-- ================================================================== -->
+  <!-- Archives                                                           -->
+  <!-- ================================================================== -->
+
+  <!-- 
+     |  Build all jar files.
+    -->
+  <target name="module-jars" depends="init">
+    
+    <jar jarfile="${build.lib}/jboss-container-test.jar" manifest="${build.etc}/default.mf">
+      <fileset dir="${build.classes}"/>
+    </jar>
+
+     <!--  vfs test jars -->
+     <jar destfile="${build.lib}/jar1.jar">
+        <manifest>
+           <attribute name="Specification-Title" value="jar1" />
+           <attribute name="Specification-Version" value="1.0.0.GA-jar1" />
+           <attribute name="Specification-Vendor" value="JBoss Inc." />
+        </manifest>
+        <zipfileset dir="${build.classes}">
+           <include name="org/jboss/test/vfs/support/jar1/**" />
+        </zipfileset>
+     </jar>
+     <jar destfile="${build.lib}/jar2.jar">
+        <manifest>
+           <attribute name="Specification-Title" value="jar2" />
+           <attribute name="Specification-Version" value="1.0.0.GA-jar2" />
+           <attribute name="Specification-Vendor" value="JBoss Inc." />
+        </manifest>
+        <zipfileset dir="${build.classes}">
+           <include name="org/jboss/test/vfs/support/jar2/**" />
+        </zipfileset>
+     </jar>
+     <jar destfile="${build.lib}/outer.jar">
+       <manifest>
+          <attribute name="Specification-Title" value="outer-jar" />
+          <attribute name="Specification-Version" value="1.0.0.GA" />
+          <attribute name="Specification-Vendor" value="JBoss Inc." />
+          <attribute name="Implementation-Title" value="outer-jar-test" />
+          <attribute name="Implementation-URL" value="www.jboss.org" />
+          <attribute name="Implementation-Version" value="1.0.0.GA-jboss" />
+          <attribute name="Implementation-Vendor" value="JBoss Inc." />
+       </manifest>
+        <zipfileset dir="${build.lib}">
+           <include name="jar1.jar" />
+           <include name="jar2.jar" />
+        </zipfileset>
+        <zipfileset dir="${build.classes}">
+           <include name="org/jboss/test/vfs/support/*" />
+        </zipfileset>
+     </jar>
+     <!--  unpacked versions of vfs test jars -->
+      <unzip dest="${build.lib}/unpacked-outer.jar" src="${build.lib}/outer.jar">
+         
+      </unzip>
+
+     <!-- Profile service test jars -->
+    <jar destfile="${build.lib}/p0.jar">
+      <manifest>
+         <attribute name="Specification-Title" value="profile0-jar" />
+         <attribute name="Specification-Version" value="1.0.0.GA" />
+         <attribute name="Specification-Vendor" value="JBoss Inc." />
+         <attribute name="Implementation-Title" value="p0-jar-test" />
+         <attribute name="Implementation-URL" value="www.jboss.org" />
+         <attribute name="Implementation-Version" value="1.0.0.GA-jboss" />
+         <attribute name="Implementation-Vendor" value="JBoss Inc." />
+      </manifest>
+       <zipfileset dir="${build.classes}">
+          <include name="org/jboss/test/profileservice/profiles/p0/**" />
+       </zipfileset>
+    </jar>
+
+    <!-- OSGi bundle jars -->
+     <jar destfile="${build.lib}/osgi-bundle1.jar">
+        <manifest>
+           <attribute name="Bundle-ManifestVersion" value="2" />
+           <attribute name="Bundle-Category" value="osgi-bundle1" />
+           <attribute name="Bundle-ClassPath" value="jar1.jar,jar2.jar,."/>
+           <attribute name="Bundle-Copyright" value="2006, JBoss Inc." />
+           <attribute name="Bundle-Description" value="An OSGi test bundle" />
+           <attribute name="Bundle-Name" value="osgi-bundle" />
+           <attribute name="Bundle-SymbolicName" value="org.jboss.test.bundle1;singleton:=true" />
+           <attribute name="Bundle-Vendor" value="JBoss Inc." />
+           <attribute name="Bundle-Version" value="1.0.0" />
+           <attribute name="Bundle-Activator" value="org.jboss.test.bundle.TestBundleActivator" />
+           <attribute name="Bundle-RequiredExecutionEnvironment" value="J2SE-1.4" />
+           
+           <attribute name="Import-Package" value="org.jboss.test.vfs.support.jar1,
+              org.jboss.test.vfs.support.jar2,version=&quot;[1.0,2.0]&quot;resolution=mandatory" />
+        </manifest>
+        <zipfileset dir="${build.classes}">
+           <include name="org/jboss/test/bundle/support/*" />
+        </zipfileset>
+     </jar>
+     <jar destfile="${build.lib}/osgi-bundle-export.jar">
+        <manifest>
+           <attribute name="Bundle-ManifestVersion" value="2" />
+           <attribute name="Bundle-Category" value="osgi-bundle-export-jar1" />
+           <attribute name="Bundle-Copyright" value="2006, JBoss Inc." />
+           <attribute name="Bundle-Description" value="A bundle which exports org.jboss.test.vfs.support.jar1" />
+           <attribute name="Bundle-Name" value="osgi-bundle" />
+           <attribute name="Bundle-SymbolicName" value="org.jboss.test.vfs.support.jar1" />
+           <attribute name="Bundle-Vendor" value="JBoss Inc." />
+           <attribute name="Bundle-Version" value="1.0.1" />
+           <attribute name="Bundle-RequiredExecutionEnvironment" value="J2SE-1.5" />
+
+           <attribute name="Export-Package" value="org.jboss.test.vfs.support.jar1;version=1.0.1,
+              org.jboss.test.vfs.support.jar2;version=1.1;,
+              uses=org.jboss.test.vfs.support;" />
+        </manifest>
+        <zipfileset dir="${build.lib}">
+           <include name="jar1.jar" />
+           <include name="jar2.jar" />
+        </zipfileset>
+        <zipfileset dir="${build.classes}">
+           <include name="org/jboss/test/bundle/support/*" />
+        </zipfileset>        
+     </jar>
+     
+     <!--  unpacked versions of osgi-bundle test jars -->
+     <unzip dest="${build.lib}/unpacked-osgi-bundle-export.jar" src="${build.lib}/osgi-bundle-export.jar" />
+  </target>
+
+  <!-- ================================================================== -->
+  <!-- Tests                                                              -->
+  <!-- ================================================================== -->
+
+   <target name="tests" depends="most"
+      description="Execute all tests in the given test directory.">
+      <mkdir dir="${build.reports}"/>
+      <mkdir dir="${build.testlog}"/>
+      <!-- Remove the test.log so each run has a fresh log -->
+      <delete file="${build.testlog}/test.log"/>
+      <junit dir="${module.output}"
+         printsummary="yes"
+         haltonerror="false"
+         haltonfailure="false"
+         fork="true">
+
+         <sysproperty key="build.testlog" value="${build.testlog}"/>
+
+         <classpath>
+            <pathelement location="${build.classes}"/>
+            <pathelement location="${build.resources}"/>
+            <path refid="javac.classpath"/>
+            <path refid="apache.xerces.classpath"/>
+         </classpath>
+
+         <formatter type="plain" usefile="true"/>
+         <formatter type="xml" usefile="true"/>
+
+         <batchtest todir="${build.reports}"
+            haltonerror="false"
+            haltonfailure="false"
+            fork="true">
+
+            <fileset dir="${build.classes}">
+               <include name="org/jboss/test/**/*TestCase.class"/>
+               <exclude name="org/jboss/test/**/NoJavassistAnnotationCreatorTestCase.class"/>
+            </fileset>
+         </batchtest>
+      </junit>
+      <junit dir="${module.output}"
+         printsummary="yes"
+         haltonerror="false"
+         haltonfailure="false"
+         fork="true">
+
+         <sysproperty key="build.testlog" value="${build.testlog}"/>
+
+         <classpath>
+            <pathelement location="${build.classes}"/>
+            <pathelement location="${build.resources}"/>
+            <path refid="no.javassist.classpath"/>
+            <path refid="apache.xerces.classpath"/>
+         </classpath>
+
+         <formatter type="plain" usefile="true"/>
+         <formatter type="xml" usefile="true"/>
+
+         <batchtest todir="${build.reports}"
+            haltonerror="false"
+            haltonfailure="false"
+            fork="true">
+
+            <fileset dir="${build.classes}">
+               <include name="org/jboss/test/**/NoJavassistAnnotationCreatorTestCase.class"/>
+            </fileset>
+         </batchtest>
+      </junit>
+   </target>
+
+   <target name="one-test" depends="init"
+      description="Execute all tests in the given test directory.">
+      <mkdir dir="${build.reports}"/>
+      <mkdir dir="${build.testlog}"/>
+      <!-- Remove the test.log so each run has a fresh log -->
+      <delete file="${build.testlog}/test.log"/>
+      <junit dir="${module.output}"
+         printsummary="yes"
+         haltonerror="false"
+         haltonfailure="false"
+         fork="true">
+
+         <sysproperty key="build.testlog" value="${build.testlog}"/>
+
+         <classpath>
+            <pathelement location="${build.classes}"/>
+            <pathelement location="${build.resources}"/>
+            <path refid="javac.classpath"/>
+            <path refid="apache.xerces.classpath"/>
+         </classpath>
+
+         <formatter type="plain" usefile="true"/>
+         <formatter type="xml" usefile="true"/>
+
+         <test todir="${build.reports}" name="${test}"
+               haltonerror="${junit.batchtest.haltonerror}"
+               haltonfailure="${junit.batchtest.haltonfailure}"
+               fork="${junit.batchtest.fork}"/>
+      </junit>
+   </target>
+   
+   <target name="memory-test" depends="most" description="Execute MemoryLeakTestCase">
+      <mkdir dir="${build.reports}"/>
+      <mkdir dir="${build.testlog}"/>
+   	
+	      <junit printsummary="yes" fork="yes" haltonfailure="no">
+         <classpath>
+            <pathelement location="${build.classes}"/>
+            <pathelement location="${build.resources}"/>
+	         <path refid="thirdparty.classpath"/>
+            <path refid="javac.classpath"/>
+            <path refid="apache.xerces.classpath"/>
+         </classpath>
+         <jvmarg value="-agentlib:jbossAgent"/>
+         <formatter type="plain" usefile="true"/>
+         <formatter type="xml" usefile="true"/>
+	      <test fork="yes" todir="${build.reports}" name="org.jboss.test.memorytests.ClassInfoMemoryTestCase"/>
+	      </junit>
+
+	   </target>
+
+</project>
