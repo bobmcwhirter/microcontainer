@@ -81,6 +81,7 @@
       <module name="dependency"/>
       <module name="kernel"/>
       <module name="aop-mc-int"/>
+      <module name="osgi-int"/>
 
       <!-- Module groups -->
 
@@ -92,7 +93,7 @@
       </group>
 
       <group name="core">
-        <include modules="common, container, dependency, kernel, aop-mc-int"/>
+        <include modules="common, container, dependency, kernel, aop-mc-int, osgi-int"/>
       </group>
 
       <group name="default">
