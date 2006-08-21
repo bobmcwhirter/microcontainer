@@ -419,9 +419,10 @@ to build define build-bypass.disabled=true.
 
   <!-- Hack, required to avoid duplicate javac targets -->
   <mkdir dir="${build.gen-src}"/>
+  <mkdir dir="${build.parsers}"/>
 
   <!-- Remove classes which depend on changed files, so they will rebuild. -->
-  <depend srcdir="${source.java}:${build.gen-src}"
+  <depend srcdir="${source.java}:${build.gen-src}:${build.parsers}"
     destdir="${build.classes}"
     dump="${javac.depend.dump}"
     closure="${javac.depend.closure}">
@@ -445,7 +446,7 @@ to build define build-bypass.disabled=true.
     <bootclasspath>
       <path refid="javac.bootclasspath"/>
     </bootclasspath>
-    <src path="${source.java}:${build.gen-src}"/>
+    <src path="${source.java}:${build.gen-src}:${build.parsers}"/>
     <classpath refid="javac.classpath"/>
   </javac>
 </target>
