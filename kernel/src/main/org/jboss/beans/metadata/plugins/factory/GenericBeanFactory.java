@@ -239,7 +239,7 @@ public class GenericBeanFactory
    protected void invokeLifecycle(String methodName, LifecycleMetaData lifecycle, BeanInfo info, ClassLoader cl, Object target) throws Throwable
    {
       String method = methodName;
-      if (lifecycle != null)
+      if (lifecycle != null && lifecycle.getMethodName() != null)
          method = lifecycle.getMethodName();
       List<ParameterMetaData> parameters = null;
       if (lifecycle != null)
