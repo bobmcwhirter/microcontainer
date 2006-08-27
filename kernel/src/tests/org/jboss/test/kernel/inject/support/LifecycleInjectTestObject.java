@@ -42,4 +42,9 @@ public class LifecycleInjectTestObject
       testerInterface = ti;
    }
 
+   public TesterInterface getTesterInterface()
+   {
+      return testerInterface;
+   }
+
 }

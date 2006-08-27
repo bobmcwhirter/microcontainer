@@ -22,6 +22,7 @@
 package org.jboss.test.kernel.inject.test;
 
 import junit.framework.Test;
+import org.jboss.test.kernel.inject.support.PropertyInjectTestObject;
 
 /**
  * @author <a href="mailto:ales.justin@gmail.com">Ales Justin</a>
@@ -41,6 +42,18 @@ public class PropertyContextualInjectionTestCase extends ContextualInjectionAdap
    protected String getResource()
    {
       return "PropertyContextualInjection.xml";
+   }
+
+   protected void checkInjection()
+   {
+      PropertyInjectTestObject test1 = (PropertyInjectTestObject) getBean("testObject1");
+      assertNotNull(test1.getTesterInterface());
+
+      PropertyInjectTestObject test2 = (PropertyInjectTestObject) getBean("testObject2");
+      assertNotNull(test2.getDuplicateTester());
+
+      PropertyInjectTestObject test3 = (PropertyInjectTestObject) getBean("testObject3");
+      assertFalse(test3.getCollection().isEmpty());      
    }
 
 }

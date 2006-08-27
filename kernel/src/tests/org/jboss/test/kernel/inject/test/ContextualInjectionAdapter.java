@@ -20,12 +20,15 @@ public abstract class ContextualInjectionAdapter extends MicrocontainerTest
 
    protected abstract String getResource();
 
+   protected abstract void checkInjection();
+
    public void testInjection() throws Throwable
    {
       KernelDeployment deployment = deploy(getResource());
       try
       {
          validate();
+         checkInjection();
       }
       finally
       {

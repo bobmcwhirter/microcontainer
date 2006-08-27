@@ -50,4 +50,9 @@ public class ConstructorInjectTestObject
       return testerInterface;
    }
 
+   public List<TesterInterface> getTesterInterfaces()
+   {
+      return testerInterfaces;
+   }
+
 }
