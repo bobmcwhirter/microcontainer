@@ -190,18 +190,25 @@ public class AbstractMapMetaData extends AbstractTypeMetaData implements Map<Met
 
    public Class getType(MetaDataVisitor visitor, MetaDataVisitorNode previous) throws Throwable
    {
-      for(MetaDataVisitorNode key : keySet())
+      // todo equality on cloned nodes
+      if (keyType != null)
       {
-         if (previous.equals(key) && keyType != null)
+         for(MetaDataVisitorNode key : keySet())
          {
-            return getClass(visitor, keyType);
+            if (previous.equals(key))
+            {
+               return getClass(visitor, keyType);
+            }
          }
       }
-      for(MetaDataVisitorNode v : values())
+      if (valueType != null)
       {
-         if (previous.equals(v) && valueType != null)
+         for(MetaDataVisitorNode v : values())
          {
-            return getClass(visitor, valueType);
+            if (previous.equals(v))
+            {
+               return getClass(visitor, valueType);
+            }
          }
       }
       return super.getType(visitor, previous);
