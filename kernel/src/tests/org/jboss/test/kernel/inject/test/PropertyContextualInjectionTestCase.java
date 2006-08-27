@@ -53,7 +53,10 @@ public class PropertyContextualInjectionTestCase extends ContextualInjectionAdap
       assertNotNull(test2.getDuplicateTester());
 
       PropertyInjectTestObject test3 = (PropertyInjectTestObject) getBean("testObject3");
-      assertFalse(test3.getCollection().isEmpty());      
+      assertFalse(test3.getCollection().isEmpty());
+
+      PropertyInjectTestObject test4 = (PropertyInjectTestObject) getBean("testObject4");
+      assertFalse(test4.getMap().isEmpty());      
    }
 
 }

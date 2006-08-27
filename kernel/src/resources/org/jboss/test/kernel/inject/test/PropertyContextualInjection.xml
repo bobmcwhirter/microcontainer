@@ -20,10 +20,9 @@
       </property>
    </bean>
 
-<!--
    <bean name="testObject4" class="org.jboss.test.kernel.inject.support.PropertyInjectTestObject">
       <property name="map">
-         <map key="org.jboss.test.kernel.inject.support.TesterInterface" valueClass="org.jboss.test.kernel.inject.support.TesterInterface">
+         <map keyClass="org.jboss.test.kernel.inject.support.TesterInterface" valueClass="org.jboss.test.kernel.inject.support.TesterInterface">
             <entry>
                <key><inject/></key>
                <value><inject/></value>
@@ -32,6 +31,7 @@
       </property>
    </bean>
 
+   <!--
    <bean name="testObject5" class="org.jboss.test.kernel.inject.support.PropertyInjectTestObject">
       <property name="map">
          <map>

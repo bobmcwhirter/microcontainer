@@ -190,7 +190,6 @@ public class AbstractMapMetaData extends AbstractTypeMetaData implements Map<Met
 
    public Class getType(MetaDataVisitor visitor, MetaDataVisitorNode previous) throws Throwable
    {
-      // todo equality on cloned nodes
       if (keyType != null)
       {
          for(MetaDataVisitorNode key : keySet())
