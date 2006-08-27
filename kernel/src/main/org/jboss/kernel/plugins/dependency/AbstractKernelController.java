@@ -341,9 +341,14 @@ public class AbstractKernelController extends AbstractController implements Kern
       {
          numberOfMatchingBeans = contexts.size();
       }
+
+      if (log.isTraceEnabled())
+      {
+         log.trace("Checking for contextual injection, current matches: " + numberOfMatchingBeans + " - " + clazz);
+      }
+
       if (numberOfMatchingBeans != 1)
       {
-         log.warn("Checking for contextual injection, current matches: " + numberOfMatchingBeans + " - " + clazz);
          return null;
       }
       return contexts.iterator().next();
