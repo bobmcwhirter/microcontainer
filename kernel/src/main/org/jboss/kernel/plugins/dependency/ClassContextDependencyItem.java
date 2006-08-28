@@ -19,11 +19,12 @@
 * Software Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA
 * 02110-1301 USA, or see the FSF site: http://www.fsf.org.
 */
-package org.jboss.dependency.plugins;
+package org.jboss.kernel.plugins.dependency;
 
 import org.jboss.dependency.spi.Controller;
 import org.jboss.dependency.spi.ControllerContext;
 import org.jboss.dependency.spi.ControllerState;
+import org.jboss.dependency.plugins.AbstractDependencyItem;
 import org.jboss.util.JBossStringBuilder;
 
 /**
@@ -33,7 +34,6 @@ import org.jboss.util.JBossStringBuilder;
  */
 public class ClassContextDependencyItem extends AbstractDependencyItem
 {
-
    public ClassContextDependencyItem(Object name, Class demandClass, ControllerState dependentState)
    {
       super(name, demandClass, ControllerState.INSTANTIATED, dependentState);
