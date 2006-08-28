@@ -158,6 +158,7 @@ public class SimpleBean implements Serializable
    {
       constructorUsed = string;
       aString = string;
+      preInstantiatedCollection.add(string);
    }
 
    public SimpleBean(Integer integer)

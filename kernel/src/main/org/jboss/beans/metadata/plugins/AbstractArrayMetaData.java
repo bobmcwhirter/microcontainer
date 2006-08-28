@@ -74,7 +74,7 @@ public class AbstractArrayMetaData extends AbstractListMetaData
          // Try to use the passed type
          typeInfo = info;
       }
-      
+
       Object[] array = new Object[result.size()];
       if (typeInfo != null)
          array = typeInfo.newArrayInstance(result.size());
@@ -84,7 +84,19 @@ public class AbstractArrayMetaData extends AbstractListMetaData
 
    protected Collection<Object> getCollectionInstance(TypeInfo info, ClassLoader cl, Class expected) throws Throwable
    {
-      return new ArrayList<Object>();
+      Collection<Object> result = new ArrayList<Object>();
+      Object preinstantiatedObject = preinstantiatedLookup(cl, null);
+      if (preinstantiatedObject != null)
+      {
+         if (preinstantiatedObject.getClass().isArray() == false)
+            throw new ClassCastException("Preinstantiated property is not an array: " + propertyName);
+         Object[] preinstantiatedArray = (Object[]) preinstantiatedObject;
+         for(Object previous : preinstantiatedArray)
+         {
+            result.add(previous);
+         }
+      }
+      return result;
    }
 
    public void toString(JBossStringBuilder buffer)

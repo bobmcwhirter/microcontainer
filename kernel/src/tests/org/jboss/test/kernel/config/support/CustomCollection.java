@@ -39,11 +39,12 @@ public class CustomCollection extends ArrayList
    
    public CustomCollection()
    {
+      this.preInstantiated = true;
    }
    
    public CustomCollection(boolean preInstantiated)
    {
-      this.preInstantiated = true;
+      this.preInstantiated = preInstantiated;      
    }
    
    public boolean getPreInstantiated()

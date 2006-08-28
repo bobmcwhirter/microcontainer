@@ -25,19 +25,15 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.HashSet;
 
-import junit.framework.Test;
-
-import org.jboss.beans.metadata.plugins.AbstractBeanMetaData;
-import org.jboss.beans.metadata.plugins.AbstractCollectionMetaData;
-import org.jboss.beans.metadata.plugins.AbstractPropertyMetaData;
-import org.jboss.beans.metadata.plugins.AbstractValueMetaData;
-import org.jboss.beans.metadata.plugins.StringValueMetaData;
+import org.jboss.beans.metadata.plugins.*;
 import org.jboss.beans.metadata.spi.PropertyMetaData;
 import org.jboss.kernel.Kernel;
 import org.jboss.kernel.spi.config.KernelConfigurator;
 import org.jboss.test.kernel.config.support.CustomCollection;
 import org.jboss.test.kernel.config.support.MyObject;
 import org.jboss.test.kernel.config.support.SimpleBean;
+
+import junit.framework.Test;
 
 /**
  * Collection Test Case.
@@ -240,7 +236,7 @@ public class CollectionTestCase extends AbstractKernelConfigTest
    /*
     * @todo - allow retrieval of collection instance from the bean
     */
-   public void TODOtestCustomCollectionPreInstantiated() throws Throwable
+   public void testCustomCollectionPreInstantiated() throws Throwable
    {
       SimpleBean bean = customCollectionPreInstantiated();
       assertNotNull(bean);

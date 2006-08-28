@@ -241,37 +241,41 @@ public class AbstractMapMetaData extends AbstractTypeMetaData implements Map<Met
    @SuppressWarnings("unchecked")
    protected Map<Object, Object> getMapInstance(TypeInfo info, ClassLoader cl, Class<?> expected) throws Throwable
    {
-      TypeInfo typeInfo = getClassInfo(cl);
-
-      if (typeInfo != null && typeInfo instanceof ClassInfo == false)
-         throw new IllegalArgumentException(typeInfo.getName() + " is not a class");
-
-      if (typeInfo != null && ((ClassInfo) typeInfo).isInterface())
-         throw new IllegalArgumentException(typeInfo.getName() + " is an interface");
-
-      if (typeInfo == null)
+      Object result = preinstantiatedLookup(cl, expected);
+      if (result == null)
       {
-         // No type specified
-         if (info == null)
-            return null;
-         // Not a class 
-         if (info instanceof ClassInfo == false)
-            return null;
-         // Not an interface
-         if (((ClassInfo) info).isInterface())
-            return null;
-         // Type is too general
-         if (Object.class.getName().equals(info.getName()))
-            return null;
-         // Try to use the passed type
-         typeInfo = info;
-      }
+         TypeInfo typeInfo = getClassInfo(cl);
 
-      BeanInfo beanInfo = configurator.getBeanInfo(typeInfo);
-      Joinpoint constructor = configurator.getConstructorJoinPoint(beanInfo);
-      Object result = constructor.dispatch();
-      if (expected.isAssignableFrom(result.getClass()) == false)
-         throw new ClassCastException(result.getClass() + " is not a " + expected.getName());
+         if (typeInfo != null && typeInfo instanceof ClassInfo == false)
+            throw new IllegalArgumentException(typeInfo.getName() + " is not a class");
+
+         if (typeInfo != null && ((ClassInfo) typeInfo).isInterface())
+            throw new IllegalArgumentException(typeInfo.getName() + " is an interface");
+
+         if (typeInfo == null)
+         {
+            // No type specified
+            if (info == null)
+               return null;
+            // Not a class
+            if (info instanceof ClassInfo == false)
+               return null;
+            // Not an interface
+            if (((ClassInfo) info).isInterface())
+               return null;
+            // Type is too general
+            if (Object.class.getName().equals(info.getName()))
+               return null;
+            // Try to use the passed type
+            typeInfo = info;
+         }
+
+         BeanInfo beanInfo = configurator.getBeanInfo(typeInfo);
+         Joinpoint constructor = configurator.getConstructorJoinPoint(beanInfo);
+         result = constructor.dispatch();
+         if (expected.isAssignableFrom(result.getClass()) == false)
+            throw new ClassCastException(result.getClass() + " is not a " + expected.getName());
+      }
       return (Map<Object, Object>) result;
    }
 

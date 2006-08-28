@@ -21,10 +21,15 @@
 */
 package org.jboss.beans.metadata.plugins;
 
+import org.jboss.beans.metadata.spi.BeanMetaData;
 import org.jboss.beans.metadata.spi.MetaDataVisitor;
-import org.jboss.kernel.spi.config.KernelConfigurator;
-import org.jboss.kernel.spi.dependency.KernelControllerContext;
+import org.jboss.beans.metadata.spi.PropertyMetaData;
+import org.jboss.dependency.spi.ControllerState;
+import org.jboss.joinpoint.spi.TargettedJoinpoint;
 import org.jboss.kernel.plugins.config.Configurator;
+import org.jboss.kernel.spi.config.KernelConfigurator;
+import org.jboss.kernel.spi.dependency.KernelController;
+import org.jboss.kernel.spi.dependency.KernelControllerContext;
 import org.jboss.reflect.spi.ClassInfo;
 import org.jboss.util.JBossStringBuilder;
 
@@ -38,9 +43,19 @@ public abstract class AbstractTypeMetaData extends AbstractValueMetaData
 {
    /** The type */
    protected String type;
-   
+
+   /** The configurator */
+   protected KernelController controller;
+
    /** The configurator */
    protected KernelConfigurator configurator;
+
+   /** The property name */
+   protected String propertyName;
+
+   /** The bean name */
+   protected String beanName;
+
    /**
     * Create a new typed value
     */
@@ -75,8 +90,55 @@ public abstract class AbstractTypeMetaData extends AbstractValueMetaData
 
    public void initialVisit(MetaDataVisitor visitor)
    {
+      controller = (KernelController) visitor.getControllerContext().getController();
       configurator = visitor.getControllerContext().getKernel().getConfigurator();
+      preparePreinstantiatedLookup(visitor);
       visitor.initialVisit(this);
+   }
+
+   private void preparePreinstantiatedLookup(MetaDataVisitor visitor)
+   {
+      Object parent = visitor.visitorNodeStack().pop();
+      try
+      {
+         if (parent instanceof PropertyMetaData)
+         {
+            PropertyMetaData pmd = (PropertyMetaData) parent;
+            propertyName = pmd.getName();
+            Object gp = visitor.visitorNodeStack().peek();
+            if (gp instanceof BeanMetaData)
+            {
+               BeanMetaData bmd = (BeanMetaData) gp;
+               beanName = bmd.getName();
+            }
+         }
+      }
+      finally
+      {
+         visitor.visitorNodeStack().push(parent);
+      }
+   }
+
+   protected Object preinstantiatedLookup(ClassLoader cl, Class expected)
+   {
+      try
+      {
+         if (propertyName != null && beanName != null)
+         {
+            KernelControllerContext context = (KernelControllerContext) controller.getContext(beanName, ControllerState.INSTANTIATED);
+            TargettedJoinpoint joinpoint = configurator.getPropertyGetterJoinPoint(context.getBeanInfo(), propertyName);
+            joinpoint.setTarget(context.getTarget());
+            Object result = joinpoint.dispatch();
+            if (result != null && expected != null && expected.isAssignableFrom(result.getClass()) == false)
+               throw new ClassCastException(result.getClass() + " is not a " + expected.getName());
+            return result;
+         }
+      }
+      catch (Throwable t)
+      {
+         log.warn("Exception in preinstantiated lookup: " + t, t);
+      }
+      return null;
    }
 
    /**
@@ -88,14 +150,14 @@ public abstract class AbstractTypeMetaData extends AbstractValueMetaData
    {
       this.configurator = configurator;
    }
-   
+
    public void toString(JBossStringBuilder buffer)
    {
       super.toString(buffer);
       if (type != null)
          buffer.append(" type=").append(type);
    }
-   
+
    /**
     * Get the class info for this type
     * 
