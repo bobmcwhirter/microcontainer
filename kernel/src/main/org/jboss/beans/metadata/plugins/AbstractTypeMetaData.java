@@ -35,25 +35,35 @@ import org.jboss.util.JBossStringBuilder;
 
 /**
  * A typed value.
- * 
+ *
  * @author <a href="adrian@jboss.com">Adrian Brock</a>
  * @version $Revision$
  */
 public abstract class AbstractTypeMetaData extends AbstractValueMetaData
 {
-   /** The type */
+   /**
+    * The type
+    */
    protected String type;
 
-   /** The configurator */
+   /**
+    * The configurator
+    */
    protected KernelController controller;
 
-   /** The configurator */
+   /**
+    * The configurator
+    */
    protected KernelConfigurator configurator;
 
-   /** The property name */
+   /**
+    * The property name
+    */
    protected String propertyName;
 
-   /** The bean name */
+   /**
+    * The bean name
+    */
    protected String beanName;
 
    /**
@@ -65,7 +75,7 @@ public abstract class AbstractTypeMetaData extends AbstractValueMetaData
 
    /**
     * Create a new typed value
-    * 
+    *
     * @param value the value
     */
    public AbstractTypeMetaData(String value)
@@ -75,7 +85,7 @@ public abstract class AbstractTypeMetaData extends AbstractValueMetaData
 
    /**
     * Set the type
-    * 
+    *
     * @param type the type
     */
    public void setType(String type)
@@ -121,9 +131,9 @@ public abstract class AbstractTypeMetaData extends AbstractValueMetaData
 
    protected Object preinstantiatedLookup(ClassLoader cl, Class expected)
    {
-      try
+      if (propertyName != null && beanName != null)
       {
-         if (propertyName != null && beanName != null)
+         try
          {
             KernelControllerContext context = (KernelControllerContext) controller.getContext(beanName, ControllerState.INSTANTIATED);
             TargettedJoinpoint joinpoint = configurator.getPropertyGetterJoinPoint(context.getBeanInfo(), propertyName);
@@ -133,17 +143,17 @@ public abstract class AbstractTypeMetaData extends AbstractValueMetaData
                throw new ClassCastException(result.getClass() + " is not a " + expected.getName());
             return result;
          }
-      }
-      catch (Throwable t)
-      {
-         log.warn("Exception in preinstantiated lookup: " + t, t);
+         catch (Throwable t)
+         {
+            log.warn("Exception in preinstantiated lookup: " + t, t);
+         }
       }
       return null;
    }
 
    /**
     * Set the configurator
-    * 
+    *
     * @param configurator the configurator
     */
    public void setConfigurator(KernelConfigurator configurator)
@@ -160,7 +170,7 @@ public abstract class AbstractTypeMetaData extends AbstractValueMetaData
 
    /**
     * Get the class info for this type
-    * 
+    *
     * @param cl classloader
     * @return the class info
     * @throws Throwable for any error
