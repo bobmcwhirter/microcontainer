@@ -233,9 +233,6 @@ public class CollectionTestCase extends AbstractKernelConfigTest
       return (SimpleBean) instantiateAndConfigure(configurator, bmd);
    }
 
-   /*
-    * @todo - allow retrieval of collection instance from the bean
-    */
    public void testCustomCollectionPreInstantiated() throws Throwable
    {
       SimpleBean bean = customCollectionPreInstantiated();
