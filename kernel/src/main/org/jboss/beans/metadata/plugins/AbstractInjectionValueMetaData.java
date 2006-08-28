@@ -22,13 +22,11 @@
 package org.jboss.beans.metadata.plugins;
 
 import org.jboss.beans.metadata.spi.MetaDataVisitor;
-import org.jboss.dependency.plugins.AbstractDependencyItem;
-import org.jboss.dependency.spi.Controller;
+import org.jboss.dependency.plugins.ClassContextDependencyItem;
 import org.jboss.dependency.spi.ControllerContext;
-import org.jboss.dependency.spi.ControllerState;
 import org.jboss.dependency.spi.DependencyItem;
-import org.jboss.kernel.spi.dependency.KernelControllerContext;
 import org.jboss.kernel.spi.dependency.KernelController;
+import org.jboss.kernel.spi.dependency.KernelControllerContext;
 import org.jboss.reflect.spi.TypeInfo;
 import org.jboss.util.JBossStringBuilder;
 
@@ -140,7 +138,10 @@ public class AbstractInjectionValueMetaData extends AbstractDependencyValueMetaD
             TypeProvider typeProvider = (TypeProvider) visitor.visitorNodeStack().pop();
             try
             {
-               DependencyItem item = new ClassContextDependencyItem(context.getName(), typeProvider.getType(visitor, this));
+               DependencyItem item = new ClassContextDependencyItem(
+                     context.getName(),
+                     typeProvider.getType(visitor, this),
+                     dependentState);
                visitor.addDependency(item);
             }
             catch (Throwable throwable)
@@ -166,42 +167,6 @@ public class AbstractInjectionValueMetaData extends AbstractDependencyValueMetaD
          buffer.append(" injectionType=").append(injectionType);
       if (propertyMetaData != null)
          buffer.append(" propertyMetaData=").append(propertyMetaData.getName()); //else overflow - indefinite recursion
-   }
-
-   public class ClassContextDependencyItem extends AbstractDependencyItem
-   {
-      public ClassContextDependencyItem(Object name, Class demandClass)
-      {
-         super(name, demandClass, ControllerState.INSTANTIATED, dependentState);
-      }
-
-      public boolean resolve(Controller controller)
-      {
-         ControllerContext context = controller.getInstalledContext(getIDependOn());
-         if (context != null)
-         {
-            setIDependOn(context.getName());
-            addDependsOnMe(controller, context);
-            setResolved(true);
-         }
-         else
-         {
-            setResolved(false);
-         }
-         return isResolved();
-      }
-
-      public void toString(JBossStringBuilder buffer)
-      {
-         super.toString(buffer);
-         buffer.append(" demandClass=").append(getIDependOn());
-      }
-
-      public void toShortString(JBossStringBuilder buffer)
-      {
-         buffer.append(getName()).append(" demands ").append(getIDependOn());
-      }
-
    }
 
 }

@@ -25,6 +25,7 @@ import java.security.AccessControlContext;
 import java.security.AccessController;
 import java.security.PrivilegedAction;
 import java.util.Iterator;
+import java.util.Set;
 import java.util.Stack;
 
 import org.jboss.beans.info.spi.BeanInfo;
@@ -33,10 +34,8 @@ import org.jboss.beans.metadata.spi.MetaDataVisitor;
 import org.jboss.beans.metadata.spi.MetaDataVisitorNode;
 import org.jboss.dependency.plugins.AbstractControllerContext;
 import org.jboss.dependency.plugins.AbstractDependencyInfo;
-import org.jboss.dependency.spi.Controller;
-import org.jboss.dependency.spi.ControllerMode;
-import org.jboss.dependency.spi.ControllerState;
-import org.jboss.dependency.spi.DependencyItem;
+import org.jboss.dependency.plugins.ClassContextDependencyItem;
+import org.jboss.dependency.spi.*;
 import org.jboss.kernel.Kernel;
 import org.jboss.kernel.spi.dependency.KernelController;
 import org.jboss.kernel.spi.dependency.KernelControllerContext;
@@ -159,8 +158,12 @@ public class AbstractKernelControllerContext extends AbstractControllerContext i
     */
    protected void infoprocessMetaData()
    {
-      if (info == null || isDescribeProcessed)
+      if (info == null)
+      {
+         removeClassContextReference();
          return;
+      }
+      if (isDescribeProcessed) return;
       DescribedMetaDataVisitor visitor = new DescribedMetaDataVisitor(metaData);
       AccessController.doPrivileged(visitor);
       isDescribeProcessed = true;
@@ -189,6 +192,20 @@ public class AbstractKernelControllerContext extends AbstractControllerContext i
    protected AccessControlContext getAccessControlContext()
    {
       return accessContext;
+   }
+
+   private void removeClassContextReference()
+   {
+      DependencyInfo dependencyInfo = getDependencyInfo();
+      if (dependencyInfo != null)
+      {
+         Set dependencys = dependencyInfo.getIDependOn(ClassContextDependencyItem.class);
+         for(Iterator it = dependencys.iterator(); it.hasNext();)
+         {
+            DependencyItem di = (DependencyItem) it.next();
+            di.unresolved(getController());
+         }
+      }
    }
 
    protected abstract class AbstractMetaDataVistor implements MetaDataVisitor, PrivilegedAction<Object>
