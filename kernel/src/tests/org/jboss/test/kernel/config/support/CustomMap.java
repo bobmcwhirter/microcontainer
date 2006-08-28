@@ -39,11 +39,12 @@ public class CustomMap extends HashMap
    
    public CustomMap()
    {
+      this.preInstantiated = true;
    }
    
    public CustomMap(boolean preInstantiated)
    {
-      this.preInstantiated = true;
+      this.preInstantiated = preInstantiated;
    }
    
    public boolean getPreInstantiated()

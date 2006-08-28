@@ -7,12 +7,12 @@
       <constructor>
          <parameter class="java.lang.String">string1</parameter>
       </constructor>
-      <property name="preInstantiatedCollection">
-         <collection class="org.jboss.test.kernel.config.support.CustomCollection" elementClass="java.lang.String">
+      <property name="preInstantiatedArray">
+         <array elementClass="java.lang.String">
             <value>string2</value>
             <value>string2</value>
             <value>string1</value>
-         </collection>
+         </array>
       </property>
    </bean>
 </deployment>

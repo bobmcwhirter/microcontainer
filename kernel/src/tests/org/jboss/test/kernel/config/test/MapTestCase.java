@@ -229,10 +229,7 @@ public class MapTestCase extends AbstractKernelConfigTest
       return (SimpleBean) instantiateAndConfigure(configurator, bmd);
    }
 
-   /*
-    * @todo - allow retrieval of map instance from the bean
-    */
-   public void TODOtestCustomMapPreInstantiated() throws Throwable
+   public void testCustomMapPreInstantiated() throws Throwable
    {
       SimpleBean bean = customMapPreInstantiated();
       assertNotNull(bean);

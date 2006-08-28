@@ -150,6 +150,18 @@ public class ArrayTestCase extends AbstractKernelConfigTest
       assertEquals(expected, result);
    }
 
+   public void testArrayPreinstantiated() throws Throwable
+   {
+      SimpleBean bean = customArrayExplicit();
+      assertNotNull(bean);
+
+      Object[] result = bean.getPreInstantiatedArray();
+      assertNotNull("Should be a array", result);
+
+      Object[] expected = new Object[] { string1, string2, string2, string1 };
+      assertEquals(expected, result);
+   }
+
    protected SimpleBean customArrayExplicit() throws Throwable
    {
       Kernel kernel = bootstrap();

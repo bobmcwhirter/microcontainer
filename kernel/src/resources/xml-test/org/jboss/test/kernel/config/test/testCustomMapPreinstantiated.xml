@@ -5,14 +5,13 @@
             xmlns="urn:jboss:bean-deployer">
    <bean name="SimpleBean" class="org.jboss.test.kernel.config.support.SimpleBean">
       <constructor>
-         <parameter class="java.lang.String">string1</parameter>
+         <parameter>string1</parameter>
+         <parameter>string2</parameter>
       </constructor>
-      <property name="preInstantiatedCollection">
-         <collection class="org.jboss.test.kernel.config.support.CustomCollection" elementClass="java.lang.String">
-            <value>string2</value>
-            <value>string2</value>
-            <value>string1</value>
-         </collection>
+      <property name="preInstantiatedMap">
+         <map class="org.jboss.test.kernel.config.support.CustomMap" keyClass="java.lang.String" valueClass="java.lang.String">
+            <entry><key>string2</key><value>string1</value></entry>
+         </map>
       </property>
    </bean>
 </deployment>

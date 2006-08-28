@@ -136,6 +136,9 @@ public class SimpleBean implements Serializable
    /** array */
    private Object[] array;
 
+   /** preInstantiated */
+   private Object[] preInstantiatedArray = new Object[]{"string1", "string2", "string2", "string1"};
+
    /** map */
    private Map map;
 
@@ -159,6 +162,12 @@ public class SimpleBean implements Serializable
       constructorUsed = string;
       aString = string;
       preInstantiatedCollection.add(string);
+      preInstantiatedArray = new Object[]{"string1"};
+   }
+
+   public SimpleBean(String string1, String string2)
+   {
+      preInstantiatedMap.put(string1,  string2);
    }
 
    public SimpleBean(Integer integer)
@@ -536,6 +545,16 @@ public class SimpleBean implements Serializable
       this.array = array;
    }
 
+   public Object[] getPreInstantiatedArray()
+   {
+      return preInstantiatedArray;
+   }
+
+   public void setPreInstantiatedArray(Object[] preInstantiatedArray)
+   {
+      this.preInstantiatedArray = preInstantiatedArray;
+   }
+
    public String[] getCustomArray()
    {
       return (String[]) array;
@@ -571,7 +590,7 @@ public class SimpleBean implements Serializable
       return preInstantiatedMap;
    }
    
-   public void setPreInstantiatedList(CustomMap preInstantiatedMap)
+   public void setPreInstantiatedMap(CustomMap preInstantiatedMap)
    {
       this.preInstantiatedMap = preInstantiatedMap;
    }
