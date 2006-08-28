@@ -131,6 +131,7 @@ public abstract class AbstractTypeMetaData extends AbstractValueMetaData
 
    protected Object preinstantiatedLookup(ClassLoader cl, Class expected)
    {
+      Object result = null;
       if (propertyName != null && beanName != null)
       {
          try
@@ -138,17 +139,16 @@ public abstract class AbstractTypeMetaData extends AbstractValueMetaData
             KernelControllerContext context = (KernelControllerContext) controller.getContext(beanName, ControllerState.INSTANTIATED);
             TargettedJoinpoint joinpoint = configurator.getPropertyGetterJoinPoint(context.getBeanInfo(), propertyName);
             joinpoint.setTarget(context.getTarget());
-            Object result = joinpoint.dispatch();
-            if (result != null && expected != null && expected.isAssignableFrom(result.getClass()) == false)
-               throw new ClassCastException(result.getClass() + " is not a " + expected.getName());
-            return result;
+            result = joinpoint.dispatch();
          }
          catch (Throwable t)
          {
-            log.warn("Exception in preinstantiated lookup: " + t, t);
+            log.warn("Exception in preinstantiated lookup: " + t);
          }
+         if (result != null && expected != null && expected.isAssignableFrom(result.getClass()) == false)
+            throw new ClassCastException(result.getClass() + " is not a " + expected.getName());
       }
-      return null;
+      return result;
    }
 
    /**
