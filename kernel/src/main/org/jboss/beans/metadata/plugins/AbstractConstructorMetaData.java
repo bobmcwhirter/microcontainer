@@ -185,7 +185,7 @@ public class AbstractConstructorMetaData extends AbstractFeatureMetaData impleme
          // should be parameter
          ParameterMetaData parameter = (ParameterMetaData) previous;
          String[] parameterTypes = Configurator.getParameterTypes(false, parameters);
-         MethodInfo methodInfo = Configurator.findMethodInfo(classInfo, factoryMethod, parameterTypes);
+         MethodInfo methodInfo = Configurator.findMethodInfo(classInfo, factoryMethod, parameterTypes, factoryClassName != null, true);
          return applyCollectionOrMapCheck(methodInfo.getParameterTypes()[parameter.getIndex()].getType());
       }
       else

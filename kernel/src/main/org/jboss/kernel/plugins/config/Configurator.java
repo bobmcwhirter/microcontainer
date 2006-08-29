@@ -707,7 +707,7 @@ public class Configurator extends Config
          throw new IllegalArgumentException("Null name");
 
       String[] paramTypes = getParameterTypes(trace, parameters);
-      MethodInfo minfo = findMethodInfo(info.getClassInfo(), name, paramTypes); // FIXME isStatic, isPublic);
+      MethodInfo minfo = findMethodInfo(info.getClassInfo(), name, paramTypes, isStatic, isPublic);
       JoinpointFactory jpf = info.getJoinpointFactory();
       MethodJoinpoint joinPoint = jpf.getMethodJoinpoint(minfo);
 
