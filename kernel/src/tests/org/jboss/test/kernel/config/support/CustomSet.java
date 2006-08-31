@@ -43,7 +43,7 @@ public class CustomSet extends HashSet
    
    public CustomSet(boolean preInstantiated)
    {
-      this.preInstantiated = true;
+      this.preInstantiated = preInstantiated;
    }
    
    public boolean getPreInstantiated()

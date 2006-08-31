@@ -39,7 +39,6 @@ public class CustomCollection extends ArrayList
    
    public CustomCollection()
    {
-      this.preInstantiated = false;
    }
    
    public CustomCollection(boolean preInstantiated)

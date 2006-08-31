@@ -43,7 +43,7 @@ public class CustomList extends ArrayList
    
    public CustomList(boolean preInstantiated)
    {
-      this.preInstantiated = true;
+      this.preInstantiated = preInstantiated;
    }
    
    public boolean getPreInstantiated()

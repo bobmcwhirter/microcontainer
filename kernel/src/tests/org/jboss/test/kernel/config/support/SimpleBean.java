@@ -162,7 +162,9 @@ public class SimpleBean implements Serializable
       constructorUsed = string;
       aString = string;
       preInstantiatedCollection.add(string);
-      preInstantiatedArray = new Object[]{"string1"};
+      preInstantiatedList.add(string);
+      preInstantiatedSet.add(string);
+      preInstantiatedArray = new Object[]{string};
    }
 
    public SimpleBean(String string1, String string2)
