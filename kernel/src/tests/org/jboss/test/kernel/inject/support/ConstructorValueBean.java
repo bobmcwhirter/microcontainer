@@ -19,42 +19,11 @@
 * Software Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA
 * 02110-1301 USA, or see the FSF site: http://www.fsf.org.
 */
-package org.jboss.test.kernel.inject.test;
-
-import org.jboss.kernel.spi.deployment.KernelDeployment;
-import org.jboss.test.kernel.junit.MicrocontainerTest;
+package org.jboss.test.kernel.inject.support;
 
 /**
- * @author <a href="mailto:ales.justin@gmail.com">Ales Justin</a>
+ * @author <a href="mailto:ales.justin@genera-lynx.com">Ales Justin</a>
  */
-public abstract class ContextualInjectionAdapter extends MicrocontainerTest
+public class ConstructorValueBean
 {
-
-   public ContextualInjectionAdapter(String name)
-   {
-      super(name);
-   }
-
-   protected abstract String getResource();
-
-   protected abstract void checkInjection();
-
-   protected void enableTrace()
-   {
-   }
-
-   public void testInjection() throws Throwable
-   {
-      enableTrace();
-      KernelDeployment deployment = deploy(getResource());
-      try
-      {
-         validate();
-         checkInjection();
-      }
-      finally
-      {
-         undeploy(deployment);
-      }
-   }
 }

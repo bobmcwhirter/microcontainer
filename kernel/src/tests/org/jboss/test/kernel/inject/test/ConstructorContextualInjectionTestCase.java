@@ -21,8 +21,9 @@
 */
 package org.jboss.test.kernel.inject.test;
 
-import junit.framework.Test;
 import org.jboss.test.kernel.inject.support.ConstructorInjectTestObject;
+
+import junit.framework.Test;
 
 /**
  * @author <a href="mailto:ales.justin@gmail.com">Ales Justin</a>
@@ -44,8 +45,15 @@ public class ConstructorContextualInjectionTestCase extends ContextualInjectionA
       return "ConstructorContextualInjection.xml";
    }
 
+   protected void enableTrace()
+   {
+      enableTrace("org.jboss.beans");
+      enableTrace("org.jboss.kernel");
+   }
+
    protected void checkInjection()
    {
+/*
       ConstructorInjectTestObject test1 = (ConstructorInjectTestObject) getBean("testObject1");
       assertNotNull(test1.getTesterInterface());
 
@@ -57,6 +65,18 @@ public class ConstructorContextualInjectionTestCase extends ContextualInjectionA
 
       ConstructorInjectTestObject test4 = (ConstructorInjectTestObject) getBean("testObject4");
       assertNotNull(test4.getTesterInterface());
+
+*/
+      ConstructorInjectTestObject test5 = (ConstructorInjectTestObject) getBean("testObject5");
+      assertNotNull(test5.getTesterInterface());
+
+/*
+      ConstructorValueBean constBean = (ConstructorValueBean) getBean("constBean");
+      ConstructorValueBean constBeanRef = (ConstructorValueBean) getBean("constBeanRef");
+      assertNotNull(constBean);
+      assertNotNull(constBeanRef);
+      assertEquals(constBean, constBeanRef);
+*/
    }
 
 }

@@ -244,6 +244,7 @@ $Id$
       <xsd:attribute name="bean" type="xsd:string" use="required"/>
       <xsd:attribute name="property" type="xsd:string" use="optional"/>
       <xsd:attribute name="state" type="controllerStateType" use="optional"/>
+      <xsd:attribute name="whenRequired" type="controllerStateType" use="optional"/>
    </xsd:complexType>
 
    <!-- todo use extension with dependencyType -->
@@ -281,6 +282,7 @@ $Id$
       <xsd:attribute name="bean" type="xsd:string" use="optional"/>
       <xsd:attribute name="property" type="xsd:string" use="optional"/>
       <xsd:attribute name="state" type="controllerStateType" use="optional"/>
+      <xsd:attribute name="whenRequired" type="controllerStateType" use="optional"/>
       <xsd:attribute name="type" type="injectionTypeType" use="optional" default="ByClass"/>
    </xsd:complexType>
 
@@ -412,6 +414,7 @@ $Id$
          </xsd:documentation>
       </xsd:annotation>
       <xsd:choice>
+         <xsd:element name="bean" type="beanType"/>
          <xsd:element name="value" type="plainValueType"/>
          <xsd:element name="collection" type="collectionType"/>
          <xsd:element name="list" type="listType"/>
@@ -478,6 +481,7 @@ $Id$
          </xsd:documentation>
       </xsd:annotation>
       <xsd:choice>
+         <xsd:element name="bean" type="beanType"/>
          <xsd:element name="inject" type="dependencyType"/>
          <xsd:element name="null">
             <xsd:complexType/>

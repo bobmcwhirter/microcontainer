@@ -200,12 +200,14 @@ $Id$
                <xsd:element name="factory" type="factoryType" minOccurs="0"/>
                <xsd:element name="parameter" type="parameterType" minOccurs="0" maxOccurs="unbounded"/>
             </xsd:sequence>
+            <xsd:element name="bean" type="beanType"/>
             <xsd:element name="value" type="plainValueType"/>
             <xsd:element name="collection" type="collectionType"/>
             <xsd:element name="list" type="listType"/>
             <xsd:element name="set" type="setType"/>
             <xsd:element name="array" type="arrayType"/>
             <xsd:element name="map" type="mapType"/>
+            <xsd:element name="inject" type="injectionType"/>
             <xsd:any namespace="##other" processContents="strict">
                <xsd:annotation>
                   <xsd:documentation>An extension value</xsd:documentation>
@@ -301,6 +303,7 @@ $Id$
       <xsd:attribute name="bean" type="xsd:string" use="required"/>
       <xsd:attribute name="property" type="xsd:string" use="optional"/>
       <xsd:attribute name="state" type="controllerStateType" use="optional"/>
+      <xsd:attribute name="whenRequired" type="controllerStateType" use="optional"/>
    </xsd:complexType>
 
    <xsd:complexType name="injectionType">
@@ -337,6 +340,7 @@ $Id$
       <xsd:attribute name="bean" type="xsd:string" use="optional"/>
       <xsd:attribute name="property" type="xsd:string" use="optional"/>
       <xsd:attribute name="state" type="controllerStateType" use="optional"/>
+      <xsd:attribute name="whenRequired" type="controllerStateType" use="optional"/>
       <xsd:attribute name="type" type="injectionTypeType" use="optional" default="ByClass"/>
    </xsd:complexType>
 
@@ -380,6 +384,7 @@ $Id$
       <xsd:attribute name="bean" type="xsd:string" use="optional"/>
       <xsd:attribute name="property" type="xsd:string" use="optional"/>
       <xsd:attribute name="state" type="controllerStateType" use="optional"/>
+      <xsd:attribute name="whenRequired" type="controllerStateType" use="optional"/>
    </xsd:complexType>
 
    <xsd:complexType name="parameterType" mixed="true">
@@ -500,6 +505,7 @@ $Id$
          </xsd:documentation>
       </xsd:annotation>
       <xsd:choice>
+         <xsd:element name="bean" type="beanType"/>
          <xsd:element name="value" type="plainValueType"/>
          <xsd:element name="collection" type="collectionType"/>
          <xsd:element name="list" type="listType"/>
@@ -569,6 +575,7 @@ $Id$
          </xsd:documentation>
       </xsd:annotation>
       <xsd:choice>
+         <xsd:element name="bean" type="beanType"/>
          <xsd:element name="inject" type="dependencyType"/>
          <xsd:element name="null">
             <xsd:complexType/>

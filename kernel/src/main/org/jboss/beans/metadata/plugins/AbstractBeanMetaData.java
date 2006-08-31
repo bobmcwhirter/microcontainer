@@ -21,15 +21,17 @@
 */
 package org.jboss.beans.metadata.plugins;
 
-import java.util.Collections;
-import java.util.HashSet;
-import java.util.Iterator;
-import java.util.List;
-import java.util.Set;
+import java.util.*;
 
 import org.jboss.beans.metadata.spi.*;
+import org.jboss.dependency.spi.ControllerContext;
 import org.jboss.dependency.spi.ControllerMode;
 import org.jboss.dependency.spi.ControllerState;
+import org.jboss.dependency.spi.DependencyItem;
+import org.jboss.dependency.plugins.AbstractDependencyItem;
+import org.jboss.kernel.spi.dependency.KernelController;
+import org.jboss.kernel.spi.dependency.KernelControllerContext;
+import org.jboss.reflect.spi.TypeInfo;
 import org.jboss.util.JBossObject;
 import org.jboss.util.JBossStringBuilder;
 
@@ -46,10 +48,10 @@ public class AbstractBeanMetaData extends AbstractFeatureMetaData implements Bea
 
    /** The name of this instance */
    protected String name;
-   
+
    /** The mode */
    protected ControllerMode mode = null;
-   
+
    /** The properties configuration Set<PropertyMetaData> */
    private Set<PropertyMetaData> properties;
 
@@ -58,34 +60,37 @@ public class AbstractBeanMetaData extends AbstractFeatureMetaData implements Bea
 
    /** The constructor */
    protected ConstructorMetaData constructor;
-   
+
    /** The create lifecycle */
    protected LifecycleMetaData create;
-   
+
    /** The start lifecycle */
    protected LifecycleMetaData start;
-   
+
    /** The stop lifecycle */
    protected LifecycleMetaData stop;
-   
+
    /** The destroy lifecycle */
    protected LifecycleMetaData destroy;
-   
+
    /** What the bean demands Set<DemandMetaData> */
    protected Set<DemandMetaData> demands;
-   
+
    /** What the bean supplies Set<SupplyMetaData> */
    protected Set<SupplyMetaData> supplies;
-   
+
    /** What the bean dependencies Set<DependencyMetaData> */
    protected Set<DependencyMetaData> depends;
-   
+
    /** The install operations List<InstallMetaData> */
    protected List<InstallMetaData> installs;
-   
+
    /** The uninstall operations List<InstallMetaData> */
    protected List<InstallMetaData> uninstalls;
-   
+
+   /** The kernel controller */
+   protected KernelController controller;
+
    /**
     * Create a new bean meta data
     */
@@ -176,7 +181,7 @@ public class AbstractBeanMetaData extends AbstractFeatureMetaData implements Bea
       properties.add(property);
       flushJBossObjectCache();
    }
-   
+
    /**
     * Set the propertiess.
     * 
@@ -218,7 +223,7 @@ public class AbstractBeanMetaData extends AbstractFeatureMetaData implements Bea
       this.demands = demands;
       flushJBossObjectCache();
    }
-   
+
    /**
     * Set what the bean supplies.
     * 
@@ -261,28 +266,28 @@ public class AbstractBeanMetaData extends AbstractFeatureMetaData implements Bea
    {
       return mode;
    }
-   
+
    public void setMode(ControllerMode mode)
    {
       this.mode = mode;
       flushJBossObjectCache();
    }
-   
+
    public Set<PropertyMetaData> getProperties()
    {
       return properties;
    }
-   
+
    public ConstructorMetaData getConstructor()
    {
       return constructor;
    }
-   
+
    public LifecycleMetaData getCreate()
    {
       return create;
    }
-   
+
    /**
     * Set the lifecycle metadata
     * 
@@ -293,12 +298,12 @@ public class AbstractBeanMetaData extends AbstractFeatureMetaData implements Bea
       lifecycle.setState(ControllerState.CREATE);
       this.create = lifecycle;
    }
-   
+
    public LifecycleMetaData getStart()
    {
       return start;
    }
-   
+
    /**
     * Set the start metadata
     * 
@@ -309,12 +314,12 @@ public class AbstractBeanMetaData extends AbstractFeatureMetaData implements Bea
       lifecycle.setState(ControllerState.START);
       this.start = lifecycle;
    }
-   
+
    public LifecycleMetaData getStop()
    {
       return stop;
    }
-   
+
    /**
     * Set the stop metadata
     * 
@@ -325,12 +330,12 @@ public class AbstractBeanMetaData extends AbstractFeatureMetaData implements Bea
       lifecycle.setState(ControllerState.START);
       this.stop = lifecycle;
    }
-   
+
    public LifecycleMetaData getDestroy()
    {
       return destroy;
    }
-   
+
    /**
     * Set the destroy metadata
     * 
@@ -341,17 +346,17 @@ public class AbstractBeanMetaData extends AbstractFeatureMetaData implements Bea
       lifecycle.setState(ControllerState.CREATE);
       this.destroy = lifecycle;
    }
-   
+
    public Set<DemandMetaData> getDemands()
    {
       return demands;
    }
-   
+
    public Set<SupplyMetaData> getSupplies()
    {
       return supplies;
    }
-   
+
    public Set<DependencyMetaData> getDepends()
    {
       return depends;
@@ -361,7 +366,7 @@ public class AbstractBeanMetaData extends AbstractFeatureMetaData implements Bea
    {
       return installs;
    }
-   
+
    /**
     * Set the installs
     * 
@@ -377,7 +382,7 @@ public class AbstractBeanMetaData extends AbstractFeatureMetaData implements Bea
    {
       return uninstalls;
    }
-   
+
    /**
     * Set the uninstalls
     * 
@@ -387,6 +392,26 @@ public class AbstractBeanMetaData extends AbstractFeatureMetaData implements Bea
    {
       this.uninstalls = uninstalls;
       flushJBossObjectCache();
+   }
+
+   public void initialVisit(MetaDataVisitor visitor)
+   {
+      if (visitor.visitorNodeStack().isEmpty() == false)
+      {
+         KernelControllerContext controllerContext = visitor.getControllerContext();
+         controller = (KernelController) controllerContext.getController();
+         Object name = controllerContext.getName();
+         Object iDependOn = getUnderlyingValue();
+         ControllerState whenRequired = visitor.getContextState();
+         DependencyItem di = new AbstractDependencyItem(name, iDependOn, whenRequired, ControllerState.INSTALLED);
+         visitor.addDependency(di);
+      }
+      super.initialVisit(visitor);
+   }
+
+   public void setController(KernelController controller)
+   {
+      this.controller = controller;
    }
 
    protected void addChildren(Set<MetaDataVisitorNode> children)
@@ -421,6 +446,26 @@ public class AbstractBeanMetaData extends AbstractFeatureMetaData implements Bea
    public Class getType(MetaDataVisitor visitor, MetaDataVisitorNode previous) throws Throwable
    {
       throw new IllegalArgumentException("Cannot determine inject class type: " + this);
+   }
+
+   public Object getUnderlyingValue()
+   {
+      return getName();
+   }
+
+   public Object getValue(TypeInfo info, ClassLoader cl) throws Throwable
+   {
+      ControllerContext context = controller.getInstalledContext(getName());
+      if (context == null || context.getTarget() == null)
+      {
+         throw new IllegalArgumentException("Bean not yet installed: " + getName());
+      }
+      Object target = context.getTarget();
+      if (info.getType().isAssignableFrom(target.getClass()) == false)
+      {
+         throw new ClassCastException(target + " is not a " + info);
+      }
+      return target;
    }
 
    public void toString(JBossStringBuilder buffer)
@@ -467,7 +512,7 @@ public class AbstractBeanMetaData extends AbstractFeatureMetaData implements Bea
          JBossObject.list(buffer, uninstalls);
       }
    }
-   
+
    public void toShortString(JBossStringBuilder buffer)
    {
       buffer.append(bean);

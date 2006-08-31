@@ -95,6 +95,10 @@ public class AbstractInjectionValueMetaData extends AbstractDependencyValueMetaD
       if (value == null)
       {
          ControllerContext context = controller.getInstalledContext(info.getType());
+         if (context == null)
+         {
+            throw new IllegalArgumentException("Possible multiple matching beans, see log for info.");
+         }
          return context.getTarget();
       }
       return super.getValue(info, cl);
@@ -119,6 +123,8 @@ public class AbstractInjectionValueMetaData extends AbstractDependencyValueMetaD
             }
             setValue(propertyMetaData.getName());
          }
+         
+         visitor.initialVisit(this);
       }
       // check if was maybe set with by_name
       if (getUnderlyingValue() != null)
@@ -141,6 +147,7 @@ public class AbstractInjectionValueMetaData extends AbstractDependencyValueMetaD
                DependencyItem item = new ClassContextDependencyItem(
                      context.getName(),
                      typeProvider.getType(visitor, this),
+                     visitor.getContextState(), 
                      dependentState);
                visitor.addDependency(item);
             }

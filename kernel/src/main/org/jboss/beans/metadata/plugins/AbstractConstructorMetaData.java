@@ -202,6 +202,12 @@ public class AbstractConstructorMetaData extends AbstractFeatureMetaData impleme
          }
          else
          {
+            // currently value constructor supports only values that are instances of class itself
+            // this will add another instance with the same class to context
+            Class type = beanInfo.getClassInfo().getType();
+            log.warn("Constructing bean from injection value: results in multiple beans with same class type - " + type);
+            return type;
+/*
             // find all constructors with single value
             Set<ConstructorInfo> constructors = beanInfo.getConstructors();
             Set<ConstructorInfo> matchingConstructorInfos = new HashSet<ConstructorInfo>();
@@ -220,6 +226,7 @@ public class AbstractConstructorMetaData extends AbstractFeatureMetaData impleme
                throw new IllegalArgumentException("Should not be here - illegal size of matching constructors: " + this);
             }
             return applyCollectionOrMapCheck(matchingConstructorInfos.iterator().next().getParameterTypes()[0].getType());
+*/
          }
       }
    }

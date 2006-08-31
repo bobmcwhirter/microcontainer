@@ -24,10 +24,11 @@ package org.jboss.test.kernel.deployment.xml.test;
 import java.util.ArrayList;
 import java.util.HashSet;
 
-import junit.framework.Test;
-
 import org.jboss.beans.metadata.plugins.AbstractBeanMetaData;
 import org.jboss.beans.metadata.spi.ConstructorMetaData;
+import org.jboss.beans.metadata.spi.BeanMetaData;
+
+import junit.framework.Test;
 
 /**
  * ConstructorTestCase.
@@ -54,6 +55,18 @@ public class ConstructorTestCase extends AbstractXMLTest
       assertNull(constructor.getFactory());
       assertNull(constructor.getParameters());
       assertNull(constructor.getValue());
+   }
+
+   public void testConstructorWithBean() throws Exception
+   {
+      ConstructorMetaData constructor = getConstructor("ConstructorWithBean.xml");
+      assertNull(constructor.getFactoryClass());
+      assertNull(constructor.getFactoryMethod());
+      assertNull(constructor.getAnnotations());
+      assertNull(constructor.getFactory());
+      assertNull(constructor.getParameters());
+      assertNotNull(constructor.getValue());
+      assertTrue(constructor.getValue() instanceof BeanMetaData);
    }
 
    public void testConstructorWithFactoryClass() throws Exception

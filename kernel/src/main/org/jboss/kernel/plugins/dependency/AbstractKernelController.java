@@ -222,6 +222,10 @@ public class AbstractKernelController extends AbstractController implements Kern
          ClassContext classContext = contextsByClass.get(clazz);
          if (classContext != null)
          {
+            if (log.isTraceEnabled())
+            {
+               log.trace("Marking class " + clazz + " as used.");
+            }
             classContext.used = true;
             return classContext.contexts;
          }
@@ -349,6 +353,10 @@ public class AbstractKernelController extends AbstractController implements Kern
 
       if (numberOfMatchingBeans != 1)
       {
+         if (numberOfMatchingBeans > 1)
+         {
+            log.warn("Multiple beans match class type: " + clazz);
+         }
          return null;
       }
       return contexts.iterator().next();

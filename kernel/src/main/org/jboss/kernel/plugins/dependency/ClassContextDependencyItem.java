@@ -34,9 +34,9 @@ import org.jboss.util.JBossStringBuilder;
  */
 public class ClassContextDependencyItem extends AbstractDependencyItem
 {
-   public ClassContextDependencyItem(Object name, Class demandClass, ControllerState dependentState)
+   public ClassContextDependencyItem(Object name, Class demandClass, ControllerState whenRequired, ControllerState dependentState)
    {
-      super(name, demandClass, ControllerState.INSTANTIATED, dependentState);
+      super(name, demandClass, whenRequired, dependentState);
    }
 
    public boolean resolve(Controller controller)

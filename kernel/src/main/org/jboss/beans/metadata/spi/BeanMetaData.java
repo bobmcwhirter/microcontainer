@@ -32,7 +32,7 @@ import org.jboss.dependency.spi.ControllerMode;
  * @author <a href="adrian@jboss.com">Adrian Brock</a>
  * @version $Revision$
  */
-public interface BeanMetaData extends FeatureMetaData
+public interface BeanMetaData extends FeatureMetaData, ValueMetaData
 {
    /**
     * Get the bean.

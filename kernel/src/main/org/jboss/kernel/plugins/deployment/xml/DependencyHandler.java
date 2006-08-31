@@ -58,6 +58,8 @@ public class DependencyHandler extends DefaultElementHandler
             dependency.setProperty(attrs.getValue(i));
          else if ("state".equals(localName))
             dependency.setDependentState(new ControllerState(attrs.getValue(i)));
+         else if ("whenRequired".equals(localName))
+            dependency.setWhenRequiredState(new ControllerState(attrs.getValue(i)));
       }
    }
    

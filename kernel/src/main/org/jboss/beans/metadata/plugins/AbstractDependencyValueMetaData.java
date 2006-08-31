@@ -48,6 +48,9 @@ public class AbstractDependencyValueMetaData extends AbstractValueMetaData
    /** The property name */
    protected String property;
 
+   /** The when required state of the dependency or null to use current context state */
+   protected ControllerState whenRequiredState;
+
    /** The required state of the dependency or null to look in the registry */
    protected ControllerState dependentState = ControllerState.INSTALLED;
 
@@ -101,8 +104,24 @@ public class AbstractDependencyValueMetaData extends AbstractValueMetaData
    }
    
    /**
-    * Set the required state of the dependency
+    * Set the when required state of the dependency
     * 
+    * @param whenRequiredState the when required state or null if it uses current context state
+    */
+   public void setWhenRequiredState(ControllerState whenRequredState)
+   {
+      this.whenRequiredState = whenRequredState;
+      flushJBossObjectCache();
+   }
+
+   public ControllerState getWhenRequiredState()
+   {
+      return whenRequiredState;
+   }
+   
+   /**
+    * Set the required state of the dependency
+    *
     * @param dependentState the required state or null if it must be in the registry
     */
    public void setDependentState(ControllerState dependentState)
@@ -115,7 +134,7 @@ public class AbstractDependencyValueMetaData extends AbstractValueMetaData
    {
       return dependentState;
    }
-   
+
    public Object getValue(TypeInfo info, ClassLoader cl) throws Throwable
    {
       ControllerState state = dependentState;
@@ -142,7 +161,11 @@ public class AbstractDependencyValueMetaData extends AbstractValueMetaData
       controller = (KernelController) controllerContext.getController();
       Object name = controllerContext.getName();
       Object iDependOn = getUnderlyingValue();
-      ControllerState whenRequired = visitor.getContextState();
+      ControllerState whenRequired = whenRequiredState;
+      if (whenRequired == null)
+      {
+         whenRequired = visitor.getContextState();
+      }
 
       DependencyItem item = new AbstractDependencyItem(name, iDependOn, whenRequired, dependentState);
       visitor.addDependency(item);
@@ -155,6 +178,8 @@ public class AbstractDependencyValueMetaData extends AbstractValueMetaData
       super.toString(buffer);
       if (property != null)
          buffer.append(" property=").append(property);
+      if (whenRequiredState != null)
+         buffer.append(" whenRequiredState=").append(whenRequiredState.getStateString());
       if (dependentState != null)
          buffer.append(" dependentState=").append(dependentState.getStateString());
    }

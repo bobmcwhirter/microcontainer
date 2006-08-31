@@ -49,6 +49,8 @@ public class InjectionHandler extends DefaultElementHandler
             injection.setProperty(attrs.getValue(i));
          else if ("state".equals(localName))
             injection.setDependentState(new ControllerState(attrs.getValue(i)));
+         else if ("whenRequired".equals(localName))
+            injection.setWhenRequiredState(new ControllerState(attrs.getValue(i)));
          else if ("type".equals(localName))
             injection.setInjectionType(new InjectionType(attrs.getValue(i)));
       }

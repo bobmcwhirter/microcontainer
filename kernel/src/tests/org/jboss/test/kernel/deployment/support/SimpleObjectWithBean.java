@@ -19,42 +19,53 @@
 * Software Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA
 * 02110-1301 USA, or see the FSF site: http://www.fsf.org.
 */
-package org.jboss.test.kernel.inject.test;
+package org.jboss.test.kernel.deployment.support;
 
-import org.jboss.kernel.spi.deployment.KernelDeployment;
-import org.jboss.test.kernel.junit.MicrocontainerTest;
+import java.io.Serializable;
 
 /**
- * @author <a href="mailto:ales.justin@gmail.com">Ales Justin</a>
+ * A simple object with all possible bean as meta data
+ *
+ * @author <a href="ales.justin@gmail.com">Ales Justin</a>
  */
-public abstract class ContextualInjectionAdapter extends MicrocontainerTest
+public class SimpleObjectWithBean implements Serializable
 {
+   // Constants -----------------------------------------------------
 
-   public ContextualInjectionAdapter(String name)
+   private static final long serialVersionUID = 3258126972906387766L;
+
+   // Attributes ----------------------------------------------------
+
+   private SimpleBean simpleBean;
+   private ClassLoader classLoader;
+
+   public SimpleObjectWithBean()
    {
-      super(name);
    }
 
-   protected abstract String getResource();
-
-   protected abstract void checkInjection();
-
-   protected void enableTrace()
+   public SimpleObjectWithBean(SimpleBean simpleBean)
    {
+      this.simpleBean = simpleBean;
    }
 
-   public void testInjection() throws Throwable
+   public SimpleBean getSimpleBean()
    {
-      enableTrace();
-      KernelDeployment deployment = deploy(getResource());
-      try
-      {
-         validate();
-         checkInjection();
-      }
-      finally
-      {
-         undeploy(deployment);
-      }
+      return simpleBean;
    }
+
+   public void setSimpleBean(SimpleBean simpleBean)
+   {
+      this.simpleBean = simpleBean;
+   }
+
+   public ClassLoader getClassLoader()
+   {
+      return classLoader;
+   }
+
+   public void setClassLoader(ClassLoader classLoader)
+   {
+      this.classLoader = classLoader;
+   }
+
 }

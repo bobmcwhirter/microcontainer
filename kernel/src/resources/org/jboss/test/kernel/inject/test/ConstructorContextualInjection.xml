@@ -1,8 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
-<deployment xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-            xsi:schemaLocation="urn:jboss:bean-deployer bean-deployer_1_0.xsd"
-            xmlns="urn:jboss:bean-deployer">
+<deployment xmlns="urn:jboss:bean-deployer:2.0">
 
    <bean name="testObject1" class="org.jboss.test.kernel.inject.support.ConstructorInjectTestObject" >
       <constructor
@@ -32,17 +30,21 @@
       <constructor><parameter><inject/></parameter></constructor>
    </bean>
 
-<!--
    <bean name="testObject5" class="org.jboss.test.kernel.inject.support.ConstructorInjectTestObject" >
       <constructor factoryMethod="withParameter">
-         <factory bean="testObject6"/>
+         <factory bean="testObject6" whenRequired="Described"/>
          <parameter><inject/></parameter>
       </constructor>
    </bean>
--->
 
    <bean name="duplicateTester" class="org.jboss.test.kernel.inject.support.DuplicateTester"/>
 
    <bean name="testObject6" class="org.jboss.test.kernel.inject.support.ConstructorInjectTestObject" />
+
+   <bean name="constBean" class="org.jboss.test.kernel.inject.support.ConstructorValueBean" />
+
+   <bean name="constBeanRef" class="org.jboss.test.kernel.inject.support.ConstructorValueBean">
+      <constructor><inject/></constructor>
+   </bean>
 
 </deployment>

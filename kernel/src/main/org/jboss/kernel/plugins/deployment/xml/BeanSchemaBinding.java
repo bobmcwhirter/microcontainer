@@ -941,6 +941,8 @@ public class BeanSchemaBinding
                   dependency.setProperty(attrs.getValue(i));
                else if ("state".equals(localName))
                   dependency.setDependentState(new ControllerState(attrs.getValue(i)));
+               else if ("whenRequired".equals(localName))
+                  dependency.setWhenRequiredState(new ControllerState(attrs.getValue(i)));
             }
          }
          
@@ -981,6 +983,8 @@ public class BeanSchemaBinding
                   injection.setProperty(attrs.getValue(i));
                else if ("state".equals(localName))
                   injection.setDependentState(new ControllerState(attrs.getValue(i)));
+               else if ("whenRequired".equals(localName))
+                  injection.setWhenRequiredState(new ControllerState(attrs.getValue(i)));
                else if ("type".equals(localName))
                   injection.setInjectionType(new InjectionType(attrs.getValue(i)));
             }

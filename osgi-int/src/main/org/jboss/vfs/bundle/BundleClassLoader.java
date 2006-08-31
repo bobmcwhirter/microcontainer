@@ -31,7 +31,7 @@ public class BundleClassLoader extends SecureClassLoader
    }
 
    /* (non-Javadoc)
-    * @see org.jboss.classloading.spi.DomainClassLoader#getPackagNames()
+    * @see org.jboss.classloading.spi.DomainClassLoader#getPackageNames()
     */
    public String[] getPackageNames()
    {

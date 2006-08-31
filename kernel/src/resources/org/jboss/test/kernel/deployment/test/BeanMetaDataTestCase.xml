@@ -1,0 +1,33 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<deployment xmlns="urn:jboss:bean-deployer:2.0">
+
+<!--
+   <bean name="SimpleObject1" class="org.jboss.test.kernel.deployment.support.SimpleObjectWithBean">
+      <classloader>
+         <bean name="simple1" class="org.jboss.test.kernel.deployment.support.NullClassLoader" />
+      </classloader>
+   </bean>
+
+   <bean name="SimpleObject2" class="org.jboss.test.kernel.deployment.support.SimpleObjectWithBean">
+      <constructor>
+         <bean name="simple2" class="org.jboss.test.kernel.deployment.support.SimpleBeanImpl" />
+      </constructor>
+   </bean>
+
+   <bean name="SimpleObject3" class="org.jboss.test.kernel.deployment.support.SimpleObjectWithBean">
+      <constructor>
+         <parameter>
+            <bean name="simple3" class="org.jboss.test.kernel.deployment.support.SimpleBeanImpl" />
+         </parameter>
+      </constructor>
+   </bean>
+
+   <bean name="SimpleObject4" class="org.jboss.test.kernel.deployment.support.SimpleObjectWithBean">
+      <property name="simpleBean">
+         <bean name="simple4" class="org.jboss.test.kernel.deployment.support.SimpleBeanImpl"/>
+      </property>
+   </bean>
+-->
+
+</deployment>

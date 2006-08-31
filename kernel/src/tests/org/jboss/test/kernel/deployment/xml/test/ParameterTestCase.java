@@ -24,11 +24,12 @@ package org.jboss.test.kernel.deployment.xml.test;
 import java.util.HashSet;
 import java.util.List;
 
-import junit.framework.Test;
-
 import org.jboss.beans.metadata.plugins.AbstractBeanMetaData;
 import org.jboss.beans.metadata.spi.ConstructorMetaData;
 import org.jboss.beans.metadata.spi.ParameterMetaData;
+import org.jboss.beans.metadata.spi.BeanMetaData;
+
+import junit.framework.Test;
 
 /**
  * ParameterTestCase.
@@ -59,6 +60,14 @@ public class ParameterTestCase extends AbstractXMLTest
       assertNull(parameter.getValue());
    }
    
+   public void testParameterWithBean() throws Exception
+   {
+      ParameterMetaData parameter = getParameter("ParameterWithBean.xml");
+      assertNull(parameter.getAnnotations());
+      assertNotNull(parameter.getValue());
+      assertTrue(parameter.getValue() instanceof BeanMetaData);
+   }
+   
    public void testParameterWithClass() throws Exception
    {
       ParameterMetaData parameter = getParameter("ParameterWithClass.xml");
@@ -66,7 +75,7 @@ public class ParameterTestCase extends AbstractXMLTest
       assertNull(parameter.getAnnotations());
       assertNull(parameter.getValue());
    }
-   
+
    public void testParameterWithAnnotation() throws Exception
    {
       ParameterMetaData parameter = getParameter("ParameterWithAnnotation.xml");
