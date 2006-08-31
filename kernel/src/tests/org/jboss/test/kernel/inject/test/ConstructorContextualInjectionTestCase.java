@@ -22,6 +22,7 @@
 package org.jboss.test.kernel.inject.test;
 
 import org.jboss.test.kernel.inject.support.ConstructorInjectTestObject;
+import org.jboss.test.kernel.inject.support.ConstructorValueBean;
 
 import junit.framework.Test;
 
@@ -53,7 +54,6 @@ public class ConstructorContextualInjectionTestCase extends ContextualInjectionA
 
    protected void checkInjection()
    {
-/*
       ConstructorInjectTestObject test1 = (ConstructorInjectTestObject) getBean("testObject1");
       assertNotNull(test1.getTesterInterface());
 
@@ -66,17 +66,14 @@ public class ConstructorContextualInjectionTestCase extends ContextualInjectionA
       ConstructorInjectTestObject test4 = (ConstructorInjectTestObject) getBean("testObject4");
       assertNotNull(test4.getTesterInterface());
 
-*/
       ConstructorInjectTestObject test5 = (ConstructorInjectTestObject) getBean("testObject5");
       assertNotNull(test5.getTesterInterface());
 
-/*
       ConstructorValueBean constBean = (ConstructorValueBean) getBean("constBean");
       ConstructorValueBean constBeanRef = (ConstructorValueBean) getBean("constBeanRef");
       assertNotNull(constBean);
       assertNotNull(constBeanRef);
       assertEquals(constBean, constBeanRef);
-*/
    }
 
 }
