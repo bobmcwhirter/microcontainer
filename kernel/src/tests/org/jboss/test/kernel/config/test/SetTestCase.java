@@ -236,10 +236,7 @@ public class SetTestCase extends AbstractKernelConfigTest
       return (SimpleBean) instantiateAndConfigure(configurator, bmd);
    }
 
-   /*
-    * @todo allow retrieval of set instance from the bean
-    */
-   public void TODOtestCustomSetPreInstantiated() throws Throwable
+   public void testCustomSetPreInstantiated() throws Throwable
    {
       SimpleBean bean = customSetPreInstantiated();
       assertNotNull(bean);

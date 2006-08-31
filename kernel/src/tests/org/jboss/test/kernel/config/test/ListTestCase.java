@@ -237,10 +237,7 @@ public class ListTestCase extends AbstractKernelConfigTest
       return (SimpleBean) instantiateAndConfigure(configurator, bmd);
    }
 
-   /*
-    * @todo allow retrieval of list instance from the bean
-    */
-   public void TODOtestCustomListPreInstantiated() throws Throwable
+   public void testCustomListPreInstantiated() throws Throwable
    {
       SimpleBean bean = customListPreInstantiated();
       assertNotNull(bean);
