@@ -46,12 +46,6 @@ public class ConstructorContextualInjectionTestCase extends ContextualInjectionA
       return "ConstructorContextualInjection.xml";
    }
 
-   protected void enableTrace()
-   {
-      enableTrace("org.jboss.beans");
-      enableTrace("org.jboss.kernel");
-   }
-
    protected void checkInjection()
    {
       ConstructorInjectTestObject test1 = (ConstructorInjectTestObject) getBean("testObject1");
