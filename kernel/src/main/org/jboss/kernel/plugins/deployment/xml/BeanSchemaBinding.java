@@ -241,6 +241,14 @@ public class BeanSchemaBinding
             AbstractKernelDeployment deployment = (AbstractKernelDeployment) parent;
             AbstractClassLoaderMetaData classloader = (AbstractClassLoaderMetaData) child;
             deployment.setClassLoader(classloader);
+            // add classloaders as value beans
+            List<BeanMetaDataFactory> beans = deployment.getBeanFactories();
+            if (beans == null)
+            {
+               beans = new ArrayList<BeanMetaDataFactory>();
+               deployment.setBeanFactories(beans);
+            }
+            beans.add(classloader);
          }
       });
 

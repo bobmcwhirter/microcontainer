@@ -23,11 +23,10 @@ package org.jboss.beans.metadata.plugins;
 
 import java.util.Collections;
 import java.util.Iterator;
+import java.util.List;
+import java.util.ArrayList;
 
-import org.jboss.beans.metadata.spi.ClassLoaderMetaData;
-import org.jboss.beans.metadata.spi.MetaDataVisitor;
-import org.jboss.beans.metadata.spi.MetaDataVisitorNode;
-import org.jboss.beans.metadata.spi.ValueMetaData;
+import org.jboss.beans.metadata.spi.*;
 import org.jboss.dependency.spi.ControllerState;
 import org.jboss.util.JBossObject;
 import org.jboss.util.JBossStringBuilder;
@@ -38,7 +37,7 @@ import org.jboss.util.JBossStringBuilder;
  * @author <a href="adrian@jboss.com">Adrian Brock</a>
  * @version $Revision$
  */
-public class AbstractClassLoaderMetaData extends JBossObject implements ClassLoaderMetaData
+public class AbstractClassLoaderMetaData extends JBossObject implements ClassLoaderMetaData, BeanMetaDataFactory
 {
    /** The classloader */
    protected ValueMetaData classloader;
@@ -74,6 +73,15 @@ public class AbstractClassLoaderMetaData extends JBossObject implements ClassLoa
    public ValueMetaData getClassLoader()
    {
       return classloader;
+   }
+
+   public List<BeanMetaData> getBeans()
+   {
+      if (classloader instanceof BeanMetaData)
+      {
+         return Collections.singletonList((BeanMetaData)classloader);
+      }
+      return new ArrayList<BeanMetaData>();
    }
 
    public void initialVisit(MetaDataVisitor visitor)

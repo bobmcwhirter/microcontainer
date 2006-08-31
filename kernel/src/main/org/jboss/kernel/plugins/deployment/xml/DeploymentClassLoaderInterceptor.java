@@ -21,9 +21,12 @@
 */
 package org.jboss.kernel.plugins.deployment.xml;
 
+import java.util.List;
+import java.util.ArrayList;
 import javax.xml.namespace.QName;
 
 import org.jboss.beans.metadata.plugins.AbstractClassLoaderMetaData;
+import org.jboss.beans.metadata.spi.BeanMetaDataFactory;
 import org.jboss.kernel.plugins.deployment.AbstractKernelDeployment;
 import org.jboss.xb.binding.sunday.unmarshalling.DefaultElementInterceptor;
 
@@ -43,5 +46,13 @@ public class DeploymentClassLoaderInterceptor extends DefaultElementInterceptor
       AbstractKernelDeployment deployment = (AbstractKernelDeployment) parent;
       AbstractClassLoaderMetaData classloader = (AbstractClassLoaderMetaData) child;
       deployment.setClassLoader(classloader);
+      // add classloaders as value beans
+      List<BeanMetaDataFactory> beans = deployment.getBeanFactories();
+      if (beans == null)
+      {
+         beans = new ArrayList<BeanMetaDataFactory>();
+         deployment.setBeanFactories(beans);
+      }
+      beans.add(classloader);
    }
 }

@@ -62,7 +62,7 @@ public class DeploymentTestCase extends AbstractXMLTest
       AbstractKernelDeployment deployment = unmarshalDeployment("DeploymentWithClassLoader.xml");
       assertEquals("SimpleDeployment", deployment.getName());
       assertNotNull(deployment.getClassLoader());
-      assertNull(deployment.getBeans());
+      assertEmpty(deployment.getBeans());
    }
 
    public void testDeploymentWithBean() throws Exception

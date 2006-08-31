@@ -37,7 +37,6 @@ public class SimpleObjectWithBean implements Serializable
    // Attributes ----------------------------------------------------
 
    private SimpleBean simpleBean;
-   private ClassLoader classLoader;
 
    public SimpleObjectWithBean()
    {
@@ -56,16 +55,6 @@ public class SimpleObjectWithBean implements Serializable
    public void setSimpleBean(SimpleBean simpleBean)
    {
       this.simpleBean = simpleBean;
-   }
-
-   public ClassLoader getClassLoader()
-   {
-      return classLoader;
-   }
-
-   public void setClassLoader(ClassLoader classLoader)
-   {
-      this.classLoader = classLoader;
    }
 
 }

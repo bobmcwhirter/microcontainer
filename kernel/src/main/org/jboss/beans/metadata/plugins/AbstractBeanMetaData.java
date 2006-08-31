@@ -24,11 +24,11 @@ package org.jboss.beans.metadata.plugins;
 import java.util.*;
 
 import org.jboss.beans.metadata.spi.*;
+import org.jboss.dependency.plugins.AbstractDependencyItem;
 import org.jboss.dependency.spi.ControllerContext;
 import org.jboss.dependency.spi.ControllerMode;
 import org.jboss.dependency.spi.ControllerState;
 import org.jboss.dependency.spi.DependencyItem;
-import org.jboss.dependency.plugins.AbstractDependencyItem;
 import org.jboss.kernel.spi.dependency.KernelController;
 import org.jboss.kernel.spi.dependency.KernelControllerContext;
 import org.jboss.reflect.spi.TypeInfo;
@@ -122,7 +122,29 @@ public class AbstractBeanMetaData extends AbstractFeatureMetaData implements Bea
 
    public List<BeanMetaData> getBeans()
    {
-      return Collections.singletonList((BeanMetaData) this);
+      List<BeanMetaData> allBeans = new ArrayList<BeanMetaData>();
+      addBeans(this, allBeans);
+      return allBeans;
+   }
+
+   protected void addBeans(MetaDataVisitorNode current, List<BeanMetaData> list)
+   {
+      for(Iterator<? extends MetaDataVisitorNode> children = current.getChildren(); children != null && children.hasNext();)
+      {
+         MetaDataVisitorNode next = children.next();
+         if (next instanceof BeanMetaDataFactory)
+         {
+            list.addAll(((BeanMetaDataFactory) next).getBeans());
+         }
+         else
+         {
+            addBeans(next, list);
+         }
+      }
+      if (current instanceof BeanMetaData)
+      {
+         list.add((BeanMetaData) current);
+      }
    }
 
    /**
@@ -396,15 +418,18 @@ public class AbstractBeanMetaData extends AbstractFeatureMetaData implements Bea
 
    public void initialVisit(MetaDataVisitor visitor)
    {
-      if (visitor.visitorNodeStack().isEmpty() == false)
+      if (visitor.visitorNodeStack().isEmpty() == false || (classLoader != null && classLoader.getClassLoader() != this))
       {
          KernelControllerContext controllerContext = visitor.getControllerContext();
          controller = (KernelController) controllerContext.getController();
          Object name = controllerContext.getName();
          Object iDependOn = getUnderlyingValue();
-         ControllerState whenRequired = visitor.getContextState();
-         DependencyItem di = new AbstractDependencyItem(name, iDependOn, whenRequired, ControllerState.INSTALLED);
-         visitor.addDependency(di);
+         if (name.equals(iDependOn) == false)
+         {
+            ControllerState whenRequired = visitor.getContextState();
+            DependencyItem di = new AbstractDependencyItem(name, iDependOn, whenRequired, ControllerState.INSTALLED);
+            visitor.addDependency(di);
+         }
       }
       super.initialVisit(visitor);
    }
@@ -417,7 +442,7 @@ public class AbstractBeanMetaData extends AbstractFeatureMetaData implements Bea
    protected void addChildren(Set<MetaDataVisitorNode> children)
    {
       super.addChildren(children);
-      if (classLoader != null)
+      if (classLoader != null && classLoader.getClassLoader() != this)
          children.add(classLoader);
       if (constructor != null)
          children.add(constructor);
@@ -458,10 +483,15 @@ public class AbstractBeanMetaData extends AbstractFeatureMetaData implements Bea
       ControllerContext context = controller.getInstalledContext(getName());
       if (context == null || context.getTarget() == null)
       {
+         // possible call for classloader
+         if (info == null && classLoader != null && classLoader.getClassLoader() == this)
+         {
+            return cl;
+         }
          throw new IllegalArgumentException("Bean not yet installed: " + getName());
       }
       Object target = context.getTarget();
-      if (info.getType().isAssignableFrom(target.getClass()) == false)
+      if (info != null && info.getType().isAssignableFrom(target.getClass()) == false)
       {
          throw new ClassCastException(target + " is not a " + info);
       }
@@ -474,7 +504,7 @@ public class AbstractBeanMetaData extends AbstractFeatureMetaData implements Bea
       buffer.append(" bean=").append(bean);
       buffer.append(" properties=");
       JBossObject.list(buffer, properties);
-      if (classLoader != null)
+      if (classLoader != null && classLoader.getClassLoader() != this)
          buffer.append(" classLoader=").append(classLoader);
       buffer.append(" constructor=").append(constructor);
       if (create != null)
