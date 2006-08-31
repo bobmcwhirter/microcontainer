@@ -33,7 +33,7 @@ public class BundleClassLoader extends SecureClassLoader
    /* (non-Javadoc)
     * @see org.jboss.classloading.spi.DomainClassLoader#getPackagNames()
     */
-   public String[] getPackagNames()
+   public String[] getPackageNames()
    {
       // TODO Auto-generated method stub
       return null;
