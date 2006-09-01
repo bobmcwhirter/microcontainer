@@ -31,8 +31,11 @@ import org.jboss.joinpoint.spi.Joinpoint;
 import org.jboss.joinpoint.spi.TargettedJoinpoint;
 import org.jboss.kernel.Kernel;
 import org.jboss.kernel.spi.config.KernelConfigurator;
+import org.jboss.kernel.spi.dependency.KernelController;
+import org.jboss.kernel.spi.dependency.KernelControllerContext;
 import org.jboss.test.kernel.AbstractKernelTest;
 import org.jboss.test.kernel.config.support.XMLUtil;
+import org.jboss.dependency.spi.ControllerMode;
 
 /**
  * An abstract kernel config test.
@@ -55,7 +58,7 @@ public class AbstractKernelConfigTest extends AbstractKernelTest
       super(name);
       this.xmltest = xmltest;
    }
-   
+
    protected Kernel bootstrap() throws Throwable
    {
       if (xmltest)
@@ -81,7 +84,6 @@ public class AbstractKernelConfigTest extends AbstractKernelTest
       KernelConfigurator configurator = kernel.getConfigurator();
       return instantiateAndConfigure(configurator, metaData);
    }
-   
 
    protected Object instantiateAndConfigure(KernelConfigurator configurator, BeanMetaData metaData) throws Throwable
    {
@@ -89,19 +91,26 @@ public class AbstractKernelConfigTest extends AbstractKernelTest
       configure(configurator, result, metaData);
       return result;
    }
-   
+
+   protected Object instantiate(KernelController controller, BeanMetaData metaData) throws Throwable
+   {
+      metaData.setMode(ControllerMode.AUTOMATIC);
+      KernelControllerContext kernelControllerContext = controller.install(metaData);
+      return kernelControllerContext.getTarget();
+   }
+
    protected Object instantiate(KernelConfigurator configurator, BeanMetaData metaData) throws Throwable
    {
       Joinpoint joinPoint = configurator.getConstructorJoinPoint(metaData);
       return joinPoint.dispatch();
    }
-   
+
    protected void configure(KernelConfigurator configurator, Object bean, BeanMetaData metaData) throws Throwable
    {
       BeanInfo info = configurator.getBeanInfo(metaData);
       configure(configurator, bean, info, metaData);
    }
-   
+
    protected void configure(KernelConfigurator configurator, Object bean, BeanInfo info, BeanMetaData metaData) throws Throwable
    {
       Set joinPoints = configurator.getPropertySetterJoinPoints(info, metaData);
@@ -112,7 +121,7 @@ public class AbstractKernelConfigTest extends AbstractKernelTest
          joinPoint.dispatch();
       }
    }
-   
+
    protected void configure(KernelConfigurator configurator, Object bean, BeanInfo info, PropertyMetaData metaData) throws Throwable
    {
       ClassLoader cl = getClass().getClassLoader();
@@ -120,7 +129,7 @@ public class AbstractKernelConfigTest extends AbstractKernelTest
       joinPoint.setTarget(bean);
       joinPoint.dispatch();
    }
-   
+
    protected void unconfigure(KernelConfigurator configurator, Object bean, BeanInfo info, BeanMetaData metaData) throws Throwable
    {
       Set joinPoints = configurator.getPropertyNullerJoinPoints(info, metaData);

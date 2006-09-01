@@ -25,19 +25,16 @@ import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Map;
 
-import junit.framework.Test;
-
-import org.jboss.beans.metadata.plugins.AbstractBeanMetaData;
-import org.jboss.beans.metadata.plugins.AbstractMapMetaData;
-import org.jboss.beans.metadata.plugins.AbstractPropertyMetaData;
-import org.jboss.beans.metadata.plugins.AbstractValueMetaData;
-import org.jboss.beans.metadata.plugins.StringValueMetaData;
+import org.jboss.beans.metadata.plugins.*;
 import org.jboss.beans.metadata.spi.PropertyMetaData;
 import org.jboss.kernel.Kernel;
 import org.jboss.kernel.spi.config.KernelConfigurator;
+import org.jboss.kernel.spi.dependency.KernelController;
 import org.jboss.test.kernel.config.support.CustomMap;
 import org.jboss.test.kernel.config.support.MyObject;
 import org.jboss.test.kernel.config.support.SimpleBean;
+
+import junit.framework.Test;
 
 /**
  * Map Test Case.
@@ -121,7 +118,7 @@ public class MapTestCase extends AbstractKernelConfigTest
    {
       Kernel kernel = bootstrap();
       KernelConfigurator configurator = kernel.getConfigurator();
-      
+
       AbstractBeanMetaData bmd = new AbstractBeanMetaData(SimpleBean.class.getName());
       HashSet<PropertyMetaData> properties = new HashSet<PropertyMetaData>();
       bmd.setProperties(properties);
@@ -248,9 +245,9 @@ public class MapTestCase extends AbstractKernelConfigTest
    protected SimpleBean customMapPreInstantiated() throws Throwable
    {
       Kernel kernel = bootstrap();
-      KernelConfigurator configurator = kernel.getConfigurator();
-      
-      AbstractBeanMetaData bmd = new AbstractBeanMetaData(SimpleBean.class.getName());
+      KernelController controller = kernel.getController();
+
+      AbstractBeanMetaData bmd = new AbstractBeanMetaData("test1", SimpleBean.class.getName());
       HashSet<PropertyMetaData> properties = new HashSet<PropertyMetaData>();
       bmd.setProperties(properties);
 
@@ -262,14 +259,13 @@ public class MapTestCase extends AbstractKernelConfigTest
       AbstractMapMetaData smd = new AbstractMapMetaData();
       smd.setKeyType("java.lang.String");
       smd.setValueType("java.lang.String");
-      smd.setConfigurator(configurator);
       smd.put(kmd1, vmd1);
       smd.put(kmd2, vmd2);
 
       AbstractPropertyMetaData pmd = new AbstractPropertyMetaData("preInstantiatedMap", smd);
       properties.add(pmd);
       
-      return (SimpleBean) instantiateAndConfigure(configurator, bmd);
+      return (SimpleBean) instantiate(controller, bmd);
    }
 
    public void testMapWithKeyTypeOverride() throws Throwable

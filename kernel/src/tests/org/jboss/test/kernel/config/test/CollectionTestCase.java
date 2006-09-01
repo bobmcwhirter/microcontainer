@@ -29,6 +29,7 @@ import org.jboss.beans.metadata.plugins.*;
 import org.jboss.beans.metadata.spi.PropertyMetaData;
 import org.jboss.kernel.Kernel;
 import org.jboss.kernel.spi.config.KernelConfigurator;
+import org.jboss.kernel.spi.dependency.KernelController;
 import org.jboss.test.kernel.config.support.CustomCollection;
 import org.jboss.test.kernel.config.support.MyObject;
 import org.jboss.test.kernel.config.support.SimpleBean;
@@ -254,9 +255,9 @@ public class CollectionTestCase extends AbstractKernelConfigTest
    protected SimpleBean customCollectionPreInstantiated() throws Throwable
    {
       Kernel kernel = bootstrap();
-      KernelConfigurator configurator = kernel.getConfigurator();
-      
-      AbstractBeanMetaData bmd = new AbstractBeanMetaData(SimpleBean.class.getName());
+      KernelController controller = kernel.getController();
+
+      AbstractBeanMetaData bmd = new AbstractBeanMetaData("test1", SimpleBean.class.getName());
       HashSet<PropertyMetaData> properties = new HashSet<PropertyMetaData>();
       bmd.setProperties(properties);
 
@@ -266,7 +267,6 @@ public class CollectionTestCase extends AbstractKernelConfigTest
 
       AbstractCollectionMetaData smd = new AbstractCollectionMetaData();
       smd.setElementType("java.lang.String");
-      smd.setConfigurator(configurator);
       smd.add(vmd1);
       smd.add(vmd2);
       smd.add(vmd2); // tests duplicates
@@ -275,7 +275,7 @@ public class CollectionTestCase extends AbstractKernelConfigTest
       AbstractPropertyMetaData pmd = new AbstractPropertyMetaData("preInstantiatedCollection", smd);
       properties.add(pmd);
       
-      return (SimpleBean) instantiateAndConfigure(configurator, bmd);
+      return (SimpleBean) instantiate(controller, bmd);
    }
 
    public void testCollectionWithValueTypeOverride() throws Throwable

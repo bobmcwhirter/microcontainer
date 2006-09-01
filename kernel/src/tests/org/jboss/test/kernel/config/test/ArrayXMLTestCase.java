@@ -21,10 +21,10 @@
 */
 package org.jboss.test.kernel.config.test;
 
-import junit.framework.Test;
-
 import org.jboss.test.kernel.config.support.SimpleBean;
 import org.jboss.test.kernel.config.support.XMLUtil;
+
+import junit.framework.Test;
 
 /**
  * Array Test Case.
@@ -51,6 +51,12 @@ public class ArrayXMLTestCase extends ArrayTestCase
    }
 
    protected SimpleBean simpleArrayFromStrings() throws Throwable
+   {
+      XMLUtil util = bootstrapXML(true);
+      return (SimpleBean) util.getBean("SimpleBean");
+   }
+
+   protected SimpleBean customArrayPreinstantiated() throws Throwable
    {
       XMLUtil util = bootstrapXML(true);
       return (SimpleBean) util.getBean("SimpleBean");

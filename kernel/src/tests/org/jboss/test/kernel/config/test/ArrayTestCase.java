@@ -23,18 +23,15 @@ package org.jboss.test.kernel.config.test;
 
 import java.util.HashSet;
 
-import junit.framework.Test;
-
-import org.jboss.beans.metadata.plugins.AbstractBeanMetaData;
-import org.jboss.beans.metadata.plugins.AbstractArrayMetaData;
-import org.jboss.beans.metadata.plugins.AbstractPropertyMetaData;
-import org.jboss.beans.metadata.plugins.AbstractValueMetaData;
-import org.jboss.beans.metadata.plugins.StringValueMetaData;
+import org.jboss.beans.metadata.plugins.*;
 import org.jboss.beans.metadata.spi.PropertyMetaData;
 import org.jboss.kernel.Kernel;
 import org.jboss.kernel.spi.config.KernelConfigurator;
+import org.jboss.kernel.spi.dependency.KernelController;
 import org.jboss.test.kernel.config.support.MyObject;
 import org.jboss.test.kernel.config.support.SimpleBean;
+
+import junit.framework.Test;
 
 /**
  * Array Test Case.
@@ -152,7 +149,7 @@ public class ArrayTestCase extends AbstractKernelConfigTest
 
    public void testArrayPreinstantiated() throws Throwable
    {
-      SimpleBean bean = customArrayExplicit();
+      SimpleBean bean = customArrayPreinstantiated();
       assertNotNull(bean);
 
       Object[] result = bean.getPreInstantiatedArray();
@@ -162,11 +159,38 @@ public class ArrayTestCase extends AbstractKernelConfigTest
       assertEquals(expected, result);
    }
 
+   protected SimpleBean customArrayPreinstantiated() throws Throwable
+   {
+      Kernel kernel = bootstrap();
+      KernelController controller = kernel.getController();
+
+      AbstractBeanMetaData bmd = new AbstractBeanMetaData("test1", SimpleBean.class.getName());
+      HashSet<PropertyMetaData> properties = new HashSet<PropertyMetaData>();
+      bmd.setProperties(properties);
+
+      StringValueMetaData vmd1 = new StringValueMetaData(string1);
+      StringValueMetaData vmd2 = new StringValueMetaData(string2);
+      StringValueMetaData vmd3 = new StringValueMetaData(string1);
+
+      AbstractArrayMetaData smd = new AbstractArrayMetaData();
+      smd.setType(new String[0].getClass().getName());
+      smd.setElementType("java.lang.String");
+      smd.add(vmd1);
+      smd.add(vmd2);
+      smd.add(vmd2); // tests duplicates
+      smd.add(vmd3); // tests duplicates
+
+      AbstractPropertyMetaData pmd = new AbstractPropertyMetaData("array", smd);
+      properties.add(pmd);
+
+      return (SimpleBean) instantiate(controller, bmd);
+   }
+
    protected SimpleBean customArrayExplicit() throws Throwable
    {
       Kernel kernel = bootstrap();
       KernelConfigurator configurator = kernel.getConfigurator();
-      
+
       AbstractBeanMetaData bmd = new AbstractBeanMetaData(SimpleBean.class.getName());
       HashSet<PropertyMetaData> properties = new HashSet<PropertyMetaData>();
       bmd.setProperties(properties);

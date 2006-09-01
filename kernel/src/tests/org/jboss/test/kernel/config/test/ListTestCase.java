@@ -22,22 +22,19 @@
 package org.jboss.test.kernel.config.test;
 
 import java.util.ArrayList;
-import java.util.List;
 import java.util.HashSet;
+import java.util.List;
 
-import junit.framework.Test;
-
-import org.jboss.beans.metadata.plugins.AbstractBeanMetaData;
-import org.jboss.beans.metadata.plugins.AbstractListMetaData;
-import org.jboss.beans.metadata.plugins.AbstractPropertyMetaData;
-import org.jboss.beans.metadata.plugins.AbstractValueMetaData;
-import org.jboss.beans.metadata.plugins.StringValueMetaData;
+import org.jboss.beans.metadata.plugins.*;
 import org.jboss.beans.metadata.spi.PropertyMetaData;
 import org.jboss.kernel.Kernel;
 import org.jboss.kernel.spi.config.KernelConfigurator;
+import org.jboss.kernel.spi.dependency.KernelController;
 import org.jboss.test.kernel.config.support.CustomList;
 import org.jboss.test.kernel.config.support.MyObject;
 import org.jboss.test.kernel.config.support.SimpleBean;
+
+import junit.framework.Test;
 
 /**
  * List Test Case.
@@ -258,9 +255,9 @@ public class ListTestCase extends AbstractKernelConfigTest
    protected SimpleBean customListPreInstantiated() throws Throwable
    {
       Kernel kernel = bootstrap();
-      KernelConfigurator configurator = kernel.getConfigurator();
-      
-      AbstractBeanMetaData bmd = new AbstractBeanMetaData(SimpleBean.class.getName());
+      KernelController controller = kernel.getController();
+
+      AbstractBeanMetaData bmd = new AbstractBeanMetaData("test1", SimpleBean.class.getName());
       HashSet<PropertyMetaData> properties = new HashSet<PropertyMetaData>();
       bmd.setProperties(properties);
 
@@ -270,7 +267,6 @@ public class ListTestCase extends AbstractKernelConfigTest
 
       AbstractListMetaData smd = new AbstractListMetaData();
       smd.setElementType("java.lang.String");
-      smd.setConfigurator(configurator);
       smd.add(vmd1);
       smd.add(vmd2);
       smd.add(vmd2); // tests duplicates
@@ -279,7 +275,7 @@ public class ListTestCase extends AbstractKernelConfigTest
       AbstractPropertyMetaData pmd = new AbstractPropertyMetaData("preInstantiatedList", smd);
       properties.add(pmd);
       
-      return (SimpleBean) instantiateAndConfigure(configurator, bmd);
+      return (SimpleBean) instantiate(controller, bmd);
    }
 
    public void testListWithValueTypeOverride() throws Throwable
