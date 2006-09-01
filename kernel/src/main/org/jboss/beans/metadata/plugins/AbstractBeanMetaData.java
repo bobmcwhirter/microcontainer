@@ -475,12 +475,12 @@ public class AbstractBeanMetaData extends AbstractFeatureMetaData implements Bea
 
    public Object getUnderlyingValue()
    {
-      return getName();
+      return name;
    }
 
    public Object getValue(TypeInfo info, ClassLoader cl) throws Throwable
    {
-      ControllerContext context = controller.getInstalledContext(getName());
+      ControllerContext context = controller.getInstalledContext(name);
       if (context == null || context.getTarget() == null)
       {
          // possible call for classloader
@@ -488,7 +488,7 @@ public class AbstractBeanMetaData extends AbstractFeatureMetaData implements Bea
          {
             return cl;
          }
-         throw new IllegalArgumentException("Bean not yet installed: " + getName());
+         throw new IllegalArgumentException("Bean not yet installed: " + name);
       }
       Object target = context.getTarget();
       if (info != null && info.getType().isAssignableFrom(target.getClass()) == false)
