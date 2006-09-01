@@ -77,7 +77,11 @@ public class AbstractClassLoaderMetaData extends JBossObject implements ClassLoa
 
    public List<BeanMetaData> getBeans()
    {
-      if (classloader instanceof BeanMetaData)
+      if (classloader instanceof BeanMetaDataFactory)
+      {
+         return ((BeanMetaDataFactory)classloader).getBeans();
+      }
+      else if (classloader instanceof BeanMetaData)
       {
          return Collections.singletonList((BeanMetaData)classloader);
       }

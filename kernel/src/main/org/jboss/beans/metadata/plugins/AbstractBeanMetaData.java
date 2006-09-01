@@ -122,6 +122,20 @@ public class AbstractBeanMetaData extends AbstractFeatureMetaData implements Bea
 
    public List<BeanMetaData> getBeans()
    {
+      List<BeanMetaData> nestedBeans = findNestedBeans();
+      if (nestedBeans.isEmpty())
+      {
+         return Collections.singletonList((BeanMetaData)this);
+      }
+      else
+      {
+         nestedBeans.add(this);
+         return nestedBeans;
+      }
+   }
+
+   protected List<BeanMetaData> findNestedBeans()
+   {
       List<BeanMetaData> allBeans = new ArrayList<BeanMetaData>();
       addBeans(this, allBeans);
       return allBeans;
@@ -139,11 +153,11 @@ public class AbstractBeanMetaData extends AbstractFeatureMetaData implements Bea
          else
          {
             addBeans(next, list);
+            if (next instanceof BeanMetaData)
+            {
+               list.add((BeanMetaData) current);
+            }
          }
-      }
-      if (current instanceof BeanMetaData)
-      {
-         list.add((BeanMetaData) current);
       }
    }
 
