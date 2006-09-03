@@ -275,7 +275,7 @@ public class MainDeployerImpl implements MainDeployer
             }
             deployContexts.removeAll(errors);
          }
-         for (DeploymentContext context : undeployContexts)
+         for (DeploymentContext context : deployContexts)
             context.setState(DEPLOYED);
       }
    }
