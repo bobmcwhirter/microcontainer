@@ -49,8 +49,7 @@ public abstract class BaseDeployersTest extends BaseTestCase
    {
       URL url = getResource(root);
       assertNotNull(url);
-      VFSFactoryLocator locator = new VFSFactoryLocator();
-      VFSFactory factory = locator.getFactory(url);
+      VFSFactory factory = VFSFactoryLocator.getFactory(url);
       ReadOnlyVFS vfs = factory.getVFS(url);
       return vfs.resolveFile(path);
    }
