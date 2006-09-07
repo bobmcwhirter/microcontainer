@@ -21,8 +21,8 @@
 */
 package org.jboss.deployers.plugins.structure.vfs;
 
+import org.jboss.deployers.spi.structure.DeploymentContext;
 import org.jboss.deployers.spi.structure.vfs.StructureDeployer;
-import org.jboss.deployers.spi.structure.vfs.VFSDeploymentContext;
 import org.jboss.logging.Logger;
 
 /**
@@ -53,7 +53,7 @@ public class StructureDeployerWrapper implements StructureDeployer
       this.deployer = deployer;
    }
    
-   public boolean determineStructure(VFSDeploymentContext context)
+   public boolean determineStructure(DeploymentContext context)
    {
       if (context == null)
          throw new IllegalArgumentException("Null context");

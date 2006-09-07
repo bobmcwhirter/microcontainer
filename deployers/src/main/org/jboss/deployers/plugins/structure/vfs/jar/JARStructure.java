@@ -19,12 +19,16 @@
 * Software Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA
 * 02110-1301 USA, or see the FSF site: http://www.fsf.org.
 */
-package org.jboss.deployers.plugins.structure.vfs;
+package org.jboss.deployers.plugins.structure.vfs.jar;
 
 import java.io.IOException;
+import java.util.ArrayList;
+import java.util.List;
 
-import org.jboss.deployers.spi.structure.vfs.VFSDeploymentContext;
-import org.jboss.vfs.spi.VirtualFile;
+import org.jboss.deployers.plugins.structure.vfs.AbstractStructureDeployer;
+import org.jboss.deployers.spi.structure.DeploymentContext;
+import org.jboss.virtual.VFSUtils;
+import org.jboss.virtual.VirtualFile;
 
 /**
  * JARStructure.
@@ -34,43 +38,59 @@ import org.jboss.vfs.spi.VirtualFile;
  */
 public class JARStructure extends AbstractStructureDeployer
 {
-   public boolean determineStructure(VFSDeploymentContext context)
+   public boolean determineStructure(DeploymentContext context)
    {
       try
       {
-         VirtualFile file = context.getRoot();
-         if (file.isDirectory())
+         VirtualFile root = context.getRoot();
+         if (root.isDirectory())
          {
-            if (file.isArchive() == false)
+            if (root.isArchive() == false)
             {
-               // For non top level directories we require a META-INF
-               // otherwise each subdirectory would be a subdeployment
+               // For non top level directories that don't look like jars
+               // we require a META-INF otherwise each subdirectory would be a subdeployment
                if  (context.isTopLevel() == false)
                {
                   try
                   {
-                     VirtualFile test = file.findChild("META-INF");
-                     if (test == null)
-                        return false;
+                     root.findChild("META-INF");
+                     log.trace("... ok - non top level directory has a META-INF subdirectory");
                   }
                   catch (IOException e)
                   {
+                     log.trace("... no - doesn't look like a jar and no META-INF subdirectory.");
                      return false;
                   }
                }
+               else
+               {
+                  log.trace("... ok - doesn't look like a jar but it is a top level directory.");
+               }
+            }
+            else
+            {
+               log.trace("... ok - its an archive or at least pretending to be.");
             }
 
             // The metadata path is META-INF
             context.setMetaDataPath("META-INF");
 
+            // The classpath is the root
+            List<VirtualFile> paths = new ArrayList<VirtualFile>();
+            paths.add(root);
+            // Add the manifest locations
+            VFSUtils.addManifestLocations(root, paths);
+            context.setClassPath(paths);
+            
             // We tentatively try all the children as potential subdeployments
             // but ignore subdirectories if it is an archive
-            addAllChildren(context, file.isArchive());
+            addAllChildren(context, root.isArchive());
             
             return true;
          }
          else
          {
+            log.trace("... no - not a directory or an archive.");
             return false;
          }
       }

@@ -48,7 +48,6 @@ import org.jboss.deployers.spi.deployer.Deployer;
 import org.jboss.deployers.spi.deployer.DeploymentUnit;
 import org.jboss.deployers.spi.structure.DeploymentContext;
 import org.jboss.deployers.spi.structure.vfs.StructureDeployer;
-import org.jboss.deployers.spi.structure.vfs.VFSDeploymentContext;
 import org.jboss.logging.Logger;
 
 /**
@@ -305,10 +304,8 @@ public class MainDeployerImpl implements MainDeployer
       if (context.getStructureDetermined() == PREDETERMINED)
          return;
 
-      if (context instanceof VFSDeploymentContext == false)
-         throw new DeploymentException("Unable to determine structure for non VFSDeploymentContext " + context.getName());
-      
-      VFSDeploymentContext vfsContext = (VFSDeploymentContext) context;
+      if (context.getRoot() == null)
+         throw new DeploymentException("Unable to determine structure context has not root " + context.getName());
       
       StructureDeployer[] theDeployers;
       synchronized (this)
@@ -318,7 +315,7 @@ public class MainDeployerImpl implements MainDeployer
          theDeployers = structureDeployers.toArray(new StructureDeployer[structureDeployers.size()]);
       }
 
-      determineStructure(vfsContext, theDeployers);
+      determineStructure(context, theDeployers);
    }
    
    /**
@@ -329,8 +326,12 @@ public class MainDeployerImpl implements MainDeployer
     * @return true when determined
     * @throws DeploymentException for any problem
     */
-   private boolean determineStructure(VFSDeploymentContext context, StructureDeployer[] theDeployers) throws DeploymentException
+   private boolean determineStructure(DeploymentContext context, StructureDeployer[] theDeployers) throws DeploymentException
    {
+      boolean trace = log.isTraceEnabled();
+      if (trace)
+         log.trace("Trying to determine structure: " + context.getName());
+
       boolean result = false;
       for (StructureDeployer deployer : theDeployers)
       {
@@ -346,14 +347,12 @@ public class MainDeployerImpl implements MainDeployer
       Set<DeploymentContext> children = context.getChildren();
       for (DeploymentContext child : children)
       {
-         if (child instanceof VFSDeploymentContext == false)
-            throw new DeploymentException("Unable to determine structure for non VFSDeploymentContext: " + context.getName());
-         
-         VFSDeploymentContext childContext = (VFSDeploymentContext) child;
+         if (child.getRoot() == null)
+            throw new DeploymentException("Unable to determine structure context has no root: " + context.getName());
          
          // This must be a candidate that doesn't match
-         if (determineStructure(childContext, theDeployers) == false)
-            children.remove(child);
+         if (determineStructure(child, theDeployers) == false)
+            context.removeChild(child);
       }
       
       return result;

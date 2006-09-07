@@ -21,9 +21,12 @@
 */
 package org.jboss.deployers.plugins.structure;
 
+import java.io.IOException;
 import java.io.InputStream;
+import java.net.MalformedURLException;
 import java.net.URL;
 import java.util.Collections;
+import java.util.List;
 import java.util.Set;
 import java.util.concurrent.CopyOnWriteArraySet;
 
@@ -33,7 +36,8 @@ import org.jboss.deployers.spi.structure.DeploymentState;
 import org.jboss.deployers.spi.structure.StructureDetermined;
 import org.jboss.logging.Logger;
 import org.jboss.util.UnreachableStatementException;
-import org.jboss.vfs.spi.VirtualFile;
+import org.jboss.virtual.VFSUtils;
+import org.jboss.virtual.VirtualFile;
 
 /**
  * AbstractDeploymentContext.
@@ -57,12 +61,20 @@ public class AbstractDeploymentContext implements DeploymentContext
    
    /** The deployment unit */
    private DeploymentUnit unit;
+   /** The root */
+   private VirtualFile root;
    
    /** The meta data location */
    private VirtualFile metaDataLocation;
    
+   /** The class paths */
+   private List<VirtualFile> classPath;
+   
    /** The class loader */
    private ClassLoader classLoader;
+
+   /** Whether this is a candidate deployment */
+   private boolean candidate = false;
 
    /** The parent context */
    private DeploymentContext parent;
@@ -72,19 +84,122 @@ public class AbstractDeploymentContext implements DeploymentContext
    
    /** Throwable */
    private Throwable problem;
+   
+   /**
+    * Get the deployment name
+    * 
+    * @param file the file
+    * @return the name;
+    */
+   public static String getDeploymentName(VirtualFile file)
+   {
+      if (file == null)
+         throw new IllegalArgumentException("Null file");
+      try
+      {
+         URL url = file.toURL();
+         String name = url.toString();
+         return name;
+      }
+      catch (MalformedURLException e)
+      {
+         throw new IllegalArgumentException("File does not have a valid url: " + file, e);
+      }
+   }
 
    /**
     * Create a new AbstractDeploymentContext.
     * 
     * @param name the name
+    * @throws IllegalArgumentException if the name is null
     */
    public AbstractDeploymentContext(String name)
+   {
+      this(name, false);
+   }
+
+   /**
+    * Create a new AbstractDeploymentContext.
+    * 
+    * @param name the name
+    * @param candidate whether this is a candidate
+    * @throws IllegalArgumentException if the name is null
+    */
+   public AbstractDeploymentContext(String name, boolean candidate)
    {
       if (name == null)
          throw new IllegalArgumentException("Null name");
       this.name = name;
+      this.candidate = candidate;
+   }
+
+   /**
+    * Create a new AbstractDeploymentContext.
+    * 
+    * @param name the name
+    * @param parent the parent
+    * @throws IllegalArgumentException if the name or parent is null
+    */
+   public AbstractDeploymentContext(String name, DeploymentContext parent)
+   {
+      this(name, false, parent);
+   }
+
+   /**
+    * Create a new AbstractDeploymentContext.
+    * 
+    * @param name the name
+    * @param candidate whether this is a candidate
+    * @param parent the parent
+    * @throws IllegalArgumentException if the name or parent is null
+    */
+   public AbstractDeploymentContext(String name, boolean candidate, DeploymentContext parent)
+   {
+      this(name, candidate);
+      if (parent == null)
+         throw new IllegalArgumentException("Null parent");
+      setParent(parent);
    }
    
+   /**
+    * Create a new AbstractDeploymentContext.
+    * 
+    * @param root the root
+    * @throws IllegalArgumentException if the file/root is null 
+    */
+   public AbstractDeploymentContext(VirtualFile root)
+   {
+      this(getDeploymentName(root), false);
+      setRoot(root);
+   }
+   
+   /**
+    * Create a new AbstractDeploymentContext.
+    * 
+    * @param root the root
+    * @param candidate whether this is a candidate
+    * @throws IllegalArgumentException if the file/root is null 
+    */
+   public AbstractDeploymentContext(VirtualFile root, boolean candidate)
+   {
+      this(getDeploymentName(root), candidate);
+      setRoot(root);
+   }
+   
+   /**
+    * Create a new AbstractDeploymentContext.
+    * 
+    * @param root the root
+    * @param candidate whether this is a candidate
+    * @param parent the parent
+    * @throws IllegalArgumentException if the file/root or parent is null 
+    */
+   public AbstractDeploymentContext(VirtualFile root, boolean candidate, DeploymentContext parent)
+   {
+      this(getDeploymentName(root), candidate, parent);
+      setRoot(root);
+   }
+
    public String getName()
    {
       return name;
@@ -104,7 +219,7 @@ public class AbstractDeploymentContext implements DeploymentContext
    
    public boolean isCandidate()
    {
-      return false;
+      return candidate;
    }
 
    public DeploymentState getState()
@@ -129,6 +244,35 @@ public class AbstractDeploymentContext implements DeploymentContext
       this.unit = unit;
    }
 
+   public VirtualFile getRoot()
+   {
+      return root;
+   }
+
+   /**
+    * Set the root location
+    * 
+    * @param root the root
+    */
+   public void setRoot(VirtualFile root)
+   {
+      this.root = root;
+   }
+   
+   public void setMetaDataPath(String path)
+   {
+      if (path == null)
+         setMetaDataLocation(null);
+      try
+      {
+         setMetaDataLocation(root.findChild(path));
+      }
+      catch (IOException e)
+      {
+         log.debug("Meta data path does not exist: root=" + root.getPathName() + " path=" + path);
+      }
+   }
+
    public VirtualFile getMetaDataLocation()
    {
       return metaDataLocation;
@@ -137,18 +281,32 @@ public class AbstractDeploymentContext implements DeploymentContext
    public void setMetaDataLocation(VirtualFile location)
    {
       this.metaDataLocation = location;
+      if (log.isTraceEnabled() && location != null)
+         log.trace("MetaData locaton for " + root.getPathName() + " is " + location.getPathName());
    }
 
    public ClassLoader getClassLoader()
    {
-      if (classLoader == null)
-         throw new IllegalStateException("Attempt to retrieve classloader when it has not been set.");
       return classLoader;
    }
    
    public void setClassLoader(ClassLoader classLoader)
    {
       this.classLoader = classLoader;
+      if (classLoader != null)
+         log.trace("ClassLoader for " + root.getPathName() + " is " + classLoader);
+   }
+   
+   public List<VirtualFile> getClassPath()
+   {
+      return classPath;
+   }
+   
+   public void setClassPath(List<VirtualFile> paths)
+   {
+      this.classPath = paths;
+      if (log.isTraceEnabled() && paths != null)
+         log.trace("ClassPath for " + root.getPathName() + " is " + VFSUtils.getPathsString(paths));
    }
 
    public boolean isTopLevel()

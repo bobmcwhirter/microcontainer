@@ -60,7 +60,10 @@ public class AbstractDeploymentUnit implements DeploymentUnit
    
    public ClassLoader getClassLoader()
    {
-      return deploymentContext.getClassLoader();
+      ClassLoader cl = deploymentContext.getClassLoader();
+      if (cl == null)
+         throw new IllegalStateException("ClassLoader has not been set");
+      return cl;
    }
 
    public URL getMetaData(String name)

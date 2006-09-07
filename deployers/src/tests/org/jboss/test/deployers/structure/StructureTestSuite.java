@@ -1,6 +1,6 @@
 /*
 * JBoss, Home of Professional Open Source
-* Copyright 2005, JBoss Inc., and individual contributors as indicated
+* Copyright 2006, JBoss Inc., and individual contributors as indicated
 * by the @authors tag. See the copyright.txt in the distribution for a
 * full listing of individual contributors.
 *
@@ -26,6 +26,7 @@ import junit.framework.TestSuite;
 import junit.textui.TestRunner;
 
 import org.jboss.test.deployers.structure.jar.test.JARStructureUnitTestCase;
+import org.jboss.test.deployers.structure.war.test.WARStructureUnitTestCase;
 
 /**
  * Structure Test Suite.
@@ -45,6 +46,7 @@ public class StructureTestSuite extends TestSuite
       TestSuite suite = new TestSuite("Structure Tests");
 
       suite.addTest(JARStructureUnitTestCase.suite());
+      suite.addTest(WARStructureUnitTestCase.suite());
 
       return suite;
    }

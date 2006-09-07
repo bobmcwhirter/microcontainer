@@ -27,10 +27,10 @@ import java.util.Set;
 
 import org.jboss.deployers.spi.structure.DeploymentContext;
 import org.jboss.test.BaseTestCase;
-import org.jboss.vfs.VFSFactory;
-import org.jboss.vfs.VFSFactoryLocator;
-import org.jboss.vfs.spi.ReadOnlyVFS;
-import org.jboss.vfs.spi.VirtualFile;
+import org.jboss.util.NotImplementedException;
+import org.jboss.virtual.VFS;
+import org.jboss.virtual.VirtualFile;
+import org.jboss.virtual.plugins.context.jar.JarUtils;
 
 /**
  * BaseDeployersTest.
@@ -45,15 +45,95 @@ public abstract class BaseDeployersTest extends BaseTestCase
       super(name);
    }
    
+   @Override
+   public URL getResource(String path)
+   {
+      URL url = super.getResource(path);
+      assertNotNull("Resource not found: " + path, url);
+      return url;
+   }
+   
+   /**
+    * Get a virtual file
+    * 
+    * @param root the root
+    * @param path the path
+    * @return the file
+    * @throws Exception for any error
+    */
    protected VirtualFile getVirtualFile(String root, String path) throws Exception
    {
       URL url = getResource(root);
-      assertNotNull(url);
-      VFSFactory factory = VFSFactoryLocator.getFactory(url);
-      ReadOnlyVFS vfs = factory.getVFS(url);
-      return vfs.resolveFile(path);
+      return VFS.getVirtualFile(url, path);
    }
    
+   /**
+    * Get a url string from a path
+    * 
+    * @param path the path
+    * @return the string
+    * @throws Exception for any error
+    */
+   protected String getURL(String path) throws Exception
+   {
+      URL url = getResource(path);
+      return url.toString();
+   }
+   
+   /**
+    * Get a jar url string from a path
+    * 
+    * @param path the path
+    * @return the string
+    * @throws Exception for any error
+    */
+   protected String getJarURL(String path) throws Exception
+   {
+      URL url = getResource(path);
+      url = JarUtils.createJarURL(url);
+      return url.toString();
+   }
+
+   protected boolean determineStructure(DeploymentContext context) throws Exception
+   {
+      throw new NotImplementedException("Implemented in subclasses");
+   }
+   
+   /**
+    * Assert non of the candidates are valid
+    * 
+    * @param context the context
+    * @throws Exception for any error
+    */
+   protected void assertCandidatesNotValid(DeploymentContext context) throws Exception
+   {
+      assertNotNull(context);
+      
+      for (DeploymentContext child : context.getChildren())
+         assertFalse("Should not be a valid candidate: " + child.getName(), determineStructure(child));
+   }
+   
+   /**
+    * Assert the candidates are valid
+    * 
+    * @param context the context
+    * @throws Exception for any error
+    */
+   protected void assertCandidatesValid(DeploymentContext context) throws Exception
+   {
+      assertNotNull(context);
+
+      for (DeploymentContext child : context.getChildren())
+         assertTrue("Should be a valid candidate: " + child.getName(), determineStructure(child));
+   }
+
+   /**
+    * Assert the contexts match the expected urls
+    * 
+    * @param expected the expected
+    * @param actual the actual
+    * @throws Exception for any error
+    */
    protected void assertContexts(Set<String> expected, Set<DeploymentContext> actual) throws Exception
    {
       assertNotNull(expected);

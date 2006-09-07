@@ -21,10 +21,11 @@
 */
 package org.jboss.deployers.plugins.structure.vfs;
 
+import org.jboss.deployers.spi.structure.DeploymentContext;
 import org.jboss.deployers.spi.structure.vfs.StructureDeployer;
-import org.jboss.deployers.spi.structure.vfs.VFSDeploymentContext;
 import org.jboss.logging.Logger;
-import org.jboss.vfs.spi.VirtualFile;
+import org.jboss.virtual.VirtualFile;
+import org.jboss.virtual.VisitorAttributes;
 
 /**
  * AbstractStructureDeployer.<p>
@@ -44,25 +45,26 @@ public abstract class AbstractStructureDeployer implements StructureDeployer
       return Integer.MAX_VALUE;
    }
 
-   public abstract boolean determineStructure(VFSDeploymentContext context);
+   public abstract boolean determineStructure(DeploymentContext context);
    
    /**
     * Add all children as candidates
     * 
-    * @param context the context
+    * @param parent the parent context
     * @param ignoreDirectories whether to ignore directories
     * @throws Exception for any error
     */
-   protected void addAllChildren(VFSDeploymentContext context, boolean ignoreDirectories) throws Exception
+   protected void addAllChildren(DeploymentContext parent, boolean ignoreDirectories) throws Exception
    {
-      VirtualFile[] childFiles = context.getRoot().getChildren();
-      for (VirtualFile childFile : childFiles)
-      {
-         if (ignoreDirectories == false || childFile.isDirectory() == false)
-         {
-            AbstractVFSDeploymentContext child = new AbstractVFSDeploymentContext(childFile, true);
-            context.addChild(child);
-         }
-      }
+      if (parent == null)
+         throw new IllegalArgumentException("Null parent");
+      
+      VisitorAttributes attributes = VisitorAttributes.DEFAULT;
+      if (ignoreDirectories)
+         attributes = VisitorAttributes.NO_DIRECTORIES;
+      CandidateStructureVisitor visitor = new CandidateStructureVisitor(parent, attributes);
+
+      VirtualFile root = parent.getRoot();
+      root.visit(visitor);
    }
 }

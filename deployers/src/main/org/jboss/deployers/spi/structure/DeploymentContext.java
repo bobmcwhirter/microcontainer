@@ -23,10 +23,11 @@ package org.jboss.deployers.spi.structure;
 
 import java.io.InputStream;
 import java.net.URL;
+import java.util.List;
 import java.util.Set;
 
 import org.jboss.deployers.spi.deployer.DeploymentUnit;
-import org.jboss.vfs.spi.VirtualFile;
+import org.jboss.virtual.VirtualFile;
 
 /**
  * DeploymentContext.
@@ -91,7 +92,21 @@ public interface DeploymentContext extends Cloneable
     * @param unit the deployment unit
     */
    void setDeploymentUnit(DeploymentUnit unit);
-   
+
+   /**
+    * Get the root file
+    * 
+    * @return the root
+    */
+   VirtualFile getRoot();
+
+   /**
+    * Set the meta data path relative to the root
+    * 
+    * @param path the path
+    */
+   void setMetaDataPath(String path);
+
    /**
     * Get the meta data location
     * 
@@ -135,6 +150,20 @@ public interface DeploymentContext extends Cloneable
     * @param classLoader the new classloader
     */
    void setClassLoader(ClassLoader classLoader);
+   
+   /**
+    * Get the class path
+    * 
+    * @return the class path
+    */
+   List<VirtualFile> getClassPath();
+   
+   /**
+    * Set the class path
+    * 
+    * @param paths the paths 
+    */
+   void setClassPath(List<VirtualFile> paths);
 
    /**
     * Whether this is a top level deployment

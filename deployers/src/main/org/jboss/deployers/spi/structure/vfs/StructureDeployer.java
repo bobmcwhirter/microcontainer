@@ -23,6 +23,8 @@ package org.jboss.deployers.spi.structure.vfs;
 
 import java.util.Comparator;
 
+import org.jboss.deployers.spi.structure.DeploymentContext;
+
 /**
  * StructureDeployer.
  * 
@@ -37,7 +39,7 @@ public interface StructureDeployer
     * @param context the context
     * @return true when it is recongnised
     */
-   boolean determineStructure(VFSDeploymentContext context);
+   boolean determineStructure(DeploymentContext context);
 
    /**
     * Get the relative order
