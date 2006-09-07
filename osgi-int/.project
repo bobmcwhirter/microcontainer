@@ -3,6 +3,7 @@
 	<name>osgi-int</name>
 	<comment></comment>
 	<projects>
+		<project>container</project>
 	</projects>
 	<buildSpec>
 		<buildCommand>
