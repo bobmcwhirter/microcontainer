@@ -175,7 +175,7 @@ public class MainDeployerImpl implements MainDeployer
    {
       if (name == null)
          throw new IllegalArgumentException("Null name");
-      return topLevelDeployments.get(name);
+      return allDeployments.get(name);
    }
    
    public synchronized void addDeploymentContext(DeploymentContext context) throws DeploymentException
