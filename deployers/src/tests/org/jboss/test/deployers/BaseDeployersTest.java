@@ -23,9 +23,12 @@ package org.jboss.test.deployers;
 
 import java.net.URL;
 import java.util.HashSet;
+import java.util.Map;
 import java.util.Set;
 
+import org.jboss.deployers.plugins.structure.AbstractDeploymentContext;
 import org.jboss.deployers.spi.structure.DeploymentContext;
+import org.jboss.deployers.spi.structure.vfs.StructureDeployer;
 import org.jboss.test.BaseTestCase;
 import org.jboss.util.NotImplementedException;
 import org.jboss.virtual.VFS;
@@ -94,9 +97,41 @@ public abstract class BaseDeployersTest extends BaseTestCase
       return url.toString();
    }
 
-   protected boolean determineStructure(DeploymentContext context) throws Exception
+   /**
+    * Get the structure deployer for this test
+    * 
+    * @return the deployer
+    */
+   protected StructureDeployer getStrucutureDeployer()
    {
       throw new NotImplementedException("Implemented in subclasses");
+   }
+
+   /**
+    * Determine the structure
+    * 
+    * @param context the context
+    * @return the result
+    */
+   protected boolean determineStructure(DeploymentContext context)
+   {
+      return determineStructure(getStrucutureDeployer(), context);
+   }
+
+   /**
+    * Determine the structure
+    * 
+    * @param structure the structural deployer
+    * @param context the context
+    * @return the result
+    */
+   protected boolean determineStructure(StructureDeployer structure, DeploymentContext context)
+   {
+      assertNotNull(structure);
+      assertNotNull(context);
+      
+      log.debug("Determining structure: " + context.getName());
+      return structure.determineStructure(context);
    }
    
    /**
@@ -107,10 +142,22 @@ public abstract class BaseDeployersTest extends BaseTestCase
     */
    protected void assertCandidatesNotValid(DeploymentContext context) throws Exception
    {
+      assertCandidatesNotValid(getStrucutureDeployer(), context);
+   }
+   
+   /**
+    * Assert non of the candidates are valid
+    * 
+    * @param structure the structure deployer
+    * @param context the context
+    * @throws Exception for any error
+    */
+   protected void assertCandidatesNotValid(StructureDeployer structure, DeploymentContext context) throws Exception
+   {
       assertNotNull(context);
       
       for (DeploymentContext child : context.getChildren())
-         assertFalse("Should not be a valid candidate: " + child.getName(), determineStructure(child));
+         assertFalse("Should not be a valid candidate: " + child.getName(), determineStructure(structure, child));
    }
    
    /**
@@ -121,10 +168,23 @@ public abstract class BaseDeployersTest extends BaseTestCase
     */
    protected void assertCandidatesValid(DeploymentContext context) throws Exception
    {
+      assertCandidatesValid(getStrucutureDeployer(), context);
+   }
+   
+   /**
+    * Assert the candidates are valid
+    * 
+    * @param structure the structure deployer
+    * @param context the context
+    * @throws Exception for any error
+    */
+   protected void assertCandidatesValid(StructureDeployer structure, DeploymentContext context) throws Exception
+   {
+      assertNotNull(structure);
       assertNotNull(context);
 
       for (DeploymentContext child : context.getChildren())
-         assertTrue("Should be a valid candidate: " + child.getName(), determineStructure(child));
+         assertTrue("Should be a valid candidate: " + child.getName(), determineStructure(structure, child));
    }
 
    /**
@@ -134,13 +194,50 @@ public abstract class BaseDeployersTest extends BaseTestCase
     * @param actual the actual
     * @throws Exception for any error
     */
-   protected void assertContexts(Set<String> expected, Set<DeploymentContext> actual) throws Exception
+   protected void assertCandidateContexts(Map<String, Boolean> expected, Set<DeploymentContext> actual) throws Exception
    {
       assertNotNull(expected);
       assertNotNull(actual);
-      Set<String> contextNames = new HashSet<String>(actual.size());
+      Set<String> contexts = new HashSet<String>(actual.size());
       for (DeploymentContext context : actual)
-         contextNames.add(context.getName());
-      assertEquals(expected, contextNames);
+         contexts.add(context.getName());
+      assertEquals(expected.keySet(), contexts);
+   }
+
+   /**
+    * Assert the contexts match the expected urls
+    * 
+    * @param expected the expected
+    * @param actual the actual
+    * @throws Exception for any error
+    */
+   protected void assertActualContexts(Map<String, Boolean> expected, Set<DeploymentContext> actual) throws Exception
+   {
+      assertNotNull(expected);
+      assertNotNull(actual);
+      Set<String> contexts = new HashSet<String>(actual.size());
+      for (DeploymentContext context : actual)
+         contexts.add(context.getName());
+      Set<String> expectedActualContexts = new HashSet<String> (expected.size());
+      for (Map.Entry<String, Boolean> entry : expected.entrySet())
+      {
+         if (entry.getValue() == true)
+            expectedActualContexts.add(entry.getKey());
+      }
+      assertEquals(expectedActualContexts, contexts);
+   }
+   
+   /**
+    * Create a deployment context
+    * 
+    * @param root the root
+    * @param path the path
+    * @return the context
+    * @throws Exception for any error
+    */
+   protected DeploymentContext createDeploymentContext(String root, String path) throws Exception
+   {
+      VirtualFile file = getVirtualFile(root, path);
+      return new AbstractDeploymentContext(file);
    }
 }

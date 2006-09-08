@@ -33,7 +33,7 @@ import junit.textui.TestRunner;
  * @author <a href="adrian@jboss.com">Adrian Brock</a>
  * @version $Revision: 37459 $
  */
-public class DependencyAllTestSuite extends TestSuite
+public class DeployersAllTestSuite extends TestSuite
 {
    public static void main(String[] args)
    {

@@ -72,12 +72,49 @@ public class MainDeployerImpl implements MainDeployer
    
    /** The deployments by name */
    private Map<String, DeploymentContext> topLevelDeployments = new ConcurrentHashMap<String, DeploymentContext>();
+   
+   /** All deployments by name */
+   private Map<String, DeploymentContext> allDeployments = new ConcurrentHashMap<String, DeploymentContext>();
 
    /** The undeploy work */
    private Set<DeploymentContext> undeploy = new CopyOnWriteArraySet<DeploymentContext>();
    
    /** The deploy work */
    private Set<DeploymentContext> deploy = new CopyOnWriteArraySet<DeploymentContext>();
+   
+   /**
+    * Get the structure deployers
+    * 
+    * @return the structure deployers
+    */
+   public synchronized Set<StructureDeployer> getStructureDeployers()
+   {
+      return new HashSet<StructureDeployer>(structureDeployers);
+   }
+   
+   /**
+    * Set the structure deployers
+    * 
+    * @param deployers the deployers
+    * @throws IllegalArgumentException for null deployers
+    */
+   public synchronized void setStructureDeployers(Set<StructureDeployer> deployers)
+   {
+      if (deployers == null)
+         throw new IllegalArgumentException("Null deployers");
+      
+      // Remove all the old deployers that are not in the new set
+      HashSet<StructureDeployer> oldDeployers = new HashSet<StructureDeployer>(structureDeployers);
+      oldDeployers.removeAll(deployers);
+      for (StructureDeployer deployer : oldDeployers)
+         removeStructureDeployer(deployer);
+      
+      // Add all the new deployers that were not already present
+      HashSet<StructureDeployer> newDeployers = new HashSet<StructureDeployer>(deployers);
+      newDeployers.removeAll(structureDeployers);
+      for (StructureDeployer deployer : newDeployers)
+         addStructureDeployer(deployer);
+   }
    
    /**
     * Add a structure deployer
@@ -91,6 +128,7 @@ public class MainDeployerImpl implements MainDeployer
       StructureDeployerWrapper wrapper = new StructureDeployerWrapper(deployer);
       structureDeployers.add(wrapper);
       // TODO recheck failed deployments
+      log.debug("Added structure deployer: " + deployer);
    }
    
    /**
@@ -103,6 +141,7 @@ public class MainDeployerImpl implements MainDeployer
       if (deployer == null)
          throw new IllegalArgumentException("Null deployer");
       structureDeployers.remove(deployer);
+      log.debug("Remove structure deployer: " + deployer);
    }
    
    /**
@@ -147,22 +186,31 @@ public class MainDeployerImpl implements MainDeployer
       if (shutdown.get())
          throw new DeploymentException("The main deployer is shutdown");
 
+      log.debug("Add deployment context: " + context.getName());
+      
       if (context.isTopLevel() == false)
          throw new DeploymentException("Context is not a top level deployment: " + context.getName());
       
-      context = context.clone();
-
-      if (context.getStructureDetermined() == YES)
-         context.setStructureDetermined(NO);
-      context.setProblem(null);
-      
       String name = context.getName();
       DeploymentContext previous = topLevelDeployments.get(name);
+      boolean topLevelFound = false;
       if (previous != null)
       {
          log.debug("Removing previous deployment: " + previous.getName());
          removeContext(previous);
+         topLevelFound = true;
       }
+
+      if (topLevelFound == false)
+      {
+         previous = allDeployments.get(name);
+         if (previous != null)
+            throw new IllegalStateException("Deployment already exists as a subdeployment: " + context.getName()); 
+      }
+
+      if (context.getStructureDetermined() == YES)
+         context.setStructureDetermined(NO);
+      context.setProblem(null);
 
       topLevelDeployments.put(name, context);
       try
@@ -177,16 +225,6 @@ public class MainDeployerImpl implements MainDeployer
       }
       
       addContext(context);
-
-      if (context.getProblem() == null)
-      {
-         Set<DeploymentContext> children = context.getChildren();
-         if (children != null)
-         {
-            for (DeploymentContext child : children)
-               addContext(child);
-         }
-      }
    }
 
    public synchronized boolean removeDeploymentContext(String name) throws DeploymentException
@@ -196,12 +234,15 @@ public class MainDeployerImpl implements MainDeployer
 
       if (shutdown.get())
          throw new IllegalStateException("The main deployer is shutdown");
+
+      log.debug("Remove deployment context: " + name);
       
       DeploymentContext context = topLevelDeployments.remove(name);
       if (context == null)
          return false;
       
       removeContext(context);
+      
       return true;
    }
 
@@ -342,7 +383,7 @@ public class MainDeployerImpl implements MainDeployer
          }
       }
       if (result == false && context.isCandidate() == false)
-         throw new DeploymentException("No structural deployment recognised the deployment. " + context.getName());
+         throw new DeploymentException("No structural deployer recognised the deployment. " + context.getName());
       
       Set<DeploymentContext> children = context.getChildren();
       for (DeploymentContext child : children)
@@ -365,6 +406,7 @@ public class MainDeployerImpl implements MainDeployer
     */
    private void addContext(DeploymentContext context)
    {
+      allDeployments.put(context.getName(), context);
       if (context.getState() == ERROR)
       {
          log.debug("Not scheduling addition of context already in error: " + context.getName());
@@ -374,6 +416,14 @@ public class MainDeployerImpl implements MainDeployer
       context.setState(DEPLOYING);
       log.debug("Scheduling deployment: " + context.getName());
       deploy.add(context);
+      
+      // Add all the children
+      Set<DeploymentContext> children = context.getChildren();
+      if (children != null)
+      {
+         for (DeploymentContext child : children)
+            addContext(child);
+      }
    }
    
    /**
@@ -383,6 +433,7 @@ public class MainDeployerImpl implements MainDeployer
     */
    private void removeContext(DeploymentContext context)
    {
+      allDeployments.remove(context.getName());
       if (context.getState() == ERROR)
       {
          log.debug("Not scheduling removal of context already in error: " + context.getName());
@@ -391,5 +442,13 @@ public class MainDeployerImpl implements MainDeployer
       context.setState(UNDEPLOYING);
       log.debug("Scheduling undeployment: " + context.getName());
       undeploy.add(context);
+      
+      // Remove all the children
+      Set<DeploymentContext> children = context.getChildren();
+      if (children != null)
+      {
+         for (DeploymentContext child : children)
+            removeContext(child);
+      }
    }
 }

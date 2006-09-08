@@ -37,6 +37,9 @@ public class CandidateStructureVisitor extends AbstractVirtualFileVisitor
 {
    /** The parent deployment context */
    private final DeploymentContext parent;
+
+   /** The meta data location */
+   private final String metaDataPath;
    
    /**
     * Create a new CandidateStructureVisitor.
@@ -62,6 +65,11 @@ public class CandidateStructureVisitor extends AbstractVirtualFileVisitor
       if (parent == null)
          throw new IllegalArgumentException("Null parent");
       this.parent = parent;
+      VirtualFile metaDataLocation = parent.getMetaDataLocation();
+      if (metaDataLocation != null)
+         metaDataPath = metaDataLocation.getPathName(); 
+      else
+         metaDataPath = null;
    }
    
    public void visit(VirtualFile virtualFile)
@@ -79,6 +87,10 @@ public class CandidateStructureVisitor extends AbstractVirtualFileVisitor
     */
    protected DeploymentContext createCandidate(VirtualFile virtualFile)
    {
+      // Exclude the meta data location
+      if (metaDataPath != null && virtualFile.getPathName().startsWith(metaDataPath))
+         return null;
+      
       return new AbstractDeploymentContext(virtualFile, true, parent);
    }
 }

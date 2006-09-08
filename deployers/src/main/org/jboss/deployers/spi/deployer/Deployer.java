@@ -75,7 +75,10 @@ public interface Deployer
    {
       public int compare(Deployer o1, Deployer o2)
       {
-         return o1.getRelativeOrder() - o2.getRelativeOrder();
+         int relative = o1.getRelativeOrder() - o2.getRelativeOrder();
+         if (relative != 0)
+            return relative;
+         return o1.toString().compareTo(o2.toString());
       }
    }
 }

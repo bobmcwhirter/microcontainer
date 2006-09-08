@@ -51,6 +51,7 @@ public class StructureDeployerWrapper implements StructureDeployer
       if (deployer == null)
          throw new IllegalArgumentException("Null deployer");
       this.deployer = deployer;
+      log = Logger.getLogger(deployer.getClass());
    }
    
    public boolean determineStructure(DeploymentContext context)
@@ -66,7 +67,7 @@ public class StructureDeployerWrapper implements StructureDeployer
             if (result == false)
                log.trace("Not recognised: " + context.getName());
             else
-               context.dump();
+               log.trace("Recognised: " + context.getName());
          }
          return result;
       }
@@ -85,6 +86,12 @@ public class StructureDeployerWrapper implements StructureDeployer
    @Override
    public boolean equals(Object obj)
    {
+      if (obj == this)
+         return true;
+      if (obj == null || obj instanceof StructureDeployer == false)
+         return false;
+      if (obj instanceof StructureDeployerWrapper)
+         obj = ((StructureDeployerWrapper) obj).deployer;
       return deployer.equals(obj);
    }
    
@@ -92,5 +99,11 @@ public class StructureDeployerWrapper implements StructureDeployer
    public int hashCode()
    {
       return deployer.hashCode();
+   }
+   
+   @Override
+   public String toString()
+   {
+      return deployer.toString();
    }
 }

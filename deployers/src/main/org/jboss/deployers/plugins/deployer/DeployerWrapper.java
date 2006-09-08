@@ -116,6 +116,12 @@ public class DeployerWrapper implements Deployer
    @Override
    public boolean equals(Object obj)
    {
+      if (obj == this)
+         return true;
+      if (obj == null || obj instanceof Deployer == false)
+         return false;
+      if (obj instanceof DeployerWrapper)
+         obj = ((DeployerWrapper) obj).deployer;
       return deployer.equals(obj);
    }
    
@@ -123,5 +129,11 @@ public class DeployerWrapper implements Deployer
    public int hashCode()
    {
       return deployer.hashCode();
+   }
+   
+   @Override
+   public String toString()
+   {
+      return deployer.toString();
    }
 }

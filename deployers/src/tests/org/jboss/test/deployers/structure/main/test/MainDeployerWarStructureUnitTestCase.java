@@ -19,88 +19,64 @@
 * Software Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA
 * 02110-1301 USA, or see the FSF site: http://www.fsf.org.
 */
-package org.jboss.test.deployers.structure.war.test;
+package org.jboss.test.deployers.structure.main.test;
 
 import junit.framework.Test;
 import junit.framework.TestSuite;
 
+import org.jboss.deployers.plugins.deployment.MainDeployerImpl;
+import org.jboss.deployers.plugins.structure.vfs.jar.JARStructure;
 import org.jboss.deployers.plugins.structure.vfs.war.WARStructure;
+import org.jboss.deployers.spi.deployement.MainDeployer;
 import org.jboss.deployers.spi.structure.DeploymentContext;
-import org.jboss.deployers.spi.structure.vfs.StructureDeployer;
-import org.jboss.test.deployers.BaseDeployersTest;
+import org.jboss.deployers.spi.structure.DeploymentState;
+import org.jboss.test.deployers.structure.war.test.WARStructureUnitTestCase;
 
 /**
- * WARStructureUnitTestCase.
+ * MainDeployerStructureUnitTestCase.
  * 
  * @author <a href="adrian@jboss.com">Adrian Brock</a>
  * @version $Revision: 1.1 $
  */
-public class WARStructureUnitTestCase extends BaseDeployersTest
+public class MainDeployerWarStructureUnitTestCase extends WARStructureUnitTestCase
 {
-   /** The war structure deployer */
-   private static final WARStructure structure = new WARStructure();
-   
    public static Test suite()
    {
-      return new TestSuite(WARStructureUnitTestCase.class);
+      return new TestSuite(MainDeployerWarStructureUnitTestCase.class);
    }
    
-   public WARStructureUnitTestCase(String name)
+   public MainDeployerWarStructureUnitTestCase(String name)
    {
       super(name);
-   }
-
-   @Override
-   protected void setUp() throws Exception
-   {
-      super.setUp();
-      enableTrace("org.jboss.deployers");
-   }
-
-   @Override
-   protected StructureDeployer getStrucutureDeployer()
-   {
-      return structure;
    }
 
    protected DeploymentContext assertValidContext(String root, String path) throws Exception
    {
       DeploymentContext context = createDeploymentContext(root, path);
-      assertTrue("Structure should be valid: " + context.getName(), determineStructure(context));
+      getMainDeployer().addDeploymentContext(context);
+      assertFalse("Structure should be valid: " + context.getName(), context.getState() == DeploymentState.ERROR);
       assertEmpty(context.getChildren());
       return context;
    }
 
    protected DeploymentContext assertNotValidContext(String root, String path, boolean isValidJar) throws Exception
    {
+      // It might not be a valid war but it is a valid jar
+      if (isValidJar)
+         return assertValidContext(root, path);
+
       DeploymentContext context = createDeploymentContext(root, path);
-      assertFalse("Structure should not be valid: " + context.getName(), determineStructure(context));
+      getMainDeployer().addDeploymentContext(context);
+      assertTrue("Structure should not be valid: " + context.getName(), context.getState() == DeploymentState.ERROR);
       assertEmpty(context.getChildren());
       return context;
    }
-   
-   public void testSimple() throws Exception
+
+   protected static MainDeployer getMainDeployer()
    {
-      assertValidContext("/structure/", "war/simple/simple.war");
-   }
-   
-   public void testNotAnArchive() throws Exception
-   {
-      assertNotValidContext("/structure/", "war/notanarchive/notanarchive.war", false);
-   }
-   
-   public void testWarDirectory() throws Exception
-   {
-      assertValidContext("/structure/", "war/directory.war");
-   }
-   
-   public void testDirectoryNotAWar() throws Exception
-   {
-      assertNotValidContext("/structure/", "war/directorynotawar", true);
-   }
-   
-   public void testDirectoryWithWebInf() throws Exception
-   {
-      assertValidContext("/structure/", "war/directorywithwebinf");
+      MainDeployerImpl main = new MainDeployerImpl();
+      main.addStructureDeployer(new JARStructure());
+      main.addStructureDeployer(new WARStructure());
+      return main;
    }
 }

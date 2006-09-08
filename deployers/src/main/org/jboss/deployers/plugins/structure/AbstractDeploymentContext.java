@@ -35,7 +35,6 @@ import org.jboss.deployers.spi.structure.DeploymentContext;
 import org.jboss.deployers.spi.structure.DeploymentState;
 import org.jboss.deployers.spi.structure.StructureDetermined;
 import org.jboss.logging.Logger;
-import org.jboss.util.UnreachableStatementException;
 import org.jboss.virtual.VFSUtils;
 import org.jboss.virtual.VirtualFile;
 
@@ -282,7 +281,7 @@ public class AbstractDeploymentContext implements DeploymentContext
    {
       this.metaDataLocation = location;
       if (log.isTraceEnabled() && location != null)
-         log.trace("MetaData locaton for " + root.getPathName() + " is " + location.getPathName());
+         log.trace("MetaData location for " + root.getPathName() + " is " + location.getPathName());
    }
 
    public ClassLoader getClassLoader()
@@ -389,18 +388,6 @@ public class AbstractDeploymentContext implements DeploymentContext
       }
    }
    
-   public AbstractDeploymentContext clone()
-   {
-      try
-      {
-         return (AbstractDeploymentContext) super.clone();
-      }
-      catch (CloneNotSupportedException e)
-      {
-         throw new UnreachableStatementException();
-      }
-   }
-   
    public String toString()
    {
       StringBuilder buffer = new StringBuilder();
@@ -409,10 +396,5 @@ public class AbstractDeploymentContext implements DeploymentContext
       buffer.append(System.identityHashCode(this));
       buffer.append('{').append(name).append('}');
       return buffer.toString();
-   }
-   
-   public void dump()
-   {
-      log.trace("TODO: dump");
    }
 }

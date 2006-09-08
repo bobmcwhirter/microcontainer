@@ -21,17 +21,17 @@
 */
 package org.jboss.test.deployers.structure.jar.test;
 
-import java.util.HashSet;
+import java.util.HashMap;
+import java.util.Map;
 import java.util.Set;
 
 import junit.framework.Test;
 import junit.framework.TestSuite;
 
-import org.jboss.deployers.plugins.structure.AbstractDeploymentContext;
 import org.jboss.deployers.plugins.structure.vfs.jar.JARStructure;
 import org.jboss.deployers.spi.structure.DeploymentContext;
+import org.jboss.deployers.spi.structure.vfs.StructureDeployer;
 import org.jboss.test.deployers.BaseDeployersTest;
-import org.jboss.virtual.VirtualFile;
 
 /**
  * JARStructureUnitTestCase.
@@ -53,24 +53,24 @@ public class JARStructureUnitTestCase extends BaseDeployersTest
    {
       super(name);
    }
-   
+
+   @Override
    protected void setUp() throws Exception
    {
       super.setUp();
       enableTrace("org.jboss.deployers");
    }
 
-   protected boolean determineStructure(DeploymentContext context)
+   @Override
+   protected StructureDeployer getStrucutureDeployer()
    {
-      log.debug("Determining structure: " + context.getName());
-      return structure.determineStructure(context);
+      return structure;
    }
    
    protected DeploymentContext getValidContext(String root, String path) throws Exception
    {
-      VirtualFile file = getVirtualFile(root, path);
-      DeploymentContext context = new AbstractDeploymentContext(file);
-      assertTrue("Structure should be valid: " + file, determineStructure(context));
+      DeploymentContext context = createDeploymentContext(root, path);
+      assertTrue("Structure should be valid: " + context.getName(), determineStructure(context));
       return context;
    }
 
@@ -81,9 +81,8 @@ public class JARStructureUnitTestCase extends BaseDeployersTest
    
    protected DeploymentContext assertNotValidContext(String root, String path) throws Exception
    {
-      VirtualFile file = getVirtualFile(root, path);
-      DeploymentContext context = new AbstractDeploymentContext(file);
-      assertFalse("Structure should not be valid: " + file, determineStructure(context));
+      DeploymentContext context = createDeploymentContext(root, path);
+      assertFalse("Structure should not be valid: " + context.getName(), determineStructure(context));
       assertEmpty(context.getChildren());
       return context;
    }
@@ -93,9 +92,9 @@ public class JARStructureUnitTestCase extends BaseDeployersTest
       DeploymentContext context = getValidContext("/structure/", "jar/simple");
       
       // Test it got all the candidates
-      Set<String> expected = new HashSet<String>();
-      expected.add(getURL("/structure/jar/simple/simple1.txt"));
-      expected.add(getURL("/structure/jar/simple/simple2.txt"));
+      Map<String, Boolean> expected = new HashMap<String, Boolean>();
+      expected.put(getURL("/structure/jar/simple/simple1.txt"), false);
+      expected.put(getURL("/structure/jar/simple/simple2.txt"), false);
       assertContexts(expected, context.getChildren());
 
       assertCandidatesNotValid(context);
@@ -112,9 +111,9 @@ public class JARStructureUnitTestCase extends BaseDeployersTest
       DeploymentContext context = getValidContext("/structure/", "jar/notanarchive");
       
       // Test it got all the candidates
-      Set<String> expected = new HashSet<String>();
-      expected.add(getURL("/structure/jar/notanarchive/NotAnArchive.jar"));
-      expected.add(getURL("/structure/jar/notanarchive/NotAnArchive.zip"));
+      Map<String, Boolean> expected = new HashMap<String, Boolean>();
+      expected.put(getURL("/structure/jar/notanarchive/NotAnArchive.jar"), false);
+      expected.put(getURL("/structure/jar/notanarchive/NotAnArchive.zip"), false);
       assertContexts(expected, context.getChildren());
 
       assertCandidatesNotValid(context);
@@ -131,9 +130,9 @@ public class JARStructureUnitTestCase extends BaseDeployersTest
       DeploymentContext context = getValidContext("/structure/", "jar/indirectory");
       
       // Test it got all the candidates
-      Set<String> expected = new HashSet<String>();
-      expected.add(getJarURL("/structure/jar/indirectory/archive.jar").toString());
-      expected.add(getJarURL("/structure/jar/indirectory/archive.zip").toString());
+      Map<String, Boolean> expected = new HashMap<String, Boolean>();
+      expected.put(getJarURL("/structure/jar/indirectory/archive.jar"), true);
+      expected.put(getJarURL("/structure/jar/indirectory/archive.zip"), true);
       assertContexts(expected, context.getChildren());
       
       assertCandidatesValid(context);
@@ -144,8 +143,8 @@ public class JARStructureUnitTestCase extends BaseDeployersTest
       DeploymentContext context = getValidContext("/structure/", "jar/subdirnotajar");
       
       // Test it got all the candidates
-      Set<String> expected = new HashSet<String>();
-      expected.add(getURL("/structure/jar/subdirnotajar/sub").toString());
+      Map<String, Boolean> expected = new HashMap<String, Boolean>();
+      expected.put(getURL("/structure/jar/subdirnotajar/sub"), false);
       assertContexts(expected, context.getChildren());
       
       assertCandidatesNotValid(context);
@@ -156,8 +155,8 @@ public class JARStructureUnitTestCase extends BaseDeployersTest
       DeploymentContext context = getValidContext("/structure/", "jar/subdirisajar");
       
       // Test it got all the candidates
-      Set<String> expected = new HashSet<String>();
-      expected.add(getURL("/structure/jar/subdirisajar/sub.jar").toString());
+      Map<String, Boolean> expected = new HashMap<String, Boolean>();
+      expected.put(getURL("/structure/jar/subdirisajar/sub.jar"), true);
       assertContexts(expected, context.getChildren());
       
       assertCandidatesValid(context);
@@ -173,10 +172,15 @@ public class JARStructureUnitTestCase extends BaseDeployersTest
       DeploymentContext context = getValidContext("/structure/", "jar/subdirhasmetainf");
       
       // Test it got all the candidates
-      Set<String> expected = new HashSet<String>();
-      expected.add(getURL("/structure/jar/subdirhasmetainf/sub").toString());
+      Map<String, Boolean> expected = new HashMap<String, Boolean>();
+      expected.put(getURL("/structure/jar/subdirhasmetainf/sub"), true);
       assertContexts(expected, context.getChildren());
       
       assertCandidatesValid(context);
+   }
+   
+   protected void assertContexts(Map<String, Boolean> expected, Set<DeploymentContext> actual) throws Exception
+   {
+      assertCandidateContexts(expected, actual);
    }
 }

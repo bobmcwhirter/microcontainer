@@ -35,7 +35,7 @@ import org.jboss.virtual.VirtualFile;
  * @author <a href="adrian@jboss.com">Adrian Brock</a>
  * @version $Revision: 1.1 $
  */
-public interface DeploymentContext extends Cloneable
+public interface DeploymentContext
 {
    /**
     * Get the deployment name
@@ -221,16 +221,4 @@ public interface DeploymentContext extends Cloneable
     * @param problem the problem
     */
    void setProblem(Throwable problem);
-   
-   /**
-    * Clone the context
-    * 
-    * @return the cloned context
-    */
-   DeploymentContext clone();
-   
-   /**
-    * A debug method that dumps the context to the log
-    */
-   void dump();
 }
