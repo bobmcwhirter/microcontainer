@@ -30,10 +30,12 @@ import junit.framework.Test;
 import junit.framework.TestSuite;
 
 import org.jboss.deployers.plugins.deployment.MainDeployerImpl;
+import org.jboss.deployers.plugins.structure.AbstractDeploymentContext;
 import org.jboss.deployers.plugins.structure.vfs.jar.JARStructure;
 import org.jboss.deployers.plugins.structure.vfs.war.WARStructure;
 import org.jboss.deployers.spi.structure.DeploymentContext;
 import org.jboss.deployers.spi.structure.DeploymentState;
+import org.jboss.deployers.spi.structure.StructureDetermined;
 import org.jboss.deployers.spi.structure.vfs.StructureDeployer;
 import org.jboss.test.deployers.BaseDeployersTest;
 
@@ -201,5 +203,30 @@ public class MainDeployerStructureUnitTestCase extends BaseDeployersTest
       main.addDeploymentContext(context);
       assertEquals(DeploymentState.ERROR, context.getState());
       checkThrowable(IllegalStateException.class, context.getProblem());
+   }
+   
+   public void testPredeterminedStructure() throws Exception
+   {
+      MainDeployerImpl main = new MainDeployerImpl();
+      TestStructureDeployer deployer = new TestStructureDeployer();
+      main.addStructureDeployer(deployer);
+      
+      DeploymentContext predetermined = new AbstractDeploymentContext("predetermined");
+      predetermined.setStructureDetermined(StructureDetermined.PREDETERMINED);
+      main.addDeploymentContext(predetermined);
+      assertEmpty(deployer.getInvoked());
+   }
+   
+   public void testNotPredeterminedStructure() throws Exception
+   {
+      MainDeployerImpl main = new MainDeployerImpl();
+      TestStructureDeployer deployer = new TestStructureDeployer();
+      main.addStructureDeployer(deployer);
+      
+      DeploymentContext context = createDeploymentContext("/structure/", "jar/simple");
+      main.addDeploymentContext(context);
+      Set<DeploymentContext> expected = new HashSet<DeploymentContext>();
+      expected.add(context);
+      assertEquals(expected, deployer.getInvoked());
    }
 }
