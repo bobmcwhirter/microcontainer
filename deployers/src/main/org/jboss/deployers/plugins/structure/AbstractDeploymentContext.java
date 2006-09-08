@@ -388,6 +388,17 @@ public class AbstractDeploymentContext implements DeploymentContext
       }
    }
    
+   public void reset()
+   {
+      if (structureDetermined != StructureDetermined.PREDETERMINED)
+         children.clear();
+      else
+      {
+         for (DeploymentContext child : children)
+            child.reset();
+      }
+   }
+
    public String toString()
    {
       StringBuilder buffer = new StringBuilder();

@@ -221,4 +221,9 @@ public interface DeploymentContext
     * @param problem the problem
     */
    void setProblem(Throwable problem);
+   
+   /**
+    * Reset a deployment context that is about to be deployed
+    */
+   void reset();
 }

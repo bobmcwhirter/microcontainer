@@ -142,6 +142,7 @@ public class MainDeployerImpl implements MainDeployer
          throw new IllegalArgumentException("Null deployer");
       structureDeployers.remove(deployer);
       log.debug("Remove structure deployer: " + deployer);
+      // TODO remove deployments for this structure?
    }
    
    /**
@@ -155,6 +156,7 @@ public class MainDeployerImpl implements MainDeployer
          throw new IllegalArgumentException("Null deployer");
       DeployerWrapper wrapper = new DeployerWrapper(deployer);
       deployers.add(wrapper);
+      log.debug("Added deployer: " + deployer);
       // TODO process existing deployments
    }
    
@@ -168,6 +170,7 @@ public class MainDeployerImpl implements MainDeployer
       if (deployer == null)
          throw new IllegalArgumentException("Null deployer");
       deployers.remove(deployer);
+      log.debug("Removed deployer: " + deployer);
       // TODO unprocess existing deployments
    }
 
@@ -208,9 +211,7 @@ public class MainDeployerImpl implements MainDeployer
             throw new IllegalStateException("Deployment already exists as a subdeployment: " + context.getName()); 
       }
 
-      if (context.getStructureDetermined() == YES)
-         context.setStructureDetermined(NO);
-      context.setProblem(null);
+      reset(context);
 
       topLevelDeployments.put(name, context);
       try
@@ -333,6 +334,23 @@ public class MainDeployerImpl implements MainDeployer
       }
       
       shutdown.set(true);
+   }
+
+   /**
+    * Reset a deployment context
+    * 
+    * @param context the context
+    * @throws IllegalArgumentException for a null context
+    */
+   protected void reset(DeploymentContext context)
+   {
+      if (context == null)
+         throw new IllegalArgumentException("Null context");
+
+      if (context.getStructureDetermined() == YES)
+         context.setStructureDetermined(NO);
+      context.setProblem(null);
+      context.reset();
    }
 
    /**
