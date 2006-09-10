@@ -100,7 +100,7 @@ public class AbstractDeploymentContext implements DeploymentContext
          String name = url.toString();
          return name;
       }
-      catch (MalformedURLException e)
+      catch (Exception e)
       {
          throw new IllegalArgumentException("File does not have a valid url: " + file, e);
       }
