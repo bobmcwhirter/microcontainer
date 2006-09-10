@@ -1,4 +1,4 @@
-package org.jboss.test.vfs.support.jar2;
+package org.jboss.test.bundle.support.jar2;
 
 import org.jboss.test.vfs.support.CommonClass;
 

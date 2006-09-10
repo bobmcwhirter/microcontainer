@@ -1,4 +1,4 @@
-package org.jboss.test.vfs.support;
+package org.jboss.test.bundle.support;
 
 /**
  * @author Scott.Stark@jboss.org
