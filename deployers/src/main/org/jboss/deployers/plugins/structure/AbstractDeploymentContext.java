@@ -22,8 +22,7 @@
 package org.jboss.deployers.plugins.structure;
 
 import java.io.IOException;
-import java.io.InputStream;
-import java.net.URL;
+import java.net.URI;
 import java.util.Collections;
 import java.util.List;
 import java.util.Set;
@@ -95,13 +94,13 @@ public class AbstractDeploymentContext implements DeploymentContext
          throw new IllegalArgumentException("Null file");
       try
       {
-         URL url = file.toURL();
-         String name = url.toString();
+         URI uri = file.toURI();
+         String name = uri.toString();
          return name;
       }
       catch (Exception e)
       {
-         throw new IllegalArgumentException("File does not have a valid url: " + file, e);
+         throw new IllegalArgumentException("File does not have a valid uri: " + file, e);
       }
    }
 
@@ -353,36 +352,17 @@ public class AbstractDeploymentContext implements DeploymentContext
       this.problem = problem;
    }
 
-   public URL getMetaData(String name)
+   public VirtualFile getMetaDataFile(String name)
    {
       if (metaDataLocation == null)
          return null;
       try
       {
-         VirtualFile child = metaDataLocation.findChild(name);
-         if (child == null)
-            return null;
-         return child.toURL();
+         return metaDataLocation.findChild(name);
       }
       catch (Exception e)
       {
          log.debug("Error retrieving meta data: " + name, e);
-         return null;
-      }
-   }
-
-   public InputStream getMetaDataAsStream(String name)
-   {
-      URL url = getMetaData(name);
-      if (url == null)
-         return null;
-      try
-      {
-         return url.openStream();
-      }
-      catch (Exception e)
-      {
-         log.debug("Error retrieving meta data: " + name + " from " + url, e);
          return null;
       }
    }

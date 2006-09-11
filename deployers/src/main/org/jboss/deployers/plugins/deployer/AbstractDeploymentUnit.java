@@ -21,11 +21,9 @@
 */
 package org.jboss.deployers.plugins.deployer;
 
-import java.io.InputStream;
-import java.net.URL;
-
 import org.jboss.deployers.spi.deployer.DeploymentUnit;
 import org.jboss.deployers.spi.structure.DeploymentContext;
+import org.jboss.virtual.VirtualFile;
 
 /**
  * AbstractDeploymentUnit.<p>
@@ -66,13 +64,8 @@ public class AbstractDeploymentUnit implements DeploymentUnit
       return cl;
    }
 
-   public URL getMetaData(String name)
+   public VirtualFile getMetaDataFile(String name)
    {
-      return deploymentContext.getMetaData(name);
-   }
-
-   public InputStream getMetaDataAsStream(String name)
-   {
-      return deploymentContext.getMetaDataAsStream(name);
+      return deploymentContext.getMetaDataFile(name);
    }
 }

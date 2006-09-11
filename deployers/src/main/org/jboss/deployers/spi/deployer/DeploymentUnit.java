@@ -21,8 +21,7 @@
 */
 package org.jboss.deployers.spi.deployer;
 
-import java.io.InputStream;
-import java.net.URL;
+import org.jboss.virtual.VirtualFile;
 
 /**
  * DeploymentUnit.<p>
@@ -50,15 +49,7 @@ public interface DeploymentUnit
     * @param name the resource name
     * @return the url of the metadata or null if not found
     */
-   URL getMetaData(String name);
-   
-   /**
-    * Gets some metadata as a stream
-    * 
-    * @param name the resource name
-    * @return the stream or null if not found
-    */
-   InputStream getMetaDataAsStream(String name);
+   VirtualFile getMetaDataFile(String name);
    
    /**
     * Gets the classloader for this deployment unit
