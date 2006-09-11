@@ -38,6 +38,7 @@ import org.jboss.deployers.spi.structure.DeploymentState;
 import org.jboss.deployers.spi.structure.StructureDetermined;
 import org.jboss.deployers.spi.structure.vfs.StructureDeployer;
 import org.jboss.test.deployers.BaseDeployersTest;
+import org.jboss.test.deployers.structure.main.support.TestStructureDeployer;
 
 /**
  * MainDeployerStructureUnitTestCase.

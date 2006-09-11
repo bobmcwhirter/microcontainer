@@ -21,9 +21,6 @@
 */
 package org.jboss.test.deployers.structure.main.test;
 
-import java.util.Map;
-import java.util.Set;
-
 import junit.framework.Test;
 import junit.framework.TestSuite;
 
@@ -34,7 +31,7 @@ import org.jboss.deployers.plugins.structure.vfs.war.WARStructure;
 import org.jboss.deployers.spi.deployment.MainDeployer;
 import org.jboss.deployers.spi.structure.DeploymentContext;
 import org.jboss.deployers.spi.structure.DeploymentState;
-import org.jboss.test.deployers.structure.jar.test.JARStructureUnitTestCase;
+import org.jboss.test.deployers.structure.file.test.FileStructureUnitTestCase;
 
 /**
  * MainDeployerStructureUnitTestCase.
@@ -42,50 +39,40 @@ import org.jboss.test.deployers.structure.jar.test.JARStructureUnitTestCase;
  * @author <a href="adrian@jboss.com">Adrian Brock</a>
  * @version $Revision: 1.1 $
  */
-public class MainDeployerJarStructureUnitTestCase extends JARStructureUnitTestCase
+public class MainDeployerFileStructureUnitTestCase extends FileStructureUnitTestCase
 {
    public static Test suite()
    {
-      return new TestSuite(MainDeployerJarStructureUnitTestCase.class);
+      return new TestSuite(MainDeployerFileStructureUnitTestCase.class);
    }
    
-   public MainDeployerJarStructureUnitTestCase(String name)
+   public MainDeployerFileStructureUnitTestCase(String name)
    {
       super(name);
-   }
-   
-   protected DeploymentContext getValidContext(String root, String path) throws Exception
-   {
-      DeploymentContext context = createDeploymentContext(root, path);
-      MainDeployer main = getMainDeployer();
-      main.addDeploymentContext(context);
-      assertFalse("Structure should be valid: " + context.getName(), context.getState() == DeploymentState.ERROR);
-      return context;
    }
 
    protected DeploymentContext assertValidContext(String root, String path) throws Exception
    {
-      return getValidContext(root, path);
+      DeploymentContext context = createDeploymentContext(root, path);
+      getMainDeployer().addDeploymentContext(context);
+      assertFalse("Structure should be valid: " + context.getName(), context.getState() == DeploymentState.ERROR);
+      assertEmpty(context.getChildren());
+      return context;
    }
-   
+
    protected DeploymentContext assertNotValidContext(String root, String path, boolean other) throws Exception
    {
+      // It might not be a valid file, but it could be another deployment
       if (other)
          return assertValidContext(root, path);
-      
+
       DeploymentContext context = createDeploymentContext(root, path);
-      MainDeployer main = getMainDeployer();
-      main.addDeploymentContext(context);
+      getMainDeployer().addDeploymentContext(context);
       assertTrue("Structure should not be valid: " + context.getName(), context.getState() == DeploymentState.ERROR);
       assertEmpty(context.getChildren());
       return context;
    }
-   
-   protected void assertContexts(Map<String, Boolean> expected, Set<DeploymentContext> actual) throws Exception
-   {
-      assertActualContexts(expected, actual);
-   }
-   
+
    protected static MainDeployer getMainDeployer()
    {
       MainDeployerImpl main = new MainDeployerImpl();

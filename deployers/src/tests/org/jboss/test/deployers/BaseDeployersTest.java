@@ -28,6 +28,7 @@ import java.util.Set;
 
 import org.jboss.deployers.plugins.structure.AbstractDeploymentContext;
 import org.jboss.deployers.spi.structure.DeploymentContext;
+import org.jboss.deployers.spi.structure.StructureDetermined;
 import org.jboss.deployers.spi.structure.vfs.StructureDeployer;
 import org.jboss.test.BaseTestCase;
 import org.jboss.util.NotImplementedException;
@@ -239,5 +240,18 @@ public abstract class BaseDeployersTest extends BaseTestCase
    {
       VirtualFile file = getVirtualFile(root, path);
       return new AbstractDeploymentContext(file);
+   }
+   
+   /**
+    * Create a simple predetermined deployment context
+    * 
+    * @param name the context name
+    * @return the context
+    */
+   protected DeploymentContext createSimpleDeployment(String name)
+   {
+      AbstractDeploymentContext context = new AbstractDeploymentContext(name);
+      context.setStructureDetermined(StructureDetermined.PREDETERMINED);
+      return context;
    }
 }

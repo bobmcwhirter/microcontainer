@@ -19,40 +19,39 @@
 * Software Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA
 * 02110-1301 USA, or see the FSF site: http://www.fsf.org.
 */
-package org.jboss.test.deployers.structure.main.test;
+package org.jboss.test.deployers.deployer;
 
-import java.util.HashSet;
-import java.util.Set;
+import junit.framework.Test;
+import junit.framework.TestSuite;
+import junit.textui.TestRunner;
 
-import org.jboss.deployers.plugins.structure.vfs.AbstractStructureDeployer;
-import org.jboss.deployers.spi.structure.DeploymentContext;
+import org.jboss.test.deployers.deployer.test.DeployerOrderingUnitTestCase;
+import org.jboss.test.deployers.deployer.test.DeployerProtocolUnitTestCase;
+import org.jboss.test.deployers.deployer.test.DeployerWidthFirstUnitTestCase;
+import org.jboss.test.deployers.deployer.test.MainDeployerDeployerUnitTestCase;
 
 /**
- * TestStructureDeployer.
+ * Deployer Test Suite.
  * 
  * @author <a href="adrian@jboss.com">Adrian Brock</a>
- * @version $Revision: 1.1 $
+ * @version $Revision: 37459 $
  */
-public class TestStructureDeployer extends AbstractStructureDeployer
+public class DeployerTestSuite extends TestSuite
 {
-   /** The contexts with which we have been invoked */
-   private Set<DeploymentContext> invoked = new HashSet<DeploymentContext>();
-
-   /**
-    * Get the contexts with which we were invoked and clear it
-    * 
-    * @return the set of contexts
-    */
-   public Set<DeploymentContext> getInvoked()
+   public static void main(String[] args)
    {
-      HashSet<DeploymentContext> result = new HashSet<DeploymentContext>(invoked);
-      invoked.clear();
-      return result;
+      TestRunner.run(suite());
    }
-   
-   public boolean determineStructure(DeploymentContext context)
+
+   public static Test suite()
    {
-      invoked.add(context);
-      return true;
+      TestSuite suite = new TestSuite("Deployer Tests");
+
+      suite.addTest(DeployerProtocolUnitTestCase.suite());
+      suite.addTest(DeployerOrderingUnitTestCase.suite());
+      suite.addTest(DeployerWidthFirstUnitTestCase.suite());
+      suite.addTest(MainDeployerDeployerUnitTestCase.suite());
+
+      return suite;
    }
 }

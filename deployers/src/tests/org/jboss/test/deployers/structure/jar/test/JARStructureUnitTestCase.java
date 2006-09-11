@@ -79,7 +79,7 @@ public class JARStructureUnitTestCase extends BaseDeployersTest
       return getValidContext(root, path);
    }
    
-   protected DeploymentContext assertNotValidContext(String root, String path) throws Exception
+   protected DeploymentContext assertNotValidContext(String root, String path, boolean other) throws Exception
    {
       DeploymentContext context = createDeploymentContext(root, path);
       assertFalse("Structure should not be valid: " + context.getName(), determineStructure(context));
@@ -102,8 +102,8 @@ public class JARStructureUnitTestCase extends BaseDeployersTest
    
    public void testRootNotAnArchive() throws Exception
    {
-      assertNotValidContext("/structure/", "jar/notanarchive/NotAnArchive.jar");
-      assertNotValidContext("/structure/", "jar/notanarchive/NotAnArchive.zip");
+      assertNotValidContext("/structure/", "jar/notanarchive/NotAnArchive.jar", true);
+      assertNotValidContext("/structure/", "jar/notanarchive/NotAnArchive.zip", true);
    }
    
    public void testSubdeploymentNotAnArchive() throws Exception
@@ -177,6 +177,31 @@ public class JARStructureUnitTestCase extends BaseDeployersTest
       assertContexts(expected, context.getChildren());
       
       assertCandidatesValid(context);
+   }
+   
+   public void testSubdeploymentIsKnownFile() throws Exception
+   {
+      DeploymentContext context = getValidContext("/structure/file", "simple");
+      
+      // Test it got all the candidates
+      Map<String, Boolean> expected = new HashMap<String, Boolean>();
+      expected.put(getURL("/structure/file/simple/simple-service.xml"), true);
+      assertContexts(expected, context.getChildren());
+
+      assertCandidatesNotValid(context);
+   }
+   
+   public void testSubdeploymentIsUnknownFile() throws Exception
+   {
+      DeploymentContext context = getValidContext("/structure/file", "notknown");
+      
+      // Test it got all the candidates
+      Map<String, Boolean> expected = new HashMap<String, Boolean>();
+      expected.put(getURL("/structure/file/notknown/test-unknown.xml"), false);
+      expected.put(getURL("/structure/file/notknown/unknown.xml"), false);
+      assertContexts(expected, context.getChildren());
+
+      assertCandidatesNotValid(context);
    }
    
    protected void assertContexts(Map<String, Boolean> expected, Set<DeploymentContext> actual) throws Exception

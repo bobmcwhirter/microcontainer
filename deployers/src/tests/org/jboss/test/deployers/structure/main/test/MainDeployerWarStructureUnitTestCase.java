@@ -25,9 +25,10 @@ import junit.framework.Test;
 import junit.framework.TestSuite;
 
 import org.jboss.deployers.plugins.deployment.MainDeployerImpl;
+import org.jboss.deployers.plugins.structure.vfs.file.FileStructure;
 import org.jboss.deployers.plugins.structure.vfs.jar.JARStructure;
 import org.jboss.deployers.plugins.structure.vfs.war.WARStructure;
-import org.jboss.deployers.spi.deployement.MainDeployer;
+import org.jboss.deployers.spi.deployment.MainDeployer;
 import org.jboss.deployers.spi.structure.DeploymentContext;
 import org.jboss.deployers.spi.structure.DeploymentState;
 import org.jboss.test.deployers.structure.war.test.WARStructureUnitTestCase;
@@ -75,6 +76,7 @@ public class MainDeployerWarStructureUnitTestCase extends WARStructureUnitTestCa
    protected static MainDeployer getMainDeployer()
    {
       MainDeployerImpl main = new MainDeployerImpl();
+      main.addStructureDeployer(new FileStructure());
       main.addStructureDeployer(new JARStructure());
       main.addStructureDeployer(new WARStructure());
       return main;

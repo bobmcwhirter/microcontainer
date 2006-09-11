@@ -19,33 +19,36 @@
 * Software Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA
 * 02110-1301 USA, or see the FSF site: http://www.fsf.org.
 */
-package org.jboss.test.deployers.structure.war.test;
+package org.jboss.test.deployers.structure.file.test;
+
+import java.util.Map;
+import java.util.Set;
 
 import junit.framework.Test;
 import junit.framework.TestSuite;
 
-import org.jboss.deployers.plugins.structure.vfs.war.WARStructure;
+import org.jboss.deployers.plugins.structure.vfs.file.FileStructure;
 import org.jboss.deployers.spi.structure.DeploymentContext;
 import org.jboss.deployers.spi.structure.vfs.StructureDeployer;
 import org.jboss.test.deployers.BaseDeployersTest;
 
 /**
- * WARStructureUnitTestCase.
+ * FileStructureUnitTestCase.
  * 
  * @author <a href="adrian@jboss.com">Adrian Brock</a>
  * @version $Revision: 1.1 $
  */
-public class WARStructureUnitTestCase extends BaseDeployersTest
+public class FileStructureUnitTestCase extends BaseDeployersTest
 {
-   /** The war structure deployer */
-   private static final WARStructure structure = new WARStructure();
+   /** The file structure deployer */
+   private static final FileStructure structure = new FileStructure();
    
    public static Test suite()
    {
-      return new TestSuite(WARStructureUnitTestCase.class);
+      return new TestSuite(FileStructureUnitTestCase.class);
    }
    
-   public WARStructureUnitTestCase(String name)
+   public FileStructureUnitTestCase(String name)
    {
       super(name);
    }
@@ -70,8 +73,8 @@ public class WARStructureUnitTestCase extends BaseDeployersTest
       assertEmpty(context.getChildren());
       return context;
    }
-
-   protected DeploymentContext assertNotValidContext(String root, String path, boolean other) throws Exception
+   
+   protected DeploymentContext assertNotValidContext(String root, String path, boolean isDirectory) throws Exception
    {
       DeploymentContext context = createDeploymentContext(root, path);
       assertFalse("Structure should not be valid: " + context.getName(), determineStructure(context));
@@ -81,26 +84,22 @@ public class WARStructureUnitTestCase extends BaseDeployersTest
    
    public void testSimple() throws Exception
    {
-      assertValidContext("/structure/", "war/simple/simple.war");
+      assertValidContext("/structure/", "file/simple/simple-service.xml");
    }
    
-   public void testNotAnArchive() throws Exception
+   public void testNotKnownButTopLevel() throws Exception
    {
-      assertNotValidContext("/structure/", "war/notanarchive/notanarchive.war", true);
+      assertValidContext("/structure/", "file/notknown/test-unknown.xml");
+      assertValidContext("/structure/", "file/notknown/unknown.xml");
    }
    
-   public void testWarDirectory() throws Exception
+   public void testDirectory() throws Exception
    {
-      assertValidContext("/structure/", "war/directory.war");
+      assertNotValidContext("/structure/", "file/directory", true);
    }
    
-   public void testDirectoryNotAWar() throws Exception
+   protected void assertContexts(Map<String, Boolean> expected, Set<DeploymentContext> actual) throws Exception
    {
-      assertNotValidContext("/structure/", "war/directorynotawar", true);
-   }
-   
-   public void testDirectoryWithWebInf() throws Exception
-   {
-      assertValidContext("/structure/", "war/directorywithwebinf");
+      assertCandidateContexts(expected, actual);
    }
 }

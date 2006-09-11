@@ -19,55 +19,56 @@
 * Software Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA
 * 02110-1301 USA, or see the FSF site: http://www.fsf.org.
 */
-package org.jboss.deployers.spi.deployement;
+package org.jboss.deployers.plugins.deployer;
 
 import org.jboss.deployers.spi.DeploymentException;
-import org.jboss.deployers.spi.structure.DeploymentContext;
+import org.jboss.deployers.spi.deployer.DeploymentUnit;
 
 /**
- * MainDeployer.<p>
- * 
- * The basic contract is to add and remove deployment
- * contexts then use process method to actually
- * bring the deployments to required state. 
+ * AbstractSimpleDeployer.
  * 
  * @author <a href="adrian@jboss.com">Adrian Brock</a>
  * @version $Revision: 1.1 $
  */
-public interface MainDeployer
+public abstract class AbstractSimpleDeployer extends AbstractDeployer
 {
-   /**
-    * Get a deployment context
-    * 
-    * @param name the name
-    * @return the context or null if not found
-    */
-   DeploymentContext getDeploymentContext(String name);
-   
-   /**
-    * Add a deployment context
-    * 
-    * @param context the deployment context
-    * @throws DeploymentException for any error
-    */
-   void addDeploymentContext(DeploymentContext context) throws DeploymentException;
+   public void prepareDeploy(DeploymentUnit unit) throws DeploymentException
+   {
+      // nothing
+   }
+
+   public void prepareUndeploy(DeploymentUnit unit)
+   {
+      undeploy(unit);
+   }
+
+   public void handoff(DeploymentUnit from, DeploymentUnit to) throws DeploymentException
+   {
+      // nothing
+   }
+
+   public void commitDeploy(DeploymentUnit unit) throws DeploymentException
+   {
+      deploy(unit);
+   }
+
+   public void commitUndeploy(DeploymentUnit unit)
+   {
+      // nothing
+   }
 
    /**
-    * Remove a deployment context
+    * Deploy a deployment
     * 
-    * @param name the name of the context
-    * @return false when the context was previously unknown
+    * @param unit the unit
     * @throws DeploymentException for any error
     */
-   boolean removeDeploymentContext(String name) throws DeploymentException;
+   public abstract void deploy(DeploymentUnit unit) throws DeploymentException; 
 
    /**
-    * Process the outstanding deployments
+    * Undeploy a deployment
+    * 
+    * @param unit the unit
     */
-   void process();
-   
-   /**
-    * Shutdown. Removes all the deployments.
-    */
-   void shutdown();
+   public abstract void undeploy(DeploymentUnit unit); 
 }

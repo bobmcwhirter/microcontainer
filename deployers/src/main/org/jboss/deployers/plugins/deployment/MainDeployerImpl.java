@@ -43,9 +43,9 @@ import org.jboss.deployers.plugins.deployer.AbstractDeploymentUnit;
 import org.jboss.deployers.plugins.deployer.DeployerWrapper;
 import org.jboss.deployers.plugins.structure.vfs.StructureDeployerWrapper;
 import org.jboss.deployers.spi.DeploymentException;
-import org.jboss.deployers.spi.deployement.MainDeployer;
 import org.jboss.deployers.spi.deployer.Deployer;
 import org.jboss.deployers.spi.deployer.DeploymentUnit;
+import org.jboss.deployers.spi.deployment.MainDeployer;
 import org.jboss.deployers.spi.structure.DeploymentContext;
 import org.jboss.deployers.spi.structure.vfs.StructureDeployer;
 import org.jboss.logging.Logger;
@@ -53,6 +53,7 @@ import org.jboss.logging.Logger;
 /**
  * MainDeployerImpl.
  * 
+ * TODO full deployer protocol
  * @author <a href="adrian@jboss.com">Adrian Brock</a>
  * @version $Revision: 1.1 $
  */
@@ -143,6 +144,40 @@ public class MainDeployerImpl implements MainDeployer
       structureDeployers.remove(deployer);
       log.debug("Remove structure deployer: " + deployer);
       // TODO remove deployments for this structure?
+   }
+   
+   /**
+    * Get the deployers
+    * 
+    * @return the deployers
+    */
+   public synchronized Set<Deployer> getDeployers()
+   {
+      return new HashSet<Deployer>(deployers);
+   }
+   
+   /**
+    * Set the deployers
+    * 
+    * @param deployers the deployers
+    * @throws IllegalArgumentException for null deployers
+    */
+   public synchronized void setDeployers(Set<Deployer> deployers)
+   {
+      if (deployers == null)
+         throw new IllegalArgumentException("Null deployers");
+      
+      // Remove all the old deployers that are not in the new set
+      HashSet<Deployer> oldDeployers = new HashSet<Deployer>(this.deployers);
+      oldDeployers.removeAll(deployers);
+      for (Deployer deployer : oldDeployers)
+         removeDeployer(deployer);
+      
+      // Add all the new deployers that were not already present
+      HashSet<Deployer> newDeployers = new HashSet<Deployer>(deployers);
+      newDeployers.removeAll(this.deployers);
+      for (Deployer deployer : newDeployers)
+         addDeployer(deployer);
    }
    
    /**
@@ -280,7 +315,7 @@ public class MainDeployerImpl implements MainDeployer
             for (DeploymentContext context : undeployContexts)
             {
                DeploymentUnit unit = context.getDeploymentUnit();
-               deployer.undeploy(unit);
+               deployer.prepareUndeploy(unit);
             }
          }
          for (DeploymentContext context : undeployContexts)
@@ -299,7 +334,7 @@ public class MainDeployerImpl implements MainDeployer
                DeploymentUnit unit = context.getDeploymentUnit();
                try
                {
-                  deployer.deploy(unit);
+                  deployer.commitDeploy(unit);
                }
                catch (DeploymentException e)
                {
@@ -310,7 +345,7 @@ public class MainDeployerImpl implements MainDeployer
                   for (int j = i-1; j >= 0; --j)
                   {
                      Deployer other = theDeployers[j];
-                     other.undeploy(unit);
+                     other.prepareUndeploy(unit);
                   }
                }
             }

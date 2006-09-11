@@ -44,19 +44,43 @@ public interface Deployer
    boolean isRelevant(DeploymentUnit unit);
    
    /**
-    * Deploy a deployment
+    * Prepare a deployment
     * 
     * @param unit the unit
     * @throws DeploymentException for any error
     */
-   void deploy(DeploymentUnit unit) throws DeploymentException;
+   void prepareDeploy(DeploymentUnit unit) throws DeploymentException;
 
    /**
-    * Undeploy a deployment
+    * Prepare an undeployment
     * 
     * @param unit the unit
     */
-   void undeploy(DeploymentUnit unit);
+   void prepareUndeploy(DeploymentUnit unit);
+   
+   /**
+    * Handoff a deployment
+    * 
+    * @param from the from deployment
+    * @param to the to deployment
+    * @throws DeploymentException for any error
+    */
+   void handoff(DeploymentUnit from, DeploymentUnit to) throws DeploymentException;
+   
+   /**
+    * Commit a deployment
+    * 
+    * @param unit the unit
+    * @throws DeploymentException for any error
+    */
+   void commitDeploy(DeploymentUnit unit) throws DeploymentException;
+
+   /**
+    * Prepare an undeployment
+    * 
+    * @param unit the unit
+    */
+   void commitUndeploy(DeploymentUnit unit);
 
    /**
     * Get the relative order

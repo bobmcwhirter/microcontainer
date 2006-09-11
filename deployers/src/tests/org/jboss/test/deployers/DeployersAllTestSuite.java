@@ -21,6 +21,7 @@
 */
 package org.jboss.test.deployers;
 
+import org.jboss.test.deployers.deployer.DeployerTestSuite;
 import org.jboss.test.deployers.structure.StructureTestSuite;
 
 import junit.framework.Test;
@@ -45,6 +46,7 @@ public class DeployersAllTestSuite extends TestSuite
       TestSuite suite = new TestSuite("Deployers All Tests");
 
       suite.addTest(StructureTestSuite.suite());
+      suite.addTest(DeployerTestSuite.suite());
 
       return suite;
    }

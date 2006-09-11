@@ -25,8 +25,11 @@ import junit.framework.Test;
 import junit.framework.TestSuite;
 import junit.textui.TestRunner;
 
+import org.jboss.test.deployers.structure.file.test.FileStructureUnitTestCase;
 import org.jboss.test.deployers.structure.jar.test.JARStructureUnitTestCase;
+import org.jboss.test.deployers.structure.main.test.MainDeployerFileStructureUnitTestCase;
 import org.jboss.test.deployers.structure.main.test.MainDeployerJarStructureUnitTestCase;
+import org.jboss.test.deployers.structure.main.test.MainDeployerStructureOrderingUnitTestCase;
 import org.jboss.test.deployers.structure.main.test.MainDeployerStructureUnitTestCase;
 import org.jboss.test.deployers.structure.main.test.MainDeployerWarStructureUnitTestCase;
 import org.jboss.test.deployers.structure.war.test.WARStructureUnitTestCase;
@@ -48,9 +51,12 @@ public class StructureTestSuite extends TestSuite
    {
       TestSuite suite = new TestSuite("Structure Tests");
 
+      suite.addTest(FileStructureUnitTestCase.suite());
       suite.addTest(JARStructureUnitTestCase.suite());
       suite.addTest(WARStructureUnitTestCase.suite());
       suite.addTest(MainDeployerStructureUnitTestCase.suite());
+      suite.addTest(MainDeployerStructureOrderingUnitTestCase.suite());
+      suite.addTest(MainDeployerFileStructureUnitTestCase.suite());
       suite.addTest(MainDeployerJarStructureUnitTestCase.suite());
       suite.addTest(MainDeployerWarStructureUnitTestCase.suite());
 

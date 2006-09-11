@@ -19,32 +19,40 @@
 * Software Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA
 * 02110-1301 USA, or see the FSF site: http://www.fsf.org.
 */
-package org.jboss.deployers.plugins.deployer;
+package org.jboss.test.deployers.structure.main.support;
 
-import org.jboss.deployers.spi.deployer.Deployer;
-import org.jboss.deployers.spi.deployer.DeploymentUnit;
-import org.jboss.logging.Logger;
+import java.util.HashSet;
+import java.util.Set;
+
+import org.jboss.deployers.plugins.structure.vfs.AbstractStructureDeployer;
+import org.jboss.deployers.spi.structure.DeploymentContext;
 
 /**
- * AbstractDeployer.<p>
- * 
- * We don't care about the order by default.
+ * TestStructureDeployer.
  * 
  * @author <a href="adrian@jboss.com">Adrian Brock</a>
  * @version $Revision: 1.1 $
  */
-public abstract class AbstractDeployer implements Deployer
+public class TestStructureDeployer extends AbstractStructureDeployer
 {
-   /** The log */
-   protected Logger log = Logger.getLogger(this.getClass());
-   
-   public boolean isRelevant(DeploymentUnit unit)
-   {
-      return true;
-   }
+   /** The contexts with which we have been invoked */
+   private Set<DeploymentContext> invoked = new HashSet<DeploymentContext>();
 
-   public int getRelativeOrder()
+   /**
+    * Get the contexts with which we were invoked and clear it
+    * 
+    * @return the set of contexts
+    */
+   public Set<DeploymentContext> getInvoked()
    {
-      return Integer.MAX_VALUE;
+      HashSet<DeploymentContext> result = new HashSet<DeploymentContext>(invoked);
+      invoked.clear();
+      return result;
+   }
+   
+   public boolean determineStructure(DeploymentContext context)
+   {
+      invoked.add(context);
+      return true;
    }
 }

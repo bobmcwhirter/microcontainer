@@ -31,6 +31,7 @@ import org.jboss.logging.Logger;
  * 
  * To avoid any problems with error handling by the deployers.
  * 
+ * TODO change logging when full protocol is implemented
  * @author <a href="adrian@jboss.com">Adrian Brock</a>
  * @version $Revision: 1.1 $
  */
@@ -74,37 +75,100 @@ public class DeployerWrapper implements Deployer
       }
    }
 
-   public void deploy(DeploymentUnit unit) throws DeploymentException
+   public void prepareDeploy(DeploymentUnit unit) throws DeploymentException
    {
       if (unit == null)
          throw new IllegalArgumentException("Null unit");
 
       try
       {
-         log.debug("Deploying: " + unit.getName());
-         deployer.deploy(unit);
-         log.debug("Deployed:  " + unit.getName());
+         log.debug("Preparing deployment: " + unit.getName());
+         deployer.prepareDeploy(unit);
+         log.debug("Prepared deployment:  " + unit.getName());
       }
       catch (Throwable t)
       {
-         log.error("Error during deploy: " + unit.getName(), t);
-         throw DeploymentException.rethrowAsDeploymentException("Error during deploy: " + unit.getName(), t);
+         log.error("Error during prepare deployment: " + unit.getName(), t);
+         throw DeploymentException.rethrowAsDeploymentException("Error during prepare deployment: " + unit.getName(), t);
       }
    }
 
-   public void undeploy(DeploymentUnit unit)
+   public void prepareUndeploy(DeploymentUnit unit)
    {
       if (unit == null)
          throw new IllegalArgumentException("Null unit");
+
       try
       {
+         // TODO log.debug("Prepare undeployment: " + unit.getName());
          log.debug("Undeploying: " + unit.getName());
-         deployer.undeploy(unit);
+         deployer.prepareUndeploy(unit);
+         // TODO log.debug("Prepared undeployment:  " + unit.getName());
          log.debug("Undeployed:  " + unit.getName());
       }
       catch (Throwable t)
       {
-         log.warn("Error during undeploy: " + unit.getName(), t);
+         // TODO log.warn("Error during prepare undeployment: " + unit.getName(), t);
+         log.warn("Error during undeployment: " + unit.getName(), t);
+      }
+   }
+
+   public void handoff(DeploymentUnit from, DeploymentUnit to) throws DeploymentException
+   {
+      if (from == null)
+         throw new IllegalArgumentException("Null from deployment");
+      if (to == null)
+         throw new IllegalArgumentException("Null to deployment");
+
+      try
+      {
+         log.debug("Handing off from=" + from.getName() + " to=" + to.getName());
+         deployer.handoff(from, to);
+         log.debug("Handed off from=" + from.getName() + " to=" + to.getName());
+      }
+      catch (Throwable t)
+      {
+         log.warn("Error during handoff from=" + from.getName() + " to=" + to.getName(), t);
+         throw DeploymentException.rethrowAsDeploymentException("Error during handoff from=" + from.getName() + " to=" + to.getName(), t);
+      }
+   }
+
+   public void commitDeploy(DeploymentUnit unit) throws DeploymentException
+   {
+      if (unit == null)
+         throw new IllegalArgumentException("Null unit");
+
+      try
+      {
+         // TODO log.debug("Commiting deployment: " + unit.getName());
+         log.debug("Deploying: " + unit.getName());
+         deployer.commitDeploy(unit);
+         // TODO log.debug("Commited deployment:  " + unit.getName());
+         log.debug("Deployed:  " + unit.getName());
+      }
+      catch (Throwable t)
+      {
+         // TODO log.error("Error during commit deploy: " + unit.getName(), t);
+         log.error("Error during deployment: " + unit.getName(), t);
+         // TODO throw DeploymentException.rethrowAsDeploymentException("Error during commit deployment: " + unit.getName(), t);
+         throw DeploymentException.rethrowAsDeploymentException("Error during deployment: " + unit.getName(), t);
+      }
+   }
+
+   public void commitUndeploy(DeploymentUnit unit)
+   {
+      if (unit == null)
+         throw new IllegalArgumentException("Null unit");
+
+      try
+      {
+         log.debug("Commiting undeployment: " + unit.getName());
+         deployer.commitUndeploy(unit);
+         log.debug("Commited undeployment:  " + unit.getName());
+      }
+      catch (Throwable t)
+      {
+         log.warn("Error during commit undeployment: " + unit.getName(), t);
       }
    }
    

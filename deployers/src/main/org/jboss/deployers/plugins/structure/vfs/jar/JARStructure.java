@@ -38,6 +38,12 @@ import org.jboss.virtual.VirtualFile;
  */
 public class JARStructure extends AbstractStructureDeployer
 {
+   @Override
+   public int getRelativeOrder()
+   {
+      return 10000;
+   }
+
    public boolean determineStructure(DeploymentContext context)
    {
       try

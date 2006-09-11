@@ -19,32 +19,48 @@
 * Software Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA
 * 02110-1301 USA, or see the FSF site: http://www.fsf.org.
 */
-package org.jboss.deployers.plugins.deployer;
+package org.jboss.test.deployers.structure.main.support;
 
-import org.jboss.deployers.spi.deployer.Deployer;
-import org.jboss.deployers.spi.deployer.DeploymentUnit;
-import org.jboss.logging.Logger;
+import org.jboss.deployers.plugins.structure.vfs.AbstractStructureDeployer;
+import org.jboss.deployers.spi.structure.DeploymentContext;
 
 /**
- * AbstractDeployer.<p>
- * 
- * We don't care about the order by default.
+ * TestStructureOrdering.
  * 
  * @author <a href="adrian@jboss.com">Adrian Brock</a>
  * @version $Revision: 1.1 $
  */
-public abstract class AbstractDeployer implements Deployer
+public class TestStructureOrdering extends AbstractStructureDeployer
 {
-   /** The log */
-   protected Logger log = Logger.getLogger(this.getClass());
-   
-   public boolean isRelevant(DeploymentUnit unit)
-   {
-      return true;
-   }
+   private static int order = 0;
 
+   private int relativeOrder;
+   
+   private int structureOrder = -1; 
+
+   public static void reset()
+   {
+      order = 0;
+   }
+   
+   public int getStructureOrder()
+   {
+      return structureOrder;
+   }
+   
+   public TestStructureOrdering(int relativeOrder)
+   {
+      this.relativeOrder = relativeOrder;
+   }
+   
    public int getRelativeOrder()
    {
-      return Integer.MAX_VALUE;
+      return relativeOrder;
+   }
+
+   public boolean determineStructure(DeploymentContext context)
+   {
+      structureOrder = ++order;
+      return false;
    }
 }
