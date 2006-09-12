@@ -60,9 +60,8 @@ public class BasicXMLDeployer extends BasicKernelDeployer
     * Create a new XML deployer
     * 
     * @param kernel the kernel
-    * @throws Throwable for any error
     */
-   public BasicXMLDeployer(Kernel kernel) throws Throwable
+   public BasicXMLDeployer(Kernel kernel)
    {
       super(kernel);
    }
