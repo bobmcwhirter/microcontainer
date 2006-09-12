@@ -21,6 +21,13 @@
 */
 package org.jboss.deployers.plugins.deployer;
 
+import java.util.Collections;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+
+import org.jboss.deployers.plugins.attachments.AbstractAttachments;
+import org.jboss.deployers.spi.attachments.Attachments;
 import org.jboss.deployers.spi.deployer.DeploymentUnit;
 import org.jboss.deployers.spi.structure.DeploymentContext;
 import org.jboss.virtual.VirtualFile;
@@ -34,7 +41,7 @@ import org.jboss.virtual.VirtualFile;
  * @author <a href="adrian@jboss.com">Adrian Brock</a>
  * @version $Revision: 1.1 $
  */
-public class AbstractDeploymentUnit implements DeploymentUnit
+public class AbstractDeploymentUnit extends AbstractAttachments implements DeploymentUnit
 {
    /** The deployment context */
    private DeploymentContext deploymentContext;
@@ -67,5 +74,53 @@ public class AbstractDeploymentUnit implements DeploymentUnit
    public VirtualFile getMetaDataFile(String name)
    {
       return deploymentContext.getMetaDataFile(name);
+   }
+
+   public List<VirtualFile> getMetaDataFiles(String name, String suffix)
+   {
+      return deploymentContext.getMetaDataFiles(name, suffix);
+   }
+
+   public Map<String, Object> getAttachments()
+   {
+      HashMap<String, Object> result = new HashMap<String, Object>(deploymentContext.getTransientAttachments().getAttachments());
+      result.putAll(deploymentContext.getTransientManagedObjects().getAttachments());
+      result.putAll(deploymentContext.getPredeterminedManagedObjects().getAttachments());
+      return Collections.unmodifiableMap(result);
+   }
+
+   public Object addAttachment(String name, Object attachment)
+   {
+      return deploymentContext.getTransientAttachments().addAttachment(name, attachment);
+   }
+
+   public Object getAttachment(String name)
+   {
+      Object result = deploymentContext.getPredeterminedManagedObjects().getAttachment(name);
+      if (result != null)
+         return result;
+      result = deploymentContext.getTransientManagedObjects().getAttachment(name);
+      if (result != null)
+         return result;
+      return deploymentContext.getTransientAttachments().getAttachment(name);
+   }
+
+   public boolean isAttachmentPresent(String name)
+   {
+      if (deploymentContext.getPredeterminedManagedObjects().isAttachmentPresent(name))
+         return true;
+      if (deploymentContext.getTransientManagedObjects().isAttachmentPresent(name))
+         return true;
+      return deploymentContext.getTransientAttachments().isAttachmentPresent(name);
+   }
+
+   public Object removeAttachment(String name)
+   {
+      return deploymentContext.getTransientAttachments().removeAttachment(name);
+   }
+
+   public Attachments getTransientManagedObjects()
+   {
+      return deploymentContext.getTransientManagedObjects();
    }
 }

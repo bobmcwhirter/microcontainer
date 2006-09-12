@@ -25,10 +25,13 @@ import junit.framework.Test;
 import junit.framework.TestSuite;
 import junit.textui.TestRunner;
 
+import org.jboss.test.deployers.bean.test.BeanDeployerUnitTestCase;
+import org.jboss.test.deployers.bean.test.KernelDeployerUnitTestCase;
 import org.jboss.test.deployers.deployer.test.DeployerOrderingUnitTestCase;
 import org.jboss.test.deployers.deployer.test.DeployerProtocolUnitTestCase;
 import org.jboss.test.deployers.deployer.test.DeployerWidthFirstUnitTestCase;
 import org.jboss.test.deployers.deployer.test.MainDeployerDeployerUnitTestCase;
+import org.jboss.test.deployers.metadata.test.MetaDataUnitTestCase;
 
 /**
  * Deployer Test Suite.
@@ -51,6 +54,9 @@ public class DeployerTestSuite extends TestSuite
       suite.addTest(DeployerOrderingUnitTestCase.suite());
       suite.addTest(DeployerWidthFirstUnitTestCase.suite());
       suite.addTest(MainDeployerDeployerUnitTestCase.suite());
+      suite.addTest(MetaDataUnitTestCase.suite());
+      suite.addTest(BeanDeployerUnitTestCase.suite());
+      suite.addTest(KernelDeployerUnitTestCase.suite());
 
       return suite;
    }

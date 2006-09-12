@@ -19,37 +19,14 @@
 * Software Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA
 * 02110-1301 USA, or see the FSF site: http://www.fsf.org.
 */
-package org.jboss.test.deployers;
-
-import org.jboss.test.deployers.attachments.AttachmentsTestSuite;
-import org.jboss.test.deployers.deployer.DeployerTestSuite;
-import org.jboss.test.deployers.structure.StructureTestSuite;
-
-import junit.framework.Test;
-import junit.framework.TestSuite;
-import junit.textui.TestRunner;
+package org.jboss.test.deployers.bean.support;
 
 /**
- * Deployers All Test Suite.
+ * Simple.
  * 
  * @author <a href="adrian@jboss.com">Adrian Brock</a>
- * @version $Revision: 37459 $
+ * @version $Revision: 1.1 $
  */
-public class DeployersAllTestSuite extends TestSuite
+public class Simple
 {
-   public static void main(String[] args)
-   {
-      TestRunner.run(suite());
-   }
-
-   public static Test suite()
-   {
-      TestSuite suite = new TestSuite("Deployers All Tests");
-
-      suite.addTest(AttachmentsTestSuite.suite());
-      suite.addTest(StructureTestSuite.suite());
-      suite.addTest(DeployerTestSuite.suite());
-
-      return suite;
-   }
 }

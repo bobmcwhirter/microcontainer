@@ -19,30 +19,54 @@
 * Software Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA
 * 02110-1301 USA, or see the FSF site: http://www.fsf.org.
 */
-package org.jboss.deployers.plugins.deployer;
+package org.jboss.deployers.plugins.deployers.kernel;
 
-import org.jboss.deployers.spi.deployer.Deployer;
+import org.jboss.deployers.plugins.deployers.helpers.SchemaResolverDeployer;
+import org.jboss.deployers.spi.DeploymentException;
 import org.jboss.deployers.spi.deployer.DeploymentUnit;
-import org.jboss.logging.Logger;
+import org.jboss.kernel.spi.deployment.KernelDeployment;
+import org.jboss.virtual.VirtualFile;
 
 /**
- * AbstractDeployer.
+ * BeanDeployer.<p>
+ * 
+ * This deployer is responsible for looking for -beans.xml
+ * and creating the metadata object.<p>
+ * 
+ * The {@link KernelDeployer} does the real work of deployment.
  * 
  * @author <a href="adrian@jboss.com">Adrian Brock</a>
  * @version $Revision: 1.1 $
  */
-public abstract class AbstractDeployer implements Deployer
+public class BeanDeployer extends SchemaResolverDeployer<KernelDeployment>
 {
-   /** The log */
-   protected Logger log = Logger.getLogger(this.getClass());
-   
-   public boolean isRelevant(DeploymentUnit unit)
+   /**
+    * Create a new BeanDeployer.
+    * 
+    * @throws IllegalArgumentException for a null kernel
+    */
+   public BeanDeployer()
    {
-      return true;
+      super(KernelDeployment.class);
    }
 
    public int getRelativeOrder()
    {
-      return Integer.MAX_VALUE;
+      return 1000;
+   }
+
+   protected void init(DeploymentUnit unit, KernelDeployment metaData, VirtualFile file) throws Exception
+   {
+      String name = file.toURI().toString();
+      metaData.setName(name);
+   }
+
+   public void deploy(DeploymentUnit unit) throws DeploymentException
+   {
+      createMetaData(unit, null, "-beans.xml");
+   }
+
+   public void undeploy(DeploymentUnit unit)
+   {
    }
 }

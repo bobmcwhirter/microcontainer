@@ -19,37 +19,28 @@
 * Software Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA
 * 02110-1301 USA, or see the FSF site: http://www.fsf.org.
 */
-package org.jboss.test.deployers;
+package org.jboss.test.deployers.attachments.test;
 
-import org.jboss.test.deployers.attachments.AttachmentsTestSuite;
-import org.jboss.test.deployers.deployer.DeployerTestSuite;
-import org.jboss.test.deployers.structure.StructureTestSuite;
-
-import junit.framework.Test;
-import junit.framework.TestSuite;
-import junit.textui.TestRunner;
+import java.util.HashMap;
+import java.util.Map;
 
 /**
- * Deployers All Test Suite.
+ * ExpectedAttachments.
  * 
  * @author <a href="adrian@jboss.com">Adrian Brock</a>
- * @version $Revision: 37459 $
+ * @version $Revision: 1.1 $
  */
-public class DeployersAllTestSuite extends TestSuite
+public class ExpectedAttachments
 {
-   public static void main(String[] args)
+   public Map<String, Object> expected = new HashMap<String, Object>();
+   
+   public Object add(String name, Object attachment)
    {
-      TestRunner.run(suite());
+      return expected.put(name, attachment);
    }
-
-   public static Test suite()
+   
+   public Object remove(String name)
    {
-      TestSuite suite = new TestSuite("Deployers All Tests");
-
-      suite.addTest(AttachmentsTestSuite.suite());
-      suite.addTest(StructureTestSuite.suite());
-      suite.addTest(DeployerTestSuite.suite());
-
-      return suite;
+      return expected.remove(name);
    }
 }

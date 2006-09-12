@@ -19,37 +19,41 @@
 * Software Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA
 * 02110-1301 USA, or see the FSF site: http://www.fsf.org.
 */
-package org.jboss.test.deployers;
-
-import org.jboss.test.deployers.attachments.AttachmentsTestSuite;
-import org.jboss.test.deployers.deployer.DeployerTestSuite;
-import org.jboss.test.deployers.structure.StructureTestSuite;
+package org.jboss.test.deployers.attachments.test;
 
 import junit.framework.Test;
 import junit.framework.TestSuite;
-import junit.textui.TestRunner;
+
+import org.jboss.deployers.plugins.attachments.AttachmentsImpl;
+import org.jboss.deployers.spi.attachments.Attachments;
 
 /**
- * Deployers All Test Suite.
+ * AttachmentsUnitTestCase.
  * 
  * @author <a href="adrian@jboss.com">Adrian Brock</a>
- * @version $Revision: 37459 $
+ * @version $Revision: 1.1 $
  */
-public class DeployersAllTestSuite extends TestSuite
+public class AttachmentsUnitTestCase extends AttachmentsTest
 {
-   public static void main(String[] args)
-   {
-      TestRunner.run(suite());
-   }
-
    public static Test suite()
    {
-      TestSuite suite = new TestSuite("Deployers All Tests");
+      return new TestSuite(AttachmentsUnitTestCase.class);
+   }
+   
+   private Attachments impl = new AttachmentsImpl();
+   
+   public AttachmentsUnitTestCase(String name)
+   {
+      super(name);
+   }
 
-      suite.addTest(AttachmentsTestSuite.suite());
-      suite.addTest(StructureTestSuite.suite());
-      suite.addTest(DeployerTestSuite.suite());
+   protected Attachments getAttachments()
+   {
+      return impl;
+   }
 
-      return suite;
+   protected Attachments getMutable()
+   {
+      return impl;
    }
 }

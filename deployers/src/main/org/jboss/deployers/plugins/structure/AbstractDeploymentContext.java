@@ -28,6 +28,8 @@ import java.util.List;
 import java.util.Set;
 import java.util.concurrent.CopyOnWriteArraySet;
 
+import org.jboss.deployers.plugins.attachments.AttachmentsImpl;
+import org.jboss.deployers.spi.attachments.Attachments;
 import org.jboss.deployers.spi.deployer.DeploymentUnit;
 import org.jboss.deployers.spi.structure.DeploymentContext;
 import org.jboss.deployers.spi.structure.DeploymentState;
@@ -78,6 +80,15 @@ public class AbstractDeploymentContext implements DeploymentContext
 
    /** The child contexts */
    private Set<DeploymentContext> children = new CopyOnWriteArraySet<DeploymentContext>();
+   
+   /** The predtermined managed objects */
+   private Attachments predeterminedManagedObjects = new AttachmentsImpl();
+   
+   /** The attachments */
+   private Attachments transientAttachments = new AttachmentsImpl();
+   
+   /** The managed objects */
+   private Attachments transientManagedObjects = new AttachmentsImpl();
    
    /** Throwable */
    private Throwable problem;
@@ -341,6 +352,21 @@ public class AbstractDeploymentContext implements DeploymentContext
          throw new IllegalArgumentException("Null child");
       return children.remove(child);
    }
+   
+   public Attachments getPredeterminedManagedObjects()
+   {
+      return predeterminedManagedObjects;
+   }
+   
+   public Attachments getTransientManagedObjects()
+   {
+      return transientManagedObjects;
+   }
+   
+   public Attachments getTransientAttachments()
+   {
+      return transientAttachments;
+   }
 
    public Throwable getProblem()
    {
@@ -354,16 +380,64 @@ public class AbstractDeploymentContext implements DeploymentContext
 
    public VirtualFile getMetaDataFile(String name)
    {
-      if (metaDataLocation == null)
-         return null;
+      if (name == null)
+         throw new IllegalArgumentException("Null name");
       try
       {
+         // There isn't a metadata location so let's see whether the root matches.
+         if (metaDataLocation == null)
+         {
+            // It has to be a plain file that is not an archive
+            if (root != null && root.isFile() && root.isArchive() == false)
+            {
+               String fileName = root.getName();
+               if (fileName.equals(name))
+                  return root;
+            }
+            
+            // No match
+            return null;
+         }
+         // Look in the meta data location
          return metaDataLocation.findChild(name);
       }
       catch (Exception e)
       {
          log.debug("Error retrieving meta data: " + name, e);
          return null;
+      }
+   }
+
+   public List<VirtualFile> getMetaDataFiles(String name, String suffix)
+   {
+      if (name == null && suffix == null)
+         throw new IllegalArgumentException("Null name and suffix");
+      try
+      {
+         // There isn't a metadata location so let's see whether the root matches.
+         // i.e. the top level is an xml
+         if (metaDataLocation == null)
+         {
+            // It has to be a plain file that is not an archive
+            if (root != null && root.isFile() && root.isArchive() == false)
+            {
+               String fileName = root.getName();
+               if (name != null && fileName.equals(name))
+                  return Collections.singletonList(root);
+               if (suffix != null && fileName.endsWith(suffix))
+                  return Collections.singletonList(root);
+            }
+            
+            // No match
+            return Collections.emptyList();
+         }
+         // Look in the meta data location
+         return metaDataLocation.getChildren(new MetaDataMatchFilter(name, suffix));
+      }
+      catch (Exception e)
+      {
+         log.debug("Error retrieving meta data: name=" + name + " suffix=" + suffix, e);
+         return Collections.emptyList();
       }
    }
    
@@ -376,6 +450,9 @@ public class AbstractDeploymentContext implements DeploymentContext
          for (DeploymentContext child : children)
             child.reset();
       }
+      
+      transientManagedObjects.clear();
+      transientAttachments.clear();
    }
 
    public String toString()

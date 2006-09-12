@@ -2,6 +2,7 @@
 <!DOCTYPE project [
    <!ENTITY buildmagic SYSTEM "../tools/etc/buildmagic/buildmagic.ent">
    <!ENTITY libraries SYSTEM "../thirdparty/libraries.ent">
+   <!ENTITY modules SYSTEM "../tools/etc/buildmagic/modules.ent">
    <!ENTITY targets SYSTEM "../tools/etc/buildmagic/targets.ent">
 ]>
 
@@ -63,23 +64,20 @@
     <!-- ========= -->
 
     &libraries;
-<!-- container -->
-<property name="jboss.container.root" value="${project.root}/container"/>
-<property name="jboss.container.lib" value="${jboss.container.root}/output/lib"/>
-<path id="jboss.container.classpath">
-   <fileset dir="${jboss.container.lib}">
-      <include name="jboss-container.jar"/>
-   </fileset>
-</path>
 
     <!-- The combined library classpath -->
     <path id="library.classpath">
       <path refid="jboss.common.classpath"/>
-      <path refid="jboss.container.classpath"/>
+      <path refid="jboss.jbossxb.classpath"/>
     </path>
+
+    &modules;
 
     <!-- The combined dependant module classpath -->
     <path id="dependentmodule.classpath">
+      <path refid="jboss.container.classpath"/>
+      <path refid="jboss.dependency.classpath"/>
+      <path refid="jboss.kernel.classpath"/>
     </path>
      
     <!-- ===== -->

@@ -21,6 +21,9 @@
 */
 package org.jboss.deployers.spi.deployer;
 
+import java.util.List;
+
+import org.jboss.deployers.spi.attachments.Attachments;
 import org.jboss.virtual.VirtualFile;
 
 /**
@@ -29,12 +32,10 @@ import org.jboss.virtual.VirtualFile;
  * A deployment unit represents a single unit
  * that deployers work with.
  * 
- * TODO managed object stuff
- * 
  * @author <a href="adrian@jboss.com">Adrian Brock</a>
  * @version $Revision: 1.1 $
  */
-public interface DeploymentUnit
+public interface DeploymentUnit extends Attachments
 {
    /**
     * Get the deployment units name
@@ -44,12 +45,23 @@ public interface DeploymentUnit
    String getName();
    
    /**
-    * Gets some metadata for this deployment unit
+    * Gets a metadata file
     * 
-    * @param name the resource name
-    * @return the url of the metadata or null if not found
+    * @param name the name to exactly match
+    * @return the virtual file or null if not found
+    * @throws IllegalArgumentException for a null name
     */
    VirtualFile getMetaDataFile(String name);
+   
+   /**
+    * Gets the metadata files for this deployment unit
+    * 
+    * @param name the name to exactly match
+    * @param suffix the suffix to partially match
+    * @return the virtual files that match
+    * @throws IllegalArgumentException if both the name and suffix are null
+    */
+   List<VirtualFile> getMetaDataFiles(String name, String suffix);
    
    /**
     * Gets the classloader for this deployment unit
@@ -57,4 +69,11 @@ public interface DeploymentUnit
     * @return the classloader
     */
    ClassLoader getClassLoader();
+
+   /**
+    * Get the managed objects
+    * 
+    * @return the managed objects
+    */
+   Attachments getTransientManagedObjects();
 }

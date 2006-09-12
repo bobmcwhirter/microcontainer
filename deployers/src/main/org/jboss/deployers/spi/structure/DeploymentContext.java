@@ -24,6 +24,7 @@ package org.jboss.deployers.spi.structure;
 import java.util.List;
 import java.util.Set;
 
+import org.jboss.deployers.spi.attachments.Attachments;
 import org.jboss.deployers.spi.deployer.DeploymentUnit;
 import org.jboss.virtual.VirtualFile;
 
@@ -120,12 +121,23 @@ public interface DeploymentContext
    void setMetaDataLocation(VirtualFile location);
    
    /**
-    * Gets a metadata file for this deployment unit
+    * Gets a metadata file
     * 
-    * @param name the resource name
-    * @return the url of the metadata or null if not found
+    * @param name the name to exactly match
+    * @return the virtual file or null if not found
+    * @throws IllegalArgumentException for a null name
     */
    VirtualFile getMetaDataFile(String name);
+
+   /**
+    * Gets metadata files for this deployment
+    * 
+    * @param name the name to exactly match
+    * @param suffix the suffix to partially match
+    * @return the virtual files that match
+    * @throws IllegalArgumentException if both the name and suffix are null
+    */
+   List<VirtualFile> getMetaDataFiles(String name, String suffix);
 
    /**
     * Gets the classloader for this deployment unit
@@ -197,7 +209,28 @@ public interface DeploymentContext
     * @return whether it was removed
     */
    boolean removeChild(DeploymentContext child);
-   
+
+   /**
+    * Get the predetermined managed objects
+    * 
+    * @return the predetermined managed objects
+    */
+   Attachments getPredeterminedManagedObjects();
+
+   /**
+    * Get the managed objects
+    * 
+    * @return the managed objects
+    */
+   Attachments getTransientManagedObjects();
+
+   /**
+    * Get the transient attachments
+    * 
+    * @return the attachments
+    */
+   Attachments getTransientAttachments();
+
    /**
     * Get the problem for this context
     * 

@@ -54,6 +54,7 @@ import org.jboss.logging.Logger;
  * MainDeployerImpl.
  * 
  * TODO full deployer protocol
+ * TODO sort out a proper state machine
  * @author <a href="adrian@jboss.com">Adrian Brock</a>
  * @version $Revision: 1.1 $
  */
@@ -319,7 +320,10 @@ public class MainDeployerImpl implements MainDeployer
             }
          }
          for (DeploymentContext context : undeployContexts)
+         {
             context.setState(UNDEPLOYED);
+            log.debug("Undeployed: " + context.getName());
+         }
       }
       
       if (deployContexts != null)
@@ -352,7 +356,10 @@ public class MainDeployerImpl implements MainDeployer
             deployContexts.removeAll(errors);
          }
          for (DeploymentContext context : deployContexts)
+         {
             context.setState(DEPLOYED);
+            log.debug("Deployed: " + context.getName());
+         }
       }
    }
 

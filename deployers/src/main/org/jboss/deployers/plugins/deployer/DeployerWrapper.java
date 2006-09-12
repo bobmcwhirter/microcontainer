@@ -82,9 +82,9 @@ public class DeployerWrapper implements Deployer
 
       try
       {
-         log.debug("Preparing deployment: " + unit.getName());
+         log.trace("Preparing deployment: " + unit.getName());
          deployer.prepareDeploy(unit);
-         log.debug("Prepared deployment:  " + unit.getName());
+         log.trace("Prepared deployment:  " + unit.getName());
       }
       catch (Throwable t)
       {
@@ -100,11 +100,11 @@ public class DeployerWrapper implements Deployer
 
       try
       {
-         // TODO log.debug("Prepare undeployment: " + unit.getName());
-         log.debug("Undeploying: " + unit.getName());
+         // TODO log.trace("Prepare undeployment: " + unit.getName());
+         log.trace("Undeploying: " + unit.getName());
          deployer.prepareUndeploy(unit);
-         // TODO log.debug("Prepared undeployment:  " + unit.getName());
-         log.debug("Undeployed:  " + unit.getName());
+         // TODO log.trace("Prepared undeployment:  " + unit.getName());
+         log.trace("Undeployed:  " + unit.getName());
       }
       catch (Throwable t)
       {
@@ -122,9 +122,9 @@ public class DeployerWrapper implements Deployer
 
       try
       {
-         log.debug("Handing off from=" + from.getName() + " to=" + to.getName());
+         log.trace("Handing off from=" + from.getName() + " to=" + to.getName());
          deployer.handoff(from, to);
-         log.debug("Handed off from=" + from.getName() + " to=" + to.getName());
+         log.trace("Handed off from=" + from.getName() + " to=" + to.getName());
       }
       catch (Throwable t)
       {
@@ -141,10 +141,10 @@ public class DeployerWrapper implements Deployer
       try
       {
          // TODO log.debug("Commiting deployment: " + unit.getName());
-         log.debug("Deploying: " + unit.getName());
+         log.trace("Deploying: " + unit.getName());
          deployer.commitDeploy(unit);
          // TODO log.debug("Commited deployment:  " + unit.getName());
-         log.debug("Deployed:  " + unit.getName());
+         log.trace("Deployed:  " + unit.getName());
       }
       catch (Throwable t)
       {
@@ -162,9 +162,9 @@ public class DeployerWrapper implements Deployer
 
       try
       {
-         log.debug("Commiting undeployment: " + unit.getName());
+         log.trace("Commiting undeployment: " + unit.getName());
          deployer.commitUndeploy(unit);
-         log.debug("Commited undeployment:  " + unit.getName());
+         log.trace("Commited undeployment:  " + unit.getName());
       }
       catch (Throwable t)
       {

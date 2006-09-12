@@ -19,30 +19,46 @@
 * Software Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA
 * 02110-1301 USA, or see the FSF site: http://www.fsf.org.
 */
-package org.jboss.deployers.plugins.deployer;
+package org.jboss.test.deployers.bean.support;
 
-import org.jboss.deployers.spi.deployer.Deployer;
+import java.util.Collections;
+
+import org.jboss.beans.metadata.plugins.AbstractBeanMetaData;
+import org.jboss.beans.metadata.spi.BeanMetaDataFactory;
+import org.jboss.deployers.plugins.deployer.AbstractSimpleDeployer;
+import org.jboss.deployers.spi.DeploymentException;
 import org.jboss.deployers.spi.deployer.DeploymentUnit;
-import org.jboss.logging.Logger;
+import org.jboss.kernel.plugins.deployment.AbstractKernelDeployment;
 
 /**
- * AbstractDeployer.
+ * TestBeanDeployer.<p>
+ * 
+ * This just creates some metadata for use by the KernelDeployer
  * 
  * @author <a href="adrian@jboss.com">Adrian Brock</a>
  * @version $Revision: 1.1 $
  */
-public abstract class AbstractDeployer implements Deployer
+public class TestBeanDeployer extends AbstractSimpleDeployer
 {
-   /** The log */
-   protected Logger log = Logger.getLogger(this.getClass());
-   
-   public boolean isRelevant(DeploymentUnit unit)
-   {
-      return true;
-   }
 
    public int getRelativeOrder()
    {
-      return Integer.MAX_VALUE;
+      return 1;
+   }
+
+   public void deploy(DeploymentUnit unit) throws DeploymentException
+   {
+
+      AbstractKernelDeployment deployment = new AbstractKernelDeployment();
+      deployment.setName("KernelDeployerTest");
+      
+      BeanMetaDataFactory metaData = new AbstractBeanMetaData("Test", Simple.class.getName());
+      deployment.setBeanFactories(Collections.singletonList(metaData));
+      
+      unit.getTransientManagedObjects().addAttachment("KernelDeployerTest", deployment);
+   }
+
+   public void undeploy(DeploymentUnit unit)
+   {
    }
 }
