@@ -369,7 +369,10 @@ public class MainDeployerImpl implements MainDeployer
       {
          // Remove all the contexts
          for (DeploymentContext context : topLevelDeployments.values())
+         {
+            topLevelDeployments.remove(context.getName());
             removeContext(context);
+         }
          
          // Do it
          process();
