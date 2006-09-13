@@ -210,7 +210,9 @@
 
   <target name="install"
 	  description="Install the structure for a release."
-     />
+     >
+     <mkdir dir="output"/>
+  </target>
 
   <target name="release"
 	  description="Builds the default release structure."
