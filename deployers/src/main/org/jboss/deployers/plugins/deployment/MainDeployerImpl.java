@@ -30,13 +30,15 @@ import static org.jboss.deployers.spi.structure.StructureDetermined.NO;
 import static org.jboss.deployers.spi.structure.StructureDetermined.PREDETERMINED;
 import static org.jboss.deployers.spi.structure.StructureDetermined.YES;
 
+import java.util.ArrayList;
 import java.util.HashSet;
+import java.util.List;
 import java.util.Map;
 import java.util.Set;
 import java.util.SortedSet;
 import java.util.TreeSet;
 import java.util.concurrent.ConcurrentHashMap;
-import java.util.concurrent.CopyOnWriteArraySet;
+import java.util.concurrent.CopyOnWriteArrayList;
 import java.util.concurrent.atomic.AtomicBoolean;
 
 import org.jboss.deployers.plugins.deployer.AbstractDeploymentUnit;
@@ -79,10 +81,10 @@ public class MainDeployerImpl implements MainDeployer
    private Map<String, DeploymentContext> allDeployments = new ConcurrentHashMap<String, DeploymentContext>();
 
    /** The undeploy work */
-   private Set<DeploymentContext> undeploy = new CopyOnWriteArraySet<DeploymentContext>();
+   private List<DeploymentContext> undeploy = new CopyOnWriteArrayList<DeploymentContext>();
    
    /** The deploy work */
-   private Set<DeploymentContext> deploy = new CopyOnWriteArraySet<DeploymentContext>();
+   private List<DeploymentContext> deploy = new CopyOnWriteArrayList<DeploymentContext>();
    
    /**
     * Get the structure deployers
@@ -91,7 +93,7 @@ public class MainDeployerImpl implements MainDeployer
     */
    public synchronized Set<StructureDeployer> getStructureDeployers()
    {
-      return new HashSet<StructureDeployer>(structureDeployers);
+      return new TreeSet<StructureDeployer>(structureDeployers);
    }
    
    /**
@@ -154,7 +156,7 @@ public class MainDeployerImpl implements MainDeployer
     */
    public synchronized Set<Deployer> getDeployers()
    {
-      return new HashSet<Deployer>(deployers);
+      return new TreeSet<Deployer>(deployers);
    }
    
    /**
@@ -288,8 +290,8 @@ public class MainDeployerImpl implements MainDeployer
       if (shutdown.get())
          throw new IllegalStateException("The main deployer is shutdown");
 
-      Set<DeploymentContext> undeployContexts = null;
-      Set<DeploymentContext> deployContexts = null;
+      List<DeploymentContext> undeployContexts = null;
+      List<DeploymentContext> deployContexts = null;
       Deployer[] theDeployers;
       synchronized (this)
       {
@@ -297,12 +299,15 @@ public class MainDeployerImpl implements MainDeployer
             throw new IllegalStateException("No deployers");
          if (undeploy.isEmpty() == false)
          {
-            undeployContexts = new HashSet<DeploymentContext>(undeploy);
+            // Undeploy in reverse order (subdeployments first)
+            undeployContexts = new ArrayList<DeploymentContext>(undeploy.size());
+            for (int i = undeploy.size() -1; i >= 0; --i)
+               undeployContexts.add(undeploy.get(i));
             undeploy.clear();
          }
          if (deploy.isEmpty() == false)
          {
-            deployContexts = new HashSet<DeploymentContext>(deploy);
+            deployContexts = new ArrayList<DeploymentContext>(deploy);
             deploy.clear();
          }
          theDeployers = deployers.toArray(new Deployer[deployers.size()]); 
@@ -318,6 +323,9 @@ public class MainDeployerImpl implements MainDeployer
                DeploymentUnit unit = context.getDeploymentUnit();
                deployer.prepareUndeploy(unit);
             }
+            // TODO perform with the deployer that created the classloader?
+            for (DeploymentContext context : undeployContexts)
+               context.removeClassLoader();
          }
          for (DeploymentContext context : undeployContexts)
          {
@@ -351,6 +359,7 @@ public class MainDeployerImpl implements MainDeployer
                      Deployer other = theDeployers[j];
                      other.prepareUndeploy(unit);
                   }
+                  context.removeClassLoader();
                }
             }
             deployContexts.removeAll(errors);

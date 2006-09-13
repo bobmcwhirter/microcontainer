@@ -27,6 +27,7 @@ import junit.textui.TestRunner;
 
 import org.jboss.test.deployers.bean.test.BeanDeployerUnitTestCase;
 import org.jboss.test.deployers.bean.test.KernelDeployerUnitTestCase;
+import org.jboss.test.deployers.deployer.test.DeployerClassLoaderUnitTestCase;
 import org.jboss.test.deployers.deployer.test.DeployerOrderingUnitTestCase;
 import org.jboss.test.deployers.deployer.test.DeployerProtocolUnitTestCase;
 import org.jboss.test.deployers.deployer.test.DeployerWidthFirstUnitTestCase;
@@ -53,6 +54,7 @@ public class DeployerTestSuite extends TestSuite
       suite.addTest(DeployerProtocolUnitTestCase.suite());
       suite.addTest(DeployerOrderingUnitTestCase.suite());
       suite.addTest(DeployerWidthFirstUnitTestCase.suite());
+      suite.addTest(DeployerClassLoaderUnitTestCase.suite());
       suite.addTest(MainDeployerDeployerUnitTestCase.suite());
       suite.addTest(MetaDataUnitTestCase.suite());
       suite.addTest(BeanDeployerUnitTestCase.suite());

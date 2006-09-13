@@ -27,7 +27,9 @@ import java.util.List;
 import java.util.Map;
 
 import org.jboss.deployers.plugins.attachments.AbstractAttachments;
+import org.jboss.deployers.spi.DeploymentException;
 import org.jboss.deployers.spi.attachments.Attachments;
+import org.jboss.deployers.spi.classloader.ClassLoaderFactory;
 import org.jboss.deployers.spi.deployer.DeploymentUnit;
 import org.jboss.deployers.spi.structure.DeploymentContext;
 import org.jboss.virtual.VirtualFile;
@@ -45,7 +47,7 @@ public class AbstractDeploymentUnit extends AbstractAttachments implements Deplo
 {
    /** The deployment context */
    private DeploymentContext deploymentContext;
-
+   
    /**
     * Create a new AbstractDeploymentUnit.
     * 
@@ -71,6 +73,11 @@ public class AbstractDeploymentUnit extends AbstractAttachments implements Deplo
       return cl;
    }
 
+   public boolean createClassLoader(ClassLoaderFactory factory) throws DeploymentException
+   {
+      return deploymentContext.createClassLoader(factory);
+   }
+   
    public VirtualFile getMetaDataFile(String name)
    {
       return deploymentContext.getMetaDataFile(name);

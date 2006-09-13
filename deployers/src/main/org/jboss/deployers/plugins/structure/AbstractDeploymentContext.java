@@ -29,7 +29,9 @@ import java.util.Set;
 import java.util.concurrent.CopyOnWriteArraySet;
 
 import org.jboss.deployers.plugins.attachments.AttachmentsImpl;
+import org.jboss.deployers.spi.DeploymentException;
 import org.jboss.deployers.spi.attachments.Attachments;
+import org.jboss.deployers.spi.classloader.ClassLoaderFactory;
 import org.jboss.deployers.spi.deployer.DeploymentUnit;
 import org.jboss.deployers.spi.structure.DeploymentContext;
 import org.jboss.deployers.spi.structure.DeploymentState;
@@ -60,6 +62,7 @@ public class AbstractDeploymentContext implements DeploymentContext
    
    /** The deployment unit */
    private DeploymentUnit unit;
+
    /** The root */
    private VirtualFile root;
    
@@ -72,6 +75,9 @@ public class AbstractDeploymentContext implements DeploymentContext
    /** The class loader */
    private ClassLoader classLoader;
 
+   /** The class loader factory for this deployment */
+   private ClassLoaderFactory classLoaderFactory;
+   
    /** Whether this is a candidate deployment */
    private boolean candidate = false;
 
@@ -302,8 +308,49 @@ public class AbstractDeploymentContext implements DeploymentContext
    {
       this.classLoader = classLoader;
       if (classLoader != null)
-         log.trace("ClassLoader for " + root.getPathName() + " is " + classLoader);
+         log.trace("ClassLoader for " + name + " is " + classLoader);
    }
+   
+   public boolean createClassLoader(ClassLoaderFactory factory) throws DeploymentException
+   {
+      if (factory == null)
+         throw new IllegalArgumentException("Null factory");
+
+      ClassLoader cl = getClassLoader();
+      if (cl != null)
+         return false;
+
+      try
+      {
+         cl = factory.createClassLoader(this);
+         if (cl != null)
+         {
+            setClassLoader(cl);
+            this.classLoaderFactory = factory;
+         }
+      }
+      catch (Throwable t)
+      {
+         throw DeploymentException.rethrowAsDeploymentException("Error creating classloader for " + getName(), t);
+      }
+      return true;
+   }
+
+   public void removeClassLoader()
+   {
+      if (classLoaderFactory == null)
+         return;
+      try
+      {
+         classLoaderFactory.removeClassLoader(this);
+      }
+      catch (Throwable t)
+      {
+         log.warn("Error removing classloader for " + getName(), t);
+      }
+      setClassLoader(null);
+   }
+
    
    public List<VirtualFile> getClassPath()
    {
@@ -322,6 +369,18 @@ public class AbstractDeploymentContext implements DeploymentContext
       return parent == null;
    }
 
+   public DeploymentContext getTopLevel()
+   {
+      DeploymentContext result = this;
+      DeploymentContext parent = getParent();
+      while (parent != null)
+      {
+         result = parent;
+         parent = parent.getParent();
+      }
+      return result;
+   }
+   
    public DeploymentContext getParent()
    {
       return parent;
@@ -451,6 +510,7 @@ public class AbstractDeploymentContext implements DeploymentContext
             child.reset();
       }
       
+      classLoader = null;
       transientManagedObjects.clear();
       transientAttachments.clear();
    }

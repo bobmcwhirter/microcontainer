@@ -23,7 +23,9 @@ package org.jboss.deployers.spi.deployer;
 
 import java.util.List;
 
+import org.jboss.deployers.spi.DeploymentException;
 import org.jboss.deployers.spi.attachments.Attachments;
+import org.jboss.deployers.spi.classloader.ClassLoaderFactory;
 import org.jboss.virtual.VirtualFile;
 
 /**
@@ -70,6 +72,16 @@ public interface DeploymentUnit extends Attachments
     */
    ClassLoader getClassLoader();
 
+   /**
+    * Create the classloader
+    * 
+    * @param factory the classloader factory
+    * @return false if the classloader already exists
+    * @throws IllegalArgumentException for a null factory
+    * @throws DeploymentException for any error
+    */
+   boolean createClassLoader(ClassLoaderFactory factory) throws DeploymentException;
+   
    /**
     * Get the managed objects
     * 

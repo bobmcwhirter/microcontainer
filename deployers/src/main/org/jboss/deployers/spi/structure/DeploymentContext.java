@@ -24,7 +24,9 @@ package org.jboss.deployers.spi.structure;
 import java.util.List;
 import java.util.Set;
 
+import org.jboss.deployers.spi.DeploymentException;
 import org.jboss.deployers.spi.attachments.Attachments;
+import org.jboss.deployers.spi.classloader.ClassLoaderFactory;
 import org.jboss.deployers.spi.deployer.DeploymentUnit;
 import org.jboss.virtual.VirtualFile;
 
@@ -152,7 +154,21 @@ public interface DeploymentContext
     * @param classLoader the new classloader
     */
    void setClassLoader(ClassLoader classLoader);
-   
+
+   /**
+    * Create a classloader
+    * 
+    * @param factory the factory
+    * @return false if there is already is a classloader
+    * @throws DeploymentException for any error
+    */
+   boolean createClassLoader(ClassLoaderFactory factory) throws DeploymentException;
+
+   /**
+    * Remove the classloader created by the factory
+    */
+   void removeClassLoader();
+
    /**
     * Get the class path
     * 
@@ -173,6 +189,13 @@ public interface DeploymentContext
     * @return true when top level
     */
    boolean isTopLevel();
+   
+   /**
+    * Get the top level deployment
+    * 
+    * @return the top level deployment
+    */
+   DeploymentContext getTopLevel();
    
    /**
     * The parent
