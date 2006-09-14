@@ -234,6 +234,15 @@ public interface DeploymentContext
    boolean removeChild(DeploymentContext child);
 
    /**
+    * Visit the context and the children
+    * 
+    * @param visitor the visitor
+    * @throws DeploymentException for any error in the visitor
+    * @throws IllegalArgumentException for a null visitor
+    */
+   void visit(DeploymentContextVisitor visitor) throws DeploymentException;
+   
+   /**
     * Get the predetermined managed objects
     * 
     * @return the predetermined managed objects

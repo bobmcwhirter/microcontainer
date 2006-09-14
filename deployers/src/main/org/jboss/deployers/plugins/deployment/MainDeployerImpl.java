@@ -323,12 +323,12 @@ public class MainDeployerImpl implements MainDeployer
                DeploymentUnit unit = context.getDeploymentUnit();
                deployer.prepareUndeploy(unit);
             }
-            // TODO perform with the deployer that created the classloader?
-            for (DeploymentContext context : undeployContexts)
-               context.removeClassLoader();
          }
          for (DeploymentContext context : undeployContexts)
          {
+            // TODO perform with the deployer that created the classloader?
+            context.removeClassLoader();
+
             context.setState(UNDEPLOYED);
             log.debug("Undeployed: " + context.getName());
          }

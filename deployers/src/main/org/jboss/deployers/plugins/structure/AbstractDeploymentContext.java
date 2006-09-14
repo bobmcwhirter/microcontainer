@@ -34,6 +34,7 @@ import org.jboss.deployers.spi.attachments.Attachments;
 import org.jboss.deployers.spi.classloader.ClassLoaderFactory;
 import org.jboss.deployers.spi.deployer.DeploymentUnit;
 import org.jboss.deployers.spi.structure.DeploymentContext;
+import org.jboss.deployers.spi.structure.DeploymentContextVisitor;
 import org.jboss.deployers.spi.structure.DeploymentState;
 import org.jboss.deployers.spi.structure.StructureDetermined;
 import org.jboss.logging.Logger;
@@ -348,6 +349,7 @@ public class AbstractDeploymentContext implements DeploymentContext
       {
          log.warn("Error removing classloader for " + getName(), t);
       }
+      classLoaderFactory = null;
       setClassLoader(null);
    }
 
@@ -411,7 +413,94 @@ public class AbstractDeploymentContext implements DeploymentContext
          throw new IllegalArgumentException("Null child");
       return children.remove(child);
    }
+
+   public void visit(DeploymentContextVisitor visitor) throws DeploymentException
+   {
+      if (visitor == null)
+         throw new IllegalArgumentException("Null visitor");
+
+      visit(this, visitor);
+   }
    
+   /**
+    * Visit a context
+    * 
+    * @param context the context
+    * @param visitor the visitor
+    * @throws DeploymentException for any error
+    */
+   private void visit(DeploymentContext context, DeploymentContextVisitor visitor) throws DeploymentException
+   {
+      visitor.visit(context);
+      try
+      {
+         Set<DeploymentContext> children = context.getChildren();
+         if (children.isEmpty())
+            return;
+         
+         DeploymentContext[] childContexts = children.toArray(new DeploymentContext[children.size()]);
+         for (int i = 0; i < childContexts.length; ++i)
+         {
+            if (childContexts[i] == null)
+               throw new IllegalStateException("Null child context for " + context.getName() + " children=" + children);
+            try
+            {
+               visit(childContexts[i], visitor);
+            }
+            catch (Throwable t)
+            {
+               for (int j = i-1; j >= 0; --j)
+                  visitError(childContexts[j], visitor, true);
+               throw DeploymentException.rethrowAsDeploymentException("Error visiting: " + childContexts[i].getName(), t);
+            }
+         }
+      }
+      catch (Throwable t)
+      {
+         visitError(context, visitor, false);
+         throw DeploymentException.rethrowAsDeploymentException("Error visiting: " + context.getName(), t);
+      }
+   }
+
+   /**
+    * Unwind the visit invoking the previously visited context's error handler
+    * 
+    * @param context the context
+    * @param visitor the visitor
+    * @param visitChildren whether to visit the children
+    * @throws DeploymentException for any error
+    */
+   private void visitError(DeploymentContext context, DeploymentContextVisitor visitor, boolean visitChildren) throws DeploymentException
+   {
+      if (visitChildren)
+      {
+         Set<DeploymentContext> children = context.getChildren();
+         if (children.isEmpty())
+            return;
+         
+         for (DeploymentContext child : children)
+         {
+            try
+            {
+               visitError(child, visitor, true);
+            }
+            catch (Throwable t)
+            {
+               log.warn("Error during visit error: " + child.getName(), t);
+            }
+         }
+         
+      }
+      try
+      {
+         visitor.error(context);
+      }
+      catch (Throwable t)
+      {
+         log.warn("Error during visit error: " + context.getName(), t);
+      }
+   }
+
    public Attachments getPredeterminedManagedObjects()
    {
       return predeterminedManagedObjects;

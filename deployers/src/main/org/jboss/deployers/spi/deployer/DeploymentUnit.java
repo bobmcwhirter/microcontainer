@@ -26,6 +26,7 @@ import java.util.List;
 import org.jboss.deployers.spi.DeploymentException;
 import org.jboss.deployers.spi.attachments.Attachments;
 import org.jboss.deployers.spi.classloader.ClassLoaderFactory;
+import org.jboss.deployers.spi.structure.DeploymentContext;
 import org.jboss.virtual.VirtualFile;
 
 /**
@@ -88,4 +89,12 @@ public interface DeploymentUnit extends Attachments
     * @return the managed objects
     */
    Attachments getTransientManagedObjects();
+   
+   /**
+    * Get the deployment contxt
+    * 
+    * @return the deployment context
+    */
+   @Deprecated // If you are using this, then think about it.
+   DeploymentContext getDeploymentContext();
 }

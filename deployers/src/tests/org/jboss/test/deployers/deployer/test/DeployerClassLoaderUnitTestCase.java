@@ -21,14 +21,19 @@
 */
 package org.jboss.test.deployers.deployer.test;
 
+import java.util.HashSet;
+
 import junit.framework.Test;
 import junit.framework.TestSuite;
 
+import org.jboss.deployers.plugins.deployers.helpers.ClassPathVisitor;
 import org.jboss.deployers.plugins.deployment.MainDeployerImpl;
+import org.jboss.deployers.plugins.structure.vfs.jar.JARStructure;
 import org.jboss.deployers.spi.structure.DeploymentContext;
 import org.jboss.deployers.spi.structure.DeploymentState;
 import org.jboss.test.deployers.BaseDeployersTest;
 import org.jboss.test.deployers.deployer.support.TestClassLoaderDeployer;
+import org.jboss.virtual.VirtualFile;
 
 /**
  * DeployerClassLoaderUnitTestCase.
@@ -88,5 +93,20 @@ public class DeployerClassLoaderUnitTestCase extends BaseDeployersTest
       assertNull(top.getClassLoader());
       assertEquals(DeploymentState.UNDEPLOYED, sub.getState());
       assertNull(sub.getClassLoader());
+   }
+
+   public void testClassPathVisitor() throws Exception
+   {
+      MainDeployerImpl main = new MainDeployerImpl();
+      main.addStructureDeployer(new JARStructure());
+      DeploymentContext context = createDeploymentContext("/structure/jar", "indirectory");
+      main.addDeploymentContext(context);
+      ClassPathVisitor visitor = new ClassPathVisitor();
+      context.visit(visitor);
+      HashSet<VirtualFile> expected = new HashSet<VirtualFile>();
+      expected.add(context.getRoot());
+      expected.add(context.getRoot().findChild("archive.zip"));
+      expected.add(context.getRoot().findChild("archive.jar"));
+      assertEquals(expected, visitor.getClassPath());
    }
 }

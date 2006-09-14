@@ -130,4 +130,10 @@ public class AbstractDeploymentUnit extends AbstractAttachments implements Deplo
    {
       return deploymentContext.getTransientManagedObjects();
    }
+
+   @Deprecated
+   public DeploymentContext getDeploymentContext()
+   {
+      return deploymentContext;
+   }
 }
