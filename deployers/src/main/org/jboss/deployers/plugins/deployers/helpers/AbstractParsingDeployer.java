@@ -52,7 +52,12 @@ public abstract class AbstractParsingDeployer<T> extends AbstractSimpleDeployer
          throw new IllegalArgumentException("Null expectedType");
       this.expectedType = expectedType;
    }
-   
+
+   public int getRelativeOrder()
+   {
+      return PARSER_DEPLOYER;
+   }
+
    /**
     * Get the expected type
     * 

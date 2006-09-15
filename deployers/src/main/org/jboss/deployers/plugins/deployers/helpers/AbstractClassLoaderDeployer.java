@@ -35,6 +35,11 @@ import org.jboss.deployers.spi.structure.DeploymentContext;
  */
 public abstract class AbstractClassLoaderDeployer extends AbstractSimpleDeployer implements ClassLoaderFactory
 {
+   public int getRelativeOrder()
+   {
+      return CLASSLOADER_DEPLOYER;
+   }
+
    public void deploy(DeploymentUnit unit) throws DeploymentException
    {
       unit.createClassLoader(this);

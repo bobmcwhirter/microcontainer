@@ -87,6 +87,9 @@ public class AbstractDeploymentContext implements DeploymentContext
 
    /** The child contexts */
    private Set<DeploymentContext> children = new CopyOnWriteArraySet<DeploymentContext>();
+
+   /** The component contexts */
+   private Set<DeploymentContext> components = new CopyOnWriteArraySet<DeploymentContext>();
    
    /** The predtermined managed objects */
    private Attachments predeterminedManagedObjects = new AttachmentsImpl();
@@ -414,6 +417,33 @@ public class AbstractDeploymentContext implements DeploymentContext
       return children.remove(child);
    }
 
+   public Set<DeploymentContext> getComponents()
+   {
+      return Collections.unmodifiableSet(components);
+   }
+
+   public void addComponent(DeploymentContext component)
+   {
+      if (component == null)
+         throw new IllegalArgumentException("Null component");
+      components.add(component);
+      log.debug("Added component " + component.getName() + " to " + getName());
+   }
+
+   public boolean removeComponent(DeploymentContext component)
+   {
+      if (component == null)
+         throw new IllegalArgumentException("Null component");
+
+      Set<DeploymentContext> componentComponents = component.getComponents();
+      if (componentComponents.isEmpty() == false)
+         log.warn("Removing component " + name + " which still has components " + componentComponents);
+      boolean result = components.remove(component);
+      if (result)
+         log.debug("Removed component " + component.getName() + " from " + getName());
+      return result;
+   }
+
    public void visit(DeploymentContextVisitor visitor) throws DeploymentException
    {
       if (visitor == null)
@@ -598,6 +628,7 @@ public class AbstractDeploymentContext implements DeploymentContext
          for (DeploymentContext child : children)
             child.reset();
       }
+      components.clear();
       
       classLoader = null;
       transientManagedObjects.clear();

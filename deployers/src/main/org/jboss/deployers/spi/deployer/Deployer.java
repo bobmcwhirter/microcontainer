@@ -35,6 +35,15 @@ import org.jboss.deployers.spi.DeploymentException;
  */
 public interface Deployer
 {
+   /** The parser order */
+   public static final int PARSER_DEPLOYER = 2000;
+
+   /** The class loader order */
+   public static final int CLASSLOADER_DEPLOYER = 4000;
+
+   /** The component order */
+   public static final int COMPONENT_DEPLOYER = 4000;
+   
    /**
     * Whether the deployer is relevant for this unit
     * 

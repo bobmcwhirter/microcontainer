@@ -232,6 +232,28 @@ public interface DeploymentContext
     * @return whether it was removed
     */
    boolean removeChild(DeploymentContext child);
+   
+   /**
+    * The components
+    * 
+    * @return the components
+    */
+   Set<DeploymentContext> getComponents();
+
+   /**
+    * Add a component
+    * 
+    * @param component the componnet to add
+    */
+   void addComponent(DeploymentContext component);
+
+   /**
+    * Remove a component
+    * 
+    * @param component the component to remove
+    * @return whether it was removed
+    */
+   boolean removeComponent(DeploymentContext component);
 
    /**
     * Visit the context and the children

@@ -91,6 +91,24 @@ public interface DeploymentUnit extends Attachments
    Attachments getTransientManagedObjects();
    
    /**
+    * Add a component
+    * 
+    * @param name the name
+    * @return the new deployment unit
+    * @throws IllegalArgumentException for a null name
+    */
+   DeploymentUnit addComponent(String name);
+   
+   /**
+    * Remove a component
+    * 
+    * @param name the name
+    * @return true when removed
+    * @throws IllegalArgumentException for a null name
+    */
+   boolean removeComponent(String name);
+   
+   /**
     * Get the deployment contxt
     * 
     * @return the deployment context

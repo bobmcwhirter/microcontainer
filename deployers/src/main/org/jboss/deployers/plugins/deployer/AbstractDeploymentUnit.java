@@ -27,6 +27,7 @@ import java.util.List;
 import java.util.Map;
 
 import org.jboss.deployers.plugins.attachments.AbstractAttachments;
+import org.jboss.deployers.plugins.structure.ComponentDeploymentContext;
 import org.jboss.deployers.spi.DeploymentException;
 import org.jboss.deployers.spi.attachments.Attachments;
 import org.jboss.deployers.spi.classloader.ClassLoaderFactory;
@@ -88,10 +89,40 @@ public class AbstractDeploymentUnit extends AbstractAttachments implements Deplo
       return deploymentContext.getMetaDataFiles(name, suffix);
    }
 
+   public DeploymentUnit addComponent(String name)
+   {
+      ComponentDeploymentContext component = new ComponentDeploymentContext(name, deploymentContext);
+      AbstractDeploymentUnit unit = new AbstractDeploymentUnit(component);
+      component.setDeploymentUnit(unit);
+      deploymentContext.addComponent(component);
+      return unit;
+   }
+
+   public boolean removeComponent(String name)
+   {
+      if (name == null)
+         throw new IllegalArgumentException("Null name");
+      
+      for (DeploymentContext component : deploymentContext.getComponents())
+      {
+         if (name.equals(component.getName()))
+            return deploymentContext.removeComponent(component);
+      }
+      return false;
+   }
+
    public Map<String, Object> getAttachments()
    {
-      HashMap<String, Object> result = new HashMap<String, Object>(deploymentContext.getTransientAttachments().getAttachments());
+      DeploymentContext parent = deploymentContext.getParent();
+      HashMap<String, Object> result = new HashMap<String, Object>();
+      if (parent != null)
+         result.putAll(parent.getTransientAttachments().getAttachments());
+      result.putAll(deploymentContext.getTransientAttachments().getAttachments());
+      if (parent != null)
+         result.putAll(parent.getTransientManagedObjects().getAttachments());
       result.putAll(deploymentContext.getTransientManagedObjects().getAttachments());
+      if (parent != null)
+         result.putAll(parent.getPredeterminedManagedObjects().getAttachments());
       result.putAll(deploymentContext.getPredeterminedManagedObjects().getAttachments());
       return Collections.unmodifiableMap(result);
    }
@@ -103,22 +134,53 @@ public class AbstractDeploymentUnit extends AbstractAttachments implements Deplo
 
    public Object getAttachment(String name)
    {
+      DeploymentContext parent = deploymentContext.getParent();
       Object result = deploymentContext.getPredeterminedManagedObjects().getAttachment(name);
       if (result != null)
          return result;
+      if (parent != null)
+      {
+         result = parent.getPredeterminedManagedObjects().getAttachment(name);
+         if (result != null)
+            return result;
+      }
       result = deploymentContext.getTransientManagedObjects().getAttachment(name);
       if (result != null)
          return result;
-      return deploymentContext.getTransientAttachments().getAttachment(name);
+      if (parent != null)
+      {
+         result = parent.getTransientManagedObjects().getAttachment(name);
+         if (result != null)
+            return result;
+      }
+      result = deploymentContext.getTransientAttachments().getAttachment(name);
+      if (result != null)
+         return result;
+      if (parent != null)
+      {
+         result = parent.getTransientAttachments().getAttachment(name);
+         if (result != null)
+            return result;
+      }
+      return null;
    }
 
    public boolean isAttachmentPresent(String name)
    {
+      DeploymentContext parent = deploymentContext.getParent();
       if (deploymentContext.getPredeterminedManagedObjects().isAttachmentPresent(name))
+         return true;
+      if (parent != null && parent.getPredeterminedManagedObjects().isAttachmentPresent(name))
          return true;
       if (deploymentContext.getTransientManagedObjects().isAttachmentPresent(name))
          return true;
-      return deploymentContext.getTransientAttachments().isAttachmentPresent(name);
+      if (parent != null && parent.getTransientAttachments().isAttachmentPresent(name))
+         return true;
+      if (deploymentContext.getTransientAttachments().isAttachmentPresent(name))
+         return true;
+      if (parent != null && parent.getTransientAttachments().isAttachmentPresent(name))
+         return true;
+      return false;
    }
 
    public Object removeAttachment(String name)

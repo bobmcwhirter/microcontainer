@@ -319,10 +319,7 @@ public class MainDeployerImpl implements MainDeployer
          {
             Deployer deployer = theDeployers[i];
             for (DeploymentContext context : undeployContexts)
-            {
-               DeploymentUnit unit = context.getDeploymentUnit();
-               deployer.prepareUndeploy(unit);
-            }
+               prepareUndeploy(deployer, context, true);
          }
          for (DeploymentContext context : undeployContexts)
          {
@@ -343,10 +340,10 @@ public class MainDeployerImpl implements MainDeployer
             Set<DeploymentContext> errors = new HashSet<DeploymentContext>();
             for (DeploymentContext context : deployContexts)
             {
-               DeploymentUnit unit = context.getDeploymentUnit();
                try
                {
-                  deployer.commitDeploy(unit);
+                  Set<DeploymentContext> components = context.getComponents();
+                  commitDeploy(deployer, context, components);
                }
                catch (DeploymentException e)
                {
@@ -357,7 +354,7 @@ public class MainDeployerImpl implements MainDeployer
                   for (int j = i-1; j >= 0; --j)
                   {
                      Deployer other = theDeployers[j];
-                     other.prepareUndeploy(unit);
+                     prepareUndeploy(other, context, true);
                   }
                   context.removeClassLoader();
                }
@@ -372,6 +369,59 @@ public class MainDeployerImpl implements MainDeployer
       }
    }
 
+   private void prepareUndeploy(Deployer deployer, DeploymentContext context, boolean doComponents)
+   {
+      DeploymentUnit unit = context.getDeploymentUnit();
+      deployer.prepareUndeploy(unit);
+      
+      if (doComponents)
+      {
+         Set<DeploymentContext> components = context.getComponents();
+         if (components != null && components.isEmpty() == false)
+         {
+            for (DeploymentContext component : components)
+               prepareUndeploy(deployer, component, true);
+         }
+      }
+   }
+   
+   private void commitDeploy(Deployer deployer, DeploymentContext context, Set<DeploymentContext> components) throws DeploymentException
+   {
+      DeploymentContext[] theComponents = null;
+      if (components != null && components.isEmpty() == false)
+         theComponents = components.toArray(new DeploymentContext[components.size()]);
+      
+      DeploymentUnit unit = context.getDeploymentUnit();
+      deployer.commitDeploy(unit);
+      
+      try
+      {
+         if (theComponents != null)
+         {
+            for (int i = 0; i < theComponents.length; ++i)
+            {
+               try
+               {
+                  Set<DeploymentContext> componentComponents = theComponents[i].getComponents();
+                  commitDeploy(deployer, theComponents[i], componentComponents);
+               }
+               catch (DeploymentException e)
+               {
+                  // Unwind the previous components
+                  for (int j = i-1; j >=0; --j)
+                     prepareUndeploy(deployer, theComponents[j], true);
+                  throw e;
+               }
+            }
+         }
+      }
+      catch (DeploymentException e)
+      {
+         prepareUndeploy(deployer, context, false);
+         throw e;
+      }
+   }
+   
    public void shutdown()
    {
       while (topLevelDeployments.isEmpty() == false)

@@ -21,47 +21,52 @@
 */
 package org.jboss.deployers.plugins.deployers.kernel;
 
-import org.jboss.deployers.plugins.deployers.helpers.SchemaResolverDeployer;
+import java.util.List;
+import java.util.Set;
+
+import org.jboss.beans.metadata.spi.BeanMetaData;
+import org.jboss.deployers.plugins.deployers.helpers.AbstractRealDeployer;
 import org.jboss.deployers.spi.DeploymentException;
 import org.jboss.deployers.spi.deployer.DeploymentUnit;
 import org.jboss.kernel.spi.deployment.KernelDeployment;
-import org.jboss.virtual.VirtualFile;
 
-/**
- * BeanDeployer.<p>
- * 
- * This deployer is responsible for looking for -beans.xml
- * and creating the metadata object.<p>
- * 
- * The {@link KernelDeployer} does the real work of deployment.
- * 
- * @author <a href="adrian@jboss.com">Adrian Brock</a>
- * @version $Revision: 1.1 $
- */
-public class BeanDeployer extends SchemaResolverDeployer<KernelDeployment>
+public class KernelDeploymentDeployer extends AbstractRealDeployer<KernelDeployment>
 {
    /**
-    * Create a new BeanDeployer.
-    * 
-    * @throws IllegalArgumentException for a null kernel
+    * Create a new KernelDeploymentDeployer.
     */
-   public BeanDeployer()
+   public KernelDeploymentDeployer()
    {
       super(KernelDeployment.class);
    }
 
-   protected void init(DeploymentUnit unit, KernelDeployment metaData, VirtualFile file) throws Exception
+   public int getRelativeOrder()
    {
-      String name = file.toURI().toString();
-      metaData.setName(name);
+      return COMPONENT_DEPLOYER;
    }
 
    public void deploy(DeploymentUnit unit) throws DeploymentException
    {
-      createMetaData(unit, null, "-beans.xml");
+      Set<KernelDeployment> deployments = getAllMetaData(unit);
+      for (KernelDeployment deployment : deployments)
+      {
+         List<BeanMetaData> beans = deployment.getBeans();
+         for (BeanMetaData bean : beans)
+         {
+            DeploymentUnit component = unit.addComponent(bean.getName());
+            component.addAttachment(BeanMetaData.class.getName(), bean);
+         }
+      }
    }
 
    public void undeploy(DeploymentUnit unit)
    {
+      Set<KernelDeployment> deployments = getAllMetaData(unit);
+      for (KernelDeployment deployment : deployments)
+      {
+         List<BeanMetaData> beans = deployment.getBeans();
+         for (BeanMetaData bean : beans)
+            unit.removeComponent(bean.getName());
+      }
    }
 }

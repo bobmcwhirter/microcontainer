@@ -28,7 +28,8 @@ import junit.framework.TestSuite;
 
 import org.jboss.beans.metadata.plugins.AbstractBeanMetaData;
 import org.jboss.beans.metadata.spi.BeanMetaDataFactory;
-import org.jboss.deployers.plugins.deployers.kernel.KernelDeployer;
+import org.jboss.deployers.plugins.deployers.kernel.BeanMetaDataDeployer;
+import org.jboss.deployers.plugins.deployers.kernel.KernelDeploymentDeployer;
 import org.jboss.deployers.plugins.deployment.MainDeployerImpl;
 import org.jboss.deployers.spi.structure.DeploymentContext;
 import org.jboss.deployers.spi.structure.DeploymentState;
@@ -76,9 +77,12 @@ public class KernelDeployerUnitTestCase extends BaseDeployersTest
          main = new MainDeployerImpl();
          
          TestBeanDeployer testDeployer = new TestBeanDeployer();
-         KernelDeployer kernelDeployer = new KernelDeployer(kernel);
+         //KernelDeployer kernelDeployer = new KernelDeployer(kernel);
+         KernelDeploymentDeployer kernelDeploymentDeployer = new KernelDeploymentDeployer();
+         BeanMetaDataDeployer beanMetaDataDeployer = new BeanMetaDataDeployer(kernel);
          main.addDeployer(testDeployer);
-         main.addDeployer(kernelDeployer);
+         main.addDeployer(kernelDeploymentDeployer);
+         main.addDeployer(beanMetaDataDeployer);
       }
       catch (Throwable t)
       {
