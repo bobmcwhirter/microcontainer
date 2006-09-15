@@ -79,6 +79,7 @@
       <module name="common"/>
       <module name="container"/>
       <module name="dependency"/>
+      <module name="deployers"/>
       <module name="kernel"/>
       <module name="aop-mc-int"/>
       <module name="osgi-int"/>
