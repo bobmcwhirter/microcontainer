@@ -379,8 +379,9 @@ public class MainDeployerImpl implements MainDeployer
          Set<DeploymentContext> components = context.getComponents();
          if (components != null && components.isEmpty() == false)
          {
-            for (DeploymentContext component : components)
-               prepareUndeploy(deployer, component, true);
+            DeploymentContext[] theComponents = components.toArray(new DeploymentContext[components.size()]);
+            for (int i = theComponents.length-1; i >= 0; --i)
+               prepareUndeploy(deployer, theComponents[i], true);
          }
       }
    }
