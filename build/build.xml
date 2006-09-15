@@ -94,7 +94,7 @@
       </group>
 
       <group name="core">
-        <include modules="common, container, dependency, kernel, aop-mc-int, osgi-int"/>
+        <include modules="common, container, dependency, kernel, aop-mc-int, deployers, osgi-int"/>
       </group>
 
       <group name="default">
