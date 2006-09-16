@@ -220,6 +220,11 @@ public class ComponentDeploymentContext implements DeploymentContext
       throw new UnsupportedOperationException("Not supported for components");
    }
 
+   public boolean isComponent()
+   {
+      return true;
+   }
+
    public Set<DeploymentContext> getComponents()
    {
       return Collections.unmodifiableSet(components);

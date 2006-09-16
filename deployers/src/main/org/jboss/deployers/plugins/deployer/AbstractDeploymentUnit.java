@@ -116,6 +116,8 @@ public class AbstractDeploymentUnit extends AbstractAttachments implements Deplo
    public Map<String, Object> getAttachments()
    {
       DeploymentContext parent = deploymentContext.getParent();
+      if (deploymentContext.isComponent() == false)
+         parent = null;
       HashMap<String, Object> result = new HashMap<String, Object>();
       if (parent != null)
          result.putAll(parent.getTransientAttachments().getAttachments());

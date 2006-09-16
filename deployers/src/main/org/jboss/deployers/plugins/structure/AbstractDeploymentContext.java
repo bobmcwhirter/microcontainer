@@ -417,6 +417,11 @@ public class AbstractDeploymentContext implements DeploymentContext
       return children.remove(child);
    }
 
+   public boolean isComponent()
+   {
+      return false;
+   }
+   
    public Set<DeploymentContext> getComponents()
    {
       return Collections.unmodifiableSet(components);

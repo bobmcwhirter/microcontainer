@@ -234,6 +234,13 @@ public interface DeploymentContext
    boolean removeChild(DeploymentContext child);
    
    /**
+    * Whether this is a component
+    * 
+    * @return true when a component
+    */
+   boolean isComponent();
+   
+   /**
     * The components
     * 
     * @return the components
