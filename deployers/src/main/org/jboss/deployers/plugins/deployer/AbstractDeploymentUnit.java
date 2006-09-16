@@ -23,8 +23,10 @@ package org.jboss.deployers.plugins.deployer;
 
 import java.util.Collections;
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 
 import org.jboss.deployers.plugins.attachments.AbstractAttachments;
 import org.jboss.deployers.plugins.structure.ComponentDeploymentContext;
@@ -191,6 +193,23 @@ public class AbstractDeploymentUnit extends AbstractAttachments implements Deplo
    public Attachments getTransientManagedObjects()
    {
       return deploymentContext.getTransientManagedObjects();
+   }
+
+   @SuppressWarnings("unchecked")
+   // TODO optimize
+   public <T> Set<? extends T> getAllMetaData(Class<T> type)
+   {
+      if (type == null)
+         throw new IllegalArgumentException("Null type");
+      
+      Set<T> result = new HashSet<T>();
+      Map<String, Object> attachments = getAttachments();
+      for (Object object : attachments.values())
+      {
+         if (type.isInstance(object))
+            result.add((T) object);
+      }
+      return result;
    }
 
    @Deprecated

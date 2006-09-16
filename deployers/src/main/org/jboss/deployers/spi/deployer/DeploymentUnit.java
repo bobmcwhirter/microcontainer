@@ -22,6 +22,7 @@
 package org.jboss.deployers.spi.deployer;
 
 import java.util.List;
+import java.util.Set;
 
 import org.jboss.deployers.spi.DeploymentException;
 import org.jboss.deployers.spi.attachments.Attachments;
@@ -90,6 +91,17 @@ public interface DeploymentUnit extends Attachments
     */
    Attachments getTransientManagedObjects();
    
+   /**
+    * Get all the metadata for the expected type
+    * 
+    * @param <T> the type to get
+    * @param unit the unit
+    * @param type the type
+    * @return a set of metadata matching the type
+    * @throws IllegalArgumentException if the type is null 
+    */
+   <T> Set<? extends T> getAllMetaData(Class<T> type);
+
    /**
     * Add a component
     * 

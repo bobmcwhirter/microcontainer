@@ -43,6 +43,9 @@ public interface Deployer
 
    /** The component order */
    public static final int COMPONENT_DEPLOYER = 4000;
+
+   /** The real order */
+   public static final int REAL_DEPLOYER = 10000;
    
    /**
     * Whether the deployer is relevant for this unit

@@ -23,7 +23,6 @@ package org.jboss.deployers.plugins.deployers.helpers;
 
 import java.util.List;
 
-import org.jboss.deployers.plugins.deployer.AbstractSimpleDeployer;
 import org.jboss.deployers.spi.DeploymentException;
 import org.jboss.deployers.spi.deployer.DeploymentUnit;
 import org.jboss.virtual.VirtualFile;
@@ -35,37 +34,22 @@ import org.jboss.virtual.VirtualFile;
  * @author <a href="adrian@jboss.com">Adrian Brock</a>
  * @version $Revision: 1.1 $
  */
-public abstract class AbstractParsingDeployer<T> extends AbstractSimpleDeployer
+public abstract class AbstractParsingDeployer<T> extends AbstractTypedDeployer<T>
 {
-   /** The expected type */
-   private final Class<T> expectedType;
-   
    /**
     * Create a new AbstractParsingDeployer.
     * 
-    * @param expectedType the expected type
-    * @throws IllegalArgumentException if the expected type is null
+    * @param deploymentType the deployment type
+    * @throws IllegalArgumentException if the deployment type is null
     */
-   protected AbstractParsingDeployer(Class<T> expectedType)
+   protected AbstractParsingDeployer(Class<T> deploymentType)
    {
-      if (expectedType == null)
-         throw new IllegalArgumentException("Null expectedType");
-      this.expectedType = expectedType;
+      super(deploymentType);
    }
 
    public int getRelativeOrder()
    {
       return PARSER_DEPLOYER;
-   }
-
-   /**
-    * Get the expected type
-    * 
-    * @return the expected type
-    */
-   protected Class<T> getExpectedType()
-   {
-      return expectedType;
    }
    
    /**
@@ -77,7 +61,7 @@ public abstract class AbstractParsingDeployer<T> extends AbstractSimpleDeployer
     */
    protected T getMetaData(DeploymentUnit unit, String key)
    {
-      return unit.getAttachment(key, expectedType);
+      return unit.getAttachment(key, getDeploymentType());
    }
    
    /**
@@ -90,7 +74,7 @@ public abstract class AbstractParsingDeployer<T> extends AbstractSimpleDeployer
     */
    protected void createMetaData(DeploymentUnit unit, String name, String suffix) throws DeploymentException
    {
-      createMetaData(unit, name, suffix, expectedType.getName());
+      createMetaData(unit, name, suffix, getDeploymentType().getName());
    }
    
    /**
@@ -127,7 +111,7 @@ public abstract class AbstractParsingDeployer<T> extends AbstractSimpleDeployer
          return;
       
       // Register it
-      unit.getTransientManagedObjects().addAttachment(key, result, expectedType);
+      unit.getTransientManagedObjects().addAttachment(key, result, getDeploymentType());
    }
 
    /**

@@ -49,12 +49,12 @@ public abstract class SchemaResolverDeployer<T> extends AbstractParsingDeployer<
    /**
     * Create a new SchemaResolverDeployer.
     * 
-    * @param expectedType the expected type
-    * @throws IllegalArgumentException if the expected type is null
+    * @param deploymentType the deployment type
+    * @throws IllegalArgumentException for a null deployment type
     */
-   public SchemaResolverDeployer(Class<T> expectedType)
+   public SchemaResolverDeployer(Class<T> deploymentType)
    {
-      super(expectedType);
+      super(deploymentType);
    }
 
    /**
@@ -90,6 +90,6 @@ public abstract class SchemaResolverDeployer<T> extends AbstractParsingDeployer<
       if (parsed == null)
          throw new DeploymentException("The xml " + file.getPathName() + " is not well formed!");
 
-      return getExpectedType().cast(parsed);
+      return getDeploymentType().cast(parsed);
    }
 }

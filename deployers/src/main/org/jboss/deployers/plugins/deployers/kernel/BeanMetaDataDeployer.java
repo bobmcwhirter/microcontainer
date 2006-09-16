@@ -21,10 +21,8 @@
 */
 package org.jboss.deployers.plugins.deployers.kernel;
 
-import java.util.Set;
-
 import org.jboss.beans.metadata.spi.BeanMetaData;
-import org.jboss.deployers.plugins.deployers.helpers.AbstractRealDeployer;
+import org.jboss.deployers.plugins.deployers.helpers.AbstractSimpleRealDeployer;
 import org.jboss.deployers.spi.DeploymentException;
 import org.jboss.deployers.spi.deployer.DeploymentUnit;
 import org.jboss.kernel.Kernel;
@@ -33,15 +31,15 @@ import org.jboss.kernel.spi.dependency.KernelController;
 import org.jboss.kernel.spi.dependency.KernelControllerContext;
 
 /**
- * KernelDeployer.<p>
+ * BeanMetaDataDeployer.<p>
  * 
  * This deployer is responsible for deploying all metadata of
- * type {@link org.jboss.kernel.spi.deployment.KernelDeployment}.
+ * type {@link org.jboss.beans.metadata.spi.BeanMetaData}.
  * 
  * @author <a href="adrian@jboss.com">Adrian Brock</a>
  * @version $Revision: 1.1 $
  */
-public class BeanMetaDataDeployer extends AbstractRealDeployer<BeanMetaData>
+public class BeanMetaDataDeployer extends AbstractSimpleRealDeployer<BeanMetaData>
 {
    /** The kernel controller */
    private final KernelController controller;
@@ -60,29 +58,22 @@ public class BeanMetaDataDeployer extends AbstractRealDeployer<BeanMetaData>
       controller = kernel.getController();
    }
 
-   public void deploy(DeploymentUnit unit) throws DeploymentException
+   public void deploy(DeploymentUnit unit, BeanMetaData deployment) throws DeploymentException
    {
-      Set<BeanMetaData> beans = getAllMetaData(unit);
-      for (BeanMetaData bean : beans)
-      {
-         KernelControllerContext context = new AbstractKernelControllerContext(null, bean, null);
+      KernelControllerContext context = new AbstractKernelControllerContext(null, deployment, null);
 
-         try
-         {
-            controller.install(context);
-         }
-         catch (Throwable t)
-         {
-            undeploy(unit); // TODO better unwind
-            throw DeploymentException.rethrowAsDeploymentException("Error deploying: " + bean.getName(), t);
-         }
+      try
+      {
+         controller.install(context);
+      }
+      catch (Throwable t)
+      {
+         throw DeploymentException.rethrowAsDeploymentException("Error deploying: " + deployment.getName(), t);
       }
    }
 
-   public void undeploy(DeploymentUnit unit)
+   public void undeploy(DeploymentUnit unit, BeanMetaData deployment)
    {
-      Set<BeanMetaData> beans = getAllMetaData(unit);
-      for (BeanMetaData bean : beans)
-         controller.uninstall(bean.getName());
+      controller.uninstall(deployment.getName());
    }
 }

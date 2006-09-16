@@ -19,47 +19,41 @@
 * Software Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA
 * 02110-1301 USA, or see the FSF site: http://www.fsf.org.
 */
-package org.jboss.deployers.plugins.deployers.kernel;
+package org.jboss.deployers.plugins.deployers.helpers;
 
-import org.jboss.deployers.plugins.deployers.helpers.SchemaResolverDeployer;
 import org.jboss.deployers.spi.DeploymentException;
 import org.jboss.deployers.spi.deployer.DeploymentUnit;
-import org.jboss.kernel.spi.deployment.KernelDeployment;
-import org.jboss.virtual.VirtualFile;
 
 /**
- * BeanDeployer.<p>
+ * SimpleDeploymentVisitor.
  * 
- * This deployer is responsible for looking for -beans.xml
- * and creating the metadata object.
- * 
+ * @param <T> the deployment type
  * @author <a href="adrian@jboss.com">Adrian Brock</a>
  * @version $Revision: 1.1 $
  */
-public class BeanDeployer extends SchemaResolverDeployer<KernelDeployment>
+public interface SimpleDeploymentVisitor<T>
 {
    /**
-    * Create a new BeanDeployer.
+    * Get the visitor type
     * 
-    * @throws IllegalArgumentException for a null kernel
+    * @return the visitor type
     */
-   public BeanDeployer()
-   {
-      super(KernelDeployment.class);
-   }
-
-   protected void init(DeploymentUnit unit, KernelDeployment metaData, VirtualFile file) throws Exception
-   {
-      String name = file.toURI().toString();
-      metaData.setName(name);
-   }
-
-   public void deploy(DeploymentUnit unit) throws DeploymentException
-   {
-      createMetaData(unit, null, "-beans.xml");
-   }
-
-   public void undeploy(DeploymentUnit unit)
-   {
-   }
+   Class<T> getVisitorType();
+   
+   /**
+    * Deploy the deployment
+    * 
+    * @param unit the deployment unit
+    * @param deployment the deployment
+    * @throws DeploymentException the deployment exception
+    */
+   void deploy(DeploymentUnit unit, T deployment) throws DeploymentException;
+   
+   /**
+    * Undeploy the deployment
+    * 
+    * @param unit the deployment unit
+    * @param deployment the deployment
+    */
+   void undeploy(DeploymentUnit unit, T deployment);
 }

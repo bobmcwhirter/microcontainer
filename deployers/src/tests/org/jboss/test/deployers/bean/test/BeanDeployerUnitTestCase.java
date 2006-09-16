@@ -25,7 +25,8 @@ import junit.framework.Test;
 import junit.framework.TestSuite;
 
 import org.jboss.deployers.plugins.deployers.kernel.BeanDeployer;
-import org.jboss.deployers.plugins.deployers.kernel.KernelDeployer;
+import org.jboss.deployers.plugins.deployers.kernel.BeanMetaDataDeployer;
+import org.jboss.deployers.plugins.deployers.kernel.KernelDeploymentDeployer;
 import org.jboss.deployers.plugins.deployment.MainDeployerImpl;
 import org.jboss.deployers.plugins.structure.vfs.file.FileStructure;
 import org.jboss.deployers.plugins.structure.vfs.jar.JARStructure;
@@ -73,9 +74,11 @@ public class BeanDeployerUnitTestCase extends BaseDeployersTest
          main.addStructureDeployer(new FileStructure());
          
          BeanDeployer beanDeployer = new BeanDeployer();
-         KernelDeployer kernelDeployer = new KernelDeployer(kernel);
+         KernelDeploymentDeployer kernelDeploymentDeployer = new KernelDeploymentDeployer();
+         BeanMetaDataDeployer beanMetaDataDeployer = new BeanMetaDataDeployer(kernel);
          main.addDeployer(beanDeployer);
-         main.addDeployer(kernelDeployer);
+         main.addDeployer(kernelDeploymentDeployer);
+         main.addDeployer(beanMetaDataDeployer);
       }
       catch (Throwable t)
       {

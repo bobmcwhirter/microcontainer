@@ -23,81 +23,84 @@ package org.jboss.deployers.plugins.deployers.helpers;
 
 import java.util.Set;
 
-import org.jboss.deployers.plugins.deployer.AbstractSimpleDeployer;
 import org.jboss.deployers.spi.DeploymentException;
 import org.jboss.deployers.spi.deployer.DeploymentUnit;
 
 /**
- * AbstractRealDeployer.
+ * AbstractComponentDeployer.
  * 
- * @param <T> the deployment type
+ * @param <D> the deployment type
+ * @param <C> the component type
  * @author <a href="adrian@jboss.com">Adrian Brock</a>
  * @version $Revision: 1.1 $
  */
-public abstract class AbstractRealDeployer<T> extends AbstractSimpleDeployer
+public abstract class AbstractComponentDeployer<D, C> extends AbstractRealDeployer<D>
 {
-   /** The visitor */
-   private SimpleDeploymentVisitor<T> visitor;
+   /** The component visitor */
+   private SimpleDeploymentVisitor<C> visitor;
 
-   /** The deployment type */
-   private Class<T> deploymentType;
-
-   /** Whether the warning has been displayed */
-   private boolean warned;
+   /** The component type */
+   private Class<C> componentType;
 
    public int getRelativeOrder()
    {
-      return REAL_DEPLOYER;
+      return COMPONENT_DEPLOYER;
    }
-
+   
    /**
-    * Set the deployment visitor
+    * Set the component visitor
     * 
     * @param visitor the visitor
     * @throws IllegalArgumentException if the visitor is null
     */
-   protected void setDeploymentVisitor(SimpleDeploymentVisitor<T> visitor)
+   protected void setComponentVisitor(SimpleDeploymentVisitor<C> visitor)
    {
       if (visitor == null)
          throw new IllegalArgumentException("Null visitor");
       this.visitor = visitor;
-      deploymentType = visitor.getVisitorType();
-      if (deploymentType == null)
+      componentType = visitor.getVisitorType();
+      if (componentType == null)
          throw new IllegalArgumentException("Null visitor type");
    }
 
    public void deploy(DeploymentUnit unit) throws DeploymentException
    {
-      if (visitor == null)
-      {
-         if (warned == false)
-         {
-            log.error("INTERNAL ERROR: Visitor is null for " + getClass().getName());
-            warned = true;
-         }
-         return;
-      }
-
+      super.deploy(unit);
+      
       try
       {
-         Set<? extends T> deployments = unit.getAllMetaData(deploymentType);
-         for (T deployment : deployments)
-            visitor.deploy(unit, deployment);
+         deployComponents(unit);
       }
       catch (Throwable t)
       {
-         undeploy(unit);
+         undeployComponents(unit);
          throw DeploymentException.rethrowAsDeploymentException("Error deploying: " + unit.getName(), t);
       }
    }
-
+   
    public void undeploy(DeploymentUnit unit)
+   {
+      super.undeploy(unit);
+      undeployComponents(unit);
+   }
+
+   protected void deployComponents(DeploymentUnit unit) throws DeploymentException
    {
       if (visitor == null)
          return;
-      Set<? extends T> deployments = unit.getAllMetaData(deploymentType);
-      for (T deployment : deployments)
-         visitor.undeploy(unit, deployment);
-   }
 
+      Set<? extends C> components = unit.getAllMetaData(componentType);
+      for (C component : components)
+         visitor.deploy(unit, component);
+   }
+   
+   protected void undeployComponents(DeploymentUnit unit)
+   {
+      if (visitor == null)
+         return;
+      
+      Set<? extends C> components = unit.getAllMetaData(componentType);
+      for (C component : components)
+         visitor.undeploy(unit, component);
+   }
 }

@@ -22,22 +22,23 @@
 package org.jboss.deployers.plugins.deployers.kernel;
 
 import java.util.List;
-import java.util.Set;
 
 import org.jboss.beans.metadata.spi.BeanMetaData;
-import org.jboss.deployers.plugins.deployers.helpers.AbstractRealDeployer;
+import org.jboss.deployers.plugins.deployers.helpers.AbstractComponentDeployer;
+import org.jboss.deployers.plugins.deployers.helpers.SimpleDeploymentVisitor;
 import org.jboss.deployers.spi.DeploymentException;
 import org.jboss.deployers.spi.deployer.DeploymentUnit;
 import org.jboss.kernel.spi.deployment.KernelDeployment;
 
-public class KernelDeploymentDeployer extends AbstractRealDeployer<KernelDeployment>
+public class KernelDeploymentDeployer extends AbstractComponentDeployer<KernelDeployment, BeanMetaData>
 {
    /**
     * Create a new KernelDeploymentDeployer.
     */
    public KernelDeploymentDeployer()
    {
-      super(KernelDeployment.class);
+      setDeploymentVisitor(new KernelDeploymentVisitor());
+      setComponentVisitor(new BeanMetaDataVisitor());
    }
 
    public int getRelativeOrder()
@@ -45,28 +46,60 @@ public class KernelDeploymentDeployer extends AbstractRealDeployer<KernelDeploym
       return COMPONENT_DEPLOYER;
    }
 
-   public void deploy(DeploymentUnit unit) throws DeploymentException
+   protected static void addBeanComponent(DeploymentUnit unit, BeanMetaData bean)
    {
-      Set<KernelDeployment> deployments = getAllMetaData(unit);
-      for (KernelDeployment deployment : deployments)
+      DeploymentUnit component = unit.addComponent(bean.getName());
+      component.addAttachment(BeanMetaData.class.getName(), bean);
+   }
+
+   protected static void removeBeanComponent(DeploymentUnit unit, BeanMetaData bean)
+   {
+      unit.removeComponent(bean.getName());
+   }
+   
+   /**
+    * KernelDeploymentVisitor.
+    */
+   public static class KernelDeploymentVisitor implements SimpleDeploymentVisitor<KernelDeployment>
+   {
+      public Class<KernelDeployment> getVisitorType()
+      {
+         return KernelDeployment.class;
+      }
+
+      public void deploy(DeploymentUnit unit, KernelDeployment deployment) throws DeploymentException
       {
          List<BeanMetaData> beans = deployment.getBeans();
          for (BeanMetaData bean : beans)
-         {
-            DeploymentUnit component = unit.addComponent(bean.getName());
-            component.addAttachment(BeanMetaData.class.getName(), bean);
-         }
+            addBeanComponent(unit, bean);
+      }
+
+      public void undeploy(DeploymentUnit unit, KernelDeployment deployment)
+      {
+         List<BeanMetaData> beans = deployment.getBeans();
+         for (BeanMetaData bean : beans)
+            removeBeanComponent(unit, bean);
       }
    }
 
-   public void undeploy(DeploymentUnit unit)
+   /**
+    * BeanMetaDataVisitor.
+    */
+   public static class BeanMetaDataVisitor implements SimpleDeploymentVisitor<BeanMetaData>
    {
-      Set<KernelDeployment> deployments = getAllMetaData(unit);
-      for (KernelDeployment deployment : deployments)
+      public Class<BeanMetaData> getVisitorType()
       {
-         List<BeanMetaData> beans = deployment.getBeans();
-         for (BeanMetaData bean : beans)
-            unit.removeComponent(bean.getName());
+         return BeanMetaData.class;
+      }
+
+      public void deploy(DeploymentUnit unit, BeanMetaData deployment) throws DeploymentException
+      {
+         addBeanComponent(unit, deployment);
+      }
+
+      public void undeploy(DeploymentUnit unit, BeanMetaData deployment)
+      {
+         removeBeanComponent(unit, deployment);
       }
    }
 }

@@ -19,47 +19,42 @@
 * Software Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA
 * 02110-1301 USA, or see the FSF site: http://www.fsf.org.
 */
-package org.jboss.deployers.plugins.deployers.kernel;
+package org.jboss.deployers.plugins.deployers.helpers;
 
-import org.jboss.deployers.plugins.deployers.helpers.SchemaResolverDeployer;
-import org.jboss.deployers.spi.DeploymentException;
-import org.jboss.deployers.spi.deployer.DeploymentUnit;
-import org.jboss.kernel.spi.deployment.KernelDeployment;
-import org.jboss.virtual.VirtualFile;
+import org.jboss.deployers.plugins.deployer.AbstractSimpleDeployer;
 
 /**
- * BeanDeployer.<p>
+ * AbstractTypedDeployer.
  * 
- * This deployer is responsible for looking for -beans.xml
- * and creating the metadata object.
- * 
+ * @param <T> the deployment type
  * @author <a href="adrian@jboss.com">Adrian Brock</a>
  * @version $Revision: 1.1 $
  */
-public class BeanDeployer extends SchemaResolverDeployer<KernelDeployment>
+public abstract class AbstractTypedDeployer<T> extends AbstractSimpleDeployer
 {
+   /** The deployment type */
+   private Class<T> deploymentType;
+
    /**
-    * Create a new BeanDeployer.
+    * Create a new AbstractTypedDeployer.
     * 
-    * @throws IllegalArgumentException for a null kernel
+    * @param deploymentType the deployment type
+    * @throws IllegalArgumentException for a null deployment type
     */
-   public BeanDeployer()
+   public AbstractTypedDeployer(Class<T> deploymentType)
    {
-      super(KernelDeployment.class);
+      if (deploymentType == null)
+         throw new IllegalArgumentException("Null deploymentType");
+      this.deploymentType = deploymentType;
    }
 
-   protected void init(DeploymentUnit unit, KernelDeployment metaData, VirtualFile file) throws Exception
+   /**
+    * Get the deployment type
+    * 
+    * @return the type
+    */
+   protected Class<T> getDeploymentType()
    {
-      String name = file.toURI().toString();
-      metaData.setName(name);
-   }
-
-   public void deploy(DeploymentUnit unit) throws DeploymentException
-   {
-      createMetaData(unit, null, "-beans.xml");
-   }
-
-   public void undeploy(DeploymentUnit unit)
-   {
+      return deploymentType;
    }
 }

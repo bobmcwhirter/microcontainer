@@ -19,47 +19,51 @@
 * Software Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA
 * 02110-1301 USA, or see the FSF site: http://www.fsf.org.
 */
-package org.jboss.deployers.plugins.deployers.kernel;
+package org.jboss.deployers.plugins.deployers.helpers;
 
-import org.jboss.deployers.plugins.deployers.helpers.SchemaResolverDeployer;
 import org.jboss.deployers.spi.DeploymentException;
 import org.jboss.deployers.spi.deployer.DeploymentUnit;
-import org.jboss.kernel.spi.deployment.KernelDeployment;
-import org.jboss.virtual.VirtualFile;
 
 /**
- * BeanDeployer.<p>
+ * AbstractSimpleRealDeployer.
  * 
- * This deployer is responsible for looking for -beans.xml
- * and creating the metadata object.
- * 
+ * @param <T> the deployment type
  * @author <a href="adrian@jboss.com">Adrian Brock</a>
  * @version $Revision: 1.1 $
  */
-public class BeanDeployer extends SchemaResolverDeployer<KernelDeployment>
+public abstract class AbstractSimpleRealDeployer<T> extends AbstractTypedDeployer<T>
 {
    /**
-    * Create a new BeanDeployer.
+    * Create a new AbstractSimpleRealDeployer.
     * 
-    * @throws IllegalArgumentException for a null kernel
+    * @param deploymentType the deployment type
+    * @throws IllegalArgumentException for a null deployment type
     */
-   public BeanDeployer()
+   public AbstractSimpleRealDeployer(Class<T> deploymentType)
    {
-      super(KernelDeployment.class);
+      super(deploymentType);
    }
 
-   protected void init(DeploymentUnit unit, KernelDeployment metaData, VirtualFile file) throws Exception
+   public int getRelativeOrder()
    {
-      String name = file.toURI().toString();
-      metaData.setName(name);
+      return REAL_DEPLOYER;
    }
-
+   
    public void deploy(DeploymentUnit unit) throws DeploymentException
    {
-      createMetaData(unit, null, "-beans.xml");
+      T deployment = unit.getAttachment(getDeploymentType());
+      if (deployment != null)
+         deploy(unit, deployment);
    }
 
    public void undeploy(DeploymentUnit unit)
    {
+      T deployment = unit.getAttachment(getDeploymentType());
+      if (deployment != null)
+         undeploy(unit, deployment);
    }
+   
+   public abstract void deploy(DeploymentUnit unit, T deployment) throws DeploymentException;
+
+   public abstract void undeploy(DeploymentUnit unit, T deployment);
 }
