@@ -41,11 +41,6 @@ public class KernelDeploymentDeployer extends AbstractComponentDeployer<KernelDe
       setComponentVisitor(new BeanMetaDataVisitor());
    }
 
-   public int getRelativeOrder()
-   {
-      return COMPONENT_DEPLOYER;
-   }
-
    protected static void addBeanComponent(DeploymentUnit unit, BeanMetaData bean)
    {
       DeploymentUnit component = unit.addComponent(bean.getName());
