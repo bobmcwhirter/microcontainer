@@ -144,7 +144,7 @@ public class JARStructureUnitTestCase extends BaseDeployersTest
       
       // Test it got all the candidates
       Map<String, Boolean> expected = new HashMap<String, Boolean>();
-      expected.put(getURL("/structure/jar/subdirnotajar/sub"), false);
+      expected.put(getURL("/structure/jar/subdirnotajar/sub/"), false);
       assertContexts(expected, context.getChildren());
       
       assertCandidatesNotValid(context);
@@ -156,7 +156,7 @@ public class JARStructureUnitTestCase extends BaseDeployersTest
       
       // Test it got all the candidates
       Map<String, Boolean> expected = new HashMap<String, Boolean>();
-      expected.put(getURL("/structure/jar/subdirisajar/sub.jar"), true);
+      expected.put(getURL("/structure/jar/subdirisajar/sub.jar/"), true);
       assertContexts(expected, context.getChildren());
       
       assertCandidatesValid(context);
@@ -173,7 +173,7 @@ public class JARStructureUnitTestCase extends BaseDeployersTest
       
       // Test it got all the candidates
       Map<String, Boolean> expected = new HashMap<String, Boolean>();
-      expected.put(getURL("/structure/jar/subdirhasmetainf/sub"), true);
+      expected.put(getURL("/structure/jar/subdirhasmetainf/sub/"), true);
       assertContexts(expected, context.getChildren());
       
       assertCandidatesValid(context);
