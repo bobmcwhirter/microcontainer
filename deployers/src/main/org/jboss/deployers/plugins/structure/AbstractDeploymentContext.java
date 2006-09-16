@@ -408,6 +408,8 @@ public class AbstractDeploymentContext implements DeploymentContext
       if (child == null)
          throw new IllegalArgumentException("Null child");
       children.add(child);
+      if (log.isTraceEnabled())
+         log.trace("Adding child " + child.getName() + " to " + getName() + " candidate=" + child.isCandidate());
    }
 
    public boolean removeChild(DeploymentContext child)

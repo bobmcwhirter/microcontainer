@@ -21,8 +21,11 @@
 */
 package org.jboss.deployers.plugins.structure.vfs;
 
+import java.io.IOException;
+
 import org.jboss.deployers.plugins.structure.AbstractDeploymentContext;
 import org.jboss.deployers.spi.structure.DeploymentContext;
+import org.jboss.logging.Logger;
 import org.jboss.virtual.VirtualFile;
 import org.jboss.virtual.VisitorAttributes;
 import org.jboss.virtual.plugins.vfs.helpers.AbstractVirtualFileVisitor;
@@ -35,11 +38,17 @@ import org.jboss.virtual.plugins.vfs.helpers.AbstractVirtualFileVisitor;
  */
 public class CandidateStructureVisitor extends AbstractVirtualFileVisitor
 {
+   /** The log */
+   private static final Logger log = Logger.getLogger(CandidateStructureVisitor.class);
+   
    /** The parent deployment context */
    private final DeploymentContext parent;
 
    /** The meta data location */
    private final String metaDataPath;
+
+   /** Ignore directories */
+   private boolean ignoreDirectories;
    
    /**
     * Create a new CandidateStructureVisitor.
@@ -49,7 +58,7 @@ public class CandidateStructureVisitor extends AbstractVirtualFileVisitor
     */
    public CandidateStructureVisitor(DeploymentContext parent)
    {
-      this(parent, null);
+      this(parent, null, false);
    }
    
    /**
@@ -57,9 +66,10 @@ public class CandidateStructureVisitor extends AbstractVirtualFileVisitor
     * 
     * @param parent the parent
     * @param attributes the attributes
+    * @param ignoreDirectories whether to ignore directories
     * @throws IllegalArgumentException for a null parent
     */
-   public CandidateStructureVisitor(DeploymentContext parent, VisitorAttributes attributes)
+   public CandidateStructureVisitor(DeploymentContext parent, VisitorAttributes attributes, boolean ignoreDirectories)
    {
       super(attributes);
       if (parent == null)
@@ -70,6 +80,7 @@ public class CandidateStructureVisitor extends AbstractVirtualFileVisitor
          metaDataPath = metaDataLocation.getPathName(); 
       else
          metaDataPath = null;
+      this.ignoreDirectories = ignoreDirectories;
    }
    
    public void visit(VirtualFile virtualFile)
@@ -90,6 +101,17 @@ public class CandidateStructureVisitor extends AbstractVirtualFileVisitor
       // Exclude the meta data location
       if (metaDataPath != null && virtualFile.getPathName().startsWith(metaDataPath))
          return null;
+
+      try
+      {
+         if (ignoreDirectories && virtualFile.isDirectory() && virtualFile.isArchive() == false)
+            return null;
+      }
+      catch (IOException e)
+      {
+         log.debug("Ignoring " + virtualFile + " reason=" + e);
+         return null;
+      }
       
       return new AbstractDeploymentContext(virtualFile, true, parent);
    }

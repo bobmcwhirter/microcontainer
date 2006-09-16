@@ -51,7 +51,7 @@ public abstract class AbstractStructureDeployer implements StructureDeployer
     * Add all children as candidates
     * 
     * @param parent the parent context
-    * @param ignoreDirectories whether to ignore directories
+    * @param ignoreDirectories whether to ignore directories that are not archives
     * @throws Exception for any error
     */
    protected void addAllChildren(DeploymentContext parent, boolean ignoreDirectories) throws Exception
@@ -60,9 +60,7 @@ public abstract class AbstractStructureDeployer implements StructureDeployer
          throw new IllegalArgumentException("Null parent");
       
       VisitorAttributes attributes = VisitorAttributes.DEFAULT;
-      if (ignoreDirectories)
-         attributes = VisitorAttributes.NO_DIRECTORIES;
-      CandidateStructureVisitor visitor = new CandidateStructureVisitor(parent, attributes);
+      CandidateStructureVisitor visitor = new CandidateStructureVisitor(parent, attributes, ignoreDirectories);
 
       VirtualFile root = parent.getRoot();
       root.visit(visitor);
