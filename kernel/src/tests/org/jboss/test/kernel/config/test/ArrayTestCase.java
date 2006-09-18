@@ -147,45 +147,6 @@ public class ArrayTestCase extends AbstractKernelConfigTest
       assertEquals(expected, result);
    }
 
-   public void testArrayPreinstantiated() throws Throwable
-   {
-      SimpleBean bean = customArrayPreinstantiated();
-      assertNotNull(bean);
-
-      Object[] result = bean.getPreInstantiatedArray();
-      assertNotNull("Should be a array", result);
-
-      Object[] expected = new Object[] { string1, string2, string2, string1 };
-      assertEquals(expected, result);
-   }
-
-   protected SimpleBean customArrayPreinstantiated() throws Throwable
-   {
-      Kernel kernel = bootstrap();
-      KernelController controller = kernel.getController();
-
-      AbstractBeanMetaData bmd = new AbstractBeanMetaData("test1", SimpleBean.class.getName());
-      HashSet<PropertyMetaData> properties = new HashSet<PropertyMetaData>();
-      bmd.setProperties(properties);
-
-      StringValueMetaData vmd1 = new StringValueMetaData(string1);
-      StringValueMetaData vmd2 = new StringValueMetaData(string2);
-      StringValueMetaData vmd3 = new StringValueMetaData(string1);
-
-      AbstractArrayMetaData smd = new AbstractArrayMetaData();
-      smd.setType(new String[0].getClass().getName());
-      smd.setElementType("java.lang.String");
-      smd.add(vmd1);
-      smd.add(vmd2);
-      smd.add(vmd2); // tests duplicates
-      smd.add(vmd3); // tests duplicates
-
-      AbstractPropertyMetaData pmd = new AbstractPropertyMetaData("array", smd);
-      properties.add(pmd);
-
-      return (SimpleBean) instantiate(controller, bmd);
-   }
-
    protected SimpleBean customArrayExplicit() throws Throwable
    {
       Kernel kernel = bootstrap();
