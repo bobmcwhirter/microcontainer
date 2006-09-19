@@ -246,7 +246,7 @@
 
 			<sysproperty key="jboss.aop.exclude" value="org.jboss.,org.apache."/>
 			<sysproperty key="jboss.aop.include" value="org.jboss.test."/>
-         <sysproperty key="jboss-junit-configuration" value="weave"/>
+         <sysproperty key="jboss-junit-configuration" value="weave-JDK1.4"/>
          <sysproperty key="build.testlog" value="${build.testlog}"/>
          <sysproperty key="java.system.class.loader" value="org.jboss.aop.standalone.SystemClassLoader"/>
 
@@ -256,9 +256,9 @@
             <path refid="apache.xerces.classpath"/>
          </classpath>
 
-         <formatter type="plain" usefile="true" extension="-weave.txt"/>
+         <formatter type="plain" usefile="true" extension="-weave-jdk14.txt"/>
          <formatter classname="org.jboss.ant.taskdefs.XMLJUnitMultipleResultFormatter"
-                    usefile="true" extension="-weave.xml"/>
+                    usefile="true" extension="-weave-jdk14.xml"/>
 
          <batchtest todir="${build.reports}"
             haltonerror="false"
@@ -291,7 +291,7 @@
          haltonfailure="false"
          fork="true">
 
-         <sysproperty key="jboss-junit-configuration" value="no_weave"/>
+         <sysproperty key="jboss-junit-configuration" value="no_weave-JDK1.4"/>
          <sysproperty key="build.testlog" value="${build.testlog}"/>
 
          <classpath>
@@ -300,9 +300,9 @@
             <path refid="apache.xerces.classpath"/>
          </classpath>
 
-         <formatter type="plain" usefile="true" extension="-no-weave.txt"/>
+         <formatter type="plain" usefile="true" extension="-no-weave-jdk14.txt"/>
          <formatter classname="org.jboss.ant.taskdefs.XMLJUnitMultipleResultFormatter"
-                    usefile="true" extension="-no-weave.xml"/>
+                    usefile="true" extension="-no-weave-jdk14.xml"/>
 
          <batchtest todir="${build.reports}"
             haltonerror="false"
@@ -337,7 +337,7 @@
 
 			<sysproperty key="jboss.aop.exclude" value="org.jboss.,org.apache."/>
 			<sysproperty key="jboss.aop.include" value="org.jboss.test."/>
-         <sysproperty key="jboss-junit-configuration" value="weave"/>
+         <sysproperty key="jboss-junit-configuration" value="weave-JDK1.4"/>
          <sysproperty key="build.testlog" value="${build.testlog}"/>
          <sysproperty key="java.system.class.loader" value="org.jboss.aop.standalone.SystemClassLoader"/>
 
@@ -347,9 +347,9 @@
             <path refid="apache.xerces.classpath"/>
          </classpath>
 
-         <formatter type="plain" usefile="true" extension="-weave.txt"/>
+         <formatter type="plain" usefile="true" extension="-weave-jdk14.txt"/>
          <formatter classname="org.jboss.ant.taskdefs.XMLJUnitMultipleResultFormatter"
-                    usefile="true" extension="-weave.xml"/>
+                    usefile="true" extension="-weave-jdk14.xml"/>
 
          <test todir="${build.reports}" name="${test}"
                haltonerror="${junit.batchtest.haltonerror}"
@@ -377,7 +377,7 @@
          haltonfailure="false"
          fork="true">
 
-         <sysproperty key="jboss-junit-configuration" value="no_weave"/>
+         <sysproperty key="jboss-junit-configuration" value="no_weave-JDK1.4"/>
          <sysproperty key="build.testlog" value="${build.testlog}"/>
 
          <classpath>
@@ -386,9 +386,9 @@
             <path refid="apache.xerces.classpath"/>
          </classpath>
 
-         <formatter type="plain" usefile="true" extension="-no-weave.txt"/>
+         <formatter type="plain" usefile="true" extension="-no-weave-jdk14.txt"/>
          <formatter classname="org.jboss.ant.taskdefs.XMLJUnitMultipleResultFormatter"
-                    usefile="true" extension="-no-weave.xml"/>
+                    usefile="true" extension="-no-weave-jdk14.xml"/>
 
          <test todir="${build.reports}" name="${test}"
                haltonerror="${junit.batchtest.haltonerror}"
