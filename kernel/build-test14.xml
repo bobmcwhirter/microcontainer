@@ -159,7 +159,7 @@
 	   </fileset>
       <path refid="jboss.container14.classpath"/>
       <path refid="jboss.dependency14.classpath"/>
-      <path refid="jboss.test.classpath"/>
+      <path refid="jboss.test14.classpath"/>
       <path refid="jboss.common.classpath"/>
       <path refid="apache.log4j.classpath"/>
       <path refid="javassist.classpath"/>
