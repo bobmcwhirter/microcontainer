@@ -179,5 +179,7 @@ public abstract class AbstractParsingDeployer<T> extends AbstractTypedDeployer<T
     * @param file the metadata file
     * @throws Exception for any error
     */
-   protected abstract void init(DeploymentUnit unit, T metaData, VirtualFile file) throws Exception;
+   protected void init(DeploymentUnit unit, T metaData, VirtualFile file) throws Exception
+   {
+   }
 }
