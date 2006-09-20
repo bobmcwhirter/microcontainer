@@ -586,7 +586,7 @@ public class AbstractDeploymentContext implements DeploymentContext
       }
       catch (Exception e)
       {
-         log.debug("Error retrieving meta data: " + name, e);
+         log.trace("Error retrieving meta data: " + name, e);
          return null;
       }
    }
