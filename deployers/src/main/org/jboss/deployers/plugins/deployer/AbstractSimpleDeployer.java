@@ -70,5 +70,7 @@ public abstract class AbstractSimpleDeployer extends AbstractDeployer
     * 
     * @param unit the unit
     */
-   public abstract void undeploy(DeploymentUnit unit); 
+   public void undeploy(DeploymentUnit unit)
+   {
+   }
 }
