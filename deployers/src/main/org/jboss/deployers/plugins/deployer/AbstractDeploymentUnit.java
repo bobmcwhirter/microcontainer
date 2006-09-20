@@ -139,6 +139,8 @@ public class AbstractDeploymentUnit extends AbstractAttachments implements Deplo
    public Object getAttachment(String name)
    {
       DeploymentContext parent = deploymentContext.getParent();
+      if (deploymentContext.isComponent() == false)
+         parent = null;
       Object result = deploymentContext.getPredeterminedManagedObjects().getAttachment(name);
       if (result != null)
          return result;
@@ -172,6 +174,8 @@ public class AbstractDeploymentUnit extends AbstractAttachments implements Deplo
    public boolean isAttachmentPresent(String name)
    {
       DeploymentContext parent = deploymentContext.getParent();
+      if (deploymentContext.isComponent() == false)
+         parent = null;
       if (deploymentContext.getPredeterminedManagedObjects().isAttachmentPresent(name))
          return true;
       if (parent != null && parent.getPredeterminedManagedObjects().isAttachmentPresent(name))
