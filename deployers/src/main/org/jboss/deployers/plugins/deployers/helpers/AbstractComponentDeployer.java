@@ -37,7 +37,7 @@ import org.jboss.deployers.spi.deployer.DeploymentUnit;
 public abstract class AbstractComponentDeployer<D, C> extends AbstractRealDeployer<D>
 {
    /** The component visitor */
-   private SimpleDeploymentVisitor<C> visitor;
+   private SimpleDeploymentVisitor<C> compVisitor;
 
    /** The component type */
    private Class<C> componentType;
@@ -57,7 +57,7 @@ public abstract class AbstractComponentDeployer<D, C> extends AbstractRealDeploy
    {
       if (visitor == null)
          throw new IllegalArgumentException("Null visitor");
-      this.visitor = visitor;
+      this.compVisitor = visitor;
       componentType = visitor.getVisitorType();
       if (componentType == null)
          throw new IllegalArgumentException("Null visitor type");
@@ -86,21 +86,21 @@ public abstract class AbstractComponentDeployer<D, C> extends AbstractRealDeploy
 
    protected void deployComponents(DeploymentUnit unit) throws DeploymentException
    {
-      if (visitor == null)
+      if (compVisitor == null)
          return;
 
       Set<? extends C> components = unit.getAllMetaData(componentType);
       for (C component : components)
-         visitor.deploy(unit, component);
+         compVisitor.deploy(unit, component);
    }
    
    protected void undeployComponents(DeploymentUnit unit)
    {
-      if (visitor == null)
+      if (compVisitor == null)
          return;
       
       Set<? extends C> components = unit.getAllMetaData(componentType);
       for (C component : components)
-         visitor.undeploy(unit, component);
+         compVisitor.undeploy(unit, component);
    }
 }
