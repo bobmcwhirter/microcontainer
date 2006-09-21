@@ -27,6 +27,7 @@ import java.util.Map;
 import java.util.Set;
 import java.util.TreeMap;
 import java.util.TreeSet;
+import java.io.Serializable;
 
 /**
  * IncompleteDeployments.
@@ -34,7 +35,7 @@ import java.util.TreeSet;
  * @author <a href="adrian@jboss.com">Adrian Brock</a>
  * @version $Revision: 1.1 $
  */
-public class IncompleteDeployments
+public class IncompleteDeployments implements Serializable
 {
    /** The serialVersionUID */
    private static final long serialVersionUID = 1433292979582684692L;
@@ -44,10 +45,10 @@ public class IncompleteDeployments
 
    /** Deployments missing deployer */
    private Collection<String> deploymentsMissingDeployer;
-   
+
    /** Contexts in error */
    private Map<String, Throwable> contextsInError;
-   
+
    /** Contexts missing dependencies */
    private Map<String, Set<MissingDependency>> contextsMissingDependencies;
 
@@ -100,7 +101,7 @@ public class IncompleteDeployments
          return true;
       return false;
    }
-   
+
    /**
     * Get the contextsInError.
     * 
