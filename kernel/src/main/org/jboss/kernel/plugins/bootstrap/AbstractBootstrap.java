@@ -96,7 +96,7 @@ public abstract class AbstractBootstrap extends AbstractKernelObject implements 
       catch (Exception e)
       {
          log.trace("Exception during JBoss Kernel Bootstrap.", e);
-         throw new RuntimeException(e);
+         throw new RuntimeException("Exception during Bootstrap", e);
       }
       catch (Error e)
       {
@@ -106,7 +106,7 @@ public abstract class AbstractBootstrap extends AbstractKernelObject implements 
       catch (Throwable t)
       {
          log.trace("Error during JBoss Kernel Bootstrap.", t);
-         throw new RuntimeException("Error during JBoss Kernel Bootstrap", t);
+         throw new RuntimeException("Error during Bootstrap", t);
       }
    }
 
