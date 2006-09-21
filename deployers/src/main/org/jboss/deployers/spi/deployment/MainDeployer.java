@@ -21,6 +21,8 @@
 */
 package org.jboss.deployers.spi.deployment;
 
+import java.util.Collection;
+
 import org.jboss.deployers.spi.DeploymentException;
 import org.jboss.deployers.spi.structure.DeploymentContext;
 
@@ -43,6 +45,34 @@ public interface MainDeployer
     * @return the context or null if not found
     */
    DeploymentContext getDeploymentContext(String name);
+   
+   /**
+    * Get the top level deployments
+    * 
+    * @return the top level deployments
+    */
+   Collection<DeploymentContext> getTopLevel();
+   
+   /**
+    * Get all the deployments
+    * 
+    * @return the deployments
+    */
+   Collection<DeploymentContext> getAll();
+   
+   /**
+    * Get the deployments in error
+    * 
+    * @return the deployments
+    */
+   Collection<DeploymentContext> getErrors();
+   
+   /**
+    * Get the deployments missing a deployer
+    * 
+    * @return the deployments
+    */
+   Collection<DeploymentContext> getMissingDeployer();
    
    /**
     * Add a deployment context

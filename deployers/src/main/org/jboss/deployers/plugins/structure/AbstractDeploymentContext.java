@@ -82,6 +82,9 @@ public class AbstractDeploymentContext implements DeploymentContext
    /** Whether this is a candidate deployment */
    private boolean candidate = false;
 
+   /** Whether this deployment was processed */
+   private boolean deployed = false;
+   
    /** The parent context */
    private DeploymentContext parent;
 
@@ -319,7 +322,7 @@ public class AbstractDeploymentContext implements DeploymentContext
    {
       if (factory == null)
          throw new IllegalArgumentException("Null factory");
-
+      
       ClassLoader cl = getClassLoader();
       if (cl != null)
          return false;
@@ -431,6 +434,7 @@ public class AbstractDeploymentContext implements DeploymentContext
    {
       if (component == null)
          throw new IllegalArgumentException("Null component");
+      deployed();
       components.add(component);
       log.debug("Added component " + component.getName() + " to " + getName());
    }
@@ -582,7 +586,10 @@ public class AbstractDeploymentContext implements DeploymentContext
             return null;
          }
          // Look in the meta data location
-         return metaDataLocation.findChild(name);
+         VirtualFile result = metaDataLocation.findChild(name);
+         if (result != null)
+            deployed();
+         return result;
       }
       catch (Exception e)
       {
@@ -615,7 +622,10 @@ public class AbstractDeploymentContext implements DeploymentContext
             return Collections.emptyList();
          }
          // Look in the meta data location
-         return metaDataLocation.getChildren(new MetaDataMatchFilter(name, suffix));
+         List<VirtualFile> result = metaDataLocation.getChildren(new MetaDataMatchFilter(name, suffix));
+         if (result != null && result.isEmpty() == false)
+            deployed();
+         return result;
       }
       catch (Exception e)
       {
@@ -624,6 +634,16 @@ public class AbstractDeploymentContext implements DeploymentContext
       }
    }
    
+   public boolean isDeployed()
+   {
+      return deployed;
+   }
+   
+   public void deployed()
+   {
+      deployed = true;
+   }
+
    public void reset()
    {
       if (structureDetermined != StructureDetermined.PREDETERMINED)
@@ -634,6 +654,7 @@ public class AbstractDeploymentContext implements DeploymentContext
             child.reset();
       }
       components.clear();
+      deployed = false;
       
       classLoader = null;
       transientManagedObjects.clear();

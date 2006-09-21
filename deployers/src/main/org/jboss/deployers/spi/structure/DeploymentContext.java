@@ -293,6 +293,18 @@ public interface DeploymentContext
    Attachments getTransientAttachments();
 
    /**
+    * Whether the deployment was processed
+    * 
+    * @return true when processed
+    */
+   boolean isDeployed();
+
+   /**
+    * Touch the context to say it is deployed
+    */
+   void deployed();
+   
+   /**
     * Get the problem for this context
     * 
     * @return the problem

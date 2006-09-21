@@ -366,6 +366,16 @@ public class ComponentDeploymentContext implements DeploymentContext
       return parent.getMetaDataFiles(name, suffix);
    }
    
+   public void deployed()
+   {
+      parent.deployed();
+   }
+
+   public boolean isDeployed()
+   {
+      return parent.isDeployed();
+   }
+
    public void reset()
    {
       components.clear();

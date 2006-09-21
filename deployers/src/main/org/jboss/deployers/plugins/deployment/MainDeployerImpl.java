@@ -31,6 +31,8 @@ import static org.jboss.deployers.spi.structure.StructureDetermined.PREDETERMINE
 import static org.jboss.deployers.spi.structure.StructureDetermined.YES;
 
 import java.util.ArrayList;
+import java.util.Collection;
+import java.util.Collections;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
@@ -79,6 +81,12 @@ public class MainDeployerImpl implements MainDeployer
    
    /** All deployments by name */
    private Map<String, DeploymentContext> allDeployments = new ConcurrentHashMap<String, DeploymentContext>();
+   
+   /** Deployments in error by name */
+   private Map<String, DeploymentContext> errorDeployments = new ConcurrentHashMap<String, DeploymentContext>();
+   
+   /** Deployments missing deployers */
+   private Map<String, DeploymentContext> missingDeployers = new ConcurrentHashMap<String, DeploymentContext>();
 
    /** The undeploy work */
    private List<DeploymentContext> undeploy = new CopyOnWriteArrayList<DeploymentContext>();
@@ -261,6 +269,7 @@ public class MainDeployerImpl implements MainDeployer
          log.error("Unable to determine structure of deployment: " + name, t);
          context.setState(ERROR);
          context.setProblem(t);
+         errorDeployments.put(name, context);
       }
       
       addContext(context);
@@ -283,6 +292,26 @@ public class MainDeployerImpl implements MainDeployer
       removeContext(context);
       
       return true;
+   }
+
+   public Collection<DeploymentContext> getAll()
+   {
+      return Collections.unmodifiableCollection(allDeployments.values());
+   }
+
+   public Collection<DeploymentContext> getErrors()
+   {
+      return Collections.unmodifiableCollection(errorDeployments.values());
+   }
+
+   public Collection<DeploymentContext> getMissingDeployer()
+   {
+      return Collections.unmodifiableCollection(missingDeployers.values());
+   }
+
+   public Collection<DeploymentContext> getTopLevel()
+   {
+      return Collections.unmodifiableCollection(topLevelDeployments.values());
    }
 
    public void process()
@@ -350,6 +379,7 @@ public class MainDeployerImpl implements MainDeployer
                   context.setState(ERROR);
                   context.setProblem(e);
                   errors.add(context);
+                  errorDeployments.put(context.getName(), context);
                   // Unwind the deployment
                   for (int j = i-1; j >= 0; --j)
                   {
@@ -363,8 +393,12 @@ public class MainDeployerImpl implements MainDeployer
          }
          for (DeploymentContext context : deployContexts)
          {
+            String name = context.getName();
+            // TODO Need some metadata that says we expect a deployment to only provide classes
+            if (context.isDeployed() == false && context.getRoot().getName().endsWith(".jar") == false)
+               missingDeployers.put(name, context);
             context.setState(DEPLOYED);
-            log.debug("Deployed: " + context.getName());
+            log.debug("Deployed: " + name);
          }
       }
    }
@@ -556,14 +590,17 @@ public class MainDeployerImpl implements MainDeployer
     */
    private void removeContext(DeploymentContext context)
    {
-      allDeployments.remove(context.getName());
+      String name = context.getName();
+      allDeployments.remove(name);
+      errorDeployments.remove(name);
+      missingDeployers.remove(name);
       if (context.getState() == ERROR)
       {
-         log.debug("Not scheduling removal of context already in error: " + context.getName());
+         log.debug("Not scheduling removal of context already in error: " + name);
          return;
       }
       context.setState(UNDEPLOYING);
-      log.debug("Scheduling undeployment: " + context.getName());
+      log.debug("Scheduling undeployment: " + name);
       undeploy.add(context);
       
       // Remove all the children

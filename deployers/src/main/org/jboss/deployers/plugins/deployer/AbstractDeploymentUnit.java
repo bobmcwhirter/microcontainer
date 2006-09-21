@@ -73,6 +73,7 @@ public class AbstractDeploymentUnit extends AbstractAttachments implements Deplo
       ClassLoader cl = deploymentContext.getClassLoader();
       if (cl == null)
          throw new IllegalStateException("ClassLoader has not been set");
+      deploymentContext.deployed();
       return cl;
    }
 
@@ -128,11 +129,14 @@ public class AbstractDeploymentUnit extends AbstractAttachments implements Deplo
       if (parent != null)
          result.putAll(parent.getPredeterminedManagedObjects().getAttachments());
       result.putAll(deploymentContext.getPredeterminedManagedObjects().getAttachments());
+      if (result.isEmpty() == false)
+         deploymentContext.deployed();
       return Collections.unmodifiableMap(result);
    }
 
    public Object addAttachment(String name, Object attachment)
    {
+      deploymentContext.deployed();
       return deploymentContext.getTransientAttachments().addAttachment(name, attachment);
    }
 
@@ -143,30 +147,48 @@ public class AbstractDeploymentUnit extends AbstractAttachments implements Deplo
          parent = null;
       Object result = deploymentContext.getPredeterminedManagedObjects().getAttachment(name);
       if (result != null)
+      {
+         deploymentContext.deployed();
          return result;
+      }
       if (parent != null)
       {
          result = parent.getPredeterminedManagedObjects().getAttachment(name);
          if (result != null)
+         {
+            deploymentContext.deployed();
             return result;
+         }
       }
       result = deploymentContext.getTransientManagedObjects().getAttachment(name);
       if (result != null)
+      {
+         deploymentContext.deployed();
          return result;
+      }
       if (parent != null)
       {
          result = parent.getTransientManagedObjects().getAttachment(name);
          if (result != null)
+         {
+            deploymentContext.deployed();
             return result;
+         }
       }
       result = deploymentContext.getTransientAttachments().getAttachment(name);
       if (result != null)
+      {
+         deploymentContext.deployed();
          return result;
+      }
       if (parent != null)
       {
          result = parent.getTransientAttachments().getAttachment(name);
          if (result != null)
+         {
+            deploymentContext.deployed();
             return result;
+         }
       }
       return null;
    }
@@ -177,17 +199,35 @@ public class AbstractDeploymentUnit extends AbstractAttachments implements Deplo
       if (deploymentContext.isComponent() == false)
          parent = null;
       if (deploymentContext.getPredeterminedManagedObjects().isAttachmentPresent(name))
+      {
+         deploymentContext.deployed();
          return true;
+      }
       if (parent != null && parent.getPredeterminedManagedObjects().isAttachmentPresent(name))
+      {
+         deploymentContext.deployed();
          return true;
+      }
       if (deploymentContext.getTransientManagedObjects().isAttachmentPresent(name))
+      {
+         deploymentContext.deployed();
          return true;
+      }
       if (parent != null && parent.getTransientAttachments().isAttachmentPresent(name))
+      {
+         deploymentContext.deployed();
          return true;
+      }
       if (deploymentContext.getTransientAttachments().isAttachmentPresent(name))
+      {
+         deploymentContext.deployed();
          return true;
+      }
       if (parent != null && parent.getTransientAttachments().isAttachmentPresent(name))
+      {
+         deploymentContext.deployed();
          return true;
+      }
       return false;
    }
 
@@ -215,12 +255,15 @@ public class AbstractDeploymentUnit extends AbstractAttachments implements Deplo
          if (type.isInstance(object))
             result.add((T) object);
       }
+      if (result.isEmpty() == false)
+         deploymentContext.deployed();
       return result;
    }
 
    @Deprecated
    public DeploymentContext getDeploymentContext()
    {
+      deploymentContext.deployed();
       return deploymentContext;
    }
 }
