@@ -70,6 +70,8 @@ public class IncompleteDeploymentException extends DeploymentException
       return incompleteDeployments;
    }
 
+   // TODO Some of the calculations done in this method should be done upfront in IncompleteDeployments instead!
+   @Override
    public String getMessage()
    {
       StringBuilder buffer = new StringBuilder();
