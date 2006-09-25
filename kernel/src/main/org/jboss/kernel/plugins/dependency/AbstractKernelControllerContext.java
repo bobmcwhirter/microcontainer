@@ -34,7 +34,11 @@ import org.jboss.beans.metadata.spi.MetaDataVisitor;
 import org.jboss.beans.metadata.spi.MetaDataVisitorNode;
 import org.jboss.dependency.plugins.AbstractControllerContext;
 import org.jboss.dependency.plugins.AbstractDependencyInfo;
-import org.jboss.dependency.spi.*;
+import org.jboss.dependency.spi.Controller;
+import org.jboss.dependency.spi.ControllerMode;
+import org.jboss.dependency.spi.ControllerState;
+import org.jboss.dependency.spi.DependencyInfo;
+import org.jboss.dependency.spi.DependencyItem;
 import org.jboss.kernel.Kernel;
 import org.jboss.kernel.spi.dependency.KernelController;
 import org.jboss.kernel.spi.dependency.KernelControllerContext;
@@ -222,12 +226,12 @@ public class AbstractKernelControllerContext extends AbstractControllerContext i
       /**
        * Visited branch stack
        */
-      protected Stack visitorNodeStack;
+      protected Stack<MetaDataVisitorNode> visitorNodeStack;
 
       protected AbstractMetaDataVistor(BeanMetaData bmd)
       {
          this.bmd = bmd;
-         this.visitorNodeStack = new Stack();
+         this.visitorNodeStack = new Stack<MetaDataVisitorNode>();
       }
 
       public void initialVisit(MetaDataVisitorNode node)
@@ -284,7 +288,7 @@ public class AbstractKernelControllerContext extends AbstractControllerContext i
          this.contextState = contextState;
       }
 
-      public Stack visitorNodeStack()
+      public Stack<MetaDataVisitorNode> visitorNodeStack()
       {
          return visitorNodeStack;
       }
@@ -298,6 +302,8 @@ public class AbstractKernelControllerContext extends AbstractControllerContext i
    {
       /**
        * Create a new MetaDataVisitor.
+       * 
+       * @param bmd the bean metadata
        */
       public PreprocessMetaDataVisitor(BeanMetaData bmd)
       {
@@ -354,6 +360,8 @@ public class AbstractKernelControllerContext extends AbstractControllerContext i
    {
       /**
        * Create a new MetaDataVisitor.
+       * 
+       * @param bmd the bean meta data
        */
       public DescribedMetaDataVisitor(BeanMetaData bmd)
       {

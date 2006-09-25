@@ -82,6 +82,8 @@ public class AbstractKernelDeployer
     * Create a new kernel deployer
     * 
     * @param kernel the kernel
+    * @param requiredState the required state
+    * @param mode the controller mode
     */
    public AbstractKernelDeployer(final Kernel kernel, ControllerState requiredState, ControllerMode mode)
    {

@@ -93,15 +93,18 @@ public class AbstractValueMetaData extends JBossObject implements ValueMetaData,
 
    public Class getType(MetaDataVisitor visitor, MetaDataVisitorNode previous) throws Throwable
    {
-      Stack visitorNodeStack = visitor.visitorNodeStack();
-      TypeProvider typeProvider = (TypeProvider) visitorNodeStack.pop();
+      Stack<MetaDataVisitorNode> visitorNodeStack = visitor.visitorNodeStack();
+      // FIXME this popping and pushing looks broken, should be peek?
+      MetaDataVisitorNode node = visitor.visitorNodeStack().pop();
+      // FIXME Not typesafe
+      TypeProvider typeProvider = (TypeProvider) node;
       try
       {
          return typeProvider.getType(visitor, this);
       }
       finally
       {
-         visitorNodeStack.push(typeProvider);
+         visitorNodeStack.push(node);
       }
    }
 

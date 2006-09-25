@@ -67,6 +67,7 @@ public class BeanXMLDeployer extends AbstractKernelDeployer
     * Deploy a url
     * 
     * @param url the url to deploy
+    * @return the kernel deployment
     * @throws Throwable for any error
     */
    public KernelDeployment deploy(final URL url) throws Throwable
@@ -108,6 +109,8 @@ public class BeanXMLDeployer extends AbstractKernelDeployer
     *
     * @param deploymentName the deployment name
     * @param stream the stream
+    * @return the kernel deployment
+    * @throws Throwable for any error
     */
    public KernelDeployment deploy(String deploymentName, final InputStream stream) throws Throwable
    {

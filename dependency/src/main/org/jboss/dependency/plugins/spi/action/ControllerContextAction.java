@@ -43,7 +43,6 @@ public interface ControllerContextAction
     * Uninstall a context
     * 
     * @param context the context
-    * @throws Throwable for any error
     */
    void uninstall(ControllerContext context);
 }

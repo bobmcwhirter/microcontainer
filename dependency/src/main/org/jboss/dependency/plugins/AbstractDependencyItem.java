@@ -188,6 +188,7 @@ public class AbstractDependencyItem extends JBossObject implements DependencyIte
    /**
     * Register a dependency with another context
     * 
+    * @param controller the controller
     * @param context the other context
     */
    protected void addDependsOnMe(Controller controller, ControllerContext context)

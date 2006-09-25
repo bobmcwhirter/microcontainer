@@ -67,6 +67,7 @@ public class KernelPermission extends BasicPermission
     * Create a new Permission
     * 
     * @param name the target
+    * @param actions the actions
     * @throws IllegalArgumentException for an invalid name or target 
     * @throws NullPointerException for null name
     */ 

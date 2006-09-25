@@ -95,6 +95,7 @@ public class AbstractPropertyMetaData extends AbstractFeatureMetaData implements
     * 
     * @param name the name
     * @param value the string value
+    * @param type the type
     */
    public AbstractPropertyMetaData(String name, String value, String type)
    {

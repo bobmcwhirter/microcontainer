@@ -23,15 +23,18 @@ package org.jboss.test.kernel.config.test;
 
 import java.util.HashSet;
 
-import org.jboss.beans.metadata.plugins.*;
+import junit.framework.Test;
+
+import org.jboss.beans.metadata.plugins.AbstractArrayMetaData;
+import org.jboss.beans.metadata.plugins.AbstractBeanMetaData;
+import org.jboss.beans.metadata.plugins.AbstractPropertyMetaData;
+import org.jboss.beans.metadata.plugins.AbstractValueMetaData;
+import org.jboss.beans.metadata.plugins.StringValueMetaData;
 import org.jboss.beans.metadata.spi.PropertyMetaData;
 import org.jboss.kernel.Kernel;
 import org.jboss.kernel.spi.config.KernelConfigurator;
-import org.jboss.kernel.spi.dependency.KernelController;
 import org.jboss.test.kernel.config.support.MyObject;
 import org.jboss.test.kernel.config.support.SimpleBean;
-
-import junit.framework.Test;
 
 /**
  * Array Test Case.

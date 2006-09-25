@@ -278,6 +278,8 @@ public class AbstractKernelController extends AbstractController implements Kern
     *
     * @param context context whose target is instance of clazz
     * @param clazz current class to map context to
+    * @param addition whether this is an addition
+    * @param trace whether trace is enabled
     */
    protected void traverseBean(KernelControllerContext context, Class clazz, boolean addition, boolean trace)
    {

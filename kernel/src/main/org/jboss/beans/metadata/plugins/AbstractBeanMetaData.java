@@ -492,6 +492,7 @@ public class AbstractBeanMetaData extends AbstractFeatureMetaData implements Bea
       return name;
    }
 
+   @SuppressWarnings("unchecked")
    public Object getValue(TypeInfo info, ClassLoader cl) throws Throwable
    {
       ControllerContext context = controller.getInstalledContext(name);

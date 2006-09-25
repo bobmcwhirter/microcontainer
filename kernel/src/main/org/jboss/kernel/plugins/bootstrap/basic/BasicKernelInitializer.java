@@ -176,6 +176,7 @@ public class BasicKernelInitializer extends AbstractKernelInitializer
     * @param kernel the kernel
     * @param name the name
     * @param object the object
+    * @throws Throwable for any error
     */
    protected void register(Kernel kernel, String name, Object object) throws Throwable
    {
@@ -188,6 +189,7 @@ public class BasicKernelInitializer extends AbstractKernelInitializer
     * @param kernel the kernel
     * @param name the name
     * @param object the object
+    * @throws Throwable for any error
     */
    protected void register(Kernel kernel, Object name, Object object) throws Throwable
    {
@@ -214,6 +216,7 @@ public class BasicKernelInitializer extends AbstractKernelInitializer
     * @param kernel the kernel
     * @param object the object
     * @return the entry
+    * @throws Throwable for any error
     */
    protected KernelRegistryEntry createKernelRegistryEntry(Kernel kernel, Object object) throws Throwable
    {

@@ -82,6 +82,5 @@ public interface MetaDataVisitor
     *
     * @return stack of meta data objects in this branch
     */
-   Stack visitorNodeStack();
-
+   Stack<MetaDataVisitorNode> visitorNodeStack();
 }

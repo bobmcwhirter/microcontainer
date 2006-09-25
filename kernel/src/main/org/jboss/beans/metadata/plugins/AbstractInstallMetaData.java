@@ -144,7 +144,6 @@ public class AbstractInstallMetaData extends AbstractLifecycleMetaData implement
        * Create a new InstallationDependencyItem.
        * 
        * @param name the name
-       * @param state the state
        */
       public InstallationDependencyItem(Object name)
       {

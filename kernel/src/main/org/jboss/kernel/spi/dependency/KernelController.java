@@ -74,7 +74,10 @@ public interface KernelController extends KernelObject, Controller
    void removeSupplies(KernelControllerContext context);
 
    /**
-    * @return all instantiated contexts whose target is instance of this class clazz param
+    * Get all instantiated contexts of a type
+    * 
+    * @param clazz the type
+    * @return the contexts
     */
    Set<KernelControllerContext> getInstantiatedContexts(Class clazz);
 
@@ -82,6 +85,7 @@ public interface KernelController extends KernelObject, Controller
     * If zero or multiple instances match class clazz
     * a warning is issued, but no throwable is thrown
     *
+    * @param clazz the type
     * @return context whose target is instance of this class clazz param or null if zero or multiple such instances
     */
    KernelControllerContext getContextByClass(Class clazz);
@@ -89,12 +93,16 @@ public interface KernelController extends KernelObject, Controller
    /**
     * add instantiated context into contextsByClass map
     * look at all target's superclasses and interfaces
+    * 
+    * @param context the context
     */
    void addInstantiatedContext(KernelControllerContext context);
 
    /**
     * remove instantiated context from contextsByClass map
     * look at all target's superclasses and interfaces
+    * 
+    * @param context the context
     */
    void removeInstantiatedContext(KernelControllerContext context);
 }

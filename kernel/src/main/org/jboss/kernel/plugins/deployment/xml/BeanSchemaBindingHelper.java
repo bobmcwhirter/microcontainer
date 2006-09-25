@@ -277,7 +277,7 @@ public class BeanSchemaBindingHelper
    /**
     * Initialize the handlers for the demands type
     * 
-    * @param demandsType the demand type
+    * @param demandType the demand type
     */
    public static void initDemandHandlers(TypeBinding demandType)
    {

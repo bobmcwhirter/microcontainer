@@ -122,7 +122,7 @@ public class MicrocontainerTest extends AbstractTestCaseWithSetup
     *
     * @param url the deployment url
     * @return the deployment
-    * @throws Throwable for any error  
+    * @throws Exception for any error  
     */
    protected KernelDeployment deploy(URL url) throws Exception
    {
@@ -134,7 +134,7 @@ public class MicrocontainerTest extends AbstractTestCaseWithSetup
     *
     * @param resource the deployment resource
     * @return the deployment
-    * @throws Throwable for any error  
+    * @throws Exception for any error  
     */
    protected KernelDeployment deploy(String resource) throws Exception
    {

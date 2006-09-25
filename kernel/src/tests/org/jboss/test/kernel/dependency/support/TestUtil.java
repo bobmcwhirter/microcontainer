@@ -88,6 +88,10 @@ public class TestUtil
    
    /**
     * Install a BeanMetaData
+    * 
+    * @param beanMetaData the bean meta data
+    * @return the context
+    * @throws Throwable for any error
     */
    public KernelControllerContext install(BeanMetaData beanMetaData) throws Throwable
    {
@@ -96,14 +100,21 @@ public class TestUtil
    
    /**
     * Uninstall
+    * 
+    * @param name the name
+    * @throws Throwable for any error
     */
-   public void uninstall(String name1) throws Throwable
+   public void uninstall(String name) throws Throwable
    {
-      controller.uninstall(name1);
+      controller.uninstall(name);
    }
    
    /**
     * Get a context
+    * 
+    * @param name the name
+    * @return the context
+    * @throws Throwable for any error
     */
    public ControllerContext getContext(String name) throws Throwable
    {
@@ -112,6 +123,10 @@ public class TestUtil
    
    /**
     * Get installed context
+    * 
+    * @param name the name
+    * @return the context
+    * @throws Throwable for any error
     */
    public ControllerContext getInstalledContext(String name) throws Throwable
    {
@@ -120,6 +135,9 @@ public class TestUtil
    
    /**
     * Deploy a url
+    * 
+    * @param url the url
+    * @throws Throwable for any error
     */
    public void deploy(URL url) throws Throwable
    {

@@ -22,6 +22,7 @@
 package org.jboss.beans.metadata.plugins;
 
 import org.jboss.beans.metadata.spi.MetaDataVisitor;
+import org.jboss.beans.metadata.spi.MetaDataVisitorNode;
 import org.jboss.dependency.spi.ControllerContext;
 import org.jboss.dependency.spi.DependencyItem;
 import org.jboss.kernel.spi.dependency.KernelController;
@@ -141,7 +142,11 @@ public class AbstractInjectionValueMetaData extends AbstractDependencyValueMetaD
          {
             KernelControllerContext context = visitor.getControllerContext();
             controller = (KernelController) context.getController(); // set controller
-            TypeProvider typeProvider = (TypeProvider) visitor.visitorNodeStack().pop();
+            
+            // FIXME this popping and pushing looks broken, should be peek?
+            MetaDataVisitorNode node = visitor.visitorNodeStack().pop();
+            // FIXME Not typesafe
+            TypeProvider typeProvider = (TypeProvider) node;
             try
             {
                DependencyItem item = new ClassContextDependencyItem(
@@ -154,9 +159,10 @@ public class AbstractInjectionValueMetaData extends AbstractDependencyValueMetaD
             catch (Throwable throwable)
             {
                throw new Error(throwable);
-            } finally
+            } 
+            finally
             {
-               visitor.visitorNodeStack().push(typeProvider);
+               visitor.visitorNodeStack().push(node);
             }
          }
          else

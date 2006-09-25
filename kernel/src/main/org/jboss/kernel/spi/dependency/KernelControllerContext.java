@@ -79,7 +79,7 @@ public interface KernelControllerContext extends KernelRegistryEntry
    /**
     * Set the metadata context
     * 
-    * @oparam mctx the metadata context
+    * @param mctx the metadata context
     */
    void setMetaDataContext(MetaDataContext mctx);
 }

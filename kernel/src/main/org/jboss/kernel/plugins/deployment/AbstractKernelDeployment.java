@@ -79,7 +79,7 @@ public class AbstractKernelDeployment extends JBossObject implements KernelDeplo
    /**
     * Set the bean factories.
     * 
-    * @param beans a List<BeanMetaDataFactory>.
+    * @param beanFactories a List<BeanMetaDataFactory>.
     */
    public void setBeanFactories(List<BeanMetaDataFactory> beanFactories)
    {

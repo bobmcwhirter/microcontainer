@@ -23,6 +23,7 @@ package org.jboss.beans.metadata.plugins;
 
 import org.jboss.beans.metadata.spi.BeanMetaData;
 import org.jboss.beans.metadata.spi.MetaDataVisitor;
+import org.jboss.beans.metadata.spi.MetaDataVisitorNode;
 import org.jboss.beans.metadata.spi.PropertyMetaData;
 import org.jboss.dependency.spi.ControllerState;
 import org.jboss.joinpoint.spi.TargettedJoinpoint;
@@ -108,7 +109,7 @@ public abstract class AbstractTypeMetaData extends AbstractValueMetaData
 
    private void preparePreinstantiatedLookup(MetaDataVisitor visitor)
    {
-      Object parent = visitor.visitorNodeStack().pop();
+      MetaDataVisitorNode parent = visitor.visitorNodeStack().pop();
       try
       {
          if (parent instanceof PropertyMetaData)
@@ -129,6 +130,7 @@ public abstract class AbstractTypeMetaData extends AbstractValueMetaData
       }
    }
 
+   @SuppressWarnings("unchecked")
    protected Object preinstantiatedLookup(ClassLoader cl, Class expected)
    {
       Object result = null;

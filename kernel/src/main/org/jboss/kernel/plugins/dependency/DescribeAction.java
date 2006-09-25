@@ -64,13 +64,12 @@ public class DescribeAction extends KernelControllerContextAction
 
          DependencyInfo depends = context.getDependencyInfo();
          // add custom dependencies (e.g. AOP layer).
-         List dependencies = info.getDependencies();
+         List<Object> dependencies = info.getDependencies();
          if (dependencies != null)
          {
-            Iterator it = dependencies.iterator();
-            while (it.hasNext())
+            for (Object dependencyName : dependencies)
             {
-               AbstractDependencyItem dependency = new AbstractDependencyItem(metaData.getName(), it.next(), ControllerState.INSTANTIATED, ControllerState.INSTALLED);
+               AbstractDependencyItem dependency = new AbstractDependencyItem(metaData.getName(), dependencyName, ControllerState.INSTANTIATED, ControllerState.INSTALLED);
                depends.addIDependOn(dependency);
             }
          }

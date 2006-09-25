@@ -143,7 +143,7 @@ public class PropertyKernelConfig extends AbstractKernelConfig
     * @param type the type
     * @param defaultType the default implementation
     * @return the implementation object
-    * @throws Exception for any error
+    * @throws Throwable for any error
     */
    protected Object getImplementation(String type, String defaultType) throws Throwable
    {

@@ -58,6 +58,7 @@ public class Configurator extends Config
    /**
     * Instantiate and configure a bean
     * 
+    * @param config the confg
     * @param info the bean info
     * @param metaData the bean metadata
     * @return the instantiated and configured object

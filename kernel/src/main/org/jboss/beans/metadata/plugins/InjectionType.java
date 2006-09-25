@@ -41,7 +41,7 @@ public class InjectionType extends JBossObject
    /**
     * Create a new state
     *
-    * @param modeString the string representation
+    * @param typeString the string representation
     */
    public InjectionType(String typeString)
    {

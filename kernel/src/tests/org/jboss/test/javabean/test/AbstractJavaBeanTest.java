@@ -50,7 +50,7 @@ public class AbstractJavaBeanTest extends AbstractTestCaseWithSetup
     * Unmarshal some xml
     * 
     * @param name the name
-    * @param class the expected type
+    * @param expected the expected type
     * @return the unmarshalled object
     * @throws Exception for any error
     */

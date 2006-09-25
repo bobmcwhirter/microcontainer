@@ -103,6 +103,7 @@ public class MicrocontainerTestDelegate extends AbstractTestDelegate
     * Get the kernel bootstrap
     * 
     * @return the bootstrap
+    * @throws Exception for any error
     */
    protected AbstractBootstrap getBootstrap() throws Exception
    {
@@ -142,6 +143,8 @@ public class MicrocontainerTestDelegate extends AbstractTestDelegate
    
    /**
     * Validate
+    * 
+    * @throws Exception for any error
     */
    protected void validate() throws Exception
    {
@@ -172,7 +175,7 @@ public class MicrocontainerTestDelegate extends AbstractTestDelegate
     *
     * @param url the deployment url
     * @return the deployment
-    * @throws Throwable for any error  
+    * @throws Exception for any error  
     */
    protected KernelDeployment deploy(URL url) throws Exception
    {

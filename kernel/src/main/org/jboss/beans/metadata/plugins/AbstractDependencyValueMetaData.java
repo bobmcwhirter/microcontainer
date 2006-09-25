@@ -108,9 +108,9 @@ public class AbstractDependencyValueMetaData extends AbstractValueMetaData
     * 
     * @param whenRequiredState the when required state or null if it uses current context state
     */
-   public void setWhenRequiredState(ControllerState whenRequredState)
+   public void setWhenRequiredState(ControllerState whenRequiredState)
    {
-      this.whenRequiredState = whenRequredState;
+      this.whenRequiredState = whenRequiredState;
       flushJBossObjectCache();
    }
 
