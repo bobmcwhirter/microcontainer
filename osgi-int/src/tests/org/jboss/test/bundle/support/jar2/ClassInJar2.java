@@ -1,6 +1,6 @@
 package org.jboss.test.bundle.support.jar2;
 
-import org.jboss.test.vfs.support.CommonClass;
+import org.jboss.test.bundle.support.CommonClass;
 
 /**
  * @author Scott.Stark@jboss.org

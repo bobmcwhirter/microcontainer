@@ -22,8 +22,6 @@
 package org.jboss.vfs.bundle;
 
 import java.util.StringTokenizer;
-import java.util.regex.Matcher;
-import java.util.regex.Pattern;
 
 import org.osgi.framework.Version;
 

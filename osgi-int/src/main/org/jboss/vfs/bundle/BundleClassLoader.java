@@ -7,15 +7,11 @@ import java.util.Enumeration;
 
 import org.jboss.classloading.spi.ClassLoadingDomain;
 import org.jboss.classloading.spi.DomainClassLoader;
-import org.jboss.logging.Logger;
 import org.osgi.framework.Bundle;
 
 public class BundleClassLoader extends SecureClassLoader
    implements DomainClassLoader
 {
-
-   private static Logger log = Logger.getLogger(BundleClassLoader.class);
-
    public BundleClassLoader(Bundle bundle)
    {
 	   

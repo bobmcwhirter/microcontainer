@@ -28,26 +28,20 @@ import java.security.AccessController;
 import java.util.ArrayList;
 import java.util.Dictionary;
 import java.util.Enumeration;
-import java.util.HashMap;
 import java.util.Hashtable;
 import java.util.Iterator;
-import java.util.List;
-import java.util.Map;
-import java.util.StringTokenizer;
 import java.util.Map.Entry;
 import java.util.jar.Attributes;
 import java.util.jar.JarInputStream;
 import java.util.jar.Manifest;
 
-import org.jboss.vfs.spi.ReadOnlyVFS;
-import org.jboss.vfs.spi.VirtualFile;
+import org.jboss.virtual.VFS;
+import org.jboss.virtual.VirtualFile;
 import org.osgi.framework.AdminPermission;
 import org.osgi.framework.Bundle;
 import org.osgi.framework.BundleException;
 import org.osgi.framework.Constants;
 import org.osgi.framework.ServiceReference;
-import org.osgi.service.packageadmin.ExportedPackage;
-import org.osgi.service.packageadmin.PackageAdmin;
 
 /**
  * An implementation of the OSGi bundle interface that uses a vfs to access the bundle contents.
@@ -57,7 +51,7 @@ import org.osgi.service.packageadmin.PackageAdmin;
  */
 public class VFSBundle implements Bundle
 {
-   private ReadOnlyVFS vfs;
+   private VFS vfs;
    private String vfsPath;
    private long bundleID;
    /** Is this an extension bundle */
@@ -76,8 +70,9 @@ public class VFSBundle implements Bundle
     * 
     * @param vfs - the VFS holding the bundle
     * @param vfsPath - the path in the VFS for the bundle root
+    * @param bundleID the bundle id
     */
-   public VFSBundle(ReadOnlyVFS vfs, String vfsPath, long bundleID)
+   public VFSBundle(VFS vfs, String vfsPath, long bundleID)
    {
       this.vfs = vfs;
       this.vfsPath = vfsPath;
@@ -143,6 +138,36 @@ public class VFSBundle implements Bundle
          AccessController.checkPermission(p);
       }
       return headers;
+   }
+
+   /**
+    * Get the category.
+    * 
+    * @return the category.
+    */
+   public String getCategory()
+   {
+      return category;
+   }
+
+   /**
+    * Get the classpath.
+    * 
+    * @return the classpath.
+    */
+   public ArrayList<String> getClasspath()
+   {
+      return classpath;
+   }
+
+   /**
+    * Get the description.
+    * 
+    * @return the description.
+    */
+   public String getDescription()
+   {
+      return description;
    }
 
    /*
@@ -333,7 +358,7 @@ public class VFSBundle implements Bundle
 
       try
       {
-         VirtualFile bundleFile = vfs.resolveFile(this.vfsPath);
+         VirtualFile bundleFile = vfs.findChildFromRoot(this.vfsPath);
          update(bundleFile);
       }
       catch(IOException e)
@@ -386,7 +411,7 @@ public class VFSBundle implements Bundle
    protected void validateFragmentHost()
    {
       String key = Constants.FRAGMENT_HOST.toLowerCase();
-      String value = headers.get(key);
+      headers.get(key); // TODO what?
       
    }
    /**
@@ -397,8 +422,8 @@ public class VFSBundle implements Bundle
    protected void extractImports()
    {
       String key = Constants.IMPORT_PACKAGE;
-      String value = headers.get(key);
-      HeaderValue.PkgInfo pkgInfo = new HeaderValue.PkgInfo();
+      headers.get(key); // TODO what?
+      new HeaderValue.PkgInfo(); // TODO what?
    }
    protected void extractExports()
    {
