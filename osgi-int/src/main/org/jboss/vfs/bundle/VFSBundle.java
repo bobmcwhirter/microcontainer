@@ -358,7 +358,7 @@ public class VFSBundle implements Bundle
 
       try
       {
-         VirtualFile bundleFile = vfs.findChildFromRoot(this.vfsPath);
+         VirtualFile bundleFile = vfs.findChild(this.vfsPath);
          update(bundleFile);
       }
       catch(IOException e)
