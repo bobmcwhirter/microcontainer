@@ -24,9 +24,11 @@ package org.jboss.deployers.plugins.structure.vfs;
 import java.io.IOException;
 
 import org.jboss.deployers.plugins.structure.AbstractDeploymentContext;
+import org.jboss.deployers.plugins.structure.vfs.jar.JARCandidateStructureVisitor;
 import org.jboss.deployers.spi.structure.DeploymentContext;
 import org.jboss.logging.Logger;
 import org.jboss.virtual.VirtualFile;
+import org.jboss.virtual.VirtualFileFilter;
 import org.jboss.virtual.VisitorAttributes;
 import org.jboss.virtual.plugins.vfs.helpers.AbstractVirtualFileVisitor;
 
@@ -36,11 +38,11 @@ import org.jboss.virtual.plugins.vfs.helpers.AbstractVirtualFileVisitor;
  * @author <a href="adrian@jboss.com">Adrian Brock</a>
  * @version $Revision: 1.1 $
  */
-public class CandidateStructureVisitor extends AbstractVirtualFileVisitor
+public class AbstractCandidateStructureVisitor extends AbstractVirtualFileVisitor
 {
    /** The log */
-   private static final Logger log = Logger.getLogger(CandidateStructureVisitor.class);
-   
+   private static final Logger log = Logger.getLogger(JARCandidateStructureVisitor.class);
+
    /** The parent deployment context */
    private final DeploymentContext parent;
 
@@ -49,6 +51,9 @@ public class CandidateStructureVisitor extends AbstractVirtualFileVisitor
 
    /** Ignore directories */
    private boolean ignoreDirectories;
+
+   /** A filter */
+   private VirtualFileFilter filter;
    
    /**
     * Create a new CandidateStructureVisitor.
@@ -56,9 +61,9 @@ public class CandidateStructureVisitor extends AbstractVirtualFileVisitor
     * @param parent the parent
     * @throws IllegalArgumentException for a null parent
     */
-   public CandidateStructureVisitor(DeploymentContext parent)
+   public AbstractCandidateStructureVisitor(DeploymentContext parent)
    {
-      this(parent, null, false);
+      this(parent, null);
    }
    
    /**
@@ -66,10 +71,9 @@ public class CandidateStructureVisitor extends AbstractVirtualFileVisitor
     * 
     * @param parent the parent
     * @param attributes the attributes
-    * @param ignoreDirectories whether to ignore directories
     * @throws IllegalArgumentException for a null parent
     */
-   public CandidateStructureVisitor(DeploymentContext parent, VisitorAttributes attributes, boolean ignoreDirectories)
+   public AbstractCandidateStructureVisitor(DeploymentContext parent, VisitorAttributes attributes)
    {
       super(attributes);
       if (parent == null)
@@ -80,9 +84,58 @@ public class CandidateStructureVisitor extends AbstractVirtualFileVisitor
          metaDataPath = metaDataLocation.getPathName(); 
       else
          metaDataPath = null;
-      this.ignoreDirectories = ignoreDirectories;
    }
    
+   /**
+    * Get the parent deployment context
+    * 
+    * @return the parent.
+    */
+   public DeploymentContext getParent()
+   {
+      return parent;
+   }
+
+   /**
+    * Get the ignoreDirectories.
+    * 
+    * @return the ignoreDirectories.
+    */
+   public boolean isIgnoreDirectories()
+   {
+      return ignoreDirectories;
+   }
+
+   /**
+    * Get the filter.
+    * 
+    * @return the filter.
+    */
+   public VirtualFileFilter getFilter()
+   {
+      return filter;
+   }
+
+   /**
+    * Set the filter.
+    * 
+    * @param filter the filter.
+    */
+   public void setFilter(VirtualFileFilter filter)
+   {
+      this.filter = filter;
+   }
+
+   /**
+    * Set the ignoreDirectories.
+    * 
+    * @param ignoreDirectories the ignoreDirectories.
+    */
+   public void setIgnoreDirectories(boolean ignoreDirectories)
+   {
+      this.ignoreDirectories = ignoreDirectories;
+   }
+
    public void visit(VirtualFile virtualFile)
    {
       DeploymentContext candidate = createCandidate(virtualFile);
@@ -102,9 +155,10 @@ public class CandidateStructureVisitor extends AbstractVirtualFileVisitor
       if (metaDataPath != null && virtualFile.getPathName().startsWith(metaDataPath))
          return null;
 
+      // Ignore directories that are not archives when asked
       try
       {
-         if (ignoreDirectories && virtualFile.isLeaf() && virtualFile.isArchive() == false)
+         if (ignoreDirectories && virtualFile.isLeaf() == false && virtualFile.isArchive() == false)
             return null;
       }
       catch (IOException e)
@@ -112,6 +166,10 @@ public class CandidateStructureVisitor extends AbstractVirtualFileVisitor
          log.debug("Ignoring " + virtualFile + " reason=" + e);
          return null;
       }
+      
+      // Apply any filter
+      if (filter != null && filter.accepts(virtualFile) == false)
+         return null;
       
       return new AbstractDeploymentContext(virtualFile, true, parent);
    }

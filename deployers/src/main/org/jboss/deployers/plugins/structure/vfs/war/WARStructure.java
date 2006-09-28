@@ -29,6 +29,8 @@ import org.jboss.deployers.plugins.structure.vfs.AbstractStructureDeployer;
 import org.jboss.deployers.spi.structure.DeploymentContext;
 import org.jboss.virtual.VFSUtils;
 import org.jboss.virtual.VirtualFile;
+import org.jboss.virtual.VirtualFileFilter;
+import org.jboss.virtual.plugins.vfs.helpers.SuffixMatchFilter;
 
 /**
  * WARStructure.
@@ -38,10 +40,39 @@ import org.jboss.virtual.VirtualFile;
  */
 public class WARStructure extends AbstractStructureDeployer
 {
+   /** The default filter */
+   public static final VirtualFileFilter DEFAULT_WEB_INF_LIB_FILTER = new SuffixMatchFilter(".jar");
+   
+   /** The web-inf/lib filter */
+   private VirtualFileFilter webInfLibFilter = DEFAULT_WEB_INF_LIB_FILTER;
+   
    @Override
    public int getRelativeOrder()
    {
       return 1000;
+   }
+
+   /**
+    * Get the webInfLibFilter.
+    * 
+    * @return the webInfLibFilter.
+    */
+   public VirtualFileFilter getWebInfLibFilter()
+   {
+      return webInfLibFilter;
+   }
+
+   /**
+    * Set the webInfLibFilter.
+    * 
+    * @param webInfLibFilter the webInfLibFilter.
+    * @throws IllegalArgumentException for a null filter
+    */
+   public void setWebInfLibFilter(VirtualFileFilter webInfLibFilter)
+   {
+      if (webInfLibFilter == null)
+         throw new IllegalArgumentException("Null filter");
+      this.webInfLibFilter = webInfLibFilter;
    }
 
    public boolean determineStructure(DeploymentContext context)
@@ -91,7 +122,7 @@ public class WARStructure extends AbstractStructureDeployer
                try
                {
                   VirtualFile webinfLib = webinf.findChild("lib");
-                  List<VirtualFile> archives = webinfLib.getChildren(WebInfLibFilter.INSTANCE);
+                  List<VirtualFile> archives = webinfLib.getChildren(webInfLibFilter);
                   for (VirtualFile archive : archives)
                      paths.add(archive);
                }

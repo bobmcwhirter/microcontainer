@@ -89,8 +89,7 @@ public class JARStructure extends AbstractStructureDeployer
             context.setClassPath(paths);
             
             // We tentatively try all the children as potential subdeployments
-            // but ignore subdirectories if it is an archive
-            addAllChildren(context, root.isArchive());
+            addAllChildren(context);
             
             return true;
          }

@@ -19,49 +19,50 @@
   * Software Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA
   * 02110-1301 USA, or see the FSF site: http://www.fsf.org.
   */
-package org.jboss.deployers.plugins.structure.vfs.war;
+package org.jboss.virtual.plugins.vfs.helpers;
 
-import java.io.IOException;
+import java.util.List;
 
-import org.jboss.logging.Logger;
 import org.jboss.virtual.VirtualFile;
-import org.jboss.virtual.VirtualFileFilterWithAttributes;
-import org.jboss.virtual.VisitorAttributes;
+import org.jboss.virtual.VirtualFileFilter;
 
 /**
- * Filters web-inf/lib for archives
+ * Filters out a set of suffixes
  * 
- * @author Scott.Stark@jboss.org
  * @author adrian@jboss.org
  * @version $Revision: 44223 $
  */
-public class WebInfLibFilter implements VirtualFileFilterWithAttributes
+public class SuffixesExcludeFilter implements VirtualFileFilter
 {
-   /** The log */
-   private static final Logger log = Logger.getLogger(WebInfLibFilter.class);
+   /** The suffixes */
+   private List<String> suffixes;
    
-   /** The instance */
-   public static final WebInfLibFilter INSTANCE = new WebInfLibFilter();
-   
-   public VisitorAttributes getAttributes()
+   /**
+    * Create a new SuffixMatchFilter,
+    * 
+    * @param suffixes the suffixes
+    * @throws IllegalArgumentException for null suffixes
+    */
+   public SuffixesExcludeFilter(List<String> suffixes)
    {
-      return VisitorAttributes.DEFAULT;
+      if (suffixes == null)
+         throw new IllegalArgumentException("Null suffixes");
+      for (String suffix : suffixes)
+      {
+         if (suffix == null)
+            throw new IllegalArgumentException("Null suffix in " + suffixes);
+      }
+      this.suffixes = suffixes;
    }
 
    public boolean accepts(VirtualFile file)
    {
-      try
+      String name = file.getName();
+      for (int i = 0; i < suffixes.size(); ++i)
       {
-         // We want archives
-         if (file.isArchive())
-            return true;
+         if (name.endsWith(suffixes.get(0)))
+            return false;
       }
-      catch (IOException e)
-      {
-         log.warn("Ignoring " + file + " reason=" + e);
-      }
-      
-      // We ignore everything else
-      return false;
+      return true;
    }
 }
