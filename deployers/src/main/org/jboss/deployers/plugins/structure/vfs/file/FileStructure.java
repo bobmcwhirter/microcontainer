@@ -99,7 +99,7 @@ public class FileStructure extends AbstractStructureDeployer
       try
       {
          VirtualFile root = context.getRoot();
-         if (root.isFile())
+         if (root.isLeaf())
          {
             // It must be top level
             if (context.isTopLevel() == false)

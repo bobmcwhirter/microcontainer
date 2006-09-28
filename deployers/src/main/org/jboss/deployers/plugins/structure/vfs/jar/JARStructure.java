@@ -49,7 +49,7 @@ public class JARStructure extends AbstractStructureDeployer
       try
       {
          VirtualFile root = context.getRoot();
-         if (root.isDirectory())
+         if (root.isLeaf() == false)
          {
             if (root.isArchive() == false)
             {

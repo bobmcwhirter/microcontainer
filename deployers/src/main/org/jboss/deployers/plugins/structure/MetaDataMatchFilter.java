@@ -44,7 +44,7 @@ public class MetaDataMatchFilter implements VirtualFileFilterWithAttributes
    
    /**
     * Create a new MetaDataMatchFilter.
-    * using {@link VisitorAttributes#NO_DIRECTORIES}
+    * using {@link VisitorAttributes#LEAVES_ONLY}
     * 
     * @param name the name to exactly match
     * @param suffix the suffix to partially match
@@ -60,7 +60,7 @@ public class MetaDataMatchFilter implements VirtualFileFilterWithAttributes
     * 
     * @param name the name to exactly match
     * @param suffix the suffix to partially match
-    * @param attributes the attributes, pass null to use {@link VisitorAttributes#NO_DIRECTORIES}
+    * @param attributes the attributes, pass null to use {@link VisitorAttributes#LEAVES_ONLY}
     * @throws IllegalArgumentException if both the name and suffix are null
     */
    public MetaDataMatchFilter(String name, String suffix, VisitorAttributes attributes)
@@ -70,7 +70,7 @@ public class MetaDataMatchFilter implements VirtualFileFilterWithAttributes
       this.name = name;
       this.suffix = suffix;
       if (attributes == null)
-         attributes = VisitorAttributes.NO_DIRECTORIES;
+         attributes = VisitorAttributes.LEAVES_ONLY;
       this.attributes = attributes;
    }
    

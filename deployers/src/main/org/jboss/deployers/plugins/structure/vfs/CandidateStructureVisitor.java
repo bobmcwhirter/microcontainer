@@ -104,7 +104,7 @@ public class CandidateStructureVisitor extends AbstractVirtualFileVisitor
 
       try
       {
-         if (ignoreDirectories && virtualFile.isDirectory() && virtualFile.isArchive() == false)
+         if (ignoreDirectories && virtualFile.isLeaf() && virtualFile.isArchive() == false)
             return null;
       }
       catch (IOException e)

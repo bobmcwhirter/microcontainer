@@ -49,7 +49,7 @@ public class WARStructure extends AbstractStructureDeployer
       try
       {
          VirtualFile root = context.getRoot();
-         if (root.isDirectory())
+         if (root.isLeaf() == false)
          {
             // We require either a WEB-INF or the name ends in .war
             if (root.getName().endsWith(".war") == false)

@@ -575,7 +575,7 @@ public class AbstractDeploymentContext implements DeploymentContext
          if (metaDataLocation == null)
          {
             // It has to be a plain file that is not an archive
-            if (root != null && root.isFile() && root.isArchive() == false)
+            if (root != null && root.isLeaf() && root.isArchive() == false)
             {
                String fileName = root.getName();
                if (fileName.equals(name))
@@ -609,7 +609,7 @@ public class AbstractDeploymentContext implements DeploymentContext
          if (metaDataLocation == null)
          {
             // It has to be a plain file that is not an archive
-            if (root != null && root.isFile() && root.isArchive() == false)
+            if (root != null && root.isLeaf() && root.isArchive() == false)
             {
                String fileName = root.getName();
                if (name != null && fileName.equals(name))

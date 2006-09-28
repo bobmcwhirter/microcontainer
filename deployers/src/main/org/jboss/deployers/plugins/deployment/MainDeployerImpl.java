@@ -53,6 +53,7 @@ import org.jboss.deployers.spi.deployment.MainDeployer;
 import org.jboss.deployers.spi.structure.DeploymentContext;
 import org.jboss.deployers.spi.structure.vfs.StructureDeployer;
 import org.jboss.logging.Logger;
+import org.jboss.virtual.VirtualFile;
 
 /**
  * MainDeployerImpl.
@@ -395,7 +396,11 @@ public class MainDeployerImpl implements MainDeployer
          {
             String name = context.getName();
             // TODO Need some metadata that says we expect a deployment to only provide classes
-            if (context.isDeployed() == false && context.getRoot().getName().endsWith(".jar") == false)
+            boolean isJar = false;
+            VirtualFile root = context.getRoot();
+            if (root != null && root.getName().endsWith(".jar"))
+               isJar = true;
+            if (context.isDeployed() == false && isJar == false)
                missingDeployers.put(name, context);
             context.setState(DEPLOYED);
             log.debug("Deployed: " + name);

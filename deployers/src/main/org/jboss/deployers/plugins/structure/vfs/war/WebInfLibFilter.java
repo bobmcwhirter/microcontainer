@@ -27,7 +27,6 @@ import org.jboss.logging.Logger;
 import org.jboss.virtual.VirtualFile;
 import org.jboss.virtual.VirtualFileFilterWithAttributes;
 import org.jboss.virtual.VisitorAttributes;
-import org.jboss.virtual.plugins.context.jar.JarUtils;
 
 /**
  * Filters web-inf/lib for archives
@@ -62,10 +61,6 @@ public class WebInfLibFilter implements VirtualFileFilterWithAttributes
       {
          // We want archives
          if (file.isArchive())
-            return true;
-         
-         // Or directories pretending to be archives
-         if (file.isDirectory() && JarUtils.isArchive(file.getName()))
             return true;
       }
       catch (IOException e)
