@@ -98,6 +98,17 @@ public class IncompleteDeploymentException extends DeploymentException
       // Popluate the potential root causes
       Map<String, String> rootCauses = new HashMap<String, String>();
 
+      // Missing dependencies are root causes
+      Map<String, Set<MissingDependency>> contextsMissingDependencies = incompleteDeployments.getContextsMissingDependencies();
+      if (contextsMissingDependencies.isEmpty() == false)
+      {
+         for (Map.Entry<String, Set<MissingDependency>> entry : contextsMissingDependencies.entrySet())
+         {
+            for (MissingDependency dependency : entry.getValue())
+               rootCauses.put(dependency.getDependency(), dependency.getActualState());
+         }
+      }
+
       // Errors are root causes
       Map<String, Throwable> contextsInError = incompleteDeployments.getContextsInError();
       if (contextsInError.isEmpty() == false)
@@ -109,16 +120,6 @@ public class IncompleteDeploymentException extends DeploymentException
                rootCauses.put(entry.getKey(), "** UNKNOWN ERROR **");
             else
                rootCauses.put(entry.getKey(), t.toString());
-         }
-      }
-      // Missing dependencies are root causes
-      Map<String, Set<MissingDependency>> contextsMissingDependencies = incompleteDeployments.getContextsMissingDependencies();
-      if (contextsMissingDependencies.isEmpty() == false)
-      {
-         for (Map.Entry<String, Set<MissingDependency>> entry : contextsMissingDependencies.entrySet())
-         {
-            for (MissingDependency dependency : entry.getValue())
-               rootCauses.put(dependency.getDependency(), dependency.getActualState());
          }
       }
 
