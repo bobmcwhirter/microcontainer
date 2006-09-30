@@ -119,8 +119,7 @@ public class AbstractDeploymentContext implements DeploymentContext
       try
       {
          URI uri = file.toURI();
-         String name = uri.toString();
-         return name;
+         return uri.toString();
       }
       catch (Exception e)
       {

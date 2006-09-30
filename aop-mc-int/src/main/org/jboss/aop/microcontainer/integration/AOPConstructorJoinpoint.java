@@ -74,9 +74,7 @@ public class AOPConstructorJoinpoint extends BasicConstructorJoinPoint
       params.setTarget(target);
       params.setContainerCache(cache);
 
-      Object proxy = proxyFactory.createAdvisedProxy(params);
-
-      return proxy;
+      return proxyFactory.createAdvisedProxy(params);
    }
 
    private Object createTarget(ContainerCache cache) throws Throwable

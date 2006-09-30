@@ -53,8 +53,7 @@ public class ThisValueMetaData extends AbstractValueMetaData
       ControllerContext context = controller.getContext(value, ControllerState.INSTANTIATED);
       if (context == null)
          throw new Error("Could not deference this " + this);
-      Object result = context.getTarget();
-      return result;
+      return context.getTarget();
    }
 
    public void initialVisit(MetaDataVisitor visitor)

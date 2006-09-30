@@ -202,7 +202,7 @@ public class KernelPermission extends BasicPermission
       public Enumeration<Permission> elements()
       {
          final Iterator<Permission> iter = permissions.iterator();
-         Enumeration<Permission> enumerator = new Enumeration<Permission>()
+         return new Enumeration<Permission>()
          {
             public boolean hasMoreElements()
             {
@@ -214,7 +214,6 @@ public class KernelPermission extends BasicPermission
                return iter.next();
             }
          };
-         return enumerator;
       }
    }
 }

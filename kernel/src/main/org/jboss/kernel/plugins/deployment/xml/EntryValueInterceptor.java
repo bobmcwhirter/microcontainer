@@ -40,7 +40,6 @@ public class EntryValueInterceptor extends DefaultElementInterceptor
    public void add(Object parent, Object child, QName name)
    {
       MapEntry entry = (MapEntry) parent;
-      ValueMetaData value = (ValueMetaData) child;
-      entry.value = value;
+      entry.value = (ValueMetaData) child;
    }
 }

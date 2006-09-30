@@ -75,7 +75,7 @@ public abstract class AttachmentsTest extends BaseTestCase
       
       try
       {
-         mutable.addAttachment((String) null, "attachment", String.class);
+         mutable.addAttachment(null, "attachment", String.class);
          fail("Should not be here!");
       }
       catch (Throwable t)
@@ -246,7 +246,7 @@ public abstract class AttachmentsTest extends BaseTestCase
       
       try
       {
-         mutable.removeAttachment((String) null, String.class);
+         mutable.removeAttachment(null, String.class);
          fail("Should not be here!");
       }
       catch (Throwable t)
@@ -400,7 +400,7 @@ public abstract class AttachmentsTest extends BaseTestCase
       
       try
       {
-         attachments.getAttachment((String) null, String.class);
+         attachments.getAttachment(null, String.class);
          fail("Should not be here!");
       }
       catch (Throwable t)
@@ -445,7 +445,7 @@ public abstract class AttachmentsTest extends BaseTestCase
       
       try
       {
-         attachments.isAttachmentPresent((String) null, String.class);
+         attachments.isAttachmentPresent(null, String.class);
          fail("Should not be here!");
       }
       catch (Throwable t)

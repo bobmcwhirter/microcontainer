@@ -248,8 +248,7 @@ public class BasicDependencyTestCase extends AbstractDependencyTest
    
    protected TestDelegate getDelegate1()
    {
-      TestDelegate result = new TestDelegate("Name1");
-      return result;
+      return new TestDelegate("Name1");
    }
    
    protected TestDelegate getDelegate2()

@@ -1145,8 +1145,7 @@ public class BeanSchemaBinding
          public void add(Object parent, Object child, QName name)
          {
             MapEntry entry = (MapEntry) parent;
-            ValueMetaData value = (ValueMetaData) child;
-            entry.key = value;
+            entry.key = (ValueMetaData) child;
          }
       });
 
@@ -1156,8 +1155,7 @@ public class BeanSchemaBinding
          public void add(Object parent, Object child, QName name)
          {
             MapEntry entry = (MapEntry) parent;
-            ValueMetaData value = (ValueMetaData) child;
-            entry.value = value;
+            entry.value = (ValueMetaData) child;
          }
       });
    }

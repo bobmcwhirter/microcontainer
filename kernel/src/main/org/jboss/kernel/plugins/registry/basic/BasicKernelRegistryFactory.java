@@ -85,7 +85,7 @@ public class BasicKernelRegistryFactory implements KernelRegistryPlugin
 
       synchronized (entries)
       {
-         entry = (KernelRegistryEntry) entries.remove(name);
+         entry = entries.remove(name);
          if (entry == null)
             throw new KernelRegistryEntryNotFoundException("Not found: " + name);
       }
@@ -101,6 +101,6 @@ public class BasicKernelRegistryFactory implements KernelRegistryPlugin
       if (name == null)
          throw new IllegalArgumentException("Null name");
 
-      return (KernelRegistryEntry) entries.get(name);
+      return entries.get(name);
    }
 }
