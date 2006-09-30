@@ -165,7 +165,7 @@ public class GenericBeanFactoryMetaData extends AbstractBeanMetaData
    {
       PropertyMetaData properties = getProperty("properties"); 
 
-      AbstractMapMetaData map = null;
+      AbstractMapMetaData map;
       if (properties == null)
       {
          map = new AbstractMapMetaData();

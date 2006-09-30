@@ -82,9 +82,8 @@ public class AOPDependencyBuilder extends AbstractDependencyBuilder
                loader = Thread.currentThread().getContextClassLoader();
             }
             Class clazz = loader.loadClass(classInfo.getName());
-            Set aspects = null;
-            
-            Advisor advisor = null;
+
+            Advisor advisor;
             synchronized (ContainerCache.mapLock)
             {
                ContainerCache cache = ContainerCache.initialise(AspectManager.instance(), clazz, metaDataContext);
@@ -92,7 +91,7 @@ public class AOPDependencyBuilder extends AbstractDependencyBuilder
             }
             
             ReflectiveAspectBinder binder = new ReflectiveAspectBinder(clazz, advisor);
-            aspects = binder.getAspects();
+            Set aspects = binder.getAspects();
             
             ArrayList<Object> depends = new ArrayList<Object>();
             if (aspects != null && aspects.size() > 0)

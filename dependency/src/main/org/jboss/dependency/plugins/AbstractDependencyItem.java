@@ -108,7 +108,7 @@ public class AbstractDependencyItem extends JBossObject implements DependencyIte
    public boolean resolve(Controller controller)
    {
       boolean previous = resolved;
-      ControllerContext context = null;
+      ControllerContext context;
 
       if (dependentState == null)
          context = controller.getInstalledContext(iDependOn);

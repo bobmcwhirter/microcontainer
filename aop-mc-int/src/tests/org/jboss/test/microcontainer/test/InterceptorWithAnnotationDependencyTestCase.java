@@ -243,7 +243,7 @@ public class InterceptorWithAnnotationDependencyTestCase extends AOPMicrocontain
 
    private void checkNotInstalledAndNotDescribed(String name)
    {
-      SimpleBean bean = null;
+      SimpleBean bean;
       try
       {
          bean = (SimpleBean) getBean(name);

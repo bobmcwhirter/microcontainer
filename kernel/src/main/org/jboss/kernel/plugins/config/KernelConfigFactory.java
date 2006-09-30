@@ -66,7 +66,7 @@ public class KernelConfigFactory {
     * @see PropertyKernelConfig
     */
    public static KernelConfig newInstance( Properties props ) {
-      KernelConfig cfg = null;
+      KernelConfig cfg;
       try
       {
          //for the values not found in the given props, default values

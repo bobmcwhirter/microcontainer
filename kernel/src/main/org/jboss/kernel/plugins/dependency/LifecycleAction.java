@@ -94,7 +94,7 @@ public abstract class LifecycleAction extends KernelControllerContextAction
       BeanMetaData metaData = context.getBeanMetaData();
       String method = getInstallMethod(context);
       List<ParameterMetaData> parameters = getInstallParameters(context);
-      MethodJoinpoint joinpoint = null;
+      MethodJoinpoint joinpoint;
       try
       {
          ClassLoader cl = Configurator.getClassLoader(metaData);
@@ -128,7 +128,7 @@ public abstract class LifecycleAction extends KernelControllerContextAction
       BeanMetaData metaData = context.getBeanMetaData();
       String method = getUninstallMethod(context);
       List<ParameterMetaData> parameters = getUninstallParameters(context);
-      MethodJoinpoint joinpoint = null;
+      MethodJoinpoint joinpoint;
       try
       {
          ClassLoader cl = Configurator.getClassLoader(metaData);

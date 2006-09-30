@@ -129,9 +129,9 @@ public class IncompleteDeploymentsBuilder
                      {
                         if (item.isResolved() == false)
                         {
-                           String dependency = null;
+                           String dependency;
                            ControllerState actualState = null;
-                           String actualStateString = null;
+                           String actualStateString;
                            Object iDependOn = item.getIDependOn();
                            if (iDependOn == null)
                            {

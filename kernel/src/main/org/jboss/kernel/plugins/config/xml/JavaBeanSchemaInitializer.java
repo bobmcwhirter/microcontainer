@@ -160,7 +160,7 @@ public class JavaBeanSchemaInitializer implements SchemaBindingInitializer
             Property prop = (Property) child;
             String property = prop.getProperty();
 
-            MethodInfo method = null;
+            MethodInfo method;
             Object value = prop.getValue();
             try
             {

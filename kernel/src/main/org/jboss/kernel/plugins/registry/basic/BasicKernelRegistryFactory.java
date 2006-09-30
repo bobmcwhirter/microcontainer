@@ -81,7 +81,7 @@ public class BasicKernelRegistryFactory implements KernelRegistryPlugin
 
       boolean trace = log.isTraceEnabled();
 
-      KernelRegistryEntry entry = null;
+      KernelRegistryEntry entry;
 
       synchronized (entries)
       {

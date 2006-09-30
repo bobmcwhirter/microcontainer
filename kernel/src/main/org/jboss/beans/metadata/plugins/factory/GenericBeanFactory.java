@@ -244,7 +244,7 @@ public class GenericBeanFactory
       List<ParameterMetaData> parameters = null;
       if (lifecycle != null)
          parameters = lifecycle.getParameters();
-      MethodJoinpoint joinpoint = null;
+      MethodJoinpoint joinpoint;
       try
       {
          joinpoint = configurator.getMethodJoinPoint(info, cl, method, parameters, false, true);
