@@ -423,7 +423,7 @@ public class VFSBundle implements Bundle
    {
       String key = Constants.IMPORT_PACKAGE;
       headers.get(key); // TODO what?
-//      new HeaderValue.PkgInfo(); // TODO what?
+      new HeaderValue.PkgInfo(); // TODO what?
    }
    protected void extractExports()
    {
