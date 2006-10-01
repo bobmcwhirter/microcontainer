@@ -50,7 +50,7 @@ public class AbstractDemandMetaData extends JBossObject implements DemandMetaDat
    protected ControllerState whenRequired = ControllerState.DESCRIBED;
    
    /** The dependency delegate */
-   protected AbstractDependencyItem dependencyItem = null;
+   protected AbstractDependencyItem dependencyItem;
 
    /**
     * Create a new demand

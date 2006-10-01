@@ -55,7 +55,7 @@ public class AbstractDependencyItem extends JBossObject implements DependencyIte
    private ControllerState dependentState;
    
    /** Whether we are resolved */
-   private boolean resolved = false;
+   private boolean resolved;
 
    /**
     * Create a new dependency item

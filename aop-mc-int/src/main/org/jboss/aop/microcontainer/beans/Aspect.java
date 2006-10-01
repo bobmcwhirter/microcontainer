@@ -49,7 +49,7 @@ public class Aspect implements KernelControllerContextAware, Untransformable
    
    protected String adviceName = GUID.asString();
    
-   protected String adviceBean = null;
+   protected String adviceBean;
    
    protected String scope;
    

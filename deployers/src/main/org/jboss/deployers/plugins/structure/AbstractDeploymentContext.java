@@ -80,10 +80,10 @@ public class AbstractDeploymentContext implements DeploymentContext
    private ClassLoaderFactory classLoaderFactory;
    
    /** Whether this is a candidate deployment */
-   private boolean candidate = false;
+   private boolean candidate;
 
    /** Whether this deployment was processed */
-   private boolean deployed = false;
+   private boolean deployed;
    
    /** The parent context */
    private DeploymentContext parent;

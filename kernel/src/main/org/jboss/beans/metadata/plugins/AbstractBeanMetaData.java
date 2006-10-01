@@ -50,7 +50,7 @@ public class AbstractBeanMetaData extends AbstractFeatureMetaData implements Bea
    protected String name;
 
    /** The mode */
-   protected ControllerMode mode = null;
+   protected ControllerMode mode;
 
    /** The properties configuration Set<PropertyMetaData> */
    private Set<PropertyMetaData> properties;
