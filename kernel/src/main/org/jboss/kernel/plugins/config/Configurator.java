@@ -787,7 +787,8 @@ public class Configurator extends Config
       {
          ParameterMetaData pdata = (ParameterMetaData) i.next();
          ValueMetaData vmd = pdata.getValue();
-         params[x++] = vmd.getValue(pinfos[x], cl);
+         params[x] = vmd.getValue(pinfos[x], cl);
+         x++;
       }
       return params;
    }
