@@ -44,7 +44,5 @@ public class JARCandidateStructureVisitor extends AbstractCandidateStructureVisi
    public JARCandidateStructureVisitor(DeploymentContext parent, VisitorAttributes attributes) throws Exception
    {
       super(parent, attributes);
-      // We ignore plain directories as subdeployments
-      setIgnoreDirectories(true);
    }
 }
