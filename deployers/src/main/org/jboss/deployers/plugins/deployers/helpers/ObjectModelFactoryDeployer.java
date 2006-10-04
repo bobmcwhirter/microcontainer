@@ -61,7 +61,7 @@ public abstract class ObjectModelFactoryDeployer<T> extends AbstractParsingDeplo
     * @return the metadata
     * @throws Exception for any error
     */
-   protected T parse(DeploymentUnit unit, VirtualFile file) throws Exception
+   protected T parse(DeploymentUnit unit, VirtualFile file, T root) throws Exception
    {
       if (file == null)
          throw new IllegalArgumentException("Null file");
@@ -70,8 +70,7 @@ public abstract class ObjectModelFactoryDeployer<T> extends AbstractParsingDeplo
       Object parsed = null;
       try
       {
-         ObjectModelFactory factory = getObjectModelFactory();
-         Object root = null;
+         ObjectModelFactory factory = getObjectModelFactory(root);
          URL url = file.toURL();
          parsed = unmarshaller.unmarshal(url.toString(), factory, root);
       }
@@ -90,5 +89,5 @@ public abstract class ObjectModelFactoryDeployer<T> extends AbstractParsingDeplo
     * 
     * @return the object model factory
     */
-   protected abstract ObjectModelFactory getObjectModelFactory();
+   protected abstract ObjectModelFactory getObjectModelFactory(T root);
 }

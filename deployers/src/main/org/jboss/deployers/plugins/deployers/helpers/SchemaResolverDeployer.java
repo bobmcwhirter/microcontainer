@@ -65,7 +65,7 @@ public abstract class SchemaResolverDeployer<T> extends AbstractParsingDeployer<
     * @return the metadata
     * @throws Exception for any error
     */
-   protected T parse(DeploymentUnit unit, VirtualFile file) throws Exception
+   protected T parse(DeploymentUnit unit, VirtualFile file, T root) throws Exception
    {
       if (file == null)
          throw new IllegalArgumentException("Null file");

@@ -28,7 +28,9 @@ import org.jboss.deployers.spi.deployer.DeploymentUnit;
 import org.jboss.virtual.VirtualFile;
 
 /**
- * AbstractParsingDeployer.
+ * AbstractParsingDeployer. Extends AbstractTypedDeployer to add a notion of obtaining an instance of the
+ * deploymentType by parsing a metadata file. Subclasses need to override
+ * parse(DeploymentUnit, VirtualFile) to define this behavior. 
  *
  * @param <T> the expected type
  * @author <a href="adrian@jboss.com">Adrian Brock</a>
@@ -51,7 +53,18 @@ public abstract class AbstractParsingDeployer<T> extends AbstractTypedDeployer<T
    {
       return PARSER_DEPLOYER;
    }
-   
+
+   /**
+    * A flag indicating whether createMetaData should execute a parse even if a non-null metadata value exists.
+    * 
+    * @return false if a parse should be performed only if there is no existing metadata value. True indicates
+    * that parse should be done regardless of an existing metadata value.
+    */
+   protected boolean allowsReparse()
+   {
+      return false;
+   }
+
    /**
     * Get some meta data
     * 
@@ -65,7 +78,7 @@ public abstract class AbstractParsingDeployer<T> extends AbstractTypedDeployer<T
    }
    
    /**
-    * Create some meta data
+    * Create some meta data. Calls createMetaData(unit, name, suffix, getDeploymentType().getName()).
     * 
     * @param unit the deployment unit
     * @param name the name
@@ -78,7 +91,8 @@ public abstract class AbstractParsingDeployer<T> extends AbstractTypedDeployer<T
    }
    
    /**
-    * Create some meta data
+    * Create some meta data. Invokes parse(unit, name, suffix) if there is not already a
+    * metadata
     * 
     * @param unit the deployment unit
     * @param name the name
@@ -90,16 +104,16 @@ public abstract class AbstractParsingDeployer<T> extends AbstractTypedDeployer<T
    {
       // First see whether it already exists
       T result = getMetaData(unit, key);
-      if (result != null)
+      if (result != null && allowsReparse() == false)
          return;
 
       // Create it
       try
       {
          if (suffix == null)
-            result = parse(unit, name);
+            result = parse(unit, name, result);
          else
-            result = parse(unit, name, suffix);
+            result = parse(unit, name, suffix, result);
       }
       catch (Exception e)
       {
@@ -122,14 +136,14 @@ public abstract class AbstractParsingDeployer<T> extends AbstractTypedDeployer<T
     * @return the metadata or null if it doesn't exist
     * @throws Exception for any error
     */
-   protected T parse(DeploymentUnit unit, String name) throws Exception
+   protected T parse(DeploymentUnit unit, String name, T root) throws Exception
    {
       // Try to find the metadata
       VirtualFile file = unit.getMetaDataFile(name);
       if (file == null)
          return null;
       
-      T result = parse(unit, file);
+      T result = parse(unit, file, root);
       init(unit, result, file);
       return result;
    }
@@ -143,7 +157,7 @@ public abstract class AbstractParsingDeployer<T> extends AbstractTypedDeployer<T
     * @return the metadata or null if it doesn't exist
     * @throws Exception for any error
     */
-   protected T parse(DeploymentUnit unit, String name, String suffix) throws Exception
+   protected T parse(DeploymentUnit unit, String name, String suffix, T root) throws Exception
    {
       // Try to find the metadata
       List<VirtualFile> files = unit.getMetaDataFiles(name, suffix);
@@ -156,7 +170,7 @@ public abstract class AbstractParsingDeployer<T> extends AbstractTypedDeployer<T
 
       VirtualFile file = files.get(0);
       
-      T result = parse(unit, file);
+      T result = parse(unit, file, root);
       init(unit, result, file);
       return result;
    }
@@ -169,7 +183,7 @@ public abstract class AbstractParsingDeployer<T> extends AbstractTypedDeployer<T
     * @return the metadata
     * @throws Exception for any error
     */
-   protected abstract T parse(DeploymentUnit unit, VirtualFile file) throws Exception;
+   protected abstract T parse(DeploymentUnit unit, VirtualFile file, T root) throws Exception;
    
    /**
     * Initialise the metadata

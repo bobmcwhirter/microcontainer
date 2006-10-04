@@ -142,7 +142,7 @@ public abstract class JAXPDeployer<T> extends AbstractParsingDeployer<T>
     * @return the metadata
     * @throws Exception for any error
     */
-   protected T parse(DeploymentUnit unit, VirtualFile file) throws Exception
+   protected T parse(DeploymentUnit unit, VirtualFile file, T root) throws Exception
    {
       Document document = doParse(unit, file);
       return parse(unit, file, document);
