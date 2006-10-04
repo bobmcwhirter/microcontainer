@@ -58,6 +58,7 @@ public abstract class ObjectModelFactoryDeployer<T> extends AbstractParsingDeplo
     * 
     * @param unit the deployment unit
     * @param file the metadata file
+    * @param root - possibly null pre-existing root
     * @return the metadata
     * @throws Exception for any error
     */
@@ -87,6 +88,7 @@ public abstract class ObjectModelFactoryDeployer<T> extends AbstractParsingDeplo
    /**
     * Get the object model factory 
     * 
+    * @param root - possibly null pre-existing root
     * @return the object model factory
     */
    protected abstract ObjectModelFactory getObjectModelFactory(T root);

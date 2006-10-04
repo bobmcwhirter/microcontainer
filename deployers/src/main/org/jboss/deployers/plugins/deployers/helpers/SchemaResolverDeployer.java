@@ -62,6 +62,7 @@ public abstract class SchemaResolverDeployer<T> extends AbstractParsingDeployer<
     * 
     * @param unit the deployment unit
     * @param file the metadata file
+    * @param root - possibly null pre-existing root
     * @return the metadata
     * @throws Exception for any error
     */

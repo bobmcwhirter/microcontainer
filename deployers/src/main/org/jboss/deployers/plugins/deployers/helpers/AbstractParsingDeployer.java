@@ -133,6 +133,7 @@ public abstract class AbstractParsingDeployer<T> extends AbstractTypedDeployer<T
     * 
     * @param unit the unit
     * @param name the exact name to match
+    * @param root - possibly null pre-existing root
     * @return the metadata or null if it doesn't exist
     * @throws Exception for any error
     */
@@ -154,6 +155,7 @@ public abstract class AbstractParsingDeployer<T> extends AbstractTypedDeployer<T
     * @param unit the unit
     * @param name the exact name to match
     * @param suffix the suffix to match
+    * @param root - possibly null pre-existing root
     * @return the metadata or null if it doesn't exist
     * @throws Exception for any error
     */
@@ -180,6 +182,7 @@ public abstract class AbstractParsingDeployer<T> extends AbstractTypedDeployer<T
     * 
     * @param unit the deployment unit
     * @param file the metadata file
+    * @param root - possibly null pre-existing root
     * @return the metadata
     * @throws Exception for any error
     */
