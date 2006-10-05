@@ -48,9 +48,9 @@ public class FileStructure extends AbstractStructureDeployer
    }
 
    /**
-    * Set the list of suffixes that are recognised as jars
+    * Set the suffixes that are recognised as files
     * 
-    * @param suffixes A list of suffixes, e.g. {".jar", ".ear"}
+    * @param suffixes A list of suffixes, e.g. {"-service.xml", "-ds.xml"}
     */
    public void setSuffixes(Set<String> suffixes)
    {
@@ -65,7 +65,7 @@ public class FileStructure extends AbstractStructureDeployer
    }
    
    /**
-    * Gets the list of suffixes recognised as jars
+    * Gets the list of suffixes recognised as files
     * 
     * @return the list of suffixes
     */
