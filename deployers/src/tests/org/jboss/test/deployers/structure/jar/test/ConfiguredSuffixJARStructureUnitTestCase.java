@@ -57,34 +57,29 @@ public class ConfiguredSuffixJARStructureUnitTestCase extends BaseDeployersTest
       assertTrue("default suffixes size should be > 0", defaultSuffixes.size() > 0);
    }
 
-   public void testOverwriteDefaults() throws Exception
+   public void testNewUsingDefaults() throws Exception
    {
       JARStructure structure = new JARStructure();
 
       Set<String> suffixes = structure.getSuffixes();
       assertNotNull(suffixes);
       assertEquals(defaultSuffixes.size(), suffixes.size());
-      
+      for (String suff : defaultSuffixes)
+      {
+         suffixes.contains(suff);
+      }
+   }
+   
+   public void testOverwriteDefaults() throws Exception
+   {
+
       Set<String> newSuffixes = new HashSet<String>();
-      structure.setSuffixes(newSuffixes);
-      suffixes = structure.getSuffixes();
-      assertNotNull(suffixes);
-      assertTrue(suffixes.isEmpty());
-      
-      newSuffixes = new HashSet<String>();
-      newSuffixes.add(".jar");
-      structure.setSuffixes(newSuffixes);
-      suffixes = structure.getSuffixes();
-      assertNotNull(suffixes);
-      assertEquals(1, suffixes.size());
-      assertTrue(suffixes.contains(".jar"));
-      
-      newSuffixes = new HashSet<String>();
       newSuffixes.add(".bar");
       newSuffixes.add(".tar");
       newSuffixes.add(".far");
-      structure.setSuffixes(newSuffixes);
-      suffixes = structure.getSuffixes();
+      
+      JARStructure structure = new JARStructure(newSuffixes);
+      Set<String> suffixes = structure.getSuffixes();
       assertNotNull(suffixes);
       assertEquals(3, suffixes.size());
       assertTrue(suffixes.contains(".bar"));

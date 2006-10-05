@@ -64,34 +64,31 @@ public class ConfiguredSuffixFileStructureUnitTestCase extends BaseTestCase
       assertTrue("default suffixes size should be > 0", defaultSuffixes.size() > 0);
    }
    
-   public void testOverwriteDefaults() throws Exception
+   public void testNewUsingDefaults() throws Exception
    {
       FileStructure structure = new FileStructure();
 
       Set<String> suffixes = structure.getSuffixes();
       assertNotNull(suffixes);
       assertEquals(defaultSuffixes.size(), suffixes.size());
-      
+      for (String suff : defaultSuffixes)
+      {
+         suffixes.contains(suff);
+      }
+   }
+   
+   public void testOverwriteDefaults() throws Exception
+   {
       Set<String> newSuffixes = new HashSet<String>();
-      structure.setSuffixes(newSuffixes);
-      suffixes = structure.getSuffixes();
-      assertNotNull(suffixes);
-      assertTrue(suffixes.isEmpty());
-      
-      newSuffixes = new HashSet<String>();
-      newSuffixes.add(".txt");
-      structure.setSuffixes(newSuffixes);
-      suffixes = structure.getSuffixes();
-      assertNotNull(suffixes);
-      assertEquals(1, suffixes.size());
-      assertTrue(suffixes.contains(".txt"));
       
       newSuffixes = new HashSet<String>();
       newSuffixes.add("-ds.xml");
       newSuffixes.add("-dd.xml");
       newSuffixes.add("-service.xml");
-      structure.setSuffixes(newSuffixes);
-      suffixes = structure.getSuffixes();
+      
+      FileStructure structure = new FileStructure(newSuffixes);
+      
+      Set<String> suffixes = structure.getSuffixes();
       assertNotNull(suffixes);
       assertEquals(3, suffixes.size());
       assertTrue(suffixes.contains("-ds.xml"));

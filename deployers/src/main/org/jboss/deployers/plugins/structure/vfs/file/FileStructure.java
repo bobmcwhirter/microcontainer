@@ -47,21 +47,14 @@ public class FileStructure extends AbstractStructureDeployer
       fileSuffixes.add("-ds.xml");
    }
 
-   /**
-    * Set the suffixes that are recognised as files
-    * 
-    * @param suffixes A list of suffixes, e.g. {"-service.xml", "-ds.xml"}
-    */
-   public void setSuffixes(Set<String> suffixes)
+   public FileStructure()
    {
-      if (suffixes != null)
-      {
-         fileSuffixes.clear();
-         for (String suffix : suffixes)
-         {
-            addFileSuffix(suffix);
-         }
-      }
+      
+   }
+   
+   public FileStructure(Set<String> suffixes)
+   {
+      this.fileSuffixes = suffixes;
    }
    
    /**

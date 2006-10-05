@@ -40,21 +40,14 @@ import org.jboss.virtual.plugins.context.jar.JarUtils;
  */
 public class JARStructure extends AbstractStructureDeployer
 {
-   /**
-    * Set the list of suffixes that are recognised as jars
-    * 
-    * @param suffixes A list of suffixes, e.g. {".jar", ".ear"}
-    */
-   public void setSuffixes(Set<String> suffixes)
+   public JARStructure()
    {
-      if (suffixes != null)
-      {
-         JarUtils.clearSuffixes();
-         for (String suffix : suffixes)
-         {
-            JarUtils.addJarSuffix(suffix);
-         }
-      }
+      
+   }
+
+   public JARStructure(Set<String> suffixes)
+   {
+      JarUtils.setJarSuffixes(suffixes);
    }
    
    /**
