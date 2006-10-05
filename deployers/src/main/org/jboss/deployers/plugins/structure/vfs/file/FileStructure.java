@@ -48,6 +48,34 @@ public class FileStructure extends AbstractStructureDeployer
    }
 
    /**
+    * Set the list of suffixes that are recognised as jars
+    * 
+    * @param suffixes A list of suffixes, e.g. {".jar", ".ear"}
+    */
+   public void setSuffixes(Set<String> suffixes)
+   {
+      if (suffixes != null)
+      {
+         fileSuffixes.clear();
+         for (String suffix : suffixes)
+         {
+            addFileSuffix(suffix);
+         }
+      }
+   }
+   
+   /**
+    * Gets the list of suffixes recognised as jars
+    * 
+    * @return the list of suffixes
+    */
+   public Set<String> getSuffixes()
+   {
+      return fileSuffixes;      
+   }
+   
+   
+   /**
     * Add a file suffix
     * 
     * @param suffix the suffix

@@ -24,11 +24,13 @@ package org.jboss.deployers.plugins.structure.vfs.jar;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Set;
 
 import org.jboss.deployers.plugins.structure.vfs.AbstractStructureDeployer;
 import org.jboss.deployers.spi.structure.DeploymentContext;
 import org.jboss.virtual.VFSUtils;
 import org.jboss.virtual.VirtualFile;
+import org.jboss.virtual.plugins.context.jar.JarUtils;
 
 /**
  * JARStructure.
@@ -38,6 +40,34 @@ import org.jboss.virtual.VirtualFile;
  */
 public class JARStructure extends AbstractStructureDeployer
 {
+   /**
+    * Set the list of suffixes that are recognised as jars
+    * 
+    * @param suffixes A list of suffixes, e.g. {".jar", ".ear"}
+    */
+   public void setSuffixes(Set<String> suffixes)
+   {
+      if (suffixes != null)
+      {
+         JarUtils.clearSuffixes();
+         for (String suffix : suffixes)
+         {
+            JarUtils.addJarSuffix(suffix);
+         }
+      }
+   }
+   
+   /**
+    * Gets the list of suffixes recognised as jars
+    * 
+    * @return the list of suffixes
+    */
+   public Set<String> getSuffixes()
+   {
+      return JarUtils.getSuffixes();
+   }
+   
+   
    @Override
    public int getRelativeOrder()
    {
