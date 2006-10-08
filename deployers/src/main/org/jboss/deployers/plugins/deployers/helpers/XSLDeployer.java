@@ -135,16 +135,9 @@ public abstract class XSLDeployer<T> extends JAXPDeployer<T>
       super.destroy();
       templates = null;
    }
-
-   /**
-    * Parse a deployment
-    * 
-    * @param unit the deployment unit
-    * @param file the metadata file
-    * @return the metadata
-    * @throws Exception for any error
-    */
-   protected T parse(DeploymentUnit unit, VirtualFile file) throws Exception
+   
+   @Override
+   protected T parse(DeploymentUnit unit, VirtualFile file, T root) throws Exception
    {
       if (file == null)
          throw new IllegalArgumentException("Null file");
