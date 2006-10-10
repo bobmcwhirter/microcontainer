@@ -41,8 +41,10 @@ public interface Deployer
    /** The class loader order */
    public static final int CLASSLOADER_DEPLOYER = 4000;
 
+   public static final int POSTPROCESS_CLASSLOADING_DEPLOYER = 5000;
+   
    /** The component order */
-   public static final int COMPONENT_DEPLOYER = 4000;
+   public static final int COMPONENT_DEPLOYER = 7000; 
 
    /** The real order */
    public static final int REAL_DEPLOYER = 10000;
