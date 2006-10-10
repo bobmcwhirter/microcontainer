@@ -45,7 +45,8 @@ public class FileStructure extends AbstractStructureDeployer
       fileSuffixes.add("-service.xml");
       fileSuffixes.add("-beans.xml");
       fileSuffixes.add("-ds.xml");
-   }
+      fileSuffixes.add("-aop.xml");
+        }
 
    public FileStructure()
    {
