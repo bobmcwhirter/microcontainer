@@ -41,6 +41,7 @@ public interface Deployer
    /** The class loader order */
    public static final int CLASSLOADER_DEPLOYER = 4000;
 
+   /** The postprocessing class loader order (usage: AOP) */
    public static final int POSTPROCESS_CLASSLOADING_DEPLOYER = 5000;
    
    /** The component order */
