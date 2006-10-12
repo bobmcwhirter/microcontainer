@@ -41,7 +41,7 @@ import org.jboss.virtual.plugins.vfs.helpers.AbstractVirtualFileVisitor;
 public class AbstractCandidateStructureVisitor extends AbstractVirtualFileVisitor
 {
    /** The log */
-   private static final Logger log = Logger.getLogger(JARCandidateStructureVisitor.class);
+   private static final Logger log = Logger.getLogger(AbstractCandidateStructureVisitor.class);
 
    /** The parent deployment context */
    private final DeploymentContext parent;
