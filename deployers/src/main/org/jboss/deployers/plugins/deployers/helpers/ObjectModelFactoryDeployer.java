@@ -31,10 +31,14 @@ import org.jboss.xb.binding.Unmarshaller;
 import org.jboss.xb.binding.UnmarshallerFactory;
 
 /**
- * SchemaResolverDeployer.
+ * ObjectModelFactoryDeployer extends the AbstractParsingDeployer to add an
+ * abstract JBossXB ObjectModelFactory accessor that is used from within an
+ * overriden parse(DeploymentUnit unit, VirtualFile file) to unmarshall the xml
+ * document represented by file into an instance of deploymentType T.
  * 
  * @param <T> the expected type 
  * @author <a href="adrian@jboss.com">Adrian Brock</a>
+ * @author Scott.Stark@jboss.org
  * @version $Revision: 1.1 $
  */
 public abstract class ObjectModelFactoryDeployer<T> extends AbstractParsingDeployer<T>
@@ -54,11 +58,14 @@ public abstract class ObjectModelFactoryDeployer<T> extends AbstractParsingDeplo
    }
 
    /**
-    * Parse a deployment
+    * Parse a deployment. The entails obtaining the metadata file contents via
+    * its URL handler, creating a jbossxb Unmarshaller, and unmarshalling the
+    * metdata into deployment type T via the associated ObjectModelFactory. 
     * 
     * @param unit the deployment unit
     * @param file the metadata file
-    * @param root - possibly null pre-existing root
+    * @param root - possibly null pre-existing root. It should be null if there
+    * is no pre-existing that should be passed to the ObjectModelFactory.
     * @return the metadata
     * @throws Exception for any error
     */
