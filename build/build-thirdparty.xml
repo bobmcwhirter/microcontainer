@@ -53,7 +53,7 @@
       <componentref name="junit4" version="4.1"/>
       <componentref name="jboss/aop" version="snapshot" />
       <componentref name="jboss/backport-concurrent" version="2.1.0.GA"/>
-      <componentref name="jboss/jbossretro" version="1.0.3.GA"/>
+      <componentref name="jboss/jbossretro" version="1.0.4.GA"/>
       <componentref name="jboss/test" version="snapshot"/>
       <componentref name="jboss/test14" version="snapshot"/>
       <componentref name="osgi" version="4.0"/>
