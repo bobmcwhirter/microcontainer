@@ -25,6 +25,7 @@ import javax.xml.namespace.QName;
 
 import org.jboss.xb.binding.sunday.unmarshalling.SchemaBinding;
 import org.jboss.xb.binding.sunday.unmarshalling.TypeBinding;
+import org.jboss.xb.binding.sunday.unmarshalling.WildcardBinding;
 
 /**
  * BeanSchemaBindingHelper.
@@ -438,6 +439,8 @@ public class BeanSchemaBindingHelper
       typeBinding.pushInterceptor(BeanSchemaBinding20.thisQName, ThisValueElementInterceptor.THISVALUES);
       
       // type has wildcard
-      typeBinding.getWildcard().setWildcardHandler(ValueWildcardHandler.WILDCARD);
+      WildcardBinding wcb = typeBinding.getWildcard();
+      if( wcb != null )
+         wcb.setWildcardHandler(ValueWildcardHandler.WILDCARD);
    }
 }
