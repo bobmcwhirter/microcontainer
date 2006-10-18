@@ -26,6 +26,7 @@ import junit.framework.Test;
 
 import org.jboss.aop.Advised;
 import org.jboss.aop.metadata.SimpleMetaData;
+import org.jboss.aop.microcontainer.junit.AbstractProxyTest;
 import org.jboss.aop.proxy.container.AspectManaged;
 import org.jboss.test.microcontainer.matrix.Base;
 import org.jboss.test.microcontainer.matrix.TestInterceptor;

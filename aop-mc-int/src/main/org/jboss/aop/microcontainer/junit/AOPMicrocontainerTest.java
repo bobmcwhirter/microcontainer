@@ -41,7 +41,11 @@ public class AOPMicrocontainerTest extends MicrocontainerTest
     */
    public static AbstractTestDelegate getDelegate(Class clazz) throws Exception
    {
-      return new AOPMicrocontainerTestDelegate(clazz);
+      String property = System.getProperty("jboss.mc.secure", "false");
+      boolean enableSecurity = Boolean.valueOf(property).booleanValue();
+      AOPMicrocontainerTestDelegate delegate = new AOPMicrocontainerTestDelegate(clazz);
+      delegate.enableSecurity = enableSecurity;
+      return delegate;
    }
    
    /**

@@ -52,6 +52,13 @@ public class AOPMicrocontainerTestDelegate extends MicrocontainerTestDelegate
       super(clazz);
    }
 
+   public void setUp() throws Exception
+   {
+      super.setUp();
+      log.debug("Security enabled: " + enableSecurity);
+   }
+
+
    protected void deploy() throws Exception
    {
       String testName = clazz.getName();

@@ -172,6 +172,8 @@
       <mkdir dir="${build.reports}"/>
       <mkdir dir="${build.testlog}"/>
 
+      <antcall target="tests-weave-secure" inheritRefs="true"/>
+      <antcall target="tests-no-weave-secure" inheritRefs="true"/>
       <antcall target="tests-weave" inheritRefs="true"/>
       <antcall target="tests-no-weave" inheritRefs="true"/>
 
@@ -217,6 +219,47 @@
       </junit>
    </target>
 
+   <target name="tests-weave-secure" depends="most"
+      description="Execute all tests in the given test directory.">
+      <mkdir dir="${build.reports}"/>
+      <mkdir dir="${build.testlog}"/>
+      <!-- Remove the test.log so each run has a fresh log -->
+      <delete file="${build.testlog}/test.log"/>
+      <junit dir="${module.output}"
+         printsummary="yes"
+         haltonerror="false"
+         haltonfailure="false"
+         fork="true">
+
+			<sysproperty key="jboss.aop.exclude" value="org.jboss.,org.apache."/>
+			<sysproperty key="jboss.aop.include" value="org.jboss.test."/>
+         <sysproperty key="jboss-junit-configuration" value="weave-secure"/>
+         <sysproperty key="build.testlog" value="${build.testlog}"/>
+         <sysproperty key="java.system.class.loader" value="org.jboss.aop.standalone.SystemClassLoader"/>
+	      <sysproperty key="jboss.mc.secure" value="true"/>
+
+         <classpath>
+            <pathelement location="${build.lib}/${jar.prefix}.jar"/>
+            <path refid="javac.classpath"/>
+            <path refid="apache.xerces.classpath"/>
+         </classpath>
+
+         <formatter type="plain" usefile="true" extension="-weave-secure.txt"/>
+         <formatter classname="org.jboss.ant.taskdefs.XMLJUnitMultipleResultFormatter"
+                    usefile="true" extension="-weave-secure.xml"/>
+
+         <batchtest todir="${build.reports}"
+            haltonerror="false"
+            haltonfailure="false"
+            fork="true">
+
+            <fileset dir="${build.classes}">
+               <include name="org/jboss/test/**/*TestCase.class"/>
+            </fileset>
+         </batchtest>
+      </junit>
+   </target>
+
    <target name="tests-no-weave" depends="most"
       description="Execute all tests in the given test directory.">
       <mkdir dir="${build.reports}"/>
@@ -239,6 +282,42 @@
          <formatter type="plain" usefile="true" extension="-no-weave.txt"/>
          <formatter classname="org.jboss.ant.taskdefs.XMLJUnitMultipleResultFormatter"
                     usefile="true" extension="-no-weave.xml"/>
+
+         <batchtest todir="${build.reports}"
+            haltonerror="false"
+            haltonfailure="false"
+            fork="true">
+
+            <fileset dir="${build.classes}">
+               <include name="org/jboss/test/microcontainer/test/**/*TestCase.class"/>
+            </fileset>
+         </batchtest>
+      </junit>
+   </target>
+
+   <target name="tests-no-weave-secure" depends="most"
+      description="Execute all tests in the given test directory.">
+      <mkdir dir="${build.reports}"/>
+      <mkdir dir="${build.testlog}"/>
+      <junit dir="${module.output}"
+         printsummary="yes"
+         haltonerror="false"
+         haltonfailure="false"
+         fork="true">
+
+         <sysproperty key="jboss-junit-configuration" value="no_weave-secure"/>
+         <sysproperty key="build.testlog" value="${build.testlog}"/>
+	      <sysproperty key="jboss.mc.secure" value="true"/>
+
+         <classpath>
+            <pathelement location="${build.lib}/${jar.prefix}.jar"/>
+            <path refid="javac.classpath"/>
+            <path refid="apache.xerces.classpath"/>
+         </classpath>
+
+         <formatter type="plain" usefile="true" extension="-no-weave-secure.txt"/>
+         <formatter classname="org.jboss.ant.taskdefs.XMLJUnitMultipleResultFormatter"
+                    usefile="true" extension="-no-weave-secure.xml"/>
 
          <batchtest todir="${build.reports}"
             haltonerror="false"
