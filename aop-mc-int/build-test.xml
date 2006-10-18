@@ -366,6 +366,42 @@
       </junit>
    </target>
 
+   <target name="one-test-secure" depends="init"
+      description="Executes a specific test with weaving.">
+      <mkdir dir="${build.reports}"/>
+      <mkdir dir="${build.testlog}"/>
+      <!-- Remove the test.log so each run has a fresh log -->
+      <delete file="${build.testlog}/test.log"/>
+      <junit dir="${module.output}"
+         printsummary="yes"
+         haltonerror="false"
+         haltonfailure="false"
+         fork="true">
+
+			<sysproperty key="jboss.aop.exclude" value="org.jboss.,org.apache."/>
+			<sysproperty key="jboss.aop.include" value="org.jboss.test."/>
+         <sysproperty key="jboss-junit-configuration" value="weave-secure"/>
+         <sysproperty key="build.testlog" value="${build.testlog}"/>
+	      <sysproperty key="jboss.mc.secure" value="true"/>
+         <sysproperty key="java.system.class.loader" value="org.jboss.aop.standalone.SystemClassLoader"/>
+
+         <classpath>
+            <pathelement location="${build.lib}/${jar.prefix}.jar"/>
+            <path refid="javac.classpath"/>
+            <path refid="apache.xerces.classpath"/>
+         </classpath>
+
+         <formatter type="plain" usefile="true" extension="-weave-secure.txt"/>
+         <formatter classname="org.jboss.ant.taskdefs.XMLJUnitMultipleResultFormatter"
+                    usefile="true" extension="-weave-secure.xml"/>
+
+         <test todir="${build.reports}" name="${test}"
+               haltonerror="${junit.batchtest.haltonerror}"
+               haltonfailure="${junit.batchtest.haltonfailure}"
+               fork="${junit.batchtest.fork}"/>
+      </junit>
+   </target>
+
    <target name="one-test-no-weave" depends="init"
       description="Executes a specific test with no weaving.">
       <mkdir dir="${build.reports}"/>
@@ -390,6 +426,39 @@
          <formatter type="plain" usefile="true" extension="-no-weave.txt"/>
          <formatter classname="org.jboss.ant.taskdefs.XMLJUnitMultipleResultFormatter"
                     usefile="true" extension="-no-weave.xml"/>
+
+         <test todir="${build.reports}" name="${test}"
+               haltonerror="${junit.batchtest.haltonerror}"
+               haltonfailure="${junit.batchtest.haltonfailure}"
+               fork="${junit.batchtest.fork}"/>
+      </junit>
+   </target>
+
+   <target name="one-test-no-weave-secure" depends="init"
+      description="Executes a specific test with no weaving.">
+      <mkdir dir="${build.reports}"/>
+      <mkdir dir="${build.testlog}"/>
+      <!-- Remove the test.log so each run has a fresh log -->
+      <delete file="${build.testlog}/test.log"/>
+      <junit dir="${module.output}"
+         printsummary="yes"
+         haltonerror="false"
+         haltonfailure="false"
+         fork="true">
+
+         <sysproperty key="jboss-junit-configuration" value="no_weave-secure"/>
+         <sysproperty key="build.testlog" value="${build.testlog}"/>
+	      <sysproperty key="jboss.mc.secure" value="true"/>
+
+         <classpath>
+            <pathelement location="${build.lib}/${jar.prefix}.jar"/>
+            <path refid="javac.classpath"/>
+            <path refid="apache.xerces.classpath"/>
+         </classpath>
+
+         <formatter type="plain" usefile="true" extension="-no-weave-secure.txt"/>
+         <formatter classname="org.jboss.ant.taskdefs.XMLJUnitMultipleResultFormatter"
+                    usefile="true" extension="-no-weave-secure.xml"/>
 
          <test todir="${build.reports}" name="${test}"
                haltonerror="${junit.batchtest.haltonerror}"
