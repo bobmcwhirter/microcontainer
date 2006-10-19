@@ -573,8 +573,8 @@ public class AbstractDeploymentContext implements DeploymentContext
          // There isn't a metadata location so let's see whether the root matches.
          if (metaDataLocation == null)
          {
-            // It has to be a plain file that is not an archive
-            if (root != null && root.isLeaf() && root.isArchive() == false)
+            // It has to be a plain file
+            if (root != null && root.isLeaf())
             {
                String fileName = root.getName();
                if (fileName.equals(name))
@@ -607,8 +607,8 @@ public class AbstractDeploymentContext implements DeploymentContext
          // i.e. the top level is an xml
          if (metaDataLocation == null)
          {
-            // It has to be a plain file that is not an archive
-            if (root != null && root.isLeaf() && root.isArchive() == false)
+            // It has to be a plain file
+            if (root != null && root.isLeaf())
             {
                String fileName = root.getName();
                if (name != null && fileName.equals(name))
