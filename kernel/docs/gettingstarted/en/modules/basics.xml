@@ -104,7 +104,7 @@ public class ConstructorBean {
 &lt;/bean>
     </programlisting>
     
-    <para>Behind the scene, the micorcontainer invokes:</para>
+    <para>Behind the scene, the microcontainer invokes:</para>
     
     <programlisting>
 new ConstructorBean (new String("a string"), (long) 10);
@@ -117,7 +117,7 @@ new ConstructorBean (new String("a string"), (long) 10);
   <section>
     <title>Factories</title>
 
-    <para>Not all classes have pubic constructors. It is often good practice to use factories when you to have a choice of implementation for an interface. The microcontainer includes support for the several different types of factory. The simplest case is a static factory class with a static factory method like the following from the <varname>factory</varname> example.</para>
+    <para>Not all classes have public constructors. It is often good practice to use factories when you to have a choice of implementation for an interface. The microcontainer includes support for the several different types of factory. The simplest case is a static factory class with a static factory method like the following from the <varname>factory</varname> example.</para>
     
     <programlisting>
 public class StaticFactory
@@ -317,7 +317,7 @@ Example example = new com.acme.Example();
 example.setTitle(new String("null"));
 
 &lt;!-- Correct --&gt;
-&lt;bean name="Name1" class=com.acme.Example"&gt;
+&lt;bean name="Name1" class="com.acme.Example"&gt;
    &lt;property name="title"&gt;&lt;null/&gt;&lt;/property&gt;
 &lt;/bean&gt;
 
@@ -446,7 +446,7 @@ Circular2.setOther(Circular1); // Complete the confguration of Circular2
     <para>It is also possible to use a <varname>List</varname> as an element inside another <varname>List</varname>. Here is an example.</para>    
 
     <programlisting>
-&lt;bean name="Name1" class=com.acme.Example"&gt;
+&lt;bean name="Name1" class="com.acme.Example"&gt;
    &lt;property name="list"&gt;
       &lt;list class="java.util.LinkedList" elementClass="java.lang.String"&gt;
 
