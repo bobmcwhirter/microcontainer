@@ -155,10 +155,10 @@ public class AbstractCandidateStructureVisitor extends AbstractVirtualFileVisito
       if (metaDataPath != null && virtualFile.getPathName().startsWith(metaDataPath))
          return null;
 
-      // Ignore directories that are not archives when asked
+      // Ignore directories when asked
       try
       {
-         if (ignoreDirectories && virtualFile.isLeaf() == false && virtualFile.isArchive() == false)
+         if (ignoreDirectories && virtualFile.isLeaf() == false)
             return null;
       }
       catch (IOException e)

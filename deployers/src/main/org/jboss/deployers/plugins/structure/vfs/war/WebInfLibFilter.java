@@ -50,16 +50,9 @@ public class WebInfLibFilter implements VirtualFileFilterWithAttributes
 
    public boolean accepts(VirtualFile file)
    {
-      try
-      {
-         // We want archives
-         if (file.isArchive())
-            return true;
-      }
-      catch (IOException e)
-      {
-         log.warn("Ignoring " + file + " reason=" + e);
-      }
+      // We want jars
+      if (file.getName().endsWith(".jar"))
+         return true;
       
       // We ignore everything else
       return false;
