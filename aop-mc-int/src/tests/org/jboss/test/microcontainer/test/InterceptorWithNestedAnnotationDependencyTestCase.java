@@ -61,6 +61,7 @@ public class InterceptorWithNestedAnnotationDependencyTestCase extends AOPMicroc
          try
          {
             checkInterceptedAndInjected("AnnotatedIntercepted");
+            checkInterceptedAndInjected("Intercepted");
          }
          finally
          {
@@ -81,17 +82,22 @@ public class InterceptorWithNestedAnnotationDependencyTestCase extends AOPMicroc
       try
       {
          checkNotInstalled("AnnotatedIntercepted");
+         checkNotInstalled("Intercepted");
 
          try
          {
             deploy("InterceptorWithNestedAnnotationDependencyTestCaseNotAutomatic0.xml");
             checkNotInstalled("AnnotatedIntercepted");
+            checkNotInstalled("Intercepted");
             deploy("InterceptorWithNestedAnnotationDependencyTestCaseNotAutomatic1.xml");
             checkNotInstalled("AnnotatedIntercepted");
+            checkNotInstalled("Intercepted");
             deploy("InterceptorWithNestedAnnotationDependencyTestCaseNotAutomatic2.xml");
             checkInterceptedAndInjected("AnnotatedIntercepted");
+            checkInterceptedAndInjected("Intercepted");
             undeploy("InterceptorWithNestedAnnotationDependencyTestCaseNotAutomatic2.xml");
             checkNotInstalled("AnnotatedIntercepted");
+            checkNotInstalled("Intercepted");
          }
          finally
          {
@@ -103,12 +109,16 @@ public class InterceptorWithNestedAnnotationDependencyTestCase extends AOPMicroc
          {
             deploy("InterceptorWithNestedAnnotationDependencyTestCaseNotAutomatic1.xml");
             checkNotInstalled("AnnotatedIntercepted");
+            checkNotInstalled("Intercepted");
             deploy("InterceptorWithNestedAnnotationDependencyTestCaseNotAutomatic2.xml");
             checkNotInstalled("AnnotatedIntercepted");
+            checkNotInstalled("Intercepted");
             deploy("InterceptorWithNestedAnnotationDependencyTestCaseNotAutomatic0.xml");
             checkInterceptedAndInjected("AnnotatedIntercepted");
+            checkInterceptedAndInjected("Intercepted");
             undeploy("InterceptorWithNestedAnnotationDependencyTestCaseNotAutomatic0.xml");
             checkNotInstalled("AnnotatedIntercepted");
+            checkNotInstalled("Intercepted");
          }
          finally
          {
@@ -121,12 +131,16 @@ public class InterceptorWithNestedAnnotationDependencyTestCase extends AOPMicroc
          {
             deploy("InterceptorWithNestedAnnotationDependencyTestCaseNotAutomatic1.xml");
             checkNotInstalled("AnnotatedIntercepted");
+            checkNotInstalled("Intercepted");
             deploy("InterceptorWithNestedAnnotationDependencyTestCaseNotAutomatic2.xml");
             checkNotInstalled("AnnotatedIntercepted");
+            checkNotInstalled("Intercepted");
             deploy("InterceptorWithNestedAnnotationDependencyTestCaseNotAutomatic0.xml");
             checkInterceptedAndInjected("AnnotatedIntercepted");
+            checkInterceptedAndInjected("Intercepted");
             undeploy("InterceptorWithNestedAnnotationDependencyTestCaseNotAutomatic0.xml");
             checkNotInstalled("AnnotatedIntercepted");
+            checkNotInstalled("Intercepted");
          }
          finally
          {
@@ -156,7 +170,7 @@ public class InterceptorWithNestedAnnotationDependencyTestCase extends AOPMicroc
       assertNotNull(dependency3);
 
       InterceptorWithAnnotationDependency.intercepted = null;
-      NestedAnnotatedSimpleBeanImpl bean = (NestedAnnotatedSimpleBeanImpl) getBean(name);
+      SimpleBean bean = (SimpleBean) getBean(name);
       assertNotNull(bean);
       bean.someMethod();
       assertNotNull(InterceptorWithNestedAnnotationDependency.intercepted1);

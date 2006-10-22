@@ -61,6 +61,7 @@ public class InterceptorWithNestedMethodAnnotationDependencyTestCase extends AOP
          try
          {
             checkInterceptedAndInjected("AnnotatedIntercepted");
+            checkInterceptedAndInjected("Intercepted");
          }
          finally
          {
@@ -81,17 +82,22 @@ public class InterceptorWithNestedMethodAnnotationDependencyTestCase extends AOP
       try
       {
          checkNotInstalled("AnnotatedIntercepted");
+         checkNotInstalled("Intercepted");
 
          try
          {
             deploy("InterceptorWithNestedMethodAnnotationDependencyTestCaseNotAutomatic0.xml");
             checkNotInstalled("AnnotatedIntercepted");
+            checkNotInstalled("Intercepted");
             deploy("InterceptorWithNestedMethodAnnotationDependencyTestCaseNotAutomatic1.xml");
             checkNotInstalled("AnnotatedIntercepted");
+            checkNotInstalled("Intercepted");
             deploy("InterceptorWithNestedMethodAnnotationDependencyTestCaseNotAutomatic2.xml");
             checkInterceptedAndInjected("AnnotatedIntercepted");
+            checkInterceptedAndInjected("Intercepted");
             undeploy("InterceptorWithNestedMethodAnnotationDependencyTestCaseNotAutomatic2.xml");
             checkNotInstalled("AnnotatedIntercepted");
+            checkNotInstalled("Intercepted");
          }
          finally
          {
@@ -103,12 +109,16 @@ public class InterceptorWithNestedMethodAnnotationDependencyTestCase extends AOP
          {
             deploy("InterceptorWithNestedMethodAnnotationDependencyTestCaseNotAutomatic1.xml");
             checkNotInstalled("AnnotatedIntercepted");
+            checkNotInstalled("Intercepted");
             deploy("InterceptorWithNestedMethodAnnotationDependencyTestCaseNotAutomatic2.xml");
             checkNotInstalled("AnnotatedIntercepted");
+            checkNotInstalled("Intercepted");
             deploy("InterceptorWithNestedMethodAnnotationDependencyTestCaseNotAutomatic0.xml");
             checkInterceptedAndInjected("AnnotatedIntercepted");
+            checkInterceptedAndInjected("Intercepted");
             undeploy("InterceptorWithNestedMethodAnnotationDependencyTestCaseNotAutomatic0.xml");
             checkNotInstalled("AnnotatedIntercepted");
+            checkNotInstalled("Intercepted");
          }
          finally
          {
@@ -121,12 +131,16 @@ public class InterceptorWithNestedMethodAnnotationDependencyTestCase extends AOP
          {
             deploy("InterceptorWithNestedMethodAnnotationDependencyTestCaseNotAutomatic1.xml");
             checkNotInstalled("AnnotatedIntercepted");
+            checkNotInstalled("Intercepted");
             deploy("InterceptorWithNestedMethodAnnotationDependencyTestCaseNotAutomatic2.xml");
             checkNotInstalled("AnnotatedIntercepted");
+            checkNotInstalled("Intercepted");
             deploy("InterceptorWithNestedMethodAnnotationDependencyTestCaseNotAutomatic0.xml");
             checkInterceptedAndInjected("AnnotatedIntercepted");
+            checkInterceptedAndInjected("Intercepted");
             undeploy("InterceptorWithNestedMethodAnnotationDependencyTestCaseNotAutomatic0.xml");
             checkNotInstalled("AnnotatedIntercepted");
+            checkNotInstalled("Intercepted");
          }
          finally
          {
@@ -156,7 +170,7 @@ public class InterceptorWithNestedMethodAnnotationDependencyTestCase extends AOP
       assertNotNull(dependency3);
 
       InterceptorWithAnnotationDependency.intercepted = null;
-      NestedMethodAnnotatedSimpleBeanImpl bean = (NestedMethodAnnotatedSimpleBeanImpl) getBean(name);
+      SimpleBean bean = (SimpleBean) getBean(name);
       assertNotNull(bean);
       bean.someMethod();
       assertNotNull(InterceptorWithNestedAnnotationDependency.intercepted1);
