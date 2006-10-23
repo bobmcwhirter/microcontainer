@@ -76,22 +76,25 @@ public class JARStructure extends AbstractStructureDeployer
          {
             // For non top level directories that don't look like jars
             // we require a META-INF otherwise each subdirectory would be a subdeployment
-            if  (context.isTopLevel() == false)
+            if (JarUtils.isArchive(root.getName()) == false)
             {
-               try
+               if  (context.isTopLevel() == false)
                {
-                  root.findChild("META-INF");
-                  log.trace("... ok - non top level directory has a META-INF subdirectory");
+                  try
+                  {
+                     root.findChild("META-INF");
+                     log.trace("... ok - non top level directory has a META-INF subdirectory");
+                  }
+                  catch (IOException e)
+                  {
+                     log.trace("... no - doesn't look like a jar and no META-INF subdirectory.");
+                     return false;
+                  }
                }
-               catch (IOException e)
+               else
                {
-                  log.trace("... no - doesn't look like a jar and no META-INF subdirectory.");
-                  return false;
+                  log.trace("... ok - doesn't look like a jar but it is a top level directory.");
                }
-            }
-            else
-            {
-               log.trace("... ok - doesn't look like a jar but it is a top level directory.");
             }
 
             // The metadata path is META-INF
