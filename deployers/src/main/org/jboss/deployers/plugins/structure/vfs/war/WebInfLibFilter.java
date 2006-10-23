@@ -21,8 +21,6 @@
   */
 package org.jboss.deployers.plugins.structure.vfs.war;
 
-import java.io.IOException;
-
 import org.jboss.logging.Logger;
 import org.jboss.virtual.VirtualFile;
 import org.jboss.virtual.VirtualFileFilterWithAttributes;
