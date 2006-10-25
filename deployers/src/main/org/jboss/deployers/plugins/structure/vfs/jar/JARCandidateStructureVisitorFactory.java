@@ -22,7 +22,9 @@
 package org.jboss.deployers.plugins.structure.vfs.jar;
 
 import org.jboss.deployers.plugins.structure.vfs.CandidateStructureVisitorFactory;
-import org.jboss.deployers.spi.structure.DeploymentContext;
+import org.jboss.deployers.spi.structure.vfs.StructureMetaData;
+import org.jboss.deployers.spi.structure.vfs.StructuredDeployers;
+import org.jboss.virtual.VirtualFile;
 import org.jboss.virtual.VirtualFileFilter;
 import org.jboss.virtual.VirtualFileVisitor;
 import org.jboss.virtual.VisitorAttributes;
@@ -61,10 +63,10 @@ public class JARCandidateStructureVisitorFactory implements CandidateStructureVi
       this.filter = filter;
    }
 
-   public VirtualFileVisitor createVisitor(DeploymentContext context, VisitorAttributes attributes) throws Exception
+   public VirtualFileVisitor createVisitor(VirtualFile parent, StructureMetaData metaData, StructuredDeployers deployers,
+         VisitorAttributes attributes) throws Exception
    {
-      
-      JARCandidateStructureVisitor visitor = new JARCandidateStructureVisitor(context, attributes);
+      JARCandidateStructureVisitor visitor = new JARCandidateStructureVisitor(parent, metaData, deployers, attributes);
       if (filter != null)
          visitor.setFilter(filter);
       return visitor;

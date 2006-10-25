@@ -23,6 +23,10 @@ package org.jboss.deployers.plugins.structure.vfs.explicit;
 
 import java.util.ArrayList;
 
+import org.jboss.deployers.plugins.structure.ClassPathInfoImpl;
+import org.jboss.deployers.plugins.structure.ContextInfoImpl;
+import org.jboss.deployers.plugins.structure.StructureMetaDataImpl;
+import org.jboss.deployers.spi.structure.vfs.ClassPathInfo;
 import org.jboss.xb.binding.ObjectModelFactory;
 import org.jboss.xb.binding.UnmarshallingContext;
 import org.xml.sax.Attributes;
@@ -35,14 +39,14 @@ import org.xml.sax.Attributes;
  */
 public class StructureMetaDataObjectFactory implements ObjectModelFactory
 {
-   public StructureMetaData newRoot(Object root, UnmarshallingContext navigator,
+   public StructureMetaDataImpl newRoot(Object root, UnmarshallingContext navigator,
          String namespaceURI, String localName, Attributes attrs)
    {
-      StructureMetaData metaData = null;
+      StructureMetaDataImpl metaData = null;
       if (root != null)
-         metaData = (StructureMetaData) root;
+         metaData = (StructureMetaDataImpl) root;
       else
-         metaData = new StructureMetaData();
+         metaData = new StructureMetaDataImpl();
 
       return metaData;
    }
@@ -53,22 +57,22 @@ public class StructureMetaDataObjectFactory implements ObjectModelFactory
       return root;
    }
 
-   public Object newChild(StructureMetaData parent, UnmarshallingContext navigator,
+   public Object newChild(StructureMetaDataImpl parent, UnmarshallingContext navigator,
          String namespaceURI, String localName, Attributes attrs)
    {
       Object child = null;
       if(localName.equals("context"))
       {
-         child = new ContextInfo();
+         child = new ContextInfoImpl();
       }
       return child;
    }
-   public Object newChild(ContextInfo parent, UnmarshallingContext navigator,
+   public Object newChild(ContextInfoImpl parent, UnmarshallingContext navigator,
          String namespaceURI, String localName, Attributes attrs)
    {
       Object child = null;
       if (localName.equals("classpath"))
-         child = new ArrayList<ContextInfo.Path>();
+         child = new ArrayList<ClassPathInfoImpl>();
       else if( localName.equals("path") )
       {
          String path = attrs.getValue("name");
@@ -81,7 +85,7 @@ public class StructureMetaDataObjectFactory implements ObjectModelFactory
       }
       return child;
    }
-   public Object newChild(ArrayList<ContextInfo.Path> parent, UnmarshallingContext navigator,
+   public Object newChild(ArrayList<ClassPathInfo> parent, UnmarshallingContext navigator,
          String namespaceURI, String localName, Attributes attrs)
    {
       Object child = null;
@@ -89,18 +93,19 @@ public class StructureMetaDataObjectFactory implements ObjectModelFactory
       {
          String name = attrs.getValue("name");
          String suffixes = attrs.getValue("suffixes");
-         ContextInfo.Path path = new ContextInfo.Path(name, suffixes);
+         ClassPathInfoImpl path = new ClassPathInfoImpl(name);
+         path.setOption("suffixes", suffixes);
          parent.add(path);
       }
       return child;
    }
 
-   public void addChild(StructureMetaData parent, ContextInfo context,
+   public void addChild(StructureMetaDataImpl parent, ContextInfoImpl context,
          UnmarshallingContext navigator, String namespaceURI, String localName)
    {
       parent.addContext(context);
    }
-   public void addChild(ContextInfo context, ArrayList<ContextInfo.Path> classpath,
+   public void addChild(ContextInfoImpl context, ArrayList<ClassPathInfo> classpath,
          UnmarshallingContext navigator, String namespaceURI, String localName)
    {
       context.setClassPath(classpath);

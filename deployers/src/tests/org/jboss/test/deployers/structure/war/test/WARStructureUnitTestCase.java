@@ -21,6 +21,8 @@
 */
 package org.jboss.test.deployers.structure.war.test;
 
+import java.util.List;
+
 import junit.framework.Test;
 import junit.framework.TestSuite;
 
@@ -28,6 +30,7 @@ import org.jboss.deployers.plugins.structure.vfs.war.WARStructure;
 import org.jboss.deployers.spi.structure.DeploymentContext;
 import org.jboss.deployers.spi.structure.vfs.StructureDeployer;
 import org.jboss.test.deployers.BaseDeployersTest;
+import org.jboss.virtual.VirtualFile;
 
 /**
  * WARStructureUnitTestCase.
@@ -63,18 +66,27 @@ public class WARStructureUnitTestCase extends BaseDeployersTest
       return structure;
    }
 
-   protected DeploymentContext assertValidContext(String root, String path) throws Exception
+   protected DeploymentContext assertValidContext(String root, String path)
+      throws Exception
+   {
+      return assertValidContext(root, path, false);
+   }
+   protected DeploymentContext assertValidContext(String root, String path, boolean addTopLevelInfo)
+      throws Exception
    {
       DeploymentContext context = createDeploymentContext(root, path);
-      assertTrue("Structure should be valid: " + context.getName(), determineStructure(context));
+      boolean recognized = determineStructure(context, addTopLevelInfo);
+      assertTrue("Structure should be valid: " + context.getName(), recognized);
       assertEmpty(context.getChildren());
       return context;
    }
 
-   protected DeploymentContext assertNotValidContext(String root, String path, boolean other) throws Exception
+   protected DeploymentContext assertNotValidContext(String root, String path, boolean addTopLevelInfo)
+      throws Exception
    {
       DeploymentContext context = createDeploymentContext(root, path);
-      assertFalse("Structure should not be valid: " + context.getName(), determineStructure(context));
+      boolean recognized = determineStructure(context, addTopLevelInfo);
+      assertFalse("Structure should not be valid: " + context.getName(), recognized);
       assertEmpty(context.getChildren());
       return context;
    }
@@ -83,7 +95,7 @@ public class WARStructureUnitTestCase extends BaseDeployersTest
    {
       assertValidContext("/structure/", "war/simple/simple.war");
    }
-   
+
    public void testNotAnArchive() throws Exception
    {
       assertNotValidContext("/structure/", "war/notanarchive/notanarchive.war", true);
@@ -101,6 +113,16 @@ public class WARStructureUnitTestCase extends BaseDeployersTest
    
    public void testDirectoryWithWebInf() throws Exception
    {
-      assertValidContext("/structure/", "war/directorywithwebinf");
+      DeploymentContext war = assertValidContext("/structure/", "war/directorywithwebinf");
+      List<VirtualFile> classpath = war.getClassPath();
+      assertNotNull("classpath", classpath);
+      assertEquals("classpath.size = 3", 3, classpath.size());
+      VirtualFile warFile = war.getRoot();
+      VirtualFile classes = warFile.findChild("WEB-INF/classes");
+      assertTrue("WEB-INF/classes in classpath", classpath.contains(classes));
+      VirtualFile j0 = warFile.findChild("WEB-INF/lib/j0.jar");
+      assertTrue("WEB-INF/lib/j0.jar in classpath", classpath.contains(j0));
+      VirtualFile j1 = warFile.findChild("WEB-INF/lib/j1.jar");
+      assertTrue("WEB-INF/lib/j1.jar in classpath", classpath.contains(j1));
    }
 }

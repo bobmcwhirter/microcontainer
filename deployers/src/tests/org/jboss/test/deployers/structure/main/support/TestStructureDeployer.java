@@ -24,8 +24,11 @@ package org.jboss.test.deployers.structure.main.support;
 import java.util.HashSet;
 import java.util.Set;
 
+import org.jboss.deployers.plugins.structure.ContextInfoImpl;
 import org.jboss.deployers.plugins.structure.vfs.AbstractStructureDeployer;
-import org.jboss.deployers.spi.structure.DeploymentContext;
+import org.jboss.deployers.spi.structure.vfs.StructureMetaData;
+import org.jboss.deployers.spi.structure.vfs.StructuredDeployers;
+import org.jboss.virtual.VirtualFile;
 
 /**
  * TestStructureDeployer.
@@ -35,24 +38,27 @@ import org.jboss.deployers.spi.structure.DeploymentContext;
  */
 public class TestStructureDeployer extends AbstractStructureDeployer
 {
-   /** The contexts with which we have been invoked */
-   private Set<DeploymentContext> invoked = new HashSet<DeploymentContext>();
+   /** The files with which we have been invoked */
+   private Set<VirtualFile> invoked = new HashSet<VirtualFile>();
 
    /**
     * Get the contexts with which we were invoked and clear it
     * 
     * @return the set of contexts
     */
-   public Set<DeploymentContext> getInvoked()
+   public Set<VirtualFile> getInvoked()
    {
-      HashSet<DeploymentContext> result = new HashSet<DeploymentContext>(invoked);
+      HashSet<VirtualFile> result = new HashSet<VirtualFile>(invoked);
       invoked.clear();
       return result;
    }
    
-   public boolean determineStructure(DeploymentContext context)
+   public boolean determineStructure(VirtualFile root,
+         StructureMetaData metaData, StructuredDeployers deployers)
    {
-      invoked.add(context);
+      invoked.add(root);
+      ContextInfoImpl context = new ContextInfoImpl(root.getPathName());
+      metaData.addContext(context);
       return true;
    }
 }

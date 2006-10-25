@@ -25,11 +25,9 @@ import java.io.IOException;
 import java.net.URL;
 
 import org.jboss.deployers.plugins.structure.vfs.AbstractStructureDeployer;
-import org.jboss.deployers.plugins.structure.vfs.CandidateStructureVisitorFactory;
-import org.jboss.deployers.spi.structure.DeploymentContext;
+import org.jboss.deployers.spi.structure.vfs.StructureMetaData;
+import org.jboss.deployers.spi.structure.vfs.StructuredDeployers;
 import org.jboss.virtual.VirtualFile;
-import org.jboss.virtual.VirtualFileVisitor;
-import org.jboss.virtual.VisitorAttributes;
 import org.jboss.xb.binding.Unmarshaller;
 import org.jboss.xb.binding.UnmarshallerFactory;
 
@@ -41,20 +39,12 @@ import org.jboss.xb.binding.UnmarshallerFactory;
  * @version $Revision: 1.1 $
  */
 public class DeclaredStructure extends AbstractStructureDeployer
-   implements CandidateStructureVisitorFactory
 {
-   private static ThreadLocal<StructureMetaData> activeMetaData = new ThreadLocal<StructureMetaData>();
+   private static ThreadLocal<StructureMetaData> activeMetaData
+   = new ThreadLocal<StructureMetaData>();
 
    public DeclaredStructure()
    {
-      super.setCandidateStructureVisitorFactory(this);
-   }
-
-   public VirtualFileVisitor createVisitor(DeploymentContext context, VisitorAttributes attributes)
-      throws Exception
-   {
-      StructureMetaData metaData = activeMetaData.get();
-      return new StructureMetaDataFileVisitor(metaData, context, attributes);
    }
 
    /**
@@ -66,35 +56,35 @@ public class DeclaredStructure extends AbstractStructureDeployer
       return 0;
    }
 
-   public boolean determineStructure(DeploymentContext context)
+   public boolean determineStructure(VirtualFile root, StructureMetaData metaData, StructuredDeployers deployers)
    {
       try
       {
-         VirtualFile root = context.getRoot();
-         try
+         if( root.isLeaf() == false )
          {
-            VirtualFile jbossStructure = root.findChild("META-INF/jboss-structure.xml");
-            log.trace("... context has a META-INF subdirectory");
-            URL url = jbossStructure.toURL();
-            UnmarshallerFactory factory = UnmarshallerFactory.newInstance();
-            Unmarshaller unmarshaller = factory.newUnmarshaller();
-            StructureMetaDataObjectFactory ofactory = new StructureMetaDataObjectFactory();
-            StructureMetaData metaData = (StructureMetaData) unmarshaller.unmarshal(url.toString(), ofactory, null);
-            activeMetaData.set(metaData);
+            try
+            {
+               VirtualFile jbossStructure = root.findChild("META-INF/jboss-structure.xml");
+               log.trace("... context has a META-INF subdirectory");
+               URL url = jbossStructure.toURL();
+               UnmarshallerFactory factory = UnmarshallerFactory.newInstance();
+               Unmarshaller unmarshaller = factory.newUnmarshaller();
+               StructureMetaDataObjectFactory ofactory = new StructureMetaDataObjectFactory();
+               unmarshaller.unmarshal(url.toString(), ofactory, metaData);
+               activeMetaData.set(metaData);
+            }
+            catch (IOException e)
+            {
+               log.trace("... no META-INF subdirectory.");
+               return false;
+            }
+            return true;
          }
-         catch (IOException e)
-         {
-            log.trace("... no META-INF subdirectory.");
-            return false;
-         }
-
-         super.addAllChildren(context);
-         return true;
       }
       catch (Exception e)
       {
-         log.warn("Error determining structure: " + context.getName(), e);
-         return false;
+         log.warn("Error determining structure: " + root.getName(), e);
       }
+      return false;
    }
 }

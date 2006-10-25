@@ -19,28 +19,34 @@
  * Software Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA
  * 02110-1301 USA, or see the FSF site: http://www.fsf.org.
  */
-package org.jboss.deployers.spi.structure.vfs;
+package org.jboss.deployers.plugins.structure;
 
-import org.jboss.deployers.spi.OrderedDeployer;
+import org.jboss.deployers.spi.structure.vfs.ContextInfo;
+import org.jboss.deployers.spi.structure.vfs.StructureMetaData;
 import org.jboss.virtual.VirtualFile;
+import org.jboss.virtual.VirtualFileFilter;
 
 /**
- * A StructureDeployer translates a deployment virtual file root into
- * StructureMetaData representing the deployment contexts.
- * 
- * @author <a href="adrian@jboss.com">Adrian Brock</a>
- * @version $Revision: 1.1 $
+ * @author Scott.Stark@jboss.org
+ * @version $Revision:$
  */
-public interface StructureDeployer extends OrderedDeployer
+public class StructureMetaDataFilter implements VirtualFileFilter
 {
+   private StructureMetaData metaData;
+
+   public StructureMetaDataFilter(StructureMetaData metaData)
+   {
+      this.metaData = metaData;
+   }
+
    /**
-    * Determine the structure of a deployment
-    * 
-    * @param file - the candidate root file of the deployment
-    * @param metaData - the structure metadata to build
-    * @param deployers - the available structure deployers
-    * @return true when it is recongnised
+    * Accept a file for which the StructureMetaData
+    * @return true if the file has a ContextInfo
     */
-   boolean determineStructure(VirtualFile file, StructureMetaData metaData, StructuredDeployers deployers);
+   public boolean accepts(VirtualFile file)
+   {
+      ContextInfo info = metaData.getContext(file.getPathName());
+      return info != null;
+   }
 
 }

@@ -23,9 +23,9 @@ package org.jboss.deployers.plugins.structure.vfs;
 
 import java.io.IOException;
 
-import org.jboss.deployers.plugins.structure.AbstractDeploymentContext;
-import org.jboss.deployers.plugins.structure.vfs.jar.JARCandidateStructureVisitor;
-import org.jboss.deployers.spi.structure.DeploymentContext;
+import org.jboss.deployers.spi.structure.vfs.ContextInfo;
+import org.jboss.deployers.spi.structure.vfs.StructureMetaData;
+import org.jboss.deployers.spi.structure.vfs.StructuredDeployers;
 import org.jboss.logging.Logger;
 import org.jboss.virtual.VirtualFile;
 import org.jboss.virtual.VirtualFileFilter;
@@ -43,11 +43,12 @@ public class AbstractCandidateStructureVisitor extends AbstractVirtualFileVisito
    /** The log */
    private static final Logger log = Logger.getLogger(AbstractCandidateStructureVisitor.class);
 
-   /** The parent deployment context */
-   private final DeploymentContext parent;
+   /** The parent deployment file */
+   private final VirtualFile parent;
 
    /** The meta data location */
-   private final String metaDataPath;
+   private final StructureMetaData metaData;
+   private final StructuredDeployers deployers;
 
    /** Ignore directories */
    private boolean ignoreDirectories;
@@ -61,9 +62,9 @@ public class AbstractCandidateStructureVisitor extends AbstractVirtualFileVisito
     * @param parent the parent
     * @throws IllegalArgumentException for a null parent
     */
-   public AbstractCandidateStructureVisitor(DeploymentContext parent)
+   public AbstractCandidateStructureVisitor(VirtualFile parent, StructureMetaData metaData, StructuredDeployers deployers)
    {
-      this(parent, null);
+      this(parent, metaData, deployers, null);
    }
    
    /**
@@ -73,25 +74,22 @@ public class AbstractCandidateStructureVisitor extends AbstractVirtualFileVisito
     * @param attributes the attributes
     * @throws IllegalArgumentException for a null parent
     */
-   public AbstractCandidateStructureVisitor(DeploymentContext parent, VisitorAttributes attributes)
+   public AbstractCandidateStructureVisitor(VirtualFile parent, StructureMetaData metaData, StructuredDeployers deployers, VisitorAttributes attributes)
    {
       super(attributes);
       if (parent == null)
          throw new IllegalArgumentException("Null parent");
       this.parent = parent;
-      VirtualFile metaDataLocation = parent.getMetaDataLocation();
-      if (metaDataLocation != null)
-         metaDataPath = metaDataLocation.getPathName(); 
-      else
-         metaDataPath = null;
+      this.metaData = metaData;
+      this.deployers = deployers;
    }
-   
+
    /**
     * Get the parent deployment context
     * 
     * @return the parent.
     */
-   public DeploymentContext getParent()
+   public VirtualFile getParent()
    {
       return parent;
    }
@@ -136,41 +134,37 @@ public class AbstractCandidateStructureVisitor extends AbstractVirtualFileVisito
       this.ignoreDirectories = ignoreDirectories;
    }
 
-   public void visit(VirtualFile virtualFile)
+   public void visit(VirtualFile file)
    {
-      DeploymentContext candidate = createCandidate(virtualFile);
-      if (candidate != null)
-         parent.addChild(candidate);
-   }
-
-   /**
-    * Create a new candidate deployment context
-    * 
-    * @param virtualFile the virtual file
-    * @return the candidate or null if it is not a candidate
-    */
-   protected DeploymentContext createCandidate(VirtualFile virtualFile)
-   {
-      // Exclude the meta data location
-      if (metaDataPath != null && virtualFile.getPathName().startsWith(metaDataPath))
-         return null;
-
-      // Ignore directories when asked
-      try
+      ContextInfo context = metaData.getContext(file.getPathName());
+      if (context == null)
       {
-         if (ignoreDirectories && virtualFile.isLeaf() == false)
-            return null;
+         // Ignore directories when asked
+         try
+         {
+            if (ignoreDirectories && file.isLeaf() == false)
+               return;
+         }
+         catch (IOException e)
+         {
+            log.debug("Ignoring " + file + " reason=" + e);
+            return;
+         }
+         
+         // Apply any filter
+         if (filter != null && filter.accepts(file) == false)
+            return;
+
+         try
+         {
+            // Ask the deployers to process this file
+            deployers.determineStructure(file, metaData);
+         }
+         catch (Exception e)
+         {
+            log.debug("Ignoring " + file + " reason=" + e);
+            return;
+         }
       }
-      catch (IOException e)
-      {
-         log.debug("Ignoring " + virtualFile + " reason=" + e);
-         return null;
-      }
-      
-      // Apply any filter
-      if (filter != null && filter.accepts(virtualFile) == false)
-         return null;
-      
-      return new AbstractDeploymentContext(virtualFile, true, parent);
    }
 }

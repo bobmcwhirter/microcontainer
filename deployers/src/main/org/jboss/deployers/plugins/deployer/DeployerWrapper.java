@@ -176,6 +176,10 @@ public class DeployerWrapper implements Deployer
    {
       return deployer.getRelativeOrder();
    }
+   public void setRelativeOrder(int order)
+   {
+      deployer.setRelativeOrder(order);
+   }
 
    @Override
    public boolean equals(Object obj)

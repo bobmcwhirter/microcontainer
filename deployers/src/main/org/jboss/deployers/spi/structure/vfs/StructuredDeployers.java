@@ -21,26 +21,37 @@
  */
 package org.jboss.deployers.spi.structure.vfs;
 
-import org.jboss.deployers.spi.OrderedDeployer;
+import java.util.SortedSet;
+
+import org.jboss.deployers.spi.DeploymentException;
 import org.jboss.virtual.VirtualFile;
 
 /**
- * A StructureDeployer translates a deployment virtual file root into
- * StructureMetaData representing the deployment contexts.
- * 
- * @author <a href="adrian@jboss.com">Adrian Brock</a>
- * @version $Revision: 1.1 $
+ * An encapsulation of the avaialble StructureDeployer
+ *  
+ * @author Scott.Stark@jboss.org
+ * @version $Revision:$
  */
-public interface StructureDeployer extends OrderedDeployer
+public interface StructuredDeployers
 {
    /**
-    * Determine the structure of a deployment
     * 
-    * @param file - the candidate root file of the deployment
-    * @param metaData - the structure metadata to build
-    * @param deployers - the available structure deployers
-    * @return true when it is recongnised
+    * @param file - root of the deployment in the VFS
+    * @param metaData - the existing metadata to use/populate with structure metadata
+    * @return true if the deployment was recognized, false if it was not
+    * @throws DeploymentException - thrown on failure to parse the deployment
     */
-   boolean determineStructure(VirtualFile file, StructureMetaData metaData, StructuredDeployers deployers);
+   public boolean determineStructure(VirtualFile file, StructureMetaData metaData)
+      throws DeploymentException;
 
+   /**
+    * Get the ordered set of deployers.
+    * @return the ordered set of deployers.
+    */
+   public SortedSet<StructureDeployer> getDeployers();
+   /**
+    * Are there any deployers
+    * @return 
+    */
+   public boolean isEmpty();
 }

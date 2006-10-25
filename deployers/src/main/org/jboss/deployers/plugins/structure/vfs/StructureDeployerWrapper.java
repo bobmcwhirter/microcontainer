@@ -23,7 +23,10 @@ package org.jboss.deployers.plugins.structure.vfs;
 
 import org.jboss.deployers.spi.structure.DeploymentContext;
 import org.jboss.deployers.spi.structure.vfs.StructureDeployer;
+import org.jboss.deployers.spi.structure.vfs.StructureMetaData;
+import org.jboss.deployers.spi.structure.vfs.StructuredDeployers;
 import org.jboss.logging.Logger;
+import org.jboss.virtual.VirtualFile;
 
 /**
  * StructureDeployerWrapper.
@@ -54,26 +57,27 @@ public class StructureDeployerWrapper implements StructureDeployer
       log = Logger.getLogger(deployer.getClass());
    }
    
-   public boolean determineStructure(DeploymentContext context)
+   public boolean determineStructure(VirtualFile root,
+         StructureMetaData metaData, StructuredDeployers deployers)
    {
-      if (context == null)
-         throw new IllegalArgumentException("Null context");
+      if (root == null)
+         throw new IllegalArgumentException("Null root");
       
       try
       {
-         boolean result = deployer.determineStructure(context);
+         boolean result = deployers.determineStructure(root, metaData);
          if (log.isTraceEnabled())
          {
             if (result == false)
-               log.trace("Not recognised: " + context.getName());
+               log.trace("Not recognised: " + root.getName());
             else
-               log.trace("Recognised: " + context.getName());
+               log.trace("Recognised: " + root.getName());
          }
          return result;
       }
       catch (Throwable t)
       {
-         log.warn("Error during determineStructure: " + context.getName(), t);
+         log.warn("Error during determineStructure: " + root.getName(), t);
          return false;
       }
    }
@@ -81,6 +85,10 @@ public class StructureDeployerWrapper implements StructureDeployer
    public int getRelativeOrder()
    {
       return deployer.getRelativeOrder();
+   }
+   public void setRelativeOrder(int order)
+   {
+      deployer.setRelativeOrder(order);
    }
 
    @Override

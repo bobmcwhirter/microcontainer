@@ -66,36 +66,41 @@ public class FileStructureUnitTestCase extends BaseDeployersTest
       return structure;
    }
 
-   protected DeploymentContext assertValidContext(String root, String path) throws Exception
+   protected DeploymentContext assertValidContext(String root, String path, boolean addTopLevelInfo)
+      throws Exception
    {
       DeploymentContext context = createDeploymentContext(root, path);
-      assertTrue("Structure should be valid: " + context.getName(), determineStructure(context));
+      boolean recoginized = determineStructure(context, addTopLevelInfo);
+      assertTrue("Structure should be valid: " + context.getName(), recoginized);
       assertEmpty(context.getChildren());
       return context;
    }
    
-   protected DeploymentContext assertNotValidContext(String root, String path, boolean isDirectory) throws Exception
+   protected DeploymentContext assertNotValidContext(String root, String path,
+         boolean isDirectory, boolean addTopLevelInfo)
+      throws Exception
    {
       DeploymentContext context = createDeploymentContext(root, path);
-      assertFalse("Structure should not be valid: " + context.getName(), determineStructure(context));
+      boolean recoginized = determineStructure(context, addTopLevelInfo);
+      assertFalse("Structure should not be valid: " + context.getName(), recoginized);
       assertEmpty(context.getChildren());
       return context;
    }
    
    public void testSimple() throws Exception
    {
-      assertValidContext("/structure/", "file/simple/simple-service.xml");
+      assertValidContext("/structure/", "file/simple/simple-service.xml", false);
    }
    
    public void testNotKnownButTopLevel() throws Exception
    {
-      assertValidContext("/structure/", "file/notknown/test-unknown.xml");
-      assertValidContext("/structure/", "file/notknown/unknown.xml");
+      assertValidContext("/structure/", "file/notknown/test-unknown.xml", true);
+      assertValidContext("/structure/", "file/notknown/unknown.xml", true);
    }
-   
+
    public void testDirectory() throws Exception
    {
-      assertNotValidContext("/structure/", "file/directory", true);
+      assertNotValidContext("/structure/", "file/directory", false, false);
    }
    
    protected void assertContexts(Map<String, Boolean> expected, Set<DeploymentContext> actual) throws Exception

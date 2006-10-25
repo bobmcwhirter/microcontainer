@@ -45,13 +45,17 @@ import java.util.concurrent.atomic.AtomicBoolean;
 
 import org.jboss.deployers.plugins.deployer.AbstractDeploymentUnit;
 import org.jboss.deployers.plugins.deployer.DeployerWrapper;
-import org.jboss.deployers.plugins.structure.vfs.StructureDeployerWrapper;
+import org.jboss.deployers.plugins.structure.BasicStructuredDeployers;
+import org.jboss.deployers.plugins.structure.DefaultStructureBuilder;
+import org.jboss.deployers.plugins.structure.StructureMetaDataImpl;
 import org.jboss.deployers.spi.DeploymentException;
 import org.jboss.deployers.spi.deployer.Deployer;
 import org.jboss.deployers.spi.deployer.DeploymentUnit;
 import org.jboss.deployers.spi.deployment.MainDeployer;
 import org.jboss.deployers.spi.structure.DeploymentContext;
+import org.jboss.deployers.spi.structure.vfs.StructureBuilder;
 import org.jboss.deployers.spi.structure.vfs.StructureDeployer;
+import org.jboss.deployers.spi.structure.vfs.StructureMetaData;
 import org.jboss.logging.Logger;
 import org.jboss.virtual.VirtualFile;
 
@@ -72,7 +76,10 @@ public class MainDeployerImpl implements MainDeployer
    private AtomicBoolean shutdown = new AtomicBoolean(false);
    
    /** The structure deployers */
-   private SortedSet<StructureDeployer> structureDeployers = new TreeSet<StructureDeployer>(StructureDeployer.COMPARATOR);
+   private BasicStructuredDeployers structureDeployers = new BasicStructuredDeployers();
+
+   /** The structure builder that translates structure metadata to deployments */
+   private StructureBuilder structureBuilder = new DefaultStructureBuilder();
 
    /** The deployers */
    private SortedSet<Deployer> deployers = new TreeSet<Deployer>(Deployer.COMPARATOR);
@@ -102,9 +109,10 @@ public class MainDeployerImpl implements MainDeployer
     */
    public synchronized Set<StructureDeployer> getStructureDeployers()
    {
-      return new TreeSet<StructureDeployer>(structureDeployers);
+      SortedSet<StructureDeployer> sdeployers = structureDeployers.getDeployers();
+      return sdeployers;
    }
-   
+
    /**
     * Set the structure deployers
     * 
@@ -115,18 +123,7 @@ public class MainDeployerImpl implements MainDeployer
    {
       if (deployers == null)
          throw new IllegalArgumentException("Null deployers");
-      
-      // Remove all the old deployers that are not in the new set
-      HashSet<StructureDeployer> oldDeployers = new HashSet<StructureDeployer>(structureDeployers);
-      oldDeployers.removeAll(deployers);
-      for (StructureDeployer deployer : oldDeployers)
-         removeStructureDeployer(deployer);
-      
-      // Add all the new deployers that were not already present
-      HashSet<StructureDeployer> newDeployers = new HashSet<StructureDeployer>(deployers);
-      newDeployers.removeAll(structureDeployers);
-      for (StructureDeployer deployer : newDeployers)
-         addStructureDeployer(deployer);
+      structureDeployers.setDeployers(deployers);
    }
    
    /**
@@ -138,8 +135,7 @@ public class MainDeployerImpl implements MainDeployer
    {
       if (deployer == null)
          throw new IllegalArgumentException("Null deployer");
-      StructureDeployerWrapper wrapper = new StructureDeployerWrapper(deployer);
-      structureDeployers.add(wrapper);
+      structureDeployers.addDeployer(deployer);
       // TODO recheck failed deployments
       log.debug("Added structure deployer: " + deployer);
    }
@@ -153,7 +149,7 @@ public class MainDeployerImpl implements MainDeployer
    {
       if (deployer == null)
          throw new IllegalArgumentException("Null deployer");
-      structureDeployers.remove(deployer);
+      structureDeployers.removeDeployer(deployer);
       log.debug("Remove structure deployer: " + deployer);
       // TODO remove deployments for this structure?
    }
@@ -227,7 +223,16 @@ public class MainDeployerImpl implements MainDeployer
          throw new IllegalArgumentException("Null name");
       return allDeployments.get(name);
    }
-   
+
+   public StructureBuilder getStructureBuilder()
+   {
+      return structureBuilder;
+   }
+   public void setStructureBuilder(StructureBuilder builder)
+   {
+      this.structureBuilder = builder;
+   }
+
    public synchronized void addDeploymentContext(DeploymentContext context) throws DeploymentException
    {
       if (context == null)
@@ -502,7 +507,8 @@ public class MainDeployerImpl implements MainDeployer
     * 
     * @param context the context
     */
-   private void determineStructure(DeploymentContext context) throws DeploymentException
+   private void determineStructure(DeploymentContext context)
+      throws DeploymentException
    {
       if (context.getStructureDetermined() == PREDETERMINED)
          return;
@@ -510,17 +516,22 @@ public class MainDeployerImpl implements MainDeployer
       if (context.getRoot() == null)
          throw new DeploymentException("Unable to determine structure context has not root " + context.getName());
       
-      StructureDeployer[] theDeployers;
       synchronized (this)
       {
          if (structureDeployers.isEmpty())
             throw new IllegalStateException("No structure deployers");
-         theDeployers = structureDeployers.toArray(new StructureDeployer[structureDeployers.size()]);
       }
+      VirtualFile root = context.getRoot();
 
-      determineStructure(context, theDeployers);
+      // TODO: does the StructureMetaData impl need to be externalized?
+      StructureMetaData metaData = new StructureMetaDataImpl();
+      boolean result = structureDeployers.determineStructure(root, metaData);
+      if (result == false)
+         throw new DeploymentException("No structural deployer recognised the deployment. " + context.getName());
+      // Build the deployment context from the structure metadata
+      structureBuilder.populateContext(context, metaData);
    }
-   
+
    /**
     * Determine the structure
     * 
@@ -528,17 +539,16 @@ public class MainDeployerImpl implements MainDeployer
     * @param theDeployers the deployers
     * @return true when determined
     * @throws DeploymentException for any problem
-    */
-   private boolean determineStructure(DeploymentContext context, StructureDeployer[] theDeployers) throws DeploymentException
+   private boolean determineStructure(DeploymentContext context) throws DeploymentException
    {
       boolean trace = log.isTraceEnabled();
       if (trace)
          log.trace("Trying to determine structure: " + context.getName());
 
-      boolean result = false;
+      boolean result = this.structureDeployers.determineStructure(context);
       for (StructureDeployer deployer : theDeployers)
       {
-         if (deployer.determineStructure(context))
+         if (deployer.determineStructure(context, deployers))
          {
             result = true;
             break;
@@ -560,6 +570,7 @@ public class MainDeployerImpl implements MainDeployer
       
       return result;
    }
+   */
    
    /**
     * Add a context

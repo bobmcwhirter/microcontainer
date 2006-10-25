@@ -22,7 +22,9 @@
 package org.jboss.test.deployers.structure.main.support;
 
 import org.jboss.deployers.plugins.structure.vfs.AbstractStructureDeployer;
-import org.jboss.deployers.spi.structure.DeploymentContext;
+import org.jboss.deployers.spi.structure.vfs.StructureMetaData;
+import org.jboss.deployers.spi.structure.vfs.StructuredDeployers;
+import org.jboss.virtual.VirtualFile;
 
 /**
  * TestStructureOrdering.
@@ -58,7 +60,8 @@ public class TestStructureOrdering extends AbstractStructureDeployer
       return relativeOrder;
    }
 
-   public boolean determineStructure(DeploymentContext context)
+   public boolean determineStructure(VirtualFile root,
+         StructureMetaData metaData, StructuredDeployers deployers)
    {
       structureOrder = ++order;
       return false;

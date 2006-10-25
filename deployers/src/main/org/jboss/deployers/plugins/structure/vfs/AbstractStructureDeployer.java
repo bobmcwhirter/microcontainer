@@ -21,10 +21,19 @@
 */
 package org.jboss.deployers.plugins.structure.vfs;
 
+import java.io.IOException;
+import java.util.ArrayList;
+import java.util.List;
+
+import org.jboss.deployers.plugins.structure.ClassPathInfoImpl;
 import org.jboss.deployers.plugins.structure.vfs.jar.JARCandidateStructureVisitorFactory;
-import org.jboss.deployers.spi.structure.DeploymentContext;
+import org.jboss.deployers.spi.structure.vfs.ClassPathInfo;
+import org.jboss.deployers.spi.structure.vfs.ContextInfo;
 import org.jboss.deployers.spi.structure.vfs.StructureDeployer;
+import org.jboss.deployers.spi.structure.vfs.StructureMetaData;
+import org.jboss.deployers.spi.structure.vfs.StructuredDeployers;
 import org.jboss.logging.Logger;
+import org.jboss.virtual.VFSUtils;
 import org.jboss.virtual.VirtualFile;
 import org.jboss.virtual.VirtualFileVisitor;
 import org.jboss.virtual.VisitorAttributes;
@@ -41,14 +50,20 @@ public abstract class AbstractStructureDeployer implements StructureDeployer
 {
    /** The log */
    protected Logger log = Logger.getLogger(getClass());
-   
+   private int relativeOrder = Integer.MAX_VALUE;
+
    /** The candidate structure visitor factory */
    private CandidateStructureVisitorFactory candidateStructureVisitorFactory = JARCandidateStructureVisitorFactory.INSTANCE;
-   
+
    public int getRelativeOrder()
    {
-      return Integer.MAX_VALUE;
+      return relativeOrder;
    }
+   public void setRelativeOrder(int order)
+   {
+      this.relativeOrder = order;
+   }
+   
 
    /**
     * Get the candidateStructureVisitorFactory.
@@ -73,19 +88,86 @@ public abstract class AbstractStructureDeployer implements StructureDeployer
       this.candidateStructureVisitorFactory = candidateStructureVisitorFactory;
    }
 
-   public abstract boolean determineStructure(DeploymentContext context);
-   
+   public abstract boolean determineStructure(VirtualFile root,
+         StructureMetaData metaData, StructuredDeployers deployers);
+
+   /**
+    * See if a file corresponds to a top-level deployment.
+    * 
+    * @param root
+    * @param metaData
+    * @return
+    */
+   public boolean isTopLevel(VirtualFile file, StructureMetaData metaData)
+      throws IOException
+   {
+      // See if this is a top-level by checking the parent
+      VirtualFile parent = file.getParent();
+      String parentPath = parent != null ? parent.getPathName() : null;
+      boolean isTopLevel = parentPath == null || metaData.getContext(parentPath) == null;
+      return isTopLevel;
+   }
+
+   /**
+    * Add an entry to the context classpath.
+    * 
+    * @param root - the root file the classpath entry should be relative to
+    * @param entry - the candidate file to add as a classpath entry
+    * @param includeEntry - a flag indicating if the entry should be added to
+    *    the classpath
+    * @param includeRootManifestCP - a flag indicating if the entry metainf
+    *    manifest classpath should be included.
+    * @param context - the context to populate
+    * @throws IOException
+    */
+   protected void addClassPath(VirtualFile root, VirtualFile entry,
+         boolean includeEntry, boolean includeRootManifestCP,
+         ContextInfo context)
+      throws IOException
+   {
+      // Add the manifest locations
+      List<VirtualFile> paths = new ArrayList<VirtualFile>();
+      if( includeEntry )
+         paths.add(entry);
+      String rootPath = root.getPathName();
+      if( includeRootManifestCP )
+      {
+         VFSUtils.addManifestLocations(entry, paths);
+      }
+      // Add to any existing classpath
+      List<ClassPathInfo> pathInfo = new ArrayList<ClassPathInfo>();
+      if( context.getClassPath() != null )
+         pathInfo.addAll(context.getClassPath());
+      // Translate from VirtualFile to root relative paths
+      for(VirtualFile vf : paths)
+      {
+         // Set the path relative to the root
+         String cp = vf.getPathName();
+         if( cp.startsWith(rootPath) )
+         {
+            if( cp.length() == rootPath.length() )
+               cp = "";
+            else
+               cp = cp.substring(rootPath.length()+1);
+         }
+         ClassPathInfoImpl cpi = new ClassPathInfoImpl(cp);
+         pathInfo.add(cpi);
+      }
+      context.setClassPath(pathInfo);
+   }
+
    /**
     * Add all children as candidates
     * 
     * @param parent the parent context
     * @throws Exception for any error
     */
-   protected void addAllChildren(DeploymentContext parent) throws Exception
+   protected void addAllChildren(VirtualFile parent, StructureMetaData metaData, StructuredDeployers deployers)
+      throws Exception
    {
-      addChildren(parent, null);
+      addChildren(parent, metaData, deployers, null);
    }
-   
+
    /**
     * Add all children as candidates
     * 
@@ -93,13 +175,13 @@ public abstract class AbstractStructureDeployer implements StructureDeployer
     * @param attributes the visitor attributes uses {@link VisitorAttributes#DEFAULT} when null
     * @throws Exception for any error
     */
-   protected void addChildren(DeploymentContext parent, VisitorAttributes attributes) throws Exception
+   protected void addChildren(VirtualFile parent, StructureMetaData metaData, StructuredDeployers deployers,
+         VisitorAttributes attributes) throws Exception
    {
       if (parent == null)
          throw new IllegalArgumentException("Null parent");
       
-      VirtualFileVisitor visitor = candidateStructureVisitorFactory.createVisitor(parent, attributes);
-      VirtualFile root = parent.getRoot();
-      root.visit(visitor);
+      VirtualFileVisitor visitor = candidateStructureVisitorFactory.createVisitor(parent, metaData, deployers, attributes);
+      parent.visit(visitor);
    }
 }

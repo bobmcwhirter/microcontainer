@@ -1,0 +1,18 @@
+<structure>
+	<context>
+		<path>complex.jar</path>
+		<metaDataPath>META-INF</metaDataPath>
+		<classpath>
+			<path>jar1.jar</path>
+			<path>lib-dir/*.jar</path>
+		</classpath>
+	</context>
+	<context>
+		<path>complex.jar/sub.jar</path>
+		<metaDataPath>META-INF</metaDataPath>
+	</context>
+	<context>
+		<path>complex.jar/sub.jar</path>
+		<metaDataPath>META-INF</metaDataPath>
+	</context>
+</structure>

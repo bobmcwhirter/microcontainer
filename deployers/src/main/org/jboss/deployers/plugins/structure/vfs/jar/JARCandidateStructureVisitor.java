@@ -22,7 +22,9 @@
 package org.jboss.deployers.plugins.structure.vfs.jar;
 
 import org.jboss.deployers.plugins.structure.vfs.AbstractCandidateStructureVisitor;
-import org.jboss.deployers.spi.structure.DeploymentContext;
+import org.jboss.deployers.spi.structure.vfs.StructureMetaData;
+import org.jboss.deployers.spi.structure.vfs.StructuredDeployers;
+import org.jboss.virtual.VirtualFile;
 import org.jboss.virtual.VisitorAttributes;
 
 /**
@@ -41,8 +43,9 @@ public class JARCandidateStructureVisitor extends AbstractCandidateStructureVisi
     * @throws IllegalArgumentException for a null parent
     * @throws Exception for any error
     */
-   public JARCandidateStructureVisitor(DeploymentContext parent, VisitorAttributes attributes) throws Exception
+   public JARCandidateStructureVisitor(VirtualFile parent, StructureMetaData metaData, StructuredDeployers deployers,
+         VisitorAttributes attributes) throws Exception
    {
-      super(parent, attributes);
+      super(parent, metaData, deployers, attributes);
    }
 }

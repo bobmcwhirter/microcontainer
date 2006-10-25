@@ -21,26 +21,13 @@
  */
 package org.jboss.deployers.spi.structure.vfs;
 
-import org.jboss.deployers.spi.OrderedDeployer;
-import org.jboss.virtual.VirtualFile;
-
 /**
- * A StructureDeployer translates a deployment virtual file root into
- * StructureMetaData representing the deployment contexts.
+ * A factory interface for creating StructureBuilders
  * 
- * @author <a href="adrian@jboss.com">Adrian Brock</a>
- * @version $Revision: 1.1 $
+ * @author Scott.Stark@jboss.org
+ * @version $Revision:$
  */
-public interface StructureDeployer extends OrderedDeployer
+public interface StructureBuilderFactory
 {
-   /**
-    * Determine the structure of a deployment
-    * 
-    * @param file - the candidate root file of the deployment
-    * @param metaData - the structure metadata to build
-    * @param deployers - the available structure deployers
-    * @return true when it is recongnised
-    */
-   boolean determineStructure(VirtualFile file, StructureMetaData metaData, StructuredDeployers deployers);
-
+   StructureBuilder createBuilder(StructureMetaData metaData);
 }

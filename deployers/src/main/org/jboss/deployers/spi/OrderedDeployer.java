@@ -19,28 +19,46 @@
  * Software Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA
  * 02110-1301 USA, or see the FSF site: http://www.fsf.org.
  */
-package org.jboss.deployers.spi.structure.vfs;
+package org.jboss.deployers.spi;
 
-import org.jboss.deployers.spi.OrderedDeployer;
-import org.jboss.virtual.VirtualFile;
+import java.util.Comparator;
 
 /**
- * A StructureDeployer translates a deployment virtual file root into
- * StructureMetaData representing the deployment contexts.
+ * A base interface for deployers that defines the ordering contract
+ * and comparator.
  * 
- * @author <a href="adrian@jboss.com">Adrian Brock</a>
- * @version $Revision: 1.1 $
+ * @author Scott.Stark@jboss.org
+ * @version $Revision:$
  */
-public interface StructureDeployer extends OrderedDeployer
+public interface OrderedDeployer
 {
    /**
-    * Determine the structure of a deployment
+    * Get the relative order
     * 
-    * @param file - the candidate root file of the deployment
-    * @param metaData - the structure metadata to build
-    * @param deployers - the available structure deployers
-    * @return true when it is recongnised
+    * @return the relative order
     */
-   boolean determineStructure(VirtualFile file, StructureMetaData metaData, StructuredDeployers deployers);
+   int getRelativeOrder();
+   /**
+    * Set the deployer relative order.
+    * @param order - the order of the deployer in a deployer chain.
+    */
+   public void setRelativeOrder(int order);
+
+   /** The comparator for relative ordering of deployers */
+   Comparator<OrderedDeployer> COMPARATOR = new DeployerComparator();
+   
+   /**
+    * The comparator for relative ordering of deployers
+    */
+   public class DeployerComparator implements Comparator<OrderedDeployer>
+   {
+      public int compare(OrderedDeployer o1, OrderedDeployer o2)
+      {
+         int relative = o1.getRelativeOrder() - o2.getRelativeOrder();
+         if (relative != 0)
+            return relative;
+         return o1.toString().compareTo(o2.toString());
+      }
+   }
 
 }

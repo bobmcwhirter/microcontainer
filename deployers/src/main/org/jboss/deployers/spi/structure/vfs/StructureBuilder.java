@@ -21,26 +21,27 @@
  */
 package org.jboss.deployers.spi.structure.vfs;
 
-import org.jboss.deployers.spi.OrderedDeployer;
-import org.jboss.virtual.VirtualFile;
+import org.jboss.deployers.spi.DeploymentException;
+import org.jboss.deployers.spi.structure.DeploymentContext;
+import org.jboss.deployers.spi.structure.vfs.StructureMetaData;
 
 /**
- * A StructureDeployer translates a deployment virtual file root into
- * StructureMetaData representing the deployment contexts.
+ * A StructureBuilder transforms the StructureMetaData for a deployment info
+ * a DeploymentContext tree.
  * 
- * @author <a href="adrian@jboss.com">Adrian Brock</a>
+ * @author Scott.Stark@jboss.org
  * @version $Revision: 1.1 $
  */
-public interface StructureDeployer extends OrderedDeployer
+public interface StructureBuilder
 {
    /**
-    * Determine the structure of a deployment
+    * Create the visitor
     * 
-    * @param file - the candidate root file of the deployment
-    * @param metaData - the structure metadata to build
-    * @param deployers - the available structure deployers
-    * @return true when it is recongnised
+    * @param context - the root deployment context to populate
+    * @param metaData - the metadata from a structural parse of the context
+    *    root VirtualFile
+    * @throws Exception for any error
     */
-   boolean determineStructure(VirtualFile file, StructureMetaData metaData, StructuredDeployers deployers);
-
+   public void populateContext(DeploymentContext context, StructureMetaData metaData)
+      throws DeploymentException;
 }

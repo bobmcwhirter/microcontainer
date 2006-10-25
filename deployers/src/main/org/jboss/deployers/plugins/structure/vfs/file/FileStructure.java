@@ -24,8 +24,10 @@ package org.jboss.deployers.plugins.structure.vfs.file;
 import java.util.Set;
 import java.util.concurrent.CopyOnWriteArraySet;
 
+import org.jboss.deployers.plugins.structure.ContextInfoImpl;
 import org.jboss.deployers.plugins.structure.vfs.AbstractStructureDeployer;
-import org.jboss.deployers.spi.structure.DeploymentContext;
+import org.jboss.deployers.spi.structure.vfs.StructureMetaData;
+import org.jboss.deployers.spi.structure.vfs.StructuredDeployers;
 import org.jboss.virtual.VirtualFile;
 
 /**
@@ -46,7 +48,7 @@ public class FileStructure extends AbstractStructureDeployer
       fileSuffixes.add("-beans.xml");
       fileSuffixes.add("-ds.xml");
       fileSuffixes.add("-aop.xml");
-        }
+   }
 
    public FileStructure()
    {
@@ -55,9 +57,10 @@ public class FileStructure extends AbstractStructureDeployer
    
    public FileStructure(Set<String> suffixes)
    {
-      this.fileSuffixes = suffixes;
+      fileSuffixes.clear();
+      fileSuffixes.addAll(suffixes);
    }
-   
+
    /**
     * Gets the list of suffixes recognised as files
     * 
@@ -116,15 +119,14 @@ public class FileStructure extends AbstractStructureDeployer
       return fileSuffixes.contains(suffix);
    }
 
-   public boolean determineStructure(DeploymentContext context)
+   public boolean determineStructure(VirtualFile root, StructureMetaData metaData, StructuredDeployers deployers)
    {
       try
       {
-         VirtualFile root = context.getRoot();
          if (root.isLeaf())
          {
-            // It must be top level
-            if (context.isTopLevel() == false)
+            // See if this is a top-level by checking the parent
+            if (isTopLevel(root, metaData) == false)
             {
                if (isKnownFile(root.getName()) == false)
                {
@@ -141,6 +143,9 @@ public class FileStructure extends AbstractStructureDeployer
                log.trace("... ok - it is a top level file");
             }
 
+            // Create a context info for this file
+            ContextInfoImpl context = new ContextInfoImpl(root.getPathName());
+            metaData.addContext(context);
             // There are no subdeployments for files
             return true;
          }
@@ -152,7 +157,7 @@ public class FileStructure extends AbstractStructureDeployer
       }
       catch (Exception e)
       {
-         log.warn("Error determining structure: " + context.getName(), e);
+         log.warn("Error determining structure: " + root.getName(), e);
          return false;
       }
    }

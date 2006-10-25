@@ -35,7 +35,8 @@ public abstract class AbstractDeployer implements Deployer
 {
    /** The log */
    protected Logger log = Logger.getLogger(this.getClass());
-   
+   private int relativeOrder = Integer.MAX_VALUE;
+
    public boolean isRelevant(DeploymentUnit unit)
    {
       return true;
@@ -43,6 +44,10 @@ public abstract class AbstractDeployer implements Deployer
 
    public int getRelativeOrder()
    {
-      return Integer.MAX_VALUE;
+      return relativeOrder;
+   }
+   public void setRelativeOrder(int order)
+   {
+      this.relativeOrder = order;
    }
 }

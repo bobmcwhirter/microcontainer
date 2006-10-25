@@ -21,26 +21,42 @@
  */
 package org.jboss.deployers.spi.structure.vfs;
 
-import org.jboss.deployers.spi.OrderedDeployer;
-import org.jboss.virtual.VirtualFile;
+import java.util.Map;
 
 /**
- * A StructureDeployer translates a deployment virtual file root into
- * StructureMetaData representing the deployment contexts.
+ * A classpath entry.
  * 
- * @author <a href="adrian@jboss.com">Adrian Brock</a>
- * @version $Revision: 1.1 $
+ * @author Scott.Stark@jboss.org
+ * @version $Revision:$
  */
-public interface StructureDeployer extends OrderedDeployer
+public interface ClassPathInfo
 {
    /**
-    * Determine the structure of a deployment
-    * 
-    * @param file - the candidate root file of the deployment
-    * @param metaData - the structure metadata to build
-    * @param deployers - the available structure deployers
-    * @return true when it is recongnised
+    * path relative to the context virtual file.
     */
-   boolean determineStructure(VirtualFile file, StructureMetaData metaData, StructuredDeployers deployers);
+   public String getPath();
+   public void setPath(String path);
+   /**
+    * Get the options associated with the classpath entry.
+    * @return A map of entry options.
+    */
+   public Map getOptions();
+   /**
+    * Set the options associated with the classpath entry.
+    * @param options - A map of entry options.
+    */
+   public void setOptions(Map options);
 
+   /**
+    * Get a classpath entry option
+    * @param key - the option key
+    * @return the option if it exists, null otherwise
+    */
+   public Object getOption(Object key);
+   /**
+    * Set a classpath entry option
+    * @param key - the option key
+    * @param value - the option value
+    */
+   public void setOption(Object key, Object value);
 }

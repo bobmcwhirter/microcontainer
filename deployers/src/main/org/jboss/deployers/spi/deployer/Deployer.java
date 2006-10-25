@@ -24,6 +24,7 @@ package org.jboss.deployers.spi.deployer;
 import java.util.Comparator;
 
 import org.jboss.deployers.spi.DeploymentException;
+import org.jboss.deployers.spi.OrderedDeployer;
 
 /**
  * Deployer.
@@ -33,7 +34,7 @@ import org.jboss.deployers.spi.DeploymentException;
  * @author <a href="adrian@jboss.com">Adrian Brock</a>
  * @version $Revision: 1.1 $
  */
-public interface Deployer
+public interface Deployer extends OrderedDeployer
 {
    /** The parser order */
    public static final int PARSER_DEPLOYER = 2000;
@@ -97,27 +98,4 @@ public interface Deployer
     */
    void commitUndeploy(DeploymentUnit unit);
 
-   /**
-    * Get the relative order
-    * 
-    * @return the relative order
-    */
-   int getRelativeOrder();
-   
-   /** The comparator for relative ordering of deployers */
-   Comparator<Deployer> COMPARATOR = new DeployerComparator();
-   
-   /**
-    * The comparator for relative ordering of deployers
-    */
-   public class DeployerComparator implements Comparator<Deployer>
-   {
-      public int compare(Deployer o1, Deployer o2)
-      {
-         int relative = o1.getRelativeOrder() - o2.getRelativeOrder();
-         if (relative != 0)
-            return relative;
-         return o1.toString().compareTo(o2.toString());
-      }
-   }
 }

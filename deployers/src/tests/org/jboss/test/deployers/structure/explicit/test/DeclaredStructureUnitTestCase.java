@@ -70,22 +70,21 @@ public class DeclaredStructureUnitTestCase extends BaseDeployersTest
       return structure;
    }
    
-   protected DeploymentContext getValidContext(String root, String path) throws Exception
+   protected DeploymentContext getValidContext(String root, String path)
+      throws Exception
    {
       DeploymentContext context = createDeploymentContext(root, path);
-      assertTrue("Structure should be valid: " + context.getName(), determineStructure(context));
+      boolean recognized = determineStructure(context, false);
+      assertTrue("Structure should be valid: " + context.getName(), recognized);
       return context;
    }
 
-   protected DeploymentContext assertValidContext(String root, String path) throws Exception
-   {
-      return getValidContext(root, path);
-   }
-   
-   protected DeploymentContext assertNotValidContext(String root, String path, boolean other) throws Exception
+   protected DeploymentContext assertNotValidContext(String root, String path, boolean addTopLevelInfo)
+      throws Exception
    {
       DeploymentContext context = createDeploymentContext(root, path);
-      assertFalse("Structure should not be valid: " + context.getName(), determineStructure(context));
+      boolean recognized = determineStructure(context, addTopLevelInfo);
+      assertFalse("Structure should not be valid: " + context.getName(), recognized);
       assertEmpty(context.getChildren());
       return context;
    }
@@ -172,4 +171,5 @@ public class DeclaredStructureUnitTestCase extends BaseDeployersTest
       }
       return pathMap;
    }
+
 }

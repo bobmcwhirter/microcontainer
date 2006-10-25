@@ -27,9 +27,17 @@ import java.util.Map;
 import java.util.Set;
 
 import org.jboss.deployers.plugins.structure.AbstractDeploymentContext;
+import org.jboss.deployers.plugins.structure.BasicStructuredDeployers;
+import org.jboss.deployers.plugins.structure.ContextInfoImpl;
+import org.jboss.deployers.plugins.structure.DefaultStructureBuilderFactory;
+import org.jboss.deployers.plugins.structure.StructureMetaDataImpl;
 import org.jboss.deployers.spi.structure.DeploymentContext;
 import org.jboss.deployers.spi.structure.StructureDetermined;
+import org.jboss.deployers.spi.structure.vfs.StructureBuilder;
+import org.jboss.deployers.spi.structure.vfs.StructureBuilderFactory;
 import org.jboss.deployers.spi.structure.vfs.StructureDeployer;
+import org.jboss.deployers.spi.structure.vfs.StructureMetaData;
+import org.jboss.deployers.spi.structure.vfs.StructuredDeployers;
 import org.jboss.test.BaseTestCase;
 import org.jboss.util.NotImplementedException;
 import org.jboss.virtual.VFS;
@@ -107,6 +115,20 @@ public abstract class BaseDeployersTest extends BaseTestCase
    {
       throw new NotImplementedException("Implemented in subclasses");
    }
+   protected StructuredDeployers getStrucuturedDeployers()
+   {
+      BasicStructuredDeployers deployers = new BasicStructuredDeployers();
+      deployers.addDeployer(getStrucutureDeployer());
+      return deployers;
+   }
+   /**
+    * Get the StructureVisitorFactory that translates the StructureMetaData into a DeploymentContext tree.
+    * @return
+    */
+   protected StructureBuilderFactory getStructureBuilderFactory()
+   {
+      return new DefaultStructureBuilderFactory();     
+   }
 
    /**
     * Determine the structure
@@ -114,9 +136,12 @@ public abstract class BaseDeployersTest extends BaseTestCase
     * @param context the context
     * @return the result
     */
-   protected boolean determineStructure(DeploymentContext context)
+   protected boolean determineStructure(DeploymentContext context, boolean addTopLevelInfo)
+      throws Exception
    {
-      return determineStructure(getStrucutureDeployer(), context);
+      StructureDeployer deployer = getStrucutureDeployer();
+      StructuredDeployers deployers = getStrucuturedDeployers();
+      return determineStructure(deployer, deployers, context, addTopLevelInfo);
    }
 
    /**
@@ -126,15 +151,65 @@ public abstract class BaseDeployersTest extends BaseTestCase
     * @param context the context
     * @return the result
     */
-   protected boolean determineStructure(StructureDeployer structure, DeploymentContext context)
+   protected boolean determineStructure(StructureDeployer deployer,
+         DeploymentContext context)
+      throws Exception
    {
-      assertNotNull(structure);
+      return determineStructure(deployer, getStrucuturedDeployers(), context, false);
+   }
+   /**
+    * Determine the structure
+    * 
+    * @param structure the structural deployer
+    * @param context the context
+    * @return the result
+    */
+   protected boolean determineStructure(StructureDeployer deployer,
+         DeploymentContext context, boolean addTopLevelInfo)
+      throws Exception
+   {
+      return determineStructure(deployer, getStrucuturedDeployers(), context, addTopLevelInfo);
+   }
+   /**
+    * 
+    * @param deployer
+    * @param deployers
+    * @param context
+    * @param addTopLevelInfo - should a ContextInfo be created for the
+    *    context root
+    * @return
+    * @throws Exception
+    */
+   protected boolean determineStructure(StructureDeployer deployer,
+         StructuredDeployers deployers, DeploymentContext context,
+         boolean addTopLevelInfo)
+      throws Exception
+   {
+      assertNotNull(deployer);
       assertNotNull(context);
       
       log.debug("Determining structure: " + context.getName());
-      return structure.determineStructure(context);
+      StructureMetaData metaData = new StructureMetaDataImpl();
+      VirtualFile root = context.getRoot();
+      String rootPath = root.getPathName();
+      if( addTopLevelInfo && metaData.getContext(rootPath) == null )
+      {
+         /* For backward compatibility with the top-level context notion, we need
+          to add an entry for the  
+         */
+         ContextInfoImpl rootContextInfo = new ContextInfoImpl(rootPath);
+         metaData.addContext(rootContextInfo);
+      }
+      boolean result = deployer.determineStructure(root, metaData, deployers);
+      if( result )
+      {
+         StructureBuilderFactory factory = getStructureBuilderFactory();
+         StructureBuilder builder = factory.createBuilder(metaData);
+         builder.populateContext(context, metaData);
+      }
+      return result;
    }
-   
+
    /**
     * Assert non of the candidates are valid
     * 
@@ -156,9 +231,11 @@ public abstract class BaseDeployersTest extends BaseTestCase
    protected void assertCandidatesNotValid(StructureDeployer structure, DeploymentContext context) throws Exception
    {
       assertNotNull(context);
-      
       for (DeploymentContext child : context.getChildren())
-         assertFalse("Should not be a valid candidate: " + child.getName(), determineStructure(structure, child));
+      {
+         boolean recognized = determineStructure(structure, child);
+         assertFalse("Should not be a valid candidate: " + child.getName(), recognized);
+      }
    }
    
    /**
