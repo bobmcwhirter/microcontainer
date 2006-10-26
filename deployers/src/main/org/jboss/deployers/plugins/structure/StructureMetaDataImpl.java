@@ -79,6 +79,15 @@ public class StructureMetaDataImpl implements StructureMetaData
       return contextSet;
    }
 
+   public String toString()
+   {
+      StringBuilder tmp = new StringBuilder(super.toString());
+      tmp.append("[ContextInfo:");
+      tmp.append(contextSet.toString());
+      tmp.append(']');
+      return tmp.toString();
+   }
+
    private class ContextComparator implements Comparator<ContextInfo>
    {
       public int compare(ContextInfo o1, ContextInfo o2)
