@@ -130,9 +130,17 @@ public abstract class AbstractStructureDeployer implements StructureDeployer
       if( includeEntry )
          paths.add(entry);
       String rootPath = root.getPathName();
-      if( includeRootManifestCP )
+      if( includeRootManifestCP && entry.isLeaf() == false )
       {
-         VFSUtils.addManifestLocations(entry, paths);
+         try
+         {
+            VFSUtils.addManifestLocations(entry, paths);
+         }
+         catch(Exception e)
+         {
+            if( log.isTraceEnabled() )
+               log.trace("Failed to add manifest locations", e);
+         }
       }
       // Add to any existing classpath
       List<ClassPathInfo> pathInfo = new ArrayList<ClassPathInfo>();
