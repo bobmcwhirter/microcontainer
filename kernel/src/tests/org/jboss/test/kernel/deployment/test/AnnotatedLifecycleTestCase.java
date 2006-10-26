@@ -60,6 +60,7 @@ public class AnnotatedLifecycleTestCase extends AbstractDeploymentTest
       assertNull(target);
 
 /*
+      // TODO - uncomment once annotations are pickeup
       delegate.change(context, ControllerState.CREATE);
       target = (AnnotatedLifecycleBean) context.getTarget();
       assertTrue(target.isCreate());
