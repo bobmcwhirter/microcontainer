@@ -22,6 +22,7 @@
 package org.jboss.kernel.plugins.dependency;
 
 import java.util.List;
+import java.util.Set;
 
 import org.jboss.beans.info.spi.BeanInfo;
 import org.jboss.beans.metadata.spi.BeanMetaData;
@@ -33,6 +34,9 @@ import org.jboss.kernel.plugins.config.Configurator;
 import org.jboss.kernel.spi.config.KernelConfigurator;
 import org.jboss.kernel.spi.dependency.KernelController;
 import org.jboss.kernel.spi.dependency.KernelControllerContext;
+import org.jboss.repository.spi.MetaDataContext;
+import org.jboss.reflect.spi.AnnotationValue;
+import org.jboss.reflect.spi.MethodInfo;
 
 /**
  * LifecycleAction.
@@ -52,35 +56,63 @@ public abstract class LifecycleAction extends KernelControllerContextAction
    /**
     * Get the install method
     * 
-    * @param context the context
+    * @param beanMetaData
     * @return the method
     */
-   public abstract String getInstallMethod(KernelControllerContext context);
+   public abstract String getInstallMethod(BeanMetaData beanMetaData);
+
+   /**
+    * Get install default method name
+    *
+    * @return install annotation name
+    */
+   public abstract String getDefaultInstallMethod();
+
+   /**
+    * Get install annotation class name
+    *
+    * @return install annotation name
+    */
+   public abstract String getInstallAnnotation();
 
    /**
     * Get the install parameters
     * 
-    * @param context the context
+    * @param beanMetaData
     * @return the parameters
     */
-   public abstract List<ParameterMetaData> getInstallParameters(KernelControllerContext context);
+   public abstract List<ParameterMetaData> getInstallParameters(BeanMetaData beanMetaData);
 
    /**
     * Get the uninstall method
     * 
-    * @param context the context
+    * @param beanMetaData
     * @return the method
     */
-   public abstract String getUninstallMethod(KernelControllerContext context);
+   public abstract String getUninstallMethod(BeanMetaData beanMetaData);
+
+   /**
+    * Get uninstall default method name
+    *
+    * @return install annotation name
+    */
+   public abstract String getDefaultUninstallMethod();
+
+   /**
+    * Get uninstall annotation class name
+    *
+    * @return uninstall annotation name
+    */
+   public abstract String getUninstallAnnotation();
 
    /**
     * Get the uninstall parameters
-    * 
-    * @param context the context
+    *
+    * @param beanMetaData
     * @return the parameters
     */
-   public abstract List<ParameterMetaData> getUninstallParameters(KernelControllerContext context);
-   
+   public abstract List<ParameterMetaData> getUninstallParameters(BeanMetaData beanMetaData);
+
    public void installAction(KernelControllerContext context) throws Throwable
    {
       boolean trace = log.isTraceEnabled();
@@ -145,11 +177,91 @@ public abstract class LifecycleAction extends KernelControllerContextAction
             else
                log.trace("No " + method + parameters + " method for " + context);
          }
-         return;
       }
       catch (Throwable throwable)
       {
          log.warn("Error during " + method, throwable);
       }
    }
+
+   /**
+    * Get the install method
+    *
+    * @param context
+    * @return the method
+    */
+   public String getInstallMethod(KernelControllerContext context)
+   {
+      String installMethod = getInstallMethod(context.getBeanMetaData());
+      if (installMethod != null)
+      {
+         return installMethod;
+      }
+      BeanInfo beanInfo = context.getBeanInfo();
+      Set<MethodInfo> methods = beanInfo.getMethods();
+      if (methods != null)
+      {
+         for (MethodInfo mi : methods)
+         {
+            if (mi.isAnnotationPresent(getInstallAnnotation()))
+            {
+               return mi.getName();
+            }
+         }
+      }
+      return getDefaultInstallMethod();
+   }
+
+   /**
+    * Get the install parameters
+    *
+    * @param context
+    * @return the parameters
+    */
+   public List<ParameterMetaData> getInstallParameters(KernelControllerContext context)
+   {
+      // todo some parameter support
+      return getInstallParameters(context.getBeanMetaData());
+   }
+
+   /**
+    * Get the uninstall method
+    *
+    * @param context
+    * @return the method
+    */
+   public String getUninstallMethod(KernelControllerContext context)
+   {
+      String uninstallMethod = getUninstallMethod(context.getBeanMetaData());
+      if (uninstallMethod != null)
+      {
+         return uninstallMethod;
+      }
+      BeanInfo beanInfo = context.getBeanInfo();
+      Set<MethodInfo> methods = beanInfo.getMethods();
+      if (methods != null)
+      {
+         for (MethodInfo mi : methods)
+         {
+            if (mi.isAnnotationPresent(getUninstallAnnotation()))
+            {
+               return mi.getName();
+            }
+         }
+      }
+      return getDefaultUninstallMethod();
+   }
+
+   /**
+    * Get the uninstall parameters
+    *
+    * @param context the context
+    * @return the parameters
+    */
+   public List<ParameterMetaData> getUninstallParameters(KernelControllerContext context)
+   {
+      // todo some parameter support
+      return getUninstallParameters(context.getBeanMetaData());
+   }
+
 }

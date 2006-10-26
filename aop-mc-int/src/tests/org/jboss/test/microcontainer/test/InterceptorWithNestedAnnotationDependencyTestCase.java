@@ -29,7 +29,6 @@ import org.jboss.dependency.spi.ControllerState;
 import org.jboss.kernel.spi.dependency.KernelControllerContext;
 import org.jboss.test.microcontainer.support.InterceptorWithAnnotationDependency;
 import org.jboss.test.microcontainer.support.InterceptorWithNestedAnnotationDependency;
-import org.jboss.test.microcontainer.support.NestedAnnotatedSimpleBeanImpl;
 import org.jboss.test.microcontainer.support.SimpleBean;
 
 public class InterceptorWithNestedAnnotationDependencyTestCase extends AOPMicrocontainerTest

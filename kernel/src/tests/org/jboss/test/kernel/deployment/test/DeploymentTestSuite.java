@@ -47,7 +47,8 @@ public class DeploymentTestSuite extends TestSuite
       suite.addTest(GenericBeanFactoryLifecycleTestCase.suite());
       suite.addTest(WildcardClassLoaderTestCase.suite());
       suite.addTest(BeanMetaDataFactoryTestCase.suite());
-      
+      suite.addTest(AnnotatedLifecycleTestCase.suite());
+
       return suite;
    }
 }

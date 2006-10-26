@@ -26,7 +26,6 @@ import java.util.List;
 import org.jboss.beans.metadata.spi.BeanMetaData;
 import org.jboss.beans.metadata.spi.LifecycleMetaData;
 import org.jboss.beans.metadata.spi.ParameterMetaData;
-import org.jboss.kernel.spi.dependency.KernelControllerContext;
 
 /**
  * CreateDestroyLifecycleAction.
@@ -36,37 +35,53 @@ import org.jboss.kernel.spi.dependency.KernelControllerContext;
  */
 public class CreateDestroyLifecycleAction extends LifecycleAction
 {
-   public String getInstallMethod(KernelControllerContext context)
+   public String getInstallMethod(BeanMetaData beanMetaData)
    {
-      BeanMetaData metaData = context.getBeanMetaData();
-      LifecycleMetaData lifecycle = metaData.getCreate();
-      if (lifecycle != null && lifecycle.getMethodName() != null)
+      LifecycleMetaData lifecycle = beanMetaData.getCreate();
+      if (lifecycle != null)
          return lifecycle.getMethodName();
+      return null;
+   }
+
+   public String getDefaultInstallMethod()
+   {
       return "create";
    }
 
-   public List<ParameterMetaData> getInstallParameters(KernelControllerContext context)
+   public String getInstallAnnotation()
    {
-      BeanMetaData metaData = context.getBeanMetaData();
-      LifecycleMetaData lifecycle = metaData.getCreate();
+      return CreateLifecycle.class.getName();
+   }
+
+   public List<ParameterMetaData> getInstallParameters(BeanMetaData beanMetaData)
+   {
+      LifecycleMetaData lifecycle = beanMetaData.getCreate();
       if (lifecycle != null)
          return lifecycle.getParameters();
       return null;
    }
 
-   public String getUninstallMethod(KernelControllerContext context)
+   public String getUninstallMethod(BeanMetaData beanMetaData)
    {
-      BeanMetaData metaData = context.getBeanMetaData();
-      LifecycleMetaData lifecycle = metaData.getDestroy();
-      if (lifecycle != null && lifecycle.getMethodName() != null)
+      LifecycleMetaData lifecycle = beanMetaData.getDestroy();
+      if (lifecycle != null)
          return lifecycle.getMethodName();
+      return null;
+   }
+
+   public String getDefaultUninstallMethod()
+   {
       return "destroy";
    }
 
-   public List<ParameterMetaData> getUninstallParameters(KernelControllerContext context)
+   public String getUninstallAnnotation()
    {
-      BeanMetaData metaData = context.getBeanMetaData();
-      LifecycleMetaData lifecycle = metaData.getDestroy();
+      return DestroyLifecycle.class.getName();
+   }
+
+   public List<ParameterMetaData> getUninstallParameters(BeanMetaData beanMetaData)
+   {
+      LifecycleMetaData lifecycle = beanMetaData.getDestroy();
       if (lifecycle != null)
          return lifecycle.getParameters();
       return null;

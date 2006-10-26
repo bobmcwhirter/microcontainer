@@ -42,7 +42,7 @@ import org.jboss.repository.spi.MetaDataContextFactory;
 
 /**
  * DescribeAction.
- * 
+ *
  * @author <a href="adrian@jboss.com">Adrian Brock</a>
  * @version $Revision$
  */
@@ -53,7 +53,7 @@ public class DescribeAction extends KernelControllerContextAction
       KernelController controller = (KernelController) context.getController();
       Kernel kernel = controller.getKernel();
       KernelConfigurator configurator = kernel.getConfigurator();
-      
+
       BeanMetaData metaData = context.getBeanMetaData();
       if (metaData.getBean() != null)
       {
@@ -81,7 +81,7 @@ public class DescribeAction extends KernelControllerContextAction
       context.setMetaDataContext(null);
       context.setBeanInfo(null);
    }
-   
+
    /**
     * Adds annotations to the bean. If annotations are added, returns the bean info for the instance
     * @return The class bean info if no annotations exist or the instance bean info if annotations exist
@@ -89,35 +89,32 @@ public class DescribeAction extends KernelControllerContextAction
    private BeanInfo addAnnotations(KernelControllerContext context, BeanMetaData beanMetaData, BeanInfo beanInfo)
    {
       MetaDataContext metaCtx = addClassAnnotations(context, beanMetaData, beanInfo);
-      metaCtx = addPropertyAnnotations(metaCtx, context, beanMetaData, beanInfo);
+      addPropertyAnnotations(metaCtx, context, beanMetaData, beanInfo);
       return context.getBeanInfo();
    }
-   
+
    private MetaDataContext addClassAnnotations(KernelControllerContext context, BeanMetaData beanMetaData, BeanInfo beanInfo)
    {
       Set annotations = beanMetaData.getAnnotations();
 
       MetaDataContext metaCtx = null;
-      
+
       if (annotations != null && annotations.size() > 0)
       {
-         if (metaCtx == null)
-         {
-            metaCtx = getMetaDataContext(context);
-         }
+         metaCtx = getMetaDataContext(context);
          if (metaCtx != null)
          {
             metaCtx.addAnnotations(annotations);
          }
       }
-      
+
       return metaCtx;
    }
 
    private MetaDataContext addPropertyAnnotations(MetaDataContext metaCtx, KernelControllerContext context, BeanMetaData beanMetaData, BeanInfo beanInfo)
    {
       Set properties = beanMetaData.getProperties();
-      
+
       if (properties != null && properties.size() > 0)
       {
          for (Iterator it = properties.iterator() ; it.hasNext() ; )
@@ -131,7 +128,7 @@ public class DescribeAction extends KernelControllerContextAction
                   metaCtx = getMetaDataContext(context);
                }
                if (metaCtx != null)
-               {                  
+               {
                   //metaCtx.addPropertyAnnotations(property.getName(), propertyAnnotations);
                   Set propertyInfos = beanInfo.getProperties();
                   if (propertyInfos != null && propertyInfos.size() > 0)
@@ -142,15 +139,15 @@ public class DescribeAction extends KernelControllerContextAction
             }
          }
       }
-      
+
       return metaCtx;
    }
-   
+
    private MetaDataContext getMetaDataContext(KernelControllerContext context)
    {
       //TODO: Hardcoding this doesn't feel right...
       ControllerContext repCtx = context.getController().getContext("Repository", ControllerState.INSTALLED);
-      
+
       if (repCtx == null)
       {
          log.warn("You have defined annotations for bean '" + context.getName() + "', but no KernelRepository has been installed under the name 'Repository'");
@@ -162,7 +159,7 @@ public class DescribeAction extends KernelControllerContextAction
       MetaDataContext metaCtx = metaFactory.getMetaDataContext(repository, context.getName());
 
       context.setMetaDataContext(metaCtx);
-      
+
       return metaCtx;
    }
 

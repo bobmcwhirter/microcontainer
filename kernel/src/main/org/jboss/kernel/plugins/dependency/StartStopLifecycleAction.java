@@ -26,7 +26,6 @@ import java.util.List;
 import org.jboss.beans.metadata.spi.BeanMetaData;
 import org.jboss.beans.metadata.spi.LifecycleMetaData;
 import org.jboss.beans.metadata.spi.ParameterMetaData;
-import org.jboss.kernel.spi.dependency.KernelControllerContext;
 
 /**
  * StartStopLifecycleAction.
@@ -36,37 +35,53 @@ import org.jboss.kernel.spi.dependency.KernelControllerContext;
  */
 public class StartStopLifecycleAction extends LifecycleAction
 {
-   public String getInstallMethod(KernelControllerContext context)
+   public String getInstallMethod(BeanMetaData beanMetaData)
    {
-      BeanMetaData metaData = context.getBeanMetaData();
-      LifecycleMetaData lifecycle = metaData.getStart();
-      if (lifecycle != null && lifecycle.getMethodName() != null)
+      LifecycleMetaData lifecycle = beanMetaData.getStart();
+      if (lifecycle != null)
          return lifecycle.getMethodName();
+      return null;
+   }
+
+   public String getDefaultInstallMethod()
+   {
       return "start";
    }
 
-   public List<ParameterMetaData> getInstallParameters(KernelControllerContext context)
+   public String getInstallAnnotation()
    {
-      BeanMetaData metaData = context.getBeanMetaData();
-      LifecycleMetaData lifecycle = metaData.getStart();
+      return StartLifecycle.class.getName();
+   }
+
+   public List<ParameterMetaData> getInstallParameters(BeanMetaData beanMetaData)
+   {
+      LifecycleMetaData lifecycle = beanMetaData.getStart();
       if (lifecycle != null)
          return lifecycle.getParameters();
       return null;
    }
 
-   public String getUninstallMethod(KernelControllerContext context)
+   public String getUninstallMethod(BeanMetaData beanMetaData)
    {
-      BeanMetaData metaData = context.getBeanMetaData();
-      LifecycleMetaData lifecycle = metaData.getStop();
-      if (lifecycle != null && lifecycle.getMethodName() != null)
+      LifecycleMetaData lifecycle = beanMetaData.getStop();
+      if (lifecycle != null)
          return lifecycle.getMethodName();
+      return null;
+   }
+
+   public String getDefaultUninstallMethod()
+   {
       return "stop";
    }
 
-   public List<ParameterMetaData> getUninstallParameters(KernelControllerContext context)
+   public String getUninstallAnnotation()
    {
-      BeanMetaData metaData = context.getBeanMetaData();
-      LifecycleMetaData lifecycle = metaData.getStop();
+      return StopLifecycle.class.getName();
+   }
+
+   public List<ParameterMetaData> getUninstallParameters(BeanMetaData beanMetaData)
+   {
+      LifecycleMetaData lifecycle = beanMetaData.getStop();
       if (lifecycle != null)
          return lifecycle.getParameters();
       return null;
