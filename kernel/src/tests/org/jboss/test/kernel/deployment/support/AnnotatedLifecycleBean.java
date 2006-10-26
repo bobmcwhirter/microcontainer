@@ -21,6 +21,11 @@
 */
 package org.jboss.test.kernel.deployment.support;
 
+import org.jboss.beans.metadata.spi.annotations.CreateLifecycle;
+import org.jboss.beans.metadata.spi.annotations.DestroyLifecycle;
+import org.jboss.beans.metadata.spi.annotations.StopLifecycle;
+import org.jboss.beans.metadata.spi.annotations.StartLifecycle;
+
 /**
  * @author <a href="mailto:ales.justin@gmail.com">Ales Justin</a>
  */
@@ -52,26 +57,26 @@ public class AnnotatedLifecycleBean
       return m_destroy;
    }
 
-   @org.jboss.beans.metadata.spi.annotations.CreateLifecycle
+   @CreateLifecycle
    public void annotatedCreate()
    {
       m_create = true;
    }
 
-   @org.jboss.beans.metadata.spi.annotations.StartLifecycle
+   @StartLifecycle
    public void annotatedStart()
    {
       m_start = true;
    }
 
-   @org.jboss.beans.metadata.spi.annotations.StopLifecycle
+   @StopLifecycle
    public void annotatedStop()
    {
       m_start = false;
       m_stop = true;
    }
 
-   @org.jboss.beans.metadata.spi.annotations.DestroyLifecycle
+   @DestroyLifecycle
    public void annotatedDestroy()
    {
       m_create = false;

@@ -26,6 +26,8 @@ import java.util.List;
 import org.jboss.beans.metadata.spi.BeanMetaData;
 import org.jboss.beans.metadata.spi.LifecycleMetaData;
 import org.jboss.beans.metadata.spi.ParameterMetaData;
+import org.jboss.beans.metadata.spi.annotations.StartLifecycle;
+import org.jboss.beans.metadata.spi.annotations.StopLifecycle;
 
 /**
  * StartStopLifecycleAction.
