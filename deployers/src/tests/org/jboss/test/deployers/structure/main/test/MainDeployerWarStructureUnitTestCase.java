@@ -60,11 +60,12 @@ public class MainDeployerWarStructureUnitTestCase extends WARStructureUnitTestCa
       return context;
    }
 
-   protected DeploymentContext assertNotValidContext(String root, String path, boolean isValidJar) throws Exception
+   protected DeploymentContext assertNotValidContext(String root, String path,
+         boolean addTopLevelInfo, boolean isValidJar) throws Exception
    {
       // It might not be a valid war but it is a valid jar
       if (isValidJar)
-         return assertValidContext(root, path);
+         return assertValidContext(root, path, addTopLevelInfo);
 
       DeploymentContext context = createDeploymentContext(root, path);
       getMainDeployer().addDeploymentContext(context);

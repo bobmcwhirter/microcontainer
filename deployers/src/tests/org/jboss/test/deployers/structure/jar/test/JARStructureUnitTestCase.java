@@ -92,7 +92,8 @@ public class JARStructureUnitTestCase extends BaseDeployersTest
       return getValidContext(root, path, addTopLevelInfo);
    }
    
-   protected DeploymentContext assertNotValidContext(String root, String path, boolean addTopLevelInfo)
+   protected DeploymentContext assertNotValidContext(String root, String path,
+         boolean other, boolean addTopLevelInfo)
       throws Exception
    {
       DeploymentContext context = createDeploymentContext(root, path);
@@ -118,8 +119,8 @@ public class JARStructureUnitTestCase extends BaseDeployersTest
    
    public void testRootNotAnArchive() throws Exception
    {
-      assertNotValidContext("/structure/", "jar/notanarchive/NotAnArchive.jar", true);
-      assertNotValidContext("/structure/", "jar/notanarchive/NotAnArchive.zip", true);
+      assertNotValidContext("/structure/", "jar/notanarchive/NotAnArchive.jar", true, false);
+      assertNotValidContext("/structure/", "jar/notanarchive/NotAnArchive.zip", true, false);
    }
    
    public void testSubdeploymentNotAnArchive() throws Exception
