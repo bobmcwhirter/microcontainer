@@ -22,7 +22,6 @@
 package org.jboss.test.deployers.structure.ear.test;
 
 import java.net.URL;
-import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
@@ -45,7 +44,7 @@ import org.jboss.virtual.VirtualFile;
 /**
  * Mock ear structure deployer tests
  * 
- * @author <a href="adrian@jboss.com">Adrian Brock</a>
+ * @author Scott.Stark@jboss.org
  * @version $Revision: 1.1 $
  */
 public class EARStructureUnitTestCase extends BaseDeployersTest
