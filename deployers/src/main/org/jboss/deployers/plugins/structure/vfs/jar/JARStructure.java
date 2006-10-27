@@ -50,16 +50,24 @@ public class JARStructure extends AbstractStructureDeployer
    }
    
    /**
-    * Gets the list of suffixes recognised as jars
+    * Gets the set of suffixes recognised as jars
     * 
-    * @return the list of suffixes
+    * @return the set of suffixes
     */
    public Set<String> getSuffixes()
    {
       return JarUtils.getSuffixes();
    }
-   
-   
+   /**
+    * Gets the set of suffixes recognised as jars
+    * 
+    * @param suffixes - the set of suffixes
+    */
+   public void setSuffixes(Set<String> suffixes)
+   {
+      JarUtils.setJarSuffixes(suffixes);
+   }
+
    @Override
    public int getRelativeOrder()
    {
@@ -68,6 +76,7 @@ public class JARStructure extends AbstractStructureDeployer
 
    public boolean determineStructure(VirtualFile root, StructureMetaData metaData, StructuredDeployers deployers)
    {
+      String contextPath = null;
       try
       {
          if (root.isLeaf() == false)
@@ -113,6 +122,7 @@ public class JARStructure extends AbstractStructureDeployer
          // The classpath is the root
          super.addClassPath(root, root, true, true, context);
          metaData.addContext(context);
+         contextPath = context.getVfsPath();
 
          // We tentatively try all the children as potential subdeployments
          addAllChildren(root, metaData, deployers);
@@ -121,6 +131,9 @@ public class JARStructure extends AbstractStructureDeployer
       catch (Exception e)
       {
          log.warn("Error determining structure: " + root.getName(), e);
+         // Remove the invalid context
+         if( contextPath != null )
+            metaData.removeContext(contextPath);
          return false;
       }
    }
