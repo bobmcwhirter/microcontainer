@@ -60,6 +60,14 @@ public class StructureMetaDataImpl implements StructureMetaData
                context.setParent(parent);
             parentKey.append('/');
          }
+         // Handle a VFS rooted at ""
+         if( keys.length == 1 )
+         {
+            // Look for "" as the parent
+            parent = contextMap.get("");
+            if( parent != null )
+               context.setParent(parent);
+         }
       }
       contextSet.add(context);
    }
