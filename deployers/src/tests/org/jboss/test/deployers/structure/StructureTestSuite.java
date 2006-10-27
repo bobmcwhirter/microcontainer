@@ -25,6 +25,7 @@ import junit.framework.Test;
 import junit.framework.TestSuite;
 import junit.textui.TestRunner;
 
+import org.jboss.test.deployers.structure.ear.test.EARStructureUnitTestCase;
 import org.jboss.test.deployers.structure.file.test.FileStructureUnitTestCase;
 import org.jboss.test.deployers.structure.jar.test.JARStructureUnitTestCase;
 import org.jboss.test.deployers.structure.main.test.MainDeployerFileStructureUnitTestCase;
@@ -54,6 +55,7 @@ public class StructureTestSuite extends TestSuite
       suite.addTest(FileStructureUnitTestCase.suite());
       suite.addTest(JARStructureUnitTestCase.suite());
       suite.addTest(WARStructureUnitTestCase.suite());
+      suite.addTest(EARStructureUnitTestCase.suite());
       suite.addTest(MainDeployerStructureUnitTestCase.suite());
       suite.addTest(MainDeployerStructureOrderingUnitTestCase.suite());
       suite.addTest(MainDeployerFileStructureUnitTestCase.suite());
