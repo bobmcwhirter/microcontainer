@@ -52,11 +52,11 @@ public class DefaultStructureBuilder
    implements StructureBuilder
 {
    private static Logger log = Logger.getLogger(DefaultStructureBuilder.class);
-   private HashMap<String, DeploymentContext> contextMap = new HashMap<String, DeploymentContext>();
 
    public void populateContext(DeploymentContext context, StructureMetaData metaData)
       throws DeploymentException
 	{
+      HashMap<String, DeploymentContext> contextMap = new HashMap<String, DeploymentContext>();
       // Validate that the root file has a valid ContextInfo
 		VirtualFile root = context.getRoot();
       ContextInfo rootInfo = metaData.getContext(root.getPathName());
@@ -86,16 +86,18 @@ public class DefaultStructureBuilder
                else
                   ctx = new AbstractDeploymentContext(vf);
             }
-            processContext(ctx, vf, info);
+            processContext(ctx, vf, info, contextMap);
          }
       }
       catch(Exception e)
       {
          throw new DeploymentException("Failed to process context: "+context.getName(), e);
       }
+      contextMap.clear();
 	}
 
-   protected void processContext(DeploymentContext context, VirtualFile virtualFile, ContextInfo info)
+   protected void processContext(DeploymentContext context, VirtualFile virtualFile,
+         ContextInfo info, HashMap<String, DeploymentContext> contextMap)
    {
       boolean trace = log.isTraceEnabled();
       if( trace )
