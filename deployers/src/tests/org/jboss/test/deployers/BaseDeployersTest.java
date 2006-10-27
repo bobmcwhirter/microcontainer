@@ -25,6 +25,7 @@ import java.io.IOException;
 import java.net.MalformedURLException;
 import java.net.URISyntaxException;
 import java.net.URL;
+import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Map;
 import java.util.Set;
@@ -358,4 +359,49 @@ public abstract class BaseDeployersTest extends BaseTestCase
       }
       return paths;
    }
+
+   /**
+    * Create a map of all context from root to children keyed by the vfs path
+    * starting at the root with any prefix removed. For example an ear with
+    * a vfs path for the ear like the following:
+    * 
+    * /prefix/some.ear
+    * /prefix/some.ear/child.jar
+    * 
+    * would have map keys like:
+    * 
+    * some.ear
+    * some.ear/child.jar
+    * 
+    * @param root ctx
+    * @return
+    */
+   protected Map<String, DeploymentContext> createDeploymentPathMap(DeploymentContext root)
+      throws IOException, URISyntaxException
+   {
+      String rootPath = root.getRoot().getPathName();
+      int rootPrefixLength = 0;
+      // Truncate any vfs path prefix 
+      int lastSlash = rootPath.lastIndexOf('/');
+      if( lastSlash >= 0 )
+         rootPrefixLength = lastSlash+1;
+      HashMap<String, DeploymentContext> pathMap = new HashMap<String, DeploymentContext>();
+      createDeploymentPathMap(root, pathMap, rootPrefixLength);
+      return pathMap;
+   }
+   private void createDeploymentPathMap(DeploymentContext parent,
+         Map<String, DeploymentContext> pathMap, int rootPrefixLength)
+      throws IOException, URISyntaxException
+   {
+      Set<DeploymentContext> children = parent.getChildren();
+      for(DeploymentContext ctx : children)
+      {
+         String ctxPath = ctx.getRoot().getPathName();
+         ctxPath = ctxPath.substring(rootPrefixLength);
+         pathMap.put(ctxPath, ctx);
+         if( ctx.getChildren() != null )
+            createDeploymentPathMap(ctx, pathMap, rootPrefixLength);
+      }
+   }
+    
 }
