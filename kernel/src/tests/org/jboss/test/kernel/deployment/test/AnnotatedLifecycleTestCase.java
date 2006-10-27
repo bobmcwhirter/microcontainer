@@ -21,13 +21,13 @@
 */
 package org.jboss.test.kernel.deployment.test;
 
-import junit.framework.Test;
-import org.jboss.kernel.spi.dependency.KernelControllerContext;
 import org.jboss.dependency.spi.ControllerState;
-import org.jboss.test.kernel.deployment.support.AnnotatedLifecycleBean;
-import org.jboss.test.kernel.junit.MicrocontainerTest;
-import org.jboss.test.kernel.junit.ManualMicrocontainerTestDelegate;
+import org.jboss.kernel.spi.dependency.KernelControllerContext;
 import org.jboss.test.AbstractTestDelegate;
+import org.jboss.test.kernel.deployment.support.AnnotatedLifecycleBean;
+import org.jboss.test.kernel.junit.ManualMicrocontainerTestDelegate;
+
+import junit.framework.Test;
 
 /**
  * @author <a href="mailto:ales.justin@gmail.com">Ales Justin</a>
@@ -59,8 +59,6 @@ public class AnnotatedLifecycleTestCase extends AbstractDeploymentTest
       target = (AnnotatedLifecycleBean) context.getTarget();
       assertNull(target);
 
-/*
-      // TODO - uncomment once annotations are pickeup
       delegate.change(context, ControllerState.CREATE);
       target = (AnnotatedLifecycleBean) context.getTarget();
       assertTrue(target.isCreate());
@@ -84,11 +82,7 @@ public class AnnotatedLifecycleTestCase extends AbstractDeploymentTest
 
       delegate.change(context, ControllerState.DESCRIBED);
       target = (AnnotatedLifecycleBean) context.getTarget();
-      assertFalse(target.isCreate());
-      assertFalse(target.isStart());
-      assertTrue(target.isStop());
-      assertTrue(target.isDestroy());
-*/
+      assertNull(target);
 
    }
 
