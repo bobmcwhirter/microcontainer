@@ -42,7 +42,8 @@ import org.jboss.virtual.VisitorAttributes;
 import org.jboss.virtual.plugins.vfs.helpers.SuffixMatchFilter;
 
 /**
- * The default StructureBuilder. It translates a  
+ * The default StructureBuilder. It translates a StructureMetaData instance
+ * into a DeploymentContext tree.
  * 
  * @author Scott.Stark@jboss.org
  * @version $Revision:$
@@ -104,6 +105,7 @@ public class DefaultStructureBuilder
          context.setMetaDataPath(metaDataPath);
       ArrayList<VirtualFile> paths = new ArrayList<VirtualFile>();
       List<ClassPathInfo> classPath = info.getClassPath();
+      boolean classPathHadVF = false;
       if( classPath != null )
       {
          for(ClassPathInfo cp : classPath)
@@ -119,6 +121,8 @@ public class DefaultStructureBuilder
                if( suffixes == null || suffixes.length == 0 )
                {
                   paths.add(child);
+                  if( classPathHadVF == false )
+                     classPathHadVF = child.equals(virtualFile);
                   if( trace )
                      log.trace("Added simple classpath entry: "+child);
                   // Process any Manifest Class-Path refs
@@ -138,6 +142,8 @@ public class DefaultStructureBuilder
                      for(VirtualFile file : matches)
                      {
                         VFSUtils.addManifestLocations(file, paths);
+                        if( classPathHadVF == false )
+                           classPathHadVF = child.equals(virtualFile);
                      }
                   }
                }
@@ -149,14 +155,18 @@ public class DefaultStructureBuilder
          }
       }
 
-      try
+      // If virtualFile was not already processed as part of the classpath
+      if( classPathHadVF == false )
       {
-         // Process any Manifest Class-Path refs on the context itself
-         if( virtualFile.isLeaf() == false )
-            VFSUtils.addManifestLocations(virtualFile, paths);
-      }
-      catch(IOException ignore)
-      {
+         try
+         {
+            // Process any Manifest Class-Path refs on the context itself
+            if( virtualFile.isLeaf() == false )
+               VFSUtils.addManifestLocations(virtualFile, paths);
+         }
+         catch(IOException ignore)
+         {
+         }
       }
       // Set the classpath
       if( paths.size() > 0 )
