@@ -21,6 +21,9 @@
 */
 package org.jboss.test.deployers;
 
+import java.io.IOException;
+import java.net.MalformedURLException;
+import java.net.URISyntaxException;
 import java.net.URL;
 import java.util.HashSet;
 import java.util.Map;
@@ -330,5 +333,29 @@ public abstract class BaseDeployersTest extends BaseTestCase
       AbstractDeploymentContext context = new AbstractDeploymentContext(name);
       context.setStructureDetermined(StructureDetermined.PREDETERMINED);
       return context;
+   }
+
+
+   /**
+    * Translate a set of DeploymentContexts string paths relative to the root
+    * URL.
+    * 
+    * @param set
+    * @return set of 
+    * @throws URISyntaxException 
+    * @throws IOException 
+    */
+   protected Set<String> createDeploymentPathSet(Set<DeploymentContext> set, URL root)
+      throws IOException, URISyntaxException
+   {
+      HashSet<String> paths = new HashSet<String>();
+      String rootPath = root.getPath();
+      for(DeploymentContext ctx : set)
+      {
+         URL ctxURL = ctx.getRoot().toURL();
+         String ctxPath = ctxURL.getPath().substring(rootPath.length());
+         paths.add(ctxPath);
+      }
+      return paths;
    }
 }
