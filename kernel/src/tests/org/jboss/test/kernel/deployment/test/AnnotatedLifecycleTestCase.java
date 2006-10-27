@@ -55,10 +55,6 @@ public class AnnotatedLifecycleTestCase extends AbstractDeploymentTest
 
       ManualMicrocontainerTestDelegate delegate = (ManualMicrocontainerTestDelegate) getMCDelegate();
 
-      delegate.change(context, ControllerState.DESCRIBED);
-      target = (AnnotatedLifecycleBean) context.getTarget();
-      assertNull(target);
-
       delegate.change(context, ControllerState.CREATE);
       target = (AnnotatedLifecycleBean) context.getTarget();
       assertTrue(target.isCreate());
@@ -80,9 +76,12 @@ public class AnnotatedLifecycleTestCase extends AbstractDeploymentTest
       assertTrue(target.isStop());
       assertFalse(target.isDestroy());
 
-      delegate.change(context, ControllerState.DESCRIBED);
+      delegate.change(context, ControllerState.CONFIGURED);
       target = (AnnotatedLifecycleBean) context.getTarget();
-      assertNull(target);
+      assertFalse(target.isCreate());
+      assertFalse(target.isStart());
+      assertTrue(target.isStop());
+      assertTrue(target.isDestroy());
 
    }
 
