@@ -117,7 +117,7 @@ public class DeclaredStructureUnitTestCase extends BaseDeployersTest
          assertTrue(url, rootCPSet.contains(url));
       }
 
-      Map<String, DeploymentContext> pathMap = buildPathMap(root);
+      Map<String, DeploymentContext> pathMap = createDeploymentPathMap(root);
       // Validate the sub.jar context info
       DeploymentContext subJar = pathMap.get("complex.deployer/sub.jar");
       assertNotNull("complex.deployer/sub.jar", subJar);
@@ -153,23 +153,6 @@ public class DeclaredStructureUnitTestCase extends BaseDeployersTest
    protected void assertContexts(Map<String, Boolean> expected, Set<DeploymentContext> actual) throws Exception
    {
       assertCandidateContexts(expected, actual);
-   }
-
-   /**
-    * Create a map of vfs relative paths to the child DeploymentContexts.
-    * @param root
-    * @return
-    */
-   protected Map<String, DeploymentContext> buildPathMap(DeploymentContext root)
-   {
-      HashMap<String, DeploymentContext> pathMap = new HashMap<String, DeploymentContext>();
-      Set<DeploymentContext> children = root.getChildren();
-      for(DeploymentContext ctx : children)
-      {
-         String path = ctx.getRoot().getPathName();
-         pathMap.put(path, ctx);
-      }
-      return pathMap;
    }
 
 }
