@@ -71,7 +71,10 @@ public class StructureMetaDataImpl implements StructureMetaData
 
    public ContextInfo removeContext(String vfsPath)
    {
-      return contextMap.remove(vfsPath);
+      ContextInfo info = contextMap.remove(vfsPath);
+      if( info != null )
+         contextSet.remove(info);
+      return info;
    }
 
    public SortedSet<ContextInfo> getContexts()
