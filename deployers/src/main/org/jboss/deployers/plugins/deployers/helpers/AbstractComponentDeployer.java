@@ -42,11 +42,15 @@ public abstract class AbstractComponentDeployer<D, C> extends AbstractRealDeploy
    /** The component type */
    private Class<C> componentType;
 
-   public int getRelativeOrder()
+   /**
+    * Set the default relative order to COMPONENT_DEPLOYER
+    *
+    */
+   public AbstractComponentDeployer()
    {
-      return COMPONENT_DEPLOYER;
+      setRelativeOrder(COMPONENT_DEPLOYER);
    }
-   
+
    /**
     * Set the component visitor
     * 

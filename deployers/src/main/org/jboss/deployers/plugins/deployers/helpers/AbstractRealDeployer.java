@@ -45,9 +45,13 @@ public abstract class AbstractRealDeployer<T> extends AbstractSimpleDeployer
    /** Whether the warning has been displayed */
    private boolean warned;
 
-   public int getRelativeOrder()
+   /**
+    * Set the default relative order to REAL_DEPLOYER.
+    *
+    */
+   public AbstractRealDeployer()
    {
-      return REAL_DEPLOYER;
+      setRelativeOrder(REAL_DEPLOYER);
    }
 
    /**

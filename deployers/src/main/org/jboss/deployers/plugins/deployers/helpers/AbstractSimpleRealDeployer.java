@@ -34,7 +34,8 @@ import org.jboss.deployers.spi.deployer.DeploymentUnit;
 public abstract class AbstractSimpleRealDeployer<T> extends AbstractTypedDeployer<T>
 {
    /**
-    * Create a new AbstractSimpleRealDeployer.
+    * Create a new AbstractSimpleRealDeployer. Sets the default relative order
+    * to REAL_DEPLOYER.
     * 
     * @param deploymentType the deployment type
     * @throws IllegalArgumentException for a null deployment type
@@ -42,13 +43,9 @@ public abstract class AbstractSimpleRealDeployer<T> extends AbstractTypedDeploye
    public AbstractSimpleRealDeployer(Class<T> deploymentType)
    {
       super(deploymentType);
+      setRelativeOrder(REAL_DEPLOYER);
    }
 
-   public int getRelativeOrder()
-   {
-      return REAL_DEPLOYER;
-   }
-   
    public void deploy(DeploymentUnit unit) throws DeploymentException
    {
       T deployment = unit.getAttachment(getDeploymentType());

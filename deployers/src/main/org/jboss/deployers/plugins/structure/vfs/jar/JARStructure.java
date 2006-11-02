@@ -41,14 +41,20 @@ public class JARStructure extends AbstractStructureDeployer
 {
    public JARStructure()
    {
-      
+      this(null);
    }
 
+   /**
+    * Sets the default relative order 10000.
+    *
+    */
    public JARStructure(Set<String> suffixes)
    {
-      JarUtils.setJarSuffixes(suffixes);
+      if( suffixes != null )
+         JarUtils.setJarSuffixes(suffixes);
+      setRelativeOrder(10000);
    }
-   
+
    /**
     * Gets the set of suffixes recognised as jars
     * 
@@ -66,12 +72,6 @@ public class JARStructure extends AbstractStructureDeployer
    public void setSuffixes(Set<String> suffixes)
    {
       JarUtils.setJarSuffixes(suffixes);
-   }
-
-   @Override
-   public int getRelativeOrder()
-   {
-      return 10000;
    }
 
    public boolean determineStructure(VirtualFile root, StructureMetaData metaData, StructuredDeployers deployers)

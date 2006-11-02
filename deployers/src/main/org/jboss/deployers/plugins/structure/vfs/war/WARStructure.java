@@ -47,11 +47,14 @@ public class WARStructure extends AbstractStructureDeployer
    
    /** The web-inf/lib filter */
    private VirtualFileFilter webInfLibFilter = DEFAULT_WEB_INF_LIB_FILTER;
-   
-   @Override
-   public int getRelativeOrder()
+
+   /**
+    * Sets the default relative order 1000.
+    *
+    */
+   public WARStructure()
    {
-      return 1000;
+      setRelativeOrder(1000);
    }
 
    /**

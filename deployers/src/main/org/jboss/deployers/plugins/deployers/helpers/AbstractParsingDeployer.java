@@ -39,7 +39,8 @@ import org.jboss.virtual.VirtualFile;
 public abstract class AbstractParsingDeployer<T> extends AbstractTypedDeployer<T>
 {
    /**
-    * Create a new AbstractParsingDeployer.
+    * Create a new AbstractParsingDeployer. Sets the default relative order
+    * to PARSER_DEPLOYER.
     * 
     * @param deploymentType the deployment type
     * @throws IllegalArgumentException if the deployment type is null
@@ -47,11 +48,8 @@ public abstract class AbstractParsingDeployer<T> extends AbstractTypedDeployer<T
    protected AbstractParsingDeployer(Class<T> deploymentType)
    {
       super(deploymentType);
-   }
-
-   public int getRelativeOrder()
-   {
-      return PARSER_DEPLOYER;
+      // Default the relative order to PARSER_DEPLOYER
+      setRelativeOrder(PARSER_DEPLOYER);
    }
 
    /**

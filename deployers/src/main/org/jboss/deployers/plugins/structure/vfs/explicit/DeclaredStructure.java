@@ -41,19 +41,14 @@ import org.jboss.xb.binding.UnmarshallerFactory;
 public class DeclaredStructure extends AbstractStructureDeployer
 {
    private static ThreadLocal<StructureMetaData> activeMetaData
-   = new ThreadLocal<StructureMetaData>();
-
-   public DeclaredStructure()
-   {
-   }
+      = new ThreadLocal<StructureMetaData>();
 
    /**
-    * Overriden to be the highest priority deployer
+    * Set the relative order to 0 by default.
     */
-   @Override
-   public int getRelativeOrder()
+   public DeclaredStructure()
    {
-      return 0;
+      setRelativeOrder(0);
    }
 
    public boolean determineStructure(VirtualFile root, StructureMetaData metaData, StructuredDeployers deployers)
