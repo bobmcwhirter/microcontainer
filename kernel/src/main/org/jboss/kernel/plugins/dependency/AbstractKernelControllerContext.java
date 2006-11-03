@@ -42,6 +42,7 @@ import org.jboss.dependency.spi.DependencyItem;
 import org.jboss.kernel.Kernel;
 import org.jboss.kernel.spi.dependency.KernelController;
 import org.jboss.kernel.spi.dependency.KernelControllerContext;
+import org.jboss.kernel.spi.metadata.MutableMetaDataContext;
 import org.jboss.repository.spi.MetaDataContext;
 import org.jboss.util.JBossStringBuilder;
 
@@ -172,10 +173,19 @@ public class AbstractKernelControllerContext extends AbstractControllerContext i
       isDescribeProcessed = true;
    }
 
-   public MetaDataContext getMetaDataContext()
+   public MutableMetaDataContext getMetaDataContext()
    {
       if (info != null)
-         return info.getMetaDataContext();
+      {
+         try
+         {
+            return (MutableMetaDataContext)info.getMetaDataContext();
+         }
+         catch (ClassCastException e)
+         {
+            throw new RuntimeException("MetaDataContext must be an instance of MutableMetaDataContext");
+         }
+      }
       return null;
    }
 

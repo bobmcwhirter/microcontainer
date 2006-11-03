@@ -26,6 +26,7 @@ import java.util.List;
 import java.util.Set;
 
 import org.jboss.beans.info.spi.BeanInfo;
+import org.jboss.beans.metadata.spi.AnnotationMetaData;
 import org.jboss.beans.metadata.spi.BeanMetaData;
 import org.jboss.beans.metadata.spi.PropertyMetaData;
 import org.jboss.dependency.plugins.AbstractDependencyItem;
@@ -36,6 +37,8 @@ import org.jboss.kernel.Kernel;
 import org.jboss.kernel.spi.config.KernelConfigurator;
 import org.jboss.kernel.spi.dependency.KernelController;
 import org.jboss.kernel.spi.dependency.KernelControllerContext;
+import org.jboss.kernel.spi.metadata.MutableMetaDataContext;
+import org.jboss.metadata.spi.repository.MetaDataRepository;
 import org.jboss.repository.spi.KernelRepository;
 import org.jboss.repository.spi.MetaDataContext;
 import org.jboss.repository.spi.MetaDataContextFactory;
@@ -88,16 +91,16 @@ public class DescribeAction extends KernelControllerContextAction
     */
    private BeanInfo addAnnotations(KernelControllerContext context, BeanMetaData beanMetaData, BeanInfo beanInfo)
    {
-      MetaDataContext metaCtx = addClassAnnotations(context, beanMetaData, beanInfo);
+      MutableMetaDataContext metaCtx = addClassAnnotations(context, beanMetaData, beanInfo);
       addPropertyAnnotations(metaCtx, context, beanMetaData, beanInfo);
       return context.getBeanInfo();
    }
 
-   private MetaDataContext addClassAnnotations(KernelControllerContext context, BeanMetaData beanMetaData, BeanInfo beanInfo)
+   private MutableMetaDataContext addClassAnnotations(KernelControllerContext context, BeanMetaData beanMetaData, BeanInfo beanInfo)
    {
-      Set annotations = beanMetaData.getAnnotations();
+      Set<AnnotationMetaData> annotations = beanMetaData.getAnnotations();
 
-      MetaDataContext metaCtx = null;
+      MutableMetaDataContext metaCtx = null;
 
       if (annotations != null && annotations.size() > 0)
       {
@@ -111,7 +114,7 @@ public class DescribeAction extends KernelControllerContextAction
       return metaCtx;
    }
 
-   private MetaDataContext addPropertyAnnotations(MetaDataContext metaCtx, KernelControllerContext context, BeanMetaData beanMetaData, BeanInfo beanInfo)
+   private MutableMetaDataContext addPropertyAnnotations(MutableMetaDataContext metaCtx, KernelControllerContext context, BeanMetaData beanMetaData, BeanInfo beanInfo)
    {
       Set properties = beanMetaData.getProperties();
 
@@ -143,24 +146,29 @@ public class DescribeAction extends KernelControllerContextAction
       return metaCtx;
    }
 
-   private MetaDataContext getMetaDataContext(KernelControllerContext context)
+   private MutableMetaDataContext getMetaDataContext(KernelControllerContext context)
    {
       //TODO: Hardcoding this doesn't feel right...
       ControllerContext repCtx = context.getController().getContext("Repository", ControllerState.INSTALLED);
 
       if (repCtx == null)
       {
-         log.warn("You have defined annotations for bean '" + context.getName() + "', but no KernelRepository has been installed under the name 'Repository'");
+         log.warn("You have defined annotations for bean '" + context.getName() + "', but no MetaDataRepository has been installed under the name 'Repository'");
          return null;
       }
 
-      KernelRepository repository = (KernelRepository)repCtx.getTarget();
+      MetaDataRepository repository = (MetaDataRepository)repCtx.getTarget();
       MetaDataContextFactory metaFactory = context.getBeanInfo().getMetaDataContextFactory();
-      MetaDataContext metaCtx = metaFactory.getMetaDataContext(repository, context.getName());
-
+      MetaDataContext metaCtx = metaFactory.getMetaDataContext(repository, (String)context.getName());
+      
+      if (metaCtx instanceof MutableMetaDataContext == false)
+      {
+         throw new RuntimeException("MetaDataContext must be mutable");
+      }
+         
       context.setMetaDataContext(metaCtx);
 
-      return metaCtx;
+      return (MutableMetaDataContext)metaCtx;
    }
 
 }

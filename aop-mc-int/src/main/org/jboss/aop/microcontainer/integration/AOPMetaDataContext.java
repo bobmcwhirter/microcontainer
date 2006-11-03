@@ -22,243 +22,159 @@
 package org.jboss.aop.microcontainer.integration;
 
 import java.lang.annotation.Annotation;
-import java.lang.reflect.Method;
 import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.Iterator;
 import java.util.List;
-import java.util.Map;
 import java.util.Set;
 
 import org.jboss.aop.Advised;
 import org.jboss.aop.Advisor;
 import org.jboss.aop.proxy.container.AspectManaged;
+import org.jboss.aop.util.ClassInfoMethodHashing;
 import org.jboss.beans.info.spi.PropertyInfo;
 import org.jboss.beans.metadata.spi.AnnotationMetaData;
+import org.jboss.kernel.spi.metadata.MutableMetaDataContext;
+import org.jboss.metadata.plugins.loader.memory.MemoryMetaDataLoader;
+import org.jboss.metadata.spi.repository.MetaDataRepository;
+import org.jboss.metadata.spi.repository.MutableMetaDataRepository;
+import org.jboss.metadata.spi.retrieval.AnnotationItem;
+import org.jboss.metadata.spi.retrieval.AnnotationsItem;
+import org.jboss.metadata.spi.retrieval.MetaDataRetrieval;
+import org.jboss.metadata.spi.scope.CommonLevels;
+import org.jboss.metadata.spi.scope.Scope;
+import org.jboss.metadata.spi.scope.ScopeKey;
 import org.jboss.reflect.spi.MethodInfo;
-
-import org.jboss.repository.spi.BasicMetaData;
-import org.jboss.repository.spi.CommonNames;
-import org.jboss.repository.spi.KernelRepository;
-import org.jboss.repository.spi.Key;
-import org.jboss.repository.spi.MetaData;
 import org.jboss.repository.spi.MetaDataContext;
-import org.jboss.util.JBossStringBuilder;
 
 /**
  * 
  * @author <a href="kabir.khan@jboss.com">Kabir Khan</a>
  * @version $Revision$
  */
-public class AOPMetaDataContext implements MetaDataContext
+public class AOPMetaDataContext implements MutableMetaDataContext
 {
-   Map<String, String> scope;
+   final static List<Annotation> EMPTY_ANNOTATIONS = new ArrayList<Annotation>();
+   Scope scope;
    Object target;
-   KernelRepository repository;
-   private final static Class[] EMPTY_CLASS_ARRAY = new Class[0];
-
-   public AOPMetaDataContext(KernelRepository repository, Object beanName)
+   MutableMetaDataRepository repository;
+   String beanName;
+   ScopeKey instanceKey;
+   
+   public AOPMetaDataContext(MutableMetaDataRepository repository, String beanName)
    {
       this.repository = repository;
-      scope = new HashMap<String, String>();
-      
-      //TODO: Determine level this data should be put at.
-      scope.put(CommonNames.DOMAIN, "d");
-      scope.put(CommonNames.CLUSTER, "c");
-      scope.put(CommonNames.SERVER, "s");
-      scope.put(CommonNames.APPLICATION, "a");
-      scope.put(CommonNames.DEPLOYMENT, (String) beanName);
+      this.beanName = beanName;
+      //TODO: This needs linking up with the parent scopes somehow - where will that info come from?
+      scope = new Scope(CommonLevels.INSTANCE, beanName);
+      instanceKey = new ScopeKey(scope);
    }
    
-   public Object getAnnotation(Class ann)
-   {
-      return getAnnotation(ann.getName());
-   }
-
-   public boolean hasAnnotation(String ann)
+   public <T extends Annotation> boolean hasAnnotation(Class<T> ann)
    {
       return getAnnotation(ann) != null;
    }
 
-   private Object getAnnotation(String name)
+   public <T extends Annotation> Annotation getAnnotation(Class<T> ann)
    {
-      Key key = new Key(name, scope);
-      return repository.getMetaData(key);
+      return getAnnotation(instanceKey, ann);
    }
 
-   public List getAnnotations()
+   public <T extends Annotation> boolean hasAnnotationForMethod(long methodHash, Class<T> ann)
    {
-      ArrayList<Object> annotations = new ArrayList<Object>();
-      Iterator keys = repository.getKeyNames();
-      while (keys.hasNext())
-      {
-         Key key = (Key)keys.next();
-         if (key.getName().length == 1)
-         {
-            Key realKey =  new Key(key.getName(), scope);
-            Object annotation = repository.getMetaData(realKey);
-            if (annotation != null)
-            {
-               annotations.add(annotation);
-            }
-         }
-      }
-      
-      return annotations;
+      return getAnnotationForMethod(methodHash, ann) != null;
    }
 
-
-   public Object getAnnotation(Method m, Class ann)
+   public <T extends Annotation> Annotation getAnnotationForMethod(long methodHash, Class<T> ann)
    {
-      return getAnnotation(m, ann.getName());
+      ScopeKey joinpointKey = createHashedJoinpointKey(methodHash);
+      return getAnnotation(joinpointKey, ann);
    }
 
-   public boolean hasAnnotation(Method m, String ann)
+   public List<Annotation> getAnnotations()
    {
-      return getAnnotation(m, ann) != null;
-   }
-
-   private Object getAnnotation(Method m, String name)
-   {
-      Key key = createMethodKey(name, m.getName());
-      return repository.getMetaData(key);
+      return getAnnotations(instanceKey);
    }
    
-   public List getAnnotationsForMethod(String methodName)
+   public List<Annotation> getAnnotationsForMethod(long methodHash)
    {
-      ArrayList<Object> annotations = new ArrayList<Object>();
-      Iterator keys = repository.getKeyNames();
-      while (keys.hasNext())
-      {
-         Key key = (Key)keys.next();
-         String[] name = key.getName(); 
-         if (name.length == 2)
-         {
-            if (name[1].equals(methodName))
-            {
-               Key realKey =  new Key(key.getName(), scope);
-               Object annotation = repository.getMetaData(realKey);
-               if (annotation != null)
-               {
-                  annotations.add(annotation);
-               }
-            }
-         }
-      }
-      
-      return annotations;
+      ScopeKey joinpointKey = createHashedJoinpointKey(methodHash);
+      return getAnnotations(joinpointKey);
    }
-
-   public List getAnnotationsForMethods(String[] methodNames)
+   
+   public List<Annotation> getAnnotationsForMethods(long[] methodHashes)
    {
-      ArrayList<Object> annotations = new ArrayList<Object>();
-      Iterator keys = repository.getKeyNames();
-      while (keys.hasNext())
+      ArrayList<Annotation> annotations = new ArrayList<Annotation>();
+      for (long hash : methodHashes)
       {
-         Key key = (Key)keys.next();
-         String[] name = key.getName(); 
-         if (name.length == 2)
-         {
-            for (int i = 0 ; i < methodNames.length ; i++)
-            {
-               if (name[1].equals(methodNames[i]))
-               {
-                  Key realKey =  new Key(key.getName(), scope);
-                  Object annotation = repository.getMetaData(realKey);
-                  if (annotation != null)
-                  {
-                     annotations.add(annotation);
-                  }
-               }
-            }
-         }
+         ScopeKey joinpointKey = createHashedJoinpointKey(hash);
+         List<Annotation> methodAnnotations = getAnnotations(joinpointKey);
+         annotations.addAll(methodAnnotations);
       }
-      
       return annotations;
    }
    
-   public KernelRepository getRepository()
+   public MetaDataRepository getRepository()
    {
       return repository;
    }
 
-   public Map getScope()
+   /**
+    * Add instance-level annotations
+    * @param annotations a Set<AnnotationMetaData>
+    */
+   public void addAnnotations(Set<AnnotationMetaData> annotations)
    {
-      return scope;
-   }
-
-   public void addAnnotations(Set annotations)
-   {
-      for (Iterator i = annotations.iterator(); i.hasNext();)
+      if (annotations.size() == 0)
       {
-         AnnotationMetaData annotation = (AnnotationMetaData) i.next();
-         Key key = new Key(getName(annotation), scope);            
-         
-         final MetaData metadata = createMetaData(annotation);
-         repository.addMetaData(key, metadata);
+         return;
       }
+
+      MemoryMetaDataLoader retrieval = new MemoryMetaDataLoader(instanceKey);
+      for (AnnotationMetaData annotationMetaData : annotations)
+      {
+         Annotation annotation = annotationMetaData.getAnnotationInstance();
+         retrieval.addAnnotation(annotation);
+      }
+      repository.addMetaDataRetrieval(retrieval);
    }
    
-   public void addPropertyAnnotations(String propertyName, Set propertyInfos, Set annotations)
+   public void addPropertyAnnotations(String propertyName, Set<PropertyInfo> propertyInfos, Set<AnnotationMetaData> annotations)
    {
-      for (Iterator props = propertyInfos.iterator() ; props.hasNext() ; )
+      for (PropertyInfo info : propertyInfos)
       {
-         PropertyInfo info = (PropertyInfo)props.next();
-         
          if (propertyName.equals(info.getName()))
          {
-            MethodInfo getter = info.getGetter();
-            MethodInfo setter = info.getSetter();
+            MemoryMetaDataLoader getterRetrieval = createGetterMetaDataRetrieval(info);
+            MemoryMetaDataLoader setterRetrieval = createSetterMetaDataRetrieval(info);
             
-            for (Iterator anns = annotations.iterator() ; anns.hasNext() ; )
+            if (getterRetrieval == null && setterRetrieval == null)
             {
-               AnnotationMetaData annotation = (AnnotationMetaData)anns.next();
-               
-               if (getter != null || setter != null)
+               continue;
+            }
+            
+            for (AnnotationMetaData annotation : annotations)
+            {
+               if (getterRetrieval != null)
                {
-                  MetaData data = createMetaData(annotation);
-                  if (getter != null)
-                  {
-                     Key key = createMethodKey(getName(annotation), getter.getName());
-                     repository.addMetaData(key, data);
-                  }
-                  if (setter != null)
-                  {
-                     Key key = createMethodKey(getName(annotation), setter.getName());
-                     repository.addMetaData(key, data);
-                  }
+                  getterRetrieval.addAnnotation(annotation.getAnnotationInstance());
                }
+               if (setterRetrieval != null)
+               {
+                  setterRetrieval.addAnnotation(annotation.getAnnotationInstance());
+               }
+            }
+            
+            if (getterRetrieval != null)
+            {
+               repository.addMetaDataRetrieval(getterRetrieval);
+            }
+            if (setterRetrieval != null)
+            {
+               repository.addMetaDataRetrieval(setterRetrieval);
             }
          }
       }
    }
 
-   private Key createMethodKey(String annotationName, String methodName)
-   {
-      return new Key(new String[] {annotationName, methodName}, scope);
-   }
-   
-   private MetaData createMetaData(AnnotationMetaData metadata)
-   {
-      return new BasicMetaData(0, metadata.getAnnotationInstance());
-   }
-   
-   
-   private String getName(Annotation annotation)
-   {
-      return annotation.annotationType().getName();
-   }
-   
-   private String getName(MetaData metadata)
-   {
-      return getName((Annotation)metadata.getData());
-   }
-   
-   private String getName(AnnotationMetaData annotation)
-   {
-      return getName(annotation.getAnnotationInstance());
-   }
-   
    public void setTarget(Object tgt)
    {
       if (tgt == null)
@@ -289,5 +205,72 @@ public class AOPMetaDataContext implements MetaDataContext
             advisor.setMetadataContext(this);
          }
       }
+   }
+   
+   private MemoryMetaDataLoader createGetterMetaDataRetrieval(PropertyInfo propertyInfo)
+   {
+      MethodInfo getter = propertyInfo.getGetter();
+      return createMethodMetaDataRetrieval(getter);
+   }
+   
+   private MemoryMetaDataLoader createSetterMetaDataRetrieval(PropertyInfo propertyInfo)
+   {
+      MethodInfo setter = propertyInfo.getSetter();
+      return createMethodMetaDataRetrieval(setter);
+   }
+   
+   private MemoryMetaDataLoader createMethodMetaDataRetrieval(MethodInfo accessor)
+   {
+      if (accessor == null)
+      {
+         return null;
+      }
+      long hash = ClassInfoMethodHashing.methodHash(accessor);
+      ScopeKey joinpointKey = createHashedJoinpointKey(hash);
+      MemoryMetaDataLoader retrieval = new MemoryMetaDataLoader(joinpointKey);
+      return retrieval;
+   }
+   
+   private ScopeKey createHashedJoinpointKey(long hash)
+   {
+      ScopeKey joinpointKey = new ScopeKey(instanceKey.getScopes());
+      joinpointKey.addScope(CommonLevels.JOINPOINT, String.valueOf(hash));
+      return joinpointKey;
+   }
+
+   private <T extends Annotation> Annotation getAnnotation(ScopeKey key, Class<T> ann)
+   {
+      MetaDataRetrieval retrieval = repository.getMetaDataRetrieval(key);
+      
+      if (retrieval != null)
+      {
+         AnnotationItem item = retrieval.retrieveAnnotation(ann);
+         if (item != null)
+         {
+            return item.getAnnotation();
+         }
+      }      
+      return null;
+   }
+
+   private List<Annotation> getAnnotations(ScopeKey key)
+   {
+      MetaDataRetrieval retrieval = repository.getMetaDataRetrieval(key);
+      
+      if (retrieval != null)
+      {
+         AnnotationsItem item = retrieval.retrieveAnnotations();
+         if (item != null)
+         {
+            AnnotationItem[] items = item.getAnnotations();
+            List<Annotation> annotations = new ArrayList<Annotation>();
+            for (AnnotationItem aitem : items)
+            {
+               annotations.add(aitem.getAnnotation());
+            }
+            return annotations;    
+         }
+      }      
+      return EMPTY_ANNOTATIONS;
    }
 }   

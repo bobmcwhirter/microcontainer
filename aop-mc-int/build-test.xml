@@ -68,7 +68,7 @@
 
     <path id="jboss.aop50.classpath">
       <fileset dir="${jboss.aop.lib}">
-         <include name="jboss-aop.jar"/>
+         <include name="jboss-aop-jdk50.jar"/>
       </fileset>
     </path>
 

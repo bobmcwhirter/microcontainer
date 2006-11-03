@@ -6,9 +6,7 @@
       <constructor factoryClass="javax.management.MBeanServerFactory" factoryMethod="createMBeanServer"/>
    </bean>
 
-   <bean name="Repository" class="org.jboss.aop.microcontainer.integration.AOPKernelRepository">
-      <constructor factoryClass="org.jboss.aop.microcontainer.integration.AOPKernelRepository" factoryMethod="instance"/>
-   </bean>
+   <bean name="Repository" class="org.jboss.metadata.plugins.repository.basic.BasicMetaDataRepository"/>
 
    <bean name="AspectManager" class="org.jboss.aop.AspectManager">
       <constructor factoryClass="org.jboss.aop.AspectManager" factoryMethod="instance"/>

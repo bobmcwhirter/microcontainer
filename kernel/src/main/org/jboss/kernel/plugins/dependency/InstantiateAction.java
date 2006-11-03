@@ -29,7 +29,7 @@ import org.jboss.kernel.spi.config.KernelConfigurator;
 import org.jboss.kernel.spi.dependency.KernelController;
 import org.jboss.kernel.spi.dependency.KernelControllerContext;
 import org.jboss.kernel.spi.dependency.KernelControllerContextAware;
-import org.jboss.repository.spi.MetaDataContext;
+import org.jboss.kernel.spi.metadata.MutableMetaDataContext;
 
 /**
  * InstantiateAction.
@@ -52,7 +52,7 @@ public class InstantiateAction extends KernelControllerContextAction
       Object object = dispatchJoinPoint(context, joinPoint);
       context.setTarget(object);
 
-      MetaDataContext metaCtx = context.getMetaDataContext();
+      MutableMetaDataContext metaCtx = context.getMetaDataContext();
       if (metaCtx != null)
       {
          metaCtx.setTarget(object);

@@ -184,7 +184,7 @@ public class AOPDependencyBuilder extends AbstractDependencyBuilder
                HashMap<String, ArrayList<String>> classMap = new HashMap<String, ArrayList<String>>();
                getRealMethodAnnotationDependencies(method, classMap);
                HashMap<String, ArrayList<String>> overrideMap = new HashMap<String, ArrayList<String>>();
-               getMetaDataContextMethodAnnotationDependencies(method.getName(), metaDataContext, overrideMap);
+               getMetaDataContextMethodAnnotationDependencies(method, metaDataContext, overrideMap);
                addAllDependenciesToSet(dependencies, classMap, overrideMap);
             }
          }
@@ -203,11 +203,12 @@ public class AOPDependencyBuilder extends AbstractDependencyBuilder
       }
    }
    
-   private void getMetaDataContextMethodAnnotationDependencies(String methodName, MetaDataContext metaDataContext, HashMap<String, ArrayList<String>> dependencies) throws Exception
+   private void getMetaDataContextMethodAnnotationDependencies(MethodInfo method, MetaDataContext metaDataContext, HashMap<String, ArrayList<String>> dependencies) throws Exception
    {
       if (metaDataContext != null)
       {
-         List methodAnnotations = metaDataContext.getAnnotationsForMethod(methodName);
+         long hash = ClassInfoMethodHashing.methodHash(method);
+         List methodAnnotations = metaDataContext.getAnnotationsForMethod(hash);
          for (Iterator it = methodAnnotations.iterator() ; it.hasNext() ; )
          {
             Object annotation = it.next();

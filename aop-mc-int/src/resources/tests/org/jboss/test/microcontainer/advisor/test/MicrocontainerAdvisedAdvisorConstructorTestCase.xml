@@ -2,16 +2,14 @@
 
 <deployment xmlns="urn:jboss:bean-deployer:2.0">
 
-   <bean name="Repository" class="org.jboss.aop.microcontainer.integration.AOPKernelRepository">
-      <constructor factoryClass="org.jboss.aop.microcontainer.integration.AOPKernelRepository" factoryMethod="instance"/>
-   </bean>
+   <bean name="Repository" class="org.jboss.metadata.plugins.repository.basic.BasicMetaDataRepository"/>
 
 	<bean name="One" class="org.jboss.test.microcontainer.advisor.test.some.Pojo"/>
-	
+
 	<bean name="Two" class="org.jboss.test.microcontainer.advisor.test.some.Pojo"/>
-	
+
 	<bean name="Three" class="org.jboss.test.microcontainer.advisor.test.another.Pojo"/>
-	
+
 	<bean name="Four" class="org.jboss.test.microcontainer.advisor.test.another.Pojo"/>
 </deployment>
 

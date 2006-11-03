@@ -24,6 +24,7 @@ package org.jboss.kernel.spi.dependency;
 import org.jboss.beans.info.spi.BeanInfo;
 import org.jboss.beans.metadata.spi.BeanMetaData;
 import org.jboss.kernel.Kernel;
+import org.jboss.kernel.spi.metadata.MutableMetaDataContext;
 import org.jboss.kernel.spi.registry.KernelRegistryEntry;
 import org.jboss.repository.spi.MetaDataContext;
 /**
@@ -74,7 +75,7 @@ public interface KernelControllerContext extends KernelRegistryEntry
     * 
     * @return the metadata context
     */
-   MetaDataContext getMetaDataContext();
+   MutableMetaDataContext getMetaDataContext();
    
    /**
     * Set the metadata context

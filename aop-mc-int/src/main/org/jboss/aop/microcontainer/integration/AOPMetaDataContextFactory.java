@@ -21,7 +21,8 @@
 */ 
 package org.jboss.aop.microcontainer.integration;
 
-import org.jboss.repository.spi.KernelRepository;
+import org.jboss.metadata.spi.repository.MetaDataRepository;
+import org.jboss.metadata.spi.repository.MutableMetaDataRepository;
 import org.jboss.repository.spi.MetaDataContext;
 import org.jboss.repository.spi.MetaDataContextFactory;
 
@@ -33,9 +34,16 @@ import org.jboss.repository.spi.MetaDataContextFactory;
 public class AOPMetaDataContextFactory implements MetaDataContextFactory
 {
 
-   public MetaDataContext getMetaDataContext(KernelRepository repository, Object beanName)
+   public MetaDataContext getMetaDataContext(MetaDataRepository repository, String beanName)
    {
-      return new AOPMetaDataContext(repository, beanName);
+      if (repository instanceof MutableMetaDataRepository)
+      {
+         return new AOPMetaDataContext((MutableMetaDataRepository)repository, beanName);
+      }
+      else
+      {
+         throw new RuntimeException("The passed in repository must be of type org.jboss.metadata.spi.repository.MutableMetaDataRepository");
+      }
    }
    
 }
