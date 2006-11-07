@@ -60,4 +60,5 @@
 
    <bean name="AnnotatedBean" class="org.jboss.test.microcontainer.support.SimpleBeanAnnotatedImpl"/>
 
+   <bean name="AnnotatedBean2" class="org.jboss.test.microcontainer.support.SimpleBeanAnnotatedImpl2"/>
 </deployment>

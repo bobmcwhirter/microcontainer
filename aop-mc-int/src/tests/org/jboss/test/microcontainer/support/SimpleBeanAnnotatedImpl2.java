@@ -27,9 +27,9 @@ import org.jboss.aop.microcontainer.aspects.jmx.JMX;
  * SimpleBeanImpl.
  * 
  * @author <a href="adrian@jboss.com">Adrian Brock</a>
- * @version $Revision$
+ * @version $Revision: 44470 $
  */
-@JMX(exposedInterface=SimpleBeanImplMBean.class)
-public class SimpleBeanAnnotatedImpl extends SimpleBeanImpl
+@JMX(name="test:name=AnnotatedNotBean", exposedInterface=SimpleBeanImplMBean.class)
+public class SimpleBeanAnnotatedImpl2 extends SimpleBeanImpl
 {
 }

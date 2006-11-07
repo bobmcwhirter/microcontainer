@@ -21,12 +21,19 @@
 */ 
 package org.jboss.aop.microcontainer.aspects.jmx;
 
+import java.lang.annotation.ElementType;
+import java.lang.annotation.Retention;
+import java.lang.annotation.RetentionPolicy;
+import java.lang.annotation.Target;
+
 /**
  * A temporary home for this annotation interface
  * 
  * @author <a href="kabir.khan@jboss.com">Kabir Khan</a>
  * @version $Revision$
  */
+@Retention(RetentionPolicy.RUNTIME)
+@Target(ElementType.TYPE)
 public @interface JMX 
 {
    Class exposedInterface();

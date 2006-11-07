@@ -71,6 +71,13 @@ public class JMXDecoratedTestCase extends AOPMicrocontainerTest
       ops = info.getOperations();
       assertEquals(1, ops.length);
       assertEquals("someOtherMethod", ops[0].getName());
+      
+      name = new ObjectName("test:name=AnnotatedNotBean");
+      info = server.getMBeanInfo(name);
+      assertNotNull(info);
+      ops = info.getOperations();
+      assertEquals(1, ops.length);
+      assertEquals("someOtherMethod", ops[0].getName());
    }
    
    /**
