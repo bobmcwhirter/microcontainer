@@ -12,7 +12,9 @@
       <constructor factoryClass="org.jboss.aop.AspectManager" factoryMethod="instance"/>
    </bean>
 
-   <beanfactory name="JMXAdvice" class="org.jboss.aop.microcontainer.aspects.jmx.JMXIntroduction"/>
+   <beanfactory name="JMXAdvice" class="org.jboss.aop.microcontainer.aspects.jmx.JMXIntroduction">
+      <property name="mbeanServer"><inject bean="MBeanServer"/></property>
+   </beanfactory>
 
    <beanfactory name="MetaDataContextAdvice" class="org.jboss.test.microcontainer.support.MetaDataContextInterceptor">
       <property name="annotation">org.jboss.aop.microcontainer.aspects.jmx.JMX</property>

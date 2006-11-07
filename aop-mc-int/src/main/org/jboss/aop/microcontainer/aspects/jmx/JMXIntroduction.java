@@ -44,10 +44,16 @@ import org.jboss.logging.Logger;
 public class JMXIntroduction implements Interceptor
 {
    private static final Logger log = Logger.getLogger(JMXIntroduction.class);
+   private MBeanServer server;
    
    public String getName()
    {
       return getClass().getName();
+   }
+   
+   public void setMbeanServer(MBeanServer server)
+   {
+      this.server = server;
    }
  
    public Object invoke(Invocation invocation) throws Throwable
@@ -66,11 +72,11 @@ public class JMXIntroduction implements Interceptor
             objectName = new ObjectName(jmxName);
       }
       
-      ControllerContext mbc = context.getController().getInstalledContext("MBeanServer");
-      if (mbc == null)
-         return null;
-      MBeanServer server = (MBeanServer) mbc.getTarget();
-
+      if (server == null)
+      {
+         throw new RuntimeException("No MBeanServer was injected");
+      }
+      
       if ("setKernelControllerContext".equals(mi.getMethod().getName()))
       {
          Class intfClass = null;
