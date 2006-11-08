@@ -94,7 +94,7 @@ public abstract class AbstractStructureDeployer implements StructureDeployer
    /**
     * See if a file corresponds to a top-level deployment.
     * 
-    * @param root
+    * @param file
     * @param metaData
     * @return
     */
@@ -151,7 +151,7 @@ public abstract class AbstractStructureDeployer implements StructureDeployer
       {
          // Set the path relative to the root
          String cp = vf.getPathName();
-         if( cp.startsWith(rootPath) )
+         if( !"".equals(rootPath) && cp.startsWith(rootPath) )
          {
             if( cp.length() == rootPath.length() )
                cp = "";
