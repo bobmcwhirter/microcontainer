@@ -23,6 +23,7 @@ package org.jboss.aop.microcontainer.integration;
 
 import org.jboss.metadata.spi.repository.MetaDataRepository;
 import org.jboss.metadata.spi.repository.MutableMetaDataRepository;
+import org.jboss.repository.plugins.basic.BasicMetaDataContextFactory;
 import org.jboss.repository.spi.MetaDataContext;
 import org.jboss.repository.spi.MetaDataContextFactory;
 
@@ -31,19 +32,49 @@ import org.jboss.repository.spi.MetaDataContextFactory;
  * @author <a href="kabir.khan@jboss.com">Kabir Khan</a>
  * @version $Revision$
  */
-public class AOPMetaDataContextFactory implements MetaDataContextFactory
+public class AOPMetaDataContextFactory extends BasicMetaDataContextFactory implements MetaDataContextFactory
 {
-
-   public MetaDataContext getMetaDataContext(MetaDataRepository repository, String beanName)
+   MetaDataContextFactory delegate;
+   public MetaDataContext getMetaDataContext(ClassLoader beanLoader, MetaDataRepository repository, String beanName)
    {
-      if (repository instanceof MutableMetaDataRepository)
+      MetaDataContextFactory factoryDelegate = getMetaDataContextFactoryDelegate(beanLoader);
+      if (factoryDelegate == null)
       {
-         return new AOPMetaDataContext((MutableMetaDataRepository)repository, beanName);
+         return super.getMetaDataContext(beanLoader, repository, beanName);
       }
       else
       {
-         throw new RuntimeException("The passed in repository must be of type org.jboss.metadata.spi.repository.MutableMetaDataRepository");
+         return factoryDelegate.getMetaDataContext(beanLoader, repository, beanName);
       }
    }
+   
+   private synchronized MetaDataContextFactory getMetaDataContextFactoryDelegate(ClassLoader beanLoader)
+   {
+      if (delegate != null)
+      {
+         return delegate;
+      }
+      
+      Class clazz = AOPDeployedChecker.getClassIfExists(
+            beanLoader, 
+            "org.jboss.aop.microcontainer.integration.AOPMetaDataContextFactoryDelegate");
+      
+      if (clazz == null)
+      {
+         return null;
+      }
+      
+      try
+      {
+         delegate = (MetaDataContextFactory)clazz.newInstance();
+      }
+      catch (Exception e)
+      {
+         throw new RuntimeException("Error instantiating AOPMetaDataContextFactoryDelegate", e);
+      }
+      
+      return delegate;
+   }
+   
    
 }

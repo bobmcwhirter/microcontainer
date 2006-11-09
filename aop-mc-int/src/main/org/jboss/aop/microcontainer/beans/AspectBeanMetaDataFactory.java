@@ -84,14 +84,14 @@ public class AspectBeanMetaDataFactory extends GenericBeanFactoryMetaData implem
       String aspectName = name + "$Aspect";
       AbstractBeanMetaData aspect = new AbstractBeanMetaData();
       aspect.setName(aspectName);
-      aspect.setBean(Aspect.class.getName());
+      aspect.setBean("org.jboss.aop.microcontainer.beans.Aspect");
       aspect.addProperty(new AbstractPropertyMetaData("manager", aspectManager));
       result.add(aspect);
       
       String aspectBindingName = name + "$AspectBinding";
       AbstractBeanMetaData aspectBinding = new AbstractBeanMetaData();
       aspectBinding.setName(aspectBindingName);
-      aspectBinding.setBean(AspectBinding.class.getName());
+      aspectBinding.setBean("org.jboss.aop.microcontainer.beans.AspectBinding");
       aspectBinding.addProperty(new AbstractPropertyMetaData("pointcut", pointcut));
       aspectBinding.addProperty(new AbstractPropertyMetaData("aspect", new AbstractDependencyValueMetaData(aspectName, "definition")));
       aspectBinding.addProperty(new AbstractPropertyMetaData("manager", aspectManager));

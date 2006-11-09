@@ -132,7 +132,6 @@ public class DescribeAction extends KernelControllerContextAction
                }
                if (metaCtx != null)
                {
-                  //metaCtx.addPropertyAnnotations(property.getName(), propertyAnnotations);
                   Set propertyInfos = beanInfo.getProperties();
                   if (propertyInfos != null && propertyInfos.size() > 0)
                   {
@@ -159,7 +158,8 @@ public class DescribeAction extends KernelControllerContextAction
 
       MetaDataRepository repository = (MetaDataRepository)repCtx.getTarget();
       MetaDataContextFactory metaFactory = context.getBeanInfo().getMetaDataContextFactory();
-      MetaDataContext metaCtx = metaFactory.getMetaDataContext(repository, (String)context.getName());
+      ClassLoader beanLoader = context.getBeanInfo().getClassInfo().getType().getClassLoader();
+      MetaDataContext metaCtx = metaFactory.getMetaDataContext(beanLoader, repository, (String)context.getName());
       
       if (metaCtx instanceof MutableMetaDataContext == false)
       {

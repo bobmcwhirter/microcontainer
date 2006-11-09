@@ -64,7 +64,12 @@ public class AOPConstructorJoinpoint extends BasicConstructorJoinPoint
    public Object dispatch() throws Throwable
    {
       Class clazz = constructorInfo.getDeclaringClass().getType();
-      ContainerCache cache = ContainerCache.initialise(AspectManager.instance(), clazz, metaDataContext);
+      AspectManager manager = AspectManager.instance();
+      if (manager.isNonAdvisableClassName(clazz.getName()))
+      {
+         return super.dispatch();
+      }
+      ContainerCache cache = ContainerCache.initialise(manager, clazz, metaDataContext);
       Object target = createTarget(cache);
 
       AOPProxyFactoryParameters params = new AOPProxyFactoryParameters();
