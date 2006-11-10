@@ -58,6 +58,7 @@ public class AOPMicrocontainerTestDelegate extends MicrocontainerTestDelegate
       log.debug("Security enabled: " + enableSecurity);
    }
 
+   
 
    protected void deploy() throws Exception
    {
