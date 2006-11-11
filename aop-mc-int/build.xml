@@ -167,7 +167,8 @@
    <jar jarfile="${build.lib}/${jar.prefix}-boot.jar" manifest="${build.etc}/default.mf">
      <fileset dir="${build.classes}">
    	  <include name="org/jboss/aop/microcontainer/beans/xml/*.class"/>
-     	  <include name="org/jboss/aop/microcontainer/beans/AspectBeanMetaDataFactory.class"/>
+   	  <include name="org/jboss/aop/microcontainer/beans/AspectBeanMetaDataFactory.class"/>
+   	  <include name="org/jboss/aop/microcontainer/beans/LifecycleBeanMetaDataFactory.class"/>
         <include name="org/jboss/aop/microcontainer/integration/AOPDependencyBuilder.class"/>
      	  <include name="org/jboss/aop/microcontainer/integration/AOPDeployedChecker.class"/>
    	  <include name="org/jboss/aop/microcontainer/integration/AOPJoinpointFactory.class"/>
@@ -182,6 +183,7 @@
       <fileset dir="${build.classes}">
          <exclude name="org/jboss/aop/microcontainer/beans/xml/*.class"/>
          <exclude name="org/jboss/aop/microcontainer/beans/AspectBeanMetaDataFactory.class"/>
+         <exclude name="org/jboss/aop/microcontainer/beans/LifecycleBeanMetaDataFactory.class"/>
          <exclude name="org/jboss/aop/microcontainer/integration/AOPDependencyBuilder.class"/>
       	<exclude name="org/jboss/aop/microcontainer/integration/AOPDeployedChecker.class"/>
          <exclude name="org/jboss/aop/microcontainer/integration/AOPJoinpointFactory.class"/>
