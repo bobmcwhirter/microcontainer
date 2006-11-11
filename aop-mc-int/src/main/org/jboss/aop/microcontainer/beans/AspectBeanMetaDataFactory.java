@@ -37,6 +37,7 @@ import org.jboss.beans.metadata.spi.BeanMetaDataFactory;
 import org.jboss.beans.metadata.spi.InstallMetaData;
 import org.jboss.beans.metadata.spi.MetaDataVisitorNode;
 import org.jboss.beans.metadata.spi.ParameterMetaData;
+import org.jboss.beans.metadata.spi.PropertyMetaData;
 
 /**
  * AspectBeanMetaDataFactory.
@@ -110,7 +111,7 @@ public class AspectBeanMetaDataFactory extends GenericBeanFactoryMetaData implem
       AbstractBeanMetaData aspect = new AbstractBeanMetaData();
       aspect.setName(aspectName);
       aspect.setBean("org.jboss.aop.microcontainer.beans.Aspect");
-      aspect.addProperty(new AbstractPropertyMetaData("manager", new AbstractDependencyValueMetaData(managerBean, managerProperty)));
+      aspect.addProperty(getAspectManagerPropertyMetaData("manager"));
       result.add(aspect);
       
       String aspectBindingName = name + "$AspectBinding";
@@ -119,7 +120,7 @@ public class AspectBeanMetaDataFactory extends GenericBeanFactoryMetaData implem
       aspectBinding.setBean("org.jboss.aop.microcontainer.beans.AspectBinding");
       aspectBinding.addProperty(new AbstractPropertyMetaData("pointcut", pointcut));
       aspectBinding.addProperty(new AbstractPropertyMetaData("aspect", new AbstractDependencyValueMetaData(aspectName, "definition")));
-      aspectBinding.addProperty(new AbstractPropertyMetaData("manager", new AbstractDependencyValueMetaData(managerBean, managerProperty)));
+      aspectBinding.addProperty(getAspectManagerPropertyMetaData("manager"));
       result.add(aspectBinding);
       
       if (hasInjectedBeans())
@@ -133,6 +134,11 @@ public class AspectBeanMetaDataFactory extends GenericBeanFactoryMetaData implem
       
       
       return result;
+   }
+   
+   protected PropertyMetaData getAspectManagerPropertyMetaData(String name)
+   {
+      return new AbstractPropertyMetaData(name, new AbstractDependencyValueMetaData(managerBean, managerProperty));
    }
    
    private void configureWithDependencies(AbstractBeanMetaData aspect, AbstractBeanMetaData aspectBinding)

@@ -47,5 +47,30 @@ $Id$
          </xsd:extension>
       </xsd:complexContent>
    </xsd:complexType>
+   
+   <xsd:element name="lifecycle" type="lifecycleType">
+      <xsd:annotation>
+         <xsd:documentation>
+           <![CDATA[
+           An aspect intercepting when a bean is installed/uninstalled
+           ]]>
+         </xsd:documentation>
+      </xsd:annotation>
+   </xsd:element>
 
+   <xsd:complexType name="lifecycleType">
+      <xsd:annotation>
+         <xsd:documentation>
+           <![CDATA[
+           An aspect
+           ]]>
+         </xsd:documentation>
+      </xsd:annotation>
+      <xsd:complexContent>
+         <xsd:extension base="aspectType">
+            <xsd:attribute name="classes" type="xsd:string" use="required"/>
+         </xsd:extension>
+      </xsd:complexContent>
+   </xsd:complexType>
+   
 </xsd:schema>

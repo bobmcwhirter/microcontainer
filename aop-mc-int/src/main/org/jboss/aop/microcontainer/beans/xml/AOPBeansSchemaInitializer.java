@@ -25,6 +25,7 @@ import javax.xml.namespace.NamespaceContext;
 import javax.xml.namespace.QName;
 
 import org.jboss.aop.microcontainer.beans.AspectBeanMetaDataFactory;
+import org.jboss.aop.microcontainer.beans.LifecycleBeanMetaDataFactory;
 import org.jboss.kernel.plugins.deployment.xml.BeanFactoryHandler;
 import org.jboss.kernel.plugins.deployment.xml.BeanSchemaBinding20;
 import org.jboss.kernel.plugins.deployment.xml.BeanSchemaBindingHelper;
@@ -47,6 +48,9 @@ public class AOPBeansSchemaInitializer implements SchemaBindingInitializer
 
    /** The aspect binding */
    private static final QName aspectTypeQName = new QName(AOP_BEANS_NS, "aspectType");
+   
+   /** The lifecycle aspect binding */
+   private static final QName lifecycleTypeQName = new QName(AOP_BEANS_NS, "lifecycleType");
    
    public SchemaBinding init(SchemaBinding schema)
    {
@@ -78,6 +82,36 @@ public class AOPBeansSchemaInitializer implements SchemaBindingInitializer
          }
       });
 
+      //lifecycle binding
+      TypeBinding lifecycleType = schema.getType(lifecycleTypeQName);
+      BeanSchemaBindingHelper.initBeanFactoryHandlers(lifecycleType);
+      lifecycleType.setHandler(new BeanFactoryHandler()
+      {
+         public Object startElement(Object parent, QName name, ElementBinding element)
+         {
+            return new LifecycleBeanMetaDataFactory();
+         }
+
+         public void attributes(Object o, QName elementName, ElementBinding element, Attributes attrs, NamespaceContext nsCtx)
+         {
+            super.attributes(o, elementName, element, attrs, nsCtx);
+
+            LifecycleBeanMetaDataFactory factory = (LifecycleBeanMetaDataFactory) o;
+            for (int i = 0; i < attrs.getLength(); ++i)
+            {
+               String localName = attrs.getLocalName(i);
+               if ("pointcut".equals(localName))
+                  factory.setPointcut(attrs.getValue(i));
+               else if ("manager-bean".equals(localName))
+                  factory.setManagerBean(attrs.getValue(i));
+               else if ("manager-property".equals(localName))
+                  factory.setManagerProperty(attrs.getValue(i));
+               else if ("classes".equals(localName))
+                  factory.setClasses(attrs.getValue(i));
+            }
+         }
+      });
+      
       // TODO FIXME???
       BeanSchemaBinding20.initArtifacts(schema);
       
