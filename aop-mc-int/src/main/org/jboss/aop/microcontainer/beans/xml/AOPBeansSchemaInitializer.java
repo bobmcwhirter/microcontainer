@@ -70,6 +70,10 @@ public class AOPBeansSchemaInitializer implements SchemaBindingInitializer
                String localName = attrs.getLocalName(i);
                if ("pointcut".equals(localName))
                   factory.setPointcut(attrs.getValue(i));
+               else if ("manager-bean".equals(localName))
+                  factory.setManagerBean(attrs.getValue(i));
+               else if ("manager-property".equals(localName))
+                  factory.setManagerProperty(attrs.getValue(i));
             }
          }
       });

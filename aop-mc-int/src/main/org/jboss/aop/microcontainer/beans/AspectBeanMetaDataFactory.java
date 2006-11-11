@@ -25,7 +25,6 @@ import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
 
-import org.jboss.aop.AspectManager;
 import org.jboss.beans.metadata.plugins.AbstractBeanMetaData;
 import org.jboss.beans.metadata.plugins.AbstractDependencyValueMetaData;
 import org.jboss.beans.metadata.plugins.AbstractInstallMetaData;
@@ -47,8 +46,17 @@ import org.jboss.beans.metadata.spi.ParameterMetaData;
  */
 public class AspectBeanMetaDataFactory extends GenericBeanFactoryMetaData implements BeanMetaDataFactory
 {
+   /** Unless specified use the bean with this name as the aspect manager */
+   final static String DEFAULT_ASPECT_MANAGER = "AspectManager";
+   
    /** The pointcut */
    private String pointcut;
+   
+   /** The bean name of the aspect manager to use */
+   private String managerBean = DEFAULT_ASPECT_MANAGER;
+   
+   /** The property of the aspect manager bean, if any, containing the aspect manager */
+   private String managerProperty;
    
    /**
     * Get the pointcut.
@@ -70,22 +78,39 @@ public class AspectBeanMetaDataFactory extends GenericBeanFactoryMetaData implem
       this.pointcut = pointcut;
    }
 
+
+   public String getManager()
+   {
+      return managerBean;
+   }
+
+   public void setManagerBean(String managerBean)
+   {
+      this.managerBean = managerBean;
+   }
+
+   public String getManagerProperty()
+   {
+      return managerProperty;
+   }
+
+   public void setManagerProperty(String aspectManagerProperty)
+   {
+      this.managerProperty = aspectManagerProperty;
+   }   
+   
    public List<BeanMetaData> getBeans()
    {
       ArrayList<BeanMetaData> result = new ArrayList<BeanMetaData>();
 
-      // TODO [JBAOP-271] Hardcoded aspect manager in AspectBeanMetaDataFactory
-      AspectManager aspectManager = AspectManager.instance();
 
       result.add(this);
-      
-      boolean b = hasInjectedBeans();
       
       String aspectName = name + "$Aspect";
       AbstractBeanMetaData aspect = new AbstractBeanMetaData();
       aspect.setName(aspectName);
       aspect.setBean("org.jboss.aop.microcontainer.beans.Aspect");
-      aspect.addProperty(new AbstractPropertyMetaData("manager", aspectManager));
+      aspect.addProperty(new AbstractPropertyMetaData("manager", new AbstractDependencyValueMetaData(managerBean, managerProperty)));
       result.add(aspect);
       
       String aspectBindingName = name + "$AspectBinding";
@@ -94,7 +119,7 @@ public class AspectBeanMetaDataFactory extends GenericBeanFactoryMetaData implem
       aspectBinding.setBean("org.jboss.aop.microcontainer.beans.AspectBinding");
       aspectBinding.addProperty(new AbstractPropertyMetaData("pointcut", pointcut));
       aspectBinding.addProperty(new AbstractPropertyMetaData("aspect", new AbstractDependencyValueMetaData(aspectName, "definition")));
-      aspectBinding.addProperty(new AbstractPropertyMetaData("manager", aspectManager));
+      aspectBinding.addProperty(new AbstractPropertyMetaData("manager", new AbstractDependencyValueMetaData(managerBean, managerProperty)));
       result.add(aspectBinding);
       
       if (hasInjectedBeans())
@@ -185,4 +210,5 @@ public class AspectBeanMetaDataFactory extends GenericBeanFactoryMetaData implem
          }
       }
    }
+
 }
