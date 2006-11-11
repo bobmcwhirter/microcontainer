@@ -34,7 +34,7 @@ public class IntroductionDependencyTestCase extends AOPMicrocontainerTest
 {
    public static Test suite()
    {
-      return suite(InterceptorWithDependencyTestCase.class);
+      return suite(IntroductionDependencyTestCase.class);
    }
    
    public IntroductionDependencyTestCase(String name)

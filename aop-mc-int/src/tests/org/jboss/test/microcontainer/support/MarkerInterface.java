@@ -26,7 +26,7 @@ package org.jboss.test.microcontainer.support;
  * @author <a href="kabir.khan@jboss.com">Kabir Khan</a>
  * @version $Revision$
  */
-public class MarkerInterface
+public interface MarkerInterface
 {
 
 }
