@@ -52,11 +52,12 @@ public interface DeploymentUnit extends Attachments
     * Get the simple vfs name of the deployment unit. This is the simple
     * name of the virtual file .
     * 
-    * vfs path ------------------- relative path
+    * vfs path ------------------- simple name
     * deploy/some.ear              "some.ear"
     * deploy/some.ear/x.ejb        "x.ejb"
     * deploy/some.ear/y.sar        "y.sar"
     * deploy/some.ear/y.sar/z.rar  "z.rar"
+    * deploy/complexwithappxml.ear/module-mbean1.sar/submbean.sar submbean.sar
     * @return the deployment unit simple path
     */
    public String getSimpleName();
@@ -70,6 +71,7 @@ public interface DeploymentUnit extends Attachments
     * deploy/some.ear/x.ejb        "/x.ejb"
     * deploy/some.ear/y.sar        "/y.sar"
     * deploy/some.ear/y.sar/z.rar  "/y.sar/z.rar"
+    * deploy/complexwithappxml.ear/module-mbean1.sar/submbean.sar /module-mbean1.sar/submbean.sar
     * 
     * @return the top-level deployment relative path
     */
