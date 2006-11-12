@@ -21,6 +21,8 @@
 */
 package org.jboss.deployers.plugins.attachments;
 
+import java.io.Serializable;
+
 import org.jboss.deployers.spi.attachments.Attachments;
 
 /**
@@ -29,8 +31,11 @@ import org.jboss.deployers.spi.attachments.Attachments;
  * @author <a href="adrian@jboss.com">Adrian Brock</a>
  * @version $Revision: 1.1 $
  */
-public abstract class AbstractAttachments implements Attachments
+public abstract class AbstractAttachments
+   implements Attachments, Serializable
 {
+   private static final long serialVersionUID = 1;
+
    public <T> T addAttachment(String name, T attachment, Class<T> expectedType)
    {
       if (expectedType == null)

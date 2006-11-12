@@ -22,6 +22,7 @@
 package org.jboss.deployers.plugins.structure;
 
 import java.io.IOException;
+import java.io.Serializable;
 import java.net.URI;
 import java.util.Collections;
 import java.util.List;
@@ -47,8 +48,11 @@ import org.jboss.virtual.VirtualFile;
  * @author <a href="adrian@jboss.com">Adrian Brock</a>
  * @version $Revision: 1.1 $
  */
-public class AbstractDeploymentContext implements DeploymentContext
+public class AbstractDeploymentContext
+   implements DeploymentContext, Serializable
 {
+   private static final long serialVersionUID = 1;
+
    /** The log */
    protected Logger log = Logger.getLogger(getClass());
    
@@ -74,10 +78,10 @@ public class AbstractDeploymentContext implements DeploymentContext
    private List<VirtualFile> classPath;
    
    /** The class loader */
-   private ClassLoader classLoader;
+   private transient ClassLoader classLoader;
 
    /** The class loader factory for this deployment */
-   private ClassLoaderFactory classLoaderFactory;
+   private transient ClassLoaderFactory classLoaderFactory;
    
    /** Whether this is a candidate deployment */
    private boolean candidate;
@@ -98,10 +102,10 @@ public class AbstractDeploymentContext implements DeploymentContext
    private Attachments predeterminedManagedObjects = new AttachmentsImpl();
    
    /** The attachments */
-   private Attachments transientAttachments = new AttachmentsImpl();
+   private transient Attachments transientAttachments = new AttachmentsImpl();
    
    /** The managed objects */
-   private Attachments transientManagedObjects = new AttachmentsImpl();
+   private transient Attachments transientManagedObjects = new AttachmentsImpl();
    
    /** Throwable */
    private Throwable problem;

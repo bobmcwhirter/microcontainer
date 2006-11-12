@@ -21,6 +21,7 @@
 */
 package org.jboss.deployers.plugins.deployer;
 
+import java.io.Serializable;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.HashSet;
@@ -44,10 +45,14 @@ import org.jboss.virtual.VirtualFile;
  * restricts people from "poking" behind the scenes.
  * 
  * @author <a href="adrian@jboss.com">Adrian Brock</a>
+ * @author Scott.Stark@jboss.org
  * @version $Revision: 1.1 $
  */
-public class AbstractDeploymentUnit extends AbstractAttachments implements DeploymentUnit
+public class AbstractDeploymentUnit extends AbstractAttachments
+   implements DeploymentUnit, Serializable
 {
+   private static final long serialVersionUID = 1;
+
    /** The deployment context */
    private DeploymentContext deploymentContext;
    
