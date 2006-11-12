@@ -21,6 +21,7 @@
  */
 package org.jboss.deployers.plugins.structure;
 
+import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -28,13 +29,16 @@ import org.jboss.deployers.spi.structure.vfs.ClassPathInfo;
 import org.jboss.deployers.spi.structure.vfs.ContextInfo;
 
 /**
+ * Represents a deployment context in the vfs.
  * 
  * @author Scott.Stark@jboss.org
  * @version $Revision:$
  */
 public class ContextInfoImpl
-   implements ContextInfo
+   implements ContextInfo, Serializable
 {
+   private static final long serialVersionUID = 1;
+
    private String vfsPath;
    private String metaDataPath;
    private ContextInfo parent;

@@ -21,6 +21,7 @@
 */
 package org.jboss.deployers.plugins.structure;
 
+import java.io.Serializable;
 import java.util.Collections;
 import java.util.List;
 import java.util.Set;
@@ -44,8 +45,11 @@ import org.jboss.virtual.VirtualFile;
  * @author <a href="adrian@jboss.com">Adrian Brock</a>
  * @version $Revision: 1.1 $
  */
-public class ComponentDeploymentContext implements DeploymentContext
+public class ComponentDeploymentContext
+   implements DeploymentContext, Serializable
 {
+   private static final long serialVersionUID = 1;
+
    /** The log */
    protected Logger log = Logger.getLogger(getClass());
    
@@ -62,10 +66,10 @@ public class ComponentDeploymentContext implements DeploymentContext
    private Set<DeploymentContext> components = new CopyOnWriteArraySet<DeploymentContext>();
    
    /** The attachments */
-   private Attachments transientAttachments = new AttachmentsImpl();
+   private transient Attachments transientAttachments = new AttachmentsImpl();
    
    /** The managed objects */
-   private Attachments transientManagedObjects = new AttachmentsImpl();
+   private transient Attachments transientManagedObjects = new AttachmentsImpl();
 
    /**
     * Create a new ComponentDeploymentContext.

@@ -21,6 +21,7 @@
  */
 package org.jboss.deployers.plugins.structure;
 
+import java.io.Serializable;
 import java.util.Comparator;
 import java.util.HashMap;
 import java.util.SortedSet;
@@ -35,8 +36,11 @@ import org.jboss.deployers.spi.structure.vfs.StructureMetaData;
  * @author Scott.Stark@jboss.org
  * @version $Revision:$
  */
-public class StructureMetaDataImpl implements StructureMetaData
+public class StructureMetaDataImpl
+   implements StructureMetaData, Serializable
 {
+   private static final long serialVersionUID = 1;
+
    private HashMap<String, ContextInfo> contextMap =
       new HashMap<String, ContextInfo>();
    private TreeSet<ContextInfo> contextSet = new  TreeSet<ContextInfo>(new ContextComparator());

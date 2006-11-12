@@ -21,6 +21,7 @@
  */
 package org.jboss.deployers.plugins.structure;
 
+import java.io.Serializable;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -33,8 +34,11 @@ import org.jboss.deployers.spi.structure.vfs.ClassPathInfo;
  * @author Scott.Stark@jboss.org
  * @version $Revision:$
  */
-public class ClassPathInfoImpl implements ClassPathInfo
+public class ClassPathInfoImpl
+   implements ClassPathInfo, Serializable
 {
+   private static final long serialVersionUID = 1;
+
    private String path;
    private HashMap options = new HashMap();
 
