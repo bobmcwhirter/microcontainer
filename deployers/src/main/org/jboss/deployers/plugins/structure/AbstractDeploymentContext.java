@@ -229,6 +229,45 @@ public class AbstractDeploymentContext
       return name;
    }
 
+   /**
+    * Get the simple vfs name of the deployment unit. This is the simple
+    * name of the virtual file .
+    * 
+    * vfs path ------------------- relative path
+    * deploy/some.ear              "some.ear"
+    * deploy/some.ear/x.ejb        "x.ejb"
+    * deploy/some.ear/y.sar        "y.sar"
+    * deploy/some.ear/y.sar/z.rar  "z.rar"
+    * @return the deployment unit simple path
+    */
+   public String getSimpleName()
+   {
+      VirtualFile unitVF = getRoot();
+      return unitVF.getName();
+   }
+
+   /**
+    * Get the path of this deployment relative to the top of the
+    * deployment based on the vfs paths.
+    * 
+    * @return the top-level deployment relative path
+    */
+   public String getRelativePath()
+   {
+      VirtualFile unitVF = getRoot();
+      VirtualFile topVF = unitVF;
+      DeploymentContext ctx = getParent();
+      while( ctx != null )
+      {
+         topVF = ctx.getRoot();
+         ctx = ctx.getParent();
+      }
+      String unitPath = unitVF.getPathName();
+      String topPath = topVF.getPathName();
+      String relativePath = unitPath.substring(topPath.length());
+      return relativePath;
+   }
+
    public StructureDetermined getStructureDetermined()
    {
       return structureDetermined;

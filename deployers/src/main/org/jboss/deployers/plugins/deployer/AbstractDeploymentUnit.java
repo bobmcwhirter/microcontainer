@@ -73,6 +73,22 @@ public class AbstractDeploymentUnit extends AbstractAttachments
       return deploymentContext.getName();
    }
    
+   public String getSimpleName()
+   {
+      return deploymentContext.getSimpleName();
+   }
+
+   /**
+    * Get the path of this deployment relative to the top of the
+    * deployment based on the vfs paths.
+    * 
+    * @return the top-level deployment relative path
+    */
+   public String getRelativePath()
+   {
+      return deploymentContext.getRelativePath();
+   }
+
    public ClassLoader getClassLoader()
    {
       ClassLoader cl = deploymentContext.getClassLoader();

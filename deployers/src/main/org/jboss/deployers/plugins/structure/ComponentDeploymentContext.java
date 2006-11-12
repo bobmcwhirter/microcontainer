@@ -93,6 +93,15 @@ public class ComponentDeploymentContext
       return name;
    }
 
+   public String getSimpleName()
+   {
+      return parent.getSimpleName();
+   }
+   public String getRelativePath()
+   {
+      return parent.getRelativePath();
+   }
+
    public StructureDetermined getStructureDetermined()
    {
       return parent.getStructureDetermined();

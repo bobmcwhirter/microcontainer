@@ -46,6 +46,33 @@ public interface DeploymentContext
    String getName();
 
    /**
+    * Get the simple vfs name of the deployment unit. This is the simple
+    * name of the virtual file .
+    * 
+    * vfs path ------------------- relative path
+    * deploy/some.ear              "some.ear"
+    * deploy/some.ear/x.ejb        "x.ejb"
+    * deploy/some.ear/y.sar        "y.sar"
+    * deploy/some.ear/y.sar/z.rar  "z.rar"
+    * @return the deployment unit simple path
+    */
+   public String getSimpleName();
+
+   /**
+    * Get the path of this deployment relative to the top of the
+    * deployment based on the vfs paths. For example, an ear:
+    * 
+    * vfs path ------------------- relative path
+    * deploy/some.ear              ""
+    * deploy/some.ear/x.ejb        "/x.ejb"
+    * deploy/some.ear/y.sar        "/y.sar"
+    * deploy/some.ear/y.sar/z.rar  "/y.sar/z.rar"
+    * 
+    * @return the top-level deployment relative path
+    */
+   public String getRelativePath();
+
+   /**
     * Whether the structure is determined
     * 
     * @return true when the structure is determined

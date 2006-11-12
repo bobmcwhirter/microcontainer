@@ -146,6 +146,37 @@ public class EARStructureUnitTestCase extends BaseDeployersTest
       Set<DeploymentContext> children = ear.getChildren();
       Set<String> childPaths = super.createDeploymentPathSet(children, rootURL);
       assertEquals("ear child count", expected, childPaths);
+
+      // Check the deployment relative path names
+      Map<String, DeploymentContext> ctxMap = createDeploymentPathMap(ear);
+      String earPath = ear.getRelativePath();
+      assertEquals("ear relative path is ''", "", earPath);
+      assertEquals("ear simple name is simplewithappxml.ear", "simplewithappxml.ear", ear.getSimpleName());
+      log.debug("ctxMap: "+ctxMap);
+      DeploymentContext ms = ctxMap.get("simplewithappxml.ear/module-service.xml");
+      assertEquals("module-service.xml", "/module-service.xml", ms.getRelativePath());
+      assertEquals("module-service.xml", "module-service.xml", ms.getSimpleName());
+      DeploymentContext ejb1 = ctxMap.get("simplewithappxml.ear/module-bean1ejb.jar");
+      assertEquals("module-bean1ejb.jar", "/module-bean1ejb.jar", ejb1.getRelativePath());
+      assertEquals("module-bean1ejb.jar", "module-bean1ejb.jar", ejb1.getSimpleName());
+      DeploymentContext ejb2 = ctxMap.get("simplewithappxml.ear/module-bean2.ejb3");
+      assertEquals("module-bean2.ejb3", "/module-bean2.ejb3", ejb2.getRelativePath());
+      assertEquals("module-bean2.ejb3", "module-bean2.ejb3", ejb2.getSimpleName());
+      DeploymentContext client1 = ctxMap.get("simplewithappxml.ear/module-client1.jar");
+      assertEquals("module-client1.jar", "/module-client1.jar", client1.getRelativePath());
+      assertEquals("module-client1.jar", "module-client1.jar", client1.getSimpleName());
+      DeploymentContext sar1 = ctxMap.get("simplewithappxml.ear/module-mbean1.sar");
+      assertEquals("module-mbean1.sar", "/module-mbean1.sar", sar1.getRelativePath());
+      assertEquals("module-mbean1.sar", "module-mbean1.sar", sar1.getSimpleName());
+      DeploymentContext mc1 = ctxMap.get("simplewithappxml.ear/module-mcf1-ds.xml");
+      assertEquals("module-mcf1-ds.xml", "/module-mcf1-ds.xml", mc1.getRelativePath());
+      assertEquals("module-mcf1-ds.xml", "module-mcf1-ds.xml", mc1.getSimpleName());
+      DeploymentContext rar1 = ctxMap.get("simplewithappxml.ear/module-mcf1.rar");
+      assertEquals("module-mcf1.rar", "/module-mcf1.rar", rar1.getRelativePath());
+      assertEquals("module-mcf1.rar", "module-mcf1.rar", rar1.getSimpleName());
+      DeploymentContext web1 = ctxMap.get("simplewithappxml.ear/module-web1.war");
+      assertEquals("module-web1.war", "/module-web1.war", web1.getRelativePath());
+      assertEquals("module-web1.war", "module-web1.war", web1.getSimpleName());
    }
 
    /**
@@ -181,9 +212,14 @@ public class EARStructureUnitTestCase extends BaseDeployersTest
       DeploymentContext extensionsAop = pathMap.get("complexwithappxml.ear/module-mbean1.sar/extensions.aop");
       assertNotNull("complexwithappxml.ear/module-mbean1.sar/extensions.aop/", extensionsAop);
       DeploymentContext submbean1 = pathMap.get("complexwithappxml.ear/module-mbean1.sar/submbean.sar");
+      assertEquals("submbean.sar", "/module-mbean1.sar/submbean.sar", submbean1.getRelativePath());
+      assertEquals("submbean.sar", "submbean.sar", submbean1.getSimpleName());
       assertNotNull("complexwithappxml.ear/submbean.sar", submbean1);
       DeploymentContext submbean2 = pathMap.get("complexwithappxml.ear/module-mbean1.sar/submbean2-service.xml");
       assertNotNull("complexwithappxml.ear/submbean2-service.xml", submbean2);
+      assertEquals("submbean2-service.xml", "/module-mbean1.sar/submbean2-service.xml", submbean2.getRelativePath());
+      assertEquals("submbean2-service.xml", "submbean2-service.xml", submbean2.getSimpleName());
+
    }
    
 }
