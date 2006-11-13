@@ -44,9 +44,16 @@ public abstract class AbstractClassLoaderDeployer extends AbstractSimpleDeployer
       super.setRelativeOrder(CLASSLOADER_DEPLOYER);
    }
 
+   /**
+    * Look for an attachment of type ClassLoaderFactory, and if its not
+    * found, use this as the factory.
+    */
    public void deploy(DeploymentUnit unit) throws DeploymentException
    {
-      unit.createClassLoader(this);
+      ClassLoaderFactory factory = unit.getAttachment(ClassLoaderFactory.class);
+      if( factory == null )
+         factory = this;
+      unit.createClassLoader(factory);
    }
 
    public void undeploy(DeploymentUnit unit)
