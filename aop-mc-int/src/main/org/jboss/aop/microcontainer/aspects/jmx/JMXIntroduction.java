@@ -63,13 +63,19 @@ public class JMXIntroduction implements Interceptor
 
       JMX jmx = (JMX)invocation.resolveClassAnnotation(JMX.class);
       
-      String name = (String) context.getName();
-      ObjectName objectName = new ObjectName("test:name='" + name + "'");
+      ObjectName objectName = null;
       if (jmx != null)
       {
          String jmxName = jmx.name();
          if (jmxName != null && jmxName.length() > 0)
             objectName = new ObjectName(jmxName);
+      }
+      
+      if (objectName == null)
+      {
+         // try to build one from the bean name
+         String name = (String) context.getName();
+         objectName = new ObjectName("test:name='" + name + "'");
       }
       
       if (server == null)
