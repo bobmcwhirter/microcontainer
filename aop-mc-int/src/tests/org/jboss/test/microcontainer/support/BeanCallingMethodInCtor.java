@@ -36,11 +36,11 @@ public class BeanCallingMethodInCtor
    
    public void publicMethod()
    {
-      
+      System.out.println("public");
    }
    
    private void privateMethod()
    {
-      
+      System.out.println("private");
    }
 }

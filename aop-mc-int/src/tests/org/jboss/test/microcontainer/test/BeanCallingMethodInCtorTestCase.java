@@ -36,7 +36,7 @@ public class BeanCallingMethodInCtorTestCase extends AOPMicrocontainerTest
 {
    public static Test suite()
    {
-      return suite(InterceptedTestCase.class);
+      return suite(BeanCallingMethodInCtorTestCase.class);
    }
    
    public BeanCallingMethodInCtorTestCase(String name)
