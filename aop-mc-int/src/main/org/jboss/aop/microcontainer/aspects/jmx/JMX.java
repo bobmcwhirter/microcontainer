@@ -30,12 +30,37 @@ import java.lang.annotation.Target;
  * A temporary home for this annotation interface
  * 
  * @author <a href="kabir.khan@jboss.com">Kabir Khan</a>
+ * @author Brian Stansberry
+ * 
  * @version $Revision$
  */
 @Retention(RetentionPolicy.RUNTIME)
 @Target(ElementType.TYPE)
 public @interface JMX 
 {
+   /**
+    * The mbean interface the annotated object should expose. Ignored if 
+    * {@link #registerDirectly()} is <code>true</code>. 
+    * 
+    * @return the mbean interface
+    */
    Class exposedInterface();
+   
+   /**
+    * String form of the ObjectName for the mbean.
+    * 
+    * @return the object name
+    */
    String name() default "";
+   
+   /**
+    * Should the annotated object itself be directly registered with
+    * the MBeanServer, or should a <code>javax.management.StandardMBean</code>
+    * be created using the object and the 
+    * {@link #exposedInterface() exposed interface}?
+    * 
+    * @return  <code>true</code> if the object should be registered directly,
+    *          <code>false</code> if a StandardMBean should be created.
+    */
+   boolean registerDirectly() default false;
 }

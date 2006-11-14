@@ -22,6 +22,7 @@
 package org.jboss.aop.microcontainer.aspects.jmx;
 
 import javax.management.MBeanServer;
+import javax.management.NotCompliantMBeanException;
 import javax.management.ObjectName;
 import javax.management.StandardMBean;
 
@@ -86,11 +87,14 @@ public class JMXIntroduction implements Interceptor
       if ("setKernelControllerContext".equals(mi.getMethod().getName()))
       {
          Class intfClass = null;
+         boolean registerDirectly = false;
          if (jmx != null)
          {
             intfClass = jmx.exposedInterface();
+            registerDirectly = jmx.registerDirectly();
          }
-         StandardMBean mbean = new StandardMBean(context.getTarget(), intfClass);
+         Object mbean = (registerDirectly ? context.getTarget() 
+                                          : new StandardMBean(context.getTarget(), intfClass));
          server.registerMBean(mbean, objectName);
          log.info("Registered MBean " + objectName);
       }
