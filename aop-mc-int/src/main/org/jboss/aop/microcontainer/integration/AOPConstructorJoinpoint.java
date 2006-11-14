@@ -50,6 +50,7 @@ public class AOPConstructorJoinpoint extends BasicConstructorJoinPoint
    AOPProxyFactory proxyFactory = new GeneratedAOPProxyFactory();
 
    MetaDataContext metaDataContext;
+   
    /**
     * Create a new AOPConstructorJoinpoint.
     *
@@ -70,9 +71,8 @@ public class AOPConstructorJoinpoint extends BasicConstructorJoinPoint
          return super.dispatch();
       }
       ContainerCache cache = ContainerCache.initialise(manager, clazz, metaDataContext);
-      Object target = createTarget(cache);
-
       AOPProxyFactoryParameters params = new AOPProxyFactoryParameters();
+      Object target = createTarget(cache, params);
 
       params.setProxiedClass(target.getClass());
       params.setMetaDataContext(metaDataContext);
@@ -82,12 +82,13 @@ public class AOPConstructorJoinpoint extends BasicConstructorJoinPoint
       return proxyFactory.createAdvisedProxy(params);
    }
 
-   private Object createTarget(ContainerCache cache) throws Throwable
+   private Object createTarget(ContainerCache cache, AOPProxyFactoryParameters params) throws Throwable
    {
       Advisor advisor = cache.getAdvisor();
       if (advisor != null)
       {
          org.jboss.aop.ConstructorInfo aopinfo = findAopConstructorInfo(advisor);
+         
          Interceptor[] interceptors = (aopinfo != null) ? aopinfo.getInterceptors() : null;
 
          if (interceptors != null)
@@ -96,6 +97,30 @@ public class AOPConstructorJoinpoint extends BasicConstructorJoinPoint
             inv.setArguments(getArguments());
             return inv.invokeNext();
          }
+         
+         if (getConstructorInfo().getParameterTypes().length > 0)
+         {
+            Constructor constructor = null;
+            if (aopinfo == null)
+            {
+               //Fall back to using the class;
+               Class clazz = advisor.getClazz();
+               Constructor[] ctors = clazz.getConstructors();
+               for (Constructor ctor : ctors)
+               {
+                  if (matchConstructor(ctor))
+                  {
+                     constructor = ctor;
+                     break;
+                  }
+               }
+            }
+            else
+            {
+               constructor = aopinfo.getConstructor();
+            }
+            params.setCtor(constructor.getParameterTypes(), getArguments());
+         }
       }
 
       return super.dispatch();
@@ -103,31 +128,39 @@ public class AOPConstructorJoinpoint extends BasicConstructorJoinPoint
 
    private org.jboss.aop.ConstructorInfo findAopConstructorInfo(Advisor advisor)
    {
-      TypeInfo[] params = constructorInfo.getParameterTypes();
       org.jboss.aop.ConstructorInfo[] infos = advisor.getConstructorInfos();
       for (int i = 0 ; i < infos.length ; i++)
       {
-         Constructor ctor = infos[i].getConstructor();
-         Class[] ctorParams = ctor.getParameterTypes();
-         if (params.length == ctorParams.length)
+         if (matchConstructor(infos[i].getConstructor()))
          {
-            boolean match = true;
-            for (int p = 0 ; p < params.length ; p++)
-            {
-               if (!params[p].getName().equals(ctorParams[p].getName()))
-               {
-                  match = false;
-                  break;
-               }
-            }
-
-            if (match)
-            {
-               return infos[i];
-            }
+            return infos[i];
          }
       }
       return null;
+   }
+   
+   private boolean matchConstructor(Constructor ctor)
+   {
+      TypeInfo[] params = constructorInfo.getParameterTypes();
+      Class[] ctorParams = ctor.getParameterTypes();
+      if (params.length == ctorParams.length)
+      {
+         boolean match = true;
+         for (int p = 0 ; p < params.length ; p++)
+         {
+            if (!params[p].getName().equals(ctorParams[p].getName()))
+            {
+               match = false;
+               break;
+            }
+         }
+
+         if (match)
+         {
+            return true;
+         }
+      }
+      return false;
    }
 
 }

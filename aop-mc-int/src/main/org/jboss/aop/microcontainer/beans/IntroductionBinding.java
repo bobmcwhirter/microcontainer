@@ -43,6 +43,16 @@ public class IntroductionBinding
    
    protected List<String> interfaces;
 
+   public String getName()
+   {
+      return name;
+   }
+
+   public void setName(String name)
+   {
+      this.name = name;
+   }
+
    /**
     * Get the classes.
     * 

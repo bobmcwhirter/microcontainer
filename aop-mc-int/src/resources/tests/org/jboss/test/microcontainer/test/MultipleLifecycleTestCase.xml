@@ -1,0 +1,33 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<deployment xmlns="urn:jboss:bean-deployer:2.0">
+
+   <bean name="MBeanServer" class="java.lang.Object">
+      <constructor factoryClass="javax.management.MBeanServerFactory" factoryMethod="createMBeanServer"/>
+   </bean>
+
+   <bean name="Repository" class="org.jboss.metadata.plugins.repository.basic.BasicMetaDataRepository"/>
+
+   <bean name="AspectManager" class="org.jboss.aop.AspectManager">
+      <constructor factoryClass="org.jboss.aop.AspectManager" factoryMethod="instance"/>
+   </bean>
+
+   <aop:lifecycle xmlns:aop="urn:jboss:aop-beans:1.0"
+               name="JMXAdvice"
+               class="org.jboss.aop.microcontainer.aspects.jmx.JMXIntroduction"
+               classes="@org.jboss.aop.microcontainer.aspects.jmx.JMX"
+               pointcut="execution(* @org.jboss.aop.microcontainer.aspects.jmx.JMX->$implements{org.jboss.kernel.spi.dependency.KernelControllerContextAware}(..))">
+      <property name="mbeanServer"><inject bean="MBeanServer"/></property>
+   </aop:lifecycle>
+
+   <aop:lifecycle xmlns:aop="urn:jboss:aop-beans:1.0"
+               name="JndiAdvice"
+               class="org.jboss.test.microcontainer.support.CalledInterceptor"
+               classes="org.jboss.test.microcontainer.support.SimpleBeanImpl"
+               pointcut="execution(* org.jboss.test.microcontainer.support.SimpleBeanImpl->$implements{org.jboss.kernel.spi.dependency.KernelControllerContextAware}(..))">
+   </aop:lifecycle>
+
+   <bean name="Bean" class="org.jboss.test.microcontainer.support.SimpleBeanImpl">
+      <annotation>@org.jboss.aop.microcontainer.aspects.jmx.JMX(name="", exposedInterface=org.jboss.test.microcontainer.support.SimpleBean.class)</annotation>
+   </bean>
+</deployment>
