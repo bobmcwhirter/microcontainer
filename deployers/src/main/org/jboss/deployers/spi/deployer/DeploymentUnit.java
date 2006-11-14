@@ -37,6 +37,7 @@ import org.jboss.virtual.VirtualFile;
  * that deployers work with.
  * 
  * @author <a href="adrian@jboss.com">Adrian Brock</a>
+ * @author Scott.Stark@jboss.org
  * @version $Revision: 1.1 $
  */
 public interface DeploymentUnit extends Attachments
@@ -78,7 +79,8 @@ public interface DeploymentUnit extends Attachments
    public String getRelativePath();
 
    /**
-    * Gets a metadata file
+    * Gets a metadata file. This is a file located under the deployment metadata
+    * context(s).
     * 
     * @param name the name to exactly match
     * @return the virtual file or null if not found
@@ -95,7 +97,16 @@ public interface DeploymentUnit extends Attachments
     * @throws IllegalArgumentException if both the name and suffix are null
     */
    List<VirtualFile> getMetaDataFiles(String name, String suffix);
-   
+
+   /**
+    * Get a file in the deployment. To get the deployment root use "" as the file
+    * name.
+    * 
+    * @param name - the path name of the file relative to the deployment root.
+    * @return the file if found, null otherwise.
+    */
+   VirtualFile getFile(String name);
+
    /**
     * Gets the classloader for this deployment unit
     * 

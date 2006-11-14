@@ -36,6 +36,7 @@ import org.jboss.deployers.spi.attachments.Attachments;
 import org.jboss.deployers.spi.classloader.ClassLoaderFactory;
 import org.jboss.deployers.spi.deployer.DeploymentUnit;
 import org.jboss.deployers.spi.structure.DeploymentContext;
+import org.jboss.logging.Logger;
 import org.jboss.virtual.VirtualFile;
 
 /**
@@ -51,6 +52,7 @@ import org.jboss.virtual.VirtualFile;
 public class AbstractDeploymentUnit extends AbstractAttachments
    implements DeploymentUnit, Serializable
 {
+   private static final Logger log = Logger.getLogger(AbstractDeploymentUnit.class);
    private static final long serialVersionUID = 1;
 
    /** The deployment context */
@@ -87,6 +89,27 @@ public class AbstractDeploymentUnit extends AbstractAttachments
    public String getRelativePath()
    {
       return deploymentContext.getRelativePath();
+   }
+
+   /**
+    * Find a child of the deployment root.
+    * @param name - relative path of the file to find
+    * @return the file if found, null otherwise.
+    */
+   public VirtualFile getFile(String name)
+   {
+      VirtualFile root = deploymentContext.getRoot();
+      VirtualFile file = null;
+      try
+      {
+         file = root.findChild(name);
+      }
+      catch(Exception e)
+      {
+         if( log.isTraceEnabled() )
+            log.trace("Failed to find: "+name, e);
+      }
+      return file;
    }
 
    public ClassLoader getClassLoader()

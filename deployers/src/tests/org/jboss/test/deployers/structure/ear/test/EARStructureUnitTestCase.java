@@ -30,10 +30,12 @@ import java.util.Set;
 import junit.framework.Test;
 import junit.framework.TestSuite;
 
+import org.jboss.deployers.plugins.deployer.AbstractDeploymentUnit;
 import org.jboss.deployers.plugins.structure.BasicStructuredDeployers;
 import org.jboss.deployers.plugins.structure.vfs.file.FileStructure;
 import org.jboss.deployers.plugins.structure.vfs.jar.JARStructure;
 import org.jboss.deployers.plugins.structure.vfs.war.WARStructure;
+import org.jboss.deployers.spi.deployer.DeploymentUnit;
 import org.jboss.deployers.spi.structure.DeploymentContext;
 import org.jboss.deployers.spi.structure.vfs.StructureDeployer;
 import org.jboss.deployers.spi.structure.vfs.StructuredDeployers;
@@ -221,5 +223,28 @@ public class EARStructureUnitTestCase extends BaseDeployersTest
       assertEquals("submbean2-service.xml", "submbean2-service.xml", submbean2.getSimpleName());
 
    }
-   
+
+   /**
+    * Basic getMetaDataFile/getFile tests.
+    * 
+    * @throws Exception
+    */
+   public void testComplexWithAppFinds()
+      throws Exception
+   {
+      DeploymentContext ear = assertValidContext("/structure/", "ear/complexwithappxml.ear");
+      AbstractDeploymentUnit earUnit = new AbstractDeploymentUnit(ear);
+
+      // META-INF/application.properties
+      VirtualFile appProps = earUnit.getMetaDataFile("application.properties");
+      assertNotNull("META-INF/application.properties", appProps);
+      VirtualFile xappProps = earUnit.getFile("application.properties");
+      assertNull("application.properties", xappProps);
+
+      // lib/lib0.jar
+      VirtualFile xlib0Jar = earUnit.getMetaDataFile("lib/lib0.jar");
+      assertNull("lib/lib0.jar", xlib0Jar);
+      VirtualFile lib0Jar = earUnit.getFile("lib/lib0.jar");
+      assertNotNull("lib/lib0.jar", lib0Jar);
+   }
 }
