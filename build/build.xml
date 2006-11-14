@@ -153,16 +153,6 @@
        implementation.url
     </property>
 
-    <!-- Install/Release structure -->
-    <property name="install.id" value="${module.name}-${module.version}"/>
-    <property name="release.id" value="${install.id}"/>
-
-    <property name="install.root" value="${module.output}/${install.id}"/>
-    <property name="install.bin" value="${install.root}/bin"/>
-    <property name="install.docs" value="${install.root}/docs"/>
-    <property name="install.etc" value="${install.root}/etc"/>
-    <property name="install.lib" value="${install.root}/lib"/>
-
     <!-- Bits for building source archives -->
     <patternset id="source.ignore">
       <exclude name="**/output/**"/>
@@ -210,40 +200,36 @@
   <!-- ================================================================== -->
 
   <target name="install"
-	  description="Install the structure for a release."
+	  description="Install the jars to the jbossbuild repository."
+  	  depends="most"
      >
-     <mkdir dir="output"/>
+   <fail unless="jbossbuild.repository"
+   		message="The jbossbuild.repository.dir property must be set and point to the local jbossbuild repository root"/>
+   <fail unless="jbossbuild.repository.version"
+   		message="The jbossbuild.repository.version property must be set to the version id (snapshot, 2.0.0.GA, ...)"/>
+  	  <copy todir="${jbossbuild.repository.dir}/jboss/microcontainer/${jbossbuild.repository.version}/lib">  	 
+	  		<fileset dir="../aop-mc-int/output/lib">
+	  			<include name="*.jar" />
+	  			<include name="*-src.zip" />
+	  		</fileset>
+	  		<fileset dir="../container/output/lib">
+	  			<include name="*.jar" />
+	  			<include name="*-src.zip" />
+	  		</fileset>
+	  		<fileset dir="../dependency/output/lib">
+	  			<include name="*.jar" />
+	  			<include name="*-src.zip" />
+	  		</fileset>
+	  		<fileset dir="../deployers/output/lib">
+	  			<include name="*.jar" />
+	  			<include name="*-src.zip" />
+	  		</fileset>
+	  		<fileset dir="../kernel/output/lib">
+	  			<include name="*.jar" />
+	  			<include name="*-src.zip" />
+	  		</fileset>  	 
+  	  	</copy>
   </target>
-
-  <target name="release"
-	  description="Builds the default release structure."
-	  depends="modules-most, install"/>
-
-  <target name="release-zip"
-	  description="Builds a ZIP distribution."
-	  depends="release, _buildmagic:release:zip"/>
-
-  <target name="release-tar"
-	  description="Builds a TAR distribution."
-	  depends="release, _buildmagic:release:tar"/>
-
-  <target name="release-tgz"
-	  description="Builds a TAR-GZ distribution."
-	  depends="release, _buildmagic:release:tgz"/>
-
-  <target name="release-all"
-	  description="Builds a distribution for each archive type."
-	  depends="release-zip, release-tgz"/>
-
-  <!-- ================================================================== -->
-  <!-- Source Archives                                                    -->
-  <!-- ================================================================== -->
-
-  <target name="source-zip"
-	  description="Builds a ZIP source distribution."/>
-
-  <target name="source-tar"
-	  description="Builds a TAR source distribution."/>
 
   <!-- ================================================================== -->
   <!-- Cleaning                                                           -->
@@ -268,7 +254,7 @@
   <target name="main" depends="most"
 	  description="Executes the default target (most)."/>
 
-  <target name="most" depends="createthirdparty, modules-most, install"
+  <target name="most" depends="createthirdparty, modules-most"
 	  description="Executes all modules and builds most everything."/>
 
   <target name="help" depends="_buildmagic:help:build"
