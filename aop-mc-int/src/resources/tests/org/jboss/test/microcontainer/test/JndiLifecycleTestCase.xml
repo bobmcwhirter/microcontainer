@@ -2,10 +2,6 @@
 
 <deployment xmlns="urn:jboss:bean-deployer:2.0">
 
-   <bean name="MBeanServer" class="java.lang.Object">
-      <constructor factoryClass="javax.management.MBeanServerFactory" factoryMethod="createMBeanServer"/>
-   </bean>
-
    <bean name="Repository" class="org.jboss.metadata.plugins.repository.basic.BasicMetaDataRepository"/>
 
    <bean name="AspectManager" class="org.jboss.aop.AspectManager">
