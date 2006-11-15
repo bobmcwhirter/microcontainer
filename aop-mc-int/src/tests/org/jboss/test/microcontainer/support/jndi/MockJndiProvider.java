@@ -21,6 +21,8 @@
  */
 package org.jboss.test.microcontainer.support.jndi;
 
+import java.io.IOException;
+import java.rmi.MarshalledObject;
 import java.util.HashMap;
 import java.util.Hashtable;
 import java.util.concurrent.ConcurrentHashMap;
@@ -58,7 +60,17 @@ public class MockJndiProvider implements Context
    }
    public void bind(String name, Object obj) throws NamingException
    {
-      bindings.put(name, obj);
+      try
+      {
+         MarshalledObject mo = new MarshalledObject(obj);
+         bindings.put(name, mo);
+      }
+      catch(IOException e)
+      {
+         NamingException ex = new NamingException("Failed to bind name: "+name);
+         ex.setRootCause(e);
+         throw ex;
+      }
    }
    public void close() throws NamingException
    {
@@ -139,7 +151,21 @@ public class MockJndiProvider implements Context
    }
    public Object lookup(String name) throws NamingException
    {
-      Object value = bindings.get(name);
+      MarshalledObject mo = (MarshalledObject) bindings.get(name);
+      Object value = null;
+      if( mo != null )
+      {
+         try
+         {
+            value = mo.get();
+         }
+         catch(Exception e)
+         {
+            NamingException ex = new NamingException();
+            ex.setRootCause(e);
+            throw ex;
+         }
+      }
       return value;
    }
    public Object lookupLink(Name name) throws NamingException
