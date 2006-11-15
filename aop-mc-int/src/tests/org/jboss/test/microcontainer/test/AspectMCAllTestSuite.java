@@ -27,7 +27,7 @@ import junit.textui.TestRunner;
 
 /**
  * All Test Suite.
- * 
+ *
  * @author <a href="adrian@jboss.com">Adrian Brock</a>
  * @version $Revision$
  */
@@ -42,12 +42,27 @@ public class AspectMCAllTestSuite extends TestSuite
    {
       TestSuite suite = new TestSuite("All Tests");
 
-      suite.addTest(JMXDecoratedTestCase.suite());
+      suite.addTest(BeanCallingMethodInCtorTestCase.suite());
+      suite.addTest(BeanNoDefaultCtorUsingParamTestCase.suite());
+      suite.addTest(ConstructorInterceptorWithDependencyTestCase.suite());
       suite.addTest(InterceptedTestCase.suite());
-      suite.addTest(MetaDataTestCase.suite());
-      suite.addTest(InterceptorWithDependencyTestCase.suite());
+      suite.addTest(InterceptedUseCaseXmlTestCase.suite());
       suite.addTest(InterceptorWithAnnotationDependencyTestCase.suite());
-      
+      suite.addTest(InterceptorWithDependencyTestCase.suite());
+      suite.addTest(InterceptorWithNestedAnnotationDependencyTestCase.suite());
+      suite.addTest(InterceptorWithNestedMethodAnnotationDependencyTestCase.suite());
+      suite.addTest(InterceptorWithOverriddenClassAnnotationDependencyTestCase.suite());
+      suite.addTest(InterceptorWithOverriddenMethodAnnotationDependencyForChildTestCase.suite());
+      suite.addTest(InterceptorWithOverriddenMethodAnnotationDependencyTestCase.suite());
+      suite.addTest(IntroductionDependencyTestCase.suite());
+      suite.addTest(JMXDecoratedTestCase.suite());
+      suite.addTest(JMXLifecycleTestCase.suite());
+      suite.addTest(JndiDecoratedTestCase.suite());
+      suite.addTest(JndiLifeCycleTestCase.suite());
+      suite.addTest(MetaDataTestCase.suite());
+      suite.addTest(MixinTestCase.suite());
+      suite.addTest(MultipleLifecycleTestCase.suite());
+
       return suite;
    }
 }
