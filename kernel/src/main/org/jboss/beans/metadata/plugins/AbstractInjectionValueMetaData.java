@@ -25,9 +25,9 @@ import org.jboss.beans.metadata.spi.MetaDataVisitor;
 import org.jboss.beans.metadata.spi.MetaDataVisitorNode;
 import org.jboss.dependency.spi.ControllerContext;
 import org.jboss.dependency.spi.DependencyItem;
+import org.jboss.kernel.plugins.dependency.ClassContextDependencyItem;
 import org.jboss.kernel.spi.dependency.KernelController;
 import org.jboss.kernel.spi.dependency.KernelControllerContext;
-import org.jboss.kernel.plugins.dependency.ClassContextDependencyItem;
 import org.jboss.reflect.spi.TypeInfo;
 import org.jboss.util.JBossStringBuilder;
 
@@ -40,7 +40,9 @@ public class AbstractInjectionValueMetaData extends AbstractDependencyValueMetaD
 {
    protected InjectionType injectionType = InjectionType.BY_CLASS;
 
-   /** Simplyifies things with InjectionType.BY_NAME */
+   /**
+    * Simplyifies things with InjectionType.BY_NAME
+    */
    protected AbstractPropertyMetaData propertyMetaData;
 
    /**
@@ -124,7 +126,7 @@ public class AbstractInjectionValueMetaData extends AbstractDependencyValueMetaD
             }
             setValue(propertyMetaData.getName());
          }
-         
+
          visitor.initialVisit(this);
       }
       // check if was maybe set with by_name
@@ -142,24 +144,39 @@ public class AbstractInjectionValueMetaData extends AbstractDependencyValueMetaD
          {
             KernelControllerContext context = visitor.getControllerContext();
             controller = (KernelController) context.getController(); // set controller
-            
-            // FIXME this popping and pushing looks broken, should be peek?
+
+            // we pop it so that parent node has the same semantics as this one
+            // meaning that his current peek is also his parent
+            // and all other nodes that cannot determine type follow the same
+            // contract - popping and pushing
+            // maybe the whole thing can be rewritten to LinkedList
+            // or simply using the fact that Stack is also a Vector?
             MetaDataVisitorNode node = visitor.visitorNodeStack().pop();
-            // FIXME Not typesafe
-            TypeProvider typeProvider = (TypeProvider) node;
             try
             {
-               DependencyItem item = new ClassContextDependencyItem(
-                     context.getName(),
-                     typeProvider.getType(visitor, this),
-                     visitor.getContextState(), 
-                     dependentState);
-               visitor.addDependency(item);
+               if (node instanceof TypeProvider)
+               {
+                  TypeProvider typeProvider = (TypeProvider) node;
+                  DependencyItem item = new ClassContextDependencyItem(
+                        context.getName(),
+                        typeProvider.getType(visitor, this),
+                        visitor.getContextState(),
+                        dependentState);
+                  visitor.addDependency(item);
+               }
+               else
+               {
+                  throw new Error(TypeProvider.ERROR_MSG);
+               }
+            }
+            catch (Error error)
+            {
+               throw error;
             }
             catch (Throwable throwable)
             {
                throw new Error(throwable);
-            } 
+            }
             finally
             {
                visitor.visitorNodeStack().push(node);

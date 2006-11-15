@@ -21,6 +21,8 @@
 */
 package org.jboss.beans.metadata.plugins;
 
+import java.util.Stack;
+
 import org.jboss.beans.metadata.spi.BeanMetaData;
 import org.jboss.beans.metadata.spi.MetaDataVisitor;
 import org.jboss.beans.metadata.spi.MetaDataVisitorNode;
@@ -109,14 +111,16 @@ public abstract class AbstractTypeMetaData extends AbstractValueMetaData
 
    private void preparePreinstantiatedLookup(MetaDataVisitor visitor)
    {
-      MetaDataVisitorNode parent = visitor.visitorNodeStack().pop();
+      Stack<MetaDataVisitorNode> visitorNodes = visitor.visitorNodeStack();
+      // pop it so that we can get to grand parent for more info
+      MetaDataVisitorNode parent = visitorNodes.pop();
       try
       {
          if (parent instanceof PropertyMetaData)
          {
             PropertyMetaData pmd = (PropertyMetaData) parent;
             propertyName = pmd.getName();
-            Object gp = visitor.visitorNodeStack().peek();
+            Object gp = visitorNodes.peek();
             if (gp instanceof BeanMetaData)
             {
                BeanMetaData bmd = (BeanMetaData) gp;
@@ -126,7 +130,7 @@ public abstract class AbstractTypeMetaData extends AbstractValueMetaData
       }
       finally
       {
-         visitor.visitorNodeStack().push(parent);
+         visitorNodes.push(parent);
       }
    }
 

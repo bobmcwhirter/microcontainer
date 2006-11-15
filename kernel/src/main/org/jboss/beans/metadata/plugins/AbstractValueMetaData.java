@@ -21,26 +21,28 @@
 */
 package org.jboss.beans.metadata.plugins;
 
-import java.util.Iterator;
 import java.util.Collections;
+import java.util.Iterator;
 import java.util.Stack;
 
 import org.jboss.beans.metadata.spi.MetaDataVisitor;
-import org.jboss.beans.metadata.spi.ValueMetaData;
 import org.jboss.beans.metadata.spi.MetaDataVisitorNode;
+import org.jboss.beans.metadata.spi.ValueMetaData;
 import org.jboss.reflect.spi.TypeInfo;
 import org.jboss.util.JBossObject;
 import org.jboss.util.JBossStringBuilder;
 
 /**
  * Plain value.
- * 
+ *
  * @author <a href="adrian@jboss.com">Adrian Brock</a>
  * @version $Revision$
  */
 public class AbstractValueMetaData extends JBossObject implements ValueMetaData, TypeProvider
 {
-   /** The value */
+   /**
+    * The value
+    */
    protected Object value;
 
    /**
@@ -52,14 +54,14 @@ public class AbstractValueMetaData extends JBossObject implements ValueMetaData,
 
    /**
     * Create a new plain value
-    * 
+    *
     * @param value the value
     */
    public AbstractValueMetaData(Object value)
    {
       this.value = value;
    }
-   
+
    public Object getValue()
    {
       return value;
@@ -75,7 +77,7 @@ public class AbstractValueMetaData extends JBossObject implements ValueMetaData,
    {
       return value;
    }
-   
+
    public Object getValue(TypeInfo info, ClassLoader cl) throws Throwable
    {
       return value;
@@ -94,13 +96,19 @@ public class AbstractValueMetaData extends JBossObject implements ValueMetaData,
    public Class getType(MetaDataVisitor visitor, MetaDataVisitorNode previous) throws Throwable
    {
       Stack<MetaDataVisitorNode> visitorNodeStack = visitor.visitorNodeStack();
-      // FIXME this popping and pushing looks broken, should be peek?
-      MetaDataVisitorNode node = visitor.visitorNodeStack().pop();
-      // FIXME Not typesafe
-      TypeProvider typeProvider = (TypeProvider) node;
+      // see AbstractInjectionValueMetaData.describeVisit
+      MetaDataVisitorNode node = visitorNodeStack.pop();
       try
       {
-         return typeProvider.getType(visitor, this);
+         if (node instanceof TypeProvider)
+         {
+            TypeProvider typeProvider = (TypeProvider) node;
+            return typeProvider.getType(visitor, this);
+         }
+         else
+         {
+            throw new IllegalArgumentException(TypeProvider.ERROR_MSG);
+         }
       }
       finally
       {
@@ -114,12 +122,12 @@ public class AbstractValueMetaData extends JBossObject implements ValueMetaData,
          return Collections.singletonList((MetaDataVisitorNode) value).iterator();
       return null;
    }
-   
+
    public void toString(JBossStringBuilder buffer)
    {
       buffer.append("value=").append(value);
    }
-   
+
    public void toShortString(JBossStringBuilder buffer)
    {
       buffer.append(value);

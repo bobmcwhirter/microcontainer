@@ -30,6 +30,8 @@ import org.jboss.beans.metadata.spi.MetaDataVisitorNode;
 public interface TypeProvider
 {
 
+   static final String ERROR_MSG = "Node not of TypeProvider instance, cannot determine class type."; 
+
    Class getType(MetaDataVisitor visitor, MetaDataVisitorNode previous) throws Throwable;
 
 }

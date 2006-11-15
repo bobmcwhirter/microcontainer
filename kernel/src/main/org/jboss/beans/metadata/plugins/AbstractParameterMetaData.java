@@ -28,11 +28,11 @@ import org.jboss.beans.metadata.spi.MetaDataVisitor;
 import org.jboss.beans.metadata.spi.MetaDataVisitorNode;
 import org.jboss.beans.metadata.spi.ParameterMetaData;
 import org.jboss.beans.metadata.spi.ValueMetaData;
-import org.jboss.util.JBossStringBuilder;
+import org.jboss.kernel.plugins.config.Configurator;
+import org.jboss.kernel.spi.config.KernelConfigurator;
 import org.jboss.kernel.spi.dependency.KernelController;
 import org.jboss.kernel.spi.dependency.KernelControllerContext;
-import org.jboss.kernel.spi.config.KernelConfigurator;
-import org.jboss.kernel.plugins.config.Configurator;
+import org.jboss.util.JBossStringBuilder;
 
 /**
  * Metadata for a parameter.
@@ -173,13 +173,19 @@ public class AbstractParameterMetaData extends AbstractFeatureMetaData implement
       else
       {
          Stack<MetaDataVisitorNode> visitorNodeStack = visitor.visitorNodeStack();
-         // FIXME this popping and pushing looks broken, should be peek?
-         MetaDataVisitorNode node = visitor.visitorNodeStack().pop();
-         // FIXME Not typesafe
-         TypeProvider typeProvider = (TypeProvider) node;
+         // see AbstractInjectionValueMetaData.describeVisit
+         MetaDataVisitorNode node = visitorNodeStack.pop();
          try
          {
-            return typeProvider.getType(visitor, this);
+            if (node instanceof TypeProvider)
+            {
+               TypeProvider typeProvider = (TypeProvider) node;
+               return typeProvider.getType(visitor, this);
+            }
+            else
+            {
+               throw new IllegalArgumentException(TypeProvider.ERROR_MSG);
+            }
          }
          finally
          {
