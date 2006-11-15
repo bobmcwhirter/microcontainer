@@ -29,7 +29,6 @@ import javax.management.StandardMBean;
 import org.jboss.aop.advice.Interceptor;
 import org.jboss.aop.joinpoint.Invocation;
 import org.jboss.aop.joinpoint.MethodInvocation;
-import org.jboss.dependency.spi.ControllerContext;
 import org.jboss.kernel.spi.dependency.KernelControllerContext;
 import org.jboss.logging.Logger;
 
@@ -76,7 +75,15 @@ public class JMXIntroduction implements Interceptor
       {
          // try to build one from the bean name
          String name = (String) context.getName();
-         objectName = new ObjectName("test:name='" + name + "'");
+         
+         if (name.contains(":"))
+         {
+            objectName = new ObjectName(name);
+         }
+         else
+         {
+            objectName = new ObjectName("test:name='" + name + "'");            
+         }
       }
       
       if (server == null)
