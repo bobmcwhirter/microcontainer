@@ -68,8 +68,8 @@ public class InstantiateAction extends KernelControllerContextAction
                context.setBeanInfo(info);
             }
 
-            if (object instanceof KernelControllerContextAware)
-               ((KernelControllerContextAware) object).setKernelControllerContext(context);
+//            if (object instanceof KernelControllerContextAware)
+//               ((KernelControllerContextAware) object).setKernelControllerContext(context);
 
             controller.addInstantiatedContext(context);
          }
@@ -88,8 +88,8 @@ public class InstantiateAction extends KernelControllerContextAction
          Object object = context.getTarget();
          if (object != null)
          {
-            if (object instanceof KernelControllerContextAware)
-               ((KernelControllerContextAware) object).unsetKernelControllerContext(context);
+//            if (object instanceof KernelControllerContextAware)
+//               ((KernelControllerContextAware) object).unsetKernelControllerContext(context);
 
             KernelController controller = (KernelController) context.getController();
             controller.removeInstantiatedContext(context);

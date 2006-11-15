@@ -31,6 +31,7 @@ import org.jboss.kernel.Kernel;
 import org.jboss.kernel.spi.config.KernelConfigurator;
 import org.jboss.kernel.spi.dependency.KernelController;
 import org.jboss.kernel.spi.dependency.KernelControllerContext;
+import org.jboss.kernel.spi.dependency.KernelControllerContextAware;
 
 /**
  * ConfigureAction.
@@ -51,6 +52,10 @@ public class ConfigureAction extends KernelControllerContextAction
       BeanMetaData metaData = context.getBeanMetaData();
       Set joinPoints = configurator.getPropertySetterJoinPoints(info, metaData);
       setAttributes(context, object, joinPoints, false);
+      
+      if (object instanceof KernelControllerContextAware)
+         ((KernelControllerContextAware) object).setKernelControllerContext(context);
+
    }
 
    public void uninstallAction(KernelControllerContext context)
@@ -60,6 +65,21 @@ public class ConfigureAction extends KernelControllerContextAction
       KernelConfigurator configurator = kernel.getConfigurator();
 
       Object object = context.getTarget();
+
+      try
+      {
+         if (object != null)
+         {
+            if (object instanceof KernelControllerContextAware)
+               ((KernelControllerContextAware) object).unsetKernelControllerContext(context);
+         }
+      }
+      catch (Throwable ignored)
+      {
+         log.debug("Ignored error unsetting context ", ignored);
+      }
+      
+      
       BeanInfo info = context.getBeanInfo();
       BeanMetaData metaData = context.getBeanMetaData();
       try
