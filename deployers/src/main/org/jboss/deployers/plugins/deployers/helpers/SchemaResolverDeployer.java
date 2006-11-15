@@ -70,13 +70,15 @@ public abstract class SchemaResolverDeployer<T> extends AbstractParsingDeployer<
    {
       if (file == null)
          throw new IllegalArgumentException("Null file");
-      
+
+      log.debug("Parsing file: "+file+" for deploymentType: "+getDeploymentType());
       Unmarshaller unmarshaller = factory.newUnmarshaller();
       InputStream is = file.openStream();
       Object parsed = null;
       try
       {
          parsed = unmarshaller.unmarshal(is, resolver);
+         log.debug("Parsed file: "+file+" to: "+parsed);
       }
       finally
       {
