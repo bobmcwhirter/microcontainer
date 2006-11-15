@@ -17,17 +17,8 @@
    	</property>
    </beanfactory>
 
-   <beanfactory name="MetaDataContextAdvice" class="org.jboss.test.microcontainer.support.MetaDataContextInterceptor">
-      <property name="annotation">org.jboss.aop.microcontainer.aspects.jndi.JndiBinding</property>
-   </beanfactory>
-
    <bean name="JndiAspect" class="org.jboss.aop.microcontainer.beans.Aspect">
       <property name="advice"><inject bean="JndiAdvice"/></property>
-      <property name="manager"><inject bean="AspectManager"/></property>
-   </bean>
-
-   <bean name="MetaDataContextAspect" class="org.jboss.aop.microcontainer.beans.Aspect">
-      <property name="advice"><inject bean="MetaDataContextAdvice"/></property>
       <property name="manager"><inject bean="AspectManager"/></property>
    </bean>
 
@@ -46,12 +37,6 @@
    <bean name="JndiBinding" class="org.jboss.aop.microcontainer.beans.AspectBinding">
       <property name="pointcut">execution(* $instanceof{org.jboss.kernel.spi.dependency.KernelControllerContextAware}->$implements{org.jboss.kernel.spi.dependency.KernelControllerContextAware}(..))</property>
       <property name="aspect"><inject bean="JndiAspect" property="definition"/></property>
-      <property name="manager"><inject bean="AspectManager"/></property>
-   </bean>
-
-   <bean name="MetaDataContextBinding" class="org.jboss.aop.microcontainer.beans.AspectBinding">
-      <property name="pointcut">execution(* org.jboss.test.microcontainer.support.jndi.SimpleBean->*(..))</property>
-      <property name="aspect"><inject bean="MetaDataContextAspect" property="definition"/></property>
       <property name="manager"><inject bean="AspectManager"/></property>
    </bean>
 
