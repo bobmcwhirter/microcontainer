@@ -66,15 +66,13 @@ public class AttachmentLocator
       Object result = search(unit, name);
       if (result == null)
          return null;
-      T attachment = expectedType.cast(result);
-      return attachment;
+      return expectedType.cast(result);
    }
 
    /**
     * Get an attachment of the given type
     * 
     * @param <T> the expected type
-    * @param name the name of the attachment
     * @param type the type
     * @return the attachment or null if not present
     * @throws IllegalArgumentException for a null name or type
