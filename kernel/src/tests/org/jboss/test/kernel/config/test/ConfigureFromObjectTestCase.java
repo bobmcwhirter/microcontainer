@@ -35,6 +35,7 @@ import org.jboss.beans.metadata.spi.PropertyMetaData;
 import org.jboss.kernel.Kernel;
 import org.jboss.kernel.spi.config.KernelConfigurator;
 import org.jboss.test.kernel.config.support.SimpleBean;
+import org.jboss.test.kernel.config.support.SimpleBean.Alphabet;
 
 /**
  * Configuration from object Test Case.
@@ -68,6 +69,7 @@ public class ConfigureFromObjectTestCase extends AbstractKernelConfigTest
       Date dateValue = createDate(2001, 1, 1);
       BigDecimal bigDecimalValue = new BigDecimal("12e4");
       BigInteger bigIntegerValue = new BigInteger("123456");
+      Alphabet enumValue = Alphabet.Z;
 
       Kernel kernel = bootstrap();
       KernelConfigurator configurator = kernel.getConfigurator();
@@ -98,6 +100,7 @@ public class ConfigureFromObjectTestCase extends AbstractKernelConfigTest
       attributes.add(new AbstractPropertyMetaData("adouble", doubleValue));
       attributes.add(new AbstractPropertyMetaData("ANumber", longValue));
       attributes.add(new AbstractPropertyMetaData("overloadedProperty", stringValue));
+      attributes.add(new AbstractPropertyMetaData("enumProperty", enumValue));
       metaData.setProperties(attributes);
       
       configure(configurator, bean, info, metaData);
@@ -126,5 +129,6 @@ public class ConfigureFromObjectTestCase extends AbstractKernelConfigTest
       assertEquals(Long.class, number.getClass());
       assertEquals(longValue, number);
       assertEquals(stringValue, bean.getOverloadedProperty());
+      assertEquals(enumValue, bean.getEnumProperty());
    }
 }

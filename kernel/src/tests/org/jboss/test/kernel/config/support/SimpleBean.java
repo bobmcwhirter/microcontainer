@@ -40,6 +40,8 @@ import java.util.Set;
  */
 public class SimpleBean implements Serializable
 {
+   public enum Alphabet {A, B, C, D, E, F, G, H, I, J, K, L, M, N, O, P, Q, R, S, T, U, V, X, Y, Z};
+
    // Constants -----------------------------------------------------
 
    private static final long serialVersionUID = 3258126972906387766L;
@@ -147,6 +149,8 @@ public class SimpleBean implements Serializable
    
    /** Overloaded property */
    private String overloadedProperty;
+
+   private Alphabet enumProperty = Alphabet.A;
    
    // Static --------------------------------------------------------
 
@@ -615,5 +619,15 @@ public class SimpleBean implements Serializable
    public void setOverloadedProperty(Integer broken)
    {
       throw new RuntimeException("Invoked the wrong setter");
+   }
+
+   public Alphabet getEnumProperty()
+   {
+      return enumProperty;
+   }
+
+   public void setEnumProperty(Alphabet enumProperty)
+   {
+      this.enumProperty = enumProperty;
    }
 }

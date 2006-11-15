@@ -32,6 +32,7 @@ import org.jboss.beans.metadata.plugins.StringValueMetaData;
 import org.jboss.kernel.Kernel;
 import org.jboss.kernel.spi.config.KernelConfigurator;
 import org.jboss.test.kernel.config.support.SimpleBean;
+import org.jboss.test.kernel.config.support.SimpleBean.Alphabet;
 
 /**
  * Configuration from string Test Case.
@@ -201,7 +202,16 @@ public class ConfigureAttributeFromStringTestCase extends AbstractKernelConfigTe
       assertEquals(Long.class, number.getClass());
       assertEquals(value, number);
    }
-   
+
+   public void testEnum() throws Throwable
+   {
+      Alphabet value = Alphabet.Z;
+      SimpleBean bean = configureSimpleBean("enumProperty", value, Alphabet.class.getName());
+      Object evalue = bean.getEnumProperty();
+      assertEquals(Alphabet.class, evalue.getClass());
+      assertEquals(value, evalue);
+   }
+
    protected SimpleBean configureSimpleBean(String name, Object value) throws Throwable
    {
       Kernel kernel = bootstrap();
