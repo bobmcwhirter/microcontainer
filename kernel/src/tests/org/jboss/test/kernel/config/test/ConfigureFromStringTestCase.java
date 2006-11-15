@@ -36,6 +36,7 @@ import org.jboss.beans.metadata.spi.PropertyMetaData;
 import org.jboss.kernel.Kernel;
 import org.jboss.kernel.spi.config.KernelConfigurator;
 import org.jboss.test.kernel.config.support.SimpleBean;
+import org.jboss.test.kernel.config.support.SimpleBean.Alphabet;
 
 /**
  * Configuration from object Test Case.
@@ -64,6 +65,7 @@ public class ConfigureFromStringTestCase extends AbstractKernelConfigTest
    Date dateValue = createDate("Mon Jan 01 00:00:00 CET 2001");
    BigDecimal bigDecimalValue = new BigDecimal("12e4");
    BigInteger bigIntegerValue = new BigInteger("123456");
+   Alphabet enumValue = Alphabet.Z;
 
    public static Test suite()
    {
@@ -110,6 +112,7 @@ public class ConfigureFromStringTestCase extends AbstractKernelConfigTest
       assertEquals(Long.class, number.getClass());
       assertEquals(longValue, number);
       assertEquals(stringValue, bean.getOverloadedProperty());
+      assertEquals(enumValue, bean.getEnumProperty());
 
       unconfigure(bean);
 
@@ -137,6 +140,7 @@ public class ConfigureFromStringTestCase extends AbstractKernelConfigTest
       assertEquals(doubleValue.doubleValue(), bean.getAdouble());
       assertEquals(null, bean.getANumber());
       assertEquals(null, bean.getOverloadedProperty());
+      assertEquals(null, bean.getEnumProperty());
    }
 
    protected SimpleBean configure() throws Throwable
@@ -174,6 +178,7 @@ public class ConfigureFromStringTestCase extends AbstractKernelConfigTest
       AbstractPropertyMetaData number = new AbstractPropertyMetaData("ANumber", longValue.toString(), "java.lang.Long");
       ((StringValueMetaData) number.getValue()).setConfigurator(configurator);
       attributes.add(number);
+      attributes.add(new AbstractPropertyMetaData("enumProperty", enumValue.toString()));
 
       metaData.setProperties(attributes);
       

@@ -24,6 +24,6 @@
       <property name="adouble">3.14e12</property>
       <property name="ANumber" class="java.lang.Long">12345</property>
       <property name="overloadedProperty">StringValue</property>
-      <property name="enumProperty">StringValue</property>
+      <property name="enumProperty">Z</property>
    </bean>
 </deployment>

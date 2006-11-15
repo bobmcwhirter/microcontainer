@@ -125,10 +125,13 @@ public class ConfigureFromObjectTestCase extends AbstractKernelConfigTest
       assertEquals(longValue.longValue(), bean.getAlong());
       assertEquals(floatValue.floatValue(), bean.getAfloat());
       assertEquals(doubleValue.doubleValue(), bean.getAdouble());
+
       Number number = bean.getANumber();
       assertEquals(Long.class, number.getClass());
       assertEquals(longValue, number);
       assertEquals(stringValue, bean.getOverloadedProperty());
-      assertEquals(enumValue, bean.getEnumProperty());
+
+      Alphabet anenum = bean.getEnumProperty();
+      assertEquals(enumValue, anenum);
    }
 }
