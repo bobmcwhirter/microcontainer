@@ -92,14 +92,15 @@
   </tstamp>
   <property name="build.id" value="${build.number}"/>
 
-  <!-- Version identifiers for the server. -->
-  <property name="version.major" value="5"/>
+  <!-- Version identifiers for the project. -->
+  <property name="version.major" value="2"/>
   <property name="version.minor" value="0"/>
   <property name="version.revision" value="0"/>
   <property name="version.tag" value="Beta"/>
-  <property name="version.name" value="Morpheus"/>
-  <!-- This must be set to the CVS tag for any release -->
-  <property name="version.cvstag" value="HEAD"/>
+  <property name="version.name" value="Nano"/>
+  <!-- This must be set to the SVN tag for any release -->
+  <property name="version.cvstag"
+      value="https://svn.jboss.org/repos/jbossas/projects/microcontainer/tags/JBossMC_2_0_0_Beta"/>
 
   <!-- Manifest version info -->
   <property name="specification.title" value="JBoss"/>
@@ -109,7 +110,7 @@
   <property name="implementation.title" value="JBoss [${version.name}]"/>
   <property name="implementation.url" value="http://www.jboss.org/"/>
   <property name="implementation.version"
-    value="${version.major}.${version.minor}.${version.revision}.${version.tag} (build: CVSTag=${version.cvstag} date=${build.id})"/>
+    value="${version.major}.${version.minor}.${version.revision}.${version.tag} (build: SVNTag=${version.cvstag} date=${build.id})"/>
   <property name="implementation.vendor" value="JBoss.org"/>
   <property name="implementation.vendor.id" value="${implementation.url}"/>
 
