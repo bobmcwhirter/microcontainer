@@ -14,7 +14,7 @@
 	<classpathentry kind="lib" path="/thirdparty/trove/lib/trove.jar"/>
 	<classpathentry kind="lib" path="src/resources/schema"/>
 	<classpathentry kind="lib" path="/thirdparty/jboss/jbossxb/lib/jboss-xml-binding.jar"/>
-	<classpathentry sourcepath="C:/cygwin/home/Kabir/sourcecontrol/jboss-test/test/src/main" kind="lib" path="/thirdparty/jboss/test/lib/jboss-test.jar"/>
+	<classpathentry kind="lib" path="/thirdparty/jboss/test/lib/jboss-test.jar" sourcepath="/thirdparty/jboss/test/lib/jboss-test-src.zip"/>
 	<classpathentry kind="lib" path="/thirdparty/jboss/aop/lib/jboss-aop-jdk50.jar"/>
 	<classpathentry kind="output" path="output/eclipse-classes"/>
 </classpath>
