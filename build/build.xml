@@ -76,7 +76,6 @@
     <moduleconfig property="modules" selected="${groups}">
 
       <!-- Modules -->
-      <module name="common"/>
       <module name="container"/>
       <module name="dependency"/>
       <module name="deployers"/>
@@ -94,7 +93,7 @@
       </group>
 
       <group name="core">
-        <include modules="common, container, dependency, kernel, aop-mc-int, deployers, osgi-int"/>
+        <include modules="container, dependency, kernel, aop-mc-int, deployers, osgi-int"/>
       </group>
 
       <group name="default">
@@ -207,6 +206,39 @@
    		message="The jbossbuild.repository.dir property must be set and point to the local jbossbuild repository root"/>
    <fail unless="jbossbuild.repository.version"
    		message="The jbossbuild.repository.version property must be set to the version id (snapshot, 2.0.0.GA, ...)"/>
+  	<mkdir dir="${jbossbuild.repository.dir}/jboss/microcontainer/${jbossbuild.repository.version}" />
+  	<echo file="${jbossbuild.repository.dir}/jboss/microcontainer/${jbossbuild.repository.version}/component-info.xml"><![CDATA[<?xml version="1.0" encoding="UTF-8"?>
+<project name="jboss/microcontainer-component-info">
+
+   <component id="jboss/microcontainer"
+              licenseType="lgpl"
+              version="${jbossbuild.repository.version}"
+              >
+      <artifact id="jboss-aop-mc-int.jar"/>
+      <artifact id="jboss-aop-mc-int-boot.jar"/>
+      <artifact id="jboss-aop-mc-int-deployer.jar"/>
+      <artifact id="jboss-container.jar"/>
+      <artifact id="jboss-dependency.jar"/>
+      <artifact id="jboss-microcontainer.jar"/>
+      <artifact id="jboss-deployers.jar"/>
+      <artifact id="jboss-aop-mc-int-src.zip"/>
+      <artifact id="jboss-container-src.zip"/>
+      <artifact id="jboss-dependency-src.zip"/>
+      <artifact id="jboss-deployers-src.zip"/>
+      <artifact id="jboss-microcontainer-src.zip"/>
+      <export>
+         <include input="jboss-aop-mc-int.jar"/>
+         <include input="jboss-aop-mc-int-boot.jar"/>
+         <include input="jboss-aop-mc-int-deployer.jar"/>
+         <include input="jboss-container.jar"/>
+         <include input="jboss-dependency.jar"/>
+         <include input="jboss-microcontainer.jar"/>
+         <include input="jboss-deployers.jar"/>
+      </export>
+   </component>
+
+</project>
+]]></echo>
   	  <copy todir="${jbossbuild.repository.dir}/jboss/microcontainer/${jbossbuild.repository.version}/lib">  	 
 	  		<fileset dir="../aop-mc-int/output/lib">
 	  			<include name="*.jar" />
@@ -229,6 +261,50 @@
 	  			<include name="*-src.zip" />
 	  		</fileset>  	 
   	  	</copy>
+	<!-- The JDK14 compatible versions -->
+  	<mkdir dir="${jbossbuild.repository.dir}/jboss/microcontainer14/${jbossbuild.repository.version}" />
+  	<echo file="${jbossbuild.repository.dir}/jboss/microcontainer14/${jbossbuild.repository.version}/component-info.xml"><![CDATA[<?xml version="1.0" encoding="UTF-8"?>
+<project name="jboss/microcontainer-component-info">
+
+   <component id="jboss/microcontainer14"
+              licenseType="lgpl"
+              version="${jbossbuild.repository.version}"
+              >
+      <artifact id="jboss-aop-mc-int14.jar"/>
+      <artifact id="jboss-aop-mc-int-boot14.jar"/>
+      <artifact id="jboss-aop-mc-int-deployer14.jar"/>
+      <artifact id="jboss-container14.jar"/>
+      <artifact id="jboss-dependency14.jar"/>
+      <artifact id="jboss-microcontainer14.jar"/>
+      <artifact id="jboss-deployers14.jar"/>
+      <export>
+         <include input="jboss-aop-mc-int14.jar"/>
+         <include input="jboss-aop-mc-int-boot14.jar"/>
+         <include input="jboss-aop-mc-int-deployer14.jar"/>
+         <include input="jboss-container14.jar"/>
+         <include input="jboss-dependency14.jar"/>
+         <include input="jboss-microcontainer14.jar"/>
+         <include input="jboss-deployers14.jar"/>
+      </export>
+   </component>
+
+</project>
+]]></echo>
+  	  <copy todir="${jbossbuild.repository.dir}/jboss/microcontainer14/${jbossbuild.repository.version}/lib">  	 
+	  		<fileset dir="../aop-mc-int/output/lib14">
+	  			<include name="*.jar" />
+	  		</fileset>
+	  		<fileset dir="../container/output/lib14">
+	  			<include name="*.jar" />
+	  		</fileset>
+	  		<fileset dir="../dependency/output/lib14">
+	  			<include name="*.jar" />
+	  		</fileset>
+	  		<fileset dir="../kernel/output/lib14">
+	  			<include name="*.jar" />
+	  		</fileset>  	 
+  	  	</copy>
+
   </target>
 
   <!-- ================================================================== -->
