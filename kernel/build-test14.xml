@@ -119,7 +119,9 @@
     <!-- The combined dependant module classpath -->
     <path id="dependentmodule.classpath">
       <path refid="jboss.this.classpath"/>
-      <path refid="jboss.common.classpath"/>
+      <path refid="jboss/common.core.classpath"/>
+      <path refid="jboss/common.logging.spi.classpath"/>
+      <path refid="jboss/common.logging.log4j.classpath"/>
       <path refid="jboss.container.classpath"/>
       <path refid="jboss.dependency.classpath"/>
     </path>
