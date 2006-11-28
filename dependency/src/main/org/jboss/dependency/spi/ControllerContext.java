@@ -89,6 +89,13 @@ public interface ControllerContext extends JBossInterface
     * @return the state
     */
    ControllerState getState();
+   
+   /**
+    * Set the state
+    * 
+    * @param state the state
+    */
+   void setState(ControllerState state);
 
    /**
     * Get the required state

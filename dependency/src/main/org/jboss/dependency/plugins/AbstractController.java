@@ -409,6 +409,7 @@ public class AbstractController extends JBossObject implements Controller
          }
          Set<ControllerContext> notInstalled = contextsByState.get(ControllerState.NOT_INSTALLED);
          notInstalled.add(context);
+         context.setState(ControllerState.NOT_INSTALLED);
       }
       else
       {
@@ -448,6 +449,7 @@ public class AbstractController extends JBossObject implements Controller
       if (fromContexts != null)
          fromContexts.remove(context);
       toContexts.add(context);
+      context.setState(toState);
       return true;
    }
 
@@ -634,10 +636,7 @@ public class AbstractController extends JBossObject implements Controller
 
       Set<ControllerContext> fromContexts = contextsByState.get(fromState);
       if (fromContexts == null || fromContexts.remove(context) == false)
-      {
-         log.error("INTERNAL ERROR: context not found in previous state " + fromState.getStateString() + " context=" + context.toShortString(), new Exception("STACKTRACE"));
-         return;
-      }
+         throw new Error("INTERNAL ERROR: context not found in previous state " + fromState.getStateString() + " context=" + context.toShortString(), new Exception("STACKTRACE"));
 
       DependencyInfo dependencies = context.getDependencyInfo();
       Set dependsOnMe = dependencies.getDependsOnMe(null);
@@ -678,6 +677,7 @@ public class AbstractController extends JBossObject implements Controller
       ControllerState toState = states.get(toIndex);
       Set<ControllerContext> toContexts = contextsByState.get(toState);
       toContexts.add(context);
+      context.setState(toState);
 
       unlockWrite();
       try

@@ -103,6 +103,11 @@ public class AbstractKernelRegistryEntry extends JBossObject implements KernelRe
    {
       return ControllerState.ERROR;
    }
+   
+   public void setState(ControllerState state)
+   {
+      throw new org.jboss.util.NotImplementedException("setState");
+   }
 
    public ControllerState getRequiredState()
    {

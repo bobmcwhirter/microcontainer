@@ -220,18 +220,22 @@ public class AbstractControllerContext extends JBossObject implements Controller
       flushJBossObjectCache();
    }
 
+   public void setState(ControllerState state)
+   {
+      this.state = state;
+      flushJBossObjectCache();
+   }
+
    public void install(ControllerState fromState, ControllerState toState) throws Throwable
    {
       this.error = null;
-      actions.install(this, fromState, toState);
-      this.state = toState;
       flushJBossObjectCache();
+      actions.install(this, fromState, toState);
    }
 
    public void uninstall(ControllerState fromState, ControllerState toState)
    {
       this.error = null;
-      this.state = toState;
       flushJBossObjectCache();
       actions.uninstall(this, fromState, toState);
    }
