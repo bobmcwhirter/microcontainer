@@ -440,7 +440,8 @@ public class BeanSchemaBindingHelper
       
       // type has wildcard
       WildcardBinding wcb = typeBinding.getWildcard();
-      if( wcb != null )
-         wcb.setWildcardHandler(ValueWildcardHandler.WILDCARD);
+      if (wcb == null)
+         throw new IllegalStateException("Missing wildcard binding for type: " + typeBinding.getQName());
+      wcb.setWildcardHandler(ValueWildcardHandler.WILDCARD);
    }
 }
