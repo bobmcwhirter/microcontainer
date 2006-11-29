@@ -46,7 +46,10 @@
       <componentref name="apache-log4j" version="1.2.8"/>
       <componentref name="apache-xerces" version="2.7.1"/>
       <componentref name="javassist" version="3.4.GA"/>
-      <componentref name="jboss/common" version="snapshot"/>
+      <componentref name="jboss/common-core" version="2.0.2.GA"/>
+      <componentref name="jboss/common-logging-log4j" version="2.0.2.GA"/>
+      <componentref name="jboss/common-logging-jdk" version="2.0.2.GA"/>
+      <componentref name="jboss/common-logging-spi" version="2.0.2.GA"/>
       <componentref name="jboss/jbossxb" version="snapshot"/>
       <componentref name="jboss/profiler/jvmti" version="1.0.0.CR4"/>
       <componentref name="junit" version="3.8.1"/>
