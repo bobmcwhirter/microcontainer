@@ -271,20 +271,14 @@
               version="${jbossbuild.repository.version}"
               >
       <artifact id="jboss-aop-mc-int14.jar"/>
-      <artifact id="jboss-aop-mc-int-boot14.jar"/>
-      <artifact id="jboss-aop-mc-int-deployer14.jar"/>
       <artifact id="jboss-container14.jar"/>
       <artifact id="jboss-dependency14.jar"/>
       <artifact id="jboss-microcontainer14.jar"/>
-      <artifact id="jboss-deployers14.jar"/>
       <export>
          <include input="jboss-aop-mc-int14.jar"/>
-         <include input="jboss-aop-mc-int-boot14.jar"/>
-         <include input="jboss-aop-mc-int-deployer14.jar"/>
          <include input="jboss-container14.jar"/>
          <include input="jboss-dependency14.jar"/>
          <include input="jboss-microcontainer14.jar"/>
-         <include input="jboss-deployers14.jar"/>
       </export>
    </component>
 
