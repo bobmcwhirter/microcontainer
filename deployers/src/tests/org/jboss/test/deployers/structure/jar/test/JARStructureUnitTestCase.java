@@ -149,8 +149,13 @@ public class JARStructureUnitTestCase extends BaseDeployersTest
       
       // Test it got all the candidates
       Map<String, Boolean> expected = new HashMap<String, Boolean>();
+      /* With the change to not expose the outer jar url, these are
+         no longer valid checks.
       expected.put(getJarURL("/structure/jar/indirectory/archive.jar"), true);
       expected.put(getJarURL("/structure/jar/indirectory/archive.zip"), true);
+      */
+      expected.put(getURL("/structure/jar/indirectory/archive.jar"), true);
+      expected.put(getURL("/structure/jar/indirectory/archive.zip"), true);
       assertContexts(expected, context.getChildren());
       
       assertCandidatesValid(context);
