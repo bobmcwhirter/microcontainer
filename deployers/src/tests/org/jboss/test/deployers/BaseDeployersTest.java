@@ -95,7 +95,19 @@ public abstract class BaseDeployersTest extends BaseTestCase
       URL url = getResource(path);
       return url.toString();
    }
-   
+   /**
+    * Get a vfs url string from a path
+    * 
+    * @param path
+    * @return
+    * @throws Exception
+    */
+   protected String getVfsURL(String path) throws Exception
+   {
+      URL url = getResource(path);
+      return "vfs"+url.toString();
+   }
+
    /**
     * Get a jar url string from a path
     * 

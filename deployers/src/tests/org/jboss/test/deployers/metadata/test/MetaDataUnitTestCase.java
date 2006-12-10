@@ -53,7 +53,7 @@ public class MetaDataUnitTestCase extends BaseDeployersTest
    public void testExactMatchTopLevel() throws Exception
    {
       DeploymentContext context = createDeploymentContext("/metadata", "toplevel/exact/jboss-service.xml");
-      String expected = getURL("/metadata/toplevel/exact/jboss-service.xml");
+      String expected = getVfsURL("/metadata/toplevel/exact/jboss-service.xml");
       assertMetaDataMatch(context, expected, "jboss-service.xml");
    }
 
@@ -67,7 +67,7 @@ public class MetaDataUnitTestCase extends BaseDeployersTest
    {
       DeploymentContext context = createDeploymentContext("/metadata", "toplevel/partial/mydb-ds.xml");
       Set<String> expected = new HashSet<String>();
-      expected.add(getURL("/metadata/toplevel/partial/mydb-ds.xml"));
+      expected.add(getVfsURL("/metadata/toplevel/partial/mydb-ds.xml"));
       assertMetaDataMatch(context, expected, null, "-ds.xml");
    }
 
@@ -81,7 +81,7 @@ public class MetaDataUnitTestCase extends BaseDeployersTest
    {
       DeploymentContext context = createDeploymentContext("/metadata", "toplevel/metadata.jar");
       context.setMetaDataPath("META-INF");
-      String expected = getURL("/metadata/toplevel/metadata.jar/META-INF/jboss-service.xml");
+      String expected = getVfsURL("/metadata/toplevel/metadata.jar/META-INF/jboss-service.xml");
       assertMetaDataMatch(context, expected, "jboss-service.xml");
    }
 
@@ -111,8 +111,8 @@ public class MetaDataUnitTestCase extends BaseDeployersTest
       DeploymentContext context = createDeploymentContext("/metadata", "toplevel/metadata.jar");
       context.setMetaDataPath("META-INF");
       Set<String> expected = new HashSet<String>();
-      expected.add(getURL("/metadata/toplevel/metadata.jar/META-INF/1-ds.xml"));
-      expected.add(getURL("/metadata/toplevel/metadata.jar/META-INF/2-ds.xml"));
+      expected.add(getVfsURL("/metadata/toplevel/metadata.jar/META-INF/1-ds.xml"));
+      expected.add(getVfsURL("/metadata/toplevel/metadata.jar/META-INF/2-ds.xml"));
       assertMetaDataMatch(context, expected, null, "-ds.xml");
    }
 
@@ -142,9 +142,9 @@ public class MetaDataUnitTestCase extends BaseDeployersTest
       DeploymentContext context = createDeploymentContext("/metadata", "toplevel/metadata.jar");
       context.setMetaDataPath("META-INF");
       Set<String> expected = new HashSet<String>();
-      expected.add(getURL("/metadata/toplevel/metadata.jar/META-INF/jboss-service.xml"));
-      expected.add(getURL("/metadata/toplevel/metadata.jar/META-INF/1-ds.xml"));
-      expected.add(getURL("/metadata/toplevel/metadata.jar/META-INF/2-ds.xml"));
+      expected.add(getVfsURL("/metadata/toplevel/metadata.jar/META-INF/jboss-service.xml"));
+      expected.add(getVfsURL("/metadata/toplevel/metadata.jar/META-INF/1-ds.xml"));
+      expected.add(getVfsURL("/metadata/toplevel/metadata.jar/META-INF/2-ds.xml"));
       assertMetaDataMatch(context, expected, "jboss-service.xml", "-ds.xml");
    }
 

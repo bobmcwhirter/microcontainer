@@ -154,8 +154,8 @@ public class JARStructureUnitTestCase extends BaseDeployersTest
       expected.put(getJarURL("/structure/jar/indirectory/archive.jar"), true);
       expected.put(getJarURL("/structure/jar/indirectory/archive.zip"), true);
       */
-      expected.put(getURL("/structure/jar/indirectory/archive.jar"), true);
-      expected.put(getURL("/structure/jar/indirectory/archive.zip"), true);
+      expected.put(getVfsURL("/structure/jar/indirectory/archive.jar"), true);
+      expected.put(getVfsURL("/structure/jar/indirectory/archive.zip"), true);
       assertContexts(expected, context.getChildren());
       
       assertCandidatesValid(context);
@@ -180,7 +180,7 @@ public class JARStructureUnitTestCase extends BaseDeployersTest
       
       // Test it got all the candidates
       Map<String, Boolean> expected = new HashMap<String, Boolean>();
-      expected.put(getURL("/structure/jar/subdirisajar/sub.jar/"), true);
+      expected.put(getVfsURL("/structure/jar/subdirisajar/sub.jar/"), true);
       assertContexts(expected, context.getChildren());
       
       assertCandidatesValid(context);
