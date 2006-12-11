@@ -359,7 +359,7 @@ public class BeanSchemaBindingHelper
       // value can take characters
       valueType.setSimpleType(ValueCharactersHandler.HANDLER);
       
-      BeanSchemaBindingHelper.configureValueBindings(valueType);
+      configureValueBindings(valueType);
    }
 
    /**
