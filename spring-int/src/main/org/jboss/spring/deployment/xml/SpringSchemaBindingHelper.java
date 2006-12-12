@@ -58,6 +58,8 @@ public class SpringSchemaBindingHelper
    public static void initConstructorArgHandler(TypeBinding typeBinding)
    {
       typeBinding.setHandler(ConstructorArgHandler.HANDLER);
+      // configure
+      configureValueBindings(typeBinding);
    }
 
    public static void initPropertyHandler(TypeBinding typeBinding)
@@ -71,9 +73,9 @@ public class SpringSchemaBindingHelper
 
    public static void initValueHandler(TypeBinding typeBinding)
    {
-      typeBinding.setHandler(ValueHandler.HANDLER);
+      typeBinding.setHandler(PlainValueHandler.HANDLER);
       // value can take characters
-      typeBinding.setSimpleType(ValueCharactersHandler.HANDLER);
+      typeBinding.setSimpleType(PlainValueCharactersHandler.HANDLER);
       // configure
       configureValueBindings(typeBinding);
    }
