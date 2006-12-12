@@ -21,10 +21,8 @@
 */
 package org.jboss.test.javabean.test;
 
-import java.net.URL;
-
-import org.jboss.test.AbstractTestCaseWithSetup;
 import org.jboss.test.AbstractTestDelegate;
+import org.jboss.test.ioc.test.AbstractIoCTest;
 
 /**
  * AbstractJavaBeanTest.
@@ -32,10 +30,8 @@ import org.jboss.test.AbstractTestDelegate;
  * @author <a href="adrian@jboss.com">Adrian Brock</a>
  * @version $Revision$
  */
-public class AbstractJavaBeanTest extends AbstractTestCaseWithSetup
+public class AbstractJavaBeanTest extends AbstractIoCTest
 {
-   protected String rootName = getRootName();
-   
    /**
     * Create a new AbstractJBossXBTest.
     * 
@@ -44,50 +40,6 @@ public class AbstractJavaBeanTest extends AbstractTestCaseWithSetup
    public AbstractJavaBeanTest(String name)
    {
       super(name);
-   }
-
-   /**
-    * Unmarshal some xml
-    * 
-    * @param name the name
-    * @param expected the expected type
-    * @return the unmarshalled object
-    * @throws Exception for any error
-    */
-   protected Object unmarshal(String name, Class<?> expected) throws Exception
-   {
-      Object object = unmarshal(name);
-      if (object == null)
-         fail("No object from " + name);
-      assertTrue("Object '" + object + "' cannot be assigned to " + expected.getName(), expected.isAssignableFrom(object.getClass()));
-      return object;
-   }
-   
-   /**
-    * Unmarshal some xml
-    * 
-    * @param name the name
-    * @return the unmarshalled object
-    * @throws Exception for any error
-    */
-   protected Object unmarshal(String name) throws Exception
-   {
-      String url = findXML(name);
-      return getJBossXBDelegate().unmarshal(url);
-   }
-   
-   /**
-    * Find the xml
-    * 
-    * @param name the name
-    * @return the url of the xml
-    */
-   protected String findXML(String name)
-   {
-      URL url = getResource(name);
-      if (url == null)
-         fail(name + " not found");
-      return url.toString();
    }
 
    /**
@@ -102,33 +54,4 @@ public class AbstractJavaBeanTest extends AbstractTestCaseWithSetup
       return new JavaBeanTestDelegate(clazz);
    }
 
-   protected JavaBeanTestDelegate getJBossXBDelegate()
-   {
-      return (JavaBeanTestDelegate) getDelegate();
-   }
-   
-   protected void setUp() throws Exception
-   {
-      super.setUp();
-      configureLogging();
-   }
-   
-   /**
-    * Get the package root name
-    * 
-    * @return the root name
-    */
-   protected String getRootName()
-   {
-      String longName = getClass().getName();
-      int dot = longName.lastIndexOf('.');
-      if (dot != -1)
-         return longName.substring(dot + 1);
-      return longName;
-   }
-   
-   protected void configureLogging()
-   {
-      //enableTrace("org.jboss.xb");
-   }
 }

@@ -35,7 +35,7 @@ public class SpringSchemaBinding
    /**
     * The namespace
     */
-   public static final String SPRING_DEPLOYER_NS = "http://www.springframework.org/schema/beans";
+   public static final String SPRING_DEPLOYER_NS = "urn:jboss:spring-beans:2.0";
 
    /**
     * The beans binding

@@ -35,7 +35,7 @@ public class InstantiateTestCase extends AbstractJavaBeanTest
 {
    public void testInstantiate() throws Exception
    {
-      SimpleBean bean = (SimpleBean) unmarshal("TestInstantiate.xml", SimpleBean.class);
+      SimpleBean bean = unmarshal("TestInstantiate.xml", SimpleBean.class);
       assertEquals("()", bean.getConstructorUsed());
    }
    

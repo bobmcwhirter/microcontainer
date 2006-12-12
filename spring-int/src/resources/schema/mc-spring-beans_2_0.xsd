@@ -2,9 +2,13 @@
 <!-- A prototype Spring xsd schema for the pojoserver xml deployer
 $Id: mc-spring-beans_2_0.xsd 56471 2006-08-31 10:44:05 +0200 (Pon, 11 dec 2006) alesj $
  -->
-<xsd:schema xmlns="http://www.springframework.org/schema/beans"
-            xmlns:xsd="http://www.w3.org/2001/XMLSchema"
-            targetNamespace="http://www.springframework.org/schema/beans">
+<xsd:schema xmlns:xsd="http://www.w3.org/2001/XMLSchema"
+   targetNamespace="urn:jboss:spring-beans:2.0"
+   xmlns="urn:jboss:spring-beans:2.0"
+   elementFormDefault="qualified"
+   attributeFormDefault="unqualified"
+   version="1.0"
+>
 
    <xsd:import namespace="http://www.w3.org/XML/1998/namespace"/>
 

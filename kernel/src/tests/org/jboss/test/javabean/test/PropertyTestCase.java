@@ -46,7 +46,7 @@ public class PropertyTestCase extends AbstractJavaBeanTest
 {
    private static DateFormat dateFormat = new SimpleDateFormat("EEE MMM d HH:mm:ss z yyyy");
    
-   String stringValue =  new String("StringValue");
+   String stringValue =  "StringValue";
    Byte byteValue = new Byte("12");
    Boolean booleanValue = Boolean.TRUE;
    // TODO character
@@ -62,7 +62,7 @@ public class PropertyTestCase extends AbstractJavaBeanTest
 
    public void testConfigure() throws Exception
    {
-      SimpleBean bean = (SimpleBean) unmarshal("TestConfigure.xml", SimpleBean.class);
+      SimpleBean bean = unmarshal("TestConfigure.xml", SimpleBean.class);
       assertEquals("()", bean.getConstructorUsed());
       
       assertEquals(stringValue, bean.getAString());
