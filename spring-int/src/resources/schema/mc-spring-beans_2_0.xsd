@@ -948,16 +948,17 @@ too generic: for example, in case of a collection element.
       </xsd:annotation>
    </xsd:element>
 
-   <xsd:element name="key">
+   <xsd:element name="key" type="keyType">
       <xsd:annotation>
          <xsd:documentation><![CDATA[
 	A key element can contain an inner bean, ref, value, or collection.
 			]]></xsd:documentation>
       </xsd:annotation>
-      <xsd:complexType>
-         <xsd:group ref="collectionElements"/>
-      </xsd:complexType>
    </xsd:element>
+
+   <xsd:complexType name="keyType">
+      <xsd:group ref="collectionElements"/>
+   </xsd:complexType>
 
    <xsd:element name="prop">
       <xsd:annotation>

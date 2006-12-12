@@ -138,6 +138,11 @@ public class SpringSchemaBinding
    public static final QName entryQName = new QName(SPRING_DEPLOYER_NS, "entry");
 
    /**
+    * The key binding
+    */
+   public static final QName keyTypeQName = new QName(SPRING_DEPLOYER_NS, "keyType");
+
+   /**
     * The key element name
     */
    public static final QName keyQName = new QName(SPRING_DEPLOYER_NS, "key");
@@ -207,6 +212,10 @@ public class SpringSchemaBinding
       // entry type
       TypeBinding entryType = schemaBinding.getType(entryTypeQName);
       SpringSchemaBindingHelper.initEntryHandler(entryType);
+
+      // key type
+      TypeBinding keyType = schemaBinding.getType(entryTypeQName);
+      SpringSchemaBindingHelper.initKeyHandler(keyType);
    }
 
 }

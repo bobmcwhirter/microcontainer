@@ -103,6 +103,13 @@ public class SpringSchemaBindingHelper
       typeBinding.pushInterceptor(SpringSchemaBinding.valueQName, EntryValueInterceptor.INTERCEPTOR);
    }
 
+   public static void initKeyHandler(TypeBinding typeBinding)
+   {
+      typeBinding.setHandler(SpringMapKeyHandler.HANDLER);
+      // key has a value
+      typeBinding.pushInterceptor(SpringSchemaBinding.valueQName, ValueMetaDataElementInterceptor.VALUES);
+   }
+
    public static void configureValueBindings(TypeBinding typeBinding)
    {
       // type has values
