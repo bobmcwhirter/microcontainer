@@ -80,7 +80,7 @@ public class SpringSchemaBindingHelper
 
    public static void initCollectionHandler(TypeBinding typeBinding)
    {
-      typeBinding.setHandler(CollectionHandler.HANDLER);
+      typeBinding.setHandler(SpringCollectionHandler.HANDLER);
       // configure
       configureValueBindings(typeBinding);
    }
