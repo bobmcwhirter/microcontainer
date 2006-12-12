@@ -47,16 +47,16 @@ public class MapHandler extends DefaultElementHandler
 
    public void attributes(Object o, QName elementName, ElementBinding element, Attributes attrs, NamespaceContext nsCtx)
    {
-      AbstractMapMetaData collection = (AbstractMapMetaData) o;
+      AbstractMapMetaData map = (AbstractMapMetaData) o;
       for (int i = 0; i < attrs.getLength(); ++i)
       {
          String localName = attrs.getLocalName(i);
          if ("class".equals(localName))
-            collection.setType(attrs.getValue(i));
+            map.setType(attrs.getValue(i));
          else if ("keyClass".equals(localName))
-            collection.setKeyType(attrs.getValue(i));
+            map.setKeyType(attrs.getValue(i));
          else if ("valueClass".equals(localName))
-            collection.setValueType(attrs.getValue(i));
+            map.setValueType(attrs.getValue(i));
       }
    }
 }

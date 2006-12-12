@@ -87,7 +87,7 @@ public class SpringSchemaBindingHelper
 
    public static void initMapHandler(TypeBinding typeBinding)
    {
-      typeBinding.setHandler(MapHandler.HANDLER);
+      typeBinding.setHandler(SpringMapHandler.HANDLER);
       // entry has an entry
       typeBinding.pushInterceptor(SpringSchemaBinding.entryQName, MapEntryInterceptor.INTERCEPTOR);
    }
