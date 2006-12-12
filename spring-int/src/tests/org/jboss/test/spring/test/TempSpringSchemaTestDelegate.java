@@ -39,7 +39,7 @@ public class TempSpringSchemaTestDelegate extends IoCTestDelegate
    public void setUp() throws Exception
    {
       super.setUp();
-      DefaultSchemaResolver defaultSchemaResolver = ((DefaultSchemaResolver) resolver);
+      DefaultSchemaResolver defaultSchemaResolver = (DefaultSchemaResolver) resolver;
       defaultSchemaResolver.addSchemaInitializer("urn:jboss:spring-beans:2.0", new SpringSchemaInitializer());
       defaultSchemaResolver.addSchemaLocation("urn:jboss:spring-beans:2.0", "mc-spring-beans_2_0.xsd");
    }
