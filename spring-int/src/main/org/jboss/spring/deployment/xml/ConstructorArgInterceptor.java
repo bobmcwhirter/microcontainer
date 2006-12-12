@@ -28,11 +28,9 @@ import java.util.List;
 import org.jboss.beans.metadata.plugins.AbstractBeanMetaData;
 import org.jboss.beans.metadata.plugins.AbstractConstructorMetaData;
 import org.jboss.beans.metadata.plugins.AbstractParameterMetaData;
-import org.jboss.beans.metadata.spi.BeanMetaDataFactory;
-import org.jboss.beans.metadata.spi.ConstructorMetaData;
 import org.jboss.beans.metadata.spi.ParameterMetaData;
-import org.jboss.xb.binding.sunday.unmarshalling.DefaultElementInterceptor;
 import org.jboss.spring.deployment.AbstractConstructorArg;
+import org.jboss.xb.binding.sunday.unmarshalling.DefaultElementInterceptor;
 
 /**
  * @author <a href="mailto:ales.justin@jboss.com">Ales Justin</a>
@@ -61,6 +59,7 @@ public class ConstructorArgInterceptor extends DefaultElementInterceptor
       }
       if (parameter instanceof AbstractConstructorArg && ((AbstractConstructorArg)parameter).isExplicitIndex() == false)
       {
+         // actual order is done in SpringBeanHandler
          parameter.setIndex(parameters.size());
       }
       parameters.add(parameter);

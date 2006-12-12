@@ -24,10 +24,16 @@ package org.jboss.spring.deployment.xml;
 import javax.xml.namespace.NamespaceContext;
 import javax.xml.namespace.QName;
 
+import java.util.List;
+import java.util.Collections;
+import java.util.Comparator;
+
 import org.jboss.beans.metadata.plugins.AbstractBeanMetaData;
 import org.jboss.beans.metadata.plugins.AbstractLifecycleMetaData;
 import org.jboss.beans.metadata.plugins.AbstractConstructorMetaData;
 import org.jboss.beans.metadata.plugins.AbstractDependencyValueMetaData;
+import org.jboss.beans.metadata.spi.ConstructorMetaData;
+import org.jboss.beans.metadata.spi.ParameterMetaData;
 import org.jboss.xb.binding.sunday.unmarshalling.DefaultElementHandler;
 import org.jboss.xb.binding.sunday.unmarshalling.ElementBinding;
 import org.xml.sax.Attributes;
@@ -74,6 +80,31 @@ public class SpringBeanHandler extends DefaultElementHandler
             if ("factory-bean".equals(localName))
                constructor.setFactory(new AbstractDependencyValueMetaData(attrs.getValue(i)));
          }
+      }
+   }
+
+   public Object endElement(Object object, QName qName, ElementBinding elementBinding)
+   {
+      AbstractBeanMetaData beanMetaData = (AbstractBeanMetaData) object;
+      ConstructorMetaData constructor = beanMetaData.getConstructor();
+      if (constructor != null)
+      {
+         List<ParameterMetaData> parameters = constructor.getParameters();
+         if (parameters != null && parameters.size() > 1)
+         {
+            Collections.sort(parameters, ParameterIndexComparator.INSTANCE);
+         }
+      }
+      return beanMetaData;
+   }
+
+   private static class ParameterIndexComparator implements Comparator<ParameterMetaData>
+   {
+      static Comparator<ParameterMetaData> INSTANCE = new ParameterIndexComparator();
+
+      public int compare(ParameterMetaData pmd1, ParameterMetaData pmd2)
+      {
+         return 0; // todo
       }
    }
 

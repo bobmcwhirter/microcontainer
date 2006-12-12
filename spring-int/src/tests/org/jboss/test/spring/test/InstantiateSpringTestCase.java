@@ -22,7 +22,7 @@
 package org.jboss.test.spring.test;
 
 import junit.framework.Test;
-import org.jboss.test.spring.support.SimpleBean;
+import org.jboss.beans.metadata.spi.BeanMetaData;
 
 /**
  * @author <a href="mailto:ales.justin@jboss.com">Ales Justin</a>
@@ -47,8 +47,8 @@ public class InstantiateSpringTestCase extends TempSpringSchemaTest
 
    public void testInstantiate() throws Exception
    {
-      SimpleBean simpleBean = unmarshal("TestInstantiate.xml", SimpleBean.class);
-      System.out.println("simpleBean = " + simpleBean);
+      BeanMetaData simpleBeanMD = unmarshal("TestInstantiate.xml", BeanMetaData.class);
+      System.out.println("simpleBean = " + simpleBeanMD);
    }
 
 }
