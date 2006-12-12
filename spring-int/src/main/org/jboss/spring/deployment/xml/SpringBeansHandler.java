@@ -52,17 +52,9 @@ public class SpringBeansHandler extends DefaultElementHandler
       {
          String localName = attrs.getLocalName(i);
          if ("default-init-method".equals(localName))
-         {
-            AbstractLifecycleMetaData create = new AbstractLifecycleMetaData();
-            create.setMethodName(attrs.getValue(i));
-            deployment.setCreate(create);
-         }
+            deployment.setCreate(new AbstractLifecycleMetaData(attrs.getValue(i)));
          else if ("default-destroy-method".equals(localName))
-         {
-            AbstractLifecycleMetaData destroy = new AbstractLifecycleMetaData();
-            destroy.setMethodName(attrs.getValue(i));
-            deployment.setDestroy(destroy);
-         }
+            deployment.setDestroy(new AbstractLifecycleMetaData(attrs.getValue(i)));
       }
    }
 

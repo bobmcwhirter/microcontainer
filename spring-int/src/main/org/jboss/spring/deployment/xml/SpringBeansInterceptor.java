@@ -22,48 +22,51 @@
 package org.jboss.spring.deployment.xml;
 
 import javax.xml.namespace.QName;
+
 import java.util.ArrayList;
 import java.util.List;
 
+import org.jboss.xb.binding.sunday.unmarshalling.DefaultElementInterceptor;
 import org.jboss.beans.metadata.plugins.AbstractBeanMetaData;
 import org.jboss.beans.metadata.plugins.AbstractConstructorMetaData;
 import org.jboss.beans.metadata.plugins.AbstractParameterMetaData;
-import org.jboss.beans.metadata.spi.BeanMetaDataFactory;
 import org.jboss.beans.metadata.spi.ConstructorMetaData;
 import org.jboss.beans.metadata.spi.ParameterMetaData;
-import org.jboss.xb.binding.sunday.unmarshalling.DefaultElementInterceptor;
+import org.jboss.beans.metadata.spi.BeanMetaDataFactory;
 import org.jboss.spring.deployment.AbstractConstructorArg;
+import org.jboss.spring.deployment.AbstractSpringDeployment;
+import org.jboss.kernel.plugins.deployment.AbstractKernelDeployment;
 
 /**
  * @author <a href="mailto:ales.justin@jboss.com">Ales Justin</a>
  */
-public class ConstructorArgInterceptor extends DefaultElementInterceptor
+public class SpringBeansInterceptor extends DefaultElementInterceptor
 {
    /**
     * The interceptor
     */
-   public static final ConstructorArgInterceptor INTERCEPTOR = new ConstructorArgInterceptor();
+   public static final SpringBeansInterceptor INTERCEPTOR = new SpringBeansInterceptor();
 
    public void add(Object parent, Object child, QName name)
    {
-      AbstractBeanMetaData bean = (AbstractBeanMetaData) parent;
-      AbstractConstructorMetaData constructor = (AbstractConstructorMetaData) bean.getConstructor();
-      if (constructor == null) {
-         constructor = new AbstractConstructorMetaData();
-         bean.setConstructor(constructor);
-      }
-      AbstractParameterMetaData parameter = (AbstractParameterMetaData) child;
-      List<ParameterMetaData> parameters = constructor.getParameters();
-      if (parameters == null)
+      AbstractSpringDeployment deployment = (AbstractSpringDeployment) parent;
+      AbstractBeanMetaData bean = (AbstractBeanMetaData) child;
+      List<BeanMetaDataFactory> beans = deployment.getBeanFactories();
+      if (beans == null)
       {
-         parameters = new ArrayList<ParameterMetaData>();
-         constructor.setParameters(parameters);
+         beans = new ArrayList<BeanMetaDataFactory>();
+         deployment.setBeanFactories(beans);
       }
-      if (parameter instanceof AbstractConstructorArg && ((AbstractConstructorArg)parameter).isExplicitIndex() == false)
+      // set deployment defaults, if not already set per bean
+      if (bean.getCreate() == null && deployment.getCreate() != null)
       {
-         parameter.setIndex(parameters.size());
+         bean.setCreate(deployment.getCreate());
       }
-      parameters.add(parameter);
+      if (bean.getDestroy() == null && deployment.getDestroy() != null)
+      {
+         bean.setDestroy(deployment.getDestroy());
+      }
+      beans.add(bean);
    }
 
 }

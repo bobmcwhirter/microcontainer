@@ -63,6 +63,11 @@ public class AbstractLifecycleMetaData extends AbstractFeatureMetaData implement
    {
    }
 
+   public AbstractLifecycleMetaData(String methodName)
+   {
+      this.methodName = methodName;
+   }
+
    public ControllerState getState()
    {
       return state;

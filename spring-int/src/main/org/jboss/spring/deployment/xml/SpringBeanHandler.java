@@ -25,6 +25,9 @@ import javax.xml.namespace.NamespaceContext;
 import javax.xml.namespace.QName;
 
 import org.jboss.beans.metadata.plugins.AbstractBeanMetaData;
+import org.jboss.beans.metadata.plugins.AbstractLifecycleMetaData;
+import org.jboss.beans.metadata.plugins.AbstractConstructorMetaData;
+import org.jboss.beans.metadata.plugins.AbstractDependencyValueMetaData;
 import org.jboss.xb.binding.sunday.unmarshalling.DefaultElementHandler;
 import org.jboss.xb.binding.sunday.unmarshalling.ElementBinding;
 import org.xml.sax.Attributes;
@@ -54,6 +57,23 @@ public class SpringBeanHandler extends DefaultElementHandler
             bean.setName(attrs.getValue(i));
          else if ("class".equals(localName))
             bean.setBean(attrs.getValue(i));
+         else if ("init-method".equals(localName))
+            bean.setCreate(new AbstractLifecycleMetaData(attrs.getValue(i)));
+         else if ("destroy-method".equals(localName))
+            bean.setDestroy(new AbstractLifecycleMetaData(attrs.getValue(i)));
+         else if ("factory-method".equals(localName) || "factory-bean".equals(localName))
+         {
+            AbstractConstructorMetaData constructor = (AbstractConstructorMetaData) bean.getConstructor();
+            if (constructor == null)
+            {
+               constructor = new AbstractConstructorMetaData();
+               bean.setConstructor(constructor);
+            }
+            if ("factory-method".equals(localName))
+               constructor.setFactoryMethod(attrs.getValue(i));
+            if ("factory-bean".equals(localName))
+               constructor.setFactory(new AbstractDependencyValueMetaData(attrs.getValue(i)));
+         }
       }
    }
 

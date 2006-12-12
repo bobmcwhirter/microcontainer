@@ -34,7 +34,7 @@ public class SpringSchemaBindingHelper
    {
       typeBinding.setHandler(SpringBeansHandler.HANDLER);
       // handle beans
-      typeBinding.pushInterceptor(SpringSchemaBinding.beansQName, DeploymentBeanInterceptor.INTERCEPTOR);
+      typeBinding.pushInterceptor(SpringSchemaBinding.beansQName, SpringBeansInterceptor.INTERCEPTOR);
       // todo alias
       // todo import
    }
@@ -103,7 +103,20 @@ public class SpringSchemaBindingHelper
 
    public static void configureValueBindings(TypeBinding typeBinding)
    {
-      //todo
+      // type has values
+      typeBinding.pushInterceptor(SpringSchemaBinding.valueQName, ValueMetaDataElementInterceptor.VALUES);
+
+      // type can take a list
+      typeBinding.pushInterceptor(SpringSchemaBinding.listQName, ValueMetaDataElementInterceptor.VALUES);
+
+      // type can take a set
+      typeBinding.pushInterceptor(SpringSchemaBinding.setQName, ValueMetaDataElementInterceptor.VALUES);
+
+      // type can take a map
+      typeBinding.pushInterceptor(SpringSchemaBinding.mapQName, ValueMetaDataElementInterceptor.VALUES);
+
+      // type has a null
+      typeBinding.pushInterceptor(SpringSchemaBinding.nullQName, NullValueElementInterceptor.NULLVALUES);
    }
 
 }
