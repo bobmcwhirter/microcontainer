@@ -31,6 +31,7 @@ import org.jboss.kernel.plugins.deployment.xml.BasicXMLDeployer;
 import org.jboss.kernel.spi.dependency.KernelController;
 import org.jboss.kernel.spi.dependency.KernelControllerContext;
 import org.jboss.kernel.spi.deployment.KernelDeployment;
+import org.jboss.kernel.spi.metadata.KernelMetaDataRepository;
 import org.jboss.test.AbstractTestDelegate;
 
 /**
@@ -122,6 +123,16 @@ public class MicrocontainerTestDelegate extends AbstractTestDelegate
    {
       KernelControllerContext context = getControllerContext(name, state);
       return context.getTarget();
+   }
+   
+   /**
+    * Get the metadata repository
+    * @return the metadata repository
+    * @throws IllegalStateException when the bean does not exist at that state
+    */
+   protected KernelMetaDataRepository getMetaDataRepository()
+   {
+      return kernel.getMetaDataRepository();
    }
    
    /**

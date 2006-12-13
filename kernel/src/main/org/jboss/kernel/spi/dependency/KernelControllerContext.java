@@ -24,9 +24,9 @@ package org.jboss.kernel.spi.dependency;
 import org.jboss.beans.info.spi.BeanInfo;
 import org.jboss.beans.metadata.spi.BeanMetaData;
 import org.jboss.kernel.Kernel;
-import org.jboss.kernel.spi.metadata.MutableMetaDataContext;
 import org.jboss.kernel.spi.registry.KernelRegistryEntry;
-import org.jboss.repository.spi.MetaDataContext;
+import org.jboss.metadata.spi.MetaData;
+import org.jboss.metadata.spi.scope.ScopeKey;
 /**
  * Information about dependencies and state.
  * 
@@ -71,16 +71,23 @@ public interface KernelControllerContext extends KernelRegistryEntry
    void setTarget(Object target);
    
    /**
-    * Get the metadata context
+    * Get the metadata
     * 
-    * @return the metadata context
+    * @return the metadata
     */
-   MutableMetaDataContext getMetaDataContext();
+   MetaData getMetaData();
    
    /**
-    * Set the metadata context
+    * Get the scope
     * 
-    * @param mctx the metadata context
+    * @return the scope
     */
-   void setMetaDataContext(MetaDataContext mctx);
+   ScopeKey getScope();
+   
+   /**
+    * Set the scope
+    * 
+    * @param key the scope key
+    */
+   void setScope(ScopeKey key);
 }

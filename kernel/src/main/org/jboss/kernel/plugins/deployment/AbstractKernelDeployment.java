@@ -23,6 +23,7 @@ package org.jboss.kernel.plugins.deployment;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.concurrent.CopyOnWriteArrayList;
 
 import org.jboss.beans.metadata.spi.BeanMetaData;
 import org.jboss.beans.metadata.spi.BeanMetaDataFactory;
@@ -31,7 +32,6 @@ import org.jboss.kernel.spi.dependency.KernelControllerContext;
 import org.jboss.kernel.spi.deployment.KernelDeployment;
 import org.jboss.util.JBossObject;
 import org.jboss.util.JBossStringBuilder;
-import org.jboss.util.collection.CollectionsFactory;
 
 /**
  * An abstract kernel deployment.
@@ -48,7 +48,7 @@ public class AbstractKernelDeployment extends JBossObject implements KernelDeplo
    protected boolean installed;
 
    /** The installed contexts */
-   protected List<KernelControllerContext> installedContexts = CollectionsFactory.createCopyOnWriteList();
+   protected List<KernelControllerContext> installedContexts = new CopyOnWriteArrayList<KernelControllerContext>();
 
    /** The beans List<BeanMetaDataFactory> */
    protected List<BeanMetaDataFactory> beanFactories;

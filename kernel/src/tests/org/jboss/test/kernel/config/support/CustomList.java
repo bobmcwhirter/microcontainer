@@ -29,7 +29,7 @@ import java.util.ArrayList;
  * @author <a href="adrian@jboss.com">Adrian Brock</a>
  * @version $Revision$
  */
-public class CustomList extends ArrayList
+public class CustomList extends ArrayList<String>
 {
    /** The serialVersionUID */
    private static final long serialVersionUID = 3762538897183683896L;

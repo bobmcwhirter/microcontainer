@@ -26,6 +26,7 @@ import java.net.URL;
 import org.jboss.dependency.spi.ControllerState;
 import org.jboss.kernel.spi.dependency.KernelControllerContext;
 import org.jboss.kernel.spi.deployment.KernelDeployment;
+import org.jboss.kernel.spi.metadata.KernelMetaDataRepository;
 import org.jboss.test.AbstractTestCaseWithSetup;
 import org.jboss.test.AbstractTestDelegate;
 
@@ -175,6 +176,17 @@ public class MicrocontainerTest extends AbstractTestCaseWithSetup
    protected void validate() throws Exception
    {
       getMCDelegate().validate();
+   }
+   
+   /**
+    * Get the metadata repository
+    * 
+    * @return the metadata repository
+    * @throws IllegalStateException when the bean does not exist at that state
+    */
+   protected KernelMetaDataRepository getMetaDataRepository()
+   {
+      return getMCDelegate().getMetaDataRepository();
    }
 
    /**

@@ -29,7 +29,7 @@ import java.util.HashMap;
  * @author <a href="adrian@jboss.com">Adrian Brock</a>
  * @version $Revision$
  */
-public class CustomMap extends HashMap
+public class CustomMap extends HashMap<String, String>
 {
    /** The serialVersionUID */
    private static final long serialVersionUID = 3762538897183683896L;

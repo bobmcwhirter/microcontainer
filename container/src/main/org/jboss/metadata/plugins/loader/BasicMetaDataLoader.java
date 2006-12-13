@@ -27,7 +27,9 @@ import org.jboss.metadata.annotation.AnnotationMatcher;
 import org.jboss.metadata.generic.GenericMatcher;
 import org.jboss.metadata.spi.retrieval.AnnotationItem;
 import org.jboss.metadata.spi.retrieval.MetaDataItem;
+import org.jboss.metadata.spi.retrieval.MetaDataRetrieval;
 import org.jboss.metadata.spi.scope.ScopeKey;
+import org.jboss.metadata.spi.signature.Signature;
 
 /**
  * BasicMetaDataLoader.
@@ -64,5 +66,10 @@ public abstract class BasicMetaDataLoader extends AbstractMetaDataLoader
    {
       MetaDataItem[] metaDatas = retrieveMetaData().getMetaDatas();
       return GenericMatcher.matchMetaDataItem(metaDatas, name);
+   }
+
+   public MetaDataRetrieval getComponentMetaDataRetrieval(Signature signature)
+   {
+      return null;
    }
 }

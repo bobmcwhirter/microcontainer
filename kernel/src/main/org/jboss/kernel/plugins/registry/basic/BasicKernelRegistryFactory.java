@@ -22,13 +22,13 @@
 package org.jboss.kernel.plugins.registry.basic;
 
 import java.util.Map;
+import java.util.concurrent.ConcurrentHashMap;
 
 import org.jboss.kernel.spi.registry.KernelRegistryEntry;
 import org.jboss.kernel.spi.registry.KernelRegistryEntryAlreadyRegisteredException;
 import org.jboss.kernel.spi.registry.KernelRegistryEntryNotFoundException;
 import org.jboss.kernel.spi.registry.KernelRegistryPlugin;
 import org.jboss.logging.Logger;
-import org.jboss.util.collection.CollectionsFactory;
 
 /**
  * Basic Kernel registry factory.
@@ -42,7 +42,7 @@ public class BasicKernelRegistryFactory implements KernelRegistryPlugin
    private static final Logger log = Logger.getLogger(BasicKernelRegistryFactory.class);
 
    /** The registred entries */
-   protected Map<Object, KernelRegistryEntry> entries = CollectionsFactory.createConcurrentReaderMap();
+   protected Map<Object, KernelRegistryEntry> entries = new ConcurrentHashMap<Object, KernelRegistryEntry>();
 
    /**
     * Create a new basic registry factory

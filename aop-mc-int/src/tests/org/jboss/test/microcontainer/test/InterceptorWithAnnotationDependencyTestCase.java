@@ -229,7 +229,7 @@ public class InterceptorWithAnnotationDependencyTestCase extends AOPMicrocontain
       SimpleBean bean = (SimpleBean) getBean(name);
       assertNotNull(bean);
       bean.someMethod();
-      assertTrue(dependency == InterceptorWithAnnotationDependency.intercepted);
+      assertTrue(dependency + "==" + InterceptorWithAnnotationDependency.intercepted, dependency == InterceptorWithAnnotationDependency.intercepted);
    }   
 
    private void checkInterceptedAndInjectedMethodAnnotatedXml(SimpleBean dependency)

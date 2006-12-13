@@ -25,16 +25,16 @@ import java.io.InputStream;
 import java.net.URL;
 import java.util.Collection;
 import java.util.Map;
+import java.util.concurrent.ConcurrentHashMap;
 
 import org.jboss.kernel.Kernel;
 import org.jboss.kernel.plugins.deployment.BasicKernelDeployer;
 import org.jboss.kernel.spi.deployment.KernelDeployment;
 import org.jboss.logging.Logger;
-import org.jboss.util.collection.CollectionsFactory;
-import org.jboss.xb.binding.sunday.unmarshalling.SingletonSchemaResolverFactory;
 import org.jboss.xb.binding.Unmarshaller;
 import org.jboss.xb.binding.UnmarshallerFactory;
 import org.jboss.xb.binding.sunday.unmarshalling.SchemaBindingResolver;
+import org.jboss.xb.binding.sunday.unmarshalling.SingletonSchemaResolverFactory;
 
 /**
  * BasicXMLDeployer.
@@ -54,7 +54,7 @@ public class BasicXMLDeployer extends BasicKernelDeployer
    private static final SchemaBindingResolver resolver = SingletonSchemaResolverFactory.getInstance().getSchemaBindingResolver();
 
    /** The deployments by url or name */
-   private Map<String, KernelDeployment> deploymentsByName = CollectionsFactory.createConcurrentReaderMap();
+   private Map<String, KernelDeployment> deploymentsByName = new ConcurrentHashMap<String, KernelDeployment>();
 
    /**
     * Create a new XML deployer

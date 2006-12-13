@@ -40,6 +40,8 @@ import org.jboss.aop.util.ClassInfoMethodHashing;
 import org.jboss.classadapter.plugins.dependency.AbstractDependencyBuilder;
 import org.jboss.classadapter.spi.ClassAdapter;
 import org.jboss.classadapter.spi.Dependency;
+import org.jboss.metadata.spi.MetaData;
+import org.jboss.metadata.spi.signature.MethodSignature;
 import org.jboss.reflect.plugins.AnnotationValueFactory;
 import org.jboss.reflect.plugins.introspection.IntrospectionTypeInfoFactoryImpl;
 import org.jboss.reflect.spi.AnnotationInfo;
@@ -51,7 +53,6 @@ import org.jboss.reflect.spi.MethodInfo;
 import org.jboss.reflect.spi.StringValue;
 import org.jboss.reflect.spi.TypeInfo;
 import org.jboss.reflect.spi.Value;
-import org.jboss.repository.spi.MetaDataContext;
 
 /**
  * Used by the AOPDependencyBuilder once the AspectManager has been installed. Finds all managed aspects that apply 
@@ -66,7 +67,7 @@ public class AOPDependencyBuilderDelegate extends AbstractDependencyBuilder
    private static final String DEPENDENCY_NAME_ATTRIBUTE = "name";
    private static final IntrospectionTypeInfoFactoryImpl typeInfoFactory = new IntrospectionTypeInfoFactoryImpl();
 
-   public List getDependencies(ClassAdapter classAdapter)
+   public List<Object> getDependencies(ClassAdapter classAdapter, MetaData metaData)
    {
       AspectManager manager = AspectManager.instance();
       try
@@ -77,10 +78,8 @@ public class AOPDependencyBuilderDelegate extends AbstractDependencyBuilder
          {
             if (manager.isNonAdvisableClassName(className))
             {
-               return super.getDependencies(classAdapter);
+               return super.getDependencies(classAdapter, metaData);
             }
-            
-            MetaDataContext metaDataContext = classAdapter.getMetaDataContext();
 
             ClassLoader loader = classAdapter.getClassLoader();
             if (loader == null)
@@ -92,7 +91,7 @@ public class AOPDependencyBuilderDelegate extends AbstractDependencyBuilder
             Advisor advisor;
             synchronized (ContainerCache.mapLock)
             {
-               ContainerCache cache = ContainerCache.initialise(manager, clazz, metaDataContext);
+               ContainerCache cache = ContainerCache.initialise(manager, clazz, metaData);
                advisor = cache.getAdvisor();
             }
             
@@ -113,7 +112,7 @@ public class AOPDependencyBuilderDelegate extends AbstractDependencyBuilder
                }
             }
             
-            HashSet<Object> annotationDependencies = getAnnotationDependencies(classInfo, metaDataContext);
+            HashSet<Object> annotationDependencies = getAnnotationDependencies(classInfo, metaData);
             depends.addAll(annotationDependencies);
             
             return depends;
@@ -127,13 +126,13 @@ public class AOPDependencyBuilderDelegate extends AbstractDependencyBuilder
       }
    }
    
-   private HashSet<Object> getAnnotationDependencies(ClassInfo classInfo, MetaDataContext metaDataContext)
+   private HashSet<Object> getAnnotationDependencies(ClassInfo classInfo, MetaData metaData)
    {
       try
       {
          HashSet<Object> dependencies = new HashSet<Object>();
-         getClassAnnotationDependencies(classInfo, metaDataContext, dependencies);
-         getMethodAnnotationDependencies(classInfo, metaDataContext, dependencies);
+         getClassAnnotationDependencies(classInfo, metaData, dependencies);
+         getMethodAnnotationDependencies(classInfo, metaData, dependencies);
          return dependencies;
       }
       catch (RuntimeException e)
@@ -146,12 +145,12 @@ public class AOPDependencyBuilderDelegate extends AbstractDependencyBuilder
       }
    }
 
-   private void getClassAnnotationDependencies(ClassInfo classInfo, MetaDataContext metaDataContext, HashSet<Object> dependencies) throws Exception
+   private void getClassAnnotationDependencies(ClassInfo classInfo, MetaData metaData, HashSet<Object> dependencies) throws Exception
    {
       HashMap<String, ArrayList<String>> realMap = new HashMap<String, ArrayList<String>>();
       getRealClassAnnotationDependencies(classInfo, realMap);
       HashMap<String, ArrayList<String>> metaMap = new HashMap<String, ArrayList<String>>();
-      getMetaDataContextClassAnnotationDependencies(metaDataContext, metaMap);
+      getMetaDataClassAnnotationDependencies(metaData, metaMap);
       addAllDependenciesToSet(dependencies, realMap, metaMap);
    }
    
@@ -165,19 +164,18 @@ public class AOPDependencyBuilderDelegate extends AbstractDependencyBuilder
       }
    }
    
-   private void getMetaDataContextClassAnnotationDependencies(MetaDataContext metaDataContext, HashMap<String, ArrayList<String>> dependencies) throws Exception
+   private void getMetaDataClassAnnotationDependencies(MetaData metaData, HashMap<String, ArrayList<String>> dependencies) throws Exception
    {
-      if (metaDataContext != null)
+      if (metaData != null)
       {
-         for (Iterator it = metaDataContext.getAnnotations().iterator() ; it.hasNext() ; )
+         for (Object annotation : metaData.getAnnotations())
          {
-            Object annotation = it.next();
             getDependenciesForMetaDataAnnotation(annotation, dependencies);
          }
       }
    }
    
-   private void getMethodAnnotationDependencies(ClassInfo classInfo, MetaDataContext metaDataContext, HashSet<Object> dependencies) throws Exception
+   private void getMethodAnnotationDependencies(ClassInfo classInfo, MetaData metaData, HashSet<Object> dependencies) throws Exception
    {
       Map methodMap = ClassInfoMethodHashing.getMethodMap(classInfo);
       if (methodMap != null)
@@ -190,7 +188,7 @@ public class AOPDependencyBuilderDelegate extends AbstractDependencyBuilder
                HashMap<String, ArrayList<String>> classMap = new HashMap<String, ArrayList<String>>();
                getRealMethodAnnotationDependencies(method, classMap);
                HashMap<String, ArrayList<String>> overrideMap = new HashMap<String, ArrayList<String>>();
-               getMetaDataContextMethodAnnotationDependencies(method, metaDataContext, overrideMap);
+               getMetaDataMethodAnnotationDependencies(method, metaData, overrideMap);
                addAllDependenciesToSet(dependencies, classMap, overrideMap);
             }
          }
@@ -209,16 +207,21 @@ public class AOPDependencyBuilderDelegate extends AbstractDependencyBuilder
       }
    }
    
-   private void getMetaDataContextMethodAnnotationDependencies(MethodInfo method, MetaDataContext metaDataContext, HashMap<String, ArrayList<String>> dependencies) throws Exception
+   private void getMetaDataMethodAnnotationDependencies(MethodInfo method, MetaData metaData, HashMap<String, ArrayList<String>> dependencies) throws Exception
    {
-      if (metaDataContext != null)
+      if (metaData != null)
       {
-         long hash = ClassInfoMethodHashing.methodHash(method);
-         List methodAnnotations = metaDataContext.getAnnotationsForMethod(hash);
-         for (Iterator it = methodAnnotations.iterator() ; it.hasNext() ; )
+         TypeInfo[] typeInfos = method.getParameterTypes();
+         Class[] params = new Class[typeInfos.length];
+         for (int i = 0; i < typeInfos.length; ++i)
+            params[i] = typeInfos[i].getType();
+         MetaData methodMetaData = metaData.getComponentMetaData(new MethodSignature(method.getName(), params));
+         if (methodMetaData != null)
          {
-            Object annotation = it.next();
-            getDependenciesForMetaDataAnnotation(annotation, dependencies);
+            for (Object annotation : methodMetaData.getAnnotations())
+            {
+               getDependenciesForMetaDataAnnotation(annotation, dependencies);
+            }
          }
       }
    }

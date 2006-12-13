@@ -23,11 +23,11 @@ package org.jboss.kernel.plugins.deployment;
 
 import java.util.List;
 import java.util.ListIterator;
+import java.util.concurrent.CopyOnWriteArrayList;
 
 import org.jboss.kernel.Kernel;
 import org.jboss.kernel.spi.deployment.KernelDeployment;
 import org.jboss.logging.Logger;
-import org.jboss.util.collection.CollectionsFactory;
 
 /**
  * BasicKernelDeployer.<p>
@@ -44,7 +44,7 @@ public class BasicKernelDeployer extends AbstractKernelDeployer
    private static final Logger log = Logger.getLogger(BasicKernelDeployer.class);
 
    /** The deployments */
-   protected List<KernelDeployment> deployments = CollectionsFactory.createCopyOnWriteList();
+   protected List<KernelDeployment> deployments = new CopyOnWriteArrayList<KernelDeployment>();
 
    /**
     * Create a new BasicKernelDeployer.

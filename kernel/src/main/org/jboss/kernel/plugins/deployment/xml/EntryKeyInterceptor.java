@@ -23,7 +23,6 @@ package org.jboss.kernel.plugins.deployment.xml;
 
 import javax.xml.namespace.QName;
 
-import org.jboss.beans.metadata.spi.ValueMetaData;
 import org.jboss.xb.binding.sunday.unmarshalling.DefaultElementInterceptor;
 
 /**
@@ -40,6 +39,6 @@ public class EntryKeyInterceptor extends DefaultElementInterceptor
    public void add(Object parent, Object child, QName name)
    {
       MapEntry entry = (MapEntry) parent;
-      entry.key = (ValueMetaData) child;
+      entry.key =  child;
    }
 }

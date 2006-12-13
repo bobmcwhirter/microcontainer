@@ -24,13 +24,13 @@ package org.jboss.kernel.plugins.registry;
 import java.util.Iterator;
 import java.util.List;
 import java.util.ListIterator;
+import java.util.concurrent.CopyOnWriteArrayList;
 
 import org.jboss.kernel.plugins.AbstractKernelObject;
 import org.jboss.kernel.spi.registry.KernelRegistry;
 import org.jboss.kernel.spi.registry.KernelRegistryEntry;
 import org.jboss.kernel.spi.registry.KernelRegistryEntryNotFoundException;
 import org.jboss.kernel.spi.registry.KernelRegistryPlugin;
-import org.jboss.util.collection.CollectionsFactory;
 
 /**
  * Abstract Kernel registry.
@@ -42,7 +42,7 @@ import org.jboss.util.collection.CollectionsFactory;
 public abstract class AbstractKernelRegistry extends AbstractKernelObject implements KernelRegistry
 {
    /** The registry factories */
-   protected List<KernelRegistryPlugin> factories = CollectionsFactory.createCopyOnWriteList();
+   protected List<KernelRegistryPlugin> factories = new CopyOnWriteArrayList<KernelRegistryPlugin>();
 
    /**
     * Create an abstract kernel registry

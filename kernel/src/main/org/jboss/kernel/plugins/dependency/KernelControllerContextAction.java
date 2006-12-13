@@ -28,8 +28,12 @@ import org.jboss.dependency.plugins.spi.action.ControllerContextAction;
 import org.jboss.dependency.spi.ControllerContext;
 import org.jboss.joinpoint.spi.Joinpoint;
 import org.jboss.kernel.plugins.config.Configurator;
+import org.jboss.kernel.spi.dependency.KernelController;
 import org.jboss.kernel.spi.dependency.KernelControllerContext;
+import org.jboss.kernel.spi.metadata.KernelMetaDataRepository;
 import org.jboss.logging.Logger;
+import org.jboss.metadata.spi.MetaData;
+import org.jboss.metadata.spi.stack.MetaDataStack;
 
 /**
  * KernelControllerContextAction.
@@ -39,6 +43,10 @@ import org.jboss.logging.Logger;
  */
 public class KernelControllerContextAction implements ControllerContextAction
 {
+   /** Static log */
+   private static final Logger staticLog = Logger.getLogger(KernelControllerContextAction.class);
+   
+   /** The log */
    protected Logger log = Logger.getLogger(getClass());
 
    /** 
@@ -59,37 +67,53 @@ public class KernelControllerContextAction implements ControllerContextAction
          AbstractKernelControllerContext theContext = (AbstractKernelControllerContext) context;
          access = theContext.getAccessControlContext();
       }
-
-      // Dispatch with the bean class loader if it exists
-      ClassLoader tcl = Thread.currentThread().getContextClassLoader();
+      
+      KernelController controller = (KernelController) context.getController();
+      KernelMetaDataRepository repository = controller.getKernel().getMetaDataRepository();
+      MetaData md = repository.getMetaData(context);
+      if (md != null)
+         MetaDataStack.push(md);
+      else
+         staticLog.warn("NO METADATA! for " + context.getName() + " with scope " + context.getScope());
       try
       {
-         if( cl != null && access == null )
-            Thread.currentThread().setContextClassLoader(cl);
-         if (access == null)
+         
+         // Dispatch with the bean class loader if it exists
+         ClassLoader tcl = Thread.currentThread().getContextClassLoader();
+         try
          {
-            return joinpoint.dispatch();
+            if( cl != null && access == null )
+               Thread.currentThread().setContextClassLoader(cl);
+            if (access == null)
+            {
+               return joinpoint.dispatch();
+            }
+            else
+            {
+               DispatchJoinPoint action = new DispatchJoinPoint(joinpoint);
+               try
+               {
+                  return AccessController.doPrivileged(action, access);
+               }
+               catch (PrivilegedActionException e)
+               {
+                  throw e.getCause();
+               }
+            }
          }
-         else
+         finally
          {
-            DispatchJoinPoint action = new DispatchJoinPoint(joinpoint);
-            try
-            {
-               return AccessController.doPrivileged(action, access);
-            }
-            catch (PrivilegedActionException e)
-            {
-               throw e.getCause();
-            }
+            if( cl != null && access == null )
+               Thread.currentThread().setContextClassLoader(tcl);
          }
       }
       finally
       {
-         if( cl != null && access == null )
-            Thread.currentThread().setContextClassLoader(tcl);
+         if (md != null)
+            MetaDataStack.pop();
       }
    }
-
+   
    public void install(final ControllerContext context) throws Throwable
    {
       if (System.getSecurityManager() == null || context instanceof AbstractKernelControllerContext == false)

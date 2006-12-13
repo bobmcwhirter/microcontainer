@@ -25,6 +25,8 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
+import java.util.concurrent.ConcurrentHashMap;
+import java.util.concurrent.CopyOnWriteArrayList;
 
 import org.jboss.beans.metadata.spi.BeanMetaData;
 import org.jboss.beans.metadata.spi.SupplyMetaData;
@@ -41,7 +43,6 @@ import org.jboss.kernel.spi.event.KernelEventListener;
 import org.jboss.kernel.spi.registry.KernelRegistry;
 import org.jboss.kernel.spi.registry.KernelRegistryEntry;
 import org.jboss.kernel.spi.registry.KernelRegistryPlugin;
-import org.jboss.util.collection.CollectionsFactory;
 
 /**
  * Abstract Kernel controller.
@@ -58,10 +59,10 @@ public class AbstractKernelController extends AbstractController implements Kern
    protected AbstractEventEmitter emitterDelegate = new AbstractEventEmitter();
 
    /** The supplies */
-   protected Map<Object, List<KernelControllerContext>> suppliers = CollectionsFactory.createConcurrentReaderMap();
+   protected Map<Object, List<KernelControllerContext>> suppliers = new ConcurrentHashMap<Object, List<KernelControllerContext>>();
 
    /** The contexts by class Map<Class, Set<ControllerContext>> */
-   protected Map<Class, ClassContext> contextsByClass = CollectionsFactory.createConcurrentReaderMap();
+   protected Map<Class, ClassContext> contextsByClass = new ConcurrentHashMap<Class, ClassContext>();
 
    /**
     * Create an abstract kernel controller
@@ -133,7 +134,7 @@ public class AbstractKernelController extends AbstractController implements Kern
                   List<KernelControllerContext> list = suppliers.get(supply);
                   if (list == null)
                   {
-                     list = CollectionsFactory.createCopyOnWriteList();
+                     list = new CopyOnWriteArrayList<KernelControllerContext>();
                      suppliers.put(supply, list);
                   }
                   list.add(context);

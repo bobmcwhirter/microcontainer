@@ -46,6 +46,7 @@ public abstract class AbstractIoCTest extends AbstractTestCaseWithSetup
    /**
     * Unmarshal some xml
     *
+    * @param <T> the expected type
     * @param name the name
     * @param expected the expected type
     * @return the unmarshalled object

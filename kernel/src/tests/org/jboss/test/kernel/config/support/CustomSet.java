@@ -29,7 +29,7 @@ import java.util.HashSet;
  * @author <a href="adrian@jboss.com">Adrian Brock</a>
  * @version $Revision$
  */
-public class CustomSet extends HashSet
+public class CustomSet extends HashSet<String>
 {
    /** The serialVersionUID */
    private static final long serialVersionUID = 3762538897183683896L;

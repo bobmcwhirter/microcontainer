@@ -22,7 +22,11 @@
 package org.jboss.kernel.spi.metadata;
 
 import org.jboss.kernel.spi.KernelObject;
+import org.jboss.kernel.spi.dependency.KernelControllerContext;
+import org.jboss.metadata.spi.MetaData;
 import org.jboss.metadata.spi.repository.MutableMetaDataRepository;
+import org.jboss.metadata.spi.retrieval.MetaDataRetrieval;
+import org.jboss.metadata.spi.scope.ScopeKey;
 
 /**
  * KernelMetaDataRepository.
@@ -38,4 +42,52 @@ public interface KernelMetaDataRepository extends KernelObject
     * @return the meta data repository
     */
    MutableMetaDataRepository getMetaDataRepository();
+
+   /**
+    * Get MetaData
+    * 
+    * @param context the context
+    * @return the metadata
+    */
+   MetaData getMetaData(KernelControllerContext context);
+
+   /**
+    * Get the MetaData retrieval
+    * 
+    * @param context the context
+    * @return the metadata retrieval
+    */
+   MetaDataRetrieval getMetaDataRetrieval(KernelControllerContext context);
+   
+   /**
+    * Add metadata to the bean.
+    * 
+    * @param context the context
+    * @param beanMetaData the bean metadata
+    * @param beanInfo the bean info
+    */
+   void addMetaData(KernelControllerContext context);
+
+   /**
+    * Remove any previously added metadata
+    * 
+    * @param context the context
+    */
+   void removeMetaData(KernelControllerContext context);
+
+   /**
+    * Get the default scope for a context
+    * 
+    * @param context the context
+    * @return the default scope
+    */
+   ScopeKey getFullScope(KernelControllerContext context);
+   
+   /**
+    * Get the mutable scope for a context
+    * 
+    * @param context the context
+    * @return the default scope
+    */
+   ScopeKey getMutableScope(KernelControllerContext context);
 }

@@ -34,8 +34,6 @@ import org.jboss.kernel.plugins.config.Configurator;
 import org.jboss.kernel.spi.config.KernelConfigurator;
 import org.jboss.kernel.spi.dependency.KernelController;
 import org.jboss.kernel.spi.dependency.KernelControllerContext;
-import org.jboss.repository.spi.MetaDataContext;
-import org.jboss.reflect.spi.AnnotationValue;
 import org.jboss.reflect.spi.MethodInfo;
 
 /**
@@ -180,7 +178,7 @@ public abstract class LifecycleAction extends KernelControllerContextAction
       }
       catch (Throwable throwable)
       {
-         log.warn("Error during " + method, throwable);
+         log.warn("Error during " + method + " for " + context.getName(), throwable);
       }
    }
 

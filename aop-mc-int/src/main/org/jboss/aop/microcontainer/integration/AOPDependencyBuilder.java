@@ -26,6 +26,7 @@ import java.util.List;
 import org.jboss.classadapter.plugins.dependency.AbstractDependencyBuilder;
 import org.jboss.classadapter.spi.ClassAdapter;
 import org.jboss.classadapter.spi.DependencyBuilder;
+import org.jboss.metadata.spi.MetaData;
 
 /**
  * The existence of this class is the signal to the kernel that we want to use the aop-mc integration.
@@ -40,14 +41,14 @@ public class AOPDependencyBuilder extends AbstractDependencyBuilder
 {
    DependencyBuilder delegate;
    
-   public List getDependencies(ClassAdapter classAdapter)
+   public List<Object> getDependencies(ClassAdapter classAdapter, MetaData metaData)
    {
       DependencyBuilder builder = getDependencyBuilderDelegate(classAdapter);
       if (builder == null)
       {
-         return super.getDependencies(classAdapter);
+         return super.getDependencies(classAdapter, metaData);
       }
-      return delegate.getDependencies(classAdapter);
+      return delegate.getDependencies(classAdapter, metaData);
    }
    
    private synchronized DependencyBuilder getDependencyBuilderDelegate(ClassAdapter classAdapter)

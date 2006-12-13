@@ -24,7 +24,6 @@ package org.jboss.aop.microcontainer.integration;
 import org.jboss.joinpoint.spi.JoinpointFactory;
 import org.jboss.joinpoint.spi.JoinpointFactoryBuilder;
 import org.jboss.reflect.spi.ClassInfo;
-import org.jboss.repository.spi.MetaDataContext;
 
 /**
  * AOPJoinpointFactoryBuilder.
@@ -34,13 +33,8 @@ import org.jboss.repository.spi.MetaDataContext;
  */
 public class AOPJoinpointFactoryBuilder implements JoinpointFactoryBuilder
 {
-   public JoinpointFactory createJoinpointFactory(ClassInfo classInfo, MetaDataContext metaDataContext)
-   {
-      return new AOPJoinpointFactory(classInfo, metaDataContext);
-   }
-
    public JoinpointFactory createJoinpointFactory(ClassInfo classInfo)
    {
-      return createJoinpointFactory(classInfo, null);
+      return new AOPJoinpointFactory(classInfo);
    }
 }

@@ -21,27 +21,19 @@
 */
 package org.jboss.kernel.plugins.dependency;
 
-import java.util.Iterator;
 import java.util.List;
-import java.util.Set;
 
 import org.jboss.beans.info.spi.BeanInfo;
-import org.jboss.beans.metadata.spi.AnnotationMetaData;
 import org.jboss.beans.metadata.spi.BeanMetaData;
-import org.jboss.beans.metadata.spi.PropertyMetaData;
 import org.jboss.dependency.plugins.AbstractDependencyItem;
-import org.jboss.dependency.spi.ControllerContext;
 import org.jboss.dependency.spi.ControllerState;
 import org.jboss.dependency.spi.DependencyInfo;
 import org.jboss.kernel.Kernel;
 import org.jboss.kernel.spi.config.KernelConfigurator;
 import org.jboss.kernel.spi.dependency.KernelController;
 import org.jboss.kernel.spi.dependency.KernelControllerContext;
-import org.jboss.kernel.spi.metadata.MutableMetaDataContext;
-import org.jboss.metadata.spi.repository.MetaDataRepository;
-import org.jboss.repository.spi.KernelRepository;
-import org.jboss.repository.spi.MetaDataContext;
-import org.jboss.repository.spi.MetaDataContextFactory;
+import org.jboss.kernel.spi.metadata.KernelMetaDataRepository;
+import org.jboss.metadata.spi.MetaData;
 
 /**
  * DescribeAction.
@@ -63,112 +55,66 @@ public class DescribeAction extends KernelControllerContextAction
          BeanInfo info = configurator.getBeanInfo(metaData);
          context.setBeanInfo(info);
 
-         info = addAnnotations(context, metaData, info);
-
-         DependencyInfo depends = context.getDependencyInfo();
-         // add custom dependencies (e.g. AOP layer).
-         List<Object> dependencies = info.getDependencies();
-         if (dependencies != null)
+         MetaData md = addMetaData(context);
+         try
          {
-            for (Object dependencyName : dependencies)
+            DependencyInfo depends = context.getDependencyInfo();
+            // add custom dependencies (e.g. AOP layer).
+            List<Object> dependencies = info.getDependencies(md);
+            log.trace("Extra dependencies for " + context.getName() + " " + dependencies);
+            if (dependencies != null)
             {
-               AbstractDependencyItem dependency = new AbstractDependencyItem(metaData.getName(), dependencyName, ControllerState.INSTANTIATED, ControllerState.INSTALLED);
-               depends.addIDependOn(dependency);
+               for (Object dependencyName : dependencies)
+               {
+                  AbstractDependencyItem dependency = new AbstractDependencyItem(metaData.getName(), dependencyName, ControllerState.INSTANTIATED, ControllerState.INSTALLED);
+                  depends.addIDependOn(dependency);
+               }
             }
+         }
+         catch (Throwable t)
+         {
+            removeMetaData(context);
+            throw t;
          }
       }
    }
 
    public void uninstallAction(KernelControllerContext context)
    {
-      context.setMetaDataContext(null);
+      removeMetaData(context);
       context.setBeanInfo(null);
    }
 
    /**
-    * Adds annotations to the bean. If annotations are added, returns the bean info for the instance
-    * @return The class bean info if no annotations exist or the instance bean info if annotations exist
+    * Adds annotations to the bean.
+    * 
+    * @param context the context
+    * @return the metadata
     */
-   private BeanInfo addAnnotations(KernelControllerContext context, BeanMetaData beanMetaData, BeanInfo beanInfo)
+   private MetaData addMetaData(KernelControllerContext context)
    {
-      MutableMetaDataContext metaCtx = addClassAnnotations(context, beanMetaData, beanInfo);
-      addPropertyAnnotations(metaCtx, context, beanMetaData, beanInfo);
-      return context.getBeanInfo();
+      KernelController controller = (KernelController) context.getController();
+      KernelMetaDataRepository repository = controller.getKernel().getMetaDataRepository();
+      repository.addMetaData(context);
+      return repository.getMetaData(context);
    }
 
-   private MutableMetaDataContext addClassAnnotations(KernelControllerContext context, BeanMetaData beanMetaData, BeanInfo beanInfo)
+   /**
+    * Remove any previously added metadata
+    * 
+    * @param context the context
+    */
+   private void removeMetaData(KernelControllerContext context)
    {
-      Set<AnnotationMetaData> annotations = beanMetaData.getAnnotations();
-
-      MutableMetaDataContext metaCtx = null;
-
-      if (annotations != null && annotations.size() > 0)
+      try
       {
-         metaCtx = getMetaDataContext(context);
-         if (metaCtx != null)
-         {
-            metaCtx.addAnnotations(annotations);
-         }
+         KernelController controller = (KernelController) context.getController();
+         KernelMetaDataRepository repository = controller.getKernel().getMetaDataRepository();
+         repository.removeMetaData(context);
       }
-
-      return metaCtx;
+      catch (Throwable ignored)
+      {
+         log.warn("Unexpected error removing metadata: ", ignored);
+      }
    }
-
-   private MutableMetaDataContext addPropertyAnnotations(MutableMetaDataContext metaCtx, KernelControllerContext context, BeanMetaData beanMetaData, BeanInfo beanInfo)
-   {
-      Set properties = beanMetaData.getProperties();
-
-      if (properties != null && properties.size() > 0)
-      {
-         for (Iterator it = properties.iterator() ; it.hasNext() ; )
-         {
-            PropertyMetaData property = (PropertyMetaData)it.next();
-            Set propertyAnnotations = property.getAnnotations();
-            if (propertyAnnotations != null && propertyAnnotations.size() > 0)
-            {
-               if (metaCtx == null)
-               {
-                  metaCtx = getMetaDataContext(context);
-               }
-               if (metaCtx != null)
-               {
-                  Set propertyInfos = beanInfo.getProperties();
-                  if (propertyInfos != null && propertyInfos.size() > 0)
-                  {
-                     metaCtx.addPropertyAnnotations(property.getName(), beanInfo.getProperties(), propertyAnnotations);
-                  }
-               }
-            }
-         }
-      }
-
-      return metaCtx;
-   }
-
-   private MutableMetaDataContext getMetaDataContext(KernelControllerContext context)
-   {
-      //TODO: Hardcoding this doesn't feel right...
-      ControllerContext repCtx = context.getController().getContext("Repository", ControllerState.INSTALLED);
-
-      if (repCtx == null)
-      {
-         log.warn("You have defined annotations for bean '" + context.getName() + "', but no MetaDataRepository has been installed under the name 'Repository'");
-         return null;
-      }
-
-      MetaDataRepository repository = (MetaDataRepository)repCtx.getTarget();
-      MetaDataContextFactory metaFactory = context.getBeanInfo().getMetaDataContextFactory();
-      ClassLoader beanLoader = context.getBeanInfo().getClassInfo().getType().getClassLoader();
-      MetaDataContext metaCtx = metaFactory.getMetaDataContext(beanLoader, repository, (String)context.getName());
-      
-      if (metaCtx instanceof MutableMetaDataContext == false)
-      {
-         throw new RuntimeException("MetaDataContext must be mutable");
-      }
-         
-      context.setMetaDataContext(metaCtx);
-
-      return (MutableMetaDataContext)metaCtx;
-   }
-
 }

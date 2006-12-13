@@ -32,9 +32,10 @@ import org.jboss.aop.proxy.container.AOPProxyFactoryParameters;
 import org.jboss.aop.proxy.container.ContainerCache;
 import org.jboss.aop.proxy.container.GeneratedAOPProxyFactory;
 import org.jboss.joinpoint.plugins.BasicConstructorJoinPoint;
+import org.jboss.metadata.spi.MetaData;
+import org.jboss.metadata.spi.stack.MetaDataStack;
 import org.jboss.reflect.spi.ConstructorInfo;
 import org.jboss.reflect.spi.TypeInfo;
-import org.jboss.repository.spi.MetaDataContext;
 
 /**
  * An AOPConstructorJoinpoint.
@@ -48,18 +49,15 @@ import org.jboss.repository.spi.MetaDataContext;
 public class AOPConstructorJoinpoint extends BasicConstructorJoinPoint
 {
    AOPProxyFactory proxyFactory = new GeneratedAOPProxyFactory();
-
-   MetaDataContext metaDataContext;
    
    /**
     * Create a new AOPConstructorJoinpoint.
     *
     * @param constructorInfo the constructor info
     */
-   public AOPConstructorJoinpoint(ConstructorInfo constructorInfo, MetaDataContext metaDataContext)
+   public AOPConstructorJoinpoint(ConstructorInfo constructorInfo)
    {
       super(constructorInfo);
-      this.metaDataContext = metaDataContext;
    }
 
    public Object dispatch() throws Throwable
@@ -70,16 +68,25 @@ public class AOPConstructorJoinpoint extends BasicConstructorJoinPoint
       {
          return super.dispatch();
       }
-      ContainerCache cache = ContainerCache.initialise(manager, clazz, metaDataContext);
-      AOPProxyFactoryParameters params = new AOPProxyFactoryParameters();
-      Object target = createTarget(cache, params);
+      MetaData metaData = MetaDataStack.peek();
+      MetaDataStack.mask();
+      try
+      {
+         ContainerCache cache = ContainerCache.initialise(manager, clazz, metaData);
+         AOPProxyFactoryParameters params = new AOPProxyFactoryParameters();
+         Object target = createTarget(cache, params);
 
-      params.setProxiedClass(target.getClass());
-      params.setMetaDataContext(metaDataContext);
-      params.setTarget(target);
-      params.setContainerCache(cache);
-
-      return proxyFactory.createAdvisedProxy(params);
+         params.setProxiedClass(target.getClass());
+         params.setMetaDataContext(metaData);
+         params.setTarget(target);
+         params.setContainerCache(cache);
+         
+         return proxyFactory.createAdvisedProxy(params);
+      }
+      finally
+      {
+         MetaDataStack.unmask();
+      }
    }
 
    private Object createTarget(ContainerCache cache, AOPProxyFactoryParameters params) throws Throwable

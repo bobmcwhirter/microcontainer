@@ -25,13 +25,14 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.ListIterator;
 import java.util.Map;
+import java.util.concurrent.ConcurrentHashMap;
+import java.util.concurrent.CopyOnWriteArrayList;
 
 import org.jboss.kernel.spi.event.KernelEvent;
 import org.jboss.kernel.spi.event.KernelEventEmitter;
 import org.jboss.kernel.spi.event.KernelEventFilter;
 import org.jboss.kernel.spi.event.KernelEventListener;
 import org.jboss.logging.Logger;
-import org.jboss.util.collection.CollectionsFactory;
 
 /**
  * Abstract Event emitter.
@@ -57,7 +58,7 @@ public class AbstractEventEmitter implements KernelEventEmitter
    };
 
    /** The registry Map<filter, Map<handback, List<listener>>>*/
-   protected Map<KernelEventFilter, Map<Object, List<KernelEventListener>>> eventListenerRegistry = CollectionsFactory.createConcurrentReaderMap();
+   protected Map<KernelEventFilter, Map<Object, List<KernelEventListener>>> eventListenerRegistry = new ConcurrentHashMap<KernelEventFilter, Map<Object,List<KernelEventListener>>>();
 
    /** The sequence number of this emitter */
    private long emitterSequence = 0;
@@ -74,6 +75,10 @@ public class AbstractEventEmitter implements KernelEventEmitter
 
    /**
     * Make a new event
+    * 
+    * @param type the event type
+    * @param context the context
+    * @return the event
     */
    public KernelEvent createEvent(String type, Object context)
    {
@@ -90,13 +95,13 @@ public class AbstractEventEmitter implements KernelEventEmitter
          Map<Object, List<KernelEventListener>> handbacks = eventListenerRegistry.get(filterObject);
          if (handbacks == null)
          {
-            handbacks = CollectionsFactory.createConcurrentReaderMap();
+            handbacks = new ConcurrentHashMap<Object, List<KernelEventListener>>();
             eventListenerRegistry.put(filterObject, handbacks);
          }
          List<KernelEventListener> listeners = handbacks.get(handbackObject);
          if (listeners == null)
          {
-            listeners = CollectionsFactory.createCopyOnWriteList();
+            listeners = new CopyOnWriteArrayList<KernelEventListener>();
             handbacks.put(handbackObject, listeners);
          }
          listeners.add(listener);

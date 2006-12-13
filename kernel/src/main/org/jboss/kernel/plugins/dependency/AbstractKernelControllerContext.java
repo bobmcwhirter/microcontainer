@@ -42,8 +42,10 @@ import org.jboss.dependency.spi.DependencyItem;
 import org.jboss.kernel.Kernel;
 import org.jboss.kernel.spi.dependency.KernelController;
 import org.jboss.kernel.spi.dependency.KernelControllerContext;
-import org.jboss.kernel.spi.metadata.MutableMetaDataContext;
-import org.jboss.repository.spi.MetaDataContext;
+import org.jboss.kernel.spi.metadata.KernelMetaDataRepository;
+import org.jboss.metadata.spi.MetaData;
+import org.jboss.metadata.spi.repository.MetaDataRepository;
+import org.jboss.metadata.spi.scope.ScopeKey;
 import org.jboss.util.JBossStringBuilder;
 
 /**
@@ -54,36 +56,27 @@ import org.jboss.util.JBossStringBuilder;
  */
 public class AbstractKernelControllerContext extends AbstractControllerContext implements KernelControllerContext
 {
-   /**
-    * The default actions
-    */
+   /** The default actions */
    private static final KernelControllerContextActions actions = KernelControllerContextActions.getInstance();
 
-   /**
-    * The no instantiate actions
-    */
+   /** The no instantiate actions */
    private static final KernelControllerContextActions noInstantiate = KernelControllerContextActions.getNoInstantiate();
 
-   /**
-    * The BeanInfo
-    */
+   /** The BeanInfo */
    protected BeanInfo info;
 
-   /**
-    * The meta data
-    */
+   /** The meta data */
    protected BeanMetaData metaData;
 
-   /**
-    * The access control context
-    */
+   /** The access control context */
    protected AccessControlContext accessContext;
 
-   /**
-    * Did we do a describeVisit
-    */
+   /** Did we do a describeVisit */
    protected boolean isDescribeProcessed;
 
+   /** The scope */
+   protected ScopeKey scope;
+   
    /**
     * Create an abstract controller context
     *
@@ -133,6 +126,35 @@ public class AbstractKernelControllerContext extends AbstractControllerContext i
       return metaData;
    }
 
+   public MetaData getMetaData()
+   {
+      KernelController controller = (KernelController) getController();
+      if (controller == null)
+         throw new IllegalStateException("Context is not associated with a controller");
+      MetaDataRepository repository = controller.getKernel().getMetaDataRepository().getMetaDataRepository();
+      ScopeKey scope = getScope();
+      return repository.getMetaData(scope);
+   }
+
+   public ScopeKey getScope()
+   {
+      if (scope == null)
+      {
+         // Bootstrap (probably not really a good idea?)
+         KernelController controller = (KernelController) getController();
+         if (controller == null)
+            return null;
+         KernelMetaDataRepository repository = controller.getKernel().getMetaDataRepository();
+         scope = repository.getFullScope(this);
+      }
+      return scope;
+   }
+   
+   public void setScope(ScopeKey key)
+   {
+      this.scope = key;
+   }
+
    public void toString(JBossStringBuilder buffer)
    {
       if (metaData != null)
@@ -171,28 +193,6 @@ public class AbstractKernelControllerContext extends AbstractControllerContext i
       DescribedMetaDataVisitor visitor = new DescribedMetaDataVisitor(metaData);
       AccessController.doPrivileged(visitor);
       isDescribeProcessed = true;
-   }
-
-   public MutableMetaDataContext getMetaDataContext()
-   {
-      if (info != null)
-      {
-         try
-         {
-            return (MutableMetaDataContext)info.getMetaDataContext();
-         }
-         catch (ClassCastException e)
-         {
-            throw new RuntimeException("MetaDataContext must be an instance of MutableMetaDataContext");
-         }
-      }
-      return null;
-   }
-
-   public void setMetaDataContext(MetaDataContext mctx)
-   {
-      info = info.getInstanceInfo();
-      info.setMetaDataContext(mctx);
    }
 
    /**
