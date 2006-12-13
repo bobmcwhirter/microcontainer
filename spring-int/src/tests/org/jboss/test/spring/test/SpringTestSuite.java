@@ -40,7 +40,7 @@ public class SpringTestSuite extends TestSuite
    {
       TestSuite suite = new TestSuite("Spring Tests");
 
-      suite.addTest(InstantiateSpringTestCase.suite());
+      suite.addTest(DescribeSpringTestCase.suite());
 
       return suite;
    }

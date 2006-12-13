@@ -27,10 +27,10 @@ import org.jboss.beans.metadata.spi.BeanMetaData;
 /**
  * @author <a href="mailto:ales.justin@jboss.com">Ales Justin</a>
  */
-public class InstantiateSpringTestCase extends TempSpringSchemaTest
+public class DescribeSpringTestCase extends TempSpringSchemaTest
 {
 
-   public InstantiateSpringTestCase(String name)
+   public DescribeSpringTestCase(String name)
    {
       super(name);
    }
@@ -42,12 +42,13 @@ public class InstantiateSpringTestCase extends TempSpringSchemaTest
     */
    public static Test suite()
    {
-      return suite(InstantiateSpringTestCase.class);
+      return suite(DescribeSpringTestCase.class);
    }
 
-   public void testInstantiate() throws Exception
+   public void testDescribe() throws Exception
    {
       BeanMetaData simpleBeanMD = unmarshal("TestInstantiate.xml", BeanMetaData.class);
+      // todo - test descriptions
       System.out.println("simpleBean = " + simpleBeanMD);
    }
 
