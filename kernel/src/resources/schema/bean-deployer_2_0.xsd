@@ -505,7 +505,7 @@ $Id$
          </xsd:documentation>
       </xsd:annotation>
       <xsd:choice>
-         <xsd:element name="bean" type="beanType"/>
+         <!--<xsd:element name="bean" type="beanType"/>-->
          <xsd:element name="value" type="plainValueType"/>
          <xsd:element name="inject" type="injectionType"/>
          <xsd:element name="collection" type="collectionType"/>
