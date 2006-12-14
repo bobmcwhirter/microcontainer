@@ -105,7 +105,7 @@ public class SpringSchemaBinding
    /**
     * The list binding
     */
-   public static final QName listTypeQName = new QName(SPRING_DEPLOYER_NS, "listOrSetType");
+   public static final QName listOrSetTypeQName = new QName(SPRING_DEPLOYER_NS, "listOrSetType");
 
    /**
     * The list element name
@@ -222,7 +222,7 @@ public class SpringSchemaBinding
       SpringSchemaBindingHelper.initValueHandler(valueType);
 
       // list or set
-      TypeBinding collectionType = schemaBinding.getType(listTypeQName);
+      TypeBinding collectionType = schemaBinding.getType(listOrSetTypeQName);
       SpringSchemaBindingHelper.initCollectionHandler(collectionType);
 
       // map
