@@ -52,7 +52,7 @@
       <include name="jboss-microcontainer-test14.jar"/>
    </fileset>
 </path>
-<!-- kernel -->
+<!-- aop-int -->
 <property name="jboss.aop-mc-int.root" value="${project.root}/aop-mc-int"/>
 <property name="jboss.aop-mc-int.lib" value="${jboss.aop-mc-int.root}/output/lib"/>
 <path id="jboss.aop-mc-int.classpath">
@@ -66,6 +66,11 @@
       <include name="jboss-aop-mc-int14.jar"/>
    </fileset>
 </path>
-
-
-
+<!-- spring-int -->
+<property name="jboss.spring-int.root" value="${project.root}/spring-int"/>
+<property name="jboss.spring-int.lib" value="${jboss.spring-int.root}/output/lib"/>
+<path id="jboss.spring-int.classpath">
+   <fileset dir="${jboss.spring-int.lib}">
+      <include name="jboss-spring-int.jar"/>
+   </fileset>
+</path>
