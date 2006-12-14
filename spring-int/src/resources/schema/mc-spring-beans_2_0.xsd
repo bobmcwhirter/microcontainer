@@ -79,12 +79,12 @@ $Id: mc-spring-beans_2_0.xsd 56471 2006-08-31 10:44:05 +0200 (Pon, 11 dec 2006) 
 
    <xsd:complexType name="beansType">
       <xsd:sequence>
-         <xsd:element ref="description" minOccurs="0"/>
+         <xsd:element name="description" type="descriptionType" minOccurs="0"/>
 
          <xsd:choice minOccurs="0" maxOccurs="unbounded">
-            <xsd:element ref="import"/>
-            <xsd:element ref="alias"/>
-            <xsd:element ref="bean"/>
+            <xsd:element name="import" type="importType"/>
+            <xsd:element name="alias" type="aliasType"/>
+            <xsd:element name="bean" type="beanType"/>
             <xsd:any namespace="##other" processContents="strict" minOccurs="0" maxOccurs="unbounded"/>
          </xsd:choice>
       </xsd:sequence>
@@ -161,7 +161,7 @@ The default 'destroy-method' value; see the documentation for the
 
    </xsd:complexType>
 
-   <xsd:element name="description">
+   <xsd:element name="description" type="descriptionType">
       <xsd:annotation>
          <xsd:documentation><![CDATA[
 	Contains informative text describing the purpose of the enclosing
@@ -169,77 +169,78 @@ The default 'destroy-method' value; see the documentation for the
 	Used primarily for user documentation of XML bean definition documents.
 			]]></xsd:documentation>
       </xsd:annotation>
-      <xsd:complexType mixed="true">
-         <xsd:choice minOccurs="0" maxOccurs="unbounded"/>
-
-      </xsd:complexType>
    </xsd:element>
 
-   <xsd:element name="import">
+   <xsd:complexType name="descriptionType" mixed="true">
+      <xsd:choice minOccurs="0" maxOccurs="unbounded"/>
+   </xsd:complexType>
+
+   <xsd:element name="import" type="importType">
       <xsd:annotation>
          <xsd:documentation source="java:org.springframework.core.io.Resource"><![CDATA[
 	Specifies an XML bean definition resource to import.
 			]]></xsd:documentation>
       </xsd:annotation>
-      <xsd:complexType>
-         <xsd:complexContent>
-
-            <xsd:restriction base="xsd:anyType">
-               <xsd:attribute name="resource" type="xsd:string" use="required">
-                  <xsd:annotation>
-                     <xsd:documentation><![CDATA[
-	The relative resource location of the XML (bean definition) file to import,
-	for example "myImport.xml" or "includes/myImport.xml" or "../myImport.xml".
-							]]></xsd:documentation>
-                  </xsd:annotation>
-               </xsd:attribute>
-            </xsd:restriction>
-         </xsd:complexContent>
-      </xsd:complexType>
-
    </xsd:element>
 
-   <xsd:element name="alias">
+   <xsd:complexType name="importType">
+      <xsd:complexContent>
+
+         <xsd:restriction base="xsd:anyType">
+            <xsd:attribute name="resource" type="xsd:string" use="required">
+               <xsd:annotation>
+                  <xsd:documentation><![CDATA[
+The relative resource location of the XML (bean definition) file to import,
+for example "myImport.xml" or "includes/myImport.xml" or "../myImport.xml".
+                  ]]></xsd:documentation>
+               </xsd:annotation>
+            </xsd:attribute>
+         </xsd:restriction>
+      </xsd:complexContent>
+   </xsd:complexType>
+
+   <xsd:element name="alias" type="aliasType">
       <xsd:annotation>
          <xsd:documentation><![CDATA[
 	Defines an alias for a bean (which can reside in a different definition
 	resource).
 			]]></xsd:documentation>
       </xsd:annotation>
-      <xsd:complexType>
-         <xsd:complexContent>
-            <xsd:restriction base="xsd:anyType">
-
-               <xsd:attribute name="name" type="xsd:string" use="required">
-                  <xsd:annotation>
-                     <xsd:documentation><![CDATA[
-	The name of the bean to define an alias for.
-							]]></xsd:documentation>
-                  </xsd:annotation>
-               </xsd:attribute>
-               <xsd:attribute name="alias" type="xsd:string" use="required">
-                  <xsd:annotation>
-                     <xsd:documentation><![CDATA[
-	The alias name to define for the bean.
-							]]></xsd:documentation>
-                  </xsd:annotation>
-
-               </xsd:attribute>
-            </xsd:restriction>
-         </xsd:complexContent>
-      </xsd:complexType>
    </xsd:element>
+
+   <xsd:complexType name="aliasType">
+      <xsd:complexContent>
+         <xsd:restriction base="xsd:anyType">
+
+            <xsd:attribute name="name" type="xsd:string" use="required">
+               <xsd:annotation>
+                  <xsd:documentation><![CDATA[
+The name of the bean to define an alias for.
+                  ]]></xsd:documentation>
+               </xsd:annotation>
+            </xsd:attribute>
+            <xsd:attribute name="alias" type="xsd:string" use="required">
+               <xsd:annotation>
+                  <xsd:documentation><![CDATA[
+The alias name to define for the bean.
+                  ]]></xsd:documentation>
+               </xsd:annotation>
+
+            </xsd:attribute>
+         </xsd:restriction>
+      </xsd:complexContent>
+   </xsd:complexType>
 
    <xsd:group name="beanElements">
       <xsd:sequence>
-         <xsd:element ref="description" minOccurs="0"/>
+         <xsd:element name="description" type="descriptionType" minOccurs="0"/>
 
          <xsd:choice minOccurs="0" maxOccurs="unbounded">
-            <xsd:element ref="meta"/>
-            <xsd:element ref="constructor-arg"/>
-            <xsd:element ref="property"/>
-            <xsd:element ref="lookup-method"/>
-            <xsd:element ref="replaced-method"/>
+            <xsd:element name="meta" type="metaType"/>
+            <xsd:element name="constructor-arg" type="constructorArgType"/>
+            <xsd:element name="property" type="propertyType"/>
+            <xsd:element name="lookup-method" type="lookup-methodType"/>
+            <xsd:element name="replaced-method" type="replaced-methodType"/>
             <xsd:any namespace="##other" processContents="strict" minOccurs="0" maxOccurs="unbounded"/>
          </xsd:choice>
       </xsd:sequence>
@@ -590,18 +591,18 @@ The default 'destroy-method' value; see the documentation for the
    <xsd:complexType name="constructorArgType">
       <xsd:sequence>
 
-         <xsd:element ref="description" minOccurs="0"/>
+         <xsd:element name="description" type="descriptionType" minOccurs="0"/>
          <xsd:choice minOccurs="0" maxOccurs="1">
-            <xsd:element ref="bean"/>
-            <xsd:element ref="ref"/>
-            <xsd:element ref="idref"/>
-            <xsd:element ref="value"/>
-            <xsd:element ref="null"/>
-            <xsd:element ref="list"/>
-            <xsd:element ref="set"/>
+            <xsd:element name="bean" type="beanType"/>
+            <xsd:element name="ref" type="refType"/>
+            <xsd:element name="idref" type="idrefType"/>
+            <xsd:element name="value" type="valueType"/>
+            <xsd:element name="null" type="nullType"/>
+            <xsd:element name="list" type="listOrSetType"/>
+            <xsd:element name="set" type="listOrSetType"/>
 
-            <xsd:element ref="map"/>
-            <xsd:element ref="props"/>
+            <xsd:element name="map" type="mapType"/>
+            <xsd:element name="props" type="propsType"/>
             <xsd:any namespace="##other" processContents="strict"/>
          </xsd:choice>
       </xsd:sequence>
@@ -653,7 +654,7 @@ element.
       </xsd:annotation>
    </xsd:element>
 
-   <xsd:element name="lookup-method">
+   <xsd:element name="lookup-method" type="lookup-methodType">
       <xsd:annotation>
          <xsd:documentation><![CDATA[
 	A lookup method causes the IoC container to override the given method
@@ -665,33 +666,34 @@ element.
 			]]></xsd:documentation>
 
       </xsd:annotation>
-      <xsd:complexType>
-         <xsd:complexContent>
-            <xsd:restriction base="xsd:anyType">
-               <xsd:attribute name="name" type="xsd:string">
-                  <xsd:annotation>
-                     <xsd:documentation><![CDATA[
-	The name of the lookup method. This method must take no arguments.
-							]]></xsd:documentation>
-                  </xsd:annotation>
-               </xsd:attribute>
-
-               <xsd:attribute name="bean" type="xsd:string">
-                  <xsd:annotation>
-                     <xsd:documentation><![CDATA[
-	The name of the bean in the current or ancestor factories that
-	the lookup method should resolve to. Often this bean will be a
-	prototype, in which case the lookup method will return a distinct
-	instance on every invocation. This is useful for single-threaded objects.
-							]]></xsd:documentation>
-                  </xsd:annotation>
-               </xsd:attribute>
-            </xsd:restriction>
-         </xsd:complexContent>
-      </xsd:complexType>
    </xsd:element>
 
-   <xsd:element name="replaced-method">
+   <xsd:complexType name="lookup-methodType">
+      <xsd:complexContent>
+         <xsd:restriction base="xsd:anyType">
+            <xsd:attribute name="name" type="xsd:string">
+               <xsd:annotation>
+                  <xsd:documentation><![CDATA[
+The name of the lookup method. This method must take no arguments.
+                  ]]></xsd:documentation>
+               </xsd:annotation>
+            </xsd:attribute>
+
+            <xsd:attribute name="bean" type="xsd:string">
+               <xsd:annotation>
+                  <xsd:documentation><![CDATA[
+The name of the bean in the current or ancestor factories that
+the lookup method should resolve to. Often this bean will be a
+prototype, in which case the lookup method will return a distinct
+instance on every invocation. This is useful for single-threaded objects.
+                  ]]></xsd:documentation>
+               </xsd:annotation>
+            </xsd:attribute>
+         </xsd:restriction>
+      </xsd:complexContent>
+   </xsd:complexType>
+
+   <xsd:element name="replaced-method" type="replaced-methodType">
       <xsd:annotation>
          <xsd:documentation><![CDATA[
 	Similar to the lookup method mechanism, the replaced-method element
@@ -699,38 +701,39 @@ element.
 	This mechanism allows the overriding of a method with arbitrary code.
 			]]></xsd:documentation>
       </xsd:annotation>
-      <xsd:complexType>
-         <xsd:sequence>
-            <xsd:choice minOccurs="0" maxOccurs="unbounded">
-               <xsd:element ref="arg-type"/>
-
-            </xsd:choice>
-         </xsd:sequence>
-         <xsd:attribute name="name" type="xsd:string">
-            <xsd:annotation>
-               <xsd:documentation><![CDATA[
-	The name of the method whose implementation must be replaced by the
-	IoC container. If this method is not overloaded, there is no need
-	to use arg-type subelements. If this method is overloaded, arg-type
-	subelements must be used for all override definitions for the method.
-					]]></xsd:documentation>
-            </xsd:annotation>
-         </xsd:attribute>
-         <xsd:attribute name="replacer" type="xsd:string">
-            <xsd:annotation>
-
-               <xsd:documentation source="java:org.springframework.beans.factory.support.MethodReplacer"><![CDATA[
-	Bean name of an implementation of the MethodReplacer interface in the
-	current or ancestor factories. This may be a singleton or prototype
-	bean. If it is a prototype, a new instance will be used for each
-	method replacement. Singleton usage is the norm.
-					]]></xsd:documentation>
-            </xsd:annotation>
-         </xsd:attribute>
-      </xsd:complexType>
    </xsd:element>
 
-   <xsd:element name="arg-type">
+   <xsd:complexType name="replaced-methodType">
+      <xsd:sequence>
+         <xsd:choice minOccurs="0" maxOccurs="unbounded">
+            <xsd:element name="arg-type" type="argType"/>
+
+         </xsd:choice>
+      </xsd:sequence>
+      <xsd:attribute name="name" type="xsd:string">
+         <xsd:annotation>
+            <xsd:documentation><![CDATA[
+The name of the method whose implementation must be replaced by the
+IoC container. If this method is not overloaded, there is no need
+to use arg-type subelements. If this method is overloaded, arg-type
+subelements must be used for all override definitions for the method.
+            ]]></xsd:documentation>
+         </xsd:annotation>
+      </xsd:attribute>
+      <xsd:attribute name="replacer" type="xsd:string">
+         <xsd:annotation>
+
+            <xsd:documentation source="java:org.springframework.beans.factory.support.MethodReplacer"><![CDATA[
+Bean name of an implementation of the MethodReplacer interface in the
+current or ancestor factories. This may be a singleton or prototype
+bean. If it is a prototype, a new instance will be used for each
+method replacement. Singleton usage is the norm.
+            ]]></xsd:documentation>
+         </xsd:annotation>
+      </xsd:attribute>
+   </xsd:complexType>
+
+   <xsd:element name="arg-type" type="argType">
       <xsd:annotation>
          <xsd:documentation><![CDATA[
 	Identifies an argument for a replaced method in the event of
@@ -738,26 +741,27 @@ element.
 			]]></xsd:documentation>
 
       </xsd:annotation>
-      <xsd:complexType mixed="true">
-         <xsd:choice minOccurs="0" maxOccurs="unbounded"/>
-         <xsd:attribute name="match" type="xsd:string">
-            <xsd:annotation>
-               <xsd:documentation><![CDATA[
-	Specification of the type of an overloaded method argument as a String.
-	For convenience, this may be a substring of the FQN. E.g. all the
-	following would match "java.lang.String":
-	- java.lang.String
-	- String
-	- Str
-
-	As the number of arguments will be checked also, this convenience
-	can often be used to save typing.
-					]]></xsd:documentation>
-            </xsd:annotation>
-         </xsd:attribute>
-      </xsd:complexType>
 
    </xsd:element>
+
+   <xsd:complexType name="argType" mixed="true">
+      <xsd:choice minOccurs="0" maxOccurs="unbounded"/>
+      <xsd:attribute name="match" type="xsd:string">
+         <xsd:annotation>
+            <xsd:documentation><![CDATA[
+Specification of the type of an overloaded method argument as a String.
+For convenience, this may be a substring of the FQN. E.g. all the
+following would match "java.lang.String":
+- java.lang.String
+- String
+- Str
+
+As the number of arguments will be checked also, this convenience
+can often be used to save typing.
+            ]]></xsd:documentation>
+         </xsd:annotation>
+      </xsd:attribute>
+   </xsd:complexType>
 
    <xsd:element name="ref" type="refType">
       <xsd:annotation>
@@ -801,7 +805,7 @@ The name of the referenced bean *in a parent factory*.
       </xsd:complexContent>
    </xsd:complexType>
 
-   <xsd:element name="idref">
+   <xsd:element name="idref" type="idrefType">
       <xsd:annotation>
          <xsd:documentation><![CDATA[
 	The id of another bean in this factory or an external factory
@@ -811,31 +815,32 @@ The name of the referenced bean *in a parent factory*.
 	bean ids by the XML parser, and name completion by supporting tools.
 			]]></xsd:documentation>
       </xsd:annotation>
-      <xsd:complexType>
-         <xsd:complexContent>
-            <xsd:restriction base="xsd:anyType">
-
-               <xsd:attribute name="bean" type="xsd:string">
-                  <xsd:annotation>
-                     <xsd:documentation><![CDATA[
-	The name of the referenced bean.
-							]]></xsd:documentation>
-                  </xsd:annotation>
-               </xsd:attribute>
-               <xsd:attribute name="local" type="xsd:IDREF">
-                  <xsd:annotation>
-                     <xsd:documentation><![CDATA[
-	The name of the referenced bean. The value must be a bean ID,
-	and thus can be checked by the XML parser, thus should be preferred
-	for references within the same bean factory XML file.
-							]]></xsd:documentation>
-                  </xsd:annotation>
-
-               </xsd:attribute>
-            </xsd:restriction>
-         </xsd:complexContent>
-      </xsd:complexType>
    </xsd:element>
+
+   <xsd:complexType name="idrefType">
+      <xsd:complexContent>
+         <xsd:restriction base="xsd:anyType">
+
+            <xsd:attribute name="bean" type="xsd:string">
+               <xsd:annotation>
+                  <xsd:documentation><![CDATA[
+The name of the referenced bean.
+                  ]]></xsd:documentation>
+               </xsd:annotation>
+            </xsd:attribute>
+            <xsd:attribute name="local" type="xsd:IDREF">
+               <xsd:annotation>
+                  <xsd:documentation><![CDATA[
+The name of the referenced bean. The value must be a bean ID,
+and thus can be checked by the XML parser, thus should be preferred
+for references within the same bean factory XML file.
+                  ]]></xsd:documentation>
+               </xsd:annotation>
+
+            </xsd:attribute>
+         </xsd:restriction>
+      </xsd:complexContent>
+   </xsd:complexType>
 
    <xsd:element name="value" type="valueType">
       <xsd:annotation>
@@ -868,7 +873,7 @@ too generic: for example, in case of a collection element.
       </xsd:attribute>
    </xsd:complexType>
 
-   <xsd:element name="null">
+   <xsd:element name="null" type="nullType">
       <xsd:annotation>
          <xsd:documentation><![CDATA[
 	Denotes a Java null value. Necessary because an empty "value" tag
@@ -876,26 +881,26 @@ too generic: for example, in case of a collection element.
 	null value unless a special PropertyEditor does so.
 			]]></xsd:documentation>
       </xsd:annotation>
-      <xsd:complexType mixed="true">
-         <xsd:choice minOccurs="0" maxOccurs="unbounded"/>
-      </xsd:complexType>
 
    </xsd:element>
+
+   <xsd:complexType name="nullType" mixed="true">
+      <xsd:choice minOccurs="0" maxOccurs="unbounded"/>
+   </xsd:complexType>
 
    <!-- Collection Elements -->
    <xsd:group name="collectionElements">
       <xsd:sequence>
          <xsd:choice minOccurs="0" maxOccurs="unbounded">
-            <xsd:element ref="bean"/>
-            <xsd:element ref="ref"/>
-            <xsd:element ref="idref"/>
-
-            <xsd:element ref="value"/>
-            <xsd:element ref="null"/>
-            <xsd:element ref="list"/>
-            <xsd:element ref="set"/>
-            <xsd:element ref="map"/>
-            <xsd:element ref="props"/>
+            <xsd:element name="bean" type="beanType"/>
+            <xsd:element name="ref" type="refType"/>
+            <xsd:element name="idref" type="idrefType"/>
+            <xsd:element name="value" type="valueType"/>
+            <xsd:element name="null" type="nullType"/>
+            <xsd:element name="list" type="listOrSetType"/>
+            <xsd:element name="set" type="listOrSetType"/>
+            <xsd:element name="map" type="mapType"/>
+            <xsd:element name="props" type="propsType"/>
             <xsd:any namespace="##other" processContents="strict" minOccurs="0" maxOccurs="unbounded"/>
          </xsd:choice>
       </xsd:sequence>
@@ -960,42 +965,42 @@ too generic: for example, in case of a collection element.
       <xsd:group ref="collectionElements"/>
    </xsd:complexType>
 
-   <xsd:element name="prop">
+   <xsd:element name="prop" type="propType">
       <xsd:annotation>
          <xsd:documentation><![CDATA[
 	The string value of the property. Note that whitespace is trimmed
 	off to avoid unwanted whitespace caused by typical XML formatting.
 			]]></xsd:documentation>
       </xsd:annotation>
-      <xsd:complexType mixed="true">
-         <xsd:choice minOccurs="0" maxOccurs="unbounded"/>
-         <xsd:attribute name="key" type="xsd:string" use="required">
-            <xsd:annotation>
-
-               <xsd:documentation><![CDATA[
-	The key of the property entry.
-					]]></xsd:documentation>
-            </xsd:annotation>
-         </xsd:attribute>
-      </xsd:complexType>
    </xsd:element>
+
+   <xsd:complexType name="propType" mixed="true">
+      <xsd:choice minOccurs="0" maxOccurs="unbounded"/>
+      <xsd:attribute name="key" type="xsd:string" use="required">
+         <xsd:annotation>
+
+            <xsd:documentation><![CDATA[
+The key of the property entry.
+            ]]></xsd:documentation>
+         </xsd:annotation>
+      </xsd:attribute>
+   </xsd:complexType>
 
    <xsd:complexType name="propertyType">
       <xsd:sequence>
-         <xsd:element ref="description" minOccurs="0"/>
+         <xsd:element name="description" type="descriptionType" minOccurs="0"/>
 
          <xsd:choice minOccurs="0" maxOccurs="1">
-            <xsd:element ref="meta"/>
-            <xsd:element ref="bean"/>
-            <xsd:element ref="ref"/>
-            <xsd:element ref="idref"/>
-            <xsd:element ref="value"/>
-            <xsd:element ref="null"/>
-            <xsd:element ref="list"/>
-            <xsd:element ref="set"/>
-
-            <xsd:element ref="map"/>
-            <xsd:element ref="props"/>
+            <xsd:element name="meta" type="metaType"/>
+            <xsd:element name="bean" type="beanType"/>
+            <xsd:element name="ref" type="refType"/>
+            <xsd:element name="idref" type="idrefType"/>
+            <xsd:element name="value" type="valueType"/>
+            <xsd:element name="null" type="nullType"/>
+            <xsd:element name="list" type="listOrSetType"/>
+            <xsd:element name="set" type="listOrSetType"/>
+            <xsd:element name="map" type="mapType"/>
+            <xsd:element name="props" type="propsType"/>
             <xsd:any namespace="##other" processContents="strict"/>
          </xsd:choice>
       </xsd:sequence>
@@ -1062,7 +1067,7 @@ too generic: for example, in case of a collection element.
          <xsd:extension base="typedCollectionType">
             <xsd:sequence>
                <xsd:choice minOccurs="0" maxOccurs="unbounded">
-                  <xsd:element ref="entry"/>
+                  <xsd:element name="entry" type="entryType"/>
                </xsd:choice>
             </xsd:sequence>
 
@@ -1081,7 +1086,7 @@ too generic: for example, in case of a collection element.
    <!-- 'entry' element type -->
    <xsd:complexType name="entryType">
       <xsd:sequence>
-         <xsd:element ref="key" minOccurs="0"/>
+         <xsd:element name="key" type="keyType" minOccurs="0"/>
          <xsd:group ref="collectionElements"/>
       </xsd:sequence>
       <xsd:attribute name="key" type="xsd:string">
@@ -1134,7 +1139,7 @@ too generic: for example, in case of a collection element.
          <xsd:extension base="baseCollectionType">
             <xsd:sequence>
                <xsd:choice minOccurs="0" maxOccurs="unbounded">
-                  <xsd:element ref="prop"/>
+                  <xsd:element name="prop" type="propType"/>
                </xsd:choice>
 
             </xsd:sequence>
