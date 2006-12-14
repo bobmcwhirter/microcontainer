@@ -52,6 +52,7 @@ public class RefHandler extends DefaultElementHandler
          String localName = attrs.getLocalName(i);
          if ("bean".equals(localName))
             value.setValue(attrs.getValue(i));
+         // todo local, parent
       }
    }
 

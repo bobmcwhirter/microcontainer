@@ -34,9 +34,9 @@ public class SimpleBean
    private int x;
    private double y;
    private String s;
-   private List list;
-   private Set set;
-   private Map map;
+   private List mylist;
+   private Set myset;
+   private Map mymap;
 
    public SimpleBean()
    {
@@ -49,34 +49,34 @@ public class SimpleBean
       this.s = s;
    }
 
-   public List getList()
+   public List getMylist()
    {
-      return list;
+      return mylist;
    }
 
-   public void setList(List list)
+   public void setMylist(List mylist)
    {
-      this.list = list;
+      this.mylist = mylist;
    }
 
-   public Set getSet()
+   public Set getMyset()
    {
-      return set;
+      return myset;
    }
 
-   public void setSet(Set set)
+   public void setMyset(Set myset)
    {
-      this.set = set;
+      this.myset = myset;
    }
 
-   public Map getMap()
+   public Map getMymap()
    {
-      return map;
+      return mymap;
    }
 
-   public void setMap(Map map)
+   public void setMymap(Map mymap)
    {
-      this.map = map;
+      this.mymap = mymap;
    }
 
 }

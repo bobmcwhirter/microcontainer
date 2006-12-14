@@ -44,7 +44,6 @@ public class SpringCollectionHandler extends DefaultElementHandler
    public Object startElement(Object parent, QName name, ElementBinding element)
    {
       String typeName = element.getQName().getLocalPart();
-      // todo - does this work?
       if ("list".equals(typeName))
          return new AbstractListMetaData();
       else if ("set".equals(typeName))

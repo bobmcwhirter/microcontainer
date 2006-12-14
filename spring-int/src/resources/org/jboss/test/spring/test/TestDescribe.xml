@@ -4,14 +4,14 @@
    <constructor-arg index="2"><value>SpringBean</value></constructor-arg>
    <constructor-arg index="0"><value>1</value></constructor-arg>
    <constructor-arg index="1"><value>3.1415</value></constructor-arg>
-   <property name="list">
+   <property name="mylist">
       <list value-type="java.lang.String">
          <value>one</value>
          <value>two</value>
          <value>three</value>
       </list>
    </property>
-   <property name="set">
+   <property name="myset">
       <set value-type="java.lang.String">
          <value>one</value>
          <value>two</value>
@@ -23,7 +23,7 @@
          <key>
             <value>key</value>
          </key>
-         <value>key</value>
+         <value>myvalue</value>
       </entry>
    </property>
 </bean>

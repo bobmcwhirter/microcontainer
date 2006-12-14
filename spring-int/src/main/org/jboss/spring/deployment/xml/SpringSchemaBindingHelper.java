@@ -21,8 +21,8 @@
 */
 package org.jboss.spring.deployment.xml;
 
-import org.jboss.xb.binding.sunday.unmarshalling.TypeBinding;
 import org.jboss.kernel.plugins.deployment.xml.*;
+import org.jboss.xb.binding.sunday.unmarshalling.TypeBinding;
 
 /**
  * @author <a href="mailto:ales.justin@jboss.com">Ales Justin</a>
@@ -71,13 +71,12 @@ public class SpringSchemaBindingHelper
       configureValueBindings(typeBinding);
    }
 
+   // here value only takes simple type
    public static void initValueHandler(TypeBinding typeBinding)
    {
       typeBinding.setHandler(PlainValueHandler.HANDLER);
       // value can take characters
       typeBinding.setSimpleType(PlainValueCharactersHandler.HANDLER);
-      // configure
-      configureValueBindings(typeBinding);
    }
 
    public static void initCollectionHandler(TypeBinding typeBinding)
@@ -99,19 +98,44 @@ public class SpringSchemaBindingHelper
       typeBinding.setHandler(EntryHandler.HANDLER);
       // entry has a key
       typeBinding.pushInterceptor(SpringSchemaBinding.keyQName, EntryKeyInterceptor.INTERCEPTOR);
-      // entry has a value
+
+      // entry has bean
+      typeBinding.pushInterceptor(SpringSchemaBinding.beanQName, EntryValueInterceptor.INTERCEPTOR);
+
+      // entry has ref
+      typeBinding.pushInterceptor(SpringSchemaBinding.refQName, EntryValueInterceptor.INTERCEPTOR);
+
+      // entry has value
       typeBinding.pushInterceptor(SpringSchemaBinding.valueQName, EntryValueInterceptor.INTERCEPTOR);
+
+      // entry can take a list
+      typeBinding.pushInterceptor(SpringSchemaBinding.listQName, EntryValueInterceptor.INTERCEPTOR);
+
+      // entry can take a set
+      typeBinding.pushInterceptor(SpringSchemaBinding.setQName, EntryValueInterceptor.INTERCEPTOR);
+
+      // entry can take a map
+      typeBinding.pushInterceptor(SpringSchemaBinding.mapQName, EntryValueInterceptor.INTERCEPTOR);
+
+      // entry has a null
+      typeBinding.pushInterceptor(SpringSchemaBinding.nullQName, EntryValueInterceptor.INTERCEPTOR);
    }
 
    public static void initKeyHandler(TypeBinding typeBinding)
    {
       typeBinding.setHandler(SpringMapKeyHandler.HANDLER);
       // key has a value
-      typeBinding.pushInterceptor(SpringSchemaBinding.valueQName, ValueMetaDataElementInterceptor.VALUES);
+      configureValueBindings(typeBinding);
    }
 
    public static void configureValueBindings(TypeBinding typeBinding)
    {
+      // type has beans
+      typeBinding.pushInterceptor(SpringSchemaBinding.beanQName, ValueMetaDataElementInterceptor.VALUES);
+
+      // type has refs
+      typeBinding.pushInterceptor(SpringSchemaBinding.refQName, ValueMetaDataElementInterceptor.VALUES);
+
       // type has values
       typeBinding.pushInterceptor(SpringSchemaBinding.valueQName, ValueMetaDataElementInterceptor.VALUES);
 
