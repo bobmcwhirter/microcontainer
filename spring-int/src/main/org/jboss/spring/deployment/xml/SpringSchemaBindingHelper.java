@@ -96,6 +96,7 @@ public class SpringSchemaBindingHelper
    public static void initEntryHandler(TypeBinding typeBinding)
    {
       typeBinding.setHandler(EntryHandler.HANDLER);
+
       // entry has a key
       typeBinding.pushInterceptor(SpringSchemaBinding.keyQName, EntryKeyInterceptor.INTERCEPTOR);
 
