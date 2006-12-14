@@ -128,6 +128,26 @@ public class SpringSchemaBinding
    public static final QName mapQName = new QName(SPRING_DEPLOYER_NS, "map");
 
    /**
+    * The props binding
+    */
+   public static final QName propsTypeQName = new QName(SPRING_DEPLOYER_NS, "propsType");
+
+   /**
+    * The props element name
+    */
+   public static final QName propsQName = new QName(SPRING_DEPLOYER_NS, "props");
+
+   /**
+    * The props binding
+    */
+   public static final QName propTypeQName = new QName(SPRING_DEPLOYER_NS, "propType");
+
+   /**
+    * The prop element name
+    */
+   public static final QName propQName = new QName(SPRING_DEPLOYER_NS, "prop");
+
+   /**
     * The entry binding
     */
    public static final QName entryTypeQName = new QName(SPRING_DEPLOYER_NS, "entryType");
@@ -216,6 +236,14 @@ public class SpringSchemaBinding
       // key type
       TypeBinding keyType = schemaBinding.getType(entryTypeQName);
       SpringSchemaBindingHelper.initKeyHandler(keyType);
+
+      // props
+      TypeBinding propsType = schemaBinding.getType(propsTypeQName);
+      SpringSchemaBindingHelper.initPropsHandler(propsType);
+
+      // prop
+      TypeBinding propType = schemaBinding.getType(propTypeQName);
+      SpringSchemaBindingHelper.initPropHandler(propType);
    }
 
 }

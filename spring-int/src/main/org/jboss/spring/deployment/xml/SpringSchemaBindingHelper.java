@@ -93,6 +93,13 @@ public class SpringSchemaBindingHelper
       typeBinding.pushInterceptor(SpringSchemaBinding.entryQName, MapEntryInterceptor.INTERCEPTOR);
    }
 
+   public static void initPropsHandler(TypeBinding typeBinding)
+   {
+      typeBinding.setHandler(PropertiesHandler.HANDLER);
+      // props
+      typeBinding.pushInterceptor(SpringSchemaBinding.propQName, MapEntryInterceptor.INTERCEPTOR);
+   }
+
    public static void initEntryHandler(TypeBinding typeBinding)
    {
       typeBinding.setHandler(EntryHandler.HANDLER);
@@ -120,6 +127,13 @@ public class SpringSchemaBindingHelper
 
       // entry has a null
       typeBinding.pushInterceptor(SpringSchemaBinding.nullQName, EntryValueInterceptor.INTERCEPTOR);
+   }
+
+   public static void initPropHandler(TypeBinding typeBinding)
+   {
+      typeBinding.setHandler(PropHandler.HANDLER);
+      // property takes characters
+      typeBinding.setSimpleType(PropertyCharactersHandler.HANDLER);
    }
 
    public static void initKeyHandler(TypeBinding typeBinding)

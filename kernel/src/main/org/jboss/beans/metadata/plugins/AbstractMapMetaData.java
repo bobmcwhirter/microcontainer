@@ -30,7 +30,6 @@ import org.jboss.beans.metadata.spi.ValueMetaData;
 import org.jboss.joinpoint.spi.Joinpoint;
 import org.jboss.reflect.spi.ClassInfo;
 import org.jboss.reflect.spi.TypeInfo;
-import org.jboss.util.JBossStringBuilder;
 
 /**
  * Map metadata.
@@ -96,9 +95,14 @@ public class AbstractMapMetaData extends AbstractTypeMetaData implements Map<Met
       this.valueType = valueType;
    }
 
+   protected Class<? extends Map> expectedMapClass()
+   {
+      return Map.class;
+   }
+
    public Object getValue(TypeInfo info, ClassLoader cl) throws Throwable
    {
-      Map<Object, Object> result = getMapInstance(info, cl, Map.class);
+      Map<Object, Object> result = getMapInstance(info, cl, expectedMapClass());
       if (result == null)
          result = getDefaultMapInstance();
 
@@ -162,8 +166,7 @@ public class AbstractMapMetaData extends AbstractTypeMetaData implements Map<Met
 
    public void putAll(Map<? extends MetaDataVisitorNode, ? extends MetaDataVisitorNode> t)
    {
-      putAll(t);
-
+      map.putAll(t);
    }
 
    public MetaDataVisitorNode remove(Object key)
@@ -211,11 +214,6 @@ public class AbstractMapMetaData extends AbstractTypeMetaData implements Map<Met
          }
       }
       return super.getType(visitor, previous);
-   }
-
-   public void toString(JBossStringBuilder buffer)
-   {
-      super.toString(buffer);
    }
 
    /**
