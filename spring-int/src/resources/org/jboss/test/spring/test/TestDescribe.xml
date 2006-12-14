@@ -18,7 +18,6 @@
          <value>one</value>
       </set>
    </property>
-<!--
    <property name="map">
       <entry>
          <key>
@@ -27,5 +26,4 @@
          <value>key</value>
       </entry>
    </property>
--->
 </bean>

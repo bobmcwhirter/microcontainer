@@ -411,6 +411,12 @@ public class BeanSchemaBindingHelper
     */
    public static void configureValueBindings(TypeBinding typeBinding)
    {
+/*
+      TODO - test with inner bean!!
+      // type has bean
+      typeBinding.pushInterceptor(BeanSchemaBinding20.beanQName, ValueMetaDataElementInterceptor.VALUES);
+*/
+
       // type has values
       typeBinding.pushInterceptor(BeanSchemaBinding20.valueQName, ValueMetaDataElementInterceptor.VALUES);
 

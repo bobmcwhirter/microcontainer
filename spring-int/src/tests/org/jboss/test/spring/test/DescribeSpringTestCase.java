@@ -47,7 +47,7 @@ public class DescribeSpringTestCase extends TempSpringSchemaTest
 
    public void testDescribe() throws Exception
    {
-      BeanMetaData simpleBeanMD = unmarshal("TestInstantiate.xml", BeanMetaData.class);
+      BeanMetaData simpleBeanMD = unmarshal("TestDescribe.xml", BeanMetaData.class);
       // todo - test descriptions
       System.out.println("simpleBean = " + simpleBeanMD);
    }

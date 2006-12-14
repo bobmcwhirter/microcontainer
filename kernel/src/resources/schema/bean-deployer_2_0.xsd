@@ -507,12 +507,12 @@ $Id$
       <xsd:choice>
          <xsd:element name="bean" type="beanType"/>
          <xsd:element name="value" type="plainValueType"/>
+         <xsd:element name="inject" type="injectionType"/>
          <xsd:element name="collection" type="collectionType"/>
          <xsd:element name="list" type="listType"/>
          <xsd:element name="set" type="setType"/>
          <xsd:element name="array" type="arrayType"/>
          <xsd:element name="map" type="mapType"/>
-         <xsd:element name="inject" type="injectionType"/>
          <xsd:element name="null">
             <xsd:complexType/>
          </xsd:element>
