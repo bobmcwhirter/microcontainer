@@ -29,7 +29,7 @@ import org.jboss.beans.metadata.plugins.AbstractBeanMetaData;
 import org.jboss.beans.metadata.plugins.AbstractConstructorMetaData;
 import org.jboss.beans.metadata.plugins.AbstractParameterMetaData;
 import org.jboss.beans.metadata.spi.ParameterMetaData;
-import org.jboss.spring.deployment.AbstractConstructorArg;
+import org.jboss.spring.metadata.AbstractConstructorArg;
 import org.jboss.xb.binding.sunday.unmarshalling.DefaultElementInterceptor;
 
 /**

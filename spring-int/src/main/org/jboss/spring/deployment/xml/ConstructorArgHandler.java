@@ -27,7 +27,7 @@ import javax.xml.namespace.QName;
 import org.jboss.beans.metadata.plugins.AbstractParameterMetaData;
 import org.jboss.xb.binding.sunday.unmarshalling.DefaultElementHandler;
 import org.jboss.xb.binding.sunday.unmarshalling.ElementBinding;
-import org.jboss.spring.deployment.AbstractConstructorArg;
+import org.jboss.spring.metadata.AbstractConstructorArg;
 import org.xml.sax.Attributes;
 
 /**

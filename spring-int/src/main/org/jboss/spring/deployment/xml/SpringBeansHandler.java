@@ -25,7 +25,7 @@ import javax.xml.namespace.NamespaceContext;
 import javax.xml.namespace.QName;
 
 import org.jboss.beans.metadata.plugins.AbstractLifecycleMetaData;
-import org.jboss.spring.deployment.AbstractSpringDeployment;
+import org.jboss.spring.metadata.AbstractSpringDeployment;
 import org.jboss.xb.binding.sunday.unmarshalling.DefaultElementHandler;
 import org.jboss.xb.binding.sunday.unmarshalling.ElementBinding;
 import org.xml.sax.Attributes;

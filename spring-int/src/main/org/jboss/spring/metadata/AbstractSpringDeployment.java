@@ -19,29 +19,43 @@
 * Software Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA
 * 02110-1301 USA, or see the FSF site: http://www.fsf.org.
 */
-package org.jboss.spring.deployment;
+package org.jboss.spring.metadata;
 
-import org.jboss.kernel.plugins.deployment.AbstractKernelDeployment;
 import org.jboss.beans.metadata.spi.LifecycleMetaData;
-import org.jboss.beans.metadata.plugins.AbstractParameterMetaData;
 import org.jboss.dependency.spi.ControllerState;
+import org.jboss.kernel.plugins.deployment.AbstractKernelDeployment;
 
 /**
  * @author <a href="mailto:ales.justin@jboss.com">Ales Justin</a>
  */
-public class AbstractConstructorArg extends AbstractParameterMetaData
+public class AbstractSpringDeployment extends AbstractKernelDeployment
 {
-   private boolean explicitIndex;
+   /* default init lifecycle method */
+   protected LifecycleMetaData create;
 
-   public void setIndex(int index)
+   /* default destroy lifecycle method */
+   protected LifecycleMetaData destroy;
+
+   public LifecycleMetaData getCreate()
    {
-      explicitIndex = true;
-      super.setIndex(index);
+      return create;
    }
 
-   public boolean isExplicitIndex()
+   public void setCreate(LifecycleMetaData create)
    {
-      return explicitIndex;
+      create.setState(ControllerState.CREATE);
+      this.create = create;
+   }
+
+   public LifecycleMetaData getDestroy()
+   {
+      return destroy;
+   }
+
+   public void setDestroy(LifecycleMetaData destroy)
+   {
+      destroy.setState(ControllerState.CREATE);
+      this.destroy = destroy;
    }
 
 }

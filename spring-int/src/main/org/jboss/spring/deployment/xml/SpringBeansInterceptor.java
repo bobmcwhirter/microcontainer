@@ -28,14 +28,8 @@ import java.util.List;
 
 import org.jboss.xb.binding.sunday.unmarshalling.DefaultElementInterceptor;
 import org.jboss.beans.metadata.plugins.AbstractBeanMetaData;
-import org.jboss.beans.metadata.plugins.AbstractConstructorMetaData;
-import org.jboss.beans.metadata.plugins.AbstractParameterMetaData;
-import org.jboss.beans.metadata.spi.ConstructorMetaData;
-import org.jboss.beans.metadata.spi.ParameterMetaData;
 import org.jboss.beans.metadata.spi.BeanMetaDataFactory;
-import org.jboss.spring.deployment.AbstractConstructorArg;
-import org.jboss.spring.deployment.AbstractSpringDeployment;
-import org.jboss.kernel.plugins.deployment.AbstractKernelDeployment;
+import org.jboss.spring.metadata.AbstractSpringDeployment;
 
 /**
  * @author <a href="mailto:ales.justin@jboss.com">Ales Justin</a>
