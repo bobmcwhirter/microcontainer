@@ -6,16 +6,16 @@
    <constructor-arg index="1"><value>3.1415</value></constructor-arg>
    <property name="mylist">
       <list value-type="java.lang.String">
-         <value>one</value>
-         <value>two</value>
-         <value>three</value>
+         <value>onel</value>
+         <value>twol</value>
+         <value>threel</value>
       </list>
    </property>
    <property name="myset">
       <set value-type="java.lang.String">
-         <value>one</value>
-         <value>two</value>
-         <value>one</value>
+         <value>ones</value>
+         <value>twos</value>
+         <value>ones</value>
       </set>
    </property>
    <property name="map">
