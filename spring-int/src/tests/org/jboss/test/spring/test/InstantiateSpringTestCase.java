@@ -49,6 +49,7 @@ public class InstantiateSpringTestCase extends TempSpringMicrocontainerTest
    public void testDescribe() throws Exception
    {
       SimpleBean testBean = (SimpleBean) getBean("testBean", ControllerState.INSTANTIATED);
+      assertNotNull(testBean);
       assertEquals(testBean.getX(), 1);
       assertEquals(testBean.getY(), 3.14159);
       assertEquals(testBean.getS(), "SpringBean");

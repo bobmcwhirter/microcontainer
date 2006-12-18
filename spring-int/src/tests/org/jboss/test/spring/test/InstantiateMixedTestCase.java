@@ -22,30 +22,41 @@
 package org.jboss.test.spring.test;
 
 import junit.framework.Test;
-import junit.framework.TestSuite;
-import junit.textui.TestRunner;
+import org.jboss.test.spring.support.OldBean;
+import org.jboss.test.spring.support.SimpleBean;
 
 /**
+ * Testing how Spring beans can be mixed (injected, ...) with MC beans.
+ *
+ * @see InstantiateMixed2TestCase
  * @author <a href="mailto:ales.justin@jboss.com">Ales Justin</a>
  */
-public class SpringTestSuite extends TestSuite
+public class InstantiateMixedTestCase extends TempSpringMicrocontainerTest
 {
 
-   public static void main(String[] args)
+   public InstantiateMixedTestCase(String name)
    {
-      TestRunner.run(suite());
+      super(name);
    }
 
+   /**
+    * Setup the test
+    *
+    * @return the test
+    */
    public static Test suite()
    {
-      TestSuite suite = new TestSuite("Spring Tests");
+      return suite(InstantiateMixedTestCase.class);
+   }
 
-      suite.addTest(DescribeSpringTestCase.suite());
-      suite.addTest(InstantiateSpringTestCase.suite());
-      suite.addTest(InstantiateMixedTestCase.suite());
-      suite.addTest(InstantiateMixed2TestCase.suite());
-
-      return suite;
+   public void testInjection() throws Exception
+   {
+      OldBean oldBean = (OldBean) getBean("oldBean");
+      assertNotNull(oldBean);
+      SimpleBean testBean = oldBean.getTestBean();
+      assertNotNull(testBean);
+      assertFalse(testBean.getMylist().isEmpty());
+      assertEquals(testBean.getMylist().size(), 3);
    }
 
 }

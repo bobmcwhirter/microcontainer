@@ -37,6 +37,7 @@ public class SimpleBean
    private List mylist;
    private Set myset;
    private Map mymap;
+   private OldBean refBean;
 
    public SimpleBean()
    {
@@ -94,6 +95,16 @@ public class SimpleBean
       this.mymap = mymap;
    }
 
+   public OldBean getRefBean()
+   {
+      return refBean;
+   }
+
+   public void setRefBean(OldBean refBean)
+   {
+      this.refBean = refBean;
+   }
+
    public String toString()
    {
       StringBuilder builder = new StringBuilder();
@@ -103,6 +114,7 @@ public class SimpleBean
       builder.append(mylist).append(",");
       builder.append(myset).append(",");
       builder.append(mymap);
+      builder.append(refBean);
       return builder.toString();
    }
 

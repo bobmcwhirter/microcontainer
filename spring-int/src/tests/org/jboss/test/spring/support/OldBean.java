@@ -19,33 +19,35 @@
 * Software Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA
 * 02110-1301 USA, or see the FSF site: http://www.fsf.org.
 */
-package org.jboss.test.spring.test;
-
-import junit.framework.Test;
-import junit.framework.TestSuite;
-import junit.textui.TestRunner;
+package org.jboss.test.spring.support;
 
 /**
  * @author <a href="mailto:ales.justin@jboss.com">Ales Justin</a>
  */
-public class SpringTestSuite extends TestSuite
+public class OldBean
 {
 
-   public static void main(String[] args)
+   private SimpleBean testBean;
+   private String javaBeanString;
+
+   public SimpleBean getTestBean()
    {
-      TestRunner.run(suite());
+      return testBean;
    }
 
-   public static Test suite()
+   public void setTestBean(SimpleBean testBean)
    {
-      TestSuite suite = new TestSuite("Spring Tests");
-
-      suite.addTest(DescribeSpringTestCase.suite());
-      suite.addTest(InstantiateSpringTestCase.suite());
-      suite.addTest(InstantiateMixedTestCase.suite());
-      suite.addTest(InstantiateMixed2TestCase.suite());
-
-      return suite;
+      this.testBean = testBean;
    }
 
+   public String getJavaBeanString()
+   {
+      return javaBeanString;
+   }
+
+   public void setJavaBeanString(String javaBeanString)
+   {
+      this.javaBeanString = javaBeanString;
+   }
+   
 }

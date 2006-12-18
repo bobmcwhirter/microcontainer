@@ -47,16 +47,9 @@ public class DescribeSpringTestCase extends TempSpringSchemaTest
 
    public void testDescribe() throws Exception
    {
-      try
-      {
-         BeanMetaData simpleBeanMD = unmarshal("TestDescribe.xml", BeanMetaData.class);
-         // todo - test descriptions
-         System.out.println("simpleBean = " + simpleBeanMD);
-      }
-      catch (Exception e)
-      {
-         System.out.println("not yet fully implemented = " + e);
-      }
+      BeanMetaData simpleBeanMD = unmarshal("TestDescribe.xml", BeanMetaData.class);
+      // todo - test descriptions
+      System.out.println("simpleBean = " + simpleBeanMD);
    }
 
 }
