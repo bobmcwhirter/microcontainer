@@ -34,7 +34,7 @@ public class SpringSchemaBindingHelper
    {
       typeBinding.setHandler(SpringBeansHandler.HANDLER);
       // handle beans
-      typeBinding.pushInterceptor(SpringSchemaBinding.beansQName, SpringBeansInterceptor.INTERCEPTOR);
+      typeBinding.pushInterceptor(SpringSchemaBinding.beanQName, SpringBeansInterceptor.INTERCEPTOR);
       // todo alias
       // todo import
    }
