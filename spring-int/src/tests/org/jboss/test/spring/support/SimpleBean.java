@@ -49,6 +49,21 @@ public class SimpleBean
       this.s = s;
    }
 
+   public int getX()
+   {
+      return x;
+   }
+
+   public double getY()
+   {
+      return y;
+   }
+
+   public String getS()
+   {
+      return s;
+   }
+
    public List getMylist()
    {
       return mylist;
