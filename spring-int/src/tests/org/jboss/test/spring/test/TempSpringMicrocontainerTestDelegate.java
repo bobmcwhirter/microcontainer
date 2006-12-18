@@ -21,29 +21,30 @@
 */
 package org.jboss.test.spring.test;
 
-import junit.framework.Test;
-import junit.framework.TestSuite;
-import junit.textui.TestRunner;
+import org.jboss.spring.deployment.xml.SpringSchemaInitializer;
+import org.jboss.test.kernel.junit.MicrocontainerTestDelegate;
+import org.jboss.xb.binding.sunday.unmarshalling.DefaultSchemaResolver;
+import org.jboss.xb.binding.sunday.unmarshalling.SingletonSchemaResolverFactory;
+import org.jboss.xb.binding.sunday.unmarshalling.SchemaBindingResolver;
 
 /**
  * @author <a href="mailto:ales.justin@jboss.com">Ales Justin</a>
  */
-public class SpringTestSuite extends TestSuite
+public class TempSpringMicrocontainerTestDelegate extends MicrocontainerTestDelegate
 {
 
-   public static void main(String[] args)
+   public TempSpringMicrocontainerTestDelegate(Class clazz) throws Exception
    {
-      TestRunner.run(suite());
+      super(clazz);
    }
 
-   public static Test suite()
+   public void setUp() throws Exception
    {
-      TestSuite suite = new TestSuite("Spring Tests");
-
-      suite.addTest(DescribeSpringTestCase.suite());
-      suite.addTest(InstantiateSpringTestCase.suite());
-
-      return suite;
+      SchemaBindingResolver resolver = SingletonSchemaResolverFactory.getInstance().getSchemaBindingResolver();
+      DefaultSchemaResolver defaultSchemaResolver = (DefaultSchemaResolver) resolver;
+      defaultSchemaResolver.addSchemaInitializer("urn:jboss:spring-beans:2.0", new SpringSchemaInitializer());
+      defaultSchemaResolver.addSchemaLocation("urn:jboss:spring-beans:2.0", "mc-spring-beans_2_0.xsd");
+      super.setUp();
    }
 
 }

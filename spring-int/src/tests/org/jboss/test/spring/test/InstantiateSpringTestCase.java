@@ -22,28 +22,35 @@
 package org.jboss.test.spring.test;
 
 import junit.framework.Test;
-import junit.framework.TestSuite;
-import junit.textui.TestRunner;
+import org.jboss.test.spring.support.SimpleBean;
+import org.jboss.dependency.spi.ControllerState;
 
 /**
  * @author <a href="mailto:ales.justin@jboss.com">Ales Justin</a>
  */
-public class SpringTestSuite extends TestSuite
+public class InstantiateSpringTestCase extends TempSpringMicrocontainerTest
 {
 
-   public static void main(String[] args)
+   public InstantiateSpringTestCase(String name)
    {
-      TestRunner.run(suite());
+      super(name);
    }
 
+   /**
+    * Setup the test
+    *
+    * @return the test
+    */
    public static Test suite()
    {
-      TestSuite suite = new TestSuite("Spring Tests");
+      return suite(InstantiateSpringTestCase.class);
+   }
 
-      suite.addTest(DescribeSpringTestCase.suite());
-      suite.addTest(InstantiateSpringTestCase.suite());
-
-      return suite;
+   public void testDescribe() throws Exception
+   {
+      SimpleBean testBean = (SimpleBean) getBean("testBean", ControllerState.INSTANTIATED);
+      // todo - test instantiation
+      System.out.println("testBean = " + testBean);
    }
 
 }

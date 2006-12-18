@@ -21,29 +21,30 @@
 */
 package org.jboss.test.spring.test;
 
-import junit.framework.Test;
-import junit.framework.TestSuite;
-import junit.textui.TestRunner;
+import org.jboss.test.AbstractTestDelegate;
+import org.jboss.test.kernel.junit.MicrocontainerTest;
 
 /**
  * @author <a href="mailto:ales.justin@jboss.com">Ales Justin</a>
  */
-public class SpringTestSuite extends TestSuite
+public class TempSpringMicrocontainerTest extends MicrocontainerTest
 {
 
-   public static void main(String[] args)
+   public TempSpringMicrocontainerTest(String name)
    {
-      TestRunner.run(suite());
+      super(name);
    }
 
-   public static Test suite()
+   /**
+    * Setup the test delegate
+    *
+    * @param clazz the class
+    * @return the delegate
+    * @throws Exception for any error
+    */
+   public static AbstractTestDelegate getDelegate(Class clazz) throws Exception
    {
-      TestSuite suite = new TestSuite("Spring Tests");
-
-      suite.addTest(DescribeSpringTestCase.suite());
-      suite.addTest(InstantiateSpringTestCase.suite());
-
-      return suite;
+      return new TempSpringMicrocontainerTestDelegate(clazz);
    }
 
 }

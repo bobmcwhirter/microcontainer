@@ -23,19 +23,18 @@ package org.jboss.spring.deployment.xml;
 
 import javax.xml.namespace.NamespaceContext;
 import javax.xml.namespace.QName;
-
+import java.util.Arrays;
 import java.util.List;
-import java.util.Collections;
-import java.util.Comparator;
 
 import org.jboss.beans.metadata.plugins.AbstractBeanMetaData;
-import org.jboss.beans.metadata.plugins.AbstractLifecycleMetaData;
 import org.jboss.beans.metadata.plugins.AbstractConstructorMetaData;
 import org.jboss.beans.metadata.plugins.AbstractDependencyValueMetaData;
+import org.jboss.beans.metadata.plugins.AbstractLifecycleMetaData;
 import org.jboss.beans.metadata.spi.ConstructorMetaData;
 import org.jboss.beans.metadata.spi.ParameterMetaData;
 import org.jboss.xb.binding.sunday.unmarshalling.DefaultElementHandler;
 import org.jboss.xb.binding.sunday.unmarshalling.ElementBinding;
+import org.jboss.spring.metadata.AbstractConstructorArg;
 import org.xml.sax.Attributes;
 
 /**
@@ -92,20 +91,41 @@ public class SpringBeanHandler extends DefaultElementHandler
          List<ParameterMetaData> parameters = constructor.getParameters();
          if (parameters != null && parameters.size() > 1)
          {
-            Collections.sort(parameters, ParameterIndexComparator.INSTANCE);
+            orderParameters(parameters);
          }
       }
       return beanMetaData;
    }
 
-   private static class ParameterIndexComparator implements Comparator<ParameterMetaData>
+   protected void orderParameters(List<ParameterMetaData> parameters)
    {
-      static Comparator<ParameterMetaData> INSTANCE = new ParameterIndexComparator();
-
-      public int compare(ParameterMetaData pmd1, ParameterMetaData pmd2)
+      ParameterMetaData[] pmds = new ParameterMetaData[parameters.size()];
+      int i = 0;
+      for(ParameterMetaData pmd : parameters)
       {
-         return 0; // todo
+         int index = pmd.getIndex();
+         // lets first try to set those with explicit index
+         if (pmd instanceof AbstractConstructorArg && ((AbstractConstructorArg)pmd).isExplicitIndex())
+         {
+            if (pmds[index] != null)
+               throw new IllegalArgumentException("Argument with index: " + index + " already set!");
+            pmds[index] = pmd;
+         }
       }
+      int index = 0;
+      for(ParameterMetaData pmd : parameters)
+      {
+         // then just put the others in the free places
+         if ((pmd instanceof AbstractConstructorArg && ((AbstractConstructorArg)pmd).isExplicitIndex() == false))
+         {
+            while(pmds[index] != null) index++;
+            pmds[index] = pmd;
+         }
+         index++;
+      }
+      // todo clone md
+      parameters.clear();
+      parameters.addAll(Arrays.asList(pmds));
    }
 
 }

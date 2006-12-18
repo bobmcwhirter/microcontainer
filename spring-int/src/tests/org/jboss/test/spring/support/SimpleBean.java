@@ -79,4 +79,16 @@ public class SimpleBean
       this.mymap = mymap;
    }
 
+   public String toString()
+   {
+      StringBuilder builder = new StringBuilder();
+      builder.append(x).append(",");
+      builder.append(y).append(",");
+      builder.append(s).append(",");
+      builder.append(mylist).append(",");
+      builder.append(myset).append(",");
+      builder.append(mymap);
+      return builder.toString();
+   }
+
 }
