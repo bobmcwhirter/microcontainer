@@ -46,7 +46,7 @@ public class InstantiateSpringTestCase extends TempSpringMicrocontainerTest
       return suite(InstantiateSpringTestCase.class);
    }
 
-   public void testDescribe() throws Exception
+   public void testConfigure() throws Exception
    {
       SimpleBean testBean = (SimpleBean) getBean("testBean", ControllerState.INSTANTIATED);
       assertNotNull(testBean);
