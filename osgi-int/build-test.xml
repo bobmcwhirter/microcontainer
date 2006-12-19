@@ -16,7 +16,7 @@
 
 <!-- $Id: build-test.xml 55205 2006-08-04 16:46:15Z kabir.khan@jboss.com $ -->
 
-<project default="main" name="JBoss/Container Tests">
+<project default="main" name="JBoss/OSGi Tests">
 
   <!-- ================================================================== -->
   <!-- Setup                                                              -->
