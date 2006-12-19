@@ -51,6 +51,7 @@
       <componentref name="jboss/common-logging-jdk" version="2.0.2.GA"/>
       <componentref name="jboss/common-logging-spi" version="2.0.2.GA"/>
       <componentref name="jboss/jbossxb" version="snapshot"/>
+      <componentref name="jboss/jboss-vfs" version="2.0.0.Beta2"/>
       <componentref name="jboss/profiler/jvmti" version="1.0.0.CR4"/>
       <componentref name="junit" version="3.8.1"/>
       <componentref name="junit4" version="4.1"/>

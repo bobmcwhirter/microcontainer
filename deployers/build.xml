@@ -80,6 +80,7 @@
       <path refid="jboss.container.classpath"/>
       <path refid="jboss.dependency.classpath"/>
       <path refid="jboss.kernel.classpath"/>
+      <path refid="jboss/jboss.vfs.classpath"/>
     </path>
      
     <!-- ===== -->

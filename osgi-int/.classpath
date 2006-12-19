@@ -2,7 +2,7 @@
 <classpath>
 	<classpathentry kind="src" path="src/main"/>
 	<classpathentry kind="src" path="output/gen-parsers"/>
-	<classpathentry output="output/eclipse-classes-tests" kind="src" path="src/tests"/>
+	<classpathentry kind="src" output="output/eclipse-classes-tests" path="src/tests"/>
 	<classpathentry kind="con" path="org.eclipse.jdt.launching.JRE_CONTAINER"/>
 	<classpathentry kind="lib" path="/thirdparty/jboss/common-core/lib/jboss-common-core.jar"/>
 	<classpathentry kind="lib" path="/thirdparty/jboss/common-logging-spi/lib/jboss-logging-spi.jar"/>
@@ -14,8 +14,8 @@
 	<classpathentry kind="lib" path="/thirdparty/jboss/profiler/jvmti/lib/jboss-profiler-jvmti.jar"/>
 	<classpathentry kind="lib" path="/thirdparty/jboss/test/lib/jboss-test.jar"/>
 	<classpathentry kind="con" path="org.eclipse.jdt.junit.JUNIT_CONTAINER/4"/>
-	<classpathentry combineaccessrules="false" kind="src" path="/container"/>
 	<classpathentry kind="lib" path="/thirdparty/osgi/lib/osgi.compendium.jar"/>
 	<classpathentry kind="lib" path="/thirdparty/osgi/lib/osgi.core.jar"/>
+	<classpathentry kind="lib" path="/thirdparty/jboss/jboss-vfs/lib/jboss-vfs.jar" sourcepath="/thirdparty/jboss/jboss-vfs/lib/jboss-vfs-sources.jar"/>
 	<classpathentry kind="output" path="output/eclipse-classes"/>
 </classpath>

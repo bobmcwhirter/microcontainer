@@ -14,5 +14,6 @@
 	<classpathentry kind="lib" path="/thirdparty/jboss/jbossxb/lib/jboss-xml-binding.jar"/>
 	<classpathentry combineaccessrules="false" kind="src" path="/kernel"/>
 	<classpathentry combineaccessrules="false" kind="src" path="/dependency"/>
+	<classpathentry kind="lib" path="/thirdparty/jboss/jboss-vfs/lib/jboss-vfs.jar" sourcepath="/thirdparty/jboss/jboss-vfs/lib/jboss-vfs-sources.jar"/>
 	<classpathentry kind="output" path="output/eclipse-classes"/>
 </classpath>
