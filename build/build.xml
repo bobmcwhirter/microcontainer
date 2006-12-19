@@ -81,6 +81,8 @@
       <module name="deployers"/>
       <module name="kernel"/>
       <module name="aop-mc-int"/>
+      <module name="metatype"/>
+      <module name="managed"/>
       <module name="osgi-int"/>
 
       <!-- Module groups -->
@@ -93,7 +95,7 @@
       </group>
 
       <group name="core">
-        <include modules="container, dependency, kernel, aop-mc-int, deployers, osgi-int"/>
+        <include modules="container, dependency, kernel, aop-mc-int, deployers, metatype, managed, osgi-int"/>
       </group>
 
       <group name="default">
