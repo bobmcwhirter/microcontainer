@@ -17,5 +17,6 @@
 	<classpathentry kind="lib" path="/thirdparty/osgi/lib/osgi.compendium.jar"/>
 	<classpathentry kind="lib" path="/thirdparty/osgi/lib/osgi.core.jar"/>
 	<classpathentry kind="lib" path="/thirdparty/jboss/jboss-vfs/lib/jboss-vfs.jar" sourcepath="/thirdparty/jboss/jboss-vfs/lib/jboss-vfs-sources.jar"/>
+	<classpathentry combineaccessrules="false" kind="src" path="/container"/>
 	<classpathentry kind="output" path="output/eclipse-classes"/>
 </classpath>
