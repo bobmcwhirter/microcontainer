@@ -66,6 +66,16 @@
       <include name="jboss-aop-mc-int14.jar"/>
    </fileset>
 </path>
+
+<!-- metatype -->
+<property name="jboss.metatype.root" value="${project.root}/metatype"/>
+<property name="jboss.metatype.lib" value="${jboss.metatype.root}/output/lib"/>
+<path id="jboss.metatype.classpath">
+   <fileset dir="${jboss.metatype.lib}">
+      <include name="jboss-metatype.jar"/>
+   </fileset>
+</path>
+
 <!-- spring-int -->
 <property name="jboss.spring-int.root" value="${project.root}/spring-int"/>
 <property name="jboss.spring-int.lib" value="${jboss.spring-int.root}/output/lib"/>
