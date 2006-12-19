@@ -10,8 +10,6 @@ $Id: mc-spring-beans_2_0.xsd 56471 2006-08-31 10:44:05 +0200 (Pon, 11 dec 2006) 
    version="1.0"
 >
 
-   <xsd:import namespace="http://www.w3.org/XML/1998/namespace"/>
-
    <xsd:annotation>
       <xsd:documentation><![CDATA[
 	Spring XML Beans Schema, version 2.0
