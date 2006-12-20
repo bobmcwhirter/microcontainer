@@ -31,8 +31,7 @@ import org.xml.sax.Attributes;
 /**
  * PropertyHandler.
  *
- * @author <a href="adrian@jboss.com">Adrian Brock</a>
- * @version $Revision: 43026 $
+ * @author <a href="ales.justin@jboss.com">Ales Justin</a>
  */
 public class PropHandler extends DefaultElementHandler
 {

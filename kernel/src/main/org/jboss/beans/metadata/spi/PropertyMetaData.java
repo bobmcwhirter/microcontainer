@@ -35,7 +35,14 @@ public interface PropertyMetaData extends FeatureMetaData
     * @return the name.
     */
    String getName();
-   
+
+   /**
+    * Get property type if possible.
+    *
+    * @return class type if set, otherwise null
+    */
+   String getType();
+
    /**
     * Get the value.
     * 

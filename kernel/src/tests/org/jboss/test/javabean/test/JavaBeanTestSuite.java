@@ -44,7 +44,8 @@ public class JavaBeanTestSuite extends TestSuite
 
       suite.addTest(InstantiateTestCase.suite());
       suite.addTest(PropertyTestCase.suite());
-      
+      suite.addTest(AmbiguityTestCase.suite());
+
       return suite;
    }
 }

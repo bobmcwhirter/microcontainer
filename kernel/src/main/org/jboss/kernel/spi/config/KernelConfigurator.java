@@ -205,6 +205,7 @@ public interface KernelConfigurator extends KernelObject
     * @param metaData the property metadata
     * @return the join point
     * @throws Throwable for any error
+    * @deprecated must use ClassLoader when determining PropertyInfo
     */
    TargettedJoinpoint getPropertyNullerJoinPoint(BeanInfo info, PropertyMetaData metaData) throws Throwable;
 

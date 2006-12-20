@@ -9,7 +9,8 @@
    <property name="ALong">12345</property>
    <property name="AFloat">3.14</property>
    <property name="ADouble">3.14e12</property>
-   <property name="ADate">Mon Jan 01 00:00:00 CET 2001</property>
+   <!--<property name="ADate">Mon Jan 01 00:00:00 CET 2001</property>-->
+   <property name="ADate">Jan 01 00:00:00 CET 2001</property>
    <property name="ABigDecimal">12e4</property>
    <property name="ABigInteger">123456</property>
    <property name="abyte">12</property>

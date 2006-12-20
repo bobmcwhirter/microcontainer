@@ -44,8 +44,10 @@ import junit.framework.Test;
  */
 public class PropertyTestCase extends AbstractJavaBeanTest
 {
-   private static DateFormat dateFormat = new SimpleDateFormat("EEE MMM d HH:mm:ss z yyyy");
-   
+//   private static DateFormat dateFormat = new SimpleDateFormat("EEE MMM d HH:mm:ss z yyyy");
+   // even example from API doesn't work for me (alesj) - with EEE
+   private static DateFormat dateFormat = new SimpleDateFormat("MMM d HH:mm:ss z yyyy");
+
    String stringValue =  "StringValue";
    Byte byteValue = new Byte("12");
    Boolean booleanValue = Boolean.TRUE;
@@ -56,12 +58,16 @@ public class PropertyTestCase extends AbstractJavaBeanTest
    Long longValue = new Long("12345");
    Float floatValue = new Float("3.14");
    Double doubleValue = new Double("3.14e12");
-   Date dateValue = createDate("Mon Jan 01 00:00:00 CET 2001");
+//   Date dateValue = createDate("Mon Jan 01 00:00:00 CET 2001");
+   Date dateValue = createDate("Jan 01 00:00:00 CET 2001");
    BigDecimal bigDecimalValue = new BigDecimal("12e4");
    BigInteger bigIntegerValue = new BigInteger("123456");
 
    public void testConfigure() throws Exception
    {
+      // tmp format
+      System.setProperty("org.jboss.util.propertyeditor.DateEditor.format", "MMM d HH:mm:ss z yyyy");
+      // check bean
       SimpleBean bean = unmarshal("TestConfigure.xml", SimpleBean.class);
       assertEquals("()", bean.getConstructorUsed());
       

@@ -21,13 +21,10 @@
 */
 package org.jboss.kernel.plugins.config.xml;
 
-import java.security.AccessController;
-import java.security.PrivilegedExceptionAction;
-import java.util.Iterator;
-import java.util.Set;
-
 import javax.xml.namespace.NamespaceContext;
 import javax.xml.namespace.QName;
+import java.security.AccessController;
+import java.security.PrivilegedExceptionAction;
 
 import org.jboss.beans.info.spi.BeanInfo;
 import org.jboss.beans.info.spi.PropertyInfo;
@@ -39,12 +36,7 @@ import org.jboss.reflect.spi.MethodInfo;
 import org.jboss.reflect.spi.TypeInfo;
 import org.jboss.reflect.spi.TypeInfoFactory;
 import org.jboss.util.propertyeditor.PropertyEditors;
-import org.jboss.xb.binding.sunday.unmarshalling.DefaultElementHandler;
-import org.jboss.xb.binding.sunday.unmarshalling.DefaultElementInterceptor;
-import org.jboss.xb.binding.sunday.unmarshalling.ElementBinding;
-import org.jboss.xb.binding.sunday.unmarshalling.SchemaBinding;
-import org.jboss.xb.binding.sunday.unmarshalling.SchemaBindingInitializer;
-import org.jboss.xb.binding.sunday.unmarshalling.TypeBinding;
+import org.jboss.xb.binding.sunday.unmarshalling.*;
 import org.xml.sax.Attributes;
 
 /**
@@ -164,7 +156,7 @@ public class JavaBeanSchemaInitializer implements SchemaBindingInitializer
             Object value = prop.getValue();
             try
             {
-               PropertyInfo info = getProperty(parentValue, property);
+               PropertyInfo info = getProperty(parentValue, property, prop.getType());
                value = convertValue(info, prop.getType(), value);
                method = info.getSetter();
                method.invoke(parentValue, new Object[] { value });
@@ -211,24 +203,11 @@ public class JavaBeanSchemaInitializer implements SchemaBindingInitializer
       return schema;
    }
    
-   private PropertyInfo getProperty(Object parent, String property) throws Throwable
+   private PropertyInfo getProperty(Object parent, String property, String type) throws Throwable
    {
       BeanInfo beanInfo = config.getBeanInfo(parent.getClass());
-      Set properties = beanInfo.getProperties();
-      if (properties != null && properties.size() > 0)
-      {
-         for (Iterator i = properties.iterator(); i.hasNext();)
-         {
-            PropertyInfo prop = (PropertyInfo) i.next();
-            if (prop.getName().equals(property))
-            {
-               if (prop.getSetter() == null)
-                  throw new IllegalArgumentException("Property '" + property + "' is read only " + prop);
-               return prop;
-            }
-         }
-      }
-      throw new IllegalArgumentException("No property '" + property + "' for " + beanInfo);
+      ClassLoader cl = Thread.currentThread().getContextClassLoader();
+      return Configurator.resolveProperty(false, beanInfo, cl, property, type);
    }
 
    /**

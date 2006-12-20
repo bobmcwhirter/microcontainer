@@ -19,27 +19,43 @@
 * Software Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA
 * 02110-1301 USA, or see the FSF site: http://www.fsf.org.
 */
-package org.jboss.kernel.plugins.deployment.xml;
-
-import javax.xml.namespace.QName;
-
-import org.jboss.beans.metadata.plugins.AbstractPropertiesMetaData;
-import org.jboss.xb.binding.sunday.unmarshalling.DefaultElementHandler;
-import org.jboss.xb.binding.sunday.unmarshalling.ElementBinding;
+package org.jboss.test.javabean.support;
 
 /**
- * PropertyHandler.
+ * SimpleBean.
  *
- * @author <a href="ales.justin@jboss.com">Ales Justin</a>
+ * @author <a href="adrian@jboss.com">Adrian Brock</a>
+ * @version $Revision: 46093 $
  */
-public class PropertiesHandler extends DefaultElementHandler
+public class AmbiguityBean
 {
-   /** The handler */
-   public static final PropertiesHandler HANDLER = new PropertiesHandler();
+   private Integer someint;
+   private String somestring;
 
-   public Object startElement(Object parent, QName name, ElementBinding element)
+   public void setSomething(Integer integer)
    {
-      return new AbstractPropertiesMetaData();
+      someint = integer;
+   }
+
+   public void setSomething(String string)
+   {
+      somestring = string;
+   }
+
+   public Object something()
+   {
+      if (someint != null && somestring != null)
+         throw new IllegalArgumentException("Only one 'something' can be set!");
+      if (someint != null)
+         return someint;
+      if (somestring != null)
+         return somestring;
+      throw new IllegalArgumentException("Must set 'something'!");
+   }
+
+   public String toString()
+   {
+      return someint + "," + somestring;
    }
 
 }

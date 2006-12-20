@@ -300,7 +300,7 @@ public class Configurator extends Config
     */
    public static void configure(boolean trace, Object object, BeanInfo info, ClassLoader cl, PropertyMetaData metaData) throws Throwable
    {
-      PropertyInfo ainfo = resolveProperty(trace, info, metaData.getName());
+      PropertyInfo ainfo = resolveProperty(trace, info, cl, metaData.getName(), metaData.getType());
       configure(trace, object, ainfo, cl, metaData);
    }
 
@@ -440,7 +440,7 @@ public class Configurator extends Config
     */
    public static TargettedJoinpoint getPropertySetterJoinPoint(boolean trace, BeanInfo info, ClassLoader cl, PropertyMetaData metaData) throws Throwable
    {
-      PropertyInfo ainfo = resolveProperty(trace, info, metaData.getName());
+      PropertyInfo ainfo = resolveProperty(trace, info, cl, metaData.getName(), metaData.getType());
       return getPropertySetterJoinPoint(trace, ainfo, cl, metaData.getValue());
    }
 
@@ -523,13 +523,14 @@ public class Configurator extends Config
       if (metaData == null)
          throw new IllegalArgumentException("Null bean metadata");
 
+      ClassLoader cl = getClassLoader(metaData);
       Set propertys = metaData.getProperties();
       if (propertys != null && propertys.isEmpty() == false)
       {
          for (Iterator i = metaData.getProperties().iterator(); i.hasNext();)
          {
             PropertyMetaData property = (PropertyMetaData) i.next();
-            unconfigure(object, info, property);
+            unconfigure(object, cl, info, property);
          }
       }
    }
@@ -542,10 +543,10 @@ public class Configurator extends Config
     * @param metaData the property metadata
     * @throws Throwable for any error
     */
-   public static void unconfigure(Object object, BeanInfo info, PropertyMetaData metaData) throws Throwable
+   public static void unconfigure(Object object, ClassLoader cl, BeanInfo info, PropertyMetaData metaData) throws Throwable
    {
       boolean trace = log.isTraceEnabled();
-      PropertyInfo ainfo = resolveProperty(trace, info, metaData.getName());
+      PropertyInfo ainfo = resolveProperty(trace, info, cl, metaData.getName(), metaData.getType());
       unconfigure(trace, object, ainfo, metaData);
    }
 
@@ -586,7 +587,8 @@ public class Configurator extends Config
          throw new IllegalArgumentException("Null bean info");
       if (metaData == null)
          throw new IllegalArgumentException("Null bean metadata");
-      
+
+      ClassLoader cl = getClassLoader(metaData);
       Set<TargettedJoinpoint> result = new HashSet<TargettedJoinpoint>();
       Set<PropertyMetaData> propertys = metaData.getProperties();
       if (propertys != null && propertys.isEmpty() == false)
@@ -608,11 +610,26 @@ public class Configurator extends Config
     * @param metaData the property metadata
     * @return the join point
     * @throws Throwable for any error
+    * @deprecated must use ClassLoader when determinig PropertyInfo
     */
    public static TargettedJoinpoint getPropertyNullerJoinPoint(BeanInfo info, PropertyMetaData metaData) throws Throwable
    {
+      return getPropertyNullerJoinPoint(null, info, metaData);
+   }
+
+   /**
+    * Get property nuller joinpoint for a property
+    *
+    * @param cl the bean classloader
+    * @param info the bean info
+    * @param metaData the property metadata
+    * @return the join point
+    * @throws Throwable for any error
+    */
+   public static TargettedJoinpoint getPropertyNullerJoinPoint(ClassLoader cl, BeanInfo info, PropertyMetaData metaData) throws Throwable
+   {
       boolean trace = log.isTraceEnabled();
-      PropertyInfo ainfo = resolveProperty(trace, info, metaData.getName());
+      PropertyInfo ainfo = resolveProperty(trace, info, cl, metaData.getName(), metaData.getType());
       return getPropertyNullerJoinPoint(ainfo, metaData);
    }
 
@@ -650,11 +667,29 @@ public class Configurator extends Config
     */
    public static PropertyInfo resolveProperty(boolean trace, BeanInfo info, String name) throws Throwable
    {
+      return resolveProperty(trace, info, null, name, null);
+   }
+
+   /**
+    * Get the property info
+    *
+    * @param trace whether trace is enabled
+    * @param info the bean info
+    * @param name the property name
+    * @param type the property type
+    * @return the property info
+    * @throws Throwable for any error
+    */
+   public static PropertyInfo resolveProperty(boolean trace, BeanInfo info, ClassLoader cl, String name, String type) throws Throwable
+   {
       if (info == null)
          throw new IllegalArgumentException("Null bean info");
       if (name == null)
          throw new IllegalArgumentException("Null name");
-      
+
+      if (trace)
+         log.trace("Resolving property on bean info=" + info + " name=" + name);
+
       Set properties = info.getProperties();
       if (properties != null && properties.size() > 0)
       {
@@ -662,7 +697,14 @@ public class Configurator extends Config
          {
             PropertyInfo ainfo = (PropertyInfo) i.next();
             if (name.equals(ainfo.getName()))
-               return ainfo;
+            {
+               String[] typeNames = {type};
+               TypeInfo[] typeInfos = {ainfo.getType()};
+               if (equals(typeNames, typeInfos) || assignable(cl, typeNames, typeInfos) || progression(cl, typeNames, typeInfos))
+               {
+                  return ainfo;
+               }
+            }
          }
       }
       
@@ -834,7 +876,58 @@ public class Configurator extends Config
          cl = tcl;
       return cl;
    }
-   
+
+   /**
+    * Test whether type names can be assigned to type infos
+    *
+    * @param cl bean classloader
+    * @param typeNames the type names
+    * @param typeInfos the type infos
+    * @return true when they can be assigned
+    */
+   public static boolean assignable(ClassLoader cl, String[] typeNames, TypeInfo[] typeInfos) throws Throwable
+   {
+      if (cl == null)
+         return false;
+
+      if (simpleCheck(typeNames, typeInfos) == false)
+         return false;
+
+      for (int i = 0; i < typeNames.length; ++i)
+      {
+         if (typeNames[i] != null)
+         {
+            // todo - is there some better way to do this - via Container?
+            Class clazz = Class.forName(typeNames[i], true, cl);
+            if (typeInfos[i].getType().isAssignableFrom(clazz) == false)
+            {
+               return false;
+            }
+         }
+      }
+      return true;
+   }
+
+   /**
+    * Test whether type names can progress to type infos
+    *
+    * @param cl bean classloader
+    * @param typeNames the type names
+    * @param typeInfos the type infos
+    * @return true when we can use progression
+    */
+   public static boolean progression(ClassLoader cl, String[] typeNames, TypeInfo[] typeInfos)
+   {
+      if (cl == null)
+         return false;
+
+      if (simpleCheck(typeNames, typeInfos) == false)
+         return false;
+
+      // JBMICROCONT-119: todo - write this + actual progression code at value injection
+      return false;
+   }
+
    /**
     * ValueJoinpoint.
     */

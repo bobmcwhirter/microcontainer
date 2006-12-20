@@ -121,6 +121,15 @@ public class AbstractPropertyMetaData extends AbstractFeatureMetaData implements
       flushJBossObjectCache();
    }
 
+   public String getType()
+   {
+      if (value instanceof AbstractTypeMetaData)
+      {
+         return ((AbstractTypeMetaData)value).getType();
+      }
+      return null;
+   }
+
    public ValueMetaData getValue()
    {
       return value;
