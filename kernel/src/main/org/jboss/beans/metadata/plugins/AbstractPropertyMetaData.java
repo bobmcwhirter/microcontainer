@@ -31,6 +31,8 @@ import org.jboss.beans.metadata.spi.PropertyMetaData;
 import org.jboss.beans.metadata.spi.ValueMetaData;
 import org.jboss.dependency.spi.ControllerState;
 import org.jboss.kernel.spi.dependency.KernelControllerContext;
+import org.jboss.kernel.spi.config.KernelConfigurator;
+import org.jboss.kernel.plugins.config.Configurator;
 import org.jboss.util.JBossStringBuilder;
 
 /**
@@ -160,6 +162,15 @@ public class AbstractPropertyMetaData extends AbstractFeatureMetaData implements
 
    public Class getType(MetaDataVisitor visitor, MetaDataVisitorNode previous) throws Throwable
    {
+      String type = getType();
+      if (type != null)
+      {
+         KernelControllerContext context = visitor.getControllerContext();
+         ClassLoader cl = Configurator.getClassLoader(context.getBeanMetaData());
+         KernelConfigurator configurator = context.getKernel().getConfigurator();
+         return configurator.getClassInfo(type, cl).getType();
+      }
+      // check properties
       KernelControllerContext context = visitor.getControllerContext();
       Set propertyInfos = context.getBeanInfo().getProperties();
       if (propertyInfos != null)
