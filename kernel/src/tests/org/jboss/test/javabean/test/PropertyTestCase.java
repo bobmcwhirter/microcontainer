@@ -38,21 +38,21 @@ import junit.framework.Test;
 
 /**
  * PropertyTestCase.
- * 
+ *
  * @author <a href="adrian@jboss.com">Adrian Brock</a>
  * @version $Revision$
  */
 public class PropertyTestCase extends AbstractJavaBeanTest
 {
 //   private static DateFormat dateFormat = new SimpleDateFormat("EEE MMM d HH:mm:ss z yyyy");
-   // even example from API doesn't work for me (alesj) - with EEE
+   // EEE names - Locale configured
    private static DateFormat dateFormat = new SimpleDateFormat("MMM d HH:mm:ss z yyyy");
 
    String stringValue =  "StringValue";
    Byte byteValue = new Byte("12");
    Boolean booleanValue = Boolean.TRUE;
    // TODO character
-   // Character characterValue = new Character('a'); 
+   // Character characterValue = new Character('a');
    Short shortValue = new Short("123");
    Integer integerValue = new Integer("1234");
    Long longValue = new Long("12345");
@@ -70,11 +70,11 @@ public class PropertyTestCase extends AbstractJavaBeanTest
       // check bean
       SimpleBean bean = unmarshal("TestConfigure.xml", SimpleBean.class);
       assertEquals("()", bean.getConstructorUsed());
-      
+
       assertEquals(stringValue, bean.getAString());
       assertEquals(byteValue, bean.getAByte());
       assertEquals(booleanValue, bean.getABoolean());
-      // TODO character 
+      // TODO character
       // assertEquals(characterValue, bean.getACharacter());
       assertEquals(shortValue, bean.getAShort());
       assertEquals(integerValue, bean.getAnInt());
@@ -87,7 +87,7 @@ public class PropertyTestCase extends AbstractJavaBeanTest
       assertEquals(byteValue.byteValue(), bean.getAbyte());
       assertEquals(booleanValue.booleanValue(), bean.isAboolean());
       // TODO character
-      // assertEquals(characterValue.charValue(), bean.getAchar()); 
+      // assertEquals(characterValue.charValue(), bean.getAchar());
       assertEquals(shortValue.shortValue(), bean.getAshort());
       assertEquals(integerValue.intValue(), bean.getAnint());
       assertEquals(longValue.longValue(), bean.getAlong());
