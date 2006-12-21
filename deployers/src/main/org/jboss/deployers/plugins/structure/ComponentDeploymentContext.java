@@ -43,7 +43,8 @@ import org.jboss.virtual.VirtualFile;
  * AbstractDeploymentContext.
  * 
  * @author <a href="adrian@jboss.com">Adrian Brock</a>
- * @version $Revision: 1.1 $
+ * @author Scott.Stark@jboss.org
+ * @version $Revision$
  */
 public class ComponentDeploymentContext
    implements DeploymentContext, Serializable
@@ -347,6 +348,10 @@ public class ComponentDeploymentContext
    public Attachments getPredeterminedManagedObjects()
    {
       return parent.getPredeterminedManagedObjects();
+   }
+   public void setPredeterminedManagedObjects(Attachments objects)
+   {
+      // TODO should throw an exception or support this at the component
    }
    
    public Attachments getTransientManagedObjects()

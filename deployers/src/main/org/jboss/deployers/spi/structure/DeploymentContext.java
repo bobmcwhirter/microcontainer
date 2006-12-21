@@ -34,7 +34,8 @@ import org.jboss.virtual.VirtualFile;
  * DeploymentContext.
  * 
  * @author <a href="adrian@jboss.com">Adrian Brock</a>
- * @version $Revision: 1.1 $
+ * @author Scott.Stark@jboss.org
+ * @version $Revision$
  */
 public interface DeploymentContext
 {
@@ -304,6 +305,11 @@ public interface DeploymentContext
     * @return the predetermined managed objects
     */
    Attachments getPredeterminedManagedObjects();
+   /**
+    * Sst the predetermined managed objects
+    * @param objects the predetermined managed objects
+    */
+   void setPredeterminedManagedObjects(Attachments objects);
 
    /**
     * Get the managed objects

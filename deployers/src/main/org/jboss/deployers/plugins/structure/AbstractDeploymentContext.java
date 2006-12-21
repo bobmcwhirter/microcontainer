@@ -46,7 +46,8 @@ import org.jboss.virtual.VirtualFile;
  * AbstractDeploymentContext.
  * 
  * @author <a href="adrian@jboss.com">Adrian Brock</a>
- * @version $Revision: 1.1 $
+ * @author Scott.Stark@jboss.org
+ * @version $Revision$
  */
 public class AbstractDeploymentContext
    implements DeploymentContext, Serializable
@@ -586,7 +587,12 @@ public class AbstractDeploymentContext
    {
       return predeterminedManagedObjects;
    }
-   
+   public void setPredeterminedManagedObjects(Attachments objects)
+   {
+      predeterminedManagedObjects.clear();
+      ((AttachmentsImpl)predeterminedManagedObjects).setAttachments(objects.getAttachments());
+   }
+
    public Attachments getTransientManagedObjects()
    {
       return transientManagedObjects;
