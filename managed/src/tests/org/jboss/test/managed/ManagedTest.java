@@ -19,38 +19,44 @@
 * Software Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA
 * 02110-1301 USA, or see the FSF site: http://www.fsf.org.
 */
-package org.jboss.managed.api;
+package org.jboss.test.managed;
 
-import java.io.Serializable;
-import java.util.Set;
+import org.jboss.test.AbstractTestCaseWithSetup;
+import org.jboss.test.AbstractTestDelegate;
 
 /**
- * ManagedObject.
+ * ManagedTest.
  * 
  * @author <a href="adrian@jboss.com">Adrian Brock</a>
  * @version $Revision: 1.1 $
  */
-public interface ManagedObject extends Serializable
+public abstract class ManagedTest extends AbstractTestCaseWithSetup
 {
    /**
-    * Get the property names
+    * Get the test delegate
     * 
-    * @return the property names
+    * @param clazz the test class
+    * @return the delegate
+    * @throws Exception for any error
     */
-   Set<String> getPropertyNames();
+   public static AbstractTestDelegate getDelegate(Class clazz) throws Exception
+   {
+      return new ManagedTestDelegate(clazz);
+   }
    
    /**
-    * Get a property
+    * Create a new Managed test
     * 
-    * @param name the name
-    * @return the property
+    * @param name the test name
     */
-   ManagedProperty getProperty(String name);
+   public ManagedTest(String name)
+   {
+      super(name);
+   }
    
-   /**
-    * Get the properties
-    * 
-    * @return the properties
-    */
-   Set<ManagedProperty> getProperties();
+   protected void setUp() throws Exception
+   {
+      super.setUp();
+      configureLogging();
+   }
 }

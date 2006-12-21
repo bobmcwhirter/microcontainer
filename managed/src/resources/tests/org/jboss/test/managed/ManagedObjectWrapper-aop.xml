@@ -1,0 +1,9 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+   <!-- Wrapper methods for managed object -->
+   <bind pointcut="execution(* $instanceof{org.jboss.managed.api.ManagedObject}->getProperty(..))">
+      <advice name="wrapManagedProperty" aspect="wrap"/>
+   </bind>
+   <bind pointcut="execution(* $instanceof{org.jboss.managed.api.ManagedObject}->getProperties(..))">
+      <advice name="wrapManagedPropertySet" aspect="wrap"/>
+   </bind>

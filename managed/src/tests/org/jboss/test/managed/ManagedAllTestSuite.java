@@ -1,6 +1,6 @@
 /*
 * JBoss, Home of Professional Open Source
-* Copyright 2006, JBoss Inc., and individual contributors as indicated
+* Copyright 2005, JBoss Inc., and individual contributors as indicated
 * by the @authors tag. See the copyright.txt in the distribution for a
 * full listing of individual contributors.
 *
@@ -19,38 +19,31 @@
 * Software Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA
 * 02110-1301 USA, or see the FSF site: http://www.fsf.org.
 */
-package org.jboss.managed.api;
+package org.jboss.test.managed;
 
-import java.io.Serializable;
-import java.util.Set;
+import junit.framework.Test;
+import junit.framework.TestSuite;
+import junit.textui.TestRunner;
 
 /**
- * ManagedObject.
+ * Managed All Test Suite.
  * 
  * @author <a href="adrian@jboss.com">Adrian Brock</a>
- * @version $Revision: 1.1 $
+ * @version $Revision: 37459 $
  */
-public interface ManagedObject extends Serializable
+public class ManagedAllTestSuite extends TestSuite
 {
-   /**
-    * Get the property names
-    * 
-    * @return the property names
-    */
-   Set<String> getPropertyNames();
-   
-   /**
-    * Get a property
-    * 
-    * @param name the name
-    * @return the property
-    */
-   ManagedProperty getProperty(String name);
-   
-   /**
-    * Get the properties
-    * 
-    * @return the properties
-    */
-   Set<ManagedProperty> getProperties();
+   public static void main(String[] args)
+   {
+      TestRunner.run(suite());
+   }
+
+   public static Test suite()
+   {
+      TestSuite suite = new TestSuite("Managed All Tests");
+
+      //suite.addTest(TypesTestSuite.suite());
+
+      return suite;
+   }
 }

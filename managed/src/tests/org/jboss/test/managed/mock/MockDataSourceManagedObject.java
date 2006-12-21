@@ -19,7 +19,7 @@
 * Software Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA
 * 02110-1301 USA, or see the FSF site: http://www.fsf.org.
 */
-package org.jboss.managed.mock;
+package org.jboss.test.managed.mock;
 
 import java.util.HashSet;
 import java.util.Set;
@@ -27,8 +27,9 @@ import java.util.Set;
 import javax.xml.parsers.DocumentBuilder;
 import javax.xml.parsers.DocumentBuilderFactory;
 
-import org.jboss.managed.api.ManagedObject;
 import org.jboss.managed.api.ManagedProperty;
+import org.jboss.managed.plugins.ManagedObjectImpl;
+import org.jboss.managed.plugins.ManagedPropertyImpl;
 import org.jboss.util.xml.DOMWriter;
 import org.w3c.dom.DOMImplementation;
 import org.w3c.dom.Document;
@@ -40,7 +41,7 @@ import org.w3c.dom.Element;
  * @author <a href="adrian@jboss.com">Adrian Brock</a>
  * @version $Revision: 1.1 $
  */
-public class MockDataSourceManagedObject extends ManagedObject
+public class MockDataSourceManagedObject extends ManagedObjectImpl
 {
    /** The serialVersionUID */
    private static final long serialVersionUID = 1L;
@@ -74,11 +75,11 @@ public class MockDataSourceManagedObject extends ManagedObject
          throw new RuntimeException("Error creating dom", e);
       }
       
-      Set<ManagedProperty> properties = getManagedProperties();
-      properties.add(new ManagedProperty(new MockDOMFields(element, "jndi-name")));
-      properties.add(new ManagedProperty(new MockDOMFields(element, "connection-url")));
-      properties.add(new ManagedProperty(new MockDOMFields(element, "user")));
-      properties.add(new ManagedProperty(new MockDOMFields(element, "password")));
+      Set<ManagedProperty> properties = getProperties();
+      properties.add(new ManagedPropertyImpl(this, new MockDOMFields(element, "jndi-name")));
+      properties.add(new ManagedPropertyImpl(this, new MockDOMFields(element, "connection-url")));
+      properties.add(new ManagedPropertyImpl(this, new MockDOMFields(element, "user")));
+      properties.add(new ManagedPropertyImpl(this, new MockDOMFields(element, "password")));
    }
    
    public String prettyPrint()

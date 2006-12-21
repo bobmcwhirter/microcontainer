@@ -19,38 +19,55 @@
 * Software Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA
 * 02110-1301 USA, or see the FSF site: http://www.fsf.org.
 */
-package org.jboss.managed.api;
+package org.jboss.managed.plugins.advice;
 
 import java.io.Serializable;
+import java.util.AbstractSet;
+import java.util.Iterator;
 import java.util.Set;
 
 /**
- * ManagedObject.
+ * WrapperSet.
  * 
+ * @param <T> the interface type
  * @author <a href="adrian@jboss.com">Adrian Brock</a>
  * @version $Revision: 1.1 $
  */
-public interface ManagedObject extends Serializable
+class WrapperSet<T> extends AbstractSet<T> implements Serializable
 {
-   /**
-    * Get the property names
-    * 
-    * @return the property names
-    */
-   Set<String> getPropertyNames();
+   /** The serialVersionUID */
+   private static final long serialVersionUID = -5588975054846538928L;
+
+   /** The delegate */
+   private Set<T> delegate;
+
+   /** The interface class */
+   private Class<T> interfaceClass;
    
    /**
-    * Get a property
+    * Create a new WrapperSet.
     * 
-    * @param name the name
-    * @return the property
+    * @param delegate the delegate
+    * @param interfaceClass the interface class
     */
-   ManagedProperty getProperty(String name);
-   
-   /**
-    * Get the properties
-    * 
-    * @return the properties
-    */
-   Set<ManagedProperty> getProperties();
+   public WrapperSet(Set<T> delegate, Class<T> interfaceClass)
+   {
+      if (delegate == null)
+         throw new IllegalArgumentException("Null delegate");
+      if (interfaceClass == null)
+         throw new IllegalArgumentException("Null interface class");
+
+      this.delegate = delegate;
+      this.interfaceClass = interfaceClass;
+   }
+
+   public Iterator<T> iterator()
+   {
+      return new WrapperIterator<T>(delegate.iterator(), interfaceClass);
+   }
+
+   public int size()
+   {
+      return delegate.size();
+   }
 }

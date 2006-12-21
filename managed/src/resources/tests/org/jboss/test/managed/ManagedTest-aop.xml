@@ -1,0 +1,43 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE aop SYSTEM "jboss-aop_1_0.dtd" [
+   <!ENTITY ManagedAdvices SYSTEM "resource:org/jboss/test/managed/ManagedAdvices-aop.xml">
+   <!ENTITY ManagedObjectWrapper SYSTEM "resource:org/jboss/test/managed/ManagedObjectWrapper-aop.xml">
+   <!ENTITY ManagedPropertyWrapper SYSTEM "resource:org/jboss/test/managed/ManagedPropertyWrapper-aop.xml">
+]>
+
+<aop>
+
+   <!-- This is the default AOP setup when the test doesn't having anything specific -->
+
+   <!-- ==== Advices ==== -->
+
+   &ManagedAdvices;
+
+   <!-- ==== Managed Object ==== -->
+
+   <!-- The managed object advice stack -->
+   <bind pointcut="execution(* $instanceof{org.jboss.managed.api.ManagedObject}->$implements{org.jboss.managed.api.ManagedObject}(..))">
+      <advice name="invoke" aspect="trace"/>
+   </bind>
+
+   <!-- Wrapper methods for managed object -->
+   &ManagedObjectWrapper;
+
+   <!-- ==== Managed Property ==== -->
+
+   <!-- The managed property advice stack -->
+   <bind pointcut="execution(* $instanceof{org.jboss.managed.api.ManagedProperty}->$implements{org.jboss.managed.api.ManagedProperty}(..))">
+      <advice name="invoke" aspect="trace"/>
+   </bind>
+
+   <!-- Wrapper methods for managed object -->
+   &ManagedPropertyWrapper;
+
+   <!-- ==== Fields ==== -->
+
+   <!-- The fields advice stack -->
+   <bind pointcut="execution(* $instanceof{org.jboss.managed.api.Fields}->$implements{org.jboss.managed.api.Fields}(..))">
+      <advice name="invoke" aspect="trace"/>
+   </bind>
+
+</aop>

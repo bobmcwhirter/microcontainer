@@ -1,0 +1,7 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+   <!-- A trace advice for debugging -->
+   <aspect name="trace" class="org.jboss.managed.plugins.advice.TraceAdvice"/>
+
+   <!-- A wrapping advice -->
+   <aspect name="wrap" class="org.jboss.managed.plugins.advice.WrapperAdvice"/>

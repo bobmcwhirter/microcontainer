@@ -19,41 +19,55 @@
 * Software Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA
 * 02110-1301 USA, or see the FSF site: http://www.fsf.org.
 */
-package org.jboss.managed.mock;
+package org.jboss.managed.plugins.advice;
+
+import java.util.Iterator;
 
 /**
- * Test.
+ * WrapperIterator.
  * 
+ * @param <T> the interface
  * @author <a href="adrian@jboss.com">Adrian Brock</a>
  * @version $Revision: 1.1 $
  */
-public class Test
+public class WrapperIterator<T> implements Iterator<T>
 {
-   public static void main(String[] args) throws Exception
+   /** The delegate */
+   private Iterator<T> delegate;
+
+   /** The interface class */
+   private Class<T> interfaceClass;
+   
+   /**
+    * Create a new WrapperIterator.
+    * 
+    * @param delegate the delegate
+    * @param interfaceClass the interface class
+    */
+   public WrapperIterator(Iterator<T> delegate, Class<T> interfaceClass)
    {
-      MockDataSourceManagedObject mo = new MockDataSourceManagedObject();
-
-      System.out.println("MockDataSourceManagedObject, available propertes...\n");
-      System.out.println(mo.getPropertyNames());
-
-      System.out.println("\nInitial MetaData...\n");
-      System.out.println(mo.prettyPrint());
+      if (delegate == null)
+         throw new IllegalArgumentException("Null delegate");
+      if (interfaceClass == null)
+         throw new IllegalArgumentException("Null interface class");
       
-      System.out.println("\nAdding jndi-name...\n");
-      mo.getProperty("jndi-name").setValue("DefaultDS");
-      System.out.println(mo.prettyPrint());
+      this.delegate = delegate;
+      this.interfaceClass = interfaceClass;
+   }
 
-      System.out.println("\nAdding user and password...\n");
-      mo.getProperty("user").setValue("Scott");
-      mo.getProperty("password").setValue("Tiger");
-      System.out.println(mo.prettyPrint());
+   public boolean hasNext()
+   {
+      return delegate.hasNext();
+   }
 
-      System.out.println("\nChanging jndi-name...\n");
-      mo.getProperty("jndi-name").setValue("ChangedDS");
-      System.out.println(mo.prettyPrint());
+   public T next()
+   {
+      T next = delegate.next();
+      return WrapperAdvice.createProxy(next, interfaceClass);
+   }
 
-      System.out.println("\nRemoving jndi-name...\n");
-      mo.getProperty("jndi-name").setValue(null);
-      System.out.println(mo.prettyPrint());
+   public void remove()
+   {
+      throw new UnsupportedOperationException();
    }
 }
