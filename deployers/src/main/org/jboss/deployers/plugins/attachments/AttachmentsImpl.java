@@ -33,12 +33,19 @@ import java.util.concurrent.ConcurrentHashMap;
  */
 public class AttachmentsImpl extends AbstractAttachments
 {
+   private static final long serialVersionUID = 1;
+
    /** The attachments */
    private Map<String, Object> attachments = new ConcurrentHashMap<String, Object>();
 
    public Map<String, Object> getAttachments()
    {
       return Collections.unmodifiableMap(attachments);
+   }
+   public void setAttachments(Map<String, Object> map)
+   {
+      attachments.clear();
+      attachments.putAll(map);
    }
 
    public Object addAttachment(String name, Object attachment)
