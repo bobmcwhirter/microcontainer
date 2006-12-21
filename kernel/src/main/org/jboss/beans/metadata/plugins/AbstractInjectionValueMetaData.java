@@ -102,6 +102,7 @@ public class AbstractInjectionValueMetaData extends AbstractDependencyValueMetaD
          {
             throw new IllegalArgumentException("Possible multiple matching beans, see log for info.");
          }
+         // TODO - add progression here, then fix BeanMetaData as well
          return context.getTarget();
       }
       return super.getValue(info, cl);

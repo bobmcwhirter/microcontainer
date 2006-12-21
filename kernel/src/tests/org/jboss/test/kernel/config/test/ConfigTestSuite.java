@@ -62,7 +62,9 @@ public class ConfigTestSuite extends TestSuite
       suite.addTest(ArrayXMLTestCase.suite());
       suite.addTest(MapTestCase.suite());
       suite.addTest(MapXMLTestCase.suite());
-      
+      suite.addTest(ProgressionTestCase.suite());
+      suite.addTest(ProgressionXMLTestCase.suite());
+
       return suite;
    }
 }

@@ -80,7 +80,7 @@ public class AbstractValueMetaData extends JBossObject implements ValueMetaData,
 
    public Object getValue(TypeInfo info, ClassLoader cl) throws Throwable
    {
-      return value;
+      return info != null ? info.convertValue(value) : value;
    }
 
    public void initialVisit(MetaDataVisitor visitor)

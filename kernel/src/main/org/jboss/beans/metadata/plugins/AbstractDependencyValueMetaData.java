@@ -150,9 +150,9 @@ public class AbstractDependencyValueMetaData extends AbstractValueMetaData
          BeanInfo beanInfo = configurator.getBeanInfo(result.getClass());
          TargettedJoinpoint joinpoint = configurator.getPropertyGetterJoinPoint(beanInfo, property);
          joinpoint.setTarget(result);
-         return joinpoint.dispatch();
+         result = joinpoint.dispatch();
       }
-      return result;
+      return info != null ? info.convertValue(result) : result;
    }
 
    public void initialVisit(MetaDataVisitor visitor)

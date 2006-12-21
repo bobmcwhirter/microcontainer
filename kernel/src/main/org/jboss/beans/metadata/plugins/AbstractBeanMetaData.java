@@ -506,6 +506,7 @@ public class AbstractBeanMetaData extends AbstractFeatureMetaData implements Bea
          throw new IllegalArgumentException("Bean not yet installed: " + name);
       }
       Object target = context.getTarget();
+      // TODO - add progression here as well?
       if (info != null && info.getType().isAssignableFrom(target.getClass()) == false)
       {
          throw new ClassCastException(target + " is not a " + info);

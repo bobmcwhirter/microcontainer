@@ -46,6 +46,8 @@ import org.jboss.kernel.spi.config.KernelConfig;
 import org.jboss.reflect.spi.ConstructorInfo;
 import org.jboss.reflect.spi.MethodInfo;
 import org.jboss.reflect.spi.TypeInfo;
+import org.jboss.reflect.plugins.ProgressionConvertor;
+import org.jboss.reflect.plugins.ProgressionConvertorFactory;
 
 /**
  * Configuration utilities.
@@ -71,7 +73,7 @@ public class Configurator extends Config
          configure(result, info, metaData);
       return result;
    }
-   
+
    /**
     * Instantiate a bean
     * 
@@ -93,7 +95,7 @@ public class Configurator extends Config
       Joinpoint joinPoint = getConstructorJoinPoint(config, info, constructor, metaData);
       return joinPoint.dispatch();
    }
-   
+
    /**
     * Get a constructor joinpoint
     * 
@@ -108,7 +110,7 @@ public class Configurator extends Config
       throws Throwable
    {
       boolean trace = log.isTraceEnabled();
-      
+
       if (trace)
          log.trace("Get constructor joinpoint info=" + info + " constructor=" + metaData);
 
@@ -127,7 +129,7 @@ public class Configurator extends Config
                typeInfo = info.getClassInfo();
             return new ValueJoinpoint(vmd, typeInfo, cl);
          }
-         
+
          vmd = metaData.getFactory();
          if (vmd != null)
          {
@@ -139,7 +141,7 @@ public class Configurator extends Config
 
             // Describe the factory
             BeanInfo factoryInfo = config.getBeanInfo(factory.getClass());
-            
+
             // Find the method
             MethodJoinpoint joinPoint = findMethod(trace, factoryInfo, cl, metaData.getFactoryMethod(), parameters, false, true);
             joinPoint.setTarget(factory);
@@ -154,7 +156,7 @@ public class Configurator extends Config
             }
             return joinPoint;
          }
-         
+
          String factoryClassName = metaData.getFactoryClass();
          if (factoryClassName != null)
          {
@@ -176,11 +178,11 @@ public class Configurator extends Config
             }
             return joinPoint;
          }
-         
+
          // Find the constructor
          ConstructorJoinpoint joinPoint = findConstructor(trace, info, metaData, beanMetaData);
          ConstructorInfo cinfo = joinPoint.getConstructorInfo();
-         
+
          // Set the parameters
          if (cinfo != null)
          {
@@ -190,11 +192,11 @@ public class Configurator extends Config
          }
          return joinPoint;
       }
-      
+
       // Default constructor
       return findConstructor(trace, info, metaData, beanMetaData);
    }
-   
+
    /**
     * Find a constructor
     * 
@@ -211,7 +213,7 @@ public class Configurator extends Config
       JoinpointFactory jpf = info.getJoinpointFactory();
       return jpf.getConstructorJoinpoint(cinfo);
    }
-   
+
    /**
     * Resolve a constructor
     * 
@@ -264,7 +266,7 @@ public class Configurator extends Config
       if (properties != null && properties.isEmpty() == false)
       {
          ClassLoader cl = getClassLoader(metaData);
-         
+
          for (Iterator i = metaData.getProperties().iterator(); i.hasNext();)
          {
             PropertyMetaData property = (PropertyMetaData) i.next();
@@ -333,13 +335,13 @@ public class Configurator extends Config
    {
       if (trace)
          log.trace("Configuring info=" + info + " metaData=" + metaData);
-      
+
       TargettedJoinpoint joinPoint = getPropertySetterJoinPoint(trace, info, cl, metaData.getValue());
       joinPoint.setTarget(object);
-      
+
       if (trace)
          log.trace("Setting property " + joinPoint);
-      
+
       joinPoint.dispatch();
    }
 
@@ -373,7 +375,7 @@ public class Configurator extends Config
 
       if (info == null)
          throw new IllegalArgumentException("Null property info");
-      
+
       JoinpointFactory jpf = info.getBeanInfo().getJoinpointFactory();
       MethodInfo minfo = info.getGetter();
       return getMethodJoinpoint(null, jpf, minfo.getName(), null, null);
@@ -395,13 +397,13 @@ public class Configurator extends Config
          throw new IllegalArgumentException("Null bean info");
       if (metaData == null)
          throw new IllegalArgumentException("Null bean metadata");
-      
+
       Set<TargettedJoinpoint> result = new HashSet<TargettedJoinpoint>();
       Set<PropertyMetaData> propertys = metaData.getProperties();
       if (propertys != null && propertys.isEmpty() == false)
       {
          ClassLoader cl = getClassLoader(metaData);
-         
+
          for (Iterator i = metaData.getProperties().iterator(); i.hasNext();)
          {
             PropertyMetaData property = (PropertyMetaData) i.next();
@@ -409,7 +411,7 @@ public class Configurator extends Config
             result.add(joinPoint);
          }
       }
-      
+
       return result;
    }
 
@@ -495,7 +497,7 @@ public class Configurator extends Config
          throw new IllegalArgumentException("Null property info");
       if (metaData == null)
          throw new IllegalArgumentException("Null value metadata");
-      
+
       TypeInfo type = info.getType();
       Object value = metaData.getValue(type, cl);
       JoinpointFactory jpf = info.getBeanInfo().getJoinpointFactory();
@@ -505,7 +507,7 @@ public class Configurator extends Config
       String[] parameterTypes = getParameterTypes(trace, minfo.getParameterTypes());
       return getMethodJoinpoint(null, jpf, minfo.getName(), parameterTypes, new Object[] { value });
    }
-   
+
    /**
     * Unconfigure a bean
     * 
@@ -563,16 +565,16 @@ public class Configurator extends Config
    {
       if (trace)
          log.trace("Unconfiguring info=" + info + " metaData=" + metaData);
-      
+
       TargettedJoinpoint joinPoint = getPropertyNullerJoinPoint(info, metaData);
       joinPoint.setTarget(object);
-      
+
       if (trace)
          log.trace("Unsetting property " + joinPoint);
-      
+
       joinPoint.dispatch();
    }
-   
+
    /**
     * Get property nuller joinpoints for a bean
     * 
@@ -646,16 +648,16 @@ public class Configurator extends Config
       boolean trace = log.isTraceEnabled();
       if (trace)
          log.trace("Get property nuller join point info=" + info + " metaData=" + metaData);
-      
+
       if (info == null)
          throw new IllegalArgumentException("Null property info");
-      
+
       JoinpointFactory jpf = info.getBeanInfo().getJoinpointFactory();
       MethodInfo minfo = info.getSetter();
       String[] parameterTypes = getParameterTypes(trace, minfo.getParameterTypes());
       return getMethodJoinpoint(null, jpf, minfo.getName(), parameterTypes, new Object[] { null });
    }
-   
+
    /**
     * Get the property info
     * 
@@ -707,10 +709,10 @@ public class Configurator extends Config
             }
          }
       }
-      
+
       throw new JoinpointException("Property " + name + " not found for " + info);
    }
-   
+
    /**
     * Find a method
     * 
@@ -728,7 +730,7 @@ public class Configurator extends Config
       boolean trace = log.isTraceEnabled();
       return findMethod(trace, info, cl, name, parameters, isStatic, isPublic);
    }
-   
+
    /**
     * Find a method
     * 
@@ -761,10 +763,10 @@ public class Configurator extends Config
          Object[] params = getParameters(trace, cl, pinfos, parameters);
          joinPoint.setArguments(params);
       }
-      
+
       return joinPoint;
    }
-   
+
    /**
     * Get the parameters types
     * 
@@ -777,7 +779,7 @@ public class Configurator extends Config
    {
       if (parameters == null)
          return null;
-      
+
       String[] paramTypes = new String[parameters.size()];
       int x = 0;
       for (Iterator i = parameters.iterator(); i.hasNext();)
@@ -787,7 +789,7 @@ public class Configurator extends Config
       }
       return paramTypes;
    }
-   
+
    /**
     * Get the parameters types
     * 
@@ -800,14 +802,14 @@ public class Configurator extends Config
    {
       if (parameters == null)
          return null;
-      
+
       String[] paramTypes = new String[parameters.length];
       int x = 0;
       for (int i = 0; i < parameters.length; ++i)
          paramTypes[x++] = parameters[i].getName();
       return paramTypes;
    }
-   
+
    /**
     * Get the parameters
     * 
@@ -822,7 +824,7 @@ public class Configurator extends Config
    {
       if (parameters == null)
          return null;
-      
+
       Object[] params = new Object[parameters.size()];
       int x = 0;
       for (Iterator i = parameters.iterator(); i.hasNext();)
@@ -916,7 +918,7 @@ public class Configurator extends Config
     * @param typeInfos the type infos
     * @return true when we can use progression
     */
-   public static boolean progression(ClassLoader cl, String[] typeNames, TypeInfo[] typeInfos)
+   public static boolean progression(ClassLoader cl, String[] typeNames, TypeInfo[] typeInfos) throws Throwable
    {
       if (cl == null)
          return false;
@@ -924,7 +926,20 @@ public class Configurator extends Config
       if (simpleCheck(typeNames, typeInfos) == false)
          return false;
 
-      // JBMICROCONT-119: todo - write this + actual progression code at value injection
+      // convertor
+      ProgressionConvertor convertor = ProgressionConvertorFactory.getInstance().getConvertor();
+
+      for (int i = 0; i < typeNames.length; ++i)
+      {
+         if (typeNames[i] != null)
+         {
+            Class clazz = Class.forName(typeNames[i], true, cl);
+            if (convertor.canProgress(typeInfos[i].getType(), clazz) == false)
+            {
+               return false;
+            }
+         }
+      }
       return false;
    }
 
@@ -934,14 +949,14 @@ public class Configurator extends Config
    private static class ValueJoinpoint implements Joinpoint
    {
       /** The value metadata */
-      private ValueMetaData vmd; 
-      
+      private ValueMetaData vmd;
+
       /** The type info */
       private TypeInfo info;
-      
+
       /** The classloader */
       private ClassLoader cl;
-      
+
       /**
        * Create a new ValueJoinpoint.
        * 
@@ -955,7 +970,7 @@ public class Configurator extends Config
          this.info = info;
          this.cl = cl;
       }
-      
+
       public Object dispatch() throws Throwable
       {
          return vmd.getValue(info, cl);
@@ -977,6 +992,6 @@ public class Configurator extends Config
             throw new Error(e);
          }
       }
-      
+
    }
 }
