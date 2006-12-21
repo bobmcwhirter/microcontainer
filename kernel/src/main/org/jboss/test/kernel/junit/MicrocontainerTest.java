@@ -104,7 +104,7 @@ public class MicrocontainerTest extends AbstractTestCaseWithSetup
    {
       return getControllerContext(name, ControllerState.INSTALLED);
    }
-   
+
    /**
     * Get a context
     * 
@@ -116,6 +116,19 @@ public class MicrocontainerTest extends AbstractTestCaseWithSetup
    protected KernelControllerContext getControllerContext(Object name, ControllerState state)
    {
       return getMCDelegate().getControllerContext(name, state);
+   }
+
+   /**
+    * Change the context to the given state
+    * 
+    * @param context the context
+    * @param required the required state
+    * @return the actual state
+    * @throws Throwable for any error
+    */
+   public ControllerState change(KernelControllerContext context, ControllerState required) throws Throwable
+   {
+      return getMCDelegate().change(context, required);
    }
    
    /**

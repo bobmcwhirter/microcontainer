@@ -23,6 +23,7 @@ package org.jboss.test.kernel.junit;
 
 import java.net.URL;
 
+import org.jboss.dependency.spi.Controller;
 import org.jboss.dependency.spi.ControllerState;
 import org.jboss.kernel.Kernel;
 import org.jboss.kernel.plugins.bootstrap.AbstractBootstrap;
@@ -151,7 +152,22 @@ public class MicrocontainerTestDelegate extends AbstractTestDelegate
          throw new IllegalStateException("Bean not found " + name + " at state " + state);
       return context;
    }
-   
+
+   /**
+    * Change the context to the given state
+    * 
+    * @param context the context
+    * @param required the required state
+    * @return the actual state
+    * @throws Throwable for any error
+    */
+   protected ControllerState change(KernelControllerContext context, ControllerState required) throws Throwable
+   {
+      Controller controller = kernel.getController();
+      controller.change(context, required);
+      return context.getState();
+   }
+
    /**
     * Validate
     * 

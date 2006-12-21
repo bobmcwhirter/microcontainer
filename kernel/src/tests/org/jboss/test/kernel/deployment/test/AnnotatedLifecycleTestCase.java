@@ -21,13 +21,11 @@
 */
 package org.jboss.test.kernel.deployment.test;
 
+import junit.framework.Test;
+
 import org.jboss.dependency.spi.ControllerState;
 import org.jboss.kernel.spi.dependency.KernelControllerContext;
-import org.jboss.test.AbstractTestDelegate;
 import org.jboss.test.kernel.deployment.support.AnnotatedLifecycleBean;
-import org.jboss.test.kernel.junit.ManualMicrocontainerTestDelegate;
-
-import junit.framework.Test;
 
 /**
  * @author <a href="mailto:ales.justin@gmail.com">Ales Justin</a>
@@ -47,47 +45,38 @@ public class AnnotatedLifecycleTestCase extends AbstractDeploymentTest
       return suite(AnnotatedLifecycleTestCase.class);
    }
 
-   public void testAnnotetedLifecycle() throws Throwable
+   public void testAnnotatedLifecycle() throws Throwable
    {
       AnnotatedLifecycleBean target;
 
       KernelControllerContext context = getControllerContext(BEAN_NAME, ControllerState.NOT_INSTALLED);
 
-      ManualMicrocontainerTestDelegate delegate = (ManualMicrocontainerTestDelegate) getMCDelegate();
-
-      delegate.change(context, ControllerState.CREATE);
+      change(context, ControllerState.CREATE);
       target = (AnnotatedLifecycleBean) context.getTarget();
       assertTrue(target.isCreate());
       assertFalse(target.isStart());
       assertFalse(target.isStop());
       assertFalse(target.isDestroy());
 
-      delegate.change(context, ControllerState.START);
+      change(context, ControllerState.START);
       target = (AnnotatedLifecycleBean) context.getTarget();
       assertTrue(target.isCreate());
       assertTrue(target.isStart());
       assertFalse(target.isStop());
       assertFalse(target.isDestroy());
 
-      delegate.change(context, ControllerState.CREATE);
+      change(context, ControllerState.CREATE);
       target = (AnnotatedLifecycleBean) context.getTarget();
       assertTrue(target.isCreate());
       assertFalse(target.isStart());
       assertTrue(target.isStop());
       assertFalse(target.isDestroy());
 
-      delegate.change(context, ControllerState.CONFIGURED);
+      change(context, ControllerState.CONFIGURED);
       target = (AnnotatedLifecycleBean) context.getTarget();
       assertFalse(target.isCreate());
       assertFalse(target.isStart());
       assertTrue(target.isStop());
       assertTrue(target.isDestroy());
-
    }
-
-   public static AbstractTestDelegate getDelegate(Class clazz) throws Exception
-   {
-      return new ManualMicrocontainerTestDelegate(clazz);
-   }
-
 }
