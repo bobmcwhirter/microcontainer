@@ -21,10 +21,14 @@
 */
 package org.jboss.deployers.plugins.deployer;
 
+import java.util.Map;
+
 import org.jboss.deployers.spi.DeploymentException;
 import org.jboss.deployers.spi.deployer.Deployer;
 import org.jboss.deployers.spi.deployer.DeploymentUnit;
+import org.jboss.deployers.spi.managed.ManagedObjectBuilder;
 import org.jboss.logging.Logger;
+import org.jboss.managed.api.ManagedObject;
 
 /**
  * DeployerWrapper.<p>
@@ -35,13 +39,16 @@ import org.jboss.logging.Logger;
  * @author <a href="adrian@jboss.com">Adrian Brock</a>
  * @version $Revision: 1.1 $
  */
-public class DeployerWrapper implements Deployer
+public class DeployerWrapper implements Deployer, ManagedObjectBuilder
 {
    /** The log */
    private Logger log; 
    
    /** The deployer */
    private Deployer deployer;
+   
+   /** The managed object builder */
+   private ManagedObjectBuilder managedObjectBuilder;
    
    /**
     * Create a new DeployerWrapper.
@@ -54,6 +61,10 @@ public class DeployerWrapper implements Deployer
          throw new IllegalArgumentException("Null deployer");
       this.deployer = deployer;
       this.log = Logger.getLogger(deployer.getClass());
+      
+      // Check to see whether the deployer also builds managed  objects
+      if (deployer instanceof ManagedObjectBuilder)
+         managedObjectBuilder = (ManagedObjectBuilder) deployer;
    }
    
    public boolean isRelevant(DeploymentUnit unit)
@@ -176,9 +187,33 @@ public class DeployerWrapper implements Deployer
    {
       return deployer.getRelativeOrder();
    }
+
    public void setRelativeOrder(int order)
    {
       deployer.setRelativeOrder(order);
+   }
+
+   public void build(DeploymentUnit unit, Map<String, ManagedObject> managedObjects) throws DeploymentException
+   {
+      // Not a managed object builder
+      if (managedObjectBuilder == null)
+         return;
+      
+      if (unit == null)
+         throw new IllegalArgumentException("Null unit");
+      if (managedObjects == null)
+         throw new IllegalArgumentException("Null managed objects");
+
+      try
+      {
+         log.trace("build: " + unit.getName());
+         managedObjectBuilder.build(unit, managedObjects);
+         log.trace("built: " + unit.getName());
+      }
+      catch (Throwable t)
+      {
+         log.warn("Error during commit undeployment: " + unit.getName(), t);
+      }
    }
 
    @Override

@@ -36,6 +36,7 @@ public class AttachmentLocator
    /**
     * Get a named attachment
     * 
+    * @param unit the deployment unit
     * @param name the name of the attachment
     * @return the attachment or null if not present
     * @throws IllegalArgumentException for a null name
@@ -56,6 +57,7 @@ public class AttachmentLocator
     * Get named attachment of a given type
     * 
     * @param <T> the expected type
+    * @param unit the deployment unit
     * @param name the name of the attachment
     * @param expectedType the expected type
     * @return the attachment or null if not present
@@ -74,6 +76,7 @@ public class AttachmentLocator
     * 
     * @param <T> the expected type
     * @param type the type
+    * @param unit the deployment unit
     * @return the attachment or null if not present
     * @throws IllegalArgumentException for a null name or type
     */

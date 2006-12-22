@@ -35,7 +35,6 @@ import org.jboss.deployers.plugins.structure.BasicStructuredDeployers;
 import org.jboss.deployers.plugins.structure.vfs.file.FileStructure;
 import org.jboss.deployers.plugins.structure.vfs.jar.JARStructure;
 import org.jboss.deployers.plugins.structure.vfs.war.WARStructure;
-import org.jboss.deployers.spi.deployer.DeploymentUnit;
 import org.jboss.deployers.spi.structure.DeploymentContext;
 import org.jboss.deployers.spi.structure.vfs.StructureDeployer;
 import org.jboss.deployers.spi.structure.vfs.StructuredDeployers;

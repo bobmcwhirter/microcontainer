@@ -21,7 +21,6 @@
 */
 package org.jboss.deployers.plugins.structure.vfs;
 
-import org.jboss.deployers.spi.structure.DeploymentContext;
 import org.jboss.deployers.spi.structure.vfs.StructureDeployer;
 import org.jboss.deployers.spi.structure.vfs.StructureMetaData;
 import org.jboss.deployers.spi.structure.vfs.StructuredDeployers;

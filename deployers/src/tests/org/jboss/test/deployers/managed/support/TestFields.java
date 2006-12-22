@@ -19,52 +19,49 @@
 * Software Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA
 * 02110-1301 USA, or see the FSF site: http://www.fsf.org.
 */
-package org.jboss.managed.api;
+package org.jboss.test.deployers.managed.support;
 
 import java.io.Serializable;
-import java.util.Set;
+
+import org.jboss.managed.api.Fields;
 
 /**
- * ManagedObject.
+ * TestFields.
  * 
  * @author <a href="adrian@jboss.com">Adrian Brock</a>
  * @version $Revision: 1.1 $
  */
-public interface ManagedObject extends Serializable
+public class TestFields implements Fields
 {
-   /**
-    * Get the attachment name
-    * 
-    * @return the name
-    */
-   String getName();
-   
-   /**
-    * Get the underlying object
-    * 
-    * @return the underlying object
-    */
-   Serializable getAttachment();
+   /** The serialVersionUID */
+   private static final long serialVersionUID = 1L;
 
-   /**
-    * Get the property names
-    * 
-    * @return the property names
-    */
-   Set<String> getPropertyNames();
+   private TestAttachment attachment;
    
-   /**
-    * Get a property
-    * 
-    * @param name the name
-    * @return the property
-    */
-   ManagedProperty getProperty(String name);
+   private String property;
    
-   /**
-    * Get the properties
-    * 
-    * @return the properties
-    */
-   Set<ManagedProperty> getProperties();
+   public TestFields(TestAttachment attachment, String property)
+   {
+      this.attachment = attachment;
+      this.property = property;
+   }
+
+   public Serializable getField(String name)
+   {
+      if (name == Fields.NAME)
+         return property;
+      if (name == Fields.VALUE)
+         return attachment.getProperty(property);
+      return null;
+   }
+
+   public void setField(String name, Serializable value)
+   {
+      if (name == Fields.VALUE)
+      {
+         attachment.setProperty(property, value);
+         return;
+      }
+      throw new UnsupportedOperationException("setField: " + name);
+   }
 }

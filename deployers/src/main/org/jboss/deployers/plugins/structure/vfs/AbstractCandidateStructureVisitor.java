@@ -60,6 +60,8 @@ public class AbstractCandidateStructureVisitor extends AbstractVirtualFileVisito
     * Create a new CandidateStructureVisitor.
     * 
     * @param parent the parent
+    * @param metaData the structure meta data
+    * @param deployers the structure deployers
     * @throws IllegalArgumentException for a null parent
     */
    public AbstractCandidateStructureVisitor(VirtualFile parent, StructureMetaData metaData, StructuredDeployers deployers)
@@ -71,6 +73,8 @@ public class AbstractCandidateStructureVisitor extends AbstractVirtualFileVisito
     * Create a new CandidateStructureVisitor.
     * 
     * @param parent the parent
+    * @param metaData the structure meta data
+    * @param deployers the structure deployers
     * @param attributes the attributes
     * @throws IllegalArgumentException for a null parent
     */

@@ -40,7 +40,7 @@ public interface StructureBuilder
     * @param context - the root deployment context to populate
     * @param metaData - the metadata from a structural parse of the context
     *    root VirtualFile
-    * @throws Exception for any error
+    * @throws DeploymentException for any error
     */
    public void populateContext(DeploymentContext context, StructureMetaData metaData)
       throws DeploymentException;

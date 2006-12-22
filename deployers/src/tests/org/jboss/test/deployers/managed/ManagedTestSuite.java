@@ -19,52 +19,33 @@
 * Software Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA
 * 02110-1301 USA, or see the FSF site: http://www.fsf.org.
 */
-package org.jboss.managed.api;
+package org.jboss.test.deployers.managed;
 
-import java.io.Serializable;
-import java.util.Set;
+import junit.framework.Test;
+import junit.framework.TestSuite;
+import junit.textui.TestRunner;
+
+import org.jboss.test.deployers.managed.test.DeployerManagedObjectUnitTestCase;
 
 /**
- * ManagedObject.
+ * Managed Test Suite.
  * 
  * @author <a href="adrian@jboss.com">Adrian Brock</a>
- * @version $Revision: 1.1 $
+ * @version $Revision: 37459 $
  */
-public interface ManagedObject extends Serializable
+public class ManagedTestSuite extends TestSuite
 {
-   /**
-    * Get the attachment name
-    * 
-    * @return the name
-    */
-   String getName();
-   
-   /**
-    * Get the underlying object
-    * 
-    * @return the underlying object
-    */
-   Serializable getAttachment();
+   public static void main(String[] args)
+   {
+      TestRunner.run(suite());
+   }
 
-   /**
-    * Get the property names
-    * 
-    * @return the property names
-    */
-   Set<String> getPropertyNames();
-   
-   /**
-    * Get a property
-    * 
-    * @param name the name
-    * @return the property
-    */
-   ManagedProperty getProperty(String name);
-   
-   /**
-    * Get the properties
-    * 
-    * @return the properties
-    */
-   Set<ManagedProperty> getProperties();
+   public static Test suite()
+   {
+      TestSuite suite = new TestSuite("Managed Tests");
+
+      suite.addTest(DeployerManagedObjectUnitTestCase.suite());
+
+      return suite;
+   }
 }

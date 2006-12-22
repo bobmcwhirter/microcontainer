@@ -23,10 +23,7 @@ package org.jboss.test.deployers.structure.main.test;
 
 import java.util.Collections;
 import java.util.HashSet;
-import java.util.Iterator;
 import java.util.Set;
-import java.util.SortedSet;
-import java.util.TreeSet;
 
 import junit.framework.AssertionFailedError;
 import junit.framework.Test;
@@ -34,10 +31,6 @@ import junit.framework.TestSuite;
 
 import org.jboss.deployers.plugins.deployment.MainDeployerImpl;
 import org.jboss.deployers.plugins.structure.AbstractDeploymentContext;
-import org.jboss.deployers.plugins.structure.BasicStructuredDeployers;
-import org.jboss.deployers.plugins.structure.vfs.StructureDeployerWrapper;
-import org.jboss.deployers.plugins.structure.vfs.explicit.DeclaredStructure;
-import org.jboss.deployers.plugins.structure.vfs.file.FileStructure;
 import org.jboss.deployers.plugins.structure.vfs.jar.JARStructure;
 import org.jboss.deployers.plugins.structure.vfs.war.WARStructure;
 import org.jboss.deployers.spi.structure.DeploymentContext;

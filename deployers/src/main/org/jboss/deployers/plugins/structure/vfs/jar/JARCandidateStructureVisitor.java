@@ -39,6 +39,8 @@ public class JARCandidateStructureVisitor extends AbstractCandidateStructureVisi
     * Create a new JARCandidateStructureVisitor.
     * 
     * @param parent the parent
+    * @param metaData the structure meta data
+    * @param deployers the structure deployers
     * @param attributes the attributes
     * @throws IllegalArgumentException for a null parent
     * @throws Exception for any error

@@ -47,6 +47,7 @@ public class JARStructure extends AbstractStructureDeployer
    /**
     * Sets the default relative order 10000.
     *
+    * @param suffixes the suffixes
     */
    public JARStructure(Set<String> suffixes)
    {

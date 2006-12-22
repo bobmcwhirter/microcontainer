@@ -26,7 +26,6 @@ import java.io.InputStream;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Properties;
-import java.util.Set;
 
 import org.jboss.deployers.plugins.structure.ContextInfoImpl;
 import org.jboss.deployers.plugins.structure.vfs.AbstractStructureDeployer;

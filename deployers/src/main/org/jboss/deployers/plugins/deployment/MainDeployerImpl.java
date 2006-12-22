@@ -33,6 +33,7 @@ import static org.jboss.deployers.spi.structure.StructureDetermined.YES;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
+import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
@@ -57,13 +58,18 @@ import org.jboss.deployers.spi.structure.vfs.StructureBuilder;
 import org.jboss.deployers.spi.structure.vfs.StructureDeployer;
 import org.jboss.deployers.spi.structure.vfs.StructureMetaData;
 import org.jboss.logging.Logger;
+import org.jboss.managed.api.ManagedObject;
 import org.jboss.virtual.VirtualFile;
 
 /**
  * MainDeployerImpl.
  * 
  * TODO full deployer protocol
+ * 
  * TODO sort out a proper state machine
+ * 
+ * TODO implement attachment flow see comment in {@link Deployer}
+ * 
  * @author <a href="adrian@jboss.com">Adrian Brock</a>
  * @version $Revision: 1.1 $
  */
@@ -82,7 +88,7 @@ public class MainDeployerImpl implements MainDeployer
    private StructureBuilder structureBuilder = new DefaultStructureBuilder();
 
    /** The deployers */
-   private SortedSet<Deployer> deployers = new TreeSet<Deployer>(Deployer.COMPARATOR);
+   private SortedSet<DeployerWrapper> deployers = new TreeSet<DeployerWrapper>(Deployer.COMPARATOR);
    
    /** The deployments by name */
    private Map<String, DeploymentContext> topLevelDeployments = new ConcurrentHashMap<String, DeploymentContext>();
@@ -161,7 +167,9 @@ public class MainDeployerImpl implements MainDeployer
     */
    public synchronized Set<Deployer> getDeployers()
    {
-      return new TreeSet<Deployer>(deployers);
+      TreeSet<Deployer> result = new TreeSet<Deployer>(Deployer.COMPARATOR);
+      result.addAll(deployers);
+      return result;
    }
    
    /**
@@ -222,6 +230,18 @@ public class MainDeployerImpl implements MainDeployer
       if (name == null)
          throw new IllegalArgumentException("Null name");
       return allDeployments.get(name);
+   }
+
+   public Map<String, ManagedObject> getManagedObjects(DeploymentContext context) throws DeploymentException
+   {
+      if (context == null)
+         throw new IllegalArgumentException("Null context");
+      
+      Map<String, ManagedObject> managedObjects = new HashMap<String, ManagedObject>();
+      for (DeployerWrapper deployer : deployers)
+         deployer.build(context.getDeploymentUnit(), managedObjects);
+      
+      return managedObjects;
    }
 
    public StructureBuilder getStructureBuilder()

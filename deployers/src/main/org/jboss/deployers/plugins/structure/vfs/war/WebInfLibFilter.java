@@ -21,7 +21,6 @@
   */
 package org.jboss.deployers.plugins.structure.vfs.war;
 
-import org.jboss.logging.Logger;
 import org.jboss.virtual.VirtualFile;
 import org.jboss.virtual.VirtualFileFilterWithAttributes;
 import org.jboss.virtual.VisitorAttributes;
@@ -35,9 +34,6 @@ import org.jboss.virtual.VisitorAttributes;
  */
 public class WebInfLibFilter implements VirtualFileFilterWithAttributes
 {
-   /** The log */
-   private static final Logger log = Logger.getLogger(WebInfLibFilter.class);
-   
    /** The instance */
    public static final WebInfLibFilter INSTANCE = new WebInfLibFilter();
    

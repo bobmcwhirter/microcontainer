@@ -96,7 +96,8 @@ public abstract class AbstractStructureDeployer implements StructureDeployer
     * 
     * @param file
     * @param metaData
-    * @return
+    * @return true when it is top level
+    * @throws IOException for an error accessing the file
     */
    public boolean isTopLevel(VirtualFile file, StructureMetaData metaData)
       throws IOException
@@ -168,6 +169,8 @@ public abstract class AbstractStructureDeployer implements StructureDeployer
     * Add all children as candidates
     * 
     * @param parent the parent context
+    * @param metaData the structure meta data
+    * @param deployers the structure deployers
     * @throws Exception for any error
     */
    protected void addAllChildren(VirtualFile parent, StructureMetaData metaData, StructuredDeployers deployers)
@@ -180,6 +183,8 @@ public abstract class AbstractStructureDeployer implements StructureDeployer
     * Add all children as candidates
     * 
     * @param parent the parent context
+    * @param metaData the structure meta data
+    * @param deployers the structure deployers
     * @param attributes the visitor attributes uses {@link VisitorAttributes#DEFAULT} when null
     * @throws Exception for any error
     */

@@ -21,8 +21,6 @@
 */
 package org.jboss.deployers.spi.deployer;
 
-import java.util.Comparator;
-
 import org.jboss.deployers.spi.DeploymentException;
 import org.jboss.deployers.spi.OrderedDeployer;
 
@@ -30,6 +28,12 @@ import org.jboss.deployers.spi.OrderedDeployer;
  * Deployer.
  * 
  * TODO contract for redeployment
+ * 
+ * TODO the contract should really be based on attachment flow
+ *      i.e. input/output of attachments
+ *      e.g. - parsing deployer (creates an attachment)
+ *           - component deployers splits one attachment into mulitple attachments
+ *           - real deployer produces the real work for the attachment
  * 
  * @author <a href="adrian@jboss.com">Adrian Brock</a>
  * @version $Revision: 1.1 $

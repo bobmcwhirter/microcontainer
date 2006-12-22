@@ -22,7 +22,6 @@
 package org.jboss.test.deployers;
 
 import java.io.IOException;
-import java.net.MalformedURLException;
 import java.net.URISyntaxException;
 import java.net.URL;
 import java.util.HashMap;
@@ -99,7 +98,7 @@ public abstract class BaseDeployersTest extends BaseTestCase
     * Get a vfs url string from a path
     * 
     * @param path
-    * @return
+    * @return the url
     * @throws Exception
     */
    protected String getVfsURL(String path) throws Exception
@@ -137,9 +136,11 @@ public abstract class BaseDeployersTest extends BaseTestCase
       deployers.addDeployer(getStrucutureDeployer());
       return deployers;
    }
+
    /**
     * Get the StructureVisitorFactory that translates the StructureMetaData into a DeploymentContext tree.
-    * @return
+    * 
+    * @return the builder
     */
    protected StructureBuilderFactory getStructureBuilderFactory()
    {
@@ -150,7 +151,9 @@ public abstract class BaseDeployersTest extends BaseTestCase
     * Determine the structure
     * 
     * @param context the context
+    * @param addTopLevelInfo whether to add top level info
     * @return the result
+    * @throws Exception for any error
     */
    protected boolean determineStructure(DeploymentContext context, boolean addTopLevelInfo)
       throws Exception
@@ -163,9 +166,10 @@ public abstract class BaseDeployersTest extends BaseTestCase
    /**
     * Determine the structure
     * 
-    * @param structure the structural deployer
+    * @param deployer the structural deployer
     * @param context the context
     * @return the result
+    * @throws Exception for any error
     */
    protected boolean determineStructure(StructureDeployer deployer,
          DeploymentContext context)
@@ -173,12 +177,15 @@ public abstract class BaseDeployersTest extends BaseTestCase
    {
       return determineStructure(deployer, getStrucuturedDeployers(), context, false);
    }
+
    /**
     * Determine the structure
     * 
-    * @param structure the structural deployer
+    * @param deployer the structural deployer
     * @param context the context
+    * @param addTopLevelInfo whether to add top level info
     * @return the result
+    * @throws Exception for any error
     */
    protected boolean determineStructure(StructureDeployer deployer,
          DeploymentContext context, boolean addTopLevelInfo)
@@ -187,14 +194,15 @@ public abstract class BaseDeployersTest extends BaseTestCase
       return determineStructure(deployer, getStrucuturedDeployers(), context, addTopLevelInfo);
    }
    /**
+    * Determine the structure
     * 
     * @param deployer
     * @param deployers
     * @param context
     * @param addTopLevelInfo - should a ContextInfo be created for the
     *    context root
-    * @return
-    * @throws Exception
+    * @return whether the structure was determined
+    * @throws Exception for any error
     */
    protected boolean determineStructure(StructureDeployer deployer,
          StructuredDeployers deployers, DeploymentContext context,
@@ -353,7 +361,8 @@ public abstract class BaseDeployersTest extends BaseTestCase
     * Translate a set of DeploymentContexts string paths relative to the root
     * URL.
     * 
-    * @param set
+    * @param set the deployment contexts
+    * @param root the root url
     * @return set of 
     * @throws URISyntaxException 
     * @throws IOException 
@@ -386,7 +395,9 @@ public abstract class BaseDeployersTest extends BaseTestCase
     * some.ear/child.jar
     * 
     * @param root ctx
-    * @return
+    * @return the map
+    * @throws IOException for an error accessing the vfs path
+    * @throws URISyntaxException for an error resolving the uri
     */
    protected Map<String, DeploymentContext> createDeploymentPathMap(DeploymentContext root)
       throws IOException, URISyntaxException

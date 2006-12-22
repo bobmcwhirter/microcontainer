@@ -32,6 +32,7 @@ import org.jboss.test.deployers.deployer.test.DeployerOrderingUnitTestCase;
 import org.jboss.test.deployers.deployer.test.DeployerProtocolUnitTestCase;
 import org.jboss.test.deployers.deployer.test.DeployerWidthFirstUnitTestCase;
 import org.jboss.test.deployers.deployer.test.MainDeployerDeployerUnitTestCase;
+import org.jboss.test.deployers.managed.ManagedTestSuite;
 import org.jboss.test.deployers.metadata.test.MetaDataUnitTestCase;
 
 /**
@@ -57,6 +58,7 @@ public class DeployerTestSuite extends TestSuite
       suite.addTest(DeployerClassLoaderUnitTestCase.suite());
       suite.addTest(MainDeployerDeployerUnitTestCase.suite());
       suite.addTest(MetaDataUnitTestCase.suite());
+      suite.addTest(ManagedTestSuite.suite());
       suite.addTest(BeanDeployerUnitTestCase.suite());
       suite.addTest(KernelDeployerUnitTestCase.suite());
 

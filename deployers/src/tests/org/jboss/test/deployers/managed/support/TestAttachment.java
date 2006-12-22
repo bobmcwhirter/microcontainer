@@ -19,52 +19,46 @@
 * Software Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA
 * 02110-1301 USA, or see the FSF site: http://www.fsf.org.
 */
-package org.jboss.managed.api;
+package org.jboss.test.deployers.managed.support;
 
 import java.io.Serializable;
-import java.util.Set;
+import java.util.HashMap;
+import java.util.Map;
 
 /**
- * ManagedObject.
+ * TestAttachment.
  * 
  * @author <a href="adrian@jboss.com">Adrian Brock</a>
  * @version $Revision: 1.1 $
  */
-public interface ManagedObject extends Serializable
+public class TestAttachment implements Cloneable, Serializable
 {
-   /**
-    * Get the attachment name
-    * 
-    * @return the name
-    */
-   String getName();
+   /** The serialVersionUID */
+   private static final long serialVersionUID = 1L;
    
-   /**
-    * Get the underlying object
-    * 
-    * @return the underlying object
-    */
-   Serializable getAttachment();
+   private Map<String, Serializable> fields = new HashMap<String, Serializable>();
 
-   /**
-    * Get the property names
-    * 
-    * @return the property names
-    */
-   Set<String> getPropertyNames();
+   public Serializable getProperty(String name)
+   {
+      return fields.get(name);
+   }
+
+   public void setProperty(String name, Serializable value)
+   {
+      fields.put(name, value);
+   }
    
-   /**
-    * Get a property
-    * 
-    * @param name the name
-    * @return the property
-    */
-   ManagedProperty getProperty(String name);
-   
-   /**
-    * Get the properties
-    * 
-    * @return the properties
-    */
-   Set<ManagedProperty> getProperties();
+   public TestAttachment clone()
+   {
+      try
+      {
+         TestAttachment clone = (TestAttachment) super.clone();
+         clone.fields = new HashMap<String, Serializable>(clone.fields);
+         return clone;
+      }
+      catch (CloneNotSupportedException e)
+      {
+         throw new Error("Unexpected", e);
+      }
+   }
 }

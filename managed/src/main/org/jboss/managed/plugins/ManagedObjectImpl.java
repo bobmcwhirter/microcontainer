@@ -21,7 +21,7 @@
 */
 package org.jboss.managed.plugins;
 
-import java.util.Collections;
+import java.io.Serializable;
 import java.util.HashSet;
 import java.util.Set;
 
@@ -39,21 +39,70 @@ public class ManagedObjectImpl implements ManagedObject
    /** The serialVersionUID */
    private static final long serialVersionUID = -2588364350006686542L;
 
+   /** The attachment name */
+   private String name;
+   
+   /** The attachment */
+   private Serializable attachment;
+   
    /** The properties */
    private Set<ManagedProperty> properties;
    
    /**
     * Create a new ManagedObjectImpl
     * 
+    * @param name the attachment name
+    */
+   public ManagedObjectImpl(String name)
+   {
+      if (name == null)
+         throw new IllegalArgumentException("Null name");
+      
+      this.name = name;
+      properties = new HashSet<ManagedProperty>();
+   }
+   
+   /**
+    * Create a new ManagedObjectImpl
+    * 
+    * @param name the attachment name
     * @param properties the properties 
     */
-   public ManagedObjectImpl(Set<ManagedProperty> properties)
+   public ManagedObjectImpl(String name, Set<ManagedProperty> properties)
    {
+      if (name == null)
+         throw new IllegalArgumentException("Null name");
       if (properties == null)
-         properties = Collections.emptySet();
+         throw new IllegalArgumentException("Null properties");
+      
+      this.name = name;
       this.properties = properties;
    }
    
+   /**
+    * Create a new ManagedObjectImpl
+    * 
+    * @param name the attachment name
+    * @param properties the properties 
+    * @param attachment the attachment
+    */
+   public ManagedObjectImpl(String name, Set<ManagedProperty> properties, Serializable attachment)
+   {
+      if (name == null)
+         throw new IllegalArgumentException("Null name");
+      if (properties == null)
+         throw new IllegalArgumentException("Null properties");
+      
+      this.name = name;
+      this.properties = properties;
+      setAttachment(attachment);
+   }
+   
+   public String getName()
+   {
+      return name;
+   }
+
    public Set<String> getPropertyNames()
    {
       Set<String> result = new HashSet<String>(properties.size());
@@ -78,5 +127,44 @@ public class ManagedObjectImpl implements ManagedObject
    public Set<ManagedProperty> getProperties()
    {
       return properties;
+   }
+
+   public Serializable getAttachment()
+   {
+      return attachment;
+   }
+
+   /**
+    * Set the attachment.
+    * 
+    * @param attachment the attachment.
+    */
+   public void setAttachment(Serializable attachment)
+   {
+      this.attachment = attachment;
+   }
+   
+   @Override
+   public boolean equals(Object obj)
+   {
+      if (obj == this)
+         return true;
+      if (obj == null || obj instanceof ManagedObject == false)
+         return false;
+      
+      ManagedObject other = (ManagedObject) obj;
+      return getName().equals(other.getName()) && getProperties().equals(other.getProperties());
+   }
+   
+   @Override
+   public int hashCode()
+   {
+      return name.hashCode();
+   }
+   
+   @Override
+   public String toString()
+   {
+      return "ManagedObject{" + name + "}"; 
    }
 }

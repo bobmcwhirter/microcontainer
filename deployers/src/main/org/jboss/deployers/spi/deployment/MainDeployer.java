@@ -22,9 +22,11 @@
 package org.jboss.deployers.spi.deployment;
 
 import java.util.Collection;
+import java.util.Map;
 
 import org.jboss.deployers.spi.DeploymentException;
 import org.jboss.deployers.spi.structure.DeploymentContext;
+import org.jboss.managed.api.ManagedObject;
 
 /**
  * MainDeployer.<p>
@@ -45,6 +47,15 @@ public interface MainDeployer
     * @return the context or null if not found
     */
    DeploymentContext getDeploymentContext(String name);
+
+   /**
+    * Get the managed object for a deployment context
+    *      
+    * @param context the context
+    * @return the managed object
+    * @throws DeploymentException for any error
+    */
+   Map<String, ManagedObject> getManagedObjects(DeploymentContext context) throws DeploymentException;
    
    /**
     * Get the top level deployments

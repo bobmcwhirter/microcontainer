@@ -21,7 +21,6 @@
 */
 package org.jboss.test.managed.mock;
 
-import java.util.HashSet;
 import java.util.Set;
 
 import javax.xml.parsers.DocumentBuilder;
@@ -54,7 +53,7 @@ public class MockDataSourceManagedObject extends ManagedObjectImpl
     */
    public MockDataSourceManagedObject()
    {
-      super(new HashSet<ManagedProperty>());
+      super("Mock");
       Element element;
       try
       {

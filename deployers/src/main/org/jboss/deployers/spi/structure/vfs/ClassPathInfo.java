@@ -32,31 +32,45 @@ import java.util.Map;
 public interface ClassPathInfo
 {
    /**
-    * path relative to the context virtual file.
+    * Get the path relative to the context virtual file
+    * 
+    * @return the path.
     */
-   public String getPath();
-   public void setPath(String path);
+   String getPath();
+   
+   /**
+    * Set the path relative to the context virtual file
+    * 
+    * @param path the path
+    */
+   void setPath(String path);
+   
    /**
     * Get the options associated with the classpath entry.
+    * 
     * @return A map of entry options.
     */
-   public Map getOptions();
+   Map<Object, Object> getOptions();
+   
    /**
     * Set the options associated with the classpath entry.
+    * 
     * @param options - A map of entry options.
     */
-   public void setOptions(Map options);
+   void setOptions(Map<Object, Object> options);
 
    /**
     * Get a classpath entry option
     * @param key - the option key
     * @return the option if it exists, null otherwise
     */
-   public Object getOption(Object key);
+   Object getOption(Object key);
+   
    /**
     * Set a classpath entry option
+    * 
     * @param key - the option key
     * @param value - the option value
     */
-   public void setOption(Object key, Object value);
+   void setOption(Object key, Object value);
 }

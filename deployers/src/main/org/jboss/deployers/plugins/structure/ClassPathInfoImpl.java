@@ -40,7 +40,7 @@ public class ClassPathInfoImpl
    private static final long serialVersionUID = 1;
 
    private String path;
-   private HashMap options = new HashMap();
+   private HashMap<Object, Object> options = new HashMap<Object, Object>();
 
    public ClassPathInfoImpl()
    {
@@ -65,7 +65,7 @@ public class ClassPathInfoImpl
       return options.get(key);
    }
 
-   public Map getOptions()
+   public Map<Object, Object> getOptions()
    {
       return options;
    }
@@ -75,7 +75,7 @@ public class ClassPathInfoImpl
       options.put(key, value);
    }
 
-   public void setOptions(Map options)
+   public void setOptions(Map<Object, Object> options)
    {
       this.options.clear();
       this.options.putAll(options);

@@ -49,9 +49,10 @@ public interface StructuredDeployers
     * @return the ordered set of deployers.
     */
    public SortedSet<StructureDeployer> getDeployers();
+
    /**
     * Are there any deployers
-    * @return 
+    * @return true when empty
     */
    public boolean isEmpty();
 }
