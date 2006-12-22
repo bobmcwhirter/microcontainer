@@ -28,6 +28,15 @@
       <include name="jboss-dependency14.jar"/>
    </fileset>
 </path>
+<!-- managed -->
+<property name="jboss.managed.root" value="${project.root}/managed"/>
+<property name="jboss.managed.lib" value="${jboss.managed.root}/output/lib"/>
+<path id="jboss.managed.classpath">
+   <fileset dir="${jboss.managed.lib}">
+      <include name="jboss-managed.jar"/>
+   </fileset>
+</path>
+
 <!-- kernel -->
 <property name="jboss.kernel.root" value="${project.root}/kernel"/>
 <property name="jboss.kernel.lib" value="${jboss.kernel.root}/output/lib"/>
