@@ -174,7 +174,7 @@ public class ManagedPropertyImpl implements ManagedProperty
       Boolean result = getField(Fields.MANDATORY, Boolean.class);
       if (result == null)
          return false;
-      return result.booleanValue();
+      return result;
    }
 
    @Override
