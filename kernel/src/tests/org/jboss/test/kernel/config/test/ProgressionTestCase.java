@@ -52,6 +52,8 @@ public class ProgressionTestCase extends AbstractKernelConfigTest
 
    public void testProgressionFromOtherBean() throws Throwable
    {
+      //Uncomment the line for no progression simple test.
+      //System.setProperty("org.jboss.reflect.plugins.progressionConvertor", NullProgressionConvertor.class.getName());
       SimpleBean bean = instantiateProgressionBeans();
       assertEquals(123, bean.getAnint());
       assertEquals((short)987, bean.getAShort().shortValue());
