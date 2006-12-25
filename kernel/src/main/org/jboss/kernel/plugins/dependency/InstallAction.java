@@ -33,6 +33,8 @@ import org.jboss.kernel.plugins.config.Configurator;
 import org.jboss.kernel.spi.config.KernelConfigurator;
 import org.jboss.kernel.spi.dependency.KernelController;
 import org.jboss.kernel.spi.dependency.KernelControllerContext;
+import org.jboss.kernel.spi.dependency.KernelControllerContextAware;
+import org.jboss.kernel.spi.dependency.InstallKernelControllerContextAware;
 import org.jboss.kernel.spi.registry.KernelRegistry;
 
 /**
@@ -43,7 +45,7 @@ import org.jboss.kernel.spi.registry.KernelRegistry;
  */
 public class InstallAction extends KernelControllerContextAction
 {
-   public void installAction(KernelControllerContext context) throws Throwable
+   protected void installActionInternal(KernelControllerContext context) throws Throwable
    {
       KernelController controller = (KernelController) context.getController();
       Kernel kernel = controller.getKernel();
@@ -67,8 +69,13 @@ public class InstallAction extends KernelControllerContextAction
          }
       }
    }
-   
-   public void uninstallAction(KernelControllerContext context)
+
+   protected Class<? extends KernelControllerContextAware> getActionAwareInterface()
+   {
+      return InstallKernelControllerContextAware.class;
+   }
+
+   protected void uninstallActionInternal(KernelControllerContext context)
    {
       KernelController controller = (KernelController) context.getController();
       Kernel kernel = controller.getKernel();
@@ -99,7 +106,6 @@ public class InstallAction extends KernelControllerContextAction
             catch (Throwable t)
             {
                log.warn("Ignoring uninstall action on target " + uninstall, t);
-               continue;
             }
          }
       }

@@ -32,6 +32,8 @@ import org.jboss.kernel.Kernel;
 import org.jboss.kernel.spi.config.KernelConfigurator;
 import org.jboss.kernel.spi.dependency.KernelController;
 import org.jboss.kernel.spi.dependency.KernelControllerContext;
+import org.jboss.kernel.spi.dependency.KernelControllerContextAware;
+import org.jboss.kernel.spi.dependency.DescribeKernelControllerContextAware;
 import org.jboss.kernel.spi.metadata.KernelMetaDataRepository;
 import org.jboss.metadata.spi.MetaData;
 
@@ -43,7 +45,7 @@ import org.jboss.metadata.spi.MetaData;
  */
 public class DescribeAction extends KernelControllerContextAction
 {
-   public void installAction(KernelControllerContext context) throws Throwable
+   protected void installActionInternal(KernelControllerContext context) throws Throwable
    {
       KernelController controller = (KernelController) context.getController();
       Kernel kernel = controller.getKernel();
@@ -79,7 +81,12 @@ public class DescribeAction extends KernelControllerContextAction
       }
    }
 
-   public void uninstallAction(KernelControllerContext context)
+   protected Class<? extends KernelControllerContextAware> getActionAwareInterface()
+   {
+      return DescribeKernelControllerContextAware.class;
+   }
+
+   protected void uninstallActionInternal(KernelControllerContext context)
    {
       removeMetaData(context);
       context.setBeanInfo(null);

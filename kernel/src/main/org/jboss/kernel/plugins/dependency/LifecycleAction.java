@@ -111,7 +111,7 @@ public abstract class LifecycleAction extends KernelControllerContextAction
     */
    public abstract List<ParameterMetaData> getUninstallParameters(BeanMetaData beanMetaData);
 
-   public void installAction(KernelControllerContext context) throws Throwable
+   protected void installActionInternal(KernelControllerContext context) throws Throwable
    {
       boolean trace = log.isTraceEnabled();
 
@@ -145,7 +145,7 @@ public abstract class LifecycleAction extends KernelControllerContextAction
       dispatchJoinPoint(context, joinpoint);
    }
 
-   public void uninstallAction(KernelControllerContext context)
+   protected void uninstallActionInternal(KernelControllerContext context)
    {
       boolean trace = log.isTraceEnabled();
 

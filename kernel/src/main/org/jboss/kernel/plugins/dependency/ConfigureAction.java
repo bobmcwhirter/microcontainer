@@ -32,6 +32,7 @@ import org.jboss.kernel.spi.config.KernelConfigurator;
 import org.jboss.kernel.spi.dependency.KernelController;
 import org.jboss.kernel.spi.dependency.KernelControllerContext;
 import org.jboss.kernel.spi.dependency.KernelControllerContextAware;
+import org.jboss.kernel.spi.dependency.ConfigureKernelControllerContextAware;
 
 /**
  * ConfigureAction.
@@ -41,7 +42,7 @@ import org.jboss.kernel.spi.dependency.KernelControllerContextAware;
  */
 public class ConfigureAction extends KernelControllerContextAction
 {
-   public void installAction(KernelControllerContext context) throws Throwable
+   protected void installActionInternal(KernelControllerContext context) throws Throwable
    {
       KernelController controller = (KernelController) context.getController();
       Kernel kernel = controller.getKernel();
@@ -52,13 +53,18 @@ public class ConfigureAction extends KernelControllerContextAction
       BeanMetaData metaData = context.getBeanMetaData();
       Set joinPoints = configurator.getPropertySetterJoinPoints(info, metaData);
       setAttributes(context, object, joinPoints, false);
-      
+
       if (object instanceof KernelControllerContextAware)
          ((KernelControllerContextAware) object).setKernelControllerContext(context);
 
    }
 
-   public void uninstallAction(KernelControllerContext context)
+   protected Class<? extends KernelControllerContextAware> getActionAwareInterface()
+   {
+      return ConfigureKernelControllerContextAware.class;
+   }
+
+   protected void uninstallActionInternal(KernelControllerContext context)
    {
       KernelController controller = (KernelController) context.getController();
       Kernel kernel = controller.getKernel();
@@ -78,8 +84,7 @@ public class ConfigureAction extends KernelControllerContextAction
       {
          log.debug("Ignored error unsetting context ", ignored);
       }
-      
-      
+
       BeanInfo info = context.getBeanInfo();
       BeanMetaData metaData = context.getBeanMetaData();
       try

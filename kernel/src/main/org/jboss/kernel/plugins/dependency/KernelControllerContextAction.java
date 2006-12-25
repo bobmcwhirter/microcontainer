@@ -30,6 +30,7 @@ import org.jboss.joinpoint.spi.Joinpoint;
 import org.jboss.kernel.plugins.config.Configurator;
 import org.jboss.kernel.spi.dependency.KernelController;
 import org.jboss.kernel.spi.dependency.KernelControllerContext;
+import org.jboss.kernel.spi.dependency.KernelControllerContextAware;
 import org.jboss.kernel.spi.metadata.KernelMetaDataRepository;
 import org.jboss.logging.Logger;
 import org.jboss.metadata.spi.MetaData;
@@ -178,9 +179,56 @@ public class KernelControllerContextAction implements ControllerContextAction
    
    public void installAction(KernelControllerContext context) throws Throwable
    {
+      installActionInternal(context);
+      Object target = context.getTarget();
+      if (target != null)
+      {
+         Class<? extends KernelControllerContextAware> awareInterface = getActionAwareInterface();
+         // only applying interfaces that explicitly extend KernelControllerContextAware
+         if (awareInterface != null &&
+             awareInterface.equals(KernelControllerContextAware.class) == false &&
+             awareInterface.isAssignableFrom(target.getClass()))
+         {
+            ((KernelControllerContextAware)target).setKernelControllerContext(context);
+         }
+      }
+   }
+
+   protected void installActionInternal(KernelControllerContext context) throws Throwable
+   {
+   }
+
+   protected Class<? extends KernelControllerContextAware> getActionAwareInterface()
+   {
+      return null;
    }
 
    public void uninstallAction(KernelControllerContext context)
    {
+      Object target = context.getTarget();
+      if (target != null)
+      {
+         Class<? extends KernelControllerContextAware> awareInterface = getActionAwareInterface();
+         // only applying interfaces that explicitly extend KernelControllerContextAware
+         if (awareInterface != null &&
+             awareInterface.equals(KernelControllerContextAware.class) == false &&
+             awareInterface.isAssignableFrom(target.getClass()))
+         {
+            try
+            {
+               ((KernelControllerContextAware)target).unsetKernelControllerContext(context);
+            }
+            catch (Exception ignored)
+            {
+               log.debug("Ignored error unsetting context ", ignored);
+            }
+         }
+      }
+      uninstallActionInternal(context);
    }
+
+   protected void uninstallActionInternal(KernelControllerContext context)
+   {
+   }
+
 }

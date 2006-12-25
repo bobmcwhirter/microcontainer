@@ -28,6 +28,8 @@ import org.jboss.kernel.Kernel;
 import org.jboss.kernel.spi.config.KernelConfigurator;
 import org.jboss.kernel.spi.dependency.KernelController;
 import org.jboss.kernel.spi.dependency.KernelControllerContext;
+import org.jboss.kernel.spi.dependency.KernelControllerContextAware;
+import org.jboss.kernel.spi.dependency.InstantiateKernelControllerContextAware;
 
 /**
  * InstantiateAction.
@@ -37,7 +39,7 @@ import org.jboss.kernel.spi.dependency.KernelControllerContext;
  */
 public class InstantiateAction extends KernelControllerContextAction
 {
-   public void installAction(KernelControllerContext context) throws Throwable
+   protected void installActionInternal(KernelControllerContext context) throws Throwable
    {
       KernelController controller = (KernelController) context.getController();
       Kernel kernel = controller.getKernel();
@@ -73,7 +75,12 @@ public class InstantiateAction extends KernelControllerContextAction
       }
    }
 
-   public void uninstallAction(KernelControllerContext context)
+   protected Class<? extends KernelControllerContextAware> getActionAwareInterface()
+   {
+      return InstantiateKernelControllerContextAware.class;
+   }
+
+   protected void uninstallActionInternal(KernelControllerContext context)
    {
       try
       {
