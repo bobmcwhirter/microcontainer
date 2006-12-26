@@ -27,10 +27,10 @@ import org.jboss.beans.metadata.spi.LifecycleMetaData;
 
 /**
  * Helper class.
- *
- * @author <a href="mailto:ales.justin@jboss.com">Ales Justin</a>
  * @see BeanMetaDataBuilder
  * @see ParameterMetaDataBuilder
+ *
+ * @author <a href="mailto:ales.justin@jboss.com">Ales Justin</a>
  */
 public class LifecycleMetaDataBuilder
 {
