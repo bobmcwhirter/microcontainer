@@ -29,9 +29,12 @@ import org.jboss.test.AbstractTestDelegate;
 
 /**
  * 
- * ManagedTestDelegate.
+ * ManagedTestDelegate overrides the AbstractTestDelegate to
+ * deploy/undeploy test specific aop descriptors in setUp/tearDown.
+ * 
  * 
  * @author <a href="adrian@jboss.com">Adrian Brock</a>
+ * @author Scott.Stark@jboss.com
  * @version $Revision: 58245 $
  */
 public class ManagedTestDelegate extends AbstractTestDelegate
@@ -50,6 +53,10 @@ public class ManagedTestDelegate extends AbstractTestDelegate
       super(clazz);
    }
 
+   /**
+    * Look for a test specific aop descriptor based on the ctor
+    * class first, and if none is found, the ManagedTest.class.
+    */
    public void setUp() throws Exception
    {
       super.setUp();
@@ -57,12 +64,26 @@ public class ManagedTestDelegate extends AbstractTestDelegate
          deployAOP(ManagedTest.class);
    }
 
+   /**
+    * Undeployment any test specific aop descriptor deployed in setUp.
+    */
    public void tearDown() throws Exception
    {
       super.tearDown();
       undeployAOP();
    }
 
+   /**
+    * Look for a test specific resource name by appending "-aop.xml"
+    * to the referenceClass name as a resource. For example, a.b.SomeTest
+    * would produce a a/b/SomeTest-aop.xml resource that is queried
+    * for using clazz.getClassLoader().getResource("a/b/SomeTest-aop.xml");
+    *  
+    * @param referenceClass - the class to use as the aop descriptor base name.
+    * @return true if the aop descriptor was found and deployed,
+    *    false otherwise.
+    * @throws Exception on failure to deploy the aop descriptor.
+    */
    protected boolean deployAOP(Class referenceClass) throws Exception
    {
       String testName = referenceClass.getName();
@@ -90,6 +111,11 @@ public class ManagedTestDelegate extends AbstractTestDelegate
       }
    }
 
+   /**
+    * Undeploy the aop descriptor deployed in deployAOP if
+    * one was found.
+    *
+    */
    protected void undeployAOP()
    {
       if (aopURL == null)
@@ -105,6 +131,11 @@ public class ManagedTestDelegate extends AbstractTestDelegate
       }
    }
 
+   /**
+    * Update the java.protocol.handler.pkgs system property
+    * to include the org.jboss.net.protocol package.
+    *
+    */
    private void initURLHandlers()
    {
       try
