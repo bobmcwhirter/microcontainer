@@ -26,6 +26,7 @@ import java.util.Set;
 import org.jboss.aop.joinpoint.Invocation;
 import org.jboss.aop.proxy.container.AOPProxyFactoryParameters;
 import org.jboss.aop.proxy.container.GeneratedAOPProxyFactory;
+import org.jboss.logging.Logger;
 import org.jboss.managed.api.Fields;
 import org.jboss.managed.api.ManagedObject;
 import org.jboss.managed.api.ManagedProperty;
@@ -35,10 +36,12 @@ import org.jboss.managed.api.ManagedProperty;
  * that require proxies.
  * 
  * @author <a href="adrian@jboss.com">Adrian Brock</a>
- * @version $Revision: 1.1 $
+ * @version $Revision$
  */
 public class WrapperAdvice
 {
+   private static Logger log = Logger.getLogger(WrapperAdvice.class);
+
    /**
     * Wrap a managed object
     * 
@@ -137,13 +140,15 @@ public class WrapperAdvice
    {
       if (target == null)
          return null;
-      
+
       GeneratedAOPProxyFactory proxyFactory = new GeneratedAOPProxyFactory();
       AOPProxyFactoryParameters params = new AOPProxyFactoryParameters();
       params.setInterfaces(new Class[] { interfaceClass });
       params.setObjectAsSuperClass(true);
       params.setTarget(target);
       Object proxy = proxyFactory.createAdvisedProxy(params);
+      if( log.isTraceEnabled() )
+         log.trace("Created proxy: "+proxy.getClass()+"@"+System.identityHashCode(proxy)+" target: "+target.getClass());
       return interfaceClass.cast(proxy);
    }
 }
