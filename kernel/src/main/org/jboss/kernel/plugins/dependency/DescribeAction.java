@@ -33,7 +33,6 @@ import org.jboss.kernel.spi.config.KernelConfigurator;
 import org.jboss.kernel.spi.dependency.KernelController;
 import org.jboss.kernel.spi.dependency.KernelControllerContext;
 import org.jboss.kernel.spi.dependency.KernelControllerContextAware;
-import org.jboss.kernel.spi.dependency.DescribeKernelControllerContextAware;
 import org.jboss.kernel.spi.metadata.KernelMetaDataRepository;
 import org.jboss.metadata.spi.MetaData;
 
@@ -83,7 +82,7 @@ public class DescribeAction extends KernelControllerContextAction
 
    protected Class<? extends KernelControllerContextAware> getActionAwareInterface()
    {
-      return DescribeKernelControllerContextAware.class;
+      return null;
    }
 
    protected void uninstallActionInternal(KernelControllerContext context)

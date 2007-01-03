@@ -24,6 +24,7 @@ package org.jboss.kernel.spi.dependency;
 /**
  * A Describe KernelControllerContextAware.
  * @see org.jboss.kernel.plugins.dependency.KernelControllerContextAction
+ * @deprecated at the describe state there is no target yet instantiated
  *
  * @author <a href="ales.justin@jboss.com">Ales Justin</a>
  */
