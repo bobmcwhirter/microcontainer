@@ -33,6 +33,7 @@ import org.jboss.managed.api.ManagedObject;
 import org.jboss.test.deployers.BaseDeployersTest;
 import org.jboss.test.deployers.managed.support.TestAttachment;
 import org.jboss.test.deployers.managed.support.TestManagedObjectDeployer;
+import org.jboss.util.graph.Graph;
 
 /**
  * DeployerManagedObjectUnitTestCase.
@@ -75,7 +76,14 @@ public class DeployerManagedObjectUnitTestCase extends BaseDeployersTest
       assertNotNull(mos);
       ManagedObject mo = mos.get(TestAttachment.class.getName());
       assertNotNull(mo);
-      
+      //
+      Graph<Map<String, ManagedObject>> mosg = main.getManagedObjects(context.getName());
+      assertEquals("MO Graph", mosg.size(), 1);
+      mos = mosg.getRootVertex().getData();
+      assertNotNull(mos);
+      mo = mos.get(TestAttachment.class.getName());
+      assertNotNull(mo);
+
       // TODO the attachment should NOT be the top level managed object
       //      that should be describing the structure and deployment state
       //      with the attachments as sub managed objects

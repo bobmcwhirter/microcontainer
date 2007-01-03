@@ -27,6 +27,8 @@ import java.util.Map;
 import org.jboss.deployers.spi.DeploymentException;
 import org.jboss.deployers.spi.structure.DeploymentContext;
 import org.jboss.managed.api.ManagedObject;
+import org.jboss.util.graph.Graph;
+
 
 /**
  * MainDeployer.<p>
@@ -55,8 +57,15 @@ public interface MainDeployer
     * @return the managed object
     * @throws DeploymentException for any error
     */
-   Map<String, ManagedObject> getManagedObjects(DeploymentContext context) throws DeploymentException;
-   
+   public Map<String, ManagedObject> getManagedObjects(DeploymentContext context) throws DeploymentException;
+   /**
+    * Get the graph of managed objects starting with the top-level deployment associated with name.
+    * @param name - the name of the top-level DeploymentContext to process.
+    * @return the graph of managed objects for the top-level DeploymentContex and its children.
+    * @throws DeploymentException
+    */
+   public Graph<Map<String, ManagedObject>> getManagedObjects(String name) throws DeploymentException;
+
    /**
     * Get the top level deployments
     * 

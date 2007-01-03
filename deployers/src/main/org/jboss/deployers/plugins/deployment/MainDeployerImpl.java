@@ -59,6 +59,8 @@ import org.jboss.deployers.spi.structure.vfs.StructureDeployer;
 import org.jboss.deployers.spi.structure.vfs.StructureMetaData;
 import org.jboss.logging.Logger;
 import org.jboss.managed.api.ManagedObject;
+import org.jboss.util.graph.Graph;
+import org.jboss.util.graph.Vertex;
 import org.jboss.virtual.VirtualFile;
 
 /**
@@ -242,6 +244,36 @@ public class MainDeployerImpl implements MainDeployer
          deployer.build(context.getDeploymentUnit(), managedObjects);
       
       return managedObjects;
+   }
+   /**
+    * 
+    */
+   public Graph<Map<String, ManagedObject>> getManagedObjects(String name) throws DeploymentException
+   {
+      DeploymentContext context = getDeploymentContext(name);
+      Graph<Map<String, ManagedObject>> managedObjectsGraph = new Graph<Map<String, ManagedObject>>();
+      Vertex<Map<String, ManagedObject>> parent = new Vertex<Map<String, ManagedObject>>(context.getName());
+      managedObjectsGraph.setRootVertex(parent);
+      Map<String, ManagedObject> managedObjects = getManagedObjects(context);
+      parent.setData(managedObjects);
+      processContext(context, managedObjectsGraph, parent);
+      
+      return managedObjectsGraph;
+   }
+   protected void processContext(DeploymentContext context,
+         Graph<Map<String, ManagedObject>> graph,
+         Vertex<Map<String, ManagedObject>> parent)
+      throws DeploymentException
+   {
+      Set<DeploymentContext> children = context.getChildren();
+      for(DeploymentContext child : children)
+      {
+         Vertex<Map<String, ManagedObject>> vertex = new Vertex<Map<String, ManagedObject>>(child.getName());
+         Map<String, ManagedObject> managedObjects = getManagedObjects(context);
+         vertex.setData(managedObjects);
+         graph.addEdge(parent, vertex, 0);
+         processContext(child, graph, vertex);
+      }
    }
 
    public StructureBuilder getStructureBuilder()
