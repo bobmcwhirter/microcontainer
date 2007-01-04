@@ -72,12 +72,13 @@ public class AOPConstructorJoinpoint extends BasicConstructorJoinPoint
       MetaDataStack.mask();
       try
       {
-         ContainerCache cache = ContainerCache.initialise(manager, clazz, metaData);
+         MetaData md = getNonEmptyMetaData(metaData);
+         ContainerCache cache = ContainerCache.initialise(manager, clazz, md);
          AOPProxyFactoryParameters params = new AOPProxyFactoryParameters();
          Object target = createTarget(cache, params);
 
          params.setProxiedClass(target.getClass());
-         params.setMetaDataContext(metaData);
+         params.setMetaData(md);
          params.setTarget(target);
          params.setContainerCache(cache);
          
@@ -89,6 +90,21 @@ public class AOPConstructorJoinpoint extends BasicConstructorJoinPoint
       }
    }
 
+   private MetaData getNonEmptyMetaData(MetaData metaData)
+   {
+      if (metaData == null)
+      {
+         return null;
+      }
+      
+      if (metaData.getAnnotations() != MetaData.NO_ANNOTATIONS)
+      {
+         return metaData;
+      }
+      
+      return null; 
+   }
+   
    private Object createTarget(ContainerCache cache, AOPProxyFactoryParameters params) throws Throwable
    {
       Advisor advisor = cache.getAdvisor();

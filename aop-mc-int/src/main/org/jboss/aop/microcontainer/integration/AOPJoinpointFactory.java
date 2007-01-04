@@ -21,11 +21,14 @@
 */
 package org.jboss.aop.microcontainer.integration;
 
+import org.jboss.joinpoint.plugins.BasicConstructorJoinPoint;
 import org.jboss.joinpoint.plugins.BasicJoinpointFactory;
 import org.jboss.joinpoint.spi.ConstructorJoinpoint;
 import org.jboss.joinpoint.spi.JoinpointException;
+import org.jboss.reflect.plugins.introspection.IntrospectionTypeInfoFactory;
 import org.jboss.reflect.spi.ClassInfo;
 import org.jboss.reflect.spi.ConstructorInfo;
+import org.jboss.reflect.spi.TypeInfoFactory;
 
 /**
  * The existence of this class is the signal to the kernel that we want to use the aop-mc integration.
@@ -38,6 +41,7 @@ import org.jboss.reflect.spi.ConstructorInfo;
  */
 public class AOPJoinpointFactory extends BasicJoinpointFactory
 {
+   private ConstructorInfo ctorInfo;
    /**
     * Create a new AOPJoinpointFactory.
     * 
@@ -83,17 +87,12 @@ public class AOPJoinpointFactory extends BasicJoinpointFactory
       ConstructorInfo[] ctors = info.getDeclaredConstructors();
       for (int i = 0 ; i < ctors.length ; i++)
       {
-         if (ctors[i].getParameterTypes().length == 2)
+         if (ctors[i].getParameterTypes().length == 1)
          {
             if (ctors[i].getParameterTypes()[0].getName().equals(ConstructorInfo.class.getName()) == false)
             {
                continue;
-            }
-            
-            if (ctors[i].getParameterTypes()[1].getName().equals(MetaDataContext.class.getName()) == false)
-            {
-               continue;
-            }
+            }            
             ctorInfo = ctors[i];
             break;
          }
@@ -101,7 +100,7 @@ public class AOPJoinpointFactory extends BasicJoinpointFactory
       
       if (ctorInfo == null)
       {
-         throw new JoinpointException("No constructor found with the reqiured signature AOPConstructorJoinpoint(ConstructorInfo, MetadataContext)");
+         throw new JoinpointException("No constructor found with the reqiured signature AOPConstructorJoinpoint(ConstructorInfo)");
       }
       return ctorInfo;
    }
@@ -109,7 +108,7 @@ public class AOPJoinpointFactory extends BasicJoinpointFactory
    private ConstructorJoinpoint createAOPConstructorJoinpoint(ConstructorInfo info, ConstructorInfo aopCtorInfo) throws JoinpointException
    {
       ConstructorJoinpoint jp = new BasicConstructorJoinPoint(info);
-      jp.setArguments(new Object[] {aopCtorInfo, metaDataContext});
+      jp.setArguments(new Object[] {aopCtorInfo});
       try
       {
          return (ConstructorJoinpoint)jp.dispatch();
