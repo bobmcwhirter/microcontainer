@@ -66,7 +66,6 @@ public interface Attachments
     * Add attachment
     *
     * @param <T> the expected type
-    * @param name the name of the attachment
     * @param attachment the attachment
     * @param type the type
     * @return any previous attachment
@@ -98,7 +97,6 @@ public interface Attachments
     * Get attachment
     * 
     * @param <T> the expected type
-    * @param name the name of the attachment
     * @param type the type
     * @return the attachment or null if not present
     * @throws IllegalArgumentException for a null name or type
@@ -127,7 +125,6 @@ public interface Attachments
    /**
     * Is the attachment present
     * 
-    * @param name the name of the attachment
     * @param type the type
     * @return true when the attachment is present
     * @throws IllegalArgumentException for a null name or type
