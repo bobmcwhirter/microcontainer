@@ -91,7 +91,7 @@ public class AOPDependencyBuilderDelegate extends AbstractDependencyBuilder
             Advisor advisor;
             synchronized (ContainerCache.mapLock)
             {
-               ContainerCache cache = ContainerCache.initialise(manager, clazz, metaData);
+               ContainerCache cache = ContainerCache.initialise(manager, clazz, metaData, true);
                advisor = cache.getAdvisor();
             }
             
