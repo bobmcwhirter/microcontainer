@@ -58,7 +58,7 @@
     <!-- Module name(s) & version -->
     <property name="module.name" value="microcontainer"/>
     <property name="module.Name" value="JBoss MicroContainer"/>
-    <property name="module.version" value="2.0.0.M1"/>
+    <property name="module.version" value="snapshot"/>
 
     <!-- ========= -->
     <!-- Libraries -->
