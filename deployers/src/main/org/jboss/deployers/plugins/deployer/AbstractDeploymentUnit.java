@@ -285,6 +285,27 @@ public class AbstractDeploymentUnit extends AbstractAttachments
       return deploymentContext.getTransientManagedObjects();
    }
 
+   public boolean hasAttachments()
+   {
+      boolean hasAttachments = false;
+      DeploymentContext parent = deploymentContext.getParent();
+      if (deploymentContext.isComponent() == false)
+         parent = null;
+      if (parent != null)
+         hasAttachments = parent.getTransientAttachments().hasAttachments();
+      hasAttachments |= deploymentContext.getTransientAttachments().hasAttachments();
+      if( hasAttachments == false )
+      {
+         if (parent != null)
+            hasAttachments |= parent.getTransientManagedObjects().hasAttachments();
+         hasAttachments |= deploymentContext.getTransientManagedObjects().hasAttachments();
+         if (parent != null)
+            hasAttachments |= parent.getPredeterminedManagedObjects().hasAttachments();
+         hasAttachments |= deploymentContext.getPredeterminedManagedObjects().hasAttachments();
+      }
+      return hasAttachments;
+   }
+
    @SuppressWarnings("unchecked")
    // TODO optimize
    public <T> Set<? extends T> getAllMetaData(Class<T> type)

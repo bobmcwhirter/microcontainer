@@ -82,4 +82,9 @@ public class AttachmentsImpl extends AbstractAttachments
    {
       attachments.clear();
    }
+
+   public boolean hasAttachments()
+   {
+      return attachments.isEmpty() == false;
+   }
 }
