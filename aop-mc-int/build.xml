@@ -57,7 +57,7 @@
     <!-- Module name(s) & version -->
     <property name="module.name" value="aop-mc-int"/>
     <property name="module.Name" value="JBoss AOP MC Integration"/>
-    <property name="module.version" value="M1"/>
+    <property name="module.version" value="snapshot"/>
     <property name="jar.prefix" value="jboss-${module.name}"/>
 
     <!-- ========= -->
