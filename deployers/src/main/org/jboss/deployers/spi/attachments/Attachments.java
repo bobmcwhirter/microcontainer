@@ -170,4 +170,10 @@ public interface Attachments
     * @throws UnsupportedOperationException when not supported by the implementation
     */
    void clear();
+
+   /**
+    * Are there any attachments
+    * @return true if there are any attachments, false otherwise.
+    */
+   public boolean hasAttachments();
 }
