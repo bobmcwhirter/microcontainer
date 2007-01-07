@@ -83,7 +83,6 @@
       <module name="metatype"/>
       <module name="managed"/>
       <module name="deployers"/>
-      <module name="osgi-int"/>
 
       <!-- Module groups -->
 
@@ -95,7 +94,7 @@
       </group>
 
       <group name="core">
-        <include modules="container, dependency, kernel, aop-mc-int, metatype, managed, deployers, osgi-int"/>
+        <include modules="container, dependency, kernel, aop-mc-int, metatype, managed, deployers"/>
       </group>
 
       <group name="default">
@@ -221,12 +220,16 @@
       <artifact id="jboss-aop-mc-int-deployer.jar"/>
       <artifact id="jboss-container.jar"/>
       <artifact id="jboss-dependency.jar"/>
-      <artifact id="jboss-microcontainer.jar"/>
       <artifact id="jboss-deployers.jar"/>
+      <artifact id="jboss-managed.jar"/>
+      <artifact id="jboss-metatype.jar"/>
+      <artifact id="jboss-microcontainer.jar"/>
       <artifact id="jboss-aop-mc-int-src.zip"/>
       <artifact id="jboss-container-src.zip"/>
       <artifact id="jboss-dependency-src.zip"/>
       <artifact id="jboss-deployers-src.zip"/>
+      <artifact id="jboss-managed-src.zip"/>
+      <artifact id="jboss-metatype-src.zip"/>
       <artifact id="jboss-microcontainer-src.zip"/>
       <export>
          <include input="jboss-aop-mc-int.jar"/>
@@ -234,8 +237,10 @@
          <include input="jboss-aop-mc-int-deployer.jar"/>
          <include input="jboss-container.jar"/>
          <include input="jboss-dependency.jar"/>
-         <include input="jboss-microcontainer.jar"/>
          <include input="jboss-deployers.jar"/>
+         <include input="jboss-managed.jar"/>
+         <include input="jboss-metatype.jar"/>
+         <include input="jboss-microcontainer.jar"/>
       </export>
    </component>
 
@@ -259,6 +264,14 @@
 	  			<include name="*-src.zip" />
 	  		</fileset>
 	  		<fileset dir="../kernel/output/lib">
+	  			<include name="*.jar" />
+	  			<include name="*-src.zip" />
+	  		</fileset>  	 
+	  		<fileset dir="../managed/output/lib">
+	  			<include name="*.jar" />
+	  			<include name="*-src.zip" />
+	  		</fileset>  	 
+	  		<fileset dir="../metatype/output/lib">
 	  			<include name="*.jar" />
 	  			<include name="*-src.zip" />
 	  		</fileset>  	 
