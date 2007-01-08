@@ -21,25 +21,7 @@
 */
 package org.jboss.deployers.plugins.deployment;
 
-import static org.jboss.deployers.spi.structure.DeploymentState.DEPLOYED;
-import static org.jboss.deployers.spi.structure.DeploymentState.DEPLOYING;
-import static org.jboss.deployers.spi.structure.DeploymentState.ERROR;
-import static org.jboss.deployers.spi.structure.DeploymentState.UNDEPLOYED;
-import static org.jboss.deployers.spi.structure.DeploymentState.UNDEPLOYING;
-import static org.jboss.deployers.spi.structure.StructureDetermined.NO;
-import static org.jboss.deployers.spi.structure.StructureDetermined.PREDETERMINED;
-import static org.jboss.deployers.spi.structure.StructureDetermined.YES;
-
-import java.util.ArrayList;
-import java.util.Collection;
-import java.util.Collections;
-import java.util.HashMap;
-import java.util.HashSet;
-import java.util.List;
-import java.util.Map;
-import java.util.Set;
-import java.util.SortedSet;
-import java.util.TreeSet;
+import java.util.*;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.CopyOnWriteArrayList;
 import java.util.concurrent.atomic.AtomicBoolean;
@@ -54,6 +36,8 @@ import org.jboss.deployers.spi.deployer.Deployer;
 import org.jboss.deployers.spi.deployer.DeploymentUnit;
 import org.jboss.deployers.spi.deployment.MainDeployer;
 import org.jboss.deployers.spi.structure.DeploymentContext;
+import static org.jboss.deployers.spi.structure.DeploymentState.*;
+import static org.jboss.deployers.spi.structure.StructureDetermined.*;
 import org.jboss.deployers.spi.structure.vfs.StructureBuilder;
 import org.jboss.deployers.spi.structure.vfs.StructureDeployer;
 import org.jboss.deployers.spi.structure.vfs.StructureMetaData;
@@ -118,8 +102,7 @@ public class MainDeployerImpl implements MainDeployer
     */
    public synchronized Set<StructureDeployer> getStructureDeployers()
    {
-      SortedSet<StructureDeployer> sdeployers = structureDeployers.getDeployers();
-      return sdeployers;
+      return structureDeployers.getDeployers();
    }
 
    /**
@@ -223,7 +206,9 @@ public class MainDeployerImpl implements MainDeployer
    {
       if (deployer == null)
          throw new IllegalArgumentException("Null deployer");
-      deployers.remove(deployer);
+      // TODO - currently unneccessary to wrap, but maybe wrapping changes once
+      DeployerWrapper wrapper = new DeployerWrapper(deployer);
+      deployers.remove(wrapper);
       log.debug("Removed deployer: " + deployer);
       // TODO unprocess existing deployments
    }
