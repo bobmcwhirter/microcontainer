@@ -73,6 +73,7 @@ import org.jboss.virtual.VirtualFile;
  * TODO implement attachment flow see comment in {@link Deployer}
  * 
  * @author <a href="adrian@jboss.com">Adrian Brock</a>
+ * @author Scott.Stark@jboss.org
  * @version $Revision: 1.1 $
  */
 public class MainDeployerImpl implements MainDeployer
@@ -374,11 +375,23 @@ public class MainDeployerImpl implements MainDeployer
 
    public void process()
    {
+      process(-1, Integer.MAX_VALUE);
+   }
+   /**
+    * Process the new deployments.
+    * 
+    * TODO: Only deployment uses begin/end. Does it make sense to have
+    * partial undeployment?
+    * 
+    */
+   public Collection<DeploymentContext> process(int begin, int end)
+   {
       if (shutdown.get())
          throw new IllegalStateException("The main deployer is shutdown");
 
       List<DeploymentContext> undeployContexts = null;
       List<DeploymentContext> deployContexts = null;
+      List<DeploymentContext> processedContexts = new ArrayList<DeploymentContext>();
       Deployer[] theDeployers;
       synchronized (this)
       {
@@ -395,7 +408,6 @@ public class MainDeployerImpl implements MainDeployer
          if (deploy.isEmpty() == false)
          {
             deployContexts = new ArrayList<DeploymentContext>(deploy);
-            deploy.clear();
          }
          theDeployers = deployers.toArray(new Deployer[deployers.size()]); 
       }
@@ -420,9 +432,31 @@ public class MainDeployerImpl implements MainDeployer
       
       if (deployContexts != null)
       {
+         // Restrict deployers to begin/end range
+         boolean validDeployersIncludesLastDeployer = false;
+         ArrayList<Deployer> validDeployers = new ArrayList<Deployer>();
          for (int i = 0; i < theDeployers.length; ++i)
          {
             Deployer deployer = theDeployers[i];
+            int order = deployer.getRelativeOrder();
+            // If the deployer is in the [begin, end) range
+            if( (begin <= order && order < end) ||
+                  // Integer.MAX_VALUE has to be treated specially since its used by deployers
+                  // TODO change the default deployer order to Integer.MAX_VALUE-1
+                  (begin <= order && end == Integer.MAX_VALUE) )
+            {
+               validDeployers.add(deployer);
+               if( i == theDeployers.length-1 )
+                  validDeployersIncludesLastDeployer = true;
+            }
+         }
+         // Clear the deployments if the all deployments
+         if (validDeployersIncludesLastDeployer)
+            deploy.clear();
+
+         for (int i = 0; i < validDeployers.size(); ++i)
+         {
+            Deployer deployer = validDeployers.get(i);
 
             Set<DeploymentContext> errors = new HashSet<DeploymentContext>();
             for (DeploymentContext context : deployContexts)
@@ -441,7 +475,7 @@ public class MainDeployerImpl implements MainDeployer
                   // Unwind the deployment
                   for (int j = i-1; j >= 0; --j)
                   {
-                     Deployer other = theDeployers[j];
+                     Deployer other = validDeployers.get(j);
                      prepareUndeploy(other, context, true);
                   }
                   context.removeClassLoader();
@@ -457,12 +491,15 @@ public class MainDeployerImpl implements MainDeployer
             VirtualFile root = context.getRoot();
             if (root != null && root.getName().endsWith(".jar"))
                isJar = true;
-            if (context.isDeployed() == false && isJar == false)
+            if (validDeployersIncludesLastDeployer && context.isDeployed() == false && isJar == false)
                missingDeployers.put(name, context);
+            // TODO: Should there be a PARTIAL_DEPLOYED state for end < max deployer
             context.setState(DEPLOYED);
+            processedContexts.add(context);
             log.debug("Deployed: " + name);
          }
       }
+      return processedContexts;
    }
 
    private void prepareUndeploy(Deployer deployer, DeploymentContext context, boolean doComponents)

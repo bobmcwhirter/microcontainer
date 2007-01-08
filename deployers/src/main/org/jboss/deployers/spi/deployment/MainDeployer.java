@@ -112,9 +112,21 @@ public interface MainDeployer
    boolean removeDeploymentContext(String name) throws DeploymentException;
 
    /**
-    * Process the outstanding deployments
+    * Process the outstanding deployments.
+    * This is equivalent to calling process(-1, Integer.MAX_VALUE).
     */
    void process();
+   /**
+    * Process all the outstanding deployments through the deployers whose
+    * relative order is in the range [begin, end), which begin <= ro < end.
+    * 
+    * @param begin - the minimum relative order value of of deployers to
+    * use
+    * @param end - the max relative order value of of deployers to
+    * use
+    * @return the top-level DeploymentContexts that were processed 
+    */
+   Collection<DeploymentContext> process(int begin, int end);
    
    /**
     * Shutdown. Removes all the deployments.
