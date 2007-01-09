@@ -21,6 +21,7 @@
 */
 package org.jboss.beans.metadata.plugins;
 
+import java.io.Serializable;
 import java.util.*;
 
 import org.jboss.beans.info.spi.BeanInfo;
@@ -40,8 +41,11 @@ import org.jboss.util.JBossStringBuilder;
  * @author <a href="adrian@jboss.com">Adrian Brock</a>
  * @version $Revision$
  */
-public class AbstractConstructorMetaData extends AbstractFeatureMetaData implements ConstructorMetaData
+public class AbstractConstructorMetaData extends AbstractFeatureMetaData
+   implements ConstructorMetaData, Serializable
 {
+   private static final long serialVersionUID = 1L;
+
    /**
     * The paramaters List<ParameterMetaData>
     */

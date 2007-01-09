@@ -34,6 +34,8 @@ import org.jboss.beans.metadata.spi.MetaDataVisitorNode;
  */
 public class StringValueMetaData extends AbstractTypeMetaData
 {
+   private static final long serialVersionUID = 1L;
+
    /** The log */
    private static final Logger log = Logger.getLogger(StringValueMetaData.class);
 

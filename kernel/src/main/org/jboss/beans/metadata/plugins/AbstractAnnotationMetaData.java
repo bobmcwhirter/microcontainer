@@ -21,6 +21,7 @@
 */
 package org.jboss.beans.metadata.plugins;
 
+import java.io.Serializable;
 import java.lang.annotation.Annotation;
 import java.util.Iterator;
 
@@ -38,8 +39,11 @@ import org.jboss.util.JBossStringBuilder;
  * @author <a href="adrian@jboss.com">Adrian Brock</a>
  * @version $Revision$
  */
-public class AbstractAnnotationMetaData extends JBossObject implements AnnotationMetaData
+public class AbstractAnnotationMetaData extends JBossObject
+   implements AnnotationMetaData, Serializable
 {
+   private static final long serialVersionUID = 1L;
+
    public String annotation;
 
    protected Annotation ann;

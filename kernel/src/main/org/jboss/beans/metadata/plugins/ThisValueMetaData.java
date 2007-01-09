@@ -38,8 +38,10 @@ import org.jboss.reflect.spi.TypeInfo;
  */
 public class ThisValueMetaData extends AbstractValueMetaData
 {
+   private static final long serialVersionUID = 1L;
+
    /** The controller */
-   protected KernelController controller;
+   protected transient KernelController controller;
 
    /**
     * Create a new dependency value

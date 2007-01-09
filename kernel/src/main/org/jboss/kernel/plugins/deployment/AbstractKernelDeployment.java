@@ -21,6 +21,7 @@
 */
 package org.jboss.kernel.plugins.deployment;
 
+import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.concurrent.CopyOnWriteArrayList;
@@ -39,8 +40,11 @@ import org.jboss.util.JBossStringBuilder;
  * @author <a href="adrian@jboss.com">Adrian Brock</a>
  * @version $Revision$
  */
-public class AbstractKernelDeployment extends JBossObject implements KernelDeployment
+public class AbstractKernelDeployment extends JBossObject
+   implements KernelDeployment, Serializable
 {
+   private static final long serialVersionUID = 1;
+
    /** The name of the deployment */
    protected String name;
 
@@ -48,7 +52,7 @@ public class AbstractKernelDeployment extends JBossObject implements KernelDeplo
    protected boolean installed;
 
    /** The installed contexts */
-   protected List<KernelControllerContext> installedContexts = new CopyOnWriteArrayList<KernelControllerContext>();
+   protected transient List<KernelControllerContext> installedContexts = new CopyOnWriteArrayList<KernelControllerContext>();
 
    /** The beans List<BeanMetaDataFactory> */
    protected List<BeanMetaDataFactory> beanFactories;

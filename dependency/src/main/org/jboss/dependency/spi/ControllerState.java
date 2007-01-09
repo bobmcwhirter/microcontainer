@@ -21,6 +21,8 @@
 */
 package org.jboss.dependency.spi;
 
+import java.io.Serializable;
+
 import org.jboss.util.JBossObject;
 import org.jboss.util.JBossStringBuilder;
 
@@ -31,7 +33,10 @@ import org.jboss.util.JBossStringBuilder;
  * @version $Revision$
  */
 public class ControllerState extends JBossObject
+   implements Serializable
 {
+   private static final long serialVersionUID = 1L;
+
    /** Error */
    public static final ControllerState ERROR = new ControllerState("**ERROR**");
 

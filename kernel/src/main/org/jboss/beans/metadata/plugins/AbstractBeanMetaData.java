@@ -21,6 +21,7 @@
 */
 package org.jboss.beans.metadata.plugins;
 
+import java.io.Serializable;
 import java.util.*;
 
 import org.jboss.beans.metadata.spi.*;
@@ -41,8 +42,11 @@ import org.jboss.util.JBossStringBuilder;
  * @author <a href="adrian@jboss.com">Adrian Brock</a>
  * @version $Revision$
  */
-public class AbstractBeanMetaData extends AbstractFeatureMetaData implements BeanMetaData, BeanMetaDataFactory
+public class AbstractBeanMetaData extends AbstractFeatureMetaData
+   implements BeanMetaData, BeanMetaDataFactory, Serializable
 {
+   private static final long serialVersionUID = 1L;
+
    /** The bean fully qualified class name */
    protected String bean;
 

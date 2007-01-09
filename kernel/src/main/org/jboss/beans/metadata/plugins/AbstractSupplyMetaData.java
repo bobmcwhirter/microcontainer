@@ -21,6 +21,7 @@
 */
 package org.jboss.beans.metadata.plugins;
 
+import java.io.Serializable;
 import java.util.Iterator;
 
 import org.jboss.beans.metadata.spi.MetaDataVisitor;
@@ -35,8 +36,11 @@ import org.jboss.util.JBossStringBuilder;
  * @author <a href="adrian@jboss.com">Adrian Brock</a>
  * @version $Revision$
  */
-public class AbstractSupplyMetaData extends JBossObject implements SupplyMetaData
+public class AbstractSupplyMetaData extends JBossObject
+   implements SupplyMetaData, Serializable
 {
+   private static final long serialVersionUID = 1L;
+
    /** The supply */
    protected Object supply;
 

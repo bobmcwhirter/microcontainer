@@ -36,6 +36,8 @@ import org.jboss.util.JBossStringBuilder;
  */
 public class AbstractArrayMetaData extends AbstractListMetaData
 {
+   private static final long serialVersionUID = 1L;
+
    /**
     * Create a new array value
     */

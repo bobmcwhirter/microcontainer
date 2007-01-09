@@ -45,8 +45,11 @@ import org.jboss.beans.metadata.spi.PropertyMetaData;
  * @author <a href="adrian@jboss.com">Adrian Brock</a>
  * @version $Revision$
  */
-public class AspectBeanMetaDataFactory extends GenericBeanFactoryMetaData implements BeanMetaDataFactory
+public class AspectBeanMetaDataFactory extends GenericBeanFactoryMetaData
+   implements BeanMetaDataFactory
 {
+   private static final long serialVersionUID = 1L;
+
    /** Unless specified use the bean with this name as the aspect manager */
    final static String DEFAULT_ASPECT_MANAGER = "AspectManager";
    

@@ -21,6 +21,7 @@
 */
 package org.jboss.beans.metadata.plugins;
 
+import java.io.Serializable;
 import java.util.Iterator;
 
 import org.jboss.beans.metadata.spi.DependencyMetaData;
@@ -39,9 +40,12 @@ import org.jboss.util.JBossStringBuilder;
  * @author <a href="adrian@jboss.com">Adrian Brock</a>
  * @version $Revision$
  */
-public class AbstractDependencyMetaData extends JBossObject implements DependencyMetaData
+public class AbstractDependencyMetaData extends JBossObject
+   implements DependencyMetaData, Serializable
 {
-   /** The dependency */
+   private static final long serialVersionUID = 1L;
+
+   /** The dependency, may transient? */
    protected Object dependency;
 
    /**

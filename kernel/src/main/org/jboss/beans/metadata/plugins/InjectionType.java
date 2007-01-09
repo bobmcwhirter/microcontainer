@@ -21,6 +21,8 @@
 */
 package org.jboss.beans.metadata.plugins;
 
+import java.io.Serializable;
+
 import org.jboss.util.JBossObject;
 import org.jboss.util.JBossStringBuilder;
 
@@ -28,7 +30,10 @@ import org.jboss.util.JBossStringBuilder;
  * @author <a href="mailto:ales.justin@genera-lynx.com">Ales Justin</a>
  */
 public class InjectionType extends JBossObject
+   implements Serializable
 {
+   private static final long serialVersionUID = 1L;
+
    /** Strict */
    public static final InjectionType BY_CLASS = new InjectionType("ByClass");
 

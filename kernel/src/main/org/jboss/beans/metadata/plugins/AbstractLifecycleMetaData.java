@@ -21,6 +21,7 @@
 */
 package org.jboss.beans.metadata.plugins;
 
+import java.io.Serializable;
 import java.util.List;
 import java.util.Set;
 
@@ -42,8 +43,11 @@ import org.jboss.util.JBossStringBuilder;
  * @author <a href="adrian@jboss.com">Adrian Brock</a>
  * @version $Revision$
  */
-public class AbstractLifecycleMetaData extends AbstractFeatureMetaData implements LifecycleMetaData
+public class AbstractLifecycleMetaData extends AbstractFeatureMetaData
+   implements LifecycleMetaData, Serializable
 {
+   private static final long serialVersionUID = 1L;
+
    /** The state */
    protected ControllerState state;
 

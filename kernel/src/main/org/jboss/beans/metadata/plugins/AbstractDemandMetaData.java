@@ -21,6 +21,7 @@
 */
 package org.jboss.beans.metadata.plugins;
 
+import java.io.Serializable;
 import java.util.Iterator;
 
 import org.jboss.beans.metadata.spi.DemandMetaData;
@@ -41,8 +42,11 @@ import org.jboss.util.JBossStringBuilder;
  * @author <a href="adrian@jboss.com">Adrian Brock</a>
  * @version $Revision$
  */
-public class AbstractDemandMetaData extends JBossObject implements DemandMetaData
+public class AbstractDemandMetaData extends JBossObject
+   implements DemandMetaData, Serializable
 {
+   private static final long serialVersionUID = 1L;
+
    /** The demand */
    protected Object demand;
    

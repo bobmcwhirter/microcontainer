@@ -21,6 +21,8 @@
 */
 package org.jboss.beans.metadata.plugins;
 
+import java.io.Serializable;
+
 import org.jboss.beans.metadata.spi.InstallMetaData;
 import org.jboss.beans.metadata.spi.MetaDataVisitor;
 import org.jboss.dependency.plugins.AbstractDependencyItem;
@@ -39,8 +41,11 @@ import org.jboss.reflect.spi.ClassInfo;
  * @author <a href="adrian@jboss.com">Adrian Brock</a>
  * @version $Revision$
  */
-public class AbstractInstallMetaData extends AbstractLifecycleMetaData implements InstallMetaData
+public class AbstractInstallMetaData extends AbstractLifecycleMetaData
+   implements InstallMetaData, Serializable
 {
+   private static final long serialVersionUID = 1L;
+
    /** The bean name */
    protected String bean;
 

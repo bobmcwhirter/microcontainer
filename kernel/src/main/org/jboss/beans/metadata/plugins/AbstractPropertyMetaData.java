@@ -21,6 +21,7 @@
 */
 package org.jboss.beans.metadata.plugins;
 
+import java.io.Serializable;
 import java.util.Iterator;
 import java.util.Set;
 
@@ -41,8 +42,11 @@ import org.jboss.util.JBossStringBuilder;
  * @author <a href="adrian@jboss.com">Adrian Brock</a>
  * @version $Revision$
  */
-public class AbstractPropertyMetaData extends AbstractFeatureMetaData implements PropertyMetaData, TypeProvider
+public class AbstractPropertyMetaData extends AbstractFeatureMetaData
+   implements PropertyMetaData, TypeProvider, Serializable
 {
+   private static final long serialVersionUID = 1L;
+
    /** The property name */
    protected String name;
 

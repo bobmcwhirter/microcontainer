@@ -21,6 +21,7 @@
 */
 package org.jboss.beans.metadata.plugins;
 
+import java.io.Serializable;
 import java.util.Stack;
 
 import org.jboss.beans.metadata.spi.BeanMetaData;
@@ -43,7 +44,10 @@ import org.jboss.util.JBossStringBuilder;
  * @version $Revision$
  */
 public abstract class AbstractTypeMetaData extends AbstractValueMetaData
+   implements Serializable
 {
+   private static final long serialVersionUID = 1L;
+
    /**
     * The type
     */
@@ -52,12 +56,12 @@ public abstract class AbstractTypeMetaData extends AbstractValueMetaData
    /**
     * The configurator
     */
-   protected KernelController controller;
+   protected transient KernelController controller;
 
    /**
     * The configurator
     */
-   protected KernelConfigurator configurator;
+   protected transient KernelConfigurator configurator;
 
    /**
     * The property name

@@ -38,6 +38,8 @@ import org.jboss.util.JBossStringBuilder;
  */
 public class AbstractInjectionValueMetaData extends AbstractDependencyValueMetaData
 {
+   private static final long serialVersionUID = 1L;
+
    protected InjectionType injectionType = InjectionType.BY_CLASS;
 
    /**

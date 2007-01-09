@@ -46,6 +46,8 @@ import org.jboss.kernel.spi.config.KernelConfigurator;
  */
 public class GenericBeanFactoryMetaData extends AbstractBeanMetaData
 {
+   private static final long serialVersionUID = 1L;
+
    /**
     * Create a new GenericBeanFactoryMetaData.
     */

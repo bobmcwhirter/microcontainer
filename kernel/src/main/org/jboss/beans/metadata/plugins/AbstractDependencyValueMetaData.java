@@ -42,8 +42,10 @@ import org.jboss.util.JBossStringBuilder;
  */
 public class AbstractDependencyValueMetaData extends AbstractValueMetaData
 {
+   private static final long serialVersionUID = 1L;
+
    /** The controller */
-   protected KernelController controller;
+   protected transient KernelController controller;
    
    /** The property name */
    protected String property;

@@ -21,6 +21,7 @@
 */
 package org.jboss.beans.metadata.plugins;
 
+import java.io.Serializable;
 import java.util.Collections;
 import java.util.Iterator;
 import java.util.Stack;
@@ -38,8 +39,11 @@ import org.jboss.util.JBossStringBuilder;
  * @author <a href="adrian@jboss.com">Adrian Brock</a>
  * @version $Revision$
  */
-public class AbstractValueMetaData extends JBossObject implements ValueMetaData, TypeProvider
+public class AbstractValueMetaData extends JBossObject
+   implements ValueMetaData, TypeProvider, Serializable
 {
+   private static final long serialVersionUID = 1L;
+
    /**
     * The value
     */

@@ -31,6 +31,7 @@ import java.util.Properties;
  */
 public class AbstractPropertiesMetaData extends AbstractMapMetaData
 {
+   private static final long serialVersionUID = 1L;
 
    protected Map<Object, Object> getDefaultMapInstance() throws Throwable
    {

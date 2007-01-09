@@ -21,6 +21,7 @@
 */
 package org.jboss.beans.metadata.plugins;
 
+import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Iterator;
@@ -41,8 +42,11 @@ import org.jboss.util.JBossStringBuilder;
  * @author <a href="adrian@jboss.com">Adrian Brock</a>
  * @version $Revision$
  */
-public class AbstractCollectionMetaData extends AbstractTypeMetaData implements Collection<MetaDataVisitorNode>
+public class AbstractCollectionMetaData extends AbstractTypeMetaData
+   implements Collection<MetaDataVisitorNode>, Serializable
 {
+   private static final long serialVersionUID = 1L;
+
    /** The collection */
    protected ArrayList<MetaDataVisitorNode> collection = new ArrayList<MetaDataVisitorNode>();
 

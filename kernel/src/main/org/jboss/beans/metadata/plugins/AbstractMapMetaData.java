@@ -21,6 +21,7 @@
 */
 package org.jboss.beans.metadata.plugins;
 
+import java.io.Serializable;
 import java.util.*;
 
 import org.jboss.beans.info.spi.BeanInfo;
@@ -37,8 +38,11 @@ import org.jboss.reflect.spi.TypeInfo;
  * @author <a href="adrian@jboss.com">Adrian Brock</a>
  * @version $Revision$
  */
-public class AbstractMapMetaData extends AbstractTypeMetaData implements Map<MetaDataVisitorNode, MetaDataVisitorNode>
+public class AbstractMapMetaData extends AbstractTypeMetaData
+   implements Map<MetaDataVisitorNode, MetaDataVisitorNode>, Serializable
 {
+   private static final long serialVersionUID = 1L;
+
    /** The map */
    private HashMap<MetaDataVisitorNode, MetaDataVisitorNode> map = new HashMap<MetaDataVisitorNode, MetaDataVisitorNode>();
 

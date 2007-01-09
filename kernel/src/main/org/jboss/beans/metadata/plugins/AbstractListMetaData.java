@@ -21,6 +21,7 @@
 */
 package org.jboss.beans.metadata.plugins;
 
+import java.io.Serializable;
 import java.util.Collection;
 import java.util.List;
 import java.util.ListIterator;
@@ -34,8 +35,11 @@ import org.jboss.util.JBossStringBuilder;
  * @author <a href="adrian@jboss.com">Adrian Brock</a>
  * @version $Revision$
  */
-public class AbstractListMetaData extends AbstractCollectionMetaData implements List<MetaDataVisitorNode>
+public class AbstractListMetaData extends AbstractCollectionMetaData
+   implements List<MetaDataVisitorNode>, Serializable
 {
+   private static final long serialVersionUID = 1L;
+
    /**
     * Create a new list value
     */

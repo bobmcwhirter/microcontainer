@@ -36,9 +36,12 @@ import org.jboss.beans.metadata.spi.ValueMetaData;
  * @author <a href="kabir.khan@jboss.com">Kabir Khan</a>
  * @version $Revision: 1.1 $
  */
-public class LifecycleBeanMetaDataFactory extends AspectBeanMetaDataFactory implements BeanMetaDataFactory
+public class LifecycleBeanMetaDataFactory extends AspectBeanMetaDataFactory
+   implements BeanMetaDataFactory
 {
-   String classes;
+   private static final long serialVersionUID = 1L;
+
+   private String classes;
 
    public String getClasses()
    {
