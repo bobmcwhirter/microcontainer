@@ -135,7 +135,6 @@ public interface DeploymentUnit extends Attachments
     * Get all the metadata for the expected type
     * 
     * @param <T> the type to get
-    * @param unit the unit
     * @param type the type
     * @return a set of metadata matching the type
     * @throws IllegalArgumentException if the type is null 
