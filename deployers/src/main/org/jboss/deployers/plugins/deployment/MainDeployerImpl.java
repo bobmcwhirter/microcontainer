@@ -44,6 +44,7 @@ import org.jboss.deployers.spi.DeploymentException;
 import org.jboss.deployers.spi.deployer.Deployer;
 import org.jboss.deployers.spi.deployer.DeploymentUnit;
 import org.jboss.deployers.spi.deployment.MainDeployer;
+import org.jboss.deployers.spi.managed.ManagedObjectBuilder;
 import org.jboss.deployers.spi.structure.DeploymentContext;
 import static org.jboss.deployers.spi.structure.DeploymentState.*;
 import static org.jboss.deployers.spi.structure.StructureDetermined.*;
@@ -220,6 +221,39 @@ public class MainDeployerImpl implements MainDeployer
       deployers.remove(wrapper);
       log.debug("Removed deployer: " + deployer);
       // TODO unprocess existing deployments
+   }
+
+   /**
+    * Get the ManagedObjectBuilder for a deployer.
+    * 
+    * @param deployer - the deployer to set the ManagedObjectBuilder for.
+    * @return managedObjectBuilder for deployer, may be null
+    */
+   public ManagedObjectBuilder getDeployerManagedObjectBuilder(Deployer deployer)
+   {
+      ManagedObjectBuilder managedObjectBuilder = null;
+      for(DeployerWrapper wrapper : deployers)
+      {
+         if( wrapper.equals(deployer) )
+            managedObjectBuilder = wrapper.getManagedObjectBuilder();
+      }
+      return managedObjectBuilder;
+   }
+
+   /**
+    * Set the ManagedObjectBuilder for a deployer. This allows one to override the given deployer
+    * ManagedObjectBuilder or assign one when the deployer does not provide a ManagedObjectBuilder.
+    * 
+    * @param deployer - the deployer to set the ManagedObjectBuilder for.
+    * @param managedObjectBuilder
+    */
+   public void setDeployerManagedObjectBuilder(Deployer deployer, ManagedObjectBuilder managedObjectBuilder)
+   {
+      for(DeployerWrapper wrapper : deployers)
+      {
+         if( wrapper.equals(deployer) )
+            wrapper.setManagedObjectBuilder(managedObjectBuilder);
+      }
    }
 
    public DeploymentContext getDeploymentContext(String name)
