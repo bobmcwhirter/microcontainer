@@ -19,63 +19,40 @@
 * Software Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA
 * 02110-1301 USA, or see the FSF site: http://www.fsf.org.
 */
-package org.jboss.beans.metadata.plugins;
+package org.jboss.beans.metadata.plugins.builder;
 
-import java.lang.reflect.Method;
 import java.util.ArrayList;
 import java.util.List;
 
+import org.jboss.beans.metadata.plugins.AbstractParameterMetaData;
 import org.jboss.beans.metadata.spi.ParameterMetaData;
+import org.jboss.beans.metadata.spi.builder.BeanMetaDataBuilder;
 
 /**
  * Helper class.
+ *
+ * @param <T> the parameter holder type
  * @see BeanMetaDataBuilder
  * @see LifecycleMetaDataBuilder
- *
  * @author <a href="mailto:ales.justin@jboss.com">Ales Justin</a>
  */
-public class ParameterMetaDataBuilder<T>
+public class ParameterMetaDataBuilder<T extends MutableParameterizedMetaData>
 {
    private T parameterHolder;
-   private Method GET_PARAMETERS;
-   private Method SET_PARAMETERS;
 
    public ParameterMetaDataBuilder(T parameterHolder) throws IllegalArgumentException
    {
       this.parameterHolder = parameterHolder;
-      try
-      {
-         GET_PARAMETERS = parameterHolder.getClass().getMethod("getParameters");
-         SET_PARAMETERS = parameterHolder.getClass().getMethod("setParameters", List.class);
-      }
-      catch (NoSuchMethodException e)
-      {
-         throw new IllegalArgumentException("Holder MetaData object doesn't implement get or set parameters method: " + e);
-      }
    }
 
    private List<ParameterMetaData> getParameters()
    {
-      try
-      {
-         return (List<ParameterMetaData>) GET_PARAMETERS.invoke(parameterHolder);
-      }
-      catch (Exception e)
-      {
-         throw new IllegalArgumentException(e);
-      }
+      return parameterHolder.getParameters();
    }
 
    private void setParameters(List<ParameterMetaData> parameters)
    {
-      try
-      {
-         SET_PARAMETERS.invoke(parameterHolder, parameters);
-      }
-      catch (Exception e)
-      {
-         throw new IllegalArgumentException(e);
-      }
+      parameterHolder.setParameters(parameters);
    }
 
    public T addParameterMetaData(String type, Object value)

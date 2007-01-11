@@ -1,6 +1,6 @@
 /*
 * JBoss, Home of Professional Open Source
-* Copyright 2005, JBoss Inc., and individual contributors as indicated
+* Copyright 2006, JBoss Inc., and individual contributors as indicated
 * by the @authors tag. See the copyright.txt in the distribution for a
 * full listing of individual contributors.
 *
@@ -21,40 +21,20 @@
 */
 package org.jboss.beans.metadata.spi;
 
+import java.util.List;
 
 /**
- * Metadata about construction.
+ * ParameterizedMetaData.
  * 
  * @author <a href="adrian@jboss.com">Adrian Brock</a>
- * @version $Revision$
+ * @version $Revision: 1.1 $
  */
-public interface ConstructorMetaData extends ParameterizedMetaData, FeatureMetaData
+public interface ParameterizedMetaData
 {
    /**
-    * Get the value.
+    * Get the parameters.
     *
-    * @return the value.
+    * @return List<ParameterMetaData>.
     */
-   ValueMetaData getValue();
-   
-   /**
-    * Get the factory.
-    *
-    * @return the factory.
-    */
-   ValueMetaData getFactory();
-
-   /**
-    * Get the factory class.
-    *
-    * @return the class name of the factory.
-    */
-   String getFactoryClass();
-   
-   /**
-    * Get the factory method.
-    *
-    * @return the factory method.
-    */
-   String getFactoryMethod();
+   List<ParameterMetaData> getParameters();
 }

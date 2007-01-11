@@ -19,11 +19,12 @@
 * Software Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA
 * 02110-1301 USA, or see the FSF site: http://www.fsf.org.
 */
-package org.jboss.beans.metadata.plugins;
+package org.jboss.beans.metadata.plugins.builder;
 
-import java.lang.reflect.Method;
-
+import org.jboss.beans.metadata.plugins.AbstractBeanMetaData;
+import org.jboss.beans.metadata.plugins.AbstractLifecycleMetaData;
 import org.jboss.beans.metadata.spi.LifecycleMetaData;
+import org.jboss.beans.metadata.spi.builder.BeanMetaDataBuilder;
 
 /**
  * Helper class.
@@ -32,70 +33,19 @@ import org.jboss.beans.metadata.spi.LifecycleMetaData;
  *
  * @author <a href="mailto:ales.justin@jboss.com">Ales Justin</a>
  */
-public class LifecycleMetaDataBuilder
+public abstract class LifecycleMetaDataBuilder
 {
    private AbstractBeanMetaData beanMetaData;
-   private Method GET_METHOD;
-   private Method SET_METHOD;
-   private ParameterMetaDataBuilder<LifecycleMetaData> builder;
+   private ParameterMetaDataBuilder<AbstractLifecycleMetaData> builder;
 
-   public enum LifecycleType
-   {
-      CREATE("Create"),
-      START("Start"),
-      STOP("Stop"),
-      DESTROY("Destroy");
-
-      private String type;
-
-      LifecycleType(String type)
-      {
-         this.type = type;
-      }
-
-      public String toString()
-      {
-         return type;
-      }
-   }
-
-   public LifecycleMetaDataBuilder(AbstractBeanMetaData beanMetaData, LifecycleType type) throws IllegalArgumentException
+   public LifecycleMetaDataBuilder(AbstractBeanMetaData beanMetaData) throws IllegalArgumentException
    {
       this.beanMetaData = beanMetaData;
-      try
-      {
-         GET_METHOD = AbstractBeanMetaData.class.getMethod("get" + type);
-         SET_METHOD = AbstractBeanMetaData.class.getMethod("set" + type, LifecycleMetaData.class);
-      }
-      catch (NoSuchMethodException e)
-      {
-         throw new IllegalArgumentException("Holder MetaData object doesn't implement get or set " + type + " method: " + e);
-      }
    }
 
-   private LifecycleMetaData getLifecycle()
-   {
-      try
-      {
-         return (LifecycleMetaData) GET_METHOD.invoke(beanMetaData);
-      }
-      catch (Exception e)
-      {
-         throw new IllegalArgumentException(e);
-      }
-   }
+   abstract LifecycleMetaData getLifecycle(AbstractBeanMetaData beanMetaData);
 
-   private void setLifecycle(LifecycleMetaData lifecycle)
-   {
-      try
-      {
-         SET_METHOD.invoke(beanMetaData, lifecycle);
-      }
-      catch (Exception e)
-      {
-         throw new IllegalArgumentException(e);
-      }
-   }
+   abstract void setLifecycle(AbstractBeanMetaData beanMetaData, LifecycleMetaData lifecycle);
 
    public LifecycleMetaData createLifecycleMetaData(String methodName)
    {
@@ -104,14 +54,14 @@ public class LifecycleMetaDataBuilder
       {
          lifecycle.setMethodName(methodName);
       }
-      setLifecycle(lifecycle);
-      builder = new ParameterMetaDataBuilder<LifecycleMetaData>(lifecycle);
+      setLifecycle(beanMetaData, lifecycle);
+      builder = new ParameterMetaDataBuilder<AbstractLifecycleMetaData>(lifecycle);
       return lifecycle;
    }
 
    public LifecycleMetaData addParameterMetaData(String type, Object value)
    {
-      LifecycleMetaData lifecycle = getLifecycle();
+      LifecycleMetaData lifecycle = getLifecycle(beanMetaData);
       if (lifecycle == null)
       {
          createLifecycleMetaData(null);

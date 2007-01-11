@@ -1,6 +1,6 @@
 /*
 * JBoss, Home of Professional Open Source
-* Copyright 2005, JBoss Inc., and individual contributors as indicated
+* Copyright 2006, JBoss Inc., and individual contributors as indicated
 * by the @authors tag. See the copyright.txt in the distribution for a
 * full listing of individual contributors.
 *
@@ -19,42 +19,38 @@
 * Software Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA
 * 02110-1301 USA, or see the FSF site: http://www.fsf.org.
 */
-package org.jboss.beans.metadata.spi;
+package org.jboss.beans.metadata.plugins.builder;
 
+import org.jboss.beans.metadata.plugins.AbstractBeanMetaData;
+import org.jboss.beans.metadata.spi.LifecycleMetaData;
 
 /**
- * Metadata about construction.
+ * CreateLifecycleMetaDataBuilder.
  * 
  * @author <a href="adrian@jboss.com">Adrian Brock</a>
- * @version $Revision$
+ * @version $Revision: 1.1 $
  */
-public interface ConstructorMetaData extends ParameterizedMetaData, FeatureMetaData
+public class CreateLifecycleMetaDataBuilder extends LifecycleMetaDataBuilder
 {
    /**
-    * Get the value.
-    *
-    * @return the value.
+    * Create a new CreateLifecycleMetaDataBuilder.
+    * 
+    * @param beanMetaData
+    * @throws IllegalArgumentException
     */
-   ValueMetaData getValue();
-   
-   /**
-    * Get the factory.
-    *
-    * @return the factory.
-    */
-   ValueMetaData getFactory();
+   public CreateLifecycleMetaDataBuilder(AbstractBeanMetaData beanMetaData) throws IllegalArgumentException
+   {
+      super(beanMetaData);
+   }
 
-   /**
-    * Get the factory class.
-    *
-    * @return the class name of the factory.
-    */
-   String getFactoryClass();
-   
-   /**
-    * Get the factory method.
-    *
-    * @return the factory method.
-    */
-   String getFactoryMethod();
+   LifecycleMetaData getLifecycle(AbstractBeanMetaData beanMetaData)
+   {
+      return beanMetaData.getCreate();
+   }
+
+   void setLifecycle(AbstractBeanMetaData beanMetaData, LifecycleMetaData lifecycle)
+   {
+      beanMetaData.setCreate(lifecycle);
+   }
+
 }

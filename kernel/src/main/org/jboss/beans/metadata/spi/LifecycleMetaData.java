@@ -21,8 +21,6 @@
 */
 package org.jboss.beans.metadata.spi;
 
-import java.util.List;
-
 import org.jboss.dependency.spi.ControllerState;
 
 /**
@@ -31,7 +29,7 @@ import org.jboss.dependency.spi.ControllerState;
  * @author <a href="adrian@jboss.com">Adrian Brock</a>
  * @version $Revision$
  */
-public interface LifecycleMetaData extends FeatureMetaData
+public interface LifecycleMetaData extends ParameterizedMetaData, FeatureMetaData
 {
    /**
     * Get the state
@@ -53,11 +51,4 @@ public interface LifecycleMetaData extends FeatureMetaData
     * @return the method name.
     */
    String getMethodName();
-
-   /**
-    * Get the parameters.
-    *
-    * @return List<ParameterMetaData>.
-    */
-   List<ParameterMetaData> getParameters();
 }

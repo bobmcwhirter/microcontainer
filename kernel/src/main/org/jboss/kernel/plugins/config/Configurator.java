@@ -541,6 +541,7 @@ public class Configurator extends Config
     * Unconfigure a bean property
     * 
     * @param object the object to unconfigure
+    * @param cl the classloader
     * @param info the bean info
     * @param metaData the property metadata
     * @throws Throwable for any error
@@ -590,7 +591,6 @@ public class Configurator extends Config
       if (metaData == null)
          throw new IllegalArgumentException("Null bean metadata");
 
-      ClassLoader cl = getClassLoader(metaData);
       Set<TargettedJoinpoint> result = new HashSet<TargettedJoinpoint>();
       Set<PropertyMetaData> propertys = metaData.getProperties();
       if (propertys != null && propertys.isEmpty() == false)
@@ -677,6 +677,7 @@ public class Configurator extends Config
     *
     * @param trace whether trace is enabled
     * @param info the bean info
+    * @param cl the classloader
     * @param name the property name
     * @param type the property type
     * @return the property info
@@ -692,24 +693,28 @@ public class Configurator extends Config
       if (trace)
          log.trace("Resolving property on bean info=" + info + " name=" + name);
 
-      Set properties = info.getProperties();
+      // FIXME the isAssignable and isProgression currently needs a classloader
+      //       to work properly, use the bean's classloader if there isn't one provided
+      if (cl == null)
+         cl = info.getClassInfo().getType().getClassLoader();
+      
+      Set<PropertyInfo> properties = info.getProperties();
       if (properties != null && properties.size() > 0)
       {
-         for (Iterator i = properties.iterator(); i.hasNext();)
+         for (PropertyInfo ainfo : properties)
          {
-            PropertyInfo ainfo = (PropertyInfo) i.next();
             if (name.equals(ainfo.getName()))
             {
                String[] typeNames = {type};
                TypeInfo[] typeInfos = {ainfo.getType()};
-               if (equals(typeNames, typeInfos) || assignable(cl, typeNames, typeInfos) || progression(cl, typeNames, typeInfos))
+               if (equals(typeNames, typeInfos) || isAssignable(cl, typeNames, typeInfos) || isProgression(cl, typeNames, typeInfos))
                {
                   return ainfo;
                }
             }
          }
       }
-
+      
       throw new JoinpointException("Property " + name + " not found for " + info);
    }
 
@@ -881,13 +886,18 @@ public class Configurator extends Config
 
    /**
     * Test whether type names can be assigned to type infos
+    * 
+    * TODO isAssignableFrom should be part of the TypeInfo api
+    *      with comparisons made between TypeInfos
     *
     * @param cl bean classloader
     * @param typeNames the type names
     * @param typeInfos the type infos
     * @return true when they can be assigned
+    * @throws Throwable for any error
     */
-   public static boolean assignable(ClassLoader cl, String[] typeNames, TypeInfo[] typeInfos) throws Throwable
+   @SuppressWarnings("unchecked")
+   public static boolean isAssignable(ClassLoader cl, String[] typeNames, TypeInfo[] typeInfos) throws Throwable
    {
       if (cl == null)
          return false;
@@ -917,8 +927,9 @@ public class Configurator extends Config
     * @param typeNames the type names
     * @param typeInfos the type infos
     * @return true when we can use progression
+    * @throws Throwable for any error
     */
-   public static boolean progression(ClassLoader cl, String[] typeNames, TypeInfo[] typeInfos) throws Throwable
+   public static boolean isProgression(ClassLoader cl, String[] typeNames, TypeInfo[] typeInfos) throws Throwable
    {
       if (cl == null)
          return false;

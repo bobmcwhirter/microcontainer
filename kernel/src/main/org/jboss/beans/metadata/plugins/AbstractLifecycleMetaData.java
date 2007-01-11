@@ -25,6 +25,7 @@ import java.io.Serializable;
 import java.util.List;
 import java.util.Set;
 
+import org.jboss.beans.metadata.plugins.builder.MutableParameterizedMetaData;
 import org.jboss.beans.metadata.spi.LifecycleMetaData;
 import org.jboss.beans.metadata.spi.MetaDataVisitor;
 import org.jboss.beans.metadata.spi.MetaDataVisitorNode;
@@ -44,7 +45,7 @@ import org.jboss.util.JBossStringBuilder;
  * @version $Revision$
  */
 public class AbstractLifecycleMetaData extends AbstractFeatureMetaData
-   implements LifecycleMetaData, Serializable
+   implements LifecycleMetaData, MutableParameterizedMetaData, Serializable
 {
    private static final long serialVersionUID = 1L;
 
