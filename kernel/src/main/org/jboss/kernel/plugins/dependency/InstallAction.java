@@ -23,18 +23,10 @@ package org.jboss.kernel.plugins.dependency;
 
 import java.util.List;
 
-import org.jboss.beans.info.spi.BeanInfo;
 import org.jboss.beans.metadata.spi.BeanMetaData;
 import org.jboss.beans.metadata.spi.InstallMetaData;
-import org.jboss.beans.metadata.spi.ParameterMetaData;
-import org.jboss.joinpoint.spi.MethodJoinpoint;
 import org.jboss.kernel.Kernel;
-import org.jboss.kernel.plugins.config.Configurator;
-import org.jboss.kernel.spi.config.KernelConfigurator;
-import org.jboss.kernel.spi.dependency.KernelController;
-import org.jboss.kernel.spi.dependency.KernelControllerContext;
-import org.jboss.kernel.spi.dependency.KernelControllerContextAware;
-import org.jboss.kernel.spi.dependency.InstallKernelControllerContextAware;
+import org.jboss.kernel.spi.dependency.*;
 import org.jboss.kernel.spi.registry.KernelRegistry;
 
 /**
@@ -55,17 +47,17 @@ public class InstallAction extends KernelControllerContextAction
       Object name = metaData.getName();
       registry.registerEntry(name, context);
       controller.addSupplies(context);
-      
+
       List installs = metaData.getInstalls();
       if (installs != null)
       {
          for (int i = 0; i < installs.size(); ++i)
          {
             InstallMetaData install = (InstallMetaData) installs.get(i);
-            KernelControllerContext target = context;
+            DispatchContext target = context;
             if (install.getBean() != null)
-               target = (KernelControllerContext) controller.getContext(install.getBean(), install.getDependentState());
-            dispatch(target, install.getMethodName(), install.getParameters());
+               target = (DispatchContext) controller.getContext(install.getBean(), install.getDependentState());
+            target.invoke(install.getMethodName(), install.getParameters());
          }
       }
    }
@@ -82,17 +74,17 @@ public class InstallAction extends KernelControllerContextAction
       KernelRegistry registry = kernel.getRegistry();
       BeanMetaData metaData = context.getBeanMetaData();
       Object name = metaData.getName();
-      
+
       List uninstalls = metaData.getUninstalls();
       if (uninstalls != null)
       {
          for (int i = uninstalls.size()-1; i >= 0; --i)
          {
             InstallMetaData uninstall = (InstallMetaData) uninstalls.get(i);
-            KernelControllerContext target = context;
+            DispatchContext target = context;
             if (uninstall.getBean() != null)
             {
-               target = (KernelControllerContext) controller.getContext(uninstall.getBean(), uninstall.getDependentState());
+               target = (DispatchContext) controller.getContext(uninstall.getBean(), uninstall.getDependentState());
                if (target == null)
                {
                   log.warn("Ignoring uninstall action on target in incorrect state " + uninstall.getBean());
@@ -101,7 +93,7 @@ public class InstallAction extends KernelControllerContextAction
             }
             try
             {
-               dispatch(target, uninstall.getMethodName(), uninstall.getParameters());
+               target.invoke(uninstall.getMethodName(), uninstall.getParameters());
             }
             catch (Throwable t)
             {
@@ -120,16 +112,5 @@ public class InstallAction extends KernelControllerContextAction
          log.warn("Ignoring unregistered entry at uninstall " + name);
       }
    }
-   
-   protected void dispatch(KernelControllerContext context, String method, List<ParameterMetaData> parameters) throws Throwable
-   {
-      KernelController controller = (KernelController) context.getController();
-      KernelConfigurator configurator = controller.getKernel().getConfigurator();
-      BeanInfo info = context.getBeanInfo();
-      BeanMetaData metaData = context.getBeanMetaData();
-      ClassLoader cl = Configurator.getClassLoader(metaData);
-      MethodJoinpoint joinpoint = configurator.getMethodJoinPoint(info, cl, method, parameters, false, true);
-      joinpoint.setTarget(context.getTarget());
-      dispatchJoinPoint(context, joinpoint);
-   }
+
 }

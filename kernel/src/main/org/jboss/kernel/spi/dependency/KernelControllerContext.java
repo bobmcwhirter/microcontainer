@@ -33,7 +33,7 @@ import org.jboss.metadata.spi.scope.ScopeKey;
  * @author <a href="adrian@jboss.com">Adrian Brock</a>
  * @version $Revision$
  */
-public interface KernelControllerContext extends KernelRegistryEntry
+public interface KernelControllerContext extends KernelRegistryEntry, DispatchContext
 {
    /**
     * Get the kernel

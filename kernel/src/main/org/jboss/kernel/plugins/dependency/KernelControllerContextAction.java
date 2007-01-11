@@ -58,7 +58,7 @@ public class KernelControllerContextAction implements ControllerContextAction
     * @return the result
     * @throws Throwable for any error
     */
-   protected static Object dispatchJoinPoint(final KernelControllerContext context, final Joinpoint joinpoint) throws Throwable
+   static Object dispatchJoinPoint(final KernelControllerContext context, final Joinpoint joinpoint) throws Throwable
    {
       BeanMetaData metaData = context.getBeanMetaData();
       ClassLoader cl = Configurator.getClassLoader(metaData);

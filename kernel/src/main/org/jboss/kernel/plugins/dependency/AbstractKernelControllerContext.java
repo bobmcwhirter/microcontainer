@@ -25,21 +25,19 @@ import java.security.AccessControlContext;
 import java.security.AccessController;
 import java.security.PrivilegedAction;
 import java.util.Iterator;
+import java.util.List;
 import java.util.Set;
 import java.util.Stack;
 
 import org.jboss.beans.info.spi.BeanInfo;
-import org.jboss.beans.metadata.spi.BeanMetaData;
-import org.jboss.beans.metadata.spi.MetaDataVisitor;
-import org.jboss.beans.metadata.spi.MetaDataVisitorNode;
+import org.jboss.beans.metadata.spi.*;
 import org.jboss.dependency.plugins.AbstractControllerContext;
 import org.jboss.dependency.plugins.AbstractDependencyInfo;
-import org.jboss.dependency.spi.Controller;
-import org.jboss.dependency.spi.ControllerMode;
-import org.jboss.dependency.spi.ControllerState;
-import org.jboss.dependency.spi.DependencyInfo;
-import org.jboss.dependency.spi.DependencyItem;
+import org.jboss.dependency.spi.*;
+import org.jboss.joinpoint.spi.TargettedJoinpoint;
 import org.jboss.kernel.Kernel;
+import org.jboss.kernel.plugins.config.Configurator;
+import org.jboss.kernel.spi.config.KernelConfigurator;
 import org.jboss.kernel.spi.dependency.KernelController;
 import org.jboss.kernel.spi.dependency.KernelControllerContext;
 import org.jboss.kernel.spi.metadata.KernelMetaDataRepository;
@@ -76,7 +74,7 @@ public class AbstractKernelControllerContext extends AbstractControllerContext i
 
    /** The scope */
    protected ScopeKey scope;
-   
+
    /**
     * Create an abstract controller context
     *
@@ -149,7 +147,7 @@ public class AbstractKernelControllerContext extends AbstractControllerContext i
       }
       return scope;
    }
-   
+
    public void setScope(ScopeKey key)
    {
       this.scope = key;
@@ -219,6 +217,49 @@ public class AbstractKernelControllerContext extends AbstractControllerContext i
             di.unresolved(getController());
          }
       }
+   }
+
+   public Object get(final String name) throws Throwable
+   {
+      return execute(new JoinPointCreator()
+      {
+         public TargettedJoinpoint createJoinpoint(ClassLoader cl, KernelConfigurator configurator) throws Throwable
+         {
+            return configurator.getPropertyGetterJoinPoint(getBeanInfo(), name);
+         }
+      });
+   }
+
+   public void set(final PropertyMetaData property) throws Throwable
+   {
+      execute(new JoinPointCreator()
+      {
+         public TargettedJoinpoint createJoinpoint(ClassLoader cl, KernelConfigurator configurator) throws Throwable
+         {
+            return configurator.getPropertySetterJoinPoint(getBeanInfo(), cl, property);
+         }
+      });
+   }
+
+   public Object invoke(final String name, final List<ParameterMetaData> parameters) throws Throwable
+   {
+      return execute(new JoinPointCreator()
+      {
+         public TargettedJoinpoint createJoinpoint(ClassLoader cl, KernelConfigurator configurator) throws Throwable
+         {
+            return configurator.getMethodJoinPoint(getBeanInfo(), cl, name, parameters, false, true);
+         }
+      });
+   }
+
+   protected Object execute(JoinPointCreator creator) throws Throwable
+   {
+      KernelController controller = (KernelController) getController();
+      final KernelConfigurator configurator = controller.getKernel().getConfigurator();
+      final ClassLoader cl = Configurator.getClassLoader(getBeanMetaData());
+      TargettedJoinpoint joinpoint = creator.createJoinpoint(cl, configurator);
+      joinpoint.setTarget(getTarget());
+      return KernelControllerContextAction.dispatchJoinPoint(this, joinpoint);
    }
 
    protected abstract class AbstractMetaDataVistor implements MetaDataVisitor, PrivilegedAction<Object>
@@ -418,6 +459,11 @@ public class AbstractKernelControllerContext extends AbstractControllerContext i
             }
          }
       }
+   }
+
+   private interface JoinPointCreator
+   {
+      TargettedJoinpoint createJoinpoint(ClassLoader cl, KernelConfigurator configurator) throws Throwable;
    }
 
 }
