@@ -153,7 +153,7 @@ public abstract class AbstractTypeMetaData extends AbstractValueMetaData
          }
          catch (Throwable t)
          {
-            log.warn("Exception in preinstantiated lookup: " + t);
+            log.warn("Exception in preinstantiated lookup: ", t);
          }
          if (result != null && expected != null && expected.isAssignableFrom(result.getClass()) == false)
             throw new ClassCastException(result.getClass() + " is not a " + expected.getName());
