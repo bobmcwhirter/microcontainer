@@ -38,6 +38,7 @@ import org.jboss.util.graph.Graph;
  * bring the deployments to required state. 
  * 
  * @author <a href="adrian@jboss.com">Adrian Brock</a>
+ * @author Scott.Stark@jboss.org
  * @version $Revision: 1.1 $
  */
 public interface MainDeployer
@@ -51,10 +52,11 @@ public interface MainDeployer
    DeploymentContext getDeploymentContext(String name);
 
    /**
-    * Get the managed object for a deployment context
+    * Get the managed objects for a deployment context. This is a
+    * mapping of the attachment names to the associated ManagedObject.
     *      
     * @param context the context
-    * @return the managed object
+    * @return the managed object map keyed by the attachment names.
     * @throws DeploymentException for any error
     */
    public Map<String, ManagedObject> getManagedObjects(DeploymentContext context) throws DeploymentException;
