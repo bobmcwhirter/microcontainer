@@ -22,12 +22,20 @@
 package org.jboss.kernel.plugins.dependency;
 
 import java.util.List;
+import java.util.Set;
+import java.util.HashSet;
 
 import org.jboss.beans.metadata.spi.BeanMetaData;
 import org.jboss.beans.metadata.spi.InstallMetaData;
+import org.jboss.beans.metadata.spi.ParameterMetaData;
+import org.jboss.beans.info.spi.BeanInfo;
 import org.jboss.kernel.Kernel;
 import org.jboss.kernel.spi.dependency.*;
 import org.jboss.kernel.spi.registry.KernelRegistry;
+import org.jboss.kernel.spi.config.KernelConfigurator;
+import org.jboss.dependency.spi.DispatchContext;
+import org.jboss.reflect.spi.TypeInfo;
+import org.jboss.reflect.spi.MethodInfo;
 
 /**
  * InstallAction.
@@ -42,6 +50,7 @@ public class InstallAction extends KernelControllerContextAction
       KernelController controller = (KernelController) context.getController();
       Kernel kernel = controller.getKernel();
       KernelRegistry registry = kernel.getRegistry();
+      KernelConfigurator configurator = kernel.getConfigurator();
 
       BeanMetaData metaData = context.getBeanMetaData();
       Object name = metaData.getName();
@@ -57,7 +66,7 @@ public class InstallAction extends KernelControllerContextAction
             DispatchContext target = context;
             if (install.getBean() != null)
                target = (DispatchContext) controller.getContext(install.getBean(), install.getDependentState());
-            target.invoke(install.getMethodName(), install.getParameters());
+            invoke(configurator, target, install.getMethodName(), install.getParameters());
          }
       }
    }
@@ -72,6 +81,7 @@ public class InstallAction extends KernelControllerContextAction
       KernelController controller = (KernelController) context.getController();
       Kernel kernel = controller.getKernel();
       KernelRegistry registry = kernel.getRegistry();
+      KernelConfigurator configurator = kernel.getConfigurator();
       BeanMetaData metaData = context.getBeanMetaData();
       Object name = metaData.getName();
 
@@ -93,7 +103,7 @@ public class InstallAction extends KernelControllerContextAction
             }
             try
             {
-               target.invoke(uninstall.getMethodName(), uninstall.getParameters());
+               invoke(configurator, target, uninstall.getMethodName(), uninstall.getParameters());
             }
             catch (Throwable t)
             {
@@ -110,6 +120,57 @@ public class InstallAction extends KernelControllerContextAction
       catch (Throwable t)
       {
          log.warn("Ignoring unregistered entry at uninstall " + name);
+      }
+   }
+
+   protected Object invoke(KernelConfigurator configurator, DispatchContext context, String name, List<ParameterMetaData> params) throws Throwable
+   {
+      ClassLoader classLoader = context.getClassLoader();
+      int size = (params != null) ? params.size() : 0;
+      Object[] parameters = new Object[size];
+      String[] signature = new String[size];
+      for(int i = 0; i < size; i++)
+      {
+         ParameterMetaData pmd = params.get(i);
+         signature[i] = pmd.getType();
+         TypeInfo typeInfo;
+         if (signature[i] != null)
+         {
+            typeInfo = configurator.getClassInfo(signature[i], classLoader);
+         }
+         else
+         {
+            typeInfo = findTypeInfo(configurator, context.getTarget(), name, i);
+         }
+         parameters[i] = pmd.getValue().getValue(typeInfo, classLoader);
+      }
+      return context.invoke(name, parameters, signature);
+   }
+
+   private TypeInfo findTypeInfo(KernelConfigurator configurator, Object target, String name, int index) throws Throwable
+   {
+      if (target == null)
+      {
+         return null;
+      }
+      BeanInfo beanInfo = configurator.getBeanInfo(target.getClass());
+      Set<MethodInfo> methods = beanInfo.getMethods();
+      Set<MethodInfo> possibleMethods = new HashSet<MethodInfo>();
+      for(MethodInfo mi : methods)
+      {
+         if (name.equals(mi.getName()))
+         {
+            possibleMethods.add(mi);
+         }
+      }
+      if (possibleMethods.isEmpty() || possibleMethods.size() > 1)
+      {
+         log.warn("Unable to determine parameter TypeInfo, method name: " + name + ", index: " + index + ", target: " + target);
+         return null;
+      }
+      else
+      {
+         return possibleMethods.iterator().next().getParameterTypes()[index];
       }
    }
 

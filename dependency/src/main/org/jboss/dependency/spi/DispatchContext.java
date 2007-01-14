@@ -19,12 +19,7 @@
 * Software Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA
 * 02110-1301 USA, or see the FSF site: http://www.fsf.org.
 */
-package org.jboss.kernel.spi.dependency;
-
-import java.util.List;
-
-import org.jboss.beans.metadata.spi.ParameterMetaData;
-import org.jboss.beans.metadata.spi.PropertyMetaData;
+package org.jboss.dependency.spi;
 
 /**
  * The API similar to the DynamicMBean API
@@ -41,7 +36,7 @@ public interface DispatchContext
     * Getter property / attribute
     *
     * @param name
-    * @return
+    * @return target's property / attribute instance
     * @throws Throwable
     */
    Object get(String name) throws Throwable;
@@ -49,18 +44,37 @@ public interface DispatchContext
    /**
     * Setter property / attribute
     *
-    * @param property
+    * @param name
+    * @param value set target's property / attribute instance
     * @throws Throwable
     */
-   void set(PropertyMetaData property) throws Throwable;
+   void set(String name, Object value) throws Throwable;
 
    /**
-    * Invoke method / opration
+    * Invoke method / operation
     *
     * @param name
     * @param parameters
-    * @return
+    * @param signature
+    * @return inovocation's return object
     * @throws Throwable
     */
-   Object invoke(String name, List<ParameterMetaData> parameters) throws Throwable;
+   Object invoke(String name, Object parameters[], String[] signature) throws Throwable;
+
+   /**
+    * Get context's classloader.
+    * Used when determining type info for parameter and
+    * getting the parameter actual value.
+    *
+    * @return context's classloader
+    * @throws Throwable
+    */
+   ClassLoader getClassLoader() throws Throwable;
+
+   /**
+    * Get context's target, if available.
+    * @return target
+    */
+   Object getTarget();
+
 }

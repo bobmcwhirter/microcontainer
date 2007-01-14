@@ -24,13 +24,12 @@ package org.jboss.kernel.plugins.dependency;
 import java.security.AccessControlContext;
 import java.security.AccessController;
 import java.security.PrivilegedAction;
-import java.util.Iterator;
-import java.util.List;
-import java.util.Set;
-import java.util.Stack;
+import java.util.*;
 
 import org.jboss.beans.info.spi.BeanInfo;
 import org.jboss.beans.metadata.spi.*;
+import org.jboss.beans.metadata.plugins.AbstractValueMetaData;
+import org.jboss.beans.metadata.plugins.AbstractParameterMetaData;
 import org.jboss.dependency.plugins.AbstractControllerContext;
 import org.jboss.dependency.plugins.AbstractDependencyInfo;
 import org.jboss.dependency.spi.*;
@@ -230,33 +229,50 @@ public class AbstractKernelControllerContext extends AbstractControllerContext i
       });
    }
 
-   public void set(final PropertyMetaData property) throws Throwable
+   public void set(final String name, final Object value) throws Throwable
    {
       execute(new JoinPointCreator()
       {
          public TargettedJoinpoint createJoinpoint(ClassLoader cl, KernelConfigurator configurator) throws Throwable
          {
-            return configurator.getPropertySetterJoinPoint(getBeanInfo(), cl, property);
+            return configurator.getPropertySetterJoinPoint(getBeanInfo(), name, cl, new AbstractValueMetaData(value));
          }
       });
    }
 
-   public Object invoke(final String name, final List<ParameterMetaData> parameters) throws Throwable
+   public Object invoke(final String name, final Object[] parameters, final String[] signature) throws Throwable
    {
       return execute(new JoinPointCreator()
       {
          public TargettedJoinpoint createJoinpoint(ClassLoader cl, KernelConfigurator configurator) throws Throwable
          {
-            return configurator.getMethodJoinPoint(getBeanInfo(), cl, name, parameters, false, true);
+            List<ParameterMetaData> params = new ArrayList<ParameterMetaData>();
+            if (parameters != null)
+            {
+               for(int i = 0; i < parameters.length; i++)
+               {
+                  AbstractParameterMetaData pmd = new AbstractParameterMetaData(parameters[i]);
+                  // setting it as it was; we don't want the actual value class
+                  pmd.setType(signature[i] != null ? signature[i] : null);
+                  pmd.setIndex(i);
+                  params.add(pmd);
+               }
+            }
+            return configurator.getMethodJoinPoint(getBeanInfo(), cl, name, params, false, true);
          }
       });
+   }
+
+   public ClassLoader getClassLoader() throws Throwable
+   {
+      return Configurator.getClassLoader(getBeanMetaData());
    }
 
    protected Object execute(JoinPointCreator creator) throws Throwable
    {
       KernelController controller = (KernelController) getController();
       final KernelConfigurator configurator = controller.getKernel().getConfigurator();
-      final ClassLoader cl = Configurator.getClassLoader(getBeanMetaData());
+      final ClassLoader cl = getClassLoader();
       TargettedJoinpoint joinpoint = creator.createJoinpoint(cl, configurator);
       joinpoint.setTarget(getTarget());
       return KernelControllerContextAction.dispatchJoinPoint(this, joinpoint);

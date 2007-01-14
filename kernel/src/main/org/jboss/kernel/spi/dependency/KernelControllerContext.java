@@ -27,6 +27,8 @@ import org.jboss.kernel.Kernel;
 import org.jboss.kernel.spi.registry.KernelRegistryEntry;
 import org.jboss.metadata.spi.MetaData;
 import org.jboss.metadata.spi.scope.ScopeKey;
+import org.jboss.dependency.spi.DispatchContext;
+
 /**
  * Information about dependencies and state.
  * 
@@ -41,49 +43,49 @@ public interface KernelControllerContext extends KernelRegistryEntry, DispatchCo
     * @return the kernel
     */
    Kernel getKernel();
-   
+
    /**
     * Get the BeanInfo
     * 
     * @return the bean info
     */
    BeanInfo getBeanInfo();
-   
+
    /**
     * Set the bean info
     * 
     * @param info the bean info
     */
    void setBeanInfo(BeanInfo info);
-   
+
    /**
     * Get the metadata
     * 
     * @return the bean metadata
     */
    BeanMetaData getBeanMetaData();
-   
+
    /**
     * Set the target
     * 
     * @param target the target
     */
    void setTarget(Object target);
-   
+
    /**
     * Get the metadata
     * 
     * @return the metadata
     */
    MetaData getMetaData();
-   
+
    /**
     * Get the scope
     * 
     * @return the scope
     */
    ScopeKey getScope();
-   
+
    /**
     * Set the scope
     * 
