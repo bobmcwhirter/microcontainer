@@ -158,7 +158,7 @@ public class InstallAction extends KernelControllerContextAction
       Set<MethodInfo> possibleMethods = new HashSet<MethodInfo>();
       for(MethodInfo mi : methods)
       {
-         if (name.equals(mi.getName()))
+         if (name.equals(mi.getName()) && mi.getParameterTypes() != null && mi.getParameterTypes().length > index)
          {
             possibleMethods.add(mi);
          }
