@@ -46,10 +46,4 @@ public interface KernelRegistryEntry extends JBossInterface, ControllerContext
     */
    void setName(Object name);
    
-   /**
-    * Get any target
-    * 
-    * @return the target
-    */
-   Object getTarget();
 }

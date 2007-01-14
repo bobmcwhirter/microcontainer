@@ -222,6 +222,11 @@ public class AbstractKernelControllerContext extends AbstractControllerContext i
    {
       return execute(new JoinPointCreator()
       {
+         public boolean isSecure()
+         {
+            return false;
+         }
+
          public TargettedJoinpoint createJoinpoint(ClassLoader cl, KernelConfigurator configurator) throws Throwable
          {
             return configurator.getPropertyGetterJoinPoint(getBeanInfo(), name);
@@ -275,7 +280,15 @@ public class AbstractKernelControllerContext extends AbstractControllerContext i
       final ClassLoader cl = getClassLoader();
       TargettedJoinpoint joinpoint = creator.createJoinpoint(cl, configurator);
       joinpoint.setTarget(getTarget());
-      return KernelControllerContextAction.dispatchJoinPoint(this, joinpoint);
+      // do we need this? - only GenericBeanFactoryPropertydependencyTC is failing
+      if (creator.isSecure())
+      {
+         return KernelControllerContextAction.dispatchJoinPoint(this, joinpoint);
+      }
+      else
+      {
+         return joinpoint.dispatch();
+      }
    }
 
    protected abstract class AbstractMetaDataVistor implements MetaDataVisitor, PrivilegedAction<Object>
@@ -477,9 +490,14 @@ public class AbstractKernelControllerContext extends AbstractControllerContext i
       }
    }
 
-   private interface JoinPointCreator
+   private abstract class JoinPointCreator
    {
-      TargettedJoinpoint createJoinpoint(ClassLoader cl, KernelConfigurator configurator) throws Throwable;
+      public boolean isSecure()
+      {
+         return true;
+      }
+
+      protected abstract TargettedJoinpoint createJoinpoint(ClassLoader cl, KernelConfigurator configurator) throws Throwable;
    }
 
 }

@@ -30,7 +30,7 @@ package org.jboss.dependency.spi;
  *
  * @author <a href="mailto:ales.justin@jboss.com">Ales Justin</a>
  */
-public interface DispatchContext
+public interface DispatchContext extends ControllerContext
 {
    /**
     * Getter property / attribute
@@ -70,11 +70,5 @@ public interface DispatchContext
     * @throws Throwable
     */
    ClassLoader getClassLoader() throws Throwable;
-
-   /**
-    * Get context's target, if available.
-    * @return target
-    */
-   Object getTarget();
 
 }

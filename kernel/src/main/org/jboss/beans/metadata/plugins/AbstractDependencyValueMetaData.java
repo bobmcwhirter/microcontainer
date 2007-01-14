@@ -21,14 +21,12 @@
 */
 package org.jboss.beans.metadata.plugins;
 
-import org.jboss.beans.info.spi.BeanInfo;
 import org.jboss.beans.metadata.spi.MetaDataVisitor;
 import org.jboss.dependency.plugins.AbstractDependencyItem;
 import org.jboss.dependency.spi.ControllerContext;
 import org.jboss.dependency.spi.ControllerState;
 import org.jboss.dependency.spi.DependencyItem;
-import org.jboss.joinpoint.spi.TargettedJoinpoint;
-import org.jboss.kernel.spi.config.KernelConfigurator;
+import org.jboss.dependency.spi.DispatchContext;
 import org.jboss.kernel.spi.dependency.KernelController;
 import org.jboss.kernel.spi.dependency.KernelControllerContext;
 import org.jboss.reflect.spi.TypeInfo;
@@ -146,13 +144,10 @@ public class AbstractDependencyValueMetaData extends AbstractValueMetaData
       if (context == null)
          throw new Error("Should not be here - dependency failed! " + this);
       Object result = context.getTarget();
-      if (result != null && property != null)
+      if (property != null && context instanceof DispatchContext)
       {
-         KernelConfigurator configurator = controller.getKernel().getConfigurator();
-         BeanInfo beanInfo = configurator.getBeanInfo(result.getClass());
-         TargettedJoinpoint joinpoint = configurator.getPropertyGetterJoinPoint(beanInfo, property);
-         joinpoint.setTarget(result);
-         result = joinpoint.dispatch();
+         DispatchContext dc = (DispatchContext) context;
+         result = dc.get(property);
       }
       return info != null ? info.convertValue(result) : result;
    }
