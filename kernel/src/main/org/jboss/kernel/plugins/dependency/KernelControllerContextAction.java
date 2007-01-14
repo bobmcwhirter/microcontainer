@@ -25,9 +25,12 @@ import java.security.*;
 import java.util.List;
 import java.util.Set;
 import java.util.HashSet;
+import java.util.ArrayList;
 
 import org.jboss.beans.metadata.spi.BeanMetaData;
 import org.jboss.beans.metadata.spi.ParameterMetaData;
+import org.jboss.beans.metadata.spi.PropertyMetaData;
+import org.jboss.beans.metadata.plugins.AbstractParameterMetaData;
 import org.jboss.beans.info.spi.BeanInfo;
 import org.jboss.dependency.plugins.spi.action.ControllerContextAction;
 import org.jboss.dependency.spi.ControllerContext;
@@ -245,7 +248,14 @@ public class KernelControllerContextAction implements ControllerContextAction
    {
    }
 
-   // DispatchContext util methods 
+   // DispatchContext util methods
+
+   protected void set(KernelConfigurator configurator, DispatchContext context, PropertyMetaData property) throws Throwable
+   {
+      List<ParameterMetaData> params = new ArrayList<ParameterMetaData>(1);
+      params.add(new AbstractParameterMetaData(property.getType(), property.getValue()));
+      invoke(configurator, context, property.getName(), params);
+   }
 
    protected Object invoke(KernelConfigurator configurator, DispatchContext context, String name, List<ParameterMetaData> params) throws Throwable
    {
