@@ -22,50 +22,54 @@
 package org.jboss.kernel.plugins.dependency;
 
 import java.security.*;
+import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
-import java.util.HashSet;
-import java.util.ArrayList;
 
+import org.jboss.beans.info.spi.BeanInfo;
+import org.jboss.beans.metadata.plugins.AbstractParameterMetaData;
 import org.jboss.beans.metadata.spi.BeanMetaData;
 import org.jboss.beans.metadata.spi.ParameterMetaData;
 import org.jboss.beans.metadata.spi.PropertyMetaData;
-import org.jboss.beans.metadata.plugins.AbstractParameterMetaData;
-import org.jboss.beans.info.spi.BeanInfo;
 import org.jboss.dependency.plugins.spi.action.ControllerContextAction;
 import org.jboss.dependency.spi.ControllerContext;
 import org.jboss.dependency.spi.DispatchContext;
 import org.jboss.joinpoint.spi.Joinpoint;
 import org.jboss.kernel.plugins.config.Configurator;
+import org.jboss.kernel.spi.config.KernelConfigurator;
 import org.jboss.kernel.spi.dependency.KernelController;
 import org.jboss.kernel.spi.dependency.KernelControllerContext;
 import org.jboss.kernel.spi.dependency.KernelControllerContextAware;
 import org.jboss.kernel.spi.metadata.KernelMetaDataRepository;
-import org.jboss.kernel.spi.config.KernelConfigurator;
 import org.jboss.logging.Logger;
 import org.jboss.metadata.spi.MetaData;
 import org.jboss.metadata.spi.stack.MetaDataStack;
-import org.jboss.reflect.spi.TypeInfo;
 import org.jboss.reflect.spi.MethodInfo;
+import org.jboss.reflect.spi.TypeInfo;
 
 /**
  * KernelControllerContextAction.
- * 
+ *
  * @author <a href="adrian@jboss.com">Adrian Brock</a>
  * @version $Revision$
  */
 public class KernelControllerContextAction implements ControllerContextAction
 {
-   /** Static log */
+   /**
+    * Static log
+    */
    private static final Logger staticLog = Logger.getLogger(KernelControllerContextAction.class);
 
-   /** The log */
+   /**
+    * The log
+    */
    protected Logger log = Logger.getLogger(getClass());
 
    /**
     * Dispatch a joinpoint
-    * 
-    * @param context the context
+    *
+    * @param context   the context
     * @param joinpoint the joinpoint
     * @return the result
     * @throws Throwable for any error
@@ -95,10 +99,10 @@ public class KernelControllerContextAction implements ControllerContextAction
          ClassLoader tcl = Thread.currentThread().getContextClassLoader();
          try
          {
-            if( cl != null && access == null )
+            if (cl != null && access == null)
                Thread.currentThread().setContextClassLoader(cl);
             if (joinpoint instanceof KernelControllerContextAware)
-               ((KernelControllerContextAware)joinpoint).setKernelControllerContext(context);
+               ((KernelControllerContextAware) joinpoint).setKernelControllerContext(context);
 
             if (access == null)
             {
@@ -119,10 +123,10 @@ public class KernelControllerContextAction implements ControllerContextAction
          }
          finally
          {
-            if( cl != null && access == null )
+            if (cl != null && access == null)
                Thread.currentThread().setContextClassLoader(tcl);
             if (joinpoint instanceof KernelControllerContextAware)
-               ((KernelControllerContextAware)joinpoint).unsetKernelControllerContext(null);
+               ((KernelControllerContextAware) joinpoint).unsetKernelControllerContext(null);
          }
       }
       finally
@@ -203,10 +207,10 @@ public class KernelControllerContextAction implements ControllerContextAction
          Class<? extends KernelControllerContextAware> awareInterface = getActionAwareInterface();
          // only applying interfaces that explicitly extend KernelControllerContextAware
          if (awareInterface != null &&
-             awareInterface.equals(KernelControllerContextAware.class) == false &&
-             awareInterface.isAssignableFrom(target.getClass()))
+               awareInterface.equals(KernelControllerContextAware.class) == false &&
+               awareInterface.isAssignableFrom(target.getClass()))
          {
-            ((KernelControllerContextAware)target).setKernelControllerContext(context);
+            ((KernelControllerContextAware) target).setKernelControllerContext(context);
          }
       }
    }
@@ -228,12 +232,12 @@ public class KernelControllerContextAction implements ControllerContextAction
          Class<? extends KernelControllerContextAware> awareInterface = getActionAwareInterface();
          // only applying interfaces that explicitly extend KernelControllerContextAware
          if (awareInterface != null &&
-             awareInterface.equals(KernelControllerContextAware.class) == false &&
-             awareInterface.isAssignableFrom(target.getClass()))
+               awareInterface.equals(KernelControllerContextAware.class) == false &&
+               awareInterface.isAssignableFrom(target.getClass()))
          {
             try
             {
-               ((KernelControllerContextAware)target).unsetKernelControllerContext(context);
+               ((KernelControllerContextAware) target).unsetKernelControllerContext(context);
             }
             catch (Exception ignored)
             {
@@ -259,24 +263,28 @@ public class KernelControllerContextAction implements ControllerContextAction
 
    protected Object invoke(KernelConfigurator configurator, DispatchContext context, String name, List<ParameterMetaData> params) throws Throwable
    {
-      ClassLoader classLoader = context.getClassLoader();
       int size = (params != null) ? params.size() : 0;
       Object[] parameters = new Object[size];
       String[] signature = new String[size];
-      for(int i = 0; i < size; i++)
+      if (size > 0)
       {
-         ParameterMetaData pmd = params.get(i);
-         signature[i] = pmd.getType();
-         TypeInfo typeInfo;
-         if (signature[i] != null)
+         // lazy cl lookup
+         ClassLoader classLoader = context.getClassLoader();
+         for (int i = 0; i < size; i++)
          {
-            typeInfo = configurator.getClassInfo(signature[i], classLoader);
+            ParameterMetaData pmd = params.get(i);
+            signature[i] = pmd.getType();
+            TypeInfo typeInfo;
+            if (signature[i] != null)
+            {
+               typeInfo = configurator.getClassInfo(signature[i], classLoader);
+            }
+            else
+            {
+               typeInfo = findTypeInfo(configurator, context.getTarget(), name, i);
+            }
+            parameters[i] = pmd.getValue().getValue(typeInfo, classLoader);
          }
-         else
-         {
-            typeInfo = findTypeInfo(configurator, context.getTarget(), name, i);
-         }
-         parameters[i] = pmd.getValue().getValue(typeInfo, classLoader);
       }
       return context.invoke(name, parameters, signature);
    }
@@ -290,7 +298,7 @@ public class KernelControllerContextAction implements ControllerContextAction
       BeanInfo beanInfo = configurator.getBeanInfo(target.getClass());
       Set<MethodInfo> methods = beanInfo.getMethods();
       Set<MethodInfo> possibleMethods = new HashSet<MethodInfo>();
-      for(MethodInfo mi : methods)
+      for (MethodInfo mi : methods)
       {
          if (name.equals(mi.getName()) && mi.getParameterTypes() != null && mi.getParameterTypes().length > index)
          {
