@@ -258,7 +258,7 @@ public class AbstractKernelControllerContext extends AbstractControllerContext i
                {
                   AbstractParameterMetaData pmd = new AbstractParameterMetaData(parameters[i]);
                   // setting it as it was; we don't want the actual value class
-                  pmd.setType(signature[i] != null ? signature[i] : null);
+                  pmd.setType(signature[i]);
                   pmd.setIndex(i);
                   params.add(pmd);
                }
