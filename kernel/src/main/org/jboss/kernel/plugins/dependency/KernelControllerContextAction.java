@@ -282,6 +282,10 @@ public class KernelControllerContextAction implements ControllerContextAction
             else
             {
                typeInfo = findTypeInfo(configurator, context.getTarget(), name, i);
+               if (typeInfo != null)
+               {
+                  signature[i] = typeInfo.getName();
+               }
             }
             parameters[i] = pmd.getValue().getValue(typeInfo, classLoader);
          }
