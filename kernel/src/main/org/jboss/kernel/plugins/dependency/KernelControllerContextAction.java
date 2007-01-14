@@ -23,11 +23,8 @@ package org.jboss.kernel.plugins.dependency;
 
 import java.security.*;
 import java.util.ArrayList;
-import java.util.HashSet;
 import java.util.List;
-import java.util.Set;
 
-import org.jboss.beans.info.spi.BeanInfo;
 import org.jboss.beans.metadata.plugins.AbstractParameterMetaData;
 import org.jboss.beans.metadata.spi.BeanMetaData;
 import org.jboss.beans.metadata.spi.ParameterMetaData;
@@ -263,61 +260,51 @@ public class KernelControllerContextAction implements ControllerContextAction
 
    protected Object invoke(KernelConfigurator configurator, DispatchContext context, String name, List<ParameterMetaData> params) throws Throwable
    {
-      int size = (params != null) ? params.size() : 0;
-      Object[] parameters = new Object[size];
-      String[] signature = new String[size];
-      if (size > 0)
+      String[] signature;
+      Object[] parameters;
+      if (params == null || params.isEmpty())
       {
-         // lazy cl lookup
-         ClassLoader classLoader = context.getClassLoader();
-         for (int i = 0; i < size; i++)
-         {
-            ParameterMetaData pmd = params.get(i);
-            signature[i] = pmd.getType();
-            TypeInfo typeInfo;
-            if (signature[i] != null)
-            {
-               typeInfo = configurator.getClassInfo(signature[i], classLoader);
-            }
-            else
-            {
-               typeInfo = findTypeInfo(configurator, context.getTarget(), name, i);
-               if (typeInfo != null)
-               {
-                  signature[i] = typeInfo.getName();
-               }
-            }
-            parameters[i] = pmd.getValue().getValue(typeInfo, classLoader);
-         }
-      }
-      return context.invoke(name, parameters, signature);
-   }
-
-   private TypeInfo findTypeInfo(KernelConfigurator configurator, Object target, String name, int index) throws Throwable
-   {
-      if (target == null)
-      {
-         return null;
-      }
-      BeanInfo beanInfo = configurator.getBeanInfo(target.getClass());
-      Set<MethodInfo> methods = beanInfo.getMethods();
-      Set<MethodInfo> possibleMethods = new HashSet<MethodInfo>();
-      for (MethodInfo mi : methods)
-      {
-         if (name.equals(mi.getName()) && mi.getParameterTypes() != null && mi.getParameterTypes().length > index)
-         {
-            possibleMethods.add(mi);
-         }
-      }
-      if (possibleMethods.isEmpty() || possibleMethods.size() > 1)
-      {
-         log.warn("Unable to determine parameter TypeInfo, method name: " + name + ", index: " + index + ", target: " + target);
-         return null;
+         signature = new String[0];
+         parameters = new Object[0];
       }
       else
       {
-         return possibleMethods.iterator().next().getParameterTypes()[index];
+         int size = params.size();
+         signature = Configurator.getParameterTypes(log.isTraceEnabled(), params);
+         Object target = context.getTarget();
+         // TODO - is this ok for non-POJO targets?
+         if (target != null)
+         {
+            MethodInfo methodInfo = Configurator.findMethodInfo(configurator.getClassInfo(target.getClass()), name, signature);
+            parameters = Configurator.getParameters(log.isTraceEnabled(), context.getClassLoader(), methodInfo.getParameterTypes(), params);
+            // add some more info, if not yet set
+            for(int i = 0; i < size; i++)
+            {
+               if (signature[i] == null)
+               {
+                  signature[i] = methodInfo.getParameterTypes()[i].getName();
+               }
+            }
+         }
+         else
+         {
+            parameters = new Object[size];
+            ClassLoader classLoader = context.getClassLoader();
+            for (int i = 0; i < size; i++)
+            {
+               ParameterMetaData pmd = params.get(i);
+               TypeInfo typeInfo = null;
+               if (signature[i] != null)
+               {
+                  typeInfo = configurator.getClassInfo(signature[i], classLoader);
+               }
+               // typeInfo might be null, but we can still get value in some cases
+               parameters[i] = pmd.getValue().getValue(typeInfo, classLoader);
+            }
+
+         }
       }
+      return context.invoke(name, parameters, signature);
    }
 
 }
