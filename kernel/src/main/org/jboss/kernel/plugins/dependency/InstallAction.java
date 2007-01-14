@@ -22,20 +22,17 @@
 package org.jboss.kernel.plugins.dependency;
 
 import java.util.List;
-import java.util.Set;
-import java.util.HashSet;
 
 import org.jboss.beans.metadata.spi.BeanMetaData;
 import org.jboss.beans.metadata.spi.InstallMetaData;
-import org.jboss.beans.metadata.spi.ParameterMetaData;
-import org.jboss.beans.info.spi.BeanInfo;
-import org.jboss.kernel.Kernel;
-import org.jboss.kernel.spi.dependency.*;
-import org.jboss.kernel.spi.registry.KernelRegistry;
-import org.jboss.kernel.spi.config.KernelConfigurator;
 import org.jboss.dependency.spi.DispatchContext;
-import org.jboss.reflect.spi.TypeInfo;
-import org.jboss.reflect.spi.MethodInfo;
+import org.jboss.kernel.Kernel;
+import org.jboss.kernel.spi.config.KernelConfigurator;
+import org.jboss.kernel.spi.dependency.InstallKernelControllerContextAware;
+import org.jboss.kernel.spi.dependency.KernelController;
+import org.jboss.kernel.spi.dependency.KernelControllerContext;
+import org.jboss.kernel.spi.dependency.KernelControllerContextAware;
+import org.jboss.kernel.spi.registry.KernelRegistry;
 
 /**
  * InstallAction.
@@ -120,57 +117,6 @@ public class InstallAction extends KernelControllerContextAction
       catch (Throwable t)
       {
          log.warn("Ignoring unregistered entry at uninstall " + name);
-      }
-   }
-
-   protected Object invoke(KernelConfigurator configurator, DispatchContext context, String name, List<ParameterMetaData> params) throws Throwable
-   {
-      ClassLoader classLoader = context.getClassLoader();
-      int size = (params != null) ? params.size() : 0;
-      Object[] parameters = new Object[size];
-      String[] signature = new String[size];
-      for(int i = 0; i < size; i++)
-      {
-         ParameterMetaData pmd = params.get(i);
-         signature[i] = pmd.getType();
-         TypeInfo typeInfo;
-         if (signature[i] != null)
-         {
-            typeInfo = configurator.getClassInfo(signature[i], classLoader);
-         }
-         else
-         {
-            typeInfo = findTypeInfo(configurator, context.getTarget(), name, i);
-         }
-         parameters[i] = pmd.getValue().getValue(typeInfo, classLoader);
-      }
-      return context.invoke(name, parameters, signature);
-   }
-
-   private TypeInfo findTypeInfo(KernelConfigurator configurator, Object target, String name, int index) throws Throwable
-   {
-      if (target == null)
-      {
-         return null;
-      }
-      BeanInfo beanInfo = configurator.getBeanInfo(target.getClass());
-      Set<MethodInfo> methods = beanInfo.getMethods();
-      Set<MethodInfo> possibleMethods = new HashSet<MethodInfo>();
-      for(MethodInfo mi : methods)
-      {
-         if (name.equals(mi.getName()) && mi.getParameterTypes() != null && mi.getParameterTypes().length > index)
-         {
-            possibleMethods.add(mi);
-         }
-      }
-      if (possibleMethods.isEmpty() || possibleMethods.size() > 1)
-      {
-         log.warn("Unable to determine parameter TypeInfo, method name: " + name + ", index: " + index + ", target: " + target);
-         return null;
-      }
-      else
-      {
-         return possibleMethods.iterator().next().getParameterTypes()[index];
       }
    }
 

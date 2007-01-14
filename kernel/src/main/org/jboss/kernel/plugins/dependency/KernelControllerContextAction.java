@@ -22,19 +22,28 @@
 package org.jboss.kernel.plugins.dependency;
 
 import java.security.*;
+import java.util.List;
+import java.util.Set;
+import java.util.HashSet;
 
 import org.jboss.beans.metadata.spi.BeanMetaData;
+import org.jboss.beans.metadata.spi.ParameterMetaData;
+import org.jboss.beans.info.spi.BeanInfo;
 import org.jboss.dependency.plugins.spi.action.ControllerContextAction;
 import org.jboss.dependency.spi.ControllerContext;
+import org.jboss.dependency.spi.DispatchContext;
 import org.jboss.joinpoint.spi.Joinpoint;
 import org.jboss.kernel.plugins.config.Configurator;
 import org.jboss.kernel.spi.dependency.KernelController;
 import org.jboss.kernel.spi.dependency.KernelControllerContext;
 import org.jboss.kernel.spi.dependency.KernelControllerContextAware;
 import org.jboss.kernel.spi.metadata.KernelMetaDataRepository;
+import org.jboss.kernel.spi.config.KernelConfigurator;
 import org.jboss.logging.Logger;
 import org.jboss.metadata.spi.MetaData;
 import org.jboss.metadata.spi.stack.MetaDataStack;
+import org.jboss.reflect.spi.TypeInfo;
+import org.jboss.reflect.spi.MethodInfo;
 
 /**
  * KernelControllerContextAction.
@@ -46,11 +55,11 @@ public class KernelControllerContextAction implements ControllerContextAction
 {
    /** Static log */
    private static final Logger staticLog = Logger.getLogger(KernelControllerContextAction.class);
-   
+
    /** The log */
    protected Logger log = Logger.getLogger(getClass());
 
-   /** 
+   /**
     * Dispatch a joinpoint
     * 
     * @param context the context
@@ -68,7 +77,7 @@ public class KernelControllerContextAction implements ControllerContextAction
          AbstractKernelControllerContext theContext = (AbstractKernelControllerContext) context;
          access = theContext.getAccessControlContext();
       }
-      
+
       KernelController controller = (KernelController) context.getController();
       KernelMetaDataRepository repository = controller.getKernel().getMetaDataRepository();
       MetaData md = repository.getMetaData(context);
@@ -78,7 +87,7 @@ public class KernelControllerContextAction implements ControllerContextAction
          staticLog.warn("NO METADATA! for " + context.getName() + " with scope " + context.getScope());
       try
       {
-         
+
          // Dispatch with the bean class loader if it exists
          ClassLoader tcl = Thread.currentThread().getContextClassLoader();
          try
@@ -109,7 +118,7 @@ public class KernelControllerContextAction implements ControllerContextAction
          {
             if( cl != null && access == null )
                Thread.currentThread().setContextClassLoader(tcl);
-            if (joinpoint instanceof KernelControllerContextAware) 
+            if (joinpoint instanceof KernelControllerContextAware)
                ((KernelControllerContextAware)joinpoint).unsetKernelControllerContext(null);
          }
       }
@@ -119,7 +128,7 @@ public class KernelControllerContextAction implements ControllerContextAction
             MetaDataStack.pop();
       }
    }
-   
+
    public void install(final ControllerContext context) throws Throwable
    {
       if (System.getSecurityManager() == null || context instanceof AbstractKernelControllerContext == false)
@@ -181,7 +190,7 @@ public class KernelControllerContextAction implements ControllerContextAction
          AccessController.doPrivileged(action);
       }
    }
-   
+
    public void installAction(KernelControllerContext context) throws Throwable
    {
       installActionInternal(context);
@@ -234,6 +243,59 @@ public class KernelControllerContextAction implements ControllerContextAction
 
    protected void uninstallActionInternal(KernelControllerContext context)
    {
+   }
+
+   // DispatchContext util methods 
+
+   protected Object invoke(KernelConfigurator configurator, DispatchContext context, String name, List<ParameterMetaData> params) throws Throwable
+   {
+      ClassLoader classLoader = context.getClassLoader();
+      int size = (params != null) ? params.size() : 0;
+      Object[] parameters = new Object[size];
+      String[] signature = new String[size];
+      for(int i = 0; i < size; i++)
+      {
+         ParameterMetaData pmd = params.get(i);
+         signature[i] = pmd.getType();
+         TypeInfo typeInfo;
+         if (signature[i] != null)
+         {
+            typeInfo = configurator.getClassInfo(signature[i], classLoader);
+         }
+         else
+         {
+            typeInfo = findTypeInfo(configurator, context.getTarget(), name, i);
+         }
+         parameters[i] = pmd.getValue().getValue(typeInfo, classLoader);
+      }
+      return context.invoke(name, parameters, signature);
+   }
+
+   private TypeInfo findTypeInfo(KernelConfigurator configurator, Object target, String name, int index) throws Throwable
+   {
+      if (target == null)
+      {
+         return null;
+      }
+      BeanInfo beanInfo = configurator.getBeanInfo(target.getClass());
+      Set<MethodInfo> methods = beanInfo.getMethods();
+      Set<MethodInfo> possibleMethods = new HashSet<MethodInfo>();
+      for(MethodInfo mi : methods)
+      {
+         if (name.equals(mi.getName()) && mi.getParameterTypes() != null && mi.getParameterTypes().length > index)
+         {
+            possibleMethods.add(mi);
+         }
+      }
+      if (possibleMethods.isEmpty() || possibleMethods.size() > 1)
+      {
+         log.warn("Unable to determine parameter TypeInfo, method name: " + name + ", index: " + index + ", target: " + target);
+         return null;
+      }
+      else
+      {
+         return possibleMethods.iterator().next().getParameterTypes()[index];
+      }
    }
 
 }
