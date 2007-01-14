@@ -280,7 +280,7 @@ public class AbstractKernelControllerContext extends AbstractControllerContext i
       final ClassLoader cl = getClassLoader();
       TargettedJoinpoint joinpoint = creator.createJoinpoint(cl, configurator);
       joinpoint.setTarget(getTarget());
-      // do we need this? - only GenericBeanFactoryPropertyDependencyTC is failing
+      // do we need this? - only GenericBeanFactoryPropertyDependencyTC is failing without
       if (creator.isSecure())
       {
          return KernelControllerContextAction.dispatchJoinPoint(this, joinpoint);
