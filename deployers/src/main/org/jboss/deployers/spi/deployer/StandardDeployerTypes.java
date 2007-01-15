@@ -49,6 +49,8 @@ public interface StandardDeployerTypes
    public static final String SAR = "sar";
    /** JBoss hibernate archive */
    public static final String HAR = "har";
+   /** JBoss aop archive */
+   public static final String AOP = "aop";
    /** Spring archive */
    public static final String SPRING = "spring";
    /** An OSGi bundle */
