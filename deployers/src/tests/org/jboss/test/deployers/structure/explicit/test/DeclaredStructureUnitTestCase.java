@@ -95,8 +95,8 @@ public class DeclaredStructureUnitTestCase extends BaseDeployersTest
       
       // Test it got all the candidates
       Map<String, Boolean> expected = new HashMap<String, Boolean>();
-      expected.put(getURL("/structure/explicit/complex.deployer/sub.jar/"), false);
-      expected.put(getURL("/structure/explicit/complex.deployer/x.war/"), false);
+      expected.put(getVfsURL("/structure/explicit/complex.deployer/sub.jar/"), false);
+      expected.put(getVfsURL("/structure/explicit/complex.deployer/x.war/"), false);
       assertContexts(expected, root.getChildren());
       // None of the complex.deployer children should be valid
       assertCandidatesNotValid(root);
@@ -107,10 +107,10 @@ public class DeclaredStructureUnitTestCase extends BaseDeployersTest
       List<VirtualFile> rootCP = root.getClassPath();
       assertEquals("classpath.size = 4", 4, rootCP.size());
       HashSet<String> rootCPSet = new HashSet<String>();
-      rootCPSet.add(getURL("/structure/explicit/complex.deployer/cp-mf.jar/"));
-      rootCPSet.add(getURL("/structure/explicit/complex.deployer/jar1.jar/"));
-      rootCPSet.add(getURL("/structure/explicit/complex.deployer/lib-dir/jar0.jar/"));
-      rootCPSet.add(getURL("/structure/explicit/complex.deployer/lib-dir/jar2.jar/"));
+      rootCPSet.add(getVfsURL("/structure/explicit/complex.deployer/cp-mf.jar/"));
+      rootCPSet.add(getVfsURL("/structure/explicit/complex.deployer/jar1.jar/"));
+      rootCPSet.add(getVfsURL("/structure/explicit/complex.deployer/lib-dir/jar0.jar/"));
+      rootCPSet.add(getVfsURL("/structure/explicit/complex.deployer/lib-dir/jar2.jar/"));
       for(VirtualFile file : rootCP)
       {
          String url = file.toURL().toString();
@@ -126,7 +126,7 @@ public class DeclaredStructureUnitTestCase extends BaseDeployersTest
       List<VirtualFile> subJarCP = subJar.getClassPath();
       assertEquals("classpath.size = 1", 1, subJarCP.size());
       HashSet<String> subJarCPSet = new HashSet<String>();
-      subJarCPSet.add(getURL("/structure/explicit/complex.deployer/cp-mf.jar/"));
+      subJarCPSet.add(getVfsURL("/structure/explicit/complex.deployer/cp-mf.jar/"));
       for(VirtualFile file : subJarCP)
       {
          String url = file.toURL().toString();
@@ -141,8 +141,8 @@ public class DeclaredStructureUnitTestCase extends BaseDeployersTest
       List<VirtualFile> xWarCP = xwar.getClassPath();
       assertEquals("classpath.size = 2", 2, xWarCP.size());
       HashSet<String> xWarCPSet = new HashSet<String>();
-      xWarCPSet.add(getURL("/structure/explicit/complex.deployer/x.war/WEB-INF/classes/"));
-      xWarCPSet.add(getURL("/structure/explicit/complex.deployer/x.war/WEB-INF/lib/w0.jar/"));
+      xWarCPSet.add(getVfsURL("/structure/explicit/complex.deployer/x.war/WEB-INF/classes/"));
+      xWarCPSet.add(getVfsURL("/structure/explicit/complex.deployer/x.war/WEB-INF/lib/w0.jar/"));
       for(VirtualFile file : xWarCP)
       {
          String url = file.toURL().toString();
