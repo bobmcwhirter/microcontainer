@@ -43,15 +43,11 @@ import org.jboss.joinpoint.spi.JoinpointFactory;
 import org.jboss.joinpoint.spi.MethodJoinpoint;
 import org.jboss.joinpoint.spi.TargettedJoinpoint;
 import org.jboss.kernel.spi.config.KernelConfig;
-import org.jboss.reflect.spi.ConstructorInfo;
-import org.jboss.reflect.spi.MethodInfo;
-import org.jboss.reflect.spi.TypeInfo;
-import org.jboss.reflect.plugins.ProgressionConvertor;
-import org.jboss.reflect.plugins.ProgressionConvertorFactory;
+import org.jboss.reflect.spi.*;
 
 /**
  * Configuration utilities.
- * 
+ *
  * @author <a href="adrian@jboss.com">Adrian Brock</a>
  * @version $Revision$
  */
@@ -59,7 +55,7 @@ public class Configurator extends Config
 {
    /**
     * Instantiate and configure a bean
-    * 
+    *
     * @param config the confg
     * @param info the bean info
     * @param metaData the bean metadata
@@ -76,7 +72,7 @@ public class Configurator extends Config
 
    /**
     * Instantiate a bean
-    * 
+    *
     * @param config the kernel config
     * @param info the bean info
     * @param metaData the bean metadata
@@ -98,7 +94,7 @@ public class Configurator extends Config
 
    /**
     * Get a constructor joinpoint
-    * 
+    *
     * @param config the kernel config
     * @param info the bean info
     * @param metaData the constructor metadata
@@ -147,7 +143,7 @@ public class Configurator extends Config
             joinPoint.setTarget(factory);
             MethodInfo minfo = joinPoint.getMethodInfo();
 
-            // Set the parameters 
+            // Set the parameters
             if (minfo != null)
             {
                TypeInfo[] pinfos = minfo.getParameterTypes();
@@ -169,7 +165,7 @@ public class Configurator extends Config
             MethodJoinpoint joinPoint = findMethod(trace, factoryInfo, cl, metaData.getFactoryMethod(), parameters, true, true);
             MethodInfo minfo = joinPoint.getMethodInfo();
 
-            // Set the parameters 
+            // Set the parameters
             if (minfo != null)
             {
                TypeInfo[] pinfos = minfo.getParameterTypes();
@@ -199,7 +195,7 @@ public class Configurator extends Config
 
    /**
     * Find a constructor
-    * 
+    *
     * @param trace whether trace is enabled
     * @param info the bean info
     * @param metaData the constructor metadata
@@ -216,7 +212,7 @@ public class Configurator extends Config
 
    /**
     * Resolve a constructor
-    * 
+    *
     * @param trace whether trace is enabled
     * @param info the bean info
     * @param metaData the constructor metadata
@@ -245,7 +241,7 @@ public class Configurator extends Config
 
    /**
     * Configure a bean
-    * 
+    *
     * @param object the object to configure
     * @param info the bean info
     * @param metaData the bean metadata
@@ -277,7 +273,7 @@ public class Configurator extends Config
 
    /**
     * Configure a bean property
-    * 
+    *
     * @param object the object to configure
     * @param info the bean info
     * @param cl the classloader
@@ -308,7 +304,7 @@ public class Configurator extends Config
 
    /**
     * Configure a bean property
-    * 
+    *
     * @param object the object to configure
     * @param info the property info
     * @param cl the classloader
@@ -383,7 +379,7 @@ public class Configurator extends Config
 
    /**
     * Get the property setters for a bean
-    * 
+    *
     * @param info the bean info
     * @param metaData the bean metadata
     * @return the property setters
@@ -417,7 +413,7 @@ public class Configurator extends Config
 
    /**
     * Get property setter for an property
-    * 
+    *
     * @param info the bean info
     * @param cl the classloader
     * @param metaData the property metadata
@@ -448,7 +444,7 @@ public class Configurator extends Config
 
    /**
     * Get property setter for an property
-    * 
+    *
     * @param info the property info
     * @param cl the classloader
     * @param metaData the property metadata
@@ -510,7 +506,7 @@ public class Configurator extends Config
 
    /**
     * Unconfigure a bean
-    * 
+    *
     * @param object the object to unconfigure
     * @param info the bean info
     * @param metaData the bean metadata
@@ -539,7 +535,7 @@ public class Configurator extends Config
 
    /**
     * Unconfigure a bean property
-    * 
+    *
     * @param object the object to unconfigure
     * @param cl the classloader
     * @param info the bean info
@@ -578,7 +574,7 @@ public class Configurator extends Config
 
    /**
     * Get property nuller joinpoints for a bean
-    * 
+    *
     * @param info the bean info
     * @param metaData the bean metadata
     * @return the join points
@@ -607,7 +603,7 @@ public class Configurator extends Config
 
    /**
     * Get property nuller joinpoint for a property
-    * 
+    *
     * @param info the bean info
     * @param metaData the property metadata
     * @return the join point
@@ -637,7 +633,7 @@ public class Configurator extends Config
 
    /**
     * Get property nuller joinpoint for a property
-    * 
+    *
     * @param info the property info
     * @param metaData the property metadata
     * @return the join point
@@ -660,7 +656,7 @@ public class Configurator extends Config
 
    /**
     * Get the property info
-    * 
+    *
     * @param trace whether trace is enabled
     * @param info the bean info
     * @param name the property name
@@ -697,7 +693,7 @@ public class Configurator extends Config
       //       to work properly, use the bean's classloader if there isn't one provided
       if (cl == null)
          cl = info.getClassInfo().getType().getClassLoader();
-      
+
       Set<PropertyInfo> properties = info.getProperties();
       if (properties != null && properties.size() > 0)
       {
@@ -714,13 +710,13 @@ public class Configurator extends Config
             }
          }
       }
-      
+
       throw new JoinpointException("Property " + name + " not found for " + info);
    }
 
    /**
     * Find a method
-    * 
+    *
     * @param info the bean info
     * @param cl the classloader
     * @param name the method name
@@ -738,7 +734,7 @@ public class Configurator extends Config
 
    /**
     * Find a method
-    * 
+    *
     * @param trace whether trace is enabled
     * @param info the bean info
     * @param cl the classloader
@@ -761,7 +757,7 @@ public class Configurator extends Config
       JoinpointFactory jpf = info.getJoinpointFactory();
       MethodJoinpoint joinPoint = jpf.getMethodJoinpoint(minfo);
 
-      // Set the parameters 
+      // Set the parameters
       if (minfo != null)
       {
          TypeInfo[] pinfos = minfo.getParameterTypes();
@@ -774,7 +770,7 @@ public class Configurator extends Config
 
    /**
     * Get the parameters types
-    * 
+    *
     * @param trace whether trace is enabled
     * @param parameters the parameter metadata
     * @return an array of parameter types
@@ -797,7 +793,7 @@ public class Configurator extends Config
 
    /**
     * Get the parameters types
-    * 
+    *
     * @param trace whether trace is enabled
     * @param parameters the parameter types
     * @return an array of parameter types
@@ -817,7 +813,7 @@ public class Configurator extends Config
 
    /**
     * Get the parameters
-    * 
+    *
     * @param trace whether trace is enabled
     * @param cl the classloader
     * @param pinfos the parameter infos
@@ -844,9 +840,9 @@ public class Configurator extends Config
 
    /**
     * Get the classloader for some BeanMetaData
-    * 
+    *
     * @param metaData the metaData
-    * @return the classloader 
+    * @return the classloader
     * @throws Throwable for any error
     */
    public static ClassLoader getClassLoader(BeanMetaData metaData) throws Throwable
@@ -859,9 +855,9 @@ public class Configurator extends Config
 
    /**
     * Get the classloader for some ClassLoaderMetaData
-    * 
+    *
     * @param metaData the metaData
-    * @return the classloader 
+    * @return the classloader
     * @throws Throwable for any error
     */
    public static ClassLoader getClassLoader(ClassLoaderMetaData metaData) throws Throwable
@@ -886,7 +882,7 @@ public class Configurator extends Config
 
    /**
     * Test whether type names can be assigned to type infos
-    * 
+    *
     * TODO isAssignableFrom should be part of the TypeInfo api
     *      with comparisons made between TypeInfos
     *
@@ -909,7 +905,7 @@ public class Configurator extends Config
       {
          if (typeNames[i] != null)
          {
-            // todo - is there some better way to do this - via Container?
+            // TODO - use typeInfos[i].isAssignableFrom(otherTypeInfo)
             Class clazz = Class.forName(typeNames[i], true, cl);
             if (typeInfos[i].getType().isAssignableFrom(clazz) == false)
             {
