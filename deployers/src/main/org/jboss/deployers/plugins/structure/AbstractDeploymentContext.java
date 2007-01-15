@@ -93,6 +93,9 @@ public class AbstractDeploymentContext
    /** The parent context */
    private DeploymentContext parent;
 
+   /** The types of deployments this has been identified as */
+   private Set<String> deploymentTypes = new CopyOnWriteArraySet<String>();
+
    /** The child contexts */
    private Set<DeploymentContext> children = new CopyOnWriteArraySet<DeploymentContext>();
 
@@ -269,6 +272,10 @@ public class AbstractDeploymentContext
       return relativePath;
    }
 
+   public Set<String> getTypes()
+   {
+      return deploymentTypes;
+   }
    public StructureDetermined getStructureDetermined()
    {
       return structureDetermined;

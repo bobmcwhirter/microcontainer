@@ -67,6 +67,9 @@ public class DeployerProtocolUnitTestCase extends BaseDeployersTest
       Set<DeploymentUnit> expected = new HashSet<DeploymentUnit>();
       expected.add(context.getDeploymentUnit());
       assertEquals(expected, deployer.getDeployedUnits());
+      HashSet<String> types = new HashSet<String>();
+      types.add("test");
+      assertEquals(types, context.getTypes());
    }
 
    public void testUndeploy() throws Exception

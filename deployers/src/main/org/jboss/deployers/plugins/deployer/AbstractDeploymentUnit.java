@@ -92,6 +92,16 @@ public class AbstractDeploymentUnit extends AbstractAttachments
    }
 
    /**
+    * Get the deployment types associated with this deployment.
+    * @return set of deployment type names deployers have identified
+    * in this deployment.
+    */
+   public Set<String> getTypes()
+   {
+      return deploymentContext.getTypes();
+   }
+
+   /**
     * Find a child of the deployment root.
     * @param name - relative path of the file to find
     * @return the file if found, null otherwise.

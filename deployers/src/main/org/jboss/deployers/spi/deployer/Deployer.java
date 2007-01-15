@@ -54,7 +54,16 @@ public interface Deployer extends OrderedDeployer
 
    /** The real order */
    public static final int REAL_DEPLOYER = 10000;
-   
+
+   /**
+    * Get the type of the deployer. This should be reflected in
+    * the DeploymentUnit deploymentType set of deployments the
+    * Deployer processes.
+    * 
+    * @return the deployer type.
+    */
+   public String getType();
+
    /**
     * Whether the deployer is relevant for this unit
     * 

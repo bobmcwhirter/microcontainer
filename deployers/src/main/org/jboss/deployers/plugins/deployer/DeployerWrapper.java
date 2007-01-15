@@ -76,6 +76,11 @@ public class DeployerWrapper implements Deployer, ManagedObjectBuilder
       this.managedObjectBuilder = managedObjectBuilder;
    }
 
+   public String getType()
+   {
+      return deployer.getType();
+   }
+
    public boolean isRelevant(DeploymentUnit unit)
    {
       if (unit == null)

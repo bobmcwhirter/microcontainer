@@ -52,12 +52,13 @@ public class TestSimpleDeployer extends AbstractSimpleDeployer
    
    public TestSimpleDeployer()
    {
-      this.relativeOrder = Integer.MAX_VALUE;
+      this(Integer.MAX_VALUE);
    }
    
    public TestSimpleDeployer(int relativeOrder)
    {
       this.relativeOrder = relativeOrder;
+      this.setType("test");
    }
 
    public void clear()
@@ -107,6 +108,7 @@ public class TestSimpleDeployer extends AbstractSimpleDeployer
 
    public void deploy(DeploymentUnit unit) throws DeploymentException
    {
+      unit.getTypes().add(getType());
       deployed.put(unit, ++order);
    }
 

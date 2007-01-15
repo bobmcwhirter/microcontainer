@@ -23,19 +23,24 @@ package org.jboss.deployers.plugins.deployer;
 
 import org.jboss.deployers.spi.deployer.Deployer;
 import org.jboss.deployers.spi.deployer.DeploymentUnit;
+import org.jboss.deployers.spi.deployer.StandardDeployerTypes;
 import org.jboss.logging.Logger;
 
 /**
  * AbstractDeployer.
  * 
  * @author <a href="adrian@jboss.com">Adrian Brock</a>
+ * @author Scott.Stark@jboss.org
  * @version $Revision: 1.1 $
  */
 public abstract class AbstractDeployer implements Deployer
 {
    /** The log */
    protected Logger log = Logger.getLogger(this.getClass());
+
    private int relativeOrder = Integer.MAX_VALUE;
+   /** The type of the deployer */
+   private String type = StandardDeployerTypes.UNSPECIFIED_TYPE;
 
    public boolean isRelevant(DeploymentUnit unit)
    {
@@ -50,4 +55,14 @@ public abstract class AbstractDeployer implements Deployer
    {
       this.relativeOrder = order;
    }
+
+   public String getType()
+   {
+      return type;
+   }
+   public void setType(String type)
+   {
+      this.type = type;
+   }
+   
 }

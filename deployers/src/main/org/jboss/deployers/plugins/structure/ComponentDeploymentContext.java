@@ -103,6 +103,16 @@ public class ComponentDeploymentContext
       return parent.getRelativePath();
    }
 
+   /**
+    * A component deployment context has no deployment types as
+    * the deployment type is more of a top-level notion, so
+    * return the parent deployment types. 
+    */
+   public Set<String> getTypes()
+   {
+      return parent.getTypes();
+   }
+
    public StructureDetermined getStructureDetermined()
    {
       return parent.getStructureDetermined();

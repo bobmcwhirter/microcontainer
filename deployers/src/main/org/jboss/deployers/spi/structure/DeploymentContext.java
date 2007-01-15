@@ -74,6 +74,13 @@ public interface DeploymentContext
    public String getRelativePath();
 
    /**
+    * Get the deployment types associated with this deployment.
+    * @return set of deployment type names deployers have identified
+    * in this deployment.
+    */
+   public Set<String> getTypes();
+
+   /**
     * Whether the structure is determined
     * 
     * @return true when the structure is determined

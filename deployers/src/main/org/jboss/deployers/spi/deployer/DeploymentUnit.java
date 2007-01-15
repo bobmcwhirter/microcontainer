@@ -79,6 +79,13 @@ public interface DeploymentUnit extends Attachments
    public String getRelativePath();
 
    /**
+    * Get the deployment types associated with this deployment.
+    * @return set of deployment type names deployers have identified
+    * in this deployment.
+    */
+   public Set<String> getTypes();
+
+   /**
     * Gets a metadata file. This is a file located under the deployment metadata
     * context(s).
     * 
