@@ -61,13 +61,26 @@ public class ManagedPropertyImpl implements ManagedProperty
 
    /** The property name */
    private transient String name;
-   
+
+   /**
+    * Create a new ManagedProperty that is not associated to
+    * a ManagedObject.
+    * 
+    * @param fields the fields
+    * @throws IllegalArgumentException for null fields or
+    *    missing Fields.NAME
+    */
+   public ManagedPropertyImpl(Fields fields)
+   {
+      this(null, fields);
+   }
    /**
     * Create a new ManagedProperty.
     * 
-    * @param managedObject the managed object
+    * @param managedObject the managed object, may be null
     * @param fields the fields
-    * @throws IllegalArgumentException for null fields
+    * @throws IllegalArgumentException for null fields or
+    *    missing Fields.NAME
     */
    public ManagedPropertyImpl(ManagedObject managedObject, Fields fields)
    {
@@ -77,6 +90,10 @@ public class ManagedPropertyImpl implements ManagedProperty
    public ManagedObject getManagedObject()
    {
       return managedObject;
+   }
+   public void setManagedObject(ManagedObject managedObject)
+   {
+      this.managedObject = managedObject;
    }
 
    public Fields getFields()
@@ -204,14 +221,13 @@ public class ManagedPropertyImpl implements ManagedProperty
    /**
     * Initialise a ManagedPropertyImpl.
     * 
-    * @param managedObject the managed object
+    * @param managedObject the managed object, may be null
     * @param fields the fields
-    * @throws IllegalArgumentException for null fields
+    * @throws IllegalArgumentException for null fields or
+    *    missing Fields.NAME
     */
    private void init(ManagedObject managedObject, Fields fields)
    {
-      if (managedObject == null)
-         throw new IllegalArgumentException("Null managed object");
       if (fields == null)
          throw new IllegalArgumentException("Null fields");
       
