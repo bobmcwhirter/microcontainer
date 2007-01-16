@@ -49,12 +49,12 @@ public class ManagedPropertyImpl implements ManagedProperty
    private static final ObjectStreamField[] serialPersistentFields =
       new ObjectStreamField[]
       {
-         new ObjectStreamField("managedObject", ManagedObjectImpl.class),
+         new ObjectStreamField("managedObject", ManagedObject.class),
          new ObjectStreamField("fields", Fields.class),
       };
 
    /** The managed object */
-   private ManagedObjectImpl managedObject;
+   private ManagedObject managedObject;
    
    /** The fields */
    private Fields fields;
@@ -69,7 +69,7 @@ public class ManagedPropertyImpl implements ManagedProperty
     * @param fields the fields
     * @throws IllegalArgumentException for null fields
     */
-   public ManagedPropertyImpl(ManagedObjectImpl managedObject, Fields fields)
+   public ManagedPropertyImpl(ManagedObject managedObject, Fields fields)
    {
       init(managedObject, fields);
    }
@@ -208,7 +208,7 @@ public class ManagedPropertyImpl implements ManagedProperty
     * @param fields the fields
     * @throws IllegalArgumentException for null fields
     */
-   private void init(ManagedObjectImpl managedObject, Fields fields)
+   private void init(ManagedObject managedObject, Fields fields)
    {
       if (managedObject == null)
          throw new IllegalArgumentException("Null managed object");
@@ -233,7 +233,7 @@ public class ManagedPropertyImpl implements ManagedProperty
    private void readObject(ObjectInputStream in) throws IOException, ClassNotFoundException
    {
       ObjectInputStream.GetField getField = in.readFields();
-      ManagedObjectImpl managedObject = (ManagedObjectImpl) getField.get("managedObject", null);
+      ManagedObject managedObject = (ManagedObject) getField.get("managedObject", null);
       Fields fields = (Fields) getField.get("fields", null);
       try
       {
