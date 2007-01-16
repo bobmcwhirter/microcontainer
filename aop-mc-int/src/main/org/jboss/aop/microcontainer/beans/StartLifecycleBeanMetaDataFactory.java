@@ -28,6 +28,8 @@ package org.jboss.aop.microcontainer.beans;
  */
 public class StartLifecycleBeanMetaDataFactory extends LifecycleBeanMetaDataFactory
 {
+   private static final long serialVersionUID = 1L;
+
    @Override
    protected String getControllerInterface()
    {
