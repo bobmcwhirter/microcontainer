@@ -21,6 +21,8 @@
 */
 package org.jboss.test.managed;
 
+import org.jboss.test.managed.mock.MockTest;
+
 import junit.framework.Test;
 import junit.framework.TestSuite;
 import junit.textui.TestRunner;
@@ -29,6 +31,7 @@ import junit.textui.TestRunner;
  * Managed All Test Suite.
  * 
  * @author <a href="adrian@jboss.com">Adrian Brock</a>
+ * @author Scott.Stark@jboss.org
  * @version $Revision: 37459 $
  */
 public class ManagedAllTestSuite extends TestSuite
@@ -42,7 +45,7 @@ public class ManagedAllTestSuite extends TestSuite
    {
       TestSuite suite = new TestSuite("Managed All Tests");
 
-      //suite.addTest(TypesTestSuite.suite());
+      suite.addTest(MockTest.suite());
 
       return suite;
    }
