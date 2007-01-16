@@ -29,10 +29,15 @@ import org.jboss.beans.metadata.spi.BeanMetaData;
 import org.jboss.joinpoint.spi.TargettedJoinpoint;
 import org.jboss.kernel.Kernel;
 import org.jboss.kernel.spi.config.KernelConfigurator;
+import org.jboss.kernel.spi.dependency.CreateKernelControllerContextAware;
+import org.jboss.kernel.spi.dependency.DescribeKernelControllerContextAware;
+import org.jboss.kernel.spi.dependency.InstallKernelControllerContextAware;
+import org.jboss.kernel.spi.dependency.InstantiateKernelControllerContextAware;
 import org.jboss.kernel.spi.dependency.KernelController;
 import org.jboss.kernel.spi.dependency.KernelControllerContext;
 import org.jboss.kernel.spi.dependency.KernelControllerContextAware;
 import org.jboss.kernel.spi.dependency.ConfigureKernelControllerContextAware;
+import org.jboss.kernel.spi.dependency.StartKernelControllerContextAware;
 
 /**
  * ConfigureAction.
@@ -54,8 +59,13 @@ public class ConfigureAction extends KernelControllerContextAction
       Set joinPoints = configurator.getPropertySetterJoinPoints(info, metaData);
       setAttributes(context, object, joinPoints, false);
 
-      if (object instanceof KernelControllerContextAware)
-         ((KernelControllerContextAware) object).setKernelControllerContext(context);
+      //TODO remove this?
+      //In case the class is EXACTLY KernelControllerContextAware, we call it from here, 
+      //required for KernelControllerContextAwareTestCase and KernelControllerContextAwareXMLTestCase
+      if (isExactlyKernelControllerContextAware(object))
+      {
+         ((KernelControllerContextAware) object).setKernelControllerContext(context);            
+      }
 
    }
 
@@ -76,8 +86,13 @@ public class ConfigureAction extends KernelControllerContextAction
       {
          if (object != null)
          {
-            if (object instanceof KernelControllerContextAware)
+            //TODO remove this?
+            //In case the class is EXACTLY KernelControllerContextAware, we call it from here, 
+            //required for KernelControllerContextAwareTestCase and KernelControllerContextAwareXMLTestCase
+            if (isExactlyKernelControllerContextAware(object))
+            {
                ((KernelControllerContextAware) object).unsetKernelControllerContext(context);
+            }
          }
       }
       catch (Throwable ignored)
@@ -137,4 +152,15 @@ public class ConfigureAction extends KernelControllerContextAction
       }
    }
 
+   private boolean isExactlyKernelControllerContextAware(Object o)
+   {
+      Class clazz = o.getClass();
+      return KernelControllerContextAware.class.isAssignableFrom(o.getClass()) &&
+               (!ConfigureKernelControllerContextAware.class.isAssignableFrom(o.getClass()) &&
+               !CreateKernelControllerContextAware.class.isAssignableFrom(o.getClass()) &&
+               !DescribeKernelControllerContextAware.class.isAssignableFrom(o.getClass()) &&
+               !InstallKernelControllerContextAware.class.isAssignableFrom(o.getClass()) &&
+               !InstantiateKernelControllerContextAware.class.isAssignableFrom(o.getClass()) &&
+               !StartKernelControllerContextAware.class.isAssignableFrom(o.getClass()));
+   }
 }

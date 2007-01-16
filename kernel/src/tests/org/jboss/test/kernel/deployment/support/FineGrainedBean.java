@@ -36,7 +36,6 @@ public class FineGrainedBean implements
    public static String[] states = {
          "NOT_INSTALLED (DESCRIBED)",
          "INSTANTIATED",
-         "CONFIGURED", // since ConfigureAction calls this as well, remove this once we remove that from CA
          "CONFIGURED",
          "CREATE",
          "START",

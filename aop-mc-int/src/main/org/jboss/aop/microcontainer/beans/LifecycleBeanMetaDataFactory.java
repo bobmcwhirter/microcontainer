@@ -36,8 +36,7 @@ import org.jboss.beans.metadata.spi.ValueMetaData;
  * @author <a href="kabir.khan@jboss.com">Kabir Khan</a>
  * @version $Revision: 1.1 $
  */
-public class LifecycleBeanMetaDataFactory extends AspectBeanMetaDataFactory
-   implements BeanMetaDataFactory
+public abstract class LifecycleBeanMetaDataFactory extends AspectBeanMetaDataFactory implements BeanMetaDataFactory
 {
    private static final long serialVersionUID = 1L;
 
@@ -73,7 +72,9 @@ public class LifecycleBeanMetaDataFactory extends AspectBeanMetaDataFactory
    {
       AbstractListMetaData interfaces = new AbstractListMetaData();
       interfaces.setElementType("java.lang.String");
-      interfaces.add(new StringValueMetaData("org.jboss.kernel.spi.dependency.KernelControllerContextAware"));
+      interfaces.add(new StringValueMetaData(getControllerInterface()));
       return interfaces;
    }
+   
+   protected abstract String getControllerInterface();
 }

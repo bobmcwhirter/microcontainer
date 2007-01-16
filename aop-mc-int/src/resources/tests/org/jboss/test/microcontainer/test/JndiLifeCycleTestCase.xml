@@ -8,7 +8,7 @@
       <constructor factoryClass="org.jboss.aop.AspectManager" factoryMethod="instance"/>
    </bean>
 
-   <aop:lifecycle xmlns:aop="urn:jboss:aop-beans:1.0"
+   <aop:lifecycle-configure xmlns:aop="urn:jboss:aop-beans:1.0"
       name="DependencyAdvice"
       class="org.jboss.aop.microcontainer.aspects.jndi.JndiIntroduction"
       classes="@org.jboss.aop.microcontainer.aspects.jndi.JndiBinding"
@@ -18,7 +18,7 @@
             <entry><key>java.naming.factory.initial</key><value>org.jboss.test.microcontainer.support.jndi.MockInitialContextFactory</value></entry>
          </map>
       </property>
-   </aop:lifecycle>
+   </aop:lifecycle-configure>
 
    
    <bean name="Bean" class="org.jboss.test.microcontainer.support.jndi.SimpleBean">

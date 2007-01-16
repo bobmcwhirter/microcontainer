@@ -207,7 +207,8 @@ public class KernelControllerContextAction implements ControllerContextAction
                awareInterface.equals(KernelControllerContextAware.class) == false &&
                awareInterface.isAssignableFrom(target.getClass()))
          {
-            ((KernelControllerContextAware) target).setKernelControllerContext(context);
+            System.out.println("-----> " + context.getName() + " " + target.getClass() + " " + context.getState());
+            ((KernelControllerContextAware)target).setKernelControllerContext(context);
          }
       }
    }

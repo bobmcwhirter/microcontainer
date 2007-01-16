@@ -30,8 +30,8 @@ import org.jboss.aop.instrument.Untransformable;
 import org.jboss.beans.metadata.plugins.factory.GenericBeanFactory;
 import org.jboss.dependency.spi.Controller;
 import org.jboss.kernel.Kernel;
+import org.jboss.kernel.spi.dependency.ConfigureKernelControllerContextAware;
 import org.jboss.kernel.spi.dependency.KernelControllerContext;
-import org.jboss.kernel.spi.dependency.KernelControllerContextAware;
 import org.jboss.logging.Logger;
 import org.jboss.util.id.GUID;
 
@@ -41,7 +41,7 @@ import org.jboss.util.id.GUID;
  * @author <a href="adrian@jboss.com">Adrian Brock</a>
  * @version $Revision$
  */
-public class Aspect implements KernelControllerContextAware, Untransformable
+public class Aspect implements ConfigureKernelControllerContextAware, Untransformable
 {
    private static final Logger log = Logger.getLogger(Aspect.class);
    

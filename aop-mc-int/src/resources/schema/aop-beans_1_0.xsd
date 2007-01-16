@@ -47,7 +47,7 @@ $Id$
          </xsd:extension>
       </xsd:complexContent>
    </xsd:complexType>
-   
+<!--   
    <xsd:element name="lifecycle" type="lifecycleType">
       <xsd:annotation>
          <xsd:documentation>
@@ -57,7 +57,7 @@ $Id$
          </xsd:documentation>
       </xsd:annotation>
    </xsd:element>
-
+-->
    <xsd:complexType name="lifecycleType">
       <xsd:annotation>
          <xsd:documentation>
@@ -70,6 +70,144 @@ $Id$
          <xsd:extension base="aspectType">
             <xsd:attribute name="classes" type="xsd:string" use="required"/>
          </xsd:extension>
+      </xsd:complexContent>
+   </xsd:complexType>
+   
+   <xsd:element name="lifecycle-configure" type="lifecycleConfigureType">
+      <xsd:annotation>
+         <xsd:documentation>
+           <![CDATA[
+           An aspect intercepting when a bean is configured/unconfigured
+           ]]>
+         </xsd:documentation>
+      </xsd:annotation>
+   </xsd:element>
+   
+   <xsd:complexType name="lifecycleConfigureType">
+      <xsd:annotation>
+         <xsd:documentation>
+           <![CDATA[
+           An aspect intercepting when a bean is configured/unconfigured
+           ]]>
+         </xsd:documentation>
+      </xsd:annotation>
+      <xsd:complexContent>
+         <xsd:extension base="lifecycleType"/>
+      </xsd:complexContent>
+   </xsd:complexType>
+   
+   <xsd:element name="lifecycle-create" type="lifecycleCreateType">
+      <xsd:annotation>
+         <xsd:documentation>
+           <![CDATA[
+           An aspect intercepting when a bean is created/destroyed
+           ]]>
+         </xsd:documentation>
+      </xsd:annotation>
+   </xsd:element>
+   
+   <xsd:complexType name="lifecycleCreateType">
+      <xsd:annotation>
+         <xsd:documentation>
+           <![CDATA[
+           An aspect intercepting when a bean is created/destroyed
+           ]]>
+         </xsd:documentation>
+      </xsd:annotation>
+      <xsd:complexContent>
+         <xsd:extension base="lifecycleType"/>
+      </xsd:complexContent>
+   </xsd:complexType>
+   
+   <xsd:element name="lifecycle-describe" type="lifecycleDescribeType">
+      <xsd:annotation>
+         <xsd:documentation>
+           <![CDATA[
+           An aspect intercepting when a bean is described/undescribed
+           ]]>
+         </xsd:documentation>
+      </xsd:annotation>
+   </xsd:element>
+   
+   <xsd:complexType name="lifecycleDescribeType">
+      <xsd:annotation>
+         <xsd:documentation>
+           <![CDATA[
+           An aspect intercepting when a bean is described/undescribed
+           ]]>
+         </xsd:documentation>
+      </xsd:annotation>
+      <xsd:complexContent>
+         <xsd:extension base="lifecycleType"/>
+      </xsd:complexContent>
+   </xsd:complexType>
+   
+   <xsd:element name="lifecycle-install" type="lifecycleInstallType">
+      <xsd:annotation>
+         <xsd:documentation>
+           <![CDATA[
+           An aspect intercepting when a bean is installed/uninstalled
+           ]]>
+         </xsd:documentation>
+      </xsd:annotation>
+   </xsd:element>
+   
+   <xsd:complexType name="lifecycleInstallType">
+      <xsd:annotation>
+         <xsd:documentation>
+           <![CDATA[
+           An aspect intercepting when a bean is installed/uninstalled
+           ]]>
+         </xsd:documentation>
+      </xsd:annotation>
+      <xsd:complexContent>
+         <xsd:extension base="lifecycleType"/>
+      </xsd:complexContent>
+   </xsd:complexType>
+   
+   <xsd:element name="lifecycle-instantiate" type="lifecycleInstantiateType">
+      <xsd:annotation>
+         <xsd:documentation>
+           <![CDATA[
+           An aspect intercepting when a bean is instantiated/uninstantiated
+           ]]>
+         </xsd:documentation>
+      </xsd:annotation>
+   </xsd:element>
+   
+   <xsd:complexType name="lifecycleInstantiateType">
+      <xsd:annotation>
+         <xsd:documentation>
+           <![CDATA[
+           An aspect intercepting when a bean is instantiated/uninstantiated
+           ]]>
+         </xsd:documentation>
+      </xsd:annotation>
+      <xsd:complexContent>
+         <xsd:extension base="lifecycleType"/>
+      </xsd:complexContent>
+   </xsd:complexType>
+   
+   <xsd:element name="lifecycle-start" type="lifecycleStartType">
+      <xsd:annotation>
+         <xsd:documentation>
+           <![CDATA[
+           An aspect intercepting when a bean is started/stopped
+           ]]>
+         </xsd:documentation>
+      </xsd:annotation>
+   </xsd:element>
+   
+   <xsd:complexType name="lifecycleStartType">
+      <xsd:annotation>
+         <xsd:documentation>
+           <![CDATA[
+           An aspect intercepting when a bean is started/stopped
+           ]]>
+         </xsd:documentation>
+      </xsd:annotation>
+      <xsd:complexContent>
+         <xsd:extension base="lifecycleType"/>
       </xsd:complexContent>
    </xsd:complexType>
    
