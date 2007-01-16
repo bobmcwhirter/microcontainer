@@ -89,8 +89,29 @@ public class MockTest extends ManagedTest
       assertEquals(mo, jndiName.getManagedObject());
    }
 
+   public void testManagedObjectSerialization()
+      throws Exception
+   {
+      MockDataSourceManagedObject mock = new MockDataSourceManagedObject();
+      ManagedObject mo = WrapperAdvice.wrapManagedObject(mock);
+
+      mo.getProperty("jndi-name").setValue("DefaultDS");
+      mo.getProperty("user").setValue("Scott");
+      mo.getProperty("password").setValue("Tiger");
+      mo.getProperty("jndi-name").setValue("ChangedDS");
+
+      getLog().debug(mock.prettyPrint());
+      
+      byte[] data = super.serialize(mo);
+      ManagedObject mo2 = (ManagedObject) super.deserialize(data);
+      
+      assertEquals("jndiName", "ChangedDS", mo2.getProperty("jndi-name").getValue());
+      assertEquals("user", "Scott", mo2.getProperty("user").getValue());
+      assertEquals("password", "Tiger", mo2.getProperty("password").getValue());
+   }
+
    protected void configureLogging()
    {
-      //enableTrace("org.jboss.managed.plugins.advice");
+      enableTrace("org.jboss.managed.plugins.advice");
    }
 }
