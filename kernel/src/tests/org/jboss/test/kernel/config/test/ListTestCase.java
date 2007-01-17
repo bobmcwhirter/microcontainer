@@ -243,13 +243,17 @@ public class ListTestCase extends AbstractKernelConfigTest
       assertNotNull("Should be a list", result);
       assertTrue("Not a CustomList: " + result.getClass(), result instanceof CustomList);
       assertTrue("Not preinstantiated", ((CustomList) result).getPreInstantiated());
-      
+
       ArrayList<Object> expected = new ArrayList<Object>();
       expected.add(string1);
       expected.add(string2);
       expected.add(string2);
       expected.add(string1);
       assertEquals(expected, result);
+
+      List setter = bean.setterList;
+      assertNotNull(setter);
+      assertFalse("Empty setterList", setter.isEmpty());
    }
 
    protected SimpleBean customListPreInstantiated() throws Throwable
@@ -272,8 +276,14 @@ public class ListTestCase extends AbstractKernelConfigTest
       smd.add(vmd2); // tests duplicates
       smd.add(vmd3); // tests duplicates
 
-      AbstractPropertyMetaData pmd = new AbstractPropertyMetaData("preInstantiatedList", smd);
-      properties.add(pmd);
+      AbstractPropertyMetaData pmd1 = new AbstractPropertyMetaData("preInstantiatedList", smd);
+      properties.add(pmd1);
+
+      AbstractListMetaData lmd = new AbstractListMetaData();
+      lmd.setElementType("java.lang.String");
+      lmd.add(new StringValueMetaData("element"));
+      AbstractPropertyMetaData pmd2 = new AbstractPropertyMetaData("setterList", lmd);
+      properties.add(pmd2);
       
       return (SimpleBean) instantiate(controller, bmd);
    }

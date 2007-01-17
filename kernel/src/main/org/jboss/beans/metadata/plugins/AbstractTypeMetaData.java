@@ -28,8 +28,10 @@ import org.jboss.beans.metadata.spi.BeanMetaData;
 import org.jboss.beans.metadata.spi.MetaDataVisitor;
 import org.jboss.beans.metadata.spi.MetaDataVisitorNode;
 import org.jboss.beans.metadata.spi.PropertyMetaData;
-import org.jboss.dependency.spi.ControllerState;
+import org.jboss.beans.info.spi.PropertyInfo;
+import org.jboss.beans.info.spi.BeanInfo;
 import org.jboss.dependency.spi.ControllerContext;
+import org.jboss.dependency.spi.ControllerState;
 import org.jboss.dependency.spi.dispatch.AttributeDispatchContext;
 import org.jboss.kernel.plugins.config.Configurator;
 import org.jboss.kernel.spi.config.KernelConfigurator;
@@ -108,7 +110,7 @@ public abstract class AbstractTypeMetaData extends AbstractValueMetaData
 
    public void initialVisit(MetaDataVisitor visitor)
    {
-      controller = (KernelController) visitor.getControllerContext().getController();
+      controller = (KernelController)visitor.getControllerContext().getController();
       configurator = visitor.getControllerContext().getKernel().getConfigurator();
       preparePreinstantiatedLookup(visitor);
       visitor.initialVisit(this);
@@ -123,12 +125,12 @@ public abstract class AbstractTypeMetaData extends AbstractValueMetaData
       {
          if (parent instanceof PropertyMetaData)
          {
-            PropertyMetaData pmd = (PropertyMetaData) parent;
+            PropertyMetaData pmd = (PropertyMetaData)parent;
             propertyName = pmd.getName();
             Object gp = visitorNodes.peek();
             if (gp instanceof BeanMetaData)
             {
-               BeanMetaData bmd = (BeanMetaData) gp;
+               BeanMetaData bmd = (BeanMetaData)gp;
                beanName = bmd.getName();
             }
          }
@@ -150,12 +152,21 @@ public abstract class AbstractTypeMetaData extends AbstractValueMetaData
             ControllerContext context = controller.getContext(beanName, ControllerState.INSTANTIATED);
             if (context != null && context instanceof AttributeDispatchContext)
             {
-               result = ((AttributeDispatchContext)context).get(propertyName);
+               Object target = context.getTarget();
+               if (target != null)
+               {
+                  BeanInfo beanInfo = configurator.getBeanInfo(target.getClass());
+                  PropertyInfo pi = Configurator.resolveProperty(log.isTraceEnabled(), beanInfo, propertyName);
+                  if (pi.getGetter() != null)
+                  {
+                     result = ((AttributeDispatchContext)context).get(propertyName);
+                  }
+               }
             }
          }
          catch (Throwable t)
          {
-            log.warn("Exception in preinstantiated lookup for: "+beanName+"."+propertyName+", "+ t);
+            log.warn("Exception in preinstantiated lookup for: " + beanName + "." + propertyName + ", " + t);
          }
          if (result != null && expected != null && expected.isAssignableFrom(result.getClass()) == false)
             throw new ClassCastException(result.getClass() + " is not a " + expected.getName());

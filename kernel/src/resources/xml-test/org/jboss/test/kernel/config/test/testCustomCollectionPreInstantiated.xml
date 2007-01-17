@@ -14,5 +14,10 @@
             <value>string1</value>
          </collection>
       </property>
+      <property name="setterCollection">
+         <collection elementClass="java.lang.String">
+            <value>element</value>
+         </collection>
+      </property>
    </bean>
 </deployment>

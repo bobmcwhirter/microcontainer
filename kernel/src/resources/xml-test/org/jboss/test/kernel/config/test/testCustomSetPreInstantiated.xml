@@ -8,11 +8,16 @@
          <parameter class="java.lang.String">string1</parameter>
       </constructor>
       <property name="preInstantiatedSet">
-         <collection class="org.jboss.test.kernel.config.support.CustomSet" elementClass="java.lang.String">
+         <set class="org.jboss.test.kernel.config.support.CustomSet" elementClass="java.lang.String">
             <value>string2</value>
             <value>string2</value>
             <value>string1</value>
-         </collection>
+         </set>
+      </property>
+      <property name="setterSet">
+         <set elementClass="java.lang.String">
+            <value>element</value>
+         </set>
       </property>
    </bean>
 </deployment>

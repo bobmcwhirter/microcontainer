@@ -13,5 +13,10 @@
             <entry><key>string2</key><value>string1</value></entry>
          </map>
       </property>
+      <property name="setterMap">
+         <map keyClass="java.lang.String" valueClass="java.lang.String">
+            <entry><key>justKey</key><value>justValue</value></entry>
+         </map>
+      </property>
    </bean>
 </deployment>

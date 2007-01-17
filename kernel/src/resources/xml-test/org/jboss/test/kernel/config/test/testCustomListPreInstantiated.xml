@@ -8,11 +8,16 @@
          <parameter class="java.lang.String">string1</parameter>
       </constructor>
       <property name="preInstantiatedList">
-         <collection class="org.jboss.test.kernel.config.support.CustomList" elementClass="java.lang.String">
+         <list class="org.jboss.test.kernel.config.support.CustomList" elementClass="java.lang.String">
             <value>string2</value>
             <value>string2</value>
             <value>string1</value>
-         </collection>
+         </list>
+      </property>
+      <property name="setterList">
+         <list elementClass="java.lang.String">
+            <value>element</value>
+         </list>
       </property>
    </bean>
 </deployment>

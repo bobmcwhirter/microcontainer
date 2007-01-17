@@ -249,6 +249,10 @@ public class SetTestCase extends AbstractKernelConfigTest
       expected.add(string2);
       expected.add(string1);
       assertEquals(expected, result);
+
+      Set setter = bean.setterSet;
+      assertNotNull(setter);
+      assertFalse("Empty setterSet", setter.isEmpty());
    }
 
    protected SimpleBean customSetPreInstantiated() throws Throwable
@@ -274,6 +278,12 @@ public class SetTestCase extends AbstractKernelConfigTest
       AbstractPropertyMetaData pmd = new AbstractPropertyMetaData("preInstantiatedSet", smd);
       properties.add(pmd);
       
+      AbstractSetMetaData lmd = new AbstractSetMetaData();
+      lmd.setElementType("java.lang.String");
+      lmd.add(new StringValueMetaData("element"));
+      AbstractPropertyMetaData pmd2 = new AbstractPropertyMetaData("setterSet", lmd);
+      properties.add(pmd2);
+
       return (SimpleBean) instantiate(controller, bmd);
    }
 

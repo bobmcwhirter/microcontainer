@@ -250,6 +250,10 @@ public class CollectionTestCase extends AbstractKernelConfigTest
       expected.add(string2);
       expected.add(string1);
       assertEquals(expected, result);
+
+      Collection setter = bean.setterCollection;
+      assertNotNull(setter);
+      assertFalse("Empty setterCollection", setter.isEmpty());
    }
 
    protected SimpleBean customCollectionPreInstantiated() throws Throwable
@@ -275,6 +279,12 @@ public class CollectionTestCase extends AbstractKernelConfigTest
       AbstractPropertyMetaData pmd = new AbstractPropertyMetaData("preInstantiatedCollection", smd);
       properties.add(pmd);
       
+      AbstractListMetaData lmd = new AbstractListMetaData();
+      lmd.setElementType("java.lang.String");
+      lmd.add(new StringValueMetaData("element"));
+      AbstractPropertyMetaData pmd2 = new AbstractPropertyMetaData("setterCollection", lmd);
+      properties.add(pmd2);
+
       return (SimpleBean) instantiate(controller, bmd);
    }
 

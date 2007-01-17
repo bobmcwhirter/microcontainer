@@ -240,6 +240,10 @@ public class MapTestCase extends AbstractKernelConfigTest
       expected.put(string1, string2);
       expected.put(string2, string1);
       assertEquals(expected, result);
+
+      Map setter = bean.setterMap;
+      assertNotNull(setter);
+      assertFalse("Empty setterMap", setter.isEmpty());
    }
 
    protected SimpleBean customMapPreInstantiated() throws Throwable
@@ -265,6 +269,13 @@ public class MapTestCase extends AbstractKernelConfigTest
       AbstractPropertyMetaData pmd = new AbstractPropertyMetaData("preInstantiatedMap", smd);
       properties.add(pmd);
       
+      AbstractMapMetaData lmd = new AbstractMapMetaData();
+      lmd.setKeyType("java.lang.String");
+      lmd.setValueType("java.lang.String");
+      lmd.put(new StringValueMetaData("justKey"), new StringValueMetaData("justValue"));
+      AbstractPropertyMetaData pmd2 = new AbstractPropertyMetaData("setterMap", lmd);
+      properties.add(pmd2);
+
       return (SimpleBean) instantiate(controller, bmd);
    }
 

@@ -151,7 +151,21 @@ public class SimpleBean implements Serializable
    private String overloadedProperty;
 
    private Alphabet enumProperty = Alphabet.A;
-   
+
+   // public just for testing purpose
+
+   /** Just a setter for this collection */
+   public Collection setterCollection;
+
+   /** Just a setter for this set */
+   public Set setterSet;
+
+   /** Just a setter for this list */
+   public List setterList;
+
+   /** Just a setter for this map */
+   public Map setterMap;
+
    // Static --------------------------------------------------------
 
    // Constructors --------------------------------------------------
@@ -629,5 +643,25 @@ public class SimpleBean implements Serializable
    public void setEnumProperty(Alphabet enumProperty)
    {
       this.enumProperty = enumProperty;
+   }
+
+   public void setSetterCollection(Collection setterCollection)
+   {
+      this.setterCollection = setterCollection;
+   }
+
+   public void setSetterSet(Set setterSet)
+   {
+      this.setterSet = setterSet;
+   }
+
+   public void setSetterList(List setterList)
+   {
+      this.setterList = setterList;
+   }
+
+   public void setSetterMap(Map setterMap)
+   {
+      this.setterMap = setterMap;
    }
 }
