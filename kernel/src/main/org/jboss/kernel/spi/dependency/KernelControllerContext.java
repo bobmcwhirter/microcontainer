@@ -27,7 +27,7 @@ import org.jboss.kernel.Kernel;
 import org.jboss.kernel.spi.registry.KernelRegistryEntry;
 import org.jboss.metadata.spi.MetaData;
 import org.jboss.metadata.spi.scope.ScopeKey;
-import org.jboss.dependency.spi.DispatchContext;
+import org.jboss.dependency.spi.dispatch.InvokeDispatchContext;
 
 /**
  * Information about dependencies and state.
@@ -35,7 +35,7 @@ import org.jboss.dependency.spi.DispatchContext;
  * @author <a href="adrian@jboss.com">Adrian Brock</a>
  * @version $Revision$
  */
-public interface KernelControllerContext extends KernelRegistryEntry, DispatchContext
+public interface KernelControllerContext extends KernelRegistryEntry, InvokeDispatchContext
 {
    /**
     * Get the kernel

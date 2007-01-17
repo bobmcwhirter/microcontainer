@@ -374,6 +374,8 @@ public class Configurator extends Config
 
       JoinpointFactory jpf = info.getBeanInfo().getJoinpointFactory();
       MethodInfo minfo = info.getGetter();
+      if (minfo == null)
+         throw new IllegalArgumentException("Property is write only: " + info);
       return getMethodJoinpoint(null, jpf, minfo.getName(), null, null);
    }
 
@@ -650,6 +652,8 @@ public class Configurator extends Config
 
       JoinpointFactory jpf = info.getBeanInfo().getJoinpointFactory();
       MethodInfo minfo = info.getSetter();
+      if (minfo == null)
+         throw new IllegalArgumentException("Property is read only: " + info);
       String[] parameterTypes = getParameterTypes(trace, minfo.getParameterTypes());
       return getMethodJoinpoint(null, jpf, minfo.getName(), parameterTypes, new Object[] { null });
    }
@@ -697,13 +701,18 @@ public class Configurator extends Config
       Set<PropertyInfo> properties = info.getProperties();
       if (properties != null && properties.size() > 0)
       {
+         ClassInfo classInfo = info.getClassInfo();
+         TypeInfoFactory tif = classInfo.getTypeInfoFactory();
+         if (tif == null)
+            throw new IllegalArgumentException("TypeInfoFactory is null: " + classInfo);
+
          for (PropertyInfo ainfo : properties)
          {
             if (name.equals(ainfo.getName()))
             {
                String[] typeNames = {type};
                TypeInfo[] typeInfos = {ainfo.getType()};
-               if (equals(typeNames, typeInfos) || isAssignable(cl, typeNames, typeInfos) || isProgression(cl, typeNames, typeInfos))
+               if (equals(typeNames, typeInfos) || isAssignable(tif, cl, typeNames, typeInfos))
                {
                   return ainfo;
                }
@@ -883,9 +892,6 @@ public class Configurator extends Config
    /**
     * Test whether type names can be assigned to type infos
     *
-    * TODO isAssignableFrom should be part of the TypeInfo api
-    *      with comparisons made between TypeInfos
-    *
     * @param cl bean classloader
     * @param typeNames the type names
     * @param typeInfos the type infos
@@ -893,7 +899,7 @@ public class Configurator extends Config
     * @throws Throwable for any error
     */
    @SuppressWarnings("unchecked")
-   public static boolean isAssignable(ClassLoader cl, String[] typeNames, TypeInfo[] typeInfos) throws Throwable
+   public static boolean isAssignable(TypeInfoFactory tif, ClassLoader cl, String[] typeNames, TypeInfo[] typeInfos) throws Throwable
    {
       if (cl == null)
          return false;
@@ -905,49 +911,13 @@ public class Configurator extends Config
       {
          if (typeNames[i] != null)
          {
-            // TODO - use typeInfos[i].isAssignableFrom(otherTypeInfo)
-            Class clazz = Class.forName(typeNames[i], true, cl);
-            if (typeInfos[i].getType().isAssignableFrom(clazz) == false)
+            if (typeInfos[i].isAssignableFrom(tif.getTypeInfo(typeNames[i], cl)) == false)
             {
                return false;
             }
          }
       }
       return true;
-   }
-
-   /**
-    * Test whether type names can progress to type infos
-    *
-    * @param cl bean classloader
-    * @param typeNames the type names
-    * @param typeInfos the type infos
-    * @return true when we can use progression
-    * @throws Throwable for any error
-    */
-   public static boolean isProgression(ClassLoader cl, String[] typeNames, TypeInfo[] typeInfos) throws Throwable
-   {
-      if (cl == null)
-         return false;
-
-      if (simpleCheck(typeNames, typeInfos) == false)
-         return false;
-
-      // convertor
-      ProgressionConvertor convertor = ProgressionConvertorFactory.getInstance().getConvertor();
-
-      for (int i = 0; i < typeNames.length; ++i)
-      {
-         if (typeNames[i] != null)
-         {
-            Class clazz = Class.forName(typeNames[i], true, cl);
-            if (convertor.canProgress(typeInfos[i].getType(), clazz) == false)
-            {
-               return false;
-            }
-         }
-      }
-      return false;
    }
 
    /**

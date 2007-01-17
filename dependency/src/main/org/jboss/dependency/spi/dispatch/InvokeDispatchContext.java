@@ -19,7 +19,7 @@
 * Software Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA
 * 02110-1301 USA, or see the FSF site: http://www.fsf.org.
 */
-package org.jboss.dependency.spi;
+package org.jboss.dependency.spi.dispatch;
 
 /**
  * The API similar to the DynamicMBean API
@@ -30,26 +30,8 @@ package org.jboss.dependency.spi;
  *
  * @author <a href="mailto:ales.justin@jboss.com">Ales Justin</a>
  */
-public interface DispatchContext extends ControllerContext
+public interface InvokeDispatchContext extends AttributeDispatchContext
 {
-   /**
-    * Getter property / attribute
-    *
-    * @param name
-    * @return target's property / attribute instance
-    * @throws Throwable
-    */
-   Object get(String name) throws Throwable;
-
-   /**
-    * Setter property / attribute
-    *
-    * @param name
-    * @param value set target's property / attribute instance
-    * @throws Throwable
-    */
-   void set(String name, Object value) throws Throwable;
-
    /**
     * Invoke method / operation
     *
@@ -62,6 +44,13 @@ public interface DispatchContext extends ControllerContext
    Object invoke(String name, Object parameters[], String[] signature) throws Throwable;
 
    /**
+    * Get any target
+    *
+    * @return the target
+    */
+   Object getTarget();
+
+   /**
     * Get context's classloader.
     * Used when determining type info for parameter and
     * getting the parameter actual value.
@@ -70,5 +59,4 @@ public interface DispatchContext extends ControllerContext
     * @throws Throwable
     */
    ClassLoader getClassLoader() throws Throwable;
-
 }

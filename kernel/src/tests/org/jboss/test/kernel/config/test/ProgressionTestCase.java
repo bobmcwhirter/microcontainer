@@ -24,6 +24,7 @@ package org.jboss.test.kernel.config.test;
 import junit.framework.Test;
 import org.jboss.beans.metadata.plugins.AbstractBeanMetaData;
 import org.jboss.beans.metadata.plugins.AbstractPropertyMetaData;
+import org.jboss.beans.metadata.plugins.StringValueMetaData;
 import org.jboss.kernel.Kernel;
 import org.jboss.kernel.spi.config.KernelConfigurator;
 import org.jboss.test.kernel.config.support.SimpleBean;
@@ -66,9 +67,15 @@ public class ProgressionTestCase extends AbstractKernelConfigTest
       KernelConfigurator configurator = kernel.getConfigurator();
 
       AbstractBeanMetaData bmd = new AbstractBeanMetaData(SimpleBean.class.getName());
-      bmd.addProperty(new AbstractPropertyMetaData("anint", 123.456));
-      bmd.addProperty(new AbstractPropertyMetaData("AShort", 987.6543));
-      bmd.addProperty(new AbstractPropertyMetaData("AFloat", 314159));
+      AbstractPropertyMetaData prop1 = new AbstractPropertyMetaData("anint", 123.456);
+      bmd.addProperty(prop1);
+      StringValueMetaData svmd = new StringValueMetaData("987.6543");
+      svmd.setType("java.lang.Double");
+      svmd.setConfigurator(configurator);
+      AbstractPropertyMetaData prop2 = new AbstractPropertyMetaData("AShort", svmd);
+      bmd.addProperty(prop2);
+      AbstractPropertyMetaData prop3 = new AbstractPropertyMetaData("AFloat", 314159);
+      bmd.addProperty(prop3);
 
       return (SimpleBean) instantiateAndConfigure(configurator, bmd);
    }

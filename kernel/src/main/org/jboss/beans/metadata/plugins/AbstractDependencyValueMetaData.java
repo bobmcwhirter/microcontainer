@@ -26,7 +26,7 @@ import org.jboss.dependency.plugins.AbstractDependencyItem;
 import org.jboss.dependency.spi.ControllerContext;
 import org.jboss.dependency.spi.ControllerState;
 import org.jboss.dependency.spi.DependencyItem;
-import org.jboss.dependency.spi.DispatchContext;
+import org.jboss.dependency.spi.dispatch.AttributeDispatchContext;
 import org.jboss.kernel.spi.dependency.KernelController;
 import org.jboss.kernel.spi.dependency.KernelControllerContext;
 import org.jboss.reflect.spi.TypeInfo;
@@ -144,10 +144,10 @@ public class AbstractDependencyValueMetaData extends AbstractValueMetaData
       if (context == null)
          throw new Error("Should not be here - dependency failed! " + this);
       Object result = context.getTarget();
-      if (property != null && context instanceof DispatchContext)
+      if (property != null && context instanceof AttributeDispatchContext)
       {
-         DispatchContext dc = (DispatchContext) context;
-         result = dc.get(property);
+         AttributeDispatchContext adc = (AttributeDispatchContext) context;
+         result = adc.get(property);
       }
       return info != null ? info.convertValue(result) : result;
    }

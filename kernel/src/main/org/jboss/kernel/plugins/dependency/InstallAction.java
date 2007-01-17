@@ -25,7 +25,8 @@ import java.util.List;
 
 import org.jboss.beans.metadata.spi.BeanMetaData;
 import org.jboss.beans.metadata.spi.InstallMetaData;
-import org.jboss.dependency.spi.DispatchContext;
+import org.jboss.dependency.spi.ControllerContext;
+import org.jboss.dependency.spi.dispatch.InvokeDispatchContext;
 import org.jboss.kernel.Kernel;
 import org.jboss.kernel.spi.config.KernelConfigurator;
 import org.jboss.kernel.spi.dependency.InstallKernelControllerContextAware;
@@ -60,10 +61,17 @@ public class InstallAction extends KernelControllerContextAction
          for (int i = 0; i < installs.size(); ++i)
          {
             InstallMetaData install = (InstallMetaData) installs.get(i);
-            DispatchContext target = context;
+            ControllerContext target = context;
             if (install.getBean() != null)
-               target = (DispatchContext) controller.getContext(install.getBean(), install.getDependentState());
-            invoke(configurator, target, install.getMethodName(), install.getParameters());
+               target = controller.getContext(install.getBean(), install.getDependentState());
+            if (target instanceof InvokeDispatchContext)
+            {
+               invoke(configurator, (InvokeDispatchContext)target, install.getMethodName(), install.getParameters());
+            }
+            else
+            {
+               throw new IllegalArgumentException("Cannot install, context " + target + " does not implement InvokeDispatchContext");
+            }
          }
       }
    }
@@ -88,23 +96,30 @@ public class InstallAction extends KernelControllerContextAction
          for (int i = uninstalls.size()-1; i >= 0; --i)
          {
             InstallMetaData uninstall = (InstallMetaData) uninstalls.get(i);
-            DispatchContext target = context;
+            ControllerContext target = context;
             if (uninstall.getBean() != null)
             {
-               target = (DispatchContext) controller.getContext(uninstall.getBean(), uninstall.getDependentState());
+               target = controller.getContext(uninstall.getBean(), uninstall.getDependentState());
                if (target == null)
                {
                   log.warn("Ignoring uninstall action on target in incorrect state " + uninstall.getBean());
                   continue;
                }
             }
-            try
+            if (target instanceof InvokeDispatchContext)
             {
-               invoke(configurator, target, uninstall.getMethodName(), uninstall.getParameters());
+               try
+               {
+                  invoke(configurator, (InvokeDispatchContext)target, uninstall.getMethodName(), uninstall.getParameters());
+               }
+               catch (Throwable t)
+               {
+                  log.warn("Ignoring uninstall action on target " + uninstall, t);
+               }
             }
-            catch (Throwable t)
+            else
             {
-               log.warn("Ignoring uninstall action on target " + uninstall, t);
+               throw new IllegalArgumentException("Cannot uninstall, context " + target + " does not implement InvokeDispatchContext");
             }
          }
       }

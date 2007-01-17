@@ -22,16 +22,13 @@
 package org.jboss.kernel.plugins.dependency;
 
 import java.security.*;
-import java.util.ArrayList;
 import java.util.List;
 
-import org.jboss.beans.metadata.plugins.AbstractParameterMetaData;
 import org.jboss.beans.metadata.spi.BeanMetaData;
 import org.jboss.beans.metadata.spi.ParameterMetaData;
-import org.jboss.beans.metadata.spi.PropertyMetaData;
 import org.jboss.dependency.plugins.spi.action.ControllerContextAction;
 import org.jboss.dependency.spi.ControllerContext;
-import org.jboss.dependency.spi.DispatchContext;
+import org.jboss.dependency.spi.dispatch.InvokeDispatchContext;
 import org.jboss.joinpoint.spi.Joinpoint;
 import org.jboss.kernel.plugins.config.Configurator;
 import org.jboss.kernel.spi.config.KernelConfigurator;
@@ -207,7 +204,7 @@ public class KernelControllerContextAction implements ControllerContextAction
                awareInterface.equals(KernelControllerContextAware.class) == false &&
                awareInterface.isAssignableFrom(target.getClass()))
          {
-            System.out.println("-----> " + context.getName() + " " + target.getClass() + " " + context.getState());
+            //System.out.println("-----> " + context.getName() + " " + target.getClass() + " " + context.getState());
             ((KernelControllerContextAware)target).setKernelControllerContext(context);
          }
       }
@@ -252,14 +249,7 @@ public class KernelControllerContextAction implements ControllerContextAction
 
    // DispatchContext util methods
 
-   protected void set(KernelConfigurator configurator, DispatchContext context, PropertyMetaData property) throws Throwable
-   {
-      List<ParameterMetaData> params = new ArrayList<ParameterMetaData>(1);
-      params.add(new AbstractParameterMetaData(property.getType(), property.getValue()));
-      invoke(configurator, context, property.getName(), params);
-   }
-
-   protected Object invoke(KernelConfigurator configurator, DispatchContext context, String name, List<ParameterMetaData> params) throws Throwable
+   protected Object invoke(KernelConfigurator configurator, InvokeDispatchContext context, String name, List<ParameterMetaData> params) throws Throwable
    {
       String[] signature;
       Object[] parameters;

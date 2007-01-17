@@ -29,7 +29,8 @@ import org.jboss.beans.metadata.spi.MetaDataVisitor;
 import org.jboss.beans.metadata.spi.MetaDataVisitorNode;
 import org.jboss.beans.metadata.spi.PropertyMetaData;
 import org.jboss.dependency.spi.ControllerState;
-import org.jboss.dependency.spi.DispatchContext;
+import org.jboss.dependency.spi.ControllerContext;
+import org.jboss.dependency.spi.dispatch.AttributeDispatchContext;
 import org.jboss.kernel.plugins.config.Configurator;
 import org.jboss.kernel.spi.config.KernelConfigurator;
 import org.jboss.kernel.spi.dependency.KernelController;
@@ -146,8 +147,11 @@ public abstract class AbstractTypeMetaData extends AbstractValueMetaData
       {
          try
          {
-            DispatchContext context = (DispatchContext) controller.getContext(beanName, ControllerState.INSTANTIATED);
-            result = context.get(propertyName);
+            ControllerContext context = controller.getContext(beanName, ControllerState.INSTANTIATED);
+            if (context != null && context instanceof AttributeDispatchContext)
+            {
+               result = ((AttributeDispatchContext)context).get(propertyName);
+            }
          }
          catch (Throwable t)
          {

@@ -85,6 +85,13 @@ public class StringValueMetaData extends AbstractTypeMetaData
       if (typeInfo == null)
          throw new IllegalArgumentException("Unable to determine type for value: " + value);
 
+      // we convert it with more precise type
+      // and then check for progression, ...
+      if (typeInfo != info && info != null)
+      {
+         Object typeValue = typeInfo.convertValue(value);
+         return info.convertValue(typeValue);
+      }
       return typeInfo.convertValue(value);
    }
 
