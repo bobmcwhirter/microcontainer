@@ -35,6 +35,7 @@ public class SimpleBean
 {
    /** Constructor used */
    private String constructorUsed;
+   private String factoryUsed;
 
    /** Object */
    private Object anObject;
@@ -111,10 +112,79 @@ public class SimpleBean
    {
       constructorUsed = "()";
    }
+   public SimpleBean(String aString)
+   {
+      constructorUsed = "(String)";
+      this.aString = aString;
+   }
+
+   public static SimpleBean getInstance(Object anObject, String string, Byte byte1,
+         Boolean boolean1, Character character, Short short1,
+         Integer anInt, Long long1, Float float1, Double double1,
+         Date date, BigDecimal bigDecimal, BigInteger bigInteger,
+         byte abyte, boolean aboolean, char achar, short ashort,
+         int anint2, long along, float afloat, double adouble,
+         Number number, String overloadedProperty, String xyz, String abc)
+   {
+      SimpleBean bean = new SimpleBean(anObject, string, byte1,
+            boolean1, character, short1,
+            anInt, long1, float1, double1,
+            date, bigDecimal, bigInteger,
+            abyte, aboolean, achar, ashort,
+            anint2, along, afloat, adouble,
+            number, overloadedProperty, xyz, abc);
+      bean.factoryUsed = "getInstance(<all-fields>)";
+      return bean;
+   }
+
+   public SimpleBean(Object anObject, String string, Byte byte1,
+         Boolean boolean1, Character character, Short short1,
+         Integer anInt, Long long1, Float float1, Double double1,
+         Date date, BigDecimal bigDecimal, BigInteger bigInteger,
+         byte abyte, boolean aboolean, char achar, short ashort,
+         int anint2, long along, float afloat, double adouble,
+         Number number, String overloadedProperty, String xyz, String abc)
+   {
+      constructorUsed = "(<all-fields>)";
+      this.anObject = anObject;
+      aString = string;
+      aByte = byte1;
+      aBoolean = boolean1;
+      aCharacter = character;
+      aShort = short1;
+      this.anInt = anInt;
+      aLong = long1;
+      aFloat = float1;
+      aDouble = double1;
+      aDate = date;
+      aBigDecimal = bigDecimal;
+      aBigInteger = bigInteger;
+      this.abyte = abyte;
+      this.aboolean = aboolean;
+      this.achar = achar;
+      this.ashort = ashort;
+      anint = anint2;
+      this.along = along;
+      this.afloat = afloat;
+      this.adouble = adouble;
+      aNumber = number;
+      this.overloadedProperty = overloadedProperty;
+      this.xyz = xyz;
+      this.abc = abc;
+   }
 
    public String getConstructorUsed()
    {
       return constructorUsed;
+   }
+
+   public String getFactoryUsed()
+   {
+      return factoryUsed;
+   }
+   public void setFactoryUsed(String factoryUsed)
+   {
+      this.factoryUsed = factoryUsed;
    }
 
    public Object getAnObject()

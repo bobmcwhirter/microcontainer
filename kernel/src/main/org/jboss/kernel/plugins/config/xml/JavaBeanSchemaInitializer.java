@@ -23,20 +23,19 @@ package org.jboss.kernel.plugins.config.xml;
 
 import javax.xml.namespace.NamespaceContext;
 import javax.xml.namespace.QName;
-import java.security.AccessController;
-import java.security.PrivilegedExceptionAction;
 
 import org.jboss.beans.info.spi.BeanInfo;
 import org.jboss.beans.info.spi.PropertyInfo;
 import org.jboss.kernel.plugins.config.Configurator;
-import org.jboss.kernel.plugins.config.property.PropertyKernelConfig;
-import org.jboss.kernel.spi.config.KernelConfig;
-import org.jboss.reflect.plugins.introspection.IntrospectionTypeInfoFactory;
+import org.jboss.kernel.plugins.config.xml.Common.Holder;
+import org.jboss.kernel.plugins.config.xml.Common.Property;
 import org.jboss.reflect.spi.MethodInfo;
-import org.jboss.reflect.spi.TypeInfo;
-import org.jboss.reflect.spi.TypeInfoFactory;
-import org.jboss.util.propertyeditor.PropertyEditors;
-import org.jboss.xb.binding.sunday.unmarshalling.*;
+import org.jboss.xb.binding.sunday.unmarshalling.DefaultElementHandler;
+import org.jboss.xb.binding.sunday.unmarshalling.DefaultElementInterceptor;
+import org.jboss.xb.binding.sunday.unmarshalling.ElementBinding;
+import org.jboss.xb.binding.sunday.unmarshalling.SchemaBinding;
+import org.jboss.xb.binding.sunday.unmarshalling.SchemaBindingInitializer;
+import org.jboss.xb.binding.sunday.unmarshalling.TypeBinding;
 import org.xml.sax.Attributes;
 
 /**
@@ -47,11 +46,6 @@ import org.xml.sax.Attributes;
  */
 public class JavaBeanSchemaInitializer implements SchemaBindingInitializer
 {
-   /** The kernel config */
-   private static final KernelConfig config;
-   /** The type info factory */
-   protected static final TypeInfoFactory typeInfoFactory = new IntrospectionTypeInfoFactory();
-
    /** The namespace */
    private static final String JAVABEAN_NS = "urn:jboss:javabean:1.0";
 
@@ -66,26 +60,7 @@ public class JavaBeanSchemaInitializer implements SchemaBindingInitializer
 
    static
    {
-      try
-      {
-         config = AccessController.doPrivileged(new PrivilegedExceptionAction<KernelConfig>()
-         {
-            public KernelConfig run() throws Exception
-            {
-               return new PropertyKernelConfig(System.getProperties());
-            }
-         });
-      }
-      catch (RuntimeException e)
-      {
-         throw e;
-      }
-      catch (Exception e)
-      {
-         throw new RuntimeException("Error getting configuration", e);
-      }
-      
-      PropertyEditors.init();
+      KernelConfigInit.init();
    }
 
    public SchemaBinding init(SchemaBinding schema)
@@ -116,8 +91,8 @@ public class JavaBeanSchemaInitializer implements SchemaBindingInitializer
             
             try
             {
-               BeanInfo beanInfo = config.getBeanInfo(className, Thread.currentThread().getContextClassLoader());
-               Object object = Configurator.instantiate(config, beanInfo, null);
+               BeanInfo beanInfo = KernelConfigInit.config.getBeanInfo(className, Thread.currentThread().getContextClassLoader());
+               Object object = Configurator.instantiate(KernelConfigInit.config, beanInfo, null);
                holder.setValue(object);
             }
             catch (RuntimeException e)
@@ -156,8 +131,8 @@ public class JavaBeanSchemaInitializer implements SchemaBindingInitializer
             Object value = prop.getValue();
             try
             {
-               PropertyInfo info = getProperty(parentValue, property, prop.getType());
-               value = convertValue(info, prop.getType(), value);
+               PropertyInfo info = Common.getProperty(parentValue, property, prop.getType());
+               value = Common.convertValue(info, prop.getType(), value);
                method = info.getSetter();
                method.invoke(parentValue, new Object[] { value });
             }
@@ -203,77 +178,4 @@ public class JavaBeanSchemaInitializer implements SchemaBindingInitializer
       return schema;
    }
    
-   private PropertyInfo getProperty(Object parent, String property, String type) throws Throwable
-   {
-      BeanInfo beanInfo = config.getBeanInfo(parent.getClass());
-      ClassLoader cl = Thread.currentThread().getContextClassLoader();
-      return Configurator.resolveProperty(false, beanInfo, cl, property, type);
-   }
-
-   /**
-    * Convert a value
-    * 
-    * @param info the property info
-    * @param override the override class
-    * @param value the value
-    * @return the converted value
-    * @throws Throwable for any error
-    */
-   private Object convertValue(PropertyInfo info, String override, Object value) throws Throwable
-   {
-      TypeInfo type = info.getType();
-      if (override != null)
-         type = typeInfoFactory.getTypeInfo(override, null);
-      return type.convertValue(value);
-   }
-   
-   public static class Holder
-   {
-      private Object object;
-      
-      public Holder()
-      {
-      }
-      
-      public Object getValue()
-      {
-         return object;
-      }
-      
-      public void setValue(Object object)
-      {
-         this.object = object;
-      }
-   }
-   
-   public static class Property extends Holder
-   {
-      private String property;
-      
-      private String type;
-      
-      public Property()
-      {
-      }
-      
-      public String getProperty()
-      {
-         return property;
-      }
-      
-      public void setProperty(String property)
-      {
-         this.property = property;
-      }
-      
-      public String getType()
-      {
-         return type;
-      }
-      
-      public void setType(String type)
-      {
-         this.type = type;
-      }
-   }
 }

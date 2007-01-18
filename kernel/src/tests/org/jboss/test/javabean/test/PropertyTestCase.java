@@ -65,11 +65,80 @@ public class PropertyTestCase extends AbstractJavaBeanTest
 
    public void testConfigure() throws Exception
    {
-      // tmp format
-      System.setProperty("org.jboss.util.propertyeditor.DateEditor.format", "MMM d HH:mm:ss z yyyy");
       // check bean
       SimpleBean bean = unmarshal("TestConfigure.xml", SimpleBean.class);
-      assertEquals("()", bean.getConstructorUsed());
+      validateFields("()", null, bean);
+   }
+
+   public void testConfigure20() throws Exception
+   {
+      // check bean
+      SimpleBean bean = unmarshal("TestConfigure20.xml", SimpleBean.class);
+      validateFields("()", null, bean);
+   }
+
+   public void testConfigure20WithCtor() throws Exception
+   {
+      // check bean
+      SimpleBean bean = unmarshal("TestConfigure20WithCtor.xml", SimpleBean.class);
+      validateFields("(<all-fields>)", null, bean);
+   }
+
+   public void testConfigure20WithCtorFactory() throws Exception
+   {
+      // check bean
+      SimpleBean bean = unmarshal("TestConfigure20WithCtorFactory.xml", SimpleBean.class);
+      validateFields("(<all-fields>)", "getInstance(<all-fields>)", bean);
+   }
+
+   public void testConfigure20WithCtorExplicitFactoryClass() throws Exception
+   {
+      // check bean
+      SimpleBean bean = unmarshal("TestConfigure20WithCtorExplicitFactoryClass.xml", SimpleBean.class);
+      validateFields("()", "SimpleBeanFactory.newInstance()", bean);
+   }
+   public void testConfigure20WithCtorExplicitFactoryClassAndParams() throws Exception
+   {
+      // check bean
+      SimpleBean bean = unmarshal("TestConfigure20WithCtorExplicitFactoryClassAndParams.xml", SimpleBean.class);
+      validateFields("(<all-fields>)", "SimpleBeanFactory.newInstance(<all-fields>)", bean);
+   }
+
+
+   /**
+    * Validate the JavaBean property name introspection
+    * @throws Exception
+    */
+   public void testJavaBeanMatching() throws Exception
+   {
+      BeanInfo info = Introspector.getBeanInfo(SimpleBean.class);
+      PropertyDescriptor[] props = info.getPropertyDescriptors();
+      HashMap<String, PropertyDescriptor> propMap = new HashMap<String, PropertyDescriptor>();
+      for(PropertyDescriptor pd : props)
+      {
+         propMap.put(pd.getName(), pd);
+      }
+      assertNotNull("Has XYZ", propMap.get("XYZ"));
+      assertNull("Does not have xYZ", propMap.get("xYZ"));
+   }
+
+   @Override
+   protected Object unmarshal(String name) throws Exception
+   {
+      // tmp format
+      System.setProperty("org.jboss.util.propertyeditor.DateEditor.format", "MMM d HH:mm:ss z yyyy");
+      // TODO Auto-generated method stub
+      return super.unmarshal(name);
+   }
+
+   protected void validateFields(String ctor, String factory, SimpleBean bean)
+   {
+      // check bean
+      assertEquals(ctor, bean.getConstructorUsed());
+      if( factory == null )
+         assertTrue("factory == null", bean.getFactoryUsed() == null);
+      else
+         assertEquals(factory, bean.getFactoryUsed());
 
       assertEquals(stringValue, bean.getAString());
       assertEquals(byteValue, bean.getAByte());
@@ -99,24 +168,7 @@ public class PropertyTestCase extends AbstractJavaBeanTest
       assertEquals(stringValue, bean.getOverloadedProperty());
       // An all uppercase property
       assertEquals("XYZ", bean.getXYZ());
-      assertEquals("abc", bean.getAbc());
-   }
-
-   /**
-    * Validate the JavaBean property name introspection
-    * @throws Exception
-    */
-   public void testJavaBeanMatching() throws Exception
-   {
-      BeanInfo info = Introspector.getBeanInfo(SimpleBean.class);
-      PropertyDescriptor[] props = info.getPropertyDescriptors();
-      HashMap<String, PropertyDescriptor> propMap = new HashMap<String, PropertyDescriptor>();
-      for(PropertyDescriptor pd : props)
-      {
-         propMap.put(pd.getName(), pd);
-      }
-      assertNotNull("Has XYZ", propMap.get("XYZ"));
-      assertNull("Does not have xYZ", propMap.get("xYZ"));
+      assertEquals("abc", bean.getAbc());      
    }
 
    protected Date createDate(String date)
