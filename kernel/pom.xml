@@ -140,8 +140,15 @@
 	</dependency>
 	
 	<!-- Test dependencies -->
-	
-   </dependencies>
- 
+  </dependencies>
+
+  <distributionManagement>
+    <repository>
+      <id>cvs-file-repository</id>
+      <url>file://${maven.cvs.root}</url>
+    </repository>
+  </distributionManagement>
+  
+
 </project>
 

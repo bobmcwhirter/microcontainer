@@ -64,18 +64,18 @@
           </configuration>
       </plugin>  
 
-       <plugin>
-         <groupId>org.apache.maven.plugins</groupId>
-         <artifactId>maven-jar-plugin</artifactId>
-         <configuration>
-           <archive>
-             <manifest>
-               <addDefaultSpecificationEntries>true</addDefaultSpecificationEntries>
-               <addDefaultImplementationEntries>true</addDefaultImplementationEntries>
-             </manifest>
-           </archive>
-         </configuration>
-       </plugin>
+      <plugin>
+        <groupId>org.apache.maven.plugins</groupId>
+        <artifactId>maven-jar-plugin</artifactId>
+        <configuration>
+          <archive>
+            <manifest>
+              <addDefaultSpecificationEntries>true</addDefaultSpecificationEntries>
+              <addDefaultImplementationEntries>true</addDefaultImplementationEntries>
+            </manifest>
+          </archive>
+        </configuration>
+      </plugin>
       <!-- define that we wish to create src jars -->
       <plugin>
         <artifactId>maven-source-plugin</artifactId>
@@ -131,6 +131,12 @@
 	</dependency>
    </dependencies>
   
-  
+  <distributionManagement>
+    <repository>
+      <id>cvs-file-repository</id>
+      <url>file://${maven.cvs.root}</url>
+    </repository>
+  </distributionManagement>
+    
 </project>
 

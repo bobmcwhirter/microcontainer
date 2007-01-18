@@ -1,14 +1,18 @@
 <!--
-A top level maven pom that expects a structure like: 
-  build/pom.xml
-  aop-mc-int/pom.xml
-  container/pom.xml
-  dependency/pom.xml
-  deployers/pom.xml
-  kernel/pom.xml
-  managed/pom.xml
-  metatype/pom.xml
-  spring-int/pom.xml
+  A top level maven pom that expects a structure like: 
+    build/pom.xml
+    aop-mc-int/pom.xml
+    container/pom.xml
+    dependency/pom.xml
+    deployers/pom.xml
+    kernel/pom.xml
+    managed/pom.xml
+    metatype/pom.xml
+    spring-int/pom.xml
+
+  To build this project maven 2 should be installed and in the system path.  From the command line
+  run "mvn install".
+  
 -->
 <project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"  
   xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
@@ -62,6 +66,7 @@ A top level maven pom that expects a structure like:
   
   <distributionManagement>
     <repository>
+      <!-- Copy the distribution jar file to a local copy of the maven repository, for use by other projects -->
       <id>cvs-file-repository</id>
       <url>file://${maven.cvs.root}</url>
     </repository>

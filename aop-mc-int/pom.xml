@@ -9,10 +9,10 @@
   <url>http://www.jboss.org</url>
   <description>JBoss Microcontainer</description>
   <licenses>
-   <license>
+    <license>
       <name>lgpl</name>
       <url>http://repository.jboss.com/licenses/lgpl.txt</url>
-   </license>
+    </license>
   </licenses>
   <organization>
     <name>JBoss Inc.</name>
@@ -32,7 +32,7 @@
   </repositories>
 
   <pluginRepositories>
-     <pluginRepository>
+      <pluginRepository>
         <id>jbosspluginrepo</id>
         <name>jboss plugin repository</name>
         <url>http://repository.jboss.com/maven2</url>
@@ -41,14 +41,14 @@
            <enabled>false</enabled>
            <updatePolicy>never</updatePolicy>
         </snapshots>
-     </pluginRepository>
+      </pluginRepository>
   </pluginRepositories>
   
   <build>
-     <sourceDirectory>src/main</sourceDirectory>
-     <testSourceDirectory>src/tests</testSourceDirectory>
-     <finalName>${artifactId}</finalName>
-     <plugins>
+    <sourceDirectory>src/main</sourceDirectory>
+    <testSourceDirectory>src/tests</testSourceDirectory>
+    <finalName>${artifactId}</finalName>
+    <plugins>
     
       <!-- define how we want compilation to take place
            here, we accept most of the defaults but say that we want the
@@ -58,24 +58,25 @@
         <artifactId>maven-compiler-plugin</artifactId>
         <version>2.0</version>
           <configuration>
-              <optimize>true</optimize>
-              <source>1.5</source>
-              <target>1.5</target>
+            <optimize>true</optimize>
+            <source>1.5</source>
+            <target>1.5</target>
           </configuration>
       </plugin>  
 
-       <plugin>
-         <groupId>org.apache.maven.plugins</groupId>
-         <artifactId>maven-jar-plugin</artifactId>
-         <configuration>
-           <archive>
-             <manifest>
-               <addDefaultSpecificationEntries>true</addDefaultSpecificationEntries>
-               <addDefaultImplementationEntries>true</addDefaultImplementationEntries>
-             </manifest>
-           </archive>
-         </configuration>
-       </plugin>
+      <plugin>
+        <groupId>org.apache.maven.plugins</groupId>
+        <artifactId>maven-jar-plugin</artifactId>
+        <configuration>
+          <archive>
+            <manifest>
+              <addDefaultSpecificationEntries>true</addDefaultSpecificationEntries>
+              <addDefaultImplementationEntries>true</addDefaultImplementationEntries>
+            </manifest>
+          </archive>
+        </configuration>
+      </plugin>
+      
       <!-- define that we wish to create src jars -->
       <plugin>
         <artifactId>maven-source-plugin</artifactId>
@@ -95,7 +96,6 @@
           <skip>true</skip>
         </configuration>
       </plugin>
-    
     </plugins>
   </build>
   <dependencies>
@@ -149,5 +149,12 @@
 	
   </dependencies>
   
+  <distributionManagement>
+    <repository>
+      <id>cvs-file-repository</id>
+      <url>file://${maven.cvs.root}</url>
+    </repository>
+  </distributionManagement>
+
 </project>
 
