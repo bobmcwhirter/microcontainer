@@ -70,10 +70,24 @@ public class ManagedPropertyImpl implements ManagedProperty
     * @throws IllegalArgumentException for null fields or
     *    missing Fields.NAME
     */
+   public ManagedPropertyImpl(String name)
+   {
+      this(null, new DefaultFieldsImpl(name));
+   }
+
+   /**
+    * Create a new ManagedProperty that is not associated to
+    * a ManagedObject.
+    * 
+    * @param fields the fields
+    * @throws IllegalArgumentException for null fields or
+    *    missing Fields.NAME
+    */
    public ManagedPropertyImpl(Fields fields)
    {
       this(null, fields);
    }
+
    /**
     * Create a new ManagedProperty.
     * 
@@ -148,10 +162,19 @@ public class ManagedPropertyImpl implements ManagedProperty
    {
       return getField(Fields.DESCRIPTION, String.class);
    }
+   public void setDescription(String description)
+   {
+      setField(Fields.DESCRIPTION, description);
+   }
+
 
    public MetaType getMetaType()
    {
       return getField(Fields.META_TYPE, MetaType.class);
+   }
+   public void setMetaType(MetaType type)
+   {
+      setField(Fields.META_TYPE, type);
    }
 
    public Object getValue()
@@ -169,15 +192,27 @@ public class ManagedPropertyImpl implements ManagedProperty
    {
       return getField(Fields.LEGAL_VALUES, Set.class);
    }
+   public void setLegalValues(Set<MetaValue> values)
+   {
+      setField(Fields.LEGAL_VALUES, (Serializable)values);
+   }
 
    public Comparable getMinimumValue()
    {
       return getField(Fields.MINIMUM_VALUE, Comparable.class);
    }
+   public void setMinimumValue(Comparable value)
+   {
+      setField(Fields.MINIMUM_VALUE, (Serializable)value);
+   }
 
    public Comparable getMaximumValue()
    {
       return getField(Fields.MAXIMUM_VALUE, Comparable.class);
+   }
+   public void setMaximumValue(Comparable value)
+   {
+      setField(Fields.MAXIMUM_VALUE, (Serializable)value);
    }
 
    public String checkValidValue(Serializable value)
@@ -192,6 +227,10 @@ public class ManagedPropertyImpl implements ManagedProperty
       if (result == null)
          return false;
       return result;
+   }
+   public void setMandatory(boolean flag)
+   {
+      setField(Fields.MANDATORY, flag);
    }
 
    @Override
