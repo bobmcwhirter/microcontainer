@@ -1,0 +1,70 @@
+<!--
+A top level maven pom that expects a structure like: 
+  build/pom.xml
+  aop-mc-int/pom.xml
+  container/pom.xml
+  dependency/pom.xml
+  deployers/pom.xml
+  kernel/pom.xml
+  managed/pom.xml
+  metatype/pom.xml
+  spring-int/pom.xml
+-->
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"  
+  xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
+  <modelVersion>4.0.0</modelVersion>
+  <groupId>jboss</groupId>
+  <version>2.0.0.Beta</version>
+  <artifactId>jboss-microcontainer</artifactId>
+  <name>JBoss Microcontainer Build</name>
+  <url>http://www.jboss.org</url>
+  <description>Parent POM for the JBoss Microcontainer Projects</description>
+  <licenses>
+   <license>
+      <name>lgpl</name>
+      <url>http://repository.jboss.com/licenses/lgpl.txt</url>
+   </license>
+  </licenses>
+  <organization>
+    <name>JBoss Inc.</name>
+    <url>http://www.jboss.org</url>
+  </organization>
+
+  <packaging>pom</packaging>
+  <modules>
+    <module>../container</module>
+    <module>../dependency</module>
+    <module>../metatype</module>
+    <module>../kernel</module>
+    <module>../managed</module>
+    <module>../deployers</module>
+    <module>../aop-mc-int</module>
+    <module>../spring-int</module>
+  </modules>
+  <reporting>
+    <plugins>
+      <plugin>
+        <groupId>org.apache.maven.plugins</groupId>
+        <artifactId>maven-project-info-reports-plugin</artifactId>
+        <reportSets>
+          <reportSet>
+            <reports>
+              <report>dependencies</report>
+              <report>issue-tracking</report>
+              <report>license</report>
+              <report>scm</report>
+            </reports>
+          </reportSet>
+        </reportSets>
+      </plugin>
+    </plugins>
+  </reporting>
+  
+  <distributionManagement>
+    <repository>
+      <id>cvs-file-repository</id>
+      <url>file://${maven.cvs.root}</url>
+    </repository>
+  </distributionManagement>
+
+</project>
