@@ -22,6 +22,7 @@
 package org.jboss.kernel.plugins.config.xml;
 
 import java.util.ArrayList;
+import java.util.List;
 
 import org.jboss.beans.info.spi.BeanInfo;
 import org.jboss.beans.info.spi.PropertyInfo;
@@ -64,11 +65,11 @@ public class Common
 
    public static class Ctor extends Holder
    {
-      String className;
-      boolean ctorWasDeclared;
-      AbstractConstructorMetaData metaData = new AbstractConstructorMetaData();
-      ArrayList<String> paramTypes = new ArrayList<String>();
-      ArrayList<Object> argValues = new ArrayList<Object>();
+      private String className;
+      private boolean ctorWasDeclared;
+      private AbstractConstructorMetaData metaData = new AbstractConstructorMetaData();
+      private List<String> paramTypes = new ArrayList<String>();
+      private List<Object> argValues = new ArrayList<Object>();
 
       public Ctor(String className)
       {
@@ -79,10 +80,12 @@ public class Common
       {
          return ctorWasDeclared;
       }
+
       public void setCtorWasDeclared(boolean ctorWasDeclared)
       {
          this.ctorWasDeclared = ctorWasDeclared;
       }
+
       public String getClassName()
       {
          return className;
@@ -93,22 +96,26 @@ public class Common
          paramTypes.add(param.getType().getName());
          argValues.add(value);
       }
+
       public String[] getParamTypes()
       {
          String[] types = new String[paramTypes.size()];
          paramTypes.toArray(types);
          return types;
       }
+
       public Object[] getArgs()
       {
          Object[] args = new Object[argValues.size()];
          argValues.toArray(args);
          return args;
       }
+
       public AbstractConstructorMetaData getMetaData()
       {
          return metaData;
       }
+
       public Object newInstance()
          throws Throwable
       {
@@ -120,6 +127,7 @@ public class Common
          return Common.newInstance(this);
       }
    }
+
    public static class Property extends Holder
    {
       private String property;
@@ -154,19 +162,18 @@ public class Common
    static BeanInfo getBeanInfo(String name)
       throws Throwable
    {
-      BeanInfo beanInfo = KernelConfigInit.config.getBeanInfo(name,
-            Thread.currentThread().getContextClassLoader());
-      return beanInfo;
+      return KernelConfigInit.config.getBeanInfo(name, Thread.currentThread().getContextClassLoader());
    }
+
    static ConstructorInfo getConstructor(Ctor ctor)
       throws Throwable
    {
       BeanInfo beanInfo = getBeanInfo(ctor.getClassName());
       String[] paramTypes = ctor.getParamTypes();
       ClassInfo classInfo = beanInfo.getClassInfo();
-      ConstructorInfo ctorInfo = Configurator.findConstructorInfo(classInfo, paramTypes);
-      return ctorInfo;
+      return Configurator.findConstructorInfo(classInfo, paramTypes);
    }
+
    static Object newInstance(Ctor ctor)
       throws Throwable
    {
@@ -177,7 +184,7 @@ public class Common
       if( args.length > 0 )
       {
          String[] paramTypes = ctor.getParamTypes();
-         ArrayList<ParameterMetaData> constructorParams = new ArrayList<ParameterMetaData>();
+         List<ParameterMetaData> constructorParams = new ArrayList<ParameterMetaData>();
          for(int n = 0; n < args.length; n ++)
          {
             Object arg = args[n];
@@ -188,8 +195,7 @@ public class Common
          cmd.setParameters(constructorParams);
       }
       BeanInfo info = getBeanInfo(ctor.getClassName());
-      Joinpoint joinPoint = Configurator.getConstructorJoinPoint(KernelConfigInit.config,
-            info, cmd, bmd);
+      Joinpoint joinPoint = Configurator.getConstructorJoinPoint(KernelConfigInit.config, info, cmd, bmd);
       return joinPoint.dispatch();
    }
 
@@ -199,6 +205,7 @@ public class Common
       ClassLoader cl = Thread.currentThread().getContextClassLoader();
       return Configurator.resolveProperty(false, beanInfo, cl, property, type);
    }
+
    static PropertyInfo getProperty(String className, String property, String type)
       throws Throwable
    {

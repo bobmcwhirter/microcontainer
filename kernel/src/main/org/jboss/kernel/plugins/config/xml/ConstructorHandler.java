@@ -73,8 +73,7 @@ public class ConstructorHandler extends DefaultElementHandler
       Ctor ctor = (Ctor) holder.getValue();
       try
       {
-         Object bean = ctor.newInstance();
-         return bean;
+         return ctor.newInstance();
       }
       catch (RuntimeException e)
       {
