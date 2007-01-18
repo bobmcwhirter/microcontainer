@@ -4,7 +4,6 @@
    <property name="PropertyName">
       <set>
          <javabean xmlns="urn:jboss:javabean:1.0" class="java.lang.Object"/>
-         <javabean xmlns="urn:jboss:javabean:1.0" class="org.jboss.test.javabean.support.SimpleBean" />
       </set>
    </property>
 </bean>
