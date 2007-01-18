@@ -49,7 +49,14 @@ public class InstantiateXMLTestCase extends InstantiateTestCase
    {
       // No XML equivalent
    }
-      
+
+   public void testValueInstantiateFromJavabean2() throws Throwable
+   {
+      Object object = valueInstantiateFromJavabean2();
+      assertNotNull(object);
+      assertTrue(object.getClass() == Object.class);
+   }
+
    protected SimpleBean simpleInstantiateFromBeanMetaData() throws Throwable
    {
       XMLUtil util = bootstrapXML(true);
@@ -135,6 +142,12 @@ public class InstantiateXMLTestCase extends InstantiateTestCase
    }
 
    protected Object valueInstantiateFromObject() throws Throwable
+   {
+      XMLUtil util = bootstrapXML(true);
+      return util.getBean("Value");
+   }
+
+   protected Object valueInstantiateFromJavabean2() throws Throwable
    {
       XMLUtil util = bootstrapXML(true);
       return util.getBean("Value");
