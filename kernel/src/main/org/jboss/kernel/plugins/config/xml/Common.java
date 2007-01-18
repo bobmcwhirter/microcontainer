@@ -34,7 +34,6 @@ import org.jboss.kernel.plugins.config.Configurator;
 import org.jboss.reflect.spi.ClassInfo;
 import org.jboss.reflect.spi.ConstructorInfo;
 import org.jboss.reflect.spi.TypeInfo;
-import org.jboss.test.kernel.config.support.SimpleBean;
 
 /**
  * Common classes and static methods
@@ -171,7 +170,7 @@ public class Common
    static Object newInstance(Ctor ctor)
       throws Throwable
    {
-      AbstractBeanMetaData bmd = new AbstractBeanMetaData(SimpleBean.class.getName());
+      AbstractBeanMetaData bmd = new AbstractBeanMetaData(ctor.getClassName());
       AbstractConstructorMetaData cmd = ctor.getMetaData();
       bmd.setConstructor(cmd);
       Object[] args = ctor.getArgs();
