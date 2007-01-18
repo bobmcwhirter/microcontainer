@@ -2,7 +2,7 @@
 <classpath>
 	<classpathentry kind="src" path="src/main"/>
 	<classpathentry kind="lib" path="src/resources"/>
-	<classpathentry output="output/eclipse-classes-tests" kind="src" path="src/tests"/>
+	<classpathentry kind="src" output="output/eclipse-classes-tests" path="src/tests"/>
 	<classpathentry kind="src" path="examples/lifecycle/src/main"/>
 	<classpathentry kind="src" path="examples/collections/src/main"/>
 	<classpathentry kind="src" path="examples/injection/src/main"/>
@@ -20,7 +20,7 @@
 	<classpathentry kind="lib" path="/thirdparty/jboss/common-logging-log4j/lib/jboss-logging-log4j.jar"/>
 	<classpathentry kind="src" path="/container"/>
 	<classpathentry combineaccessrules="false" kind="src" path="/dependency"/>
-	<classpathentry kind="lib" path="/thirdparty/jboss/jbossxb/lib/jboss-xml-binding.jar"/>
+	<classpathentry kind="lib" path="/thirdparty/jboss/jbossxb/lib/jboss-xml-binding.jar" sourcepath="/thirdparty/jboss/jbossxb/lib/jboss-xml-binding-sources.jar"/>
 	<classpathentry kind="lib" path="/thirdparty/jboss/test/lib/jboss-test.jar"/>
 	<classpathentry kind="lib" path="/thirdparty/apache-xerces/lib/resolver.jar"/>
 	<classpathentry kind="lib" path="/thirdparty/apache-xerces/lib/xercesImpl.jar"/>
