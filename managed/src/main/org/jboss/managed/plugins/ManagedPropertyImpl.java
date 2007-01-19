@@ -241,7 +241,16 @@ public class ManagedPropertyImpl implements ManagedProperty
    @Override
    public String toString()
    {
-      return "ManagedProperty{" + name + "}"; 
+      StringBuilder tmp = new StringBuilder("ManagedProperty");
+      tmp.append('{');
+      tmp.append(name);
+      if( getMappedName() != null )
+      {
+         tmp.append(',');
+         tmp.append(getMappedName());
+      }
+      tmp.append('}');
+      return tmp.toString(); 
    }
 
    @Override
