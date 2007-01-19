@@ -179,12 +179,12 @@ public class AbstractKernelDeployment extends JBossObject
    {
       buffer.append(name);
    }
+
    private void readObject(java.io.ObjectInputStream in)
        throws IOException, ClassNotFoundException
    {
       in.defaultReadObject();
       installedContexts = new CopyOnWriteArrayList<KernelControllerContext>();
    }
-
 
 }
