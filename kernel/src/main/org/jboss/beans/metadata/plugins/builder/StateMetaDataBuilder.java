@@ -24,44 +24,39 @@ package org.jboss.beans.metadata.plugins.builder;
 import org.jboss.beans.metadata.plugins.AbstractBeanMetaData;
 import org.jboss.beans.metadata.plugins.AbstractLifecycleMetaData;
 import org.jboss.beans.metadata.spi.LifecycleMetaData;
-import org.jboss.beans.metadata.spi.builder.BeanMetaDataBuilder;
 
 /**
  * Helper class.
- * @see BeanMetaDataBuilder
- * @see ParameterMetaDataBuilder
+ * @see org.jboss.beans.metadata.spi.builder.BeanMetaDataBuilder
+ * @see org.jboss.beans.metadata.plugins.builder.ParameterMetaDataBuilder
  *
  * @author <a href="mailto:ales.justin@jboss.com">Ales Justin</a>
  */
-public abstract class LifecycleMetaDataBuilder extends StateMetaDataBuilder
+public abstract class StateMetaDataBuilder
 {
-   protected ParameterMetaDataBuilder<AbstractLifecycleMetaData> builder;
+   protected AbstractBeanMetaData beanMetaData;
 
-   public LifecycleMetaDataBuilder(AbstractBeanMetaData beanMetaData)
+   public StateMetaDataBuilder(AbstractBeanMetaData beanMetaData)
    {
-      super(beanMetaData);
+      this.beanMetaData = beanMetaData;
    }
 
-   abstract LifecycleMetaData getLifecycle(AbstractBeanMetaData beanMetaData);
+   protected abstract void setLifecycle(AbstractBeanMetaData beanMetaData, LifecycleMetaData lifecycle);
 
-   protected AbstractLifecycleMetaData createLifecycleMetaData()
-   {
-      return new AbstractLifecycleMetaData();
-   }
+   protected abstract AbstractLifecycleMetaData createLifecycleMetaData();
 
-   protected void applyAfterSet(AbstractLifecycleMetaData lifecycle)
-   {
-      builder = new ParameterMetaDataBuilder<AbstractLifecycleMetaData>(lifecycle);
-   }
+   protected abstract void applyAfterSet(AbstractLifecycleMetaData lifecycle);
 
-   public LifecycleMetaData addParameterMetaData(String type, Object value)
+   public LifecycleMetaData createLifecycleMetaData(String methodName)
    {
-      LifecycleMetaData lifecycle = getLifecycle(beanMetaData);
-      if (lifecycle == null)
+      AbstractLifecycleMetaData lifecycle = createLifecycleMetaData();
+      if (methodName != null)
       {
-         createLifecycleMetaData(null);
+         lifecycle.setMethodName(methodName);
       }
-      return builder.addParameterMetaData(type, value);
+      setLifecycle(beanMetaData, lifecycle);
+      applyAfterSet(lifecycle);
+      return lifecycle;
    }
 
 }

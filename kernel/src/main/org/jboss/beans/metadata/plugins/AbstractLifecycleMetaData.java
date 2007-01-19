@@ -115,6 +115,11 @@ public class AbstractLifecycleMetaData extends AbstractFeatureMetaData
       flushJBossObjectCache();
    }
 
+   /**
+    * Get type - create, start, stop, destroy, install
+    *
+    * @return lifecycle type
+    */
    public String getType()
    {
       return type;

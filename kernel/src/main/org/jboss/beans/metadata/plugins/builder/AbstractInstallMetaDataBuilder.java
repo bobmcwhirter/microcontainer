@@ -23,45 +23,39 @@ package org.jboss.beans.metadata.plugins.builder;
 
 import org.jboss.beans.metadata.plugins.AbstractBeanMetaData;
 import org.jboss.beans.metadata.plugins.AbstractLifecycleMetaData;
-import org.jboss.beans.metadata.spi.LifecycleMetaData;
-import org.jboss.beans.metadata.spi.builder.BeanMetaDataBuilder;
+import org.jboss.beans.metadata.plugins.AbstractInstallMetaData;
 
 /**
- * Helper class.
- * @see BeanMetaDataBuilder
- * @see ParameterMetaDataBuilder
+ * AbstractInstallMetaDataBuilder.
  *
- * @author <a href="mailto:ales.justin@jboss.com">Ales Justin</a>
+ * @author <a href="ales.justin@jboss.com">Ales Justin</a>
  */
-public abstract class LifecycleMetaDataBuilder extends StateMetaDataBuilder
+public abstract class AbstractInstallMetaDataBuilder extends StateMetaDataBuilder
 {
-   protected ParameterMetaDataBuilder<AbstractLifecycleMetaData> builder;
-
-   public LifecycleMetaDataBuilder(AbstractBeanMetaData beanMetaData)
+   /**
+    * Create a new StartLifecycleMetaDataBuilder.
+    *
+    * @param beanMetaData
+    */
+   public AbstractInstallMetaDataBuilder(AbstractBeanMetaData beanMetaData)
    {
       super(beanMetaData);
    }
 
-   abstract LifecycleMetaData getLifecycle(AbstractBeanMetaData beanMetaData);
-
    protected AbstractLifecycleMetaData createLifecycleMetaData()
    {
-      return new AbstractLifecycleMetaData();
+      return new AbstractInstallMetaData();
    }
 
    protected void applyAfterSet(AbstractLifecycleMetaData lifecycle)
    {
-      builder = new ParameterMetaDataBuilder<AbstractLifecycleMetaData>(lifecycle);
+      // do nothing
    }
 
-   public LifecycleMetaData addParameterMetaData(String type, Object value)
+   public void addParameter(AbstractInstallMetaData installMetaData, String type, Object value)
    {
-      LifecycleMetaData lifecycle = getLifecycle(beanMetaData);
-      if (lifecycle == null)
-      {
-         createLifecycleMetaData(null);
-      }
-      return builder.addParameterMetaData(type, value);
+      ParameterMetaDataBuilder<AbstractInstallMetaData> builder = new ParameterMetaDataBuilder<AbstractInstallMetaData>(installMetaData);
+      builder.addParameterMetaData(type, value);
    }
 
 }

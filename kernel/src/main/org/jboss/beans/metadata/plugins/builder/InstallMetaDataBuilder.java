@@ -21,47 +21,40 @@
 */
 package org.jboss.beans.metadata.plugins.builder;
 
+import java.util.List;
+import java.util.ArrayList;
+
 import org.jboss.beans.metadata.plugins.AbstractBeanMetaData;
-import org.jboss.beans.metadata.plugins.AbstractLifecycleMetaData;
 import org.jboss.beans.metadata.spi.LifecycleMetaData;
-import org.jboss.beans.metadata.spi.builder.BeanMetaDataBuilder;
+import org.jboss.beans.metadata.spi.InstallMetaData;
 
 /**
- * Helper class.
- * @see BeanMetaDataBuilder
- * @see ParameterMetaDataBuilder
+ * InstallMetaDataBuilder.
  *
- * @author <a href="mailto:ales.justin@jboss.com">Ales Justin</a>
+ * @author <a href="ales.justin@jboss.com">Ales Justin</a>
  */
-public abstract class LifecycleMetaDataBuilder extends StateMetaDataBuilder
+public class InstallMetaDataBuilder extends AbstractInstallMetaDataBuilder
 {
-   protected ParameterMetaDataBuilder<AbstractLifecycleMetaData> builder;
-
-   public LifecycleMetaDataBuilder(AbstractBeanMetaData beanMetaData)
+   /**
+    * Create a new StartLifecycleMetaDataBuilder.
+    *
+    * @param beanMetaData
+    * @throws IllegalArgumentException
+    */
+   public InstallMetaDataBuilder(AbstractBeanMetaData beanMetaData)
    {
       super(beanMetaData);
    }
 
-   abstract LifecycleMetaData getLifecycle(AbstractBeanMetaData beanMetaData);
-
-   protected AbstractLifecycleMetaData createLifecycleMetaData()
+   protected void setLifecycle(AbstractBeanMetaData beanMetaData, LifecycleMetaData lifecycle)
    {
-      return new AbstractLifecycleMetaData();
-   }
-
-   protected void applyAfterSet(AbstractLifecycleMetaData lifecycle)
-   {
-      builder = new ParameterMetaDataBuilder<AbstractLifecycleMetaData>(lifecycle);
-   }
-
-   public LifecycleMetaData addParameterMetaData(String type, Object value)
-   {
-      LifecycleMetaData lifecycle = getLifecycle(beanMetaData);
-      if (lifecycle == null)
+      List<InstallMetaData> installs = beanMetaData.getInstalls();
+      if (installs == null)
       {
-         createLifecycleMetaData(null);
+         installs = new ArrayList<InstallMetaData>();
+         beanMetaData.setInstalls(installs);
       }
-      return builder.addParameterMetaData(type, value);
+      installs.add((InstallMetaData) lifecycle);
    }
 
 }

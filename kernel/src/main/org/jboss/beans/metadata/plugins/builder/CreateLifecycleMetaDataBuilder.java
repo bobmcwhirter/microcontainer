@@ -36,19 +36,18 @@ public class CreateLifecycleMetaDataBuilder extends LifecycleMetaDataBuilder
     * Create a new CreateLifecycleMetaDataBuilder.
     * 
     * @param beanMetaData
-    * @throws IllegalArgumentException
     */
-   public CreateLifecycleMetaDataBuilder(AbstractBeanMetaData beanMetaData) throws IllegalArgumentException
+   public CreateLifecycleMetaDataBuilder(AbstractBeanMetaData beanMetaData)
    {
       super(beanMetaData);
    }
 
-   LifecycleMetaData getLifecycle(AbstractBeanMetaData beanMetaData)
+   protected LifecycleMetaData getLifecycle(AbstractBeanMetaData beanMetaData)
    {
       return beanMetaData.getCreate();
    }
 
-   void setLifecycle(AbstractBeanMetaData beanMetaData, LifecycleMetaData lifecycle)
+   protected void setLifecycle(AbstractBeanMetaData beanMetaData, LifecycleMetaData lifecycle)
    {
       beanMetaData.setCreate(lifecycle);
    }

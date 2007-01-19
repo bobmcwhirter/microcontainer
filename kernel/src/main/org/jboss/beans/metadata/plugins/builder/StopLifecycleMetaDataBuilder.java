@@ -36,19 +36,18 @@ public class StopLifecycleMetaDataBuilder extends LifecycleMetaDataBuilder
     * Create a new StopLifecycleMetaDataBuilder.
     * 
     * @param beanMetaData
-    * @throws IllegalArgumentException
     */
-   public StopLifecycleMetaDataBuilder(AbstractBeanMetaData beanMetaData) throws IllegalArgumentException
+   public StopLifecycleMetaDataBuilder(AbstractBeanMetaData beanMetaData)
    {
       super(beanMetaData);
    }
 
-   LifecycleMetaData getLifecycle(AbstractBeanMetaData beanMetaData)
+   protected LifecycleMetaData getLifecycle(AbstractBeanMetaData beanMetaData)
    {
       return beanMetaData.getStop();
    }
 
-   void setLifecycle(AbstractBeanMetaData beanMetaData, LifecycleMetaData lifecycle)
+   protected void setLifecycle(AbstractBeanMetaData beanMetaData, LifecycleMetaData lifecycle)
    {
       beanMetaData.setStop(lifecycle);
    }

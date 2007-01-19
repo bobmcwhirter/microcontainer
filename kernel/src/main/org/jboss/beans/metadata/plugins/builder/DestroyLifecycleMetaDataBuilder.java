@@ -36,19 +36,18 @@ public class DestroyLifecycleMetaDataBuilder extends LifecycleMetaDataBuilder
     * Create a new DestroyLifecycleMetaDataBuilder.
     * 
     * @param beanMetaData
-    * @throws IllegalArgumentException
     */
-   public DestroyLifecycleMetaDataBuilder(AbstractBeanMetaData beanMetaData) throws IllegalArgumentException
+   public DestroyLifecycleMetaDataBuilder(AbstractBeanMetaData beanMetaData)
    {
       super(beanMetaData);
    }
 
-   LifecycleMetaData getLifecycle(AbstractBeanMetaData beanMetaData)
+   protected LifecycleMetaData getLifecycle(AbstractBeanMetaData beanMetaData)
    {
       return beanMetaData.getDestroy();
    }
 
-   void setLifecycle(AbstractBeanMetaData beanMetaData, LifecycleMetaData lifecycle)
+   protected void setLifecycle(AbstractBeanMetaData beanMetaData, LifecycleMetaData lifecycle)
    {
       beanMetaData.setDestroy(lifecycle);
    }

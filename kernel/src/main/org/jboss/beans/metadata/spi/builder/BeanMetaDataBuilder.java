@@ -21,9 +21,7 @@
 */
 package org.jboss.beans.metadata.spi.builder;
 
-import java.util.ArrayList;
 import java.util.HashSet;
-import java.util.List;
 import java.util.Set;
 
 import org.jboss.beans.metadata.plugins.AbstractBeanMetaData;
@@ -35,16 +33,18 @@ import org.jboss.beans.metadata.plugins.AbstractInstallMetaData;
 import org.jboss.beans.metadata.plugins.AbstractPropertyMetaData;
 import org.jboss.beans.metadata.plugins.AbstractSupplyMetaData;
 import org.jboss.beans.metadata.plugins.AbstractValueMetaData;
+import org.jboss.beans.metadata.plugins.builder.AbstractInstallMetaDataBuilder;
 import org.jboss.beans.metadata.plugins.builder.CreateLifecycleMetaDataBuilder;
 import org.jboss.beans.metadata.plugins.builder.DestroyLifecycleMetaDataBuilder;
+import org.jboss.beans.metadata.plugins.builder.InstallMetaDataBuilder;
 import org.jboss.beans.metadata.plugins.builder.LifecycleMetaDataBuilder;
 import org.jboss.beans.metadata.plugins.builder.ParameterMetaDataBuilder;
 import org.jboss.beans.metadata.plugins.builder.StartLifecycleMetaDataBuilder;
 import org.jboss.beans.metadata.plugins.builder.StopLifecycleMetaDataBuilder;
+import org.jboss.beans.metadata.plugins.builder.UninstallMetaDataBuilder;
 import org.jboss.beans.metadata.spi.BeanMetaData;
 import org.jboss.beans.metadata.spi.DemandMetaData;
 import org.jboss.beans.metadata.spi.DependencyMetaData;
-import org.jboss.beans.metadata.spi.InstallMetaData;
 import org.jboss.beans.metadata.spi.PropertyMetaData;
 import org.jboss.beans.metadata.spi.SupplyMetaData;
 import org.jboss.dependency.spi.ControllerMode;
@@ -54,7 +54,6 @@ import org.jboss.dependency.spi.ControllerMode;
  * Similar to StringBuffer, methods return current instance of BeanMetaDataBuilder.
  *
  * TODO - add on demand, when building OSGi, Spring, ...
- * TODO - install/uninstall parametrers
  *
  * @author <a href="mailto:ales.justin@jboss.com">Ales Justin</a>
  */
@@ -67,6 +66,9 @@ public class BeanMetaDataBuilder
    private LifecycleMetaDataBuilder startBuilder;
    private LifecycleMetaDataBuilder stopBuilder;
    private LifecycleMetaDataBuilder destroyBuilder;
+   // install
+   private AbstractInstallMetaDataBuilder installBuilder;
+   private AbstractInstallMetaDataBuilder uninstallBuilder;
 
    public BeanMetaDataBuilder(String bean)
    {
@@ -86,6 +88,9 @@ public class BeanMetaDataBuilder
       startBuilder = new StartLifecycleMetaDataBuilder(beanMetaData);
       stopBuilder = new StopLifecycleMetaDataBuilder(beanMetaData);
       destroyBuilder = new DestroyLifecycleMetaDataBuilder(beanMetaData);
+      // install
+      installBuilder = new InstallMetaDataBuilder(beanMetaData);
+      uninstallBuilder = new UninstallMetaDataBuilder(beanMetaData);
    }
 
    public BeanMetaData getBeanMetaData()
@@ -221,29 +226,73 @@ public class BeanMetaDataBuilder
 
    public BeanMetaDataBuilder addInstall(String methodName)
    {
-      List<InstallMetaData> installs = beanMetaData.getInstalls();
-      if (installs == null)
+      return addInstall(methodName, null);
+   }
+
+   public BeanMetaDataBuilder addInstall(String methodName, String bean)
+   {
+      return addInstall(methodName, bean, new String[]{}, new Object[]{});
+   }
+
+   public BeanMetaDataBuilder addInstall(String methodName, String type, Object value)
+   {
+      return addInstall(methodName, null, type, value);
+   }
+
+   public BeanMetaDataBuilder addInstall(String methodName, String bean, String type, Object value)
+   {
+      return addInstall(methodName, bean, new String[]{type}, new Object[]{value});
+   }
+
+   public BeanMetaDataBuilder addInstall(String methodName, String[] types, Object[] values)
+   {
+      return addInstall(methodName, null, types, values);
+   }
+
+   public BeanMetaDataBuilder addInstall(String methodName, String bean, String[] types, Object[] values)
+   {
+      AbstractInstallMetaData install = (AbstractInstallMetaData)installBuilder.createLifecycleMetaData(methodName);
+      install.setBean(bean);
+      for(int i = 0; i < types.length; i++)
       {
-         installs = new ArrayList<InstallMetaData>();
-         beanMetaData.setInstalls(installs);
+         installBuilder.addParameter(install, types[i], values[i]);
       }
-      AbstractInstallMetaData installMetaData = new AbstractInstallMetaData();
-      installMetaData.setMethodName(methodName);
-      installs.add(installMetaData);
       return this;
    }
 
    public BeanMetaDataBuilder addUninstall(String methodName)
    {
-      List<InstallMetaData> uninstalls = beanMetaData.getUninstalls();
-      if (uninstalls == null)
+      return addUninstall(methodName, null);
+   }
+
+   public BeanMetaDataBuilder addUninstall(String methodName, String type, Object value)
+   {
+      return addUninstall(methodName, new String[]{type}, new Object[]{value});
+   }
+
+   public BeanMetaDataBuilder addUninstall(String methodName, String[] types, Object[] values)
+   {
+      return addUninstall(methodName, null, types, values);
+   }
+
+   public BeanMetaDataBuilder addUninstall(String methodName, String bean)
+   {
+      return addUninstall(methodName, bean, new String[]{}, new Object[]{});
+   }
+
+   public BeanMetaDataBuilder addUninstall(String methodName, String bean, String type, Object value)
+   {
+      return addUninstall(methodName, bean, new String[]{type}, new Object[]{value});
+   }
+
+   public BeanMetaDataBuilder addUninstall(String methodName, String bean, String[] types, Object[] values)
+   {
+      AbstractInstallMetaData uninstall = (AbstractInstallMetaData)uninstallBuilder.createLifecycleMetaData(methodName);
+      uninstall.setBean(bean);
+      for(int i = 0; i < types.length; i++)
       {
-         uninstalls = new ArrayList<InstallMetaData>();
-         beanMetaData.setUninstalls(uninstalls);
+         uninstallBuilder.addParameter(uninstall, types[i], values[i]);
       }
-      AbstractInstallMetaData uninstallMetaData = new AbstractInstallMetaData();
-      uninstallMetaData.setMethodName(methodName);
-      uninstalls.add(uninstallMetaData);
       return this;
    }
 
