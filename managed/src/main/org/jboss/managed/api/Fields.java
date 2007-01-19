@@ -35,6 +35,9 @@ public interface Fields extends Serializable
    /** The name field name */
    String NAME = "name";
 
+   /** The mapped name field name */
+   String MAPPED_NAME = "mappedName";
+
    /** The description field name */
    String DESCRIPTION = "description";
 

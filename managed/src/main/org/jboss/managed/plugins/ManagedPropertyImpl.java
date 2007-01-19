@@ -158,6 +158,11 @@ public class ManagedPropertyImpl implements ManagedProperty
       return name;
    }
 
+   public String getMappedName()
+   {
+      return getField(Fields.MAPPED_NAME, String.class);
+   }
+
    public String getDescription()
    {
       return getField(Fields.DESCRIPTION, String.class);

@@ -75,6 +75,16 @@ public interface ManagedProperty extends Serializable
    String getName();
 
    /**
+    * Get the property's mapped name. This is an optional name
+    * that allows for an external name to be mapped to an
+    * internal one.
+    * 
+    * @return the mapped name if it exists, null if there is no
+    * mapped name.
+    */
+   String getMappedName();
+
+   /**
     * Get the description
     * 
     * @return the description
