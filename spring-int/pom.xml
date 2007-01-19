@@ -4,7 +4,7 @@
   <groupId>jboss</groupId>
   <artifactId>jboss-spring-int</artifactId>
   <packaging>jar</packaging>
-  <version>2.0.0.Beta</version>
+  <version>snapshot</version>
   <name>JBoss Microcontainer Spring Int</name>
   <url>http://www.jboss.org</url>
   <description>JBoss Microcontainer Spring Int</description>
@@ -109,7 +109,7 @@
     <dependency>
 	  <groupId>jboss</groupId>
 	  <artifactId>jboss-kernel</artifactId>
-	  <version>2.0.0.Beta</version>
+	  <version>${project.version}</version>
 	</dependency>
 	
 	<!-- Test dependencies -->
@@ -122,7 +122,7 @@
     <dependency>
       <groupId>jboss</groupId>
       <artifactId>jboss-kernel</artifactId>
-      <version>2.0.0.Beta</version>
+      <version>${project.version}</version>
       <type>test-jar</type>
       <scope>test</scope>
     </dependency>

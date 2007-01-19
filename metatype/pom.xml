@@ -4,7 +4,7 @@
   <groupId>jboss</groupId>
   <artifactId>jboss-metatype</artifactId>
   <packaging>jar</packaging>
-  <version>2.0.0.Beta</version>
+  <version>snapshot</version>
   <name>JBoss Microcontainer Metatype</name>
   <url>http://www.jboss.org</url>
   <description>JBoss Microcontainer Metatype</description>
