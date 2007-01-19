@@ -22,6 +22,8 @@
 package org.jboss.dependency.spi;
 
 import java.io.Serializable;
+import java.io.ObjectStreamException;
+import java.util.HashMap;
 
 import org.jboss.util.JBossObject;
 import org.jboss.util.JBossStringBuilder;
@@ -63,7 +65,21 @@ public class ControllerState extends JBossObject
 
    /** The state string */
    protected final String stateString;
-   
+
+   private static HashMap values = new HashMap();
+
+   static
+   {
+      values.put(ERROR.getStateString(), ERROR);
+      values.put(NOT_INSTALLED.getStateString(), NOT_INSTALLED);
+      values.put(DESCRIBED.getStateString(), DESCRIBED);
+      values.put(INSTANTIATED.getStateString(), INSTANTIATED);
+      values.put(CONFIGURED.getStateString(), CONFIGURED);
+      values.put(CREATE.getStateString(), CREATE);
+      values.put(START.getStateString(), START);
+      values.put(INSTALLED.getStateString(), INSTALLED);
+   }
+
    /**
     * Create a new state
     * 
@@ -102,5 +118,10 @@ public class ControllerState extends JBossObject
    protected int getHashCode()
    {
       return stateString.hashCode();
+   }
+
+   protected Object readResolve() throws ObjectStreamException
+   {
+      return values.get(stateString);   
    }
 }
