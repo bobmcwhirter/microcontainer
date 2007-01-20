@@ -101,7 +101,7 @@ public class AbstractKernelController extends AbstractController implements Kern
       ControllerContext context = super.getContext(name, state);
       if (context != null)
          return context;
-      if (state == null || state == ControllerState.INSTALLED)
+      if (state == null || ControllerState.INSTALLED.equals(state))
       {
          KernelRegistry registry = kernel.getRegistry();
          try

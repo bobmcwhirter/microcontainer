@@ -117,7 +117,7 @@ public class AbstractDependencyItem extends JBossObject implements DependencyIte
          context = controller.getContext(iDependOn, dependentState);
          if (context == null)
          {
-            if (dependentState == ControllerState.INSTALLED)
+            if (ControllerState.INSTALLED.equals(dependentState))
                context = controller.getInstalledContext(iDependOn);
          }
       }
