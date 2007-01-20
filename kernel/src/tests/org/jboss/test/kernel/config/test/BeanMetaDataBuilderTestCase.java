@@ -21,10 +21,14 @@
 */
 package org.jboss.test.kernel.config.test;
 
+import java.util.Arrays;
+
 import junit.framework.Test;
 import org.jboss.beans.metadata.spi.BeanMetaData;
 import org.jboss.beans.metadata.spi.builder.BeanMetaDataBuilder;
 import org.jboss.kernel.Kernel;
+import org.jboss.kernel.plugins.deployment.AbstractKernelDeployment;
+import org.jboss.kernel.plugins.deployment.AbstractKernelDeployer;
 import org.jboss.kernel.spi.dependency.KernelController;
 import org.jboss.kernel.spi.dependency.KernelControllerContext;
 import org.jboss.test.kernel.config.support.SimpleBean;
@@ -113,12 +117,65 @@ public class BeanMetaDataBuilderTestCase extends AbstractKernelConfigTest
 
    public void testDemandSupply() throws Throwable
    {
-      // todo
+      BeanMetaDataBuilder demand = new BeanMetaDataBuilder("DemandBean", SimpleBean.class.getName());
+      demand.addDemand("Barrier");
+      BeanMetaData demandBean = demand.getBeanMetaData();
+
+      BeanMetaDataBuilder supply = new BeanMetaDataBuilder("SupplyBean", SimpleLifecycleBean.class.getName());
+      supply.addSupply("Barrier");
+      BeanMetaData supplyBean = supply.getBeanMetaData();
+
+      AbstractKernelDeployment deployment = new AbstractKernelDeployment();
+      deployment.setBeans(Arrays.asList(demandBean, supplyBean));
+
+      Kernel kernel = bootstrap();
+      KernelController controller = kernel.getController();
+      AbstractKernelDeployer deployer = new AbstractKernelDeployer(kernel);
+      try
+      {
+         deployer.deploy(deployment);
+
+         Object db = controller.getInstalledContext("DemandBean").getTarget();
+         assertNotNull(db);
+
+         Object sb = controller.getInstalledContext("SupplyBean").getTarget();
+         assertNotNull(sb);
+      }
+      finally
+      {
+         deployer.undeploy(deployment);
+      }
    }
 
    public void testDependency() throws Throwable
    {
-      // todo
+      BeanMetaDataBuilder dependOn = new BeanMetaDataBuilder("DependOnBean", SimpleBean.class.getName());
+      dependOn.addDependency("DependencyResolver");
+      BeanMetaData dependOnBean = dependOn.getBeanMetaData();
+
+      BeanMetaDataBuilder resolver = new BeanMetaDataBuilder("DependencyResolver", SimpleLifecycleBean.class.getName());
+      BeanMetaData resolverBean = resolver.getBeanMetaData();
+
+      AbstractKernelDeployment deployment = new AbstractKernelDeployment();
+      deployment.setBeans(Arrays.asList(dependOnBean, resolverBean));
+
+      Kernel kernel = bootstrap();
+      KernelController controller = kernel.getController();
+      AbstractKernelDeployer deployer = new AbstractKernelDeployer(kernel);
+      try
+      {
+         deployer.deploy(deployment);
+
+         Object db = controller.getInstalledContext("DependOnBean").getTarget();
+         assertNotNull(db);
+
+         Object rb = controller.getInstalledContext("DependencyResolver").getTarget();
+         assertNotNull(rb);
+      }
+      finally
+      {
+         deployer.undeploy(deployment);
+      }
    }
 
 }
