@@ -24,6 +24,7 @@ package org.jboss.dependency.spi;
 import java.io.Serializable;
 import java.io.ObjectStreamException;
 import java.util.HashMap;
+import java.util.Map;
 
 import org.jboss.util.JBossObject;
 import org.jboss.util.JBossStringBuilder;
@@ -66,7 +67,7 @@ public class ControllerState extends JBossObject
    /** The state string */
    protected final String stateString;
 
-   private static HashMap values = new HashMap();
+   private static Map<String, ControllerState> values = new HashMap<String, ControllerState>();
 
    static
    {
