@@ -27,8 +27,8 @@ import junit.framework.Test;
 import org.jboss.beans.metadata.spi.BeanMetaData;
 import org.jboss.beans.metadata.spi.builder.BeanMetaDataBuilder;
 import org.jboss.kernel.Kernel;
-import org.jboss.kernel.plugins.deployment.AbstractKernelDeployment;
 import org.jboss.kernel.plugins.deployment.AbstractKernelDeployer;
+import org.jboss.kernel.plugins.deployment.AbstractKernelDeployment;
 import org.jboss.kernel.spi.dependency.KernelController;
 import org.jboss.kernel.spi.dependency.KernelControllerContext;
 import org.jboss.test.kernel.config.support.SimpleBean;
@@ -131,20 +131,15 @@ public class BeanMetaDataBuilderTestCase extends AbstractKernelConfigTest
       Kernel kernel = bootstrap();
       KernelController controller = kernel.getController();
       AbstractKernelDeployer deployer = new AbstractKernelDeployer(kernel);
-      try
-      {
-         deployer.deploy(deployment);
 
-         Object db = controller.getInstalledContext("DemandBean").getTarget();
-         assertNotNull(db);
+      deployer.deploy(deployment);
 
-         Object sb = controller.getInstalledContext("SupplyBean").getTarget();
-         assertNotNull(sb);
-      }
-      finally
-      {
-         deployer.undeploy(deployment);
-      }
+      Object db = controller.getInstalledContext("DemandBean").getTarget();
+      assertNotNull(db);
+      Object sb = controller.getInstalledContext("SupplyBean").getTarget();
+      assertNotNull(sb);
+
+      deployer.undeploy(deployment);
    }
 
    public void testDependency() throws Throwable
@@ -162,20 +157,15 @@ public class BeanMetaDataBuilderTestCase extends AbstractKernelConfigTest
       Kernel kernel = bootstrap();
       KernelController controller = kernel.getController();
       AbstractKernelDeployer deployer = new AbstractKernelDeployer(kernel);
-      try
-      {
-         deployer.deploy(deployment);
 
-         Object db = controller.getInstalledContext("DependOnBean").getTarget();
-         assertNotNull(db);
+      deployer.deploy(deployment);
 
-         Object rb = controller.getInstalledContext("DependencyResolver").getTarget();
-         assertNotNull(rb);
-      }
-      finally
-      {
-         deployer.undeploy(deployment);
-      }
+      Object db = controller.getInstalledContext("DependOnBean").getTarget();
+      assertNotNull(db);
+      Object rb = controller.getInstalledContext("DependencyResolver").getTarget();
+      assertNotNull(rb);
+
+      deployer.undeploy(deployment);
    }
 
 }
