@@ -24,14 +24,21 @@ package org.jboss.dependency.spi;
 import org.jboss.util.JBossObject;
 import org.jboss.util.JBossStringBuilder;
 
+import java.util.Map;
+import java.util.HashMap;
+import java.io.ObjectStreamException;
+import java.io.Serializable;
+
 /**
  * Mode of the context.
  * 
  * @author <a href="adrian@jboss.com">Adrian Brock</a>
  * @version $Revision$
  */
-public class ControllerMode extends JBossObject
+public class ControllerMode extends JBossObject implements Serializable
 {
+   private static final long serialVersionUID = 1L;
+   
    /** Automatic */
    public static final ControllerMode AUTOMATIC = new ControllerMode("Automatic");
 
@@ -47,6 +54,16 @@ public class ControllerMode extends JBossObject
    /** The mode string */
    protected final String modeString;
    
+   private static Map<String, ControllerMode> values = new HashMap<String, ControllerMode>();
+
+   static
+   {
+      values.put(AUTOMATIC.getModeString(), AUTOMATIC);
+      values.put(ON_DEMAND.getModeString(), ON_DEMAND);
+      values.put(MANUAL.getModeString(), MANUAL);
+      values.put(DISABLED.getModeString(), DISABLED);
+   }
+
    /**
     * Create a new mode
     * 
@@ -86,4 +103,10 @@ public class ControllerMode extends JBossObject
    {
       return modeString.hashCode();
    }
+
+   protected Object readResolve() throws ObjectStreamException
+   {
+      return values.get(modeString);   
+   }
+
 }

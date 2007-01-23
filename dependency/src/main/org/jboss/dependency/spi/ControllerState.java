@@ -21,13 +21,13 @@
 */
 package org.jboss.dependency.spi;
 
-import java.io.Serializable;
-import java.io.ObjectStreamException;
-import java.util.HashMap;
-import java.util.Map;
-
 import org.jboss.util.JBossObject;
 import org.jboss.util.JBossStringBuilder;
+
+import java.io.ObjectStreamException;
+import java.io.Serializable;
+import java.util.HashMap;
+import java.util.Map;
 
 /**
  * Description of state.
@@ -35,8 +35,7 @@ import org.jboss.util.JBossStringBuilder;
  * @author <a href="adrian@jboss.com">Adrian Brock</a>
  * @version $Revision$
  */
-public class ControllerState extends JBossObject
-   implements Serializable
+public class ControllerState extends JBossObject implements Serializable
 {
    private static final long serialVersionUID = 1L;
 

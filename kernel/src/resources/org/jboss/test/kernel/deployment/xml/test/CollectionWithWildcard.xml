@@ -3,7 +3,7 @@
 <bean xmlns="urn:jboss:bean-deployer:2.0" class="Dummy">
    <property name="PropertyName">
       <collection>
-         <javabean xmlns="urn:jboss:javabean:1.0" class="java.lang.Object"/>
+         <javabean xmlns="urn:jboss:javabean:1.0" class="org.jboss.test.kernel.deployment.xml.support.SerializableObject"/>
       </collection>
    </property>
 </bean>

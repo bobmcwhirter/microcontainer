@@ -23,6 +23,7 @@ package org.jboss.test.kernel.deployment.xml.support;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.io.Serializable;
 
 import org.jboss.beans.metadata.plugins.AbstractBeanMetaData;
 import org.jboss.beans.metadata.spi.BeanMetaData;
@@ -35,8 +36,10 @@ import org.jboss.util.JBossObject;
  * @author <a href="adrian@jboss.com">Adrian Brock</a>
  * @version $Revision$
  */
-public class TestBeanMetaDataFactory1 extends JBossObject implements BeanMetaDataFactory
+public class TestBeanMetaDataFactory1 extends JBossObject implements BeanMetaDataFactory, Serializable
 {
+   private static final long serialVersionUID = 1L;
+
    public List<BeanMetaData> getBeans()
    {
       ArrayList<BeanMetaData> result = new ArrayList<BeanMetaData>();

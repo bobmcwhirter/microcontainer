@@ -3,7 +3,7 @@
 <bean xmlns="urn:jboss:bean-deployer:2.0" class="Dummy">
    <constructor>
       <parameter>
-         <javabean xmlns="urn:jboss:javabean:1.0" class="java.lang.Object"/>
+         <javabean xmlns="urn:jboss:javabean:1.0" class="org.jboss.test.kernel.deployment.xml.support.SerializableObject"/>
       </parameter>
    </constructor>
 </bean>

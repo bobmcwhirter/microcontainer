@@ -26,6 +26,7 @@ import java.util.HashSet;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Set;
+import java.io.Serializable;
 
 import org.jboss.beans.metadata.plugins.AbstractArrayMetaData;
 import org.jboss.beans.metadata.plugins.AbstractBeanMetaData;
@@ -121,6 +122,18 @@ public class AbstractXMLTest extends AbstractTestCaseWithSetup
       Object object = getJBossXBDelegate().unmarshal(url);
       if (object == null)
          fail("No object from " + name);
+
+      // use this once we update jboss-test.jar
+      if (object instanceof Serializable == false)
+         fail("Object not Serializable: " + object.getClass());
+
+      // TODO - update jboss-test.jar
+      //Serializable serializable = assertInstanceOf(object, Serializable.class, false);
+      Serializable serializable = (Serializable)object;
+
+      // Test that serialize/deserialize works accurately reproduces the object
+      object = deserialize(serialize(serializable));
+
       assertTrue("Object '" + object + "' cannot be assigned to " + expected.getName(), expected.isAssignableFrom(object.getClass()));
       return object;
    }
