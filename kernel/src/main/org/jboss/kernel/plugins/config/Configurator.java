@@ -892,6 +892,7 @@ public class Configurator extends Config
    /**
     * Test whether type names can be assigned to type infos
     *
+    * @param tif the type info factory
     * @param cl bean classloader
     * @param typeNames the type names
     * @param typeInfos the type infos

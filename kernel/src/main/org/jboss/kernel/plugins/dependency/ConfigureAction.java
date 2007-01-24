@@ -155,12 +155,12 @@ public class ConfigureAction extends KernelControllerContextAction
    private boolean isExactlyKernelControllerContextAware(Object o)
    {
       Class clazz = o.getClass();
-      return KernelControllerContextAware.class.isAssignableFrom(o.getClass()) &&
-               (!ConfigureKernelControllerContextAware.class.isAssignableFrom(o.getClass()) &&
-               !CreateKernelControllerContextAware.class.isAssignableFrom(o.getClass()) &&
-               !DescribeKernelControllerContextAware.class.isAssignableFrom(o.getClass()) &&
-               !InstallKernelControllerContextAware.class.isAssignableFrom(o.getClass()) &&
-               !InstantiateKernelControllerContextAware.class.isAssignableFrom(o.getClass()) &&
-               !StartKernelControllerContextAware.class.isAssignableFrom(o.getClass()));
+      return KernelControllerContextAware.class.isAssignableFrom(clazz) &&
+               (!ConfigureKernelControllerContextAware.class.isAssignableFrom(clazz) &&
+               !CreateKernelControllerContextAware.class.isAssignableFrom(clazz) &&
+               !DescribeKernelControllerContextAware.class.isAssignableFrom(clazz) &&
+               !InstallKernelControllerContextAware.class.isAssignableFrom(clazz) &&
+               !InstantiateKernelControllerContextAware.class.isAssignableFrom(clazz) &&
+               !StartKernelControllerContextAware.class.isAssignableFrom(clazz));
    }
 }
