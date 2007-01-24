@@ -2,6 +2,8 @@
 <classpath>
 	<classpathentry kind="src" path="src/main"/>
 	<classpathentry kind="src" path="src/tests"/>
+	<classpathentry kind="lib" path="src/resources/xml-test"/>
+	<classpathentry kind="lib" path="src/resources/schema"/>
 	<classpathentry kind="con" path="org.eclipse.jdt.launching.JRE_CONTAINER"/>
 	<classpathentry combineaccessrules="false" kind="src" path="/container"/>
 	<classpathentry combineaccessrules="false" kind="src" path="/dependency"/>

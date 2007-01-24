@@ -44,6 +44,7 @@ public class TempSpringMicrocontainerTestDelegate extends MicrocontainerTestDele
       DefaultSchemaResolver defaultSchemaResolver = (DefaultSchemaResolver) resolver;
       defaultSchemaResolver.addSchemaInitializer("urn:jboss:spring-beans:2.0", new SpringSchemaInitializer());
       defaultSchemaResolver.addSchemaLocation("urn:jboss:spring-beans:2.0", "mc-spring-beans_2_0.xsd");
+      defaultSchemaResolver.addSchemaParseAnnotations("urn:jboss:spring-beans:2.0", Boolean.FALSE);
       super.setUp();
    }
 
