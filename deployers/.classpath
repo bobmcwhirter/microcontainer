@@ -16,5 +16,8 @@
 	<classpathentry combineaccessrules="false" kind="src" path="/dependency"/>
 	<classpathentry kind="lib" path="/thirdparty/jboss/jboss-vfs/lib/jboss-vfs.jar" sourcepath="/thirdparty/jboss/jboss-vfs/lib/jboss-vfs-sources.jar"/>
 	<classpathentry combineaccessrules="false" kind="src" path="/managed"/>
+	<classpathentry kind="lib" path="/thirdparty/sun-jaf/lib/activation.jar"/>
+	<classpathentry kind="lib" path="/thirdparty/sun-jaxb/lib/jaxb-api.jar"/>
+	<classpathentry kind="lib" path="/thirdparty/stax-api/lib/stax-api.jar"/>
 	<classpathentry kind="output" path="output/eclipse-classes"/>
 </classpath>

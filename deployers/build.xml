@@ -72,6 +72,9 @@
       <path refid="jboss/common.logging.log4j.classpath"/>
       <path refid="jboss.jbossxb.classpath"/>
       <path refid="jboss/jboss.vfs.classpath"/>
+      <path refid="stax.api.classpath"/>
+      <path refid="sun.jaf.classpath"/>
+      <path refid="sun.jaxb.classpath"/>
     </path>
 
     &modules;
