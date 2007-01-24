@@ -25,11 +25,28 @@ import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
-
 import javax.xml.namespace.NamespaceContext;
 import javax.xml.namespace.QName;
 
-import org.jboss.beans.metadata.plugins.*;
+import org.jboss.beans.metadata.plugins.AbstractArrayMetaData;
+import org.jboss.beans.metadata.plugins.AbstractBeanMetaData;
+import org.jboss.beans.metadata.plugins.AbstractClassLoaderMetaData;
+import org.jboss.beans.metadata.plugins.AbstractCollectionMetaData;
+import org.jboss.beans.metadata.plugins.AbstractConstructorMetaData;
+import org.jboss.beans.metadata.plugins.AbstractDemandMetaData;
+import org.jboss.beans.metadata.plugins.AbstractDependencyMetaData;
+import org.jboss.beans.metadata.plugins.AbstractDependencyValueMetaData;
+import org.jboss.beans.metadata.plugins.AbstractInjectionValueMetaData;
+import org.jboss.beans.metadata.plugins.AbstractLifecycleMetaData;
+import org.jboss.beans.metadata.plugins.AbstractListMetaData;
+import org.jboss.beans.metadata.plugins.AbstractMapMetaData;
+import org.jboss.beans.metadata.plugins.AbstractParameterMetaData;
+import org.jboss.beans.metadata.plugins.AbstractPropertyMetaData;
+import org.jboss.beans.metadata.plugins.AbstractSetMetaData;
+import org.jboss.beans.metadata.plugins.AbstractSupplyMetaData;
+import org.jboss.beans.metadata.plugins.AbstractValueMetaData;
+import org.jboss.beans.metadata.plugins.InjectionType;
+import org.jboss.beans.metadata.plugins.StringValueMetaData;
 import org.jboss.beans.metadata.plugins.factory.GenericBeanFactoryMetaData;
 import org.jboss.beans.metadata.spi.BeanMetaDataFactory;
 import org.jboss.beans.metadata.spi.DemandMetaData;
@@ -39,7 +56,6 @@ import org.jboss.beans.metadata.spi.ParameterMetaData;
 import org.jboss.beans.metadata.spi.PropertyMetaData;
 import org.jboss.beans.metadata.spi.SupplyMetaData;
 import org.jboss.beans.metadata.spi.ValueMetaData;
-import org.jboss.beans.metadata.plugins.InjectionType;
 import org.jboss.dependency.spi.ControllerMode;
 import org.jboss.dependency.spi.ControllerState;
 import org.jboss.kernel.plugins.deployment.AbstractKernelDeployment;
@@ -222,6 +238,9 @@ public class BeanSchemaBinding
       log.warn("You should use the 2.0 version of the Microcontainer xml. xmlns='urn:jboss:bean-deployer:2.0'");
       
       BeanSchemaBinding.schemaBinding = schemaBinding;
+
+      // ignore XB property replacement
+      schemaBinding.setReplacePropertyRefs(false);
 
       // deployment binding
       TypeBinding deploymentType = schemaBinding.getType(deploymentTypeQName);

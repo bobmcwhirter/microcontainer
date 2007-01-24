@@ -63,6 +63,9 @@ public class JavaBeanSchemaInitializer20 implements SchemaBindingInitializer
 
    public SchemaBinding init(SchemaBinding schema)
    {
+      // ignore XB property replacement
+      schema.setReplacePropertyRefs(false);
+
       // javabean binding
       TypeBinding beanType = schema.getType(javabeanTypeQName);
       beanType.setHandler(JavaBeanHandler.HANDLER);

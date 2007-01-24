@@ -204,6 +204,9 @@ public class BeanSchemaBinding20
     */
    public static void init(SchemaBinding schemaBinding)
    {
+      // ignore XB property replacement
+      schemaBinding.setReplacePropertyRefs(false);
+      // init
       initDeployment(schemaBinding);
       initBean(schemaBinding);
       initBeanFactory(schemaBinding);

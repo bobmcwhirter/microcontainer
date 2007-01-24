@@ -21,10 +21,10 @@
 */
 package org.jboss.beans.metadata.plugins;
 
-import org.jboss.logging.Logger;
-import org.jboss.reflect.spi.TypeInfo;
 import org.jboss.beans.metadata.spi.MetaDataVisitor;
 import org.jboss.beans.metadata.spi.MetaDataVisitorNode;
+import org.jboss.logging.Logger;
+import org.jboss.reflect.spi.TypeInfo;
 
 /**
  * String value.
@@ -90,9 +90,9 @@ public class StringValueMetaData extends AbstractTypeMetaData
       if (typeInfo != info && info != null)
       {
          Object typeValue = typeInfo.convertValue(value);
-         return info.convertValue(typeValue);
+         return info.convertValue(typeValue, true);
       }
-      return typeInfo.convertValue(value);
+      return typeInfo.convertValue(value, true);
    }
 
    public Class getType(MetaDataVisitor visitor, MetaDataVisitorNode previous) throws Throwable

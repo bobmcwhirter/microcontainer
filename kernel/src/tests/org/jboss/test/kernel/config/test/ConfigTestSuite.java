@@ -65,6 +65,8 @@ public class ConfigTestSuite extends TestSuite
       suite.addTest(ProgressionTestCase.suite());
       suite.addTest(ProgressionXMLTestCase.suite());
       suite.addTest(BeanMetaDataBuilderTestCase.suite());
+      suite.addTest(PropertyTestCase.suite());
+      suite.addTest(PropertyXMLTestCase.suite());
 
       return suite;
    }

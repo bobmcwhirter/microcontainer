@@ -76,6 +76,9 @@ public class AOPBeansSchemaInitializer implements SchemaBindingInitializer
    
    public SchemaBinding init(SchemaBinding schema)
    {
+      // ignore XB property replacement
+      schema.setReplacePropertyRefs(false);
+
       // aspect binding
       TypeBinding aspectType = schema.getType(aspectTypeQName);
       BeanSchemaBindingHelper.initBeanFactoryHandlers(aspectType);

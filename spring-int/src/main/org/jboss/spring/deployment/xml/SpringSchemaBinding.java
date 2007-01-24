@@ -169,6 +169,9 @@ public class SpringSchemaBinding
 
    public static void init(SchemaBinding schemaBinding)
    {
+      // ignore XB property replacement
+      schemaBinding.setReplacePropertyRefs(false);
+      // init
       initDeployment(schemaBinding);
       initBean(schemaBinding);
       initArtifacts(schemaBinding);
