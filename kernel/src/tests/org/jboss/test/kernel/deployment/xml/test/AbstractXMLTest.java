@@ -21,12 +21,12 @@
 */
 package org.jboss.test.kernel.deployment.xml.test;
 
+import java.io.Serializable;
 import java.net.URL;
 import java.util.HashSet;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Set;
-import java.io.Serializable;
 
 import org.jboss.beans.metadata.plugins.AbstractArrayMetaData;
 import org.jboss.beans.metadata.plugins.AbstractBeanMetaData;
@@ -123,13 +123,7 @@ public class AbstractXMLTest extends AbstractTestCaseWithSetup
       if (object == null)
          fail("No object from " + name);
 
-      // use this once we update jboss-test.jar
-      if (object instanceof Serializable == false)
-         fail("Object not Serializable: " + object.getClass());
-
-      // TODO - update jboss-test.jar
-      //Serializable serializable = assertInstanceOf(object, Serializable.class, false);
-      Serializable serializable = (Serializable)object;
+      Serializable serializable = assertInstanceOf(object, Serializable.class, false);
 
       // Test that serialize/deserialize works accurately reproduces the object
       object = deserialize(serialize(serializable));
