@@ -21,6 +21,9 @@
 */
 package org.jboss.test.kernel.config.test;
 
+import java.util.ArrayList;
+import java.util.List;
+
 import junit.framework.Test;
 import org.jboss.test.kernel.config.support.MyObject;
 import org.jboss.test.kernel.config.support.XMLUtil;
@@ -45,11 +48,59 @@ public class PropertyXMLTestCase extends PropertyTestCase
       return suite(PropertyXMLTestCase.class);
    }
 
-   protected Object instantiateReplacePropertyValue(boolean replace) throws Throwable
+   protected Object instantiateValue(String type) throws Throwable
    {
       XMLUtil util = bootstrapXML(true);
-      MyObject mybean = (MyObject)util.getBean("MyBean");
+      MyObject mybean = (MyObject)util.getBean("MyBean" + type);
       return mybean.getKey();
+   }
+
+   protected Object instantiateProperty() throws Throwable
+   {
+      return instantiateValue("Property");
+   }
+
+   protected Object instantiateConstructorParameter() throws Throwable
+   {
+      return instantiateValue("Parameter");
+   }
+
+   protected Object instantiatePlainValue() throws Throwable
+   {
+      return instantiateValue("PlainValue");
+   }
+
+   protected List<ObjectCreator> createCreators()
+   {
+      List<ObjectCreator> result = new ArrayList<ObjectCreator>();
+      ObjectCreator property = new ObjectCreator()
+      {
+         public Object createObject() throws Throwable
+         {
+            return instantiateProperty();
+         }
+      };
+      result.add(property);
+/*
+      TODO
+      ObjectCreator parameter = new ObjectCreator()
+      {
+         public Object createObject() throws Throwable
+         {
+            return instantiateConstructorParameter();
+         }
+      };
+      result.add(parameter);
+*/
+      ObjectCreator plainValue = new ObjectCreator()
+      {
+         public Object createObject() throws Throwable
+         {
+            return instantiatePlainValue();
+         }
+      };
+      result.add(plainValue);
+      return result;
    }
 
 }

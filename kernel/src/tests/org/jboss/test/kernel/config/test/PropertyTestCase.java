@@ -21,6 +21,9 @@
 */
 package org.jboss.test.kernel.config.test;
 
+import java.util.Collections;
+import java.util.List;
+
 import junit.framework.Test;
 import org.jboss.beans.metadata.plugins.AbstractPropertyMetaData;
 import org.jboss.beans.metadata.plugins.StringValueMetaData;
@@ -46,17 +49,34 @@ public class PropertyTestCase extends AbstractKernelConfigTest
       return suite(PropertyTestCase.class);
    }
 
+   private List<ObjectCreator> singlePropertyCreator(final boolean replace)
+   {
+      ObjectCreator oc = new ObjectCreator()
+      {
+         public Object createObject() throws Throwable
+         {
+            return instantiateReplacePropertyValue(replace);
+         }
+      };
+      return Collections.singletonList(oc);
+   }
+
    public void testPropertyWithPropertyValue() throws Throwable
    {
-      doTestProperty(true);
+      doTestProperty(true, singlePropertyCreator(true));
    }
 
    public void testPropertyWithIgnoreReplace() throws Throwable
    {
-      doTestProperty(false);
+      doTestProperty(false, createCreators());
    }
 
-   private void doTestProperty(boolean replace) throws Throwable
+   protected List<ObjectCreator> createCreators()
+   {
+      return singlePropertyCreator(false);
+   }
+
+   private void doTestProperty(boolean replace, List<ObjectCreator> ocs) throws Throwable
    {
       SecurityManager sm = suspendSecurity();
       try
@@ -65,12 +85,15 @@ public class PropertyTestCase extends AbstractKernelConfigTest
          String PROP_NAME = "test.property.value";
          String CONST = "PropertyReplaceTestCase";
          System.setProperty(PROP_NAME, CONST);
-         // get property
-         Object value = instantiateReplacePropertyValue(replace);
-         assertNotNull(value);
-         assertEquals(String.class, value.getClass());
-         String checkValue = replace ? CONST : "${" + PROP_NAME + "}"; 
-         assertEquals(checkValue, value);
+         for(ObjectCreator oc : ocs)
+         {
+            // get property
+            Object value = oc.createObject();
+            assertNotNull(value);
+            assertEquals(String.class, value.getClass());
+            String checkValue = replace ? CONST : "${" + PROP_NAME + "}";
+            assertEquals(checkValue, value);
+         }
       }
       finally
       {
@@ -80,11 +103,16 @@ public class PropertyTestCase extends AbstractKernelConfigTest
 
    protected Object instantiateReplacePropertyValue(boolean replace) throws Throwable
    {
-      PropertyMetaData property = new AbstractPropertyMetaData("test", "${test.property.value}", String.class.getName());
+      PropertyMetaData property = new AbstractPropertyMetaData("key", "${test.property.value}", String.class.getName());
       StringValueMetaData svmd = assertInstanceOf(property.getValue(), StringValueMetaData.class, false);
       svmd.setReplace(replace);
       svmd.setConfigurator(bootstrap().getConfigurator());
       return svmd.getValue(null, Thread.currentThread().getContextClassLoader());
+   }
+
+   protected interface ObjectCreator
+   {
+      Object createObject() throws Throwable;
    }
 
 }
