@@ -55,6 +55,7 @@ public class PropertyCharactersHandler extends CharactersHandler
       if (vmd != null && vmd instanceof StringValueMetaData)
       {
          StringValueMetaData previous = (StringValueMetaData) vmd;
+         svmd.setReplace(previous.isReplace());
          String type = previous.getType();
          if (type != null)
             svmd.setType(type);

@@ -53,6 +53,8 @@ public class PlainValueHandler extends DefaultElementHandler
          String localName = attrs.getLocalName(i);
          if ("class".equals(localName))
             value.setType(attrs.getValue(i));
+         else if ("replace".equals(localName))
+            value.setReplace(Boolean.parseBoolean(attrs.getValue(i)));
       }
    }
 }

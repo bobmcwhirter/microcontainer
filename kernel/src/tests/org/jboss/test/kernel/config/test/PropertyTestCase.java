@@ -23,7 +23,7 @@ package org.jboss.test.kernel.config.test;
 
 import junit.framework.Test;
 import org.jboss.beans.metadata.plugins.AbstractPropertyMetaData;
-import org.jboss.beans.metadata.plugins.AbstractTypeMetaData;
+import org.jboss.beans.metadata.plugins.StringValueMetaData;
 import org.jboss.beans.metadata.spi.PropertyMetaData;
 
 /**
@@ -48,17 +48,29 @@ public class PropertyTestCase extends AbstractKernelConfigTest
 
    public void testPropertyWithPropertyValue() throws Throwable
    {
+      doTestProperty(true);
+   }
+
+   public void testPropertyWithIgnoreReplace() throws Throwable
+   {
+      doTestProperty(false);
+   }
+
+   private void doTestProperty(boolean replace) throws Throwable
+   {
       SecurityManager sm = suspendSecurity();
       try
       {
          // set property to be replaced
-         final String CONST = "PropertyReplaceTestCase";
-         System.setProperty("test.property.value", CONST);
+         String PROP_NAME = "test.property.value";
+         String CONST = "PropertyReplaceTestCase";
+         System.setProperty(PROP_NAME, CONST);
          // get property
-         Object value = instantiateReplacePropertyValue();
+         Object value = instantiateReplacePropertyValue(replace);
          assertNotNull(value);
          assertEquals(String.class, value.getClass());
-         assertEquals(CONST, value);
+         String checkValue = replace ? CONST : "${" + PROP_NAME + "}"; 
+         assertEquals(checkValue, value);
       }
       finally
       {
@@ -66,12 +78,13 @@ public class PropertyTestCase extends AbstractKernelConfigTest
       }
    }
 
-   protected Object instantiateReplacePropertyValue() throws Throwable
+   protected Object instantiateReplacePropertyValue(boolean replace) throws Throwable
    {
       PropertyMetaData property = new AbstractPropertyMetaData("test", "${test.property.value}", String.class.getName());
-      AbstractTypeMetaData atmd = assertInstanceOf(property.getValue(), AbstractTypeMetaData.class, false);
-      atmd.setConfigurator(bootstrap().getConfigurator());
-      return atmd.getValue(null, Thread.currentThread().getContextClassLoader());
+      StringValueMetaData svmd = assertInstanceOf(property.getValue(), StringValueMetaData.class, false);
+      svmd.setReplace(replace);
+      svmd.setConfigurator(bootstrap().getConfigurator());
+      return svmd.getValue(null, Thread.currentThread().getContextClassLoader());
    }
 
 }

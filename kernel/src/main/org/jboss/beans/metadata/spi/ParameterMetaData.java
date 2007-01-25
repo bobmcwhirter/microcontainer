@@ -49,5 +49,5 @@ public interface ParameterMetaData extends FeatureMetaData
     * @return index in list
     */
    int getIndex();
-   
+
 }

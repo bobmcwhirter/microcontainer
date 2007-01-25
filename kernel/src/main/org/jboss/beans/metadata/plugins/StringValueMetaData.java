@@ -40,6 +40,12 @@ public class StringValueMetaData extends AbstractTypeMetaData
    private static final Logger log = Logger.getLogger(StringValueMetaData.class);
 
    /**
+    * Do we replace String with System property,
+    * by default it is true.
+    */
+   private boolean replace = true;
+
+   /**
     * Create a new string value
     */
    public StringValueMetaData()
@@ -90,9 +96,9 @@ public class StringValueMetaData extends AbstractTypeMetaData
       if (typeInfo != info && info != null)
       {
          Object typeValue = typeInfo.convertValue(value);
-         return info.convertValue(typeValue, true);
+         return info.convertValue(typeValue, replace);
       }
-      return typeInfo.convertValue(value, true);
+      return typeInfo.convertValue(value, replace);
    }
 
    public Class getType(MetaDataVisitor visitor, MetaDataVisitorNode previous) throws Throwable
@@ -104,4 +110,13 @@ public class StringValueMetaData extends AbstractTypeMetaData
       return super.getType(visitor, previous);
    }
 
+   public boolean isReplace()
+   {
+      return replace;
+   }
+
+   public void setReplace(boolean replace)
+   {
+      this.replace = replace;
+   }
 }

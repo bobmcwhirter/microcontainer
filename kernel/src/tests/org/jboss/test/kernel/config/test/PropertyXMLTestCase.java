@@ -45,7 +45,7 @@ public class PropertyXMLTestCase extends PropertyTestCase
       return suite(PropertyXMLTestCase.class);
    }
 
-   protected Object instantiateReplacePropertyValue() throws Throwable
+   protected Object instantiateReplacePropertyValue(boolean replace) throws Throwable
    {
       XMLUtil util = bootstrapXML(true);
       MyObject mybean = (MyObject)util.getBean("MyBean");

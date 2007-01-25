@@ -26,6 +26,7 @@ import javax.xml.namespace.QName;
 
 import org.jboss.beans.metadata.plugins.AbstractPropertyMetaData;
 import org.jboss.beans.metadata.plugins.StringValueMetaData;
+import org.jboss.beans.metadata.spi.ValueMetaData;
 import org.jboss.xb.binding.sunday.unmarshalling.DefaultElementHandler;
 import org.jboss.xb.binding.sunday.unmarshalling.ElementBinding;
 import org.xml.sax.Attributes;
@@ -54,11 +55,23 @@ public class PropertyHandler extends DefaultElementHandler
          String localName = attrs.getLocalName(i);
          if ("name".equals(localName))
             property.setName(attrs.getValue(i));
-         else if ("class".equals(localName))
+         else if ("class".equals(localName) || "replace".equals(localName))
          {
-            StringValueMetaData svmd = new StringValueMetaData();
-            svmd.setType(attrs.getValue(i));
-            property.setValue(svmd);
+            StringValueMetaData svmd;
+            ValueMetaData vmd = property.getValue();
+            if (vmd == null || vmd instanceof StringValueMetaData == false)
+            {
+               svmd = new StringValueMetaData();
+               property.setValue(svmd);
+            }
+            else
+            {
+               svmd = (StringValueMetaData)vmd;
+            }
+            if ("class".equals(localName))
+               svmd.setType(attrs.getValue(i));
+            else if ("replace".equals(localName))
+               svmd.setReplace(Boolean.parseBoolean(attrs.getValue(i)));
          }
       }
    }
