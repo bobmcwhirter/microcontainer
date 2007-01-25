@@ -21,6 +21,8 @@
 */
 package org.jboss.test.managed.mock;
 
+import java.util.HashMap;
+
 import junit.framework.Test;
 
 import org.jboss.managed.api.Fields;
@@ -108,6 +110,38 @@ public class MockTest extends ManagedTest
       assertEquals("jndiName", "ChangedDS", mo2.getProperty("jndi-name").getValue());
       assertEquals("user", "Scott", mo2.getProperty("user").getValue());
       assertEquals("password", "Tiger", mo2.getProperty("password").getValue());
+   }
+   public void testManagedPropertyMapSerialization()
+      throws Exception
+   {
+      MockDataSourceManagedObject mock = new MockDataSourceManagedObject();
+      ManagedObject mo = WrapperAdvice.wrapManagedObject(mock);
+
+      ManagedProperty jndiName = mo.getProperty("jndi-name");
+      jndiName.setValue("DefaultDS");
+      ManagedProperty user = mo.getProperty("user");
+      user.setValue("Scott");
+      ManagedProperty password = mo.getProperty("password");
+      password.setValue("Tiger");
+      jndiName.setValue("ChangedDS");
+
+      HashMap<String, ManagedProperty> props = new HashMap<String, ManagedProperty>();
+      props.put(jndiName.getName(), jndiName);
+      props.put(user.getName(), user);
+      props.put(password.getName(), password);
+      
+      byte[] data = super.serialize(props);
+      HashMap<String, ManagedProperty> props2 =
+         (HashMap<String, ManagedProperty>) super.deserialize(data);
+
+      ManagedProperty jndiName2 = props2.get("jndi-name");
+      assertEquals("jndiName", "ChangedDS", jndiName2.getValue());
+      ManagedProperty jndiName3 = jndiName2.getManagedObject().getProperty("jndi-name");
+      assertEquals("jndiName", "ChangedDS", jndiName3.getValue());
+      ManagedProperty user2 = props2.get("user");
+      assertEquals("user", "Scott", user2.getValue());
+      ManagedProperty password2 = props2.get("password");
+      assertEquals("password", "Tiger", password.getValue());
    }
 
    protected void configureLogging()

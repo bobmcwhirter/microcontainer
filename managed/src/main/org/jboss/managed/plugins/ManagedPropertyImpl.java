@@ -22,8 +22,9 @@
 package org.jboss.managed.plugins;
 
 import java.io.IOException;
+import java.io.InvalidObjectException;
 import java.io.ObjectInputStream;
-import java.io.ObjectStreamField;
+import java.io.ObjectOutputStream;
 import java.io.Serializable;
 import java.util.Set;
 
@@ -43,15 +44,15 @@ import org.jboss.metatype.api.values.SimpleValue;
 public class ManagedPropertyImpl implements ManagedProperty
 {
    /** The serialVersionUID */
-   private static final long serialVersionUID = 2268454772998030799L;
-   
-   /** The serialized form */
-   private static final ObjectStreamField[] serialPersistentFields =
-      new ObjectStreamField[]
-      {
-         new ObjectStreamField("managedObject", ManagedObject.class),
-         new ObjectStreamField("fields", Fields.class),
-      };
+   private static final long serialVersionUID = 2;
+   /* writeObject format:
+    * - int version
+    * - Fields fields
+    * - ManagedObject managedObject
+    */
+   private static final int VERSION1 = 1;
+   /** The serialization version used by writeObject */
+   private static final int STREAM_VERSION = VERSION1;
 
    /** The managed object */
    private ManagedObject managedObject;
@@ -299,18 +300,40 @@ public class ManagedPropertyImpl implements ManagedProperty
     * @throws IOException for IO problem
     * @throws ClassNotFoundException for a classloading problem
     */
-   private void readObject(ObjectInputStream in) throws IOException, ClassNotFoundException
+   private void readObject(ObjectInputStream in)
+      throws IOException, ClassNotFoundException
    {
-      ObjectInputStream.GetField getField = in.readFields();
-      ManagedObject managedObject = (ManagedObject) getField.get("managedObject", null);
-      Fields fields = (Fields) getField.get("fields", null);
-      try
-      {
-         init(managedObject, fields);
-      }
-      catch (Exception e)
-      {
-         throw new RuntimeException("Error deserializing managed property", e);
-      }
+      int version = in.readInt();
+      if( version == VERSION1 )
+         readVersion1(in);
+      else
+         throw new InvalidObjectException("Unknown version="+version);
+   }
+   /**
+    * Write out the property fields
+    * @param out
+    * @throws IOException
+    */
+   private void writeObject(ObjectOutputStream out)
+      throws IOException
+   {
+      out.writeInt(STREAM_VERSION);
+      out.writeObject(fields);
+      out.writeObject(managedObject);
+   }
+
+   /**
+    * The VERSION1 expected format: 
+    * - Fields fields
+    * - ManagedObject managedObject
+    */
+   private void readVersion1(ObjectInputStream in)
+      throws IOException, ClassNotFoundException
+   {
+      fields = (Fields) in.readObject();
+      name = getField(Fields.NAME, String.class);
+      if (name == null)
+         throw new IOException("No " + Fields.NAME + " in fields");
+      managedObject = (ManagedObject) in.readObject();      
    }
 }
