@@ -83,7 +83,33 @@ public class JavaBeanHandler extends DefaultElementHandler
    public Object endElement(Object o, QName qName, ElementBinding element)
    {
       Holder holder = (Holder) o;
-      return holder.getValue();
+      Object result = holder.getValue();
+      
+      // We still have a constructor because there was no constructor element
+      if (result != null && result instanceof Ctor)
+      {
+         Ctor ctor = (Ctor) result;
+         result = ctor.getValue();
+
+         // The constructor was never run
+         if (result == null)
+         {
+            try
+            {
+               return ctor.newInstance();
+            }
+            catch (Throwable t)
+            {
+               new RuntimeException("Unable to construct object javabean", t);
+            }
+         }
+      }
+      
+      // Sanity check
+      if (result == null)
+         throw new IllegalStateException("Null object creating javabean");
+      
+      return result;
    }
 }
 
