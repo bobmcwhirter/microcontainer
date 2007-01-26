@@ -50,23 +50,19 @@ public class InstantiateAction extends KernelControllerContextAction
       final Joinpoint joinPoint = configurator.getConstructorJoinPoint(info, metaData.getConstructor(), metaData);
 
       Object object = dispatchJoinPoint(context, joinPoint);
+      if (object == null)
+         throw new IllegalStateException("Instantiate joinpoint returned a null object: " + joinPoint);
       context.setTarget(object);
 
       try
       {
-         if (object != null)
+         if (info == null)
          {
-            if (context.getBeanInfo() == null)
-            {
-               info = configurator.getBeanInfo(object.getClass());
-               context.setBeanInfo(info);
-            }
-
-//            if (object instanceof KernelControllerContextAware)
-//               ((KernelControllerContextAware) object).setKernelControllerContext(context);
-
-            controller.addInstantiatedContext(context);
+            info = configurator.getBeanInfo(object.getClass());
+            context.setBeanInfo(info);
          }
+
+         controller.addInstantiatedContext(context);
       }
       catch (Throwable t)
       {
