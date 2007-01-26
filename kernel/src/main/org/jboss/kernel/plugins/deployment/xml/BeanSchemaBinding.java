@@ -509,6 +509,12 @@ public class BeanSchemaBinding
                String localName = attrs.getLocalName(i);
                if ("class".equals(localName))
                   parameter.setType(attrs.getValue(i));
+               else if ("replace".equals(localName))
+               {
+                  StringValueMetaData svmd = new StringValueMetaData();
+                  svmd.setReplace(Boolean.parseBoolean(attrs.getValue(i)));
+                  parameter.setValue(svmd);
+               }
             }
          }
       });
@@ -524,8 +530,17 @@ public class BeanSchemaBinding
          public void setValue(QName qName, ElementBinding element, Object owner, Object value)
          {
             AbstractParameterMetaData parameter = (AbstractParameterMetaData) owner;
-            parameter.setValue((StringValueMetaData) value);
-         }
+            StringValueMetaData svmd = (StringValueMetaData) value;
+            ValueMetaData vmd = parameter.getValue();
+            if (vmd != null && vmd instanceof StringValueMetaData)
+            {
+               StringValueMetaData previous = (StringValueMetaData) vmd;
+               svmd.setReplace(previous.isReplace());
+               String type = previous.getType();
+               if (type != null)
+                  svmd.setType(type);
+            }
+            parameter.setValue(svmd);         }
       });
 
       // bean has a create

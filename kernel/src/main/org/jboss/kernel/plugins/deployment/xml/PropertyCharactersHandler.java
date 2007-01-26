@@ -21,15 +21,11 @@
 */
 package org.jboss.kernel.plugins.deployment.xml;
 
-import javax.xml.namespace.NamespaceContext;
 import javax.xml.namespace.QName;
 
 import org.jboss.beans.metadata.plugins.AbstractPropertyMetaData;
 import org.jboss.beans.metadata.plugins.StringValueMetaData;
-import org.jboss.beans.metadata.spi.ValueMetaData;
-import org.jboss.xb.binding.sunday.unmarshalling.CharactersHandler;
 import org.jboss.xb.binding.sunday.unmarshalling.ElementBinding;
-import org.jboss.xb.binding.sunday.unmarshalling.TypeBinding;
 
 /**
  * PropertyCharactersHandler.
@@ -37,29 +33,15 @@ import org.jboss.xb.binding.sunday.unmarshalling.TypeBinding;
  * @author <a href="adrian@jboss.com">Adrian Brock</a>
  * @version $Revision$
  */
-public class PropertyCharactersHandler extends CharactersHandler
+public class PropertyCharactersHandler extends StringValueCharactersHandler
 {
    /** The interceptor */
    public static final PropertyCharactersHandler HANDLER = new PropertyCharactersHandler();
-
-   public Object unmarshal(QName qName, TypeBinding typeBinding, NamespaceContext nsCtx, org.jboss.xb.binding.metadata.ValueMetaData valueMetaData, String value)
-   {
-      return new StringValueMetaData(value);
-   }
 
    public void setValue(QName qName, ElementBinding element, Object owner, Object value)
    {
       AbstractPropertyMetaData property = (AbstractPropertyMetaData) owner;
       StringValueMetaData svmd = (StringValueMetaData) value;
-      ValueMetaData vmd = property.getValue();
-      if (vmd != null && vmd instanceof StringValueMetaData)
-      {
-         StringValueMetaData previous = (StringValueMetaData) vmd;
-         svmd.setReplace(previous.isReplace());
-         String type = previous.getType();
-         if (type != null)
-            svmd.setType(type);
-      }
-      property.setValue(svmd);
+      setStringValue(property, svmd);
    }
 }

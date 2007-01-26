@@ -22,11 +22,16 @@
 package org.jboss.beans.metadata.plugins;
 
 import java.io.Serializable;
-import java.util.*;
+import java.util.List;
+import java.util.Set;
 
 import org.jboss.beans.info.spi.BeanInfo;
 import org.jboss.beans.metadata.plugins.builder.MutableParameterizedMetaData;
-import org.jboss.beans.metadata.spi.*;
+import org.jboss.beans.metadata.spi.ConstructorMetaData;
+import org.jboss.beans.metadata.spi.MetaDataVisitor;
+import org.jboss.beans.metadata.spi.MetaDataVisitorNode;
+import org.jboss.beans.metadata.spi.ParameterMetaData;
+import org.jboss.beans.metadata.spi.ValueMetaData;
 import org.jboss.kernel.plugins.config.Configurator;
 import org.jboss.kernel.spi.config.KernelConfigurator;
 import org.jboss.kernel.spi.dependency.KernelControllerContext;
@@ -43,7 +48,7 @@ import org.jboss.util.JBossStringBuilder;
  * @version $Revision$
  */
 public class AbstractConstructorMetaData extends AbstractFeatureMetaData
-   implements ConstructorMetaData, MutableParameterizedMetaData, Serializable
+   implements ConstructorMetaData, MutableParameterizedMetaData, ValueMetaDataAware, Serializable
 {
    private static final long serialVersionUID = 1L;
 

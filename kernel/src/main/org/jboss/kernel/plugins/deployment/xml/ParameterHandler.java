@@ -25,19 +25,22 @@ import javax.xml.namespace.NamespaceContext;
 import javax.xml.namespace.QName;
 
 import org.jboss.beans.metadata.plugins.AbstractParameterMetaData;
+import org.jboss.beans.metadata.plugins.StringValueMetaData;
 import org.jboss.xb.binding.sunday.unmarshalling.DefaultElementHandler;
 import org.jboss.xb.binding.sunday.unmarshalling.ElementBinding;
 import org.xml.sax.Attributes;
 
 /**
  * CollectionHandler.
- * 
+ *
  * @author <a href="adrian@jboss.com">Adrian Brock</a>
  * @version $Revision$
  */
 public class ParameterHandler extends DefaultElementHandler
 {
-   /** The handler */
+   /**
+    * The handler
+    */
    public static final ParameterHandler HANDLER = new ParameterHandler();
 
    public Object startElement(Object parent, QName name, ElementBinding element)
@@ -47,12 +50,18 @@ public class ParameterHandler extends DefaultElementHandler
 
    public void attributes(Object o, QName elementName, ElementBinding element, Attributes attrs, NamespaceContext nsCtx)
    {
-      AbstractParameterMetaData parameter = (AbstractParameterMetaData) o;
+      AbstractParameterMetaData parameter = (AbstractParameterMetaData)o;
       for (int i = 0; i < attrs.getLength(); ++i)
       {
          String localName = attrs.getLocalName(i);
          if ("class".equals(localName))
             parameter.setType(attrs.getValue(i));
+         else if ("replace".equals(localName))
+         {
+            StringValueMetaData svmd = new StringValueMetaData();
+            svmd.setReplace(Boolean.parseBoolean(attrs.getValue(i)));
+            parameter.setValue(svmd);
+         }
       }
    }
 }

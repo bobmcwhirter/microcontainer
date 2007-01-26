@@ -21,14 +21,11 @@
 */
 package org.jboss.kernel.plugins.deployment.xml;
 
-import javax.xml.namespace.NamespaceContext;
 import javax.xml.namespace.QName;
 
 import org.jboss.beans.metadata.plugins.AbstractParameterMetaData;
 import org.jboss.beans.metadata.plugins.StringValueMetaData;
-import org.jboss.xb.binding.sunday.unmarshalling.CharactersHandler;
 import org.jboss.xb.binding.sunday.unmarshalling.ElementBinding;
-import org.jboss.xb.binding.sunday.unmarshalling.TypeBinding;
 
 /**
  * ParameterCharactersHandler.
@@ -36,19 +33,14 @@ import org.jboss.xb.binding.sunday.unmarshalling.TypeBinding;
  * @author <a href="adrian@jboss.com">Adrian Brock</a>
  * @version $Revision$
  */
-public class ParameterCharactersHandler extends CharactersHandler
+public class ParameterCharactersHandler extends StringValueCharactersHandler
 {
    /** The interceptor */
    public static final ParameterCharactersHandler HANDLER = new ParameterCharactersHandler();
 
-   public Object unmarshal(QName qName, TypeBinding typeBinding, NamespaceContext nsCtx, org.jboss.xb.binding.metadata.ValueMetaData valueMetaData, String value)
-   {
-      return new StringValueMetaData(value);
-   }
-
    public void setValue(QName qName, ElementBinding element, Object owner, Object value)
    {
       AbstractParameterMetaData parameter = (AbstractParameterMetaData) owner;
-      parameter.setValue((StringValueMetaData) value);
+      setStringValue(parameter, (StringValueMetaData)value);
    }
 }

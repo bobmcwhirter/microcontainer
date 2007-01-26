@@ -81,8 +81,6 @@ public class PropertyXMLTestCase extends PropertyTestCase
          }
       };
       result.add(property);
-/*
-      TODO
       ObjectCreator parameter = new ObjectCreator()
       {
          public Object createObject() throws Throwable
@@ -91,7 +89,6 @@ public class PropertyXMLTestCase extends PropertyTestCase
          }
       };
       result.add(parameter);
-*/
       ObjectCreator plainValue = new ObjectCreator()
       {
          public Object createObject() throws Throwable

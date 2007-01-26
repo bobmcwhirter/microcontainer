@@ -42,7 +42,7 @@ import org.jboss.util.JBossStringBuilder;
  * @version $Revision$
  */
 public class AbstractParameterMetaData extends AbstractFeatureMetaData
-   implements ParameterMetaData, Serializable
+   implements ParameterMetaData, ValueMetaDataAware, Serializable
 {
    private static final long serialVersionUID = 1L;
 

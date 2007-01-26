@@ -31,9 +31,9 @@ import org.jboss.beans.metadata.spi.MetaDataVisitorNode;
 import org.jboss.beans.metadata.spi.PropertyMetaData;
 import org.jboss.beans.metadata.spi.ValueMetaData;
 import org.jboss.dependency.spi.ControllerState;
-import org.jboss.kernel.spi.dependency.KernelControllerContext;
-import org.jboss.kernel.spi.config.KernelConfigurator;
 import org.jboss.kernel.plugins.config.Configurator;
+import org.jboss.kernel.spi.config.KernelConfigurator;
+import org.jboss.kernel.spi.dependency.KernelControllerContext;
 import org.jboss.util.JBossStringBuilder;
 
 /**
@@ -43,7 +43,7 @@ import org.jboss.util.JBossStringBuilder;
  * @version $Revision$
  */
 public class AbstractPropertyMetaData extends AbstractFeatureMetaData
-   implements PropertyMetaData, TypeProvider, Serializable
+   implements PropertyMetaData, ValueMetaDataAware, TypeProvider, Serializable
 {
    private static final long serialVersionUID = 1L;
 
