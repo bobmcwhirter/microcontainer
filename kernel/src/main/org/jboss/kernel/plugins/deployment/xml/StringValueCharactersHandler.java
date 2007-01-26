@@ -31,10 +31,12 @@ import org.jboss.xb.binding.sunday.unmarshalling.CharactersHandler;
 import org.jboss.xb.binding.sunday.unmarshalling.TypeBinding;
 
 /**
- * PropertyCharactersHandler.
+ * Abstract StringValueMetaData helper.
+ * Looks for previous value on the ValueMetaDataAware.
+ * If the previous value is StringValueMD it applies its
+ * property values to the new StringValueMetaData instance.
  *
- * @author <a href="adrian@jboss.com">Adrian Brock</a>
- * @version $Revision: 59990 $
+ * @author <a href="ales.justin@jboss.com">Ales Justin</a>
  */
 public abstract class StringValueCharactersHandler extends CharactersHandler
 {
