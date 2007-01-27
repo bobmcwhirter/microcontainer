@@ -32,6 +32,7 @@ import org.jboss.beans.metadata.spi.MetaDataVisitor;
 import org.jboss.beans.metadata.spi.MetaDataVisitorNode;
 import org.jboss.util.JBossObject;
 import org.jboss.util.JBossStringBuilder;
+import org.jboss.util.StringPropertyReplacer;
 
 /**
  * Metadata for an annotation.
@@ -47,7 +48,9 @@ public class AbstractAnnotationMetaData extends JBossObject
    public String annotation;
 
    protected Annotation ann;
-   
+
+   protected boolean replace = true;
+
    /**
     * Create a new annotation meta data
     */
@@ -66,12 +69,27 @@ public class AbstractAnnotationMetaData extends JBossObject
       this.annotation = annotation;
    }
 
+   public boolean isReplace()
+   {
+      return replace;
+   }
+
+   public void setReplace(boolean replace)
+   {
+      this.replace = replace;
+   }
+
    public Annotation getAnnotationInstance()
    {
       try
       {
+         String annString = annotation;
+         if (replace)
+         {
+            annString = StringPropertyReplacer.replaceProperties(annString);
+         }
          //FIXME [JBMICROCONT-99] [JBAOP-278] Use the loader for the bean?
-         ann = (Annotation)AnnotationCreator.createAnnotation(annotation, Thread.currentThread().getContextClassLoader());
+         ann = (Annotation)AnnotationCreator.createAnnotation(annString, Thread.currentThread().getContextClassLoader());
       }
       catch (Exception e)
       {
@@ -81,10 +99,10 @@ public class AbstractAnnotationMetaData extends JBossObject
       {
          throw new RuntimeException("Error creating annotation for " + annotation, e);
       }
-      
+
       return ann;
    }
-   
+
    public void initialVisit(MetaDataVisitor visitor)
    {
       visitor.initialVisit(this);
@@ -99,12 +117,12 @@ public class AbstractAnnotationMetaData extends JBossObject
    {
       return null;
    }
-   
+
    public void toString(JBossStringBuilder buffer)
    {
       buffer.append("expr=").append(ann);
    }
-   
+
    public void toShortString(JBossStringBuilder buffer)
    {
       buffer.append(ann);

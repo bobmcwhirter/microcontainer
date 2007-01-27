@@ -459,7 +459,6 @@ $Id$
            ]]>
          </xsd:documentation>
       </xsd:annotation>
-<!--      <xsd:attribute name="value" type="xsd:string" use="required"/>-->
       <xsd:restriction base="xsd:string">
          <xsd:whiteSpace value="collapse"/>
       </xsd:restriction>
