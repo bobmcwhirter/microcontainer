@@ -1,0 +1,47 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<deployment xmlns="urn:jboss:bean-deployer:2.0">
+
+   <bean name="Repository" class="org.jboss.metadata.plugins.repository.basic.BasicMetaDataRepository"/>
+
+   <bean name="AspectManager" class="org.jboss.aop.AspectManager">
+      <constructor factoryClass="org.jboss.aop.AspectManager" factoryMethod="instance"/>
+   </bean>
+
+   <beanfactory name="DeployersAdvice" class="org.jboss.test.microcontainer.support.deployers.DeployerAspects">
+   </beanfactory>
+
+   <bean name="DeployersAspect" class="org.jboss.aop.microcontainer.beans.Aspect">
+      <property name="advice"><inject bean="DeployersAdvice"/></property>
+      <property name="manager"><inject bean="AspectManager"/></property>
+   </bean>
+   
+   <bean name="DeployersBinding" class="org.jboss.aop.microcontainer.beans.AspectBinding">
+      <!-- This fails to match anything 
+      -->
+      <property name="pointcut">execution(* $instanceof{org.jboss.test.microcontainer.support.deployers.IDeployer}->$implements(org.jboss.test.microcontainer.support.deployers.IDeployer))</property>
+      <!-- This matches the prepareDeploy method
+      <property name="pointcut">execution(* $instanceof{org.jboss.test.microcontainer.support.deployers.IDeployer}->prepareDeploy(..))</property>
+      -->
+      <!-- This matches all IDeployer methods
+         <property name="pointcut">execution(* $instanceof{org.jboss.test.microcontainer.support.deployers.IDeployer}->*(..))</property>
+      -->
+      <property name="aspect"><inject bean="DeployersAspect" property="definition"/></property>
+      <property name="manager"><inject bean="AspectManager"/></property>
+   </bean>
+   
+   <bean name="MainDeployer" class="org.jboss.test.microcontainer.support.deployers.SampleMainDeployer">
+      <property name="deployers">
+         <list>
+            <bean name="SampleDeployer1" class="org.jboss.test.microcontainer.support.deployers.SampleDeployer">
+               <property name="type">aop</property>
+            </bean>
+            <bean name="SampleDeployer2" class="org.jboss.test.microcontainer.support.deployers.SampleDeployer">
+               <property name="type">beans</property>
+            </bean>
+         </list>
+      </property>
+   </bean>
+   
+
+</deployment>
