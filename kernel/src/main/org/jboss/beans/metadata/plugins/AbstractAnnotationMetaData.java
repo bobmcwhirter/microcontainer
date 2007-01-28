@@ -32,7 +32,6 @@ import org.jboss.beans.metadata.spi.MetaDataVisitor;
 import org.jboss.beans.metadata.spi.MetaDataVisitorNode;
 import org.jboss.util.JBossObject;
 import org.jboss.util.JBossStringBuilder;
-import org.jboss.util.StringPropertyReplacer;
 
 /**
  * Metadata for an annotation.
@@ -84,10 +83,13 @@ public class AbstractAnnotationMetaData extends JBossObject
       try
       {
          String annString = annotation;
+/*
+         // TODO - JBMICROCONT-143 + tests
          if (replace)
          {
             annString = StringPropertyReplacer.replaceProperties(annString);
          }
+*/
          //FIXME [JBMICROCONT-99] [JBAOP-278] Use the loader for the bean?
          ann = (Annotation)AnnotationCreator.createAnnotation(annString, Thread.currentThread().getContextClassLoader());
       }
