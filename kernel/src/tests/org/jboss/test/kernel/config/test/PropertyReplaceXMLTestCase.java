@@ -31,21 +31,21 @@ import org.jboss.test.kernel.config.support.XMLUtil;
 /**
  * @author <a href="mailto:ales.justin@jboss.com">Ales Justin</a>
  */
-public class PropertyXMLTestCase extends PropertyTestCase
+public class PropertyReplaceXMLTestCase extends PropertyReplaceTestCase
 {
-   public PropertyXMLTestCase(String name)
+   public PropertyReplaceXMLTestCase(String name)
    {
       super(name);
    }
 
-   public PropertyXMLTestCase(String name, boolean xmltest)
+   public PropertyReplaceXMLTestCase(String name, boolean xmltest)
    {
       super(name, xmltest);
    }
 
    public static Test suite()
    {
-      return suite(PropertyXMLTestCase.class);
+      return suite(PropertyReplaceXMLTestCase.class);
    }
 
    protected Object instantiateValue(String type) throws Throwable

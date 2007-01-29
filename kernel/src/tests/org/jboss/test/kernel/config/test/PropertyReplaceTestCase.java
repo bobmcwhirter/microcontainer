@@ -30,28 +30,30 @@ import org.jboss.beans.metadata.plugins.StringValueMetaData;
 import org.jboss.beans.metadata.spi.PropertyMetaData;
 
 /**
+ * Property replace test cases: ${x} - looking for System property named x.
+ * 
  * @author <a href="mailto:ales.justin@jboss.com">Ales Justin</a>
  */
-public class PropertyTestCase extends AbstractKernelConfigTest
+public class PropertyReplaceTestCase extends AbstractKernelConfigTest
 {
-   public PropertyTestCase(String name)
+   public PropertyReplaceTestCase(String name)
    {
       super(name);
    }
 
-   public PropertyTestCase(String name, boolean xmltest)
+   public PropertyReplaceTestCase(String name, boolean xmltest)
    {
       super(name, xmltest);
    }
 
    public static Test suite()
    {
-      return suite(PropertyTestCase.class);
+      return suite(PropertyReplaceTestCase.class);
    }
 
    private List<ObjectCreator> singlePropertyCreator(final boolean replace)
    {
-      ObjectCreator oc = new ObjectCreator()
+      PropertyReplaceTestCase.ObjectCreator oc = new PropertyReplaceTestCase.ObjectCreator()
       {
          public Object createObject() throws Throwable
          {
@@ -71,12 +73,12 @@ public class PropertyTestCase extends AbstractKernelConfigTest
       doTestProperty(false, createCreators());
    }
 
-   protected List<ObjectCreator> createCreators()
+   protected List<PropertyReplaceTestCase.ObjectCreator> createCreators()
    {
       return singlePropertyCreator(false);
    }
 
-   private void doTestProperty(boolean replace, List<ObjectCreator> ocs) throws Throwable
+   private void doTestProperty(boolean replace, List<PropertyReplaceTestCase.ObjectCreator> ocs) throws Throwable
    {
       SecurityManager sm = suspendSecurity();
       try
@@ -85,7 +87,7 @@ public class PropertyTestCase extends AbstractKernelConfigTest
          String PROP_NAME = "test.property.value";
          String CONST = "PropertyReplaceTestCase";
          System.setProperty(PROP_NAME, CONST);
-         for(ObjectCreator oc : ocs)
+         for(PropertyReplaceTestCase.ObjectCreator oc : ocs)
          {
             // get property
             Object value = oc.createObject();
