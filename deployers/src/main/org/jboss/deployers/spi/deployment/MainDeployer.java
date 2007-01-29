@@ -43,6 +43,13 @@ import org.jboss.util.graph.Graph;
  */
 public interface MainDeployer
 {
+   public enum ProcessMode {
+      /** Partial processing for validation of deployments metadata, dependencies */
+      Validation,
+      /** Full processing to runtime microcontainer components */
+      Runtime
+   };
+
    /**
     * Get a deployment context
     * 
@@ -115,20 +122,15 @@ public interface MainDeployer
 
    /**
     * Process the outstanding deployments.
-    * This is equivalent to calling process(-1, Integer.MAX_VALUE).
+    * Equivalent to process(ProcessMode.Runtime);
+    *
     */
    void process();
    /**
-    * Process all the outstanding deployments through the deployers whose
-    * relative order is in the range [begin, end), which begin <= ro < end.
-    * 
-    * @param begin - the minimum relative order value of of deployers to
-    * use
-    * @param end - the max relative order value of of deployers to
-    * use
-    * @return the top-level DeploymentContexts that were processed 
+    * Process the outstanding deployments.
+    * @param mode, the mode in which processing should be done.
     */
-   Collection<DeploymentContext> process(int begin, int end);
+   Collection<DeploymentContext> process(ProcessMode mode);
    
    /**
     * Shutdown. Removes all the deployments.
