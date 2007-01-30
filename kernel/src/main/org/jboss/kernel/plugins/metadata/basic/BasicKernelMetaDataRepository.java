@@ -191,15 +191,14 @@ public class BasicKernelMetaDataRepository extends AbstractKernelMetaDataReposit
     * Add property annotations
     * 
     * @param mutable the mutable
-    * @param beanMetaData the bean metadata
-    * @param beanInfo the bean info
+    * @param context the kernel controller contex
     */
    private void addPropertyAnnotations(MemoryMetaDataLoader mutable, KernelControllerContext context)
    {
       BeanMetaData beanMetaData = context.getBeanMetaData();
       if (beanMetaData == null)
          return;
-      
+
       Set<PropertyMetaData> properties = beanMetaData.getProperties();
 
       if (properties == null || properties.size() == 0)
