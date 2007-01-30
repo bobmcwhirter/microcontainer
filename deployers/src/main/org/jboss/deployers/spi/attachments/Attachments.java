@@ -173,4 +173,16 @@ public interface Attachments
     * @return true if there are any attachments, false otherwise.
     */
    public boolean hasAttachments();
+
+   /**
+    * Get the number of changes that have happened. 
+    * @return Number of adds/removes that have happened since
+    * creation or clearChangeCount.
+    */
+   public int getChangeCount();
+
+   /**
+    * Reset the change count to zero.
+    */
+   public void clearChangeCount();
 }

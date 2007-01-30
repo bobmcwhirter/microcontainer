@@ -57,7 +57,7 @@ public class AbstractDeploymentUnit extends AbstractAttachments
 
    /** The deployment context */
    private DeploymentContext deploymentContext;
-   
+
    /**
     * Create a new AbstractDeploymentUnit.
     * 
@@ -314,6 +314,27 @@ public class AbstractDeploymentUnit extends AbstractAttachments
          hasAttachments |= deploymentContext.getPredeterminedManagedObjects().hasAttachments();
       }
       return hasAttachments;
+   }
+
+   /**
+    * Get the transientAttachments and transientManagedObjects
+    * change counts sum.
+    */
+   public int getChangeCount()
+   {
+      int count = deploymentContext.getTransientAttachments().getChangeCount()
+         + deploymentContext.getTransientManagedObjects().getChangeCount();
+      return count;
+   }
+
+   /**
+    * Clear the transientAttachments and transientManagedObjects
+    * change counts.
+    */
+   public void clearChangeCount()
+   {
+      deploymentContext.getTransientAttachments().clearChangeCount();
+      deploymentContext.getTransientManagedObjects().clearChangeCount();
    }
 
    @SuppressWarnings("unchecked")

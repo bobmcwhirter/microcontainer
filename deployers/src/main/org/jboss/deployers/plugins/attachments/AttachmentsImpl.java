@@ -24,6 +24,7 @@ package org.jboss.deployers.plugins.attachments;
 import java.util.Collections;
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
+import java.util.concurrent.atomic.AtomicInteger;
 
 /**
  * Attachments implementation
@@ -37,6 +38,7 @@ public class AttachmentsImpl extends AbstractAttachments
 
    /** The attachments */
    private Map<String, Object> attachments = new ConcurrentHashMap<String, Object>();
+   private AtomicInteger changeCount = new AtomicInteger();
 
    public Map<String, Object> getAttachments()
    {
@@ -46,6 +48,7 @@ public class AttachmentsImpl extends AbstractAttachments
    {
       attachments.clear();
       attachments.putAll(map);
+      changeCount.addAndGet(map.size());
    }
 
    public Object addAttachment(String name, Object attachment)
@@ -54,7 +57,9 @@ public class AttachmentsImpl extends AbstractAttachments
          throw new IllegalArgumentException("Null name");
       if (attachment == null)
          throw new IllegalArgumentException("Null attachment");
-      return attachments.put(name, attachment);
+      Object value = attachments.put(name, attachment);
+      changeCount.incrementAndGet();
+      return value;
    }
 
    public Object getAttachment(String name)
@@ -75,16 +80,29 @@ public class AttachmentsImpl extends AbstractAttachments
    {
       if (name == null)
          throw new IllegalArgumentException("Null name");
-      return attachments.remove(name);
+      Object value = attachments.remove(name);
+      changeCount.incrementAndGet();
+      return value;
    }
 
    public void clear()
    {
       attachments.clear();
+      changeCount.incrementAndGet();
    }
 
    public boolean hasAttachments()
    {
       return attachments.isEmpty() == false;
+   }
+
+   public int getChangeCount()
+   {
+      return changeCount.intValue();
+   }
+
+   public void clearChangeCount()
+   {
+      changeCount.set(0);
    }
 }
