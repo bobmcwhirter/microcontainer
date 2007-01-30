@@ -19,13 +19,7 @@
    <bean name="DeployersBinding" class="org.jboss.aop.microcontainer.beans.AspectBinding">
       <!-- This fails to match anything 
       -->
-      <property name="pointcut">execution(* $instanceof{org.jboss.test.microcontainer.support.deployers.IDeployer}->$implements(org.jboss.test.microcontainer.support.deployers.IDeployer))</property>
-      <!-- This matches the prepareDeploy method
-      <property name="pointcut">execution(* $instanceof{org.jboss.test.microcontainer.support.deployers.IDeployer}->prepareDeploy(..))</property>
-      -->
-      <!-- This matches all IDeployer methods
-         <property name="pointcut">execution(* $instanceof{org.jboss.test.microcontainer.support.deployers.IDeployer}->*(..))</property>
-      -->
+      <property name="pointcut">execution(* $instanceof{org.jboss.test.microcontainer.support.deployers.IDeployer}->$implements{org.jboss.test.microcontainer.support.deployers.IDeployer}(..))</property>
       <property name="aspect"><inject bean="DeployersAspect" property="definition"/></property>
       <property name="manager"><inject bean="AspectManager"/></property>
    </bean>
