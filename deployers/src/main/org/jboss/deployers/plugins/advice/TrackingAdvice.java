@@ -60,6 +60,10 @@ public class TrackingAdvice
       Object target = mi.getTargetObject();
       Object[] args = mi.getArguments();
       Object value = mi.invokeNext();
+      // check for legal args length
+      if (args == null || args.length < 2)
+         throw new IllegalArgumentException("Illegal method invocation, possibly not adding attachment?");
+
       String name;
       Object attachment;
       // addAttachment(Class<T> type, T attachment)
@@ -86,6 +90,10 @@ public class TrackingAdvice
       Object target = mi.getTargetObject();
       Object[] args = mi.getArguments();
       Object value = mi.invokeNext();
+      // check for legal args length
+      if (args == null || args.length < 1)
+         throw new IllegalArgumentException("Illegal method invocation, possibly not removing attachment?");
+
       String name;
       // removeAttachment(Class<T> type)
       if( args[0] instanceof Class )
@@ -105,13 +113,12 @@ public class TrackingAdvice
 
    public static Map<String, Object> getAttachmentsForTarget(Object key)
    {
-      Map<String, Object> attachments = attachmentsByTarget.get(key);
-      return attachments;
+      return attachmentsByTarget.get(key);
    }
+
    public static Map<String, Object> clearAttachmentsForTarget(Object key)
    {
-      Map<String, Object> attachments = attachmentsByTarget.remove(key);
-      return attachments;
+      return attachmentsByTarget.remove(key);
    }
 
    private static void addAttachment(Object target, String name, Object attachment)
@@ -124,6 +131,7 @@ public class TrackingAdvice
       }
       attachments.put(name, attachment);
    }
+
    private static void removeAttachment(Object target, String name)
    {
       Map<String, Object> attachments = attachmentsByTarget.get(target);
