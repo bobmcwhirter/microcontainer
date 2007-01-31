@@ -127,7 +127,7 @@ public class AbstractDemandMetaData extends JBossObject
    {
       buffer.append("demand=").append(demand);
       if (whenRequired != null)
-         buffer.append(" whenRequired").append(whenRequired.getStateString());
+         buffer.append(" whenRequired=").append(whenRequired.getStateString());
    }
    
    public void toShortString(JBossStringBuilder buffer)
