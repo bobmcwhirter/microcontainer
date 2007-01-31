@@ -74,9 +74,11 @@
       <path refid="jboss.jbossxb.classpath"/>
       <path refid="jboss/jboss.vfs.classpath"/>
       <path refid="oswego.concurrent.classpath"/>
+      <path refid="javassist.javassist.classpath"/>
       <path refid="junit.junit.classpath"/>
       <path refid="apache.log4j.classpath"/>
       <path refid="jboss.test.classpath"/>
+      <path refid="trove.trove.classpath"/>
     </path>
 
     <!-- ======= -->
@@ -97,6 +99,8 @@
 
     <!-- The combined dependant module classpath -->
     <path id="dependentmodule.classpath">
+      <path refid="jboss.aop-mc-int.classpath"/>
+      <path refid="jboss.aop.classpath"/>
       <path refid="jboss.container.classpath"/>
       <path refid="jboss.dependency.classpath"/>
       <path refid="jboss.kernel.classpath"/>
