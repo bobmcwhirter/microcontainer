@@ -63,8 +63,6 @@ public interface KernelMetaDataRepository extends KernelObject
     * Add metadata to the bean.
     * 
     * @param context the context
-    * @param beanMetaData the bean metadata
-    * @param beanInfo the bean info
     */
    void addMetaData(KernelControllerContext context);
 
