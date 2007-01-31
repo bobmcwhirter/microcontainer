@@ -1,0 +1,18 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE aop SYSTEM "jboss-aop_1_0.dtd">
+<aop>
+
+   <!-- This is the default AOP setup when the test doesn't having anything specific -->
+
+   <!-- ==== Advices ==== -->
+   <aspect name="track" class="org.jboss.deployers.plugins.advice.TrackingAdvice"/>
+
+   <!-- The attachments advice stack -->
+   <bind pointcut="execution(* $instanceof{org.jboss.deployers.spi.attachments.Attachments}->addAttachment(..))">
+      <advice name="addAttachment" aspect="track"/>
+   </bind>
+   <bind pointcut="execution(* $instanceof{org.jboss.deployers.spi.attachments.Attachments}->removeAttachment(..))">
+      <advice name="removeAttachment" aspect="track"/>
+   </bind>
+   
+</aop>

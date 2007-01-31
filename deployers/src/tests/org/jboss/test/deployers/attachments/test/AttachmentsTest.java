@@ -25,6 +25,8 @@ import junit.framework.Test;
 import junit.framework.TestSuite;
 
 import org.jboss.deployers.spi.attachments.Attachments;
+import org.jboss.test.AbstractTestCaseWithSetup;
+import org.jboss.test.AbstractTestDelegate;
 import org.jboss.test.BaseTestCase;
 
 /**
@@ -33,13 +35,26 @@ import org.jboss.test.BaseTestCase;
  * @author <a href="adrian@jboss.com">Adrian Brock</a>
  * @version $Revision: 1.1 $
  */
-public abstract class AttachmentsTest extends BaseTestCase
+public abstract class AttachmentsTest extends AbstractTestCaseWithSetup
 {
    public static Test suite()
    {
       return new TestSuite(AttachmentsTest.class);
    }
-   
+   /**
+    * A static getDelegate method that is called by the AbstractTestDelegate
+    * getDelegate logic to obtain the test specific delegate. This sets the
+    * default delegate for ManagedTests to ManagedTestDelegate.
+    * 
+    * @param clazz the test class
+    * @return the delegate
+    * @throws Exception for any error
+    */
+   public static AbstractTestDelegate getDelegate(Class clazz) throws Exception
+   {
+      return new AttachmentsTestDelegate(clazz);
+   }
+
    public AttachmentsTest(String name)
    {
       super(name);
@@ -48,7 +63,16 @@ public abstract class AttachmentsTest extends BaseTestCase
    protected abstract Attachments getAttachments();
    
    protected abstract Attachments getMutable();
-   
+
+   /**
+    * Adds a call to configureLogging after super.setUp.
+    */
+   protected void setUp() throws Exception
+   {
+      super.setUp();
+      configureLogging();
+   }
+
    public void testAddAttachmentErrors() throws Exception
    {
       Attachments mutable = getMutable();
@@ -127,10 +151,10 @@ public abstract class AttachmentsTest extends BaseTestCase
    public void testAddAttachmentByName() throws Exception
    {
       ExpectedAttachments expected = new ExpectedAttachments();
-      assertAddFreshAttachmentByName(expected, "name1", "attachment");
-      assertAddFreshAttachmentByName(expected, "name2", "attachment");
+      assertAddFreshAttachmentByName(expected, "name1", "attachment1");
+      assertAddFreshAttachmentByName(expected, "name2", "attachment2");
       
-      assertAddReplaceAttachmentByName(expected, "name1", "different", "attachment");
+      assertAddReplaceAttachmentByName(expected, "name1", "different1", "attachment1");
    }
 
    protected void assertAddFreshAttachmentByName(ExpectedAttachments expected, String name, Object attachment)
@@ -170,10 +194,10 @@ public abstract class AttachmentsTest extends BaseTestCase
    public void testAddAttachmentByNameAndType() throws Exception
    {
       ExpectedAttachments expected = new ExpectedAttachments();
-      assertAddFreshAttachmentByNameAndType(expected, "name1", "attachment", String.class);
-      assertAddFreshAttachmentByNameAndType(expected, "name2", "attachment", String.class);
+      assertAddFreshAttachmentByNameAndType(expected, "name1", "attachment1", String.class);
+      assertAddFreshAttachmentByNameAndType(expected, "name2", "attachment2", String.class);
       
-      assertAddReplaceAttachmentByNameAndType(expected, "name1", "different", "attachment", String.class);
+      assertAddReplaceAttachmentByNameAndType(expected, "name1", "different1", "attachment1", String.class);
    }
 
    protected <T> void assertAddFreshAttachmentByNameAndType(ExpectedAttachments expected, String name, T attachment, Class<T> expectedType)
@@ -280,9 +304,9 @@ public abstract class AttachmentsTest extends BaseTestCase
       ExpectedAttachments expected = new ExpectedAttachments();
       assertRemoveNotPresentAttachmentByName(expected, "name1");
       
-      assertAddAttachmentByName(expected, "name1", "attachment");
-      assertAddAttachmentByName(expected, "name2", "different");
-      assertRemoveAttachmentByName(expected, "name1", "attachment");
+      assertAddAttachmentByName(expected, "name1", "attachment1");
+      assertAddAttachmentByName(expected, "name2", "different2");
+      assertRemoveAttachmentByName(expected, "name1", "attachment1");
    }
 
    protected void assertRemoveNotPresentAttachmentByName(ExpectedAttachments expected, String name)
@@ -324,9 +348,9 @@ public abstract class AttachmentsTest extends BaseTestCase
       ExpectedAttachments expected = new ExpectedAttachments();
       assertRemoveNotPresentAttachmentByNameAndType(expected, "name1", String.class);
       
-      assertAddAttachmentByNameAndType(expected, "name1", "attachment", String.class);
-      assertAddAttachmentByNameAndType(expected, "name2", "different", String.class);
-      assertRemoveAttachmentByNameAndType(expected, "name1", "attachment", String.class);
+      assertAddAttachmentByNameAndType(expected, "name1", "attachment1", String.class);
+      assertAddAttachmentByNameAndType(expected, "name2", "different2", String.class);
+      assertRemoveAttachmentByNameAndType(expected, "name1", "attachment1", String.class);
    }
 
    protected <T> void assertRemoveNotPresentAttachmentByNameAndType(ExpectedAttachments expected, String name, Class<T> expectedType)

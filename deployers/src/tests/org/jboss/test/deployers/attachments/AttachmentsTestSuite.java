@@ -26,6 +26,7 @@ import junit.framework.TestSuite;
 import junit.textui.TestRunner;
 
 import org.jboss.test.deployers.attachments.test.AttachmentsUnitTestCase;
+import org.jboss.test.deployers.attachments.test.DeploymentAttachmentsInterceptUnitTestCase;
 import org.jboss.test.deployers.attachments.test.DeploymentUnitAttachmentHierarchyUnitTestCase;
 import org.jboss.test.deployers.attachments.test.DeploymentUnitAttachmentsUnitTestCase;
 import org.jboss.test.deployers.attachments.test.DeploymentUnitPredeterminedManagedObjectsUnitTestCase;
@@ -61,6 +62,7 @@ public class AttachmentsTestSuite extends TestSuite
       suite.addTest(DeploymentUnitTransientManagedObjectsUnitTestCase.suite());
       suite.addTest(DeploymentUnitTransientAttachmentsUnitTestCase.suite());
       suite.addTest(DeploymentUnitAttachmentHierarchyUnitTestCase.suite());
+      suite.addTest(DeploymentAttachmentsInterceptUnitTestCase.suite());
 
       return suite;
    }
