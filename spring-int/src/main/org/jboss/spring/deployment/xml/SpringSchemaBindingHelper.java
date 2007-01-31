@@ -21,7 +21,18 @@
 */
 package org.jboss.spring.deployment.xml;
 
-import org.jboss.kernel.plugins.deployment.xml.*;
+import org.jboss.kernel.plugins.deployment.xml.BeanPropertyInterceptor;
+import org.jboss.kernel.plugins.deployment.xml.EntryHandler;
+import org.jboss.kernel.plugins.deployment.xml.EntryKeyInterceptor;
+import org.jboss.kernel.plugins.deployment.xml.EntryValueInterceptor;
+import org.jboss.kernel.plugins.deployment.xml.MapEntryInterceptor;
+import org.jboss.kernel.plugins.deployment.xml.NullValueElementInterceptor;
+import org.jboss.kernel.plugins.deployment.xml.PlainValueCharactersHandler;
+import org.jboss.kernel.plugins.deployment.xml.PropHandler;
+import org.jboss.kernel.plugins.deployment.xml.PropertiesHandler;
+import org.jboss.kernel.plugins.deployment.xml.PropertyCharactersHandler;
+import org.jboss.kernel.plugins.deployment.xml.PropertyHandler;
+import org.jboss.kernel.plugins.deployment.xml.ValueMetaDataElementInterceptor;
 import org.jboss.xb.binding.sunday.unmarshalling.TypeBinding;
 
 /**
@@ -74,7 +85,7 @@ public class SpringSchemaBindingHelper
    // here value only takes simple type
    public static void initValueHandler(TypeBinding typeBinding)
    {
-      typeBinding.setHandler(PlainValueHandler.HANDLER);
+      typeBinding.setHandler(SpringPlainValueHandler.HANDLER);
       // value can take characters
       typeBinding.setSimpleType(PlainValueCharactersHandler.HANDLER);
    }
@@ -114,7 +125,7 @@ public class SpringSchemaBindingHelper
       typeBinding.pushInterceptor(SpringSchemaBinding.refQName, EntryValueInterceptor.INTERCEPTOR);
 
       // entry has value
-      typeBinding.pushInterceptor(SpringSchemaBinding.valueQName, EntryValueInterceptor.INTERCEPTOR);
+      typeBinding.pushInterceptor(SpringSchemaBinding.valueQName, StringEntryValueInterceptor.INTERCEPTOR);
 
       // entry can take a list
       typeBinding.pushInterceptor(SpringSchemaBinding.listQName, EntryValueInterceptor.INTERCEPTOR);

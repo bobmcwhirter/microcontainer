@@ -26,16 +26,16 @@
             <value>ones</value>
          </set>
       </property>
-      <!--
-         <property name="map">
+      <property name="mymap">
+         <map key-type="java.lang.String">
             <entry>
                <key>
                   <value>test_key</value>
                </key>
-               <value>myvalue</value>
+               <value type="java.lang.String">myvalue</value>
             </entry>
-         </property>
-      -->
+         </map>
+      </property>
    </bean>
 
 </beans>

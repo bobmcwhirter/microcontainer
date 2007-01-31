@@ -596,9 +596,8 @@ The alias name to define for the bean.
             <xsd:element name="idref" type="idrefType"/>
             <xsd:element name="value" type="valueType"/>
             <xsd:element name="null" type="nullType"/>
-            <xsd:element name="list" type="listOrSetType"/>
-            <xsd:element name="set" type="listOrSetType"/>
-
+            <xsd:element name="list" type="listType"/>
+            <xsd:element name="set" type="setType"/>
             <xsd:element name="map" type="mapType"/>
             <xsd:element name="props" type="propsType"/>
             <xsd:any namespace="##other" processContents="strict"/>
@@ -895,8 +894,8 @@ too generic: for example, in case of a collection element.
             <xsd:element name="idref" type="idrefType"/>
             <xsd:element name="value" type="valueType"/>
             <xsd:element name="null" type="nullType"/>
-            <xsd:element name="list" type="listOrSetType"/>
-            <xsd:element name="set" type="listOrSetType"/>
+            <xsd:element name="list" type="listType"/>
+            <xsd:element name="set" type="setType"/>
             <xsd:element name="map" type="mapType"/>
             <xsd:element name="props" type="propsType"/>
             <xsd:any namespace="##other" processContents="strict" minOccurs="0" maxOccurs="unbounded"/>
@@ -905,7 +904,7 @@ too generic: for example, in case of a collection element.
 
    </xsd:group>
 
-   <xsd:element name="list" type="listOrSetType">
+   <xsd:element name="list" type="listType">
       <xsd:annotation>
          <xsd:documentation><![CDATA[
 	A list can contain multiple inner bean, ref, collection, or value
@@ -916,7 +915,7 @@ too generic: for example, in case of a collection element.
 			]]></xsd:documentation>
       </xsd:annotation>
    </xsd:element>
-   <xsd:element name="set" type="listOrSetType">
+   <xsd:element name="set" type="setType">
       <xsd:annotation>
 
          <xsd:documentation><![CDATA[
@@ -987,7 +986,6 @@ The key of the property entry.
    <xsd:complexType name="propertyType">
       <xsd:sequence>
          <xsd:element name="description" type="descriptionType" minOccurs="0"/>
-
          <xsd:choice minOccurs="0" maxOccurs="1">
             <xsd:element name="meta" type="metaType"/>
             <xsd:element name="bean" type="beanType"/>
@@ -995,8 +993,8 @@ The key of the property entry.
             <xsd:element name="idref" type="idrefType"/>
             <xsd:element name="value" type="valueType"/>
             <xsd:element name="null" type="nullType"/>
-            <xsd:element name="list" type="listOrSetType"/>
-            <xsd:element name="set" type="listOrSetType"/>
+            <xsd:element name="list" type="listType"/>
+            <xsd:element name="set" type="setType"/>
             <xsd:element name="map" type="mapType"/>
             <xsd:element name="props" type="propsType"/>
             <xsd:any namespace="##other" processContents="strict"/>
@@ -1032,6 +1030,9 @@ The key of the property entry.
 
    <!-- base collection type -->
    <xsd:complexType name="baseCollectionType">
+      <xsd:choice minOccurs="0" maxOccurs="unbounded">
+         <xsd:group ref="collectionElements"/>
+      </xsd:choice>
       <xsd:attribute name="merge" type="defaultable-boolean">
          <xsd:annotation>
 
@@ -1040,9 +1041,10 @@ The key of the property entry.
 				]]></xsd:documentation>
          </xsd:annotation>
       </xsd:attribute>
+      <xsd:attribute name="value-type" type="xsd:string" use="optional"/>
    </xsd:complexType>
 
-   <!-- base type for collections that have (possibly) typed nested values -->
+   <!-- base type for collections that have (possibly) typed nested values
    <xsd:complexType name="typedCollectionType">
       <xsd:complexContent>
          <xsd:extension base="baseCollectionType">
@@ -1058,11 +1060,20 @@ The key of the property entry.
          </xsd:extension>
       </xsd:complexContent>
    </xsd:complexType>
+   -->
 
    <!-- 'map' element type -->
    <xsd:complexType name="mapType">
+      <xsd:sequence>
+         <xsd:element name="entry" type="entryType" minOccurs="0" maxOccurs="unbounded"/>
+      </xsd:sequence>
+      <xsd:attribute name="key-type" type="xsd:string" use="optional"/>
+   </xsd:complexType>
+
+<!--
+   <xsd:complexType name="mapType">
       <xsd:complexContent>
-         <xsd:extension base="typedCollectionType">
+         <xsd:extension base="baseCollectionType">
             <xsd:sequence>
                <xsd:choice minOccurs="0" maxOccurs="unbounded">
                   <xsd:element name="entry" type="entryType"/>
@@ -1080,12 +1091,13 @@ The key of the property entry.
          </xsd:extension>
       </xsd:complexContent>
    </xsd:complexType>
+-->
 
    <!-- 'entry' element type -->
    <xsd:complexType name="entryType">
       <xsd:sequence>
          <xsd:element name="key" type="keyType" minOccurs="0"/>
-         <xsd:group ref="collectionElements"/>
+         <xsd:group ref="collectionElements" minOccurs="0"/>
       </xsd:sequence>
       <xsd:attribute name="key" type="xsd:string">
          <xsd:annotation>
@@ -1106,7 +1118,6 @@ The key of the property entry.
       </xsd:attribute>
       <xsd:attribute name="value" type="xsd:string">
          <xsd:annotation>
-
             <xsd:documentation><![CDATA[
 	A short-cut alternative to a nested "<value>...</value>"
 	element.
@@ -1123,11 +1134,15 @@ The key of the property entry.
    </xsd:complexType>
 
    <!-- 'list' and 'set' collection type -->
-   <xsd:complexType name="listOrSetType">
+   <xsd:complexType name="listType">
       <xsd:complexContent>
-         <xsd:extension base="typedCollectionType">
-            <xsd:group ref="collectionElements"/>
-         </xsd:extension>
+         <xsd:extension base="baseCollectionType" />
+      </xsd:complexContent>
+   </xsd:complexType>
+
+   <xsd:complexType name="setType">
+      <xsd:complexContent>
+         <xsd:extension base="baseCollectionType" />
       </xsd:complexContent>
    </xsd:complexType>
 
@@ -1139,7 +1154,6 @@ The key of the property entry.
                <xsd:choice minOccurs="0" maxOccurs="unbounded">
                   <xsd:element name="prop" type="propType"/>
                </xsd:choice>
-
             </xsd:sequence>
          </xsd:extension>
       </xsd:complexContent>

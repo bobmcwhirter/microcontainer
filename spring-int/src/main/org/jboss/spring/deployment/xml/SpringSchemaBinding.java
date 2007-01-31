@@ -105,12 +105,17 @@ public class SpringSchemaBinding
    /**
     * The list binding
     */
-   public static final QName listOrSetTypeQName = new QName(SPRING_DEPLOYER_NS, "listOrSetType");
+   public static final QName listTypeQName = new QName(SPRING_DEPLOYER_NS, "listType");
 
    /**
     * The list element name
     */
    public static final QName listQName = new QName(SPRING_DEPLOYER_NS, "list");
+
+   /**
+    * The set binding
+    */
+   public static final QName setTypeQName = new QName(SPRING_DEPLOYER_NS, "setType");
 
    /**
     * The set element name
@@ -224,9 +229,13 @@ public class SpringSchemaBinding
       TypeBinding valueType = schemaBinding.getType(valueTypeQName);
       SpringSchemaBindingHelper.initValueHandler(valueType);
 
-      // list or set
-      TypeBinding collectionType = schemaBinding.getType(listOrSetTypeQName);
-      SpringSchemaBindingHelper.initCollectionHandler(collectionType);
+      // list
+      TypeBinding listType = schemaBinding.getType(listTypeQName);
+      SpringSchemaBindingHelper.initCollectionHandler(listType);
+
+      // set
+      TypeBinding setType = schemaBinding.getType(setTypeQName);
+      SpringSchemaBindingHelper.initCollectionHandler(setType);
 
       // map
       TypeBinding mapType = schemaBinding.getType(mapTypeQName);
@@ -237,7 +246,7 @@ public class SpringSchemaBinding
       SpringSchemaBindingHelper.initEntryHandler(entryType);
 
       // key type
-      TypeBinding keyType = schemaBinding.getType(entryTypeQName);
+      TypeBinding keyType = schemaBinding.getType(keyTypeQName);
       SpringSchemaBindingHelper.initKeyHandler(keyType);
 
       // props

@@ -21,15 +21,15 @@
 */
 package org.jboss.spring.deployment.xml;
 
-import javax.xml.namespace.QName;
-
 import java.util.ArrayList;
 import java.util.List;
+import javax.xml.namespace.QName;
 
-import org.jboss.xb.binding.sunday.unmarshalling.DefaultElementInterceptor;
 import org.jboss.beans.metadata.plugins.AbstractBeanMetaData;
 import org.jboss.beans.metadata.spi.BeanMetaDataFactory;
+import org.jboss.kernel.plugins.deployment.AbstractKernelDeployment;
 import org.jboss.spring.metadata.AbstractSpringDeployment;
+import org.jboss.xb.binding.sunday.unmarshalling.DefaultElementInterceptor;
 
 /**
  * @author <a href="mailto:ales.justin@jboss.com">Ales Justin</a>
@@ -43,24 +43,30 @@ public class SpringBeansInterceptor extends DefaultElementInterceptor
 
    public void add(Object parent, Object child, QName name)
    {
-      AbstractSpringDeployment deployment = (AbstractSpringDeployment) parent;
-      AbstractBeanMetaData bean = (AbstractBeanMetaData) child;
+      AbstractKernelDeployment deployment = (AbstractKernelDeployment)parent;
+      AbstractBeanMetaData bean = (AbstractBeanMetaData)child;
       List<BeanMetaDataFactory> beans = deployment.getBeanFactories();
       if (beans == null)
       {
          beans = new ArrayList<BeanMetaDataFactory>();
          deployment.setBeanFactories(beans);
       }
-      // set deployment defaults, if not already set per bean
-      if (bean.getCreate() == null && deployment.getCreate() != null)
-      {
-         bean.setCreate(deployment.getCreate());
-      }
-      if (bean.getDestroy() == null && deployment.getDestroy() != null)
-      {
-         bean.setDestroy(deployment.getDestroy());
-      }
       beans.add(bean);
+
+      // handle bean lifecycle
+      if (deployment instanceof AbstractSpringDeployment)
+      {
+         AbstractSpringDeployment sd = (AbstractSpringDeployment)deployment;
+         // set deployment defaults, if not already set per bean
+         if (bean.getCreate() == null && sd.getCreate() != null)
+         {
+            bean.setCreate(sd.getCreate());
+         }
+         if (bean.getDestroy() == null && sd.getDestroy() != null)
+         {
+            bean.setDestroy(sd.getDestroy());
+         }
+      }
    }
 
 }
