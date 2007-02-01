@@ -22,6 +22,7 @@
 package org.jboss.spring.deployment.xml;
 
 import org.jboss.kernel.plugins.deployment.xml.BeanPropertyInterceptor;
+import org.jboss.kernel.plugins.deployment.xml.DeploymentWildcardHandler;
 import org.jboss.kernel.plugins.deployment.xml.EntryHandler;
 import org.jboss.kernel.plugins.deployment.xml.EntryKeyInterceptor;
 import org.jboss.kernel.plugins.deployment.xml.EntryValueInterceptor;
@@ -33,7 +34,9 @@ import org.jboss.kernel.plugins.deployment.xml.PropertiesHandler;
 import org.jboss.kernel.plugins.deployment.xml.PropertyCharactersHandler;
 import org.jboss.kernel.plugins.deployment.xml.PropertyHandler;
 import org.jboss.kernel.plugins.deployment.xml.ValueMetaDataElementInterceptor;
+import org.jboss.kernel.plugins.deployment.xml.ValueWildcardHandler;
 import org.jboss.xb.binding.sunday.unmarshalling.TypeBinding;
+import org.jboss.xb.binding.sunday.unmarshalling.WildcardBinding;
 
 /**
  * @author <a href="mailto:ales.justin@jboss.com">Ales Justin</a>
@@ -48,6 +51,8 @@ public class SpringSchemaBindingHelper
       typeBinding.pushInterceptor(SpringSchemaBinding.beanQName, SpringBeansInterceptor.INTERCEPTOR);
       // todo alias
       // todo import
+      // Deployment can take wildcards
+      typeBinding.getWildcard().setWildcardHandler(DeploymentWildcardHandler.HANDLER);
    }
 
    public static void initBeanHandler(TypeBinding typeBinding)
@@ -176,6 +181,12 @@ public class SpringSchemaBindingHelper
 
       // type has a null
       typeBinding.pushInterceptor(SpringSchemaBinding.nullQName, NullValueElementInterceptor.NULLVALUES);
+
+      // type has wildcard
+      WildcardBinding wcb = typeBinding.getWildcard();
+      if (wcb == null)
+         throw new IllegalStateException("Missing wildcard binding for type: " + typeBinding.getQName());
+      wcb.setWildcardHandler(ValueWildcardHandler.WILDCARD);
    }
 
 }
