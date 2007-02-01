@@ -7,7 +7,7 @@
    </bean>
 
    <bean xmlns="urn:jboss:bean-deployer:2.0" name="oldBean" class="org.jboss.test.spring.support.OldBean">
-      <property name="javaBeanString"><value>JavaBean</value></property>
+      <property name="javaBeanString">JavaBean</property>
    </bean>
 
 </beans>
