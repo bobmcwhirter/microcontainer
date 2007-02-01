@@ -1,0 +1,50 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<deployment xmlns="urn:jboss:bean-deployer:2.0">
+   <bean name="ProfileService" class="java.lang.Object"/>
+   
+   <bean name="JBossServer" class="org.jboss.test.microcontainer.support.deployers.JBossServer"/>
+
+   <bean name="JMXKernel" class="org.jboss.test.microcontainer.support.deployers.JMXKernel">
+      <property name="kernel"><inject bean="jboss.kernel:service=Kernel"/></property>
+      <property name="serverImpl"><inject bean="JBossServer"/></property>
+   </bean>
+
+   <bean name="AspectManager" class="org.jboss.test.microcontainer.support.deployers.AspectManagerBean">
+      <constructor>
+         <parameter><![CDATA[
+	         <aop>
+				</aop>]]>
+	      </parameter>
+      </constructor>
+       <property name="mbeanServer"><inject bean="JMXKernel" property="mbeanServer"/></property>
+   </bean>
+
+   <beanfactory name="DeployersAdvice" class="org.jboss.test.microcontainer.support.deployers.DeployerAspects">
+   </beanfactory>
+
+   <bean name="DeployersAspect" class="org.jboss.aop.microcontainer.beans.Aspect">
+      <property name="advice"><inject bean="DeployersAdvice"/></property>
+      <property name="manager"><inject bean="AspectManager" property="aspectManager"/></property>
+   </bean>
+   
+   <bean name="DeployersBinding" class="org.jboss.aop.microcontainer.beans.AspectBinding">
+      <property name="pointcut">execution(* $instanceof{org.jboss.test.microcontainer.support.deployers.IDeployer}->$implements{org.jboss.test.microcontainer.support.deployers.IDeployer}(..))</property>
+      <property name="aspect"><inject bean="DeployersAspect" property="definition"/></property>
+      <property name="manager"><inject bean="AspectManager" property="aspectManager"/></property>
+   </bean>
+   
+   <bean name="MainDeployer" class="org.jboss.test.microcontainer.support.deployers.SampleMainDeployer">
+      <property name="deployers">
+         <list>
+            <bean name="SampleDeployer1" class="org.jboss.test.microcontainer.support.deployers.SampleDeployer">
+               <property name="type">aop</property>
+            </bean>
+            <bean name="SampleDeployer2" class="org.jboss.test.microcontainer.support.deployers.SampleDeployer">
+               <property name="type">beans</property>
+            </bean>
+         </list>
+      </property>
+   </bean>
+
+</deployment>
