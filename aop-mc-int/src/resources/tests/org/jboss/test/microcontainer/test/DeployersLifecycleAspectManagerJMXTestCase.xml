@@ -1,10 +1,10 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
 <deployment xmlns="urn:jboss:bean-deployer:2.0">
-   <bean name="ProfileService" class="java.lang.Object"/>
-   
    <bean name="JBossServer" class="org.jboss.test.microcontainer.support.deployers.JBossServer"/>
 
+   <bean name="ProfileService" class="java.lang.Object"/>
+   
    <bean name="JMXKernel" class="org.jboss.test.microcontainer.support.deployers.JMXKernel">
       <property name="kernel"><inject bean="jboss.kernel:service=Kernel"/></property>
       <property name="serverImpl"><inject bean="JBossServer"/></property>
