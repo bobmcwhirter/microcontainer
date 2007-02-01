@@ -83,7 +83,7 @@ $Id: mc-spring-beans_2_0.xsd 56471 2006-08-31 10:44:05 +0200 (Pon, 11 dec 2006) 
             <xsd:element name="import" type="importType"/>
             <xsd:element name="alias" type="aliasType"/>
             <xsd:element name="bean" type="beanType"/>
-            <xsd:any namespace="##other" processContents="strict" minOccurs="0" maxOccurs="unbounded"/>
+            <xsd:any namespace="##other" processContents="strict"/>
          </xsd:choice>
       </xsd:sequence>
       <xsd:attribute name="default-lazy-init" default="false" type="xsd:boolean">
