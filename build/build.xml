@@ -337,7 +337,32 @@
   <!-- ================================================================== -->
 
   <target name="main" depends="most"
-	  description="Executes the default target (most)."/>
+	  description="Executes the default target (most).">
+	  <mkdir dir="output/lib"/>
+	  <copy todir="output/lib">  	 
+	  		<fileset dir="../aop-mc-int/output/lib">
+	  			<include name="*.jar" />
+	  		</fileset>
+	  		<fileset dir="../container/output/lib">
+	  			<include name="*.jar" />
+	  		</fileset>
+	  		<fileset dir="../dependency/output/lib">
+	  			<include name="*.jar" />
+	  		</fileset>
+	  		<fileset dir="../deployers/output/lib">
+	  			<include name="*.jar" />
+	  		</fileset>
+	  		<fileset dir="../kernel/output/lib">
+	  			<include name="*.jar" />
+	  		</fileset>  	 
+	  		<fileset dir="../managed/output/lib">
+	  			<include name="*.jar" />
+	  		</fileset>  	 
+	  		<fileset dir="../metatype/output/lib">
+	  			<include name="*.jar" />
+	  		</fileset>  	 
+	  	</copy>
+  </target>
 
   <target name="most" depends="createthirdparty, modules-most"
 	  description="Executes all modules and builds most everything."/>
