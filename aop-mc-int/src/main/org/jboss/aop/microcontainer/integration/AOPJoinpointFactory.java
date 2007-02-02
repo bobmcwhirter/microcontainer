@@ -21,14 +21,11 @@
 */
 package org.jboss.aop.microcontainer.integration;
 
-import org.jboss.joinpoint.plugins.BasicConstructorJoinPoint;
 import org.jboss.joinpoint.plugins.BasicJoinpointFactory;
 import org.jboss.joinpoint.spi.ConstructorJoinpoint;
 import org.jboss.joinpoint.spi.JoinpointException;
-import org.jboss.reflect.plugins.introspection.IntrospectionTypeInfoFactory;
 import org.jboss.reflect.spi.ClassInfo;
 import org.jboss.reflect.spi.ConstructorInfo;
-import org.jboss.reflect.spi.TypeInfoFactory;
 
 /**
  * The existence of this class is the signal to the kernel that we want to use the aop-mc integration.
@@ -41,7 +38,6 @@ import org.jboss.reflect.spi.TypeInfoFactory;
  */
 public class AOPJoinpointFactory extends BasicJoinpointFactory
 {
-   private ConstructorInfo ctorInfo;
    /**
     * Create a new AOPJoinpointFactory.
     * 
@@ -54,68 +50,6 @@ public class AOPJoinpointFactory extends BasicJoinpointFactory
 
    public ConstructorJoinpoint getConstructorJoinpoint(ConstructorInfo constructorInfo) throws JoinpointException
    {
-      ConstructorInfo info = getAOPJoinpointConstructorInfo(constructorInfo);
-      
-      if (info != null)
-      {
-         return createAOPConstructorJoinpoint(info, constructorInfo);
-      }
-      else
-      {
-         return super.getConstructorJoinpoint(constructorInfo);
-      }
-   }
-   
-   private synchronized ConstructorInfo getAOPJoinpointConstructorInfo(ConstructorInfo currentConstructorInfo) throws JoinpointException
-   {
-      if (ctorInfo != null)
-      {
-         return ctorInfo;
-      }
-      
-      Class clazz = AOPDeployedChecker.getClassIfExists(
-            classInfo.getType().getClassLoader(), 
-            "org.jboss.aop.microcontainer.integration.AOPConstructorJoinpoint");
-      
-      if (clazz == null)
-      {
-         return null;
-      }
-      
-      TypeInfoFactory factory = new IntrospectionTypeInfoFactory();
-      ClassInfo info = (ClassInfo)factory.getTypeInfo(clazz);
-      ConstructorInfo[] ctors = info.getDeclaredConstructors();
-      for (int i = 0 ; i < ctors.length ; i++)
-      {
-         if (ctors[i].getParameterTypes().length == 1)
-         {
-            if (ctors[i].getParameterTypes()[0].getName().equals(ConstructorInfo.class.getName()) == false)
-            {
-               continue;
-            }            
-            ctorInfo = ctors[i];
-            break;
-         }
-      }
-      
-      if (ctorInfo == null)
-      {
-         throw new JoinpointException("No constructor found with the reqiured signature AOPConstructorJoinpoint(ConstructorInfo)");
-      }
-      return ctorInfo;
-   }
-   
-   private ConstructorJoinpoint createAOPConstructorJoinpoint(ConstructorInfo info, ConstructorInfo aopCtorInfo) throws JoinpointException
-   {
-      ConstructorJoinpoint jp = new BasicConstructorJoinPoint(info);
-      jp.setArguments(new Object[] {aopCtorInfo});
-      try
-      {
-         return (ConstructorJoinpoint)jp.dispatch();
-      }
-      catch (Throwable e)
-      {
-         throw new JoinpointException("Error calling AOPConstructorJoinpoint constructor", e);
-      }     
+	   return new AOPConstructorJoinpoint(constructorInfo);
    }
 }

@@ -139,6 +139,7 @@ public class AspectBinding
       AdviceBinding binding = new AdviceBinding(name, pointcut, null);
       binding.addInterceptorFactory(new AdviceFactory(aspect, method));
       manager.addBinding(binding);
+//      System.out.println("----> Added binding " + pointcut);
       log.debug("Bound binding " + name);
    }
    

@@ -167,32 +167,6 @@
         <include name="schema/**"/>
      </fileset>
    </jar>
-   <jar jarfile="${build.lib}/${jar.prefix}-boot.jar" manifest="${build.etc}/default.mf">
-     <fileset dir="${build.classes}">
-   	  <include name="org/jboss/aop/microcontainer/beans/xml/*.class"/>
-   	  <include name="org/jboss/aop/microcontainer/beans/AspectBeanMetaDataFactory.class"/>
-   	  <include name="org/jboss/aop/microcontainer/beans/LifecycleBeanMetaDataFactory.class"/>
-        <include name="org/jboss/aop/microcontainer/integration/AOPDependencyBuilder.class"/>
-     	  <include name="org/jboss/aop/microcontainer/integration/AOPDeployedChecker.class"/>
-   	  <include name="org/jboss/aop/microcontainer/integration/AOPJoinpointFactory.class"/>
-        <include name="org/jboss/aop/microcontainer/integration/AOPJoinpointFactoryBuilder.class"/>
-     	 <include name="org/jboss/aop/microcontainer/integration/AOPMetaDataContextFactory.class"/>
-     </fileset>
-     <fileset dir="${build.resources}">
-        <include name="schema/**"/>
-     </fileset>
-   </jar>
-   <jar jarfile="${build.lib}/${jar.prefix}-deployer.jar" manifest="${build.etc}/default.mf">
-      <fileset dir="${build.classes}">
-         <exclude name="org/jboss/aop/microcontainer/beans/xml/*.class"/>
-         <exclude name="org/jboss/aop/microcontainer/beans/AspectBeanMetaDataFactory.class"/>
-         <exclude name="org/jboss/aop/microcontainer/beans/LifecycleBeanMetaDataFactory.class"/>
-         <exclude name="org/jboss/aop/microcontainer/integration/AOPDependencyBuilder.class"/>
-      	<exclude name="org/jboss/aop/microcontainer/integration/AOPDeployedChecker.class"/>
-         <exclude name="org/jboss/aop/microcontainer/integration/AOPJoinpointFactory.class"/>
-         <exclude name="org/jboss/aop/microcontainer/integration/AOPJoinpointFactoryBuilder.class"/>
-      </fileset>
-   </jar>
     <jar jarfile="${build.lib.retro}/${jar.prefix}14.jar" manifest="${build.etc}/default.mf">
       <fileset dir="${build.classes.retro}"/>
       <fileset dir="${build.resources}">
