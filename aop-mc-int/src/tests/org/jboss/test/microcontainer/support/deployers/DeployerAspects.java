@@ -61,7 +61,7 @@ public class DeployerAspects
    {
       log.debug(invocation);
       MethodInvocation mi = (MethodInvocation) invocation;
-      String methodName = mi.getActualMethod().getName();
+      String methodName = mi.getMethod().getName();
       Object value = null;
       if( methodName.equals("prepareDeploy") )
          value = prepareDeploy(mi);
@@ -72,7 +72,10 @@ public class DeployerAspects
       else if( methodName.equals("commitUndeploy") )
          value = commitUndeploy(mi);
       else
+      {
+         log.debug("Method " + methodName + " is not advised");
          value = invocation.invokeNext();
+      }
       return value;
    }
 

@@ -21,11 +21,15 @@
 */ 
 package org.jboss.test.microcontainer.support.deployers;
 
+import java.security.AccessController;
+import java.security.PrivilegedActionException;
+import java.security.PrivilegedExceptionAction;
+
 import javax.management.MBeanServer;
+import javax.management.MBeanServerFactory;
 
 import org.jboss.kernel.Kernel;
 
-import com.sun.management.jmx.MBeanServerImpl;
 
 /**
  * 
@@ -36,7 +40,24 @@ public class JMXKernel
 {
    Kernel kernel;
    JBossServer serverImpl;
-   MBeanServer mbeanServer = new MBeanServerImpl();
+   MBeanServer mbeanServer = MBeanServerFactory.createMBeanServer();
+   
+   public JMXKernel() throws Exception
+   {
+      try
+      {
+         mbeanServer = (MBeanServer)AccessController.doPrivileged(new PrivilegedExceptionAction() {
+               public Object run() throws Exception 
+               {
+                  return MBeanServerFactory.createMBeanServer();
+               }
+            });
+      }
+      catch (PrivilegedActionException e)
+      {
+         throw (Exception)e.getCause();
+      }
+   }
 
    public Kernel getKernel()
    {

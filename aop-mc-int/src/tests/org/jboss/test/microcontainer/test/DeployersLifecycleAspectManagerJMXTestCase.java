@@ -23,12 +23,9 @@ package org.jboss.test.microcontainer.test;
 
 import java.util.HashSet;
 
-import javax.management.MBeanServer;
-
 import junit.framework.Test;
 
 import org.jboss.aop.microcontainer.junit.AOPMicrocontainerTest;
-import org.jboss.test.microcontainer.support.deployers.AspectManagerBean;
 import org.jboss.test.microcontainer.support.deployers.DeployerAspects;
 import org.jboss.test.microcontainer.support.deployers.IMainDeployer;
 import org.jboss.test.microcontainer.support.deployers.SampleDeployer;
@@ -53,16 +50,6 @@ public class DeployersLifecycleAspectManagerJMXTestCase extends AOPMicrocontaine
    
    public void testBean() throws Exception
    {
-//      //Make sure that the mbean server and aspect manager are installed properly
-//      MBeanServer server = (MBeanServer)getBean("MBeanServer");
-//      assertNotNull(server);
-//      AspectManagerBean am = (AspectManagerBean)getBean("AspectManager");
-//      assertNotNull(am);
-//      MBeanServer amServer = am.getMbeanServer();
-//      assertSame(server, amServer);
-//      assertEquals(server, amServer);
-      
-      //Now let's get on with the test
       IMainDeployer md = (IMainDeployer) getBean("MainDeployer");
       assertNotNull(md);
 

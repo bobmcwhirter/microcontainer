@@ -50,7 +50,7 @@ public class MainDeployerAspects
    {
       log.debug(invocation);
       MethodInvocation mi = (MethodInvocation) invocation;
-      String methodName = mi.getActualMethod().getName();
+      String methodName = mi.getMethod().getName();
       Object value = null;
       if( methodName.equals("process") )
          value = process(mi);

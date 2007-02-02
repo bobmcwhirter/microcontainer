@@ -21,10 +21,6 @@
 */ 
 package org.jboss.test.microcontainer.support.deployers;
 
-import javax.management.MBeanServer;
-
-import com.sun.management.jmx.MBeanServerImpl;
-
 /**
  * 
  * @author <a href="kabir.khan@jboss.com">Kabir Khan</a>
