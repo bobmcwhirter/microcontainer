@@ -24,15 +24,25 @@ package org.jboss.kernel.plugins.dependency;
 import java.security.AccessControlContext;
 import java.security.AccessController;
 import java.security.PrivilegedAction;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.Iterator;
+import java.util.List;
+import java.util.Set;
+import java.util.Stack;
 
 import org.jboss.beans.info.spi.BeanInfo;
-import org.jboss.beans.metadata.spi.*;
-import org.jboss.beans.metadata.plugins.AbstractValueMetaData;
 import org.jboss.beans.metadata.plugins.AbstractParameterMetaData;
+import org.jboss.beans.metadata.spi.BeanMetaData;
+import org.jboss.beans.metadata.spi.MetaDataVisitor;
+import org.jboss.beans.metadata.spi.MetaDataVisitorNode;
+import org.jboss.beans.metadata.spi.ParameterMetaData;
 import org.jboss.dependency.plugins.AbstractControllerContext;
 import org.jboss.dependency.plugins.AbstractDependencyInfo;
-import org.jboss.dependency.spi.*;
+import org.jboss.dependency.spi.Controller;
+import org.jboss.dependency.spi.ControllerMode;
+import org.jboss.dependency.spi.ControllerState;
+import org.jboss.dependency.spi.DependencyInfo;
+import org.jboss.dependency.spi.DependencyItem;
 import org.jboss.joinpoint.spi.TargettedJoinpoint;
 import org.jboss.kernel.Kernel;
 import org.jboss.kernel.plugins.config.Configurator;
@@ -220,29 +230,16 @@ public class AbstractKernelControllerContext extends AbstractControllerContext i
 
    public Object get(final String name) throws Throwable
    {
-      return execute(new JoinPointCreator()
-      {
-         public boolean isSecure()
-         {
-            return false;
-         }
-
-         public TargettedJoinpoint createJoinpoint(ClassLoader cl, KernelConfigurator configurator) throws Throwable
-         {
-            return configurator.getPropertyGetterJoinPoint(getBeanInfo(), name);
-         }
-      });
+      if (info == null)
+         throw new IllegalArgumentException("Null BeanInfo");
+      return info.getProperty(name).get(getTarget());
    }
 
    public void set(final String name, final Object value) throws Throwable
    {
-      execute(new JoinPointCreator()
-      {
-         public TargettedJoinpoint createJoinpoint(ClassLoader cl, KernelConfigurator configurator) throws Throwable
-         {
-            return configurator.getPropertySetterJoinPoint(getBeanInfo(), name, cl, new AbstractValueMetaData(value));
-         }
-      });
+      if (info == null)
+         throw new IllegalArgumentException("Null BeanInfo");
+      info.getProperty(name).set(getTarget(), value);
    }
 
    public Object invoke(final String name, final Object[] parameters, final String[] signature) throws Throwable
