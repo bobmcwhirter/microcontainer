@@ -61,7 +61,7 @@ public class AspectBinding
    /**
     * Set the aspectDefinition.
     * 
-    * @param aspectDefinition The aspectDefinition to set.
+    * @param aspect The aspectDefinition to set.
     */
    public void setAspect(AspectDefinition aspect)
    {
