@@ -216,8 +216,6 @@
               version="${jbossbuild.repository.version}"
               >
       <artifact id="jboss-aop-mc-int.jar"/>
-      <artifact id="jboss-aop-mc-int-boot.jar"/>
-      <artifact id="jboss-aop-mc-int-deployer.jar"/>
       <artifact id="jboss-container.jar"/>
       <artifact id="jboss-dependency.jar"/>
       <artifact id="jboss-deployers.jar"/>
@@ -233,8 +231,6 @@
       <artifact id="jboss-microcontainer-src.zip"/>
       <export>
          <include input="jboss-aop-mc-int.jar"/>
-         <include input="jboss-aop-mc-int-boot.jar"/>
-         <include input="jboss-aop-mc-int-deployer.jar"/>
          <include input="jboss-container.jar"/>
          <include input="jboss-dependency.jar"/>
          <include input="jboss-deployers.jar"/>
