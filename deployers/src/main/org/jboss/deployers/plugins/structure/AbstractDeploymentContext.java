@@ -29,6 +29,8 @@ import java.util.List;
 import java.util.Set;
 import java.util.concurrent.CopyOnWriteArraySet;
 
+import org.jboss.aop.proxy.container.AOPProxyFactoryParameters;
+import org.jboss.aop.proxy.container.GeneratedAOPProxyFactory;
 import org.jboss.deployers.plugins.attachments.AttachmentsImpl;
 import org.jboss.deployers.spi.DeploymentException;
 import org.jboss.deployers.spi.attachments.Attachments;
@@ -109,8 +111,9 @@ public class AbstractDeploymentContext
    private transient Attachments transientAttachments = new AttachmentsImpl();
    
    /** The managed objects */
-   private transient Attachments transientManagedObjects = new AttachmentsImpl();
-   
+   private transient Attachments transientManagedObjects =
+      createProxy(new AttachmentsImpl(), Attachments.class);
+
    /** Throwable */
    private Throwable problem;
    
@@ -724,5 +727,29 @@ public class AbstractDeploymentContext
       buffer.append(System.identityHashCode(this));
       buffer.append('{').append(name).append('}');
       return buffer.toString();
+   }
+
+   /**
+    * Create a proxy 
+    * 
+    * @param <T> the expected type
+    * @param target the target
+    * @param interfaceClass the interface class
+    * @return the proxy
+    */
+   private <T> T createProxy(T target, Class<T> interfaceClass)
+   {
+      if (target == null)
+         return null;
+
+      GeneratedAOPProxyFactory proxyFactory = new GeneratedAOPProxyFactory();
+      AOPProxyFactoryParameters params = new AOPProxyFactoryParameters();
+      params.setInterfaces(new Class[] { interfaceClass });
+      params.setObjectAsSuperClass(true);
+      params.setTarget(target);
+      Object proxy = proxyFactory.createAdvisedProxy(params);
+      if( log.isTraceEnabled() )
+         log.trace("Created proxy: "+proxy.getClass()+"@"+System.identityHashCode(proxy)+" target: "+target.getClass());
+      return interfaceClass.cast(proxy);
    }
 }
