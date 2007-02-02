@@ -29,7 +29,6 @@ import java.util.List;
 import java.util.Set;
 import java.util.concurrent.CopyOnWriteArraySet;
 
-import org.jboss.aop.proxy.container.AOPProxyFactoryParameters;
 import org.jboss.aop.proxy.container.GeneratedAOPProxyFactory;
 import org.jboss.deployers.plugins.attachments.AttachmentsImpl;
 import org.jboss.deployers.spi.DeploymentException;
@@ -739,17 +738,7 @@ public class AbstractDeploymentContext
     */
    private <T> T createProxy(T target, Class<T> interfaceClass)
    {
-      if (target == null)
-         return null;
-
       GeneratedAOPProxyFactory proxyFactory = new GeneratedAOPProxyFactory();
-      AOPProxyFactoryParameters params = new AOPProxyFactoryParameters();
-      params.setInterfaces(new Class[] { interfaceClass });
-      params.setObjectAsSuperClass(true);
-      params.setTarget(target);
-      Object proxy = proxyFactory.createAdvisedProxy(params);
-      if( log.isTraceEnabled() )
-         log.trace("Created proxy: "+proxy.getClass()+"@"+System.identityHashCode(proxy)+" target: "+target.getClass());
-      return interfaceClass.cast(proxy);
+      return proxyFactory.createProxy(target, interfaceClass);
    }
 }

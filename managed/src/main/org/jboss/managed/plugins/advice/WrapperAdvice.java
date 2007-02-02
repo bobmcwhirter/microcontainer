@@ -24,7 +24,6 @@ package org.jboss.managed.plugins.advice;
 import java.util.Set;
 
 import org.jboss.aop.joinpoint.Invocation;
-import org.jboss.aop.proxy.container.AOPProxyFactoryParameters;
 import org.jboss.aop.proxy.container.GeneratedAOPProxyFactory;
 import org.jboss.logging.Logger;
 import org.jboss.managed.api.Fields;
@@ -138,17 +137,7 @@ public class WrapperAdvice
     */
    static <T> T createProxy(T target, Class<T> interfaceClass)
    {
-      if (target == null)
-         return null;
-
       GeneratedAOPProxyFactory proxyFactory = new GeneratedAOPProxyFactory();
-      AOPProxyFactoryParameters params = new AOPProxyFactoryParameters();
-      params.setInterfaces(new Class[] { interfaceClass });
-      params.setObjectAsSuperClass(true);
-      params.setTarget(target);
-      Object proxy = proxyFactory.createAdvisedProxy(params);
-      if( log.isTraceEnabled() )
-         log.trace("Created proxy: "+proxy.getClass()+"@"+System.identityHashCode(proxy)+" target: "+target.getClass());
-      return interfaceClass.cast(proxy);
+      return proxyFactory.createProxy(target, interfaceClass);
    }
 }
