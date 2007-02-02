@@ -111,7 +111,7 @@ public class AbstractDeploymentContext
    
    /** The managed objects */
    private transient Attachments transientManagedObjects =
-      createProxy(new AttachmentsImpl(), Attachments.class);
+      GeneratedAOPProxyFactory.createProxy(new AttachmentsImpl(), Attachments.class);
 
    /** Throwable */
    private Throwable problem;
@@ -270,8 +270,7 @@ public class AbstractDeploymentContext
       }
       String unitPath = unitVF.getPathName();
       String topPath = topVF.getPathName();
-      String relativePath = unitPath.substring(topPath.length());
-      return relativePath;
+      return unitPath.substring(topPath.length());
    }
 
    public Set<String> getTypes()
@@ -728,17 +727,4 @@ public class AbstractDeploymentContext
       return buffer.toString();
    }
 
-   /**
-    * Create a proxy 
-    * 
-    * @param <T> the expected type
-    * @param target the target
-    * @param interfaceClass the interface class
-    * @return the proxy
-    */
-   private <T> T createProxy(T target, Class<T> interfaceClass)
-   {
-      GeneratedAOPProxyFactory proxyFactory = new GeneratedAOPProxyFactory();
-      return proxyFactory.createProxy(target, interfaceClass);
-   }
 }

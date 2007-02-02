@@ -44,8 +44,7 @@ public class ProxyUtils
     */
    public static <T> T createProxy(T target, Class<T> interfaceClass)
    {
-      GeneratedAOPProxyFactory proxyFactory = new GeneratedAOPProxyFactory();
-      return proxyFactory.createProxy(target, interfaceClass);
+      return GeneratedAOPProxyFactory.createProxy(target, interfaceClass);
    }
 
 }
