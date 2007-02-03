@@ -24,18 +24,14 @@ package org.jboss.kernel.plugins.dependency;
 import java.security.AccessControlContext;
 import java.security.AccessController;
 import java.security.PrivilegedAction;
-import java.util.ArrayList;
 import java.util.Iterator;
-import java.util.List;
 import java.util.Set;
 import java.util.Stack;
 
 import org.jboss.beans.info.spi.BeanInfo;
-import org.jboss.beans.metadata.plugins.AbstractParameterMetaData;
 import org.jboss.beans.metadata.spi.BeanMetaData;
 import org.jboss.beans.metadata.spi.MetaDataVisitor;
 import org.jboss.beans.metadata.spi.MetaDataVisitorNode;
-import org.jboss.beans.metadata.spi.ParameterMetaData;
 import org.jboss.dependency.plugins.AbstractControllerContext;
 import org.jboss.dependency.plugins.AbstractDependencyInfo;
 import org.jboss.dependency.spi.Controller;
@@ -232,59 +228,26 @@ public class AbstractKernelControllerContext extends AbstractControllerContext i
    {
       if (info == null)
          throw new IllegalArgumentException("Null BeanInfo");
-      return info.getProperty(name).get(getTarget());
+      return info.getProperty(getTarget(), name);
    }
 
    public void set(final String name, final Object value) throws Throwable
    {
       if (info == null)
          throw new IllegalArgumentException("Null BeanInfo");
-      info.getProperty(name).set(getTarget(), value);
+      info.setProperty(getTarget(), name, value);
    }
 
    public Object invoke(final String name, final Object[] parameters, final String[] signature) throws Throwable
    {
-      return execute(new JoinPointCreator()
-      {
-         public TargettedJoinpoint createJoinpoint(ClassLoader cl, KernelConfigurator configurator) throws Throwable
-         {
-            List<ParameterMetaData> params = new ArrayList<ParameterMetaData>();
-            if (parameters != null)
-            {
-               for(int i = 0; i < parameters.length; i++)
-               {
-                  // setting it as it was; we don't want the actual value class
-                  AbstractParameterMetaData pmd = new AbstractParameterMetaData(signature[i], parameters[i]);
-                  pmd.setIndex(i);
-                  params.add(pmd);
-               }
-            }
-            return configurator.getMethodJoinPoint(getBeanInfo(), cl, name, params, false, true);
-         }
-      });
+      if (info == null)
+         throw new IllegalArgumentException("Null BeanInfo");
+      return info.invoke(getTarget(), name, signature, parameters);
    }
 
    public ClassLoader getClassLoader() throws Throwable
    {
       return Configurator.getClassLoader(getBeanMetaData());
-   }
-
-   protected Object execute(JoinPointCreator creator) throws Throwable
-   {
-      KernelController controller = (KernelController) getController();
-      final KernelConfigurator configurator = controller.getKernel().getConfigurator();
-      final ClassLoader cl = getClassLoader();
-      TargettedJoinpoint joinpoint = creator.createJoinpoint(cl, configurator);
-      joinpoint.setTarget(getTarget());
-      // do we need this? - only GenericBeanFactoryPropertyDependencyTC is failing without
-      if (creator.isSecure())
-      {
-         return KernelControllerContextAction.dispatchJoinPoint(this, joinpoint);
-      }
-      else
-      {
-         return joinpoint.dispatch();
-      }
    }
 
    protected abstract class AbstractMetaDataVistor implements MetaDataVisitor, PrivilegedAction<Object>
