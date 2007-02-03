@@ -78,11 +78,6 @@ public class AOPDependencyBuilder extends AbstractDependencyBuilder
          String className = classInfo.getName();
          if (className != null)
          {
-            if (manager.isNonAdvisableClassName(className))
-            {
-               return super.getDependencies(classAdapter, metaData);
-            }
-
             ClassLoader loader = classAdapter.getClassLoader();
             if (loader == null)
             {
@@ -113,7 +108,7 @@ public class AOPDependencyBuilder extends AbstractDependencyBuilder
                   }
                }
             }
-            
+
             HashSet<Object> annotationDependencies = getAnnotationDependencies(classInfo, metaData);
             depends.addAll(annotationDependencies);
             return depends;

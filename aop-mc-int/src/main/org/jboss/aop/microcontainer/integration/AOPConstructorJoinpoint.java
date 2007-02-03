@@ -91,10 +91,7 @@ public class AOPConstructorJoinpoint extends BasicConstructorJoinPoint implement
    {
       Class clazz = constructorInfo.getDeclaringClass().getType();
       AspectManager manager = AspectManager.instance();
-      if (manager.isNonAdvisableClassName(clazz.getName()))
-      {
-         return super.dispatch();
-      }
+
       MetaData metaData = MetaDataStack.peek();
       MetaDataStack.mask();
       try
