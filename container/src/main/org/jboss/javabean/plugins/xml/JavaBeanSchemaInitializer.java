@@ -19,17 +19,14 @@
 * Software Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA
 * 02110-1301 USA, or see the FSF site: http://www.fsf.org.
 */
-package org.jboss.kernel.plugins.config.xml;
+package org.jboss.javabean.plugins.xml;
 
 import javax.xml.namespace.NamespaceContext;
 import javax.xml.namespace.QName;
 
 import org.jboss.beans.info.spi.BeanInfo;
-import org.jboss.beans.info.spi.PropertyInfo;
-import org.jboss.kernel.plugins.config.Configurator;
-import org.jboss.kernel.plugins.config.xml.Common.Holder;
-import org.jboss.kernel.plugins.config.xml.Common.Property;
-import org.jboss.reflect.spi.MethodInfo;
+import org.jboss.javabean.plugins.xml.Common.Holder;
+import org.jboss.javabean.plugins.xml.Common.Property;
 import org.jboss.xb.binding.sunday.unmarshalling.DefaultElementHandler;
 import org.jboss.xb.binding.sunday.unmarshalling.DefaultElementInterceptor;
 import org.jboss.xb.binding.sunday.unmarshalling.ElementBinding;
@@ -60,7 +57,7 @@ public class JavaBeanSchemaInitializer implements SchemaBindingInitializer
 
    static
    {
-      KernelConfigInit.init();
+      ConfigurationUtil.init();
    }
 
    public SchemaBinding init(SchemaBinding schema)
@@ -94,8 +91,8 @@ public class JavaBeanSchemaInitializer implements SchemaBindingInitializer
             
             try
             {
-               BeanInfo beanInfo = KernelConfigInit.config.getBeanInfo(className, Thread.currentThread().getContextClassLoader());
-               Object object = Configurator.instantiate(KernelConfigInit.config, beanInfo, null);
+               BeanInfo beanInfo = ConfigurationUtil.getBeanInfo(className);
+               Object object = beanInfo.newInstance();
                holder.setValue(object);
             }
             catch (RuntimeException e)
@@ -129,15 +126,12 @@ public class JavaBeanSchemaInitializer implements SchemaBindingInitializer
             
             Property prop = (Property) child;
             String property = prop.getProperty();
-
-            MethodInfo method;
             Object value = prop.getValue();
             try
             {
-               PropertyInfo info = Common.getProperty(parentValue, property, prop.getType());
-               value = Common.convertValue(info, prop.getType(), value);
-               method = info.getSetter();
-               method.invoke(parentValue, new Object[] { value });
+               BeanInfo info = ConfigurationUtil.getBeanInfo(parentValue.getClass());
+               value = ConfigurationUtil.convertValue(parentValue, property, prop.getType(), value);
+               info.setProperty(parentValue, property, value);
             }
             catch (RuntimeException e)
             {

@@ -19,15 +19,15 @@
  * Software Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA
  * 02110-1301 USA, or see the FSF site: http://www.fsf.org.
  */
-package org.jboss.kernel.plugins.config.xml;
+package org.jboss.javabean.plugins.xml;
 
 import javax.xml.namespace.QName;
 
+import org.jboss.beans.info.spi.BeanInfo;
 import org.jboss.beans.info.spi.PropertyInfo;
-import org.jboss.kernel.plugins.config.xml.Common.Ctor;
-import org.jboss.kernel.plugins.config.xml.Common.Holder;
-import org.jboss.kernel.plugins.config.xml.Common.Property;
-import org.jboss.reflect.spi.MethodInfo;
+import org.jboss.javabean.plugins.xml.Common.Ctor;
+import org.jboss.javabean.plugins.xml.Common.Holder;
+import org.jboss.javabean.plugins.xml.Common.Property;
 import org.jboss.xb.binding.sunday.unmarshalling.DefaultElementInterceptor;
 
 /**
@@ -42,7 +42,6 @@ public class PropertyInterceptor extends DefaultElementInterceptor
 {
    /** The interceptor */
    public static final PropertyInterceptor INTERCEPTOR = new PropertyInterceptor();
-
 
    /**
     * Add a property to the bean. If the parent value is a Ctor the bean
@@ -71,9 +70,10 @@ public class PropertyInterceptor extends DefaultElementInterceptor
             Ctor ctor = (Ctor) parentValue;
             if( ctor.isCtorWasDeclared() )
             {
-               PropertyInfo info = Common.getProperty(ctor.getClassName(), property, prop.getType());
-               value = Common.convertValue(info, prop.getType(), value);
-               ctor.addParam(info, value);
+               BeanInfo beanInfo = ConfigurationUtil.getBeanInfo(ctor.getClassName());
+               PropertyInfo propertyInfo = beanInfo.getProperty(property);
+               value = ConfigurationUtil.convertValue(propertyInfo, prop.getType(), value);
+               ctor.addParam(propertyInfo.getType().getName(), value);
             }
             else
             {
@@ -84,12 +84,10 @@ public class PropertyInterceptor extends DefaultElementInterceptor
             }
          }
          else
-         {   
-            MethodInfo method;
-            PropertyInfo info = Common.getProperty(parentValue, property, prop.getType());
-            value = Common.convertValue(info, prop.getType(), value);
-            method = info.getSetter();
-            method.invoke(parentValue, new Object[] { value });
+         {
+            BeanInfo beanInfo = ConfigurationUtil.getBeanInfo(parentValue);
+            value = ConfigurationUtil.convertValue(parentValue, property, prop.getType(), value);
+            beanInfo.setProperty(parentValue, property, value);
          }
       }
       catch (RuntimeException e)

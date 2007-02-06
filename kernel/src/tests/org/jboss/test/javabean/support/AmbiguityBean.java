@@ -24,8 +24,7 @@ package org.jboss.test.javabean.support;
 /**
  * SimpleBean.
  *
- * @author <a href="adrian@jboss.com">Adrian Brock</a>
- * @version $Revision: 46093 $
+ * @author <a href="ales.justin@jboss.com">Ales Justin</a>
  */
 public class AmbiguityBean
 {

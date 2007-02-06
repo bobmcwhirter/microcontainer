@@ -19,75 +19,44 @@
  * Software Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA
  * 02110-1301 USA, or see the FSF site: http://www.fsf.org.
  */
-package org.jboss.kernel.plugins.config.xml;
+package org.jboss.javabean.plugins.xml;
 
 import javax.xml.namespace.NamespaceContext;
 import javax.xml.namespace.QName;
 
-import org.jboss.beans.metadata.plugins.AbstractConstructorMetaData;
-import org.jboss.kernel.plugins.config.xml.Common.Ctor;
-import org.jboss.kernel.plugins.config.xml.Common.Holder;
+import org.jboss.javabean.plugins.xml.Common.Property;
 import org.jboss.xb.binding.sunday.unmarshalling.DefaultElementHandler;
 import org.jboss.xb.binding.sunday.unmarshalling.ElementBinding;
 import org.xml.sax.Attributes;
 
 /**
- * Handler for the constructor element.
+ * Handler for the property element.
  * 
+ * @author <a href="adrian@jboss.com">Adrian Brock</a>
  * @author Scott.Stark@jboss.org
  * @version $Revision: 43020 $
  */
-public class ConstructorHandler extends DefaultElementHandler
+public class PropertyHandler extends DefaultElementHandler
 {
    /** The handler */
-   public static final ConstructorHandler HANDLER = new ConstructorHandler();
+   public static final PropertyHandler HANDLER = new PropertyHandler();
 
    public Object startElement(Object parent, QName name, ElementBinding element)
    {
-      Holder holder = (Holder) parent;
-      Ctor ctor = (Ctor) holder.getValue();
-      ctor.setCtorWasDeclared(true);
-      return holder;
+      return new Property();
    }
 
    public void attributes(Object o, QName elementName, ElementBinding element, Attributes attrs, NamespaceContext nsCtx)
    {
-      Holder holder = (Holder) o;
-      Ctor ctor = (Ctor) holder.getValue();
-      AbstractConstructorMetaData constructor = ctor.getMetaData();
+      Property property = (Property) o;
       for (int i = 0; i < attrs.getLength(); ++i)
       {
          String localName = attrs.getLocalName(i);
-         if ("factoryClass".equals(localName))
-            constructor.setFactoryClass(attrs.getValue(i));
-         else if ("factoryMethod".equals(localName))
-            constructor.setFactoryMethod(attrs.getValue(i));
+         if ("name".equals(localName))
+            property.setProperty(attrs.getValue(i));
+         else if ("class".equals(localName))
+            property.setType(attrs.getValue(i));
       }
-      if( constructor.getFactoryMethod() != null && constructor.getFactoryClass() == null )
-         constructor.setFactoryClass(ctor.getClassName());
-   }
-
-   public Object endElement(Object o, QName qName, ElementBinding element)
-   {
-      Holder holder = (Holder) o;
-      Ctor ctor = (Ctor) holder.getValue();
-      try
-      {
-         return ctor.newInstance();
-      }
-      catch (RuntimeException e)
-      {
-         throw e;
-      }
-      catch (Error e)
-      {
-         throw e;
-      }
-      catch (Throwable t)
-      {
-         throw new RuntimeException("Error instantiating class " + ctor.getClassName(), t);
-      }
-
    }
 }
 

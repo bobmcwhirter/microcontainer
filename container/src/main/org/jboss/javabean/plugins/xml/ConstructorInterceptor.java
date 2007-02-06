@@ -19,11 +19,11 @@
  * Software Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA
  * 02110-1301 USA, or see the FSF site: http://www.fsf.org.
  */
-package org.jboss.kernel.plugins.config.xml;
+package org.jboss.javabean.plugins.xml;
 
 import javax.xml.namespace.QName;
 
-import org.jboss.kernel.plugins.config.xml.Common.Holder;
+import org.jboss.javabean.plugins.xml.Common.Holder;
 import org.jboss.xb.binding.sunday.unmarshalling.DefaultElementInterceptor;
 
 /**

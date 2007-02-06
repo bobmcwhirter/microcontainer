@@ -19,7 +19,7 @@
 * Software Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA
 * 02110-1301 USA, or see the FSF site: http://www.fsf.org.
 */
-package org.jboss.kernel.plugins.config.xml;
+package org.jboss.javabean.plugins.xml;
 
 import javax.xml.namespace.QName;
 
@@ -58,7 +58,7 @@ public class JavaBeanSchemaInitializer20 implements SchemaBindingInitializer
 
    static
    {
-      KernelConfigInit.init();
+      ConfigurationUtil.init();
    }
 
    public SchemaBinding init(SchemaBinding schema)

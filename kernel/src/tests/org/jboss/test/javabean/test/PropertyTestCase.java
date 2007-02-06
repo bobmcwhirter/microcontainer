@@ -22,8 +22,8 @@
 package org.jboss.test.javabean.test;
 
 import java.beans.BeanInfo;
-import java.beans.PropertyDescriptor;
 import java.beans.Introspector;
+import java.beans.PropertyDescriptor;
 import java.math.BigDecimal;
 import java.math.BigInteger;
 import java.text.DateFormat;
@@ -31,10 +31,9 @@ import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.HashMap;
 
+import junit.framework.Test;
 import org.jboss.test.javabean.support.SimpleBean;
 import org.jboss.util.NestedRuntimeException;
-
-import junit.framework.Test;
 
 /**
  * PropertyTestCase.
@@ -103,7 +102,6 @@ public class PropertyTestCase extends AbstractJavaBeanTest
       SimpleBean bean = unmarshal("TestConfigure20WithCtorExplicitFactoryClassAndParams.xml", SimpleBean.class);
       validateFields("(<all-fields>)", "SimpleBeanFactory.newInstance(<all-fields>)", bean);
    }
-
 
    /**
     * Validate the JavaBean property name introspection
