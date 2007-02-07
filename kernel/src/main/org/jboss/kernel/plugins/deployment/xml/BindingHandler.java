@@ -58,8 +58,15 @@ public class BindingHandler extends DefaultElementHandler
    public Object endElement(Object o, QName qName, ElementBinding element)
    {
       AbstractBindingMetaData binding = (AbstractBindingMetaData)o;
+
       if (binding.getValue() == null)
          throw new IllegalArgumentException("Binding must have a non-null value:" + binding);
+
+      if (binding.getName() == null)
+      {
+         // TODO name aware - introduce NameAware interface
+      }
+
       return binding;
    }
 }
