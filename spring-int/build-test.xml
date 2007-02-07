@@ -107,6 +107,7 @@
       <!-- The combined dependant module classpath -->
       <path id="dependentmodule.classpath">
          <path refid="jboss.container.classpath"/>
+         <path refid="jboss.container-test.classpath"/>
          <path refid="jboss.dependency.classpath"/>
          <path refid="jboss.kernel.classpath"/>
          <path refid="jboss.kernel-test.classpath"/>

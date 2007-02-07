@@ -8,6 +8,11 @@
       <include name="jboss-container.jar"/>
    </fileset>
 </path>
+<path id="jboss.container-test.classpath">
+   <fileset dir="${jboss.container.lib}">
+      <include name="jboss-container-test.jar"/>
+   </fileset>
+</path>
 <property name="jboss.container14.lib" value="${jboss.container.root}/output/lib14"/>
 <path id="jboss.container14.classpath">
    <fileset dir="${jboss.container14.lib}">
