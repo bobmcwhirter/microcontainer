@@ -57,7 +57,7 @@ public class BindingTestCase extends AbstractXMLTest
       assertFalse(policy.getBindings().isEmpty());
       assertEquals(1, policy.getBindings().size());
       BindingMetaData binding = policy.getBindings().iterator().next();
-      assertNull(binding.getName());
+      assertNotNull(binding.getName());
       assertNotNull(binding.getValue());
    }
 
@@ -67,7 +67,7 @@ public class BindingTestCase extends AbstractXMLTest
       assertFalse(policy.getBindings().isEmpty());
       assertEquals(1, policy.getBindings().size());
       BindingMetaData binding = policy.getBindings().iterator().next();
-      assertNull(binding.getName());
+      assertNotNull(binding.getName());
       assertNotNull(binding.getValue());
    }
 

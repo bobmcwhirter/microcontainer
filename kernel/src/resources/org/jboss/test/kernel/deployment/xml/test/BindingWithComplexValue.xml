@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
 <policy xmlns="urn:jboss:policy:1.0">
-   <binding>
+   <binding name="somename">
       <value xmlns="urn:jboss:bean-deployer:2.0" class="java.lang.Integer">42</value>
    </binding>
 </policy>
