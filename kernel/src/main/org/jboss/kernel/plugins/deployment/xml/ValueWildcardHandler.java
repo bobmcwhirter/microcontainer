@@ -25,10 +25,8 @@ import javax.xml.namespace.QName;
 
 import org.jboss.beans.metadata.plugins.AbstractClassLoaderMetaData;
 import org.jboss.beans.metadata.plugins.AbstractCollectionMetaData;
-import org.jboss.beans.metadata.plugins.AbstractConstructorMetaData;
-import org.jboss.beans.metadata.plugins.AbstractParameterMetaData;
-import org.jboss.beans.metadata.plugins.AbstractPropertyMetaData;
 import org.jboss.beans.metadata.plugins.AbstractValueMetaData;
+import org.jboss.beans.metadata.plugins.ValueMetaDataAware;
 import org.jboss.beans.metadata.spi.ValueMetaData;
 import org.jboss.xb.binding.sunday.unmarshalling.DefaultWildcardHandler;
 import org.jboss.xb.binding.sunday.unmarshalling.ElementBinding;
@@ -52,30 +50,20 @@ public class ValueWildcardHandler extends DefaultWildcardHandler
       else
          value = new AbstractValueMetaData(o);
 
-      if (parent instanceof AbstractCollectionMetaData)
+      if (parent instanceof ValueMetaDataAware)
+      {
+         ValueMetaDataAware valueMetaDataAware = (ValueMetaDataAware) parent;
+         valueMetaDataAware.setValue(value);
+      }
+      else if (parent instanceof AbstractCollectionMetaData)
       {
          AbstractCollectionMetaData collection = (AbstractCollectionMetaData) parent;
          collection.add(value);
-      }
-      else if (parent instanceof AbstractParameterMetaData)
-      {
-         AbstractParameterMetaData valueMetaData = (AbstractParameterMetaData) parent;
-         valueMetaData.setValue(value);
-      }
-      else if (parent instanceof AbstractPropertyMetaData)
-      {
-         AbstractPropertyMetaData valueMetaData = (AbstractPropertyMetaData) parent;
-         valueMetaData.setValue(value);
       }
       else if (parent instanceof AbstractClassLoaderMetaData)
       {
          AbstractClassLoaderMetaData valueMetaData = (AbstractClassLoaderMetaData) parent;
          valueMetaData.setClassLoader(value);
-      }
-      else if (parent instanceof AbstractConstructorMetaData)
-      {
-         AbstractConstructorMetaData valueMetaData = (AbstractConstructorMetaData) parent;
-         valueMetaData.setValue(value);
       }
       else
       {

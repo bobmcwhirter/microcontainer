@@ -22,6 +22,7 @@
 package org.jboss.test.kernel.deployment.xml.test;
 
 import junit.framework.Test;
+import org.jboss.beans.metadata.plugins.StringValueMetaData;
 import org.jboss.beans.metadata.plugins.policy.AbstractPolicyMetaData;
 import org.jboss.beans.metadata.spi.policy.BindingMetaData;
 import org.jboss.beans.metadata.spi.policy.PolicyMetaData;
@@ -53,22 +54,24 @@ public class BindingTestCase extends AbstractXMLTest
 
    public void testBindingWithPlainValue() throws Throwable
    {
-      PolicyMetaData policy = unmarshal("BindingWithNoName.xml", AbstractPolicyMetaData.class);
+      PolicyMetaData policy = unmarshal("BindingWithPlainValue.xml", AbstractPolicyMetaData.class);
       assertFalse(policy.getBindings().isEmpty());
       assertEquals(1, policy.getBindings().size());
       BindingMetaData binding = policy.getBindings().iterator().next();
       assertNotNull(binding.getName());
       assertNotNull(binding.getValue());
+      assertInstanceOf(binding.getValue(), StringValueMetaData.class);
    }
 
    public void testBindingWithComplexValue() throws Throwable
    {
-      PolicyMetaData policy = unmarshal("BindingWithNoName.xml", AbstractPolicyMetaData.class);
+      PolicyMetaData policy = unmarshal("BindingWithComplexValue.xml", AbstractPolicyMetaData.class);
       assertFalse(policy.getBindings().isEmpty());
       assertEquals(1, policy.getBindings().size());
       BindingMetaData binding = policy.getBindings().iterator().next();
       assertNotNull(binding.getName());
       assertNotNull(binding.getValue());
+      assertInstanceOf(binding.getValue(), StringValueMetaData.class);
    }
 
 }
