@@ -22,8 +22,9 @@
 package org.jboss.test.kernel.deployment.xml.test;
 
 import junit.framework.Test;
-import org.jboss.beans.metadata.plugins.policy.AbstractBindingMetaData;
+import org.jboss.beans.metadata.plugins.policy.AbstractPolicyMetaData;
 import org.jboss.beans.metadata.spi.policy.BindingMetaData;
+import org.jboss.beans.metadata.spi.policy.PolicyMetaData;
 
 /**
  * @author <a href="mailto:ales.justin@jboss.com">Ales Justin</a>
@@ -42,23 +43,31 @@ public class BindingTestCase extends AbstractXMLTest
 
    public void testBindingWithNoName() throws Throwable
    {
-      BindingMetaData binding = unmarshal("BindingWithNoName.xml", AbstractBindingMetaData.class);
-      assertNotNull(binding.getName());
+      PolicyMetaData policy = unmarshal("BindingWithNoName.xml", AbstractPolicyMetaData.class);
+      assertFalse(policy.getBindings().isEmpty());
+      assertEquals(1, policy.getBindings().size());
+      BindingMetaData binding = policy.getBindings().iterator().next();
 //      assertEquals("", binding.getName()); // todo
       assertNotNull(binding.getValue());
    }
 
    public void testBindingWithPlainValue() throws Throwable
    {
-      BindingMetaData binding = unmarshal("BindingWithPlainValue.xml", AbstractBindingMetaData.class);
-      assertNotNull(binding.getName());
+      PolicyMetaData policy = unmarshal("BindingWithNoName.xml", AbstractPolicyMetaData.class);
+      assertFalse(policy.getBindings().isEmpty());
+      assertEquals(1, policy.getBindings().size());
+      BindingMetaData binding = policy.getBindings().iterator().next();
+      assertNull(binding.getName());
       assertNotNull(binding.getValue());
    }
 
    public void testBindingWithComplexValue() throws Throwable
    {
-      BindingMetaData binding = unmarshal("BindingWithComplexValue.xml", AbstractBindingMetaData.class);
-      assertNotNull(binding.getName());
+      PolicyMetaData policy = unmarshal("BindingWithNoName.xml", AbstractPolicyMetaData.class);
+      assertFalse(policy.getBindings().isEmpty());
+      assertEquals(1, policy.getBindings().size());
+      BindingMetaData binding = policy.getBindings().iterator().next();
+      assertNull(binding.getName());
       assertNotNull(binding.getValue());
    }
 

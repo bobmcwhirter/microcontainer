@@ -45,17 +45,14 @@ public class PolicySchemaBinding
    /** The scope element name */
    public static final QName scopeQName = new QName(POLICY_NS, "scope");
 
-   /** The annotation binding */
-   public static final QName annotationTypeQName = new QName(POLICY_NS,  "annotationsType");
-
-   /** The annotation element name */
-   public static final QName annotationQName = new QName(POLICY_NS, "annotations");
-
    /** The binding binding */
    public static final QName bindingTypeQName = new QName(POLICY_NS, "bindingType");
 
    /** The binding element name */
    public static final QName bindingQName = new QName(POLICY_NS, "binding");
+
+   /** The annotation element name */
+   public static final QName annotationQName = new QName(BeanSchemaBinding20.BEAN_DEPLOYER_NS, "annotation");
 
    /**
     * Initialize the schema binding
@@ -70,14 +67,13 @@ public class PolicySchemaBinding
       TypeBinding policyType = schemaBinding.getType(policyTypeQName);
       PolicySchemaBindingHelper.initPolicyHandlers(policyType);
 
-      TypeBinding scopeType = schemaBinding.getType(policyTypeQName);
+      TypeBinding scopeType = schemaBinding.getType(scopeTypeQName);
       PolicySchemaBindingHelper.initScopeHandlers(scopeType);
-
-      TypeBinding annotationsType = schemaBinding.getType(annotationTypeQName);
-      PolicySchemaBindingHelper.initAnnotationHandlers(annotationsType);
 
       TypeBinding bindingsType = schemaBinding.getType(bindingTypeQName);
       PolicySchemaBindingHelper.initBindingHandlers(bindingsType);
+
+      BeanSchemaBinding20.initArtifacts(schemaBinding);
    }
 
 }

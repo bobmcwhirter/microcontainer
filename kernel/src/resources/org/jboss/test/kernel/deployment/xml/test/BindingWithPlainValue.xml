@@ -1,3 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
-<binding xmlns="urn:jboss:policy:1.0">binddinb</binding>
+<policy xmlns="urn:jboss:policy:1.0">
+   <binding>binddinb</binding>
+</policy>

@@ -22,7 +22,8 @@
 package org.jboss.test.kernel.deployment.xml.test;
 
 import junit.framework.Test;
-import org.jboss.beans.metadata.plugins.policy.AbstractScopeMetaData;
+import org.jboss.beans.metadata.plugins.policy.AbstractPolicyMetaData;
+import org.jboss.beans.metadata.spi.policy.PolicyMetaData;
 import org.jboss.beans.metadata.spi.policy.ScopeMetaData;
 
 /**
@@ -42,14 +43,16 @@ public class ScopeTestCase extends AbstractXMLTest
 
    public void testScope() throws Throwable
    {
-      ScopeMetaData scope = unmarshal("Scope.xml", AbstractScopeMetaData.class);
+      PolicyMetaData policy = unmarshal("Scope.xml", AbstractPolicyMetaData.class);
+      ScopeMetaData scope = policy.getScope();
       assertNull(scope.getLevel());
       assertNull(scope.getQualifier());
    }
 
    public void testScopeWithLevel() throws Throwable
    {
-      ScopeMetaData scope = unmarshal("ScopeWithLevel.xml", AbstractScopeMetaData.class);
+      PolicyMetaData policy = unmarshal("ScopeWithLevel.xml", AbstractPolicyMetaData.class);
+      ScopeMetaData scope = policy.getScope();
       assertNotNull(scope.getLevel());
       assertEquals("DefaultLevel", scope.getLevel());
       assertNull(scope.getQualifier());
@@ -57,7 +60,8 @@ public class ScopeTestCase extends AbstractXMLTest
 
    public void testScopeWithQualifier() throws Throwable
    {
-      ScopeMetaData scope = unmarshal("ScopeWithQualifier.xml", AbstractScopeMetaData.class);
+      PolicyMetaData policy = unmarshal("ScopeWithQualifier.xml", AbstractPolicyMetaData.class);
+      ScopeMetaData scope = policy.getScope();
       assertNull(scope.getLevel());
       assertNotNull(scope.getQualifier());
       assertEquals("SimpleQualifier", scope.getQualifier());
