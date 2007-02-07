@@ -22,10 +22,10 @@
 package org.jboss.test.kernel.deployment.xml.test;
 
 import org.jboss.test.AbstractTestDelegate;
-import org.jboss.xb.binding.sunday.unmarshalling.SingletonSchemaResolverFactory;
 import org.jboss.xb.binding.Unmarshaller;
 import org.jboss.xb.binding.UnmarshallerFactory;
 import org.jboss.xb.binding.sunday.unmarshalling.SchemaBindingResolver;
+import org.jboss.xb.binding.sunday.unmarshalling.SingletonSchemaResolverFactory;
 
 /**
  * XMLTestDelegate.
@@ -55,7 +55,7 @@ public class XMLTestDelegate extends AbstractTestDelegate
    {
       super.setUp();
       unmarshallerFactory = UnmarshallerFactory.newInstance();
-      resolver = SingletonSchemaResolverFactory.getInstance().getSchemaBindingResolver();;
+      resolver = SingletonSchemaResolverFactory.getInstance().getSchemaBindingResolver();
    }
    
    /**

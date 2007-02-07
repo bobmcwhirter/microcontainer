@@ -93,7 +93,7 @@ public class AbstractXMLTest extends AbstractTestCaseWithSetup
     */
    protected AbstractBeanMetaData unmarshalBean(String name) throws Exception
    {
-      return (AbstractBeanMetaData) unmarshal(name, AbstractBeanMetaData.class);
+      return unmarshal(name, AbstractBeanMetaData.class);
    }
 
    /**
@@ -105,7 +105,7 @@ public class AbstractXMLTest extends AbstractTestCaseWithSetup
     */
    protected GenericBeanFactoryMetaData unmarshalBeanFactory(String name) throws Exception
    {
-      return (GenericBeanFactoryMetaData) unmarshal(name, GenericBeanFactoryMetaData.class);
+      return unmarshal(name, GenericBeanFactoryMetaData.class);
    }
    
    /**
@@ -116,7 +116,7 @@ public class AbstractXMLTest extends AbstractTestCaseWithSetup
     * @return the unmarshalled object
     * @throws Exception for any error
     */
-   protected Object unmarshal(String name, Class<?> expected) throws Exception
+   protected <T> T unmarshal(String name, Class<T> expected) throws Exception
    {
       String url = findXML(name);
       Object object = getJBossXBDelegate().unmarshal(url);
@@ -129,7 +129,7 @@ public class AbstractXMLTest extends AbstractTestCaseWithSetup
       object = deserialize(serialize(serializable));
 
       assertTrue("Object '" + object + "' cannot be assigned to " + expected.getName(), expected.isAssignableFrom(object.getClass()));
-      return object;
+      return expected.cast(object);
    }
    
    /**
