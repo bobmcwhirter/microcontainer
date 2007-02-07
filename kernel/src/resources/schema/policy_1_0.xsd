@@ -41,9 +41,9 @@
          </xsd:documentation>
       </xsd:annotation>
       <xsd:sequence>
-         <xsd:element name="scope" type="scopeType" minOccurs="0"/>
-         <xsd:element name="annotations" type="annotationsType" minOccurs="0"/>
-         <xsd:element name="bindings" type="bindingsType" minOccurs="0"/>
+         <xsd:element name="scope" type="scopeType" minOccurs="0" maxOccurs="1"/>
+         <xsd:element name="annotation" type="mc:annotationType" minOccurs="0" maxOccurs="unbounded"/>
+         <xsd:element name="binding" type="bindingType" minOccurs="0" maxOccurs="unbounded"/>
       </xsd:sequence>
       <xsd:attribute name="name" type="xsd:string" use="optional"/>
       <xsd:attribute name="extends" type="xsd:string" use="optional"/>
@@ -66,24 +66,11 @@
       <xsd:attribute name="qualifier" type="xsd:string" use="optional"/>
    </xsd:complexType>
 
-   <xsd:complexType name="annotationsType">
-      <xsd:annotation>
-         <xsd:documentation>
-           <![CDATA[
-            The annotations.
-           ]]>
-         </xsd:documentation>
-      </xsd:annotation>
-      <xsd:sequence>
-         <xsd:element name="annotation" type="mc:annotationType" minOccurs="0"/>
-      </xsd:sequence>
-   </xsd:complexType>
-
-   <xsd:complexType name="bindingsType" mixed="true">
+   <xsd:complexType name="bindingType" mixed="true">
       <xsd:annotation>
          <xsd:documentation>
             <![CDATA[
-             The bindings.
+             The binding.
             ]]>
          </xsd:documentation>
       </xsd:annotation>

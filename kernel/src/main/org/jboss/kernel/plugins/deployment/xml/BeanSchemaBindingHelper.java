@@ -35,11 +35,6 @@ import org.jboss.xb.binding.sunday.unmarshalling.WildcardBinding;
  */
 public class BeanSchemaBindingHelper
 {
-   public static void initAll(SchemaBinding schemaBinding)
-   {
-      
-   }
-   
    /**
     * Initialize the handlers for the deployment type
     * 

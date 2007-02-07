@@ -102,7 +102,7 @@ public class AbstractPolicyMetaData extends AbstractFeatureMetaData implements P
       this.name = name;
    }
 
-   public void setExt(String ext)
+   public void setExtends(String ext)
    {
       this.ext = ext;
    }

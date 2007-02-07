@@ -25,6 +25,7 @@ import java.io.Serializable;
 import java.util.Collections;
 import java.util.Iterator;
 
+import org.jboss.beans.metadata.plugins.ValueMetaDataAware;
 import org.jboss.beans.metadata.spi.MetaDataVisitor;
 import org.jboss.beans.metadata.spi.MetaDataVisitorNode;
 import org.jboss.beans.metadata.spi.ValueMetaData;
@@ -37,7 +38,7 @@ import org.jboss.util.JBossStringBuilder;
  *
  * @author <a href="mailto:ales.justin@jboss.com">Ales Justin</a>
  */
-public class AbstractBindingMetaData extends JBossObject implements BindingMetaData, Serializable
+public class AbstractBindingMetaData extends JBossObject implements BindingMetaData, ValueMetaDataAware, Serializable
 {
    private static final long serialVersionUID = 1;
 
