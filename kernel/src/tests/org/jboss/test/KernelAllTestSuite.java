@@ -24,8 +24,6 @@ package org.jboss.test;
 import junit.framework.Test;
 import junit.framework.TestSuite;
 import junit.textui.TestRunner;
-
-import org.jboss.test.javabean.test.JavaBeanTestSuite;
 import org.jboss.test.junit.test.JUnitTestSuite;
 import org.jboss.test.kernel.KernelTestSuite;
 
@@ -47,7 +45,6 @@ public class KernelAllTestSuite extends TestSuite
       TestSuite suite = new TestSuite("All Tests");
 
       suite.addTest(JUnitTestSuite.suite());
-      suite.addTest(JavaBeanTestSuite.suite());
       suite.addTest(KernelTestSuite.suite());
       
       return suite;

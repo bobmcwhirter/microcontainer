@@ -21,9 +21,8 @@
 */
 package org.jboss.test.javabean.test;
 
-import org.jboss.test.javabean.support.SimpleBean;
-
 import junit.framework.Test;
+import org.jboss.test.javabean.support.SimpleBean;
 
 /**
  * InstantiateTestCase.

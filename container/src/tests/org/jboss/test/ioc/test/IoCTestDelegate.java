@@ -21,11 +21,11 @@
 */
 package org.jboss.test.ioc.test;
 
-import org.jboss.xb.binding.UnmarshallerFactory;
+import org.jboss.test.AbstractTestDelegate;
 import org.jboss.xb.binding.Unmarshaller;
+import org.jboss.xb.binding.UnmarshallerFactory;
 import org.jboss.xb.binding.sunday.unmarshalling.SchemaBindingResolver;
 import org.jboss.xb.binding.sunday.unmarshalling.SingletonSchemaResolverFactory;
-import org.jboss.test.AbstractTestDelegate;
 
 /**
  * Test delegate support for other IoC / XML bindings than MC's.
