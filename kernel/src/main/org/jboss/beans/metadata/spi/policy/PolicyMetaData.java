@@ -19,19 +19,45 @@
 * Software Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA
 * 02110-1301 USA, or see the FSF site: http://www.fsf.org.
 */
-package org.jboss.test.kernel.config.support;
+package org.jboss.beans.metadata.spi.policy;
 
-import java.lang.annotation.ElementType;
-import java.lang.annotation.Retention;
-import java.lang.annotation.RetentionPolicy;
-import java.lang.annotation.Target;
+import java.util.Set;
+
+import org.jboss.beans.metadata.spi.BeanMetaDataFactory;
+import org.jboss.beans.metadata.spi.FeatureMetaData;
 
 /**
+ * Policy info.
+ *
  * @author <a href="mailto:ales.justin@jboss.com">Ales Justin</a>
  */
-@Retention(RetentionPolicy.RUNTIME)
-@Target({ElementType.METHOD, ElementType.TYPE})
-public @interface SimpleAnnotation
+public interface PolicyMetaData extends FeatureMetaData, BeanMetaDataFactory
 {
-   String name();
+   /**
+    * Get the name
+    *
+    * @return the name
+    */
+   String getName();
+
+   /**
+    * Get the extends
+    *
+    * @return the name
+    */
+   String getExtends();
+
+   /**
+    * Get scope info
+    *
+    * @return the name
+    */
+   ScopeMetaData getScope();
+
+   /**
+    * Get the bindings
+    *
+    * @return the name
+    */
+   Set<BindingMetaData> getBindings();
 }
