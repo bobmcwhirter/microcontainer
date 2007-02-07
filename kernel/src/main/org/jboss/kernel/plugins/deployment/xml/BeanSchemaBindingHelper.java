@@ -260,6 +260,9 @@ public class BeanSchemaBindingHelper
    public static void initAnnotationHandlers(TypeBinding annotationType)
    {
       annotationType.setHandler(AnnotationHandler.HANDLER);
+
+      // annotation can take characters
+      annotationType.setSimpleType(AnnotationCharactersHandler.HANDLER);
    }
 
    /**

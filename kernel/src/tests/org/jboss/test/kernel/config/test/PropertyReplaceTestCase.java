@@ -25,9 +25,11 @@ import java.util.Collections;
 import java.util.List;
 
 import junit.framework.Test;
+import org.jboss.beans.metadata.plugins.AbstractAnnotationMetaData;
 import org.jboss.beans.metadata.plugins.AbstractPropertyMetaData;
 import org.jboss.beans.metadata.plugins.StringValueMetaData;
 import org.jboss.beans.metadata.spi.PropertyMetaData;
+import org.jboss.test.kernel.config.support.SimpleAnnotation;
 
 /**
  * Property replace test cases: ${x} - looking for System property named x.
@@ -36,6 +38,10 @@ import org.jboss.beans.metadata.spi.PropertyMetaData;
  */
 public class PropertyReplaceTestCase extends AbstractKernelConfigTest
 {
+   private static final String PROP_NAME = "test.property.value";
+   private static final String BRACKET_PROP_NAME = "${" + PROP_NAME + "}";
+   private static final String CONST = "PropertyReplaceTestCase";
+
    public PropertyReplaceTestCase(String name)
    {
       super(name);
@@ -73,6 +79,31 @@ public class PropertyReplaceTestCase extends AbstractKernelConfigTest
       doTestProperty(false, createCreators());
    }
 
+   public void testAnnotationPropertyReplace() throws Throwable
+   {
+      SecurityManager sm = suspendSecurity();
+      try
+      {
+         SimpleAnnotation replAnn = instantiateAnnotation(true);
+         assertEquals("test." + CONST + ".Name", replAnn.name());
+
+         SimpleAnnotation ignAnn = instantiateAnnotation(false);
+         assertEquals("test." + BRACKET_PROP_NAME + ".Name", ignAnn.name());
+      }
+      finally
+      {
+         resumeSecurity(sm);
+      }
+   }
+
+   protected SimpleAnnotation instantiateAnnotation(boolean replace) throws Throwable
+   {
+      AbstractAnnotationMetaData annotation = new AbstractAnnotationMetaData();
+      annotation.setAnnotation("@org.jboss.test.kernel.config.support.SimpleAnnotation(name = \"test." + BRACKET_PROP_NAME + ".Name\")");
+      annotation.setReplace(replace);
+      return (SimpleAnnotation)annotation.getAnnotationInstance();
+   }
+
    protected List<PropertyReplaceTestCase.ObjectCreator> createCreators()
    {
       return singlePropertyCreator(false);
@@ -84,8 +115,6 @@ public class PropertyReplaceTestCase extends AbstractKernelConfigTest
       try
       {
          // set property to be replaced
-         String PROP_NAME = "test.property.value";
-         String CONST = "PropertyReplaceTestCase";
          System.setProperty(PROP_NAME, CONST);
          for(PropertyReplaceTestCase.ObjectCreator oc : ocs)
          {
@@ -93,7 +122,7 @@ public class PropertyReplaceTestCase extends AbstractKernelConfigTest
             Object value = oc.createObject();
             assertNotNull(value);
             assertEquals(String.class, value.getClass());
-            String checkValue = replace ? CONST : "${" + PROP_NAME + "}";
+            String checkValue = replace ? CONST : BRACKET_PROP_NAME;
             assertEquals(checkValue, value);
          }
       }
@@ -105,7 +134,7 @@ public class PropertyReplaceTestCase extends AbstractKernelConfigTest
 
    protected Object instantiateReplacePropertyValue(boolean replace) throws Throwable
    {
-      PropertyMetaData property = new AbstractPropertyMetaData("key", "${test.property.value}", String.class.getName());
+      PropertyMetaData property = new AbstractPropertyMetaData("key", BRACKET_PROP_NAME, String.class.getName());
       StringValueMetaData svmd = assertInstanceOf(property.getValue(), StringValueMetaData.class, false);
       svmd.setReplace(replace);
       svmd.setConfigurator(bootstrap().getConfigurator());

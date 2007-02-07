@@ -21,11 +21,13 @@
 */
 package org.jboss.kernel.plugins.deployment.xml;
 
+import javax.xml.namespace.NamespaceContext;
 import javax.xml.namespace.QName;
 
 import org.jboss.beans.metadata.plugins.AbstractAnnotationMetaData;
 import org.jboss.xb.binding.sunday.unmarshalling.DefaultElementHandler;
 import org.jboss.xb.binding.sunday.unmarshalling.ElementBinding;
+import org.xml.sax.Attributes;
 
 /**
  * AnnotationHandler.
@@ -41,6 +43,18 @@ public class AnnotationHandler extends DefaultElementHandler
    public Object startElement(Object parent, QName name, ElementBinding element)
    {
       return new AbstractAnnotationMetaData();
+   }
+
+   public void attributes(Object o, QName elementName, ElementBinding element, Attributes attrs, NamespaceContext nsCtx)
+   {
+      AbstractAnnotationMetaData annotation = (AbstractAnnotationMetaData) o;
+      for (int i = 0; i < attrs.getLength(); ++i)
+      {
+         String localName = attrs.getLocalName(i);
+         if ("replace".equals(localName))
+            annotation.setReplace(Boolean.parseBoolean(attrs.getValue(i)));
+      }
+
    }
 
    public Object endElement(Object o, QName qName, ElementBinding element)

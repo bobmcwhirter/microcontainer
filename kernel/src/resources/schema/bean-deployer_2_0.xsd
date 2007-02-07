@@ -451,7 +451,7 @@ $Id$
       </xsd:complexContent>
    </xsd:complexType>
 
-   <xsd:simpleType name="annotationType">
+   <xsd:complexType name="annotationType">
       <xsd:annotation>
          <xsd:documentation>
            <![CDATA[
@@ -459,10 +459,12 @@ $Id$
            ]]>
          </xsd:documentation>
       </xsd:annotation>
-      <xsd:restriction base="xsd:string">
-         <xsd:whiteSpace value="collapse"/>
-      </xsd:restriction>
-   </xsd:simpleType>
+      <xsd:simpleContent>
+         <xsd:extension base="xsd:string">
+            <xsd:attribute name="replace" type="xsd:boolean"/>
+         </xsd:extension>
+      </xsd:simpleContent>
+   </xsd:complexType>
 
    <xsd:simpleType name="classNameType">
       <xsd:annotation>

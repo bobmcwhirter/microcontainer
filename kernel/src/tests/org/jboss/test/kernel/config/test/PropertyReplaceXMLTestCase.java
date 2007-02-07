@@ -23,9 +23,15 @@ package org.jboss.test.kernel.config.test;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Set;
 
 import junit.framework.Test;
+import org.jboss.beans.metadata.spi.AnnotationMetaData;
+import org.jboss.beans.metadata.spi.BeanMetaData;
+import org.jboss.kernel.spi.dependency.KernelController;
+import org.jboss.kernel.spi.dependency.KernelControllerContext;
 import org.jboss.test.kernel.config.support.MyObject;
+import org.jboss.test.kernel.config.support.SimpleAnnotation;
 import org.jboss.test.kernel.config.support.XMLUtil;
 
 /**
@@ -100,4 +106,16 @@ public class PropertyReplaceXMLTestCase extends PropertyReplaceTestCase
       return result;
    }
 
+   protected SimpleAnnotation instantiateAnnotation(boolean replace) throws Throwable
+   {
+      XMLUtil util = bootstrapXML(true);
+      KernelController controller = util.getKernel().getController();
+      KernelControllerContext context = (KernelControllerContext)controller.getInstalledContext("MyBean" + (replace ? "Replace" : "Ignore"));
+      BeanMetaData beanMetaData = context.getBeanMetaData();
+      Set<AnnotationMetaData> annotations = beanMetaData.getAnnotations();
+      assertNotNull(annotations);
+      assertFalse(annotations.isEmpty());
+      assertEquals(1, annotations.size());
+      return (SimpleAnnotation)annotations.iterator().next().getAnnotationInstance();
+   }
 }
