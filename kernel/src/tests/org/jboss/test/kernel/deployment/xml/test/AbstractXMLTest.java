@@ -81,7 +81,7 @@ public class AbstractXMLTest extends AbstractTestCaseWithSetup
     */
    protected AbstractKernelDeployment unmarshalDeployment(String name) throws Exception
    {
-      return (AbstractKernelDeployment) unmarshal(name, AbstractKernelDeployment.class);
+      return unmarshal(name, AbstractKernelDeployment.class);
    }
 
    /**
@@ -111,6 +111,7 @@ public class AbstractXMLTest extends AbstractTestCaseWithSetup
    /**
     * Unmarshal some xml
     * 
+    * @param <T> the expected type
     * @param name the name
     * @param expected the expected class
     * @return the unmarshalled object

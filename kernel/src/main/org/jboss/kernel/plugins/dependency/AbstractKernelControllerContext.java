@@ -39,10 +39,8 @@ import org.jboss.dependency.spi.ControllerMode;
 import org.jboss.dependency.spi.ControllerState;
 import org.jboss.dependency.spi.DependencyInfo;
 import org.jboss.dependency.spi.DependencyItem;
-import org.jboss.joinpoint.spi.TargettedJoinpoint;
 import org.jboss.kernel.Kernel;
 import org.jboss.kernel.plugins.config.Configurator;
-import org.jboss.kernel.spi.config.KernelConfigurator;
 import org.jboss.kernel.spi.dependency.KernelController;
 import org.jboss.kernel.spi.dependency.KernelControllerContext;
 import org.jboss.kernel.spi.metadata.KernelMetaDataRepository;
@@ -448,15 +446,4 @@ public class AbstractKernelControllerContext extends AbstractControllerContext i
          }
       }
    }
-
-   private abstract class JoinPointCreator
-   {
-      public boolean isSecure()
-      {
-         return true;
-      }
-
-      protected abstract TargettedJoinpoint createJoinpoint(ClassLoader cl, KernelConfigurator configurator) throws Throwable;
-   }
-
 }
