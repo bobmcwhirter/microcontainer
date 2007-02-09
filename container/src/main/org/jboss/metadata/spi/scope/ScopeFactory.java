@@ -19,57 +19,22 @@
 * Software Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA
 * 02110-1301 USA, or see the FSF site: http://www.fsf.org.
 */
-package org.jboss.beans.metadata.plugins.policy;
+package org.jboss.metadata.spi.scope;
 
-import java.io.Serializable;
-
-import org.jboss.beans.metadata.spi.policy.ScopeMetaData;
-import org.jboss.util.JBossObject;
-import org.jboss.util.JBossStringBuilder;
+import java.lang.annotation.Annotation;
 
 /**
- * Meta data for scope.
+ * Factory to create ScopeKey from annotation.
  *
  * @author <a href="mailto:ales.justin@jboss.com">Ales Justin</a>
  */
-public class AbstractScopeMetaData extends JBossObject implements ScopeMetaData, Serializable
+public interface ScopeFactory<T extends Annotation>
 {
-   private static final long serialVersionUID = 1;
-
-   private String level;
-   private String qualifier;
-
-   public String getLevel()
-   {
-      return level;
-   }
-
-   public String getQualifier()
-   {
-      return qualifier;
-   }
-
-   public void setLevel(String level)
-   {
-      this.level = level;
-   }
-
-   public void setQualifier(String qualifier)
-   {
-      this.qualifier = qualifier;
-   }
-
-   public void toString(JBossStringBuilder buffer)
-   {
-      buffer.append("level=").append(level);
-      buffer.append(" qualifier=").append(qualifier);
-   }
-
-   public void toShortString(JBossStringBuilder buffer)
-   {
-      buffer.append(level);
-      buffer.append('/');
-      buffer.append(qualifier);
-   }
-
+   /**
+    * Create ScopeKey from scope annotation instance
+    *
+    * @param annotation scope annotation
+    * @return scope key from scope annotation
+    */
+   ScopeKey create(T annotation);
 }

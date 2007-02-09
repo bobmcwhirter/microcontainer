@@ -19,57 +19,22 @@
 * Software Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA
 * 02110-1301 USA, or see the FSF site: http://www.fsf.org.
 */
-package org.jboss.beans.metadata.plugins.policy;
+package org.jboss.metadata.plugins.scope;
 
-import java.io.Serializable;
-
-import org.jboss.beans.metadata.spi.policy.ScopeMetaData;
-import org.jboss.util.JBossObject;
-import org.jboss.util.JBossStringBuilder;
+import org.jboss.metadata.spi.scope.CommonLevels;
+import org.jboss.metadata.spi.scope.ScopeFactory;
+import org.jboss.metadata.spi.scope.ScopeKey;
 
 /**
- * Meta data for scope.
+ * Factory for creating Instance scope key
+ * from InstanceScope annotation.
  *
  * @author <a href="mailto:ales.justin@jboss.com">Ales Justin</a>
  */
-public class AbstractScopeMetaData extends JBossObject implements ScopeMetaData, Serializable
+public class InstanceScopeFactory implements ScopeFactory<InstanceScope>
 {
-   private static final long serialVersionUID = 1;
-
-   private String level;
-   private String qualifier;
-
-   public String getLevel()
+   public ScopeKey create(InstanceScope annotation)
    {
-      return level;
+      return new ScopeKey(CommonLevels.INSTANCE, annotation.value());
    }
-
-   public String getQualifier()
-   {
-      return qualifier;
-   }
-
-   public void setLevel(String level)
-   {
-      this.level = level;
-   }
-
-   public void setQualifier(String qualifier)
-   {
-      this.qualifier = qualifier;
-   }
-
-   public void toString(JBossStringBuilder buffer)
-   {
-      buffer.append("level=").append(level);
-      buffer.append(" qualifier=").append(qualifier);
-   }
-
-   public void toShortString(JBossStringBuilder buffer)
-   {
-      buffer.append(level);
-      buffer.append('/');
-      buffer.append(qualifier);
-   }
-
 }

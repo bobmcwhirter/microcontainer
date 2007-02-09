@@ -21,7 +21,6 @@
 */
 package org.jboss.beans.metadata.spi.policy;
 
-import org.jboss.beans.metadata.spi.MetaDataVisitorNode;
 import org.jboss.beans.metadata.spi.ValueMetaData;
 
 /**
@@ -29,7 +28,7 @@ import org.jboss.beans.metadata.spi.ValueMetaData;
  *
  * @author <a href="mailto:ales.justin@jboss.com">Ales Justin</a>
  */
-public interface BindingMetaData extends MetaDataVisitorNode
+public interface BindingMetaData
 {
    /**
     * Get the name

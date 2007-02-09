@@ -21,18 +21,16 @@
 */
 package org.jboss.beans.metadata.plugins.policy;
 
-import java.util.ArrayList;
+import java.io.Serializable;
 import java.util.List;
 import java.util.Set;
 
-import org.jboss.beans.metadata.plugins.AbstractFeatureMetaData;
+import org.jboss.beans.metadata.spi.AnnotationMetaData;
 import org.jboss.beans.metadata.spi.BeanMetaData;
-import org.jboss.beans.metadata.spi.MetaDataVisitor;
-import org.jboss.beans.metadata.spi.MetaDataVisitorNode;
-import org.jboss.beans.metadata.spi.ValueMetaData;
 import org.jboss.beans.metadata.spi.policy.BindingMetaData;
 import org.jboss.beans.metadata.spi.policy.PolicyMetaData;
 import org.jboss.beans.metadata.spi.policy.ScopeMetaData;
+import org.jboss.util.JBossObject;
 import org.jboss.util.JBossStringBuilder;
 
 /**
@@ -40,14 +38,15 @@ import org.jboss.util.JBossStringBuilder;
  *
  * @author <a href="mailto:ales.justin@jboss.com">Ales Justin</a>
  */
-public class AbstractPolicyMetaData extends AbstractFeatureMetaData implements PolicyMetaData
+public class AbstractPolicyMetaData extends JBossObject implements PolicyMetaData, Serializable
 {
    private static final long serialVersionUID = 1;
 
-   private String name;
-   private String ext;
-   private ScopeMetaData scope;
-   private Set<BindingMetaData> bindings;
+   protected String name;
+   protected String ext;
+   protected ScopeMetaData scope;
+   protected Set<AnnotationMetaData> annotations;
+   protected Set<BindingMetaData> bindings;
 
    public String getName()
    {
@@ -64,6 +63,11 @@ public class AbstractPolicyMetaData extends AbstractFeatureMetaData implements P
       return scope;
    }
 
+   public Set<AnnotationMetaData> getAnnotations()
+   {
+      return annotations;
+   }
+
    public Set<BindingMetaData> getBindings()
    {
       return bindings;
@@ -71,30 +75,7 @@ public class AbstractPolicyMetaData extends AbstractFeatureMetaData implements P
 
    public List<BeanMetaData> getBeans()
    {
-      List<BeanMetaData> beans = new ArrayList<BeanMetaData>();
-      for(BindingMetaData binding : bindings)
-      {
-         ValueMetaData value = binding.getValue();
-         if (value instanceof BeanMetaData)
-         {
-            beans.add((BeanMetaData)value);
-         }
-      }
-      return beans;
-   }
-
-   protected void addChildren(Set<MetaDataVisitorNode> children)
-   {
-      if (scope != null)
-         children.add(scope);
-      super.addChildren(children);
-      if (bindings != null && bindings.size() > 0)
-         children.addAll(bindings);
-   }
-
-   public Class getType(MetaDataVisitor visitor, MetaDataVisitorNode previous) throws Throwable
-   {
-      throw new IllegalArgumentException("Cannot determine inject class type: " + this);
+      return null; // todo
    }
 
    public void setName(String name)
@@ -110,6 +91,11 @@ public class AbstractPolicyMetaData extends AbstractFeatureMetaData implements P
    public void setScope(ScopeMetaData scope)
    {
       this.scope = scope;
+   }
+
+   public void setAnnotations(Set<AnnotationMetaData> annotations)
+   {
+      this.annotations = annotations;
    }
 
    public void setBindings(Set<BindingMetaData> bindings)

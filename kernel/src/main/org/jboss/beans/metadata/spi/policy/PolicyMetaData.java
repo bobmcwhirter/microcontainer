@@ -23,15 +23,16 @@ package org.jboss.beans.metadata.spi.policy;
 
 import java.util.Set;
 
+import org.jboss.beans.metadata.spi.AnnotationMetaData;
 import org.jboss.beans.metadata.spi.BeanMetaDataFactory;
-import org.jboss.beans.metadata.spi.FeatureMetaData;
+import org.jboss.util.JBossInterface;
 
 /**
  * Policy info.
  *
  * @author <a href="mailto:ales.justin@jboss.com">Ales Justin</a>
  */
-public interface PolicyMetaData extends FeatureMetaData, BeanMetaDataFactory
+public interface PolicyMetaData extends JBossInterface, BeanMetaDataFactory
 {
    /**
     * Get the name
@@ -53,6 +54,13 @@ public interface PolicyMetaData extends FeatureMetaData, BeanMetaDataFactory
     * @return the name
     */
    ScopeMetaData getScope();
+
+   /**
+    * Get the annotations.
+    *
+    * @return Set<AnnotationMetaData>.
+    */
+   Set<AnnotationMetaData> getAnnotations();
 
    /**
     * Get the bindings

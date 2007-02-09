@@ -22,12 +22,8 @@
 package org.jboss.beans.metadata.plugins.policy;
 
 import java.io.Serializable;
-import java.util.Collections;
-import java.util.Iterator;
 
 import org.jboss.beans.metadata.plugins.ValueMetaDataAware;
-import org.jboss.beans.metadata.spi.MetaDataVisitor;
-import org.jboss.beans.metadata.spi.MetaDataVisitorNode;
 import org.jboss.beans.metadata.spi.ValueMetaData;
 import org.jboss.beans.metadata.spi.policy.BindingMetaData;
 import org.jboss.util.JBossObject;
@@ -53,21 +49,6 @@ public class AbstractBindingMetaData extends JBossObject implements BindingMetaD
    public ValueMetaData getValue()
    {
       return value;
-   }
-
-   public void initialVisit(MetaDataVisitor vistor)
-   {
-      vistor.initialVisit(this);
-   }
-
-   public void describeVisit(MetaDataVisitor vistor)
-   {
-      vistor.describeVisit(this);
-   }
-
-   public Iterator<? extends MetaDataVisitorNode> getChildren()
-   {
-      return Collections.singleton(value).iterator();
    }
 
    public void setName(String name)

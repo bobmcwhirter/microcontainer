@@ -21,14 +21,12 @@
 */
 package org.jboss.beans.metadata.spi.policy;
 
-import org.jboss.beans.metadata.spi.MetaDataVisitorNode;
-
 /**
  * Scope definition.
  *
  * @author <a href="mailto:ales.justin@jboss.com">Ales Justin</a>
  */
-public interface ScopeMetaData extends MetaDataVisitorNode
+public interface ScopeMetaData
 {
    /**
     * Get the level

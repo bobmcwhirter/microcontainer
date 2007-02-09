@@ -19,57 +19,15 @@
 * Software Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA
 * 02110-1301 USA, or see the FSF site: http://www.fsf.org.
 */
-package org.jboss.beans.metadata.plugins.policy;
-
-import java.io.Serializable;
-
-import org.jboss.beans.metadata.spi.policy.ScopeMetaData;
-import org.jboss.util.JBossObject;
-import org.jboss.util.JBossStringBuilder;
+package org.jboss.metadata.spi.scope;
 
 /**
- * Meta data for scope.
+ * Defining the factory class to create actual ScopeKey
+ * from annotated scope annotation.
  *
  * @author <a href="mailto:ales.justin@jboss.com">Ales Justin</a>
  */
-public class AbstractScopeMetaData extends JBossObject implements ScopeMetaData, Serializable
+public @interface ScopeFactoryLookup
 {
-   private static final long serialVersionUID = 1;
-
-   private String level;
-   private String qualifier;
-
-   public String getLevel()
-   {
-      return level;
-   }
-
-   public String getQualifier()
-   {
-      return qualifier;
-   }
-
-   public void setLevel(String level)
-   {
-      this.level = level;
-   }
-
-   public void setQualifier(String qualifier)
-   {
-      this.qualifier = qualifier;
-   }
-
-   public void toString(JBossStringBuilder buffer)
-   {
-      buffer.append("level=").append(level);
-      buffer.append(" qualifier=").append(qualifier);
-   }
-
-   public void toShortString(JBossStringBuilder buffer)
-   {
-      buffer.append(level);
-      buffer.append('/');
-      buffer.append(qualifier);
-   }
-
+   Class<? extends ScopeFactory> value();
 }
