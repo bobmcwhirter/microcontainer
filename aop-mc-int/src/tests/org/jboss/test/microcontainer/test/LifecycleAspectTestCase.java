@@ -29,20 +29,21 @@ import javax.management.ObjectName;
 import junit.framework.Test;
 
 import org.jboss.aop.microcontainer.junit.AOPMicrocontainerTest;
+import org.jboss.test.microcontainer.support.TestAspect;
 
 /**
  * 
  * @author <a href="kabir.khan@jboss.com">Kabir Khan</a>
  * @version $Revision: 43840 $
  */
-public class MultipleLifecycleTestCase extends AOPMicrocontainerTest
+public class LifecycleAspectTestCase extends AOPMicrocontainerTest
 {
    public static Test suite()
    {
-      return suite(MultipleLifecycleTestCase.class);
+      return suite(LifecycleAspectTestCase.class);
    }
    
-   public MultipleLifecycleTestCase(String name)
+   public LifecycleAspectTestCase(String name)
    {
       super(name);
    }
@@ -50,14 +51,31 @@ public class MultipleLifecycleTestCase extends AOPMicrocontainerTest
    
    public void testBean() throws Exception
    {
-      MBeanServer server = (MBeanServer) getBean("MBeanServer");
-      assertNotNull(server);
+      assertFalse(TestAspect.barCalled);
+      assertFalse(TestAspect.fooCalled);
+      Object bean = null; 
+      try
+      {
+         bean = getBean("Bean");
+      }
+      catch (RuntimeException expected)
+      {
+      }
+      
+      if (bean != null)
+      {
+         fail("Should not be deployed yet");
+      }
 
-      ObjectName name = new ObjectName("test:name='Bean'");
-      MBeanInfo info = server.getMBeanInfo(name);
-      assertNotNull(info);
-      MBeanOperationInfo[] ops = info.getOperations();
-      assertEquals(1, ops.length);
-      assertEquals("someMethod", ops[0].getName());
+      deploy("LifecycleAspectTestCaseNotAutomatic.xml");
+      
+      bean = getBean("Bean");
+      assertNotNull(bean);
+      assertTrue(TestAspect.fooCalled);
+      assertFalse(TestAspect.barCalled);
+      TestAspect.fooCalled = false;
+      undeploy("LifecycleAspectTestCaseNotAutomatic.xml");
+      assertTrue(TestAspect.fooCalled);
+      assertFalse(TestAspect.barCalled);
    }
 }

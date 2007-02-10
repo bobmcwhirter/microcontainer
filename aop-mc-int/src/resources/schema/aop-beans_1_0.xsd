@@ -67,8 +67,12 @@ $Id$
          </xsd:documentation>
       </xsd:annotation>
       <xsd:complexContent>
-         <xsd:extension base="aspectType">
+         <xsd:extension base="mc:beanfactoryType">
+            <xsd:attribute name="pointcut" type="xsd:string" use="optional"/>
+            <xsd:attribute name="manager-bean" type="xsd:string" use="optional"/>
+            <xsd:attribute name="manager-property" type="xsd:string" use="optional"/>
             <xsd:attribute name="classes" type="xsd:string" use="required"/>
+            <xsd:attribute name="method" type="xsd:string" use="optional"/>
          </xsd:extension>
       </xsd:complexContent>
    </xsd:complexType>

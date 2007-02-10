@@ -21,43 +21,45 @@
   */
 package org.jboss.test.microcontainer.test;
 
-import javax.management.MBeanInfo;
-import javax.management.MBeanOperationInfo;
-import javax.management.MBeanServer;
-import javax.management.ObjectName;
-
 import junit.framework.Test;
 
 import org.jboss.aop.microcontainer.junit.AOPMicrocontainerTest;
+import org.jboss.test.microcontainer.support.SimpleBeanImpl;
+import org.jboss.test.microcontainer.support.TestAspect;
 
 /**
  * 
  * @author <a href="kabir.khan@jboss.com">Kabir Khan</a>
  * @version $Revision: 43840 $
  */
-public class MultipleLifecycleTestCase extends AOPMicrocontainerTest
+public class SimpleAspectUseCaseXmlTestCase extends AOPMicrocontainerTest
 {
    public static Test suite()
    {
-      return suite(MultipleLifecycleTestCase.class);
+      return suite(SimpleAspectUseCaseXmlTestCase.class);
    }
    
-   public MultipleLifecycleTestCase(String name)
+   public SimpleAspectUseCaseXmlTestCase(String name)
    {
       super(name);
    }
    
-   
-   public void testBean() throws Exception
+   public void testIntercepted()
    {
-      MBeanServer server = (MBeanServer) getBean("MBeanServer");
-      assertNotNull(server);
+      SimpleBeanImpl bean = (SimpleBeanImpl) getBean("Intercepted");
+      assertFalse(TestAspect.fooCalled);
+      assertFalse(TestAspect.barCalled);
 
-      ObjectName name = new ObjectName("test:name='Bean'");
-      MBeanInfo info = server.getMBeanInfo(name);
-      assertNotNull(info);
-      MBeanOperationInfo[] ops = info.getOperations();
-      assertEquals(1, ops.length);
-      assertEquals("someMethod", ops[0].getName());
+      bean.someMethod();
+      assertTrue("TestAspect.foo not called", TestAspect.fooCalled);
+      assertFalse("TestAspect.bar was called", TestAspect.barCalled);
+      
+      TestAspect.fooCalled = false;
+      assertFalse(TestAspect.fooCalled);
+      assertFalse(TestAspect.barCalled);
+
+      bean.someOtherMethod();
+      assertFalse("TestAspect.foo was called", TestAspect.fooCalled);
+      assertTrue("TestAspect.bar was not called", TestAspect.barCalled);
    }
 }

@@ -153,6 +153,10 @@ public class AOPBeansSchemaInitializer implements SchemaBindingInitializer
          {
             factory.setManagerProperty(attr);
          }
+         else if ("method".equals(localName))
+         {
+            factory.setAdviceMethod(attr);
+         }
       }
    }
 

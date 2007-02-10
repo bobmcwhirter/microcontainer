@@ -62,6 +62,8 @@ public class AspectBeanMetaDataFactory extends GenericBeanFactoryMetaData
    /** The property of the aspect manager bean, if any, containing the aspect manager */
    private String managerProperty;
    
+   private String adviceMethod;
+   
    /**
     * Get the pointcut.
     * 
@@ -103,6 +105,16 @@ public class AspectBeanMetaDataFactory extends GenericBeanFactoryMetaData
       this.managerProperty = aspectManagerProperty;
    }   
    
+   public String getAdviceMethod()
+   {
+      return adviceMethod;
+   }
+
+   public void setAdviceMethod(String adviceMethod)
+   {
+      this.adviceMethod = adviceMethod;
+   }
+
    public List<BeanMetaData> getBeans()
    {
       ArrayList<BeanMetaData> result = new ArrayList<BeanMetaData>();
@@ -124,6 +136,10 @@ public class AspectBeanMetaDataFactory extends GenericBeanFactoryMetaData
       aspectBinding.addProperty(new AbstractPropertyMetaData("pointcut", pointcut));
       aspectBinding.addProperty(new AbstractPropertyMetaData("aspect", new AbstractDependencyValueMetaData(aspectName, "definition")));
       aspectBinding.addProperty(getAspectManagerPropertyMetaData("manager"));
+      if (adviceMethod != null)
+      {
+         aspectBinding.addProperty(new AbstractPropertyMetaData("method", adviceMethod));
+      }
       result.add(aspectBinding);
       
       if (hasInjectedBeans())

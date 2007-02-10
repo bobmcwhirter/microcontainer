@@ -1,0 +1,22 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<deployment xmlns="urn:jboss:bean-deployer:2.0">
+   <bean name="Repository" class="org.jboss.metadata.plugins.repository.basic.BasicMetaDataRepository"/>
+
+   <bean name="AspectManager" class="org.jboss.aop.AspectManager">
+      <constructor factoryClass="org.jboss.aop.AspectManager" factoryMethod="instance"/>
+   </bean>
+
+   <aop:lifecycle-configure xmlns:aop="urn:jboss:aop-beans:1.0"
+               name="JMXLifecycle"
+               class="org.jboss.test.microcontainer.support.TestAspect"
+               classes="@org.jboss.aop.microcontainer.aspects.jmx.JMX"
+               method="foo"
+               pointcut="execution(* @org.jboss.aop.microcontainer.aspects.jmx.JMX->$implements{org.jboss.kernel.spi.dependency.KernelControllerContextAware}(..))">
+      <property name="shouldInvoke">false</property>
+   </aop:lifecycle-configure>
+
+   <bean name="Bean" class="org.jboss.test.microcontainer.support.SimpleBeanImpl">
+      <annotation>@org.jboss.aop.microcontainer.aspects.jmx.JMX(name="", exposedInterface=org.jboss.test.microcontainer.support.SimpleBean.class)</annotation>
+   </bean>
+</deployment>
