@@ -68,7 +68,14 @@ public interface BeanMetaData extends FeatureMetaData, ValueMetaData
     * @param mode the mode
     */
    void setMode(ControllerMode mode);
-   
+
+   /**
+    * Set the annotations
+    *
+    * @param annotations the annotations
+    */
+   void setAnnotations(Set<AnnotationMetaData> annotations);
+
    /**
     * Get the properties.
     * 

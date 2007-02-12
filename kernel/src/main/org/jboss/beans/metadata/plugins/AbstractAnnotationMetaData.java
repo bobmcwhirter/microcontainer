@@ -129,7 +129,6 @@ public class AbstractAnnotationMetaData extends JBossObject
       buffer.append(ann);
    }
 
-/*
    protected int getHashCode()
    {
       return annotation.hashCode();
@@ -141,11 +140,8 @@ public class AbstractAnnotationMetaData extends JBossObject
          return false;
 
       AbstractAnnotationMetaData amd = (AbstractAnnotationMetaData)object;
-      if (replace != amd.replace)
-         return false;
-
-      return annotation.equals(amd.annotation);
+      // this is what we probably want? - never saw duplicate annotation on a bean/prop/...
+      return (replace == amd.replace) && annotation.equals(amd.annotation);
    }
-*/
 
 }

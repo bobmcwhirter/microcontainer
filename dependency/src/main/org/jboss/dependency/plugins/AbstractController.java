@@ -64,7 +64,7 @@ public class AbstractController extends JBossObject implements Controller
    protected Set<ControllerContext> installing = CollectionsFactory.createCopyOnWriteSet();
 
    /** The child controllers */
-   protected Set<Controller> childControllers;
+   protected Set<Controller> childControllers = CollectionsFactory.createCopyOnWriteSet();
 
    /** Whether an on demand context has been enabled */
    protected boolean onDemandEnabled = true;
@@ -109,6 +109,17 @@ public class AbstractController extends JBossObject implements Controller
       {
          unlockWrite();
       }
+   }
+
+   public Set<Controller> getControllers()
+   {
+      return childControllers;      
+   }
+
+   // no need for locking - we are already locked
+   public void addController(Controller controller)
+   {
+      childControllers.add(controller);
    }
 
    public ControllerContext getContext(Object name, ControllerState state)
@@ -246,8 +257,6 @@ public class AbstractController extends JBossObject implements Controller
       lockWrite();
       try
       {
-         // TODO - add scoping here
-
          Object name = context.getName();
 
          if (allContexts.get(name) != null)

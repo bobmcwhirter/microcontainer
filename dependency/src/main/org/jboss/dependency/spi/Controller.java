@@ -110,4 +110,18 @@ public interface Controller extends JBossInterface
     * @return the states in order
     */
    List<ControllerState> getStates();
+
+   /**
+    * Get the child controllers
+    *
+    * @return child controllers
+    */
+   Set<Controller> getControllers();
+
+   /**
+    *  Add a child controller.
+    *
+    * @param controller new scoped controller instance
+    */
+   void addController(Controller controller);
 }

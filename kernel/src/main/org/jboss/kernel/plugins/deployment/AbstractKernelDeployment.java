@@ -157,6 +157,7 @@ public class AbstractKernelDeployment extends JBossObject
                if (annotationsBMD == null)
                {
                   annotationsBMD = new HashSet<AnnotationMetaData>();
+                  bmd.setAnnotations(annotationsBMD);
                }
                annotationsBMD.addAll(annotations);
             }

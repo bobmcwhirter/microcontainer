@@ -1,4 +1,4 @@
-   /*
+/*
 * JBoss, Home of Professional Open Source
 * Copyright 2006, JBoss Inc., and individual contributors as indicated
 * by the @authors tag. See the copyright.txt in the distribution for a
@@ -21,21 +21,22 @@
 */
 package org.jboss.beans.metadata.plugins.policy;
 
-   import java.util.Map;
-   import java.util.Set;
+import java.util.Map;
+import java.util.Set;
 
-   import org.jboss.kernel.Kernel;
-   import org.jboss.kernel.spi.metadata.KernelMetaDataRepository;
-   import org.jboss.metadata.plugins.loader.memory.MemoryMetaDataLoader;
-   import org.jboss.metadata.spi.MutableMetaData;
-   import org.jboss.metadata.spi.repository.MutableMetaDataRepository;
-   import org.jboss.metadata.spi.retrieval.MetaDataItem;
-   import org.jboss.metadata.spi.retrieval.MetaDataRetrieval;
-   import org.jboss.metadata.spi.scope.Scope;
-   import org.jboss.metadata.spi.scope.ScopeKey;
+import org.jboss.kernel.Kernel;
+import org.jboss.kernel.spi.metadata.KernelMetaDataRepository;
+import org.jboss.metadata.plugins.loader.memory.MemoryMetaDataLoader;
+import org.jboss.metadata.spi.MutableMetaData;
+import org.jboss.metadata.spi.repository.MutableMetaDataRepository;
+import org.jboss.metadata.spi.retrieval.MetaDataItem;
+import org.jboss.metadata.spi.retrieval.MetaDataRetrieval;
+import org.jboss.metadata.spi.scope.Scope;
+import org.jboss.metadata.spi.scope.ScopeKey;
 
-   /**
+/**
  * POJO binding bean meta data to scoped repository.
+ * TODO - a lot more work (once we finalize scoped BeanMD deployment) 
  *
  * @author <a href="mailto:ales.justin@jboss.com">Ales Justin</a>
  */
