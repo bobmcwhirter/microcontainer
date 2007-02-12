@@ -44,6 +44,9 @@ public class BeanSchemaBindingHelper
    {
       deploymentType.setHandler(DeploymentHandler.HANDLER);
 
+      // deployment has annotations
+      deploymentType.pushInterceptor(BeanSchemaBinding20.annotationQName, DeploymentAnnotationInterceptor.INTERCEPTOR);
+
       // deployment has a classloader
       deploymentType.pushInterceptor(BeanSchemaBinding20.classloaderQName, DeploymentClassLoaderInterceptor.INTERCEPTOR);
 

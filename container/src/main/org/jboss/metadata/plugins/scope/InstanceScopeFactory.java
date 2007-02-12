@@ -22,8 +22,8 @@
 package org.jboss.metadata.plugins.scope;
 
 import org.jboss.metadata.spi.scope.CommonLevels;
+import org.jboss.metadata.spi.scope.Scope;
 import org.jboss.metadata.spi.scope.ScopeFactory;
-import org.jboss.metadata.spi.scope.ScopeKey;
 
 /**
  * Factory for creating Instance scope key
@@ -33,8 +33,8 @@ import org.jboss.metadata.spi.scope.ScopeKey;
  */
 public class InstanceScopeFactory implements ScopeFactory<InstanceScope>
 {
-   public ScopeKey create(InstanceScope annotation)
+   public Scope create(InstanceScope annotation)
    {
-      return new ScopeKey(CommonLevels.INSTANCE, annotation.value());
+      return new Scope(CommonLevels.INSTANCE, annotation.value());
    }
 }

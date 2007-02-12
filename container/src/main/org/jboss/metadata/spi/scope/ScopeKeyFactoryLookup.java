@@ -19,35 +19,22 @@
 * Software Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA
 * 02110-1301 USA, or see the FSF site: http://www.fsf.org.
 */
-package org.jboss.beans.metadata.spi.policy;
+package org.jboss.metadata.spi.scope;
 
-import org.jboss.beans.metadata.spi.ValueMetaData;
+import java.lang.annotation.ElementType;
+import java.lang.annotation.Retention;
+import java.lang.annotation.RetentionPolicy;
+import java.lang.annotation.Target;
 
 /**
- * Scope definition.
+ * Defining the factory class to create actual ScopeKey
+ * from annotated scope key annotation.
  *
  * @author <a href="mailto:ales.justin@jboss.com">Ales Justin</a>
  */
-public interface ScopeMetaData extends ValueMetaData
+@Retention(RetentionPolicy.RUNTIME)
+@Target({ElementType.ANNOTATION_TYPE})
+public @interface ScopeKeyFactoryLookup
 {
-   /**
-    * Get the scope annotation name
-    *
-    * @return scope annotation
-    */
-   String getScope();
-
-   /**
-    * Get the level
-    *
-    * @return scope level
-    */
-   String getLevel();
-
-   /**
-    * Get the qualifier
-    *
-    * @return qualifier name
-    */
-   String getQualifier();
+   Class<? extends ScopeKeyFactory> value();
 }

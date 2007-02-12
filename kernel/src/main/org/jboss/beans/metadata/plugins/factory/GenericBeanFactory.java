@@ -39,7 +39,7 @@ import org.jboss.kernel.plugins.config.Configurator;
 import org.jboss.kernel.spi.config.KernelConfigurator;
 
 /**
- * Collection metadata.
+ * Bean factory metadata.
  * 
  * @author <a href="adrian@jboss.com">Adrian Brock</a>
  * @version $Revision$

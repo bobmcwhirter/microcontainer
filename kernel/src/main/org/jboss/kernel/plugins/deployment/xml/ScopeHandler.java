@@ -36,7 +36,9 @@ import org.xml.sax.Attributes;
  */
 public class ScopeHandler extends DefaultElementHandler
 {
-   /** The scope handler */
+   /**
+    * The scope handler
+    */
    public static final ScopeHandler HANDLER = new ScopeHandler();
 
    public Object startElement(Object parent, QName name, ElementBinding element)
@@ -55,6 +57,20 @@ public class ScopeHandler extends DefaultElementHandler
          else if ("qualifier".equals(localName))
             scope.setQualifier(attrs.getValue(i));
       }
+   }
+
+   public Object endElement(Object o, QName qName, ElementBinding element)
+   {
+      AbstractScopeMetaData scopeMetaData = (AbstractScopeMetaData)o;
+      String scope = scopeMetaData.getScope();
+      if (scope != null && scope.length() > 0)
+      {
+         if (scope.startsWith("@") == false)
+         {
+            throw new IllegalArgumentException("<scope/> content must be a fully qualified annotation type name prefixed with '@'");
+         }
+      }
+      return scopeMetaData;
    }
 
 }

@@ -21,12 +21,15 @@
 */
 package org.jboss.kernel.plugins.deployment;
 
-import java.io.Serializable;
 import java.io.IOException;
+import java.io.Serializable;
 import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 import java.util.concurrent.CopyOnWriteArrayList;
 
+import org.jboss.beans.metadata.spi.AnnotationMetaData;
 import org.jboss.beans.metadata.spi.BeanMetaData;
 import org.jboss.beans.metadata.spi.BeanMetaDataFactory;
 import org.jboss.beans.metadata.spi.ClassLoaderMetaData;
@@ -54,6 +57,12 @@ public class AbstractKernelDeployment extends JBossObject
 
    /** The installed contexts */
    protected transient List<KernelControllerContext> installedContexts = new CopyOnWriteArrayList<KernelControllerContext>();
+
+   /** Is deployment scoped */
+   protected Boolean scoped;
+
+   /** The annotations */
+   protected Set<AnnotationMetaData> annotations;
 
    /** The beans List<BeanMetaDataFactory> */
    protected List<BeanMetaDataFactory> beanFactories;
@@ -136,13 +145,45 @@ public class AbstractKernelDeployment extends JBossObject
       if (beanFactories == null || beanFactories.size() == 0)
          return null;
       List<BeanMetaData> result = new ArrayList<BeanMetaData>(beanFactories.size());
-      for (int i = 0; i < beanFactories.size(); ++i)
+      for (BeanMetaDataFactory factory : beanFactories)
       {
-         BeanMetaDataFactory factory = beanFactories.get(i);
          List<BeanMetaData> beans = factory.getBeans();
+         // add all deployment annotations to bean's annotations
+         if (annotations != null && annotations.isEmpty() == false)
+         {
+            for (BeanMetaData bmd : beans)
+            {
+               Set<AnnotationMetaData> annotationsBMD = bmd.getAnnotations();
+               if (annotationsBMD == null)
+               {
+                  annotationsBMD = new HashSet<AnnotationMetaData>();
+               }
+               annotationsBMD.addAll(annotations);
+            }
+         }
          result.addAll(beans);
       }
       return result;
+   }
+
+   public Boolean isScoped()
+   {
+      return scoped;
+   }
+
+   public void setScoped(Boolean scoped)
+   {
+      this.scoped = scoped;
+   }
+
+   public Set<AnnotationMetaData> getAnnotations()
+   {
+      return annotations;
+   }
+
+   public void setAnnotations(Set<AnnotationMetaData> annotations)
+   {
+      this.annotations = annotations;
    }
 
    public List<BeanMetaDataFactory> getBeanFactories()

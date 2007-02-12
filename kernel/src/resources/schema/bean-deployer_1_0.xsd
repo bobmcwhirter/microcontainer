@@ -51,6 +51,7 @@ $Id$
          </xsd:documentation>
       </xsd:annotation>
       <xsd:choice minOccurs="0" maxOccurs="unbounded">
+         <xsd:element name="annotation" type="annotationType" minOccurs="0" maxOccurs="unbounded"/>
          <xsd:element name="classloader" type="classloaderType" minOccurs="0"/>
          <xsd:element name="bean" type="beanType" minOccurs="0" maxOccurs="unbounded"/>
          <xsd:element name="beanfactory" type="beanfactoryType" minOccurs="0" maxOccurs="unbounded"/>

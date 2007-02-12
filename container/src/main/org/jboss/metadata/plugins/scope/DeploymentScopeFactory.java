@@ -19,35 +19,22 @@
 * Software Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA
 * 02110-1301 USA, or see the FSF site: http://www.fsf.org.
 */
-package org.jboss.beans.metadata.spi.policy;
+package org.jboss.metadata.plugins.scope;
 
-import org.jboss.beans.metadata.spi.ValueMetaData;
+import org.jboss.metadata.spi.scope.CommonLevels;
+import org.jboss.metadata.spi.scope.Scope;
+import org.jboss.metadata.spi.scope.ScopeFactory;
 
 /**
- * Scope definition.
+ * Factory for creating Deployment scope key
+ * from DeploymentScope annotation.
  *
  * @author <a href="mailto:ales.justin@jboss.com">Ales Justin</a>
  */
-public interface ScopeMetaData extends ValueMetaData
+public class DeploymentScopeFactory implements ScopeFactory<DeploymentScope>
 {
-   /**
-    * Get the scope annotation name
-    *
-    * @return scope annotation
-    */
-   String getScope();
-
-   /**
-    * Get the level
-    *
-    * @return scope level
-    */
-   String getLevel();
-
-   /**
-    * Get the qualifier
-    *
-    * @return qualifier name
-    */
-   String getQualifier();
+   public Scope create(DeploymentScope annotation)
+   {
+      return new Scope(CommonLevels.DEPLOYMENT, annotation.value());
+   }
 }

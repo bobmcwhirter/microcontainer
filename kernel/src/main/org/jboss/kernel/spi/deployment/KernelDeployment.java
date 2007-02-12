@@ -22,7 +22,9 @@
 package org.jboss.kernel.spi.deployment;
 
 import java.util.List;
+import java.util.Set;
 
+import org.jboss.beans.metadata.spi.AnnotationMetaData;
 import org.jboss.beans.metadata.spi.BeanMetaData;
 import org.jboss.beans.metadata.spi.BeanMetaDataFactory;
 import org.jboss.beans.metadata.spi.ClassLoaderMetaData;
@@ -64,7 +66,21 @@ public interface KernelDeployment extends JBossInterface
     * @param installed true when installed
     */
    void setInstalled(boolean installed);
-   
+
+   /**
+    * Is deployment scoped
+    *
+    * @return true if scoped, false if isolated, null by default
+    */
+   Boolean isScoped();
+
+   /**
+    * Get the deployment annotations.
+    *
+    * @return the annotations
+    */
+   Set<AnnotationMetaData> getAnnotations();
+
    /**
     * Get the classloader for this deployment
     *

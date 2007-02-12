@@ -19,35 +19,23 @@
 * Software Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA
 * 02110-1301 USA, or see the FSF site: http://www.fsf.org.
 */
-package org.jboss.beans.metadata.spi.policy;
+package org.jboss.metadata.spi.scope;
 
-import org.jboss.beans.metadata.spi.ValueMetaData;
+import java.lang.annotation.Annotation;
 
 /**
- * Scope definition.
+ * Factory to create ScopeKey from annotation.
  *
+ * @param <T> the scope key annotation
  * @author <a href="mailto:ales.justin@jboss.com">Ales Justin</a>
  */
-public interface ScopeMetaData extends ValueMetaData
+public interface ScopeKeyFactory<T extends Annotation>
 {
    /**
-    * Get the scope annotation name
+    * Create ScopeKey from scope annotation instance
     *
-    * @return scope annotation
+    * @param annotation scope annotation
+    * @return scope key from scope annotation
     */
-   String getScope();
-
-   /**
-    * Get the level
-    *
-    * @return scope level
-    */
-   String getLevel();
-
-   /**
-    * Get the qualifier
-    *
-    * @return qualifier name
-    */
-   String getQualifier();
+   ScopeKey create(T annotation);
 }

@@ -128,4 +128,24 @@ public class AbstractAnnotationMetaData extends JBossObject
    {
       buffer.append(ann);
    }
+
+/*
+   protected int getHashCode()
+   {
+      return annotation.hashCode();
+   }
+
+   public boolean equals(Object object)
+   {
+      if (object == null || object instanceof AbstractAnnotationMetaData == false)
+         return false;
+
+      AbstractAnnotationMetaData amd = (AbstractAnnotationMetaData)object;
+      if (replace != amd.replace)
+         return false;
+
+      return annotation.equals(amd.annotation);
+   }
+*/
+
 }

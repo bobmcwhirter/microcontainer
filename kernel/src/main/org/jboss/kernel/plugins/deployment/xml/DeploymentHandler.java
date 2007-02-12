@@ -21,11 +21,13 @@
 */
 package org.jboss.kernel.plugins.deployment.xml;
 
+import javax.xml.namespace.NamespaceContext;
 import javax.xml.namespace.QName;
 
 import org.jboss.kernel.plugins.deployment.AbstractKernelDeployment;
 import org.jboss.xb.binding.sunday.unmarshalling.DefaultElementHandler;
 import org.jboss.xb.binding.sunday.unmarshalling.ElementBinding;
+import org.xml.sax.Attributes;
 
 /**
  * DeploymentHandler.
@@ -42,4 +44,18 @@ public class DeploymentHandler extends DefaultElementHandler
    {
       return new AbstractKernelDeployment();
    }
+
+   public void attributes(Object o, QName elementName, ElementBinding element, Attributes attrs, NamespaceContext nsCtx)
+   {
+      AbstractKernelDeployment deployment = (AbstractKernelDeployment)o;
+      for (int i = 0; i < attrs.getLength(); ++i)
+      {
+         String localName = attrs.getLocalName(i);
+         if ("name".equals(localName))
+            deployment.setName(attrs.getValue(i));
+         else if ("scoped".equals(localName))                       
+            deployment.setScoped(Boolean.parseBoolean(attrs.getValue(i)));
+      }
+   }
+
 }
