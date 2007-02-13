@@ -50,7 +50,7 @@
     </dependency>
     <dependency>
       <groupId>jboss</groupId>
-      <artifactId>jboss-kernel</artifactId>
+      <artifactId>jboss-container</artifactId>
       <version>${project.version}</version>
       <type>test-jar</type>
       <scope>test</scope>
