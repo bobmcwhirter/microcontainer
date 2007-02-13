@@ -113,7 +113,7 @@ public class AbstractDependencyInfo extends JBossObject implements DependencyInf
 
    public void removeDependsOnMe(DependencyItem dependency)
    {
-      dependsOnMe.add(dependency);
+      dependsOnMe.remove(dependency);
       flushJBossObjectCache();
    }
    
