@@ -104,7 +104,13 @@ public class PreInstallAction extends KernelControllerContextAction
                if (scopes.size() > 0)
                {
                   ScopeKey scopeKey = new ScopeKey(scopes);
-                  context.setScope(scopeKey);
+                  // todo - should this be done (repare the current context scope key)
+                  //        or where to store this 'deployment' key?
+/*
+                  ScopeKey contextScopeKey = context.getScope();
+                  for (Scope s : scopes)
+                     contextScopeKey.addScope(s);
+*/
                   // find scoped controller
                   MutableMetaDataRepository mmdr = repository.getMetaDataRepository();
                   MetaDataRetrieval mdr = mmdr.getMetaDataRetrieval(scopeKey);
