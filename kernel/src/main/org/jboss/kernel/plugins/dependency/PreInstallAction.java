@@ -21,14 +21,28 @@
 */
 package org.jboss.kernel.plugins.dependency;
 
+import java.lang.annotation.Annotation;
+import java.util.Collection;
+import java.util.HashSet;
+
 import org.jboss.beans.info.spi.BeanInfo;
 import org.jboss.beans.metadata.spi.BeanMetaData;
+import org.jboss.dependency.spi.Controller;
 import org.jboss.kernel.Kernel;
 import org.jboss.kernel.spi.config.KernelConfigurator;
 import org.jboss.kernel.spi.dependency.KernelController;
 import org.jboss.kernel.spi.dependency.KernelControllerContext;
 import org.jboss.kernel.spi.metadata.KernelMetaDataRepository;
-import org.jboss.metadata.spi.MetaData;
+import org.jboss.metadata.plugins.loader.memory.MemoryMetaDataLoader;
+import org.jboss.metadata.spi.MutableMetaData;
+import org.jboss.metadata.spi.repository.MutableMetaDataRepository;
+import org.jboss.metadata.spi.retrieval.AnnotationItem;
+import org.jboss.metadata.spi.retrieval.AnnotationsItem;
+import org.jboss.metadata.spi.retrieval.MetaDataItem;
+import org.jboss.metadata.spi.retrieval.MetaDataRetrieval;
+import org.jboss.metadata.spi.scope.Scope;
+import org.jboss.metadata.spi.scope.ScopeFactoryLookup;
+import org.jboss.metadata.spi.scope.ScopeKey;
 
 /**
  * PreInstallAction.
@@ -49,10 +63,11 @@ public class PreInstallAction extends KernelControllerContextAction
          BeanInfo info = configurator.getBeanInfo(metaData);
          context.setBeanInfo(info);
 
-         MetaData md = addMetaData(context);
+         KernelMetaDataRepository repository = controller.getKernel().getMetaDataRepository();
+         repository.addMetaData(context);
          try
          {
-            // todo
+            //applyScoping(context);
          }
          catch (Throwable t)
          {
@@ -62,24 +77,99 @@ public class PreInstallAction extends KernelControllerContextAction
       }
    }
 
-   protected void uninstallActionInternal(KernelControllerContext context)
+   protected void applyScoping(KernelControllerContext context) throws Throwable
    {
-      removeMetaData(context);
-      context.setBeanInfo(null);
+      KernelController controller = (KernelController)context.getController();
+      KernelMetaDataRepository repository = controller.getKernel().getMetaDataRepository();
+      MetaDataRetrieval retrieval = repository.getMetaDataRetrieval(context);
+      if (retrieval != null)
+      {
+         AnnotationsItem annotations = retrieval.retrieveAnnotations();
+         if (annotations != null)
+         {
+            AnnotationItem[] annotationItems = annotations.getAnnotations();
+            if (annotationItems != null && annotationItems.length > 0)
+            {
+               Collection<Scope> scopes = new HashSet<Scope>();
+               for(AnnotationItem annItem : annotationItems)
+               {
+                  Annotation annotation = annItem.getAnnotation();
+                  if (annotation.annotationType().isAnnotationPresent(ScopeFactoryLookup.class))
+                  {
+                     ScopeFactoryLookup sfl = annotation.annotationType().getAnnotation(ScopeFactoryLookup.class);
+                     Scope scope = sfl.value().newInstance().create(annotation);
+                     scopes.add(scope);
+                  }
+               }
+               if (scopes.size() > 0)
+               {
+                  ScopeKey scopeKey = new ScopeKey(scopes);
+                  context.setScope(scopeKey);
+                  // find scoped controller
+                  MutableMetaDataRepository mmdr = repository.getMetaDataRepository();
+                  MetaDataRetrieval mdr = mmdr.getMetaDataRetrieval(scopeKey);
+                  if (mdr == null)
+                  {
+                     mdr = new MemoryMetaDataLoader(scopeKey);
+                     mmdr.addMetaDataRetrieval(mdr);
+                  }
+                  MetaDataItem<Controller> controllerItem = mdr.retrieveMetaData(Controller.class);
+                  Controller scopedController;
+                  if (controllerItem != null)
+                  {
+                     scopedController = controllerItem.getValue();
+                  }
+                  else
+                  {
+                     Controller parentController = null;
+                     ScopeKey parentKey = scopeKey.getParent();
+                     while(parentController == null && parentKey != null)
+                     {
+                        MetaDataRetrieval pmdr = mmdr.getMetaDataRetrieval(parentKey);
+                        if (pmdr != null)
+                        {
+                           MetaDataItem<Controller> pci = pmdr.retrieveMetaData(Controller.class);
+                           if (pci != null)
+                           {
+                              parentController = pci.getValue();
+                           }
+                        }
+                        parentKey = parentKey.getParent();
+                     }
+                     if (parentController == null)
+                     {
+                        parentController = controller;
+                     }
+                     scopedController = new ScopedKernelController(parentController);
+                     ((MutableMetaData)mdr).addMetaData(scopedController, Controller.class);
+                  }
+                  context.setController(scopedController);
+               }
+            }
+         }
+      }
    }
 
-   /**
-    * Adds annotations to the bean.
-    *
-    * @param context the context
-    * @return the metadata
-    */
-   private MetaData addMetaData(KernelControllerContext context)
+   protected void removeScoping(KernelControllerContext context) throws Throwable
    {
-      KernelController controller = (KernelController) context.getController();
-      KernelMetaDataRepository repository = controller.getKernel().getMetaDataRepository();
-      repository.addMetaData(context);
-      return repository.getMetaData(context);
+      // todo
+   }
+
+   protected void uninstallActionInternal(KernelControllerContext context)
+   {
+      try
+      {
+         removeScoping(context);
+      }
+      catch(Throwable ignored)
+      {
+         log.warn("Unexpected error removing scoping: ", ignored);
+      }
+      finally
+      {
+         removeMetaData(context);
+         context.setBeanInfo(null);
+      }
    }
 
    /**

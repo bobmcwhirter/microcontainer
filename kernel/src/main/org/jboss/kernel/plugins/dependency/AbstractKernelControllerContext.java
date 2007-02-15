@@ -72,6 +72,9 @@ public class AbstractKernelControllerContext extends AbstractControllerContext i
    /** The access control context */
    protected AccessControlContext accessContext;
 
+   /** Did we do a initialVisit */
+   protected boolean isInitialProcessed;
+
    /** Did we do a describeVisit */
    protected boolean isDescribeProcessed;
 
@@ -176,8 +179,10 @@ public class AbstractKernelControllerContext extends AbstractControllerContext i
    {
       if (metaData == null)
          return;
+      if (isInitialProcessed) return;
       PreprocessMetaDataVisitor visitor = new PreprocessMetaDataVisitor(metaData);
       AccessController.doPrivileged(visitor);
+      isInitialProcessed = true;
    }
 
    /**
