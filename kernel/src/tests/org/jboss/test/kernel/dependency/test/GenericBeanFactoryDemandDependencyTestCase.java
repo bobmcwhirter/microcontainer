@@ -24,7 +24,6 @@ package org.jboss.test.kernel.dependency.test;
 import java.util.HashSet;
 
 import junit.framework.Test;
-
 import org.jboss.beans.metadata.plugins.AbstractDemandMetaData;
 import org.jboss.beans.metadata.plugins.AbstractPropertyMetaData;
 import org.jboss.beans.metadata.plugins.AbstractSupplyMetaData;
@@ -100,7 +99,7 @@ public class GenericBeanFactoryDemandDependencyTestCase extends OldAbstractKerne
    {
       demandDependencyWrongOrder();
       
-      ControllerContext context2 = assertInstall(1, "Name2", ControllerState.NOT_INSTALLED);      
+      ControllerContext context2 = assertInstall(1, "Name2", ControllerState.PRE_INSTALL);      
       ControllerContext context1 = assertInstall(0, "Name1");      
       assertEquals(ControllerState.INSTALLED, context2.getState());
       
@@ -150,10 +149,10 @@ public class GenericBeanFactoryDemandDependencyTestCase extends OldAbstractKerne
 
       assertUninstall("Name1");
       assertEquals(ControllerState.ERROR, context1.getState());
-      assertEquals(ControllerState.NOT_INSTALLED, context2.getState());
+      assertEquals(ControllerState.PRE_INSTALL, context2.getState());
 
       assertNotInstalled("Name2");
-      assertContext("Name2", ControllerState.NOT_INSTALLED);
+      assertContext("Name2", ControllerState.PRE_INSTALL);
       
       context1 = assertInstall(0, "Name1");      
       assertNotNull(context1);

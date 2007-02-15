@@ -22,12 +22,17 @@
 package org.jboss.beans.metadata.plugins;
 
 import java.io.Serializable;
+import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Iterator;
 import java.util.List;
-import java.util.ArrayList;
 
-import org.jboss.beans.metadata.spi.*;
+import org.jboss.beans.metadata.spi.BeanMetaData;
+import org.jboss.beans.metadata.spi.BeanMetaDataFactory;
+import org.jboss.beans.metadata.spi.ClassLoaderMetaData;
+import org.jboss.beans.metadata.spi.MetaDataVisitor;
+import org.jboss.beans.metadata.spi.MetaDataVisitorNode;
+import org.jboss.beans.metadata.spi.ValueMetaData;
 import org.jboss.dependency.spi.ControllerState;
 import org.jboss.util.JBossObject;
 import org.jboss.util.JBossStringBuilder;
@@ -94,7 +99,7 @@ public class AbstractClassLoaderMetaData extends JBossObject
 
    public void initialVisit(MetaDataVisitor visitor)
    {
-      visitor.setContextState(ControllerState.DESCRIBED);
+      visitor.setContextState(ControllerState.PRE_INSTALL);
       visitor.initialVisit(this);
    }
 

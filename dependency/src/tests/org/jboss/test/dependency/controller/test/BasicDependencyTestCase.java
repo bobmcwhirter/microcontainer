@@ -22,7 +22,6 @@
 package org.jboss.test.dependency.controller.test;
 
 import junit.framework.Test;
-
 import org.jboss.dependency.plugins.AbstractDependencyItem;
 import org.jboss.dependency.spi.ControllerContext;
 import org.jboss.dependency.spi.ControllerState;
@@ -81,7 +80,7 @@ public class BasicDependencyTestCase extends AbstractDependencyTest
    public void testDependencyWrongOrder() throws Throwable
    {
       TestDelegate delegate2 = getDelegate2();
-      ControllerContext context2 = assertInstall(delegate2, ControllerState.NOT_INSTALLED);
+      ControllerContext context2 = assertInstall(delegate2, ControllerState.PRE_INSTALL);
       assertEquals(-1, delegate2.describeInstallOrder);
       assertEquals(-1, delegate2.instantiateInstallOrder);
       assertEquals(-1, delegate2.configureInstallOrder);
@@ -205,7 +204,7 @@ public class BasicDependencyTestCase extends AbstractDependencyTest
       assertEquals(34, delegate1.configureUninstallOrder);
       assertEquals(35, delegate1.instantiateUninstallOrder);
       assertEquals(36, delegate1.describeUninstallOrder);
-      assertContext("Name2", ControllerState.NOT_INSTALLED);
+      assertContext("Name2", ControllerState.PRE_INSTALL);
       assertEquals(19, delegate2.describeInstallOrder);
       assertEquals(20, delegate2.instantiateInstallOrder);
       assertEquals(21, delegate2.configureInstallOrder);

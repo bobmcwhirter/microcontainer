@@ -28,11 +28,8 @@ import org.jboss.beans.metadata.spi.BeanMetaData;
 import org.jboss.dependency.plugins.AbstractDependencyItem;
 import org.jboss.dependency.spi.ControllerState;
 import org.jboss.dependency.spi.DependencyInfo;
-import org.jboss.kernel.Kernel;
-import org.jboss.kernel.spi.config.KernelConfigurator;
 import org.jboss.kernel.spi.dependency.KernelController;
 import org.jboss.kernel.spi.dependency.KernelControllerContext;
-import org.jboss.kernel.spi.dependency.KernelControllerContextAware;
 import org.jboss.kernel.spi.metadata.KernelMetaDataRepository;
 import org.jboss.metadata.spi.MetaData;
 
@@ -46,81 +43,26 @@ public class DescribeAction extends KernelControllerContextAction
 {
    protected void installActionInternal(KernelControllerContext context) throws Throwable
    {
-      KernelController controller = (KernelController) context.getController();
-      Kernel kernel = controller.getKernel();
-      KernelConfigurator configurator = kernel.getConfigurator();
-
-      BeanMetaData metaData = context.getBeanMetaData();
-      if (metaData.getBean() != null)
+      BeanInfo info = context.getBeanInfo();
+      if (info != null)
       {
-         BeanInfo info = configurator.getBeanInfo(metaData);
-         context.setBeanInfo(info);
-
-         MetaData md = addMetaData(context);
-         try
+         KernelController controller = (KernelController)context.getController();
+         KernelMetaDataRepository repository = controller.getKernel().getMetaDataRepository();
+         MetaData md = repository.getMetaData(context);
+         DependencyInfo depends = context.getDependencyInfo();
+         // add custom dependencies (e.g. AOP layer).
+         List<Object> dependencies = info.getDependencies(md);
+         log.trace("Extra dependencies for " + context.getName() + " " + dependencies);
+         if (dependencies != null)
          {
-            DependencyInfo depends = context.getDependencyInfo();
-            // add custom dependencies (e.g. AOP layer).
-            List<Object> dependencies = info.getDependencies(md);
-            log.trace("Extra dependencies for " + context.getName() + " " + dependencies);
-            if (dependencies != null)
+            BeanMetaData metaData = context.getBeanMetaData();
+            for (Object dependencyName : dependencies)
             {
-               for (Object dependencyName : dependencies)
-               {
-                  AbstractDependencyItem dependency = new AbstractDependencyItem(metaData.getName(), dependencyName, ControllerState.INSTANTIATED, ControllerState.INSTALLED);
-                  depends.addIDependOn(dependency);
-               }
+               AbstractDependencyItem dependency = new AbstractDependencyItem(metaData.getName(), dependencyName, ControllerState.INSTANTIATED, ControllerState.INSTALLED);
+               depends.addIDependOn(dependency);
             }
          }
-         catch (Throwable t)
-         {
-            removeMetaData(context);
-            throw t;
-         }
       }
    }
 
-   protected Class<? extends KernelControllerContextAware> getActionAwareInterface()
-   {
-      return null;
-   }
-
-   protected void uninstallActionInternal(KernelControllerContext context)
-   {
-      removeMetaData(context);
-      context.setBeanInfo(null);
-   }
-
-   /**
-    * Adds annotations to the bean.
-    * 
-    * @param context the context
-    * @return the metadata
-    */
-   private MetaData addMetaData(KernelControllerContext context)
-   {
-      KernelController controller = (KernelController) context.getController();
-      KernelMetaDataRepository repository = controller.getKernel().getMetaDataRepository();
-      repository.addMetaData(context);
-      return repository.getMetaData(context);
-   }
-
-   /**
-    * Remove any previously added metadata
-    * 
-    * @param context the context
-    */
-   private void removeMetaData(KernelControllerContext context)
-   {
-      try
-      {
-         KernelController controller = (KernelController) context.getController();
-         KernelMetaDataRepository repository = controller.getKernel().getMetaDataRepository();
-         repository.removeMetaData(context);
-      }
-      catch (Throwable ignored)
-      {
-         log.warn("Unexpected error removing metadata: ", ignored);
-      }
-   }
 }

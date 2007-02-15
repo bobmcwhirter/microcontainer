@@ -32,7 +32,7 @@
 
    <bean name="testObject5" class="org.jboss.test.kernel.inject.support.ConstructorInjectTestObject" >
       <constructor factoryMethod="withParameter">
-         <factory bean="testObject6" whenRequired="Described"/>
+         <factory bean="testObject6" whenRequired="PreInstall"/>
          <parameter><inject/></parameter>
       </constructor>
    </bean>

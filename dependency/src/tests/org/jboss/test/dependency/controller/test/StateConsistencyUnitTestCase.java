@@ -24,7 +24,6 @@ package org.jboss.test.dependency.controller.test;
 import java.util.HashMap;
 
 import junit.framework.Test;
-
 import org.jboss.dependency.plugins.AbstractControllerContext;
 import org.jboss.dependency.plugins.AbstractControllerContextActions;
 import org.jboss.dependency.plugins.spi.action.ControllerContextAction;
@@ -62,7 +61,7 @@ public class StateConsistencyUnitTestCase extends AbstractDependencyTest
          {
             try
             {
-               assertChange(ctx, ControllerState.DESCRIBED);
+               assertChange(ctx, ControllerState.PRE_INSTALL);
             }
             catch (Throwable t)
             {

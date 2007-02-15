@@ -57,6 +57,7 @@ public class KernelControllerContextActions extends AbstractControllerContextAct
       if (instance == null)
       {
          Map<ControllerState, ControllerContextAction> actions = new HashMap<ControllerState, ControllerContextAction>();
+         actions.put(ControllerState.PRE_INSTALL, new PreInstallAction());
          actions.put(ControllerState.DESCRIBED, new DescribeAction());
          actions.put(ControllerState.INSTANTIATED, new InstantiateAction());
          actions.put(ControllerState.CONFIGURED, new ConfigureAction());
@@ -78,6 +79,7 @@ public class KernelControllerContextActions extends AbstractControllerContextAct
       if (noInstantiate == null)
       {
          Map<ControllerState, ControllerContextAction> actions = new HashMap<ControllerState, ControllerContextAction>();
+         actions.put(ControllerState.PRE_INSTALL, new PreInstallAction());
          actions.put(ControllerState.DESCRIBED, new DescribeAction());
          actions.put(ControllerState.CONFIGURED, new ConfigureAction());
          actions.put(ControllerState.CREATE, new CreateDestroyLifecycleAction());

@@ -21,13 +21,13 @@
 */
 package org.jboss.dependency.spi;
 
-import org.jboss.util.JBossObject;
-import org.jboss.util.JBossStringBuilder;
-
 import java.io.ObjectStreamException;
 import java.io.Serializable;
 import java.util.HashMap;
 import java.util.Map;
+
+import org.jboss.util.JBossObject;
+import org.jboss.util.JBossStringBuilder;
 
 /**
  * Description of state.
@@ -37,13 +37,16 @@ import java.util.Map;
  */
 public class ControllerState extends JBossObject implements Serializable
 {
-   private static final long serialVersionUID = 1L;
+   private static final long serialVersionUID = 2L;
 
    /** Error */
    public static final ControllerState ERROR = new ControllerState("**ERROR**");
 
    /** Not installed state */
    public static final ControllerState NOT_INSTALLED = new ControllerState("Not Installed");
+
+   /** Pre install state */
+   public static final ControllerState PRE_INSTALL = new ControllerState("PreInstall");
 
    /** Described state */
    public static final ControllerState DESCRIBED = new ControllerState("Described");
@@ -72,6 +75,7 @@ public class ControllerState extends JBossObject implements Serializable
    {
       values.put(ERROR.getStateString(), ERROR);
       values.put(NOT_INSTALLED.getStateString(), NOT_INSTALLED);
+      values.put(PRE_INSTALL.getStateString(), PRE_INSTALL);
       values.put(DESCRIBED.getStateString(), DESCRIBED);
       values.put(INSTANTIATED.getStateString(), INSTANTIATED);
       values.put(CONFIGURED.getStateString(), CONFIGURED);

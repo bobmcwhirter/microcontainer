@@ -77,6 +77,7 @@ public class AbstractController extends JBossObject implements Controller
    public AbstractController() throws Exception
    {
       addState(ControllerState.NOT_INSTALLED, null);
+      addState(ControllerState.PRE_INSTALL, null);
       addState(ControllerState.DESCRIBED, null);
       addState(ControllerState.INSTANTIATED, null);
       addState(ControllerState.CONFIGURED, null);
