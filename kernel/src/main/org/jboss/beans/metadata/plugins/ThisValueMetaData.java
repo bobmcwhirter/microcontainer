@@ -23,11 +23,10 @@ package org.jboss.beans.metadata.plugins;
 
 import org.jboss.beans.metadata.spi.MetaDataVisitor;
 import org.jboss.dependency.plugins.AbstractDependencyItem;
+import org.jboss.dependency.spi.Controller;
 import org.jboss.dependency.spi.ControllerContext;
 import org.jboss.dependency.spi.ControllerState;
 import org.jboss.dependency.spi.DependencyItem;
-import org.jboss.kernel.spi.dependency.KernelController;
-import org.jboss.kernel.spi.dependency.KernelControllerContext;
 import org.jboss.reflect.spi.TypeInfo;
 
 /**
@@ -38,10 +37,10 @@ import org.jboss.reflect.spi.TypeInfo;
  */
 public class ThisValueMetaData extends AbstractValueMetaData
 {
-   private static final long serialVersionUID = 1L;
+   private static final long serialVersionUID = 2L;
 
-   /** The controller */
-   protected transient KernelController controller;
+   /** The context */
+   protected transient ControllerContext context;
 
    /**
     * Create a new dependency value
@@ -52,6 +51,7 @@ public class ThisValueMetaData extends AbstractValueMetaData
    
    public Object getValue(TypeInfo info, ClassLoader cl) throws Throwable
    {
+      Controller controller = context.getController();
       ControllerContext context = controller.getContext(value, ControllerState.INSTANTIATED);
       if (context == null)
          throw new Error("Could not deference this " + this);
@@ -61,9 +61,8 @@ public class ThisValueMetaData extends AbstractValueMetaData
 
    public void initialVisit(MetaDataVisitor visitor)
    {
-      KernelControllerContext controllerContext = visitor.getControllerContext();
-      controller = (KernelController) controllerContext.getController();
-      value = controllerContext.getName();
+      context = visitor.getControllerContext();
+      value = context.getName();
       ControllerState whenRequired = visitor.getContextState();
 
       DependencyItem item = new AbstractDependencyItem(value, value, whenRequired, ControllerState.INSTANTIATED);

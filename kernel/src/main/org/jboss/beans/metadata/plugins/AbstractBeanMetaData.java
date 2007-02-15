@@ -22,16 +22,31 @@
 package org.jboss.beans.metadata.plugins;
 
 import java.io.Serializable;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.HashSet;
+import java.util.Iterator;
+import java.util.List;
+import java.util.Set;
 
-import org.jboss.beans.metadata.spi.*;
+import org.jboss.beans.metadata.spi.BeanMetaData;
+import org.jboss.beans.metadata.spi.BeanMetaDataFactory;
+import org.jboss.beans.metadata.spi.ClassLoaderMetaData;
+import org.jboss.beans.metadata.spi.ConstructorMetaData;
+import org.jboss.beans.metadata.spi.DemandMetaData;
+import org.jboss.beans.metadata.spi.DependencyMetaData;
+import org.jboss.beans.metadata.spi.InstallMetaData;
+import org.jboss.beans.metadata.spi.LifecycleMetaData;
+import org.jboss.beans.metadata.spi.MetaDataVisitor;
+import org.jboss.beans.metadata.spi.MetaDataVisitorNode;
+import org.jboss.beans.metadata.spi.PropertyMetaData;
+import org.jboss.beans.metadata.spi.SupplyMetaData;
 import org.jboss.dependency.plugins.AbstractDependencyItem;
+import org.jboss.dependency.spi.Controller;
 import org.jboss.dependency.spi.ControllerContext;
 import org.jboss.dependency.spi.ControllerMode;
 import org.jboss.dependency.spi.ControllerState;
 import org.jboss.dependency.spi.DependencyItem;
-import org.jboss.kernel.spi.dependency.KernelController;
-import org.jboss.kernel.spi.dependency.KernelControllerContext;
 import org.jboss.reflect.spi.TypeInfo;
 import org.jboss.util.JBossObject;
 import org.jboss.util.JBossStringBuilder;
@@ -92,8 +107,8 @@ public class AbstractBeanMetaData extends AbstractFeatureMetaData
    /** The uninstall operations List<InstallMetaData> */
    protected List<InstallMetaData> uninstalls;
 
-   /** The kernel controller */
-   protected KernelController controller;
+   /** The context */
+   protected transient ControllerContext context;
 
    /**
     * Create a new bean meta data
@@ -438,9 +453,8 @@ public class AbstractBeanMetaData extends AbstractFeatureMetaData
    {
       if (visitor.visitorNodeStack().isEmpty() == false || (classLoader != null && classLoader.getClassLoader() != this))
       {
-         KernelControllerContext controllerContext = visitor.getControllerContext();
-         controller = (KernelController) controllerContext.getController();
-         Object name = controllerContext.getName();
+         context = visitor.getControllerContext();
+         Object name = context.getName();
          Object iDependOn = getUnderlyingValue();
          if (name.equals(iDependOn) == false)
          {
@@ -450,11 +464,6 @@ public class AbstractBeanMetaData extends AbstractFeatureMetaData
          }
       }
       super.initialVisit(visitor);
-   }
-
-   public void setController(KernelController controller)
-   {
-      this.controller = controller;
    }
 
    protected void addChildren(Set<MetaDataVisitorNode> children)
@@ -499,8 +508,9 @@ public class AbstractBeanMetaData extends AbstractFeatureMetaData
    @SuppressWarnings("unchecked")
    public Object getValue(TypeInfo info, ClassLoader cl) throws Throwable
    {
-      ControllerContext context = controller.getInstalledContext(name);
-      if (context == null || context.getTarget() == null)
+      Controller controller = context.getController();
+      ControllerContext lookup = controller.getInstalledContext(name);
+      if (lookup == null || lookup.getTarget() == null)
       {
          // possible call for classloader
          if (info == null && classLoader != null && classLoader.getClassLoader() == this)
@@ -509,7 +519,7 @@ public class AbstractBeanMetaData extends AbstractFeatureMetaData
          }
          throw new IllegalArgumentException("Bean not yet installed: " + name);
       }
-      Object target = context.getTarget();
+      Object target = lookup.getTarget();
       // TODO - add progression here as well?
       if (info != null && info.getType().isAssignableFrom(target.getClass()) == false)
       {

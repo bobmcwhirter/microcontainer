@@ -28,7 +28,7 @@ import org.jboss.aop.advice.Scope;
 import org.jboss.aop.advice.ScopeUtil;
 import org.jboss.aop.instrument.Untransformable;
 import org.jboss.beans.metadata.plugins.factory.GenericBeanFactory;
-import org.jboss.dependency.spi.Controller;
+import org.jboss.dependency.spi.ControllerContext;
 import org.jboss.kernel.Kernel;
 import org.jboss.kernel.spi.dependency.ConfigureKernelControllerContextAware;
 import org.jboss.kernel.spi.dependency.KernelControllerContext;
@@ -57,7 +57,7 @@ public class Aspect implements ConfigureKernelControllerContextAware, Untransfor
    
    protected GenericBeanFactory advice;
 
-   protected Controller controller;
+   protected ControllerContext context;
 
    /** The name of this bean */
    protected String myname;
@@ -180,13 +180,13 @@ public class Aspect implements ConfigureKernelControllerContextAware, Untransfor
    public void setKernelControllerContext(KernelControllerContext context) throws Exception
    {
       myname = (String)context.getName();
-      controller = context.getController();
+      this.context = context;
       kernel = context.getKernel();
    }
 
    public void unsetKernelControllerContext(KernelControllerContext context) throws Exception
    {
-      controller = null;
+      this.context = null;
    }
 
    public void install(GenericBeanFactory factory) throws Exception
@@ -207,7 +207,7 @@ public class Aspect implements ConfigureKernelControllerContextAware, Untransfor
          {
             definition = new ManagedAspectDefinition(aspectDefName, theScope, new GenericBeanAspectFactory(adviceName, advice));
          }
-         else if (adviceBean != null && controller != null)
+         else if (adviceBean != null && context.getController() != null)
          {
             definition = new ManagedAspectDefinition(aspectDefName, theScope, new GenericBeanAspectFactory(aspectDefName, advice), false);
          }

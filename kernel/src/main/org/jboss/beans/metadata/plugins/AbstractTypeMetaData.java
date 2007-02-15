@@ -24,18 +24,18 @@ package org.jboss.beans.metadata.plugins;
 import java.io.Serializable;
 import java.util.Stack;
 
+import org.jboss.beans.info.spi.BeanInfo;
+import org.jboss.beans.info.spi.PropertyInfo;
 import org.jboss.beans.metadata.spi.BeanMetaData;
 import org.jboss.beans.metadata.spi.MetaDataVisitor;
 import org.jboss.beans.metadata.spi.MetaDataVisitorNode;
 import org.jboss.beans.metadata.spi.PropertyMetaData;
-import org.jboss.beans.info.spi.PropertyInfo;
-import org.jboss.beans.info.spi.BeanInfo;
+import org.jboss.dependency.spi.Controller;
 import org.jboss.dependency.spi.ControllerContext;
 import org.jboss.dependency.spi.ControllerState;
 import org.jboss.dependency.spi.dispatch.AttributeDispatchContext;
 import org.jboss.kernel.plugins.config.Configurator;
 import org.jboss.kernel.spi.config.KernelConfigurator;
-import org.jboss.kernel.spi.dependency.KernelController;
 import org.jboss.kernel.spi.dependency.KernelControllerContext;
 import org.jboss.reflect.spi.ClassInfo;
 import org.jboss.util.JBossStringBuilder;
@@ -49,7 +49,7 @@ import org.jboss.util.JBossStringBuilder;
 public abstract class AbstractTypeMetaData extends AbstractValueMetaData
    implements Serializable
 {
-   private static final long serialVersionUID = 1L;
+   private static final long serialVersionUID = 2L;
 
    /**
     * The type
@@ -57,9 +57,9 @@ public abstract class AbstractTypeMetaData extends AbstractValueMetaData
    protected String type;
 
    /**
-    * The configurator
+    * The context
     */
-   protected transient KernelController controller;
+   protected transient ControllerContext context;
 
    /**
     * The configurator
@@ -110,7 +110,7 @@ public abstract class AbstractTypeMetaData extends AbstractValueMetaData
 
    public void initialVisit(MetaDataVisitor visitor)
    {
-      controller = (KernelController)visitor.getControllerContext().getController();
+      context = visitor.getControllerContext();
       configurator = visitor.getControllerContext().getKernel().getConfigurator();
       preparePreinstantiatedLookup(visitor);
       visitor.initialVisit(this);
@@ -149,6 +149,7 @@ public abstract class AbstractTypeMetaData extends AbstractValueMetaData
       {
          try
          {
+            Controller controller = context.getController();
             ControllerContext context = controller.getContext(beanName, ControllerState.INSTANTIATED);
             if (context != null && context instanceof AttributeDispatchContext)
             {

@@ -23,11 +23,10 @@ package org.jboss.beans.metadata.plugins;
 
 import org.jboss.beans.metadata.spi.MetaDataVisitor;
 import org.jboss.beans.metadata.spi.MetaDataVisitorNode;
+import org.jboss.dependency.spi.Controller;
 import org.jboss.dependency.spi.ControllerContext;
 import org.jboss.dependency.spi.DependencyItem;
 import org.jboss.kernel.plugins.dependency.ClassContextDependencyItem;
-import org.jboss.kernel.spi.dependency.KernelController;
-import org.jboss.kernel.spi.dependency.KernelControllerContext;
 import org.jboss.reflect.spi.TypeInfo;
 import org.jboss.util.JBossStringBuilder;
 
@@ -99,13 +98,14 @@ public class AbstractInjectionValueMetaData extends AbstractDependencyValueMetaD
    {
       if (value == null)
       {
-         ControllerContext context = controller.getInstalledContext(info.getType());
-         if (context == null)
+         Controller controller = context.getController();
+         ControllerContext lookup = controller.getInstalledContext(info.getType());
+         if (lookup == null)
          {
             throw new IllegalArgumentException("Possible multiple matching beans, see log for info.");
          }
          // TODO - add progression here, then fix BeanMetaData as well
-         return context.getTarget();
+         return lookup.getTarget();
       }
       return super.getValue(info, cl);
    }
@@ -145,8 +145,7 @@ public class AbstractInjectionValueMetaData extends AbstractDependencyValueMetaD
       {
          if (InjectionType.BY_CLASS.equals(injectionType))
          {
-            KernelControllerContext context = visitor.getControllerContext();
-            controller = (KernelController) context.getController(); // set controller
+            context = visitor.getControllerContext();
 
             // we pop it so that parent node has the same semantics as this one
             // meaning that his current peek is also his parent

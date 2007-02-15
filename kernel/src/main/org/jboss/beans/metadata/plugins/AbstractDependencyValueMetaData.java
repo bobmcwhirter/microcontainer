@@ -23,12 +23,11 @@ package org.jboss.beans.metadata.plugins;
 
 import org.jboss.beans.metadata.spi.MetaDataVisitor;
 import org.jboss.dependency.plugins.AbstractDependencyItem;
+import org.jboss.dependency.spi.Controller;
 import org.jboss.dependency.spi.ControllerContext;
 import org.jboss.dependency.spi.ControllerState;
 import org.jboss.dependency.spi.DependencyItem;
 import org.jboss.dependency.spi.dispatch.AttributeDispatchContext;
-import org.jboss.kernel.spi.dependency.KernelController;
-import org.jboss.kernel.spi.dependency.KernelControllerContext;
 import org.jboss.reflect.spi.TypeInfo;
 import org.jboss.util.JBossStringBuilder;
 
@@ -40,10 +39,10 @@ import org.jboss.util.JBossStringBuilder;
  */
 public class AbstractDependencyValueMetaData extends AbstractValueMetaData
 {
-   private static final long serialVersionUID = 1L;
+   private static final long serialVersionUID = 2L;
 
-   /** The controller */
-   protected transient KernelController controller;
+   /** The context */
+   protected transient ControllerContext context;
    
    /** The property name */
    protected String property;
@@ -140,13 +139,14 @@ public class AbstractDependencyValueMetaData extends AbstractValueMetaData
       ControllerState state = dependentState;
       if (state == null)
          state = ControllerState.INSTALLED;
-      ControllerContext context = controller.getContext(value, state);
-      if (context == null)
+      Controller controller = context.getController();
+      ControllerContext lookup = controller.getContext(value, state);
+      if (lookup == null)
          throw new Error("Should not be here - dependency failed! " + this);
-      Object result = context.getTarget();
-      if (property != null && context instanceof AttributeDispatchContext)
+      Object result = lookup.getTarget();
+      if (property != null && lookup instanceof AttributeDispatchContext)
       {
-         AttributeDispatchContext adc = (AttributeDispatchContext) context;
+         AttributeDispatchContext adc = (AttributeDispatchContext) lookup;
          result = adc.get(property);
       }
       return info != null ? info.convertValue(result) : result;
@@ -154,9 +154,8 @@ public class AbstractDependencyValueMetaData extends AbstractValueMetaData
 
    public void initialVisit(MetaDataVisitor visitor)
    {
-      KernelControllerContext controllerContext = visitor.getControllerContext();
-      controller = (KernelController) controllerContext.getController();
-      Object name = controllerContext.getName();
+      context = visitor.getControllerContext();
+      Object name = context.getName();
       Object iDependOn = getUnderlyingValue();
       ControllerState whenRequired = whenRequiredState;
       if (whenRequired == null)
