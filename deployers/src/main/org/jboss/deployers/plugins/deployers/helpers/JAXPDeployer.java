@@ -33,11 +33,17 @@ import org.w3c.dom.Document;
 import org.xml.sax.InputSource;
 
 /**
- * SchemaResolverDeployer.
+ * JAXPDeployer is an abstract deployer that overrides parse to run a jaxp
+ * parse of the VirtualFile passed to parse.
+ * 
+ * 
+ * @see #parse(DeploymentUnit, VirtualFile, T)
+ * @see #doParse(DeploymentUnit, VirtualFile)
  * 
  * @param <T> the expected type 
  * @author <a href="adrian@jboss.com">Adrian Brock</a>
- * @version $Revision: 1.1 $
+ * @author Scott.Stark@jboss.org
+ * @version $Revision: 60707 $
  */
 public abstract class JAXPDeployer<T> extends AbstractParsingDeployer<T>
 {
@@ -145,7 +151,15 @@ public abstract class JAXPDeployer<T> extends AbstractParsingDeployer<T>
     */
    protected T parse(DeploymentUnit unit, VirtualFile file, T root) throws Exception
    {
-      Document document = doParse(unit, file);
+      // First look for an existing Document attachment 
+      Document document = unit.getAttachment(Document.class);
+      if( document == null )
+      {
+         // Next parse the metadata file
+         document = doParse(unit, file);
+      }
+
+      // Transform the document into a T instance
       return parse(unit, file, document);
    }
    
