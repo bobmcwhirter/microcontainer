@@ -213,9 +213,8 @@ public class AbstractBeanMetaData extends AbstractFeatureMetaData
          throw new IllegalArgumentException("Null name");
       if (properties != null && properties.size() > 0)
       {
-         for (Iterator i = properties.iterator(); i.hasNext();)
+         for (PropertyMetaData prop : properties)
          {
-            AbstractPropertyMetaData prop = (AbstractPropertyMetaData) i.next();
             if (name.equals(prop.getName()))
                return prop;
          }
