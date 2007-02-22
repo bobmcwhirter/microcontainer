@@ -1,0 +1,51 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<deployment xmlns="urn:jboss:bean-deployer:2.0">
+
+   <classloader>
+      <bean name="cl" class="org.jboss.test.kernel.deployment.support.NullClassLoader" />
+   </classloader>
+
+   <bean name="appScopeObject" class="org.jboss.test.kernel.deployment.support.AnnotatedObjectWithBean" />
+
+   <bean name="deploy1" class="org.jboss.test.kernel.deployment.support.Deployment1ObjectWithBean">
+      <property name="simpleBean"><inject bean="simple"/></property>
+   </bean>
+
+   <bean name="deploy2" class="org.jboss.test.kernel.deployment.support.Deployment2ObjectWithBean">
+      <property name="simpleBean"><inject bean="simple"/></property>
+   </bean>
+
+   <bean name="deploy3" class="org.jboss.test.kernel.deployment.support.Deployment3ObjectWithBean">
+      <property name="simpleBean"><inject bean="simpleFromBoot"/></property>
+   </bean>
+
+   <bean name="deploy4" class="org.jboss.test.kernel.deployment.support.Deployment4ObjectWithBean">
+      <property name="simpleBean"><inject bean="simpleFromApp"/></property>
+   </bean>
+
+   <bean name="simple" class="org.jboss.test.kernel.deployment.support.Deployment1BeanImpl">
+      <constructor>
+         <parameter>deployment1</parameter>
+      </constructor>
+   </bean>
+
+   <bean name="simple" class="org.jboss.test.kernel.deployment.support.Deployment2BeanImpl">
+      <constructor>
+         <parameter>deployment2</parameter>
+      </constructor>
+   </bean>
+
+   <bean name="simpleFromBoot" class="org.jboss.test.kernel.deployment.support.SimpleBeanImpl">
+      <constructor>
+         <parameter>fromBoot</parameter>
+      </constructor>
+   </bean>
+
+   <bean name="simpleFromApp" class="org.jboss.test.kernel.deployment.support.AnnotatedFromAppBeanImpl">
+      <constructor>
+         <parameter>fromApp</parameter>
+      </constructor>
+   </bean>
+
+</deployment>

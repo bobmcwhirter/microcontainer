@@ -22,7 +22,6 @@
 package org.jboss.dependency.plugins;
 
 import java.util.HashSet;
-import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
@@ -64,7 +63,7 @@ public class AbstractController extends JBossObject implements Controller
    protected Set<ControllerContext> installing = CollectionsFactory.createCopyOnWriteSet();
 
    /** The child controllers */
-   protected Set<Controller> childControllers = CollectionsFactory.createCopyOnWriteSet();
+   protected Set<AbstractController> childControllers = CollectionsFactory.createCopyOnWriteSet();
 
    /** Whether an on demand context has been enabled */
    protected boolean onDemandEnabled = true;
@@ -112,15 +111,35 @@ public class AbstractController extends JBossObject implements Controller
       }
    }
 
-   public Set<Controller> getControllers()
+   public void addControllerContext(ControllerContext context)
    {
-      return childControllers;      
+      Object name = context.getName();
+      if (allContexts.containsKey(name) == false)
+         allContexts.put(name, context);
+      else
+         log.warn("Unable to put/return context to allContexts, name already exists: " + context);
+   }
+
+   public void removeControllerContext(ControllerContext context)
+   {
+      allContexts.remove(context.getName());
+   }
+
+   public Set<AbstractController> getControllers()
+   {
+      return childControllers;
    }
 
    // no need for locking - we are already locked
-   public void addController(Controller controller)
+
+   public boolean addController(AbstractController controller)
    {
-      childControllers.add(controller);
+      return childControllers.add(controller);
+   }
+
+   public boolean removeController(AbstractController controller)
+   {
+      return childControllers.remove(controller);
    }
 
    public ControllerContext getContext(Object name, ControllerState state)
@@ -162,7 +181,7 @@ public class AbstractController extends JBossObject implements Controller
          Set<ControllerContext> result = new HashSet<ControllerContext>(errorContexts.values());
          for (int i = 0; ControllerState.INSTALLED.equals(states.get(i)) == false; ++i)
          {
-            Set<ControllerContext> stateContexts = contextsByState.get(states.get(i));
+            Set<ControllerContext> stateContexts = getContextsByState(states.get(i));
             result.addAll(stateContexts);
          }
          return result;
@@ -176,6 +195,11 @@ public class AbstractController extends JBossObject implements Controller
    public List<ControllerState> getStates()
    {
       return states;
+   }
+
+   public Set<ControllerContext> getContextsByState(ControllerState state)
+   {
+      return contextsByState.get(state);
    }
 
    public void install(ControllerContext context) throws Throwable
@@ -217,6 +241,13 @@ public class AbstractController extends JBossObject implements Controller
 
    public ControllerContext uninstall(Object name)
    {
+      return uninstall(name, 0);
+   }
+
+   // todo - some better way to find context's by name
+   // currently the first one found is used
+   protected ControllerContext uninstall(Object name, int level)
+   {
       boolean trace = log.isTraceEnabled();
 
       if (name == null)
@@ -229,15 +260,26 @@ public class AbstractController extends JBossObject implements Controller
             log.trace("Tidied up context in error state: " + name);
 
          ControllerContext context = allContexts.get(name);
-         if (context == null)
+         if (context != null)
+         {
+            if (trace)
+               log.trace("Uninstalling " + context.toShortString());
+
+            uninstallContext(context, ControllerState.NOT_INSTALLED, trace);
+
+            allContexts.remove(name);
+         }
+         else
+         {
+            for(AbstractController controller : childControllers)
+            {
+               context = controller.uninstall(name, level + 1);
+               if (context != null)
+                  break;
+            }
+         }
+         if (context == null && level == 0)
             throw new IllegalStateException("Not installed: " + name);
-
-         if (trace)
-            log.trace("Uninstalling " + context.toShortString());
-
-         uninstallContext(context, ControllerState.NOT_INSTALLED, trace);
-
-         allContexts.remove(name);
          return context;
       }
       finally
@@ -395,6 +437,7 @@ public class AbstractController extends JBossObject implements Controller
    {
       ControllerState fromState = context.getState();
 
+      Controller fromController = context.getController();
       Set fromContexts = null;
 
       int currentIndex = -1;
@@ -422,21 +465,20 @@ public class AbstractController extends JBossObject implements Controller
                return false;
             }
          }
-         Set<ControllerContext> notInstalled = contextsByState.get(ControllerState.NOT_INSTALLED);
+         Set<ControllerContext> notInstalled = fromController.getContextsByState(ControllerState.NOT_INSTALLED);
          notInstalled.add(context);
          context.setState(ControllerState.NOT_INSTALLED);
       }
       else
       {
          currentIndex = states.indexOf(fromState);
-         fromContexts = contextsByState.get(fromState);
+         fromContexts = fromController.getContextsByState(fromState);
          if (fromContexts.contains(context) == false)
             throw new IllegalStateException("Context not found in previous state: " + context.toShortString());
       }
 
       int toIndex = currentIndex + 1;
       ControllerState toState = states.get(toIndex);
-      Set<ControllerContext> toContexts = contextsByState.get(toState);
 
       unlockWrite();
       Throwable error = null;
@@ -463,6 +505,8 @@ public class AbstractController extends JBossObject implements Controller
 
       if (fromContexts != null)
          fromContexts.remove(context);
+      Controller toController = context.getController();
+      Set<ControllerContext> toContexts = toController.getContextsByState(toState);
       toContexts.add(context);
       context.setState(toState);
       return true;
@@ -503,13 +547,26 @@ public class AbstractController extends JBossObject implements Controller
             Set<ControllerContext> stillUnresolved = contextsByState.get(state);
             if (stillUnresolved.isEmpty() == false)
             {
-               for (Iterator j = stillUnresolved.iterator(); j.hasNext();)
+               for (ControllerContext ctx : stillUnresolved)
                {
-                  ControllerContext ctx = (ControllerContext) j.next();
                   if (advance(ctx))
                      log.trace("Still unresolved " + nextState.getStateString() + ": " + ctx);
                }
             }
+         }
+      }
+
+      // resolve child controllers
+      for (AbstractController controller : childControllers)
+      {
+         controller.lockWrite();
+         try
+         {
+            controller.resolveContexts(trace);
+         }
+         finally
+         {
+            controller.unlockWrite();
          }
       }
    }
@@ -531,9 +588,8 @@ public class AbstractController extends JBossObject implements Controller
       Set<ControllerContext> resolved = resolveContexts(unresolved, toState, trace);
       if (resolved.isEmpty() == false)
       {
-         for (Iterator i = resolved.iterator(); i.hasNext();)
+         for (ControllerContext context : resolved)
          {
-            ControllerContext context = (ControllerContext) i.next();
             Object name = context.getName();
             if (fromState.equals(context.getState()) == false)
             {
@@ -586,9 +642,8 @@ public class AbstractController extends JBossObject implements Controller
 
       if (contexts.isEmpty() == false)
       {
-         for (Iterator i = contexts.iterator(); i.hasNext();)
+         for (ControllerContext ctx : contexts)
          {
-            ControllerContext ctx = (ControllerContext) i.next();
             if (advance(ctx))
             {
                DependencyInfo dependencies = ctx.getDependencyInfo();
@@ -649,17 +704,18 @@ public class AbstractController extends JBossObject implements Controller
       if (trace)
          log.trace("Uninstalling " + name + " from " + fromState.getStateString());
 
-      Set<ControllerContext> fromContexts = contextsByState.get(fromState);
+      Controller fromController = context.getController();
+
+      Set<ControllerContext> fromContexts = fromController.getContextsByState(fromState);
       if (fromContexts == null || fromContexts.remove(context) == false)
          throw new Error("INTERNAL ERROR: context not found in previous state " + fromState.getStateString() + " context=" + context.toShortString(), new Exception("STACKTRACE"));
 
       DependencyInfo dependencies = context.getDependencyInfo();
-      Set dependsOnMe = dependencies.getDependsOnMe(null);
+      Set<DependencyItem> dependsOnMe = dependencies.getDependsOnMe(null);
       if (dependsOnMe.isEmpty() == false)
       {
-         for (Iterator i = dependsOnMe.iterator(); i.hasNext();)
+         for (DependencyItem item : dependsOnMe)
          {
-            DependencyItem item = (DependencyItem) i.next();
             if (item.isResolved())
             {
                ControllerState dependentState = item.getDependentState();
@@ -690,14 +746,16 @@ public class AbstractController extends JBossObject implements Controller
       }
 
       ControllerState toState = states.get(toIndex);
-      Set<ControllerContext> toContexts = contextsByState.get(toState);
-      toContexts.add(context);
-      context.setState(toState);
 
       unlockWrite();
       try
       {
          uninstall(context, fromState, toState);
+
+         Controller toController = context.getController();
+         Set<ControllerContext> toContexts = toController.getContextsByState(toState);
+         toContexts.add(context);
+         context.setState(toState);
       }
       catch (Throwable t)
       {

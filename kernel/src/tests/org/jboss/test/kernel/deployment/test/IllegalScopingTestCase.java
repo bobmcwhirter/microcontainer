@@ -1,6 +1,6 @@
 /*
 * JBoss, Home of Professional Open Source
-* Copyright 2005, JBoss Inc., and individual contributors as indicated
+* Copyright 2006, JBoss Inc., and individual contributors as indicated
 * by the @authors tag. See the copyright.txt in the distribution for a
 * full listing of individual contributors.
 *
@@ -22,28 +22,54 @@
 package org.jboss.test.kernel.deployment.test;
 
 import junit.framework.Test;
+import org.jboss.dependency.spi.ControllerState;
+import org.jboss.test.kernel.deployment.support.SimpleBean;
+import org.jboss.test.kernel.deployment.support.SimpleObjectWithBean;
 
 /**
+ * Scoping tests.
+ * Diff scopes.
+ *
  * @author <a href="mailto:ales.justin@genera-lynx.com">Ales Justin</a>
  */
-public class BeanMetaDataTestCase extends AbstractBeanMetaDataTest
+public class IllegalScopingTestCase extends ScopingDeploymentTest
 {
-   public BeanMetaDataTestCase(String name)
-         throws Throwable
+   public IllegalScopingTestCase(String name) throws Throwable
    {
       super(name);
    }
 
    public static Test suite()
    {
-      return suite(BeanMetaDataTestCase.class);
+      return suite(IllegalScopingTestCase.class);
    }
 
    // ---- tests
 
-   public void testBeanAsValueMetaData() throws Throwable
+   public void testIllegalScoping() throws Throwable
    {
-      doInnerBeanTests();
+      ClassLoader cl = (ClassLoader) getBean("cl");
+      assertNotNull(cl);
+
+      Throwable expected = null;
+      try
+      {
+         getBean("deploy1");
+      }
+      catch(Throwable t)
+      {
+         expected = t;
+      }
+      assertNotNull(expected);
+
+      SimpleObjectWithBean deploy = (SimpleObjectWithBean) getBean("deploy1", ControllerState.INSTANTIATED);
+      assertNotNull(deploy);
+      SimpleBean simple1 = deploy.getSimpleBean();
+      assertNull(simple1);
+
+      SimpleBean simple = (SimpleBean)getBean("simple");
+      assertNotNull(simple);
+      assertEquals("deployment2", simple.getConstructorString());
    }
 
 }

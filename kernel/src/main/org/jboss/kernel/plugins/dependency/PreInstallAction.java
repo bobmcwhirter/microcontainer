@@ -27,7 +27,7 @@ import java.util.HashSet;
 
 import org.jboss.beans.info.spi.BeanInfo;
 import org.jboss.beans.metadata.spi.BeanMetaData;
-import org.jboss.dependency.spi.Controller;
+import org.jboss.dependency.plugins.AbstractController;
 import org.jboss.kernel.Kernel;
 import org.jboss.kernel.spi.config.KernelConfigurator;
 import org.jboss.kernel.spi.dependency.KernelController;
@@ -53,7 +53,7 @@ public class PreInstallAction extends KernelControllerContextAction
 {
    protected void installActionInternal(KernelControllerContext context) throws Throwable
    {
-      KernelController controller = (KernelController) context.getController();
+      KernelController controller = (KernelController)context.getController();
       Kernel kernel = controller.getKernel();
       KernelConfigurator configurator = kernel.getConfigurator();
 
@@ -67,7 +67,7 @@ public class PreInstallAction extends KernelControllerContextAction
          repository.addMetaData(context);
          try
          {
-            //applyScoping(context);
+            applyScoping(context);
          }
          catch (Throwable t)
          {
@@ -77,10 +77,12 @@ public class PreInstallAction extends KernelControllerContextAction
       }
    }
 
-   protected void applyScoping(KernelControllerContext context) throws Throwable
+   @SuppressWarnings("unchecked")
+   protected ScopeKey getInstallScopeKey(
+         KernelControllerContext context,
+         KernelController controller,
+         KernelMetaDataRepository repository) throws Throwable
    {
-      KernelController controller = (KernelController)context.getController();
-      KernelMetaDataRepository repository = controller.getKernel().getMetaDataRepository();
       MetaDataRetrieval retrieval = repository.getMetaDataRetrieval(context);
       if (retrieval != null)
       {
@@ -91,7 +93,7 @@ public class PreInstallAction extends KernelControllerContextAction
             if (annotationItems != null && annotationItems.length > 0)
             {
                Collection<Scope> scopes = new HashSet<Scope>();
-               for(AnnotationItem annItem : annotationItems)
+               for (AnnotationItem annItem : annotationItems)
                {
                   Annotation annotation = annItem.getAnnotation();
                   if (annotation.annotationType().isAnnotationPresent(ScopeFactoryLookup.class))
@@ -103,62 +105,109 @@ public class PreInstallAction extends KernelControllerContextAction
                }
                if (scopes.size() > 0)
                {
-                  ScopeKey scopeKey = new ScopeKey(scopes);
-                  // todo - should this be done (repare the current context scope key)
-                  //        or where to store this 'deployment' key?
+                  return new ScopeKey(scopes);
+               }
+            }
+         }
+      }
+      return null;
+   }
+
+   protected void applyScoping(KernelControllerContext context) throws Throwable
+   {
+      KernelController controller = (KernelController)context.getController();
+      KernelMetaDataRepository repository = controller.getKernel().getMetaDataRepository();
+      ScopeKey scopeKey = getInstallScopeKey(context, controller, repository);
+      if (scopeKey != null)
+      {
+         scopeKey.freeze();
+         context.setInstallScope(scopeKey);
+         // todo - should this be done (repare the current context scope key)
+         //        or where to store this 'deployment' key?
 /*
                   ScopeKey contextScopeKey = context.getScope();
                   for (Scope s : scopes)
                      contextScopeKey.addScope(s);
 */
-                  // find scoped controller
-                  MutableMetaDataRepository mmdr = repository.getMetaDataRepository();
-                  MetaDataRetrieval mdr = mmdr.getMetaDataRetrieval(scopeKey);
-                  if (mdr == null)
-                  {
-                     mdr = new MemoryMetaDataLoader(scopeKey);
-                     mmdr.addMetaDataRetrieval(mdr);
-                  }
-                  MetaDataItem<Controller> controllerItem = mdr.retrieveMetaData(Controller.class);
-                  Controller scopedController;
-                  if (controllerItem != null)
-                  {
-                     scopedController = controllerItem.getValue();
-                  }
-                  else
-                  {
-                     Controller parentController = null;
-                     ScopeKey parentKey = scopeKey.getParent();
-                     while(parentController == null && parentKey != null)
-                     {
-                        MetaDataRetrieval pmdr = mmdr.getMetaDataRetrieval(parentKey);
-                        if (pmdr != null)
-                        {
-                           MetaDataItem<Controller> pci = pmdr.retrieveMetaData(Controller.class);
-                           if (pci != null)
-                           {
-                              parentController = pci.getValue();
-                           }
-                        }
-                        parentKey = parentKey.getParent();
-                     }
-                     if (parentController == null)
-                     {
-                        parentController = controller;
-                     }
-                     scopedController = new ScopedKernelController(parentController);
-                     ((MutableMetaData)mdr).addMetaData(scopedController, Controller.class);
-                  }
-                  context.setController(scopedController);
-               }
-            }
+         // find scoped controller
+         MutableMetaDataRepository mmdr = repository.getMetaDataRepository();
+         MetaDataRetrieval mdr = mmdr.getMetaDataRetrieval(scopeKey);
+         if (mdr == null)
+         {
+            mdr = new MemoryMetaDataLoader(scopeKey);
+            mmdr.addMetaDataRetrieval(mdr);
          }
+         MetaDataItem<ScopedKernelController> controllerItem = mdr.retrieveMetaData(ScopedKernelController.class);
+         ScopedKernelController scopedController;
+         if (controllerItem != null)
+         {
+            scopedController = controllerItem.getValue();
+         }
+         else
+         {
+            AbstractController parentController = null;
+            ScopeKey parentKey = scopeKey.getParent();
+            while (parentController == null && parentKey != null)
+            {
+               MetaDataRetrieval pmdr = mmdr.getMetaDataRetrieval(parentKey);
+               if (pmdr != null)
+               {
+                  MetaDataItem<ScopedKernelController> pci = pmdr.retrieveMetaData(ScopedKernelController.class);
+                  if (pci != null)
+                  {
+                     parentController = pci.getValue();
+                  }
+               }
+               parentKey = parentKey.getParent();
+            }
+            if (parentController == null)
+            {
+               if (controller instanceof AbstractController == false)
+                  throw new IllegalArgumentException("Underlying controller not AbstractController instance!");
+               parentController = (AbstractController) controller;
+            }
+            scopedController = new ScopedKernelController(controller.getKernel(), parentController);
+            ((MutableMetaData)mdr).addMetaData(scopedController, ScopedKernelController.class);
+         }
+         scopedController.addControllerContext(context);
+         context.setController(scopedController);
       }
    }
 
    protected void removeScoping(KernelControllerContext context) throws Throwable
    {
-      // todo
+      KernelController controller = (KernelController)context.getController();
+      KernelMetaDataRepository repository = controller.getKernel().getMetaDataRepository();
+      ScopeKey scopeKey = context.getInstallScope();
+      if (scopeKey != null)
+      {
+         // find scoped controller
+         MutableMetaDataRepository mmdr = repository.getMetaDataRepository();
+         MetaDataRetrieval mdr = mmdr.getMetaDataRetrieval(scopeKey);
+         if (mdr == null)
+         {
+            throw new IllegalArgumentException("Expecting MetaDataRetrieval instance in scope: " + scopeKey);
+         }
+         MetaDataItem<ScopedKernelController> controllerItem = mdr.retrieveMetaData(ScopedKernelController.class);
+         if (controllerItem == null)
+         {
+            throw new IllegalArgumentException("Expecting ScopedKernelController instance in scope:" + scopeKey);
+         }
+         ScopedKernelController scopedController = controllerItem.getValue();
+         scopedController.removeControllerContext(context);
+         if (scopedController.isActive() == false)
+         {
+            try
+            {
+               ((MutableMetaData)mdr).removeMetaData(ScopedKernelController.class);
+               context.setController(scopedController.getUnderlyingController());
+            }
+            finally
+            {
+               scopedController.release();
+            }
+         }
+      }
    }
 
    protected void uninstallActionInternal(KernelControllerContext context)
@@ -167,7 +216,7 @@ public class PreInstallAction extends KernelControllerContextAction
       {
          removeScoping(context);
       }
-      catch(Throwable ignored)
+      catch (Throwable ignored)
       {
          log.warn("Unexpected error removing scoping: ", ignored);
       }
@@ -187,7 +236,7 @@ public class PreInstallAction extends KernelControllerContextAction
    {
       try
       {
-         KernelController controller = (KernelController) context.getController();
+         KernelController controller = (KernelController)context.getController();
          KernelMetaDataRepository repository = controller.getKernel().getMetaDataRepository();
          repository.removeMetaData(context);
       }

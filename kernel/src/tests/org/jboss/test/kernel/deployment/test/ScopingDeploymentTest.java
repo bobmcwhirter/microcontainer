@@ -1,6 +1,6 @@
 /*
 * JBoss, Home of Professional Open Source
-* Copyright 2005, JBoss Inc., and individual contributors as indicated
+* Copyright 2006, JBoss Inc., and individual contributors as indicated
 * by the @authors tag. See the copyright.txt in the distribution for a
 * full listing of individual contributors.
 *
@@ -21,29 +21,38 @@
 */
 package org.jboss.test.kernel.deployment.test;
 
-import junit.framework.Test;
+import org.jboss.test.AbstractTestDelegate;
 
 /**
- * @author <a href="mailto:ales.justin@genera-lynx.com">Ales Justin</a>
+ * Scoping Deployment Test Case.
+ *
+ * @author <a href="ales.justin@jboss.com">Ales Justin</a>
  */
-public class BeanMetaDataTestCase extends AbstractBeanMetaDataTest
+public abstract class ScopingDeploymentTest extends AbstractDeploymentTest
 {
-   public BeanMetaDataTestCase(String name)
-         throws Throwable
+   public ScopingDeploymentTest(String name) throws Throwable
    {
       super(name);
    }
 
-   public static Test suite()
+   /**
+    * Default setup with security manager enabled
+    *
+    * @param clazz the class
+    * @return the delegate
+    * @throws Exception for any error
+    */
+   public static AbstractTestDelegate getDelegate(Class clazz) throws Exception
    {
-      return suite(BeanMetaDataTestCase.class);
+      AbstractTestDelegate delegate = new ScopingTestDelegate(clazz);
+      delegate.enableSecurity = true;
+      return delegate;
    }
 
-   // ---- tests
-
-   public void testBeanAsValueMetaData() throws Throwable
+   protected void configureLogging()
    {
-      doInnerBeanTests();
+      //enableTrace("org.jboss.dependency");
+      //enableTrace("org.jboss.kernel.plugins.dependency");
+      //enableTrace("org.jboss.kernel.plugins.deployment");
    }
-
 }

@@ -122,6 +122,8 @@ public class BasicKernelMetaDataRepository extends AbstractKernelMetaDataReposit
          if (bean != null)
             scope.addScope(CommonLevels.CLASS, bean);
       }
+      // todo - some other level
+      scope.addScope(CommonLevels.WORK, String.valueOf(context.hashCode()));
       return scope;
    }
 

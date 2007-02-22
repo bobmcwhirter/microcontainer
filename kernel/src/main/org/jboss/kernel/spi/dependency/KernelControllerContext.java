@@ -23,11 +23,11 @@ package org.jboss.kernel.spi.dependency;
 
 import org.jboss.beans.info.spi.BeanInfo;
 import org.jboss.beans.metadata.spi.BeanMetaData;
+import org.jboss.dependency.spi.dispatch.InvokeDispatchContext;
 import org.jboss.kernel.Kernel;
 import org.jboss.kernel.spi.registry.KernelRegistryEntry;
 import org.jboss.metadata.spi.MetaData;
 import org.jboss.metadata.spi.scope.ScopeKey;
-import org.jboss.dependency.spi.dispatch.InvokeDispatchContext;
 
 /**
  * Information about dependencies and state.
@@ -92,4 +92,18 @@ public interface KernelControllerContext extends KernelRegistryEntry, InvokeDisp
     * @param key the scope key
     */
    void setScope(ScopeKey key);
+
+   /**
+    * Get the install scope
+    *
+    * @return the scope
+    */
+   ScopeKey getInstallScope();
+
+   /**
+    * Set the install scope
+    *
+    * @param key the scope key
+    */
+   void setInstallScope(ScopeKey key);
 }

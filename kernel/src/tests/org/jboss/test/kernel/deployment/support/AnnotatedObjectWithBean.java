@@ -1,6 +1,6 @@
 /*
 * JBoss, Home of Professional Open Source
-* Copyright 2005, JBoss Inc., and individual contributors as indicated
+* Copyright 2006, JBoss Inc., and individual contributors as indicated
 * by the @authors tag. See the copyright.txt in the distribution for a
 * full listing of individual contributors.
 *
@@ -19,31 +19,45 @@
 * Software Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA
 * 02110-1301 USA, or see the FSF site: http://www.fsf.org.
 */
-package org.jboss.test.kernel.deployment.test;
+package org.jboss.test.kernel.deployment.support;
 
-import junit.framework.Test;
+import java.io.Serializable;
+
+import org.jboss.metadata.plugins.scope.ApplicationScope;
 
 /**
- * @author <a href="mailto:ales.justin@genera-lynx.com">Ales Justin</a>
+ * An annotated object with all possible bean as meta data
+ *
+ * @author <a href="ales.justin@gmail.com">Ales Justin</a>
  */
-public class BeanMetaDataTestCase extends AbstractBeanMetaDataTest
+@ApplicationScope("testApp")
+public class AnnotatedObjectWithBean implements Serializable, ObjectWithBeanAware
 {
-   public BeanMetaDataTestCase(String name)
-         throws Throwable
+   // Constants -----------------------------------------------------
+
+   private static final long serialVersionUID = 3258126972906387766L;
+
+   // Attributes ----------------------------------------------------
+
+   private SimpleBean simpleBean;
+
+   public AnnotatedObjectWithBean()
    {
-      super(name);
    }
 
-   public static Test suite()
+   public AnnotatedObjectWithBean(SimpleBean simpleBean)
    {
-      return suite(BeanMetaDataTestCase.class);
+      this.simpleBean = simpleBean;
    }
 
-   // ---- tests
-
-   public void testBeanAsValueMetaData() throws Throwable
+   public SimpleBean getSimpleBean()
    {
-      doInnerBeanTests();
+      return simpleBean;
+   }
+
+   public void setSimpleBean(SimpleBean simpleBean)
+   {
+      this.simpleBean = simpleBean;
    }
 
 }

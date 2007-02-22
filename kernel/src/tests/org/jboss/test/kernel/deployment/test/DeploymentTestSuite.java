@@ -43,12 +43,19 @@ public class DeploymentTestSuite extends TestSuite
       TestSuite suite = new TestSuite("Deployment Tests");
 
       suite.addTest(BeanMetaDataTestCase.suite());
+      suite.addTest(BeanMetaDataWithClassloaderTestCase.suite());
       suite.addTest(DeploymentClassLoaderTestCase.suite());
       suite.addTest(GenericBeanFactoryLifecycleTestCase.suite());
       suite.addTest(WildcardClassLoaderTestCase.suite());
       suite.addTest(BeanMetaDataFactoryTestCase.suite());
       suite.addTest(AnnotatedLifecycleTestCase.suite());
       suite.addTest(FineGrainedActionTestCase.suite());
+      suite.addTest(ScopingTestCase.suite());
+      suite.addTest(AnnotatedDeploymentScopingTestCase.suite());
+      suite.addTest(IllegalScopingTestCase.suite());
+      suite.addTest(AnnotatedClassesScopingTestCase.suite());
+      suite.addTest(ContextualScopingTestCase.suite());
+      suite.addTest(InnerBeanScopingTestCase.suite());
 
       return suite;
    }

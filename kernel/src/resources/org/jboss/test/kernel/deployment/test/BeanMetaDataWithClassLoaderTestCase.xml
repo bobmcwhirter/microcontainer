@@ -22,6 +22,10 @@
       </property>
    </bean>
 
+   <classloader>
+      <bean name="cl" class="org.jboss.test.kernel.deployment.support.NullClassLoader" />
+   </classloader>
+
    <bean name="SimpleObject4" class="org.jboss.test.kernel.deployment.support.SimpleObjectWithBean">
       <property name="beans">
          <list>
@@ -55,6 +59,15 @@
                </property>
             </bean>
          </list>
+      </property>
+   </bean>
+
+   <bean name="SimpleObject5" class="org.jboss.test.kernel.deployment.support.SimpleObjectWithBean">
+      <classloader>
+         <bean name="cl2" class="org.jboss.test.kernel.deployment.support.NullClassLoader" />
+      </classloader>
+      <property name="simpleBean">
+         <bean name="simple5" class="org.jboss.test.kernel.deployment.support.SimpleBeanImpl"/>
       </property>
    </bean>
 

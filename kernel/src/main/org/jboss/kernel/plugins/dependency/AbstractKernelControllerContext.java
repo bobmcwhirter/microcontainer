@@ -81,6 +81,9 @@ public class AbstractKernelControllerContext extends AbstractControllerContext i
    /** The scope */
    protected ScopeKey scope;
 
+   /** The install scope */
+   protected ScopeKey installScope;
+
    /**
     * Create an abstract controller context
     *
@@ -157,6 +160,16 @@ public class AbstractKernelControllerContext extends AbstractControllerContext i
    public void setScope(ScopeKey key)
    {
       this.scope = key;
+   }
+
+   public ScopeKey getInstallScope()
+   {
+      return installScope;
+   }
+
+   public void setInstallScope(ScopeKey key)
+   {
+      this.installScope = key;
    }
 
    public void toString(JBossStringBuilder buffer)

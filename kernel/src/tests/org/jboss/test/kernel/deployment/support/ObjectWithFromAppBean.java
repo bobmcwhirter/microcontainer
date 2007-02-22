@@ -1,6 +1,6 @@
 /*
 * JBoss, Home of Professional Open Source
-* Copyright 2005, JBoss Inc., and individual contributors as indicated
+* Copyright 2006, JBoss Inc., and individual contributors as indicated
 * by the @authors tag. See the copyright.txt in the distribution for a
 * full listing of individual contributors.
 *
@@ -19,31 +19,32 @@
 * Software Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA
 * 02110-1301 USA, or see the FSF site: http://www.fsf.org.
 */
-package org.jboss.test.kernel.deployment.test;
+package org.jboss.test.kernel.deployment.support;
 
-import junit.framework.Test;
+import java.io.Serializable;
 
 /**
- * @author <a href="mailto:ales.justin@genera-lynx.com">Ales Justin</a>
+ * A simple object with a fromapp bean
+ *
+ * @author <a href="ales.justin@gmail.com">Ales Justin</a>
  */
-public class BeanMetaDataTestCase extends AbstractBeanMetaDataTest
+public class ObjectWithFromAppBean implements Serializable
 {
-   public BeanMetaDataTestCase(String name)
-         throws Throwable
+   // Constants -----------------------------------------------------
+
+   private static final long serialVersionUID = 1L;
+
+   // Attributes ----------------------------------------------------
+
+   private FromAppBean simpleBean;
+
+   public FromAppBean getSimpleBean()
    {
-      super(name);
+      return simpleBean;
    }
 
-   public static Test suite()
+   public void setSimpleBean(FromAppBean simpleBean)
    {
-      return suite(BeanMetaDataTestCase.class);
+      this.simpleBean = simpleBean;
    }
-
-   // ---- tests
-
-   public void testBeanAsValueMetaData() throws Throwable
-   {
-      doInnerBeanTests();
-   }
-
 }

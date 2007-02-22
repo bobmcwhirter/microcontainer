@@ -47,6 +47,7 @@ import org.jboss.dependency.spi.ControllerContext;
 import org.jboss.dependency.spi.ControllerMode;
 import org.jboss.dependency.spi.ControllerState;
 import org.jboss.dependency.spi.DependencyItem;
+import org.jboss.kernel.spi.dependency.KernelControllerContext;
 import org.jboss.reflect.spi.TypeInfo;
 import org.jboss.util.JBossObject;
 import org.jboss.util.JBossStringBuilder;
@@ -451,17 +452,17 @@ public class AbstractBeanMetaData extends AbstractFeatureMetaData
 
    public void initialVisit(MetaDataVisitor visitor)
    {
-      if (visitor.visitorNodeStack().isEmpty() == false || (classLoader != null && classLoader.getClassLoader() != this))
+      KernelControllerContext ctx = visitor.getControllerContext();
+      if (ctx.getBeanMetaData() == this)
+         context = ctx;
+      boolean isInnerBean = visitor.visitorNodeStack().isEmpty() == false;
+      if (isInnerBean)
       {
-         context = visitor.getControllerContext();
-         Object name = context.getName();
+         Object name = ctx.getName();
          Object iDependOn = getUnderlyingValue();
-         if (name.equals(iDependOn) == false)
-         {
-            ControllerState whenRequired = visitor.getContextState();
-            DependencyItem di = new AbstractDependencyItem(name, iDependOn, whenRequired, ControllerState.INSTALLED);
-            visitor.addDependency(di);
-         }
+         ControllerState whenRequired = visitor.getContextState();
+         DependencyItem di = new AbstractDependencyItem(name, iDependOn, whenRequired, ControllerState.INSTALLED);
+         visitor.addDependency(di);
       }
       super.initialVisit(visitor);
    }

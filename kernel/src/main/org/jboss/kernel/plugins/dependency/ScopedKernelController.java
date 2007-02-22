@@ -22,17 +22,25 @@
 package org.jboss.kernel.plugins.dependency;
 
 import java.util.HashSet;
+import java.util.Properties;
 import java.util.Set;
 
-import org.jboss.dependency.spi.Controller;
+import org.jboss.dependency.plugins.AbstractController;
 import org.jboss.dependency.spi.ControllerContext;
 import org.jboss.dependency.spi.ControllerState;
 import org.jboss.kernel.Kernel;
+import org.jboss.kernel.KernelFactory;
+import org.jboss.kernel.plugins.bootstrap.basic.BasicKernelInitializer;
+import org.jboss.kernel.plugins.config.property.PropertyKernelConfig;
+import org.jboss.kernel.spi.bootstrap.KernelInitializer;
+import org.jboss.kernel.spi.config.KernelConfig;
+import org.jboss.kernel.spi.config.KernelConfigurator;
 import org.jboss.kernel.spi.dependency.KernelController;
 import org.jboss.kernel.spi.dependency.KernelControllerContext;
 import org.jboss.kernel.spi.event.KernelEvent;
 import org.jboss.kernel.spi.event.KernelEventFilter;
 import org.jboss.kernel.spi.event.KernelEventListener;
+import org.jboss.kernel.spi.metadata.KernelMetaDataRepository;
 import org.jboss.kernel.spi.registry.KernelRegistryEntry;
 import org.jboss.kernel.spi.registry.KernelRegistryPlugin;
 
@@ -43,26 +51,65 @@ import org.jboss.kernel.spi.registry.KernelRegistryPlugin;
  */
 public class ScopedKernelController extends AbstractKernelController
 {
-   protected Controller parent;
+   protected Kernel parentKernel;
+   protected AbstractController underlyingController;
+   protected AbstractController parentController;
 
-   public ScopedKernelController(Controller parentController)
-         throws Exception
+   public ScopedKernelController(Kernel parentKernel, AbstractController parentController) throws Exception
    {
       super();
-      parent = parentController;
-      parent.addController(this);
+      this.parentKernel = parentKernel;
+      if (parentKernel.getController() instanceof AbstractController == false)
+         throw new IllegalArgumentException("Underlying controller not AbstractController instance!");
+      this.underlyingController = (AbstractController)parentKernel.getController();
+      this.parentController = parentController;
+      KernelConfig config = new ScopedKernelConfig(System.getProperties());
+      kernel = KernelFactory.newInstance(config);
+      this.parentController.addController(this);
    }
 
    private boolean isParentKernelController()
    {
-      return (parent instanceof KernelController);
+      return (parentController instanceof KernelController);
    }
 
    private KernelController getParentKernelController()
    {
       if (isParentKernelController() == false)
          throw new IllegalArgumentException("Illegal call to parent Controller, not of KernelController instance!");
-      return (KernelController)parent;
+      return (KernelController)parentController;
+   }
+
+   // Scoped helper methods 
+
+   public AbstractController getUnderlyingController()
+   {
+      return underlyingController;
+   }
+
+   public void addControllerContext(ControllerContext context)
+   {
+      underlyingController.removeControllerContext(context);
+      allContexts.put(context.getName(), context);
+   }
+
+   public void removeControllerContext(ControllerContext context)
+   {
+      allContexts.remove(context.getName());
+      underlyingController.addControllerContext(context);
+   }
+
+   public boolean isActive()
+   {
+      return allContexts.isEmpty() == false;
+   }
+
+   public void release()
+   {
+      parentController.removeController(this);
+      underlyingController = null;
+      parentController = null;
+      parentKernel = null;
    }
 
    // Controller methods
@@ -74,81 +121,22 @@ public class ScopedKernelController extends AbstractKernelController
       {
          return context;
       }
-      return parent.getContext(name, state);
+      return parentController.getContext(name, state);
    }
 
    public Set<ControllerContext> getNotInstalled()
    {
-      Set<ControllerContext> uninstalled = new HashSet<ControllerContext>(parent.getNotInstalled());
+      Set<ControllerContext> uninstalled = new HashSet<ControllerContext>(parentController.getNotInstalled());
       uninstalled.addAll(super.getNotInstalled());
       return uninstalled;
    }
 
-   public ControllerContext uninstall(Object name)
-   {
-      return super.uninstall(name);    //todo
-   }
-
    protected void install(ControllerContext context, boolean trace) throws Throwable
    {
-      super.install(context, trace);    //todo
-   }
-
-   protected void change(ControllerContext context, ControllerState state, boolean trace) throws Throwable
-   {
-      super.change(context, state, trace);    //todo
-   }
-
-   protected void enableOnDemand(ControllerContext context, boolean trace) throws Throwable
-   {
-      super.enableOnDemand(context, trace);    //todo
-   }
-
-   protected boolean incrementState(ControllerContext context, boolean trace)
-   {
-      return super.incrementState(context, trace);    //todo
-   }
-
-   protected void resolveContexts(boolean trace)
-   {
-      super.resolveContexts(trace);    //todo
-   }
-
-   protected boolean resolveContexts(ControllerState fromState, ControllerState toState, boolean trace)
-   {
-      return super.resolveContexts(fromState, toState, trace);    //todo
-   }
-
-   protected void uninstallContext(ControllerContext context, boolean trace)
-   {
-      super.uninstallContext(context, trace);    //todo
+      throw new IllegalArgumentException("Should not be called!");
    }
 
    // KernelController methods
-
-   public Kernel getKernel()
-   {
-      if (isParentKernelController())
-      {
-         return getParentKernelController().getKernel();
-      }
-      else
-      {
-         return super.getKernel();
-      }
-   }
-
-   public void setKernel(Kernel kernel) throws Throwable
-   {
-      if (isParentKernelController())
-      {
-         getParentKernelController().setKernel(kernel);
-      }
-      else
-      {
-         super.setKernel(kernel);
-      }
-   }
 
    public void fireKernelEvent(KernelEvent event)
    {
@@ -188,22 +176,28 @@ public class ScopedKernelController extends AbstractKernelController
 
    public Set<KernelControllerContext> getInstantiatedContexts(Class clazz)
    {
-      // todo - some locking?
-      Set<KernelControllerContext> contexts = new HashSet<KernelControllerContext>();
-      Set<KernelControllerContext> currentContexts = super.getInstantiatedContexts(clazz);
-      if (currentContexts != null && currentContexts.size() > 0)
+      lockRead();
+      try
       {
-         contexts.addAll(currentContexts);
-      }
-      if (isParentKernelController())
-      {
-         Set<KernelControllerContext> parentContexts = ((KernelController)parent).getInstantiatedContexts(clazz);
-         if (parentContexts != null && parentContexts.size() > 0)
+         Set<KernelControllerContext> contexts = new HashSet<KernelControllerContext>();
+         Set<KernelControllerContext> currentContexts = super.getInstantiatedContexts(clazz);
+         if (currentContexts != null && currentContexts.size() > 0)
          {
-            contexts.addAll(parentContexts);
+            contexts.addAll(currentContexts);
          }
+         if (isParentKernelController())
+         {
+            Set<KernelControllerContext> parentContexts = getParentKernelController().getInstantiatedContexts(clazz);
+            if (parentContexts != null && parentContexts.size() > 0)
+            {
+               contexts.addAll(parentContexts);
+            }
+         }
+         return contexts.size() > 0 ? contexts : null;
       }
-      return contexts.size() > 0 ? contexts : null;
+      finally{
+         unlockRead();
+      }
    }
 
    // KernelRegistry plugin method
@@ -213,11 +207,54 @@ public class ScopedKernelController extends AbstractKernelController
       KernelRegistryEntry entry = super.getEntry(name);
       if (entry != null)
          return entry;
-      if (parent instanceof KernelRegistryPlugin)
+      if (parentController instanceof KernelRegistryPlugin)
       {
-         return ((KernelRegistryPlugin)parent).getEntry(name);
+         return ((KernelRegistryPlugin)parentController).getEntry(name);
       }
       return null;
+   }
+
+   // Kernel creation util classes
+
+   private class ScopedKernelConfig extends PropertyKernelConfig
+   {
+      public ScopedKernelConfig(Properties properties)
+      {
+         super(properties);
+      }
+
+      public KernelInitializer createKernelInitializer() throws Throwable
+      {
+         return new ScopedKernelInitializer();
+      }
+   }
+
+   /**
+    * Scoped Kernel Initializer.
+    * Overriddes the creation of configurator, controller, metadatarepo
+    */
+   private class ScopedKernelInitializer extends BasicKernelInitializer
+   {
+      public ScopedKernelInitializer()
+            throws Exception
+      {
+         super();
+      }
+
+      protected KernelConfigurator createKernelConfigurator(Kernel kernel) throws Throwable
+      {
+         return parentKernel.getConfigurator();
+      }
+
+      protected KernelController createKernelController(Kernel kernel) throws Throwable
+      {
+         return ScopedKernelController.this;
+      }
+
+      protected KernelMetaDataRepository createKernelMetaDataRepository(Kernel kernel) throws Throwable
+      {
+         return parentKernel.getMetaDataRepository();
+      }
    }
 
 }

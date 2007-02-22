@@ -1,6 +1,6 @@
 /*
 * JBoss, Home of Professional Open Source
-* Copyright 2005, JBoss Inc., and individual contributors as indicated
+* Copyright 2006, JBoss Inc., and individual contributors as indicated
 * by the @authors tag. See the copyright.txt in the distribution for a
 * full listing of individual contributors.
 *
@@ -22,13 +22,15 @@
 package org.jboss.test.kernel.deployment.test;
 
 import junit.framework.Test;
+import org.jboss.test.kernel.deployment.support.SimpleBean;
+import org.jboss.test.kernel.deployment.support.SimpleObjectWithBean;
 
 /**
  * @author <a href="mailto:ales.justin@genera-lynx.com">Ales Justin</a>
  */
-public class BeanMetaDataTestCase extends AbstractBeanMetaDataTest
+public class BeanMetaDataWithClassloaderTestCase extends AbstractBeanMetaDataTest
 {
-   public BeanMetaDataTestCase(String name)
+   public BeanMetaDataWithClassloaderTestCase(String name)
          throws Throwable
    {
       super(name);
@@ -36,14 +38,27 @@ public class BeanMetaDataTestCase extends AbstractBeanMetaDataTest
 
    public static Test suite()
    {
-      return suite(BeanMetaDataTestCase.class);
+      return suite(BeanMetaDataWithClassloaderTestCase.class);
    }
 
    // ---- tests
 
    public void testBeanAsValueMetaData() throws Throwable
    {
+      ClassLoader cl = (ClassLoader) getBean("cl");
+      assertNotNull(cl);
+
       doInnerBeanTests();
+
+      ClassLoader cl2 = (ClassLoader) getBean("cl2");
+      assertNotNull(cl2);
+
+      SimpleObjectWithBean sowb5 = (SimpleObjectWithBean) getBean("SimpleObject5");
+      assertNotNull(sowb5);
+      SimpleBean simple5 = (SimpleBean) getBean("simple5");
+      assertNotNull(simple5);
+      assertNotNull(sowb5.getSimpleBean());
+      assertEquals(sowb5.getSimpleBean(), simple5);
    }
 
 }

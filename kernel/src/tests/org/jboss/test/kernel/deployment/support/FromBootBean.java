@@ -1,6 +1,6 @@
 /*
 * JBoss, Home of Professional Open Source
-* Copyright 2005, JBoss Inc., and individual contributors as indicated
+* Copyright 2006, JBoss Inc., and individual contributors as indicated
 * by the @authors tag. See the copyright.txt in the distribution for a
 * full listing of individual contributors.
 *
@@ -19,31 +19,57 @@
 * Software Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA
 * 02110-1301 USA, or see the FSF site: http://www.fsf.org.
 */
-package org.jboss.test.kernel.deployment.test;
+package org.jboss.test.kernel.deployment.support;
 
-import junit.framework.Test;
+import java.io.Serializable;
 
 /**
- * @author <a href="mailto:ales.justin@genera-lynx.com">Ales Justin</a>
+ * A simple annotated bean
+ *
+ * @author <a href="ales.justin@jboss.com">Ales Justin</a>
  */
-public class BeanMetaDataTestCase extends AbstractBeanMetaDataTest
+public class FromBootBean implements Serializable
 {
-   public BeanMetaDataTestCase(String name)
-         throws Throwable
+   private static final long serialVersionUID = 1L;
+
+   private String constructorString;
+
+   private String string;
+
+   private SimpleBean bean;
+
+   public FromBootBean()
    {
-      super(name);
+      constructorString = "()";
    }
 
-   public static Test suite()
+   public FromBootBean(String string)
    {
-      return suite(BeanMetaDataTestCase.class);
+      constructorString = string;
    }
 
-   // ---- tests
-
-   public void testBeanAsValueMetaData() throws Throwable
+   public String getConstructorString()
    {
-      doInnerBeanTests();
+      return constructorString;
    }
 
+   public String getString()
+   {
+      return string;
+   }
+
+   public void setString(String string)
+   {
+      this.string = string;
+   }
+
+   public SimpleBean getBean()
+   {
+      return bean;
+   }
+
+   public void setBean(SimpleBean bean)
+   {
+      this.bean = bean;
+   }
 }

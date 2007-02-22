@@ -55,12 +55,11 @@ public class InstallAction extends KernelControllerContextAction
       registry.registerEntry(name, context);
       controller.addSupplies(context);
 
-      List installs = metaData.getInstalls();
+      List<InstallMetaData> installs = metaData.getInstalls();
       if (installs != null)
       {
-         for (int i = 0; i < installs.size(); ++i)
+         for (InstallMetaData install : installs)
          {
-            InstallMetaData install = (InstallMetaData) installs.get(i);
             ControllerContext target = context;
             if (install.getBean() != null)
                target = controller.getContext(install.getBean(), install.getDependentState());
@@ -90,12 +89,12 @@ public class InstallAction extends KernelControllerContextAction
       BeanMetaData metaData = context.getBeanMetaData();
       Object name = metaData.getName();
 
-      List uninstalls = metaData.getUninstalls();
+      List<InstallMetaData> uninstalls = metaData.getUninstalls();
       if (uninstalls != null)
       {
          for (int i = uninstalls.size()-1; i >= 0; --i)
          {
-            InstallMetaData uninstall = (InstallMetaData) uninstalls.get(i);
+            InstallMetaData uninstall = uninstalls.get(i);
             ControllerContext target = context;
             if (uninstall.getBean() != null)
             {

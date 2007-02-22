@@ -159,7 +159,7 @@ public class AbstractKernelDeployer
     */
    public void validate() throws Throwable
    {
-      Set notInstalled = controller.getNotInstalled();
+      Set<ControllerContext> notInstalled = controller.getNotInstalled();
       internalValidate(notInstalled);
    }
    
@@ -171,7 +171,7 @@ public class AbstractKernelDeployer
     */
    public void validate(KernelDeployment deployment) throws Throwable
    {
-      Set<KernelControllerContext> notInstalled = new HashSet<KernelControllerContext>(deployment.getInstalledContexts());
+      Set<ControllerContext> notInstalled = new HashSet<ControllerContext>(deployment.getInstalledContexts());
       internalValidate(notInstalled);
    }
    
@@ -181,7 +181,7 @@ public class AbstractKernelDeployer
     * @param notInstalled the not installed deployments
     * @throws Throwable for any error
     */
-   protected void internalValidate(Set notInstalled) throws Throwable
+   protected void internalValidate(Set<ControllerContext> notInstalled) throws Throwable
    {
       if (notInstalled.isEmpty() == false)
       {
@@ -193,11 +193,10 @@ public class AbstractKernelDeployer
          }
          if (notInstalled.isEmpty() == false)
          {
-            HashSet<KernelControllerContext> errors = new HashSet<KernelControllerContext>();
-            HashSet<KernelControllerContext> incomplete = new HashSet<KernelControllerContext>();
-            for (Iterator i = notInstalled.iterator(); i.hasNext();)
+            HashSet<ControllerContext> errors = new HashSet<ControllerContext>();
+            HashSet<ControllerContext> incomplete = new HashSet<ControllerContext>();
+            for (ControllerContext ctx : notInstalled)
             {
-               KernelControllerContext ctx = (KernelControllerContext) i.next();
                if (ctx.getState().equals(ControllerState.ERROR))
                   errors.add(ctx);
                else
@@ -208,24 +207,22 @@ public class AbstractKernelDeployer
             if (errors.size() != 0)
             {
                buffer.append("\n*** DEPLOYMENTS IN ERROR: Name -> Error\n");
-               for (Iterator i = errors.iterator(); i.hasNext(); )
+               for (ControllerContext ctx : errors)
                {
-                  KernelControllerContext ctx = (KernelControllerContext) i.next();
                   buffer.append(ctx.getName()).append(" -> ").append(ctx.getError().toString()).append('\n');
                }
             }
             if (incomplete.size() != 0)
             {
                buffer.append("\n*** DEPLOYMENTS MISSING DEPENDENCIES: Name -> Dependency{Required State:Actual State}\n");
-               for (Iterator i = incomplete.iterator(); i.hasNext();)
+               for (ControllerContext ctx : incomplete)
                {
-                  KernelControllerContext ctx = (KernelControllerContext) i.next();
                   buffer.append(ctx.getName()).append(" -> ");
                   DependencyInfo dependsInfo = ctx.getDependencyInfo();
                   Set depends = dependsInfo.getIDependOn(null);
                   for (Iterator j = depends.iterator(); j.hasNext();)
                   {
-                     DependencyItem item = (DependencyItem) j.next();
+                     DependencyItem item = (DependencyItem)j.next();
                      buffer.append(item.getIDependOn()).append('{').append(item.getWhenRequired().getStateString());
                      buffer.append(':');
                      Object iDependOn = item.getIDependOn();
@@ -263,12 +260,11 @@ public class AbstractKernelDeployer
     */
    protected void deployBeans(KernelController controller, KernelDeployment deployment) throws Throwable
    {
-      List beans = deployment.getBeans();
+      List<BeanMetaData> beans = deployment.getBeans();
       if (beans != null)
       {
-         for (int i = 0; i < beans.size(); ++i)
+         for (BeanMetaData metaData : beans)
          {
-            BeanMetaData metaData = (BeanMetaData) beans.get(i);
             KernelControllerContext context = deployBean(controller, deployment, metaData);
             deployment.addInstalledContext(context);
          }
@@ -313,12 +309,11 @@ public class AbstractKernelDeployer
     */
    protected void changeBeans(KernelController controller, KernelDeployment deployment, ControllerState state) throws Throwable
    {
-      List contexts = deployment.getInstalledContexts();
+      List<KernelControllerContext> contexts = deployment.getInstalledContexts();
       if (contexts != null)
       {
-         for (Iterator i = contexts.iterator(); i.hasNext();)
+         for (KernelControllerContext context : contexts)
          {
-            KernelControllerContext context = (KernelControllerContext) i.next();
             changeBean(controller, context, state);
          }
       }

@@ -1,6 +1,6 @@
 /*
 * JBoss, Home of Professional Open Source
-* Copyright 2005, JBoss Inc., and individual contributors as indicated
+* Copyright 2006, JBoss Inc., and individual contributors as indicated
 * by the @authors tag. See the copyright.txt in the distribution for a
 * full listing of individual contributors.
 *
@@ -22,29 +22,32 @@
 package org.jboss.test.kernel.deployment.support;
 
 import java.io.Serializable;
-import java.util.List;
+
+import org.jboss.metadata.plugins.scope.ApplicationScope;
+import org.jboss.metadata.plugins.scope.DeploymentScope;
 
 /**
- * A simple object with all possible bean as meta data
+ * An annotated object with all possible bean as meta data
  *
  * @author <a href="ales.justin@gmail.com">Ales Justin</a>
  */
-public class SimpleObjectWithBean implements Serializable
+@ApplicationScope("testApp")
+@DeploymentScope("deployment2")
+public class Deployment2ObjectWithBean implements Serializable, ObjectWithBeanAware
 {
    // Constants -----------------------------------------------------
 
-   private static final long serialVersionUID = 3258126972906387766L;
+   private static final long serialVersionUID = 1L;
 
    // Attributes ----------------------------------------------------
 
    private SimpleBean simpleBean;
-   private List<SimpleBean> beans;
 
-   public SimpleObjectWithBean()
+   public Deployment2ObjectWithBean()
    {
    }
 
-   public SimpleObjectWithBean(SimpleBean simpleBean)
+   public Deployment2ObjectWithBean(SimpleBean simpleBean)
    {
       this.simpleBean = simpleBean;
    }
@@ -59,13 +62,4 @@ public class SimpleObjectWithBean implements Serializable
       this.simpleBean = simpleBean;
    }
 
-   public List<SimpleBean> getBeans()
-   {
-      return beans;
-   }
-
-   public void setBeans(List<SimpleBean> beans)
-   {
-      this.beans = beans;
-   }
 }

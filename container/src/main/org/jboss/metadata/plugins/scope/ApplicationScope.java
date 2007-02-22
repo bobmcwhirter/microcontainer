@@ -1,6 +1,6 @@
 /*
 * JBoss, Home of Professional Open Source
-* Copyright 2005, JBoss Inc., and individual contributors as indicated
+* Copyright 2006, JBoss Inc., and individual contributors as indicated
 * by the @authors tag. See the copyright.txt in the distribution for a
 * full listing of individual contributors.
 *
@@ -19,31 +19,24 @@
 * Software Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA
 * 02110-1301 USA, or see the FSF site: http://www.fsf.org.
 */
-package org.jboss.test.kernel.deployment.test;
+package org.jboss.metadata.plugins.scope;
 
-import junit.framework.Test;
+import java.lang.annotation.ElementType;
+import java.lang.annotation.Retention;
+import java.lang.annotation.RetentionPolicy;
+import java.lang.annotation.Target;
+
+import org.jboss.metadata.spi.scope.ScopeFactoryLookup;
 
 /**
- * @author <a href="mailto:ales.justin@genera-lynx.com">Ales Justin</a>
+ * Application scope annotation.
+ *
+ * @author <a href="mailto:ales.justin@jboss.com">Ales Justin</a>
  */
-public class BeanMetaDataTestCase extends AbstractBeanMetaDataTest
+@ScopeFactoryLookup(ApplicationScopeFactory.class)
+@Retention(RetentionPolicy.RUNTIME)
+@Target({ElementType.TYPE})
+public @interface ApplicationScope
 {
-   public BeanMetaDataTestCase(String name)
-         throws Throwable
-   {
-      super(name);
-   }
-
-   public static Test suite()
-   {
-      return suite(BeanMetaDataTestCase.class);
-   }
-
-   // ---- tests
-
-   public void testBeanAsValueMetaData() throws Throwable
-   {
-      doInnerBeanTests();
-   }
-
+   String value();
 }

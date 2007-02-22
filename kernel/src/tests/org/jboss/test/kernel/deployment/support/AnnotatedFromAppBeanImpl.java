@@ -1,6 +1,6 @@
 /*
 * JBoss, Home of Professional Open Source
-* Copyright 2005, JBoss Inc., and individual contributors as indicated
+* Copyright 2006, JBoss Inc., and individual contributors as indicated
 * by the @authors tag. See the copyright.txt in the distribution for a
 * full listing of individual contributors.
 *
@@ -22,50 +22,57 @@
 package org.jboss.test.kernel.deployment.support;
 
 import java.io.Serializable;
-import java.util.List;
+
+import org.jboss.metadata.plugins.scope.ApplicationScope;
 
 /**
- * A simple object with all possible bean as meta data
+ * A simple annotated bean
  *
- * @author <a href="ales.justin@gmail.com">Ales Justin</a>
+ * @author <a href="ales.justin@jboss.com">Ales Justin</a>
  */
-public class SimpleObjectWithBean implements Serializable
+@ApplicationScope("testApp")
+public class AnnotatedFromAppBeanImpl implements Serializable, SimpleBean
 {
-   // Constants -----------------------------------------------------
+   private static final long serialVersionUID = 1L;
 
-   private static final long serialVersionUID = 3258126972906387766L;
+   private String constructorString;
 
-   // Attributes ----------------------------------------------------
+   private String string;
 
-   private SimpleBean simpleBean;
-   private List<SimpleBean> beans;
+   private SimpleBean bean;
 
-   public SimpleObjectWithBean()
+   public AnnotatedFromAppBeanImpl()
    {
+      constructorString = "()";
    }
 
-   public SimpleObjectWithBean(SimpleBean simpleBean)
+   public AnnotatedFromAppBeanImpl(String string)
    {
-      this.simpleBean = simpleBean;
+      constructorString = string;
    }
 
-   public SimpleBean getSimpleBean()
+   public String getConstructorString()
    {
-      return simpleBean;
+      return constructorString;
    }
 
-   public void setSimpleBean(SimpleBean simpleBean)
+   public String getString()
    {
-      this.simpleBean = simpleBean;
+      return string;
    }
 
-   public List<SimpleBean> getBeans()
+   public void setString(String string)
    {
-      return beans;
+      this.string = string;
    }
 
-   public void setBeans(List<SimpleBean> beans)
+   public SimpleBean getBean()
    {
-      this.beans = beans;
+      return bean;
+   }
+
+   public void setBean(SimpleBean bean)
+   {
+      this.bean = bean;
    }
 }

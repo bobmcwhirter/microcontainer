@@ -1,6 +1,6 @@
 /*
 * JBoss, Home of Professional Open Source
-* Copyright 2005, JBoss Inc., and individual contributors as indicated
+* Copyright 2006, JBoss Inc., and individual contributors as indicated
 * by the @authors tag. See the copyright.txt in the distribution for a
 * full listing of individual contributors.
 *
@@ -19,31 +19,14 @@
 * Software Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA
 * 02110-1301 USA, or see the FSF site: http://www.fsf.org.
 */
-package org.jboss.test.kernel.deployment.test;
-
-import junit.framework.Test;
+package org.jboss.test.kernel.deployment.support;
 
 /**
- * @author <a href="mailto:ales.justin@genera-lynx.com">Ales Justin</a>
+ * An interface with simple bean getter
+ *
+ * @author <a href="ales.justin@gmail.com">Ales Justin</a>
  */
-public class BeanMetaDataTestCase extends AbstractBeanMetaDataTest
+public interface ObjectWithBeanAware
 {
-   public BeanMetaDataTestCase(String name)
-         throws Throwable
-   {
-      super(name);
-   }
-
-   public static Test suite()
-   {
-      return suite(BeanMetaDataTestCase.class);
-   }
-
-   // ---- tests
-
-   public void testBeanAsValueMetaData() throws Throwable
-   {
-      doInnerBeanTests();
-   }
-
+   SimpleBean getSimpleBean();
 }

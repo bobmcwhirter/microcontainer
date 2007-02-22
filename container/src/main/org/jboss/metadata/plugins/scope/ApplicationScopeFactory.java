@@ -1,6 +1,6 @@
 /*
 * JBoss, Home of Professional Open Source
-* Copyright 2005, JBoss Inc., and individual contributors as indicated
+* Copyright 2006, JBoss Inc., and individual contributors as indicated
 * by the @authors tag. See the copyright.txt in the distribution for a
 * full listing of individual contributors.
 *
@@ -19,31 +19,22 @@
 * Software Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA
 * 02110-1301 USA, or see the FSF site: http://www.fsf.org.
 */
-package org.jboss.test.kernel.deployment.test;
+package org.jboss.metadata.plugins.scope;
 
-import junit.framework.Test;
+import org.jboss.metadata.spi.scope.CommonLevels;
+import org.jboss.metadata.spi.scope.Scope;
+import org.jboss.metadata.spi.scope.ScopeFactory;
 
 /**
- * @author <a href="mailto:ales.justin@genera-lynx.com">Ales Justin</a>
+ * Factory for creating Application scope key
+ * from ApplicationScope annotation.
+ *
+ * @author <a href="mailto:ales.justin@jboss.com">Ales Justin</a>
  */
-public class BeanMetaDataTestCase extends AbstractBeanMetaDataTest
+public class ApplicationScopeFactory implements ScopeFactory<ApplicationScope>
 {
-   public BeanMetaDataTestCase(String name)
-         throws Throwable
+   public Scope create(ApplicationScope annotation)
    {
-      super(name);
+      return new Scope(CommonLevels.APPLICATION, annotation.value());
    }
-
-   public static Test suite()
-   {
-      return suite(BeanMetaDataTestCase.class);
-   }
-
-   // ---- tests
-
-   public void testBeanAsValueMetaData() throws Throwable
-   {
-      doInnerBeanTests();
-   }
-
 }
