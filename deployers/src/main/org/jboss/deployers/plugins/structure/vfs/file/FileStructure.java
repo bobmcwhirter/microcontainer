@@ -123,35 +123,46 @@ public class FileStructure extends AbstractStructureDeployer
    {
       try
       {
-         if (root.isLeaf())
+         boolean trace = log.isTraceEnabled();
+         if( SecurityActions.isLeaf(root) == true )
          {
+            boolean isFile = false;
+            if( trace )
+               log.trace(root+" is not a leaf");
             // See if this is a top-level by checking the parent
             if (isTopLevel(root, metaData) == false)
             {
                if (isKnownFile(root.getName()) == false)
                {
-                  log.trace("... no - it is not a top level file and not a known name");
-                  return false;
+                  if( trace )
+                     log.trace("... no - it is not a top level file and not a known name");
                }
                else
                {
-                  log.trace("... ok - not a top level file but it is a known name");
+                  if( trace )
+                     log.trace("... ok - not a top level file but it is a known name");
+                  isFile = true;
                }
             }
             else
             {
-               log.trace("... ok - it is a top level file");
+               if( trace )
+                  log.trace("... ok - it is a top level file");
+               isFile = true;
             }
 
             // Create a context info for this file
             ContextInfoImpl context = new ContextInfoImpl(root.getPathName());
             metaData.addContext(context);
             // There are no subdeployments for files
-            return true;
+            if( trace )
+               log.trace(root+" isFile: "+isFile);
+            return isFile;
          }
          else
          {
-            log.trace("... no - not a file.");
+            if( trace )
+               log.trace("... no - not a file.");
             return false;
          }
       }

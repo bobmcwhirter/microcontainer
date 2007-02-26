@@ -631,7 +631,7 @@ public class AbstractDeploymentContext
          if (metaDataLocation == null)
          {
             // It has to be a plain file
-            if (root != null && root.isLeaf())
+            if (root != null && SecurityActions.isLeaf(root))
             {
                String fileName = root.getName();
                if (fileName.equals(name))
@@ -665,7 +665,7 @@ public class AbstractDeploymentContext
          if (metaDataLocation == null)
          {
             // It has to be a plain file
-            if (root != null && root.isLeaf())
+            if (root != null && SecurityActions.isLeaf(root))
             {
                String fileName = root.getName();
                if (name != null && fileName.equals(name))

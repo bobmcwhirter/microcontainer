@@ -80,7 +80,7 @@ public class JARStructure extends AbstractStructureDeployer
       String contextPath = null;
       try
       {
-         if (root.isLeaf() == false)
+         if (SecurityActions.isLeaf(root) == false)
          {
             // For non top level directories that don't look like jars
             // we require a META-INF otherwise each subdirectory would be a subdeployment

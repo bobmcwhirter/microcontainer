@@ -163,7 +163,7 @@ public class DefaultStructureBuilder
          try
          {
             // Process any Manifest Class-Path refs on the context itself
-            if( virtualFile.isLeaf() == false )
+            if( SecurityActions.isLeaf(virtualFile) == false )
                VFSUtils.addManifestLocations(virtualFile, paths);
          }
          catch(IOException ignore)

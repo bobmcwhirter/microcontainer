@@ -55,8 +55,12 @@ public class DeclaredStructure extends AbstractStructureDeployer
    {
       try
       {
-         if( root.isLeaf() == false )
+         boolean trace = log.isTraceEnabled();
+         if( SecurityActions.isLeaf(root) == false )
          {
+            boolean isJBossStructure = false;
+            if( trace )
+               log.trace(root+" is not a leaf");
             try
             {
                VirtualFile jbossStructure = root.findChild("META-INF/jboss-structure.xml");
@@ -67,13 +71,16 @@ public class DeclaredStructure extends AbstractStructureDeployer
                StructureMetaDataObjectFactory ofactory = new StructureMetaDataObjectFactory();
                unmarshaller.unmarshal(url.toString(), ofactory, metaData);
                activeMetaData.set(metaData);
+               isJBossStructure = true;
             }
             catch (IOException e)
             {
-               log.trace("... no META-INF subdirectory.");
-               return false;
+               if( trace )
+                  log.trace("... no META-INF subdirectory.");
             }
-            return true;
+            if( trace )
+               log.trace(root+" isJBossStructure: "+isJBossStructure);
+            return isJBossStructure;
          }
       }
       catch (Exception e)

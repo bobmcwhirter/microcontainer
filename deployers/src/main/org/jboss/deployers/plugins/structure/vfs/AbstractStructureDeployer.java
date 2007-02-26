@@ -131,7 +131,7 @@ public abstract class AbstractStructureDeployer implements StructureDeployer
       if( includeEntry )
          paths.add(entry);
       String rootPath = root.getPathName();
-      if( includeRootManifestCP && entry.isLeaf() == false )
+      if( includeRootManifestCP && SecurityActions.isLeaf(entry) == false )
       {
          try
          {

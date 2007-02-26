@@ -146,7 +146,7 @@ public class AbstractCandidateStructureVisitor extends AbstractVirtualFileVisito
          // Ignore directories when asked
          try
          {
-            if (ignoreDirectories && file.isLeaf() == false)
+            if (ignoreDirectories && SecurityActions.isLeaf(file) == false)
                return;
          }
          catch (IOException e)

@@ -84,7 +84,7 @@ public class WARStructure extends AbstractStructureDeployer
    {
       try
       {
-         if (root.isLeaf() == false)
+         if( SecurityActions.isLeaf(root) == false )
          {
             // We require either a WEB-INF or the name ends in .war
             if (root.getName().endsWith(".war") == false)

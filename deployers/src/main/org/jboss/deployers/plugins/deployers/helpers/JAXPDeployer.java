@@ -176,7 +176,7 @@ public abstract class JAXPDeployer<T> extends AbstractParsingDeployer<T>
       if (file == null)
          throw new IllegalArgumentException("Null file");
       
-      InputStream is = file.openStream();
+      InputStream is = SecurityActions.openStream(file);
       try
       {
          DocumentBuilder parser = getDocumentBuilderFactory().newDocumentBuilder();
