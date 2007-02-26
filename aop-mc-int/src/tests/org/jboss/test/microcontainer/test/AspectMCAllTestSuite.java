@@ -62,6 +62,7 @@ public class AspectMCAllTestSuite extends TestSuite
       suite.addTest(MetaDataTestCase.suite());
       suite.addTest(MixinTestCase.suite());
       suite.addTest(MultipleLifecycleTestCase.suite());
+      suite.addTest(ScopingAopTestCase.suite());
 
       return suite;
    }
