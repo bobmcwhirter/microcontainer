@@ -21,6 +21,7 @@
 */
 package org.jboss.test.kernel.config.test;
 
+import java.util.ArrayList;
 import java.util.Arrays;
 
 import junit.framework.Test;
@@ -53,16 +54,30 @@ public class BeanMetaDataBuilderTestCase extends AbstractKernelConfigTest
 
    public void testConstructor() throws Throwable
    {
-      Kernel kernel = bootstrap();
-
       BeanMetaDataBuilder builder = new BeanMetaDataBuilder("FromBMD", SimpleBean.class.getName());
       builder.addConstructorParameter(String.class.getName(), "TestConstructor");
       BeanMetaData beanMetaData = builder.getBeanMetaData();
-      SimpleBean fbmd = (SimpleBean)instantiateAndConfigure(kernel.getConfigurator(), beanMetaData);
+      SimpleBean fbmd = (SimpleBean)instantiateAndConfigure(beanMetaData);
 
       assertNotNull(fbmd);
       assertNotNull(fbmd.getConstructorUsed());
       assertEquals("TestConstructor", fbmd.getConstructorUsed());
+   }
+
+   public void testProperty() throws Throwable
+   {
+      BeanMetaDataBuilder builder = new BeanMetaDataBuilder("PropBMD", SimpleBean.class.getName())
+            .addPropertyMetaData("adouble", 3.1459)
+            .addPropertyMetaData("anint", "123")
+            .addPropertyMetaData("collection", new ArrayList());
+      BeanMetaData beanMetaData = builder.getBeanMetaData();
+      SimpleBean pbmd = (SimpleBean)instantiateAndConfigure(beanMetaData);
+
+      assertNotNull(pbmd);
+      assertEquals(3.1459, pbmd.getAdouble());
+      assertEquals(123, pbmd.getAnint());
+      assertNotNull(pbmd.getCollection());
+      assertTrue(pbmd.getCollection().isEmpty());
    }
 
    public void testLifecycle() throws Throwable
