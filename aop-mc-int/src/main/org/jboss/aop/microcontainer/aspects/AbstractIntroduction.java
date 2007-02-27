@@ -33,35 +33,42 @@ import org.jboss.kernel.spi.dependency.KernelControllerContext;
  *
  * @author <a href="mailto:ales.justin@jboss.com">Ales Justin</a>
  */
-public abstract class AbstractIntroduction implements Interceptor
+public abstract class AbstractIntroduction<T extends Annotation> implements Interceptor
 {
    public String getName()
    {
       return getClass().getName();
    }
 
-   protected abstract Class<? extends Annotation> getBindingAnnotation();
+   protected abstract Class<T> getBindingAnnotation();
 
    protected boolean isBindingInfoPresent(Invocation invocation)
    {
       return invocation.resolveClassAnnotation(getBindingAnnotation()) != null;
    }
 
-   protected void onRegistration(Invocation invocation, KernelControllerContext context)
+   protected T resolveBindingInfo(Invocation invocation)
    {
-      onRegistration(context);
+      Class<T> bindingClass = getBindingAnnotation();
+      Object bindingInfo = invocation.resolveClassAnnotation(bindingClass);
+      return bindingClass.cast(bindingInfo);
    }
 
-   protected void onRegistration(KernelControllerContext context)
+   protected void onRegistration(Invocation invocation, KernelControllerContext context)
+   {
+      onRegistration(context, resolveBindingInfo(invocation));
+   }
+
+   protected void onRegistration(KernelControllerContext context, T annotation)
    {
    }
 
    protected void onUnregistration(Invocation invocation, KernelControllerContext context)
    {
-      onUnregistration(context);
+      onUnregistration(context, resolveBindingInfo(invocation));
    }
 
-   protected void onUnregistration(KernelControllerContext context)
+   protected void onUnregistration(KernelControllerContext context, T annotation)
    {
    }
 
