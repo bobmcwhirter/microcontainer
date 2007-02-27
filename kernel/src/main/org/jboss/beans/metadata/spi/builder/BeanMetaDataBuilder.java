@@ -47,6 +47,7 @@ import org.jboss.beans.metadata.spi.DemandMetaData;
 import org.jboss.beans.metadata.spi.DependencyMetaData;
 import org.jboss.beans.metadata.spi.PropertyMetaData;
 import org.jboss.beans.metadata.spi.SupplyMetaData;
+import org.jboss.beans.metadata.spi.ValueMetaData;
 import org.jboss.dependency.spi.ControllerMode;
 
 /**
@@ -130,14 +131,34 @@ public class BeanMetaDataBuilder
 
    public BeanMetaDataBuilder addPropertyMetaData(String name, Object value)
    {
+      Set<PropertyMetaData> properties = getProperties();
+      properties.add(new AbstractPropertyMetaData(name, value));
+      return this;
+   }
+
+   public BeanMetaDataBuilder addPropertyMetaData(String name, String value)
+   {
+      Set<PropertyMetaData> properties = getProperties();
+      properties.add(new AbstractPropertyMetaData(name, value));
+      return this;
+   }
+
+   public BeanMetaDataBuilder addPropertyMetaData(String name, ValueMetaData value)
+   {
+      Set<PropertyMetaData> properties = getProperties();
+      properties.add(new AbstractPropertyMetaData(name, value));
+      return this;
+   }
+
+   private Set<PropertyMetaData> getProperties()
+   {
       Set<PropertyMetaData> properties = beanMetaData.getProperties();
       if (properties == null)
       {
          properties = new HashSet<PropertyMetaData>();
          beanMetaData.setProperties(properties);
       }
-      properties.add(new AbstractPropertyMetaData(name, value));
-      return this;
+      return properties;
    }
 
    public BeanMetaDataBuilder setCreate(String methodName)
