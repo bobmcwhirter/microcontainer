@@ -40,6 +40,7 @@ import org.jboss.logging.Logger;
  * or even the basic xml parsing. 
  * @author <a href="adrian@jboss.com">Adrian Brock</a>
  * @version $Revision$
+ * @deprecated Should use JMXLifecycleCallback instead
  */
 public class JMXIntroduction implements Interceptor
 {

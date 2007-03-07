@@ -25,6 +25,7 @@ import java.util.List;
 import java.util.Set;
 
 import org.jboss.dependency.spi.ControllerMode;
+import org.jboss.dependency.spi.ControllerState;
 
 /**
  * Metadata about a bean.
@@ -161,9 +162,23 @@ public interface BeanMetaData extends FeatureMetaData, ValueMetaData
    List<InstallMetaData> getInstalls();
 
    /**
-    * Get the uninstallation oeprations.
+    * Get the uninstallation operations.
     * 
     * @return List<InstallMetaData>
     */
    List<InstallMetaData> getUninstalls();
+   
+   /**
+    * Get the lifecycle callbacks.
+    * 
+    * @return List<LifecycleCallbackMetaData>
+    */
+   List<LifecycleCallbackMetaData> getLifecycleCallbacks();
+   
+   /**
+    * Get the lifecycle callbacks for a particular state.
+    * 
+    * @return List<LifecycleCallbackMetaData>
+    */
+   List<LifecycleCallbackMetaData> getLifecycleCallbacks(ControllerState state);
 }

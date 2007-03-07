@@ -10,9 +10,8 @@
 
    <aop:lifecycle-configure xmlns:aop="urn:jboss:aop-beans:1.0"
       name="DependencyAdvice"
-      class="org.jboss.aop.microcontainer.aspects.jndi.JndiIntroduction"
-      classes="@org.jboss.aop.microcontainer.aspects.jndi.JndiBinding"
-      pointcut="execution(* @org.jboss.aop.microcontainer.aspects.jndi.JndiBinding->$implements{org.jboss.kernel.spi.dependency.KernelControllerContextAware}(..))">
+      class="org.jboss.aop.microcontainer.aspects.jndi.JndiLifecycleCallback"
+      classes="@org.jboss.aop.microcontainer.aspects.jndi.JndiBinding">
       <property name="env">
          <map class="java.util.Properties" keyClass="java.lang.String" valueClass="java.lang.String">
             <entry><key>java.naming.factory.initial</key><value>org.jboss.test.microcontainer.support.jndi.MockInitialContextFactory</value></entry>

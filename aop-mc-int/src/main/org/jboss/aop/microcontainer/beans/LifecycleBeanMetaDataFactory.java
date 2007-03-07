@@ -21,30 +21,46 @@
 */ 
 package org.jboss.aop.microcontainer.beans;
 
+import java.util.ArrayList;
+import java.util.HashSet;
+import java.util.Iterator;
 import java.util.List;
 
 import org.jboss.beans.metadata.plugins.AbstractBeanMetaData;
-import org.jboss.beans.metadata.plugins.AbstractListMetaData;
-import org.jboss.beans.metadata.plugins.AbstractPropertyMetaData;
-import org.jboss.beans.metadata.plugins.StringValueMetaData;
+import org.jboss.beans.metadata.plugins.AbstractDependencyValueMetaData;
+import org.jboss.beans.metadata.plugins.factory.GenericBeanFactoryMetaData;
 import org.jboss.beans.metadata.spi.BeanMetaData;
 import org.jboss.beans.metadata.spi.BeanMetaDataFactory;
-import org.jboss.beans.metadata.spi.ValueMetaData;
+import org.jboss.beans.metadata.spi.MetaDataVisitorNode;
+import org.jboss.beans.metadata.spi.PropertyMetaData;
+import org.jboss.dependency.spi.ControllerState;
 
 /**
  * 
  * @author <a href="kabir.khan@jboss.com">Kabir Khan</a>
  * @version $Revision: 1.1 $
  */
-public abstract class LifecycleBeanMetaDataFactory extends AspectBeanMetaDataFactory implements BeanMetaDataFactory
+public abstract class LifecycleBeanMetaDataFactory extends GenericBeanFactoryMetaData
+implements BeanMetaDataFactory
 {
    private static final long serialVersionUID = 1L;
 
    private String classes;
+   private String expr;
+   private String installMethod;
+   private String uninstallMethod;
 
-   public String getClasses()
+   AspectBeanMetaDataUtil util = new AspectBeanMetaDataUtil();
+   HashSet<PropertyMetaData> properties = new HashSet<PropertyMetaData>();
+
+   public void setManagerBean(String managerBean)
    {
-      return classes;
+      util.setManagerBean(managerBean);
+   }
+
+   public void setManagerProperty(String aspectManagerProperty)
+   {
+      util.setManagerProperty(aspectManagerProperty);
    }
 
    public void setClasses(String classes)
@@ -52,29 +68,106 @@ public abstract class LifecycleBeanMetaDataFactory extends AspectBeanMetaDataFac
       this.classes = classes;
    }
    
+   public void setExpr(String classes)
+   {
+      this.expr = classes;
+   }
+   
+   public void setInstallMethod(String installMethod)
+   {
+      this.installMethod = installMethod;
+   }
+
+   public void setUninstallMethod(String uninstallMethod)
+   {
+      this.uninstallMethod = uninstallMethod;
+   }
+
+   protected abstract ControllerState getState();
+
    public List<BeanMetaData> getBeans()
    {
-      List<BeanMetaData> beans = super.getBeans();
+      ArrayList<BeanMetaData> result = new ArrayList<BeanMetaData>();
 
-      String aspectBindingName = name + "$IntroductionBinding";
-      AbstractBeanMetaData introductionBinding = new AbstractBeanMetaData();
-      introductionBinding.setName(aspectBindingName);
-      introductionBinding.setBean("org.jboss.aop.microcontainer.beans.IntroductionBinding");
-      introductionBinding.addProperty(getAspectManagerPropertyMetaData("manager"));
-      introductionBinding.addProperty(new AbstractPropertyMetaData("interfaces", getInterfaces()));
-      introductionBinding.addProperty(new AbstractPropertyMetaData("classes", getClasses()));
-      beans.add(introductionBinding);
+      //Do not include the bean factory here, just install the bean directly and the binding 
+      AbstractBeanMetaData lifecycle = new AbstractBeanMetaData();
+      lifecycle.setName(name);
+      lifecycle.setBean(getBeanClass());
+      for (PropertyMetaData pmd : properties)
+      {
+         lifecycle.addProperty(pmd);   
+      }
+      lifecycle.setDepends(getDepends());
+      result.add(lifecycle);
       
-      return beans;
+      
+      String aspectBindingName = name + "$AspectBinding";
+      AbstractBeanMetaData aspectBinding = new AbstractBeanMetaData();
+      aspectBinding.setName(aspectBindingName);
+      aspectBinding.setBean(LifecycleBinding.class.getName());
+
+      util.setSimpleProperty(aspectBinding, "callbackBean", name);
+      util.setAspectManagerProperty(aspectBinding, "manager");
+      if (expr != null)
+      {
+         util.setSimpleProperty(aspectBinding, "expr", expr);
+      }
+      else if (classes != null) 
+      {
+         util.setSimpleProperty(aspectBinding, "classes", classes);         
+      }
+      util.setSimpleProperty(aspectBinding, "state", getState());
+      if (installMethod != null)
+      {
+         util.setSimpleProperty(aspectBinding, "installMethod", installMethod);
+      }
+      if (uninstallMethod != null)
+      {
+         util.setSimpleProperty(aspectBinding, "uninstallMethod", uninstallMethod);
+      }
+      result.add(aspectBinding);
+      
+      return result;
    }
-   
-   private ValueMetaData getInterfaces()
+
+
+   protected boolean hasInjectedBeans()
    {
-      AbstractListMetaData interfaces = new AbstractListMetaData();
-      interfaces.setElementType("java.lang.String");
-      interfaces.add(new StringValueMetaData(getControllerInterface()));
-      return interfaces;
+      ArrayList<AbstractDependencyValueMetaData> dependencies = new ArrayList<AbstractDependencyValueMetaData>();
+      getDependencies(dependencies, this);
+      
+      for (AbstractDependencyValueMetaData dep : dependencies)
+      {
+         if(!((String)dep.getValue()).startsWith("jboss.kernel:service="))
+         {
+            return true;
+         }
+      }
+      return false;
    }
-   
-   protected abstract String getControllerInterface();
+
+   private void getDependencies(ArrayList<AbstractDependencyValueMetaData> dependencies, MetaDataVisitorNode node)
+   {
+      Iterator children = node.getChildren();
+      
+      if (children != null)
+      {
+         while (children.hasNext())
+         {
+            MetaDataVisitorNode child = (MetaDataVisitorNode)children.next();
+            if (child instanceof AbstractDependencyValueMetaData)
+            {
+               dependencies.add((AbstractDependencyValueMetaData)child);
+            }
+            getDependencies(dependencies, child);
+         }
+      }
+   }
+
+   @Override
+   public void addBeanProperty(PropertyMetaData property)
+   {
+      properties.add(property);
+   }
+
 }

@@ -21,6 +21,8 @@
 */ 
 package org.jboss.aop.microcontainer.beans;
 
+import org.jboss.dependency.spi.ControllerState;
+
 /**
  * 
  * @author <a href="kabir.khan@jboss.com">Kabir Khan</a>
@@ -31,8 +33,14 @@ public class InstallLifecycleBeanMetaDataFactory extends LifecycleBeanMetaDataFa
    private static final long serialVersionUID = 1L;
 
    @Override
-   protected String getControllerInterface()
+   protected ControllerState getState()
    {
-      return "org.jboss.kernel.spi.dependency.InstallKernelControllerContextAware";
+      return ControllerState.INSTALLED;
    }
+
+//   @Override
+//   protected String getControllerInterface()
+//   {
+//      return "org.jboss.kernel.spi.dependency.InstallKernelControllerContextAware";
+//   }
 }

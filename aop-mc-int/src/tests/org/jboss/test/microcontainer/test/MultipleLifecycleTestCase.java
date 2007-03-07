@@ -29,6 +29,7 @@ import javax.management.ObjectName;
 import junit.framework.Test;
 
 import org.jboss.aop.microcontainer.junit.AOPMicrocontainerTest;
+import org.jboss.test.microcontainer.support.SimpleLifecycleCallback;
 
 /**
  * 
@@ -59,5 +60,8 @@ public class MultipleLifecycleTestCase extends AOPMicrocontainerTest
       MBeanOperationInfo[] ops = info.getOperations();
       assertEquals(1, ops.length);
       assertEquals("someMethod", ops[0].getName());
+      
+      assertNotNull(SimpleLifecycleCallback.interceptions);
+      assertEquals(1, SimpleLifecycleCallback.interceptions.size());
    }
 }

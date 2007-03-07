@@ -24,10 +24,7 @@ package org.jboss.kernel.plugins.dependency;
 import java.util.List;
 
 import org.jboss.beans.info.spi.BeanInfo;
-import org.jboss.beans.metadata.spi.BeanMetaData;
-import org.jboss.dependency.plugins.AbstractDependencyItem;
-import org.jboss.dependency.spi.ControllerState;
-import org.jboss.dependency.spi.DependencyInfo;
+import org.jboss.classadapter.spi.DependencyBuilderListItem;
 import org.jboss.kernel.spi.dependency.KernelController;
 import org.jboss.kernel.spi.dependency.KernelControllerContext;
 import org.jboss.kernel.spi.metadata.KernelMetaDataRepository;
@@ -49,17 +46,14 @@ public class DescribeAction extends KernelControllerContextAction
          KernelController controller = (KernelController)context.getController();
          KernelMetaDataRepository repository = controller.getKernel().getMetaDataRepository();
          MetaData md = repository.getMetaData(context);
-         DependencyInfo depends = context.getDependencyInfo();
          // add custom dependencies (e.g. AOP layer).
          List<Object> dependencies = info.getDependencies(md);
          log.trace("Extra dependencies for " + context.getName() + " " + dependencies);
          if (dependencies != null)
          {
-            BeanMetaData metaData = context.getBeanMetaData();
-            for (Object dependencyName : dependencies)
+            for (Object dependencyItem : dependencies)
             {
-               AbstractDependencyItem dependency = new AbstractDependencyItem(metaData.getName(), dependencyName, ControllerState.INSTANTIATED, ControllerState.INSTALLED);
-               depends.addIDependOn(dependency);
+               ((DependencyBuilderListItem)dependencyItem).addDependency(context);
             }
          }
       }

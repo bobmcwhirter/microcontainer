@@ -36,6 +36,7 @@ import org.jboss.beans.metadata.spi.ConstructorMetaData;
 import org.jboss.beans.metadata.spi.DemandMetaData;
 import org.jboss.beans.metadata.spi.DependencyMetaData;
 import org.jboss.beans.metadata.spi.InstallMetaData;
+import org.jboss.beans.metadata.spi.LifecycleCallbackMetaData;
 import org.jboss.beans.metadata.spi.LifecycleMetaData;
 import org.jboss.beans.metadata.spi.MetaDataVisitor;
 import org.jboss.beans.metadata.spi.MetaDataVisitorNode;
@@ -54,7 +55,7 @@ import org.jboss.util.JBossStringBuilder;
 
 /**
  * Metadata for a bean.
- * 
+ *
  * @author <a href="adrian@jboss.com">Adrian Brock</a>
  * @version $Revision$
  */
@@ -62,6 +63,8 @@ public class AbstractBeanMetaData extends AbstractFeatureMetaData
    implements BeanMetaData, BeanMetaDataFactory, Serializable
 {
    private static final long serialVersionUID = 1L;
+
+   private static final List<LifecycleCallbackMetaData> EMPTY_LIFECYCLE_CALLBACKS = Collections.unmodifiableList(new ArrayList<LifecycleCallbackMetaData>());
 
    /** The bean fully qualified class name */
    protected String bean;
@@ -88,9 +91,7 @@ public class AbstractBeanMetaData extends AbstractFeatureMetaData
    protected LifecycleMetaData start;
 
    /** The stop lifecycle */
-   protected LifecycleMetaData stop;
-
-   /** The destroy lifecycle */
+   protected LifecycleMetaData stop;   /** The destroy lifecycle */
    protected LifecycleMetaData destroy;
 
    /** What the bean demands Set<DemandMetaData> */
@@ -108,6 +109,9 @@ public class AbstractBeanMetaData extends AbstractFeatureMetaData
    /** The uninstall operations List<InstallMetaData> */
    protected List<InstallMetaData> uninstalls;
 
+   /** The uninstall operations List<LifecycleCallbackMetaData> */
+   protected List<LifecycleCallbackMetaData> lifecycleCallbacks;
+
    /** The context */
    protected transient ControllerContext context;
 
@@ -121,7 +125,7 @@ public class AbstractBeanMetaData extends AbstractFeatureMetaData
 
    /**
     * Create a new bean meta data
-    * 
+    *
     * @param bean the bean class name
     */
    public AbstractBeanMetaData(String bean)
@@ -130,7 +134,7 @@ public class AbstractBeanMetaData extends AbstractFeatureMetaData
    }
    /**
     * Create a new bean meta data
-    * 
+    *
     * @param name the name
     * @param bean the bean class name
     */
@@ -192,7 +196,7 @@ public class AbstractBeanMetaData extends AbstractFeatureMetaData
 
    /**
     * Set the bean class name and flush the object cache.
-    * 
+    *
     * @param bean The bean class name to set.
     */
    public void setBean(String bean)
@@ -203,7 +207,7 @@ public class AbstractBeanMetaData extends AbstractFeatureMetaData
 
    /**
     * Get a property
-    * 
+    *
     * @param name the name
     * @return the property name
     */
@@ -224,7 +228,7 @@ public class AbstractBeanMetaData extends AbstractFeatureMetaData
 
    /**
     * Add a property
-    * 
+    *
     * @param property the property
     */
    public void addProperty(PropertyMetaData property)
@@ -239,7 +243,7 @@ public class AbstractBeanMetaData extends AbstractFeatureMetaData
 
    /**
     * Set the propertiess.
-    * 
+    *
     * @param properties Set<PropertyMetaData>
     */
    public void setProperties(Set<PropertyMetaData> properties)
@@ -260,7 +264,7 @@ public class AbstractBeanMetaData extends AbstractFeatureMetaData
 
    /**
     * Set the constructor
-    * 
+    *
     * @param constructor the constructor metadata
     */
    public void setConstructor(ConstructorMetaData constructor)
@@ -270,7 +274,7 @@ public class AbstractBeanMetaData extends AbstractFeatureMetaData
 
    /**
     * Set what the bean demands.
-    * 
+    *
     * @param demands Set<DemandMetaData>
     */
    public void setDemands(Set<DemandMetaData> demands)
@@ -281,7 +285,7 @@ public class AbstractBeanMetaData extends AbstractFeatureMetaData
 
    /**
     * Set what the bean supplies.
-    * 
+    *
     * @param supplies Set<SupplyMetaData>
     */
    public void setSupplies(Set<SupplyMetaData> supplies)
@@ -292,7 +296,7 @@ public class AbstractBeanMetaData extends AbstractFeatureMetaData
 
    /**
     * Set what the bean depends.
-    * 
+    *
     * @param depends Set<DependencyMetaData>
     */
    public void setDepends(Set<DependencyMetaData> depends)
@@ -308,7 +312,7 @@ public class AbstractBeanMetaData extends AbstractFeatureMetaData
 
    /**
     * Set the name.
-    * 
+    *
     * @param name The name to set.
     */
    public void setName(String name)
@@ -345,7 +349,7 @@ public class AbstractBeanMetaData extends AbstractFeatureMetaData
 
    /**
     * Set the lifecycle metadata
-    * 
+    *
     * @param lifecycle the lifecycle metadata
     */
    public void setCreate(LifecycleMetaData lifecycle)
@@ -361,7 +365,7 @@ public class AbstractBeanMetaData extends AbstractFeatureMetaData
 
    /**
     * Set the start metadata
-    * 
+    *
     * @param lifecycle the lifecycle metadata
     */
    public void setStart(LifecycleMetaData lifecycle)
@@ -377,7 +381,7 @@ public class AbstractBeanMetaData extends AbstractFeatureMetaData
 
    /**
     * Set the stop metadata
-    * 
+    *
     * @param lifecycle the lifecycle metadata
     */
    public void setStop(LifecycleMetaData lifecycle)
@@ -393,7 +397,7 @@ public class AbstractBeanMetaData extends AbstractFeatureMetaData
 
    /**
     * Set the destroy metadata
-    * 
+    *
     * @param lifecycle the lifecycle metadata
     */
    public void setDestroy(LifecycleMetaData lifecycle)
@@ -422,9 +426,20 @@ public class AbstractBeanMetaData extends AbstractFeatureMetaData
       return installs;
    }
 
+   public List<LifecycleCallbackMetaData> getLifecycleCallbacks()
+   {
+      return lifecycleCallbacks;
+   }
+
+   public void setLifecycleCallbacks(List<LifecycleCallbackMetaData> lifecycleCallbacks)
+   {
+      this.lifecycleCallbacks = lifecycleCallbacks;
+      flushJBossObjectCache();
+   }
+
    /**
     * Set the installs
-    * 
+    *
     * @param installs List<InstallMetaData>
     */
    public void setInstalls(List<InstallMetaData> installs)
@@ -440,7 +455,7 @@ public class AbstractBeanMetaData extends AbstractFeatureMetaData
 
    /**
     * Set the uninstalls
-    * 
+    *
     * @param uninstalls List<InstallMetaData>
     */
    public void setUninstalls(List<InstallMetaData> uninstalls)
@@ -493,6 +508,8 @@ public class AbstractBeanMetaData extends AbstractFeatureMetaData
          children.addAll(installs);
       if (uninstalls != null)
          children.addAll(uninstalls);
+      if (lifecycleCallbacks != null)
+         children.addAll(lifecycleCallbacks);
    }
 
    public Class getType(MetaDataVisitor visitor, MetaDataVisitorNode previous) throws Throwable
@@ -571,6 +588,32 @@ public class AbstractBeanMetaData extends AbstractFeatureMetaData
          buffer.append(" uninstalls=");
          JBossObject.list(buffer, uninstalls);
       }
+      if (lifecycleCallbacks != null)
+      {
+         buffer.append(" lifecycleCallbacks=");
+         JBossObject.list(buffer, lifecycleCallbacks);
+      }
+   }
+
+   public List<LifecycleCallbackMetaData> getLifecycleCallbacks(ControllerState state)
+   {
+      List<LifecycleCallbackMetaData> callbacks = EMPTY_LIFECYCLE_CALLBACKS;
+      List<LifecycleCallbackMetaData> allCallbacks = getLifecycleCallbacks();
+      if (allCallbacks != null && allCallbacks.size() > 0)
+      {
+         for (LifecycleCallbackMetaData lifecycleCallback : allCallbacks)
+         {
+            if (lifecycleCallback.getWhenRequired().equals(state))
+            {
+               if (callbacks == EMPTY_LIFECYCLE_CALLBACKS)
+               {
+                  callbacks = new ArrayList<LifecycleCallbackMetaData>();
+               }
+               callbacks.add(lifecycleCallback);
+            }
+         }
+      }
+      return callbacks;
    }
 
    public void toShortString(JBossStringBuilder buffer)

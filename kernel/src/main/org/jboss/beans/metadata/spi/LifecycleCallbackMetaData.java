@@ -19,28 +19,45 @@
 * Software Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA
 * 02110-1301 USA, or see the FSF site: http://www.fsf.org.
 */ 
-package org.jboss.aop.microcontainer.beans;
+package org.jboss.beans.metadata.spi;
 
 import org.jboss.dependency.spi.ControllerState;
+import org.jboss.util.JBossInterface;
 
 /**
+ * Metadata about lifecycle callbacks
  * 
  * @author <a href="kabir.khan@jboss.com">Kabir Khan</a>
  * @version $Revision: 1.1 $
  */
-public class InstantiateLifecycleBeanMetaDataFactory extends LifecycleBeanMetaDataFactory
+public interface LifecycleCallbackMetaData extends JBossInterface, MetaDataVisitorNode
 {
-   private static final long serialVersionUID = 1L;
+   /**
+    * Get the target state of the bean this callback applies to indicating when this callback should trigger
+    * @return the state 
+    */
+   ControllerState getWhenRequired();
+   
+   /**
+    * The required state of the lifecycle callback bean
+    */
+   ControllerState getDependentState();
+   
+   /**
+    * Get the bean this callback should be made on
+    * @return the state 
+    */
+   String getBean();
 
-   @Override
-   protected ControllerState getState()
-   {
-      return ControllerState.INSTANTIATED;
-   }
+   /**
+    * Get the method on the bean that should be called when reaching the required state on installation
+    */
+   public String getInstallMethod();
 
-//   @Override
-//   protected String getControllerInterface()
-//   {
-//      return "org.jboss.kernel.spi.dependency.InstantiateKernelControllerContextAware";
-//   }
+
+   /**
+    * Get the method on the bean that should be called when reaching the required state on uninstallation
+    */
+   public String getUninstallMethod();
+
 }

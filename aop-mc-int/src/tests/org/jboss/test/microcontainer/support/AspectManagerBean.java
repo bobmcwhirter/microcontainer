@@ -19,28 +19,21 @@
 * Software Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA
 * 02110-1301 USA, or see the FSF site: http://www.fsf.org.
 */ 
-package org.jboss.aop.microcontainer.beans;
+package org.jboss.test.microcontainer.support;
 
-import org.jboss.dependency.spi.ControllerState;
+import org.jboss.aop.AspectManager;
 
 /**
  * 
  * @author <a href="kabir.khan@jboss.com">Kabir Khan</a>
  * @version $Revision: 1.1 $
  */
-public class InstantiateLifecycleBeanMetaDataFactory extends LifecycleBeanMetaDataFactory
+public class AspectManagerBean
 {
-   private static final long serialVersionUID = 1L;
-
-   @Override
-   protected ControllerState getState()
+   AspectManager manager = AspectManager.instance();
+   
+   public AspectManager getManager()
    {
-      return ControllerState.INSTANTIATED;
+      return manager;
    }
-
-//   @Override
-//   protected String getControllerInterface()
-//   {
-//      return "org.jboss.kernel.spi.dependency.InstantiateKernelControllerContextAware";
-//   }
 }

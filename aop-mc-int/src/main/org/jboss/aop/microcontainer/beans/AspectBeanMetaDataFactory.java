@@ -37,7 +37,6 @@ import org.jboss.beans.metadata.spi.BeanMetaDataFactory;
 import org.jboss.beans.metadata.spi.InstallMetaData;
 import org.jboss.beans.metadata.spi.MetaDataVisitorNode;
 import org.jboss.beans.metadata.spi.ParameterMetaData;
-import org.jboss.beans.metadata.spi.PropertyMetaData;
 
 /**
  * AspectBeanMetaDataFactory.
@@ -50,20 +49,23 @@ public class AspectBeanMetaDataFactory extends GenericBeanFactoryMetaData
 {
    private static final long serialVersionUID = 1L;
 
-   /** Unless specified use the bean with this name as the aspect manager */
-   final static String DEFAULT_ASPECT_MANAGER = "AspectManager";
-   
    /** The pointcut */
    private String pointcut;
    
-   /** The bean name of the aspect manager to use */
-   private String managerBean = DEFAULT_ASPECT_MANAGER;
-   
-   /** The property of the aspect manager bean, if any, containing the aspect manager */
-   private String managerProperty;
-   
    private String adviceMethod;
    
+   AspectBeanMetaDataUtil util = new AspectBeanMetaDataUtil();
+
+   public void setManagerBean(String managerBean)
+   {
+      util.setManagerBean(managerBean);
+   }
+
+   public void setManagerProperty(String aspectManagerProperty)
+   {
+      util.setManagerProperty(aspectManagerProperty);
+   }
+
    /**
     * Get the pointcut.
     * 
@@ -85,26 +87,6 @@ public class AspectBeanMetaDataFactory extends GenericBeanFactoryMetaData
    }
 
 
-   public String getManager()
-   {
-      return managerBean;
-   }
-
-   public void setManagerBean(String managerBean)
-   {
-      this.managerBean = managerBean;
-   }
-
-   public String getManagerProperty()
-   {
-      return managerProperty;
-   }
-
-   public void setManagerProperty(String aspectManagerProperty)
-   {
-      this.managerProperty = aspectManagerProperty;
-   }   
-   
    public String getAdviceMethod()
    {
       return adviceMethod;
@@ -115,6 +97,11 @@ public class AspectBeanMetaDataFactory extends GenericBeanFactoryMetaData
       this.adviceMethod = adviceMethod;
    }
 
+   /**
+    * See http://www.jboss.com/index.html?module=bb&op=viewtopic&t=79719&start=20
+    * for a description of the beans created
+    */
+   @Override
    public List<BeanMetaData> getBeans()
    {
       ArrayList<BeanMetaData> result = new ArrayList<BeanMetaData>();
@@ -125,20 +112,20 @@ public class AspectBeanMetaDataFactory extends GenericBeanFactoryMetaData
       String aspectName = name + "$Aspect";
       AbstractBeanMetaData aspect = new AbstractBeanMetaData();
       aspect.setName(aspectName);
-      aspect.setBean("org.jboss.aop.microcontainer.beans.Aspect");
-      aspect.addProperty(getAspectManagerPropertyMetaData("manager"));
+      aspect.setBean(Aspect.class.getName());
+      util.setAspectManagerProperty(aspect, "manager");
       result.add(aspect);
       
       String aspectBindingName = name + "$AspectBinding";
       AbstractBeanMetaData aspectBinding = new AbstractBeanMetaData();
       aspectBinding.setName(aspectBindingName);
-      aspectBinding.setBean("org.jboss.aop.microcontainer.beans.AspectBinding");
-      aspectBinding.addProperty(new AbstractPropertyMetaData("pointcut", pointcut));
-      aspectBinding.addProperty(new AbstractPropertyMetaData("aspect", new AbstractDependencyValueMetaData(aspectName, "definition")));
-      aspectBinding.addProperty(getAspectManagerPropertyMetaData("manager"));
+      aspectBinding.setBean(AspectBinding.class.getName());
+      util.setSimpleProperty(aspectBinding, "pointcut", pointcut);
+      util.setDependencyProperty(aspectBinding, "aspect", aspectName, "definition");
+      util.setAspectManagerProperty(aspectBinding, "manager");
       if (adviceMethod != null)
       {
-         aspectBinding.addProperty(new AbstractPropertyMetaData("method", adviceMethod));
+         util.setSimpleProperty(aspectBinding, "method", adviceMethod);
       }
       result.add(aspectBinding);
       
@@ -153,11 +140,6 @@ public class AspectBeanMetaDataFactory extends GenericBeanFactoryMetaData
       
       
       return result;
-   }
-   
-   protected PropertyMetaData getAspectManagerPropertyMetaData(String name)
-   {
-      return new AbstractPropertyMetaData(name, new AbstractDependencyValueMetaData(managerBean, managerProperty));
    }
    
    private void configureWithDependencies(AbstractBeanMetaData aspect, AbstractBeanMetaData aspectBinding)

@@ -14,44 +14,38 @@
 
    <aop:lifecycle-configure xmlns:aop="urn:jboss:aop-beans:1.0"
                name="ConfigureAdvice"
-               class="org.jboss.test.microcontainer.support.LifecycleInterceptor"
-               classes="@org.jboss.test.microcontainer.support.Configure"
-               pointcut="execution(* @org.jboss.test.microcontainer.support.Configure->$implements{org.jboss.kernel.spi.dependency.KernelControllerContextAware}(..))">
+               class="org.jboss.test.microcontainer.support.LifecycleCallback"
+               classes="@org.jboss.test.microcontainer.support.Configure">
    </aop:lifecycle-configure>
 
    <aop:lifecycle-create xmlns:aop="urn:jboss:aop-beans:1.0"
                name="CreateAdvice"
-               class="org.jboss.test.microcontainer.support.LifecycleInterceptor"
-               classes="@org.jboss.test.microcontainer.support.Create"
-               pointcut="execution(* @org.jboss.test.microcontainer.support.Create->$implements{org.jboss.kernel.spi.dependency.KernelControllerContextAware}(..))">
+               class="org.jboss.test.microcontainer.support.LifecycleCallback"
+               classes="@org.jboss.test.microcontainer.support.Create">
    </aop:lifecycle-create>
 
    <aop:lifecycle-describe xmlns:aop="urn:jboss:aop-beans:1.0"
                name="DescribeAdvice"
-               class="org.jboss.test.microcontainer.support.LifecycleInterceptor"
-               classes="@org.jboss.test.microcontainer.support.Describe"
-               pointcut="execution(* @org.jboss.test.microcontainer.support.Describe->$implements{org.jboss.kernel.spi.dependency.KernelControllerContextAware}(..))">
+               class="org.jboss.test.microcontainer.support.LifecycleCallback"
+               classes="@org.jboss.test.microcontainer.support.Describe">
    </aop:lifecycle-describe>
 
    <aop:lifecycle-install xmlns:aop="urn:jboss:aop-beans:1.0"
                name="InstallAdvice"
-               class="org.jboss.test.microcontainer.support.LifecycleInterceptor"
-               classes="@org.jboss.test.microcontainer.support.Install"
-               pointcut="execution(* @org.jboss.test.microcontainer.support.Install->$implements{org.jboss.kernel.spi.dependency.KernelControllerContextAware}(..))">
+               class="org.jboss.test.microcontainer.support.LifecycleCallback"
+               classes="@org.jboss.test.microcontainer.support.Install">
    </aop:lifecycle-install>
 
    <aop:lifecycle-instantiate xmlns:aop="urn:jboss:aop-beans:1.0"
                name="InstantiateAdvice"
-               class="org.jboss.test.microcontainer.support.LifecycleInterceptor"
-               classes="@org.jboss.test.microcontainer.support.Instantiate"
-               pointcut="execution(* @org.jboss.test.microcontainer.support.Instantiate->$implements{org.jboss.kernel.spi.dependency.KernelControllerContextAware}(..))">
+               class="org.jboss.test.microcontainer.support.LifecycleCallback"
+               classes="@org.jboss.test.microcontainer.support.Instantiate">
    </aop:lifecycle-instantiate>
 
    <aop:lifecycle-start xmlns:aop="urn:jboss:aop-beans:1.0"
                name="StartAdvice"
-               class="org.jboss.test.microcontainer.support.LifecycleInterceptor"
-               classes="@org.jboss.test.microcontainer.support.Start"
-               pointcut="execution(* @org.jboss.test.microcontainer.support.Start->$implements{org.jboss.kernel.spi.dependency.KernelControllerContextAware}(..))">
+               class="org.jboss.test.microcontainer.support.LifecycleCallback"
+               classes="@org.jboss.test.microcontainer.support.Start">
    </aop:lifecycle-start>
 
    <bean name="ConfigureBean" class="org.jboss.test.microcontainer.support.SimpleBeanImpl">

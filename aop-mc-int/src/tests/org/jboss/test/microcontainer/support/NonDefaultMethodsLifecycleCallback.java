@@ -19,28 +19,45 @@
 * Software Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA
 * 02110-1301 USA, or see the FSF site: http://www.fsf.org.
 */ 
-package org.jboss.aop.microcontainer.beans;
+package org.jboss.test.microcontainer.support;
 
-import org.jboss.dependency.spi.ControllerState;
+import org.jboss.kernel.spi.dependency.KernelControllerContext;
 
 /**
  * 
  * @author <a href="kabir.khan@jboss.com">Kabir Khan</a>
  * @version $Revision: 1.1 $
  */
-public class InstantiateLifecycleBeanMetaDataFactory extends LifecycleBeanMetaDataFactory
+public class NonDefaultMethodsLifecycleCallback
 {
-   private static final long serialVersionUID = 1L;
-
-   @Override
-   protected ControllerState getState()
+   public static boolean inited;
+   public static boolean uninited;
+   
+   public void install(KernelControllerContext context)
    {
-      return ControllerState.INSTANTIATED;
+      throw new IllegalStateException("install should not have been called");
+   }
+   
+   public void uninstall(KernelControllerContext context)
+   {
+      throw new IllegalStateException("uninstall should not have been called");      
    }
 
-//   @Override
-//   protected String getControllerInterface()
-//   {
-//      return "org.jboss.kernel.spi.dependency.InstantiateKernelControllerContextAware";
-//   }
+   public void init(KernelControllerContext context)
+   {
+      if (inited)
+      {
+         throw new IllegalStateException("Has already been installed");
+      }
+      inited = true;
+   }
+   
+   public void uninit(KernelControllerContext context)
+   {
+      if (uninited)
+      {
+         throw new IllegalStateException("Has already been uninstalled");
+      }
+      uninited = true;
+   }
 }

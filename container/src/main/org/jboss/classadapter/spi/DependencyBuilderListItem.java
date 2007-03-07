@@ -19,28 +19,15 @@
 * Software Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA
 * 02110-1301 USA, or see the FSF site: http://www.fsf.org.
 */ 
-package org.jboss.aop.microcontainer.beans;
-
-import org.jboss.dependency.spi.ControllerState;
+package org.jboss.classadapter.spi;
 
 /**
  * 
  * @author <a href="kabir.khan@jboss.com">Kabir Khan</a>
  * @version $Revision: 1.1 $
  */
-public class InstantiateLifecycleBeanMetaDataFactory extends LifecycleBeanMetaDataFactory
+public interface DependencyBuilderListItem
 {
-   private static final long serialVersionUID = 1L;
-
-   @Override
-   protected ControllerState getState()
-   {
-      return ControllerState.INSTANTIATED;
-   }
-
-//   @Override
-//   protected String getControllerInterface()
-//   {
-//      return "org.jboss.kernel.spi.dependency.InstantiateKernelControllerContextAware";
-//   }
+   //TODO This sucks, should be the KernelControllerContext passed in
+   void addDependency(Object ctx);
 }

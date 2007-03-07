@@ -25,17 +25,15 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Map;
 
-import org.jboss.aop.advice.Interceptor;
-import org.jboss.aop.joinpoint.Invocation;
-import org.jboss.aop.joinpoint.MethodInvocation;
 import org.jboss.kernel.spi.dependency.KernelControllerContext;
+import org.jboss.metadata.spi.MetaData;
 
 /**
  * 
  * @author <a href="kabir.khan@jboss.com">Kabir Khan</a>
  * @version $Revision: 1.1 $
  */
-public class LifecycleInterceptor implements Interceptor
+public class LifecycleCallback
 {
    public static Map<String, ArrayList<Class>> interceptions = new HashMap<String, ArrayList<Class>>();
    Class[] lifecycleAnnotations = new Class[] {Configure.class, Create.class, Describe.class, Install.class, Instantiate.class, Start.class}; 
@@ -44,21 +42,27 @@ public class LifecycleInterceptor implements Interceptor
       return this.getClass().getName();
    }
 
-   public Object invoke(Invocation invocation) throws Throwable
+   public void install(KernelControllerContext context)
    {
-      MethodInvocation mi = (MethodInvocation)invocation;
-      KernelControllerContext context = (KernelControllerContext) mi.getArguments()[0];
-
+      handle(context);
+   }
+   
+   public void uninstall(KernelControllerContext context) 
+   {
+      handle(context);
+   }
+   
+   private void handle(KernelControllerContext context)
+   {
       for (int i = 0 ; i < lifecycleAnnotations.length ; i++)
       {
-         Object cur = invocation.resolveClassAnnotation(lifecycleAnnotations[i]);
+         MetaData metaData = context.getMetaData();
+         Object cur = metaData.getAnnotation(lifecycleAnnotations[i]);
          if (cur != null)
          {
             addInterception(context, lifecycleAnnotations[i]);
          }
       }
-      
-      return null;
    }
    
    private void addInterception(KernelControllerContext context, Class annotation)

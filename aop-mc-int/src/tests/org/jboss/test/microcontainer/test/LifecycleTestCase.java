@@ -26,14 +26,12 @@ import java.util.ArrayList;
 import junit.framework.Test;
 
 import org.jboss.aop.microcontainer.junit.AOPMicrocontainerTest;
-import org.jboss.kernel.plugins.deployment.xml.LifecycleAnnotationsInterceptor;
 import org.jboss.test.microcontainer.support.Configure;
 import org.jboss.test.microcontainer.support.Create;
 import org.jboss.test.microcontainer.support.Describe;
 import org.jboss.test.microcontainer.support.Install;
 import org.jboss.test.microcontainer.support.Instantiate;
-import org.jboss.test.microcontainer.support.LifecycleInterceptor;
-import org.jboss.test.microcontainer.support.SimpleBeanImpl;
+import org.jboss.test.microcontainer.support.LifecycleCallback;
 import org.jboss.test.microcontainer.support.Start;
 
 public class LifecycleTestCase extends AOPMicrocontainerTest
@@ -53,13 +51,13 @@ public class LifecycleTestCase extends AOPMicrocontainerTest
       boolean undeployed = false;
       try
       {
-         LifecycleInterceptor.interceptions.clear();
+         LifecycleCallback.interceptions.clear();
          deploy("LifecycleTestCaseNotAutomatic.xml");
          
          //Verify the beans exist
          checkBeanExists("ConfigureBean");
          checkBeanExists("CreateBean");
-//         checkBeanExists("DescribeBean"); 
+         checkBeanExists("DescribeBean"); 
          checkBeanExists("InstallBean");
          checkBeanExists("InstantiateBean"); 
          checkBeanExists("StartBean"); 
@@ -67,20 +65,20 @@ public class LifecycleTestCase extends AOPMicrocontainerTest
          //Now check the expected lifecycle events for each bean
          checkExpectedAnnotations("ConfigureBean", Configure.class);
          checkExpectedAnnotations("CreateBean", Create.class);
-//         checkExpectedAnnotations("DescribeBean", Describe.class);
+         checkExpectedAnnotations("DescribeBean", Describe.class);
          checkExpectedAnnotations("InstallBean", Install.class);
          checkExpectedAnnotations("InstantiateBean", Instantiate.class);
          checkExpectedAnnotations("StartBean", Start.class);
          
          
-         LifecycleInterceptor.interceptions.clear();
+         LifecycleCallback.interceptions.clear();
          
          undeploy("LifecycleTestCaseNotAutomatic.xml");
          undeployed = true;
          
          checkExpectedAnnotations("ConfigureBean", Configure.class);
          checkExpectedAnnotations("CreateBean", Create.class);
-//         checkExpectedAnnotations("DescribeBean", Describe.class);
+         checkExpectedAnnotations("DescribeBean", Describe.class);
          checkExpectedAnnotations("InstallBean", Install.class);
          checkExpectedAnnotations("InstantiateBean", Instantiate.class);
          checkExpectedAnnotations("StartBean", Start.class);
@@ -103,7 +101,7 @@ public class LifecycleTestCase extends AOPMicrocontainerTest
    
    public void checkExpectedAnnotations(String name, Class annotation)
    {
-      ArrayList<Class> events = LifecycleInterceptor.interceptions.get(name);
+      ArrayList<Class> events = LifecycleCallback.interceptions.get(name);
       assertNotNull(events);
       assertEquals("Wrong events, expected one element only " + events, 1, events.size());
       Class actualAnnotation = events.get(0);

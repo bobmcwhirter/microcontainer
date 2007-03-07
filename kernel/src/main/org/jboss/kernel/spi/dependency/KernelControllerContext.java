@@ -21,8 +21,12 @@
 */
 package org.jboss.kernel.spi.dependency;
 
+import java.util.List;
+
 import org.jboss.beans.info.spi.BeanInfo;
 import org.jboss.beans.metadata.spi.BeanMetaData;
+import org.jboss.beans.metadata.spi.LifecycleCallbackMetaData;
+import org.jboss.dependency.spi.ControllerState;
 import org.jboss.dependency.spi.dispatch.InvokeDispatchContext;
 import org.jboss.kernel.Kernel;
 import org.jboss.kernel.spi.registry.KernelRegistryEntry;
@@ -106,4 +110,11 @@ public interface KernelControllerContext extends KernelRegistryEntry, InvokeDisp
     * @param key the scope key
     */
    void setInstallScope(ScopeKey key);
+   
+   /**
+    * Get the lifecycle callbacks for a particular state.
+    * 
+    * @return List<LifecycleCallbackMetaData>
+    */
+   List<LifecycleCallbackMetaData> getLifecycleCallbacks(ControllerState state);
 }

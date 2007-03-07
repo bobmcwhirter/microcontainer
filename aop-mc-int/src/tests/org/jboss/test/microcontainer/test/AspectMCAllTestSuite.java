@@ -55,6 +55,7 @@ public class AspectMCAllTestSuite extends TestSuite
       suite.addTest(InterceptorWithOverriddenMethodAnnotationDependencyForChildTestCase.suite());
       suite.addTest(InterceptorWithOverriddenMethodAnnotationDependencyTestCase.suite());
       suite.addTest(IntroductionDependencyTestCase.suite());
+      suite.addTest(LifecycleTestCase.suite());
       suite.addTest(JMXDecoratedTestCase.suite());
       suite.addTest(JMXLifecycleTestCase.suite());
       suite.addTest(JndiDecoratedTestCase.suite());
@@ -63,6 +64,9 @@ public class AspectMCAllTestSuite extends TestSuite
       suite.addTest(MixinTestCase.suite());
       suite.addTest(MultipleLifecycleTestCase.suite());
       suite.addTest(ScopingAopTestCase.suite());
+      suite.addTest(CreatedBeansLifecycleCallbackTestCase.suite());
+      suite.addTest(CreatedBeansLifecycleCallbackWithDependencyTestCase.suite());
+      suite.addTest(NonDefaultMethodsLifecycleCallbackTestCase.suite());
 
       return suite;
    }

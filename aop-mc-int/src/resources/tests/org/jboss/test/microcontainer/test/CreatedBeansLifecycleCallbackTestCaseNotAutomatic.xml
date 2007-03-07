@@ -1,0 +1,19 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<deployment xmlns="urn:jboss:bean-deployer:2.0">
+
+   <bean name="AspectManager" class="org.jboss.aop.AspectManager">
+      <constructor factoryClass="org.jboss.aop.AspectManager" factoryMethod="instance"/>
+   </bean>
+   
+   <bean name="LifecycleCallback" class="org.jboss.test.microcontainer.support.SimpleLifecycleCallback"/>
+   
+   <bean name="LifecycleCallback$Binding" class="org.jboss.aop.microcontainer.beans.LifecycleBinding">
+      <property name="callbackBean">LifecycleCallback</property>
+      <property name="manager"><inject bean="AspectManager"/></property>
+      <property name="classes">org.jboss.test.microcontainer.support.SimpleBeanImpl</property>
+      <property name="state">Configured</property>
+   </bean>
+            
+   <bean name="Intercepted" class="org.jboss.test.microcontainer.support.SimpleBeanImpl"/>
+   
+</deployment>

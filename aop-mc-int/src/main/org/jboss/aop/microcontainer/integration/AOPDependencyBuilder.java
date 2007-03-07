@@ -18,7 +18,7 @@
 * License along with this software; if not, write to the Free
 * Software Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA
 * 02110-1301 USA, or see the FSF site: http://www.fsf.org.
-*/ 
+*/
 package org.jboss.aop.microcontainer.integration;
 
 import java.util.ArrayList;
@@ -28,18 +28,23 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
+import java.util.Map.Entry;
 
 import org.jboss.aop.Advisor;
 import org.jboss.aop.AspectManager;
 import org.jboss.aop.ReflectiveAspectBinder;
 import org.jboss.aop.advice.AspectDefinition;
 import org.jboss.aop.microcontainer.beans.ManagedAspectDefinition;
+import org.jboss.aop.microcontainer.lifecycle.LifecycleCallbackBinding;
+import org.jboss.aop.microcontainer.lifecycle.LifecycleCallbackDefinition;
 import org.jboss.aop.proxy.container.ContainerCache;
 import org.jboss.aop.util.Advisable;
 import org.jboss.aop.util.ClassInfoMethodHashing;
 import org.jboss.classadapter.plugins.dependency.AbstractDependencyBuilder;
 import org.jboss.classadapter.spi.ClassAdapter;
 import org.jboss.classadapter.spi.Dependency;
+import org.jboss.classadapter.spi.DependencyBuilderListItem;
+import org.jboss.dependency.spi.ControllerState;
 import org.jboss.metadata.spi.MetaData;
 import org.jboss.metadata.spi.signature.MethodSignature;
 import org.jboss.reflect.plugins.AnnotationValueFactory;
@@ -55,9 +60,9 @@ import org.jboss.reflect.spi.TypeInfo;
 import org.jboss.reflect.spi.Value;
 
 /**
- * Finds all managed aspects that apply 
+ * Finds all managed aspects that apply
  * to the bean and includes their dependencies as dependencies of the bean
- *  
+ *
  * @author <a href="kabir.khan@jboss.com">Kabir Khan</a>
  * @author <a href="adrian@jboss.com">Adrian Brock</a>
  * @version $Revision$
@@ -68,7 +73,6 @@ public class AOPDependencyBuilder extends AbstractDependencyBuilder
    private static final String DEPENDENCY_NAME_ATTRIBUTE = "name";
    private static final IntrospectionTypeInfoFactoryImpl typeInfoFactory = new IntrospectionTypeInfoFactoryImpl();
 
-   static int i = 0;
    public List<Object> getDependencies(ClassAdapter classAdapter, MetaData metaData)
    {
       AspectManager manager = AspectManager.instance();
@@ -91,10 +95,10 @@ public class AOPDependencyBuilder extends AbstractDependencyBuilder
                ContainerCache cache = ContainerCache.initialise(manager, clazz, metaData, true);
                advisor = cache.getAdvisor();
             }
-            
+
             ReflectiveAspectBinder binder = new ReflectiveAspectBinder(clazz, advisor);
             Set aspects = binder.getAspects();
-            
+
             ArrayList<Object> depends = new ArrayList<Object>();
             if (aspects != null && aspects.size() > 0)
             {
@@ -104,24 +108,40 @@ public class AOPDependencyBuilder extends AbstractDependencyBuilder
                   AspectDefinition def = (AspectDefinition) it.next();
                   if (def instanceof ManagedAspectDefinition)
                   {
-                     depends.add(def.getName());
+                     depends.add(new AspectDependencyBuilderListItem(def.getName()));
+                  }
+               }
+            }
+
+            Map<Object, Set<LifecycleCallbackDefinition>> lifecycleCallbacks = binder.getLifecycleCallbacks();
+            if (lifecycleCallbacks != null && lifecycleCallbacks.size() > 0)
+            {
+               for (Entry<Object, Set<LifecycleCallbackDefinition>> states : lifecycleCallbacks.entrySet())
+               {
+                  for (LifecycleCallbackDefinition callback : states.getValue())
+                  {
+                     depends.add(new LifecycleAspectDependencyBuilderListItem(
+                           callback.getBean(), (ControllerState)states.getKey(), callback.getInstallMethod(), callback.getUninstallMethod()));
                   }
                }
             }
 
             HashSet<Object> annotationDependencies = getAnnotationDependencies(classInfo, metaData);
-            depends.addAll(annotationDependencies);
+            for (Object dependency : annotationDependencies)
+            {
+               depends.add(new AnnotationDependencyBuilderListItem((String)dependency));
+            }
             return depends;
          }
          return null;
-         
+
       }
       catch (ClassNotFoundException e)
       {
          throw new RuntimeException(e);
       }
    }
-   
+
    private HashSet<Object> getAnnotationDependencies(ClassInfo classInfo, MetaData metaData)
    {
       try
@@ -149,17 +169,17 @@ public class AOPDependencyBuilder extends AbstractDependencyBuilder
       getMetaDataClassAnnotationDependencies(metaData, metaMap);
       addAllDependenciesToSet(dependencies, realMap, metaMap);
    }
-   
+
    private void getRealClassAnnotationDependencies(ClassInfo classInfo, HashMap<String, ArrayList<String>> dependencies) throws Exception
    {
       AnnotationValue[] annotations = classInfo.getAnnotations();
-      
+
       for (int i = 0 ; i < annotations.length ; i++)
       {
          getDependenciesForAnnotation(annotations[i].getType().getName(), annotations[i], dependencies);
       }
    }
-   
+
    private void getMetaDataClassAnnotationDependencies(MetaData metaData, HashMap<String, ArrayList<String>> dependencies) throws Exception
    {
       if (metaData != null)
@@ -170,7 +190,7 @@ public class AOPDependencyBuilder extends AbstractDependencyBuilder
          }
       }
    }
-   
+
    private void getMethodAnnotationDependencies(ClassInfo classInfo, MetaData metaData, HashSet<Object> dependencies) throws Exception
    {
       Map methodMap = ClassInfoMethodHashing.getMethodMap(classInfo);
@@ -190,7 +210,7 @@ public class AOPDependencyBuilder extends AbstractDependencyBuilder
          }
       }
    }
-   
+
    private void getRealMethodAnnotationDependencies(MethodInfo methodInfo, HashMap<String, ArrayList<String>> dependencies) throws Exception
    {
       AnnotationValue[] annotations = methodInfo.getAnnotations();
@@ -202,7 +222,7 @@ public class AOPDependencyBuilder extends AbstractDependencyBuilder
          }
       }
    }
-   
+
    private void getMetaDataMethodAnnotationDependencies(MethodInfo method, MetaData metaData, HashMap<String, ArrayList<String>> dependencies) throws Exception
    {
       if (metaData != null)
@@ -221,7 +241,7 @@ public class AOPDependencyBuilder extends AbstractDependencyBuilder
          }
       }
    }
-   
+
    private void getDependenciesForMetaDataAnnotation(Object annotation, HashMap<String, ArrayList<String>> dependencies) throws Exception
    {
       AnnotationInfo info;
@@ -238,13 +258,13 @@ public class AOPDependencyBuilder extends AbstractDependencyBuilder
       AnnotationValue value = AnnotationValueFactory.createAnnotationValue(typeInfoFactory, typeInfoFactory, info, annotation);
       getDependenciesForAnnotation(info.getName(), value, dependencies);
    }
-   
+
    private void getDependenciesForAnnotation(String topLevelAnnotationName, AnnotationValue annotation, HashMap<String, ArrayList<String>> dependencies)
    {
       if (annotation != null)
       {
          addAnnotationAttributeDependencies(topLevelAnnotationName, annotation, dependencies);
-         
+
          AnnotationValue[] annotationAnnotations = annotation.getAnnotationType().getAnnotations();
          for (int i = 0 ; i < annotationAnnotations.length ; i++)
          {
@@ -257,7 +277,7 @@ public class AOPDependencyBuilder extends AbstractDependencyBuilder
          }
       }
    }
-   
+
    private void addAnnotationAttributeDependencies(String topLevelAnnotationName, AnnotationValue annotation, HashMap<String, ArrayList<String>> dependencies)
    {
       MethodInfo[] attributes = annotation.getAnnotationType().getDeclaredMethods();
@@ -266,7 +286,7 @@ public class AOPDependencyBuilder extends AbstractDependencyBuilder
          for (int i = 0 ; i < attributes.length ; i++)
          {
             Value value = annotation.getValue(attributes[i].getName());
-            
+
             if (value instanceof AnnotationValue)
             {
                getDependenciesForAnnotation(topLevelAnnotationName, (AnnotationValue)value, dependencies);
@@ -287,7 +307,7 @@ public class AOPDependencyBuilder extends AbstractDependencyBuilder
          }
       }
    }
-   
+
    private void addDependency(String topLevelAnnotationName, StringValue dependency, HashMap<String, ArrayList<String>> dependencies)
    {
       ArrayList<String> list = dependencies.get(topLevelAnnotationName);
@@ -296,7 +316,7 @@ public class AOPDependencyBuilder extends AbstractDependencyBuilder
          list = new ArrayList<String>();
          dependencies.put(topLevelAnnotationName, list);
       }
-      
+
       list.add(dependency.getValue());
    }
 
@@ -311,7 +331,7 @@ public class AOPDependencyBuilder extends AbstractDependencyBuilder
          }
       }
    }
-   
+
    private HashMap<String, ArrayList<String>> mergeClassAndOverrideMaps(HashMap<String, ArrayList<String>> classMap, HashMap<String, ArrayList<String>> overrideMap)
    {
       if (classMap.size() == 0 && overrideMap.size() == 0)
@@ -326,7 +346,7 @@ public class AOPDependencyBuilder extends AbstractDependencyBuilder
       {
          return overrideMap;
       }
-      
+
       for (String key : overrideMap.keySet())
       {
          classMap.put(key, overrideMap.get(key));

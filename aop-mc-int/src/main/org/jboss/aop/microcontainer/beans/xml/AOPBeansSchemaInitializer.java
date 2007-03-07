@@ -56,23 +56,8 @@ public class AOPBeansSchemaInitializer implements SchemaBindingInitializer
    private static final QName aspectTypeQName = new QName(AOP_BEANS_NS, "aspectType");
    
    /** The lifecycle configure aspect binding */
-   private static final QName lifecycleConfigureTypeQName = new QName(AOP_BEANS_NS, "lifecycleConfigureType");
+   private static final QName lifecycleTypeQName = new QName(AOP_BEANS_NS, "lifecycleType");
    
-   /** The lifecycle create aspect binding */
-   private static final QName lifecycleCreateTypeQName = new QName(AOP_BEANS_NS, "lifecycleCreateType");
-   
-   /** The lifecycle describe aspect binding */
-   private static final QName lifecycleDescribeTypeQName = new QName(AOP_BEANS_NS, "lifecycleDescribeType");
-   
-   /** The lifecycle aspect binding */
-   private static final QName lifecycleInstallTypeQName = new QName(AOP_BEANS_NS, "lifecycleInstallType");
-   
-   /** The lifecycle aspect binding */
-   private static final QName lifecycleInstantiateTypeQName = new QName(AOP_BEANS_NS, "lifecycleInstantiateType");
-   
-   /** The lifecycle start aspect binding */
-   private static final QName lifecycleStartTypeQName = new QName(AOP_BEANS_NS, "lifecycleStartType");
-
    
    public SchemaBinding init(SchemaBinding schema)
    {
@@ -85,35 +70,10 @@ public class AOPBeansSchemaInitializer implements SchemaBindingInitializer
       aspectType.setHandler(new AspectBeanFactoryHandler());
 
       //Configure binding
-      TypeBinding lifecycleConfigureTypeQ = schema.getType(lifecycleConfigureTypeQName);
+      TypeBinding lifecycleConfigureTypeQ = schema.getType(lifecycleTypeQName);
       BeanSchemaBindingHelper.initBeanFactoryHandlers(lifecycleConfigureTypeQ);
-      lifecycleConfigureTypeQ.setHandler(new ConfigureLifecycleBeanFactoryHandler());
+      lifecycleConfigureTypeQ.setHandler(new LifecycleBeanFactoryHandler());
 
-      //Create binding
-      TypeBinding lifecycleCreateType = schema.getType(lifecycleCreateTypeQName);
-      BeanSchemaBindingHelper.initBeanFactoryHandlers(lifecycleCreateType);
-      lifecycleCreateType.setHandler(new CreateLifecycleBeanFactoryHandler());
-
-      //Describe binding
-      TypeBinding lifecycleDescribeType = schema.getType(lifecycleDescribeTypeQName);
-      BeanSchemaBindingHelper.initBeanFactoryHandlers(lifecycleDescribeType);
-      lifecycleDescribeType.setHandler(new DescribeLifecycleBeanFactoryHandler());
-
-      //Install binding
-      TypeBinding lifecycleInstallType = schema.getType(lifecycleInstallTypeQName);
-      BeanSchemaBindingHelper.initBeanFactoryHandlers(lifecycleInstallType);
-      lifecycleInstallType.setHandler(new InstallLifecycleBeanFactoryHandler());
-      
-      //Instantiate binding
-      TypeBinding lifecycleInstantiateType = schema.getType(lifecycleInstantiateTypeQName);
-      BeanSchemaBindingHelper.initBeanFactoryHandlers(lifecycleInstantiateType);
-      lifecycleInstantiateType.setHandler(new InstantiateLifecycleBeanFactoryHandler());
-      
-      //Start binding
-      TypeBinding lifecycleStartType = schema.getType(lifecycleStartTypeQName);
-      BeanSchemaBindingHelper.initBeanFactoryHandlers(lifecycleStartType);
-      lifecycleStartType.setHandler(new StartLifecycleBeanFactoryHandler());
-      
       // TODO FIXME???
       BeanSchemaBinding20.initArtifacts(schema);
       
@@ -141,6 +101,7 @@ public class AOPBeansSchemaInitializer implements SchemaBindingInitializer
       
       protected void setAttribute(AspectBeanMetaDataFactory factory, String localName, String attr)
       {
+         
          if ("pointcut".equals(localName))
          {
             factory.setPointcut(attr);
@@ -160,68 +121,79 @@ public class AOPBeansSchemaInitializer implements SchemaBindingInitializer
       }
    }
 
-   private static class LifecycleBeanFactoryHandler extends AspectBeanFactoryHandler
+   private static class LifecycleBeanFactoryHandler extends BeanFactoryHandler
    {
       public Object startElement(Object parent, QName name, ElementBinding element)
       {
-         throw new RuntimeException("Do not use <lifecycle> directly");
+         String localname = name.getLocalPart();
+         if (localname.equals("lifecycle-configure"))
+         {
+            return new ConfigureLifecycleBeanMetaDataFactory();
+         }
+         if (localname.equals("lifecycle-create"))
+         {      
+            return new CreateLifecycleBeanMetaDataFactory();
+         }
+         if (localname.equals("lifecycle-describe"))
+         {      
+            return new DescribeLifecycleBeanMetaDataFactory();
+         }
+         if (localname.equals("lifecycle-install"))
+         {      
+            return new InstallLifecycleBeanMetaDataFactory();
+         }
+         if (localname.equals("lifecycle-instantiate"))
+         {      
+            return new InstantiateLifecycleBeanMetaDataFactory();
+         }
+         if (localname.equals("lifecycle-start"))
+         {      
+            return new StartLifecycleBeanMetaDataFactory();
+         }
+         
+         throw new IllegalStateException(name + " is not a recognized element");
       }
 
-      protected void setAttribute(AspectBeanMetaDataFactory factory, String localName, String attr)
+      public void attributes(Object o, QName elementName, ElementBinding element, Attributes attrs, NamespaceContext nsCtx)
       {
-         super.setAttribute(factory, localName, attr);
-         if ("classes".equals(localName))
+         //TODO see TODO in setAttribute()
+         super.attributes(o, elementName, element, attrs, nsCtx);
+
+         LifecycleBeanMetaDataFactory factory = (LifecycleBeanMetaDataFactory) o;
+         for (int i = 0; i < attrs.getLength(); ++i)
          {
-            ((LifecycleBeanMetaDataFactory)factory).setClasses(attr);
+            String localName = attrs.getLocalName(i);
+            setAttribute(factory, localName, attrs.getValue(i));
          }
       }
-   }
-   
-   private static class ConfigureLifecycleBeanFactoryHandler extends LifecycleBeanFactoryHandler
-   {
-      public Object startElement(Object parent, QName name, ElementBinding element)
+
+      protected void setAttribute(LifecycleBeanMetaDataFactory factory, String localName, String attr)
       {
-         return new ConfigureLifecycleBeanMetaDataFactory();
-      }
-   }
-   
-   private static class CreateLifecycleBeanFactoryHandler extends LifecycleBeanFactoryHandler
-   {
-      public Object startElement(Object parent, QName name, ElementBinding element)
-      {
-         return new CreateLifecycleBeanMetaDataFactory();
-      }
-   }
-   
-   private static class DescribeLifecycleBeanFactoryHandler extends LifecycleBeanFactoryHandler
-   {
-      public Object startElement(Object parent, QName name, ElementBinding element)
-      {
-         return new DescribeLifecycleBeanMetaDataFactory();
-      }
-   }
-   
-   private static class InstallLifecycleBeanFactoryHandler extends LifecycleBeanFactoryHandler
-   {
-      public Object startElement(Object parent, QName name, ElementBinding element)
-      {
-         return new InstallLifecycleBeanMetaDataFactory();
-      }
-   }
-   
-   private static class InstantiateLifecycleBeanFactoryHandler extends LifecycleBeanFactoryHandler
-   {
-      public Object startElement(Object parent, QName name, ElementBinding element)
-      {
-         return new InstantiateLifecycleBeanMetaDataFactory();
-      }
-   }
-   
-   private static class StartLifecycleBeanFactoryHandler extends LifecycleBeanFactoryHandler
-   {
-      public Object startElement(Object parent, QName name, ElementBinding element)
-      {
-         return new StartLifecycleBeanMetaDataFactory();
+         if ("classes".equals(localName))
+         {
+            factory.setClasses(attr);
+         }
+         else if ("expr".equals(localName))
+         {
+            factory.setExpr(attr);
+            return;
+         }         
+         else if ("manager-bean".equals(localName))
+         {
+            factory.setManagerBean(attr);
+         }
+         else if ("manager-property".equals(localName))
+         {
+            factory.setManagerProperty(attr);
+         }
+         else if ("install".equals(localName))
+         {
+            factory.setInstallMethod(attr);
+         }
+         else if ("uninstall".equals(localName))
+         {
+            factory.setUninstallMethod(attr);
+         }
       }
    }
 }

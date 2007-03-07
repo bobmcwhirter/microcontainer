@@ -30,27 +30,27 @@ import org.jboss.util.id.GUID;
 
 /**
  * An AspectBinding.
- * 
+ *
  * @author <a href="adrian@jboss.com">Adrian Brock</a>
  * @version $Revision$
  */
 public class AspectBinding
 {
    private static final Logger log = Logger.getLogger(AspectBinding.class);
-   
+
    protected AspectManager manager;
-   
+
    protected String name = GUID.asString();
-   
+
    protected String pointcut;
-   
+
    protected AspectDefinition aspect;
-   
+
    protected String method = "invoke";
-   
+
    /**
     * Get the aspectDefinition.
-    * 
+    *
     * @return the aspectDefinition.
     */
    public AspectDefinition getAspect()
@@ -60,7 +60,7 @@ public class AspectBinding
 
    /**
     * Set the aspectDefinition.
-    * 
+    *
     * @param aspect The aspectDefinition to set.
     */
    public void setAspect(AspectDefinition aspect)
@@ -70,7 +70,7 @@ public class AspectBinding
 
    /**
     * Get the manager.
-    * 
+    *
     * @return the manager.
     */
    public AspectManager getManager()
@@ -80,7 +80,7 @@ public class AspectBinding
 
    /**
     * Set the manager.
-    * 
+    *
     * @param manager The manager to set.
     */
    public void setManager(AspectManager manager)
@@ -90,7 +90,7 @@ public class AspectBinding
 
    /**
     * Get the method.
-    * 
+    *
     * @return the method.
     */
    public String getMethod()
@@ -100,7 +100,7 @@ public class AspectBinding
 
    /**
     * Set the method.
-    * 
+    *
     * @param method The method to set.
     */
    public void setMethod(String method)
@@ -110,7 +110,7 @@ public class AspectBinding
 
    /**
     * Get the pointcut.
-    * 
+    *
     * @return the pointcut.
     */
    public String getPointcut()
@@ -120,7 +120,7 @@ public class AspectBinding
 
    /**
     * Set the pointcut.
-    * 
+    *
     * @param pointcut The pointcut to set.
     */
    public void setPointcut(String pointcut)
@@ -139,10 +139,9 @@ public class AspectBinding
       AdviceBinding binding = new AdviceBinding(name, pointcut, null);
       binding.addInterceptorFactory(new AdviceFactory(aspect, method));
       manager.addBinding(binding);
-//      System.out.println("----> Added binding " + pointcut);
       log.debug("Bound binding " + name);
    }
-   
+
    public void stop() throws Exception
    {
       manager.removeBinding(name);
@@ -152,7 +151,7 @@ public class AspectBinding
    {
       stop();
    }
-   
+
    public void rebind(AspectDefinition aspect) throws Exception
    {
       this.aspect = aspect;

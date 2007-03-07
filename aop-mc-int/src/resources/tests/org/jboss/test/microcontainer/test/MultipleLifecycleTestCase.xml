@@ -14,17 +14,15 @@
 
    <aop:lifecycle-configure xmlns:aop="urn:jboss:aop-beans:1.0"
                name="JMXAdvice"
-               class="org.jboss.aop.microcontainer.aspects.jmx.JMXIntroduction"
-               classes="@org.jboss.aop.microcontainer.aspects.jmx.JMX"
-               pointcut="execution(* @org.jboss.aop.microcontainer.aspects.jmx.JMX->$implements{org.jboss.kernel.spi.dependency.KernelControllerContextAware}(..))">
+               class="org.jboss.aop.microcontainer.aspects.jmx.JMXLifecycleCallback"
+               classes="@org.jboss.aop.microcontainer.aspects.jmx.JMX">
       <property name="mbeanServer"><inject bean="MBeanServer"/></property>
    </aop:lifecycle-configure>
 
    <aop:lifecycle-configure xmlns:aop="urn:jboss:aop-beans:1.0"
                name="JndiAdvice"
-               class="org.jboss.test.microcontainer.support.CalledInterceptor"
-               classes="org.jboss.test.microcontainer.support.SimpleBeanImpl"
-               pointcut="execution(* org.jboss.test.microcontainer.support.SimpleBeanImpl->$implements{org.jboss.kernel.spi.dependency.KernelControllerContextAware}(..))">
+               class="org.jboss.test.microcontainer.support.SimpleLifecycleCallback"
+               classes="org.jboss.test.microcontainer.support.SimpleBeanImpl">
    </aop:lifecycle-configure>
 
    <bean name="Bean" class="org.jboss.test.microcontainer.support.SimpleBeanImpl">

@@ -40,6 +40,7 @@ import org.jboss.util.naming.Util;
  * 
  * @author Scott.Stark@jboss.org
  * @version $Revision: 46386 $
+ * @deprecated Should use JndiLifecycleCallback instead
  */
 public class JndiIntroduction implements Interceptor
 {
