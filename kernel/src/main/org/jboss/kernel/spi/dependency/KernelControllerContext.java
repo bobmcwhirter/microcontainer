@@ -113,7 +113,8 @@ public interface KernelControllerContext extends KernelRegistryEntry, InvokeDisp
    
    /**
     * Get the lifecycle callbacks for a particular state.
-    * 
+    *
+    * @param state the state callbacks refer to
     * @return List<LifecycleCallbackMetaData>
     */
    List<LifecycleCallbackMetaData> getLifecycleCallbacks(ControllerState state);

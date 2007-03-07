@@ -40,6 +40,7 @@ public interface LifecycleCallbackMetaData extends JBossInterface, MetaDataVisit
    
    /**
     * The required state of the lifecycle callback bean
+    * @return the dependant state
     */
    ControllerState getDependentState();
    
@@ -51,12 +52,14 @@ public interface LifecycleCallbackMetaData extends JBossInterface, MetaDataVisit
 
    /**
     * Get the method on the bean that should be called when reaching the required state on installation
+    * @return name of the install method
     */
    public String getInstallMethod();
 
 
    /**
     * Get the method on the bean that should be called when reaching the required state on uninstallation
+    * @return name of the uninstall method
     */
    public String getUninstallMethod();
 
