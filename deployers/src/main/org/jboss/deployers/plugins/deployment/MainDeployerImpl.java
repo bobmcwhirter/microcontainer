@@ -245,7 +245,7 @@ public class MainDeployerImpl implements MainDeployer
     * ManagedObjectBuilder or assign one when the deployer does not provide a ManagedObjectBuilder.
     * 
     * @param deployer - the deployer to set the ManagedObjectBuilder for.
-    * @param managedObjectBuilder
+    * @param managedObjectBuilder the managed object builder to set to the deployer
     */
    public void setDeployerManagedObjectBuilder(Deployer deployer, ManagedObjectBuilder managedObjectBuilder)
    {
@@ -658,6 +658,7 @@ public class MainDeployerImpl implements MainDeployer
     * Determine the deployment structure
     * 
     * @param context the context
+    * @throws DeploymentException deployment exception
     */
    private void determineStructure(DeploymentContext context)
       throws DeploymentException
