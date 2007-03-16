@@ -64,11 +64,37 @@
           <printSummary>false</printSummary>
           <testFailureIgnore>true</testFailureIgnore>
           <includes>
-            <include>**/**TestCase.java</include>
+            <include>**/*TestCase.java</include>
           </includes>
-          <skip>true</skip>
         </configuration>
       </plugin>    
+      <plugin>
+        <groupId>jboss.maven-plugins</groupId>
+        <artifactId>jboss-retro-maven-plugin</artifactId>
+        <version>0.5-beta</version>
+        <executions>
+          <execution>
+            <goals>
+              <goal>retro-compile</goal>
+            </goals>
+          </execution>
+        </executions>
+      </plugin>
+      <plugin>
+        <groupId>jboss.maven-plugins</groupId>
+        <artifactId>jboss-deploy-maven-plugin</artifactId>
+        <version>1.1-beta</version>
+        <executions>
+          <execution>
+            <goals>
+              <goal>jboss-deploy</goal>
+            </goals>
+          </execution>
+        </executions>
+        <configuration>
+          <jbossDeployRoot>${jboss.repository.root}</jbossDeployRoot>
+        </configuration>
+      </plugin>
     </plugins>
   </build>
   <repositories>
@@ -110,4 +136,48 @@
       </plugin>
     </plugins>
   </reporting>
+  <dependencyManagement>
+    <dependencies>
+      <dependency>
+        <groupId>jboss</groupId>
+        <artifactId>jboss-aop-mc-int</artifactId>
+        <version>${project.version}</version>
+      </dependency>
+      <dependency>
+        <groupId>jboss</groupId>
+        <artifactId>jboss-container</artifactId>
+        <version>${project.version}</version>
+      </dependency>
+      <dependency>
+        <groupId>jboss</groupId>
+        <artifactId>jboss-dependency</artifactId>
+        <version>${project.version}</version>
+      </dependency>
+      <dependency>
+        <groupId>jboss</groupId>
+        <artifactId>jboss-deployers</artifactId>
+        <version>${project.version}</version>
+      </dependency>
+      <dependency>
+        <groupId>jboss</groupId>
+        <artifactId>jboss-kernel</artifactId>
+        <version>${project.version}</version>
+      </dependency>
+      <dependency>
+        <groupId>jboss</groupId>
+        <artifactId>jboss-managed</artifactId>
+        <version>${project.version}</version>
+      </dependency>
+      <dependency>
+        <groupId>jboss</groupId>
+        <artifactId>jboss-metatype</artifactId>
+        <version>${project.version}</version>
+      </dependency>
+      <dependency>
+        <groupId>jboss</groupId>
+        <artifactId>jboss-spring-int</artifactId>
+        <version>${project.version}</version>
+      </dependency>
+    </dependencies>
+  </dependencyManagement>
 </project>
