@@ -21,8 +21,6 @@
 */ 
 package org.jboss.aop.microcontainer.integration;
 
-import org.jboss.classadapter.spi.DependencyBuilderListItem;
-
 /**
  * 
  * @author <a href="kabir.khan@jboss.com">Kabir Khan</a>
