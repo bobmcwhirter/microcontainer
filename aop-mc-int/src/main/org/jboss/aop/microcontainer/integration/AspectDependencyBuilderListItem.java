@@ -33,7 +33,7 @@ import org.jboss.kernel.spi.dependency.KernelControllerContext;
  * @author <a href="kabir.khan@jboss.com">Kabir Khan</a>
  * @version $Revision: 1.1 $
  */
-class AspectDependencyBuilderListItem implements DependencyBuilderListItem
+class AspectDependencyBuilderListItem implements DependencyBuilderListItem<KernelControllerContext>
 {
    String dependencyName;
    AspectDependencyBuilderListItem(String name)
@@ -41,9 +41,8 @@ class AspectDependencyBuilderListItem implements DependencyBuilderListItem
       this.dependencyName = name; 
    }
    
-   public void addDependency(Object ctx)
+   public void addDependency(KernelControllerContext context)
    {
-      KernelControllerContext context = (KernelControllerContext)ctx;
       BeanMetaData metaData = context.getBeanMetaData();
       AbstractDependencyItem dependency = new AbstractDependencyItem(metaData.getName(), dependencyName, ControllerState.INSTANTIATED, ControllerState.INSTALLED);
       DependencyInfo depends = context.getDependencyInfo();

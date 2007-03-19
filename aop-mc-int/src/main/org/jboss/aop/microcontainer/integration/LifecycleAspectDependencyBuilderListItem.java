@@ -37,7 +37,7 @@ import org.jboss.kernel.spi.dependency.KernelControllerContext;
  * @author <a href="kabir.khan@jboss.com">Kabir Khan</a>
  * @version $Revision: 1.1 $
  */
-class LifecycleAspectDependencyBuilderListItem extends AspectDependencyBuilderListItem implements DependencyBuilderListItem
+class LifecycleAspectDependencyBuilderListItem extends AspectDependencyBuilderListItem implements DependencyBuilderListItem<KernelControllerContext>
 {
    ControllerState state;
    String installMethod;
@@ -68,9 +68,8 @@ class LifecycleAspectDependencyBuilderListItem extends AspectDependencyBuilderLi
       return dependencyName.hashCode();
    }
 
-   public void addDependency(Object ctx)
+   public void addDependency(KernelControllerContext context)
    {
-      KernelControllerContext context = (KernelControllerContext)ctx;
       BeanMetaData metaData = context.getBeanMetaData();
       List<LifecycleCallbackMetaData> callbacks = metaData.getLifecycleCallbacks();
       if (callbacks == null)
@@ -82,6 +81,6 @@ class LifecycleAspectDependencyBuilderListItem extends AspectDependencyBuilderLi
       callbacks.add(callback);
       
       //We need to manually add the dependency since this is happening after the metadata visitors run
-      super.addDependency(ctx);
+      super.addDependency(context);
    }
 }
