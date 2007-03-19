@@ -31,7 +31,6 @@
         <groupId>org.apache.maven.plugins</groupId>
         <artifactId>maven-surefire-plugin</artifactId>
         <configuration>
-          <skip>false</skip>
           <excludes>
             <exclude>**/AbstractDependencyTest*</exclude>
             <exclude>**/TestControllerContext*</exclude>
@@ -52,7 +51,7 @@
     <dependency>
       <groupId>jboss</groupId>
       <artifactId>jboss-test</artifactId>
-      <version>1.0.2-SNAPSHOT</version>
+      <version>1.0.3.GA</version>
       <scope>test</scope>
     </dependency>
     <dependency>
@@ -62,10 +61,4 @@
 	    <scope>test</scope>
 	  </dependency>
   </dependencies>
-  <distributionManagement>
-    <repository>
-      <id>cvs-file-repository</id>
-      <url>file://${maven.cvs.root}</url>
-    </repository>
-  </distributionManagement>
 </project>

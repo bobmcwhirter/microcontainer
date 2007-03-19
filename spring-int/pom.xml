@@ -11,24 +11,7 @@
   <packaging>jar</packaging>
   <name>JBoss Microcontainer Spring Int</name>
   <url>http://www.jboss.com/products/jbossmc</url>
-  <description>JBoss Microcontainer Spring Int</description>
-  <build>
-    <plugins>
-      <!-- The antrun plugin is used for generating jdk1.4 compatible classes.  
-           The configuration for this plugin is specified in the parent pom. -->
-      <plugin>
-        <groupId>org.apache.maven.plugins</groupId>
-        <artifactId>maven-antrun-plugin</artifactId>
-      </plugin>    
-      <plugin>
-        <groupId>org.apache.maven.plugins</groupId>
-        <artifactId>maven-surefire-plugin</artifactId>
-        <configuration>
-          <skip>true</skip>
-        </configuration>
-      </plugin>
-    </plugins>
-  </build>
+  <description>JBoss Microcontainer Spring Integration</description>
   <dependencies>
     <!-- Global dependencies -->
     <dependency>
@@ -39,19 +22,17 @@
     <dependency>
       <groupId>jboss</groupId>
       <artifactId>jboss-kernel</artifactId>
-      <version>${project.version}</version>
     </dependency>
     <!-- Test dependencies -->
     <dependency>
       <groupId>jboss</groupId>
       <artifactId>jboss-test</artifactId>
-      <version>1.0.2-SNAPSHOT</version>
+      <version>1.0.3.GA</version>
       <scope>test</scope>
     </dependency>
     <dependency>
       <groupId>jboss</groupId>
       <artifactId>jboss-container</artifactId>
-      <version>${project.version}</version>
       <type>test-jar</type>
       <scope>test</scope>
     </dependency>

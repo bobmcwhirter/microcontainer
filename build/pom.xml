@@ -61,7 +61,6 @@
       <plugin>
         <artifactId>maven-surefire-plugin</artifactId>
         <configuration>
-          <printSummary>false</printSummary>
           <testFailureIgnore>true</testFailureIgnore>
           <includes>
             <include>**/*TestCase.java</include>
@@ -137,6 +136,7 @@
     </plugins>
   </reporting>
   <dependencyManagement>
+    <!-- The parent pom manages the inter-dependencies of the modules. -->
     <dependencies>
       <dependency>
         <groupId>jboss</groupId>
@@ -147,6 +147,13 @@
         <groupId>jboss</groupId>
         <artifactId>jboss-container</artifactId>
         <version>${project.version}</version>
+      </dependency>
+      <dependency>
+        <groupId>jboss</groupId>
+        <artifactId>jboss-container</artifactId>
+        <version>${project.version}</version>
+        <type>test-jar</type>
+        <scope>test</scope>
       </dependency>
       <dependency>
         <groupId>jboss</groupId>
@@ -162,6 +169,13 @@
         <groupId>jboss</groupId>
         <artifactId>jboss-kernel</artifactId>
         <version>${project.version}</version>
+      </dependency>
+      <dependency>
+        <groupId>jboss</groupId>
+        <artifactId>jboss-kernel</artifactId>
+        <version>${project.version}</version>
+        <type>test-jar</type>
+        <scope>test</scope>
       </dependency>
       <dependency>
         <groupId>jboss</groupId>

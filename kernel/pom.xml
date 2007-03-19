@@ -45,17 +45,15 @@
     <dependency>
       <groupId>jboss</groupId>
       <artifactId>jboss-container</artifactId>
-      <version>${project.version}</version>
     </dependency>
     <dependency>
       <groupId>jboss</groupId>
       <artifactId>jboss-dependency</artifactId>
-      <version>${project.version}</version>
     </dependency>
     <dependency>
       <groupId>jboss</groupId>
       <artifactId>jboss-test</artifactId>
-      <version>1.0.2-SNAPSHOT</version>
+      <version>1.0.3.GA</version>
     </dependency>
     <dependency>
       <groupId>jboss</groupId>

@@ -46,7 +46,6 @@
     <dependency>
       <groupId>jboss</groupId>
       <artifactId>jboss-container</artifactId>
-      <version>${project.version}</version>
     </dependency>
     <dependency>
       <groupId>org.osgi</groupId>

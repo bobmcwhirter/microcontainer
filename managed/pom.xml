@@ -39,12 +39,10 @@
     <dependency>
       <groupId>jboss</groupId>
       <artifactId>jboss-container</artifactId>
-      <version>${project.version}</version>
     </dependency>
     <dependency>
       <groupId>jboss</groupId>
       <artifactId>jboss-metatype</artifactId>
-      <version>${project.version}</version>
     </dependency>
     <!-- Test dependencies -->
     <dependency>

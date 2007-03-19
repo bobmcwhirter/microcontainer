@@ -49,23 +49,20 @@
     <dependency>
       <groupId>jboss</groupId>
       <artifactId>jboss-aop-mc-int</artifactId>
-      <version>${project.version}</version>
     </dependency>
     <dependency>
       <groupId>jboss</groupId>
       <artifactId>jboss-kernel</artifactId>
-      <version>${project.version}</version>
     </dependency>
     <dependency>
       <groupId>jboss</groupId>
       <artifactId>jboss-managed</artifactId>
-      <version>${project.version}</version>
     </dependency>
     <!-- Test dependencies -->
     <dependency>
       <groupId>jboss</groupId>
       <artifactId>jboss-test</artifactId>
-      <version>1.0.2-SNAPSHOT</version>
+      <version>1.0.3.GA</version>
       <scope>test</scope>
     </dependency>
     <dependency>
