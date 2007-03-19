@@ -29,7 +29,6 @@ import org.jboss.classadapter.spi.DependencyBuilderListItem;
  * @version $Revision: 1.1 $
  */
 class AnnotationDependencyBuilderListItem extends AspectDependencyBuilderListItem
-implements DependencyBuilderListItem
 {
    AnnotationDependencyBuilderListItem(String name)
    {
