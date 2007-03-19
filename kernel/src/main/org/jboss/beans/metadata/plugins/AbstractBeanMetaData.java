@@ -597,13 +597,16 @@ public class AbstractBeanMetaData extends AbstractFeatureMetaData
 
    public List<LifecycleCallbackMetaData> getLifecycleCallbacks(ControllerState state)
    {
+      if (state == null)
+         throw new IllegalArgumentException("ControllerState cannot be null!");
+
       List<LifecycleCallbackMetaData> callbacks = EMPTY_LIFECYCLE_CALLBACKS;
       List<LifecycleCallbackMetaData> allCallbacks = getLifecycleCallbacks();
       if (allCallbacks != null && allCallbacks.size() > 0)
       {
          for (LifecycleCallbackMetaData lifecycleCallback : allCallbacks)
          {
-            if (lifecycleCallback.getWhenRequired().equals(state))
+            if (state.equals(lifecycleCallback.getWhenRequired()))
             {
                if (callbacks == EMPTY_LIFECYCLE_CALLBACKS)
                {
