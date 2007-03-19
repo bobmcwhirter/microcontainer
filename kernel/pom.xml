@@ -13,6 +13,14 @@
   <url>http://www.jboss.com/products/jbossmc</url>
   <description>JBoss Microcontainer Kernel</description>  
   <build>
+    <resources>
+      <resource>
+        <directory>src/resources</directory>
+        <includes>
+          <include>schema/**</include>
+        </includes>
+      </resource>
+    </resources>
     <plugins>
       <!-- The antrun plugin is used for generating jdk1.4 compatible classes.  
            The configuration for this plugin is specified in the parent pom. -->

@@ -12,6 +12,13 @@
   <name>JBoss Microcontainer AOP MC INT</name>
   <url>http://www.jboss.com/products/jbossmc</url>
   <description>JBoss Microcontainer</description>
+  <build>
+    <testResources>
+      <testResource>
+        <directory>src/resources/test</directory>
+      </testResource>
+    </testResources>
+  </build>
   <dependencies>
     <!-- Global dependencies -->
     <dependency>

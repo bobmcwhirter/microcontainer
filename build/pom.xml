@@ -35,6 +35,11 @@
     The JBoss Microcontainer provides a lightweight container for managing POJOs, their deployment 
     and configuration.
   </description>
+  <scm>
+    <connection>scm:svn:http://anonsvn.jboss.org/repos/jbossas/projects/microcontainer/trunk/</connection>
+    <developerConnection>scm:svn:https://svn.jboss.org/repos/jbossas/projects/microcontainer/trunk/</developerConnection>
+    <url>http://viewvc.jboss.org/cgi-bin/viewvc.cgi/jbossas/projects/microcontainer/trunk/</url>
+  </scm>
   <build>
     <sourceDirectory>src/main</sourceDirectory>
 	  <testSourceDirectory>src/tests</testSourceDirectory>
@@ -59,6 +64,16 @@
     </testResources>
     <plugins>
       <plugin>
+        <artifactId>maven-compiler-plugin</artifactId>
+        <configuration>
+          <source>1.5</source>
+          <target>1.5</target>
+          <showDeprecation>true</showDeprecation>
+          <showWarnings>true</showWarnings>
+          <optimize>true</optimize>
+        </configuration>
+      </plugin>
+      <plugin>
         <artifactId>maven-surefire-plugin</artifactId>
         <configuration>
           <testFailureIgnore>true</testFailureIgnore>
@@ -66,7 +81,13 @@
             <include>**/*TestCase.java</include>
           </includes>
         </configuration>
-      </plugin>    
+      </plugin>
+      <plugin>
+        <artifactId>maven-release-plugin</artifactId>
+        <configuration>
+          <tagBase>https://svn.jboss.org/repos/jbossas/projects/microcontainer/tags</tagBase>
+        </configuration>
+      </plugin>
       <plugin>
         <groupId>jboss.maven-plugins</groupId>
         <artifactId>jboss-retro-maven-plugin</artifactId>
@@ -110,12 +131,11 @@
   <modules>
     <module>../container</module>
     <module>../dependency</module>
-    <module>../metatype</module>
     <module>../kernel</module>
-    <module>../managed</module>
     <module>../aop-mc-int</module>
+    <module>../metatype</module>
+    <module>../managed</module>
     <module>../deployers</module>
-    <module>../spring-int</module>
   </modules>
   <reporting>
     <plugins>
@@ -137,7 +157,7 @@
   </reporting>
   <dependencyManagement>
     <!-- The parent pom manages the inter-dependencies of the modules. -->
-    <dependencies>
+        <dependencies>
       <dependency>
         <groupId>jboss</groupId>
         <artifactId>jboss-aop-mc-int</artifactId>
