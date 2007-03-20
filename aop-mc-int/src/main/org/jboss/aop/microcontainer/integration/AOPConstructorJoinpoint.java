@@ -29,6 +29,7 @@ import org.jboss.aop.Advisor;
 import org.jboss.aop.AspectManager;
 import org.jboss.aop.advice.Interceptor;
 import org.jboss.aop.joinpoint.ConstructorInvocation;
+import org.jboss.aop.microcontainer.beans.AspectManagerFactory;
 import org.jboss.aop.proxy.container.AOPProxyFactory;
 import org.jboss.aop.proxy.container.AOPProxyFactoryParameters;
 import org.jboss.aop.proxy.container.ContainerCache;
@@ -90,9 +91,9 @@ public class AOPConstructorJoinpoint extends BasicConstructorJoinPoint implement
    public Object dispatch() throws Throwable
    {
       Class clazz = constructorInfo.getDeclaringClass().getType();
-      AspectManager manager = AspectManager.instance();
-
       MetaData metaData = MetaDataStack.peek();
+      AspectManager manager = AspectManagerFactory.getAspectManager(metaData);
+
       MetaDataStack.mask();
       try
       {

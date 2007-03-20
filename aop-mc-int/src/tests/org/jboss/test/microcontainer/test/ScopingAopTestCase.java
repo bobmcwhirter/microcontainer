@@ -26,6 +26,7 @@ import org.jboss.aop.microcontainer.junit.AOPMicrocontainerTest;
 import org.jboss.aop.microcontainer.junit.AOPMicrocontainerTestDelegate;
 import org.jboss.aop.microcontainer.junit.ScopingAOPMicrocontainerTestDelegate;
 import org.jboss.test.AbstractTestDelegate;
+import org.jboss.test.microcontainer.support.CalledInterceptor;
 import org.jboss.test.microcontainer.support.SimpleBean;
 
 /**
@@ -65,8 +66,15 @@ public class ScopingAopTestCase extends AOPMicrocontainerTest
    {
       SimpleBean simple1 = (SimpleBean)getBean("simple1");
       assertNotNull(simple1);
+      CalledInterceptor.intercepted = false;
+      simple1.someMethod();
+      assertTrue(CalledInterceptor.intercepted);
+      
       SimpleBean simple2 = (SimpleBean)getBean("simple2");
       assertNotNull(simple2);
+      CalledInterceptor.intercepted = false;
+      simple2.someMethod();
+      assertFalse(CalledInterceptor.intercepted);
    }
 
 }

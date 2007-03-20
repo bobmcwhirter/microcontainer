@@ -34,8 +34,8 @@ import org.jboss.aop.Advisor;
 import org.jboss.aop.AspectManager;
 import org.jboss.aop.ReflectiveAspectBinder;
 import org.jboss.aop.advice.AspectDefinition;
+import org.jboss.aop.microcontainer.beans.AspectManagerFactory;
 import org.jboss.aop.microcontainer.beans.ManagedAspectDefinition;
-import org.jboss.aop.microcontainer.lifecycle.LifecycleCallbackBinding;
 import org.jboss.aop.microcontainer.lifecycle.LifecycleCallbackDefinition;
 import org.jboss.aop.proxy.container.ContainerCache;
 import org.jboss.aop.util.Advisable;
@@ -43,7 +43,6 @@ import org.jboss.aop.util.ClassInfoMethodHashing;
 import org.jboss.classadapter.plugins.dependency.AbstractDependencyBuilder;
 import org.jboss.classadapter.spi.ClassAdapter;
 import org.jboss.classadapter.spi.Dependency;
-import org.jboss.classadapter.spi.DependencyBuilderListItem;
 import org.jboss.dependency.spi.ControllerState;
 import org.jboss.metadata.spi.MetaData;
 import org.jboss.metadata.spi.signature.MethodSignature;
@@ -75,7 +74,7 @@ public class AOPDependencyBuilder extends AbstractDependencyBuilder
 
    public List<Object> getDependencies(ClassAdapter classAdapter, MetaData metaData)
    {
-      AspectManager manager = AspectManager.instance();
+      AspectManager manager = AspectManagerFactory.getAspectManager(metaData);
       try
       {
          ClassInfo classInfo = classAdapter.getClassInfo();
@@ -95,7 +94,6 @@ public class AOPDependencyBuilder extends AbstractDependencyBuilder
                ContainerCache cache = ContainerCache.initialise(manager, clazz, metaData, true);
                advisor = cache.getAdvisor();
             }
-
             ReflectiveAspectBinder binder = new ReflectiveAspectBinder(clazz, advisor);
             Set aspects = binder.getAspects();
 
