@@ -1,8 +1,16 @@
 <?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE chapter PUBLIC "-//OASIS//DTD DocBook XML V4.4//EN" 
+"http://www.oasis-open.org/docbook/xml/4.4/docbookx.dtd">
+
 <chapter id="basics">
   <title>Basic Configuration and Usage</title>
 
-  <para>The microcontainer's main purpose is to allow external configuration of POJOs. As we have seen in <xref linkend="examples"/>, the POJOs in a microcontainer applications are nothing special. The key element that drives the application is the <varname>jboss-beans.xml</varname> configuration file. So, in this chapter, we will look at the some of the common configurations in <varname>jboss-beans.xml</varname>.</para>
+  <para>The microcontainer's main purpose is to allow external configuration of
+  POJOs. As we have seen in <xref linkend="examples"/>, the POJOs in a
+  microcontainer applications are nothing special. The key element that drives
+  the application is the <varname>jboss-beans.xml</varname> configuration file.
+  So, in this chapter, we will look at the some of the common configurations in
+  <varname>jboss-beans.xml</varname>.</para>
 
   <section>
     <title>Deployment</title>

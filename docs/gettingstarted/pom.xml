@@ -66,7 +66,7 @@
             </entity>
           </entities>
 
-          <xincludeSupport>true</xincludeSupport>
+          <xincludeSupported>true</xincludeSupported>
           <sourceDirectory>${basedir}/src/docbkx/en</sourceDirectory>
           <headerRule>0</headerRule>
           <footerRule>0</footerRule>

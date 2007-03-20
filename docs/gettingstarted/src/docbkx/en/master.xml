@@ -1,15 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!DOCTYPE book PUBLIC "-//OASIS//DTD DocBook XML V4.4//EN" 
-"http://www.oasis-open.org/docbook/xml/4.4/docbookx.dtd" 
-[
-<!ENTITY introduction SYSTEM "modules/introduction.xml">
-<!ENTITY installation SYSTEM "modules/installation.xml">
-<!ENTITY examples SYSTEM "modules/examples.xml">
-<!ENTITY packaging SYSTEM "modules/packaging.xml">
-<!ENTITY basics SYSTEM "modules/basics.xml">
-<!ENTITY standalone SYSTEM "modules/standalone.xml">
-<!ENTITY conclusion SYSTEM "modules/conclusion.xml">
-]>
+"http://www.oasis-open.org/docbook/xml/4.4/docbookx.dtd">
 <book lang="en">
   <bookinfo>
     <title>Getting Started with the JBoss Microcontainer</title>
@@ -43,17 +34,26 @@
       </itemizedlist></para>
   </preface>
 
-  &introduction;
+  <xi:include href="modules/introduction.xml"
+    xml:base="./"
+    xmlns:xi="http://www.w3.org/2001/XInclude"/>
+  <xi:include href="modules/installation.xml"
+    xml:base="./"
+    xmlns:xi="http://www.w3.org/2001/XInclude"/>
+  <xi:include href="modules/examples.xml"
+    xml:base="./"
+    xmlns:xi="http://www.w3.org/2001/XInclude"/>
+  <xi:include href="modules/packaging.xml"
+    xml:base="./"
+    xmlns:xi="http://www.w3.org/2001/XInclude"/>
+  <xi:include href="modules/basics.xml"
+    xml:base="./"
+    xmlns:xi="http://www.w3.org/2001/XInclude"/>
+  <xi:include href="modules/standalone.xml"
+    xml:base="./"
+    xmlns:xi="http://www.w3.org/2001/XInclude"/>
+  <xi:include href="modules/conclusion.xml"
+    xml:base="./"
+    xmlns:xi="http://www.w3.org/2001/XInclude"/>
 
-  &installation;
-
-  &examples;
-
-  &basics;
-  
-  &packaging;
-
-  &standalone;
-
-  &conclusion;
 </book>
