@@ -44,24 +44,6 @@
     <sourceDirectory>src/main</sourceDirectory>
 	  <testSourceDirectory>src/tests</testSourceDirectory>
     <finalName>${artifactId}</finalName>
-    <resources>
-      <resource>
-        <directory>src</directory>
-        <includes>
-          <include>etc/**</include>
-        </includes>
-        <filtering>true</filtering>
-      </resource>
-    </resources>
-    <testResources>
-      <testResource>
-        <directory>src</directory>
-        <includes>
-          <include>resources/**</include>
-        </includes>
-        <filtering>true</filtering>
-      </testResource>
-    </testResources>
     <plugins>
       <plugin>
         <artifactId>maven-compiler-plugin</artifactId>

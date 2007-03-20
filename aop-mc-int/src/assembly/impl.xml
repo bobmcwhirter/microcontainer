@@ -1,0 +1,16 @@
+<assembly>
+  <id>impl</id>
+  <formats>
+    <format>jar</format>
+  </formats>
+  <includeBaseDirectory>false</includeBaseDirectory>
+  <fileSets>
+    <fileSet>
+      <directory>target/classes</directory>
+        <excludes>
+          <eclude>org/jboss/aop/microcontainer/aspects/**</eclude>
+        </excludes>
+      <outputDirectory></outputDirectory>
+    </fileSet>
+  </fileSets>
+</assembly>

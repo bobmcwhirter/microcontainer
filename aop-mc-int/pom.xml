@@ -13,11 +13,39 @@
   <url>http://www.jboss.com/products/jbossmc</url>
   <description>JBoss Microcontainer</description>
   <build>
+    <resources>
+      <resource>
+        <directory>src/resources</directory>
+        <includes>
+          <include>schema/**</include>
+        </includes>
+      </resource>
+    </resources>
     <testResources>
       <testResource>
         <directory>src/resources/test</directory>
       </testResource>
     </testResources>
+    <plugins>
+      <plugin>
+        <artifactId>maven-assembly-plugin</artifactId>
+        <configuration>
+          <descriptors>
+            <descriptor>src/assembly/impl.xml</descriptor>
+            <descriptor>src/assembly/aspects.xml</descriptor>
+          </descriptors>
+        </configuration>
+        <executions>
+          <execution>
+            <id>make-assembly</id>
+            <phase>package</phase>
+            <goals>
+              <goal>attached</goal>
+            </goals>
+          </execution>
+        </executions>
+      </plugin>
+    </plugins>
   </build>
   <dependencies>
     <!-- Global dependencies -->
