@@ -1,0 +1,39 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<chapter id="installation">
+  <title>Download and Installation</title>
+
+  <para>First you need download JBoss Microcontainer release from <ulink
+  url="http://www.jboss.com/downloads/index">http://www.jboss.com/downloads/index</ulink></para>
+
+  <para>Unpack the archive which will give you a microcontainer-x.y.z
+  directory with the following subfolders:</para>
+
+  <itemizedlist>
+    <listitem>
+      <para>docs/api - javadocs for the microcontainer</para>
+    </listitem>
+
+    <listitem>
+      <para>docs/gettingstarted - this getting started documentation</para>
+    </listitem>
+
+    <listitem>
+      <para>docs/licences - the licenses for the software</para>
+    </listitem>
+    <listitem>
+      <para>examples - the examples explained in the next chapter</para>
+    </listitem>
+
+    <listitem>
+      <para>lib - the libraries required to run the microcontainer</para>
+    </listitem>
+
+  </itemizedlist>
+
+  <para>You will also need a JDK of version 1.4.x+ and a copy of Apache Ant
+  1.6+</para>
+
+  <para>If you want to run the examples inside JBoss AS, you will need to
+  download JBoss-4.0.3 or later <ulink
+  url="http://www.jboss.com/products/jbossas/downloads">http://www.jboss.com/products/jbossas/downloads</ulink></para>
+</chapter>
