@@ -1,0 +1,30 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<chapter id="bootstrap">
+  <title>Bootstrapping the Kernel</title>
+
+  <para>The bootstrap provides a simple mechanism for bootstrapping the microcontainer.</para>
+
+  <sect1 id="bootstrap-overview">
+    <title>Bootstrap - bootstrapping</title>
+
+    <para>This bootstrap creates and configures the microcontainer. This
+    involves creating a KernelConfig
+    from which the KernelFactory
+    can be instantiated using the KernelInstantiator.</para>
+  </sect1>
+
+  <sect1 id="config-overview">
+    <title>Config - bootstrap configuration</title>
+
+    <para>This KernelConfig provides the mechanism to configure the bootstrap
+    including how the core kernel services are instantiated and
+    configured.</para>
+  </sect1>
+
+  <sect1 id="kernelfactory-overview">
+    <title>KernelFactory - kernel instantiation</title>
+
+    <para>The KernelFactory is responsible for initializing and configuring
+    the kernel services using information provided by the KernelConfig.</para>
+  </sect1>
+</chapter>
