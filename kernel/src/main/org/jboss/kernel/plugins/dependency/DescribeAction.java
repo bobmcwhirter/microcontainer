@@ -38,6 +38,7 @@ import org.jboss.metadata.spi.MetaData;
  */
 public class DescribeAction extends KernelControllerContextAction
 {
+   @SuppressWarnings("unchecked")
    protected void installActionInternal(KernelControllerContext context) throws Throwable
    {
       BeanInfo info = context.getBeanInfo();
