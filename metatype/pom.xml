@@ -12,16 +12,6 @@
   <name>JBoss Microcontainer Metatype</name>
   <url>http://www.jboss.com/products/jbossmc</url>
   <description>JBoss Microcontainer Metatype</description>
-  <build>
-    <plugins>
-      <!-- The antrun plugin is used for generating jdk1.4 compatible classes.  
-           The configuration for this plugin is specified in the parent pom. -->
-      <plugin>
-        <groupId>org.apache.maven.plugins</groupId>
-        <artifactId>maven-antrun-plugin</artifactId>
-      </plugin>    
-    </plugins>
-  </build>
   <dependencies>
     <!-- Global dependencies -->
 	  <!-- none -->
