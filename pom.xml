@@ -111,13 +111,13 @@
     </repository>
   </repositories>
   <modules>
-    <module>../container</module>
-    <module>../dependency</module>
-    <module>../kernel</module>
-    <module>../aop-mc-int</module>
-    <module>../metatype</module>
-    <module>../managed</module>
-    <module>../deployers</module>
+    <module>container</module>
+    <module>dependency</module>
+    <module>kernel</module>
+    <module>aop-mc-int</module>
+    <module>metatype</module>
+    <module>managed</module>
+    <module>deployers</module>
   </modules>
   <reporting>
     <plugins>
