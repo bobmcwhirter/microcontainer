@@ -1,0 +1,16 @@
+<assembly>
+  <id>plugins</id>
+  <formats>
+    <format>jar</format>
+  </formats>
+  <includeBaseDirectory>false</includeBaseDirectory>
+  <fileSets>
+    <fileSet>
+      <directory>target/classes</directory>
+        <excludes>
+          <eclude>org/jboss/deployers/plugins/**</eclude>
+        </excludes>
+      <outputDirectory></outputDirectory>
+    </fileSet>
+  </fileSets>
+</assembly>

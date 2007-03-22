@@ -14,10 +14,12 @@
   <build>
     <plugins>
       <plugin>
-        <groupId>org.apache.maven.plugins</groupId>
-        <artifactId>maven-surefire-plugin</artifactId>
+        <artifactId>maven-assembly-plugin</artifactId>
         <configuration>
-          <skip>true</skip>
+          <descriptors>
+            <descriptor>src/assembly/api.xml</descriptor>
+            <descriptor>src/assembly/plugins.xml</descriptor>
+          </descriptors>
         </configuration>
       </plugin>
     </plugins>
