@@ -16,7 +16,7 @@
       <resource>
         <directory>src/resources</directory>
         <includes>
-          <include>schema/**</include>
+          <include>schema</include>
         </includes>
       </resource>
     </resources>
@@ -25,6 +25,7 @@
         <directory>src/resources</directory>
         <includes>
           <include>org</include>
+          <include>xml-test</include>
         </includes>
       </testResource>
     </testResources>

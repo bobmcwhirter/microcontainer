@@ -16,13 +16,13 @@
       <resource>
         <directory>src/resources</directory>
         <includes>
-          <include>schema/**</include>
+          <include>schema</include>
         </includes>
       </resource>
     </resources>
     <testResources>
       <testResource>
-        <directory>src/resources/test</directory>
+        <directory>src/resources/tests</directory>
       </testResource>
     </testResources>
     <plugins>

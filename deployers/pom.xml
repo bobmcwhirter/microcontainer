@@ -12,6 +12,11 @@
   <url>http://www.jboss.com/products/jbossmc</url>
   <description>JBoss Microcontainer Deployers</description>
   <build>
+    <testResources>
+      <testResource>
+        <directory>src/resources/tests</directory>
+      </testResource>
+    </testResources>
     <plugins>
       <plugin>
         <artifactId>maven-assembly-plugin</artifactId>

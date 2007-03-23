@@ -23,7 +23,7 @@
   <parent>
     <groupId>jboss</groupId>
     <artifactId>jboss-parent</artifactId>
-    <version>1</version>
+    <version>2-SNAPSHOT</version>
   </parent>
   <modelVersion>4.0.0</modelVersion>
   <artifactId>jboss-microcontainer</artifactId>
@@ -60,8 +60,11 @@
         <configuration>
           <testFailureIgnore>true</testFailureIgnore>
           <includes>
-            <include>**/*TestCase.java</include>
+            <include>org/jboss/test/**/*TestCase.java</include>
           </includes>
+          <!--<excludes>
+            <exclude>org/jboss/test/**/NoJavassistAnnotationCreatorTestCase.java</exclude>
+          </excludes>-->
         </configuration>
       </plugin>
       <plugin>
@@ -85,7 +88,7 @@
       <plugin>
         <groupId>jboss.maven-plugins</groupId>
         <artifactId>jboss-deploy-maven-plugin</artifactId>
-        <version>1.1-beta</version>
+        <version>1.1</version>
         <executions>
           <execution>
             <goals>
