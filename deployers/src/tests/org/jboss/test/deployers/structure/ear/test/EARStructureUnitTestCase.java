@@ -46,7 +46,7 @@ import org.jboss.virtual.VirtualFile;
  * Mock ear structure deployer tests
  * 
  * @author Scott.Stark@jboss.org
- * @version $Revision: 1.1 $
+ * @version $Revision$
  */
 public class EARStructureUnitTestCase extends BaseDeployersTest
 {
@@ -181,7 +181,9 @@ public class EARStructureUnitTestCase extends BaseDeployersTest
    }
 
    /**
-    * Validate a ear with modules having subdeployments 
+    * Validate a ear type of structure specified via the ear
+    * META-INF/application.properties parsed by the MockEarStructureDeployer.
+    * The ear modules having subdeployments 
     * @throws Exception
     */
    public void testComplexWithAppXml() throws Exception
@@ -192,7 +194,8 @@ public class EARStructureUnitTestCase extends BaseDeployersTest
       assertEquals("classpath.size = 1", 1, classpath.size());
       VirtualFile earFile = ear.getRoot();
       VirtualFile j0 = earFile.findChild("lib/lib0.jar");
-      assertTrue("lib/j0.jar in classpath", classpath.contains(j0));
+      // Should be in classpath due to default ear lib logic
+      assertTrue("lib/lib0.jar in classpath", classpath.contains(j0));
       // Validate that the expected module contexts exist
       HashSet<String> expected = new HashSet<String>();
       URL rootURL = ear.getRoot().toURL();
@@ -204,9 +207,12 @@ public class EARStructureUnitTestCase extends BaseDeployersTest
       expected.add("module-mcf1-ds.xml");
       expected.add("module-mcf1.rar/");
       expected.add("module-web1.war/");
+      expected.add("subdir/relative.jar/");
       Set<DeploymentContext> children = ear.getChildren();
       Set<String> childPaths = super.createDeploymentPathSet(children, rootURL);
-      assertEquals("ear child count", expected, childPaths);
+      assertEquals("ear child DeploymentContext paths", expected, childPaths);
+      // lib/lib0.jar should not have a DeploymentContext
+      assertFalse("lib/lib0.jar is not a DeploymentContext", childPaths.contains("lib/lib0.jar"));
 
       // Validate that the expected module subdeployments are there
       Map<String, DeploymentContext> pathMap = createDeploymentPathMap(ear);
@@ -220,7 +226,6 @@ public class EARStructureUnitTestCase extends BaseDeployersTest
       assertNotNull("complexwithappxml.ear/submbean2-service.xml", submbean2);
       assertEquals("submbean2-service.xml", "/module-mbean1.sar/submbean2-service.xml", submbean2.getRelativePath());
       assertEquals("submbean2-service.xml", "submbean2-service.xml", submbean2.getSimpleName());
-
    }
 
    /**
