@@ -38,7 +38,7 @@ import org.jboss.test.BaseTestCase;
  * Tests of the default StructureMetaData implementation
  * 
  * @author Scott.Stark@jboss.org
- * @version $Revision: 1.1 $
+ * @version $Revision$
  */
 public class StructureMetaDataUnitTestCase extends BaseTestCase
 {
@@ -152,35 +152,57 @@ public class StructureMetaDataUnitTestCase extends BaseTestCase
       assertNotNull("top/root/sub2/sub21", sub21Jar);
       assertSame(sub2, sub21Jar.getParent());
    }
+   /**
+    * JBMICROCONT-161 test for missing websubdir/relative.jar context info.
+    * @throws Exception
+    */
+   public void testStructureMetaDataParentChildRelativeMC161()
+      throws Exception
+   {
+      StructureMetaData metaData = new StructureMetaDataImpl();
+      ContextInfo c0 = getContextInfo("");
+      metaData.addContext(c0);
+      ContextInfo c1 = getContextInfo("wars/notjbosstest-web.war");
+      metaData.addContext(c1);
+      ContextInfo c2 = getContextInfo("cts.jar");
+      metaData.addContext(c2);
+      ContextInfo c3 = getContextInfo("jbosstest-web-ejbs.jar");
+      metaData.addContext(c3);
+      ContextInfo c4 = getContextInfo("jbosstest-web.war");
+      metaData.addContext(c4);
+      ContextInfo c5 = getContextInfo("root-web.war");
+      metaData.addContext(c5);
+      ContextInfo c6 = getContextInfo("jbosstest-web-ejbs.jar/roles.properties");
+      metaData.addContext(c6);
+      ContextInfo c7 = getContextInfo("jbosstest-web-ejbs.jar/users.properties");
+      metaData.addContext(c7);
+      ContextInfo c8 = getContextInfo("websubdir/relative.jar");
+
+      StructureMetaDataImpl.ContextComparator compare = new StructureMetaDataImpl.ContextComparator();
+      assertFalse(compare.compare(c0, c8) == 0);
+      assertFalse(compare.compare(c1, c8) == 0);
+      assertFalse(compare.compare(c2, c8) == 0);
+      assertFalse(compare.compare(c3, c8) == 0);
+      assertFalse(compare.compare(c4, c8) == 0);
+      assertFalse(compare.compare(c5, c8) == 0);
+      assertFalse(compare.compare(c6, c8) == 0);
+      assertFalse(compare.compare(c7, c8) == 0);
+      metaData.addContext(c8);
+
+      assertEquals("context count is 9", 9, metaData.getContexts().size());
+      assertNotNull("wars/notjbosstest-web.war", metaData.getContext("wars/notjbosstest-web.war"));
+      assertNotNull("cts.jar", metaData.getContext("cts.jar"));
+      assertNotNull("jbosstest-web-ejbs.jar", metaData.getContext("jbosstest-web-ejbs.jar"));
+      assertNotNull("jbosstest-web.war", metaData.getContext("jbosstest-web.war"));
+      assertNotNull("root-web.war", metaData.getContext("root-web.war"));
+      assertNotNull("jbosstest-web-ejbs.jar/roles.properties", metaData.getContext("jbosstest-web-ejbs.jar/roles.properties"));
+      assertNotNull("jbosstest-web-ejbs.jar/users.properties", metaData.getContext("jbosstest-web-ejbs.jar/users.properties"));
+      assertNotNull("websubdir/relative.jar", metaData.getContext("websubdir/relative.jar"));
+   }
 
    public void testSortedSet()
    {
-      Comparator<ContextInfo> c = new Comparator<ContextInfo>()
-      {
-         public int compare(ContextInfo o1, ContextInfo o2)
-         {
-            int compare = 0;
-            if( o1 == null && o2 != null )
-               compare = -1;
-            else if( o1 != null && o2 == null )
-               compare = 1;
-            else
-            {
-               // Sort by depth and then name
-               ContextInfo p1 = o1.getParent();
-               ContextInfo p2 = o2.getParent();
-               if( p1 != p2 )
-               {
-                  compare = compare(p1, p2);
-               }
-               else if( p1 != null )
-               {
-                  compare = o1.getVfsPath().compareTo(o2.getVfsPath());
-               }
-            }
-            return compare;
-         }
-      };
+      StructureMetaDataImpl.ContextComparator c = new StructureMetaDataImpl.ContextComparator();
       TreeSet<ContextInfo> info = new TreeSet<ContextInfo>(c);
 
       ArrayList<ContextInfo> order = new ArrayList<ContextInfo>();
@@ -197,11 +219,12 @@ public class StructureMetaDataUnitTestCase extends BaseTestCase
       metaData.addContext(context);
       info.add(context);
       order.add(context);
-      context = getContextInfo("top/root/subdir/sub3.jar");
+      context = getContextInfo("top/root/subdir");
       metaData.addContext(context);
       info.add(context);
       order.add(context);
 
+      // sub2 < subd
       context = getContextInfo("top/root/sub2/sub21");
       metaData.addContext(context);
       info.add(context);
@@ -210,8 +233,16 @@ public class StructureMetaDataUnitTestCase extends BaseTestCase
       metaData.addContext(context);
       info.add(context);
       order.add(context);
-      metaData.addContext(context);
       context = getContextInfo("top/root/sub2/sub21.war");
+      metaData.addContext(context);
+      info.add(context);
+      order.add(context);
+
+      context = getContextInfo("top/root/subdir/sub2.jar");
+      metaData.addContext(context);
+      info.add(context);
+      order.add(context);
+      context = getContextInfo("top/root/subdir/sub3.jar");
       metaData.addContext(context);
       info.add(context);
       order.add(context);
@@ -220,7 +251,7 @@ public class StructureMetaDataUnitTestCase extends BaseTestCase
       for(ContextInfo ci : info)
       {
          ContextInfo expected = order.get(count);
-         assertSame("At: "+count, ci, expected);
+         assertSame("At: "+count, expected, ci);
          count ++;
       }
    }
@@ -240,9 +271,6 @@ public class StructureMetaDataUnitTestCase extends BaseTestCase
       context = getContextInfo("top/root/sub2");
       metaData.addContext(context);
       order.add(context);
-      context = getContextInfo("top/root/subdir/sub3.jar");
-      metaData.addContext(context);
-      order.add(context);
 
       // top/root/sub2 children
       context = getContextInfo("top/root/sub2/sub21");
@@ -255,11 +283,16 @@ public class StructureMetaDataUnitTestCase extends BaseTestCase
       metaData.addContext(context);
       order.add(context);
 
+      // top/root/subdir children
+      context = getContextInfo("top/root/subdir/sub3.jar");
+      metaData.addContext(context);
+      order.add(context);
+
       int count = 0;
       for(ContextInfo ci : metaData.getContexts())
       {
          ContextInfo expected = order.get(count);
-         assertSame("At: "+count, ci, expected);
+         assertSame("At: "+count, expected, ci);
          count ++;
       }      
    }

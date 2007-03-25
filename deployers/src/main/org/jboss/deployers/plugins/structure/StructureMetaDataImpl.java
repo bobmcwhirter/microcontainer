@@ -34,15 +34,21 @@ import org.jboss.deployers.spi.structure.vfs.StructureMetaData;
  * Metadata describing the structure of a deployment.
  * 
  * @author Scott.Stark@jboss.org
- * @version $Revision:$
+ * @version $Revision$
  */
 public class StructureMetaDataImpl
    implements StructureMetaData, Serializable
 {
    private static final long serialVersionUID = 1;
 
+   /**
+    * The map of vfs relative paths to ContextInfo
+    */
    private HashMap<String, ContextInfo> contextMap =
       new HashMap<String, ContextInfo>();
+   /**
+    * 
+    */
    private TreeSet<ContextInfo> contextSet = new  TreeSet<ContextInfo>(new ContextComparator());
 
    public void addContext(ContextInfo context)
@@ -73,7 +79,9 @@ public class StructureMetaDataImpl
                context.setParent(parent);
          }
       }
-      contextSet.add(context);
+      // There should not be duplicate contexts
+      if( contextSet.add(context) == false )
+         throw new IllegalStateException("Failed to add: "+context);
    }
 
    public ContextInfo getContext(String vfsPath)
@@ -103,7 +111,10 @@ public class StructureMetaDataImpl
       return tmp.toString();
    }
 
-   private class ContextComparator implements Comparator<ContextInfo>
+   /**
+    * Compare ContextInfo by depth and then leaf name.
+    */
+   public static class ContextComparator implements Comparator<ContextInfo>
    {
       public int compare(ContextInfo o1, ContextInfo o2)
       {
@@ -115,15 +126,20 @@ public class StructureMetaDataImpl
          else
          {
             // Sort by depth and then name
-            ContextInfo p1 = o1.getParent();
-            ContextInfo p2 = o2.getParent();
-            if( p1 != p2 )
+            String[] p1 = o1.getVfsPath().split("/");
+            String[] p2 = o2.getVfsPath().split("/");
+            compare = p1.length - p2.length;
+            if( compare == 0 )
             {
-               compare = compare(p1, p2);
-            }
-            else if( p1 != null )
-            {
-               compare = o1.getVfsPath().compareTo(o2.getVfsPath());
+               for(int n = 0; n < p1.length; n ++)
+               {
+                  String p1p = p1[n];
+                  String p2p = p2[n];
+                  compare = p1p.compareTo(p2p);
+                  if( compare != 0 )
+                     break;
+               }
+               
             }
          }
          return compare;

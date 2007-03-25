@@ -229,6 +229,53 @@ public class EARStructureUnitTestCase extends BaseDeployersTest
    }
 
    /**
+    * Same as testComplexWithAppXml, but the URL for the ear VFS is the ear
+    * itself. This leads to the ear having an "" empty vfs relative path.
+    * @throws Exception
+    */
+   public void testComplexWithAppXmlEmptyRootPath() throws Exception
+   {      
+      DeploymentContext ear = assertValidContext("/structure/ear/complexwithappxml.ear", "");
+      List<VirtualFile> classpath = ear.getClassPath();
+      assertNotNull("classpath", classpath);
+      assertEquals("classpath.size = 1", 1, classpath.size());
+      VirtualFile earFile = ear.getRoot();
+      VirtualFile j0 = earFile.findChild("lib/lib0.jar");
+      // Should be in classpath due to default ear lib logic
+      assertTrue("lib/lib0.jar in classpath", classpath.contains(j0));
+      // Validate that the expected module contexts exist
+      HashSet<String> expected = new HashSet<String>();
+      URL rootURL = ear.getRoot().toURL();
+      expected.add("module-service.xml");
+      expected.add("module-bean1ejb.jar/");
+      expected.add("module-bean2.ejb3/");
+      expected.add("module-client1.jar/");
+      expected.add("module-mbean1.sar/");
+      expected.add("module-mcf1-ds.xml");
+      expected.add("module-mcf1.rar/");
+      expected.add("module-web1.war/");
+      expected.add("subdir/relative.jar/");
+      Set<DeploymentContext> children = ear.getChildren();
+      Set<String> childPaths = super.createDeploymentPathSet(children, rootURL);
+      assertEquals("ear child DeploymentContext paths", expected, childPaths);
+      // lib/lib0.jar should not have a DeploymentContext
+      assertFalse("lib/lib0.jar is not a DeploymentContext", childPaths.contains("lib/lib0.jar"));
+
+      // Validate that the expected module subdeployments are there
+      Map<String, DeploymentContext> pathMap = createDeploymentPathMap(ear);
+      DeploymentContext extensionsAop = pathMap.get("module-mbean1.sar/extensions.aop");
+      assertNotNull("module-mbean1.sar/extensions.aop/", extensionsAop);
+      DeploymentContext submbean1 = pathMap.get("module-mbean1.sar/submbean.sar");
+      assertEquals("submbean.sar", "module-mbean1.sar/submbean.sar", submbean1.getRelativePath());
+      assertEquals("submbean.sar", "submbean.sar", submbean1.getSimpleName());
+      assertNotNull("submbean.sar", submbean1);
+      DeploymentContext submbean2 = pathMap.get("module-mbean1.sar/submbean2-service.xml");
+      assertNotNull("submbean2-service.xml", submbean2);
+      assertEquals("submbean2-service.xml", "module-mbean1.sar/submbean2-service.xml", submbean2.getRelativePath());
+      assertEquals("submbean2-service.xml", "submbean2-service.xml", submbean2.getSimpleName());
+   }
+
+   /**
     * Basic getMetaDataFile/getFile tests.
     * 
     * @throws Exception
