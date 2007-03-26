@@ -45,13 +45,17 @@ Generate html using:   mvn docbkx:generate-html
       </itemizedlist></para>
   </preface>
   
-  <preface>
-     <title>Wiki Links</title>
-     <itemizedlist>
-        <listitem><para><ulink url="http://wiki.jboss.org/wiki/Wiki.jsp?page=JBossMicrocontainer">JBossMicrocontainer</ulink></para></listitem>
-     </itemizedlist>
-  </preface>
 
+   <!-- Temp outline of book organization -->
+   <xi:include href="modules/outline.xml"
+      xml:base="./"
+      xmlns:xi="http://www.w3.org/2001/XInclude"/>
+
+   <!-- Collection of wiki links -->
+   <xi:include href="modules/wikilinks.xml"
+      xml:base="./"
+      xmlns:xi="http://www.w3.org/2001/XInclude"/>
+   
    <xi:include href="modules/introduction.xml"
       xml:base="./"
       xmlns:xi="http://www.w3.org/2001/XInclude"/>

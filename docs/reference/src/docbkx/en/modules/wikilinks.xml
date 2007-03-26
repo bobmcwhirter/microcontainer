@@ -1,0 +1,20 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE chapter PUBLIC "-//OASIS//DTD DocBook XML V4.4//EN" 
+"http://www.oasis-open.org/docbook/xml/4.4/docbookx.dtd">
+
+<chapter id="wiki-links">
+    <title>Wiki Links</title>
+    <para>A collection of useful wiki/forum links to help pull together
+    content.
+    </para>
+
+    <itemizedlist>
+        <listitem><para><ulink url="http://wiki.jboss.org/wiki/Wiki.jsp?page=JBossMicrocontainerHighLevelRoadMap">MC High Level Road Map</ulink></para></listitem>
+        <listitem><para><ulink url="http://www.jboss.com/index.html?module=bb&amp;op=viewtopic&amp;t=59868">Executive Overview</ulink></para></listitem>
+        <listitem><para><ulink url="http://wiki.jboss.org/wiki/Wiki.jsp?page=JBossMicrocontainer">JBossMicrocontainer</ulink></para></listitem>
+        <listitem><para><ulink url="http://wiki.jboss.org/wiki/Wiki.jsp?page=JBossController">JBossController</ulink></para></listitem>
+        <listitem><para><ulink url="http://wiki.jboss.org/wiki/Wiki.jsp?page=JBoss5HighLevelRoadMap">JBoss5 High Level Road Map</ulink></para></listitem>
+        <listitem><para><ulink url="http://wiki.jboss.org/wiki/Wiki.jsp?page=JBoss5DeploymentFramework">JBossAS5 Virtual Deployment Framework</ulink></para></listitem>
+        <listitem><para><ulink url="http://wiki.jboss.org/wiki/Wiki.jsp?page=JBossMicrocontainerFAQ">FAQ</ulink></para></listitem>
+    </itemizedlist>
+</chapter>
