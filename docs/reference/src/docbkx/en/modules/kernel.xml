@@ -1,3 +1,6 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE chapter PUBLIC "-//OASIS//DTD DocBook XML V4.4//EN" 
+"http://www.oasis-open.org/docbook/xml/4.4/docbookx.dtd">
 <chapter id="kernel">
     <title>The Core Kernel</title>
 
@@ -49,4 +52,13 @@
       </para>
    </sect1>
 
+   <sect1>
+      <para>
+         <itemizedlist>
+            <listitem>
+               <u
+            </listitem>
+         </itemizedlist>
+      </para>
+   </sect1>
 </chapter>

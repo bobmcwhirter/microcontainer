@@ -1,4 +1,9 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE chapter PUBLIC "-//OASIS//DTD DocBook XML V4.4//EN" 
+"http://www.oasis-open.org/docbook/xml/4.4/docbookx.dtd">
+   
 <chapter id="configuration">
+   
     <title>Bean Configuration - instantiating and configuring beans</title>
 
     <para>
@@ -12,6 +17,7 @@
       This service is used by the
       <link linkend="controller-overview">Controller</link>
       once it knows the dependencies have been satisfied.
+         ControllerContext
       </para>
    </sect1>
 

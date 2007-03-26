@@ -1,29 +1,15 @@
 <?xml version='1.0' encoding="iso-8859-1"?>
 <!DOCTYPE book PUBLIC "-//OASIS//DTD DocBook XML V4.4//EN" 
-"http://www.oasis-open.org/docbook/xml/4.4/docbookx.dtd"
-[
-<!ENTITY beaninfo              SYSTEM "modules/beaninfo.xml">
-<!ENTITY bootstrap             SYSTEM "modules/bootstrap.xml">
-<!ENTITY bus                   SYSTEM "modules/bus.xml">
-<!ENTITY classadapter          SYSTEM "modules/classadapter.xml">
-<!ENTITY configuration         SYSTEM "modules/configuration.xml">
-<!ENTITY dependency            SYSTEM "modules/dependency.xml">
-<!ENTITY dependencycontroller  SYSTEM "modules/dependencycontroller.xml">
-<!ENTITY dependencyinfo        SYSTEM "modules/dependencyinfo.xml">
-<!ENTITY deployment            SYSTEM "modules/deployment.xml">
-<!ENTITY events                SYSTEM "modules/events.xml">
-<!ENTITY introduction          SYSTEM "modules/introduction.xml">
-<!ENTITY joinpoint             SYSTEM "modules/joinpoint.xml">
-<!ENTITY kernel                SYSTEM "modules/kernel.xml">
-<!ENTITY metadata              SYSTEM "modules/metadata.xml">
-<!ENTITY registry              SYSTEM "modules/registry.xml">
-<!ENTITY reflection            SYSTEM "modules/reflection.xml">
-]>
+"http://www.oasis-open.org/docbook/xml/4.4/docbookx.dtd">
+<!--
+$Id:$
+Generate html using:   mvn docbkx:generate-html
+-->
 <book lang="en">
    <bookinfo>
       <title>JBoss Microcontainer Reference</title>
       <subtitle>A Reference for Developers</subtitle>
-      <releaseinfo>1.0.2</releaseinfo>
+      <releaseinfo>2.0.0</releaseinfo>
    </bookinfo>
     
    <toc/>
@@ -53,38 +39,60 @@
         <listitem>
           <para>Adrian Brock - JBoss Microcontainer Project Lead and Chief
           Scientist of JBoss Inc.</para>
+          <para>Ales Justin</para>
+          <para>Scott Stark</para>
         </listitem>
       </itemizedlist></para>
   </preface>
+  
+  <preface>
+     <title>Wiki Links</title>
+     <itemizedlist>
+        <listitem><para><ulink url="http://wiki.jboss.org/wiki/Wiki.jsp?page=JBossMicrocontainer">JBossMicrocontainer</ulink></para></listitem>
+     </itemizedlist>
+  </preface>
 
-&introduction; 
-
-&reflection; 
-
-&joinpoint; 
-
-&classadapter;
-
-&dependencycontroller;
-
-&dependencyinfo;
-
-&bootstrap; 
-
-&registry; 
-
-&bus; 
-
-&beaninfo; 
-
-&metadata; 
-
-&configuration; 
-
-&dependency; 
-
-&deployment; 
-
-&events; 
+   <xi:include href="modules/introduction.xml"
+      xml:base="./"
+      xmlns:xi="http://www.w3.org/2001/XInclude"/>
+   <xi:include href="modules/reflection.xml"
+      xml:base="./"
+      xmlns:xi="http://www.w3.org/2001/XInclude"/>
+   <xi:include href="modules/joinpoint.xml"
+      xml:base="./"
+      xmlns:xi="http://www.w3.org/2001/XInclude"/>
+   <xi:include href="modules/dependencycontroller.xml"
+      xml:base="./"
+      xmlns:xi="http://www.w3.org/2001/XInclude"/>
+   <xi:include href="modules/dependencyinfo.xml"
+      xml:base="./"
+      xmlns:xi="http://www.w3.org/2001/XInclude"/>
+   <xi:include href="modules/bootstrap.xml"
+      xml:base="./"
+      xmlns:xi="http://www.w3.org/2001/XInclude"/>
+   <xi:include href="modules/registry.xml"
+      xml:base="./"
+      xmlns:xi="http://www.w3.org/2001/XInclude"/>
+   <xi:include href="modules/bus.xml"
+      xml:base="./"
+      xmlns:xi="http://www.w3.org/2001/XInclude"/>
+   <xi:include href="modules/beaninfo.xml"
+      xml:base="./"
+      xmlns:xi="http://www.w3.org/2001/XInclude"/>
+   <xi:include href="modules/metadata.xml"
+      xml:base="./"
+      xmlns:xi="http://www.w3.org/2001/XInclude"/>
+   <xi:include href="modules/configuration.xml"
+      xml:base="./"
+      xmlns:xi="http://www.w3.org/2001/XInclude"/>
+   <xi:include href="modules/dependency.xml"
+      xml:base="./"
+      xmlns:xi="http://www.w3.org/2001/XInclude"/>
+   <xi:include href="modules/deployment.xml"
+      xml:base="./"
+      xmlns:xi="http://www.w3.org/2001/XInclude"/>
+   <xi:include href="modules/events.xml"
+      xml:base="./"
+      xmlns:xi="http://www.w3.org/2001/XInclude"/>
 
 </book>

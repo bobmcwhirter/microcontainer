@@ -1,4 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE chapter PUBLIC "-//OASIS//DTD DocBook XML V4.4//EN" 
+"http://www.oasis-open.org/docbook/xml/4.4/docbookx.dtd">
+
 <chapter id="introduction">
   <title>Introduction to the JBoss Microcontainer</title>
 
@@ -9,8 +12,8 @@
 
   <para></para>
 
-  <para>This initial release provides a set of features to support POJO
-  deployment in JBoss-4.0.3+ and the bootstrap of services used by the
+  <para>This second release provides a set of features to support POJO
+  deployment in JBossAS-5.0.x and the bootstrap of services used by the
   standalone EJB3 distribution.</para>
 
   <para></para>

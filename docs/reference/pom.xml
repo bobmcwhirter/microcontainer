@@ -53,7 +53,9 @@
         </dependencies>
 
         <configuration>
+<!--
           <foCustomization>${basedir}/src/styles/docbook-fo.xsl</foCustomization>
+-->
           <includes>master.xml</includes>
 
           <!-- use separate pages per chapter for HTML -->
