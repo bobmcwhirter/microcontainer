@@ -60,4 +60,70 @@
           (discussion of how a kernel/framework like OSGi should integrate with the MC). 
       </para>
   </sect1>
+
+  <sect1 id="mc-modules">
+      <title>An overview of the MC modules</title>
+      <para>This section introduces the various MC modules</para>
+      <sect2>
+          <title>aop-mc-int</title>
+          <para>Integration between the JBossAOP and MC projects</para>
+      </sect2>
+      <sect2>
+          <title>container</title>
+          <para>A better name would be joinpoint. This module contains:
+          reflection, the integration point for manipulating class information at runtime,
+          e.g. overriding annotations or obtaining an aop instance advisor.
+          joinpoint, the joinpoint model including the join point factory.
+          classadaptor, the integration and configuration spi.
+          metadata, base metadata types and repository
+          </para>
+      </sect2>
+      <sect2>
+          <title>dependency</title>
+          <para>Dependency management is handled by the controller. The
+          controller is the core component for keeping track
+          of contexts to make sure the configuration and lifecycle are
+          done in the correct order including dependencies and
+          classloading considerations. 
+          </para>
+      </sect2>
+      <sect2>
+          <title>deployers</title>
+          <para>Deployers load components from various models, POJOs, JMX, spring,
+          Java EE, etc. into the MC runtime.  
+          </para>
+      </sect2>
+      <sect2>
+          <title>kernel</title>
+          <para>The kernel defines the core kernel spi including, boostrap,
+              configuration, POJO deployments, dependency, events, bean
+              metadata, and bean registry.
+          </para>
+      </sect2>
+      <sect2>
+          <title>managed</title>
+          <para>The managed module defines the base objects defining the
+              management view of a component. 
+          </para>
+      </sect2>
+      <sect2>
+          <title>metatype</title>
+          <para>The metatype module defines the base types found in the
+              management view of a component.
+          </para>
+      </sect2>
+      <sect2>
+          <title>osgi-int</title>
+          <para>This contains the integration classes that adapt the OSGi
+              model onto the MC.
+          </para>
+      </sect2>
+      <sect2>
+          <title>spring-int</title>
+          <para>This contains the integration classes that adapt the spring
+              model onto the MC.
+          </para>
+      </sect2>
+      
+  </sect1>
 </chapter>
