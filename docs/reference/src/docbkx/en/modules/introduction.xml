@@ -1,23 +1,63 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!DOCTYPE chapter PUBLIC "-//OASIS//DTD DocBook XML V4.4//EN" 
 "http://www.oasis-open.org/docbook/xml/4.4/docbookx.dtd">
-
+<!-- Id: -->
 <chapter id="introduction">
   <title>Introduction to the JBoss Microcontainer</title>
 
-  <para>The JBoss Microcontainer provides an environment to configure and
+  <para>The JBoss Microcontainer (MC) provides an environment to configure and
   manage POJOs (plain old java objects). It is designed to reproduce the
   existing JBoss JMX Microkernel but targetted at POJO environments. As such
   it can be used standalone outside the JBoss Application Server.</para>
 
-  <para></para>
-
-  <para>This second release provides a set of features to support POJO
-  deployment in JBossAS-5.0.x and the bootstrap of services used by the
-  standalone EJB3 distribution.</para>
+  <para>The 2.0.x release provides a set of features to support POJO
+  deployment in JBossAS-5.0.x, JBossESB, and the bootstrap of services used by
+  standalone projects like embedded EJB3.</para>
 
   <para></para>
 
   <para>This document takes you through the design of the microcontainer
-  including design decisions and future directions.</para>
+  including design decisions and future directions.
+  </para>
+
+  <sect1>
+      <title>JBoss Microcontainer Highlights</title>
+      <para>The primary focus of the MC is as a framework for
+      building server kernels. It replaces the legacy JMX based kernel
+      found in JBossAS4.x and earlier with a POJO based kernel that
+      has been generalized to better support extensibility along the
+      primary aspects required for a server type of environment: aop, metadata,
+      class loading, deployments, state management, lifecycle/dependcies, configuration,
+      and management. The use of the term server should not be correlated with
+      large memory/cpu requirment environments of typical application/web servers.
+      A server in the context of the MC is just a kernel for plugging POJO
+      container models into. The MC can be configured for extremely lightweight
+      application type setups like a junit testcase as well as full feature
+      application servers.
+      </para>
+
+      <para>
+          
+      </para>
+  </sect1>
+
+  <sect1>
+      <title>Information and Roadmaps</title>
+      <para>A high level roadmap for the MC and status can be found in the
+          wiki page <ulink url="http://wiki.jboss.org/wiki/Wiki.jsp?page=JBossMicrocontainerHighLevelRoadMap">JBossMicrocontainerHighLevelRoadMap</ulink>.
+          A more detailed roadmap of the issues going into releases can be found
+          in the   
+          <ulink url="http://jira.jboss.com/jira/browse/JBMICROCONT?report=com.atlassian.jira.plugin.system.project:roadmap-panel">MC JIRA</ulink>
+          project page.
+      </para>
+      <para>Design discussion occur in the <ulink url="http://www.jboss.com/index.html?module=bb&amp;op=main&amp;c=18">JBoss POJO Developers Forums</ulink>.
+          This currently includes 3 sub-forums:
+          <ulink url="http://www.jboss.com/index.html?module=bb&amp;op=viewforum&amp;f=204">Design the new POJO MicroContainer</ulink>
+          (the core MC projects independent of any particular usage),
+          <ulink url="http://www.jboss.com/index.html?module=bb&amp;op=viewforum&amp;f=208">Design of POJO Server</ulink>
+          (discussions related to application server environments like JBossAS, JBossESB),
+          <ulink url="http://www.jboss.com/index.html?module=bb&amp;op=viewforum&amp;f=256">Design of OSGi Integration</ulink>
+          (discussion of how a kernel/framework like OSGi should integrate with the MC). 
+      </para>
+  </sect1>
 </chapter>
