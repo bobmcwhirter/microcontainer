@@ -2,7 +2,7 @@
 <!DOCTYPE book PUBLIC "-//OASIS//DTD DocBook XML V4.4//EN" 
 "http://www.oasis-open.org/docbook/xml/4.4/docbookx.dtd">
 <!--
-$Id:$
+Id
 Generate html using:   mvn docbkx:generate-html
 -->
 <book lang="en">
