@@ -24,7 +24,7 @@
       <testResource>
         <directory>src/resources</directory>
         <includes>
-          <include>xml-test</include>
+          <include>xml-test/**</include>
         </includes>
       </testResource>
     </testResources>

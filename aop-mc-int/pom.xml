@@ -16,7 +16,7 @@
       <resource>
         <directory>src/resources</directory>
         <includes>
-          <include>schema</include>
+          <include>schema/**</include>
         </includes>
       </resource>
     </resources>
