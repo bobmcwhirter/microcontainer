@@ -10,6 +10,7 @@
     managed/pom.xml
     metatype/pom.xml
     spring-int/pom.xml
+    osgi-int/pom.xml
 
   This pom aggregates the subproject pom, and it also functions as a default configuration.  The subproject
   poms each inherit configuration from this one.
@@ -137,6 +138,8 @@
     <module>metatype</module>
     <module>managed</module>
     <module>deployers</module>
+    <module>spring-int</module>
+    <module>osgi-int</module>
   </modules>
   <reporting>
     <plugins>
@@ -211,6 +214,11 @@
       <dependency>
         <groupId>jboss</groupId>
         <artifactId>jboss-spring-int</artifactId>
+        <version>${project.version}</version>
+      </dependency>
+      <dependency>
+        <groupId>jboss</groupId>
+        <artifactId>jboss-osgi-int</artifactId>
         <version>${project.version}</version>
       </dependency>
     </dependencies>
