@@ -63,9 +63,6 @@
           <includes>
             <include>org/jboss/test/**/*TestCase.java</include>
           </includes>
-          <!--<excludes>
-            <exclude>org/jboss/test/**/NoJavassistAnnotationCreatorTestCase.java</exclude>
-          </excludes>-->
         </configuration>
       </plugin>
       <plugin>
