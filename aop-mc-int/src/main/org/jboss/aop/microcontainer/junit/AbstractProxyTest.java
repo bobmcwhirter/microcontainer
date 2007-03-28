@@ -219,7 +219,7 @@ public abstract class AbstractProxyTest extends AbstractTestCaseWithSetup
     * 
     * @param target the target
     * @param interfaces the interfaces
-    * @param metadata the metadata
+    * @param metaData the metadata
     * @return the proxy
     * @throws Exception for any error
     */
@@ -238,7 +238,7 @@ public abstract class AbstractProxyTest extends AbstractTestCaseWithSetup
     * 
     * @param target the target
     * @param interfaces the interfaces
-    * @param metadata the metadata
+    * @param metaData the metadata
     * @param expected the expected class
     * @return the proxy
     * @throws Exception for any error
@@ -286,6 +286,7 @@ public abstract class AbstractProxyTest extends AbstractTestCaseWithSetup
    /**
     * Create a proxy
     * 
+    * @param interfaces the interfaces
     * @param mixins the mixins
     * @param metaData the metadata
     * @return the proxy
@@ -304,7 +305,7 @@ public abstract class AbstractProxyTest extends AbstractTestCaseWithSetup
     * Create a proxy
     * 
     * @param interfaces the interfaces
-    * @param metadata the metadata
+    * @param metaData the metadata
     * @param expected the expected class
     * @return the proxy
     * @throws Exception for any error
@@ -320,8 +321,8 @@ public abstract class AbstractProxyTest extends AbstractTestCaseWithSetup
    /**
     * Create a proxy
     * 
-    * @param interfaces the interfaces
-    * @param metadata the metadata
+    * @param mixins the mixins
+    * @param metaData the metadata
     * @param expected the expected class
     * @return the proxy
     * @throws Exception for any error
@@ -337,9 +338,9 @@ public abstract class AbstractProxyTest extends AbstractTestCaseWithSetup
    /**
     * Create a proxy
     * 
-    * @param target the target
     * @param interfaces the interfaces
     * @param mixins the mixins
+    * @param metaData the meta data
     * @param expected the expected class
     * @return the proxy
     * @throws Exception for any error

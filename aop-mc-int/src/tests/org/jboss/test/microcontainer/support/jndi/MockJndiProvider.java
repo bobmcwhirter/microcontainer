@@ -23,7 +23,6 @@ package org.jboss.test.microcontainer.support.jndi;
 
 import java.io.IOException;
 import java.rmi.MarshalledObject;
-import java.util.HashMap;
 import java.util.Hashtable;
 import java.util.concurrent.ConcurrentHashMap;
 
@@ -41,7 +40,7 @@ import javax.naming.NamingException;
  */
 public class MockJndiProvider implements Context
 {
-   private static ConcurrentHashMap bindings = new ConcurrentHashMap();
+   private static ConcurrentHashMap<Object, Object> bindings = new ConcurrentHashMap<Object, Object>();
    private Hashtable<?, ?> env;
 
    MockJndiProvider(Hashtable<?, ?> env)

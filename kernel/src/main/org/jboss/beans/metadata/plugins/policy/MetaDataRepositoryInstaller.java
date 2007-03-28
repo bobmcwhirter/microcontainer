@@ -44,6 +44,8 @@ public class MetaDataRepositoryInstaller
 {
    private Kernel underlyingKernel;
    private Set<Scope> scopes;
+   
+   /* TODO What is this for, it is unreferenced? */
    private Map<String, Object> bindings;
 
    public void setKernel(Kernel kernel)

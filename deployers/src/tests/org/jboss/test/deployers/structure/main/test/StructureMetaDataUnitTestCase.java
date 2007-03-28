@@ -22,7 +22,6 @@
 package org.jboss.test.deployers.structure.main.test;
 
 import java.util.ArrayList;
-import java.util.Comparator;
 import java.util.TreeSet;
 
 import junit.framework.Test;

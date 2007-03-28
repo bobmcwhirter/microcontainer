@@ -29,7 +29,6 @@ import org.jboss.aop.joinpoint.Invocation;
 import org.jboss.aop.joinpoint.MethodInvocation;
 import org.jboss.aop.microcontainer.aspects.util.ProxyUtils;
 import org.jboss.deployers.spi.attachments.Attachments;
-import org.jboss.logging.Logger;
 
 /**
  * An advice for capturing changes made to an Attachments.
@@ -39,7 +38,6 @@ import org.jboss.logging.Logger;
  */
 public class TrackingAdvice
 {
-   private static Logger log = Logger.getLogger(TrackingAdvice.class);
    private static ConcurrentHashMap<Object, Map<String, Object>> attachmentsByTarget =
       new ConcurrentHashMap<Object, Map<String, Object>>();
 

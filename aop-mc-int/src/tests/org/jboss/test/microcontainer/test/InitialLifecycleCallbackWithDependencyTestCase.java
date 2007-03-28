@@ -51,7 +51,7 @@ public class InitialLifecycleCallbackWithDependencyTestCase extends AOPMicrocont
       deploy("InitialLifecycleCallbackWithDependencyTestCaseNotAutomatic0.xml");
       try
       {
-         Object dependency = (Object) getCheckBeanExists("Dependency");
+         Object dependency = getCheckBeanExists("Dependency");
          assertNotNull(dependency);
          boolean itworked = false;
 

@@ -207,10 +207,9 @@ public class InterceptorWithOverriddenClassAnnotationDependencyTestCase extends 
 
    private void checkNotInstalledAndNotDescribed(String name)
    {
-      SimpleBean bean;
       try
       {
-         bean = (SimpleBean) getBean(name);
+         getBean(name);
          fail("'" + name + "' should not be installed yet");
       }
       catch (IllegalStateException expected)
@@ -219,12 +218,11 @@ public class InterceptorWithOverriddenClassAnnotationDependencyTestCase extends 
       
       try
       {
-         bean = (SimpleBean) getBean(name, ControllerState.DESCRIBED);
+         getBean(name, ControllerState.DESCRIBED);
          fail("'" + name + "' should not be described");
       }
       catch(IllegalStateException expected)
       {
-         
       }
    }
    

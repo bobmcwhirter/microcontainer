@@ -89,10 +89,6 @@ public class AspectManagerBean
       return AspectManager.getTopLevelAspectManager();
    }
 
-   /**
-    * @throws Exception
-    * @see org.jboss.system.ServiceMBeanSupport#start()
-    */
    public void start() throws Exception
    {
       try
@@ -105,10 +101,6 @@ public class AspectManagerBean
       }
    }
 
-   /**
-    * 
-    * @see org.jboss.system.ServiceMBeanSupport#destroy()
-    */
    public void destroy()
    {
       if (this.server == null)

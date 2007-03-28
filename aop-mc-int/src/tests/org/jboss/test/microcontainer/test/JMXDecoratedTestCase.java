@@ -82,6 +82,8 @@ public class JMXDecoratedTestCase extends AOPMicrocontainerTest
    
    /**
     * Test that the two beans indeed have different metadata values
+    * 
+    * @throws Exception for any error
     */
    public void testJMXMetaData() throws Exception
    {

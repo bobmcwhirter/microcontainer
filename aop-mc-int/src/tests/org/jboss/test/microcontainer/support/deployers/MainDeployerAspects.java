@@ -64,7 +64,6 @@ public class MainDeployerAspects
       throws Throwable
    {
       Object target = invocation.getTargetObject();
-      Object[] args = invocation.getArguments();
       log.debug("process, target="+target);
       processCalled = true;
       return invocation.invokeNext();

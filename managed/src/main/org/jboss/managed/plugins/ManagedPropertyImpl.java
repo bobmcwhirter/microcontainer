@@ -67,7 +67,7 @@ public class ManagedPropertyImpl implements ManagedProperty
     * Create a new ManagedProperty that is not associated to
     * a ManagedObject.
     * 
-    * @param fields the fields
+    * @param name the property name
     * @throws IllegalArgumentException for null fields or
     *    missing Fields.NAME
     */

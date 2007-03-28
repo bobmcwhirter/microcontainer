@@ -53,7 +53,7 @@ public class CreatedBeansLifecycleCallbackWithDependencyTestCase extends AOPMicr
       deploy("CreatedBeansLifecycleCallbackWithDependencyTestCaseNotAutomatic0.xml");
       try
       {
-         Object dependency = (Object) getCheckBeanExists("Dependency");
+         Object dependency = getCheckBeanExists("Dependency");
          assertNotNull(dependency);
          boolean itworked = false;
 

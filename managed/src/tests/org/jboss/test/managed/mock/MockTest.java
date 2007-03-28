@@ -141,9 +141,9 @@ public class MockTest extends ManagedTest
       ManagedProperty user2 = props2.get("user");
       assertEquals("user", "Scott", user2.getValue());
       ManagedProperty password2 = props2.get("password");
-      assertEquals("password", "Tiger", password.getValue());
+      assertEquals("password", "Tiger", password2.getValue());
    }
-
+   
    protected void configureLogging()
    {
       enableTrace("org.jboss.managed.plugins.advice");

@@ -25,8 +25,6 @@ package org.jboss.aop.microcontainer.beans;
 import org.jboss.beans.metadata.plugins.AbstractBeanMetaData;
 import org.jboss.beans.metadata.plugins.AbstractDependencyValueMetaData;
 import org.jboss.beans.metadata.plugins.AbstractPropertyMetaData;
-import org.jboss.beans.metadata.plugins.factory.GenericBeanFactoryMetaData;
-import org.jboss.beans.metadata.spi.BeanMetaDataFactory;
 
 /**
  * 

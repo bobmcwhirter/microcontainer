@@ -37,14 +37,18 @@ import java.lang.annotation.Target;
 @Target({ElementType.TYPE,ElementType.FIELD})
 public @interface JndiBinding 
 {
+
    /**
     * the name under which the binding will be located
-    * @return
+    * 
+    * @return the name
     */
    String name() ;
+   
    /**
     * Optional additional aliases to also bind
-    * @return
+    * 
+    * @return the aliases
     */
    String[] aliases() default {};
 }

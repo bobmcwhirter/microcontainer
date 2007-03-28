@@ -52,6 +52,7 @@ public class LifecycleCallback
       handle(context);
    }
    
+   @SuppressWarnings("unchecked")
    private void handle(KernelControllerContext context)
    {
       for (int i = 0 ; i < lifecycleAnnotations.length ; i++)

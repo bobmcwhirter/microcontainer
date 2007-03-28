@@ -23,7 +23,6 @@ package org.jboss.aop.microcontainer.beans;
 
 import org.jboss.aop.AspectManager;
 import org.jboss.aop.advice.AspectDefinition;
-import org.jboss.logging.Logger;
 import org.jboss.util.id.GUID;
 
 /**
@@ -33,8 +32,6 @@ import org.jboss.util.id.GUID;
  */
 public abstract class AbstractBinding
 {
-   private static final Logger log = Logger.getLogger(AbstractBinding.class);
-   
    protected AspectManager manager;
    
    protected String name = GUID.asString();

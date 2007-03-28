@@ -126,9 +126,12 @@ public interface MainDeployer
     *
     */
    void process();
+
    /**
     * Process the outstanding deployments.
-    * @param mode, the mode in which processing should be done.
+    * 
+    * @param mode the mode in which processing should be done.
+    * @return the processed deployments  
     */
    Collection<DeploymentContext> process(ProcessMode mode);
    

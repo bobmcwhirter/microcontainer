@@ -23,13 +23,10 @@ package org.jboss.aop.microcontainer.aspects.jndi;
 
 import java.util.Properties;
 
-import javax.management.ObjectName;
-import javax.management.StandardMBean;
 import javax.naming.InitialContext;
 
 import org.jboss.aop.joinpoint.Invocation;
 import org.jboss.aop.joinpoint.MethodInvocation;
-import org.jboss.aop.microcontainer.aspects.jmx.JMX;
 import org.jboss.kernel.spi.dependency.KernelControllerContext;
 import org.jboss.logging.Logger;
 import org.jboss.util.naming.Util;
@@ -70,6 +67,10 @@ public class JndiLifecycleCallback
    /**
     * Bind the target on setKernelControllerContext, unbind on any other method provided that
     * the invocation has a JndiBinding annotation.
+    * 
+    * @param invocation the invocation
+    * @return the result
+    * @throws Throwable for any error
     */
    public Object invoke(Invocation invocation) throws Throwable
    {

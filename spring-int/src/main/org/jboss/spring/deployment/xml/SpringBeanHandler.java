@@ -100,7 +100,6 @@ public class SpringBeanHandler extends DefaultElementHandler
    protected void orderParameters(List<ParameterMetaData> parameters)
    {
       ParameterMetaData[] pmds = new ParameterMetaData[parameters.size()];
-      int i = 0;
       for(ParameterMetaData pmd : parameters)
       {
          int index = pmd.getIndex();

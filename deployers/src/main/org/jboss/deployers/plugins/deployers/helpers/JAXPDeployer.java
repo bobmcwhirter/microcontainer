@@ -37,7 +37,7 @@ import org.xml.sax.InputSource;
  * parse of the VirtualFile passed to parse.
  * 
  * 
- * @see #parse(DeploymentUnit, VirtualFile, T)
+ * @see #parse(DeploymentUnit, VirtualFile, Object)
  * @see #doParse(DeploymentUnit, VirtualFile)
  * 
  * @param <T> the expected type 

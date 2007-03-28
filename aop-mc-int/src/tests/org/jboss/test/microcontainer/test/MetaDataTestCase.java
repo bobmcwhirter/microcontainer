@@ -46,6 +46,8 @@ public class MetaDataTestCase extends AOPMicrocontainerTest
    
    /**
     * Test that the two beans indeed have different metadata values
+    * 
+    * @throws Exception for any error
     */
    public void testBeanMetaData() throws Exception
    {
@@ -64,6 +66,8 @@ public class MetaDataTestCase extends AOPMicrocontainerTest
    
    /**
     * Test that the two beans indeed have different metadata values
+    * 
+    * @throws Exception for any error
     */
    public void testPropertyMetaData() throws Exception
    {
@@ -83,6 +87,8 @@ public class MetaDataTestCase extends AOPMicrocontainerTest
    
    /**
     * Test that the two beans indeed have different metadata values
+    * 
+    * @throws Exception for any error
     */
    public void testNoMetaData() throws Exception
    {

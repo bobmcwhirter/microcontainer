@@ -46,8 +46,8 @@ public class JMXKernel
    {
       try
       {
-         mbeanServer = (MBeanServer)AccessController.doPrivileged(new PrivilegedExceptionAction() {
-               public Object run() throws Exception 
+         mbeanServer = AccessController.doPrivileged(new PrivilegedExceptionAction<MBeanServer>() {
+               public MBeanServer run() throws Exception 
                {
                   return MBeanServerFactory.createMBeanServer();
                }

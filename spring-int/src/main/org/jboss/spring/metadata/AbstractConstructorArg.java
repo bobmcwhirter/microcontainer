@@ -21,16 +21,15 @@
 */
 package org.jboss.spring.metadata;
 
-import org.jboss.kernel.plugins.deployment.AbstractKernelDeployment;
-import org.jboss.beans.metadata.spi.LifecycleMetaData;
 import org.jboss.beans.metadata.plugins.AbstractParameterMetaData;
-import org.jboss.dependency.spi.ControllerState;
 
 /**
  * @author <a href="mailto:ales.justin@jboss.com">Ales Justin</a>
  */
 public class AbstractConstructorArg extends AbstractParameterMetaData
 {
+   /** The serialVersionUID */
+   private static final long serialVersionUID = -9018964033015040870L;
    private boolean explicitIndex;
 
    public void setIndex(int index)

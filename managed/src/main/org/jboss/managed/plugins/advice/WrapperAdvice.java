@@ -25,7 +25,6 @@ import java.util.Set;
 
 import org.jboss.aop.joinpoint.Invocation;
 import org.jboss.aop.proxy.container.GeneratedAOPProxyFactory;
-import org.jboss.logging.Logger;
 import org.jboss.managed.api.Fields;
 import org.jboss.managed.api.ManagedObject;
 import org.jboss.managed.api.ManagedProperty;
@@ -39,8 +38,6 @@ import org.jboss.managed.api.ManagedProperty;
  */
 public class WrapperAdvice
 {
-   private static Logger log = Logger.getLogger(WrapperAdvice.class);
-
    /**
     * Wrap a managed object
     * 

@@ -31,6 +31,7 @@ import org.jboss.kernel.spi.dependency.KernelControllerContext;
 /**
  * Abstract helper class for [Aspect]Introduction.
  *
+ * @param <T> the annotation type
  * @author <a href="mailto:ales.justin@jboss.com">Ales Justin</a>
  */
 public abstract class AbstractIntroduction<T extends Annotation> implements Interceptor

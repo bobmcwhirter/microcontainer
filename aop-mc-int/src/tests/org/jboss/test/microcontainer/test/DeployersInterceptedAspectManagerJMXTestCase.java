@@ -23,12 +23,9 @@ package org.jboss.test.microcontainer.test;
 
 import java.util.HashSet;
 
-import javax.management.MBeanServer;
-
 import junit.framework.Test;
 
 import org.jboss.aop.microcontainer.junit.AOPMicrocontainerTest;
-import org.jboss.test.microcontainer.support.deployers.AspectManagerBean;
 import org.jboss.test.microcontainer.support.deployers.DeployerAspects;
 import org.jboss.test.microcontainer.support.deployers.IMainDeployer;
 import org.jboss.test.microcontainer.support.deployers.SampleDeployer;

@@ -22,7 +22,6 @@
 package org.jboss.aop.microcontainer.aspects.util;
 
 import org.jboss.aop.proxy.container.GeneratedAOPProxyFactory;
-import org.jboss.logging.Logger;
 
 /**
  * AOP proxy utils.
@@ -32,8 +31,6 @@ import org.jboss.logging.Logger;
  */
 public class ProxyUtils
 {
-   private static Logger log = Logger.getLogger(ProxyUtils.class);
-
    /**
     * Create a proxy 
     * 
@@ -46,5 +43,4 @@ public class ProxyUtils
    {
       return GeneratedAOPProxyFactory.createProxy(target, interfaceClass);
    }
-
 }

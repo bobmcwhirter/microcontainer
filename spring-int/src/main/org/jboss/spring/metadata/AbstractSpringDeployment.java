@@ -30,6 +30,9 @@ import org.jboss.kernel.plugins.deployment.AbstractKernelDeployment;
  */
 public class AbstractSpringDeployment extends AbstractKernelDeployment
 {
+   /** The serialVersionUID */
+   private static final long serialVersionUID = 1470671009380840890L;
+
    /* default init lifecycle method */
    protected LifecycleMetaData create;
 

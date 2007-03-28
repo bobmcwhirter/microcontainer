@@ -27,7 +27,6 @@ import junit.framework.TestSuite;
 import org.jboss.deployers.spi.attachments.Attachments;
 import org.jboss.test.AbstractTestCaseWithSetup;
 import org.jboss.test.AbstractTestDelegate;
-import org.jboss.test.BaseTestCase;
 
 /**
  * Attachments Test.
