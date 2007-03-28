@@ -1,22 +1,22 @@
-<?xml version="1.0" encoding="UTF-8"?>
 <classpath>
-	<classpathentry kind="src" path="src/main"/>
-	<classpathentry kind="src" path="output/gen-parsers"/>
-	<classpathentry kind="src" output="output/eclipse-classes-tests" path="src/tests"/>
-	<classpathentry kind="con" path="org.eclipse.jdt.launching.JRE_CONTAINER"/>
-	<classpathentry kind="lib" path="/thirdparty/jboss/common-core/lib/jboss-common-core.jar"/>
-	<classpathentry kind="lib" path="/thirdparty/jboss/common-logging-spi/lib/jboss-logging-spi.jar"/>
-	<classpathentry kind="lib" path="/thirdparty/jboss/common-logging-log4j/lib/jboss-logging-log4j.jar"/>
-	<classpathentry kind="lib" path="/thirdparty/apache-log4j/lib/log4j.jar"/>
-	<classpathentry kind="lib" path="/thirdparty/oswego-concurrent/lib/concurrent.jar"/>
-	<classpathentry kind="lib" path="/thirdparty/junit/lib/junit.jar"/>
-	<classpathentry kind="lib" path="/thirdparty/javassist/lib/javassist.jar"/>
-	<classpathentry kind="lib" path="/thirdparty/jboss/profiler/jvmti/lib/jboss-profiler-jvmti.jar"/>
-	<classpathentry kind="lib" path="/thirdparty/jboss/test/lib/jboss-test.jar"/>
-	<classpathentry kind="con" path="org.eclipse.jdt.junit.JUNIT_CONTAINER/4"/>
-	<classpathentry kind="lib" path="/thirdparty/osgi/lib/osgi.compendium.jar"/>
-	<classpathentry kind="lib" path="/thirdparty/osgi/lib/osgi.core.jar"/>
-	<classpathentry kind="lib" path="/thirdparty/jboss/jboss-vfs/lib/jboss-vfs.jar" sourcepath="/thirdparty/jboss/jboss-vfs/lib/jboss-vfs-sources.jar"/>
-	<classpathentry combineaccessrules="false" kind="src" path="/container"/>
-	<classpathentry kind="output" path="output/eclipse-classes"/>
+  <classpathentry kind="src" path="src/main"/>
+  <classpathentry kind="src" path="src/tests"/>
+  <classpathentry kind="src" path="target/generated-sources/javacc"/>
+  <classpathentry kind="output" path="target/eclipse-classes"/>
+  <classpathentry kind="con" path="org.eclipse.jdt.launching.JRE_CONTAINER"/>
+  <classpathentry kind="var" path="M2_REPO/jboss/jboss-logging-spi/2.0.2.GA/jboss-logging-spi-2.0.2.GA.jar" sourcepath="M2_REPO/jboss/jboss-logging-spi/2.0.2.GA/jboss-logging-spi-2.0.2.GA-sources.jar"/>
+  <classpathentry kind="var" path="M2_REPO/jboss/jbossxb/1.0.0-SNAPSHOT/jbossxb-1.0.0-SNAPSHOT.jar" sourcepath="M2_REPO/jboss/jbossxb/1.0.0-SNAPSHOT/jbossxb-1.0.0-SNAPSHOT-sources.jar"/>
+  <classpathentry kind="var" path="M2_REPO/sun-jaf/activation/1.0.2/activation-1.0.2.jar"/>
+  <classpathentry kind="var" path="M2_REPO/org/osgi/osgi_R4_core/1.0/osgi_R4_core-1.0.jar"/>
+  <classpathentry kind="var" path="M2_REPO/oswego-concurrent/concurrent/1.3.4/concurrent-1.3.4.jar"/>
+  <classpathentry kind="var" path="M2_REPO/jboss/jboss-common-core/2.0.3.GA/jboss-common-core-2.0.3.GA.jar" sourcepath="M2_REPO/jboss/jboss-common-core/2.0.3.GA/jboss-common-core-2.0.3.GA-sources.jar"/>
+  <classpathentry kind="var" path="M2_REPO/jboss/jboss-vfs/2.0.4.snapshot/jboss-vfs-2.0.4.snapshot.jar" sourcepath="M2_REPO/jboss/jboss-vfs/2.0.4.snapshot/jboss-vfs-2.0.4.snapshot-sources.jar"/>
+  <classpathentry kind="var" path="M2_REPO/jboss/jboss-container/2.0.0-SNAPSHOT/jboss-container-2.0.0-SNAPSHOT.jar" sourcepath="M2_REPO/jboss/jboss-container/2.0.0-SNAPSHOT/jboss-container-2.0.0-SNAPSHOT-sources.jar"/>
+  <classpathentry kind="var" path="M2_REPO/apache-xerces/xercesImpl/2.7.1/xercesImpl-2.7.1.jar"/>
+  <classpathentry kind="var" path="M2_REPO/apache-httpclient/commons-httpclient/2.0.2/commons-httpclient-2.0.2.jar"/>
+  <classpathentry kind="var" path="M2_REPO/junit/junit/4.1/junit-4.1.jar" sourcepath="M2_REPO/junit/junit/4.1/junit-4.1-sources.jar"/>
+  <classpathentry kind="var" path="M2_REPO/apache-xerces/xml-apis/2.7.1/xml-apis-2.7.1.jar"/>
+  <classpathentry kind="var" path="M2_REPO/javassist/javassist/3.4.GA/javassist-3.4.GA.jar"/>
+  <classpathentry kind="var" path="M2_REPO/wutka-dtdparser/dtdparser121/1.2.1/dtdparser121-1.2.1.jar"/>
+  <classpathentry kind="var" path="M2_REPO/apache-slide/webdavlib/2.0/webdavlib-2.0.jar"/>
 </classpath>

@@ -1,17 +1,20 @@
-<?xml version="1.0" encoding="UTF-8"?>
 <projectDescription>
-	<name>deployers</name>
-	<comment></comment>
-	<projects>
-	</projects>
-	<buildSpec>
-		<buildCommand>
-			<name>org.eclipse.jdt.core.javabuilder</name>
-			<arguments>
-			</arguments>
-		</buildCommand>
-	</buildSpec>
-	<natures>
-		<nature>org.eclipse.jdt.core.javanature</nature>
-	</natures>
+  <name>jboss-deployers</name>
+  <comment>JBoss Microcontainer Deployers</comment>
+  <projects>
+    <project>jboss-aop-mc-int</project>
+    <project>jboss-dependency</project>
+    <project>jboss-container</project>
+    <project>jboss-managed</project>
+    <project>jboss-metatype</project>
+    <project>jboss-kernel</project>
+  </projects>
+  <buildSpec>
+    <buildCommand>
+      <name>org.eclipse.jdt.core.javabuilder</name>
+    </buildCommand>
+  </buildSpec>
+  <natures>
+    <nature>org.eclipse.jdt.core.javanature</nature>
+  </natures>
 </projectDescription>
