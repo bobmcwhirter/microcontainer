@@ -45,7 +45,9 @@ public abstract class ObjectModelFactoryDeployer<T> extends AbstractParsingDeplo
 {
    /** Unmarshaller factory */
    private static final UnmarshallerFactory factory = UnmarshallerFactory.newInstance();
-   
+   /** Whether the Unmarshaller will use schema validation */
+   private boolean useSchemaValidation = true;
+
    /**
     * Create a new SchemaResolverDeployer.
     * 
@@ -55,6 +57,16 @@ public abstract class ObjectModelFactoryDeployer<T> extends AbstractParsingDeplo
    public ObjectModelFactoryDeployer(Class<T> deploymentType)
    {
       super(deploymentType);
+   }
+
+   public boolean isUseSchemaValidation()
+   {
+      return useSchemaValidation;
+   }
+
+   public void setUseSchemaValidation(boolean useSchemaValidation)
+   {
+      this.useSchemaValidation = useSchemaValidation;
    }
 
    /**
@@ -75,6 +87,7 @@ public abstract class ObjectModelFactoryDeployer<T> extends AbstractParsingDeplo
          throw new IllegalArgumentException("Null file");
 
       Unmarshaller unmarshaller = factory.newUnmarshaller();
+      unmarshaller.setSchemaValidation(useSchemaValidation);
       Object parsed = null;
       try
       {
