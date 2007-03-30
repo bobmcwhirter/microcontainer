@@ -70,7 +70,6 @@
     <dependency>
       <groupId>jboss</groupId>
       <artifactId>jbossxb</artifactId>
-      <version>1.0.0.CR8</version>
     </dependency>
     <dependency>
       <groupId>junit</groupId>

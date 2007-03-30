@@ -43,7 +43,7 @@
   </scm>
   <build>
     <sourceDirectory>src/main</sourceDirectory>
-	  <testSourceDirectory>src/tests</testSourceDirectory>
+    <testSourceDirectory>src/tests</testSourceDirectory>
     <finalName>${artifactId}</finalName>
     <plugins>
       <plugin>
@@ -217,6 +217,16 @@
         <groupId>jboss</groupId>
         <artifactId>jboss-osgi-int</artifactId>
         <version>${project.version}</version>
+      </dependency>
+      <dependency>
+        <groupId>jboss</groupId>
+        <artifactId>jboss-common-core</artifactId>
+        <version>2.0.4.GA</version>
+      </dependency>
+      <dependency>
+        <groupId>jboss</groupId>
+        <artifactId>jbossxb</artifactId>
+        <version>2.0.0.CR3</version>
       </dependency>
     </dependencies>
   </dependencyManagement>
