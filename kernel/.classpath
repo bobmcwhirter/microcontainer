@@ -1,6 +1,6 @@
 <classpath>
   <classpathentry kind="src" path="src/main"/>
-  <classpathentry kind="src" path="src/resources" including="schema/**" excluding="**/*.java"/>
+  <classpathentry kind="lib" path="src/resources"/>
   <classpathentry kind="src" path="src/tests"/>
   <classpathentry kind="output" path="target/eclipse-classes"/>
   <classpathentry kind="con" path="org.eclipse.jdt.launching.JRE_CONTAINER"/>
