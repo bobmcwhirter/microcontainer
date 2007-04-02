@@ -28,6 +28,7 @@ import org.jboss.deployers.spi.DeploymentException;
 import org.jboss.deployers.spi.deployer.DeploymentUnit;
 import org.jboss.kernel.Kernel;
 import org.jboss.kernel.spi.dependency.KernelController;
+import org.jboss.osgi.plugins.facade.BundleContextImpl;
 import org.jboss.osgi.spi.metadata.OSGiMetaData;
 import org.osgi.framework.BundleContext;
 
@@ -61,7 +62,8 @@ public class BundleActivatorDeployer extends AbstractRealDeployer<OSGiMetaData>
          if (bundleActivator != null)
          {
             String name = createBundleActivatorBeanName(deployment);
-            BundleContext bundleContext = null; // todo
+            // todo - get deployment context in non-depricated way
+            BundleContext bundleContext = new BundleContextImpl(unit.getDeploymentContext());
             BeanMetaDataBuilder builder = new BeanMetaDataBuilder(name, bundleActivator)
                   .addStartParameter(BundleContext.class.getName(), bundleContext)
                   .addStopParameter(BundleContext.class.getName(), bundleContext);

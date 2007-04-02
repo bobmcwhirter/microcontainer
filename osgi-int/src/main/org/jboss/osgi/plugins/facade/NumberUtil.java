@@ -21,36 +21,30 @@
 */
 package org.jboss.osgi.plugins.facade;
 
-import java.util.Dictionary;
-import java.util.Map;
-
-import org.jboss.reflect.spi.ClassInfo;
-import org.osgi.framework.ServiceReference;
-import org.osgi.framework.ServiceRegistration;
+import java.util.concurrent.atomic.AtomicLong;
 
 /**
- * ServiceRegistration implementation.
+ * Unique numbering util.
+ * todo - should we do this more generic?
  *
  * @author <a href="mailto:ales.justin@jboss.com">Ales Justin</a>
  */
-public class ServiceRegistrationImpl implements ServiceRegistration
+public class NumberUtil
 {
-   private ClassInfo serviceInfo;
-   private ClassInfo[] interfaces;
-   private Map properties;
+   private static AtomicLong longOrder = new AtomicLong(Long.MIN_VALUE);
 
-   public ServiceReference getReference()
+   private NumberUtil()
    {
-      return null;  //To change body of implemented methods use File | Settings | File Templates.
    }
 
-   public void setProperties(Dictionary dictionary)
+   /**
+    * Return next long.
+    *
+    * @return unique Long number
+    */
+   public static Long nextLong()
    {
-      //To change body of implemented methods use File | Settings | File Templates.
+      return longOrder.getAndIncrement();        
    }
 
-   public void unregister()
-   {
-      //To change body of implemented methods use File | Settings | File Templates.
-   }
 }

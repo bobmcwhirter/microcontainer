@@ -58,7 +58,7 @@ public class ServiceDeploymentDeployer extends AbstractComponentDeployer<Service
    /**
     * ServiceDeploymentVisitor.
     */
-   public static class ServiceDeploymentVisitor implements SimpleDeploymentVisitor<ServiceDeployment>
+   private static class ServiceDeploymentVisitor implements SimpleDeploymentVisitor<ServiceDeployment>
    {
       public Class<ServiceDeployment> getVisitorType()
       {
@@ -83,7 +83,7 @@ public class ServiceDeploymentDeployer extends AbstractComponentDeployer<Service
    /**
     * ServiceMetaDataVisitor.
     */
-   public static class ServiceMetaDataVisitor implements SimpleDeploymentVisitor<ServiceMetaData>
+   private static class ServiceMetaDataVisitor implements SimpleDeploymentVisitor<ServiceMetaData>
    {
       public Class<ServiceMetaData> getVisitorType()
       {

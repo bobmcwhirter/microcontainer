@@ -21,36 +21,51 @@
 */
 package org.jboss.osgi.plugins.facade;
 
-import java.util.Dictionary;
-import java.util.Map;
-
-import org.jboss.reflect.spi.ClassInfo;
+import org.osgi.framework.Constants;
 import org.osgi.framework.ServiceReference;
-import org.osgi.framework.ServiceRegistration;
 
 /**
- * ServiceRegistration implementation.
+ * Helpful methods for handling specific OSGi cases.
  *
  * @author <a href="mailto:ales.justin@jboss.com">Ales Justin</a>
  */
-public class ServiceRegistrationImpl implements ServiceRegistration
+public abstract class OSGiUtils
 {
-   private ClassInfo serviceInfo;
-   private ClassInfo[] interfaces;
-   private Map properties;
-
-   public ServiceReference getReference()
+   /**
+    * Get ServiceReference id.
+    *
+    * @param reference service reference to look for id
+    * @return reference's id or error if no such property
+    */
+   public static Long getServiceId(ServiceReference reference)
    {
-      return null;  //To change body of implemented methods use File | Settings | File Templates.
+      Object value = reference.getProperty(Constants.SERVICE_RANKING);
+      if (value == null || value instanceof Long == false)
+      {
+         throw new IllegalArgumentException("No such property: " + Constants.SERVICE_ID);
+      }
+      else
+      {
+         return (Long)value;
+      }
    }
 
-   public void setProperties(Dictionary dictionary)
+   /**
+    * Get ServiceReference ranking.
+    *
+    * @param reference service reference to look for ranking
+    * @return reference's ranking or 0 if no such property
+    */
+   public static Integer getServiceRanking(ServiceReference reference)
    {
-      //To change body of implemented methods use File | Settings | File Templates.
-   }
-
-   public void unregister()
-   {
-      //To change body of implemented methods use File | Settings | File Templates.
+      Object value = reference.getProperty(Constants.SERVICE_RANKING);
+      if (value == null || value instanceof Integer == false)
+      {
+         return 0;
+      }
+      else
+      {
+         return (Integer)value;
+      }
    }
 }

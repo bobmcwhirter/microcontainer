@@ -23,24 +23,34 @@ package org.jboss.osgi.plugins.facade;
 
 import java.io.File;
 import java.io.InputStream;
+import java.util.ArrayList;
 import java.util.Collections;
+import java.util.Comparator;
 import java.util.Dictionary;
 import java.util.EventListener;
 import java.util.HashMap;
+import java.util.Hashtable;
+import java.util.List;
 import java.util.Map;
 
 import org.jboss.deployers.spi.structure.DeploymentContext;
+import org.jboss.kernel.spi.config.KernelConfigurator;
+import org.jboss.kernel.spi.event.KernelEvent;
 import org.jboss.kernel.spi.event.KernelEventEmitter;
 import org.jboss.kernel.spi.event.KernelEventFilter;
+import org.jboss.kernel.spi.registry.KernelRegistry;
 import org.jboss.logging.Logger;
+import org.jboss.reflect.spi.ClassInfo;
 import org.osgi.framework.Bundle;
 import org.osgi.framework.BundleContext;
 import org.osgi.framework.BundleException;
 import org.osgi.framework.BundleListener;
+import org.osgi.framework.Constants;
 import org.osgi.framework.Filter;
 import org.osgi.framework.FrameworkListener;
 import org.osgi.framework.FrameworkUtil;
 import org.osgi.framework.InvalidSyntaxException;
+import org.osgi.framework.ServiceFactory;
 import org.osgi.framework.ServiceListener;
 import org.osgi.framework.ServiceReference;
 import org.osgi.framework.ServiceRegistration;
@@ -54,10 +64,13 @@ public class BundleContextImpl implements BundleContext
 {
    /** The log */
    private static final Logger log = Logger.getLogger(BundleContextImpl.class);
+   /** The service reference comparator */
+   private static Comparator<ServiceReference> serviceRefenceComparator = new ServiceReferenceComparator();
 
    protected DeploymentContext context;
    protected Bundle bundle;
-   protected KernelEventEmitter eventEmitter;
+   protected KernelEventEmitter eventEmitter; // todo - get it
+   protected KernelConfigurator kernelConfigurator; // todo - get it
 
    protected Map<EventListener, AbstractDelegateListener> listeners = Collections.synchronizedMap(new HashMap<EventListener, AbstractDelegateListener>());
    protected Map<ServiceListener, KernelEventFilter> filters = Collections.synchronizedMap(new HashMap<ServiceListener, KernelEventFilter>());
@@ -77,6 +90,13 @@ public class BundleContextImpl implements BundleContext
       if (isBundleContextValid() == false)
          throw new IllegalStateException("BundleContext is no longer valid.");
    }
+
+   protected ClassLoader getClassLoader()
+   {
+      return null;
+   }
+
+   // --------------- OSGi framework -----------------------
 
    public String getProperty(String string)
    {
@@ -156,6 +176,7 @@ public class BundleContextImpl implements BundleContext
 
    public void removeServiceListener(ServiceListener serviceListener)
    {
+      validateBundle();
       AbstractDelegateListener listener = listeners.get(serviceListener);
       if (listener != null)
       {
@@ -262,37 +283,117 @@ public class BundleContextImpl implements BundleContext
       }
    }
 
-   public ServiceRegistration registerService(String[] strings, Object object, Dictionary dictionary)
+   public ServiceRegistration registerService(String[] clazzes, Object service, Dictionary properties)
+   {
+      validateBundle();
+      // todo - permissions
+      if (service == null)
+         throw new IllegalArgumentException("service is null!");
+      if (clazzes == null)
+         throw new Error("null clazzes parameter!"); // todo - what else?
+
+      ClassInfo serviceInfo;
+      ClassInfo[] infos = new ClassInfo[clazzes.length];
+      try
+      {
+         serviceInfo = kernelConfigurator.getClassInfo(service.getClass());
+         for(int i=0; i < clazzes.length; i++)
+         {
+            infos[i] = kernelConfigurator.getClassInfo(clazzes[i], getClassLoader());
+         }
+      }
+      catch (Throwable t)
+      {
+         throw new InternalOSGiFacadeException(t);
+      }
+      // check types
+      boolean isServiceFactory = (service instanceof ServiceFactory);
+      if (isServiceFactory == false)
+      {
+         for (ClassInfo info : infos)
+         {
+            if (info.isAssignableFrom(serviceInfo) == false)
+               throw new IllegalArgumentException("service is not a ServiceFactory object and is not an instance of all the named classes in clazzes: " + info);
+         }
+      }
+      // handle properties
+      if (properties == null)
+      {
+         properties = new Hashtable();
+      }
+      Long serviceId = NumberUtil.nextLong();
+      properties.put(Constants.SERVICE_ID, serviceId);
+      properties.put(Constants.OBJECTCLASS, clazzes);
+      // todo - add to framework --> controller + handle factory bean!
+      // todo - get underlying bundle --> ServiceReference
+      KernelEvent event = new AbstractServiceEvent(this, KernelRegistry.KERNEL_REGISTRY_REGISTERED, serviceId, System.currentTimeMillis(), service);
+      eventEmitter.fireKernelEvent(event);
+      return new ServiceRegistrationImpl();
+   }
+
+   public ServiceRegistration registerService(String clazz, Object service, Dictionary properties)
+   {
+      return registerService(new String[]{clazz}, service, properties);
+   }
+
+   public ServiceReference[] getAllServiceReferences(String clazz, String filter) throws InvalidSyntaxException
+   {
+      validateBundle();
+      // todo - see spec API
+      return null;
+   }
+
+   public ServiceReference[] getServiceReferences(String clazz, String filter) throws InvalidSyntaxException
+   {
+      ServiceReference[] references = getAllServiceReferences(clazz, filter);
+      if (references != null && references.length > 0)
+      {
+         List<ServiceReference> list = new ArrayList<ServiceReference>();
+         for(ServiceReference ref : references)
+         {
+            String[] clazzes = (String[])ref.getProperty(Constants.OBJECTCLASS);
+            for (String refClass : clazzes)
+            {
+               if (ref.isAssignableTo(getBundle(), refClass))
+               {
+                  list.add(ref);
+               }
+            }
+         }
+         Collections.sort(list, serviceRefenceComparator);
+         return list.toArray(new ServiceReference[list.size()]);
+      }
+      else
+      {
+         return null;
+      }
+   }
+
+   public ServiceReference getServiceReference(String clazz)
+   {
+      validateBundle();
+      try
+      {
+         ServiceReference[] references = getServiceReferences(clazz, null);
+         if (references != null && references.length > 0)
+         {
+            // watch for the order in getServiceReferences
+            return references[0];
+         }
+         return null;
+      }
+      catch (InvalidSyntaxException e)
+      {
+         throw new InternalOSGiFacadeException("Should not be here, since filter was null!");
+      }
+   }
+
+   public Object getService(ServiceReference reference)
    {
       return null;  //To change body of implemented methods use File | Settings | File Templates.
    }
 
-   public ServiceRegistration registerService(String string, Object object, Dictionary dictionary)
-   {
-      return null;  //To change body of implemented methods use File | Settings | File Templates.
-   }
-
-   public ServiceReference[] getServiceReferences(String string, String string1) throws InvalidSyntaxException
-   {
-      return new ServiceReference[0];  //To change body of implemented methods use File | Settings | File Templates.
-   }
-
-   public ServiceReference[] getAllServiceReferences(String string, String string1) throws InvalidSyntaxException
-   {
-      return new ServiceReference[0];  //To change body of implemented methods use File | Settings | File Templates.
-   }
-
-   public ServiceReference getServiceReference(String string)
-   {
-      return null;  //To change body of implemented methods use File | Settings | File Templates.
-   }
-
-   public Object getService(ServiceReference serviceReference)
-   {
-      return null;  //To change body of implemented methods use File | Settings | File Templates.
-   }
-
-   public boolean ungetService(ServiceReference serviceReference)
+   public boolean ungetService(ServiceReference reference)
    {
       return false;  //To change body of implemented methods use File | Settings | File Templates.
    }
@@ -305,7 +406,27 @@ public class BundleContextImpl implements BundleContext
    public Filter createFilter(String filter) throws InvalidSyntaxException
    {
       validateBundle();
+      // todo - create our own impl?
       return FrameworkUtil.createFilter(filter);
+   }
+
+   /**
+    * @see org.osgi.framework.BundleContext#getServiceReferences(String, String)
+    */
+   private static class ServiceReferenceComparator implements Comparator<ServiceReference>
+   {
+      public int compare(ServiceReference sr1, ServiceReference sr2)
+      {
+         int rank1 = OSGiUtils.getServiceRanking(sr1);
+         int rank2 = OSGiUtils.getServiceRanking(sr2);
+         if (rank1 == rank2)
+         {
+            long id1 = OSGiUtils.getServiceId(sr1);
+            long id2 = OSGiUtils.getServiceId(sr2);
+            return (int)(id1 - id2);
+         }
+         return rank2 - rank1;
+      }
    }
 
 }

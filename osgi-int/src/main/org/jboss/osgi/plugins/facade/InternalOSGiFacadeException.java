@@ -21,36 +21,31 @@
 */
 package org.jboss.osgi.plugins.facade;
 
-import java.util.Dictionary;
-import java.util.Map;
-
-import org.jboss.reflect.spi.ClassInfo;
-import org.osgi.framework.ServiceReference;
-import org.osgi.framework.ServiceRegistration;
-
 /**
- * ServiceRegistration implementation.
+ * Signaling internal exception - container, dependency, kernel related.
  *
  * @author <a href="mailto:ales.justin@jboss.com">Ales Justin</a>
  */
-public class ServiceRegistrationImpl implements ServiceRegistration
+public class InternalOSGiFacadeException extends RuntimeException
 {
-   private ClassInfo serviceInfo;
-   private ClassInfo[] interfaces;
-   private Map properties;
-
-   public ServiceReference getReference()
+   public InternalOSGiFacadeException()
    {
-      return null;  //To change body of implemented methods use File | Settings | File Templates.
+      super();
    }
 
-   public void setProperties(Dictionary dictionary)
+   public InternalOSGiFacadeException(String message)
    {
-      //To change body of implemented methods use File | Settings | File Templates.
+      super(message);
    }
 
-   public void unregister()
+   public InternalOSGiFacadeException(String message, Throwable cause)
    {
-      //To change body of implemented methods use File | Settings | File Templates.
+      super(message, cause);
    }
+
+   public InternalOSGiFacadeException(Throwable cause)
+   {
+      super(cause);
+   }
+   
 }
