@@ -24,7 +24,7 @@ package org.jboss.test.dependency.controller.support;
 import java.util.HashMap;
 
 import org.jboss.dependency.plugins.AbstractControllerContextActions;
-import org.jboss.dependency.plugins.spi.action.ControllerContextAction;
+import org.jboss.dependency.plugins.action.ControllerContextAction;
 import org.jboss.dependency.spi.ControllerContext;
 import org.jboss.dependency.spi.ControllerState;
 import org.jboss.test.dependency.controller.test.RecursiveControllerActionTestCase;

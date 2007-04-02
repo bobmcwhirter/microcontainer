@@ -22,8 +22,7 @@
 package org.jboss.test.kernel.deployment.test;
 
 import junit.framework.Test;
-
-import org.jboss.beans.metadata.plugins.factory.GenericBeanFactory;
+import org.jboss.beans.metadata.spi.factory.BeanFactory;
 import org.jboss.kernel.spi.deployment.KernelDeployment;
 
 /**
@@ -60,13 +59,13 @@ public class DeploymentClassLoaderTestCase extends AbstractDeploymentTest
          bean = getBean("NotConfiguredClassLoader");
          assertEquals(getClass().getClassLoader(), bean.getClass().getClassLoader());
          
-         GenericBeanFactory factory = (GenericBeanFactory) getBean("FactoryDeploymentConfiguredClassLoader");
+         BeanFactory factory = (BeanFactory) getBean("FactoryDeploymentConfiguredClassLoader");
          bean = factory.createBean();
          assertEquals(deploymentCL, bean.getClass().getClassLoader());
-         factory = (GenericBeanFactory) getBean("FactoryBeanConfiguredClassLoader");
+         factory = (BeanFactory) getBean("FactoryBeanConfiguredClassLoader");
          bean = factory.createBean();
          assertEquals(beanCL, bean.getClass().getClassLoader());
-         factory = (GenericBeanFactory) getBean("FactoryNotConfiguredClassLoader");
+         factory = (BeanFactory) getBean("FactoryNotConfiguredClassLoader");
          bean = factory.createBean();
          assertEquals(getClass().getClassLoader(), bean.getClass().getClassLoader());
       }

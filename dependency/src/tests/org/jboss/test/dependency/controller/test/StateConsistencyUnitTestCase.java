@@ -26,7 +26,7 @@ import java.util.HashMap;
 import junit.framework.Test;
 import org.jboss.dependency.plugins.AbstractControllerContext;
 import org.jboss.dependency.plugins.AbstractControllerContextActions;
-import org.jboss.dependency.plugins.spi.action.ControllerContextAction;
+import org.jboss.dependency.plugins.action.ControllerContextAction;
 import org.jboss.dependency.spi.ControllerMode;
 import org.jboss.dependency.spi.ControllerState;
 

@@ -21,13 +21,15 @@
 */
 package org.jboss.kernel.plugins.dependency;
 
-import java.security.*;
+import java.security.AccessControlContext;
+import java.security.AccessController;
+import java.security.PrivilegedActionException;
 import java.util.List;
 
 import org.jboss.beans.metadata.spi.BeanMetaData;
 import org.jboss.beans.metadata.spi.LifecycleCallbackMetaData;
 import org.jboss.beans.metadata.spi.ParameterMetaData;
-import org.jboss.dependency.plugins.spi.action.ControllerContextAction;
+import org.jboss.dependency.plugins.action.SimpleControllerContextAction;
 import org.jboss.dependency.spi.Controller;
 import org.jboss.dependency.spi.ControllerContext;
 import org.jboss.dependency.spi.ControllerState;
@@ -51,7 +53,7 @@ import org.jboss.reflect.spi.TypeInfo;
  * @author <a href="adrian@jboss.com">Adrian Brock</a>
  * @version $Revision$
  */
-public class KernelControllerContextAction implements ControllerContextAction
+public class KernelControllerContextAction extends SimpleControllerContextAction<KernelControllerContext>
 {
    /**
     * Static log
@@ -133,68 +135,15 @@ public class KernelControllerContextAction implements ControllerContextAction
       }
    }
 
-   public void install(final ControllerContext context) throws Throwable
+   protected boolean validateContext(ControllerContext context)
    {
-      if (System.getSecurityManager() == null || context instanceof AbstractKernelControllerContext == false)
-         installAction((KernelControllerContext) context);
-      else
-      {
-         PrivilegedExceptionAction<Object> action = new PrivilegedExceptionAction<Object>()
-         {
-            public Object run() throws Exception
-            {
-               try
-               {
-                  installAction((KernelControllerContext) context);
-                  return null;
-               }
-               catch (RuntimeException e)
-               {
-                  throw e;
-               }
-               catch (Exception e)
-               {
-                  throw e;
-               }
-               catch (Error e)
-               {
-                  throw e;
-               }
-               catch (Throwable t)
-               {
-                  throw new RuntimeException(t);
-               }
-            }
-         };
-         try
-         {
-            AccessController.doPrivileged(action);
-         }
-         catch (PrivilegedActionException e)
-         {
-            throw e.getCause();
-         }
-      }
+      return (context instanceof AbstractKernelControllerContext);
    }
 
-   public void uninstall(final ControllerContext context)
+   protected KernelControllerContext contextCast(ControllerContext context)
    {
-      if (System.getSecurityManager() == null || context instanceof AbstractKernelControllerContext == false)
-         uninstallAction((KernelControllerContext) context);
-      else
-      {
-         PrivilegedAction<Object> action = new PrivilegedAction<Object>()
-         {
-            public Object run()
-            {
-               uninstallAction((KernelControllerContext) context);
-               return null;
-            }
-         };
-         AccessController.doPrivileged(action);
-      }
+      return KernelControllerContext.class.cast(context);
    }
-
 
    public void installAction(KernelControllerContext context) throws Throwable
    {

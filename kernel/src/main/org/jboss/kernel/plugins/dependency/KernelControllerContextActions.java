@@ -25,7 +25,7 @@ import java.util.HashMap;
 import java.util.Map;
 
 import org.jboss.dependency.plugins.AbstractControllerContextActions;
-import org.jboss.dependency.plugins.spi.action.ControllerContextAction;
+import org.jboss.dependency.plugins.action.ControllerContextAction;
 import org.jboss.dependency.spi.ControllerState;
 
 /**

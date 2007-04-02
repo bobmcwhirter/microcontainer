@@ -22,8 +22,7 @@
 package org.jboss.test.kernel.deployment.test;
 
 import junit.framework.Test;
-
-import org.jboss.beans.metadata.plugins.factory.GenericBeanFactory;
+import org.jboss.beans.metadata.spi.factory.BeanFactory;
 import org.jboss.test.kernel.deployment.support.SimpleBeanWithLifecycle;
 
 /**
@@ -46,13 +45,13 @@ public class GenericBeanFactoryLifecycleTestCase extends AbstractDeploymentTest
 
    public void testGenericBeanFactoryLifecycle() throws Throwable
    {
-      GenericBeanFactory factory = (GenericBeanFactory) getBean("Name1");
+      BeanFactory factory = (BeanFactory) getBean("Name1");
       SimpleBeanWithLifecycle bean = (SimpleBeanWithLifecycle) factory.createBean();
       assertTrue(bean.createInvoked);
       assertTrue(bean.startInvoked);
       assertFalse(bean.notCreateInvoked);
       assertFalse(bean.notStartInvoked);
-      factory = (GenericBeanFactory) getBean("Name2");
+      factory = (BeanFactory) getBean("Name2");
       bean = (SimpleBeanWithLifecycle) factory.createBean();
       assertFalse(bean.createInvoked);
       assertFalse(bean.startInvoked);

@@ -21,7 +21,6 @@
 */
 package org.jboss.beans.metadata.plugins.factory;
 
-import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 
@@ -31,6 +30,7 @@ import org.jboss.beans.metadata.spi.ConstructorMetaData;
 import org.jboss.beans.metadata.spi.LifecycleMetaData;
 import org.jboss.beans.metadata.spi.ParameterMetaData;
 import org.jboss.beans.metadata.spi.ValueMetaData;
+import org.jboss.beans.metadata.spi.factory.BeanFactory;
 import org.jboss.joinpoint.spi.Joinpoint;
 import org.jboss.joinpoint.spi.JoinpointException;
 import org.jboss.joinpoint.spi.MethodJoinpoint;
@@ -44,7 +44,7 @@ import org.jboss.kernel.spi.config.KernelConfigurator;
  * @author <a href="adrian@jboss.com">Adrian Brock</a>
  * @version $Revision$
  */
-public class GenericBeanFactory
+public class GenericBeanFactory implements BeanFactory
 {
    /** The configurator */
    protected KernelConfigurator configurator;
@@ -91,11 +91,11 @@ public class GenericBeanFactory
       Object result = joinpoint.dispatch();
       if (properties != null && properties.size() > 0)
       {
-         for (Iterator i = properties.entrySet().iterator(); i.hasNext();)
+         for (Object o : properties.entrySet())
          {
-            Map.Entry entry = (Map.Entry) i.next();
-            String property = (String) entry.getKey();
-            ValueMetaData vmd = (ValueMetaData) entry.getValue();
+            Map.Entry entry = (Map.Entry)o;
+            String property = (String)entry.getKey();
+            ValueMetaData vmd = (ValueMetaData)entry.getValue();
             TargettedJoinpoint jp = configurator.getPropertySetterJoinPoint(info, property, cl, vmd);
             jp.setTarget(result);
             jp.dispatch();

@@ -26,6 +26,7 @@ import org.jboss.aop.InstanceAdvisor;
 import org.jboss.aop.advice.AspectFactory;
 import org.jboss.aop.joinpoint.Joinpoint;
 import org.jboss.beans.metadata.plugins.factory.GenericBeanFactory;
+import org.jboss.beans.metadata.spi.factory.BeanFactory;
 import org.jboss.logging.Logger;
 
 /**
@@ -38,11 +39,11 @@ public class GenericBeanAspectFactory implements AspectFactory
 {
    private static final Logger log = Logger.getLogger(GenericBeanAspectFactory.class); 
 
-   protected GenericBeanFactory factory;
+   protected BeanFactory factory;
 
    protected String name;
    
-   public GenericBeanAspectFactory(String name, GenericBeanFactory factory)
+   public GenericBeanAspectFactory(String name, BeanFactory factory)
    {
       this.name = name;
       this.factory = factory;

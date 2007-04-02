@@ -23,7 +23,7 @@ package org.jboss.dependency.plugins;
 
 import java.util.Map;
 
-import org.jboss.dependency.plugins.spi.action.ControllerContextAction;
+import org.jboss.dependency.plugins.action.ControllerContextAction;
 import org.jboss.dependency.spi.ControllerContext;
 import org.jboss.dependency.spi.ControllerContextActions;
 import org.jboss.dependency.spi.ControllerState;
