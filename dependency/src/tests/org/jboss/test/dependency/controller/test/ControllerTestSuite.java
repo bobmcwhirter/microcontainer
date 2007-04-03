@@ -54,6 +54,7 @@ public class ControllerTestSuite extends TestSuite
       suite.addTest(ErrorControllerActionTestCase.suite());
       suite.addTest(CrossContextDependencyBadObjectNameTestCase.suite());
       suite.addTest(AliasDependencyTestCase.suite());
+      suite.addTest(AliasUnitTestCase.suite());
       
       return suite;
    }
