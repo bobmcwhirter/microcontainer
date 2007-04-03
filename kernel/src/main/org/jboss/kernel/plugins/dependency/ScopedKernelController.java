@@ -87,21 +87,18 @@ public class ScopedKernelController extends AbstractKernelController
       return underlyingController;
    }
 
+   // TODO See comments on super implementation
    public void addControllerContext(ControllerContext context)
    {
       underlyingController.removeControllerContext(context);
-      allContexts.put(context.getName(), context);
+      registerControllerContext(context.getName(), context);
    }
 
+   // TODO See comments on super implementation
    public void removeControllerContext(ControllerContext context)
    {
-      allContexts.remove(context.getName());
+      unregisterControllerContext(context.getName());
       underlyingController.addControllerContext(context);
-   }
-
-   public boolean isActive()
-   {
-      return allContexts.isEmpty() == false;
    }
 
    public void release()

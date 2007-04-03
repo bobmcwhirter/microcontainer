@@ -48,25 +48,25 @@ public class AbstractController extends JBossObject implements Controller
    private ReentrantReadWriteLock lock = new ReentrantReadWriteLock();
 
    /** The states in order List<ControllerState> */
-   protected List<ControllerState> states = CollectionsFactory.createCopyOnWriteList();
+   private List<ControllerState> states = CollectionsFactory.createCopyOnWriteList();
 
    /** All contexts by name Map<Object, ControllerContext> */
-   protected Map<Object, ControllerContext> allContexts = CollectionsFactory.createConcurrentReaderMap();
+   private Map<Object, ControllerContext> allContexts = CollectionsFactory.createConcurrentReaderMap();
 
    /** The contexts by state Map<ControllerState, Set<ControllerContext>> */
-   protected Map<ControllerState, Set<ControllerContext>> contextsByState = CollectionsFactory.createConcurrentReaderMap();
+   private Map<ControllerState, Set<ControllerContext>> contextsByState = CollectionsFactory.createConcurrentReaderMap();
 
    /** The error contexts Map<Name, ControllerContext> */
-   protected Map<Object, ControllerContext> errorContexts = CollectionsFactory.createConcurrentReaderMap();
+   private Map<Object, ControllerContext> errorContexts = CollectionsFactory.createConcurrentReaderMap();
 
    /** The contexts that are currently being installed */
-   protected Set<ControllerContext> installing = CollectionsFactory.createCopyOnWriteSet();
+   private Set<ControllerContext> installing = CollectionsFactory.createCopyOnWriteSet();
 
    /** The child controllers */
-   protected Set<AbstractController> childControllers = CollectionsFactory.createCopyOnWriteSet();
+   private Set<AbstractController> childControllers = CollectionsFactory.createCopyOnWriteSet();
 
    /** Whether an on demand context has been enabled */
-   protected boolean onDemandEnabled = true;
+   private boolean onDemandEnabled = true;
 
    /**
     * Create an abstract controller
@@ -111,18 +111,20 @@ public class AbstractController extends JBossObject implements Controller
       }
    }
 
+   // TODO This api looks broken and unsafe
+   //      1) It should not be public
+   //      2) There should be parameter checking for public methods
+   //      3) There should be locking when updating state
+   //      4) Error handling?
    public void addControllerContext(ControllerContext context)
    {
-      Object name = context.getName();
-      if (allContexts.containsKey(name) == false)
-         allContexts.put(name, context);
-      else
-         log.warn("Unable to put/return context to allContexts, name already exists: " + context);
+      registerControllerContext(context.getName(), context);
    }
 
+   // TODO This api looks broken and unsafe see above
    public void removeControllerContext(ControllerContext context)
    {
-      allContexts.remove(context.getName());
+      unregisterControllerContext(context.getName());
    }
 
    public Set<AbstractController> getControllers()
@@ -142,6 +144,16 @@ public class AbstractController extends JBossObject implements Controller
       return childControllers.remove(controller);
    }
 
+   /**
+    * Whether the controller has contexts
+    * 
+    * @return true when there are registered contexts
+    */
+   public boolean isActive()
+   {
+      return allContexts.isEmpty() == false;
+   }
+
    public ControllerContext getContext(Object name, ControllerState state)
    {
       if (name == null)
@@ -150,7 +162,7 @@ public class AbstractController extends JBossObject implements Controller
       lockRead();
       try
       {
-         ControllerContext result = allContexts.get(name);
+         ControllerContext result = getRegisterControllerContext(name, false);
          if (result != null && state != null)
          {
             int required = states.indexOf(state);
@@ -259,7 +271,7 @@ public class AbstractController extends JBossObject implements Controller
          if (errorContexts.remove(name) != null && trace)
             log.trace("Tidied up context in error state: " + name);
 
-         ControllerContext context = allContexts.get(name);
+         ControllerContext context = getRegisterControllerContext(name, false);
          if (context != null)
          {
             if (trace)
@@ -267,7 +279,14 @@ public class AbstractController extends JBossObject implements Controller
 
             uninstallContext(context, ControllerState.NOT_INSTALLED, trace);
 
-            allContexts.remove(name);
+            try
+            {
+               unregisterControllerContext(name);
+            }
+            catch (Throwable t)
+            {
+               log.warn("Error unregistering context: " + context.toShortString() + " with name: " + name);
+            }
          }
          else
          {
@@ -302,7 +321,7 @@ public class AbstractController extends JBossObject implements Controller
       {
          Object name = context.getName();
 
-         if (allContexts.get(name) != null)
+         if (getRegisterControllerContext(name, false) != null)
             throw new IllegalStateException(name + " is already installed.");
 
          if (ControllerMode.AUTOMATIC.equals(context.getMode()))
@@ -325,9 +344,22 @@ public class AbstractController extends JBossObject implements Controller
             log.trace("Dependencies for " + name + ": " + dependsOn);
          }
 
-         if (incrementState(context, trace))
+         boolean ok = incrementState(context, trace);
+         if (ok)
          {
-            allContexts.put(context.getName(), context);
+            try
+            {
+               registerControllerContext(name, context);
+            }
+            catch (Throwable t)
+            {
+               // This is probably unreachable? But let's be paranoid
+               ok = false;
+               throw t;
+            }
+         }
+         if (ok)
+         {
             resolveContexts(trace);
          }
          else
@@ -405,8 +437,8 @@ public class AbstractController extends JBossObject implements Controller
          if (ControllerMode.ON_DEMAND.equals(context.getMode()) == false)
             throw new IllegalStateException("Context is not ON DEMAND: " + context.toShortString());
 
-         if (allContexts.containsKey(context.getName()) == false)
-            throw new IllegalStateException("Unknown context: " + context.toShortString());
+         // Sanity check
+         getRegisterControllerContext(context.getName(), true);
 
          // Already done
          if (ControllerState.INSTALLED.equals(context.getRequiredState()))
@@ -850,5 +882,65 @@ public class AbstractController extends JBossObject implements Controller
    protected void unlockWrite()
    {
       lock.writeLock().unlock();
+   }
+
+   /**
+    * Get a registered context<p>
+    * 
+    * This method should be invoked with at least the read lock taken
+    * 
+    * @param name the name with which to register it
+    * @param mustExist whether to throw an error when the context does not exist
+    * @return context the registered context
+    * @throws IllegalArgumentException for null parameters
+    * @throws IllegalStateException if the context if must exist is true and the context does not exist
+    */
+   protected ControllerContext getRegisterControllerContext(Object name, boolean mustExist)
+   {
+      if (name == null)
+         throw new IllegalArgumentException("Null name");
+
+      ControllerContext result = allContexts.get(name);
+      if (mustExist && result == null)
+         throw new IllegalStateException("Context does not exist with name: " + name);
+      return result;
+   }
+
+   /**
+    * Register a context<p>
+    * 
+    * This method must be invoked with the write lock taken
+    * 
+    * @param name the name with which to register it
+    * @param context the context to register
+    * @throws IllegalArgumentException for null parameters
+    * @throws IllegalStateException if the context is already registered with that name
+    */
+   protected void registerControllerContext(Object name, ControllerContext context)
+   {
+      if (name == null)
+         throw new IllegalArgumentException("Null name");
+      if (context == null)
+         throw new IllegalArgumentException("Null context");
+      
+      if (allContexts.containsKey(name) == false)
+         allContexts.put(name, context);
+      else
+         throw new IllegalStateException("Unable to register context" + context.toShortString() + " name already exists: " + name);
+   }
+
+   /**
+    * Unregister a context<p>
+    * 
+    * This method must be invoked with the write lock taken
+    * 
+    * @param name the name it was registered with
+    * @throws IllegalArgumentException for null parameters
+    */
+   protected void unregisterControllerContext(Object name)
+   {
+      if (name == null)
+         throw new IllegalArgumentException("Null name");
+      allContexts.remove(name);
    }
 }
