@@ -38,6 +38,9 @@ public interface KernelRegistry extends KernelObject
    /** Event type for registered event */
    public static final String KERNEL_REGISTRY_REGISTERED = "KERNEL_REGISTRY_REGISTERED";
 
+   /** Event type for modified event */
+   public static final String KERNEL_REGISTRY_MODIFIED = "KERNEL_REGISTRY_MODIFIED";
+
    /** Event type for unregistered event */
    public static final String KERNEL_REGISTRY_UNREGISTERED = "KERNEL_REGISTRY_UNREGISTERED";
    

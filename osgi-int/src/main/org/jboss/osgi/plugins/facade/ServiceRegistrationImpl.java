@@ -22,9 +22,16 @@
 package org.jboss.osgi.plugins.facade;
 
 import java.util.Dictionary;
+import java.util.Enumeration;
 import java.util.Map;
+import java.util.Set;
+import java.util.TreeSet;
 
-import org.jboss.reflect.spi.ClassInfo;
+import org.jboss.kernel.spi.dependency.KernelControllerContext;
+import org.jboss.kernel.spi.event.KernelEvent;
+import org.jboss.kernel.spi.event.KernelEventEmitter;
+import org.jboss.kernel.spi.registry.KernelRegistry;
+import org.osgi.framework.Constants;
 import org.osgi.framework.ServiceReference;
 import org.osgi.framework.ServiceRegistration;
 
@@ -35,22 +42,70 @@ import org.osgi.framework.ServiceRegistration;
  */
 public class ServiceRegistrationImpl implements ServiceRegistration
 {
-   private ClassInfo serviceInfo;
-   private ClassInfo[] interfaces;
-   private Map properties;
+   protected KernelEventEmitter emitter;
+   protected KernelControllerContext context;
+   protected Long serviceId;
+   protected Map<String, Object> properties;
+
+   protected boolean isRegistered;
+
+   public ServiceRegistrationImpl(KernelEventEmitter emitter, KernelControllerContext context, Long serviceId, Map<String, Object> properties)
+   {
+      this.emitter = emitter;
+      this.context = context;
+      this.serviceId = serviceId;
+      this.properties = properties;
+      init();
+   }
+   protected void init()
+   {
+      KernelEvent event = new AbstractServiceEvent(this, KernelRegistry.KERNEL_REGISTRY_REGISTERED, serviceId, System.currentTimeMillis(), emitter);
+      emitter.fireKernelEvent(event);
+   }
+
+   protected void validateServiceRegistration()
+   {
+      if (isServiceRegistered() == false)
+         throw new IllegalStateException("ServiceRegistration object has already been unregistered.");
+   }
+
+   protected boolean isServiceRegistered()
+   {
+      return isRegistered;
+   }
 
    public ServiceReference getReference()
    {
       return null;  //To change body of implemented methods use File | Settings | File Templates.
    }
 
-   public void setProperties(Dictionary dictionary)
+   public void setProperties(Dictionary properties)
    {
-      //To change body of implemented methods use File | Settings | File Templates.
+      validateServiceRegistration();
+      if (properties != null && properties.size() > 0)
+      {
+         Set<String> names = new TreeSet<String>(String.CASE_INSENSITIVE_ORDER);
+         Enumeration keys = properties.keys();
+         for(String key = (String)keys.nextElement(); keys.hasMoreElements();)
+         {
+            if (names.add(key) == false)
+               throw new IllegalArgumentException("properties contains case variants of the same key name.");
+
+            if (Constants.OBJECTCLASS.equals(key) == false && Constants.SERVICE_ID.equals(key) == false)
+            {
+               this.properties.put(key, properties.get(key));
+            }
+         }
+         KernelEvent event = new AbstractServiceEvent(this, KernelRegistry.KERNEL_REGISTRY_MODIFIED, serviceId, System.currentTimeMillis(), emitter);
+         emitter.fireKernelEvent(event);
+      }
    }
 
    public void unregister()
    {
-      //To change body of implemented methods use File | Settings | File Templates.
+      validateServiceRegistration();
+      isRegistered = false;
+      KernelEvent event = new AbstractServiceEvent(this, KernelRegistry.KERNEL_REGISTRY_UNREGISTERED, serviceId, System.currentTimeMillis(), emitter);
+      emitter.fireKernelEvent(event);
    }
 }

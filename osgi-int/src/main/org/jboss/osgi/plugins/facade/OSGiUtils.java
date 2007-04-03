@@ -21,6 +21,11 @@
 */
 package org.jboss.osgi.plugins.facade;
 
+import java.util.Dictionary;
+import java.util.Enumeration;
+import java.util.HashMap;
+import java.util.Map;
+
 import org.osgi.framework.Constants;
 import org.osgi.framework.ServiceReference;
 
@@ -31,6 +36,28 @@ import org.osgi.framework.ServiceReference;
  */
 public abstract class OSGiUtils
 {
+   /**
+    * Transform from Dictionary to Map
+    *
+    * @param dictionary dictionary to transform
+    * @return Map<String, Object>
+    */
+   public static Map<String, Object> toMap(Dictionary dictionary)
+   {
+      Map<String, Object> map = new HashMap<String, Object>();
+      if (dictionary != null && dictionary.size() > 0)
+      {
+         Enumeration keys = dictionary.keys();
+         while(keys.hasMoreElements())
+         {
+            String key = keys.nextElement().toString();
+            Object value = dictionary.get(key);
+            map.put(key, value);
+         }
+      }
+      return map;
+   }
+
    /**
     * Get ServiceReference id.
     *

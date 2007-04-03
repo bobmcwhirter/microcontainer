@@ -29,18 +29,22 @@ import java.util.Comparator;
 import java.util.Dictionary;
 import java.util.EventListener;
 import java.util.HashMap;
-import java.util.Hashtable;
 import java.util.List;
 import java.util.Map;
 
+import org.jboss.beans.metadata.spi.BeanMetaData;
+import org.jboss.beans.metadata.spi.builder.BeanMetaDataBuilder;
 import org.jboss.deployers.spi.structure.DeploymentContext;
 import org.jboss.kernel.spi.config.KernelConfigurator;
+import org.jboss.kernel.spi.dependency.KernelController;
+import org.jboss.kernel.spi.dependency.KernelControllerContext;
 import org.jboss.kernel.spi.event.KernelEvent;
 import org.jboss.kernel.spi.event.KernelEventEmitter;
 import org.jboss.kernel.spi.event.KernelEventFilter;
-import org.jboss.kernel.spi.registry.KernelRegistry;
+import org.jboss.kernel.spi.event.KernelEventListener;
 import org.jboss.logging.Logger;
 import org.jboss.reflect.spi.ClassInfo;
+import org.jboss.util.id.GUID;
 import org.osgi.framework.Bundle;
 import org.osgi.framework.BundleContext;
 import org.osgi.framework.BundleException;
@@ -60,7 +64,7 @@ import org.osgi.framework.ServiceRegistration;
  *
  * @author <a href="mailto:ales.justin@jboss.com">Ales Justin</a>
  */
-public class BundleContextImpl implements BundleContext
+public class BundleContextImpl implements BundleContext, KernelEventEmitter
 {
    /** The log */
    private static final Logger log = Logger.getLogger(BundleContextImpl.class);
@@ -69,8 +73,9 @@ public class BundleContextImpl implements BundleContext
 
    protected DeploymentContext context;
    protected Bundle bundle;
-   protected KernelEventEmitter eventEmitter; // todo - get it
-   protected KernelConfigurator kernelConfigurator; // todo - get it
+   protected KernelController controller; // todo - get it
+   protected KernelEventEmitter emitterDelegate; // todo - get it
+   protected KernelConfigurator configurator; // todo - get it
 
    protected Map<EventListener, AbstractDelegateListener> listeners = Collections.synchronizedMap(new HashMap<EventListener, AbstractDelegateListener>());
    protected Map<ServiceListener, KernelEventFilter> filters = Collections.synchronizedMap(new HashMap<ServiceListener, KernelEventFilter>());
@@ -94,6 +99,21 @@ public class BundleContextImpl implements BundleContext
    protected ClassLoader getClassLoader()
    {
       return null;
+   }
+
+   public void registerListener(KernelEventListener listener, KernelEventFilter filter, Object handback) throws Throwable
+   {
+      emitterDelegate.registerListener(listener, filter, handback);
+   }
+
+   public void unregisterListener(KernelEventListener listener, KernelEventFilter filter, Object handback) throws Throwable
+   {
+      emitterDelegate.unregisterListener(listener, filter, handback);
+   }
+
+   public void fireKernelEvent(KernelEvent event)
+   {
+      emitterDelegate.fireKernelEvent(event);
    }
 
    // --------------- OSGi framework -----------------------
@@ -152,7 +172,7 @@ public class BundleContextImpl implements BundleContext
       }
       try
       {
-         eventEmitter.registerListener(listener, eventFilter, this);
+         registerListener(listener, eventFilter, this);
          listeners.put(serviceListener, listener);
       }
       catch (Throwable throwable)
@@ -184,7 +204,7 @@ public class BundleContextImpl implements BundleContext
          KernelEventFilter filter = filters.get(serviceListener);
          try
          {
-            eventEmitter.unregisterListener(listener, filter, this);
+            unregisterListener(listener, filter, this);
          }
          catch (Throwable t)
          {
@@ -210,7 +230,7 @@ public class BundleContextImpl implements BundleContext
          listener.addValidate();
          try
          {
-            eventEmitter.registerListener(listener, null, this);
+            registerListener(listener, null, this);
             listeners.put(bundleListener, listener);
          }
          catch (Throwable t)
@@ -229,7 +249,7 @@ public class BundleContextImpl implements BundleContext
          listener.removeValidate();
          try
          {
-            eventEmitter.unregisterListener(listener, null, this);
+            unregisterListener(listener, null, this);
          }
          catch (Throwable t)
          {
@@ -251,7 +271,7 @@ public class BundleContextImpl implements BundleContext
          listener.addValidate();
          try
          {
-            eventEmitter.registerListener(listener, null, this);
+            registerListener(listener, null, this);
             listeners.put(frameworkListener, listener);
          }
          catch (Throwable t)
@@ -270,7 +290,7 @@ public class BundleContextImpl implements BundleContext
          listener.removeValidate();
          try
          {
-            eventEmitter.unregisterListener(listener, null, this);
+            unregisterListener(listener, null, this);
          }
          catch (Throwable t)
          {
@@ -294,12 +314,14 @@ public class BundleContextImpl implements BundleContext
 
       ClassInfo serviceInfo;
       ClassInfo[] infos = new ClassInfo[clazzes.length];
+      Class[] interfaces = new Class[clazzes.length];
       try
       {
-         serviceInfo = kernelConfigurator.getClassInfo(service.getClass());
+         serviceInfo = configurator.getClassInfo(service.getClass());
          for(int i=0; i < clazzes.length; i++)
          {
-            infos[i] = kernelConfigurator.getClassInfo(clazzes[i], getClassLoader());
+            infos[i] = configurator.getClassInfo(clazzes[i], getClassLoader());
+            interfaces[i] = infos[i].getType();
          }
       }
       catch (Throwable t)
@@ -317,18 +339,27 @@ public class BundleContextImpl implements BundleContext
          }
       }
       // handle properties
-      if (properties == null)
-      {
-         properties = new Hashtable();
-      }
+      Map<String, Object> serviceMap = OSGiUtils.toMap(properties);
       Long serviceId = NumberUtil.nextLong();
-      properties.put(Constants.SERVICE_ID, serviceId);
-      properties.put(Constants.OBJECTCLASS, clazzes);
-      // todo - add to framework --> controller + handle factory bean!
+      serviceMap.put(Constants.SERVICE_ID, serviceId);
+      serviceMap.put(Constants.OBJECTCLASS, clazzes);
+      if (isServiceFactory)
+      {
+         service = ServiceFactoryProxy.createProxy(service, interfaces);
+      }
+      BeanMetaDataBuilder builder = new BeanMetaDataBuilder(GUID.asString(), serviceInfo.getName());
+      BeanMetaData metaData = builder.getBeanMetaData();
+      KernelControllerContext context;
+      try
+      {
+         context = controller.install(metaData, service);
+      }
+      catch (Throwable t)
+      {
+         throw new InternalOSGiFacadeException(t);
+      }
       // todo - get underlying bundle --> ServiceReference
-      KernelEvent event = new AbstractServiceEvent(this, KernelRegistry.KERNEL_REGISTRY_REGISTERED, serviceId, System.currentTimeMillis(), service);
-      eventEmitter.fireKernelEvent(event);
-      return new ServiceRegistrationImpl();
+      return new ServiceRegistrationImpl(this, context, serviceId, serviceMap);
    }
 
    public ServiceRegistration registerService(String clazz, Object service, Dictionary properties)
@@ -390,15 +421,17 @@ public class BundleContextImpl implements BundleContext
 
    public Object getService(ServiceReference reference)
    {
-      return null;  //To change body of implemented methods use File | Settings | File Templates.
+      validateBundle();
+      return null;
    }
 
    public boolean ungetService(ServiceReference reference)
    {
+      validateBundle();
       return false;  //To change body of implemented methods use File | Settings | File Templates.
    }
 
-   public File getDataFile(String string)
+   public File getDataFile(String filename)
    {
       return null;  //To change body of implemented methods use File | Settings | File Templates.
    }

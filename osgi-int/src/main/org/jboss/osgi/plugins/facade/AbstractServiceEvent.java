@@ -32,7 +32,7 @@ import org.osgi.framework.ServiceEvent;
  */
 public class AbstractServiceEvent extends AbstractEvent implements ServiceEventAdapter
 {
-   // todo - service modified type, ServiceReference
+   // todo - ServiceReference
    public AbstractServiceEvent(Object source, String type, long sequence, long timestamp, Object context)
    {
       super(source, type, sequence, timestamp, context);
@@ -44,6 +44,10 @@ public class AbstractServiceEvent extends AbstractEvent implements ServiceEventA
       if (KernelRegistry.KERNEL_REGISTRY_REGISTERED.equals(type))
       {
          serviceType = ServiceEvent.REGISTERED;
+      }
+      else if (KernelRegistry.KERNEL_REGISTRY_MODIFIED.equals(type))
+      {
+         serviceType = ServiceEvent.MODIFIED;
       }
       else if (KernelRegistry.KERNEL_REGISTRY_UNREGISTERED.equals(type))
       {
