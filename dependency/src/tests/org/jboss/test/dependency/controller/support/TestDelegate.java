@@ -21,6 +21,9 @@
 */
 package org.jboss.test.dependency.controller.support;
 
+import java.util.HashSet;
+import java.util.Set;
+
 import org.jboss.dependency.plugins.AbstractDependencyInfo;
 import org.jboss.dependency.spi.ControllerMode;
 import org.jboss.dependency.spi.DependencyItem;
@@ -34,6 +37,8 @@ import org.jboss.dependency.spi.DependencyItem;
 public class TestDelegate extends Ordering
 {
    private Object name;
+   
+   private Set<Object> aliases;
    
    public AbstractDependencyInfo dependencies = new AbstractDependencyInfo();
 
@@ -54,12 +59,28 @@ public class TestDelegate extends Ordering
    
    public TestDelegate(Object name)
    {
+      this(name, null);
+   }
+   
+   public TestDelegate(Object name, Object... aliases)
+   {
       this.name = name;
+      if (aliases != null)
+      {
+         this.aliases = new HashSet<Object>();
+         for (int i = 0; i < aliases.length; ++i)
+            this.aliases.add(aliases[i]);
+      }
    }
    
    public Object getName()
    {
       return name;
+   }
+   
+   public Set<Object> getAliases()
+   {
+      return aliases;
    }
    
    public void describeInstall()

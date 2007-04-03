@@ -21,6 +21,8 @@
 */
 package org.jboss.kernel.plugins.registry;
 
+import java.util.Set;
+
 import org.jboss.dependency.spi.Controller;
 import org.jboss.dependency.spi.ControllerMode;
 import org.jboss.dependency.spi.ControllerState;
@@ -75,6 +77,11 @@ public class AbstractKernelRegistryEntry extends JBossObject implements KernelRe
    {
       this.name = name;
       flushJBossObjectCache();
+   }
+
+   public Set<Object> getAliases()
+   {
+      return null;
    }
 
    public Object getTarget()

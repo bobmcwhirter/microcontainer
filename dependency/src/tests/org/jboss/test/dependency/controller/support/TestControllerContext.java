@@ -62,6 +62,7 @@ public class TestControllerContext extends AbstractControllerContext
    {
       super(delegate.getName(), actions, delegate.dependencies);
       setMode(delegate.mode);
+      setAliases(delegate.getAliases());
       this.delegate = delegate;
    }
    

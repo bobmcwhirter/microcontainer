@@ -21,6 +21,8 @@
 */
 package org.jboss.dependency.spi;
 
+import java.util.Set;
+
 import org.jboss.util.JBossInterface;
 
 /**
@@ -38,6 +40,13 @@ public interface ControllerContext extends JBossInterface
     */
    Object getName();
 
+   /**
+    * The aliases
+    * 
+    * @return the aliases or null if there are no aliases
+    */
+   Set<Object> getAliases();
+   
    /**
     * Get the dependency information
     * 

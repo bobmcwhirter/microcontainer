@@ -21,12 +21,17 @@
 */
 package org.jboss.test.dependency.controller.test;
 
+import java.util.HashSet;
+import java.util.Set;
+
 import org.jboss.dependency.plugins.AbstractController;
+import org.jboss.dependency.plugins.AbstractControllerContext;
 import org.jboss.dependency.spi.Controller;
 import org.jboss.dependency.spi.ControllerContext;
 import org.jboss.dependency.spi.ControllerState;
 import org.jboss.test.AbstractTestCaseWithSetup;
 import org.jboss.test.AbstractTestDelegate;
+import org.jboss.test.dependency.controller.support.MockControllerContextActions;
 import org.jboss.test.dependency.controller.support.Ordering;
 import org.jboss.test.dependency.controller.support.OtherControllerContext;
 import org.jboss.test.dependency.controller.support.OtherDelegate;
@@ -80,6 +85,11 @@ public class AbstractDependencyTest extends AbstractTestCaseWithSetup
       return context;
    }
 
+   protected void install(ControllerContext context) throws Throwable
+   {
+      controller.install(context);
+   }
+
    protected void assertInstall(ControllerContext context, ControllerState expected) throws Throwable
    {
       controller.install(context);
@@ -118,6 +128,11 @@ public class AbstractDependencyTest extends AbstractTestCaseWithSetup
    {
       assertContext(context, ControllerState.ERROR);
    }
+
+   protected void assertNoContext(Object name) throws Throwable
+   {
+      assertNull(controller.getContext(name, null));
+   }
    
    protected void assertUninstall(ControllerContext context) throws Throwable
    {
@@ -125,6 +140,30 @@ public class AbstractDependencyTest extends AbstractTestCaseWithSetup
       assertEquals(ControllerState.ERROR, context.getState());
    }
    
+   protected Set<Object> createAliases(Object... aliases)
+   {
+      if (aliases == null)
+         return null;
+      HashSet<Object> result = new HashSet<Object>(aliases.length);
+      for (int i = 0; i < aliases.length; ++i)
+         result.add(aliases[i]);
+      return result;
+   }
+   
+   protected ControllerContext createControllerContext(Object name, Object... aliases)
+   {
+      AbstractControllerContext result = new AbstractControllerContext(name, new MockControllerContextActions());
+      result.setAliases(createAliases(aliases));
+      return result;
+   }
+   
+   protected ControllerContext assertCreateInstall(Object name, Object... aliases) throws Throwable
+   {
+      ControllerContext context = createControllerContext(name, aliases);
+      assertInstall(context, ControllerState.INSTALLED);
+      return context;
+   }
+
    /**
     * Default setup with security manager enabled
     * 

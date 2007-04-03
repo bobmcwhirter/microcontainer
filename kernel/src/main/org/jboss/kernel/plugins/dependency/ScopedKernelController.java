@@ -91,13 +91,13 @@ public class ScopedKernelController extends AbstractKernelController
    public void addControllerContext(ControllerContext context)
    {
       underlyingController.removeControllerContext(context);
-      registerControllerContext(context.getName(), context);
+      registerControllerContext(context);
    }
 
    // TODO See comments on super implementation
    public void removeControllerContext(ControllerContext context)
    {
-      unregisterControllerContext(context.getName());
+      unregisterControllerContext(context);
       underlyingController.addControllerContext(context);
    }
 

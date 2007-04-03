@@ -23,6 +23,7 @@ package org.jboss.dependency.plugins;
 
 import java.io.PrintWriter;
 import java.io.StringWriter;
+import java.util.Set;
 
 import org.jboss.dependency.spi.Controller;
 import org.jboss.dependency.spi.ControllerContext;
@@ -44,6 +45,9 @@ public class AbstractControllerContext extends JBossObject implements Controller
    /** The name */
    private Object name;
 
+   /** The aliases */
+   private Set<Object> aliases;
+   
    /** The target */
    private Object target;
 
@@ -76,7 +80,7 @@ public class AbstractControllerContext extends JBossObject implements Controller
     */
    public AbstractControllerContext(Object name, ControllerContextActions actions)
    {
-      this(name, actions, null, null);
+      this(name, null, actions, null, null);
    }
 
    /**
@@ -88,7 +92,7 @@ public class AbstractControllerContext extends JBossObject implements Controller
     */
    public AbstractControllerContext(Object name, ControllerContextActions actions, DependencyInfo dependencies)
    {
-      this(name, actions, dependencies, null);
+      this(name, null, actions, dependencies, null);
    }
 
    /**
@@ -100,6 +104,20 @@ public class AbstractControllerContext extends JBossObject implements Controller
     * @param target the target
     */
    public AbstractControllerContext(Object name, ControllerContextActions actions, DependencyInfo dependencies, Object target)
+   {
+      this(name, null, actions, dependencies, target);
+   }
+
+   /**
+    * Create a new AbstractControllerContext.
+    * 
+    * @param name the name
+    * @param aliases the aliases
+    * @param actions the actions
+    * @param dependencies the dependencies
+    * @param target the target
+    */
+   public AbstractControllerContext(Object name, Set<Object> aliases, ControllerContextActions actions, DependencyInfo dependencies, Object target)
    {
       if (name == null)
          throw new IllegalArgumentException("Null name");
@@ -113,6 +131,7 @@ public class AbstractControllerContext extends JBossObject implements Controller
       else
         this.dependencies = dependencies;
       this.target = target;
+      this.aliases = aliases;
    }
 
    /**
@@ -145,6 +164,23 @@ public class AbstractControllerContext extends JBossObject implements Controller
       this.name = name;
    }
    
+   public Set<Object> getAliases()
+   {
+      return aliases;
+   }
+   
+   /**
+    * Set the aliases<p>
+    * 
+    * Aliases in this list only take effect if they are set before installation on the controller
+    * 
+    * @param aliases the aliases
+    */
+   public void setAliases(Set<Object> aliases)
+   {
+      this.aliases = aliases;
+   }
+
    public ControllerState getState()
    {
       return state;
@@ -243,6 +279,8 @@ public class AbstractControllerContext extends JBossObject implements Controller
    public void toString(JBossStringBuilder buffer)
    {
       buffer.append("name=").append(name);
+      if (aliases != null)
+         buffer.append(" aliases=").append(aliases);
       buffer.append(" target=").append(target);
       if (error != null || state.equals(ControllerState.ERROR) == false)
          buffer.append(" state=").append(state.getStateString());
@@ -266,6 +304,8 @@ public class AbstractControllerContext extends JBossObject implements Controller
    public void toShortString(JBossStringBuilder buffer)
    {
       buffer.append("name=").append(name);
+      if (aliases != null)
+         buffer.append(" aliases=").append(aliases);
       if (error != null || state.equals(ControllerState.ERROR) == false)
          buffer.append(" state=").append(state.getStateString());
       if (ControllerMode.AUTOMATIC.equals(mode) == false)

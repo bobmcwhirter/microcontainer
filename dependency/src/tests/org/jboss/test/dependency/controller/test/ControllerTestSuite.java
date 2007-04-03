@@ -53,6 +53,7 @@ public class ControllerTestSuite extends TestSuite
       suite.addTest(RecursiveControllerActionTestCase.suite());
       suite.addTest(ErrorControllerActionTestCase.suite());
       suite.addTest(CrossContextDependencyBadObjectNameTestCase.suite());
+      suite.addTest(AliasDependencyTestCase.suite());
       
       return suite;
    }

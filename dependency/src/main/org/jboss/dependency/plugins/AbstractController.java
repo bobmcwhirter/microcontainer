@@ -118,13 +118,13 @@ public class AbstractController extends JBossObject implements Controller
    //      4) Error handling?
    public void addControllerContext(ControllerContext context)
    {
-      registerControllerContext(context.getName(), context);
+      registerControllerContext(context);
    }
 
    // TODO This api looks broken and unsafe see above
    public void removeControllerContext(ControllerContext context)
    {
-      unregisterControllerContext(context.getName());
+      unregisterControllerContext(context);
    }
 
    public Set<AbstractController> getControllers()
@@ -289,7 +289,7 @@ public class AbstractController extends JBossObject implements Controller
 
             try
             {
-               unregisterControllerContext(name);
+               unregisterControllerContext(context);
             }
             catch (Throwable t)
             {
@@ -329,8 +329,20 @@ public class AbstractController extends JBossObject implements Controller
       {
          Object name = context.getName();
 
+         // Check the name is not already registered
          if (getRegisterControllerContext(name, false) != null)
             throw new IllegalStateException(name + " is already installed.");
+         
+         // Check any alias is not already registered
+         Set<Object> aliases = context.getAliases();
+         if (aliases != null && aliases.isEmpty() == false)
+         {
+            for (Object alias : aliases)
+            {
+               if (getRegisterControllerContext(alias, false) != null)
+                  throw new IllegalStateException(alias + " an alias of " + name + " is already installed.");
+            }
+         }
 
          if (ControllerMode.AUTOMATIC.equals(context.getMode()))
             context.setRequiredState(ControllerState.INSTALLED);
@@ -357,7 +369,7 @@ public class AbstractController extends JBossObject implements Controller
          {
             try
             {
-               registerControllerContext(name, context);
+               registerControllerContext(context);
             }
             catch (Throwable t)
             {
@@ -915,9 +927,114 @@ public class AbstractController extends JBossObject implements Controller
    }
 
    /**
-    * Register a context<p>
+    * Register a context and all its aliases<p>
     * 
     * This method must be invoked with the write lock taken
+    * 
+    * @param context the context to register
+    * @throws IllegalArgumentException for null parameters
+    * @throws IllegalStateException if the context is already registered with that name or alias
+    */
+   protected void registerControllerContext(ControllerContext context)
+   {
+      if (context == null)
+         throw new IllegalArgumentException("Null context");
+
+      Set<Object> aliases = context.getAliases();
+      
+      // Register the context
+      Object name = context.getName();
+      registerControllerContext(name, context);
+
+      // Register the aliases
+      if (aliases != null && aliases.isEmpty() == false)
+      {
+         int ok = 0;
+         try
+         {
+            for (Object alias : aliases)
+            {
+               registerControllerContext(alias, context);
+               ++ok;
+            }
+         }
+         finally
+         {
+            // It didn't work
+            if (ok != aliases.size() && ok > 0)
+            {
+               // Unregister the aliases we added
+               for (Object alias : aliases)
+               {
+                  if (ok-- == 0)
+                     break;
+                  try
+                  {
+                     unregisterControllerContext(alias);
+                  }
+                  catch (Throwable ignored)
+                  {
+                     log.debug("Error unregistering alias: " + alias, ignored);
+                  }
+               }
+               
+               // Unregister the context
+               try
+               {
+                  unregisterControllerContext(name);
+               }
+               catch (Throwable ignored)
+               {
+                  log.debug("Error unregistering context with name: " + name, ignored);
+               }
+            }
+         }
+      }
+   }
+
+   /**
+    * Unregister a context and all its aliases<p>
+    * 
+    * This method must be invoked with the write lock taken
+    * 
+    * @param context the context
+    * @throws IllegalArgumentException for null parameters
+    * @throws IllegalStateException if the context is not registered
+    */
+   protected void unregisterControllerContext(ControllerContext context)
+   {
+      if (context == null)
+         throw new IllegalArgumentException("Null context");
+
+      Set<Object> aliases = context.getAliases();
+      
+      // Unregister the context
+      Object name = context.getName();
+      unregisterControllerContext(name);
+
+      // Unegister the aliases
+      if (aliases != null && aliases.isEmpty() == false)
+      {
+         for (Object alias : aliases)
+         {
+            try
+            {
+               unregisterControllerContext(alias);
+            }
+            catch (Throwable ignored)
+            {
+               log.debug("Error unregistering alias: " + alias, ignored);
+            }
+         }
+      }
+   }
+
+   /**
+    * Register a context<p>
+    * 
+    * This method must be invoked with the write lock taken<p>
+    * 
+    * NOTE: You probably want to use the {@link #registerControllerContext(ControllerContext)}
     * 
     * @param name the name with which to register it
     * @param context the context to register
@@ -940,7 +1057,9 @@ public class AbstractController extends JBossObject implements Controller
    /**
     * Unregister a context<p>
     * 
-    * This method must be invoked with the write lock taken
+    * This method must be invoked with the write lock taken<p>
+    * 
+    * NOTE: You probably want to use the {@link #unregisterControllerContext(ControllerContext)}
     * 
     * @param name the name it was registered with
     * @throws IllegalArgumentException for null parameters
