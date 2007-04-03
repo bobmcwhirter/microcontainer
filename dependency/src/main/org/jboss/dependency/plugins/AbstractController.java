@@ -151,7 +151,15 @@ public class AbstractController extends JBossObject implements Controller
     */
    public boolean isActive()
    {
-      return allContexts.isEmpty() == false;
+      lockRead();
+      try
+      {
+         return allContexts.isEmpty() == false;
+      }
+      finally
+      {
+         unlockRead();
+      }
    }
 
    public ControllerContext getContext(Object name, ControllerState state)
