@@ -14,10 +14,7 @@
   <build>
     <resources>
       <resource>
-        <directory>src/resources</directory>
-        <includes>
-          <include>schema/**</include>
-        </includes>
+        <directory>src/resources/main</directory>
       </resource>
     </resources>
     <testResources>
