@@ -1,7 +1,15 @@
 <projectDescription>
   <name>jboss-osgi-int</name>
   <comment>JBoss Microcontainer</comment>
-  <projects/>
+  <projects>
+    <project>jboss-deployers</project>
+    <project>jboss-managed</project>
+    <project>jboss-metatype</project>
+    <project>jboss-kernel</project>
+    <project>jboss-aop-mc-int</project>
+    <project>jboss-container</project>
+    <project>jboss-dependency</project>
+  </projects>
   <buildSpec>
     <buildCommand>
       <name>org.eclipse.jdt.core.javabuilder</name>
