@@ -75,7 +75,7 @@ public class AbstractDependencyItem extends JBossObject implements DependencyIte
    public AbstractDependencyItem(Object name, Object iDependOn, ControllerState whenRequired, ControllerState dependentState)
    {
       this.name = name;
-      this.iDependOn = iDependOn;
+      setIDependOn(iDependOn);
       this.whenRequired = whenRequired;
       this.dependentState = dependentState;
    }
@@ -206,6 +206,12 @@ public class AbstractDependencyItem extends JBossObject implements DependencyIte
    protected void setIDependOn(Object iDependOn)
    {
       this.iDependOn = iDependOn;
+      
+      // HACK: Try to fixup JMX like ObjectNames to their canonical name
+      Object fixup = JMXObjectNameFix.needsAnAlias(iDependOn);
+      if (fixup != null)
+         this.iDependOn = fixup;
+
       flushJBossObjectCache();
    }
 

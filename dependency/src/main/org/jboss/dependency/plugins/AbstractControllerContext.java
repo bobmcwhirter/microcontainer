@@ -23,6 +23,8 @@ package org.jboss.dependency.plugins;
 
 import java.io.PrintWriter;
 import java.io.StringWriter;
+import java.util.Collections;
+import java.util.HashSet;
 import java.util.Set;
 
 import org.jboss.dependency.spi.Controller;
@@ -131,7 +133,7 @@ public class AbstractControllerContext extends JBossObject implements Controller
       else
         this.dependencies = dependencies;
       this.target = target;
-      this.aliases = aliases;
+      setAliases(aliases);
    }
 
    /**
@@ -178,7 +180,40 @@ public class AbstractControllerContext extends JBossObject implements Controller
     */
    public void setAliases(Set<Object> aliases)
    {
-      this.aliases = aliases;
+      // WARNING: This code is hack for backwards compatiblity
+      
+      // Here we fixup the aliases to map JMX like ObjectNames to their canonical form
+      // I've made it a protected method needsAnAlias so others can subclass and
+      // change the rules (including not doing this at all)
+      // NOTE: This method should be invoked from all constructors
+      if (aliases == null)
+      {
+         // There are no explicit aliases so just see whether the name is an ObjectName.
+         Object alias = needsAnAlias(name);
+         // No alias required
+         if (alias == null)
+            this.aliases = null;
+         else
+            // Add a single alias with canonical name
+            this.aliases = Collections.singleton(alias);
+      }
+      else
+      {
+         // Always clone the aliases passed it
+         this.aliases = new HashSet<Object>();
+         // Check the main name
+         Object alias = needsAnAlias(name);
+         if (alias != null)
+            this.aliases.add(alias);
+         // Check the aliases
+         for (Object passedAlias : aliases)
+         {
+            this.aliases.add(passedAlias);
+            alias = needsAnAlias(passedAlias);
+            if (alias != null)
+               this.aliases.add(alias);
+         }
+      }
    }
 
    public ControllerState getState()
@@ -315,5 +350,18 @@ public class AbstractControllerContext extends JBossObject implements Controller
       }
       if (error != null)
          buffer.append(" error=").append(error.getClass().getName()).append(": ").append(error.getMessage());
+   }
+   
+   /**
+    * Whether the given name needs an alias<p>
+    * 
+    * By default we just add aliases for JMX like ObjectNames to have a canonical name alias
+    * 
+    * @param original the original name
+    * @return the alias if required or null if no alias required
+    */
+   protected Object needsAnAlias(Object original)
+   {
+      return JMXObjectNameFix.needsAnAlias(original);
    }
 }
