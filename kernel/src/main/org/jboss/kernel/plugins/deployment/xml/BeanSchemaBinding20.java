@@ -53,6 +53,12 @@ public class BeanSchemaBinding20
    /** The beanfactory element name */
    public static final QName beanFactoryQName = new QName(BEAN_DEPLOYER_NS, "beanfactory");
 
+   /** The alias binding */
+   public static final QName aliasTypeQName = new QName(BEAN_DEPLOYER_NS,  "aliasType");
+
+   /** The alias element name */
+   public static final QName aliasQName = new QName(BEAN_DEPLOYER_NS, "alias");
+
    /** The annotation binding */
    public static final QName annotationTypeQName = new QName(BEAN_DEPLOYER_NS,  "annotationType");
 
@@ -271,6 +277,10 @@ public class BeanSchemaBinding20
       // lifecycle binding
       TypeBinding lifecycleType = schemaBinding.getType(lifecycleTypeQName);
       BeanSchemaBindingHelper.initLifecycleHandlers(lifecycleType);
+
+      // alias binding
+      TypeBinding aliasType = schemaBinding.getType(aliasTypeQName);
+      BeanSchemaBindingHelper.initAliasHandlers(aliasType);
 
       // annotation binding
       TypeBinding annotationType = schemaBinding.getType(annotationTypeQName);

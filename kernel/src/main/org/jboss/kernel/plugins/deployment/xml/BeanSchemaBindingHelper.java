@@ -90,6 +90,9 @@ public class BeanSchemaBindingHelper
       // bean has a destroy
       beanType.pushInterceptor(BeanSchemaBinding20.destroyQName, BeanDestroyInterceptor.INTERCEPTOR);
 
+      // bean has aliases
+      beanType.pushInterceptor(BeanSchemaBinding20.aliasQName, BeanAliasInterceptor.INTERCEPTOR);
+
       // bean has annotations
       beanType.pushInterceptor(BeanSchemaBinding20.annotationQName, BeanAnnotationInterceptor.INTERCEPTOR);
 
@@ -117,6 +120,9 @@ public class BeanSchemaBindingHelper
    public static void initBeanFactoryHandlers(TypeBinding beanFactoryType)
    {
       beanFactoryType.setHandler(BeanFactoryHandler.HANDLER);
+
+      // bean factory has aliases
+      beanFactoryType.pushInterceptor(BeanSchemaBinding20.aliasQName, BeanAliasInterceptor.INTERCEPTOR);
 
       // bean factory has a classloader
       beanFactoryType.pushInterceptor(BeanSchemaBinding20.classloaderQName, BeanClassLoaderInterceptor.INTERCEPTOR);
@@ -251,8 +257,21 @@ public class BeanSchemaBindingHelper
    }
 
    /**
-    * Initialize the handlers for the annotation type
+    * Initialize the handlers for the alias type
     * 
+    * @param aliasType the alias type
+    */
+   public static void initAliasHandlers(TypeBinding aliasType)
+   {
+      aliasType.setHandler(AliasHandler.HANDLER);
+
+      // annotation can take characters
+      aliasType.setSimpleType(AliasCharactersHandler.HANDLER);
+   }
+
+   /**
+    * Initialize the handlers for the annotation type
+    *
     * @param annotationType the annotation type
     */
    public static void initAnnotationHandlers(TypeBinding annotationType)

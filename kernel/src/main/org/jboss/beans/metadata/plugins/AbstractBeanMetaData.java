@@ -72,6 +72,9 @@ public class AbstractBeanMetaData extends AbstractFeatureMetaData
    /** The name of this instance */
    protected String name;
 
+   /** The aliases */
+   protected Set<Object> aliases;
+
    /** The mode */
    protected ControllerMode mode;
 
@@ -91,7 +94,9 @@ public class AbstractBeanMetaData extends AbstractFeatureMetaData
    protected LifecycleMetaData start;
 
    /** The stop lifecycle */
-   protected LifecycleMetaData stop;   /** The destroy lifecycle */
+   protected LifecycleMetaData stop;
+
+   /** The destroy lifecycle */
    protected LifecycleMetaData destroy;
 
    /** What the bean demands Set<DemandMetaData> */
@@ -321,6 +326,16 @@ public class AbstractBeanMetaData extends AbstractFeatureMetaData
       flushJBossObjectCache();
    }
 
+   public Set<Object> getAliases()
+   {
+      return aliases;
+   }
+
+   public void setAliases(Set<Object> aliases)
+   {
+      this.aliases = aliases;
+   }
+
    public ControllerMode getMode()
    {
       return mode;
@@ -548,6 +563,8 @@ public class AbstractBeanMetaData extends AbstractFeatureMetaData
    public void toString(JBossStringBuilder buffer)
    {
       buffer.append("name=").append(name);
+      if (aliases != null)
+         buffer.append(" aliases=").append(aliases);
       buffer.append(" bean=").append(bean);
       buffer.append(" properties=");
       JBossObject.list(buffer, properties);

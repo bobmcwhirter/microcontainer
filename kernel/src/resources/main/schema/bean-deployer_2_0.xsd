@@ -81,6 +81,7 @@ $Id$
       </xsd:annotation>
       <xsd:sequence>
          <xsd:element name="annotation" type="annotationType" minOccurs="0" maxOccurs="unbounded"/>
+         <xsd:element name="alias" type="aliasType" minOccurs="0" maxOccurs="unbounded"/>
          <xsd:element name="classloader" type="classloaderType" minOccurs="0"/>
          <xsd:element name="constructor" type="constructorType" minOccurs="0"/>
          <xsd:element name="property" type="propertyType" minOccurs="0" maxOccurs="unbounded"/>
@@ -150,6 +151,7 @@ $Id$
          </xsd:documentation>
       </xsd:annotation>
       <xsd:sequence>
+         <xsd:element name="alias" type="aliasType" minOccurs="0" maxOccurs="unbounded"/>
          <xsd:element name="classloader" type="classloaderType" minOccurs="0"/>
          <xsd:element name="constructor" type="constructorType" minOccurs="0"/>
          <xsd:element name="property" type="propertyType" minOccurs="0" maxOccurs="unbounded"/>
@@ -389,13 +391,36 @@ $Id$
       <xsd:attribute name="whenRequired" type="controllerStateType" use="optional"/>
    </xsd:complexType>
 
+   <xsd:complexType name="aliasType" mixed="true">
+      <xsd:annotation>
+         <xsd:documentation>
+            <![CDATA[
+            Bean's aliases.
+
+            e.g.
+            <bean name="MyName" class="com.acme.POJO">
+               <alias>YourName</alias>
+               <alias><value class="java.lang.Class">com.acme.POJO</value></alias>
+               <alias><value class="java.lang.Integer">1234</value></alias>
+            </bean>
+            ]]>
+         </xsd:documentation>
+      </xsd:annotation>
+      <xsd:simpleContent>
+         <xsd:extension base="xsd:string">
+            <xsd:attribute name="class" type="classNameType" use="optional"/>
+            <xsd:attribute name="replace" type="xsd:boolean"/>
+         </xsd:extension>
+      </xsd:simpleContent>
+   </xsd:complexType>
+
    <xsd:complexType name="parameterType" mixed="true">
       <xsd:annotation>
          <xsd:documentation>
            <![CDATA[
            A parameter is used to define the constructor, factory
            and lifecycle method usage.
-           
+
            e.g. Using number of parameters when this is unique enough
            <bean ...>
               <constructor>
@@ -403,7 +428,7 @@ $Id$
                  <parameter>2nd Parameter</parameter>
               </constructor>
            </bean>
-           
+
            e.g. Explicitly stating the parameter type to resolve overloading
            <bean ...>
               <constructor>

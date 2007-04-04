@@ -57,6 +57,13 @@ public interface BeanMetaData extends FeatureMetaData, ValueMetaData
    void setName(String name);
 
    /**
+    * The aliases
+    *
+    * @return the aliases or null if there are no aliases
+    */
+   Set<Object> getAliases();      
+
+   /**
     * Get the mode
     * 
     * @return the mode
