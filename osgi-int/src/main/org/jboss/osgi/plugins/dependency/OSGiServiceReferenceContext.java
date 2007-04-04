@@ -29,7 +29,7 @@ import org.jboss.dependency.plugins.AbstractControllerContext;
 import org.jboss.dependency.spi.Controller;
 import org.jboss.dependency.spi.ControllerState;
 import org.jboss.dependency.spi.DependencyItem;
-import org.jboss.dependency.spi.dispatch.InvokeDispatchContext;
+import org.jboss.osgi.spi.dependency.ServiceControllerContext;
 import org.jboss.osgi.spi.metadata.ServiceMetaData;
 import org.jboss.osgi.spi.metadata.ServiceMetaDataVisitor;
 import org.jboss.osgi.spi.metadata.ServiceMetaDataVisitorNode;
@@ -40,7 +40,7 @@ import org.osgi.framework.BundleContext;
  *
  * @author <a href="mailto:ales.justin@jboss.com">Ales Justin</a>
  */
-public class OSGiServiceReferenceContext extends AbstractControllerContext implements InvokeDispatchContext
+public class OSGiServiceReferenceContext extends AbstractControllerContext implements ServiceControllerContext
 {
    /** The meta data */
    private ServiceMetaData serviceMetaData;
@@ -73,11 +73,6 @@ public class OSGiServiceReferenceContext extends AbstractControllerContext imple
       return null; // todo get Bundle CL
    }
 
-   /**
-    * Get the serviceMetaData.
-    *
-    * @return the serviceMetaData.
-    */
    public ServiceMetaData getServiceMetaData()
    {
       return serviceMetaData;
@@ -93,11 +88,6 @@ public class OSGiServiceReferenceContext extends AbstractControllerContext imple
       this.serviceMetaData = serviceMetaData;
    }
 
-   /**
-    * Get Bundle Context
-    *
-    * @return the bundle context
-    */
    public BundleContext getBundleContext()
    {
       return bundleContext;
@@ -182,7 +172,7 @@ public class OSGiServiceReferenceContext extends AbstractControllerContext imple
          }
       }
 
-      public OSGiServiceReferenceContext getControllerContext()
+      public ServiceControllerContext getControllerContext()
       {
          return OSGiServiceReferenceContext.this;
       }

@@ -23,7 +23,7 @@ package org.jboss.osgi.spi.metadata;
 
 import org.jboss.dependency.spi.ControllerState;
 import org.jboss.dependency.spi.DependencyItem;
-import org.jboss.osgi.plugins.dependency.OSGiServiceReferenceContext;
+import org.jboss.osgi.spi.dependency.ServiceControllerContext;
 
 /**
  * ServiceMetaDataVisitor.
@@ -37,7 +37,7 @@ public interface ServiceMetaDataVisitor
     * 
     * @return the context
     */
-   OSGiServiceReferenceContext getControllerContext();
+   ServiceControllerContext getControllerContext();
 
    /**
     * Get the context state
