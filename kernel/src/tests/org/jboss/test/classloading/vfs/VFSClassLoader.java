@@ -50,6 +50,9 @@ public class VFSClassLoader extends URLClassLoader
    public Class<?> loadClass(String name, boolean flag)
       throws ClassNotFoundException
    {
+      
+      if (name.startsWith("org.jboss.test") == false)
+         return getClass().getClassLoader().loadClass(name);
       Class c;
       try
       {
