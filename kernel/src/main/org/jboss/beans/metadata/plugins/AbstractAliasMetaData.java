@@ -21,18 +21,18 @@
 */
 package org.jboss.beans.metadata.plugins;
 
-import java.beans.PropertyEditor;
 import java.io.Serializable;
 import java.util.Iterator;
 
 import org.jboss.beans.metadata.spi.AliasMetaData;
 import org.jboss.beans.metadata.spi.MetaDataVisitor;
 import org.jboss.beans.metadata.spi.MetaDataVisitorNode;
-import org.jboss.logging.Logger;
+import org.jboss.reflect.plugins.introspection.IntrospectionTypeInfoFactory;
+import org.jboss.reflect.spi.TypeInfo;
+import org.jboss.reflect.spi.TypeInfoFactory;
 import org.jboss.util.JBossObject;
 import org.jboss.util.JBossStringBuilder;
 import org.jboss.util.StringPropertyReplacer;
-import org.jboss.util.propertyeditor.PropertyEditors;
 
 /**
  * Metadata for an alias.
@@ -42,24 +42,8 @@ import org.jboss.util.propertyeditor.PropertyEditors;
 public class AbstractAliasMetaData extends JBossObject
       implements AliasMetaData, Serializable
 {
-   /**
-    * The log
-    */
-   private static final Logger log = Logger.getLogger(AbstractAliasMetaData.class);
-
-   static
-   {
-      try
-      {
-         PropertyEditors.init();
-      }
-      catch (Throwable t)
-      {
-         log.debug("Unable to initialise property editors", t);
-      }
-   }
-
    private static final long serialVersionUID = 1L;
+   private static TypeInfoFactory typeInfoFactory = new IntrospectionTypeInfoFactory();
 
    public String alias;
 
@@ -108,29 +92,22 @@ public class AbstractAliasMetaData extends JBossObject
    {
       try
       {
+         if (clazz != null)
+         {
+            ClassLoader cl = Thread.currentThread().getContextClassLoader();
+            TypeInfo info = typeInfoFactory.getTypeInfo(clazz, cl);
+            return info.convertValue(alias, replace);
+         }
          String aliasString = alias;
          if (replace)
          {
             aliasString = StringPropertyReplacer.replaceProperties(aliasString);
          }
-         if (clazz != null)
-         {
-            PropertyEditor editor = PropertyEditors.findEditor(clazz);
-            if (editor != null)
-            {
-               editor.setAsText(aliasString);
-               return editor.getValue();
-            }
-            else
-            {
-               log.warn("No matching PropertyEditor found for class: " + clazz);
-            }
-         }
          return aliasString;
       }
-      catch (Exception e)
+      catch (Throwable t)
       {
-         throw new RuntimeException("Error creating alias for " + alias, e);
+         throw new RuntimeException("Error creating alias for " + alias, t);
       }
    }
 
