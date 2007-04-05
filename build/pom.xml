@@ -28,6 +28,8 @@
   <build>
     <sourceDirectory>src/main</sourceDirectory>
     <testSourceDirectory>src/tests</testSourceDirectory>
+    <outputDirectory>${microcontainer.outputDirectory}</outputDirectory>
+    <testOutputDirectory>${microcontainer.testOutputDirectory}</testOutputDirectory>
     <finalName>${artifactId}</finalName>
     <plugins>
       <plugin>
@@ -208,4 +210,45 @@
       </dependency>
     </dependencies>
   </dependencyManagement>
+
+  <profiles>
+    <profile>
+      <id>default</id>
+      <activation>
+        <activeByDefault>true</activeByDefault>
+      </activation>
+      <properties>
+        <microcontainer.outputDirectory>target/classes</microcontainer.outputDirectory>
+        <microcontainer.testOutputDirectory>target/test-classes</microcontainer.testOutputDirectory>
+      </properties>
+    </profile>
+    <profile>
+      <id>eclipse</id>
+      <build>
+        <defaultGoal>process-test-resources</defaultGoal>
+        <plugins>
+          <plugin>
+            <artifactId>maven-eclipse-plugin</artifactId>
+            <executions>
+              <execution>
+                <id>eclipse</id>
+                <phase>process-test-resources</phase>
+                <goals>
+                  <goal>eclipse</goal>
+                </goals>
+              </execution>
+            </executions>
+            <configuration>
+              <downloadSources>true</downloadSources>
+              <buildOutputDirectory>${microcontainer.outputDirectory}</buildOutputDirectory>
+            </configuration>
+          </plugin>
+        </plugins>
+      </build>
+      <properties>
+        <microcontainer.outputDirectory>target/eclipse-classes</microcontainer.outputDirectory>
+        <microcontainer.testOutputDirectory>target/eclipse-classes-tests</microcontainer.testOutputDirectory>
+      </properties>
+    </profile>
+  </profiles>
 </project>

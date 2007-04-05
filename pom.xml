@@ -44,4 +44,13 @@
     <module>spring-int</module>
     <module>osgi-int</module>
   </modules>
+
+  <profiles>
+    <profile>
+      <id>eclipse</id>
+      <build>
+        <defaultGoal>process-test-resources</defaultGoal>
+      </build>
+    </profile>
+  </profiles>
 </project>
