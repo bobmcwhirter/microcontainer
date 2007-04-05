@@ -247,7 +247,7 @@
       </build>
       <properties>
         <microcontainer.outputDirectory>target/eclipse-classes</microcontainer.outputDirectory>
-        <microcontainer.testOutputDirectory>target/eclipse-classes-tests</microcontainer.testOutputDirectory>
+        <microcontainer.testOutputDirectory>target/eclipse-tests-classes</microcontainer.testOutputDirectory>
       </properties>
     </profile>
   </profiles>
