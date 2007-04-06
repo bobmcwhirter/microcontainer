@@ -29,10 +29,6 @@ import org.jboss.osgi.spi.metadata.VersionRange;
 import org.osgi.framework.Version;
 
 /**
- * @author <a href="mailto:ales.justin@jboss.com">Ales Justin</a>
- */
-
-/**
  * Represents an OSGi version range:
  * version-range ::= interval | atleast
  * interval ::= ( '[' | '(' ) floor ',' ceiling ( ']' | ')' )
@@ -41,7 +37,7 @@ import org.osgi.framework.Version;
  * ceiling ::= version
  *
  * @author Scott.Stark@jboss.org
- * @author Ales.Justin@jboss.org
+ * @author <a href="mailto:ales.justin@jboss.com">Ales Justin</a>
  */
 public class AbstractVersionRange implements VersionRange, Serializable
 {
