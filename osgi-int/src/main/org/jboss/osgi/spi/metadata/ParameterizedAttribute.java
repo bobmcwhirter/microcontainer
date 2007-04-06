@@ -21,42 +21,26 @@
 */
 package org.jboss.osgi.spi.metadata;
 
-import java.util.Set;
-
-import org.jboss.beans.metadata.spi.ClassLoaderMetaData;
+import java.util.Map;
 
 /**
- * Common OSGi meta data mainAttributes.
- *
  * @author <a href="mailto:ales.justin@jboss.com">Ales Justin</a>
  */
-public interface HolderMetaData
+public interface ParameterizedAttribute extends AttributeAware
 {
    /**
-    * Get the element id.
+    * Get the parameters.
     *
-    * @return unique string id
+    * @return properties for this attribute
     */
-   String getId();
+   Map<String, Parameter> getParameters();
 
    /**
-    * Get the exposed interface.
+    * Get the parameter by name.
+    * Helper method to getParameters method.
     *
-    * @return qualified interface name.
+    * @param name parameter's name
+    * @return parameter value
     */
-   String getInterface();
-
-   /**
-    * Get the dependencies.
-    *
-    * @return set of dependencies.
-    */
-   Set<DependencyMetaData> getDepends();
-
-   /**
-    * Get the classloader metadata.
-    *
-    * @return classloader metadata
-    */
-   ClassLoaderMetaData getContextClassLoader();
+   Parameter getParameter(String name);
 }

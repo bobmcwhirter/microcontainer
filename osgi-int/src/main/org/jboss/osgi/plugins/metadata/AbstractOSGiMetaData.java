@@ -21,8 +21,21 @@
 */
 package org.jboss.osgi.plugins.metadata;
 
+import java.net.MalformedURLException;
+import java.net.URL;
+import java.util.Arrays;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+import java.util.jar.Manifest;
+
 import org.jboss.deployers.plugins.metadata.AbstractManifestMetaData;
+import org.jboss.logging.Logger;
 import org.jboss.osgi.spi.metadata.OSGiMetaData;
+import org.jboss.osgi.spi.metadata.PackageAttribute;
+import org.jboss.osgi.spi.metadata.ParameterizedAttribute;
+import static org.osgi.framework.Constants.*;
+import org.osgi.framework.Version;
 
 /**
  * Abstract OSGi meta data.
@@ -32,14 +45,181 @@ import org.jboss.osgi.spi.metadata.OSGiMetaData;
 public class AbstractOSGiMetaData extends AbstractManifestMetaData implements OSGiMetaData
 {
    private static final long serialVersionUID = 1L;
+   private static Logger log = Logger.getLogger(AbstractOSGiMetaData.class);
 
-   public String getBundleSymbolicName()
+   protected static StringValueCreator STRING_VC = new StringValueCreator();
+   protected static IntegerValueCreator INTEGER_VC = new IntegerValueCreator();
+   protected static VersionValueCreator VERSION_VC = new VersionValueCreator();
+   protected static URLValueCreator URL_VC = new URLValueCreator();
+   protected static ParameterizedAttributeValueCreator PARAM_ATTRIB_VC = new ParameterizedAttributeValueCreator();
+   protected static StringListValueCreator STRING_LIST_VC = new StringListValueCreator();
+   protected static ParameterizedAttributeListValueCreator PARAM_ATTRIB_LIST_VC = new ParameterizedAttributeListValueCreator();
+   protected static PackageAttributeListValueCreator PACKAGE_LIST_VC = new PackageAttributeListValueCreator();
+
+   protected Map<String, Object> cachedAttributes = new HashMap<String, Object>();
+
+   public AbstractOSGiMetaData()
    {
-      return null;
+   }
+
+   public AbstractOSGiMetaData(Manifest manifest)
+   {
+      super(manifest);
    }
 
    public String getBundleActivator()
    {
-      return null;
+      return get(BUNDLE_ACTIVATOR, STRING_VC);
    }
+
+   public List<String> getBundleClassPath()
+   {
+      return get(BUNDLE_CLASSPATH, STRING_LIST_VC, Arrays.asList("."));
+   }
+
+   public String getBundleDescription()
+   {
+      return get(BUNDLE_DESCRIPTION, STRING_VC);
+   }
+
+   public String getBundleLocalization()
+   {
+      return get(BUNDLE_LOCALIZATION, STRING_VC, BUNDLE_LOCALIZATION_DEFAULT_BASENAME);
+   }
+
+   public int getBundleManifestVersion()
+   {
+      return get(BUNDLE_VERSION, INTEGER_VC, 1);
+   }
+
+   public String getBundleName()
+   {
+      return get(BUNDLE_NAME, STRING_VC);
+   }
+
+   public List<ParameterizedAttribute> getBundleNativeCode()
+   {
+      return get(BUNDLE_NATIVECODE, PARAM_ATTRIB_LIST_VC);
+   }
+
+   public List<String> getRequiredExecutionEnvironment()
+   {
+      return get(BUNDLE_REQUIREDEXECUTIONENVIRONMENT, STRING_LIST_VC);
+   }
+
+   public String getBundleSymbolicName()
+   {
+      return get(BUNDLE_SYMBOLICNAME, STRING_VC);
+   }
+
+   public URL getBundleUpdateLocation()
+   {
+      return get(BUNDLE_UPDATELOCATION, URL_VC);
+   }
+
+   public Version getBundleVersion()
+   {
+      return get(BUNDLE_VERSION, VERSION_VC , new Version("0.0.0"));
+   }
+
+   public List<PackageAttribute> getDynamicImports()
+   {
+      return get(DYNAMICIMPORT_PACKAGE, PACKAGE_LIST_VC);
+   }
+
+   public List<PackageAttribute> getExportPackages()
+   {
+      return get(EXPORT_PACKAGE, PACKAGE_LIST_VC);
+   }
+
+   public ParameterizedAttribute getFragmentHost()
+   {
+      return get(FRAGMENT_HOST, PARAM_ATTRIB_VC);
+   }
+
+   public List<PackageAttribute> getImportPackages()
+   {
+      return get(IMPORT_PACKAGE, PACKAGE_LIST_VC);
+   }
+
+   public List<ParameterizedAttribute> getRequireBundles()
+   {
+      return get(REQUIRE_BUNDLE, PARAM_ATTRIB_LIST_VC);
+   }
+
+   @SuppressWarnings("unchecked")
+   protected <T> T get(String key, ValueCreator<T> creator)
+   {
+      return get(key, creator, null);
+   }
+
+   @SuppressWarnings("unchecked")
+   protected <T> T get(String key, ValueCreator<T> creator, T defaultValue)
+   {
+      T value = (T)cachedAttributes.get(key);
+      if (value == null)
+      {
+         String attribute = getMainAttribute(key);
+         if (attribute != null)
+         {
+            value = creator.createValue(attribute);
+            cachedAttributes.put(key, value);
+         }
+         else if (defaultValue != null)
+         {
+            value = defaultValue;
+            cachedAttributes.put(key, value);
+         }
+      }
+      return value;
+   }
+
+   private static class StringValueCreator implements ValueCreator<String>
+   {
+      public String createValue(String attribute)
+      {
+         return attribute;
+      }
+   }
+
+   private static class IntegerValueCreator implements ValueCreator<Integer>
+   {
+      public Integer createValue(String attribute)
+      {
+         return Integer.valueOf(attribute);
+      }
+   }
+
+   private static class VersionValueCreator implements ValueCreator<Version>
+   {
+      public Version createValue(String attribute)
+      {
+         return new Version(attribute);
+      }
+   }
+
+   private static class URLValueCreator implements ValueCreator<URL>
+   {
+      public URL createValue(String attribute)
+      {
+         try
+         {
+            return new URL(attribute);
+         }
+         catch (MalformedURLException e)
+         {
+            log.warn("Exception while creating URL.", e);
+            return null;
+         }
+      }
+   }
+
+   private static class StringListValueCreator extends ListValueCreator<String>
+   {
+      public List<String> createValue(String attribute)
+      {
+         return Arrays.asList(attribute.split(","));
+      }
+   }
+
 }

@@ -21,42 +21,17 @@
 */
 package org.jboss.osgi.spi.metadata;
 
-import java.util.Set;
-
-import org.jboss.beans.metadata.spi.ClassLoaderMetaData;
-
 /**
- * Common OSGi meta data mainAttributes.
+ * Attribute string value holder.
  *
  * @author <a href="mailto:ales.justin@jboss.com">Ales Justin</a>
  */
-public interface HolderMetaData
+public interface AttributeAware
 {
    /**
-    * Get the element id.
+    * Get the attribute.
     *
-    * @return unique string id
+    * @return string attribute value
     */
-   String getId();
-
-   /**
-    * Get the exposed interface.
-    *
-    * @return qualified interface name.
-    */
-   String getInterface();
-
-   /**
-    * Get the dependencies.
-    *
-    * @return set of dependencies.
-    */
-   Set<DependencyMetaData> getDepends();
-
-   /**
-    * Get the classloader metadata.
-    *
-    * @return classloader metadata
-    */
-   ClassLoaderMetaData getContextClassLoader();
+   String getAttribute();
 }

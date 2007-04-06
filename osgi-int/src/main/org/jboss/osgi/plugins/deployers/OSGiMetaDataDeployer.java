@@ -24,6 +24,7 @@ package org.jboss.osgi.plugins.deployers;
 import java.util.jar.Manifest;
 
 import org.jboss.deployers.plugins.deployers.helpers.ManifestDeployer;
+import org.jboss.osgi.plugins.metadata.AbstractOSGiMetaData;
 import org.jboss.osgi.spi.metadata.OSGiMetaData;
 
 /**
@@ -40,7 +41,7 @@ public class OSGiMetaDataDeployer extends ManifestDeployer<OSGiMetaData>
 
    protected OSGiMetaData createMetaData(Manifest manifest) throws Exception
    {
-      return null;  //todo
+      return new AbstractOSGiMetaData(manifest);
    }
 
 }

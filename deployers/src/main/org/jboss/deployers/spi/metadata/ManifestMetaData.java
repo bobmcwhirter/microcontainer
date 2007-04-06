@@ -34,5 +34,23 @@ public interface ManifestMetaData
     * @param name the name
     * @return attribute value or null if attribute doesn't exist
     */
-   String getAttribute(String name);
+   String getMainAttribute(String name);
+
+   /**
+    * Get attribute value from specific attrbiutes.
+    * 
+    * @param attributesName attribute group name
+    * @param name string key for accessing specific attribute
+    * @return attribute value or null if attribute doesn't exist
+    */
+   String getAttribute(String attributesName, String name);
+
+   /**
+    * Get attribute value from specific attrbiutes.
+    *
+    * @param entryName entry name
+    * @param name string key for accessing specific attribute
+    * @return attribute value or null if attribute doesn't exist
+    */
+   String getEntry(String entryName, String name);
 }

@@ -21,42 +21,17 @@
 */
 package org.jboss.osgi.spi.metadata;
 
-import java.util.Set;
-
-import org.jboss.beans.metadata.spi.ClassLoaderMetaData;
-
 /**
- * Common OSGi meta data mainAttributes.
+ * Attribute with VersionRange attribute.
  *
  * @author <a href="mailto:ales.justin@jboss.com">Ales Justin</a>
  */
-public interface HolderMetaData
+public interface VersionRangeAttribute extends AttributeAware
 {
    /**
-    * Get the element id.
+    * Get the version range.
     *
-    * @return unique string id
+    * @return version range for this attribute
     */
-   String getId();
-
-   /**
-    * Get the exposed interface.
-    *
-    * @return qualified interface name.
-    */
-   String getInterface();
-
-   /**
-    * Get the dependencies.
-    *
-    * @return set of dependencies.
-    */
-   Set<DependencyMetaData> getDepends();
-
-   /**
-    * Get the classloader metadata.
-    *
-    * @return classloader metadata
-    */
-   ClassLoaderMetaData getContextClassLoader();
+   VersionRange getVersion();
 }

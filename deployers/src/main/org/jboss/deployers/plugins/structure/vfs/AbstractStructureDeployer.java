@@ -94,8 +94,8 @@ public abstract class AbstractStructureDeployer implements StructureDeployer
    /**
     * See if a file corresponds to a top-level deployment.
     * 
-    * @param file
-    * @param metaData
+    * @param file virtual file
+    * @param metaData structure meta data
     * @return true when it is top level
     * @throws IOException for an error accessing the file
     */
@@ -105,8 +105,7 @@ public abstract class AbstractStructureDeployer implements StructureDeployer
       // See if this is a top-level by checking the parent
       VirtualFile parent = file.getParent();
       String parentPath = parent != null ? parent.getPathName() : null;
-      boolean isTopLevel = parentPath == null || metaData.getContext(parentPath) == null;
-      return isTopLevel;
+      return (parentPath == null || metaData.getContext(parentPath) == null);
    }
 
    /**
@@ -119,7 +118,7 @@ public abstract class AbstractStructureDeployer implements StructureDeployer
     * @param includeRootManifestCP - a flag indicating if the entry metainf
     *    manifest classpath should be included.
     * @param context - the context to populate
-    * @throws IOException
+    * @throws IOException on any IO error
     */
    protected void addClassPath(VirtualFile root, VirtualFile entry,
          boolean includeEntry, boolean includeRootManifestCP,

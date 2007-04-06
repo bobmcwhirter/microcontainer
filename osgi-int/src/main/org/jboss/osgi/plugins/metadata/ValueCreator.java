@@ -19,44 +19,21 @@
 * Software Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA
 * 02110-1301 USA, or see the FSF site: http://www.fsf.org.
 */
-package org.jboss.osgi.spi.metadata;
-
-import java.util.Set;
-
-import org.jboss.beans.metadata.spi.ClassLoaderMetaData;
+package org.jboss.osgi.plugins.metadata;
 
 /**
- * Common OSGi meta data mainAttributes.
+ * Create value from attribute.
  *
+ * @param <T> expected type
  * @author <a href="mailto:ales.justin@jboss.com">Ales Justin</a>
  */
-public interface HolderMetaData
+public interface ValueCreator<T>
 {
    /**
-    * Get the element id.
+    * Create value from string attribute.
     *
-    * @return unique string id
+    * @param attribute string to get value from
+    * @return value
     */
-   String getId();
-
-   /**
-    * Get the exposed interface.
-    *
-    * @return qualified interface name.
-    */
-   String getInterface();
-
-   /**
-    * Get the dependencies.
-    *
-    * @return set of dependencies.
-    */
-   Set<DependencyMetaData> getDepends();
-
-   /**
-    * Get the classloader metadata.
-    *
-    * @return classloader metadata
-    */
-   ClassLoaderMetaData getContextClassLoader();
+   T createValue(String attribute);
 }

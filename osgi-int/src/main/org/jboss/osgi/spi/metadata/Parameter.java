@@ -21,42 +21,27 @@
 */
 package org.jboss.osgi.spi.metadata;
 
-import java.util.Set;
-
-import org.jboss.beans.metadata.spi.ClassLoaderMetaData;
-
 /**
- * Common OSGi meta data mainAttributes.
+ * Parameter interface - single value or set of values.
  *
  * @author <a href="mailto:ales.justin@jboss.com">Ales Justin</a>
  */
-public interface HolderMetaData
+public interface Parameter
 {
    /**
-    * Get the element id.
+    * Get value.
+    * Simple value or collection.
     *
-    * @return unique string id
+    * @return value
     */
-   String getId();
+   Object getValue();
 
    /**
-    * Get the exposed interface.
+    * Has multiple values.
+    * Used when same name is used for multiple parameter values.
+    * Value _can_ be casted into Collection.
     *
-    * @return qualified interface name.
+    * @return true is returned type is Collection, otherwise false
     */
-   String getInterface();
-
-   /**
-    * Get the dependencies.
-    *
-    * @return set of dependencies.
-    */
-   Set<DependencyMetaData> getDepends();
-
-   /**
-    * Get the classloader metadata.
-    *
-    * @return classloader metadata
-    */
-   ClassLoaderMetaData getContextClassLoader();
+   boolean isCollection();
 }

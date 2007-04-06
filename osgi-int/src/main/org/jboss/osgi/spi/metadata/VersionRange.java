@@ -21,42 +21,35 @@
 */
 package org.jboss.osgi.spi.metadata;
 
-import java.util.Set;
-
-import org.jboss.beans.metadata.spi.ClassLoaderMetaData;
+import org.osgi.framework.Version;
 
 /**
- * Common OSGi meta data mainAttributes.
+ * Version range.
+ * [floor, ceiling]
  *
  * @author <a href="mailto:ales.justin@jboss.com">Ales Justin</a>
  */
-public interface HolderMetaData
+public interface VersionRange
 {
    /**
-    * Get the element id.
+    * Get the floor version.
     *
-    * @return unique string id
+    * @return floor version
     */
-   String getId();
+   Version getFloor();
 
    /**
-    * Get the exposed interface.
+    * Get the ceiling version.
     *
-    * @return qualified interface name.
+    * @return ceiling version
     */
-   String getInterface();
+   Version getCeiling();
 
    /**
-    * Get the dependencies.
+    * Is param verision between (including) floor and ceiling.
     *
-    * @return set of dependencies.
+    * @param version version parameter to compare
+    * @return true if version param in version range interval
     */
-   Set<DependencyMetaData> getDepends();
-
-   /**
-    * Get the classloader metadata.
-    *
-    * @return classloader metadata
-    */
-   ClassLoaderMetaData getContextClassLoader();
+   boolean isInRange(Version version);
 }

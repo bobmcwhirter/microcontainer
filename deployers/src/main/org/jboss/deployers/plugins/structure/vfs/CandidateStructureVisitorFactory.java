@@ -41,7 +41,6 @@ public interface CandidateStructureVisitorFactory
     * @param parent the parent virtual file
     * @param metaData the structure metaData
     * @param deployers the structure deployers
-    * @param context the deployment context
     * @param attributes the visitor attributes uses {@link VisitorAttributes#DEFAULT} when null
     * @return the visitor
     * @throws Exception for any error

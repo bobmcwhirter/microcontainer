@@ -1,0 +1,254 @@
+/*
+ * JBoss, Home of Professional Open Source
+ * Copyright 2005, JBoss Inc., and individual contributors as indicated
+ * by the @authors tag. See the copyright.txt in the distribution for a
+ * full listing of individual contributors.
+ *
+ * This is free software; you can redistribute it and/or modify it
+ * under the terms of the GNU Lesser General Public License as
+ * published by the Free Software Foundation; either version 2.1 of
+ * the License, or (at your option) any later version.
+ *
+ * This software is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU
+ * Lesser General Public License for more details.
+ *
+ * You should have received a copy of the GNU Lesser General Public
+ * License along with this software; if not, write to the Free
+ * Software Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA
+ * 02110-1301 USA, or see the FSF site: http://www.fsf.org.
+ */
+ options {
+   LOOKAHEAD=1;
+   DEBUG_PARSER=true;
+   DEBUG_LOOKAHEAD=true;
+   DEBUG_TOKEN_MANAGER=false;
+   STATIC=false;
+}
+
+PARSER_BEGIN(HeaderValue)
+package org.jboss.osgi.plugins.metadata;
+
+import java.io.StringReader;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+
+/**
+ * A JavaCC 3.2 grammar for the OSGi R4 bundle headers
+
+ * @see https://javacc.dev.java.net/
+ * eclipse plugin: http://sourceforge.net/projects/eclipse-javacc
+ *
+ * @author Scott.Stark@jboss.org
+ * @author Ales.Justin@jboss.org
+ */
+public class HeaderValue
+{
+   /**
+   * Package name and param holder.
+   */
+   public static class PkgInfo
+   {
+      List<String> pkgNames = new ArrayList<String>();
+      Map<String, String> paramMap = new HashMap<String, String>();
+   }
+
+   public HeaderValue()
+   {
+      this(new StringReader(""));
+   }
+
+   public HeaderValue(String value)
+   {
+      this(new StringReader(value));
+   }
+
+   public PkgInfo parseImportPackage(StringReader header, boolean trace)
+      throws ParseException
+   {
+      ReInit(header);
+
+      // This will have no effect unless the debugging options are true
+      if (trace)
+      {
+         this.enable_tracing();
+      }
+      else
+      {
+         this.disable_tracing();
+      }
+
+      return this.ImportPackage();
+   }
+   
+   public static PkgInfo parseImportPackage(String header, boolean trace)
+      throws ParseException
+   {
+      HeaderValue parser = new HeaderValue();
+      return parser.parseImportPackage(new StringReader(header), trace);
+   }
+}
+PARSER_END(HeaderValue)
+
+/* IGNORE WHITESPACE */
+
+SKIP :
+{
+    " "
+  | "\r"
+  | "\t"
+  | "\n"
+}
+
+/* Common tokens */
+TOKEN:
+{
+  <#ALPHA: [ "a"-"z", "A"-"Z" ] >
+|
+  <#DIGIT: ["0" - "9"] >
+|
+  <#ALPHANUM: <ALPHA>|<DIGIT> >
+|
+  <#TOKN: (<ALPHANUM>|"_"|"-")+ >
+|
+  <NUMBER: (<DIGIT>)+ >
+|
+  <QNAME: <JLETTER> (<JLETTER>|<DIGIT>)* ("." <JLETTER> (<JLETTER>|<DIGIT>)*)* >
+|
+  <#JLETTER: [ "_", "a"-"z", "A"-"Z" ] >
+|
+  <#JLETTER_OR_DIGIT: <JLETTER> | <DIGIT> >
+|
+  <IDENTIFIER: <JLETTER> (<JLETTER> | <JLETTER_OR_DIGIT>)* >
+|
+  <QUOTED_STRING: "\"" ( ~["\"", "\\", "\r", "\n", "\u0000"] | "\\\"")* "\"" >
+|
+  <ARGUMENT: <TOKN>|<QUOTED_STRING> >
+|
+  <DIRECTIVE: <TOKN> ":=" <ARGUMENT> >
+|
+  <ATTRIBUTE: <TOKN> "=" <ARGUMENT> >
+|
+  <PARAMETER: <DIRECTIVE>|<ATTRIBUTE> >
+|
+  <UNIQUE_NAME: <IDENTIFIER> ("." <IDENTIFIER>)* >
+|
+  <SYMBOLIC_NAME: <TOKN> ("." <TOKN>)* >
+|
+  <PACKAGE_NAME: <UNIQUE_NAME> >
+|
+  <PATH: <PATH_UNQUOTED> | "\"" <PATH_UNQUOTED> "\"" >
+|
+  <PATH_UNQUOTED: <PATH_SEP> | (<PATH_SEP>)? <PATH_ELEMENT> (<PATH_SEP> <PATH_ELEMENT>)* >
+|
+  <PATH_ELEMENT: (~["/", "\"", "\n", "\r", "\u0000"])+ >
+|
+  <PATH_SEP: "/" >
+}
+
+/* Directives */
+TOKEN [IGNORE_CASE]:
+{
+  <EXCLUDE_DIRECTIVE: "exclude">
+|
+  <EXTENSION_DIRECTIVE: "extension">
+|
+  <FRAGMENT_ATTACHMENT_DIRECTIVE: "fragment-attachment">
+|
+  <INCLUDE_DIRECTIVE: "include">
+|
+  <MANDATORY_DIRECTIVE: "mandatory">
+|
+  <RESOLUTION_DIRECTIVE: "resolution">
+|
+  <RESOLUTION_DIRECTIVE_VALUE: "mandatory"|"optional">
+|
+  <SINGLETON_DIRECTIVE: "singleton">
+|
+  <USES_DIRECTIVE: "uses">
+|
+  <VISIBILITY_DIRECTIVE: "visibility">
+}
+
+/* Attributes */
+TOKEN [IGNORE_CASE]:
+{
+  <BUNDLE_SYMBOLICNAME_ATTRIBUTE: "bundle-symbolic-name">
+|
+  <BUNDLE_VERSION_ATTRIBUTE: "bundle-version">
+|
+  <SELECTION_FILTER_ATTRIBUTE: "selection-filter">
+|
+  <VERSION_ATTRIBUTE: "version">
+|
+  <VERSION_VALUE: (<NUMBER> ("." <NUMBER> ("." <NUMBER> ("." <ALPHANUM>)? )?  )?) >
+}
+
+/** Start of the grammar */
+
+void headers() :
+{
+}
+{
+   header() <EOF>
+}
+void header() :
+{
+}
+{
+	(BundleManifestVersion())?
+	| (ImportPackage())?
+}
+
+void BundleManifestVersion() :
+{
+}
+{
+  <NUMBER>
+}
+
+/**
+Entry point for the Import-Package header value parsing.
+*/
+PkgInfo ImportPackage() :
+{
+   PkgInfo info = new PkgInfo();
+}
+{
+  Import(info) ( "," Import(info) )*
+  {
+  	return info;
+  }
+}
+
+void Import(PkgInfo info) :
+{
+}
+{
+   PackageNames(info) ( ";" <PARAMETER> )*
+}
+
+void PackageNames(PkgInfo info) :
+{
+	Token t = null;
+}
+{
+  t=<PACKAGE_NAME> {info.pkgNames.add(t.image);} ( ";" t=<PACKAGE_NAME> {info.pkgNames.add(t.image);})*
+}
+void ImportParameters(PkgInfo info) :
+{
+	Token t = null;
+}
+{
+  <RESOLUTION_DIRECTIVE> <DIRECTIVE> t=<RESOLUTION_DIRECTIVE_VALUE>
+  {
+  	info.paramMap.put("resolution", t.image);
+  }
+  | <VERSION_ATTRIBUTE> <ATTRIBUTE>  t=<VERSION_VALUE>
+  {
+  	info.paramMap.put("version", t.image);
+  }
+}
