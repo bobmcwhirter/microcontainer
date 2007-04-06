@@ -28,7 +28,7 @@
         <configuration>
           <sourceDirectory>${basedir}/src/main</sourceDirectory>
 			    <outputDirectory>${project.build.directory}/generated-sources/javacc/</outputDirectory>
-          <packageName>org.jboss.vfs.bundle</packageName>
+          <packageName>org.jboss.osgi.plugins.metadata</packageName>
         </configuration>
       </plugin>  
       <plugin>
