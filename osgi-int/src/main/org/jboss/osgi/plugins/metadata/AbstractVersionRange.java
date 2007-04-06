@@ -31,6 +31,7 @@ import org.osgi.framework.Version;
 /**
  * @author <a href="mailto:ales.justin@jboss.com">Ales Justin</a>
  */
+
 /**
  * Represents an OSGi version range:
  * version-range ::= interval | atleast
@@ -46,15 +47,25 @@ public class AbstractVersionRange implements VersionRange, Serializable
 {
    private static final long serialVersionUID = 1l;
 
-   /** The lower bound of the range */
+   /**
+    * The lower bound of the range
+    */
    private transient Version floor;
-   /** The upper bound of the range */
+   /**
+    * The upper bound of the range
+    */
    private transient Version ceiling;
-   /** is the floor version a >(true) or >= constraint(false) */
+   /**
+    * is the floor version a >(true) or >= constraint(false)
+    */
    private transient boolean floorIsGreaterThan;
-   /** is the ceiling version a <(true) or <= constraint(false) */
+   /**
+    * is the ceiling version a <(true) or <= constraint(false)
+    */
    private transient boolean ceilingIsLessThan;
-   /** create object from this after serialization */
+   /**
+    * create object from this after serialization
+    */
    private String rangeSpec;
 
    public static VersionRange parseRangeSpec(String rangeSpec)
@@ -62,32 +73,33 @@ public class AbstractVersionRange implements VersionRange, Serializable
       Version floor = null;
       Version ceiling = null;
       StringTokenizer st = new StringTokenizer(rangeSpec, ",[]()", true);
-      boolean floorIsGreaterThan = false;
-      boolean ceilingIsLessThan = false;
-      while( st.hasMoreTokens() )
+      Boolean floorIsGreaterThan = null;
+      Boolean ceilingIsLessThan = null;
+      while (st.hasMoreTokens())
       {
          String token = st.nextToken();
-         if( token.equals("[") )
+         if (token.equals("["))
             floorIsGreaterThan = false;
-         else if( token.equals("(") )
+         else if (token.equals("("))
             floorIsGreaterThan = true;
-         else if( token.equals("]") )
+         else if (token.equals("]"))
             ceilingIsLessThan = false;
-         else if( token.equals(")") )
+         else if (token.equals(")"))
             ceilingIsLessThan = true;
-         else if( token.equals(",") )
-         {
-         }
-         else
+         else if (token.equals(",") == false)
          {
             // A version token
-            if( floor == null )
+            if (floor == null)
                floor = new Version(token);
             else
                ceiling = new Version(token);
          }
 
       }
+      // check for parenthesis
+      if (floorIsGreaterThan == null || ceilingIsLessThan == null)
+         throw new IllegalArgumentException("Missing parenthesis: " + rangeSpec);
+
       return new AbstractVersionRange(rangeSpec, floor, ceiling, floorIsGreaterThan, ceilingIsLessThan);
    }
 
@@ -114,18 +126,18 @@ public class AbstractVersionRange implements VersionRange, Serializable
    {
       // Test a null floor version which implies 0.0.0 <= v <= inf
       boolean isInRange = floor == null;
-      if( isInRange == false )
+      if (isInRange == false)
       {
          // Test the floor version
          int floorCompare = v.compareTo(floor);
-         if( (floorIsGreaterThan && floorCompare > 0) || (floorIsGreaterThan == false && floorCompare >= 0) )
+         if ((floorIsGreaterThan && floorCompare > 0) || (floorIsGreaterThan == false && floorCompare >= 0))
          {
             isInRange = ceiling == null;
-            if( isInRange == false )
+            if (isInRange == false)
             {
                // Test the ceiling version
                int ceilingCompare = v.compareTo(ceiling);
-               if( (ceilingIsLessThan && ceilingCompare < 0) || (ceilingIsLessThan == false && ceilingCompare <= 0) )
+               if ((ceilingIsLessThan && ceilingCompare < 0) || (ceilingIsLessThan == false && ceilingCompare <= 0))
                {
                   isInRange = true;
                }
@@ -138,20 +150,20 @@ public class AbstractVersionRange implements VersionRange, Serializable
    public String toString()
    {
       StringBuilder tmp = new StringBuilder();
-      if( floor == null )
+      if (floor == null)
          tmp.append("0.0.0");
       else
          tmp.append(floor.toString());
       tmp.append(" <");
-      if( floorIsGreaterThan == false )
+      if (floorIsGreaterThan == false)
          tmp.append('=');
       tmp.append(" v ");
       // Ceiling
       tmp.append('<');
-      if( ceilingIsLessThan == false )
+      if (ceilingIsLessThan == false)
          tmp.append('=');
       tmp.append(' ');
-      if( ceiling == null )
+      if (ceiling == null)
          tmp.append("inf");
       else
          tmp.append(ceiling.toString());
