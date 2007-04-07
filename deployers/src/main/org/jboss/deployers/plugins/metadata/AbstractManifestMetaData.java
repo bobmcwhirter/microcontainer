@@ -89,13 +89,68 @@ public class AbstractManifestMetaData implements ManifestMetaData, Externalizabl
 
    public void writeExternal(ObjectOutput out) throws IOException
    {
-      OutputStream os = null; // todo
+      OutputStream os = new OutputWrapper(out);
       getManifest().write(os);
    }
 
    public void readExternal(ObjectInput in) throws IOException, ClassNotFoundException
    {
-      InputStream is = null; // todo
+      InputStream is = new InputWrapper(in);
       manifest = new Manifest(is);
+   }
+
+   private class OutputWrapper extends OutputStream
+   {
+      private ObjectOutput out;
+
+      public OutputWrapper(ObjectOutput out)
+      {
+         this.out = out;
+      }
+
+      public void write(int b) throws IOException
+      {
+         out.write(b);
+      }
+
+      public void flush() throws IOException
+      {
+         out.flush();
+      }
+
+      public void close() throws IOException
+      {
+         out.close();
+      }
+   }
+
+   private class InputWrapper extends InputStream
+   {
+      private ObjectInput in;
+
+      public InputWrapper(ObjectInput in)
+      {
+         this.in = in;
+      }
+
+      public int read() throws IOException
+      {
+         return in.read();
+      }
+
+      public long skip(long n) throws IOException
+      {
+         return in.skip(n);
+      }
+
+      public int available() throws IOException
+      {
+         return in.available();
+      }
+
+      public void close() throws IOException
+      {
+         in.close();
+      }
    }
 }
