@@ -42,7 +42,7 @@ public class AbstractManifestMetaData implements ManifestMetaData, Externalizabl
 {
    private static final long serialVersionUID = 1L;
 
-   protected Manifest manifest;
+   protected transient Manifest manifest;
 
    public AbstractManifestMetaData()
    {
