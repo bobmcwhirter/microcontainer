@@ -21,19 +21,39 @@
 */
 package org.jboss.osgi.plugins.metadata;
 
-import java.util.List;
-
-import org.jboss.osgi.spi.metadata.ParameterizedAttribute;
-
 /**
- * Create paramertized attribute list from string attribute.
+ * Abstract value creator.
+ * Extend this one for safe string usage.
  *
  * @author <a href="mailto:ales.justin@jboss.com">Ales Justin</a>
- */
-class ParameterizedAttributeListValueCreator extends ListValueCreator<ParameterizedAttribute>
+*/
+abstract class AbstractValueCreator<T> implements ValueCreator<T>
 {
-   public List<ParameterizedAttribute> useString(String attribute)
+   private boolean trim;
+
+   protected AbstractValueCreator()
    {
-      return null;  //Todo
+      this(false);
    }
+
+   protected AbstractValueCreator(boolean trim)
+   {
+      this.trim = trim;
+   }
+
+   public T createValue(String attribute)
+   {
+      if (attribute == null)
+         return null;
+      if (trim)
+         attribute = attribute.trim();
+      return useString(attribute);
+   }
+
+   /**
+    * Use this method on non-null trimmed string.
+    * @param attibute non-null trimmed string
+    * @return expected value
+    */
+   protected abstract T useString(String attibute);
 }

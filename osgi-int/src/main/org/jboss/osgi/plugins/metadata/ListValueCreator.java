@@ -29,6 +29,15 @@ import java.util.List;
  * @param <T> expected component type
  * @author <a href="mailto:ales.justin@jboss.com">Ales Justin</a>
  */
-public abstract class ListValueCreator<T> implements ValueCreator<List<T>>
+abstract class ListValueCreator<T> extends AbstractValueCreator<List<T>>   
 {
+   protected ListValueCreator()
+   {
+      super();
+   }
+
+   protected ListValueCreator(boolean trim)
+   {
+      super(trim);
+   }
 }

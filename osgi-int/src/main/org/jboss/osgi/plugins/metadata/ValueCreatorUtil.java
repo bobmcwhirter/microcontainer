@@ -21,19 +21,19 @@
 */
 package org.jboss.osgi.plugins.metadata;
 
-import java.util.List;
-
-import org.jboss.osgi.spi.metadata.ParameterizedAttribute;
-
 /**
- * Create paramertized attribute list from string attribute.
+ * ValueCreator holder.
  *
  * @author <a href="mailto:ales.justin@jboss.com">Ales Justin</a>
  */
-class ParameterizedAttributeListValueCreator extends ListValueCreator<ParameterizedAttribute>
+public class ValueCreatorUtil
 {
-   public List<ParameterizedAttribute> useString(String attribute)
-   {
-      return null;  //Todo
-   }
+   static StringValueCreator STRING_VC = new StringValueCreator();
+   static IntegerValueCreator INTEGER_VC = new IntegerValueCreator();
+   static VersionValueCreator VERSION_VC = new VersionValueCreator();
+   static URLValueCreator URL_VC = new URLValueCreator();
+   static ParameterizedAttributeValueCreator PARAM_ATTRIB_VC = new ParameterizedAttributeValueCreator();
+   static StringListValueCreator STRING_LIST_VC = new StringListValueCreator();
+   static ParameterizedAttributeListValueCreator PARAM_ATTRIB_LIST_VC = new ParameterizedAttributeListValueCreator();
+   static PackageAttributeListValueCreator PACKAGE_LIST_VC = new PackageAttributeListValueCreator();   
 }

@@ -21,19 +21,25 @@
 */
 package org.jboss.osgi.plugins.metadata;
 
-import java.util.List;
-
-import org.jboss.osgi.spi.metadata.ParameterizedAttribute;
-
 /**
- * Create paramertized attribute list from string attribute.
- *
+ * Parse int from string.
+ * 
  * @author <a href="mailto:ales.justin@jboss.com">Ales Justin</a>
- */
-class ParameterizedAttributeListValueCreator extends ListValueCreator<ParameterizedAttribute>
+*/
+class IntegerValueCreator extends AbstractValueCreator<Integer>
 {
-   public List<ParameterizedAttribute> useString(String attribute)
+   public IntegerValueCreator()
    {
-      return null;  //Todo
+      super();
+   }
+
+   public IntegerValueCreator(boolean trim)
+   {
+      super(trim);
+   }
+
+   public Integer useString(String attribute)
+   {
+      return Integer.valueOf(attribute);
    }
 }

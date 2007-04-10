@@ -21,19 +21,40 @@
 */
 package org.jboss.osgi.plugins.metadata;
 
-import java.util.List;
+import java.net.MalformedURLException;
+import java.net.URL;
 
-import org.jboss.osgi.spi.metadata.ParameterizedAttribute;
+import org.jboss.logging.Logger;
 
 /**
- * Create paramertized attribute list from string attribute.
+ * Create URL from string.
  *
  * @author <a href="mailto:ales.justin@jboss.com">Ales Justin</a>
- */
-class ParameterizedAttributeListValueCreator extends ListValueCreator<ParameterizedAttribute>
+*/
+class URLValueCreator extends AbstractValueCreator<URL>
 {
-   public List<ParameterizedAttribute> useString(String attribute)
+   private static Logger log = Logger.getLogger(URLValueCreator.class);
+
+   public URLValueCreator()
    {
-      return null;  //Todo
+      super();
+   }
+
+   public URLValueCreator(boolean trim)
+   {
+      super(trim);
+   }
+
+   public URL useString(String attribute)
+   {
+      try
+      {
+         return new URL(attribute);
+      }
+      catch (MalformedURLException e)
+      {
+         log.warn("Exception while creating URL.", e);
+         return null;
+      }
    }
 }

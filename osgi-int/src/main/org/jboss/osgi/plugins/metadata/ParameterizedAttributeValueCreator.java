@@ -28,9 +28,9 @@ import org.jboss.osgi.spi.metadata.ParameterizedAttribute;
  *
  * @author <a href="mailto:ales.justin@jboss.com">Ales Justin</a>
  */
-public class ParameterizedAttributeValueCreator implements ValueCreator<ParameterizedAttribute>
+class ParameterizedAttributeValueCreator extends AbstractValueCreator<ParameterizedAttribute>
 {
-   public ParameterizedAttribute createValue(String attribute)
+   public ParameterizedAttribute useString(String attribute)
    {
       return null;  //todo
    }

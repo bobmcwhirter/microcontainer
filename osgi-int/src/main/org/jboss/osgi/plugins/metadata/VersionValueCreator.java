@@ -21,19 +21,27 @@
 */
 package org.jboss.osgi.plugins.metadata;
 
-import java.util.List;
-
-import org.jboss.osgi.spi.metadata.ParameterizedAttribute;
+import org.osgi.framework.Version;
 
 /**
- * Create paramertized attribute list from string attribute.
+ * Parse Version from string.
  *
  * @author <a href="mailto:ales.justin@jboss.com">Ales Justin</a>
- */
-class ParameterizedAttributeListValueCreator extends ListValueCreator<ParameterizedAttribute>
+*/
+class VersionValueCreator extends AbstractValueCreator<Version>
 {
-   public List<ParameterizedAttribute> useString(String attribute)
+   public VersionValueCreator()
    {
-      return null;  //Todo
+      super();
+   }
+
+   public VersionValueCreator(boolean trim)
+   {
+      super(trim);
+   }
+
+   public Version useString(String attribute)
+   {
+      return new Version(attribute);
    }
 }

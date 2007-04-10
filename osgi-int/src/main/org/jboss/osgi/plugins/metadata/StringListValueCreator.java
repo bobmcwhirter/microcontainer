@@ -21,19 +21,18 @@
 */
 package org.jboss.osgi.plugins.metadata;
 
+import java.util.Arrays;
 import java.util.List;
 
-import org.jboss.osgi.spi.metadata.ParameterizedAttribute;
-
 /**
- * Create paramertized attribute list from string attribute.
+ * Split string into list of strings.
  *
  * @author <a href="mailto:ales.justin@jboss.com">Ales Justin</a>
- */
-class ParameterizedAttributeListValueCreator extends ListValueCreator<ParameterizedAttribute>
+*/
+class StringListValueCreator extends ListValueCreator<String>
 {
-   public List<ParameterizedAttribute> useString(String attribute)
+   public List<String> useString(String attribute)
    {
-      return null;  //Todo
+      return Arrays.asList(attribute.split(","));
    }
 }

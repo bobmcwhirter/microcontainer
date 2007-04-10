@@ -21,7 +21,6 @@
 */
 package org.jboss.osgi.plugins.metadata;
 
-import java.net.MalformedURLException;
 import java.net.URL;
 import java.util.Arrays;
 import java.util.HashMap;
@@ -30,7 +29,7 @@ import java.util.Map;
 import java.util.jar.Manifest;
 
 import org.jboss.deployers.plugins.metadata.AbstractManifestMetaData;
-import org.jboss.logging.Logger;
+import static org.jboss.osgi.plugins.metadata.ValueCreatorUtil.*;
 import org.jboss.osgi.spi.metadata.OSGiMetaData;
 import org.jboss.osgi.spi.metadata.PackageAttribute;
 import org.jboss.osgi.spi.metadata.ParameterizedAttribute;
@@ -45,16 +44,6 @@ import org.osgi.framework.Version;
 public class AbstractOSGiMetaData extends AbstractManifestMetaData implements OSGiMetaData
 {
    private static final long serialVersionUID = 1L;
-   private static Logger log = Logger.getLogger(AbstractOSGiMetaData.class);
-
-   protected static StringValueCreator STRING_VC = new StringValueCreator();
-   protected static IntegerValueCreator INTEGER_VC = new IntegerValueCreator();
-   protected static VersionValueCreator VERSION_VC = new VersionValueCreator();
-   protected static URLValueCreator URL_VC = new URLValueCreator();
-   protected static ParameterizedAttributeValueCreator PARAM_ATTRIB_VC = new ParameterizedAttributeValueCreator();
-   protected static StringListValueCreator STRING_LIST_VC = new StringListValueCreator();
-   protected static ParameterizedAttributeListValueCreator PARAM_ATTRIB_LIST_VC = new ParameterizedAttributeListValueCreator();
-   protected static PackageAttributeListValueCreator PACKAGE_LIST_VC = new PackageAttributeListValueCreator();
 
    protected Map<String, Object> cachedAttributes = new HashMap<String, Object>();
 
@@ -172,54 +161,6 @@ public class AbstractOSGiMetaData extends AbstractManifestMetaData implements OS
          }
       }
       return value;
-   }
-
-   private static class StringValueCreator implements ValueCreator<String>
-   {
-      public String createValue(String attribute)
-      {
-         return attribute;
-      }
-   }
-
-   private static class IntegerValueCreator implements ValueCreator<Integer>
-   {
-      public Integer createValue(String attribute)
-      {
-         return Integer.valueOf(attribute);
-      }
-   }
-
-   private static class VersionValueCreator implements ValueCreator<Version>
-   {
-      public Version createValue(String attribute)
-      {
-         return new Version(attribute);
-      }
-   }
-
-   private static class URLValueCreator implements ValueCreator<URL>
-   {
-      public URL createValue(String attribute)
-      {
-         try
-         {
-            return new URL(attribute);
-         }
-         catch (MalformedURLException e)
-         {
-            log.warn("Exception while creating URL.", e);
-            return null;
-         }
-      }
-   }
-
-   private static class StringListValueCreator extends ListValueCreator<String>
-   {
-      public List<String> createValue(String attribute)
-      {
-         return Arrays.asList(attribute.split(","));
-      }
    }
 
 }

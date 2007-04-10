@@ -30,9 +30,9 @@ import org.jboss.osgi.spi.metadata.PackageAttribute;
  *
  * @author <a href="mailto:ales.justin@jboss.com">Ales Justin</a>
  */
-public class PackageAttributeListValueCreator extends ListValueCreator<PackageAttribute>
+class PackageAttributeListValueCreator extends ListValueCreator<PackageAttribute>
 {
-   public List<PackageAttribute> createValue(String attibute)
+   public List<PackageAttribute> useString(String attibute)
    {
       return null; // todo
    }
