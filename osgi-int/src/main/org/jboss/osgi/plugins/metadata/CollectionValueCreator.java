@@ -29,7 +29,7 @@ import java.util.Collection;
  * @param <T> expected type
  * @author <a href="mailto:ales.justin@jboss.com">Ales Justin</a>
  */
-public interface CollectionValueCreator<T>
+public interface CollectionValueCreator<T> extends ValueCreator<T>
 {
    /**
     * Create value from string attribute.
