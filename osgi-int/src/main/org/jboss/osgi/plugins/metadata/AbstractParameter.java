@@ -21,21 +21,52 @@
 */
 package org.jboss.osgi.plugins.metadata;
 
+import java.io.Serializable;
+import java.util.Collection;
+import java.util.HashSet;
+
+import org.jboss.osgi.spi.metadata.Parameter;
+import org.jboss.util.JBossObject;
+import org.jboss.util.JBossStringBuilder;
+
 /**
- * ValueCreator holder.
+ * Parameter impl.
+ * It uses [Hash]Set to hold the values.
+ * So duplicate values (by hash) will be ignored.
  *
  * @author <a href="mailto:ales.justin@jboss.com">Ales Justin</a>
  */
-public class ValueCreatorUtil
+class AbstractParameter extends JBossObject implements Parameter, Serializable
 {
-   static StringValueCreator STRING_VC = new StringValueCreator();
-   static IntegerValueCreator INTEGER_VC = new IntegerValueCreator();
-   static BooleanValueCreator BOOLEAN_VC = new BooleanValueCreator();
-   static VersionValueCreator VERSION_VC = new VersionValueCreator();
-   static VersionRangeValueCreator VERSION_RANGE_VC = new VersionRangeValueCreator();
-   static URLValueCreator URL_VC = new URLValueCreator();
-   static StringListValueCreator STRING_LIST_VC = new StringListValueCreator();
-   public static ParameterizedAttributeValueCreator PARAM_ATTRIB_VC = new ParameterizedAttributeValueCreator();
-   public static ParameterizedAttributeListValueCreator PARAM_ATTRIB_LIST_VC = new ParameterizedAttributeListValueCreator();
-   public static PackageAttributeListValueCreator PACKAGE_LIST_VC = new PackageAttributeListValueCreator();
+   protected Collection<String> values = new HashSet<String>();
+
+   public void addValue(String value)
+   {
+      values.add(value);
+   }
+
+   public Object getValue()
+   {
+      if (values.isEmpty())
+         return null;
+      else if (values.size() == 1)
+         return values.iterator().next();
+      else
+         return values;
+   }
+
+   public boolean isCollection()
+   {
+      return values.size() > 1;
+   }
+
+   public void toShortString(JBossStringBuilder buffer)
+   {
+      buffer.append("value=" + getValue());
+   }
+
+   protected void toString(JBossStringBuilder buffer)
+   {
+      buffer.append("value=" + getValue());
+   }
 }

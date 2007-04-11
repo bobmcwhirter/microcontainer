@@ -21,6 +21,7 @@
 */
 package org.jboss.osgi.plugins.metadata;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import org.jboss.osgi.spi.metadata.PackageAttribute;
@@ -34,6 +35,15 @@ class PackageAttributeListValueCreator extends ListValueCreator<PackageAttribute
 {
    public List<PackageAttribute> useString(String attibute)
    {
-      return null; // todo
+      List<PackageAttribute> list = new ArrayList<PackageAttribute>();
+      try
+      {
+         HeaderValue.parsePackages(attibute, list, log.isTraceEnabled());
+      }
+      catch (ParseException e)
+      {
+         log.error("Exception parsing package headers.", e);
+      }
+      return list;
    }
 }

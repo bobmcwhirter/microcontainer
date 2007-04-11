@@ -24,6 +24,8 @@ package org.jboss.osgi.spi.metadata;
 import java.util.Map;
 
 /**
+ * Attribute with parameters.
+ *
  * @author <a href="mailto:ales.justin@jboss.com">Ales Justin</a>
  */
 public interface ParameterizedAttribute extends AttributeAware

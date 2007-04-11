@@ -30,11 +30,18 @@ public interface Parameter
 {
    /**
     * Get value.
-    * Simple value or collection.
+    * Simple string value or collection of string values.
     *
     * @return value
     */
    Object getValue();
+
+   /**
+    * Add value.
+    * 
+    * @param value string to add
+    */
+   void addValue(String value);
 
    /**
     * Has multiple values.

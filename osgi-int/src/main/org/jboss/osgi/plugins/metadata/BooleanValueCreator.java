@@ -22,20 +22,24 @@
 package org.jboss.osgi.plugins.metadata;
 
 /**
- * ValueCreator holder.
+ * Parse boolean from string.
  *
  * @author <a href="mailto:ales.justin@jboss.com">Ales Justin</a>
- */
-public class ValueCreatorUtil
+*/
+class BooleanValueCreator extends AbstractValueCreator<Boolean>
 {
-   static StringValueCreator STRING_VC = new StringValueCreator();
-   static IntegerValueCreator INTEGER_VC = new IntegerValueCreator();
-   static BooleanValueCreator BOOLEAN_VC = new BooleanValueCreator();
-   static VersionValueCreator VERSION_VC = new VersionValueCreator();
-   static VersionRangeValueCreator VERSION_RANGE_VC = new VersionRangeValueCreator();
-   static URLValueCreator URL_VC = new URLValueCreator();
-   static StringListValueCreator STRING_LIST_VC = new StringListValueCreator();
-   public static ParameterizedAttributeValueCreator PARAM_ATTRIB_VC = new ParameterizedAttributeValueCreator();
-   public static ParameterizedAttributeListValueCreator PARAM_ATTRIB_LIST_VC = new ParameterizedAttributeListValueCreator();
-   public static PackageAttributeListValueCreator PACKAGE_LIST_VC = new PackageAttributeListValueCreator();
+   public BooleanValueCreator()
+   {
+      super();
+   }
+
+   public BooleanValueCreator(boolean trim)
+   {
+      super(trim);
+   }
+
+   public Boolean useString(String attribute)
+   {
+      return Boolean.valueOf(attribute);
+   }
 }

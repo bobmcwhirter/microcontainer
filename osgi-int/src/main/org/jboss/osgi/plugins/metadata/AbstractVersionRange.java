@@ -71,6 +71,7 @@ public class AbstractVersionRange implements VersionRange, Serializable
       StringTokenizer st = new StringTokenizer(rangeSpec, ",[]()", true);
       Boolean floorIsGreaterThan = null;
       Boolean ceilingIsLessThan = null;
+      boolean mid = false;
       while (st.hasMoreTokens())
       {
          String token = st.nextToken();
@@ -82,7 +83,9 @@ public class AbstractVersionRange implements VersionRange, Serializable
             ceilingIsLessThan = false;
          else if (token.equals(")"))
             ceilingIsLessThan = true;
-         else if (token.equals(",") == false)
+         else if (token.equals(","))
+            mid = true;
+         else
          {
             // A version token
             if (floor == null)
@@ -93,7 +96,7 @@ public class AbstractVersionRange implements VersionRange, Serializable
 
       }
       // check for parenthesis
-      if (floorIsGreaterThan == null || ceilingIsLessThan == null)
+      if (mid && (floorIsGreaterThan == null || ceilingIsLessThan == null))
          throw new IllegalArgumentException("Missing parenthesis: " + rangeSpec);
 
       return new AbstractVersionRange(rangeSpec, floor, ceiling, floorIsGreaterThan, ceilingIsLessThan);

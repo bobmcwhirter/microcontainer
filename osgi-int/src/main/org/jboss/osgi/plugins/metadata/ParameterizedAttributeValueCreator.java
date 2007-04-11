@@ -21,6 +21,8 @@
 */
 package org.jboss.osgi.plugins.metadata;
 
+import java.util.List;
+
 import org.jboss.osgi.spi.metadata.ParameterizedAttribute;
 
 /**
@@ -32,6 +34,8 @@ class ParameterizedAttributeValueCreator extends AbstractValueCreator<Parameteri
 {
    public ParameterizedAttribute useString(String attribute)
    {
-      return null;  //todo
+      ParameterizedAttributeListValueCreator palvc = new ParameterizedAttributeListValueCreator();
+      List<ParameterizedAttribute> list = palvc.useString(attribute);
+      return list.size() > 0 ? list.get(0) : null;
    }
 }

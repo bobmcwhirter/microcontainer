@@ -21,21 +21,42 @@
 */
 package org.jboss.osgi.plugins.metadata;
 
+import java.util.Map;
+
+import org.jboss.osgi.spi.metadata.Parameter;
+import org.jboss.osgi.spi.metadata.ParameterizedAttribute;
+import org.jboss.util.JBossStringBuilder;
+
 /**
- * ValueCreator holder.
+ * Parameter attribute impl.
  *
  * @author <a href="mailto:ales.justin@jboss.com">Ales Justin</a>
  */
-public class ValueCreatorUtil
+public class AbstractParameterizedAttribute extends AbstractAttributeAware implements ParameterizedAttribute
 {
-   static StringValueCreator STRING_VC = new StringValueCreator();
-   static IntegerValueCreator INTEGER_VC = new IntegerValueCreator();
-   static BooleanValueCreator BOOLEAN_VC = new BooleanValueCreator();
-   static VersionValueCreator VERSION_VC = new VersionValueCreator();
-   static VersionRangeValueCreator VERSION_RANGE_VC = new VersionRangeValueCreator();
-   static URLValueCreator URL_VC = new URLValueCreator();
-   static StringListValueCreator STRING_LIST_VC = new StringListValueCreator();
-   public static ParameterizedAttributeValueCreator PARAM_ATTRIB_VC = new ParameterizedAttributeValueCreator();
-   public static ParameterizedAttributeListValueCreator PARAM_ATTRIB_LIST_VC = new ParameterizedAttributeListValueCreator();
-   public static PackageAttributeListValueCreator PACKAGE_LIST_VC = new PackageAttributeListValueCreator();
+   private static final long serialVersionUID = 1l;
+   
+   protected Map<String, Parameter> parameters;
+
+   public AbstractParameterizedAttribute(String attribute, Map<String, Parameter> parameters)
+   {
+      super(attribute);
+      this.parameters = parameters;
+   }
+
+   public Map<String, Parameter> getParameters()
+   {
+      return parameters;
+   }
+
+   public Parameter getParameter(String name)
+   {
+      return parameters.get(name);
+   }
+
+   protected void toString(JBossStringBuilder buffer)
+   {
+      super.toString(buffer);
+      buffer.append(" parameters=" + parameters);
+   }
 }

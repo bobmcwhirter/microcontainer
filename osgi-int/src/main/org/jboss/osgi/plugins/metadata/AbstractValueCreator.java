@@ -21,6 +21,8 @@
 */
 package org.jboss.osgi.plugins.metadata;
 
+import org.jboss.logging.Logger;
+
 /**
  * Abstract value creator.
  * Extend this one for safe string usage.
@@ -29,6 +31,7 @@ package org.jboss.osgi.plugins.metadata;
 */
 abstract class AbstractValueCreator<T> implements ValueCreator<T>
 {
+   protected Logger log = Logger.getLogger(getClass());
    private boolean trim;
 
    protected AbstractValueCreator()

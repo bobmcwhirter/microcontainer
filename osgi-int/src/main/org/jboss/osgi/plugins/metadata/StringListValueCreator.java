@@ -31,8 +31,32 @@ import java.util.List;
 */
 class StringListValueCreator extends ListValueCreator<String>
 {
+   protected String delimiter = ",";
+
+   public StringListValueCreator()
+   {
+      super();
+   }
+
+   public StringListValueCreator(boolean trim)
+   {
+      super(trim);
+   }
+
+   public StringListValueCreator(String delimiter)
+   {
+      this();
+      this.delimiter = delimiter;
+   }
+
+   public StringListValueCreator(String delimiter, boolean trim)
+   {
+      this(trim);
+      this.delimiter = delimiter;
+   }
+
    public List<String> useString(String attribute)
    {
-      return Arrays.asList(attribute.split(","));
+      return Arrays.asList(attribute.split(delimiter));
    }
 }

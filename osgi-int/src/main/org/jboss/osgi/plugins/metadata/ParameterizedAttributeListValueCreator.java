@@ -21,6 +21,7 @@
 */
 package org.jboss.osgi.plugins.metadata;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import org.jboss.osgi.spi.metadata.ParameterizedAttribute;
@@ -34,6 +35,15 @@ class ParameterizedAttributeListValueCreator extends ListValueCreator<Parameteri
 {
    public List<ParameterizedAttribute> useString(String attribute)
    {
-      return null;  //Todo
+      List<ParameterizedAttribute> list = new ArrayList<ParameterizedAttribute>();
+      try
+      {
+         HeaderValue.parseParameters(attribute, list, log.isTraceEnabled());
+      }
+      catch (ParseException e)
+      {
+         log.error("Exception parsing parameters.", e);
+      }
+      return list;
    }
 }
