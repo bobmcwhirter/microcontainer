@@ -19,36 +19,23 @@
 * Software Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA
 * 02110-1301 USA, or see the FSF site: http://www.fsf.org.
 */
-package org.jboss.osgi.spi.metadata;
+package org.jboss.osgi.plugins.metadata;
+
+import java.util.Collection;
 
 /**
- * Parameter interface - single value or set of values.
+ * Create value from collection of attributes.
  *
+ * @param <T> expected type
  * @author <a href="mailto:ales.justin@jboss.com">Ales Justin</a>
  */
-public interface Parameter
+public interface CollectionValueCreator<T>
 {
    /**
-    * Get value.
-    * Simple string value or collection of string values.
+    * Create value from string attribute.
     *
+    * @param attributes collection of strings to get value from
     * @return value
     */
-   Object getValue();
-
-   /**
-    * Add value.
-    * 
-    * @param value string to add
-    */
-   void addValue(String value);
-
-   /**
-    * Has multiple values.
-    * Used when same name is used for multiple parameter values.
-    * Value _can_ be casted into Collection<String>.
-    *
-    * @return true is returned type is Collection, otherwise false
-    */
-   boolean isCollection();
+   T createValue(Collection<String> attributes);
 }

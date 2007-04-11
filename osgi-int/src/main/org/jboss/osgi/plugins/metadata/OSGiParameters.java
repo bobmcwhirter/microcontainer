@@ -21,9 +21,12 @@
 */
 package org.jboss.osgi.plugins.metadata;
 
+import java.util.Collection;
+import java.util.Collections;
 import java.util.HashMap;
 import java.util.Map;
 
+import org.jboss.logging.Logger;
 import org.jboss.osgi.spi.metadata.Parameter;
 import org.jboss.osgi.spi.metadata.VersionRange;
 import static org.osgi.framework.Constants.*;
@@ -36,13 +39,20 @@ import static org.osgi.framework.Constants.*;
  */
 public class OSGiParameters
 {
+   protected static Logger log = Logger.getLogger(OSGiParameters.class);
+
    protected Map<String, Parameter> parameters;
    protected Map<String, Object> cachedAttributes;
 
    public OSGiParameters(Map<String, Parameter> parameters)
    {
-      this.parameters = parameters;
+      this.parameters = Collections.unmodifiableMap(parameters);
       this.cachedAttributes = new HashMap<String, Object>();
+   }
+
+   protected Map<String, Parameter> getParameters()
+   {
+      return parameters;
    }
 
    public VersionRange getVersion()
@@ -88,7 +98,15 @@ public class OSGiParameters
             Object paramValue = parameter.getValue();
             if(parameter.isCollection())
             {
-               // todo
+               if (creator instanceof CollectionValueCreator)
+               {
+                  CollectionValueCreator<T> cvc = (CollectionValueCreator<T>)creator;
+                  value = cvc.createValue((Collection<String>)paramValue);
+               }
+               else
+               {
+                  log.warn("Unable to create proper value from " + creator + " for parameter: " + parameter);
+               }
             }
             else
             {
