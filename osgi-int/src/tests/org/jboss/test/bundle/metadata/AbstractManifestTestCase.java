@@ -27,6 +27,7 @@ import java.net.URL;
 import java.util.jar.Manifest;
 
 import junit.framework.Test;
+import junit.framework.TestCase;
 import junit.framework.TestSuite;
 import org.jboss.test.BaseTestCase;
 
@@ -43,7 +44,7 @@ public abstract class AbstractManifestTestCase extends BaseTestCase
    }
 
    // todo - remove after jboss-test update
-   public static Test suite(Class<?> clazz)
+   public static Test suite(Class<? extends TestCase> clazz)
    {
       return new TestSuite(clazz);
    }
