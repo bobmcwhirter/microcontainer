@@ -25,7 +25,6 @@ import java.util.HashMap;
 import java.util.Map;
 
 import junit.framework.TestSuite;
-
 import org.jboss.metatype.api.types.CompositeMetaType;
 import org.jboss.metatype.api.types.ImmutableCompositeMetaType;
 import org.jboss.metatype.api.types.MetaType;
@@ -46,7 +45,7 @@ public abstract class AbstractMetaTypeTest extends BaseTestCase
    /**
     * Create a new testsuite for the class
     * 
-    * TODO move to BaseTestCase
+    * TODO added to BaseTestCase - remove once jboss-test is updated
     * @param clazz the class
     * @return the suite
     */
