@@ -74,6 +74,14 @@ public class HeaderValue
       parseParameters(list);
    }
 
+   public void parsePaths(List<ParameterizedAttribute> list, boolean trace)
+      throws ParseException
+   {
+      // This will have no effect unless the debugging options are true
+      applyTracing(trace);
+      parsePaths(list);
+   }
+
    public static void parsePackages(String header, List<PackageAttribute> list, boolean trace)
       throws ParseException
    {
@@ -86,6 +94,13 @@ public class HeaderValue
    {
       HeaderValue parser = new HeaderValue(header);
       parser.parseParameters(list, trace);
+   }
+
+   public static void parsePaths(String header, List<ParameterizedAttribute> list, boolean trace)
+      throws ParseException
+   {
+      HeaderValue parser = new HeaderValue(header);
+      parser.parsePaths(list, trace);
    }
 }
 PARSER_END(HeaderValue)
@@ -107,6 +122,8 @@ TOKEN:
 |
   <#DIGIT: ["0" - "9"] >
 |
+  <STAR: "*" >
+|
   <NUMBER: (<DIGIT>)+ >
 |
   <DECIMAL_NUMBER: <NUMBER> ( "." <NUMBER> )? >
@@ -121,7 +138,7 @@ TOKEN:
 |
   <#JLETTER_OR_DIGIT: <JLETTER> | <DIGIT> >
 |
-  <QNAME: <JLETTER> (<JLETTER_OR_DIGIT>)* ("." <JLETTER> (<JLETTER_OR_DIGIT>)*)* >
+  <QNAME: <JLETTER> (<JLETTER_OR_DIGIT>)* ("." <JLETTER> (<JLETTER_OR_DIGIT>)*)* (".*")? >
 |
   <QUOTED_STRING: "\"" ( ~["\"", "\\", "\r", "\n", "\u0000"] | "\\\"")* "\"" >
 |
@@ -130,6 +147,14 @@ TOKEN:
   <ATTRIBUTE: <TOKN> "=" <ARGUMENT> >
 |
   <DIRECTIVE: <TOKN> ":=" <ARGUMENT> >
+|
+  <PATH_ELEMENT: (~["/", "\"", "\n", "\r", "\u0000", ";", ","])+ >
+|
+  <PATH_SEP: "/" >
+|
+  <#PATH_UNQUOTED: <PATH_SEP> | (<PATH_SEP>)? <PATH_ELEMENT> (<PATH_SEP> <PATH_ELEMENT>)* >
+|
+  <PATH: <PATH_UNQUOTED> | "\"" <PATH_UNQUOTED> "\"" >
 }
 
 /** Start of the grammar */
@@ -153,6 +178,15 @@ void parseParameters(List<ParameterizedAttribute> list) :
   }
 }
 
+void parsePaths(List<ParameterizedAttribute> list) :
+{
+}
+{
+  pathInfo(list) ( "," pathInfo(list) )*
+  {
+  }
+}
+
 void packageInfo(List<PackageAttribute> list) :
 {
    List<String> packages = new ArrayList<String>();
@@ -164,6 +198,21 @@ void packageInfo(List<PackageAttribute> list) :
       for(String pckg : packages)
       {
          list.add(new AbstractPackageAttribute(pckg, parameters));
+      }
+   }
+}
+
+void pathInfo(List<ParameterizedAttribute> list) :
+{
+   List<String> paths = new ArrayList<String>();
+   Map<String, Parameter> parameters = new HashMap<String, Parameter>();
+}
+{
+   pathNames(paths) ( ";" parsePathParameters(parameters) )+
+   {
+      for(String path : paths)
+      {
+         list.add(new AbstractPackageAttribute(path, parameters));
       }
    }
 }
@@ -186,6 +235,16 @@ void packageNames(List<String> packages) :
 }
 {
   t=<QNAME> {packages.add(t.image);} ( ";" packageNames(packages))*
+  |
+  t=<STAR> {packages.add(t.image);} ( ";" packageNames(packages))*
+}
+
+void pathNames(List<String> paths) :
+{
+	Token t;
+}
+{
+  t=<PATH> {paths.add(t.image);} ( ";" pathNames(paths))*
 }
 
 void parsePackageParameters(Map<String, Parameter> parameters) :
@@ -228,5 +287,26 @@ void parseAttributeParameters(Map<String, Parameter> parameters) :
       addParameter(parameters, params[0], params[1]);
    }
    ( ";" parseAttributeParameters(parameters))*
+}
+
+void parsePathParameters(Map<String, Parameter> parameters) :
+{
+   Token t;
+}
+{
+   t = <DIRECTIVE>
+   {
+      String ts = t.toString();
+      String[] params = ts.split(":=");
+      addParameter(parameters, params[0], params[1]);
+   }
+|
+   t = <ATTRIBUTE>
+   {
+      String ts = t.toString();
+      String[] params = ts.split("=");
+      addParameter(parameters, params[0], params[1]);
+   }
+   ( ";" parsePathParameters(parameters))*
 }
 

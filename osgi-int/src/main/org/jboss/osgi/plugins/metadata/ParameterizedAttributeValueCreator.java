@@ -34,7 +34,7 @@ class ParameterizedAttributeValueCreator extends AbstractValueCreator<Parameteri
 {
    public ParameterizedAttribute useString(String attribute)
    {
-      ParameterizedAttributeListValueCreator palvc = new ParameterizedAttributeListValueCreator();
+      ParameterizedAttributeListValueCreator palvc = new QNameAttributeListValueCreator();
       List<ParameterizedAttribute> list = palvc.useString(attribute);
       return list.size() > 0 ? list.get(0) : null;
    }

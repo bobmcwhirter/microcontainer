@@ -36,6 +36,7 @@ public class ValueCreatorUtil
    static URLValueCreator URL_VC = new URLValueCreator();
    static StringListValueCreator STRING_LIST_VC = new StringListValueCreator();
    public static ParameterizedAttributeValueCreator PARAM_ATTRIB_VC = new ParameterizedAttributeValueCreator();
-   public static ParameterizedAttributeListValueCreator PARAM_ATTRIB_LIST_VC = new ParameterizedAttributeListValueCreator();
+   public static ParameterizedAttributeListValueCreator QNAME_ATTRIB_LIST_VC = new QNameAttributeListValueCreator();
+   public static ParameterizedAttributeListValueCreator PATH_ATTRIB_LIST_VC = new PathAttributeListValueCreator();
    public static PackageAttributeListValueCreator PACKAGE_LIST_VC = new PackageAttributeListValueCreator();
 }

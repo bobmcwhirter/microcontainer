@@ -45,7 +45,7 @@ public class AbstractOSGiMetaData extends AbstractManifestMetaData implements OS
 {
    private static final long serialVersionUID = 1L;
 
-   protected Map<String, Object> cachedAttributes = new HashMap<String, Object>();
+   protected transient Map<String, Object> cachedAttributes = new HashMap<String, Object>();
 
    public AbstractOSGiMetaData()
    {
@@ -78,7 +78,7 @@ public class AbstractOSGiMetaData extends AbstractManifestMetaData implements OS
 
    public int getBundleManifestVersion()
    {
-      return get(BUNDLE_VERSION, INTEGER_VC, 1);
+      return get(BUNDLE_MANIFESTVERSION, INTEGER_VC, 1);
    }
 
    public String getBundleName()
@@ -88,7 +88,7 @@ public class AbstractOSGiMetaData extends AbstractManifestMetaData implements OS
 
    public List<ParameterizedAttribute> getBundleNativeCode()
    {
-      return get(BUNDLE_NATIVECODE, PARAM_ATTRIB_LIST_VC);
+      return get(BUNDLE_NATIVECODE, PATH_ATTRIB_LIST_VC);
    }
 
    public List<String> getRequiredExecutionEnvironment()
@@ -133,7 +133,7 @@ public class AbstractOSGiMetaData extends AbstractManifestMetaData implements OS
 
    public List<ParameterizedAttribute> getRequireBundles()
    {
-      return get(REQUIRE_BUNDLE, PARAM_ATTRIB_LIST_VC);
+      return get(REQUIRE_BUNDLE, QNAME_ATTRIB_LIST_VC);
    }
 
    @SuppressWarnings("unchecked")

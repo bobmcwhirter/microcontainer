@@ -36,9 +36,21 @@ import org.jboss.util.JBossStringBuilder;
  *
  * @author <a href="mailto:ales.justin@jboss.com">Ales Justin</a>
  */
-class AbstractParameter extends JBossObject implements Parameter, Serializable
+public class AbstractParameter extends JBossObject implements Parameter, Serializable
 {
-   protected Collection<String> values = new HashSet<String>();
+   protected Collection<String> values;
+
+   public AbstractParameter()
+   {
+      super();
+      values = new HashSet<String>();
+   }
+
+   public AbstractParameter(String parameter)
+   {
+      this();
+      addValue(parameter);
+   }
 
    public void addValue(String value)
    {
@@ -58,6 +70,16 @@ class AbstractParameter extends JBossObject implements Parameter, Serializable
    public boolean isCollection()
    {
       return values.size() > 1;
+   }
+
+   protected int getHashCode()
+   {
+      return values.hashCode();
+   }
+
+   public boolean equals(Object obj)
+   {
+      return (obj instanceof AbstractParameter && values.equals(((AbstractParameter)obj).values));
    }
 
    public void toShortString(JBossStringBuilder buffer)

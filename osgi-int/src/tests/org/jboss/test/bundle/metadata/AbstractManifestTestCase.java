@@ -19,31 +19,64 @@
 * Software Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA
 * 02110-1301 USA, or see the FSF site: http://www.fsf.org.
 */
-package org.jboss.test.bundle;
+package org.jboss.test.bundle.metadata;
+
+import java.io.IOException;
+import java.io.InputStream;
+import java.net.URL;
+import java.util.jar.Manifest;
 
 import junit.framework.Test;
 import junit.framework.TestSuite;
-import junit.textui.TestRunner;
-import org.jboss.test.bundle.metadata.MetaDataTestSuite;
+import org.jboss.test.BaseTestCase;
 
 /**
- * Bundle Test Suite.
+ * Uses Manifest.mf file for actual tests.
  *
  * @author <a href="mailto:ales.justin@jboss.com">Ales Justin</a>
  */
-public class BundleTestSuite extends TestSuite
+public abstract class AbstractManifestTestCase extends BaseTestCase
 {
-   public static void main(String[] args)
+   protected AbstractManifestTestCase(String name)
    {
-      TestRunner.run(suite());
+      super(name);
    }
 
-   public static Test suite()
+   // todo - remove after jboss-test update
+   public static Test suite(Class<?> clazz)
    {
-      TestSuite suite = new TestSuite("Bundle Tests");
-
-      suite.addTest(MetaDataTestSuite.suite());
-
-      return suite;
+      return new TestSuite(clazz);
    }
+
+   protected String createName(String prefix)
+   {
+      if (prefix == null)
+         prefix = "";
+      return prefix + "Manifest.mf";
+   }
+
+   protected Manifest getManifest(String name) throws IOException
+   {
+      InputStream is = getManifestInputStream(name);
+      try
+      {
+         return new Manifest(is);
+      }
+      finally
+      {
+         is.close();
+      }
+   }
+
+   protected InputStream getManifestInputStream(String name) throws IOException
+   {
+      URL url = getResource(name);
+      if (url == null)
+      {
+         log.warn("Name not found:" + name);
+         fail(name + " not found");
+      }
+      return url.openStream();
+   }
+
 }

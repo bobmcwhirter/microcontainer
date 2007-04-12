@@ -19,31 +19,28 @@
 * Software Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA
 * 02110-1301 USA, or see the FSF site: http://www.fsf.org.
 */
-package org.jboss.test.bundle;
+package org.jboss.osgi.plugins.metadata;
 
-import junit.framework.Test;
-import junit.framework.TestSuite;
-import junit.textui.TestRunner;
-import org.jboss.test.bundle.metadata.MetaDataTestSuite;
+import java.util.List;
+
+import org.jboss.osgi.spi.metadata.ParameterizedAttribute;
 
 /**
- * Bundle Test Suite.
+ * Create path attribute list from string attribute.
  *
  * @author <a href="mailto:ales.justin@jboss.com">Ales Justin</a>
  */
-public class BundleTestSuite extends TestSuite
+class PathAttributeListValueCreator extends ParameterizedAttributeListValueCreator
 {
-   public static void main(String[] args)
+   protected void parseAttribute(String attribute, List<ParameterizedAttribute> list, boolean trace)
    {
-      TestRunner.run(suite());
-   }
-
-   public static Test suite()
-   {
-      TestSuite suite = new TestSuite("Bundle Tests");
-
-      suite.addTest(MetaDataTestSuite.suite());
-
-      return suite;
+      try
+      {
+         HeaderValue.parsePaths(attribute, list, trace);
+      }
+      catch (ParseException e)
+      {
+         log.error("Exception parsing parameters.", e);
+      }
    }
 }

@@ -26,6 +26,8 @@ import java.io.Serializable;
 import java.util.StringTokenizer;
 
 import org.jboss.osgi.spi.metadata.VersionRange;
+import org.jboss.util.JBossObject;
+import org.jboss.util.JBossStringBuilder;
 import org.osgi.framework.Version;
 
 /**
@@ -39,7 +41,7 @@ import org.osgi.framework.Version;
  * @author Scott.Stark@jboss.org
  * @author <a href="mailto:ales.justin@jboss.com">Ales Justin</a>
  */
-public class AbstractVersionRange implements VersionRange, Serializable
+public class AbstractVersionRange extends JBossObject implements VersionRange, Serializable
 {
    private static final long serialVersionUID = 1l;
 
@@ -85,7 +87,7 @@ public class AbstractVersionRange implements VersionRange, Serializable
             ceilingIsLessThan = true;
          else if (token.equals(","))
             mid = true;
-         else
+         else if (token.equals("\"") == false)
          {
             // A version token
             if (floor == null)
@@ -153,9 +155,18 @@ public class AbstractVersionRange implements VersionRange, Serializable
       return isInRange;
    }
 
-   public String toString()
+   protected int getHashCode()
    {
-      StringBuilder tmp = new StringBuilder();
+      return rangeSpec.hashCode();
+   }
+
+   public boolean equals(Object obj)
+   {
+      return (obj instanceof AbstractVersionRange && rangeSpec.equals(((AbstractVersionRange)obj).rangeSpec));
+   }
+
+   protected void toString(JBossStringBuilder tmp)
+   {
       if (floor == null)
          tmp.append("0.0.0");
       else
@@ -173,7 +184,6 @@ public class AbstractVersionRange implements VersionRange, Serializable
          tmp.append("inf");
       else
          tmp.append(ceiling.toString());
-      return tmp.toString();
    }
 
    protected Object readResolve() throws ObjectStreamException

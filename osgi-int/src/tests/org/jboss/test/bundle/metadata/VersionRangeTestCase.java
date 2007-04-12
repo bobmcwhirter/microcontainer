@@ -15,7 +15,7 @@ import org.osgi.framework.Version;
  * Tests of the version range comparision.
  * 
  * @author Scott.Stark@jboss.org
- * @author Ales.Justin@jboss.org
+ * @author <a href="mailto:ales.justin@jboss.com">Ales Justin</a>
  */
 public class VersionRangeTestCase extends BaseTestCase
 {

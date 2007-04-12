@@ -27,23 +27,26 @@ import java.util.List;
 import org.jboss.osgi.spi.metadata.ParameterizedAttribute;
 
 /**
- * Create paramertized attribute list from string attribute.
+ * Create parameterized attribute list from string attribute.
  *
  * @author <a href="mailto:ales.justin@jboss.com">Ales Justin</a>
  */
-class ParameterizedAttributeListValueCreator extends ListValueCreator<ParameterizedAttribute>
+abstract class ParameterizedAttributeListValueCreator extends ListValueCreator<ParameterizedAttribute>
 {
    public List<ParameterizedAttribute> useString(String attribute)
    {
       List<ParameterizedAttribute> list = new ArrayList<ParameterizedAttribute>();
-      try
-      {
-         HeaderValue.parseParameters(attribute, list, log.isTraceEnabled());
-      }
-      catch (ParseException e)
-      {
-         log.error("Exception parsing parameters.", e);
-      }
+      parseAttribute(attribute, list, log.isTraceEnabled());
       return list;
    }
+
+   /**
+    * Use appropriate JavaCC parsing util.
+    *
+    * @param attribute string value to parse
+    * @param list data holder list
+    * @param trace log trace
+    */
+   protected abstract void parseAttribute(String attribute, List<ParameterizedAttribute> list, boolean trace);
+
 }
