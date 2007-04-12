@@ -106,20 +106,19 @@ public class OSGiParameters
                else
                {
                   log.warn("Unable to create proper value from " + creator + " for parameter: " + parameter);
-                  return null;
                }
             }
             else
             {
                value = creator.createValue(paramValue.toString());
             }
-            cachedAttributes.put(key, value);
          }
          else if (defaultValue != null)
          {
             value = defaultValue;
-            cachedAttributes.put(key, value);
          }
+         if (value != null)
+            cachedAttributes.put(key, value);
       }
       return value;
    }

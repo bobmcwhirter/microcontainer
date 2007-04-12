@@ -152,13 +152,13 @@ public class AbstractOSGiMetaData extends AbstractManifestMetaData implements OS
          if (attribute != null)
          {
             value = creator.createValue(attribute);
-            cachedAttributes.put(key, value);
          }
          else if (defaultValue != null)
          {
             value = defaultValue;
-            cachedAttributes.put(key, value);
          }
+         if (value != null)
+            cachedAttributes.put(key, value);
       }
       return value;
    }
