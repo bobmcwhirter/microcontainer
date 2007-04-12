@@ -106,6 +106,7 @@ public class OSGiParameters
                else
                {
                   log.warn("Unable to create proper value from " + creator + " for parameter: " + parameter);
+                  return null;
                }
             }
             else
