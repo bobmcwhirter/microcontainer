@@ -96,8 +96,15 @@ public class AbstractVersionRange implements VersionRange, Serializable
 
       }
       // check for parenthesis
-      if (mid && (floorIsGreaterThan == null || ceilingIsLessThan == null))
-         throw new IllegalArgumentException("Missing parenthesis: " + rangeSpec);
+      if (floorIsGreaterThan == null || ceilingIsLessThan == null)
+      {
+         // non-empty interval usage
+         if (mid)
+            throw new IllegalArgumentException("Missing parenthesis: " + rangeSpec);
+         // single value
+         floorIsGreaterThan = false;
+         ceilingIsLessThan = false;
+      }
 
       return new AbstractVersionRange(rangeSpec, floor, ceiling, floorIsGreaterThan, ceilingIsLessThan);
    }

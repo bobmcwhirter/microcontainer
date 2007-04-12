@@ -1,26 +1,35 @@
 
-package org.jboss.test.bundle;
+package org.jboss.test.bundle.metadata;
 
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
+import junit.framework.Test;
+import junit.framework.TestSuite;
 import org.jboss.osgi.plugins.metadata.AbstractVersionRange;
 import org.jboss.osgi.spi.metadata.VersionRange;
-import static org.junit.Assert.assertFalse;
-import static org.junit.Assert.assertTrue;
-import org.junit.Test;
+import org.jboss.test.BaseTestCase;
 import org.osgi.framework.Version;
 
 /**
- * Tests of the bundle manifest headers
+ * Tests of the version range comparision.
  * 
  * @author Scott.Stark@jboss.org
- * @version $Revision:$
+ * @author Ales.Justin@jboss.org
  */
-public class TestBundleHeaders
+public class VersionRangeTestCase extends BaseTestCase
 {
-   @Test
-   public void testRangeSpecRE()
+   public VersionRangeTestCase(String name)
+   {
+      super(name);
+   }
+
+   public static Test suite()
+   {
+      return new TestSuite(VersionRangeTestCase.class);
+   }
+
+   public void testRangeSpecRE() throws Exception
    {
       String rangeSpec = "1.0.0";
       //                       ( 1  ) (2 (3)  (4)   ) (5 (6)  (7)    (8)   ) (9 (10) (11)   (12)   (13)        )
@@ -38,8 +47,7 @@ public class TestBundleHeaders
       }
    }
 
-   @Test
-   public void testExclusiveRanges()
+   public void testExclusiveRanges() throws Exception
    {
       VersionRange v100to110ExclusiveRange = AbstractVersionRange.parseRangeSpec("(1.0.0,1.1.0)");
       VersionRange v100GAto110GAExclusvieRange = AbstractVersionRange.parseRangeSpec("(1.0.0.GA,1.1.0.GA)");
@@ -57,8 +65,7 @@ public class TestBundleHeaders
       assertTrue("1.0.2 is in "+v100GAto110GAExclusvieRange, v100GAto110GAExclusvieRange.isInRange(v102));
    }
 
-   @Test
-   public void testInclusiveRanges()
+   public void testInclusiveRanges() throws Exception
    {
       VersionRange v100to110InclusiveRange = AbstractVersionRange.parseRangeSpec("[1.0.0,1.1.0]");
       VersionRange v100GAto110GAInclusiveRange = AbstractVersionRange.parseRangeSpec("[1.0.0.GA,1.1.0.GA]");
@@ -76,8 +83,7 @@ public class TestBundleHeaders
       assertTrue("1.0.2 is in "+v100GAto110GAInclusiveRange, v100GAto110GAInclusiveRange.isInRange(v102));
    }
 
-   @Test
-   public void testMixedRanges()
+   public void testMixedRanges() throws Exception
    {
       VersionRange v100to110InclusiveLowerExclusiveUpperRange = AbstractVersionRange.parseRangeSpec("[1.0.0,1.1.0)");
       VersionRange v100to110ExclusiveLowerInclusiveUpperRange = AbstractVersionRange.parseRangeSpec("(1.0.0,1.1.0]");
@@ -102,8 +108,7 @@ public class TestBundleHeaders
       assertTrue("1.0.2 is in "+v100GAto110GAExclusiveLowerInclusiveUpperRange, v100GAto110GAExclusiveLowerInclusiveUpperRange.isInRange(v102));
    }
 
-   @Test
-   public void testSingleRange()
+   public void testSingleRange() throws Exception
    {
       VersionRange v100Range = AbstractVersionRange.parseRangeSpec("1.0.0");
       Version v100 = new Version("1.0.0");
