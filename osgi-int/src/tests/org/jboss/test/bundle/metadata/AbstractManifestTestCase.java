@@ -73,10 +73,7 @@ public abstract class AbstractManifestTestCase extends BaseTestCase
    {
       URL url = getResource(name);
       if (url == null)
-      {
-         log.warn("Name not found:" + name);
          fail(name + " not found");
-      }
       return url.openStream();
    }
 
