@@ -24,7 +24,6 @@ package org.jboss.test.bundle.metadata;
 import junit.framework.Test;
 import junit.framework.TestSuite;
 import junit.textui.TestRunner;
-import org.jboss.test.bundle.metadata.MetaDataTestSuite;
 
 /**
  * MetaData Test Suite.
