@@ -7,9 +7,10 @@
   <fileSets>
     <fileSet>
       <directory>target/classes</directory>
-        <excludes>
-          <eclude>org/jboss/dependency/plugins/**</eclude>
-        </excludes>
+      <includes>
+        <include>org/jboss/kernel/plugins/**</include>
+        <include>org/jboss/beans.metadata/plugins/**</include>
+      </includes>
       <outputDirectory></outputDirectory>
     </fileSet>
   </fileSets>

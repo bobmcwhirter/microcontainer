@@ -7,9 +7,10 @@
   <fileSets>
     <fileSet>
       <directory>target/classes</directory>
-        <includes>
-          <include>org/jboss/dependency/spi/**</include>
-        </includes>
+      <includes>
+        <include>org/jboss/kernel/spi/**</include>
+        <include>org/jboss/beans/metadata/spi/**</include>
+      </includes>
       <outputDirectory></outputDirectory>
     </fileSet>
   </fileSets>
