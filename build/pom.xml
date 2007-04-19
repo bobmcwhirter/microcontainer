@@ -8,7 +8,7 @@
   <parent>
     <groupId>jboss</groupId>
     <artifactId>jboss-parent</artifactId>
-    <version>2-SNAPSHOT</version>
+    <version>2</version>
   </parent>
   <modelVersion>4.0.0</modelVersion>
   <artifactId>jboss-microcontainer</artifactId>
@@ -107,10 +107,22 @@
       <id>jboss</id>
       <name>JBoss Repository</name>
       <layout>default</layout>
-      <url>http://repository.jboss.com/maven2/</url>
+      <url>http://repository.jboss.org/maven2/</url>
+      <snapshots>
+        <enabled>false</enabled>
+      </snapshots>
+    </repository>
+    <repository>
+      <id>jboss-snapshots</id>
+      <name>JBoss Repository</name>
+      <layout>default</layout>
+      <url>http://snapshots.jboss.org/maven2/</url>
       <snapshots>
         <enabled>true</enabled>
       </snapshots>
+      <releases>
+        <enabled>false</enabled>
+      </releases>
     </repository>
   </repositories>
   <reporting>
