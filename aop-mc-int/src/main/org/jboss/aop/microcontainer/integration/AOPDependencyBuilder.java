@@ -43,6 +43,7 @@ import org.jboss.aop.util.ClassInfoMethodHashing;
 import org.jboss.classadapter.plugins.dependency.AbstractDependencyBuilder;
 import org.jboss.classadapter.spi.ClassAdapter;
 import org.jboss.classadapter.spi.Dependency;
+import org.jboss.classadapter.spi.DependencyBuilderListItem;
 import org.jboss.dependency.spi.ControllerState;
 import org.jboss.metadata.spi.MetaData;
 import org.jboss.metadata.spi.signature.MethodSignature;
@@ -72,7 +73,7 @@ public class AOPDependencyBuilder extends AbstractDependencyBuilder
    private static final String DEPENDENCY_NAME_ATTRIBUTE = "name";
    private static final IntrospectionTypeInfoFactoryImpl typeInfoFactory = new IntrospectionTypeInfoFactoryImpl();
 
-   public List<Object> getDependencies(ClassAdapter classAdapter, MetaData metaData)
+   public List<DependencyBuilderListItem> getDependencies(ClassAdapter classAdapter, MetaData metaData)
    {
       AspectManager manager = AspectManagerFactory.getAspectManager(metaData);
       try
@@ -97,7 +98,7 @@ public class AOPDependencyBuilder extends AbstractDependencyBuilder
             ReflectiveAspectBinder binder = new ReflectiveAspectBinder(clazz, advisor);
             Set aspects = binder.getAspects();
 
-            ArrayList<Object> depends = new ArrayList<Object>();
+            ArrayList<DependencyBuilderListItem> depends = new ArrayList<DependencyBuilderListItem>();
             if (aspects != null && aspects.size() > 0)
             {
                Iterator it = aspects.iterator();
@@ -124,10 +125,10 @@ public class AOPDependencyBuilder extends AbstractDependencyBuilder
                }
             }
 
-            HashSet<Object> annotationDependencies = getAnnotationDependencies(classInfo, metaData);
-            for (Object dependency : annotationDependencies)
+            HashSet<String> annotationDependencies = getAnnotationDependencies(classInfo, metaData);
+            for (String dependency : annotationDependencies)
             {
-               depends.add(new AnnotationDependencyBuilderListItem((String)dependency));
+               depends.add(new AnnotationDependencyBuilderListItem(dependency));
             }
             return depends;
          }
@@ -140,11 +141,11 @@ public class AOPDependencyBuilder extends AbstractDependencyBuilder
       }
    }
 
-   private HashSet<Object> getAnnotationDependencies(ClassInfo classInfo, MetaData metaData)
+   private HashSet<String> getAnnotationDependencies(ClassInfo classInfo, MetaData metaData)
    {
       try
       {
-         HashSet<Object> dependencies = new HashSet<Object>();
+         HashSet<String> dependencies = new HashSet<String>();
          getClassAnnotationDependencies(classInfo, metaData, dependencies);
          getMethodAnnotationDependencies(classInfo, metaData, dependencies);
          return dependencies;
@@ -159,7 +160,7 @@ public class AOPDependencyBuilder extends AbstractDependencyBuilder
       }
    }
 
-   private void getClassAnnotationDependencies(ClassInfo classInfo, MetaData metaData, HashSet<Object> dependencies) throws Exception
+   private void getClassAnnotationDependencies(ClassInfo classInfo, MetaData metaData, HashSet<String> dependencies) throws Exception
    {
       HashMap<String, ArrayList<String>> realMap = new HashMap<String, ArrayList<String>>();
       getRealClassAnnotationDependencies(classInfo, realMap);
@@ -189,7 +190,7 @@ public class AOPDependencyBuilder extends AbstractDependencyBuilder
       }
    }
 
-   private void getMethodAnnotationDependencies(ClassInfo classInfo, MetaData metaData, HashSet<Object> dependencies) throws Exception
+   private void getMethodAnnotationDependencies(ClassInfo classInfo, MetaData metaData, HashSet<String> dependencies) throws Exception
    {
       Map methodMap = ClassInfoMethodHashing.getMethodMap(classInfo);
       if (methodMap != null)
@@ -318,7 +319,7 @@ public class AOPDependencyBuilder extends AbstractDependencyBuilder
       list.add(dependency.getValue());
    }
 
-   private void addAllDependenciesToSet(HashSet<Object> dependencies, HashMap<String, ArrayList<String>> classMap, HashMap<String, ArrayList<String>> overrideMap)
+   private void addAllDependenciesToSet(HashSet<String> dependencies, HashMap<String, ArrayList<String>> classMap, HashMap<String, ArrayList<String>> overrideMap)
    {
       HashMap<String, ArrayList<String>> dependencyMap = mergeClassAndOverrideMaps(classMap, overrideMap);
       if (dependencyMap.size() > 0)
