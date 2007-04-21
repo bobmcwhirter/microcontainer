@@ -76,6 +76,13 @@ public class CardinalityCallbackTestCase extends ManualMicrocontainerTest
 
       assertNotNull(injectee.getTesterInterfaces());
       assertEquals(3, injectee.getTesterInterfaces().size());
+
+      change(tester3, ControllerState.NOT_INSTALLED);
+      assertEquals(2, injectee.getTesterInterfaces().size());
+      assertEquals(context.getState(), ControllerState.INSTALLED);
+
+      change(tester2, ControllerState.NOT_INSTALLED);
+      assertEquals(context.getState(), ControllerState.CONFIGURED);
    }
 
 }

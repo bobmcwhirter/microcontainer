@@ -243,7 +243,8 @@ public class AbstractKernelController extends AbstractController implements Kern
       lockRead();
       try
       {
-         return Collections.unmodifiableSet(getContexts(clazz));
+         Set<KernelControllerContext> contexts = getContexts(clazz);
+         return contexts != null && contexts.isEmpty() == false ? Collections.unmodifiableSet(contexts) : null;
       }
       finally
       {
