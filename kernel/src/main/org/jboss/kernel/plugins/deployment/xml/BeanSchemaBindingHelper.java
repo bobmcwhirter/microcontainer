@@ -102,6 +102,12 @@ public class BeanSchemaBindingHelper
       // bean has uninstalls
       beanType.pushInterceptor(BeanSchemaBinding20.uninstallQName, BeanUninstallInterceptor.INTERCEPTOR);
 
+      // bean has installs
+      beanType.pushInterceptor(BeanSchemaBinding20.installCallbackQName, BeanInstallCallbackInterceptor.INTERCEPTOR);
+
+      // bean has uninstalls
+      beanType.pushInterceptor(BeanSchemaBinding20.uninstallCallbackQName, BeanUninstallCallbackInterceptor.INTERCEPTOR);
+
       // bean has depends
       beanType.pushInterceptor(BeanSchemaBinding20.dependsQName, BeanDependsInterceptor.INTERCEPTOR);
 
@@ -144,6 +150,12 @@ public class BeanSchemaBindingHelper
 
       // bean factory has uninstalls
       beanFactoryType.pushInterceptor(BeanSchemaBinding20.uninstallQName, BeanUninstallInterceptor.INTERCEPTOR);
+
+      // bean has installs
+      beanFactoryType.pushInterceptor(BeanSchemaBinding20.installCallbackQName, BeanInstallCallbackInterceptor.INTERCEPTOR);
+
+      // bean has uninstalls
+      beanFactoryType.pushInterceptor(BeanSchemaBinding20.uninstallCallbackQName, BeanUninstallCallbackInterceptor.INTERCEPTOR);
 
       // bean factory has depends
       beanFactoryType.pushInterceptor(BeanSchemaBinding20.dependsQName, BeanDependsInterceptor.INTERCEPTOR);
@@ -254,6 +266,19 @@ public class BeanSchemaBindingHelper
 
       // install has parameters
       installType.pushInterceptor(BeanSchemaBinding20.parameterQName, InstallParametersInterceptor.INTERCEPTOR);
+   }
+
+   /**
+    * Initialize the handlers for the callback type
+    *
+    * @param installType the install type
+    */
+   public static void initCallbackHandlers(TypeBinding installType)
+   {
+      installType.setHandler(CallbackHandler.HANDLER);
+
+      // install has annotations
+      installType.pushInterceptor(BeanSchemaBinding20.annotationQName, CallbackAnnotationsInterceptor.INTERCEPTOR);
    }
 
    /**

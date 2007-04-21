@@ -79,6 +79,17 @@ public class AbstractKernelDeployer
    }
 
    /**
+    * Create a new kernel deployer with mode
+    *
+    * @param kernel the kernel
+    * @param mode the controller mode
+    */
+   public AbstractKernelDeployer(Kernel kernel, ControllerMode mode)
+   {
+      this(kernel, null, mode);
+   }
+
+   /**
     * Create a new kernel deployer
     * 
     * @param kernel the kernel

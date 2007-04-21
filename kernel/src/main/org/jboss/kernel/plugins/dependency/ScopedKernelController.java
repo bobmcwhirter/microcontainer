@@ -197,6 +197,34 @@ public class ScopedKernelController extends AbstractKernelController
       }
    }
 
+   public Set<KernelControllerContext> getContexts(Class clazz, ControllerState state)
+   {
+      lockRead();
+      try
+      {
+         Set<KernelControllerContext> contexts = new HashSet<KernelControllerContext>();
+         Set<KernelControllerContext> currentContexts = super.getContexts(clazz, state);
+         if (currentContexts != null && currentContexts.size() > 0)
+         {
+            contexts.addAll(currentContexts);
+         }
+         if (isParentKernelController())
+         {
+            Set<KernelControllerContext> parentContexts = getParentKernelController().getContexts(clazz, state);
+            if (parentContexts != null && parentContexts.size() > 0)
+            {
+               contexts.addAll(parentContexts);
+            }
+         }
+         return contexts.size() > 0 ? contexts : null;
+      }
+      finally{
+         unlockRead();
+      }
+   }
+
+   
+
    // KernelRegistry plugin method
 
    public KernelRegistryEntry getEntry(Object name)

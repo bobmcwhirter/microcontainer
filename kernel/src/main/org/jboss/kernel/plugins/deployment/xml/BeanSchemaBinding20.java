@@ -107,11 +107,20 @@ public class BeanSchemaBinding20
    /** The install binding */
    public static final QName installTypeQName = new QName(BEAN_DEPLOYER_NS, "installType");
 
+   /** The install binding */
+   public static final QName callbackTypeQName = new QName(BEAN_DEPLOYER_NS, "callbackType");
+
    /** The install element name */
    public static final QName installQName = new QName(BEAN_DEPLOYER_NS, "install");
 
-   /** The start element name */
+   /** The uninstall element name */
    public static final QName uninstallQName = new QName(BEAN_DEPLOYER_NS, "uninstall");
+
+   /** The install callback element name */
+   public static final QName installCallbackQName = new QName(BEAN_DEPLOYER_NS, "incallback");
+
+   /** The uninstall callback element name */
+   public static final QName uninstallCallbackQName = new QName(BEAN_DEPLOYER_NS, "uncallback");
 
    /** The property binding */
    public static final QName propertyTypeQName = new QName(BEAN_DEPLOYER_NS, "propertyType");
@@ -289,6 +298,10 @@ public class BeanSchemaBinding20
       // install binding
       TypeBinding installType = schemaBinding.getType(installTypeQName);
       BeanSchemaBindingHelper.initInstallHandlers(installType);
+
+      // callback binding
+      TypeBinding callbackType = schemaBinding.getType(callbackTypeQName);
+      BeanSchemaBindingHelper.initCallbackHandlers(callbackType);
 
       // property binding
       TypeBinding propertyType = schemaBinding.getType(propertyTypeQName);

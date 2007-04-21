@@ -21,12 +21,15 @@
 */
 package org.jboss.dependency.plugins;
 
+import java.util.Collection;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
+import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.locks.ReentrantReadWriteLock;
 
+import org.jboss.dependency.spi.CallbackItem;
 import org.jboss.dependency.spi.Controller;
 import org.jboss.dependency.spi.ControllerContext;
 import org.jboss.dependency.spi.ControllerMode;
@@ -64,6 +67,10 @@ public class AbstractController extends JBossObject implements Controller
 
    /** The child controllers */
    private Set<AbstractController> childControllers = CollectionsFactory.createCopyOnWriteSet();
+
+   /** The callback items */
+   private Map<Object, Set<CallbackItem>> installCallbacks = new ConcurrentHashMap<Object, Set<CallbackItem>>();
+   private Map<Object, Set<CallbackItem>> uninstallCallbacks = new ConcurrentHashMap<Object, Set<CallbackItem>>();
 
    /** Whether an on demand context has been enabled */
    private boolean onDemandEnabled = true;
@@ -146,7 +153,7 @@ public class AbstractController extends JBossObject implements Controller
 
    /**
     * Whether the controller has contexts
-    * 
+    *
     * @return true when there are registered contexts
     */
    public boolean isActive()
@@ -298,7 +305,7 @@ public class AbstractController extends JBossObject implements Controller
          }
          else
          {
-            for(AbstractController controller : childControllers)
+            for (AbstractController controller : childControllers)
             {
                context = controller.uninstall(name, level + 1);
                if (context != null)
@@ -319,7 +326,7 @@ public class AbstractController extends JBossObject implements Controller
     * Install a context
     *
     * @param context the context
-    * @param trace whether trace is enabled
+    * @param trace   whether trace is enabled
     * @throws Throwable for any error
     */
    protected void install(ControllerContext context, boolean trace) throws Throwable
@@ -332,7 +339,7 @@ public class AbstractController extends JBossObject implements Controller
          // Check the name is not already registered
          if (getRegisterControllerContext(name, false) != null)
             throw new IllegalStateException(name + " is already installed.");
-         
+
          // Check any alias is not already registered
          Set<Object> aliases = context.getAliases();
          if (aliases != null && aliases.isEmpty() == false)
@@ -355,10 +362,10 @@ public class AbstractController extends JBossObject implements Controller
          if (trace)
          {
             String dependsOn = null;
-            if( dependencies != null )
+            if (dependencies != null)
             {
                Set set = dependencies.getIDependOn(null);
-               if( set != null )
+               if (set != null)
                   dependsOn = set.toString();
             }
             log.trace("Dependencies for " + name + ": " + dependsOn);
@@ -398,8 +405,8 @@ public class AbstractController extends JBossObject implements Controller
     * Change a context's state
     *
     * @param context the context
-    * @param state the required state
-    * @param trace whether trace is enabled
+    * @param state   the required state
+    * @param trace   whether trace is enabled
     * @throws Throwable for any error
     */
    protected void change(ControllerContext context, ControllerState state, boolean trace) throws Throwable
@@ -446,7 +453,7 @@ public class AbstractController extends JBossObject implements Controller
     * Enable an on demand context
     *
     * @param context the context
-    * @param trace whether trace is enabled
+    * @param trace   whether trace is enabled
     * @throws Throwable for any error
     */
    protected void enableOnDemand(ControllerContext context, boolean trace) throws Throwable
@@ -478,11 +485,11 @@ public class AbstractController extends JBossObject implements Controller
 
    /**
     * Increment state<p>
-    *
+    * <p/>
     * This method must be invoked with the write lock taken.
     *
     * @param context the context
-    * @param trace whether trace is enabled
+    * @param trace   whether trace is enabled
     * @return whether the suceeded
     */
    protected boolean incrementState(ControllerContext context, boolean trace)
@@ -537,6 +544,15 @@ public class AbstractController extends JBossObject implements Controller
       try
       {
          install(context, fromState, toState);
+
+         if (fromContexts != null)
+            fromContexts.remove(context);
+         Controller toController = context.getController();
+         Set<ControllerContext> toContexts = toController.getContextsByState(toState);
+         toContexts.add(context);
+         context.setState(toState);
+
+         resolveCallbacks(context, toState, true);      
       }
       catch (Throwable t)
       {
@@ -555,18 +571,12 @@ public class AbstractController extends JBossObject implements Controller
          }
       }
 
-      if (fromContexts != null)
-         fromContexts.remove(context);
-      Controller toController = context.getController();
-      Set<ControllerContext> toContexts = toController.getContextsByState(toState);
-      toContexts.add(context);
-      context.setState(toState);
       return true;
    }
 
    /**
     * Resolve unresolved contexts<p>
-    *
+    * <p/>
     * This method must be invoked with the write lock taken
     *
     * @param trace whether trace is enabled
@@ -578,10 +588,10 @@ public class AbstractController extends JBossObject implements Controller
       {
          onDemandEnabled = false;
          resolutions = false;
-         for (int i = 0; i < states.size()-1; ++i)
+         for (int i = 0; i < states.size() - 1; ++i)
          {
             ControllerState fromState = states.get(i);
-            ControllerState toState = states.get(i+1);
+            ControllerState toState = states.get(i + 1);
             if (resolveContexts(fromState, toState, trace))
             {
                resolutions = true;
@@ -592,10 +602,10 @@ public class AbstractController extends JBossObject implements Controller
 
       if (trace)
       {
-         for (int i = 0; i < states.size()-1; ++i)
+         for (int i = 0; i < states.size() - 1; ++i)
          {
             ControllerState state = states.get(i);
-            ControllerState nextState = states.get(i+1);
+            ControllerState nextState = states.get(i + 1);
             Set<ControllerContext> stillUnresolved = contextsByState.get(state);
             if (stillUnresolved.isEmpty() == false)
             {
@@ -625,12 +635,12 @@ public class AbstractController extends JBossObject implements Controller
 
    /**
     * Resolve contexts<p>
-    *
+    * <p/>
     * This method must be invoked with the write lock taken
     *
     * @param fromState the from state
-    * @param toState the to state
-    * @param trace whether trace is enabled
+    * @param toState   the to state
+    * @param trace     whether trace is enabled
     * @return true when there were resolutions
     */
    protected boolean resolveContexts(ControllerState fromState, ControllerState toState, boolean trace)
@@ -680,12 +690,12 @@ public class AbstractController extends JBossObject implements Controller
 
    /**
     * Resolve contexts<p>
-    *
+    * <p/>
     * This method must be invoked with the write lock taken
     *
     * @param contexts the contexts
-    * @param state the state
-    * @param trace whether trace is enabled
+    * @param state    the state
+    * @param trace    whether trace is enabled
     * @return the set of resolved contexts
     */
    protected Set<ControllerContext> resolveContexts(Set<ControllerContext> contexts, ControllerState state, boolean trace)
@@ -710,12 +720,12 @@ public class AbstractController extends JBossObject implements Controller
 
    /**
     * Uninstall a context
-    *
+    * <p/>
     * This method must be invoked with the write lock taken
     *
     * @param context the context to uninstall
     * @param toState the target state
-    * @param trace whether trace is enabled
+    * @param trace   whether trace is enabled
     */
    protected void uninstallContext(ControllerContext context, ControllerState toState, boolean trace)
    {
@@ -740,11 +750,11 @@ public class AbstractController extends JBossObject implements Controller
 
    /**
     * Uninstall a context<p>
-    *
+    * <p/>
     * This method must be invoked with the write lock taken
     *
     * @param context the context to uninstall
-    * @param trace whether trace is enabled
+    * @param trace   whether trace is enabled
     */
    protected void uninstallContext(ControllerContext context, boolean trace)
    {
@@ -790,7 +800,7 @@ public class AbstractController extends JBossObject implements Controller
          }
       }
 
-      int toIndex = currentIndex-1;
+      int toIndex = currentIndex - 1;
       if (toIndex == -1)
       {
          context.setError(new IllegalStateException("Cannot uninstall from " + fromState));
@@ -808,6 +818,8 @@ public class AbstractController extends JBossObject implements Controller
          Set<ControllerContext> toContexts = toController.getContextsByState(toState);
          toContexts.add(context);
          context.setState(toState);
+
+         resolveCallbacks(context, fromState, false);
       }
       catch (Throwable t)
       {
@@ -820,13 +832,213 @@ public class AbstractController extends JBossObject implements Controller
    }
 
    /**
-    * Install a context<p>
+    * Add callback item under demand name.
     *
+    * @param name demand name
+    * @param isInstallPhase install or uninstall phase
+    * @param callback callback item
+    */
+   protected void addCallback(Object name, boolean isInstallPhase, CallbackItem callback)
+   {
+      lockWrite();
+      try
+      {
+         Map<Object, Set<CallbackItem>> map = (isInstallPhase ? installCallbacks : uninstallCallbacks);
+         Set<CallbackItem> callbacks = map.get(name);
+         if (callbacks == null)
+         {
+            callbacks = new HashSet<CallbackItem>();
+            map.put(name, callbacks);
+         }
+         callbacks.add(callback);
+      }
+      finally
+      {
+         unlockWrite();
+      }
+   }
+
+   /**
+    * Remove callback item under demand name.
+    *
+    * @param name demand name
+    * @param isInstallPhase install or uninstall phase
+    * @param callback callback item
+    */
+   protected void removeCallback(Object name, boolean isInstallPhase, CallbackItem callback)
+   {
+      lockWrite();
+      try
+      {
+         Map<Object, Set<CallbackItem>> map = (isInstallPhase ? installCallbacks : uninstallCallbacks);
+         Set<CallbackItem> callbacks = map.get(name);
+         if (callbacks != null)
+         {
+            callbacks.remove(callback);
+            if (callbacks.isEmpty())
+               map.remove(name);
+         }
+      }
+      finally
+      {
+         unlockWrite();
+      }
+   }
+
+   /**
+    * Get calbacks from context.
+    *
+    * @param context current context
+    * @param isInstallPhase install or uninstall phase
+    * @return callback items from dependency info
+    */
+   protected Set<CallbackItem> getDependencyCallbacks(ControllerContext context, boolean isInstallPhase)
+   {
+      DependencyInfo di = context.getDependencyInfo();
+      if (di != null)
+      {
+         return isInstallPhase ? di.getInstallItems() : di.getUninstallItems();
+      }
+      return null;
+   }
+
+   /**
+    * Get the matching callbacks.
+    *
+    * @param name demand name
+    * @param isInstallPhase install or uninstall phase
+    * @return all matching registered callbacks or empty set if no such item
+    */
+   protected Set<CallbackItem> getCallbacks(Object name, boolean isInstallPhase)
+   {
+      lockRead();
+      try
+      {
+         Map<Object, Set<CallbackItem>> map = (isInstallPhase ? installCallbacks : uninstallCallbacks);
+         Set<CallbackItem> callbacks = map.get(name);
+         return callbacks != null ? callbacks : new HashSet<CallbackItem>();
+      }
+      finally
+      {
+         unlockRead();
+      }
+   }
+
+   /**
+    * Resolve callbacks.
+    *
+    * @param callbacks the callbacks
+    * @param state current context state
+    * @param execute do execute callback
+    * @param isInstallPhase install or uninstall phase
+    * @param type install or uninstall type
+    * @throws Throwable for any error
+    */
+   protected void resolveCallbacks(Set<CallbackItem> callbacks, ControllerState state, boolean execute, boolean isInstallPhase, boolean type) throws Throwable
+   {
+      if (callbacks != null && callbacks.isEmpty() == false)
+      {
+         for (CallbackItem callback : callbacks)
+         {
+            if (callback.getWhenRequired().equals(state))
+            {
+               if (isInstallPhase)
+               {
+                  addCallback(callback.getIDependOn(), type, callback);
+               }
+               else
+               {
+                  removeCallback(callback.getIDependOn(), type, callback);
+               }
+               if (execute)
+                  callback.ownerCallback(this);
+            }
+         }
+      }
+   }
+
+   /**
+    * Resolve callback items.
+    *
+    * @param context current context
+    * @param state current context state
+    * @param isInstallPhase install or uninstall phase
+    * @throws Throwable for any error
+    */
+   protected void resolveCallbacks(ControllerContext context, ControllerState state, boolean isInstallPhase) throws Throwable
+   {
+      Set<CallbackItem> installs = getDependencyCallbacks(context, true);
+      resolveCallbacks(installs, state, isInstallPhase, isInstallPhase, true);
+      Set<CallbackItem> uninstalls = getDependencyCallbacks(context, false);
+      resolveCallbacks(uninstalls, state, isInstallPhase == false, isInstallPhase, false);
+
+      // match callbacks by name
+      Set<CallbackItem> existingCallbacks = getCallbacks(context.getName(), isInstallPhase);
+      // match by classes
+      Collection<Class<?>> classes = getClassesImplemented(context.getTarget());
+      if (classes != null && classes.isEmpty() == false)
+      {
+         for (Class clazz : classes)
+         {
+            existingCallbacks.addAll(getCallbacks(clazz, isInstallPhase));
+         }
+      }
+
+      // Do the installs if we are at the required state
+      if (existingCallbacks != null && existingCallbacks.isEmpty() == false)
+      {
+         for(CallbackItem callback : existingCallbacks)
+         {
+            if (state.equals(callback.getDependentState()))
+               callback.additionCallback(this, context);
+         }
+      }
+   }
+
+   /**
+    * Get implemented classes.
+    *
+    * @param target target value / bean
+    * @return collection of implementing classes by target
+    */
+   protected Collection<Class<?>> getClassesImplemented(Object target)
+   {
+      if (target == null)
+         return null;
+      Set<Class<?>> classes = new HashSet<Class<?>>();
+      traverseClass(target.getClass(), classes);
+      return classes;
+   }
+
+   /**
+    * Recurse over classes.
+    *
+    * @param clazz current class
+    * @param classes classes holder set
+    */
+   protected void traverseClass(Class clazz, Set<Class<?>> classes)
+   {
+      if (clazz != null && Object.class.equals(clazz) == false)
+      {
+         classes.add(clazz);
+         traverseClass(clazz.getSuperclass(), classes);
+         Class[] interfaces = clazz.getInterfaces();
+         // traverse interfaces
+         for (Class intface : interfaces)
+         {
+            traverseClass(intface, classes);
+         }
+      }
+   }
+
+   /**
+    * Install a context<p>
+    * <p/>
     * This method must be invoked with NO locks taken
     *
-    * @param context the context
+    * @param context   the context
     * @param fromState the from state
-    * @param toState the toState
+    * @param toState   the toState
     * @throws Throwable for any error
     */
    protected void install(ControllerContext context, ControllerState fromState, ControllerState toState) throws Throwable
@@ -836,12 +1048,12 @@ public class AbstractController extends JBossObject implements Controller
 
    /**
     * Uninstall a context<p>
-    *
+    * <p/>
     * This method must be invoked with NO locks taken
     *
-    * @param context the context
+    * @param context   the context
     * @param fromState the from state
-    * @param toState the to state
+    * @param toState   the to state
     */
    protected void uninstall(ControllerContext context, ControllerState fromState, ControllerState toState)
    {
@@ -850,7 +1062,7 @@ public class AbstractController extends JBossObject implements Controller
 
    /**
     * Whether we should advance the context<p>
-    *
+    * <p/>
     * This method must be invoked with the write lock taken
     *
     * @param context the context
@@ -906,14 +1118,14 @@ public class AbstractController extends JBossObject implements Controller
 
    /**
     * Get a registered context<p>
-    * 
+    * <p/>
     * This method should be invoked with at least the read lock taken
-    * 
-    * @param name the name with which to register it
+    *
+    * @param name      the name with which to register it
     * @param mustExist whether to throw an error when the context does not exist
     * @return context the registered context
     * @throws IllegalArgumentException for null parameters
-    * @throws IllegalStateException if the context if must exist is true and the context does not exist
+    * @throws IllegalStateException    if the context if must exist is true and the context does not exist
     */
    protected ControllerContext getRegisterControllerContext(Object name, boolean mustExist)
    {
@@ -928,12 +1140,12 @@ public class AbstractController extends JBossObject implements Controller
 
    /**
     * Register a context and all its aliases<p>
-    * 
+    * <p/>
     * This method must be invoked with the write lock taken
-    * 
+    *
     * @param context the context to register
     * @throws IllegalArgumentException for null parameters
-    * @throws IllegalStateException if the context is already registered with that name or alias
+    * @throws IllegalStateException    if the context is already registered with that name or alias
     */
    protected void registerControllerContext(ControllerContext context)
    {
@@ -941,7 +1153,7 @@ public class AbstractController extends JBossObject implements Controller
          throw new IllegalArgumentException("Null context");
 
       Set<Object> aliases = context.getAliases();
-      
+
       // Register the context
       Object name = context.getName();
       registerControllerContext(name, context);
@@ -977,7 +1189,7 @@ public class AbstractController extends JBossObject implements Controller
                      log.debug("Error unregistering alias: " + alias, ignored);
                   }
                }
-               
+
                // Unregister the context
                try
                {
@@ -994,12 +1206,12 @@ public class AbstractController extends JBossObject implements Controller
 
    /**
     * Unregister a context and all its aliases<p>
-    * 
+    * <p/>
     * This method must be invoked with the write lock taken
-    * 
+    *
     * @param context the context
     * @throws IllegalArgumentException for null parameters
-    * @throws IllegalStateException if the context is not registered
+    * @throws IllegalStateException    if the context is not registered
     */
    protected void unregisterControllerContext(ControllerContext context)
    {
@@ -1007,7 +1219,7 @@ public class AbstractController extends JBossObject implements Controller
          throw new IllegalArgumentException("Null context");
 
       Set<Object> aliases = context.getAliases();
-      
+
       // Unregister the context
       Object name = context.getName();
       unregisterControllerContext(name);
@@ -1031,15 +1243,15 @@ public class AbstractController extends JBossObject implements Controller
 
    /**
     * Register a context<p>
-    * 
+    * <p/>
     * This method must be invoked with the write lock taken<p>
-    * 
+    * <p/>
     * NOTE: You probably want to use the {@link #registerControllerContext(ControllerContext)}
-    * 
-    * @param name the name with which to register it
+    *
+    * @param name    the name with which to register it
     * @param context the context to register
     * @throws IllegalArgumentException for null parameters
-    * @throws IllegalStateException if the context is already registered with that name
+    * @throws IllegalStateException    if the context is already registered with that name
     */
    protected void registerControllerContext(Object name, ControllerContext context)
    {
@@ -1047,7 +1259,7 @@ public class AbstractController extends JBossObject implements Controller
          throw new IllegalArgumentException("Null name");
       if (context == null)
          throw new IllegalArgumentException("Null context");
-      
+
       if (allContexts.containsKey(name) == false)
          allContexts.put(name, context);
       else
@@ -1056,11 +1268,11 @@ public class AbstractController extends JBossObject implements Controller
 
    /**
     * Unregister a context<p>
-    * 
+    * <p/>
     * This method must be invoked with the write lock taken<p>
-    * 
+    * <p/>
     * NOTE: You probably want to use the {@link #unregisterControllerContext(ControllerContext)}
-    * 
+    *
     * @param name the name it was registered with
     * @throws IllegalArgumentException for null parameters
     */

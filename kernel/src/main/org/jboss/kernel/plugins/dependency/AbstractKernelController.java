@@ -21,6 +21,7 @@
 */
 package org.jboss.kernel.plugins.dependency;
 
+import java.util.Collections;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
@@ -213,6 +214,28 @@ public class AbstractKernelController extends AbstractController implements Kern
    }
 
    /**
+    * Get contexts by class.
+    * This method should be taken with read lock.
+    *
+    * @param clazz the class type
+    * @return contexts by class
+    */
+   protected Set<KernelControllerContext> getContexts(Class clazz)
+   {
+      ClassContext classContext = contextsByClass.get(clazz);
+      if (classContext != null)
+      {
+         if (log.isTraceEnabled())
+         {
+            log.trace("Marking class " + clazz + " as used.");
+         }
+         classContext.used = true;
+         return classContext.contexts;
+      }
+      return null;
+   }
+
+   /**
     * @return all instantiated contexts whose target is instance of this class clazz param
     */
    public Set<KernelControllerContext> getInstantiatedContexts(Class clazz)
@@ -220,17 +243,7 @@ public class AbstractKernelController extends AbstractController implements Kern
       lockRead();
       try
       {
-         ClassContext classContext = contextsByClass.get(clazz);
-         if (classContext != null)
-         {
-            if (log.isTraceEnabled())
-            {
-               log.trace("Marking class " + clazz + " as used.");
-            }
-            classContext.used = true;
-            return classContext.contexts;
-         }
-         return null;
+         return Collections.unmodifiableSet(getContexts(clazz));
       }
       finally
       {
@@ -238,19 +251,39 @@ public class AbstractKernelController extends AbstractController implements Kern
       }
    }
 
-   /**
-    * add instantiated context into contextsByClass map
-    * look at all target's superclasses and interfaces
-    */
+   public Set<KernelControllerContext> getContexts(Class clazz, ControllerState state)
+   {
+      lockRead();
+      try
+      {
+         Set<KernelControllerContext> contexts = getContexts(clazz);
+         if (contexts != null && contexts.isEmpty() == false)
+         {
+            Set<KernelControllerContext> kccs = new HashSet<KernelControllerContext>();
+            List<ControllerState> states = getStates();
+            int stateIndex = states.indexOf(state);
+            for(KernelControllerContext context : contexts)
+            {
+               int contextStateIndex = states.indexOf(context.getState());
+               if (contextStateIndex >= stateIndex)
+                  kccs.add(context);
+            }
+            return Collections.unmodifiableSet(kccs);
+         }
+         else
+            return null;
+      }
+      finally
+      {
+         unlockRead();
+      }
+   }
+
    public void addInstantiatedContext(KernelControllerContext context)
    {
       prepareToTraverse(context, true);
    }
 
-   /**
-    * remove instantiated context from contextsByClass map
-    * look at all target's superclasses and interfaces
-    */
    public void removeInstantiatedContext(KernelControllerContext context)
    {
       prepareToTraverse(context, false);

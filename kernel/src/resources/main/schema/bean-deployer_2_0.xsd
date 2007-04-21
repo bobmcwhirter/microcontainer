@@ -94,6 +94,8 @@ $Id$
          <xsd:element name="supply" type="supplyType" minOccurs="0" maxOccurs="unbounded"/>
          <xsd:element name="install" type="installType" minOccurs="0" maxOccurs="unbounded"/>
          <xsd:element name="uninstall" type="installType" minOccurs="0" maxOccurs="unbounded"/>
+         <xsd:element name="incallback" type="callbackType" minOccurs="0" maxOccurs="unbounded"/>
+         <xsd:element name="uncallback" type="callbackType" minOccurs="0" maxOccurs="unbounded"/>
       </xsd:sequence>
       <xsd:attribute name="name" type="xsd:string" use="optional"/>
       <xsd:attribute name="class" type="xsd:token" use="optional"/>
@@ -162,6 +164,8 @@ $Id$
          <xsd:element name="supply" type="supplyType" minOccurs="0" maxOccurs="unbounded"/>
          <xsd:element name="install" type="installType" minOccurs="0" maxOccurs="unbounded"/>
          <xsd:element name="uninstall" type="installType" minOccurs="0" maxOccurs="unbounded"/>
+         <xsd:element name="incallback" type="callbackType" minOccurs="0" maxOccurs="unbounded"/>
+         <xsd:element name="uncallback" type="callbackType" minOccurs="0" maxOccurs="unbounded"/>
       </xsd:sequence>
       <xsd:attribute name="name" type="xsd:string" use="optional"/>
       <xsd:attribute name="class" type="xsd:token" use="required"/>
@@ -283,6 +287,33 @@ $Id$
       <xsd:attribute name="state" type="controllerStateType" use="optional"/>
    </xsd:complexType>
 
+   <xsd:complexType name="callbackType">
+      <xsd:annotation>
+         <xsd:documentation>
+           <![CDATA[
+           Callback item description.
+           Define you methods for callback invocation.
+
+           e.g.
+           <bean>
+              <callback method="addSomething" />
+              <callback property="items" cardinality="2..n" />
+              <callback property="info" signature="org.jboss.test.Info"/>
+           </bean>
+           ]]>
+         </xsd:documentation>
+      </xsd:annotation>
+      <xsd:sequence>
+         <xsd:element name="annotation" type="annotationType" minOccurs="0" maxOccurs="unbounded"/>
+      </xsd:sequence>
+      <xsd:attribute name="method" type="xsd:token" use="optional"/>
+      <xsd:attribute name="property" type="xsd:token" use="optional"/>
+      <xsd:attribute name="cardinality" type="xsd:token" use="optional"/>
+      <xsd:attribute name="whenRequired" type="controllerStateType" use="optional"/>
+      <xsd:attribute name="state" type="controllerStateType" use="optional"/>
+      <xsd:attribute name="signature" type="xsd:token" use="optional"/>
+   </xsd:complexType>
+
    <xsd:complexType name="dependencyType">
       <xsd:annotation>
          <xsd:documentation>
@@ -338,6 +369,11 @@ $Id$
            <bean name="InjectedIntoMe" ...>
               <property name="transactionManager"><inject type="ByName"/></property>
            </bean>
+
+           e.g. Contextual injection - set optional injection; execute callback if currently no matching context exists 
+           <bean name="InjectedIntoMe" ...>
+              <property name="transactionManager"><inject option="Callback"/></property>
+           </bean>
            ]]>
          </xsd:documentation>
       </xsd:annotation>
@@ -346,6 +382,7 @@ $Id$
       <xsd:attribute name="state" type="controllerStateType" use="optional"/>
       <xsd:attribute name="whenRequired" type="controllerStateType" use="optional"/>
       <xsd:attribute name="type" type="injectionTypeType" use="optional" default="ByClass"/>
+      <xsd:attribute name="option" type="optionType" use="optional" default="Strict"/>
    </xsd:complexType>
 
    <xsd:complexType name="factoryType">
@@ -892,6 +929,22 @@ $Id$
             Valid values include:
             ByClass (default)
             ByName
+            ]]>
+         </xsd:documentation>
+      </xsd:annotation>
+      <xsd:restriction base="xsd:string">
+         <xsd:whiteSpace value="collapse"/>
+      </xsd:restriction>
+   </xsd:simpleType>
+
+   <xsd:simpleType name="optionType">
+      <xsd:annotation>
+         <xsd:documentation>
+            <![CDATA[
+            You can set the type of lookup option - Strict or Callback
+            Valid values include:
+            Strict (default)
+            Callback
             ]]>
          </xsd:documentation>
       </xsd:annotation>

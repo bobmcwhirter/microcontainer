@@ -27,6 +27,10 @@ import org.jboss.util.JBossObject;
 import org.jboss.util.JBossStringBuilder;
 
 /**
+ * Injection type:
+ *  * ByClass - matching the class type of value (default)
+ *  * ByName - matching the property name
+ *
  * @author <a href="mailto:ales.justin@genera-lynx.com">Ales Justin</a>
  */
 public class InjectionType extends JBossObject
@@ -48,11 +52,28 @@ public class InjectionType extends JBossObject
     *
     * @param typeString the string representation
     */
-   public InjectionType(String typeString)
+   private InjectionType(String typeString)
    {
       if (typeString == null)
          throw new IllegalArgumentException("Null type string");
       this.typeString = typeString;
+   }
+
+   /**
+    * Return injection type.
+    * Or exception if no matching type.
+    *
+    * @param typeString type
+    * @return InjectionType instance
+    */
+   public static InjectionType getInstance(String typeString)
+   {
+      if ("ByClass".equalsIgnoreCase(typeString))
+         return BY_CLASS;
+      else if ("ByName".equalsIgnoreCase(typeString))
+         return BY_NAME;
+      else
+         throw new IllegalArgumentException("No such type: " + typeString);
    }
 
    /**

@@ -31,6 +31,7 @@ import java.util.Set;
 
 import org.jboss.beans.metadata.spi.BeanMetaData;
 import org.jboss.beans.metadata.spi.BeanMetaDataFactory;
+import org.jboss.beans.metadata.spi.CallbackMetaData;
 import org.jboss.beans.metadata.spi.ClassLoaderMetaData;
 import org.jboss.beans.metadata.spi.ConstructorMetaData;
 import org.jboss.beans.metadata.spi.DemandMetaData;
@@ -113,6 +114,12 @@ public class AbstractBeanMetaData extends AbstractFeatureMetaData
 
    /** The uninstall operations List<InstallMetaData> */
    protected List<InstallMetaData> uninstalls;
+
+   /** The install callback List<InstallMetaData> */
+   protected List<CallbackMetaData> installCallbacks;
+
+   /** The uninstall callback List<InstallMetaData> */
+   protected List<CallbackMetaData> uninstallCallbacks;
 
    /** The uninstall operations List<LifecycleCallbackMetaData> */
    protected List<LifecycleCallbackMetaData> lifecycleCallbacks;
@@ -479,6 +486,28 @@ public class AbstractBeanMetaData extends AbstractFeatureMetaData
       flushJBossObjectCache();
    }
 
+   public List<CallbackMetaData> getInstallCallbacks()
+   {
+      return installCallbacks;
+   }
+
+   public void setInstallCallbacks(List<CallbackMetaData> installCallbacks)
+   {
+      this.installCallbacks = installCallbacks;
+      flushJBossObjectCache();
+   }
+
+   public List<CallbackMetaData> getUninstallCallbacks()
+   {
+      return uninstallCallbacks;
+   }
+
+   public void setUninstallCallbacks(List<CallbackMetaData> uninstallCallbacks)
+   {
+      this.uninstallCallbacks = uninstallCallbacks;
+      flushJBossObjectCache();
+   }
+
    public void initialVisit(MetaDataVisitor visitor)
    {
       KernelControllerContext ctx = visitor.getControllerContext();
@@ -523,6 +552,10 @@ public class AbstractBeanMetaData extends AbstractFeatureMetaData
          children.addAll(installs);
       if (uninstalls != null)
          children.addAll(uninstalls);
+      if (installCallbacks != null)
+         children.addAll(installCallbacks);
+      if (uninstallCallbacks != null)
+         children.addAll(uninstallCallbacks);
       if (lifecycleCallbacks != null)
          children.addAll(lifecycleCallbacks);
    }
@@ -604,6 +637,16 @@ public class AbstractBeanMetaData extends AbstractFeatureMetaData
       {
          buffer.append(" uninstalls=");
          JBossObject.list(buffer, uninstalls);
+      }
+      if (installCallbacks != null)
+      {
+         buffer.append(" installCallbacks=");
+         JBossObject.list(buffer, installCallbacks);
+      }
+      if (uninstallCallbacks != null)
+      {
+         buffer.append(" uninstallCallbacks=");
+         JBossObject.list(buffer, uninstallCallbacks);
       }
       if (lifecycleCallbacks != null)
       {

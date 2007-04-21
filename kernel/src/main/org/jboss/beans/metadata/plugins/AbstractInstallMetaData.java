@@ -26,14 +26,14 @@ import java.io.Serializable;
 import org.jboss.beans.metadata.spi.InstallMetaData;
 import org.jboss.beans.metadata.spi.MetaDataVisitor;
 import org.jboss.dependency.plugins.AbstractDependencyItem;
+import org.jboss.dependency.spi.ControllerContext;
 import org.jboss.dependency.spi.ControllerState;
 import org.jboss.dependency.spi.DependencyItem;
-import org.jboss.dependency.spi.ControllerContext;
-import org.jboss.kernel.spi.dependency.KernelControllerContext;
-import org.jboss.kernel.spi.dependency.KernelController;
 import org.jboss.kernel.spi.config.KernelConfigurator;
-import org.jboss.util.JBossStringBuilder;
+import org.jboss.kernel.spi.dependency.KernelController;
+import org.jboss.kernel.spi.dependency.KernelControllerContext;
 import org.jboss.reflect.spi.ClassInfo;
+import org.jboss.util.JBossStringBuilder;
 
 /**
  * Metadata for installation.
@@ -126,7 +126,7 @@ public class AbstractInstallMetaData extends AbstractLifecycleMetaData
    {
       if (bean != null)
          buffer.append("bean=").append(bean);
-      if (dependentState != ControllerState.INSTALLED);
+      if (ControllerState.INSTALLED.equals(dependentState) == false)
          buffer.append(" dependentState=" + dependentState);
       buffer.append(" ");
       super.toString(buffer);
@@ -135,9 +135,11 @@ public class AbstractInstallMetaData extends AbstractLifecycleMetaData
    public void toShortString(JBossStringBuilder buffer)
    {
       if (bean != null)
-         buffer.append(bean);
+      {
+         buffer.append(bean).append(".");
+      }
       if (methodName != null)
-         buffer.append(".").append(methodName);
+         buffer.append(methodName);
    }
 
    /**

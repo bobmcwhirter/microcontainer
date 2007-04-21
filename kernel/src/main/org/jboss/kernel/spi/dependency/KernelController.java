@@ -25,6 +25,7 @@ import java.util.Set;
 
 import org.jboss.beans.metadata.spi.BeanMetaData;
 import org.jboss.dependency.spi.Controller;
+import org.jboss.dependency.spi.ControllerState;
 import org.jboss.kernel.spi.KernelObject;
 
 /**
@@ -82,6 +83,15 @@ public interface KernelController extends KernelObject, Controller
    Set<KernelControllerContext> getInstantiatedContexts(Class clazz);
 
    /**
+    * Get all contexts of a type which are at least in state.
+    *
+    * @param clazz the type
+    * @param state the required state
+    * @return the contexts
+    */
+   Set<KernelControllerContext> getContexts(Class clazz, ControllerState state);
+
+   /**
     * If zero or multiple instances match class clazz
     * a warning is issued, but no throwable is thrown
     *
@@ -91,7 +101,7 @@ public interface KernelController extends KernelObject, Controller
    KernelControllerContext getContextByClass(Class clazz);
 
    /**
-    * add instantiated context into contextsByClass map
+    * Add instantiated context into contextsByClass map
     * look at all target's superclasses and interfaces
     * 
     * @param context the context
@@ -99,7 +109,7 @@ public interface KernelController extends KernelObject, Controller
    void addInstantiatedContext(KernelControllerContext context);
 
    /**
-    * remove instantiated context from contextsByClass map
+    * Remove instantiated context from contextsByClass map
     * look at all target's superclasses and interfaces
     * 
     * @param context the context

@@ -36,6 +36,7 @@ import org.jboss.beans.metadata.spi.MetaDataVisitor;
 import org.jboss.beans.metadata.spi.MetaDataVisitorNode;
 import org.jboss.dependency.plugins.AbstractControllerContext;
 import org.jboss.dependency.plugins.AbstractDependencyInfo;
+import org.jboss.dependency.spi.CallbackItem;
 import org.jboss.dependency.spi.Controller;
 import org.jboss.dependency.spi.ControllerMode;
 import org.jboss.dependency.spi.ControllerState;
@@ -239,10 +240,11 @@ public class AbstractKernelControllerContext extends AbstractControllerContext i
       DependencyInfo dependencyInfo = getDependencyInfo();
       if (dependencyInfo != null)
       {
-         Set dependencys = dependencyInfo.getIDependOn(ClassContextDependencyItem.class);
-         for(Iterator it = dependencys.iterator(); it.hasNext();)
+         // remove all dependency items that hold class ref
+         Set<DependencyItem> dependencys = dependencyInfo.getIDependOn(ClassContextDependencyItem.class);
+         dependencys.addAll(dependencyInfo.getIDependOn(CallbackDependencyItem.class));
+         for (DependencyItem di : dependencys)
          {
-            DependencyItem di = (DependencyItem) it.next();
             di.unresolved(getController());
          }
       }
@@ -344,6 +346,16 @@ public class AbstractKernelControllerContext extends AbstractControllerContext i
       public void addDependency(DependencyItem dependency)
       {
          getDependencyInfo().addIDependOn(dependency);
+      }
+
+      public void addInstallCallback(CallbackItem callback)
+      {
+         getDependencyInfo().addInstallItem(callback);
+      }
+
+      public void addUninstallCallback(CallbackItem callback)
+      {
+         getDependencyInfo().addUninstallItem(callback);
       }
 
       public void setContextState(ControllerState contextState)

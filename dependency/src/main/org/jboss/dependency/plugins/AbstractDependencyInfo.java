@@ -22,9 +22,9 @@
 package org.jboss.dependency.plugins;
 
 import java.util.HashSet;
-import java.util.Iterator;
 import java.util.Set;
 
+import org.jboss.dependency.spi.CallbackItem;
 import org.jboss.dependency.spi.Controller;
 import org.jboss.dependency.spi.ControllerState;
 import org.jboss.dependency.spi.DependencyInfo;
@@ -50,6 +50,12 @@ public class AbstractDependencyInfo extends JBossObject implements DependencyInf
    /** Unresolved dependencies */
    private Set<DependencyItem> unresolved = CollectionsFactory.createCopyOnWriteSet();
 
+   /** Install callbacks */
+   private Set<CallbackItem> installCallbacks = CollectionsFactory.createCopyOnWriteSet();
+
+   /** Uninstall callbacks */
+   private Set<CallbackItem> uninstallCallbacks = CollectionsFactory.createCopyOnWriteSet();
+
    /**
     * Create an abstract dependency info
     */
@@ -64,9 +70,8 @@ public class AbstractDependencyInfo extends JBossObject implements DependencyInf
       else
       {
          HashSet<DependencyItem> set = new HashSet<DependencyItem>();
-         for (Iterator i = iDependOn.iterator(); i.hasNext();)
+         for (DependencyItem item : iDependOn)
          {
-            DependencyItem item = (DependencyItem) i.next();
             if (type.isInstance(item))
                set.add(item);
          }
@@ -95,9 +100,8 @@ public class AbstractDependencyInfo extends JBossObject implements DependencyInf
       else
       {
          HashSet<DependencyItem> set = new HashSet<DependencyItem>();
-         for (Iterator i = dependsOnMe.iterator(); i.hasNext();)
+         for (DependencyItem item : dependsOnMe)
          {
-            DependencyItem item = (DependencyItem) i.next();
             if (type.isInstance(item))
                set.add(item);
          }
@@ -122,9 +126,8 @@ public class AbstractDependencyInfo extends JBossObject implements DependencyInf
       boolean resolved = true;
       if (unresolved.isEmpty() == false)
       {
-         for (Iterator i = unresolved.iterator(); i.hasNext();)
+         for (DependencyItem item : unresolved)
          {
-            DependencyItem item = (DependencyItem) i.next();
             if (state.equals(item.getWhenRequired()) && item.resolve(controller) == false)
             {
                resolved = false;
@@ -139,7 +142,41 @@ public class AbstractDependencyInfo extends JBossObject implements DependencyInf
    {
       return unresolved;
    }
-   
+
+   public void addInstallItem(CallbackItem callbackItem)
+   {
+      installCallbacks.add(callbackItem);
+      flushJBossObjectCache();
+   }
+
+   public void removeInstallItem(CallbackItem callbackItem)
+   {
+      installCallbacks.remove(callbackItem);
+      flushJBossObjectCache();
+   }
+
+   public Set<CallbackItem> getInstallItems()
+   {
+      return installCallbacks;
+   }
+
+   public void addUninstallItem(CallbackItem callbackItem)
+   {
+      uninstallCallbacks.add(callbackItem);
+      flushJBossObjectCache();
+   }
+
+   public void removeUninstallItem(CallbackItem callbackItem)
+   {
+      uninstallCallbacks.remove(callbackItem);
+      flushJBossObjectCache();
+   }
+
+   public Set<CallbackItem> getUninstallItems()
+   {
+      return uninstallCallbacks;
+   }
+
    public void toString(JBossStringBuilder buffer)
    {
       buffer.append("idependOn=").append(iDependOn);

@@ -25,36 +25,41 @@ import org.jboss.kernel.spi.deployment.KernelDeployment;
 import org.jboss.test.kernel.junit.MicrocontainerTest;
 
 /**
+ * Test unit deployment contextual injection helper class.
+ * 
  * @author <a href="mailto:ales.justin@gmail.com">Ales Justin</a>
  */
 public abstract class ContextualInjectionAdapter extends MicrocontainerTest
 {
-
    public ContextualInjectionAdapter(String name)
    {
       super(name);
    }
 
-   protected abstract String getResource();
-
-   protected abstract void checkInjection();
-
    protected void enableTrace()
    {
    }
 
-   public void testInjection() throws Throwable
+   protected void execute(TestUnit testUnit) throws Throwable
    {
       enableTrace();
-      KernelDeployment deployment = deploy(getResource());
+      KernelDeployment deployment = deploy(testUnit.getResource());
       try
       {
          validate();
-         checkInjection();
+         testUnit.executeTest();
       }
       finally
       {
          undeploy(deployment);
       }
    }
+
+   protected interface TestUnit
+   {
+      String getResource();
+
+      void executeTest() throws Throwable;
+   }
+
 }

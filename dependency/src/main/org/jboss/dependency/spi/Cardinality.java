@@ -23,16 +23,19 @@ package org.jboss.dependency.spi;
 
 import java.io.Serializable;
 
+import org.jboss.util.JBossObject;
+import org.jboss.util.JBossStringBuilder;
+
 /**
  * Cardinality def.
  *
  * @author <a href="mailto:ales.justin@jboss.com">Ales Justin</a>
  */
-public class Cardinality implements Serializable
+public class Cardinality extends JBossObject implements Serializable
 {
-   private static final long serialVersionUID = 1L;
+   private static final long serialVersionUID = 2L;
   
-   private static final int INFINITY = -1;
+   public static final int INFINITY = -1;
 
    public static Cardinality ZERO_TO_ONE = new Cardinality("0..1", 0, 1);
    public static Cardinality ZERO_TO_MANY = new Cardinality("0..n", 0, INFINITY);
@@ -59,6 +62,17 @@ public class Cardinality implements Serializable
    }
 
    /**
+    * Is number in cardinality's range.
+    *
+    * @param number number to check
+    * @return left <= number <= right
+    */
+   public boolean isInRange(int number)
+   {
+      return (number < 0 || number < left || left == INFINITY) == false && (number <= right || right == INFINITY);
+   }
+
+   /**
     * Get the cardinality by type.
     *
     * @param type the commont type
@@ -73,7 +87,58 @@ public class Cardinality implements Serializable
             return c;
          }
       }
-      throw new IllegalArgumentException("Illegal Cardinality value: " + type);
+      return fromString(type);
+   }
+
+   /**
+    * Get limit from string.
+    *
+    * @param limit from string
+    * @return limit as int from string
+    */
+   protected static int getLimitFromString(String limit)
+   {
+      try
+      {
+         return Integer.parseInt(limit);
+      }
+      catch (NumberFormatException e)
+      {
+         return INFINITY;
+      }
+   }
+
+   /**
+    * Get limit as string.
+    *
+    * @param limit right limit
+    * @return limit as string
+    */
+   protected static String getLimitFromInt(int limit)
+   {
+      return limit == INFINITY ? "n" : String.valueOf(limit);
+   }
+
+   /**
+    * Parse cardinality from string - #1..#2.
+    *
+    * @param string cardinality string
+    * @return cardinality
+    */
+   public static Cardinality fromString(String string)
+   {
+      if (string == null)
+         throw new IllegalArgumentException("Null string.");
+
+      if (string.contains(".."))
+      {
+         String[] args = string.split("\\.\\.");
+         if (args == null || args.length != 2)
+            throw new IllegalArgumentException("Illegal cardinality format: " + string);
+         return createCardinality(getLimitFromString(args[0]), getLimitFromString(args[1]));
+      }
+      else
+         return createUnlimitedCardinality(Integer.valueOf(string));
    }
 
    /**
@@ -109,7 +174,30 @@ public class Cardinality implements Serializable
     */
    public static Cardinality createCardinality(int left, int right)
    {
-      return new Cardinality(left + ".." + right, left, right);
+      return new Cardinality(getLimitFromInt(left) + ".." + getLimitFromInt(right), left, right);
+   }
+
+   protected int getHashCode()
+   {
+      return type.hashCode();
+   }
+
+   public void toShortString(JBossStringBuilder buffer)
+   {
+      buffer.append("type=").append(type);
+   }
+
+   protected void toString(JBossStringBuilder buffer)
+   {
+      buffer.append("type=").append(type);
+   }
+
+   public boolean equals(Object obj)
+   {
+      if (obj instanceof Cardinality == false)
+         return false;
+      Cardinality card = (Cardinality)obj;
+      return left == card.left && right == card.right; 
    }
 
    public String getType()
@@ -125,5 +213,15 @@ public class Cardinality implements Serializable
    public int getRight()
    {
       return right;
+   }
+
+   public boolean isLeftInfinity()
+   {
+      return left <= INFINITY;
+   }
+
+   public boolean isRightInfinity()
+   {
+      return right <= INFINITY;
    }
 }

@@ -19,21 +19,25 @@
 * Software Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA
 * 02110-1301 USA, or see the FSF site: http://www.fsf.org.
 */
-package org.jboss.dependency.spi;
+package org.jboss.test.kernel.junit;
+
+import org.jboss.dependency.spi.ControllerMode;
 
 /**
- * Information about a install dependency.
+ * A Manual MicrocontainerTest.
  *
- * @author <a href="mailto:ales.justin@jboss.com">Ales Justin</a>
+ * @author <a href="ales.justin@jboss.com">Ales Justin</a>
  */
-public interface InstallItem
+public class ManualMicrocontainerTestDelegate extends ModeMicrocontainerTestDelegate
 {
-   /**
-    * Get the cardinality.
-    *
-    * @return cardinality
-    */
-   Cardinality getCardinality();
+   public ManualMicrocontainerTestDelegate(Class clazz)
+         throws Exception
+   {
+      super(clazz);
+   }
 
-   //todo
+   protected ControllerMode getControllerMode()
+   {
+      return ControllerMode.MANUAL;
+   }
 }

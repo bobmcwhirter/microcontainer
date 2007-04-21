@@ -40,6 +40,7 @@ import org.jboss.beans.metadata.plugins.StringValueMetaData;
 import org.jboss.beans.metadata.plugins.ThisValueMetaData;
 import org.jboss.beans.metadata.plugins.factory.GenericBeanFactoryMetaData;
 import org.jboss.beans.metadata.spi.AnnotationMetaData;
+import org.jboss.beans.metadata.spi.CallbackMetaData;
 import org.jboss.beans.metadata.spi.DemandMetaData;
 import org.jboss.beans.metadata.spi.DependencyMetaData;
 import org.jboss.beans.metadata.spi.InstallMetaData;
@@ -252,6 +253,18 @@ public class AbstractXMLTest extends AbstractTestCaseWithSetup
       }
    }
    
+   protected void assertCallbacks(List expected, List callbacks)
+   {
+      assertNotNull(callbacks);
+      assertEquals(expected.size(), callbacks.size());
+      for (int i = 0; i < expected.size(); ++i)
+      {
+         CallbackMetaData callback = (CallbackMetaData) callbacks.get(i);
+         String method = (String) expected.get(i);
+         assertEquals(method, callback.getMethodName());
+      }
+   }
+
    protected void assertParameters(List expected, List parameters)
    {
       assertNotNull(parameters);

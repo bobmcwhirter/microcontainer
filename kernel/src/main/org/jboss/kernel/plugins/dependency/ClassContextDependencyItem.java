@@ -24,15 +24,13 @@ package org.jboss.kernel.plugins.dependency;
 import org.jboss.dependency.spi.Controller;
 import org.jboss.dependency.spi.ControllerContext;
 import org.jboss.dependency.spi.ControllerState;
-import org.jboss.dependency.plugins.AbstractDependencyItem;
-import org.jboss.util.JBossStringBuilder;
 
 /**
  * A Class context dependencyItem.
  *
  * @author <a href="ales.justin@gmail.com">Ales Justin</a>
  */
-public class ClassContextDependencyItem extends AbstractDependencyItem
+public class ClassContextDependencyItem extends ClassDependencyItem
 {
    public ClassContextDependencyItem(Object name, Class demandClass, ControllerState whenRequired, ControllerState dependentState)
    {
@@ -53,23 +51,6 @@ public class ClassContextDependencyItem extends AbstractDependencyItem
          setResolved(false);
       }
       return isResolved();
-   }
-
-   public void unresolved(Controller controller)
-   {
-      setIDependOn(null);
-      super.unresolved(controller);
-   }
-
-   public void toString(JBossStringBuilder buffer)
-   {
-      super.toString(buffer);
-      buffer.append(" demandClass=").append(getIDependOn());
-   }
-
-   public void toShortString(JBossStringBuilder buffer)
-   {
-      buffer.append(getName()).append(" demands ").append(getIDependOn());
    }
 
 }

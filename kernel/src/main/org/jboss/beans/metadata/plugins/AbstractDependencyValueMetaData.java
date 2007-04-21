@@ -28,6 +28,7 @@ import org.jboss.dependency.spi.ControllerContext;
 import org.jboss.dependency.spi.ControllerState;
 import org.jboss.dependency.spi.DependencyItem;
 import org.jboss.dependency.spi.dispatch.AttributeDispatchContext;
+import org.jboss.kernel.spi.dependency.KernelControllerContext;
 import org.jboss.reflect.spi.TypeInfo;
 import org.jboss.util.JBossStringBuilder;
 
@@ -42,7 +43,7 @@ public class AbstractDependencyValueMetaData extends AbstractValueMetaData
    private static final long serialVersionUID = 2L;
 
    /** The context */
-   protected transient ControllerContext context;
+   protected transient KernelControllerContext context;
    
    /** The property name */
    protected String property;
@@ -134,6 +135,11 @@ public class AbstractDependencyValueMetaData extends AbstractValueMetaData
       return dependentState;
    }
 
+   protected boolean isLookupValid(ControllerContext lookup)
+   {
+      return (lookup != null);
+   }
+
    public Object getValue(TypeInfo info, ClassLoader cl) throws Throwable
    {
       ControllerState state = dependentState;
@@ -141,8 +147,13 @@ public class AbstractDependencyValueMetaData extends AbstractValueMetaData
          state = ControllerState.INSTALLED;
       Controller controller = context.getController();
       ControllerContext lookup = controller.getContext(value, state);
+
+      if (isLookupValid(lookup) == false)
+         throw new Error("Should not be here - dependency failed - " + this);
+
       if (lookup == null)
-         throw new Error("Should not be here - dependency failed! " + this);
+         return null;
+
       Object result = lookup.getTarget();
       if (property != null && lookup instanceof AttributeDispatchContext)
       {
@@ -152,20 +163,29 @@ public class AbstractDependencyValueMetaData extends AbstractValueMetaData
       return info != null ? info.convertValue(result) : result;
    }
 
+   protected boolean addDependencyItem()
+   {
+      return true;
+   }
+
    public void initialVisit(MetaDataVisitor visitor)
    {
       context = visitor.getControllerContext();
-      Object name = context.getName();
-      Object iDependOn = getUnderlyingValue();
-      ControllerState whenRequired = whenRequiredState;
-      if (whenRequired == null)
+      // used for sub class optional handling
+      if (addDependencyItem())
       {
-         whenRequired = visitor.getContextState();
+         Object name = context.getName();
+         Object iDependOn = getUnderlyingValue();
+
+         ControllerState whenRequired = whenRequiredState;
+         if (whenRequired == null)
+         {
+            whenRequired = visitor.getContextState();
+         }
+
+         DependencyItem item = new AbstractDependencyItem(name, iDependOn, whenRequired, dependentState);
+         visitor.addDependency(item);
       }
-
-      DependencyItem item = new AbstractDependencyItem(name, iDependOn, whenRequired, dependentState);
-      visitor.addDependency(item);
-
       super.initialVisit(visitor);
    }
       

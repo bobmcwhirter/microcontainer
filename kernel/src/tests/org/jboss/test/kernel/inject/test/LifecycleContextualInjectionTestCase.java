@@ -25,9 +25,11 @@ import junit.framework.Test;
 import org.jboss.test.kernel.inject.support.LifecycleInjectTestObject;
 
 /**
+ * Lifecycle method injection.
+ *
  * @author <a href="mailto:ales.justin@gmail.com">Ales Justin</a>
  */
-public class LifecycleContextualInjectionTestCase extends ContextualInjectionAdapter
+public class LifecycleContextualInjectionTestCase extends SingleContextualInjectionAdapter
 {
    public LifecycleContextualInjectionTestCase(String name)
    {

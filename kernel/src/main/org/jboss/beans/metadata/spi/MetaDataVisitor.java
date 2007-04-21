@@ -23,6 +23,7 @@ package org.jboss.beans.metadata.spi;
 
 import java.util.Stack;
 
+import org.jboss.dependency.spi.CallbackItem;
 import org.jboss.dependency.spi.ControllerState;
 import org.jboss.dependency.spi.DependencyItem;
 import org.jboss.kernel.spi.dependency.KernelControllerContext;
@@ -63,6 +64,20 @@ public interface MetaDataVisitor
     */
    void addDependency(DependencyItem dependency);
    
+   /**
+    * Add an install callback
+    *
+    * @param callback the callback
+    */
+   void addInstallCallback(CallbackItem callback);
+
+   /**
+    * Add an uninstall callback
+    *
+    * @param callback the callback
+    */
+   void addUninstallCallback(CallbackItem callback);
+
    /**
     * Visit the node
     * 

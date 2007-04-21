@@ -92,4 +92,46 @@ public interface DependencyInfo extends JBossInterface
     * @return our unresolved dependencies
     */
    Set<DependencyItem> getUnresolvedDependencies();
+
+   /**
+    * Add a callback reference
+    *
+    * @param callbackItem the callback to add
+    */
+   void addInstallItem(CallbackItem callbackItem);
+
+   /**
+    * Remove a callback reference
+    *
+    * @param callbackItem the callback to remove
+    */
+   void removeInstallItem(CallbackItem callbackItem);
+
+   /**
+    * Return install callbacks.
+    *
+    * @return our install callbacks
+    */
+   Set<CallbackItem> getInstallItems();
+
+   /**
+    * Add a callback reference
+    *
+    * @param callbackItem the callback to add
+    */
+   void addUninstallItem(CallbackItem callbackItem);
+
+   /**
+    * Remove a callback reference
+    *
+    * @param callbackItem the callback to remove
+    */
+   void removeUninstallItem(CallbackItem callbackItem);
+
+   /**
+    * Return uninstall callbacks.
+    *
+    * @return our uninstall callbacks
+    */
+   Set<CallbackItem> getUninstallItems();
 }

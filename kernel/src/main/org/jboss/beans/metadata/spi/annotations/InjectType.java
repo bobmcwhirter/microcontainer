@@ -22,6 +22,8 @@
 package org.jboss.beans.metadata.spi.annotations;
 
 /**
+ * Injection type - by class or by property name.
+ *
  * @author <a href="mailto:ales.justin@gmail.com">Ales Justin</a>
  */
 public enum InjectType

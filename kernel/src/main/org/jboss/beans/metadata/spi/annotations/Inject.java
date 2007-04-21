@@ -21,10 +21,10 @@
 */
 package org.jboss.beans.metadata.spi.annotations;
 
-import java.lang.annotation.Target;
 import java.lang.annotation.ElementType;
 import java.lang.annotation.Retention;
 import java.lang.annotation.RetentionPolicy;
+import java.lang.annotation.Target;
 
 /**
  * Beans when injected by class type are by default changed to configured
@@ -44,5 +44,7 @@ public @interface Inject
    String state() default "Installed";
 
    InjectType type() default InjectType.BY_CLASS;
+
+   InjectOption option() default InjectOption.STRICT;
 
 }

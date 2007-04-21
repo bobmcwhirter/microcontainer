@@ -23,8 +23,10 @@ package org.jboss.beans.metadata.plugins;
 
 import org.jboss.beans.metadata.spi.MetaDataVisitor;
 import org.jboss.beans.metadata.spi.MetaDataVisitorNode;
+import org.jboss.dependency.plugins.NamedCallbackItem;
 import org.jboss.dependency.spi.Controller;
 import org.jboss.dependency.spi.ControllerContext;
+import org.jboss.dependency.spi.ControllerState;
 import org.jboss.dependency.spi.DependencyItem;
 import org.jboss.kernel.plugins.dependency.ClassContextDependencyItem;
 import org.jboss.reflect.spi.TypeInfo;
@@ -37,9 +39,11 @@ import org.jboss.util.JBossStringBuilder;
  */
 public class AbstractInjectionValueMetaData extends AbstractDependencyValueMetaData
 {
-   private static final long serialVersionUID = 1L;
+   private static final long serialVersionUID = 2L;
 
    protected InjectionType injectionType = InjectionType.BY_CLASS;
+
+   protected InjectionOption injectionOption = InjectionOption.STRICT;
 
    /**
     * Simplyifies things with InjectionType.BY_NAME
@@ -84,6 +88,16 @@ public class AbstractInjectionValueMetaData extends AbstractDependencyValueMetaD
       this.injectionType = injectionType;
    }
 
+   public InjectionOption getInjectionOption()
+   {
+      return injectionOption;
+   }
+
+   public void setInjectionOption(InjectionOption injectionOption)
+   {
+      this.injectionOption = injectionOption;
+   }
+
    public AbstractPropertyMetaData getPropertyMetaData()
    {
       return propertyMetaData;
@@ -94,15 +108,42 @@ public class AbstractInjectionValueMetaData extends AbstractDependencyValueMetaD
       this.propertyMetaData = propertyMetaData;
    }
 
+   protected void addInstallItem(Object name)
+   {
+      if (propertyMetaData == null)
+         throw new IllegalArgumentException("Illegal usage of option Callback - injection not used with property = " + this);
+      context.getDependencyInfo().addInstallItem(new NamedCallbackItem(name, whenRequiredState, dependentState, context, propertyMetaData.getName()));
+   }
+
+   protected boolean isLookupValid(ControllerContext lookup)
+   {
+      boolean lookupExists = super.isLookupValid(lookup);
+      boolean isCallback = InjectionOption.CALLBACK.equals(injectionOption);
+      if (lookupExists == false && isCallback)
+      {
+         addInstallItem(value);
+      }
+      return lookupExists || isCallback;
+   }
+
    public Object getValue(TypeInfo info, ClassLoader cl) throws Throwable
    {
+      // by class type
       if (value == null)
       {
          Controller controller = context.getController();
          ControllerContext lookup = controller.getInstalledContext(info.getType());
          if (lookup == null)
          {
-            throw new IllegalArgumentException("Possible multiple matching beans, see log for info.");
+            if (InjectionOption.STRICT.equals(injectionOption))
+            {
+               throw new IllegalArgumentException("Possible multiple matching beans, see log for info.");
+            }
+            else
+            {
+               addInstallItem(info.getType());
+               return null;
+            }
          }
          // TODO - add progression here, then fix BeanMetaData as well
          return lookup.getTarget();
@@ -110,8 +151,14 @@ public class AbstractInjectionValueMetaData extends AbstractDependencyValueMetaD
       return super.getValue(info, cl);
    }
 
+   protected boolean addDependencyItem()
+   {
+      return InjectionOption.STRICT.equals(injectionOption);
+   }
+
    public void initialVisit(MetaDataVisitor visitor)
    {
+      // no bean specified
       if (getUnderlyingValue() == null)
       {
          // check for property
@@ -124,13 +171,13 @@ public class AbstractInjectionValueMetaData extends AbstractDependencyValueMetaD
          if (InjectionType.BY_NAME.equals(injectionType))
          {
             if (propertyMetaData == null)
-            {
                throw new IllegalArgumentException("Illegal usage of type ByName - injection not used with property = " + this);
-            }
             setValue(propertyMetaData.getName());
          }
-
-         visitor.initialVisit(this);
+         else
+         {
+            visitor.initialVisit(this);
+         }
       }
       // check if was maybe set with by_name
       if (getUnderlyingValue() != null)
@@ -141,47 +188,60 @@ public class AbstractInjectionValueMetaData extends AbstractDependencyValueMetaD
 
    public void describeVisit(MetaDataVisitor visitor)
    {
+      // no bean and not by_name
       if (getUnderlyingValue() == null)
       {
          if (InjectionType.BY_CLASS.equals(injectionType))
          {
             context = visitor.getControllerContext();
 
-            // we pop it so that parent node has the same semantics as this one
-            // meaning that his current peek is also his parent
-            // and all other nodes that cannot determine type follow the same
-            // contract - popping and pushing
-            // maybe the whole thing can be rewritten to LinkedList
-            // or simply using the fact that Stack is also a Vector?
-            MetaDataVisitorNode node = visitor.visitorNodeStack().pop();
-            try
+            // dependency item or install item
+            if (InjectionOption.STRICT.equals(injectionOption))
             {
-               if (node instanceof TypeProvider)
+               // add dependency item only for strict inject behaviour
+               // we pop it so that parent node has the same semantics as this one
+               // meaning that his current peek is also his parent
+               // and all other nodes that cannot determine type follow the same
+               // contract - popping and pushing
+               // maybe the whole thing can be rewritten to LinkedList
+               // or simply using the fact that Stack is also a Vector?
+               MetaDataVisitorNode node = visitor.visitorNodeStack().pop();
+               try
                {
-                  TypeProvider typeProvider = (TypeProvider) node;
-                  DependencyItem item = new ClassContextDependencyItem(
-                        context.getName(),
-                        typeProvider.getType(visitor, this),
-                        visitor.getContextState(),
-                        dependentState);
-                  visitor.addDependency(item);
+                  if (node instanceof TypeProvider)
+                  {
+                     TypeProvider typeProvider = (TypeProvider)node;
+                     Class injectionClass = typeProvider.getType(visitor, this);
+                     // set when required
+                     ControllerState whenRequired = whenRequiredState;
+                     if (whenRequired == null)
+                     {
+                        whenRequired = visitor.getContextState();
+                     }
+                     DependencyItem item = new ClassContextDependencyItem(
+                           context.getName(),
+                           injectionClass,
+                           whenRequired,
+                           dependentState);
+                     visitor.addDependency(item);
+                  }
+                  else
+                  {
+                     throw new Error(TypeProvider.ERROR_MSG);
+                  }
                }
-               else
+               catch (Error error)
                {
-                  throw new Error(TypeProvider.ERROR_MSG);
+                  throw error;
                }
-            }
-            catch (Error error)
-            {
-               throw error;
-            }
-            catch (Throwable throwable)
-            {
-               throw new Error(throwable);
-            }
-            finally
-            {
-               visitor.visitorNodeStack().push(node);
+               catch (Throwable throwable)
+               {
+                  throw new Error(throwable);
+               }
+               finally
+               {
+                  visitor.visitorNodeStack().push(node);
+               }
             }
          }
          else

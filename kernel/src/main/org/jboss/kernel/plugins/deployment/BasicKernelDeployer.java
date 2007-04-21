@@ -25,6 +25,7 @@ import java.util.List;
 import java.util.ListIterator;
 import java.util.concurrent.CopyOnWriteArrayList;
 
+import org.jboss.dependency.spi.ControllerMode;
 import org.jboss.kernel.Kernel;
 import org.jboss.kernel.spi.deployment.KernelDeployment;
 import org.jboss.logging.Logger;
@@ -53,7 +54,18 @@ public class BasicKernelDeployer extends AbstractKernelDeployer
     */
    public BasicKernelDeployer(Kernel kernel)
    {
-      super(kernel);
+      this(kernel, null);
+   }
+
+   /**
+    * Create a new BasicKernelDeployer with mode.
+    *
+    * @param kernel the kernel
+    * @param mode the controller mode
+    */
+   public BasicKernelDeployer(Kernel kernel, ControllerMode mode)
+   {
+      super(kernel, mode);
    }
 
    public void deploy(KernelDeployment deployment) throws Throwable

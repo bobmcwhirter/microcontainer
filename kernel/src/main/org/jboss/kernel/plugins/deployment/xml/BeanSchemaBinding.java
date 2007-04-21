@@ -45,6 +45,7 @@ import org.jboss.beans.metadata.plugins.AbstractPropertyMetaData;
 import org.jboss.beans.metadata.plugins.AbstractSetMetaData;
 import org.jboss.beans.metadata.plugins.AbstractSupplyMetaData;
 import org.jboss.beans.metadata.plugins.AbstractValueMetaData;
+import org.jboss.beans.metadata.plugins.InjectionOption;
 import org.jboss.beans.metadata.plugins.InjectionType;
 import org.jboss.beans.metadata.plugins.StringValueMetaData;
 import org.jboss.beans.metadata.plugins.factory.GenericBeanFactoryMetaData;
@@ -1041,7 +1042,9 @@ public class BeanSchemaBinding
                else if ("whenRequired".equals(localName))
                   injection.setWhenRequiredState(new ControllerState(attrs.getValue(i)));
                else if ("type".equals(localName))
-                  injection.setInjectionType(new InjectionType(attrs.getValue(i)));
+                  injection.setInjectionType(InjectionType.getInstance(attrs.getValue(i)));
+               else if ("option".equals(localName))
+                  injection.setInjectionOption(InjectionOption.getInstance(attrs.getValue(i)));
             }
          }
 
@@ -1213,6 +1216,7 @@ public class BeanSchemaBinding
    
    /**
     * Configure a collection.
+    * @param qname collection qname
     */
    private static void configureCollection(QName qname)
    {

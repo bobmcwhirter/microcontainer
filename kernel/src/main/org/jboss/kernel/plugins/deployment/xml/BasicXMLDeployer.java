@@ -27,6 +27,7 @@ import java.util.Collection;
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
 
+import org.jboss.dependency.spi.ControllerMode;
 import org.jboss.kernel.Kernel;
 import org.jboss.kernel.plugins.deployment.BasicKernelDeployer;
 import org.jboss.kernel.spi.deployment.KernelDeployment;
@@ -63,7 +64,18 @@ public class BasicXMLDeployer extends BasicKernelDeployer
     */
    public BasicXMLDeployer(Kernel kernel)
    {
-      super(kernel);
+      this(kernel, null);
+   }
+
+   /**
+    * Create a new XML deployer with mode.
+    *
+    * @param kernel the kernel
+    * @param mode the controller mode
+    */
+   public BasicXMLDeployer(Kernel kernel, ControllerMode mode)
+   {
+      super(kernel, mode);
    }
 
    public Collection getDeploymentNames()

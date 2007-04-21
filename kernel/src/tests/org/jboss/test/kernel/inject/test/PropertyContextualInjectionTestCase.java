@@ -25,9 +25,11 @@ import junit.framework.Test;
 import org.jboss.test.kernel.inject.support.PropertyInjectTestObject;
 
 /**
+ * Property injection.
+ * 
  * @author <a href="mailto:ales.justin@gmail.com">Ales Justin</a>
  */
-public class PropertyContextualInjectionTestCase extends ContextualInjectionAdapter
+public class PropertyContextualInjectionTestCase extends SingleContextualInjectionAdapter
 {
    public PropertyContextualInjectionTestCase(String name)
    {

@@ -7,9 +7,10 @@ package org.jboss.kernel.plugins.deployment.xml;
 import javax.xml.namespace.NamespaceContext;
 import javax.xml.namespace.QName;
 
-import org.jboss.beans.metadata.plugins.InjectionType;
 import org.jboss.beans.metadata.plugins.AbstractInjectionValueMetaData;
 import org.jboss.beans.metadata.plugins.AbstractPropertyMetaData;
+import org.jboss.beans.metadata.plugins.InjectionOption;
+import org.jboss.beans.metadata.plugins.InjectionType;
 import org.jboss.dependency.spi.ControllerState;
 import org.jboss.xb.binding.sunday.unmarshalling.DefaultElementHandler;
 import org.jboss.xb.binding.sunday.unmarshalling.ElementBinding;
@@ -52,7 +53,9 @@ public class InjectionHandler extends DefaultElementHandler
          else if ("whenRequired".equals(localName))
             injection.setWhenRequiredState(new ControllerState(attrs.getValue(i)));
          else if ("type".equals(localName))
-            injection.setInjectionType(new InjectionType(attrs.getValue(i)));
+            injection.setInjectionType(InjectionType.getInstance(attrs.getValue(i)));
+         else if ("option".equals(localName))
+            injection.setInjectionOption(InjectionOption.getInstance(attrs.getValue(i)));
       }
    }
 

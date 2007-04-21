@@ -72,8 +72,8 @@ public class MicrocontainerTestDelegate extends AbstractTestDelegate
          kernel = bootstrap.getKernel();
          
          // Create the deployer
-         deployer = new BasicXMLDeployer(kernel);
-         
+         deployer = createDeployer();
+
          // Deploy
          deploy();
       }
@@ -93,6 +93,11 @@ public class MicrocontainerTestDelegate extends AbstractTestDelegate
       {
          throw new RuntimeException(e);
       }
+   }
+
+   protected BasicXMLDeployer createDeployer()
+   {
+      return new BasicXMLDeployer(kernel);
    }
 
    public void tearDown() throws Exception
@@ -276,13 +281,23 @@ public class MicrocontainerTestDelegate extends AbstractTestDelegate
     */
    protected void deploy() throws Exception
    {
-      String testName = clazz.getName();
-      testName = testName.replace('.', '/') + ".xml";
-      URL url = clazz.getClassLoader().getResource(testName);
+      String testName = getTestName();
+      URL url = getTestResource(testName);
       if (url != null)
          deploy(url);
       else
          log.debug("No test specific deployment " + testName);
+   }
+
+   protected String getTestName()
+   {
+      String testName = clazz.getName();
+      return testName.replace('.', '/') + ".xml";
+   }
+
+   protected URL getTestResource(String testName)
+   {
+      return clazz.getClassLoader().getResource(testName);
    }
 
    /**

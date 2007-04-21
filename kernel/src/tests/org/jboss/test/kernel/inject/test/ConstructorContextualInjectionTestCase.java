@@ -21,15 +21,16 @@
 */
 package org.jboss.test.kernel.inject.test;
 
+import junit.framework.Test;
 import org.jboss.test.kernel.inject.support.ConstructorInjectTestObject;
 import org.jboss.test.kernel.inject.support.ConstructorValueBean;
 
-import junit.framework.Test;
-
 /**
+ * Constructor injection.
+ *
  * @author <a href="mailto:ales.justin@gmail.com">Ales Justin</a>
  */
-public class ConstructorContextualInjectionTestCase extends ContextualInjectionAdapter
+public class ConstructorContextualInjectionTestCase extends SingleContextualInjectionAdapter
 {
    public ConstructorContextualInjectionTestCase(String name)
    {

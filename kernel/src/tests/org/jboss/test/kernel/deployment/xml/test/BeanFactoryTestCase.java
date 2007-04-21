@@ -25,7 +25,6 @@ import java.util.ArrayList;
 import java.util.HashSet;
 
 import junit.framework.Test;
-
 import org.jboss.beans.metadata.plugins.factory.GenericBeanFactory;
 import org.jboss.beans.metadata.plugins.factory.GenericBeanFactoryMetaData;
 import org.jboss.dependency.spi.ControllerMode;
@@ -61,6 +60,8 @@ public class BeanFactoryTestCase extends AbstractXMLTest
       assertNull(factory.getSupplies());
       assertNull(factory.getInstalls());
       assertNull(factory.getUninstalls());
+      assertNull(factory.getInstallCallbacks());
+      assertNull(factory.getUninstallCallbacks());
    }
 
    public void testBeanFactoryWithClass() throws Exception
@@ -86,6 +87,8 @@ public class BeanFactoryTestCase extends AbstractXMLTest
       assertNull(factory.getSupplies());
       assertNull(factory.getInstalls());
       assertNull(factory.getUninstalls());
+      assertNull(factory.getInstallCallbacks());
+      assertNull(factory.getUninstallCallbacks());
    }
 
    public void testBeanFactoryWithMode() throws Exception
@@ -111,6 +114,8 @@ public class BeanFactoryTestCase extends AbstractXMLTest
       assertNull(factory.getSupplies());
       assertNull(factory.getInstalls());
       assertNull(factory.getUninstalls());
+      assertNull(factory.getInstallCallbacks());
+      assertNull(factory.getUninstallCallbacks());
    }
 
    public void testBeanFactoryWithClassLoader() throws Exception
@@ -136,6 +141,8 @@ public class BeanFactoryTestCase extends AbstractXMLTest
       assertNull(factory.getSupplies());
       assertNull(factory.getInstalls());
       assertNull(factory.getUninstalls());
+      assertNull(factory.getInstallCallbacks());
+      assertNull(factory.getUninstallCallbacks());
    }
 
    public void testBeanFactoryWithConstructor() throws Exception
@@ -161,6 +168,8 @@ public class BeanFactoryTestCase extends AbstractXMLTest
       assertNull(factory.getSupplies());
       assertNull(factory.getInstalls());
       assertNull(factory.getUninstalls());
+      assertNull(factory.getInstallCallbacks());
+      assertNull(factory.getUninstallCallbacks());
    }
 
    public void testBeanFactoryWithProperty() throws Exception
@@ -188,6 +197,8 @@ public class BeanFactoryTestCase extends AbstractXMLTest
       assertNull(factory.getSupplies());
       assertNull(factory.getInstalls());
       assertNull(factory.getUninstalls());
+      assertNull(factory.getInstallCallbacks());
+      assertNull(factory.getUninstallCallbacks());
    }
 
    public void testBeanFactoryWithProperties() throws Exception
@@ -216,6 +227,8 @@ public class BeanFactoryTestCase extends AbstractXMLTest
       assertNull(factory.getSupplies());
       assertNull(factory.getInstalls());
       assertNull(factory.getUninstalls());
+      assertNull(factory.getInstallCallbacks());
+      assertNull(factory.getUninstallCallbacks());
    }
 
    public void testBeanFactoryWithCreate() throws Exception
@@ -240,6 +253,8 @@ public class BeanFactoryTestCase extends AbstractXMLTest
       assertNull(factory.getSupplies());
       assertNull(factory.getInstalls());
       assertNull(factory.getUninstalls());
+      assertNull(factory.getInstallCallbacks());
+      assertNull(factory.getUninstallCallbacks());
    }
 
    public void testBeanFactoryWithStart() throws Exception
@@ -264,6 +279,8 @@ public class BeanFactoryTestCase extends AbstractXMLTest
       assertNull(factory.getSupplies());
       assertNull(factory.getInstalls());
       assertNull(factory.getUninstalls());
+      assertNull(factory.getInstallCallbacks());
+      assertNull(factory.getUninstallCallbacks());
    }
 
    public void testBeanFactoryWithDependency() throws Exception
@@ -291,6 +308,8 @@ public class BeanFactoryTestCase extends AbstractXMLTest
       assertNull(factory.getSupplies());
       assertNull(factory.getInstalls());
       assertNull(factory.getUninstalls());
+      assertNull(factory.getInstallCallbacks());
+      assertNull(factory.getUninstallCallbacks());
    }
 
    public void testBeanFactoryWithDependencies() throws Exception
@@ -320,6 +339,8 @@ public class BeanFactoryTestCase extends AbstractXMLTest
       assertNull(factory.getSupplies());
       assertNull(factory.getInstalls());
       assertNull(factory.getUninstalls());
+      assertNull(factory.getInstallCallbacks());
+      assertNull(factory.getUninstallCallbacks());
    }
 
    public void testBeanFactoryWithDemand() throws Exception
@@ -347,6 +368,8 @@ public class BeanFactoryTestCase extends AbstractXMLTest
       assertNull(factory.getSupplies());
       assertNull(factory.getInstalls());
       assertNull(factory.getUninstalls());
+      assertNull(factory.getInstallCallbacks());
+      assertNull(factory.getUninstallCallbacks());
    }
 
    public void testBeanFactoryWithDemands() throws Exception
@@ -376,6 +399,8 @@ public class BeanFactoryTestCase extends AbstractXMLTest
       assertNull(factory.getSupplies());
       assertNull(factory.getInstalls());
       assertNull(factory.getUninstalls());
+      assertNull(factory.getInstallCallbacks());
+      assertNull(factory.getUninstallCallbacks());
    }
 
    public void testBeanFactoryWithSupply() throws Exception
@@ -403,6 +428,8 @@ public class BeanFactoryTestCase extends AbstractXMLTest
       assertSupplies(expected, factory.getSupplies());
       assertNull(factory.getInstalls());
       assertNull(factory.getUninstalls());
+      assertNull(factory.getInstallCallbacks());
+      assertNull(factory.getUninstallCallbacks());
    }
 
    public void testBeanFactoryWithSupplies() throws Exception
@@ -432,6 +459,8 @@ public class BeanFactoryTestCase extends AbstractXMLTest
       assertSupplies(expected, factory.getSupplies());
       assertNull(factory.getInstalls());
       assertNull(factory.getUninstalls());
+      assertNull(factory.getInstallCallbacks());
+      assertNull(factory.getUninstallCallbacks());
    }
 
    public void testBeanFactoryWithInstall() throws Exception
@@ -459,6 +488,8 @@ public class BeanFactoryTestCase extends AbstractXMLTest
       expected.add("Install1");
       assertInstalls(expected, factory.getInstalls());
       assertNull(factory.getUninstalls());
+      assertNull(factory.getInstallCallbacks());
+      assertNull(factory.getUninstallCallbacks());
    }
 
    public void testBeanFactoryWithInstalls() throws Exception
@@ -488,6 +519,8 @@ public class BeanFactoryTestCase extends AbstractXMLTest
       expected.add("Install3");
       assertInstalls(expected, factory.getInstalls());
       assertNull(factory.getUninstalls());
+      assertNull(factory.getInstallCallbacks());
+      assertNull(factory.getUninstallCallbacks());
    }
 
    public void testBeanFactoryWithUninstall() throws Exception
@@ -515,6 +548,8 @@ public class BeanFactoryTestCase extends AbstractXMLTest
       ArrayList<String> expected = new ArrayList<String>();
       expected.add("Uninstall1");
       assertInstalls(expected, factory.getUninstalls());
+      assertNull(factory.getInstallCallbacks());
+      assertNull(factory.getUninstallCallbacks());
    }
 
    public void testBeanFactoryWithUninstalls() throws Exception
@@ -544,6 +579,128 @@ public class BeanFactoryTestCase extends AbstractXMLTest
       expected.add("Uninstall2");
       expected.add("Uninstall3");
       assertInstalls(expected, factory.getUninstalls());
+      assertNull(factory.getInstallCallbacks());
+      assertNull(factory.getUninstallCallbacks());
+   }
+
+   public void testBeanFactoryWithInstallCallback() throws Exception
+   {
+      GenericBeanFactoryMetaData factory = unmarshalBeanFactory("BeanFactoryWithInstallCallback.xml");
+      assertNull(factory.getName());
+      assertEquals(GenericBeanFactory.class.getName(), factory.getBean());
+      assertEquals("Dummy", factory.getBeanClass());
+      assertNull(factory.getMode());
+      assertNull(factory.getAnnotations());
+      assertNull(factory.getClassLoader());
+      assertNotNull(factory.getConstructor());
+      assertNull(factory.getProperty("constructor"));
+      assertNotNull(factory.getProperties());
+      assertNull(factory.getProperty("properties"));
+      assertNull(factory.getCreate());
+      assertNull(factory.getProperty("create"));
+      assertNull(factory.getStart());
+      assertNull(factory.getProperty("start"));
+      assertNull(factory.getStop());
+      assertNull(factory.getDestroy());
+      assertNull(factory.getDemands());
+      assertNull(factory.getSupplies());
+      assertNull(factory.getInstalls());
+      assertNull(factory.getUninstalls());
+      ArrayList<String> expected = new ArrayList<String>();
+      expected.add("Install1");
+      assertCallbacks(expected, factory.getInstallCallbacks());
+      assertNull(factory.getUninstallCallbacks());
+   }
+
+   public void testBeanFactoryWithInstallCallbacks() throws Exception
+   {
+      GenericBeanFactoryMetaData factory = unmarshalBeanFactory("BeanFactoryWithInstallCallbacks.xml");
+      assertNull(factory.getName());
+      assertEquals(GenericBeanFactory.class.getName(), factory.getBean());
+      assertEquals("Dummy", factory.getBeanClass());
+      assertNull(factory.getMode());
+      assertNull(factory.getAnnotations());
+      assertNull(factory.getClassLoader());
+      assertNotNull(factory.getConstructor());
+      assertNull(factory.getProperty("constructor"));
+      assertNotNull(factory.getProperties());
+      assertNull(factory.getProperty("properties"));
+      assertNull(factory.getCreate());
+      assertNull(factory.getProperty("create"));
+      assertNull(factory.getStart());
+      assertNull(factory.getProperty("start"));
+      assertNull(factory.getStop());
+      assertNull(factory.getDestroy());
+      assertNull(factory.getDemands());
+      assertNull(factory.getSupplies());
+      assertNull(factory.getInstalls());
+      assertNull(factory.getUninstalls());
+      ArrayList<String> expected = new ArrayList<String>();
+      expected.add("Install1");
+      expected.add("Install2");
+      expected.add("Install3");
+      assertCallbacks(expected, factory.getInstallCallbacks());
+      assertNull(factory.getUninstallCallbacks());
+   }
+
+   public void testBeanFactoryWithUninstallCallback() throws Exception
+   {
+      GenericBeanFactoryMetaData factory = unmarshalBeanFactory("BeanFactoryWithUninstallCallback.xml");
+      assertNull(factory.getName());
+      assertEquals(GenericBeanFactory.class.getName(), factory.getBean());
+      assertEquals("Dummy", factory.getBeanClass());
+      assertNull(factory.getMode());
+      assertNull(factory.getAnnotations());
+      assertNull(factory.getClassLoader());
+      assertNotNull(factory.getConstructor());
+      assertNull(factory.getProperty("constructor"));
+      assertNotNull(factory.getProperties());
+      assertNull(factory.getProperty("properties"));
+      assertNull(factory.getCreate());
+      assertNull(factory.getProperty("create"));
+      assertNull(factory.getStart());
+      assertNull(factory.getProperty("start"));
+      assertNull(factory.getStop());
+      assertNull(factory.getDestroy());
+      assertNull(factory.getDemands());
+      assertNull(factory.getSupplies());
+      assertNull(factory.getInstalls());
+      assertNull(factory.getUninstalls());
+      assertNull(factory.getInstallCallbacks());
+      ArrayList<String> expected = new ArrayList<String>();
+      expected.add("Uninstall1");
+      assertCallbacks(expected, factory.getUninstallCallbacks());
+   }
+
+   public void testBeanFactoryWithUninstallCallbacks() throws Exception
+   {
+      GenericBeanFactoryMetaData factory = unmarshalBeanFactory("BeanFactoryWithUninstallCallbacks.xml");
+      assertNull(factory.getName());
+      assertEquals(GenericBeanFactory.class.getName(), factory.getBean());
+      assertEquals("Dummy", factory.getBeanClass());
+      assertNull(factory.getMode());
+      assertNull(factory.getAnnotations());
+      assertNull(factory.getClassLoader());
+      assertNotNull(factory.getConstructor());
+      assertNull(factory.getProperty("constructor"));
+      assertNotNull(factory.getProperties());
+      assertNull(factory.getProperty("properties"));
+      assertNull(factory.getCreate());
+      assertNull(factory.getProperty("create"));
+      assertNull(factory.getStart());
+      assertNull(factory.getProperty("start"));
+      assertNull(factory.getStop());
+      assertNull(factory.getDestroy());
+      assertNull(factory.getDemands());
+      assertNull(factory.getSupplies());
+      assertNull(factory.getInstalls());
+      assertNull(factory.getUninstalls());
+      assertNull(factory.getInstallCallbacks());
+      ArrayList<String> expected = new ArrayList<String>();
+      expected.add("Uninstall1");
+      expected.add("Uninstall2");
+      expected.add("Uninstall3");
+      assertCallbacks(expected, factory.getUninstallCallbacks());
    }
 
    public void testBeanFactoryBadNoClassOrConstructor() throws Exception

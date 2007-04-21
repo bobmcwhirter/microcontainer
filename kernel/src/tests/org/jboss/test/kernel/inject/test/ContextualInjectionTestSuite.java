@@ -21,8 +21,8 @@
 */
 package org.jboss.test.kernel.inject.test;
 
-import junit.framework.TestSuite;
 import junit.framework.Test;
+import junit.framework.TestSuite;
 import junit.textui.TestRunner;
 
 /**
@@ -44,6 +44,11 @@ public class ContextualInjectionTestSuite extends TestSuite
       suite.addTest(ConstructorContextualInjectionTestCase.suite());
       suite.addTest(LifecycleContextualInjectionTestCase.suite());
       suite.addTest(PropertyContextualInjectionTestCase.suite());
+      suite.addTest(MultipleContextualInjectionTestCase.suite());
+      suite.addTest(InjectionValueCallbackTestCase.suite());
+      suite.addTest(AdditionCallbackTestCase.suite());
+      suite.addTest(CollectionCallbackTestCase.suite());
+      suite.addTest(CardinalityCallbackTestCase.suite());
 
       return suite;
    }

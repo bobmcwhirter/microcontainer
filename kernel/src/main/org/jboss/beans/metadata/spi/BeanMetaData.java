@@ -176,6 +176,20 @@ public interface BeanMetaData extends FeatureMetaData, ValueMetaData
    List<InstallMetaData> getUninstalls();
    
    /**
+    * Get the installation oeprations.
+    *
+    * @return List<InstallMetaData>
+    */
+   List<CallbackMetaData> getInstallCallbacks();
+
+   /**
+    * Get the uninstallation operations.
+    *
+    * @return List<InstallMetaData>
+    */
+   List<CallbackMetaData> getUninstallCallbacks();
+
+   /**
     * Get the lifecycle callbacks.
     * 
     * @return List<LifecycleCallbackMetaData>
