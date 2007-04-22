@@ -21,6 +21,7 @@
 */
 package org.jboss.dependency.plugins;
 
+import org.jboss.dependency.spi.Cardinality;
 import org.jboss.dependency.spi.ControllerState;
 import org.jboss.dependency.spi.dispatch.AttributeDispatchContext;
 
@@ -36,8 +37,8 @@ public class NamedCallbackItem extends AttributeCallbackItem<Object>
       super(name, owner, attribute);
    }
 
-   public NamedCallbackItem(Object name, ControllerState whenRequired, ControllerState dependentState, AttributeDispatchContext context, String attribute)
+   public NamedCallbackItem(Object name, ControllerState whenRequired, ControllerState dependentState, Cardinality cardinality, AttributeDispatchContext context, String attribute)
    {
-      super(name, whenRequired, dependentState, context, attribute);
+      super(name, whenRequired, dependentState, cardinality, context, attribute);
    }
 }

@@ -168,7 +168,7 @@ public abstract class AbstractCallbackMetaData extends AbstractLifecycleMetaData
          if (typeInfos.length != 1)
             throw new IllegalArgumentException("Illegal size of actual type arguments: " + info);
          Class clazz = typeInfos[0].getType();
-         return CollectionCallbackItemFactory.createCollectionCallbackItem(info.getType(), clazz, whenRequired, dependentState, context, attribute);
+         return CollectionCallbackItemFactory.createCollectionCallbackItem(info.getType(), clazz, whenRequired, dependentState, cardinality, context, attribute);
       }
       else
          throw new IllegalArgumentException("Unable to determine collection element class type: " + this);
@@ -194,7 +194,7 @@ public abstract class AbstractCallbackMetaData extends AbstractLifecycleMetaData
             if (info.isCollection())
                callback = createCollectionCallback(info, context, property);
             else
-               callback = new NamedCallbackItem(info.getType(), whenRequired, dependentState, context, property);
+               callback = new NamedCallbackItem(info.getType(), whenRequired, dependentState, cardinality, context, property);
          }
          else if (methodName != null)
          {
@@ -208,7 +208,7 @@ public abstract class AbstractCallbackMetaData extends AbstractLifecycleMetaData
             else
             {
                Class clazz = info.getType();
-               callback = new SingleCallbackItem(clazz, whenRequired, dependentState, context, methodName, clazz.getName());   
+               callback = new SingleCallbackItem(clazz, whenRequired, dependentState, cardinality, context, methodName, clazz.getName());
             }
          }
          else
@@ -218,14 +218,6 @@ public abstract class AbstractCallbackMetaData extends AbstractLifecycleMetaData
          // demand name is Class in this case
          if (cardinality != null)
          {
-/*
-            Controller controller = vistor.getControllerContext().getController();
-            List<ControllerState> states = controller.getStates();
-            int whenIndex = states.indexOf(whenRequired);
-            if (whenIndex < 0 || whenIndex + 1 == states.size())
-               throw new IllegalArgumentException("Illegal whenRequired state - check cardinality dependency: " + whenRequired);
-            ControllerState dependencyWhenRequired = states.get(whenIndex + 1);
-*/
             vistor.addDependency(new CallbackDependencyItem(context.getName(), (Class)callback.getIDependOn(), whenRequired, dependentState, cardinality));
          }
       }

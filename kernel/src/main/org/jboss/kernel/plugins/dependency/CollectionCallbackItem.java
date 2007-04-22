@@ -25,6 +25,7 @@ import java.util.Collection;
 import java.util.Set;
 
 import org.jboss.dependency.plugins.AttributeCallbackItem;
+import org.jboss.dependency.spi.Cardinality;
 import org.jboss.dependency.spi.Controller;
 import org.jboss.dependency.spi.ControllerContext;
 import org.jboss.dependency.spi.ControllerState;
@@ -45,9 +46,9 @@ public abstract class CollectionCallbackItem<T extends Collection<Object>> exten
       super(name, owner, attribute);
    }
 
-   public CollectionCallbackItem(Class name, ControllerState whenRequired, ControllerState dependentState, InvokeDispatchContext context, String attribute)
+   public CollectionCallbackItem(Class name, ControllerState whenRequired, ControllerState dependentState, Cardinality cardinality, InvokeDispatchContext context, String attribute)
    {
-      super(name, whenRequired, dependentState, context, attribute);
+      super(name, whenRequired, dependentState, cardinality, context, attribute);
    }
 
    /**

@@ -21,6 +21,7 @@
 */
 package org.jboss.dependency.plugins;
 
+import org.jboss.dependency.spi.Cardinality;
 import org.jboss.dependency.spi.ControllerContext;
 import org.jboss.dependency.spi.ControllerState;
 import org.jboss.dependency.spi.dispatch.InvokeDispatchContext;
@@ -44,17 +45,17 @@ public class SingleCallbackItem extends AbstractCallbackItem<Object>
 
    public SingleCallbackItem(Object name, InvokeDispatchContext owner, String method, String signature)
    {
-      this(name, null, null, owner, method, signature);
+      this(name, null, null, null, owner, method, signature);
    }
 
-   public SingleCallbackItem(Object name, ControllerState whenRequired, ControllerState dependentState, InvokeDispatchContext owner, String method)
+   public SingleCallbackItem(Object name, ControllerState whenRequired, ControllerState dependentState, Cardinality cardinality, InvokeDispatchContext owner, String method)
    {
-      this(name, whenRequired, dependentState, owner, method, null);
+      this(name, whenRequired, dependentState, cardinality, owner, method, null);
    }
 
-   public SingleCallbackItem(Object name, ControllerState whenRequired, ControllerState dependentState, InvokeDispatchContext owner, String method, String signature)
+   public SingleCallbackItem(Object name, ControllerState whenRequired, ControllerState dependentState, Cardinality cardinality, InvokeDispatchContext owner, String method, String signature)
    {
-      super(name, whenRequired, dependentState);
+      super(name, whenRequired, dependentState, cardinality);
       init(owner, method, signature);
    }
 

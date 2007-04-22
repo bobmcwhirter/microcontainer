@@ -24,6 +24,7 @@ package org.jboss.kernel.plugins.dependency;
 import java.util.HashSet;
 import java.util.Set;
 
+import org.jboss.dependency.spi.Cardinality;
 import org.jboss.dependency.spi.ControllerState;
 import org.jboss.dependency.spi.dispatch.InvokeDispatchContext;
 
@@ -39,9 +40,9 @@ public class SetCallbackItem extends CollectionCallbackItem<Set<Object>>
       super(name, owner, attribute);
    }
 
-   public SetCallbackItem(Class name, ControllerState whenRequired, ControllerState dependentState, InvokeDispatchContext context, String attribute)
+   public SetCallbackItem(Class name, ControllerState whenRequired, ControllerState dependentState, Cardinality cardinality, InvokeDispatchContext context, String attribute)
    {
-      super(name, whenRequired, dependentState, context, attribute);
+      super(name, whenRequired, dependentState, cardinality, context, attribute);
    }
 
    protected Set<Object> getCollectionParameterHolder()

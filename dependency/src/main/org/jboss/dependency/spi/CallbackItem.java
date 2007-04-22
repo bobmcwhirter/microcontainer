@@ -54,6 +54,13 @@ public interface CallbackItem<T>
    ControllerState getDependentState();
 
    /**
+    * Get the cardinality.
+    *
+    * @return cardinality
+    */
+   Cardinality getCardinality();
+
+   /**
     * Execute callback when item added to controller.
     *
     * @param controller the controller

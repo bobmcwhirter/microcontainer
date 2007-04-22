@@ -22,6 +22,7 @@
 package org.jboss.dependency.plugins;
 
 import org.jboss.dependency.spi.CallbackItem;
+import org.jboss.dependency.spi.Cardinality;
 import org.jboss.dependency.spi.Controller;
 import org.jboss.dependency.spi.ControllerContext;
 import org.jboss.dependency.spi.ControllerState;
@@ -38,19 +39,21 @@ public abstract class AbstractCallbackItem<T> extends JBossObject implements Cal
    protected T name;
    protected ControllerState whenRequired = ControllerState.CONFIGURED;
    protected ControllerState dependentState = ControllerState.INSTALLED;
+   protected Cardinality cardinality;
 
    protected AbstractCallbackItem(T name)
    {
       this.name = name;
    }
 
-   protected AbstractCallbackItem(T name, ControllerState whenRequired, ControllerState dependentState)
+   protected AbstractCallbackItem(T name, ControllerState whenRequired, ControllerState dependentState, Cardinality cardinality)
    {
       this.name = name;
       if (whenRequired != null)
          this.whenRequired = whenRequired;
       if (dependentState != null)
          this.dependentState = dependentState;
+      this.cardinality = cardinality;
    }
 
    public void ownerCallback(Controller controller) throws Throwable
@@ -85,6 +88,11 @@ public abstract class AbstractCallbackItem<T> extends JBossObject implements Cal
    public ControllerState getDependentState()
    {
       return dependentState;
+   }
+
+   public Cardinality getCardinality()
+   {
+      return cardinality;
    }
 
    public void toShortString(JBossStringBuilder buffer)
