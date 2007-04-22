@@ -112,7 +112,7 @@ public class AbstractInjectionValueMetaData extends AbstractDependencyValueMetaD
    {
       if (propertyMetaData == null)
          throw new IllegalArgumentException("Illegal usage of option Callback - injection not used with property = " + this);
-      context.getDependencyInfo().addInstallItem(new NamedCallbackItem(name, whenRequiredState, dependentState, context, propertyMetaData.getName()));
+      context.getDependencyInfo().addInstallItem(new NamedCallbackItem(name, whenRequiredState, dependentState, null, context, propertyMetaData.getName()));
    }
 
    protected boolean isLookupValid(ControllerContext lookup)
