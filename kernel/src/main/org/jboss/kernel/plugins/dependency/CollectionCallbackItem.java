@@ -24,7 +24,6 @@ package org.jboss.kernel.plugins.dependency;
 import java.util.Collection;
 import java.util.Set;
 
-import org.jboss.dependency.plugins.AttributeCallbackItem;
 import org.jboss.dependency.spi.Cardinality;
 import org.jboss.dependency.spi.Controller;
 import org.jboss.dependency.spi.ControllerContext;
@@ -39,7 +38,7 @@ import org.jboss.kernel.spi.dependency.KernelControllerContext;
  * @param <T> expected collection type
  * @author <a href="mailto:ales.justin@jboss.com">Ales Justin</a>
  */
-public abstract class CollectionCallbackItem<T extends Collection<Object>> extends AttributeCallbackItem<Class>
+public abstract class CollectionCallbackItem<T extends Collection<Object>> extends ClassAttributeCallbackItem
 {
    public CollectionCallbackItem(Class name, InvokeDispatchContext owner, String attribute)
    {
@@ -80,8 +79,9 @@ public abstract class CollectionCallbackItem<T extends Collection<Object>> exten
       }
    }
 
-   public void additionCallback(Controller controller, ControllerContext context) throws Throwable
+   public void changeCallback(Controller controller, ControllerContext context) throws Throwable
    {
       ownerCallback(controller);
+      addDependency(controller, context);
    }
 }

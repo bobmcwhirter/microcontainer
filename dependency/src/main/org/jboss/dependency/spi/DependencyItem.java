@@ -76,6 +76,7 @@ public interface DependencyItem
     * Mark the dependency as unresolved
     * 
     * @param controller the controller
+    * @return true if proceed with unresolving, false otherwise
     */
-   void unresolved(Controller controller);
+   boolean unresolved(Controller controller);
 }

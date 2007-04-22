@@ -159,7 +159,7 @@ public class AbstractDependencyItem extends JBossObject implements DependencyIte
       return resolved;
    }
 
-   public void unresolved(Controller controller)
+   public boolean unresolved(Controller controller)
    {
       if (resolved)
       {
@@ -167,6 +167,7 @@ public class AbstractDependencyItem extends JBossObject implements DependencyIte
          flushJBossObjectCache();
          log.trace("Forced unresolved " + this);
       }
+      return true;
    }
    
    public void toString(JBossStringBuilder buffer)

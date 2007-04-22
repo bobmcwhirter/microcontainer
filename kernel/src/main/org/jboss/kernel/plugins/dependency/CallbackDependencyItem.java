@@ -28,6 +28,8 @@ import org.jboss.dependency.spi.Controller;
 import org.jboss.dependency.spi.ControllerState;
 import org.jboss.kernel.spi.dependency.KernelController;
 import org.jboss.kernel.spi.dependency.KernelControllerContext;
+import org.jboss.util.HashCode;
+import org.jboss.util.JBossStringBuilder;
 
 /**
  * A Callback dependencyItem.
@@ -46,13 +48,23 @@ public class CallbackDependencyItem extends ClassDependencyItem
       this.cardinality = cardinality;
    }
 
-   public boolean resolve(Controller controller)
+   public Cardinality getCardinality()
+   {
+      return cardinality;
+   }
+
+   protected Set<KernelControllerContext> getContexts(Controller controller)
    {
       if (controller instanceof KernelController == false)
          throw new IllegalArgumentException("Controller not KernelController!");
 
       KernelController kernelController = (KernelController)controller;
-      Set<KernelControllerContext> contexts = kernelController.getInstantiatedContexts(getDemandClass());
+      return kernelController.getContexts(getDemandClass(), getDependentState());
+   }
+
+   public boolean resolve(Controller controller)
+   {
+      Set<KernelControllerContext> contexts = getContexts(controller);
       int size = contexts != null ? contexts.size() : 0;
       if (cardinality.isInRange(size))
       {
@@ -71,4 +83,59 @@ public class CallbackDependencyItem extends ClassDependencyItem
       return isResolved();
    }
 
+   public boolean checkUnresolved(Controller controller, boolean previous)
+   {
+      if (previous == false)
+         return false;
+      if (getIDependOn() == null)
+         return true;
+      
+      Set<KernelControllerContext> contexts = getContexts(controller);
+       // minus one, since this is called when unistalling dependent context
+      int size = contexts != null ? contexts.size() - 1 : 0;
+      return cardinality.isInRange(size) == false;
+   }
+
+   protected int getHashCode()
+   {
+      int result = HashCode.generate(getName());
+      result += 3 * HashCode.generate(getIDependOn());
+      result += 7 * HashCode.generate(getWhenRequired());
+      result += 11 * HashCode.generate(getDependentState());
+      result += 19 * HashCode.generate(getCardinality());
+      return result;
+   }
+
+   public boolean equals(Object obj)
+   {
+      if (obj instanceof CallbackDependencyItem == false)
+         return false;
+
+      CallbackDependencyItem cdi = (CallbackDependencyItem)obj;
+      if (isDifferent(getName(), cdi.getName()))
+         return false;
+      if (isDifferent(getIDependOn(), cdi.getIDependOn()))
+         return false;
+      if (isDifferent(getWhenRequired(), cdi.getWhenRequired()))
+         return false;
+      if (isDifferent(getDependentState(), cdi.getDependentState()))
+         return false;
+      if (isDifferent(getCardinality(), cdi.getCardinality()))
+         return false;
+      return true;
+   }
+
+   protected static boolean isDifferent(Object first, Object second)
+   {
+      if (first == null)
+         return second != null;
+      else
+         return first.equals(second) == false;
+   }
+
+   public void toString(JBossStringBuilder buffer)
+   {
+      super.toString(buffer);
+      buffer.append(" cardinality=" + cardinality);
+   }
 }

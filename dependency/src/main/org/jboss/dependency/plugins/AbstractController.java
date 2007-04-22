@@ -783,17 +783,19 @@ public class AbstractController extends JBossObject implements Controller
                ControllerState dependentState = item.getDependentState();
                if (dependentState == null || dependentState.equals(fromState))
                {
-                  item.unresolved(this);
-                  ControllerContext dependent = getContext(item.getName(), null);
-                  if (dependent != null)
+                  if (item.unresolved(this))
                   {
-                     ControllerState whenRequired = item.getWhenRequired();
-                     if (whenRequired == null)
-                        whenRequired = ControllerState.NOT_INSTALLED;
-                     int proposed = states.indexOf(whenRequired);
-                     int actual = states.indexOf(dependent.getState());
-                     if (proposed <= actual)
-                        uninstallContext(dependent, whenRequired, trace);
+                     ControllerContext dependent = getContext(item.getName(), null);
+                     if (dependent != null)
+                     {
+                        ControllerState whenRequired = item.getWhenRequired();
+                        if (whenRequired == null)
+                           whenRequired = ControllerState.NOT_INSTALLED;
+                        int proposed = states.indexOf(whenRequired);
+                        int actual = states.indexOf(dependent.getState());
+                        if (proposed <= actual)
+                           uninstallContext(dependent, whenRequired, trace);
+                     }
                   }
                }
             }
@@ -990,7 +992,7 @@ public class AbstractController extends JBossObject implements Controller
          for(CallbackItem callback : existingCallbacks)
          {
             if (state.equals(callback.getDependentState()))
-               callback.additionCallback(this, context);
+               callback.changeCallback(this, context);
          }
       }
    }

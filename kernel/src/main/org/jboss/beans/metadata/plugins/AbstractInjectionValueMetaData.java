@@ -23,7 +23,7 @@ package org.jboss.beans.metadata.plugins;
 
 import org.jboss.beans.metadata.spi.MetaDataVisitor;
 import org.jboss.beans.metadata.spi.MetaDataVisitorNode;
-import org.jboss.dependency.plugins.NamedCallbackItem;
+import org.jboss.dependency.plugins.AttributeCallbackItem;
 import org.jboss.dependency.spi.Controller;
 import org.jboss.dependency.spi.ControllerContext;
 import org.jboss.dependency.spi.ControllerState;
@@ -112,7 +112,7 @@ public class AbstractInjectionValueMetaData extends AbstractDependencyValueMetaD
    {
       if (propertyMetaData == null)
          throw new IllegalArgumentException("Illegal usage of option Callback - injection not used with property = " + this);
-      context.getDependencyInfo().addInstallItem(new NamedCallbackItem(name, whenRequiredState, dependentState, null, context, propertyMetaData.getName()));
+      context.getDependencyInfo().addInstallItem(new AttributeCallbackItem<Object>(name, whenRequiredState, dependentState, context, propertyMetaData.getName()));
    }
 
    protected boolean isLookupValid(ControllerContext lookup)

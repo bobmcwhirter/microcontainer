@@ -43,10 +43,23 @@ public abstract class ClassDependencyItem extends AbstractDependencyItem
       return (Class)getIDependOn();
    }
 
-   public void unresolved(Controller controller)
+   public boolean unresolved(Controller controller)
    {
+      boolean result = checkUnresolved(controller, super.unresolved(controller));
       setIDependOn(null);
-      super.unresolved(controller);
+      return result;
+   }
+
+   /**
+    * Check some additionl dependency.
+    *
+    * @param controller the controller
+    * @param previous previous result
+    * @return see unresolved method
+    */
+   protected boolean checkUnresolved(Controller controller, boolean previous)
+   {
+      return previous;
    }
 
    public void toString(JBossStringBuilder buffer)

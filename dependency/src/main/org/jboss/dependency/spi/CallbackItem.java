@@ -54,13 +54,6 @@ public interface CallbackItem<T>
    ControllerState getDependentState();
 
    /**
-    * Get the cardinality.
-    *
-    * @return cardinality
-    */
-   Cardinality getCardinality();
-
-   /**
     * Execute callback when item added to controller.
     *
     * @param controller the controller
@@ -69,11 +62,11 @@ public interface CallbackItem<T>
    void ownerCallback(Controller controller) throws Throwable;
 
    /**
-    * Execute callback with current new installed context.
+    * Execute callback with current changed context.
     *
     * @param controller the controller
     * @param context the new context
     * @throws Throwable for any error
     */
-   void additionCallback(Controller controller, ControllerContext context) throws Throwable;
+   void changeCallback(Controller controller, ControllerContext context) throws Throwable;
 }

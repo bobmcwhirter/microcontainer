@@ -19,26 +19,40 @@
 * Software Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA
 * 02110-1301 USA, or see the FSF site: http://www.fsf.org.
 */
-package org.jboss.dependency.plugins;
+package org.jboss.kernel.plugins.dependency;
 
+import org.jboss.dependency.plugins.AttributeCallbackItem;
 import org.jboss.dependency.spi.Cardinality;
+import org.jboss.dependency.spi.ControllerContext;
 import org.jboss.dependency.spi.ControllerState;
+import org.jboss.dependency.spi.DependencyItem;
 import org.jboss.dependency.spi.dispatch.AttributeDispatchContext;
 
 /**
- * Named callback item.
- *
+ * Class callback item - class dependency.
+ * 
  * @author <a href="mailto:ales.justin@jboss.com">Ales Justin</a>
  */
-public class NamedCallbackItem extends AttributeCallbackItem<Object>
+public class ClassAttributeCallbackItem extends AttributeCallbackItem<Class>
 {
-   public NamedCallbackItem(Object name, AttributeDispatchContext owner, String attribute)
+   protected Cardinality cardinality;
+
+   public ClassAttributeCallbackItem(Class name, AttributeDispatchContext owner, String attribute)
    {
       super(name, owner, attribute);
    }
 
-   public NamedCallbackItem(Object name, ControllerState whenRequired, ControllerState dependentState, Cardinality cardinality, AttributeDispatchContext context, String attribute)
+   public ClassAttributeCallbackItem(Class name, ControllerState whenRequired, ControllerState dependentState, Cardinality cardinality, AttributeDispatchContext owner, String attribute)
    {
-      super(name, whenRequired, dependentState, cardinality, context, attribute);
+      super(name, whenRequired, dependentState, owner, attribute);
+      this.cardinality = cardinality;
+   }
+
+   protected DependencyItem createDependencyItem(ControllerContext owner)
+   {
+      if (cardinality != null)
+         return new CallbackDependencyItem(owner.getName(), getIDependOn(), whenRequired, dependentState, cardinality);
+      else
+         return null;
    }
 }

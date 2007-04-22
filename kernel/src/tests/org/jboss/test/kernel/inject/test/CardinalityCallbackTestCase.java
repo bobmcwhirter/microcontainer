@@ -48,7 +48,7 @@ public class CardinalityCallbackTestCase extends ManualMicrocontainerTest
    {
       KernelControllerContext context = getControllerContext("testObject", ControllerState.NOT_INSTALLED);
       assertNull(context.getTarget());
-      assertEquals(context.getState(), ControllerState.NOT_INSTALLED);
+      assertEquals(ControllerState.NOT_INSTALLED, context.getState());
 
       change(context, ControllerState.CREATE);
       CallbackTestObject injectee = (CallbackTestObject)context.getTarget();
@@ -77,12 +77,12 @@ public class CardinalityCallbackTestCase extends ManualMicrocontainerTest
       assertNotNull(injectee.getTesterInterfaces());
       assertEquals(3, injectee.getTesterInterfaces().size());
 
-      change(tester3, ControllerState.NOT_INSTALLED);
+      change(tester1, ControllerState.NOT_INSTALLED);
       assertEquals(2, injectee.getTesterInterfaces().size());
-      assertEquals(context.getState(), ControllerState.INSTALLED);
+      assertEquals(ControllerState.INSTALLED, context.getState());
 
-      change(tester2, ControllerState.NOT_INSTALLED);
-      assertEquals(context.getState(), ControllerState.CONFIGURED);
+      change(tester3, ControllerState.NOT_INSTALLED);
+      assertEquals(ControllerState.CONFIGURED, context.getState());
    }
 
 }

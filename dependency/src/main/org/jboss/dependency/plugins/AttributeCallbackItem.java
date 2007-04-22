@@ -21,7 +21,6 @@
 */
 package org.jboss.dependency.plugins;
 
-import org.jboss.dependency.spi.Cardinality;
 import org.jboss.dependency.spi.ControllerContext;
 import org.jboss.dependency.spi.ControllerState;
 import org.jboss.dependency.spi.dispatch.AttributeDispatchContext;
@@ -32,30 +31,20 @@ import org.jboss.util.JBossStringBuilder;
  *
  * @author <a href="mailto:ales.justin@jboss.com">Ales Justin</a>
  */
-public abstract class AttributeCallbackItem<T> extends AbstractCallbackItem<T>
+public class AttributeCallbackItem<T> extends OwnerCallbackItem<T, AttributeDispatchContext>
 {
-   protected AttributeDispatchContext owner;
    protected String attribute;
 
    public AttributeCallbackItem(T name, AttributeDispatchContext owner, String attribute)
    {
-      this(name, null, null, null, owner, attribute);
+      this(name, null, null, owner, attribute);
    }
 
-   public AttributeCallbackItem(T name, ControllerState whenRequired, ControllerState dependentState, Cardinality cardinality, AttributeDispatchContext owner, String attribute)
+   public AttributeCallbackItem(T name, ControllerState whenRequired, ControllerState dependentState, AttributeDispatchContext owner, String attribute)
    {
-      super(name, whenRequired, dependentState, cardinality);
-      init(owner, attribute);
-   }
-
-   protected void init(AttributeDispatchContext owner, String attribute)
-   {
-      if (owner == null)
-         throw new IllegalArgumentException("Null owner!");
+      super(name, whenRequired, dependentState, owner);
       if (attribute == null)
          throw new IllegalArgumentException("Null attribute!");
-
-      this.owner = owner;
       this.attribute = attribute;
    }
 
@@ -64,7 +53,7 @@ public abstract class AttributeCallbackItem<T> extends AbstractCallbackItem<T>
       owner.set(attribute, target);      
    }
 
-   protected void additionCallback(ControllerContext context) throws Throwable
+   protected void changeCallback(ControllerContext context) throws Throwable
    {
       execute(context.getTarget());
    }
@@ -72,7 +61,6 @@ public abstract class AttributeCallbackItem<T> extends AbstractCallbackItem<T>
    protected void toString(JBossStringBuilder buffer)
    {
       super.toString(buffer);
-      buffer.append(" owner=").append(owner);
       buffer.append(" attribute=").append(attribute);
    }
 }

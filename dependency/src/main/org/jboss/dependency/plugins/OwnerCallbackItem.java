@@ -21,81 +21,69 @@
 */
 package org.jboss.dependency.plugins;
 
-import org.jboss.dependency.spi.CallbackItem;
 import org.jboss.dependency.spi.Controller;
 import org.jboss.dependency.spi.ControllerContext;
 import org.jboss.dependency.spi.ControllerState;
-import org.jboss.util.JBossObject;
+import org.jboss.dependency.spi.DependencyItem;
 import org.jboss.util.JBossStringBuilder;
 
 /**
- * Abstract callback item.
+ * Owner callback item.
  *
+ * @param <C> owner type
  * @author <a href="mailto:ales.justin@jboss.com">Ales Justin</a>
  */
-public abstract class AbstractCallbackItem<T> extends JBossObject implements CallbackItem<T>
+public abstract class OwnerCallbackItem<T, C> extends AbstractCallbackItem<T>
 {
-   protected T name;
-   protected ControllerState whenRequired = ControllerState.CONFIGURED;
-   protected ControllerState dependentState = ControllerState.INSTALLED;
+   protected C owner;
 
-   protected AbstractCallbackItem(T name)
+   protected OwnerCallbackItem(T name, C owner)
    {
-      this.name = name;
+      this(name, null, null, owner);
    }
 
-   protected AbstractCallbackItem(T name, ControllerState whenRequired, ControllerState dependentState)
+   protected OwnerCallbackItem(T name, ControllerState whenRequired, ControllerState dependentState, C owner)
    {
-      this.name = name;
-      if (whenRequired != null)
-         this.whenRequired = whenRequired;
-      if (dependentState != null)
-         this.dependentState = dependentState;
+      super(name, whenRequired, dependentState);
+      if (owner == null)
+         throw new IllegalArgumentException("Null owner!");
+      this.owner = owner;
    }
 
-   public void ownerCallback(Controller controller) throws Throwable
+   protected void addDependency(Controller controller, ControllerContext context)
    {
+      if (owner instanceof ControllerContext)
+      {
+         ControllerContext co = (ControllerContext)owner;
+         DependencyItem dependency = createDependencyItem(co);
+         if (dependency != null && dependency.resolve(controller))
+         {
+            context.getDependencyInfo().addDependsOnMe(dependency);
+            co.getDependencyInfo().addIDependOn(dependency);
+         }
+      }
    }
 
    /**
-    * Helper method.
+    * Create dependency - if it exists.
     *
-    * @param context changed context
-    * @throws Throwable for any error
+    * @param owner if owner is controller context
+    * @return dependency or null if no such dependency exists
     */
-   protected void changeCallback(ControllerContext context) throws Throwable
+   protected DependencyItem createDependencyItem(ControllerContext owner)
    {
+      return null;
    }
 
    public void changeCallback(Controller controller, ControllerContext context) throws Throwable
    {
-      changeCallback(context);
-   }
-
-   public T getIDependOn()
-   {
-      return name;
-   }
-
-   public ControllerState getWhenRequired()
-   {
-      return whenRequired;
-   }
-
-   public ControllerState getDependentState()
-   {
-      return dependentState;
-   }
-
-   public void toShortString(JBossStringBuilder buffer)
-   {
-      buffer.append("name=").append(name);
+      super.changeCallback(controller, context);
+      addDependency(controller, context);
    }
 
    protected void toString(JBossStringBuilder buffer)
    {
-      buffer.append("name=").append(name);
-      buffer.append(" whenRequired=").append(whenRequired);
-      buffer.append(" dependentState=").append(dependentState);
+      super.toString(buffer);
+      buffer.append(" owner=").append(owner);
    }
 }

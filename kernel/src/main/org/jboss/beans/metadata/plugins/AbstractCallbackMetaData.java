@@ -26,13 +26,13 @@ import java.io.Serializable;
 import org.jboss.beans.info.spi.PropertyInfo;
 import org.jboss.beans.metadata.spi.CallbackMetaData;
 import org.jboss.beans.metadata.spi.MetaDataVisitor;
-import org.jboss.dependency.plugins.NamedCallbackItem;
-import org.jboss.dependency.plugins.SingleCallbackItem;
 import org.jboss.dependency.spi.CallbackItem;
 import org.jboss.dependency.spi.Cardinality;
 import org.jboss.dependency.spi.ControllerState;
 import org.jboss.kernel.plugins.config.Configurator;
 import org.jboss.kernel.plugins.dependency.CallbackDependencyItem;
+import org.jboss.kernel.plugins.dependency.ClassAttributeCallbackItem;
+import org.jboss.kernel.plugins.dependency.ClassSingleCallbackItem;
 import org.jboss.kernel.plugins.dependency.CollectionCallbackItemFactory;
 import org.jboss.kernel.spi.dependency.KernelControllerContext;
 import org.jboss.reflect.spi.ClassInfo;
@@ -194,7 +194,7 @@ public abstract class AbstractCallbackMetaData extends AbstractLifecycleMetaData
             if (info.isCollection())
                callback = createCollectionCallback(info, context, property);
             else
-               callback = new NamedCallbackItem(info.getType(), whenRequired, dependentState, cardinality, context, property);
+               callback = new ClassAttributeCallbackItem(info.getType(), whenRequired, dependentState, cardinality, context, property);
          }
          else if (methodName != null)
          {
@@ -208,7 +208,7 @@ public abstract class AbstractCallbackMetaData extends AbstractLifecycleMetaData
             else
             {
                Class clazz = info.getType();
-               callback = new SingleCallbackItem(clazz, whenRequired, dependentState, cardinality, context, methodName, clazz.getName());
+               callback = new ClassSingleCallbackItem(clazz, whenRequired, dependentState, cardinality, context, methodName, clazz.getName());
             }
          }
          else
