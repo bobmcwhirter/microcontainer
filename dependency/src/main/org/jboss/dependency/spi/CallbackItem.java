@@ -57,16 +57,18 @@ public interface CallbackItem<T>
     * Execute callback when item added to controller.
     *
     * @param controller the controller
+    * @param isInstallPhase install or uninstall
     * @throws Throwable for any error
     */
-   void ownerCallback(Controller controller) throws Throwable;
+   void ownerCallback(Controller controller, boolean isInstallPhase) throws Throwable;
 
    /**
     * Execute callback with current changed context.
     *
     * @param controller the controller
     * @param context the new context
+    * @param isInstallPhase install or uninstall
     * @throws Throwable for any error
     */
-   void changeCallback(Controller controller, ControllerContext context) throws Throwable;
+   void changeCallback(Controller controller, ControllerContext context, boolean isInstallPhase) throws Throwable;
 }

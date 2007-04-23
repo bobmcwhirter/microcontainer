@@ -53,7 +53,7 @@ public abstract class AbstractCallbackItem<T> extends JBossObject implements Cal
          this.dependentState = dependentState;
    }
 
-   public void ownerCallback(Controller controller) throws Throwable
+   public void ownerCallback(Controller controller, boolean isInstallPhase) throws Throwable
    {
    }
 
@@ -61,15 +61,16 @@ public abstract class AbstractCallbackItem<T> extends JBossObject implements Cal
     * Helper method.
     *
     * @param context changed context
+    * @param isInstallPhase install or uninstall phase
     * @throws Throwable for any error
     */
-   protected void changeCallback(ControllerContext context) throws Throwable
+   protected void changeCallback(ControllerContext context, boolean isInstallPhase) throws Throwable
    {
    }
 
-   public void changeCallback(Controller controller, ControllerContext context) throws Throwable
+   public void changeCallback(Controller controller, ControllerContext context, boolean isInstallPhase) throws Throwable
    {
-      changeCallback(context);
+      changeCallback(context, isInstallPhase);
    }
 
    public T getIDependOn()

@@ -53,7 +53,7 @@ public class AttributeCallbackItem<T> extends OwnerCallbackItem<T, AttributeDisp
       owner.set(attribute, target);      
    }
 
-   protected void changeCallback(ControllerContext context) throws Throwable
+   protected void changeCallback(ControllerContext context, boolean isInstallPhase) throws Throwable
    {
       execute(context.getTarget());
    }

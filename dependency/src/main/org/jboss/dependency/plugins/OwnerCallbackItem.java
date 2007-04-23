@@ -50,7 +50,14 @@ public abstract class OwnerCallbackItem<T, C> extends AbstractCallbackItem<T>
       this.owner = owner;
    }
 
-   protected void addDependency(Controller controller, ControllerContext context)
+   /**
+    * Add dependency.
+    *
+    * @param controller the controller
+    * @param context changed context
+    * @param isInstallPhase install or uninstall phase
+    */
+   protected void addDependency(Controller controller, ControllerContext context, boolean isInstallPhase)
    {
       if (owner instanceof ControllerContext)
       {
@@ -75,10 +82,10 @@ public abstract class OwnerCallbackItem<T, C> extends AbstractCallbackItem<T>
       return null;
    }
 
-   public void changeCallback(Controller controller, ControllerContext context) throws Throwable
+   public void changeCallback(Controller controller, ControllerContext context, boolean isInstallPhase) throws Throwable
    {
-      super.changeCallback(controller, context);
-      addDependency(controller, context);
+      super.changeCallback(controller, context, isInstallPhase);
+      addDependency(controller, context, isInstallPhase);
    }
 
    protected void toString(JBossStringBuilder buffer)

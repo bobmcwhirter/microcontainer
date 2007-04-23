@@ -814,14 +814,14 @@ public class AbstractController extends JBossObject implements Controller
       unlockWrite();
       try
       {
+         resolveCallbacks(context, fromState, false);
+
          uninstall(context, fromState, toState);
 
          Controller toController = context.getController();
          Set<ControllerContext> toContexts = toController.getContextsByState(toState);
          toContexts.add(context);
          context.setState(toState);
-
-         resolveCallbacks(context, fromState, false);
       }
       catch (Throwable t)
       {
@@ -934,9 +934,8 @@ public class AbstractController extends JBossObject implements Controller
     * @param execute do execute callback
     * @param isInstallPhase install or uninstall phase
     * @param type install or uninstall type
-    * @throws Throwable for any error
     */
-   protected void resolveCallbacks(Set<CallbackItem> callbacks, ControllerState state, boolean execute, boolean isInstallPhase, boolean type) throws Throwable
+   protected void resolveCallbacks(Set<CallbackItem> callbacks, ControllerState state, boolean execute, boolean isInstallPhase, boolean type)
    {
       if (callbacks != null && callbacks.isEmpty() == false)
       {
@@ -953,7 +952,16 @@ public class AbstractController extends JBossObject implements Controller
                   removeCallback(callback.getIDependOn(), type, callback);
                }
                if (execute)
-                  callback.ownerCallback(this);
+               {
+                  try
+                  {
+                     callback.ownerCallback(this, isInstallPhase);
+                  }
+                  catch (Throwable t)
+                  {
+                     log.warn("Broken callback: " + callback, t);
+                  }
+               }
             }
          }
       }
@@ -965,35 +973,51 @@ public class AbstractController extends JBossObject implements Controller
     * @param context current context
     * @param state current context state
     * @param isInstallPhase install or uninstall phase
-    * @throws Throwable for any error
     */
-   protected void resolveCallbacks(ControllerContext context, ControllerState state, boolean isInstallPhase) throws Throwable
+   protected void resolveCallbacks(ControllerContext context, ControllerState state, boolean isInstallPhase)
    {
-      Set<CallbackItem> installs = getDependencyCallbacks(context, true);
-      resolveCallbacks(installs, state, isInstallPhase, isInstallPhase, true);
-      Set<CallbackItem> uninstalls = getDependencyCallbacks(context, false);
-      resolveCallbacks(uninstalls, state, isInstallPhase == false, isInstallPhase, false);
-
-      // match callbacks by name
-      Set<CallbackItem> existingCallbacks = getCallbacks(context.getName(), isInstallPhase);
-      // match by classes
-      Collection<Class<?>> classes = getClassesImplemented(context.getTarget());
-      if (classes != null && classes.isEmpty() == false)
+      try
       {
-         for (Class clazz : classes)
+         Set<CallbackItem> installs = getDependencyCallbacks(context, true);
+         resolveCallbacks(installs, state, isInstallPhase, isInstallPhase, true);
+         Set<CallbackItem> uninstalls = getDependencyCallbacks(context, false);
+         resolveCallbacks(uninstalls, state, isInstallPhase == false, isInstallPhase, false);
+
+         // match callbacks by name
+         Set<CallbackItem> existingCallbacks = getCallbacks(context.getName(), isInstallPhase);
+         // match by classes
+         Collection<Class<?>> classes = getClassesImplemented(context.getTarget());
+         if (classes != null && classes.isEmpty() == false)
          {
-            existingCallbacks.addAll(getCallbacks(clazz, isInstallPhase));
+            for (Class clazz : classes)
+            {
+               existingCallbacks.addAll(getCallbacks(clazz, isInstallPhase));
+            }
+         }
+
+         // Do the installs if we are at the required state
+         if (existingCallbacks != null && existingCallbacks.isEmpty() == false)
+         {
+            for(CallbackItem callback : existingCallbacks)
+            {
+               if (state.equals(callback.getDependentState()))
+               {
+                  try
+                  {
+                     callback.changeCallback(this, context, isInstallPhase);
+                  }
+                  catch (Throwable t)
+                  {
+                     log.warn("Broken callback: " + callback, t);
+                  }
+               }
+            }
          }
       }
-
-      // Do the installs if we are at the required state
-      if (existingCallbacks != null && existingCallbacks.isEmpty() == false)
+      // let's make sure we suppress any exceptions
+      catch (Throwable t)
       {
-         for(CallbackItem callback : existingCallbacks)
-         {
-            if (state.equals(callback.getDependentState()))
-               callback.changeCallback(this, context);
-         }
+         log.warn("Cannot resolve callbacks.", t);
       }
    }
 

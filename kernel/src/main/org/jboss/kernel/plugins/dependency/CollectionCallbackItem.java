@@ -57,7 +57,7 @@ public abstract class CollectionCallbackItem<T extends Collection<Object>> exten
     */
    protected abstract T getCollectionParameterHolder();
 
-   public void ownerCallback(Controller controller) throws Throwable
+   protected T fillHolder(Controller controller) throws Throwable
    {
       if (controller instanceof KernelController)
       {
@@ -71,17 +71,23 @@ public abstract class CollectionCallbackItem<T extends Collection<Object>> exten
                holder.add(context.getTarget());
             }
          }
-         execute(holder);
+         return holder;
       }
       else
-      {
-         log.warn("Cannot execute Collection call back - controller not KernelController instance.");
-      }
+         throw new IllegalArgumentException("Cannot execute Collection call back - controller not KernelController instance.");
    }
 
-   public void changeCallback(Controller controller, ControllerContext context) throws Throwable
+   public void ownerCallback(Controller controller, boolean isInstallPhase) throws Throwable
    {
-      ownerCallback(controller);
-      addDependency(controller, context);
+      execute(fillHolder(controller));
+   }
+
+   public void changeCallback(Controller controller, ControllerContext context, boolean isInstallPhase) throws Throwable
+   {
+      T holder = fillHolder(controller);
+      if (isInstallPhase == false)
+         holder.remove(context.getTarget());
+      execute(holder);
+      addDependency(controller, context, isInstallPhase);
    }
 }

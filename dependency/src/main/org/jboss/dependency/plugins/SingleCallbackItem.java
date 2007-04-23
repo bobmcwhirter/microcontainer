@@ -62,7 +62,7 @@ public class SingleCallbackItem<T> extends OwnerCallbackItem<T, InvokeDispatchCo
       this.signature = signature;
    }
 
-   protected void changeCallback(ControllerContext context) throws Throwable
+   protected void changeCallback(ControllerContext context, boolean isInstallPhase) throws Throwable
    {
       Object target = context.getTarget();
       if (target != null)
@@ -71,6 +71,8 @@ public class SingleCallbackItem<T> extends OwnerCallbackItem<T, InvokeDispatchCo
             signature = target.getClass().getName();
          owner.invoke(method, new Object[]{target}, new String[]{signature});
       }
+      else
+         log.warn("Null target, cannot invoke non-static method: " + this);
    }
 
    protected void toString(JBossStringBuilder buffer)
