@@ -21,7 +21,7 @@
 */
 package org.jboss.osgi.plugins.deployers;
 
-import org.jboss.beans.metadata.plugins.builder.BeanMetaDataBuilderImpl;
+import org.jboss.beans.metadata.plugins.builder.BeanMetaDataBuilderFactory;
 import org.jboss.beans.metadata.spi.BeanMetaData;
 import org.jboss.beans.metadata.spi.builder.BeanMetaDataBuilder;
 import org.jboss.deployers.plugins.deployers.helpers.AbstractRealDeployer;
@@ -65,7 +65,7 @@ public class BundleActivatorDeployer extends AbstractRealDeployer<OSGiMetaData>
             String name = createBundleActivatorBeanName(deployment);
             // todo - get deployment context in non-depricated way
             BundleContext bundleContext = new BundleContextImpl(unit.getDeploymentContext());
-            BeanMetaDataBuilder builder = new BeanMetaDataBuilderImpl(name, bundleActivator)
+            BeanMetaDataBuilder builder = BeanMetaDataBuilderFactory.createBuilder(name, bundleActivator)
                   .addStartParameter(BundleContext.class.getName(), bundleContext)
                   .addStopParameter(BundleContext.class.getName(), bundleContext);
             BeanMetaData beanMetaData = builder.getBeanMetaData();

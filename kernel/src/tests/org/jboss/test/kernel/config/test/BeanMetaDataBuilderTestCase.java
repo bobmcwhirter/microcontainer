@@ -25,7 +25,7 @@ import java.util.ArrayList;
 import java.util.Arrays;
 
 import junit.framework.Test;
-import org.jboss.beans.metadata.plugins.builder.BeanMetaDataBuilderImpl;
+import org.jboss.beans.metadata.plugins.builder.BeanMetaDataBuilderFactory;
 import org.jboss.beans.metadata.spi.BeanMetaData;
 import org.jboss.beans.metadata.spi.builder.BeanMetaDataBuilder;
 import org.jboss.kernel.Kernel;
@@ -55,7 +55,7 @@ public class BeanMetaDataBuilderTestCase extends AbstractKernelConfigTest
 
    public void testConstructor() throws Throwable
    {
-      BeanMetaDataBuilder builder = new BeanMetaDataBuilderImpl("FromBMD", SimpleBean.class.getName());
+      BeanMetaDataBuilder builder = BeanMetaDataBuilderFactory.createBuilder("FromBMD", SimpleBean.class.getName());
       builder.addConstructorParameter(String.class.getName(), "TestConstructor");
       BeanMetaData beanMetaData = builder.getBeanMetaData();
       SimpleBean fbmd = (SimpleBean)instantiateAndConfigure(beanMetaData);
@@ -67,7 +67,7 @@ public class BeanMetaDataBuilderTestCase extends AbstractKernelConfigTest
 
    public void testProperty() throws Throwable
    {
-      BeanMetaDataBuilder builder = new BeanMetaDataBuilderImpl("PropBMD", SimpleBean.class.getName())
+      BeanMetaDataBuilder builder = BeanMetaDataBuilderFactory.createBuilder("PropBMD", SimpleBean.class.getName())
             .addPropertyMetaData("adouble", 3.1459)
             .addPropertyMetaData("anint", "123")
             .addPropertyMetaData("collection", new ArrayList());
@@ -85,7 +85,7 @@ public class BeanMetaDataBuilderTestCase extends AbstractKernelConfigTest
    {
       Kernel kernel = bootstrap();
 
-      BeanMetaDataBuilder builder = new BeanMetaDataBuilderImpl("SLB", SimpleLifecycleBean.class.getName())
+      BeanMetaDataBuilder builder = BeanMetaDataBuilderFactory.createBuilder("SLB", SimpleLifecycleBean.class.getName())
          .addCreateParameter(String.class.getName(), "ParamCreate")
          .setStart("doStart")
          .addStartParameter(String.class.getName(), "ParamStart")
@@ -113,7 +113,7 @@ public class BeanMetaDataBuilderTestCase extends AbstractKernelConfigTest
    {
       Kernel kernel = bootstrap();
 
-      BeanMetaDataBuilder builder = new BeanMetaDataBuilderImpl("SLB", SimpleLifecycleBean.class.getName())
+      BeanMetaDataBuilder builder = BeanMetaDataBuilderFactory.createBuilder("SLB", SimpleLifecycleBean.class.getName())
          .addInstall("installParam", String.class.getName(), "Install")
          .addUninstall("uninstallParam", String.class.getName(), "Uninstall");
       BeanMetaData beanMetaData = builder.getBeanMetaData();
@@ -133,11 +133,11 @@ public class BeanMetaDataBuilderTestCase extends AbstractKernelConfigTest
 
    public void testDemandSupply() throws Throwable
    {
-      BeanMetaDataBuilder demand = new BeanMetaDataBuilderImpl("DemandBean", SimpleBean.class.getName());
+      BeanMetaDataBuilder demand = BeanMetaDataBuilderFactory.createBuilder("DemandBean", SimpleBean.class.getName());
       demand.addDemand("Barrier");
       BeanMetaData demandBean = demand.getBeanMetaData();
 
-      BeanMetaDataBuilder supply = new BeanMetaDataBuilderImpl("SupplyBean", SimpleLifecycleBean.class.getName());
+      BeanMetaDataBuilder supply = BeanMetaDataBuilderFactory.createBuilder("SupplyBean", SimpleLifecycleBean.class.getName());
       supply.addSupply("Barrier");
       BeanMetaData supplyBean = supply.getBeanMetaData();
 
@@ -160,11 +160,11 @@ public class BeanMetaDataBuilderTestCase extends AbstractKernelConfigTest
 
    public void testDependency() throws Throwable
    {
-      BeanMetaDataBuilder dependOn = new BeanMetaDataBuilderImpl("DependOnBean", SimpleBean.class.getName());
+      BeanMetaDataBuilder dependOn = BeanMetaDataBuilderFactory.createBuilder("DependOnBean", SimpleBean.class.getName());
       dependOn.addDependency("DependencyResolver");
       BeanMetaData dependOnBean = dependOn.getBeanMetaData();
 
-      BeanMetaDataBuilder resolver = new BeanMetaDataBuilderImpl("DependencyResolver", SimpleLifecycleBean.class.getName());
+      BeanMetaDataBuilder resolver = BeanMetaDataBuilderFactory.createBuilder("DependencyResolver", SimpleLifecycleBean.class.getName());
       BeanMetaData resolverBean = resolver.getBeanMetaData();
 
       AbstractKernelDeployment deployment = new AbstractKernelDeployment();

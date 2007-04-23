@@ -50,7 +50,7 @@ import org.jboss.dependency.spi.ControllerMode;
  *
  * @author <a href="mailto:ales.justin@jboss.com">Ales Justin</a>
  */
-public class BeanMetaDataBuilderImpl implements BeanMetaDataBuilder
+class BeanMetaDataBuilderImpl implements BeanMetaDataBuilder
 {
    private AbstractBeanMetaData beanMetaData;
    // parameter builders

@@ -32,7 +32,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-import org.jboss.beans.metadata.plugins.builder.BeanMetaDataBuilderImpl;
+import org.jboss.beans.metadata.plugins.builder.BeanMetaDataBuilderFactory;
 import org.jboss.beans.metadata.spi.BeanMetaData;
 import org.jboss.beans.metadata.spi.builder.BeanMetaDataBuilder;
 import org.jboss.deployers.spi.structure.DeploymentContext;
@@ -348,7 +348,7 @@ public class BundleContextImpl implements BundleContext, KernelEventEmitter
       {
          service = ServiceFactoryProxy.createProxy(service, interfaces);
       }
-      BeanMetaDataBuilder builder = new BeanMetaDataBuilderImpl(GUID.asString(), serviceInfo.getName());
+      BeanMetaDataBuilder builder = BeanMetaDataBuilderFactory.createBuilder(GUID.asString(), serviceInfo.getName());
       BeanMetaData metaData = builder.getBeanMetaData();
       KernelControllerContext context;
       try
