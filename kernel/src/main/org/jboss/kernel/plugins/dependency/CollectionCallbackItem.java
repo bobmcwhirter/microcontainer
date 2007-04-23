@@ -57,6 +57,13 @@ public abstract class CollectionCallbackItem<T extends Collection<Object>> exten
     */
    protected abstract T getCollectionParameterHolder();
 
+   /**
+    * Fill collection impl with existing context targets.
+    *
+    * @param controller the controller
+    * @return collection holder with target beans
+    * @throws Throwable for any error
+    */
    protected T fillHolder(Controller controller) throws Throwable
    {
       if (controller instanceof KernelController)
