@@ -1,6 +1,6 @@
 /*
 * JBoss, Home of Professional Open Source
-* Copyright 2005, JBoss Inc., and individual contributors as indicated
+* Copyright 2006, JBoss Inc., and individual contributors as indicated
 * by the @authors tag. See the copyright.txt in the distribution for a
 * full listing of individual contributors.
 *
@@ -19,28 +19,21 @@
 * Software Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA
 * 02110-1301 USA, or see the FSF site: http://www.fsf.org.
 */
-package org.jboss.beans.metadata.spi.annotations;
+package org.jboss.beans.metadata.plugins.annotations;
+
+import org.jboss.beans.metadata.spi.annotations.DependencyFactory;
+import org.jboss.classadapter.spi.DependencyBuilderListItem;
+import org.jboss.kernel.spi.dependency.KernelControllerContext;
 
 /**
- * Injection type - by class or by property name.
+ * Create dependency list item from Install info.
  *
- * @author <a href="mailto:ales.justin@gmail.com">Ales Justin</a>
+ * @author <a href="mailto:ales.justin@jboss.com">Ales Justin</a>
  */
-public enum InjectType
+public class InstallFactory implements DependencyFactory<Install>
 {
-   BY_CLASS("ByClass"),
-   BY_NAME("ByName");
-
-   private String typeString;
-
-   InjectType(String modeString)
+   public DependencyBuilderListItem<KernelControllerContext> createDependency(Install annotation)
    {
-      this.typeString = modeString;
+      return null; // todo
    }
-
-   public String toString()
-   {
-      return typeString;
-   }
-
 }

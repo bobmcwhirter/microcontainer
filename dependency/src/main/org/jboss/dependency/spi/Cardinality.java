@@ -37,10 +37,10 @@ public class Cardinality extends JBossObject implements Serializable
   
    public static final int INFINITY = -1;
 
-   public static Cardinality ZERO_TO_ONE = new Cardinality("0..1", 0, 1);
-   public static Cardinality ZERO_TO_MANY = new Cardinality("0..n", 0, INFINITY);
-   public static Cardinality ONE_TO_ONE = new Cardinality("1..1", 1, 1);
-   public static Cardinality ONE_TO_MANY = new Cardinality("1..n", 1, INFINITY);
+   public static final Cardinality ZERO_TO_ONE = new Cardinality("0..1", 0, 1);
+   public static final Cardinality ZERO_TO_MANY = new Cardinality("0..n", 0, INFINITY);
+   public static final Cardinality ONE_TO_ONE = new Cardinality("1..1", 1, 1);
+   public static final Cardinality ONE_TO_MANY = new Cardinality("1..n", 1, INFINITY);
 
    private static Cardinality[] values = new Cardinality[]
          {

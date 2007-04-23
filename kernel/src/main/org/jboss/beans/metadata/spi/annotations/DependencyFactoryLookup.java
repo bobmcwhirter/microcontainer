@@ -1,6 +1,6 @@
 /*
 * JBoss, Home of Professional Open Source
-* Copyright 2005, JBoss Inc., and individual contributors as indicated
+* Copyright 2006, JBoss Inc., and individual contributors as indicated
 * by the @authors tag. See the copyright.txt in the distribution for a
 * full listing of individual contributors.
 *
@@ -27,24 +27,11 @@ import java.lang.annotation.RetentionPolicy;
 import java.lang.annotation.Target;
 
 /**
- * Beans when injected by class type are by default changed to configured
- * state - if not yet configured.
- * You can change this behavior by setting state.
- *
- * @author <a href="mailto:ales.justin@genera-lynx.com">Ales Justin</a>
+ * @author <a href="mailto:ales.justin@jboss.com">Ales Justin</a>
  */
 @Retention(RetentionPolicy.RUNTIME)
-@Target({ElementType.METHOD, ElementType.TYPE})
-public @interface Inject
+@Target({ElementType.ANNOTATION_TYPE})
+public @interface DependencyFactoryLookup
 {
-   String bean() default "";
-
-   String property() default "";
-
-   String state() default "Installed";
-
-   InjectType type() default InjectType.BY_CLASS;
-
-   InjectOption option() default InjectOption.STRICT;
-
+   Class<? extends DependencyFactory> value();
 }

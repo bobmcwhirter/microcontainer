@@ -1,6 +1,6 @@
 /*
 * JBoss, Home of Professional Open Source
-* Copyright 2006, JBoss Inc., and individual contributors as indicated
+* Copyright 2005, JBoss Inc., and individual contributors as indicated
 * by the @authors tag. See the copyright.txt in the distribution for a
 * full listing of individual contributors.
 *
@@ -19,28 +19,28 @@
 * Software Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA
 * 02110-1301 USA, or see the FSF site: http://www.fsf.org.
 */
-package org.jboss.beans.metadata.spi.annotations;
+package org.jboss.beans.metadata.plugins.annotations;
 
 /**
- * Injection option - strict or optional / callback.
+ * Injection type - by class or by property name.
  *
  * @author <a href="mailto:ales.justin@gmail.com">Ales Justin</a>
  */
-public enum InjectOption
+public enum InjectType
 {
-   STRICT("Strict"),
-   CALLBACK("Callback");
+   BY_CLASS("ByClass"),
+   BY_NAME("ByName");
 
-   private String optionString;
+   private String typeString;
 
-   InjectOption(String optionString)
+   InjectType(String modeString)
    {
-      this.optionString = optionString;
+      this.typeString = modeString;
    }
 
    public String toString()
    {
-      return optionString;
+      return typeString;
    }
 
 }

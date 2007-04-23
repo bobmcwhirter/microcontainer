@@ -26,13 +26,12 @@ import java.util.List;
 
 import org.jboss.beans.metadata.plugins.AbstractParameterMetaData;
 import org.jboss.beans.metadata.spi.ParameterMetaData;
-import org.jboss.beans.metadata.spi.builder.BeanMetaDataBuilder;
 
 /**
  * Helper class.
  *
  * @param <T> the parameter holder type
- * @see BeanMetaDataBuilder
+ * @see BeanMetaDataBuilderImpl
  * @see LifecycleMetaDataBuilder
  * @author <a href="mailto:ales.justin@jboss.com">Ales Justin</a>
  */
