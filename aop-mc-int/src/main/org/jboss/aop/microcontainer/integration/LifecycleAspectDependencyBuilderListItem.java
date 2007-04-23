@@ -28,7 +28,6 @@ import org.jboss.beans.metadata.plugins.AbstractBeanMetaData;
 import org.jboss.beans.metadata.plugins.AbstractLifecycleCallbackMetaData;
 import org.jboss.beans.metadata.spi.BeanMetaData;
 import org.jboss.beans.metadata.spi.LifecycleCallbackMetaData;
-import org.jboss.classadapter.spi.DependencyBuilderListItem;
 import org.jboss.dependency.spi.ControllerState;
 import org.jboss.kernel.spi.dependency.KernelControllerContext;
 
@@ -37,7 +36,7 @@ import org.jboss.kernel.spi.dependency.KernelControllerContext;
  * @author <a href="kabir.khan@jboss.com">Kabir Khan</a>
  * @version $Revision: 1.1 $
  */
-class LifecycleAspectDependencyBuilderListItem extends AspectDependencyBuilderListItem implements DependencyBuilderListItem<KernelControllerContext>
+class LifecycleAspectDependencyBuilderListItem extends AspectDependencyBuilderListItem
 {
    ControllerState state;
    String installMethod;
