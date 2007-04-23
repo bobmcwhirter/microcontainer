@@ -37,6 +37,15 @@ import org.jboss.dependency.spi.dispatch.InvokeDispatchContext;
  */
 public class CollectionCallbackItemFactory
 {
+   /**
+    * Create collection callback item for parameter class.
+    *
+    * @param parameterClass actual collection class
+    * @param name demand name
+    * @param context invoke owner
+    * @param attribute the attribute
+    * @return new exact collection callback item
+    */
    public static CollectionCallbackItem createCollectionCallbackItem(
          Class<? extends Collection> parameterClass,
          Class name,
@@ -46,6 +55,18 @@ public class CollectionCallbackItemFactory
       return createCollectionCallbackItem(parameterClass, name, null, null, null, context, attribute);
    }
 
+   /**
+    * Create collection callback item for parameter class.
+    *
+    * @param parameterClass actual collection class
+    * @param name demand name
+    * @param whenRequired when required state
+    * @param dependentState dependent state
+    * @param cardinality the cardinality
+    * @param context invoke owner
+    * @param attribute the attribute
+    * @return new exact collection callback item
+    */
    public static CollectionCallbackItem createCollectionCallbackItem(
          Class<? extends Collection> parameterClass,
          Class name,
