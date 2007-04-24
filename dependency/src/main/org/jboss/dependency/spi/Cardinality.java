@@ -138,7 +138,7 @@ public class Cardinality extends JBossObject implements Serializable
          return createCardinality(getLimitFromString(args[0]), getLimitFromString(args[1]));
       }
       else
-         return createUnlimitedCardinality(Integer.valueOf(string));
+         return createUnlimitedCardinality(getLimitFromString(string));
    }
 
    /**

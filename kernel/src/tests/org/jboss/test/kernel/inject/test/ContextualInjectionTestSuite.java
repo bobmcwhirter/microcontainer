@@ -49,6 +49,7 @@ public class ContextualInjectionTestSuite extends TestSuite
       suite.addTest(AdditionCallbackTestCase.suite());
       suite.addTest(CollectionCallbackTestCase.suite());
       suite.addTest(CardinalityCallbackTestCase.suite());
+      suite.addTest(BadCardinalityCallbackTestCase.suite());
 
       return suite;
    }
