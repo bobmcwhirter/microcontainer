@@ -21,45 +21,14 @@
 */
 package org.jboss.test.kernel.inject.support;
 
-import java.util.HashSet;
 import java.util.Set;
 
 /**
  * @author <a href="mailto:ales.justin@gmail.com">Ales Justin</a>
  */
-public class CallbackTestObject
+public interface CallbackTestObject
 {
-   private Set<TesterInterface> testerInterfaces;
+   Set<TesterInterface> getTesterInterfaces();
 
-   protected void init()
-   {
-      if (testerInterfaces == null)
-      {
-         testerInterfaces = new HashSet<TesterInterface>();
-      }
-   }
-
-   public void addTesterInterface(TesterInterface tester)
-   {
-      init();
-      testerInterfaces.add(tester);
-   }
-
-   public void removeTesterInterface(TesterInterface tester)
-   {
-      init();
-      testerInterfaces.remove(tester);
-      if (testerInterfaces.isEmpty())
-         testerInterfaces = null;
-   }
-
-   public Set<TesterInterface> getTesterInterfaces()
-   {
-      return testerInterfaces;
-   }
-
-   public void setTesterInterfaces(Set<TesterInterface> testerInterfaces)
-   {
-      this.testerInterfaces = testerInterfaces;
-   }
+   void setTesterInterfaces(Set<TesterInterface> testerInterfaces);
 }

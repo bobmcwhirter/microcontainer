@@ -21,26 +21,47 @@
 */
 package org.jboss.kernel.plugins.dependency;
 
+import java.util.ArrayList;
+import java.util.Collection;
+import java.util.HashSet;
+import java.util.LinkedList;
+import java.util.List;
+import java.util.Queue;
 import java.util.Set;
 
-import org.jboss.dependency.spi.Cardinality;
-import org.jboss.dependency.spi.ControllerState;
-import org.jboss.dependency.spi.dispatch.InvokeDispatchContext;
-
 /**
- * Set collection callback item.
- *
- * @author <a href="mailto:ales.justin@jboss.com">Ales Justin</a>
+ * Collection creator.
  */
-public class SetCallbackItem extends CollectionCreatorCallbackItem<Set<Object>>
+public interface CollectionCreator<T extends Collection<Object>>
 {
-   public SetCallbackItem(Class name, InvokeDispatchContext owner, AttributeInfo attribute)
-   {
-      super(CollectionCreator.SET, name, owner, attribute);
-   }
+   /**
+    * Create new Collection instance.
+    *
+    * @return collection
+    */
+   T createCollection();
 
-   public SetCallbackItem(Class name, ControllerState whenRequired, ControllerState dependentState, Cardinality cardinality, InvokeDispatchContext context, AttributeInfo attribute)
+   public CollectionCreator<List<Object>> LIST = new CollectionCreator<List<Object>>()
    {
-      super(CollectionCreator.SET, name, whenRequired, dependentState, cardinality, context, attribute);
-   }
+      public List<Object> createCollection()
+      {
+         return new ArrayList<Object>();
+      }
+   };
+
+   public CollectionCreator<Set<Object>> SET = new CollectionCreator<Set<Object>>()
+   {
+      public Set<Object> createCollection()
+      {
+         return new HashSet<Object>();
+      }
+   };
+
+   public CollectionCreator<Queue<Object>> QUEUE = new CollectionCreator<Queue<Object>>()
+   {
+      public Queue<Object> createCollection()
+      {
+         return new LinkedList<Object>();
+      }
+   };
 }

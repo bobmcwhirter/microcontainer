@@ -21,9 +21,11 @@
 */
 package org.jboss.beans.metadata.plugins.annotations;
 
+import org.jboss.beans.info.spi.PropertyInfo;
 import org.jboss.beans.metadata.spi.annotations.DependencyFactory;
 import org.jboss.classadapter.spi.DependencyBuilderListItem;
 import org.jboss.kernel.spi.dependency.KernelControllerContext;
+import org.jboss.reflect.spi.MethodInfo;
 
 /**
  * Create injection dependency.
@@ -32,8 +34,13 @@ import org.jboss.kernel.spi.dependency.KernelControllerContext;
  */
 public class InjectFactory implements DependencyFactory<Inject>
 {
-   public DependencyBuilderListItem<KernelControllerContext> createDependency(Inject annotation)
+   public DependencyBuilderListItem<KernelControllerContext> createDependency(Inject annotation, MethodInfo method)
    {
-      return null; // todo
+      return null;
+   }
+
+   public DependencyBuilderListItem<KernelControllerContext> createDependency(Inject annotation, PropertyInfo property)
+   {
+      return null;
    }
 }

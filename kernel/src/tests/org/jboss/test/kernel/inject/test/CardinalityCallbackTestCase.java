@@ -50,26 +50,33 @@ public class CardinalityCallbackTestCase extends ManualMicrocontainerTest
       assertNull(context.getTarget());
       assertEquals(ControllerState.NOT_INSTALLED, context.getState());
 
+      // move conetxt to change - triggering callback addition + cardinality dependency
       change(context, ControllerState.CREATE);
       CallbackTestObject injectee = (CallbackTestObject)context.getTarget();
       assertNotNull(injectee);
       assertNull(injectee.getTesterInterfaces());
 
+      // install 1st - cardinality dependency not yet satisfied
       KernelControllerContext tester1 = getControllerContext("tester1", ControllerState.NOT_INSTALLED);
       assertNotNull(tester1);
       change(tester1, ControllerState.INSTALLED);
 
       assertNull(injectee.getTesterInterfaces());
 
+      // install 1st - cardinality dependency now satisfied
       KernelControllerContext tester2 = getControllerContext("tester2", ControllerState.NOT_INSTALLED);
       assertNotNull(tester2);
       change(tester2, ControllerState.INSTALLED);
 
+      // can be moved to installed
       change(context, ControllerState.INSTALLED);
+      assertEquals(ControllerState.INSTALLED, context.getState());
 
+      // collection should be there
       assertNotNull(injectee.getTesterInterfaces());
       assertEquals(2, injectee.getTesterInterfaces().size());
 
+      // add another tester, should be injected as well
       KernelControllerContext tester3 = getControllerContext("tester3", ControllerState.NOT_INSTALLED);
       assertNotNull(tester3);
       change(tester3, ControllerState.INSTALLED);
@@ -77,10 +84,13 @@ public class CardinalityCallbackTestCase extends ManualMicrocontainerTest
       assertNotNull(injectee.getTesterInterfaces());
       assertEquals(3, injectee.getTesterInterfaces().size());
 
+      // remove one of the first one added
       change(tester1, ControllerState.NOT_INSTALLED);
       assertEquals(2, injectee.getTesterInterfaces().size());
       assertEquals(ControllerState.INSTALLED, context.getState());
 
+      // remove the one that was added after cardinality dependency was already resolved
+      // now the cardinality dependency should uninstall main context - since cardinality is out of range
       change(tester3, ControllerState.NOT_INSTALLED);
       assertEquals(ControllerState.CONFIGURED, context.getState());
    }

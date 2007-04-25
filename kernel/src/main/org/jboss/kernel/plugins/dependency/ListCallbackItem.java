@@ -21,7 +21,6 @@
 */
 package org.jboss.kernel.plugins.dependency;
 
-import java.util.ArrayList;
 import java.util.List;
 
 import org.jboss.dependency.spi.Cardinality;
@@ -29,24 +28,19 @@ import org.jboss.dependency.spi.ControllerState;
 import org.jboss.dependency.spi.dispatch.InvokeDispatchContext;
 
 /**
- * List callback item.
+ * List collection callback item.
  *
  * @author <a href="mailto:ales.justin@jboss.com">Ales Justin</a>
  */
-public class ListCallbackItem extends CollectionCallbackItem<List<Object>>
+public class ListCallbackItem extends CollectionCreatorCallbackItem<List<Object>>
 {
-   public ListCallbackItem(Class name, InvokeDispatchContext owner, String attribute)
+   public ListCallbackItem(Class name, InvokeDispatchContext owner, AttributeInfo attribute)
    {
-      super(name, owner, attribute);
+      super(CollectionCreator.LIST, name, owner, attribute);
    }
 
-   public ListCallbackItem(Class name, ControllerState whenRequired, ControllerState dependentState, Cardinality cardinality, InvokeDispatchContext context, String attribute)
+   public ListCallbackItem(Class name, ControllerState whenRequired, ControllerState dependentState, Cardinality cardinality, InvokeDispatchContext context, AttributeInfo attribute)
    {
-      super(name, whenRequired, dependentState, cardinality, context, attribute);
-   }
-
-   protected List<Object> getCollectionParameterHolder()
-   {
-      return new ArrayList<Object>();
+      super(CollectionCreator.LIST, name, whenRequired, dependentState, cardinality, context, attribute);
    }
 }

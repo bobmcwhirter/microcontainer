@@ -21,7 +21,6 @@
 */
 package org.jboss.kernel.plugins.dependency;
 
-import java.util.LinkedList;
 import java.util.Queue;
 
 import org.jboss.dependency.spi.Cardinality;
@@ -29,24 +28,19 @@ import org.jboss.dependency.spi.ControllerState;
 import org.jboss.dependency.spi.dispatch.InvokeDispatchContext;
 
 /**
- * Queue callback item.
+ * Queue collection callback item.
  *
  * @author <a href="mailto:ales.justin@jboss.com">Ales Justin</a>
  */
-public class QueueCallbackItem extends CollectionCallbackItem<Queue<Object>>
+public class QueueCallbackItem extends CollectionCreatorCallbackItem<Queue<Object>>
 {
-   public QueueCallbackItem(Class name, InvokeDispatchContext owner, String attribute)
+   public QueueCallbackItem(Class name, InvokeDispatchContext owner, AttributeInfo attribute)
    {
-      super(name, owner, attribute);
+      super(CollectionCreator.QUEUE, name, owner, attribute);
    }
 
-   public QueueCallbackItem(Class name, ControllerState whenRequired, ControllerState dependentState, Cardinality cardinality, InvokeDispatchContext context, String attribute)
+   public QueueCallbackItem(Class name, ControllerState whenRequired, ControllerState dependentState, Cardinality cardinality, InvokeDispatchContext context, AttributeInfo attribute)
    {
-      super(name, whenRequired, dependentState, cardinality, context, attribute);
-   }
-
-   protected Queue<Object> getCollectionParameterHolder()
-   {
-      return new LinkedList<Object>();
+      super(CollectionCreator.QUEUE, name, whenRequired, dependentState, cardinality, context, attribute);
    }
 }

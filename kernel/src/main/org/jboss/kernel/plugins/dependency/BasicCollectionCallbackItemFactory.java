@@ -21,52 +21,50 @@
 */
 package org.jboss.kernel.plugins.dependency;
 
+import java.util.ArrayList;
 import java.util.Collection;
+import java.util.HashSet;
+import java.util.LinkedList;
 
 import org.jboss.dependency.spi.Cardinality;
 import org.jboss.dependency.spi.ControllerState;
 import org.jboss.dependency.spi.dispatch.InvokeDispatchContext;
 
 /**
- * Collection callback item factory.
+ * Basic collection callback item factory.
  *
  * @author <a href="mailto:ales.justin@jboss.com">Ales Justin</a>
  */
-public interface CollectionCallbackItemFactory
+public class BasicCollectionCallbackItemFactory implements CollectionCallbackItemFactory
 {
-   /**
-    * Create collection callback item for parameter class.
-    *
-    * @param parameterClass actual collection class
-    * @param name demand name
-    * @param context invoke owner
-    * @param attribute the attribute
-    * @return new exact collection callback item
-    */
-   CollectionCallbackItem createCollectionCallbackItem(
+   public CollectionCallbackItem createCollectionCallbackItem(
          Class<? extends Collection> parameterClass,
          Class name,
          InvokeDispatchContext context,
-         AttributeInfo attribute);
+         AttributeInfo attribute)
+   {
+      return createCollectionCallbackItem(parameterClass, name, null, null, null, context, attribute);
+   }
 
-   /**
-    * Create collection callback item for parameter class.
-    *
-    * @param parameterClass actual collection class
-    * @param name demand name
-    * @param whenRequired when required state
-    * @param dependentState dependent state
-    * @param cardinality the cardinality
-    * @param context invoke owner
-    * @param attribute the attribute
-    * @return new exact collection callback item
-    */
-   CollectionCallbackItem createCollectionCallbackItem(
+   public CollectionCallbackItem createCollectionCallbackItem(
          Class<? extends Collection> parameterClass,
          Class name,
          ControllerState whenRequired,
          ControllerState dependentState,
          Cardinality cardinality,
          InvokeDispatchContext context,
-         AttributeInfo attribute);
+         AttributeInfo attribute)
+   {
+      if (parameterClass == null)
+         throw new IllegalArgumentException("Null parameter class!");
+
+      if (parameterClass.isAssignableFrom(ArrayList.class))
+         return new ListCallbackItem(name, whenRequired, dependentState, cardinality, context, attribute);
+      else if (parameterClass.isAssignableFrom(HashSet.class))
+         return new SetCallbackItem(name, whenRequired, dependentState, cardinality, context, attribute);
+      else if (parameterClass.isAssignableFrom(LinkedList.class))
+         return new QueueCallbackItem(name, whenRequired, dependentState, cardinality, context, attribute);
+      else
+         throw new IllegalArgumentException("No matching callback impl for parameter type: " + parameterClass);
+   }
 }

@@ -19,28 +19,40 @@
 * Software Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA
 * 02110-1301 USA, or see the FSF site: http://www.fsf.org.
 */
-package org.jboss.beans.metadata.plugins.annotations;
+package org.jboss.kernel.plugins.dependency;
 
 import org.jboss.beans.info.spi.PropertyInfo;
-import org.jboss.beans.metadata.spi.annotations.DependencyFactory;
-import org.jboss.classadapter.spi.DependencyBuilderListItem;
-import org.jboss.kernel.spi.dependency.KernelControllerContext;
-import org.jboss.reflect.spi.MethodInfo;
+import org.jboss.reflect.spi.TypeInfo;
 
 /**
- * Create dependency list item from Install info.
+ * Property attribute info.
  *
  * @author <a href="mailto:ales.justin@jboss.com">Ales Justin</a>
  */
-public class InstallFactory extends CallbackFactoryAdapter implements DependencyFactory<Install>
+public class PropertyAttributeInfo extends AbstractAttributeInfo<PropertyInfo>
 {
-   public DependencyBuilderListItem<KernelControllerContext> createDependency(Install annotation, MethodInfo method)
+   public PropertyAttributeInfo(PropertyInfo propertyInfo)
    {
-      return getDependency(new CallbackInfo(annotation), method);
+      super(propertyInfo);
    }
 
-   public DependencyBuilderListItem<KernelControllerContext> createDependency(Install annotation, PropertyInfo property)
+   public boolean isProperty()
    {
-      return getDependency(new CallbackInfo(annotation), property);
+      return true;
+   }
+
+   public String getName()
+   {
+      return info.getName();
+   }
+
+   public TypeInfo getType()
+   {
+      return info.getType();
+   }
+
+   public boolean isValid()
+   {
+      return (info.getSetter() != null && super.isValid());
    }
 }

@@ -28,45 +28,31 @@ import org.jboss.dependency.spi.ControllerState;
 import org.jboss.dependency.spi.dispatch.InvokeDispatchContext;
 
 /**
- * Collection callback item factory.
+ * Collection callback item using CollectionCreator.
  *
+ * @param <T> expected collection type
  * @author <a href="mailto:ales.justin@jboss.com">Ales Justin</a>
  */
-public interface CollectionCallbackItemFactory
+public abstract class CollectionCreatorCallbackItem<T extends Collection<Object>> extends CollectionCallbackItem<T>
 {
-   /**
-    * Create collection callback item for parameter class.
-    *
-    * @param parameterClass actual collection class
-    * @param name demand name
-    * @param context invoke owner
-    * @param attribute the attribute
-    * @return new exact collection callback item
-    */
-   CollectionCallbackItem createCollectionCallbackItem(
-         Class<? extends Collection> parameterClass,
-         Class name,
-         InvokeDispatchContext context,
-         AttributeInfo attribute);
+   protected CollectionCreator<T> creator;
 
-   /**
-    * Create collection callback item for parameter class.
-    *
-    * @param parameterClass actual collection class
-    * @param name demand name
-    * @param whenRequired when required state
-    * @param dependentState dependent state
-    * @param cardinality the cardinality
-    * @param context invoke owner
-    * @param attribute the attribute
-    * @return new exact collection callback item
-    */
-   CollectionCallbackItem createCollectionCallbackItem(
-         Class<? extends Collection> parameterClass,
-         Class name,
-         ControllerState whenRequired,
-         ControllerState dependentState,
-         Cardinality cardinality,
-         InvokeDispatchContext context,
-         AttributeInfo attribute);
+   public CollectionCreatorCallbackItem(CollectionCreator<T> creator, Class name, InvokeDispatchContext owner, AttributeInfo attribute)
+   {
+      this(creator, name, null, null, null, owner, attribute);
+   }
+
+   public CollectionCreatorCallbackItem(CollectionCreator<T> creator, Class name, ControllerState whenRequired, ControllerState dependentState, Cardinality cardinality, InvokeDispatchContext context, AttributeInfo attribute)
+   {
+      super(name, whenRequired, dependentState, cardinality, context, attribute);
+      if (creator == null)
+         throw new IllegalArgumentException("Null creator!");
+      this.creator = creator;
+   }
+
+   protected T getCollectionParameterHolder()
+   {
+      return creator.createCollection();
+   }
+
 }

@@ -19,28 +19,42 @@
 * Software Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA
 * 02110-1301 USA, or see the FSF site: http://www.fsf.org.
 */
-package org.jboss.beans.metadata.plugins.annotations;
+package org.jboss.kernel.plugins.dependency;
 
-import org.jboss.beans.info.spi.PropertyInfo;
-import org.jboss.beans.metadata.spi.annotations.DependencyFactory;
-import org.jboss.classadapter.spi.DependencyBuilderListItem;
-import org.jboss.kernel.spi.dependency.KernelControllerContext;
-import org.jboss.reflect.spi.MethodInfo;
+import org.jboss.reflect.spi.TypeInfo;
 
 /**
- * Create dependency list item from Install info.
+ * PropertyInfo or MethodInfo abstraction.
  *
  * @author <a href="mailto:ales.justin@jboss.com">Ales Justin</a>
  */
-public class InstallFactory extends CallbackFactoryAdapter implements DependencyFactory<Install>
+public interface AttributeInfo
 {
-   public DependencyBuilderListItem<KernelControllerContext> createDependency(Install annotation, MethodInfo method)
-   {
-      return getDependency(new CallbackInfo(annotation), method);
-   }
+   /**
+    * Is property.
+    * 
+    * @return true for PropertyInfo, false otherwise
+    */
+   boolean isProperty();
 
-   public DependencyBuilderListItem<KernelControllerContext> createDependency(Install annotation, PropertyInfo property)
-   {
-      return getDependency(new CallbackInfo(annotation), property);
-   }
+   /**
+    * Get the name.
+    *
+    * @return attribute name
+    */
+   String getName();
+
+   /**
+    * Get attribute type.
+    *
+    * @return type info
+    */
+   TypeInfo getType();
+
+   /**
+    * Is valid.
+    *
+    * @return true if valid, false otherwise
+    */
+   boolean isValid();
 }

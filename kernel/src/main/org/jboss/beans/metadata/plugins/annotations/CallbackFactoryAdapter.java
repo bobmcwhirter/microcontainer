@@ -22,25 +22,35 @@
 package org.jboss.beans.metadata.plugins.annotations;
 
 import org.jboss.beans.info.spi.PropertyInfo;
-import org.jboss.beans.metadata.spi.annotations.DependencyFactory;
 import org.jboss.classadapter.spi.DependencyBuilderListItem;
+import org.jboss.kernel.plugins.dependency.AttributeInfo;
+import org.jboss.kernel.plugins.dependency.MethodAttributeInfo;
+import org.jboss.kernel.plugins.dependency.PropertyAttributeInfo;
 import org.jboss.kernel.spi.dependency.KernelControllerContext;
 import org.jboss.reflect.spi.MethodInfo;
 
 /**
- * Create dependency list item from Install info.
+ * Create dependency list item from Callback info holder - via adapter.
  *
  * @author <a href="mailto:ales.justin@jboss.com">Ales Justin</a>
  */
-public class InstallFactory extends CallbackFactoryAdapter implements DependencyFactory<Install>
+public abstract class CallbackFactoryAdapter
 {
-   public DependencyBuilderListItem<KernelControllerContext> createDependency(Install annotation, MethodInfo method)
+   protected DependencyBuilderListItem<KernelControllerContext> getDependency(CallbackInfo info, MethodInfo method)
    {
-      return getDependency(new CallbackInfo(annotation), method);
+      return getDependency(info, new MethodAttributeInfo(method));
    }
 
-   public DependencyBuilderListItem<KernelControllerContext> createDependency(Install annotation, PropertyInfo property)
+   protected DependencyBuilderListItem<KernelControllerContext> getDependency(CallbackInfo info, PropertyInfo property)
    {
-      return getDependency(new CallbackInfo(annotation), property);
+      return getDependency(info, new PropertyAttributeInfo(property));
+   }
+
+   protected DependencyBuilderListItem<KernelControllerContext> getDependency(CallbackInfo info, AttributeInfo attribute)
+   {
+      if (info.isInstallPhase())
+         return new InstallCallbackDependencyBuilderListItem(info, attribute);
+      else
+         return new UninstallCallbackDependencyBuilderListItem(info, attribute);
    }
 }

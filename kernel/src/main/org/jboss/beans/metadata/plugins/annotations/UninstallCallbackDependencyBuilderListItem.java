@@ -21,26 +21,24 @@
 */
 package org.jboss.beans.metadata.plugins.annotations;
 
-import org.jboss.beans.info.spi.PropertyInfo;
-import org.jboss.beans.metadata.spi.annotations.DependencyFactory;
-import org.jboss.classadapter.spi.DependencyBuilderListItem;
-import org.jboss.kernel.spi.dependency.KernelControllerContext;
-import org.jboss.reflect.spi.MethodInfo;
+import org.jboss.dependency.spi.CallbackItem;
+import org.jboss.dependency.spi.DependencyInfo;
+import org.jboss.kernel.plugins.dependency.AttributeInfo;
 
 /**
- * Create dependency list item from Install info.
+ * Install callback dependency list item from Callback info.
  *
  * @author <a href="mailto:ales.justin@jboss.com">Ales Justin</a>
  */
-public class InstallFactory extends CallbackFactoryAdapter implements DependencyFactory<Install>
+public class UninstallCallbackDependencyBuilderListItem extends CallbackDependencyBuilderListItem
 {
-   public DependencyBuilderListItem<KernelControllerContext> createDependency(Install annotation, MethodInfo method)
+   public UninstallCallbackDependencyBuilderListItem(CallbackInfo info, AttributeInfo attribute)
    {
-      return getDependency(new CallbackInfo(annotation), method);
+      super(info, attribute);
    }
 
-   public DependencyBuilderListItem<KernelControllerContext> createDependency(Install annotation, PropertyInfo property)
+   protected void addCallback(DependencyInfo dependencyInfo, CallbackItem<Class> callback)
    {
-      return getDependency(new CallbackInfo(annotation), property);
+      dependencyInfo.addUninstallItem(callback);
    }
 }

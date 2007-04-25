@@ -4,7 +4,7 @@
             xsi:schemaLocation="urn:jboss:bean-deployer bean-deployer_2_0.xsd"
             xmlns="urn:jboss:bean-deployer:2.0">
 
-   <bean name="testObject" class="org.jboss.test.kernel.inject.support.CallbackTestObject">
+   <bean name="testObject" class="org.jboss.test.kernel.inject.support.CallbackTestObjectImpl">
       <incallback property="testerInterfaces"/>
       <uncallback property="testerInterfaces"/>
    </bean>

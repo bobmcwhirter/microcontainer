@@ -19,28 +19,35 @@
 * Software Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA
 * 02110-1301 USA, or see the FSF site: http://www.fsf.org.
 */
-package org.jboss.beans.metadata.plugins.annotations;
+package org.jboss.kernel.plugins.dependency;
 
-import org.jboss.beans.info.spi.PropertyInfo;
-import org.jboss.beans.metadata.spi.annotations.DependencyFactory;
-import org.jboss.classadapter.spi.DependencyBuilderListItem;
-import org.jboss.kernel.spi.dependency.KernelControllerContext;
-import org.jboss.reflect.spi.MethodInfo;
+import org.jboss.util.JBossObject;
+import org.jboss.util.JBossStringBuilder;
 
 /**
- * Create dependency list item from Install info.
+ * Abstract attribute info.
  *
+ * @param <T> expected info type
  * @author <a href="mailto:ales.justin@jboss.com">Ales Justin</a>
  */
-public class InstallFactory extends CallbackFactoryAdapter implements DependencyFactory<Install>
+public abstract class AbstractAttributeInfo<T> extends JBossObject implements AttributeInfo
 {
-   public DependencyBuilderListItem<KernelControllerContext> createDependency(Install annotation, MethodInfo method)
+   protected T info;
+
+   public AbstractAttributeInfo(T info)
    {
-      return getDependency(new CallbackInfo(annotation), method);
+      if (info == null)
+         throw new IllegalArgumentException("Null info argument!");
+      this.info = info;
    }
 
-   public DependencyBuilderListItem<KernelControllerContext> createDependency(Install annotation, PropertyInfo property)
+   public boolean isValid()
    {
-      return getDependency(new CallbackInfo(annotation), property);
+      return (getType() != null);
+   }
+
+   protected void toString(JBossStringBuilder buffer)
+   {
+      buffer.append("info=").append(info);
    }
 }

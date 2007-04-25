@@ -21,15 +21,50 @@
 */
 package org.jboss.test.kernel.inject.support;
 
+import java.util.HashSet;
 import java.util.Set;
+
+import org.jboss.beans.metadata.plugins.annotations.Callback;
+import org.jboss.beans.metadata.plugins.annotations.CallbackType;
 
 /**
  * @author <a href="mailto:ales.justin@gmail.com">Ales Justin</a>
  */
-public class BadCallbackTestObject extends CallbackTestObjectImpl
+public class AnnotationAdditionCallbackTestObjectImpl implements CallbackTestObject
 {
+   private Set<TesterInterface> testerInterfaces;
+
+   protected void init()
+   {
+      if (testerInterfaces == null)
+      {
+         testerInterfaces = new HashSet<TesterInterface>();
+      }
+   }
+
+   @Callback(type = CallbackType.INSTALL)
+   public void addTesterInterface(TesterInterface tester)
+   {
+      init();
+      testerInterfaces.add(tester);
+   }
+
+   @Callback(type = CallbackType.UNINSTALL)
+   public void removeTesterInterface(TesterInterface tester)
+   {
+      init();
+      testerInterfaces.remove(tester);
+      if (testerInterfaces.isEmpty())
+         testerInterfaces = null;
+   }
+
+   public Set<TesterInterface> getTesterInterfaces()
+   {
+      return testerInterfaces;
+   }
+
    public void setTesterInterfaces(Set<TesterInterface> testerInterfaces)
    {
-      throw new UnsupportedOperationException("DOS test exception.");
+      this.testerInterfaces = testerInterfaces;
    }
 }

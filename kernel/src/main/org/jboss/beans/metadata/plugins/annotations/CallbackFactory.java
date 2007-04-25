@@ -21,19 +21,26 @@
 */
 package org.jboss.beans.metadata.plugins.annotations;
 
+import org.jboss.beans.info.spi.PropertyInfo;
 import org.jboss.beans.metadata.spi.annotations.DependencyFactory;
 import org.jboss.classadapter.spi.DependencyBuilderListItem;
 import org.jboss.kernel.spi.dependency.KernelControllerContext;
+import org.jboss.reflect.spi.MethodInfo;
 
 /**
  * Create dependency list item from Callback info.
  *
  * @author <a href="mailto:ales.justin@jboss.com">Ales Justin</a>
  */
-public class CallbackFactory implements DependencyFactory<Callback>
+public class CallbackFactory extends CallbackFactoryAdapter implements DependencyFactory<Callback>
 {
-   public DependencyBuilderListItem<KernelControllerContext> createDependency(Callback annotation)
+   public DependencyBuilderListItem<KernelControllerContext> createDependency(Callback annotation, MethodInfo method)
    {
-      return null; // todo
+      return getDependency(new CallbackInfo(annotation), method);
+   }
+
+   public DependencyBuilderListItem<KernelControllerContext> createDependency(Callback annotation, PropertyInfo property)
+   {
+      return getDependency(new CallbackInfo(annotation), property);
    }
 }

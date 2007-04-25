@@ -19,28 +19,29 @@
 * Software Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA
 * 02110-1301 USA, or see the FSF site: http://www.fsf.org.
 */
-package org.jboss.beans.metadata.plugins.annotations;
+package org.jboss.test.kernel.inject.support;
 
-import org.jboss.beans.info.spi.PropertyInfo;
-import org.jboss.beans.metadata.spi.annotations.DependencyFactory;
-import org.jboss.classadapter.spi.DependencyBuilderListItem;
-import org.jboss.kernel.spi.dependency.KernelControllerContext;
-import org.jboss.reflect.spi.MethodInfo;
+import java.util.Set;
+
+import org.jboss.beans.metadata.plugins.annotations.Install;
+import org.jboss.beans.metadata.plugins.annotations.Uninstall;
 
 /**
- * Create dependency list item from Install info.
- *
- * @author <a href="mailto:ales.justin@jboss.com">Ales Justin</a>
+ * @author <a href="mailto:ales.justin@gmail.com">Ales Justin</a>
  */
-public class InstallFactory extends CallbackFactoryAdapter implements DependencyFactory<Install>
+public class AnnotationCollectionCallbackTestObjectImpl implements CallbackTestObject
 {
-   public DependencyBuilderListItem<KernelControllerContext> createDependency(Install annotation, MethodInfo method)
+   private Set<TesterInterface> testerInterfaces;
+
+   public Set<TesterInterface> getTesterInterfaces()
    {
-      return getDependency(new CallbackInfo(annotation), method);
+      return testerInterfaces;
    }
 
-   public DependencyBuilderListItem<KernelControllerContext> createDependency(Install annotation, PropertyInfo property)
+   @Install
+   @Uninstall
+   public void setTesterInterfaces(Set<TesterInterface> testerInterfaces)
    {
-      return getDependency(new CallbackInfo(annotation), property);
+      this.testerInterfaces = testerInterfaces;
    }
 }

@@ -19,28 +19,25 @@
 * Software Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA
 * 02110-1301 USA, or see the FSF site: http://www.fsf.org.
 */
-package org.jboss.beans.metadata.plugins.annotations;
+package org.jboss.test.kernel.inject.test;
 
-import org.jboss.beans.info.spi.PropertyInfo;
-import org.jboss.beans.metadata.spi.annotations.DependencyFactory;
-import org.jboss.classadapter.spi.DependencyBuilderListItem;
-import org.jboss.kernel.spi.dependency.KernelControllerContext;
-import org.jboss.reflect.spi.MethodInfo;
+import junit.framework.Test;
 
 /**
- * Create dependency list item from Install info.
+ * Cardinality tests.
  *
- * @author <a href="mailto:ales.justin@jboss.com">Ales Justin</a>
+ * @author <a href="mailto:ales.justin@gmail.com">Ales Justin</a>
  */
-public class InstallFactory extends CallbackFactoryAdapter implements DependencyFactory<Install>
+public class CardinalityAnnotationCallbackTestCase extends CardinalityCallbackTestCase
 {
-   public DependencyBuilderListItem<KernelControllerContext> createDependency(Install annotation, MethodInfo method)
+   public CardinalityAnnotationCallbackTestCase(String name)
    {
-      return getDependency(new CallbackInfo(annotation), method);
+      super(name);
    }
 
-   public DependencyBuilderListItem<KernelControllerContext> createDependency(Install annotation, PropertyInfo property)
+   public static Test suite()
    {
-      return getDependency(new CallbackInfo(annotation), property);
+      return suite(CardinalityAnnotationCallbackTestCase.class);
    }
+
 }

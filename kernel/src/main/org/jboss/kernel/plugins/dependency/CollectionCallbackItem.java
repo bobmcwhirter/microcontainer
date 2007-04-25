@@ -24,10 +24,12 @@ package org.jboss.kernel.plugins.dependency;
 import java.util.Collection;
 import java.util.Set;
 
+import org.jboss.dependency.plugins.OwnerCallbackItem;
 import org.jboss.dependency.spi.Cardinality;
 import org.jboss.dependency.spi.Controller;
 import org.jboss.dependency.spi.ControllerContext;
 import org.jboss.dependency.spi.ControllerState;
+import org.jboss.dependency.spi.DependencyItem;
 import org.jboss.dependency.spi.dispatch.InvokeDispatchContext;
 import org.jboss.kernel.spi.dependency.KernelController;
 import org.jboss.kernel.spi.dependency.KernelControllerContext;
@@ -38,16 +40,23 @@ import org.jboss.kernel.spi.dependency.KernelControllerContext;
  * @param <T> expected collection type
  * @author <a href="mailto:ales.justin@jboss.com">Ales Justin</a>
  */
-public abstract class CollectionCallbackItem<T extends Collection<Object>> extends ClassAttributeCallbackItem
+public abstract class CollectionCallbackItem<T extends Collection<Object>> extends OwnerCallbackItem<Class, InvokeDispatchContext>
 {
-   public CollectionCallbackItem(Class name, InvokeDispatchContext owner, String attribute)
+   protected Cardinality cardinality;
+   protected AttributeInfo attribute;
+
+   public CollectionCallbackItem(Class name, InvokeDispatchContext owner, AttributeInfo attribute)
    {
-      super(name, owner, attribute);
+      this(name, null, null, null, owner, attribute);
    }
 
-   public CollectionCallbackItem(Class name, ControllerState whenRequired, ControllerState dependentState, Cardinality cardinality, InvokeDispatchContext context, String attribute)
+   public CollectionCallbackItem(Class name, ControllerState whenRequired, ControllerState dependentState, Cardinality cardinality, InvokeDispatchContext context, AttributeInfo attribute)
    {
-      super(name, whenRequired, dependentState, cardinality, context, attribute);
+      super(name, whenRequired, dependentState, context);
+      if (attribute == null)
+         throw new IllegalArgumentException("Null attribute!");
+      this.attribute = attribute;
+      this.cardinality = cardinality;
    }
 
    /**
@@ -84,6 +93,22 @@ public abstract class CollectionCallbackItem<T extends Collection<Object>> exten
          throw new IllegalArgumentException("Cannot execute Collection call back - controller not KernelController instance.");
    }
 
+   protected void execute(T holder) throws Throwable
+   {
+      if (attribute.isProperty())
+         owner.set(attribute.getName(), holder);
+      else
+         owner.invoke(attribute.getName(), new Object[]{holder}, new String[]{attribute.getType().getName()});
+   }
+
+   protected DependencyItem createDependencyItem(ControllerContext owner)
+   {
+      if (cardinality != null)
+         return new CallbackDependencyItem(owner.getName(), getIDependOn(), whenRequired, dependentState, cardinality);
+      else
+         return null;
+   }
+
    public void ownerCallback(Controller controller, boolean isInstallPhase) throws Throwable
    {
       execute(fillHolder(controller));
@@ -97,4 +122,5 @@ public abstract class CollectionCallbackItem<T extends Collection<Object>> exten
       execute(holder);
       addDependency(controller, context, isInstallPhase);
    }
+
 }

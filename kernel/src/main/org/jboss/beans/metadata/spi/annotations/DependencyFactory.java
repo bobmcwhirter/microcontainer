@@ -23,21 +23,34 @@ package org.jboss.beans.metadata.spi.annotations;
 
 import java.lang.annotation.Annotation;
 
+import org.jboss.beans.info.spi.PropertyInfo;
 import org.jboss.classadapter.spi.DependencyBuilderListItem;
 import org.jboss.kernel.spi.dependency.KernelControllerContext;
+import org.jboss.reflect.spi.MethodInfo;
 
 /**
  * Dependecy factory contract.
- * 
+ *
+ * @param <T> expected annotation type
  * @author <a href="mailto:ales.justin@jboss.com">Ales Justin</a>
  */
 public interface DependencyFactory<T extends Annotation>
 {
    /**
-    * Create dependency builder item.
+    * Create dependency builder item from method.
     *
     * @param annotation current annotation
+    * @param method current method
     * @return dependency builder item
     */
-   DependencyBuilderListItem<KernelControllerContext> createDependency(T annotation);
+   DependencyBuilderListItem<KernelControllerContext> createDependency(T annotation, MethodInfo method);
+
+   /**
+    * Create dependency builder item from property.
+    *
+    * @param annotation current annotation
+    * @param property current property
+    * @return dependency builder item
+    */
+   DependencyBuilderListItem<KernelControllerContext> createDependency(T annotation, PropertyInfo property);
 }

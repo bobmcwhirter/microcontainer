@@ -4,10 +4,7 @@
             xsi:schemaLocation="urn:jboss:bean-deployer bean-deployer_2_0.xsd"
             xmlns="urn:jboss:bean-deployer:2.0">
 
-   <bean name="testObject" class="org.jboss.test.kernel.inject.support.CallbackTestObjectImpl">
-      <incallback property="testerInterfaces" cardinality="2..n" whenRequired="Create"/>
-      <uncallback property="testerInterfaces"/>
-   </bean>
+   <bean name="testObject" class="org.jboss.test.kernel.inject.support.AnnotationCollectionCallbackTestObjectImpl" />
 
    <bean name="tester1" class="org.jboss.test.kernel.inject.support.DuplicateTester"/>
    <bean name="tester2" class="org.jboss.test.kernel.inject.support.DuplicateTester"/>

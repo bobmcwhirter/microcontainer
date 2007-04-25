@@ -31,13 +31,8 @@ import org.jboss.dependency.spi.Cardinality;
 import org.jboss.dependency.spi.ControllerState;
 import org.jboss.kernel.plugins.config.Configurator;
 import org.jboss.kernel.plugins.dependency.CallbackDependencyItem;
-import org.jboss.kernel.plugins.dependency.ClassAttributeCallbackItem;
-import org.jboss.kernel.plugins.dependency.ClassSingleCallbackItem;
-import org.jboss.kernel.plugins.dependency.CollectionCallbackItemFactory;
 import org.jboss.kernel.spi.dependency.KernelControllerContext;
-import org.jboss.reflect.spi.ClassInfo;
 import org.jboss.reflect.spi.MethodInfo;
-import org.jboss.reflect.spi.TypeInfo;
 import org.jboss.util.JBossStringBuilder;
 
 /**
@@ -158,22 +153,6 @@ public abstract class AbstractCallbackMetaData extends AbstractLifecycleMetaData
     */
    protected abstract void addCallback(MetaDataVisitor visitor, CallbackItem callback);
 
-   @SuppressWarnings("unchecked")
-   protected CallbackItem createCollectionCallback(TypeInfo info, KernelControllerContext context, String attribute)
-   {
-      if (info instanceof ClassInfo && ((ClassInfo)info).getActualTypeArguments() != null)
-      {
-         ClassInfo ci = (ClassInfo)info;
-         TypeInfo[] typeInfos = ci.getActualTypeArguments();
-         if (typeInfos.length != 1)
-            throw new IllegalArgumentException("Illegal size of actual type arguments: " + info);
-         Class clazz = typeInfos[0].getType();
-         return CollectionCallbackItemFactory.createCollectionCallbackItem(info.getType(), clazz, whenRequired, dependentState, cardinality, context, attribute);
-      }
-      else
-         throw new IllegalArgumentException("Unable to determine collection element class type: " + this);
-   }
-
    public void describeVisit(MetaDataVisitor vistor)
    {
       try
@@ -184,35 +163,17 @@ public abstract class AbstractCallbackMetaData extends AbstractLifecycleMetaData
          {
             ClassLoader cl = Configurator.getClassLoader(context.getBeanMetaData());
             PropertyInfo pi = Configurator.resolveProperty(log.isTraceEnabled(), context.getBeanInfo(), cl, property, signature);
-
-            TypeInfo info;
-            if (pi.getSetter() != null)
-               info = pi.getSetter().getParameterTypes()[0];
-            else
-               throw new IllegalArgumentException("No setter for property: " + pi);
-
-            if (info.isCollection())
-               callback = createCollectionCallback(info, context, property);
-            else
-               callback = new ClassAttributeCallbackItem(info.getType(), whenRequired, dependentState, cardinality, context, property);
+            callback = CallbackCreatorUtil.createCallback(context, pi, whenRequired, dependentState, cardinality);
          }
          else if (methodName != null)
          {
             MethodInfo mi = Configurator.findMethodInfo(getClassInfo(context), methodName, new String[]{signature});
-            // signature matches one parameter
-            TypeInfo info = mi.getParameterTypes()[0];
-            if (info.isCollection())
-            {
-               callback = createCollectionCallback(info, context, methodName);
-            }
-            else
-            {
-               Class clazz = info.getType();
-               callback = new ClassSingleCallbackItem(clazz, whenRequired, dependentState, cardinality, context, methodName, clazz.getName());
-            }
+            callback = CallbackCreatorUtil.createCallback(context, mi, whenRequired, dependentState, cardinality);
          }
          else
             throw new IllegalArgumentException("Illegal usage - not property or method:" + this);
+
+         // add callback
          addCallback(vistor, callback);
 
          // demand name is Class in this case
