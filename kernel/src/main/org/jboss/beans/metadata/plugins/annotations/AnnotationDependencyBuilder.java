@@ -79,14 +79,14 @@ public class AnnotationDependencyBuilder implements DependencyBuilder
    @SuppressWarnings("unchecked")
    protected void checkAnnotation(MethodInfo mi, Class<? extends Annotation> annotation, List<DependencyBuilderListItem> list)
    {
-      Annotation callback = mi.getUnderlyingAnnotation(annotation);
-      if (callback != null)
+      Annotation expected = mi.getUnderlyingAnnotation(annotation);
+      if (expected != null)
       {
-         DependencyFactoryLookup dfl = callback.annotationType().getAnnotation(DependencyFactoryLookup.class);
+         DependencyFactoryLookup dfl = expected.annotationType().getAnnotation(DependencyFactoryLookup.class);
          if (dfl == null)
-            throw new IllegalArgumentException("Illegal annotation type - no DependencyFactoryLookup meta data: " + annotation);
+            throw new IllegalArgumentException("Illegal annotation type - no DependencyFactoryLookup meta data: " + expected);
          DependencyFactory df = createDependencyFactory(dfl);
-         list.add(df.createDependency(callback, mi));
+         list.add(df.createDependency(expected, mi));
       }
    }
 
