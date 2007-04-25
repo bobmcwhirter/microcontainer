@@ -43,12 +43,13 @@
               <goal>test</goal>
             </goals>
             <configuration>
-              <skip>false</skip>
+              <skip>true</skip>
               <includes>
                 <include>org/jboss/test/**/*TestCase.java</include>
               </includes>
+              <useSystemClassLoader>true</useSystemClassLoader>
               <argLine>-Djava.system.class.loader=org.jboss.aop.standalone.SystemClassLoader</argLine>
-              <forkMode>always</forkMode>
+              <reportsDirectory>${project.build.directory}/surefire-reports/weave</reportsDirectory>     
               <systemProperties>
                 <property>
                   <name>jboss.aop.exclude</name>
@@ -71,9 +72,6 @@
                   <value>true</value>
                 </property>
               </systemProperties>
-              <!--
-              <redirectTestOutputToFile>true</redirectTestOutputToFile>          
-              -->
             </configuration>
           </execution>
           <execution>
@@ -83,12 +81,12 @@
               <goal>test</goal>
             </goals>
             <configuration>
-              <skip>false</skip>
+              <skip>true</skip>
+              <reportsDirectory>${project.build.directory}/surefire-reports/weave-secure</reportsDirectory>     
               <includes>
                 <include>org/jboss/test/**/*TestCase.java</include>
               </includes>
               <argLine>-Djava.system.class.loader=org.jboss.aop.standalone.SystemClassLoader</argLine>
-              <forkMode>always</forkMode>
               <systemProperties>
                 <property>
                   <name>jboss.aop.exclude</name>
@@ -111,9 +109,6 @@
                   <value>true</value>
                 </property>
               </systemProperties>
-              <!--
-              <redirectTestOutputToFile>true</redirectTestOutputToFile>          
-              -->
             </configuration>
           </execution>
           <execution>
@@ -122,7 +117,8 @@
               <goal>test</goal>
             </goals>
             <configuration>
-              <skip>false</skip>
+              <skip>true</skip>
+              <reportsDirectory>${project.build.directory}/surefire-reports/no-weave</reportsDirectory>     
               <includes>
                 <include>org/jboss/test/microcontainer/test/**/*TestCase.java</include>
               </includes>
@@ -136,7 +132,6 @@
                   <value>target/log</value>
                 </property>
               </systemProperties>
-              <redirectTestOutputToFile>true</redirectTestOutputToFile>          
             </configuration>
           </execution>
           <execution>
@@ -145,7 +140,8 @@
               <goal>test</goal>
             </goals>
             <configuration>
-              <skip>false</skip>
+              <skip>true</skip>
+              <reportsDirectory>${project.build.directory}/surefire-reports/no-weave-secure</reportsDirectory>     
               <includes>
                 <include>org/jboss/test/microcontainer/test/**/*TestCase.java</include>
               </includes>
@@ -163,13 +159,13 @@
                   <value>true</value>
                 </property>
               </systemProperties>
-              <redirectTestOutputToFile>true</redirectTestOutputToFile>          
             </configuration>
           </execution>
         </executions>
         <configuration>
           <testFailureIgnore>true</testFailureIgnore>
-          <!--<forkMode>always</forkMode>-->
+          <forkMode>always</forkMode>
+          <redirectTestOutputToFile>true</redirectTestOutputToFile>          
           <skip>true</skip>
         </configuration>
       </plugin>
@@ -231,4 +227,102 @@
       <scope>test</scope>
     </dependency>
   </dependencies>
+  <profiles>
+    <profile>
+      <id>tests-weave</id>
+      <activation>
+        <property>
+          <name>tests-weave</name>
+        </property>
+      </activation>
+      <build>
+        <plugins>
+          <plugin>
+            <groupId>org.apache.maven.plugins</groupId>
+            <artifactId>maven-surefire-plugin</artifactId>
+            <executions>
+              <execution>
+                <id>weave</id>
+                <configuration>
+                  <skip>false</skip>
+                </configuration>
+              </execution>
+            </executions>
+          </plugin>
+        </plugins>
+      </build>
+    </profile>
+    <profile>
+      <id>tests-weave-secure</id>
+      <activation>
+        <property>
+          <name>tests-weave-secure</name>
+        </property>
+      </activation>
+      <build>
+        <plugins>
+          <plugin>
+            <groupId>org.apache.maven.plugins</groupId>
+            <artifactId>maven-surefire-plugin</artifactId>
+            <executions>
+              <execution>
+                <id>weave-secure</id>
+                <configuration>
+                  <skip>false</skip>
+                </configuration>
+              </execution>
+            </executions>
+          </plugin>
+        </plugins>
+      </build>
+    </profile>
+    <profile>
+      <id>tests-no-weave</id>
+      <activation>
+        <property>
+          <name>tests-no-weave</name>
+        </property>
+      </activation>
+      <build>
+        <plugins>
+          <plugin>
+            <groupId>org.apache.maven.plugins</groupId>
+            <artifactId>maven-surefire-plugin</artifactId>
+            <executions>
+              <execution>
+                <id>no-weave</id>
+                <configuration>
+                  <skip>false</skip>
+                </configuration>
+              </execution>
+            </executions>
+          </plugin>
+        </plugins>
+      </build>
+    </profile>
+    <profile>
+      <id>tests-no-weave-secure</id>
+      <activation>
+        <property>
+          <name>tests-no-weave-secure</name>
+        </property>
+      </activation>
+      <build>
+        <plugins>
+          <plugin>
+            <groupId>org.apache.maven.plugins</groupId>
+            <artifactId>maven-surefire-plugin</artifactId>
+            <executions>
+              <execution>
+                <id>no-weave-secure</id>
+                <configuration>
+                  <skip>false</skip>
+                </configuration>
+              </execution>
+            </executions>
+          </plugin>
+        </plugins>
+      </build>
+    </profile>
+  </profiles>
 </project>
