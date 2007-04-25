@@ -36,16 +36,40 @@ import org.jboss.reflect.spi.MethodInfo;
  */
 public abstract class CallbackFactoryAdapter
 {
+   /**
+    * Create new dependency builder list item.
+    * Install or uninstall phase item.
+    *
+    * @param info callback info
+    * @param method method info
+    * @return new dependency builder list item
+    */
    protected DependencyBuilderListItem<KernelControllerContext> getDependency(CallbackInfo info, MethodInfo method)
    {
       return getDependency(info, new MethodAttributeInfo(method));
    }
 
+   /**
+    * Create new dependency builder list item.
+    * Install or uninstall phase item.
+    *
+    * @param info callback info
+    * @param property property info
+    * @return new dependency builder list item
+    */
    protected DependencyBuilderListItem<KernelControllerContext> getDependency(CallbackInfo info, PropertyInfo property)
    {
       return getDependency(info, new PropertyAttributeInfo(property));
    }
 
+   /**
+    * Create new dependency builder list item.
+    * Install or uninstall phase item.
+    *
+    * @param info callback info
+    * @param attribute attribute info
+    * @return new dependency builder list item
+    */
    protected DependencyBuilderListItem<KernelControllerContext> getDependency(CallbackInfo info, AttributeInfo attribute)
    {
       if (info.isInstallPhase())

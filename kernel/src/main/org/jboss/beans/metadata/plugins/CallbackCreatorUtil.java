@@ -165,6 +165,13 @@ public class CallbackCreatorUtil
       return createCallback(context, new MethodAttributeInfo(mi), whenRequired, dependentState, cardinality);
    }
 
+   /**
+    * Get the collection callback item factory.
+    * You can use org.jboss.dependency.collectionCallbackItemFactory name
+    * in System properties to override default implementation class.
+    *
+    * @return get the underlying factory
+    */
    public static CollectionCallbackItemFactory getCollectionFactory()
    {
       if (factory == null)
@@ -184,6 +191,7 @@ public class CallbackCreatorUtil
       return factory;
    }
 
+   // Privileged system property lookup
    private static class FactoryLookup implements PrivilegedExceptionAction<String>
    {
       public String run() throws Exception

@@ -48,6 +48,12 @@ public class AnnotationDependencyBuilder implements DependencyBuilder
             Uninstall.class
          };
 
+   /**
+    * Get expected annotation classes.
+    * Can be overridden for additional annotations.
+    *
+    * @return expected/supported annotation classes
+    */
    @SuppressWarnings("unchecked")
    protected Class<? extends Annotation>[] getExpectedAnnotations()
    {
@@ -76,6 +82,13 @@ public class AnnotationDependencyBuilder implements DependencyBuilder
       return null;
    }
 
+   /**
+    * Check if annotation exists on method.
+    *
+    * @param mi method info
+    * @param annotation annotation to check for
+    * @param list existing dependency item list
+    */
    @SuppressWarnings("unchecked")
    protected void checkAnnotation(MethodInfo mi, Class<? extends Annotation> annotation, List<DependencyBuilderListItem> list)
    {
@@ -90,6 +103,13 @@ public class AnnotationDependencyBuilder implements DependencyBuilder
       }
    }
 
+   /**
+    * Create dependency factory from anntoation info.
+    * Can be overridden for caching factory instances.
+    *
+    * @param dfl dependency factory lookup
+    * @return dependecny factory instance
+    */
    protected DependencyFactory createDependencyFactory(DependencyFactoryLookup dfl)
    {
       try
