@@ -45,8 +45,10 @@
             <configuration>
               <skip>false</skip>
               <includes>
-                <include>org/jboss/test/microcontainer/test/**/*TestCase.java</include>
+                <include>org/jboss/test/**/*TestCase.java</include>
               </includes>
+              <argLine>-Djava.system.class.loader=org.jboss.aop.standalone.SystemClassLoader</argLine>
+              <forkMode>always</forkMode>
               <systemProperties>
                 <property>
                   <name>jboss.aop.exclude</name>
@@ -65,11 +67,13 @@
                   <value>target/log</value>
                 </property>
                 <property>
-                  <name>java.system.class.loader</name>
-                  <value>org.jboss.aop.standalone.SystemClassLoader</value>
+                  <name>jboss.aop.verbose</name>
+                  <value>true</value>
                 </property>
               </systemProperties>
+              <!--
               <redirectTestOutputToFile>true</redirectTestOutputToFile>          
+              -->
             </configuration>
           </execution>
           <execution>
@@ -81,8 +85,10 @@
             <configuration>
               <skip>false</skip>
               <includes>
-                <include>org/jboss/test/microcontainer/test/**/*TestCase.java</include>
+                <include>org/jboss/test/**/*TestCase.java</include>
               </includes>
+              <argLine>-Djava.system.class.loader=org.jboss.aop.standalone.SystemClassLoader</argLine>
+              <forkMode>always</forkMode>
               <systemProperties>
                 <property>
                   <name>jboss.aop.exclude</name>
@@ -101,15 +107,13 @@
                   <value>target/log</value>
                 </property>
                 <property>
-                  <name>java.system.class.loader</name>
-                  <value>org.jboss.aop.standalone.SystemClassLoader</value>
-                </property>
-                <property>
                   <name>jboss.mc.secure</name>
                   <value>true</value>
                 </property>
               </systemProperties>
+              <!--
               <redirectTestOutputToFile>true</redirectTestOutputToFile>          
+              -->
             </configuration>
           </execution>
           <execution>
