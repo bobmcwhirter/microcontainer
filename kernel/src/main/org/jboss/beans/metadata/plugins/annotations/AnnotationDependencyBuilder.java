@@ -98,7 +98,7 @@ public class AnnotationDependencyBuilder implements DependencyBuilder
       }
       catch (Exception e)
       {
-         throw new Error("Cannot create DependencyFactory: " + e);
+         throw new Error("Cannot create DependencyFactory: " + dfl, e);
       }
    }
 }
