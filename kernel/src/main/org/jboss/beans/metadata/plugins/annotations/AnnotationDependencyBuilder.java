@@ -84,7 +84,7 @@ public class AnnotationDependencyBuilder implements DependencyBuilder
       {
          DependencyFactoryLookup dfl = callback.annotationType().getAnnotation(DependencyFactoryLookup.class);
          if (dfl == null)
-            throw new IllegalArgumentException("Illegal annotation type - no DependencyFactoryLookup meta data.");
+            throw new IllegalArgumentException("Illegal annotation type - no DependencyFactoryLookup meta data: " + annotation);
          DependencyFactory df = createDependencyFactory(dfl);
          list.add(df.createDependency(callback, mi));
       }
