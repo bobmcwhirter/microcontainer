@@ -83,7 +83,7 @@ public class ParentPolicy
       this.afterFilter = afterFilter;
       this.description = description;
       if (description == null)
-         description = "(before=" + beforeFilter + " after=" + afterFilter + ")";
+         this.description = "(before=" + beforeFilter + " after=" + afterFilter + ")";
    }
 
    /**
