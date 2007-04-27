@@ -37,18 +37,18 @@ public interface AttributeDispatchContext
    /**
     * Getter property / attribute
     *
-    * @param name
+    * @param name property / attribute name
     * @return target's property / attribute instance
-    * @throws Throwable
+    * @throws Throwable for any error
     */
    Object get(String name) throws Throwable;
 
    /**
     * Setter property / attribute
     *
-    * @param name
+    * @param name property / attribute name
     * @param value set target's property / attribute instance
-    * @throws Throwable
+    * @throws Throwable for any error
     */
    void set(String name, Object value) throws Throwable;
 }

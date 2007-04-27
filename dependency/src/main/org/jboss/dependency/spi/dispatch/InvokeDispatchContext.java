@@ -35,11 +35,11 @@ public interface InvokeDispatchContext extends AttributeDispatchContext
    /**
     * Invoke method / operation
     *
-    * @param name
-    * @param parameters
-    * @param signature
+    * @param name method name
+    * @param parameters parameter values
+    * @param signature method's parameter types / signatures
     * @return inovocation's return object
-    * @throws Throwable
+    * @throws Throwable for any error
     */
    Object invoke(String name, Object parameters[], String[] signature) throws Throwable;
 
@@ -56,7 +56,7 @@ public interface InvokeDispatchContext extends AttributeDispatchContext
     * getting the parameter actual value.
     *
     * @return context's classloader
-    * @throws Throwable
+    * @throws Throwable for any error
     */
    ClassLoader getClassLoader() throws Throwable;
 }
