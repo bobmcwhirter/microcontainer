@@ -11,6 +11,8 @@
     metatype/pom.xml
     spring-int/pom.xml
     osgi-int/pom.xml
+    classloader/pom.xml
+    varia/pom.xml
 
   This pom aggregates the subproject pom
   
@@ -65,6 +67,8 @@
     <module>deployers</module>
     <module>spring-int</module>
     <module>osgi-int</module>
+    <module>classloader</module>
+    <module>varia</module>
   </modules>
 
   <profiles>
