@@ -65,6 +65,31 @@ public class BasicCollectionCallbackItemFactory implements CollectionCallbackIte
       else if (parameterClass.isAssignableFrom(LinkedList.class))
          return new QueueCallbackItem(name, whenRequired, dependentState, cardinality, context, attribute);
       else
-         throw new IllegalArgumentException("No matching callback impl for parameter type: " + parameterClass);
+         return handleAdditionalCollectionClass(parameterClass, name, whenRequired, dependentState, cardinality, context, attribute);
+   }
+
+   /**
+    * Override for additional handling of
+    * collection callback item creaton via parameter class.
+    *
+    * @param parameterClass actual collection class
+    * @param name demand name
+    * @param whenRequired when required state
+    * @param dependentState dependent state
+    * @param cardinality the cardinality
+    * @param context invoke owner
+    * @param attribute the attribute
+    * @return new exact collection callback item
+    */
+   protected CollectionCallbackItem handleAdditionalCollectionClass(
+         Class<? extends Collection> parameterClass,
+         Class name,
+         ControllerState whenRequired,
+         ControllerState dependentState,
+         Cardinality cardinality,
+         InvokeDispatchContext context,
+         AttributeInfo attribute)
+   {
+      throw new IllegalArgumentException("No matching callback impl for parameter type: " + parameterClass);
    }
 }
