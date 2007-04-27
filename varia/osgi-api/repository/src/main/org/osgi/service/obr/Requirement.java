@@ -34,22 +34,51 @@ public interface Requirement
 
     /**
      * Return the name of the requirement.
+     *
+     * @return name
      */
     String getName();
 
     /**
      * Return the filter.
-     * 
+     *
+     * @return filter string
      */
     String getFilter();
 
+   /**
+    * Is multiple.
+    *
+    * @return true for multiple, false otherwise
+    */
     boolean isMultiple();
 
+   /**
+    * Is optional.
+    *
+    * @return true for optional, false otherwise
+    */
     boolean isOptional();
 
+   /**
+    * Is extended.
+    *
+    * @return true for extended, false otherwise
+    */
     boolean isExtend();
 
+   /**
+    * Get comment.
+    *
+    * @return the comment
+    */
     String getComment();
 
+   /**
+    * Is satisfied.
+    *
+    * @param capability the capability to check
+    * @return true for satisfied, false otherwise
+    */
     boolean isSatisfied(Capability capability);
 }

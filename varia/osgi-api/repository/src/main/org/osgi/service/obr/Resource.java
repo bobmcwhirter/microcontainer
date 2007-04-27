@@ -66,23 +66,73 @@ public interface Resource
 
     // get readable name
 
+   /**
+    * Get the properties.
+    *
+    * @return proipersties as map
+    */
     Map getProperties();
 
+   /**
+    * Get the symbolic name.
+    *
+    * @return symbolic name
+    */
     String getSymbolicName();
 
+   /**
+    * Get the presentation name.
+    *
+    * @return presentation name
+    */
     String getPresentationName();
 
+   /**
+    * Get the version.
+    *
+    * @return version
+    */
     Version getVersion();
 
+   /**
+    * Get the id.
+    *
+    * @return id
+    */
     String getId();
 
+   /**
+    * Get the URL.
+    *
+    * @return url
+    */
     URL getURL();
 
+   /**
+    * Get the requirement array.
+    *
+    * @return requirements
+    */
     Requirement[] getRequirements();
 
+   /**
+    * Get the capabiliteis array.
+    *
+    * @return capabiliteis
+    */
     Capability[] getCapabilities();
 
+   /**
+    * Get the categories.
+    *
+    * @return categories
+    */
     String[] getCategories();
 
+   /**
+    * Get the repository.
+    *
+    * @return repository
+    */
     Repository getRepository();
 }

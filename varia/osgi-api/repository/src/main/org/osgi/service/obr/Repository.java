@@ -34,12 +34,15 @@ public interface Repository
 {
     /**
      * Return the associated URL for the repository.
-     * 
+     *
+     * @return url
      */
     URL getURL();
 
     /**
      * Return the resources for this repository.
+     *
+     * @return resource
      */
     Resource[] getResources();
 

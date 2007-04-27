@@ -77,8 +77,7 @@ public interface RepositoryAdmin
     /**
      * Create a resolver.
      * 
-     * @param resource
-     * @return
+     * @return resolver
      */
     Resolver resolver();
 
@@ -87,20 +86,32 @@ public interface RepositoryAdmin
      * 
      * The url must point to a repository XML file.
      * 
-     * @param repository
-     * @return
-     * @throws Exception
+     * @param repository respository's url
+     * @return repository
+     * @throws Exception for any exception
      */
     Repository addRepository(URL repository) throws Exception;
 
+   /**
+    * Remove the repository under repository param.
+    *
+    * @param repository the respoitory url
+    * @return true if removed, false otherwise
+    */
     boolean removeRepository(URL repository);
 
     /**
      * List all the repositories.
      * 
-     * @return
+     * @return repositories array
      */
     Repository[] listRepositories();
 
+   /**
+    * Get repository by id.
+    *
+    * @param respositoryId repository id
+    * @return the respository by id
+    */
     Resource getResource(String respositoryId);
 }

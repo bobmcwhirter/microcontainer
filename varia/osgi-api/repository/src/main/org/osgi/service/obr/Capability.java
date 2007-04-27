@@ -35,7 +35,8 @@ public interface Capability
 {
     /**
      * Return the name of the capability.
-     * 
+     *
+     * @return name
      */
     String getName();
 
