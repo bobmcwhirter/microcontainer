@@ -192,7 +192,8 @@ public abstract class BaseClassLoaderDomain implements Loader
             ClassLoader hack = getClass().getClassLoader();
             if (trace)
                log.trace(this + " trying to load " + name + " using hack " + hack);
-            Class<?> result = getClass().getClassLoader().loadClass(name);
+            Class<?> result = hack.loadClass(name);
+            if (result != null)
             {
                if (trace)
                   log.trace(this + " loaded from hack " + hack + " " + ClassLoaderUtils.classToString(result));
