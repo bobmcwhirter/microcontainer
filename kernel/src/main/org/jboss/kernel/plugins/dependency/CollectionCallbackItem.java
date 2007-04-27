@@ -118,9 +118,23 @@ public abstract class CollectionCallbackItem<T extends Collection<Object>> exten
    {
       T holder = fillHolder(controller);
       if (isInstallPhase == false)
-         holder.remove(context.getTarget());
+         removeUninstallingContext(holder, context);
       execute(holder);
       addDependency(controller, context, isInstallPhase);
    }
 
+   /**
+    * Remove the uninstalling context from holder.
+    * Since the context is about to change state -
+    * not part of callback watched targets.
+    * 
+    * Can be overridden for different remove behaviour.
+    *
+    * @param holder collection holder
+    * @param context current context
+    */
+   protected void removeUninstallingContext(T holder, ControllerContext context)
+   {
+      holder.remove(context.getTarget());
+   }
 }
