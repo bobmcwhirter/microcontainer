@@ -77,8 +77,11 @@ public abstract class CollectionCallbackItem<T extends Collection<Object>> exten
    {
       if (controller instanceof KernelController)
       {
-         KernelController kernelController = (KernelController)controller;
          T holder = getCollectionParameterHolder();
+         if (holder == null)
+            throw new IllegalArgumentException("Illegal collection holder, equals null!");
+
+         KernelController kernelController = (KernelController)controller;        
          Set<KernelControllerContext> contexts = kernelController.getContexts(getIDependOn(), dependentState);
          if (contexts != null && contexts.isEmpty() == false)
          {
