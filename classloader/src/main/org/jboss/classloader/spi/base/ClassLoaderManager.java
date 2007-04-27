@@ -134,7 +134,7 @@ public class ClassLoaderManager
     * @param thread the thread
     * @param task the task
     * @return the loaded class
-    * @throws InterruptedException if it is interrupted
+    * @throws ClassNotFoundException for load exception
     */
    static Class<?> process(Thread thread, ClassLoadingTask task) throws ClassNotFoundException
    {
@@ -314,10 +314,10 @@ public class ClassLoaderManager
       if (trace)
          log.trace("ScheduleTask task=" + task + " loader=" + loader + " reschedule=" + reschedule);
       
-      Thread thread = null;
+      Thread thread;
       boolean releaseInNextTask = false;
-      ThreadTask subtask = null;
-      List<ThreadTask> taskList = null;
+      ThreadTask subtask;
+      List<ThreadTask> taskList;
 
       BaseClassLoader classLoader = null;
       if (loader instanceof BaseDelegateLoader)
@@ -352,8 +352,7 @@ public class ClassLoaderManager
          
          if (thread == null)
          {
-            Thread currentThread = Thread.currentThread();
-            boolean interrupted = currentThread.interrupted();
+            boolean interrupted = Thread.interrupted();
             int waits = 0;
             
             try
@@ -388,7 +387,7 @@ public class ClassLoaderManager
             finally
             {
                if (interrupted)
-                  currentThread.interrupt();
+                  Thread.currentThread().interrupt();
             }
          }
 
