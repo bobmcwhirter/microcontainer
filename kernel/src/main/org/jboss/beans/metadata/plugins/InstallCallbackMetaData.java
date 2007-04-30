@@ -31,6 +31,9 @@ import org.jboss.dependency.spi.CallbackItem;
  */
 public class InstallCallbackMetaData extends AbstractCallbackMetaData
 {
+   /** The serialVersionUID */
+   private static final long serialVersionUID = -8687489846562385403L;
+
    public InstallCallbackMetaData()
    {
       super();

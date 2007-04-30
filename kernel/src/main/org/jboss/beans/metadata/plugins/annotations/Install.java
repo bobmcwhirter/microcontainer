@@ -29,8 +29,8 @@ import java.lang.annotation.Target;
 import org.jboss.beans.metadata.spi.annotations.DependencyFactoryLookup;
 
 /**
- * Inistall callback.
- * @see @org.jboss.beans.metadata.plugins.annotations.Callback
+ * Install callback.
+ * @see org.jboss.beans.metadata.plugins.annotations.Callback
  *
  * @author <a href="mailto:ales.justin@jboss.com">Ales Justin</a>
  */

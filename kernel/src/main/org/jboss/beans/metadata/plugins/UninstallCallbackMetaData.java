@@ -31,6 +31,9 @@ import org.jboss.dependency.spi.CallbackItem;
  */
 public class UninstallCallbackMetaData extends AbstractCallbackMetaData
 {
+   /** The serialVersionUID */
+   private static final long serialVersionUID = 1888688138196290492L;
+
    public UninstallCallbackMetaData()
    {
       super();

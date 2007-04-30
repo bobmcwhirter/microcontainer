@@ -31,6 +31,8 @@ import java.util.Set;
 
 /**
  * Collection creator.
+ * 
+ * @param <T> the collection type
  */
 public interface CollectionCreator<T extends Collection<Object>>
 {

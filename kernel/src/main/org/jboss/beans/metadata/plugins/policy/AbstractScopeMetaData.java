@@ -55,6 +55,7 @@ public class AbstractScopeMetaData extends JBossObject implements ScopeMetaData,
       return scope;
    }
 
+   @SuppressWarnings("unchecked")
    public Object getValue(TypeInfo info, ClassLoader cl) throws Throwable
    {
       if (scope != null)
@@ -63,6 +64,13 @@ public class AbstractScopeMetaData extends JBossObject implements ScopeMetaData,
          ScopeFactoryLookup scopeFactoryLookup = annotation.getClass().getAnnotation(ScopeFactoryLookup.class);
          if (scopeFactoryLookup != null)
          {
+            // TODO do we really want to create a new factory for every annotation we look at?
+            // We could use some kind of soft reference map here (per classloader)
+            // Class<?> clazz = scopeFactoryLookup.value();
+            // WeakHashMap.put(clazz.getClassLoader(), new SoftMap())
+            // SoftValueHashMap.put(clazz.getName(), instance)
+            // If this is done, it should be moved to a common helper class
+            // that does generic construction from a factory given on the meta annotations
             ScopeFactory scopeFactory = scopeFactoryLookup.value().newInstance();
             return scopeFactory.create(annotation);
          }

@@ -35,6 +35,9 @@ import org.jboss.util.JBossStringBuilder;
  */
 class CallbackInfo extends JBossObject implements Serializable
 {
+   /** The serialVersionUID */
+   private static final long serialVersionUID = -2213756676713799799L;
+
    /* The cardinality */
    protected Cardinality cardinality;
 
