@@ -65,19 +65,19 @@ public class CircularLoadUnitTestCase extends AbstractClassLoaderTest
    {
       ClassLoaderSystem system = createClassLoaderSystemWithModifiedBootstrap();
 
-      MockClassLoaderPolicy le0 = new MockClassLoaderPolicy("le0", this);
+      MockClassLoaderPolicy le0 = new MockClassLoaderPolicy("le0");
       le0.setPathsAndPackageNames(Base.class);
       le0.setImportAll(true);
       le0.setIncluded(Base.class, UserOfBase.class);
       ClassLoader cl0 = system.registerClassLoaderPolicy(le0);
 
-      MockClassLoaderPolicy le1 = new MockClassLoaderPolicy("le1", this);
+      MockClassLoaderPolicy le1 = new MockClassLoaderPolicy("le1");
       le1.setPathsAndPackageNames(Base.class);
       le1.setImportAll(true);
       le1.setIncluded(Base.class, Support.class);
       ClassLoader cl1 = system.registerClassLoaderPolicy(le1);
 
-      MockClassLoaderPolicy all = new MockClassLoaderPolicy("all", this);
+      MockClassLoaderPolicy all = new MockClassLoaderPolicy("all");
       all.setPackageNames(Base.class);
       all.setImportAll(true);
       ClassLoader cl2 = system.registerClassLoaderPolicy(all);
@@ -113,7 +113,7 @@ public class CircularLoadUnitTestCase extends AbstractClassLoaderTest
    {
       ClassLoaderSystem system = createClassLoaderSystemWithModifiedBootstrap();
 
-      MockClassLoaderPolicy mock = new MockClassLoaderPolicy(this);
+      MockClassLoaderPolicy mock = new MockClassLoaderPolicy();
       mock.setPathsAndPackageNames(Base.class);
       mock.setIncluded(LoginInfo.class, UsrMgr.class, UserOfUsrMgr.class, UserOfLoginInfo.class);
       ClassLoader cl = system.registerClassLoaderPolicy(mock);
@@ -155,13 +155,13 @@ public class CircularLoadUnitTestCase extends AbstractClassLoaderTest
    {
       ClassLoaderSystem system = createClassLoaderSystemWithModifiedBootstrap();
 
-      MockClassLoaderPolicy any0 = new MockClassLoaderPolicy("any0", this);
+      MockClassLoaderPolicy any0 = new MockClassLoaderPolicy("any0");
       any0.setPathsAndPackageNames(Support.class);
       any0.setImportAll(true);
       any0.setIncluded(Base.class, Class0.class, Class2.class);
       ClassLoader cl0 = system.registerClassLoaderPolicy(any0);
       
-      MockClassLoaderPolicy any1 = new MockClassLoaderPolicy("any1", this);
+      MockClassLoaderPolicy any1 = new MockClassLoaderPolicy("any1");
       any1.setPathsAndPackageNames(Support.class);
       any1.setImportAll(true);
       any1.setIncluded(Class0.class, Class2.class);
@@ -178,13 +178,13 @@ public class CircularLoadUnitTestCase extends AbstractClassLoaderTest
    {
       ClassLoaderSystem system = createClassLoaderSystemWithModifiedBootstrap();
 
-      MockClassLoaderPolicy j0 = new MockClassLoaderPolicy("j0", this);
+      MockClassLoaderPolicy j0 = new MockClassLoaderPolicy("j0");
       j0.setPathsAndPackageNames(Support.class);
       j0.setImportAll(true);
       j0.setIncluded(Class0.class);
       ClassLoader cl0 = system.registerClassLoaderPolicy(j0);
 
-      MockClassLoaderPolicy j1 = new MockClassLoaderPolicy("j1", this);
+      MockClassLoaderPolicy j1 = new MockClassLoaderPolicy("j1");
       j1.setPathsAndPackageNames(Support.class);
       j1.setImportAll(true);
       j1.setIncluded(Class2.class);
@@ -212,13 +212,13 @@ public class CircularLoadUnitTestCase extends AbstractClassLoaderTest
    {
       ClassLoaderSystem system = createClassLoaderSystemWithModifiedBootstrap();
 
-      MockClassLoaderPolicy j0 = new MockClassLoaderPolicy("j0", this);
+      MockClassLoaderPolicy j0 = new MockClassLoaderPolicy("j0");
       j0.setPathsAndPackageNames(Support.class);
       j0.setImportAll(true);
       j0.setIncluded(Class0.class);
       ClassLoader cl0 = system.registerClassLoaderPolicy(j0);
 
-      MockClassLoaderPolicy j3 = new MockClassLoaderPolicy("j3", this);
+      MockClassLoaderPolicy j3 = new MockClassLoaderPolicy("j3");
       j3.setPathsAndPackageNames(Support.class);
       j3.setImportAll(true);
       j3.setIncluded(Derived.class);
@@ -236,19 +236,19 @@ public class CircularLoadUnitTestCase extends AbstractClassLoaderTest
    {
       ClassLoaderSystem system = createClassLoaderSystemWithModifiedBootstrap();
 
-      MockClassLoaderPolicy j0 = new MockClassLoaderPolicy("j0", this);
+      MockClassLoaderPolicy j0 = new MockClassLoaderPolicy("j0");
       j0.setPathsAndPackageNames(Support.class);
       j0.setImportAll(true);
       j0.setIncluded(Class0.class);
       ClassLoader cl0 = system.registerClassLoaderPolicy(j0);
 
-      MockClassLoaderPolicy j1 = new MockClassLoaderPolicy("j1", this);
+      MockClassLoaderPolicy j1 = new MockClassLoaderPolicy("j1");
       j1.setPathsAndPackageNames(Support.class);
       j1.setImportAll(true);
       j1.setIncluded(Class1.class);
       ClassLoader cl1 = system.registerClassLoaderPolicy(j1);
 
-      MockClassLoaderPolicy j2 = new MockClassLoaderPolicy("j2", this);
+      MockClassLoaderPolicy j2 = new MockClassLoaderPolicy("j2");
       j2.setPathsAndPackageNames(Support.class);
       j2.setImportAll(true);
       j2.setIncluded(Class2.class);

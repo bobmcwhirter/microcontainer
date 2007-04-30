@@ -67,7 +67,7 @@ public class ConcurrentLoaderUnitTestCase extends AbstractClassLoaderTest
    {
       ClassLoaderSystem system = createClassLoaderSystemWithModifiedBootstrap();
       
-      MockClassLoaderPolicy policy = new MockClassLoaderPolicy(this);
+      MockClassLoaderPolicy policy = new MockClassLoaderPolicy();
       policy.setPaths(Support.class);
       cl = system.registerClassLoaderPolicy(policy);
       

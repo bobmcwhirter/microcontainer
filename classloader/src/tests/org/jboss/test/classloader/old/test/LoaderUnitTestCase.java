@@ -51,7 +51,7 @@ public class LoaderUnitTestCase extends AbstractClassLoaderTest
    {
       ClassLoaderSystem system = createClassLoaderSystemWithModifiedBootstrap();
 
-      MockClassLoaderPolicy policy = new MockClassLoaderPolicy(this);
+      MockClassLoaderPolicy policy = new MockClassLoaderPolicy();
       policy.setPaths(Support.class);
       final ClassLoader cl = system.registerClassLoaderPolicy(policy);
 
@@ -72,7 +72,7 @@ public class LoaderUnitTestCase extends AbstractClassLoaderTest
    {
       ClassLoaderSystem system = createClassLoaderSystemWithModifiedBootstrap();
 
-      MockClassLoaderPolicy policy = new MockClassLoaderPolicy(this);
+      MockClassLoaderPolicy policy = new MockClassLoaderPolicy();
       policy.setPaths(Support.class);
       ClassLoader cl = system.registerClassLoaderPolicy(policy);
 

@@ -23,6 +23,8 @@ package org.jboss.test.classloader.support;
 
 import java.io.IOException;
 import java.net.URL;
+import java.security.AccessController;
+import java.security.PrivilegedAction;
 import java.security.ProtectionDomain;
 import java.util.Arrays;
 import java.util.Enumeration;
@@ -32,7 +34,6 @@ import java.util.Set;
 import org.jboss.classloader.plugins.ClassLoaderUtils;
 import org.jboss.classloader.spi.ClassLoaderPolicy;
 import org.jboss.classloader.spi.DelegateLoader;
-import org.jboss.test.classloader.AbstractClassLoaderTest;
 
 /**
  * MockClassLoaderPolicy.
@@ -56,19 +57,16 @@ public class MockClassLoaderPolicy extends ClassLoaderPolicy
    
    private boolean importAll;
    
-   private AbstractClassLoaderTest test;
-   
-   public MockClassLoaderPolicy(AbstractClassLoaderTest test)
+   public MockClassLoaderPolicy()
    {
-      this(null, test);
+      this(null);
    }
 
-   public MockClassLoaderPolicy(String name, AbstractClassLoaderTest test)
+   public MockClassLoaderPolicy(String name)
    {
       if (name == null)
          name = "mock";
       this.name = name;
-      this.test = test;
    }
    
    @Override
@@ -253,7 +251,22 @@ public class MockClassLoaderPolicy extends ClassLoaderPolicy
    @Override
    protected ProtectionDomain getProtectionDomain(String className, String path)
    {
-      return test.getProtectionDomain(className);
+      final Class clazz;
+      try
+      {
+         clazz = getClass().getClassLoader().loadClass(className);
+      }
+      catch (ClassNotFoundException e)
+      {
+         throw new Error("Could not load class: " + className, e);
+      }
+      return AccessController.doPrivileged(new PrivilegedAction<ProtectionDomain>()
+      {
+         public ProtectionDomain run()
+         {
+            return clazz.getProtectionDomain();
+         }
+      });
    }
 
    /*

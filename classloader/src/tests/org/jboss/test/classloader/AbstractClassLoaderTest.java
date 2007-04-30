@@ -21,8 +21,6 @@
  */
 package org.jboss.test.classloader;
 
-import java.security.ProtectionDomain;
-
 import org.jboss.classloader.plugins.ClassLoaderUtils;
 import org.jboss.classloader.plugins.system.DefaultClassLoaderSystem;
 import org.jboss.classloader.spi.ClassLoaderDomain;
@@ -60,29 +58,6 @@ public abstract class AbstractClassLoaderTest extends AbstractTestCaseWithSetup
       super(name);
    }
    
-   // TODO the suspension of the security manager
-   // does not play well with multi-threaded tests.
-   // We really need to give this class access to getClassLoader()
-   // and getProtectionDomain() which means figuring how Scott's
-   // properties file works in the Security policy plugin
-   public ProtectionDomain getProtectionDomain(String name)
-   {
-      SecurityManager sm = suspendSecurity();
-      try
-      {
-         Class<?> clazz = getClass().getClassLoader().loadClass(name);
-         return clazz.getProtectionDomain();
-      }
-      catch (ClassNotFoundException e)
-      {
-         throw new Error("Class not found " + name, e);
-      }
-      finally
-      {
-         resumeSecurity(sm);
-      }
-   }
-   
    protected ClassLoaderSystem createClassLoaderSystem()
    {
       // We always create a new one to avoid things in the default domain leaking across tests
@@ -114,7 +89,7 @@ public abstract class AbstractClassLoaderTest extends AbstractTestCaseWithSetup
    
    protected ClassLoader createAndRegisterMockClassLoader(ClassLoaderSystem system, String name)
    {
-      MockClassLoaderPolicy policy = new MockClassLoaderPolicy(name, this);
+      MockClassLoaderPolicy policy = new MockClassLoaderPolicy(name);
       return system.registerClassLoaderPolicy(policy);
    }
    
@@ -125,7 +100,7 @@ public abstract class AbstractClassLoaderTest extends AbstractTestCaseWithSetup
    
    protected ClassLoader createAndRegisterMockClassLoader(ClassLoaderSystem system, ClassLoaderDomain domain, String name)
    {
-      MockClassLoaderPolicy policy = new MockClassLoaderPolicy(name, this);
+      MockClassLoaderPolicy policy = new MockClassLoaderPolicy(name);
       return system.registerClassLoaderPolicy(domain, policy);
    }
    

@@ -66,7 +66,7 @@ public class CircularityErrorUnitTestCase extends AbstractClassLoaderTest
       // Thread1 throws ClassCircularityError
 
       ClassLoaderSystem system = createClassLoaderSystemWithModifiedBootstrap();
-      final ClassLoader cl = system.registerClassLoaderPolicy(new TestClassLoaderPolicy(this));
+      final ClassLoader cl = system.registerClassLoaderPolicy(new TestClassLoaderPolicy());
 
       Class cls = assertLoadClass(Support.class, cl);
 
@@ -115,9 +115,8 @@ public class CircularityErrorUnitTestCase extends AbstractClassLoaderTest
 
    public class TestClassLoaderPolicy extends MockClassLoaderPolicy
    {
-      public TestClassLoaderPolicy(AbstractClassLoaderTest test)
+      public TestClassLoaderPolicy()
       {
-         super(test);
          setPaths(Support.class);
       }
 

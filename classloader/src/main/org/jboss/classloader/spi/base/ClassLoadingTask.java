@@ -457,7 +457,7 @@ class ClassLoadingTask
    }
    
    /**
-    * Get the protected domain for a class
+    * Get the protection domain for a class
     * 
     * @param clazz the class
     * @return the protected domain or null if it doesn't have one
