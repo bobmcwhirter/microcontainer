@@ -33,7 +33,6 @@ public interface JDKChecker
     * Check wether this is a request from the JDK
     * 
     * @param name the class name
-    * @param stack the stack
     * @return true when from the JDK
     */
    boolean isJDKRequest(String name);
