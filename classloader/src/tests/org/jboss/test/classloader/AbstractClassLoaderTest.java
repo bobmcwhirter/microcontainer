@@ -23,8 +23,6 @@ package org.jboss.test.classloader;
 
 import java.security.ProtectionDomain;
 
-import junit.framework.AssertionFailedError;
-
 import org.jboss.classloader.plugins.ClassLoaderUtils;
 import org.jboss.classloader.plugins.system.DefaultClassLoaderSystem;
 import org.jboss.classloader.spi.ClassLoaderDomain;
@@ -43,23 +41,6 @@ import org.jboss.test.classloader.support.MockClassLoaderPolicy;
  */
 public abstract class AbstractClassLoaderTest extends AbstractTestCaseWithSetup
 {
-   /**
-    * Raise an assertion failed error for an error
-    * 
-    * TODO move to AbstractTestCase
-    * @param reason the reason
-    * @param cause the cause
-    */
-   protected void failure(String reason, Throwable cause)
-   {
-      getLog().error(reason, cause);
-      if (cause instanceof AssertionFailedError)
-         throw (AssertionFailedError) cause;
-      Error error = new AssertionFailedError(reason);
-      error.initCause(cause);
-      throw error;
-   }
-
    public static AbstractTestDelegate getDelegate(Class<?> clazz)
    {
       AbstractTestDelegate delegate = new AbstractTestDelegate(clazz);
@@ -79,6 +60,11 @@ public abstract class AbstractClassLoaderTest extends AbstractTestCaseWithSetup
       super(name);
    }
    
+   // TODO the suspension of the security manager
+   // does not play well with multi-threaded tests.
+   // We really need to give this class access to getClassLoader()
+   // and getProtectionDomain() which means figuring how Scott's
+   // properties file works in the Security policy plugin
    public ProtectionDomain getProtectionDomain(String name)
    {
       SecurityManager sm = suspendSecurity();

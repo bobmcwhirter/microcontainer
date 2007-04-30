@@ -22,7 +22,7 @@
     <dependency>
       <groupId>jboss</groupId>
       <artifactId>jboss-test</artifactId>
-      <version>1.0.3.GA</version>
+      <version>1.0.4-SNAPSHOT</version>
       <scope>test</scope>
     </dependency>
     <dependency>

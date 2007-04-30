@@ -35,7 +35,6 @@ import org.jboss.classloader.spi.ClassLoaderSystem;
 import org.jboss.classloader.spi.DelegateLoader;
 import org.jboss.classloader.spi.filter.FilteredDelegateLoader;
 import org.jboss.test.classloader.AbstractClassLoaderTest;
-import org.jboss.test.classloader.TestThread;
 import org.jboss.test.classloader.delegate.support.a.TestA1;
 import org.jboss.test.classloader.delegate.support.a.TestADelegateClassLoaderDomain;
 import org.jboss.test.classloader.delegate.support.a.TestAbstractFactory;
@@ -43,6 +42,7 @@ import org.jboss.test.classloader.delegate.support.a.TestSleep;
 import org.jboss.test.classloader.delegate.support.b.TestB1;
 import org.jboss.test.classloader.delegate.support.b.TestFactoryImplementation;
 import org.jboss.test.classloader.support.MockClassLoaderPolicy;
+import org.jboss.test.thread.TestThread;
 
 /**
  * DelegateUnitTestCase

@@ -24,6 +24,8 @@ package org.jboss.classloader.spi;
 import java.io.IOException;
 import java.io.InputStream;
 import java.net.URL;
+import java.security.AccessController;
+import java.security.PrivilegedAction;
 import java.security.ProtectionDomain;
 import java.util.Arrays;
 import java.util.Collections;
@@ -192,7 +194,7 @@ public abstract class ClassLoaderPolicy extends BaseClassLoaderPolicy
    {
       JDKChecker checker = JDKCheckerFactory.getChecker();
       if (checker.isJDKRequest(name))
-         return ClassLoader.getSystemClassLoader();
+         return getSystemClassLoader();
       return null;
    }
 
@@ -207,4 +209,32 @@ public abstract class ClassLoaderPolicy extends BaseClassLoaderPolicy
       if (importAll)
          builder.append(" <IMPORT-ALL>");
    }
+
+   /**
+    * Get the system classloader
+    * 
+    * @return the classloader
+    */
+   private ClassLoader getSystemClassLoader()
+   {
+      SecurityManager sm = System.getSecurityManager();
+      if (sm == null)
+         return ClassLoader.getSystemClassLoader();
+      
+      return AccessController.doPrivileged(GetSystemClassLoader.INSTANCE);
+   }
+   
+   /**
+    * GetSystemClassLoader.
+    */
+   private static class GetSystemClassLoader implements PrivilegedAction<ClassLoader>
+   {
+      private static GetSystemClassLoader INSTANCE = new GetSystemClassLoader();
+      
+      public ClassLoader run()
+      {
+         return ClassLoader.getSystemClassLoader();
+      }
+   }
+   
 }
