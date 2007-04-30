@@ -26,7 +26,7 @@ import java.util.Timer;
 import java.util.TimerTask;
 import java.util.Vector;
 
-import junit.framework.TestSuite;
+import junit.framework.Test;
 
 import org.jboss.classloader.spi.ClassLoaderSystem;
 import org.jboss.test.classloader.AbstractClassLoaderTest;
@@ -52,8 +52,8 @@ public class ConcurrentLoaderUnitTestCase extends AbstractClassLoaderTest
    private Timer newInstanceTimer;
    private int doneCount;
    private ClassLoader cl;
-
-   public static TestSuite suite()
+   
+   public static Test suite()
    {
       return suite(ConcurrentLoaderUnitTestCase.class);
    }
@@ -67,11 +67,11 @@ public class ConcurrentLoaderUnitTestCase extends AbstractClassLoaderTest
    {
       ClassLoaderSystem system = createClassLoaderSystemWithModifiedBootstrap();
       
-      MockClassLoaderPolicy policy = new MockClassLoaderPolicy();
+      MockClassLoaderPolicy policy = new MockClassLoaderPolicy(this);
       policy.setPaths(Support.class);
       cl = system.registerClassLoaderPolicy(policy);
       
-      log.debug("Creating " + NUMBER_OF_THREADS + " threads...");
+      getLog().debug("Creating " + NUMBER_OF_THREADS + " threads...");
       newInstanceTimer = new Timer(true);
       newInstanceTimer.scheduleAtFixedRate(new NewInstanceTask(), 0, 100);
       doneCount = 0;
@@ -81,15 +81,15 @@ public class ConcurrentLoaderUnitTestCase extends AbstractClassLoaderTest
          loader.start();
          loaders.add(loader);
       }
-      log.debug("All threads created");
-      Thread.sleep(2000);
+      getLog().debug("All threads created");
+      Thread.sleep(1000);
 
       synchronized(lock)
       {
-         lock.notifyAll ();
+         lock.notifyAll();
       }
       
-      log.debug("Unlocked all Loader threads");
+      getLog().debug("Unlocked all Loader threads");
       
       synchronized(lock)
       {
@@ -97,9 +97,9 @@ public class ConcurrentLoaderUnitTestCase extends AbstractClassLoaderTest
          {
             lock.wait();
          }
-         log.debug("Loader doneCount=" + doneCount);
+         getLog().debug("Loader doneCount=" + doneCount);
       }
-      log.debug("All Loaders are done");
+      getLog().debug("All Loaders are done");
       newInstanceTimer.cancel();
       
       for (Loader loader : loaders)
@@ -116,18 +116,18 @@ public class ConcurrentLoaderUnitTestCase extends AbstractClassLoaderTest
          int size = classes.size();
          Class[] theClasses = new Class[size];
          classes.toArray(theClasses);
-         log.debug("NewInstanceTask, creating " + size + " instances");
+         getLog().trace("NewInstanceTask, creating " + size + " instances");
          for (int c = 0; c < theClasses.length; ++c)
          {
             try
             {
                Class clazz = theClasses[c];
                Object obj = clazz.newInstance();
-               log.debug("Created instance=" + obj);
+               getLog().trace("Created instance=" + obj);
             }
             catch(Throwable t)
             {
-               log.error("Error instantiating class " + theClasses[c], t);
+               getLog().error("Error instantiating class " + theClasses[c], t);
             }
          }
       }
@@ -153,35 +153,35 @@ public class ConcurrentLoaderUnitTestCase extends AbstractClassLoaderTest
          {
             try
             {
-               log.debug("Thread ready: " + classid);
-               lock.wait ();
+               getLog().debug("Thread ready: " + classid);
+               lock.wait();
             }
             catch (Exception e)
             {
-               log.error("Error during wait", e);
+               getLog().error("Error during wait", e);
             }
          }
-         log.debug("loading class... " + className);
+         getLog().trace("loading class... " + className);
          for (int i = 0; i < NUMBER_OF_LOADING; ++i)
          {
-            log.debug("loading class with id " + classid + " for the " + i + "th time");
+            getLog().trace("loading class with id " + classid + " for the " + i + "th time");
             try
             {
-               log.debug("before load...");
-               long sleep = (long) (1000 * Math.random());
+               getLog().trace("before load...");
+               long sleep = (long) (500 * Math.random());
                Thread.sleep(sleep);
                Class clazz = cl.loadClass (className);
                classes.add(clazz);
                Object obj = clazz.newInstance();
-               log.debug("Class " + className + " loaded, obj=" + obj);
+               getLog().trace("Class " + className + " loaded, obj=" + obj);
             }
             catch (Throwable e)
             {
-               log.debug("Failed to load class and create instance", e);
+               getLog().debug("Failed to load class and create instance", e);
                error = e;
             }
          }
-         log.debug("...Done loading classes. " + classid);
+         getLog().debug("...Done loading classes. " + classid);
          synchronized( lock )
          {
             doneCount++;

@@ -25,6 +25,7 @@ import java.security.ProtectionDomain;
 import java.util.List;
 
 import org.jboss.classloader.spi.DelegateLoader;
+import org.jboss.logging.Logger;
 
 /**
  * Base ClassLoader policy.<p>
@@ -37,6 +38,9 @@ import org.jboss.classloader.spi.DelegateLoader;
  */
 public abstract class BaseClassLoaderPolicy
 {
+   /** The log */
+   private static final Logger log = Logger.getLogger(BaseClassLoaderPolicy.class);
+   
    /** The classloader for this policy */
    private volatile BaseClassLoader classLoader;
 
@@ -89,7 +93,9 @@ public abstract class BaseClassLoaderPolicy
    protected abstract ProtectionDomain getProtectionDomain(String className, String path);
    
    /**
-    * Transform the byte code
+    * Transform the byte code<p>
+    * 
+    * By default, this delegates to the domain
     * 
     * @param className the class name
     * @param byteCode the byte code
@@ -98,10 +104,20 @@ public abstract class BaseClassLoaderPolicy
     */
    protected byte[] transform(String className, byte[] byteCode, ProtectionDomain protectionDomain)
    {
-      // TODO should delegate to the domain by default
+      BaseClassLoaderDomain domain = getClassLoaderDomain();
+      if (domain != null)
+         domain.transform(className, byteCode, protectionDomain);
       return byteCode;
    }
 
+   /**
+    * Check whether this a request from the jdk if it is return the relevant classloader
+    * 
+    * @param name the class name
+    * @return the classloader
+    */
+   protected abstract ClassLoader isJDKRequest(String name);
+   
    /**
     * A long version of toString()
     * 
@@ -174,6 +190,7 @@ public abstract class BaseClassLoaderPolicy
    {
       if (this.domain != domain)
          throw new IllegalStateException("Policy is not a part of the domain " + this + " domain=" + domain);
+      shutdownPolicy();
       this.domain = null;
    }
    /**
@@ -181,8 +198,10 @@ public abstract class BaseClassLoaderPolicy
     * 
     * @return the classloader
     */
-   BaseClassLoader getClassLoader()
+   synchronized BaseClassLoader getClassLoader()
    {
+      if (classLoader == null)
+         throw new IllegalStateException("No classloader associated with policy therefore it is no longer registered " + toLongString());
       return classLoader;
    }
    
@@ -194,10 +213,23 @@ public abstract class BaseClassLoaderPolicy
     * @param classLoader the classloader
     * @throws IllegalStateException if the classloader is already set
     */
-   void setClassLoader(BaseClassLoader classLoader)
+   synchronized void setClassLoader(BaseClassLoader classLoader)
    {
       if (this.classLoader != null)
          throw new IllegalStateException("Policy already has a classloader previous=" + classLoader);
       this.classLoader = classLoader;
+   }
+   
+   /**
+    * Shutdown the policy<p>
+    * 
+    * The default implementation removes and shutdowns the classloader
+    */
+   synchronized protected void shutdownPolicy()
+   {
+      log.debug(toLongString() + " shutdown!");
+      BaseClassLoader classLoader = this.classLoader;
+      this.classLoader = null;
+      classLoader.shutdownClassLoader();
    }
 }

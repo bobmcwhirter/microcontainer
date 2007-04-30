@@ -24,7 +24,7 @@ package org.jboss.test.classloader.old.test;
 import java.net.URL;
 import java.util.concurrent.CountDownLatch;
 
-import junit.framework.TestSuite;
+import junit.framework.Test;
 
 import org.jboss.classloader.plugins.ClassLoaderUtils;
 import org.jboss.classloader.spi.ClassLoaderSystem;
@@ -45,12 +45,12 @@ public class CircularityErrorUnitTestCase extends AbstractClassLoaderTest
 {
    private CountDownLatch waiting = new CountDownLatch(1);
    private Throwable sawError;
-
-   public static TestSuite suite()
+   
+   public static Test suite()
    {
       return suite(CircularityErrorUnitTestCase.class);
    }
-
+   
    public CircularityErrorUnitTestCase(String name)
    {
       super(name);
@@ -66,7 +66,7 @@ public class CircularityErrorUnitTestCase extends AbstractClassLoaderTest
       // Thread1 throws ClassCircularityError
 
       ClassLoaderSystem system = createClassLoaderSystemWithModifiedBootstrap();
-      final ClassLoader cl = system.registerClassLoaderPolicy(new TestClassLoaderPolicy());
+      final ClassLoader cl = system.registerClassLoaderPolicy(new TestClassLoaderPolicy(this));
 
       Class cls = assertLoadClass(Support.class, cl);
 
@@ -86,9 +86,9 @@ public class CircularityErrorUnitTestCase extends AbstractClassLoaderTest
 
             try
             {
-               log.debug("Thread " + Thread.currentThread() + " loading...");
+               getLog().debug("Thread " + Thread.currentThread() + " loading...");
                assertLoadClass(Derived.class, cl);
-               log.debug("Thread " + Thread.currentThread() + " loading done !");
+               getLog().debug("Thread " + Thread.currentThread() + " loading done !");
             }
             catch (Throwable t)
             {
@@ -98,9 +98,9 @@ public class CircularityErrorUnitTestCase extends AbstractClassLoaderTest
       }, "CircularityErrorThread");
       thread1.start();
 
-      log.debug("Thread " + Thread.currentThread() + " waiting...");
+      getLog().debug("Thread " + Thread.currentThread() + " waiting...");
       waiting.await();
-      log.debug("Thread " + Thread.currentThread() + " woken up !");
+      getLog().debug("Thread " + Thread.currentThread() + " woken up !");
 
       // Ask this thread to trigger a loadClassInternal directly; the thread will be put to sleep
       // but the JVM has already registered the fact that
@@ -115,15 +115,16 @@ public class CircularityErrorUnitTestCase extends AbstractClassLoaderTest
 
    public class TestClassLoaderPolicy extends MockClassLoaderPolicy
    {
-      public TestClassLoaderPolicy()
+      public TestClassLoaderPolicy(AbstractClassLoaderTest test)
       {
+         super(test);
          setPaths(Support.class);
       }
 
       @Override
       public URL getResource(String name)
       {
-         log.debug(Thread.currentThread() + " is now asked to load class: " + name);
+         getLog().debug(Thread.currentThread() + " is now asked to load class: " + name);
 
          if (name.equals(ClassLoaderUtils.classNameToPath(Derived.class.getName())))
          {
@@ -133,13 +134,13 @@ public class CircularityErrorUnitTestCase extends AbstractClassLoaderTest
             // Do not release the lock on the classloader
             try
             {
-               log.debug("Loading " + name + ", waiting...");
+               getLog().debug("Loading " + name + ", waiting...");
                Thread.sleep(2000);
-               log.debug("Loading " + name + " end wait");
+               getLog().debug("Loading " + name + " end wait");
             }
             catch (InterruptedException x)
             {
-               log.debug("Sleep was interrupted", x);
+               getLog().debug("Sleep was interrupted", x);
             }
          }
 

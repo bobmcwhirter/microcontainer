@@ -33,6 +33,8 @@ import java.util.Set;
 import org.jboss.classloader.plugins.filter.PackageClassFilter;
 import org.jboss.classloader.spi.base.BaseClassLoaderPolicy;
 import org.jboss.classloader.spi.filter.FilteredDelegateLoader;
+import org.jboss.classloader.spi.jdk.JDKChecker;
+import org.jboss.classloader.spi.jdk.JDKCheckerFactory;
 import org.jboss.logging.Logger;
 
 /**
@@ -175,6 +177,22 @@ public abstract class ClassLoaderPolicy extends BaseClassLoaderPolicy
     */
    public PackageInformation getPackageInformation(String packageName)
    {
+      return null;
+   }
+
+   /**
+    * Check whether this a request from the jdk if it is return the relevant classloader<p>
+    * 
+    * By default this uses the {@Link JDKCheckerFactory} and returns the system classloader if true.
+    * 
+    * @param name the class name
+    * @return the classloader
+    */
+   protected ClassLoader isJDKRequest(String name)
+   {
+      JDKChecker checker = JDKCheckerFactory.getChecker();
+      if (checker.isJDKRequest(name))
+         return ClassLoader.getSystemClassLoader();
       return null;
    }
 

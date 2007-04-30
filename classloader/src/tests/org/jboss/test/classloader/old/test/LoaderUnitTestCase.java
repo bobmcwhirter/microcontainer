@@ -21,7 +21,7 @@
  */
 package org.jboss.test.classloader.old.test;
 
-import junit.framework.TestSuite;
+import junit.framework.Test;
 
 import org.jboss.classloader.spi.ClassLoaderSystem;
 import org.jboss.test.classloader.AbstractClassLoaderTest;
@@ -37,7 +37,7 @@ import org.jboss.test.classloader.support.MockClassLoaderPolicy;
  */
 public class LoaderUnitTestCase extends AbstractClassLoaderTest
 {
-   public static TestSuite suite()
+   public static Test suite()
    {
       return suite(LoaderUnitTestCase.class);
    }
@@ -51,12 +51,12 @@ public class LoaderUnitTestCase extends AbstractClassLoaderTest
    {
       ClassLoaderSystem system = createClassLoaderSystemWithModifiedBootstrap();
 
-      MockClassLoaderPolicy policy = new MockClassLoaderPolicy();
+      MockClassLoaderPolicy policy = new MockClassLoaderPolicy(this);
       policy.setPaths(Support.class);
       final ClassLoader cl = system.registerClassLoaderPolicy(policy);
 
       // Set our interrupted flag
-      log.debug("Setting interrupt flag");
+      getLog().debug("Setting interrupt flag");
       Thread.currentThread().interrupt();
       try
       {
@@ -72,7 +72,7 @@ public class LoaderUnitTestCase extends AbstractClassLoaderTest
    {
       ClassLoaderSystem system = createClassLoaderSystemWithModifiedBootstrap();
 
-      MockClassLoaderPolicy policy = new MockClassLoaderPolicy();
+      MockClassLoaderPolicy policy = new MockClassLoaderPolicy(this);
       policy.setPaths(Support.class);
       ClassLoader cl = system.registerClassLoaderPolicy(policy);
 

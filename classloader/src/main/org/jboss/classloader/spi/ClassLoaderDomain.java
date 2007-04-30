@@ -332,16 +332,6 @@ public class ClassLoaderDomain extends BaseClassLoaderDomain implements Loader
    }
 
    /**
-    * Get the parent classloader
-    * 
-    * @return the parent classloader
-    */
-   protected ClassLoader getParentClassLoader()
-   {
-      return getClass().getClassLoader();
-   }
-
-   /**
     * Fixup the parent to the our classloader as parent if we don't have an explicit one
     */
    private void fixUpParent()

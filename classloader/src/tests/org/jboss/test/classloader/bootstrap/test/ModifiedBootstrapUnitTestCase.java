@@ -25,7 +25,7 @@ import java.util.List;
 
 import javax.naming.Context;
 
-import junit.framework.TestSuite;
+import junit.framework.Test;
 
 import org.jboss.classloader.spi.ClassLoaderDomain;
 import org.jboss.test.classloader.AbstractClassLoaderTest;
@@ -38,7 +38,7 @@ import org.jboss.test.classloader.AbstractClassLoaderTest;
  */
 public class ModifiedBootstrapUnitTestCase extends AbstractClassLoaderTest
 {
-   public static TestSuite suite()
+   public static Test suite()
    {
       return suite(ModifiedBootstrapUnitTestCase.class);
    }

@@ -21,8 +21,9 @@
  */
 package org.jboss.test.classloader;
 
+import java.security.ProtectionDomain;
+
 import junit.framework.AssertionFailedError;
-import junit.framework.TestSuite;
 
 import org.jboss.classloader.plugins.ClassLoaderUtils;
 import org.jboss.classloader.plugins.system.DefaultClassLoaderSystem;
@@ -30,7 +31,8 @@ import org.jboss.classloader.spi.ClassLoaderDomain;
 import org.jboss.classloader.spi.ClassLoaderPolicy;
 import org.jboss.classloader.spi.ClassLoaderSystem;
 import org.jboss.classloader.spi.ParentPolicy;
-import org.jboss.test.BaseTestCase;
+import org.jboss.test.AbstractTestCaseWithSetup;
+import org.jboss.test.AbstractTestDelegate;
 import org.jboss.test.classloader.support.MockClassLoaderPolicy;
 
 /**
@@ -39,20 +41,8 @@ import org.jboss.test.classloader.support.MockClassLoaderPolicy;
  * @author <a href="adrian@jboss.com">Adrian Brock</a>
  * @version $Revision: 1.1 $
  */
-public abstract class AbstractClassLoaderTest extends BaseTestCase
+public abstract class AbstractClassLoaderTest extends AbstractTestCaseWithSetup
 {
-   /**
-    * Create a new testsuite for the class
-    * 
-    * TODO move to BaseTestCase
-    * @param clazz the class
-    * @return the suite
-    */
-   public static TestSuite suite(Class<?> clazz)
-   {
-      return new TestSuite(clazz);
-   }
-
    /**
     * Raise an assertion failed error for an error
     * 
@@ -62,17 +52,49 @@ public abstract class AbstractClassLoaderTest extends BaseTestCase
     */
    protected void failure(String reason, Throwable cause)
    {
-      log.error(reason, cause);
+      getLog().error(reason, cause);
       if (cause instanceof AssertionFailedError)
          throw (AssertionFailedError) cause;
       Error error = new AssertionFailedError(reason);
       error.initCause(cause);
       throw error;
    }
-   
+
+   public static AbstractTestDelegate getDelegate(Class<?> clazz)
+   {
+      AbstractTestDelegate delegate = new AbstractTestDelegate(clazz);
+      delegate.enableSecurity = true;
+      return delegate;
+   }
+
+   @Override
+   protected void setUp() throws Exception
+   {
+      super.setUp();
+      configureLogging();
+   }
+
    public AbstractClassLoaderTest(String name)
    {
       super(name);
+   }
+   
+   public ProtectionDomain getProtectionDomain(String name)
+   {
+      SecurityManager sm = suspendSecurity();
+      try
+      {
+         Class<?> clazz = getClass().getClassLoader().loadClass(name);
+         return clazz.getProtectionDomain();
+      }
+      catch (ClassNotFoundException e)
+      {
+         throw new Error("Class not found " + name, e);
+      }
+      finally
+      {
+         resumeSecurity(sm);
+      }
    }
    
    protected ClassLoaderSystem createClassLoaderSystem()
@@ -91,7 +113,7 @@ public abstract class AbstractClassLoaderTest extends BaseTestCase
    protected ClassLoader createClassLoaderSystemWithModifiedBootstrapAndMockClassLoader()
    {
       ClassLoaderSystem system = createClassLoaderSystemWithModifiedBootstrap();
-      return createMockClassLoader(system);
+      return createAndRegisterMockClassLoader(system);
    }
    
    protected ClassLoader registerPolicyWithDefaultDomain(ClassLoaderPolicy policy, ClassLoaderSystem system)
@@ -99,25 +121,25 @@ public abstract class AbstractClassLoaderTest extends BaseTestCase
       return system.registerClassLoaderPolicy(policy);
    }
    
-   protected ClassLoader createMockClassLoader(ClassLoaderSystem system)
+   protected ClassLoader createAndRegisterMockClassLoader(ClassLoaderSystem system)
    {
-      return createMockClassLoader(system, "mock");
+      return createAndRegisterMockClassLoader(system, "mock");
    }
    
-   protected ClassLoader createMockClassLoader(ClassLoaderSystem system, String name)
+   protected ClassLoader createAndRegisterMockClassLoader(ClassLoaderSystem system, String name)
    {
-      MockClassLoaderPolicy policy = new MockClassLoaderPolicy(name);
+      MockClassLoaderPolicy policy = new MockClassLoaderPolicy(name, this);
       return system.registerClassLoaderPolicy(policy);
    }
    
-   protected ClassLoader createMockClassLoader(ClassLoaderSystem system, ClassLoaderDomain domain)
+   protected ClassLoader createAndRegisterMockClassLoader(ClassLoaderSystem system, ClassLoaderDomain domain)
    {
-      return createMockClassLoader(system, domain, "mock");
+      return createAndRegisterMockClassLoader(system, domain, "mock");
    }
    
-   protected ClassLoader createMockClassLoader(ClassLoaderSystem system, ClassLoaderDomain domain, String name)
+   protected ClassLoader createAndRegisterMockClassLoader(ClassLoaderSystem system, ClassLoaderDomain domain, String name)
    {
-      MockClassLoaderPolicy policy = new MockClassLoaderPolicy(name);
+      MockClassLoaderPolicy policy = new MockClassLoaderPolicy(name, this);
       return system.registerClassLoaderPolicy(domain, policy);
    }
    
@@ -133,8 +155,18 @@ public abstract class AbstractClassLoaderTest extends BaseTestCase
    
    protected void assertClassLoader(Class<?> clazz, ClassLoader expected)
    {
-      log.debug("Should be the expected classloader expected=" + expected + " actual=" + clazz.getClassLoader());
-      assertEquals("Should be the expected classloader", expected, clazz.getClassLoader());
+      ClassLoader classLoader = null;
+      SecurityManager sm = suspendSecurity();
+      try
+      {
+         classLoader = clazz.getClassLoader();
+      }
+      finally
+      {
+         resumeSecurity(sm);
+      }
+      getLog().debug("Should be the expected classloader expected=" + expected + " actual=" + classLoader);
+      assertEquals("Should be the expected classloader", expected, classLoader);
    }
    
    protected Class<?> assertLoadClass(Class<?> reference, ClassLoader start)
@@ -173,7 +205,7 @@ public abstract class AbstractClassLoaderTest extends BaseTestCase
       try
       {
          result = start.loadClass(name);
-         log.debug("Got class: " + ClassLoaderUtils.classToString(result) + " for " + name + " from " + start);
+         getLog().debug("Got class: " + ClassLoaderUtils.classToString(result) + " for " + name + " from " + start);
       }
       catch (ClassNotFoundException e)
       {
@@ -236,7 +268,7 @@ public abstract class AbstractClassLoaderTest extends BaseTestCase
       try
       {
          result = Class.forName(name, true, start);
-         log.debug("Got class: " + ClassLoaderUtils.classToString(result) + " for " + name + " from " + start);
+         getLog().debug("Got class: " + ClassLoaderUtils.classToString(result) + " for " + name + " from " + start);
       }
       catch (ClassNotFoundException e)
       {

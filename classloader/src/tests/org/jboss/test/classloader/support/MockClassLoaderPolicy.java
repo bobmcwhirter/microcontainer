@@ -25,12 +25,14 @@ import java.io.IOException;
 import java.net.URL;
 import java.security.ProtectionDomain;
 import java.util.Arrays;
+import java.util.Enumeration;
 import java.util.List;
 import java.util.Set;
 
 import org.jboss.classloader.plugins.ClassLoaderUtils;
 import org.jboss.classloader.spi.ClassLoaderPolicy;
 import org.jboss.classloader.spi.DelegateLoader;
+import org.jboss.test.classloader.AbstractClassLoaderTest;
 
 /**
  * MockClassLoaderPolicy.
@@ -54,16 +56,19 @@ public class MockClassLoaderPolicy extends ClassLoaderPolicy
    
    private boolean importAll;
    
-   public MockClassLoaderPolicy()
+   private AbstractClassLoaderTest test;
+   
+   public MockClassLoaderPolicy(AbstractClassLoaderTest test)
    {
-      this(null);
+      this(null, test);
    }
 
-   public MockClassLoaderPolicy(String name)
+   public MockClassLoaderPolicy(String name, AbstractClassLoaderTest test)
    {
       if (name == null)
          name = "mock";
       this.name = name;
+      this.test = test;
    }
    
    @Override
@@ -76,7 +81,7 @@ public class MockClassLoaderPolicy extends ClassLoaderPolicy
    {
       this.delegates = delegates;
    }
-
+   
    public String[] getPaths()
    {
       return paths;
@@ -204,17 +209,63 @@ public class MockClassLoaderPolicy extends ClassLoaderPolicy
    }
 
    @Override
-   public void getResources(String name, Set<URL> urls) throws IOException
+   public void getResources(String path, Set<URL> urls) throws IOException
    {
-      // TODO getResources
-      throw new org.jboss.util.NotImplementedException("getResources");
-      
-   }
+      if (paths == null)
+         return;
 
+      if (excluded != null)
+      {
+         for (String excludedPath : excluded)
+         {
+            if (excludedPath.equals(path))
+               return;
+         }
+      }
+
+      if (included != null)
+      {
+         boolean include = false;
+         for (String includedPath : included)
+         {
+            if (includedPath.equals(path))
+            {
+               include = true;
+               break;
+            }
+         }
+         if (include == false)
+            return;
+      }
+      
+      ClassLoader parent = getClass().getClassLoader();
+      for (int i = 0; i < paths.length; ++i)
+      {
+         if (path.startsWith(paths[i]))
+         {
+            Enumeration<URL> enumeration = parent.getResources(path);
+            while (enumeration.hasMoreElements())
+               urls.add(enumeration.nextElement());
+         }
+      }
+   }
+   
    @Override
    protected ProtectionDomain getProtectionDomain(String className, String path)
    {
-      return getClass().getProtectionDomain();
+      return test.getProtectionDomain(className);
+   }
+
+   /*
+    * Overridden to not load jboss classes
+    * this is so we don't expose classes from the classpath
+    * that we haven't explicitly declared in the policy
+    */
+   protected ClassLoader isJDKRequest(String name)
+   {
+      if (name.startsWith("org.jboss."))
+         return null;
+      return super.isJDKRequest(name);
    }
 
    @Override 

@@ -104,7 +104,7 @@ public class FilteredDelegateLoader extends DelegateLoader
          return super.getResource(name, resourceName);
       }
       if (trace)
-         log.trace(this + " " + name + " NOT match filter=" + filter);
+         log.trace(this + " " + name + " does NOT match filter=" + filter);
       return null;
    }
 
@@ -118,7 +118,7 @@ public class FilteredDelegateLoader extends DelegateLoader
          super.getResources(name, resourceName, urls);
       }
       if (trace)
-         log.trace(this + " " + name + " matches does NOT match filter=" + filter);
+         log.trace(this + " " + name + " does NOT match filter=" + filter);
    }
 
    @Override

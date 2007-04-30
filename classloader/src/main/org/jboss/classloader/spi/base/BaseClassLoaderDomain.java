@@ -23,6 +23,8 @@ package org.jboss.classloader.spi.base;
 
 import java.io.IOException;
 import java.net.URL;
+import java.security.ProtectionDomain;
+import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
@@ -41,7 +43,6 @@ import org.jboss.logging.Logger;
  * This class hides some of the implementation details and allows
  * package access to the protected methods.
  *
- * TODO add handling of domain shutdown
  * TODO add caching (needs to be per classloader when not AllExports policy)
  * @author <a href="adrian@jboss.com">Adrian Brock</a>
  * @version $Revision: 1.1 $
@@ -51,6 +52,9 @@ public abstract class BaseClassLoaderDomain implements Loader
    /** The log */
    private static final Logger log = Logger.getLogger(BaseClassLoaderDomain.class);
 
+   /** The classloader system to which we belong */
+   private BaseClassLoaderSystem system;
+   
    /** The classloaders  in the order they were registered */
    private List<ClassLoaderInformation> classLoaders = new CopyOnWriteArrayList<ClassLoaderInformation>();
 
@@ -63,6 +67,71 @@ public abstract class BaseClassLoaderDomain implements Loader
    /** Keep track of the added order */
    private int order = 0;
    
+   /**
+    * Get the classloader system
+    * 
+    * @return the classloader system
+    */
+   synchronized BaseClassLoaderSystem getClassLoaderSystem()
+   {
+      return system;
+   }
+   
+   /**
+    * Get the classloader system
+    * 
+    * @param system the classloader system
+    */
+   synchronized void setClassLoaderSystem(BaseClassLoaderSystem system)
+   {
+      if (system == null)
+         shutdownDomain();
+      this.system = system;
+   }
+
+   /**
+    * Shutdown the domain<p>
+    * 
+    * The default implementation just unregisters all classloaders
+    */
+   protected void shutdownDomain()
+   {
+      log.debug(toLongString() + " shutdown!");
+
+      // Unregister all classloaders
+      while (true)
+      {
+         Iterator<ClassLoaderInformation> iterator = classLoaders.iterator();
+         if (iterator.hasNext() == false)
+            break;
+
+         while (iterator.hasNext())
+         {
+            ClassLoaderInformation info = iterator.next();
+            if (info != null)
+               unregisterClassLoader(info.getClassLoader());
+         }
+      }
+   }
+   
+   /**
+    * Transform the byte code<p>
+    * 
+    * By default, this delegates to the classloader system
+    * 
+    * @param className the class name
+    * @param byteCode the byte code
+    * @param protectionDomain the protection domain
+    * @return the transformed byte code
+    */
+   protected byte[] transform(String className, byte[] byteCode, ProtectionDomain protectionDomain)
+   {
+      BaseClassLoaderSystem system = getClassLoaderSystem();
+      if (system != null)
+         system.transform(className, byteCode, protectionDomain);
+      return byteCode;
+   }
+
    /**
     * Invoked before classloading is attempted to allow a preload attempt, e.g. from the parent
     * 
@@ -118,6 +187,9 @@ public abstract class BaseClassLoaderDomain implements Loader
    Class<?> loadClass(BaseClassLoader classLoader, String name, boolean allExports) throws ClassNotFoundException
    {
       boolean trace = log.isTraceEnabled();
+
+      if (getClassLoaderSystem() == null)
+         throw new IllegalStateException("Domain is not registered with a classloader system: " + toLongString());
       
       String path = ClassLoaderUtils.classNameToPath(name);
       
@@ -187,17 +259,20 @@ public abstract class BaseClassLoaderDomain implements Loader
             loader = findAfterLoader(path, name);
 
          // Finally see whether this is the JDK assuming it can load its classes from any classloader
-         if (loader == null && ClassLoaderUtils.isRequestFromJDK())
+         if (loader == null)
          {
-            ClassLoader hack = getClass().getClassLoader();
-            if (trace)
-               log.trace(this + " trying to load " + name + " using hack " + hack);
-            Class<?> result = hack.loadClass(name);
-            if (result != null)
+            ClassLoader hack = policy.isJDKRequest(name);
+            if (hack != null)
             {
                if (trace)
-                  log.trace(this + " loaded from hack " + hack + " " + ClassLoaderUtils.classToString(result));
-               return result;
+                  log.trace(this + " trying to load " + name + " using hack " + hack);
+               Class<?> result = hack.loadClass(name);
+               if (result != null)
+               {
+                  if (trace)
+                     log.trace(this + " loaded from hack " + hack + " " + ClassLoaderUtils.classToString(result));
+                  return result;
+               }
             }
          }
       }
@@ -262,6 +337,9 @@ public abstract class BaseClassLoaderDomain implements Loader
    URL getResource(BaseClassLoader classLoader, String name, String resourceName, boolean allExports)
    {
       boolean trace = log.isTraceEnabled();
+
+      if (getClassLoaderSystem() == null)
+         throw new IllegalStateException("Domain is not registered with a classloader system: " + toLongString());
 
       // Try the before attempt
       URL result = beforeGetResource(name, resourceName);
@@ -386,6 +464,9 @@ public abstract class BaseClassLoaderDomain implements Loader
    void getResources(BaseClassLoader classLoader, String name, String resourceName, Set<URL> urls, boolean allExports) throws IOException
    {
       boolean trace = log.isTraceEnabled();
+
+      if (getClassLoaderSystem() == null)
+         throw new IllegalStateException("Domain is not registered with a classloader system: " + toLongString());
 
       // Try the before attempt
       beforeGetResources(name, resourceName, urls);
@@ -517,7 +598,17 @@ public abstract class BaseClassLoaderDomain implements Loader
    {
       // nothing
    }
-   
+
+   /**
+    * Get the parent classloader
+    * 
+    * @return the parent classloader
+    */
+   protected ClassLoader getParentClassLoader()
+   {
+      return getClass().getClassLoader();
+   }
+
    /**
     * Register a classloader 
     * 
@@ -527,6 +618,9 @@ public abstract class BaseClassLoaderDomain implements Loader
    {
       log.debug(this + " registerClassLoader " + classLoader.toLongString());
 
+      if (getClassLoaderSystem() == null)
+         throw new IllegalStateException("Domain is not registered with a classloader system: " + toLongString());
+      
       try
       {
          beforeRegisterClassLoader(classLoader, classLoader.getPolicy());

@@ -29,10 +29,6 @@ import java.security.CodeSource;
 import java.security.PrivilegedAction;
 import java.security.ProtectionDomain;
 
-import org.jboss.classloader.spi.base.BaseClassLoader;
-import org.jboss.classloader.spi.base.BaseClassLoaderDomain;
-import org.jboss.util.UnreachableStatementException;
-
 /**
  * ClassLoaderUtils.
  * 
@@ -41,9 +37,6 @@ import org.jboss.util.UnreachableStatementException;
  */
 public class ClassLoaderUtils
 {
-   /** The hack to the security manager */
-   private static final Hack hack = new Hack();
-   
    /**
     * Check the class name makes sense
     * 
@@ -157,35 +150,6 @@ public class ClassLoaderUtils
    }
    
    /**
-    * Used to check whether the classloading request is from the jdk<p>
-    * 
-    * This is a hack because of broken behaviour by the JDKs where they assume
-    * they can load their own classes from any classloader.
-    * 
-    * @return true when it is a JDK request
-    */
-   public static boolean isRequestFromJDK()
-   {
-      Class[] context = hack.getClassContext();
-      for (Class clazz : context)
-      {
-         // Review others?
-         if (Hack.class.isAssignableFrom(clazz) == false &&
-             ClassLoaderUtils.class.isAssignableFrom(clazz) == false &&
-             BaseClassLoaderDomain.class.isAssignableFrom(clazz) == false &&
-             BaseClassLoader.class.isAssignableFrom(clazz) == false &&
-             ClassLoader.class.isAssignableFrom(clazz) == false &&
-             Class.class.isAssignableFrom(clazz) == false)
-         {
-            ClassLoader cl = clazz.getClassLoader();
-            // Review: I don't think this true for all JDKs? i.e. JDK classes have no classloader.
-            return (cl == null);
-         }
-      }
-      throw new UnreachableStatementException();
-   }
-   
-   /**
     * Formats the class as a string
     * 
     * @param clazz the class
@@ -217,11 +181,32 @@ public class ClassLoaderUtils
 
       builder.append(clazz);
       builder.append('{');
-      ClassLoader cl = clazz.getClassLoader();
+      ClassLoader cl = getClassLoader(clazz);
       builder.append("cl=").append(cl);
       builder.append(" codeSource=");
       builder.append(getCodeSource(clazz));
       builder.append("}");
+   }
+   
+   /**
+    * Get the classloader for a class
+    * 
+    * @param clazz the class
+    * @return the classloader or null if it doesn't have one
+    */
+   private static final ClassLoader getClassLoader(final Class<?> clazz)
+   {
+      SecurityManager sm = System.getSecurityManager();
+      if (sm == null)
+         return clazz.getClassLoader();
+      
+      return AccessController.doPrivileged(new PrivilegedAction<ClassLoader>()
+      {
+         public ClassLoader run()
+         {
+            return clazz.getClassLoader();
+         }
+      });
    }
    
    /**
@@ -257,19 +242,5 @@ public class ClassLoaderUtils
       if (protectionDomain == null)
          return null;
       return protectionDomain.getCodeSource();
-   }
-   
-   /**
-    * Extend the security manager so we can get access to the stacktrace
-    * 
-    * TODO move this hack somewhere else?
-    */
-   private static class Hack extends SecurityManager
-   {
-      @Override
-      public Class[] getClassContext()
-      {
-         return super.getClassContext();
-      }
    }
 }

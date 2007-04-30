@@ -21,7 +21,10 @@
  */
 package org.jboss.classloader.spi;
 
+import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.Iterator;
+import java.util.List;
 import java.util.Map;
 
 import org.jboss.classloader.plugins.system.ClassLoaderSystemBuilder;
@@ -51,6 +54,9 @@ public abstract class ClassLoaderSystem extends BaseClassLoaderSystem
    
    /** The registered domains by name */
    private Map<String, ClassLoaderDomain> registeredDomains = new HashMap<String, ClassLoaderDomain>();
+
+   /** Whether the system is shutdown */
+   private boolean shutdown = false;
    
    /**
     * Get the classloading system instance
@@ -69,6 +75,9 @@ public abstract class ClassLoaderSystem extends BaseClassLoaderSystem
     */
    public synchronized ClassLoaderDomain getDefaultDomain()
    {
+      if (shutdown)
+         throw new IllegalStateException("The classloader system is shutdown: " + toLongString());
+      
       // Already constructed
       if (defaultDomain != null)
          return defaultDomain;
@@ -165,6 +174,10 @@ public abstract class ClassLoaderSystem extends BaseClassLoaderSystem
    {
       if (name == null)
          throw new IllegalArgumentException("Null name");
+
+      if (shutdown)
+         throw new IllegalStateException("The classloader system is shutdown: " + toLongString());
+
       ClassLoaderDomain result = registeredDomains.get(name);
       
       // See whether this is the default domain
@@ -221,8 +234,11 @@ public abstract class ClassLoaderSystem extends BaseClassLoaderSystem
 
    private void internalRegisterDomain(String name, ClassLoaderDomain domain)
    {
-      
+      if (shutdown)
+         throw new IllegalStateException("The classloader system is shutdown: " + toLongString());
+
       registeredDomains.put(name, domain);
+      super.registerDomain(domain);
       
       log.debug(this + " registered domain=" + domain.toLongString());
    }
@@ -236,11 +252,11 @@ public abstract class ClassLoaderSystem extends BaseClassLoaderSystem
     */
    public synchronized void unregisterDomain(ClassLoaderDomain domain)
    {
-      
       if (isDomainRegistered(domain) == false)
          throw new IllegalStateException("Domain is not registered " + domain);
       
       registeredDomains.remove(domain.getName());
+      super.unregisterDomain(domain);
       
       log.debug(this + " unregistered domain=" + domain.toLongString());
    }
@@ -262,36 +278,6 @@ public abstract class ClassLoaderSystem extends BaseClassLoaderSystem
    }
    
    /**
-    * Unregister a policy with the default domain<p>
-    * 
-    * Equivalent to {@link #unregisterClassLoaderPolicy(ClassLoaderDomain, ClassLoaderPolicy)} using
-    * {@link #getDefaultDomain()} as the ClassLoaderDomain
-    * 
-    * @param policy the policy
-    * @throws IllegalArgumentException if a parameter is null
-    * @throws IllegalStateException if the policy is not registered with the default domain  
-    */
-   public void unregisterClassLoaderPolicy(ClassLoaderPolicy policy)
-   {
-      unregisterClassLoaderPolicy(getDefaultDomain(), policy);
-   }
-   
-   /**
-    * Unregister a classloader with the default domain<p>
-    * 
-    * Equivalent to {@link #unregisterClassLoader(ClassLoaderDomain, ClassLoader)} using
-    * {@link #getDefaultDomain()} as the ClassLoaderDomain
-    * 
-    * @param classLoader classLoader
-    * @throws IllegalArgumentException if a parameter is null
-    * @throws IllegalStateException if the policy is not registered with the default domain  
-    */
-   public void unregisterClassLoader(ClassLoader classLoader)
-   {
-      unregisterClassLoader(getDefaultDomain(), classLoader);
-   }
-   
-   /**
     * Register a policy with a domain
     * 
     * @param domain the domain
@@ -304,36 +290,72 @@ public abstract class ClassLoaderSystem extends BaseClassLoaderSystem
    {
       if (isDomainRegistered(domain) == false)
          throw new IllegalArgumentException("Domain is not registered: " + domain);
+      
+      synchronized (this)
+      {
+         if (shutdown)
+            throw new IllegalStateException("The classloader system is shutdown: " + toLongString());
+      }
       return super.registerClassLoaderPolicy(domain, policy);
    }
    
    /**
-    * Unregister a policy with a domain
+    * Unregister a policy from its domain
     * 
-    * @param domain the domain
     * @param policy the policy
     * @throws IllegalArgumentException if a parameter is null
-    * @throws IllegalStateException if the domain is not registered or if the policy is not registered with the domain  
+    * @throws IllegalStateException if the policy is not registered with the default domain  
     */
-   public void unregisterClassLoaderPolicy(ClassLoaderDomain domain, ClassLoaderPolicy policy)
+   public void unregisterClassLoaderPolicy(ClassLoaderPolicy policy)
    {
-      if (isDomainRegistered(domain) == false)
-         throw new IllegalArgumentException("Domain is not registered: " + domain);
-      super.unregisterClassLoaderPolicy(domain, policy);
+      super.unregisterClassLoaderPolicy(policy);
    }
    
    /**
-    * Unregister a policy with a domain
+    * Unregister a classloader from its domain
     * 
-    * @param domain the domain
-    * @param classLoader the class loader
+    * @param classLoader classLoader
     * @throws IllegalArgumentException if a parameter is null
-    * @throws IllegalStateException if the policy is not registered with the domain  
+    * @throws IllegalStateException if the policy is not registered with the default domain  
     */
-   public void unregisterClassLoader(ClassLoaderDomain domain, ClassLoader classLoader)
+   public void unregisterClassLoader(ClassLoader classLoader)
    {
-      if (isDomainRegistered(domain) == false)
-         throw new IllegalArgumentException("Domain is not registered: " + domain);
-      super.unregisterClassLoader(domain, classLoader);
+      super.unregisterClassLoader(classLoader);
+   }
+
+   /**
+    * Shutdown the classloader system<p>
+    * 
+    * Unregisters all domains by default
+    */
+   public synchronized void shutdown()
+   {
+      if (shutdown)
+         return;
+
+      log.debug(toLongString() + " SHUTDOWN!");
+      shutdown = true;
+      
+      while (true)
+      {
+         List<ClassLoaderDomain> domains = new ArrayList<ClassLoaderDomain>(registeredDomains.values());
+         Iterator<ClassLoaderDomain> iterator = domains.iterator();
+         if (iterator.hasNext() == false)
+            break;
+         
+         while (iterator.hasNext())
+         {
+            ClassLoaderDomain domain = iterator.next();
+            unregisterDomain(domain);
+         }
+      }
+   }
+   
+   @Override
+   protected void toLongString(StringBuilder builder)
+   {
+      if (shutdown)
+         builder.append("SHUTDOWN! ");
+      super.toLongString(builder);
    }
 }

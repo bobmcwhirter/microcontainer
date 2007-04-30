@@ -21,7 +21,8 @@
  */
 package org.jboss.classloader.spi.base;
 
-import org.jboss.classloader.spi.ClassLoaderDomain;
+import java.security.ProtectionDomain;
+
 import org.jboss.classloader.spi.ClassLoaderPolicy;
 
 /**
@@ -68,6 +69,32 @@ public abstract class BaseClassLoaderSystem
    }
 
    /**
+    * Register a domain
+    * 
+    * @param domain the domain to register
+    * @throws IllegalArgumentException for a null domain
+    */
+   protected void registerDomain(BaseClassLoaderDomain domain)
+   {
+      if (domain == null)
+         throw new IllegalArgumentException("Null domain");
+      domain.setClassLoaderSystem(this);
+   }
+
+   /**
+    * Unregister a domain
+    * 
+    * @param domain the domain to unregister
+    * @throws IllegalArgumentException for a null domain
+    */
+   protected void unregisterDomain(BaseClassLoaderDomain domain)
+   {
+      if (domain == null)
+         throw new IllegalArgumentException("Null domain");
+      domain.setClassLoaderSystem(null);
+   }
+   
+   /**
     * Register a policy with a domain
     * 
     * @param domain the domain
@@ -89,15 +116,12 @@ public abstract class BaseClassLoaderSystem
    /**
     * Unregister a policy with a domain
     * 
-    * @param domain the domain
     * @param policy the policy
     * @throws IllegalArgumentException if a parameter is null
     * @throws IllegalStateException if the policy is not registered with the domain  
     */
-   protected void unregisterClassLoaderPolicy(BaseClassLoaderDomain domain, ClassLoaderPolicy policy)
+   protected void unregisterClassLoaderPolicy(ClassLoaderPolicy policy)
    {
-      if (domain == null)
-         throw new IllegalArgumentException("Null domain");
       if (policy == null)
          throw new IllegalArgumentException("Null policy");
       
@@ -105,21 +129,21 @@ public abstract class BaseClassLoaderSystem
       BaseClassLoader classLoader = basePolicy.getClassLoader();
       if (classLoader == null)
          throw new IllegalStateException("Policy has no associated classloader, it is therefore not registered with a domain. " + policy.toLongString());
+      BaseClassLoaderDomain domain = basePolicy.getClassLoaderDomain();
+      if (domain == null)
+         throw new IllegalStateException("Policy has no domain " + policy.toLongString());
       domain.unregisterClassLoader(classLoader);
    }
    
    /**
     * Unregister a policy with a domain
     * 
-    * @param domain the domain
     * @param classLoader the class loader
     * @throws IllegalArgumentException if a parameter is null
     * @throws IllegalStateException if the policy is not registered with the domain  
     */
-   protected void unregisterClassLoader(ClassLoaderDomain domain, ClassLoader classLoader)
+   protected void unregisterClassLoader(ClassLoader classLoader)
    {
-      if (domain == null)
-         throw new IllegalArgumentException("Null domain");
       if (classLoader == null)
          throw new IllegalArgumentException("Null classLoader");
       
@@ -127,7 +151,7 @@ public abstract class BaseClassLoaderSystem
          throw new IllegalStateException("ClassLoader is not the correct type and therefore not registered: " + classLoader);
       
       BaseClassLoader baseClassLoader = (BaseClassLoader) classLoader;
-      unregisterClassLoaderPolicy(domain, baseClassLoader.getPolicy());
+      unregisterClassLoaderPolicy(baseClassLoader.getPolicy());
    }
 
    /**
@@ -140,5 +164,20 @@ public abstract class BaseClassLoaderSystem
    protected BaseClassLoader createClassLoader(ClassLoaderPolicy policy)
    {
       return new BaseClassLoader(policy);
+   }
+   
+   /**
+    * Transform the byte code<p>
+    *
+    * By default this does nothing
+    * 
+    * @param className the class name
+    * @param byteCode the byte code
+    * @param protectionDomain the protection domain
+    * @return the transformed byte code
+    */
+   protected byte[] transform(String className, byte[] byteCode, ProtectionDomain protectionDomain)
+   {
+      return byteCode;
    }
 }

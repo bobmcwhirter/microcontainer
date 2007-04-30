@@ -24,7 +24,7 @@ package org.jboss.test.classloader.system.test;
 import java.util.ArrayList;
 import java.util.List;
 
-import junit.framework.TestSuite;
+import junit.framework.Test;
 
 import org.jboss.classloader.spi.ClassLoaderDomain;
 import org.jboss.classloader.spi.ClassLoaderSystem;
@@ -40,7 +40,7 @@ import org.jboss.test.classloader.system.support.MockClassLoaderSystem;
  */
 public class ClassLoadingSystemUnitTestCase extends AbstractClassLoaderTest
 {
-   public static TestSuite suite()
+   public static Test suite()
    {
       return suite(ClassLoadingSystemUnitTestCase.class);
    }
@@ -67,7 +67,7 @@ public class ClassLoadingSystemUnitTestCase extends AbstractClassLoaderTest
    {
       MockClassLoaderSystem system = createMockClassLoaderSystem();
       MockClassLoaderDomain domain = system.createAndRegisterDomain("mock");
-      ClassLoader cl1 = createMockClassLoader(system, domain);
+      ClassLoader cl1 = createAndRegisterMockClassLoader(system, domain);
       
       List<ClassLoader> expected = new ArrayList<ClassLoader>();
       expected.add(cl1);
@@ -75,7 +75,7 @@ public class ClassLoadingSystemUnitTestCase extends AbstractClassLoaderTest
       assertEquals(expected, domain.added);
       assertEmpty(domain.removed);
 
-      ClassLoader cl2 = createMockClassLoader(system, domain);
+      ClassLoader cl2 = createAndRegisterMockClassLoader(system, domain);
       expected.add(cl2);
       
       assertEquals(expected, domain.added);
@@ -86,7 +86,7 @@ public class ClassLoadingSystemUnitTestCase extends AbstractClassLoaderTest
    {
       MockClassLoaderSystem system = createMockClassLoaderSystem();
       MockClassLoaderDomain domain = system.createAndRegisterDomain("mock");
-      ClassLoader cl1 = createMockClassLoader(system, domain);
+      ClassLoader cl1 = createAndRegisterMockClassLoader(system, domain);
       
       List<ClassLoader> expected = new ArrayList<ClassLoader>();
       expected.add(cl1);
@@ -94,7 +94,7 @@ public class ClassLoadingSystemUnitTestCase extends AbstractClassLoaderTest
       assertEquals(expected, domain.added);
       assertEmpty(domain.removed);
 
-      system.unregisterClassLoader(domain, cl1);
+      system.unregisterClassLoader(cl1);
       
       assertEquals(expected, domain.added);
       assertEquals(expected, domain.removed);

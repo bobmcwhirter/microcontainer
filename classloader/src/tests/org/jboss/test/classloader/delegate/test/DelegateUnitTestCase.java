@@ -28,14 +28,16 @@ import java.util.Collections;
 import java.util.List;
 import java.util.concurrent.CountDownLatch;
 
-import junit.framework.TestSuite;
+import junit.framework.Test;
 
+import org.jboss.classloader.spi.ClassLoaderDomain;
 import org.jboss.classloader.spi.ClassLoaderSystem;
 import org.jboss.classloader.spi.DelegateLoader;
 import org.jboss.classloader.spi.filter.FilteredDelegateLoader;
 import org.jboss.test.classloader.AbstractClassLoaderTest;
 import org.jboss.test.classloader.TestThread;
 import org.jboss.test.classloader.delegate.support.a.TestA1;
+import org.jboss.test.classloader.delegate.support.a.TestADelegateClassLoaderDomain;
 import org.jboss.test.classloader.delegate.support.a.TestAbstractFactory;
 import org.jboss.test.classloader.delegate.support.a.TestSleep;
 import org.jboss.test.classloader.delegate.support.b.TestB1;
@@ -43,14 +45,14 @@ import org.jboss.test.classloader.delegate.support.b.TestFactoryImplementation;
 import org.jboss.test.classloader.support.MockClassLoaderPolicy;
 
 /**
- * ModifiedBootstrapUnitTestCase.
+ * DelegateUnitTestCase
  * 
  * @author <a href="adrian@jboss.com">Adrian Brock</a>
  * @version $Revision: 1.1 $
  */
 public class DelegateUnitTestCase extends AbstractClassLoaderTest
 {
-   public static TestSuite suite()
+   public static Test suite()
    {
       return suite(DelegateUnitTestCase.class);
    }
@@ -64,11 +66,11 @@ public class DelegateUnitTestCase extends AbstractClassLoaderTest
    {
       ClassLoaderSystem system = createClassLoaderSystemWithModifiedBootstrap();
 
-      MockClassLoaderPolicy pb = new MockClassLoaderPolicy("B");
+      MockClassLoaderPolicy pb = new MockClassLoaderPolicy("B", this);
       pb.setPaths(TestB1.class);
       ClassLoader b = system.registerClassLoaderPolicy(pb);
 
-      MockClassLoaderPolicy pa = new MockClassLoaderPolicy("A");
+      MockClassLoaderPolicy pa = new MockClassLoaderPolicy("A", this);
       pa.setPaths(TestA1.class);
       ClassLoader a = system.registerClassLoaderPolicy(pa);
       
@@ -80,11 +82,11 @@ public class DelegateUnitTestCase extends AbstractClassLoaderTest
    {
       ClassLoaderSystem system = createClassLoaderSystemWithModifiedBootstrap();
 
-      MockClassLoaderPolicy pb = new MockClassLoaderPolicy("B");
+      MockClassLoaderPolicy pb = new MockClassLoaderPolicy("B", this);
       pb.setPaths(TestB1.class);
       ClassLoader b = system.registerClassLoaderPolicy(pb);
 
-      MockClassLoaderPolicy pa = new MockClassLoaderPolicy("A");
+      MockClassLoaderPolicy pa = new MockClassLoaderPolicy("A", this);
       pa.setPaths(TestA1.class);
       pa.setDelegates(Collections.singletonList(new FilteredDelegateLoader(pb)));
       ClassLoader a = system.registerClassLoaderPolicy(pa);
@@ -99,10 +101,10 @@ public class DelegateUnitTestCase extends AbstractClassLoaderTest
    {
       ClassLoaderSystem system = createClassLoaderSystemWithModifiedBootstrap();
       
-      MockClassLoaderPolicy pb = new MockClassLoaderPolicy("B");
+      MockClassLoaderPolicy pb = new MockClassLoaderPolicy("B", this);
       pb.setPaths(TestB1.class);
 
-      MockClassLoaderPolicy pa = new MockClassLoaderPolicy("A");
+      MockClassLoaderPolicy pa = new MockClassLoaderPolicy("A", this);
       pa.setPaths(TestA1.class);
 
       List<DelegateLoader> delegates = new ArrayList<DelegateLoader>();
@@ -121,14 +123,48 @@ public class DelegateUnitTestCase extends AbstractClassLoaderTest
       assertClassEquality(testFactoryImplementationClass, instance.getClass());
    }
    
+   public void testDelegateToAnotherCodeSource() throws Exception
+   {
+      ClassLoaderSystem system = createClassLoaderSystemWithModifiedBootstrap();
+
+      MockClassLoaderPolicy pb = new MockClassLoaderPolicy("B", this);
+      pb.setPaths(ClassLoaderDomain.class);
+      ClassLoader b = system.registerClassLoaderPolicy(pb);
+
+      MockClassLoaderPolicy pa = new MockClassLoaderPolicy("A", this);
+      pa.setPaths(TestADelegateClassLoaderDomain.class);
+      pa.setDelegates(Collections.singletonList(new FilteredDelegateLoader(pb)));
+      ClassLoader a = system.registerClassLoaderPolicy(pa);
+      
+      Class<?> fromB = assertLoadClass(ClassLoaderDomain.class, b, false);
+      Class<?> delegate = assertLoadClass(TestADelegateClassLoaderDomain.class, a, false);
+      
+      SecurityManager sm = suspendSecurity();
+      try
+      {
+         System.out.println(delegate.getProtectionDomain());
+      }
+      finally
+      {
+         resumeSecurity(sm);
+      }
+      
+      Method method = delegate.getMethod("getSomething", null);
+      Class<?> fromA = method.getReturnType();
+      assertNotNull(fromA);
+      assertClassLoader(fromA, b);
+      
+      assertClassEquality(fromB, fromA);
+   }
+   
    public void testAbstractFactoryWrongWay() throws Exception
    {
       ClassLoaderSystem system = createClassLoaderSystemWithModifiedBootstrap();
       
-      MockClassLoaderPolicy pb = new MockClassLoaderPolicy("B");
+      MockClassLoaderPolicy pb = new MockClassLoaderPolicy("B", this);
       pb.setPaths(TestB1.class);
 
-      MockClassLoaderPolicy pa = new MockClassLoaderPolicy("A");
+      MockClassLoaderPolicy pa = new MockClassLoaderPolicy("A", this);
       pa.setPaths(TestA1.class);
 
       List<DelegateLoader> delegates = new ArrayList<DelegateLoader>();
@@ -151,13 +187,13 @@ public class DelegateUnitTestCase extends AbstractClassLoaderTest
    {
       for (int i = 0; i < 10; ++i)
       {
-         log.debug("Attempt: " + i);
+         getLog().debug("Attempt: " + i);
          ClassLoaderSystem system = createClassLoaderSystemWithModifiedBootstrap();
          
-         MockClassLoaderPolicy pb = new MockClassLoaderPolicy("B");
+         MockClassLoaderPolicy pb = new MockClassLoaderPolicy("B", this);
          pb.setPaths(TestB1.class);
 
-         MockClassLoaderPolicy pa = new MockClassLoaderPolicy("A");
+         MockClassLoaderPolicy pa = new MockClassLoaderPolicy("A", this);
          pa.setPaths(TestA1.class);
 
          List<DelegateLoader> delegates = new ArrayList<DelegateLoader>();

@@ -26,6 +26,7 @@ import java.net.URL;
 import java.util.Set;
 
 import org.jboss.classloader.spi.Loader;
+import org.jboss.logging.Logger;
 
 /**
  * Base DelegateLoader.
@@ -35,6 +36,9 @@ import org.jboss.classloader.spi.Loader;
  */
 public class BaseDelegateLoader implements Loader
 {
+   /** The log */
+   private static final Logger log = Logger.getLogger(BaseDelegateLoader.class);
+   
    /** The delegate loader policy */
    private BaseClassLoaderPolicy delegate;
 
@@ -59,27 +63,33 @@ public class BaseDelegateLoader implements Loader
    public Class<?> loadClass(String className)
    {
       BaseClassLoader classLoader = delegate.getClassLoader();
-      // REVIEW: Should probably add some kind of warning here
       if (classLoader == null)
+      {
+         log.warn("Not loading from policy that has no classLoader: " + toLongString(), new Throwable("STACKTRACE"));
          return null;
+      }
       return classLoader.loadClassLocally(className);
    }
    
    public URL getResource(String name, String resourceName)
    {
       BaseClassLoader classLoader = delegate.getClassLoader();
-      // REVIEW: Should probably add some kind of warning here
       if (classLoader == null)
+      {
+         log.warn("Not loading from policy that has no classLoader: " + toLongString(), new Throwable("STACKTRACE"));
          return null;
+      }
       return classLoader.getResourceLocally(name, resourceName);
    }
 
    public void getResources(String name, String resourceName, Set<URL> urls) throws IOException
    {
       BaseClassLoader classLoader = delegate.getClassLoader();
-      // REVIEW: Should probably add some kind of warning here
       if (classLoader == null)
+      {
+         log.warn("Not loading from policy that has no classLoader: " + toLongString(), new Throwable("STACKTRACE"));
          return;
+      }
       classLoader.getResourcesLocally(name, resourceName, urls);
    }
 

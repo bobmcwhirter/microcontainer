@@ -411,6 +411,14 @@ public class BaseClassLoader extends SecureClassLoader
    }
 
    /**
+    * Shutdown the classloader
+    */
+   protected void shutdownClassLoader()
+   {
+      log.debug(toLongString() + " shutdown!");
+   }
+   
+   /**
     * For subclasses to add things to the long string
     * 
     * @param builder the builder
