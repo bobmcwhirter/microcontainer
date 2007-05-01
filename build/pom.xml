@@ -99,6 +99,12 @@
             </execution>
           </executions>
         </plugin>
+        <plugin>
+          <artifactId>maven-idea-plugin</artifactId>
+          <configuration>
+            <downloadSources>true</downloadSources>
+          </configuration>
+        </plugin>
       </plugins>
     </pluginManagement>
   </build>
