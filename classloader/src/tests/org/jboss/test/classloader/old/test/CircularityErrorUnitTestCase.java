@@ -28,10 +28,10 @@ import junit.framework.Test;
 
 import org.jboss.classloader.plugins.ClassLoaderUtils;
 import org.jboss.classloader.spi.ClassLoaderSystem;
+import org.jboss.classloader.test.support.MockClassLoaderPolicy;
 import org.jboss.test.classloader.AbstractClassLoaderTest;
 import org.jboss.test.classloader.old.support.Derived;
 import org.jboss.test.classloader.old.support.Support;
-import org.jboss.test.classloader.support.MockClassLoaderPolicy;
 
 /**
  * CircularityErrorUnitTestCase.

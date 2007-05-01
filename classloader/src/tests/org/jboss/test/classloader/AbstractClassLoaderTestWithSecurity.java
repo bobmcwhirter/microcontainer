@@ -19,18 +19,29 @@
  * Software Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA
  * 02110-1301 USA, or see the FSF site: http://www.fsf.org.
  */
-package org.jboss.test.classloader.old.support;
+package org.jboss.test.classloader;
+
+import org.jboss.test.AbstractTestDelegate;
+import org.jboss.test.security.NothingPolicyPlugin;
 
 /**
- * UserOfBase.
+ * AbstractClassLoaderTest.
  * 
- * @author Scott.Stark@jboss.org
  * @author <a href="adrian@jboss.com">Adrian Brock</a>
  * @version $Revision: 1.1 $
  */
-public class UserOfBase
+public abstract class AbstractClassLoaderTestWithSecurity extends AbstractClassLoaderTest
 {
-   public void testBase(Support s)
+   public static AbstractTestDelegate getDelegate(Class<?> clazz)
    {
+      AbstractTestDelegate delegate = new AbstractTestDelegate(clazz);
+      delegate.enableSecurity = true;
+      delegate.securityPolicyName = NothingPolicyPlugin.class.getName();
+      return delegate;
+   }
+
+   public AbstractClassLoaderTestWithSecurity(String name)
+   {
+      super(name);
    }
 }

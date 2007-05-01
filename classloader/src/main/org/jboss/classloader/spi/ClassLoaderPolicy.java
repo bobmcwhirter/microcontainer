@@ -221,7 +221,7 @@ public abstract class ClassLoaderPolicy extends BaseClassLoaderPolicy
       if (sm == null)
          return ClassLoader.getSystemClassLoader();
       
-      return AccessController.doPrivileged(GetSystemClassLoader.INSTANCE);
+      return AccessController.doPrivileged(GetSystemClassLoader.INSTANCE, getAccessControlContext());
    }
    
    /**

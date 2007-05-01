@@ -28,7 +28,7 @@ import junit.framework.Test;
 
 import org.jboss.classloader.spi.ClassLoaderDomain;
 import org.jboss.classloader.spi.ClassLoaderSystem;
-import org.jboss.test.classloader.AbstractClassLoaderTest;
+import org.jboss.test.classloader.AbstractClassLoaderTestWithSecurity;
 import org.jboss.test.classloader.system.support.MockClassLoaderDomain;
 import org.jboss.test.classloader.system.support.MockClassLoaderSystem;
 
@@ -38,7 +38,7 @@ import org.jboss.test.classloader.system.support.MockClassLoaderSystem;
  * @author <a href="adrian@jboss.com">Adrian Brock</a>
  * @version $Revision: 1.1 $
  */
-public class ClassLoadingSystemUnitTestCase extends AbstractClassLoaderTest
+public class ClassLoadingSystemUnitTestCase extends AbstractClassLoaderTestWithSecurity
 {
    public static Test suite()
    {
@@ -48,12 +48,6 @@ public class ClassLoadingSystemUnitTestCase extends AbstractClassLoaderTest
    public ClassLoadingSystemUnitTestCase(String name)
    {
       super(name);
-   }
-   
-   public void testGetInstance() throws Exception
-   {
-      ClassLoaderSystem instance = ClassLoaderSystem.getInstance();
-      assertNotNull(instance);
    }
    
    public void testDefaultDomain() throws Exception

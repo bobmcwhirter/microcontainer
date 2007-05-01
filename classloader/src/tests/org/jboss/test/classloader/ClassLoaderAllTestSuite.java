@@ -26,7 +26,7 @@ import junit.framework.TestSuite;
 import junit.textui.TestRunner;
 
 import org.jboss.test.classloader.bootstrap.BootstrapTestSuite;
-import org.jboss.test.classloader.delegate.test.DelegateUnitTestCase;
+import org.jboss.test.classloader.delegate.DelegateTestSuite;
 import org.jboss.test.classloader.old.OldTestSuite;
 import org.jboss.test.classloader.system.ClassLoadingSystemTestSuite;
 
@@ -59,7 +59,7 @@ public class ClassLoaderAllTestSuite extends TestSuite
 
       suite.addTest(ClassLoadingSystemTestSuite.suite());
       suite.addTest(BootstrapTestSuite.suite());
-      suite.addTest(DelegateUnitTestCase.suite());
+      suite.addTest(DelegateTestSuite.suite());
       suite.addTest(OldTestSuite.suite());
       
       return suite;

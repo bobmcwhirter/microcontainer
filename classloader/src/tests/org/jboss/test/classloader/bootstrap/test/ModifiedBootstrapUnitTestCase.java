@@ -28,7 +28,7 @@ import javax.naming.Context;
 import junit.framework.Test;
 
 import org.jboss.classloader.spi.ClassLoaderDomain;
-import org.jboss.test.classloader.AbstractClassLoaderTest;
+import org.jboss.test.classloader.AbstractClassLoaderTestWithSecurity;
 
 /**
  * ModifiedBootstrapUnitTestCase.
@@ -36,7 +36,7 @@ import org.jboss.test.classloader.AbstractClassLoaderTest;
  * @author <a href="adrian@jboss.com">Adrian Brock</a>
  * @version $Revision: 1.1 $
  */
-public class ModifiedBootstrapUnitTestCase extends AbstractClassLoaderTest
+public class ModifiedBootstrapUnitTestCase extends AbstractClassLoaderTestWithSecurity
 {
    public static Test suite()
    {

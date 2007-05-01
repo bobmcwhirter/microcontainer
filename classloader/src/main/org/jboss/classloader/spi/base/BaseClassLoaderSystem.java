@@ -21,6 +21,8 @@
  */
 package org.jboss.classloader.spi.base;
 
+import java.security.AccessController;
+import java.security.PrivilegedAction;
 import java.security.ProtectionDomain;
 
 import org.jboss.classloader.spi.ClassLoaderPolicy;
@@ -28,7 +30,6 @@ import org.jboss.classloader.spi.ClassLoaderPolicy;
 /**
  * Base ClassLoaderSystem.
  * 
- * TODO Permissions
  * @author <a href="adrian@jboss.com">Adrian Brock</a>
  * @version $Revision: 1.1 $
  */
@@ -103,14 +104,20 @@ public abstract class BaseClassLoaderSystem
     * @throws IllegalArgumentException if a parameter is null
     * @throws IllegalStateException if the policy is already registered with a domain  
     */
-   protected ClassLoader registerClassLoaderPolicy(BaseClassLoaderDomain domain, ClassLoaderPolicy policy)
+   protected ClassLoader registerClassLoaderPolicy(final BaseClassLoaderDomain domain, final ClassLoaderPolicy policy)
    {
       if (domain == null)
          throw new IllegalArgumentException("Null domain");
 
-      BaseClassLoader classLoader = createClassLoader(policy);
-      domain.registerClassLoader(classLoader);
-      return classLoader;
+      return AccessController.doPrivileged(new PrivilegedAction<BaseClassLoader>()
+      {
+         public BaseClassLoader run()
+         {
+            BaseClassLoader classLoader = createClassLoader(policy);
+            domain.registerClassLoader(classLoader);
+            return classLoader;
+         }
+      }, policy.getAccessControlContext());
    }
    
    /**

@@ -22,14 +22,14 @@
 package org.jboss.test.classloader;
 
 import org.jboss.classloader.plugins.ClassLoaderUtils;
-import org.jboss.classloader.plugins.system.DefaultClassLoaderSystem;
 import org.jboss.classloader.spi.ClassLoaderDomain;
 import org.jboss.classloader.spi.ClassLoaderPolicy;
 import org.jboss.classloader.spi.ClassLoaderSystem;
 import org.jboss.classloader.spi.ParentPolicy;
+import org.jboss.classloader.test.support.MockClassLoaderHelper;
+import org.jboss.classloader.test.support.MockClassLoaderPolicy;
 import org.jboss.test.AbstractTestCaseWithSetup;
 import org.jboss.test.AbstractTestDelegate;
-import org.jboss.test.classloader.support.MockClassLoaderPolicy;
 
 /**
  * AbstractClassLoaderTest.
@@ -41,9 +41,7 @@ public abstract class AbstractClassLoaderTest extends AbstractTestCaseWithSetup
 {
    public static AbstractTestDelegate getDelegate(Class<?> clazz)
    {
-      AbstractTestDelegate delegate = new AbstractTestDelegate(clazz);
-      delegate.enableSecurity = true;
-      return delegate;
+      return new AbstractTestDelegate(clazz);
    }
 
    @Override
@@ -57,11 +55,11 @@ public abstract class AbstractClassLoaderTest extends AbstractTestCaseWithSetup
    {
       super(name);
    }
-   
+
    protected ClassLoaderSystem createClassLoaderSystem()
    {
       // We always create a new one to avoid things in the default domain leaking across tests
-      return new DefaultClassLoaderSystem();
+      return MockClassLoaderHelper.createMockClassLoaderSystem();
    }
    
    protected ClassLoaderSystem createClassLoaderSystemWithModifiedBootstrap()
@@ -82,6 +80,16 @@ public abstract class AbstractClassLoaderTest extends AbstractTestCaseWithSetup
       return system.registerClassLoaderPolicy(policy);
    }
    
+   protected MockClassLoaderPolicy createMockClassLoaderPolicy()
+   {
+      return createMockClassLoaderPolicy(null);
+   }
+   
+   protected MockClassLoaderPolicy createMockClassLoaderPolicy(String name)
+   {
+      return MockClassLoaderHelper.createMockClassLoaderPolicy(name);
+   }
+   
    protected ClassLoader createAndRegisterMockClassLoader(ClassLoaderSystem system)
    {
       return createAndRegisterMockClassLoader(system, "mock");
@@ -89,8 +97,7 @@ public abstract class AbstractClassLoaderTest extends AbstractTestCaseWithSetup
    
    protected ClassLoader createAndRegisterMockClassLoader(ClassLoaderSystem system, String name)
    {
-      MockClassLoaderPolicy policy = new MockClassLoaderPolicy(name);
-      return system.registerClassLoaderPolicy(policy);
+      return MockClassLoaderHelper.createAndRegisterMockClassLoader(system, null, name);
    }
    
    protected ClassLoader createAndRegisterMockClassLoader(ClassLoaderSystem system, ClassLoaderDomain domain)
@@ -100,8 +107,7 @@ public abstract class AbstractClassLoaderTest extends AbstractTestCaseWithSetup
    
    protected ClassLoader createAndRegisterMockClassLoader(ClassLoaderSystem system, ClassLoaderDomain domain, String name)
    {
-      MockClassLoaderPolicy policy = new MockClassLoaderPolicy(name);
-      return system.registerClassLoaderPolicy(domain, policy);
+      return MockClassLoaderHelper.createAndRegisterMockClassLoader(system, domain, name);
    }
    
    protected void assertClassEquality(Class<?> expected, Class<?> actual)
@@ -116,18 +122,8 @@ public abstract class AbstractClassLoaderTest extends AbstractTestCaseWithSetup
    
    protected void assertClassLoader(Class<?> clazz, ClassLoader expected)
    {
-      ClassLoader classLoader = null;
-      SecurityManager sm = suspendSecurity();
-      try
-      {
-         classLoader = clazz.getClassLoader();
-      }
-      finally
-      {
-         resumeSecurity(sm);
-      }
-      getLog().debug("Should be the expected classloader expected=" + expected + " actual=" + classLoader);
-      assertEquals("Should be the expected classloader", expected, classLoader);
+      boolean result = MockClassLoaderHelper.isExpectedClassLoader(clazz, expected);
+      assertTrue(ClassLoaderUtils.classToString(clazz) + " should have expected classloader=" + expected, result);
    }
    
    protected Class<?> assertLoadClass(Class<?> reference, ClassLoader start)

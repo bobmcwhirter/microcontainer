@@ -24,9 +24,9 @@ package org.jboss.test.classloader.old.test;
 import junit.framework.Test;
 
 import org.jboss.classloader.spi.ClassLoaderSystem;
-import org.jboss.test.classloader.AbstractClassLoaderTest;
+import org.jboss.classloader.test.support.MockClassLoaderPolicy;
+import org.jboss.test.classloader.AbstractClassLoaderTestWithSecurity;
 import org.jboss.test.classloader.old.support.Support;
-import org.jboss.test.classloader.support.MockClassLoaderPolicy;
 
 /**
  * LoaderUnitTestCase.
@@ -35,7 +35,7 @@ import org.jboss.test.classloader.support.MockClassLoaderPolicy;
  * @author Scott.Stark@jboss.org
  * @version $Revision: 1.1 $
  */
-public class LoaderUnitTestCase extends AbstractClassLoaderTest
+public class LoaderUnitTestCase extends AbstractClassLoaderTestWithSecurity
 {
    public static Test suite()
    {
@@ -51,7 +51,7 @@ public class LoaderUnitTestCase extends AbstractClassLoaderTest
    {
       ClassLoaderSystem system = createClassLoaderSystemWithModifiedBootstrap();
 
-      MockClassLoaderPolicy policy = new MockClassLoaderPolicy();
+      MockClassLoaderPolicy policy = createMockClassLoaderPolicy();
       policy.setPaths(Support.class);
       final ClassLoader cl = system.registerClassLoaderPolicy(policy);
 
@@ -72,7 +72,7 @@ public class LoaderUnitTestCase extends AbstractClassLoaderTest
    {
       ClassLoaderSystem system = createClassLoaderSystemWithModifiedBootstrap();
 
-      MockClassLoaderPolicy policy = new MockClassLoaderPolicy();
+      MockClassLoaderPolicy policy = createMockClassLoaderPolicy();
       policy.setPaths(Support.class);
       ClassLoader cl = system.registerClassLoaderPolicy(policy);
 

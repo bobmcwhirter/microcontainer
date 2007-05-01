@@ -21,6 +21,7 @@
  */
 package org.jboss.test.classloader.system;
 
+import org.jboss.test.classloader.system.test.ClassLoadingSystemNoSecurityUnitTestCase;
 import org.jboss.test.classloader.system.test.ClassLoadingSystemUnitTestCase;
 
 import junit.framework.Test;
@@ -54,6 +55,7 @@ public class ClassLoadingSystemTestSuite extends TestSuite
    {
       TestSuite suite = new TestSuite("ClassLoading System Tests");
 
+      suite.addTest(ClassLoadingSystemNoSecurityUnitTestCase.suite());
       suite.addTest(ClassLoadingSystemUnitTestCase.suite());
       
       return suite;

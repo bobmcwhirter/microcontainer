@@ -21,6 +21,8 @@
  */
 package org.jboss.classloader.spi.base;
 
+import java.security.AccessControlContext;
+import java.security.AccessController;
 import java.security.ProtectionDomain;
 import java.util.List;
 
@@ -47,6 +49,33 @@ public abstract class BaseClassLoaderPolicy
    /** The domain for this policy */
    private volatile BaseClassLoaderDomain domain;
 
+   /** The access control context for this policy */
+   private AccessControlContext access;
+   
+   /**
+    * Create a new BaseClassLoaderPolicy.
+    * 
+    * @throws SecurityException if the caller does not have permission to create a classloader
+    */
+   public BaseClassLoaderPolicy()
+   {
+      SecurityManager sm = System.getSecurityManager();
+      if (sm != null)
+         sm.checkCreateClassLoader();
+      
+      access = AccessController.getContext();
+   }
+
+   /**
+    * Get the access control context for this policy
+    * 
+    * @return the access control context
+    */
+   protected AccessControlContext getAccessControlContext()
+   {
+      return access;
+   }
+   
    /**
     * Get the delegate loader for exported stuff<p>
     *

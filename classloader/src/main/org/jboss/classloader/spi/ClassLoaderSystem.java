@@ -34,7 +34,6 @@ import org.jboss.logging.Logger;
 /**
  * ClassLoaderSystem.
  * 
- * TODO Permissions
  * @author <a href="adrian@jboss.com">Adrian Brock</a>
  * @version $Revision: 1.1 $
  */
@@ -62,9 +61,13 @@ public abstract class ClassLoaderSystem extends BaseClassLoaderSystem
     * Get the classloading system instance
     * 
     * @return the instance
+    * @throws SecurityException if the caller does not have authority to create a classloader
     */
    public static final ClassLoaderSystem getInstance()
    {
+      SecurityManager sm = System.getSecurityManager();
+      if (sm != null)
+         sm.checkCreateClassLoader();
       return builder.get();
    }
 

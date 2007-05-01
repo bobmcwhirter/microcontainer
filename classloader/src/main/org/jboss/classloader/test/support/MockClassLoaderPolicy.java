@@ -19,7 +19,7 @@
  * Software Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA
  * 02110-1301 USA, or see the FSF site: http://www.fsf.org.
  */
-package org.jboss.test.classloader.support;
+package org.jboss.classloader.test.support;
 
 import java.io.IOException;
 import java.net.URL;
@@ -32,41 +32,89 @@ import java.util.List;
 import java.util.Set;
 
 import org.jboss.classloader.plugins.ClassLoaderUtils;
+import org.jboss.classloader.plugins.filter.PatternClassFilter;
 import org.jboss.classloader.spi.ClassLoaderPolicy;
 import org.jboss.classloader.spi.DelegateLoader;
+import org.jboss.classloader.spi.filter.ClassFilter;
 
 /**
- * MockClassLoaderPolicy.
+ * MockClassLoaderPolicy.<p>
  * 
  * @author <a href="adrian@jboss.com">Adrian Brock</a>
  * @version $Revision: 1.1 $
  */
 public class MockClassLoaderPolicy extends ClassLoaderPolicy
 {
+   /** The logical name of the policy */
    private String name;
    
+   /** The delegates */
    private List<? extends DelegateLoader> delegates;
    
+   /** The paths */
    private String[] paths;
    
+   /** The included resources */
    private String[] included;
    
+   /** The excluded resources */
    private String[] excluded;
 
+   /** The exported package names */
    private String[] packageNames;
    
+   /** Whether to import all */
    private boolean importAll;
+
+   /** The non JDK classes filter */
+   private ClassFilter nonJDKFilter;
    
+   /**
+    * Create a new MockClassLoaderPolicy filtering org.jboss.* classes
+    * with logical name "mock"
+    */
    public MockClassLoaderPolicy()
    {
       this(null);
    }
 
+   /**
+    * Create a new MockClassLoaderPolicy filtering org.jboss.* classes
+    * 
+    * @param name the logical name of the policy
+    */
    public MockClassLoaderPolicy(String name)
+   {
+      this(name, "org\\.jboss\\..*");
+   }
+
+   /**
+    * Create a new MockClassLoaderPolicy filtering the given patterns
+    * 
+    * @param name the logical name of the policy
+    * @param nonJDKPatterns the patterns to filter
+    * @throws IllegalArgumentException for null patterns
+    */
+   public MockClassLoaderPolicy(String name, String... nonJDKPatterns)
+   {
+      this(name, new PatternClassFilter(nonJDKPatterns));
+   }
+
+   /**
+    * Create a new MockClassLoaderPolicy filtering the given patterns
+    * 
+    * @param name the logical name of the policy
+    * @param nonJDKFilter the filter for nonJDK classes
+    * @throws IllegalArgumentException for a null filter
+    */
+   public MockClassLoaderPolicy(String name, ClassFilter nonJDKFilter)
    {
       if (name == null)
          name = "mock";
       this.name = name;
+      if (nonJDKFilter == null)
+         throw new IllegalArgumentException("Null filter");
+      this.nonJDKFilter = nonJDKFilter;
    }
    
    @Override
@@ -75,26 +123,51 @@ public class MockClassLoaderPolicy extends ClassLoaderPolicy
       return delegates;
    }
    
+   /**
+    * Set the delegates
+    * 
+    * @param delegates the delegate imports
+    */
    public void setDelegates(List<? extends DelegateLoader> delegates)
    {
       this.delegates = delegates;
    }
    
+   /**
+    * Get the paths to expose
+    * 
+    * @return the paths
+    */
    public String[] getPaths()
    {
       return paths;
    }
    
+   /**
+    * Set the path to expose
+    * 
+    * @param path the path
+    */
    public void setPath(String path)
    {
       setPaths(new String[] { path });
    }
    
+   /**
+    * Set the paths to expose
+    * 
+    * @param paths the paths to expose
+    */
    public void setPaths(String[] paths)
    {
       this.paths = paths;
    }
    
+   /**
+    * Set the paths to expose
+    * 
+    * @param classes the classes to reference to determine the package paths
+    */
    public void setPaths(Class... classes)
    {
       if (classes == null)
@@ -110,11 +183,21 @@ public class MockClassLoaderPolicy extends ClassLoaderPolicy
       return packageNames;
    }
    
+   /**
+    * Set the exported package names
+    * 
+    * @param packageNames the exported packages
+    */
    public void setPackageNames(String[] packageNames)
    {
       this.packageNames = packageNames;
    }
    
+   /**
+    * Set the exported package names
+    * 
+    * @param classes the classes to reference to determine the package names
+    */
    public void setPackageNames(Class... classes)
    {
       if (classes == null)
@@ -124,6 +207,11 @@ public class MockClassLoaderPolicy extends ClassLoaderPolicy
          packageNames[i] = ClassLoaderUtils.getClassPackageName(classes[i].getName());
    }
    
+   /**
+    * Set the included classes
+    * 
+    * @param classes the classes to include from the paths
+    */
    public void setIncluded(Class... classes)
    {
       if (classes == null)
@@ -133,6 +221,11 @@ public class MockClassLoaderPolicy extends ClassLoaderPolicy
          included[i] = ClassLoaderUtils.classNameToPath(classes[i].getName());
    }
    
+   /**
+    * Set the excluded classes
+    * 
+    * @param classes the classes to exclude from the paths
+    */
    public void setExcluded(Class... classes)
    {
       if (classes == null)
@@ -142,17 +235,18 @@ public class MockClassLoaderPolicy extends ClassLoaderPolicy
          excluded[i] = ClassLoaderUtils.classNameToPath(classes[i].getName());
    }
 
+   /**
+    * Set the paths and the exported package names
+    * 
+    * @param classes the classes to reference
+    */
    public void setPathsAndPackageNames(Class... classes)
    {
       setPaths(classes);
       setPackageNames(classes);
    }
    
-   /**
-    * Get the importAll.
-    * 
-    * @return the importAll.
-    */
+   @Override
    public boolean isImportAll()
    {
       return importAll;
@@ -266,17 +360,18 @@ public class MockClassLoaderPolicy extends ClassLoaderPolicy
          {
             return clazz.getProtectionDomain();
          }
-      });
+      }, getAccessControlContext());
    }
 
    /*
-    * Overridden to not load jboss classes
+    * Overridden to not expose classes in the nonJDKFilter
     * this is so we don't expose classes from the classpath
     * that we haven't explicitly declared in the policy
     */
+   @Override
    protected ClassLoader isJDKRequest(String name)
    {
-      if (name.startsWith("org.jboss."))
+      if (nonJDKFilter.matches(name))
          return null;
       return super.isJDKRequest(name);
    }

@@ -29,9 +29,9 @@ import java.util.Vector;
 import junit.framework.Test;
 
 import org.jboss.classloader.spi.ClassLoaderSystem;
-import org.jboss.test.classloader.AbstractClassLoaderTest;
+import org.jboss.classloader.test.support.MockClassLoaderPolicy;
+import org.jboss.test.classloader.AbstractClassLoaderTestWithSecurity;
 import org.jboss.test.classloader.old.support.Support;
-import org.jboss.test.classloader.support.MockClassLoaderPolicy;
 
 /**
  * ConcurrentLoaderUnitTestCase.
@@ -40,7 +40,7 @@ import org.jboss.test.classloader.support.MockClassLoaderPolicy;
  * @author Scott.Stark@jboss.org
  * @version $Revision: 1.1 $
  */
-public class ConcurrentLoaderUnitTestCase extends AbstractClassLoaderTest
+public class ConcurrentLoaderUnitTestCase extends AbstractClassLoaderTestWithSecurity
 {
    public Object lock = new Object ();
 
@@ -67,7 +67,7 @@ public class ConcurrentLoaderUnitTestCase extends AbstractClassLoaderTest
    {
       ClassLoaderSystem system = createClassLoaderSystemWithModifiedBootstrap();
       
-      MockClassLoaderPolicy policy = new MockClassLoaderPolicy();
+      MockClassLoaderPolicy policy = createMockClassLoaderPolicy();
       policy.setPaths(Support.class);
       cl = system.registerClassLoaderPolicy(policy);
       

@@ -24,6 +24,10 @@ package org.jboss.classloader.spi.base;
 import java.io.IOException;
 import java.io.InputStream;
 import java.net.URL;
+import java.security.AccessController;
+import java.security.PrivilegedAction;
+import java.security.PrivilegedActionException;
+import java.security.PrivilegedExceptionAction;
 import java.security.ProtectionDomain;
 import java.security.SecureClassLoader;
 import java.util.Enumeration;
@@ -198,7 +202,7 @@ public class BaseClassLoader extends SecureClassLoader
     * @param trace whether trace is enabled
     * @return the class if found
     */
-   synchronized Class<?> loadClassLocally(String name, boolean trace)
+   synchronized Class<?> loadClassLocally(final String name, final boolean trace)
    {
       if (trace)
          log.trace(this + " load class locally " + name);
@@ -213,34 +217,42 @@ public class BaseClassLoader extends SecureClassLoader
       }
 
       // Look for the resource
-      String resourceName = ClassLoaderUtils.classNameToPath(name);
-      InputStream is = policy.getResourceAsStream(resourceName);
-      if (is == null)
+      final String resourceName = ClassLoaderUtils.classNameToPath(name);
+      
+      return AccessController.doPrivileged(new PrivilegedAction<Class>()
       {
-         if (trace)
-            log.trace(this + " resource not found locally " + resourceName + " for " + name);
-         return null;
-      }
+         public Class<?> run()
+         {
+            InputStream is = policy.getResourceAsStream(resourceName);
+            if (is == null)
+            {
+               if (trace)
+                  log.trace(this + " resource not found locally " + resourceName + " for " + name);
+               return null;
+            }
 
-      // Load the bytecode
-      byte[] byteCode = ClassLoaderUtils.loadByteCode(name, is);
-      
-      // Let the policy do things before we define the class
-      BaseClassLoaderPolicy basePolicy = policy;
-      ProtectionDomain protectionDomain = basePolicy.getProtectionDomain(name, resourceName);
-      byteCode = policy.transform(name, byteCode, protectionDomain);
-      
-      // Create the package if necessary
-      definePackage(name);
-      
-      // Finally we can define the class
-      if (protectionDomain != null)
-         result = defineClass(name, byteCode, 0, byteCode.length, protectionDomain);
-      else
-         result = defineClass(name, byteCode, 0, byteCode.length);
-      if (trace)
-         log.trace(this + " loaded class locally " + ClassLoaderUtils.classToString(result));
-      return result;
+            // Load the bytecode
+            byte[] byteCode = ClassLoaderUtils.loadByteCode(name, is);
+            
+            // Let the policy do things before we define the class
+            BaseClassLoaderPolicy basePolicy = policy;
+            ProtectionDomain protectionDomain = basePolicy.getProtectionDomain(name, resourceName);
+            byteCode = policy.transform(name, byteCode, protectionDomain);
+            
+            // Create the package if necessary
+            definePackage(name);
+            
+            // Finally we can define the class
+            Class<?> result;
+            if (protectionDomain != null)
+               result = defineClass(name, byteCode, 0, byteCode.length, protectionDomain);
+            else
+               result = defineClass(name, byteCode, 0, byteCode.length);
+            if (trace)
+               log.trace(this + " loaded class locally " + ClassLoaderUtils.classToString(result));
+            return result;
+         }
+      }, policy.getAccessControlContext());
    }
 
    /**
@@ -263,22 +275,28 @@ public class BaseClassLoader extends SecureClassLoader
     * @param trace whether trace is enabled
     * @return the URL if found
     */
-   URL getResourceLocally(String name, String resourceName, boolean trace)
+   URL getResourceLocally(final String name, final String resourceName, final boolean trace)
    {
       if (trace)
          log.trace(this + " get resource locally " + name);
-
-      // Look for the resource
-      URL result = policy.getResource(name);
-      if (result == null)
+      
+      return AccessController.doPrivileged(new PrivilegedAction<URL>()
       {
-         if (trace)
-            log.trace(this + " resource not found locally " + name);
-         return null;
-      }
-      if (trace)
-         log.trace(this + " got resource locally " + name);
-      return result;
+         public URL run()
+         {
+            // Look for the resource
+            URL result = policy.getResource(name);
+            if (result == null)
+            {
+               if (trace)
+                  log.trace(this + " resource not found locally " + name);
+               return null;
+            }
+            if (trace)
+               log.trace(this + " got resource locally " + name);
+            return result;
+         }
+      }, policy.getAccessControlContext());
    }
 
    /**
@@ -303,13 +321,35 @@ public class BaseClassLoader extends SecureClassLoader
     * @param trace whether trace is enabled
     * @throws IOException for any error
     */
-   void getResourcesLocally(String name, String resourceName, Set<URL> urls, boolean trace) throws IOException
+   void getResourcesLocally(final String name, final String resourceName, final Set<URL> urls, boolean trace) throws IOException
    {
       if (trace)
          log.trace(this + " get resources locally " + name);
 
       // Look for the resources
-      policy.getResources(name, urls);
+      
+      try
+      {
+         AccessController.doPrivileged(new PrivilegedExceptionAction<Object>()
+         {
+            public Object run() throws Exception
+            {
+               policy.getResources(name, urls);
+               return null;
+            }
+         }, policy.getAccessControlContext());
+      }
+      catch (PrivilegedActionException e)
+      {
+         Exception e1 = e.getException();
+         if (e1 instanceof RuntimeException)
+            throw (RuntimeException) e1;
+         if (e1 instanceof IOException)
+            throw (IOException) e1;
+         IOException e2 = new IOException("Unexpected error");
+         e2.initCause(e1);
+         throw e2;
+      }
    }
    
    /**
