@@ -48,5 +48,8 @@ public class ClassLoadingSystemNoSecurityUnitTestCase extends AbstractClassLoade
    {
       ClassLoaderSystem instance = ClassLoaderSystem.getInstance();
       assertNotNull(instance);
+      
+      ClassLoaderSystem instance2 = ClassLoaderSystem.getInstance();
+      assertTrue("Should be the same instance", instance == instance2);
    }
 }

@@ -35,7 +35,7 @@ public class MockClassLoaderSystem extends ClassLoaderSystem
    @Override
    protected ClassLoaderDomain createDomain(String name)
    {
-      return new MockClassLoaderDomain();
+      return new MockClassLoaderDomain(name);
    }
 
    public MockClassLoaderDomain createAndRegisterDomain(String name)

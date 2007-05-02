@@ -230,11 +230,17 @@ public abstract class ClassLoaderSystem extends BaseClassLoaderSystem
       
       String name = domain.getName();
       if (isRegistered(name))
-         throw new IllegalStateException("A domain is already registered with " + name);
+         throw new IllegalStateException("A domain is already registered with name " + name);
       
       internalRegisterDomain(name, domain);
    }
 
+   /**
+    * Do the registration
+    * 
+    * @param name the name
+    * @param domain the domain
+    */
    private void internalRegisterDomain(String name, ClassLoaderDomain domain)
    {
       if (shutdown)
@@ -250,13 +256,16 @@ public abstract class ClassLoaderSystem extends BaseClassLoaderSystem
     * Unregister a domain
     * 
     * @param domain the domain
-    * @throws IllegalArgumentException for a null domain
+    * @throws IllegalArgumentException for a null domain or if you attempt to unregister the default domain
     * @throws IllegalStateException if a domain is not registered
     */
    public synchronized void unregisterDomain(ClassLoaderDomain domain)
    {
       if (isDomainRegistered(domain) == false)
          throw new IllegalStateException("Domain is not registered " + domain);
+
+      if (ClassLoaderSystem.DEFAULT_DOMAIN_NAME.equals(domain.getName()))
+         throw new IllegalArgumentException("Cannot unregister the default domain");
       
       registeredDomains.remove(domain.getName());
       super.unregisterDomain(domain);

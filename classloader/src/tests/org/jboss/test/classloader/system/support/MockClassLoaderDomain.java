@@ -43,6 +43,11 @@ public class MockClassLoaderDomain extends ClassLoaderDomain
       super("mock");
    }
    
+   public MockClassLoaderDomain(String name)
+   {
+      super(name);
+   }
+   
    protected void afterRegisterClassLoader(ClassLoader classLoader, ClassLoaderPolicy policy)
    {
       added.add(classLoader);
