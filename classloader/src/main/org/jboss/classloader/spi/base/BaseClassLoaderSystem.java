@@ -108,6 +108,8 @@ public abstract class BaseClassLoaderSystem
    {
       if (domain == null)
          throw new IllegalArgumentException("Null domain");
+      if (policy == null)
+         throw new IllegalArgumentException("Null policy");
 
       return AccessController.doPrivileged(new PrivilegedAction<BaseClassLoader>()
       {

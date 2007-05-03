@@ -267,6 +267,18 @@ public abstract class ClassLoaderSystem extends BaseClassLoaderSystem
       if (ClassLoaderSystem.DEFAULT_DOMAIN_NAME.equals(domain.getName()))
          throw new IllegalArgumentException("Cannot unregister the default domain");
       
+      internalUnregisterDomain(domain);
+   }
+   
+   /**
+    * Unregister a domain
+    * 
+    * @param domain the domain
+    * @throws IllegalArgumentException for a null domain or if you attempt to unregister the default domain
+    * @throws IllegalStateException if a domain is not registered
+    */
+   private synchronized void internalUnregisterDomain(ClassLoaderDomain domain)
+   {
       registeredDomains.remove(domain.getName());
       super.unregisterDomain(domain);
       
@@ -301,7 +313,7 @@ public abstract class ClassLoaderSystem extends BaseClassLoaderSystem
    public ClassLoader registerClassLoaderPolicy(ClassLoaderDomain domain, ClassLoaderPolicy policy)
    {
       if (isDomainRegistered(domain) == false)
-         throw new IllegalArgumentException("Domain is not registered: " + domain);
+         throw new IllegalStateException("Domain is not registered: " + domain);
       
       synchronized (this)
       {
@@ -358,7 +370,7 @@ public abstract class ClassLoaderSystem extends BaseClassLoaderSystem
          while (iterator.hasNext())
          {
             ClassLoaderDomain domain = iterator.next();
-            unregisterDomain(domain);
+            internalUnregisterDomain(domain);
          }
       }
    }

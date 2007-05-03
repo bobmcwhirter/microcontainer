@@ -21,20 +21,51 @@
  */
 package org.jboss.classloader.spi.jdk;
 
+import java.security.AccessController;
+import java.security.PrivilegedAction;
+
 import org.jboss.classloader.plugins.jdk.AbstractJDKChecker;
 
 /**
  * JDKCheckerFactory.
  * 
- * TODO parameterize this
+ * 
  * @author <a href="adrian@jboss.com">Adrian Brock</a>
  * @version $Revision: 1.1 $
  */
 public class JDKCheckerFactory
 {
    /** The checker */
-   private static JDKChecker checker = new AbstractJDKChecker(); 
-   
+   private static final JDKChecker checker; 
+
+   static
+   {
+      checker = AccessController.doPrivileged(new PrivilegedAction<JDKChecker>()
+      {
+         public JDKChecker run()
+         {
+            // Decide what default checker to use based on the JDK (not implemented - YAGNI?)
+            String defaultChecker = AbstractJDKChecker.class.getName();
+            
+            String className = System.getProperty(JDKChecker.class.getName(), defaultChecker);
+            try
+            {
+               Class<?> clazz = Thread.currentThread().getContextClassLoader().loadClass(className);
+               Object result = clazz.newInstance();
+               return JDKChecker.class.cast(result);
+            }
+            catch (RuntimeException e)
+            {
+               throw e;
+            }
+            catch (Exception e)
+            {
+               throw new Error("Unexpected error loading JDKChecker " + className, e);
+            }
+         }
+      });
+   }
+
    /**
     * Retrieve the checker for the JDK we are running on
     * 

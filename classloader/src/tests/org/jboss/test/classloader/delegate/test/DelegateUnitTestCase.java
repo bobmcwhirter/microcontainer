@@ -33,6 +33,7 @@ import junit.framework.Test;
 import org.jboss.classloader.spi.ClassLoaderDomain;
 import org.jboss.classloader.spi.ClassLoaderSystem;
 import org.jboss.classloader.spi.DelegateLoader;
+import org.jboss.classloader.spi.ParentPolicy;
 import org.jboss.classloader.spi.filter.FilteredDelegateLoader;
 import org.jboss.classloader.test.support.MockClassLoaderPolicy;
 import org.jboss.test.classloader.AbstractClassLoaderTestWithSecurity;
@@ -117,8 +118,8 @@ public class DelegateUnitTestCase extends AbstractClassLoaderTestWithSecurity
       ClassLoader b = system.registerClassLoaderPolicy(pb);
       
       Class<?> testAbstractFactoryClass = assertLoadClass(TestAbstractFactory.class, a);
-      Method method = testAbstractFactoryClass.getMethod("getInstance", null);
-      Object instance = method.invoke(null, null);
+      Method method = testAbstractFactoryClass.getMethod("getInstance", (Class[]) null);
+      Object instance = method.invoke(null, (Object[]) null);
       Class<?> testFactoryImplementationClass = assertLoadClass(TestFactoryImplementation.class, b);
       assertClassEquality(testFactoryImplementationClass, instance.getClass());
    }
@@ -141,7 +142,7 @@ public class DelegateUnitTestCase extends AbstractClassLoaderTestWithSecurity
       
       Class<?> delegate = assertLoadClass(TestADelegateClassLoaderDomain.class, a, false);
       
-      Method method = delegate.getMethod("getSomething", null);
+      Method method = delegate.getMethod("getSomething", (Class[]) null);
       fromA = method.getReturnType();
       assertNotNull(fromA);
       assertClassLoader(fromA, b);
@@ -169,12 +170,66 @@ public class DelegateUnitTestCase extends AbstractClassLoaderTestWithSecurity
       ClassLoader b = system.registerClassLoaderPolicy(pb);
       
       Class<?> testAbstractFactoryClass = assertLoadClass(TestAbstractFactory.class, b, a);
-      Method method = testAbstractFactoryClass.getMethod("getInstance", null);
-      Object instance = method.invoke(null, null);
+      Method method = testAbstractFactoryClass.getMethod("getInstance", (Class[]) null);
+      Object instance = method.invoke(null, (Object[]) null);
       Class<?> testFactoryImplementationClass = assertLoadClass(TestFactoryImplementation.class, a, b);
       assertClassEquality(testFactoryImplementationClass, instance.getClass());
    }
-   
+
+   public void testLoadClassFromDefaultPackage() throws Exception
+   {
+      ClassLoaderSystem system = createClassLoaderSystemWithModifiedBootstrap();
+      MockClassLoaderPolicy policy = createMockClassLoaderPolicy();
+      policy.setPath("");
+      policy.setPackageNames(new String[] { "" });
+      ClassLoader classLoader = system.registerClassLoaderPolicy(policy);
+      
+      assertLoadClass("TestDefaultPackage", classLoader);
+   }
+
+   public void testLoadClassFromDefaultPackageFromDelegate() throws Exception
+   {
+      ClassLoaderSystem system = createClassLoaderSystemWithModifiedBootstrap();
+      MockClassLoaderPolicy policy = createMockClassLoaderPolicy();
+      policy.setPath("");
+      policy.setPackageNames(new String[] { "" });
+      MockClassLoaderPolicy policy2 = createMockClassLoaderPolicy();
+      policy2.setDelegates(Collections.singletonList(new FilteredDelegateLoader(policy)));
+      ClassLoader classLoader = system.registerClassLoaderPolicy(policy);
+      ClassLoader classLoader2 = system.registerClassLoaderPolicy(policy2);
+      
+      assertLoadClass("TestDefaultPackage", classLoader2, classLoader);
+   }
+
+   public void testLoadClassFromDefaultPackageFromExports() throws Exception
+   {
+      ClassLoaderSystem system = createClassLoaderSystemWithModifiedBootstrap();
+      MockClassLoaderPolicy policy = createMockClassLoaderPolicy();
+      policy.setPath("");
+      policy.setPackageNames(new String[] { "" });
+      MockClassLoaderPolicy policy2 = createMockClassLoaderPolicy();
+      policy2.setImportAll(true);
+      ClassLoader classLoader = system.registerClassLoaderPolicy(policy);
+      ClassLoader classLoader2 = system.registerClassLoaderPolicy(policy2);
+      
+      assertLoadClass("TestDefaultPackage", classLoader2, classLoader);
+   }
+
+   public void testLoadClassFromDefaultPackageFromParent() throws Exception
+   {
+      ClassLoaderSystem system = createClassLoaderSystem();
+      ClassLoaderDomain parent = system.createAndRegisterDomain("parent", ParentPolicy.BEFORE_BUT_JAVA_ONLY);
+      MockClassLoaderPolicy policy = createMockClassLoaderPolicy();
+      policy.setPath("");
+      policy.setPackageNames(new String[] { "" });
+      ClassLoaderDomain child = system.createAndRegisterDomain("child", ParentPolicy.BEFORE, parent);
+      MockClassLoaderPolicy policy2 = createMockClassLoaderPolicy();
+      ClassLoader classLoader = system.registerClassLoaderPolicy(parent, policy);
+      ClassLoader classLoader2 = system.registerClassLoaderPolicy(child, policy2);
+      
+      assertLoadClass("TestDefaultPackage", classLoader2, classLoader);
+   }
+
    public void testAbstractFactoryConcurrent() throws Exception
    {
       for (int i = 0; i < 10; ++i)
@@ -219,8 +274,8 @@ public class DelegateUnitTestCase extends AbstractClassLoaderTestWithSecurity
                Class<?> testAbstractFactoryClass = assertLoadClass(TestAbstractFactory.class, a);
                try
                {
-                  Method method = testAbstractFactoryClass.getMethod("getInstance", null);
-                  method.invoke(null, null);
+                  Method method = testAbstractFactoryClass.getMethod("getInstance", (Class[]) null);
+                  method.invoke(null, (Object[]) null);
                }
                catch (Exception e)
                {

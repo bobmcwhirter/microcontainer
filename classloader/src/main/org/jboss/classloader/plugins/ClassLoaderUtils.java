@@ -40,7 +40,6 @@ public class ClassLoaderUtils
    /**
     * Check the class name makes sense
     * 
-    * REVIEW other checks besides null and empty?
     * @param className the class name
     * @throws ClassNotFoundException for a malformed class name
     */

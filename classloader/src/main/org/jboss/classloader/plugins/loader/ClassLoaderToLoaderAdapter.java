@@ -23,10 +23,16 @@ package org.jboss.classloader.plugins.loader;
 
 import java.io.IOException;
 import java.net.URL;
+import java.security.AccessControlContext;
+import java.security.AccessController;
+import java.security.PrivilegedAction;
+import java.security.PrivilegedActionException;
+import java.security.PrivilegedExceptionAction;
 import java.util.Enumeration;
 import java.util.Set;
 
 import org.jboss.classloader.spi.Loader;
+import org.jboss.logging.Logger;
 
 /**
  * ClassLoaderToLoaderAdapter.
@@ -36,9 +42,15 @@ import org.jboss.classloader.spi.Loader;
  */
 public class ClassLoaderToLoaderAdapter implements Loader
 {
+   /** The log */
+   private static final Logger log = Logger.getLogger(ClassLoaderToLoaderAdapter.class);
+   
    /** The classloader */
    private ClassLoader classLoader;
 
+   /** The access control context of the creator of this adapter */
+   private AccessControlContext accessControlContext;
+   
    /**
     * Create a new ClassLoaderToLoaderAdapter.
     * 
@@ -49,16 +61,71 @@ public class ClassLoaderToLoaderAdapter implements Loader
       if (classLoader == null)
          throw new IllegalArgumentException("Null classLoader");
       this.classLoader = classLoader;
+      accessControlContext = AccessController.getContext();
    }
 
-   public URL getResource(String name, String resourceName)
+   public URL getResource(final String name, String resourceName)
    {
-      return classLoader.getResource(name);
+      URL url;
+      SecurityManager sm = System.getSecurityManager();
+      if (sm != null)
+      {
+         url = AccessController.doPrivileged(new PrivilegedAction<URL>()
+         {
+            public URL run()
+            {
+               return classLoader.getResource(name);
+            }
+         }, accessControlContext);
+         
+      }
+      else
+      {
+         url = classLoader.getResource(name);
+      }
+      
+      if (log.isTraceEnabled())
+      {
+         if (url != null)
+            log.trace("Resource " + name + " found in " + classLoader);
+         else
+            log.trace("Resource " + name + " NOT found in " + classLoader);
+      }
+      return url;
    }
 
-   public void getResources(String name, String resourceName, Set<URL> urls) throws IOException
+   public void getResources(final String name, String resourceName, Set<URL> urls) throws IOException
    {
-      Enumeration<URL> enumeration = classLoader.getResources(name);
+      Enumeration<URL> enumeration;
+      SecurityManager sm = System.getSecurityManager();
+      if (sm != null)
+      {
+         try
+         {
+            enumeration = AccessController.doPrivileged(new PrivilegedExceptionAction<Enumeration<URL>>()
+            {
+               public Enumeration<URL> run() throws Exception
+               {
+                  return classLoader.getResources(name);
+               }
+            }, accessControlContext);
+         }
+         catch (PrivilegedActionException e)
+         {
+            Exception e1 = e.getException();
+            if (e1 instanceof RuntimeException)
+               throw (RuntimeException) e1;
+            if (e1 instanceof IOException)
+               throw (IOException) e1;
+            IOException e2 = new IOException("Unexpected error");
+            e2.initCause(e1);
+            throw e2;
+         }
+      }
+      else
+      {
+         enumeration = classLoader.getResources(name);
+      }
       while (enumeration.hasMoreElements())
          urls.add(enumeration.nextElement());
    }

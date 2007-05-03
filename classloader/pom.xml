@@ -11,6 +11,13 @@
   <name>JBoss ClassLoader</name>
   <url>http://www.jboss.com/products/jbossmc</url>
   <description>JBoss ClassLoader</description>
+  <build>
+    <testResources>
+      <testResource>
+        <directory>src/resources/tests</directory>
+      </testResource>
+    </testResources>
+  </build>
   <dependencies>
     <!-- Global dependencies -->
     <dependency>

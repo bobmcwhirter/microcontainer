@@ -26,6 +26,7 @@ import org.jboss.classloader.spi.ClassLoaderDomain;
 import org.jboss.classloader.spi.ClassLoaderPolicy;
 import org.jboss.classloader.spi.ClassLoaderSystem;
 import org.jboss.classloader.spi.ParentPolicy;
+import org.jboss.classloader.spi.filter.ClassFilter;
 import org.jboss.classloader.test.support.MockClassLoaderHelper;
 import org.jboss.classloader.test.support.MockClassLoaderPolicy;
 import org.jboss.test.AbstractTestCaseWithSetup;
@@ -122,6 +123,8 @@ public abstract class AbstractClassLoaderTest extends AbstractTestCaseWithSetup
    
    protected void assertClassLoader(Class<?> clazz, ClassLoader expected)
    {
+      if (expected == null)
+         return;
       boolean result = MockClassLoaderHelper.isExpectedClassLoader(clazz, expected);
       assertTrue(ClassLoaderUtils.classToString(clazz) + " should have expected classloader=" + expected, result);
    }
@@ -252,6 +255,22 @@ public abstract class AbstractClassLoaderTest extends AbstractTestCaseWithSetup
       }
    }
    
+   protected void assertFilterMatches(String test, ClassFilter filter)
+   {
+      getLog().debug("Checking " + test + " expect it to match filter=" + filter);
+      boolean result = filter.matches(test);
+      getLog().debug("Checked " + test + " result was " + result + " for filter=" + filter);
+      assertTrue("Expected " + test + " to match " + filter, result);
+   }
+   
+   protected void assertFilterNoMatch(String test, ClassFilter filter)
+   {
+      getLog().debug("Checking " + test + " expect it NOT to match filter=" + filter);
+      boolean result = filter.matches(test);
+      getLog().debug("Checked " + test + " result was " + result + " for filter=" + filter);
+      assertFalse("Expected " + test + " NOT to match " + filter, result);
+   }
+
    protected void configureLogging()
    {
       //enableTrace("org.jboss.classloader");

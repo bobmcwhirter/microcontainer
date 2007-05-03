@@ -62,10 +62,14 @@ public class BaseDelegateLoader implements Loader
    
    public Class<?> loadClass(String className)
    {
-      BaseClassLoader classLoader = delegate.getClassLoader();
-      if (classLoader == null)
+      BaseClassLoader classLoader;
+      try
       {
-         log.warn("Not loading from policy that has no classLoader: " + toLongString(), new Throwable("STACKTRACE"));
+         classLoader = delegate.getClassLoader();
+      }
+      catch (IllegalStateException e)
+      {
+         log.warn("Not loading from policy that has no classLoader: " + toLongString());
          return null;
       }
       return classLoader.loadClassLocally(className);
@@ -73,10 +77,14 @@ public class BaseDelegateLoader implements Loader
    
    public URL getResource(String name, String resourceName)
    {
-      BaseClassLoader classLoader = delegate.getClassLoader();
-      if (classLoader == null)
+      BaseClassLoader classLoader;
+      try
       {
-         log.warn("Not loading from policy that has no classLoader: " + toLongString(), new Throwable("STACKTRACE"));
+         classLoader = delegate.getClassLoader();
+      }
+      catch (IllegalStateException e)
+      {
+         log.warn("Not loading from policy that has no classLoader: " + toLongString());
          return null;
       }
       return classLoader.getResourceLocally(name, resourceName);
@@ -84,10 +92,14 @@ public class BaseDelegateLoader implements Loader
 
    public void getResources(String name, String resourceName, Set<URL> urls) throws IOException
    {
-      BaseClassLoader classLoader = delegate.getClassLoader();
-      if (classLoader == null)
+      BaseClassLoader classLoader;
+      try
       {
-         log.warn("Not loading from policy that has no classLoader: " + toLongString(), new Throwable("STACKTRACE"));
+         classLoader = delegate.getClassLoader();
+      }
+      catch (IllegalStateException e)
+      {
+         log.warn("Not loading from policy that has no classLoader: " + toLongString());
          return;
       }
       classLoader.getResourcesLocally(name, resourceName, urls);

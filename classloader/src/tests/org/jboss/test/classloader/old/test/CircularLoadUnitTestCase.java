@@ -89,13 +89,13 @@ public class CircularLoadUnitTestCase extends AbstractClassLoaderTestWithSecurit
 
          // Load and create an instance of the UserOfBase class
          Class<?> userOfBaseClass = assertLoadClass(UserOfBase.class, cl0);
-         Constructor ctor0 = userOfBaseClass.getConstructor(null);
-         Object userOfBase = ctor0.newInstance(null);
+         Constructor ctor0 = userOfBaseClass.getConstructor((Class[]) null);
+         Object userOfBase = ctor0.newInstance((Object[]) null);
 
          // Load and create an instance of the Support class
          Class<?> supportClass = assertLoadClass(Support.class, cl1);
-         Constructor ctor1 = supportClass.getConstructor(null);
-         Object support = ctor1.newInstance(null);
+         Constructor ctor1 = supportClass.getConstructor((Class[]) null);
+         Object support = ctor1.newInstance((Object[]) null);
 
          // Now invoke UserOfBase.testBase(Support)
          Class[] sig = { supportClass };
@@ -169,8 +169,8 @@ public class CircularLoadUnitTestCase extends AbstractClassLoaderTestWithSecurit
       assertLoadClass(Class0.class, cl0);
       assertLoadClass(Class2.class, cl1, cl0);
       Class<?> base = assertLoadClass(Base.class, cl0);
-      Method run = base.getMethod("run", null);
-      run.invoke(null, null);
+      Method run = base.getMethod("run", (Class[]) null);
+      run.invoke(null, (Object[]) null);
    }
    
    public void testUCLOwner() throws Exception

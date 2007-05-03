@@ -37,6 +37,18 @@ public class PatternClassFilter implements ClassFilter
 {
    /** The patterns as regular expressions */
    private Pattern[] patterns;
+
+   /**
+    * Create a new PatternClassFilter.
+    * 
+    * @param patterns the patterns
+    * @return the filter
+    * @throws IllegalArgumentException for a null pattern
+    */
+   public static PatternClassFilter createPatternClassFilter(String... patterns)
+   {
+      return new PatternClassFilter(patterns);
+   }
    
    /**
     * Create a new PatternClassFilter.
@@ -73,6 +85,9 @@ public class PatternClassFilter implements ClassFilter
 
    public boolean matches(String className)
    {
+      if (className == null)
+         return false;
+      
       for (int i = 0; i < patterns.length; ++i)
       {
          Matcher matcher = patterns[i].matcher(className);

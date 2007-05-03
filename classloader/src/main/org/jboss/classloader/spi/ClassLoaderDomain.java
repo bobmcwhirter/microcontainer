@@ -23,6 +23,8 @@ package org.jboss.classloader.spi;
 
 import java.io.IOException;
 import java.net.URL;
+import java.security.AccessController;
+import java.security.PrivilegedAction;
 import java.util.Set;
 
 import org.jboss.classloader.plugins.loader.ClassLoaderToLoaderAdapter;
@@ -153,11 +155,11 @@ public class ClassLoaderDomain extends BaseClassLoaderDomain implements Loader
       if (filter.matches(resourceName))
       {
          if (trace)
-            log.trace(this + " " + name + " matches parent beforeFilter=" + filter);
+            log.trace(this + " " + resourceName + " matches parent beforeFilter=" + filter);
          return findLoaderFromParent(name, resourceName);
       }
       if (trace)
-         log.trace(this + " " + name + " does NOT match parent beforeFilter=" + filter);
+         log.trace(this + " " + resourceName + " does NOT match parent beforeFilter=" + filter);
       return null;
    }
 
@@ -169,11 +171,11 @@ public class ClassLoaderDomain extends BaseClassLoaderDomain implements Loader
       if (filter.matches(resourceName))
       {
          if (trace)
-            log.trace(this + " " + name + " matches parent afterFilter=" + filter);
+            log.trace(this + " " + resourceName + " matches parent afterFilter=" + filter);
          return findLoaderFromParent(name, resourceName);
       }
       if (trace)
-         log.trace(this + " " + name + " does NOT match parent afterFilter=" + filter);
+         log.trace(this + " " + resourceName + " does NOT match parent afterFilter=" + filter);
       return null;
    }
 
@@ -197,8 +199,16 @@ public class ClassLoaderDomain extends BaseClassLoaderDomain implements Loader
       }
 
       if (trace)
-         log.trace(this + " load from parent " + name + " parent=" + parent);
+         log.trace(this + " load from parent " + resourceName + " parent=" + parent);
+
+      // Recurse into parent domains
+      if (parentLoader instanceof ClassLoaderDomain)
+      {
+         ClassLoaderDomain parentDomain = (ClassLoaderDomain) parentLoader;
+         return parentDomain.findLoader(name, resourceName);
+      }
       
+      // A normal loader
       if (parentLoader.getResource(name, resourceName) != null)
          return parentLoader;
       
@@ -338,9 +348,17 @@ public class ClassLoaderDomain extends BaseClassLoaderDomain implements Loader
    {
       if (parent == null)
       {
-         ClassLoader classLoader = getParentClassLoader();
+         final ClassLoader classLoader = getParentClassLoader();
          if (classLoader != null)
-            parent = new ClassLoaderToLoaderAdapter(classLoader);
+         {
+            parent = AccessController.doPrivileged(new PrivilegedAction<Loader>()
+            {
+               public Loader run()
+               {
+                  return new ClassLoaderToLoaderAdapter(classLoader);
+               }
+            });
+         }
       }
    }
 }

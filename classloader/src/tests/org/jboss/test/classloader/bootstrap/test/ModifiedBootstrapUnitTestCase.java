@@ -21,6 +21,8 @@
  */
 package org.jboss.test.classloader.bootstrap.test;
 
+import java.lang.reflect.Constructor;
+import java.lang.reflect.Method;
 import java.util.List;
 
 import javax.naming.Context;
@@ -28,7 +30,10 @@ import javax.naming.Context;
 import junit.framework.Test;
 
 import org.jboss.classloader.spi.ClassLoaderDomain;
+import org.jboss.classloader.spi.ClassLoaderSystem;
+import org.jboss.classloader.test.support.MockClassLoaderPolicy;
 import org.jboss.test.classloader.AbstractClassLoaderTestWithSecurity;
+import org.jboss.test.classloader.bootstrap.support.TestClass;
 
 /**
  * ModifiedBootstrapUnitTestCase.
@@ -66,6 +71,23 @@ public class ModifiedBootstrapUnitTestCase extends AbstractClassLoaderTestWithSe
    public void testClassLoaderDomain() throws Exception
    {
       testNotBootstrapClass(ClassLoaderDomain.class);
+   }
+   
+   public void testReflection() throws Exception
+   {
+      ClassLoaderSystem system = createClassLoaderSystemWithModifiedBootstrap();
+      MockClassLoaderPolicy policy = createMockClassLoaderPolicy();
+      policy.setPathsAndPackageNames(TestClass.class);
+      ClassLoader classLoader = system.registerClassLoaderPolicy(policy);
+      
+      Class clazz = assertLoadClass(TestClass.class, classLoader);
+      Constructor constructor = clazz.getConstructor((Class[]) null);
+      
+      Object object = constructor.newInstance((Object[]) null);
+      
+      Method method = clazz.getMethod("doSomething", (Class[]) null);
+      Object result = method.invoke(object, (Object[]) null);
+      assertEquals(classLoader, result);
    }
    
    protected void testBootstrapClass(Class<?> clazz) throws Exception

@@ -92,6 +92,31 @@ public class MockClassLoaderHelper
          }
       });
    }
+   
+   /**
+    * Register a mock classloader policy<p>
+    * 
+    * No security problem here. The user needs access to a ClassLoaderSystem
+    * to register a classloader with it.
+    * 
+    * @param system the system
+    * @param domain the domain
+    * @param policy the policy
+    * @return the classloader
+    */
+   public static ClassLoader registerMockClassLoader(final ClassLoaderSystem system, final ClassLoaderDomain domain, final MockClassLoaderPolicy policy)
+   {
+      return AccessController.doPrivileged(new PrivilegedAction<ClassLoader>()
+      {
+         public ClassLoader run()
+         {
+            if (domain == null)
+               return system.registerClassLoaderPolicy(policy);
+            else
+               return system.registerClassLoaderPolicy(domain, policy);
+         }
+      });
+   }
 
    /**
     * Check whether a class has the expected classloader

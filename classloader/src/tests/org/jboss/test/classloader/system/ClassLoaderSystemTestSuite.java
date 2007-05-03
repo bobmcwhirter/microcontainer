@@ -19,37 +19,45 @@
  * Software Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA
  * 02110-1301 USA, or see the FSF site: http://www.fsf.org.
  */
-package org.jboss.test.classloader.system.test;
+package org.jboss.test.classloader.system;
+
+import org.jboss.test.classloader.system.test.ClassLoaderSystemNoSecurityUnitTestCase;
+import org.jboss.test.classloader.system.test.ClassLoaderSystemUnitTestCase;
 
 import junit.framework.Test;
-
-import org.jboss.classloader.spi.ClassLoaderSystem;
-import org.jboss.test.classloader.AbstractClassLoaderTest;
+import junit.framework.TestSuite;
+import junit.textui.TestRunner;
 
 /**
- * ClassLoadingSystemUnitTestCase.
+ * ClassLoaderSystem Test Suite.
  * 
  * @author <a href="adrian@jboss.com">Adrian Brock</a>
- * @version $Revision: 1.1 $
+ * @version $Revision: 37459 $
  */
-public class ClassLoadingSystemNoSecurityUnitTestCase extends AbstractClassLoaderTest
+public class ClassLoaderSystemTestSuite extends TestSuite
 {
-   public static Test suite()
+   /**
+    * For running the testsuite from the command line
+    * 
+    * @param args the command line args
+    */
+   public static void main(String[] args)
    {
-      return suite(ClassLoadingSystemNoSecurityUnitTestCase.class);
+      TestRunner.run(suite());
    }
 
-   public ClassLoadingSystemNoSecurityUnitTestCase(String name)
+   /**
+    * Create the testsuite
+    * 
+    * @return the testsuite
+    */
+   public static Test suite()
    {
-      super(name);
-   }
-   
-   public void testGetInstance() throws Exception
-   {
-      ClassLoaderSystem instance = ClassLoaderSystem.getInstance();
-      assertNotNull(instance);
+      TestSuite suite = new TestSuite("ClassLoader System Tests");
+
+      suite.addTest(ClassLoaderSystemNoSecurityUnitTestCase.suite());
+      suite.addTest(ClassLoaderSystemUnitTestCase.suite());
       
-      ClassLoaderSystem instance2 = ClassLoaderSystem.getInstance();
-      assertTrue("Should be the same instance", instance == instance2);
+      return suite;
    }
 }

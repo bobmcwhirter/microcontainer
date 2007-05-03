@@ -167,7 +167,9 @@ public class ClassLoaderManager
          }
          // Assert that loadedClass is not null
          else
-            throw new IllegalStateException("ClassLoadingTask.loadedTask is null, name: " + task.getClassName());
+         {
+            throw new ClassNotFoundException("Failed to load class " + task.getClassName());
+         }
       }
       return loadedClass;
    }
@@ -365,8 +367,8 @@ public class ClassLoaderManager
                      boolean gotLock = classLoader.attemptLock();
                      if (gotLock == false)
                      {
-                        // REVIEW: If we've been spinning for more than a minute then there is probably something wrong? 
-                        if (waits++ == 6)
+                        // Two minutes should be long enough?
+                        if (waits++ == 12)
                            throw new IllegalStateException("Waiting too long to get the registration lock for classLoader " + classLoader);
                         // Wait 10 seconds
                         if (trace)

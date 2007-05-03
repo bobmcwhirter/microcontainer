@@ -30,6 +30,7 @@ import java.util.Map;
 import java.util.Set;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.CopyOnWriteArrayList;
+import java.util.concurrent.CopyOnWriteArraySet;
 
 import org.jboss.classloader.plugins.ClassLoaderUtils;
 import org.jboss.classloader.spi.ClassLoaderPolicy;
@@ -43,7 +44,6 @@ import org.jboss.logging.Logger;
  * This class hides some of the implementation details and allows
  * package access to the protected methods.
  *
- * TODO add caching (needs to be per classloader when not AllExports policy)
  * @author <a href="adrian@jboss.com">Adrian Brock</a>
  * @version $Revision: 1.1 $
  */
@@ -64,8 +64,31 @@ public abstract class BaseClassLoaderDomain implements Loader
    /** The classloaders by package name */
    private Map<String, List<ClassLoaderInformation>> classLoadersByPackageName = new ConcurrentHashMap<String, List<ClassLoaderInformation>>();
    
+   /** The global class cache */
+   private Map<String, Loader> globalClassCache = new ConcurrentHashMap<String, Loader>();
+   
+   /** The global class black list */
+   private Set<String> globalClassBlackList = new CopyOnWriteArraySet<String>();
+   
+   /** The global resource cache */
+   private Map<String, URL> globalResourceCache = new ConcurrentHashMap<String, URL>();
+   
+   /** The global resource black list */
+   private Set<String> globalResourceBlackList = new CopyOnWriteArraySet<String>();
+   
    /** Keep track of the added order */
    private int order = 0;
+   
+   /**
+    * Flush the internal caches
+    */
+   public void flushCaches()
+   {
+      globalClassCache.clear();
+      globalClassBlackList.clear();
+      globalResourceCache.clear();
+      globalResourceBlackList.clear();
+   }
    
    /**
     * Get the classloader system
@@ -112,6 +135,8 @@ public abstract class BaseClassLoaderDomain implements Loader
                unregisterClassLoader(info.getClassLoader());
          }
       }
+      
+      flushCaches();
    }
    
    /**
@@ -131,49 +156,6 @@ public abstract class BaseClassLoaderDomain implements Loader
          system.transform(className, byteCode, protectionDomain);
       return byteCode;
    }
-
-   /**
-    * Invoked before classloading is attempted to allow a preload attempt, e.g. from the parent
-    * 
-    * @param name the class resource name
-    * @param resourceName the resource name in dot notation
-    * @return the loader if found or null otherwise
-    */
-   protected abstract Loader findBeforeLoader(String name, String resourceName);
-   
-   /**
-    * Invoked after classloading is attempted to allow a postload attempt, e.g. from the parent
-    * 
-    * @param name the class resource name
-    * @param resourceName the resource name in dot notation
-    * @return the loader if found or null otherwise
-    */
-   protected abstract Loader findAfterLoader(String name, String resourceName);
-   
-   public Class<?> loadClass(String name)
-   {
-      try
-      {
-         return loadClass(null, name, true);
-      }
-      catch (ClassNotFoundException e)
-      {
-         return null;
-      }
-   }
-   
-   /**
-    * Load a class from the domain
-    * 
-    * @param classLoader the classloader
-    * @param name the class name
-    * @return the class
-    * @throws ClassNotFoundException for any error
-    */
-   Class<?> loadClass(BaseClassLoader classLoader, String name) throws ClassNotFoundException
-   {
-      return loadClass(classLoader, name, false);
-   }
    
    /**
     * Load a class from the domain
@@ -187,96 +169,10 @@ public abstract class BaseClassLoaderDomain implements Loader
    Class<?> loadClass(BaseClassLoader classLoader, String name, boolean allExports) throws ClassNotFoundException
    {
       boolean trace = log.isTraceEnabled();
-
-      if (getClassLoaderSystem() == null)
-         throw new IllegalStateException("Domain is not registered with a classloader system: " + toLongString());
       
       String path = ClassLoaderUtils.classNameToPath(name);
-      
-      // Try the before attempt (e.g. from the parent)
-      Loader loader = findBeforeLoader(path, name);
-      
-      if (loader == null)
-      {
-         // Work out the rules
-         List<? extends DelegateLoader> delegates = null;
-         BaseClassLoaderPolicy policy = null;
-         if (classLoader != null)
-         {
-            policy = classLoader.getPolicy();
-            delegates = policy.getDelegates();
-            if (policy.isImportAll())
-               allExports = true;
-         }
 
-         // Next we try the old "big ball of mud" model      
-         if (allExports)
-         {
-            String packageName = ClassLoaderUtils.getClassPackageName(name);
-            List<ClassLoaderInformation> list = classLoadersByPackageName.get(packageName);
-            if (list != null && list.isEmpty() == false)
-            {
-               if (trace)
-                  log.trace(this + " trying to load " + name + " from all exports " + list);
-               for (ClassLoaderInformation info : list)
-               {
-                  BaseDelegateLoader exported = info.getExported();
-                  if (exported.getResource(path, name) != null)
-                  {
-                     loader = exported;
-                     break;
-                  }
-               }
-            }
-         }
-         
-         // Next we try the imports
-         if (loader == null && delegates != null && delegates.isEmpty() == false)
-         {
-            for (DelegateLoader delegate : delegates)
-            {
-               if (trace)
-                  log.trace(this + " trying to load " + name + " from import " + delegate + " for " + classLoader);
-               if (delegate.getResource(path, name) != null)
-               {
-                  loader = delegate;
-                  break;
-               }
-            }
-         }
-
-         // Next use any requesting classloader, this will look at everything not just what it exports
-         if (loader == null && classLoader != null)
-         {
-            if (trace)
-               log.trace(this + " trying to load " + name + " from requesting " + classLoader);
-            if (classLoader.getResourceLocally(path, name) != null)
-               loader = classLoader.getLoader();
-         }
-
-         // Try the after attempt (e.g. from the parent)
-         if (loader == null)
-            loader = findAfterLoader(path, name);
-
-         // Finally see whether this is the JDK assuming it can load its classes from any classloader
-         if (loader == null)
-         {
-            ClassLoader hack = policy.isJDKRequest(name);
-            if (hack != null)
-            {
-               if (trace)
-                  log.trace(this + " trying to load " + name + " using hack " + hack);
-               Class<?> result = hack.loadClass(name);
-               if (result != null)
-               {
-                  if (trace)
-                     log.trace(this + " loaded from hack " + hack + " " + ClassLoaderUtils.classToString(result));
-                  return result;
-               }
-            }
-         }
-      }
-
+      Loader loader = findLoader(classLoader, path, name, allExports);
       if (loader != null)
       {
          Thread thread = Thread.currentThread();
@@ -284,45 +180,104 @@ public abstract class BaseClassLoaderDomain implements Loader
          ClassLoaderManager.scheduleTask(task, loader, false);
          return ClassLoaderManager.process(thread, task);
       }
+      // Finally see whether this is the JDK assuming it can load its classes from any classloader
+      else if (classLoader != null)
+      {
+         BaseClassLoaderPolicy policy = classLoader.getPolicy();
+         ClassLoader hack = policy.isJDKRequest(name);
+         if (hack != null)
+         {
+            if (trace)
+               log.trace(this + " trying to load " + name + " using hack " + hack);
+            Class<?> result = hack.loadClass(name);
+            if (result != null)
+            {
+               if (trace)
+                  log.trace(this + " loaded from hack " + hack + " " + ClassLoaderUtils.classToString(result));
+               return result;
+            }
+         }
+      }
       
       // Didn't find it
       return null;
    }
-   
+
    /**
-    * Invoked before getResource is attempted to allow a preload attempt, e.g. from the parent
+    * Find a loader for a class
     * 
-    * @param name the resource name
-    * @param resourceName the name of the resource in dot notation
-    * @return the url if found or null otherwise
+    * @param name the class resource name
+    * @param resourceName the resource name in dot notation
+    * @return the loader
     */
-   protected abstract URL beforeGetResource(String name, String resourceName);
-   
-   /**
-    * Invoked after getResource is attempted to allow a postload attempt, e.g. from the parent
-    * 
-    * @param name the class name
-    * @param resourceName the name of the resource in dot notation
-    * @return the url if found or null otherwise
-    */
-   protected abstract URL afterGetResource(String name, String resourceName);
-   
-   public URL getResource(String name, String resourceName)
+   protected Loader findLoader(String name, String resourceName)
    {
-      return getResource(null, name, resourceName, true);
+      return findLoader(null, name, resourceName, true);
    }
-   
+
    /**
-    * Get a resource from the domain
+    * Find a loader for a class
     * 
     * @param classLoader the classloader
-    * @param name the resource name
-    * @param resourceName the name of the resource in dot notation
-    * @return the url
+    * @param name the class resource name
+    * @param resourceName the resource name in dot notation
+    * @param allExports whether we should look at all exports
+    * @return the loader
     */
-   URL getResource(BaseClassLoader classLoader, String name, String resourceName)
+   Loader findLoader(BaseClassLoader classLoader, String name, String resourceName, boolean allExports)
    {
-      return getResource(classLoader, name, resourceName, false);
+      boolean trace = log.isTraceEnabled();
+      if (trace)
+         log.trace(this + " findLoader " + resourceName + " classLoader=" + classLoader + " allExports=" + allExports);
+      
+      if (getClassLoaderSystem() == null)
+         throw new IllegalStateException("Domain is not registered with a classloader system: " + toLongString());
+      
+      // Try the before attempt (e.g. from the parent)
+      Loader loader = findBeforeLoader(name, resourceName);
+      if (loader != null)
+         return loader;
+
+      // Work out the rules
+      ClassLoaderInformation info = null;
+      BaseClassLoaderPolicy policy = null;
+      if (classLoader != null)
+      {
+         info = infos.get(classLoader);
+         policy = classLoader.getPolicy();
+         if (policy.isImportAll())
+            allExports = true;
+      }
+
+      // Next we try the old "big ball of mud" model      
+      if (allExports)
+      {
+         loader = findLoaderInExports(classLoader, name, resourceName, trace);
+         if (loader != null)
+            return loader;
+      }
+      else if (trace)
+         log.trace(this + " not loading " + resourceName + " from all exports");
+      
+      // Next we try the imports
+      if (info != null)
+      {
+         loader = findLoaderInImports(info, name, resourceName, trace);
+         if (loader != null)
+            return loader;
+      }
+
+      // Next use any requesting classloader, this will look at everything not just what it exports
+      if (classLoader != null)
+      {
+         if (trace)
+            log.trace(this + " trying to load " + resourceName + " from requesting " + classLoader);
+         if (classLoader.getResourceLocally(name, resourceName) != null)
+            return classLoader.getLoader();
+      }
+
+      // Try the after attempt (e.g. from the parent)
+      return findAfterLoader(name, resourceName);
    }
    
    /**
@@ -347,12 +302,12 @@ public abstract class BaseClassLoaderDomain implements Loader
          return result;
 
       // Work out the rules
-      List<? extends DelegateLoader> delegates = null;
+      ClassLoaderInformation info = null;
       BaseClassLoaderPolicy policy = null;
       if (classLoader != null)
       {
          policy = classLoader.getPolicy();
-         delegates = policy.getDelegates();
+         info = infos.get(classLoader);
          if (policy.isImportAll())
             allExports = true;
       }
@@ -360,33 +315,19 @@ public abstract class BaseClassLoaderDomain implements Loader
       // Next we try the old "big ball of mud" model      
       if (allExports)
       {
-         String packageName = ClassLoaderUtils.getResourcePackageName(name);
-         List<ClassLoaderInformation> list = classLoadersByPackageName.get(packageName);
-         if (list != null && list.isEmpty() == false)
-         {
-            if (trace)
-               log.trace(this + " trying to get resource " + name + " from all exports " + list);
-            for (ClassLoaderInformation info : list)
-            {
-               BaseDelegateLoader loader = info.getExported();
-               result = loader.getResource(name, resourceName);
-               if (result != null)
-                  return result;
-            }
-         }
+         result = getResourceFromExports(classLoader, name, resourceName, trace);
+         if (result != null)
+            return result;
       }
+      else if (trace)
+         log.trace(this + " not getting resource " + name + " from all exports");
       
       // Next we try the imports
-      if (delegates != null && delegates.isEmpty() == false)
+      if (info != null)
       {
-         for (DelegateLoader delegate : delegates)
-         {
-            if (trace)
-               log.trace(this + " trying to get resource " + name + " from import " + delegate + " for " + classLoader);
-            result = delegate.getResource(name, resourceName);
-            if (result != null)
-               return result;
-         }
+         result = getResourceFromImports(info, name, resourceName, trace);
+         if (result != null)
+            return result;
       }
 
       // Finally use any requesting classloader
@@ -413,46 +354,7 @@ public abstract class BaseClassLoaderDomain implements Loader
    }
    
    /**
-    * Invoked before getResources is attempted to allow a preload attempt, e.g. from the parent
-    * 
-    * @param name the resource name
-    * @param resourceName the name of the resource in dot notation
-    * @param urls the urls to add to
-    * @throws IOException for any error
-    */
-   protected abstract void beforeGetResources(String name, String resourceName, Set<URL> urls) throws IOException;
-   
-   /**
-    * Invoked after getResources is attempted to allow a postload attempt, e.g. from the parent
-    * 
-    * @param name the resource name
-    * @param resourceName the name of the resource in dot notation
-    * @param urls the urls to add to
-    * @throws IOException for any error
-    */
-   protected abstract void afterGetResources(String name, String resourceName, Set<URL> urls) throws IOException;
-   
-   public void getResources(String name, String resourceName, Set<URL> urls) throws IOException
-   {
-      getResources(null, name, resourceName, urls, true);
-   }
-   
-   /**
-    * Get a resource from the domain
-    * 
-    * @param classLoader the classloader
-    * @param name the resource name
-    * @param resourceName the name of the resource in dot notation
-    * @param urls the urls to add to
-    * @throws IOException for any error
-    */
-   void getResources(BaseClassLoader classLoader, String name, String resourceName, Set<URL> urls) throws IOException
-   {
-      getResources(classLoader, name, resourceName, urls, false);
-   }
-   
-   /**
-    * Load a resource from the domain
+    * Load resources from the domain
     * 
     * @param classLoader the classloader
     * @param name the resource name
@@ -472,43 +374,25 @@ public abstract class BaseClassLoaderDomain implements Loader
       beforeGetResources(name, resourceName, urls);
 
       // Work out the rules
-      List<? extends DelegateLoader> delegates = null;
+      ClassLoaderInformation info = null;
       BaseClassLoaderPolicy policy = null;
       if (classLoader != null)
       {
          policy = classLoader.getPolicy();
-         delegates = policy.getDelegates();
+         info = infos.get(classLoader);
          if (policy.isImportAll())
             allExports = true;
       }
 
       // Next we try the old "big ball of mud" model      
       if (allExports)
-      {
-         String packageName = ClassLoaderUtils.getResourcePackageName(name);
-         List<ClassLoaderInformation> list = classLoadersByPackageName.get(packageName);
-         if (list != null && list.isEmpty() == false)
-         {
-            if (trace)
-               log.trace(this + " trying to get resources " + name + " from all exports " + list);
-            for (ClassLoaderInformation info : list)
-            {
-               BaseDelegateLoader loader = info.getExported();
-               loader.getResources(name, resourceName, urls);
-            }
-         }
-      }
+         getResourcesFromExports(classLoader, name, resourceName, urls, trace);
+      else if (trace)
+         log.trace(this + " not getting resource " + name + " from all exports");
       
       // Next we try the imports
-      if (delegates != null && delegates.isEmpty() == false)
-      {
-         for (DelegateLoader delegate : delegates)
-         {
-            if (trace)
-               log.trace(this + " trying to get resources " + name + " from import " + delegate + " for " + classLoader);
-            delegate.getResources(name, resourceName, urls);
-         }
-      }
+      if (info != null)
+         getResourcesFromImports(info, name, resourceName, urls, trace);
 
       // Finally use any requesting classloader
       if (classLoader != null)
@@ -520,6 +404,393 @@ public abstract class BaseClassLoaderDomain implements Loader
 
       // Try the after attempt
       afterGetResources(name, resourceName, urls);
+   }
+   
+   /**
+    * Find a loader for class in exports
+    * 
+    * @param classLoader the classloader
+    * @param name the class resource name
+    * @param resourceName the resource name in dot notation
+    * @param trace whether trace is enabled
+    * @return the loader
+    */
+   private Loader findLoaderInExports(BaseClassLoader classLoader, String name, String resourceName, boolean trace)
+   {
+      Loader loader = globalClassCache.get(name);
+      if (loader != null)
+      {
+         if (trace)
+            log.trace(this + " found in global class cache " + resourceName);
+
+         return loader;
+      }
+
+      if (globalClassBlackList.contains(name))
+      {
+         if (trace)
+            log.trace(this + " class is black listed " + resourceName);
+         return null;
+      }
+      boolean canCache = true;
+      boolean canBlackList = true;
+      
+      String packageName = ClassLoaderUtils.getClassPackageName(resourceName);
+      List<ClassLoaderInformation> list = classLoadersByPackageName.get(packageName);
+      if (trace)
+         log.trace(this + " trying to load " + resourceName + " from all exports of package " + packageName + " " + list);
+      if (list != null && list.isEmpty() == false)
+      {
+         for (ClassLoaderInformation info : list)
+         {
+            BaseDelegateLoader exported = info.getExported();
+            
+            // See whether the policies allow caching/blacklisting
+            BaseClassLoaderPolicy loaderPolicy = exported.getPolicy();
+            if (loaderPolicy.isCachable() == false)
+               canCache = false;
+            if (loaderPolicy.isBlackListable() == false)
+               canBlackList = false;
+
+            if (exported.getResource(name, resourceName) != null)
+            {
+               if (canCache)
+                  globalClassCache.put(name, exported);
+               return exported;
+            }
+         }
+      }
+      // Here is not found in the exports so can we blacklist it?
+      if (canBlackList)
+         globalClassBlackList.add(name);
+      
+      return null;
+   }
+   
+   /**
+    * Load a resource from the exports
+    * 
+    * @param classLoader the classloader
+    * @param name the resource name
+    * @param resourceName the name of the resource in dot notation
+    * @param trace whether trace is enabled
+    * @return the url
+    */
+   private URL getResourceFromExports(BaseClassLoader classLoader, String name, String resourceName, boolean trace)
+   {
+      URL result = globalResourceCache.get(name);
+      if (result != null)
+      {
+         if (trace)
+            log.trace(this + " got resource from cache " + name);
+      }
+      
+      if (globalResourceBlackList.contains(name))
+      {
+         if (trace)
+            log.trace(this + " resource is black listed, not looking at exports " + name);
+         return null;
+      }
+      boolean canCache = true;
+      boolean canBlackList = true;
+      
+      String packageName = ClassLoaderUtils.getResourcePackageName(name);
+      List<ClassLoaderInformation> list = classLoadersByPackageName.get(packageName);
+      if (trace)
+         log.trace(this + " trying to get resource " + name + " from all exports " + list);
+      if (list != null && list.isEmpty() == false)
+      {
+         for (ClassLoaderInformation info : list)
+         {
+            BaseDelegateLoader loader = info.getExported();
+            
+            // See whether the policies allow caching/blacklisting
+            BaseClassLoaderPolicy loaderPolicy = loader.getPolicy();
+            if (loaderPolicy.isCachable() == false)
+               canCache = false;
+            if (loaderPolicy.isBlackListable() == false)
+               canBlackList = false;
+
+            result = loader.getResource(name, resourceName);
+            if (result != null)
+            {
+               if (canCache)
+                  globalResourceCache.put(name, result);
+               return result;
+            }
+         }
+      }
+      // Here is not found in the exports so can we blacklist it?
+      if (canBlackList)
+         globalResourceBlackList.add(name);
+      return null;
+   }
+   
+   /**
+    * Load resources from the exports
+    * 
+    * @param classLoader the classloader
+    * @param name the resource name
+    * @param resourceName the name of the resource in dot notation
+    * @param urls the urls to add to
+    * @param trace whether trace is enabled
+    * @throws IOException for any error
+    */
+   void getResourcesFromExports(BaseClassLoader classLoader, String name, String resourceName, Set<URL> urls, boolean trace) throws IOException
+   {
+      String packageName = ClassLoaderUtils.getResourcePackageName(name);
+      List<ClassLoaderInformation> list = classLoadersByPackageName.get(packageName);
+      if (trace)
+         log.trace(this + " trying to get resources " + name + " from all exports " + list);
+      if (list != null && list.isEmpty() == false)
+      {
+         for (ClassLoaderInformation info : list)
+         {
+            BaseDelegateLoader loader = info.getExported();
+            loader.getResources(name, resourceName, urls);
+         }
+      }
+   }
+
+   /**
+    * Find a loader for a class in imports
+    * 
+    * @param info the classloader information
+    * @param name the class resource name
+    * @param resourceName the resource name in dot notation
+    * @param trace whether trace is enabled
+    * @return the loader
+    */
+   Loader findLoaderInImports(ClassLoaderInformation info, String name, String resourceName, boolean trace)
+   {
+      List<? extends DelegateLoader> delegates = info.getDelegates();
+      if (delegates == null || delegates.isEmpty())
+      {
+         if (trace)
+            log.trace(this + " not loading " + resourceName + " from imports it has no delegates");
+         return null;
+      }
+
+      Loader loader = info.getCachedLoader(name);
+      if (loader != null)
+      {
+         if (trace)
+            log.trace(this + " found in import cache " + name);
+         return loader;
+      }
+      
+      if (info.isBlackListedClass(name))
+      {
+         if (trace)
+            log.trace(this + " class is black listed in imports " + name);
+         return null;
+      }
+      
+      for (DelegateLoader delegate : delegates)
+      {
+         if (trace)
+            log.trace(this + " trying to load " + resourceName + " from import " + delegate + " for " + info.getClassLoader());
+         if (delegate.getResource(name, resourceName) != null)
+         {
+            info.cacheLoader(name, delegate);
+            return delegate;
+         }
+      }
+      info.blackListClass(name);
+      return null;
+   }
+   
+   /**
+    * Load a resource from the imports
+    * 
+    * @param info the classloader information
+    * @param name the resource name
+    * @param resourceName the name of the resource in dot notation
+    * @param trace whether trace is enabled
+    * @return the url
+    */
+   private URL getResourceFromImports(ClassLoaderInformation info, String name, String resourceName, boolean trace)
+   {
+      List<? extends DelegateLoader> delegates = info.getDelegates();
+      if (delegates == null || delegates.isEmpty())
+      {
+         if (trace)
+            log.trace(this + " not getting resource " + name + " from imports it has no delegates");
+         return null;
+      }
+
+      URL url = info.getCachedResource(name);
+      if (url != null)
+      {
+         if (trace)
+            log.trace(this + " found resource in import cache " + name);
+         return url;
+      }
+      
+      if (info.isBlackListedResource(name))
+      {
+         if (trace)
+            log.trace(this + " resource is black listed in imports " + name);
+         return null;
+      }
+
+      if (trace)
+         log.trace(this + " trying to get resource " + name + " from imports " + delegates + " for " + info.getClassLoader());
+
+      for (DelegateLoader delegate : delegates)
+      {
+         URL result = delegate.getResource(name, resourceName);
+         if (result != null)
+         {
+            info.cacheResource(name, result);
+            return result;
+         }
+      }
+      info.blackListResource(name);
+      return null;
+   }
+   
+   /**
+    * Load resources from the imports
+    * 
+    * @param info the classloader info
+    * @param name the resource name
+    * @param resourceName the name of the resource in dot notation
+    * @param urls the urls to add to
+    * @param trace whether trace is enabled
+    * @throws IOException for any error
+    */
+   void getResourcesFromImports(ClassLoaderInformation info, String name, String resourceName, Set<URL> urls, boolean trace) throws IOException
+   {
+      List<? extends DelegateLoader> delegates = info.getDelegates();
+      if (delegates == null || delegates.isEmpty())
+      {
+         if (trace)
+            log.trace(this + " not getting resource " + name + " from imports it has no delegates");
+         return;
+      }
+      if (trace)
+         log.trace(this + " trying to get resources " + name + " from imports " + delegates + " for " + info.getClassLoader());
+      for (DelegateLoader delegate : delegates)
+         delegate.getResources(name, resourceName, urls);
+   }
+
+   /**
+    * Invoked before classloading is attempted to allow a preload attempt, e.g. from the parent
+    * 
+    * @param name the class resource name
+    * @param resourceName the resource name in dot notation
+    * @return the loader if found or null otherwise
+    */
+   protected abstract Loader findBeforeLoader(String name, String resourceName);
+   
+   /**
+    * Invoked after classloading is attempted to allow a postload attempt, e.g. from the parent
+    * 
+    * @param name the class resource name
+    * @param resourceName the resource name in dot notation
+    * @return the loader if found or null otherwise
+    */
+   protected abstract Loader findAfterLoader(String name, String resourceName);
+   
+   /**
+    * Invoked before getResources is attempted to allow a preload attempt, e.g. from the parent
+    * 
+    * @param name the resource name
+    * @param resourceName the name of the resource in dot notation
+    * @param urls the urls to add to
+    * @throws IOException for any error
+    */
+   protected abstract void beforeGetResources(String name, String resourceName, Set<URL> urls) throws IOException;
+   
+   /**
+    * Invoked after getResources is attempted to allow a postload attempt, e.g. from the parent
+    * 
+    * @param name the resource name
+    * @param resourceName the name of the resource in dot notation
+    * @param urls the urls to add to
+    * @throws IOException for any error
+    */
+   protected abstract void afterGetResources(String name, String resourceName, Set<URL> urls) throws IOException;
+   
+   /**
+    * Invoked before getResource is attempted to allow a preload attempt, e.g. from the parent
+    * 
+    * @param name the resource name
+    * @param resourceName the name of the resource in dot notation
+    * @return the url if found or null otherwise
+    */
+   protected abstract URL beforeGetResource(String name, String resourceName);
+   
+   /**
+    * Invoked after getResource is attempted to allow a postload attempt, e.g. from the parent
+    * 
+    * @param name the class name
+    * @param resourceName the name of the resource in dot notation
+    * @return the url if found or null otherwise
+    */
+   protected abstract URL afterGetResource(String name, String resourceName);
+   
+   public Class<?> loadClass(String name)
+   {
+      try
+      {
+         return loadClass(null, name, true);
+      }
+      catch (ClassNotFoundException e)
+      {
+         return null;
+      }
+   }
+   
+   /**
+    * Load a class from the domain
+    * 
+    * @param classLoader the classloader
+    * @param name the class name
+    * @return the class
+    * @throws ClassNotFoundException for any error
+    */
+   Class<?> loadClass(BaseClassLoader classLoader, String name) throws ClassNotFoundException
+   {
+      return loadClass(classLoader, name, false);
+   }
+   
+   public URL getResource(String name, String resourceName)
+   {
+      return getResource(null, name, resourceName, true);
+   }
+   
+   /**
+    * Get a resource from the domain
+    * 
+    * @param classLoader the classloader
+    * @param name the resource name
+    * @param resourceName the name of the resource in dot notation
+    * @return the url
+    */
+   URL getResource(BaseClassLoader classLoader, String name, String resourceName)
+   {
+      return getResource(classLoader, name, resourceName, false);
+   }
+   
+   public void getResources(String name, String resourceName, Set<URL> urls) throws IOException
+   {
+      getResources(null, name, resourceName, urls, true);
+   }
+   
+   /**
+    * Get a resource from the domain
+    * 
+    * @param classLoader the classloader
+    * @param name the resource name
+    * @param resourceName the name of the resource in dot notation
+    * @param urls the urls to add to
+    * @throws IOException for any error
+    */
+   void getResources(BaseClassLoader classLoader, String name, String resourceName, Set<URL> urls) throws IOException
+   {
+      getResources(classLoader, name, resourceName, urls, false);
    }
 
    /**
@@ -557,6 +828,7 @@ public abstract class BaseClassLoaderDomain implements Loader
    {
       // nothing
    }
+
    /**
     * Invoked after adding a classloader policy 
     * 
@@ -578,6 +850,7 @@ public abstract class BaseClassLoaderDomain implements Loader
    {
       // nothing
    }
+   
    /**
     * Invoked after adding a classloader policy 
     * 
@@ -585,16 +858,6 @@ public abstract class BaseClassLoaderDomain implements Loader
     * @param policy the classloader policy
     */
    protected void afterUnregisterClassLoader(ClassLoader classLoader, ClassLoaderPolicy policy)
-   {
-      // nothing
-   }
-   
-   /**
-    * Remove a classloader 
-    * 
-    * @param classLoader the classloader
-    */
-   protected void removeClassLoader(BaseClassLoader classLoader)
    {
       // nothing
    }
@@ -641,7 +904,6 @@ public abstract class BaseClassLoaderDomain implements Loader
          infos.put(classLoader, info);
 
          // Index the packages
-         // TODO Test base package and add support for dynamic packages to the policy
          String[] packageNames = policy.getPackageNames();
          if (packageNames != null && info.getExported() != null)
          {
@@ -657,6 +919,8 @@ public abstract class BaseClassLoaderDomain implements Loader
                log.trace("Registered " + policy + " as providing package=" + packageName);
             }
          }
+         
+         flushCaches();
       }
 
       try
@@ -712,6 +976,8 @@ public abstract class BaseClassLoaderDomain implements Loader
                }
             }
          }
+
+         flushCaches();
       }
 
       try

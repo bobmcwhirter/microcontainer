@@ -32,7 +32,10 @@ import java.security.ProtectionDomain;
 import java.security.SecureClassLoader;
 import java.util.Enumeration;
 import java.util.HashSet;
+import java.util.Map;
 import java.util.Set;
+import java.util.concurrent.ConcurrentHashMap;
+import java.util.concurrent.CopyOnWriteArraySet;
 import java.util.concurrent.TimeUnit;
 import java.util.concurrent.locks.ReentrantLock;
 
@@ -63,6 +66,12 @@ public class BaseClassLoader extends SecureClassLoader
    /** Our Loader front end */
    private DelegateLoader loader;
    
+   /** Our resource cache */
+   private Map<String, URL> resourceCache;
+   
+   /** Our black list */
+   private Set<String> blackList;
+   
    /**
     * Create a new ClassLoader with no parent.
     * 
@@ -81,6 +90,12 @@ public class BaseClassLoader extends SecureClassLoader
       basePolicy.setClassLoader(this);
 
       loader = new DelegateLoader(policy);
+      
+      if (basePolicy.isCachable())
+         resourceCache = new ConcurrentHashMap<String, URL>();
+      
+      if (basePolicy.isBlackListable())
+         blackList = new CopyOnWriteArraySet<String>();
       
       if (log.isTraceEnabled())
          log.debug("Created " + this + " with policy " + policy);
@@ -279,8 +294,29 @@ public class BaseClassLoader extends SecureClassLoader
    {
       if (trace)
          log.trace(this + " get resource locally " + name);
+
+      // Do we already know the answer?
+      if (resourceCache != null)
+      {
+         URL url = resourceCache.get(name);
+         if (url != null)
+         {
+            if (trace)
+               log.trace(this + " got resource from cache " + name);
+            return url;
+         }
+      }
       
-      return AccessController.doPrivileged(new PrivilegedAction<URL>()
+      // Is this resource blacklisted?
+      if (blackList != null && blackList.contains(name))
+      {
+         if (trace)
+            log.trace(this + " resource is blacklisted " + name);
+         return null;
+      }
+      
+      // Ask the policy for the resource
+      URL result = AccessController.doPrivileged(new PrivilegedAction<URL>()
       {
          public URL run()
          {
@@ -297,6 +333,16 @@ public class BaseClassLoader extends SecureClassLoader
             return result;
          }
       }, policy.getAccessControlContext());
+
+      // Cache what we found
+      if (resourceCache != null && result != null)
+         resourceCache.put(name, result);
+      
+      // Blacklist when not found
+      if (blackList != null && result == null)
+         blackList.add(name);
+      
+      return result;
    }
 
    /**
@@ -327,7 +373,6 @@ public class BaseClassLoader extends SecureClassLoader
          log.trace(this + " get resources locally " + name);
 
       // Look for the resources
-      
       try
       {
          AccessController.doPrivileged(new PrivilegedExceptionAction<Object>()
@@ -456,6 +501,10 @@ public class BaseClassLoader extends SecureClassLoader
    protected void shutdownClassLoader()
    {
       log.debug(toLongString() + " shutdown!");
+      if (resourceCache != null)
+         resourceCache.clear();
+      if (blackList != null)
+         blackList.clear();
    }
    
    /**
@@ -550,6 +599,8 @@ public class BaseClassLoader extends SecureClassLoader
     * Acquire the lock on the classloader fairly<p>
     *
     * This must be invoked with the monitor held
+    * 
+    * @param trace whether trace is enabled
     */
    private void acquireLockFairly(boolean trace)
    {
@@ -569,8 +620,8 @@ public class BaseClassLoader extends SecureClassLoader
             {
                if (lock.tryLock(0, TimeUnit.MICROSECONDS) == false)
                {
-                  // REVIEW: If we've been spinning for more than a minute then there is probably something wrong? 
-                  if (waits++ == 6)
+                  // Two minutes should be long enough?
+                  if (waits++ == 12)
                      throw new IllegalStateException("Waiting too long to get the classloader lock: " + this);
                   // Wait 10 seconds
                   if (trace)
@@ -602,7 +653,7 @@ public class BaseClassLoader extends SecureClassLoader
    /**
     * Unlock
     * 
-    * This method must be invoked with the monitor held
+    * @param trace whether trace is enabled
     */
    private void unlock(boolean trace)
    {

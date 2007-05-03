@@ -81,7 +81,7 @@ public class AbstractJDKChecker implements JDKChecker
    /**
     * Whether the requesting class is from the JDK<p>
     * 
-    * The default implementation returs true if the requesting class is not loaded from
+    * The default implementation returns true if the requesting class is not loaded from a
     * {@link BaseClassLoader}
     * 
     * @param name the name of the class being loaded

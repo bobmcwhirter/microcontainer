@@ -32,9 +32,9 @@ import java.util.Collections;
 import java.util.List;
 import java.util.Set;
 
-import org.jboss.classloader.plugins.filter.PackageClassFilter;
 import org.jboss.classloader.spi.base.BaseClassLoaderPolicy;
 import org.jboss.classloader.spi.filter.FilteredDelegateLoader;
+import org.jboss.classloader.spi.filter.PackageClassFilter;
 import org.jboss.classloader.spi.jdk.JDKChecker;
 import org.jboss.classloader.spi.jdk.JDKCheckerFactory;
 import org.jboss.logging.Logger;
@@ -64,7 +64,7 @@ public abstract class ClassLoaderPolicy extends BaseClassLoaderPolicy
       String[] packageNames = getPackageNames();
       if (packageNames == null)
          return null;
-      return new FilteredDelegateLoader(this, new PackageClassFilter(packageNames));
+      return new FilteredDelegateLoader(this, PackageClassFilter.createPackageClassFilter(packageNames));
    }
 
    /**
@@ -111,6 +111,30 @@ public abstract class ClassLoaderPolicy extends BaseClassLoaderPolicy
       return false;
    }
 
+   /**
+    * Whether to cache<p>
+    * 
+    * True by default
+    * 
+    * @return true to cache
+    */
+   protected boolean isCachable()
+   {
+      return true;
+   }
+
+   /**
+    * Whether to cache misses<p>
+    * 
+    * True by default
+    * 
+    * @return true to cache misses
+    */
+   protected boolean isBlackListable()
+   {
+      return true;
+   }
+   
    /**
     * Get the resource
     * 
@@ -236,5 +260,4 @@ public abstract class ClassLoaderPolicy extends BaseClassLoaderPolicy
          return ClassLoader.getSystemClassLoader();
       }
    }
-   
 }

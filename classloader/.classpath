@@ -2,6 +2,7 @@
 <classpath>
 	<classpathentry kind="src" path="src/main"/>
 	<classpathentry kind="src" output="target/eclipse-classes-tests" path="src/tests"/>
+	<classpathentry kind="lib" path="src/resources/tests"/>
 	<classpathentry kind="con" path="org.eclipse.jdt.launching.JRE_CONTAINER"/>
 	<classpathentry kind="var" path="M2_REPO/jboss/jboss-logging-log4j/2.0.2.GA/jboss-logging-log4j-2.0.2.GA.jar" sourcepath="M2_REPO/jboss/jboss-logging-log4j/2.0.2.GA/jboss-logging-log4j-2.0.2.GA-sources.jar"/>
 	<classpathentry kind="var" path="M2_REPO/jboss/jboss-common-logging-spi/2.0.4.GA/jboss-common-logging-spi-2.0.4.GA.jar" sourcepath="M2_REPO/jboss/jboss-common-logging-spi/2.0.4.GA/jboss-common-logging-spi-2.0.4.GA-sources.jar"/>

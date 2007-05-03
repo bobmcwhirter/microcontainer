@@ -25,6 +25,7 @@ import junit.framework.Test;
 import junit.framework.TestSuite;
 import junit.textui.TestRunner;
 
+import org.jboss.test.classloader.delegate.test.DelegateLoaderUnitTestCase;
 import org.jboss.test.classloader.delegate.test.DelegateUnitTestCase;
 
 /**
@@ -54,6 +55,7 @@ public class DelegateTestSuite extends TestSuite
    {
       TestSuite suite = new TestSuite("Delegate Tests");
 
+      suite.addTest(DelegateLoaderUnitTestCase.suite());
       suite.addTest(DelegateUnitTestCase.suite());
       
       return suite;

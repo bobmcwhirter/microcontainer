@@ -19,9 +19,11 @@
  * Software Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA
  * 02110-1301 USA, or see the FSF site: http://www.fsf.org.
  */
-package org.jboss.classloader.plugins.filter;
+package org.jboss.classloader.spi.filter;
 
 import java.util.Arrays;
+
+import org.jboss.classloader.plugins.filter.PatternClassFilter;
 
 /**
  * A class filter using regular expressions
@@ -56,9 +58,21 @@ public class PackageClassFilter extends PatternClassFilter
             patterns[i] = "[^.]*";
          else
             // Escape the dots in the package and match anything that has a single dot followed by non-dots
-            patterns[i] = packageNames[i].replace(".", "\\.") + "\\.[^.]*";
+            patterns[i] = packageNames[i].replace(".", "\\.") + "\\.[^.]+";
       }
       return patterns;
+   }
+   
+   /**
+    * Create a new package class filter
+    * 
+    * @param packageNames the package names
+    * @return the filter
+    * @throws IllegalArgumentException for null packageNames
+    */
+   public static PackageClassFilter createPackageClassFilter(String... packageNames)
+   {
+      return new PackageClassFilter(packageNames);
    }
    
    /**

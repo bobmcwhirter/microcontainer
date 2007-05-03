@@ -140,6 +140,20 @@ public abstract class BaseClassLoaderPolicy
    }
 
    /**
+    * Whether to cache<p>
+    * 
+    * @return true to cache
+    */
+   protected abstract boolean isCachable();
+
+   /**
+    * Whether to cache misses<p>
+    * 
+    * @return true to cache misses
+    */
+   protected abstract boolean isBlackListable();
+
+   /**
     * Check whether this a request from the jdk if it is return the relevant classloader
     * 
     * @param name the class name

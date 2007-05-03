@@ -19,45 +19,13 @@
  * Software Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA
  * 02110-1301 USA, or see the FSF site: http://www.fsf.org.
  */
-package org.jboss.test.classloader.system;
-
-import org.jboss.test.classloader.system.test.ClassLoadingSystemNoSecurityUnitTestCase;
-import org.jboss.test.classloader.system.test.ClassLoadingSystemUnitTestCase;
-
-import junit.framework.Test;
-import junit.framework.TestSuite;
-import junit.textui.TestRunner;
 
 /**
- * ClassLoadingSystem Test Suite.
+ * TestDefaultPackage
  * 
  * @author <a href="adrian@jboss.com">Adrian Brock</a>
- * @version $Revision: 37459 $
+ * @version $Revision: 1.1 $
  */
-public class ClassLoadingSystemTestSuite extends TestSuite
+public class TestDefaultPackage
 {
-   /**
-    * For running the testsuite from the command line
-    * 
-    * @param args the command line args
-    */
-   public static void main(String[] args)
-   {
-      TestRunner.run(suite());
-   }
-
-   /**
-    * Create the testsuite
-    * 
-    * @return the testsuite
-    */
-   public static Test suite()
-   {
-      TestSuite suite = new TestSuite("ClassLoading System Tests");
-
-      suite.addTest(ClassLoadingSystemNoSecurityUnitTestCase.suite());
-      suite.addTest(ClassLoadingSystemUnitTestCase.suite());
-      
-      return suite;
-   }
 }

@@ -37,6 +37,7 @@ public class MockClassLoaderDomain extends ClassLoaderDomain
 {
    public List<ClassLoader> added = new CopyOnWriteArrayList<ClassLoader>();
    public List<ClassLoader> removed = new CopyOnWriteArrayList<ClassLoader>();
+   public boolean shutdown = false;
    
    public MockClassLoaderDomain()
    {
@@ -56,5 +57,11 @@ public class MockClassLoaderDomain extends ClassLoaderDomain
    protected void afterUnregisterClassLoader(ClassLoader classLoader, ClassLoaderPolicy policy)
    {
       removed.add(classLoader);
+   }
+
+   protected void shutdownDomain()
+   {
+      shutdown = true;
+      super.shutdownDomain();
    }
 }

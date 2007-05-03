@@ -21,19 +21,46 @@
  */
 package org.jboss.classloader.plugins.system;
 
+import java.security.AccessController;
+import java.security.PrivilegedAction;
+
 import org.jboss.classloader.spi.ClassLoaderSystem;
 
 /**
  * ClassLoaderSystemBuilder.
  * 
- * TODO parameterize this
  * @author <a href="adrian@jboss.com">Adrian Brock</a>
  * @version $Revision: 1.1 $
  */
 public class ClassLoaderSystemBuilder
 {
    /** The singleton */
-   private static final ClassLoaderSystem singleton = new DefaultClassLoaderSystem();
+   private static final ClassLoaderSystem singleton;
+
+   static
+   {
+      singleton = AccessController.doPrivileged(new PrivilegedAction<ClassLoaderSystem>()
+      {
+         public ClassLoaderSystem run()
+         {
+            String className = System.getProperty(ClassLoaderSystem.class.getName(), DefaultClassLoaderSystem.class.getName());
+            try
+            {
+               Class<?> clazz = Thread.currentThread().getContextClassLoader().loadClass(className);
+               Object result = clazz.newInstance();
+               return ClassLoaderSystem.class.cast(result);
+            }
+            catch (RuntimeException e)
+            {
+               throw e;
+            }
+            catch (Exception e)
+            {
+               throw new Error("Unexpected error loading ClassLoaderSystem " + className, e);
+            }
+         }
+      });
+   }
    
    /**
     * Get the classloader system singleton

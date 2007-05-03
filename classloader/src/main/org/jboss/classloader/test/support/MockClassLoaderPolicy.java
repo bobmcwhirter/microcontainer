@@ -48,6 +48,9 @@ public class MockClassLoaderPolicy extends ClassLoaderPolicy
    /** The logical name of the policy */
    private String name;
    
+   /** The prefix */
+   private String prefix = "";
+   
    /** The delegates */
    private List<? extends DelegateLoader> delegates;
    
@@ -133,6 +136,26 @@ public class MockClassLoaderPolicy extends ClassLoaderPolicy
       this.delegates = delegates;
    }
    
+   /**
+    * Get the prefix.
+    * 
+    * @return the prefix.
+    */
+   public String getPrefix()
+   {
+      return prefix;
+   }
+
+   /**
+    * Set the prefix.
+    * 
+    * @param prefix the prefix.
+    */
+   public void setPrefix(String prefix)
+   {
+      this.prefix = prefix;
+   }
+
    /**
     * Get the paths to expose
     * 
@@ -295,7 +318,7 @@ public class MockClassLoaderPolicy extends ClassLoaderPolicy
       for (int i = 0; i < paths.length; ++i)
       {
          if (path.startsWith(paths[i]))
-            return getClass().getClassLoader().getResource(path);
+            return getClass().getClassLoader().getResource(prefix + path);
       }
       return null;
    }
@@ -335,7 +358,7 @@ public class MockClassLoaderPolicy extends ClassLoaderPolicy
       {
          if (path.startsWith(paths[i]))
          {
-            Enumeration<URL> enumeration = parent.getResources(path);
+            Enumeration<URL> enumeration = parent.getResources(prefix + path);
             while (enumeration.hasMoreElements())
                urls.add(enumeration.nextElement());
          }
@@ -380,6 +403,8 @@ public class MockClassLoaderPolicy extends ClassLoaderPolicy
    public void toLongString(StringBuilder builder)
    {
       builder.append(" name=").append(name);
+      if (prefix.length() > 0)
+         builder.append(" prefix=").append(prefix);
       if (paths != null)
          builder.append(" paths=").append(Arrays.asList(paths));
       if (included != null)
