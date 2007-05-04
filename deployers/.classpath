@@ -39,5 +39,6 @@
 	<classpathentry kind="var" path="M2_REPO/apache-xerces/xercesImpl/2.7.1/xercesImpl-2.7.1.jar"/>
 	<classpathentry kind="src" path="/jboss-kernel"/>
 	<classpathentry kind="var" path="M2_REPO/javassist/javassist/3.5-SNAPSHOT/javassist-3.5-SNAPSHOT.jar" sourcepath="M2_REPO/javassist/javassist/3.5-SNAPSHOT/javassist-3.5-SNAPSHOT-sources.jar"/>
+	<classpathentry combineaccessrules="false" kind="src" path="/jboss-classloader"/>
 	<classpathentry kind="output" path="target/eclipse-classes"/>
 </classpath>
