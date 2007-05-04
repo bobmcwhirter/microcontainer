@@ -33,29 +33,7 @@
     The JBoss Microcontainer provides a lightweight container for managing POJOs, their deployment 
     and configuration.
   </description>
-  <build>
-    <plugins>
-      <plugin>
-        <artifactId>maven-assembly-plugin</artifactId>
-        <inherited>false</inherited>
-        <executions>
-          <execution>
-            <id>make-assembly</id>
-            <phase>package</phase>
-            <goals>
-              <goal>assembly</goal>
-            </goals>
-          </execution>
-        </executions>
-        <configuration>
-          <descriptors>
-            <descriptor>build/assembly/dist.xml</descriptor>
-            <descriptor>build/assembly/src.xml</descriptor>
-          </descriptors>
-        </configuration>
-      </plugin>
-    </plugins>
-  </build>
+  
   <modules>
     <module>build</module>
     <module>container</module>
@@ -78,5 +56,42 @@
         <defaultGoal>process-test-resources</defaultGoal>
       </build>
     </profile>
+    <profile>
+      <id>docs</id>
+      <modules>
+        <module>docs</module>
+      </modules>
+    </profile>
+    <profile>
+      <id>assembly</id>
+      <build>
+        <plugins>
+          <plugin>
+            <artifactId>maven-assembly-plugin</artifactId>
+            <inherited>false</inherited>
+            <executions>
+              <execution>
+                <id>make-assembly</id>
+                <phase>install</phase>
+                <goals>
+                  <goal>assembly</goal>
+                </goals>
+              </execution>
+            </executions>
+            <configuration>
+              <finalName>jboss-microcontainer-${project.version}</finalName>
+              <descriptors>
+                <descriptor>build/assembly/dist.xml</descriptor>
+                <descriptor>build/assembly/src.xml</descriptor>
+              </descriptors>
+            </configuration>
+          </plugin>
+        </plugins>
+      </build>
+      <modules>
+        <module>docs</module>
+      </modules>
+    </profile>
   </profiles>
+
 </project>

@@ -75,6 +75,46 @@
             </configuration>
           </execution>
           <execution>
+            <id>weave-separate</id>
+            <phase>test</phase>
+            <goals>
+              <goal>test</goal>
+            </goals>
+            <configuration>
+              <skip>true</skip>
+              <includes>
+                <include>org/jboss/test/microcontainer/test/JndiDecoratedTestCase.java</include>
+                <include>org/jboss/test/microcontainer/test/MultipleLifecycleTestCase.java</include>
+                <include>org/jboss/test/microcontainer/test/SimpleAspectUseCaseXmlTestCase.java</include>
+              </includes>
+              <useSystemClassLoader>true</useSystemClassLoader>
+              <argLine>-Djava.system.class.loader=org.jboss.aop.standalone.SystemClassLoader</argLine>
+              <reportsDirectory>${project.build.directory}/surefire-reports/weave</reportsDirectory>     
+              <systemProperties>
+                <property>
+                  <name>jboss.aop.exclude</name>
+                  <value>org.jboss.,org.apache.</value>
+                </property>
+                <property>
+                  <name>jboss.aop.include</name>
+                  <value>org.jboss.test.</value>
+                </property>
+                <property>
+                  <name>jboss-junit-configuration</name>
+                  <value>weave</value>
+                </property>
+                <property>
+                  <name>build.testlog</name>
+                  <value>target/log</value>
+                </property>
+                <property>
+                  <name>jboss.aop.verbose</name>
+                  <value>true</value>
+                </property>
+              </systemProperties>
+            </configuration>
+          </execution>
+          <execution>
             <id>weave-secure</id>
             <phase>test</phase>
             <goals>
@@ -470,5 +510,42 @@
         </plugins>
       </build>
     </profile>
+    <profile>
+      <id>generate-test-report</id>
+      <build>
+        <plugins>
+          <plugin>
+            <groupId>org.apache.maven.plugins</groupId>
+            <artifactId>maven-surefire-report-plugin</artifactId>
+            <version>2.3</version>
+            <executions>
+              <execution>
+                <phase>install</phase>
+                <goals>
+                  <goal>report-only</goal>
+                </goals>
+              </execution>
+            </executions>
+          </plugin>
+        </plugins>
+      </build>
+    </profile>
   </profiles>
+  <!--<reporting>
+    <plugins>
+
+      <plugin>
+        <groupId>org.apache.maven.plugins</groupId>
+        <artifactId>maven-surefire-report-plugin</artifactId>
+        <version>2.3</version>
+        <reportSets>
+          <reportSet>
+            <reports>
+              <report>report-only</report>
+            </reports>
+          </reportSet>
+        </reportSets>
+      </plugin>
+    </plugins>
+  </reporting>-->
 </project>
