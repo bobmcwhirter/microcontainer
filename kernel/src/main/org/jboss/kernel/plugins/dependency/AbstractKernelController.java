@@ -57,7 +57,7 @@ public class AbstractKernelController extends AbstractController implements Kern
    protected Kernel kernel;
 
    /** The emitter delegate */
-   protected AbstractEventEmitter emitterDelegate = new AbstractEventEmitter();
+   protected AbstractEventEmitter emitterDelegate = createEventEmitter();
 
    /** The supplies */
    protected Map<Object, List<KernelControllerContext>> suppliers = new ConcurrentHashMap<Object, List<KernelControllerContext>>();
@@ -72,6 +72,16 @@ public class AbstractKernelController extends AbstractController implements Kern
     */
    public AbstractKernelController() throws Exception
    {
+   }
+
+   /**
+    * Create event emitter.
+    *
+    * @return new abstract event emitter instance
+    */
+   protected AbstractEventEmitter createEventEmitter()
+   {
+      return new AbstractEventEmitter();
    }
 
    public KernelControllerContext install(BeanMetaData metaData) throws Throwable
