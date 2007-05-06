@@ -70,14 +70,14 @@ public class RunnableEventEmitter extends AbstractEventEmitter
     * @param handback the handback
     * @return true if we should use runnable, false to use default listener execution
     */
-   protected boolean useRunnable(KernelEventListener listener, KernelEvent event, Object handback)
+   protected boolean useExecutor(KernelEventListener listener, KernelEvent event, Object handback)
    {
       return true;
    }
 
    protected void fireKernelEvent(KernelEventListener listener, KernelEvent event, Object handback)
    {
-      if (useRunnable(listener, event, handback))
+      if (useExecutor(listener, event, handback))
       {
          executor.run(new RunnableWrapper(listener, event, handback), startTimeout, completeTimeout);
       }

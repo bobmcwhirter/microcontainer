@@ -42,7 +42,7 @@ public class BundleEventEmitter extends RunnableEventEmitter
       super(executor, startTimeout, completeTimeout);
    }
 
-   protected boolean useRunnable(KernelEventListener listener, KernelEvent event, Object handback)
+   protected boolean useExecutor(KernelEventListener listener, KernelEvent event, Object handback)
    {
       if (listener instanceof BundleListenerImpl)
       {
