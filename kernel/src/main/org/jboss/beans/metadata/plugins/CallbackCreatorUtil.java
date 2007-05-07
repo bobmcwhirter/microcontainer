@@ -22,7 +22,7 @@
 package org.jboss.beans.metadata.plugins;
 
 import java.security.AccessController;
-import java.security.PrivilegedExceptionAction;
+import java.security.PrivilegedAction;
 
 import org.jboss.beans.info.spi.PropertyInfo;
 import org.jboss.dependency.spi.CallbackItem;
@@ -176,27 +176,28 @@ public class CallbackCreatorUtil
    {
       if (factory == null)
       {
-         try
-         {
             FactoryLookup lookup = new FactoryLookup();
-            String factoryClassName = AccessController.doPrivileged(lookup);
-            return (CollectionCallbackItemFactory)ReflectionUtils.newInstance(factoryClassName);
-         }
-         catch (Throwable t)
-         {
-            getLog().warn("Exception while creating CollectionCallbackItemFactory, using basic one instead.", t);
-            factory = new BasicCollectionCallbackItemFactory();
-         }
+            factory = AccessController.doPrivileged(lookup);
       }
       return factory;
    }
 
-   // Privileged system property lookup
-   private static class FactoryLookup implements PrivilegedExceptionAction<String>
+   // Privileged system property lookup + factory creation
+   private static class FactoryLookup implements PrivilegedAction<CollectionCallbackItemFactory>
    {
-      public String run() throws Exception
+      public CollectionCallbackItemFactory run()
       {
-         return System.getProperty("org.jboss.dependency.collectionCallbackItemFactory", BasicCollectionCallbackItemFactory.class.getName());
+         try
+         {
+            String factoryClassName = System.getProperty("org.jboss.dependency.collectionCallbackItemFactory", BasicCollectionCallbackItemFactory.class.getName());
+            Object result = ReflectionUtils.newInstance(factoryClassName);
+            return CollectionCallbackItemFactory.class.cast(result);
+         }
+         catch (Throwable t)
+         {
+            getLog().warn("Exception while creating CollectionCallbackItemFactory, using basic one instead.", t);
+            return new BasicCollectionCallbackItemFactory();
+         }
       }
    }
 
