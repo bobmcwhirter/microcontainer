@@ -250,6 +250,13 @@
               </execution>
             </executions>
           </plugin>
+          <plugin>
+            <artifactId>maven-surefire-report-plugin</artifactId>
+            <configuration>
+              <reportsDirectory>${project.build.directory}/surefire-reports/weave</reportsDirectory>
+              <outputName>surefire-report-weave</outputName>
+            </configuration>
+          </plugin>
         </plugins>
       </build>
     </profile>
@@ -273,6 +280,13 @@
                 </configuration>
               </execution>
             </executions>
+          </plugin>
+          <plugin>
+            <artifactId>maven-surefire-report-plugin</artifactId>
+            <configuration>
+              <reportsDirectory>${project.build.directory}/surefire-reports/weave-secure</reportsDirectory>
+              <outputName>surefire-report-weave-secure</outputName>
+            </configuration>
           </plugin>
         </plugins>
       </build>
@@ -298,6 +312,13 @@
               </execution>
             </executions>
           </plugin>
+          <plugin>
+            <artifactId>maven-surefire-report-plugin</artifactId>
+            <configuration>
+              <reportsDirectory>${project.build.directory}/surefire-reports/no-weave</reportsDirectory>
+              <outputName>surefire-report-no-weave</outputName>
+            </configuration>
+          </plugin>
         </plugins>
       </build>
     </profile>
@@ -322,6 +343,13 @@
               </execution>
             </executions>
           </plugin>
+          <plugin>
+            <artifactId>maven-surefire-report-plugin</artifactId>
+            <configuration>
+              <reportsDirectory>${project.build.directory}/surefire-reports/no-weave-secure</reportsDirectory>
+              <outputName>surefire-report-no-weave-secure</outputName>
+            </configuration>
+          </plugin>
         </plugins>
       </build>
     </profile>
@@ -342,7 +370,7 @@
                 <phase>test</phase>
                 <configuration>
                   <tasks>
-                    <mkdir dir="${project.build.directory}/surefire-reports/weave-ant"/>
+                    <mkdir dir="${project.build.directory}/surefire-reports/ant-weave"/>
                     <property name="build.testlog" value="${project.build.directory}/log"/>
                     <mkdir dir="${build.testlog}"/>
                     <!-- Remove the test.log so each run has a fresh log -->
@@ -361,15 +389,13 @@
               
                        <classpath>
                           <path refid="maven.test.classpath"/>
-                          <!--<path refid="javac.classpath"/>
-                          <path refid="apache.xerces.classpath"/>-->
                        </classpath>
               
-                       <formatter type="plain" usefile="true" extension="-weave.txt"/>
+                       <formatter type="plain" usefile="true" extension=".txt"/>
                        <formatter classname="org.jboss.ant.taskdefs.XMLJUnitMultipleResultFormatter"
-                                  usefile="true" extension="-weave.xml"/>
+                                  usefile="true" extension=".xml"/>
               
-                       <batchtest todir="${project.build.directory}/surefire-reports/weave-ant"
+                       <batchtest todir="${project.build.directory}/surefire-reports/ant-weave"
                           haltonerror="false"
                           haltonfailure="false"
                           fork="true">
@@ -394,6 +420,13 @@
               </dependency>
             </dependencies>     
           </plugin>
+          <plugin>
+            <artifactId>maven-surefire-report-plugin</artifactId>
+            <configuration>
+              <reportsDirectory>${project.build.directory}/surefire-reports/ant-weave</reportsDirectory>
+              <outputName>surefire-report-ant-weave</outputName>
+            </configuration>
+          </plugin>
         </plugins>
       </build>
     </profile>
@@ -414,7 +447,7 @@
                 <phase>test</phase>
                 <configuration>
                   <tasks>
-                    <mkdir dir="${project.build.directory}/surefire-reports/weave-ant"/>
+                    <mkdir dir="${project.build.directory}/surefire-reports/ant-weave-secure"/>
                     <property name="build.testlog" value="${project.build.directory}/log"/>
                     <mkdir dir="${build.testlog}"/>
                     <!-- Remove the test.log so each run has a fresh log -->
@@ -434,15 +467,13 @@
               
                        <classpath>
                           <path refid="maven.test.classpath"/>
-                          <!--<path refid="javac.classpath"/>
-                          <path refid="apache.xerces.classpath"/>-->
                        </classpath>
               
-                       <formatter type="plain" usefile="true" extension="-weave-secure.txt"/>
+                       <formatter type="plain" usefile="true" extension=".txt"/>
                        <formatter classname="org.jboss.ant.taskdefs.XMLJUnitMultipleResultFormatter"
-                                  usefile="true" extension="-weave-secure.xml"/>
+                                  usefile="true" extension=".xml"/>
               
-                       <batchtest todir="${project.build.directory}/surefire-reports/weave-ant"
+                       <batchtest todir="${project.build.directory}/surefire-reports/ant-weave-secure"
                           haltonerror="false"
                           haltonfailure="false"
                           fork="true">
@@ -466,6 +497,13 @@
                 <version>1.7.0</version>
               </dependency>
             </dependencies>     
+          </plugin>
+          <plugin>
+            <artifactId>maven-surefire-report-plugin</artifactId>
+            <configuration>
+              <reportsDirectory>${project.build.directory}/surefire-reports/ant-weave-secure</reportsDirectory>
+              <outputName>surefire-report-ant-weave-secure</outputName>
+            </configuration>
           </plugin>
         </plugins>
       </build>
