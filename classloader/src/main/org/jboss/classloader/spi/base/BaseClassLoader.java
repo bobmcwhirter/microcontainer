@@ -85,16 +85,15 @@ public class BaseClassLoader extends SecureClassLoader
       if (policy == null)
          throw new IllegalArgumentException("Null policy");
       this.policy = policy;
-      
-      BaseClassLoaderPolicy basePolicy = policy;
-      basePolicy.setClassLoader(this);
+
+      policy.setClassLoader(this);
 
       loader = new DelegateLoader(policy);
       
-      if (basePolicy.isCachable())
+      if (policy.isCachable())
          resourceCache = new ConcurrentHashMap<String, URL>();
       
-      if (basePolicy.isBlackListable())
+      if (policy.isBlackListable())
          blackList = new CopyOnWriteArraySet<String>();
       
       if (log.isTraceEnabled())
@@ -559,7 +558,7 @@ public class BaseClassLoader extends SecureClassLoader
     * @param trace whether trace is enabled
     * @return true when obtained the lock
     */
-   private final boolean attemptLock(boolean trace)
+   private boolean attemptLock(boolean trace)
    {
       Thread thread = Thread.currentThread();
       if (trace)
@@ -608,7 +607,7 @@ public class BaseClassLoader extends SecureClassLoader
       if (trace)
          log.trace(this + " aquireLockFairly " + thread);
 
-      boolean interrupted = thread.interrupted();
+      boolean interrupted = Thread.interrupted();
 
       int waits = 0;
       
