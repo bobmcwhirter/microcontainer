@@ -99,7 +99,7 @@ public abstract class LifecycleAction extends KernelControllerContextAction
 
    /**
     * Get the install method
-    * 
+    *
     * @param beanMetaData bean meta data
     * @return the method
     */
@@ -124,7 +124,7 @@ public abstract class LifecycleAction extends KernelControllerContextAction
 
    /**
     * Get the install parameters
-    * 
+    *
     * @param beanMetaData bean meta data
     * @return the parameters
     */
@@ -135,7 +135,7 @@ public abstract class LifecycleAction extends KernelControllerContextAction
 
    /**
     * Get the uninstall method
-    * 
+    *
     * @param beanMetaData bean meta data
     * @return the method
     */
@@ -205,7 +205,7 @@ public abstract class LifecycleAction extends KernelControllerContextAction
    /**
     * Is invocation ignored due to annotation ignored attibute.
     *
-    * @param context the context
+    * @param context        the context
     * @param annotationName annotation name
     * @return true if ignored found on annotation
     */
@@ -227,7 +227,7 @@ public abstract class LifecycleAction extends KernelControllerContextAction
    /**
     * Find method with annotation matching name parameter.
     *
-    * @param context the context
+    * @param context        the context
     * @param annotationName annotation name
     * @return method info instance or null if no such method exists
     */
@@ -258,7 +258,7 @@ public abstract class LifecycleAction extends KernelControllerContextAction
       if (isInstallInvocationIgnored(context) == false)
       {
 
-         KernelController controller = (KernelController) context.getController();
+         KernelController controller = (KernelController)context.getController();
          Kernel kernel = controller.getKernel();
          KernelConfigurator configurator = kernel.getConfigurator();
 
@@ -270,7 +270,7 @@ public abstract class LifecycleAction extends KernelControllerContextAction
          MethodJoinpoint joinpoint;
          try
          {
-         ClassLoader cl = Configurator.getClassLoader(metaData);
+            ClassLoader cl = Configurator.getClassLoader(metaData);
             joinpoint = configurator.getMethodJoinPoint(info, cl, method, parameters, false, true);
          }
          catch (JoinpointException ignored)
@@ -298,7 +298,7 @@ public abstract class LifecycleAction extends KernelControllerContextAction
       if (isUninstallInvocationIgnored(context) == false)
       {
 
-         KernelController controller = (KernelController) context.getController();
+         KernelController controller = (KernelController)context.getController();
          Kernel kernel = controller.getKernel();
          KernelConfigurator configurator = kernel.getConfigurator();
 
@@ -310,7 +310,7 @@ public abstract class LifecycleAction extends KernelControllerContextAction
          MethodJoinpoint joinpoint;
          try
          {
-         ClassLoader cl = Configurator.getClassLoader(metaData);
+            ClassLoader cl = Configurator.getClassLoader(metaData);
             joinpoint = configurator.getMethodJoinPoint(info, cl, method, parameters, false, true);
             joinpoint.setTarget(target);
             dispatchJoinPoint(context, joinpoint);
