@@ -86,14 +86,15 @@ public class BaseClassLoader extends SecureClassLoader
          throw new IllegalArgumentException("Null policy");
       this.policy = policy;
 
-      policy.setClassLoader(this);
+      BaseClassLoaderPolicy basePolicy = policy;
+      basePolicy.setClassLoader(this);
 
       loader = new DelegateLoader(policy);
-      
-      if (policy.isCachable())
+
+      if (basePolicy.isCachable())
          resourceCache = new ConcurrentHashMap<String, URL>();
-      
-      if (policy.isBlackListable())
+
+      if (basePolicy.isBlackListable())
          blackList = new CopyOnWriteArraySet<String>();
       
       if (log.isTraceEnabled())

@@ -51,4 +51,11 @@ public interface LifecycleMetaData extends ParameterizedMetaData, FeatureMetaDat
     * @return the method name.
     */
    String getMethodName();
+
+   /**
+    * Is default ignored.
+    *
+    * @return should we ignore default
+    */
+   boolean isIgnored();
 }

@@ -1,6 +1,6 @@
 /*
 * JBoss, Home of Professional Open Source
-* Copyright 2005, JBoss Inc., and individual contributors as indicated
+* Copyright 2006, JBoss Inc., and individual contributors as indicated
 * by the @authors tag. See the copyright.txt in the distribution for a
 * full listing of individual contributors.
 *
@@ -24,70 +24,69 @@ package org.jboss.test.kernel.deployment.test;
 import junit.framework.Test;
 import org.jboss.dependency.spi.ControllerState;
 import org.jboss.kernel.spi.dependency.KernelControllerContext;
-import org.jboss.test.kernel.deployment.support.AnnotatedLifecycleBean;
+import org.jboss.test.kernel.deployment.support.SimpleLifecycleBean;
 import org.jboss.test.kernel.junit.ManualMicrocontainerTest;
 
 /**
- * Test lifecycle annotations.
- * 
+ * Test ignore lifecycle.
+ *
  * @author <a href="mailto:ales.justin@gmail.com">Ales Justin</a>
  */
-public class AnnotatedLifecycleTestCase extends ManualMicrocontainerTest
+public class IgnoredLifecycleTestCase extends ManualMicrocontainerTest
 {
-
    private static final String BEAN_NAME = "LifecycleBean";
 
-   public AnnotatedLifecycleTestCase(String name) throws Throwable
+   public IgnoredLifecycleTestCase(String name) throws Throwable
    {
       super(name);
    }
 
    public static Test suite()
    {
-      return suite(AnnotatedLifecycleTestCase.class);
+      return suite(IgnoredLifecycleTestCase.class);
    }
 
    public void testAnnotatedLifecycle() throws Throwable
    {
-      AnnotatedLifecycleBean target;
+      SimpleLifecycleBean target;
 
       KernelControllerContext context = getControllerContext(BEAN_NAME, ControllerState.NOT_INSTALLED);
       assertEquals(context.getState(), ControllerState.NOT_INSTALLED);
 
       change(context, ControllerState.CREATE);
       assertEquals(context.getState(), ControllerState.CREATE);
-      target = (AnnotatedLifecycleBean) context.getTarget();
+      target = (SimpleLifecycleBean) context.getTarget();
       assertNotNull(target);
-      assertTrue(target.isCreate());
+      assertFalse(target.isCreate());
       assertFalse(target.isStart());
       assertFalse(target.isStop());
       assertFalse(target.isDestroy());
 
       change(context, ControllerState.START);
       assertEquals(context.getState(), ControllerState.START);
-      target = (AnnotatedLifecycleBean) context.getTarget();
+      target = (SimpleLifecycleBean) context.getTarget();
       assertNotNull(target);
-      assertTrue(target.isCreate());
-      assertTrue(target.isStart());
+      assertFalse(target.isCreate());
+      assertFalse(target.isStart());
       assertFalse(target.isStop());
       assertFalse(target.isDestroy());
 
       change(context, ControllerState.CREATE);
       assertEquals(context.getState(), ControllerState.CREATE);
-      target = (AnnotatedLifecycleBean) context.getTarget();
+      target = (SimpleLifecycleBean) context.getTarget();
       assertNotNull(target);
-      assertTrue(target.isCreate());
+      assertFalse(target.isCreate());
       assertFalse(target.isStart());
-      assertTrue(target.isStop());
+      assertFalse(target.isStop());
       assertFalse(target.isDestroy());
 
       change(context, ControllerState.CONFIGURED);
       assertEquals(context.getState(), ControllerState.CONFIGURED);
-      target = (AnnotatedLifecycleBean) context.getTarget();
+      target = (SimpleLifecycleBean) context.getTarget();
       assertNotNull(target);
       assertFalse(target.isCreate());
       assertFalse(target.isStart());
-      assertTrue(target.isStop());
-      assertTrue(target.isDestroy());
+      assertFalse(target.isStop());
+      assertFalse(target.isDestroy());
    }
 }

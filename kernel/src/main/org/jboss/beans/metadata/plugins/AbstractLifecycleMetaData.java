@@ -55,6 +55,9 @@ public class AbstractLifecycleMetaData extends AbstractFeatureMetaData
    /** The method name */
    protected String methodName;
 
+   /** The ignored attribute */
+   boolean ignored;
+
    /** The paramaters List<ParameterMetaData> */
    protected List<ParameterMetaData> parameters;
 
@@ -97,6 +100,21 @@ public class AbstractLifecycleMetaData extends AbstractFeatureMetaData
    {
       this.methodName = name;
       flushJBossObjectCache();
+   }
+
+   public boolean isIgnored()
+   {
+      return ignored;
+   }
+
+   /**
+    * Set ignored attribute.
+    *
+    * @param ignored the ignored
+    */
+   public void setIgnored(boolean ignored)
+   {
+      this.ignored = ignored;
    }
 
    public List<ParameterMetaData> getParameters()

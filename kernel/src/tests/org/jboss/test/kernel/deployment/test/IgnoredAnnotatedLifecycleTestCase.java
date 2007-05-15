@@ -1,6 +1,6 @@
 /*
 * JBoss, Home of Professional Open Source
-* Copyright 2005, JBoss Inc., and individual contributors as indicated
+* Copyright 2006, JBoss Inc., and individual contributors as indicated
 * by the @authors tag. See the copyright.txt in the distribution for a
 * full listing of individual contributors.
 *
@@ -28,23 +28,22 @@ import org.jboss.test.kernel.deployment.support.AnnotatedLifecycleBean;
 import org.jboss.test.kernel.junit.ManualMicrocontainerTest;
 
 /**
- * Test lifecycle annotations.
- * 
+ * Test ignore lifecycle annotations.
+ *
  * @author <a href="mailto:ales.justin@gmail.com">Ales Justin</a>
  */
-public class AnnotatedLifecycleTestCase extends ManualMicrocontainerTest
+public class IgnoredAnnotatedLifecycleTestCase extends ManualMicrocontainerTest
 {
-
    private static final String BEAN_NAME = "LifecycleBean";
 
-   public AnnotatedLifecycleTestCase(String name) throws Throwable
+   public IgnoredAnnotatedLifecycleTestCase(String name) throws Throwable
    {
       super(name);
    }
 
    public static Test suite()
    {
-      return suite(AnnotatedLifecycleTestCase.class);
+      return suite(IgnoredAnnotatedLifecycleTestCase.class);
    }
 
    public void testAnnotatedLifecycle() throws Throwable
@@ -58,7 +57,7 @@ public class AnnotatedLifecycleTestCase extends ManualMicrocontainerTest
       assertEquals(context.getState(), ControllerState.CREATE);
       target = (AnnotatedLifecycleBean) context.getTarget();
       assertNotNull(target);
-      assertTrue(target.isCreate());
+      assertFalse(target.isCreate());
       assertFalse(target.isStart());
       assertFalse(target.isStop());
       assertFalse(target.isDestroy());
@@ -67,8 +66,8 @@ public class AnnotatedLifecycleTestCase extends ManualMicrocontainerTest
       assertEquals(context.getState(), ControllerState.START);
       target = (AnnotatedLifecycleBean) context.getTarget();
       assertNotNull(target);
-      assertTrue(target.isCreate());
-      assertTrue(target.isStart());
+      assertFalse(target.isCreate());
+      assertFalse(target.isStart());
       assertFalse(target.isStop());
       assertFalse(target.isDestroy());
 
@@ -76,9 +75,9 @@ public class AnnotatedLifecycleTestCase extends ManualMicrocontainerTest
       assertEquals(context.getState(), ControllerState.CREATE);
       target = (AnnotatedLifecycleBean) context.getTarget();
       assertNotNull(target);
-      assertTrue(target.isCreate());
+      assertFalse(target.isCreate());
       assertFalse(target.isStart());
-      assertTrue(target.isStop());
+      assertFalse(target.isStop());
       assertFalse(target.isDestroy());
 
       change(context, ControllerState.CONFIGURED);
@@ -87,7 +86,7 @@ public class AnnotatedLifecycleTestCase extends ManualMicrocontainerTest
       assertNotNull(target);
       assertFalse(target.isCreate());
       assertFalse(target.isStart());
-      assertTrue(target.isStop());
-      assertTrue(target.isDestroy());
+      assertFalse(target.isStop());
+      assertFalse(target.isDestroy());
    }
 }

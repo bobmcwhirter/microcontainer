@@ -25,7 +25,6 @@ import java.util.ArrayList;
 import java.util.HashSet;
 
 import junit.framework.Test;
-
 import org.jboss.beans.metadata.plugins.AbstractBeanMetaData;
 import org.jboss.beans.metadata.spi.LifecycleMetaData;
 
@@ -57,6 +56,15 @@ public class LifecycleTestCase extends AbstractXMLTest
    {
       LifecycleMetaData lifecycle = getLifecycle("LifecycleWithMethod.xml");
       assertEquals("Method", lifecycle.getMethodName());
+      assertNull(lifecycle.getAnnotations());
+      assertNull(lifecycle.getParameters());
+   }
+
+   public void testLifecycleWithIgnored() throws Exception
+   {
+      LifecycleMetaData lifecycle = getLifecycle("LifecycleWithIgnored.xml");
+      assertTrue(lifecycle.isIgnored());
+      assertNull(lifecycle.getMethodName());
       assertNull(lifecycle.getAnnotations());
       assertNull(lifecycle.getParameters());
    }

@@ -633,6 +633,8 @@ public class BeanSchemaBinding
                String localName = attrs.getLocalName(i);
                if ("method".equals(localName))
                   lifecycle.setMethodName(attrs.getValue(i));
+               else if ("ignored".equals(localName))
+                  lifecycle.setIgnored(Boolean.parseBoolean(attrs.getValue(i)));
             }
          }
       });

@@ -1,6 +1,6 @@
 /*
 * JBoss, Home of Professional Open Source
-* Copyright 2005, JBoss Inc., and individual contributors as indicated
+* Copyright 2006, JBoss Inc., and individual contributors as indicated
 * by the @authors tag. See the copyright.txt in the distribution for a
 * full listing of individual contributors.
 *
@@ -22,38 +22,30 @@
 package org.jboss.test.kernel.deployment.support;
 
 import org.jboss.beans.metadata.spi.annotations.CreateLifecycle;
-import org.jboss.beans.metadata.spi.annotations.DestroyLifecycle;
-import org.jboss.beans.metadata.spi.annotations.StartLifecycle;
-import org.jboss.beans.metadata.spi.annotations.StopLifecycle;
 
 /**
  * @author <a href="mailto:ales.justin@gmail.com">Ales Justin</a>
  */
-public class AnnotatedLifecycleBean extends SimpleLifecycleBean
+public class MixedLifecycleBean extends SimpleLifecycleBean
 {
-   @CreateLifecycle
-   public void annotatedCreate()
+   @CreateLifecycle(ignored = true)
+   public void create()
    {
       m_create = true;
    }
 
-   @StartLifecycle
-   public void annotatedStart()
+   public void start()
    {
       m_start = true;
    }
 
-   @StopLifecycle
-   public void annotatedStop()
+   public void stop()
    {
-      m_start = false;
       m_stop = true;
    }
 
-   @DestroyLifecycle
-   public void annotatedDestroy()
+   public void destroy()
    {
-      m_create = false;
       m_destroy = true;
    }
 }

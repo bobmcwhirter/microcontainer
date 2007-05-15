@@ -1,6 +1,6 @@
 /*
 * JBoss, Home of Professional Open Source
-* Copyright 2005, JBoss Inc., and individual contributors as indicated
+* Copyright 2006, JBoss Inc., and individual contributors as indicated
 * by the @authors tag. See the copyright.txt in the distribution for a
 * full listing of individual contributors.
 *
@@ -29,31 +29,32 @@ import org.jboss.beans.metadata.spi.annotations.StopLifecycle;
 /**
  * @author <a href="mailto:ales.justin@gmail.com">Ales Justin</a>
  */
-public class AnnotatedLifecycleBean extends SimpleLifecycleBean
+public class IgnoredAnnotatedLifecycleBean extends AnnotatedLifecycleBean
 {
-   @CreateLifecycle
-   public void annotatedCreate()
+   @CreateLifecycle(ignored = true)
+   public void ignoredCreate()
    {
       m_create = true;
    }
 
-   @StartLifecycle
+   @StartLifecycle(ignored = true)
    public void annotatedStart()
    {
       m_start = true;
    }
 
-   @StopLifecycle
+   @StopLifecycle(ignored = true)
    public void annotatedStop()
    {
       m_start = false;
       m_stop = true;
    }
 
-   @DestroyLifecycle
-   public void annotatedDestroy()
+   @DestroyLifecycle(ignored = true)
+   public void ignoredDestroy()
    {
       m_create = false;
       m_destroy = true;
    }
+
 }
