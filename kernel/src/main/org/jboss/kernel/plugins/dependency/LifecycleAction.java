@@ -55,10 +55,28 @@ public abstract class LifecycleAction extends KernelControllerContextAction
    {
    }
 
+   /**
+    * Get install Lifecycle metadata.
+    *
+    * @param beanMetaData the bean meta data
+    * @return install lifecycle metadata
+    */
    protected abstract LifecycleMetaData getInstallLifecycle(BeanMetaData beanMetaData);
 
+   /**
+    * Get uninstall Lifecycle metadata.
+    *
+    * @param beanMetaData the bean meta data
+    * @return uninstall lifecycle metadata
+    */
    protected abstract LifecycleMetaData getUninstallLifecycle(BeanMetaData beanMetaData);
 
+   /**
+    * Get the method name from lifecycle meta data.
+    *
+    * @param lifecycle the lifecycle meta data
+    * @return method name or null if null lifecycle
+    */
    protected String getMethod(LifecycleMetaData lifecycle)
    {
       if (lifecycle != null)
@@ -66,6 +84,12 @@ public abstract class LifecycleAction extends KernelControllerContextAction
       return null;
    }
 
+   /**
+    * Get the parameters.
+    *
+    * @param lifecycle the lifecycle meta data
+    * @return lifecycle parameters or null if null lifecycle
+    */
    protected List<ParameterMetaData> getParameters(LifecycleMetaData lifecycle)
    {
       if (lifecycle != null)
@@ -145,21 +169,46 @@ public abstract class LifecycleAction extends KernelControllerContextAction
       return getParameters(getUninstallLifecycle(beanMetaData));
    }
 
+   /**
+    * Is install ignored.
+    *
+    * @param context the context
+    * @return true if ignored found on any metadata
+    */
    protected boolean isInstallInvocationIgnored(KernelControllerContext context)
    {
       return isInvocationIgnored(getInstallLifecycle(context.getBeanMetaData())) || isInvocationIgnored(context, getInstallAnnotation());
    }
 
+   /**
+    * Is uninstall ignored.
+    *
+    * @param context the context
+    * @return true if ignored found on any metadata
+    */
    protected boolean isUninstallInvocationIgnored(KernelControllerContext context)
    {
       return isInvocationIgnored(getUninstallLifecycle(context.getBeanMetaData())) || isInvocationIgnored(context, getUninstallAnnotation());
    }
 
+   /**
+    * Is invocation ignored.
+    *
+    * @param lifecycle the lifecycle meta data
+    * @return true if ignored set on lifecycle
+    */
    protected boolean isInvocationIgnored(LifecycleMetaData lifecycle)
    {
       return lifecycle != null && lifecycle.isIgnored();
    }
 
+   /**
+    * Is invocation ignored due to annotation ignored attibute.
+    *
+    * @param context the context
+    * @param annotationName annotation name
+    * @return true if ignored found on annotation
+    */
    protected boolean isInvocationIgnored(KernelControllerContext context, String annotationName)
    {
       MethodInfo mi = findMethodWithAnnotation(context, annotationName);
@@ -175,6 +224,13 @@ public abstract class LifecycleAction extends KernelControllerContextAction
       return false;
    }
 
+   /**
+    * Find method with annotation matching name parameter.
+    *
+    * @param context the context
+    * @param annotationName annotation name
+    * @return method info instance or null if no such method exists
+    */
    protected MethodInfo findMethodWithAnnotation(KernelControllerContext context, String annotationName)
    {
       BeanInfo info = context.getBeanInfo();
