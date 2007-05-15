@@ -253,9 +253,10 @@ public abstract class LifecycleAction extends KernelControllerContextAction
 
    protected void installActionInternal(KernelControllerContext context) throws Throwable
    {
+      boolean trace = log.isTraceEnabled();
+
       if (isInstallInvocationIgnored(context) == false)
       {
-         boolean trace = log.isTraceEnabled();
 
          KernelController controller = (KernelController) context.getController();
          Kernel kernel = controller.getKernel();
@@ -286,13 +287,16 @@ public abstract class LifecycleAction extends KernelControllerContextAction
          joinpoint.setTarget(target);
          dispatchJoinPoint(context, joinpoint);
       }
+      else if (trace)
+         log.trace("Ignoring " + getDefaultInstallMethod() + " lifecycle invocation.");
    }
 
    protected void uninstallActionInternal(KernelControllerContext context)
    {
+      boolean trace = log.isTraceEnabled();
+
       if (isUninstallInvocationIgnored(context) == false)
       {
-         boolean trace = log.isTraceEnabled();
 
          KernelController controller = (KernelController) context.getController();
          Kernel kernel = controller.getKernel();
@@ -326,6 +330,8 @@ public abstract class LifecycleAction extends KernelControllerContextAction
             log.warn("Error during " + method + " for " + context.getName(), throwable);
          }
       }
+      else if (trace)
+         log.trace("Ignoring " + getDefaultInstallMethod() + " lifecycle invocation.");
    }
 
    /**
