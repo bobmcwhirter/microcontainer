@@ -331,7 +331,7 @@ public abstract class LifecycleAction extends KernelControllerContextAction
          }
       }
       else if (trace)
-         log.trace("Ignoring " + getDefaultInstallMethod() + " lifecycle invocation.");
+         log.trace("Ignoring " + getDefaultUninstallMethod() + " lifecycle invocation.");
    }
 
    /**
