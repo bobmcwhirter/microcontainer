@@ -22,8 +22,7 @@
 package org.jboss.test.kernel.dependency.support;
 
 import java.io.Serializable;
-
-import EDU.oswego.cs.dl.util.concurrent.SynchronizedInt;
+import java.util.concurrent.atomic.AtomicInteger;
 
 /**
  * A simple bean with a lifecycle
@@ -33,7 +32,7 @@ import EDU.oswego.cs.dl.util.concurrent.SynchronizedInt;
  */
 public class SimpleBeanWithLifecycle implements Serializable
 {
-   public static SynchronizedInt order = new SynchronizedInt(0);
+   public static AtomicInteger order = new AtomicInteger(0);
    
    private static final long serialVersionUID = 3258132440433243443L;
    
@@ -52,21 +51,21 @@ public class SimpleBeanWithLifecycle implements Serializable
    
    public void create()
    {
-      createOrder = order.increment();
+      createOrder = order.incrementAndGet();
    }
    
    public void start()
    {
-      startOrder = order.increment();
+      startOrder = order.incrementAndGet();
    }
    
    public void stop()
    {
-      stopOrder = order.increment();
+      stopOrder = order.incrementAndGet();
    }
    
    public void destroy()
    {
-      destroyOrder = order.increment();
+      destroyOrder = order.incrementAndGet();
    }
 }

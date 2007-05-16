@@ -53,27 +53,27 @@ public class SimpleBeanWithComplicatedLifecycle implements Serializable
    {
       createBean = bean;
       destroyBean = null;
-      createOrder = SimpleBeanWithLifecycle.order.increment();
+      createOrder = SimpleBeanWithLifecycle.order.incrementAndGet();
    }
    
    public void notStart(SimpleBeanWithLifecycle bean)
    {
       startBean = bean;
       stopBean = null;
-      startOrder = SimpleBeanWithLifecycle.order.increment();
+      startOrder = SimpleBeanWithLifecycle.order.incrementAndGet();
    }
    
    public void notStop(SimpleBeanWithLifecycle bean)
    {
       stopBean = bean;
       startBean = null;
-      stopOrder = SimpleBeanWithLifecycle.order.increment();
+      stopOrder = SimpleBeanWithLifecycle.order.incrementAndGet();
    }
    
    public void notDestroy(SimpleBeanWithLifecycle bean)
    {
       destroyBean = bean;
       createBean = null;
-      destroyOrder = SimpleBeanWithLifecycle.order.increment();
+      destroyOrder = SimpleBeanWithLifecycle.order.incrementAndGet();
    }
 }

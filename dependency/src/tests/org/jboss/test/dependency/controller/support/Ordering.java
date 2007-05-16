@@ -21,7 +21,7 @@
 */
 package org.jboss.test.dependency.controller.support;
 
-import EDU.oswego.cs.dl.util.concurrent.SynchronizedInt;
+import java.util.concurrent.atomic.AtomicInteger;
 
 /**
  * A Ordering.
@@ -31,7 +31,7 @@ import EDU.oswego.cs.dl.util.concurrent.SynchronizedInt;
  */
 public class Ordering
 {
-   protected static final SynchronizedInt order = new SynchronizedInt(0);
+   protected static final AtomicInteger order = new AtomicInteger(0);
    
    public static void resetOrder()
    {

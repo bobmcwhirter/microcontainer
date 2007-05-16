@@ -61,62 +61,62 @@ public class OtherDelegate extends Ordering
    
    public void describeInstall()
    {
-      describeInstallOrder = order.increment();
+      describeInstallOrder = order.incrementAndGet();
    }
    
    public void describeUninstall()
    {
-      describeUninstallOrder = order.increment();
+      describeUninstallOrder = order.incrementAndGet();
    }
    
    public void instantiateInstall()
    {
-      instantiateInstallOrder = order.increment();
+      instantiateInstallOrder = order.incrementAndGet();
    }
    
    public void instantiateUninstall()
    {
-      instantiateUninstallOrder = order.increment();
+      instantiateUninstallOrder = order.incrementAndGet();
    }
    
    public void configureInstall()
    {
-      configureInstallOrder = order.increment();
+      configureInstallOrder = order.incrementAndGet();
    }
    
    public void configureUninstall()
    {
-      configureUninstallOrder = order.increment();
+      configureUninstallOrder = order.incrementAndGet();
    }
    
    public void createInstall()
    {
-      createInstallOrder = order.increment();
+      createInstallOrder = order.incrementAndGet();
    }
    
    public void createUninstall()
    {
-      createUninstallOrder = order.increment();
+      createUninstallOrder = order.incrementAndGet();
    }
    
    public void startInstall()
    {
-      startInstallOrder = order.increment();
+      startInstallOrder = order.incrementAndGet();
    }
    
    public void startUninstall()
    {
-      startUninstallOrder = order.increment();
+      startUninstallOrder = order.incrementAndGet();
    }
    
    public void installInstall()
    {
-      installInstallOrder = order.increment();
+      installInstallOrder = order.incrementAndGet();
    }
    
    public void installUninstall()
    {
-      installUninstallOrder = order.increment();
+      installUninstallOrder = order.incrementAndGet();
    }
    
    public void addDependency(DependencyItem dependency)

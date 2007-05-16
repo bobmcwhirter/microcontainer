@@ -23,11 +23,10 @@ package org.jboss.aop.microcontainer.junit;
 
 import java.net.URL;
 import java.util.Iterator;
+import java.util.concurrent.CopyOnWriteArrayList;
 
 import org.jboss.aop.AspectXmlLoader;
 import org.jboss.test.kernel.junit.MicrocontainerTestDelegate;
-
-import EDU.oswego.cs.dl.util.concurrent.CopyOnWriteArrayList;
 
 /**
  * 
