@@ -28,8 +28,12 @@ import java.security.PrivilegedAction;
 import java.security.ProtectionDomain;
 import java.util.Arrays;
 import java.util.Enumeration;
+import java.util.Hashtable;
 import java.util.List;
 import java.util.Set;
+
+import javax.management.MalformedObjectNameException;
+import javax.management.ObjectName;
 
 import org.jboss.classloader.plugins.ClassLoaderUtils;
 import org.jboss.classloader.plugins.filter.PatternClassFilter;
@@ -397,6 +401,22 @@ public class MockClassLoaderPolicy extends ClassLoaderPolicy
       if (nonJDKFilter.matches(name))
          return null;
       return super.isJDKRequest(name);
+   }
+
+   @Override
+   public ObjectName getObjectName()
+   {
+      try
+      {
+         Hashtable<String, String> properties = new Hashtable<String, String>();
+         properties.put("name", "'" + name + "'");
+         properties.put("domain", "'" + getDomainName() + "'");
+         return ObjectName.getInstance("jboss.classloader", properties);
+      }
+      catch (MalformedObjectNameException e)
+      {
+         throw new Error("Error creating object name", e);
+      }
    }
 
    @Override 

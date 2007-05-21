@@ -32,6 +32,9 @@ import java.util.Collections;
 import java.util.List;
 import java.util.Set;
 
+import javax.management.MalformedObjectNameException;
+import javax.management.ObjectName;
+
 import org.jboss.classloader.spi.base.BaseClassLoaderPolicy;
 import org.jboss.classloader.spi.filter.FilteredDelegateLoader;
 import org.jboss.classloader.spi.filter.PackageClassFilter;
@@ -175,7 +178,7 @@ public abstract class ClassLoaderPolicy extends BaseClassLoaderPolicy
     * @param urls the list of urls to add to
     * @throws IOException for any error
     */
-   public abstract void getResources(String name ,Set<URL> urls) throws IOException;
+   public abstract void getResources(String name, Set<URL> urls) throws IOException;
    
    /**
     * Get the protection domain<p>
@@ -222,6 +225,23 @@ public abstract class ClassLoaderPolicy extends BaseClassLoaderPolicy
       return null;
    }
 
+   /**
+    * Get the object name the classloader is registered in the MBeanServer with
+    * 
+    * @return the object name
+    */
+   public ObjectName getObjectName()
+   {
+      try
+      {
+         return ObjectName.getInstance("jboss.classloader", "id", "" + System.identityHashCode(this));
+      }
+      catch (MalformedObjectNameException e)
+      {
+         throw new Error("Error creating object name", e);
+      }
+   }
+   
    @Override
    protected void toLongString(StringBuilder builder)
    {

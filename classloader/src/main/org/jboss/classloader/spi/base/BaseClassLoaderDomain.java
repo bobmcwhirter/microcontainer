@@ -140,6 +140,16 @@ public abstract class BaseClassLoaderDomain implements Loader
    }
    
    /**
+    * Whether the domain has classloaders
+    * 
+    * @return true when the domain has classloaders
+    */
+   public boolean hasClassLoaders()
+   {
+      return classLoaders.isEmpty() == false;
+   }
+   
+   /**
     * Transform the byte code<p>
     * 
     * By default, this delegates to the classloader system

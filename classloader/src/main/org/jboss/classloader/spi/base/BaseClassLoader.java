@@ -39,10 +39,13 @@ import java.util.concurrent.CopyOnWriteArraySet;
 import java.util.concurrent.TimeUnit;
 import java.util.concurrent.locks.ReentrantLock;
 
+import javax.management.ObjectName;
+
 import org.jboss.classloader.plugins.ClassLoaderUtils;
 import org.jboss.classloader.spi.ClassLoaderPolicy;
 import org.jboss.classloader.spi.DelegateLoader;
 import org.jboss.classloader.spi.PackageInformation;
+import org.jboss.classloader.spi.jmx.JMXClassLoader;
 import org.jboss.logging.Logger;
 import org.jboss.util.collection.Iterators;
 
@@ -52,7 +55,7 @@ import org.jboss.util.collection.Iterators;
  * @author <a href="adrian@jboss.com">Adrian Brock</a>
  * @version $Revision: 1.1 $
  */
-public class BaseClassLoader extends SecureClassLoader
+public class BaseClassLoader extends SecureClassLoader implements BaseClassLoaderMBean, JMXClassLoader
 {
    /** The log */
    private static final Logger log = Logger.getLogger(BaseClassLoader.class);
@@ -101,6 +104,11 @@ public class BaseClassLoader extends SecureClassLoader
          log.debug("Created " + this + " with policy " + policy);
    }
 
+   public ObjectName getObjectName()
+   {
+      return policy.getObjectName();
+   }
+   
    /**
     * Get the policy.
     * 

@@ -19,29 +19,21 @@
  * Software Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA
  * 02110-1301 USA, or see the FSF site: http://www.fsf.org.
  */
-package org.jboss.test.classloader;
+package org.jboss.test.classloader.jmx;
 
 import junit.framework.Test;
 import junit.framework.TestSuite;
 import junit.textui.TestRunner;
 
-import org.jboss.test.classloader.bootstrap.BootstrapTestSuite;
-import org.jboss.test.classloader.delegate.DelegateTestSuite;
-import org.jboss.test.classloader.domain.ClassLoaderDomainTestSuite;
-import org.jboss.test.classloader.filter.FilterTestSuite;
-import org.jboss.test.classloader.jmx.JMXTestSuite;
-import org.jboss.test.classloader.old.OldTestSuite;
-import org.jboss.test.classloader.policy.test.ClassLoaderPolicyUnitTestCase;
-import org.jboss.test.classloader.resources.ResourceTestSuite;
-import org.jboss.test.classloader.system.ClassLoaderSystemTestSuite;
+import org.jboss.test.classloader.jmx.test.JMXUnitTestCase;
 
 /**
- * ClassLoader All Test Suite.
+ * JMX Test Suite.
  * 
  * @author <a href="adrian@jboss.com">Adrian Brock</a>
  * @version $Revision: 37459 $
  */
-public class ClassLoaderAllTestSuite extends TestSuite
+public class JMXTestSuite extends TestSuite
 {
    /**
     * For running the testsuite from the command line
@@ -60,17 +52,9 @@ public class ClassLoaderAllTestSuite extends TestSuite
     */
    public static Test suite()
    {
-      TestSuite suite = new TestSuite("ClassLoader All Tests");
+      TestSuite suite = new TestSuite("JMX Tests");
 
-      suite.addTest(ClassLoaderSystemTestSuite.suite());
-      suite.addTest(ClassLoaderDomainTestSuite.suite());
-      suite.addTest(ClassLoaderPolicyUnitTestCase.suite());
-      suite.addTest(BootstrapTestSuite.suite());
-      suite.addTest(OldTestSuite.suite());
-      suite.addTest(FilterTestSuite.suite());
-      suite.addTest(DelegateTestSuite.suite());
-      suite.addTest(ResourceTestSuite.suite());
-      suite.addTest(JMXTestSuite.suite());
+      suite.addTest(JMXUnitTestCase.suite());
       
       return suite;
    }

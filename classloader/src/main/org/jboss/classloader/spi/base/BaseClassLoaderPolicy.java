@@ -26,6 +26,7 @@ import java.security.AccessController;
 import java.security.ProtectionDomain;
 import java.util.List;
 
+import org.jboss.classloader.spi.ClassLoaderDomain;
 import org.jboss.classloader.spi.DelegateLoader;
 import org.jboss.logging.Logger;
 
@@ -197,6 +198,18 @@ public abstract class BaseClassLoaderPolicy
       builder.append(getClass().getSimpleName());
       builder.append("@").append(Integer.toHexString(System.identityHashCode(this)));
       return builder.toString();
+   }
+   
+   /**
+    * Get the classloader domain name
+    * 
+    * @return the domain
+    */
+   public String getDomainName()
+   {
+      if (domain == null)
+         return null;
+      return ((ClassLoaderDomain) domain).getName();
    }
    
    /**
