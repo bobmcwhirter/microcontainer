@@ -21,13 +21,13 @@
 */
 package org.jboss.deployers.spi;
 
+import java.io.Serializable;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.Map;
 import java.util.Set;
 import java.util.TreeMap;
 import java.util.TreeSet;
-import java.io.Serializable;
 
 /**
  * IncompleteDeployments.
@@ -55,10 +55,10 @@ public class IncompleteDeployments implements Serializable
    /**
     * Create a new IncompleteDeploymentException.
     * 
-    * @param deploymentsInError
-    * @param deploymentsMissingDeployer
-    * @param contextsInError
-    * @param contextsMissingDependencies
+    * @param deploymentsInError deployments in error
+    * @param deploymentsMissingDeployer deployments missing deployer
+    * @param contextsInError contexts in error
+    * @param contextsMissingDependencies contexts missing dependencies
     */
    public IncompleteDeployments(Map<String, Throwable> deploymentsInError, Collection<String> deploymentsMissingDeployer, Map<String, Throwable> contextsInError, Map<String, Set<MissingDependency>> contextsMissingDependencies)
    {

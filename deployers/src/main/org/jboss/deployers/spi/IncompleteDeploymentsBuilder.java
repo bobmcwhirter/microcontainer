@@ -88,8 +88,7 @@ public class IncompleteDeploymentsBuilder
             for (DeploymentContext context : errors)
                deploymentsInError.put(context.getName(), getCause(context.getProblem()));
          }
-         
-         
+
          Collection<DeploymentContext> missingDeployer = main.getMissingDeployer();
          if (missingDeployer != null && missingDeployer.isEmpty() == false)
          {
