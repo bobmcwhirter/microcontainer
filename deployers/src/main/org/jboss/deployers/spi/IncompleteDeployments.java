@@ -103,6 +103,56 @@ public class IncompleteDeployments implements Serializable
    }
 
    /**
+    * Whether deployment unit is responsible for incomplete deployment.
+    *
+    * @param deploymentName deployment unit name
+    * @return true when deployment unit is responsible
+    */
+   public boolean isInvalidDeployment(String deploymentName)
+   {
+      if (isIncomplete() == false)
+         return false;
+
+      if (matchComponentName(deploymentName, getDeploymentsInError().keySet()))
+         return true;
+      if (matchComponentName(deploymentName, getDeploymentsMissingDeployer()))
+         return true;
+
+      return false;
+   }
+
+   /**
+    * Whether context is responsible for incomplete deployment.
+    *
+    * @param contextName context's name
+    * @return true when context is responsible
+    */
+   public boolean isInvalidContext(String contextName)
+   {
+      if (isIncomplete() == false)
+         return false;
+
+      if (matchComponentName(contextName, getContextsInError().keySet()))
+         return true;
+      if (matchComponentName(contextName, getContextsMissingDependencies().keySet()))
+         return true;
+
+      return false;
+   }
+
+   /**
+    * Search for componentName in strings.
+    *
+    * @param componentName component's name
+    * @param strings collection of strings
+    * @return true if strings contains component name
+    */
+   protected boolean matchComponentName(String componentName, Collection<String> strings)
+   {
+      return strings.contains(componentName);
+   }
+
+   /**
     * Get the contextsInError.
     * 
     * @return the contextsInError.
