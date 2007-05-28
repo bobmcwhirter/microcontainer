@@ -38,7 +38,7 @@ import java.util.TreeSet;
 public class IncompleteDeployments implements Serializable
 {
    /** The serialVersionUID */
-   private static final long serialVersionUID = 1433292979582684692L;
+   private static final long serialVersionUID = -8413355643801749950L;
 
    /** Deployments in error */
    private Map<String, Throwable> deploymentsInError;
