@@ -37,10 +37,4 @@ public class StartLifecycleBeanMetaDataFactory extends LifecycleBeanMetaDataFact
    {
       return ControllerState.START;
    }
-
-//   @Override
-//   protected String getControllerInterface()
-//   {
-//      return "org.jboss.kernel.spi.dependency.StartKernelControllerContextAware";
-//   }
 }

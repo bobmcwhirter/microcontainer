@@ -37,10 +37,4 @@ public class InstallLifecycleBeanMetaDataFactory extends LifecycleBeanMetaDataFa
    {
       return ControllerState.INSTALLED;
    }
-
-//   @Override
-//   protected String getControllerInterface()
-//   {
-//      return "org.jboss.kernel.spi.dependency.InstallKernelControllerContextAware";
-//   }
 }

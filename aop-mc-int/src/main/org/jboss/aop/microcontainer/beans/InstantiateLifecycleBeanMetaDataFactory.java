@@ -37,10 +37,4 @@ public class InstantiateLifecycleBeanMetaDataFactory extends LifecycleBeanMetaDa
    {
       return ControllerState.INSTANTIATED;
    }
-
-//   @Override
-//   protected String getControllerInterface()
-//   {
-//      return "org.jboss.kernel.spi.dependency.InstantiateKernelControllerContextAware";
-//   }
 }

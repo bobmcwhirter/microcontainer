@@ -37,12 +37,4 @@ public class ConfigureLifecycleBeanMetaDataFactory extends LifecycleBeanMetaData
    {
       return ControllerState.CONFIGURED;
    }
-
-//   @Override
-//   protected String getControllerInterface()
-//   {
-//      return "org.jboss.kernel.spi.dependency.ConfigureKernelControllerContextAware";
-//   }
-   
-   
 }

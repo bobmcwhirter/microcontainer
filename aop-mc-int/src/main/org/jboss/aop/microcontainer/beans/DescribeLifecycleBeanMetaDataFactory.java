@@ -37,10 +37,4 @@ public class DescribeLifecycleBeanMetaDataFactory extends LifecycleBeanMetaDataF
    {
       return ControllerState.DESCRIBED;
    }
-
-//   @Override
-//   protected String getControllerInterface()
-//   {
-//      return "org.jboss.kernel.spi.dependency.DescribeKernelControllerContextAware";
-//   }
 }
