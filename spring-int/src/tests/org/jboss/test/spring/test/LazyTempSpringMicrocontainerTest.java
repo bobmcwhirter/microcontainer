@@ -22,12 +22,11 @@
 package org.jboss.test.spring.test;
 
 import org.jboss.test.AbstractTestDelegate;
-import org.jboss.test.kernel.junit.MicrocontainerTest;
 
 /**
  * @author <a href="mailto:ales.justin@jboss.com">Ales Justin</a>
  */
-public class LazyTempSpringMicrocontainerTest extends MicrocontainerTest
+public class LazyTempSpringMicrocontainerTest extends TempSpringMicrocontainerTest
 {
    public LazyTempSpringMicrocontainerTest(String name)
    {

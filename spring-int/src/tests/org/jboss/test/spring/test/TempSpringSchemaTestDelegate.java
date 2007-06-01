@@ -21,9 +21,9 @@
 */
 package org.jboss.test.spring.test;
 
+import org.jboss.spring.deployment.xml.SpringSchemaInitializer;
 import org.jboss.test.ioc.test.IoCTestDelegate;
 import org.jboss.xb.binding.sunday.unmarshalling.DefaultSchemaResolver;
-import org.jboss.spring.deployment.xml.SpringSchemaInitializer;
 
 /**
  * @author <a href="mailto:ales.justin@jboss.com">Ales Justin</a>
@@ -42,6 +42,7 @@ public class TempSpringSchemaTestDelegate extends IoCTestDelegate
       DefaultSchemaResolver defaultSchemaResolver = (DefaultSchemaResolver) resolver;
       defaultSchemaResolver.addSchemaInitializer("urn:jboss:spring-beans:2.0", new SpringSchemaInitializer());
       defaultSchemaResolver.addSchemaLocation("urn:jboss:spring-beans:2.0", "mc-spring-beans_2_0.xsd");
+      defaultSchemaResolver.addSchemaParseAnnotations("urn:jboss:spring-beans:2.0", Boolean.FALSE);
    }
 
 }
