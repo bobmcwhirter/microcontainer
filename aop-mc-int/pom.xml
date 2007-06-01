@@ -168,6 +168,7 @@
           <forkMode>always</forkMode>
           <redirectTestOutputToFile>true</redirectTestOutputToFile>          
           <skip>true</skip>
+          <trimStackTrace>false</trimStackTrace>
         </configuration>
       </plugin>
     </plugins>
