@@ -34,7 +34,7 @@ import org.jboss.util.JBossStringBuilder;
 
 /**
  * Dependency value.
- * 
+ *
  * @author <a href="adrian@jboss.com">Adrian Brock</a>
  * @version $Revision$
  */
@@ -42,16 +42,24 @@ public class AbstractDependencyValueMetaData extends AbstractValueMetaData
 {
    private static final long serialVersionUID = 2L;
 
-   /** The context */
+   /**
+    * The context
+    */
    protected transient KernelControllerContext context;
-   
-   /** The property name */
+
+   /**
+    * The property name
+    */
    protected String property;
 
-   /** The when required state of the dependency or null to use current context state */
+   /**
+    * The when required state of the dependency or null to use current context state
+    */
    protected ControllerState whenRequiredState;
 
-   /** The required state of the dependency or null to look in the registry */
+   /**
+    * The required state of the dependency or null to look in the registry
+    */
    protected ControllerState dependentState = ControllerState.INSTALLED;
 
    /**
@@ -63,7 +71,7 @@ public class AbstractDependencyValueMetaData extends AbstractValueMetaData
 
    /**
     * Create a new dependency value
-    * 
+    *
     * @param value the value
     */
    public AbstractDependencyValueMetaData(Object value)
@@ -73,8 +81,8 @@ public class AbstractDependencyValueMetaData extends AbstractValueMetaData
 
    /**
     * Create a new dependency value
-    * 
-    * @param value the value
+    *
+    * @param value    the value
     * @param property the property
     */
    public AbstractDependencyValueMetaData(Object value, String property)
@@ -85,27 +93,27 @@ public class AbstractDependencyValueMetaData extends AbstractValueMetaData
 
    /**
     * Get the property
-    * 
+    *
     * @return the property
     */
    public String getProperty()
    {
       return property;
    }
-   
+
    /**
     * Set the property
-    * 
+    *
     * @param property the property name
     */
    public void setProperty(String property)
    {
       this.property = property;
    }
-   
+
    /**
     * Set the when required state of the dependency
-    * 
+    *
     * @param whenRequiredState the when required state or null if it uses current context state
     */
    public void setWhenRequiredState(ControllerState whenRequiredState)
@@ -118,7 +126,7 @@ public class AbstractDependencyValueMetaData extends AbstractValueMetaData
    {
       return whenRequiredState;
    }
-   
+
    /**
     * Set the required state of the dependency
     *
@@ -159,11 +167,14 @@ public class AbstractDependencyValueMetaData extends AbstractValueMetaData
       {
          if (lookup instanceof AttributeDispatchContext)
          {
-            AttributeDispatchContext adc = (AttributeDispatchContext) lookup;
+            AttributeDispatchContext adc = (AttributeDispatchContext)lookup;
             result = adc.get(property);
          }
          else
-            throw new IllegalArgumentException("Cannot use property attribute, context is not AttributeDispatchContext: " + this);
+            throw new IllegalArgumentException(
+                  "Cannot use property attribute, context is not AttributeDispatchContext: " +
+                  lookup +
+                  ", metadata: " + this);
       }
       return info != null ? info.convertValue(result) : result;
    }
@@ -193,7 +204,7 @@ public class AbstractDependencyValueMetaData extends AbstractValueMetaData
       }
       super.initialVisit(visitor);
    }
-      
+
    public void toString(JBossStringBuilder buffer)
    {
       super.toString(buffer);
