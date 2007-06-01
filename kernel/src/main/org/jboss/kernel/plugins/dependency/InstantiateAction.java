@@ -26,10 +26,10 @@ import org.jboss.beans.metadata.spi.BeanMetaData;
 import org.jboss.joinpoint.spi.Joinpoint;
 import org.jboss.kernel.Kernel;
 import org.jboss.kernel.spi.config.KernelConfigurator;
+import org.jboss.kernel.spi.dependency.InstantiateKernelControllerContextAware;
 import org.jboss.kernel.spi.dependency.KernelController;
 import org.jboss.kernel.spi.dependency.KernelControllerContext;
 import org.jboss.kernel.spi.dependency.KernelControllerContextAware;
-import org.jboss.kernel.spi.dependency.InstantiateKernelControllerContextAware;
 
 /**
  * InstantiateAction.
@@ -62,7 +62,8 @@ public class InstantiateAction extends KernelControllerContextAction
             context.setBeanInfo(info);
          }
 
-         controller.addInstantiatedContext(context);
+         if (context.isAutowireCandidate())
+            controller.addInstantiatedContext(context);
       }
       catch (Throwable t)
       {
@@ -87,7 +88,8 @@ public class InstantiateAction extends KernelControllerContextAction
 //               ((KernelControllerContextAware) object).unsetKernelControllerContext(context);
 
             KernelController controller = (KernelController) context.getController();
-            controller.removeInstantiatedContext(context);
+            if (context.isAutowireCandidate())
+               controller.removeInstantiatedContext(context);
          }
 
       }

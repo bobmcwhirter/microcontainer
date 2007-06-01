@@ -21,52 +21,27 @@
 */
 package org.jboss.spring.deployment.xml;
 
-import java.util.ArrayList;
-import java.util.List;
 import javax.xml.namespace.QName;
 
-import org.jboss.beans.metadata.plugins.AbstractBeanMetaData;
-import org.jboss.beans.metadata.spi.BeanMetaDataFactory;
-import org.jboss.kernel.plugins.deployment.AbstractKernelDeployment;
+import org.jboss.spring.metadata.AbstractImportMetaData;
 import org.jboss.spring.metadata.AbstractSpringDeployment;
 import org.jboss.xb.binding.sunday.unmarshalling.DefaultElementInterceptor;
 
 /**
  * @author <a href="mailto:ales.justin@jboss.com">Ales Justin</a>
  */
-public class SpringBeansInterceptor extends DefaultElementInterceptor
+public class ImportInterceptor extends DefaultElementInterceptor
 {
    /**
     * The interceptor
     */
-   public static final SpringBeansInterceptor INTERCEPTOR = new SpringBeansInterceptor();
+   public static final ImportInterceptor INTERCEPTOR = new ImportInterceptor();
 
    public void add(Object parent, Object child, QName name)
    {
-      AbstractKernelDeployment deployment = (AbstractKernelDeployment)parent;
-      AbstractBeanMetaData bean = (AbstractBeanMetaData)child;
-      List<BeanMetaDataFactory> beans = deployment.getBeanFactories();
-      if (beans == null)
-      {
-         beans = new ArrayList<BeanMetaDataFactory>();
-         deployment.setBeanFactories(beans);
-      }
-      beans.add(bean);
-
-      // handle bean lifecycle
-      if (deployment instanceof AbstractSpringDeployment)
-      {
-         AbstractSpringDeployment sd = (AbstractSpringDeployment)deployment;
-         // set deployment defaults, if not already set per bean
-         if (bean.getCreate() == null && sd.getCreate() != null)
-         {
-            bean.setCreate(sd.getCreate());
-         }
-         if (bean.getDestroy() == null && sd.getDestroy() != null)
-         {
-            bean.setDestroy(sd.getDestroy());
-         }
-      }
+      AbstractSpringDeployment deployment = (AbstractSpringDeployment)parent;
+      AbstractImportMetaData importMD = (AbstractImportMetaData)child;
+      deployment.addImport(importMD);
    }
 
 }

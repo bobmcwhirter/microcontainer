@@ -19,46 +19,46 @@
 * Software Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA
 * 02110-1301 USA, or see the FSF site: http://www.fsf.org.
 */
-package org.jboss.test.spring.test;
+package org.jboss.spring.metadata;
 
-import junit.framework.Test;
-import org.jboss.dependency.spi.ControllerState;
-import org.jboss.test.spring.support.SimpleBean;
+import java.io.Serializable;
+
+import org.jboss.util.JBossObject;
+import org.jboss.util.JBossStringBuilder;
 
 /**
  * @author <a href="mailto:ales.justin@jboss.com">Ales Justin</a>
  */
-public class InstantiateSpringTestCase extends TempSpringMicrocontainerTest
+public class AbstractImportMetaData extends JBossObject implements Serializable
 {
-   public InstantiateSpringTestCase(String name)
+   private static final long serialVersionUID = -5372914407585899708L;
+   
+   protected String resource;
+
+   public String getResource()
    {
-      super(name);
+      return resource;
    }
 
-   /**
-    * Setup the test
-    *
-    * @return the test
-    */
-   public static Test suite()
+   public void setResource(String resource)
    {
-      return suite(InstantiateSpringTestCase.class);
+      this.resource = resource;
    }
 
-   public void testConfigure() throws Exception
+   protected int getHashCode()
    {
-      SimpleBean testBean = (SimpleBean) getBean("testBean", ControllerState.INSTANTIATED);
-      assertNotNull(testBean);
-      assertEquals(testBean.getX(), 1);
-      assertEquals(testBean.getY(), 3.14159);
-      assertEquals(testBean.getS(), "SpringBean");
-      // collections
-      assertFalse(testBean.getMylist().isEmpty());
-      assertEquals(testBean.getMylist().size(), 3);
-      assertFalse(testBean.getMyset().isEmpty());
-      assertEquals(testBean.getMyset().size(),2);
-//      assertFalse(testBean.getMymap().values().isEmpty());
-//      assertEquals(testBean.getMymap().values().size(), 1);
+      return resource.hashCode();
    }
 
+   protected void toString(JBossStringBuilder buffer)
+   {
+      buffer.append("resource=").append(resource);
+   }
+
+   public boolean equals(Object obj)
+   {
+      if (obj instanceof AbstractImportMetaData == false)
+         return false;
+      return resource.equals(((AbstractImportMetaData)obj).resource); 
+   }
 }

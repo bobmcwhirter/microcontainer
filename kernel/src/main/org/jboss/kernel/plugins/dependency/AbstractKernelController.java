@@ -409,4 +409,12 @@ public class AbstractKernelController extends AbstractController implements Kern
       return contexts.iterator().next();
    }
 
+   protected boolean isAutowireCandidate(ControllerContext context)
+   {
+      if (context instanceof KernelControllerContext)
+      {
+         return ((KernelControllerContext)context).isAutowireCandidate();
+      }
+      return super.isAutowireCandidate(context);
+   }
 }

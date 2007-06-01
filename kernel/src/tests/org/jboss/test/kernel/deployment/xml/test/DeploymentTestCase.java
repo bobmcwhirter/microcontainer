@@ -22,16 +22,18 @@
 package org.jboss.test.kernel.deployment.xml.test;
 
 import java.util.List;
+import java.util.Set;
 
+import junit.framework.Test;
 import org.jboss.beans.metadata.plugins.factory.GenericBeanFactory;
 import org.jboss.beans.metadata.spi.BeanMetaData;
 import org.jboss.beans.metadata.spi.BeanMetaDataFactory;
+import org.jboss.beans.metadata.spi.LifecycleMetaData;
+import org.jboss.dependency.spi.ControllerMode;
 import org.jboss.kernel.plugins.deployment.AbstractKernelDeployment;
 import org.jboss.test.kernel.deployment.xml.support.TestBeanMetaDataFactory;
 import org.jboss.test.kernel.deployment.xml.support.TestBeanMetaDataFactory1;
 import org.jboss.test.kernel.deployment.xml.support.TestBeanMetaDataFactory2;
-
-import junit.framework.Test;
 
 /**
  * DeploymentTestCase.
@@ -232,7 +234,65 @@ public class DeploymentTestCase extends AbstractXMLTest
       assertNotNull(bean);
       assertEquals("Bean4", bean.getBean());
    }
-   
+
+   public void testDeploymentWithLifecycle() throws Exception
+   {
+      AbstractKernelDeployment deployment = unmarshalDeployment("DeploymentWithLifecycle.xml");
+
+      LifecycleMetaData create = deployment.getCreate();
+      assertNotNull(create);
+      LifecycleMetaData start = deployment.getStart();
+      assertNotNull(start);
+      LifecycleMetaData stop = deployment.getStop();
+      assertNotNull(stop);
+      LifecycleMetaData destroy = deployment.getDestroy();
+      assertNotNull(destroy);
+
+      List beans = deployment.getBeans();
+      assertNotNull(beans);
+      assertEquals(1, beans.size());
+      BeanMetaData bean = (BeanMetaData)beans.iterator().next();
+
+      assertEquals(create, bean.getCreate());
+      assertEquals(start, bean.getStart());
+      assertEquals(stop, bean.getStop());
+      assertEquals(destroy, bean.getDestroy());
+   }
+
+   public void testDeploymentWithMode() throws Exception
+   {
+      AbstractKernelDeployment deployment = unmarshalDeployment("DeploymentWithMode.xml");
+
+      ControllerMode mode = deployment.getMode();
+      assertNotNull(mode);
+      assertEquals(ControllerMode.ON_DEMAND, mode);
+
+      List beans = deployment.getBeans();
+      assertNotNull(beans);
+      assertEquals(1, beans.size());
+      BeanMetaData bean = (BeanMetaData)beans.iterator().next();
+
+      assertEquals(mode, bean.getMode());
+   }
+
+   public void testDeploymentWithAlias() throws Exception
+   {
+      AbstractKernelDeployment deployment = unmarshalDeployment("DeploymentWithAlias.xml");
+      List beans = deployment.getBeans();
+      assertNotNull(beans);
+      assertEquals(2, beans.size());
+      BeanMetaData first = (BeanMetaData)beans.get(0);
+      Set fstAliases = first.getAliases();
+      assertNotNull(fstAliases);
+      assertEquals(1, fstAliases.size());
+      assertEquals("FirstAlias", fstAliases.iterator().next());
+      BeanMetaData second = (BeanMetaData)beans.get(1);
+      Set sndAliases = second.getAliases();
+      assertNotNull(sndAliases);
+      assertEquals(1, sndAliases.size());
+      assertEquals("SecondAlias", sndAliases.iterator().next());
+   }
+
    public static Test suite()
    {
       return suite(DeploymentTestCase.class);

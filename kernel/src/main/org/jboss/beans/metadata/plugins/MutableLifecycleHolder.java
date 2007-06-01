@@ -19,39 +19,20 @@
 * Software Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA
 * 02110-1301 USA, or see the FSF site: http://www.fsf.org.
 */
-package org.jboss.spring.metadata;
+package org.jboss.beans.metadata.plugins;
 
-import java.util.ArrayList;
-import java.util.List;
-
-import org.jboss.beans.metadata.spi.BeanMetaDataFactory;
-import org.jboss.kernel.plugins.deployment.AbstractKernelDeployment;
+import org.jboss.beans.metadata.spi.LifecycleMetaData;
 
 /**
  * @author <a href="mailto:ales.justin@jboss.com">Ales Justin</a>
  */
-public class AbstractSpringDeployment extends AbstractKernelDeployment
+public interface MutableLifecycleHolder
 {
-   /** The serialVersionUID */
-   private static final long serialVersionUID = 2L;
+   void setCreate(LifecycleMetaData create);
+   
+   void setStart(LifecycleMetaData start);
 
-   public void addImport(AbstractImportMetaData imd)
-   {
-      List<BeanMetaDataFactory> importedBeans = getBeans(imd.getResource());
-      if (importedBeans != null && importedBeans.isEmpty() == false)
-      {
-         List<BeanMetaDataFactory> beans = getBeanFactories();
-         if (beans == null)
-         {
-            beans = new ArrayList<BeanMetaDataFactory>();
-            setBeanFactories(beans);
-         }
-         beans.addAll(importedBeans);
-      }
-   }
+   void setStop(LifecycleMetaData stop);
 
-   protected List<BeanMetaDataFactory> getBeans(String resource)
-   {
-      return null; //todo
-   }
+   void setDestroy(LifecycleMetaData destroy);
 }

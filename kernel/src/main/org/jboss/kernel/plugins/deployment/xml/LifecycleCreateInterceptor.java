@@ -19,39 +19,29 @@
 * Software Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA
 * 02110-1301 USA, or see the FSF site: http://www.fsf.org.
 */
-package org.jboss.spring.metadata;
+package org.jboss.kernel.plugins.deployment.xml;
 
-import java.util.ArrayList;
-import java.util.List;
+import javax.xml.namespace.QName;
 
-import org.jboss.beans.metadata.spi.BeanMetaDataFactory;
-import org.jboss.kernel.plugins.deployment.AbstractKernelDeployment;
+import org.jboss.beans.metadata.plugins.AbstractLifecycleMetaData;
+import org.jboss.beans.metadata.plugins.MutableLifecycleHolder;
+import org.jboss.xb.binding.sunday.unmarshalling.DefaultElementInterceptor;
 
 /**
- * @author <a href="mailto:ales.justin@jboss.com">Ales Justin</a>
+ * LifecycleCreateInterceptor.
+ *
+ * @author <a href="ales.justin@jboss.com">Ales Justin</a>
  */
-public class AbstractSpringDeployment extends AbstractKernelDeployment
+public class LifecycleCreateInterceptor extends DefaultElementInterceptor
 {
-   /** The serialVersionUID */
-   private static final long serialVersionUID = 2L;
+   /** The interceptor */
+   public static final LifecycleCreateInterceptor INTERCEPTOR = new LifecycleCreateInterceptor();
 
-   public void addImport(AbstractImportMetaData imd)
+   public void add(Object parent, Object child, QName name)
    {
-      List<BeanMetaDataFactory> importedBeans = getBeans(imd.getResource());
-      if (importedBeans != null && importedBeans.isEmpty() == false)
-      {
-         List<BeanMetaDataFactory> beans = getBeanFactories();
-         if (beans == null)
-         {
-            beans = new ArrayList<BeanMetaDataFactory>();
-            setBeanFactories(beans);
-         }
-         beans.addAll(importedBeans);
-      }
-   }
-
-   protected List<BeanMetaDataFactory> getBeans(String resource)
-   {
-      return null; //todo
+      MutableLifecycleHolder holder = (MutableLifecycleHolder) parent;
+      AbstractLifecycleMetaData lifecycle = (AbstractLifecycleMetaData) child;
+      lifecycle.setType("create");
+      holder.setCreate(lifecycle);
    }
 }

@@ -22,15 +22,14 @@
 package org.jboss.test.spring.test;
 
 import junit.framework.Test;
-import org.jboss.dependency.spi.ControllerState;
 import org.jboss.test.spring.support.SimpleBean;
 
 /**
  * @author <a href="mailto:ales.justin@jboss.com">Ales Justin</a>
  */
-public class InstantiateSpringTestCase extends TempSpringMicrocontainerTest
+public class AliasSpringTestCase extends TempSpringMicrocontainerTest
 {
-   public InstantiateSpringTestCase(String name)
+   public AliasSpringTestCase(String name)
    {
       super(name);
    }
@@ -42,23 +41,23 @@ public class InstantiateSpringTestCase extends TempSpringMicrocontainerTest
     */
    public static Test suite()
    {
-      return suite(InstantiateSpringTestCase.class);
+      return suite(AliasSpringTestCase.class);
    }
 
-   public void testConfigure() throws Exception
+   public void testAlias() throws Exception
    {
-      SimpleBean testBean = (SimpleBean) getBean("testBean", ControllerState.INSTANTIATED);
-      assertNotNull(testBean);
-      assertEquals(testBean.getX(), 1);
-      assertEquals(testBean.getY(), 3.14159);
-      assertEquals(testBean.getS(), "SpringBean");
-      // collections
-      assertFalse(testBean.getMylist().isEmpty());
-      assertEquals(testBean.getMylist().size(), 3);
-      assertFalse(testBean.getMyset().isEmpty());
-      assertEquals(testBean.getMyset().size(),2);
-//      assertFalse(testBean.getMymap().values().isEmpty());
-//      assertEquals(testBean.getMymap().values().size(), 1);
+      SimpleBean testBean = (SimpleBean) getBean("testBean");
+      SimpleBean al1 = (SimpleBean) getBean("al1");
+      SimpleBean al2 = (SimpleBean) getBean("al2");
+      SimpleBean al3 = (SimpleBean) getBean("al3");
+      SimpleBean al4 = (SimpleBean) getBean("al4");
+      SimpleBean fromAlias = (SimpleBean) getBean("fromAlias");
+
+      assertEquals(testBean, al1);
+      assertEquals(al1, al2);
+      assertEquals(al2, al3);
+      assertEquals(al3, al4);
+      assertEquals(al4, fromAlias);
    }
 
 }

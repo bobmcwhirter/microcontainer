@@ -22,15 +22,15 @@
 package org.jboss.test.spring.test;
 
 import junit.framework.Test;
-import org.jboss.dependency.spi.ControllerState;
-import org.jboss.test.spring.support.SimpleBean;
+import org.jboss.test.spring.support.SettingBean;
+import org.jboss.test.spring.support.WaitingBean;
 
 /**
  * @author <a href="mailto:ales.justin@jboss.com">Ales Justin</a>
  */
-public class InstantiateSpringTestCase extends TempSpringMicrocontainerTest
+public class DependsSpringTestCase extends TempSpringMicrocontainerTest
 {
-   public InstantiateSpringTestCase(String name)
+   public DependsSpringTestCase(String name)
    {
       super(name);
    }
@@ -42,23 +42,16 @@ public class InstantiateSpringTestCase extends TempSpringMicrocontainerTest
     */
    public static Test suite()
    {
-      return suite(InstantiateSpringTestCase.class);
+      return suite(DependsSpringTestCase.class);
    }
 
-   public void testConfigure() throws Exception
+   public void testDepends() throws Exception
    {
-      SimpleBean testBean = (SimpleBean) getBean("testBean", ControllerState.INSTANTIATED);
-      assertNotNull(testBean);
-      assertEquals(testBean.getX(), 1);
-      assertEquals(testBean.getY(), 3.14159);
-      assertEquals(testBean.getS(), "SpringBean");
-      // collections
-      assertFalse(testBean.getMylist().isEmpty());
-      assertEquals(testBean.getMylist().size(), 3);
-      assertFalse(testBean.getMyset().isEmpty());
-      assertEquals(testBean.getMyset().size(),2);
-//      assertFalse(testBean.getMymap().values().isEmpty());
-//      assertEquals(testBean.getMymap().values().size(), 1);
+      WaitingBean wait = (WaitingBean)getBean("wait");
+      assertNotNull(wait);
+      assertTrue(WaitingBean.getFlag());
+      SettingBean set = (SettingBean)getBean("set");
+      assertNotNull(set);
    }
 
 }

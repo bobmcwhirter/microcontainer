@@ -22,11 +22,14 @@
 package org.jboss.spring.deployment.xml;
 
 import org.jboss.kernel.plugins.deployment.xml.BeanPropertyInterceptor;
+import org.jboss.kernel.plugins.deployment.xml.DeploymentAliasInterceptor;
+import org.jboss.kernel.plugins.deployment.xml.DeploymentBeanInterceptor;
 import org.jboss.kernel.plugins.deployment.xml.DeploymentWildcardHandler;
 import org.jboss.kernel.plugins.deployment.xml.EntryHandler;
 import org.jboss.kernel.plugins.deployment.xml.EntryKeyInterceptor;
 import org.jboss.kernel.plugins.deployment.xml.EntryValueInterceptor;
 import org.jboss.kernel.plugins.deployment.xml.MapEntryInterceptor;
+import org.jboss.kernel.plugins.deployment.xml.NamedAliasHandler;
 import org.jboss.kernel.plugins.deployment.xml.NullValueElementInterceptor;
 import org.jboss.kernel.plugins.deployment.xml.PlainValueCharactersHandler;
 import org.jboss.kernel.plugins.deployment.xml.PropHandler;
@@ -47,12 +50,24 @@ public class SpringSchemaBindingHelper
    public static void initBeansHandler(TypeBinding typeBinding)
    {
       typeBinding.setHandler(SpringBeansHandler.HANDLER);
+      // handle import
+      typeBinding.pushInterceptor(SpringSchemaBinding.importQName, ImportInterceptor.INTERCEPTOR);
+      // handle aliases
+      typeBinding.pushInterceptor(SpringSchemaBinding.aliasQName, DeploymentAliasInterceptor.INTERCEPTOR);
       // handle beans
-      typeBinding.pushInterceptor(SpringSchemaBinding.beanQName, SpringBeansInterceptor.INTERCEPTOR);
-      // todo alias
-      // todo import
+      typeBinding.pushInterceptor(SpringSchemaBinding.beanQName, DeploymentBeanInterceptor.INTERCEPTOR);
       // Deployment can take wildcards
       typeBinding.getWildcard().setWildcardHandler(DeploymentWildcardHandler.HANDLER);
+   }
+
+   public static void initAliasHandler(TypeBinding typeBinding)
+   {
+      typeBinding.setHandler(NamedAliasHandler.HANDLER);
+   }
+
+   public static void initImportHandler(TypeBinding typeBinding)
+   {
+      typeBinding.setHandler(ImportHandler.HANDLER);
    }
 
    public static void initBeanHandler(TypeBinding typeBinding)

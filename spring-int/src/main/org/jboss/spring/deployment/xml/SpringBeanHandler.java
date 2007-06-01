@@ -21,20 +21,26 @@
 */
 package org.jboss.spring.deployment.xml;
 
+import java.util.Arrays;
+import java.util.HashSet;
+import java.util.List;
+import java.util.Set;
+import java.util.TreeSet;
 import javax.xml.namespace.NamespaceContext;
 import javax.xml.namespace.QName;
-import java.util.Arrays;
-import java.util.List;
 
 import org.jboss.beans.metadata.plugins.AbstractBeanMetaData;
 import org.jboss.beans.metadata.plugins.AbstractConstructorMetaData;
+import org.jboss.beans.metadata.plugins.AbstractDemandMetaData;
 import org.jboss.beans.metadata.plugins.AbstractDependencyValueMetaData;
 import org.jboss.beans.metadata.plugins.AbstractLifecycleMetaData;
 import org.jboss.beans.metadata.spi.ConstructorMetaData;
+import org.jboss.beans.metadata.spi.DemandMetaData;
 import org.jboss.beans.metadata.spi.ParameterMetaData;
+import org.jboss.dependency.spi.ControllerMode;
+import org.jboss.spring.metadata.AbstractConstructorArg;
 import org.jboss.xb.binding.sunday.unmarshalling.DefaultElementHandler;
 import org.jboss.xb.binding.sunday.unmarshalling.ElementBinding;
-import org.jboss.spring.metadata.AbstractConstructorArg;
 import org.xml.sax.Attributes;
 
 /**
@@ -46,6 +52,11 @@ public class SpringBeanHandler extends DefaultElementHandler
     * The beans handler
     */
    public static final SpringBeanHandler HANDLER = new SpringBeanHandler();
+
+   /**
+    * The delimiter pattern
+    */
+   public static final String DELIMITER_PATTERN = "[,; ]";
 
    public Object startElement(Object parent, QName name, ElementBinding element)
    {
@@ -60,12 +71,34 @@ public class SpringBeanHandler extends DefaultElementHandler
          String localName = attrs.getLocalName(i);
          if ("id".equals(localName))
             bean.setName(attrs.getValue(i));
+         else if ("name".equals(localName))
+         {
+            String name = attrs.getValue(i);
+            String[] names = name.split(DELIMITER_PATTERN);
+            bean.setAliases(new TreeSet<Object>(Arrays.asList(names)));
+         }
          else if ("class".equals(localName))
             bean.setBean(attrs.getValue(i));
          else if ("init-method".equals(localName))
             bean.setCreate(new AbstractLifecycleMetaData(attrs.getValue(i)));
+         else if ("lazy-init".equals(localName) && Boolean.parseBoolean(attrs.getValue(i)) == true)
+            bean.setMode(ControllerMode.ON_DEMAND);
+         else if ("autowire-candidate".equals(localName))
+            bean.setAutowireCandidate(Boolean.parseBoolean(attrs.getValue(i)));
          else if ("destroy-method".equals(localName))
             bean.setDestroy(new AbstractLifecycleMetaData(attrs.getValue(i)));
+         else if ("depends-on".equals(localName))
+         {
+            Set<DemandMetaData> demands = bean.getDemands();
+            if (demands == null)
+            {
+               demands = new HashSet<DemandMetaData>();
+               bean.setDemands(demands);
+            }
+            String[] values = attrs.getValue(i).split(DELIMITER_PATTERN);
+            for(String name : values)
+               demands.add(new AbstractDemandMetaData(name));
+         }
          else if ("factory-method".equals(localName) || "factory-bean".equals(localName))
          {
             AbstractConstructorMetaData constructor = (AbstractConstructorMetaData) bean.getConstructor();

@@ -19,47 +19,52 @@
 * Software Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA
 * 02110-1301 USA, or see the FSF site: http://www.fsf.org.
 */
-package org.jboss.spring.deployment.xml;
+package org.jboss.kernel.plugins.deployment.xml;
 
 import javax.xml.namespace.NamespaceContext;
 import javax.xml.namespace.QName;
 
-import org.jboss.beans.metadata.plugins.AbstractLifecycleMetaData;
-import org.jboss.dependency.spi.ControllerMode;
-import org.jboss.kernel.plugins.deployment.AbstractKernelDeployment;
-import org.jboss.spring.metadata.AbstractSpringDeployment;
-import org.jboss.xb.binding.sunday.unmarshalling.DefaultElementHandler;
+import org.jboss.beans.metadata.plugins.AbstractNamedAliasMetaData;
 import org.jboss.xb.binding.sunday.unmarshalling.ElementBinding;
 import org.xml.sax.Attributes;
 
 /**
+ * The named alias handler.
+ *
  * @author <a href="mailto:ales.justin@jboss.com">Ales Justin</a>
  */
-public class SpringBeansHandler extends DefaultElementHandler
+public class NamedAliasHandler extends AliasHandler
 {
    /**
-    * The beans handler
+    * The alias handler
     */
-   public static final SpringBeansHandler HANDLER = new SpringBeansHandler();
+   public static final NamedAliasHandler HANDLER = new NamedAliasHandler();
 
    public Object startElement(Object parent, QName name, ElementBinding element)
    {
-      return new AbstractSpringDeployment();
+      return new AbstractNamedAliasMetaData();
    }
 
-   public void attributes(Object object, QName qName, ElementBinding elementBinding, Attributes attrs, NamespaceContext namespaceContext)
+   public void attributes(Object o, QName elementName, ElementBinding element, Attributes attrs, NamespaceContext nsCtx)
    {
-      AbstractKernelDeployment deployment = (AbstractKernelDeployment) object;
+      AbstractNamedAliasMetaData alias = (AbstractNamedAliasMetaData) o;
       for (int i = 0; i < attrs.getLength(); ++i)
       {
          String localName = attrs.getLocalName(i);
-         if ("default-init-method".equals(localName))
-            deployment.setCreate(new AbstractLifecycleMetaData(attrs.getValue(i)));
-         else if ("default-destroy-method".equals(localName))
-            deployment.setDestroy(new AbstractLifecycleMetaData(attrs.getValue(i)));
-         else if ("default-lazy-init".equals(localName) && Boolean.parseBoolean(attrs.getValue(i)) == true)
-            deployment.setMode(ControllerMode.ON_DEMAND);
+         if ("name".equals(localName))
+            alias.setName(attrs.getValue(i));
+         else if ("alias".equals(localName))
+            alias.setAlias(attrs.getValue(i));
       }
+      super.attributes(o, elementName, element, attrs, nsCtx);
+   }
+
+   public Object endElement(Object object, QName qName, ElementBinding elementBinding)
+   {
+      AbstractNamedAliasMetaData alias = (AbstractNamedAliasMetaData)object;
+      if (alias.getName() == null)
+         throw new IllegalArgumentException("Missing name: " + alias);
+      return super.endElement(object, qName, elementBinding);
    }
 
 }

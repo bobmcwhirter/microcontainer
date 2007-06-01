@@ -21,44 +21,36 @@
 */
 package org.jboss.test.spring.test;
 
-import junit.framework.Test;
+import org.jboss.dependency.spi.ControllerMode;
 import org.jboss.dependency.spi.ControllerState;
-import org.jboss.test.spring.support.SimpleBean;
+import org.jboss.kernel.spi.dependency.KernelController;
+import org.jboss.kernel.spi.dependency.KernelControllerContext;
 
 /**
  * @author <a href="mailto:ales.justin@jboss.com">Ales Justin</a>
  */
-public class InstantiateSpringTestCase extends TempSpringMicrocontainerTest
+public class LazyTempSpringMicrocontainerTestDelegate extends TempSpringMicrocontainerTestDelegate
 {
-   public InstantiateSpringTestCase(String name)
+   public LazyTempSpringMicrocontainerTestDelegate(Class clazz) throws Exception
    {
-      super(name);
+      super(clazz);
    }
 
-   /**
-    * Setup the test
-    *
-    * @return the test
-    */
-   public static Test suite()
+   protected KernelControllerContext handleNotFoundContext(KernelController controller, Object name, ControllerState state)
    {
-      return suite(InstantiateSpringTestCase.class);
+      KernelControllerContext context = (KernelControllerContext)controller.getContext(name, null);
+      if (context != null && ControllerMode.ON_DEMAND.equals(context.getMode()))
+      {
+         try
+         {
+            controller.change(context, ControllerState.INSTALLED);
+            return context;
+         }
+         catch (Throwable t)
+         {
+            throw new Error("Unable to change on demand context to Installed.", t);
+         }
+      }
+      throw new IllegalStateException("Bean not found " + name + " at state " + state);
    }
-
-   public void testConfigure() throws Exception
-   {
-      SimpleBean testBean = (SimpleBean) getBean("testBean", ControllerState.INSTANTIATED);
-      assertNotNull(testBean);
-      assertEquals(testBean.getX(), 1);
-      assertEquals(testBean.getY(), 3.14159);
-      assertEquals(testBean.getS(), "SpringBean");
-      // collections
-      assertFalse(testBean.getMylist().isEmpty());
-      assertEquals(testBean.getMylist().size(), 3);
-      assertFalse(testBean.getMyset().isEmpty());
-      assertEquals(testBean.getMyset().size(),2);
-//      assertFalse(testBean.getMymap().values().isEmpty());
-//      assertEquals(testBean.getMymap().values().size(), 1);
-   }
-
 }

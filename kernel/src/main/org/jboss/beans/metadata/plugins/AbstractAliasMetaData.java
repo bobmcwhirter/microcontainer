@@ -51,7 +51,7 @@ public class AbstractAliasMetaData extends JBossObject
    protected String clazz;
 
    /**
-    * Create a new annotation meta data
+    * Create a new alias meta data
     */
    public AbstractAliasMetaData()
    {

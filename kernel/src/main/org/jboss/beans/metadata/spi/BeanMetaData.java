@@ -78,6 +78,15 @@ public interface BeanMetaData extends FeatureMetaData, ValueMetaData
    void setMode(ControllerMode mode);
 
    /**
+    * Is this bean is a candidate for
+    * getting injected via contextual matching
+    * or callback resolution.
+    *
+    * @return true (default) if used for autowiring
+    */
+   boolean isAutowireCandidate();
+
+   /**
     * Set the annotations
     *
     * @param annotations the annotations

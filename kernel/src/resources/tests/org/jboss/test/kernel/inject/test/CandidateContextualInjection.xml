@@ -1,0 +1,17 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<deployment xmlns="urn:jboss:bean-deployer:2.0">
+
+   <bean name="testObject1" class="org.jboss.test.kernel.inject.support.PropertyInjectTestObject">
+      <property name="testerInterface"><inject/></property>
+   </bean>
+
+   <bean name="testObject2" class="org.jboss.test.kernel.inject.support.PropertyInjectTestObject">
+      <property name="duplicateTester"><inject option="Callback"/></property>
+   </bean>
+
+   <bean name="ignored" class="org.jboss.test.kernel.inject.support.DuplicateTester" autowire-candidate="false"/>
+
+   <bean name="used" class="org.jboss.test.kernel.inject.support.SomeTester"/>
+
+</deployment>

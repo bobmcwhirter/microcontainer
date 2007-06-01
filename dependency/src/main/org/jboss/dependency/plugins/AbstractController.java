@@ -978,37 +978,42 @@ public class AbstractController extends JBossObject implements Controller
    {
       try
       {
+         // existing owner callbacks
          Set<CallbackItem> installs = getDependencyCallbacks(context, true);
          resolveCallbacks(installs, state, isInstallPhase, isInstallPhase, true);
          Set<CallbackItem> uninstalls = getDependencyCallbacks(context, false);
          resolveCallbacks(uninstalls, state, isInstallPhase == false, isInstallPhase, false);
 
-         // match callbacks by name
-         Set<CallbackItem> existingCallbacks = getCallbacks(context.getName(), isInstallPhase);
-         // match by classes
-         Collection<Class<?>> classes = getClassesImplemented(context.getTarget());
-         if (classes != null && classes.isEmpty() == false)
+         // change callbacks, applied only if context is autowire candidate
+         if (isAutowireCandidate(context))
          {
-            for (Class clazz : classes)
+            // match callbacks by name
+            Set<CallbackItem> existingCallbacks = getCallbacks(context.getName(), isInstallPhase);
+            // match by classes
+            Collection<Class<?>> classes = getClassesImplemented(context.getTarget());
+            if (classes != null && classes.isEmpty() == false)
             {
-               existingCallbacks.addAll(getCallbacks(clazz, isInstallPhase));
-            }
-         }
-
-         // Do the installs if we are at the required state
-         if (existingCallbacks != null && existingCallbacks.isEmpty() == false)
-         {
-            for(CallbackItem callback : existingCallbacks)
-            {
-               if (state.equals(callback.getDependentState()))
+               for (Class clazz : classes)
                {
-                  try
+                  existingCallbacks.addAll(getCallbacks(clazz, isInstallPhase));
+               }
+            }
+
+            // Do the installs if we are at the required state
+            if (existingCallbacks != null && existingCallbacks.isEmpty() == false)
+            {
+               for(CallbackItem callback : existingCallbacks)
+               {
+                  if (state.equals(callback.getDependentState()))
                   {
-                     callback.changeCallback(this, context, isInstallPhase);
-                  }
-                  catch (Throwable t)
-                  {
-                     log.warn("Broken callback: " + callback, t);
+                     try
+                     {
+                        callback.changeCallback(this, context, isInstallPhase);
+                     }
+                     catch (Throwable t)
+                     {
+                        log.warn("Broken callback: " + callback, t);
+                     }
                   }
                }
             }
@@ -1019,6 +1024,17 @@ public class AbstractController extends JBossObject implements Controller
       {
          log.warn("Cannot resolve callbacks.", t);
       }
+   }
+
+   /**
+    * Can we use this context for autowiring.
+    *
+    * @param context the context
+    * @return true if context could be used for autowiring
+    */
+   protected boolean isAutowireCandidate(ControllerContext context)
+   {
+      return true;
    }
 
    /**

@@ -48,6 +48,26 @@ public class SpringSchemaBinding
    public static final QName beansQName = new QName(SPRING_DEPLOYER_NS, "beans");
 
    /**
+    * The alias binding
+    */
+   public static final QName aliasTypeQName = new QName(SPRING_DEPLOYER_NS, "aliasType");
+
+   /**
+    * The alias element name
+    */
+   public static final QName aliasQName = new QName(SPRING_DEPLOYER_NS, "alias");
+
+   /**
+    * The import binding
+    */
+   public static final QName importTypeQName = new QName(SPRING_DEPLOYER_NS, "importType");
+
+   /**
+    * The import element name
+    */
+   public static final QName importQName = new QName(SPRING_DEPLOYER_NS, "import");
+
+   /**
     * The bean binding
     */
    public static final QName beanTypeQName = new QName(SPRING_DEPLOYER_NS, "beanType");
@@ -179,6 +199,8 @@ public class SpringSchemaBinding
       // init
       initDeployment(schemaBinding);
       initBean(schemaBinding);
+      initAlias(schemaBinding);
+      initImport(schemaBinding);
       initArtifacts(schemaBinding);
    }
 
@@ -204,6 +226,30 @@ public class SpringSchemaBinding
       // bean binding
       TypeBinding beanType = schemaBinding.getType(beanTypeQName);
       SpringSchemaBindingHelper.initBeanHandler(beanType);
+   }
+
+   /**
+    * Initialize alias part of the schema binding
+    *
+    * @param schemaBinding the schema binding
+    */
+   private static void initAlias(SchemaBinding schemaBinding)
+   {
+      // alias binding
+      TypeBinding aliasType = schemaBinding.getType(aliasTypeQName);
+      SpringSchemaBindingHelper.initAliasHandler(aliasType);
+   }
+
+   /**
+    * Initialize import part of the schema binding
+    *
+    * @param schemaBinding the schema binding
+    */
+   private static void initImport(SchemaBinding schemaBinding)
+   {
+      // import binding
+      TypeBinding importType = schemaBinding.getType(importTypeQName);
+      SpringSchemaBindingHelper.initImportHandler(importType);
    }
 
    /**

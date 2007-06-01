@@ -50,6 +50,11 @@ $Id$
       <xsd:choice minOccurs="0" maxOccurs="unbounded">
          <xsd:element name="annotation" type="annotationType" minOccurs="0" maxOccurs="unbounded"/>
          <xsd:element name="classloader" type="classloaderType" minOccurs="0"/>
+         <xsd:element name="alias" type="namedAliasType" minOccurs="0"/>
+         <xsd:element name="create" type="lifecycleType" minOccurs="0"/>
+         <xsd:element name="start" type="lifecycleType" minOccurs="0"/>
+         <xsd:element name="stop" type="lifecycleType" minOccurs="0"/>
+         <xsd:element name="destroy" type="lifecycleType" minOccurs="0"/>
          <xsd:element name="bean" type="beanType" minOccurs="0" maxOccurs="unbounded"/>
          <xsd:element name="beanfactory" type="beanfactoryType" minOccurs="0" maxOccurs="unbounded"/>
          <xsd:any namespace="##other" processContents="strict" minOccurs="0">
@@ -60,6 +65,7 @@ $Id$
       </xsd:choice>
       <xsd:attribute name="name" type="xsd:string" use="optional"/>
       <xsd:attribute name="scoped" type="xsd:boolean" use="optional"/>
+      <xsd:attribute name="mode" type="controllerModeType" use="optional"/>
    </xsd:complexType>
 
    <xsd:complexType name="beanType">
@@ -100,6 +106,7 @@ $Id$
       <xsd:attribute name="name" type="xsd:string" use="optional"/>
       <xsd:attribute name="class" type="xsd:token" use="optional"/>
       <xsd:attribute name="mode" type="controllerModeType" use="optional"/>
+      <xsd:attribute name="autowire-candidate" type="xsd:boolean" use="optional"/>
    </xsd:complexType>
 
    <xsd:complexType name="classloaderType" mixed="true">
@@ -450,6 +457,21 @@ $Id$
             <xsd:attribute name="replace" type="xsd:boolean"/>
          </xsd:extension>
       </xsd:simpleContent>
+   </xsd:complexType>
+
+   <xsd:complexType name="namedAliasType">
+      <xsd:annotation>
+         <xsd:documentation>
+           <![CDATA[
+           An alias that has a name attribute.
+           ]]>
+         </xsd:documentation>
+      </xsd:annotation>
+      <xsd:complexContent>
+         <xsd:extension base="aliasType">
+            <xsd:attribute name="name" type="xsd:string" use="required"/>
+         </xsd:extension>
+      </xsd:complexContent>
    </xsd:complexType>
 
    <xsd:complexType name="parameterType" mixed="true">

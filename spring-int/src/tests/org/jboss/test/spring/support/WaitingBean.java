@@ -19,46 +19,29 @@
 * Software Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA
 * 02110-1301 USA, or see the FSF site: http://www.fsf.org.
 */
-package org.jboss.test.spring.test;
-
-import junit.framework.Test;
-import org.jboss.dependency.spi.ControllerState;
-import org.jboss.test.spring.support.SimpleBean;
+package org.jboss.test.spring.support;
 
 /**
  * @author <a href="mailto:ales.justin@jboss.com">Ales Justin</a>
  */
-public class InstantiateSpringTestCase extends TempSpringMicrocontainerTest
+public class WaitingBean
 {
-   public InstantiateSpringTestCase(String name)
+   private static boolean flag;
+
+   public WaitingBean()
    {
-      super(name);
+      if (flag == false)
+         throw new IllegalArgumentException("I depend on someone setting this flag.");
    }
 
-   /**
-    * Setup the test
-    *
-    * @return the test
-    */
-   public static Test suite()
+   public static boolean getFlag()
    {
-      return suite(InstantiateSpringTestCase.class);
+      return flag;
    }
 
-   public void testConfigure() throws Exception
+   public static void setFlag(boolean f)
    {
-      SimpleBean testBean = (SimpleBean) getBean("testBean", ControllerState.INSTANTIATED);
-      assertNotNull(testBean);
-      assertEquals(testBean.getX(), 1);
-      assertEquals(testBean.getY(), 3.14159);
-      assertEquals(testBean.getS(), "SpringBean");
-      // collections
-      assertFalse(testBean.getMylist().isEmpty());
-      assertEquals(testBean.getMylist().size(), 3);
-      assertFalse(testBean.getMyset().isEmpty());
-      assertEquals(testBean.getMyset().size(),2);
-//      assertFalse(testBean.getMymap().values().isEmpty());
-//      assertEquals(testBean.getMymap().values().size(), 1);
+      flag = f;
    }
 
 }

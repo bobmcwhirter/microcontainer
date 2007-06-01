@@ -722,7 +722,13 @@ public class BeanTestCase extends AbstractXMLTest
          checkJBossXBException(IllegalArgumentException.class, expected);
       }
    }
-   
+
+   public void testBeanWithCandidate() throws Exception
+   {
+      AbstractBeanMetaData bean = unmarshalBean("BeanWithCandidate.xml");
+      assertFalse(bean.isAutowireCandidate());
+   }
+
    public static Test suite()
    {
       return suite(BeanTestCase.class);

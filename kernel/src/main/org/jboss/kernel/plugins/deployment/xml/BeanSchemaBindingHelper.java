@@ -50,6 +50,21 @@ public class BeanSchemaBindingHelper
       // deployment has a classloader
       deploymentType.pushInterceptor(BeanSchemaBinding20.classloaderQName, DeploymentClassLoaderInterceptor.INTERCEPTOR);
 
+      // bean has a create
+      deploymentType.pushInterceptor(BeanSchemaBinding20.createQName, LifecycleCreateInterceptor.INTERCEPTOR);
+
+      // bean has a start
+      deploymentType.pushInterceptor(BeanSchemaBinding20.startQName, LifecycleStartInterceptor.INTERCEPTOR);
+
+      // bean has a stop
+      deploymentType.pushInterceptor(BeanSchemaBinding20.stopQName, LifecycleStopInterceptor.INTERCEPTOR);
+
+      // bean has a destroy
+      deploymentType.pushInterceptor(BeanSchemaBinding20.destroyQName, LifecycleDestroyInterceptor.INTERCEPTOR);
+
+      // deployment has a list aliases
+      deploymentType.pushInterceptor(BeanSchemaBinding20.aliasQName, DeploymentAliasInterceptor.INTERCEPTOR);
+
       // deployment has a list beans
       deploymentType.pushInterceptor(BeanSchemaBinding20.beanQName, DeploymentBeanInterceptor.INTERCEPTOR);
 
@@ -79,16 +94,16 @@ public class BeanSchemaBindingHelper
       beanType.pushInterceptor(BeanSchemaBinding20.propertyQName, BeanPropertyInterceptor.INTERCEPTOR);
 
       // bean has a create
-      beanType.pushInterceptor(BeanSchemaBinding20.createQName, BeanCreateInterceptor.INTERCEPTOR);
+      beanType.pushInterceptor(BeanSchemaBinding20.createQName, LifecycleCreateInterceptor.INTERCEPTOR);
 
       // bean has a start
-      beanType.pushInterceptor(BeanSchemaBinding20.startQName, BeanStartInterceptor.INTERCEPTOR);
+      beanType.pushInterceptor(BeanSchemaBinding20.startQName, LifecycleStartInterceptor.INTERCEPTOR);
 
       // bean has a stop
-      beanType.pushInterceptor(BeanSchemaBinding20.stopQName, BeanStopInterceptor.INTERCEPTOR);
+      beanType.pushInterceptor(BeanSchemaBinding20.stopQName, LifecycleStopInterceptor.INTERCEPTOR);
 
       // bean has a destroy
-      beanType.pushInterceptor(BeanSchemaBinding20.destroyQName, BeanDestroyInterceptor.INTERCEPTOR);
+      beanType.pushInterceptor(BeanSchemaBinding20.destroyQName, LifecycleDestroyInterceptor.INTERCEPTOR);
 
       // bean has aliases
       beanType.pushInterceptor(BeanSchemaBinding20.aliasQName, BeanAliasInterceptor.INTERCEPTOR);
@@ -282,15 +297,28 @@ public class BeanSchemaBindingHelper
    }
 
    /**
-    * Initialize the handlers for the alias type
+    * Initialize the handlers for the named alias type
     * 
+    * @param aliasType the named alias type
+    */
+   public static void initNamedAliasHandlers(TypeBinding aliasType)
+   {
+      aliasType.setHandler(NamedAliasHandler.HANDLER);
+
+      // alias can take characters
+      aliasType.setSimpleType(AliasCharactersHandler.HANDLER);
+   }
+
+   /**
+    * Initialize the handlers for the alias type
+    *
     * @param aliasType the alias type
     */
    public static void initAliasHandlers(TypeBinding aliasType)
    {
       aliasType.setHandler(AliasHandler.HANDLER);
 
-      // annotation can take characters
+      // alias can take characters
       aliasType.setSimpleType(AliasCharactersHandler.HANDLER);
    }
 

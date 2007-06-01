@@ -1,0 +1,9 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<beans xmlns="urn:jboss:spring-beans:2.0">
+
+   <bean id="testBean" class="org.jboss.test.spring.support.SimpleBean" name="al1,al2;al3 al4" />
+
+   <alias name="testBean" alias="fromAlias"/>
+
+</beans>

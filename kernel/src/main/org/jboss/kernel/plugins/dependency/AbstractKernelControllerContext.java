@@ -96,7 +96,7 @@ public class AbstractKernelControllerContext extends AbstractControllerContext i
     */
    public AbstractKernelControllerContext(BeanInfo info, BeanMetaData metaData, Object target)
    {
-      super(metaData.getName(), target == null ? actions : noInstantiate, new AbstractDependencyInfo(), target);
+      super(metaData.getName(), metaData.getAliases(), target == null ? actions : noInstantiate, new AbstractDependencyInfo(), target);
       this.info = info;
       this.metaData = metaData;
       ControllerMode mode = metaData.getMode();
@@ -168,6 +168,11 @@ public class AbstractKernelControllerContext extends AbstractControllerContext i
    public ScopeKey getInstallScope()
    {
       return installScope;
+   }
+
+   public boolean isAutowireCandidate()
+   {
+      return metaData != null && metaData.isAutowireCandidate();
    }
 
    public void setInstallScope(ScopeKey key)

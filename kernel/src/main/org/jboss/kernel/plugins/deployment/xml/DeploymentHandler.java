@@ -24,6 +24,7 @@ package org.jboss.kernel.plugins.deployment.xml;
 import javax.xml.namespace.NamespaceContext;
 import javax.xml.namespace.QName;
 
+import org.jboss.dependency.spi.ControllerMode;
 import org.jboss.kernel.plugins.deployment.AbstractKernelDeployment;
 import org.jboss.xb.binding.sunday.unmarshalling.DefaultElementHandler;
 import org.jboss.xb.binding.sunday.unmarshalling.ElementBinding;
@@ -55,6 +56,8 @@ public class DeploymentHandler extends DefaultElementHandler
             deployment.setName(attrs.getValue(i));
          else if ("scoped".equals(localName))                       
             deployment.setScoped(Boolean.parseBoolean(attrs.getValue(i)));
+         else if ("mode".equals(localName))
+            deployment.setMode(new ControllerMode(attrs.getValue(i)));
       }
    }
 

@@ -19,39 +19,36 @@
 * Software Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA
 * 02110-1301 USA, or see the FSF site: http://www.fsf.org.
 */
-package org.jboss.spring.metadata;
+package org.jboss.kernel.plugins.deployment.xml;
 
-import java.util.ArrayList;
-import java.util.List;
+import java.util.HashSet;
+import java.util.Set;
+import javax.xml.namespace.QName;
 
-import org.jboss.beans.metadata.spi.BeanMetaDataFactory;
+import org.jboss.beans.metadata.spi.NamedAliasMetaData;
 import org.jboss.kernel.plugins.deployment.AbstractKernelDeployment;
+import org.jboss.xb.binding.sunday.unmarshalling.DefaultElementInterceptor;
 
 /**
- * @author <a href="mailto:ales.justin@jboss.com">Ales Justin</a>
+ * DeploymentAliasInterceptor.
+ *
+ * @author <a href="ales.justin@jboss.com">Ales Justin</a>
  */
-public class AbstractSpringDeployment extends AbstractKernelDeployment
+public class DeploymentAliasInterceptor extends DefaultElementInterceptor
 {
-   /** The serialVersionUID */
-   private static final long serialVersionUID = 2L;
+   /** The interceptor */
+   public static final DeploymentAliasInterceptor INTERCEPTOR = new DeploymentAliasInterceptor();
 
-   public void addImport(AbstractImportMetaData imd)
+   public void add(Object parent, Object child, QName name)
    {
-      List<BeanMetaDataFactory> importedBeans = getBeans(imd.getResource());
-      if (importedBeans != null && importedBeans.isEmpty() == false)
+      AbstractKernelDeployment deployment = (AbstractKernelDeployment) parent;
+      NamedAliasMetaData alias = (NamedAliasMetaData) child;
+      Set<NamedAliasMetaData> aliases = deployment.getAliases();
+      if (aliases == null)
       {
-         List<BeanMetaDataFactory> beans = getBeanFactories();
-         if (beans == null)
-         {
-            beans = new ArrayList<BeanMetaDataFactory>();
-            setBeanFactories(beans);
-         }
-         beans.addAll(importedBeans);
+         aliases = new HashSet<NamedAliasMetaData>();
+         deployment.setAliases(aliases);
       }
-   }
-
-   protected List<BeanMetaDataFactory> getBeans(String resource)
-   {
-      return null; //todo
+      aliases.add(alias);
    }
 }

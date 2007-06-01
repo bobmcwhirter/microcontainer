@@ -110,7 +110,14 @@ public interface KernelControllerContext extends KernelRegistryEntry, InvokeDisp
     * @param key the scope key
     */
    void setInstallScope(ScopeKey key);
-   
+
+   /**
+    * Can we use this context for autowiring.
+    *
+    * @return true if context can be used for autowiring
+    */
+   boolean isAutowireCandidate();
+
    /**
     * Get the lifecycle callbacks for a particular state.
     *

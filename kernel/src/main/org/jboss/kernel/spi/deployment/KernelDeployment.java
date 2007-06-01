@@ -28,6 +28,9 @@ import org.jboss.beans.metadata.spi.AnnotationMetaData;
 import org.jboss.beans.metadata.spi.BeanMetaData;
 import org.jboss.beans.metadata.spi.BeanMetaDataFactory;
 import org.jboss.beans.metadata.spi.ClassLoaderMetaData;
+import org.jboss.beans.metadata.spi.LifecycleMetaData;
+import org.jboss.beans.metadata.spi.NamedAliasMetaData;
+import org.jboss.dependency.spi.ControllerMode;
 import org.jboss.kernel.spi.dependency.KernelControllerContext;
 import org.jboss.util.JBossInterface;
 
@@ -87,14 +90,56 @@ public interface KernelDeployment extends JBossInterface
     * @return the classloader 
     */
    ClassLoaderMetaData getClassLoader();
-   
+
+   /**
+    * Get the default create lifecycle
+    *
+    * @return the create lifecycle
+    */
+   LifecycleMetaData getCreate();
+
+   /**
+    * Get the default start lifecycle
+    *
+    * @return the start lifecycle
+    */
+   LifecycleMetaData getStart();
+
+   /**
+    * Get the default stop lifecycle
+    *
+    * @return the stop lifecycle
+    */
+   LifecycleMetaData getStop();
+
+   /**
+    * Get the default destroy lifecycle
+    *
+    * @return the destroy lifecycle
+    */
+   LifecycleMetaData getDestroy();
+
+   /**
+    * Get named aliases.
+    *
+    * @return the aliases
+    */
+   Set<NamedAliasMetaData> getAliases();
+
+   /**
+    * Get the ControllerMode.
+    *
+    * @return mode
+    */
+   ControllerMode getMode();
+
    /**
     * Get the beans in the deployment
     *
     * @return List<BeanMetaData> 
     */
    List<BeanMetaData> getBeans();
-   
+
    /**
     * Get the bean factories in the deployment
     *

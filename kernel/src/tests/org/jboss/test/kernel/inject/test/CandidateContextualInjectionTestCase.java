@@ -19,46 +19,46 @@
 * Software Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA
 * 02110-1301 USA, or see the FSF site: http://www.fsf.org.
 */
-package org.jboss.test.spring.test;
+package org.jboss.test.kernel.inject.test;
 
 import junit.framework.Test;
-import org.jboss.dependency.spi.ControllerState;
-import org.jboss.test.spring.support.SimpleBean;
+import org.jboss.test.kernel.inject.support.PropertyInjectTestObject;
+import org.jboss.test.kernel.inject.support.TesterInterface;
 
 /**
- * @author <a href="mailto:ales.justin@jboss.com">Ales Justin</a>
+ * Candidate injection.
+ *
+ * @author <a href="mailto:ales.justin@gmail.com">Ales Justin</a>
  */
-public class InstantiateSpringTestCase extends TempSpringMicrocontainerTest
+public class CandidateContextualInjectionTestCase extends SingleContextualInjectionAdapter
 {
-   public InstantiateSpringTestCase(String name)
+   public CandidateContextualInjectionTestCase(String name)
    {
       super(name);
    }
 
-   /**
-    * Setup the test
-    *
-    * @return the test
-    */
    public static Test suite()
    {
-      return suite(InstantiateSpringTestCase.class);
+      return suite(CandidateContextualInjectionTestCase.class);
    }
 
-   public void testConfigure() throws Exception
+   protected String getResource()
    {
-      SimpleBean testBean = (SimpleBean) getBean("testBean", ControllerState.INSTANTIATED);
-      assertNotNull(testBean);
-      assertEquals(testBean.getX(), 1);
-      assertEquals(testBean.getY(), 3.14159);
-      assertEquals(testBean.getS(), "SpringBean");
-      // collections
-      assertFalse(testBean.getMylist().isEmpty());
-      assertEquals(testBean.getMylist().size(), 3);
-      assertFalse(testBean.getMyset().isEmpty());
-      assertEquals(testBean.getMyset().size(),2);
-//      assertFalse(testBean.getMymap().values().isEmpty());
-//      assertEquals(testBean.getMymap().values().size(), 1);
+      return "CandidateContextualInjection.xml";
+   }
+
+   protected void checkInjection()
+   {
+      PropertyInjectTestObject test1 = (PropertyInjectTestObject) getBean("testObject1");
+      PropertyInjectTestObject test2 = (PropertyInjectTestObject) getBean("testObject2");
+
+      TesterInterface ignored = (TesterInterface)getBean("ignored");
+      assertNotNull(ignored);
+      TesterInterface used = (TesterInterface)getBean("used");
+      assertNotNull(used);
+      assertEquals(used, test1.getTesterInterface());
+
+      assertNull(test2.getDuplicateTester());
    }
 
 }

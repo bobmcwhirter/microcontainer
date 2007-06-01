@@ -61,9 +61,9 @@ import org.jboss.util.JBossStringBuilder;
  * @version $Revision$
  */
 public class AbstractBeanMetaData extends AbstractFeatureMetaData
-   implements BeanMetaData, BeanMetaDataFactory, Serializable
+   implements BeanMetaData, BeanMetaDataFactory, MutableLifecycleHolder, Serializable
 {
-   private static final long serialVersionUID = 1L;
+   private static final long serialVersionUID = 2L;
 
    private static final List<LifecycleCallbackMetaData> EMPTY_LIFECYCLE_CALLBACKS = Collections.unmodifiableList(new ArrayList<LifecycleCallbackMetaData>());
 
@@ -78,6 +78,9 @@ public class AbstractBeanMetaData extends AbstractFeatureMetaData
 
    /** The mode */
    protected ControllerMode mode;
+
+   /** Is contextual injection candidate */
+   protected boolean autowireCandidate = true;
 
    /** The properties configuration Set<PropertyMetaData> */
    private Set<PropertyMetaData> properties;
@@ -354,6 +357,16 @@ public class AbstractBeanMetaData extends AbstractFeatureMetaData
       flushJBossObjectCache();
    }
 
+   public boolean isAutowireCandidate()
+   {
+      return autowireCandidate;
+   }
+
+   public void setAutowireCandidate(boolean autowireCandidate)
+   {
+      this.autowireCandidate = autowireCandidate;
+   }
+
    public Set<PropertyMetaData> getProperties()
    {
       return properties;
@@ -604,6 +617,7 @@ public class AbstractBeanMetaData extends AbstractFeatureMetaData
       if (classLoader != null && classLoader.getClassLoader() != this)
          buffer.append(" classLoader=").append(classLoader);
       buffer.append(" constructor=").append(constructor);
+      buffer.append(" autowireCandidate=").append(autowireCandidate);
       if (create != null)
          buffer.append(" create=").append(create);
       if (start != null)

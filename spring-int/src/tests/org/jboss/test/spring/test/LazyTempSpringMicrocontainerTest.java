@@ -21,44 +21,29 @@
 */
 package org.jboss.test.spring.test;
 
-import junit.framework.Test;
-import org.jboss.dependency.spi.ControllerState;
-import org.jboss.test.spring.support.SimpleBean;
+import org.jboss.test.AbstractTestDelegate;
+import org.jboss.test.kernel.junit.MicrocontainerTest;
 
 /**
  * @author <a href="mailto:ales.justin@jboss.com">Ales Justin</a>
  */
-public class InstantiateSpringTestCase extends TempSpringMicrocontainerTest
+public class LazyTempSpringMicrocontainerTest extends MicrocontainerTest
 {
-   public InstantiateSpringTestCase(String name)
+   public LazyTempSpringMicrocontainerTest(String name)
    {
       super(name);
    }
 
    /**
-    * Setup the test
+    * Get the lazy test delegate
     *
-    * @return the test
+    * @param clazz the test class
+    * @return the lazy delegate
+    * @throws Exception for any error
     */
-   public static Test suite()
+   public static AbstractTestDelegate getDelegate(Class clazz) throws Exception
    {
-      return suite(InstantiateSpringTestCase.class);
-   }
-
-   public void testConfigure() throws Exception
-   {
-      SimpleBean testBean = (SimpleBean) getBean("testBean", ControllerState.INSTANTIATED);
-      assertNotNull(testBean);
-      assertEquals(testBean.getX(), 1);
-      assertEquals(testBean.getY(), 3.14159);
-      assertEquals(testBean.getS(), "SpringBean");
-      // collections
-      assertFalse(testBean.getMylist().isEmpty());
-      assertEquals(testBean.getMylist().size(), 3);
-      assertFalse(testBean.getMyset().isEmpty());
-      assertEquals(testBean.getMyset().size(),2);
-//      assertFalse(testBean.getMymap().values().isEmpty());
-//      assertEquals(testBean.getMymap().values().size(), 1);
+      return new LazyTempSpringMicrocontainerTestDelegate(clazz);
    }
 
 }

@@ -30,19 +30,40 @@ import org.jboss.util.JBossStringBuilder;
  * Injection type:
  *  * ByClass - matching the class type of value (default)
  *  * ByName - matching the property name
+ *  * Constructor - matching the constructor args
+ *  * Auto - matching constructor or by type
+ *  * None - do not autowire
  *
  * @author <a href="mailto:ales.justin@genera-lynx.com">Ales Justin</a>
  */
 public class InjectionType extends JBossObject
    implements Serializable
 {
-   private static final long serialVersionUID = 1L;
+   private static final long serialVersionUID = 2L;
+
+   /** None */
+   public static final InjectionType NONE = new InjectionType("None");
 
    /** Strict */
    public static final InjectionType BY_CLASS = new InjectionType("ByClass");
 
    /** Loose */
    public static final InjectionType BY_NAME = new InjectionType("ByName");
+
+   /** Constructor */
+   public static final InjectionType CONSTRUCTOR = new InjectionType("Constructor");
+
+   /** Auto */
+   public static final InjectionType AUTO = new InjectionType("Auto");
+
+   /** Array */
+   public static final InjectionType[] TYPES = new InjectionType[]{
+         NONE,
+         BY_CLASS,
+         BY_NAME,
+         CONSTRUCTOR,
+         AUTO,
+   };
 
    /** The type string */
    protected final String typeString;
@@ -61,19 +82,19 @@ public class InjectionType extends JBossObject
 
    /**
     * Return injection type.
-    * Or exception if no matching type.
+    * Or NONE if no matching type.
     *
     * @param typeString type
     * @return InjectionType instance
     */
    public static InjectionType getInstance(String typeString)
    {
-      if ("ByClass".equalsIgnoreCase(typeString))
-         return BY_CLASS;
-      else if ("ByName".equalsIgnoreCase(typeString))
-         return BY_NAME;
-      else
-         throw new IllegalArgumentException("No such type: " + typeString);
+      for(InjectionType type : TYPES)
+      {
+         if (type.getTypeString().equalsIgnoreCase(typeString))
+            return type;
+      }
+      return NONE;
    }
 
    /**

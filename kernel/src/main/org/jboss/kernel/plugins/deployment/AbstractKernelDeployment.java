@@ -29,10 +29,16 @@ import java.util.List;
 import java.util.Set;
 import java.util.concurrent.CopyOnWriteArrayList;
 
+import org.jboss.beans.metadata.plugins.AbstractBeanMetaData;
+import org.jboss.beans.metadata.plugins.MutableLifecycleHolder;
 import org.jboss.beans.metadata.spi.AnnotationMetaData;
 import org.jboss.beans.metadata.spi.BeanMetaData;
 import org.jboss.beans.metadata.spi.BeanMetaDataFactory;
 import org.jboss.beans.metadata.spi.ClassLoaderMetaData;
+import org.jboss.beans.metadata.spi.LifecycleMetaData;
+import org.jboss.beans.metadata.spi.NamedAliasMetaData;
+import org.jboss.dependency.spi.ControllerMode;
+import org.jboss.dependency.spi.ControllerState;
 import org.jboss.kernel.spi.dependency.KernelControllerContext;
 import org.jboss.kernel.spi.deployment.KernelDeployment;
 import org.jboss.util.JBossObject;
@@ -45,7 +51,7 @@ import org.jboss.util.JBossStringBuilder;
  * @version $Revision$
  */
 public class AbstractKernelDeployment extends JBossObject
-   implements KernelDeployment, Serializable
+   implements KernelDeployment, MutableLifecycleHolder, Serializable
 {
    private static final long serialVersionUID = 1;
 
@@ -69,6 +75,24 @@ public class AbstractKernelDeployment extends JBossObject
 
    /** The ClassLoader */
    protected ClassLoaderMetaData classLoader;
+
+   /** default create lifecycle method */
+   protected LifecycleMetaData create;
+
+   /** default start lifecycle method */
+   protected LifecycleMetaData start;
+
+   /** default stop lifecycle method */
+   protected LifecycleMetaData stop;
+
+   /** default destroy lifecycle method */
+   protected LifecycleMetaData destroy;
+
+   /** The ControllerMode */
+   protected ControllerMode mode;
+
+   /** The aliases */
+   protected Set<NamedAliasMetaData> aliases;
 
    /**
     * Create a new kernel deployment
@@ -142,16 +166,17 @@ public class AbstractKernelDeployment extends JBossObject
 
    public List<BeanMetaData> getBeans()
    {
-      if (beanFactories == null || beanFactories.size() == 0)
+      List<BeanMetaDataFactory> factories = getBeanFactories();
+      if (factories == null || factories.size() == 0)
          return null;
-      List<BeanMetaData> result = new ArrayList<BeanMetaData>(beanFactories.size());
-      for (BeanMetaDataFactory factory : beanFactories)
+      List<BeanMetaData> result = new ArrayList<BeanMetaData>(factories.size());
+      for (BeanMetaDataFactory factory : factories)
       {
          List<BeanMetaData> beans = factory.getBeans();
-         // add all deployment annotations to bean's annotations
-         if (annotations != null && annotations.isEmpty() == false)
+         for (BeanMetaData bmd : beans)
          {
-            for (BeanMetaData bmd : beans)
+            // check annotations
+            if (annotations != null && annotations.isEmpty() == false)
             {
                Set<AnnotationMetaData> annotationsBMD = bmd.getAnnotations();
                if (annotationsBMD == null)
@@ -160,6 +185,53 @@ public class AbstractKernelDeployment extends JBossObject
                   bmd.setAnnotations(annotationsBMD);
                }
                annotationsBMD.addAll(annotations);
+            }
+            // impl specific
+            if (bmd instanceof AbstractBeanMetaData)
+            {
+               AbstractBeanMetaData bean = (AbstractBeanMetaData)bmd;
+               // set deployment defaults, if not already set per bean
+               if (bean.getCreate() == null && getCreate() != null)
+               {
+                  bean.setCreate(getCreate());
+               }
+               if (bean.getStart() == null && getStart() != null)
+               {
+                  bean.setStart(getStart());
+               }
+               if (bean.getStop() == null && getStop() != null)
+               {
+                  bean.setStop(getStop());
+               }
+               if (bean.getDestroy() == null && getDestroy() != null)
+               {
+                  bean.setDestroy(getDestroy());
+               }
+
+               // named aliases
+               if (aliases != null && aliases.isEmpty() == false)
+               {
+                  Object beanName = bean.getName();
+                  for (NamedAliasMetaData alias : aliases)
+                  {
+                     if (alias.getName().equals(beanName))
+                     {
+                        Set<Object> beanAliases = bean.getAliases();
+                        if (beanAliases == null)
+                        {
+                           beanAliases = new HashSet<Object>();
+                           bean.setAliases(beanAliases);
+                        }
+                        beanAliases.add(alias.getAliasValue());
+                     }
+                  }
+               }
+
+               // controller mode
+               if (bean.getMode() == null && getMode() != null)
+               {
+                  bean.setMode(getMode());
+               }
             }
          }
          result.addAll(beans);
@@ -205,6 +277,70 @@ public class AbstractKernelDeployment extends JBossObject
    public void setClassLoader(ClassLoaderMetaData classLoader)
    {
       this.classLoader = classLoader;
+   }
+
+   public LifecycleMetaData getCreate()
+   {
+      return create;
+   }
+
+   public void setCreate(LifecycleMetaData create)
+   {
+      create.setState(ControllerState.CREATE);
+      this.create = create;
+   }
+
+   public LifecycleMetaData getStart()
+   {
+      return start;
+   }
+
+   public void setStart(LifecycleMetaData start)
+   {
+      start.setState(ControllerState.START);
+      this.start = start;
+   }
+
+   public LifecycleMetaData getStop()
+   {
+      return stop;
+   }
+
+   public void setStop(LifecycleMetaData stop)
+   {
+      stop.setState(ControllerState.START);
+      this.stop = stop;
+   }
+
+   public LifecycleMetaData getDestroy()
+   {
+      return destroy;
+   }
+
+   public void setDestroy(LifecycleMetaData destroy)
+   {
+      destroy.setState(ControllerState.CREATE);
+      this.destroy = destroy;
+   }
+
+   public Set<NamedAliasMetaData> getAliases()
+   {
+      return aliases;
+   }
+
+   public void setAliases(Set<NamedAliasMetaData> aliases)
+   {
+      this.aliases = aliases;
+   }
+
+   public ControllerMode getMode()
+   {
+      return mode;
+   }
+
+   public void setMode(ControllerMode mode)
+   {
+      this.mode = mode;
    }
 
    public void toString(JBossStringBuilder buffer)

@@ -24,42 +24,45 @@ package org.jboss.spring.deployment.xml;
 import javax.xml.namespace.NamespaceContext;
 import javax.xml.namespace.QName;
 
-import org.jboss.beans.metadata.plugins.AbstractLifecycleMetaData;
-import org.jboss.dependency.spi.ControllerMode;
-import org.jboss.kernel.plugins.deployment.AbstractKernelDeployment;
-import org.jboss.spring.metadata.AbstractSpringDeployment;
+import org.jboss.spring.metadata.AbstractImportMetaData;
 import org.jboss.xb.binding.sunday.unmarshalling.DefaultElementHandler;
 import org.jboss.xb.binding.sunday.unmarshalling.ElementBinding;
 import org.xml.sax.Attributes;
 
 /**
+ * The import handler.
+ *
  * @author <a href="mailto:ales.justin@jboss.com">Ales Justin</a>
  */
-public class SpringBeansHandler extends DefaultElementHandler
+public class ImportHandler extends DefaultElementHandler
 {
    /**
-    * The beans handler
+    * The import handler
     */
-   public static final SpringBeansHandler HANDLER = new SpringBeansHandler();
+   public static final ImportHandler HANDLER = new ImportHandler();
 
    public Object startElement(Object parent, QName name, ElementBinding element)
    {
-      return new AbstractSpringDeployment();
+      return new AbstractImportMetaData();
    }
 
-   public void attributes(Object object, QName qName, ElementBinding elementBinding, Attributes attrs, NamespaceContext namespaceContext)
+   public void attributes(Object o, QName elementName, ElementBinding element, Attributes attrs, NamespaceContext nsCtx)
    {
-      AbstractKernelDeployment deployment = (AbstractKernelDeployment) object;
+      AbstractImportMetaData imd = (AbstractImportMetaData) o;
       for (int i = 0; i < attrs.getLength(); ++i)
       {
          String localName = attrs.getLocalName(i);
-         if ("default-init-method".equals(localName))
-            deployment.setCreate(new AbstractLifecycleMetaData(attrs.getValue(i)));
-         else if ("default-destroy-method".equals(localName))
-            deployment.setDestroy(new AbstractLifecycleMetaData(attrs.getValue(i)));
-         else if ("default-lazy-init".equals(localName) && Boolean.parseBoolean(attrs.getValue(i)) == true)
-            deployment.setMode(ControllerMode.ON_DEMAND);
+         if ("resource".equals(localName))
+            imd.setResource(attrs.getValue(i));
       }
+   }
+
+   public Object endElement(Object object, QName qName, ElementBinding elementBinding)
+   {
+      AbstractImportMetaData imd = (AbstractImportMetaData)object;
+      if (imd.getResource() == null)
+         throw new IllegalArgumentException("Missing resource: " + imd);
+      return imd;
    }
 
 }

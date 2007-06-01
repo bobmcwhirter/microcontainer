@@ -25,6 +25,8 @@ import java.util.Set;
 
 import junit.framework.Test;
 import org.jboss.beans.metadata.plugins.AbstractBeanMetaData;
+import org.jboss.beans.metadata.spi.NamedAliasMetaData;
+import org.jboss.kernel.plugins.deployment.AbstractKernelDeployment;
 
 /**
  * AliasTestCase.
@@ -115,4 +117,60 @@ public class AliasTestCase extends AbstractXMLTest
       assertFalse(aliases.isEmpty());
    }
 
+   protected NamedAliasMetaData getNamedAlias(String name) throws Exception
+   {
+      AbstractKernelDeployment deployment = unmarshalDeployment(name);
+      Set<NamedAliasMetaData> aliases = deployment.getAliases();
+      assertNotNull(aliases);
+      assertEquals(1, aliases.size());
+      NamedAliasMetaData alias = aliases.iterator().next();
+      assertNotNull(alias);
+      return alias;
+   }
+
+   public void testNamedAlias() throws Exception
+   {
+      NamedAliasMetaData alias = getNamedAlias("NamedAlias.xml");
+      assertEquals("TestName", alias.getName());
+      assertEquals("SimpleAlias", alias.getAliasValue());
+   }
+
+   public void testNamedAliasWithClass() throws Exception
+   {
+      NamedAliasMetaData alias = getNamedAlias("NamedAliasWithClass.xml");
+      assertEquals("TestName", alias.getName());
+      assertEquals(12345, alias.getAliasValue());
+   }
+
+   public void testNamedAliasWithReplace() throws Exception
+   {
+      SecurityManager sm = suspendSecurity();
+      try
+      {
+         System.setProperty("alias.test.name", "SimpleAlias");
+         NamedAliasMetaData alias = getNamedAlias("NamedAliasWithReplace.xml");
+         assertEquals("TestName", alias.getName());
+         assertEquals("XSimpleAliasX", alias.getAliasValue());
+      }
+      finally
+      {
+         resumeSecurity(sm);
+      }
+   }
+
+   public void testNamedAliasWithNoReplace() throws Exception
+   {
+      SecurityManager sm = suspendSecurity();
+      try
+      {
+         System.setProperty("alias.test.name", "SimpleAlias");
+         NamedAliasMetaData alias = getNamedAlias("NamedAliasWithNoReplace.xml");
+         assertEquals("TestName", alias.getName());
+         assertEquals("X${alias.test.name}X", alias.getAliasValue());
+      }
+      finally
+      {
+         resumeSecurity(sm);
+      }
+   }
 }

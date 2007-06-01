@@ -19,37 +19,14 @@
 * Software Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA
 * 02110-1301 USA, or see the FSF site: http://www.fsf.org.
 */
-package org.jboss.test.spring.test;
-
-import junit.framework.Test;
-import junit.framework.TestSuite;
-import junit.textui.TestRunner;
+package org.jboss.beans.metadata.spi;
 
 /**
- * @author <a href="mailto:ales.justin@jboss.com">Ales Justin</a>
+ * Metadata about a named alias element.
+ *
+ * @author <a href="ales.justin@jboss.com">Ales Justin</a>
  */
-public class SpringTestSuite extends TestSuite
+public interface NamedAliasMetaData extends AliasMetaData
 {
-
-   public static void main(String[] args)
-   {
-      TestRunner.run(suite());
-   }
-
-   public static Test suite()
-   {
-      TestSuite suite = new TestSuite("Spring Tests");
-
-      suite.addTest(DescribeSpringTestCase.suite());
-      suite.addTest(InstantiateSpringTestCase.suite());
-      suite.addTest(InstantiateMixedTestCase.suite());
-      suite.addTest(InstantiateMixed2TestCase.suite());
-      suite.addTest(AliasSpringTestCase.suite());
-      suite.addTest(DependsSpringTestCase.suite());
-      suite.addTest(LazySpringTestCase.suite());
-      suite.addTest(ImportSpringTestCase.suite());
-
-      return suite;
-   }
-
+   Object getName();
 }
