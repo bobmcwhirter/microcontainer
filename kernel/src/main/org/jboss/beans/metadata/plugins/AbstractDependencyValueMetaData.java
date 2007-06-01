@@ -172,8 +172,7 @@ public class AbstractDependencyValueMetaData extends AbstractValueMetaData
          }
          else
             throw new IllegalArgumentException(
-                  "Cannot use property attribute, context is not AttributeDispatchContext: " +
-                  lookup +
+                  "Cannot use property attribute, context is not AttributeDispatchContext: " + lookup +
                   ", metadata: " + this);
       }
       return info != null ? info.convertValue(result) : result;
