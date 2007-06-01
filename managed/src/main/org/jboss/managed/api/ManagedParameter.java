@@ -24,55 +24,79 @@ package org.jboss.managed.api;
 import java.io.Serializable;
 import java.util.Set;
 
+import org.jboss.metatype.api.types.MetaType;
+import org.jboss.metatype.api.values.MetaValue;
+
 /**
- * ManagedObject.
+ * A representation of a ManagedOperation parameter
  * 
- * @author <a href="adrian@jboss.com">Adrian Brock</a>
- * @version $Revision: 1.1 $
+ * @author Scott.Stark@jboss.org
+ * @version $Revision$
  */
-public interface ManagedObject extends Serializable
+public interface ManagedParameter extends Serializable
 {
    /**
-    * Get the attachment name
+    * Get the property's name
     * 
-    * @return the name
+    * @return the property's name
     */
    String getName();
-   
-   /**
-    * Get the underlying object
-    * 
-    * @return the underlying object
-    */
-   Serializable getAttachment();
 
    /**
-    * Get the property names
+    * Get the description
     * 
-    * @return the property names
+    * @return the description
     */
-   Set<String> getPropertyNames();
-   
-   /**
-    * Get a property
-    * 
-    * @param name the name
-    * @return the property
-    */
-   ManagedProperty getProperty(String name);
-   
-   /**
-    * Get the properties
-    * 
-    * @return the properties
-    */
-   Set<ManagedProperty> getProperties();
-
+   String getDescription();
 
    /**
-    * Get the operations.
-    * @return A possibly empty set of the operations assocated with
-    * the managed object.
+    * Get the type
+    * 
+    * @return the type
     */
-   Set<ManagedOperation> getOperations();
+   MetaType getMetaType();
+
+   /**
+    * Get the value
+    * 
+    * @return the value
+    */
+   Object getValue();
+
+   /**
+    * Set the value
+    * 
+    * @param value the value
+    */
+   void setValue(Serializable value);
+
+   /**
+    * Get the legal values
+    * 
+    * @return the legal values
+    */
+   Set<MetaValue> getLegalValues();
+
+   /**
+    * Get the minimum value
+    * 
+    * @return the minimum value
+    */
+   Comparable getMinimumValue();
+
+   /**
+    * Get the miximum value
+    * 
+    * @return the maximum value
+    */
+   Comparable getMaximumValue();
+
+   /**
+    * Check whether this is a valid value
+    * 
+    * @param value the value
+    * @return null for a valid value, an error message otherwise
+    */
+   String checkValidValue(Serializable value);
+   
 }
