@@ -33,17 +33,9 @@ import org.jboss.util.JBossInterface;
 public interface KernelRegistryEntry extends JBossInterface, ControllerContext
 {
    /**
-    * Get the name
-    * 
-    * @return the name
-    */
-   Object getName();
-   
-   /**
     * Set the name
     * 
     * @param name the name
     */
-   void setName(Object name);
-   
+   void setName(Object name);   
 }
