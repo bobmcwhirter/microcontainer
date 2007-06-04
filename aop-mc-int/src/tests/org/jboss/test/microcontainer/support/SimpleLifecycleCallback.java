@@ -23,8 +23,8 @@ package org.jboss.test.microcontainer.support;
 
 import java.util.ArrayList;
 
+import org.jboss.dependency.spi.ControllerContext;
 import org.jboss.dependency.spi.ControllerState;
-import org.jboss.kernel.spi.dependency.KernelControllerContext;
 
 /**
  * 
@@ -35,12 +35,12 @@ public class SimpleLifecycleCallback
 {
    public static ArrayList<Handled>  interceptions = new ArrayList<Handled>();
    private String testProperty;
-   public void install(KernelControllerContext context)
+   public void install(ControllerContext context)
    {
       interceptions.add(new Handled((String)context.getName(), context.getState()));
    }
    
-   public void uninstall(KernelControllerContext context)
+   public void uninstall(ControllerContext context)
    {
       interceptions.add(new Handled((String)context.getName(), context.getState()));
    }
@@ -58,13 +58,13 @@ public class SimpleLifecycleCallback
    public static class Handled
    {
       public String contextName;
-      public ControllerState fromState;
+      public ControllerState toState;
 
-      public Handled(String contextName, ControllerState fromState)
+      public Handled(String contextName, ControllerState toState)
       {
          super();
          this.contextName = contextName;
-         this.fromState = fromState;
+         this.toState = toState;
       }
    }
 }

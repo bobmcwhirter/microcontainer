@@ -26,6 +26,7 @@ import java.util.ArrayList;
 import junit.framework.Test;
 
 import org.jboss.aop.microcontainer.junit.AOPMicrocontainerTest;
+import org.jboss.dependency.spi.ControllerContext;
 import org.jboss.test.microcontainer.support.Configure;
 import org.jboss.test.microcontainer.support.Create;
 import org.jboss.test.microcontainer.support.Describe;

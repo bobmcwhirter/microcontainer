@@ -31,7 +31,6 @@ import java.util.Stack;
 
 import org.jboss.beans.info.spi.BeanInfo;
 import org.jboss.beans.metadata.spi.BeanMetaData;
-import org.jboss.beans.metadata.spi.LifecycleCallbackMetaData;
 import org.jboss.beans.metadata.spi.MetaDataVisitor;
 import org.jboss.beans.metadata.spi.MetaDataVisitorNode;
 import org.jboss.dependency.plugins.AbstractControllerContext;
@@ -180,12 +179,6 @@ public class AbstractKernelControllerContext extends AbstractControllerContext i
       this.installScope = key;
    }
 
-   public List<LifecycleCallbackMetaData> getLifecycleCallbacks(ControllerState state)
-   {
-      return metaData.getLifecycleCallbacks(state);
-   }
-
-   
    public void toString(JBossStringBuilder buffer)
    {
       if (metaData != null)

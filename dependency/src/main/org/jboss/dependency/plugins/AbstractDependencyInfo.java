@@ -22,6 +22,7 @@
 package org.jboss.dependency.plugins;
 
 import java.util.HashSet;
+import java.util.List;
 import java.util.Set;
 
 import org.jboss.dependency.spi.CallbackItem;
@@ -29,6 +30,7 @@ import org.jboss.dependency.spi.Controller;
 import org.jboss.dependency.spi.ControllerState;
 import org.jboss.dependency.spi.DependencyInfo;
 import org.jboss.dependency.spi.DependencyItem;
+import org.jboss.dependency.spi.LifecycleCallbackItem;
 import org.jboss.util.JBossObject;
 import org.jboss.util.JBossStringBuilder;
 import org.jboss.util.collection.CollectionsFactory;
@@ -55,6 +57,11 @@ public class AbstractDependencyInfo extends JBossObject implements DependencyInf
 
    /** Uninstall callbacks */
    private Set<CallbackItem> uninstallCallbacks = CollectionsFactory.createCopyOnWriteSet();
+   
+   /** Lifecycle callbacks */
+   private List<LifecycleCallbackItem> lifecycleCallbacks = CollectionsFactory.createCopyOnWriteList();
+   
+   
 
    /**
     * Create an abstract dependency info
@@ -177,6 +184,16 @@ public class AbstractDependencyInfo extends JBossObject implements DependencyInf
       return uninstallCallbacks;
    }
 
+   public void addLifecycleCallback(LifecycleCallbackItem lifecycleCallbackItem)
+   {
+      lifecycleCallbacks.add(lifecycleCallbackItem);
+   }
+   
+   public List<LifecycleCallbackItem> getLifecycleCallbacks()
+   {
+      return lifecycleCallbacks;
+   }
+   
    public void toString(JBossStringBuilder buffer)
    {
       buffer.append("idependOn=").append(iDependOn);

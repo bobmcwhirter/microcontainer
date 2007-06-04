@@ -197,19 +197,4 @@ public interface BeanMetaData extends FeatureMetaData, ValueMetaData
     * @return List<InstallMetaData>
     */
    List<CallbackMetaData> getUninstallCallbacks();
-
-   /**
-    * Get the lifecycle callbacks.
-    * 
-    * @return List<LifecycleCallbackMetaData>
-    */
-   List<LifecycleCallbackMetaData> getLifecycleCallbacks();
-   
-   /**
-    * Get the lifecycle callbacks for a particular state.
-    * 
-    * @param state the state callbacks refer to
-    * @return List<LifecycleCallbackMetaData>
-    */
-   List<LifecycleCallbackMetaData> getLifecycleCallbacks(ControllerState state);
 }

@@ -67,7 +67,7 @@ public class CreatedBeansLifecycleCallbackWithDependencyTestCase extends AOPMicr
             assertEquals(1, LifecycleCallbackWithBeanDependency.interceptions.size());
             LifecycleCallbackWithBeanDependency.Handled handled = LifecycleCallbackWithBeanDependency.interceptions.get(0);
             assertEquals("Intercepted", handled.contextName);
-            assertEquals(ControllerState.INSTANTIATED, handled.fromState);
+            assertEquals(ControllerState.CONFIGURED, handled.toState);
             assertNotNull(lifecycle.getDependency());
             assertEquals(dependency, lifecycle.getDependency());
             itworked = true;
@@ -81,7 +81,7 @@ public class CreatedBeansLifecycleCallbackWithDependencyTestCase extends AOPMicr
                assertEquals(1, LifecycleCallbackWithBeanDependency.interceptions.size());
                LifecycleCallbackWithBeanDependency.Handled handled = LifecycleCallbackWithBeanDependency.interceptions.get(0);
                assertEquals("Intercepted", handled.contextName);
-               assertEquals(ControllerState.CONFIGURED, handled.fromState);
+               assertEquals(ControllerState.CONFIGURED, handled.toState);
             }
          }
       }
@@ -121,7 +121,7 @@ public class CreatedBeansLifecycleCallbackWithDependencyTestCase extends AOPMicr
             assertEquals(1, LifecycleCallbackWithBeanDependency.interceptions.size());
             LifecycleCallbackWithBeanDependency.Handled handled = LifecycleCallbackWithBeanDependency.interceptions.get(0);
             assertEquals("Intercepted", handled.contextName);
-            assertEquals(ControllerState.INSTANTIATED, handled.fromState);
+            assertEquals(ControllerState.CONFIGURED, handled.toState);
             assertNotNull(lifecycle.getDependency());
             assertEquals(dependency, lifecycle.getDependency());
             
@@ -137,7 +137,7 @@ public class CreatedBeansLifecycleCallbackWithDependencyTestCase extends AOPMicr
                assertEquals(1, LifecycleCallbackWithBeanDependency.interceptions.size());
                LifecycleCallbackWithBeanDependency.Handled handled = LifecycleCallbackWithBeanDependency.interceptions.get(0);
                assertEquals("Intercepted", handled.contextName);
-               assertEquals(ControllerState.CONFIGURED, handled.fromState);
+               assertEquals(ControllerState.CONFIGURED, handled.toState);
             }
 
             try
@@ -189,7 +189,7 @@ public class CreatedBeansLifecycleCallbackWithDependencyTestCase extends AOPMicr
             assertEquals(1, LifecycleCallbackWithBeanDependency.interceptions.size());
             LifecycleCallbackWithBeanDependency.Handled handled = LifecycleCallbackWithBeanDependency.interceptions.get(0);
             assertEquals("Intercepted", handled.contextName);
-            assertEquals(ControllerState.INSTANTIATED, handled.fromState);
+            assertEquals(ControllerState.CONFIGURED, handled.toState);
             assertNotNull(lifecycle.getDependency());
             assertEquals(dependency, lifecycle.getDependency());
             
@@ -205,7 +205,7 @@ public class CreatedBeansLifecycleCallbackWithDependencyTestCase extends AOPMicr
                assertEquals(1, LifecycleCallbackWithBeanDependency.interceptions.size());
                LifecycleCallbackWithBeanDependency.Handled handled = LifecycleCallbackWithBeanDependency.interceptions.get(0);
                assertEquals("Intercepted", handled.contextName);
-               assertEquals(ControllerState.CONFIGURED, handled.fromState);
+               assertEquals(ControllerState.CONFIGURED, handled.toState);
             }
 
             try
@@ -244,7 +244,7 @@ public class CreatedBeansLifecycleCallbackWithDependencyTestCase extends AOPMicr
             assertEquals(1, LifecycleCallbackWithBeanDependency.interceptions.size());
             LifecycleCallbackWithBeanDependency.Handled handled = LifecycleCallbackWithBeanDependency.interceptions.get(0);
             assertEquals("Intercepted", handled.contextName);
-            assertEquals(ControllerState.INSTANTIATED, handled.fromState);
+            assertEquals(ControllerState.CONFIGURED, handled.toState);
             assertNotNull(lifecycle.getDependency());
             assertTrue("Should not be caching the lifecycle's callback across rebinding", dependency == lifecycle.getDependency());
             
@@ -259,7 +259,7 @@ public class CreatedBeansLifecycleCallbackWithDependencyTestCase extends AOPMicr
                assertEquals(1, LifecycleCallbackWithBeanDependency.interceptions.size());
                LifecycleCallbackWithBeanDependency.Handled handled = LifecycleCallbackWithBeanDependency.interceptions.get(0);
                assertEquals("Intercepted", handled.contextName);
-               assertEquals(ControllerState.CONFIGURED, handled.fromState);
+               assertEquals(ControllerState.CONFIGURED, handled.toState);
             }
 
             try
@@ -299,7 +299,7 @@ public class CreatedBeansLifecycleCallbackWithDependencyTestCase extends AOPMicr
             assertEquals(1, LifecycleCallbackWithBeanDependency.interceptions.size());
             LifecycleCallbackWithBeanDependency.Handled handled = LifecycleCallbackWithBeanDependency.interceptions.get(0);
             assertEquals("Intercepted", handled.contextName);
-            assertEquals(ControllerState.INSTANTIATED, handled.fromState);
+            assertEquals(ControllerState.CONFIGURED, handled.toState);
             assertNotNull(lifecycle.getDependency());
             assertTrue(dependency == lifecycle.getDependency());
             itworked = true;
@@ -313,7 +313,7 @@ public class CreatedBeansLifecycleCallbackWithDependencyTestCase extends AOPMicr
                assertEquals(1, LifecycleCallbackWithBeanDependency.interceptions.size());
                LifecycleCallbackWithBeanDependency.Handled handled = LifecycleCallbackWithBeanDependency.interceptions.get(0);
                assertEquals("Intercepted", handled.contextName);
-               assertEquals(ControllerState.CONFIGURED, handled.fromState);
+               assertEquals(ControllerState.CONFIGURED, handled.toState);
             }
          }
          
@@ -329,7 +329,7 @@ public class CreatedBeansLifecycleCallbackWithDependencyTestCase extends AOPMicr
             assertEquals(1, LifecycleCallbackWithBeanDependency.interceptions.size());
             LifecycleCallbackWithBeanDependency.Handled handled = LifecycleCallbackWithBeanDependency.interceptions.get(0);
             assertEquals("Intercepted", handled.contextName);
-            assertEquals(ControllerState.INSTANTIATED, handled.fromState);
+            assertEquals(ControllerState.CONFIGURED, handled.toState);
             assertNotNull(lifecycle.getDependency());
             assertTrue(dependency == lifecycle.getDependency());
             itworked = true;
@@ -343,7 +343,7 @@ public class CreatedBeansLifecycleCallbackWithDependencyTestCase extends AOPMicr
                assertEquals(1, LifecycleCallbackWithBeanDependency.interceptions.size());
                LifecycleCallbackWithBeanDependency.Handled handled = LifecycleCallbackWithBeanDependency.interceptions.get(0);
                assertEquals("Intercepted", handled.contextName);
-               assertEquals(ControllerState.CONFIGURED, handled.fromState);
+               assertEquals(ControllerState.CONFIGURED, handled.toState);
             }
          }
       }

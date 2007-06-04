@@ -27,7 +27,6 @@ import java.security.PrivilegedActionException;
 import java.util.List;
 
 import org.jboss.beans.metadata.spi.BeanMetaData;
-import org.jboss.beans.metadata.spi.LifecycleCallbackMetaData;
 import org.jboss.beans.metadata.spi.ParameterMetaData;
 import org.jboss.dependency.plugins.action.SimpleControllerContextAction;
 import org.jboss.dependency.spi.Controller;
@@ -149,7 +148,6 @@ public class KernelControllerContextAction extends SimpleControllerContextAction
    {
       installActionInternal(context);
       setKernelControllerContext(context);
-      installLifecycleCallbacks(context);
    }
 
    private void setKernelControllerContext(KernelControllerContext context) throws Throwable
@@ -168,31 +166,6 @@ public class KernelControllerContextAction extends SimpleControllerContextAction
       }
    }
 
-   private void installLifecycleCallbacks(KernelControllerContext context) throws Throwable
-   {
-      Controller controller = context.getController();
-      List<ControllerState> states = controller.getStates();
-      int toIndex = states.indexOf(context.getState());
-      ControllerState toState = states.get(toIndex + 1);
-
-      List<LifecycleCallbackMetaData> callbacks = context.getLifecycleCallbacks(toState);
-      if (callbacks.size() > 0)
-      {
-         for (LifecycleCallbackMetaData callback : callbacks)
-         {
-            ControllerContext callbackContext = controller.getContext(callback.getBean(), callback.getDependentState());
-            if (callbackContext instanceof InvokeDispatchContext)
-            {
-               ((InvokeDispatchContext)callbackContext).invoke(callback.getInstallMethod(), new Object[]{context}, new String[]{KernelControllerContext.class.getName()});
-            }
-            else
-            {
-               throw new IllegalArgumentException("Cannot install, context " + callbackContext + " does not implement InvokeDispatchContext");
-            }
-         }
-      }
-   }
-
    protected void installActionInternal(KernelControllerContext context) throws Throwable
    {
    }
@@ -204,10 +177,8 @@ public class KernelControllerContextAction extends SimpleControllerContextAction
 
    public void uninstallAction(KernelControllerContext context)
    {
-      uninstallLifecycleCallbacks(context);
       unsetKernelControllerContext(context);
       uninstallActionInternal(context);
-
    }
 
    protected void uninstallActionInternal(KernelControllerContext context)
@@ -233,36 +204,6 @@ public class KernelControllerContextAction extends SimpleControllerContextAction
             catch (Exception ignored)
             {
                log.debug("Ignored error unsetting context " + context.getName(), ignored);
-            }
-         }
-      }
-   }
-
-   private void uninstallLifecycleCallbacks(KernelControllerContext context)
-   {
-
-      List<LifecycleCallbackMetaData> callbacks = context.getLifecycleCallbacks(context.getState());
-      if (callbacks.size() > 0)
-      {
-         Controller controller = context.getController();
-         for (LifecycleCallbackMetaData callback : callbacks)
-         {
-            ControllerContext callbackContext = controller.getContext(callback.getBean(), callback.getDependentState());
-            if (callbackContext instanceof InvokeDispatchContext)
-            {
-
-               try
-               {
-                  ((InvokeDispatchContext)callbackContext).invoke(callback.getUninstallMethod(), new Object[]{context}, new String[]{KernelControllerContext.class.getName()});
-               }
-               catch (Throwable ignored)
-               {
-                  log.debug("Ignored error uninstalling context " + context.getName(), ignored);
-               }
-            }
-            else
-            {
-               throw new IllegalArgumentException("Cannot uninstall, context " + callbackContext + " does not implement InvokeDispatchContext");
             }
          }
       }

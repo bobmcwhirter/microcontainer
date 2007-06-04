@@ -25,6 +25,7 @@ import javax.management.MBeanServer;
 import javax.management.ObjectName;
 import javax.management.StandardMBean;
 
+import org.jboss.dependency.spi.ControllerContext;
 import org.jboss.kernel.spi.dependency.KernelControllerContext;
 import org.jboss.logging.Logger;
 
@@ -43,7 +44,7 @@ public class JMXLifecycleCallback
       this.server = server;
    }
  
-   public void install(KernelControllerContext context) throws Exception
+   public void install(ControllerContext context) throws Exception
    {
       validateServer();
       JMX jmx = readJmxAnnotation(context);
@@ -62,7 +63,7 @@ public class JMXLifecycleCallback
       log.info("Registered MBean " + objectName);
    }
    
-   public void uninstall(KernelControllerContext context) throws Exception
+   public void uninstall(ControllerContext context) throws Exception
    {
       validateServer();
       JMX jmx = readJmxAnnotation(context);
@@ -80,16 +81,19 @@ public class JMXLifecycleCallback
       }
    }
    
-   private JMX readJmxAnnotation(KernelControllerContext context) throws Exception
+   private JMX readJmxAnnotation(ControllerContext context) throws Exception
    {
-      if (context.getMetaData() != null)
+      if (context instanceof KernelControllerContext)
       {
-         return context.getMetaData().getAnnotation(JMX.class);
+         if (((KernelControllerContext)context).getMetaData() != null)
+         {
+            return ((KernelControllerContext)context).getMetaData().getAnnotation(JMX.class);
+         }
       }
       return null;
    }
    
-   private ObjectName createObjectName(KernelControllerContext context, JMX jmx) throws Exception
+   private ObjectName createObjectName(ControllerContext context, JMX jmx) throws Exception
    {
       ObjectName objectName = null;
       if (jmx != null)

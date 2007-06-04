@@ -25,7 +25,6 @@ import java.util.List;
 
 import org.jboss.beans.info.spi.BeanInfo;
 import org.jboss.beans.metadata.spi.BeanMetaData;
-import org.jboss.beans.metadata.spi.LifecycleCallbackMetaData;
 import org.jboss.dependency.spi.ControllerState;
 import org.jboss.dependency.spi.dispatch.InvokeDispatchContext;
 import org.jboss.kernel.Kernel;
@@ -117,12 +116,4 @@ public interface KernelControllerContext extends KernelRegistryEntry, InvokeDisp
     * @return true if context can be used for autowiring
     */
    boolean isAutowireCandidate();
-
-   /**
-    * Get the lifecycle callbacks for a particular state.
-    *
-    * @param state the state callbacks refer to
-    * @return List<LifecycleCallbackMetaData>
-    */
-   List<LifecycleCallbackMetaData> getLifecycleCallbacks(ControllerState state);
 }

@@ -36,6 +36,7 @@ import org.jboss.dependency.spi.ControllerMode;
 import org.jboss.dependency.spi.ControllerState;
 import org.jboss.dependency.spi.DependencyInfo;
 import org.jboss.dependency.spi.DependencyItem;
+import org.jboss.dependency.spi.LifecycleCallbackItem;
 import org.jboss.util.JBossObject;
 import org.jboss.util.collection.CollectionsFactory;
 
@@ -552,7 +553,8 @@ public class AbstractController extends JBossObject implements Controller
          toContexts.add(context);
          context.setState(toState);
 
-         resolveCallbacks(context, toState, true);      
+         handleInstallLifecycleCallbacks(context, toState);
+         resolveCallbacks(context, toState, true);
       }
       catch (Throwable t)
       {
@@ -815,6 +817,7 @@ public class AbstractController extends JBossObject implements Controller
       try
       {
          resolveCallbacks(context, fromState, false);
+         handleUninstallLifecycleCallbacks(context, toState);
 
          uninstall(context, fromState, toState);
 
@@ -1023,6 +1026,38 @@ public class AbstractController extends JBossObject implements Controller
       catch (Throwable t)
       {
          log.warn("Cannot resolve callbacks.", t);
+      }
+   }
+
+   protected void handleInstallLifecycleCallbacks(ControllerContext context, ControllerState state) throws Throwable
+   {
+      handleLifecycleCallbacks(context, state, true);
+   }
+
+   protected void handleUninstallLifecycleCallbacks(ControllerContext context, ControllerState state) throws Throwable
+   {
+      int index = states.indexOf(state);
+      ControllerState newState = states.get(index + 1);
+      handleLifecycleCallbacks(context, newState, false);
+   }
+
+   protected void handleLifecycleCallbacks(ControllerContext context, ControllerState state, boolean install) throws Throwable
+   {
+      DependencyInfo di = context.getDependencyInfo();
+      List<LifecycleCallbackItem> callbacks = di.getLifecycleCallbacks();
+      for (LifecycleCallbackItem callback : callbacks)
+      {
+         if (callback.getWhenRequired().equals(state))
+         {
+            if (install)
+            {
+               callback.install(context);
+            }
+            else if (!install)
+            {
+               callback.uninstall(context);
+            }
+         }
       }
    }
 

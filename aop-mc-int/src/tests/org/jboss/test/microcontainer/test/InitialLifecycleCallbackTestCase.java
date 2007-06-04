@@ -56,7 +56,7 @@ public class InitialLifecycleCallbackTestCase extends AOPMicrocontainerTest
          assertEquals(1, SimpleLifecycleCallback.interceptions.size());
          SimpleLifecycleCallback.Handled handled = SimpleLifecycleCallback.interceptions.get(0);
          assertEquals("Intercepted", handled.contextName);
-         assertEquals(ControllerState.INSTANTIATED, handled.fromState);
+         assertEquals(ControllerState.CONFIGURED, handled.toState);
 
          SimpleLifecycleCallback callback = (SimpleLifecycleCallback)getBean("LifecycleCallback");
          assertEquals("Test123", callback.getTestProperty());
@@ -72,7 +72,7 @@ public class InitialLifecycleCallbackTestCase extends AOPMicrocontainerTest
             assertEquals(1, SimpleLifecycleCallback.interceptions.size());
             SimpleLifecycleCallback.Handled handled = SimpleLifecycleCallback.interceptions.get(0);
             assertEquals("Intercepted", handled.contextName);
-            assertEquals(ControllerState.CONFIGURED, handled.fromState);
+            assertEquals(ControllerState.CONFIGURED, handled.toState);
          }
       }
    }
@@ -83,7 +83,4 @@ public class InitialLifecycleCallbackTestCase extends AOPMicrocontainerTest
       assertNotNull(bean);
       return bean;
    }
-
-   
-   //InitialLifecycleTestCaseNotAutomatic.xml
 }

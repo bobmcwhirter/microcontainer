@@ -27,6 +27,7 @@ import javax.naming.InitialContext;
 
 import org.jboss.aop.joinpoint.Invocation;
 import org.jboss.aop.joinpoint.MethodInvocation;
+import org.jboss.dependency.spi.ControllerContext;
 import org.jboss.kernel.spi.dependency.KernelControllerContext;
 import org.jboss.logging.Logger;
 import org.jboss.util.naming.Util;
@@ -126,7 +127,7 @@ public class JndiLifecycleCallback
       return null;
    }
 
-   public void install(KernelControllerContext context) throws Exception
+   public void install(ControllerContext context) throws Exception
    {
       JndiBinding bindingInfo = readJndiAnnotation(context);
       boolean trace = log.isTraceEnabled();
@@ -150,7 +151,7 @@ public class JndiLifecycleCallback
       }
    }
    
-   public void uninstall(KernelControllerContext context) throws Exception
+   public void uninstall(ControllerContext context) throws Exception
    {
       JndiBinding bindingInfo = readJndiAnnotation(context);
       boolean trace = log.isTraceEnabled();
@@ -170,11 +171,14 @@ public class JndiLifecycleCallback
       }
    }
    
-   private JndiBinding readJndiAnnotation(KernelControllerContext context)
+   private JndiBinding readJndiAnnotation(ControllerContext context)
    {
-      if (context.getMetaData() != null)
+      if (context instanceof KernelControllerContext)
       {
-         return context.getMetaData().getAnnotation(JndiBinding.class);
+         if (((KernelControllerContext)context).getMetaData() != null)
+         {
+            return ((KernelControllerContext)context).getMetaData().getAnnotation(JndiBinding.class);
+         }
       }
       return null;
    }

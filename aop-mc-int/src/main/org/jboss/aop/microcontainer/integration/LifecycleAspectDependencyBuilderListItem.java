@@ -25,10 +25,10 @@ import java.util.ArrayList;
 import java.util.List;
 
 import org.jboss.beans.metadata.plugins.AbstractBeanMetaData;
-import org.jboss.beans.metadata.plugins.AbstractLifecycleCallbackMetaData;
 import org.jboss.beans.metadata.spi.BeanMetaData;
-import org.jboss.beans.metadata.spi.LifecycleCallbackMetaData;
+import org.jboss.dependency.plugins.AbstractLifecycleCallbackItem;
 import org.jboss.dependency.spi.ControllerState;
+import org.jboss.dependency.spi.DependencyInfo;
 import org.jboss.kernel.spi.dependency.KernelControllerContext;
 
 /**
@@ -69,17 +69,10 @@ class LifecycleAspectDependencyBuilderListItem extends AspectDependencyBuilderLi
 
    public void addDependency(KernelControllerContext context)
    {
-      BeanMetaData metaData = context.getBeanMetaData();
-      List<LifecycleCallbackMetaData> callbacks = metaData.getLifecycleCallbacks();
-      if (callbacks == null)
-      {
-         callbacks = new ArrayList<LifecycleCallbackMetaData>();
-         ((AbstractBeanMetaData)metaData).setLifecycleCallbacks(callbacks);
-      }
-      AbstractLifecycleCallbackMetaData callback = new AbstractLifecycleCallbackMetaData(dependencyName, state, ControllerState.INSTALLED, installMethod, uninstallMethod);
-      callbacks.add(callback);
-      
-      //We need to manually add the dependency since this is happening after the metadata visitors run
+      AbstractLifecycleCallbackItem callback = new AbstractLifecycleCallbackItem(dependencyName, state, ControllerState.INSTALLED, installMethod, uninstallMethod);
+      DependencyInfo di = context.getDependencyInfo();
+      di.addLifecycleCallback(callback);
+
       super.addDependency(context);
    }
 }

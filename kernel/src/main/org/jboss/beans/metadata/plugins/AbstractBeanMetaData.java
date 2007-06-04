@@ -37,7 +37,6 @@ import org.jboss.beans.metadata.spi.ConstructorMetaData;
 import org.jboss.beans.metadata.spi.DemandMetaData;
 import org.jboss.beans.metadata.spi.DependencyMetaData;
 import org.jboss.beans.metadata.spi.InstallMetaData;
-import org.jboss.beans.metadata.spi.LifecycleCallbackMetaData;
 import org.jboss.beans.metadata.spi.LifecycleMetaData;
 import org.jboss.beans.metadata.spi.MetaDataVisitor;
 import org.jboss.beans.metadata.spi.MetaDataVisitorNode;
@@ -64,8 +63,6 @@ public class AbstractBeanMetaData extends AbstractFeatureMetaData
    implements BeanMetaData, BeanMetaDataFactory, MutableLifecycleHolder, Serializable
 {
    private static final long serialVersionUID = 2L;
-
-   private static final List<LifecycleCallbackMetaData> EMPTY_LIFECYCLE_CALLBACKS = Collections.unmodifiableList(new ArrayList<LifecycleCallbackMetaData>());
 
    /** The bean fully qualified class name */
    protected String bean;
@@ -123,9 +120,6 @@ public class AbstractBeanMetaData extends AbstractFeatureMetaData
 
    /** The uninstall callback List<InstallMetaData> */
    protected List<CallbackMetaData> uninstallCallbacks;
-
-   /** The uninstall operations List<LifecycleCallbackMetaData> */
-   protected List<LifecycleCallbackMetaData> lifecycleCallbacks;
 
    /** The context */
    protected transient ControllerContext context;
@@ -461,17 +455,6 @@ public class AbstractBeanMetaData extends AbstractFeatureMetaData
       return installs;
    }
 
-   public List<LifecycleCallbackMetaData> getLifecycleCallbacks()
-   {
-      return lifecycleCallbacks;
-   }
-
-   public void setLifecycleCallbacks(List<LifecycleCallbackMetaData> lifecycleCallbacks)
-   {
-      this.lifecycleCallbacks = lifecycleCallbacks;
-      flushJBossObjectCache();
-   }
-
    /**
     * Set the installs
     *
@@ -569,8 +552,6 @@ public class AbstractBeanMetaData extends AbstractFeatureMetaData
          children.addAll(installCallbacks);
       if (uninstallCallbacks != null)
          children.addAll(uninstallCallbacks);
-      if (lifecycleCallbacks != null)
-         children.addAll(lifecycleCallbacks);
    }
 
    public Class getType(MetaDataVisitor visitor, MetaDataVisitorNode previous) throws Throwable
@@ -662,35 +643,6 @@ public class AbstractBeanMetaData extends AbstractFeatureMetaData
          buffer.append(" uninstallCallbacks=");
          JBossObject.list(buffer, uninstallCallbacks);
       }
-      if (lifecycleCallbacks != null)
-      {
-         buffer.append(" lifecycleCallbacks=");
-         JBossObject.list(buffer, lifecycleCallbacks);
-      }
-   }
-
-   public List<LifecycleCallbackMetaData> getLifecycleCallbacks(ControllerState state)
-   {
-      if (state == null)
-         throw new IllegalArgumentException("ControllerState cannot be null!");
-
-      List<LifecycleCallbackMetaData> callbacks = EMPTY_LIFECYCLE_CALLBACKS;
-      List<LifecycleCallbackMetaData> allCallbacks = getLifecycleCallbacks();
-      if (allCallbacks != null && allCallbacks.size() > 0)
-      {
-         for (LifecycleCallbackMetaData lifecycleCallback : allCallbacks)
-         {
-            if (state.equals(lifecycleCallback.getWhenRequired()))
-            {
-               if (callbacks == EMPTY_LIFECYCLE_CALLBACKS)
-               {
-                  callbacks = new ArrayList<LifecycleCallbackMetaData>();
-               }
-               callbacks.add(lifecycleCallback);
-            }
-         }
-      }
-      return callbacks;
    }
 
    public void toShortString(JBossStringBuilder buffer)

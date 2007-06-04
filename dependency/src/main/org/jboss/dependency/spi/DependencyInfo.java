@@ -21,6 +21,7 @@
 */
 package org.jboss.dependency.spi;
 
+import java.util.List;
 import java.util.Set;
 
 import org.jboss.util.JBossInterface;
@@ -134,4 +135,18 @@ public interface DependencyInfo extends JBossInterface
     * @return our uninstall callbacks
     */
    Set<CallbackItem> getUninstallItems();
+   
+   /**
+    * Add a lifecycle callback
+    * 
+    * @param lifecycleCallbackItem The lifecycle callback to add
+    */
+   void addLifecycleCallback(LifecycleCallbackItem lifecycleCallbackItem);
+   
+   /**
+    * Get the lifecycle callbacks
+    * 
+    * @return our lifecycle callbacks
+    */
+   List<LifecycleCallbackItem> getLifecycleCallbacks();
 }

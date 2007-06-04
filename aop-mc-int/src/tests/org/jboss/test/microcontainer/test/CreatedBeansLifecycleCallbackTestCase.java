@@ -58,7 +58,7 @@ public class CreatedBeansLifecycleCallbackTestCase extends AOPMicrocontainerTest
          assertEquals(1, SimpleLifecycleCallback.interceptions.size());
          SimpleLifecycleCallback.Handled handled = SimpleLifecycleCallback.interceptions.get(0);
          assertEquals("Intercepted", handled.contextName);
-         assertEquals(ControllerState.INSTANTIATED, handled.fromState);
+         assertEquals(ControllerState.CONFIGURED, handled.toState);
          
          itworked = true;
          
@@ -72,7 +72,7 @@ public class CreatedBeansLifecycleCallbackTestCase extends AOPMicrocontainerTest
             assertEquals(1, SimpleLifecycleCallback.interceptions.size());
             SimpleLifecycleCallback.Handled handled = SimpleLifecycleCallback.interceptions.get(0);
             assertEquals("Intercepted", handled.contextName);
-            assertEquals(ControllerState.CONFIGURED, handled.fromState);
+            assertEquals(ControllerState.CONFIGURED, handled.toState);
          }
       }
    }

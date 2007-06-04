@@ -21,7 +21,7 @@
 */ 
 package org.jboss.test.microcontainer.support;
 
-import org.jboss.kernel.spi.dependency.KernelControllerContext;
+import org.jboss.dependency.spi.ControllerContext;
 
 /**
  * 
@@ -33,17 +33,17 @@ public class NonDefaultMethodsLifecycleCallback
    public static boolean inited;
    public static boolean uninited;
    
-   public void install(KernelControllerContext context)
+   public void install(ControllerContext context)
    {
       throw new IllegalStateException("install should not have been called");
    }
    
-   public void uninstall(KernelControllerContext context)
+   public void uninstall(ControllerContext context)
    {
       throw new IllegalStateException("uninstall should not have been called");      
    }
 
-   public void init(KernelControllerContext context)
+   public void init(ControllerContext context)
    {
       if (inited)
       {
@@ -52,7 +52,7 @@ public class NonDefaultMethodsLifecycleCallback
       inited = true;
    }
    
-   public void uninit(KernelControllerContext context)
+   public void uninit(ControllerContext context)
    {
       if (uninited)
       {

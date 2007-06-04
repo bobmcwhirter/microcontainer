@@ -25,6 +25,7 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Map;
 
+import org.jboss.dependency.spi.ControllerContext;
 import org.jboss.kernel.spi.dependency.KernelControllerContext;
 import org.jboss.metadata.spi.MetaData;
 
@@ -42,31 +43,38 @@ public class LifecycleCallback
       return this.getClass().getName();
    }
 
-   public void install(KernelControllerContext context)
+   public void install(ControllerContext context)
    {
       handle(context);
    }
    
-   public void uninstall(KernelControllerContext context) 
+   public void uninstall(ControllerContext context) 
    {
       handle(context);
    }
    
    @SuppressWarnings("unchecked")
-   private void handle(KernelControllerContext context)
+   private void handle(ControllerContext context)
    {
-      for (int i = 0 ; i < lifecycleAnnotations.length ; i++)
+      if (context instanceof KernelControllerContext)
       {
-         MetaData metaData = context.getMetaData();
-         Object cur = metaData.getAnnotation(lifecycleAnnotations[i]);
-         if (cur != null)
+         for (int i = 0 ; i < lifecycleAnnotations.length ; i++)
          {
-            addInterception(context, lifecycleAnnotations[i]);
+            MetaData metaData = ((KernelControllerContext)context).getMetaData();
+            Object cur = metaData.getAnnotation(lifecycleAnnotations[i]);
+            if (cur != null)
+            {
+               addInterception(context, lifecycleAnnotations[i]);
+            }
          }
+      }
+      else
+      {
+         throw new RuntimeException(context + " is not a KCC!");
       }
    }
    
-   private void addInterception(KernelControllerContext context, Class annotation)
+   private void addInterception(ControllerContext context, Class annotation)
    {
       String name = (String)context.getName();
       ArrayList<Class> beanInterceptions = interceptions.get(name);
