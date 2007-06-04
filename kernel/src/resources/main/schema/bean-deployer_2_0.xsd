@@ -106,6 +106,9 @@ $Id$
       <xsd:attribute name="name" type="xsd:string" use="optional"/>
       <xsd:attribute name="class" type="xsd:token" use="optional"/>
       <xsd:attribute name="mode" type="controllerModeType" use="optional"/>
+      <xsd:attribute name="parent" type="xsd:string" use="optional"/>
+      <xsd:attribute name="abstract" type="xsd:boolean" use="optional"/>
+      <xsd:attribute name="autowire-type" type="autowireTypeType" use="optional"/>
       <xsd:attribute name="autowire-candidate" type="xsd:boolean" use="optional"/>
    </xsd:complexType>
 
@@ -389,7 +392,7 @@ $Id$
       <xsd:attribute name="property" type="xsd:string" use="optional"/>
       <xsd:attribute name="state" type="controllerStateType" use="optional"/>
       <xsd:attribute name="whenRequired" type="controllerStateType" use="optional"/>
-      <xsd:attribute name="type" type="injectionTypeType" use="optional" default="ByClass"/>
+      <xsd:attribute name="type" type="autowireTypeType" use="optional" default="ByClass"/>
       <xsd:attribute name="option" type="optionType" use="optional" default="Strict"/>
    </xsd:complexType>
 
@@ -944,14 +947,17 @@ $Id$
       </xsd:restriction>
    </xsd:simpleType>
 
-   <xsd:simpleType name="injectionTypeType">
+   <xsd:simpleType name="autowireTypeType">
       <xsd:annotation>
          <xsd:documentation>
             <![CDATA[
             You can set the type of lookup requirement - class type (ByClass) or property name (ByName)
             Valid values include:
+            None
             ByClass (default)
             ByName
+            Constructor
+            Auto
             ]]>
          </xsd:documentation>
       </xsd:annotation>

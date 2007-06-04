@@ -19,7 +19,7 @@
 * Software Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA
 * 02110-1301 USA, or see the FSF site: http://www.fsf.org.
 */
-package org.jboss.beans.metadata.plugins;
+package org.jboss.beans.metadata.spi;
 
 import java.io.Serializable;
 
@@ -27,7 +27,7 @@ import org.jboss.util.JBossObject;
 import org.jboss.util.JBossStringBuilder;
 
 /**
- * Injection type:
+ * Autowire type:
  *  * ByClass - matching the class type of value (default)
  *  * ByName - matching the property name
  *  * Constructor - matching the constructor args
@@ -36,28 +36,28 @@ import org.jboss.util.JBossStringBuilder;
  *
  * @author <a href="mailto:ales.justin@genera-lynx.com">Ales Justin</a>
  */
-public class InjectionType extends JBossObject
+public class AutowireType extends JBossObject
    implements Serializable
 {
-   private static final long serialVersionUID = 2L;
+   private static final long serialVersionUID = 1L;
 
    /** None */
-   public static final InjectionType NONE = new InjectionType("None");
+   public static final AutowireType NONE = new AutowireType("None");
 
    /** Strict */
-   public static final InjectionType BY_CLASS = new InjectionType("ByClass");
+   public static final AutowireType BY_CLASS = new AutowireType("ByClass");
 
    /** Loose */
-   public static final InjectionType BY_NAME = new InjectionType("ByName");
+   public static final AutowireType BY_NAME = new AutowireType("ByName");
 
    /** Constructor */
-   public static final InjectionType CONSTRUCTOR = new InjectionType("Constructor");
+   public static final AutowireType CONSTRUCTOR = new AutowireType("Constructor");
 
    /** Auto */
-   public static final InjectionType AUTO = new InjectionType("Auto");
+   public static final AutowireType AUTO = new AutowireType("Auto");
 
    /** Array */
-   public static final InjectionType[] TYPES = new InjectionType[]{
+   public static final AutowireType[] TYPES = new AutowireType[]{
          NONE,
          BY_CLASS,
          BY_NAME,
@@ -73,7 +73,7 @@ public class InjectionType extends JBossObject
     *
     * @param typeString the string representation
     */
-   private InjectionType(String typeString)
+   private AutowireType(String typeString)
    {
       if (typeString == null)
          throw new IllegalArgumentException("Null type string");
@@ -85,11 +85,11 @@ public class InjectionType extends JBossObject
     * Or NONE if no matching type.
     *
     * @param typeString type
-    * @return InjectionType instance
+    * @return AutowireType instance
     */
-   public static InjectionType getInstance(String typeString)
+   public static AutowireType getInstance(String typeString)
    {
-      for(InjectionType type : TYPES)
+      for(AutowireType type : TYPES)
       {
          if (type.getTypeString().equalsIgnoreCase(typeString))
             return type;
@@ -109,9 +109,9 @@ public class InjectionType extends JBossObject
 
    public boolean equals(Object object)
    {
-      if (object == null || object instanceof InjectionType == false)
+      if (object == null || object instanceof AutowireType == false)
          return false;
-      InjectionType other = (InjectionType) object;
+      AutowireType other = (AutowireType) object;
       return typeString.equals(other.getTypeString());
    }
 

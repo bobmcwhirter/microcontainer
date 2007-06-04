@@ -25,7 +25,6 @@ import java.math.BigDecimal;
 import java.math.BigInteger;
 
 import junit.framework.Test;
-
 import org.jboss.beans.info.spi.BeanInfo;
 import org.jboss.beans.metadata.plugins.AbstractPropertyMetaData;
 import org.jboss.beans.metadata.plugins.StringValueMetaData;
@@ -54,7 +53,7 @@ public class ConfigureAttributeFromStringTestCase extends AbstractKernelConfigTe
 
    public void testStringAttribute() throws Throwable
    {
-      Object value = new String("StringValue");
+      Object value = "StringValue";
       SimpleBean bean = configureSimpleBean("AString", value);
       assertEquals(value, bean.getAString());
    }
@@ -118,7 +117,7 @@ public class ConfigureAttributeFromStringTestCase extends AbstractKernelConfigTe
 
    public void testDateAttribute() throws Throwable
    {
-      Object value = createDate(2001, 01, 01);
+      Object value = createDate(2001, 1, 1);
       SimpleBean bean = configureSimpleBean("ADate", value);
       assertEquals(value, bean.getADate());
    }

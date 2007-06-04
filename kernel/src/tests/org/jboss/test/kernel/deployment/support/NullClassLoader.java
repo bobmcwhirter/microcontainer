@@ -26,4 +26,9 @@ package org.jboss.test.kernel.deployment.support;
  */
 public class NullClassLoader extends ClassLoader
 {
+   public Class<?> findClass(String name) throws ClassNotFoundException
+   {
+      Thread thread = Thread.currentThread();
+      return thread.getContextClassLoader().loadClass(name);
+   }
 }

@@ -25,7 +25,6 @@ import java.util.List;
 import java.util.Set;
 
 import org.jboss.dependency.spi.ControllerMode;
-import org.jboss.dependency.spi.ControllerState;
 
 /**
  * Metadata about a bean.
@@ -61,7 +60,28 @@ public interface BeanMetaData extends FeatureMetaData, ValueMetaData
     *
     * @return the aliases or null if there are no aliases
     */
-   Set<Object> getAliases();      
+   Set<Object> getAliases();
+
+   /**
+    * Get the parent.
+    *
+    * @return the parent
+    */
+   String getParent();
+
+   /**
+    * Is abstract metadata.
+    *
+    * @return is abstract
+    */
+   boolean isAbstract();
+
+   /**
+    * Get the autowire type.
+    *
+    * @return the autowire type
+    */
+   AutowireType getAutowireType();
 
    /**
     * Get the mode

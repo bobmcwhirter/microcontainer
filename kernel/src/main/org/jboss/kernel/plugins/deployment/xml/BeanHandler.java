@@ -25,6 +25,7 @@ import javax.xml.namespace.NamespaceContext;
 import javax.xml.namespace.QName;
 
 import org.jboss.beans.metadata.plugins.AbstractBeanMetaData;
+import org.jboss.beans.metadata.spi.AutowireType;
 import org.jboss.beans.metadata.spi.ConstructorMetaData;
 import org.jboss.dependency.spi.ControllerMode;
 import org.jboss.xb.binding.sunday.unmarshalling.DefaultElementHandler;
@@ -59,6 +60,12 @@ public class BeanHandler extends DefaultElementHandler
             bean.setBean(attrs.getValue(i));
          else if ("mode".equals(localName))
             bean.setMode(new ControllerMode(attrs.getValue(i)));
+         else if ("parent".equals(localName))
+            bean.setParent(attrs.getValue(i));
+         else if ("abstract".equals(localName))
+            bean.setAbstract(Boolean.parseBoolean(attrs.getValue(i)));
+         else if ("autowire-type".equals(localName))
+            bean.setAutowireType(AutowireType.getInstance(attrs.getValue(i)));
          else if ("autowire-candidate".equals(localName))
             bean.setAutowireCandidate(Boolean.parseBoolean(attrs.getValue(i)));
       }
@@ -67,7 +74,7 @@ public class BeanHandler extends DefaultElementHandler
    public Object endElement(Object o, QName qName, ElementBinding element)
    {
       AbstractBeanMetaData bean = (AbstractBeanMetaData) o;
-      if (bean.getBean() == null)
+      if (bean.getBean() == null && bean.isAbstract() == false && bean.getParent() == null)
       {
          ConstructorMetaData constructor = bean.getConstructor();
          if (constructor == null)

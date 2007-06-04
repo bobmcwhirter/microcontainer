@@ -26,6 +26,7 @@ import java.util.HashSet;
 
 import junit.framework.Test;
 import org.jboss.beans.metadata.plugins.AbstractBeanMetaData;
+import org.jboss.beans.metadata.spi.AutowireType;
 import org.jboss.dependency.spi.ControllerMode;
 
 /**
@@ -727,6 +728,92 @@ public class BeanTestCase extends AbstractXMLTest
    {
       AbstractBeanMetaData bean = unmarshalBean("BeanWithCandidate.xml");
       assertFalse(bean.isAutowireCandidate());
+      assertNull(bean.getName());
+      assertEquals("Dummy", bean.getBean());
+      assertNull(bean.getMode());
+      assertNull(bean.getAnnotations());
+      assertNull(bean.getClassLoader());
+      assertNull(bean.getConstructor());
+      assertNull(bean.getProperties());
+      assertNull(bean.getCreate());
+      assertNull(bean.getStart());
+      assertNull(bean.getStop());
+      assertNull(bean.getDestroy());
+      assertNull(bean.getDemands());
+      assertNull(bean.getSupplies());
+      assertNull(bean.getInstalls());
+      assertNull(bean.getUninstalls());
+      assertNull(bean.getInstallCallbacks());
+      assertNull(bean.getUninstallCallbacks());
+   }
+
+   public void testBeanWithParent() throws Exception
+   {
+      AbstractBeanMetaData bean = unmarshalBean("BeanWithParent.xml");
+      assertEquals("OldDummy", bean.getParent());
+      assertNull(bean.getName());
+      assertNull(bean.getBean());
+      assertNull(bean.getMode());
+      assertNull(bean.getAnnotations());
+      assertNull(bean.getClassLoader());
+      assertNull(bean.getConstructor());
+      assertNull(bean.getProperties());
+      assertNull(bean.getCreate());
+      assertNull(bean.getStart());
+      assertNull(bean.getStop());
+      assertNull(bean.getDestroy());
+      assertNull(bean.getDemands());
+      assertNull(bean.getSupplies());
+      assertNull(bean.getInstalls());
+      assertNull(bean.getUninstalls());
+      assertNull(bean.getInstallCallbacks());
+      assertNull(bean.getUninstallCallbacks());
+   }
+
+   public void testBeanWithAbstract() throws Exception
+   {
+      AbstractBeanMetaData bean = unmarshalBean("BeanWithAbstract.xml");
+      assertTrue(bean.isAbstract());
+      assertNull(bean.getName());
+      assertNull(bean.getBean());
+      assertNull(bean.getMode());
+      assertNull(bean.getAnnotations());
+      assertNull(bean.getClassLoader());
+      assertNull(bean.getConstructor());
+      assertNull(bean.getProperties());
+      assertNull(bean.getCreate());
+      assertNull(bean.getStart());
+      assertNull(bean.getStop());
+      assertNull(bean.getDestroy());
+      assertNull(bean.getDemands());
+      assertNull(bean.getSupplies());
+      assertNull(bean.getInstalls());
+      assertNull(bean.getUninstalls());
+      assertNull(bean.getInstallCallbacks());
+      assertNull(bean.getUninstallCallbacks());
+   }
+
+   public void testBeanWithAutowire() throws Exception
+   {
+      AbstractBeanMetaData bean = unmarshalBean("BeanWithAutowire.xml");
+      assertEquals(AutowireType.CONSTRUCTOR, bean.getAutowireType());
+      assertNull(bean.getName());
+      assertEquals("Dummy", bean.getBean());
+      assertNull(bean.getMode());
+      assertNull(bean.getAnnotations());
+      assertNull(bean.getClassLoader());
+      assertNull(bean.getConstructor());
+      assertNull(bean.getProperties());
+      assertNull(bean.getCreate());
+      assertNull(bean.getStart());
+      assertNull(bean.getStop());
+      assertNull(bean.getDestroy());
+      assertNull(bean.getDemands());
+      assertNull(bean.getSupplies());
+      assertNull(bean.getInstalls());
+      assertNull(bean.getUninstalls());
+      assertNull(bean.getInstallCallbacks());
+      assertNull(bean.getUninstallCallbacks());
    }
 
    public static Test suite()

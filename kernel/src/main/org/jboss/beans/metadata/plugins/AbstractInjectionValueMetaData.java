@@ -21,6 +21,7 @@
 */
 package org.jboss.beans.metadata.plugins;
 
+import org.jboss.beans.metadata.spi.AutowireType;
 import org.jboss.beans.metadata.spi.MetaDataVisitor;
 import org.jboss.beans.metadata.spi.MetaDataVisitorNode;
 import org.jboss.dependency.plugins.AttributeCallbackItem;
@@ -41,12 +42,12 @@ public class AbstractInjectionValueMetaData extends AbstractDependencyValueMetaD
 {
    private static final long serialVersionUID = 2L;
 
-   protected InjectionType injectionType = InjectionType.BY_CLASS;
+   protected AutowireType injectionType = AutowireType.BY_CLASS;
 
    protected InjectionOption injectionOption = InjectionOption.STRICT;
 
    /**
-    * Simplyifies things with InjectionType.BY_NAME
+    * Simplyifies things with AutowireType.BY_NAME
     */
    protected AbstractPropertyMetaData propertyMetaData;
 
@@ -78,12 +79,12 @@ public class AbstractInjectionValueMetaData extends AbstractDependencyValueMetaD
       super(value, property);
    }
 
-   public InjectionType getInjectionType()
+   public AutowireType getInjectionType()
    {
       return injectionType;
    }
 
-   public void setInjectionType(InjectionType injectionType)
+   public void setInjectionType(AutowireType injectionType)
    {
       this.injectionType = injectionType;
    }
@@ -168,7 +169,7 @@ public class AbstractInjectionValueMetaData extends AbstractDependencyValueMetaD
             log.warn("Ignoring property - contextual injection: " + this);
          }
 
-         if (InjectionType.BY_NAME.equals(injectionType))
+         if (AutowireType.BY_NAME.equals(injectionType))
          {
             if (propertyMetaData == null)
                throw new IllegalArgumentException("Illegal usage of type ByName - injection not used with property = " + this);
@@ -191,7 +192,7 @@ public class AbstractInjectionValueMetaData extends AbstractDependencyValueMetaD
       // no bean and not by_name
       if (getUnderlyingValue() == null)
       {
-         if (InjectionType.BY_CLASS.equals(injectionType))
+         if (AutowireType.BY_CLASS.equals(injectionType))
          {
             context = visitor.getControllerContext();
 

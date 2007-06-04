@@ -64,7 +64,7 @@ public class InjectionOption extends JBossObject
     * Or exception if no matching type.
     *
     * @param optionString type
-    * @return InjectionType instance
+    * @return InjectionOption instance
     */
    public static InjectionOption getInstance(String optionString)
    {

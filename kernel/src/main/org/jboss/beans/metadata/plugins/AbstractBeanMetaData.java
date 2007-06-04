@@ -29,6 +29,7 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.Set;
 
+import org.jboss.beans.metadata.spi.AutowireType;
 import org.jboss.beans.metadata.spi.BeanMetaData;
 import org.jboss.beans.metadata.spi.BeanMetaDataFactory;
 import org.jboss.beans.metadata.spi.CallbackMetaData;
@@ -72,6 +73,15 @@ public class AbstractBeanMetaData extends AbstractFeatureMetaData
 
    /** The aliases */
    protected Set<Object> aliases;
+
+   /** The parent */
+   protected String parent;
+
+   /** Is abstract */
+   protected boolean isAbstract; 
+
+   /** Autowire type */
+   protected AutowireType autowireType;
 
    /** The mode */
    protected ControllerMode mode;
@@ -338,6 +348,51 @@ public class AbstractBeanMetaData extends AbstractFeatureMetaData
    public void setAliases(Set<Object> aliases)
    {
       this.aliases = aliases;
+   }
+
+   public String getParent()
+   {
+      return parent;
+   }
+
+   /**
+    * Set the parent.
+    *
+    * @param parent the parent name
+    */
+   public void setParent(String parent)
+   {
+      this.parent = parent;
+   }
+
+   public boolean isAbstract()
+   {
+      return isAbstract;
+   }
+
+   /**
+    * Set abstract.
+    *
+    * @param anAbstract is abstract
+    */
+   public void setAbstract(boolean anAbstract)
+   {
+      isAbstract = anAbstract;
+   }
+
+   public AutowireType getAutowireType()
+   {
+      return autowireType;
+   }
+
+   /**
+    * Set autowire type.
+    *
+    * @param autowireType the type
+    */
+   public void setAutowireType(AutowireType autowireType)
+   {
+      this.autowireType = autowireType;
    }
 
    public ControllerMode getMode()

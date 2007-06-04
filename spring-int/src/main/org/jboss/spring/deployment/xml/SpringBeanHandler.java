@@ -34,6 +34,7 @@ import org.jboss.beans.metadata.plugins.AbstractConstructorMetaData;
 import org.jboss.beans.metadata.plugins.AbstractDemandMetaData;
 import org.jboss.beans.metadata.plugins.AbstractDependencyValueMetaData;
 import org.jboss.beans.metadata.plugins.AbstractLifecycleMetaData;
+import org.jboss.beans.metadata.spi.AutowireType;
 import org.jboss.beans.metadata.spi.ConstructorMetaData;
 import org.jboss.beans.metadata.spi.DemandMetaData;
 import org.jboss.beans.metadata.spi.ParameterMetaData;
@@ -83,6 +84,12 @@ public class SpringBeanHandler extends DefaultElementHandler
             bean.setCreate(new AbstractLifecycleMetaData(attrs.getValue(i)));
          else if ("lazy-init".equals(localName) && Boolean.parseBoolean(attrs.getValue(i)) == true)
             bean.setMode(ControllerMode.ON_DEMAND);
+         else if ("parent".equals(localName))
+            bean.setParent(attrs.getValue(i));
+         else if ("abstract".equals(localName))
+            bean.setAbstract(Boolean.parseBoolean(attrs.getValue(i)));
+         else if ("autowire".equals(localName))
+            bean.setAutowireType(AutowireType.getInstance(attrs.getValue(i)));
          else if ("autowire-candidate".equals(localName))
             bean.setAutowireCandidate(Boolean.parseBoolean(attrs.getValue(i)));
          else if ("destroy-method".equals(localName))

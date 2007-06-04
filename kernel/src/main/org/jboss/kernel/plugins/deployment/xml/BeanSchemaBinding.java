@@ -46,9 +46,9 @@ import org.jboss.beans.metadata.plugins.AbstractSetMetaData;
 import org.jboss.beans.metadata.plugins.AbstractSupplyMetaData;
 import org.jboss.beans.metadata.plugins.AbstractValueMetaData;
 import org.jboss.beans.metadata.plugins.InjectionOption;
-import org.jboss.beans.metadata.plugins.InjectionType;
 import org.jboss.beans.metadata.plugins.StringValueMetaData;
 import org.jboss.beans.metadata.plugins.factory.GenericBeanFactoryMetaData;
+import org.jboss.beans.metadata.spi.AutowireType;
 import org.jboss.beans.metadata.spi.BeanMetaDataFactory;
 import org.jboss.beans.metadata.spi.DemandMetaData;
 import org.jboss.beans.metadata.spi.DependencyMetaData;
@@ -1044,7 +1044,7 @@ public class BeanSchemaBinding
                else if ("whenRequired".equals(localName))
                   injection.setWhenRequiredState(new ControllerState(attrs.getValue(i)));
                else if ("type".equals(localName))
-                  injection.setInjectionType(InjectionType.getInstance(attrs.getValue(i)));
+                  injection.setInjectionType(AutowireType.getInstance(attrs.getValue(i)));
                else if ("option".equals(localName))
                   injection.setInjectionOption(InjectionOption.getInstance(attrs.getValue(i)));
             }
