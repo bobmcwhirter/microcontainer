@@ -43,6 +43,7 @@ public interface LifecycleCallbackItem
    /**
     * Call when the target bean is installed
     * @param ctx the context of the target bean
+    * @throws Exception for any error
     */
    void install(ControllerContext ctx) throws Exception;
    

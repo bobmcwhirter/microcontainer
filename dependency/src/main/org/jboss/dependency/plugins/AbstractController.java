@@ -1050,13 +1050,9 @@ public class AbstractController extends JBossObject implements Controller
          if (callback.getWhenRequired().equals(state))
          {
             if (install)
-            {
                callback.install(context);
-            }
-            else if (!install)
-            {
+            else
                callback.uninstall(context);
-            }
          }
       }
    }
