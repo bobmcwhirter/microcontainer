@@ -1037,8 +1037,8 @@ public class AbstractController extends JBossObject implements Controller
    protected void handleUninstallLifecycleCallbacks(ControllerContext context, ControllerState state) throws Throwable
    {
       int index = states.indexOf(state);
-      ControllerState newState = states.get(index + 1);
-      handleLifecycleCallbacks(context, newState, false);
+      ControllerState oldState = states.get(index + 1);
+      handleLifecycleCallbacks(context, oldState, false);
    }
 
    protected void handleLifecycleCallbacks(ControllerContext context, ControllerState state, boolean install) throws Throwable
