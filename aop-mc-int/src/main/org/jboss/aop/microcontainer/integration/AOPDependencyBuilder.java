@@ -25,6 +25,8 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Iterator;
+import java.util.LinkedHashMap;
+import java.util.LinkedHashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
@@ -145,7 +147,7 @@ public class AOPDependencyBuilder extends AbstractDependencyBuilder
    {
       try
       {
-         HashSet<String> dependencies = new HashSet<String>();
+         HashSet<String> dependencies = new LinkedHashSet<String>();
          getClassAnnotationDependencies(classInfo, metaData, dependencies);
          getMethodAnnotationDependencies(classInfo, metaData, dependencies);
          return dependencies;
@@ -162,9 +164,9 @@ public class AOPDependencyBuilder extends AbstractDependencyBuilder
 
    private void getClassAnnotationDependencies(ClassInfo classInfo, MetaData metaData, HashSet<String> dependencies) throws Exception
    {
-      HashMap<String, ArrayList<String>> realMap = new HashMap<String, ArrayList<String>>();
+      HashMap<String, ArrayList<String>> realMap = new LinkedHashMap<String, ArrayList<String>>();
       getRealClassAnnotationDependencies(classInfo, realMap);
-      HashMap<String, ArrayList<String>> metaMap = new HashMap<String, ArrayList<String>>();
+      HashMap<String, ArrayList<String>> metaMap = new LinkedHashMap<String, ArrayList<String>>();
       getMetaDataClassAnnotationDependencies(metaData, metaMap);
       addAllDependenciesToSet(dependencies, realMap, metaMap);
    }
@@ -200,9 +202,9 @@ public class AOPDependencyBuilder extends AbstractDependencyBuilder
             MethodInfo method = (MethodInfo)it.next();
             if (Advisable.isAdvisableMethod(method.getModifiers(), method.getName()))
             {
-               HashMap<String, ArrayList<String>> classMap = new HashMap<String, ArrayList<String>>();
+               HashMap<String, ArrayList<String>> classMap = new LinkedHashMap<String, ArrayList<String>>();
                getRealMethodAnnotationDependencies(method, classMap);
-               HashMap<String, ArrayList<String>> overrideMap = new HashMap<String, ArrayList<String>>();
+               HashMap<String, ArrayList<String>> overrideMap = new LinkedHashMap<String, ArrayList<String>>();
                getMetaDataMethodAnnotationDependencies(method, metaData, overrideMap);
                addAllDependenciesToSet(dependencies, classMap, overrideMap);
             }

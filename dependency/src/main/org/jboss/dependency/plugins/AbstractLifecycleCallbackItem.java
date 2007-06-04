@@ -27,6 +27,7 @@ import org.jboss.dependency.spi.ControllerState;
 import org.jboss.dependency.spi.LifecycleCallbackItem;
 import org.jboss.dependency.spi.dispatch.InvokeDispatchContext;
 import org.jboss.logging.Logger;
+import org.jboss.util.JBossStringBuilder;
 
 /**
  * 
@@ -42,6 +43,7 @@ public class AbstractLifecycleCallbackItem implements LifecycleCallbackItem
    String installMethod;
    String uninstallMethod;
    String bean;
+   boolean installed;
    
    public AbstractLifecycleCallbackItem(
          String bean, 
@@ -69,6 +71,8 @@ public class AbstractLifecycleCallbackItem implements LifecycleCallbackItem
 
    public void install(ControllerContext ctx) throws Exception
    {
+      log.trace("Invoking install callback '" + installMethod + "' on " + bean + " for target " + bean + " at " + whenRequired);
+      installed = true;
       Controller controller = ctx.getController();
       ControllerContext callbackContext = controller.getContext(bean, dependentState);
       if (callbackContext instanceof InvokeDispatchContext)
@@ -90,22 +94,36 @@ public class AbstractLifecycleCallbackItem implements LifecycleCallbackItem
 
    public void uninstall(ControllerContext ctx)
    {
-      Controller controller = ctx.getController();
-      ControllerContext callbackContext = controller.getContext(bean, dependentState);
-      if (callbackContext instanceof InvokeDispatchContext)
+      if (installed)
       {
-         try
+         log.trace("Invoking uninstall callback '" + installMethod + "' on " + bean + " for target " + bean + " at " + whenRequired);
+         installed = false;
+         Controller controller = ctx.getController();
+         ControllerContext callbackContext = controller.getContext(bean, dependentState);
+         if (callbackContext instanceof InvokeDispatchContext)
          {
-            ((InvokeDispatchContext)callbackContext).invoke(uninstallMethod, new Object[]{ctx}, new String[]{ControllerContext.class.getName()});
+            try
+            {
+               ((InvokeDispatchContext)callbackContext).invoke(uninstallMethod, new Object[]{ctx}, new String[]{ControllerContext.class.getName()});
+            }
+            catch (Throwable ignored)
+            {
+               log.warn("Ignored error uninstalling context " + ctx.getName() + "; callback=" + bean, ignored);
+            }
          }
-         catch (Throwable ignored)
+         else
          {
-            log.warn("Ignored error uninstalling context " + ctx.getName() + "; callback=" + bean, ignored);
+            log.warn("Cannot uninstall " + ctx.getName() + ". Lifecycle callback context " + bean + " does not implement InvokeDispatchContext");
          }
       }
-      else
-      {
-         log.warn("Cannot uninstall " + ctx.getName() + ". Lifecycle callback context " + bean + " does not implement InvokeDispatchContext");
-      }
+   }
+   
+   public String toString()
+   {
+      JBossStringBuilder sb = new JBossStringBuilder("LifecycleCallbackItem-");
+      sb.append(bean);
+      sb.append(":");
+      sb.append(whenRequired);
+      return sb.toString();
    }
 }
