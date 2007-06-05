@@ -1044,7 +1044,6 @@ public class AbstractController extends JBossObject implements Controller
 
    protected void handleLifecycleCallbacks(ControllerContext context, ControllerState state, boolean install) throws Throwable
    {
-      List<LifecycleCallbackItem> installedCallbacks = null;
       DependencyInfo di = context.getDependencyInfo();
       List<LifecycleCallbackItem> callbacks = di.getLifecycleCallbacks();
       for (LifecycleCallbackItem callback : callbacks)
@@ -1052,25 +1051,9 @@ public class AbstractController extends JBossObject implements Controller
          if (callback.getWhenRequired().equals(state))
          {
             if (install)
-            {
-               try
-               {
-                  callback.install(context);
-                  if (installedCallbacks == null)
-                  {
-                     installedCallbacks = new ArrayList<LifecycleCallbackItem>();
-                  }
-                  installedCallbacks.add(callback);
-               }
-               catch(Throwable t)
-               {
-                  throw t;
-               }
-            }
+               callback.install(context);
             else
-            {
                callback.uninstall(context);
-            }
          }
       }
    }
