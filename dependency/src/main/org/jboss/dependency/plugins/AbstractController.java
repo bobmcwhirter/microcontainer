@@ -263,8 +263,8 @@ public class AbstractController extends JBossObject implements Controller
          {
             ControllerState state = states.get(i);
             result.addAll(contextsByState.get(state));
-            result.addAll(errorContexts.values());
          }
+         result.addAll(errorContexts.values());
          return result;
       }
       finally
