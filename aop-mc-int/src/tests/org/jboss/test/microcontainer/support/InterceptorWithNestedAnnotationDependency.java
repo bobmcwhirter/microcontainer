@@ -43,7 +43,7 @@ public class InterceptorWithNestedAnnotationDependency extends AbstractIntercept
    
    public void setController(Controller controller)
    {
-      this.controller = controller;
+      InterceptorWithNestedAnnotationDependency.controller = controller;
    }
 
    public Object invoke(Invocation invocation) throws Throwable

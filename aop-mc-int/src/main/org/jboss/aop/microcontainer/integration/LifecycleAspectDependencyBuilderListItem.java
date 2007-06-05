@@ -21,11 +21,6 @@
 */ 
 package org.jboss.aop.microcontainer.integration;
 
-import java.util.ArrayList;
-import java.util.List;
-
-import org.jboss.beans.metadata.plugins.AbstractBeanMetaData;
-import org.jboss.beans.metadata.spi.BeanMetaData;
 import org.jboss.dependency.plugins.AbstractLifecycleCallbackItem;
 import org.jboss.dependency.spi.ControllerState;
 import org.jboss.dependency.spi.DependencyInfo;

@@ -41,7 +41,7 @@ public class InterceptorWithAnnotationDependency extends AbstractInterceptor
    
    public void setController(Controller controller)
    {
-      this.controller = controller;
+      InterceptorWithAnnotationDependency.controller = controller;
    }
 
    public Object invoke(Invocation invocation) throws Throwable

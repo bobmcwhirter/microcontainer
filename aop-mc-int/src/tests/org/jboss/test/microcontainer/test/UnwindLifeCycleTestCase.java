@@ -4,8 +4,6 @@ package org.jboss.test.microcontainer.test;
 import junit.framework.Test;
 
 import org.jboss.aop.microcontainer.junit.AOPMicrocontainerTest;
-import org.jboss.dependency.spi.ControllerContext;
-import org.jboss.dependency.spi.ControllerState;
 import org.jboss.test.microcontainer.support.ErrorLifecycleCallback;
 import org.jboss.test.microcontainer.support.InstallUninstallLifecycleCallback;
 
@@ -39,7 +37,7 @@ public class UnwindLifeCycleTestCase extends AOPMicrocontainerTest
       
       try
       {
-         Object o = getBean("Bean");
+         getBean("Bean");
       }
       catch (RuntimeException expected)
       {
