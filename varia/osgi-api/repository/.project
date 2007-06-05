@@ -1,11 +1,7 @@
 <projectDescription>
-  <name>jboss-aop-mc-int</name>
-  <comment>JBoss Microcontainer</comment>
-  <projects>
-    <project>jboss-container</project>
-    <project>jboss-dependency</project>
-    <project>jboss-kernel</project>
-  </projects>
+  <name>jboss-osgi-repository-api</name>
+  <comment>JBoss OSGi Repository API</comment>
+  <projects/>
   <buildSpec>
     <buildCommand>
       <name>org.eclipse.jdt.core.javabuilder</name>

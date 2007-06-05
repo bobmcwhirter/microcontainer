@@ -2,9 +2,8 @@
   <name>jboss-managed</name>
   <comment>JBoss Microcontainer Managed</comment>
   <projects>
-    <project>jboss-dependency</project>
-    <project>jboss-metatype</project>
     <project>jboss-container</project>
+    <project>jboss-metatype</project>
   </projects>
   <buildSpec>
     <buildCommand>

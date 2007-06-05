@@ -1,6 +1,6 @@
 <projectDescription>
   <name>jboss-classloader</name>
-  <comment>JBoss Microcontainer ClassLoader</comment>
+  <comment>JBoss ClassLoader</comment>
   <projects/>
   <buildSpec>
     <buildCommand>
