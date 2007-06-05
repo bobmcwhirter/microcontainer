@@ -282,8 +282,8 @@
         </plugins>
       </build>
       <properties>
-        <microcontainer.outputDirectory>target/eclipse-classes</microcontainer.outputDirectory>
-        <microcontainer.testOutputDirectory>target/eclipse-tests-classes</microcontainer.testOutputDirectory>
+        <microcontainer.outputDirectory>eclipse-target/classes</microcontainer.outputDirectory>
+        <microcontainer.testOutputDirectory>eclipse-target/tests-classes</microcontainer.testOutputDirectory>
       </properties>
     </profile>
   </profiles>
