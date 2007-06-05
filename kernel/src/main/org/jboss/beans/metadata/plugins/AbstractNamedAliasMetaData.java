@@ -32,6 +32,10 @@ import org.jboss.util.JBossStringBuilder;
  */
 public class AbstractNamedAliasMetaData extends AbstractAliasMetaData implements NamedAliasMetaData
 {
+   /** The serialVersionUID */
+   private static final long serialVersionUID = -6917262743964306852L;
+   
+   /** The name */
    protected Object name;
 
    /**

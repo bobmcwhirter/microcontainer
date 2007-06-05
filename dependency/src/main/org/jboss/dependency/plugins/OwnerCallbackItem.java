@@ -30,6 +30,7 @@ import org.jboss.util.JBossStringBuilder;
 /**
  * Owner callback item.
  *
+ * @param <T> the callback type
  * @param <C> owner type
  * @author <a href="mailto:ales.justin@jboss.com">Ales Justin</a>
  */

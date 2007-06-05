@@ -21,13 +21,15 @@
 */
 package org.jboss.dependency.plugins;
 
-import java.util.ArrayList;
 import java.util.Collection;
 import java.util.HashSet;
+import java.util.LinkedHashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
 import java.util.concurrent.ConcurrentHashMap;
+import java.util.concurrent.CopyOnWriteArrayList;
+import java.util.concurrent.CopyOnWriteArraySet;
 import java.util.concurrent.locks.ReentrantReadWriteLock;
 
 import org.jboss.dependency.spi.CallbackItem;
@@ -39,7 +41,6 @@ import org.jboss.dependency.spi.DependencyInfo;
 import org.jboss.dependency.spi.DependencyItem;
 import org.jboss.dependency.spi.LifecycleCallbackItem;
 import org.jboss.util.JBossObject;
-import org.jboss.util.collection.CollectionsFactory;
 
 /**
  * Abstract controller.
@@ -52,23 +53,26 @@ public class AbstractController extends JBossObject implements Controller
    /** The lock */
    private ReentrantReadWriteLock lock = new ReentrantReadWriteLock();
 
+   /** Whether we are shutdown */
+   private boolean shutdown = false;
+   
    /** The states in order List<ControllerState> */
-   private List<ControllerState> states = CollectionsFactory.createCopyOnWriteList();
+   private List<ControllerState> states = new CopyOnWriteArrayList<ControllerState>();;
 
    /** All contexts by name Map<Object, ControllerContext> */
-   private Map<Object, ControllerContext> allContexts = CollectionsFactory.createConcurrentReaderMap();
+   private Map<Object, ControllerContext> allContexts = new ConcurrentHashMap<Object, ControllerContext>();
 
    /** The contexts by state Map<ControllerState, Set<ControllerContext>> */
-   private Map<ControllerState, Set<ControllerContext>> contextsByState = CollectionsFactory.createConcurrentReaderMap();
+   private Map<ControllerState, Set<ControllerContext>> contextsByState = new ConcurrentHashMap<ControllerState, Set<ControllerContext>>();;
 
    /** The error contexts Map<Name, ControllerContext> */
-   private Map<Object, ControllerContext> errorContexts = CollectionsFactory.createConcurrentReaderMap();
+   private Map<Object, ControllerContext> errorContexts = new ConcurrentHashMap<Object, ControllerContext>();;
 
    /** The contexts that are currently being installed */
-   private Set<ControllerContext> installing = CollectionsFactory.createCopyOnWriteSet();
+   private Set<ControllerContext> installing = new CopyOnWriteArraySet<ControllerContext>();;
 
    /** The child controllers */
-   private Set<AbstractController> childControllers = CollectionsFactory.createCopyOnWriteSet();
+   private Set<AbstractController> childControllers = new CopyOnWriteArraySet<AbstractController>();;
 
    /** The callback items */
    private Map<Object, Set<CallbackItem>> installCallbacks = new ConcurrentHashMap<Object, Set<CallbackItem>>();
@@ -94,6 +98,84 @@ public class AbstractController extends JBossObject implements Controller
       addState(ControllerState.INSTALLED, null);
    }
 
+   public boolean isShutdown()
+   {
+      lockWrite();
+      try
+      {
+         return shutdown;
+      }
+      finally
+      {
+         unlockWrite();
+      }
+   }
+
+   /**
+    * Check whether the controller is shutdown
+    *
+    * @throws IllegalStateException when already shutdown
+    */
+   public void checkShutdown()
+   {
+      lockWrite();
+      try
+      {
+         if (shutdown)
+            throw new IllegalStateException("Already shutdown");
+      }
+      finally
+      {
+         unlockWrite();
+      }
+   }
+
+   // TODO need tests for shutdown
+   public void shutdown()
+   {
+      lockWrite();
+      try
+      {
+         Set<AbstractController> children = getControllers();
+         if (children != null && children.isEmpty() == false)
+         {
+            for (AbstractController child : children)
+            {
+               try
+               {
+                  child.shutdown();
+               }
+               catch (Throwable t)
+               {
+                  log.warn("Error during shutdown of child: " + child, t);
+               }
+            }
+         }
+         
+         Set<ControllerContext> contexts = getAllContexts();
+         if (contexts != null && contexts.isEmpty() == false)
+         {
+            for (ControllerContext context : contexts)
+            {
+               try
+               {
+                  uninstall(context.getName());
+               }
+               catch (Throwable t)
+               {
+                  log.warn("Error during shutdown while uninstalling: " + context, t);
+               }
+            }
+         }
+      }
+      finally
+      {
+         shutdown = true;
+         unlockWrite();
+      }
+      
+   }
+   
    public void addState(ControllerState state, ControllerState before)
    {
       lockWrite();
@@ -111,7 +193,7 @@ public class AbstractController extends JBossObject implements Controller
             states.add(index, state);
          }
 
-         Set<ControllerContext> contexts = CollectionsFactory.createCopyOnWriteSet();
+         Set<ControllerContext> contexts =  new CopyOnWriteArraySet<ControllerContext>();
          contextsByState.put(state, contexts);
       }
       finally
@@ -171,6 +253,26 @@ public class AbstractController extends JBossObject implements Controller
       }
    }
 
+   public Set<ControllerContext> getAllContexts()
+   {
+      lockRead();
+      try
+      {
+         LinkedHashSet<ControllerContext> result = new LinkedHashSet<ControllerContext>();
+         for (int i = states.size()-1; i>=0; --i)
+         {
+            ControllerState state = states.get(i);
+            result.addAll(contextsByState.get(state));
+            result.addAll(errorContexts.values());
+         }
+         return result;
+      }
+      finally
+      {
+         unlockRead();
+      }
+   }
+
    public ControllerContext getContext(Object name, ControllerState state)
    {
       if (name == null)
@@ -179,7 +281,7 @@ public class AbstractController extends JBossObject implements Controller
       lockRead();
       try
       {
-         ControllerContext result = getRegisterControllerContext(name, false);
+         ControllerContext result = getRegisteredControllerContext(name, false);
          if (result != null && state != null)
          {
             int required = states.indexOf(state);
@@ -241,7 +343,7 @@ public class AbstractController extends JBossObject implements Controller
       Object name = context.getName();
       if (name == null)
          throw new IllegalArgumentException("Null name " + context.toShortString());
-
+      
       install(context, trace);
    }
 
@@ -288,7 +390,7 @@ public class AbstractController extends JBossObject implements Controller
          if (errorContexts.remove(name) != null && trace)
             log.trace("Tidied up context in error state: " + name);
 
-         ControllerContext context = getRegisterControllerContext(name, false);
+         ControllerContext context = getRegisteredControllerContext(name, false);
          if (context != null)
          {
             if (trace)
@@ -336,10 +438,12 @@ public class AbstractController extends JBossObject implements Controller
       lockWrite();
       try
       {
+         checkShutdown();
+
          Object name = context.getName();
 
          // Check the name is not already registered
-         if (getRegisterControllerContext(name, false) != null)
+         if (getRegisteredControllerContext(name, false) != null)
             throw new IllegalStateException(name + " is already installed.");
 
          // Check any alias is not already registered
@@ -348,7 +452,7 @@ public class AbstractController extends JBossObject implements Controller
          {
             for (Object alias : aliases)
             {
-               if (getRegisterControllerContext(alias, false) != null)
+               if (getRegisteredControllerContext(alias, false) != null)
                   throw new IllegalStateException(alias + " an alias of " + name + " is already installed.");
             }
          }
@@ -416,6 +520,8 @@ public class AbstractController extends JBossObject implements Controller
       lockWrite();
       try
       {
+         checkShutdown();
+
          ControllerState fromState = context.getState();
          int currentIndex = states.indexOf(fromState);
          int requiredIndex = states.indexOf(state);
@@ -463,11 +569,13 @@ public class AbstractController extends JBossObject implements Controller
       lockWrite();
       try
       {
+         checkShutdown();
+
          if (ControllerMode.ON_DEMAND.equals(context.getMode()) == false)
             throw new IllegalStateException("Context is not ON DEMAND: " + context.toShortString());
 
          // Sanity check
-         getRegisterControllerContext(context.getName(), true);
+         getRegisteredControllerContext(context.getName(), true);
 
          // Already done
          if (ControllerState.INSTALLED.equals(context.getRequiredState()))
@@ -1201,7 +1309,7 @@ public class AbstractController extends JBossObject implements Controller
     * @throws IllegalArgumentException for null parameters
     * @throws IllegalStateException    if the context if must exist is true and the context does not exist
     */
-   protected ControllerContext getRegisterControllerContext(Object name, boolean mustExist)
+   protected ControllerContext getRegisteredControllerContext(Object name, boolean mustExist)
    {
       if (name == null)
          throw new IllegalArgumentException("Null name");

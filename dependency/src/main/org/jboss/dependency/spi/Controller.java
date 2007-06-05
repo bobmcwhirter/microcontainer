@@ -118,4 +118,16 @@ public interface Controller extends JBossInterface
     * @return set of contexts in certain state
     */
    Set<ControllerContext> getContextsByState(ControllerState state);
+
+   /**
+    * Whether the controller is shutdown
+    * 
+    * @return true when shutdown
+    */
+   boolean isShutdown();
+
+   /**
+    * Shutdown the controller
+    */
+   void shutdown();
 }

@@ -24,6 +24,8 @@ package org.jboss.dependency.plugins;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
+import java.util.concurrent.CopyOnWriteArrayList;
+import java.util.concurrent.CopyOnWriteArraySet;
 
 import org.jboss.dependency.spi.CallbackItem;
 import org.jboss.dependency.spi.Controller;
@@ -33,7 +35,6 @@ import org.jboss.dependency.spi.DependencyItem;
 import org.jboss.dependency.spi.LifecycleCallbackItem;
 import org.jboss.util.JBossObject;
 import org.jboss.util.JBossStringBuilder;
-import org.jboss.util.collection.CollectionsFactory;
 
 /**
  * A DependencyInfo.
@@ -44,22 +45,22 @@ import org.jboss.util.collection.CollectionsFactory;
 public class AbstractDependencyInfo extends JBossObject implements DependencyInfo
 {
    /** My dependencies */
-   private Set<DependencyItem> iDependOn = CollectionsFactory.createCopyOnWriteSet();
+   private Set<DependencyItem> iDependOn = new CopyOnWriteArraySet<DependencyItem>();;
 
    /** Dependencies referencing me */
-   private Set<DependencyItem> dependsOnMe = CollectionsFactory.createCopyOnWriteSet();
+   private Set<DependencyItem> dependsOnMe = new CopyOnWriteArraySet<DependencyItem>();;
 
    /** Unresolved dependencies */
-   private Set<DependencyItem> unresolved = CollectionsFactory.createCopyOnWriteSet();
+   private Set<DependencyItem> unresolved = new CopyOnWriteArraySet<DependencyItem>();;
 
    /** Install callbacks */
-   private Set<CallbackItem> installCallbacks = CollectionsFactory.createCopyOnWriteSet();
+   private Set<CallbackItem> installCallbacks = new CopyOnWriteArraySet<CallbackItem>();;
 
    /** Uninstall callbacks */
-   private Set<CallbackItem> uninstallCallbacks = CollectionsFactory.createCopyOnWriteSet();
+   private Set<CallbackItem> uninstallCallbacks = new CopyOnWriteArraySet<CallbackItem>();
    
    /** Lifecycle callbacks */
-   private List<LifecycleCallbackItem> lifecycleCallbacks = CollectionsFactory.createCopyOnWriteList();
+   private List<LifecycleCallbackItem> lifecycleCallbacks = new CopyOnWriteArrayList<LifecycleCallbackItem>();
    
    
 

@@ -31,6 +31,7 @@ import org.jboss.util.JBossStringBuilder;
 /**
  * Abstract callback item.
  *
+ * @param <T> the callback type
  * @author <a href="mailto:ales.justin@jboss.com">Ales Justin</a>
  */
 public abstract class AbstractCallbackItem<T> extends JBossObject implements CallbackItem<T>

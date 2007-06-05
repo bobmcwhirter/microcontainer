@@ -29,6 +29,7 @@ import org.jboss.util.JBossStringBuilder;
 /**
  * Attribute callback item.
  *
+ * @param <T> the callback type
  * @author <a href="mailto:ales.justin@jboss.com">Ales Justin</a>
  */
 public class AttributeCallbackItem<T> extends OwnerCallbackItem<T, AttributeDispatchContext>
