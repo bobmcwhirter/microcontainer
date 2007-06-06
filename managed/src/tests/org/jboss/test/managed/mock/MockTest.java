@@ -29,6 +29,11 @@ import org.jboss.managed.api.Fields;
 import org.jboss.managed.api.ManagedObject;
 import org.jboss.managed.api.ManagedProperty;
 import org.jboss.managed.plugins.advice.WrapperAdvice;
+import org.jboss.metatype.api.types.CompositeMetaType;
+import org.jboss.metatype.api.types.MetaType;
+import org.jboss.metatype.api.values.CompositeValueSupport;
+import org.jboss.metatype.api.values.MetaValue;
+import org.jboss.metatype.api.values.SimpleValueSupport;
 import org.jboss.test.managed.ManagedTest;
 
 /**
@@ -62,7 +67,10 @@ public class MockTest extends ManagedTest
       getLog().debug(mock.prettyPrint());
       
       getLog().debug("Adding jndi-name...");
-      mo.getProperty("jndi-name").setValue("DefaultDS");
+      ManagedProperty jndiName = mo.getProperty("jndi-name");
+      MetaType jndiType = jndiName.getMetaType();
+      assertTrue("jndi-name MetaType is not null", jndiType != null);
+      jndiName.setValue("DefaultDS");
       getLog().debug(mock.prettyPrint());
 
       getLog().debug("Adding user and password...");
@@ -70,6 +78,17 @@ public class MockTest extends ManagedTest
       mo.getProperty("password").setValue("Tiger");
       getLog().debug(mock.prettyPrint());
 
+      getLog().debug("Adding connection-props...");
+      ManagedProperty connProps = mo.getProperty("connection-props");
+      CompositeMetaType connPropsType = (CompositeMetaType) connProps.getMetaType();
+      String[] propsKeys = {"conn-prop2", "conn-prop1"};
+      MetaValue[] propsValues = {SimpleValueSupport.wrap("conn-prop2-value"),
+            SimpleValueSupport.wrap("conn-prop1-value")};
+      CompositeValueSupport connPropsValue = new CompositeValueSupport(connPropsType,
+            propsKeys, propsValues);
+      mo.getProperty("connection-props").setValue(connPropsValue);
+      getLog().debug(mock.prettyPrint());
+      
       getLog().debug("Changing jndi-name...");
       mo.getProperty("jndi-name").setValue("ChangedDS");
       getLog().debug(mock.prettyPrint());
@@ -82,11 +101,12 @@ public class MockTest extends ManagedTest
       for (ManagedProperty property : mo.getProperties())
          getLog().debug(property.getName() + "=" + property.getValue());
       
-      ManagedProperty jndiName = mo.getProperty("jndi-name");
+      jndiName = mo.getProperty("jndi-name");
       
       getLog().debug("Displaying jndi-name field values...");
       getLog().debug("jndi-name name  field is: " + jndiName.getFields().getField(Fields.NAME));
       getLog().debug("jndi-name value field is: " + jndiName.getFields().getField(Fields.VALUE));
+      getLog().debug("jndi-name type field is: " + jndiName.getFields().getField(Fields.META_TYPE));
       
       assertEquals(mo, jndiName.getManagedObject());
    }
@@ -101,6 +121,14 @@ public class MockTest extends ManagedTest
       mo.getProperty("user").setValue("Scott");
       mo.getProperty("password").setValue("Tiger");
       mo.getProperty("jndi-name").setValue("ChangedDS");
+      ManagedProperty connProps = mo.getProperty("connection-props");
+      CompositeMetaType connPropsType = (CompositeMetaType) connProps.getMetaType();
+      String[] propsKeys = {"conn-prop2", "conn-prop1"};
+      MetaValue[] propsValues = {SimpleValueSupport.wrap("conn-prop2-value"),
+            SimpleValueSupport.wrap("conn-prop1-value")};
+      CompositeValueSupport connPropsValue = new CompositeValueSupport(connPropsType,
+            propsKeys, propsValues);
+      mo.getProperty("connection-props").setValue(connPropsValue);
 
       getLog().debug(mock.prettyPrint());
       
@@ -110,6 +138,8 @@ public class MockTest extends ManagedTest
       assertEquals("jndiName", "ChangedDS", mo2.getProperty("jndi-name").getValue());
       assertEquals("user", "Scott", mo2.getProperty("user").getValue());
       assertEquals("password", "Tiger", mo2.getProperty("password").getValue());
+      ManagedProperty connProps2 = mo2.getProperty("connection-props");
+      assertEquals("connPropsValue", connPropsValue, connProps2.getValue());
    }
    public void testManagedPropertyMapSerialization()
       throws Exception
