@@ -9,12 +9,12 @@
   <itemizedlist>
     <listitem>
       <para>
-        Overview of the mc purpose.
+        Introduction of the JBoss Microcontainer and its purpose.
       </para>
     </listitem>
     <listitem>
       <para>
-        Overview of the mc modules and what the various dependencies between
+        Overview of the JBoss Microcontainer modules and what the various dependencies between
         them are.
       </para>
     </listitem>
@@ -23,7 +23,7 @@
         Setup/bootstrap of a kernel. Discussion of various bootstrap coding/configuration
         to setup a kernel for different environments/purposes. This should be
         somewhat of a deeper dive overview in that it will reference other modules
-        and spis that are used for the setup.
+        and SPIs that are used for the setup.
         <itemizedlist>
           <listitem>
             <para>
@@ -37,8 +37,8 @@
           </listitem>
           <listitem>
             <para>
-              Embedded XYZ(EJB3, JBPM, SEAM, ...). How other projects can leverage
-              the mc for configuration, ioc, ...
+              Embedded (EJB3, JBPM, SEAM, ...).
+              How other projects can leverage the JBoss Microcontainer for configuration, IoC, ...
             </para>
           </listitem>
           <listitem>
@@ -56,18 +56,16 @@
     </listitem>
     <listitem>
       <para>
-        Overview of the mc core apis and their relations;
+        Overview of the JBoss Microcontainer core apis and their relations;
         <itemizedlist>
           <listitem>
             <para>
-              container: Configuration, ClassAdapter, ControllerContex,
-              BeanInfo, Joinpoint, MetaDataRepository, MetaData, ...
+              container: Configuration, ClassAdapter, ControllerContex, BeanInfo, Joinpoint, MetaDataRepository, MetaData, ...
             </para>
           </listitem>
           <listitem>
             <para>
-              dependency: Controller, ControllerContex,
-              DependencyInfo, DependencyItem, ...
+              dependency: Controller, ControllerContex, DependencyInfo, DependencyItem, ...
             </para>
           </listitem>
           <listitem>
@@ -81,8 +79,7 @@
           </listitem>
           <listitem>
             <para>
-              aop/mc int: AOPJoinpointFactory, AspectBinding, Aspect,
-              MixinBinding, StackBinding, lifecycle stuff, 
+              aop-mc-int: AOPJoinpointFactory, AspectBinding, Aspect, MixinBinding, StackBinding, lifecycle stuff,
               ...
             </para>
           </listitem>
@@ -90,19 +87,15 @@
             <para>
               deployers: MainDeployer, Deployer, DeploymentUnit, Attachments,
               DeploymentContext, StructureMetaData, StructuredDeployers,
-              StructureBuilder, ManagedObjectBuilder, 
-              ...
+              StructureBuilder, ManagedObjectBuilder, ...
             </para>
           </listitem>
           <listitem>
             <para>
               managed/metatype: ManagedObject, ManagedProperty, Fields,
-              MetaType, SimpleMetaType, CompositeMetaType, MetaValue,
-              ...
+              MetaType, SimpleMetaType, CompositeMetaType, MetaValue, ...
             </para>
           </listitem>
-
-
         </itemizedlist>
       </para>
     </listitem>

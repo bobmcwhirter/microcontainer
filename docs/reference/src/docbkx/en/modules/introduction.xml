@@ -89,7 +89,7 @@
       </sect2>
       <sect2>
           <title>deployers</title>
-          <para>Deployers load components from various models, POJOs, JMX, spring,
+          <para>Deployers load components from various models, POJOs, JMX, Spring,
           Java EE, etc. into the MC runtime.  
           </para>
       </sect2>
