@@ -37,10 +37,10 @@ Generate html using:   mvn docbkx:generate-html
 
     <para>Authors: <itemizedlist spacing="compact">
         <listitem>
-          <para>Adrian Brock - JBoss Microcontainer Project Lead and Chief
-          Scientist of JBoss Inc.</para>
-          <para>Ales Justin</para>
-          <para>Scott Stark</para>
+          <para>Adrian Brock - JBoss Microcontainer Project Lead and Chief Scientist of JBoss Inc.</para>
+          <para>Scott Stark - VP Architecture &amp; Technology</para>
+          <para>Kabir Khan - JBoss AOP Project Lead</para>
+          <para>Ales Justin - JBoss Core Developer</para>
         </listitem>
       </itemizedlist></para>
   </preface>
