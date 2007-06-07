@@ -993,7 +993,7 @@
       </para>
 
       <programlisting>
-         public class FooBarBinder {
+         public class FooBarBinder extends JndiBinder {
 
          public void start() {
          FooBar foobar = new FooBar();
@@ -1031,7 +1031,11 @@
          <itemizedlist spacing="compact">
             <listitem>
                <para>full bean autowiring</para>
+            </listitem>
+            <listitem>
                <para>property / parameter injection</para>
+            </listitem>
+            <listitem>
                <para>callback injection</para>
             </listitem>
          </itemizedlist>
