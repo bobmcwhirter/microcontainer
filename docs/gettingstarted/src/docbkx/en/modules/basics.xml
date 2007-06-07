@@ -852,9 +852,6 @@
          method via the
          <varname>jboss-beans.xml</varname>
          configuration file.
-         They can also be ignored. See the
-         <varname>jboss-beans.xml</varname>
-         with ignored attribute set to true on the start element.
       </para>
 
       <programlisting>
@@ -955,8 +952,6 @@
          There is another useful definition of loosly coupled dependency.
          Each bean can define which beans should be installed for it to move
          to certain state.
-         On the other hand each bean can also provide additional information
-         what it supplies, apart from it self. More about this feature with the actual example.
       </para>
 
       <programlisting>
