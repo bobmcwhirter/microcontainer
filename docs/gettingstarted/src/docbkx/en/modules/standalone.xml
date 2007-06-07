@@ -1,152 +1,180 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<!DOCTYPE chapter PUBLIC "-//OASIS//DTD DocBook XML V4.4//EN" 
-"http://www.oasis-open.org/docbook/xml/4.4/docbookx.dtd">
+<!DOCTYPE chapter PUBLIC "-//OASIS//DTD DocBook XML V4.4//EN"
+      "http://www.oasis-open.org/docbook/xml/4.4/docbookx.dtd">
 
 <chapter id="standalone">
-  <title>Standalone</title>
+   <title>Standalone</title>
 
-  <para>In <xref linkend="examples"/>, we briefly discussed how to run a microcontainer application by loading the <varname>StandaloneBootstrap</varname>  class, which in turn wraps the <varname>BasicBootstrap</varname> and <varname>BeanXMLDeployer</varname> utility classes. In this chapter, we will look into the source code of <varname>StandaloneBootstrap</varname> and see exactly how it works. While the <varname>StandaloneBootstrap</varname> class is sufficient for most use case scenarios, you do not have to use it. You can trivially write your own class that uses the <varname>BasicBootstrap</varname> and <varname>BeanXMLDeployer</varname>.</para>
+   <para>In
+      <xref linkend="examples"/>
+      , we briefly discussed how to run a Microcontainer application by loading the
+      <varname>StandaloneBootstrap</varname>
+      class, which in turn wraps the
+      <varname>BasicBootstrap</varname>
+      and
+      <varname>BeanXMLDeployer</varname>
+      utility classes. In this chapter, we will look into the source code of
+      <varname>StandaloneBootstrap</varname>
+      and see exactly how it works. While the
+      <varname>StandaloneBootstrap</varname>
+      class is sufficient for most use case scenarios, you do not have to use it. You can trivially write your own class
+      that uses the
+      <varname>BasicBootstrap</varname>
+      and
+      <varname>BeanXMLDeployer</varname>
+      .
+   </para>
 
-  <programlisting>
-package org.jboss.kernel.plugins.bootstrap.standalone;
+   <programlisting>
+      package org.jboss.kernel.plugins.bootstrap.standalone;
 
-import java.net.URL;
-import java.util.Enumeration;
-import java.util.List;
-import java.util.ListIterator;
+      import java.net.URL;
+      import java.util.Enumeration;
+      import java.util.List;
+      import java.util.ListIterator;
 
-import org.jboss.kernel.plugins.bootstrap.basic.BasicBootstrap;
-import org.jboss.kernel.plugins.deployment.xml.BeanXMLDeployer;
-import org.jboss.kernel.spi.deployment.KernelDeployment;
-import org.jboss.util.collection.CollectionsFactory;
+      import org.jboss.kernel.plugins.bootstrap.basic.BasicBootstrap;
+      import org.jboss.kernel.plugins.deployment.xml.BeanXMLDeployer;
+      import org.jboss.kernel.spi.deployment.KernelDeployment;
+      import org.jboss.util.collection.CollectionsFactory;
 
-public class StandaloneBootstrap extends BasicBootstrap
-{
-   /** The deployer */
-   protected BeanXMLDeployer deployer;
-   
-   /** The deployments */
-   protected List deployments = CollectionsFactory.createCopyOnWriteList();
-   
-   /** The arguments */
-   protected String[] args;
-   
-   /**
-    * Bootstrap the kernel from the command line
-    * 
-    * @param args the command line arguments
-    * @throws Exception for any error
-    */
-   public static void main(String[] args) throws Exception
-   {
+      public class StandaloneBootstrap extends BasicBootstrap
+      {
+      /** The deployer */
+      protected BeanXMLDeployer deployer;
+
+      /** The deployments */
+      protected List deployments = CollectionsFactory.createCopyOnWriteList();
+
+      /** The arguments */
+      protected String[] args;
+
+      /**
+      * Bootstrap the kernel from the command line
+      *
+      * @param args the command line arguments
+      * @throws Exception for any error
+      */
+      public static void main(String[] args) throws Exception
+      {
       StandaloneBootstrap bootstrap = new StandaloneBootstrap(args);
       bootstrap.run();
-   }
+      }
 
-   /**
-    * Create a new bootstrap
-    */
-   public StandaloneBootstrap(String[] args) throws Exception
-   {
+      /**
+      * Create a new bootstrap
+      */
+      public StandaloneBootstrap(String[] args) throws Exception
+      {
       super();
       this.args = args;
-   }
-   
-   public void bootstrap() throws Throwable
-   {
-      super.bootstrap();
-      
-      deployer = new BeanXMLDeployer(getKernel());
-      
-      Runtime.getRuntime().addShutdownHook(new Shutdown());
-      
-      ClassLoader cl = Thread.currentThread().getContextClassLoader();
-      for (Enumeration e = 
-  cl.getResources(StandaloneKernelConstants.DEPLOYMENT_XML_NAME); 
-           e.hasMoreElements(); )
+      }
+
+      public void bootstrap() throws Throwable
       {
-         URL url = (URL) e.nextElement();
-         deploy(url);
+      super.bootstrap();
+
+      deployer = new BeanXMLDeployer(getKernel());
+
+      Runtime.getRuntime().addShutdownHook(new Shutdown());
+
+      ClassLoader cl = Thread.currentThread().getContextClassLoader();
+      for (Enumeration e =
+      cl.getResources(StandaloneKernelConstants.DEPLOYMENT_XML_NAME);
+      e.hasMoreElements(); )
+      {
+      URL url = (URL) e.nextElement();
+      deploy(url);
       }
       for (Enumeration e = cl.getResources("META-INF/" +
-                StandaloneKernelConstants.DEPLOYMENT_XML_NAME); 
-           e.hasMoreElements(); )
+      StandaloneKernelConstants.DEPLOYMENT_XML_NAME);
+      e.hasMoreElements(); )
       {
-         URL url = (URL) e.nextElement();
-         deploy(url);
+      URL url = (URL) e.nextElement();
+      deploy(url);
       }
-      
+
       // Validate that everything is ok
       deployer.validate();
-   }
-   
-   /**
-    * Deploy a url 
-    */
-   protected void deploy(URL url) throws Throwable
-   {
+      }
+
+      /**
+      * Deploy a url
+      */
+      protected void deploy(URL url) throws Throwable
+      {
       log.debug("Deploying " + url);
       KernelDeployment deployment = deployer.deploy(url);
       deployments.add(deployment);
       log.debug("Deployed " + url);
-   }
-   
-   /**
-    * Undeploy a deployment
-    */
-   protected void undeploy(KernelDeployment deployment)
-   {
+      }
+
+      /**
+      * Undeploy a deployment
+      */
+      protected void undeploy(KernelDeployment deployment)
+      {
       log.debug("Undeploying " + deployment.getName());
       deployments.remove(deployment);
       try
       {
-         deployer.undeploy(deployment);
-         log.debug("Undeployed " + deployment.getName());
+      deployer.undeploy(deployment);
+      log.debug("Undeployed " + deployment.getName());
       }
       catch (Throwable t)
       {
-         log.warn("Error during undeployment: " + deployment.getName(), t);
+      log.warn("Error during undeployment: " + deployment.getName(), t);
       }
-   }
-   
-   protected class Shutdown extends Thread
-   {
+      }
+
+      protected class Shutdown extends Thread
+      {
       public void run()
       {
-         log.info("Shutting down");
-         ListIterator iterator = 
-             deployments.listIterator(deployments.size());
-         while (iterator.hasPrevious())
-         {
-            KernelDeployment deployment = 
-                (KernelDeployment) iterator.previous();
-            undeploy(deployment);
-         }
+      log.info("Shutting down");
+      ListIterator iterator =
+      deployments.listIterator(deployments.size());
+      while (iterator.hasPrevious())
+      {
+      KernelDeployment deployment =
+      (KernelDeployment) iterator.previous();
+      undeploy(deployment);
       }
-   }
-}
-</programlisting>
+      }
+      }
+      }
+   </programlisting>
 
-  <para>One way to use this class in your own applications would be:</para>
+   <para>One way to use this class in your own applications would be:</para>
 
-  <programlisting>
-import org.jboss.kernel.plugins.bootstrap.standalone.StandaloneBootstrap
+   <programlisting>
+      import org.jboss.kernel.plugins.bootstrap.standalone.StandaloneBootstrap
 
-public MyMainClass
-{
-   public static void main(String[] args) throws Exception
-   {
+      public MyMainClass
+      {
+      public static void main(String[] args) throws Exception
+      {
       StandaloneBootstrap.main(args);
       // Your stuff here...
-   }
-}</programlisting>
+      }
+      }
+   </programlisting>
 
-  <para>So what does the standalone bootstrap do?</para>
+   <para>So what does the standalone bootstrap do?</para>
 
-  <para>First it does the plain bootstrap to get the "kernel" ready. You can
-  think of this a sophisticated form of <varname>ServerLocator</varname> implementation. It then creates a <varname>BeanXMLDeployer</varname> for deploying XML files. Next it adds a shutdown hook, such that deployments are correctly "undeployed" in reverse order to their deployment. Finally, it scans the classpath for <varname>META-INF/jboss-beans.xml</varname> and deploys every instance of that file it finds to populate the "kernel".</para>
+   <para>First it does the plain bootstrap to get the "kernel" ready. You can
+      think of this a sophisticated form of
+      <varname>ServerLocator</varname>
+      implementation. It then creates a
+      <varname>BeanXMLDeployer</varname>
+      for deploying XML files. Next it adds a shutdown hook, such that deployments are correctly "undeployed" in reverse
+      order to their deployment. Finally, it scans the classpath for
+      <varname>META-INF/jboss-beans.xml</varname>
+      and deploys every instance of that file it finds to populate the "kernel".
+   </para>
 
-  <para>You can of course choose not to use this helper class and instead
-  implement your own processing rules.</para>
-  
+   <para>You can of course choose not to use this helper class and instead
+      implement your own processing rules.
+   </para>
+
 </chapter>

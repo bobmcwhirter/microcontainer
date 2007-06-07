@@ -1,0 +1,42 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE chapter PUBLIC "-//OASIS//DTD DocBook XML V4.4//EN"
+      "http://www.oasis-open.org/docbook/xml/4.4/docbookx.dtd">
+
+<chapter id="basics">
+   <title>AOP Configuration and Usage</title>
+
+   <para>When writting new version of Kernel, there was always a need for
+      simple usage of advanced AOP features in the Kernel itself.
+      With the version 2.0.0 of Microcontainer there is an elegant way of
+      binding your aspect to wired POJOs, using all the advantages of full
+      dependency state machine. Meaning that even aspect behave as installed
+      services, having full lifecycle and dependency support in the Microcontainer.
+      And it's all a matter of configuration if you want to use aspectized Microcontainer
+      or just plain POJO behaviour.
+   </para>
+
+   <section>
+      <title>Deployment</title>
+
+      <para>The
+         <varname>deployment</varname>
+         element acts as a container for many beans that are deployed together.
+      </para>
+
+      <programlisting>&lt;?xml version="1.0" encoding="UTF-8"?&gt;
+
+         &lt;!-- Deployment holds beans --&gt;
+         &lt;deployment xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xsi:schemaLocation="urn:jboss:bean-deployer bean-deployer_1_0.xsd"
+         xmlns="urn:jboss:bean-deployer"&gt;
+
+         &lt;!-- bean part of the deployment --&gt;
+         &lt;bean .../&gt;
+
+         &lt;!-- bean part of the deployment --&gt;
+         &lt;bean .../&gt;
+
+         &lt;/deployment&gt;</programlisting>
+   </section>
+
+</chapter>

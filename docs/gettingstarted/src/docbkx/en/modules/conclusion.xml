@@ -1,18 +1,20 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<!DOCTYPE chapter PUBLIC "-//OASIS//DTD DocBook XML V4.4//EN" 
-"http://www.oasis-open.org/docbook/xml/4.4/docbookx.dtd">
+<!DOCTYPE chapter PUBLIC "-//OASIS//DTD DocBook XML V4.4//EN"
+      "http://www.oasis-open.org/docbook/xml/4.4/docbookx.dtd">
 
 <chapter id="conclusion">
-  <title>Conclusion</title>
+   <title>Conclusion</title>
 
-  <para>The microcontainer is a powerful replacement for the JBoss's JMX
-  microcontainer. It brings the loosely coupled configuration environment of
-  JBoss to POJO environments, adding more control and extra features. Both
-  inside and outside the JBoss Application Server.</para>
+   <para>The Microcontainer is a powerful replacement for the JBoss's JMX
+      microkernel. It brings the loosely coupled configuration environment of
+      JBoss to POJO environments, adding more control and extra features. Both
+      inside and outside the JBoss Application Server.
+   </para>
 
-  <para></para>
+   <para></para>
 
-  <para>Going forward these additional features will allow even more advances,
-  including aspectized deployment, on demand services, versioned deployments,
-  etc.</para>
+   <para>Going forward these additional features will allow even more advances,
+      including aspectized deployment, on demand services, versioned deployments,
+      etc.
+   </para>
 </chapter>
