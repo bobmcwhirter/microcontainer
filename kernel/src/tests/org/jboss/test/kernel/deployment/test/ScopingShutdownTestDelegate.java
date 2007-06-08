@@ -19,38 +19,31 @@
 * Software Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA
 * 02110-1301 USA, or see the FSF site: http://www.fsf.org.
 */
-package org.jboss.test.spring.test;
+package org.jboss.test.kernel.deployment.test;
 
 import org.jboss.dependency.spi.Controller;
-import org.jboss.dependency.spi.ControllerMode;
 import org.jboss.dependency.spi.ControllerState;
 import org.jboss.kernel.spi.dependency.KernelControllerContext;
 
 /**
- * @author <a href="mailto:ales.justin@jboss.com">Ales Justin</a>
+ * Scoping shutdown Deployment Test Delegate.
+ * Doesn't throw exception on not found bean.
+ *
+ * @author <a href="ales.justin@jboss.com">Ales Justin</a>
  */
-public class LazyTempSpringMicrocontainerTestDelegate extends TempSpringMicrocontainerTestDelegate
+public class ScopingShutdownTestDelegate extends ScopingTestDelegate
 {
-   public LazyTempSpringMicrocontainerTestDelegate(Class clazz) throws Exception
+   public ScopingShutdownTestDelegate(Class clazz) throws Exception
    {
       super(clazz);
    }
 
    protected KernelControllerContext handleNotFoundContext(Controller controller, Object name, ControllerState state)
    {
-      KernelControllerContext context = (KernelControllerContext)controller.getContext(name, null);
-      if (context != null && ControllerMode.ON_DEMAND.equals(context.getMode()))
-      {
-         try
-         {
-            controller.change(context, ControllerState.INSTALLED);
-            return context;
-         }
-         catch (Throwable t)
-         {
-            throw new Error("Unable to change on demand context to Installed.", t);
-         }
-      }
-      throw new IllegalStateException("Bean not found " + name + " at state " + state);
+      if (controller.isShutdown() == false)
+         return super.handleNotFoundContext(controller, name, state);
+      else
+         return null;        
    }
+
 }

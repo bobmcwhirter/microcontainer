@@ -167,7 +167,7 @@ public class MicrocontainerTestDelegate extends AbstractTestDelegate
     * @return the context
     * @throws IllegalStateException when the context does not exist at that state
     */
-   protected KernelControllerContext handleNotFoundContext(KernelController controller, Object name, ControllerState state)
+   protected KernelControllerContext handleNotFoundContext(Controller controller, Object name, ControllerState state)
    {
       throw new IllegalStateException("Bean not found " + name + " at state " + state);
    }

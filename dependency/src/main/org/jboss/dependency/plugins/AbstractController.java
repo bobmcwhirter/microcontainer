@@ -57,22 +57,25 @@ public class AbstractController extends JBossObject implements Controller
    private boolean shutdown = false;
    
    /** The states in order List<ControllerState> */
-   private List<ControllerState> states = new CopyOnWriteArrayList<ControllerState>();;
+   private List<ControllerState> states = new CopyOnWriteArrayList<ControllerState>();
 
    /** All contexts by name Map<Object, ControllerContext> */
    private Map<Object, ControllerContext> allContexts = new ConcurrentHashMap<Object, ControllerContext>();
 
    /** The contexts by state Map<ControllerState, Set<ControllerContext>> */
-   private Map<ControllerState, Set<ControllerContext>> contextsByState = new ConcurrentHashMap<ControllerState, Set<ControllerContext>>();;
+   private Map<ControllerState, Set<ControllerContext>> contextsByState = new ConcurrentHashMap<ControllerState, Set<ControllerContext>>();
 
    /** The error contexts Map<Name, ControllerContext> */
-   private Map<Object, ControllerContext> errorContexts = new ConcurrentHashMap<Object, ControllerContext>();;
+   private Map<Object, ControllerContext> errorContexts = new ConcurrentHashMap<Object, ControllerContext>();
 
    /** The contexts that are currently being installed */
-   private Set<ControllerContext> installing = new CopyOnWriteArraySet<ControllerContext>();;
+   private Set<ControllerContext> installing = new CopyOnWriteArraySet<ControllerContext>();
+
+   /** The parent controller */
+   private AbstractController parentController;
 
    /** The child controllers */
-   private Set<AbstractController> childControllers = new CopyOnWriteArraySet<AbstractController>();;
+   private Set<AbstractController> childControllers = new CopyOnWriteArraySet<AbstractController>();
 
    /** The callback items */
    private Map<Object, Set<CallbackItem>> installCallbacks = new ConcurrentHashMap<Object, Set<CallbackItem>>();
@@ -216,6 +219,16 @@ public class AbstractController extends JBossObject implements Controller
    public void removeControllerContext(ControllerContext context)
    {
       unregisterControllerContext(context);
+   }
+
+   protected AbstractController getParentController()
+   {
+      return parentController;
+   }
+
+   protected void setParentController(AbstractController parentController)
+   {
+      this.parentController = parentController;
    }
 
    public Set<AbstractController> getControllers()
@@ -406,10 +419,25 @@ public class AbstractController extends JBossObject implements Controller
             {
                log.warn("Error unregistering context: " + context.toShortString() + " with name: " + name);
             }
+
+            AbstractController parent = getParentController();
+            while (parent != null)
+            {
+               try
+               {
+                  parent.unregisterControllerContext(context);
+               }
+               catch (Throwable t)
+               {
+                  log.warn("Error unregistering context in parent controller: " + context.toShortString() + " with name: " + name);
+               }
+               parent = parent.getParentController();
+            }
+
          }
          else
          {
-            for (AbstractController controller : childControllers)
+            for (AbstractController controller : getControllers())
             {
                context = controller.uninstall(name, level + 1);
                if (context != null)

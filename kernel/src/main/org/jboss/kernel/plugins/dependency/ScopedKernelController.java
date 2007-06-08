@@ -53,7 +53,6 @@ public class ScopedKernelController extends AbstractKernelController
 {
    protected Kernel parentKernel;
    protected AbstractController underlyingController;
-   protected AbstractController parentController;
 
    public ScopedKernelController(Kernel parentKernel, AbstractController parentController) throws Exception
    {
@@ -62,22 +61,22 @@ public class ScopedKernelController extends AbstractKernelController
       if (parentKernel.getController() instanceof AbstractController == false)
          throw new IllegalArgumentException("Underlying controller not AbstractController instance!");
       this.underlyingController = (AbstractController)parentKernel.getController();
-      this.parentController = parentController;
+      setParentController(parentController);
       KernelConfig config = new ScopedKernelConfig(System.getProperties());
       kernel = KernelFactory.newInstance(config);
-      this.parentController.addController(this);
+      getParentController().addController(this);
    }
 
    private boolean isParentKernelController()
    {
-      return (parentController instanceof KernelController);
+      return (getParentController() instanceof KernelController);
    }
 
    private KernelController getParentKernelController()
    {
       if (isParentKernelController() == false)
          throw new IllegalArgumentException("Illegal call to parent Controller, not of KernelController instance!");
-      return (KernelController)parentController;
+      return (KernelController)getParentController();
    }
 
    // Scoped helper methods 
@@ -103,9 +102,9 @@ public class ScopedKernelController extends AbstractKernelController
 
    public void release()
    {
-      parentController.removeController(this);
+      getParentController().removeController(this);
       underlyingController = null;
-      parentController = null;
+      setParentController(null);
       parentKernel = null;
    }
 
@@ -118,12 +117,12 @@ public class ScopedKernelController extends AbstractKernelController
       {
          return context;
       }
-      return parentController.getContext(name, state);
+      return getParentController().getContext(name, state);
    }
 
    public Set<ControllerContext> getNotInstalled()
    {
-      Set<ControllerContext> uninstalled = new HashSet<ControllerContext>(parentController.getNotInstalled());
+      Set<ControllerContext> uninstalled = new HashSet<ControllerContext>(getParentController().getNotInstalled());
       uninstalled.addAll(super.getNotInstalled());
       return uninstalled;
    }
@@ -232,9 +231,9 @@ public class ScopedKernelController extends AbstractKernelController
       KernelRegistryEntry entry = super.getEntry(name);
       if (entry != null)
          return entry;
-      if (parentController instanceof KernelRegistryPlugin)
+      if (getParentController() instanceof KernelRegistryPlugin)
       {
-         return ((KernelRegistryPlugin)parentController).getEntry(name);
+         return ((KernelRegistryPlugin)getParentController()).getEntry(name);
       }
       return null;
    }

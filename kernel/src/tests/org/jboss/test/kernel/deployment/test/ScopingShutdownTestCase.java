@@ -22,6 +22,10 @@
 package org.jboss.test.kernel.deployment.test;
 
 import junit.framework.Test;
+import org.jboss.test.AbstractTestDelegate;
+import org.jboss.test.kernel.deployment.support.SimpleBean;
+import org.jboss.test.kernel.deployment.support.SimpleObjectWithBean;
+import org.jboss.test.kernel.junit.MicrocontainerShutdownTestDelegate;
 
 /**
  * Scoping shutdown tests.
@@ -41,12 +45,24 @@ public class ScopingShutdownTestCase extends ScopingDeploymentTest
       return suite(ScopingShutdownTestCase.class);
    }
 
+   /**
+    * Default setup with security manager enabled.
+    *
+    * @param clazz the class
+    * @return the delegate
+    * @throws Exception for any error
+    */
+   public static AbstractTestDelegate getDelegate(Class clazz) throws Exception
+   {
+      AbstractTestDelegate delegate = new ScopingShutdownTestDelegate(clazz);
+      delegate.enableSecurity = true;
+      return delegate;
+   }
+
    // ---- tests
 
-   // TODO - enable test
    public void testScopingShutdown() throws Throwable
    {
-/*
       ClassLoader cl = (ClassLoader) getBean("cl");
       assertNotNull(cl);
 
@@ -79,13 +95,12 @@ public class ScopingShutdownTestCase extends ScopingDeploymentTest
 
       ((MicrocontainerShutdownTestDelegate)getMCDelegate()).shutdown();
 
-      assertNull(getBean("deploy4"));
-      assertNull(getBean("deploy3"));
-      assertNull(getBean("deploy2"));
-      assertNull(getBean("deploy1"));
-      assertNull(getBean("appScopeObject"));
-      assertNull(getBean("cl"));
-*/
+      assertNull(getControllerContext("deploy4"));
+      assertNull(getControllerContext("deploy3"));
+      assertNull(getControllerContext("deploy2"));
+      assertNull(getControllerContext("deploy1"));
+      assertNull(getControllerContext("appScopeObject"));
+      assertNull(getControllerContext("cl"));
    }
 
 }

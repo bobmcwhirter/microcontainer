@@ -42,23 +42,30 @@ public class ScopingTestDelegate extends MicrocontainerShutdownTestDelegate
 
    protected KernelControllerContext getControllerContext(final Object name, final ControllerState state)
    {
+      Controller controller;
+      KernelControllerContext context;
       try
       {
-         Controller controller = new TestController((AbstractController)kernel.getController());
-         KernelControllerContext context = (KernelControllerContext)controller.getContext(name, state);
-         if (context == null)
-            throw new IllegalStateException("Bean not found " + name + " at state " + state);
-         return context;
+         controller = new TestController((AbstractController)kernel.getController());
+         context = (KernelControllerContext)controller.getContext(name, state);
       }
       catch (Exception e)
       {
          throw new Error(e);
       }
+      if (context == null)
+         handleNotFoundContext(controller, name, state);
+      return context;
    }
 
    private class TestController extends AbstractController
    {
       private AbstractController delegate;
+
+      public boolean isShutdown()
+      {
+         return delegate.isShutdown();
+      }
 
       public TestController(AbstractController controller) throws Exception
       {
