@@ -9,6 +9,14 @@
       used standalone outside the JBoss Application Server.
    </para>
 
+   <para>As we mention JBoss Application Server, while rewritting its Microkernel to POJO environment, there were other
+      aspects that also needed to be considered while changing the core functionality. New modules or subprojects were
+      introduced to the Microcontainer project to tightly integrate those aspects with the new POJO direction and to
+      eventually solve some of the basic problems that arose over the years with the changes application server went
+      through.
+      We will discuss those modules or subproject later on.
+   </para>
+
    <para>At its core, the JBoss Microcontainer is a generic "dependency injection" framework. It's primary function is
       to instantiate objects, figure out their dependencies (e.g., object A must be instantiated before object B), and
       then manage the relationship between those objects (e.g., object A is a property of object B). With the JBoss
@@ -17,8 +25,10 @@
       decouples the components in an application and makes the application easy to unit-test.
    </para>
 
-   <para>The JBoss Microcontainer is a big object factory that manages objects. In this sense, it is similar to existing
-      dependency injection frameworks such as the Spring framework and HiveMind framework. However, JBoss Microcontainer
+   <para>The JBoss Microcontainer is a big object factory that manages objects. In this sense, it is similar to
+      existing
+      dependency injection frameworks such as the Spring framework and HiveMind framework. However, JBoss
+      Microcontainer
       also has several important new features that set it apart from existing frameworks.
    </para>
 
@@ -34,35 +44,40 @@
          </para>
       </listitem>
       <listitem>
-         <para>JBoss Microcontainer integrates with the JBoss AOP (Aspect Oriented Programming) framework. In the JBoss
+         <para>JBoss Microcontainer integrates with the JBoss AOP (Aspect Oriented Programming) framework. In the
+            JBoss
             Microcontainer configuration file, you can easily wire aspects as services to POJOs.
          </para>
       </listitem>
       <listitem>
-         <para>JBoss Microcontainer is used as a replacement for JMX based kernel in the new JBoss AS 5.x and above. All
+         <para>JBoss Microcontainer is used as a replacement for JMX based kernel in the new JBoss AS 5.x and above.
+            All
             the existing features of MBeans are thightly integrated into new Microcontainer based ServiceController.
          </para>
       </listitem>
       <listitem>
-         <para>JBoss Microcontainer is embedded in JBoss AS 4.0.3 and above. It is the ideal choice if you need to
+         <para>JBoss Microcontainer is embedded in JBoss AS 4.x. It is the ideal choice if you need to
             develop shared services in JBoss AS.
          </para>
       </listitem>
    </itemizedlist>
 
    <para>Of course, you can also run JBoss Microcontainer outside of the JBoss AS. For instance, you can run it in a
-      Java SE (e.g., Swing) application or in the Tomcat servlet container. So, JBoss Microcontainer primarily targets
+      Java SE (e.g., Swing) application or in the Tomcat servlet container. So, JBoss Microcontainer primarily
+      targets
       three types of developers.
    </para>
 
    <itemizedlist mark="bullet">
       <listitem>
-         <para>Framework developers can use JBoss Microcontainer to assemble custom server frameworks. For instance, the
+         <para>Framework developers can use JBoss Microcontainer to assemble custom server frameworks. For instance,
+            the
             JBoss embeddable EJB3 framework is based on the Microcontainer.
          </para>
       </listitem>
       <listitem>
-         <para>JBoss application developers can develop POJO services that nicely integrate into the server and can be
+         <para>JBoss application developers can develop POJO services that nicely integrate into the server and can
+            be
             shared across applications.
          </para>
       </listitem>
@@ -74,7 +89,8 @@
       </listitem>
    </itemizedlist>
 
-   <para>A typical JBoss Microcontainer application or service include a set of POJOs that complete business tasks, as
+   <para>A typical JBoss Microcontainer application or service include a set of POJOs that complete business tasks,
+      as
       well as an XML configuration file called
       <varname>META-INF/jboss-beans.xml</varname>
       on the class path. The
@@ -90,7 +106,7 @@
    <para>This document takes you through some example deployments into
       JBoss Microcontainer 2.0 explaining how to configure POJOs and link them together
       through injection.
-      We will also explain how to use the Microcontainer modules inside new JBoss AS 5.x, specially the re-written
+      We will also explain how to use other Microcontainer modules inside new JBoss AS 5.x, specially the re-written
       deployers and classloader modules.
       Later will show how to do the same thing outside the application server.
    </para>

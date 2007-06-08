@@ -141,7 +141,7 @@
          application both as a standalone Java SE application and as a service in the JBoss AS.
       </para>
 
-    <para>This just skims the surface of the MicroContainer, showing the most
+    <para>This just skims the surface of the Microcontainer, showing the most
   common usecases. Other more complicated examples can be found in the tests
   (available from SVN).</para>
 

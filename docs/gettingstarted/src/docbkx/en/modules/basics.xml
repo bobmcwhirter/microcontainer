@@ -2,7 +2,7 @@
 <!DOCTYPE chapter PUBLIC "-//OASIS//DTD DocBook XML V4.4//EN"
       "http://www.oasis-open.org/docbook/xml/4.4/docbookx.dtd">
 
-<chapter id="basics">
+<section>
    <title>Basic Configuration and Usage</title>
 
    <para>The Microcontainer's main purpose is to allow external configuration of
@@ -1019,7 +1019,7 @@
    </section>
 
    <section>
-      <title>Contextual awareness - configuration, injection and callbacks</title>
+      <title>Contextual awareness</title>
 
       <para>
          With existing annoyance of using huge amounts of xml to sometimes wire up
@@ -1140,4 +1140,4 @@
 
    </section>
 
-</chapter>
+</section>
