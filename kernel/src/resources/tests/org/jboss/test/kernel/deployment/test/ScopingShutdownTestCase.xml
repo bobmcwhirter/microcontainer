@@ -1,0 +1,66 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<deployment xmlns="urn:jboss:bean-deployer:2.0">
+
+   <classloader>
+      <bean name="cl" class="org.jboss.test.kernel.deployment.support.NullClassLoader" />
+   </classloader>
+
+   <bean name="appScopeObject" class="org.jboss.test.kernel.deployment.support.SimpleObjectWithBean">
+      <annotation>@org.jboss.metadata.plugins.scope.ApplicationScope("testApp")</annotation>
+   </bean>
+
+   <bean name="deploy1" class="org.jboss.test.kernel.deployment.support.SimpleObjectWithBean">
+      <annotation>@org.jboss.metadata.plugins.scope.ApplicationScope("testApp")</annotation>
+      <annotation>@org.jboss.metadata.plugins.scope.DeploymentScope("deployment1")</annotation>
+      <property name="simpleBean"><inject bean="simple"/></property>
+   </bean>
+
+   <bean name="deploy2" class="org.jboss.test.kernel.deployment.support.SimpleObjectWithBean">
+      <annotation>@org.jboss.metadata.plugins.scope.ApplicationScope("testApp")</annotation>
+      <annotation>@org.jboss.metadata.plugins.scope.DeploymentScope("deployment2")</annotation>
+      <property name="simpleBean"><inject bean="simple"/></property>
+   </bean>
+
+   <bean name="deploy3" class="org.jboss.test.kernel.deployment.support.SimpleObjectWithBean">
+      <annotation>@org.jboss.metadata.plugins.scope.ApplicationScope("testApp")</annotation>
+      <annotation>@org.jboss.metadata.plugins.scope.DeploymentScope("deployment3")</annotation>
+      <property name="simpleBean"><inject bean="simpleFromBoot"/></property>
+   </bean>
+
+   <bean name="deploy4" class="org.jboss.test.kernel.deployment.support.SimpleObjectWithBean">
+      <annotation>@org.jboss.metadata.plugins.scope.ApplicationScope("testApp")</annotation>
+      <annotation>@org.jboss.metadata.plugins.scope.DeploymentScope("deployment4")</annotation>
+      <property name="simpleBean"><inject bean="simpleFromApp"/></property>
+   </bean>
+
+   <bean name="simple" class="org.jboss.test.kernel.deployment.support.SimpleBeanImpl">
+      <annotation>@org.jboss.metadata.plugins.scope.ApplicationScope("testApp")</annotation>
+      <annotation>@org.jboss.metadata.plugins.scope.DeploymentScope("deployment1")</annotation>
+      <constructor>
+         <parameter>deployment1</parameter>
+      </constructor>
+   </bean>
+
+   <bean name="simple" class="org.jboss.test.kernel.deployment.support.SimpleBeanImpl">
+      <annotation>@org.jboss.metadata.plugins.scope.ApplicationScope("testApp")</annotation>
+      <annotation>@org.jboss.metadata.plugins.scope.DeploymentScope("deployment2")</annotation>
+      <constructor>
+         <parameter>deployment2</parameter>
+      </constructor>
+   </bean>
+
+   <bean name="simpleFromBoot" class="org.jboss.test.kernel.deployment.support.SimpleBeanImpl">
+      <constructor>
+         <parameter>fromBoot</parameter>
+      </constructor>
+   </bean>
+
+   <bean name="simpleFromApp" class="org.jboss.test.kernel.deployment.support.SimpleBeanImpl">
+      <annotation>@org.jboss.metadata.plugins.scope.ApplicationScope("testApp")</annotation>
+      <constructor>
+         <parameter>fromApp</parameter>
+      </constructor>
+   </bean>
+
+</deployment>

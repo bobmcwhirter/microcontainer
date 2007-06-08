@@ -180,7 +180,7 @@ public class MicrocontainerTest extends AbstractTestCaseWithSetup
          throw new IllegalArgumentException("Resource not found: " + resource);
       getMCDelegate().undeploy(url);
    }
-   
+
    /**
     * Validate
     * 

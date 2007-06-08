@@ -22,32 +22,31 @@
 package org.jboss.test.kernel.deployment.test;
 
 import junit.framework.Test;
-import org.jboss.test.kernel.deployment.support.SimpleBean;
-import org.jboss.test.kernel.deployment.support.SimpleObjectWithBean;
 
 /**
- * Scoping tests.
+ * Scoping shutdown tests.
  * Test includes same named beans.
  *
  * @author <a href="mailto:ales.justin@genera-lynx.com">Ales Justin</a>
  */
-public class ScopingTestCase extends ScopingDeploymentTest
+public class ScopingShutdownTestCase extends ScopingDeploymentTest
 {
-   public ScopingTestCase(String name) throws Throwable
+   public ScopingShutdownTestCase(String name) throws Throwable
    {
       super(name);
    }
 
    public static Test suite()
    {
-      return suite(ScopingTestCase.class);
+      return suite(ScopingShutdownTestCase.class);
    }
 
    // ---- tests
 
-   // FIXME - correct 'simple' undeploy
-   public void testSimpleScoping() throws Throwable
+   // TODO - enable test
+   public void testScopingShutdown() throws Throwable
    {
+/*
       ClassLoader cl = (ClassLoader) getBean("cl");
       assertNotNull(cl);
 
@@ -77,6 +76,16 @@ public class ScopingTestCase extends ScopingDeploymentTest
       SimpleBean simple4 = deploy4.getSimpleBean();
       assertNotNull(simple4);
       assertEquals("fromApp", simple4.getConstructorString());
+
+      ((MicrocontainerShutdownTestDelegate)getMCDelegate()).shutdown();
+
+      assertNull(getBean("deploy4"));
+      assertNull(getBean("deploy3"));
+      assertNull(getBean("deploy2"));
+      assertNull(getBean("deploy1"));
+      assertNull(getBean("appScopeObject"));
+      assertNull(getBean("cl"));
+*/
    }
 
 }
