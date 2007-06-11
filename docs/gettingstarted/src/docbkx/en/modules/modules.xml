@@ -8,4 +8,13 @@
    <para>
       Rewrite ...
    </para>
+
+   <figure>
+      <title>Module dependency</title>
+      <mediaobject>
+         <imageobject>
+            <imagedata fileref="modules.odg"/>
+         </imageobject>
+      </mediaobject>
+   </figure>
 </chapter>

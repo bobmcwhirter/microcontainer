@@ -428,6 +428,31 @@
          example.setTitle(null);
       </programlisting>
 
+      <para>Sometimes it is still usefull to be able to set or inject a value which can be morfed / progressed into
+         needed type althogh existing type is not compatible (normally getting ClasCastException). This is mostly true
+         for java.lang.Number subclasses. Let's see how <varname>progression</varname> is used on the following example.
+      </para>
+
+      <programlisting>
+
+         &lt;bean name="FromBean" class="org.jboss.test.kernel.config.support.SimpleBean">
+            &lt;property name="adouble">123.456&lt;/property>
+            &lt;property name="AFloat" class="java.lang.Float">987.6543&lt;/property>
+            &lt;property name="anInt">314159&lt;/property>
+         &lt;/bean>
+
+         &lt;bean name="SimpleBean" class="org.jboss.test.kernel.config.support.SimpleBean">
+            &lt;property name="anint">&lt;inject bean="FromBean" property="adouble" />&lt;/property>
+            &lt;property name="AShort">&lt;inject bean="FromBean" property="AFloat" />&lt;/property>
+            &lt;property name="AFloat">&lt;inject bean="FromBean" property="anInt" />&lt;/property>
+         &lt;/bean>
+
+      </programlisting>
+
+      <para>SimpleBean is a plain JavaBean, property names reflect the field type: having a<varname>double</varname>
+         property name means that a field is of type double. A<varname>Float</varname> coresponds to Float type. Etc.
+      </para>
+
    </section>
 
    <section>
