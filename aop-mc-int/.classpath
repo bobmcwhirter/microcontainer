@@ -26,7 +26,6 @@
   <classpathentry kind="var" path="M2_REPO/qdox/qdox/1.6/qdox-1.6.jar" sourcepath="M2_REPO/qdox/qdox/1.6/qdox-1.6-sources.jar"/>
   <classpathentry kind="var" path="M2_REPO/log4j/log4j/1.2.14/log4j-1.2.14.jar" sourcepath="M2_REPO/log4j/log4j/1.2.14/log4j-1.2.14-sources.jar"/>
   <classpathentry kind="var" path="M2_REPO/jboss/jboss-common-logging-spi/2.0.4.GA/jboss-common-logging-spi-2.0.4.GA.jar" sourcepath="M2_REPO/jboss/jboss-common-logging-spi/2.0.4.GA/jboss-common-logging-spi-2.0.4.GA-sources.jar"/>
-  <classpathentry kind="lib" path="C:/Java/jdk/jdk1.5.0_10/lib/tools.jar"/>
   <classpathentry kind="var" path="M2_REPO/ant/ant/1.6.5/ant-1.6.5.jar" sourcepath="M2_REPO/ant/ant/1.6.5/ant-1.6.5-sources.jar"/>
   <classpathentry kind="var" path="M2_REPO/jboss/jboss-aop/2.0.0-SNAPSHOT/jboss-aop-2.0.0-SNAPSHOT.jar" sourcepath="M2_REPO/jboss/jboss-aop/2.0.0-SNAPSHOT/jboss-aop-2.0.0-SNAPSHOT-sources.jar"/>
   <classpathentry kind="var" path="M2_REPO/junit/junit/3.8.1/junit-3.8.1.jar" sourcepath="M2_REPO/junit/junit/3.8.1/junit-3.8.1-sources.jar"/>

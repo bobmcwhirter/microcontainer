@@ -25,7 +25,6 @@
   <classpathentry kind="var" path="M2_REPO/oswego-concurrent/concurrent/1.3.4/concurrent-1.3.4.jar"/>
   <classpathentry kind="var" path="M2_REPO/wutka-dtdparser/dtdparser121/1.2.1/dtdparser121-1.2.1.jar"/>
   <classpathentry kind="var" path="M2_REPO/jboss/jboss-vfs/2.0.4.snapshot/jboss-vfs-2.0.4.snapshot.jar" sourcepath="M2_REPO/jboss/jboss-vfs/2.0.4.snapshot/jboss-vfs-2.0.4.snapshot-sources.jar"/>
-  <classpathentry kind="lib" path="C:/Java/jdk/jdk1.5.0_10/lib/tools.jar"/>
   <classpathentry kind="var" path="M2_REPO/jboss/jboss-logging-spi/2.0.2.GA/jboss-logging-spi-2.0.2.GA.jar" sourcepath="M2_REPO/jboss/jboss-logging-spi/2.0.2.GA/jboss-logging-spi-2.0.2.GA-sources.jar"/>
   <classpathentry kind="var" path="M2_REPO/javassist/javassist/3.5-SNAPSHOT/javassist-3.5-SNAPSHOT.jar" sourcepath="M2_REPO/javassist/javassist/3.5-SNAPSHOT/javassist-3.5-SNAPSHOT-sources.jar"/>
   <classpathentry kind="var" path="M2_REPO/org/apache/ant/ant-junit/1.7.0/ant-junit-1.7.0.jar"/>
