@@ -429,7 +429,7 @@
       </programlisting>
 
       <para>Sometimes it is still usefull to be able to set or inject a value which can be morfed / progressed into
-         needed type althogh existing type is not compatible (normally getting ClasCastException). This is mostly true
+         needed type althogh existing type is not compatible (normally getting ClassCastException). This is mostly true
          for java.lang.Number subclasses. Let's see how <varname>progression</varname> is used on the following example.
       </para>
 
@@ -451,6 +451,13 @@
 
       <para>SimpleBean is a plain JavaBean, property names reflect the field type: having a<varname>double</varname>
          property name means that a field is of type double. A<varname>Float</varname> coresponds to Float type. Etc.
+      </para>
+
+      <para>You can change the progression behavior by setting System property
+         <varname>org.jboss.reflect.plugins.progressionConvertor</varname>,
+         putting the ProgressionConvertor's implementation fully qualified class name as value.
+         By default SimpleProgressionConvertor implementation is used. Another existing implementation is
+         NullProgressionConvertor, which doesn't do any actual progression.
       </para>
 
    </section>
@@ -1162,6 +1169,13 @@
          }
          }
       </programlisting>
+
+      <para>While using callbacks on the Collection subclasses, currently only basic Collection subinterfaces
+         are supported: List, Set and Queue. See BasicCollectionCallbackItemFactory for more details.
+         But you can change the Collection callback behaviour by providing your own CollectionCallbackItemFactory.
+         You do this by setting System property <varname>org.jboss.dependency.collectionCallbackItemFactory</varname>
+         and putting CollectionCallbackItemFactory implementation fully qualified class name as a value.
+      </para>
 
    </section>
 

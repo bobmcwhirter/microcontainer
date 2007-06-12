@@ -5,7 +5,105 @@
 <section>
    <title>Spring integration</title>
 
-   <para>XYZ
+   <para>Spring integration allows Spring XML files to be used for IoC without Spring BeanFactory/ApplicationContext.
+      This is possible as JBoss Microcontainer supports the same set of IoC features as Spring.
+      All you need to do is declare the right namespace: <varname>urn:jboss:spring-beans:2.0</varname>.
+      See the following example for a simple plain Spring XML example.
    </para>
+
+   <programlisting>
+      &lt;beans xmlns="urn:jboss:spring-beans:2.0">
+
+         &lt;bean id="testBean" class="org.jboss.test.spring.support.SimpleBean">
+            &lt;constructor-arg index="2">
+               &lt;value>SpringBean&lt;/value>
+            &lt;/constructor-arg>
+            &lt;constructor-arg index="0">
+               &lt;value>1&lt;/value>
+            &lt;/constructor-arg>
+            &lt;constructor-arg index="1">
+               &lt;value>3.14159&lt;/value>
+            &lt;/constructor-arg>
+            &lt;property name="mylist">
+               &lt;list value-type="java.lang.String">
+                  &lt;value>onel&lt;/value>
+                  &lt;value>twol&lt;/value>
+                  &lt;value>threel&lt;/value>
+               &lt;/list>
+            &lt;/property>
+            &lt;property name="myset">
+               &lt;set value-type="java.lang.String">
+                  &lt;value>ones&lt;/value>
+                  &lt;value>twos&lt;/value>
+                  &lt;value>ones&lt;/value>
+               &lt;/set>
+            &lt;/property>
+            &lt;property name="mymap">
+               &lt;map key-type="java.lang.String">
+                  &lt;entry>
+                     &lt;key>
+                        &lt;value>test_key&lt;/value>
+                     &lt;/key>
+                     &lt;value type="java.lang.String">myvalue&lt;/value>
+                  &lt;/entry>
+               &lt;/map>
+            &lt;/property>
+         &lt;/bean>
+
+      &lt;/beans>
+   </programlisting>
+
+   <para>But things would be too easy if we just let get away with plain Spring XML.
+      So what you can do is mix and match Microcontainer beans with Spring beans. It doesn't matter which
+      starting element you choose, as long as your beans have the right namespace.
+      Let see this on the next two examples.
+   </para>
+
+   <programlisting>
+      &lt;deployment xmlns="urn:jboss:bean-deployer:2.0">
+
+         &lt;bean name="oldBean" class="org.jboss.test.spring.support.OldBean">
+            &lt;property name="testBean">
+               &lt;inject/>
+            &lt;/property>
+         &lt;/bean>
+
+         &lt;bean xmlns="urn:jboss:spring-beans:2.0" id="testBean" class="org.jboss.test.spring.support.SimpleBean">
+            &lt;property name="mylist">
+               &lt;list value-type="java.lang.String">
+                  &lt;value>onel&lt;/value>
+                  &lt;value>twol&lt;/value>
+                  &lt;value>threel&lt;/value>
+               &lt;/list>
+            &lt;/property>
+         &lt;/bean>
+
+      &lt;/deployment>
+   </programlisting>
+
+   <para>In this example we have a Microcontainer beans at the start (deployment element at the start), and we mix
+      them with Spring beans.
+   </para>
+
+   <programlisting>
+      &lt;beans xmlns="urn:jboss:spring-beans:2.0">
+
+         &lt;bean id="testBean" class="org.jboss.test.spring.support.SimpleBean">
+            &lt;property name="refBean">
+               &lt;ref bean="oldBean"/>
+            &lt;/property>
+         &lt;/bean>
+
+         &lt;bean xmlns="urn:jboss:bean-deployer:2.0" name="oldBean" class="org.jboss.test.spring.support.OldBean">
+            &lt;property name="javaBeanString">JavaBean&lt;/property>
+         &lt;/bean>
+
+      &lt;/beans>
+   </programlisting>
+
+   <para>Here we start with Spring XML and add Microcontainer beans.</para>
+
+   <para>As you can see, all you need to change from your existing XML, be it Spring or Microcontainer,
+      is the namespace on the staring Spring beans element or bean element.</para>
 
 </section>
