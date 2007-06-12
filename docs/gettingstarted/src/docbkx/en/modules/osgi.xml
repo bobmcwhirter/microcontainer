@@ -5,7 +5,40 @@
 <chapter id="osgi">
    <title>OSGi module</title>
 
+   <para>We can see an increased demand for <ulink url="http://www.osgi.org">OSGi</ulink> technology these days.
+      Developers and users specially like OSGi kind of Classloader wiring. Being able to have Class dependency defined
+      as a versioned package dependency is something we've been lacking for while now. There are new JSRs in the making,
+      that will eventually solve this problem, but OSGi is here and now.
+   </para>
+
+   <para>Looking at the OSGi framework we saw a lot similarity with what we already have with Microcontainer. Another
+      aspect of OSGi that is cruical part of the core Framework is Service Registry. A simple lookup pattern that
+      takes Classloading wiring into the consideration when doing Service lookup. While we already have contextual
+      awareness in Microcontainer implementing this was a matter of simple <varname>OSGi Facade</varname> over the
+      existing Microcontainer registry. Together with new <xref linkend="classloader"/> there is a fully
+      OSGi r4.1 compatible solution available with the 2.0.0 Microcontainer.
+   </para>
+
+   <para>OSGi usage in Microcontainer falls down to three different aspects:
+      <itemizedlist>
+         <listitem>new OSGi Classloader</listitem>
+         <listitem>declarative or programmatic OSGi services deployment</listitem>
+         <listitem>OBR (OSGi Bundle Repository) usage</listitem>
+      </itemizedlist>
+   </para>
+
    <para>
-      OSGi ...
+      The new OSGi Classloader is used as a default Classloader, it is backward compatible with the existing UCL.
+   </para>
+
+   <para>
+      For the existing OSGi declarative services or programmatic usage via BundleActivator, there is a full support
+      of the OSGi core API. But for new service declaration, we encourage people to use much richer Microcontainer
+      IoC features. The Classloading behavior and Service Registry will take new Microcontainer services into
+      consideration.
+   </para>
+
+   <para>
+      OBR usage ...
    </para>
 </chapter>

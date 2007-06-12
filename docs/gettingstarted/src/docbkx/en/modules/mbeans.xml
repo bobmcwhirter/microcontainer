@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE book PUBLIC "-//OASIS//DTD DocBook XML V4.4//EN"
+      "http://www.oasis-open.org/docbook/xml/4.4/docbookx.dtd">
+
+<chapter id="mbeans">
+   <title>MBeans extensions</title>
+
+   <para>
+      MBeans extensions ...
+   </para>
+</chapter>
