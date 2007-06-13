@@ -15,28 +15,7 @@
       or just plain POJO behaviour.
    </para>
 
-   <section>
-      <title>Deployment</title>
-
-      <para>The
-         <varname>deployment</varname>
-         element acts as a container for many beans that are deployed together.
-      </para>
-
-      <programlisting>&lt;?xml version="1.0" encoding="UTF-8"?&gt;
-
-         &lt;!-- Deployment holds beans --&gt;
-         &lt;deployment xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-         xsi:schemaLocation="urn:jboss:bean-deployer bean-deployer_1_0.xsd"
-         xmlns="urn:jboss:bean-deployer"&gt;
-
-         &lt;!-- bean part of the deployment --&gt;
-         &lt;bean .../&gt;
-
-         &lt;!-- bean part of the deployment --&gt;
-         &lt;bean .../&gt;
-
-         &lt;/deployment&gt;</programlisting>
-   </section>
+   <para>AOP ...
+   </para>
 
 </section>
