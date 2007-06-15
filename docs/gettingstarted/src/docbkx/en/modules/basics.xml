@@ -1132,6 +1132,15 @@
          </itemizedlist>
       </para>
 
+      <para>On the other hand, if you don't want for a particular bean to be involved as a candidate for
+         autowiring, you can set bean element's attribute <varname>autowire-candidate</varname> to false.
+      </para>
+
+      <programlisting>
+         &lt;bean name="ignored" class="com.acme.Example" autowire-candidate="false"&gt;
+         &lt;/bean&gt;
+      </programlisting>
+
       <para>
          TODO for bean autowiring.
       </para>
