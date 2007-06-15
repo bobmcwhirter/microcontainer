@@ -980,11 +980,58 @@
    <section>
       <title>Alias</title>
 
-      <para>
-         TODO ... alias
+      <para>Mostly bean will have one unique name, but sometimes it is useful to be able to have an extra name.
+         The extra ones are considered aliases.
       </para>
 
       <programlisting>
+         &lt;bean xmlns="urn:jboss:bean-deployer:2.0" class="org.acme.Example">
+            &lt;alias>SimpleAlias&lt;/alias>
+         &lt;/bean>
+      </programlisting>
+
+      <para>As with all String values you can have System property replacement as part of actual alias value.
+         Additionally you can specify if this replacement is ignored. Or you can even convert final alias String value
+         into any other class supported by PropertyEditors by setting class attribute on alias element. Let see this
+         configuration on examples below.
+      </para>
+
+      <programlisting>
+         &lt;bean xmlns="urn:jboss:bean-deployer:2.0" class="org.acme.Example">
+            &lt;alias>${example.cluster.name}&lt;/alias>
+         &lt;/bean>
+
+         &lt;bean xmlns="urn:jboss:bean-deployer:2.0" class="org.acme.Example">
+            &lt;alias replace="false">X${alias.test.name}X&lt;/alias>
+         &lt;/bean>
+
+         &lt;bean xmlns="urn:jboss:bean-deployer:2.0" class="org.acme.Example">
+            &lt;alias class="java.lang.Integer">12345&lt;/alias>
+         &lt;/bean>
+      </programlisting>
+
+      <para>Having to specify all aliases when the bean is actually defined is not always adequate however. It is
+         sometimes desirable to introduce an alias for a bean which is defined elsewhere. In XML-based configuration
+         metadata this may be accomplished via the use of the standalone &lt;alias/> element.
+      </para>
+
+      <programlisting>
+         &lt;deployment name="FirstDeployment" xmlns="urn:jboss:bean-deployer:2.0">
+            &lt;bean name="Bean1" class="java.lang.Object"/>
+
+            &lt;bean name="Bean2" class="java.lang.Object"/>
+         &lt;/deployment>
+
+         &lt;deployment name="SecondDeployment" xmlns="urn:jboss:bean-deployer:2.0">
+            &lt;bean name="Xyz1" class="java.lang.Object">
+               &lt;property name="locker1">&lt;inject name="Lock1">&lt;/property>
+               &lt;property name="locker2">&lt;inject name="Lock2">&lt;/property>
+            &lt;/bean>
+
+            &lt;alias name="Bean1">Lock1&lt;/alias>
+
+            &lt;alias name="Bean2">Lock2&lt;/alias>
+         &lt;/deployment>
       </programlisting>
 
    </section>
