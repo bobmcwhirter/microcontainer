@@ -9,114 +9,134 @@ See the terms of license at gnu.org
 =========================================================================== -->
 <project name="build-common" default="usage">
 
-<property name="examples.home" value=".."/>
-<property file="${examples.home}/build.properties"/>
-<property file="$(user.home}/build.properties"/>
+   <property name="examples.home" value=".."/>
+   <property file="${examples.home}/build.properties"/>
+   <property file="$(user.home}/build.properties"/>
 
-<!-- ==========================================================================
-Classpath
-=========================================================================== -->
-<path id="compile.classpath">
+   <!-- ==========================================================================
+  Classpath
+  =========================================================================== -->
+   <path id="compile.classpath">
 
-   <pathelement location="build"/>
-   <fileset dir="${jboss.home}/lib">
-      <include name="*.jar"/>
-   </fileset>
+      <pathelement location="build"/>
+      <fileset dir="${jboss.home}/lib">
+         <include name="*.jar"/>
+      </fileset>
 
-</path>
+   </path>
 
-<path id="run.classpath">
+   <path id="run.classpath">
 
-   <fileset dir="dist">
-       <include name="*.jar"/>
-   </fileset>
-   <fileset dir="${jboss.home}/lib">
-       <include name="*.jar"/>
-   </fileset>
+      <fileset dir="dist">
+         <include name="*.jar"/>
+      </fileset>
+      <fileset dir="${jboss.home}/lib">
+         <include name="*.jar"/>
+      </fileset>
+      <fileset dir="${jboss.home}/lib/endorsed">
+         <include name="*.jar"/>
+      </fileset>
 
-</path>
+   </path>
 
-<!-- ==========================================================================
-Compile the source
-=========================================================================== -->
-<target name="compile">
+   <!-- ==========================================================================
+  Compile the source
+  =========================================================================== -->
+   <target name="compile">
 
-   <mkdir dir="build"/>
+      <mkdir dir="build"/>
 
-   <javac destdir="build"
-          debug="on"
-          deprecation="on"
-          optimize="on"
-          classpathref="compile.classpath">
-      <src path="src"/>
-   </javac>
+      <javac destdir="build"
+             debug="on"
+             deprecation="on"
+             optimize="on"
+             classpathref="compile.classpath">
+         <src path="src"/>
+      </javac>
 
-</target>
+   </target>
 
-<!-- ==========================================================================
-Do the packaging
-=========================================================================== -->
-<target name="dist" depends="compile">
+   <!-- ==========================================================================
+  Do the packaging
+  =========================================================================== -->
+   <target name="dist" depends="compile">
 
-   <copy todir="build">
-      <fileset dir="src/resources"/>
-   </copy>
+      <copy todir="build">
+         <fileset dir="src/resources"/>
+      </copy>
 
-   <mkdir dir="dist"/>
+      <mkdir dir="dist"/>
 
-   <jar jarfile="dist/${ant.project.name}.jar" basedir="build"/>
+      <jar jarfile="dist/${ant.project.name}.jar" basedir="build"/>
 
-</target>
+   </target>
 
-<!-- ==========================================================================
-Deploy the package(s)
-=========================================================================== -->
-<target name="deploy" depends="dist">
+   <!-- ==========================================================================
+  Do the packaging
+  =========================================================================== -->
+   <target name="standalone.dist" depends="compile">
 
-   <copy todir="${jboss.home}/server/${jboss.config}/deploy">
-      <fileset dir="dist"/>
-   </copy>
+      <copy todir="build">
+         <fileset dir="src/resources"/>
+         <fileset file="../log4j.properties"/>
+      </copy>
 
-</target>
+      <mkdir dir="dist"/>
+
+      <jar jarfile="dist/${ant.project.name}.jar" basedir="build"/>
+
+   </target>
+
+   <!-- ==========================================================================
+  Deploy the package(s)
+  =========================================================================== -->
+   <target name="deploy" depends="dist">
+
+      <copy todir="${jboss.home}/server/${jboss.config}/deploy">
+         <fileset dir="dist"/>
+      </copy>
+
+   </target>
 
 
-<!-- ==========================================================================
-Undeploy the package(s)
-=========================================================================== -->
-<target name="undeploy">
+   <!-- ==========================================================================
+  Undeploy the package(s)
+  =========================================================================== -->
+   <target name="undeploy">
 
-   <delete file="${jboss.home}/server/${jboss.config}/deploy/${ant.project.name}.jar"/>
+      <delete file="${jboss.home}/server/${jboss.config}/deploy/${ant.project.name}.jar"/>
 
-</target>
+   </target>
 
-<!-- ==========================================================================
-Run standalone 
-=========================================================================== -->
-<target name="run" depends="dist">
+   <!-- ==========================================================================
+  Run standalone
+  =========================================================================== -->
+   <target name="run" depends="standalone.dist">
 
-   <java classname="org.jboss.kernel.plugins.bootstrap.standalone.StandaloneBootstrap" fork="true">
-     <classpath refid="run.classpath"/>
-  </java>
+      <java classname="org.jboss.kernel.plugins.bootstrap.standalone.StandaloneBootstrap" fork="true">
+         <classpath refid="run.classpath"/>
+      </java>
 
-</target>
+   </target>
 
-<!-- ==========================================================================
-Cleans the build environment
-=========================================================================== -->
-<target name="clean" depends="undeploy">
+   <!-- ==========================================================================
+  Cleans the build environment
+  =========================================================================== -->
+   <target name="clean" depends="undeploy">
 
-   <delete dir="dist"/>
-   <delete dir="build"/>
+      <delete dir="dist"/>
+      <delete dir="build"/>
 
-</target>
+   </target>
 
-<!-- ==========================================================================
-Usage
-=========================================================================== -->
-<target name="usage">
+   <!-- ==========================================================================
+  Usage
+  =========================================================================== -->
+   <target name="usage">
 
-   <echo>This is a utility build file used by the other examples</echo>
-   <echo>cd into a subdirectory to run a specific example</echo>
-</target>
+      <echo>This is a utility build file used by the other examples</echo>
+      <echo>cd into a subdirectory to run a specific example</echo>
+
+   </target>
 
 </project>
