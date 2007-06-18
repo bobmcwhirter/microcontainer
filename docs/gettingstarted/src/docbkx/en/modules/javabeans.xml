@@ -5,13 +5,86 @@
 <section>
    <title>Java beans</title>
 
-   <para>JavaBeans ...
+   <para>In Container module there is a simple support for
+      <ulink url="http://java.sun.com/products/javabeans/">JavaBeans</ulink> configuration. When we have some existing
+      JavaBeans XML, we can easily port that bean configuration into Microcontainer beans configuration. Or if all we
+      really need is simple configuration, no dependency, JavaBeans configuration is enough. Let see this
+      in the examples below.
    </para>
 
    <programlisting>
-      TODO ...
+      &lt;javabean xmlns="urn:jboss:javabean:1.0" class="org.jboss.test.javabean.support.SimpleBean">
+         &lt;property name="AString">StringValue&lt;/property>
+         &lt;property name="AByte">12&lt;/property>
+         &lt;property name="ABoolean">true&lt;/property>
+         &lt;property name="AShort">123&lt;/property>
+         &lt;property name="anInt">1234&lt;/property>
+         &lt;property name="ALong">12345&lt;/property>
+         &lt;property name="AFloat">3.14&lt;/property>
+         &lt;property name="ADouble">3.14e12&lt;/property>
+         &lt;property name="ADate">Jan 01 00:00:00 CET 2001&lt;/property>
+         &lt;property name="ABigDecimal">12e4&lt;/property>
+         &lt;property name="ABigInteger">123456&lt;/property>
+         &lt;property name="abyte">12&lt;/property>
+         &lt;property name="aboolean">true&lt;/property>
+         &lt;property name="ashort">123&lt;/property>
+         &lt;property name="anint">1234&lt;/property>
+         &lt;property name="along">12345&lt;/property>
+         &lt;property name="afloat">3.14&lt;/property>
+         &lt;property name="adouble">3.14e12&lt;/property>
+         &lt;property name="ANumber" class="java.lang.Long">12345&lt;/property>
+         &lt;property name="overloadedProperty">StringValue&lt;/property>
+         &lt;property name="XYZ">XYZ&lt;/property>
+         &lt;property name="abc">abc&lt;/property>
+      &lt;/javabean>
    </programlisting>
 
-   <para>FooBar</para>
+   <para>Simple configuration via JavaBean setters.</para>
+
+   <programlisting>      
+      &lt;javabean xmlns="urn:jboss:javabean:2.0"
+          class="org.jboss.test.javabean.support.SimpleBean">
+          &lt;constructor factoryClass="org.jboss.test.javabean.support.SimpleBeanFactory"
+              factoryMethod="newInstance">
+              &lt;property name="anObject" class="java.lang.Object">anObjectValue&lt;/property>
+              &lt;property name="AString">StringValue&lt;/property>
+              &lt;property name="AByte">12&lt;/property>
+              &lt;property name="ABoolean">true&lt;/property>
+              &lt;property name="ACharacter">x&lt;/property>
+              &lt;property name="AShort">123&lt;/property>
+              &lt;property name="anInt">1234&lt;/property>
+              &lt;property name="ALong">12345&lt;/property>
+              &lt;property name="AFloat">3.14&lt;/property>
+              &lt;property name="ADouble">3.14e12&lt;/property>
+              &lt;property name="ADate">Jan 01 00:00:00 CET 2001&lt;/property>
+              &lt;property name="ABigDecimal">12e4&lt;/property>
+              &lt;property name="ABigInteger">123456&lt;/property>
+              &lt;property name="abyte">12&lt;/property>
+              &lt;property name="aboolean">true&lt;/property>
+              &lt;property name="achar">y&lt;/property>
+              &lt;property name="ashort">123&lt;/property>
+              &lt;property name="anint">1234&lt;/property>
+              &lt;property name="along">12345&lt;/property>
+              &lt;property name="afloat">3.14&lt;/property>
+              &lt;property name="adouble">3.14e12&lt;/property>
+              &lt;property name="ANumber" class="java.lang.Long">12345&lt;/property>
+              &lt;property name="overloadedProperty">StringValue&lt;/property>
+              &lt;property name="XYZ">XYZ&lt;/property>
+              &lt;property name="abc">abc&lt;/property>
+          &lt;/constructor>
+      &lt;/javabean>
+   </programlisting>
+
+   <para>Constructor configuration via factory class static method call.</para>
+
+   <programlisting>      
+      &lt;bean xmlns="urn:jboss:bean-deployer:2.0" class="org.jboss.acme.Example">
+         &lt;property name="PropertyName">
+            &lt;javabean xmlns="urn:jboss:javabean:1.0" class="org.jboss.test.kernel.deployment.xml.support.SerializableObject"/>
+         &lt;/property>
+      &lt;/bean>
+   </programlisting>
+
+   <para>You can use JavaBean with Microcontainer beans in all cases where you could use plain value.</para>
 
 </section>
