@@ -1,7 +1,7 @@
 <?xml version="1.0"?>
 
 <!-- ==========================================================================
-A template build file for building jboss4 applications
+A template build file for building JBoss5 applications
 Requires ant1.6+
 
 Distributable under the LGL
@@ -10,7 +10,6 @@ See the terms of license at gnu.org
 <project name="build-common" default="usage">
 
 <property name="examples.home" value=".."/>
-<property name="jboss.micro.home" value="../.."/>
 <property file="${examples.home}/build.properties"/>
 <property file="$(user.home}/build.properties"/>
 
@@ -20,7 +19,7 @@ Classpath
 <path id="compile.classpath">
 
    <pathelement location="build"/>
-   <fileset dir="${jboss.micro.home}/lib">
+   <fileset dir="${jboss.home}/lib">
       <include name="*.jar"/>
    </fileset>
 
@@ -31,7 +30,7 @@ Classpath
    <fileset dir="dist">
        <include name="*.jar"/>
    </fileset>
-   <fileset dir="${jboss.micro.home}/lib">
+   <fileset dir="${jboss.home}/lib">
        <include name="*.jar"/>
    </fileset>
 
