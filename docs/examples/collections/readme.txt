@@ -9,7 +9,7 @@ compile:
 
 dist:
      [copy] Copying 1 file to /home/adrian/jboss-head/workspace/kernel/output/microcontainer-1.0.0/examples/collections/build
-      [jar] Building jar: /home/adrian/jboss-head/workspace/kernel/output/microcontainer-1.0.0/examples/collections/dist/example-collections.beans
+      [jar] Building jar: /home/adrian/jboss-head/workspace/kernel/output/microcontainer-1.0.0/examples/collections/dist/example-collections.jar
 
 run:
      [java] Collection type=java.util.ArrayList

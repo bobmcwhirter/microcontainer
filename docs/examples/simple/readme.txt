@@ -15,7 +15,7 @@ compile:
 dist:
      [copy] Copying 1 file to /home/adrian/jboss-head/workspace/kernel/output/microcontainer-1.0.0/examples/simple/build
     [mkdir] Created dir: /home/adrian/jboss-head/workspace/kernel/output/microcontainer-1.0.0/examples/simple/dist
-      [jar] Building jar: /home/adrian/jboss-head/workspace/kernel/output/microcontainer-1.0.0/examples/simple/dist/example-simple.beans
+      [jar] Building jar: /home/adrian/jboss-head/workspace/kernel/output/microcontainer-1.0.0/examples/simple/dist/example-simple.jar
 
 run:
      [java] SimpleBean() constructor

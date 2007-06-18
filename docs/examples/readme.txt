@@ -27,7 +27,7 @@ properties: property configuration
 injection: referencing other beans
 collections: creating collections
 lifecycle: the create/start/stop/destroy lifecycle
-locator: examples of how to use the micrcontainer to create a locator
+locator: examples of how to use the microcontainer to create a locator
 
 This just skims the surface of the Microcontainer, showing the most common
-usecases. Other more complicated examples can be found in the tests (available from cvs).
+usecases. Other more complicated examples can be found in the tests (available from svn).

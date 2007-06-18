@@ -29,7 +29,7 @@ Classpath
 <path id="run.classpath">
 
    <fileset dir="dist">
-       <include name="*.beans"/>
+       <include name="*.jar"/>
    </fileset>
    <fileset dir="${jboss.micro.home}/lib">
        <include name="*.jar"/>
@@ -65,7 +65,7 @@ Do the packaging
 
    <mkdir dir="dist"/>
 
-   <jar jarfile="dist/${ant.project.name}.beans" basedir="build"/>
+   <jar jarfile="dist/${ant.project.name}.jar" basedir="build"/>
 
 </target>
 
@@ -86,7 +86,7 @@ Undeploy the package(s)
 =========================================================================== -->
 <target name="undeploy">
 
-   <delete file="${jboss.home}/server/${jboss.config}/deploy/${ant.project.name}.beans"/>
+   <delete file="${jboss.home}/server/${jboss.config}/deploy/${ant.project.name}.jar"/>
 
 </target>
 

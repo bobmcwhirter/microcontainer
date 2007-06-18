@@ -15,7 +15,7 @@ compile:
 dist:
      [copy] Copying 1 file to /home/ejort/jboss-head/workspace/kernel/output/microcontainer-1.0.2/examples/locator/build
     [mkdir] Created dir: /home/ejort/jboss-head/workspace/kernel/output/microcontainer-1.0.2/examples/locator/dist
-      [jar] Building jar: /home/ejort/jboss-head/workspace/kernel/output/microcontainer-1.0.2/examples/locator/dist/example-locator.beans
+      [jar] Building jar: /home/ejort/jboss-head/workspace/kernel/output/microcontainer-1.0.2/examples/locator/dist/example-locator.jar
 
 run:
      [java] =============================================================

@@ -12,7 +12,7 @@ compile:
 
 dist:
      [copy] Copying 1 file to /home/adrian/jboss-head/workspace/kernel/output/microcontainer-1.0.0/examples/injection/build
-      [jar] Building jar: /home/adrian/jboss-head/workspace/kernel/output/microcontainer-1.0.0/examples/injection/dist/example-injection.beans
+      [jar] Building jar: /home/adrian/jboss-head/workspace/kernel/output/microcontainer-1.0.0/examples/injection/dist/example-injection.jar
 
 run:
      [java] InjectionBean() InjectionBean1

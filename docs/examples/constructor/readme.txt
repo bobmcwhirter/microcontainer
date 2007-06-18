@@ -12,7 +12,7 @@ compile:
 dist:
      [copy] Copying 1 file to /home/adrian/jboss-head/workspace/kernel/output/microcontainer-1.0.0/examples/constructor/build
     [mkdir] Created dir: /home/adrian/jboss-head/workspace/kernel/output/microcontainer-1.0.0/examples/constructor/dist
-      [jar] Building jar: /home/adrian/jboss-head/workspace/kernel/output/microcontainer-1.0.0/examples/constructor/dist/example-constructor.beans
+      [jar] Building jar: /home/adrian/jboss-head/workspace/kernel/output/microcontainer-1.0.0/examples/constructor/dist/example-constructor.jar
 
 run:
      [java] ConstructorBean(int) with 4

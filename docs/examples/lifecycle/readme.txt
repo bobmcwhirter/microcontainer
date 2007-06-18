@@ -9,7 +9,7 @@ compile:
     [javac] Compiling 1 source file to /home/adrian/jboss-head/workspace/kernel/output/microcontainer-1.0.0/examples/lifecycle/build
 
 dist:
-      [jar] Building jar: /home/adrian/jboss-head/workspace/kernel/output/microcontainer-1.0.0/examples/lifecycle/dist/example-lifecycle.beans
+      [jar] Building jar: /home/adrian/jboss-head/workspace/kernel/output/microcontainer-1.0.0/examples/lifecycle/dist/example-lifecycle.jar
 
 run:
      [java] LifecycleBean() Lifecycle1

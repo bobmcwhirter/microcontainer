@@ -10,7 +10,7 @@ compile:
 
 dist:
      [copy] Copying 1 file to /home/adrian/jboss-head/workspace/kernel/output/microcontainer-1.0.0/examples/properties/build
-      [jar] Building jar: /home/adrian/jboss-head/workspace/kernel/output/microcontainer-1.0.0/examples/properties/dist/example-properties.beans
+      [jar] Building jar: /home/adrian/jboss-head/workspace/kernel/output/microcontainer-1.0.0/examples/properties/dist/example-properties.jar
 
 run:
      [java] PropertiesBean()
