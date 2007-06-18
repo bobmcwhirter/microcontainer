@@ -47,8 +47,8 @@
 
       <programlisting>
          &lt;deployment xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-         xsi:schemaLocation="urn:jboss:bean-deployer bean-deployer_1_0.xsd"
-         xmlns="urn:jboss:bean-deployer">
+         xsi:schemaLocation="urn:jboss:bean-deployer bean-deployer_2_0.xsd"
+         xmlns="urn:jboss:bean-deployer:2.0">
 
          &lt;bean name="Simple"
          class="org.jboss.example.microcontainer.simple.SimpleBean"/>
