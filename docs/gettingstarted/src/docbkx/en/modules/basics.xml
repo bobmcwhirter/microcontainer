@@ -1033,6 +1033,13 @@
 
          &lt;/deployment>
       </programlisting>
+
+      <para>The only issue with having annotations defined via XML is that they are per instance basis - 
+         as already mentioned, not added at compile time. In this case you need an external mechanism in
+         order to do the annotation inspection. In Microcontainer this is its MetaData Repository.
+         See how this is done in Reference Manual, TODO.
+      </para>
+
    </section>
 
    <section>
