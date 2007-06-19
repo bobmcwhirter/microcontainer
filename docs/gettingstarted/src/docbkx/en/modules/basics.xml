@@ -992,6 +992,7 @@
             <listitem>callback</listitem>
             <listitem>annotated value</listitem>
          </itemizedlist>
+         Let's see some use cases on the examples below.
       </para>
 
       <programlisting>
