@@ -978,6 +978,63 @@
    </section>
 
    <section>
+      <title>Annotations</title>
+
+      <para>With the new Microcontainer 2.0 we've added support for annotations via XML. Meaning you can have annotation
+         support even in Java 1.4 and before, depending on the retrowowen Microcontainer project.
+         Each annotation is set per bean instance and you can set annotations on the following types:
+         <itemizedlist>
+            <listitem>deployment (all beans inherit this annotations)</listitem>
+            <listitem>bean</listitem>
+            <listitem>constructor</listitem>
+            <listitem>lifecycle</listitem>
+            <listitem>install / uninstall</listitem>
+            <listitem>callback</listitem>
+            <listitem>annotated value</listitem>
+         </itemizedlist>
+      </para>
+
+      <programlisting>
+         &lt;deployment name="SimpleDeployment" xmlns="urn:jboss:bean-deployer:2.0">
+
+            &lt;annotation>@org.jboss.test.kernel.deployment.xml.support.Annotation1&lt;/annotation>
+            &lt;annotation>@org.jboss.test.kernel.deployment.xml.support.AnnotationWithAttributes(clazz=java.lang.Integer.class, integer=100, str="Annotations are nice")&lt;/annotation>
+
+            &lt;bean name="bn1" class="org.jboss.test.Example1">
+               &lt;annotation>@org.jboss.test.kernel.deployment.xml.support.Annotation2&lt;/annotation>
+               &lt;annotation>@org.jboss.test.kernel.deployment.xml.support.Annotation3&lt;/annotation>
+            &lt;/bean>
+
+            &lt;bean name="bn2" class="org.jboss.test.Example2">
+               &lt;constructor>
+                  &lt;annotation>@org.jboss.test.kernel.deployment.xml.support.Annotation3&lt;/annotation>
+               &lt;/constructor>
+            &lt;/bean>
+
+            &lt;bean name="bn3" class="org.jboss.test.Example3">
+               &lt;install method="someMethod">
+                  &lt;annotation>@org.jboss.test.kernel.deployment.xml.support.Annotation1&lt;/annotation>
+               &lt;/install>
+            &lt;/bean>
+
+            &lt;bean name="bn4" class="org.jboss.test.Example4">
+               &lt;create>
+                  &lt;annotation>@org.jboss.test.kernel.deployment.xml.support.Annotation1&lt;/annotation>
+               &lt;/create>
+            &lt;/bean>
+
+            &lt;bean name="bn5" class="org.jboss.test.Example5">
+               &lt;property name="PropertyName">
+                  &lt;annotation>@org.jboss.test.kernel.deployment.xml.support.Annotation1&lt;/annotation>
+                  &lt;value>123&lt;/value>
+               &lt;/property>
+            &lt;/bean>
+
+         &lt;/deployment>
+      </programlisting>
+   </section>
+
+   <section>
       <title>Alias</title>
 
       <para>Mostly bean will have one unique name, but sometimes it is useful to be able to have an extra name.

@@ -23,17 +23,22 @@ package org.jboss.test.kernel.deployment.xml.test;
 
 import java.util.List;
 import java.util.Set;
+import java.util.ArrayList;
+import java.lang.annotation.Annotation;
 
 import junit.framework.Test;
 import org.jboss.beans.metadata.plugins.factory.GenericBeanFactory;
 import org.jboss.beans.metadata.spi.BeanMetaData;
 import org.jboss.beans.metadata.spi.BeanMetaDataFactory;
 import org.jboss.beans.metadata.spi.LifecycleMetaData;
+import org.jboss.beans.metadata.spi.AnnotationMetaData;
 import org.jboss.dependency.spi.ControllerMode;
 import org.jboss.kernel.plugins.deployment.AbstractKernelDeployment;
 import org.jboss.test.kernel.deployment.xml.support.TestBeanMetaDataFactory;
 import org.jboss.test.kernel.deployment.xml.support.TestBeanMetaDataFactory1;
 import org.jboss.test.kernel.deployment.xml.support.TestBeanMetaDataFactory2;
+import org.jboss.test.kernel.deployment.xml.support.Annotation1;
+import org.jboss.test.kernel.deployment.xml.support.AnnotationWithAttributes;
 
 /**
  * DeploymentTestCase.
@@ -291,6 +296,29 @@ public class DeploymentTestCase extends AbstractXMLTest
       assertNotNull(sndAliases);
       assertEquals(1, sndAliases.size());
       assertEquals("SecondAlias", sndAliases.iterator().next());
+   }
+
+   public void testDeploymentWithAnnotations() throws Exception
+   {
+      AbstractKernelDeployment deployment = unmarshalDeployment("DeploymentWithAnnotations.xml");
+      Set<AnnotationMetaData> annotations = deployment.getAnnotations();
+      assertNotNull(annotations);
+      assertEquals(2, annotations.size());
+      List<AnnotationMetaData> annotationList = new ArrayList<AnnotationMetaData>(annotations);
+      Annotation ann = annotationList.get(0).getAnnotationInstance();
+      assertNotNull(ann);
+      assertEquals(Annotation1.class.getName(), ann.annotationType().getName());
+      ann = annotationList.get(1).getAnnotationInstance();
+      assertNotNull(ann);
+      assertEquals(AnnotationWithAttributes.class.getName(), ann.annotationType().getName());
+      assertTrue(ann instanceof AnnotationWithAttributes);
+      AnnotationWithAttributes ann1 = (AnnotationWithAttributes)ann;
+      assertNotNull(ann1.clazz());
+      assertEquals(Integer.class, ann1.clazz());
+      assertNotNull(ann1.integer());
+      assertEquals(100, ann1.integer());
+      assertNotNull(ann1.str());
+      assertEquals("Annotations are nice", ann1.str());
    }
 
    public static Test suite()
