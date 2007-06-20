@@ -1,0 +1,29 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<deployment xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+            xsi:schemaLocation="urn:jboss:bean-deployer:2.0 bean-deployer_2_0.xsd"
+            xmlns="urn:jboss:bean-deployer:2.0">
+
+   <bean name="AnnotationChecker" class="org.jboss.example.microcontainer.annotations.AnnotationChecker">
+      <property name="kernel"><inject bean="jboss.kernel:service=Kernel"/></property>
+      <property name="checkerMap">
+         <map keyClass="java.lang.String">
+            <entry>
+               <key>pojo</key>
+               <value>
+                  <set elementClass="java.lang.String">
+                     <value>org.jboss.example.microcontainer.annotations.Name</value>
+                  </set>
+               </value>
+            </entry>
+         </map>
+      </property>
+      <start method="check"/>
+      <demand>pojo</demand>
+   </bean>
+
+   <bean name="pojo" class="org.jboss.example.microcontainer.annotations.POJO">
+      <annotation>@org.jboss.example.microcontainer.annotations.Name("pojo")</annotation>
+   </bean>
+
+</deployment>

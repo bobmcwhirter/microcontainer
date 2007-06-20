@@ -1,0 +1,14 @@
+<?xml version="1.0"?>
+
+<!-- ==========================================================================
+A template build file for building jboss5 applications
+Requires ant1.6+
+
+Distributable under the LGL
+See the terms of license at gnu.org
+=========================================================================== -->
+<project name="example-annotations" default="run" basedir=".">
+
+   <!-- common build file -->
+   <import file="../build-common.xml"/>
+</project>

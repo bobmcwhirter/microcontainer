@@ -1,0 +1,20 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<deployment xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+            xsi:schemaLocation="urn:jboss:bean-deployer:2.0 bean-deployer_2_0.xsd"
+            xmlns="urn:jboss:bean-deployer:2.0">
+
+   <bean name="demander" class="org.jboss.example.microcontainer.demand.Demander">
+      <demand state="Create">guice</demand>
+      <demand state="Create">coke</demand>
+   </bean>
+
+   <bean name="guice" class="org.jboss.example.microcontainer.demand.Starters">
+      <install method="installed"/>
+   </bean>
+
+   <bean name="coke" class="org.jboss.example.microcontainer.demand.Starters">
+      <install method="installed"/>
+   </bean>
+
+</deployment>

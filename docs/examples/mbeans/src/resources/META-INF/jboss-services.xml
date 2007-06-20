@@ -1,0 +1,12 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<server>
+
+   <mbean code="org.jboss.example.microcontainer.mbeans.TestService"
+      name="jboss.j2ee:service=MCExampleTestService"
+      xmbean-dd="">
+      <attribute name="InjecteeName"><inject bean="PojoInjectee" property="name"/></attribute>
+   </mbean>
+
+</server>
+
