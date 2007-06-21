@@ -978,7 +978,7 @@
    </section>
 
    <section>
-      <title>Annotations</title>
+      <title>Annotations via XML</title>
 
       <para>With the new Microcontainer 2.0 we've added support for annotations via XML. Meaning you can have annotation
          support even in Java 1.4 and before, depending on the retrowowen Microcontainer project.
