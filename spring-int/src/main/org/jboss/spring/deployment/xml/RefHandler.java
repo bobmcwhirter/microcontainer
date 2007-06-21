@@ -50,9 +50,9 @@ public class RefHandler extends DefaultElementHandler
       for (int i = 0; i < attrs.getLength(); ++i)
       {
          String localName = attrs.getLocalName(i);
-         if ("bean".equals(localName))
+         if ("bean".equals(localName) || "local".equals(localName))
             value.setValue(attrs.getValue(i));
-         // todo local, parent
+         // TODO can we treat local different? what about parent?
       }
    }
 

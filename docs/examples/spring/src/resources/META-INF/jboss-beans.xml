@@ -1,0 +1,46 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<beans xmlns="urn:jboss:spring-beans:2.0">
+
+   <bean id="testBean" class="org.jboss.example.microcontainer.spring.SimpleBean">
+      <constructor-arg index="2">
+         <value>SpringBean</value>
+      </constructor-arg>
+      <constructor-arg index="0">
+         <value>1</value>
+      </constructor-arg>
+      <constructor-arg index="1">
+         <value>3.14159</value>
+      </constructor-arg>
+      <property name="mylist">
+         <list value-type="java.lang.String">
+            <value>onel</value>
+            <value>twol</value>
+            <value>threel</value>
+         </list>
+      </property>
+      <property name="myset">
+         <set value-type="java.lang.String">
+            <value>ones</value>
+            <value>twos</value>
+            <value>ones</value>
+         </set>
+      </property>
+      <property name="mymap">
+         <map>
+            <entry>
+               <key>
+                  <value>test_key</value>
+               </key>
+               <value>myvalue</value>
+            </entry>
+         </map>
+      </property>
+      <property><ref bean="mcBean"/></property>
+   </bean>
+
+   <bean xmlns="urn:jboss:bean-deployer:2.0" name="mcBean" class="org.jboss.example.microcontainer.spring.MCBean"/>
+
+   <!-- TODO other features -->
+
+</beans>
