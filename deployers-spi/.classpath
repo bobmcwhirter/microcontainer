@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<classpath>
+	<classpathentry kind="src" path="src/main"/>
+	<classpathentry kind="lib" path="src/resources"/>
+	<classpathentry kind="output" path="target/eclipse-classes"/>
+	<classpathentry combineaccessrules="false" kind="src" path="/jboss-deployers-core-spi"/>
+	<classpathentry combineaccessrules="false" kind="src" path="/jboss-deployers-structure-spi"/>
+	<classpathentry combineaccessrules="false" kind="src" path="/jboss-managed"/>
+	<classpathentry kind="var" path="M2_REPO/jboss/jboss-common-logging-spi/2.0.4.GA/jboss-common-logging-spi-2.0.4.GA.jar"/>
+	<classpathentry kind="con" path="org.eclipse.jdt.launching.JRE_CONTAINER"/>
+</classpath>
