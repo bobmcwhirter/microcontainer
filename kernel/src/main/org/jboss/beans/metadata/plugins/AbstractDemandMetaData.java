@@ -182,5 +182,13 @@ public class AbstractDemandMetaData extends JBossObject
       {
          buffer.append(getName()).append(" demands ").append(demand);
       }
+
+      @Override
+      public String toHumanReadableString()
+      {
+         StringBuilder builder = new StringBuilder();
+         builder.append("Demands '").append(getDemand());
+         return builder.toString();
+      }
    }
 }

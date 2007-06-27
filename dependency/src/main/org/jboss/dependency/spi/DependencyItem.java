@@ -79,4 +79,11 @@ public interface DependencyItem
     * @return true if proceed with unresolving, false otherwise
     */
    boolean unresolved(Controller controller);
+   
+   /**
+    * Return a human readable version of the dependency
+    * 
+    * @return the string
+    */
+   String toHumanReadableString();
 }

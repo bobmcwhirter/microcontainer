@@ -86,10 +86,8 @@ public class AbstractController extends JBossObject implements Controller
 
    /**
     * Create an abstract controller
-    *
-    * @throws Exception for any error
     */
-   public AbstractController() throws Exception
+   public AbstractController()
    {
       addState(ControllerState.NOT_INSTALLED, null);
       addState(ControllerState.PRE_INSTALL, null);
@@ -184,6 +182,9 @@ public class AbstractController extends JBossObject implements Controller
       lockWrite();
       try
       {
+         if (states.contains(state))
+            return;
+         
          if (before == null)
          {
             states.add(state);

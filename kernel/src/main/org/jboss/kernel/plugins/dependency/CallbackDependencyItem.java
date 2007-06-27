@@ -138,4 +138,11 @@ public class CallbackDependencyItem extends ClassDependencyItem
       super.toString(buffer);
       buffer.append(" cardinality=" + cardinality);
    }
+
+   @Override
+   public String toHumanReadableString()
+   {
+      // TODO toHumanReadableString
+      return super.toString();
+   }
 }

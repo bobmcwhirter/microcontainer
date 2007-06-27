@@ -26,7 +26,6 @@ import java.io.Serializable;
 import org.jboss.dependency.plugins.AbstractDependencyItem;
 import org.jboss.dependency.spi.ControllerState;
 import org.jboss.dependency.spi.DependencyItem;
-import org.jboss.osgi.plugins.dependency.OSGiServiceReferenceContext;
 import org.jboss.osgi.spi.dependency.ServiceControllerContext;
 import org.jboss.osgi.spi.metadata.DependencyMetaData;
 import org.jboss.osgi.spi.metadata.ServiceMetaDataVisitor;

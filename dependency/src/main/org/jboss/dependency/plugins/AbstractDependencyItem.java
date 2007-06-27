@@ -226,4 +226,11 @@ public class AbstractDependencyItem extends JBossObject implements DependencyIte
       this.resolved = resolved;
       flushJBossObjectCache();
    }
+
+   public String toHumanReadableString()
+   {
+      StringBuilder builder = new StringBuilder();
+      builder.append("Depends on '").append(getIDependOn());
+      return builder.toString();
+   }
 }
