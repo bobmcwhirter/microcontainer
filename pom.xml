@@ -30,15 +30,15 @@
     <module>aop-mc-int</module>
     <module>metatype</module>
     <module>managed</module>
-    <module>deployers-client</module>
-    <module>deployers-client-spi</module>
-    <module>deployers-core</module>
     <module>deployers-core-spi</module>
-    <module>deployers-impl</module>
-    <module>deployers-spi</module>
+    <module>deployers-core</module>
+    <module>deployers-client-spi</module>
+    <module>deployers-client</module>
     <module>deployers-structure-spi</module>
-    <module>deployers-vfs</module>
+    <module>deployers-spi</module>
+    <module>deployers-impl</module>
     <module>deployers-vfs-spi</module>
+    <module>deployers-vfs</module>
     <module>spring-int</module>
     <module>osgi-int</module>
     <module>classloader</module>
