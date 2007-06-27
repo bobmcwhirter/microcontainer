@@ -1,0 +1,22 @@
+<structure>
+	<context>
+		<path name=""/>
+		<metaDataPath name="META-INF"/>
+		<classpath>
+			<path name="jar1.jar"/>
+			<path name="lib-dir" suffixes=".jar"/>
+		</classpath>
+	</context>
+	<context>
+		<path name="sub.jar"/>
+		<metaDataPath name="META-INF" />
+	</context>
+	<context>
+		<path name="x.war"/>
+		<metaDataPath name="WEB-INF"/>
+		<classpath>
+			<path name="x.war/WEB-INF/classes"/>
+			<path name="x.war/WEB-INF/lib" suffixes=".jar"/>
+		</classpath>
+	</context>
+</structure>
