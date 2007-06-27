@@ -22,9 +22,9 @@
 package org.jboss.osgi.plugins.deployers;
 
 import org.jboss.dependency.spi.ControllerContext;
-import org.jboss.deployers.plugins.deployers.helpers.AbstractSimpleRealDeployer;
 import org.jboss.deployers.spi.DeploymentException;
-import org.jboss.deployers.spi.deployer.DeploymentUnit;
+import org.jboss.deployers.spi.deployer.helpers.AbstractSimpleRealDeployer;
+import org.jboss.deployers.structure.spi.DeploymentUnit;
 import org.jboss.kernel.Kernel;
 import org.jboss.kernel.spi.dependency.KernelController;
 import org.jboss.osgi.plugins.dependency.OSGiServiceReferenceContext;
@@ -48,12 +48,13 @@ public class OSGiServiceDeployer extends AbstractSimpleRealDeployer<ServiceMetaD
       if (kernel == null)
          throw new IllegalArgumentException("Null kernel");
       controller = kernel.getController();
+      setComponentsOnly(true);
    }
 
    public void deploy(DeploymentUnit unit, ServiceMetaData deployment) throws DeploymentException
    {
       // todo - get deployment context in non-depricated way
-      BundleContext bundleContext = new BundleContextImpl(unit.getDeploymentContext());
+      BundleContext bundleContext = new BundleContextImpl(unit);
       ControllerContext context = new OSGiServiceReferenceContext(deployment, bundleContext);
       try
       {

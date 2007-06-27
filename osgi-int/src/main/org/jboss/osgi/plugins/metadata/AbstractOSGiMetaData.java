@@ -21,6 +21,33 @@
 */
 package org.jboss.osgi.plugins.metadata;
 
+import static org.jboss.osgi.plugins.metadata.ValueCreatorUtil.INTEGER_VC;
+import static org.jboss.osgi.plugins.metadata.ValueCreatorUtil.PACKAGE_LIST_VC;
+import static org.jboss.osgi.plugins.metadata.ValueCreatorUtil.PARAM_ATTRIB_VC;
+import static org.jboss.osgi.plugins.metadata.ValueCreatorUtil.PATH_ATTRIB_LIST_VC;
+import static org.jboss.osgi.plugins.metadata.ValueCreatorUtil.QNAME_ATTRIB_LIST_VC;
+import static org.jboss.osgi.plugins.metadata.ValueCreatorUtil.STRING_LIST_VC;
+import static org.jboss.osgi.plugins.metadata.ValueCreatorUtil.STRING_VC;
+import static org.jboss.osgi.plugins.metadata.ValueCreatorUtil.URL_VC;
+import static org.jboss.osgi.plugins.metadata.ValueCreatorUtil.VERSION_VC;
+import static org.osgi.framework.Constants.BUNDLE_ACTIVATOR;
+import static org.osgi.framework.Constants.BUNDLE_CLASSPATH;
+import static org.osgi.framework.Constants.BUNDLE_DESCRIPTION;
+import static org.osgi.framework.Constants.BUNDLE_LOCALIZATION;
+import static org.osgi.framework.Constants.BUNDLE_LOCALIZATION_DEFAULT_BASENAME;
+import static org.osgi.framework.Constants.BUNDLE_MANIFESTVERSION;
+import static org.osgi.framework.Constants.BUNDLE_NAME;
+import static org.osgi.framework.Constants.BUNDLE_NATIVECODE;
+import static org.osgi.framework.Constants.BUNDLE_REQUIREDEXECUTIONENVIRONMENT;
+import static org.osgi.framework.Constants.BUNDLE_SYMBOLICNAME;
+import static org.osgi.framework.Constants.BUNDLE_UPDATELOCATION;
+import static org.osgi.framework.Constants.BUNDLE_VERSION;
+import static org.osgi.framework.Constants.DYNAMICIMPORT_PACKAGE;
+import static org.osgi.framework.Constants.EXPORT_PACKAGE;
+import static org.osgi.framework.Constants.FRAGMENT_HOST;
+import static org.osgi.framework.Constants.IMPORT_PACKAGE;
+import static org.osgi.framework.Constants.REQUIRE_BUNDLE;
+
 import java.net.URL;
 import java.util.Arrays;
 import java.util.HashMap;
@@ -28,12 +55,10 @@ import java.util.List;
 import java.util.Map;
 import java.util.jar.Manifest;
 
-import org.jboss.deployers.plugins.metadata.AbstractManifestMetaData;
-import static org.jboss.osgi.plugins.metadata.ValueCreatorUtil.*;
+import org.jboss.deployers.vfs.spi.deployer.helpers.AbstractManifestMetaData;
 import org.jboss.osgi.spi.metadata.OSGiMetaData;
 import org.jboss.osgi.spi.metadata.PackageAttribute;
 import org.jboss.osgi.spi.metadata.ParameterizedAttribute;
-import static org.osgi.framework.Constants.*;
 import org.osgi.framework.Version;
 
 /**

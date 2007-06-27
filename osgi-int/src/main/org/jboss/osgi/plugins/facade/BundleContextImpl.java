@@ -35,7 +35,7 @@ import java.util.Map;
 import org.jboss.beans.metadata.plugins.builder.BeanMetaDataBuilderFactory;
 import org.jboss.beans.metadata.spi.BeanMetaData;
 import org.jboss.beans.metadata.spi.builder.BeanMetaDataBuilder;
-import org.jboss.deployers.spi.structure.DeploymentContext;
+import org.jboss.deployers.structure.spi.DeploymentUnit;
 import org.jboss.kernel.spi.config.KernelConfigurator;
 import org.jboss.kernel.spi.dependency.KernelController;
 import org.jboss.kernel.spi.dependency.KernelControllerContext;
@@ -72,7 +72,7 @@ public class BundleContextImpl implements BundleContext, KernelEventEmitter
    /** The service reference comparator */
    private static Comparator<ServiceReference> serviceRefenceComparator = new ServiceReferenceComparator();
 
-   protected DeploymentContext context;
+   protected DeploymentUnit context;
    protected Bundle bundle;
    protected KernelController controller; // todo - get it
    protected KernelEventEmitter emitterDelegate; // todo - get it
@@ -81,7 +81,7 @@ public class BundleContextImpl implements BundleContext, KernelEventEmitter
    protected Map<EventListener, AbstractDelegateListener> listeners = Collections.synchronizedMap(new HashMap<EventListener, AbstractDelegateListener>());
    protected Map<ServiceListener, KernelEventFilter> filters = Collections.synchronizedMap(new HashMap<ServiceListener, KernelEventFilter>());
 
-   public BundleContextImpl(DeploymentContext context)
+   public BundleContextImpl(DeploymentUnit context)
    {
       this.context = context;
    }

@@ -24,7 +24,7 @@ package org.jboss.osgi.spi.metadata;
 import java.net.URL;
 import java.util.List;
 
-import org.jboss.deployers.spi.metadata.ManifestMetaData;
+import org.jboss.deployers.vfs.spi.deployer.ManifestMetaData;
 import org.osgi.framework.Version;
 
 /**

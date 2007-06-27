@@ -27,7 +27,7 @@ import java.net.URL;
 import java.util.Dictionary;
 import java.util.Enumeration;
 
-import org.jboss.deployers.spi.structure.DeploymentContext;
+import org.jboss.deployers.structure.spi.DeploymentUnit;
 import org.osgi.framework.Bundle;
 import org.osgi.framework.BundleException;
 import org.osgi.framework.ServiceReference;
@@ -39,11 +39,11 @@ import org.osgi.framework.ServiceReference;
  */
 public class BundleImpl implements Bundle
 {
-   protected DeploymentContext context;
+   protected DeploymentUnit unit;
 
-   public BundleImpl(DeploymentContext context)
+   public BundleImpl(DeploymentUnit unit)
    {
-      this.context = context;
+      this.unit = unit;
    }
 
    public int getState()

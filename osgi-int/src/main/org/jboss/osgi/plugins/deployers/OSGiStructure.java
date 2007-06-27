@@ -21,16 +21,15 @@
 */
 package org.jboss.osgi.plugins.deployers;
 
-import org.jboss.deployers.plugins.structure.vfs.AbstractStructureDeployer;
-import org.jboss.deployers.spi.structure.vfs.StructureMetaData;
-import org.jboss.deployers.spi.structure.vfs.StructuredDeployers;
+import org.jboss.deployers.spi.structure.StructureMetaData;
+import org.jboss.deployers.vfs.spi.structure.VFSStructuralDeployers;
+import org.jboss.deployers.vfs.spi.structure.helpers.AbstractStructureDeployer;
 import org.jboss.virtual.VirtualFile;
 
 /**
  * OSGi structure deployer.
  * Reads manifest for OSGi classpath.
  *
- * @see org.jboss.deployers.plugins.structure.vfs.jar.JARStructure
  * @author <a href="mailto:ales.justin@jboss.com">Ales Justin</a>
  */
 public class OSGiStructure extends AbstractStructureDeployer
@@ -41,7 +40,7 @@ public class OSGiStructure extends AbstractStructureDeployer
       setRelativeOrder(10001);
    }
 
-   public boolean determineStructure(VirtualFile root, StructureMetaData metaData, StructuredDeployers deployers)
+   public boolean determineStructure(VirtualFile root, VirtualFile parent, VirtualFile file, StructureMetaData metaData, VFSStructuralDeployers deployers)
    {
       // todo - see JarStructure
       return false;

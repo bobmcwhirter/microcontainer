@@ -21,7 +21,7 @@
 */
 package org.jboss.osgi.plugins.deployers;
 
-import org.jboss.deployers.plugins.deployers.helpers.SimpleDeploymentVisitor;
+import org.jboss.deployers.spi.deployer.helpers.DeploymentVisitor;
 import org.jboss.osgi.spi.metadata.OSGiMetaData;
 
 /**
@@ -31,7 +31,7 @@ import org.jboss.osgi.spi.metadata.OSGiMetaData;
  * @see BundleActivatorDeployer
  * @author <a href="mailto:ales.justin@jboss.com">Ales Justin</a>
  */
-public abstract class OSGiMetaDataDeploymentVisitor implements SimpleDeploymentVisitor<OSGiMetaData>
+public abstract class OSGiMetaDataDeploymentVisitor implements DeploymentVisitor<OSGiMetaData>
 {
    public Class<OSGiMetaData> getVisitorType()
    {

@@ -21,9 +21,8 @@
 */
 package org.jboss.osgi.plugins.deployers;
 
-import org.jboss.deployers.plugins.deployers.helpers.SchemaResolverDeployer;
-import org.jboss.deployers.spi.DeploymentException;
-import org.jboss.deployers.spi.deployer.DeploymentUnit;
+import org.jboss.deployers.structure.spi.DeploymentUnit;
+import org.jboss.deployers.vfs.spi.deployer.SchemaResolverDeployer;
 import org.jboss.osgi.spi.metadata.ServiceDeployment;
 import org.jboss.virtual.VirtualFile;
 
@@ -37,20 +36,12 @@ public class OSGiDeclarativeDeployer extends SchemaResolverDeployer<ServiceDeplo
    public OSGiDeclarativeDeployer()
    {
       super(ServiceDeployment.class);
+      setSuffix("-osgi.xml");
    }
 
    protected void init(DeploymentUnit unit, ServiceDeployment metaData, VirtualFile file) throws Exception
    {
       String name = file.toURI().toString();
       metaData.setName(name);
-   }
-
-   public void deploy(DeploymentUnit unit) throws DeploymentException
-   {
-      createMetaData(unit, null, "-osgi.xml");
-   }
-
-   public void undeploy(DeploymentUnit unit)
-   {
    }
 }

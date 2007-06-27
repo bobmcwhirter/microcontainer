@@ -23,10 +23,10 @@ package org.jboss.osgi.plugins.deployers;
 
 import java.util.List;
 
-import org.jboss.deployers.plugins.deployers.helpers.AbstractComponentDeployer;
-import org.jboss.deployers.plugins.deployers.helpers.SimpleDeploymentVisitor;
 import org.jboss.deployers.spi.DeploymentException;
-import org.jboss.deployers.spi.deployer.DeploymentUnit;
+import org.jboss.deployers.spi.deployer.helpers.AbstractComponentDeployer;
+import org.jboss.deployers.spi.deployer.helpers.DeploymentVisitor;
+import org.jboss.deployers.structure.spi.DeploymentUnit;
 import org.jboss.osgi.spi.metadata.ServiceDeployment;
 import org.jboss.osgi.spi.metadata.ServiceMetaData;
 
@@ -58,7 +58,7 @@ public class ServiceDeploymentDeployer extends AbstractComponentDeployer<Service
    /**
     * ServiceDeploymentVisitor.
     */
-   private static class ServiceDeploymentVisitor implements SimpleDeploymentVisitor<ServiceDeployment>
+   private static class ServiceDeploymentVisitor implements DeploymentVisitor<ServiceDeployment>
    {
       public Class<ServiceDeployment> getVisitorType()
       {
@@ -83,7 +83,7 @@ public class ServiceDeploymentDeployer extends AbstractComponentDeployer<Service
    /**
     * ServiceMetaDataVisitor.
     */
-   private static class ServiceMetaDataVisitor implements SimpleDeploymentVisitor<ServiceMetaData>
+   private static class ServiceMetaDataVisitor implements DeploymentVisitor<ServiceMetaData>
    {
       public Class<ServiceMetaData> getVisitorType()
       {

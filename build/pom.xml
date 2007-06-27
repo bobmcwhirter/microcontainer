@@ -174,7 +174,7 @@
         <version>${project.version}</version>
       </dependency>
       <dependency>
-        <groupId>jboss</groupId>
+        <groupId>org.jboss.microcontainer</groupId>
         <artifactId>jboss-container</artifactId>
         <version>${project.version}</version>
       </dependency>
@@ -201,75 +201,75 @@
         <version>${project.version}</version>
       </dependency>
       <dependency>
-        <groupId>jboss</groupId>
+        <groupId>org.jboss.microcontainer</groupId>
         <artifactId>jboss-deployers-core</artifactId>
         <version>${project.version}</version>
       </dependency>
       <dependency>
-        <groupId>jboss</groupId>
+        <groupId>org.jboss.microcontainer</groupId>
         <artifactId>jboss-deployers-core</artifactId>
         <version>${project.version}</version>
         <type>test-jar</type>
         <scope>test</scope>
       </dependency>
       <dependency>
-        <groupId>jboss</groupId>
+        <groupId>org.jboss.microcontainer</groupId>
         <artifactId>jboss-deployers-client-spi</artifactId>
         <version>${project.version}</version>
       </dependency>
       <dependency>
-        <groupId>jboss</groupId>
+        <groupId>org.jboss.microcontainer</groupId>
         <artifactId>jboss-deployers-client</artifactId>
         <version>${project.version}</version>
       </dependency>
       <dependency>
-        <groupId>jboss</groupId>
+        <groupId>org.jboss.microcontainer</groupId>
         <artifactId>jboss-deployers-client</artifactId>
         <version>${project.version}</version>
         <type>test-jar</type>
         <scope>test</scope>
       </dependency>
       <dependency>
-        <groupId>jboss</groupId>
+        <groupId>org.jboss.microcontainer</groupId>
         <artifactId>jboss-deployers-structure-spi</artifactId>
         <version>${project.version}</version>
       </dependency>
       <dependency>
-        <groupId>jboss</groupId>
+        <groupId>org.jboss.microcontainer</groupId>
         <artifactId>jboss-deployers-structure-spi</artifactId>
         <version>${project.version}</version>
         <type>test-jar</type>
         <scope>test</scope>
       </dependency>
       <dependency>
-        <groupId>jboss</groupId>
+        <groupId>org.jboss.microcontainer</groupId>
         <artifactId>jboss-deployers-spi</artifactId>
         <version>${project.version}</version>
       </dependency>
       <dependency>
-        <groupId>jboss</groupId>
+        <groupId>org.jboss.microcontainer</groupId>
         <artifactId>jboss-deployers-impl</artifactId>
         <version>${project.version}</version>
       </dependency>
       <dependency>
-        <groupId>jboss</groupId>
+        <groupId>org.jboss.microcontainer</groupId>
         <artifactId>jboss-deployers-impl</artifactId>
         <version>${project.version}</version>
         <type>test-jar</type>
         <scope>test</scope>
       </dependency>
       <dependency>
-        <groupId>jboss</groupId>
+        <groupId>org.jboss.microcontainer</groupId>
         <artifactId>jboss-deployers-vfs-spi</artifactId>
         <version>${project.version}</version>
       </dependency>
       <dependency>
-        <groupId>jboss</groupId>
+        <groupId>org.jboss.microcontainer</groupId>
         <artifactId>jboss-deployers-vfs</artifactId>
         <version>${project.version}</version>
       </dependency>
       <dependency>
-        <groupId>jboss</groupId>
+        <groupId>org.jboss.microcontainer</groupId>
         <artifactId>jboss-kernel</artifactId>
         <version>${project.version}</version>
       </dependency>

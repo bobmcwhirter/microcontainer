@@ -54,11 +54,11 @@
     <!-- Global dependencies -->
     <dependency>
       <groupId>org.jboss.microcontainer</groupId>
-      <artifactId>jboss-container</artifactId>
+      <artifactId>jboss-kernel</artifactId>
     </dependency>
     <dependency>
       <groupId>org.jboss.microcontainer</groupId>
-      <artifactId>jboss-deployers</artifactId>
+      <artifactId>jboss-deployers-vfs-spi</artifactId>
     </dependency>
     <dependency>
       <groupId>org.osgi</groupId>

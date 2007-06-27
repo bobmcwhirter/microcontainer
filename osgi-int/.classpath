@@ -6,7 +6,10 @@
   <classpathentry kind="output" path="eclipse-target/classes"/>
   <classpathentry kind="con" path="org.eclipse.jdt.launching.JRE_CONTAINER"/>
   <classpathentry kind="var" path="M2_REPO/jboss/jboss-vfs/2.0.4.snapshot/jboss-vfs-2.0.4.snapshot.jar" sourcepath="M2_REPO/jboss/jboss-vfs/2.0.4.snapshot/jboss-vfs-2.0.4.snapshot-sources.jar"/>
-  <classpathentry kind="src" path="/jboss-deployers"/>
+  <classpathentry kind="src" path="/jboss-deployers-core-spi"/>
+  <classpathentry kind="src" path="/jboss-deployers-structure-spi"/>
+  <classpathentry kind="src" path="/jboss-deployers-vfs-spi"/>
+  <classpathentry kind="src" path="/jboss-deployers-spi"/>
   <classpathentry kind="src" path="/jboss-metatype"/>
   <classpathentry kind="var" path="M2_REPO/junit/junit/3.8.1/junit-3.8.1.jar" sourcepath="M2_REPO/junit/junit/3.8.1/junit-3.8.1-sources.jar"/>
   <classpathentry kind="var" path="M2_REPO/jboss/profiler/jvmti/jboss-profiler-jvmti/1.0.0.CR5/jboss-profiler-jvmti-1.0.0.CR5.jar"/>

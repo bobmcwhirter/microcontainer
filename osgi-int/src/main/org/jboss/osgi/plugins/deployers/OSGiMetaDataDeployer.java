@@ -23,7 +23,7 @@ package org.jboss.osgi.plugins.deployers;
 
 import java.util.jar.Manifest;
 
-import org.jboss.deployers.plugins.deployers.helpers.ManifestDeployer;
+import org.jboss.deployers.vfs.spi.deployer.ManifestDeployer;
 import org.jboss.osgi.plugins.metadata.AbstractOSGiMetaData;
 import org.jboss.osgi.spi.metadata.OSGiMetaData;
 

@@ -24,9 +24,9 @@ package org.jboss.osgi.plugins.deployers;
 import org.jboss.beans.metadata.plugins.builder.BeanMetaDataBuilderFactory;
 import org.jboss.beans.metadata.spi.BeanMetaData;
 import org.jboss.beans.metadata.spi.builder.BeanMetaDataBuilder;
-import org.jboss.deployers.plugins.deployers.helpers.AbstractRealDeployer;
 import org.jboss.deployers.spi.DeploymentException;
-import org.jboss.deployers.spi.deployer.DeploymentUnit;
+import org.jboss.deployers.spi.deployer.helpers.AbstractRealDeployerWithInput;
+import org.jboss.deployers.structure.spi.DeploymentUnit;
 import org.jboss.kernel.Kernel;
 import org.jboss.kernel.spi.dependency.KernelController;
 import org.jboss.osgi.plugins.facade.BundleContextImpl;
@@ -38,12 +38,13 @@ import org.osgi.framework.BundleContext;
  *
  * @author <a href="mailto:ales.justin@jboss.com">Ales Justin</a>
  */
-public class BundleActivatorDeployer extends AbstractRealDeployer<OSGiMetaData>
+public class BundleActivatorDeployer extends AbstractRealDeployerWithInput<OSGiMetaData>
 {
    private final KernelController controller;
 
    public BundleActivatorDeployer(Kernel kernel)
    {
+      super(OSGiMetaData.class);
       if (kernel == null)
          throw new IllegalArgumentException("Null kernel");
       controller = kernel.getController();
@@ -64,7 +65,7 @@ public class BundleActivatorDeployer extends AbstractRealDeployer<OSGiMetaData>
          {
             String name = createBundleActivatorBeanName(deployment);
             // todo - get deployment context in non-depricated way
-            BundleContext bundleContext = new BundleContextImpl(unit.getDeploymentContext());
+            BundleContext bundleContext = new BundleContextImpl(unit);
             BeanMetaDataBuilder builder = BeanMetaDataBuilderFactory.createBuilder(name, bundleActivator)
                   .addStartParameter(BundleContext.class.getName(), bundleContext)
                   .addStopParameter(BundleContext.class.getName(), bundleContext);
