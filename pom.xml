@@ -1,18 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!--
-  The parent maven for the microcontainer project that expects a structure like: 
-    build/pom.xml
-    aop-mc-int/pom.xml
-    container/pom.xml
-    dependency/pom.xml
-    deployers/pom.xml
-    kernel/pom.xml
-    managed/pom.xml
-    metatype/pom.xml
-    spring-int/pom.xml
-    osgi-int/pom.xml
-    classloader/pom.xml
-    varia/pom.xml
+  The parent maven for the microcontainer project
 
   This pom aggregates the subproject pom
   
@@ -42,7 +30,15 @@
     <module>aop-mc-int</module>
     <module>metatype</module>
     <module>managed</module>
-    <module>deployers</module>
+    <module>deployers-client</module>
+    <module>deployers-client-spi</module>
+    <module>deployers-core</module>
+    <module>deployers-core-spi</module>
+    <module>deployers-impl</module>
+    <module>deployers-spi</module>
+    <module>deployers-structure-spi</module>
+    <module>deployers-vfs</module>
+    <module>deployers-vfs-spi</module>
     <module>spring-int</module>
     <module>osgi-int</module>
     <module>classloader</module>
