@@ -1,4 +1,0 @@
--------------------------------------------------------------------------------
-Test set: org.jboss.test.deployers.deploymentfactory.test.DeploymentFactoryUnitTestCase
--------------------------------------------------------------------------------
-Tests run: 17, Failures: 0, Errors: 0, Skipped: 0, Time elapsed: 0.185 sec
