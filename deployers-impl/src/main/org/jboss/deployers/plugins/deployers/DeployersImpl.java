@@ -567,8 +567,8 @@ public class DeployersImpl implements Deployers, ControllerContextActions
          deploymentsInError = Collections.singletonMap(context.getName(), problem);
       
       if (context.isDeployed() == false)
-         deploymentsMissingDeployer.add(context.getName());
-      
+         deploymentsMissingDeployer = Collections.singleton(context.getName());
+
       // TODO go through controller contexts for the deployment + related contexts
       
       IncompleteDeployments incomplete = new IncompleteDeployments(deploymentsInError, deploymentsMissingDeployer, contextsInError, contextsMissingDependencies);
@@ -648,10 +648,6 @@ public class DeployersImpl implements Deployers, ControllerContextActions
     */
    protected void doInstall(Deployer deployer, DeploymentContext context, boolean doComponents) throws Throwable
    {
-      // Take a copy of the components so we don't start looping on newly added components
-      // in the component deployers
-      List<DeploymentContext> components = new ArrayList<DeploymentContext>(context.getComponents());
-
       DeploymentUnit unit = context.getDeploymentUnit();
       if (isRelevant(deployer, unit, context.isTopLevel(), context.isComponent()))
          deployer.deploy(unit);
@@ -660,9 +656,13 @@ public class DeployersImpl implements Deployers, ControllerContextActions
 
       if (doComponents)
       {
-         try
+         List<DeploymentContext> currentComponents = context.getComponents();
+         if (currentComponents != null && currentComponents.isEmpty() == false)
          {
-            if (components != null && components.isEmpty() == false)
+            // Take a copy of the components so we don't start looping on newly added components
+            // in the component deployers
+            List<DeploymentContext> components = new ArrayList<DeploymentContext>(currentComponents);
+            try
             {
                for (int i = 0; i < components.size(); ++i)
                {
@@ -674,7 +674,7 @@ public class DeployersImpl implements Deployers, ControllerContextActions
                   catch (DeploymentException e)
                   {
                      // Unwind the previous components
-                     for (int j = i-1; j >=0; --j)
+                     for (int j = i - 1; j >= 0; --j)
                      {
                         component = components.get(j);
                         doUninstall(deployer, component, true);
@@ -683,11 +683,11 @@ public class DeployersImpl implements Deployers, ControllerContextActions
                   }
                }
             }
-         }
-         catch (DeploymentException e)
-         {
-            doUninstall(deployer, context, false);
-            throw e;
+            catch (DeploymentException e)
+            {
+               doUninstall(deployer, context, false);
+               throw e;
+            }
          }
       }
    }
@@ -788,7 +788,7 @@ public class DeployersImpl implements Deployers, ControllerContextActions
       if (deployer.isComponentsOnly() && isComponent == false)
          return false;
 
-      // Deployer doesn't wantwants components
+      // Deployer doesn't wants components
       if (deployer.isWantComponents() == false && isComponent)
          return false;
       

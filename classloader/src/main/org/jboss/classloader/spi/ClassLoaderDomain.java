@@ -269,9 +269,7 @@ public class ClassLoaderDomain extends BaseClassLoaderDomain implements Loader
       if (trace)
          log.trace(this + " get resource from parent " + name + " parent=" + parentLoader);
       
-      URL result = null;
-      if (parentLoader != null)
-         result = parentLoader.getResource(name, resourceName);
+      URL result = parentLoader.getResource(name, resourceName);
 
       if (trace)
       {
@@ -337,8 +335,7 @@ public class ClassLoaderDomain extends BaseClassLoaderDomain implements Loader
       if (trace)
          log.trace(this + " get resources from parent " + name + " parent=" + parentLoader);
       
-      if (parentLoader != null)
-         parentLoader.getResources(name, resourceName, urls);
+      parentLoader.getResources(name, resourceName, urls);
    }
 
    /**
