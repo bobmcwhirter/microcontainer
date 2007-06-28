@@ -648,46 +648,46 @@ public class DeployersImpl implements Deployers, ControllerContextActions
     */
    protected void doInstall(Deployer deployer, DeploymentContext context, boolean doComponents) throws Throwable
    {
+      List<DeploymentContext> currentComponents = context.getComponents();
+      // Take a copy of the components so we don't start looping on newly added components
+      // in the component deployers
+      List<DeploymentContext> components = null;
+      if (currentComponents != null && currentComponents.isEmpty() == false)
+         components = new ArrayList<DeploymentContext>(currentComponents);
+
       DeploymentUnit unit = context.getDeploymentUnit();
       if (isRelevant(deployer, unit, context.isTopLevel(), context.isComponent()))
          deployer.deploy(unit);
       else if (log.isTraceEnabled())
          log.trace("Deployer " + deployer + " not relevant for " + context.getName());
 
-      if (doComponents)
+      if (doComponents && components != null)
       {
-         List<DeploymentContext> currentComponents = context.getComponents();
-         if (currentComponents != null && currentComponents.isEmpty() == false)
+         try
          {
-            // Take a copy of the components so we don't start looping on newly added components
-            // in the component deployers
-            List<DeploymentContext> components = new ArrayList<DeploymentContext>(currentComponents);
-            try
+            for (int i = 0; i < components.size(); ++i)
             {
-               for (int i = 0; i < components.size(); ++i)
+               DeploymentContext component = components.get(i);
+               try
                {
-                  DeploymentContext component = components.get(i);
-                  try
+                  doInstall(deployer, component, true);
+               }
+               catch (DeploymentException e)
+               {
+                  // Unwind the previous components
+                  for (int j = i - 1; j >= 0; --j)
                   {
-                     doInstall(deployer, component, true);
+                     component = components.get(j);
+                     doUninstall(deployer, component, true);
                   }
-                  catch (DeploymentException e)
-                  {
-                     // Unwind the previous components
-                     for (int j = i - 1; j >= 0; --j)
-                     {
-                        component = components.get(j);
-                        doUninstall(deployer, component, true);
-                     }
-                     throw e;
-                  }
+                  throw e;
                }
             }
-            catch (DeploymentException e)
-            {
-               doUninstall(deployer, context, false);
-               throw e;
-            }
+         }
+         catch (DeploymentException e)
+         {
+            doUninstall(deployer, context, false);
+            throw e;
          }
       }
    }
