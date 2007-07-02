@@ -103,7 +103,7 @@ public abstract class AbstractVFSParsingDeployer<T> extends AbstractParsingDeplo
       if (files.size() == 0)
          return null;
       
-      // TODO remove this limitation
+      // TODO JBMICROCONT-184 remove this limitation
       if (files.size() > 1)
          throw new DeploymentException("Only one file is allowed, found=" + files);
 

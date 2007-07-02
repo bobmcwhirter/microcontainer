@@ -60,7 +60,7 @@ public abstract class ManifestDeployer<T extends ManifestMetaData> extends Abstr
    @Override
    protected T parse(VFSDeploymentUnit unit, VirtualFile file, T root) throws Exception
    {
-      // todo - update once we have new vfs snapshot
+      // todo JBMICROCONT-183 - update once we have new vfs snapshot
       InputStream is = SecurityActions.openStream(file);
       Manifest manifest;
       try
