@@ -129,7 +129,7 @@ public class VFSStructureBuilderUnitTestCase extends StructureBuilderTest
          assertNull(classPath);
       else
       {
-         // TODO test it got the correct classpath
+         // TODO JBMICROCONT-185 test it got the correct classpath
       }
    }
 }

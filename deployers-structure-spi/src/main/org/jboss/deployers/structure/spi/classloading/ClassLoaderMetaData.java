@@ -27,7 +27,7 @@ import java.util.Set;
 /**
  * ClassLoaderMetaData.
  * 
- * TODO needs greatly expanding
+ * TODO JBMICROCONT-182 needs greatly expanding
  * @author <a href="adrian@jboss.org">Adrian Brock</a>
  * @version $Revision: 1.1 $
  */

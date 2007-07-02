@@ -64,7 +64,7 @@ public class DeployerProtocolUnitTestCase extends AbstractDeployerTest
       assertEquals(expected, deployer.getDeployedUnits());
       HashSet<String> types = new HashSet<String>();
       types.add("test");
-      // TODO types assertEquals(types, context.getTypes());
+      // TODO JBMICROCONT-185 types assertEquals(types, context.getTypes());
    }
 
    public void testUndeploy() throws Exception

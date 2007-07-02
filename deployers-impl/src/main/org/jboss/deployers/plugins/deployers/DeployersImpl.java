@@ -378,7 +378,7 @@ public class DeployersImpl implements Deployers, ControllerContextActions
             {
                controller.uninstall(deploymentControllerContext.getName());
                context.setState(DeploymentState.UNDEPLOYED);
-               // TODO perform with the deployer that created the classloader?
+               // TODO JBMICROCONT-182 perform with the deployer that created the classloader?
                context.removeClassLoader();
                log.debug("Fully Undeployed " + context.getName());
             }
@@ -569,7 +569,7 @@ public class DeployersImpl implements Deployers, ControllerContextActions
       if (context.isDeployed() == false)
          deploymentsMissingDeployer = Collections.singleton(context.getName());
 
-      // TODO go through controller contexts for the deployment + related contexts
+      // TODO JBMICROCONT-187 go through controller contexts for the deployment + related contexts
       
       IncompleteDeployments incomplete = new IncompleteDeployments(deploymentsInError, deploymentsMissingDeployer, contextsInError, contextsMissingDependencies);
       if (incomplete.isIncomplete())

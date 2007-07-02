@@ -82,7 +82,7 @@ public class DeployerManagedObjectUnitTestCase extends AbstractDeployerTest
       mo = mos.get(TestAttachment.class.getName());
       assertNotNull(mo);
 
-      // TODO the attachment should NOT be the top level managed object
+      // TODO JBMICROCONT-181 the attachment should NOT be the top level managed object
       //      that should be describing the structure and deployment state
       //      with the attachments as sub managed objects
       
@@ -107,7 +107,7 @@ public class DeployerManagedObjectUnitTestCase extends AbstractDeployerTest
       assertEquals("changedString1", deployer.lastAttachment.getProperty("string1"));
       assertEquals("initialString2", deployer.lastAttachment.getProperty("string2"));
       
-      // TODO shouldn't have to reget the managed object handles across redeploys?
+      // TODO JBMICROCONT-181 shouldn't have to reget the managed object handles across redeploys?
       mos = main.getManagedObjects(context.getName());
       assertNotNull(mos);
       mo = mos.get(TestAttachment.class.getName());

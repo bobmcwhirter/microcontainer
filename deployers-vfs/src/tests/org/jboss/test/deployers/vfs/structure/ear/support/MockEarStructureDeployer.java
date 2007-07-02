@@ -133,7 +133,7 @@ public class MockEarStructureDeployer extends AbstractStructureDeployer
          // Add the ear manifest locations?
          super.addClassPath(root, file, false, true, context);
 
-         // TODO: need to scan for annotationss
+         // TODO JBMICROCONT-185 need to scan for annotationss
          if (scan)
          {
             throw new RuntimeException("Scanning not implemented: "+file.getName());

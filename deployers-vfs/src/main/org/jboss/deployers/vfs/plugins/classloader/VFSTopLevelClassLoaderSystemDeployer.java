@@ -45,7 +45,7 @@ public class VFSTopLevelClassLoaderSystemDeployer extends AbstractTopLevelClassL
       Set<VirtualFile> roots = visitor.getClassPath();
       VFSClassLoaderPolicy policy = new VFSClassLoaderPolicy(roots.toArray(new VirtualFile[roots.size()]));
       policy.setExportAll(module.getExportAll());
-      // TODO more policy from "module"
+      // TODO JBMICROCONT-182 more policy from "module"
       return policy;
    }
 

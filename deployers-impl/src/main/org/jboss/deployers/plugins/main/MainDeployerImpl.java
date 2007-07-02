@@ -281,7 +281,7 @@ public class MainDeployerImpl implements MainDeployer, MainDeployerStructure
    public void deploy(Deployment deployment) throws DeploymentException
    {
       addDeployment(deployment);
-      // TODO just process this deployment
+      // TODO JBMICROCONT-187 just process this deployment
       process();
       checkComplete(deployment);
    }
@@ -297,7 +297,7 @@ public class MainDeployerImpl implements MainDeployer, MainDeployerStructure
    public boolean undeploy(String name) throws DeploymentException
    {
       boolean result = removeDeployment(name);
-      // TODO just process this deployment
+      // TODO JBMICROCONT-187 just process this deployment
       process();
       return result;
    }

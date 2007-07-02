@@ -26,7 +26,7 @@ import java.io.Serializable;
 /**
  * A classpath entry.
  *
- * TODO other stuff e.g. inclusion/exclusion filters, etc.
+ * TODO JBMICROCONT-182 other stuff e.g. inclusion/exclusion filters, etc.
  * @author Scott.Stark@jboss.org
  * @author adrian@jboss.org
  * @version $Revision: 1.1$

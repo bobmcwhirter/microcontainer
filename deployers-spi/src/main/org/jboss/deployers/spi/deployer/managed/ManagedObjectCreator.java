@@ -30,7 +30,7 @@ import org.jboss.managed.api.ManagedObject;
 /**
  * ManagedObjectCreator.
  * 
- * TODO Critique
+ * TODO JBMICROCONT-181 Critique
  *      Rather having the contexts create the managed objects directly
  *      they should provide the underlying metadata, e.g. the Fields + other information
  *      from which we can create the managed object.

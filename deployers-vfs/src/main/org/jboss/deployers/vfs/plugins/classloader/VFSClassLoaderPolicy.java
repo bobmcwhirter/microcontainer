@@ -240,7 +240,7 @@ public class VFSClassLoaderPolicy extends ClassLoaderPolicy
       {
          VirtualFile root = clazz.getVFS().getRoot();
          URL codeSourceURL = root.toURL();
-         Certificate[] certs = null; // TODO determine certificates
+         Certificate[] certs = null; // TODO JBMICROCONT-182 determine certificates
          CodeSource cs = new CodeSource(codeSourceURL, certs);
          PermissionCollection permissions = Policy.getPolicy().getPermissions(cs);
          return new ProtectionDomain(cs, permissions);

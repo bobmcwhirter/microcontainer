@@ -249,7 +249,7 @@ public abstract class AbstractStructureTest extends BaseTestCase
 
    protected VirtualFile getVirtualFile(String root, String path) throws Exception
    {
-      // TODO THIS IS HACK TO MAKE THE TEST WORK IN MAVEN ???
+      // TODO JBMICROCONT-185 THIS IS HACK TO MAKE THE TEST WORK IN MAVEN ???
       try
       {
          URL.setURLStreamHandlerFactory(new URLStreamHandlerFactory()

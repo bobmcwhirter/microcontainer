@@ -59,7 +59,7 @@ public class ClassLoading
          metadata = new ClassLoaderMetaData();
          metadata.setName(deploymentContext.getName());
          metadata.setExportAll(ExportAll.NON_EMPTY);
-         // TODO default version
+         // TODO JBMICROCONT-182 default version
          unit.addAttachment(ClassLoaderMetaData.class, metadata);
       }
       

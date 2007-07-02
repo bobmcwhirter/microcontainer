@@ -72,7 +72,7 @@ public class EARStructureUnitTestCase extends AbstractStructureTest
    
    public void testNotAnEAR() throws Throwable
    {
-      // TODO ??? This gets recognised by the jar deployer assertNotValid("/structure/ear", "notanear");
+      // TODO JBMICROCONT-185 This gets recognised by the jar deployer assertNotValid("/structure/ear", "notanear");
    }
 
    /**
