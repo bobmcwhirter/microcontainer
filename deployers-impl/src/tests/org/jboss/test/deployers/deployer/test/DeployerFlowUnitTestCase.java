@@ -498,4 +498,48 @@ public class DeployerFlowUnitTestCase extends AbstractDeployerTest
       assertEquals(8, deployer5.getUndeployOrder());
       assertEquals(7, deployer6.getUndeployOrder());
    }
+   
+   public void testIntermediateIsRelativelySorted() throws Exception
+   {
+      DeployerClient main = createMainDeployer();
+      TestFlowDeployer deployer2 = new TestFlowDeployer("A");
+      deployer2.setInputs("test1");
+      addDeployer(main, deployer2);
+      TestFlowDeployer deployer3 = new TestFlowDeployer("B");
+      addDeployer(main, deployer3);
+      TestFlowDeployer deployer1 = new TestFlowDeployer("C");
+      deployer1.setOutputs("test1");
+      addDeployer(main, deployer1);
+      
+      Deployment deployment = createSimpleDeployment("IntermediateIsRelativelySorted");
+      main.addDeployment(deployment);
+      main.process();
+      
+      assertEquals(1, deployer1.getDeployOrder());
+      assertEquals(2, deployer2.getDeployOrder());
+      assertEquals(3, deployer3.getDeployOrder());
+      assertEquals(-1, deployer1.getUndeployOrder());
+      assertEquals(-1, deployer2.getUndeployOrder());
+      assertEquals(-1, deployer3.getUndeployOrder());
+
+      main.removeDeployment(deployment);
+      main.process();
+      
+      assertEquals(1, deployer1.getDeployOrder());
+      assertEquals(2, deployer2.getDeployOrder());
+      assertEquals(3, deployer3.getDeployOrder());
+      assertEquals(6, deployer1.getUndeployOrder());
+      assertEquals(5, deployer2.getUndeployOrder());
+      assertEquals(4, deployer3.getUndeployOrder());
+
+      main.addDeployment(deployment);
+      main.process();
+      
+      assertEquals(7, deployer1.getDeployOrder());
+      assertEquals(8, deployer2.getDeployOrder());
+      assertEquals(9, deployer3.getDeployOrder());
+      assertEquals(6, deployer1.getUndeployOrder());
+      assertEquals(5, deployer2.getUndeployOrder());
+      assertEquals(4, deployer3.getUndeployOrder());
+   }
 }
