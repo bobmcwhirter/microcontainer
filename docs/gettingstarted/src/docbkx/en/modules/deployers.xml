@@ -6,312 +6,334 @@
    <title>Deployers module</title>
 
    <para>
-      With re-writing the new application server Kernel from JMX based to POJO oriented, we also re-wrote the whole 
+      With re-writing the new application server Kernel from JMX based to POJO oriented, we also re-wrote the whole
       Deployer architecture which was also based on the old JMX MBeans. Let's first look at the new concepts and then
       do an example of each new change.
    </para>
 
-   <para>
-      Combined with previously mentioned new VFS implementation we introduced a new kind of Deployers, the
-      Structure Deployer. The purpose of Structure Deployer is to recognise the deployment type and prepare this
-      information for the actual Deployers. There are already default implementations for standard types such as
-      JAR, WAR, EAR and specific files. You can simply implement your own StructureDeployer or extend the
-      AbstractStructureDeployer. Or you can use the declarative approach by defining your structure with XML
-      file - META-INF/jboss-structure.xml. This file will be automatically picked up by DeclarativeStructureDeployer.
-      Let's now look at how to use one of the existing StructureDeployer implementations, write our own or use the
-      declarative one.
-   </para>
+   <sect1>
+      <title>StructureDeployers</title>
 
-   <programlisting></programlisting>
+      <para>
+         Combined with previously mentioned new VFS implementation we introduced a new kind of Deployers, the
+         Structure Deployer. The purpose of Structure Deployer is to recognise the deployment type and prepare this
+         information for the actual Deployers. There are already default implementations for standard types such as
+         JAR, WAR, EAR and specific files. You can simply implement your own StructureDeployer or extend the
+         AbstractStructureDeployer. Or you can use the declarative approach by defining your structure with XML
+         file - META-INF/jboss-structure.xml. This file will be automatically picked up by DeclarativeStructureDeployer.
+         Let's now look at how to use one of the existing StructureDeployer implementations, write our own or use the
+         declarative one.
+      </para>
 
-   <para>
-      This is how we can add our own new file support. This one defines that -spring.xml files are also treated
-      as metadata files.
-   </para>
+      <programlisting></programlisting>
 
-   <programlisting></programlisting>
+      <para>
+         This is how we can add our own new file support. This one defines that -spring.xml files are also treated
+         as metadata files.
+      </para>
 
-   <para>
-      This is a simple implementation for our own deployment structure which holds metadata information in mydata
-      direcotry and has Java classes in myclasses directory.
-   </para>
+      <programlisting></programlisting>
 
-   <programlisting></programlisting>
+      <para>
+         This is a simple implementation for our own deployment structure which holds metadata information in mydata
+         direcotry and has Java classes in myclasses directory.
+      </para>
 
-   <para>
-      Here we simply write a plain XML file defining where to look for ... TODO
-   </para>
+      <programlisting></programlisting>
 
-   <para>
-      With the old style of JBoss Deployers, a single deployer implementation would handle all the processing
-      for the matching top level deployment unit. This behaviour was completely changed in the new Deployers
-      architecture. Here we have a new way of handling deployment unit, we call it an aspectized deployment, meaning
-      that each deployer implementation does just one thing. This way it is easier to control how much it gets done
-      and even easier to swap out the behaviour. But what is that one thing? We are all familiar with parsing, creating
-      ClassLoaders, installing services, etc. So, basically any part of previous deployment process, we can see as a
-      separate process, parsing the jboss-service.xml file, creating ServiceMetaData, setting up RepositoryCL
-      and finally registring MBeans into the MBeanServer instance.
-   </para>
+      <para>
+         Here we simply write a plain XML file defining where to look for ... TODO
+      </para>
 
-   <para>
-      Let's see this aspectization on the listing below. This is a real example from the current Microcontainer
-      beans deployment.
-      <itemizedlist>
-         <listitem>Parsing Deployers
-            <itemizedlist>
-               <listitem>Turns XML into metadata model</listitem>
-               <listitem>e.g. my-beans.xml -> KernelDeployment</listitem>
-            </itemizedlist>
-         </listitem>
-         <listitem>ClassLoading Deployers
-            <itemizedlist>
-               <listitem>Creates classloaders from metadata</listitem>
-               <listitem>e.g. Uses the information from StructureDeployers</listitem>
-            </itemizedlist>
-         </listitem>
-         <listitem>Component Deployers
-            <itemizedlist>
-               <listitem>Splits complicated deployments into units</listitem>
-               <listitem>e.g. KernelDeployment -> BeanMetaDatas</listitem>
-            </itemizedlist>
-         </listitem>
-         <listitem>Real Deployers
-            <itemizedlist>
-               <listitem>Does the real work of deployment</listitem>
-               <listitem>e.g. BeanMetaData -> controller.install()</listitem>
-            </itemizedlist>
-         </listitem>
-      </itemizedlist>
-   </para>
+   </sect1>
 
-   <para>
-      Before we start coding the new Deployers there is another concept that we still need to have a look at.
-      What is the way to store the information between different deployers? We keep this information in so called
-      Attachments. There are two types of attachments, predetermined and transient. e.g. predetermined can be
-      set by ProfileService, where we would get the transient one's from parsing the XML file. You must be aware that
-      a predetermined overriddes transient. This is a simple API to get a hold of the Attachments reference from
-      the underlying DeploymentUnit instance.
-   </para>
+   <sect1>
+      <title>Deployers</title>
 
-   <programlisting>
-      public interface DeploymentUnit extends MutableAttachments
-      {
+      <para>
+         With the old style of JBoss Deployers, a single deployer implementation would handle all the processing
+         for the matching top level deployment unit. This behaviour was completely changed in the new Deployers
+         architecture. Here we have a new way of handling deployment unit, we call it an aspectized deployment, meaning
+         that each deployer implementation does just one thing. This way it is easier to control how much it gets done
+         and even easier to swap out the behaviour. But what is that one thing? We are all familiar with parsing,
+         creating
+         ClassLoaders, installing services, etc. So, basically any part of previous deployment process, we can see as a
+         separate process, parsing the jboss-service.xml file, creating ServiceMetaData, setting up RepositoryCL
+         and finally registring MBeans into the MBeanServer instance.
+      </para>
+
+      <para>
+         Let's see this aspectization on the listing below. This is a real example from the current Microcontainer
+         beans deployment.
+         <itemizedlist>
+            <listitem>Parsing Deployers
+               <itemizedlist>
+                  <listitem>Turns XML into metadata model</listitem>
+                  <listitem>e.g. my-beans.xml -> KernelDeployment</listitem>
+               </itemizedlist>
+            </listitem>
+            <listitem>ClassLoading Deployers
+               <itemizedlist>
+                  <listitem>Creates classloaders from metadata</listitem>
+                  <listitem>e.g. Uses the information from StructureDeployers</listitem>
+               </itemizedlist>
+            </listitem>
+            <listitem>Component Deployers
+               <itemizedlist>
+                  <listitem>Splits complicated deployments into units</listitem>
+                  <listitem>e.g. KernelDeployment -> BeanMetaDatas</listitem>
+               </itemizedlist>
+            </listitem>
+            <listitem>Real Deployers
+               <itemizedlist>
+                  <listitem>Does the real work of deployment</listitem>
+                  <listitem>e.g. BeanMetaData -> controller.install()</listitem>
+               </itemizedlist>
+            </listitem>
+         </itemizedlist>
+      </para>
+
+   </sect1>
+
+   <sect1>
+      <title>Attachments</title>
+
+      <para>
+         Before we start coding the new Deployers there is another concept that we still need to have a look at.
+         What is the way to store the information between different deployers? We keep this information in so called
+         Attachments. There are two types of attachments, predetermined and transient. e.g. predetermined can be
+         set by ProfileService, where we would get the transient one's from parsing the XML file. You must be aware that
+         a predetermined overriddes transient. This is a simple API to get a hold of the Attachments reference from
+         the underlying DeploymentUnit instance.
+      </para>
+
+      <programlisting>
+         public interface DeploymentUnit extends MutableAttachments
+         {
          /**
-          * Get all the metadata for the expected type
-          *
-          * @param &lt;T> the type to get
-          * @param type the type
-          * @return a set of metadata matching the type
-          * @throws IllegalArgumentException if the type is null
-          */
+         * Get all the metadata for the expected type
+         *
+         * @param &lt;T> the type to get
+         * @param type the type
+         * @return a set of metadata matching the type
+         * @throws IllegalArgumentException if the type is null
+         */
          &lt;T> Set&lt;? extends T> getAllMetaData(Class&lt;T> type);
 
          /**
-          * Get the transient managed objects
-          *
-          * @return the managed objects
-          */
+         * Get the transient managed objects
+         *
+         * @return the managed objects
+         */
          MutableAttachments getTransientManagedObjects();
 
          ...
-      }
+         }
 
-      public interface MutableAttachments extends Attachments
-      {
+         public interface MutableAttachments extends Attachments
+         {
          /**
-          * Add attachment
-          *
-          * @param name the name of the attachment
-          * @param attachment the attachment
-          * @return any previous attachment
-          * @throws IllegalArgumentException for a null name or attachment
-          * @throws UnsupportedOperationException when not supported by the implementation
-          */
+         * Add attachment
+         *
+         * @param name the name of the attachment
+         * @param attachment the attachment
+         * @return any previous attachment
+         * @throws IllegalArgumentException for a null name or attachment
+         * @throws UnsupportedOperationException when not supported by the implementation
+         */
          Object addAttachment(String name, Object attachment);
 
          /**
-          * Add attachment
-          *
-          * @param &lt;T> the expected type
-          * @param name the name of the attachment
-          * @param attachment the attachment
-          * @param expectedType the expected type
-          * @return any previous attachment
-          * @throws IllegalArgumentException for a null name, attachment or expectedType
-          * @throws UnsupportedOperationException when not supported by the implementation
-          */
+         * Add attachment
+         *
+         * @param &lt;T> the expected type
+         * @param name the name of the attachment
+         * @param attachment the attachment
+         * @param expectedType the expected type
+         * @return any previous attachment
+         * @throws IllegalArgumentException for a null name, attachment or expectedType
+         * @throws UnsupportedOperationException when not supported by the implementation
+         */
          &lt;T> T addAttachment(String name, T attachment, Class&lt;T> expectedType);
 
          /**
-          * Add attachment
-          *
-          * @param &lt;T> the expected type
-          * @param attachment the attachment
-          * @param type the type
-          * @return any previous attachment
-          * @throws IllegalArgumentException for a null name, attachment or type
-          * @throws UnsupportedOperationException when not supported by the implementation
-          */
+         * Add attachment
+         *
+         * @param &lt;T> the expected type
+         * @param attachment the attachment
+         * @param type the type
+         * @return any previous attachment
+         * @throws IllegalArgumentException for a null name, attachment or type
+         * @throws UnsupportedOperationException when not supported by the implementation
+         */
          &lt;T> T addAttachment(Class&lt;T> type, T attachment);
 
          /**
-          * Remove attachment
-          *
-          * @param name the name of the attachment
-          * @return the attachment or null if not present
-          * @throws IllegalArgumentException for a null name
-          * @throws UnsupportedOperationException when not supported by the implementation
-          */
+         * Remove attachment
+         *
+         * @param name the name of the attachment
+         * @return the attachment or null if not present
+         * @throws IllegalArgumentException for a null name
+         * @throws UnsupportedOperationException when not supported by the implementation
+         */
          Object removeAttachment(String name);
 
          /**
-          * Remove attachment
-          *
-          * @param &lt;T> the expected type
-          * @param name the name of the attachment
-          * @return the attachment or null if not present
-          * @param expectedType the expected type
-          * @throws IllegalArgumentException for a null name or expectedType
-          * @throws UnsupportedOperationException when not supported by the implementation
-          */
+         * Remove attachment
+         *
+         * @param &lt;T> the expected type
+         * @param name the name of the attachment
+         * @return the attachment or null if not present
+         * @param expectedType the expected type
+         * @throws IllegalArgumentException for a null name or expectedType
+         * @throws UnsupportedOperationException when not supported by the implementation
+         */
          &lt;T> T removeAttachment(String name, Class&lt;T> expectedType);
 
          /**
-          * Remove attachment
-          *
-          * @param &lt;T> the expected type
-          * @return the attachment or null if not present
-          * @param type the type
-          * @throws IllegalArgumentException for a null name or type
-          */
+         * Remove attachment
+         *
+         * @param &lt;T> the expected type
+         * @return the attachment or null if not present
+         * @param type the type
+         * @throws IllegalArgumentException for a null name or type
+         */
          &lt;T> T removeAttachment(Class&lt;T> type);
 
          /**
-          * Set the attachments
-          *
-          * @param map the new attachments a map of names to attachments
-          * @throws IllegalArgumentException for a null map
-          */
+         * Set the attachments
+         *
+         * @param map the new attachments a map of names to attachments
+         * @throws IllegalArgumentException for a null map
+         */
          void setAttachments(Map&lt;String, Object> map);
 
          /**
-          * Clear the attachments
-          *
-          * @throws UnsupportedOperationException when not supported by the implementation
-          */
+         * Clear the attachments
+         *
+         * @throws UnsupportedOperationException when not supported by the implementation
+         */
          void clear();
 
          /**
-          * Get the number of changes that have happened.
-          *
-          * @return number of adds/removes that have happened since creation or clearChangeCount.
-          */
+         * Get the number of changes that have happened.
+         *
+         * @return number of adds/removes that have happened since creation or clearChangeCount.
+         */
          int getChangeCount();
 
          /**
-          * Reset the change count to zero.
-          */
+         * Reset the change count to zero.
+         */
          void clearChangeCount();
-      }
+         }
 
-      public interface Attachments extends Serializable
-      {
+         public interface Attachments extends Serializable
+         {
          /**
-          * Get all the attachments
-          *
-          * @return the unmodifiable attachments
-          */
+         * Get all the attachments
+         *
+         * @return the unmodifiable attachments
+         */
          Map&lt;String, Object> getAttachments();
 
          /**
-          * Get attachment
-          *
-          * @param name the name of the attachment
-          * @return the attachment or null if not present
-          * @throws IllegalArgumentException for a null name
-          */
+         * Get attachment
+         *
+         * @param name the name of the attachment
+         * @return the attachment or null if not present
+         * @throws IllegalArgumentException for a null name
+         */
          Object getAttachment(String name);
 
          /**
-          * Get attachment
-          *
-          * @param &lt;T> the expected type
-          * @param name the name of the attachment
-          * @param expectedType the expected type
-          * @return the attachment or null if not present
-          * @throws IllegalArgumentException for a null name or expectedType
-          */
+         * Get attachment
+         *
+         * @param &lt;T> the expected type
+         * @param name the name of the attachment
+         * @param expectedType the expected type
+         * @return the attachment or null if not present
+         * @throws IllegalArgumentException for a null name or expectedType
+         */
          &lt;T> T getAttachment(String name, Class&lt;T> expectedType);
 
          /**
-          * Get attachment
-          *
-          * @param &lt;T> the expected type
-          * @param type the type
-          * @return the attachment or null if not present
-          * @throws IllegalArgumentException for a null name or type
-          */
+         * Get attachment
+         *
+         * @param &lt;T> the expected type
+         * @param type the type
+         * @return the attachment or null if not present
+         * @throws IllegalArgumentException for a null name or type
+         */
          &lt;T> T getAttachment(Class&lt;T> type);
 
          /**
-          * Is the attachment present
-          *
-          * @param name the name of the attachment
-          * @return true when the attachment is present
-          * @throws IllegalArgumentException for a null name
-          */
+         * Is the attachment present
+         *
+         * @param name the name of the attachment
+         * @return true when the attachment is present
+         * @throws IllegalArgumentException for a null name
+         */
          boolean isAttachmentPresent(String name);
 
          /**
-          * Is the attachment present
-          *
-          * @param name the name of the attachment
-          * @param expectedType the expected type
-          * @return true when the attachment is present
-          * @throws IllegalArgumentException for a null name or expectedType
-          */
+         * Is the attachment present
+         *
+         * @param name the name of the attachment
+         * @param expectedType the expected type
+         * @return true when the attachment is present
+         * @throws IllegalArgumentException for a null name or expectedType
+         */
          boolean isAttachmentPresent(String name, Class&lt;?> expectedType);
 
          /**
-          * Is the attachment present
-          *
-          * @param type the type
-          * @return true when the attachment is present
-          * @throws IllegalArgumentException for a null name or type
-          */
+         * Is the attachment present
+         *
+         * @param type the type
+         * @return true when the attachment is present
+         * @throws IllegalArgumentException for a null name or type
+         */
          boolean isAttachmentPresent(Class&lt;?> type);
 
          /**
-          * Are there any attachments
-          *
-          * @return true if there are any attachments, false otherwise.
-          */
+         * Are there any attachments
+         *
+         * @return true if there are any attachments, false otherwise.
+         */
          boolean hasAttachments();
-      }
-   </programlisting>
+         }
+      </programlisting>
 
-   <para>
-      Since we are now familiar with attachments we can talk about the order of our Deployers.
-      What would be the natural order of our Deployers? Probably the first thing it comes to our mind is a plain
-      number ordering. Old and proven way to do the ordering. But since we waited to introduce the attachments
-      before we talked about ordering there must be something better. We can define the order by simply providing
-      the information about Attachment requirements / demands (inputs) and supplies (outputs). Let's explain this
-      in more detail on the actual example.
-   </para>
+   </sect1>
 
-   <programlisting>
-      public MyDeployer()
-      {
+   <sect1>
+      <title>Ordering</title>
+
+      <para>
+         Since we are now familiar with attachments we can talk about the order of our Deployers.
+         What would be the natural order of our Deployers? Probably the first thing it comes to our mind is a plain
+         number ordering. Old and proven way to do the ordering. But since we waited to introduce the attachments
+         before we talked about ordering there must be something better. We can define the order by simply providing
+         the information about Attachment requirements / demands (inputs) and supplies (outputs). Let's explain this
+         in more detail on the actual example.
+      </para>
+
+      <programlisting>
+         public MyDeployer()
+         {
          setInputs(SomeMetaData1.class, SomeMetaData2.class);
          setOutputs(MyOutput.class);
-      }
-   </programlisting>
+         }
+      </programlisting>
 
-   <para>
-      Here we can see that our MyDeployer depends on SomeMetaData1 and SomeMetaData2 instance attachments, and provides
-      further MyOutput instance attachment for next deployers to use. So any deployer that provides
-      SomeMetaData1 and SomeMetaData2 instance attachments should be before our MyDeployer and any one that uses
-      MyOutput instance attachment should be after.
-   </para>
+      <para>
+         Here we can see that our MyDeployer depends on SomeMetaData1 and SomeMetaData2 instance attachments, and
+         provides
+         further MyOutput instance attachment for next deployers to use. So any deployer that provides
+         SomeMetaData1 and SomeMetaData2 instance attachments should be before our MyDeployer and any one that uses
+         MyOutput instance attachment should be after.
+      </para>
+
+   </sect1>
 
 </chapter>
