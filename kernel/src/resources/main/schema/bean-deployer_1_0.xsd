@@ -354,7 +354,9 @@ $Id$
          </xsd:documentation>
       </xsd:annotation>
       <xsd:complexContent>
-         <xsd:extension base="namedValueType"/>
+         <xsd:extension base="namedValueType">
+            <xsd:attribute name="preinstantiate" type="xsd:boolean" use="optional" default="true"/>            
+         </xsd:extension>
       </xsd:complexContent>
    </xsd:complexType>
 

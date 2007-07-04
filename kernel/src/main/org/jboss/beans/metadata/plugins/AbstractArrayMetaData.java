@@ -26,7 +26,6 @@ import java.util.Collection;
 
 import org.jboss.reflect.spi.ClassInfo;
 import org.jboss.reflect.spi.TypeInfo;
-import org.jboss.util.JBossStringBuilder;
 
 /**
  * Array metadata.
@@ -45,9 +44,10 @@ public class AbstractArrayMetaData extends AbstractListMetaData
    {
    }
 
+   @SuppressWarnings("unchecked")
    public Object getValue(TypeInfo info, ClassLoader cl) throws Throwable
    {
-      Collection<? extends Object> result = (Collection<? extends Object>) super.getValue(info, cl);
+      Collection result = (Collection)super.getValue(info, cl);
 
       TypeInfo typeInfo = getClassInfo(cl);
       
@@ -77,32 +77,32 @@ public class AbstractArrayMetaData extends AbstractListMetaData
          typeInfo = info;
       }
 
-      Object[] array = new Object[result.size()];
-      if (typeInfo != null)
-         array = typeInfo.newArrayInstance(result.size());
-      
+      Object[] array = typeInfo.newArrayInstance(result.size());
       return result.toArray(array);
    }
 
-   protected Collection<Object> getCollectionInstance(TypeInfo info, ClassLoader cl, Class expected) throws Throwable
+   protected <T> T getTypeInstance(TypeInfo info, ClassLoader cl, Class<T> expected) throws Throwable
    {
       Collection<Object> result = new ArrayList<Object>();
-      Object preinstantiatedObject = preinstantiatedLookup(cl, null);
+      Object preinstantiatedObject = preinstantiatedLookup(cl, Object[].class);
       if (preinstantiatedObject != null)
       {
-         if (preinstantiatedObject.getClass().isArray() == false)
-            throw new ClassCastException("Preinstantiated property is not an array: " + propertyName);
          Object[] preinstantiatedArray = (Object[]) preinstantiatedObject;
          for(Object previous : preinstantiatedArray)
          {
             result.add(previous);
          }
       }
-      return result;
+      return expected.cast(result);
    }
 
-   public void toString(JBossStringBuilder buffer)
+   protected <T> T checkResult(Object result, Class<T> expected)
    {
-      super.toString(buffer);
+      if (result != null)
+      {
+         if (result.getClass().isArray() == false)
+            throw new ClassCastException("Preinstantiated property is not an array: " + propertyName);
+      }
+      return expected.cast(result);
    }
 }

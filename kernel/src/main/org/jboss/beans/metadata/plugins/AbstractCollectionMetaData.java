@@ -26,11 +26,9 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Iterator;
 
-import org.jboss.beans.info.spi.BeanInfo;
 import org.jboss.beans.metadata.spi.MetaDataVisitor;
 import org.jboss.beans.metadata.spi.MetaDataVisitorNode;
 import org.jboss.beans.metadata.spi.ValueMetaData;
-import org.jboss.joinpoint.spi.Joinpoint;
 import org.jboss.reflect.spi.ClassInfo;
 import org.jboss.reflect.spi.TypeInfo;
 import org.jboss.util.JBossObject;
@@ -80,14 +78,12 @@ public class AbstractCollectionMetaData extends AbstractTypeMetaData
       this.elementType = elementType;
    }
 
+   @SuppressWarnings("unchecked")
    public Object getValue(TypeInfo info, ClassLoader cl) throws Throwable
    {
-      Collection<Object> result = getCollectionInstance(info, cl, Collection.class);
-      if (result == null)
-         result = getDefaultCollectionInstance();
+      Collection result = getTypeInstance(info, cl, Collection.class);
 
       TypeInfo elementTypeInfo = getElementClassInfo(cl);
-
       for (int i = 0; i < collection.size(); ++i)
       {
          ValueMetaData vmd = (ValueMetaData) collection.get(i);
@@ -186,61 +182,10 @@ public class AbstractCollectionMetaData extends AbstractTypeMetaData
     * Create the default collection instance
     * 
     * @return the class instance
-    * @throws Throwable for any error
     */
-   protected Collection<Object> getDefaultCollectionInstance() throws Throwable
+   protected Object getDefaultInstance()
    {
       return new ArrayList<Object>();
-   }
-
-   /**
-    * Create the collection instance
-    * 
-    * @param info the request type
-    * @param cl the classloader
-    * @param expected the expected class
-    * @return the class instance
-    * @throws Throwable for any error
-    */
-   @SuppressWarnings("unchecked")
-   protected Collection<Object> getCollectionInstance(TypeInfo info, ClassLoader cl, Class<?> expected) throws Throwable
-   {
-      Object result = preinstantiatedLookup(cl, expected);
-      if (result == null)
-      {
-         TypeInfo typeInfo = getClassInfo(cl);
-
-         if (typeInfo != null && typeInfo instanceof ClassInfo == false)
-            throw new IllegalArgumentException(typeInfo.getName() + " is not a class");
-
-         if (typeInfo != null && ((ClassInfo) typeInfo).isInterface())
-            throw new IllegalArgumentException(typeInfo.getName() + " is an interface");
-
-         if (typeInfo == null)
-         {
-            // No type specified
-            if (info == null)
-               return null;
-            // Not a class
-            if (info instanceof ClassInfo == false)
-               return null;
-            // Is an interface
-            if (((ClassInfo) info).isInterface())
-               return null;
-            // Type is too general
-            if (Object.class.getName().equals(info.getName()))
-               return null;
-            // Try to use the passed type
-            typeInfo = info;
-         }
-
-         BeanInfo beanInfo = configurator.getBeanInfo(typeInfo);
-         Joinpoint constructor = configurator.getConstructorJoinPoint(beanInfo);
-         result = constructor.dispatch();
-         if (expected.isAssignableFrom(result.getClass()) == false)
-            throw new ClassCastException(result.getClass() + " is not a " + expected.getName());
-      }
-      return (Collection<Object>) result;
    }
 
    /**

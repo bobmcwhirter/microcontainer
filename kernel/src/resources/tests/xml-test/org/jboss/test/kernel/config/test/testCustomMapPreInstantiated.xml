@@ -9,7 +9,7 @@
          <parameter>string2</parameter>
       </constructor>
       <property name="preInstantiatedMap">
-         <map class="org.jboss.test.kernel.config.support.CustomMap" keyClass="java.lang.String" valueClass="java.lang.String">
+         <map keyClass="java.lang.String" valueClass="java.lang.String">
             <entry><key>string2</key><value>string1</value></entry>
          </map>
       </property>

@@ -111,6 +111,15 @@ public class PropertyTestCase extends AbstractXMLTest
       assertPlainValue("PlainValue", property.getValue());
    }
    
+   public void testPropertyWithPreInstantiate() throws Exception
+   {
+      PropertyMetaData property = getProperty("PropertyWithPreInstantiate.xml");
+      assertFalse("PreInstantiate should be false.", property.isPreInstantiate());
+      assertNotNull("PropertyName", property.getName());
+      assertNull(property.getAnnotations());
+      assertPlainValue("PlainValue", property.getValue());
+   }
+
    public void testPropertyWithValue() throws Exception
    {
       PropertyMetaData property = getProperty("PropertyWithValue.xml");

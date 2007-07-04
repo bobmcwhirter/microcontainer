@@ -45,10 +45,13 @@ import org.jboss.util.JBossStringBuilder;
 public class AbstractPropertyMetaData extends AbstractFeatureMetaData
    implements PropertyMetaData, ValueMetaDataAware, TypeProvider, Serializable
 {
-   private static final long serialVersionUID = 1L;
+   private static final long serialVersionUID = 2L;
 
    /** The property name */
    protected String name;
+
+   /** The preinstantiate */
+   protected boolean preInstantiate = true;
 
    /** The property value */
    protected ValueMetaData value;
@@ -134,6 +137,16 @@ public class AbstractPropertyMetaData extends AbstractFeatureMetaData
          return ((AbstractTypeMetaData)value).getType();
       }
       return null;
+   }
+
+   public boolean isPreInstantiate()
+   {
+      return preInstantiate;
+   }
+
+   public void setPreInstantiate(boolean preInstantiate)
+   {
+      this.preInstantiate = preInstantiate;
    }
 
    public ValueMetaData getValue()

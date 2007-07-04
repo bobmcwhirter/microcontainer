@@ -24,6 +24,7 @@ package org.jboss.test.kernel.config.test;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.HashSet;
+import java.util.Iterator;
 
 import org.jboss.beans.metadata.plugins.*;
 import org.jboss.beans.metadata.spi.PropertyMetaData;
@@ -33,6 +34,7 @@ import org.jboss.kernel.spi.dependency.KernelController;
 import org.jboss.test.kernel.config.support.CustomCollection;
 import org.jboss.test.kernel.config.support.MyObject;
 import org.jboss.test.kernel.config.support.SimpleBean;
+import org.jboss.test.kernel.config.support.UnmodifiableGetterBean;
 
 import junit.framework.Test;
 
@@ -286,6 +288,56 @@ public class CollectionTestCase extends AbstractKernelConfigTest
       properties.add(pmd2);
 
       return (SimpleBean) instantiate(controller, bmd);
+   }
+
+   public void testUnmodifiableCollectionPreInstantiated() throws Throwable
+   {
+      UnmodifiableGetterBean bean = unmodifiableCollectionPreInstantiated();
+      assertNotNull(bean);
+
+      Collection result = bean.getCollection();
+      assertNotNull("Should be a collection", result);
+
+      Collection<Object> expected = new ArrayList<Object>();
+      expected.add(string1);
+      expected.add(string2);
+      expected.add(string2);
+      expected.add(string1);
+
+      assertEquals(expected.size(), result.size());
+      Iterator i1 = expected.iterator();
+      Iterator i2 = result.iterator();
+      while(i1.hasNext() && i2.hasNext())
+      {
+         assertEquals(i1.next(), i2.next());
+      }
+   }
+
+   protected UnmodifiableGetterBean unmodifiableCollectionPreInstantiated() throws Throwable
+   {
+      Kernel kernel = bootstrap();
+      KernelController controller = kernel.getController();
+
+      AbstractBeanMetaData bmd = new AbstractBeanMetaData("test1", UnmodifiableGetterBean.class.getName());
+      HashSet<PropertyMetaData> properties = new HashSet<PropertyMetaData>();
+      bmd.setProperties(properties);
+
+      StringValueMetaData vmd1 = new StringValueMetaData(string1);
+      StringValueMetaData vmd2 = new StringValueMetaData(string2);
+      StringValueMetaData vmd3 = new StringValueMetaData(string1);
+
+      AbstractCollectionMetaData smd = new AbstractCollectionMetaData();
+      smd.setElementType("java.lang.String");
+      smd.add(vmd1);
+      smd.add(vmd2);
+      smd.add(vmd2); // tests duplicates
+      smd.add(vmd3); // tests duplicates
+
+      AbstractPropertyMetaData pmd = new AbstractPropertyMetaData("collection", smd);
+      pmd.setPreInstantiate(false);
+      properties.add(pmd);
+
+      return (UnmodifiableGetterBean) instantiate(controller, bmd);
    }
 
    public void testCollectionWithValueTypeOverride() throws Throwable

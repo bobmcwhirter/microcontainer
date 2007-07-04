@@ -101,6 +101,11 @@ public class StringValueMetaData extends AbstractTypeMetaData
       return typeInfo.convertValue(value, replace);
    }
 
+   protected Object getDefaultInstance()
+   {
+      return null;
+   }
+
    public Class getType(MetaDataVisitor visitor, MetaDataVisitorNode previous) throws Throwable
    {
       if (getType() != null)

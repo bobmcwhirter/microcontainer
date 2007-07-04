@@ -27,7 +27,6 @@ import java.util.List;
 import java.util.ListIterator;
 
 import org.jboss.beans.metadata.spi.MetaDataVisitorNode;
-import org.jboss.util.JBossStringBuilder;
 
 /**
  * List metadata.
@@ -69,7 +68,7 @@ public class AbstractListMetaData extends AbstractCollectionMetaData
 
    public int lastIndexOf(Object o)
    {
-      return lastIndexOf(o);
+      return collection.lastIndexOf(o);
    }
 
    public ListIterator<MetaDataVisitorNode> listIterator()
@@ -89,16 +88,12 @@ public class AbstractListMetaData extends AbstractCollectionMetaData
 
    public MetaDataVisitorNode set(int index, MetaDataVisitorNode element)
    {
-      return set(index, element);
+      return collection.set(index, element);
    }
 
    public List<MetaDataVisitorNode> subList(int fromIndex, int toIndex)
    {
-      return subList(fromIndex, toIndex);
+      return collection.subList(fromIndex, toIndex);
    }
 
-   public void toString(JBossStringBuilder buffer)
-   {
-      super.toString(buffer);
-   }
 }

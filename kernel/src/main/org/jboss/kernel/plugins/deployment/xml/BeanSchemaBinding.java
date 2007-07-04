@@ -805,6 +805,8 @@ public class BeanSchemaBinding
                String localName = attrs.getLocalName(i);
                if ("name".equals(localName))
                   property.setName(attrs.getValue(i));
+               else if ("preinstantiate".equals(localName))
+                  property.setPreInstantiate(Boolean.parseBoolean(attrs.getValue(i)));
                else if ("class".equals(localName) || "replace".equals(localName))
                {
                   StringValueMetaData svmd;

@@ -38,12 +38,15 @@ import org.jboss.kernel.plugins.config.Configurator;
 import org.jboss.kernel.spi.config.KernelConfigurator;
 import org.jboss.kernel.spi.dependency.KernelControllerContext;
 import org.jboss.reflect.spi.ClassInfo;
+import org.jboss.reflect.spi.TypeInfo;
 import org.jboss.util.JBossStringBuilder;
+import org.jboss.joinpoint.spi.Joinpoint;
 
 /**
  * A typed value.
  *
  * @author <a href="adrian@jboss.com">Adrian Brock</a>
+ * @author <a href="ales.justin@jboss.com">Ales Justin</a>
  * @version $Revision$
  */
 public abstract class AbstractTypeMetaData extends AbstractValueMetaData
@@ -116,7 +119,13 @@ public abstract class AbstractTypeMetaData extends AbstractValueMetaData
       visitor.initialVisit(this);
    }
 
-   private void preparePreinstantiatedLookup(MetaDataVisitor visitor)
+   /**
+    * Check if we can extract the information about
+    * existing instance - only on property metadata.
+    *
+    * @param visitor underlying visitor
+    */
+   protected void preparePreinstantiatedLookup(MetaDataVisitor visitor)
    {
       Stack<MetaDataVisitorNode> visitorNodes = visitor.visitorNodeStack();
       // pop it so that we can get to grand parent for more info
@@ -126,12 +135,15 @@ public abstract class AbstractTypeMetaData extends AbstractValueMetaData
          if (parent instanceof PropertyMetaData)
          {
             PropertyMetaData pmd = (PropertyMetaData)parent;
-            propertyName = pmd.getName();
-            Object gp = visitorNodes.peek();
-            if (gp instanceof BeanMetaData)
+            if (pmd.isPreInstantiate())
             {
-               BeanMetaData bmd = (BeanMetaData)gp;
-               beanName = bmd.getName();
+               propertyName = pmd.getName();
+               Object gp = visitorNodes.peek();
+               if (gp instanceof BeanMetaData)
+               {
+                  BeanMetaData bmd = (BeanMetaData)gp;
+                  beanName = bmd.getName();
+               }
             }
          }
       }
@@ -141,12 +153,19 @@ public abstract class AbstractTypeMetaData extends AbstractValueMetaData
       }
    }
 
-   @SuppressWarnings("unchecked")
-   protected Object preinstantiatedLookup(ClassLoader cl, Class expected)
+   /**
+    * Check for already existing instances.
+    *
+    * @param <T> expected type
+    * @param cl the classloader
+    * @param expected the expected class
+    * @return existing instance or null otherwise
+    */
+   protected <T> T preinstantiatedLookup(ClassLoader cl, Class<T> expected)
    {
-      Object result = null;
       if (propertyName != null && beanName != null)
       {
+         Object result = null;
          try
          {
             Controller controller = context.getController();
@@ -169,11 +188,110 @@ public abstract class AbstractTypeMetaData extends AbstractValueMetaData
          {
             log.warn("Exception in preinstantiated lookup for: " + beanName + "." + propertyName + ", " + t);
          }
-         if (result != null && expected != null && expected.isAssignableFrom(result.getClass()) == false)
-            throw new ClassCastException(result.getClass() + " is not a " + expected.getName());
+         return checkResult(result, expected);
       }
+      return null;
+   }
+
+   /**
+    * Check result for class compatibility.
+    *
+    * @param result the result
+    * @param expected expected class
+    * @return casted result
+    * @throws ClassCastException if result cannot be casted into expected parameter
+    */
+   protected <T> T checkResult(Object result, Class<T> expected)
+   {
+      if (result != null && expected.isAssignableFrom(result.getClass()) == false)
+         throw new ClassCastException(result.getClass() + " is not a " + expected.getName());
+      return expected.cast(result);
+   }
+
+   /**
+    * Create new instance from type field.
+    * Fall back to info parameter if no type field is set.
+    *
+    * @param <T> expected type
+    * @param info the type of reference we are about to set
+    * @param cl the classloader to use
+    * @param expected the expected class
+    * @param explicit is type explicit
+    * @return class instance or null if type is too broad
+    * @throws Throwable on any error
+    */
+   protected <T> T createInstance(TypeInfo info, ClassLoader cl, Class<T> expected, boolean explicit) throws Throwable
+   {
+      if (info == null || Object.class.getName().equals(info.getName()))
+         return null;
+
+      if (info instanceof ClassInfo == false)
+      {
+         if (explicit)
+            throw new IllegalArgumentException(info.getName() + " is not a class");
+         else
+            return null;
+      }
+
+      if (((ClassInfo) info).isInterface())
+      {
+         if (explicit)
+            throw new IllegalArgumentException(info.getName() + " is an interface");
+         else
+            return null;
+      }
+
+      BeanInfo beanInfo = configurator.getBeanInfo(info);
+      Joinpoint constructor = configurator.getConstructorJoinPoint(beanInfo);
+      Object result = constructor.dispatch();
+
+      if (expected.isAssignableFrom(result.getClass()) == false)
+         throw new ClassCastException(result.getClass() + " is not a " + expected.getName());
+
+      return expected.cast(result);
+   }
+
+   /**
+    * Create the class instance
+    *
+    * @param <T> expected type
+    * @param info the request type
+    * @param cl the classloader
+    * @param expected the expected class
+    * @return the class instance
+    * @throws Throwable for any error
+    */
+   protected <T> T getTypeInstance(TypeInfo info, ClassLoader cl, Class<T> expected) throws Throwable
+   {
+      T result = null;
+
+      TypeInfo typeInfo = getClassInfo(cl);
+      // we have explicitly set type
+      if (typeInfo != null)
+         result = createInstance(typeInfo, cl, expected, true);
+
+      if (result == null)
+      {
+         result = preinstantiatedLookup(cl, expected);
+         // try info param
+         if (result == null)
+         {
+            result = createInstance(info, cl, expected, false);
+            // get default
+            if (result == null)
+               result = expected.cast(getDefaultInstance());
+         }
+      }
+
       return result;
    }
+
+   /**
+    * Get the default instance.
+    *
+    * @return the default instance
+    */
+   protected abstract Object getDefaultInstance();
 
    /**
     * Set the configurator

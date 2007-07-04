@@ -33,6 +33,7 @@ import org.jboss.kernel.spi.dependency.KernelController;
 import org.jboss.test.kernel.config.support.CustomMap;
 import org.jboss.test.kernel.config.support.MyObject;
 import org.jboss.test.kernel.config.support.SimpleBean;
+import org.jboss.test.kernel.config.support.UnmodifiableGetterBean;
 
 import junit.framework.Test;
 
@@ -277,6 +278,47 @@ public class MapTestCase extends AbstractKernelConfigTest
       properties.add(pmd2);
 
       return (SimpleBean) instantiate(controller, bmd);
+   }
+
+   public void testUnmodifiableMapPreInstantiated() throws Throwable
+   {
+      UnmodifiableGetterBean bean = unmodifiableMapPreInstantiated();
+      assertNotNull(bean);
+
+      Map result = bean.getMap();
+      assertNotNull("Should be a map", result);
+
+      Map<Object, Object> expected = new HashMap<Object, Object>();
+      expected.put(string1, string2);
+      expected.put(string2, string1);
+      assertEquals(expected, result);
+   }
+
+   protected UnmodifiableGetterBean unmodifiableMapPreInstantiated() throws Throwable
+   {
+      Kernel kernel = bootstrap();
+      KernelController controller = kernel.getController();
+
+      AbstractBeanMetaData bmd = new AbstractBeanMetaData("test1", UnmodifiableGetterBean.class.getName());
+      HashSet<PropertyMetaData> properties = new HashSet<PropertyMetaData>();
+      bmd.setProperties(properties);
+
+      StringValueMetaData kmd1 = new StringValueMetaData(string1);
+      StringValueMetaData kmd2 = new StringValueMetaData(string2);
+      StringValueMetaData vmd1 = new StringValueMetaData(string2);
+      StringValueMetaData vmd2 = new StringValueMetaData(string1);
+
+      AbstractMapMetaData smd = new AbstractMapMetaData();
+      smd.setKeyType("java.lang.String");
+      smd.setValueType("java.lang.String");
+      smd.put(kmd1, vmd1);
+      smd.put(kmd2, vmd2);
+
+      AbstractPropertyMetaData pmd = new AbstractPropertyMetaData("map", smd);
+      pmd.setPreInstantiate(false);
+      properties.add(pmd);
+
+      return (UnmodifiableGetterBean) instantiate(controller, bmd);
    }
 
    public void testMapWithKeyTypeOverride() throws Throwable

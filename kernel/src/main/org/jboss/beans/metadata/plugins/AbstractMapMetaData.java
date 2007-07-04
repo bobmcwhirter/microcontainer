@@ -22,13 +22,16 @@
 package org.jboss.beans.metadata.plugins;
 
 import java.io.Serializable;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.Collection;
+import java.util.HashMap;
+import java.util.Iterator;
+import java.util.Map;
+import java.util.Set;
 
-import org.jboss.beans.info.spi.BeanInfo;
 import org.jboss.beans.metadata.spi.MetaDataVisitor;
 import org.jboss.beans.metadata.spi.MetaDataVisitorNode;
 import org.jboss.beans.metadata.spi.ValueMetaData;
-import org.jboss.joinpoint.spi.Joinpoint;
 import org.jboss.reflect.spi.ClassInfo;
 import org.jboss.reflect.spi.TypeInfo;
 
@@ -99,16 +102,10 @@ public class AbstractMapMetaData extends AbstractTypeMetaData
       this.valueType = valueType;
    }
 
-   protected Class<? extends Map> expectedMapClass()
-   {
-      return Map.class;
-   }
-
+   @SuppressWarnings("unchecked")
    public Object getValue(TypeInfo info, ClassLoader cl) throws Throwable
    {
-      Map<Object, Object> result = getMapInstance(info, cl, expectedMapClass());
-      if (result == null)
-         result = getDefaultMapInstance();
+      Map result = getTypeInstance(info, cl, getExpectedClass());
 
       TypeInfo keyTypeInfo = getKeyClassInfo(cl);
       TypeInfo valueTypeInfo = getValueClassInfo(cl);
@@ -224,61 +221,15 @@ public class AbstractMapMetaData extends AbstractTypeMetaData
     * Create the default map instance
     * 
     * @return the class instance
-    * @throws Throwable for any error
     */
-   protected Map<Object, Object> getDefaultMapInstance() throws Throwable
+   protected Object getDefaultInstance()
    {
       return new HashMap<Object, Object>();
    }
 
-   /**
-    * Create the map instance
-    * 
-    * @param info the request type
-    * @param cl the classloader
-    * @param expected the expected class
-    * @return the class instance
-    * @throws Throwable for any error
-    */
-   @SuppressWarnings("unchecked")
-   protected Map<Object, Object> getMapInstance(TypeInfo info, ClassLoader cl, Class<?> expected) throws Throwable
+   protected Class<? extends Map> getExpectedClass()
    {
-      Object result = preinstantiatedLookup(cl, expected);
-      if (result == null)
-      {
-         TypeInfo typeInfo = getClassInfo(cl);
-
-         if (typeInfo != null && typeInfo instanceof ClassInfo == false)
-            throw new IllegalArgumentException(typeInfo.getName() + " is not a class");
-
-         if (typeInfo != null && ((ClassInfo) typeInfo).isInterface())
-            throw new IllegalArgumentException(typeInfo.getName() + " is an interface");
-
-         if (typeInfo == null)
-         {
-            // No type specified
-            if (info == null)
-               return null;
-            // Not a class
-            if (info instanceof ClassInfo == false)
-               return null;
-            // Not an interface
-            if (((ClassInfo) info).isInterface())
-               return null;
-            // Type is too general
-            if (Object.class.getName().equals(info.getName()))
-               return null;
-            // Try to use the passed type
-            typeInfo = info;
-         }
-
-         BeanInfo beanInfo = configurator.getBeanInfo(typeInfo);
-         Joinpoint constructor = configurator.getConstructorJoinPoint(beanInfo);
-         result = constructor.dispatch();
-         if (expected.isAssignableFrom(result.getClass()) == false)
-            throw new ClassCastException(result.getClass() + " is not a " + expected.getName());
-      }
-      return (Map<Object, Object>) result;
+      return Map.class;
    }
 
    /**

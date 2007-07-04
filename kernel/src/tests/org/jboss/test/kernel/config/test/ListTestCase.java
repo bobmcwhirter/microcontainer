@@ -33,6 +33,7 @@ import org.jboss.kernel.spi.dependency.KernelController;
 import org.jboss.test.kernel.config.support.CustomList;
 import org.jboss.test.kernel.config.support.MyObject;
 import org.jboss.test.kernel.config.support.SimpleBean;
+import org.jboss.test.kernel.config.support.UnmodifiableGetterBean;
 
 import junit.framework.Test;
 
@@ -286,6 +287,49 @@ public class ListTestCase extends AbstractKernelConfigTest
       properties.add(pmd2);
       
       return (SimpleBean) instantiate(controller, bmd);
+   }
+
+   public void testUnmodifiableListPreInstantiated() throws Throwable
+   {
+      UnmodifiableGetterBean bean = unmodifiableListPreInstantiated();
+      assertNotNull(bean);
+
+      List result = bean.getList();
+      assertNotNull("Should be a list", result);
+
+      ArrayList<Object> expected = new ArrayList<Object>();
+      expected.add(string1);
+      expected.add(string2);
+      expected.add(string2);
+      expected.add(string1);
+      assertEquals(expected, result);
+   }
+
+   protected UnmodifiableGetterBean unmodifiableListPreInstantiated() throws Throwable
+   {
+      Kernel kernel = bootstrap();
+      KernelController controller = kernel.getController();
+
+      AbstractBeanMetaData bmd = new AbstractBeanMetaData("test1", UnmodifiableGetterBean.class.getName());
+      HashSet<PropertyMetaData> properties = new HashSet<PropertyMetaData>();
+      bmd.setProperties(properties);
+
+      StringValueMetaData vmd1 = new StringValueMetaData(string1);
+      StringValueMetaData vmd2 = new StringValueMetaData(string2);
+      StringValueMetaData vmd3 = new StringValueMetaData(string1);
+
+      AbstractListMetaData smd = new AbstractListMetaData();
+      smd.setElementType("java.lang.String");
+      smd.add(vmd1);
+      smd.add(vmd2);
+      smd.add(vmd2); // tests duplicates
+      smd.add(vmd3); // tests duplicates
+
+      AbstractPropertyMetaData pmd1 = new AbstractPropertyMetaData("list", smd);
+      pmd1.setPreInstantiate(false);
+      properties.add(pmd1);
+
+      return (UnmodifiableGetterBean) instantiate(controller, bmd);
    }
 
    public void testListWithValueTypeOverride() throws Throwable

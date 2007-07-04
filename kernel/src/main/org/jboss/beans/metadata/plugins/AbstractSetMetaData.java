@@ -27,7 +27,6 @@ import java.util.HashSet;
 import java.util.Set;
 
 import org.jboss.beans.metadata.spi.MetaDataVisitorNode;
-import org.jboss.util.JBossStringBuilder;
 
 /**
  * Set metadata.
@@ -71,12 +70,7 @@ public class AbstractSetMetaData extends AbstractCollectionMetaData
       return changed;
    }
 
-   public void toString(JBossStringBuilder buffer)
-   {
-      super.toString(buffer);
-   }
-
-   protected Collection<Object> getDefaultCollectionInstance() throws Throwable
+   protected Object getDefaultInstance()
    {
       return new HashSet<Object>();
    }

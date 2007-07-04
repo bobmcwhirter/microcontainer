@@ -25,6 +25,7 @@ import junit.framework.Test;
 
 import org.jboss.test.kernel.config.support.SimpleBean;
 import org.jboss.test.kernel.config.support.XMLUtil;
+import org.jboss.test.kernel.config.support.UnmodifiableGetterBean;
 
 /**
  * Set Test Case.
@@ -72,6 +73,12 @@ public class SetXMLTestCase extends SetTestCase
    {
       XMLUtil util = bootstrapXML(true);
       return (SimpleBean) util.getBean("SimpleBean");
+   }
+
+   protected UnmodifiableGetterBean unmodifiableSetPreInstantiated() throws Throwable
+   {
+      XMLUtil util = bootstrapXML(true);
+      return (UnmodifiableGetterBean) util.getBean("SimpleBean");
    }
 
    protected SimpleBean setWithValueTypeOverride() throws Throwable

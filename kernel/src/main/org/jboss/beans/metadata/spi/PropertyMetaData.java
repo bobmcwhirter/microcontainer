@@ -44,6 +44,13 @@ public interface PropertyMetaData extends FeatureMetaData
    String getType();
 
    /**
+    * Get the preinstantiate flag.
+    *
+    * @return the preinstantiate flag
+    */
+   boolean isPreInstantiate();
+
+   /**
     * Get the value.
     * 
     * @return the value.

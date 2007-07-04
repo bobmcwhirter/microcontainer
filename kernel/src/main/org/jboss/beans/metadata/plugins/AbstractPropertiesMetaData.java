@@ -33,12 +33,12 @@ public class AbstractPropertiesMetaData extends AbstractMapMetaData
 {
    private static final long serialVersionUID = 1L;
 
-   protected Map<Object, Object> getDefaultMapInstance() throws Throwable
+   protected Object getDefaultInstance()
    {
       return new Properties();
    }
 
-   protected Class<? extends Map> expectedMapClass()
+   protected Class<? extends Map> getExpectedClass()
    {
       return Properties.class;
    }

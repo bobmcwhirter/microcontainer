@@ -25,6 +25,7 @@ import junit.framework.Test;
 
 import org.jboss.test.kernel.config.support.SimpleBean;
 import org.jboss.test.kernel.config.support.XMLUtil;
+import org.jboss.test.kernel.config.support.UnmodifiableGetterBean;
 
 /**
  * Collection Test Case.
@@ -72,6 +73,12 @@ public class CollectionXMLTestCase extends CollectionTestCase
    {
       XMLUtil util = bootstrapXML(true);
       return (SimpleBean) util.getBean("SimpleBean");
+   }
+
+   protected UnmodifiableGetterBean unmodifiableCollectionPreInstantiated() throws Throwable
+   {
+      XMLUtil util = bootstrapXML(true);
+      return (UnmodifiableGetterBean) util.getBean("SimpleBean");
    }
 
    protected SimpleBean collectionWithValueTypeOverride() throws Throwable

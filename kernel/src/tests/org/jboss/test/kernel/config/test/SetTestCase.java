@@ -32,6 +32,7 @@ import org.jboss.kernel.spi.dependency.KernelController;
 import org.jboss.test.kernel.config.support.CustomSet;
 import org.jboss.test.kernel.config.support.MyObject;
 import org.jboss.test.kernel.config.support.SimpleBean;
+import org.jboss.test.kernel.config.support.UnmodifiableGetterBean;
 
 import junit.framework.Test;
 
@@ -285,6 +286,49 @@ public class SetTestCase extends AbstractKernelConfigTest
       properties.add(pmd2);
 
       return (SimpleBean) instantiate(controller, bmd);
+   }
+
+   public void testUnmodifiableSetPreInstantiated() throws Throwable
+   {
+      UnmodifiableGetterBean bean = unmodifiableSetPreInstantiated();
+      assertNotNull(bean);
+
+      Set result = bean.getSet();
+      assertNotNull("Should be a set", result);
+
+      HashSet<Object> expected = new HashSet<Object>();
+      expected.add(string1);
+      expected.add(string2);
+      expected.add(string2);
+      expected.add(string1);
+      assertEquals(expected, result);
+   }
+
+   protected UnmodifiableGetterBean unmodifiableSetPreInstantiated() throws Throwable
+   {
+      Kernel kernel = bootstrap();
+      KernelController controller = kernel.getController();
+
+      AbstractBeanMetaData bmd = new AbstractBeanMetaData("test1", UnmodifiableGetterBean.class.getName());
+      HashSet<PropertyMetaData> properties = new HashSet<PropertyMetaData>();
+      bmd.setProperties(properties);
+
+      StringValueMetaData vmd1 = new StringValueMetaData(string1);
+      StringValueMetaData vmd2 = new StringValueMetaData(string2);
+      StringValueMetaData vmd3 = new StringValueMetaData(string1);
+
+      AbstractSetMetaData smd = new AbstractSetMetaData();
+      smd.setElementType("java.lang.String");
+      smd.add(vmd1);
+      smd.add(vmd2);
+      smd.add(vmd2); // tests duplicates
+      smd.add(vmd3); // tests duplicates
+
+      AbstractPropertyMetaData pmd = new AbstractPropertyMetaData("set", smd);
+      pmd.setPreInstantiate(false);
+      properties.add(pmd);
+
+      return (UnmodifiableGetterBean) instantiate(controller, bmd);
    }
 
    public void testSetWithValueTypeOverride() throws Throwable
