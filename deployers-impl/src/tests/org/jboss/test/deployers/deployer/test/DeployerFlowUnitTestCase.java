@@ -53,7 +53,6 @@ public class DeployerFlowUnitTestCase extends AbstractDeployerTest
       TestFlowDeployer.reset();
    }
    
-/*
    public void testSimpleInputOutputCorrectOrder() throws Exception
    {
       DeployerClient main = createMainDeployer();
@@ -500,7 +499,6 @@ public class DeployerFlowUnitTestCase extends AbstractDeployerTest
       assertEquals(7, deployer6.getUndeployOrder());
    }
 
-*/
    public void testIntermediateIsRelativelySorted() throws Exception
    {
       DeployerClient main = createMainDeployer();
@@ -545,7 +543,6 @@ public class DeployerFlowUnitTestCase extends AbstractDeployerTest
       assertEquals(4, deployer3.getUndeployOrder());
    }
 
-/*
    public void testTransitionOrdering() throws Exception
    {
       DeployerClient main = createMainDeployer();
@@ -645,5 +642,4 @@ public class DeployerFlowUnitTestCase extends AbstractDeployerTest
       assertEquals(5, deployer2.getUndeployOrder());
       assertEquals(6, deployer3.getUndeployOrder());
    }
-*/
 }
