@@ -84,7 +84,6 @@ public class DominoOrdering<T extends Domino>
             connections[j][i] = -connections[i][j];
          }
       }
-
    }
 
    public List<T> orderDominoes(List<T> dominoes)
