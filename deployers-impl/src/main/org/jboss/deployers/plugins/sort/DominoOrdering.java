@@ -96,10 +96,6 @@ public class DominoOrdering<T extends Domino>
          throwCycleException(cycle);
       // name compare on 'uncomparable'
       fillCompareNames();
-      // just check for possible newly created loops
-      cycle = fillTransitions(false);
-      if (cycle >= 0)
-         throwCycleException(cycle);
 
       List<Integer> indexes = new ArrayList<Integer>();
       for (int i = 0; i < size; i++)
