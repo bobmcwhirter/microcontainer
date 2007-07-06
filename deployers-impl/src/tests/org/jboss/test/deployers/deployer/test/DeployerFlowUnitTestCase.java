@@ -502,12 +502,12 @@ public class DeployerFlowUnitTestCase extends AbstractDeployerTest
    public void testIntermediateIsRelativelySorted() throws Exception
    {
       DeployerClient main = createMainDeployer();
-      TestFlowDeployer deployer2 = new TestFlowDeployer("C");
+      TestFlowDeployer deployer2 = new TestFlowDeployer("A");
       deployer2.setInputs("test1");
       addDeployer(main, deployer2);
-      TestFlowDeployer deployer3 = new TestFlowDeployer("E");
+      TestFlowDeployer deployer3 = new TestFlowDeployer("B");
       addDeployer(main, deployer3);
-      TestFlowDeployer deployer1 = new TestFlowDeployer("A");
+      TestFlowDeployer deployer1 = new TestFlowDeployer("C");
       deployer1.setOutputs("test1");
       addDeployer(main, deployer1);
 
