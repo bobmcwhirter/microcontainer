@@ -28,7 +28,6 @@ import org.jboss.deployers.spi.deployer.Deployer;
 
 /**
  * Deployer sorter using domino sorting.
- * 
  * @author <a href="mailto:ales.justin@jboss.com">Ales Justin</a>
  */
 public class DominoDeployerSorter implements DeployerSorter

@@ -30,7 +30,7 @@ import static org.jboss.deployers.spi.Ordered.COMPARATOR;
 
 /**
  * Simple transition ordering using transitive closure.
- * 
+ *
  * @author <a href="mailto:ales.justin@jboss.com">Ales Justin</a>
  * @param <T> exact domino type
  */
@@ -91,11 +91,15 @@ public class DominoOrdering<T extends Domino>
       // prepare initial transitions
       init(dominoes);
       // do transitive closure
-      fillTransitions(true);
+      int cycle = fillTransitions(true);
+      if (cycle >= 0)
+         throwCycleException(cycle);
       // name compare on 'uncomparable'
       fillCompareNames();
       // just check for possible newly created loops
-      fillTransitions(false);
+      cycle = fillTransitions(false);
+      if (cycle >= 0)
+         throwCycleException(cycle);
 
       List<Integer> indexes = new ArrayList<Integer>();
       for (int i = 0; i < size; i++)
@@ -103,59 +107,55 @@ public class DominoOrdering<T extends Domino>
       Collections.sort(indexes, new IndexComparator());
 
       List<T> list = new ArrayList<T>(size);
-      for(Integer index : indexes)
+      for (Integer index : indexes)
          list.add(dominoes.get(index));
       return list;
    }
 
-   protected void fillTransitions(boolean fillTransition)
+   /**
+    * Fill transitions.
+    *
+    * @param fillTransitions do change
+    * @return index of the domino cycle cause, -1 otherwise
+    */
+   protected int fillTransitions(boolean fillTransitions)
    {
       boolean changed = true;
-      while(changed)
+      while (changed)
       {
          changed = false;
          for (int i = 0; i < size; i++)
          {
             for (int j = 0; j < size; j++)
             {
-               if (j == i || connections[i][j] == 0)
+               int current = connections[i][j];
+               if (j == i || current == 0)
                   continue;
                for (int k = 0; k < size; k++)
                {
                   if (k == i || k == j)
                      continue;
-                  if (connections[i][j] > 0)
+                  int lookup = connections[j][k];
+                  // same signum
+                  if (current * lookup > 0)
                   {
-                     if (connections[j][k] > 0)
+                     int next = connections[i][k];
+                     // cycle
+                     if (next * current < 0)
                      {
-                        // cycle
-                        if (connections[i][k] < 0)
-                           throwCycleException(i);
-                        else if (fillTransition && connections[i][k] == 0)
-                        {
-                           connections[i][k] = 1;
-                           changed = true;
-                        }
+                        return i;
                      }
-                  }
-                  else if (connections[i][j] < 0)
-                  {
-                     if (connections[j][k] < 0)
+                     else if (fillTransitions && next == 0)
                      {
-                        // cycle
-                        if (connections[i][k] > 0)
-                           throwCycleException(i);
-                        else if (fillTransition && connections[i][k] == 0)
-                        {
-                           connections[i][k] = -1;
-                           changed = true;
-                        }
+                        connections[i][k] = current;
+                        changed = true;
                      }
                   }
                }
             }
          }
       }
+      return -1;
    }
 
    protected void fillCompareNames()
@@ -170,6 +170,13 @@ public class DominoOrdering<T extends Domino>
                T two = dominoes.get(j);
                connections[i][j] = COMPARATOR.compare(one, two);
                connections[j][i] = -connections[i][j];
+               int cycle = fillTransitions(false);
+               // we introduced cycle - flip the signum
+               if (cycle >= 0)
+               {
+                  connections[i][j] = -connections[i][j];
+                  connections[j][i] = -connections[i][j];
+               }
             }
          }
       }
