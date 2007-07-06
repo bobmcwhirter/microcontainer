@@ -28,6 +28,12 @@ package org.jboss.deployers.plugins.sort;
  */
 public class DeployerSorterFactory
 {
+   /**
+    * Create new DeployerSorter.
+    * Currently just plain domino sorting.
+    *
+    * @return deployer sorter instance
+    */
    public static DeployerSorter newSorter()
    {
       return new DominoDeployerSorter();      

@@ -26,7 +26,7 @@ import java.util.Collections;
 import java.util.Comparator;
 import java.util.List;
 
-import org.jboss.deployers.spi.Ordered;
+import static org.jboss.deployers.spi.Ordered.COMPARATOR;
 
 /**
  * Simple transition ordering using transitive closure.
@@ -71,7 +71,7 @@ public class DominoOrdering<T extends Domino>
             {
                // pass-through deployers
                if (one.getHead().match(twoHead) && oneTail.match(twoTail))
-                  relation = Ordered.COMPARATOR.compare(one, two);
+                  relation = COMPARATOR.compare(one, two);
                else
                   // short circut cycle - throw exception immediately
                   throwCycleException(i);
@@ -89,19 +89,27 @@ public class DominoOrdering<T extends Domino>
 
    public List<T> orderDominoes(List<T> dominoes)
    {
+      // prepare initial transitions
       init(dominoes);
-      fillTransitions();
+      // do transitive closure
+      fillTransitions(true);
+      // name compare on 'uncomparable'
+      fillCompareNames();
+      // just check for possible newly created loops
+      fillTransitions(false);
+
       List<Integer> indexes = new ArrayList<Integer>();
       for (int i = 0; i < size; i++)
          indexes.add(i);
       Collections.sort(indexes, new IndexComparator());
+
       List<T> list = new ArrayList<T>(size);
       for(Integer index : indexes)
          list.add(dominoes.get(index));
       return list;
    }
 
-   protected void fillTransitions()
+   protected void fillTransitions(boolean fillTransition)
    {
       boolean changed = true;
       while(changed)
@@ -121,31 +129,48 @@ public class DominoOrdering<T extends Domino>
                   {
                      if (connections[j][k] > 0)
                      {
-                        // already set
-                        if (connections[i][k] > 0)
-                           continue;
                         // cycle
-                        else if (connections[i][k] < 0)
+                        if (connections[i][k] < 0)
                            throwCycleException(i);
-                        connections[i][k] = 1;
-                        changed = true;
+                        else if (fillTransition && connections[i][k] == 0)
+                        {
+                           connections[i][k] = 1;
+                           changed = true;
+                        }
                      }
                   }
                   else if (connections[i][j] < 0)
                   {
                      if (connections[j][k] < 0)
                      {
-                        // already set
-                        if (connections[i][k] < 0)
-                           continue;
                         // cycle
-                        else if (connections[i][k] > 0)
+                        if (connections[i][k] > 0)
                            throwCycleException(i);
-                        connections[i][k] = -1;
-                        changed = true;
+                        else if (fillTransition && connections[i][k] == 0)
+                        {
+                           connections[i][k] = -1;
+                           changed = true;
+                        }
                      }
                   }
                }
+            }
+         }
+      }
+   }
+
+   protected void fillCompareNames()
+   {
+      for (int i = 0; i < size - 1; i++)
+      {
+         for (int j = i + 1; j < size; j++)
+         {
+            if (connections[i][j] == 0)
+            {
+               T one = dominoes.get(i);
+               T two = dominoes.get(j);
+               connections[i][j] = COMPARATOR.compare(one, two);
+               connections[j][i] = -connections[i][j];
             }
          }
       }
