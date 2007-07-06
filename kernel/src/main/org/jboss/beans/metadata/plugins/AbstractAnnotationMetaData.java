@@ -84,7 +84,6 @@ public class AbstractAnnotationMetaData extends JBossObject
       try
       {
          String annString = annotation;
-         // TODO - JBMICROCONT-143 + any better way?
          if (replace)
          {
             annString = StringPropertyReplacer.replaceProperties(annString);

@@ -47,6 +47,9 @@
    <xi:include href="modules/installation.xml"
                xml:base="./"
                xmlns:xi="http://www.w3.org/2001/XInclude"/>
+   <xi:include href="modules/glossary.xml"
+               xml:base="./"
+               xmlns:xi="http://www.w3.org/2001/XInclude"/>
    <xi:include href="modules/examples.xml"
                xml:base="./"
                xmlns:xi="http://www.w3.org/2001/XInclude"/>

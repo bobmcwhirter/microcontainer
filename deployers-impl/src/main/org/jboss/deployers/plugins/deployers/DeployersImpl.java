@@ -41,9 +41,10 @@ import org.jboss.dependency.spi.DependencyItem;
 import org.jboss.deployers.client.spi.IncompleteDeploymentException;
 import org.jboss.deployers.client.spi.IncompleteDeployments;
 import org.jboss.deployers.client.spi.MissingDependency;
+import org.jboss.deployers.plugins.sort.DeployerSorter;
+import org.jboss.deployers.plugins.sort.DeployerSorterFactory;
 import org.jboss.deployers.spi.DeploymentException;
 import org.jboss.deployers.spi.DeploymentState;
-import org.jboss.deployers.spi.Ordered;
 import org.jboss.deployers.spi.deployer.Deployer;
 import org.jboss.deployers.spi.deployer.Deployers;
 import org.jboss.deployers.spi.deployer.DeploymentStage;
@@ -175,7 +176,7 @@ public class DeployersImpl implements Deployers, ControllerContextActions
       List<Deployer> deployers = deployersByStage.get(stageName);
       if (deployers == null)
          deployers = Collections.emptyList();
-      deployers = sort(deployers, wrapper);
+      deployers = insert(deployers, wrapper);
       deployersByStage.put(stageName, deployers);
       
       this.deployers.add(wrapper);
@@ -803,17 +804,33 @@ public class DeployersImpl implements Deployers, ControllerContextActions
    }
    
    /**
+    * Insert the new Deployer.
+    *
+    * @param original the original deployers
+    * @param newDeployer the new deployer
+    * @return the sorted deployers
+    */
+   protected List<Deployer> insert(List<Deployer> original, Deployer newDeployer)
+   {
+      DeployerSorter sorter = DeployerSorterFactory.newSorter();
+      return sorter.sortDeployers(original, newDeployer);
+   }
+
+/*
+   */
+/**
     * Sort the deployers
     * 
     * @param original the original deployers
     * @param newDeployer the new deployer
     * @return the sorted deployers
     */
+/*
    protected List<Deployer> sort(List<Deployer> original, Deployer newDeployer)
    {
       List<Deployer> result = new ArrayList<Deployer>(original);
       result.add(newDeployer);
-      
+
       // Bubble sort :-)
       boolean changed = true;
       while (changed)
@@ -823,12 +840,12 @@ public class DeployersImpl implements Deployers, ControllerContextActions
          for (int i = 0; i < result.size() -1; ++i)
          {
             int j = i+1;
-            
+
             Deployer one = result.get(i);
             Deployer two = result.get(j);
-            
+
             Set<String> oneOutputs = one.getOutputs();
-            
+
             // Don't move if one outputs something for two
             boolean swap = true;
             if (oneOutputs.isEmpty() == false)
@@ -842,11 +859,11 @@ public class DeployersImpl implements Deployers, ControllerContextActions
                      break;
                   }
                }
-               
+
                if (swap == false)
                   continue;
             }
-            
+
             // Move if one inputs from two
             swap = false;
             Set<String> twoOutputs = two.getOutputs();
@@ -862,11 +879,11 @@ public class DeployersImpl implements Deployers, ControllerContextActions
                   }
                }
             }
-            
+
             // Move if the order is not correct
             if (Ordered.COMPARATOR.compare(one, two) > 0)
                swap = true;
-            
+
             if (swap)
             {
                Collections.swap(result, i, j);
@@ -874,7 +891,7 @@ public class DeployersImpl implements Deployers, ControllerContextActions
             }
          }
       }
-      
+
       // Now check the consistency
       // The new deployer should be before anything that accepts its outputs
       Set<String> outputs = newDeployer.getOutputs();
@@ -908,7 +925,8 @@ public class DeployersImpl implements Deployers, ControllerContextActions
             }
          }
       }
-      
+
       return result;
    }
+*/
 }
