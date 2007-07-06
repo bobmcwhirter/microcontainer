@@ -36,8 +36,6 @@ import org.jboss.deployers.spi.Ordered;
  */
 public class DominoOrdering<T extends Domino>
 {
-   private static final Ordered.OrderedComparator ORDERED_COMPARATOR = new Ordered.OrderedComparator();
-
    protected String message;
 
    protected List<T> dominoes;
@@ -73,7 +71,7 @@ public class DominoOrdering<T extends Domino>
             {
                // pass-through deployers
                if (one.getHead().match(twoHead) && oneTail.match(twoTail))
-                  relation = ORDERED_COMPARATOR.compare(one, two);
+                  relation = Ordered.COMPARATOR.compare(one, two);
                else
                   // short circut cycle - throw exception immediately
                   throwCycleException(i);
