@@ -38,11 +38,11 @@ public class DominoOrdering<T extends Domino>
 {
    private static final Ordered.OrderedComparator ORDERED_COMPARATOR = new Ordered.OrderedComparator();
 
-   private String message;
+   protected String message;
 
-   private List<T> dominoes;
-   private int size;
-   private int[][] connections;
+   protected List<T> dominoes;
+   protected int size;
+   protected int[][] connections;
 
    public DominoOrdering(String message)
    {
@@ -162,25 +162,11 @@ public class DominoOrdering<T extends Domino>
       throw new IllegalStateException(builder.toString());
    }
 
-   private class IndexComparator implements Comparator<Integer>
+   protected class IndexComparator implements Comparator<Integer>
    {
       public int compare(Integer i1, Integer i2)
       {
          return connections[i1][i2];
       }
    }
-
-   protected void print()
-   {
-      for(int i = 0; i < size; i++)
-      {
-         for(int j = 0; j < size; j++)
-         {
-            System.out.print(String.format("%2d ", connections[i][j]));
-         }
-         System.out.println();
-      }
-      System.out.println();
-   }
-
 }
