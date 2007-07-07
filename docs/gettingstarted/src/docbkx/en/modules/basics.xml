@@ -731,6 +731,10 @@
          &lt;/bean>
       </programlisting>
 
+      <para>
+         TODO - preinstantiated and actual collection instantiation configuration options.
+      </para>
+
    </section>
 
    <section>
