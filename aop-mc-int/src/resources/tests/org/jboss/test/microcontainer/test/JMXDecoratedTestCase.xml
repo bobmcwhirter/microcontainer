@@ -63,4 +63,12 @@
    <bean name="AnnotatedBean" class="org.jboss.test.microcontainer.support.SimpleBeanAnnotatedImpl"/>
 
    <bean name="AnnotatedBean2" class="org.jboss.test.microcontainer.support.SimpleBeanAnnotatedImpl2"/>
+
+   <bean name="DirectRegistrant" class="org.jboss.test.microcontainer.support.JmxRegistrantDirect">
+      <annotation>@org.jboss.aop.microcontainer.aspects.jmx.JMX(name="test:name=DirectRegistrant", exposedInterface=org.jboss.test.microcontainer.support.JmxRegistrantDirectMBean.class,registerDirectly=true)</annotation>
+   </bean>
+
+   <bean name="NotDirectRegistrant" class="org.jboss.test.microcontainer.support.JmxRegistrantDirect">
+      <annotation>@org.jboss.aop.microcontainer.aspects.jmx.JMX(name="test:name=NotDirectRegistrant", exposedInterface=org.jboss.test.microcontainer.support.JmxRegistrantDirectMBean.class,registerDirectly=false)</annotation>
+   </bean>
 </deployment>

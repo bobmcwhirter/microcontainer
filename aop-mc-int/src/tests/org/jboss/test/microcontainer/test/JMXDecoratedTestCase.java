@@ -21,6 +21,8 @@
   */
 package org.jboss.test.microcontainer.test;
 
+import javax.management.InstanceNotFoundException;
+import javax.management.MBeanAttributeInfo;
 import javax.management.MBeanInfo;
 import javax.management.MBeanOperationInfo;
 import javax.management.MBeanServer;
@@ -30,6 +32,7 @@ import junit.framework.Test;
 
 import org.jboss.aop.microcontainer.aspects.jmx.JMX;
 import org.jboss.aop.microcontainer.junit.AOPMicrocontainerTest;
+import org.jboss.test.microcontainer.support.JmxRegistrant;
 import org.jboss.test.microcontainer.support.MetaDataContextInterceptor;
 import org.jboss.test.microcontainer.support.SimpleBean;
 import org.jboss.test.microcontainer.support.SimpleBeanImplMBean;
@@ -116,5 +119,60 @@ public class JMXDecoratedTestCase extends AOPMicrocontainerTest
       assertNotNull(MetaDataContextInterceptor.classAnnotation);
       assertEquals(jmx, MetaDataContextInterceptor.classAnnotation);
       
+   }
+   
+   /**
+    * Tests that adding the registerDirectly=true attribute allows a
+    * standard MBean to be registered directly, while not specifying it
+    * causes a proxy to be registered (even if the bean is a standard MBean).
+    * Also confirms a bean that isn't an MBean will fail to deploy if
+    * registerDirectly=true.
+    * 
+    * @throws Exception
+    */
+   public void testRegisterDirectly() throws Exception
+   {
+      MBeanServer server = (MBeanServer) getBean("MBeanServer");
+      assertNotNull(server);
+
+      ObjectName name = new ObjectName("test:name=DirectRegistrant");
+      MBeanInfo info = server.getMBeanInfo(name);
+      assertNotNull(info);
+      MBeanAttributeInfo[] attrs = info.getAttributes();
+      assertEquals(1, attrs.length);
+      assertEquals("RegisteredInJmx", attrs[0].getName());
+      assertTrue(attrs[0].isReadable());
+      assertFalse(attrs[0].isWritable());
+      
+      JmxRegistrant bean = (JmxRegistrant) getBean("DirectRegistrant");
+      assertTrue("MBeanRegistration callbacks invoked", bean.isRegisteredInJmx());
+      
+      name = new ObjectName("test:name=NotDirectRegistrant");
+      info = server.getMBeanInfo(name);
+      assertNotNull(info);
+      attrs = info.getAttributes();
+      assertEquals(1, attrs.length);
+      assertEquals("RegisteredInJmx", attrs[0].getName());
+      assertTrue(attrs[0].isReadable());
+      assertFalse(attrs[0].isWritable());
+      
+      bean = (JmxRegistrant) getBean("NotDirectRegistrant");
+      assertFalse("MBeanRegistration callbacks not invoked", bean.isRegisteredInJmx());
+      
+      // Deploy a bean that should fail as it's not an mbean
+      
+      deploy("JMXDecorated-flawed.xml");
+      
+      name = new ObjectName("test:name=FlawedRegistrant");
+      assertFalse(name + " not registered", server.isRegistered(name));
+      
+      Object broken = null;
+      try
+      {
+         broken = getBean("FlawedRegistrant");
+      }
+      catch (Exception good) {}         
+
+      assertNull("FlawedRegistrant did not deploy", broken);
    }
 }

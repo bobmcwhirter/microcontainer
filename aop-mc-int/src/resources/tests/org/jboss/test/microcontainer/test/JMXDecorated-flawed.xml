@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<deployment xmlns="urn:jboss:bean-deployer:2.0">
+
+   <!-- This bean will fail to deploy due to invalid @JMX config,
+        so we don't include it in the main deployment file that gets validated -->
+   
+   <bean name="FlawedRegistrant" class="org.jboss.test.microcontainer.support.JmxRegistrantImpl">
+      <annotation>@org.jboss.aop.microcontainer.aspects.jmx.JMX(name="test:name=FlawedRegistrant", exposedInterface=org.jboss.test.microcontainer.support.JmxRegistrant.class,registerDirectly=true)</annotation>
+   </bean>
+</deployment>
