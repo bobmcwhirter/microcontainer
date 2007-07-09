@@ -21,7 +21,7 @@
 */
 package org.jboss.deployers.vfs.deployer.kernel;
 
-import java.util.List;
+import java.util.Set;
 
 import org.jboss.beans.metadata.spi.NamedAliasMetaData;
 import org.jboss.deployers.spi.DeploymentException;
@@ -67,7 +67,7 @@ public class AliasDeploymentDeployer extends AbstractComponentDeployer<KernelDep
 
       public void deploy(DeploymentUnit unit, KernelDeployment deployment) throws DeploymentException
       {
-         List<NamedAliasMetaData> aliases = deployment.getAliases();
+         Set<NamedAliasMetaData> aliases = deployment.getAliases();
          if (aliases != null && aliases.isEmpty() == false)
          {
             for (NamedAliasMetaData alias : aliases)
@@ -77,7 +77,7 @@ public class AliasDeploymentDeployer extends AbstractComponentDeployer<KernelDep
 
       public void undeploy(DeploymentUnit unit, KernelDeployment deployment)
       {
-         List<NamedAliasMetaData> aliases = deployment.getAliases();
+         Set<NamedAliasMetaData> aliases = deployment.getAliases();
          if (aliases != null && aliases.isEmpty() == false)
          {
             for (NamedAliasMetaData alias : aliases)

@@ -98,8 +98,9 @@ public class AliasDeployerUnitTestCase extends BaseDeployersVFSTest
 
       VFSDeployment alias = createDeployment("/alias", "toplevel/aliases-beans.xml");
       assertDeploy(alias);
-      assertNotNull(controller.getInstalledContext("MyAlias"));
+      assertNotNull("Missing Test bean.", controller.getInstalledContext("MyAlias"));
       assertEquals(controller.getInstalledContext("MyAlias"), controller.getInstalledContext("Test"));
+      assertNotNull("Missing Injectee bean.", controller.getInstalledContext("Injectee"));
 
       assertUndeploy(alias);
       assertNull(controller.getContext("MyAlias", null));

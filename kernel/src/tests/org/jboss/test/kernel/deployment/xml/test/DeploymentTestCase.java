@@ -24,6 +24,8 @@ package org.jboss.test.kernel.deployment.xml.test;
 import java.util.List;
 import java.util.Set;
 import java.util.ArrayList;
+import java.util.TreeSet;
+import java.util.Iterator;
 import java.lang.annotation.Annotation;
 
 import junit.framework.Test;
@@ -284,15 +286,22 @@ public class DeploymentTestCase extends AbstractXMLTest
    public void testDeploymentWithAlias() throws Exception
    {
       AbstractKernelDeployment deployment = unmarshalDeployment("DeploymentWithAlias.xml");
-      List<NamedAliasMetaData> aliases = deployment.getAliases();
+      Set<NamedAliasMetaData> aliases = deployment.getAliases();
       assertNotNull(aliases);
       assertEquals(2, aliases.size());
-      NamedAliasMetaData first = aliases.get(0);
-      assertNotNull(first);
-      assertEquals("FirstAlias", first.getAliasValue());
-      NamedAliasMetaData second = aliases.get(1);
-      assertNotNull(second);
-      assertEquals("SecondAlias", second.getAliasValue());
+      Set<String> stringAlias = new TreeSet<String>();
+      for(NamedAliasMetaData namd : aliases)
+      {
+         assertNotNull(namd);
+         Object ann = namd.getAliasValue();
+         assertNotNull(ann);
+         stringAlias.add(ann.toString());
+      }
+      Iterator<String> iter = stringAlias.iterator();
+      String first = iter.next();
+      assertEquals("FirstAlias", first);
+      String second = iter.next();
+      assertEquals("SecondAlias", second);
    }
 
    public void testDeploymentWithAnnotations() throws Exception

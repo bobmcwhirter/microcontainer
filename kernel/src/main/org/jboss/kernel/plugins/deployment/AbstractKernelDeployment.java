@@ -92,7 +92,7 @@ public class AbstractKernelDeployment extends JBossObject
    protected ControllerMode mode;
 
    /** The aliases */
-   protected List<NamedAliasMetaData> aliases;
+   protected Set<NamedAliasMetaData> aliases;
 
    /**
     * Create a new kernel deployment
@@ -304,12 +304,12 @@ public class AbstractKernelDeployment extends JBossObject
       this.destroy = destroy;
    }
 
-   public List<NamedAliasMetaData> getAliases()
+   public Set<NamedAliasMetaData> getAliases()
    {
       return aliases;
    }
 
-   public void setAliases(List<NamedAliasMetaData> aliases)
+   public void setAliases(Set<NamedAliasMetaData> aliases)
    {
       this.aliases = aliases;
    }

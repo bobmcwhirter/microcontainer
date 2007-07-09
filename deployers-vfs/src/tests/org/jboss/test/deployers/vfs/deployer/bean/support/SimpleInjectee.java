@@ -19,36 +19,24 @@
 * Software Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA
 * 02110-1301 USA, or see the FSF site: http://www.fsf.org.
 */
-package org.jboss.kernel.plugins.deployment.xml;
-
-import java.util.HashSet;
-import java.util.Set;
-import javax.xml.namespace.QName;
-
-import org.jboss.beans.metadata.spi.NamedAliasMetaData;
-import org.jboss.kernel.plugins.deployment.AbstractKernelDeployment;
-import org.jboss.xb.binding.sunday.unmarshalling.DefaultElementInterceptor;
+package org.jboss.test.deployers.vfs.deployer.bean.support;
 
 /**
- * DeploymentAliasInterceptor.
+ * SimpleInjectee.
  *
  * @author <a href="ales.justin@jboss.com">Ales Justin</a>
  */
-public class DeploymentAliasInterceptor extends DefaultElementInterceptor
+public class SimpleInjectee
 {
-   /** The interceptor */
-   public static final DeploymentAliasInterceptor INTERCEPTOR = new DeploymentAliasInterceptor();
+   private Simple simple;
 
-   public void add(Object parent, Object child, QName name)
+   public Simple getSimple()
    {
-      AbstractKernelDeployment deployment = (AbstractKernelDeployment) parent;
-      NamedAliasMetaData alias = (NamedAliasMetaData) child;
-      Set<NamedAliasMetaData> aliases = deployment.getAliases();
-      if (aliases == null)
-      {
-         aliases = new HashSet<NamedAliasMetaData>();
-         deployment.setAliases(aliases);
-      }
-      aliases.add(alias);
+      return simple;
+   }
+
+   public void setSimple(Simple simple)
+   {
+      this.simple = simple;
    }
 }
