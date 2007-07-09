@@ -52,7 +52,6 @@ public class DeployerFlowUnitTestCase extends AbstractDeployerTest
       TestFlowDeployer.reset();
    }
 
-/*
    public void testSimpleInputOutputCorrectOrder() throws Exception
    {
       DeployerClient main = createMainDeployer();
@@ -643,7 +642,6 @@ public class DeployerFlowUnitTestCase extends AbstractDeployerTest
       assertEquals(6, deployer3.getUndeployOrder());
    }
 
-*/
    public void testDoubleCycle() throws Exception
    {
       DeployerClient main = createMainDeployer();
