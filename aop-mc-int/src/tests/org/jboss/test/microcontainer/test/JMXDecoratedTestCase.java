@@ -162,17 +162,23 @@ public class JMXDecoratedTestCase extends AOPMicrocontainerTest
       // Deploy a bean that should fail as it's not an mbean
       
       deploy("JMXDecorated-flawed.xml");
-      
-      name = new ObjectName("test:name=FlawedRegistrant");
-      assertFalse(name + " not registered", server.isRegistered(name));
-      
-      Object broken = null;
       try
-      {
-         broken = getBean("FlawedRegistrant");
+      {      
+         name = new ObjectName("test:name=FlawedRegistrant");
+         assertFalse(name + " not registered", server.isRegistered(name));
+         
+         Object broken = null;
+         try
+         {
+            broken = getBean("FlawedRegistrant");
+         }
+         catch (Exception good) {}         
+   
+         assertNull("FlawedRegistrant did not deploy", broken);
       }
-      catch (Exception good) {}         
-
-      assertNull("FlawedRegistrant did not deploy", broken);
+      finally
+      {
+         undeploy("JMXDecorated-flawed.xml");
+      }
    }
 }
