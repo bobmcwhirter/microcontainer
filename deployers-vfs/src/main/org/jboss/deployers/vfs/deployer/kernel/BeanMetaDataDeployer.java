@@ -63,7 +63,6 @@ public class BeanMetaDataDeployer extends AbstractSimpleRealDeployer<BeanMetaDat
    public void deploy(DeploymentUnit unit, BeanMetaData deployment) throws DeploymentException
    {
       KernelControllerContext context = new AbstractKernelControllerContext(null, deployment, null);
-
       try
       {
          controller.install(context);

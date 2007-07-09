@@ -389,6 +389,38 @@ public class AbstractController extends JBossObject implements Controller
       return uninstall(name, 0);
    }
 
+   public void addAlias(Object alias, Object original)
+   {
+      lockWrite();
+      try
+      {
+         ControllerContext context = getRegisteredControllerContext(original, true);
+         // todo - do we need to add it to context.aliases?
+         registerControllerContext(alias, context);
+         if (log.isTraceEnabled())
+            log.trace("Added alias " + alias + " for context " + context);
+      }
+      finally
+      {
+         unlockWrite();
+      }
+   }
+
+   public void removeAlias(Object alias)
+   {
+      lockWrite();
+      try
+      {
+         unregisterControllerContext(alias);
+         if (log.isTraceEnabled())
+            log.trace("Removed alias " + alias);
+      }
+      finally
+      {
+         unlockWrite();
+      }
+   }
+
    // todo - some better way to find context's by name
    // currently the first one found is used
    protected ControllerContext uninstall(Object name, int level)

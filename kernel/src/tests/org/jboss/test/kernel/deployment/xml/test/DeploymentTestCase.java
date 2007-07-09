@@ -32,6 +32,7 @@ import org.jboss.beans.metadata.spi.BeanMetaData;
 import org.jboss.beans.metadata.spi.BeanMetaDataFactory;
 import org.jboss.beans.metadata.spi.LifecycleMetaData;
 import org.jboss.beans.metadata.spi.AnnotationMetaData;
+import org.jboss.beans.metadata.spi.NamedAliasMetaData;
 import org.jboss.dependency.spi.ControllerMode;
 import org.jboss.kernel.plugins.deployment.AbstractKernelDeployment;
 import org.jboss.test.kernel.deployment.xml.support.TestBeanMetaDataFactory;
@@ -283,19 +284,15 @@ public class DeploymentTestCase extends AbstractXMLTest
    public void testDeploymentWithAlias() throws Exception
    {
       AbstractKernelDeployment deployment = unmarshalDeployment("DeploymentWithAlias.xml");
-      List beans = deployment.getBeans();
-      assertNotNull(beans);
-      assertEquals(2, beans.size());
-      BeanMetaData first = (BeanMetaData)beans.get(0);
-      Set fstAliases = first.getAliases();
-      assertNotNull(fstAliases);
-      assertEquals(1, fstAliases.size());
-      assertEquals("FirstAlias", fstAliases.iterator().next());
-      BeanMetaData second = (BeanMetaData)beans.get(1);
-      Set sndAliases = second.getAliases();
-      assertNotNull(sndAliases);
-      assertEquals(1, sndAliases.size());
-      assertEquals("SecondAlias", sndAliases.iterator().next());
+      List<NamedAliasMetaData> aliases = deployment.getAliases();
+      assertNotNull(aliases);
+      assertEquals(2, aliases.size());
+      NamedAliasMetaData first = aliases.get(0);
+      assertNotNull(first);
+      assertEquals("FirstAlias", first.getAliasValue());
+      NamedAliasMetaData second = aliases.get(1);
+      assertNotNull(second);
+      assertEquals("SecondAlias", second.getAliasValue());
    }
 
    public void testDeploymentWithAnnotations() throws Exception

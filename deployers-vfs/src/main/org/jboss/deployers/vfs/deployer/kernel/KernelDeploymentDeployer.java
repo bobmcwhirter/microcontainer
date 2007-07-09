@@ -65,15 +65,21 @@ public class KernelDeploymentDeployer extends AbstractComponentDeployer<KernelDe
       public void deploy(DeploymentUnit unit, KernelDeployment deployment) throws DeploymentException
       {
          List<BeanMetaData> beans = deployment.getBeans();
-         for (BeanMetaData bean : beans)
-            addBeanComponent(unit, bean);
+         if (beans != null && beans.isEmpty() == false)
+         {
+            for (BeanMetaData bean : beans)
+               addBeanComponent(unit, bean);
+         }
       }
 
       public void undeploy(DeploymentUnit unit, KernelDeployment deployment)
       {
          List<BeanMetaData> beans = deployment.getBeans();
-         for (BeanMetaData bean : beans)
-            removeBeanComponent(unit, bean);
+         if (beans != null && beans.isEmpty() == false)
+         {
+            for (BeanMetaData bean : beans)
+               removeBeanComponent(unit, bean);
+         }
       }
    }
 

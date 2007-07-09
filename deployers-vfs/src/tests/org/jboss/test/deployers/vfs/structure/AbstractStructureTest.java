@@ -60,7 +60,7 @@ public abstract class AbstractStructureTest extends BaseTestCase
 
    protected void assertNoChildContexts(VFSDeploymentContext context)
    {
-      assertChildContexts(context, null);
+      assertChildContexts(context);
    }
 
    protected void assertChildContexts(VFSDeploymentContext context, String... paths)

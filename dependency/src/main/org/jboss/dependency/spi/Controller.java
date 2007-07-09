@@ -71,7 +71,22 @@ public interface Controller extends JBossInterface
     * @return the context
     */
    ControllerContext uninstall(Object name);
-   
+
+   /**
+    * Add alias.
+    *
+    * @param alias the alias to add
+    * @param original original name
+    */
+   void addAlias(Object alias, Object original);
+
+   /**
+    * Remove alias.
+    *
+    * @param alias alias to remove
+    */
+   void removeAlias(Object alias);
+
    /**
     * Get a context
     *

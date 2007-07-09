@@ -53,7 +53,7 @@ import org.jboss.util.JBossStringBuilder;
 public class AbstractKernelDeployment extends JBossObject
    implements KernelDeployment, MutableLifecycleHolder, Serializable
 {
-   private static final long serialVersionUID = 1;
+   private static final long serialVersionUID = 2l;
 
    /** The name of the deployment */
    protected String name;
@@ -92,7 +92,7 @@ public class AbstractKernelDeployment extends JBossObject
    protected ControllerMode mode;
 
    /** The aliases */
-   protected Set<NamedAliasMetaData> aliases;
+   protected List<NamedAliasMetaData> aliases;
 
    /**
     * Create a new kernel deployment
@@ -208,25 +208,6 @@ public class AbstractKernelDeployment extends JBossObject
                   bean.setDestroy(getDestroy());
                }
 
-               // named aliases
-               if (aliases != null && aliases.isEmpty() == false)
-               {
-                  Object beanName = bean.getName();
-                  for (NamedAliasMetaData alias : aliases)
-                  {
-                     if (alias.getName().equals(beanName))
-                     {
-                        Set<Object> beanAliases = bean.getAliases();
-                        if (beanAliases == null)
-                        {
-                           beanAliases = new HashSet<Object>();
-                           bean.setAliases(beanAliases);
-                        }
-                        beanAliases.add(alias.getAliasValue());
-                     }
-                  }
-               }
-
                // controller mode
                if (bean.getMode() == null && getMode() != null)
                {
@@ -323,12 +304,12 @@ public class AbstractKernelDeployment extends JBossObject
       this.destroy = destroy;
    }
 
-   public Set<NamedAliasMetaData> getAliases()
+   public List<NamedAliasMetaData> getAliases()
    {
       return aliases;
    }
 
-   public void setAliases(Set<NamedAliasMetaData> aliases)
+   public void setAliases(List<NamedAliasMetaData> aliases)
    {
       this.aliases = aliases;
    }

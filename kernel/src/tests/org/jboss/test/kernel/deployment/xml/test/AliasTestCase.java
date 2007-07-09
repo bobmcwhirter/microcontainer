@@ -22,6 +22,7 @@
 package org.jboss.test.kernel.deployment.xml.test;
 
 import java.util.Set;
+import java.util.List;
 
 import junit.framework.Test;
 import org.jboss.beans.metadata.plugins.AbstractBeanMetaData;
@@ -120,7 +121,7 @@ public class AliasTestCase extends AbstractXMLTest
    protected NamedAliasMetaData getNamedAlias(String name) throws Exception
    {
       AbstractKernelDeployment deployment = unmarshalDeployment(name);
-      Set<NamedAliasMetaData> aliases = deployment.getAliases();
+      List<NamedAliasMetaData> aliases = deployment.getAliases();
       assertNotNull(aliases);
       assertEquals(1, aliases.size());
       NamedAliasMetaData alias = aliases.iterator().next();

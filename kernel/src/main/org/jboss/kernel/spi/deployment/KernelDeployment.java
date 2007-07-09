@@ -124,7 +124,7 @@ public interface KernelDeployment extends JBossInterface
     *
     * @return the aliases
     */
-   Set<NamedAliasMetaData> getAliases();
+   List<NamedAliasMetaData> getAliases();
 
    /**
     * Get the ControllerMode.

@@ -21,8 +21,8 @@
 */
 package org.jboss.kernel.plugins.deployment.xml;
 
-import java.util.HashSet;
-import java.util.Set;
+import java.util.ArrayList;
+import java.util.List;
 import javax.xml.namespace.QName;
 
 import org.jboss.beans.metadata.spi.NamedAliasMetaData;
@@ -43,10 +43,10 @@ public class DeploymentAliasInterceptor extends DefaultElementInterceptor
    {
       AbstractKernelDeployment deployment = (AbstractKernelDeployment) parent;
       NamedAliasMetaData alias = (NamedAliasMetaData) child;
-      Set<NamedAliasMetaData> aliases = deployment.getAliases();
+      List<NamedAliasMetaData> aliases = deployment.getAliases();
       if (aliases == null)
       {
-         aliases = new HashSet<NamedAliasMetaData>();
+         aliases = new ArrayList<NamedAliasMetaData>();
          deployment.setAliases(aliases);
       }
       aliases.add(alias);
