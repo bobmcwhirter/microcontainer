@@ -21,35 +21,43 @@
 */
 package org.jboss.test.spring.test;
 
-import org.jboss.spring.deployment.xml.SpringSchemaInitializer;
-import org.jboss.test.kernel.junit.MicrocontainerTestDelegate;
-import org.jboss.xb.binding.sunday.unmarshalling.DefaultSchemaResolver;
-import org.jboss.xb.binding.sunday.unmarshalling.SingletonSchemaResolverFactory;
-import org.jboss.xb.binding.sunday.unmarshalling.SchemaBindingResolver;
+import java.util.Set;
+
+import org.jboss.kernel.Kernel;
+import org.jboss.kernel.spi.deployment.KernelDeployment;
+import org.jboss.kernel.spi.dependency.KernelController;
 import org.jboss.kernel.plugins.deployment.xml.BasicXMLDeployer;
+import org.jboss.beans.metadata.spi.NamedAliasMetaData;
 
 /**
  * @author <a href="mailto:ales.justin@jboss.com">Ales Justin</a>
  */
-public class TempSpringMicrocontainerTestDelegate extends MicrocontainerTestDelegate
+public class AliasBeanXMLDeployer extends BasicXMLDeployer
 {
-   public TempSpringMicrocontainerTestDelegate(Class clazz) throws Exception
+   public AliasBeanXMLDeployer(Kernel kernel)
    {
-      super(clazz);
+      super(kernel);
    }
 
-   public void setUp() throws Exception
+   protected void deployBeans(KernelController controller, KernelDeployment deployment) throws Throwable
    {
-      SchemaBindingResolver resolver = SingletonSchemaResolverFactory.getInstance().getSchemaBindingResolver();
-      DefaultSchemaResolver defaultSchemaResolver = (DefaultSchemaResolver) resolver;
-      defaultSchemaResolver.addSchemaInitializer("urn:jboss:spring-beans:2.0", new SpringSchemaInitializer());
-      defaultSchemaResolver.addSchemaLocation("urn:jboss:spring-beans:2.0", "mc-spring-beans_2_0.xsd");
-      defaultSchemaResolver.addSchemaParseAnnotations("urn:jboss:spring-beans:2.0", Boolean.FALSE);
-      super.setUp();
+      super.deployBeans(controller, deployment);
+      Set<NamedAliasMetaData> aliases = deployment.getAliases();
+      if (aliases != null && aliases.isEmpty() == false)
+      {
+         for (NamedAliasMetaData alias : aliases)
+            controller.addAlias(alias.getAliasValue(), alias.getName());
+      }
    }
 
-   protected BasicXMLDeployer createDeployer()
+   protected void undeployBeans(KernelController controller, KernelDeployment deployment)
    {
-      return new AliasBeanXMLDeployer(kernel);
+      super.undeployBeans(controller, deployment);
+      Set<NamedAliasMetaData> aliases = deployment.getAliases();
+      if (aliases != null && aliases.isEmpty() == false)
+      {
+         for (NamedAliasMetaData alias : aliases)
+            controller.removeAlias(alias.getAliasValue());
+      }
    }
 }
