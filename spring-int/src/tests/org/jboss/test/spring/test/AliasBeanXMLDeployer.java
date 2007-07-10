@@ -52,12 +52,12 @@ public class AliasBeanXMLDeployer extends BasicXMLDeployer
 
    protected void undeployBeans(KernelController controller, KernelDeployment deployment)
    {
-      super.undeployBeans(controller, deployment);
       Set<NamedAliasMetaData> aliases = deployment.getAliases();
       if (aliases != null && aliases.isEmpty() == false)
       {
          for (NamedAliasMetaData alias : aliases)
             controller.removeAlias(alias.getAliasValue());
       }
+      super.undeployBeans(controller, deployment);
    }
 }
