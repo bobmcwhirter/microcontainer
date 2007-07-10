@@ -32,6 +32,7 @@ import org.jboss.beans.metadata.spi.ValueMetaData;
 import org.jboss.reflect.spi.TypeInfo;
 import org.jboss.util.JBossObject;
 import org.jboss.util.JBossStringBuilder;
+import org.jboss.dependency.plugins.JMXObjectNameFix;
 
 /**
  * Plain value.
@@ -47,7 +48,7 @@ public class AbstractValueMetaData extends JBossObject
    /**
     * The value
     */
-   protected Object value;
+   private Object value;
 
    /**
     * Create a new plain value
@@ -63,7 +64,7 @@ public class AbstractValueMetaData extends JBossObject
     */
    public AbstractValueMetaData(Object value)
    {
-      this.value = value;
+      setValue(value);
    }
 
    public Object getValue()
@@ -73,7 +74,11 @@ public class AbstractValueMetaData extends JBossObject
 
    public void setValue(Object value)
    {
-      this.value = value;
+      Object jmxHack = JMXObjectNameFix.needsAnAlias(value);
+      if (jmxHack != null)
+         this.value = jmxHack;
+      else
+         this.value = value;
       flushJBossObjectCache();
    }
 

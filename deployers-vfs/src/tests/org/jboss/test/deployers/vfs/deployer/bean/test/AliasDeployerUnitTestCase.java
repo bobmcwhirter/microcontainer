@@ -21,73 +21,47 @@
 */
 package org.jboss.test.deployers.vfs.deployer.bean.test;
 
-import org.jboss.test.deployers.BaseDeployersVFSTest;
-import org.jboss.deployers.client.spi.DeployerClient;
-import org.jboss.deployers.vfs.plugins.structure.jar.JARStructure;
-import org.jboss.deployers.vfs.plugins.structure.file.FileStructure;
-import org.jboss.deployers.vfs.deployer.kernel.BeanDeployer;
-import org.jboss.deployers.vfs.deployer.kernel.KernelDeploymentDeployer;
-import org.jboss.deployers.vfs.deployer.kernel.BeanMetaDataDeployer;
-import org.jboss.deployers.vfs.deployer.kernel.DeploymentAliasMetaDataDeployer;
-import org.jboss.deployers.vfs.deployer.kernel.AliasDeploymentDeployer;
-import org.jboss.deployers.vfs.spi.client.VFSDeployment;
-import org.jboss.deployers.spi.DeploymentState;
-import org.jboss.kernel.spi.dependency.KernelController;
-import org.jboss.kernel.plugins.bootstrap.basic.BasicBootstrap;
-import org.jboss.kernel.Kernel;
 import junit.framework.Test;
 import junit.framework.TestSuite;
+import org.jboss.deployers.vfs.deployer.kernel.AliasDeploymentDeployer;
+import org.jboss.deployers.vfs.deployer.kernel.BeanDeployer;
+import org.jboss.deployers.vfs.deployer.kernel.BeanMetaDataDeployer;
+import org.jboss.deployers.vfs.deployer.kernel.DeploymentAliasMetaDataDeployer;
+import org.jboss.deployers.vfs.deployer.kernel.KernelDeploymentDeployer;
+import org.jboss.deployers.vfs.spi.client.VFSDeployment;
+import org.jboss.deployers.spi.DeploymentState;
+import org.jboss.kernel.Kernel;
+import org.jboss.dependency.spi.ControllerState;
 
 /**
  * AliasDeployerUnitTestCase.
  *
  * @author <a href="ales.justin@jboss.com">Ales Justin</a>
  */
-public class AliasDeployerUnitTestCase extends BaseDeployersVFSTest
+public class AliasDeployerUnitTestCase extends AbstractDeployerUnitTestCase
 {
    public static Test suite()
    {
       return new TestSuite(AliasDeployerUnitTestCase.class);
    }
 
-   private DeployerClient main;
-
-   private KernelController controller;
-
    public AliasDeployerUnitTestCase(String name) throws Throwable
    {
       super(name);
    }
 
-   protected void setUp() throws Exception
+   protected void addDeployers(Kernel kernel)
    {
-      super.setUp();
-      try
-      {
-         BasicBootstrap bootstrap = new BasicBootstrap();
-         bootstrap.run();
-         Kernel kernel = bootstrap.getKernel();
-         controller = kernel.getController();
-
-         main = createMainDeployer();
-         addStructureDeployer(main, new JARStructure());
-         addStructureDeployer(main, new FileStructure());
-
-         BeanDeployer beanDeployer = new BeanDeployer();
-         KernelDeploymentDeployer kernelDeploymentDeployer = new KernelDeploymentDeployer();
-         AliasDeploymentDeployer aliasDeploymentDeployer = new AliasDeploymentDeployer();
-         BeanMetaDataDeployer beanMetaDataDeployer = new BeanMetaDataDeployer(kernel);
-         DeploymentAliasMetaDataDeployer aliasMetaDataDeployer = new DeploymentAliasMetaDataDeployer(kernel);
-         addDeployer(main, beanDeployer);
-         addDeployer(main, kernelDeploymentDeployer);
-         addDeployer(main, aliasDeploymentDeployer);
-         addDeployer(main, beanMetaDataDeployer);
-         addDeployer(main, aliasMetaDataDeployer);
-      }
-      catch (Throwable t)
-      {
-         throw new RuntimeException(t);
-      }
+      BeanDeployer beanDeployer = new BeanDeployer();
+      KernelDeploymentDeployer kernelDeploymentDeployer = new KernelDeploymentDeployer();
+      AliasDeploymentDeployer aliasDeploymentDeployer = new AliasDeploymentDeployer();
+      BeanMetaDataDeployer beanMetaDataDeployer = new BeanMetaDataDeployer(kernel);
+      DeploymentAliasMetaDataDeployer aliasMetaDataDeployer = new DeploymentAliasMetaDataDeployer(kernel);
+      addDeployer(main, beanDeployer);
+      addDeployer(main, kernelDeploymentDeployer);
+      addDeployer(main, aliasDeploymentDeployer);
+      addDeployer(main, beanMetaDataDeployer);
+      addDeployer(main, aliasMetaDataDeployer);
    }
 
    public void testAliasSuccessful() throws Exception
@@ -103,10 +77,11 @@ public class AliasDeployerUnitTestCase extends BaseDeployersVFSTest
       assertNotNull("Missing Injectee bean.", controller.getInstalledContext("Injectee"));
 
       assertUndeploy(alias);
-      assertNull(controller.getContext("MyAlias", null));
+      assertNull(controller.getContext("Injectee", null));
 
       assertUndeploy(context);
       assertNull(controller.getContext("Test", null));
+      assertNull(controller.getContext("MyAlias", null));
    }
 
    public void testJoinedSuccessful() throws Exception
@@ -130,27 +105,40 @@ public class AliasDeployerUnitTestCase extends BaseDeployersVFSTest
       assertNull(controller.getContext("Test", null));
    }
 
-   protected void assertDeploy(VFSDeployment context) throws Exception
+   public void testJMXAlias() throws Exception
    {
-      assertDeploy(context, DeploymentState.DEPLOYED);
+      VFSDeployment context = createDeployment("/alias", "toplevel/mbean-beans.xml");
+      assertDeploy(context);
+      assertNotNull(controller.getInstalledContext("Test"));
+
+      VFSDeployment alias = createDeployment("/alias", "toplevel/jmx-beans.xml");
+      assertDeploy(alias);
+      assertNotNull("Missing Injectee bean.", controller.getInstalledContext("Injectee"));
+
+      assertUndeploy(alias);
+      assertNull(controller.getContext("Injectee", null));
+
+      assertUndeploy(context);
+      assertNull(controller.getContext("Test", null));
    }
 
-   protected void assertUndeploy(VFSDeployment context) throws Exception
+   public void testAliasDependency() throws Exception
    {
-      assertUndeploy(context, DeploymentState.UNDEPLOYED);
-   }
+      VFSDeployment context = createDeployment("/alias", "toplevel/tomcat-beans.xml");
+      assertDeploy(context);
+      assertNotNull(controller.getInstalledContext("Tomcat"));
 
-   protected void assertDeploy(VFSDeployment context, DeploymentState expectedState) throws Exception
-   {
-      main.addDeployment(context);
-      main.process();
-      assertEquals("Should be Deployed " + context, expectedState, main.getDeploymentState(context.getName()));
-   }
+      VFSDeployment alias = createDeployment("/alias", "toplevel/servicex-beans.xml");
+      assertDeploy(alias);
+      assertNotNull(controller.getInstalledContext("ServiceX"));
 
-   protected void assertUndeploy(VFSDeployment context, DeploymentState expectedState) throws Exception
-   {
-      main.removeDeployment(context.getName());
-      main.process();
-      assertEquals("Should be Undeployed " + context, expectedState, main.getDeploymentState(context.getName()));
+      assertUndeploy(context);
+      assertNull(controller.getContext("Tomcat", null));
+      assertNull(controller.getContext("ServiceX", ControllerState.CREATE));
+      assertNotNull(controller.getContext("ServiceX", ControllerState.CONFIGURED));
+
+      assertUndeploy(alias);
+      assertNull(controller.getContext("JBossWeb", null));
+      assertNull(controller.getContext("ServiceX", null));
    }
 }

@@ -26,14 +26,12 @@ import javax.xml.parsers.DocumentBuilderFactory;
 
 import junit.framework.Test;
 import junit.framework.TestSuite;
-
-import org.jboss.deployers.client.spi.DeployerClient;
 import org.jboss.deployers.spi.DeploymentState;
 import org.jboss.deployers.spi.attachments.MutableAttachments;
 import org.jboss.deployers.vfs.plugins.structure.file.FileStructure;
 import org.jboss.deployers.vfs.plugins.structure.jar.JARStructure;
 import org.jboss.deployers.vfs.spi.client.VFSDeployment;
-import org.jboss.test.deployers.BaseDeployersVFSTest;
+import org.jboss.test.deployers.vfs.deployer.jaxp.DeployerClientTestCase;
 import org.jboss.test.deployers.vfs.deployer.jaxp.support.SomeBean;
 import org.jboss.test.deployers.vfs.deployer.jaxp.support.TestXmlDeployer;
 import org.w3c.dom.DOMImplementation;
@@ -46,14 +44,13 @@ import org.w3c.dom.Element;
  * @author Scott.Stark@jboss.org
  * @version $Revision: 60707 $
  */
-public class JAXPDeployerUnitTestCase extends BaseDeployersVFSTest
+public class JAXPDeployerUnitTestCase extends DeployerClientTestCase
 {
    public static Test suite()
    {
       return new TestSuite(JAXPDeployerUnitTestCase.class);
    }
 
-   private DeployerClient main;
    private TestXmlDeployer deployer;
 
    public JAXPDeployerUnitTestCase(String name) throws Throwable
@@ -122,11 +119,4 @@ public class JAXPDeployerUnitTestCase extends BaseDeployersVFSTest
       assertEquals("Should be Deployed " + context, DeploymentState.DEPLOYED, main.getDeploymentState(context.getName()));
    }
 
-   protected void assertUndeploy(VFSDeployment context)
-      throws Exception
-   {
-      main.removeDeployment(context);
-      main.process();
-      assertEquals("Should be Undeployed " + context, DeploymentState.UNDEPLOYED, main.getDeploymentState(context.getName()));
-   }
 }

@@ -122,7 +122,7 @@ public class AbstractInjectionValueMetaData extends AbstractDependencyValueMetaD
       boolean isCallback = InjectionOption.CALLBACK.equals(injectionOption);
       if (lookupExists == false && isCallback)
       {
-         addInstallItem(value);
+         addInstallItem(getUnderlyingValue());
       }
       return lookupExists || isCallback;
    }
@@ -130,7 +130,7 @@ public class AbstractInjectionValueMetaData extends AbstractDependencyValueMetaD
    public Object getValue(TypeInfo info, ClassLoader cl) throws Throwable
    {
       // by class type
-      if (value == null)
+      if (getUnderlyingValue() == null)
       {
          Controller controller = context.getController();
          ControllerContext lookup = controller.getInstalledContext(info.getType());

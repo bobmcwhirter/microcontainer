@@ -23,19 +23,11 @@ package org.jboss.test.deployers.vfs.deployer.bean.test;
 
 import junit.framework.Test;
 import junit.framework.TestSuite;
-
-import org.jboss.deployers.client.spi.DeployerClient;
-import org.jboss.deployers.spi.DeploymentState;
 import org.jboss.deployers.vfs.deployer.kernel.BeanDeployer;
 import org.jboss.deployers.vfs.deployer.kernel.BeanMetaDataDeployer;
 import org.jboss.deployers.vfs.deployer.kernel.KernelDeploymentDeployer;
-import org.jboss.deployers.vfs.plugins.structure.file.FileStructure;
-import org.jboss.deployers.vfs.plugins.structure.jar.JARStructure;
 import org.jboss.deployers.vfs.spi.client.VFSDeployment;
 import org.jboss.kernel.Kernel;
-import org.jboss.kernel.plugins.bootstrap.basic.BasicBootstrap;
-import org.jboss.kernel.spi.dependency.KernelController;
-import org.jboss.test.deployers.BaseDeployersVFSTest;
 
 /**
  * BeanDeployerUnitTestCase.
@@ -43,47 +35,26 @@ import org.jboss.test.deployers.BaseDeployersVFSTest;
  * @author <a href="adrian@jboss.com">Adrian Brock</a>
  * @version $Revision: 1.1 $
  */
-public class BeanDeployerUnitTestCase extends BaseDeployersVFSTest
+public class BeanDeployerUnitTestCase extends AbstractDeployerUnitTestCase
 {
    public static Test suite()
    {
       return new TestSuite(BeanDeployerUnitTestCase.class);
    }
 
-   private DeployerClient main;
-   
-   private KernelController controller;
-   
    public BeanDeployerUnitTestCase(String name) throws Throwable
    {
       super(name);
    }
 
-   protected void setUp() throws Exception
+   protected void addDeployers(Kernel kernel)
    {
-      super.setUp();
-      try
-      {
-         BasicBootstrap bootstrap = new BasicBootstrap();
-         bootstrap.run();
-         Kernel kernel = bootstrap.getKernel();
-         controller = kernel.getController();
-         
-         main = createMainDeployer();
-         addStructureDeployer(main, new JARStructure());
-         addStructureDeployer(main, new FileStructure());
-         
-         BeanDeployer beanDeployer = new BeanDeployer();
-         KernelDeploymentDeployer kernelDeploymentDeployer = new KernelDeploymentDeployer();
-         BeanMetaDataDeployer beanMetaDataDeployer = new BeanMetaDataDeployer(kernel);
-         addDeployer(main, beanDeployer);
-         addDeployer(main, kernelDeploymentDeployer);
-         addDeployer(main, beanMetaDataDeployer);
-      }
-      catch (Throwable t)
-      {
-         throw new RuntimeException(t);
-      }
+      BeanDeployer beanDeployer = new BeanDeployer();
+      KernelDeploymentDeployer kernelDeploymentDeployer = new KernelDeploymentDeployer();
+      BeanMetaDataDeployer beanMetaDataDeployer = new BeanMetaDataDeployer(kernel);
+      addDeployer(main, beanDeployer);
+      addDeployer(main, kernelDeploymentDeployer);
+      addDeployer(main, beanMetaDataDeployer);
    }
 
    public void testTopLevelFile() throws Exception
@@ -106,17 +77,4 @@ public class BeanDeployerUnitTestCase extends BaseDeployersVFSTest
       assertNull(controller.getContext("Test", null));
    }
 
-   protected void assertDeploy(VFSDeployment context) throws Exception
-   {
-      main.addDeployment(context);
-      main.process();
-      assertEquals("Should be Deployed " + context, DeploymentState.DEPLOYED, main.getDeploymentState(context.getName()));
-   }
-
-   protected void assertUndeploy(VFSDeployment context) throws Exception
-   {
-      main.removeDeployment(context.getName());
-      main.process();
-      assertEquals("Should be Undeployed " + context, DeploymentState.UNDEPLOYED, main.getDeploymentState(context.getName()));
-   }
 }

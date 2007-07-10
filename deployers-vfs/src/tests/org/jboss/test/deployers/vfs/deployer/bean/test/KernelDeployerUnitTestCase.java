@@ -25,20 +25,14 @@ import java.util.Collections;
 
 import junit.framework.Test;
 import junit.framework.TestSuite;
-
 import org.jboss.beans.metadata.plugins.AbstractBeanMetaData;
 import org.jboss.beans.metadata.spi.BeanMetaDataFactory;
-import org.jboss.deployers.client.spi.DeployerClient;
 import org.jboss.deployers.client.spi.Deployment;
-import org.jboss.deployers.spi.DeploymentState;
 import org.jboss.deployers.spi.attachments.MutableAttachments;
 import org.jboss.deployers.vfs.deployer.kernel.BeanMetaDataDeployer;
 import org.jboss.deployers.vfs.deployer.kernel.KernelDeploymentDeployer;
 import org.jboss.kernel.Kernel;
-import org.jboss.kernel.plugins.bootstrap.basic.BasicBootstrap;
 import org.jboss.kernel.plugins.deployment.AbstractKernelDeployment;
-import org.jboss.kernel.spi.dependency.KernelController;
-import org.jboss.test.deployers.BaseDeployersVFSTest;
 import org.jboss.test.deployers.vfs.deployer.bean.support.Simple;
 import org.jboss.test.deployers.vfs.deployer.bean.support.TestBeanDeployer;
 
@@ -48,45 +42,26 @@ import org.jboss.test.deployers.vfs.deployer.bean.support.TestBeanDeployer;
  * @author <a href="adrian@jboss.com">Adrian Brock</a>
  * @version $Revision: 1.1 $
  */
-public class KernelDeployerUnitTestCase extends BaseDeployersVFSTest
+public class KernelDeployerUnitTestCase extends AbstractDeployerUnitTestCase
 {
    public static Test suite()
    {
       return new TestSuite(KernelDeployerUnitTestCase.class);
    }
 
-   private DeployerClient main;
-   
-   private KernelController controller;
-   
    public KernelDeployerUnitTestCase(String name) throws Throwable
    {
       super(name);
    }
 
-   protected void setUp() throws Exception
+   protected void addDeployers(Kernel kernel)
    {
-      super.setUp();
-      try
-      {
-         BasicBootstrap bootstrap = new BasicBootstrap();
-         bootstrap.run();
-         Kernel kernel = bootstrap.getKernel();
-         controller = kernel.getController();
-         
-         main = createMainDeployer();
-         
-         TestBeanDeployer testDeployer = new TestBeanDeployer();
-         KernelDeploymentDeployer kernelDeploymentDeployer = new KernelDeploymentDeployer();
-         BeanMetaDataDeployer beanMetaDataDeployer = new BeanMetaDataDeployer(kernel);
-         addDeployer(main, testDeployer);
-         addDeployer(main, kernelDeploymentDeployer);
-         addDeployer(main, beanMetaDataDeployer);
-      }
-      catch (Throwable t)
-      {
-         throw new RuntimeException(t);
-      }
+      TestBeanDeployer testDeployer = new TestBeanDeployer();
+      KernelDeploymentDeployer kernelDeploymentDeployer = new KernelDeploymentDeployer();
+      BeanMetaDataDeployer beanMetaDataDeployer = new BeanMetaDataDeployer(kernel);
+      addDeployer(main, testDeployer);
+      addDeployer(main, kernelDeploymentDeployer);
+      addDeployer(main, beanMetaDataDeployer);
    }
 
    public void testKernelDeployerPredetermined() throws Exception
@@ -120,17 +95,4 @@ public class KernelDeployerUnitTestCase extends BaseDeployersVFSTest
       assertNull(controller.getContext("Test", null));
    }
 
-   protected void assertDeploy(Deployment context) throws Exception
-   {
-      main.addDeployment(context);
-      main.process();
-      assertEquals("Should be Deployed " + context, DeploymentState.DEPLOYED, main.getDeploymentState(context.getName()));
-   }
-
-   protected void assertUndeploy(Deployment context) throws Exception
-   {
-      main.removeDeployment(context.getName());
-      main.process();
-      assertEquals("Should be Undeployed " + context, DeploymentState.UNDEPLOYED, main.getDeploymentState(context.getName()));
-   }
 }

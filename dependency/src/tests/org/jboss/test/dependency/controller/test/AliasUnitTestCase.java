@@ -21,10 +21,13 @@
 */
 package org.jboss.test.dependency.controller.test;
 
-import org.jboss.dependency.spi.ControllerContext;
-import org.jboss.dependency.spi.ControllerState;
+import javax.management.ObjectName;
 
 import junit.framework.Test;
+import org.jboss.dependency.spi.ControllerContext;
+import org.jboss.dependency.spi.ControllerState;
+import org.jboss.dependency.spi.DependencyInfo;
+import org.jboss.dependency.plugins.AbstractDependencyItem;
 
 /**
  * AliasUnitTestCase.
@@ -89,5 +92,89 @@ public class AliasUnitTestCase extends AbstractDependencyTest
          assertUninstall(alreadyDone);
       }
       assertCreateInstall("Name1", "AlreadyDone");
+   }
+
+   public void testJMXasName() throws Throwable
+   {
+      String name = "test:name=ZName,attrib=Foo";
+      ObjectName jmxName = ObjectName.getInstance(name);
+      String canonical = jmxName.getCanonicalName();
+      ControllerContext original = assertCreateInstall(name);
+      try
+      {
+         ControllerContext ctx = assertContext(canonical, ControllerState.INSTALLED);
+         assertEquals(name, ctx.getName());
+      }
+      finally
+      {
+         try
+         {
+            assertUninstall(original);
+         }
+         finally
+         {
+            assertNoContext(canonical);
+         }
+      }
+   }
+
+   public void testJMXasAlias() throws Throwable
+   {
+      String alias = "test:name=ZName,attrib=Foo";
+      ObjectName jmxName = ObjectName.getInstance(alias);
+      String canonical = jmxName.getCanonicalName();
+      ControllerContext original = assertCreateInstall("Test1", alias);
+      try
+      {
+         ControllerContext ctx = assertContext(canonical, ControllerState.INSTALLED);
+         assertEquals("Test1", ctx.getName());
+      }
+      finally
+      {
+         try
+         {
+            assertUninstall(original);
+         }
+         finally
+         {
+            assertNoContext(canonical);
+         }
+      }
+   }
+
+   public void testJMXasDependency() throws Throwable
+   {
+      String alias = "test:name=ZName,attrib=Foo";
+      ObjectName jmxName = ObjectName.getInstance(alias);
+      String canonical = jmxName.getCanonicalName();
+      // add original with dependency
+      ControllerContext original = createControllerContext("Test1");
+      DependencyInfo info = original.getDependencyInfo();
+      info.addIDependOn(new AbstractDependencyItem("Test1", alias, ControllerState.CONFIGURED, null));
+      assertInstall(original, ControllerState.INSTANTIATED);
+      try
+      {
+         // create dependency resolver
+         ControllerContext dependant = assertCreateInstall(canonical);
+         try
+         {
+            assertContext("Test1", ControllerState.INSTALLED);
+         }
+         finally
+         {
+            try
+            {
+               assertUninstall(dependant);
+            }
+            finally
+            {
+               assertNoContext(canonical);
+            }
+         }
+      }
+      finally
+      {
+         assertUninstall(original);
+      }
    }
 }

@@ -55,7 +55,7 @@ public class AbstractController extends JBossObject implements Controller
 
    /** Whether we are shutdown */
    private boolean shutdown = false;
-   
+
    /** The states in order List<ControllerState> */
    private List<ControllerState> states = new CopyOnWriteArrayList<ControllerState>();
 
@@ -152,7 +152,7 @@ public class AbstractController extends JBossObject implements Controller
                }
             }
          }
-         
+
          Set<ControllerContext> contexts = getAllContexts();
          if (contexts != null && contexts.isEmpty() == false)
          {
@@ -174,9 +174,9 @@ public class AbstractController extends JBossObject implements Controller
          shutdown = true;
          unlockWrite();
       }
-      
+
    }
-   
+
    public void addState(ControllerState state, ControllerState before)
    {
       lockWrite();
@@ -184,7 +184,7 @@ public class AbstractController extends JBossObject implements Controller
       {
          if (states.contains(state))
             return;
-         
+
          if (before == null)
          {
             states.add(state);
@@ -357,7 +357,7 @@ public class AbstractController extends JBossObject implements Controller
       Object name = context.getName();
       if (name == null)
          throw new IllegalArgumentException("Null name " + context.toShortString());
-      
+
       install(context, trace);
    }
 
@@ -391,6 +391,14 @@ public class AbstractController extends JBossObject implements Controller
 
    public void addAlias(Object alias, Object original)
    {
+      Object jmxAlias = JMXObjectNameFix.needsAnAlias(alias);
+      if (jmxAlias != null)
+         alias = jmxAlias;
+
+      Object jmxOriginal = JMXObjectNameFix.needsAnAlias(original);
+      if (jmxOriginal != null)
+         original = jmxOriginal;
+
       lockWrite();
       try
       {
@@ -413,6 +421,9 @@ public class AbstractController extends JBossObject implements Controller
       lockWrite();
       try
       {
+         Object jmxAlias = JMXObjectNameFix.needsAnAlias(alias);
+         if (jmxAlias != null)
+            alias = jmxAlias;
          unregisterControllerContext(alias);
          if (log.isTraceEnabled())
             log.trace("Removed alias " + alias);
@@ -1228,7 +1239,7 @@ public class AbstractController extends JBossObject implements Controller
          }
       }
    }
-   
+
    /**
     * Can we use this context for autowiring.
     *

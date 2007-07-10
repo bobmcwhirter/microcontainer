@@ -154,7 +154,7 @@ public class AbstractDependencyValueMetaData extends AbstractValueMetaData
       if (state == null)
          state = ControllerState.INSTALLED;
       Controller controller = context.getController();
-      ControllerContext lookup = controller.getContext(value, state);
+      ControllerContext lookup = controller.getContext(getUnderlyingValue(), state);
 
       if (isLookupValid(lookup) == false)
          throw new Error("Should not be here - dependency failed - " + this);

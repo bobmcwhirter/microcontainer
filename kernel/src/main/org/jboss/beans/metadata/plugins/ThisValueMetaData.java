@@ -52,7 +52,7 @@ public class ThisValueMetaData extends AbstractValueMetaData
    public Object getValue(TypeInfo info, ClassLoader cl) throws Throwable
    {
       Controller controller = context.getController();
-      ControllerContext context = controller.getContext(value, ControllerState.INSTANTIATED);
+      ControllerContext context = controller.getContext(getUnderlyingValue(), ControllerState.INSTANTIATED);
       if (context == null)
          throw new Error("Could not deference this " + this);
       // TODO - add progression, see BeanMetaData, InjectionMetaData
@@ -62,10 +62,10 @@ public class ThisValueMetaData extends AbstractValueMetaData
    public void initialVisit(MetaDataVisitor visitor)
    {
       context = visitor.getControllerContext();
-      value = context.getName();
+      setValue(context.getName());
       ControllerState whenRequired = visitor.getContextState();
 
-      DependencyItem item = new AbstractDependencyItem(value, value, whenRequired, ControllerState.INSTANTIATED);
+      DependencyItem item = new AbstractDependencyItem(getUnderlyingValue(), getUnderlyingValue(), whenRequired, ControllerState.INSTANTIATED);
       visitor.addDependency(item);
 
       super.initialVisit(visitor);

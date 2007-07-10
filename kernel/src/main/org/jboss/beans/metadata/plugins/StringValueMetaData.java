@@ -83,22 +83,22 @@ public class StringValueMetaData extends AbstractTypeMetaData
    {
       boolean trace = log.isTraceEnabled();
       if (trace)
-         log.trace("getValue value=" + value + " type=" + type + " info=" + info);
+         log.trace("getValue value=" + getUnderlyingValue() + " type=" + type + " info=" + info);
 
       TypeInfo typeInfo = getClassInfo(cl);
       if (typeInfo == null)
          typeInfo = info;
       if (typeInfo == null)
-         throw new IllegalArgumentException("Unable to determine type for value: " + value);
+         throw new IllegalArgumentException("Unable to determine type for value: " + getUnderlyingValue());
 
       // we convert it with more precise type
       // and then check for progression, ...
       if (typeInfo != info && info != null)
       {
-         Object typeValue = typeInfo.convertValue(value);
+         Object typeValue = typeInfo.convertValue(getUnderlyingValue());
          return info.convertValue(typeValue, replace);
       }
-      return typeInfo.convertValue(value, replace);
+      return typeInfo.convertValue(getUnderlyingValue(), replace);
    }
 
    protected Object getDefaultInstance()
