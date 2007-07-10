@@ -23,15 +23,14 @@ package org.jboss.test.deployers.vfs.deployer.bean.test;
 
 import junit.framework.Test;
 import junit.framework.TestSuite;
+import org.jboss.dependency.spi.ControllerState;
 import org.jboss.deployers.vfs.deployer.kernel.AliasDeploymentDeployer;
 import org.jboss.deployers.vfs.deployer.kernel.BeanDeployer;
 import org.jboss.deployers.vfs.deployer.kernel.BeanMetaDataDeployer;
 import org.jboss.deployers.vfs.deployer.kernel.DeploymentAliasMetaDataDeployer;
 import org.jboss.deployers.vfs.deployer.kernel.KernelDeploymentDeployer;
 import org.jboss.deployers.vfs.spi.client.VFSDeployment;
-import org.jboss.deployers.spi.DeploymentState;
 import org.jboss.kernel.Kernel;
-import org.jboss.dependency.spi.ControllerState;
 
 /**
  * AliasDeployerUnitTestCase.
@@ -100,7 +99,8 @@ public class AliasDeployerUnitTestCase extends AbstractDeployerUnitTestCase
    public void testAliasMissing() throws Exception
    {
       VFSDeployment context = createDeployment("/alias", "toplevel/aliases-beans.xml");
-      assertDeploy(context, DeploymentState.ERROR);
+      assertDeploy(context);
+      assertNotNull(controller.getContext("Injectee", ControllerState.INSTANTIATED));
       assertUndeploy(context);
       assertNull(controller.getContext("Test", null));
    }
@@ -122,7 +122,7 @@ public class AliasDeployerUnitTestCase extends AbstractDeployerUnitTestCase
       assertNull(controller.getContext("Test", null));
    }
 
-   public void testAliasDependency() throws Exception
+   public void testAliasDemand() throws Exception
    {
       VFSDeployment context = createDeployment("/alias", "toplevel/tomcat-beans.xml");
       assertDeploy(context);
@@ -130,6 +130,28 @@ public class AliasDeployerUnitTestCase extends AbstractDeployerUnitTestCase
 
       VFSDeployment alias = createDeployment("/alias", "toplevel/servicex-beans.xml");
       assertDeploy(alias);
+      assertNotNull(controller.getInstalledContext("ServiceX"));
+
+      assertUndeploy(context);
+      assertNull(controller.getContext("Tomcat", null));
+      assertNull(controller.getContext("ServiceX", ControllerState.CREATE));
+      assertNotNull(controller.getContext("ServiceX", ControllerState.CONFIGURED));
+
+      assertUndeploy(alias);
+      assertNull(controller.getContext("JBossWeb", null));
+      assertNull(controller.getContext("ServiceX", null));
+   }
+
+   public void testAliasDependency() throws Exception
+   {
+      VFSDeployment alias = createDeployment("/alias", "toplevel/servicex-beans.xml");
+      assertDeploy(alias);
+      assertNotNull(controller.getContext("ServiceX", ControllerState.CONFIGURED));
+
+      VFSDeployment context = createDeployment("/alias", "toplevel/tomcat-beans.xml");
+      assertDeploy(context);
+      assertNotNull(controller.getInstalledContext("Tomcat"));
+      assertNotNull(controller.getInstalledContext("JBossWeb"));
       assertNotNull(controller.getInstalledContext("ServiceX"));
 
       assertUndeploy(context);

@@ -27,6 +27,7 @@ import java.util.LinkedHashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
+import java.util.HashMap;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.CopyOnWriteArrayList;
 import java.util.concurrent.CopyOnWriteArraySet;
@@ -35,11 +36,13 @@ import java.util.concurrent.locks.ReentrantReadWriteLock;
 import org.jboss.dependency.spi.CallbackItem;
 import org.jboss.dependency.spi.Controller;
 import org.jboss.dependency.spi.ControllerContext;
+import org.jboss.dependency.spi.ControllerContextActions;
 import org.jboss.dependency.spi.ControllerMode;
 import org.jboss.dependency.spi.ControllerState;
 import org.jboss.dependency.spi.DependencyInfo;
 import org.jboss.dependency.spi.DependencyItem;
 import org.jboss.dependency.spi.LifecycleCallbackItem;
+import org.jboss.dependency.plugins.action.ControllerContextAction;
 import org.jboss.util.JBossObject;
 
 /**
@@ -389,49 +392,17 @@ public class AbstractController extends JBossObject implements Controller
       return uninstall(name, 0);
    }
 
-   public void addAlias(Object alias, Object original)
+   public void addAlias(Object alias, Object original) throws Throwable
    {
-      Object jmxAlias = JMXObjectNameFix.needsAnAlias(alias);
-      if (jmxAlias != null)
-         alias = jmxAlias;
-
-      Object jmxOriginal = JMXObjectNameFix.needsAnAlias(original);
-      if (jmxOriginal != null)
-         original = jmxOriginal;
-
-      lockWrite();
-      try
-      {
-         ControllerContext context = getRegisteredControllerContext(original, true);
-         // todo - do we need to add it to context.aliases?
-         registerControllerContext(alias, context);
-         if (log.isTraceEnabled())
-            log.trace("Added alias " + alias + " for context " + context);
-         // try to resolve existing beans with new alias
-         resolveContexts(log.isTraceEnabled());
-      }
-      finally
-      {
-         unlockWrite();
-      }
+      Map<ControllerState, ControllerContextAction> map = new HashMap<ControllerState, ControllerContextAction>();
+      map.put(ControllerState.INSTALLED, new AliasControllerContextAction());
+      ControllerContextActions actions = new AbstractControllerContextActions(map);
+      install(new AliasControllerContext(alias, original, actions));
    }
 
    public void removeAlias(Object alias)
    {
-      lockWrite();
-      try
-      {
-         Object jmxAlias = JMXObjectNameFix.needsAnAlias(alias);
-         if (jmxAlias != null)
-            alias = jmxAlias;
-         unregisterControllerContext(alias);
-         if (log.isTraceEnabled())
-            log.trace("Removed alias " + alias);
-      }
-      finally
-      {
-         unlockWrite();
-      }
+      uninstall(alias + "_Alias");
    }
 
    // todo - some better way to find context's by name
@@ -1537,5 +1508,85 @@ public class AbstractController extends JBossObject implements Controller
       if (name == null)
          throw new IllegalArgumentException("Null name");
       allContexts.remove(name);
+   }
+
+   // --- alias dependency
+
+   private class AliasControllerContext extends AbstractControllerContext
+   {
+      private Object alias;
+      private Object original;
+
+      public AliasControllerContext(Object alias, Object original, ControllerContextActions actions)
+      {
+         super(alias + "_Alias", actions);
+         this.alias = alias;
+         this.original = original;
+         DependencyInfo info = getDependencyInfo();
+         info.addIDependOn(new AbstractDependencyItem(alias, original, ControllerState.INSTALLED, ControllerState.INSTANTIATED));
+      }
+
+      public Object getAlias()
+      {
+         return alias;
+      }
+
+      public Object getOriginal()
+      {
+         return original;
+      }
+   }
+
+   private class AliasControllerContextAction implements ControllerContextAction
+   {
+      public void install(ControllerContext context) throws Throwable
+      {
+         AliasControllerContext acc = (AliasControllerContext)context;
+         Object alias = acc.getAlias();
+         Object jmxAlias = JMXObjectNameFix.needsAnAlias(alias);
+         if (jmxAlias != null)
+            alias = jmxAlias;
+
+         Object original = acc.getOriginal();
+         Object jmxOriginal = JMXObjectNameFix.needsAnAlias(original);
+         if (jmxOriginal != null)
+            original = jmxOriginal;
+
+         lockWrite();
+         try
+         {
+            ControllerContext lookup = getRegisteredControllerContext(original, true);
+            // todo - do we need to add it to context.aliases?
+            registerControllerContext(alias, lookup);
+            if (log.isTraceEnabled())
+               log.trace("Added alias " + alias + " for context " + context);
+            // try to resolve existing beans with new alias
+            resolveContexts(log.isTraceEnabled());
+         }
+         finally
+         {
+            unlockWrite();
+         }
+      }
+
+      public void uninstall(ControllerContext context)
+      {
+         lockWrite();
+         try
+         {
+            AliasControllerContext acc = (AliasControllerContext)context;
+            Object alias = acc.getAlias();
+            Object jmxAlias = JMXObjectNameFix.needsAnAlias(alias);
+            if (jmxAlias != null)
+               alias = jmxAlias;
+            unregisterControllerContext(alias);
+            if (log.isTraceEnabled())
+               log.trace("Removed alias " + alias);
+         }
+         finally
+         {
+            unlockWrite();
+         }
+      }
    }
 }

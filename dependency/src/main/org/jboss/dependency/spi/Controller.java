@@ -77,17 +77,14 @@ public interface Controller extends JBossInterface
     *
     * @param alias the alias to add
     * @param original original name
-    * @throws IllegalArgumentException for null parameters
-    * @throws IllegalStateException    if the context must exist is true and the context does not exist
-    *                                  if the context is already registered with that name
+    * @throws Throwable for any error
     */
-   void addAlias(Object alias, Object original);
+   void addAlias(Object alias, Object original) throws Throwable;
 
    /**
     * Remove alias.
     *
     * @param alias alias to remove
-    * @throws IllegalArgumentException for null parameters
     */
    void removeAlias(Object alias);
 

@@ -58,7 +58,14 @@ public class DeploymentAliasMetaDataDeployer extends AbstractSimpleRealDeployer<
    @Override
    public void deploy(DeploymentUnit unit, NamedAliasMetaData deployment) throws DeploymentException
    {
-      controller.addAlias(deployment.getAliasValue(), deployment.getName());
+      try
+      {
+         controller.addAlias(deployment.getAliasValue(), deployment.getName());
+      }
+      catch (Throwable t)
+      {
+         throw DeploymentException.rethrowAsDeploymentException("Error deploying alias: " + deployment.getName(), t);
+      }
    }
 
    @Override
