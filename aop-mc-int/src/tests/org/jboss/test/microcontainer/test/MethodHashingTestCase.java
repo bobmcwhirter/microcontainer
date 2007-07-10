@@ -18,7 +18,7 @@
 * License along with this software; if not, write to the Free
 * Software Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA
 * 02110-1301 USA, or see the FSF site: http://www.fsf.org.
-*/ 
+*/
 package org.jboss.test.microcontainer.test;
 
 import java.lang.reflect.Method;
@@ -41,7 +41,7 @@ import org.jboss.test.microcontainer.support.SubClass;
 
 /**
  * Test to make sure that the different mechanisms of creating method hashes return the same hashes
- * 
+ *
  * @author <a href="kabir.khan@jboss.com">Kabir Khan</a>
  * @version $Revision: 61752 $
  */
@@ -50,112 +50,109 @@ public class MethodHashingTestCase  extends TestCase
 
    public MethodHashingTestCase(String arg0)
    {
-      // FIXME MethodHashingTestCase constructor
       super(arg0);
    }
 
-   
-//TODO Move these tests into container or aop-mc-int
-   
+
    public void testDeclaredMethodHashing() throws Exception
    {
       Class clazz = SubClass.class;
       CtClass ctclass = getCtClass(clazz);
       ClassInfo classInfoReflect = getIntrospectTypeInfo(clazz);
       ClassInfo classInfoJavassist = getJavassistTypeInfo(clazz);
-      
+
       Map reflectInfoMethods = ClassInfoMethodHashing.getDeclaredMethodMap(classInfoReflect);
       Map javassistInfoMethods = ClassInfoMethodHashing.getDeclaredMethodMap(classInfoJavassist);
       Map javassistMethods = JavassistMethodHashing.getDeclaredMethodMap(ctclass);
-      
+
       compareMaps(reflectInfoMethods, javassistInfoMethods, 1);
       compareMaps(reflectInfoMethods, javassistMethods, 1);
-      
+
       for (Iterator it = reflectInfoMethods.keySet().iterator() ; it.hasNext() ; )
       {
          Long hash = (Long)it.next();
          CtMethod ctmethod = (CtMethod)javassistMethods.get(hash);
          MethodInfo methodInfo = (MethodInfo)reflectInfoMethods.get(hash);
          compareMethods(methodInfo, ctmethod);
-         
+
          MethodInfo methodInfo2 = (MethodInfo)javassistInfoMethods.get(hash);
          compareMethods(methodInfo, methodInfo2);
 
          Method method = MethodHashing.findMethodByHash(clazz, hash.longValue());
          assertNotNull(method);
          compareMethods(methodInfo, method);
-         
+
          Method methodB = org.jboss.util.MethodHashing.findMethodByHash(clazz, hash.longValue());
          assertNotNull(methodB);
          compareMethods(methodInfo, methodB);
       }
    }
-   
+
    public void testMethodHashing() throws Exception
    {
       Class clazz = SubClass.class;
       CtClass ctclass = getCtClass(clazz);
       ClassInfo classInfoReflect = getIntrospectTypeInfo(clazz);
       ClassInfo classInfoJavassist = getJavassistTypeInfo(clazz);
-      
+
       Map reflectInfoMethods = ClassInfoMethodHashing.getMethodMap(classInfoReflect);
       Map javassistInfoMethods = ClassInfoMethodHashing.getMethodMap(classInfoJavassist);
       Map javassistMethods = JavassistMethodHashing.getMethodMap(ctclass);
-      
+
       compareMaps(reflectInfoMethods, javassistInfoMethods, 2);
       compareMaps(reflectInfoMethods, javassistMethods, 2);
-      
+
       for (Iterator it = reflectInfoMethods.keySet().iterator() ; it.hasNext() ; )
       {
          Long hash = (Long)it.next();
          CtMethod ctmethod = (CtMethod)javassistMethods.get(hash);
          MethodInfo methodInfo = (MethodInfo)reflectInfoMethods.get(hash);
          compareMethods(methodInfo, ctmethod);
-         
+
          MethodInfo methodInfo2 = (MethodInfo)javassistInfoMethods.get(hash);
          compareMethods(methodInfo, methodInfo2);
 
          Method method = MethodHashing.findMethodByHash(clazz, hash.longValue());
          assertNotNull(method);
          compareMethods(methodInfo, method);
-         
+
          Method methodB = org.jboss.util.MethodHashing.findMethodByHash(clazz, hash.longValue());
          assertNotNull(methodB);
          compareMethods(methodInfo, methodB);
       }
    }
-   
+
    private CtClass getCtClass(Class clazz) throws Exception
    {
       return ReflectToJavassist.classToJavassist(clazz);
    }
-   
+
    private ClassInfo getIntrospectTypeInfo(Class clazz)
    {
       IntrospectionTypeInfoFactory typeInfoFactory = new IntrospectionTypeInfoFactory();
       ClassInfo classInfo = (ClassInfo)typeInfoFactory.getTypeInfo(clazz);
       return classInfo;
    }
-   
+
    private ClassInfo getJavassistTypeInfo(Class clazz)
    {
       JavassistTypeInfoFactory typeInfoFactory = new JavassistTypeInfoFactory();
       ClassInfo classInfo = (ClassInfo)typeInfoFactory.getTypeInfo(clazz);
       return classInfo;
    }
-   
+
    private void compareMaps(Map mapA, Map mapB, int expecedSize)
    {
       assertEquals(expecedSize, mapA.size());
       assertEquals(expecedSize, mapB.size());
-      
+
       for (Iterator it = mapA.keySet().iterator() ; it.hasNext() ; )
       {
          Long l = (Long)it.next();
          assertNotNull(mapB.get(l));
       }
    }
-   
+
    private void compareMethods(MethodInfo methodInfo, CtMethod method) throws Exception
    {
       System.out.println("-----> method " + method);
