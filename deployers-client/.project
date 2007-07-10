@@ -3,11 +3,11 @@
   <comment>JBoss Deployers Client</comment>
   <projects>
     <project>jboss-container</project>
-    <project>jboss-managed</project>
+    <project>jboss-metatype</project>
     <project>jboss-deployers-client-spi</project>
     <project>jboss-deployers-core-spi</project>
-    <project>jboss-metatype</project>
     <project>jboss-deployers-core</project>
+    <project>jboss-managed</project>
   </projects>
   <buildSpec>
     <buildCommand>
