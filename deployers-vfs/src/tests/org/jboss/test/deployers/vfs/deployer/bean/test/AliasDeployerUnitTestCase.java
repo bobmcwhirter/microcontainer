@@ -163,4 +163,35 @@ public class AliasDeployerUnitTestCase extends AbstractDeployerUnitTestCase
       assertNull(controller.getContext("JBossWeb", null));
       assertNull(controller.getContext("ServiceX", null));
    }
+
+   public void testRemovingAlias() throws Exception
+   {
+      VFSDeployment justx = createDeployment("/alias", "toplevel/justx-beans.xml");
+      assertDeploy(justx);
+      assertNotNull(controller.getContext("ServiceX", ControllerState.CONFIGURED));
+
+      VFSDeployment alias = createDeployment("/alias", "toplevel/tcalias-beans.xml");
+      assertDeploy(alias);
+
+      VFSDeployment context = createDeployment("/alias", "toplevel/tomcat-beans.xml");
+      assertDeploy(context);
+      assertNotNull(controller.getInstalledContext("Tomcat"));
+      assertNotNull(controller.getInstalledContext("JBossWeb"));
+      assertNotNull(controller.getInstalledContext("ServiceX"));
+
+      assertUndeploy(alias);
+      assertNull(controller.getInstalledContext("JBossWeb"));
+      assertNotNull(controller.getInstalledContext("Tomcat"));
+      assertNotNull(controller.getInstalledContext("ServiceX"));
+
+      assertUndeploy(context);
+      assertNull(controller.getContext("Tomcat", null));
+      assertNull(controller.getContext("ServiceX", ControllerState.CREATE));
+      assertNotNull(controller.getContext("ServiceX", ControllerState.CONFIGURED));
+
+      assertUndeploy(justx);
+      assertNull(controller.getContext("JBossWeb", null));
+      assertNull(controller.getContext("ServiceX", null));
+   }
+
 }

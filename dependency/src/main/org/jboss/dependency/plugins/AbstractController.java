@@ -44,6 +44,7 @@ import org.jboss.dependency.spi.DependencyItem;
 import org.jboss.dependency.spi.LifecycleCallbackItem;
 import org.jboss.dependency.plugins.action.ControllerContextAction;
 import org.jboss.util.JBossObject;
+import org.jboss.util.JBossStringBuilder;
 
 /**
  * Abstract controller.
@@ -1523,7 +1524,7 @@ public class AbstractController extends JBossObject implements Controller
          this.alias = alias;
          this.original = original;
          DependencyInfo info = getDependencyInfo();
-         info.addIDependOn(new AbstractDependencyItem(alias, original, ControllerState.INSTALLED, ControllerState.INSTANTIATED));
+         info.addIDependOn(new AbstractDependencyItem(getName(), original, ControllerState.INSTALLED, ControllerState.INSTANTIATED));
       }
 
       public Object getAlias()
@@ -1535,6 +1536,20 @@ public class AbstractController extends JBossObject implements Controller
       {
          return original;
       }
+
+      public void toString(JBossStringBuilder buffer)
+      {
+         buffer.append("alias=").append(alias);
+         buffer.append(" original=").append(original).append(" ");
+         super.toString(buffer);
+      }
+
+      public void toShortString(JBossStringBuilder buffer)
+      {
+         buffer.append("alias=").append(alias);
+         buffer.append(" original=").append(original).append(" ");
+         super.toShortString(buffer);
+      }
    }
 
    private class AliasControllerContextAction implements ControllerContextAction
@@ -1542,6 +1557,7 @@ public class AbstractController extends JBossObject implements Controller
       public void install(ControllerContext context) throws Throwable
       {
          AliasControllerContext acc = (AliasControllerContext)context;
+
          Object alias = acc.getAlias();
          Object jmxAlias = JMXObjectNameFix.needsAnAlias(alias);
          if (jmxAlias != null)
@@ -1575,10 +1591,12 @@ public class AbstractController extends JBossObject implements Controller
          try
          {
             AliasControllerContext acc = (AliasControllerContext)context;
+
             Object alias = acc.getAlias();
             Object jmxAlias = JMXObjectNameFix.needsAnAlias(alias);
             if (jmxAlias != null)
                alias = jmxAlias;
+
             unregisterControllerContext(alias);
             if (log.isTraceEnabled())
                log.trace("Removed alias " + alias);
