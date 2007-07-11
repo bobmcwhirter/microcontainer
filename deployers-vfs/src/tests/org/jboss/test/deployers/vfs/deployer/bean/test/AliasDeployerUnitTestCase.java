@@ -156,11 +156,11 @@ public class AliasDeployerUnitTestCase extends AbstractDeployerUnitTestCase
 
       assertUndeploy(context);
       assertNull(controller.getContext("Tomcat", null));
+      assertNull(controller.getContext("JBossWeb", null));
       assertNull(controller.getContext("ServiceX", ControllerState.CREATE));
       assertNotNull(controller.getContext("ServiceX", ControllerState.CONFIGURED));
 
       assertUndeploy(alias);
-      assertNull(controller.getContext("JBossWeb", null));
       assertNull(controller.getContext("ServiceX", null));
    }
 
