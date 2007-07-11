@@ -67,12 +67,4 @@ public interface ManagedObject extends Serializable
     * @return the properties
     */
    Set<ManagedProperty> getProperties();
-
-
-   /**
-    * Get the operations.
-    * @return A possibly empty set of the operations assocated with
-    * the managed object.
-    */
-   Set<ManagedOperation> getOperations();
 }

@@ -21,16 +21,13 @@
 */
 package org.jboss.metatype.api.types;
 
-import java.io.Serializable;
-
 /**
  * ArrayMetaType.
  *
- * @param <T> the underlying type
  * @author <a href="adrian@jboss.com">Adrian Brock</a>
  * @version $Revision: 1.1 $
  */
-public class ArrayMetaType<T extends Serializable> extends AbstractMetaType<T>
+public class ArrayMetaType extends AbstractMetaType
 {
    /** The serialVersionUID */
    private static final long serialVersionUID = -2062790692152055156L;
@@ -48,10 +45,11 @@ public class ArrayMetaType<T extends Serializable> extends AbstractMetaType<T>
    private transient String cachedToString = null;
 
    /**
-    * Generate the class and type name
+    * Generate the class name
     * 
     * @param dimension the dimension
     * @param elementType the element type
+    * @return the class name
     */
    private static String genName(int dimension, MetaType elementType)
    {
@@ -71,17 +69,42 @@ public class ArrayMetaType<T extends Serializable> extends AbstractMetaType<T>
    }
 
    /**
+    * Generate the type name
+    * 
+    * @param dimension the dimension
+    * @param elementType the element type
+    * @return the type name
+    */
+   private static String genType(int dimension, MetaType elementType)
+   {
+      if (dimension < 1)
+         throw new IllegalArgumentException("negative dimension");
+      if (elementType == null)
+         throw new IllegalArgumentException("null element type");
+      if (elementType instanceof ArrayMetaType)
+         throw new IllegalArgumentException("array type cannot be an element of an array type");
+      StringBuilder buffer = new StringBuilder();
+      for (int i=0; i < dimension; i++)
+         buffer.append('[');
+      buffer.append('L');
+      buffer.append(elementType.getTypeName());
+      buffer.append(';');
+      return buffer.toString();
+   }
+
+   /**
     * Generate the description
     * 
     * @param dimension the dimension
     * @param elementType the element type
+    * @return the description
     */
    private static String genDesc(int dimension, MetaType elementType)
    {
       StringBuilder buffer = new StringBuilder();
       buffer.append(new Integer(dimension));
       buffer.append("-dimension array of ");
-      buffer.append(elementType.getClassName());
+      buffer.append(elementType.getTypeName());
       return buffer.toString();
    }
 
@@ -94,7 +117,7 @@ public class ArrayMetaType<T extends Serializable> extends AbstractMetaType<T>
     */
    public ArrayMetaType(int dimension, MetaType elementType)
    {
-      super(genName(dimension, elementType), genDesc(dimension, elementType));
+      super(genName(dimension, elementType), genType(dimension, elementType), genDesc(dimension, elementType));
       this.dimension = dimension;
       this.elementType = elementType;
    }

@@ -41,6 +41,11 @@ public class MockTableValue extends MockMetaValue implements TableValue
    /** The serialVersionUID */
    private static final long serialVersionUID = 1L;
  
+   /**
+    * Create a new MockTableValue.
+    * 
+    * @param metaType the meta type
+    */
    public MockTableValue(TableMetaType metaType)
    {
       super(metaType);

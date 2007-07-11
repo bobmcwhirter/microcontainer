@@ -40,16 +40,31 @@ import org.jboss.test.metatype.AbstractMetaTypeTest;
  */
 public class ImmutableCompositeMetaTypeUnitTestCase extends AbstractMetaTypeTest
 {
+   /**
+    * Create a testsuite for this test
+    * 
+    * @return the testsuite
+    */
    public static Test suite()
    {
       return suite(ImmutableCompositeMetaTypeUnitTestCase.class);
    }
    
+   /**
+    * Create a new ImmutableCompositeMetaTypeUnitTestCase.
+    * 
+    * @param name the test name
+    */
    public ImmutableCompositeMetaTypeUnitTestCase(String name)
    {
       super(name);
    }
 
+   /**
+    * Test the metatype for a composite type
+    * 
+    * @throws Exception for any problem
+    */
    public void testCompositeMetaTypeMetaType() throws Exception
    {
       CompositeMetaType compositeType = initCompositeMetaType();
@@ -59,16 +74,26 @@ public class ImmutableCompositeMetaTypeUnitTestCase extends AbstractMetaTypeTest
       assertTrue("Composite meta type should not be an array", compositeType.isArray() == false);
    }
 
-   public void testContainsKey() throws Exception
+   /**
+    * Test the containsItem for a composite type
+    * 
+    * @throws Exception for any problem
+    */
+   public void testContainsItem() throws Exception
    {
       CompositeMetaType compositeType = initCompositeMetaType();
-      assertTrue("Composite type should contain key name1", compositeType.containsKey("name1") == true);
-      assertTrue("Composite type should contain key name2", compositeType.containsKey("name2") == true);
-      assertTrue("Composite type should not contain key nameX", compositeType.containsKey("nameX") == false);
-      assertTrue("Composite type should not contain key null", compositeType.containsKey(null) == false);
-      assertTrue("Composite type should not contain key <empty>", compositeType.containsKey("") == false);
+      assertTrue("Composite type should contain key name1", compositeType.containsItem("name1") == true);
+      assertTrue("Composite type should contain key name2", compositeType.containsItem("name2") == true);
+      assertTrue("Composite type should not contain key nameX", compositeType.containsItem("nameX") == false);
+      assertTrue("Composite type should not contain key null", compositeType.containsItem(null) == false);
+      assertTrue("Composite type should not contain key <empty>", compositeType.containsItem("") == false);
    }
 
+   /**
+    * Test the description for a composite type item
+    * 
+    * @throws Exception for any problem
+    */
    public void testGetDescriptionForItemName() throws Exception
    {
       CompositeMetaType compositeType = initCompositeMetaType();
@@ -76,6 +101,11 @@ public class ImmutableCompositeMetaTypeUnitTestCase extends AbstractMetaTypeTest
       assertEquals("desc2", compositeType.getDescription("name2"));
    }
 
+   /**
+    * Test the type for a composite type item
+    * 
+    * @throws Exception for any problem
+    */
    public void testGetTypeForItemName() throws Exception
    {
       CompositeMetaType compositeType = initCompositeMetaType();
@@ -83,6 +113,11 @@ public class ImmutableCompositeMetaTypeUnitTestCase extends AbstractMetaTypeTest
       assertEquals(SimpleMetaType.INTEGER, compositeType.getType("name2"));
    }
 
+   /**
+    * Test the key set for a composite type
+    * 
+    * @throws Exception for any problem
+    */
    public void testKeySet() throws Exception
    {
       CompositeMetaType compositeType = initCompositeMetaType();
@@ -92,11 +127,21 @@ public class ImmutableCompositeMetaTypeUnitTestCase extends AbstractMetaTypeTest
       assertTrue("Should contain name2", keys.contains("name2"));
    }
 
+   /**
+    * Test the isValue for a composite type
+    * 
+    * @throws Exception for any problem
+    */
    public void testIsValue() throws Exception
    {
       // TODO testIsValue
    }
 
+   /**
+    * Test the equals for a composite type
+    * 
+    * @throws Exception for any problem
+    */
    public void testEquals() throws Exception
    {
       CompositeMetaType compositeType = initCompositeMetaType();;
@@ -129,6 +174,11 @@ public class ImmutableCompositeMetaTypeUnitTestCase extends AbstractMetaTypeTest
          compositeType2.equals(compositeType) == false);
    }
 
+   /**
+    * Test the hashCode for a composite type
+    * 
+    * @throws Exception for any problem
+    */
    public void testHashCode() throws Exception
    {
       CompositeMetaType compositeType = initCompositeMetaType();
@@ -141,6 +191,11 @@ public class ImmutableCompositeMetaTypeUnitTestCase extends AbstractMetaTypeTest
       assertTrue("Wrong hash code generated", myHashCode == compositeType.hashCode());
    }
 
+   /**
+    * Test the toString for a composite type
+    * 
+    * @throws Exception for any problem
+    */
    public void testToString() throws Exception
    {
       CompositeMetaType compositeType = initCompositeMetaType();
@@ -150,10 +205,15 @@ public class ImmutableCompositeMetaTypeUnitTestCase extends AbstractMetaTypeTest
       assertTrue("toString() should contain the composite type class name", toString.indexOf(compositeType.getClass().getSimpleName()) != -1);
       assertTrue("toString() should contain the item name name1", toString.indexOf("name1") != -1);
       assertTrue("toString() should contain the item name name2", toString.indexOf("name2") != -1);
-      assertTrue("toString() should contain " + SimpleMetaType.STRING, toString.indexOf(SimpleMetaType.STRING.toString()) != -1);
-      assertTrue("toString() should contain " + SimpleMetaType.INTEGER, toString.indexOf(SimpleMetaType.INTEGER.toString()) != -1);
+      assertTrue("toString() should contain " + SimpleMetaType.STRING.getTypeName(), toString.indexOf(SimpleMetaType.STRING.getTypeName()) != -1);
+      assertTrue("toString() should contain " + SimpleMetaType.INTEGER.getTypeName(), toString.indexOf(SimpleMetaType.INTEGER.getTypeName()) != -1);
    }
 
+   /**
+    * Test the serialization for a composite type
+    * 
+    * @throws Exception for any problem
+    */
    public void testSerialization() throws Exception
    {
       CompositeMetaType compositeType = initCompositeMetaType();
@@ -162,6 +222,11 @@ public class ImmutableCompositeMetaTypeUnitTestCase extends AbstractMetaTypeTest
       assertEquals(compositeType, result);
    }
 
+   /**
+    * Test the errors for a composite type
+    * 
+    * @throws Exception for any problem
+    */
    public void testErrors() throws Exception
    {
       String[] itemNames = new String[] { "name1", "name2" };
@@ -327,6 +392,11 @@ public class ImmutableCompositeMetaTypeUnitTestCase extends AbstractMetaTypeTest
       }
    }
 
+   /**
+    * Initialise a test composite metatype
+    *
+    * @return the meta type
+    */
    protected CompositeMetaType initCompositeMetaType()
    {
       String[] itemNames = new String[] { "name1", "name2" };
@@ -336,6 +406,11 @@ public class ImmutableCompositeMetaTypeUnitTestCase extends AbstractMetaTypeTest
       return compositeType;
    }
 
+   /**
+    * Initialise a test composite metatype with different item types
+    *
+    * @return the meta type
+    */
    protected CompositeMetaType initCompositeMetaTypeDifferentItemTypes()
    {
       String[] itemNames = new String[] { "name1", "name2" };
@@ -345,6 +420,11 @@ public class ImmutableCompositeMetaTypeUnitTestCase extends AbstractMetaTypeTest
       return compositeType;
    }
 
+   /**
+    * Initialise a test composite metatype with a different type name
+    *
+    * @return the meta type
+    */
    protected CompositeMetaType initCompositeMetaTypeDifferentTypeName()
    {
       String[] itemNames = new String[] { "name1", "name2" };
@@ -354,6 +434,11 @@ public class ImmutableCompositeMetaTypeUnitTestCase extends AbstractMetaTypeTest
       return compositeType;
    }
 
+   /**
+    * Initialise a test composite metatype with different item names
+    *
+    * @return the meta type
+    */
    protected CompositeMetaType initCompositeMetaTypeDifferentItemNames()
    {
       String[] itemNames = new String[] { "nameX", "name2" };

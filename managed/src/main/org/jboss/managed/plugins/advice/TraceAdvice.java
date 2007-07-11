@@ -38,6 +38,13 @@ public class TraceAdvice
    /** The log */
    private static final Logger log = Logger.getLogger(TraceAdvice.class);
    
+   /**
+    * Interceptor
+    * 
+    * @param invocation the invocation
+    * @return the result
+    * @throws Throwable for any problem
+    */
    public Object invoke(Invocation invocation) throws Throwable
    {
       boolean trace = log.isTraceEnabled();

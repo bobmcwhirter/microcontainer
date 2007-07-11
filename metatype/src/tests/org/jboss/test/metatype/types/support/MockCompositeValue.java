@@ -38,6 +38,11 @@ public class MockCompositeValue extends MockMetaValue implements CompositeValue
    /** The serialVersionUID */
    private static final long serialVersionUID = 1L;
 
+   /**
+    * Create a new MockCompositeValue.
+    * 
+    * @param metaType the meta type
+    */
    public MockCompositeValue(CompositeMetaType metaType)
    {
       super(metaType);

@@ -32,6 +32,15 @@ import org.jboss.metatype.api.types.SimpleMetaType;
  */
 public class ManagedPropertyImplFactory
 {
+   /**
+    * Create a new managed property
+    * 
+    * @param name the property name
+    * @param description the property description
+    * @param metaType the metatype
+    * @param manadatory whether the property is mandatory
+    * @return the managed property
+    */
    public static ManagedProperty newInstance(String name, String description,
          String metaType, boolean manadatory)
    {

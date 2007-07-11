@@ -33,11 +33,21 @@ import junit.textui.TestRunner;
  */
 public class TypesTestSuite extends TestSuite
 {
+   /**
+    * For running the testsuite from the command line
+    * 
+    * @param args the command line args
+    */
    public static void main(String[] args)
    {
       TestRunner.run(suite());
    }
 
+   /**
+    * Create the testsuite
+    * 
+    * @return the testsuite
+    */
    public static Test suite()
    {
       TestSuite suite = new TestSuite("Types Tests");

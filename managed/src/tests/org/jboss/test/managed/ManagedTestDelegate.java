@@ -35,7 +35,7 @@ import org.jboss.test.AbstractTestDelegate;
  * 
  * @author <a href="adrian@jboss.com">Adrian Brock</a>
  * @author Scott.Stark@jboss.com
- * @version $Revision: 58245 $
+ * @version $Revision:59255 $
  */
 public class ManagedTestDelegate extends AbstractTestDelegate
 {

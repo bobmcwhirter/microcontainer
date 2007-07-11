@@ -108,28 +108,45 @@ public class SimpleMetaType<T extends Serializable> extends AbstractMetaType<T>
     *
     * @param className the class name of the simple type
     * @return the simple type
+    * @throws IllegalArgumentException for a null className or if it is not a simple type
     */
    public static SimpleMetaType resolve(String className)
+   {
+      SimpleMetaType result = isSimpleType(className);
+      if (result != null)
+         return result;
+      throw new IllegalArgumentException("Class is not a simple type: " + className);
+   }
+
+   /**
+    * Return the simple type if the class name is a simple type
+    * otherwise null.
+    *
+    * @param className the class name of the simple type
+    * @return the simple type
+    * @throws IllegalArgumentException for a null className
+    */
+   public static SimpleMetaType isSimpleType(String className)
    {
       if (className == null)
          throw new IllegalArgumentException("Null class name");
       if (className.equals(STRING.getClassName()))
          return STRING;
-      if (className.equals(INTEGER.getClassName()))
+      if (className.equals(INTEGER.getClassName()) || className.equals(Integer.TYPE.getName()))
          return INTEGER;
-      if (className.equals(BOOLEAN.getClassName()))
+      if (className.equals(BOOLEAN.getClassName()) || className.equals(Boolean.TYPE.getName()))
          return BOOLEAN;
-      if (className.equals(LONG.getClassName()))
+      if (className.equals(LONG.getClassName()) || className.equals(Long.TYPE.getName()))
          return LONG;
-      if (className.equals(BYTE.getClassName()))
+      if (className.equals(BYTE.getClassName()) || className.equals(Byte.TYPE.getName()))
          return BYTE;
-      if (className.equals(CHARACTER.getClassName()))
+      if (className.equals(CHARACTER.getClassName()) || className.equals(Character.TYPE.getName()))
          return CHARACTER;
-      if (className.equals(DOUBLE.getClassName()))
+      if (className.equals(DOUBLE.getClassName()) || className.equals(Double.TYPE.getName()))
          return DOUBLE;
-      if (className.equals(FLOAT.getClassName()))
+      if (className.equals(FLOAT.getClassName()) || className.equals(Float.TYPE.getName()))
          return FLOAT;
-      if (className.equals(SHORT.getClassName()))
+      if (className.equals(SHORT.getClassName()) || className.equals(Short.TYPE.getName()))
          return SHORT;
       if (className.equals(BIGDECIMAL.getClassName()))
          return BIGDECIMAL;
@@ -139,7 +156,7 @@ public class SimpleMetaType<T extends Serializable> extends AbstractMetaType<T>
          return VOID;
       if (className.equals(DATE.getClassName()))
          return DATE;
-      throw new IllegalArgumentException(className);
+      return null;
    }
 
    /**
@@ -157,6 +174,12 @@ public class SimpleMetaType<T extends Serializable> extends AbstractMetaType<T>
       buffer.append(":");
       buffer.append(getClassName());
       cachedToString = buffer.toString();
+   }
+
+   @Override
+   public boolean isSimple()
+   {
+      return true;
    }
 
    @Override

@@ -36,33 +36,63 @@ import org.jboss.test.metatype.AbstractMetaTypeTest;
  */
 public class SimpleValueSupportUnitTestCase extends AbstractMetaTypeTest
 {
+   /**
+    * Create a testsuite for this test
+    * 
+    * @return the testsuite
+    */
    public static Test suite()
    {
       return suite(SimpleValueSupportUnitTestCase.class);
    }
    
+   /**
+    * Create a new SimpleValueSupportUnitTestCase.
+    * 
+    * @param name the test name
+    */
    public SimpleValueSupportUnitTestCase(String name)
    {
       super(name);
    }
 
+   /**
+    * Test the simple value
+    * 
+    * @throws Exception for any problem
+    */
    public void testSimpleValueSupport() throws Exception
    {
       initStringValue1();
    }
 
+   /**
+    * Test the meta type for a simple value
+    * 
+    * @throws Exception for any problem
+    */
    public void testGetSimpleMetaType() throws Exception
    {
       SimpleValue<String> value = initStringValue1();
       assertEquals(SimpleMetaType.STRING, value.getMetaType());
    }
 
+   /**
+    * Test the getValue for a simple value
+    * 
+    * @throws Exception for any problem
+    */
    public void testGetValue()throws Exception
    {
       SimpleValue<String> value = initStringValue1();
       assertEquals("value1", value.getValue());
    }
 
+   /**
+    * Test the setValue for a simple value
+    * 
+    * @throws Exception for any problem
+    */
    public void testSetValue()throws Exception
    {
       SimpleValueSupport<String> value = (SimpleValueSupport<String>) initStringValue1();
@@ -70,6 +100,11 @@ public class SimpleValueSupportUnitTestCase extends AbstractMetaTypeTest
       assertEquals("value2", value.getValue());
    }
 
+   /**
+    * Test the equals for a simple value
+    * 
+    * @throws Exception for any problem
+    */
    public void testEquals() throws Exception
    {
       SimpleValue<String> v = initStringValue1();
@@ -96,6 +131,11 @@ public class SimpleValueSupportUnitTestCase extends AbstractMetaTypeTest
       assertNotSame("data2 should not be equal with data with different value", v2, v);
    }
 
+   /**
+    * Test the hashCode for a simple value
+    * 
+    * @throws Exception for any problem
+    */
    public void testHashCode() throws Exception
    {
       SimpleValue<String> v = initStringValue1();
@@ -104,6 +144,11 @@ public class SimpleValueSupportUnitTestCase extends AbstractMetaTypeTest
       assertEquals("Wrong hash code generated", myHashCode, v.hashCode());
    }
 
+   /**
+    * Test the toString for a simple value
+    * 
+    * @throws Exception for any problem
+    */
    public void testToString() throws Exception
    {
       SimpleValue<String> v = initStringValue1();
@@ -114,6 +159,11 @@ public class SimpleValueSupportUnitTestCase extends AbstractMetaTypeTest
       assertTrue("toString() should contain value1", toString.indexOf("value1") != -1);
    }
 
+   /**
+    * Test the serialization for a simple value
+    * 
+    * @throws Exception for any problem
+    */
    public void testSerialization() throws Exception
    {
       SimpleValue<String> v = initStringValue1();
@@ -122,6 +172,11 @@ public class SimpleValueSupportUnitTestCase extends AbstractMetaTypeTest
       assertEquals(v, result);
    }
 
+   /**
+    * Test the errors for a simple value
+    * 
+    * @throws Exception for any problem
+    */
    public void testErrors() throws Exception
    {
       try

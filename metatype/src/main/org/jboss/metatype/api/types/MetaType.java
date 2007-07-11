@@ -24,9 +24,15 @@ package org.jboss.metatype.api.types;
 import java.io.Serializable;
 import java.math.BigDecimal;
 import java.math.BigInteger;
+import java.util.Arrays;
+import java.util.Collections;
 import java.util.Date;
+import java.util.List;
 
+import org.jboss.metatype.api.values.ArrayValue;
 import org.jboss.metatype.api.values.CompositeValue;
+import org.jboss.metatype.api.values.EnumValue;
+import org.jboss.metatype.api.values.GenericValue;
 import org.jboss.metatype.api.values.SimpleValue;
 import org.jboss.metatype.api.values.TableValue;
 
@@ -57,10 +63,13 @@ public interface MetaType<T extends Serializable> extends Serializable
     * java.math.BigDecimal<br>
     * java.math.BigInteger<br>
     * {@link SimpleValue}<br>
+    * {@link EnumValue}<br>
+    * {@link GenericValue}<br>
+    * {@link ArrayValue}<br>
     * {@link CompositeValue}<br>
     * {@link TableValue}
     */
-   String[] ALLOWED_CLASSNAMES =
+   List<String> ALLOWED_CLASSNAMES = Collections.unmodifiableList(Arrays.asList(new String[]
    {
       Void.class.getName(),
       Boolean.class.getName(),
@@ -76,9 +85,12 @@ public interface MetaType<T extends Serializable> extends Serializable
       BigDecimal.class.getName(),
       BigInteger.class.getName(),
       SimpleValue.class.getName(),
+      EnumValue.class.getName(),
+      GenericValue.class.getName(),
+      ArrayValue.class.getName(),
       CompositeValue.class.getName(),
       TableValue.class.getName()
-   };
+   }));
 
    /**
     * Retrieve the class name of the values of this meta
@@ -109,6 +121,41 @@ public interface MetaType<T extends Serializable> extends Serializable
     * @return true when it is an array or false otherwise
     */
    boolean isArray();
+
+   /**
+    * Retrieve whether the class name of the type is an enum
+    *
+    * @return true when it is an enum or false otherwise
+    */
+   boolean isEnum();
+
+   /**
+    * Retrieve whether the class name of the type is simple
+    *
+    * @return true when it is simple or false otherwise
+    */
+   boolean isSimple();
+
+   /**
+    * Retrieve whether the class name of the type is generic
+    *
+    * @return true when it is generic or false otherwise
+    */
+   boolean isGeneric();
+
+   /**
+    * Retrieve whether the class name of the type is composite
+    *
+    * @return true when it is composite or false otherwise
+    */
+   boolean isComposite();
+
+   /**
+    * Retrieve whether the class name of the type is a table
+    *
+    * @return true when it is a table or false otherwise
+    */
+   boolean isTable();
 
    /**
     * Whether the passed value is one of those described by this meta type.

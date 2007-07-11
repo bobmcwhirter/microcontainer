@@ -37,6 +37,11 @@ public class MockMetaValue implements MetaValue
    
    private MetaType metaType;
 
+   /**
+    * Create a new MockMetaValue.
+    * 
+    * @param metaType the meta type
+    */
    public MockMetaValue(MetaType metaType)
    {
       this.metaType = metaType;

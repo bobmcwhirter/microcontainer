@@ -39,82 +39,175 @@ import org.jboss.metatype.api.values.SimpleValue;
 public class DefaultFieldsImpl
    implements Fields
 {
+   /** The serialVersionUID */
    private static final long serialVersionUID = 1;
 
+   /** The fields */
    private HashMap<String, Serializable> fields = new HashMap<String, Serializable>();
 
+   /**
+    * Create a new DefaultFieldsImpl.
+    */
    public DefaultFieldsImpl()
    {      
    }
+
+   /**
+    * Create a new DefaultFieldsImpl.
+    * 
+    * @param name the property name
+    */
    public DefaultFieldsImpl(String name)
    {
       this.setName(name);
    }
 
+   /**
+    * Get the property name
+    * 
+    * @return the name
+    */
    public String getName()
    {
       return getField(NAME, String.class);
    }
+
+   /**
+    * Set the property name
+    * 
+    * @param name the name
+    */
    public void setName(String name)
    {
       setField(NAME, name);
    }
 
+   /**
+    * Get the description
+    * 
+    * @return the description
+    */
    public String getDescription()
    {
       return getField(DESCRIPTION, String.class);
    }
+
+   /**
+    * Set the description
+    * 
+    * @param description the description
+    */
    public void setDescription(String description)
    {
       setField(DESCRIPTION, description);
    }
 
+   /**
+    * Get the meta type
+    * 
+    * @return the meta type
+    */
    public MetaType getMetaType()
    {
       return getField(META_TYPE, MetaType.class);
    }
+   
+   /**
+    * Set the meta type
+    * 
+    * @param type the meta type
+    */
    public void setMetaType(MetaType type)
    {
       setField(META_TYPE, type);
    }
 
+   /**
+    * Get the value
+    * 
+    * @return the value
+    */
    public Object getValue()
    {
       return getField(VALUE);
    }
+   
+   /**
+    * Set the value
+    * 
+    * @param value the value
+    */
    public void setValue(Serializable value)
    {
       setField(VALUE, value);
    }
 
+   /**
+    * Get the legal values
+    * 
+    * @return the values
+    */
    @SuppressWarnings("unchecked")
    public Set<MetaValue> getLegalValues()
    {
       return getField(LEGAL_VALUES, Set.class);
    }
+   
+   /**
+    * Set the legal values
+    * 
+    * @param values the values
+    */
    public void setLegalValues(Set<MetaValue> values)
    {
       setField(LEGAL_VALUES, (Serializable)values);
    }
 
+   /**
+    * Get the minimum value
+    * 
+    * @return the minimum value
+    */
    public Comparable getMinimumValue()
    {
       return getField(MINIMUM_VALUE, Comparable.class);
    }
+   
+   /**
+    * Set the minimum value
+    * 
+    * @param value the value
+    */
    public void setMinimumValue(Comparable value)
    {
       setField(MINIMUM_VALUE, (Serializable)value);
    }
 
+   /**
+    * Get the maximum value
+    * 
+    * @return the value
+    */
    public Comparable getMaximumValue()
    {
       return getField(MAXIMUM_VALUE, Comparable.class);
    }
+   
+   /**
+    * Get the maximum value
+    * 
+    * @param value the value
+    */
    public void setMaximumValue(Comparable value)
    {
       setField(MAXIMUM_VALUE, (Serializable)value);
    }
 
+   /**
+    * Get whether the property is mandatory
+    * 
+    * @return true when mandaotry
+    */
    public boolean isMandatory()
    {
       Boolean result = getField(MANDATORY, Boolean.class);
@@ -122,21 +215,49 @@ public class DefaultFieldsImpl
          return false;
       return result;
    }
+   
+   /**
+    * Set the mandatory value
+    * 
+    * @param flag true when mandatory
+    */
    public void setMandatory(boolean flag)
    {
-      setField(MANDATORY, flag);
+      if (flag)
+         setField(MANDATORY, flag);
+      else
+         setField(MANDATORY, null);
    }
 
+   /**
+    * Get a field
+    * 
+    * @param name the field name
+    */
    public Serializable getField(String name)
    {
       return fields.get(name);
    }
 
+   /**
+    * Set a field
+    * 
+    * @param name the field name
+    * @param value the value
+    */
    public void setField(String name, Serializable value)
    {
       fields.put(name, value);
    }
 
+   /**
+    * Get a field
+    * 
+    * @param <T> the expected type
+    * @param fieldName the field name
+    * @param expected the expected type
+    * @return the field value
+    */
    @SuppressWarnings("unchecked")
    public <T> T getField(String fieldName, Class<T> expected)
    {

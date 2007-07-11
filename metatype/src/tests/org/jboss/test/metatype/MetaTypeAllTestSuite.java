@@ -21,7 +21,9 @@
 */
 package org.jboss.test.metatype;
 
+import org.jboss.test.metatype.types.factory.test.TypesFactoryTestSuite;
 import org.jboss.test.metatype.types.test.TypesTestSuite;
+import org.jboss.test.metatype.values.factory.test.ValuesFactoryTestSuite;
 import org.jboss.test.metatype.values.test.ValuesTestSuite;
 
 import junit.framework.Test;
@@ -36,17 +38,29 @@ import junit.textui.TestRunner;
  */
 public class MetaTypeAllTestSuite extends TestSuite
 {
+   /**
+    * For running the testsuite from the command line
+    * 
+    * @param args the command line args
+    */
    public static void main(String[] args)
    {
       TestRunner.run(suite());
    }
 
+   /**
+    * Create the testsuite
+    * 
+    * @return the testsuite
+    */
    public static Test suite()
    {
       TestSuite suite = new TestSuite("MetaType All Tests");
 
       suite.addTest(TypesTestSuite.suite());
+      suite.addTest(TypesFactoryTestSuite.suite());
       suite.addTest(ValuesTestSuite.suite());
+      suite.addTest(ValuesFactoryTestSuite.suite());
 
       return suite;
    }

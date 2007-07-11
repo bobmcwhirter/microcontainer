@@ -37,7 +37,7 @@ public interface CompositeMetaType extends MetaType
     * @param itemName the item name
     * @return true when it does, false otherwise
     */
-   boolean containsKey(String itemName);
+   boolean containsItem(String itemName);
 
    /**
     * Retrieve the description for an item name
@@ -54,6 +54,13 @@ public interface CompositeMetaType extends MetaType
     * @return the open type or null when there is no such item name
     */
    MetaType getType(String itemName);
+
+   /**
+    * Retrieve an unmodifiable Set view of all the item names in ascending order.
+    *
+    * @return the Set
+    */
+   Set<String> itemSet();
 
    /**
     * Retrieve an unmodifiable Set view of all the item names in ascending order.

@@ -38,6 +38,11 @@ public class MockSimpleValue<T extends Serializable> extends MockMetaValue imple
    /** The serialVersionUID */
    private static final long serialVersionUID = 1L;
 
+   /**
+    * Create a new MockSimpleValue.
+    * 
+    * @param metaType the meta type
+    */
    public MockSimpleValue(SimpleMetaType<T> metaType)
    {
       super(metaType);

@@ -21,6 +21,7 @@
 */
 package org.jboss.test.managed.mock;
 
+import java.io.Serializable;
 import java.util.HashMap;
 
 import junit.framework.Test;
@@ -29,11 +30,6 @@ import org.jboss.managed.api.Fields;
 import org.jboss.managed.api.ManagedObject;
 import org.jboss.managed.api.ManagedProperty;
 import org.jboss.managed.plugins.advice.WrapperAdvice;
-import org.jboss.metatype.api.types.CompositeMetaType;
-import org.jboss.metatype.api.types.MetaType;
-import org.jboss.metatype.api.values.CompositeValueSupport;
-import org.jboss.metatype.api.values.MetaValue;
-import org.jboss.metatype.api.values.SimpleValueSupport;
 import org.jboss.test.managed.ManagedTest;
 
 /**
@@ -44,16 +40,31 @@ import org.jboss.test.managed.ManagedTest;
  */
 public class MockTest extends ManagedTest
 {
+   /**
+    * Create a testsuite for this this
+    * 
+    * @return the testsuite
+    */
    public static Test suite()
    {
       return suite(MockTest.class);
    }
    
+   /**
+    * Create a new MockTest.
+    * 
+    * @param name the test name
+    */
    public MockTest(String name)
    {
       super(name);
    }
 
+   /**
+    * Test the mock
+    * 
+    * @throws Exception for any problem
+    */
    public void testMock() throws Exception
    {
       MockDataSourceManagedObject mock = new MockDataSourceManagedObject();
@@ -67,10 +78,7 @@ public class MockTest extends ManagedTest
       getLog().debug(mock.prettyPrint());
       
       getLog().debug("Adding jndi-name...");
-      ManagedProperty jndiName = mo.getProperty("jndi-name");
-      MetaType jndiType = jndiName.getMetaType();
-      assertTrue("jndi-name MetaType is not null", jndiType != null);
-      jndiName.setValue("DefaultDS");
+      mo.getProperty("jndi-name").setValue("DefaultDS");
       getLog().debug(mock.prettyPrint());
 
       getLog().debug("Adding user and password...");
@@ -78,17 +86,6 @@ public class MockTest extends ManagedTest
       mo.getProperty("password").setValue("Tiger");
       getLog().debug(mock.prettyPrint());
 
-      getLog().debug("Adding connection-props...");
-      ManagedProperty connProps = mo.getProperty("connection-props");
-      CompositeMetaType connPropsType = (CompositeMetaType) connProps.getMetaType();
-      String[] propsKeys = {"conn-prop2", "conn-prop1"};
-      MetaValue[] propsValues = {SimpleValueSupport.wrap("conn-prop2-value"),
-            SimpleValueSupport.wrap("conn-prop1-value")};
-      CompositeValueSupport connPropsValue = new CompositeValueSupport(connPropsType,
-            propsKeys, propsValues);
-      mo.getProperty("connection-props").setValue(connPropsValue);
-      getLog().debug(mock.prettyPrint());
-      
       getLog().debug("Changing jndi-name...");
       mo.getProperty("jndi-name").setValue("ChangedDS");
       getLog().debug(mock.prettyPrint());
@@ -101,16 +98,20 @@ public class MockTest extends ManagedTest
       for (ManagedProperty property : mo.getProperties())
          getLog().debug(property.getName() + "=" + property.getValue());
       
-      jndiName = mo.getProperty("jndi-name");
+      ManagedProperty jndiName = mo.getProperty("jndi-name");
       
       getLog().debug("Displaying jndi-name field values...");
       getLog().debug("jndi-name name  field is: " + jndiName.getFields().getField(Fields.NAME));
       getLog().debug("jndi-name value field is: " + jndiName.getFields().getField(Fields.VALUE));
-      getLog().debug("jndi-name type field is: " + jndiName.getFields().getField(Fields.META_TYPE));
       
       assertEquals(mo, jndiName.getManagedObject());
    }
 
+   /**
+    * Test the managed object serialization
+    * 
+    * @throws Exception for any problem
+    */
    public void testManagedObjectSerialization()
       throws Exception
    {
@@ -121,14 +122,6 @@ public class MockTest extends ManagedTest
       mo.getProperty("user").setValue("Scott");
       mo.getProperty("password").setValue("Tiger");
       mo.getProperty("jndi-name").setValue("ChangedDS");
-      ManagedProperty connProps = mo.getProperty("connection-props");
-      CompositeMetaType connPropsType = (CompositeMetaType) connProps.getMetaType();
-      String[] propsKeys = {"conn-prop2", "conn-prop1"};
-      MetaValue[] propsValues = {SimpleValueSupport.wrap("conn-prop2-value"),
-            SimpleValueSupport.wrap("conn-prop1-value")};
-      CompositeValueSupport connPropsValue = new CompositeValueSupport(connPropsType,
-            propsKeys, propsValues);
-      mo.getProperty("connection-props").setValue(connPropsValue);
 
       getLog().debug(mock.prettyPrint());
       
@@ -138,9 +131,14 @@ public class MockTest extends ManagedTest
       assertEquals("jndiName", "ChangedDS", mo2.getProperty("jndi-name").getValue());
       assertEquals("user", "Scott", mo2.getProperty("user").getValue());
       assertEquals("password", "Tiger", mo2.getProperty("password").getValue());
-      ManagedProperty connProps2 = mo2.getProperty("connection-props");
-      assertEquals("connPropsValue", connPropsValue, connProps2.getValue());
    }
+   
+   /**
+    * Test the managed object property map serialization
+    * 
+    * @throws Exception for any problem
+    */
+   @SuppressWarnings("unchecked")
    public void testManagedPropertyMapSerialization()
       throws Exception
    {
@@ -159,10 +157,8 @@ public class MockTest extends ManagedTest
       props.put(jndiName.getName(), jndiName);
       props.put(user.getName(), user);
       props.put(password.getName(), password);
-      
-      byte[] data = super.serialize(props);
-      HashMap<String, ManagedProperty> props2 =
-         (HashMap<String, ManagedProperty>) super.deserialize(data);
+     
+      HashMap<String, ManagedProperty> props2 = serializeDeserialize(props, HashMap.class);
 
       ManagedProperty jndiName2 = props2.get("jndi-name");
       assertEquals("jndiName", "ChangedDS", jndiName2.getValue());
@@ -173,7 +169,26 @@ public class MockTest extends ManagedTest
       ManagedProperty password2 = props2.get("password");
       assertEquals("password", "Tiger", password2.getValue());
    }
+
+   /**
+    * Serialize/deserialize
+    * 
+    * TODO move to AbstractTestCase
+    * @param <T> the expected type
+    * @param value the value
+    * @param expected the expected type
+    * @return the result
+    * @throws Exception for any problem
+    */
+   protected <T> T serializeDeserialize(Serializable value, Class<T> expected) throws Exception
+   {
+      byte[] bytes = serialize(value);
+      Object result = deserialize(bytes);
+      return assertInstanceOf(result, expected);
+      
+   }
    
+   @Override
    protected void configureLogging()
    {
       enableTrace("org.jboss.managed.plugins.advice");

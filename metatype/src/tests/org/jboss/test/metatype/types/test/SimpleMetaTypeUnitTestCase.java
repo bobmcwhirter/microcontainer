@@ -40,11 +40,21 @@ import org.jboss.test.metatype.AbstractMetaTypeTest;
  */
 public class SimpleMetaTypeUnitTestCase extends AbstractMetaTypeTest
 {
+   /**
+    * Create a testsuite for this test
+    * 
+    * @return the testsuite
+    */
    public static Test suite()
    {
       return suite(SimpleMetaTypeUnitTestCase.class);
    }
    
+   /**
+    * Create a new SimpleMetaTypeUnitTestCase.
+    * 
+    * @param name the test name
+    */
    public SimpleMetaTypeUnitTestCase(String name)
    {
       super(name);
@@ -120,6 +130,11 @@ public class SimpleMetaTypeUnitTestCase extends AbstractMetaTypeTest
       new SimpleValueSupport(SimpleMetaType.VOID, null)
    };
 
+   /**
+    * Test the simple types
+    * 
+    * @throws Exception for any problem
+    */
    public void testSimpleTypes() throws Exception
    {
       for (int i = 0; i < types.length; i++)
@@ -132,6 +147,11 @@ public class SimpleMetaTypeUnitTestCase extends AbstractMetaTypeTest
       }
    }
 
+   /**
+    * Test the equals
+    * 
+    * @throws Exception for any problem
+    */
    public void testEquals() throws Exception
    {
       for (int i = 0; i < types.length; i++)
@@ -153,6 +173,11 @@ public class SimpleMetaTypeUnitTestCase extends AbstractMetaTypeTest
       }
    }
 
+   /**
+    * Test the isValue
+    * 
+    * @throws Exception for any problem
+    */
    public void testIsValue() throws Exception
    {
       for (int i = 0; i < types.length; ++i)
@@ -185,6 +210,11 @@ public class SimpleMetaTypeUnitTestCase extends AbstractMetaTypeTest
       }
    }
 
+   /**
+    * Test the hashCode
+    * 
+    * @throws Exception for any problem
+    */
    public void testHashCode() throws Exception
    {
       for (int i = 0; i < types.length; i++)
@@ -196,6 +226,11 @@ public class SimpleMetaTypeUnitTestCase extends AbstractMetaTypeTest
       }
    }
 
+   /**
+    * Test the toString
+    * 
+    * @throws Exception for any problem
+    */
    public void testToString() throws Exception
    {
       String smt = SimpleMetaType.class.getSimpleName();
@@ -209,6 +244,11 @@ public class SimpleMetaTypeUnitTestCase extends AbstractMetaTypeTest
       }
    }
 
+   /**
+    * Test the serialization
+    * 
+    * @throws Exception for any problem
+    */
    public void testSerialization() throws Exception
    {
       for (int i = 0; i < types.length; i++)

@@ -23,14 +23,16 @@ package org.jboss.test.metatype.types.test;
 
 import java.math.BigDecimal;
 import java.math.BigInteger;
-import java.util.Arrays;
 import java.util.Date;
 import java.util.List;
 
 import junit.framework.Test;
 
 import org.jboss.metatype.api.types.MetaType;
+import org.jboss.metatype.api.values.ArrayValue;
 import org.jboss.metatype.api.values.CompositeValue;
+import org.jboss.metatype.api.values.EnumValue;
+import org.jboss.metatype.api.values.GenericValue;
 import org.jboss.metatype.api.values.SimpleValue;
 import org.jboss.metatype.api.values.TableValue;
 import org.jboss.test.metatype.AbstractMetaTypeTest;
@@ -44,39 +46,61 @@ import org.jboss.test.metatype.types.support.MockMetaType;
  */
 public class MetaTypeUnitTestCase extends AbstractMetaTypeTest
 {
+   /**
+    * Create a testsuite for this test
+    * 
+    * @return the testsuite
+    */
    public static Test suite()
    {
       return suite(MetaTypeUnitTestCase.class);
    }
    
+   /**
+    * Create a new MetaTypeUnitTestCase.
+    * 
+    * @param name the test name
+    */
    public MetaTypeUnitTestCase(String name)
    {
       super(name);
    }
    
+   /**
+    * Test the allowed classes
+    * 
+    * @throws Exception for any problem
+    */
    public void testAllowedClasses() throws Exception
    {
-      String[] allowedClassNames = MetaType.ALLOWED_CLASSNAMES;
-      assertEquals(16, allowedClassNames.length);
-      List<String> names = Arrays.asList(allowedClassNames);
-      checkMetaType(names, Void.class);
-      checkMetaType(names, Boolean.class);
-      checkMetaType(names, Character.class);
-      checkMetaType(names, Byte.class);
-      checkMetaType(names, Short.class);
-      checkMetaType(names, Integer.class);
-      checkMetaType(names, Long.class);
-      checkMetaType(names, Float.class);
-      checkMetaType(names, Double.class);
-      checkMetaType(names, String.class);
-      checkMetaType(names, Date.class);
-      checkMetaType(names, BigDecimal.class);
-      checkMetaType(names, BigInteger.class);
-      checkMetaType(names, SimpleValue.class);
-      checkMetaType(names, CompositeValue.class);
-      checkMetaType(names, TableValue.class);
+      List<String> allowedClassNames = MetaType.ALLOWED_CLASSNAMES;
+      assertEquals(19, allowedClassNames.size());
+      checkMetaType(allowedClassNames, Void.class);
+      checkMetaType(allowedClassNames, Boolean.class);
+      checkMetaType(allowedClassNames, Character.class);
+      checkMetaType(allowedClassNames, Byte.class);
+      checkMetaType(allowedClassNames, Short.class);
+      checkMetaType(allowedClassNames, Integer.class);
+      checkMetaType(allowedClassNames, Long.class);
+      checkMetaType(allowedClassNames, Float.class);
+      checkMetaType(allowedClassNames, Double.class);
+      checkMetaType(allowedClassNames, String.class);
+      checkMetaType(allowedClassNames, Date.class);
+      checkMetaType(allowedClassNames, BigDecimal.class);
+      checkMetaType(allowedClassNames, BigInteger.class);
+      checkMetaType(allowedClassNames, SimpleValue.class);
+      checkMetaType(allowedClassNames, EnumValue.class);
+      checkMetaType(allowedClassNames, GenericValue.class);
+      checkMetaType(allowedClassNames, ArrayValue.class);
+      checkMetaType(allowedClassNames, CompositeValue.class);
+      checkMetaType(allowedClassNames, TableValue.class);
    }
 
+   /**
+    * Test the simple constructor
+    * 
+    * @throws Exception for any problem
+    */
    public void testConstructorSimple() throws Exception
    {
       MetaType test = new MockMetaType("java.lang.Void", "type", "description");
@@ -86,6 +110,11 @@ public class MetaTypeUnitTestCase extends AbstractMetaTypeTest
       assertEquals(false, test.isArray());
    }
 
+   /**
+    * Test the array constructor
+    * 
+    * @throws Exception for any problem
+    */
    public void testConstructorArray() throws Exception
    {
       MetaType test = new MockMetaType("[[Ljava.lang.Void;", "type", "description");
@@ -95,16 +124,31 @@ public class MetaTypeUnitTestCase extends AbstractMetaTypeTest
       assertEquals(true, test.isArray());
    }
 
+   /**
+    * Test the simple serialization
+    * 
+    * @throws Exception for any problem
+    */
    public void testSerializationSimple() throws Exception
    {
       testSerialization("java.lang.Void", "type", "description");
    }
  
+   /**
+    * Test the array serialization
+    * 
+    * @throws Exception for any problem
+    */
    public void testSerializationArray() throws Exception
    {
       testSerialization("[[Ljava.lang.Void;", "type", "description");
    }
 
+   /**
+    * Test the errors
+    * 
+    * @throws Exception for any problem
+    */
    public void testErrors() throws Exception
    {
       try

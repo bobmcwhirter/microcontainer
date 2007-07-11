@@ -43,16 +43,31 @@ import org.jboss.test.metatype.AbstractMetaTypeTest;
  */
 public class ImmutableTableMetaTypeUnitTestCase extends AbstractMetaTypeTest
 {
+   /**
+    * Create a testsuite for this test
+    * 
+    * @return the testsuite
+    */
    public static Test suite()
    {
       return suite(ImmutableTableMetaTypeUnitTestCase.class);
    }
    
+   /**
+    * Create a new ImmutableTableMetaTypeUnitTestCase.
+    * 
+    * @param name the test name
+    */
    public ImmutableTableMetaTypeUnitTestCase(String name)
    {
       super(name);
    }
 
+   /**
+    * Test the metatype for a table type
+    * 
+    * @throws Exception for any problem
+    */
    public void testTableMetaType() throws Exception
    {
       TableMetaType tableType = initTableMetaType();
@@ -63,6 +78,11 @@ public class ImmutableTableMetaTypeUnitTestCase extends AbstractMetaTypeTest
       assertTrue("Tabular type should not be an array", tableType.isArray() == false);
    }
 
+   /**
+    * Test the getRow for a table type
+    * 
+    * @throws Exception for any problem
+    */
    public void testGetRowType() throws Exception
    {
       CompositeMetaType rowType = initRowType();
@@ -71,6 +91,11 @@ public class ImmutableTableMetaTypeUnitTestCase extends AbstractMetaTypeTest
       assertEquals(rowType, tableType.getRowType());
    }
 
+   /**
+    * Test the getIndexNames for a table type
+    * 
+    * @throws Exception for any problem
+    */
    public void testIndexNames() throws Exception
    {
       TableMetaType tableType = initTableMetaType();
@@ -84,11 +109,21 @@ public class ImmutableTableMetaTypeUnitTestCase extends AbstractMetaTypeTest
       assertTrue("second index is name2", i.next().equals("name2"));
    }
 
+   /**
+    * Test the isValue for a table type
+    * 
+    * @throws Exception for any problem
+    */
    public void testIsValue() throws Exception
    {
       // TODO testIsValue
    }
 
+   /**
+    * Test the equals for a table type
+    * 
+    * @throws Exception for any problem
+    */
    public void testEquals() throws Exception
    {
       TableMetaType tableType = initTableMetaType();
@@ -113,6 +148,11 @@ public class ImmutableTableMetaTypeUnitTestCase extends AbstractMetaTypeTest
       assertNotSame("should not be equal, they have different index names", tableType2, tableType);
    }
 
+   /**
+    * Test the hashCdoe for a table type
+    * 
+    * @throws Exception for any problem
+    */
    public void testHashCode() throws Exception
    {
       CompositeMetaType rowType = initRowType();
@@ -122,6 +162,11 @@ public class ImmutableTableMetaTypeUnitTestCase extends AbstractMetaTypeTest
       assertTrue("Wrong hash code generated", myHashCode == tableType.hashCode());
    }
 
+   /**
+    * Test the toString for a table type
+    * 
+    * @throws Exception for any problem
+    */
    public void testToString() throws Exception
    {
       CompositeMetaType rowType = initRowType();
@@ -136,6 +181,11 @@ public class ImmutableTableMetaTypeUnitTestCase extends AbstractMetaTypeTest
       assertTrue("toString() should contain the index name2", toString.indexOf("name2") != -1);
    }
 
+   /**
+    * Test the serialization for a table type
+    * 
+    * @throws Exception for any problem
+    */
    public void testSerialization() throws Exception
    {
       TableMetaType tableType = initTableMetaType();
@@ -144,6 +194,11 @@ public class ImmutableTableMetaTypeUnitTestCase extends AbstractMetaTypeTest
       assertEquals(tableType, result);
    }
 
+   /**
+    * Test the errors for a table type
+    * 
+    * @throws Exception for any problem
+    */
    public void testErrors() throws Exception
    {
       CompositeMetaType rowType = initRowType();
@@ -249,6 +304,12 @@ public class ImmutableTableMetaTypeUnitTestCase extends AbstractMetaTypeTest
       }
    }
 
+   /**
+    * Initialise a test row type
+    * 
+    * @return the test row type
+    * @throws Exception for any problem
+    */
    protected CompositeMetaType initRowType() throws Exception
    {
       String[] itemNames = new String[] { "name1", "name2" };
@@ -258,6 +319,12 @@ public class ImmutableTableMetaTypeUnitTestCase extends AbstractMetaTypeTest
       return rowType;
    }
 
+   /**
+    * Initialise a test table type
+    * 
+    * @return the type
+    * @throws Exception for any problem
+    */
    protected TableMetaType initTableMetaType() throws Exception
    {
       CompositeMetaType rowType = initRowType();
@@ -267,6 +334,12 @@ public class ImmutableTableMetaTypeUnitTestCase extends AbstractMetaTypeTest
       return tableType;
    }
 
+   /**
+    * Initialise a test table type with a different type name
+    * 
+    * @return the type
+    * @throws Exception for any problem
+    */
    protected TableMetaType initTableMetaTypeDifferentTypeName() throws Exception
    {
       CompositeMetaType rowType = initRowType();
@@ -276,6 +349,12 @@ public class ImmutableTableMetaTypeUnitTestCase extends AbstractMetaTypeTest
       return tableType;
    }
 
+   /**
+    * Initialise a test row type 2
+    * 
+    * @return the type
+    * @throws Exception for any problem
+    */
    protected CompositeMetaType initRowType2() throws Exception
    {
       String[] itemNames = new String[] { "name1", "name2" };
@@ -285,6 +364,12 @@ public class ImmutableTableMetaTypeUnitTestCase extends AbstractMetaTypeTest
       return rowType;
    }
 
+   /**
+    * Initialise a test table type with different row types
+    * 
+    * @return the type
+    * @throws Exception for any problem
+    */
    protected TableMetaType initTableMetaTypeDifferentRowTypes() throws Exception
    {
       CompositeMetaType rowType = initRowType2();
@@ -294,6 +379,12 @@ public class ImmutableTableMetaTypeUnitTestCase extends AbstractMetaTypeTest
       return tableType;
    }
 
+   /**
+    * Initialise a test table type with different index names
+    * 
+    * @return the type
+    * @throws Exception for any problem
+    */
    protected TableMetaType initTableMetaTypeDifferentIndexNames() throws Exception
    {
       CompositeMetaType rowType = initRowType();

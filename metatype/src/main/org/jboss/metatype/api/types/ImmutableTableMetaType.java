@@ -28,6 +28,12 @@ import java.util.List;
 
 import org.jboss.metatype.api.values.TableValue;
 
+/**
+ * ImmutableTableMetaType.
+ * 
+ * @author <a href="adrian@jboss.com">Adrian Brock</a>
+ * @version $Revision: 1.1 $
+ */
 public class ImmutableTableMetaType extends AbstractMetaType implements TableMetaType
 {
    /** The serialVersionUID */
@@ -77,7 +83,7 @@ public class ImmutableTableMetaType extends AbstractMetaType implements TableMet
           String indexName = indexNames[i].trim();
           if (indexName.length() == 0)
              throw new IllegalArgumentException("empty index name " + i);
-          if (rowType.containsKey(indexName) == false)
+          if (rowType.containsItem(indexName) == false)
              throw new IllegalArgumentException("no item name " + indexName);
           this.indexNames.add(indexName);
       }
@@ -91,6 +97,12 @@ public class ImmutableTableMetaType extends AbstractMetaType implements TableMet
    public List<String> getIndexNames()
    {
       return Collections.unmodifiableList(indexNames);
+   }
+
+   @Override
+   public boolean isTable()
+   {
+      return true;
    }
 
    @Override

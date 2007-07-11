@@ -42,16 +42,31 @@ import org.jboss.test.metatype.AbstractMetaTypeTest;
  */
 public class CompositeValueSupportUnitTestCase extends AbstractMetaTypeTest
 {
+   /**
+    * Create a testsuite for this test
+    * 
+    * @return the testsuite
+    */
    public static Test suite()
    {
       return suite(CompositeValueSupportUnitTestCase.class);
    }
    
+   /**
+    * Create a new CompositeValueSupportUnitTestCase.
+    * 
+    * @param name the test name
+    */
    public CompositeValueSupportUnitTestCase(String name)
    {
       super(name);
    }
 
+   /**
+    * Test the composite value 
+    * 
+    * @throws Exception for any problem
+    */
    public void testCompositeValueSupport() throws Exception
    {
       CompositeMetaType compositeMetaType = initCompositeMetaType();
@@ -62,6 +77,11 @@ public class CompositeValueSupportUnitTestCase extends AbstractMetaTypeTest
       new CompositeValueSupport(compositeMetaType, keys, values);
    }
 
+   /**
+    * Test the meta type for a composite value 
+    * 
+    * @throws Exception for any problem
+    */
    public void testGetCompositeMetaType() throws Exception
    {
       CompositeMetaType compositeMetaType = initCompositeMetaType();
@@ -70,6 +90,11 @@ public class CompositeValueSupportUnitTestCase extends AbstractMetaTypeTest
       assertEquals(compositeMetaType, v.getMetaType());
    }
 
+   /**
+    * Test the get for a composite value 
+    * 
+    * @throws Exception for any problem
+    */
    public void testGet()throws Exception
    {
       CompositeMetaType compositeMetaType = initCompositeMetaType();
@@ -80,6 +105,11 @@ public class CompositeValueSupportUnitTestCase extends AbstractMetaTypeTest
       assertEquals(initInteger2(), v.get("name2"));
    }
 
+   /**
+    * Test the getAll for a composite value 
+    * 
+    * @throws Exception for any problem
+    */
    public void testGetAll() throws Exception
    {
       SimpleValue<String> value1 = initStringValue1();
@@ -100,6 +130,11 @@ public class CompositeValueSupportUnitTestCase extends AbstractMetaTypeTest
       assertEquals(integer2, result[0]);
    }
 
+   /**
+    * Test the containsKey for a composite value 
+    * 
+    * @throws Exception for any problem
+    */
    public void testContainsKey() throws Exception
    {
       CompositeMetaType compositeMetaType = initCompositeMetaType();
@@ -112,6 +147,11 @@ public class CompositeValueSupportUnitTestCase extends AbstractMetaTypeTest
       assertFalse("data should not contain key <empty>", v.containsKey(""));
    }
 
+   /**
+    * Test the containsValue for a composite value 
+    * 
+    * @throws Exception for any problem
+    */
    public void testContainsValue() throws Exception
    {
       SimpleValue<String> value1 = initStringValue1();
@@ -146,6 +186,11 @@ public class CompositeValueSupportUnitTestCase extends AbstractMetaTypeTest
       assertFalse("data should not contain key null", v.containsValue(null));
    }
 
+   /**
+    * Test the values for a composite value 
+    * 
+    * @throws Exception for any problem
+    */
    public void testValues() throws Exception
    {
       SimpleValue<String> value1 = initStringValue1();
@@ -184,6 +229,11 @@ public class CompositeValueSupportUnitTestCase extends AbstractMetaTypeTest
       assertFalse("data values should not have null", values.contains(null));
    }
 
+   /**
+    * Test the equals for a composite value 
+    * 
+    * @throws Exception for any problem
+    */
    public void testEquals() throws Exception
    {
       CompositeMetaType compositeMetaType = initCompositeMetaType();
@@ -212,6 +262,11 @@ public class CompositeValueSupportUnitTestCase extends AbstractMetaTypeTest
       assertNotSame("data2 should not be equal with data with different value", v2, v);
    }
 
+   /**
+    * Test the hashCode for a composite value 
+    * 
+    * @throws Exception for any problem
+    */
    public void testHashCode() throws Exception
    {
       CompositeMetaType compositeMetaType = initCompositeMetaType();
@@ -222,6 +277,11 @@ public class CompositeValueSupportUnitTestCase extends AbstractMetaTypeTest
       assertEquals("Wrong hash code generated", myHashCode, v.hashCode());
    }
 
+   /**
+    * Test the toString for a composite value 
+    * 
+    * @throws Exception for any problem
+    */
    public void testToString() throws Exception
    {
       CompositeMetaType compositeMetaType = initCompositeMetaType();
@@ -237,6 +297,11 @@ public class CompositeValueSupportUnitTestCase extends AbstractMetaTypeTest
       assertTrue(toString + " should contain " + new Integer(2), toString.indexOf(new Integer(2).toString()) != -1);
    }
 
+   /**
+    * Test the serialization for a composite value 
+    * 
+    * @throws Exception for any problem
+    */
    public void testSerialization() throws Exception
    {
       CompositeMetaType compositeMetaType = initCompositeMetaType();
@@ -247,6 +312,11 @@ public class CompositeValueSupportUnitTestCase extends AbstractMetaTypeTest
       assertEquals(v, result);
    }
 
+   /**
+    * Test the errors for a composite value 
+    * 
+    * @throws Exception for any problem
+    */
    public void testErrorsArray() throws Exception
    {
       CompositeMetaType compositeMetaType = initCompositeMetaType();
@@ -335,16 +405,6 @@ public class CompositeValueSupportUnitTestCase extends AbstractMetaTypeTest
 
       try
       {
-         new CompositeValueSupport(compositeMetaType, new String[] { "name1" }, new MetaValue[] { initStringValue1() });
-         fail("Excepted IllegalArgumentException for mismatch in number of itemNames for CompositeType/CompositeData");
-      }
-      catch (Throwable t)
-      {
-         checkThrowable(IllegalArgumentException.class, t);
-      }
-
-      try
-      {
          new CompositeValueSupport(compositeMetaType, new String[] { "name1", "wrongName" }, itemValues);
          fail("Excepted IllegalArgumentException for an item name not in the composite type");
       }
@@ -367,6 +427,11 @@ public class CompositeValueSupportUnitTestCase extends AbstractMetaTypeTest
       new CompositeValueSupport(compositeMetaType, itemNames, new MetaValue[] { initStringValue1(), initIntegerNull() });
    }
 
+   /**
+    * Test the errors for a composite value 
+    * 
+    * @throws Exception for any problem
+    */
    public void testErrorsMap() throws Exception
    {
       CompositeMetaType compositeMetaType = initCompositeMetaType();
@@ -376,26 +441,6 @@ public class CompositeValueSupportUnitTestCase extends AbstractMetaTypeTest
       {
          new CompositeValueSupport(null, map);
          fail("Excepted IllegalArgumentException for null composite type");
-      }
-      catch (Throwable t)
-      {
-         checkThrowable(IllegalArgumentException.class, t);
-      }
-
-      try
-      {
-         new CompositeValueSupport(compositeMetaType, null);
-         fail("Excepted IllegalArgumentException for null map");
-      }
-      catch (Throwable t)
-      {
-         checkThrowable(IllegalArgumentException.class, t);
-      }
-
-      try
-      {
-         new CompositeValueSupport(compositeMetaType, new HashMap<String, MetaValue>());
-         fail("Excepted IllegalArgumentException for empty map");
       }
       catch (Throwable t)
       {
@@ -422,18 +467,6 @@ public class CompositeValueSupportUnitTestCase extends AbstractMetaTypeTest
          map2.put("", initInteger2());
          new CompositeValueSupport(compositeMetaType, map2);
          fail("Excepted IllegalArgumentException for an empty key in map");
-      }
-      catch (Throwable t)
-      {
-         checkThrowable(IllegalArgumentException.class, t);
-      }
-
-      try
-      {
-         HashMap<String, MetaValue> map2 = new HashMap<String, MetaValue>();
-         map2.put("name1", initStringValue1());
-         new CompositeValueSupport(compositeMetaType, map2);
-         fail("Excepted IllegalArgumentException for mismatch in number of items for CompositeType/CompositeData");
       }
       catch (Throwable t)
       {
@@ -477,6 +510,11 @@ public class CompositeValueSupportUnitTestCase extends AbstractMetaTypeTest
       new CompositeValueSupport(compositeMetaType, map2);
    }
 
+   /**
+    * Test the errors for a composite value 
+    * 
+    * @throws Exception for any problem
+    */
    public void testErrors() throws Exception
    {
       CompositeMetaType compositeMetaType = initCompositeMetaType();

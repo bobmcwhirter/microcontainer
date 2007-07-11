@@ -26,7 +26,6 @@ import java.util.HashSet;
 import java.util.Set;
 
 import org.jboss.managed.api.ManagedObject;
-import org.jboss.managed.api.ManagedOperation;
 import org.jboss.managed.api.ManagedProperty;
 
 /**
@@ -144,12 +143,7 @@ public class ManagedObjectImpl implements ManagedObject
    {
       this.attachment = attachment;
    }
-
-   public Set<ManagedOperation> getOperations()
-   {
-      return null;
-   }
-
+   
    @Override
    public boolean equals(Object obj)
    {

@@ -21,11 +21,12 @@
 */
 package org.jboss.test.managed;
 
-import org.jboss.test.managed.mock.MockTest;
-
 import junit.framework.Test;
 import junit.framework.TestSuite;
 import junit.textui.TestRunner;
+
+import org.jboss.test.managed.factory.ManagedObjectFactoryTestSuite;
+import org.jboss.test.managed.mock.ManagedMockTestSuite;
 
 /**
  * Managed All Test Suite.
@@ -36,16 +37,27 @@ import junit.textui.TestRunner;
  */
 public class ManagedAllTestSuite extends TestSuite
 {
+   /**
+    * For running the testsuite from the command line
+    * 
+    * @param args the command line args
+    */
    public static void main(String[] args)
    {
       TestRunner.run(suite());
    }
 
+   /**
+    * Create the testsuite
+    * 
+    * @return the testsuite
+    */
    public static Test suite()
    {
       TestSuite suite = new TestSuite("Managed All Tests");
 
-      suite.addTest(MockTest.suite());
+      suite.addTest(ManagedMockTestSuite.suite());
+      suite.addTest(ManagedObjectFactoryTestSuite.suite());
 
       return suite;
    }

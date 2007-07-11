@@ -125,21 +125,37 @@ public abstract class AbstractMetaType<T extends Serializable> implements MetaTy
       return description;
    }
 
+   public boolean isEnum()
+   {
+      return false;
+   }
+
+   public boolean isComposite()
+   {
+      return false;
+   }
+
+   public boolean isSimple()
+   {
+      return false;
+   }
+
+   public boolean isGeneric()
+   {
+      return false;
+   }
+
+   public boolean isTable()
+   {
+      return false;
+   }
+
    public boolean isArray()
    {
       return array;
    }
 
    public abstract boolean isValue(Object obj);
-
-   @Override
-   public abstract boolean equals(Object obj);
-
-   @Override
-   public abstract int hashCode();
-
-   @Override
-   public abstract String toString();
 
    /**
     * Initialise the object
@@ -170,9 +186,9 @@ public abstract class AbstractMetaType<T extends Serializable> implements MetaTy
 
       // Check the underlying class
       boolean ok = false;
-      for (int i = 0; i < ALLOWED_CLASSNAMES.length; i++)
+      for (int i = 0; i < ALLOWED_CLASSNAMES.size(); i++)
       {
-         if (testClassName.equals(ALLOWED_CLASSNAMES[i]))
+         if (testClassName.equals(ALLOWED_CLASSNAMES.get(i)))
          {
             ok = true;
             break;

@@ -66,8 +66,8 @@ public class ManagedPropertyImpl implements ManagedProperty
    /**
     * Create a new ManagedProperty that is not associated to
     * a ManagedObject.
-    * 
-    * @param name the property name
+    *
+    * @param name the managed property name
     * @throws IllegalArgumentException for null fields or
     *    missing Fields.NAME
     */
@@ -106,6 +106,12 @@ public class ManagedPropertyImpl implements ManagedProperty
    {
       return managedObject;
    }
+
+   /**
+    * Set managed object
+    * 
+    * @param managedObject the managed object
+    */
    public void setManagedObject(ManagedObject managedObject)
    {
       this.managedObject = managedObject;
@@ -142,7 +148,7 @@ public class ManagedPropertyImpl implements ManagedProperty
          return expected.cast(result);
       }
       
-      throw new IllegalStateException("Field " + fieldName + " with value " + field + " is  a of the expected type: " + expected.getName());
+      throw new IllegalStateException("Field " + fieldName + " with value " + field + " is not of the expected type: " + expected.getName());
    }
    
    // TODO metaType stuff
@@ -168,6 +174,12 @@ public class ManagedPropertyImpl implements ManagedProperty
    {
       return getField(Fields.DESCRIPTION, String.class);
    }
+   
+   /**
+    * Set the description
+    * 
+    * @param description the description
+    */
    public void setDescription(String description)
    {
       setField(Fields.DESCRIPTION, description);
@@ -178,6 +190,12 @@ public class ManagedPropertyImpl implements ManagedProperty
    {
       return getField(Fields.META_TYPE, MetaType.class);
    }
+   
+   /**
+    * Set the meta type
+    * 
+    * @param type the meta type
+    */
    public void setMetaType(MetaType type)
    {
       setField(Fields.META_TYPE, type);
@@ -198,6 +216,12 @@ public class ManagedPropertyImpl implements ManagedProperty
    {
       return getField(Fields.LEGAL_VALUES, Set.class);
    }
+   
+   /**
+    * Set the legal values
+    * 
+    * @param values the values
+    */
    public void setLegalValues(Set<MetaValue> values)
    {
       setField(Fields.LEGAL_VALUES, (Serializable)values);
@@ -207,6 +231,12 @@ public class ManagedPropertyImpl implements ManagedProperty
    {
       return getField(Fields.MINIMUM_VALUE, Comparable.class);
    }
+   
+   /**
+    * Set the minimum value
+    * 
+    * @param value the value
+    */
    public void setMinimumValue(Comparable value)
    {
       setField(Fields.MINIMUM_VALUE, (Serializable)value);
@@ -216,6 +246,12 @@ public class ManagedPropertyImpl implements ManagedProperty
    {
       return getField(Fields.MAXIMUM_VALUE, Comparable.class);
    }
+
+   /**
+    * Set the maximum value
+    * 
+    * @param value the value
+    */
    public void setMaximumValue(Comparable value)
    {
       setField(Fields.MAXIMUM_VALUE, (Serializable)value);
@@ -234,9 +270,18 @@ public class ManagedPropertyImpl implements ManagedProperty
          return false;
       return result;
    }
+   
+   /**
+    * Set whether the field is mandatory
+    * 
+    * @param flag true for mandatory
+    */
    public void setMandatory(boolean flag)
    {
-      setField(Fields.MANDATORY, flag);
+      if (flag)
+         setField(Fields.MANDATORY, flag);
+      else
+         setField(Fields.MANDATORY, null);
    }
 
    @Override
@@ -269,7 +314,7 @@ public class ManagedPropertyImpl implements ManagedProperty
          return false;
       
       ManagedProperty other = (ManagedProperty) obj;
-      return getName().equals(other.getName()) && getManagedObject().equals(other.getManagedObject()) ;
+      return getName().equals(other.getName());
    }
    
    /**

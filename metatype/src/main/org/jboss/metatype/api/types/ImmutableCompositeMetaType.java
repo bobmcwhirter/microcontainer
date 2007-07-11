@@ -21,12 +21,8 @@
 */
 package org.jboss.metatype.api.types;
 
-import java.util.Collections;
-import java.util.Iterator;
-import java.util.Set;
-import java.util.TreeMap;
-
 import org.jboss.metatype.api.values.CompositeValue;
+import org.jboss.metatype.plugins.types.AbstractCompositeMetaType;
 
 /**
  * ImmutableCompositeMetaType.
@@ -34,16 +30,10 @@ import org.jboss.metatype.api.values.CompositeValue;
  * @author <a href="adrian@jboss.com">Adrian Brock</a>
  * @version $Revision: 1.1 $
  */
-public class ImmutableCompositeMetaType extends AbstractMetaType implements CompositeMetaType
+public class ImmutableCompositeMetaType extends AbstractCompositeMetaType
 {
    /** The serialVersionUID */
    private static final long serialVersionUID = 1133171306971861455L;
-
-   /** Item names to descriptions */
-   private TreeMap<String, String> nameToDescription;
-
-   /** Item names to meta types */
-   private TreeMap<String, MetaType> nameToType;
 
    /** Cached hash code */
    private transient int cachedHashCode = Integer.MIN_VALUE;
@@ -57,7 +47,7 @@ public class ImmutableCompositeMetaType extends AbstractMetaType implements Comp
     * The three arrays are internally copied. Future changes to these
     * arrays do not alter the composite type.<p>
     *
-    * getClassName() returns {@link CompositeValue}<p>
+    * getClassName() returns {@link CompositeValue}
     *
     * @param typeName the name of the composite type, cannot be null or  empty
     * @param description the human readable description of the composite type, cannot be null or empty
@@ -80,100 +70,13 @@ public class ImmutableCompositeMetaType extends AbstractMetaType implements Comp
     */
    public ImmutableCompositeMetaType(String typeName, String description, String[] itemNames, String[] itemDescriptions, MetaType[] itemTypes)
    {
-      super(CompositeValue.class.getName(), typeName, description);
-      if (itemNames == null || itemNames.length == 0)
-         throw new IllegalArgumentException("null or empty itemNames");
-      if (itemDescriptions == null || itemDescriptions.length == 0)
-         throw new IllegalArgumentException("null or empty itemDescriptions");
-      if (itemTypes == null || itemTypes.length == 0)
-         throw new IllegalArgumentException("null or empty itemTypes");
-      if (itemNames.length != itemDescriptions.length)
-         throw new IllegalArgumentException("wrong number of itemDescriptions");
-      if (itemNames.length != itemTypes.length)
-         throw new IllegalArgumentException("wrong number of itemTypes");
-      nameToDescription = new TreeMap<String, String>();
-      nameToType = new TreeMap<String, MetaType>();
-      for (int i = 0; i < itemNames.length; ++i)
-      {
-          if (itemNames[i] == null)
-             throw new IllegalArgumentException("null item name " + i);
-          String itemName = itemNames[i].trim();
-          if (itemName.length() == 0)
-             throw new IllegalArgumentException("empty item name " + i);
-          if (nameToDescription.containsKey(itemName))
-             throw new IllegalArgumentException("duplicate item name " + itemName);
-          if (itemDescriptions[i] == null)
-             throw new IllegalArgumentException("null item description " + i);
-          String itemDescription = itemDescriptions[i].trim();
-          if (itemDescription.length() == 0)
-             throw new IllegalArgumentException("empty item description " + i);
-          if (itemTypes[i] == null)
-             throw new IllegalArgumentException("null item type " + i);
-          nameToDescription.put(itemName, itemDescription);
-          nameToType.put(itemName, itemTypes[i]);
-      }
-   }
-
-   public boolean containsKey(String itemName)
-   {
-      if (itemName == null)
-         return false;
-      return nameToDescription.containsKey(itemName);
-   }
-
-   public String getDescription(String itemName)
-   {
-      if (itemName == null)
-         return null;
-      return nameToDescription.get(itemName);
-   }
-
-   public MetaType getType(String itemName)
-   {
-      if (itemName == null)
-         return null;
-      return nameToType.get(itemName);
-   }
-
-   public Set<String> keySet()
-   {
-      return Collections.unmodifiableSet(nameToDescription.keySet());
-   }
-
-   @Override
-   public boolean isValue(Object obj)
-   {
-      if (obj == null || obj instanceof CompositeValue == false)
-         return false;
-      return equals(((CompositeValue) obj).getMetaType());
+      super(typeName, description, itemNames, itemDescriptions, itemTypes, false);
    }
 
    @Override
    public boolean equals(Object obj)
    {
-      if (this == obj)
-         return true;
-      if (obj == null || obj instanceof ImmutableCompositeMetaType == false)
-         return false;
-
-      ImmutableCompositeMetaType other = (ImmutableCompositeMetaType) obj;
-      if (this.getTypeName().equals(other.getTypeName()) == false)
-         return false;
-      Iterator<String> thisNames = this.keySet().iterator();
-      Iterator<String> otherNames = other.keySet().iterator();
-      while(thisNames.hasNext() && otherNames.hasNext())
-      {
-         String thisName = thisNames.next();
-         String otherName = otherNames.next();
-         if (thisName.equals(otherName) == false)
-            return false;
-         if (this.getType(thisName).equals(other.getType(otherName)) == false)
-            return false;
-      }
-      if (thisNames.hasNext() || otherNames.hasNext())
-         return false;
-      
-      return true;
+      return equalsImpl(obj);
    }
 
    @Override
@@ -181,35 +84,15 @@ public class ImmutableCompositeMetaType extends AbstractMetaType implements Comp
    {
       if (cachedHashCode != Integer.MIN_VALUE)
          return cachedHashCode;
-      cachedHashCode = getTypeName().hashCode();
-      for (Iterator i = nameToType.values().iterator(); i.hasNext();)
-         cachedHashCode += i.next().hashCode();
-      for (Iterator i = nameToDescription.keySet().iterator(); i.hasNext();)
-         cachedHashCode += i.next().hashCode();
+      cachedHashCode = hashCodeImpl();
       return cachedHashCode;
    }
 
    @Override
    public String toString()
    {
-      if (cachedToString != null)
-         return cachedToString;
-      StringBuilder buffer = new StringBuilder(getClass().getSimpleName());
-      buffer.append("{items=");
-      Iterator<String> thisNames = keySet().iterator();
-      while(thisNames.hasNext())
-      {
-         String thisName = thisNames.next();
-         buffer.append("[");
-         buffer.append("name=");
-         buffer.append(thisName);
-         buffer.append(" type=");
-         buffer.append(getType(thisName));
-         buffer.append("]");
-         if (thisNames.hasNext())
-           buffer.append(", ");
-      }
-      cachedToString = buffer.toString();
+      if (cachedToString == null)
+         cachedToString = super.toString();
       return cachedToString;
    }
 }

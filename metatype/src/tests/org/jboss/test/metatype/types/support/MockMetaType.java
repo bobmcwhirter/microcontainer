@@ -36,6 +36,13 @@ public class MockMetaType<T extends Serializable> extends AbstractMetaType<T>
 {
    private static final long serialVersionUID = -1;
 
+   /**
+    * Create a new MockMetaType.
+    * 
+    * @param className the class name
+    * @param typeName the type name
+    * @param description the description
+    */
    public MockMetaType(String className, String typeName, String description)
    {
       super(className, typeName, description);

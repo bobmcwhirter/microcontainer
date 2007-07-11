@@ -44,16 +44,31 @@ import org.jboss.test.metatype.types.support.MockTableValue;
  */
 public class ArrayMetaTypeUnitTestCase extends AbstractMetaTypeTest
 {
+   /**
+    * Create a testsuite for this test
+    * 
+    * @return the testsuite
+    */
    public static Test suite()
    {
       return suite(ArrayMetaTypeUnitTestCase.class);
    }
    
+   /**
+    * Create a new ArrayMetaTypeUnitTestCase.
+    * 
+    * @param name the test name
+    */
    public ArrayMetaTypeUnitTestCase(String name)
    {
       super(name);
    }
 
+   /**
+    * Test the meta type for an array meta type
+    * 
+    * @throws Exception for any problem
+    */
    public void testArrayTypeMetaType() throws Exception
    {
       ArrayMetaType arrayType = new ArrayMetaType(3, SimpleMetaType.STRING);
@@ -63,18 +78,33 @@ public class ArrayMetaTypeUnitTestCase extends AbstractMetaTypeTest
       assertTrue("Type should be an array", arrayType.isArray());
    }
 
+   /**
+    * Test the the dimension for an array meta type
+    * 
+    * @throws Exception for any problem
+    */
    public void testGetDimension() throws Exception
    {
       ArrayMetaType arrayType = new ArrayMetaType(3, SimpleMetaType.STRING);
       assertEquals("Dimension should be 3", 3, arrayType.getDimension());
    }
 
-   public void testElementOpenType() throws Exception
+   /**
+    * Test the element type
+    * 
+    * @throws Exception for any problem
+    */
+   public void testElementType() throws Exception
    {
       ArrayMetaType arrayType = new ArrayMetaType(3, SimpleMetaType.STRING);
       assertEquals("Element MetaType should be " + SimpleMetaType.STRING, SimpleMetaType.STRING, arrayType.getElementType());
    }
 
+   /**
+    * Test the isValue for an array meta type
+    * 
+    * @throws Exception for any problem
+    */
    public void testIsValueSimpleValue() throws Exception
    {
       SimpleMetaType<String> simpleType = SimpleMetaType.STRING;
@@ -95,6 +125,11 @@ public class ArrayMetaTypeUnitTestCase extends AbstractMetaTypeTest
       assertFalse("compData1 should not be a value of array type, wrong element type", compArrayType3.isValue(compData1));
    }
 
+   /**
+    * Test the isValue for an array meta type
+    * 
+    * @throws Exception for any problem
+    */
    public void testIsValueComposite() throws Exception
    {
       String[] itemNames = new String[] { "name1", "name2" };
@@ -118,6 +153,11 @@ public class ArrayMetaTypeUnitTestCase extends AbstractMetaTypeTest
       assertFalse("compData1 should not be a value of array type, wrong element type", compArrayType3.isValue(compData1));
    }
 
+   /**
+    * Test the isValue for an array meta type
+    * 
+    * @throws Exception for any problem
+    */
    public void testIsValueTable() throws Exception
    {
       String[] itemNames = new String[] { "name1", "name2" };
@@ -142,6 +182,11 @@ public class ArrayMetaTypeUnitTestCase extends AbstractMetaTypeTest
       assertFalse("tabData1 should not be a value of array type, wrong element type", tabArrayType3.isValue(tabData1));
    }
 
+   /**
+    * Test the equals for an array meta type
+    * 
+    * @throws Exception for any problem
+    */
    public void testEquals() throws Exception
    {
       ArrayMetaType arrayType = new ArrayMetaType(3, SimpleMetaType.STRING);
@@ -164,6 +209,11 @@ public class ArrayMetaTypeUnitTestCase extends AbstractMetaTypeTest
       assertNotSame("should not be equal, wrong element type", arrayType2, arrayType);
    }
 
+   /**
+    * Test the hashCode for an array meta type
+    * 
+    * @throws Exception for any problem
+    */
    public void testHashCode() throws Exception
    {
       ArrayMetaType arrayType = new ArrayMetaType(3, SimpleMetaType.STRING);
@@ -172,6 +222,11 @@ public class ArrayMetaTypeUnitTestCase extends AbstractMetaTypeTest
       assertTrue("Wrong hash code generated", myHashCode == arrayType.hashCode());
    }
 
+   /**
+    * Test the toString for an array meta type
+    * 
+    * @throws Exception for any problem
+    */
    public void testToString() throws Exception
    {
       ArrayMetaType arrayType = new ArrayMetaType(3, SimpleMetaType.STRING);
@@ -183,6 +238,11 @@ public class ArrayMetaTypeUnitTestCase extends AbstractMetaTypeTest
       assertTrue("toString() should contain the element type", toString.indexOf(SimpleMetaType.STRING.toString()) != -1);
    }
 
+   /**
+    * Test the serialization for an array meta type
+    * 
+    * @throws Exception for any problem
+    */
    public void testSerialization() throws Exception
    {
       ArrayMetaType arrayType = new ArrayMetaType(3, SimpleMetaType.STRING);
@@ -193,6 +253,11 @@ public class ArrayMetaTypeUnitTestCase extends AbstractMetaTypeTest
       assertEquals(arrayType, result);
    }
 
+   /**
+    * Test the errors for an array meta type
+    * 
+    * @throws Exception for any problem
+    */
    public void testErrors() throws Exception
    {
       try

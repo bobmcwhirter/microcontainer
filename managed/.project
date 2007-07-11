@@ -2,8 +2,8 @@
   <name>jboss-managed</name>
   <comment>JBoss Microcontainer Managed</comment>
   <projects>
-    <project>jboss-container</project>
     <project>jboss-metatype</project>
+    <project>jboss-container</project>
   </projects>
   <buildSpec>
     <buildCommand>

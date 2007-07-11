@@ -27,6 +27,12 @@ import java.util.Set;
 
 import org.jboss.metatype.api.types.TableMetaType;
 
+/**
+ * TableValue.
+ * 
+ * @author <a href="adrian@jboss.com">Adrian Brock</a>
+ * @version $Revision: 1.1 $
+ */
 public interface TableValue extends MetaValue
 {
    TableMetaType getMetaType();

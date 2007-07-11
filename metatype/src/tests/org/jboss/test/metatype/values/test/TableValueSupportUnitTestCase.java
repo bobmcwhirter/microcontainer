@@ -47,16 +47,31 @@ import org.jboss.test.metatype.AbstractMetaTypeTest;
  */
 public class TableValueSupportUnitTestCase extends AbstractMetaTypeTest
 {
+   /**
+    * Create a testsuite for this test
+    * 
+    * @return the testsuite
+    */
    public static Test suite()
    {
       return suite(TableValueSupportUnitTestCase.class);
    }
    
+   /**
+    * Create a new TableValueSupportUnitTestCase.
+    * 
+    * @param name the test name
+    */
    public TableValueSupportUnitTestCase(String name)
    {
       super(name);
    }
 
+   /**
+    * Test the table value support
+    * 
+    * @throws Exception for any problem
+    */
    public void testTableValueSupport() throws Exception
    {
       TableMetaType tableType = initTableType();
@@ -65,7 +80,12 @@ public class TableValueSupportUnitTestCase extends AbstractMetaTypeTest
       new TableValueSupport(tableType, 100, .5f);
    }
    
-   public void testGetTabularType() throws Exception
+   /**
+    * Test the table type for a table value
+    * 
+    * @throws Exception for any problem
+    */
+   public void testGetTableType() throws Exception
    {
       TableMetaType tableType = initTableType();
 
@@ -73,6 +93,11 @@ public class TableValueSupportUnitTestCase extends AbstractMetaTypeTest
       assertTrue("Expected the same table type", data.getMetaType().equals(tableType));
    }
    
+   /**
+    * Test the calculate index for a table value
+    * 
+    * @throws Exception for any problem
+    */
    public void testCalculateIndex() throws Exception
    {
       TableMetaType tableType = initTableType();
@@ -92,6 +117,11 @@ public class TableValueSupportUnitTestCase extends AbstractMetaTypeTest
       assertEquals("Expected index element 1 to be 3", index[1], initInteger3());
    }
 
+   /**
+    * Test the contains key for a table value
+    * 
+    * @throws Exception for any problem
+    */
    public void testContainsKey() throws Exception
    {
       TableMetaType tableType = initTableType();
@@ -117,6 +147,11 @@ public class TableValueSupportUnitTestCase extends AbstractMetaTypeTest
       assertFalse("Didn't expect removed data in containsKey", data.containsKey(index));
    }
 
+   /**
+    * Test the contains value for a table value
+    * 
+    * @throws Exception for any problem
+    */
    public void testContainsValue() throws Exception
    {
       TableMetaType tableType = initTableType();
@@ -146,6 +181,11 @@ public class TableValueSupportUnitTestCase extends AbstractMetaTypeTest
       assertFalse("Didn't expect removed data in containsValue", data.containsValue(compData));
    }
 
+   /**
+    * Test the get for a table value
+    * 
+    * @throws Exception for any problem
+    */
    public void testGet() throws Exception
    {
       TableMetaType tableType = initTableType();
@@ -168,6 +208,11 @@ public class TableValueSupportUnitTestCase extends AbstractMetaTypeTest
       assertNull("Didn't expect removed data in get", data.get(index));
    }
 
+   /**
+    * Test the put for a table value
+    * 
+    * @throws Exception for any problem
+    */
    public void testPut() throws Exception
    {
       TableMetaType tableType = initTableType();
@@ -192,6 +237,11 @@ public class TableValueSupportUnitTestCase extends AbstractMetaTypeTest
       assertEquals("Data should be present after remove/put", compData, data.get(index));
    }
 
+   /**
+    * Test the remove for a table value
+    * 
+    * @throws Exception for any problem
+    */
    public void testRemove() throws Exception
    {
       TableMetaType tableType = initTableType();
@@ -207,6 +257,11 @@ public class TableValueSupportUnitTestCase extends AbstractMetaTypeTest
       assertEquals("Remove on data present returns the data", compData, data.remove(index));
    }
 
+   /**
+    * Test the put all for a table value
+    * 
+    * @throws Exception for any problem
+    */
    public void testPutAll() throws Exception
    {
       TableMetaType tableType = initTableType();
@@ -234,6 +289,11 @@ public class TableValueSupportUnitTestCase extends AbstractMetaTypeTest
       assertTrue("Put all original data still present", data.containsValue(compData));
    }
 
+   /**
+    * Test the clear for a table value
+    * 
+    * @throws Exception for any problem
+    */
    public void testClear() throws Exception
    {
       TableMetaType tableType = initTableType();
@@ -253,6 +313,11 @@ public class TableValueSupportUnitTestCase extends AbstractMetaTypeTest
       assertTrue("Clear should clear the data", data.isEmpty());
    }
 
+   /**
+    * Test the size for a table value
+    * 
+    * @throws Exception for any problem
+    */
    public void testSize() throws Exception
    {
       TableMetaType tableType = initTableType();
@@ -279,6 +344,11 @@ public class TableValueSupportUnitTestCase extends AbstractMetaTypeTest
       assertEquals("Expected no elements", 0, data.size());
    }
 
+   /**
+    * Test the isEmpty for a table value
+    * 
+    * @throws Exception for any problem
+    */
    public void testIsEmpty() throws Exception
    {
       TableMetaType tableType = initTableType();
@@ -296,6 +366,11 @@ public class TableValueSupportUnitTestCase extends AbstractMetaTypeTest
       assertTrue("Expected no elements", data.isEmpty());
    }
 
+   /**
+    * Test the keySet for a table value
+    * 
+    * @throws Exception for any problem
+    */
    public void testKeySet() throws Exception
    {
       TableMetaType tableType = initTableType();
@@ -315,6 +390,11 @@ public class TableValueSupportUnitTestCase extends AbstractMetaTypeTest
       assertTrue("Key set should contain index [value1, 4]", keySet.contains(Arrays.asList(initValues4())));
    }
 
+   /**
+    * Test the values for a table value
+    * 
+    * @throws Exception for any problem
+    */
    public void testValues() throws Exception
    {
       TableMetaType tableType = initTableType();
@@ -334,8 +414,12 @@ public class TableValueSupportUnitTestCase extends AbstractMetaTypeTest
       assertTrue("Values should contain index compData3", values.contains(compData3));
    }
 
-   public void testClone()
-      throws Exception
+   /**
+    * Test the clone for a table value
+    * 
+    * @throws Exception for any problem
+    */
+   public void testClone() throws Exception
    {
       TableMetaType tableType = initTableType();
 
@@ -354,6 +438,11 @@ public class TableValueSupportUnitTestCase extends AbstractMetaTypeTest
       assertTrue("Should be a shallow clone", compData == compDataClone);
    }
 
+   /**
+    * Test the equals for a table value
+    * 
+    * @throws Exception for any problem
+    */
    public void testEquals() throws Exception
    {
       TableMetaType tableType = initTableType();
@@ -393,6 +482,11 @@ public class TableValueSupportUnitTestCase extends AbstractMetaTypeTest
       assertNotSame("Instances with different composite values are not equal", data2, data);
    }
 
+   /**
+    * Test the hashCode for a table value
+    * 
+    * @throws Exception for any problem
+    */
    public void testHashCode() throws Exception
    {
       TableMetaType tableType = initTableType();
@@ -409,6 +503,11 @@ public class TableValueSupportUnitTestCase extends AbstractMetaTypeTest
       assertEquals("Wrong hash code generated", myHashCode, data.hashCode());
    }
 
+   /**
+    * Test the toString for a table value
+    * 
+    * @throws Exception for any problem
+    */
    public void testToString() throws Exception
    {
       TableMetaType tableType = initTableType();
@@ -432,6 +531,11 @@ public class TableValueSupportUnitTestCase extends AbstractMetaTypeTest
          toString.indexOf(Arrays.asList(data.calculateIndex(compData3)) + "=" + compData3) != -1);
    }
 
+   /**
+    * Test the serialization for a table value
+    * 
+    * @throws Exception for any problem
+    */
    public void testSerialization() throws Exception
    {
       TableMetaType tableType = initTableType();
@@ -449,6 +553,11 @@ public class TableValueSupportUnitTestCase extends AbstractMetaTypeTest
       assertEquals(data, result);
    }
 
+   /**
+    * Test the errors for a table value
+    * 
+    * @throws Exception for any problem
+    */
    public void testErrors() throws Exception
    {
       TableMetaType tableType = initTableType();
@@ -656,6 +765,11 @@ public class TableValueSupportUnitTestCase extends AbstractMetaTypeTest
       }
    }
 
+   /**
+    * Initialize a test table type
+    * 
+    * @return the type
+    */
    protected TableMetaType initTableType()
    {
       CompositeMetaType rowType = initCompositeMetaType();
@@ -665,6 +779,11 @@ public class TableValueSupportUnitTestCase extends AbstractMetaTypeTest
       return tableType;
    }
 
+   /**
+    * Initialize a test table type 2
+    * 
+    * @return the type
+    */
    protected TableMetaType initTableType2()
    {
       CompositeMetaType rowType = initCompositeMetaType();
@@ -674,11 +793,23 @@ public class TableValueSupportUnitTestCase extends AbstractMetaTypeTest
       return tableType;
    }
 
+   /**
+    * Initialize a test composite value
+    *
+    * @param tableValue the table value
+    * @return the type
+    */
    protected CompositeValue initCompositeValue(TableValue tableValue)
    {
       return initCompositeValue(tableValue.getMetaType().getRowType());
    }
 
+   /**
+    * Initialize a test composite value
+    *
+    * @param rowType the row type
+    * @return the type
+    */
    protected CompositeValue initCompositeValue(CompositeMetaType rowType)
    {
       Map<String, MetaValue> map = initMapValues();
@@ -686,11 +817,23 @@ public class TableValueSupportUnitTestCase extends AbstractMetaTypeTest
       return compData;
    }
 
+   /**
+    * Initialize a test composite value 2
+    *
+    * @param tableValue the table value
+    * @return the type
+    */
    protected CompositeValue initCompositeValue2(TableValue tableValue)
    {
       return initCompositeValue2(tableValue.getMetaType().getRowType());
    }
 
+   /**
+    * Initialize a test composite value 2
+    *
+    * @param rowType the row type
+    * @return the type
+    */
    protected CompositeValue initCompositeValue2(CompositeMetaType rowType)
    {
       Map<String, MetaValue> map = initMapValues2();
@@ -698,6 +841,12 @@ public class TableValueSupportUnitTestCase extends AbstractMetaTypeTest
       return compData;
    }
 
+   /**
+    * Initialize a test composite value 3
+    *
+    * @param tableValue the table value
+    * @return the type
+    */
    protected CompositeValue initCompositeValue3(TableValue tableValue)
    {
       Map<String, MetaValue> map = initMapValues3();
@@ -705,6 +854,12 @@ public class TableValueSupportUnitTestCase extends AbstractMetaTypeTest
       return compData;
    }
 
+   /**
+    * Initialize a test composite value 4
+    *
+    * @param tableValue the table value
+    * @return the type
+    */
    protected CompositeValue initCompositeValue4(TableValue tableValue)
    {
       Map<String, MetaValue> map = initMapValues4();

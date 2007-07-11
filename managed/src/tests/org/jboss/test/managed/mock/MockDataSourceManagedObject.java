@@ -29,10 +29,6 @@ import javax.xml.parsers.DocumentBuilderFactory;
 import org.jboss.managed.api.ManagedProperty;
 import org.jboss.managed.plugins.ManagedObjectImpl;
 import org.jboss.managed.plugins.ManagedPropertyImpl;
-import org.jboss.metatype.api.types.CompositeMetaType;
-import org.jboss.metatype.api.types.ImmutableCompositeMetaType;
-import org.jboss.metatype.api.types.MetaType;
-import org.jboss.metatype.api.types.SimpleMetaType;
 import org.jboss.util.xml.DOMWriter;
 import org.w3c.dom.DOMImplementation;
 import org.w3c.dom.Document;
@@ -83,16 +79,13 @@ public class MockDataSourceManagedObject extends ManagedObjectImpl
       properties.add(new ManagedPropertyImpl(this, new MockDOMFields(element, "connection-url")));
       properties.add(new ManagedPropertyImpl(this, new MockDOMFields(element, "user")));
       properties.add(new ManagedPropertyImpl(this, new MockDOMFields(element, "password")));
-      // Add a CompositeMetaType field
-      String[] itemNames = {"conn-prop1", "conn-prop2"};
-      String[] itemDescriptions = {"conn-prop1 description", "conn-prop2 description"};
-      MetaType[] itemTypes = {SimpleMetaType.STRING, SimpleMetaType.STRING};
-      CompositeMetaType propsType = new ImmutableCompositeMetaType("java.lang.Properties", "DS connection properties",
-            itemNames, itemDescriptions, itemTypes);
-      MockDOMFields cpField = new MockDOMFields(element, "connection-props", propsType);
-      properties.add(new ManagedPropertyImpl(this, cpField));
    }
-
+   
+   /**
+    * Pretty print the xml
+    * 
+    * @return the xml
+    */
    public String prettyPrint()
    {
       return DOMWriter.printNode(document, true);
