@@ -37,7 +37,7 @@ import org.jboss.dependency.spi.ControllerContext;
  * @param <T> full ControllerContext impl
  * @author <a href="mailto:ales.justin@jboss.com">Ales Justin</a>
  */
-public abstract class AccessControllerContextAction<S extends  ControllerContext, T extends ControllerContext> implements ControllerContextAction
+public abstract class AccessControllerContextAction<S extends ControllerContext, T extends ControllerContext> implements ControllerContextAction
 {
    /**
     * Validate context

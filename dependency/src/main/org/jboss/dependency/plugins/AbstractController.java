@@ -43,6 +43,7 @@ import org.jboss.dependency.spi.DependencyInfo;
 import org.jboss.dependency.spi.DependencyItem;
 import org.jboss.dependency.spi.LifecycleCallbackItem;
 import org.jboss.dependency.plugins.action.ControllerContextAction;
+import org.jboss.dependency.plugins.action.SimpleControllerContextAction;
 import org.jboss.util.JBossObject;
 import org.jboss.util.JBossStringBuilder;
 
@@ -1552,18 +1553,26 @@ public class AbstractController extends JBossObject implements Controller
       }
    }
 
-   private class AliasControllerContextAction implements ControllerContextAction
+   private class AliasControllerContextAction extends SimpleControllerContextAction<AliasControllerContext>
    {
-      public void install(ControllerContext context) throws Throwable
+      protected AliasControllerContext contextCast(ControllerContext context)
       {
-         AliasControllerContext acc = (AliasControllerContext)context;
+         return AliasControllerContext.class.cast(context);
+      }
 
-         Object alias = acc.getAlias();
+      protected boolean validateContext(ControllerContext context)
+      {
+         return (context instanceof AliasControllerContext);
+      }
+
+      protected void installAction(AliasControllerContext context) throws Throwable
+      {
+         Object alias = context.getAlias();
          Object jmxAlias = JMXObjectNameFix.needsAnAlias(alias);
          if (jmxAlias != null)
             alias = jmxAlias;
 
-         Object original = acc.getOriginal();
+         Object original = context.getOriginal();
          Object jmxOriginal = JMXObjectNameFix.needsAnAlias(original);
          if (jmxOriginal != null)
             original = jmxOriginal;
@@ -1585,14 +1594,12 @@ public class AbstractController extends JBossObject implements Controller
          }
       }
 
-      public void uninstall(ControllerContext context)
+      protected void uninstallAction(AliasControllerContext context)
       {
          lockWrite();
          try
          {
-            AliasControllerContext acc = (AliasControllerContext)context;
-
-            Object alias = acc.getAlias();
+            Object alias = context.getAlias();
             Object jmxAlias = JMXObjectNameFix.needsAnAlias(alias);
             if (jmxAlias != null)
                alias = jmxAlias;

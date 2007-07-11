@@ -29,7 +29,7 @@ import org.jboss.dependency.spi.ControllerContext;
  * @param <T> ControllerContext impl
  * @author <a href="mailto:ales.justin@jboss.com">Ales Justin</a>
  */
-public abstract class SimpleControllerContextAction<T extends ControllerContext>  extends AccessControllerContextAction<T, T>
+public abstract class SimpleControllerContextAction<T extends ControllerContext> extends AccessControllerContextAction<T, T>
 {
    /**
     * Cast the context to the actual implementation.
