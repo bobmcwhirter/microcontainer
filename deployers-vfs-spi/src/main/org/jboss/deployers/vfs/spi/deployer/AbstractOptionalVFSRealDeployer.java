@@ -40,7 +40,7 @@ public abstract class AbstractOptionalVFSRealDeployer<T> extends AbstractRealDep
    public AbstractOptionalVFSRealDeployer(Class<T> optionalInput)
    {
       if (optionalInput == null)
-         throw new IllegalArgumentException("Null optionlInput");
+         throw new IllegalArgumentException("Null optionallInput");
       this.optionalInput = optionalInput;
       setInputs(optionalInput);
    }
