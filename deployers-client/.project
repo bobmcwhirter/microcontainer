@@ -2,12 +2,12 @@
   <name>jboss-deployers-client</name>
   <comment>JBoss Deployers Client</comment>
   <projects>
-    <project>jboss-container</project>
     <project>jboss-metatype</project>
-    <project>jboss-deployers-client-spi</project>
-    <project>jboss-deployers-core-spi</project>
-    <project>jboss-deployers-core</project>
     <project>jboss-managed</project>
+    <project>jboss-container</project>
+    <project>jboss-deployers-core-spi</project>
+    <project>jboss-deployers-client-spi</project>
+    <project>jboss-deployers-core</project>
   </projects>
   <buildSpec>
     <buildCommand>

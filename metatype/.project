@@ -1,7 +1,9 @@
 <projectDescription>
   <name>jboss-metatype</name>
   <comment>JBoss Microcontainer Metatype</comment>
-  <projects/>
+  <projects>
+    <project>jboss-container</project>
+  </projects>
   <buildSpec>
     <buildCommand>
       <name>org.eclipse.jdt.core.javabuilder</name>

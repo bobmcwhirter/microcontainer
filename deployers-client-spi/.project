@@ -2,10 +2,10 @@
   <name>jboss-deployers-client-spi</name>
   <comment>JBoss Deployers Client SPI</comment>
   <projects>
-    <project>jboss-deployers-core-spi</project>
-    <project>jboss-container</project>
-    <project>jboss-managed</project>
     <project>jboss-metatype</project>
+    <project>jboss-deployers-core-spi</project>
+    <project>jboss-managed</project>
+    <project>jboss-container</project>
   </projects>
   <buildSpec>
     <buildCommand>
