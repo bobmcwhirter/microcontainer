@@ -18,6 +18,7 @@
       </testResource>
     </testResources>
   </build>
+  <!-- Do not add version information here, use ../build/pom.xml instead -->
   <dependencies>
     <!-- Global dependencies -->
     <dependency>
@@ -40,18 +41,18 @@
       <groupId>org.jboss.microcontainer</groupId>
 	    <artifactId>jboss-deployers-impl</artifactId>
 	 </dependency>
+    <dependency>
+      <groupId>jboss</groupId>
+      <artifactId>jboss-logging-spi</artifactId>
+    </dependency>
     <!-- Test dependencies -->
     <dependency>
       <groupId>jboss</groupId>
       <artifactId>jboss-test</artifactId>
-      <version>1.0.4-SNAPSHOT</version>
-      <scope>test</scope>
     </dependency>
     <dependency>
 	    <groupId>junit</groupId>
 	    <artifactId>junit</artifactId>
-	    <version>3.8.1</version>
-	    <scope>test</scope>
     </dependency>
     <dependency>
       <groupId>org.jboss.microcontainer</groupId>

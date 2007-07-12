@@ -23,6 +23,7 @@
       </testResource>
     </testResources>
   </build>
+  <!-- Do not add version information here, use ../build/pom.xml instead -->
   <dependencies>
     <!-- Global dependencies -->
     <dependency>
@@ -37,8 +38,6 @@
     <dependency>
       <groupId>jboss</groupId>
       <artifactId>jboss-test</artifactId>
-      <version>1.0.3.GA</version>
-      <scope>test</scope>
     </dependency>
     <dependency>
       <groupId>org.jboss.microcontainer</groupId>

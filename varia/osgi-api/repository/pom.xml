@@ -11,6 +11,7 @@
   <name>JBoss OSGi Repository API</name>
   <url>http://www.jboss.com/products/jbossmc</url>
   <description>JBoss OSGi Repository API</description>
+  <!-- Do not add version information here, use ../build/pom.xml instead -->
   <dependencies>
     <dependency>
       <groupId>org.osgi</groupId>

@@ -42,24 +42,25 @@
       </plugin>
     </plugins>
   </build>
+  <!-- Do not add version information here, use ../build/pom.xml instead -->
   <dependencies>
     <!-- Global dependencies -->
     <dependency>
       <groupId>jboss</groupId>
       <artifactId>jboss-common-core</artifactId>
     </dependency>
+    <dependency>
+      <groupId>jboss</groupId>
+      <artifactId>jboss-logging-spi</artifactId>
+    </dependency>
     <!-- Test dependencies -->
     <dependency>
       <groupId>jboss</groupId>
       <artifactId>jboss-test</artifactId>
-      <version>1.0.3.GA</version>
-      <scope>test</scope>
     </dependency>
     <dependency>
       <groupId>junit</groupId>
 	    <artifactId>junit</artifactId>
-	    <version>3.8.1</version>
-	    <scope>test</scope>
 	  </dependency>
   </dependencies>
 </project>

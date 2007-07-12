@@ -2,6 +2,11 @@
 <!--
   This pom functions as a default configuration.  The subproject
   poms each inherit configuration from this one.
+
+  When adding version information for an artifact please do the following
+  - add a version property for the specific version
+  - add a dependency in the dependencyManagement section which refers to
+    the property
 -->
 <project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"  
     xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
@@ -26,6 +31,22 @@
     <developerConnection>scm:svn:https://svn.jboss.org/repos/jbossas/projects/microcontainer/trunk/</developerConnection>
     <url>http://viewvc.jboss.org/cgi-bin/viewvc.cgi/jbossas/projects/microcontainer/trunk/</url>
   </scm>
+  
+  <properties>
+    <version.jboss.common.core>2.0.4.GA</version.jboss.common.core>
+    <version.jbossxb>2.0.0.CR3</version.jbossxb>
+    <version.osgi.r4.core>1.0</version.osgi.r4.core>
+    <version.jboss.vfs>2.0.4.snapshot</version.jboss.vfs>
+    <version.javassist>3.6-beta</version.javassist>
+    <version.jaxb.api>2.0</version.jaxb.api>
+    <version.jboss.aop>2.0.0-SNAPSHOT</version.jboss.aop>
+    <version.jboss.logging.spi>2.0.3.GA</version.jboss.logging.spi>
+    <version.jboss.test>1.0.4-SNAPSHOT</version.jboss.test>
+    <version.junit>3.8.1</version.junit>
+    <version.jboss.profiler.jvmti>1.0.0.CR5</version.jboss.profiler.jvmti>
+    <version.ant.junit>1.7.0</version.ant.junit>
+  </properties>
+
   <build>
     <sourceDirectory>src/main</sourceDirectory>
     <testSourceDirectory>src/tests</testSourceDirectory>
@@ -308,22 +329,66 @@
       <dependency>
         <groupId>jboss</groupId>
         <artifactId>jboss-common-core</artifactId>
-        <version>2.0.4.GA</version>
+        <version>${version.jboss.common.core}</version>
       </dependency>
       <dependency>
         <groupId>jboss</groupId>
         <artifactId>jbossxb</artifactId>
-        <version>2.0.0.CR3</version>
-      </dependency>
-      <dependency>
-        <groupId>jboss</groupId>
-        <artifactId>jboss-common-core</artifactId>
-        <version>2.0.4.GA</version>
+        <version>${version.jbossxb}</version>
       </dependency>
       <dependency>
         <groupId>org.osgi</groupId>
         <artifactId>osgi_R4_core</artifactId>
-        <version>1.0</version>
+        <version>${version.osgi.r4.core}</version>
+      </dependency>
+      <dependency>
+        <groupId>jboss</groupId>
+        <artifactId>jboss-vfs</artifactId>
+        <version>${version.jboss.vfs}</version>
+      </dependency>
+      <dependency>
+        <groupId>org.jboss</groupId>
+        <artifactId>javassist</artifactId>
+        <version>${version.javassist}</version>
+      </dependency>
+      <dependency>
+        <groupId>javax.xml.bind</groupId>
+        <artifactId>jaxb-api</artifactId>
+        <version>${version.jaxb.api}</version>
+      </dependency>
+      <dependency>
+        <groupId>org.jboss</groupId>
+        <artifactId>jboss-aop</artifactId>
+        <version>${version.jboss.aop}</version>
+      </dependency>
+      <dependency>
+        <groupId>jboss</groupId>
+        <artifactId>jboss-logging-spi</artifactId>
+        <version>${version.jboss.logging.spi}</version>
+      </dependency>
+      <dependency>
+        <groupId>org.apache.ant</groupId>
+        <artifactId>ant-junit</artifactId>
+        <version>${version.ant.junit}</version>
+      </dependency>
+      <!-- test dependencies -->
+      <dependency>
+        <groupId>jboss</groupId>
+        <artifactId>jboss-test</artifactId>
+        <version>${version.jboss.test}</version>
+        <scope>test</scope>
+      </dependency>
+      <dependency>
+        <groupId>junit</groupId>
+        <artifactId>junit</artifactId>
+        <version>${version.junit}</version>
+        <scope>test</scope>
+      </dependency>
+      <dependency>
+        <groupId>jboss.profiler.jvmti</groupId>
+        <artifactId>jboss-profiler-jvmti</artifactId>
+        <version>${version.jboss.profiler.jvmti}</version>
+        <scope>test</scope>
       </dependency>
     </dependencies>
   </dependencyManagement>
@@ -336,7 +401,7 @@
       </activation>
       <properties>
         <microcontainer.outputDirectory>target/classes</microcontainer.outputDirectory>
-        <microcontainer.testOutputDirectory>target/test-classes</microcontainer.testOutputDirectory>
+        <microcontainer.testOutputDirectory>target/tests-classes</microcontainer.testOutputDirectory>
       </properties>
     </profile>
     <profile>

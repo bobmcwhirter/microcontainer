@@ -11,11 +11,16 @@
   <name>JBoss Deployers SPI</name>
   <url>http://www.jboss.com/products/jbossmc</url>
   <description>JBoss Deployers SPI</description>
+  <!-- Do not add version information here, use ../build/pom.xml instead -->
   <dependencies>
     <!-- Global dependencies -->
     <dependency>
       <groupId>org.jboss.microcontainer</groupId>
       <artifactId>jboss-deployers-structure-spi</artifactId>
+    </dependency>
+    <dependency>
+      <groupId>jboss</groupId>
+      <artifactId>jboss-logging-spi</artifactId>
     </dependency>
   </dependencies>  
 </project>

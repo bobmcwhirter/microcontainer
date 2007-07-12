@@ -11,6 +11,7 @@
   <name>JBoss Deployers VFS SPI</name>
   <url>http://www.jboss.com/products/jbossmc</url>
   <description>JBoss Deployers VFS SPI</description>
+  <!-- Do not add version information here, use ../build/pom.xml instead -->
   <dependencies>
     <!-- Global dependencies -->
     <dependency>
@@ -24,7 +25,10 @@
     <dependency>
       <groupId>javax.xml.bind</groupId>
       <artifactId>jaxb-api</artifactId>
-      <version>2.0</version>
+    </dependency>
+    <dependency>
+      <groupId>jboss</groupId>
+      <artifactId>jboss-logging-spi</artifactId>
     </dependency>
   </dependencies>  
 </project>
