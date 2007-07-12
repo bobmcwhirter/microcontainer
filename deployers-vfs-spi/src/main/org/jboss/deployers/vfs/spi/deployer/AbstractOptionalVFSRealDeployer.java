@@ -31,7 +31,7 @@ import org.jboss.deployers.vfs.spi.structure.VFSDeploymentUnit;
  * is optional instead of mandatory.
  * 
  * @author <a href="mailto:carlo.dewolf@jboss.com">Carlo de Wolf</a>
- * @version $Revision: $
+ * @version $Revision$
  */
 public abstract class AbstractOptionalVFSRealDeployer<T> extends AbstractRealDeployer
 {
@@ -39,8 +39,8 @@ public abstract class AbstractOptionalVFSRealDeployer<T> extends AbstractRealDep
    
    public AbstractOptionalVFSRealDeployer(Class<T> optionalInput)
    {
-      assert optionalInput != null : "optionalInput is null";
-      
+      if (optionalInput == null)
+         throw new IllegalArgumentException("Null optionlInput");
       this.optionalInput = optionalInput;
       setInputs(optionalInput);
    }
