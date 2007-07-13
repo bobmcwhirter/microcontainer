@@ -40,13 +40,13 @@ public class MockLoader implements Loader
    public Set<String> getResources = new HashSet<String>();
    public Set<String> loadClass = new HashSet<String>();
    
-   public URL getResource(String name, String resourceName)
+   public URL getResource(String name)
    {
       getResource.add(name);
       return getClass().getClassLoader().getResource(name);
    }
 
-   public void getResources(String name, String resourceName, Set<URL> urls) throws IOException
+   public void getResources(String name, Set<URL> urls) throws IOException
    {
       // Nothing
    }

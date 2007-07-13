@@ -24,7 +24,7 @@ package org.jboss.deployers.plugins.classloading;
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
 
-import org.jboss.deployers.structure.spi.DeploymentContext;
+import org.jboss.deployers.structure.spi.DeploymentUnit;
 import org.jboss.deployers.structure.spi.classloading.ClassLoaderMetaData;
 
 /**
@@ -38,8 +38,8 @@ public class Domain
    /** The domain name */
    private String name;
    
-   /** The registered deployment contexts */
-   private Map<DeploymentContext, Module> contexts = new ConcurrentHashMap<DeploymentContext, Module>();
+   /** The registered deployment units */
+   private Map<DeploymentUnit, Module> units = new ConcurrentHashMap<DeploymentUnit, Module>();
 
    /**
     * Create a new Domain.
@@ -67,15 +67,15 @@ public class Domain
    /**
     * Add a deployment context
     * 
-    * @param deploymentContext the deployment context
+    * @param deploymentUnit the deployment unit
     * @param metadata the classloader metadata 
     * @throws IllegalArgumentException for a null parameter
     */
-   public void addDeploymentContext(DeploymentContext deploymentContext, ClassLoaderMetaData metadata)
+   public void addDeploymentUnit(DeploymentUnit deploymentUnit, ClassLoaderMetaData metadata)
    {
-      Module module = new Module(this, deploymentContext, metadata);
-      deploymentContext.getTransientAttachments().addAttachment(Module.class, module);
-      contexts.put(deploymentContext, module);
+      Module module = new Module(this, deploymentUnit, metadata);
+      deploymentUnit.addAttachment(Module.class, module);
+      units.put(deploymentUnit, module);
       module.createDependencies();
    }
    
@@ -89,7 +89,7 @@ public class Domain
    {
       if (module == null)
          throw new IllegalArgumentException("Null module");
-      DeploymentContext context = module.getDeploymentContext();
-      contexts.remove(context);
+      DeploymentUnit unit = module.getDeploymentUnit();
+      units.remove(unit);
    }
 }

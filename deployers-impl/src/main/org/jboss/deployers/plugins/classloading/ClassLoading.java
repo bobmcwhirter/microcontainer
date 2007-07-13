@@ -25,7 +25,6 @@ import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
 
 import org.jboss.classloader.spi.ClassLoaderSystem;
-import org.jboss.deployers.structure.spi.DeploymentContext;
 import org.jboss.deployers.structure.spi.DeploymentUnit;
 import org.jboss.deployers.structure.spi.classloading.ClassLoaderMetaData;
 import org.jboss.deployers.structure.spi.classloading.ExportAll;
@@ -42,25 +41,25 @@ public class ClassLoading
    private Map<String, Domain> domains = new ConcurrentHashMap<String, Domain>();
    
    /**
-    * Add a deployment context
+    * Add a deployment unit
     * 
-    * @param deploymentContext the deployment context
-    * @throws IllegalArgumentException for a null deployment context
+    * @param deploymentUnit the deployment unit
+    * @throws IllegalArgumentException for a null deployment unit
     */
-   public void addDeploymentContext(DeploymentContext deploymentContext)
+   public void addDeploymentUnit(DeploymentUnit deploymentUnit)
    {
-      if (deploymentContext == null)
-         throw new IllegalArgumentException("Null deployment context");
+      if (deploymentUnit == null)
+         throw new IllegalArgumentException("Null deployment unit");
       
-      DeploymentUnit unit = deploymentContext.getDeploymentUnit();
-      ClassLoaderMetaData metadata = unit.getAttachment(ClassLoaderMetaData.class);
+      ClassLoaderMetaData metadata = deploymentUnit.getAttachment(ClassLoaderMetaData.class);
       if (metadata == null)
       {
          metadata = new ClassLoaderMetaData();
-         metadata.setName(deploymentContext.getName());
+         metadata.setName(deploymentUnit.getName());
          metadata.setExportAll(ExportAll.NON_EMPTY);
+         metadata.setImportAll(true);
          // TODO JBMICROCONT-182 default version
-         unit.addAttachment(ClassLoaderMetaData.class, metadata);
+         deploymentUnit.addAttachment(ClassLoaderMetaData.class, metadata);
       }
       
       String domainName = metadata.getDomain();
@@ -81,23 +80,23 @@ public class ClassLoading
          }
       }
       
-      domain.addDeploymentContext(deploymentContext, metadata);
+      domain.addDeploymentUnit(deploymentUnit, metadata);
    }
    
    /**
-    * Remove a deployment context
+    * Remove a deployment unit
     * 
-    * @param deploymentContext the deployment context
+    * @param deploymentUnit the deployment unit
     * @throws IllegalArgumentException for a null deployment context
     */
-   public void removeDeploymentContext(DeploymentContext deploymentContext)
+   public void removeDeploymentUnit(DeploymentUnit deploymentUnit)
    {
-      if (deploymentContext == null)
+      if (deploymentUnit == null)
          throw new IllegalArgumentException("Null deployment context");
 
-      Module module = deploymentContext.getTransientAttachments().getAttachment(Module.class);
+      Module module = deploymentUnit.getAttachment(Module.class);
       if (module == null)
-         throw new IllegalStateException("Deployment Context has no module: " + deploymentContext);
+         throw new IllegalStateException("Deployment Unit has no module: " + deploymentUnit);
       module.release();
    }
 }

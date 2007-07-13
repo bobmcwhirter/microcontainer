@@ -148,34 +148,34 @@ public class ClassLoaderDomain extends BaseClassLoaderDomain implements Loader
    }
    
    @Override
-   protected Loader findBeforeLoader(String name, String resourceName)
+   protected Loader findBeforeLoader(String name)
    {
       boolean trace = log.isTraceEnabled();
       ClassFilter filter = getParentPolicy().getBeforeFilter();
-      if (filter.matches(resourceName))
+      if (filter.matchesResourcePath(name))
       {
          if (trace)
-            log.trace(this + " " + resourceName + " matches parent beforeFilter=" + filter);
-         return findLoaderFromParent(name, resourceName);
+            log.trace(this + " " + name + " matches parent beforeFilter=" + filter);
+         return findLoaderFromParent(name);
       }
       if (trace)
-         log.trace(this + " " + resourceName + " does NOT match parent beforeFilter=" + filter);
+         log.trace(this + " " + name + " does NOT match parent beforeFilter=" + filter);
       return null;
    }
 
    @Override
-   protected Loader findAfterLoader(String name, String resourceName)
+   protected Loader findAfterLoader(String name)
    {
       boolean trace = log.isTraceEnabled();
       ClassFilter filter = getParentPolicy().getAfterFilter();
-      if (filter.matches(resourceName))
+      if (filter.matchesResourcePath(name))
       {
          if (trace)
-            log.trace(this + " " + resourceName + " matches parent afterFilter=" + filter);
-         return findLoaderFromParent(name, resourceName);
+            log.trace(this + " " + name + " matches parent afterFilter=" + filter);
+         return findLoaderFromParent(name);
       }
       if (trace)
-         log.trace(this + " " + resourceName + " does NOT match parent afterFilter=" + filter);
+         log.trace(this + " " + name + " does NOT match parent afterFilter=" + filter);
       return null;
    }
 
@@ -183,10 +183,9 @@ public class ClassLoaderDomain extends BaseClassLoaderDomain implements Loader
     * Try to find a loader from the parent
     * 
     * @param name the name
-    * @param resourceName the name in dot notation
     * @return the loader if found
     */
-   protected Loader findLoaderFromParent(String name, String resourceName)
+   protected Loader findLoaderFromParent(String name)
    {
       Loader parentLoader = getParent();
 
@@ -199,32 +198,32 @@ public class ClassLoaderDomain extends BaseClassLoaderDomain implements Loader
       }
 
       if (trace)
-         log.trace(this + " load from parent " + resourceName + " parent=" + parent);
+         log.trace(this + " load from parent " + name + " parent=" + parent);
 
       // Recurse into parent domains
       if (parentLoader instanceof ClassLoaderDomain)
       {
          ClassLoaderDomain parentDomain = (ClassLoaderDomain) parentLoader;
-         return parentDomain.findLoader(name, resourceName);
+         return parentDomain.findLoader(name);
       }
       
       // A normal loader
-      if (parentLoader.getResource(name, resourceName) != null)
+      if (parentLoader.getResource(name) != null)
          return parentLoader;
       
       return null;
    }
    
    @Override
-   protected URL beforeGetResource(String name, String resourceName)
+   protected URL beforeGetResource(String name)
    {
       boolean trace = log.isTraceEnabled();
       ClassFilter filter = getParentPolicy().getBeforeFilter();
-      if (filter.matches(resourceName))
+      if (filter.matchesResourcePath(name))
       {
          if (trace)
             log.trace(this + " " + name + " matches parent beforeFilter=" + filter);
-         return getResourceFromParent(name, resourceName);
+         return getResourceFromParent(name);
       }
       if (trace)
          log.trace(this + " " + name + " does NOT match parent beforeFilter=" + filter);
@@ -232,15 +231,15 @@ public class ClassLoaderDomain extends BaseClassLoaderDomain implements Loader
    }
 
    @Override
-   protected URL afterGetResource(String name, String resourceName)
+   protected URL afterGetResource(String name)
    {
       boolean trace = log.isTraceEnabled();
       ClassFilter filter = getParentPolicy().getAfterFilter();
-      if (filter.matches(resourceName))
+      if (filter.matchesResourcePath(name))
       {
          if (trace)
             log.trace(this + " " + name + " matches parent afterFilter=" + filter);
-         return getResourceFromParent(name, resourceName);
+         return getResourceFromParent(name);
       }
       if (trace)
          log.trace(this + " " + name + " does NOT match parent afterFilter=" + filter);
@@ -251,10 +250,9 @@ public class ClassLoaderDomain extends BaseClassLoaderDomain implements Loader
     * Try to get a resource from the parent
     * 
     * @param name the name
-    * @param resourceName the name of the resource in dot notation
     * @return the url if found
     */
-   protected URL getResourceFromParent(String name, String resourceName)
+   protected URL getResourceFromParent(String name)
    {
       Loader parentLoader = getParent();
 
@@ -269,7 +267,7 @@ public class ClassLoaderDomain extends BaseClassLoaderDomain implements Loader
       if (trace)
          log.trace(this + " get resource from parent " + name + " parent=" + parentLoader);
       
-      URL result = parentLoader.getResource(name, resourceName);
+      URL result = parentLoader.getResource(name);
 
       if (trace)
       {
@@ -283,30 +281,30 @@ public class ClassLoaderDomain extends BaseClassLoaderDomain implements Loader
    }
    
    @Override
-   protected void beforeGetResources(String name, String resourceName, Set<URL> urls) throws IOException
+   protected void beforeGetResources(String name, Set<URL> urls) throws IOException
    {
       boolean trace = log.isTraceEnabled();
       ClassFilter filter = getParentPolicy().getBeforeFilter();
-      if (filter.matches(resourceName))
+      if (filter.matchesResourcePath(name))
       {
          if (trace)
             log.trace(this + " " + name + " matches parent beforeFilter=" + filter);
-         getResourcesFromParent(name, resourceName, urls);
+         getResourcesFromParent(name, urls);
       }
       else if (trace)
          log.trace(this + " " + name + " does NOT match parent beforeFilter=" + filter);
    }
 
    @Override
-   protected void afterGetResources(String name, String resourceName, Set<URL> urls) throws IOException
+   protected void afterGetResources(String name, Set<URL> urls) throws IOException
    {
       boolean trace = log.isTraceEnabled();
       ClassFilter filter = getParentPolicy().getAfterFilter();
-      if (filter.matches(resourceName))
+      if (filter.matchesResourcePath(name))
       {
          if (trace)
             log.trace(this + " " + name + " matches parent afterFilter=" + filter);
-         getResourcesFromParent(name, resourceName, urls);
+         getResourcesFromParent(name, urls);
       }
       else if (trace)
          log.trace(this + " " + name + " does NOT match parent afterFilter=" + filter);
@@ -317,10 +315,9 @@ public class ClassLoaderDomain extends BaseClassLoaderDomain implements Loader
     * 
     * @param name the name
     * @param urls the urls to add to
-    * @param resourceName the name of the resource in dot notation
     * @throws IOException for any error
     */
-   protected void getResourcesFromParent(String name, String resourceName, Set<URL> urls) throws IOException
+   protected void getResourcesFromParent(String name, Set<URL> urls) throws IOException
    {
       Loader parentLoader = getParent();
 
@@ -335,7 +332,7 @@ public class ClassLoaderDomain extends BaseClassLoaderDomain implements Loader
       if (trace)
          log.trace(this + " get resources from parent " + name + " parent=" + parentLoader);
       
-      parentLoader.getResources(name, resourceName, urls);
+      parentLoader.getResources(name, urls);
    }
 
    /**

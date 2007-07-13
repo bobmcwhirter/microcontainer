@@ -83,39 +83,39 @@ public class FilteredDelegateLoader extends DelegateLoader
    public Class<?> loadClass(String className)
    {
       boolean trace = log.isTraceEnabled();
-      if (filter.matches(className))
+      if (filter.matchesClassName(className))
       {
          if (trace)
-            log.trace(this + " " + className + " matches filter=" + filter);
+            log.trace(this + " " + className + " matches class filter=" + filter);
          return super.loadClass(className);
       }
       if (trace)
-         log.trace(this + " " + className + " does NOT match filter=" + filter);
+         log.trace(this + " " + className + " does NOT match class filter=" + filter);
       return null;
    }
 
-   public URL getResource(String name, String resourceName)
+   public URL getResource(String name)
    {
       boolean trace = log.isTraceEnabled();
-      if (filter.matches(resourceName))
+      if (filter.matchesResourcePath(name))
       {
          if (trace)
-            log.trace(this + " " + name + " matches filter=" + filter);
-         return super.getResource(name, resourceName);
+            log.trace(this + " " + name + " matches resource filter=" + filter);
+         return super.getResource(name);
       }
       if (trace)
-         log.trace(this + " " + name + " does NOT match filter=" + filter);
+         log.trace(this + " " + name + " does NOT match resource filter=" + filter);
       return null;
    }
 
-   public void getResources(String name, String resourceName, Set<URL> urls) throws IOException
+   public void getResources(String name, Set<URL> urls) throws IOException
    {
       boolean trace = log.isTraceEnabled();
-      if (filter.matches(resourceName))
+      if (filter.matchesResourcePath(name))
       {
          if (trace)
             log.trace(this + " " + name + " matches filter=" + filter);
-         super.getResources(name, resourceName, urls);
+         super.getResources(name, urls);
       }
       if (trace)
          log.trace(this + " " + name + " does NOT match filter=" + filter);

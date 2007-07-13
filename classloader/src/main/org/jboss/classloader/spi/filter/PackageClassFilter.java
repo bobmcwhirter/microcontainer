@@ -37,12 +37,12 @@ public class PackageClassFilter extends PatternClassFilter
    private String[] packageNames;
    
    /**
-    * Convert package names to patterns
+    * Convert package names to class patterns
     * 
     * @param packageNames the package names
     * @return the patterns
     */
-   private static String[] convertPackageNamesToPatterns(String[] packageNames)
+   private static String[] convertPackageNamesToClassPatterns(String[] packageNames)
    {
       if (packageNames == null)
          throw new IllegalArgumentException("Null package names");
@@ -59,6 +59,33 @@ public class PackageClassFilter extends PatternClassFilter
          else
             // Escape the dots in the package and match anything that has a single dot followed by non-dots
             patterns[i] = packageNames[i].replace(".", "\\.") + "\\.[^.]+";
+      }
+      return patterns;
+   }
+   
+   /**
+    * Convert package names to resource patterns
+    * 
+    * @param packageNames the package names
+    * @return the patterns
+    */
+   private static String[] convertPackageNamesToResourcePatterns(String[] packageNames)
+   {
+      if (packageNames == null)
+         throw new IllegalArgumentException("Null package names");
+      
+      String[] patterns = new String[packageNames.length];
+      for (int i = 0; i < packageNames.length; ++i)
+      {
+         if (packageNames[i] == null)
+            throw new IllegalArgumentException("Null package name in " + Arrays.asList(packageNames));
+
+         if (packageNames[i].length() == 0)
+            // Base package - it is a match if there is no / in the path
+            patterns[i] = "[^/]*";
+         else
+            // Replace the dots with slashs and match non slashes after that
+            patterns[i] = packageNames[i].replace(".", "/") + "/[^/]+";
       }
       return patterns;
    }
@@ -83,7 +110,7 @@ public class PackageClassFilter extends PatternClassFilter
     */
    public PackageClassFilter(String[] packageNames)
    {
-      super(convertPackageNamesToPatterns(packageNames));
+      super(convertPackageNamesToClassPatterns(packageNames), convertPackageNamesToResourcePatterns(packageNames));
       this.packageNames = packageNames;
    }
 

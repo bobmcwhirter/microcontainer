@@ -29,8 +29,8 @@ import javax.management.ObjectName;
 import junit.framework.Test;
 
 import org.jboss.classloader.spi.ClassLoaderSystem;
-import org.jboss.classloader.spi.jmx.JMXClassLoader;
 import org.jboss.classloader.test.support.MockClassLoaderPolicy;
+import org.jboss.classloading.spi.RealClassLoader;
 import org.jboss.test.classloader.AbstractClassLoaderTest;
 import org.jboss.test.classloader.jmx.support.Simple;
 
@@ -58,7 +58,7 @@ public class JMXUnitTestCase extends AbstractClassLoaderTest
 
       MockClassLoaderPolicy policy = createMockClassLoaderPolicy("simple");
       policy.setPathsAndPackageNames(Simple.class);
-      JMXClassLoader cl = (JMXClassLoader) system.registerClassLoaderPolicy(policy);
+      RealClassLoader cl = (RealClassLoader) system.registerClassLoaderPolicy(policy);
       
       MBeanServer server = MBeanServerFactory.newMBeanServer();
       ObjectName clName = cl.getObjectName();

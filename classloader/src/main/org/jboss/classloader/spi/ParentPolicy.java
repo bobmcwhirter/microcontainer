@@ -35,7 +35,7 @@ public class ParentPolicy
    public static final ParentPolicy BEFORE = new ParentPolicy(ClassFilter.EVERYTHING, ClassFilter.NOTHING, "BEFORE");
 
    /** Servlet style */
-   public static final ParentPolicy AFTER = new ParentPolicy(ClassFilter.NOTHING, ClassFilter.EVERYTHING, "AFTER");
+   public static final ParentPolicy AFTER = new ParentPolicy(ClassFilter.NOTHING_BUT_JAVA, ClassFilter.EVERYTHING, "AFTER");
 
    /** Standard Java Delegation for java classes */
    public static final ParentPolicy BEFORE_BUT_JAVA_ONLY = new ParentPolicy(ClassFilter.JAVA_ONLY, ClassFilter.NOTHING, "BEFORE_BUT_JAVA_ONLY");

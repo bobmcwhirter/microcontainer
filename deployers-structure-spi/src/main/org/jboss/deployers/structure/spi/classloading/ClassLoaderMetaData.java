@@ -54,6 +54,9 @@ public class ClassLoaderMetaData implements Serializable
    /** Whether to export all */
    private ExportAll exportAll;
    
+   /** Whether to import all */
+   private boolean importAll;
+   
    /** The requirements */
    private Set<Requirement> requirements;
    
@@ -207,9 +210,19 @@ public class ClassLoaderMetaData implements Serializable
     */
    public boolean isImportAll()
    {
-      return requirements == null || requirements.isEmpty();
+      return importAll;
    }
    
+   /**
+    * Set the importAll.
+    * 
+    * @param importAll the importAll.
+    */
+   public void setImportAll(boolean importAll)
+   {
+      this.importAll = importAll;
+   }
+
    /**
     * Get the requirements.
     * 

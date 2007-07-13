@@ -23,6 +23,7 @@ package org.jboss.classloader.spi.filter;
 
 import org.jboss.classloader.plugins.filter.EverythingClassFilter;
 import org.jboss.classloader.plugins.filter.JavaOnlyClassFilter;
+import org.jboss.classloader.plugins.filter.NothingButJavaClassFilter;
 import org.jboss.classloader.plugins.filter.NothingClassFilter;
 
 /**
@@ -39,6 +40,9 @@ public interface ClassFilter
    /** Match nothing */
    ClassFilter NOTHING = NothingClassFilter.INSTANCE;
 
+   /** Match nothing */
+   ClassFilter NOTHING_BUT_JAVA = NothingButJavaClassFilter.INSTANCE;
+
    /** Java Only */
    ClassFilter JAVA_ONLY = JavaOnlyClassFilter.INSTANCE;
    
@@ -48,5 +52,13 @@ public interface ClassFilter
     * @param className the class name
     * @return true when it matches the filter
     */
-   boolean matches(String className);
+   boolean matchesClassName(String className);
+   
+   /** 
+    * Whether the resource name matches the filter
+    * 
+    * @param resourcePath the resource path
+    * @return true when it matches the filter
+    */
+   boolean matchesResourcePath(String resourcePath);
 }

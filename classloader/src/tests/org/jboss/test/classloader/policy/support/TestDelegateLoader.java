@@ -49,7 +49,8 @@ public class TestDelegateLoader extends DelegateLoader
       return null;
    }
 
-   public URL getResource(String name, String resourceName)
+   @Override
+   public URL getResource(String name)
    {
       getResourceInvoked = name;
       return TestClassLoaderPolicy.codeSourceURL;

@@ -47,38 +47,38 @@ public class FilterUnitTestCase extends AbstractClassLoaderTestWithSecurity
    public void testEverything() throws Exception
    {
       ClassFilter filter = ClassFilter.EVERYTHING;
-      assertFilterMatches("gibberish", filter);
-      assertFilterMatches("", filter);
-      assertFilterMatches(null, filter);
+      assertFilterMatchesClassName("gibberish", filter);
+      assertFilterMatchesClassName("", filter);
+      assertFilterMatchesClassName(null, filter);
    }
    
    public void testNothing() throws Exception
    {
       ClassFilter filter = ClassFilter.NOTHING;
-      assertFilterNoMatch("gibberish", filter);
-      assertFilterNoMatch("", filter);
-      assertFilterNoMatch(null, filter);
+      assertFilterNoMatchClassName("gibberish", filter);
+      assertFilterNoMatchClassName("", filter);
+      assertFilterNoMatchClassName(null, filter);
    }
    
    public void testJavaOnly() throws Exception
    {
       ClassFilter filter = ClassFilter.JAVA_ONLY;
-      assertFilterMatches("java.x", filter);
-      assertFilterMatches("java.lang.Object", filter);
-      assertFilterMatches("java.lang.ref.Method", filter);
-      assertFilterMatches("java.util.Collection", filter);
-      assertFilterMatches("javax.x", filter);
-      assertFilterMatches("javax.naming.Context", filter);
-      assertFilterNoMatch("java.", filter);
-      assertFilterNoMatch("java", filter);
-      assertFilterNoMatch("javaa.", filter);
-      assertFilterNoMatch("javaa.whatever", filter);
-      assertFilterNoMatch("javax", filter);
-      assertFilterNoMatch("javax.", filter);
-      assertFilterNoMatch("javaxa.", filter);
-      assertFilterNoMatch("javaxa.whatever", filter);
-      assertFilterNoMatch("gibberish", filter);
-      assertFilterNoMatch("", filter);
-      assertFilterNoMatch(null, filter);
+      assertFilterMatchesClassName("java.x", filter);
+      assertFilterMatchesClassName("java.lang.Object", filter);
+      assertFilterMatchesClassName("java.lang.ref.Method", filter);
+      assertFilterMatchesClassName("java.util.Collection", filter);
+      assertFilterMatchesClassName("javax.x", filter);
+      assertFilterMatchesClassName("javax.naming.Context", filter);
+      assertFilterNoMatchClassName("java.", filter);
+      assertFilterNoMatchClassName("java", filter);
+      assertFilterNoMatchClassName("javaa.", filter);
+      assertFilterNoMatchClassName("javaa.whatever", filter);
+      assertFilterNoMatchClassName("javax", filter);
+      assertFilterNoMatchClassName("javax.", filter);
+      assertFilterNoMatchClassName("javaxa.", filter);
+      assertFilterNoMatchClassName("javaxa.whatever", filter);
+      assertFilterNoMatchClassName("gibberish", filter);
+      assertFilterNoMatchClassName("", filter);
+      assertFilterNoMatchClassName(null, filter);
    }
 }

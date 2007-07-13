@@ -23,6 +23,10 @@
     <!-- Global dependencies -->
     <dependency>
 	    <groupId>jboss</groupId>
+	    <artifactId>jboss-classloading-spi</artifactId>
+     </dependency>
+    <dependency>
+	    <groupId>jboss</groupId>
 	    <artifactId>jboss-common-core</artifactId>
 	  </dependency>
     <dependency>

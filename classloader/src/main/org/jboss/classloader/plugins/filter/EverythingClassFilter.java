@@ -42,7 +42,12 @@ public class EverythingClassFilter implements ClassFilter
       // Singleton
    }
    
-   public boolean matches(String className)
+   public boolean matchesClassName(String className)
+   {
+      return true;
+   }
+   
+   public boolean matchesResourcePath(String resourcePath)
    {
       return true;
    }

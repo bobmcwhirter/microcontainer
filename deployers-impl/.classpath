@@ -36,6 +36,7 @@
   <classpathentry kind="src" path="/jboss-dependency"/>
   <classpathentry kind="src" path="/jboss-deployers-structure-spi"/>
   <classpathentry kind="var" path="M2_REPO/jboss/jboss-logging-spi/2.0.3.GA/jboss-logging-spi-2.0.3.GA.jar" sourcepath="M2_REPO/jboss/jboss-logging-spi/2.0.3.GA/jboss-logging-spi-2.0.3.GA-sources.jar"/>
+  <classpathentry kind="var" path="M2_REPO/jboss/jboss-classloading-spi/5.0.0-SNAPSHOT/jboss-classloading-spi-5.0.0-SNAPSHOT.jar" sourcepath="M2_REPO/jboss/jboss-classLoading-spi-5.0.0-SNAPSHOT/5.0.0-SNAPSHOT/jboss-classloading-spi-5.0.0-SNAPSHOT-sources.jar"/>
   <classpathentry kind="var" path="M2_REPO/jboss/jbossxb/2.0.0.CR3/jbossxb-2.0.0.CR3.jar" sourcepath="M2_REPO/jboss/jbossxb/2.0.0.CR3/jbossxb-2.0.0.CR3-sources.jar"/>
   <classpathentry kind="var" path="M2_REPO/org/jboss/javassist/3.6-beta/javassist-3.6-beta.jar" sourcepath="M2_REPO/org/jboss/javassist/3.6-beta/javassist-3.6-beta-sources.jar"/>
   <classpathentry kind="src" path="/jboss-deployers-core-spi"/>

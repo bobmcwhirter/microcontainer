@@ -255,18 +255,34 @@ public abstract class AbstractClassLoaderTest extends AbstractTestCaseWithSetup
       }
    }
    
-   protected void assertFilterMatches(String test, ClassFilter filter)
+   protected void assertFilterMatchesClassName(String test, ClassFilter filter)
    {
       getLog().debug("Checking " + test + " expect it to match filter=" + filter);
-      boolean result = filter.matches(test);
+      boolean result = filter.matchesClassName(test);
       getLog().debug("Checked " + test + " result was " + result + " for filter=" + filter);
       assertTrue("Expected " + test + " to match " + filter, result);
    }
    
-   protected void assertFilterNoMatch(String test, ClassFilter filter)
+   protected void assertFilterNoMatchClassName(String test, ClassFilter filter)
    {
       getLog().debug("Checking " + test + " expect it NOT to match filter=" + filter);
-      boolean result = filter.matches(test);
+      boolean result = filter.matchesClassName(test);
+      getLog().debug("Checked " + test + " result was " + result + " for filter=" + filter);
+      assertFalse("Expected " + test + " NOT to match " + filter, result);
+   }
+   
+   protected void assertFilterMatchesResourcePath(String test, ClassFilter filter)
+   {
+      getLog().debug("Checking " + test + " expect it to match filter=" + filter);
+      boolean result = filter.matchesResourcePath(test);
+      getLog().debug("Checked " + test + " result was " + result + " for filter=" + filter);
+      assertTrue("Expected " + test + " to match " + filter, result);
+   }
+   
+   protected void assertFilterNoMatchResourcePath(String test, ClassFilter filter)
+   {
+      getLog().debug("Checking " + test + " expect it NOT to match filter=" + filter);
+      boolean result = filter.matchesResourcePath(test);
       getLog().debug("Checked " + test + " result was " + result + " for filter=" + filter);
       assertFalse("Expected " + test + " NOT to match " + filter, result);
    }

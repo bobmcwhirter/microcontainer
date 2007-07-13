@@ -41,12 +41,17 @@ public class VFSTopLevelClassLoaderSystemDeployer extends AbstractTopLevelClassL
    protected VFSClassLoaderPolicy createTopLevelClassLoaderPolicy(DeploymentContext context, Module module) throws Exception
    {
       ClassPathVisitor visitor = new ClassPathVisitor();
-      visitor.visit(context);
-      Set<VirtualFile> roots = visitor.getClassPath();
-      VFSClassLoaderPolicy policy = new VFSClassLoaderPolicy(roots.toArray(new VirtualFile[roots.size()]));
+      context.visit(visitor);
+      Set<VirtualFile> classPath = visitor.getClassPath();
+      
+      VirtualFile[] roots = new VirtualFile[classPath.size()];
+      int i = 0;
+      for (VirtualFile path : classPath)
+         roots[i++] = path;
+      VFSClassLoaderPolicy policy = new VFSClassLoaderPolicy(roots);
       policy.setExportAll(module.getExportAll());
+      policy.setImportAll(module.isImportAll());
       // TODO JBMICROCONT-182 more policy from "module"
       return policy;
    }
-
 }

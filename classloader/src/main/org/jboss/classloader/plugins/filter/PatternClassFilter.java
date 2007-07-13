@@ -35,62 +35,69 @@ import org.jboss.classloader.spi.filter.ClassFilter;
  */
 public class PatternClassFilter implements ClassFilter
 {
-   /** The patterns as regular expressions */
-   private Pattern[] patterns;
+   /** The class patterns as regular expressions */
+   private Pattern[] classPatterns;
 
-   /**
-    * Create a new PatternClassFilter.
-    * 
-    * @param patterns the patterns
-    * @return the filter
-    * @throws IllegalArgumentException for a null pattern
-    */
-   public static PatternClassFilter createPatternClassFilter(String... patterns)
-   {
-      return new PatternClassFilter(patterns);
-   }
+   /** The resource patterns as regular expressions */
+   private Pattern[] resourcePatterns;
    
    /**
     * Create a new PatternClassFilter.
     * 
-    * @param pattern the pattern
-    */
-   public PatternClassFilter(String pattern)
-   {
-      if (pattern == null)
-         throw new IllegalArgumentException("Null pattern");
-      patterns = new Pattern[1];
-      patterns[0] = Pattern.compile(pattern);
-   }
-   
-   /**
-    * Create a new PatternClassFilter.
-    * 
-    * @param patterns the patterns
+    * @param classPatterns the class patterns
+    * @param resourcePatterns the resource patterns
     * @throws IllegalArgumentException for a null pattern
     */
-   public PatternClassFilter(String[] patterns)
+   public PatternClassFilter(String[] classPatterns, String[] resourcePatterns)
    {
-      if (patterns == null)
+      if (classPatterns == null)
          throw new IllegalArgumentException("Null patterns");
       
-      this.patterns = new Pattern[patterns.length];
-      for (int i = 0; i < patterns.length; ++i)
+      this.classPatterns = new Pattern[classPatterns.length];
+      for (int i = 0; i < classPatterns.length; ++i)
       {
-         if (patterns[i] == null)
-            throw new IllegalArgumentException("Null pattern in " + Arrays.asList(patterns));
-         this.patterns[i] = Pattern.compile(patterns[i]);
+         if (classPatterns[i] == null)
+            throw new IllegalArgumentException("Null pattern in " + Arrays.asList(classPatterns));
+         this.classPatterns[i] = Pattern.compile(classPatterns[i]);
+      }
+
+      if (resourcePatterns == null)
+      {
+         this.resourcePatterns = this.classPatterns;
+         return;
+      }
+      
+      this.resourcePatterns = new Pattern[resourcePatterns.length];
+      for (int i = 0; i < resourcePatterns.length; ++i)
+      {
+         if (resourcePatterns[i] == null)
+            throw new IllegalArgumentException("Null pattern in " + Arrays.asList(resourcePatterns));
+         this.resourcePatterns[i] = Pattern.compile(resourcePatterns[i]);
       }
    }
 
-   public boolean matches(String className)
+   public boolean matchesClassName(String className)
    {
       if (className == null)
          return false;
       
-      for (int i = 0; i < patterns.length; ++i)
+      for (int i = 0; i < classPatterns.length; ++i)
       {
-         Matcher matcher = patterns[i].matcher(className);
+         Matcher matcher = classPatterns[i].matcher(className);
+         if (matcher.matches())
+            return true;
+      }
+      return false;
+   }
+
+   public boolean matchesResourcePath(String resourcePath)
+   {
+      if (resourcePath == null)
+         return false;
+      
+      for (int i = 0; i < resourcePatterns.length; ++i)
+      {
+         Matcher matcher = resourcePatterns[i].matcher(resourcePath);
          if (matcher.matches())
             return true;
       }
@@ -100,6 +107,6 @@ public class PatternClassFilter implements ClassFilter
    @Override
    public String toString()
    {
-      return Arrays.asList(patterns).toString();
+      return Arrays.asList(classPatterns).toString();
    }
 }

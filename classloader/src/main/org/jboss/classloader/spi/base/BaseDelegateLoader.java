@@ -75,7 +75,7 @@ public class BaseDelegateLoader implements Loader
       return classLoader.loadClassLocally(className);
    }
    
-   public URL getResource(String name, String resourceName)
+   public URL getResource(String name)
    {
       BaseClassLoader classLoader;
       try
@@ -87,10 +87,10 @@ public class BaseDelegateLoader implements Loader
          log.warn("Not loading from policy that has no classLoader: " + toLongString());
          return null;
       }
-      return classLoader.getResourceLocally(name, resourceName);
+      return classLoader.getResourceLocally(name);
    }
 
-   public void getResources(String name, String resourceName, Set<URL> urls) throws IOException
+   public void getResources(String name, Set<URL> urls) throws IOException
    {
       BaseClassLoader classLoader;
       try
@@ -102,7 +102,7 @@ public class BaseDelegateLoader implements Loader
          log.warn("Not loading from policy that has no classLoader: " + toLongString());
          return;
       }
-      classLoader.getResourcesLocally(name, resourceName, urls);
+      classLoader.getResourcesLocally(name, urls);
    }
 
    /**

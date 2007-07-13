@@ -64,7 +64,7 @@ public class ClassLoaderToLoaderAdapter implements Loader
       accessControlContext = AccessController.getContext();
    }
 
-   public URL getResource(final String name, String resourceName)
+   public URL getResource(final String name)
    {
       URL url;
       SecurityManager sm = System.getSecurityManager();
@@ -94,7 +94,7 @@ public class ClassLoaderToLoaderAdapter implements Loader
       return url;
    }
 
-   public void getResources(final String name, String resourceName, Set<URL> urls) throws IOException
+   public void getResources(final String name, Set<URL> urls) throws IOException
    {
       Enumeration<URL> enumeration;
       SecurityManager sm = System.getSecurityManager();

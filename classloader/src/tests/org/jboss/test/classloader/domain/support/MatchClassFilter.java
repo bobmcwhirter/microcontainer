@@ -21,6 +21,7 @@
  */
 package org.jboss.test.classloader.domain.support;
 
+import org.jboss.classloader.plugins.ClassLoaderUtils;
 import org.jboss.classloader.spi.filter.ClassFilter;
 
 /**
@@ -40,9 +41,16 @@ public class MatchClassFilter implements ClassFilter
       this.className = clazz.getName();
    }
    
-   public boolean matches(String className)
+   public boolean matchesClassName(String className)
    {
       if (this.className.equals(className))
+         filtered = true;
+      return true;
+   }
+   
+   public boolean matchesResourcePath(String resourcePath)
+   {
+      if (ClassLoaderUtils.classNameToPath(this.className).equals(resourcePath))
          filtered = true;
       return true;
    }

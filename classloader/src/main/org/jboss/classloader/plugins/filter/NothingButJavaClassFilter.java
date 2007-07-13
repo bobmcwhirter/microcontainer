@@ -19,22 +19,29 @@
  * Software Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA
  * 02110-1301 USA, or see the FSF site: http://www.fsf.org.
  */
-package org.jboss.classloader.spi.jmx;
-
-import javax.management.ObjectName;
+package org.jboss.classloader.plugins.filter;
 
 /**
- * JMXClassLoader.
+ * A class filter that only delegates java.* classes
  * 
- * @author <a href="adrian@jboss.org">Adrian Brock</a>
+ * @author <a href="adrian@jboss.com">Adrian Brock</a>
  * @version $Revision: 1.1 $
  */
-public interface JMXClassLoader
+public class NothingButJavaClassFilter extends PatternClassFilter
 {
+   /** The singleton instance */ 
+   public static final NothingButJavaClassFilter INSTANCE = new NothingButJavaClassFilter();
+   
    /**
-    * Get the object name used to register the classloader with the MBeanServer
-    * 
-    * @return the object name
+    * Create a new JavaOnlyClassFilter.
     */
-   ObjectName getObjectName();
+   private NothingButJavaClassFilter()
+   {
+      super(new String[] { "java\\..+" }, new String[] { "java/.+" });
+   }
+
+   public String toString()
+   {
+      return "NOTHING_BUT_JAVA";
+   }
 }

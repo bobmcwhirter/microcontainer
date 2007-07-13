@@ -42,7 +42,12 @@ public class NothingClassFilter implements ClassFilter
       // Singleton
    }
    
-   public boolean matches(String className)
+   public boolean matchesClassName(String className)
+   {
+      return false;
+   }
+   
+   public boolean matchesResourcePath(String resourcePath)
    {
       return false;
    }

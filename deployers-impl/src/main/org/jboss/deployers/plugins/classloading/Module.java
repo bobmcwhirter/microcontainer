@@ -26,7 +26,7 @@ import java.util.List;
 import org.jboss.classloader.spi.ClassLoaderSystem;
 import org.jboss.classloader.spi.DelegateLoader;
 import org.jboss.classloader.spi.ParentPolicy;
-import org.jboss.deployers.structure.spi.DeploymentContext;
+import org.jboss.deployers.structure.spi.DeploymentUnit;
 import org.jboss.deployers.structure.spi.classloading.ClassLoaderMetaData;
 import org.jboss.deployers.structure.spi.classloading.ExportAll;
 
@@ -41,8 +41,8 @@ public class Module
    /** The domain */
    private Domain domain;
    
-   /** The deployment context */
-   private DeploymentContext deploymentContext;
+   /** The deployment unit */
+   private DeploymentUnit deploymentUnit;
    
    /** The classloader metadata */
    private ClassLoaderMetaData metadata;
@@ -54,31 +54,31 @@ public class Module
     * Create a new Module.
     * 
     * @param domain the domain
-    * @param deploymentContext the deployment context
+    * @param deploymentUnit the deployment unit
     * @param metadata the metadata
     * @throws IllegalArgumentException for a null parameter
     */
-   public Module(Domain domain, DeploymentContext deploymentContext, ClassLoaderMetaData metadata)
+   public Module(Domain domain, DeploymentUnit deploymentUnit, ClassLoaderMetaData metadata)
    {
       if (domain == null)
          throw new IllegalArgumentException("Null domain");
-      if (deploymentContext == null)
-         throw new IllegalArgumentException("Null context");
+      if (deploymentUnit == null)
+         throw new IllegalArgumentException("Null unit");
       if (metadata == null)
          throw new IllegalArgumentException("Null metadata");
       this.domain = domain;
-      this.deploymentContext = deploymentContext;
+      this.deploymentUnit = deploymentUnit;
       this.metadata = metadata;
    }
 
    /**
-    * Get the deploymentContext.
+    * Get the deploymentUnit.
     * 
-    * @return the deploymentContext.
+    * @return the deploymentUnit.
     */
-   public DeploymentContext getDeploymentContext()
+   public DeploymentUnit getDeploymentUnit()
    {
-      return deploymentContext;
+      return deploymentUnit;
    }
 
    /**
@@ -135,6 +135,16 @@ public class Module
    public ExportAll getExportAll()
    {
       return getMetadata().getExportAll();
+   }
+
+   /**
+    * Get the import all for the module
+    * 
+    * @return the import all
+    */
+   public boolean isImportAll()
+   {
+      return getMetadata().isImportAll();
    }
 
    /**

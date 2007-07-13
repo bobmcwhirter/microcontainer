@@ -92,19 +92,19 @@ public class MockClassLoaderPolicy extends ClassLoaderPolicy
     */
    public MockClassLoaderPolicy(String name)
    {
-      this(name, "org\\.jboss\\..*");
+      this(name, new String[] { "org\\.jboss\\..+" }, new String[] { "org/jboss/.+" });
    }
 
    /**
-    * Create a new MockClassLoaderPolicy filtering the given patterns
+    * Create a new MockClassLoaderPolicy filtering org.jboss.* classes
     * 
-    * @param name the logical name of the policy
-    * @param nonJDKPatterns the patterns to filter
-    * @throws IllegalArgumentException for null patterns
+    * @param name the name
+    * @param classPatterns the class patterns
+    * @param resourcePatterns the resourcePatterns
     */
-   public MockClassLoaderPolicy(String name, String... nonJDKPatterns)
+   public MockClassLoaderPolicy(String name, String[] classPatterns, String[] resourcePatterns)
    {
-      this(name, new PatternClassFilter(nonJDKPatterns));
+      this(name, new PatternClassFilter(classPatterns, resourcePatterns));
    }
 
    /**
@@ -398,7 +398,7 @@ public class MockClassLoaderPolicy extends ClassLoaderPolicy
    @Override
    protected ClassLoader isJDKRequest(String name)
    {
-      if (nonJDKFilter.matches(name))
+      if (nonJDKFilter.matchesClassName(name))
          return null;
       return super.isJDKRequest(name);
    }

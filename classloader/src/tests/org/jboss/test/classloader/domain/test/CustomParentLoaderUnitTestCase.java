@@ -140,10 +140,10 @@ public class CustomParentLoaderUnitTestCase extends AbstractClassLoaderTestWithS
          assertEmpty(loader.getResources);
          return;
       }
-      Set<String> resourceNames = new HashSet<String>();
+      Set<String> resourcePaths = new HashSet<String>();
       for (Class clazz : classes)
-         resourceNames.add(ClassLoaderUtils.classNameToPath(clazz.getName()));
-      assertEquals(resourceNames, loader.getResource);
+         resourcePaths.add(ClassLoaderUtils.classNameToPath(clazz.getName()));
+      assertEquals(resourcePaths, loader.getResource);
    }
    
    protected void checkLoadClass(MockLoader loader, Class... classes)

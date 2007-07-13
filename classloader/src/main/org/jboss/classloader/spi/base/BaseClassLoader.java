@@ -45,7 +45,7 @@ import org.jboss.classloader.plugins.ClassLoaderUtils;
 import org.jboss.classloader.spi.ClassLoaderPolicy;
 import org.jboss.classloader.spi.DelegateLoader;
 import org.jboss.classloader.spi.PackageInformation;
-import org.jboss.classloader.spi.jmx.JMXClassLoader;
+import org.jboss.classloading.spi.RealClassLoader;
 import org.jboss.logging.Logger;
 import org.jboss.util.collection.Iterators;
 
@@ -55,7 +55,7 @@ import org.jboss.util.collection.Iterators;
  * @author <a href="adrian@jboss.com">Adrian Brock</a>
  * @version $Revision: 1.1 $
  */
-public class BaseClassLoader extends SecureClassLoader implements BaseClassLoaderMBean, JMXClassLoader
+public class BaseClassLoader extends SecureClassLoader implements BaseClassLoaderMBean, RealClassLoader 
 {
    /** The log */
    private static final Logger log = Logger.getLogger(BaseClassLoader.class);
@@ -100,8 +100,7 @@ public class BaseClassLoader extends SecureClassLoader implements BaseClassLoade
       if (basePolicy.isBlackListable())
          blackList = new CopyOnWriteArraySet<String>();
       
-      if (log.isTraceEnabled())
-         log.debug("Created " + this + " with policy " + policy);
+      log.debug("Created " + this + " with policy " + policy.toLongString());
    }
 
    public ObjectName getObjectName()
@@ -187,7 +186,7 @@ public class BaseClassLoader extends SecureClassLoader implements BaseClassLoade
          log.trace(this + " getResource " + name + " domain=" + domain);
 
       if (domain != null)
-         return domain.getResource(this, name, ClassLoaderUtils.getResourceNameInDotNotation(name));
+         return domain.getResource(this, name);
       return null;
    }
 
@@ -203,7 +202,7 @@ public class BaseClassLoader extends SecureClassLoader implements BaseClassLoade
 
       Set<URL> resourceURLs = new HashSet<URL>();
       if (domain != null)
-         domain.getResources(this, name, ClassLoaderUtils.getResourceNameInDotNotation(name), resourceURLs);
+         domain.getResources(this, name, resourceURLs);
       return Iterators.toEnumeration(resourceURLs.iterator());
    }
 
@@ -240,17 +239,17 @@ public class BaseClassLoader extends SecureClassLoader implements BaseClassLoade
       }
 
       // Look for the resource
-      final String resourceName = ClassLoaderUtils.classNameToPath(name);
+      final String resourcePath = ClassLoaderUtils.classNameToPath(name);
       
       return AccessController.doPrivileged(new PrivilegedAction<Class>()
       {
          public Class<?> run()
          {
-            InputStream is = policy.getResourceAsStream(resourceName);
+            InputStream is = policy.getResourceAsStream(resourcePath);
             if (is == null)
             {
                if (trace)
-                  log.trace(this + " resource not found locally " + resourceName + " for " + name);
+                  BaseClassLoader.log.trace(this + " resource not found locally " + resourcePath + " for " + name);
                return null;
             }
 
@@ -259,7 +258,7 @@ public class BaseClassLoader extends SecureClassLoader implements BaseClassLoade
             
             // Let the policy do things before we define the class
             BaseClassLoaderPolicy basePolicy = policy;
-            ProtectionDomain protectionDomain = basePolicy.getProtectionDomain(name, resourceName);
+            ProtectionDomain protectionDomain = basePolicy.getProtectionDomain(name, resourcePath);
             byteCode = policy.transform(name, byteCode, protectionDomain);
             
             // Create the package if necessary
@@ -272,7 +271,7 @@ public class BaseClassLoader extends SecureClassLoader implements BaseClassLoade
             else
                result = defineClass(name, byteCode, 0, byteCode.length);
             if (trace)
-               log.trace(this + " loaded class locally " + ClassLoaderUtils.classToString(result));
+               BaseClassLoader.log.trace(this + " loaded class locally " + ClassLoaderUtils.classToString(result));
             return result;
          }
       }, policy.getAccessControlContext());
@@ -282,23 +281,21 @@ public class BaseClassLoader extends SecureClassLoader implements BaseClassLoade
     * Try to find the resource locally
     * 
     * @param name the resource name
-    * @param resourceName the name of the resource in dot notation
     * @return the url if found
     */
-   URL getResourceLocally(String name, String resourceName)
+   URL getResourceLocally(String name)
    {
-      return getResourceLocally(name, resourceName, log.isTraceEnabled());
+      return getResourceLocally(name, log.isTraceEnabled());
    }
 
    /**
     * Try to find the resource locally
     * 
     * @param name the resource name
-    * @param resourceName the name of the resource in dot notation
     * @param trace whether trace is enabled
     * @return the URL if found
     */
-   URL getResourceLocally(final String name, final String resourceName, final boolean trace)
+   URL getResourceLocally(final String name, final boolean trace)
    {
       if (trace)
          log.trace(this + " get resource locally " + name);
@@ -333,11 +330,11 @@ public class BaseClassLoader extends SecureClassLoader implements BaseClassLoade
             if (result == null)
             {
                if (trace)
-                  log.trace(this + " resource not found locally " + name);
+                  BaseClassLoader.log.trace(this + " resource not found locally " + name);
                return null;
             }
             if (trace)
-               log.trace(this + " got resource locally " + name);
+               BaseClassLoader.log.trace(this + " got resource locally " + name);
             return result;
          }
       }, policy.getAccessControlContext());
@@ -357,25 +354,23 @@ public class BaseClassLoader extends SecureClassLoader implements BaseClassLoade
     * Try to find the resource locally
     * 
     * @param name the resource name
-    * @param resourceName the name of the resource in dot notation
     * @param urls the urls to add to
     * @throws IOException for any error
     */
-   void getResourcesLocally(String name, String resourceName, Set<URL> urls) throws IOException
+   void getResourcesLocally(String name, Set<URL> urls) throws IOException
    {
-      getResourcesLocally(name, resourceName, urls, log.isTraceEnabled());
+      getResourcesLocally(name, urls, log.isTraceEnabled());
    }
 
    /**
     * Try to find the resources locally
     * 
     * @param name the resource name
-    * @param resourceName the name of the resource in dot notation
     * @param urls the urls to add to
     * @param trace whether trace is enabled
     * @throws IOException for any error
     */
-   void getResourcesLocally(final String name, final String resourceName, final Set<URL> urls, boolean trace) throws IOException
+   void getResourcesLocally(final String name, final Set<URL> urls, boolean trace) throws IOException
    {
       if (trace)
          log.trace(this + " get resources locally " + name);
@@ -486,7 +481,25 @@ public class BaseClassLoader extends SecureClassLoader implements BaseClassLoade
          unlock(trace);
       }
    }
+
+   public boolean isValid()
+   {
+      BaseClassLoaderPolicy basePolicy = policy;
+      return basePolicy.getClassLoader() != null;
+   }
    
+   public Class<?> getCachedClass(String name)
+   {
+      // TODO look in global and/or local cache
+      return null;
+   }
+
+   public URL getCachedResource(String name)
+   {
+      // TODO look in global and/or local cache
+      return null;
+   }
+
    /**
     * A long version of the classloader
     * 
@@ -502,7 +515,7 @@ public class BaseClassLoader extends SecureClassLoader implements BaseClassLoade
       builder.append('}');
       return builder.toString();
    }
-
+   
    /**
     * Shutdown the classloader
     */

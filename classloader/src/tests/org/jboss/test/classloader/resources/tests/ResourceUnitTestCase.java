@@ -109,6 +109,42 @@ public class ResourceUnitTestCase extends AbstractClassLoaderTestWithSecurity
       assertGetResource("a/", "testResource", classLoader);
    }
    
+   public void testGetResourceWithDotFromDelegate() throws Exception
+   {
+      enableTrace("org.jboss.classloader");
+      ClassLoaderSystem system = createClassLoaderSystem();
+      MockClassLoaderPolicy policy = createMockClassLoaderPolicy();
+      policy.setPrefix("a/");
+      policy.setPath("com/acme/p1");
+      policy.setPackageNames(new String[] { "com.acme.p1" } );
+
+      MockClassLoaderPolicy policy2 = createMockClassLoaderPolicy();
+      policy2.setDelegates(Collections.singletonList(new FilteredDelegateLoader(policy)));
+      
+      system.registerClassLoaderPolicy(policy);
+      ClassLoader classLoader = system.registerClassLoaderPolicy(policy2);
+      
+      assertGetResource("a/", "com/acme/p1/testResource.xml", classLoader);
+   }
+   
+   public void testGetResourceWithDotFromDelegatNotFound() throws Exception
+   {
+      enableTrace("org.jboss.classloader");
+      ClassLoaderSystem system = createClassLoaderSystem();
+      MockClassLoaderPolicy policy = createMockClassLoaderPolicy();
+      policy.setPrefix("a/");
+      policy.setPath("com/acme/p1");
+      policy.setPackageNames(new String[] { "com.acme.p1" } );
+
+      MockClassLoaderPolicy policy2 = createMockClassLoaderPolicy();
+      policy2.setDelegates(Collections.singletonList(new FilteredDelegateLoader(policy)));
+      
+      system.registerClassLoaderPolicy(policy);
+      ClassLoader classLoader = system.registerClassLoaderPolicy(policy2);
+      
+      assertGetResourceFail("testResource.xml", classLoader);
+   }
+   
    public void testGetResourceUsingAllImports() throws Exception
    {
       ClassLoaderSystem system = createClassLoaderSystem();
@@ -321,6 +357,40 @@ public class ResourceUnitTestCase extends AbstractClassLoaderTestWithSecurity
       assertGetResources("testResource", classLoader, "a/");
    }
    
+   public void testGetResourcesWithDotFromDelegate() throws Exception
+   {
+      ClassLoaderSystem system = createClassLoaderSystem();
+      MockClassLoaderPolicy policy = createMockClassLoaderPolicy();
+      policy.setPrefix("a/");
+      policy.setPath("com/acme/p1");
+      policy.setPackageNames(new String[] { "com.acme.p1" } );
+
+      MockClassLoaderPolicy policy2 = createMockClassLoaderPolicy();
+      policy2.setDelegates(Collections.singletonList(new FilteredDelegateLoader(policy)));
+      
+      system.registerClassLoaderPolicy(policy);
+      ClassLoader classLoader = system.registerClassLoaderPolicy(policy2);
+      
+      assertGetResources("com/acme/p1/testResource.xml", classLoader, "a/");
+   }
+   
+   public void testGetResourcesWithDotFromDelegateNotFound() throws Exception
+   {
+      ClassLoaderSystem system = createClassLoaderSystem();
+      MockClassLoaderPolicy policy = createMockClassLoaderPolicy();
+      policy.setPrefix("a/");
+      policy.setPath("com/acme/p1");
+      policy.setPackageNames(new String[] { "com.acme.p1" } );
+
+      MockClassLoaderPolicy policy2 = createMockClassLoaderPolicy();
+      policy2.setDelegates(Collections.singletonList(new FilteredDelegateLoader(policy)));
+      
+      system.registerClassLoaderPolicy(policy);
+      ClassLoader classLoader = system.registerClassLoaderPolicy(policy2);
+      
+      assertGetResourcesFail("testResource.xml", classLoader);
+   }
+   
    public void testGetResourcesUsingAllImports() throws Exception
    {
       ClassLoaderSystem system = createClassLoaderSystem();
@@ -428,10 +498,10 @@ public class ResourceUnitTestCase extends AbstractClassLoaderTestWithSecurity
       assertGetResources("testResource", classLoader, "a/", "b/");
    }
    
-   protected URL assertGetResource(String prefix, String resourceName, ClassLoader classLoader) throws Exception
+   protected URL assertGetResource(String prefix, String resourcePath, ClassLoader classLoader) throws Exception
    {
-      URL url = classLoader.getResource(resourceName);
-      assertNotNull("Should have got resource prefix=" + prefix + " resourceName " + resourceName + " from " + classLoader, url);
+      URL url = classLoader.getResource(resourcePath);
+      assertNotNull("Should have got resource prefix=" + prefix + " resourcePath " + resourcePath + " from " + classLoader, url);
       SecurityManager sm = suspendSecurity();
       try
       {
@@ -448,7 +518,7 @@ public class ResourceUnitTestCase extends AbstractClassLoaderTestWithSecurity
                read = reader.read(chars, read, 1000 - read);
             }
             String string = new String(chars, 0, count);
-            assertEquals("Should have read the correct resource", prefix + resourceName, string);
+            assertEquals("Should have read the correct resource", prefix + resourcePath, string);
          }
          finally
          {
@@ -462,15 +532,15 @@ public class ResourceUnitTestCase extends AbstractClassLoaderTestWithSecurity
       return url;
    }
    
-   protected void assertGetResourceFail(String resourceName, ClassLoader classLoader) throws Exception
+   protected void assertGetResourceFail(String resourcePath, ClassLoader classLoader) throws Exception
    {
-      URL url = classLoader.getResource(resourceName);
-      assertNull("Should NOT have got resource " + resourceName + " from " + classLoader, url);
+      URL url = classLoader.getResource(resourcePath);
+      assertNull("Should NOT have got resource " + resourcePath + " from " + classLoader, url);
    }
    
-   protected Enumeration<URL> assertGetResources(String resourceName, ClassLoader classLoader, String... prefixes) throws Exception
+   protected Enumeration<URL> assertGetResources(String resourcePath, ClassLoader classLoader, String... prefixes) throws Exception
    {
-      Enumeration<URL> urls = classLoader.getResources(resourceName);
+      Enumeration<URL> urls = classLoader.getResources(resourcePath);
       
       HashSet<String> foundResources = new HashSet<String>();
       SecurityManager sm = suspendSecurity();
@@ -507,22 +577,22 @@ public class ResourceUnitTestCase extends AbstractClassLoaderTestWithSecurity
       
       HashSet<String> expectedResources = new HashSet<String>();
       for (String prefix : prefixes)
-         expectedResources.add(prefix + resourceName);
+         expectedResources.add(prefix + resourcePath);
       
       assertEquals(expectedResources, foundResources);
       
       return urls;
    }
    
-   protected void assertGetResourcesFail(String resourceName, ClassLoader classLoader) throws Exception
+   protected void assertGetResourcesFail(String resourcePath, ClassLoader classLoader) throws Exception
    {
-      Enumeration<URL> urls = classLoader.getResources(resourceName);
+      Enumeration<URL> urls = classLoader.getResources(resourcePath);
       if (urls.hasMoreElements())
       {
          HashSet<URL> found = new HashSet<URL>();
          while (urls.hasMoreElements())
             found.add(urls.nextElement());
-         fail("Should NOT have got resources " + resourceName + " from " + classLoader + " found " + urls);
+         fail("Should NOT have got resources " + resourcePath + " from " + classLoader + " found " + urls);
       }
    }
 }

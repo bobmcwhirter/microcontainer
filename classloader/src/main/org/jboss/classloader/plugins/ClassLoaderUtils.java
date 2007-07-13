@@ -101,17 +101,6 @@ public class ClassLoaderUtils
          return "";
       return className.substring(0, i).replace('/', '.');
    }
-
-   /**
-    * Get the resource name in dot notation
-    * 
-    * @param name the resource name
-    * @return the resource name with / replaced by .
-    */
-   public static final String getResourceNameInDotNotation(final String name)
-   {
-      return name.replace('/', '.');
-   }
    
    /**
     * Load bytecode from a stream

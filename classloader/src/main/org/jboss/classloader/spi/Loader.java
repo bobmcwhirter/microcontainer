@@ -45,18 +45,16 @@ public interface Loader
     * Get a resource
     * 
     * @param name the resource name
-    * @param resourceName the name of the resource in dot notation
     * @return the url or null if not found
     */
-   URL getResource(String name, String resourceName);
+   URL getResource(String name);
 
    /**
     * Get resources
     * 
     * @param name the resource name
-    * @param resourceName the name of the resource in dot notation
     * @param urls the list of urls to add to
     * @throws IOException for any error
     */
-   void getResources(String name, String resourceName, Set<URL> urls) throws IOException;
+   void getResources(String name, Set<URL> urls) throws IOException;
 }

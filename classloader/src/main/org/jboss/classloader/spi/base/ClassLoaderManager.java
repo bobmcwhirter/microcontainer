@@ -42,7 +42,7 @@ import org.jboss.logging.Logger;
 public class ClassLoaderManager
 {
    /** The log */
-   private static Logger log = Logger.getLogger(ClassLoaderManager.class);
+   private static Logger log = Logger.getLogger("org.jboss.detailed.classloader.ClassLoaderManager");
 
    /** The threads owning the classloader lock */
    private static Map<BaseClassLoader, Thread> loadClassThreads = new HashMap<BaseClassLoader, Thread>();

@@ -60,6 +60,9 @@ public class VFSClassLoaderPolicy extends ClassLoaderPolicy
    /** The exported packages */
    private String[] exportedPackages;
    
+   /** The import all */
+   private boolean importAll;
+   
    /**
     * Create a new VFSClassLoaderPolicy.
     * 
@@ -113,6 +116,22 @@ public class VFSClassLoaderPolicy extends ClassLoaderPolicy
          exportedPackages = determineAllPackages().toArray(new String[0]);
       else
          exportedPackages = null;
+   }
+
+   @Override
+   public boolean isImportAll()
+   {
+      return importAll;
+   }
+
+   /**
+    * Set the importAll.
+    * 
+    * @param importAll the importAll.
+    */
+   public void setImportAll(boolean importAll)
+   {
+      this.importAll = importAll;
    }
 
    @Override
@@ -228,6 +247,15 @@ public class VFSClassLoaderPolicy extends ClassLoaderPolicy
    }
 
    @Override
+   protected void toLongString(StringBuilder builder)
+   {
+      builder.append(" roots=").append(Arrays.asList(roots)).append(" ");
+      super.toLongString(builder);
+      if (exportAll != null)
+         builder.append(exportAll);
+   }
+
+   @Override
    protected ProtectionDomain getProtectionDomain(String className, String path)
    {
       VirtualFile clazz = findChild(path);
@@ -264,6 +292,7 @@ public class VFSClassLoaderPolicy extends ClassLoaderPolicy
       {
          try
          {
+            visitor.setRoot(root);
             root.visit(visitor);
          }
          catch (Exception e)

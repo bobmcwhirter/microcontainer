@@ -48,38 +48,40 @@ public class PackageFilterUnitTestCase extends AbstractClassLoaderTestWithSecuri
    public void testNothing() throws Exception
    {
       ClassFilter filter = PackageClassFilter.createPackageClassFilter();
-      assertFilterNoMatch("gibberish", filter);
-      assertFilterNoMatch("", filter);
-      assertFilterNoMatch(null, filter);
+      assertFilterNoMatchClassName("gibberish", filter);
+      assertFilterNoMatchClassName("", filter);
+      assertFilterNoMatchClassName(null, filter);
+      assertFilterNoMatchResourcePath("x.xml", filter);
    }
    
    public void testJavaLang() throws Exception
    {
       ClassFilter filter = PackageClassFilter.createPackageClassFilter("java.lang");
-      assertFilterMatches("java.lang.Object", filter);
-      assertFilterMatches("java.lang.X", filter);
-      assertFilterNoMatch("java.lang", filter);
-      assertFilterNoMatch("java.lang.", filter);
-      assertFilterNoMatch("java.lang.reflect.Method", filter);
-      assertFilterNoMatch("gibberish", filter);
-      assertFilterNoMatch("", filter);
-      assertFilterNoMatch(null, filter);
+      assertFilterMatchesClassName("java.lang.Object", filter);
+      assertFilterMatchesClassName("java.lang.X", filter);
+      assertFilterNoMatchClassName("java.lang", filter);
+      assertFilterNoMatchClassName("java.lang.", filter);
+      assertFilterNoMatchClassName("java.lang.reflect.Method", filter);
+      assertFilterNoMatchClassName("gibberish", filter);
+      assertFilterNoMatchClassName("", filter);
+      assertFilterNoMatchClassName(null, filter);
+      assertFilterMatchesResourcePath("java/lang/something.xml", filter);
    }
    
    public void testJavaLangAndJavaLangReflect() throws Exception
    {
       ClassFilter filter = PackageClassFilter.createPackageClassFilter("java.lang", "java.lang.reflect");
-      assertFilterMatches("java.lang.Object", filter);
-      assertFilterMatches("java.lang.X", filter);
-      assertFilterMatches("java.lang.reflect.Method", filter);
-      assertFilterMatches("java.lang.reflect.X", filter);
-      assertFilterMatches("java.lang.reflect", filter);
-      assertFilterNoMatch("java.lang", filter);
-      assertFilterNoMatch("java.lang.", filter);
-      assertFilterNoMatch("java.lang.reflect.", filter);
-      assertFilterNoMatch("java.lang.reflect.subpackage.Something", filter);
-      assertFilterNoMatch("gibberish", filter);
-      assertFilterNoMatch("", filter);
-      assertFilterNoMatch(null, filter);
+      assertFilterMatchesClassName("java.lang.Object", filter);
+      assertFilterMatchesClassName("java.lang.X", filter);
+      assertFilterMatchesClassName("java.lang.reflect.Method", filter);
+      assertFilterMatchesClassName("java.lang.reflect.X", filter);
+      assertFilterMatchesClassName("java.lang.reflect", filter);
+      assertFilterNoMatchClassName("java.lang", filter);
+      assertFilterNoMatchClassName("java.lang.", filter);
+      assertFilterNoMatchClassName("java.lang.reflect.", filter);
+      assertFilterNoMatchClassName("java.lang.reflect.subpackage.Something", filter);
+      assertFilterNoMatchClassName("gibberish", filter);
+      assertFilterNoMatchClassName("", filter);
+      assertFilterNoMatchClassName(null, filter);
    }
 }

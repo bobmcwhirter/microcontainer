@@ -43,12 +43,15 @@ class PackageVisitor implements VirtualFileVisitor
    /** The packages */
    private Set<String> packages = new HashSet<String>();
    
+   /** The root */
+   private String rootPath;
+   
    /** The exportAll policy */
    private ExportAll exportAll;
 
    /**
     * Create a new PackageVisitor.
-    * 
+    *
     * @param exportAll the export all policy
     * @throws IllegalArgumentException for a null exportAll policy
     */
@@ -59,6 +62,19 @@ class PackageVisitor implements VirtualFileVisitor
       this.exportAll = exportAll;
    }
 
+   /**
+    * Set the root
+    * 
+    * @param root the root
+    * @throws IllegalArgumentException for a null root
+    */
+   public void setRoot(VirtualFile root)
+   {
+      if (root == null)
+         throw new IllegalArgumentException("Null root");
+      rootPath = root.getPathName() + "/";
+   }
+   
    /**
     * Get the packages.
     * 
@@ -109,6 +125,8 @@ class PackageVisitor implements VirtualFileVisitor
             if (empty == false)
             {
                String path = file.getPathName();
+               if (path.startsWith(rootPath))
+                  path = path.substring(rootPath.length());
                packages.add(path.replace('/', '.'));
             }
          }
