@@ -68,6 +68,8 @@ public class BeanHandler extends DefaultElementHandler
             bean.setAutowireType(AutowireType.getInstance(attrs.getValue(i)));
          else if ("autowire-candidate".equals(localName))
             bean.setAutowireCandidate(Boolean.parseBoolean(attrs.getValue(i)));
+         else if ("name-method".equals(localName))
+            bean.setNameMethod(attrs.getValue(i));
       }
    }
 

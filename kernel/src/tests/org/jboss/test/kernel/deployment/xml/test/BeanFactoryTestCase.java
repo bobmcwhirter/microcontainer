@@ -27,6 +27,8 @@ import java.util.HashSet;
 import junit.framework.Test;
 import org.jboss.beans.metadata.plugins.factory.GenericBeanFactory;
 import org.jboss.beans.metadata.plugins.factory.GenericBeanFactoryMetaData;
+import org.jboss.beans.metadata.spi.PropertyMetaData;
+import org.jboss.beans.metadata.spi.ValueMetaData;
 import org.jboss.dependency.spi.ControllerMode;
 
 /**
@@ -701,6 +703,39 @@ public class BeanFactoryTestCase extends AbstractXMLTest
       expected.add("Uninstall2");
       expected.add("Uninstall3");
       assertCallbacks(expected, factory.getUninstallCallbacks());
+   }
+
+   public void testBeanFactoryWithNameMethod() throws Exception
+   {
+      GenericBeanFactoryMetaData factory = unmarshalBeanFactory("BeanFactoryWithNameMethod.xml");
+      assertNull(factory.getNameMethod());
+      PropertyMetaData property = factory.getProperty("nameMethod");
+      assertNotNull(property);
+      ValueMetaData value = property.getValue();
+      assertNotNull(value);
+      assertEquals("applyName", value.getUnderlyingValue());
+      assertNull(factory.getName());
+      assertEquals(GenericBeanFactory.class.getName(), factory.getBean());
+      assertEquals("Dummy", factory.getBeanClass());
+      assertNull(factory.getMode());
+      assertNull(factory.getAnnotations());
+      assertNull(factory.getClassLoader());
+      assertNotNull(factory.getConstructor());
+      assertNull(factory.getProperty("constructor"));
+      assertNotNull(factory.getProperties());
+      assertNull(factory.getProperty("properties"));
+      assertNull(factory.getCreate());
+      assertNull(factory.getProperty("create"));
+      assertNull(factory.getStart());
+      assertNull(factory.getProperty("start"));
+      assertNull(factory.getStop());
+      assertNull(factory.getDestroy());
+      assertNull(factory.getDemands());
+      assertNull(factory.getSupplies());
+      assertNull(factory.getInstalls());
+      assertNull(factory.getUninstalls());
+      assertNull(factory.getInstallCallbacks());
+      assertNull(factory.getUninstallCallbacks());
    }
 
    public void testBeanFactoryBadNoClassOrConstructor() throws Exception

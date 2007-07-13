@@ -23,6 +23,7 @@ package org.jboss.beans.metadata.plugins.factory;
 
 import java.util.List;
 import java.util.Map;
+import java.util.ArrayList;
 
 import org.jboss.beans.info.spi.BeanInfo;
 import org.jboss.beans.metadata.spi.ClassLoaderMetaData;
@@ -31,6 +32,7 @@ import org.jboss.beans.metadata.spi.LifecycleMetaData;
 import org.jboss.beans.metadata.spi.ParameterMetaData;
 import org.jboss.beans.metadata.spi.ValueMetaData;
 import org.jboss.beans.metadata.spi.factory.BeanFactory;
+import org.jboss.beans.metadata.plugins.AbstractParameterMetaData;
 import org.jboss.joinpoint.spi.Joinpoint;
 import org.jboss.joinpoint.spi.JoinpointException;
 import org.jboss.joinpoint.spi.MethodJoinpoint;
@@ -66,7 +68,13 @@ public class GenericBeanFactory implements BeanFactory
 
    /** The start lifecycle method */
    protected LifecycleMetaData start;
-   
+
+   /** The bean name */
+   protected String name;
+
+   /** The name method */
+   protected String nameMethod;
+
    /**
     * Create a new generic bean factory
     * 
@@ -103,6 +111,8 @@ public class GenericBeanFactory implements BeanFactory
       }
       invokeLifecycle("create", create, info, cl, result);
       invokeLifecycle("start", start, info, cl, result);
+      if (nameMethod != null)
+         invokeNameMethod(info, cl, result);
       return result;
    }
    
@@ -227,6 +237,46 @@ public class GenericBeanFactory implements BeanFactory
    }
 
    /**
+    * Get the bean name.
+    *
+    * @return the bean name
+    */
+   public String getName()
+   {
+      return name;
+   }
+
+   /**
+    * Set the bean name.
+    *
+    * @param name the bean name
+    */
+   public void setName(String name)
+   {
+      this.name = name;
+   }
+
+   /**
+    * Get the name method's name.
+    *
+    * @return name method name
+    */
+   public String getNameMethod()
+   {
+      return nameMethod;
+   }
+
+   /**
+    * Set the name method name.
+    *
+    * @param nameMethod the name method's name
+    */
+   public void setNameMethod(String nameMethod)
+   {
+      this.nameMethod = nameMethod;
+   }
+
+   /**
     * Invoke a lifecycle method
     * 
     * @param methodName the default method name
@@ -256,4 +306,22 @@ public class GenericBeanFactory implements BeanFactory
       joinpoint.setTarget(target);
       joinpoint.dispatch();
    }
+
+   /**
+    * Invoke name method to set name.
+    *
+    * @param info the bean info
+    * @param cl the classloader
+    * @param target the target
+    * @throws Throwable for any error
+    */
+   protected void invokeNameMethod(BeanInfo info, ClassLoader cl, Object target) throws Throwable
+   {
+      List<ParameterMetaData> parameters = new ArrayList<ParameterMetaData>();
+      parameters.add(new AbstractParameterMetaData(String.class.getName(), name));
+      MethodJoinpoint joinpoint = configurator.getMethodJoinPoint(info, cl, nameMethod, parameters, false, true);
+      joinpoint.setTarget(target);
+      joinpoint.dispatch();
+   }
+
 }

@@ -1,0 +1,9 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<deployment xmlns="urn:jboss:bean-deployer:2.0">
+
+   <bean name="bean" class="org.jboss.test.kernel.deployment.support.NameAwareBean" name-method="applyName" />
+
+   <beanfactory name="factory" class="org.jboss.test.kernel.deployment.support.NameAwareBean" name-method="applyName" />
+
+</deployment>

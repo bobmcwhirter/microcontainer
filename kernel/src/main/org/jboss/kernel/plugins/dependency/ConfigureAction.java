@@ -67,6 +67,11 @@ public class ConfigureAction extends KernelControllerContextAction
          ((KernelControllerContextAware) object).setKernelControllerContext(context);            
       }
 
+      String nameMethod = metaData.getNameMethod();
+      if (nameMethod != null)
+      {
+         context.invoke(nameMethod, new Object[]{metaData.getName()}, new String[]{String.class.getName()});
+      }
    }
 
    protected Class<? extends KernelControllerContextAware> getActionAwareInterface()

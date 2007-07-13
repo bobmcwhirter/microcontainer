@@ -352,6 +352,8 @@ public class BeanSchemaBinding
                   bean.setBean(attrs.getValue(i));
                else if ("mode".equals(localName))
                   bean.setMode(new ControllerMode(attrs.getValue(i)));
+               else if ("name-method".equals(localName))
+                  bean.setNameMethod(attrs.getValue(i));
             }
          }
       });
@@ -377,6 +379,8 @@ public class BeanSchemaBinding
                   bean.setBeanClass(attrs.getValue(i));
                else if ("mode".equals(localName))
                   bean.setMode(new ControllerMode(attrs.getValue(i)));
+               else if ("name-method".equals(localName))
+                  bean.setNameMethod(attrs.getValue(i));
             }
          }
       });

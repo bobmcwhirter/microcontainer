@@ -110,6 +110,7 @@ $Id$
       <xsd:attribute name="abstract" type="xsd:boolean" use="optional"/>
       <xsd:attribute name="autowire-type" type="autowireTypeType" use="optional"/>
       <xsd:attribute name="autowire-candidate" type="xsd:boolean" use="optional"/>
+      <xsd:attribute name="name-method" type="xsd:string" use="optional"/>
    </xsd:complexType>
 
    <xsd:complexType name="classloaderType" mixed="true">
@@ -179,6 +180,7 @@ $Id$
       </xsd:sequence>
       <xsd:attribute name="name" type="xsd:string" use="optional"/>
       <xsd:attribute name="class" type="xsd:token" use="required"/>
+      <xsd:attribute name="name-method" type="xsd:string" use="optional"/>
    </xsd:complexType>
 
    <xsd:complexType name="constructorType">

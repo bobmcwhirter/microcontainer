@@ -120,6 +120,19 @@ public class GenericBeanFactoryMetaData extends AbstractBeanMetaData
       properties.add(new AbstractPropertyMetaData("classLoader", new AbstractValueMetaData(classLoader)));
    }
 
+   public void setName(String name)
+   {
+      super.setName(name);
+      Set<PropertyMetaData> properties = getProperties();
+      properties.add(new AbstractPropertyMetaData("name", new AbstractValueMetaData(name)));
+   }
+
+   public void setNameMethod(String nameMethod)
+   {
+      Set<PropertyMetaData> properties = getProperties();
+      properties.add(new AbstractPropertyMetaData("nameMethod", new AbstractValueMetaData(nameMethod)));
+   }
+
    /**
     * Set the bean constructor
     * 

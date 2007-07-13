@@ -71,6 +71,9 @@ public class AbstractBeanMetaData extends AbstractFeatureMetaData
    /** The name of this instance */
    protected String name;
 
+   /** The name method name */
+   protected String nameMethod;
+
    /** The aliases */
    protected Set<Object> aliases;
 
@@ -338,6 +341,21 @@ public class AbstractBeanMetaData extends AbstractFeatureMetaData
    {
       this.name = name;
       flushJBossObjectCache();
+   }
+
+   public String getNameMethod()
+   {
+      return nameMethod;
+   }
+
+   /**
+    * Set the name method name.
+    *
+    * @param nameMethod the method name
+    */
+   public void setNameMethod(String nameMethod)
+   {
+      this.nameMethod = nameMethod;
    }
 
    public Set<Object> getAliases()
