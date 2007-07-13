@@ -56,7 +56,7 @@ public class StructureMetaDataImpl implements StructureMetaData, Externalizable
       for (ContextInfo other : contexts)
       {
          if (path.equals(other.getPath()))
-            throw new IllegalStateException("Context alread exists with path '" + path + "' contexts=" + getContexts());
+            throw new IllegalStateException("Context already exists with path '" + path + "' contexts=" + getContexts());
       }
       contexts.add(context);
    }
