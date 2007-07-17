@@ -68,6 +68,8 @@ public class BeanHandler extends DefaultElementHandler
             bean.setAutowireType(AutowireType.getInstance(attrs.getValue(i)));
          else if ("autowire-candidate".equals(localName))
             bean.setAutowireCandidate(Boolean.parseBoolean(attrs.getValue(i)));
+         else if ("name-aware".equals(localName))
+            bean.setNameAware(Boolean.parseBoolean(attrs.getValue(i)));
          else if ("name-method".equals(localName))
             bean.setNameMethod(attrs.getValue(i));
       }
@@ -88,6 +90,11 @@ public class BeanHandler extends DefaultElementHandler
          }
          else if (constructor.getFactory() == null && constructor.getFactoryClass() == null)
             throw new IllegalArgumentException("Bean should have a class attribute or the constructor element should have one of a factoryClass attribute or a factory element, or embedded value.");
+      }
+      // check for default setName method.
+      if (bean.isNameAware() && bean.getNameMethod() == null)
+      {
+         bean.setNameMethod("setName");
       }
       return bean;
    }

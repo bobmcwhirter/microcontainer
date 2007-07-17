@@ -35,6 +35,11 @@ public class NameAwareBean
       return name;
    }
 
+   public void setName(String name)
+   {
+      this.name = name;
+   }
+
    public void applyName(String name)
    {
       this.name = name;

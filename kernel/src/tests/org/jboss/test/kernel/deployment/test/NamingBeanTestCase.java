@@ -55,5 +55,15 @@ public class NamingBeanTestCase extends AbstractDeploymentTest
       NameAwareBean b2 = (NameAwareBean)factory.createBean();
       assertNotNull(b2);
       assertEquals("factory", b2.getName());
+
+      NameAwareBean nsb = (NameAwareBean)getBean("set_name_bean");
+      assertNotNull(nsb);
+      assertEquals("set_name_bean", nsb.getName());
+
+      BeanFactory nsf = (BeanFactory)getBean("set_name_factory");
+      assertNotNull(nsf);
+      NameAwareBean b3 = (NameAwareBean)nsf.createBean();
+      assertNotNull(b3);
+      assertEquals("set_name_factory", b3.getName());
    }
 }

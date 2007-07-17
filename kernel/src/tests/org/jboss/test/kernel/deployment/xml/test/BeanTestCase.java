@@ -816,6 +816,31 @@ public class BeanTestCase extends AbstractXMLTest
       assertNull(bean.getUninstallCallbacks());
    }
 
+   public void testBeanWithNameAware() throws Exception
+   {
+      AbstractBeanMetaData bean = unmarshalBean("BeanWithNameAware.xml");
+      assertTrue(bean.isNameAware());
+      assertEquals("setName", bean.getNameMethod());
+      assertNull(bean.getAutowireType());
+      assertNull(bean.getName());
+      assertEquals("Dummy", bean.getBean());
+      assertNull(bean.getMode());
+      assertNull(bean.getAnnotations());
+      assertNull(bean.getClassLoader());
+      assertNull(bean.getConstructor());
+      assertNull(bean.getProperties());
+      assertNull(bean.getCreate());
+      assertNull(bean.getStart());
+      assertNull(bean.getStop());
+      assertNull(bean.getDestroy());
+      assertNull(bean.getDemands());
+      assertNull(bean.getSupplies());
+      assertNull(bean.getInstalls());
+      assertNull(bean.getUninstalls());
+      assertNull(bean.getInstallCallbacks());
+      assertNull(bean.getUninstallCallbacks());
+   }
+
    public void testBeanWithNameMethod() throws Exception
    {
       AbstractBeanMetaData bean = unmarshalBean("BeanWithNameMethod.xml");

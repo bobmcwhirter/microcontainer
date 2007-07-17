@@ -6,4 +6,8 @@
 
    <beanfactory name="factory" class="org.jboss.test.kernel.deployment.support.NameAwareBean" name-method="applyName" />
 
+   <bean name="set_name_bean" class="org.jboss.test.kernel.deployment.support.NameAwareBean" name-aware="true" />
+
+   <beanfactory name="set_name_factory" class="org.jboss.test.kernel.deployment.support.NameAwareBean" name-aware="true" />
+
 </deployment>

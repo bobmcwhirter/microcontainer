@@ -71,6 +71,9 @@ public class AbstractBeanMetaData extends AbstractFeatureMetaData
    /** The name of this instance */
    protected String name;
 
+   /** The name aware flag */
+   protected boolean nameAware;
+
    /** The name method name */
    protected String nameMethod;
 
@@ -341,6 +344,21 @@ public class AbstractBeanMetaData extends AbstractFeatureMetaData
    {
       this.name = name;
       flushJBossObjectCache();
+   }
+
+   public boolean isNameAware()
+   {
+      return nameAware;
+   }
+
+   /**
+    * Set the name aware.
+    *
+    * @param nameAware the flag
+    */
+   public void setNameAware(boolean nameAware)
+   {
+      this.nameAware = nameAware;
    }
 
    public String getNameMethod()

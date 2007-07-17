@@ -705,6 +705,40 @@ public class BeanFactoryTestCase extends AbstractXMLTest
       assertCallbacks(expected, factory.getUninstallCallbacks());
    }
 
+   public void testBeanFactoryWithNameAware() throws Exception
+   {
+      GenericBeanFactoryMetaData factory = unmarshalBeanFactory("BeanFactoryWithNameAware.xml");
+      assertTrue(factory.isNameAware());
+      assertNull(factory.getNameMethod());
+      PropertyMetaData property = factory.getProperty("nameMethod");
+      assertNotNull(property);
+      ValueMetaData value = property.getValue();
+      assertNotNull(value);
+      assertEquals("setName", value.getUnderlyingValue());
+      assertNull(factory.getName());
+      assertEquals(GenericBeanFactory.class.getName(), factory.getBean());
+      assertEquals("Dummy", factory.getBeanClass());
+      assertNull(factory.getMode());
+      assertNull(factory.getAnnotations());
+      assertNull(factory.getClassLoader());
+      assertNotNull(factory.getConstructor());
+      assertNull(factory.getProperty("constructor"));
+      assertNotNull(factory.getProperties());
+      assertNull(factory.getProperty("properties"));
+      assertNull(factory.getCreate());
+      assertNull(factory.getProperty("create"));
+      assertNull(factory.getStart());
+      assertNull(factory.getProperty("start"));
+      assertNull(factory.getStop());
+      assertNull(factory.getDestroy());
+      assertNull(factory.getDemands());
+      assertNull(factory.getSupplies());
+      assertNull(factory.getInstalls());
+      assertNull(factory.getUninstalls());
+      assertNull(factory.getInstallCallbacks());
+      assertNull(factory.getUninstallCallbacks());
+   }
+
    public void testBeanFactoryWithNameMethod() throws Exception
    {
       GenericBeanFactoryMetaData factory = unmarshalBeanFactory("BeanFactoryWithNameMethod.xml");

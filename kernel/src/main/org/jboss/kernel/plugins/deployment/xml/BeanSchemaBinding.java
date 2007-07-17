@@ -352,9 +352,22 @@ public class BeanSchemaBinding
                   bean.setBean(attrs.getValue(i));
                else if ("mode".equals(localName))
                   bean.setMode(new ControllerMode(attrs.getValue(i)));
+               else if ("name-aware".equals(localName))
+                  bean.setNameAware(Boolean.parseBoolean(attrs.getValue(i)));
                else if ("name-method".equals(localName))
                   bean.setNameMethod(attrs.getValue(i));
             }
+         }
+
+         public Object endElement(Object o, QName qName, ElementBinding element)
+         {
+            AbstractBeanMetaData bean = (AbstractBeanMetaData)o;
+            // check for default setName method.
+            if (bean.isNameAware() && bean.getNameMethod() == null)
+            {
+               bean.setNameMethod("setName");
+            }
+            return bean;
          }
       });
 
@@ -379,9 +392,22 @@ public class BeanSchemaBinding
                   bean.setBeanClass(attrs.getValue(i));
                else if ("mode".equals(localName))
                   bean.setMode(new ControllerMode(attrs.getValue(i)));
+               else if ("name-aware".equals(localName))
+                  bean.setNameAware(Boolean.parseBoolean(attrs.getValue(i)));
                else if ("name-method".equals(localName))
                   bean.setNameMethod(attrs.getValue(i));
             }
+         }
+
+         public Object endElement(Object o, QName qName, ElementBinding element)
+         {
+            GenericBeanFactoryMetaData bean = (GenericBeanFactoryMetaData)o;
+            // check for default setName method.
+            if (bean.isNameAware() && bean.getNameMethod() == null)
+            {
+               bean.setNameMethod("setName");
+            }
+            return bean;
          }
       });
 
