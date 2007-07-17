@@ -21,6 +21,9 @@
 */
 package org.jboss.test.kernel.deployment.support;
 
+import org.jboss.metadata.spi.MetaData;
+import org.jboss.metadata.spi.scope.ScopeKey;
+
 /**
  * A simple bean with name
  *
@@ -29,6 +32,9 @@ package org.jboss.test.kernel.deployment.support;
 public class NameAwareBean
 {
    private String name;
+   private MetaData metadata;
+   private ScopeKey scopeKey;
+   private Object dynamic;
 
    public String getName()
    {
@@ -43,5 +49,35 @@ public class NameAwareBean
    public void applyName(String name)
    {
       this.name = name;
+   }
+
+   public MetaData getMetadata()
+   {
+      return metadata;
+   }
+
+   public void setMetadata(MetaData metadata)
+   {
+      this.metadata = metadata;
+   }
+
+   public ScopeKey getScopeKey()
+   {
+      return scopeKey;
+   }
+
+   public void setScopeKey(ScopeKey scopeKey)
+   {
+      this.scopeKey = scopeKey;
+   }
+
+   public Object getDynamic()
+   {
+      return dynamic;
+   }
+
+   public void setDynamic(Object dynamic)
+   {
+      this.dynamic = dynamic;
    }
 }

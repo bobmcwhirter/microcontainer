@@ -46,6 +46,8 @@ public class AbstractInjectionValueMetaData extends AbstractDependencyValueMetaD
 
    protected InjectionOption injectionOption = InjectionOption.STRICT;
 
+   protected FromContext fromContext;
+
    /**
     * Simplyifies things with AutowireType.BY_NAME
     */
@@ -99,6 +101,16 @@ public class AbstractInjectionValueMetaData extends AbstractDependencyValueMetaD
       this.injectionOption = injectionOption;
    }
 
+   public FromContext getFromContext()
+   {
+      return fromContext;
+   }
+
+   public void setFromContext(FromContext fromContext)
+   {
+      this.fromContext = fromContext;
+   }
+
    public AbstractPropertyMetaData getPropertyMetaData()
    {
       return propertyMetaData;
@@ -127,8 +139,22 @@ public class AbstractInjectionValueMetaData extends AbstractDependencyValueMetaD
       return lookupExists || isCallback;
    }
 
+   @SuppressWarnings("unchecked")
    public Object getValue(TypeInfo info, ClassLoader cl) throws Throwable
    {
+      // controller context property injection
+      if (fromContext != null)
+      {
+         ControllerState state = dependentState;
+         if (state == null)
+            state = ControllerState.INSTANTIATED;
+         Controller controller = context.getController();
+         ControllerContext lookup = controller.getContext(getUnderlyingValue(), state);
+         if (lookup == null)
+            throw new Error("Should not be here - dependency failed - " + this);
+         return fromContext.executeLookup(lookup);
+      }
+
       // by class type
       if (getUnderlyingValue() == null)
       {
@@ -154,11 +180,30 @@ public class AbstractInjectionValueMetaData extends AbstractDependencyValueMetaD
 
    protected boolean addDependencyItem()
    {
-      return InjectionOption.STRICT.equals(injectionOption);
+      return InjectionOption.STRICT.equals(injectionOption) || fromContext != null;
+   }
+
+   public Object getUnderlyingValue()
+   {
+      Object original = super.getUnderlyingValue();
+      return (fromContext != null && original == null) ? context.getName() : original;
    }
 
    public void initialVisit(MetaDataVisitor visitor)
    {
+      // controller context property injection
+      if (fromContext != null)
+      {
+         if (dependentState != null && ControllerState.INSTANTIATED.equals(dependentState) == false && super.getUnderlyingValue() == null)
+         {
+            if (log.isTraceEnabled())
+               log.trace("Cannot set demand state on itself, changing to Instantiated: " + this);
+            dependentState = ControllerState.INSTANTIATED;
+         }
+         super.initialVisit(visitor);
+         return;
+      }
+
       // no bean specified
       if (getUnderlyingValue() == null)
       {
@@ -260,6 +305,8 @@ public class AbstractInjectionValueMetaData extends AbstractDependencyValueMetaD
          buffer.append(" injectionType=").append(injectionType);
       if (propertyMetaData != null)
          buffer.append(" propertyMetaData=").append(propertyMetaData.getName()); //else overflow - indefinite recursion
+      if (fromContext != null)
+         buffer.append(" fromContext=").append(fromContext);
    }
 
 }

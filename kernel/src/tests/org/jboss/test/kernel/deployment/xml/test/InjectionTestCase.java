@@ -27,6 +27,8 @@ import junit.framework.Test;
 
 import org.jboss.beans.metadata.plugins.AbstractBeanMetaData;
 import org.jboss.beans.metadata.plugins.AbstractDependencyValueMetaData;
+import org.jboss.beans.metadata.plugins.FromContext;
+import org.jboss.beans.metadata.plugins.AbstractInjectionValueMetaData;
 import org.jboss.beans.metadata.spi.PropertyMetaData;
 import org.jboss.beans.metadata.spi.ValueMetaData;
 import org.jboss.dependency.spi.ControllerState;
@@ -39,7 +41,7 @@ import org.jboss.dependency.spi.ControllerState;
  */
 public class InjectionTestCase extends AbstractXMLTest
 {
-   protected AbstractDependencyValueMetaData getInjection(String name) throws Exception
+   protected AbstractInjectionValueMetaData getInjection(String name) throws Exception
    {
       AbstractBeanMetaData bean = unmarshalBean(name);
       Set properties = bean.getProperties();
@@ -49,8 +51,8 @@ public class InjectionTestCase extends AbstractXMLTest
       assertNotNull(property);
       ValueMetaData value = property.getValue();
       assertNotNull(property);
-      assertTrue(value instanceof AbstractDependencyValueMetaData);
-      return (AbstractDependencyValueMetaData) value;
+      assertTrue(value instanceof AbstractInjectionValueMetaData);
+      return (AbstractInjectionValueMetaData) value;
    }
 
    public void testInjectionWithBean() throws Exception
@@ -88,6 +90,14 @@ public class InjectionTestCase extends AbstractXMLTest
       {
          checkJBossXBException(IllegalArgumentException.class, expected);
       }
+   }
+
+   public void testInjectionWithFromContext() throws Exception
+   {
+      AbstractInjectionValueMetaData dependency = getInjection("InjectionWithFromContext.xml");
+      assertEquals("Dummy", dependency.getValue());
+      assertNull(dependency.getProperty());
+      assertEquals(FromContext.getInstance("name"), dependency.getFromContext());
    }
 
    public static Test suite()

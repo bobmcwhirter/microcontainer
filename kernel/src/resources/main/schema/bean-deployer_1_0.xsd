@@ -91,8 +91,6 @@ $Id$
       <xsd:attribute name="name" type="xsd:string" use="optional"/>
       <xsd:attribute name="class" type="xsd:token" use="required"/>
       <xsd:attribute name="mode" type="controllerModeType" use="optional"/>
-      <xsd:attribute name="name-aware" type="xsd:boolean" use="optional"/>
-      <xsd:attribute name="name-method" type="xsd:string" use="optional"/>
    </xsd:complexType>
 
    <xsd:complexType name="classloaderType" mixed="true">
@@ -158,8 +156,6 @@ $Id$
       </xsd:sequence>
       <xsd:attribute name="name" type="xsd:string" use="optional"/>
       <xsd:attribute name="class" type="xsd:token" use="required"/>
-      <xsd:attribute name="name-aware" type="xsd:boolean" use="optional"/>
-      <xsd:attribute name="name-method" type="xsd:string" use="optional"/>
    </xsd:complexType>
 
    <xsd:complexType name="constructorType">
@@ -296,6 +292,7 @@ $Id$
       <xsd:attribute name="whenRequired" type="controllerStateType" use="optional"/>
       <xsd:attribute name="type" type="injectionTypeType" use="optional" default="ByClass"/>
       <xsd:attribute name="option" type="optionType" use="optional" default="Strict"/>
+      <xsd:attribute name="fromContext" type="contextType" use="optional"/>
    </xsd:complexType>
 
    <xsd:complexType name="parameterType" mixed="true">
@@ -801,6 +798,23 @@ $Id$
             Valid values include:
             Strict (default)
             Callback
+            ]]>
+         </xsd:documentation>
+      </xsd:annotation>
+      <xsd:restriction base="xsd:string">
+         <xsd:whiteSpace value="collapse"/>
+      </xsd:restriction>
+   </xsd:simpleType>
+
+   <xsd:simpleType name="contextType">
+      <xsd:annotation>
+         <xsd:documentation>
+            <![CDATA[
+            You can set the type of context lookup
+            Valid values include:
+            name
+            metadata
+            scope
             ]]>
          </xsd:documentation>
       </xsd:annotation>

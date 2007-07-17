@@ -47,6 +47,7 @@ import org.jboss.beans.metadata.plugins.AbstractSupplyMetaData;
 import org.jboss.beans.metadata.plugins.AbstractValueMetaData;
 import org.jboss.beans.metadata.plugins.InjectionOption;
 import org.jboss.beans.metadata.plugins.StringValueMetaData;
+import org.jboss.beans.metadata.plugins.FromContext;
 import org.jboss.beans.metadata.plugins.factory.GenericBeanFactoryMetaData;
 import org.jboss.beans.metadata.spi.AutowireType;
 import org.jboss.beans.metadata.spi.BeanMetaDataFactory;
@@ -352,22 +353,7 @@ public class BeanSchemaBinding
                   bean.setBean(attrs.getValue(i));
                else if ("mode".equals(localName))
                   bean.setMode(new ControllerMode(attrs.getValue(i)));
-               else if ("name-aware".equals(localName))
-                  bean.setNameAware(Boolean.parseBoolean(attrs.getValue(i)));
-               else if ("name-method".equals(localName))
-                  bean.setNameMethod(attrs.getValue(i));
             }
-         }
-
-         public Object endElement(Object o, QName qName, ElementBinding element)
-         {
-            AbstractBeanMetaData bean = (AbstractBeanMetaData)o;
-            // check for default setName method.
-            if (bean.isNameAware() && bean.getNameMethod() == null)
-            {
-               bean.setNameMethod("setName");
-            }
-            return bean;
          }
       });
 
@@ -392,22 +378,7 @@ public class BeanSchemaBinding
                   bean.setBeanClass(attrs.getValue(i));
                else if ("mode".equals(localName))
                   bean.setMode(new ControllerMode(attrs.getValue(i)));
-               else if ("name-aware".equals(localName))
-                  bean.setNameAware(Boolean.parseBoolean(attrs.getValue(i)));
-               else if ("name-method".equals(localName))
-                  bean.setNameMethod(attrs.getValue(i));
             }
-         }
-
-         public Object endElement(Object o, QName qName, ElementBinding element)
-         {
-            GenericBeanFactoryMetaData bean = (GenericBeanFactoryMetaData)o;
-            // check for default setName method.
-            if (bean.isNameAware() && bean.getNameMethod() == null)
-            {
-               bean.setNameMethod("setName");
-            }
-            return bean;
          }
       });
 
@@ -1079,9 +1050,10 @@ public class BeanSchemaBinding
                   injection.setInjectionType(AutowireType.getInstance(attrs.getValue(i)));
                else if ("option".equals(localName))
                   injection.setInjectionOption(InjectionOption.getInstance(attrs.getValue(i)));
+               else if ("fromContext".equals(localName))
+                  injection.setFromContext(FromContext.getInstance(attrs.getValue(i)));
             }
          }
-
       });
 
       // value binding

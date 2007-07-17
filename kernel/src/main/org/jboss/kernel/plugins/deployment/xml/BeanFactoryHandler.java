@@ -61,10 +61,6 @@ public class BeanFactoryHandler extends DefaultElementHandler
             bean.setBeanClass(attrs.getValue(i));
          else if ("mode".equals(localName))
             bean.setMode(new ControllerMode(attrs.getValue(i)));
-         else if ("name-aware".equals(localName))
-            bean.setNameAware(Boolean.parseBoolean(attrs.getValue(i)));
-         else if ("name-method".equals(localName))
-            bean.setNameMethod(attrs.getValue(i));
       }
    }
 
@@ -86,11 +82,6 @@ public class BeanFactoryHandler extends DefaultElementHandler
             throw new IllegalArgumentException("BeanFactory should have a class attribute or the constructor element should have a factoryMethod attribute.");
          if (constructor.getFactory() == null && constructor.getFactoryClass() == null)
             throw new IllegalArgumentException("BeanFactory should have a class attribute or the constructor element should have a either a factoryClass attribute or a factory element.");
-      }
-      // check for default setName method.
-      if (bean.isNameAware() && bean.getNameMethod() == null)
-      {
-         bean.setNameMethod("setName");
       }
       return bean;
    }

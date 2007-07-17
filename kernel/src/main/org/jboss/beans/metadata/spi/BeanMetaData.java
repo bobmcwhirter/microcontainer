@@ -56,20 +56,6 @@ public interface BeanMetaData extends FeatureMetaData, ValueMetaData
    void setName(String name);
 
    /**
-    * Needs bean name injection.
-    *
-    * @return true for name injection
-    */
-   boolean isNameAware();
-
-   /**
-    * Get the method to inject name.
-    *
-    * @return the name method name
-    */
-   String getNameMethod();
-
-   /**
     * The aliases
     *
     * @return the aliases or null if there are no aliases

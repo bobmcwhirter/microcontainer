@@ -2,12 +2,28 @@
 
 <deployment xmlns="urn:jboss:bean-deployer:2.0">
 
-   <bean name="bean" class="org.jboss.test.kernel.deployment.support.NameAwareBean" name-method="applyName" />
+   <bean name="set_name_bean" class="org.jboss.test.kernel.deployment.support.NameAwareBean">
+      <property name="name"><inject fromContext="name"/></property>
+   </bean>
 
-   <beanfactory name="factory" class="org.jboss.test.kernel.deployment.support.NameAwareBean" name-method="applyName" />
+   <beanfactory name="set_name_factory" class="org.jboss.test.kernel.deployment.support.NameAwareBean">
+      <property name="name"><inject fromContext="name"/></property>
+   </beanfactory>
 
-   <bean name="set_name_bean" class="org.jboss.test.kernel.deployment.support.NameAwareBean" name-aware="true" />
+   <bean name="metadata" class="org.jboss.test.kernel.deployment.support.NameAwareBean">
+      <property name="metadata"><inject fromContext="metadata"/></property>
+   </bean>
 
-   <beanfactory name="set_name_factory" class="org.jboss.test.kernel.deployment.support.NameAwareBean" name-aware="true" />
+   <bean name="scopekey" class="org.jboss.test.kernel.deployment.support.NameAwareBean">
+      <property name="scopeKey"><inject fromContext="scope"/></property>
+   </bean>
+
+   <bean name="dynamic" class="org.jboss.test.kernel.deployment.support.NameAwareBean">
+      <property name="dynamic"><inject fromContext="getBeanMetaData"/></property>
+   </bean>
+
+   <bean name="other" class="org.jboss.test.kernel.deployment.support.NameAwareBean">
+      <property name="name"><inject bean="set_name_bean" fromContext="name"/></property>
+   </bean>
 
 </deployment>

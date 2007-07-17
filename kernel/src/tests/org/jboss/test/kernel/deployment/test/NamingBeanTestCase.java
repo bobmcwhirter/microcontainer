@@ -24,6 +24,9 @@ package org.jboss.test.kernel.deployment.test;
 import junit.framework.Test;
 import org.jboss.test.kernel.deployment.support.NameAwareBean;
 import org.jboss.beans.metadata.spi.factory.BeanFactory;
+import org.jboss.beans.metadata.spi.BeanMetaData;
+import org.jboss.metadata.spi.MetaData;
+import org.jboss.metadata.spi.scope.ScopeKey;
 
 /**
  * @author <a href="mailto:ales.justin@jboss.com">Ales Justin</a>
@@ -43,19 +46,6 @@ public class NamingBeanTestCase extends AbstractDeploymentTest
 
    public void testNameInjection() throws Throwable
    {
-      NameAwareBean bean = (NameAwareBean)getBean("bean");
-      assertNotNull(bean);
-      assertEquals("bean", bean.getName());
-
-      BeanFactory factory = (BeanFactory)getBean("factory");
-      assertNotNull(factory);
-      NameAwareBean b1 = (NameAwareBean)factory.createBean();
-      assertNotNull(b1);
-      assertEquals("factory", b1.getName());
-      NameAwareBean b2 = (NameAwareBean)factory.createBean();
-      assertNotNull(b2);
-      assertEquals("factory", b2.getName());
-
       NameAwareBean nsb = (NameAwareBean)getBean("set_name_bean");
       assertNotNull(nsb);
       assertEquals("set_name_bean", nsb.getName());
@@ -65,5 +55,27 @@ public class NamingBeanTestCase extends AbstractDeploymentTest
       NameAwareBean b3 = (NameAwareBean)nsf.createBean();
       assertNotNull(b3);
       assertEquals("set_name_factory", b3.getName());
+      NameAwareBean b4 = (NameAwareBean)nsf.createBean();
+      assertNotNull(b4);
+      assertEquals("set_name_factory", b4.getName());
+
+      NameAwareBean metadata = (NameAwareBean)getBean("metadata");
+      assertNotNull(metadata);
+      assertNotNull(metadata.getMetadata());
+      assertInstanceOf(metadata.getMetadata(), MetaData.class);
+
+      NameAwareBean scopekey = (NameAwareBean)getBean("scopekey");
+      assertNotNull(scopekey);
+      assertNotNull(scopekey.getScopeKey());
+      assertInstanceOf(scopekey.getScopeKey(), ScopeKey.class);
+
+      NameAwareBean dynamic = (NameAwareBean)getBean("dynamic");
+      assertNotNull(dynamic);
+      assertNotNull(dynamic.getDynamic());
+      assertInstanceOf(dynamic.getDynamic(), BeanMetaData.class);
+
+      NameAwareBean other = (NameAwareBean)getBean("other");
+      assertNotNull(other);
+      assertEquals("set_name_bean", other.getName());
    }
 }

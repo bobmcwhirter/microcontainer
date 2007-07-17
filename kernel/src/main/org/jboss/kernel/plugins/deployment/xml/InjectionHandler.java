@@ -10,6 +10,7 @@ import javax.xml.namespace.QName;
 import org.jboss.beans.metadata.plugins.AbstractInjectionValueMetaData;
 import org.jboss.beans.metadata.plugins.AbstractPropertyMetaData;
 import org.jboss.beans.metadata.plugins.InjectionOption;
+import org.jboss.beans.metadata.plugins.FromContext;
 import org.jboss.beans.metadata.spi.AutowireType;
 import org.jboss.dependency.spi.ControllerState;
 import org.jboss.xb.binding.sunday.unmarshalling.DefaultElementHandler;
@@ -56,7 +57,8 @@ public class InjectionHandler extends DefaultElementHandler
             injection.setInjectionType(AutowireType.getInstance(attrs.getValue(i)));
          else if ("option".equals(localName))
             injection.setInjectionOption(InjectionOption.getInstance(attrs.getValue(i)));
+         else if ("fromContext".equals(localName))
+            injection.setFromContext(FromContext.getInstance(attrs.getValue(i)));
       }
    }
-
 }
