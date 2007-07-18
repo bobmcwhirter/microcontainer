@@ -38,7 +38,9 @@ import org.jboss.beans.info.spi.BeanInfo;
 /**
  * Inject from controller context:
  *  * name - controller context name
+ *  * alias - aliases
  *  * metadata - inject MetaData
+ *  * beaninfo - BeanInfo
  *  * scope - ScopeKey
  *  * id - identifier
  *  * ...
