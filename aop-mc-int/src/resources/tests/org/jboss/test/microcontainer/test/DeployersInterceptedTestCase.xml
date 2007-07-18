@@ -2,8 +2,6 @@
 
 <deployment xmlns="urn:jboss:bean-deployer:2.0">
 
-   <bean name="Repository" class="org.jboss.metadata.plugins.repository.basic.BasicMetaDataRepository"/>
-
    <bean name="AspectManager" class="org.jboss.aop.AspectManager">
       <constructor factoryClass="org.jboss.aop.AspectManager" factoryMethod="instance"/>
    </bean>
@@ -15,15 +13,15 @@
       <property name="advice"><inject bean="DeployersAdvice"/></property>
       <property name="manager"><inject bean="AspectManager"/></property>
    </bean>
-   
+
    <bean name="DeployersBinding" class="org.jboss.aop.microcontainer.beans.AspectBinding">
-      <!-- This fails to match anything 
+      <!-- This fails to match anything
       -->
       <property name="pointcut">execution(* $instanceof{org.jboss.test.microcontainer.support.deployers.IDeployer}->$implements{org.jboss.test.microcontainer.support.deployers.IDeployer}(..))</property>
       <property name="aspect"><inject bean="DeployersAspect" property="definition"/></property>
       <property name="manager"><inject bean="AspectManager"/></property>
    </bean>
-   
+
    <bean name="MainDeployer" class="org.jboss.test.microcontainer.support.deployers.SampleMainDeployer">
       <property name="deployers">
          <list>
@@ -36,6 +34,6 @@
          </list>
       </property>
    </bean>
-   
+
 
 </deployment>

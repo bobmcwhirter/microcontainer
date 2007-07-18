@@ -6,8 +6,6 @@
       <constructor factoryClass="javax.management.MBeanServerFactory" factoryMethod="createMBeanServer"/>
    </bean>
 
-   <bean name="Repository" class="org.jboss.metadata.plugins.repository.basic.BasicMetaDataRepository"/>
-
    <bean name="AspectManager" class="org.jboss.aop.AspectManager">
       <constructor factoryClass="org.jboss.aop.AspectManager" factoryMethod="instance"/>
    </bean>
@@ -91,7 +89,7 @@
    </aop:lifecycle-install>
 
    <aop:lifecycle-install xmlns:aop="urn:jboss:aop-beans:1.0"
-               name="InstallAdviceNotInvoked" 
+               name="InstallAdviceNotInvoked"
                class="org.jboss.test.microcontainer.support.InstallUninstallLifecycleCallback"
                classes="@org.jboss.test.microcontainer.support.Install">
    </aop:lifecycle-install>

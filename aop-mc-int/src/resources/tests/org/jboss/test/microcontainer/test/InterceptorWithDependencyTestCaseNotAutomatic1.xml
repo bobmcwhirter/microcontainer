@@ -6,8 +6,6 @@
       <constructor factoryClass="org.jboss.aop.AspectManager" factoryMethod="instance"/>
    </bean>
 
-   <bean name="Repository" class="org.jboss.metadata.plugins.repository.basic.BasicMetaDataRepository"/>
-
    <aop:aspect xmlns:aop="urn:jboss:aop-beans:1.0"
                name="InterceptedAdvice"
                class="org.jboss.test.microcontainer.support.InterceptorWithDependency"

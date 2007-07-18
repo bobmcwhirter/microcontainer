@@ -6,8 +6,6 @@
       <constructor factoryClass="javax.management.MBeanServerFactory" factoryMethod="createMBeanServer"/>
    </bean>
 
-   <bean name="Repository" class="org.jboss.metadata.plugins.repository.basic.BasicMetaDataRepository"/>
-
    <bean name="AspectManager" class="org.jboss.aop.AspectManager">
       <constructor factoryClass="org.jboss.aop.AspectManager" factoryMethod="instance"/>
    </bean>
@@ -30,7 +28,7 @@
    <bean name="AnnotatedBean" class="org.jboss.test.microcontainer.support.SimpleBeanAnnotatedImpl"/>
 
    <bean name="AnnotatedBean2" class="org.jboss.test.microcontainer.support.SimpleBeanAnnotatedImpl2"/>
-   
+
    <bean name="DirectRegistrant" class="org.jboss.test.microcontainer.support.JmxRegistrantDirect">
       <annotation>@org.jboss.aop.microcontainer.aspects.jmx.JMX(name="test:name=DirectRegistrant", exposedInterface=org.jboss.test.microcontainer.support.JmxRegistrantDirectMBean.class,registerDirectly=true)</annotation>
    </bean>
