@@ -21,10 +21,13 @@
 */
 package org.jboss.test.kernel.deployment.test;
 
+import java.util.Set;
+
 import junit.framework.Test;
 import org.jboss.test.kernel.deployment.support.NameAwareBean;
 import org.jboss.beans.metadata.spi.factory.BeanFactory;
 import org.jboss.beans.metadata.spi.BeanMetaData;
+import org.jboss.beans.info.spi.BeanInfo;
 import org.jboss.metadata.spi.MetaData;
 import org.jboss.metadata.spi.scope.ScopeKey;
 
@@ -59,10 +62,24 @@ public class NamingBeanTestCase extends AbstractDeploymentTest
       assertNotNull(b4);
       assertEquals("set_name_factory", b4.getName());
 
+      NameAwareBean alias = (NameAwareBean)getBean("alias");
+      assertNotNull(alias);
+      Set<Object> aliases = alias.getAlias();
+      assertNotNull(aliases);
+      assertFalse(aliases.isEmpty());
+      assertTrue(aliases.contains("a1"));
+      assertTrue(aliases.contains("a2"));
+      assertTrue(aliases.contains("a3"));      
+
       NameAwareBean metadata = (NameAwareBean)getBean("metadata");
       assertNotNull(metadata);
       assertNotNull(metadata.getMetadata());
       assertInstanceOf(metadata.getMetadata(), MetaData.class);
+
+      NameAwareBean beaninfo = (NameAwareBean)getBean("beaninfo");
+      assertNotNull(beaninfo);
+      assertNotNull(beaninfo.getBeaninfo());
+      assertInstanceOf(beaninfo.getBeaninfo(), BeanInfo.class);
 
       NameAwareBean scopekey = (NameAwareBean)getBean("scopekey");
       assertNotNull(scopekey);

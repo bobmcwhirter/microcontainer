@@ -23,6 +23,8 @@ package org.jboss.beans.metadata.plugins;
 
 import java.io.Serializable;
 import java.lang.reflect.Method;
+import java.util.Set;
+import java.util.Collections;
 
 import org.jboss.kernel.spi.dependency.KernelControllerContext;
 import org.jboss.metadata.spi.MetaData;
@@ -31,6 +33,7 @@ import org.jboss.util.JBossObject;
 import org.jboss.util.JBossStringBuilder;
 import org.jboss.reflect.plugins.introspection.ReflectionUtils;
 import org.jboss.dependency.spi.ControllerContext;
+import org.jboss.beans.info.spi.BeanInfo;
 
 /**
  * Inject from controller context:
@@ -51,8 +54,14 @@ public abstract class FromContext<T extends ControllerContext> extends JBossObje
    /** name */
    public static final FromContext NAME = new NameFromContext("name");
 
+   /** alias */
+   public static final FromContext ALIAS = new AliasFromContext("alias");
+
    /** metadata */
    public static final FromContext METADATA = new MetaDataFromContext("metadata");
+
+   /** beaninfo */
+   public static final FromContext BEANINFO = new BeanInfoFromContext("beaninfo");
 
    /** scope */
    public static final FromContext SCOPE = new ScopeFromContext("scope");
@@ -78,21 +87,25 @@ public abstract class FromContext<T extends ControllerContext> extends JBossObje
    /**
     * Return from type.
     *
-    * @param optionString type
-    * @return InjectionOption instance
+    * @param fromString type
+    * @return FromContext instance
     */
-   public static FromContext getInstance(String optionString)
+   public static FromContext getInstance(String fromString)
    {
-      if (NAME.getFromString().equalsIgnoreCase(optionString))
+      if (NAME.getFromString().equalsIgnoreCase(fromString))
          return NAME;
-      else if (METADATA.getFromString().equalsIgnoreCase(optionString))
+      else if (ALIAS.getFromString().equalsIgnoreCase(fromString))
+         return ALIAS;
+      else if (METADATA.getFromString().equalsIgnoreCase(fromString))
          return METADATA;
-      else if (SCOPE.getFromString().equalsIgnoreCase(optionString))
+      else if (BEANINFO.getFromString().equalsIgnoreCase(fromString))
+         return BEANINFO;
+      else if (SCOPE.getFromString().equalsIgnoreCase(fromString))
          return SCOPE;
-      else if (ID.getFromString().equalsIgnoreCase(optionString))
+      else if (ID.getFromString().equalsIgnoreCase(fromString))
          return ID;
       else
-         return new DynamicFromContext(optionString);
+         return new DynamicFromContext(fromString);
    }
 
    /**
@@ -147,6 +160,21 @@ public abstract class FromContext<T extends ControllerContext> extends JBossObje
       }
    }
 
+   private static class AliasFromContext extends FromContext
+   {
+      private static final long serialVersionUID = 1L;
+
+      public AliasFromContext(String fromString)
+      {
+         super(fromString);
+      }
+
+      public Set<Object> executeLookup(ControllerContext context)
+      {
+         return Collections.unmodifiableSet(context.getAliases());
+      }
+   }
+
    private static class MetaDataFromContext extends FromContext<KernelControllerContext>
    {
       private static final long serialVersionUID = 1L;
@@ -162,6 +190,21 @@ public abstract class FromContext<T extends ControllerContext> extends JBossObje
       }
    }
 
+   private static class BeanInfoFromContext extends FromContext<KernelControllerContext>
+   {
+      private static final long serialVersionUID = 1L;
+
+      public BeanInfoFromContext(String fromString)
+      {
+         super(fromString);
+      }
+
+      public BeanInfo executeLookup(KernelControllerContext context)
+      {
+         return context.getBeanInfo();
+      }
+   }
+
    private static class ScopeFromContext extends FromContext<KernelControllerContext>
    {
       private static final long serialVersionUID = 1L;
@@ -173,7 +216,8 @@ public abstract class FromContext<T extends ControllerContext> extends JBossObje
 
       public ScopeKey executeLookup(KernelControllerContext context)
       {
-         return context.getScope();
+         ScopeKey key = context.getScope();
+         return key != null ? key.clone() : null;
       }
    }
 
@@ -234,6 +278,7 @@ public abstract class FromContext<T extends ControllerContext> extends JBossObje
          Method method = findMethod(context.getClass());
          if (method == null)
             throw new IllegalArgumentException("No such getter on context class: " + getFromString());
+         // wrap as immutable?
          return ReflectionUtils.invoke(method, context, new Object[]{});
       }
    }
