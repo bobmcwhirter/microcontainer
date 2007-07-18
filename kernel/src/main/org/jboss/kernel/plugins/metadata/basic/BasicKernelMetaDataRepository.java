@@ -236,6 +236,7 @@ public class BasicKernelMetaDataRepository extends AbstractKernelMetaDataReposit
    /**
     * Add property annotations
     * 
+    * @param classloader the classloader
     * @param mutable the mutable
     * @param propertyMetaData the property
     * @param beanInfo the bean info
@@ -266,7 +267,8 @@ public class BasicKernelMetaDataRepository extends AbstractKernelMetaDataReposit
    
    /**
     * Add annotations for a method
-    * 
+    *
+    * @param classloader the classloader
     * @param mutable the mutable metadata
     * @param methodInfo the method info
     * @param annotations the annotations
@@ -286,7 +288,8 @@ public class BasicKernelMetaDataRepository extends AbstractKernelMetaDataReposit
    
    /**
     * Add annotations to a mutable metadata
-    * 
+    *
+    * @param classloader the classloader
     * @param mutable the mutable metadata
     * @param annotations the annotations
     */
