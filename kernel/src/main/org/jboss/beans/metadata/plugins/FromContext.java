@@ -111,13 +111,37 @@ public abstract class FromContext<T extends ControllerContext> extends JBossObje
    }
 
    /**
+    * Validate context before execution.
+    * After validation we must be able to cast context to T instance.
+    *
+    * @param context the context
+    */
+   protected void validate(ControllerContext context)
+   {
+   }
+
+   /**
     * Execute injection on context.
     *
     * @param context the target context
     * @return lookup value
     * @throws Throwable for any error
     */
-   public abstract Object executeLookup(T context) throws Throwable;
+   @SuppressWarnings("unchecked")
+   public Object executeLookup(ControllerContext context) throws Throwable
+   {
+      validate(context);
+      return internalExecute((T)context);
+   }
+
+   /**
+    * Execute internal lookup on context.
+    *
+    * @param context the target context
+    * @return lookup value
+    * @throws Throwable for any error
+    */
+   public abstract Object internalExecute(T context) throws Throwable;
 
    /**
     * Get the from string
@@ -147,6 +171,22 @@ public abstract class FromContext<T extends ControllerContext> extends JBossObje
       return fromString.hashCode();
    }
 
+   private static abstract class KernelFromContext extends FromContext<KernelControllerContext>
+   {
+      private static final long serialVersionUID = 1L;
+
+      protected KernelFromContext(String fromString)
+      {
+         super(fromString);
+      }
+
+      protected void validate(ControllerContext context)
+      {
+         if (context instanceof KernelControllerContext == false)
+            throw new UnsupportedOperationException("Cannot execute " + getFromString() + " on underlying context: " + context);
+      }
+   }
+
    private static class NameFromContext extends FromContext
    {
       private static final long serialVersionUID = 1L;
@@ -156,7 +196,7 @@ public abstract class FromContext<T extends ControllerContext> extends JBossObje
          super(fromString);
       }
 
-      public Object executeLookup(ControllerContext context)
+      public Object internalExecute(ControllerContext context)
       {
          return context.getName();
       }
@@ -171,13 +211,13 @@ public abstract class FromContext<T extends ControllerContext> extends JBossObje
          super(fromString);
       }
 
-      public Set<Object> executeLookup(ControllerContext context)
+      public Set<Object> internalExecute(ControllerContext context)
       {
          return Collections.unmodifiableSet(context.getAliases());
       }
    }
 
-   private static class MetaDataFromContext extends FromContext<KernelControllerContext>
+   private static class MetaDataFromContext extends KernelFromContext
    {
       private static final long serialVersionUID = 1L;
 
@@ -186,13 +226,14 @@ public abstract class FromContext<T extends ControllerContext> extends JBossObje
          super(fromString);
       }
 
-      public MetaData executeLookup(KernelControllerContext context)
+      public MetaData internalExecute(KernelControllerContext context)
       {
+         // todo wrapper
          return context.getMetaData();
       }
    }
 
-   private static class BeanInfoFromContext extends FromContext<KernelControllerContext>
+   private static class BeanInfoFromContext extends KernelFromContext
    {
       private static final long serialVersionUID = 1L;
 
@@ -201,13 +242,14 @@ public abstract class FromContext<T extends ControllerContext> extends JBossObje
          super(fromString);
       }
 
-      public BeanInfo executeLookup(KernelControllerContext context)
+      public BeanInfo internalExecute(KernelControllerContext context)
       {
+         // todo wrapper
          return context.getBeanInfo();
       }
    }
 
-   private static class ScopeFromContext extends FromContext<KernelControllerContext>
+   private static class ScopeFromContext extends KernelFromContext
    {
       private static final long serialVersionUID = 1L;
 
@@ -216,7 +258,7 @@ public abstract class FromContext<T extends ControllerContext> extends JBossObje
          super(fromString);
       }
 
-      public ScopeKey executeLookup(KernelControllerContext context)
+      public ScopeKey internalExecute(KernelControllerContext context)
       {
          ScopeKey key = context.getScope();
          return key != null ? key.clone() : null;
@@ -232,7 +274,7 @@ public abstract class FromContext<T extends ControllerContext> extends JBossObje
          super(fromString);
       }
 
-      public Object executeLookup(ControllerContext context)
+      public Object internalExecute(ControllerContext context)
       {
          // todo - change to actual id when impl
          return context.getName();
@@ -275,7 +317,7 @@ public abstract class FromContext<T extends ControllerContext> extends JBossObje
          return null;
       }
 
-      public Object executeLookup(ControllerContext context) throws Throwable
+      public Object internalExecute(ControllerContext context) throws Throwable
       {
          Method method = findMethod(context.getClass());
          if (method == null)
