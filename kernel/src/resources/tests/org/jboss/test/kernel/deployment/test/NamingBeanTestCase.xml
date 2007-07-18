@@ -10,11 +10,11 @@
       <property name="name"><inject fromContext="name"/></property>
    </beanfactory>
 
-   <bean name="alias" class="org.jboss.test.kernel.deployment.support.NameAwareBean">
+   <bean name="aliases" class="org.jboss.test.kernel.deployment.support.NameAwareBean">
       <alias>a1</alias>
       <alias>a2</alias>
       <alias>a3</alias>
-      <property name="alias"><inject fromContext="alias"/></property>
+      <property name="aliases"><inject fromContext="aliases"/></property>
    </bean>
 
    <bean name="metadata" class="org.jboss.test.kernel.deployment.support.NameAwareBean">

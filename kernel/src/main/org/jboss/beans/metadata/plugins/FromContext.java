@@ -57,7 +57,7 @@ public abstract class FromContext<T extends ControllerContext> extends JBossObje
    public static final FromContext NAME = new NameFromContext("name");
 
    /** alias */
-   public static final FromContext ALIAS = new AliasFromContext("alias");
+   public static final FromContext ALIASES = new AliasesFromContext("aliases");
 
    /** metadata */
    public static final FromContext METADATA = new MetaDataFromContext("metadata");
@@ -96,8 +96,8 @@ public abstract class FromContext<T extends ControllerContext> extends JBossObje
    {
       if (NAME.getFromString().equalsIgnoreCase(fromString))
          return NAME;
-      else if (ALIAS.getFromString().equalsIgnoreCase(fromString))
-         return ALIAS;
+      else if (ALIASES.getFromString().equalsIgnoreCase(fromString))
+         return ALIASES;
       else if (METADATA.getFromString().equalsIgnoreCase(fromString))
          return METADATA;
       else if (BEANINFO.getFromString().equalsIgnoreCase(fromString))
@@ -162,11 +162,11 @@ public abstract class FromContext<T extends ControllerContext> extends JBossObje
       }
    }
 
-   private static class AliasFromContext extends FromContext
+   private static class AliasesFromContext extends FromContext
    {
       private static final long serialVersionUID = 1L;
 
-      public AliasFromContext(String fromString)
+      public AliasesFromContext(String fromString)
       {
          super(fromString);
       }

@@ -35,7 +35,7 @@ import org.jboss.beans.info.spi.BeanInfo;
 public class NameAwareBean
 {
    private String name;
-   private Set<Object> alias;
+   private Set<Object> aliases;
    private MetaData metadata;
    private BeanInfo beaninfo;
    private ScopeKey scopeKey;
@@ -86,14 +86,14 @@ public class NameAwareBean
       this.dynamic = dynamic;
    }
 
-   public Set<Object> getAlias()
+   public Set<Object> getAliases()
    {
-      return alias;
+      return aliases;
    }
 
-   public void setAlias(Set<Object> alias)
+   public void setAliases(Set<Object> aliases)
    {
-      this.alias = alias;
+      this.aliases = aliases;
    }
 
    public BeanInfo getBeaninfo()

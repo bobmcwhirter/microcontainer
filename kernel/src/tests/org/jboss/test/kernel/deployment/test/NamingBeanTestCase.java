@@ -62,9 +62,9 @@ public class NamingBeanTestCase extends AbstractDeploymentTest
       assertNotNull(b4);
       assertEquals("set_name_factory", b4.getName());
 
-      NameAwareBean alias = (NameAwareBean)getBean("alias");
+      NameAwareBean alias = (NameAwareBean)getBean("aliases");
       assertNotNull(alias);
-      Set<Object> aliases = alias.getAlias();
+      Set<Object> aliases = alias.getAliases();
       assertNotNull(aliases);
       assertFalse(aliases.isEmpty());
       assertTrue(aliases.contains("a1"));
