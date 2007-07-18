@@ -33,5 +33,16 @@ import org.jboss.util.JBossInterface;
  */
 public interface AnnotationMetaData extends JBossInterface, MetaDataVisitorNode
 {
+   /**
+    * Get the annotation using passed in classloader
+    * @param classloader The classloader
+    * @return The annotation instance
+    */
+   Annotation getAnnotationInstance(ClassLoader classloader);
+
+   /**
+    * Get the annotation using the thread context classloader
+    * @return The annotation instance
+    */
    Annotation getAnnotationInstance();
 }

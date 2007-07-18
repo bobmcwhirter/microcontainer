@@ -81,6 +81,11 @@ public class AbstractAnnotationMetaData extends JBossObject
 
    public Annotation getAnnotationInstance()
    {
+      return getAnnotationInstance(null);
+   }   
+   
+   public Annotation getAnnotationInstance(ClassLoader cl)
+   {
       try
       {
          String annString = annotation;
@@ -88,14 +93,17 @@ public class AbstractAnnotationMetaData extends JBossObject
          {
             annString = StringPropertyReplacer.replaceProperties(annString);
          }
-         //FIXME [JBMICROCONT-99] [JBAOP-278] Use the loader for the bean?
-         ann = (Annotation)AnnotationCreator.createAnnotation(annString, Thread.currentThread().getContextClassLoader());
+         if (cl == null) 
+         {
+            cl = Thread.currentThread().getContextClassLoader();
+         }
+         ann = (Annotation)AnnotationCreator.createAnnotation(annString, cl);
       }
-      catch (Exception e)
+      catch(TokenMgrError e)
       {
          throw new RuntimeException("Error creating annotation for " + annotation, e);
       }
-      catch(TokenMgrError e)
+      catch (Throwable e)
       {
          throw new RuntimeException("Error creating annotation for " + annotation, e);
       }

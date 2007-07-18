@@ -29,6 +29,7 @@ import org.jboss.beans.info.spi.PropertyInfo;
 import org.jboss.beans.metadata.spi.AnnotationMetaData;
 import org.jboss.beans.metadata.spi.BeanMetaData;
 import org.jboss.beans.metadata.spi.PropertyMetaData;
+import org.jboss.kernel.plugins.config.Configurator;
 import org.jboss.kernel.plugins.metadata.AbstractKernelMetaDataRepository;
 import org.jboss.kernel.spi.dependency.KernelControllerContext;
 import org.jboss.metadata.plugins.context.AbstractMetaDataContext;
@@ -186,7 +187,17 @@ public class BasicKernelMetaDataRepository extends AbstractKernelMetaDataReposit
    {
       BeanMetaData beanMetaData = context.getBeanMetaData();
       if (beanMetaData != null)
-         addAnnotations(mutable, beanMetaData.getAnnotations());
+      {
+         try
+         {
+            ClassLoader cl = Configurator.getClassLoader(beanMetaData);
+            addAnnotations(cl, mutable, beanMetaData.getAnnotations());
+         }
+         catch(Throwable t)
+         {
+            throw new RuntimeException("Error getting classloader for metadata");
+         }
+      }
    }
 
    /**
@@ -210,8 +221,16 @@ public class BasicKernelMetaDataRepository extends AbstractKernelMetaDataReposit
       if (beanInfo == null)
          return;
       
-      for (PropertyMetaData property : properties)
-         addPropertyAnnotations(mutable, property, beanInfo);
+      try
+      {
+         ClassLoader cl = Configurator.getClassLoader(beanMetaData);
+         for (PropertyMetaData property : properties)
+            addPropertyAnnotations(cl, mutable, property, beanInfo);
+      }
+      catch(Throwable t)
+      {
+         throw new RuntimeException("Error getting classloader for metadata");
+      }
    }
 
    /**
@@ -221,7 +240,7 @@ public class BasicKernelMetaDataRepository extends AbstractKernelMetaDataReposit
     * @param propertyMetaData the property
     * @param beanInfo the bean info
     */
-   private void addPropertyAnnotations(MemoryMetaDataLoader mutable, PropertyMetaData propertyMetaData, BeanInfo beanInfo)
+   private void addPropertyAnnotations(ClassLoader classloader, MemoryMetaDataLoader mutable, PropertyMetaData propertyMetaData, BeanInfo beanInfo)
    {
       Set<AnnotationMetaData> propertyAnnotations = propertyMetaData.getAnnotations();
       if (propertyAnnotations == null || propertyAnnotations.size() == 0)
@@ -236,10 +255,10 @@ public class BasicKernelMetaDataRepository extends AbstractKernelMetaDataReposit
             {
                MethodInfo methodInfo = propertyInfo.getGetter();
                if (methodInfo != null)
-                  addAnnotations(mutable, methodInfo, propertyAnnotations);
+                  addAnnotations(classloader, mutable, methodInfo, propertyAnnotations);
                methodInfo = propertyInfo.getSetter();
                if (methodInfo != null)
-                  addAnnotations(mutable, methodInfo, propertyAnnotations);
+                  addAnnotations(classloader, mutable, methodInfo, propertyAnnotations);
             }
          }
       }
@@ -252,7 +271,7 @@ public class BasicKernelMetaDataRepository extends AbstractKernelMetaDataReposit
     * @param methodInfo the method info
     * @param annotations the annotations
     */
-   private void addAnnotations(MemoryMetaDataLoader mutable, MethodInfo methodInfo, Set<AnnotationMetaData> annotations)
+   private void addAnnotations(ClassLoader classloader, MemoryMetaDataLoader mutable, MethodInfo methodInfo, Set<AnnotationMetaData> annotations)
    {
       TypeInfo[] typeInfos = methodInfo.getParameterTypes();
       String[] paramTypes = new String[typeInfos.length];
@@ -261,7 +280,7 @@ public class BasicKernelMetaDataRepository extends AbstractKernelMetaDataReposit
 
       ScopeKey scope = new ScopeKey(CommonLevels.JOINPOINT_OVERRIDE, methodInfo.getName());
       MemoryMetaDataLoader loader = new MemoryMetaDataLoader(scope);
-      addAnnotations(loader, annotations);
+      addAnnotations(classloader, loader, annotations);
       mutable.addComponentMetaDataRetrieval(new MethodSignature(methodInfo.getName(), paramTypes), loader);
    }
    
@@ -271,12 +290,12 @@ public class BasicKernelMetaDataRepository extends AbstractKernelMetaDataReposit
     * @param mutable the mutable metadata
     * @param annotations the annotations
     */
-   private void addAnnotations(MemoryMetaDataLoader mutable, Set<AnnotationMetaData> annotations)
+   private void addAnnotations(ClassLoader classloader, MemoryMetaDataLoader mutable, Set<AnnotationMetaData> annotations)
    {
       if (annotations == null || annotations.size() == 0)
          return;
 
       for (AnnotationMetaData annotation : annotations)
-         mutable.addAnnotation(annotation.getAnnotationInstance());
+         mutable.addAnnotation(annotation.getAnnotationInstance(classloader));
    }
 }
