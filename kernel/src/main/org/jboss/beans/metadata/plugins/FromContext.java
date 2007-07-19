@@ -218,7 +218,8 @@ public abstract class FromContext<T extends ControllerContext> extends JBossObje
 
       public Set<Object> internalExecute(ControllerContext context)
       {
-         return Collections.unmodifiableSet(context.getAliases());
+         Set<Object> aliases = context.getAliases();
+         return aliases != null ? Collections.unmodifiableSet(aliases) : null;
       }
    }
 
