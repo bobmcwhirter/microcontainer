@@ -337,7 +337,7 @@ public abstract class FromContext<T extends ControllerContext> extends JBossObje
       {
          Method method = findMethod(context.getClass());
          if (method == null)
-            throw new IllegalArgumentException("No such getter on context class: " + getFromString());
+            throw new IllegalArgumentException("No such getter on context class or mistyped fromContext string: " + getFromString());
          Object result = ReflectionUtils.invoke(method, context, new Object[]{});
          if (result != null)
          {
