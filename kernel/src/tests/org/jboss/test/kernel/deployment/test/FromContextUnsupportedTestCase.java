@@ -22,18 +22,24 @@
 package org.jboss.test.kernel.deployment.test;
 
 import java.util.Set;
+import java.util.HashSet;
 
 import junit.framework.Test;
+import org.jboss.beans.info.spi.BeanInfo;
 import org.jboss.beans.metadata.spi.BeanMetaData;
-import org.jboss.beans.metadata.spi.factory.BeanFactory;
+import org.jboss.metadata.spi.MetaData;
+import org.jboss.metadata.spi.MutableMetaData;
+import org.jboss.metadata.spi.scope.ScopeKey;
 import org.jboss.test.kernel.deployment.support.NameAwareBean;
+import org.jboss.kernel.spi.dependency.KernelControllerContext;
+import org.jboss.reflect.spi.MethodInfo;
 
 /**
  * @author <a href="mailto:ales.justin@jboss.com">Ales Justin</a>
  */
-public class NamingBeanTestCase extends AbstractDeploymentTest
+public class FromContextUnsupportedTestCase extends AbstractDeploymentTest
 {
-   public NamingBeanTestCase(String name)
+   public FromContextUnsupportedTestCase(String name)
          throws Throwable
    {
       super(name);
@@ -41,24 +47,11 @@ public class NamingBeanTestCase extends AbstractDeploymentTest
 
    public static Test suite()
    {
-      return suite(NamingBeanTestCase.class);
+      return suite(FromContextUnsupportedTestCase.class);
    }
 
-   public void testNameInjection() throws Throwable
+   public void testUnsupportedInjection() throws Throwable
    {
-      NameAwareBean nsb = (NameAwareBean)getBean("set_name_bean");
-      assertNotNull(nsb);
-      assertEquals("set_name_bean", nsb.getName());
-
-      BeanFactory nsf = (BeanFactory)getBean("set_name_factory");
-      assertNotNull(nsf);
-      NameAwareBean b3 = (NameAwareBean)nsf.createBean();
-      assertNotNull(b3);
-      assertEquals("set_name_factory", b3.getName());
-      NameAwareBean b4 = (NameAwareBean)nsf.createBean();
-      assertNotNull(b4);
-      assertEquals("set_name_factory", b4.getName());
-
       NameAwareBean alias = (NameAwareBean)getBean("aliases");
       assertNotNull(alias);
       Set<Object> aliases = alias.getAliases();
@@ -66,27 +59,61 @@ public class NamingBeanTestCase extends AbstractDeploymentTest
       assertFalse(aliases.isEmpty());
       assertTrue(aliases.contains("a1"));
       assertTrue(aliases.contains("a2"));
-      assertTrue(aliases.contains("a3"));      
+      assertTrue(aliases.contains("a3"));
+      try
+      {
+         aliases.add("failedAlias");
+      }
+      catch(Throwable t)
+      {
+         assertUnsupported(t);
+      }
 
       NameAwareBean metadata = (NameAwareBean)getBean("metadata");
       assertNotNull(metadata);
-      assertNotNull(metadata.getMetadata());
+      MetaData md = metadata.getMetadata();
+      assertNotNull(md);
+      assertFalse(md instanceof MutableMetaData);
 
       NameAwareBean beaninfo = (NameAwareBean)getBean("beaninfo");
       assertNotNull(beaninfo);
-      assertNotNull(beaninfo.getBeaninfo());
+      BeanInfo info = beaninfo.getBeaninfo();
+      assertNotNull(info);
+      try
+      {
+         info.setMethods(new HashSet<MethodInfo>());
+      }
+      catch(Throwable t)
+      {
+         assertUnsupported(t);
+      }
 
       NameAwareBean scopekey = (NameAwareBean)getBean("scopekey");
       assertNotNull(scopekey);
-      assertNotNull(scopekey.getScopeKey());
+      ScopeKey key = scopekey.getScopeKey();
+      assertNotNull(key);
+      assertInstanceOf(key, ScopeKey.class);
+      KernelControllerContext context = getControllerContext("scopekey");
+      assertNotSame(key, context.getScope());
 
       NameAwareBean dynamic = (NameAwareBean)getBean("dynamic");
       assertNotNull(dynamic);
-      assertNotNull(dynamic.getDynamic());
-      assertInstanceOf(dynamic.getDynamic(), BeanMetaData.class);
+      Object dyna = dynamic.getDynamic();
+      assertNotNull(dyna);
+      assertInstanceOf(dyna, BeanMetaData.class);
+      BeanMetaData bmd = (BeanMetaData)dyna;
+      try
+      {
+         bmd.setName("failedName");   
+      }
+      catch(Throwable t)
+      {
+         assertUnsupported(t);
+      }
+   }
 
-      NameAwareBean other = (NameAwareBean)getBean("other");
-      assertNotNull(other);
-      assertEquals("set_name_bean", other.getName());
+   protected void assertUnsupported(Throwable t)
+   {
+      assertInstanceOf(t, UnsupportedOperationException.class);
    }
 }

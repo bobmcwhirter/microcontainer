@@ -23,17 +23,22 @@ package org.jboss.beans.metadata.plugins;
 
 import java.io.Serializable;
 import java.lang.reflect.Method;
+import java.lang.reflect.InvocationHandler;
+import java.lang.reflect.Proxy;
 import java.util.Set;
 import java.util.Collections;
+import java.util.HashSet;
 
 import org.jboss.kernel.spi.dependency.KernelControllerContext;
 import org.jboss.metadata.spi.MetaData;
 import org.jboss.metadata.spi.scope.ScopeKey;
+import org.jboss.metadata.spi.helpers.UnmodifiableMetaData;
 import org.jboss.util.JBossObject;
 import org.jboss.util.JBossStringBuilder;
 import org.jboss.reflect.plugins.introspection.ReflectionUtils;
 import org.jboss.dependency.spi.ControllerContext;
 import org.jboss.beans.info.spi.BeanInfo;
+import org.jboss.beans.info.spi.helpers.UnmodifiableBeanInfo;
 
 /**
  * Inject from controller context:
@@ -46,7 +51,7 @@ import org.jboss.beans.info.spi.BeanInfo;
  *  * ...
  *
  * @param <T> exact controller context type
- * @author <a href="mailto:ales.justin@genera-lynx.com">Ales Justin</a>
+ * @author <a href="mailto:ales.justin@jboss.com">Ales Justin</a>
  */
 public abstract class FromContext<T extends ControllerContext> extends JBossObject
       implements Serializable
@@ -228,8 +233,8 @@ public abstract class FromContext<T extends ControllerContext> extends JBossObje
 
       public MetaData internalExecute(KernelControllerContext context)
       {
-         // todo wrapper
-         return context.getMetaData();
+         MetaData metaData = context.getMetaData();
+         return metaData != null ? new UnmodifiableMetaData(metaData) : null;
       }
    }
 
@@ -244,8 +249,8 @@ public abstract class FromContext<T extends ControllerContext> extends JBossObje
 
       public BeanInfo internalExecute(KernelControllerContext context)
       {
-         // todo wrapper
-         return context.getBeanInfo();
+         BeanInfo info = context.getBeanInfo();
+         return info != null ? new UnmodifiableBeanInfo(info) : null;
       }
    }
 
@@ -317,13 +322,63 @@ public abstract class FromContext<T extends ControllerContext> extends JBossObje
          return null;
       }
 
+      protected void getInterfaces(Class clazz, Set<Class> interfaces)
+      {
+         if (clazz == Object.class || clazz == null)
+            return;
+         for (Class iface : clazz.getInterfaces())
+            interfaces.add(iface);
+         getInterfaces(clazz.getSuperclass(), interfaces);         
+      }
+
       public Object internalExecute(ControllerContext context) throws Throwable
       {
          Method method = findMethod(context.getClass());
          if (method == null)
             throw new IllegalArgumentException("No such getter on context class: " + getFromString());
-         // wrap as immutable?
-         return ReflectionUtils.invoke(method, context, new Object[]{});
+         Object result = ReflectionUtils.invoke(method, context, new Object[]{});
+         if (result != null)
+         {
+            Set<Class> interfaces = new HashSet<Class>();
+            getInterfaces(result.getClass(), interfaces);
+            return Proxy.newProxyInstance(
+                     ControllerContext.class.getClassLoader(),
+                     interfaces.toArray(new Class[interfaces.size()]),
+                     new DynamicWrapper(result));
+         }
+         return null;
+      }
+
+      /**
+       * This warpper throws error on methods that start with set or add.
+       */
+      private class DynamicWrapper implements InvocationHandler
+      {
+         private Object target;
+
+         public DynamicWrapper(Object target)
+         {
+            this.target = target;
+         }
+
+         /**
+          * Check if the method is unsupported.
+          *
+          * @param method the executed method.
+          * @return true if unsupported, false otherwise
+          */
+         protected boolean isUnsupported(Method method)
+         {
+            String name = method.getName();
+            return (name.startsWith("set") || name.startsWith("add"));
+         }
+
+         public Object invoke(Object proxy, Method method, Object[] args) throws Throwable
+         {
+            if (isUnsupported(method))
+               throw new UnsupportedOperationException();
+            return ReflectionUtils.invoke(method, target, args);
+         }
       }
    }
 
