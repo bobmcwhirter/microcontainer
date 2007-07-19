@@ -43,11 +43,12 @@ import org.jboss.beans.info.spi.helpers.UnmodifiableBeanInfo;
 /**
  * Inject from controller context:
  *  * name - controller context name
- *  * alias - aliases
+ *  * aliases - aliases
  *  * metadata - inject MetaData
  *  * beaninfo - BeanInfo
  *  * scope - ScopeKey
  *  * id - identifier
+ *  * dynamic - method specific
  *  * ...
  *
  * @param <T> exact controller context type
