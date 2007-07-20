@@ -430,7 +430,8 @@
 
       <para>Sometimes it is still usefull to be able to set or inject a value which can be morfed / progressed into
          needed type althogh existing type is not compatible (normally getting ClassCastException). This is mostly true
-         for java.lang.Number subclasses. Let's see how <varname>progression</varname> is used on the following example.
+         for java.lang.Number subclasses. Let's see how <varname>progression</varname> is used on the following example
+         (here we use &lt;inject>, which is actually explained in the next chapter).
       </para>
 
       <programlisting>
@@ -580,6 +581,14 @@
          Circular1.setOther(Circular2); // don't wait for a fully configured Circular1
          Circular2.setOther(Circular1); // Complete the confguration of Circular2
       </programlisting>
+
+   </section>
+
+   <section>
+      <title>Value Factory</title>
+
+      <para>TODO - ValueFactory.
+      </para>
 
    </section>
 
@@ -1316,6 +1325,14 @@
          But you can change the Collection callback behaviour by providing your own CollectionCallbackItemFactory.
          You do this by setting System property <varname>org.jboss.dependency.collectionCallbackItemFactory</varname>
          and putting CollectionCallbackItemFactory implementation fully qualified class name as a value.
+      </para>
+
+   </section>
+
+   <section>
+      <title>Injection from context</title>
+
+      <para>TODO - injection from context.
       </para>
 
    </section>
