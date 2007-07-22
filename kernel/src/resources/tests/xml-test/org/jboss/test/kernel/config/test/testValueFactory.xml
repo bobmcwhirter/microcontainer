@@ -1,0 +1,53 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<deployment xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+            xsi:schemaLocation="urn:jboss:bean-deployer:2.0 bean-deployer_2_0.xsd"
+            xmlns="urn:jboss:bean-deployer:2.0">
+
+   <bean name="ldap" class="org.jboss.test.kernel.config.support.LDAPFactory">
+      <constructor>
+         <parameter>
+            <map keyClass="java.lang.String" valueClass="java.lang.String">
+               <entry>
+                  <key>foo.bar.key</key>
+                  <value>QWERT</value>
+               </entry>
+               <entry>
+                  <key>xyz.key</key>
+                  <value> QWERT </value>
+               </entry>
+            </map>
+         </parameter>
+      </constructor>
+   </bean>
+
+   <bean name="PropHolder" class="org.jboss.test.kernel.config.support.PropHolder">
+      <constructor>
+         <parameter>
+            <value-factory bean="ldap" method="getValue" parameter="foo.bar.key"/>
+         </parameter>
+      </constructor>
+      <property name="value">
+         <value-factory bean="ldap" method="getValue" parameter="foo.bar.key"/>
+      </property>
+      <property name="list">
+         <list elementClass="java.lang.String">
+            <value-factory bean="ldap" method="getValue" parameter="foo.bar.key"/>
+            <value-factory bean="ldap" method="getValue">
+               <parameter>foo.bar.key</parameter>
+               <parameter>qaz</parameter>
+            </value-factory>
+            <value-factory bean="ldap" method="getValue">
+               <parameter>xyz.key</parameter>
+               <parameter>xyz</parameter>
+               <parameter><bean name="t" class="org.jboss.test.kernel.config.support.TrimTransformer"/></parameter>
+            </value-factory>
+            <value-factory bean="ldap" method="getValue" default="QWERT">
+               <parameter>no.such.key</parameter>
+            </value-factory>
+         </list>
+      </property>
+   </bean>
+
+</deployment>
+

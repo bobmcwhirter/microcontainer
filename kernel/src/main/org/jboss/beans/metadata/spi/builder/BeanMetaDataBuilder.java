@@ -43,6 +43,8 @@ public interface BeanMetaDataBuilder
 
    BeanMetaDataBuilder addConstructorParameter(String type, Object value);
 
+   BeanMetaDataBuilder addConstructorParameter(String type, ValueMetaData value);
+
    BeanMetaDataBuilder addPropertyMetaData(String name, Object value);
 
    BeanMetaDataBuilder addPropertyMetaData(String name, String value);

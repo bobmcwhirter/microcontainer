@@ -26,6 +26,7 @@ import java.util.List;
 
 import org.jboss.beans.metadata.plugins.AbstractParameterMetaData;
 import org.jboss.beans.metadata.spi.ParameterMetaData;
+import org.jboss.beans.metadata.spi.ValueMetaData;
 
 /**
  * Helper class.
@@ -54,7 +55,7 @@ public class ParameterMetaDataBuilder<T extends MutableParameterizedMetaData>
       parameterHolder.setParameters(parameters);
    }
 
-   public T addParameterMetaData(String type, Object value)
+   private List<ParameterMetaData> checkParameters()
    {
       List<ParameterMetaData> parameters = getParameters();
       if (parameters == null)
@@ -62,6 +63,19 @@ public class ParameterMetaDataBuilder<T extends MutableParameterizedMetaData>
          parameters = new ArrayList<ParameterMetaData>();
          setParameters(parameters);
       }
+      return parameters;
+   }
+
+   public T addParameterMetaData(String type, Object value)
+   {
+      List<ParameterMetaData> parameters = checkParameters();
+      parameters.add(new AbstractParameterMetaData(type, value));
+      return parameterHolder;
+   }
+
+   public T addParameterMetaData(String type, ValueMetaData value)
+   {
+      List<ParameterMetaData> parameters = checkParameters();
       parameters.add(new AbstractParameterMetaData(type, value));
       return parameterHolder;
    }

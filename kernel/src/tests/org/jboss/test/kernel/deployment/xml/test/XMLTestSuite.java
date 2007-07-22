@@ -68,6 +68,7 @@ public class XMLTestSuite extends TestSuite
       suite.addTest(PolicyTestCase.suite());
       suite.addTest(AliasTestCase.suite());
       suite.addTest(CallbackTestCase.suite());
+      suite.addTest(ValueFactoryTestCase.suite());
 
       return suite;
    }

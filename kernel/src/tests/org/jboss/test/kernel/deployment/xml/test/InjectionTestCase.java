@@ -50,7 +50,7 @@ public class InjectionTestCase extends AbstractXMLTest
       PropertyMetaData property = (PropertyMetaData) properties.iterator().next();
       assertNotNull(property);
       ValueMetaData value = property.getValue();
-      assertNotNull(property);
+      assertNotNull(value);
       assertTrue(value instanceof AbstractInjectionValueMetaData);
       return (AbstractInjectionValueMetaData) value;
    }

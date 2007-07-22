@@ -108,7 +108,7 @@ class BeanMetaDataBuilderImpl implements BeanMetaDataBuilder
       return this;
    }
 
-   public BeanMetaDataBuilder addConstructorParameter(String type, Object value)
+   protected void checkConstructorBuilder()
    {
       AbstractConstructorMetaData constructor = (AbstractConstructorMetaData) beanMetaData.getConstructor();
       if (constructor == null)
@@ -117,6 +117,18 @@ class BeanMetaDataBuilderImpl implements BeanMetaDataBuilder
          beanMetaData.setConstructor(constructor);
          constructorBuilder = new ParameterMetaDataBuilder<AbstractConstructorMetaData>(constructor);
       }
+   }
+
+   public BeanMetaDataBuilder addConstructorParameter(String type, Object value)
+   {
+      checkConstructorBuilder();
+      constructorBuilder.addParameterMetaData(type, value);
+      return this;
+   }
+
+   public BeanMetaDataBuilder addConstructorParameter(String type, ValueMetaData value)
+   {
+      checkConstructorBuilder();
       constructorBuilder.addParameterMetaData(type, value);
       return this;
    }

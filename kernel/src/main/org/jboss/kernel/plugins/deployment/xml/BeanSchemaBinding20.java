@@ -155,11 +155,17 @@ public class BeanSchemaBinding20
    /** The dependency binding */
    public static final QName injectionTypeQName = new QName(BEAN_DEPLOYER_NS, "injectionType");
 
+   /** The value-factory binding */
+   public static final QName valueFactoryTypeQName = new QName(BEAN_DEPLOYER_NS, "valueFactoryType");
+
    /** The factory binding */
    public static final QName factoryTypeQName = new QName(BEAN_DEPLOYER_NS, "factoryType");
 
    /** The inject element name */
    public static final QName injectQName = new QName(BEAN_DEPLOYER_NS, "inject");
+
+   /** The value-factory element name */
+   public static final QName valueFactoryQName = new QName(BEAN_DEPLOYER_NS, "value-factory");
 
    /** The plain value binding */
    public static final QName plainValueTypeQName = new QName(BEAN_DEPLOYER_NS, "plainValueType");
@@ -333,6 +339,10 @@ public class BeanSchemaBinding20
       // injection binding
       TypeBinding injectionType = schemaBinding.getType(injectionTypeQName);
       BeanSchemaBindingHelper.initInjectionHandlers(injectionType);
+
+      // value-factory binding
+      TypeBinding valueFactoryType = schemaBinding.getType(valueFactoryTypeQName);
+      BeanSchemaBindingHelper.initValueFactoryHandlers(valueFactoryType);
 
       // factory binding
       TypeBinding factoryType = schemaBinding.getType(factoryTypeQName);

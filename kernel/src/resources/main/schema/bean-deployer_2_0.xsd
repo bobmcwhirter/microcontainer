@@ -226,6 +226,7 @@ $Id$
             <xsd:element name="array" type="arrayType"/>
             <xsd:element name="map" type="mapType"/>
             <xsd:element name="inject" type="injectionType"/>
+            <xsd:element name="value-factory" type="valueFactoryType"/>
             <xsd:any namespace="##other" processContents="strict">
                <xsd:annotation>
                   <xsd:documentation>An extension value</xsd:documentation>
@@ -395,6 +396,46 @@ $Id$
       <xsd:attribute name="type" type="autowireTypeType" use="optional" default="ByClass"/>
       <xsd:attribute name="option" type="optionType" use="optional" default="Strict"/>
       <xsd:attribute name="fromContext" type="contextType" use="optional"/>
+   </xsd:complexType>
+
+   <xsd:complexType name="valueFactoryType">
+      <xsd:annotation>
+         <xsd:documentation>
+           <![CDATA[
+           A dependency represents an value injection into the bean.
+           They can be used anywhere a string value can appear.
+
+           e.g. Bean instance - "InjectedIntoMe".setSomeProperty("ValueFactory".getValue("foo.bar.prop", "mydefault"));
+           <bean name="InjectedIntoMe" ...>
+              <property name="someProperty">
+                  <value-factory bean="BeanInjected" method="getValue">
+                     <parameter>foo.bar.prop</parameter>
+                     <parameter>mydefault</parameter>
+                  </value-factory>
+              </property>
+           </bean>
+           <bean name="BeanInjected" .../>
+
+           e.g. Bean instance - "InjectedIntoMe".setSomeProperty("ValueFactory".getValue("foo.bar.prop"));
+           <bean name="InjectedIntoMe" ...>
+              <property name="someProperty">
+                  <value-factory bean="BeanInjected" method="getValue" parameter="foo.bar.prop" default="mydefault" />
+              </property>
+           </bean>
+           <bean name="BeanInjected" .../>
+
+           ]]>
+         </xsd:documentation>
+      </xsd:annotation>
+      <xsd:sequence>
+         <xsd:element name="parameter" type="parameterType" minOccurs="0" maxOccurs="unbounded"/>
+      </xsd:sequence>
+      <xsd:attribute name="bean" type="xsd:string"/>
+      <xsd:attribute name="method" type="xsd:string"/>
+      <xsd:attribute name="state" type="controllerStateType" use="optional"/>
+      <xsd:attribute name="whenRequired" type="controllerStateType" use="optional"/>
+      <xsd:attribute name="parameter" type="xsd:string" use="optional"/>
+      <xsd:attribute name="default" type="xsd:string" use="optional"/>
    </xsd:complexType>
 
    <xsd:complexType name="factoryType">
@@ -602,6 +643,7 @@ $Id$
          <!--<xsd:element name="bean" type="beanType"/>-->
          <xsd:element name="value" type="plainValueType"/>
          <xsd:element name="inject" type="injectionType"/>
+         <xsd:element name="value-factory" type="valueFactoryType"/>
          <xsd:element name="collection" type="collectionType"/>
          <xsd:element name="list" type="listType"/>
          <xsd:element name="set" type="setType"/>

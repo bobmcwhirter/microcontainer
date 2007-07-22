@@ -395,6 +395,19 @@ public class BeanSchemaBindingHelper
    }
 
    /**
+    * Initialize the handlers for the value factory type
+    *
+    * @param valueFactoryType the dependency type
+    */
+   public static void initValueFactoryHandlers(TypeBinding valueFactoryType)
+   {
+      valueFactoryType.setHandler(ValueFactoryHandler.HANDLER);
+
+      // value-factory has parameters
+      valueFactoryType.pushInterceptor(BeanSchemaBinding20.parameterQName, ValueFactoryParametersInterceptor.INTERCEPTOR);
+   }
+
+   /**
     * Initialize the handlers for the factory type
     * 
     * @param factoryType the factory type
@@ -495,6 +508,9 @@ public class BeanSchemaBindingHelper
 
       // type has injections
       typeBinding.pushInterceptor(BeanSchemaBinding20.injectQName, ValueMetaDataElementInterceptor.VALUES);
+
+      // type has value-factories
+      typeBinding.pushInterceptor(BeanSchemaBinding20.valueFactoryQName, ValueMetaDataElementInterceptor.VALUES);
 
       // type can take a collection
       typeBinding.pushInterceptor(BeanSchemaBinding20.collectionQName, ValueMetaDataElementInterceptor.VALUES);

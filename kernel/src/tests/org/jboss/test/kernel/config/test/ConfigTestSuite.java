@@ -69,6 +69,8 @@ public class ConfigTestSuite extends TestSuite
       suite.addTest(PropertyReplaceXMLTestCase.suite());
       suite.addTest(ElementTestCase.suite());
       suite.addTest(ElementXMLTestCase.suite());
+      suite.addTest(ValueFactoryTestCase.suite());
+      suite.addTest(ValueFactoryXMLTestCase.suite());
 
       return suite;
    }
