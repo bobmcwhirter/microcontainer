@@ -21,6 +21,8 @@
 */
 package org.jboss.beans.metadata.plugins;
 
+import java.util.List;
+
 import org.jboss.beans.metadata.spi.AutowireType;
 import org.jboss.beans.metadata.spi.MetaDataVisitor;
 import org.jboss.beans.metadata.spi.MetaDataVisitorNode;
@@ -30,6 +32,7 @@ import org.jboss.dependency.spi.ControllerContext;
 import org.jboss.dependency.spi.ControllerState;
 import org.jboss.dependency.spi.DependencyItem;
 import org.jboss.kernel.plugins.dependency.ClassContextDependencyItem;
+import org.jboss.kernel.spi.dependency.KernelControllerContext;
 import org.jboss.reflect.spi.TypeInfo;
 import org.jboss.util.JBossStringBuilder;
 
@@ -194,11 +197,32 @@ public class AbstractInjectionValueMetaData extends AbstractDependencyValueMetaD
       // controller context property injection
       if (fromContext != null)
       {
-         if (dependentState != null && ControllerState.INSTANTIATED.equals(dependentState) == false && super.getUnderlyingValue() == null)
+         // check if whenRequired > dependent when used on itself
+         if (super.getUnderlyingValue() == null)
          {
-            if (log.isTraceEnabled())
-               log.trace("Cannot set demand state on itself, changing to Instantiated: " + this);
-            dependentState = ControllerState.INSTANTIATED;
+            ControllerState when = whenRequiredState;
+            if (when == null)
+               when = visitor.getContextState();
+
+            KernelControllerContext kcc = visitor.getControllerContext();
+            Controller controller = kcc.getController();
+            List<ControllerState> states = controller.getStates();
+            int whenIndex = states.indexOf(when);
+
+            if (dependentState == null)
+            {
+               dependentState = states.get(whenIndex - 1);
+            }
+            else
+            {
+               int dependentIndex = states.indexOf(dependentState);
+               if (whenIndex <= dependentIndex)
+               {
+                  dependentState = states.get(whenIndex - 1);
+                  if (log.isTraceEnabled())
+                    log.trace("Cannot set demand state to more/equal than when required state, changing it to : " + dependentState);
+               }
+            }
          }
          super.initialVisit(visitor);
          return;

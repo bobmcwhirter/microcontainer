@@ -58,7 +58,7 @@ public class ValueFactoryTestCase extends AbstractXMLTest
       AbstractValueFactoryMetaData dependency = getValueFactory("ValueFactoryWithBean.xml");
       assertEquals("Dummy", dependency.getValue());
       assertEquals("getValue", dependency.getMethod());
-      assertEquals(ControllerState.INSTALLED, dependency.getDependentState());
+      assertNull(dependency.getDependentState());
    }
 
    public void testValueFactoryWithParameter() throws Exception
@@ -75,7 +75,7 @@ public class ValueFactoryTestCase extends AbstractXMLTest
       ValueMetaData value = pmd.getValue();
       assertNotNull(value);
       assertEquals("foo.bar.key", value.getUnderlyingValue());
-      assertEquals(ControllerState.INSTALLED, dependency.getDependentState());
+      assertNull(dependency.getDependentState());
    }
 
    public void testValueFactoryWithParameters() throws Exception
@@ -97,7 +97,7 @@ public class ValueFactoryTestCase extends AbstractXMLTest
       ValueMetaData value2 = pmd2.getValue();
       assertNotNull(value2);
       assertEquals("mydefault", value2.getUnderlyingValue());
-      assertEquals(ControllerState.INSTALLED, dependency.getDependentState());
+      assertNull(dependency.getDependentState());
    }
 
    public void testValueFactoryWithDefault() throws Exception
@@ -106,7 +106,7 @@ public class ValueFactoryTestCase extends AbstractXMLTest
       assertEquals("Dummy", dependency.getValue());
       assertEquals("getValue", dependency.getMethod());
       assertEquals("mydefault", dependency.getDefaultValue());
-      assertEquals(ControllerState.INSTALLED, dependency.getDependentState());
+      assertNull(dependency.getDependentState());
    }
 
    public void testValueFactoryWithState() throws Exception

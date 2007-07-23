@@ -79,7 +79,7 @@ public class AbstractValueFactoryMetaData extends AbstractValueMetaData implemen
    /**
     * The required state of the dependency or null to look in the registry
     */
-   protected ControllerState dependentState = ControllerState.INSTALLED;
+   protected ControllerState dependentState;
 
    /** The parameters */
    protected List<ParameterMetaData> parameters;
