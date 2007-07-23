@@ -177,6 +177,12 @@ class BeanMetaDataBuilderImpl implements BeanMetaDataBuilder
       return this;
    }
 
+   public BeanMetaDataBuilder addCreateParameter(String type, ValueMetaData value)
+   {
+      createBuilder.addParameterMetaData(type, value);
+      return this;
+   }
+
    public BeanMetaDataBuilder setStart(String methodName)
    {
       startBuilder.createLifecycleMetaData(methodName);
@@ -184,6 +190,12 @@ class BeanMetaDataBuilderImpl implements BeanMetaDataBuilder
    }
 
    public BeanMetaDataBuilder addStartParameter(String type, Object value)
+   {
+      startBuilder.addParameterMetaData(type, value);
+      return this;
+   }
+
+   public BeanMetaDataBuilder addStartParameter(String type, ValueMetaData value)
    {
       startBuilder.addParameterMetaData(type, value);
       return this;
@@ -201,6 +213,12 @@ class BeanMetaDataBuilderImpl implements BeanMetaDataBuilder
       return this;
    }
 
+   public BeanMetaDataBuilder addStopParameter(String type, ValueMetaData value)
+   {
+      stopBuilder.addParameterMetaData(type, value);
+      return this;
+   }
+
    public BeanMetaDataBuilder setDestroy(String methodName)
    {
       destroyBuilder.createLifecycleMetaData(methodName);
@@ -208,6 +226,12 @@ class BeanMetaDataBuilderImpl implements BeanMetaDataBuilder
    }
 
    public BeanMetaDataBuilder addDestroyParameter(String type, Object value)
+   {
+      destroyBuilder.addParameterMetaData(type, value);
+      return this;
+   }
+
+   public BeanMetaDataBuilder addDestroyParameter(String type, ValueMetaData value)
    {
       destroyBuilder.addParameterMetaData(type, value);
       return this;

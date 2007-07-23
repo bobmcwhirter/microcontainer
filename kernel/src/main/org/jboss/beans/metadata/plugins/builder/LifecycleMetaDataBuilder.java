@@ -24,6 +24,7 @@ package org.jboss.beans.metadata.plugins.builder;
 import org.jboss.beans.metadata.plugins.AbstractBeanMetaData;
 import org.jboss.beans.metadata.plugins.AbstractLifecycleMetaData;
 import org.jboss.beans.metadata.spi.LifecycleMetaData;
+import org.jboss.beans.metadata.spi.ValueMetaData;
 
 /**
  * Helper class.
@@ -53,13 +54,24 @@ public abstract class LifecycleMetaDataBuilder extends StateMetaDataBuilder
       builder = new ParameterMetaDataBuilder<AbstractLifecycleMetaData>(lifecycle);
    }
 
-   public LifecycleMetaData addParameterMetaData(String type, Object value)
+   protected void checkLlifecycle()
    {
       LifecycleMetaData lifecycle = getLifecycle(beanMetaData);
       if (lifecycle == null)
       {
          createLifecycleMetaData(null);
       }
+   }
+
+   public LifecycleMetaData addParameterMetaData(String type, Object value)
+   {
+      checkLlifecycle();
+      return builder.addParameterMetaData(type, value);
+   }
+
+   public LifecycleMetaData addParameterMetaData(String type, ValueMetaData value)
+   {
+      checkLlifecycle();
       return builder.addParameterMetaData(type, value);
    }
 

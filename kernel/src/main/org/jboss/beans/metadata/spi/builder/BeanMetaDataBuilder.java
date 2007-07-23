@@ -55,17 +55,25 @@ public interface BeanMetaDataBuilder
 
    BeanMetaDataBuilder addCreateParameter(String type, Object value);
 
+   BeanMetaDataBuilder addCreateParameter(String type, ValueMetaData value);
+
    BeanMetaDataBuilder setStart(String methodName);
 
    BeanMetaDataBuilder addStartParameter(String type, Object value);
+
+   BeanMetaDataBuilder addStartParameter(String type, ValueMetaData value);
 
    BeanMetaDataBuilder setStop(String methodName);
 
    BeanMetaDataBuilder addStopParameter(String type, Object value);
 
+   BeanMetaDataBuilder addStopParameter(String type, ValueMetaData value);
+
    BeanMetaDataBuilder setDestroy(String methodName);
 
    BeanMetaDataBuilder addDestroyParameter(String type, Object value);
+
+   BeanMetaDataBuilder addDestroyParameter(String type, ValueMetaData value);
 
    BeanMetaDataBuilder addSupply(Object supply);
 
