@@ -21,7 +21,10 @@
  */
 package org.jboss.test.classloader;
 
+import junit.framework.TestCase;
+
 import org.jboss.classloader.plugins.ClassLoaderUtils;
+import org.jboss.classloader.plugins.jdk.AbstractJDKChecker;
 import org.jboss.classloader.spi.ClassLoaderDomain;
 import org.jboss.classloader.spi.ClassLoaderPolicy;
 import org.jboss.classloader.spi.ClassLoaderSystem;
@@ -40,6 +43,12 @@ import org.jboss.test.AbstractTestDelegate;
  */
 public abstract class AbstractClassLoaderTest extends AbstractTestCaseWithSetup
 {
+   static
+   {
+      // Make sure the mock classloader doesn't think we are part of the JDK
+      AbstractJDKChecker.getExcluded().add(TestCase.class);
+   }
+   
    public static AbstractTestDelegate getDelegate(Class<?> clazz)
    {
       return new AbstractTestDelegate(clazz);
@@ -185,6 +194,7 @@ public abstract class AbstractClassLoaderTest extends AbstractTestCaseWithSetup
       try
       {
          start.loadClass(name);
+         fail("Should not be here!");
       }
       catch (Exception expected)
       {

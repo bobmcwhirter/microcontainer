@@ -272,6 +272,26 @@ public class MockClassLoaderPolicy extends ClassLoaderPolicy
       setPaths(classes);
       setPackageNames(classes);
    }
+
+   /**
+    * Set the paths and the exported package names
+    * 
+    * @param packages the packages
+    */
+   public void setPathsAndPackageNames(String... packages)
+   {
+      if (packages == null)
+      {
+         paths = null;
+         packageNames = null;
+         return;
+      }
+      paths = new String[packages.length];
+      for (int i = 0; i < packages.length; ++i)
+         paths[i] = packages[i].replace('.', '/');
+      
+      setPackageNames(packages);
+   }
    
    @Override
    public boolean isImportAll()

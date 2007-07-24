@@ -27,6 +27,7 @@ import org.jboss.classloader.spi.ClassLoaderDomain;
 import org.jboss.classloader.spi.ClassLoaderSystem;
 import org.jboss.classloader.spi.ParentPolicy;
 import org.jboss.classloader.spi.filter.ClassFilter;
+import org.jboss.classloader.spi.filter.PackageClassFilter;
 import org.jboss.classloader.test.support.MockClassLoaderPolicy;
 import org.jboss.test.classloader.AbstractClassLoaderTestWithSecurity;
 import org.jboss.test.classloader.domain.support.MatchClassFilter;
@@ -226,5 +227,39 @@ public class ParentPolicyUnitTestCase extends AbstractClassLoaderTestWithSecurit
       assertLoadClass(Object.class, classLoader, null, true);
       assertLoadClass(ClassLoaderDomain.class, classLoader, null, true);
       assertTrue("Should have been filtered", filter.filtered);
+   }
+   
+   public void testNoMatchBeforeAndAfter() throws Exception
+   {
+      ClassLoaderSystem system = createClassLoaderSystem();
+      ParentPolicy parentPolicy = new ParentPolicy(ClassFilter.NOTHING, ClassFilter.NOTHING);
+      ClassLoaderDomain domain = system.createAndRegisterDomain("test", parentPolicy, null);
+      MockClassLoaderPolicy policy = createMockClassLoaderPolicy();
+      ClassLoader classLoader = system.registerClassLoaderPolicy(domain, policy);
+      enableTrace("org.jboss.classloader");
+      assertLoadClassFail(Object.class, classLoader);
+   }
+   
+   public void testPackageFilterNoJava() throws Exception
+   {
+      ClassLoaderSystem system = createClassLoaderSystem();
+      PackageClassFilter filter = PackageClassFilter.createPackageClassFilter("dummy");
+      ParentPolicy parentPolicy = new ParentPolicy(filter, ClassFilter.NOTHING);
+      ClassLoaderDomain domain = system.createAndRegisterDomain("test", parentPolicy, null);
+      MockClassLoaderPolicy policy = createMockClassLoaderPolicy();
+      ClassLoader classLoader = system.registerClassLoaderPolicy(domain, policy);
+      assertLoadClassFail(Object.class, classLoader);
+   }
+   
+   public void testPackageFilterIncludeJava() throws Exception
+   {
+      ClassLoaderSystem system = createClassLoaderSystem();
+      PackageClassFilter filter = PackageClassFilter.createPackageClassFilter("dummy");
+      filter.setIncludeJava(true);
+      ParentPolicy parentPolicy = new ParentPolicy(filter, ClassFilter.NOTHING);
+      ClassLoaderDomain domain = system.createAndRegisterDomain("test", parentPolicy, null);
+      MockClassLoaderPolicy policy = createMockClassLoaderPolicy();
+      ClassLoader classLoader = system.registerClassLoaderPolicy(domain, policy);
+      assertLoadClass(Object.class, classLoader, null, true);
    }
 }

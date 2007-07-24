@@ -19,6 +19,22 @@
     </testResources>
   </build>
   <!-- Do not add version information here, use ../build/pom.xml instead -->
+  <dependencyManagement>
+    <dependencies>
+      <dependency>
+        <groupId>jboss</groupId>
+        <artifactId>jboss-test</artifactId>
+        <version>${version.jboss.test}</version>
+        <scope>compile</scope>
+      </dependency>
+      <dependency>
+        <groupId>junit</groupId>
+        <artifactId>junit</artifactId>
+        <version>${version.junit}</version>
+        <scope>compile</scope>
+      </dependency>
+    </dependencies>
+  </dependencyManagement>
   <dependencies>
     <!-- Global dependencies -->
     <dependency>
