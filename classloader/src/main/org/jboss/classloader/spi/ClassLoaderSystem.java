@@ -21,6 +21,7 @@
  */
 package org.jboss.classloader.spi;
 
+import java.security.ProtectionDomain;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Iterator;
@@ -30,6 +31,7 @@ import java.util.Map;
 import org.jboss.classloader.plugins.system.ClassLoaderSystemBuilder;
 import org.jboss.classloader.spi.base.BaseClassLoaderSystem;
 import org.jboss.logging.Logger;
+import org.jboss.util.loading.Translator;
 
 /**
  * ClassLoaderSystem.
@@ -54,6 +56,9 @@ public abstract class ClassLoaderSystem extends BaseClassLoaderSystem
    /** The registered domains by name */
    private Map<String, ClassLoaderDomain> registeredDomains = new HashMap<String, ClassLoaderDomain>();
 
+   /** Any translator */
+   private Translator translator;
+   
    /** Whether the system is shutdown */
    private boolean shutdown = false;
    
@@ -375,6 +380,49 @@ public abstract class ClassLoaderSystem extends BaseClassLoaderSystem
       }
    }
    
+   /**
+    * Get the translator.
+    * 
+    * @return the translator.
+    */
+   public Translator getTranslator()
+   {
+      return translator;
+   }
+
+   /**
+    * Set the translator.
+    * 
+    * @param translator the translator.
+    */
+   public void setTranslator(Translator translator)
+   {
+      log.debug(this + " set translator to " + translator);
+      this.translator = translator;
+   }
+
+   @Override
+   protected byte[] transform(ClassLoader classLoader, String className, byte[] byteCode, ProtectionDomain protectionDomain) throws Exception
+   {
+      if (translator != null)
+         return translator.transform(classLoader, className, null, protectionDomain, byteCode);
+      return super.transform(classLoader, className, byteCode, protectionDomain);
+   }
+
+   @Override
+   protected void afterUnregisterClassLoader(ClassLoader classLoader)
+   {
+      try
+      {
+         if (translator != null)
+            translator.unregisterClassLoader(classLoader);
+      }
+      catch (Throwable t)
+      {
+         log.warn("Error unregistering classloader from translator " + classLoader, t);
+      }
+   }
+
    @Override
    protected void toLongString(StringBuilder builder)
    {

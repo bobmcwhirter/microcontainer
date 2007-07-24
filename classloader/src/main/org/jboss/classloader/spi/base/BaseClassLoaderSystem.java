@@ -116,7 +116,9 @@ public abstract class BaseClassLoaderSystem
          public BaseClassLoader run()
          {
             BaseClassLoader classLoader = createClassLoader(policy);
+            beforeRegisterClassLoader(classLoader);
             domain.registerClassLoader(classLoader);
+            afterRegisterClassLoader(classLoader);
             return classLoader;
          }
       }, policy.getAccessControlContext());
@@ -141,9 +143,11 @@ public abstract class BaseClassLoaderSystem
       BaseClassLoaderDomain domain = basePolicy.getClassLoaderDomain();
       if (domain == null)
          throw new IllegalStateException("Policy has no domain " + policy.toLongString());
+      beforeUnregisterClassLoader(classLoader);
       domain.unregisterClassLoader(classLoader);
+      afterUnregisterClassLoader(classLoader);
    }
-   
+
    /**
     * Unregister a policy with a domain
     * 
@@ -176,16 +180,58 @@ public abstract class BaseClassLoaderSystem
    }
    
    /**
+    * Before register classloader
+    * 
+    * @param classLoader the classloader
+    */
+   protected void beforeRegisterClassLoader(ClassLoader classLoader)
+   {
+      // Nothing
+   }
+   
+   /**
+    * After register classloader
+    * 
+    * @param classLoader the classloader
+    */
+   protected void afterRegisterClassLoader(ClassLoader classLoader)
+   {
+      // Nothing
+   }
+   
+   /**
+    * Before unregister classloader
+    * 
+    * @param classLoader the classloader
+    */
+   protected void beforeUnregisterClassLoader(ClassLoader classLoader)
+   {
+      // Nothing
+   }
+   
+   /**
+    * After unregister classloader
+    * 
+    * @param classLoader the classloader
+    */
+   protected void afterUnregisterClassLoader(ClassLoader classLoader)
+   {
+      // Nothing
+   }
+   
+   /**
     * Transform the byte code<p>
     *
     * By default this does nothing
-    * 
+    *
+    * @param classLoader the classLoader
     * @param className the class name
     * @param byteCode the byte code
     * @param protectionDomain the protection domain
     * @return the transformed byte code
+    * @throws Exception for any error
     */
-   protected byte[] transform(String className, byte[] byteCode, ProtectionDomain protectionDomain)
+   protected byte[] transform(ClassLoader classLoader, String className, byte[] byteCode, ProtectionDomain protectionDomain) throws Exception
    {
       return byteCode;
    }

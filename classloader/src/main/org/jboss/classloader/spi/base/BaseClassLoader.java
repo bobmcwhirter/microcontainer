@@ -259,7 +259,14 @@ public class BaseClassLoader extends SecureClassLoader implements BaseClassLoade
             // Let the policy do things before we define the class
             BaseClassLoaderPolicy basePolicy = policy;
             ProtectionDomain protectionDomain = basePolicy.getProtectionDomain(name, resourcePath);
-            byteCode = policy.transform(name, byteCode, protectionDomain);
+            try
+            {
+               byteCode = policy.transform(name, byteCode, protectionDomain);
+            }
+            catch (Throwable t)
+            {
+               throw new RuntimeException("Unexpected error transforming class " + name, t);
+            }
             
             // Create the package if necessary
             definePackage(name);

@@ -154,16 +154,18 @@ public abstract class BaseClassLoaderDomain implements Loader
     * 
     * By default, this delegates to the classloader system
     * 
+    * @param classLoader the classloader
     * @param className the class name
     * @param byteCode the byte code
     * @param protectionDomain the protection domain
     * @return the transformed byte code
+    * @throws Exception for any error
     */
-   protected byte[] transform(String className, byte[] byteCode, ProtectionDomain protectionDomain)
+   protected byte[] transform(ClassLoader classLoader, String className, byte[] byteCode, ProtectionDomain protectionDomain) throws Exception
    {
       BaseClassLoaderSystem system = getClassLoaderSystem();
       if (system != null)
-         system.transform(className, byteCode, protectionDomain);
+         system.transform(classLoader, className, byteCode, protectionDomain);
       return byteCode;
    }
    

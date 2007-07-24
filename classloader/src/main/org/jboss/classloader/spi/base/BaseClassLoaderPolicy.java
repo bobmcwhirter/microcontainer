@@ -131,12 +131,13 @@ public abstract class BaseClassLoaderPolicy
     * @param byteCode the byte code
     * @param protectionDomain the protection domain
     * @return the transformed byte code
+    * @throws Exception for any error
     */
-   protected byte[] transform(String className, byte[] byteCode, ProtectionDomain protectionDomain)
+   protected byte[] transform(String className, byte[] byteCode, ProtectionDomain protectionDomain) throws Exception
    {
       BaseClassLoaderDomain domain = getClassLoaderDomain();
       if (domain != null)
-         domain.transform(className, byteCode, protectionDomain);
+         domain.transform(getClassLoader(), className, byteCode, protectionDomain);
       return byteCode;
    }
 
