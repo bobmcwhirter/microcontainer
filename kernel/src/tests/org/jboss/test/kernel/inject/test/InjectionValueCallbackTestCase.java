@@ -22,17 +22,17 @@
 package org.jboss.test.kernel.inject.test;
 
 import junit.framework.Test;
+
 import org.jboss.dependency.spi.ControllerState;
 import org.jboss.kernel.spi.dependency.KernelControllerContext;
 import org.jboss.test.kernel.inject.support.PropertyInjectTestObject;
-import org.jboss.test.kernel.junit.ManualMicrocontainerTest;
 
 /**
  * Callback tests.
  *
  * @author <a href="mailto:ales.justin@gmail.com">Ales Justin</a>
  */
-public class InjectionValueCallbackTestCase extends ManualMicrocontainerTest
+public class InjectionValueCallbackTestCase extends AbstractManualInjectTest
 {
    public InjectionValueCallbackTestCase(String name)
    {

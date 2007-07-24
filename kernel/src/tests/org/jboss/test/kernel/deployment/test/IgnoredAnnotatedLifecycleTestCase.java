@@ -25,14 +25,13 @@ import junit.framework.Test;
 import org.jboss.dependency.spi.ControllerState;
 import org.jboss.kernel.spi.dependency.KernelControllerContext;
 import org.jboss.test.kernel.deployment.support.AnnotatedLifecycleBean;
-import org.jboss.test.kernel.junit.ManualMicrocontainerTest;
 
 /**
  * Test ignore lifecycle annotations.
  *
  * @author <a href="mailto:ales.justin@gmail.com">Ales Justin</a>
  */
-public class IgnoredAnnotatedLifecycleTestCase extends ManualMicrocontainerTest
+public class IgnoredAnnotatedLifecycleTestCase extends AbstractManualDeploymentTest
 {
    private static final String BEAN_NAME = "LifecycleBean";
 

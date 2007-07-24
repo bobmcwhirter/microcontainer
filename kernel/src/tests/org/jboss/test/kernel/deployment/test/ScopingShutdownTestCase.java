@@ -22,10 +22,10 @@
 package org.jboss.test.kernel.deployment.test;
 
 import junit.framework.Test;
+
 import org.jboss.test.AbstractTestDelegate;
 import org.jboss.test.kernel.deployment.support.SimpleBean;
 import org.jboss.test.kernel.deployment.support.SimpleObjectWithBean;
-import org.jboss.test.kernel.junit.MicrocontainerShutdownTestDelegate;
 
 /**
  * Scoping shutdown tests.
@@ -93,7 +93,7 @@ public class ScopingShutdownTestCase extends ScopingDeploymentTest
       assertNotNull(simple4);
       assertEquals("fromApp", simple4.getConstructorString());
 
-      ((MicrocontainerShutdownTestDelegate)getMCDelegate()).shutdown();
+      shutdown();
 
       assertNull(getControllerContext("deploy4"));
       assertNull(getControllerContext("deploy3"));

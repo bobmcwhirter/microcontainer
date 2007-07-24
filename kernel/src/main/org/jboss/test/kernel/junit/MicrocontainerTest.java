@@ -203,6 +203,14 @@ public class MicrocontainerTest extends AbstractTestCaseWithSetup
    }
 
    /**
+    * Shutdown the controller
+    */
+   protected void shutdown()
+   {
+      getMCDelegate().shutdown();
+   }
+   
+   /**
     * Get the delegate
     * 
     * @return the delegate

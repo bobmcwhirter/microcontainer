@@ -24,14 +24,13 @@ package org.jboss.test.kernel.inject.test;
 import org.jboss.dependency.spi.ControllerState;
 import org.jboss.kernel.spi.dependency.KernelControllerContext;
 import org.jboss.test.kernel.inject.support.CallbackTestObject;
-import org.jboss.test.kernel.junit.ManualMicrocontainerTest;
 
 /**
  * Callback tests.
  *
  * @author <a href="mailto:ales.justin@gmail.com">Ales Justin</a>
  */
-public abstract class SimpleCallbackTestCase extends ManualMicrocontainerTest
+public abstract class SimpleCallbackTestCase extends AbstractManualInjectTest
 {
    public SimpleCallbackTestCase(String name)
    {

@@ -26,14 +26,14 @@ import org.jboss.dependency.spi.Controller;
 import org.jboss.dependency.spi.ControllerContext;
 import org.jboss.dependency.spi.ControllerState;
 import org.jboss.kernel.spi.dependency.KernelControllerContext;
-import org.jboss.test.kernel.junit.MicrocontainerShutdownTestDelegate;
+import org.jboss.test.kernel.junit.MicrocontainerTestDelegate;
 
 /**
  * Scoping Deployment Test Delegate.
  *
  * @author <a href="ales.justin@jboss.com">Ales Justin</a>
  */
-public class ScopingTestDelegate extends MicrocontainerShutdownTestDelegate
+public class ScopingTestDelegate extends MicrocontainerTestDelegate
 {
    public ScopingTestDelegate(Class clazz) throws Exception
    {
@@ -96,5 +96,4 @@ public class ScopingTestDelegate extends MicrocontainerShutdownTestDelegate
          return null;
       }
    }
-
 }

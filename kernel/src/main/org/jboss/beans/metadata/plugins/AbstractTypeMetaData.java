@@ -196,6 +196,7 @@ public abstract class AbstractTypeMetaData extends AbstractValueMetaData
    /**
     * Check result for class compatibility.
     *
+    * @param <T> the expected type
     * @param result the result
     * @param expected expected class
     * @return casted result

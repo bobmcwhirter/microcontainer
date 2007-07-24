@@ -36,6 +36,9 @@ import java.util.Collection;
 @SuppressWarnings("unchecked")
 public class UnmodifiableGetterBean implements Serializable
 {
+   /** The serialVersionUID */
+   private static final long serialVersionUID = 1L;
+   
    private Collection collection = new CustomCollection(true);
    private List list = new CustomList(true);
    private Set set = new CustomSet(true);

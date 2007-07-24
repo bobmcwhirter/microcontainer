@@ -347,7 +347,7 @@ public class AbstractXMLTest extends AbstractTestCaseWithSetup
       assertTrue(value instanceof ThisValueMetaData);
    }
    
-   protected void checkJBossXBException(Class expected, Throwable throwable)
+   protected void checkJBossXBException(Class<? extends Throwable> expected, Throwable throwable)
    {
       checkThrowable(JBossXBException.class, throwable);
       JBossXBException e = (JBossXBException) throwable;

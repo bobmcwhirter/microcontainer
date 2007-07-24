@@ -22,6 +22,7 @@
 package org.jboss.test.kernel.inject.test;
 
 import org.jboss.kernel.spi.deployment.KernelDeployment;
+import org.jboss.test.AbstractTestDelegate;
 import org.jboss.test.kernel.junit.MicrocontainerTest;
 
 /**
@@ -34,6 +35,20 @@ public abstract class ContextualInjectionAdapter extends MicrocontainerTest
    public ContextualInjectionAdapter(String name)
    {
       super(name);
+   }
+   
+   /**
+    * Default setup with security manager enabled
+    * 
+    * @param clazz the class
+    * @return the delegate
+    * @throws Exception for any error
+    */
+   public static AbstractTestDelegate getDelegate(Class clazz) throws Exception
+   {
+      AbstractTestDelegate delegate = MicrocontainerTest.getDelegate(clazz);
+      delegate.enableSecurity = true;
+      return delegate;
    }
 
    protected void enableTrace()

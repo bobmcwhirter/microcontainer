@@ -380,6 +380,9 @@ public class AbstractKernelDeployer
     */
    protected void undeployBean(KernelController controller, KernelControllerContext context) throws Throwable
    {
-      controller.uninstall(context.getName());
+      if (controller.isShutdown() == false)
+         controller.uninstall(context.getName());
+      else
+         log.debug("Not undeploying " + context.getName() + " the controller is shutdown!");
    }
 }

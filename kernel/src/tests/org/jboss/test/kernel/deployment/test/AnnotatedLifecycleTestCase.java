@@ -22,17 +22,17 @@
 package org.jboss.test.kernel.deployment.test;
 
 import junit.framework.Test;
+
 import org.jboss.dependency.spi.ControllerState;
 import org.jboss.kernel.spi.dependency.KernelControllerContext;
 import org.jboss.test.kernel.deployment.support.AnnotatedLifecycleBean;
-import org.jboss.test.kernel.junit.ManualMicrocontainerTest;
 
 /**
  * Test lifecycle annotations.
  * 
  * @author <a href="mailto:ales.justin@gmail.com">Ales Justin</a>
  */
-public class AnnotatedLifecycleTestCase extends ManualMicrocontainerTest
+public class AnnotatedLifecycleTestCase extends AbstractManualDeploymentTest
 {
 
    private static final String BEAN_NAME = "LifecycleBean";

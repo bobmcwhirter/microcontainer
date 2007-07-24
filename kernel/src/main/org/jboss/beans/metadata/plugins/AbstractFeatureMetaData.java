@@ -111,6 +111,7 @@ public abstract class AbstractFeatureMetaData extends JBossObject
       return clazz;
    }
 
+   @SuppressWarnings("unchecked")
    public Iterator<? extends MetaDataVisitorNode> getChildren()
    {
       Set<MetaDataVisitorNode> children = CollectionsFactory.createLazySet();

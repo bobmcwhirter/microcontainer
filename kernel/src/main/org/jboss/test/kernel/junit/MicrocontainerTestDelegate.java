@@ -24,6 +24,7 @@ package org.jboss.test.kernel.junit;
 import java.net.URL;
 
 import org.jboss.dependency.spi.Controller;
+import org.jboss.dependency.spi.ControllerMode;
 import org.jboss.dependency.spi.ControllerState;
 import org.jboss.kernel.Kernel;
 import org.jboss.kernel.plugins.bootstrap.AbstractBootstrap;
@@ -48,6 +49,9 @@ public class MicrocontainerTestDelegate extends AbstractTestDelegate
 
    /** The deployer */
    protected BasicXMLDeployer deployer;
+   
+   /** The default mode */
+   protected ControllerMode defaultMode = ControllerMode.AUTOMATIC;
    
    /**
     * Create a new MicrocontainerTestDelegate.
@@ -97,7 +101,7 @@ public class MicrocontainerTestDelegate extends AbstractTestDelegate
 
    protected BasicXMLDeployer createDeployer()
    {
-      return new BasicXMLDeployer(kernel);
+      return new BasicXMLDeployer(kernel, defaultMode);
    }
 
    public void tearDown() throws Exception
@@ -106,6 +110,26 @@ public class MicrocontainerTestDelegate extends AbstractTestDelegate
       undeploy();
    }
    
+   /**
+    * Get the defaultMode.
+    * 
+    * @return the defaultMode.
+    */
+   public ControllerMode getDefaultMode()
+   {
+      return defaultMode;
+   }
+
+   /**
+    * Set the defaultMode.
+    * 
+    * @param defaultMode the defaultMode.
+    */
+   public void setDefaultMode(ControllerMode defaultMode)
+   {
+      this.defaultMode = defaultMode;
+   }
+
    /**
     * Get the kernel bootstrap
     * 
@@ -301,6 +325,11 @@ public class MicrocontainerTestDelegate extends AbstractTestDelegate
          deploy(url);
       else
          log.debug("No test specific deployment " + testName);
+   }
+
+   protected void shutdown()
+   {
+      kernel.getController().shutdown();
    }
 
    protected String getTestName()
