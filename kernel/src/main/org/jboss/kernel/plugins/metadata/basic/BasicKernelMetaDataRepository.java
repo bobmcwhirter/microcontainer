@@ -195,7 +195,7 @@ public class BasicKernelMetaDataRepository extends AbstractKernelMetaDataReposit
          }
          catch(Throwable t)
          {
-            throw new RuntimeException("Error getting classloader for metadata");
+            throw new RuntimeException("Error getting classloader for metadata", t);
          }
       }
    }
