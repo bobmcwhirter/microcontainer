@@ -137,7 +137,7 @@ public abstract class BaseClassLoaderPolicy
    {
       BaseClassLoaderDomain domain = getClassLoaderDomain();
       if (domain != null)
-         domain.transform(getClassLoader(), className, byteCode, protectionDomain);
+         return domain.transform(getClassLoader(), className, byteCode, protectionDomain);
       return byteCode;
    }
 

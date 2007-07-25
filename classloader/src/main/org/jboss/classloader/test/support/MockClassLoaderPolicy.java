@@ -185,7 +185,7 @@ public class MockClassLoaderPolicy extends ClassLoaderPolicy
     * 
     * @param paths the paths to expose
     */
-   public void setPaths(String[] paths)
+   public void setPaths(String... paths)
    {
       this.paths = paths;
    }
@@ -215,7 +215,7 @@ public class MockClassLoaderPolicy extends ClassLoaderPolicy
     * 
     * @param packageNames the exported packages
     */
-   public void setPackageNames(String[] packageNames)
+   public void setPackageNames(String... packageNames)
    {
       this.packageNames = packageNames;
    }

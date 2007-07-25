@@ -21,23 +21,11 @@
  */
 package org.jboss.classloader.test.support;
 
-import java.util.HashSet;
-import java.util.Set;
-
-import junit.extensions.TestSetup;
 import junit.framework.Test;
 
-import org.jboss.classloader.plugins.system.DefaultClassLoaderSystem;
-import org.jboss.classloader.spi.ClassLoaderDomain;
 import org.jboss.classloader.spi.ClassLoaderSystem;
-import org.jboss.classloader.spi.ParentPolicy;
-import org.jboss.classloader.spi.filter.ClassFilter;
-import org.jboss.classloader.spi.filter.PackageClassFilter;
-import org.jboss.logging.Logger;
 import org.jboss.test.AbstractTestCaseWithSetup;
 import org.jboss.test.AbstractTestDelegate;
-import org.jboss.test.logging.LoggingPlugin;
-import org.jboss.test.security.PolicyPlugin;
 
 /**
  * IsolatedClassLoaderTest.
@@ -47,8 +35,8 @@ import org.jboss.test.security.PolicyPlugin;
  */
 public abstract class IsolatedClassLoaderTest extends AbstractTestCaseWithSetup
 {
-   // The last classloader system
-   private static ClassLoaderSystem system;
+   // The last helper
+   private static IsolatedClassLoaderTestHelper helper;
 
    /**
     * Get the delegate
@@ -97,31 +85,13 @@ public abstract class IsolatedClassLoaderTest extends AbstractTestCaseWithSetup
     * It exports everything
     * It imports nothing
     * 
-    * @see #getParentPackages()
     * @param clazz the test class
     * @param packages the classes in packages that should also be included
     * @return the test
     */
    public static Test suite(Class<?> clazz, Class<?>... packages)
    {
-      return suite(clazz, false, getParentPackages(), packages);
-   }
-   
-   /**
-    * Create a test with test's package visible and the packages
-    * of the classes listed with the default parent packages
-    *
-    * It exports everything
-    * 
-    * @see #getParentPackages()
-    * @param importAll whether to import all
-    * @param clazz the test class
-    * @param packages the classes in packages that should also be included
-    * @return the test
-    */
-   public static Test suite(Class<?> clazz, boolean importAll, Class<?>... packages)
-   {
-      return suite(clazz, importAll, getParentPackages(), packages);
+      return suite(clazz, false, packages);
    }
    
    /**
@@ -130,71 +100,17 @@ public abstract class IsolatedClassLoaderTest extends AbstractTestCaseWithSetup
     * 
     * It exports everything
     * 
-    * @see #getParentPackages()
     * @param clazz the test class
     * @param importAll whether to import all
-    * @param parentPackages the packages that are not isolated
     * @param packages the classes in packages that should also be included
     * @return the test
     */
-   public static Test suite(Class<?> clazz, boolean importAll, Set<String> parentPackages, Class<?>... packages)
+   public static Test suite(Class<?> clazz, boolean importAll, Class<?>... packages)
    {
-      // A new classloader system for each test
-      system = new DefaultClassLoaderSystem();
-
-      // The parent filter
-      PackageClassFilter filter = new PackageClassFilter(parentPackages.toArray(new String[parentPackages.size()]));
-      filter.setIncludeJava(true);
-      ParentPolicy parentPolicy = new ParentPolicy(filter, ClassFilter.NOTHING);
-      ClassLoaderDomain domain = system.createAndRegisterDomain("TEST", parentPolicy);
-      
-      // Configure the policy for the test
-      MockClassLoaderPolicy policy = new MockClassLoaderPolicy();
-      Set<Class> classes = new HashSet<Class>();
-      classes.add(clazz);
-      for (Class<?> c : packages)
-         classes.add(c);
-      policy.setImportAll(importAll);
-      policy.setPathsAndPackageNames(classes.toArray(new Class[classes.size()]));
-      
-      // Create the classloader
-      ClassLoader classLoader = system.registerClassLoaderPolicy(domain, policy);
-
-      // Load the class from the isolated classloader
-      try
-      {
-         clazz = classLoader.loadClass(clazz.getName());
-      }
-      catch (ClassNotFoundException e)
-      {
-         throw new RuntimeException("Unable to load test class in isolated classloader " + clazz, e);
-      }
-      
+      helper = new IsolatedClassLoaderTestHelper();
+      Class<?> newClass = helper.initializeClassLoader(clazz, importAll, packages);
       // Create the test based on the isolated class
-      return AbstractTestCaseWithSetup.suite(clazz);
-   }
-
-   /**
-    * Get the packages that should not be isolated
-    * (and by transience their dependent classes, e.g. log4j in the classpath)<p>
-    * 
-    * NOTE: The transient packages cannot be used directly by the test
-    * unless explicity mentioned in this list.
-    * 
-    * @return the test support packages
-    */
-   public static Set<String> getParentPackages()
-   {
-      Set<String> result = new HashSet<String>();
-      result.add(Test.class.getPackage().getName());
-      result.add(TestSetup.class.getPackage().getName());
-      result.add(AbstractTestCaseWithSetup.class.getPackage().getName());
-      result.add(Logger.class.getPackage().getName());
-      result.add(LoggingPlugin.class.getPackage().getName());
-      result.add(PolicyPlugin.class.getPackage().getName());
-      result.add(ClassLoaderSystem.class.getPackage().getName());
-      result.add(IsolatedClassLoaderTest.class.getPackage().getName());
-      return result;
+      return AbstractTestCaseWithSetup.suite(newClass);
    }
    
    @Override
@@ -220,9 +136,9 @@ public abstract class IsolatedClassLoaderTest extends AbstractTestCaseWithSetup
     * 
     * @return the classloader
     */
-   public ClassLoaderSystem getClassLoaderSystem()
+   public static ClassLoaderSystem getClassLoaderSystem()
    {
-      return system;
+      return helper.getSystem();
    }
    
    /**
@@ -236,7 +152,7 @@ public abstract class IsolatedClassLoaderTest extends AbstractTestCaseWithSetup
     * @return the classloader
     * @throws Exception for any error
     */
-   protected ClassLoader createClassLoader(String name, String packages) throws Exception
+   protected static ClassLoader createClassLoader(String name, String... packages) throws Exception
    {
       return createClassLoader(name, true, packages);
    }
@@ -252,14 +168,9 @@ public abstract class IsolatedClassLoaderTest extends AbstractTestCaseWithSetup
     * @return the classloader
     * @throws Exception for any error
     */
-   protected ClassLoader createClassLoader(String name, boolean importAll, String packages) throws Exception
+   protected static ClassLoader createClassLoader(String name, boolean importAll, String... packages) throws Exception
    {
-      ClassLoaderSystem system = getClassLoaderSystem();
-      ClassLoaderDomain domain = system.getDomain("TEST");
-      MockClassLoaderPolicy policy = MockClassLoaderHelper.createMockClassLoaderPolicy(name);
-      policy.setImportAll(importAll);
-      policy.setPathsAndPackageNames(packages);
-      return MockClassLoaderHelper.registerMockClassLoader(system, domain, policy);
+      return helper.createClassLoader(name, importAll, packages);
    }
 
    /**
@@ -268,9 +179,8 @@ public abstract class IsolatedClassLoaderTest extends AbstractTestCaseWithSetup
     * @param classLoader the classloader
     * @throws Exception for any error
     */
-   protected void unregisterClassLoader(ClassLoader classLoader) throws Exception
+   protected static void unregisterClassLoader(ClassLoader classLoader) throws Exception
    {
-      ClassLoaderSystem system = getClassLoaderSystem();
-      system.unregisterClassLoader(classLoader);
+      helper.unregisterClassLoader(classLoader);
    }
 }

@@ -165,7 +165,7 @@ public abstract class BaseClassLoaderDomain implements Loader
    {
       BaseClassLoaderSystem system = getClassLoaderSystem();
       if (system != null)
-         system.transform(classLoader, className, byteCode, protectionDomain);
+         return system.transform(classLoader, className, byteCode, protectionDomain);
       return byteCode;
    }
    

@@ -41,6 +41,9 @@ public class PatternClassFilter implements ClassFilter
    /** The resource patterns as regular expressions */
    private Pattern[] resourcePatterns;
    
+   /** Whether to include java */
+   private boolean includeJava = false;
+   
    /**
     * Create a new PatternClassFilter.
     * 
@@ -76,6 +79,26 @@ public class PatternClassFilter implements ClassFilter
       }
    }
 
+   /**
+    * Get the includeJava.
+    * 
+    * @return the includeJava.
+    */
+   public boolean isIncludeJava()
+   {
+      return includeJava;
+   }
+
+   /**
+    * Set the includeJava.
+    * 
+    * @param includeJava the includeJava.
+    */
+   public void setIncludeJava(boolean includeJava)
+   {
+      this.includeJava = includeJava;
+   }
+
    public boolean matchesClassName(String className)
    {
       if (className == null)
@@ -87,7 +110,9 @@ public class PatternClassFilter implements ClassFilter
          if (matcher.matches())
             return true;
       }
-      return false;
+      if (includeJava == false)
+         return false;
+      return JavaOnlyClassFilter.INSTANCE.matchesClassName(className);
    }
 
    public boolean matchesResourcePath(String resourcePath)
@@ -101,12 +126,18 @@ public class PatternClassFilter implements ClassFilter
          if (matcher.matches())
             return true;
       }
-      return false;
+      if (includeJava == false)
+         return false;
+      return JavaOnlyClassFilter.INSTANCE.matchesResourcePath(resourcePath);
    }
 
    @Override
    public String toString()
    {
-      return Arrays.asList(classPatterns).toString();
+      StringBuilder builder = new StringBuilder();
+      builder.append(Arrays.asList(classPatterns));
+      if (isIncludeJava())
+         builder.append(" <INCLUDE_JAVA>");
+      return builder.toString();
    }
 }

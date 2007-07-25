@@ -50,7 +50,22 @@ public class JDKCheckerFactory
             String className = System.getProperty(JDKChecker.class.getName(), defaultChecker);
             try
             {
-               Class<?> clazz = Thread.currentThread().getContextClassLoader().loadClass(className);
+               Class<?> clazz = null;
+               try
+               {
+                  clazz = Thread.currentThread().getContextClassLoader().loadClass(className);
+               }
+               catch (ClassNotFoundException e)
+               {
+                  try
+                  {
+                     clazz = getClass().getClassLoader().loadClass(className);
+                  }
+                  catch (ClassNotFoundException ignored)
+                  {
+                     throw e;
+                  }
+               }
                Object result = clazz.newInstance();
                return JDKChecker.class.cast(result);
             }

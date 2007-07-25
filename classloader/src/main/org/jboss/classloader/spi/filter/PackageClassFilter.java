@@ -23,7 +23,6 @@ package org.jboss.classloader.spi.filter;
 
 import java.util.Arrays;
 
-import org.jboss.classloader.plugins.filter.JavaOnlyClassFilter;
 import org.jboss.classloader.plugins.filter.PatternClassFilter;
 
 /**
@@ -36,9 +35,6 @@ public class PackageClassFilter extends PatternClassFilter
 {
    /** The patterns as regular expressions */
    private String[] packageNames;
-   
-   /** Whether to include java */
-   private boolean includeJava = false;
    
    /**
     * Convert package names to class patterns
@@ -118,50 +114,12 @@ public class PackageClassFilter extends PatternClassFilter
       this.packageNames = packageNames;
    }
 
-   /**
-    * Get the includeJava.
-    * 
-    * @return the includeJava.
-    */
-   public boolean isIncludeJava()
-   {
-      return includeJava;
-   }
-
-   /**
-    * Set the includeJava.
-    * 
-    * @param includeJava the includeJava.
-    */
-   public void setIncludeJava(boolean includeJava)
-   {
-      this.includeJava = includeJava;
-   }
-
-   public boolean matchesClassName(String className)
-   {
-      if (super.matchesClassName(className))
-         return true;
-      if (includeJava == false)
-         return false;
-      return JavaOnlyClassFilter.INSTANCE.matchesClassName(className);
-   }
-
-   public boolean matchesResourcePath(String resourcePath)
-   {
-      if (super.matchesResourcePath(resourcePath))
-         return true;
-      if (includeJava == false)
-         return false;
-      return JavaOnlyClassFilter.INSTANCE.matchesResourcePath(resourcePath);
-   }
-
    @Override
    public String toString()
    {
       StringBuilder builder = new StringBuilder();
       builder.append(Arrays.asList(packageNames));
-      if (includeJava)
+      if (isIncludeJava())
          builder.append(" <INCLUDE_JAVA>");
       return builder.toString();
    }

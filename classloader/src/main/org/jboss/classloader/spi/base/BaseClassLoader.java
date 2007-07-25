@@ -261,7 +261,7 @@ public class BaseClassLoader extends SecureClassLoader implements BaseClassLoade
             ProtectionDomain protectionDomain = basePolicy.getProtectionDomain(name, resourcePath);
             try
             {
-               byteCode = policy.transform(name, byteCode, protectionDomain);
+              byteCode = policy.transform(name, byteCode, protectionDomain);
             }
             catch (Throwable t)
             {

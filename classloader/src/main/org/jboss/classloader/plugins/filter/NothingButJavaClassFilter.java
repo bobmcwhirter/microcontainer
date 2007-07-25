@@ -44,4 +44,10 @@ public class NothingButJavaClassFilter extends PatternClassFilter
    {
       return "NOTHING_BUT_JAVA";
    }
+
+   @Override
+   public void setIncludeJava(boolean includeJava)
+   {
+      throw new UnsupportedOperationException("This class is immutable");
+   }
 }
