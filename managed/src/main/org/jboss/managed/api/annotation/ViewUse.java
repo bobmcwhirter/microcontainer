@@ -19,8 +19,7 @@
   * Software Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA
   * 02110-1301 USA, or see the FSF site: http://www.fsf.org.
   */
-
-package org.jboss.annotation.management;
+package org.jboss.managed.api.annotation;
 
 /**
  * An enum for the types of management views a {@link ManagedProperty property}

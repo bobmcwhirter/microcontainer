@@ -26,6 +26,7 @@ import java.util.Map;
 
 import org.jboss.deployers.spi.DeploymentException;
 import org.jboss.deployers.spi.DeploymentState;
+import org.jboss.managed.api.ManagedDeployment;
 import org.jboss.managed.api.ManagedObject;
 import org.jboss.util.graph.Graph;
 
@@ -158,4 +159,6 @@ public interface DeployerClient
     * @throws DeploymentException
     */
    Graph<Map<String, ManagedObject>> getDeepManagedObjects(String name) throws DeploymentException;
+
+   ManagedDeployment getManagedDeployment(String name) throws DeploymentException;
 }

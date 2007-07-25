@@ -40,6 +40,7 @@ import org.jboss.deployers.structure.spi.DeploymentUnit;
 import org.jboss.deployers.structure.spi.StructuralDeployers;
 import org.jboss.deployers.structure.spi.main.MainDeployerStructure;
 import org.jboss.logging.Logger;
+import org.jboss.managed.api.ManagedDeployment;
 import org.jboss.managed.api.ManagedObject;
 import org.jboss.util.graph.Graph;
 import org.jboss.util.graph.Vertex;
@@ -404,6 +405,15 @@ public class MainDeployerImpl implements MainDeployer, MainDeployerStructure
       if (context == null)
          return DeploymentState.UNDEPLOYED;
       return context.getState();
+   }
+
+   /**
+    * 
+    */
+   public ManagedDeployment getManagedDeployment(String name) throws DeploymentException
+   {
+      ManagedDeployment md = null;
+      return md;
    }
 
    public Map<String, ManagedObject> getManagedObjects(String name) throws DeploymentException

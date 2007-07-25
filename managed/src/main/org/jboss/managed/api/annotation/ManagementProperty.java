@@ -27,10 +27,13 @@ import java.lang.annotation.RetentionPolicy;
 import java.lang.annotation.Target;
 
 /**
- * ManagementProperty.
+ * ManagementProperty annotation for describing a ManagedProperty
+ * 
+ * TODO: Need more info on meta-type such as constraints, allowed values.
  * 
  * @author <a href="adrian@jboss.com">Adrian Brock</a>
- * @version $Revision: 1.1 $
+ * @author Scott.Stark@jboss.org
+ * @version $Revision$
  */
 @Target({ElementType.METHOD})
 @Retention(RetentionPolicy.RUNTIME)
@@ -38,7 +41,15 @@ public @interface ManagementProperty
 {
    /** The description */
    String description() default ManagementConstants.GENERATED;
-   
+
+   /** The external name of the property. If undefined its taken
+    * from the property the annotation is on.
+    */
+   String name() default "";
+
+   /** The internal name of the property as it relates to metadata */
+   String mappedName() default "";
+
    /** Whether this property is mandatory */
    boolean mandatory() default false;
    
@@ -47,4 +58,8 @@ public @interface ManagementProperty
    
    /** Whether to ignore this property */
    boolean ignored() default false;
+
+   /** The views this property should be used in */
+   ViewUse[] use() default {ViewUse.RUNTIME};
+
 }
