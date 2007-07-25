@@ -10,7 +10,7 @@ import org.jboss.managed.api.ManagedDeployment;
 
 public class MCFDeployer
    extends AbstractSimpleRealDeployer<DSMetaData>
-   implements ManagedDeploymentCreator<DSMetaData>
+   implements ManagedDeploymentCreator
 
 {
    public MCFDeployer(Class<DSMetaData> input)
@@ -24,7 +24,7 @@ public class MCFDeployer
    {
    }
 
-   public void build(DeploymentUnit unit, ManagedDeployment md, Set<? extends DSMetaData> metaData)
+   public void build(DeploymentUnit unit, ManagedDeployment md)
    {      
    }
 
