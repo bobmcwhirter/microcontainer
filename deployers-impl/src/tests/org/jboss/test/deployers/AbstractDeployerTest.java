@@ -31,8 +31,10 @@ import org.jboss.deployers.client.spi.DeploymentFactory;
 import org.jboss.deployers.plugins.deployers.DeployerWrapper;
 import org.jboss.deployers.plugins.deployers.DeployersImpl;
 import org.jboss.deployers.plugins.main.MainDeployerImpl;
+import org.jboss.deployers.spi.attachments.PredeterminedManagedObjectAttachments;
 import org.jboss.deployers.spi.deployer.Deployer;
 import org.jboss.deployers.spi.deployer.Deployers;
+import org.jboss.deployers.spi.structure.ContextInfo;
 import org.jboss.deployers.structure.spi.DeploymentContext;
 import org.jboss.deployers.structure.spi.StructuralDeployers;
 import org.jboss.deployers.structure.spi.StructureBuilder;
@@ -48,6 +50,8 @@ import org.jboss.test.BaseTestCase;
  */
 public abstract class AbstractDeployerTest extends BaseTestCase
 {
+   DeploymentFactory factory = new DeploymentFactory();
+
    public AbstractDeployerTest(String name)
    {
       super(name);
@@ -136,14 +140,18 @@ public abstract class AbstractDeployerTest extends BaseTestCase
    protected Deployment createSimpleDeployment(String name)
    {
       AbstractDeployment unit = new AbstractDeployment(name);
-      DeploymentFactory factory = new DeploymentFactory();
       factory.addContext(unit, "");
       return unit;
+   }
+   
+   protected ContextInfo addChild(PredeterminedManagedObjectAttachments parent, String name)
+   {
+      return factory.addContext(parent, name);
    }
 
    @Override
    protected void configureLogging()
    {
-      enableTrace("org.jboss.deployers");
+      //enableTrace("org.jboss.deployers");
    }
 }

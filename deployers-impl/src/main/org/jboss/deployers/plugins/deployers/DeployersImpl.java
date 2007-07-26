@@ -378,9 +378,9 @@ public class DeployersImpl implements Deployers, ControllerContextActions
             try
             {
                controller.uninstall(deploymentControllerContext.getName());
-               context.setState(DeploymentState.UNDEPLOYED);
+               setState(context, DeploymentState.UNDEPLOYED, null);
                // TODO JBMICROCONT-182 perform with the deployer that created the classloader?
-               context.removeClassLoader();
+               removeClassLoader(context);
                log.debug("Fully Undeployed " + context.getName());
             }
             catch (Throwable t)
@@ -408,8 +408,11 @@ public class DeployersImpl implements Deployers, ControllerContextActions
             }
             catch (Throwable t)
             {
+               // Set the error on the parent
                context.setState(DeploymentState.ERROR);
                context.setProblem(t);
+               // Set the children to not deployed
+               setState(context, DeploymentState.UNDEPLOYED, DeploymentState.DEPLOYING);
             }
          }
 
@@ -477,7 +480,6 @@ public class DeployersImpl implements Deployers, ControllerContextActions
          for (DeploymentContext context : missingDeployer)
             deploymentsMissingDeployer.add(context.getName());
       }
-      
       
       if (controller != null)
       {
@@ -585,15 +587,14 @@ public class DeployersImpl implements Deployers, ControllerContextActions
       DeploymentContext deploymentContext = deploymentControllerContext.getDeploymentContext();
       try
       {
-         doInstall(deploymentContext, stageName, true);
+         doInstall(deploymentContext, stageName, true, true);
       }
       finally
       {
          if (ControllerState.INSTALLED.equals(toState) && DeploymentState.DEPLOYING.equals(deploymentContext.getState()))
          {
             log.debug("Fully Deployed " + context.getName());
-            deploymentContext.setState(DeploymentState.DEPLOYED);
-            
+            setState(deploymentContext, DeploymentState.DEPLOYED, null);
          }
       }
    }
@@ -603,10 +604,11 @@ public class DeployersImpl implements Deployers, ControllerContextActions
     * 
     * @param context the context
     * @param stageName the stage
+    * @param doChildren whether to do children
     * @param doComponents whether to do components
     * @throws Throwable for any problem
     */
-   protected void doInstall(DeploymentContext context, String stageName, boolean doComponents) throws Throwable
+   protected void doInstall(DeploymentContext context, String stageName, boolean doChildren, boolean doComponents) throws Throwable
    {
       List<Deployer> theDeployers = getDeployersList(stageName);
       
@@ -621,7 +623,7 @@ public class DeployersImpl implements Deployers, ControllerContextActions
             while (i < theDeployers.size())
             {
                Deployer deployer = theDeployers.get(i);
-               doInstall(deployer, context, doComponents);
+               doInstall(deployer, context, doChildren, doComponents);
                ++i;
             }
          }
@@ -629,11 +631,17 @@ public class DeployersImpl implements Deployers, ControllerContextActions
          {
             context.setState(DeploymentState.ERROR);
             context.setProblem(t);
+            
+            // Unwind the previous deployments
             for (int j = i-1; j >= 0; --j)
             {
                Deployer deployer = theDeployers.get(j);
-               doUninstall(deployer, context, true);
+               doUninstall(deployer, context, true, true);
             }
+            
+            // It can happen that subdeployments are not processed if the parent fails immediately
+            // so there is no callback to undeploy when nothing was done
+            setState(context, DeploymentState.UNDEPLOYED, DeploymentState.DEPLOYING);
             throw t;
          }
       }
@@ -644,10 +652,11 @@ public class DeployersImpl implements Deployers, ControllerContextActions
     * 
     * @param deployer the deployer
     * @param context the context
+    * @param doChildren whether to do children
     * @param doComponents whether to do components
     * @throws Throwable for any problem
     */
-   protected void doInstall(Deployer deployer, DeploymentContext context, boolean doComponents) throws Throwable
+   protected void doInstall(Deployer deployer, DeploymentContext context, boolean doChildren, boolean doComponents) throws Throwable
    {
       List<DeploymentContext> currentComponents = context.getComponents();
       // Take a copy of the components so we don't start looping on newly added components
@@ -658,10 +667,21 @@ public class DeployersImpl implements Deployers, ControllerContextActions
 
       DeploymentUnit unit = context.getDeploymentUnit();
       if (isRelevant(deployer, unit, context.isTopLevel(), context.isComponent()))
-         deployer.deploy(unit);
+      {
+         try
+         {
+            deployer.deploy(unit);
+         }
+         catch (DeploymentException e)
+         {
+            context.setState(DeploymentState.ERROR);
+            context.setProblem(e);
+            throw e;
+         }
+      }
       else if (log.isTraceEnabled())
          log.trace("Deployer " + deployer + " not relevant for " + context.getName());
-
+      
       if (doComponents && components != null)
       {
          try
@@ -671,7 +691,7 @@ public class DeployersImpl implements Deployers, ControllerContextActions
                DeploymentContext component = components.get(i);
                try
                {
-                  doInstall(deployer, component, true);
+                  doInstall(deployer, component, false, true);
                }
                catch (DeploymentException e)
                {
@@ -679,7 +699,7 @@ public class DeployersImpl implements Deployers, ControllerContextActions
                   for (int j = i - 1; j >= 0; --j)
                   {
                      component = components.get(j);
-                     doUninstall(deployer, component, true);
+                     doUninstall(deployer, component, false, true);
                   }
                   throw e;
                }
@@ -687,10 +707,43 @@ public class DeployersImpl implements Deployers, ControllerContextActions
          }
          catch (DeploymentException e)
          {
-            doUninstall(deployer, context, false);
+            // Just undeploy this context
+            doUninstall(deployer, context, false, false);
             throw e;
          }
       }
+
+      List<DeploymentContext> children = context.getChildren();
+      if (doChildren && children != null)
+      {
+         try
+         {
+            for (int i = 0; i < children.size(); ++i)
+            {
+               DeploymentContext child = children.get(i);
+               try
+               {
+                  doInstall(deployer, child, true, true);
+               }
+               catch (DeploymentException e)
+               {
+                  // Unwind the previous children
+                  for (int j = i - 1; j >= 0; --j)
+                  {
+                     child = children.get(j);
+                     doUninstall(deployer, child, true, true);
+                  }
+                  throw e;
+               }
+            }
+         }
+         catch (DeploymentException e)
+         {
+            // Undeploy the context but the children are already unwound
+            doUninstall(deployer, context, false, true);
+            throw e;
+         }
+      }         
    }
    
    public void uninstall(ControllerContext context, ControllerState fromState, ControllerState toState)
@@ -699,7 +752,7 @@ public class DeployersImpl implements Deployers, ControllerContextActions
       String stageName = fromState.getStateString();
       
       DeploymentContext deploymentContext = deploymentControllerContext.getDeploymentContext();
-      doUninstall(deploymentContext, stageName, true);
+      doUninstall(deploymentContext, stageName, true, true);
    }
 
    /**
@@ -707,9 +760,10 @@ public class DeployersImpl implements Deployers, ControllerContextActions
     * 
     * @param context the context
     * @param stageName the stage
+    * @param doChildren whether to do children
     * @param doComponents whether to do components
     */
-   protected void doUninstall(DeploymentContext context, String stageName, boolean doComponents)
+   protected void doUninstall(DeploymentContext context, String stageName, boolean doChildren, boolean doComponents)
    {
       List<Deployer> theDeployers = getDeployersList(stageName);
       
@@ -721,7 +775,7 @@ public class DeployersImpl implements Deployers, ControllerContextActions
          for (int i = theDeployers.size()-1; i >= 0; --i)
          {
             Deployer deployer = theDeployers.get(i);
-            doUninstall(deployer, context, doComponents);
+            doUninstall(deployer, context, doChildren, doComponents);
          }
       }
    }
@@ -731,10 +785,24 @@ public class DeployersImpl implements Deployers, ControllerContextActions
     *
     * @param deployer the deployer
     * @param context the context
+    * @param doChildren whether to do children
     * @param doComponents whether to do components
     */
-   protected void doUninstall(Deployer deployer, DeploymentContext context, boolean doComponents)
+   protected void doUninstall(Deployer deployer, DeploymentContext context, boolean doChildren, boolean doComponents)
    {
+      if (doChildren)
+      {
+         List<DeploymentContext> children = context.getChildren();
+         if (children != null && children.isEmpty() == false)
+         {
+            for (int i = children.size()-1; i >=  0; --i)
+            {
+               DeploymentContext child = children.get(i);
+               doUninstall(deployer, child, true, true);
+            }
+         }
+      }
+
       if (doComponents)
       {
          List<DeploymentContext> components = context.getComponents();
@@ -743,7 +811,7 @@ public class DeployersImpl implements Deployers, ControllerContextActions
             for (int i = components.size()-1; i >=  0; --i)
             {
                DeploymentContext component = components.get(i);
-               doUninstall(deployer, component, doComponents);
+               doUninstall(deployer, component, false, true);
             }
          }
       }
@@ -816,117 +884,38 @@ public class DeployersImpl implements Deployers, ControllerContextActions
       return sorter.sortDeployers(original, newDeployer);
    }
 
-/*
-   */
-/**
-    * Sort the deployers
+   /**
+    * Set the deployment state for a context and its children
     * 
-    * @param original the original deployers
-    * @param newDeployer the new deployer
-    * @return the sorted deployers
+    * @param context the context
+    * @param state the state
+    * @param ifState the ifState
     */
-/*
-   protected List<Deployer> sort(List<Deployer> original, Deployer newDeployer)
+   private static void setState(DeploymentContext context, DeploymentState state, DeploymentState ifState)
    {
-      List<Deployer> result = new ArrayList<Deployer>(original);
-      result.add(newDeployer);
-
-      // Bubble sort :-)
-      boolean changed = true;
-      while (changed)
+      if (ifState == null || ifState.equals(context.getState()))
+         context.setState(state);
+      List<DeploymentContext> children = context.getChildren();
+      if (children != null && children.isEmpty() == false)
       {
-         changed = false;
-
-         for (int i = 0; i < result.size() -1; ++i)
-         {
-            int j = i+1;
-
-            Deployer one = result.get(i);
-            Deployer two = result.get(j);
-
-            Set<String> oneOutputs = one.getOutputs();
-
-            // Don't move if one outputs something for two
-            boolean swap = true;
-            if (oneOutputs.isEmpty() == false)
-            {
-               Set<String> twoInputs = two.getInputs();
-               for (String output : oneOutputs)
-               {
-                  if (twoInputs.contains(output))
-                  {
-                     swap = false;
-                     break;
-                  }
-               }
-
-               if (swap == false)
-                  continue;
-            }
-
-            // Move if one inputs from two
-            swap = false;
-            Set<String> twoOutputs = two.getOutputs();
-            if (twoOutputs.isEmpty() == false)
-            {
-               Set<String> oneInputs = one.getInputs();
-               for (String output : twoOutputs)
-               {
-                  if (oneInputs.contains(output))
-                  {
-                     swap = true;
-                     break;
-                  }
-               }
-            }
-
-            // Move if the order is not correct
-            if (Ordered.COMPARATOR.compare(one, two) > 0)
-               swap = true;
-
-            if (swap)
-            {
-               Collections.swap(result, i, j);
-               changed = true;
-            }
-         }
+         for (DeploymentContext child : children)
+            setState(child, state, ifState);
       }
-
-      // Now check the consistency
-      // The new deployer should be before anything that accepts its outputs
-      Set<String> outputs = newDeployer.getOutputs();
-      if  (outputs.isEmpty() == false)
-      {
-         int location = result.indexOf(newDeployer);
-         for (int i = 0; i < location; ++i)
-         {
-            Deployer other = result.get(i);
-            Set<String> otherInputs = other.getInputs();
-            Set<String> otherOutputs = other.getOutputs();
-            if (otherInputs.isEmpty() == false)
-            {
-               for (String input : otherInputs)
-               {
-                  // Ignore transient usage
-                  if (outputs.contains(input) && otherOutputs.contains(input) == false)
-                  {
-                     StringBuilder builder = new StringBuilder();
-                     builder.append("Cannot add ").append(newDeployer).append(" it will cause a loop\n");
-                     for (Deployer temp : result)
-                     {
-                        builder.append(temp);
-                        builder.append("{inputs=").append(temp.getInputs());
-                        builder.append(" outputs=").append(temp.getOutputs());
-                        builder.append("}\n");
-                     }
-                     throw new IllegalStateException(builder.toString());
-                  }
-               }
-            }
-         }
-      }
-
-      return result;
    }
-*/
+
+   /**
+    * Remove a classloader for a context and its children
+    * 
+    * @param context the context
+    */
+   private static void removeClassLoader(DeploymentContext context)
+   {
+      context.removeClassLoader();
+      List<DeploymentContext> children = context.getChildren();
+      if (children != null && children.isEmpty() == false)
+      {
+         for (DeploymentContext child : children)
+            removeClassLoader(child);
+      }
+   }
 }

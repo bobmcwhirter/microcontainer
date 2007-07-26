@@ -504,8 +504,12 @@ public class MainDeployerImpl implements MainDeployer, MainDeployerStructure
          return;
       }
       context.setState(DeploymentState.DEPLOYING);
-      log.debug("Scheduling deployment: " + context.getName());
-      deploy.add(context);
+      DeploymentContext parent = context.getParent();
+      log.debug("Scheduling deployment: " + context.getName() + " parent=" + parent);
+
+      // Process the parent only
+      if (context.isTopLevel())
+         deploy.add(context);
       
       // Add all the children
       List<DeploymentContext> children = context.getChildren();
@@ -533,8 +537,12 @@ public class MainDeployerImpl implements MainDeployer, MainDeployerStructure
          return;
       }
       context.setState(DeploymentState.UNDEPLOYING);
-      log.debug("Scheduling undeployment: " + name);
-      undeploy.add(context);
+      DeploymentContext parent = context.getParent();
+      log.debug("Scheduling undeployment: " + name + " parent=" + parent);
+
+      // Process the top level only
+      if (context.isTopLevel())
+         undeploy.add(context);
       
       // Remove all the children
       List<DeploymentContext> children = context.getChildren();

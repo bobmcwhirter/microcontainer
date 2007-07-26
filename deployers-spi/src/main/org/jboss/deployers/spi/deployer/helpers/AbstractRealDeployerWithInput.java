@@ -21,6 +21,8 @@
  */
 package org.jboss.deployers.spi.deployer.helpers;
 
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Set;
 
 import org.jboss.deployers.spi.DeploymentException;
@@ -84,6 +86,7 @@ public abstract class AbstractRealDeployerWithInput<T> extends AbstractRealDeplo
       setInput(input);
    }
 
+   @SuppressWarnings("unchecked")
    public void deploy(DeploymentUnit unit) throws DeploymentException
    {
       if (visitor == null)
@@ -96,15 +99,29 @@ public abstract class AbstractRealDeployerWithInput<T> extends AbstractRealDeplo
          return;
       }
 
+      List<T> visited = new ArrayList();
       try
       {
          Set<? extends T> deployments = unit.getAllMetaData(getInput());
          for (T deployment : deployments)
+         {
             visitor.deploy(unit, deployment);
+            visited.add(deployment);
+         }
       }
       catch (Throwable t)
       {
-         undeploy(unit);
+         for (int i = visited.size()-1; i >= 0; --i)
+         {
+            try
+            {
+               visitor.undeploy(unit, visited.get(i));
+            }
+            catch (Throwable ignored)
+            {
+               log.warn("Error during undeploy: " + unit.getName(), ignored);
+            }
+         }
          throw DeploymentException.rethrowAsDeploymentException("Error deploying: " + unit.getName(), t);
       }
    }
