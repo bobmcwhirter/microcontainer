@@ -86,14 +86,14 @@ public class DominoOrdering<T extends Domino>
       }
    }
 
-   public List<T> orderDominoes(List<T> dominoes)
+   public List<T> orderDominoes(List<T> dominoes, Object cause)
    {
       // prepare initial transitions
       init(dominoes);
       // do transitive closure
       int cycle = fillTransitions(true);
       if (cycle >= 0)
-         throwCycleException(cycle);
+         throwCycleException(cause);
       // name compare on 'uncomparable'
       fillCompareNames();
 
@@ -178,10 +178,10 @@ public class DominoOrdering<T extends Domino>
       }
    }
 
-   protected void throwCycleException(int index)
+   protected void throwCycleException(Object cause)
    {
       StringBuilder builder = new StringBuilder();
-      builder.append(String.format(message, dominoes.get(index)));
+      builder.append(String.format(message, cause));
       for (T d : dominoes)
          builder.append(d.getInfo());
       throw new IllegalStateException(builder.toString());

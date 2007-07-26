@@ -42,7 +42,7 @@ public class DominoDeployerSorter implements DeployerSorter
       dominoes.add(new DeployerDomino(newDeployer));
 
       DominoOrdering<DeployerDomino> sorter = new DominoOrdering<DeployerDomino>("Cannot add %1s it will cause a loop\n");
-      dominoes = sorter.orderDominoes(dominoes);
+      dominoes = sorter.orderDominoes(dominoes, newDeployer);
 
       List<Deployer> deployers = new ArrayList<Deployer>(capacity);
       for (DeployerDomino domino : dominoes)
