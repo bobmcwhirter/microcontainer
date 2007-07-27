@@ -102,7 +102,7 @@ public class AbstractValueMetaData extends JBossObject
       vistor.describeVisit(this);
    }
 
-   public Class getType(MetaDataVisitor visitor, MetaDataVisitorNode previous) throws Throwable
+   public TypeInfo getType(MetaDataVisitor visitor, MetaDataVisitorNode previous) throws Throwable
    {
       Stack<MetaDataVisitorNode> visitorNodeStack = visitor.visitorNodeStack();
       // see AbstractInjectionValueMetaData.describeVisit

@@ -192,7 +192,7 @@ public class AbstractMapMetaData extends AbstractTypeMetaData
       return children.iterator();
    }
 
-   public Class getType(MetaDataVisitor visitor, MetaDataVisitorNode previous) throws Throwable
+   public TypeInfo getType(MetaDataVisitor visitor, MetaDataVisitorNode previous) throws Throwable
    {
       if (keyType != null)
       {

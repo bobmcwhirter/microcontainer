@@ -38,6 +38,7 @@ import org.jboss.kernel.spi.dependency.KernelControllerContext;
 import org.jboss.reflect.spi.ClassInfo;
 import org.jboss.reflect.spi.ConstructorInfo;
 import org.jboss.reflect.spi.MethodInfo;
+import org.jboss.reflect.spi.TypeInfo;
 import org.jboss.util.JBossObject;
 import org.jboss.util.JBossStringBuilder;
 
@@ -175,7 +176,7 @@ public class AbstractConstructorMetaData extends AbstractFeatureMetaData
          children.add(factory);
    }
 
-   public Class getType(MetaDataVisitor visitor, MetaDataVisitorNode previous) throws Throwable
+   public TypeInfo getType(MetaDataVisitor visitor, MetaDataVisitorNode previous) throws Throwable
    {
       if (factory != null || factoryClassName != null)
       {
@@ -196,7 +197,7 @@ public class AbstractConstructorMetaData extends AbstractFeatureMetaData
          ParameterMetaData parameter = (ParameterMetaData) previous;
          String[] parameterTypes = Configurator.getParameterTypes(false, parameters);
          MethodInfo methodInfo = Configurator.findMethodInfo(classInfo, factoryMethod, parameterTypes, factoryClassName != null, true);
-         return applyCollectionOrMapCheck(methodInfo.getParameterTypes()[parameter.getIndex()].getType());
+         return applyCollectionOrMapCheck(methodInfo.getParameterTypes()[parameter.getIndex()]);
       }
       else
       {
@@ -208,13 +209,13 @@ public class AbstractConstructorMetaData extends AbstractFeatureMetaData
             ParameterMetaData parameter = (ParameterMetaData) previous;
             String[] paramTypes = Configurator.getParameterTypes(false, parameters);
             ConstructorInfo ci = Configurator.findConstructorInfo(beanInfo.getClassInfo(), paramTypes);
-            return applyCollectionOrMapCheck(ci.getParameterTypes()[parameter.getIndex()].getType());
+            return applyCollectionOrMapCheck(ci.getParameterTypes()[parameter.getIndex()]);
          }
          else
          {
             // currently value constructor supports only values that are instances of class itself
             // this will add another instance with the same class to context
-            Class type = beanInfo.getClassInfo().getType();
+            ClassInfo type = beanInfo.getClassInfo();
             log.warn("Constructing bean from injection value: results in multiple beans with same class type - " + type);
             return type;
 /*

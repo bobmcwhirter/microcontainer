@@ -35,6 +35,7 @@ import org.jboss.kernel.plugins.config.Configurator;
 import org.jboss.kernel.spi.config.KernelConfigurator;
 import org.jboss.kernel.spi.dependency.KernelControllerContext;
 import org.jboss.util.JBossStringBuilder;
+import org.jboss.reflect.spi.TypeInfo;
 
 /**
  * Metadata for a property.
@@ -177,7 +178,7 @@ public class AbstractPropertyMetaData extends AbstractFeatureMetaData
          children.add(value);
    }
 
-   public Class getType(MetaDataVisitor visitor, MetaDataVisitorNode previous) throws Throwable
+   public TypeInfo getType(MetaDataVisitor visitor, MetaDataVisitorNode previous) throws Throwable
    {
       String type = getType();
       if (type != null)
@@ -185,7 +186,7 @@ public class AbstractPropertyMetaData extends AbstractFeatureMetaData
          KernelControllerContext context = visitor.getControllerContext();
          ClassLoader cl = Configurator.getClassLoader(context.getBeanMetaData());
          KernelConfigurator configurator = context.getKernel().getConfigurator();
-         return configurator.getClassInfo(type, cl).getType();
+         return configurator.getClassInfo(type, cl);
       }
       // check properties
       KernelControllerContext context = visitor.getControllerContext();
@@ -197,7 +198,7 @@ public class AbstractPropertyMetaData extends AbstractFeatureMetaData
             PropertyInfo pi = (PropertyInfo) it.next();
             if (getName().equals(pi.getName()))
             {
-               return applyCollectionOrMapCheck(pi.getType().getType());
+               return applyCollectionOrMapCheck(pi.getType());
             }
          }
       }

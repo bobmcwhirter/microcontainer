@@ -106,7 +106,7 @@ public class StringValueMetaData extends AbstractTypeMetaData
       return null;
    }
 
-   public Class getType(MetaDataVisitor visitor, MetaDataVisitorNode previous) throws Throwable
+   public TypeInfo getType(MetaDataVisitor visitor, MetaDataVisitorNode previous) throws Throwable
    {
       if (getType() != null)
       {

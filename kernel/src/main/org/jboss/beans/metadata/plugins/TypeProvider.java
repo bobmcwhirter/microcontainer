@@ -23,6 +23,7 @@ package org.jboss.beans.metadata.plugins;
 
 import org.jboss.beans.metadata.spi.MetaDataVisitor;
 import org.jboss.beans.metadata.spi.MetaDataVisitorNode;
+import org.jboss.reflect.spi.TypeInfo;
 
 /**
  * @author <a href="mailto:ales.justin@genera-lynx.com">Ales Justin</a>
@@ -30,16 +31,16 @@ import org.jboss.beans.metadata.spi.MetaDataVisitorNode;
 public interface TypeProvider
 {
    // error msg
-   static final String ERROR_MSG = "Node not of TypeProvider instance, cannot determine class type.";
+   static final String ERROR_MSG = "Node not of TypeProvider instance, cannot determine type info.";
 
    /**
-    * Get the injectee class type.
+    * Get the injectee type info.
     *
     * @param visitor meda data visitor
     * @param previous previous node in the stack
-    * @return class type for injection ByClass
+    * @return TypeInfo type info for injection ByClass
     * @throws Throwable if could not determine class
     */
-   Class getType(MetaDataVisitor visitor, MetaDataVisitorNode previous) throws Throwable;
+   TypeInfo getType(MetaDataVisitor visitor, MetaDataVisitorNode previous) throws Throwable;
 
 }

@@ -22,18 +22,21 @@
 package org.jboss.beans.metadata.plugins;
 
 import java.io.Serializable;
-import java.util.Iterator;
-import java.util.Set;
 import java.util.Collection;
+import java.util.Iterator;
 import java.util.Map;
+import java.util.Set;
 
 import org.jboss.beans.metadata.spi.AnnotationMetaData;
 import org.jboss.beans.metadata.spi.FeatureMetaData;
 import org.jboss.beans.metadata.spi.MetaDataVisitor;
 import org.jboss.beans.metadata.spi.MetaDataVisitorNode;
-import org.jboss.util.collection.CollectionsFactory;
 import org.jboss.util.JBossObject;
 import org.jboss.util.JBossStringBuilder;
+import org.jboss.util.collection.CollectionsFactory;
+import org.jboss.reflect.spi.TypeInfo;
+import org.jboss.reflect.spi.ClassInfo;
+import org.jboss.reflect.spi.TypeInfoFactory;
 
 /**
  * General metadata.
@@ -101,14 +104,23 @@ public abstract class AbstractFeatureMetaData extends JBossObject
       vistor.describeVisit(this);
    }
 
-   protected Class applyCollectionOrMapCheck(Class clazz) throws Throwable
+   protected TypeInfo applyCollectionOrMapCheck(TypeInfo typeInfo) throws Throwable
    {
-      // todo - some generics check
-      if (Collection.class.isAssignableFrom(clazz) || Map.class.isAssignableFrom(clazz))
+      TypeInfoFactory tif = typeInfo.getTypeInfoFactory();
+      boolean isMapTypeInfo = tif.getTypeInfo(Map.class).isAssignableFrom(typeInfo);
+      // cannot determine on map, since we don't know if we are key or value
+      if (typeInfo instanceof ClassInfo && isMapTypeInfo == false)
+      {
+         ClassInfo classInfo = (ClassInfo)typeInfo;
+         TypeInfo[] types = classInfo.getActualTypeArguments();
+         if (types != null)
+            return types[0];
+      }
+      if (tif.getTypeInfo(Collection.class).isAssignableFrom(typeInfo) || isMapTypeInfo)
       {
          throw new IllegalArgumentException("Should not be here - set element/value class type in collection/map: " + this);
       }
-      return clazz;
+      return typeInfo;
    }
 
    @SuppressWarnings("unchecked")

@@ -281,7 +281,7 @@ public class AbstractInjectionValueMetaData extends AbstractDependencyValueMetaD
                   if (node instanceof TypeProvider)
                   {
                      TypeProvider typeProvider = (TypeProvider)node;
-                     Class injectionClass = typeProvider.getType(visitor, this);
+                     Class injectionClass = typeProvider.getType(visitor, this).getType();
                      // set when required
                      ControllerState whenRequired = whenRequiredState;
                      if (whenRequired == null)

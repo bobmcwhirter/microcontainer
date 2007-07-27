@@ -59,7 +59,7 @@ public class AbstractArrayMetaData extends AbstractListMetaData
          // No type specified
          if (info == null)
          {
-            info = getElementClassInfo(cl);
+            info = getElementClassInfo(cl, null);
             if (info == null)
                return null;
             info = info.getArrayType(0);

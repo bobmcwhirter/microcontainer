@@ -29,8 +29,8 @@ import java.util.Iterator;
 import org.jboss.beans.metadata.spi.MetaDataVisitor;
 import org.jboss.beans.metadata.spi.MetaDataVisitorNode;
 import org.jboss.beans.metadata.spi.ValueMetaData;
-import org.jboss.reflect.spi.ClassInfo;
 import org.jboss.reflect.spi.TypeInfo;
+import org.jboss.reflect.spi.ClassInfo;
 import org.jboss.util.JBossObject;
 import org.jboss.util.JBossStringBuilder;
 
@@ -83,7 +83,7 @@ public class AbstractCollectionMetaData extends AbstractTypeMetaData
    {
       Collection result = getTypeInstance(info, cl, Collection.class);
 
-      TypeInfo elementTypeInfo = getElementClassInfo(cl);
+      TypeInfo elementTypeInfo = getElementClassInfo(cl, info);
       for (int i = 0; i < collection.size(); ++i)
       {
          ValueMetaData vmd = (ValueMetaData) collection.get(i);
@@ -92,7 +92,7 @@ public class AbstractCollectionMetaData extends AbstractTypeMetaData
       return result;
    }
 
-   public Class getType(MetaDataVisitor visitor, MetaDataVisitorNode previous) throws Throwable
+   public TypeInfo getType(MetaDataVisitor visitor, MetaDataVisitorNode previous) throws Throwable
    {
       if (elementType != null)
       {
@@ -192,14 +192,24 @@ public class AbstractCollectionMetaData extends AbstractTypeMetaData
     * Get the class info for the element type
     *
     * @param cl the classloader
+    * @param info the type info
     * @return the class info
     * @throws Throwable for any error
     */
-   protected ClassInfo getElementClassInfo(ClassLoader cl) throws Throwable
+   protected TypeInfo getElementClassInfo(ClassLoader cl, TypeInfo info) throws Throwable
    {
-      if (elementType == null)
-         return null;
+      if (elementType != null)
+         return configurator.getClassInfo(elementType, cl);
 
-      return configurator.getClassInfo(elementType, cl);
+      // null is excluded
+      if (info instanceof ClassInfo)
+      {
+         ClassInfo classInfo = (ClassInfo)info;
+         TypeInfo[] types = classInfo.getActualTypeArguments();
+         if (types != null)
+            return types[0];
+      }
+
+      return null;
    }
 }

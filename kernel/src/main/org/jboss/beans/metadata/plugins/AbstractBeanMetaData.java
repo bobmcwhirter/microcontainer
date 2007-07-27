@@ -609,7 +609,7 @@ public class AbstractBeanMetaData extends AbstractFeatureMetaData
          children.addAll(uninstallCallbacks);
    }
 
-   public Class getType(MetaDataVisitor visitor, MetaDataVisitorNode previous) throws Throwable
+   public TypeInfo getType(MetaDataVisitor visitor, MetaDataVisitorNode previous) throws Throwable
    {
       throw new IllegalArgumentException("Cannot determine inject class type: " + this);
    }

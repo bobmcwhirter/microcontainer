@@ -34,6 +34,7 @@ import org.jboss.kernel.spi.config.KernelConfigurator;
 import org.jboss.kernel.spi.dependency.KernelController;
 import org.jboss.kernel.spi.dependency.KernelControllerContext;
 import org.jboss.util.JBossStringBuilder;
+import org.jboss.reflect.spi.TypeInfo;
 
 /**
  * Metadata for a parameter.
@@ -164,7 +165,7 @@ public class AbstractParameterMetaData extends AbstractFeatureMetaData
          children.add(value);
    }
 
-   public Class getType(MetaDataVisitor visitor, MetaDataVisitorNode previous) throws Throwable
+   public TypeInfo getType(MetaDataVisitor visitor, MetaDataVisitorNode previous) throws Throwable
    {
       if (type != null)
       {
@@ -172,7 +173,7 @@ public class AbstractParameterMetaData extends AbstractFeatureMetaData
          ClassLoader cl = Configurator.getClassLoader(context.getBeanMetaData());
          KernelController controller = (KernelController) context.getController();
          KernelConfigurator configurator = controller.getKernel().getConfigurator();
-         return applyCollectionOrMapCheck(configurator.getClassInfo(type, cl).getType());
+         return applyCollectionOrMapCheck(configurator.getClassInfo(type, cl));
       }
       else
       {

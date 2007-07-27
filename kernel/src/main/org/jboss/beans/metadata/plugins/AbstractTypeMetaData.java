@@ -331,11 +331,11 @@ public abstract class AbstractTypeMetaData extends AbstractValueMetaData
       return configurator.getClassInfo(classType, cl);
    }
 
-   protected Class getClass(MetaDataVisitor visitor, String classType) throws Throwable
+   protected ClassInfo getClass(MetaDataVisitor visitor, String classType) throws Throwable
    {
       KernelControllerContext context = visitor.getControllerContext();
       ClassLoader cl = Configurator.getClassLoader(context.getBeanMetaData());
-      return getClassInfo(classType, cl).getType();
+      return getClassInfo(classType, cl);
    }
 
 }

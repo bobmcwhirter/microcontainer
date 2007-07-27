@@ -35,6 +35,7 @@ import org.jboss.kernel.plugins.config.Configurator;
 import org.jboss.kernel.spi.dependency.KernelControllerContext;
 import org.jboss.reflect.spi.ClassInfo;
 import org.jboss.reflect.spi.MethodInfo;
+import org.jboss.reflect.spi.TypeInfo;
 import org.jboss.util.JBossObject;
 import org.jboss.util.JBossStringBuilder;
 
@@ -161,14 +162,14 @@ public class AbstractLifecycleMetaData extends AbstractFeatureMetaData
          children.addAll(parameters);
    }
 
-   public Class getType(MetaDataVisitor visitor, MetaDataVisitorNode previous) throws Throwable
+   public TypeInfo getType(MetaDataVisitor visitor, MetaDataVisitorNode previous) throws Throwable
    {
       ParameterMetaData parameter = (ParameterMetaData) previous;
       KernelControllerContext context = visitor.getControllerContext();
       String method = (methodName != null ? methodName : type);
       String[] parameterTypes = Configurator.getParameterTypes(false, parameters);
       MethodInfo methodInfo = Configurator.findMethodInfo(getClassInfo(context), method, parameterTypes);
-      return applyCollectionOrMapCheck(methodInfo.getParameterTypes()[parameter.getIndex()].getType());
+      return applyCollectionOrMapCheck(methodInfo.getParameterTypes()[parameter.getIndex()]);
    }
 
    protected ClassInfo getClassInfo(KernelControllerContext context) throws Throwable
