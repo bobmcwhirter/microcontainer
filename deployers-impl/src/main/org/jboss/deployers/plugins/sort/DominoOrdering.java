@@ -48,7 +48,7 @@ public class DominoOrdering<T extends Domino>
    }
 
    @SuppressWarnings("unchecked")
-   protected void init(List<T> dominoes)
+   protected void init(List<T> dominoes, Object cause)
    {
       this.dominoes = dominoes;
       this.size = dominoes.size();
@@ -74,7 +74,7 @@ public class DominoOrdering<T extends Domino>
                   relation = COMPARATOR.compare(one, two);
                else
                   // short circut cycle - throw exception immediately
-                  throwCycleException(i);
+                  throwCycleException(cause);
             }
             else
                relation = fstXsnd ? -1 : (sndXfst ? 1 : 0);
@@ -93,7 +93,7 @@ public class DominoOrdering<T extends Domino>
    public List<T> orderDominoes(List<T> dominoes, Object cause)
    {
       // prepare initial transitions
-      init(dominoes);
+      init(dominoes, cause);
       // do transitive closure
       int cycle = fillTransitions(true);
       if (cycle >= 0)
