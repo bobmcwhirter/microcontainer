@@ -32,7 +32,7 @@ import java.util.concurrent.atomic.AtomicBoolean;
 
 import org.jboss.deployers.client.spi.Deployment;
 import org.jboss.deployers.client.spi.main.MainDeployer;
-import org.jboss.deployers.plugins.managed.DefaultManagedDeploymentCreator;
+//import org.jboss.deployers.plugins.managed.DefaultManagedDeploymentCreator;
 import org.jboss.deployers.spi.DeploymentException;
 import org.jboss.deployers.spi.DeploymentState;
 import org.jboss.deployers.spi.deployer.Deployers;
@@ -68,7 +68,7 @@ public class MainDeployerImpl implements MainDeployer, MainDeployerStructure
    
    /** The structural deployers */
    private StructuralDeployers structuralDeployers;
-   private ManagedDeploymentCreator mgtDeploymentCreator = new DefaultManagedDeploymentCreator();
+   private ManagedDeploymentCreator mgtDeploymentCreator = null; // new DefaultManagedDeploymentCreator();
    
    /** The deployments by name */
    private Map<String, DeploymentContext> topLevelDeployments = new ConcurrentHashMap<String, DeploymentContext>();
