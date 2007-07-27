@@ -21,6 +21,11 @@
  */
 package org.jboss.managed.api.annotation;
 
+import java.lang.annotation.ElementType;
+import java.lang.annotation.Retention;
+import java.lang.annotation.RetentionPolicy;
+import java.lang.annotation.Target;
+
 /**
  * An annotation that identifies property as metdata identifying
  * a ManagedComponent
@@ -28,6 +33,8 @@ package org.jboss.managed.api.annotation;
  * @author Scott.Stark@jboss.org
  * @version $Revision$
  */
+@Target({ElementType.METHOD})
+@Retention(RetentionPolicy.RUNTIME)
 public @interface ManagementComponent
 {
    String name() default "";

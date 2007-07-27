@@ -58,9 +58,11 @@ import org.jboss.reflect.spi.ClassInfo;
  * AbstractManagedObjectFactory.
  * 
  * @author <a href="adrian@jboss.com">Adrian Brock</a>
+ * @author Scott.Stark@jboss.org
  * @version $Revision: 1.1 $
  */
-public class AbstractManagedObjectFactory extends ManagedObjectFactory implements ManagedObjectBuilder, ManagedObjectPopulator<Serializable>
+public class AbstractManagedObjectFactory extends ManagedObjectFactory
+   implements ManagedObjectBuilder, ManagedObjectPopulator<Serializable>
 {
    /** The configuration */
    private static final Configuration configuration;
@@ -147,6 +149,7 @@ public class AbstractManagedObjectFactory extends ManagedObjectFactory implement
       BeanInfo beanInfo = configuration.getBeanInfo(clazz);
       ClassInfo classInfo = beanInfo.getClassInfo();
 
+      // TODO: should this be skipped if there is no ManagementObject annotation?
       ManagementObject managementObject = classInfo.getUnderlyingAnnotation(ManagementObject.class);
       
       String name = ManagementConstants.GENERATED;
@@ -180,8 +183,22 @@ public class AbstractManagedObjectFactory extends ManagedObjectFactory implement
             {
                Fields fields = new DefaultFieldsImpl();
 
-               String propertyName = propertyInfo.getName();
+               if( propertyInfo instanceof Serializable )
+               {
+                  Serializable info = Serializable.class.cast(propertyInfo);
+                  fields.setField(Fields.PROPERTY_INFO, info);
+               }
+
+               String propertyName = managementProperty.name();
+               if( propertyName.length() == 0 )
+                  propertyName = propertyInfo.getName();
                fields.setField(Fields.NAME, propertyName);
+
+               // This should probably always the the propertyInfo name?
+               String mappedName = managementProperty.mappedName();
+               if( mappedName.length() == 0 )
+                  mappedName = propertyInfo.getName();
+               fields.setField(Fields.MAPPED_NAME, mappedName);
 
                String description = ManagementConstants.GENERATED;
                if (managementProperty != null)

@@ -41,5 +41,5 @@ public interface ManagedDeploymentCreator
     * @param unit - the deployment unit to process
     * @param md - the unit ManagedDeployment
     */
-   public void build(DeploymentUnit unit, ManagedDeployment md);
+   public ManagedDeployment build(DeploymentUnit unit);
 }

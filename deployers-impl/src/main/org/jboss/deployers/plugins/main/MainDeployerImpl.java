@@ -32,9 +32,11 @@ import java.util.concurrent.atomic.AtomicBoolean;
 
 import org.jboss.deployers.client.spi.Deployment;
 import org.jboss.deployers.client.spi.main.MainDeployer;
+import org.jboss.deployers.plugins.managed.DefaultManagedDeploymentCreator;
 import org.jboss.deployers.spi.DeploymentException;
 import org.jboss.deployers.spi.DeploymentState;
 import org.jboss.deployers.spi.deployer.Deployers;
+import org.jboss.deployers.spi.deployer.managed.ManagedDeploymentCreator;
 import org.jboss.deployers.structure.spi.DeploymentContext;
 import org.jboss.deployers.structure.spi.DeploymentUnit;
 import org.jboss.deployers.structure.spi.StructuralDeployers;
@@ -42,6 +44,7 @@ import org.jboss.deployers.structure.spi.main.MainDeployerStructure;
 import org.jboss.logging.Logger;
 import org.jboss.managed.api.ManagedDeployment;
 import org.jboss.managed.api.ManagedObject;
+import org.jboss.managed.plugins.ManagedDeploymentImpl;
 import org.jboss.util.graph.Graph;
 import org.jboss.util.graph.Vertex;
 
@@ -65,6 +68,7 @@ public class MainDeployerImpl implements MainDeployer, MainDeployerStructure
    
    /** The structural deployers */
    private StructuralDeployers structuralDeployers;
+   private ManagedDeploymentCreator mgtDeploymentCreator = new DefaultManagedDeploymentCreator();
    
    /** The deployments by name */
    private Map<String, DeploymentContext> topLevelDeployments = new ConcurrentHashMap<String, DeploymentContext>();
@@ -412,7 +416,11 @@ public class MainDeployerImpl implements MainDeployer, MainDeployerStructure
     */
    public ManagedDeployment getManagedDeployment(String name) throws DeploymentException
    {
-      ManagedDeployment md = null;
+      DeploymentContext context = getDeploymentContext(name);
+      if (context == null)
+         throw new IllegalArgumentException("Context not found: " + name);
+      
+      ManagedDeployment md = mgtDeploymentCreator.build(context.getDeploymentUnit());
       return md;
    }
 

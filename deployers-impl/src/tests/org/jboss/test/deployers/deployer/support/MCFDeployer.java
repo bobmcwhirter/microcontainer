@@ -24,8 +24,10 @@ public class MCFDeployer
    {
    }
 
-   public void build(DeploymentUnit unit, ManagedDeployment md)
-   {      
+   public ManagedDeployment build(DeploymentUnit unit)
+   {
+      ManagedDeployment md = null;
+      return md;
    }
 
 }

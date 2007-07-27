@@ -27,6 +27,7 @@ import java.util.Collections;
 import java.util.List;
 
 import org.jboss.managed.api.annotation.ManagementComponent;
+import org.jboss.managed.api.annotation.ManagementObject;
 import org.jboss.managed.api.annotation.ManagementProperty;
 
 /**
@@ -35,6 +36,7 @@ import org.jboss.managed.api.annotation.ManagementProperty;
  * @author Scott.Stark@jboss.org
  * @version $Revision$
  */
+@ManagementObject
 public class DSMetaData implements Serializable
 {
    private static final long serialVersionUID = 1;

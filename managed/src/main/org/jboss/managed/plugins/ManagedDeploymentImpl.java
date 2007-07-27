@@ -34,7 +34,7 @@ import org.jboss.managed.api.ManagedDeployment;
 import org.jboss.managed.api.ManagedProperty;
 
 /**
- * A simple 
+ * A simple ManagedDeployment bean implementation
  * 
  * @author Scott.Stark@jboss.org
  * @version $Revision$
@@ -50,7 +50,7 @@ public class ManagedDeploymentImpl extends BaseManagedObject
    private Map<String, ManagedComponent> components = new HashMap<String, ManagedComponent>();
    private ArrayList<ManagedDeployment> children = new ArrayList<ManagedDeployment>();
    
-   ManagedDeploymentImpl(String name, DeploymentPhase phase,
+   public ManagedDeploymentImpl(String name, DeploymentPhase phase,
          Map<String, ManagedProperty> properties,
          ManagedDeployment parent)
    {

@@ -60,7 +60,9 @@ public interface Fields extends Serializable
    String MANDATORY = "mandatory";
    
    // TODO other standard fields here
-   
+   /** The PropertyInfo info for the ManagedObject attachment */
+   String PROPERTY_INFO = "propertyInfo";
+
    /**
     * Get a field with the given name
     * 
