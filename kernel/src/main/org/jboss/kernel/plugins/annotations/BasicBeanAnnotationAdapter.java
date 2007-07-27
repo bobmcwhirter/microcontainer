@@ -106,22 +106,23 @@ public class BasicBeanAnnotationAdapter implements BeanAnnotationAdapter
       if (annotation.getAnnotation(Retention.class) == null)
          log.warn("Annotation " + annotation + " missing @Retention annotation!");
 
-      if (plugin.getSupportedTypes().contains(ElementType.TYPE))
+      Set supported = plugin.getSupportedTypes();
+      if (supported.contains(ElementType.TYPE))
       {
          classAnnotationPlugins.add(plugin);
       }
-      if (plugin.getSupportedTypes().contains(ElementType.CONSTRUCTOR))
+      if (supported.contains(ElementType.CONSTRUCTOR))
       {
          constructorAnnotationPlugins.add(plugin);
       }
-      if (plugin.getSupportedTypes().contains(ElementType.METHOD))
+      if (supported.contains(ElementType.METHOD))
       {
          if (plugin instanceof PropertyAware)
             propertyAnnotationPlugins.add(plugin);
          else
             methodAnnotationPlugins.add(plugin);
       }
-      if (plugin.getSupportedTypes().contains(ElementType.FIELD))
+      if (supported.contains(ElementType.FIELD))
       {
          fieldAnnotationPlugins.add(plugin);
       }
