@@ -23,8 +23,6 @@ package org.jboss.kernel.plugins.dependency;
 
 import org.jboss.beans.metadata.spi.BeanMetaData;
 import org.jboss.beans.metadata.spi.LifecycleMetaData;
-import org.jboss.beans.metadata.spi.annotations.CreateLifecycle;
-import org.jboss.beans.metadata.spi.annotations.DestroyLifecycle;
 import org.jboss.kernel.spi.dependency.CreateKernelControllerContextAware;
 import org.jboss.kernel.spi.dependency.KernelControllerContextAware;
 
@@ -47,11 +45,6 @@ public class CreateDestroyLifecycleAction extends LifecycleAction
       return "create";
    }
 
-   public String getInstallAnnotation()
-   {
-      return CreateLifecycle.class.getName();
-   }
-
    protected Class<? extends KernelControllerContextAware> getActionAwareInterface()
    {
       return CreateKernelControllerContextAware.class;
@@ -65,10 +58,5 @@ public class CreateDestroyLifecycleAction extends LifecycleAction
    public String getDefaultUninstallMethod()
    {
       return "destroy";
-   }
-
-   public String getUninstallAnnotation()
-   {
-      return DestroyLifecycle.class.getName();
    }
 }

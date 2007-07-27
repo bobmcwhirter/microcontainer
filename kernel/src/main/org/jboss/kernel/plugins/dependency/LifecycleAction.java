@@ -22,7 +22,6 @@
 package org.jboss.kernel.plugins.dependency;
 
 import java.util.List;
-import java.util.Set;
 
 import org.jboss.beans.info.spi.BeanInfo;
 import org.jboss.beans.metadata.spi.BeanMetaData;
@@ -35,9 +34,6 @@ import org.jboss.kernel.plugins.config.Configurator;
 import org.jboss.kernel.spi.config.KernelConfigurator;
 import org.jboss.kernel.spi.dependency.KernelController;
 import org.jboss.kernel.spi.dependency.KernelControllerContext;
-import org.jboss.reflect.spi.AnnotationValue;
-import org.jboss.reflect.spi.MethodInfo;
-import org.jboss.reflect.spi.Value;
 
 /**
  * LifecycleAction.
@@ -116,13 +112,6 @@ public abstract class LifecycleAction extends KernelControllerContextAction
    public abstract String getDefaultInstallMethod();
 
    /**
-    * Get install annotation class name
-    *
-    * @return install annotation name
-    */
-   public abstract String getInstallAnnotation();
-
-   /**
     * Get the install parameters
     *
     * @param beanMetaData bean meta data
@@ -152,13 +141,6 @@ public abstract class LifecycleAction extends KernelControllerContextAction
    public abstract String getDefaultUninstallMethod();
 
    /**
-    * Get uninstall annotation class name
-    *
-    * @return uninstall annotation name
-    */
-   public abstract String getUninstallAnnotation();
-
-   /**
     * Get the uninstall parameters
     *
     * @param beanMetaData bean meta data
@@ -177,7 +159,7 @@ public abstract class LifecycleAction extends KernelControllerContextAction
     */
    protected boolean isInstallInvocationIgnored(KernelControllerContext context)
    {
-      return isInvocationIgnored(getInstallLifecycle(context.getBeanMetaData())) || isInvocationIgnored(context, getInstallAnnotation());
+      return isInvocationIgnored(getInstallLifecycle(context.getBeanMetaData()));
    }
 
    /**
@@ -188,7 +170,7 @@ public abstract class LifecycleAction extends KernelControllerContextAction
     */
    protected boolean isUninstallInvocationIgnored(KernelControllerContext context)
    {
-      return isInvocationIgnored(getUninstallLifecycle(context.getBeanMetaData())) || isInvocationIgnored(context, getUninstallAnnotation());
+      return isInvocationIgnored(getUninstallLifecycle(context.getBeanMetaData()));
    }
 
    /**
@@ -200,55 +182,6 @@ public abstract class LifecycleAction extends KernelControllerContextAction
    protected boolean isInvocationIgnored(LifecycleMetaData lifecycle)
    {
       return lifecycle != null && lifecycle.isIgnored();
-   }
-
-   /**
-    * Is invocation ignored due to annotation ignored attibute.
-    *
-    * @param context        the context
-    * @param annotationName annotation name
-    * @return true if ignored found on annotation
-    */
-   protected boolean isInvocationIgnored(KernelControllerContext context, String annotationName)
-   {
-      MethodInfo mi = findMethodWithAnnotation(context, annotationName);
-      if (mi != null)
-      {
-         AnnotationValue av = mi.getAnnotation(annotationName);
-         Value value = av.getValue("ignored");
-         if (value != null)
-         {
-            return Boolean.parseBoolean(value.asPrimitive().getValue());
-         }
-      }
-      return false;
-   }
-
-   /**
-    * Find method with annotation matching name parameter.
-    *
-    * @param context        the context
-    * @param annotationName annotation name
-    * @return method info instance or null if no such method exists
-    */
-   protected MethodInfo findMethodWithAnnotation(KernelControllerContext context, String annotationName)
-   {
-      BeanInfo info = context.getBeanInfo();
-      if (info != null)
-      {
-         Set<MethodInfo> methods = info.getMethods();
-         if (methods != null)
-         {
-            for (MethodInfo mi : methods)
-            {
-               if (mi.isAnnotationPresent(annotationName))
-               {
-                  return mi;
-               }
-            }
-         }
-      }
-      return null;
    }
 
    protected void installActionInternal(KernelControllerContext context) throws Throwable
@@ -347,11 +280,6 @@ public abstract class LifecycleAction extends KernelControllerContextAction
       {
          return installMethod;
       }
-      MethodInfo mi = findMethodWithAnnotation(context, getInstallAnnotation());
-      if (mi != null)
-      {
-         return mi.getName();
-      }
       return getDefaultInstallMethod();
    }
 
@@ -379,11 +307,6 @@ public abstract class LifecycleAction extends KernelControllerContextAction
       if (uninstallMethod != null)
       {
          return uninstallMethod;
-      }
-      MethodInfo mi = findMethodWithAnnotation(context, getUninstallAnnotation());
-      if (mi != null)
-      {
-         return mi.getName();
       }
       return getDefaultUninstallMethod();
    }

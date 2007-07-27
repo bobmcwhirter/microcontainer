@@ -35,6 +35,7 @@ import org.jboss.test.kernel.event.test.EventTestSuite;
 import org.jboss.test.kernel.registry.test.RegistryTestSuite;
 import org.jboss.test.kernel.inject.test.ContextualInjectionTestSuite;
 import org.jboss.test.kernel.metadata.test.MetaDataTestSuite;
+import org.jboss.test.kernel.annotations.test.AnnotationsTestSuite;
 
 /**
  * Kernel Test Suite.
@@ -63,6 +64,7 @@ public class KernelTestSuite extends TestSuite
       suite.addTest(ContextualInjectionTestSuite.suite());
       suite.addTest(XMLTestSuite.suite());
       suite.addTest(MetaDataTestSuite.suite());
+      suite.addTest(AnnotationsTestSuite.suite());
 
       return suite;
    }

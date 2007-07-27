@@ -26,8 +26,6 @@ import java.lang.annotation.Retention;
 import java.lang.annotation.RetentionPolicy;
 import java.lang.annotation.Target;
 
-import org.jboss.beans.metadata.spi.annotations.DependencyFactoryLookup;
-
 /**
  * Uninstall callback.
  * @see org.jboss.beans.metadata.plugins.annotations.Callback
@@ -36,7 +34,6 @@ import org.jboss.beans.metadata.spi.annotations.DependencyFactoryLookup;
  */
 @Retention(RetentionPolicy.RUNTIME)
 @Target({ElementType.METHOD})
-@DependencyFactoryLookup(UninstallFactory.class)
 public @interface Uninstall
 {
    /**

@@ -23,8 +23,6 @@ package org.jboss.kernel.plugins.dependency;
 
 import org.jboss.beans.metadata.spi.BeanMetaData;
 import org.jboss.beans.metadata.spi.LifecycleMetaData;
-import org.jboss.beans.metadata.spi.annotations.StartLifecycle;
-import org.jboss.beans.metadata.spi.annotations.StopLifecycle;
 import org.jboss.kernel.spi.dependency.KernelControllerContextAware;
 import org.jboss.kernel.spi.dependency.StartKernelControllerContextAware;
 
@@ -47,11 +45,6 @@ public class StartStopLifecycleAction extends LifecycleAction
       return "start";
    }
 
-   public String getInstallAnnotation()
-   {
-      return StartLifecycle.class.getName();
-   }
-
    protected Class<? extends KernelControllerContextAware> getActionAwareInterface()
    {
       return StartKernelControllerContextAware.class;
@@ -65,10 +58,5 @@ public class StartStopLifecycleAction extends LifecycleAction
    public String getDefaultUninstallMethod()
    {
       return "stop";
-   }
-
-   public String getUninstallAnnotation()
-   {
-      return StopLifecycle.class.getName();
    }
 }

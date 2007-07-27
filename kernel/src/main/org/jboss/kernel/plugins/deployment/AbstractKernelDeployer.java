@@ -198,7 +198,7 @@ public class AbstractKernelDeployer
       {
          for (Iterator i = notInstalled.iterator(); i.hasNext();)
          {
-            KernelControllerContext context = (KernelControllerContext) i.next();
+            ControllerContext context = (ControllerContext) i.next();
             if (context.getState().equals(context.getRequiredState()))
                i.remove();
          }

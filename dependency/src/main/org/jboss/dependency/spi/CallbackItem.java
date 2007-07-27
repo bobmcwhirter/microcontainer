@@ -54,6 +54,13 @@ public interface CallbackItem<T>
    ControllerState getDependentState();
 
    /**
+    * Get the method/attribute/property name
+    *
+    * @return the name
+    */
+   String getAttributeName();
+
+   /**
     * Execute callback when item added to controller.
     *
     * @param controller the controller

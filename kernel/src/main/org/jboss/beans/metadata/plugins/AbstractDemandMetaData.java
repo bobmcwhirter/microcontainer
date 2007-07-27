@@ -45,7 +45,7 @@ import org.jboss.util.JBossStringBuilder;
 public class AbstractDemandMetaData extends JBossObject
    implements DemandMetaData, Serializable
 {
-   private static final long serialVersionUID = 1L;
+   private static final long serialVersionUID = 2L;
 
    /** The demand */
    protected Object demand;
@@ -53,9 +53,6 @@ public class AbstractDemandMetaData extends JBossObject
    /** When the dependency is required */
    protected ControllerState whenRequired = ControllerState.DESCRIBED;
    
-   /** The dependency delegate */
-   protected AbstractDependencyItem dependencyItem;
-
    /**
     * Create a new demand
     */

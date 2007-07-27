@@ -26,8 +26,6 @@ import java.lang.annotation.Retention;
 import java.lang.annotation.RetentionPolicy;
 import java.lang.annotation.Target;
 
-import org.jboss.beans.metadata.spi.annotations.DependencyFactoryLookup;
-
 /**
  * Beans when injected by class type are by default changed to configured
  * state - if not yet configured.
@@ -36,8 +34,7 @@ import org.jboss.beans.metadata.spi.annotations.DependencyFactoryLookup;
  * @author <a href="mailto:ales.justin@genera-lynx.com">Ales Justin</a>
  */
 @Retention(RetentionPolicy.RUNTIME)
-@Target({ElementType.METHOD, ElementType.TYPE})
-@DependencyFactoryLookup(InjectFactory.class)
+@Target({ElementType.METHOD, ElementType.PARAMETER})
 public @interface Inject
 {
    /**
@@ -58,11 +55,10 @@ public @interface Inject
 
    /**
     * Get when required.
-    * Default is Describe.
     *
     * @return when required.
     */
-   String whenRequired() default "Describe";
+   String whenRequired() default "";
 
    /**
     * Get dependent state.
@@ -88,4 +84,10 @@ public @interface Inject
     */
    InjectOption option() default InjectOption.STRICT;
 
+   /**
+    * Get from context injection.
+    *
+    * @return from context type
+    */
+   FromContext fromContext() default FromContext.NONE;
 }

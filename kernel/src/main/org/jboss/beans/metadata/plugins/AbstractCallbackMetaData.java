@@ -60,6 +60,12 @@ public abstract class AbstractCallbackMetaData extends AbstractLifecycleMetaData
    /** The signature */
    protected String signature;
 
+   /** The property info */
+   protected transient PropertyInfo propertyInfo;
+
+   /** The method info */
+   protected transient MethodInfo methodInfo;
+
    public AbstractCallbackMetaData()
    {
       setState(ControllerState.CONFIGURED);
@@ -145,6 +151,18 @@ public abstract class AbstractCallbackMetaData extends AbstractLifecycleMetaData
       return dependentState;
    }
 
+   public void setPropertyInfo(PropertyInfo propertyInfo)
+   {
+      this.propertyInfo = propertyInfo;
+      this.property = propertyInfo.getName();
+   }
+
+   public void setMethodInfo(MethodInfo methodInfo)
+   {
+      this.methodInfo = methodInfo;
+      this.methodName = methodInfo.getName();
+   }
+
    /**
     * Add install / uninstrall callback.
     * 
@@ -161,14 +179,18 @@ public abstract class AbstractCallbackMetaData extends AbstractLifecycleMetaData
          CallbackItem callback;
          if (property != null)
          {
-            ClassLoader cl = Configurator.getClassLoader(context.getBeanMetaData());
-            PropertyInfo pi = Configurator.resolveProperty(log.isTraceEnabled(), context.getBeanInfo(), cl, property, signature);
-            callback = CallbackCreatorUtil.createCallback(context, pi, whenRequired, dependentState, cardinality);
+            if (propertyInfo == null)
+            {
+               ClassLoader cl = Configurator.getClassLoader(context.getBeanMetaData());
+               propertyInfo = Configurator.resolveProperty(log.isTraceEnabled(), context.getBeanInfo(), cl, property, signature);
+            }
+            callback = CallbackCreatorUtil.createCallback(context, propertyInfo, whenRequired, dependentState, cardinality);
          }
          else if (methodName != null)
          {
-            MethodInfo mi = Configurator.findMethodInfo(getClassInfo(context), methodName, new String[]{signature});
-            callback = CallbackCreatorUtil.createCallback(context, mi, whenRequired, dependentState, cardinality);
+            if (methodInfo == null)
+               methodInfo = Configurator.findMethodInfo(getClassInfo(context), methodName, new String[]{signature});
+            callback = CallbackCreatorUtil.createCallback(context, methodInfo, whenRequired, dependentState, cardinality);
          }
          else
             throw new IllegalArgumentException("Illegal usage - not property or method:" + this);

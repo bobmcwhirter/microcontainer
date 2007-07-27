@@ -28,6 +28,7 @@ import org.jboss.classadapter.spi.DependencyBuilderListItem;
 import org.jboss.kernel.spi.dependency.KernelController;
 import org.jboss.kernel.spi.dependency.KernelControllerContext;
 import org.jboss.kernel.spi.metadata.KernelMetaDataRepository;
+import org.jboss.kernel.plugins.annotations.BeanAnnotationAdapterFactory;
 import org.jboss.metadata.spi.MetaData;
 
 /**
@@ -50,13 +51,15 @@ public class DescribeAction extends KernelControllerContextAction
          // add custom dependencies (e.g. AOP layer).
          List<DependencyBuilderListItem> dependencies = info.getDependencies(md);
          log.trace("Extra dependencies for " + context.getName() + " " + dependencies);
-         if (dependencies != null)
+         if (dependencies != null && dependencies.isEmpty() == false)
          {
             for (DependencyBuilderListItem dependencyItem : dependencies)
             {
                dependencyItem.addDependency(context);
             }
          }
+         // handle custom annotations
+         BeanAnnotationAdapterFactory.getBeanAnnotationAdapter().applyAnnotations(context);
       }
    }
 

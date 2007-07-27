@@ -21,36 +21,36 @@
 */
 package org.jboss.test.kernel.deployment.support;
 
-import org.jboss.beans.metadata.spi.annotations.CreateLifecycle;
-import org.jboss.beans.metadata.spi.annotations.DestroyLifecycle;
-import org.jboss.beans.metadata.spi.annotations.StartLifecycle;
-import org.jboss.beans.metadata.spi.annotations.StopLifecycle;
+import org.jboss.beans.metadata.plugins.annotations.Create;
+import org.jboss.beans.metadata.plugins.annotations.Destroy;
+import org.jboss.beans.metadata.plugins.annotations.Start;
+import org.jboss.beans.metadata.plugins.annotations.Stop;
 
 /**
  * @author <a href="mailto:ales.justin@gmail.com">Ales Justin</a>
  */
 public class IgnoredAnnotatedLifecycleBean extends AnnotatedLifecycleBean
 {
-   @CreateLifecycle(ignored = true)
+   @Create(ignored = true)
    public void ignoredCreate()
    {
       m_create = true;
    }
 
-   @StartLifecycle(ignored = true)
+   @Start(ignored = true)
    public void annotatedStart()
    {
       m_start = true;
    }
 
-   @StopLifecycle(ignored = true)
+   @Stop(ignored = true)
    public void annotatedStop()
    {
       m_start = false;
       m_stop = true;
    }
 
-   @DestroyLifecycle(ignored = true)
+   @Destroy(ignored = true)
    public void ignoredDestroy()
    {
       m_create = false;

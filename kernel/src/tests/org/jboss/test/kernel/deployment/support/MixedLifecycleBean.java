@@ -21,14 +21,14 @@
 */
 package org.jboss.test.kernel.deployment.support;
 
-import org.jboss.beans.metadata.spi.annotations.CreateLifecycle;
+import org.jboss.beans.metadata.plugins.annotations.Create;
 
 /**
  * @author <a href="mailto:ales.justin@gmail.com">Ales Justin</a>
  */
 public class MixedLifecycleBean extends SimpleLifecycleBean
 {
-   @CreateLifecycle(ignored = true)
+   @Create(ignored = true)
    public void create()
    {
       m_create = true;

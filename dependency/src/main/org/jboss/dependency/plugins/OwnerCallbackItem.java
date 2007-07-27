@@ -38,14 +38,14 @@ public abstract class OwnerCallbackItem<T, C> extends AbstractCallbackItem<T>
 {
    protected C owner;
 
-   protected OwnerCallbackItem(T name, C owner)
+   protected OwnerCallbackItem(T name, String attributeName, C owner)
    {
-      this(name, null, null, owner);
+      this(name, null, null, attributeName, owner);
    }
 
-   protected OwnerCallbackItem(T name, ControllerState whenRequired, ControllerState dependentState, C owner)
+   protected OwnerCallbackItem(T name, ControllerState whenRequired, ControllerState dependentState, String attributeName, C owner)
    {
-      super(name, whenRequired, dependentState);
+      super(name, whenRequired, dependentState, attributeName);
       if (owner == null)
          throw new IllegalArgumentException("Null owner!");
       this.owner = owner;

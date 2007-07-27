@@ -24,7 +24,6 @@ package org.jboss.dependency.plugins;
 import org.jboss.dependency.spi.ControllerContext;
 import org.jboss.dependency.spi.ControllerState;
 import org.jboss.dependency.spi.dispatch.AttributeDispatchContext;
-import org.jboss.util.JBossStringBuilder;
 
 /**
  * Attribute callback item.
@@ -34,8 +33,6 @@ import org.jboss.util.JBossStringBuilder;
  */
 public class AttributeCallbackItem<T> extends OwnerCallbackItem<T, AttributeDispatchContext>
 {
-   protected String attribute;
-
    public AttributeCallbackItem(T name, AttributeDispatchContext owner, String attribute)
    {
       this(name, null, null, owner, attribute);
@@ -43,25 +40,16 @@ public class AttributeCallbackItem<T> extends OwnerCallbackItem<T, AttributeDisp
 
    public AttributeCallbackItem(T name, ControllerState whenRequired, ControllerState dependentState, AttributeDispatchContext owner, String attribute)
    {
-      super(name, whenRequired, dependentState, owner);
-      if (attribute == null)
-         throw new IllegalArgumentException("Null attribute!");
-      this.attribute = attribute;
+      super(name, whenRequired, dependentState, attribute, owner);
    }
 
    protected void execute(Object target) throws Throwable
    {
-      owner.set(attribute, target);      
+      owner.set(getAttributeName(), target);
    }
 
    protected void changeCallback(ControllerContext context, boolean isInstallPhase) throws Throwable
    {
       execute(context.getTarget());
-   }
-
-   protected void toString(JBossStringBuilder buffer)
-   {
-      super.toString(buffer);
-      buffer.append(" attribute=").append(attribute);
    }
 }

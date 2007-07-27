@@ -26,14 +26,11 @@ import java.lang.annotation.Retention;
 import java.lang.annotation.RetentionPolicy;
 import java.lang.annotation.Target;
 
-import org.jboss.beans.metadata.spi.annotations.DependencyFactoryLookup;
-
 /**
  * @author <a href="mailto:ales.justin@jboss.com">Ales Justin</a>
  */
 @Retention(RetentionPolicy.RUNTIME)
 @Target({ElementType.METHOD})
-@DependencyFactoryLookup(CallbackFactory.class)
 public @interface Callback
 {
    /**

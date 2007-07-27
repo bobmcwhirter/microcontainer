@@ -52,9 +52,7 @@ public abstract class CollectionCallbackItem<T extends Collection<Object>> exten
 
    public CollectionCallbackItem(Class name, ControllerState whenRequired, ControllerState dependentState, Cardinality cardinality, InvokeDispatchContext context, AttributeInfo attribute)
    {
-      super(name, whenRequired, dependentState, context);
-      if (attribute == null)
-         throw new IllegalArgumentException("Null attribute!");
+      super(name, whenRequired, dependentState, attribute != null ? attribute.getName() : null, context);
       this.attribute = attribute;
       this.cardinality = cardinality;
    }
@@ -99,9 +97,9 @@ public abstract class CollectionCallbackItem<T extends Collection<Object>> exten
    protected void execute(T holder) throws Throwable
    {
       if (attribute.isProperty())
-         owner.set(attribute.getName(), holder);
+         owner.set(getAttributeName(), holder);
       else
-         owner.invoke(attribute.getName(), new Object[]{holder}, new String[]{attribute.getType().getName()});
+         owner.invoke(getAttributeName(), new Object[]{holder}, new String[]{attribute.getType().getName()});
    }
 
    protected DependencyItem createDependencyItem(ControllerContext owner)

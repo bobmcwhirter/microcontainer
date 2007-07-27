@@ -34,7 +34,6 @@ import org.jboss.util.JBossStringBuilder;
  */
 public class SingleCallbackItem<T> extends OwnerCallbackItem<T, InvokeDispatchContext>
 {
-   protected String method;
    protected String signature;
 
    public SingleCallbackItem(T name, InvokeDispatchContext owner, String method)
@@ -54,12 +53,7 @@ public class SingleCallbackItem<T> extends OwnerCallbackItem<T, InvokeDispatchCo
 
    public SingleCallbackItem(T name, ControllerState whenRequired, ControllerState dependentState, InvokeDispatchContext owner, String method, String signature)
    {
-      super(name, whenRequired, dependentState, owner);
-      if (method == null)
-         throw new IllegalArgumentException("Null method!");
-
-      this.owner = owner;
-      this.method = method;
+      super(name, whenRequired, dependentState, method, owner);
       this.signature = signature;
    }
 
@@ -70,7 +64,7 @@ public class SingleCallbackItem<T> extends OwnerCallbackItem<T, InvokeDispatchCo
       {
          if (signature == null)
             signature = target.getClass().getName();
-         owner.invoke(method, new Object[]{target}, new String[]{signature});
+         owner.invoke(getAttributeName(), new Object[]{target}, new String[]{signature});
       }
       else
          log.warn("Null target, cannot invoke non-static method: " + this);
@@ -79,7 +73,6 @@ public class SingleCallbackItem<T> extends OwnerCallbackItem<T, InvokeDispatchCo
    protected void toString(JBossStringBuilder buffer)
    {
       super.toString(buffer);
-      buffer.append(" method=").append(method);
       buffer.append(" signature=").append(signature);
    }
 }

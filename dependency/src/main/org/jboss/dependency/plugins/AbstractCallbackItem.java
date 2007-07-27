@@ -39,19 +39,23 @@ public abstract class AbstractCallbackItem<T> extends JBossObject implements Cal
    protected T name;
    protected ControllerState whenRequired = ControllerState.CONFIGURED;
    protected ControllerState dependentState = ControllerState.INSTALLED;
+   protected String attributeName;
 
    protected AbstractCallbackItem(T name)
    {
       this.name = name;
    }
 
-   protected AbstractCallbackItem(T name, ControllerState whenRequired, ControllerState dependentState)
+   protected AbstractCallbackItem(T name, ControllerState whenRequired, ControllerState dependentState, String attributeName)
    {
       this.name = name;
       if (whenRequired != null)
          this.whenRequired = whenRequired;
       if (dependentState != null)
          this.dependentState = dependentState;
+      if (attributeName == null)
+         throw new IllegalArgumentException("Null attribute name!");
+      this.attributeName = attributeName;
    }
 
    public void ownerCallback(Controller controller, boolean isInstallPhase) throws Throwable
@@ -89,6 +93,11 @@ public abstract class AbstractCallbackItem<T> extends JBossObject implements Cal
       return dependentState;
    }
 
+   public String getAttributeName()
+   {
+      return attributeName;
+   }
+
    public void toShortString(JBossStringBuilder buffer)
    {
       buffer.append("name=").append(name);
@@ -99,5 +108,6 @@ public abstract class AbstractCallbackItem<T> extends JBossObject implements Cal
       buffer.append("name=").append(name);
       buffer.append(" whenRequired=").append(whenRequired);
       buffer.append(" dependentState=").append(dependentState);
+      buffer.append(" attributeName=").append(attributeName);
    }
 }
