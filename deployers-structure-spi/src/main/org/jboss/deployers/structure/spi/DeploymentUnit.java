@@ -137,6 +137,13 @@ public interface DeploymentUnit extends MutableAttachments
    List<DeploymentUnit> getChildren();
    
    /**
+    * Whether this unit is a component
+    * 
+    * @return true for a component
+    */
+   boolean isComponent();
+   
+   /**
     * Add a component
     * 
     * @param name the name

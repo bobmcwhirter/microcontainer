@@ -32,6 +32,8 @@ import org.jboss.test.deployers.deployer.test.DeployerOrderingUnitTestCase;
 import org.jboss.test.deployers.deployer.test.DeployerProtocolUnitTestCase;
 import org.jboss.test.deployers.deployer.test.DeployerWidthFirstUnitTestCase;
 import org.jboss.test.deployers.deployer.test.DeployersImplUnitTestCase;
+import org.jboss.test.deployers.deployer.test.HeuristicAllOrNothingUnitTestCase;
+import org.jboss.test.deployers.deployer.test.HeuristicRussionDollUnitTestCase;
 import org.jboss.test.deployers.deployer.test.MultipleComponentTypeUnitTestCase;
 
 /**
@@ -59,6 +61,8 @@ public class DeployersDeployerTestSuite extends TestSuite
       suite.addTest(DeployersImplUnitTestCase.suite());
       suite.addTest(ComponentUnitTestCase.suite());
       suite.addTest(MultipleComponentTypeUnitTestCase.suite());
+      suite.addTest(HeuristicAllOrNothingUnitTestCase.suite());
+      suite.addTest(HeuristicRussionDollUnitTestCase.suite());
 
       return suite;
    }

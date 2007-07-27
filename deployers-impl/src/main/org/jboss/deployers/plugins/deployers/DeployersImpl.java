@@ -587,7 +587,47 @@ public class DeployersImpl implements Deployers, ControllerContextActions
       DeploymentContext deploymentContext = deploymentControllerContext.getDeploymentContext();
       try
       {
-         doInstall(deploymentContext, stageName, true, true);
+         List<Deployer> theDeployers = getDeployersList(stageName);
+         
+         if (log.isTraceEnabled())
+            log.trace("Deployers for " + stageName + " " + theDeployers);
+         
+         if (theDeployers.isEmpty() == false)
+         {
+            int i = 0;
+            try
+            {
+               while (i < theDeployers.size())
+               {
+                  Deployer deployer = theDeployers.get(i);
+                  if (deployer.isParentFirst())
+                     doInstallParentFirst(deployer, deploymentContext);
+                  else
+                     doInstallParentLast(deployer, deploymentContext);
+                  ++i;
+               }
+            }
+            catch (Throwable t)
+            {
+               deploymentContext.setState(DeploymentState.ERROR);
+               deploymentContext.setProblem(t);
+               
+               // Unwind the previous deployments
+               for (int j = i-1; j >= 0; --j)
+               {
+                  Deployer deployer = theDeployers.get(j);
+                  if (deployer.isParentFirst())
+                     doUninstallParentLast(deployer, deploymentContext, true, true);
+                  else
+                     doUninstallParentFirst(deployer, deploymentContext, true, true);
+               }
+               
+               // It can happen that subdeployments are not processed if the parent fails immediately
+               // so there is no callback to undeploy when nothing was done
+               setState(deploymentContext, DeploymentState.UNDEPLOYED, DeploymentState.DEPLOYING);
+               throw t;
+            }
+         }
       }
       finally
       {
@@ -598,65 +638,15 @@ public class DeployersImpl implements Deployers, ControllerContextActions
          }
       }
    }
-
+   
    /**
-    * Do the install
-    * 
-    * @param context the context
-    * @param stageName the stage
-    * @param doChildren whether to do children
-    * @param doComponents whether to do components
-    * @throws Throwable for any problem
-    */
-   protected void doInstall(DeploymentContext context, String stageName, boolean doChildren, boolean doComponents) throws Throwable
-   {
-      List<Deployer> theDeployers = getDeployersList(stageName);
-      
-      if (log.isTraceEnabled())
-         log.trace("Deployers for " + stageName + " " + theDeployers);
-      
-      if (theDeployers.isEmpty() == false)
-      {
-         int i = 0;
-         try
-         {
-            while (i < theDeployers.size())
-            {
-               Deployer deployer = theDeployers.get(i);
-               doInstall(deployer, context, doChildren, doComponents);
-               ++i;
-            }
-         }
-         catch (Throwable t)
-         {
-            context.setState(DeploymentState.ERROR);
-            context.setProblem(t);
-            
-            // Unwind the previous deployments
-            for (int j = i-1; j >= 0; --j)
-            {
-               Deployer deployer = theDeployers.get(j);
-               doUninstall(deployer, context, true, true);
-            }
-            
-            // It can happen that subdeployments are not processed if the parent fails immediately
-            // so there is no callback to undeploy when nothing was done
-            setState(context, DeploymentState.UNDEPLOYED, DeploymentState.DEPLOYING);
-            throw t;
-         }
-      }
-   }
-
-   /**
-    * Do the install
+    * Do the install parent first
     * 
     * @param deployer the deployer
     * @param context the context
-    * @param doChildren whether to do children
-    * @param doComponents whether to do components
     * @throws Throwable for any problem
     */
-   protected void doInstall(Deployer deployer, DeploymentContext context, boolean doChildren, boolean doComponents) throws Throwable
+   protected void doInstallParentFirst(Deployer deployer, DeploymentContext context) throws Throwable
    {
       List<DeploymentContext> currentComponents = context.getComponents();
       // Take a copy of the components so we don't start looping on newly added components
@@ -682,7 +672,7 @@ public class DeployersImpl implements Deployers, ControllerContextActions
       else if (log.isTraceEnabled())
          log.trace("Deployer " + deployer + " not relevant for " + context.getName());
       
-      if (doComponents && components != null)
+      if (components != null)
       {
          try
          {
@@ -691,7 +681,7 @@ public class DeployersImpl implements Deployers, ControllerContextActions
                DeploymentContext component = components.get(i);
                try
                {
-                  doInstall(deployer, component, false, true);
+                  doInstallParentFirst(deployer, component);
                }
                catch (DeploymentException e)
                {
@@ -699,7 +689,7 @@ public class DeployersImpl implements Deployers, ControllerContextActions
                   for (int j = i - 1; j >= 0; --j)
                   {
                      component = components.get(j);
-                     doUninstall(deployer, component, false, true);
+                     doUninstallParentLast(deployer, component, false, true);
                   }
                   throw e;
                }
@@ -708,13 +698,13 @@ public class DeployersImpl implements Deployers, ControllerContextActions
          catch (DeploymentException e)
          {
             // Just undeploy this context
-            doUninstall(deployer, context, false, false);
+            doUninstallParentLast(deployer, context, false, false);
             throw e;
          }
       }
 
       List<DeploymentContext> children = context.getChildren();
-      if (doChildren && children != null)
+      if (children != null)
       {
          try
          {
@@ -723,7 +713,7 @@ public class DeployersImpl implements Deployers, ControllerContextActions
                DeploymentContext child = children.get(i);
                try
                {
-                  doInstall(deployer, child, true, true);
+                  doInstallParentFirst(deployer, child);
                }
                catch (DeploymentException e)
                {
@@ -731,7 +721,7 @@ public class DeployersImpl implements Deployers, ControllerContextActions
                   for (int j = i - 1; j >= 0; --j)
                   {
                      child = children.get(j);
-                     doUninstall(deployer, child, true, true);
+                     doUninstallParentLast(deployer, child, true, true);
                   }
                   throw e;
                }
@@ -740,10 +730,91 @@ public class DeployersImpl implements Deployers, ControllerContextActions
          catch (DeploymentException e)
          {
             // Undeploy the context but the children are already unwound
-            doUninstall(deployer, context, false, true);
+            doUninstallParentLast(deployer, context, false, true);
             throw e;
          }
       }         
+   }
+   
+   /**
+    * Do the install parent last
+    * 
+    * @param deployer the deployer
+    * @param context the context
+    * @throws Throwable for any problem
+    */
+   protected void doInstallParentLast(Deployer deployer, DeploymentContext context) throws Throwable
+   {
+      List<DeploymentContext> children = context.getChildren();
+      for (int i = 0; i < children.size(); ++i)
+      {
+         DeploymentContext child = children.get(i);
+         try
+         {
+            doInstallParentLast(deployer, child);
+         }
+         catch (DeploymentException e)
+         {
+            // Unwind the previous children
+            for (int j = i - 1; j >= 0; --j)
+            {
+               child = children.get(j);
+               doUninstallParentFirst(deployer, child, true, true);
+            }
+            throw e;
+         }
+      }
+      
+      List<DeploymentContext> components = context.getComponents();
+      if (components != null)
+      {
+         try
+         {
+            for (int i = 0; i < components.size(); ++i)
+            {
+               DeploymentContext component = components.get(i);
+               try
+               {
+                  doInstallParentLast(deployer, component);
+               }
+               catch (DeploymentException e)
+               {
+                  // Unwind the previous components
+                  for (int j = i - 1; j >= 0; --j)
+                  {
+                     component = components.get(j);
+                     doUninstallParentFirst(deployer, component, true, true);
+                  }
+                  throw e;
+               }
+            }
+         }
+         catch (DeploymentException e)
+         {
+            // Just undeploy the children, the components are already unwound
+            doUninstallParentFirst(deployer, context, false, false);
+            throw e;
+         }
+      }
+
+      DeploymentUnit unit = context.getDeploymentUnit();
+      if (isRelevant(deployer, unit, context.isTopLevel(), context.isComponent()))
+      {
+         try
+         {
+            deployer.deploy(unit);
+         }
+         catch (DeploymentException e)
+         {
+            // Undeploy the children and components
+            doUninstallParentFirst(deployer, context, false, true);
+            context.setState(DeploymentState.ERROR);
+            context.setProblem(e);
+            throw e;
+         }
+      }
+      else if (log.isTraceEnabled())
+         log.trace("Deployer " + deployer + " not relevant for " + context.getName());
    }
    
    public void uninstall(ControllerContext context, ControllerState fromState, ControllerState toState)
@@ -752,19 +823,6 @@ public class DeployersImpl implements Deployers, ControllerContextActions
       String stageName = fromState.getStateString();
       
       DeploymentContext deploymentContext = deploymentControllerContext.getDeploymentContext();
-      doUninstall(deploymentContext, stageName, true, true);
-   }
-
-   /**
-    * Do the uninstall
-    * 
-    * @param context the context
-    * @param stageName the stage
-    * @param doChildren whether to do children
-    * @param doComponents whether to do components
-    */
-   protected void doUninstall(DeploymentContext context, String stageName, boolean doChildren, boolean doComponents)
-   {
       List<Deployer> theDeployers = getDeployersList(stageName);
       
       if (log.isTraceEnabled())
@@ -775,20 +833,23 @@ public class DeployersImpl implements Deployers, ControllerContextActions
          for (int i = theDeployers.size()-1; i >= 0; --i)
          {
             Deployer deployer = theDeployers.get(i);
-            doUninstall(deployer, context, doChildren, doComponents);
+            if (deployer.isParentFirst())
+               doUninstallParentLast(deployer, deploymentContext, true, true);
+            else
+               doUninstallParentFirst(deployer, deploymentContext, true, true);
          }
       }
    }
 
    /**
-    * Do the uninstall
+    * Do the uninstall parent last
     *
     * @param deployer the deployer
     * @param context the context
     * @param doChildren whether to do children
     * @param doComponents whether to do components
     */
-   protected void doUninstall(Deployer deployer, DeploymentContext context, boolean doChildren, boolean doComponents)
+   protected void doUninstallParentLast(Deployer deployer, DeploymentContext context, boolean doChildren, boolean doComponents)
    {
       if (doChildren)
       {
@@ -798,7 +859,7 @@ public class DeployersImpl implements Deployers, ControllerContextActions
             for (int i = children.size()-1; i >=  0; --i)
             {
                DeploymentContext child = children.get(i);
-               doUninstall(deployer, child, true, true);
+               doUninstallParentLast(deployer, child, true, true);
             }
          }
       }
@@ -811,7 +872,7 @@ public class DeployersImpl implements Deployers, ControllerContextActions
             for (int i = components.size()-1; i >=  0; --i)
             {
                DeploymentContext component = components.get(i);
-               doUninstall(deployer, component, false, true);
+               doUninstallParentLast(deployer, component, false, true);
             }
          }
       }
@@ -821,6 +882,49 @@ public class DeployersImpl implements Deployers, ControllerContextActions
          deployer.undeploy(unit);
       else if (log.isTraceEnabled())
          log.trace("Deployer " + deployer + " not relevant for " + context.getName());
+   }
+
+   /**
+    * Do the uninstall parent first
+    *
+    * @param deployer the deployer
+    * @param context the context
+    * @param doContext whether to do context
+    * @param doComponents whether to do components
+    */
+   protected void doUninstallParentFirst(Deployer deployer, DeploymentContext context, boolean doContext, boolean doComponents)
+   {
+      if (doContext)
+      {
+         DeploymentUnit unit = context.getDeploymentUnit();
+         if (isRelevant(deployer, unit, context.isTopLevel(), context.isComponent()))
+            deployer.undeploy(unit);
+         else if (log.isTraceEnabled())
+            log.trace("Deployer " + deployer + " not relevant for " + context.getName());
+      }
+
+      if (doComponents)
+      {
+         List<DeploymentContext> components = context.getComponents();
+         if (components != null && components.isEmpty() == false)
+         {
+            for (int i = components.size()-1; i >=  0; --i)
+            {
+               DeploymentContext component = components.get(i);
+               doUninstallParentFirst(deployer, component, true, true);
+            }
+         }
+      }
+
+      List<DeploymentContext> children = context.getChildren();
+      if (children != null && children.isEmpty() == false)
+      {
+         for (int i = children.size()-1; i >=  0; --i)
+         {
+            DeploymentContext child = children.get(i);
+            doUninstallParentFirst(deployer, child, true, true);
+         }
+      }
    }
    
    /**

@@ -74,6 +74,9 @@ public abstract class AbstractDeployer implements Deployer
    /** The type */
    private String type;
    
+   /** Whether to process parents first */
+   private boolean parentFirst = true;
+   
    public int getRelativeOrder()
    {
       return relativeOrder;
@@ -390,6 +393,21 @@ public abstract class AbstractDeployer implements Deployer
    public void setType(String type)
    {
       this.type = type;
+   }
+
+   public boolean isParentFirst()
+   {
+      return parentFirst;
+   }
+
+   /**
+    * Set the parentFirst.
+    * 
+    * @param parentFirst the parentFirst.
+    */
+   public void setParentFirst(boolean parentFirst)
+   {
+      this.parentFirst = parentFirst;
    }
 
    public void undeploy(DeploymentUnit unit)

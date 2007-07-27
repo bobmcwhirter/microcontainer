@@ -108,6 +108,13 @@ public interface Deployer extends Ordered
    Set<String> getOutputs();
    
    /**
+    * Whether to process parents before children (default true)
+    * 
+    * @return true to process parents first
+    */
+   boolean isParentFirst();
+   
+   /**
     * Deploy a deployment
     * 
     * @param unit the unit

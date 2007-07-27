@@ -153,6 +153,11 @@ public class DeployerWrapper implements Deployer, ManagedObjectCreator
       return deployer.getStage();
    }
 
+   public boolean isParentFirst()
+   {
+      return deployer.isParentFirst();
+   }
+
    public void deploy(DeploymentUnit unit) throws DeploymentException
    {
       if (unit == null)

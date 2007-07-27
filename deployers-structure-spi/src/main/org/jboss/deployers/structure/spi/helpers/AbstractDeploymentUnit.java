@@ -166,6 +166,11 @@ public class AbstractDeploymentUnit extends AbstractMutableAttachments implement
       return new AbstractDeploymentUnit(component);
    }
    
+   public boolean isComponent()
+   {
+      return deploymentContext.isComponent();
+   }
+
    public DeploymentUnit addComponent(String name)
    {
       DeploymentContext component = createComponentDeploymentContext(name, deploymentContext);
