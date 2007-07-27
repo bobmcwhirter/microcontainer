@@ -79,7 +79,11 @@ public class DominoOrdering<T extends Domino>
             else
                relation = fstXsnd ? -1 : (sndXfst ? 1 : 0);
             if (relation == 0)
-               relation = one.getRelativeOrder() - two.getRelativeOrder();
+            {
+               // lazy compare on those who don't have order set
+               if (one.getRelativeOrder() != 0 && two.getRelativeOrder() != 0)
+                  relation = one.getRelativeOrder() - two.getRelativeOrder();
+            }
             connections[i][j] = relation;
             connections[j][i] = -connections[i][j];
          }
