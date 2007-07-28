@@ -22,11 +22,13 @@
 package org.jboss.deployers.structure.spi.helpers;
 
 import java.util.List;
+import java.util.Map.Entry;
 
 import org.jboss.deployers.client.spi.Deployment;
 import org.jboss.deployers.spi.DeploymentException;
 import org.jboss.deployers.spi.DeploymentState;
 import org.jboss.deployers.spi.attachments.Attachments;
+import org.jboss.deployers.spi.attachments.MutableAttachments;
 import org.jboss.deployers.spi.structure.ContextInfo;
 import org.jboss.deployers.spi.structure.StructureMetaData;
 import org.jboss.deployers.spi.structure.StructureMetaDataFactory;
@@ -145,7 +147,8 @@ public class AbstractStructureBuilder implements StructureBuilder
    }
 
    /**
-    * Apply the context info
+    * Apply the context info. This transfers the PredeterminedManagedObjects
+    * and TransientManagedObjects from the ContextInfo the DeploymentContext.
     * 
     * @param context the context
     * @param contextInfo the contextInfo
@@ -156,8 +159,17 @@ public class AbstractStructureBuilder implements StructureBuilder
       Attachments attachments = contextInfo.getPredeterminedManagedObjects();
       if (attachments != null)
          context.setPredeterminedManagedObjects(attachments);
+      attachments = contextInfo.getTransientManagedObjects();
+      if (attachments != null)
+      {
+         MutableAttachments ma = context.getTransientAttachments();
+         for(Entry<String, Object> entry : attachments.getAttachments().entrySet())
+         {
+            ma.addAttachment(entry.getKey(), entry.getValue());
+         }
+      }
    }
-   
+
    /**
     * Create the root deployment context
     * 

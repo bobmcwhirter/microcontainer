@@ -24,6 +24,7 @@ package org.jboss.deployers.spi.structure;
 import java.io.Serializable;
 import java.util.List;
 
+import org.jboss.deployers.spi.attachments.ManagedObjectAttachments;
 import org.jboss.deployers.spi.attachments.PredeterminedManagedObjectAttachments;
 
 /**
@@ -33,7 +34,7 @@ import org.jboss.deployers.spi.attachments.PredeterminedManagedObjectAttachments
  * @author adrian@jboss.org
  * @version $Revision: 1.1$
  */
-public interface ContextInfo extends PredeterminedManagedObjectAttachments, Serializable
+public interface ContextInfo extends ManagedObjectAttachments, Serializable
 {
    /** The default metadata path */
    String DEFAULT_METADATA_PATH = "META-INF";

@@ -26,8 +26,10 @@ import java.util.List;
 import junit.framework.Test;
 import junit.framework.TestSuite;
 
+import org.jboss.deployers.plugins.attachments.AttachmentsImpl;
 import org.jboss.deployers.plugins.structure.ClassPathEntryImpl;
 import org.jboss.deployers.plugins.structure.ContextInfoImpl;
+import org.jboss.deployers.spi.attachments.MutableAttachments;
 import org.jboss.deployers.spi.structure.ClassPathEntry;
 import org.jboss.deployers.spi.structure.ContextInfo;
 import org.jboss.test.deployers.structure.AbstractContextInfoTest;
@@ -167,5 +169,26 @@ public class ContextInfoImplUnitTestCase extends AbstractContextInfoTest
       assertEquals("", context.getPath());
       assertDefaultMetaDataPath(context);
       assertEquals(classPath, context.getClassPath());
+   }
+
+   public void testPredeterminedManagedObjectAttachments()
+   {
+      ContextInfoImpl context = createDefault();
+      assertEquals("", context.getPath());
+      AttachmentsImpl ai = new AttachmentsImpl();
+      ai.addAttachment("key1", "testPredeterminedManagedObjectAttachments");
+      context.setPredeterminedManagedObjects(ai);
+      String a1 = context.getPredeterminedManagedObjects().getAttachment("key1", String.class);
+      assertEquals("key1 attachment", "testPredeterminedManagedObjectAttachments", a1);
+   }
+
+   public void testTransientManagedObjects()
+   {
+      ContextInfoImpl context = createDefault();
+      assertEquals("", context.getPath());
+      MutableAttachments ma = context.getTransientManagedObjects();
+      ma.addAttachment("key1", "testTransientManagedObjects", String.class);
+      String a1 = context.getTransientManagedObjects().getAttachment("key1", String.class);
+      assertEquals("key1 attachment", "testTransientManagedObjects", a1);
    }
 }

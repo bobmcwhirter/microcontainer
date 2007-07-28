@@ -28,7 +28,7 @@ import java.io.ObjectOutput;
 import java.util.ArrayList;
 import java.util.List;
 
-import org.jboss.deployers.spi.attachments.helpers.PredeterminedManagedObjectAttachmentsImpl;
+import org.jboss.deployers.spi.attachments.helpers.ManagedObjectAttachmentsImpl;
 import org.jboss.deployers.spi.structure.ClassPathEntry;
 import org.jboss.deployers.spi.structure.ContextInfo;
 
@@ -36,12 +36,14 @@ import org.jboss.deployers.spi.structure.ContextInfo;
  * ContextInfoImpl.
  * 
  * @author <a href="adrian@jboss.org">Adrian Brock</a>
+ * @author Scott.Stark@jboss.org
  * @version $Revision: 1.1 $
  */
-public class ContextInfoImpl extends PredeterminedManagedObjectAttachmentsImpl implements ContextInfo, Externalizable
+public class ContextInfoImpl extends ManagedObjectAttachmentsImpl
+   implements ContextInfo, Externalizable
 {
    /** The serialVersionUID */
-   private static final long serialVersionUID = -4384869824260284607L;
+   private static final long serialVersionUID = 2;
 
    /** The logical path */
    private String path;
