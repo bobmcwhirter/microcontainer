@@ -22,7 +22,6 @@
 package org.jboss.beans.metadata.plugins;
 
 import java.io.Serializable;
-import java.util.Iterator;
 import java.util.Set;
 
 import org.jboss.beans.info.spi.PropertyInfo;
@@ -34,8 +33,8 @@ import org.jboss.dependency.spi.ControllerState;
 import org.jboss.kernel.plugins.config.Configurator;
 import org.jboss.kernel.spi.config.KernelConfigurator;
 import org.jboss.kernel.spi.dependency.KernelControllerContext;
-import org.jboss.util.JBossStringBuilder;
 import org.jboss.reflect.spi.TypeInfo;
+import org.jboss.util.JBossStringBuilder;
 
 /**
  * Metadata for a property.
@@ -190,12 +189,11 @@ public class AbstractPropertyMetaData extends AbstractFeatureMetaData
       }
       // check properties
       KernelControllerContext context = visitor.getControllerContext();
-      Set propertyInfos = context.getBeanInfo().getProperties();
-      if (propertyInfos != null)
+      Set<PropertyInfo> propertyInfos = context.getBeanInfo().getProperties();
+      if (propertyInfos != null && propertyInfos.isEmpty() == false)
       {
-         for(Iterator it = propertyInfos.iterator(); it.hasNext();)
+         for (PropertyInfo pi : propertyInfos)
          {
-            PropertyInfo pi = (PropertyInfo) it.next();
             if (getName().equals(pi.getName()))
             {
                return applyCollectionOrMapCheck(pi.getType());

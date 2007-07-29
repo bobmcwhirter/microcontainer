@@ -57,6 +57,7 @@ public class GenericsContextualInjectionTestCase extends SingleContextualInjecti
       checkCollection(testBean.getCollection(), tester);
       checkCollection(testBean.getList(), tester);
       checkCollection(testBean.getSet(), tester);
+      assertNotNull(testBean.getGeneric());
    }
 
    protected void checkCollection(Collection<TesterInterface> collection, TesterInterface tester)

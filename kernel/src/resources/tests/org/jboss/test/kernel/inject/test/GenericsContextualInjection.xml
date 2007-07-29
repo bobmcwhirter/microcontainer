@@ -1,10 +1,13 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
 <deployment xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-            xsi:schemaLocation="urn:jboss:bean-deployer bean-deployer_1_0.xsd"
-            xmlns="urn:jboss:bean-deployer">
+            xsi:schemaLocation="urn:jboss:bean-deployer bean-deployer_2_0.xsd"
+            xmlns="urn:jboss:bean-deployer:2.0">
 
    <bean name="testObject" class="org.jboss.test.kernel.inject.support.GenericsTestObject">
+      <property name="generic">
+         <inject/>
+      </property>
       <property name="collection">
          <collection><inject/></collection>
       </property>
@@ -17,5 +20,11 @@
    </bean>
 
    <bean name="duplicateTester" class="org.jboss.test.kernel.inject.support.DuplicateTester"/>
+
+   <bean name="gso" class="org.jboss.test.kernel.inject.support.StringValueObject">
+      <constructor>
+         <parameter>SomeString</parameter>
+      </constructor>
+   </bean>
 
 </deployment>

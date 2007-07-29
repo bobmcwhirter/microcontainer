@@ -107,16 +107,17 @@ public abstract class AbstractFeatureMetaData extends JBossObject
    protected TypeInfo applyCollectionOrMapCheck(TypeInfo typeInfo) throws Throwable
    {
       TypeInfoFactory tif = typeInfo.getTypeInfoFactory();
-      boolean isMapTypeInfo = tif.getTypeInfo(Map.class).isAssignableFrom(typeInfo);
+      boolean isCollectionType = tif.getTypeInfo(Collection.class).isAssignableFrom(typeInfo);
       // cannot determine on map, since we don't know if we are key or value
-      if (typeInfo instanceof ClassInfo && isMapTypeInfo == false)
+      if (typeInfo instanceof ClassInfo && isCollectionType)
       {
          ClassInfo classInfo = (ClassInfo)typeInfo;
          TypeInfo[] types = classInfo.getActualTypeArguments();
          if (types != null)
             return types[0];
       }
-      if (tif.getTypeInfo(Collection.class).isAssignableFrom(typeInfo) || isMapTypeInfo)
+      boolean isMapTypeInfo = tif.getTypeInfo(Map.class).isAssignableFrom(typeInfo);
+      if (isCollectionType || isMapTypeInfo)
       {
          throw new IllegalArgumentException("Should not be here - set element/value class type in collection/map: " + this);
       }

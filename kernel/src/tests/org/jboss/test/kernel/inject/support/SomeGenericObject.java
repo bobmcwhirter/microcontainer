@@ -21,57 +21,21 @@
 */
 package org.jboss.test.kernel.inject.support;
 
-import java.util.Collection;
-import java.util.Set;
-import java.util.List;
-
 /**
+ * @param <T> exact type
  * @author <a href="mailto:ales.justin@gmail.com">Ales Justin</a>
  */
-public class GenericsTestObject
+public class SomeGenericObject<T>
 {
-   private Collection<TesterInterface> collection;
-   private Set<TesterInterface> set;
-   private List<TesterInterface> list;
-   private SomeGenericObject<String> generic;
+   private T value;
 
-   public Collection<TesterInterface> getCollection()
+   public SomeGenericObject(T value)
    {
-      return collection;
+      this.value = value;
    }
 
-   public void setCollection(Collection<TesterInterface> collection)
+   public T getValue()
    {
-      this.collection = collection;
-   }
-
-   public Set<TesterInterface> getSet()
-   {
-      return set;
-   }
-
-   public void setSet(Set<TesterInterface> set)
-   {
-      this.set = set;
-   }
-
-   public List<TesterInterface> getList()
-   {
-      return list;
-   }
-
-   public void setList(List<TesterInterface> list)
-   {
-      this.list = list;
-   }
-
-   public SomeGenericObject<String> getGeneric()
-   {
-      return generic;
-   }
-
-   public void setGeneric(SomeGenericObject<String> generic)
-   {
-      this.generic = generic;
+      return value;
    }
 }
