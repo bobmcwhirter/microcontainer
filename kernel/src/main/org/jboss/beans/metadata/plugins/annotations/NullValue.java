@@ -33,4 +33,5 @@ import java.lang.annotation.ElementType;
 @Target({ElementType.METHOD, ElementType.PARAMETER})
 public @interface NullValue
 {
+   boolean valid() default true;
 }

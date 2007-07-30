@@ -19,19 +19,34 @@
 * Software Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA
 * 02110-1301 USA, or see the FSF site: http://www.fsf.org.
 */
-package org.jboss.beans.metadata.plugins.annotations;
+package org.jboss.kernel.plugins.annotations;
 
-import java.lang.annotation.Retention;
-import java.lang.annotation.RetentionPolicy;
-import java.lang.annotation.Target;
-import java.lang.annotation.ElementType;
+import org.jboss.beans.metadata.plugins.AbstractSetMetaData;
+import org.jboss.beans.metadata.plugins.annotations.SetValue;
+import org.jboss.beans.metadata.plugins.annotations.Value;
+import org.jboss.beans.metadata.spi.ValueMetaData;
 
 /**
  * @author <a href="mailto:ales.justin@jboss.com">Ales Justin</a>
  */
-@Retention(RetentionPolicy.RUNTIME)
-@Target({ElementType.METHOD, ElementType.PARAMETER})
-public @interface ThisValue
+public class SetValueAnnotationPlugin extends CollectionsAnnotationPlugin<SetValue>
 {
-   boolean valid() default true;
+   static SetValueAnnotationPlugin INSTANCE = new SetValueAnnotationPlugin();
+
+   public SetValueAnnotationPlugin()
+   {
+      super(SetValue.class);
+   }
+
+   public ValueMetaData createValueMetaData(SetValue annotation)
+   {
+      AbstractSetMetaData set = new AbstractSetMetaData();
+      if (isAttributePresent(annotation.clazz()))
+         set.setType(annotation.clazz());
+      if (isAttributePresent(annotation.elementClass()))
+         set.setElementType(annotation.elementClass());
+      for(Value value : annotation.value())
+         set.add(createValueMetaData(value));
+      return set;
+   }
 }

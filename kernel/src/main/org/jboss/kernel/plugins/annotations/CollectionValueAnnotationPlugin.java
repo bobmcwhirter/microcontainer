@@ -19,19 +19,34 @@
 * Software Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA
 * 02110-1301 USA, or see the FSF site: http://www.fsf.org.
 */
-package org.jboss.beans.metadata.plugins.annotations;
+package org.jboss.kernel.plugins.annotations;
 
-import java.lang.annotation.Retention;
-import java.lang.annotation.RetentionPolicy;
-import java.lang.annotation.Target;
-import java.lang.annotation.ElementType;
+import org.jboss.beans.metadata.plugins.AbstractCollectionMetaData;
+import org.jboss.beans.metadata.plugins.annotations.CollectionValue;
+import org.jboss.beans.metadata.plugins.annotations.Value;
+import org.jboss.beans.metadata.spi.ValueMetaData;
 
 /**
  * @author <a href="mailto:ales.justin@jboss.com">Ales Justin</a>
  */
-@Retention(RetentionPolicy.RUNTIME)
-@Target({ElementType.METHOD, ElementType.PARAMETER})
-public @interface ThisValue
+public class CollectionValueAnnotationPlugin extends CollectionsAnnotationPlugin<CollectionValue>
 {
-   boolean valid() default true;
+   static CollectionValueAnnotationPlugin INSTANCE = new CollectionValueAnnotationPlugin();
+
+   public CollectionValueAnnotationPlugin()
+   {
+      super(CollectionValue.class);
+   }
+
+   public ValueMetaData createValueMetaData(CollectionValue annotation)
+   {
+      AbstractCollectionMetaData collection = new AbstractCollectionMetaData();
+      if (isAttributePresent(annotation.clazz()))
+         collection.setType(annotation.clazz());
+      if (isAttributePresent(annotation.elementClass()))
+         collection.setElementType(annotation.elementClass());
+      for(Value value : annotation.value())
+         collection.add(createValueMetaData(value));
+      return collection;
+   }
 }

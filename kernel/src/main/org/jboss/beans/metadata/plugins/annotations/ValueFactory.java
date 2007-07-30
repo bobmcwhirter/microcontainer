@@ -37,7 +37,9 @@ public @interface ValueFactory
 
    String method();
 
-   String parameter();
+   String parameter() default "";
+
+   Parameter[] parameters() default {};
 
    String defaultValue() default "";
 

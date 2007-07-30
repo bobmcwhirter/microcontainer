@@ -23,6 +23,7 @@ package org.jboss.test.kernel.annotations.support;
 
 import java.util.Set;
 import java.util.HashSet;
+import java.util.List;
 
 import org.jboss.beans.metadata.plugins.annotations.Aliases;
 import org.jboss.beans.metadata.plugins.annotations.Demands;
@@ -39,6 +40,8 @@ import org.jboss.beans.metadata.plugins.annotations.InstallMethod;
 import org.jboss.beans.metadata.plugins.annotations.ThisValue;
 import org.jboss.beans.metadata.plugins.annotations.NullValue;
 import org.jboss.beans.metadata.plugins.annotations.UninstallMethod;
+import org.jboss.beans.metadata.plugins.annotations.ListValue;
+import org.jboss.beans.metadata.plugins.annotations.Value;
 
 /**
  * @author <a href="mailto:ales.justin@jboss.com">Ales Justin</a>
@@ -52,6 +55,7 @@ public class SimpleInject
    private int intVF;
    private TestBean testBean;
    private Set<MyDeployer> deployers;
+   private List<TestBean> testers;
 
    public int getVf()
    {
@@ -113,5 +117,16 @@ public class SimpleInject
    public void setTestBean(TestBean bean)
    {
       this.testBean = bean; 
+   }
+
+   public List<TestBean> getTesters()
+   {
+      return testers;
+   }
+
+   @ListValue({@Value(inject = @Inject(bean = "valueBean")), @Value(inject = @Inject(bean = "valueBean"))})
+   public void setTesters(List<TestBean> testers)
+   {
+      this.testers = testers;
    }
 }

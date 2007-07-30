@@ -31,7 +31,9 @@ import java.lang.annotation.ElementType;
  */
 @Retention(RetentionPolicy.RUNTIME)
 @Target({ElementType.METHOD, ElementType.PARAMETER})
-public @interface ThisValue
+public @interface EntryValue
 {
-   boolean valid() default true;
+   Value key();
+
+   Value value();
 }

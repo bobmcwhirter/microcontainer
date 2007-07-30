@@ -90,4 +90,12 @@ public @interface Inject
     * @return from context type
     */
    FromContext fromContext() default FromContext.NONE;
+
+   /**
+    * Is this @Inject valid.
+    * Used with @Value.
+    *
+    * @return is this instance valid
+    */
+   boolean valid() default true;
 }

@@ -68,6 +68,11 @@ public class BasicBeanAnnotationAdapter implements BeanAnnotationAdapter
          ValueFactoryAnnotationPlugin.INSTANCE,
          ThisValueAnnotationPlugin.INSTANCE,
          NullValueAnnotationPlugin.INSTANCE,
+         CollectionValueAnnotationPlugin.INSTANCE,
+         ListValueAnnotationPlugin.INSTANCE,
+         SetValueAnnotationPlugin.INSTANCE,
+         ArrayValueAnnotationPlugin.INSTANCE,
+         MapValueAnnotationPlugin.INSTANCE,
       };
       // -- plugins
       // class
@@ -83,6 +88,11 @@ public class BasicBeanAnnotationAdapter implements BeanAnnotationAdapter
       addAnnotationPlugin(ValueFactoryAnnotationPlugin.INSTANCE);
       addAnnotationPlugin(ThisValueAnnotationPlugin.INSTANCE);
       addAnnotationPlugin(NullValueAnnotationPlugin.INSTANCE);
+      addAnnotationPlugin(CollectionValueAnnotationPlugin.INSTANCE);
+      addAnnotationPlugin(ListValueAnnotationPlugin.INSTANCE);
+      addAnnotationPlugin(SetValueAnnotationPlugin.INSTANCE);
+      addAnnotationPlugin(ArrayValueAnnotationPlugin.INSTANCE);
+      addAnnotationPlugin(MapValueAnnotationPlugin.INSTANCE);
       addAnnotationPlugin(new PropertyInstallCallbackAnnotationPlugin());
       addAnnotationPlugin(new PropertyUninstallCallbackAnnotationPlugin());
       // method

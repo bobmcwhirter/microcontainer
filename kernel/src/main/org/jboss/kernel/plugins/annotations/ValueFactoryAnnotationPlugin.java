@@ -21,20 +21,21 @@
 */
 package org.jboss.kernel.plugins.annotations;
 
-import java.util.List;
 import java.util.ArrayList;
+import java.util.List;
 
-import org.jboss.beans.metadata.plugins.annotations.ValueFactory;
-import org.jboss.beans.metadata.plugins.AbstractValueFactoryMetaData;
 import org.jboss.beans.metadata.plugins.AbstractParameterMetaData;
-import org.jboss.beans.metadata.spi.ValueMetaData;
+import org.jboss.beans.metadata.plugins.AbstractValueFactoryMetaData;
+import org.jboss.beans.metadata.plugins.annotations.Parameter;
+import org.jboss.beans.metadata.plugins.annotations.ValueFactory;
 import org.jboss.beans.metadata.spi.ParameterMetaData;
+import org.jboss.beans.metadata.spi.ValueMetaData;
 import org.jboss.dependency.spi.ControllerState;
 
 /**
  * @author <a href="mailto:ales.justin@jboss.com">Ales Justin</a>
  */
-public class ValueFactoryAnnotationPlugin extends PropertyAnnotationPlugin<ValueFactory>
+public class ValueFactoryAnnotationPlugin extends ParametersAnnotationPlugin<ValueFactory>
 {
    static ValueFactoryAnnotationPlugin INSTANCE = new ValueFactoryAnnotationPlugin();
 
@@ -49,7 +50,15 @@ public class ValueFactoryAnnotationPlugin extends PropertyAnnotationPlugin<Value
       if (isAttributePresent(annotation.defaultValue()))
          factory.setDefaultValue(annotation.defaultValue());
       List<ParameterMetaData> parameters = new ArrayList<ParameterMetaData>();
-      parameters.add(new AbstractParameterMetaData(String.class.getName(), annotation.parameter()));
+      if (isAttributePresent(annotation.parameter()))
+         parameters.add(new AbstractParameterMetaData(String.class.getName(), annotation.parameter()));
+      if (annotation.parameters().length > 0)
+      {
+         if (parameters.size() > 0)
+            throw new IllegalArgumentException("Cannot set both parameter and parameters!");
+         for(Parameter parameter : annotation.parameters())
+            parameters.add(new AbstractParameterMetaData(createValueMetaData(parameter)));         
+      }
       factory.setParameters(parameters);
       factory.setDependentState(new ControllerState(annotation.dependantState()));
       factory.setWhenRequiredState(new ControllerState(annotation.whenRequiredState()));

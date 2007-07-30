@@ -31,7 +31,15 @@ import java.lang.annotation.ElementType;
  */
 @Retention(RetentionPolicy.RUNTIME)
 @Target({ElementType.METHOD, ElementType.PARAMETER})
-public @interface ThisValue
+public @interface MapValue
 {
-   boolean valid() default true;
+   String clazz() default "";
+
+   String keyClass() default "";
+
+   String valueClass() default "";
+
+   EntryValue[] value();
+
+   String delimiter() default ",";
 }

@@ -31,7 +31,11 @@ import java.lang.annotation.ElementType;
  */
 @Retention(RetentionPolicy.RUNTIME)
 @Target({ElementType.METHOD, ElementType.PARAMETER})
-public @interface ThisValue
+public @interface ArrayValue
 {
-   boolean valid() default true;
+   String clazz() default "";
+
+   String elementClass() default "";
+
+   Value[] value();
 }

@@ -21,17 +21,21 @@
 */
 package org.jboss.beans.metadata.plugins.annotations;
 
+import java.lang.annotation.ElementType;
 import java.lang.annotation.Retention;
 import java.lang.annotation.RetentionPolicy;
 import java.lang.annotation.Target;
-import java.lang.annotation.ElementType;
 
 /**
  * @author <a href="mailto:ales.justin@jboss.com">Ales Justin</a>
  */
 @Retention(RetentionPolicy.RUNTIME)
 @Target({ElementType.METHOD, ElementType.PARAMETER})
-public @interface ThisValue
+public @interface ListValue
 {
-   boolean valid() default true;
+   String clazz() default "";
+
+   String elementClass() default "";
+
+   Value[] value();
 }

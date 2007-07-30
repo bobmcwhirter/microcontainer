@@ -30,8 +30,16 @@ import java.lang.annotation.ElementType;
  * @author <a href="mailto:ales.justin@jboss.com">Ales Justin</a>
  */
 @Retention(RetentionPolicy.RUNTIME)
-@Target({ElementType.METHOD, ElementType.PARAMETER})
-public @interface ThisValue
+@Target({ElementType.ANNOTATION_TYPE})
+public @interface Value
 {
-   boolean valid() default true;
+   StringValue string() default @StringValue(value="");
+
+   Inject inject() default @Inject(valid=false);
+
+   ValueFactory valueFactory() default @ValueFactory(bean = "", method = "");
+
+   ThisValue thisValue() default @ThisValue(valid = false);
+
+   NullValue nullValue() default @NullValue(valid = false);
 }
