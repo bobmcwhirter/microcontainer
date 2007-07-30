@@ -40,6 +40,4 @@ public @interface MapValue
    String valueClass() default "";
 
    EntryValue[] value();
-
-   String delimiter() default ",";
 }
