@@ -119,6 +119,19 @@ class BeanMetaDataBuilderImpl implements BeanMetaDataBuilder
       }
    }
 
+   public BeanMetaDataBuilder setConstructorValue(Object value)
+   {
+      return setConstructorValue(new AbstractValueMetaData(value));
+   }
+
+   public BeanMetaDataBuilder setConstructorValue(ValueMetaData value)
+   {
+      checkConstructorBuilder();
+      AbstractConstructorMetaData constructor = (AbstractConstructorMetaData) beanMetaData.getConstructor();
+      constructor.setValue(value);
+      return this;
+   }
+
    public BeanMetaDataBuilder addConstructorParameter(String type, Object value)
    {
       checkConstructorBuilder();

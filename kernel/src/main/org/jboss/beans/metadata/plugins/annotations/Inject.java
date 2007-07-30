@@ -34,7 +34,7 @@ import java.lang.annotation.Target;
  * @author <a href="mailto:ales.justin@genera-lynx.com">Ales Justin</a>
  */
 @Retention(RetentionPolicy.RUNTIME)
-@Target({ElementType.METHOD, ElementType.PARAMETER})
+@Target({ElementType.METHOD, ElementType.PARAMETER, ElementType.CONSTRUCTOR})
 public @interface Inject
 {
    /**

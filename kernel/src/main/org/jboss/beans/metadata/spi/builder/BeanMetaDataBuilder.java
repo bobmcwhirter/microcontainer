@@ -41,6 +41,10 @@ public interface BeanMetaDataBuilder
 
    BeanMetaDataBuilder setClassLoader(Object classLoader);
 
+   BeanMetaDataBuilder setConstructorValue(Object value);
+
+   BeanMetaDataBuilder setConstructorValue(ValueMetaData value);
+
    BeanMetaDataBuilder addConstructorParameter(String type, Object value);
 
    BeanMetaDataBuilder addConstructorParameter(String type, ValueMetaData value);
