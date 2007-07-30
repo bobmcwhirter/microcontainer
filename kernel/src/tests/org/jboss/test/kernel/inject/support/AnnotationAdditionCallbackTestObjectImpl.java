@@ -24,8 +24,8 @@ package org.jboss.test.kernel.inject.support;
 import java.util.HashSet;
 import java.util.Set;
 
-import org.jboss.beans.metadata.plugins.annotations.Callback;
-import org.jboss.beans.metadata.plugins.annotations.CallbackType;
+import org.jboss.beans.metadata.plugins.annotations.Install;
+import org.jboss.beans.metadata.plugins.annotations.Uninstall;
 
 /**
  * @author <a href="mailto:ales.justin@gmail.com">Ales Justin</a>
@@ -42,14 +42,14 @@ public class AnnotationAdditionCallbackTestObjectImpl implements CallbackTestObj
       }
    }
 
-   @Callback(type = CallbackType.INSTALL)
+   @Install
    public void addTesterInterface(TesterInterface tester)
    {
       init();
       testerInterfaces.add(tester);
    }
 
-   @Callback(type = CallbackType.UNINSTALL)
+   @Uninstall
    public void removeTesterInterface(TesterInterface tester)
    {
       init();

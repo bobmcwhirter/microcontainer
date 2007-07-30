@@ -28,7 +28,6 @@ import java.lang.annotation.Target;
 
 /**
  * Install callback.
- * @see org.jboss.beans.metadata.plugins.annotations.Callback
  *
  * @author <a href="mailto:ales.justin@jboss.com">Ales Justin</a>
  */

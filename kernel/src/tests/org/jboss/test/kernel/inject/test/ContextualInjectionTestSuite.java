@@ -51,12 +51,9 @@ public class ContextualInjectionTestSuite extends TestSuite
       suite.addTest(CardinalityCallbackTestCase.suite());
       suite.addTest(BadCardinalityCallbackTestCase.suite());
       suite.addTest(CandidateContextualInjectionTestCase.suite());
-/*
-      TODO
       suite.addTest(AdditionAnnotationCallbackTestCase.suite());
       suite.addTest(CollectionAnnotationCallbackTestCase.suite());
       suite.addTest(CardinalityAnnotationCallbackTestCase.suite());
-*/
       suite.addTest(GenericsContextualInjectionTestCase.suite());
 
       return suite;
