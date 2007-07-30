@@ -30,7 +30,7 @@ import java.lang.annotation.ElementType;
  * @author <a href="mailto:ales.justin@jboss.com">Ales Justin</a>
  */
 @Retention(RetentionPolicy.RUNTIME)
-@Target({ElementType.METHOD, ElementType.PARAMETER, ElementType.CONSTRUCTOR})
+@Target({ElementType.METHOD, ElementType.PARAMETER})
 public @interface ArrayValue
 {
    String clazz() default "";

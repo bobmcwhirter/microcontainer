@@ -23,31 +23,37 @@ package org.jboss.kernel.plugins.annotations;
 
 import java.lang.annotation.Annotation;
 
-import org.jboss.reflect.spi.ConstructorInfo;
-import org.jboss.beans.metadata.spi.BeanMetaData;
-import org.jboss.beans.metadata.plugins.AbstractConstructorMetaData;
 import org.jboss.beans.metadata.plugins.AbstractBeanMetaData;
+import org.jboss.beans.metadata.plugins.AbstractConstructorMetaData;
+import org.jboss.beans.metadata.spi.BeanMetaData;
+import org.jboss.reflect.spi.ClassInfo;
+import org.jboss.kernel.spi.dependency.KernelControllerContext;
 
 /**
  * @param <C> annotation type
  * @author <a href="mailto:ales.justin@jboss.com">Ales Justin</a>
  */
-public abstract class ConstructorValueAnnotationPlugin<C extends Annotation> extends ConstructorAnnotationPlugin<C> implements Annotation2ValueMetaDataAdapter<C>
+public abstract class ConstructorValueAnnotationPlugin<C extends Annotation> extends ClassAnnotationPlugin<C> implements Annotation2ValueMetaDataAdapter<C>
 {
    protected ConstructorValueAnnotationPlugin(Class<C> annotation)
    {
       super(annotation);
    }
 
-   protected boolean isMetaDataAlreadyPresent(ConstructorInfo info, C annotation, BeanMetaData beanMetaData)
+   protected boolean isMetaDataAlreadyPresent(ClassInfo info, C annotation, BeanMetaData beanMetaData)
    {
       return beanMetaData.getConstructor() != null;
    }
 
-   protected void internalApplyAnnotation(ConstructorInfo info, C annotation, BeanMetaData beanMetaData) throws Throwable
+   protected void internalApplyAnnotation(ClassInfo info, C annotation, KernelControllerContext context) throws Throwable
    {
+      AbstractBeanMetaData beanMetaData = (AbstractBeanMetaData)context.getBeanMetaData();
       AbstractConstructorMetaData constructor = new AbstractConstructorMetaData();
       constructor.setValue(createValueMetaData(annotation));
-      ((AbstractBeanMetaData)beanMetaData).setConstructor(constructor);
+      beanMetaData.setConstructor(constructor);
+      // reset, if present
+      beanMetaData.setBean(null);
+      context.setBeanInfo(null);
+      executeVisit(context, constructor);
    }
 }

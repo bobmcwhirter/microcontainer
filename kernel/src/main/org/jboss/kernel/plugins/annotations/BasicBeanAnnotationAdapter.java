@@ -80,8 +80,7 @@ public class BasicBeanAnnotationAdapter implements BeanAnnotationAdapter
       addAnnotationPlugin(new DemandsAnnotationPlugin());
       addAnnotationPlugin(new DependsAnnotationPlugin());
       addAnnotationPlugin(new SupplysAnnotationPlugin());
-      // constructor
-      addAnnotationPlugin(new ConstructorParameterAnnotationPlugin(adapters));
+/*
       addAnnotationPlugin(new InjectConstructorValueAnnotationPlugin());
       addAnnotationPlugin(new StringValueConstructorValueAnnotationPlugin());
       addAnnotationPlugin(new ValueFactoryConstructorValueAnnotationPlugin());
@@ -90,6 +89,9 @@ public class BasicBeanAnnotationAdapter implements BeanAnnotationAdapter
       addAnnotationPlugin(new SetConstructorValueAnnotationPlugin());
       addAnnotationPlugin(new ArrayConstructorValueAnnotationPlugin());
       addAnnotationPlugin(new MapConstructorValueAnnotationPlugin());
+*/
+      // constructor
+      addAnnotationPlugin(new ConstructorParameterAnnotationPlugin(adapters));
       // property
       addAnnotationPlugin(InjectAnnotationPlugin.INSTANCE);
       addAnnotationPlugin(StringValueAnnotationPlugin.INSTANCE);
