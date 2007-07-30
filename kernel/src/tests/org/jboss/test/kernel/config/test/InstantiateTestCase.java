@@ -178,7 +178,7 @@ public class InstantiateTestCase extends AbstractKernelConfigTest
    {
       SimpleBean bean = parameterInstantiateViaInterfaceWithTypeOverride();
       assertEquals("java.lang.Comparable:java.lang.Integer:12", bean.getConstructorUsed());
-      assertEquals(new Integer(12), bean.getAnObject());
+      assertEquals(12, bean.getAnObject());
    }
 
    protected SimpleBean parameterInstantiateViaInterfaceWithTypeOverride() throws Throwable

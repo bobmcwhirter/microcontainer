@@ -92,6 +92,11 @@ public class AbstractKernelConfigTest extends AbstractKernelTest
       return result;
    }
 
+   protected Object instantiate(BeanMetaData metaData) throws Throwable
+   {
+      return instantiate(bootstrap().getController(), metaData);
+   }
+
    protected Object instantiate(KernelController controller, BeanMetaData metaData) throws Throwable
    {
       metaData.setMode(ControllerMode.AUTOMATIC);
