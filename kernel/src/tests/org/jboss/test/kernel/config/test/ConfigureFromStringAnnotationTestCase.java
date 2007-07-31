@@ -21,14 +21,10 @@
 */
 package org.jboss.test.kernel.config.test;
 
-import java.math.BigDecimal;
-import java.math.BigInteger;
-import java.util.Date;
-
 import junit.framework.Test;
 import org.jboss.beans.metadata.plugins.builder.BeanMetaDataBuilderFactory;
 import org.jboss.beans.metadata.spi.builder.BeanMetaDataBuilder;
-import org.jboss.test.kernel.config.support.FromObjectSimpleBean;
+import org.jboss.test.kernel.config.support.FromStringSimpleBean;
 import org.jboss.test.kernel.config.support.SimpleBean;
 
 /**
@@ -36,36 +32,22 @@ import org.jboss.test.kernel.config.support.SimpleBean;
  *
  * @author <a href="ales.justin@jboss.com">Ales Justin</a>
  */
-public class ConfigureFromObjectAnnotationTestCase extends ConfigureFromObjectTestCase
+public class ConfigureFromStringAnnotationTestCase extends ConfigureFromStringTestCase
 {
    public static Test suite()
    {
-      return suite(ConfigureFromObjectAnnotationTestCase.class);
+      return suite(ConfigureFromStringAnnotationTestCase.class);
    }
 
-   public ConfigureFromObjectAnnotationTestCase(String name)
+   public ConfigureFromStringAnnotationTestCase(String name)
    {
       super(name);
    }
 
-   protected SimpleBean createSimpleBean(
-         String stringValue,
-         Byte byteValue,
-         Boolean booleanValue,
-         Character characterValue,
-         Short shortValue,
-         Integer integerValue,
-         Long longValue,
-         Float floatValue,
-         Double doubleValue,
-         Date dateValue,
-         BigDecimal bigDecimalValue,
-         BigInteger bigIntegerValue,
-         SimpleBean.Alphabet enumValue
-   )
-         throws Throwable
+
+   protected SimpleBean configure() throws Throwable
    {
-      BeanMetaDataBuilder builder = BeanMetaDataBuilderFactory.createBuilder("SimpleBean", FromObjectSimpleBean.class.getName());
+      BeanMetaDataBuilder builder = BeanMetaDataBuilderFactory.createBuilder("SimpleBean", FromStringSimpleBean.class.getName());
       return (SimpleBean)instantiate(builder.getBeanMetaData());
    }
 }

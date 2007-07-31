@@ -21,9 +21,9 @@
 */
 package org.jboss.test.kernel.config.support;
 
-import java.math.BigDecimal;
-import java.math.BigInteger;
 import java.util.Date;
+import java.math.BigInteger;
+import java.math.BigDecimal;
 
 import org.jboss.beans.metadata.plugins.annotations.StringValue;
 
@@ -32,9 +32,9 @@ import org.jboss.beans.metadata.plugins.annotations.StringValue;
  *
  * @author <a href="ales.justin@jboss.com">Ales Justin</a>
  */
-public class FromObjectSimpleBean extends SimpleBean
+public class FromStringSimpleBean extends SimpleBean
 {
-   public FromObjectSimpleBean()
+   public FromStringSimpleBean()
    {
       super();
    }
