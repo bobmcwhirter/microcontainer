@@ -1,12 +1,13 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
 <deployment xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-            xsi:schemaLocation="urn:jboss:bean-deployer bean-deployer_1_0.xsd"
-            xmlns="urn:jboss:bean-deployer">
+            xsi:schemaLocation="urn:jboss:bean-deployer bean-deployer_2_0.xsd"
+            xmlns="urn:jboss:bean-deployer:2.0">
    <bean name="SimpleBean" class="org.jboss.test.kernel.config.support.SimpleBean">
       <property name="AString">StringValue</property>
       <property name="AByte">12</property>
       <property name="ABoolean">true</property>
+      <property name="ACharacter">a</property>
       <property name="AShort">123</property>
       <property name="anInt">1234</property>
       <property name="ALong">12345</property>
@@ -17,6 +18,7 @@
       <property name="ABigInteger">123456</property>
       <property name="abyte">12</property>
       <property name="aboolean">true</property>
+      <property name="achar">a</property>
       <property name="ashort">123</property>
       <property name="anint">1234</property>
       <property name="along">12345</property>

@@ -21,7 +21,13 @@
 */
 package org.jboss.test.kernel.config.test;
 
+import java.util.Date;
+import java.math.BigDecimal;
+import java.math.BigInteger;
+
 import junit.framework.Test;
+import org.jboss.test.kernel.config.support.SimpleBean;
+import org.jboss.test.kernel.config.support.XMLUtil;
 
 /**
  * Configuration from object Test Case.
@@ -38,6 +44,27 @@ public class ConfigureFromObjectXMLTestCase extends ConfigureFromObjectTestCase
 
    public ConfigureFromObjectXMLTestCase(String name)
    {
-      super(name);
+      super(name, true);
+   }
+
+   protected SimpleBean createSimpleBean(
+         String stringValue,
+         Byte byteValue,
+         Boolean booleanValue,
+         Character characterValue,
+         Short shortValue,
+         Integer integerValue,
+         Long longValue,
+         Float floatValue,
+         Double doubleValue,
+         Date dateValue,
+         BigDecimal bigDecimalValue,
+         BigInteger bigIntegerValue,
+         SimpleBean.Alphabet enumValue
+   )
+         throws Throwable
+   {
+      XMLUtil util = bootstrapXML(true);
+      return (SimpleBean) util.getBean("SimpleBean");
    }
 }
