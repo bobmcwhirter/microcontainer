@@ -25,8 +25,10 @@ import java.util.Iterator;
 import java.util.Set;
 
 import org.jboss.beans.info.spi.BeanInfo;
-import org.jboss.beans.metadata.spi.PropertyMetaData;
 import org.jboss.beans.metadata.spi.BeanMetaData;
+import org.jboss.beans.metadata.spi.PropertyMetaData;
+import org.jboss.dependency.spi.ControllerMode;
+import org.jboss.dependency.spi.ControllerState;
 import org.jboss.joinpoint.spi.Joinpoint;
 import org.jboss.joinpoint.spi.TargettedJoinpoint;
 import org.jboss.kernel.Kernel;
@@ -35,7 +37,6 @@ import org.jboss.kernel.spi.dependency.KernelController;
 import org.jboss.kernel.spi.dependency.KernelControllerContext;
 import org.jboss.test.kernel.AbstractKernelTest;
 import org.jboss.test.kernel.config.support.XMLUtil;
-import org.jboss.dependency.spi.ControllerMode;
 
 /**
  * An abstract kernel config test.
@@ -97,10 +98,22 @@ public class AbstractKernelConfigTest extends AbstractKernelTest
       return instantiate(bootstrap().getController(), metaData);
    }
 
+   protected Object instantiate(BeanMetaData metaData, ControllerState expectedState) throws Throwable
+   {
+      return instantiate(bootstrap().getController(), metaData, expectedState);
+   }
+
    protected Object instantiate(KernelController controller, BeanMetaData metaData) throws Throwable
+   {
+      return instantiate(controller, metaData, null);
+   }
+
+   protected Object instantiate(KernelController controller, BeanMetaData metaData, ControllerState expectedState) throws Throwable
    {
       metaData.setMode(ControllerMode.AUTOMATIC);
       KernelControllerContext kernelControllerContext = controller.install(metaData);
+      if (expectedState != null)
+         assertEquals(expectedState, kernelControllerContext.getState());
       return kernelControllerContext.getTarget();
    }
 

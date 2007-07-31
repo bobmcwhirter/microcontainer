@@ -19,19 +19,17 @@
 * Software Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA
 * 02110-1301 USA, or see the FSF site: http://www.fsf.org.
 */
-package org.jboss.beans.metadata.plugins.annotations;
-
-import java.lang.annotation.Retention;
-import java.lang.annotation.RetentionPolicy;
-import java.lang.annotation.Target;
-import java.lang.annotation.ElementType;
+package org.jboss.test.kernel.config.support;
 
 /**
- * @author <a href="mailto:ales.justin@jboss.com">Ales Justin</a>
+ * A simple bean
+ *
+ * @author <a href="ales.justin@jboss.com">Ales Justin</a>
  */
-@Retention(RetentionPolicy.RUNTIME)
-@Target({ElementType.METHOD, ElementType.PARAMETER})
-public @interface JavaBeanValue
+public class MyObject2 extends MyObject
 {
-   String value() default "";
+   public MyObject2()
+   {
+      super("object2");
+   }
 }

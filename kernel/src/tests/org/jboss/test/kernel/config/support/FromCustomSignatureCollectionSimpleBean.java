@@ -19,19 +19,30 @@
 * Software Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA
 * 02110-1301 USA, or see the FSF site: http://www.fsf.org.
 */
-package org.jboss.beans.metadata.plugins.annotations;
+package org.jboss.test.kernel.config.support;
 
-import java.lang.annotation.Retention;
-import java.lang.annotation.RetentionPolicy;
-import java.lang.annotation.Target;
-import java.lang.annotation.ElementType;
+import org.jboss.beans.metadata.plugins.annotations.CollectionValue;
+import org.jboss.beans.metadata.plugins.annotations.Value;
+import org.jboss.beans.metadata.plugins.annotations.StringValue;
 
 /**
- * @author <a href="mailto:ales.justin@jboss.com">Ales Justin</a>
+ * A simple bean
+ *
+ * @author <a href="ales.justin@jboss.com">Ales Justin</a>
  */
-@Retention(RetentionPolicy.RUNTIME)
-@Target({ElementType.METHOD, ElementType.PARAMETER})
-public @interface JavaBeanValue
+public class FromCustomSignatureCollectionSimpleBean extends SimpleBean
 {
-   String value() default "";
+   @CollectionValue(
+         value = {
+            @Value(string = @StringValue("string1")),
+            @Value(string = @StringValue("string2")),
+            @Value(string = @StringValue("string2")),
+            @Value(string = @StringValue("string1"))
+         },
+         elementClass = "java.lang.String"
+   )
+   public void setCustomCollection(CustomCollection collection)
+   {
+      super.setCustomCollection(collection);
+   }
 }

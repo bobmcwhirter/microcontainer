@@ -38,7 +38,7 @@ import org.jboss.beans.metadata.plugins.annotations.Value;
  * @author <a href="ales.justin@jboss.com">Ales Justin</a>
  */
 @Factory(
-      factory = @Value(javabean = @JavaBeanValue(clazz = "org.jboss.test.kernel.config.support.SimpleBeanFactory")),
+      factory = @Value(javabean = @JavaBeanValue("org.jboss.test.kernel.config.support.SimpleBeanFactory")),
       factoryMethod = "createSimpleBean",
       parameters = {@Value(string = @StringValue("Factory Value"))}
 )

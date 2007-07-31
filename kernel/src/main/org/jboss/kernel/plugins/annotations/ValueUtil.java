@@ -23,11 +23,11 @@ package org.jboss.kernel.plugins.annotations;
 
 import org.jboss.beans.metadata.plugins.annotations.Inject;
 import org.jboss.beans.metadata.plugins.annotations.NullValue;
+import org.jboss.beans.metadata.plugins.annotations.Parameter;
 import org.jboss.beans.metadata.plugins.annotations.StringValue;
 import org.jboss.beans.metadata.plugins.annotations.ThisValue;
 import org.jboss.beans.metadata.plugins.annotations.Value;
 import org.jboss.beans.metadata.plugins.annotations.ValueFactory;
-import org.jboss.beans.metadata.plugins.annotations.Parameter;
 import org.jboss.beans.metadata.plugins.annotations.JavaBeanValue;
 import org.jboss.beans.metadata.spi.ValueMetaData;
 
@@ -85,14 +85,12 @@ final class ValueUtil
          vmd = NullValueAnnotationPlugin.INSTANCE.createValueMetaData(nullValue);
       }
 
-      /* FIXME
       JavaBeanValue javabean = value.javabean();
-      if (isAttributePresent(javabean.clazz()))
+      if (isAttributePresent(javabean.value()))
       {
          checkValueMetaData(vmd);
          vmd = JavaBeanValueAnnotationPlugin.INSTANCE.createValueMetaData(javabean);
       }
-      */
 
       if (vmd == null)
          throw new IllegalArgumentException("No value set on @Value annotation!");
@@ -131,14 +129,12 @@ final class ValueUtil
          vmd = NullValueAnnotationPlugin.INSTANCE.createValueMetaData(nullValue);
       }
 
-      /* FIXME
       JavaBeanValue javabean = parameter.javabean();
-      if (isAttributePresent(javabean.clazz()))
+      if (isAttributePresent(javabean.value()))
       {
          checkValueMetaData(vmd);
          vmd = JavaBeanValueAnnotationPlugin.INSTANCE.createValueMetaData(javabean);
       }
-      */
 
       if (vmd == null)
          throw new IllegalArgumentException("No value set on @Value annotation!");

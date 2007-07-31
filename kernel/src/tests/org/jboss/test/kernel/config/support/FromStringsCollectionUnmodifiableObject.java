@@ -19,19 +19,33 @@
 * Software Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA
 * 02110-1301 USA, or see the FSF site: http://www.fsf.org.
 */
-package org.jboss.beans.metadata.plugins.annotations;
+package org.jboss.test.kernel.config.support;
 
-import java.lang.annotation.Retention;
-import java.lang.annotation.RetentionPolicy;
-import java.lang.annotation.Target;
-import java.lang.annotation.ElementType;
+import java.util.Collection;
+
+import org.jboss.beans.metadata.plugins.annotations.CollectionValue;
+import org.jboss.beans.metadata.plugins.annotations.StringValue;
+import org.jboss.beans.metadata.plugins.annotations.Value;
 
 /**
- * @author <a href="mailto:ales.justin@jboss.com">Ales Justin</a>
+ * A simple bean
+ *
+ * @author <a href="ales.justin@jboss.com">Ales Justin</a>
  */
-@Retention(RetentionPolicy.RUNTIME)
-@Target({ElementType.METHOD, ElementType.PARAMETER})
-public @interface JavaBeanValue
+public class FromStringsCollectionUnmodifiableObject extends UnmodifiableGetterBean
 {
-   String value() default "";
+   @CollectionValue(
+         value = {
+            @Value(string = @StringValue("string1")),
+            @Value(string = @StringValue("string2")),
+            @Value(string = @StringValue("string2")),
+            @Value(string = @StringValue("string1"))
+         },
+         elementClass = "java.lang.String",
+         clazz = "java.util.ArrayList"
+   )
+   public void setCollection(Collection collection)
+   {
+      super.setCollection(collection);
+   }
 }
