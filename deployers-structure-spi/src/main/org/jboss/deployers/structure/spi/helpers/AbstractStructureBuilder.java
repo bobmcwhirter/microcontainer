@@ -159,15 +159,6 @@ public class AbstractStructureBuilder implements StructureBuilder
       Attachments attachments = contextInfo.getPredeterminedManagedObjects();
       if (attachments != null)
          context.setPredeterminedManagedObjects(attachments);
-      attachments = contextInfo.getTransientManagedObjects();
-      if (attachments != null)
-      {
-         MutableAttachments ma = context.getTransientAttachments();
-         for(Entry<String, Object> entry : attachments.getAttachments().entrySet())
-         {
-            ma.addAttachment(entry.getKey(), entry.getValue());
-         }
-      }
    }
 
    /**
