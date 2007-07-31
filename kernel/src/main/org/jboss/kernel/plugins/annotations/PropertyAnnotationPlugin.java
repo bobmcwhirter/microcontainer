@@ -75,6 +75,11 @@ public abstract class PropertyAnnotationPlugin<C extends Annotation> extends Abs
 
    protected PropertyMetaData getPropertyMetaData(PropertyInfo info, C annotation, KernelControllerContext context)
    {
+      return getPropertyMetaData(info, annotation, context.getBeanMetaData());
+   }
+
+   protected PropertyMetaData getPropertyMetaData(PropertyInfo info, C annotation, BeanMetaData beanMetaData)
+   {
       return getPropertyMetaData(info, annotation);
    }
 

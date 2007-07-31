@@ -24,7 +24,6 @@ package org.jboss.kernel.plugins.annotations;
 import java.lang.annotation.Annotation;
 import java.lang.annotation.ElementType;
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.List;
 
 import org.jboss.beans.metadata.plugins.AbstractParameterMetaData;
@@ -49,17 +48,11 @@ import org.jboss.reflect.spi.TypeInfo;
  * @param <P> mutable parametrized type
  * @author <a href="mailto:ales.justin@jboss.com">Ales Justin</a>
  */
-public abstract class AbstractParameterAnnotationPlugin<T extends AnnotatedInfo, C extends Annotation, P extends MutableParameterizedMetaData> extends AbstractAnnotationPlugin<T, C>
+public abstract class AbstractParameterAnnotationPlugin<T extends AnnotatedInfo, C extends Annotation, P extends MutableParameterizedMetaData> extends AbstractAdaptersAnnotationPlugin<T, C>
 {
-   protected List<Annotation2ValueMetaDataAdapter> adapters;
-
    protected AbstractParameterAnnotationPlugin(Class<C> annotation, Annotation2ValueMetaDataAdapter... adapters)
    {
-      super(annotation);
-      this.adapters = new ArrayList<Annotation2ValueMetaDataAdapter>();
-      if (adapters == null || adapters.length == 0)
-         throw new IllegalArgumentException("Annotation adapters are empty!");
-      this.adapters.addAll(Arrays.asList(adapters));
+      super(annotation, adapters);
    }
 
    protected abstract boolean checkAnnotatedInfo(ElementType type);

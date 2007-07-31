@@ -23,13 +23,8 @@ package org.jboss.kernel.plugins.annotations;
 
 import java.lang.annotation.Annotation;
 
-import org.jboss.beans.metadata.spi.ValueMetaData;
 import org.jboss.beans.metadata.plugins.annotations.Value;
-import org.jboss.beans.metadata.plugins.annotations.StringValue;
-import org.jboss.beans.metadata.plugins.annotations.Inject;
-import org.jboss.beans.metadata.plugins.annotations.ValueFactory;
-import org.jboss.beans.metadata.plugins.annotations.NullValue;
-import org.jboss.beans.metadata.plugins.annotations.ThisValue;
+import org.jboss.beans.metadata.spi.ValueMetaData;
 
 /**
  * @param <C> annotation type
@@ -44,51 +39,6 @@ public abstract class CollectionsAnnotationPlugin<C extends Annotation> extends 
 
    protected ValueMetaData createValueMetaData(Value value)
    {
-      ValueMetaData vmd = null;
-
-      StringValue string = value.string();
-      if (isAttributePresent(string.value()))
-      {
-         vmd = StringValueAnnotationPlugin.INSTANCE.createValueMetaData(string);
-      }
-
-      Inject inject = value.inject();
-      if (inject.valid())
-      {
-         checkValueMetaData(vmd);
-         vmd = InjectAnnotationPlugin.INSTANCE.createValueMetaData(inject);
-      }
-
-      ValueFactory vf = value.valueFactory();
-      if (isAttributePresent(vf.bean()))
-      {
-         checkValueMetaData(vmd);
-         vmd = ValueFactoryAnnotationPlugin.INSTANCE.createValueMetaData(vf);
-      }
-
-      ThisValue thisValue = value.thisValue();
-      if (thisValue.valid())
-      {
-         checkValueMetaData(vmd);
-         vmd = ThisValueAnnotationPlugin.INSTANCE.createValueMetaData(thisValue);
-      }
-
-      NullValue nullValue = value.nullValue();
-      if (nullValue.valid())
-      {
-         checkValueMetaData(vmd);
-         vmd = NullValueAnnotationPlugin.INSTANCE.createValueMetaData(nullValue);
-      }
-
-      if (vmd == null)
-         throw new IllegalArgumentException("No value set on @Value annotation!");
-
-      return vmd;
-   }
-
-   protected void checkValueMetaData(ValueMetaData value)
-   {
-      if (value != null)
-         throw new IllegalArgumentException("@Value annotation has too many values set!");
+      return ValueUtil.createValueMetaData(value);
    }
 }

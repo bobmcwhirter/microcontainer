@@ -19,26 +19,19 @@
 * Software Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA
 * 02110-1301 USA, or see the FSF site: http://www.fsf.org.
 */
-package org.jboss.kernel.plugins.annotations;
+package org.jboss.beans.metadata.plugins.annotations;
 
-import java.lang.annotation.Annotation;
-
-import org.jboss.beans.metadata.plugins.annotations.Parameter;
-import org.jboss.beans.metadata.spi.ValueMetaData;
+import java.lang.annotation.Retention;
+import java.lang.annotation.RetentionPolicy;
+import java.lang.annotation.Target;
+import java.lang.annotation.ElementType;
 
 /**
- * @param <C> annotation type
  * @author <a href="mailto:ales.justin@jboss.com">Ales Justin</a>
  */
-public abstract class ParametersAnnotationPlugin<C extends Annotation> extends PropertyAnnotationPlugin<C>
+@Retention(RetentionPolicy.RUNTIME)
+@Target({ElementType.METHOD, ElementType.PARAMETER})
+public @interface JavaBeanValue
 {
-   public ParametersAnnotationPlugin(Class<C> annotation)
-   {
-      super(annotation);
-   }
-
-   protected ValueMetaData createValueMetaData(Parameter parameter)
-   {
-      return ValueUtil.createValueMetaData(parameter);
-   }
+   String clazz() default "";
 }

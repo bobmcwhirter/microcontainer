@@ -57,7 +57,12 @@ public class ValueFactoryAnnotationPlugin extends ParametersAnnotationPlugin<Val
          if (parameters.size() > 0)
             throw new IllegalArgumentException("Cannot set both parameter and parameters!");
          for(Parameter parameter : annotation.parameters())
-            parameters.add(new AbstractParameterMetaData(createValueMetaData(parameter)));         
+         {
+            AbstractParameterMetaData apmd = new AbstractParameterMetaData(ValueUtil.createValueMetaData(parameter));
+            if (isAttributePresent(parameter.type()))
+               apmd.setType(parameter.type());
+            parameters.add(apmd);
+         }
       }
       factory.setParameters(parameters);
       factory.setDependentState(new ControllerState(annotation.dependantState()));

@@ -78,7 +78,7 @@ public abstract class AbstractAnnotationPlugin<T extends AnnotatedInfo, C extend
 
    protected static boolean isAttributePresent(String value)
    {
-      return value != null && value.length() > 0;
+      return ValueUtil.isAttributePresent(value);
    }
 
    protected abstract boolean isElementTypeSupported(ElementType type);

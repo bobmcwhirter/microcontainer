@@ -128,7 +128,7 @@ public class FactoryTestCase extends AbstractKernelConfigTest
       cmd.setFactory(vmd);
       cmd.setFactoryMethod("createSimpleBean");
       ArrayList<ParameterMetaData> constructorParams = new ArrayList<ParameterMetaData>();
-      AbstractParameterMetaData pmd = new AbstractParameterMetaData(new Integer(4));
+      AbstractParameterMetaData pmd = new AbstractParameterMetaData(4);
       pmd.setType("java.lang.Integer");
       constructorParams.add(pmd);
       cmd.setParameters(constructorParams);
@@ -200,7 +200,7 @@ public class FactoryTestCase extends AbstractKernelConfigTest
       cmd.setFactoryClass(SimpleBeanFactory.class.getName());
       cmd.setFactoryMethod("staticCreateSimpleBean");
       ArrayList<ParameterMetaData> constructorParams = new ArrayList<ParameterMetaData>();
-      AbstractParameterMetaData pmd = new AbstractParameterMetaData(new Integer(7));
+      AbstractParameterMetaData pmd = new AbstractParameterMetaData(7);
       pmd.setType("java.lang.Integer");
       constructorParams.add(pmd);
       cmd.setParameters(constructorParams);

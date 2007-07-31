@@ -33,6 +33,8 @@ import java.lang.annotation.ElementType;
 @Target({ElementType.ANNOTATION_TYPE})
 public @interface Parameter
 {
+   String type() default "";
+
    StringValue string() default @StringValue(value="");
 
    Inject inject() default @Inject(valid=false);
@@ -40,4 +42,6 @@ public @interface Parameter
    ThisValue thisValue() default @ThisValue(valid = false);
 
    NullValue nullValue() default @NullValue(valid = false);
+
+   JavaBeanValue javabean() default @JavaBeanValue;
 }

@@ -22,23 +22,28 @@
 package org.jboss.kernel.plugins.annotations;
 
 import java.lang.annotation.Annotation;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.List;
 
-import org.jboss.beans.metadata.plugins.annotations.Parameter;
-import org.jboss.beans.metadata.spi.ValueMetaData;
+import org.jboss.reflect.spi.AnnotatedInfo;
 
 /**
+ * @param <T> info type
  * @param <C> annotation type
  * @author <a href="mailto:ales.justin@jboss.com">Ales Justin</a>
  */
-public abstract class ParametersAnnotationPlugin<C extends Annotation> extends PropertyAnnotationPlugin<C>
+public abstract class AbstractAdaptersAnnotationPlugin<T extends AnnotatedInfo, C extends Annotation> extends AbstractAnnotationPlugin<T, C>
 {
-   public ParametersAnnotationPlugin(Class<C> annotation)
+   protected List<Annotation2ValueMetaDataAdapter> adapters;
+
+   protected AbstractAdaptersAnnotationPlugin(Class<C> annotation, Annotation2ValueMetaDataAdapter... adapters)
    {
       super(annotation);
+      this.adapters = new ArrayList<Annotation2ValueMetaDataAdapter>();
+      if (adapters == null || adapters.length == 0)
+         throw new IllegalArgumentException("Annotation adapters are empty!");
+      this.adapters.addAll(Arrays.asList(adapters));
    }
 
-   protected ValueMetaData createValueMetaData(Parameter parameter)
-   {
-      return ValueUtil.createValueMetaData(parameter);
-   }
 }
