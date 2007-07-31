@@ -335,7 +335,7 @@ public class DeployersImpl implements Deployers, ControllerContextActions
             DeploymentContext context = undeploy.get(i);
             context.setState(DeploymentState.UNDEPLOYING);
             log.debug("Undeploying " + context.getName());
-            DeploymentControllerContext deploymentControllerContext = context.getTransientAttachments().getAttachment(DeploymentControllerContext.class);
+            DeploymentControllerContext deploymentControllerContext = context.getTransientAttachments().getAttachment(ControllerContext.class.getName(), DeploymentControllerContext.class);
             if (deploymentControllerContext == null)
             {
                log.warn("DeploymentContext has no DeploymentControllerContext during undeploy request, ignoring: " + context);
@@ -374,7 +374,7 @@ public class DeployersImpl implements Deployers, ControllerContextActions
          for (DeploymentControllerContext deploymentControllerContext : toUndeploy)
          {
             DeploymentContext context = deploymentControllerContext.getDeploymentContext();
-            context.getTransientAttachments().removeAttachment(DeploymentControllerContext.class);
+            context.getTransientAttachments().removeAttachment(ControllerContext.class);
             try
             {
                controller.uninstall(deploymentControllerContext.getName());
@@ -404,7 +404,7 @@ public class DeployersImpl implements Deployers, ControllerContextActions
                controller.install(deploymentControllerContext);
                context.setState(DeploymentState.DEPLOYING);
                log.debug("Deploying " + context.getName());
-               context.getTransientAttachments().addAttachment(DeploymentControllerContext.class, deploymentControllerContext);
+               context.getTransientAttachments().addAttachment(ControllerContext.class, deploymentControllerContext);
             }
             catch (Throwable t)
             {
@@ -424,7 +424,7 @@ public class DeployersImpl implements Deployers, ControllerContextActions
             {
                if (DeploymentState.ERROR.equals(context.getState()) == false)
                {
-                  DeploymentControllerContext deploymentControllerContext = context.getTransientAttachments().getAttachment(DeploymentControllerContext.class);
+                  DeploymentControllerContext deploymentControllerContext = context.getTransientAttachments().getAttachment(ControllerContext.class.getName(), DeploymentControllerContext.class);
                   try
                   {
                      controller.change(deploymentControllerContext, state);
