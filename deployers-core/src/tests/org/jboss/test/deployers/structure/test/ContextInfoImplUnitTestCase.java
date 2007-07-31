@@ -182,13 +182,4 @@ public class ContextInfoImplUnitTestCase extends AbstractContextInfoTest
       assertEquals("key1 attachment", "testPredeterminedManagedObjectAttachments", a1);
    }
 
-   public void testTransientManagedObjects()
-   {
-      ContextInfoImpl context = createDefault();
-      assertEquals("", context.getPath());
-      MutableAttachments ma = context.getTransientManagedObjects();
-      ma.addAttachment("key1", "testTransientManagedObjects", String.class);
-      String a1 = context.getTransientManagedObjects().getAttachment("key1", String.class);
-      assertEquals("key1 attachment", "testTransientManagedObjects", a1);
-   }
 }
