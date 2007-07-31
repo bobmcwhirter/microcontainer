@@ -85,12 +85,14 @@ final class ValueUtil
          vmd = NullValueAnnotationPlugin.INSTANCE.createValueMetaData(nullValue);
       }
 
+      /* FIXME
       JavaBeanValue javabean = value.javabean();
       if (isAttributePresent(javabean.clazz()))
       {
          checkValueMetaData(vmd);
          vmd = JavaBeanValueAnnotationPlugin.INSTANCE.createValueMetaData(javabean);
       }
+      */
 
       if (vmd == null)
          throw new IllegalArgumentException("No value set on @Value annotation!");
@@ -129,12 +131,14 @@ final class ValueUtil
          vmd = NullValueAnnotationPlugin.INSTANCE.createValueMetaData(nullValue);
       }
 
+      /* FIXME
       JavaBeanValue javabean = parameter.javabean();
       if (isAttributePresent(javabean.clazz()))
       {
          checkValueMetaData(vmd);
          vmd = JavaBeanValueAnnotationPlugin.INSTANCE.createValueMetaData(javabean);
       }
+      */
 
       if (vmd == null)
          throw new IllegalArgumentException("No value set on @Value annotation!");

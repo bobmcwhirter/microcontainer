@@ -68,7 +68,7 @@ public class BasicBeanAnnotationAdapter implements BeanAnnotationAdapter
          ValueFactoryAnnotationPlugin.INSTANCE,
          ThisValueAnnotationPlugin.INSTANCE,
          NullValueAnnotationPlugin.INSTANCE,
-         JavaBeanValueAnnotationPlugin.INSTANCE,
+         // FIXME JavaBeanValueAnnotationPlugin.INSTANCE,
          CollectionValueAnnotationPlugin.INSTANCE,
          ListValueAnnotationPlugin.INSTANCE,
          SetValueAnnotationPlugin.INSTANCE,
@@ -100,7 +100,7 @@ public class BasicBeanAnnotationAdapter implements BeanAnnotationAdapter
       addAnnotationPlugin(ValueFactoryAnnotationPlugin.INSTANCE);
       addAnnotationPlugin(ThisValueAnnotationPlugin.INSTANCE);
       addAnnotationPlugin(NullValueAnnotationPlugin.INSTANCE);
-      addAnnotationPlugin(JavaBeanValueAnnotationPlugin.INSTANCE);
+      // FIXME addAnnotationPlugin(JavaBeanValueAnnotationPlugin.INSTANCE);
       addAnnotationPlugin(CollectionValueAnnotationPlugin.INSTANCE);
       addAnnotationPlugin(ListValueAnnotationPlugin.INSTANCE);
       addAnnotationPlugin(SetValueAnnotationPlugin.INSTANCE);
