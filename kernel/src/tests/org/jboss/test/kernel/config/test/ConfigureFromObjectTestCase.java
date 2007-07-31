@@ -74,21 +74,37 @@ public class ConfigureFromObjectTestCase extends AbstractKernelConfigTest
       BigInteger bigIntegerValue = new BigInteger("123456");
       Alphabet enumValue = Alphabet.Z;
 
-      SimpleBean bean = createSimpleBean(
-            stringValue,
-            byteValue,
-            booleanValue,
-            characterValue,
-            shortValue,
-            integerValue,
-            longValue,
-            floatValue,
-            doubleValue,
-            dateValue,
-            bigDecimalValue,
-            bigIntegerValue,
-            enumValue
-      );
+      HashSet<PropertyMetaData> attributes = new HashSet<PropertyMetaData>();
+      attributes.add(new AbstractPropertyMetaData("AString", stringValue));
+      attributes.add(new AbstractPropertyMetaData("AByte", byteValue));
+      attributes.add(new AbstractPropertyMetaData("ABoolean", booleanValue));
+      attributes.add(new AbstractPropertyMetaData("ACharacter", characterValue));
+      attributes.add(new AbstractPropertyMetaData("AShort", shortValue));
+      attributes.add(new AbstractPropertyMetaData("anInt", integerValue));
+      attributes.add(new AbstractPropertyMetaData("ALong", longValue));
+      attributes.add(new AbstractPropertyMetaData("AFloat", floatValue));
+      attributes.add(new AbstractPropertyMetaData("ADouble", doubleValue));
+      attributes.add(new AbstractPropertyMetaData("ADate", dateValue));
+      attributes.add(new AbstractPropertyMetaData("ABigDecimal", bigDecimalValue));
+      attributes.add(new AbstractPropertyMetaData("ABigInteger", bigIntegerValue));
+      attributes.add(new AbstractPropertyMetaData("abyte", byteValue));
+      attributes.add(new AbstractPropertyMetaData("aboolean", booleanValue));
+      attributes.add(new AbstractPropertyMetaData("achar", characterValue));
+      attributes.add(new AbstractPropertyMetaData("ashort", shortValue));
+      attributes.add(new AbstractPropertyMetaData("anint", integerValue));
+      attributes.add(new AbstractPropertyMetaData("along", longValue));
+      attributes.add(new AbstractPropertyMetaData("afloat", floatValue));
+      attributes.add(new AbstractPropertyMetaData("adouble", doubleValue));
+      attributes.add(new AbstractPropertyMetaData("ANumber", longValue));
+      attributes.add(new AbstractPropertyMetaData("overloadedProperty", stringValue));
+      attributes.add(new AbstractPropertyMetaData("enumProperty", enumValue));
+
+      AbstractBeanMetaData metaData = new AbstractBeanMetaData(SimpleBean.class.getName());
+      metaData.setProperties(attributes);
+
+      Kernel kernel = bootstrap();
+      KernelConfigurator configurator = kernel.getConfigurator();
+      SimpleBean bean = (SimpleBean)instantiateAndConfigure(configurator, metaData);
 
       assertEquals(stringValue, bean.getAString());
       assertEquals(byteValue, bean.getAByte());
@@ -120,53 +136,4 @@ public class ConfigureFromObjectTestCase extends AbstractKernelConfigTest
       assertEquals(enumValue, anenum);
    }
 
-   protected SimpleBean createSimpleBean(
-         String stringValue,
-         Byte byteValue,
-         Boolean booleanValue,
-         Character characterValue,
-         Short shortValue,
-         Integer integerValue,
-         Long longValue,
-         Float floatValue,
-         Double doubleValue,
-         Date dateValue,
-         BigDecimal bigDecimalValue,
-         BigInteger bigIntegerValue,
-         Alphabet enumValue
-   )
-         throws Throwable
-   {
-      HashSet<PropertyMetaData> attributes = new HashSet<PropertyMetaData>();
-      attributes.add(new AbstractPropertyMetaData("AString", stringValue));
-      attributes.add(new AbstractPropertyMetaData("AByte", byteValue));
-      attributes.add(new AbstractPropertyMetaData("ABoolean", booleanValue));
-      attributes.add(new AbstractPropertyMetaData("ACharacter", characterValue));
-      attributes.add(new AbstractPropertyMetaData("AShort", shortValue));
-      attributes.add(new AbstractPropertyMetaData("anInt", integerValue));
-      attributes.add(new AbstractPropertyMetaData("ALong", longValue));
-      attributes.add(new AbstractPropertyMetaData("AFloat", floatValue));
-      attributes.add(new AbstractPropertyMetaData("ADouble", doubleValue));
-      attributes.add(new AbstractPropertyMetaData("ADate", dateValue));
-      attributes.add(new AbstractPropertyMetaData("ABigDecimal", bigDecimalValue));
-      attributes.add(new AbstractPropertyMetaData("ABigInteger", bigIntegerValue));
-      attributes.add(new AbstractPropertyMetaData("abyte", byteValue));
-      attributes.add(new AbstractPropertyMetaData("aboolean", booleanValue));
-      attributes.add(new AbstractPropertyMetaData("achar", characterValue));
-      attributes.add(new AbstractPropertyMetaData("ashort", shortValue));
-      attributes.add(new AbstractPropertyMetaData("anint", integerValue));
-      attributes.add(new AbstractPropertyMetaData("along", longValue));
-      attributes.add(new AbstractPropertyMetaData("afloat", floatValue));
-      attributes.add(new AbstractPropertyMetaData("adouble", doubleValue));
-      attributes.add(new AbstractPropertyMetaData("ANumber", longValue));
-      attributes.add(new AbstractPropertyMetaData("overloadedProperty", stringValue));
-      attributes.add(new AbstractPropertyMetaData("enumProperty", enumValue));
-
-      AbstractBeanMetaData metaData = new AbstractBeanMetaData(SimpleBean.class.getName());
-      metaData.setProperties(attributes);
-
-      Kernel kernel = bootstrap();
-      KernelConfigurator configurator = kernel.getConfigurator();
-      return (SimpleBean) instantiateAndConfigure(configurator, metaData);
-   }
 }
