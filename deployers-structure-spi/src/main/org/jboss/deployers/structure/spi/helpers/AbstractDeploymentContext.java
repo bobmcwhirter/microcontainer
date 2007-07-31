@@ -24,12 +24,18 @@ package org.jboss.deployers.structure.spi.helpers;
 import java.io.IOException;
 import java.io.ObjectInput;
 import java.io.ObjectOutput;
+import java.util.ArrayList;
 import java.util.Collections;
+import java.util.Comparator;
 import java.util.List;
 import java.util.Set;
+import java.util.SortedSet;
+import java.util.TreeSet;
 import java.util.concurrent.CopyOnWriteArrayList;
 import java.util.concurrent.CopyOnWriteArraySet;
 
+import org.jboss.dependency.spi.ControllerContext;
+import org.jboss.dependency.spi.DependencyInfo;
 import org.jboss.deployers.client.spi.Deployment;
 import org.jboss.deployers.spi.DeploymentException;
 import org.jboss.deployers.spi.DeploymentState;
@@ -96,11 +102,17 @@ public class AbstractDeploymentContext extends ManagedObjectsWithTransientAttach
    private Set<String> deploymentTypes = new CopyOnWriteArraySet<String>();
 
    /** The child contexts */
-   private List<DeploymentContext> children = new CopyOnWriteArrayList<DeploymentContext>();
+   private SortedSet<DeploymentContext> children;
 
    /** The component contexts */
    private List<DeploymentContext> components = new CopyOnWriteArrayList<DeploymentContext>();
 
+   /** The relative order */
+   private int relativeOrder;
+
+   /** The context comparator */
+   private Comparator<DeploymentContext> comparator = DefaultDeploymentContextComparator.INSTANCE;
+   
    /**
     * For serialization
     */
@@ -154,6 +166,28 @@ public class AbstractDeploymentContext extends ManagedObjectsWithTransientAttach
    public String getRelativePath()
    {
       return relativePath;
+   }
+
+   public int getRelativeOrder()
+   {
+      return relativeOrder;
+   }
+
+   public void setRelativeOrder(int relativeOrder)
+   {
+      this.relativeOrder = relativeOrder;
+   }
+
+   public Comparator<DeploymentContext> getComparator()
+   {
+      return comparator;
+   }
+
+   public void setComparator(Comparator<DeploymentContext> comparator)
+   {
+      if (comparator == null)
+         comparator = DefaultDeploymentContextComparator.INSTANCE;
+      this.comparator = comparator;
    }
 
    public Set<String> getTypes()
@@ -281,13 +315,18 @@ public class AbstractDeploymentContext extends ManagedObjectsWithTransientAttach
 
    public List<DeploymentContext> getChildren()
    {
-      return Collections.unmodifiableList(children);
+      if (children == null || children.isEmpty())
+         return Collections.emptyList();
+      
+      return new ArrayList<DeploymentContext>(children);
    }
 
    public void addChild(DeploymentContext child)
    {
       if (child == null)
          throw new IllegalArgumentException("Null child");
+      if (children == null)
+         children = new TreeSet<DeploymentContext>(comparator);
       children.add(child);
    }
 
@@ -295,6 +334,8 @@ public class AbstractDeploymentContext extends ManagedObjectsWithTransientAttach
    {
       if (child == null)
          throw new IllegalArgumentException("Null child");
+      if (children == null)
+         return false;
       return children.remove(child);
    }
 
@@ -344,6 +385,20 @@ public class AbstractDeploymentContext extends ManagedObjectsWithTransientAttach
    public DeploymentResourceLoader getResourceLoader()
    {
       return EmptyResourceLoader.INSTANCE;
+   }
+
+   public DependencyInfo getDependencyInfo()
+   {
+      ControllerContext controllerContext = getTransientAttachments().getAttachment(ControllerContext.class);
+      if (controllerContext != null)
+         return controllerContext.getDependencyInfo();
+      else
+      {
+         DeploymentContext parent = getParent();
+         if (parent == null)
+            throw new IllegalStateException("Deployment ControllerContext has not been set");
+         return parent.getDependencyInfo();
+      }
    }
 
    public void visit(DeploymentContextVisitor visitor) throws DeploymentException
@@ -487,7 +542,7 @@ public class AbstractDeploymentContext extends ManagedObjectsWithTransientAttach
       deployed = in.readBoolean();
       parent = (DeploymentContext) in.readObject();
       deploymentTypes = (Set) in.readObject();
-      children = (List) in.readObject();
+      children = (SortedSet) in.readObject();
       components = (List) in.readObject();
    }
 

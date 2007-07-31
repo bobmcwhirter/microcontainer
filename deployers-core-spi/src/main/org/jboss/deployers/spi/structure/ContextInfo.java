@@ -66,4 +66,40 @@ public interface ContextInfo extends PredeterminedManagedObjectAttachments, Seri
     * @throws IllegalArgumentException for a null entry
     */
    void addClassPathEntry(ClassPathEntry entry);
+
+   /**
+    * Get the relative order of this context
+    * 
+    * @return the relative order
+    */
+   int getRelativeOrder();
+
+   /**
+    * Set the relative order of this context
+    * 
+    * @param relativeOrder the relative order
+    */
+   void setRelativeOrder(int relativeOrder);
+   
+   /**
+    * The comparator class name, the class must implement
+    * <pre>
+    * java.util.Comparator<DeploymentContext>
+    * </pre>
+    * 
+    * If the class has a public static field called "INSTANCE"
+    * then that will be used rather than creating a new object.<p>
+    * 
+    * If none is given then the deployments are ordered
+    * by their relative order and then path/simple name.
+    * 
+    * @return the comparator class name
+    */
+   String getComparatorClassName();
+   
+   /**
+    * The comparator class name, the class must implement
+    * @param className the comparator class name
+    */
+   void setComparatorClassName(String className);
 }

@@ -21,9 +21,11 @@
 */
 package org.jboss.deployers.structure.spi;
 
+import java.util.Comparator;
 import java.util.List;
 import java.util.Set;
 
+import org.jboss.dependency.spi.DependencyInfo;
 import org.jboss.deployers.client.spi.Deployment;
 import org.jboss.deployers.spi.DeploymentException;
 import org.jboss.deployers.spi.DeploymentState;
@@ -70,6 +72,34 @@ public interface DeploymentContext extends ManagedObjectsWithTransientAttachment
     * @return the top-level deployment relative path
     */
    String getRelativePath();
+
+   /**
+    * Get the relative order
+    * 
+    * @return the relative order
+    */
+   int getRelativeOrder();
+   
+   /**
+    * Set the relative order
+    * 
+    * @param relativeOrder the relativeOrder
+    */
+   void setRelativeOrder(int relativeOrder);
+
+   /**
+    * Get the comparator.
+    * 
+    * @return the comparator.
+    */
+   Comparator<DeploymentContext> getComparator();
+
+   /**
+    * Set the comparator.
+    * 
+    * @param comparator the comparator.
+    */
+   void setComparator(Comparator<DeploymentContext> comparator);
 
    /**
     * Get the deployment types associated with this deployment.
@@ -241,6 +271,13 @@ public interface DeploymentContext extends ManagedObjectsWithTransientAttachment
     * @return the resource classloader loader
     */
    ClassLoader getResourceClassLoader();
+   
+   /**
+    * Get the dependency info
+    * 
+    * @return the dependency
+    */
+   DependencyInfo getDependencyInfo();
 
    /**
     * Visit the context and the children

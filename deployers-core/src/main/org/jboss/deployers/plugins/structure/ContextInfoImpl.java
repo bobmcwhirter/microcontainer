@@ -54,10 +54,10 @@ public class ContextInfoImpl extends PredeterminedManagedObjectAttachmentsImpl
    /** The class path entries */
    private List<ClassPathEntry> classPath = ClassPathEntryImpl.DEFAULT;
 
-   public String getPath()
-   {
-      return path;
-   }
+   private int relativeOrder = 0;
+   
+   /** The comparator class name */
+   private String comparatorClassName;
 
    /**
     * Create a new ContextInfoImpl.
@@ -104,6 +104,11 @@ public class ContextInfoImpl extends PredeterminedManagedObjectAttachmentsImpl
       setPath(path);
       setMetaDataPath(metaDataPath);
       setClassPath(classPath);
+   }
+   
+   public String getPath()
+   {
+      return path;
    }
 
    /**
@@ -166,6 +171,26 @@ public class ContextInfoImpl extends PredeterminedManagedObjectAttachmentsImpl
       classPath.add(entry);
    }
 
+   public String getComparatorClassName()
+   {
+      return comparatorClassName;
+   }
+
+   public void setComparatorClassName(String className)
+   {
+      this.comparatorClassName = className;
+   }
+
+   public int getRelativeOrder()
+   {
+      return relativeOrder;
+   }
+
+   public void setRelativeOrder(int relativeOrder)
+   {
+      this.relativeOrder = relativeOrder;
+   }
+
    @Override
    public String toString()
    {
@@ -187,6 +212,10 @@ public class ContextInfoImpl extends PredeterminedManagedObjectAttachmentsImpl
       builder.append("path=").append(getPath());
       builder.append(" metaData=").append(getMetaDataPath());
       builder.append(" classPath=").append(getClassPath());
+      if (relativeOrder != 0)
+         builder.append(" relativeOrder=").append(getRelativeOrder());
+      if (comparatorClassName != null)
+         builder.append(" comparator=").append(getComparatorClassName());
    }
    
    @Override
@@ -230,6 +259,10 @@ public class ContextInfoImpl extends PredeterminedManagedObjectAttachmentsImpl
       if (isNullMetaDataPath == false)
          setMetaDataPath(in.readUTF());
       setClassPath((List) in.readObject());
+      setRelativeOrder(in.readInt());
+      boolean isNullComparator = in.readBoolean();
+      if (isNullComparator == false)
+         setComparatorClassName(in.readUTF());
    }
 
    /**
@@ -249,5 +282,11 @@ public class ContextInfoImpl extends PredeterminedManagedObjectAttachmentsImpl
       if (isNullMetaDataPath == false)
          out.writeUTF(metaDataPath);
       out.writeObject(getClassPath());
+      out.writeInt(getRelativeOrder());
+      String comparator = getComparatorClassName();
+      boolean isNullComparator = (comparator == null);
+      out.writeBoolean(isNullComparator);
+      if (isNullComparator == false)
+         out.writeUTF(comparator);
    }
 }

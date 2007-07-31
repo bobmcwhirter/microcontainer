@@ -147,4 +147,10 @@ public class DeploymentStage
    {
       return before;
    }
+   
+   @Override
+   public String toString()
+   {
+      return getName();
+   }
 }

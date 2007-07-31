@@ -32,6 +32,8 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
+import org.jboss.dependency.spi.DependencyInfo;
+import org.jboss.dependency.spi.DependencyItem;
 import org.jboss.deployers.spi.DeploymentException;
 import org.jboss.deployers.spi.attachments.MutableAttachments;
 import org.jboss.deployers.spi.attachments.helpers.AbstractMutableAttachments;
@@ -346,6 +348,21 @@ public class AbstractDeploymentUnit extends AbstractMutableAttachments implement
    public DeploymentResourceLoader getResourceLoader()
    {
       return deploymentContext.getResourceLoader();
+   }
+
+   public void addIDependOn(DependencyItem dependency)
+   {
+      getDependencyInfo().addIDependOn(dependency);
+   }
+
+   public DependencyInfo getDependencyInfo()
+   {
+      return deploymentContext.getDependencyInfo();
+   }
+
+   public void removeIDependOn(DependencyItem dependency)
+   {
+      getDependencyInfo().removeIDependOn(dependency);
    }
 
    /**

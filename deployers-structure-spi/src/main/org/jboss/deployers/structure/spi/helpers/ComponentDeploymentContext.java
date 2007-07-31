@@ -22,10 +22,12 @@
 package org.jboss.deployers.structure.spi.helpers;
 
 import java.util.Collections;
+import java.util.Comparator;
 import java.util.List;
 import java.util.Set;
 import java.util.concurrent.CopyOnWriteArrayList;
 
+import org.jboss.dependency.spi.DependencyInfo;
 import org.jboss.deployers.client.spi.Deployment;
 import org.jboss.deployers.spi.DeploymentException;
 import org.jboss.deployers.spi.DeploymentState;
@@ -71,7 +73,7 @@ public class ComponentDeploymentContext implements DeploymentContext
    
    /** The managed objects */
    private transient MutableAttachments transientManagedObjects = AttachmentsFactory.createMutableAttachments();
-
+   
    /**
     * For serialization
     */
@@ -109,6 +111,26 @@ public class ComponentDeploymentContext implements DeploymentContext
    public String getRelativePath()
    {
       return parent.getRelativePath();
+   }
+
+   public int getRelativeOrder()
+   {
+      return 0;
+   }
+
+   public void setRelativeOrder(int relativeOrder)
+   {
+      // No relative ordering of components?
+   }
+
+   public Comparator<DeploymentContext> getComparator()
+   {
+      return null;
+   }
+
+   public void setComparator(Comparator<DeploymentContext> comparator)
+   {
+      // No relative ordering of components?
    }
 
    public Set<String> getTypes()
@@ -239,6 +261,11 @@ public class ComponentDeploymentContext implements DeploymentContext
    public DeploymentResourceLoader getResourceLoader()
    {
       return parent.getResourceLoader();
+   }
+
+   public DependencyInfo getDependencyInfo()
+   {
+      return parent.getDependencyInfo();
    }
 
    public void visit(DeploymentContextVisitor visitor) throws DeploymentException

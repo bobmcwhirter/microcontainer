@@ -24,6 +24,8 @@ package org.jboss.deployers.structure.spi;
 import java.util.List;
 import java.util.Set;
 
+import org.jboss.dependency.spi.DependencyInfo;
+import org.jboss.dependency.spi.DependencyItem;
 import org.jboss.deployers.spi.DeploymentException;
 import org.jboss.deployers.spi.attachments.MutableAttachments;
 
@@ -174,4 +176,25 @@ public interface DeploymentUnit extends MutableAttachments
     * @return the resource classloader loader
     */
    ClassLoader getResourceClassLoader();
+   
+   /**
+    * Get the dependency info
+    * 
+    * @return the dependency
+    */
+   DependencyInfo getDependencyInfo();
+
+   /**
+    * Add a dependency
+    * 
+    * @param dependency the dependency to add
+    */
+   void addIDependOn(DependencyItem dependency);
+
+   /**
+    * Remove a dependency
+    * 
+    * @param dependency the dependency to remove
+    */
+   void removeIDependOn(DependencyItem dependency);
 }

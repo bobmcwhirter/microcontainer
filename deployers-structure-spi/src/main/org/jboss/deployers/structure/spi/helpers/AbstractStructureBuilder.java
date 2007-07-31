@@ -21,14 +21,14 @@
  */
 package org.jboss.deployers.structure.spi.helpers;
 
+import java.lang.reflect.Field;
+import java.util.Comparator;
 import java.util.List;
-import java.util.Map.Entry;
 
 import org.jboss.deployers.client.spi.Deployment;
 import org.jboss.deployers.spi.DeploymentException;
 import org.jboss.deployers.spi.DeploymentState;
 import org.jboss.deployers.spi.attachments.Attachments;
-import org.jboss.deployers.spi.attachments.MutableAttachments;
 import org.jboss.deployers.spi.structure.ContextInfo;
 import org.jboss.deployers.spi.structure.StructureMetaData;
 import org.jboss.deployers.spi.structure.StructureMetaDataFactory;
@@ -148,7 +148,7 @@ public class AbstractStructureBuilder implements StructureBuilder
 
    /**
     * Apply the context info. This transfers the PredeterminedManagedObjects
-    * and TransientManagedObjects from the ContextInfo the DeploymentContext.
+    * and TransientManagedObjects and other information from the ContextInfo to the DeploymentContext.
     * 
     * @param context the context
     * @param contextInfo the contextInfo
@@ -159,6 +159,43 @@ public class AbstractStructureBuilder implements StructureBuilder
       Attachments attachments = contextInfo.getPredeterminedManagedObjects();
       if (attachments != null)
          context.setPredeterminedManagedObjects(attachments);
+
+      context.setRelativeOrder(contextInfo.getRelativeOrder());
+      applyComparator(context, contextInfo);
+   }
+
+   /**
+    * Try to apply the comparator
+    * 
+    * @param context the context
+    * @param contextInfo the contextInfo
+    * @throws Exception for any error
+    */
+   @SuppressWarnings("unchecked")
+   protected void applyComparator(DeploymentContext context, ContextInfo contextInfo) throws Exception
+   {
+      String className = contextInfo.getComparatorClassName();
+      Object o = null;
+      try
+      {
+         Class clazz = Thread.currentThread().getContextClassLoader().loadClass(className);
+         try
+         {
+            Field field = clazz.getField("INSTANCE");
+            o = field.get(null);
+         }
+         catch (NoSuchFieldException ignored)
+         {
+         }
+         if (o == null)
+            o = clazz.newInstance();
+         Comparator comparator = Comparator.class.cast(o);
+         context.setComparator(comparator);
+      }
+      catch (Throwable t)
+      {
+         log.warn("Unable to load/set comparator: " + className);
+      }
    }
 
    /**

@@ -35,4 +35,5 @@
   <classpathentry kind="var" path="M2_REPO/apache-xerces/xml-apis/2.7.1/xml-apis-2.7.1.jar"/>
   <classpathentry kind="var" path="M2_REPO/ant/ant/1.6.5/ant-1.6.5.jar" sourcepath="M2_REPO/ant/ant/1.6.5/ant-1.6.5-sources.jar"/>
   <classpathentry kind="src" path="/jboss-deployers-core-spi"/>
+  <classpathentry kind="src" path="/jboss-dependency"/>
 </classpath>
