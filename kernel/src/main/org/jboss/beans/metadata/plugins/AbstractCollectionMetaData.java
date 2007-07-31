@@ -205,9 +205,7 @@ public class AbstractCollectionMetaData extends AbstractTypeMetaData
       if (info instanceof ClassInfo)
       {
          ClassInfo classInfo = (ClassInfo)info;
-         TypeInfo[] types = classInfo.getActualTypeArguments();
-         if (types != null)
-            return types[0];
+         return classInfo.getComponentType();
       }
 
       return null;
