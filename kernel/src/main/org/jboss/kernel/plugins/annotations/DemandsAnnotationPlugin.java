@@ -25,6 +25,7 @@ import java.util.Set;
 import java.util.HashSet;
 
 import org.jboss.beans.metadata.plugins.annotations.Demands;
+import org.jboss.beans.metadata.plugins.annotations.Demand;
 import org.jboss.beans.metadata.plugins.AbstractDemandMetaData;
 import org.jboss.beans.metadata.plugins.AbstractBeanMetaData;
 import org.jboss.beans.metadata.spi.DemandMetaData;
@@ -32,6 +33,7 @@ import org.jboss.beans.metadata.spi.BeanMetaData;
 import org.jboss.beans.metadata.spi.MetaDataVisitor;
 import org.jboss.reflect.spi.ClassInfo;
 import org.jboss.kernel.spi.dependency.KernelControllerContext;
+import org.jboss.dependency.spi.ControllerState;
 
 /**
  * @author <a href="mailto:ales.justin@jboss.com">Ales Justin</a>
@@ -53,9 +55,10 @@ public class DemandsAnnotationPlugin extends ClassAnnotationPlugin<Demands>
          ((AbstractBeanMetaData)beanMetaData).setDemands(demands);
       }
       MetaDataVisitor visitor = getMetaDataVisitor(context);
-      for(String demand : annotation.value())
+      for(Demand demand : annotation.value())
       {
-         AbstractDemandMetaData admd = new AbstractDemandMetaData(demand);
+         AbstractDemandMetaData admd = new AbstractDemandMetaData(demand.value());
+         admd.setWhenRequired(new ControllerState(demand.whenRequired()));
          demands.add(admd);
          admd.initialVisit(visitor);
          admd.describeVisit(visitor);

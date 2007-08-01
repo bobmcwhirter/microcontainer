@@ -51,8 +51,6 @@ public class InstallMethodParameterAnnotationPlugin extends InstallationParamete
    {
       AbstractInstallMetaData install = new AbstractInstallMetaData();
       install.setMethodName(info.getName());
-      if (isAttributePresent(annotation.bean()))
-         install.setBean(annotation.bean());
       if (isAttributePresent(annotation.dependantState()))
          install.setDependentState(new ControllerState(annotation.dependantState()));
       return install;

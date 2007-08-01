@@ -79,18 +79,7 @@ public class GenericBeanFactoryPlainDependencyTestCase extends OldAbstractKernel
 
    public void genericBeanFactoryDependencyCorrectOrder()
    {
-      AbstractBeanMetaData metaData1 = new AbstractBeanMetaData("simple", SimpleBeanImpl.class.getName());
-      HashSet<PropertyMetaData> attributes1 = new HashSet<PropertyMetaData>();
-      attributes1.add(new AbstractPropertyMetaData("string", "String1"));
-      metaData1.setProperties(attributes1);
-
-      GenericBeanFactoryMetaData metaData2 = new GenericBeanFactoryMetaData("aspect");
-      metaData2.addProperty(new AbstractPropertyMetaData("bean", SimpleBeanWithDependencyImpl.class.getName()));
-      metaData2.addProperty(new AbstractPropertyMetaData("constructor", new AbstractConstructorMetaData()));
-      metaData2.addBeanProperty(new AbstractPropertyMetaData("simpleBean", new AbstractDependencyValueMetaData("simple")));
-      metaData2.addBeanProperty(new AbstractPropertyMetaData("string", new AbstractValueMetaData("factory")));
-      
-      setBeanMetaDatas(new BeanMetaData[] { metaData1, metaData2 });
+      buildMetaData();
    }
 
    public void testGenericBeanFactoryDependencyWrongOrder() throws Throwable
@@ -109,18 +98,7 @@ public class GenericBeanFactoryPlainDependencyTestCase extends OldAbstractKernel
 
    public void genericBeanFactoryDependencyWrongOrder()
    {
-      AbstractBeanMetaData metaData1 = new AbstractBeanMetaData("simple", SimpleBeanImpl.class.getName());
-      HashSet<PropertyMetaData> attributes1 = new HashSet<PropertyMetaData>();
-      attributes1.add(new AbstractPropertyMetaData("string", "String1"));
-      metaData1.setProperties(attributes1);
-
-      GenericBeanFactoryMetaData metaData2 = new GenericBeanFactoryMetaData("aspect");
-      metaData2.addProperty(new AbstractPropertyMetaData("bean", SimpleBeanWithDependencyImpl.class.getName()));
-      metaData2.addProperty(new AbstractPropertyMetaData("constructor", new AbstractConstructorMetaData()));
-      metaData2.addBeanProperty(new AbstractPropertyMetaData("simpleBean", new AbstractDependencyValueMetaData("simple")));
-      metaData2.addBeanProperty(new AbstractPropertyMetaData("string", new AbstractValueMetaData("factory")));
-      
-      setBeanMetaDatas(new BeanMetaData[] { metaData1, metaData2 });
+      buildMetaData();
    }
 
    public void testGenericBeanFactoryDependencyReinstall() throws Throwable
@@ -161,6 +139,11 @@ public class GenericBeanFactoryPlainDependencyTestCase extends OldAbstractKernel
 
    public void genericBeanFactoryDependencyReinstall()
    {
+      buildMetaData();
+   }
+
+   protected void buildMetaData()
+   {
       AbstractBeanMetaData metaData1 = new AbstractBeanMetaData("simple", SimpleBeanImpl.class.getName());
       HashSet<PropertyMetaData> attributes1 = new HashSet<PropertyMetaData>();
       attributes1.add(new AbstractPropertyMetaData("string", "String1"));
@@ -171,7 +154,7 @@ public class GenericBeanFactoryPlainDependencyTestCase extends OldAbstractKernel
       metaData2.addProperty(new AbstractPropertyMetaData("constructor", new AbstractConstructorMetaData()));
       metaData2.addBeanProperty(new AbstractPropertyMetaData("simpleBean", new AbstractDependencyValueMetaData("simple")));
       metaData2.addBeanProperty(new AbstractPropertyMetaData("string", new AbstractValueMetaData("factory")));
-      
+
       setBeanMetaDatas(new BeanMetaData[] { metaData1, metaData2 });
    }
 }

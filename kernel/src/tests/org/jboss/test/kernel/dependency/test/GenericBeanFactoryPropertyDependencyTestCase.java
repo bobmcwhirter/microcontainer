@@ -76,13 +76,7 @@ public class GenericBeanFactoryPropertyDependencyTestCase extends OldAbstractKer
 
    public void propertyDependencyCorrectOrder() throws Throwable
    {
-      AbstractBeanMetaData metaData1 = new AbstractBeanMetaData("Name1", SimpleBeanImpl.class.getName());
-      metaData1.addProperty(new AbstractPropertyMetaData("string", "String1"));
-      
-      GenericBeanFactoryMetaData metaData2 = new GenericBeanFactoryMetaData("Name2", SimpleBeanImpl.class.getName());
-      metaData2.addBeanProperty(new AbstractPropertyMetaData("string", new AbstractDependencyValueMetaData("Name1", "string")));
-      
-      setBeanMetaDatas(new BeanMetaData[] { metaData1, metaData2 });
+      buildMetaData();
    }
 
    public void testGenericBeanFactoryPropertyDependencyWrongOrder() throws Throwable
@@ -105,13 +99,7 @@ public class GenericBeanFactoryPropertyDependencyTestCase extends OldAbstractKer
 
    public void propertyDependencyWrongOrder() throws Throwable
    {
-      AbstractBeanMetaData metaData1 = new AbstractBeanMetaData("Name1", SimpleBeanImpl.class.getName());
-      metaData1.addProperty(new AbstractPropertyMetaData("string", "String1"));
-      
-      GenericBeanFactoryMetaData metaData2 = new GenericBeanFactoryMetaData("Name2", SimpleBeanImpl.class.getName());
-      metaData2.addBeanProperty(new AbstractPropertyMetaData("string", new AbstractDependencyValueMetaData("Name1", "string")));
-      
-      setBeanMetaDatas(new BeanMetaData[] { metaData1, metaData2 });
+      buildMetaData();
    }
 
    public void testGenericBeanFactoryPropertyDependencyReinstall() throws Throwable
@@ -171,12 +159,17 @@ public class GenericBeanFactoryPropertyDependencyTestCase extends OldAbstractKer
 
    public void propertyDependencyReinstall() throws Throwable
    {
+      buildMetaData();
+   }
+
+   protected void buildMetaData()
+   {
       AbstractBeanMetaData metaData1 = new AbstractBeanMetaData("Name1", SimpleBeanImpl.class.getName());
       metaData1.addProperty(new AbstractPropertyMetaData("string", "String1"));
-      
+
       GenericBeanFactoryMetaData metaData2 = new GenericBeanFactoryMetaData("Name2", SimpleBeanImpl.class.getName());
       metaData2.addBeanProperty(new AbstractPropertyMetaData("string", new AbstractDependencyValueMetaData("Name1", "string")));
-      
+
       setBeanMetaDatas(new BeanMetaData[] { metaData1, metaData2 });
    }
 }

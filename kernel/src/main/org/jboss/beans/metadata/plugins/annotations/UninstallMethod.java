@@ -33,7 +33,5 @@ import java.lang.annotation.ElementType;
 @Target({ElementType.METHOD})
 public @interface UninstallMethod
 {
-   String bean() default "";
-
    String dependantState() default "";
 }

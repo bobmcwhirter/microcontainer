@@ -88,5 +88,9 @@ public class NamingBeanTestCase extends AbstractDeploymentTest
       NameAwareBean other = (NameAwareBean)getBean("other");
       assertNotNull(other);
       assertEquals("set_name_bean", other.getName());
+
+      NameAwareBean context = (NameAwareBean)getBean("context");
+      assertNotNull(context);
+      assertNotNull(context.getContext());
    }
 }

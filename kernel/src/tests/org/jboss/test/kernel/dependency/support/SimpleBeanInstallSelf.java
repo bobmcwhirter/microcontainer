@@ -29,7 +29,7 @@ package org.jboss.test.kernel.dependency.support;
  */
 public class SimpleBeanInstallSelf
 {
-   private boolean installed = false;
+   protected boolean installed = false;
    
    public boolean getInstalled()
    {

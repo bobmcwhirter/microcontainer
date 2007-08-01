@@ -78,30 +78,14 @@ public class DemandDependencyTestCase extends OldAbstractKernelDependencyTest
 
    public void demandDependencyCorrectOrder() throws Throwable
    {
-      AbstractBeanMetaData metaData1 = new AbstractBeanMetaData("Name1", SimpleBeanImpl.class.getName());
-      HashSet<PropertyMetaData> attributes1 = new HashSet<PropertyMetaData>();
-      attributes1.add(new AbstractPropertyMetaData("string", "String1"));
-      metaData1.setProperties(attributes1);
-      HashSet<SupplyMetaData> supplies = new HashSet<SupplyMetaData>();
-      supplies.add(new AbstractSupplyMetaData("WhatIWant"));
-      metaData1.setSupplies(supplies);
-      
-      AbstractBeanMetaData metaData2 = new AbstractBeanMetaData("Name2", SimpleBeanImpl.class.getName());
-      HashSet<PropertyMetaData> attributes2 = new HashSet<PropertyMetaData>();
-      attributes2.add(new AbstractPropertyMetaData("string", "String2"));
-      metaData2.setProperties(attributes2);
-      HashSet<DemandMetaData> demands = new HashSet<DemandMetaData>();
-      demands.add(new AbstractDemandMetaData("WhatIWant"));
-      metaData2.setDemands(demands);
-      
-      setBeanMetaDatas(new BeanMetaData[] { metaData1, metaData2 });
+      buildMetaData();
    }
 
    public void testDemandDependencyWrongOrder() throws Throwable
    {
       demandDependencyWrongOrder();
       
-      ControllerContext context2 = assertInstall(1, "Name2", ControllerState.PRE_INSTALL);
+      ControllerContext context2 = assertInstall(1, "Name2", getWhenRequiredState());
       ControllerContext context1 = assertInstall(0, "Name1");      
       assertEquals(ControllerState.INSTALLED, context2.getState());
       
@@ -116,23 +100,7 @@ public class DemandDependencyTestCase extends OldAbstractKernelDependencyTest
 
    public void demandDependencyWrongOrder() throws Throwable
    {
-      AbstractBeanMetaData metaData1 = new AbstractBeanMetaData("Name1", SimpleBeanImpl.class.getName());
-      HashSet<PropertyMetaData> attributes1 = new HashSet<PropertyMetaData>();
-      attributes1.add(new AbstractPropertyMetaData("string", "String1"));
-      metaData1.setProperties(attributes1);
-      HashSet<SupplyMetaData> supplies = new HashSet<SupplyMetaData>();
-      supplies.add(new AbstractSupplyMetaData("WhatIWant"));
-      metaData1.setSupplies(supplies);
-      
-      AbstractBeanMetaData metaData2 = new AbstractBeanMetaData("Name2", SimpleBeanImpl.class.getName());
-      HashSet<PropertyMetaData> attributes2 = new HashSet<PropertyMetaData>();
-      attributes2.add(new AbstractPropertyMetaData("string", "String2"));
-      metaData2.setProperties(attributes2);
-      HashSet<DemandMetaData> demands = new HashSet<DemandMetaData>();
-      demands.add(new AbstractDemandMetaData("WhatIWant"));
-      metaData2.setDemands(demands);
-      
-      setBeanMetaDatas(new BeanMetaData[] { metaData1, metaData2 });
+      buildMetaData();
    }
 
    public void testDemandDependencyReinstall() throws Throwable
@@ -152,10 +120,10 @@ public class DemandDependencyTestCase extends OldAbstractKernelDependencyTest
 
       assertUninstall("Name1");
       assertEquals(ControllerState.ERROR, context1.getState());
-      assertEquals(ControllerState.PRE_INSTALL, context2.getState());
+      assertEquals(getWhenRequiredState(), context2.getState());
 
       assertNotInstalled("Name2");
-      assertContext("Name2", ControllerState.PRE_INSTALL);
+      assertContext("Name2", getWhenRequiredState());
       
       context1 = assertInstall(0, "Name1");      
       assertNotNull(context1);
@@ -190,6 +158,16 @@ public class DemandDependencyTestCase extends OldAbstractKernelDependencyTest
 
    public void demandDependencyReinstall() throws Throwable
    {
+      buildMetaData();
+   }
+
+   protected ControllerState getWhenRequiredState()
+   {
+      return ControllerState.PRE_INSTALL;
+   }
+
+   protected void buildMetaData()
+   {
       AbstractBeanMetaData metaData1 = new AbstractBeanMetaData("Name1", SimpleBeanImpl.class.getName());
       HashSet<PropertyMetaData> attributes1 = new HashSet<PropertyMetaData>();
       attributes1.add(new AbstractPropertyMetaData("string", "String1"));
@@ -197,7 +175,7 @@ public class DemandDependencyTestCase extends OldAbstractKernelDependencyTest
       HashSet<SupplyMetaData> supplies = new HashSet<SupplyMetaData>();
       supplies.add(new AbstractSupplyMetaData("WhatIWant"));
       metaData1.setSupplies(supplies);
-      
+
       AbstractBeanMetaData metaData2 = new AbstractBeanMetaData("Name2", SimpleBeanImpl.class.getName());
       HashSet<PropertyMetaData> attributes2 = new HashSet<PropertyMetaData>();
       attributes2.add(new AbstractPropertyMetaData("string", "String2"));
@@ -205,7 +183,7 @@ public class DemandDependencyTestCase extends OldAbstractKernelDependencyTest
       HashSet<DemandMetaData> demands = new HashSet<DemandMetaData>();
       demands.add(new AbstractDemandMetaData("WhatIWant"));
       metaData2.setDemands(demands);
-      
+
       setBeanMetaDatas(new BeanMetaData[] { metaData1, metaData2 });
    }
 }

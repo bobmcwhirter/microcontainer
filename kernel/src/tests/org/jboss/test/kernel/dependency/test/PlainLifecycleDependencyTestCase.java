@@ -77,14 +77,7 @@ public class PlainLifecycleDependencyTestCase extends OldAbstractKernelDependenc
 
    public void plainLifecycleDependencyCorrectOrder() throws Throwable
    {
-      AbstractBeanMetaData metaData1 = new AbstractBeanMetaData("Name1", SimpleBeanWithLifecycle.class.getName());
-      
-      AbstractBeanMetaData metaData2 = new AbstractBeanMetaData("Name2", SimpleBeanWithLifecycle.class.getName());
-      HashSet<DependencyMetaData> depends = new HashSet<DependencyMetaData>();
-      depends.add(new AbstractDependencyMetaData("Name1"));
-      metaData2.setDepends(depends);
-
-      setBeanMetaDatas(new BeanMetaData[] { metaData1, metaData2 });
+      buildMetaData();
    }
 
    public void testPlainLifecycleDependencyWrongOrder() throws Throwable
@@ -109,14 +102,7 @@ public class PlainLifecycleDependencyTestCase extends OldAbstractKernelDependenc
 
    public void plainLifecycleDependencyWrongOrder() throws Throwable
    {
-      AbstractBeanMetaData metaData1 = new AbstractBeanMetaData("Name1", SimpleBeanWithLifecycle.class.getName());
-      
-      AbstractBeanMetaData metaData2 = new AbstractBeanMetaData("Name2", SimpleBeanWithLifecycle.class.getName());
-      HashSet<DependencyMetaData> depends = new HashSet<DependencyMetaData>();
-      depends.add(new AbstractDependencyMetaData("Name1"));
-      metaData2.setDepends(depends);
-
-      setBeanMetaDatas(new BeanMetaData[] { metaData1, metaData2 });
+      buildMetaData();
    }
 
    public void testPlainLifecycleDependencyReinstall() throws Throwable
@@ -178,8 +164,13 @@ public class PlainLifecycleDependencyTestCase extends OldAbstractKernelDependenc
 
    public void plainLifecycleDependencyReinstall() throws Throwable
    {
+      buildMetaData();
+   }
+
+   protected void buildMetaData()
+   {
       AbstractBeanMetaData metaData1 = new AbstractBeanMetaData("Name1", SimpleBeanWithLifecycle.class.getName());
-      
+
       AbstractBeanMetaData metaData2 = new AbstractBeanMetaData("Name2", SimpleBeanWithLifecycle.class.getName());
       HashSet<DependencyMetaData> depends = new HashSet<DependencyMetaData>();
       depends.add(new AbstractDependencyMetaData("Name1"));

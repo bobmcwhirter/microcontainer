@@ -44,6 +44,7 @@ public class DependencyTestSuite extends TestSuite
 
       suite.addTest(PlainDependencyTestCase.suite());
       suite.addTest(PlainDependencyXMLTestCase.suite());
+      suite.addTest(PlainDependencyAnnotationTestCase.suite());
       suite.addTest(GenericBeanFactoryPlainDependencyTestCase.suite());
       suite.addTest(GenericBeanFactoryPlainDependencyXMLTestCase.suite());
       suite.addTest(OnDemandDependencyTestCase.suite());
@@ -52,31 +53,38 @@ public class DependencyTestSuite extends TestSuite
       suite.addTest(GenericBeanFactoryOnDemandDependencyXMLTestCase.suite());
       suite.addTest(PropertyDependencyTestCase.suite());
       suite.addTest(PropertyDependencyXMLTestCase.suite());
+      suite.addTest(PropertyDependencyAnnotationTestCase.suite());
       suite.addTest(GenericBeanFactoryPropertyDependencyTestCase.suite());
       suite.addTest(GenericBeanFactoryPropertyDependencyXMLTestCase.suite());
       suite.addTest(ConstructorDependencyTestCase.suite());
       suite.addTest(ConstructorDependencyXMLTestCase.suite());
+      suite.addTest(ConstructorDependencyAnnotationTestCase.suite());
       suite.addTest(GenericBeanFactoryConstructorDependencyTestCase.suite());
       suite.addTest(GenericBeanFactoryConstructorDependencyXMLTestCase.suite());
       suite.addTest(DemandDependencyTestCase.suite());
       suite.addTest(DemandDependencyXMLTestCase.suite());
+      suite.addTest(DemandDependencyAnnotationTestCase.suite());
       suite.addTest(GenericBeanFactoryDemandDependencyTestCase.suite());
       suite.addTest(GenericBeanFactoryDemandDependencyXMLTestCase.suite());
       suite.addTest(PlainLifecycleDependencyTestCase.suite());
       suite.addTest(PlainLifecycleDependencyXMLTestCase.suite());
+      suite.addTest(PlainLifecycleDependencyAnnotationTestCase.suite());
       suite.addTest(GenericBeanFactoryPlainLifecycleDependencyTestCase.suite());
       suite.addTest(GenericBeanFactoryPlainLifecycleDependencyXMLTestCase.suite());
       suite.addTest(ComplicatedLifecycleDependencyTestCase.suite());
       suite.addTest(ComplicatedLifecycleDependencyXMLTestCase.suite());
+      suite.addTest(ComplicatedLifecycleDependencyAnnotationTestCase.suite());
       suite.addTest(KernelControllerContextAwareTestCase.suite());
       suite.addTest(KernelControllerContextAwareXMLTestCase.suite());
+      suite.addTest(KernelControllerContextAwareAnnotationTestCase.suite());
       suite.addTest(InstallDependencyTestCase.suite());
       suite.addTest(InstallDependencyXMLTestCase.suite());
+//      suite.addTest(InstallDependencyAnnotationTestCase.suite()); // TODO
       suite.addTest(GenericBeanFactoryInstallDependencyTestCase.suite());
       suite.addTest(GenericBeanFactoryInstallDependencyXMLTestCase.suite());
       suite.addTest(InstallSelfDependencyTestCase.suite());
       suite.addTest(InstallSelfDependencyXMLTestCase.suite());
-      
+      suite.addTest(InstallSelfDependencyAnnotationTestCase.suite());
       return suite;
    }
 }

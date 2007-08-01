@@ -80,19 +80,7 @@ public class GenericBeanFactoryDemandDependencyTestCase extends OldAbstractKerne
 
    public void demandDependencyCorrectOrder() throws Throwable
    {
-      GenericBeanFactoryMetaData metaData1 = new GenericBeanFactoryMetaData("Name1", SimpleBeanImpl.class.getName());
-      metaData1.addBeanProperty(new AbstractPropertyMetaData("string", "String1"));
-      HashSet<SupplyMetaData> supplies = new HashSet<SupplyMetaData>();
-      supplies.add(new AbstractSupplyMetaData("WhatIWant"));
-      metaData1.setSupplies(supplies);
-      
-      GenericBeanFactoryMetaData metaData2 = new GenericBeanFactoryMetaData("Name2", SimpleBeanImpl.class.getName());
-      metaData2.addBeanProperty(new AbstractPropertyMetaData("string", "String2"));
-      HashSet<DemandMetaData> demands = new HashSet<DemandMetaData>();
-      demands.add(new AbstractDemandMetaData("WhatIWant"));
-      metaData2.setDemands(demands);
-      
-      setBeanMetaDatas(new BeanMetaData[] { metaData1, metaData2 });
+      buildMetaData();
    }
 
    public void testGenericBeanFactoryDemandDependencyWrongOrder() throws Throwable
@@ -115,19 +103,7 @@ public class GenericBeanFactoryDemandDependencyTestCase extends OldAbstractKerne
 
    public void demandDependencyWrongOrder() throws Throwable
    {
-      GenericBeanFactoryMetaData metaData1 = new GenericBeanFactoryMetaData("Name1", SimpleBeanImpl.class.getName());
-      metaData1.addBeanProperty(new AbstractPropertyMetaData("string", "String1"));
-      HashSet<SupplyMetaData> supplies = new HashSet<SupplyMetaData>();
-      supplies.add(new AbstractSupplyMetaData("WhatIWant"));
-      metaData1.setSupplies(supplies);
-      
-      GenericBeanFactoryMetaData metaData2 = new GenericBeanFactoryMetaData("Name2", SimpleBeanImpl.class.getName());
-      metaData2.addBeanProperty(new AbstractPropertyMetaData("string", "String2"));
-      HashSet<DemandMetaData> demands = new HashSet<DemandMetaData>();
-      demands.add(new AbstractDemandMetaData("WhatIWant"));
-      metaData2.setDemands(demands);
-      
-      setBeanMetaDatas(new BeanMetaData[] { metaData1, metaData2 });
+      buildMetaData();
    }
 
    public void testGenericBeanFactoryDemandDependencyReinstall() throws Throwable
@@ -190,18 +166,23 @@ public class GenericBeanFactoryDemandDependencyTestCase extends OldAbstractKerne
 
    public void demandDependencyReinstall() throws Throwable
    {
+      buildMetaData();
+   }
+
+   protected void buildMetaData()
+   {
       GenericBeanFactoryMetaData metaData1 = new GenericBeanFactoryMetaData("Name1", SimpleBeanImpl.class.getName());
       metaData1.addBeanProperty(new AbstractPropertyMetaData("string", "String1"));
       HashSet<SupplyMetaData> supplies = new HashSet<SupplyMetaData>();
       supplies.add(new AbstractSupplyMetaData("WhatIWant"));
       metaData1.setSupplies(supplies);
-      
+
       GenericBeanFactoryMetaData metaData2 = new GenericBeanFactoryMetaData("Name2", SimpleBeanImpl.class.getName());
       metaData2.addBeanProperty(new AbstractPropertyMetaData("string", "String2"));
       HashSet<DemandMetaData> demands = new HashSet<DemandMetaData>();
       demands.add(new AbstractDemandMetaData("WhatIWant"));
       metaData2.setDemands(demands);
-      
+
       setBeanMetaDatas(new BeanMetaData[] { metaData1, metaData2 });
    }
 }

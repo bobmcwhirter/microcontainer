@@ -83,22 +83,7 @@ public class ConstructorDependencyTestCase extends OldAbstractKernelDependencyTe
 
    public void constructorDependencyCorrectOrder() throws Throwable
    {
-      AbstractBeanMetaData metaData1 = new AbstractBeanMetaData("Name1", SimpleBeanImpl.class.getName());
-      HashSet<PropertyMetaData> attributes1 = new HashSet<PropertyMetaData>();
-      attributes1.add(new AbstractPropertyMetaData("string", "String1"));
-      metaData1.setProperties(attributes1);
-      
-      AbstractBeanMetaData metaData2 = new AbstractBeanMetaData("Name2", SimpleBeanWithConstructorDependencyImpl.class.getName());
-      HashSet<PropertyMetaData> attributes2 = new HashSet<PropertyMetaData>();
-      attributes2.add(new AbstractPropertyMetaData("string", "String2"));
-      metaData2.setProperties(attributes2);
-      ArrayList<ParameterMetaData> constructor2 = new ArrayList<ParameterMetaData>();
-      constructor2.add(new AbstractParameterMetaData(SimpleBean.class.getName(), new AbstractDependencyValueMetaData("Name1")));
-      AbstractConstructorMetaData cmd = new AbstractConstructorMetaData();
-      metaData2.setConstructor(cmd);
-      cmd.setParameters(constructor2);
-      
-      setBeanMetaDatas(new BeanMetaData[] { metaData1, metaData2 });
+      buildMetaData();
    }
 
    public void testConstructorDependencyWrongOrder() throws Throwable
@@ -122,22 +107,7 @@ public class ConstructorDependencyTestCase extends OldAbstractKernelDependencyTe
 
    public void constructorDependencyWrongOrder() throws Throwable
    {
-      AbstractBeanMetaData metaData1 = new AbstractBeanMetaData("Name1", SimpleBeanImpl.class.getName());
-      HashSet<PropertyMetaData> attributes1 = new HashSet<PropertyMetaData>();
-      attributes1.add(new AbstractPropertyMetaData("string", "String1"));
-      metaData1.setProperties(attributes1);
-      
-      AbstractBeanMetaData metaData2 = new AbstractBeanMetaData("Name2", SimpleBeanWithConstructorDependencyImpl.class.getName());
-      HashSet<PropertyMetaData> attributes2 = new HashSet<PropertyMetaData>();
-      attributes2.add(new AbstractPropertyMetaData("string", "String2"));
-      metaData2.setProperties(attributes2);
-      ArrayList<ParameterMetaData> constructor2 = new ArrayList<ParameterMetaData>();
-      constructor2.add(new AbstractParameterMetaData(SimpleBean.class.getName(), new AbstractDependencyValueMetaData("Name1")));
-      AbstractConstructorMetaData cmd = new AbstractConstructorMetaData();
-      metaData2.setConstructor(cmd);
-      cmd.setParameters(constructor2);
-      
-      setBeanMetaDatas(new BeanMetaData[] { metaData1, metaData2 });
+      buildMetaData();
    }
 
    public void testConstructorDependencyReinstall() throws Throwable
@@ -198,11 +168,16 @@ public class ConstructorDependencyTestCase extends OldAbstractKernelDependencyTe
 
    public void constructorDependencyReinstall() throws Throwable
    {
+      buildMetaData();
+   }
+
+   protected void buildMetaData()
+   {
       AbstractBeanMetaData metaData1 = new AbstractBeanMetaData("Name1", SimpleBeanImpl.class.getName());
       HashSet<PropertyMetaData> attributes1 = new HashSet<PropertyMetaData>();
       attributes1.add(new AbstractPropertyMetaData("string", "String1"));
       metaData1.setProperties(attributes1);
-      
+
       AbstractBeanMetaData metaData2 = new AbstractBeanMetaData("Name2", SimpleBeanWithConstructorDependencyImpl.class.getName());
       HashSet<PropertyMetaData> attributes2 = new HashSet<PropertyMetaData>();
       attributes2.add(new AbstractPropertyMetaData("string", "String2"));
@@ -212,7 +187,7 @@ public class ConstructorDependencyTestCase extends OldAbstractKernelDependencyTe
       AbstractConstructorMetaData cmd = new AbstractConstructorMetaData();
       metaData2.setConstructor(cmd);
       cmd.setParameters(constructor2);
-      
+
       setBeanMetaDatas(new BeanMetaData[] { metaData1, metaData2 });
    }
 }

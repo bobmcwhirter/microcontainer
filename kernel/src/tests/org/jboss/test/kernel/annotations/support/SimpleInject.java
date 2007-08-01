@@ -42,12 +42,13 @@ import org.jboss.beans.metadata.plugins.annotations.NullValue;
 import org.jboss.beans.metadata.plugins.annotations.UninstallMethod;
 import org.jboss.beans.metadata.plugins.annotations.ListValue;
 import org.jboss.beans.metadata.plugins.annotations.Value;
+import org.jboss.beans.metadata.plugins.annotations.Demand;
 
 /**
  * @author <a href="mailto:ales.justin@jboss.com">Ales Justin</a>
  */
 @Aliases({"al", "test"})
-@Demands({"otherBean"})
+@Demands({@Demand("otherBean")})
 @Depends({"serviceBean"})
 @Supplys({"txBean"})
 public class SimpleInject

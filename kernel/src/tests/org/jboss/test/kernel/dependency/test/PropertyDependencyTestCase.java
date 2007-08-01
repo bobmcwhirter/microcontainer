@@ -76,17 +76,7 @@ public class PropertyDependencyTestCase extends OldAbstractKernelDependencyTest
 
    public void propertyDependencyCorrectOrder() throws Throwable
    {
-      AbstractBeanMetaData metaData1 = new AbstractBeanMetaData("Name1", SimpleBeanImpl.class.getName());
-      HashSet<PropertyMetaData> attributes1 = new HashSet<PropertyMetaData>();
-      attributes1.add(new AbstractPropertyMetaData("string", "String1"));
-      metaData1.setProperties(attributes1);
-      
-      AbstractBeanMetaData metaData2 = new AbstractBeanMetaData("Name2", SimpleBeanImpl.class.getName());
-      HashSet<PropertyMetaData> attributes2 = new HashSet<PropertyMetaData>();
-      attributes2.add(new AbstractPropertyMetaData("string", new AbstractDependencyValueMetaData("Name1", "string")));
-      metaData2.setProperties(attributes2);
-      
-      setBeanMetaDatas(new BeanMetaData[] { metaData1, metaData2 });
+      buildMetaData();
    }
 
    public void testPropertyDependencyWrongOrder() throws Throwable
@@ -108,17 +98,7 @@ public class PropertyDependencyTestCase extends OldAbstractKernelDependencyTest
 
    public void propertyDependencyWrongOrder() throws Throwable
    {
-      AbstractBeanMetaData metaData1 = new AbstractBeanMetaData("Name1", SimpleBeanImpl.class.getName());
-      HashSet<PropertyMetaData> attributes1 = new HashSet<PropertyMetaData>();
-      attributes1.add(new AbstractPropertyMetaData("string", "String1"));
-      metaData1.setProperties(attributes1);
-      
-      AbstractBeanMetaData metaData2 = new AbstractBeanMetaData("Name2", SimpleBeanImpl.class.getName());
-      HashSet<PropertyMetaData> attributes2 = new HashSet<PropertyMetaData>();
-      attributes2.add(new AbstractPropertyMetaData("string", new AbstractDependencyValueMetaData("Name1", "string")));
-      metaData2.setProperties(attributes2);
-      
-      setBeanMetaDatas(new BeanMetaData[] { metaData1, metaData2 });
+      buildMetaData();
    }
 
    public void testPropertyDependencyReinstall() throws Throwable
@@ -175,16 +155,21 @@ public class PropertyDependencyTestCase extends OldAbstractKernelDependencyTest
 
    public void propertyDependencyReinstall() throws Throwable
    {
+      buildMetaData();
+   }
+
+   protected void buildMetaData()
+   {
       AbstractBeanMetaData metaData1 = new AbstractBeanMetaData("Name1", SimpleBeanImpl.class.getName());
       HashSet<PropertyMetaData> attributes1 = new HashSet<PropertyMetaData>();
       attributes1.add(new AbstractPropertyMetaData("string", "String1"));
       metaData1.setProperties(attributes1);
-      
+
       AbstractBeanMetaData metaData2 = new AbstractBeanMetaData("Name2", SimpleBeanImpl.class.getName());
       HashSet<PropertyMetaData> attributes2 = new HashSet<PropertyMetaData>();
       attributes2.add(new AbstractPropertyMetaData("string", new AbstractDependencyValueMetaData("Name1", "string")));
       metaData2.setProperties(attributes2);
-      
+
       setBeanMetaDatas(new BeanMetaData[] { metaData1, metaData2 });
    }
 }

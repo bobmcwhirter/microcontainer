@@ -84,18 +84,7 @@ public class GenericBeanFactoryConstructorDependencyTestCase extends OldAbstract
 
    public void constructorDependencyCorrectOrder() throws Throwable
    {
-      GenericBeanFactoryMetaData metaData1 = new GenericBeanFactoryMetaData("Name1", SimpleBeanImpl.class.getName());
-      metaData1.addBeanProperty(new AbstractPropertyMetaData("string", "String1"));
-      
-      GenericBeanFactoryMetaData metaData2 = new GenericBeanFactoryMetaData("Name2", SimpleBeanWithConstructorDependencyImpl.class.getName());
-      metaData2.addBeanProperty(new AbstractPropertyMetaData("string", "String2"));
-      AbstractConstructorMetaData cmd = new AbstractConstructorMetaData();
-      ArrayList<ParameterMetaData> constructor2 = new ArrayList<ParameterMetaData>();
-      constructor2.add(new AbstractParameterMetaData(GenericBeanFactory.class.getName(), new AbstractDependencyValueMetaData("Name1")));
-      cmd.setParameters(constructor2);
-      metaData2.setBeanConstructor(cmd);
-      
-      setBeanMetaDatas(new BeanMetaData[] { metaData1, metaData2 });
+      buildMetaData();
    }
 
    public void testGenericBeanFactoryConstructorDependencyWrongOrder() throws Throwable
@@ -121,18 +110,7 @@ public class GenericBeanFactoryConstructorDependencyTestCase extends OldAbstract
 
    public void constructorDependencyWrongOrder() throws Throwable
    {
-      GenericBeanFactoryMetaData metaData1 = new GenericBeanFactoryMetaData("Name1", SimpleBeanImpl.class.getName());
-      metaData1.addBeanProperty(new AbstractPropertyMetaData("string", "String1"));
-      
-      GenericBeanFactoryMetaData metaData2 = new GenericBeanFactoryMetaData("Name2", SimpleBeanWithConstructorDependencyImpl.class.getName());
-      metaData2.addBeanProperty(new AbstractPropertyMetaData("string", "String2"));
-      AbstractConstructorMetaData cmd = new AbstractConstructorMetaData();
-      ArrayList<ParameterMetaData> constructor2 = new ArrayList<ParameterMetaData>();
-      constructor2.add(new AbstractParameterMetaData(GenericBeanFactory.class.getName(), new AbstractDependencyValueMetaData("Name1")));
-      cmd.setParameters(constructor2);
-      metaData2.setBeanConstructor(cmd);
-      
-      setBeanMetaDatas(new BeanMetaData[] { metaData1, metaData2 });
+      buildMetaData();
    }
 
    public void testGenericBeanFactoryConstructorDependencyReinstall() throws Throwable
@@ -199,9 +177,14 @@ public class GenericBeanFactoryConstructorDependencyTestCase extends OldAbstract
 
    public void constructorDependencyReinstall() throws Throwable
    {
+      buildMetaData();
+   }
+
+   protected void buildMetaData()
+   {
       GenericBeanFactoryMetaData metaData1 = new GenericBeanFactoryMetaData("Name1", SimpleBeanImpl.class.getName());
       metaData1.addBeanProperty(new AbstractPropertyMetaData("string", "String1"));
-      
+
       GenericBeanFactoryMetaData metaData2 = new GenericBeanFactoryMetaData("Name2", SimpleBeanWithConstructorDependencyImpl.class.getName());
       metaData2.addBeanProperty(new AbstractPropertyMetaData("string", "String2"));
       AbstractConstructorMetaData cmd = new AbstractConstructorMetaData();
@@ -209,7 +192,7 @@ public class GenericBeanFactoryConstructorDependencyTestCase extends OldAbstract
       constructor2.add(new AbstractParameterMetaData(GenericBeanFactory.class.getName(), new AbstractDependencyValueMetaData("Name1")));
       cmd.setParameters(constructor2);
       metaData2.setBeanConstructor(cmd);
-      
+
       setBeanMetaDatas(new BeanMetaData[] { metaData1, metaData2 });
    }
 }

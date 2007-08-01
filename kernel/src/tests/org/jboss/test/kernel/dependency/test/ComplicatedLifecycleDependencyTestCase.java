@@ -112,44 +112,7 @@ public class ComplicatedLifecycleDependencyTestCase extends OldAbstractKernelDep
 
    public void complicatedLifecycleDependencyCorrectOrder() throws Throwable
    {
-      AbstractBeanMetaData metaData1 = new AbstractBeanMetaData("Name1", SimpleBeanWithLifecycle.class.getName());
-      
-      AbstractBeanMetaData metaData2 = new AbstractBeanMetaData("Name2", SimpleBeanWithLifecycle.class.getName());
-
-      AbstractBeanMetaData metaData3 = new AbstractBeanMetaData("Name3", SimpleBeanWithLifecycle.class.getName());
-      
-      AbstractBeanMetaData metaData4 = new AbstractBeanMetaData("Name4", SimpleBeanWithLifecycle.class.getName());
-      
-      AbstractBeanMetaData metaData5 = new AbstractBeanMetaData("Name5", SimpleBeanWithComplicatedLifecycle.class.getName());
-
-      AbstractLifecycleMetaData create = new AbstractLifecycleMetaData();
-      create.setMethodName("notCreate");
-      AbstractParameterMetaData parameter = new AbstractParameterMetaData(SimpleBeanWithLifecycle.class.getName(), new AbstractDependencyValueMetaData("Name1"));
-      create.setParameters(Collections.singletonList((ParameterMetaData) parameter));
-      metaData5.setCreate(create);
-      
-      AbstractLifecycleMetaData start = new AbstractLifecycleMetaData();
-      start.setMethodName("notStart");
-      parameter = new AbstractParameterMetaData();
-      parameter.setValue(new AbstractDependencyValueMetaData("Name2"));
-      start.setParameters(Collections.singletonList((ParameterMetaData) parameter));
-      metaData5.setStart(start);
-
-      AbstractLifecycleMetaData stop = new AbstractLifecycleMetaData();
-      stop.setMethodName("notStop");
-      parameter = new AbstractParameterMetaData();
-      parameter.setValue(new AbstractDependencyValueMetaData("Name3"));
-      stop.setParameters(Collections.singletonList((ParameterMetaData) parameter));
-      metaData5.setStop(stop);
-
-      AbstractLifecycleMetaData destroy = new AbstractLifecycleMetaData();
-      destroy.setMethodName("notDestroy");
-      parameter = new AbstractParameterMetaData();
-      parameter.setValue(new AbstractDependencyValueMetaData("Name4"));
-      destroy.setParameters(Collections.singletonList((ParameterMetaData) parameter));
-      metaData5.setDestroy(destroy);
-
-      setBeanMetaDatas(new BeanMetaData[] { metaData1, metaData2, metaData3, metaData4, metaData5 });
+      buildMetaData();
    }
 
    public void testComplicatedLifecycleDependencyWrongOrder() throws Throwable
@@ -207,44 +170,7 @@ public class ComplicatedLifecycleDependencyTestCase extends OldAbstractKernelDep
 
    public void complicatedLifecycleDependencyWrongOrder() throws Throwable
    {
-      AbstractBeanMetaData metaData1 = new AbstractBeanMetaData("Name1", SimpleBeanWithLifecycle.class.getName());
-      
-      AbstractBeanMetaData metaData2 = new AbstractBeanMetaData("Name2", SimpleBeanWithLifecycle.class.getName());
-
-      AbstractBeanMetaData metaData3 = new AbstractBeanMetaData("Name3", SimpleBeanWithLifecycle.class.getName());
-      
-      AbstractBeanMetaData metaData4 = new AbstractBeanMetaData("Name4", SimpleBeanWithLifecycle.class.getName());
-      
-      AbstractBeanMetaData metaData5 = new AbstractBeanMetaData("Name5", SimpleBeanWithComplicatedLifecycle.class.getName());
-
-      AbstractLifecycleMetaData create = new AbstractLifecycleMetaData();
-      create.setMethodName("notCreate");
-      AbstractParameterMetaData parameter = new AbstractParameterMetaData(SimpleBeanWithLifecycle.class.getName(), new AbstractDependencyValueMetaData("Name1"));
-      create.setParameters(Collections.singletonList((ParameterMetaData) parameter));
-      metaData5.setCreate(create);
-      
-      AbstractLifecycleMetaData start = new AbstractLifecycleMetaData();
-      start.setMethodName("notStart");
-      parameter = new AbstractParameterMetaData();
-      parameter.setValue(new AbstractDependencyValueMetaData("Name2"));
-      start.setParameters(Collections.singletonList((ParameterMetaData) parameter));
-      metaData5.setStart(start);
-
-      AbstractLifecycleMetaData stop = new AbstractLifecycleMetaData();
-      stop.setMethodName("notStop");
-      parameter = new AbstractParameterMetaData();
-      parameter.setValue(new AbstractDependencyValueMetaData("Name3"));
-      stop.setParameters(Collections.singletonList((ParameterMetaData) parameter));
-      metaData5.setStop(stop);
-
-      AbstractLifecycleMetaData destroy = new AbstractLifecycleMetaData();
-      destroy.setMethodName("notDestroy");
-      parameter = new AbstractParameterMetaData();
-      parameter.setValue(new AbstractDependencyValueMetaData("Name4"));
-      destroy.setParameters(Collections.singletonList((ParameterMetaData) parameter));
-      metaData5.setDestroy(destroy);
-
-      setBeanMetaDatas(new BeanMetaData[] { metaData1, metaData2, metaData3, metaData4, metaData5 });
+      buildMetaData();
    }
 
    public void testComplicatedLifecycleDependencyReinstall() throws Throwable
@@ -615,14 +541,19 @@ public class ComplicatedLifecycleDependencyTestCase extends OldAbstractKernelDep
 
    public void complicatedLifecycleDependencyReinstall() throws Throwable
    {
+      buildMetaData();
+   }
+
+   protected void buildMetaData()
+   {
       AbstractBeanMetaData metaData1 = new AbstractBeanMetaData("Name1", SimpleBeanWithLifecycle.class.getName());
-      
+
       AbstractBeanMetaData metaData2 = new AbstractBeanMetaData("Name2", SimpleBeanWithLifecycle.class.getName());
 
       AbstractBeanMetaData metaData3 = new AbstractBeanMetaData("Name3", SimpleBeanWithLifecycle.class.getName());
-      
+
       AbstractBeanMetaData metaData4 = new AbstractBeanMetaData("Name4", SimpleBeanWithLifecycle.class.getName());
-      
+
       AbstractBeanMetaData metaData5 = new AbstractBeanMetaData("Name5", SimpleBeanWithComplicatedLifecycle.class.getName());
 
       AbstractLifecycleMetaData create = new AbstractLifecycleMetaData();
@@ -630,7 +561,7 @@ public class ComplicatedLifecycleDependencyTestCase extends OldAbstractKernelDep
       AbstractParameterMetaData parameter = new AbstractParameterMetaData(SimpleBeanWithLifecycle.class.getName(), new AbstractDependencyValueMetaData("Name1"));
       create.setParameters(Collections.singletonList((ParameterMetaData) parameter));
       metaData5.setCreate(create);
-      
+
       AbstractLifecycleMetaData start = new AbstractLifecycleMetaData();
       start.setMethodName("notStart");
       parameter = new AbstractParameterMetaData();

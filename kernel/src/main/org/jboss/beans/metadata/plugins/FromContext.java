@@ -77,6 +77,9 @@ public abstract class FromContext<T extends ControllerContext> extends JBossObje
    /** id */
    public static final FromContext ID = new IdFromContext("id");
 
+   /** context */
+   public static final FromContext CONTEXT = new ThisContext("context");
+
    /** The type string */
    protected final String fromString;
 
@@ -112,6 +115,8 @@ public abstract class FromContext<T extends ControllerContext> extends JBossObje
          return SCOPE;
       else if (ID.getFromString().equalsIgnoreCase(fromString))
          return ID;
+      else if (CONTEXT.getFromString().equalsIgnoreCase(fromString))
+         return CONTEXT;
       else
          return new DynamicFromContext(fromString);
    }
@@ -285,6 +290,22 @@ public abstract class FromContext<T extends ControllerContext> extends JBossObje
       {
          // todo - change to actual id when impl
          return context.getName();
+      }
+   }
+
+   private static class ThisContext extends FromContext
+   {
+      private static final long serialVersionUID = 1L;
+
+      public ThisContext(String fromString)
+      {
+         super(fromString);
+      }
+
+      public ControllerContext internalExecute(ControllerContext context)
+      {
+         // todo - wrapper
+         return context;
       }
    }
 

@@ -19,19 +19,33 @@
 * Software Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA
 * 02110-1301 USA, or see the FSF site: http://www.fsf.org.
 */
-package org.jboss.beans.metadata.plugins.annotations;
+package org.jboss.test.kernel.dependency.test;
 
-import java.lang.annotation.Retention;
-import java.lang.annotation.RetentionPolicy;
-import java.lang.annotation.Target;
-import java.lang.annotation.ElementType;
+import junit.framework.Test;
 
 /**
- * @author <a href="mailto:ales.justin@jboss.com">Ales Justin</a>
+ * Install Dependency Test Case.
+ *
+ * @author <a href="ales.justin@jboss.com">Ales Justin</a>
  */
-@Retention(RetentionPolicy.RUNTIME)
-@Target({ElementType.TYPE})
-public @interface Demands
+public class InstallDependencyAnnotationTestCase extends InstallDependencyTestCase
 {
-   Demand[] value();
+   public static Test suite()
+   {
+      return suite(InstallDependencyAnnotationTestCase.class);
+   }
+
+   public InstallDependencyAnnotationTestCase(String name) throws Throwable
+   {
+      super(name);
+   }
+
+/*
+   protected void setupBeanMetaDatas() throws Throwable
+   {
+      AbstractBeanMetaData metaData1 = new AbstractBeanMetaData("Name1", SimpleBeanRepository.class.getName());
+      AbstractBeanMetaData metaData2 = new AbstractBeanMetaData("Name2", ExternalInstallSimpleBeanImpl.class.getName());
+      setBeanMetaDatas(new BeanMetaData[] { metaData1, metaData2 });
+   }
+*/
 }

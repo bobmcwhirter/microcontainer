@@ -80,14 +80,7 @@ public class GenericBeanFactoryPlainLifecycleDependencyTestCase extends OldAbstr
 
    public void plainLifecycleDependencyCorrectOrder() throws Throwable
    {
-      AbstractBeanMetaData metaData1 = new AbstractBeanMetaData("Name1", SimpleBeanWithLifecycle.class.getName());
-      
-      GenericBeanFactoryMetaData metaData2 = new GenericBeanFactoryMetaData("Name2", SimpleBeanWithLifecycle.class.getName());
-      HashSet<DependencyMetaData> depends = new HashSet<DependencyMetaData>();
-      depends.add(new AbstractDependencyMetaData("Name1"));
-      metaData2.setDepends(depends);
-
-      setBeanMetaDatas(new BeanMetaData[] { metaData1, metaData2 });
+      buildMetaData();
    }
 
    public void testGenericBeanFactoryPlainLifecycleDependencyWrongOrder() throws Throwable
@@ -113,14 +106,7 @@ public class GenericBeanFactoryPlainLifecycleDependencyTestCase extends OldAbstr
 
    public void plainLifecycleDependencyWrongOrder() throws Throwable
    {
-      AbstractBeanMetaData metaData1 = new AbstractBeanMetaData("Name1", SimpleBeanWithLifecycle.class.getName());
-      
-      GenericBeanFactoryMetaData metaData2 = new GenericBeanFactoryMetaData("Name2", SimpleBeanWithLifecycle.class.getName());
-      HashSet<DependencyMetaData> depends = new HashSet<DependencyMetaData>();
-      depends.add(new AbstractDependencyMetaData("Name1"));
-      metaData2.setDepends(depends);
-
-      setBeanMetaDatas(new BeanMetaData[] { metaData1, metaData2 });
+      buildMetaData();
    }
 
    public void testGenericBeanFactoryPlainLifecycleDependencyReinstall() throws Throwable
@@ -178,8 +164,13 @@ public class GenericBeanFactoryPlainLifecycleDependencyTestCase extends OldAbstr
 
    public void plainLifecycleDependencyReinstall() throws Throwable
    {
+      buildMetaData();
+   }
+
+   protected void buildMetaData()
+   {
       AbstractBeanMetaData metaData1 = new AbstractBeanMetaData("Name1", SimpleBeanWithLifecycle.class.getName());
-      
+
       GenericBeanFactoryMetaData metaData2 = new GenericBeanFactoryMetaData("Name2", SimpleBeanWithLifecycle.class.getName());
       HashSet<DependencyMetaData> depends = new HashSet<DependencyMetaData>();
       depends.add(new AbstractDependencyMetaData("Name1"));

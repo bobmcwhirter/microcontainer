@@ -81,15 +81,7 @@ public class GenericBeanFactoryOnDemandDependencyTestCase extends OldAbstractKer
 
    public void onDemandDependencyOnDemandFirst() throws Throwable
    {
-      GenericBeanFactoryMetaData metaData1 = new GenericBeanFactoryMetaData("Name1", SimpleBeanImpl.class.getName());
-      metaData1.setMode(ControllerMode.ON_DEMAND);
-      metaData1.addBeanProperty(new AbstractPropertyMetaData("string", "String1"));
-      
-      GenericBeanFactoryMetaData metaData2 = new GenericBeanFactoryMetaData("Name2", SimpleBeanWithDependencyImpl.class.getName());
-      metaData2.addBeanProperty(new AbstractPropertyMetaData("string", "String2"));
-      metaData2.addBeanProperty(new AbstractPropertyMetaData("factory", new AbstractDependencyValueMetaData("Name1")));
-      
-      setBeanMetaDatas(new BeanMetaData[] { metaData1, metaData2 });
+      buildMetaData();
    }
 
    public void testGenericBeanFactoryOnDemandDependencyOnDemandSecond() throws Throwable
@@ -114,15 +106,7 @@ public class GenericBeanFactoryOnDemandDependencyTestCase extends OldAbstractKer
 
    public void onDemandDependencyOnDemandSecond() throws Throwable
    {
-      GenericBeanFactoryMetaData metaData1 = new GenericBeanFactoryMetaData("Name1", SimpleBeanImpl.class.getName());
-      metaData1.setMode(ControllerMode.ON_DEMAND);
-      metaData1.addBeanProperty(new AbstractPropertyMetaData("string", "String1"));
-      
-      GenericBeanFactoryMetaData metaData2 = new GenericBeanFactoryMetaData("Name2", SimpleBeanWithDependencyImpl.class.getName());
-      metaData2.addBeanProperty(new AbstractPropertyMetaData("string", "String2"));
-      metaData2.addBeanProperty(new AbstractPropertyMetaData("factory", new AbstractDependencyValueMetaData("Name1")));
-      
-      setBeanMetaDatas(new BeanMetaData[] { metaData1, metaData2 });
+      buildMetaData();
    }
 
    public void testGenericBeanFactoryOnDemandDependencyReinstall() throws Throwable
@@ -190,14 +174,19 @@ public class GenericBeanFactoryOnDemandDependencyTestCase extends OldAbstractKer
 
    public void onDemandDependencyReinstall() throws Throwable
    {
+      buildMetaData();
+   }
+
+   protected void buildMetaData()
+   {
       GenericBeanFactoryMetaData metaData1 = new GenericBeanFactoryMetaData("Name1", SimpleBeanImpl.class.getName());
       metaData1.setMode(ControllerMode.ON_DEMAND);
       metaData1.addBeanProperty(new AbstractPropertyMetaData("string", "String1"));
-      
+
       GenericBeanFactoryMetaData metaData2 = new GenericBeanFactoryMetaData("Name2", SimpleBeanWithDependencyImpl.class.getName());
       metaData2.addBeanProperty(new AbstractPropertyMetaData("string", "String2"));
       metaData2.addBeanProperty(new AbstractPropertyMetaData("factory", new AbstractDependencyValueMetaData("Name1")));
-      
+
       setBeanMetaDatas(new BeanMetaData[] { metaData1, metaData2 });
    }
 }

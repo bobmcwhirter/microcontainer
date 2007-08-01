@@ -19,19 +19,30 @@
 * Software Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA
 * 02110-1301 USA, or see the FSF site: http://www.fsf.org.
 */
-package org.jboss.beans.metadata.plugins.annotations;
+package org.jboss.test.kernel.dependency.support;
 
-import java.lang.annotation.Retention;
-import java.lang.annotation.RetentionPolicy;
-import java.lang.annotation.Target;
-import java.lang.annotation.ElementType;
+import org.jboss.beans.metadata.plugins.annotations.Inject;
+import org.jboss.beans.metadata.plugins.annotations.StringValue;
 
 /**
- * @author <a href="mailto:ales.justin@jboss.com">Ales Justin</a>
+ * A simple bean
+ *
+ * @author <a href="adrian@jboss.com">Adrian Brock</a>
+ * @version $Revision: 40439 $
  */
-@Retention(RetentionPolicy.RUNTIME)
-@Target({ElementType.TYPE})
-public @interface Demands
+public class AnnotatedSimpleBeanWithDependencyImpl extends SimpleBeanWithDependencyImpl
 {
-   Demand[] value();
+   private static final long serialVersionUID = 3257004371517454132L;
+
+   @StringValue("String2")
+   public void setString(String string)
+   {
+      super.setString(string);
+   }
+
+   @Inject(bean = "Name1")
+   public void setSimpleBean(SimpleBean bean)
+   {
+      super.setSimpleBean(bean);
+   }
 }

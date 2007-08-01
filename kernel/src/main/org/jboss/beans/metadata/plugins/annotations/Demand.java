@@ -30,8 +30,10 @@ import java.lang.annotation.ElementType;
  * @author <a href="mailto:ales.justin@jboss.com">Ales Justin</a>
  */
 @Retention(RetentionPolicy.RUNTIME)
-@Target({ElementType.TYPE})
-public @interface Demands
+@Target({ElementType.ANNOTATION_TYPE})
+public @interface Demand
 {
-   Demand[] value();
+   String value();
+
+   String whenRequired() default "Instantiated";
 }

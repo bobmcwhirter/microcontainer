@@ -19,19 +19,27 @@
 * Software Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA
 * 02110-1301 USA, or see the FSF site: http://www.fsf.org.
 */
-package org.jboss.beans.metadata.plugins.annotations;
+package org.jboss.test.kernel.dependency.support;
 
-import java.lang.annotation.Retention;
-import java.lang.annotation.RetentionPolicy;
-import java.lang.annotation.Target;
-import java.lang.annotation.ElementType;
+import org.jboss.beans.metadata.plugins.annotations.InstallMethod;
+import org.jboss.beans.metadata.plugins.annotations.UninstallMethod;
 
 /**
- * @author <a href="mailto:ales.justin@jboss.com">Ales Justin</a>
+ * SimpleBeanInstallSelf.
+ *
+ * @author <a href="ales.justin@jboss.com">Ales Justin</a>
  */
-@Retention(RetentionPolicy.RUNTIME)
-@Target({ElementType.TYPE})
-public @interface Demands
+public class AnnotatedSimpleBeanInstallSelf extends SimpleBeanInstallSelf
 {
-   Demand[] value();
+   @InstallMethod
+   public void install()
+   {
+      installed = true;
+   }
+
+   @UninstallMethod
+   public void uninstall()
+   {
+      installed = false;
+   }
 }

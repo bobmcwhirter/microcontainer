@@ -19,19 +19,22 @@
 * Software Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA
 * 02110-1301 USA, or see the FSF site: http://www.fsf.org.
 */
-package org.jboss.beans.metadata.plugins.annotations;
+package org.jboss.test.kernel.dependency.support;
 
-import java.lang.annotation.Retention;
-import java.lang.annotation.RetentionPolicy;
-import java.lang.annotation.Target;
-import java.lang.annotation.ElementType;
+import org.jboss.kernel.spi.dependency.KernelControllerContext;
+import org.jboss.beans.metadata.plugins.annotations.Inject;
+import org.jboss.beans.metadata.plugins.annotations.FromContext;
 
 /**
- * @author <a href="mailto:ales.justin@jboss.com">Ales Justin</a>
+ * A simple bean that is kernel controllercontext aware
+ *
+ * @author <a href="ales.justin@jboss.com">Ales Justin</a>
  */
-@Retention(RetentionPolicy.RUNTIME)
-@Target({ElementType.TYPE})
-public @interface Demands
+public class AnnotatedSimpleBeanWithKernelControllerContextAware extends SimpleBeanWithKernelControllerContextAware
 {
-   Demand[] value();
+   @Inject(fromContext = FromContext.CONTEXT)
+   public void setKernelControllerContext(KernelControllerContext context) throws Exception
+   {
+      super.setKernelControllerContext(context);
+   }
 }

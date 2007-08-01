@@ -19,35 +19,34 @@
 * Software Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA
 * 02110-1301 USA, or see the FSF site: http://www.fsf.org.
 */
-package org.jboss.beans.metadata.plugins.annotations;
+package org.jboss.test.kernel.dependency.test;
+
+import junit.framework.Test;
+import org.jboss.beans.metadata.plugins.AbstractBeanMetaData;
+import org.jboss.beans.metadata.spi.BeanMetaData;
+import org.jboss.test.kernel.dependency.support.AnnotatedSimpleBeanWithKernelControllerContextAware;
 
 /**
- * FromContext.
- * @see org.jboss.beans.metadata.plugins.FromContext
+ * KernelControllerContextAware Test Case.
  *
- * @author <a href="mailto:ales.justin@gmail.com">Ales Justin</a>
+ * @author <a href="adrian@jboss.com">Adrian Brock</a>
+ * @version $Revision: 40727 $
  */
-public enum FromContext
+public class KernelControllerContextAwareAnnotationTestCase extends KernelControllerContextAwareTestCase
 {
-   NONE("[blank]"),
-   NAME("name"),
-   ALIASES("aliases"),
-   METADATA("metadata"),
-   BEANINFO("beaninfo"),
-   SCOPE("scope"),
-   ID("id"),
-   CONTEXT("context");
-
-   private String typeString;
-
-   FromContext(String optionString)
+   public static Test suite()
    {
-      this.typeString = optionString;
+      return suite(KernelControllerContextAwareAnnotationTestCase.class);
    }
 
-   public String toString()
+   public KernelControllerContextAwareAnnotationTestCase(String name) throws Throwable
    {
-      return typeString;
+      super(name);
    }
 
+   public void kernelControllerContextAware() throws Throwable
+   {
+      AbstractBeanMetaData metaData1 = new AbstractBeanMetaData("Name1", AnnotatedSimpleBeanWithKernelControllerContextAware.class.getName());
+      setBeanMetaDatas(new BeanMetaData[] { metaData1 });
+   }
 }

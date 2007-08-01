@@ -19,19 +19,33 @@
 * Software Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA
 * 02110-1301 USA, or see the FSF site: http://www.fsf.org.
 */
-package org.jboss.beans.metadata.plugins.annotations;
+package org.jboss.test.kernel.dependency.test;
 
-import java.lang.annotation.Retention;
-import java.lang.annotation.RetentionPolicy;
-import java.lang.annotation.Target;
-import java.lang.annotation.ElementType;
+import junit.framework.Test;
+import org.jboss.beans.metadata.plugins.AbstractBeanMetaData;
+import org.jboss.beans.metadata.spi.BeanMetaData;
+import org.jboss.test.kernel.dependency.support.AnnotatedSimpleBeanInstallSelf;
 
 /**
- * @author <a href="mailto:ales.justin@jboss.com">Ales Justin</a>
+ * Install Dependency Test Case.
+ *
+ * @author <a href="ales.justin@jboss.com">Ales Justin</a>
  */
-@Retention(RetentionPolicy.RUNTIME)
-@Target({ElementType.TYPE})
-public @interface Demands
+public class InstallSelfDependencyAnnotationTestCase extends InstallSelfDependencyTestCase
 {
-   Demand[] value();
+   public static Test suite()
+   {
+      return suite(InstallSelfDependencyAnnotationTestCase.class);
+   }
+
+   public InstallSelfDependencyAnnotationTestCase(String name) throws Throwable
+   {
+      super(name);
+   }
+
+   protected void setupBeanMetaDatas() throws Throwable
+   {
+      AbstractBeanMetaData metaData1 = new AbstractBeanMetaData("Name1", AnnotatedSimpleBeanInstallSelf.class.getName());
+      setBeanMetaDatas(new BeanMetaData[] { metaData1 });
+   }
 }
