@@ -333,7 +333,7 @@ public class MapTestCase extends AbstractKernelConfigTest
       Map<Object, Object> expected = new HashMap<Object, Object>();
       expected.put(string1, string2);
       expected.put(string2, string1);
-      expected.put(new Integer(1), integer);
+      expected.put(1, integer);
       assertEquals(expected, result);
    }
 
@@ -382,7 +382,7 @@ public class MapTestCase extends AbstractKernelConfigTest
       Map<Object, Object> expected = new HashMap<Object, Object>();
       expected.put(string1, string2);
       expected.put(string2, string1);
-      expected.put(integer, new Integer(1));
+      expected.put(integer, 1);
       assertEquals(expected, result);
    }
 
