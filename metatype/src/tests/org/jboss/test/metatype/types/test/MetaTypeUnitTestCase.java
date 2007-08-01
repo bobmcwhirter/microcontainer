@@ -29,6 +29,7 @@ import java.util.List;
 import junit.framework.Test;
 
 import org.jboss.metatype.api.types.MetaType;
+import org.jboss.metatype.api.types.Name;
 import org.jboss.metatype.api.values.ArrayValue;
 import org.jboss.metatype.api.values.CompositeValue;
 import org.jboss.metatype.api.values.EnumValue;
@@ -74,7 +75,7 @@ public class MetaTypeUnitTestCase extends AbstractMetaTypeTest
    public void testAllowedClasses() throws Exception
    {
       List<String> allowedClassNames = MetaType.ALLOWED_CLASSNAMES;
-      assertEquals(19, allowedClassNames.size());
+      assertEquals(20, allowedClassNames.size());
       checkMetaType(allowedClassNames, Void.class);
       checkMetaType(allowedClassNames, Boolean.class);
       checkMetaType(allowedClassNames, Character.class);
@@ -88,6 +89,7 @@ public class MetaTypeUnitTestCase extends AbstractMetaTypeTest
       checkMetaType(allowedClassNames, Date.class);
       checkMetaType(allowedClassNames, BigDecimal.class);
       checkMetaType(allowedClassNames, BigInteger.class);
+      checkMetaType(allowedClassNames, Name.class);
       checkMetaType(allowedClassNames, SimpleValue.class);
       checkMetaType(allowedClassNames, EnumValue.class);
       checkMetaType(allowedClassNames, GenericValue.class);

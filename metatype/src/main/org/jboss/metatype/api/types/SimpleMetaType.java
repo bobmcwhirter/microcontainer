@@ -83,6 +83,9 @@ public class SimpleMetaType<T extends Serializable> extends AbstractMetaType<T>
    /** The simple type for java.lang.String */
    public static final SimpleMetaType<String> STRING;
 
+   /** The simple type for an object name */
+   public static final SimpleMetaType<Name> NAMEDOBJECT;
+
    /** The simple type for java.lang.Void */
    public static final SimpleMetaType VOID;
 
@@ -100,6 +103,7 @@ public class SimpleMetaType<T extends Serializable> extends AbstractMetaType<T>
       LONG = new SimpleMetaType<Long>(Long.class.getName());
       SHORT = new SimpleMetaType<Short>(Short.class.getName());
       STRING = new SimpleMetaType<String>(String.class.getName());
+      NAMEDOBJECT = new SimpleMetaType<Name>(Name.class.getName());
       VOID = new SimpleMetaType(Void.class.getName());
    }
 
@@ -156,6 +160,8 @@ public class SimpleMetaType<T extends Serializable> extends AbstractMetaType<T>
          return VOID;
       if (className.equals(DATE.getClassName()))
          return DATE;
+      if (className.equals(NAMEDOBJECT.getClassName()))
+         return NAMEDOBJECT;
       return null;
    }
 

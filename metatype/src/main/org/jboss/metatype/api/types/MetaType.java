@@ -62,6 +62,7 @@ public interface MetaType<T extends Serializable> extends Serializable
     * java.lang.Date<br>
     * java.math.BigDecimal<br>
     * java.math.BigInteger<br>
+    * {@link Name}<br>
     * {@link SimpleValue}<br>
     * {@link EnumValue}<br>
     * {@link GenericValue}<br>
@@ -84,6 +85,7 @@ public interface MetaType<T extends Serializable> extends Serializable
       Date.class.getName(),
       BigDecimal.class.getName(),
       BigInteger.class.getName(),
+      Name.class.getName(),
       SimpleValue.class.getName(),
       EnumValue.class.getName(),
       GenericValue.class.getName(),

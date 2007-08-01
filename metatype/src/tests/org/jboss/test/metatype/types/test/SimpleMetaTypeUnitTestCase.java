@@ -27,9 +27,11 @@ import java.util.Date;
 
 import junit.framework.Test;
 
+import org.jboss.metatype.api.types.Name;
 import org.jboss.metatype.api.types.SimpleMetaType;
 import org.jboss.metatype.api.values.SimpleValue;
 import org.jboss.metatype.api.values.SimpleValueSupport;
+import org.jboss.metatype.plugins.types.StringName;
 import org.jboss.test.metatype.AbstractMetaTypeTest;
 
 /**
@@ -74,7 +76,8 @@ public class SimpleMetaTypeUnitTestCase extends AbstractMetaTypeTest
       SimpleMetaType.LONG,
       SimpleMetaType.SHORT,
       SimpleMetaType.STRING,
-      SimpleMetaType.VOID
+      SimpleMetaType.VOID,
+      SimpleMetaType.NAMEDOBJECT
    };
 
    Class[] classes = new Class[]
@@ -91,7 +94,8 @@ public class SimpleMetaTypeUnitTestCase extends AbstractMetaTypeTest
       Long.class,
       Short.class,
       String.class,
-      Void.class
+      Void.class,
+      Name.class
    };
 
    @SuppressWarnings("unchecked")
@@ -109,7 +113,8 @@ public class SimpleMetaTypeUnitTestCase extends AbstractMetaTypeTest
       new SimpleValueSupport<Long>(SimpleMetaType.LONG, new Long(1)),
       new SimpleValueSupport<Short>(SimpleMetaType.SHORT, new Short(Short.MAX_VALUE)),
       new SimpleValueSupport<String>(SimpleMetaType.STRING, new String("hello")),
-      new SimpleValueSupport(SimpleMetaType.VOID, null)
+      new SimpleValueSupport(SimpleMetaType.VOID, null),
+      new SimpleValueSupport<Name>(SimpleMetaType.NAMEDOBJECT, new StringName("objectref"))
    };
 
    @SuppressWarnings("unchecked")
@@ -127,7 +132,8 @@ public class SimpleMetaTypeUnitTestCase extends AbstractMetaTypeTest
       new SimpleValueSupport<Long>(SimpleMetaType.LONG, null),
       new SimpleValueSupport<Short>(SimpleMetaType.SHORT, null),
       new SimpleValueSupport<String>(SimpleMetaType.STRING, null),
-      new SimpleValueSupport(SimpleMetaType.VOID, null)
+      new SimpleValueSupport(SimpleMetaType.VOID, null),
+      new SimpleValueSupport<Name>(SimpleMetaType.NAMEDOBJECT, null)
    };
 
    /**
