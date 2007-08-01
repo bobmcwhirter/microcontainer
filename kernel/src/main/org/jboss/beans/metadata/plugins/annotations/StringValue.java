@@ -36,4 +36,6 @@ public @interface StringValue
    String value();
 
    String type() default "";
+
+   boolean replace() default true;
 }

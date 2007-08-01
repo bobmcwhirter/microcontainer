@@ -45,16 +45,16 @@ import org.jboss.util.JBossStringBuilder;
 public class AbstractDependencyInfo extends JBossObject implements DependencyInfo
 {
    /** My dependencies */
-   private Set<DependencyItem> iDependOn = new CopyOnWriteArraySet<DependencyItem>();;
+   private Set<DependencyItem> iDependOn = new CopyOnWriteArraySet<DependencyItem>();
 
    /** Dependencies referencing me */
-   private Set<DependencyItem> dependsOnMe = new CopyOnWriteArraySet<DependencyItem>();;
+   private Set<DependencyItem> dependsOnMe = new CopyOnWriteArraySet<DependencyItem>();
 
    /** Unresolved dependencies */
-   private Set<DependencyItem> unresolved = new CopyOnWriteArraySet<DependencyItem>();;
+   private Set<DependencyItem> unresolved = new CopyOnWriteArraySet<DependencyItem>();
 
    /** Install callbacks */
-   private Set<CallbackItem> installCallbacks = new CopyOnWriteArraySet<CallbackItem>();;
+   private Set<CallbackItem> installCallbacks = new CopyOnWriteArraySet<CallbackItem>();
 
    /** Uninstall callbacks */
    private Set<CallbackItem> uninstallCallbacks = new CopyOnWriteArraySet<CallbackItem>();

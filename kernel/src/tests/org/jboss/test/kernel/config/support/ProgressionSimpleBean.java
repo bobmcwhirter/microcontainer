@@ -19,30 +19,32 @@
 * Software Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA
 * 02110-1301 USA, or see the FSF site: http://www.fsf.org.
 */
-package org.jboss.kernel.plugins.annotations;
+package org.jboss.test.kernel.config.support;
 
 import org.jboss.beans.metadata.plugins.annotations.StringValue;
-import org.jboss.beans.metadata.plugins.StringValueMetaData;
-import org.jboss.beans.metadata.spi.ValueMetaData;
 
 /**
- * @author <a href="mailto:ales.justin@jboss.com">Ales Justin</a>
+ * A simple bean
+ *
+ * @author <a href="ales.justin@jboss.com">Ales Justin</a>
  */
-public class StringValueAnnotationPlugin extends PropertyAnnotationPlugin<StringValue>
+public class ProgressionSimpleBean extends SimpleBean
 {
-   static StringValueAnnotationPlugin INSTANCE = new StringValueAnnotationPlugin();
-
-   public StringValueAnnotationPlugin()
+   @StringValue(value = "123.456", type="java.lang.Double")
+   public void setAnint(int anint)
    {
-      super(StringValue.class);
+      super.setAnint(anint);
    }
 
-   public ValueMetaData createValueMetaData(StringValue annotation)
+   @StringValue(value = "314159")
+   public void setAFloat(Float float1)
    {
-      StringValueMetaData value = new StringValueMetaData(annotation.value());
-      if (isAttributePresent(annotation.type()))
-         value.setType(annotation.type());
-      value.setReplace(annotation.replace());
-      return value;
+      super.setAFloat(float1);
+   }
+
+   @StringValue(value = "987.6543", type="java.lang.Float")
+   public void setAShort(Short short1)
+   {
+      super.setAShort(short1);
    }
 }

@@ -19,30 +19,35 @@
 * Software Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA
 * 02110-1301 USA, or see the FSF site: http://www.fsf.org.
 */
-package org.jboss.kernel.plugins.annotations;
+package org.jboss.test.kernel.config.test;
 
-import org.jboss.beans.metadata.plugins.annotations.StringValue;
-import org.jboss.beans.metadata.plugins.StringValueMetaData;
-import org.jboss.beans.metadata.spi.ValueMetaData;
+import junit.framework.Test;
+import org.jboss.beans.metadata.plugins.builder.BeanMetaDataBuilderFactory;
+import org.jboss.beans.metadata.spi.builder.BeanMetaDataBuilder;
+import org.jboss.test.kernel.config.support.ProgressionSimpleBean;
+import org.jboss.test.kernel.config.support.SimpleBean;
 
 /**
- * @author <a href="mailto:ales.justin@jboss.com">Ales Justin</a>
+ * Progression @annotation Test Case.
+ *
+ * @author <a href="ales.justin@jboss.com">Ales Justin</a>
  */
-public class StringValueAnnotationPlugin extends PropertyAnnotationPlugin<StringValue>
+public class ProgressionAnnotationTestCase extends ProgressionTestCase
 {
-   static StringValueAnnotationPlugin INSTANCE = new StringValueAnnotationPlugin();
-
-   public StringValueAnnotationPlugin()
+   public static Test suite()
    {
-      super(StringValue.class);
+      return suite(ProgressionAnnotationTestCase.class);
    }
 
-   public ValueMetaData createValueMetaData(StringValue annotation)
+   public ProgressionAnnotationTestCase(String name)
    {
-      StringValueMetaData value = new StringValueMetaData(annotation.value());
-      if (isAttributePresent(annotation.type()))
-         value.setType(annotation.type());
-      value.setReplace(annotation.replace());
-      return value;
+      super(name);
    }
+
+   protected SimpleBean instantiateProgressionBeans() throws Throwable
+   {
+      BeanMetaDataBuilder builder = BeanMetaDataBuilderFactory.createBuilder("SimpleBean", ProgressionSimpleBean.class.getName());
+      return (SimpleBean)instantiate(builder.getBeanMetaData());
+   }
+
 }

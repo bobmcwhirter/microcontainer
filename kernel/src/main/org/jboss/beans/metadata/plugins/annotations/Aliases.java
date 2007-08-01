@@ -34,4 +34,6 @@ import java.lang.annotation.RetentionPolicy;
 public @interface Aliases
 {
    String[] value();
+
+   boolean replace() default true;
 }

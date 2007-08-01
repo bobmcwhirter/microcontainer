@@ -19,30 +19,40 @@
 * Software Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA
 * 02110-1301 USA, or see the FSF site: http://www.fsf.org.
 */
-package org.jboss.kernel.plugins.annotations;
+package org.jboss.test.kernel.config.support;
 
+import java.util.Map;
+
+import org.jboss.beans.metadata.plugins.annotations.Constructor;
+import org.jboss.beans.metadata.plugins.annotations.EntryValue;
+import org.jboss.beans.metadata.plugins.annotations.MapValue;
 import org.jboss.beans.metadata.plugins.annotations.StringValue;
-import org.jboss.beans.metadata.plugins.StringValueMetaData;
-import org.jboss.beans.metadata.spi.ValueMetaData;
+import org.jboss.beans.metadata.plugins.annotations.Value;
 
 /**
  * @author <a href="mailto:ales.justin@jboss.com">Ales Justin</a>
  */
-public class StringValueAnnotationPlugin extends PropertyAnnotationPlugin<StringValue>
+public class AnnotatedLDAPFactory extends LDAPFactory
 {
-   static StringValueAnnotationPlugin INSTANCE = new StringValueAnnotationPlugin();
-
-   public StringValueAnnotationPlugin()
+   @Constructor
+   public AnnotatedLDAPFactory(
+         @MapValue(
+               keyClass = "java.lang.String",
+               valueClass = "java.lang.String",
+               value = {
+                  @EntryValue(
+                     key = @Value(string = @StringValue("foo.bar.key")),
+                     value = @Value(string = @StringValue("QWERT"))
+                  ),
+                  @EntryValue(
+                     key = @Value(string = @StringValue("xyz.key")),
+                     value = @Value(string = @StringValue(" QWERT "))
+                  )
+               }
+         )
+         Map<String, String> map
+   )
    {
-      super(StringValue.class);
-   }
-
-   public ValueMetaData createValueMetaData(StringValue annotation)
-   {
-      StringValueMetaData value = new StringValueMetaData(annotation.value());
-      if (isAttributePresent(annotation.type()))
-         value.setType(annotation.type());
-      value.setReplace(annotation.replace());
-      return value;
+      super(map);
    }
 }

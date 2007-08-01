@@ -19,30 +19,42 @@
 * Software Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA
 * 02110-1301 USA, or see the FSF site: http://www.fsf.org.
 */
-package org.jboss.kernel.plugins.annotations;
+package org.jboss.test.kernel.config.test;
 
-import org.jboss.beans.metadata.plugins.annotations.StringValue;
-import org.jboss.beans.metadata.plugins.StringValueMetaData;
-import org.jboss.beans.metadata.spi.ValueMetaData;
+import junit.framework.Test;
+import org.jboss.beans.metadata.plugins.builder.BeanMetaDataBuilderFactory;
+import org.jboss.beans.metadata.spi.builder.BeanMetaDataBuilder;
+import org.jboss.test.kernel.config.support.MyElementAnnotated;
+import org.jboss.test.kernel.config.support.MyElement;
+import org.w3c.dom.Element;
 
 /**
+ * Test org.w3c.dom.Element usage in MC xml.
+ *
  * @author <a href="mailto:ales.justin@jboss.com">Ales Justin</a>
  */
-public class StringValueAnnotationPlugin extends PropertyAnnotationPlugin<StringValue>
+public class ElementAnnotationTestCase extends ElementTestCase
 {
-   static StringValueAnnotationPlugin INSTANCE = new StringValueAnnotationPlugin();
-
-   public StringValueAnnotationPlugin()
+   public ElementAnnotationTestCase(String name)
    {
-      super(StringValue.class);
+      super(name);
    }
 
-   public ValueMetaData createValueMetaData(StringValue annotation)
+   public ElementAnnotationTestCase(String name, boolean xmltest)
    {
-      StringValueMetaData value = new StringValueMetaData(annotation.value());
-      if (isAttributePresent(annotation.type()))
-         value.setType(annotation.type());
-      value.setReplace(annotation.replace());
-      return value;
+      super(name, xmltest);
    }
+
+   public static Test suite()
+   {
+      return suite(ElementAnnotationTestCase.class);
+   }
+
+   protected Element instantiateElement() throws Throwable
+   {
+      BeanMetaDataBuilder builder = BeanMetaDataBuilderFactory.createBuilder("MyElement", MyElementAnnotated.class.getName());
+      MyElement holder = (MyElement)instantiate(builder.getBeanMetaData());
+      return holder.getMyElement();
+   }
+
 }

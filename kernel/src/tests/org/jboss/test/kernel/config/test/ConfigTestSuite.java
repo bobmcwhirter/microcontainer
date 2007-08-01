@@ -71,13 +71,17 @@ public class ConfigTestSuite extends TestSuite
       suite.addTest(MapAnnotationTestCase.suite());
       suite.addTest(ProgressionTestCase.suite());
       suite.addTest(ProgressionXMLTestCase.suite());
+      suite.addTest(ProgressionAnnotationTestCase.suite());
       suite.addTest(BeanMetaDataBuilderTestCase.suite());
       suite.addTest(PropertyReplaceTestCase.suite());
       suite.addTest(PropertyReplaceXMLTestCase.suite());
+      suite.addTest(PropertyReplaceAnnotationTestCase.suite());
       suite.addTest(ElementTestCase.suite());
       suite.addTest(ElementXMLTestCase.suite());
+      suite.addTest(ElementAnnotationTestCase.suite());
       suite.addTest(ValueFactoryTestCase.suite());
       suite.addTest(ValueFactoryXMLTestCase.suite());
+      suite.addTest(ValueFactoryAnnotationTestCase.suite());
 
       return suite;
    }

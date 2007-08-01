@@ -19,30 +19,21 @@
 * Software Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA
 * 02110-1301 USA, or see the FSF site: http://www.fsf.org.
 */
-package org.jboss.kernel.plugins.annotations;
+package org.jboss.test.kernel.config.support;
 
+import org.w3c.dom.Element;
 import org.jboss.beans.metadata.plugins.annotations.StringValue;
-import org.jboss.beans.metadata.plugins.StringValueMetaData;
-import org.jboss.beans.metadata.spi.ValueMetaData;
 
 /**
- * @author <a href="mailto:ales.justin@jboss.com">Ales Justin</a>
+ * Element holder bean.
+ *
+ * @author <a href="ales.justin@jboss.com">Ales Justin</a>
  */
-public class StringValueAnnotationPlugin extends PropertyAnnotationPlugin<StringValue>
+public class MyElementAnnotated extends MyElement
 {
-   static StringValueAnnotationPlugin INSTANCE = new StringValueAnnotationPlugin();
-
-   public StringValueAnnotationPlugin()
+   @StringValue("<someelement attrib=\"someattribute\"/>")
+   public void setMyElement(Element myElement)
    {
-      super(StringValue.class);
-   }
-
-   public ValueMetaData createValueMetaData(StringValue annotation)
-   {
-      StringValueMetaData value = new StringValueMetaData(annotation.value());
-      if (isAttributePresent(annotation.type()))
-         value.setType(annotation.type());
-      value.setReplace(annotation.replace());
-      return value;
+      super.setMyElement(myElement);
    }
 }

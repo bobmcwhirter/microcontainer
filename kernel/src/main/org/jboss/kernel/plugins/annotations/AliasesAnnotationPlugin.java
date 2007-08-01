@@ -28,6 +28,7 @@ import org.jboss.beans.metadata.spi.BeanMetaData;
 import org.jboss.reflect.spi.ClassInfo;
 import org.jboss.kernel.spi.dependency.KernelControllerContext;
 import org.jboss.dependency.spi.Controller;
+import org.jboss.util.StringPropertyReplacer;
 
 /**
  * @author <a href="mailto:ales.justin@jboss.com">Ales Justin</a>
@@ -46,6 +47,10 @@ public class AliasesAnnotationPlugin extends ClassAnnotationPlugin<Aliases>
       Controller controller = context.getController();
       for(String alias : annotation.value())
       {
+         // check for ${property}
+         if (annotation.replace())
+            alias = StringPropertyReplacer.replaceProperties(alias);
+
          if (aliases == null || aliases.contains(alias) == false)
          {
             // alias will get removed when original will be undeployed
