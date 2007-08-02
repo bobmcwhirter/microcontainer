@@ -33,6 +33,10 @@ import org.jboss.metadata.spi.scope.ScopeKey;
 import org.jboss.test.kernel.deployment.support.NameAwareBean;
 import org.jboss.kernel.spi.dependency.KernelControllerContext;
 import org.jboss.reflect.spi.MethodInfo;
+import org.jboss.dependency.spi.ControllerContext;
+import org.jboss.dependency.spi.ControllerMode;
+import org.jboss.dependency.spi.DependencyInfo;
+import org.jboss.dependency.plugins.AbstractDependencyItem;
 
 /**
  * @author <a href="mailto:ales.justin@jboss.com">Ales Justin</a>
@@ -105,6 +109,29 @@ public class FromContextUnsupportedTestCase extends AbstractDeploymentTest
       try
       {
          bmd.setName("failedName");   
+      }
+      catch(Throwable t)
+      {
+         assertUnsupported(t);
+      }
+
+      NameAwareBean ctx = (NameAwareBean)getBean("context");
+      assertNotNull(ctx);
+      ControllerContext realCtx = ctx.getContext();
+      assertNotNull(realCtx);
+      try
+      {
+         realCtx.setMode(ControllerMode.DISABLED);
+      }
+      catch(Throwable t)
+      {
+         assertUnsupported(t);
+      }
+      DependencyInfo dependencyInfo = realCtx.getDependencyInfo();
+      assertNotNull(dependencyInfo);
+      try
+      {
+         dependencyInfo.addIDependOn(new AbstractDependencyItem());
       }
       catch(Throwable t)
       {

@@ -30,6 +30,7 @@ import java.util.Collections;
 import java.util.HashSet;
 
 import org.jboss.kernel.spi.dependency.KernelControllerContext;
+import org.jboss.kernel.spi.dependency.helpers.UnmodifiableKernelControllerContext;
 import org.jboss.metadata.spi.MetaData;
 import org.jboss.metadata.spi.scope.ScopeKey;
 import org.jboss.metadata.spi.helpers.UnmodifiableMetaData;
@@ -37,6 +38,7 @@ import org.jboss.util.JBossObject;
 import org.jboss.util.JBossStringBuilder;
 import org.jboss.reflect.plugins.introspection.ReflectionUtils;
 import org.jboss.dependency.spi.ControllerContext;
+import org.jboss.dependency.spi.helpers.UnmodifiableControllerContext;
 import org.jboss.beans.info.spi.BeanInfo;
 import org.jboss.beans.info.spi.helpers.UnmodifiableBeanInfo;
 
@@ -304,8 +306,9 @@ public abstract class FromContext<T extends ControllerContext> extends JBossObje
 
       public ControllerContext internalExecute(ControllerContext context)
       {
-         // todo - wrapper
-         return context;
+         if (context instanceof KernelControllerContext)
+            return new UnmodifiableKernelControllerContext((KernelControllerContext)context);
+         return new UnmodifiableControllerContext<ControllerContext>(context);
       }
    }
 
