@@ -24,6 +24,8 @@ package org.jboss.managed.api;
 import java.io.Serializable;
 import java.util.Set;
 
+import org.jboss.metatype.api.types.Name;
+
 /**
  * ManagedObject.
  * 
@@ -38,7 +40,14 @@ public interface ManagedObject extends Serializable
     * @return the name
     */
    String getName();
-   
+
+   /**
+    * Get the external name by which the ManagedObject
+    * @see {@linkplain ManagedObjectRegistry}}
+    * @return
+    */
+   Name getExternalName();
+
    /**
     * Get the underlying object
     * 
@@ -67,4 +76,11 @@ public interface ManagedObject extends Serializable
     * @return the properties
     */
    Set<ManagedProperty> getProperties();
+
+   /**
+    * Get the operations
+    * 
+    * @return the operations
+    */
+   Set<ManagedOperation> getOperations();
 }

@@ -76,10 +76,10 @@ public interface ManagedOperation extends Serializable
     * signature array is returned if the operation takes no arguments.
     * @return parameter information for the operation arguments.
     */
-   public ManagedParameter[] getSignature();
+   public ManagedParameter[] getParameters();
 
    /**
-    * Invoker the operation given its parameter values.
+    * Invoke the operation given its parameter values.
     * 
     * @param param the varags for the operation parameters.
     * @return the MetaValue for the result.

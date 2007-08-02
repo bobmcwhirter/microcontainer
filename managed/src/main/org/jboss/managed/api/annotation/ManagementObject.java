@@ -36,9 +36,12 @@ import java.lang.annotation.Target;
 @Retention(RetentionPolicy.RUNTIME)
 public @interface ManagementObject
 {
-   /** The object name */
+   /** The name */
    String name() default ManagementConstants.GENERATED;
    
    /** What properties to include */
    ManagementProperties properties() default ManagementProperties.ALL;
+
+   /** The exposed operations */
+   ManagementOperation[] operations() default {};
 }

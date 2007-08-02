@@ -26,7 +26,9 @@ import java.util.HashSet;
 import java.util.Set;
 
 import org.jboss.managed.api.ManagedObject;
+import org.jboss.managed.api.ManagedOperation;
 import org.jboss.managed.api.ManagedProperty;
+import org.jboss.metatype.api.types.Name;
 
 /**
  * ManagedObjectImpl.
@@ -41,13 +43,17 @@ public class ManagedObjectImpl implements ManagedObject
 
    /** The attachment name */
    private String name;
-   
+   /** */
+   private Name externalName;
+
    /** The attachment */
    private Serializable attachment;
    
    /** The properties */
    private Set<ManagedProperty> properties;
-   
+   /** The operations */
+   private Set<ManagedOperation> operations;
+
    /**
     * Create a new ManagedObjectImpl
     * 
@@ -55,11 +61,7 @@ public class ManagedObjectImpl implements ManagedObject
     */
    public ManagedObjectImpl(String name)
    {
-      if (name == null)
-         throw new IllegalArgumentException("Null name");
-      
-      this.name = name;
-      properties = new HashSet<ManagedProperty>();
+      this(name, new HashSet<ManagedProperty>(), new HashSet<ManagedOperation>(), null);
    }
    
    /**
@@ -70,23 +72,32 @@ public class ManagedObjectImpl implements ManagedObject
     */
    public ManagedObjectImpl(String name, Set<ManagedProperty> properties)
    {
-      if (name == null)
-         throw new IllegalArgumentException("Null name");
-      if (properties == null)
-         throw new IllegalArgumentException("Null properties");
-      
-      this.name = name;
-      this.properties = properties;
+      this(name, properties, new HashSet<ManagedOperation>(), null);
    }
-   
+
    /**
     * Create a new ManagedObjectImpl
     * 
     * @param name the attachment name
-    * @param properties the properties 
+    * @param properties the properties
+    * @param operations the operations
+    */
+   public ManagedObjectImpl(String name, Set<ManagedProperty> properties,
+         HashSet<ManagedOperation> operations)
+   {
+      this(name, properties, operations, null);
+   }
+
+   /**
+    * Create a new ManagedObjectImpl
+    * 
+    * @param name the attachment name
+    * @param properties the properties
+    * @param operations the operations
     * @param attachment the attachment
     */
-   public ManagedObjectImpl(String name, Set<ManagedProperty> properties, Serializable attachment)
+   public ManagedObjectImpl(String name, Set<ManagedProperty> properties,
+         HashSet<ManagedOperation> operations, Serializable attachment)
    {
       if (name == null)
          throw new IllegalArgumentException("Null name");
@@ -95,12 +106,44 @@ public class ManagedObjectImpl implements ManagedObject
       
       this.name = name;
       this.properties = properties;
+      this.operations = operations;
       setAttachment(attachment);
    }
-   
+
+   /**
+    * Create a new ManagedObjectImpl
+    * 
+    * @param name the attachment name
+    * @param externalName - the ManagedObjectRegistry name
+    * @param properties the properties 
+    * @param attachment the attachment
+    */
+   public ManagedObjectImpl(String name, Name externalName,
+         Set<ManagedProperty> properties, Serializable attachment)
+   {
+      if (name == null)
+         throw new IllegalArgumentException("Null name");
+      if (properties == null)
+         throw new IllegalArgumentException("Null properties");
+      
+      this.name = name;
+      this.externalName = externalName;
+      this.properties = properties;
+      setAttachment(attachment);
+   }
+
    public String getName()
    {
       return name;
+   }
+
+   public Name getExternalName()
+   {
+      return externalName;
+   }
+   public void setExternalName(Name externalName)
+   {
+      this.externalName = externalName;
    }
 
    public Set<String> getPropertyNames()
@@ -144,6 +187,11 @@ public class ManagedObjectImpl implements ManagedObject
       this.attachment = attachment;
    }
    
+   public Set<ManagedOperation> getOperations()
+   {
+      return operations;
+   }
+
    @Override
    public boolean equals(Object obj)
    {

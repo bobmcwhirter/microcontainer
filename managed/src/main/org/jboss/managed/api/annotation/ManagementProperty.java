@@ -26,10 +26,11 @@ import java.lang.annotation.Retention;
 import java.lang.annotation.RetentionPolicy;
 import java.lang.annotation.Target;
 
+import org.jboss.managed.spi.factory.ManagedPropertyConstraintsPopulator;
+import org.jboss.managed.spi.factory.ManagedPropertyConstraintsPopulatorFactory;
+
 /**
  * ManagementProperty annotation for describing a ManagedProperty
- * 
- * TODO: Need more info on meta-type such as constraints, allowed values.
  * 
  * @author <a href="adrian@jboss.com">Adrian Brock</a>
  * @author Scott.Stark@jboss.org
@@ -61,5 +62,23 @@ public @interface ManagementProperty
 
    /** The views this property should be used in */
    ViewUse[] use() default {ViewUse.RUNTIME};
+
+   /** The constraints, allowed values populator factory */
+   Class<? extends ManagedPropertyConstraintsPopulatorFactory> constraintsFactory()
+      default DEFAULT.class;
+
+   /**
+    * Used in {@link ManagementProperty#constraintsFactory()} to
+    * signal that the factory be inferred from the type
+    * of the property.
+    */
+   static final class DEFAULT
+      implements ManagedPropertyConstraintsPopulatorFactory
+   {
+      public ManagedPropertyConstraintsPopulator newInstance()
+      {
+         return null;
+      }
+   }
 
 }

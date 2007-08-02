@@ -28,6 +28,7 @@ import java.util.List;
 
 import org.jboss.managed.api.annotation.ManagementComponent;
 import org.jboss.managed.api.annotation.ManagementObject;
+import org.jboss.managed.api.annotation.ManagementProperties;
 import org.jboss.managed.api.annotation.ManagementProperty;
 
 /**
@@ -36,14 +37,20 @@ import org.jboss.managed.api.annotation.ManagementProperty;
  * @author Scott.Stark@jboss.org
  * @version $Revision$
  */
-@ManagementObject
+@ManagementObject(properties=ManagementProperties.EXPLICIT)
 public class DSMetaData implements Serializable
 {
    private static final long serialVersionUID = 1;
    private String diplayName;
+   private List<String> aliases = new ArrayList<String>();
    private List<ConnMetaData> deployments = new ArrayList<ConnMetaData>();
 
-   @ManagementProperty(name="display-name", use={})
+   public DSMetaData()
+   {
+      deployments.add(new ConnMetaData());
+   }
+
+   @ManagementProperty(name="display-name", description="display name of DS deployment", use={})
    public String getDiplayName()
    {
       return diplayName;
@@ -54,15 +61,24 @@ public class DSMetaData implements Serializable
       this.diplayName = diplayName;
    }
 
+   public List<String> getAliases()
+   {
+      return aliases;
+   }
+   public void setAliases(List<String> aliases)
+   {
+      this.aliases = aliases;
+   }
+
    public void addManagedConnectionFactoryDeployment(ConnMetaData deployment)
    {
       this.deployments.add(deployment);
    }
 
-   @ManagementComponent
+   @ManagementProperty(description="The DS connection factories", managed=true)
    public List<ConnMetaData> getDeployments()
    {
-      return Collections.unmodifiableList(deployments);
+      return deployments;
    }
 
 }

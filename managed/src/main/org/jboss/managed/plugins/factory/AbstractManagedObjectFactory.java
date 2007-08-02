@@ -25,6 +25,9 @@ import java.io.Serializable;
 import java.lang.ref.WeakReference;
 import java.security.AccessController;
 import java.security.PrivilegedAction;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Collection;
 import java.util.HashSet;
 import java.util.Map;
 import java.util.Set;
@@ -35,24 +38,36 @@ import org.jboss.config.plugins.property.PropertyConfiguration;
 import org.jboss.config.spi.Configuration;
 import org.jboss.managed.api.Fields;
 import org.jboss.managed.api.ManagedObject;
+import org.jboss.managed.api.ManagedOperation;
+import org.jboss.managed.api.ManagedParameter;
 import org.jboss.managed.api.ManagedProperty;
+import org.jboss.managed.api.ManagedOperation.Impact;
 import org.jboss.managed.api.annotation.ManagementConstants;
 import org.jboss.managed.api.annotation.ManagementObject;
+import org.jboss.managed.api.annotation.ManagementOperation;
 import org.jboss.managed.api.annotation.ManagementProperties;
 import org.jboss.managed.api.annotation.ManagementProperty;
 import org.jboss.managed.api.factory.ManagedObjectFactory;
 import org.jboss.managed.plugins.DefaultFieldsImpl;
 import org.jboss.managed.plugins.ManagedObjectImpl;
+import org.jboss.managed.plugins.ManagedOperationImpl;
 import org.jboss.managed.plugins.ManagedPropertyImpl;
 import org.jboss.managed.spi.factory.ManagedObjectBuilder;
 import org.jboss.managed.spi.factory.ManagedObjectPopulator;
+import org.jboss.managed.spi.factory.ManagedPropertyConstraintsPopulator;
+import org.jboss.managed.spi.factory.ManagedPropertyConstraintsPopulatorFactory;
+import org.jboss.metatype.api.types.ArrayMetaType;
 import org.jboss.metatype.api.types.GenericMetaType;
 import org.jboss.metatype.api.types.MetaType;
 import org.jboss.metatype.api.types.MetaTypeFactory;
+import org.jboss.metatype.api.values.ArrayValueSupport;
 import org.jboss.metatype.api.values.GenericValueSupport;
 import org.jboss.metatype.api.values.MetaValue;
 import org.jboss.metatype.api.values.MetaValueFactory;
 import org.jboss.reflect.spi.ClassInfo;
+import org.jboss.reflect.spi.MethodInfo;
+import org.jboss.reflect.spi.ParameterInfo;
+import org.jboss.reflect.spi.TypeInfo;
 
 /**
  * AbstractManagedObjectFactory.
@@ -149,9 +164,13 @@ public class AbstractManagedObjectFactory extends ManagedObjectFactory
       BeanInfo beanInfo = configuration.getBeanInfo(clazz);
       ClassInfo classInfo = beanInfo.getClassInfo();
 
-      // TODO: should this be skipped if there is no ManagementObject annotation?
       ManagementObject managementObject = classInfo.getUnderlyingAnnotation(ManagementObject.class);
-      
+      if( managementObject == null )
+      {
+         // Skip the ManagedObject creation
+         return null;
+      }
+
       String name = ManagementConstants.GENERATED;
       if (managementObject != null)
          name = managementObject.name();
@@ -172,13 +191,14 @@ public class AbstractManagedObjectFactory extends ManagedObjectFactory
             // Ignore the "class" property
             if ("class".equals(propertyInfo.getName()))
                continue;
-            
+
             ManagementProperty managementProperty = propertyInfo.getUnderlyingAnnotation(ManagementProperty.class);
 
+            // Check for a simple property
             boolean includeProperty = (propertyType == ManagementProperties.ALL);
             if (managementProperty != null)
                includeProperty = (managementProperty.ignored() == false);
-            
+
             if (includeProperty)
             {
                Fields fields = new DefaultFieldsImpl();
@@ -220,7 +240,11 @@ public class AbstractManagedObjectFactory extends ManagedObjectFactory
                MetaType metaType;
                if (managed)
                {
-                  metaType = MANAGED_OBJECT_META_TYPE;
+                  TypeInfo typeInfo = propertyInfo.getType();
+                  if( typeInfo.isArray() || typeInfo.isCollection() )
+                     metaType = new ArrayMetaType(1, MANAGED_OBJECT_META_TYPE);
+                  else
+                     metaType = MANAGED_OBJECT_META_TYPE;
                }
                else
                {
@@ -228,7 +252,19 @@ public class AbstractManagedObjectFactory extends ManagedObjectFactory
                }
                fields.setField(Fields.META_TYPE, metaType);
 
-               // TODO others (legal values, min/max etc.)
+               // Delegate others (legal values, min/max etc.) to the constraints factory
+               try
+               {
+                  Class<? extends ManagedPropertyConstraintsPopulatorFactory> factoryClass = managementProperty.constraintsFactory();
+                  ManagedPropertyConstraintsPopulatorFactory factory = factoryClass.newInstance();
+                  ManagedPropertyConstraintsPopulator populator = factory.newInstance();
+                  if (populator != null)
+                     populator.populateManagedProperty(clazz, propertyInfo, fields);
+               }
+               catch(Exception e)
+               {
+                  
+               }
                
                ManagedPropertyImpl property = new ManagedPropertyImpl(fields);
                properties.add(property);
@@ -236,13 +272,31 @@ public class AbstractManagedObjectFactory extends ManagedObjectFactory
          }
       }
       
+      /* TODO: Operations. In general the bean metadata does not contain
+       operation information.
+      */
+      Set<ManagedOperation> operations = new HashSet<ManagedOperation>();
+      
+      Set<MethodInfo> methodInfos = beanInfo.getMethods();
+      if (methodInfos != null && methodInfos.isEmpty() == false)
+      {
+         for (MethodInfo methodInfo : methodInfos)
+         {
+            ManagementOperation managementOp = methodInfo.getUnderlyingAnnotation(ManagementOperation.class);
+            if (managementOp == null)
+               continue;
+
+            ManagedOperation op = getManagedOperation(methodInfo, managementOp);
+            operations.add(op);
+         }
+      }
+
       ManagedObjectImpl result = new ManagedObjectImpl(name, properties);
       for (ManagedProperty property : properties)
       {
          ManagedPropertyImpl managedPropertyImpl = (ManagedPropertyImpl) property;
          managedPropertyImpl.setManagedObject(result);
       }
-      
       return result;
    }
 
@@ -319,7 +373,10 @@ public class AbstractManagedObjectFactory extends ManagedObjectFactory
     */
    protected MetaValue getValue(BeanInfo beanInfo, ManagedProperty property, Serializable object)
    {
-      String name = property.getName();
+      // First look to the mapped name
+      String name = property.getMappedName();
+      if (name == null)
+         property.getName();
 
       PropertyInfo propertyInfo = beanInfo.getProperty(name);
       if (propertyInfo == null)
@@ -346,17 +403,63 @@ public class AbstractManagedObjectFactory extends ManagedObjectFactory
       if (value == null)
          return null;
 
-      if (MANAGED_OBJECT_META_TYPE == property.getMetaType())
+      MetaType propertyType = property.getMetaType();
+      if (MANAGED_OBJECT_META_TYPE == propertyType)
       {
          if (value instanceof Serializable == false)
             throw new IllegalStateException("Object is not serializable: " + value.getClass().getName());
          ManagedObject mo = initManagedObject((Serializable) value);
          return new GenericValueSupport(MANAGED_OBJECT_META_TYPE, mo);
       }
+      else if (propertyType.isArray())
+      {
+         ArrayMetaType arrayType = ArrayMetaType.class.cast(propertyType);
+         if (MANAGED_OBJECT_META_TYPE == arrayType.getElementType())
+         {
+            Collection cvalue = getAsCollection(value);
+            ArrayMetaType moType = new ArrayMetaType(1, MANAGED_OBJECT_META_TYPE);
+            ArrayValueSupport moArrayValue = new ArrayValueSupport(moType);
+            ArrayList<ManagedObject> tmp = new ArrayList<ManagedObject>();
+            for(Object element : cvalue)
+            {
+               ManagedObject mo = initManagedObject((Serializable) element);
+               tmp.add(mo);
+            }
+            ManagedObject[] mos = new ManagedObject[tmp.size()];
+            tmp.toArray(mos);
+            moArrayValue.setValue(mos);
+            return moArrayValue;
+         }
+      }
       
       return metaValueFactory.create(value, propertyInfo.getType());
    }
-   
+
+   protected ManagedOperation getManagedOperation(MethodInfo methodInfo,
+         ManagementOperation opAnnotation)
+   {
+      String name = methodInfo.getName();
+      String description = opAnnotation.description();
+      Impact impact = opAnnotation.impact();
+      ParameterInfo[] params = methodInfo.getParameters();
+      TypeInfo returnInfo = methodInfo.getReturnType();
+      MetaType returnType = metaTypeFactory.resolve(returnInfo);
+      ArrayList<ManagedParameter> mparams = new ArrayList<ManagedParameter>();
+      if( params != null )
+      {
+         for(ParameterInfo param : params)
+         {
+            
+         }
+      }
+      ManagedParameter[] parameters = new ManagedParameter[mparams.size()];
+      mparams.toArray(parameters);
+
+      ManagedOperationImpl op = new ManagedOperationImpl(name, description, impact,
+            parameters, returnType);
+      return op;
+   }
+
    /**
     * Get the builder for a class
     * 
@@ -387,5 +490,14 @@ public class AbstractManagedObjectFactory extends ManagedObjectFactory
       if (builder instanceof ManagedObjectPopulator)
          return (ManagedObjectPopulator) builder;
       return this;
+   }
+
+   protected Collection getAsCollection(Object value)
+   {
+      if( value.getClass().isArray() )
+         return Arrays.asList(value);
+      else if (value instanceof Collection)
+         return Collection.class.cast(value);
+      return null;
    }
 }

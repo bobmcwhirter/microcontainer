@@ -21,7 +21,10 @@
 */
 package org.jboss.test.deployers.managed.test;
 
+import java.util.HashMap;
+import java.util.HashSet;
 import java.util.Map;
+import java.util.Set;
 
 import junit.framework.Test;
 import junit.framework.TestSuite;
@@ -30,7 +33,18 @@ import org.jboss.deployers.client.spi.DeployerClient;
 import org.jboss.deployers.client.spi.Deployment;
 import org.jboss.deployers.spi.attachments.MutableAttachments;
 import org.jboss.managed.api.ManagedObject;
+import org.jboss.managed.api.ManagedProperty;
+import org.jboss.managed.api.factory.ManagedObjectFactory;
+import org.jboss.managed.plugins.factory.AbstractManagedObjectFactory;
+import org.jboss.metatype.api.types.ArrayMetaType;
+import org.jboss.metatype.api.types.GenericMetaType;
+import org.jboss.metatype.api.types.MetaType;
+import org.jboss.metatype.api.types.SimpleMetaType;
+import org.jboss.metatype.api.values.ArrayValue;
+import org.jboss.metatype.api.values.MetaValue;
 import org.jboss.test.deployers.AbstractDeployerTest;
+import org.jboss.test.deployers.deployer.support.AllowedDsTypes;
+import org.jboss.test.deployers.deployer.support.DSMetaData;
 import org.jboss.test.deployers.managed.support.TestAttachment;
 import org.jboss.test.deployers.managed.support.TestManagedObjectDeployer;
 import org.jboss.util.graph.Graph;
@@ -117,7 +131,60 @@ public class DeployerManagedObjectUnitTestCase extends AbstractDeployerTest
       assertEquals("changedString1", mo.getProperty("string1").getValue());
       assertEquals("initialString2", mo.getProperty("string2").getValue());
    }
-   
+
+   /**
+    * Validate the ManagedObject for DSMetaData
+    *
+    */
+   public void testDSMetaDataManagedObjectFactory()
+   {
+      ManagedObjectFactory mof = ManagedObjectFactory.getInstance();
+      ManagedObject mo = mof.createManagedObject(DSMetaData.class);
+
+      // Validate the expected properties
+      Set<ManagedProperty> props = mo.getProperties();
+      assertEquals(2, props.size());
+      HashMap<String, ManagedProperty> propsMap = new HashMap<String, ManagedProperty>();
+      for(ManagedProperty prop : props)
+      {
+         propsMap.put(prop.getName(), prop);
+      }
+      log.info("DSMetaData properties: "+props);
+
+      // display-name
+      ManagedProperty displayName = propsMap.get("display-name");
+      assertNotNull(displayName);
+      assertEquals("display name of DS deployment", displayName.getDescription());
+      assertEquals(SimpleMetaType.STRING, displayName.getMetaType());
+
+      // deployments
+      ManagedProperty deployments = propsMap.get("deployments");
+      assertNotNull(deployments);
+      assertEquals("The DS connection factories", deployments.getDescription());
+      MetaType deploymentsType = new ArrayMetaType(1, AbstractManagedObjectFactory.MANAGED_OBJECT_META_TYPE);
+      assertEquals(deploymentsType, deployments.getMetaType());
+      ArrayValue value = ArrayValue.class.cast(deployments.getValue());
+      ArrayMetaType valueType = value.getMetaType();
+      assertEquals(AbstractManagedObjectFactory.MANAGED_OBJECT_META_TYPE, valueType.getElementType());
+
+      Object[] values = value.getValue();
+      assertEquals(1, values.length);
+      // Validate the ConnMetaData ManagedObject
+      ManagedObject connMO = ManagedObject.class.cast(values[0]);
+      props = connMO.getProperties();
+      assertEquals(8, props.size());
+      propsMap.clear();
+      for(ManagedProperty prop : props)
+      {
+         propsMap.put(prop.getName(), prop);
+      }
+      log.info("ConnMetaData properties: "+props);
+      ManagedProperty dsType = propsMap.get("datasource-type");
+      assertNotNull(dsType);
+      Set<MetaValue> dsTypeValues = dsType.getLegalValues();
+      assertTrue(dsTypeValues.containsAll(AllowedDsTypes.values));
+   }
+
    protected DeployerClient getMainDeployer()
    {
       return createMainDeployer(deployer);

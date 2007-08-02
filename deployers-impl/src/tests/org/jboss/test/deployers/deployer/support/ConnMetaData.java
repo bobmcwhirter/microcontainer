@@ -25,7 +25,9 @@ import java.io.Serializable;
 import java.util.Properties;
 
 import org.jboss.managed.api.annotation.ManagementComponent;
+import org.jboss.managed.api.annotation.ManagementObject;
 import org.jboss.managed.api.annotation.ManagementProperty;
+import org.jboss.managed.spi.factory.ManagedPropertyConstraintsPopulatorFactory;
 
 /**
  * Test connection factory like metadata.
@@ -33,16 +35,28 @@ import org.jboss.managed.api.annotation.ManagementProperty;
  * @author Scott.Stark@jboss.org
  * @version $Revision$
  */
+@ManagementObject
 public class ConnMetaData implements Serializable
 {
    private static final long serialVersionUID = 1;
    private int minSize;
    private int maxSize;
+   private String connType;
    private String jndiName;
    private String username;
    private char[] password;
    private Properties connProperties;
    private SecMetaData securityMetaData;
+
+   @ManagementProperty(name="datasource-type", constraintsFactory=AllowedDsTypes.class)
+   public String getConnType()
+   {
+      return connType;
+   }
+   public void setConnType(String connType)
+   {
+      this.connType = connType;
+   }
 
    @ManagementProperty(name="jndi-name")
    public String getJndiName()
@@ -99,7 +113,7 @@ public class ConnMetaData implements Serializable
       this.connProperties = connProperties;
    }
 
-   @ManagementComponent(name="security-domain")
+   @ManagementProperty(name="security-domain", managed=true)
    public SecMetaData getSecurityMetaData()
    {
       return securityMetaData;
