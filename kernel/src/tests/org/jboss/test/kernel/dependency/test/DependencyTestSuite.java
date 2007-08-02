@@ -79,7 +79,7 @@ public class DependencyTestSuite extends TestSuite
       suite.addTest(KernelControllerContextAwareAnnotationTestCase.suite());
       suite.addTest(InstallDependencyTestCase.suite());
       suite.addTest(InstallDependencyXMLTestCase.suite());
-//      suite.addTest(InstallDependencyAnnotationTestCase.suite()); // TODO
+      suite.addTest(InstallDependencyAnnotationTestCase.suite());
       suite.addTest(GenericBeanFactoryInstallDependencyTestCase.suite());
       suite.addTest(GenericBeanFactoryInstallDependencyXMLTestCase.suite());
       suite.addTest(InstallSelfDependencyTestCase.suite());

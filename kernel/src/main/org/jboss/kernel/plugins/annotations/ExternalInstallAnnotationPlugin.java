@@ -21,24 +21,38 @@
 */
 package org.jboss.kernel.plugins.annotations;
 
-import java.lang.annotation.Annotation;
+import java.util.List;
+import java.util.ArrayList;
 
-import org.jboss.beans.metadata.plugins.annotations.Parameter;
-import org.jboss.beans.metadata.spi.ValueMetaData;
+import org.jboss.beans.metadata.plugins.annotations.ExternalInstalls;
+import org.jboss.beans.metadata.plugins.annotations.ExternalInstall;
+import org.jboss.beans.metadata.plugins.AbstractBeanMetaData;
+import org.jboss.beans.metadata.spi.BeanMetaData;
+import org.jboss.beans.metadata.spi.InstallMetaData;
 
 /**
- * @param <C> annotation type
  * @author <a href="mailto:ales.justin@jboss.com">Ales Justin</a>
  */
-public abstract class ParametersAnnotationPlugin<C extends Annotation> extends PropertyAnnotationPlugin<C>
+public class ExternalInstallAnnotationPlugin extends ExternalInstallationAnnotationPlugin<ExternalInstalls>
 {
-   public ParametersAnnotationPlugin(Class<C> annotation)
+   protected ExternalInstallAnnotationPlugin()
    {
-      super(annotation);
+      super(ExternalInstalls.class);
    }
 
-   protected ValueMetaData createValueMetaData(Parameter parameter)
+   protected List<InstallMetaData> getExistingInstallMetaData(BeanMetaData beanMetaData)
    {
-      return ValueUtil.createValueMetaData(parameter);
+      List<InstallMetaData> list = beanMetaData.getInstalls();
+      if (list == null)
+      {
+         list = new ArrayList<InstallMetaData>();
+         ((AbstractBeanMetaData)beanMetaData).setInstalls(list);
+      }
+      return list;
+   }
+
+   protected ExternalInstall[] getExternalInstalls(ExternalInstalls annotation)
+   {
+      return annotation.value();
    }
 }

@@ -82,6 +82,8 @@ public class BasicBeanAnnotationAdapter implements BeanAnnotationAdapter
       addAnnotationPlugin(new DependsAnnotationPlugin());
       addAnnotationPlugin(new SupplysAnnotationPlugin());
       addAnnotationPlugin(new ClassFactoryAnnotationPlugin(adapters));
+      addAnnotationPlugin(new ExternalInstallAnnotationPlugin());
+      addAnnotationPlugin(new ExternalUninstallAnnotationPlugin());
 /*
       addAnnotationPlugin(new InjectConstructorValueAnnotationPlugin());
       addAnnotationPlugin(new StringValueConstructorValueAnnotationPlugin());

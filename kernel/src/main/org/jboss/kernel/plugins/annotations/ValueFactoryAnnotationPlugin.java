@@ -35,7 +35,7 @@ import org.jboss.dependency.spi.ControllerState;
 /**
  * @author <a href="mailto:ales.justin@jboss.com">Ales Justin</a>
  */
-public class ValueFactoryAnnotationPlugin extends ParametersAnnotationPlugin<ValueFactory>
+public class ValueFactoryAnnotationPlugin extends PropertyAnnotationPlugin<ValueFactory>
 {
    static ValueFactoryAnnotationPlugin INSTANCE = new ValueFactoryAnnotationPlugin();
 

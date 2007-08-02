@@ -24,33 +24,32 @@ package org.jboss.kernel.plugins.annotations;
 import java.lang.annotation.Annotation;
 import java.lang.annotation.ElementType;
 import java.lang.annotation.Target;
-import java.util.Stack;
-import java.util.Iterator;
-import java.util.Set;
-import java.util.HashSet;
 import java.util.Arrays;
 import java.util.Collections;
+import java.util.HashSet;
+import java.util.Iterator;
 import java.util.List;
+import java.util.Set;
+import java.util.Stack;
 
+import org.jboss.beans.metadata.spi.BeanMetaData;
+import org.jboss.beans.metadata.spi.MetaDataVisitor;
+import org.jboss.beans.metadata.spi.MetaDataVisitorNode;
+import org.jboss.dependency.spi.CallbackItem;
+import org.jboss.dependency.spi.ControllerState;
+import org.jboss.dependency.spi.DependencyItem;
 import org.jboss.kernel.spi.dependency.KernelControllerContext;
 import org.jboss.metadata.spi.retrieval.AnnotationItem;
 import org.jboss.metadata.spi.retrieval.MetaDataRetrieval;
 import org.jboss.reflect.spi.AnnotatedInfo;
-import org.jboss.beans.metadata.spi.MetaDataVisitor;
-import org.jboss.beans.metadata.spi.MetaDataVisitorNode;
-import org.jboss.beans.metadata.spi.BeanMetaData;
-import org.jboss.dependency.spi.ControllerState;
-import org.jboss.dependency.spi.DependencyItem;
-import org.jboss.dependency.spi.CallbackItem;
-import org.jboss.logging.Logger;
+import org.jboss.util.JBossObject;
 
 /**
  * @param <T> info type
  * @author <a href="mailto:ales.justin@jboss.com">Ales Justin</a>
  */
-public abstract class AbstractAnnotationPlugin<T extends AnnotatedInfo, C extends Annotation> implements AnnotationPlugin<T, C>
+public abstract class AbstractAnnotationPlugin<T extends AnnotatedInfo, C extends Annotation> extends JBossObject implements AnnotationPlugin<T, C>
 {
-   protected Logger log = Logger.getLogger(getClass());
    private Class<C> annotation;
    private Set<ElementType> types;
 

@@ -19,35 +19,40 @@
 * Software Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA
 * 02110-1301 USA, or see the FSF site: http://www.fsf.org.
 */
-package org.jboss.test.kernel.dependency.test;
+package org.jboss.kernel.plugins.annotations;
 
-import junit.framework.Test;
+import java.util.ArrayList;
+import java.util.List;
+
+import org.jboss.beans.metadata.plugins.annotations.ExternalInstall;
+import org.jboss.beans.metadata.plugins.annotations.ExternalUninstalls;
 import org.jboss.beans.metadata.plugins.AbstractBeanMetaData;
 import org.jboss.beans.metadata.spi.BeanMetaData;
-import org.jboss.test.kernel.dependency.support.SimpleBeanRepository;
-import org.jboss.test.kernel.dependency.support.ExternalInstallSimpleBeanImpl;
+import org.jboss.beans.metadata.spi.InstallMetaData;
 
 /**
- * Install Dependency Test Case.
- *
- * @author <a href="ales.justin@jboss.com">Ales Justin</a>
+ * @author <a href="mailto:ales.justin@jboss.com">Ales Justin</a>
  */
-public class InstallDependencyAnnotationTestCase extends InstallDependencyTestCase
+public class ExternalUninstallAnnotationPlugin extends ExternalInstallationAnnotationPlugin<ExternalUninstalls>
 {
-   public static Test suite()
+   protected ExternalUninstallAnnotationPlugin()
    {
-      return suite(InstallDependencyAnnotationTestCase.class);
+      super(ExternalUninstalls.class);
    }
 
-   public InstallDependencyAnnotationTestCase(String name) throws Throwable
+   protected List<InstallMetaData> getExistingInstallMetaData(BeanMetaData beanMetaData)
    {
-      super(name);
+      List<InstallMetaData> list = beanMetaData.getUninstalls();
+      if (list == null)
+      {
+         list = new ArrayList<InstallMetaData>();
+         ((AbstractBeanMetaData)beanMetaData).setUninstalls(list);
+      }
+      return list;
    }
 
-   protected void setupBeanMetaDatas() throws Throwable
+   protected ExternalInstall[] getExternalInstalls(ExternalUninstalls annotation)
    {
-      AbstractBeanMetaData metaData1 = new AbstractBeanMetaData("Name1", SimpleBeanRepository.class.getName());
-      AbstractBeanMetaData metaData2 = new AbstractBeanMetaData("Name2", ExternalInstallSimpleBeanImpl.class.getName());
-      setBeanMetaDatas(new BeanMetaData[] { metaData1, metaData2 });
+      return annotation.value();
    }
 }

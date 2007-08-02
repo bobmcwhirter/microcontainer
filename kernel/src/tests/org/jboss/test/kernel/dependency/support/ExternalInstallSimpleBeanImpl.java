@@ -23,11 +23,19 @@ package org.jboss.test.kernel.dependency.support;
 
 import java.io.Serializable;
 
+import org.jboss.beans.metadata.plugins.annotations.ExternalInstall;
+import org.jboss.beans.metadata.plugins.annotations.ExternalInstalls;
+import org.jboss.beans.metadata.plugins.annotations.ExternalUninstalls;
+import org.jboss.beans.metadata.plugins.annotations.ThisValue;
+import org.jboss.beans.metadata.plugins.annotations.Value;
+
 /**
  * A simple bean
  *
  * @author <a href="ales.justin@jboss.com">Ales Justin</a>
  */
+@ExternalInstalls({@ExternalInstall(bean = "Name1", method = "addSimpleBean", parameters = {@Value(thisValue = @ThisValue)})})
+@ExternalUninstalls({@ExternalInstall(bean = "Name1", method = "removeSimpleBean", parameters = {@Value(thisValue = @ThisValue)})})
 public class ExternalInstallSimpleBeanImpl implements Serializable, SimpleBean
 {
    // Constants -----------------------------------------------------
