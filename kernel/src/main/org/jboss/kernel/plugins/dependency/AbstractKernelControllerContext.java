@@ -80,9 +80,6 @@ public class AbstractKernelControllerContext extends AbstractControllerContext i
    /** Did we do a describeVisit */
    protected boolean isDescribeProcessed;
 
-   /** Did we do the annotations check */
-   protected boolean areAnnotationsProcessed;
-
    /** The scope */
    protected ScopeKey scope;
 
@@ -279,20 +276,16 @@ public class AbstractKernelControllerContext extends AbstractControllerContext i
 
    public void applyMetaData() throws Throwable
    {
-      if (areAnnotationsProcessed == false)
+      // handle custom annotations
+      AnnotationMetaDataVisitor annotationsVisitor = new AnnotationMetaDataVisitor(metaData);
+      annotationsVisitor.before();
+      try
       {
-         // handle custom annotations
-         AnnotationMetaDataVisitor annotationsVisitor = new AnnotationMetaDataVisitor(metaData);
-         annotationsVisitor.before();
-         try
-         {
-            BeanAnnotationAdapterFactory.getBeanAnnotationAdapter().applyAnnotations(annotationsVisitor);
-            areAnnotationsProcessed = true;
-         }
-         finally
-         {
-            annotationsVisitor.after();
-         }
+         BeanAnnotationAdapterFactory.getBeanAnnotationAdapter().applyAnnotations(annotationsVisitor);
+      }
+      finally
+      {
+         annotationsVisitor.after();
       }
    }
 
