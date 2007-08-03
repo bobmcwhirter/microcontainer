@@ -21,6 +21,7 @@
 */
 package org.jboss.test.deployers.managed.test;
 
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Map;
@@ -44,7 +45,10 @@ import org.jboss.metatype.api.values.ArrayValue;
 import org.jboss.metatype.api.values.MetaValue;
 import org.jboss.test.deployers.AbstractDeployerTest;
 import org.jboss.test.deployers.deployer.support.AllowedDsTypes;
+import org.jboss.test.deployers.deployer.support.ConnMetaData;
 import org.jboss.test.deployers.deployer.support.DSMetaData;
+import org.jboss.test.deployers.deployer.support.LocalDataSourceMetaData;
+import org.jboss.test.deployers.deployer.support.XADataSourceMetaData;
 import org.jboss.test.deployers.managed.support.TestAttachment;
 import org.jboss.test.deployers.managed.support.TestManagedObjectDeployer;
 import org.jboss.util.graph.Graph;
@@ -133,7 +137,7 @@ public class DeployerManagedObjectUnitTestCase extends AbstractDeployerTest
    }
 
    /**
-    * Validate the ManagedObject for DSMetaData
+    * Validate the ManagedObjectFactory for DSMetaData class
     *
     */
    public void testDSMetaDataManagedObjectFactory()
@@ -170,8 +174,9 @@ public class DeployerManagedObjectUnitTestCase extends AbstractDeployerTest
       Object[] values = value.getValue();
       assertEquals(1, values.length);
       // Validate the ConnMetaData ManagedObject
-      ManagedObject connMO = ManagedObject.class.cast(values[0]);
-      props = connMO.getProperties();
+      ManagedObject localConnMO = ManagedObject.class.cast(values[0]);
+      assertEquals(ConnMetaData.class.getName(), localConnMO.getName());
+      props = localConnMO.getProperties();
       assertEquals(8, props.size());
       propsMap.clear();
       for(ManagedProperty prop : props)
@@ -183,6 +188,96 @@ public class DeployerManagedObjectUnitTestCase extends AbstractDeployerTest
       assertNotNull(dsType);
       Set<MetaValue> dsTypeValues = dsType.getLegalValues();
       assertTrue(dsTypeValues.containsAll(AllowedDsTypes.values));
+   }
+
+   /**
+    * Validate the ManagedObjectFactory for DSMetaData instance
+    *
+    */
+   public void testDSMetaDataManagedObjectFactoryInit()
+   {
+      ManagedObjectFactory mof = ManagedObjectFactory.getInstance();
+      DSMetaData dsmd = new DSMetaData();
+      LocalDataSourceMetaData ds = new LocalDataSourceMetaData();
+      XADataSourceMetaData xads = new XADataSourceMetaData();
+      ArrayList<ConnMetaData> deployments = new ArrayList<ConnMetaData>();
+      deployments.add(ds);
+      deployments.add(xads);
+      dsmd.setDeployments(deployments);
+      ManagedObject mo = mof.initManagedObject(dsmd);
+
+      // Validate the expected properties
+      Set<ManagedProperty> props = mo.getProperties();
+      assertEquals(2, props.size());
+      HashMap<String, ManagedProperty> propsMap = new HashMap<String, ManagedProperty>();
+      for(ManagedProperty prop : props)
+      {
+         propsMap.put(prop.getName(), prop);
+      }
+      log.info("DSMetaData properties: "+props);
+
+      // display-name
+      ManagedProperty displayName = propsMap.get("display-name");
+      assertNotNull(displayName);
+      assertEquals("display name of DS deployment", displayName.getDescription());
+      assertEquals(SimpleMetaType.STRING, displayName.getMetaType());
+
+      // deployments
+      ManagedProperty dsDeployments = propsMap.get("deployments");
+      assertNotNull(deployments);
+      assertEquals("The DS connection factories", dsDeployments.getDescription());
+      MetaType deploymentsType = new ArrayMetaType(1, AbstractManagedObjectFactory.MANAGED_OBJECT_META_TYPE);
+      assertEquals(deploymentsType, dsDeployments.getMetaType());
+      ArrayValue value = ArrayValue.class.cast(dsDeployments.getValue());
+      ArrayMetaType valueType = value.getMetaType();
+      assertEquals(AbstractManagedObjectFactory.MANAGED_OBJECT_META_TYPE, valueType.getElementType());
+
+      Object[] values = value.getValue();
+      assertEquals(2, values.length);
+      ManagedObject localConnMO = null;
+      ManagedObject xaConnMO = null;
+      for(Object md : values)
+      {
+         ManagedObject tmpMO = ManagedObject.class.cast(md);
+         if (tmpMO.getName().equals(LocalDataSourceMetaData.class.getName()))
+            localConnMO = tmpMO;
+         if (tmpMO.getName().equals(XADataSourceMetaData.class.getName()))
+            xaConnMO = tmpMO;
+      }
+      assertNotNull(localConnMO);
+      assertNotNull(xaConnMO);
+
+      // Validate the LocalDataSourceMetaData ManagedObject
+      props = localConnMO.getProperties();
+      assertEquals(8, props.size());
+      propsMap.clear();
+      for(ManagedProperty prop : props)
+      {
+         propsMap.put(prop.getName(), prop);
+      }
+      log.info("LocalDataSourceMetaData properties: "+props);
+      ManagedProperty dsType = propsMap.get("datasource-type");
+      assertNotNull(dsType);
+      Set<MetaValue> dsTypeValues = dsType.getLegalValues();
+      assertTrue(dsTypeValues.containsAll(AllowedDsTypes.values));
+
+      // Validate the XADataSourceMetaData ManagedObject
+      props = xaConnMO.getProperties();
+      assertEquals(10, props.size());
+      propsMap.clear();
+      for(ManagedProperty prop : props)
+      {
+         propsMap.put(prop.getName(), prop);
+      }
+      log.info("XADataSourceMetaData properties: "+props);
+      ManagedProperty xaDataSourceClass = propsMap.get("xaDataSourceClass");
+      assertNotNull(xaDataSourceClass);
+      ManagedProperty xaResourceTimeout = propsMap.get("xaResourceTimeout");
+      assertNotNull(xaResourceTimeout);
+      ManagedProperty secDomain = propsMap.get("security-domain");
+      assertNotNull(secDomain);
+      MetaType secDomainType = secDomain.getMetaType();
+      assertEquals(AbstractManagedObjectFactory.MANAGED_OBJECT_META_TYPE, secDomainType);
    }
 
    protected DeployerClient getMainDeployer()

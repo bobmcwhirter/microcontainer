@@ -80,5 +80,10 @@ public class DSMetaData implements Serializable
    {
       return deployments;
    }
+   public void setDeployments(List<ConnMetaData> deployments)
+   {
+      this.deployments.clear();
+      this.deployments.addAll(deployments);
+   }
 
 }
