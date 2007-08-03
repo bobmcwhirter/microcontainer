@@ -282,9 +282,17 @@ public class AbstractKernelControllerContext extends AbstractControllerContext i
       if (areAnnotationsProcessed == false)
       {
          // handle custom annotations
-         MetaDataVisitor annotationsVisitor = new AnnotationMetaDataVisitor(metaData);
-         BeanAnnotationAdapterFactory.getBeanAnnotationAdapter().applyAnnotations(annotationsVisitor);
-         areAnnotationsProcessed = true;
+         AnnotationMetaDataVisitor annotationsVisitor = new AnnotationMetaDataVisitor(metaData);
+         annotationsVisitor.before();
+         try
+         {
+            BeanAnnotationAdapterFactory.getBeanAnnotationAdapter().applyAnnotations(annotationsVisitor);
+            areAnnotationsProcessed = true;
+         }
+         finally
+         {
+            annotationsVisitor.after();
+         }
       }
    }
 
@@ -481,37 +489,24 @@ public class AbstractKernelControllerContext extends AbstractControllerContext i
    /**
     * A visitor for the annotation meta data.
     */
-   protected class AnnotationMetaDataVisitor extends AbstractMetaDataVistor
+   private class AnnotationMetaDataVisitor extends AbstractMetaDataVistor
    {
       public AnnotationMetaDataVisitor(BeanMetaData bmd)
       {
          super(bmd);
       }
 
-      public void initialVisit(MetaDataVisitorNode node)
+      // push bean meta data as first node
+      public void before()
       {
          visitorNodeStack.push(bmd);
-         try
-         {
-            super.initialVisit(node);
-         }
-         finally
-         {
-            visitorNodeStack.pop();
-         }
       }
 
-      public void describeVisit(MetaDataVisitorNode node)
+      // remove bean meta data
+      public void after()
       {
-         visitorNodeStack.push(bmd);
-         try
-         {
-            super.describeVisit(node);
-         }
-         finally
-         {
-            visitorNodeStack.pop();
-         }
+         visitorNodeStack.pop();
+         visitorNodeStack = null;
       }
    }
 }
