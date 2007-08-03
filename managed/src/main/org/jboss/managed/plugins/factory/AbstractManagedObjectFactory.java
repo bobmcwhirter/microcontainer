@@ -23,6 +23,7 @@ package org.jboss.managed.plugins.factory;
 
 import java.io.Serializable;
 import java.lang.ref.WeakReference;
+import java.lang.reflect.Constructor;
 import java.security.AccessController;
 import java.security.PrivilegedAction;
 import java.util.ArrayList;
@@ -36,6 +37,7 @@ import org.jboss.beans.info.spi.BeanInfo;
 import org.jboss.beans.info.spi.PropertyInfo;
 import org.jboss.config.plugins.property.PropertyConfiguration;
 import org.jboss.config.spi.Configuration;
+import org.jboss.logging.Logger;
 import org.jboss.managed.api.Fields;
 import org.jboss.managed.api.ManagedObject;
 import org.jboss.managed.api.ManagedOperation;
@@ -79,6 +81,8 @@ import org.jboss.reflect.spi.TypeInfo;
 public class AbstractManagedObjectFactory extends ManagedObjectFactory
    implements ManagedObjectBuilder, ManagedObjectPopulator<Serializable>
 {
+   private static final Logger log = Logger.getLogger(AbstractManagedObjectFactory.class);
+
    /** The configuration */
    private static final Configuration configuration;
 
@@ -201,7 +205,24 @@ public class AbstractManagedObjectFactory extends ManagedObjectFactory
 
             if (includeProperty)
             {
-               Fields fields = new DefaultFieldsImpl();
+               Fields fields = null;
+               if (managementProperty != null)
+               {
+                  Class<? extends Fields> factory = managementProperty.fieldsFactory();
+                  if (factory != ManagementProperty.NULL_FIELDS_FACTORY.class)
+                  {
+                     try
+                     {
+                        fields = factory.newInstance();
+                     }
+                     catch (Exception e)
+                     {
+                        log.debug("Failed to created Fields", e);
+                     }
+                  }
+               }
+               if (fields == null)
+                  fields = new DefaultFieldsImpl();
 
                if( propertyInfo instanceof Serializable )
                {
@@ -269,13 +290,24 @@ public class AbstractManagedObjectFactory extends ManagedObjectFactory
                {
                   
                }
+
                
-               ManagedPropertyImpl property = new ManagedPropertyImpl(fields);
+               ManagedProperty property = null;
+               if (managementProperty != null)
+               {
+                  Class<? extends ManagedProperty> factory = managementProperty.propertyFactory();
+                  if (factory != ManagementProperty.NULL_PROPERTY_FACTORY.class)
+                  {
+                     property = getManagedProperty(factory, fields);
+                  }
+               }
+               if (property == null)
+                  property = new ManagedPropertyImpl(fields);
                properties.add(property);
             }
          }
       }
-      
+
       /* TODO: Operations. In general the bean metadata does not contain
        operation information.
       */
@@ -503,5 +535,28 @@ public class AbstractManagedObjectFactory extends ManagedObjectFactory
       else if (value instanceof Collection)
          return Collection.class.cast(value);
       return null;
+   }
+
+   /**
+    * Look for ctor(Fields)
+    * @param factory - the ManagedProperty implementation class
+    * @param fields - the fields to pass to the ctor
+    * @return
+    */
+   protected ManagedProperty getManagedProperty(Class<? extends ManagedProperty> factory, Fields fields)
+   {
+      ManagedProperty property = null;
+      try
+      {
+         Class[] sig = {Fields.class};
+         Constructor<? extends ManagedProperty> ctor = factory.getConstructor(sig);
+         Object[] args = {fields};
+         property = ctor.newInstance(args);
+      }
+      catch(Exception e)
+      {
+         log.debug("Failed to create ManagedProperty", e);
+      }
+      return property;
    }
 }

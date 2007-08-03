@@ -26,6 +26,8 @@ import java.lang.annotation.Retention;
 import java.lang.annotation.RetentionPolicy;
 import java.lang.annotation.Target;
 
+import org.jboss.managed.api.Fields;
+import org.jboss.managed.api.ManagedProperty;
 import org.jboss.managed.spi.factory.ManagedPropertyConstraintsPopulator;
 import org.jboss.managed.spi.factory.ManagedPropertyConstraintsPopulatorFactory;
 
@@ -63,22 +65,42 @@ public @interface ManagementProperty
    /** The views this property should be used in */
    ViewUse[] use() default {ViewUse.RUNTIME};
 
+   /** */
+   Class<? extends ManagedProperty> propertyFactory() default NULL_PROPERTY_FACTORY.class;
+   /** The class to use for the ManagedProperty Fields implementation */
+   Class<? extends Fields> fieldsFactory() default NULL_FIELDS_FACTORY.class;
    /** The constraints, allowed values populator factory */
    Class<? extends ManagedPropertyConstraintsPopulatorFactory> constraintsFactory()
-      default DEFAULT.class;
+      default NULL_CONSTRAINTS.class;
 
    /**
     * Used in {@link ManagementProperty#constraintsFactory()} to
     * signal that the factory be inferred from the type
     * of the property.
     */
-   static final class DEFAULT
+   public static final class NULL_CONSTRAINTS
       implements ManagedPropertyConstraintsPopulatorFactory
    {
       public ManagedPropertyConstraintsPopulator newInstance()
       {
          return null;
       }
+   }
+   /**
+    * Used in {@link ManagementProperty#fieldsFactory()} to
+    * indicate that no Fields factory is defined.
+    */
+   public static abstract class NULL_FIELDS_FACTORY
+      implements Fields
+   {
+   }
+   /**
+    * Used in {@link ManagementProperty#fieldsFactory()} to
+    * indicate that no Fields factory is defined.
+    */
+   public static abstract class NULL_PROPERTY_FACTORY
+      implements ManagedProperty
+   {
    }
 
 }

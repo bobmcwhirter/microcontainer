@@ -23,7 +23,6 @@ package org.jboss.test.deployers.managed.test;
 
 import java.util.ArrayList;
 import java.util.HashMap;
-import java.util.HashSet;
 import java.util.Map;
 import java.util.Set;
 
@@ -38,7 +37,6 @@ import org.jboss.managed.api.ManagedProperty;
 import org.jboss.managed.api.factory.ManagedObjectFactory;
 import org.jboss.managed.plugins.factory.AbstractManagedObjectFactory;
 import org.jboss.metatype.api.types.ArrayMetaType;
-import org.jboss.metatype.api.types.GenericMetaType;
 import org.jboss.metatype.api.types.MetaType;
 import org.jboss.metatype.api.types.SimpleMetaType;
 import org.jboss.metatype.api.values.ArrayValue;
@@ -278,6 +276,36 @@ public class DeployerManagedObjectUnitTestCase extends AbstractDeployerTest
       assertNotNull(secDomain);
       MetaType secDomainType = secDomain.getMetaType();
       assertEquals(AbstractManagedObjectFactory.MANAGED_OBJECT_META_TYPE, secDomainType);
+
+      ManagedProperty jndiName = propsMap.get("jndi-name");
+      assertNotNull(jndiName);
+      ManagedProperty password = propsMap.get("password");
+      assertNotNull(password);
+      ManagedProperty connProperties = propsMap.get("connection-properties");
+      assertNotNull(connProperties);
+      ManagedProperty username = propsMap.get("username");
+      assertNotNull(username);
+      ManagedProperty maxSize = propsMap.get("max-size");
+      assertNotNull(maxSize);
+      ManagedProperty minSize = propsMap.get("min-size");
+      assertNotNull(minSize);
+
+      // Validate setting the properties
+      displayName.setValue("testDSMetaDataManagedObjectFactoryInit");
+      jndiName.setValue("java:TestDS");
+      password.setValue("password".toCharArray());
+      username.setValue("username");
+      minSize.setValue(new Integer(10));
+      maxSize.setValue(new Integer(100));
+
+      Object attachment = xaConnMO.getAttachment();
+      assertTrue("attachment is a XADataSourceMetaData("+attachment+")", attachment instanceof XADataSourceMetaData);
+      XADataSourceMetaData xaDS = XADataSourceMetaData.class.cast(attachment);
+      assertEquals("jndiName", "java:TestDS", xaDS.getJndiName());
+      assertEquals("password", "password", new String(xaDS.getPassword()));
+      assertEquals("username", "username", xaDS.getUsername());
+      assertEquals("minSize", 10, xaDS.getMinSize());
+      assertEquals("maxSize", 100, xaDS.getMaxSize());
    }
 
    protected DeployerClient getMainDeployer()
