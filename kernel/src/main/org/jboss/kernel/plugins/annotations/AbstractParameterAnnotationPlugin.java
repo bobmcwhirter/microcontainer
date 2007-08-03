@@ -24,6 +24,7 @@ package org.jboss.kernel.plugins.annotations;
 import java.lang.annotation.Annotation;
 import java.lang.annotation.ElementType;
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 
 import org.jboss.beans.metadata.plugins.AbstractParameterMetaData;
@@ -64,12 +65,12 @@ public abstract class AbstractParameterAnnotationPlugin<T extends AnnotatedInfo,
 
    protected abstract ParameterInfo[] getParameters(T info);
 
-   protected void handleParameterlessInfo(T info, C annotation, KernelControllerContext context)
+   protected List<? extends MetaDataVisitorNode> handleParameterlessInfo(T info, C annotation, KernelControllerContext context)
    {
-      handleParameterlessInfo(info, annotation, context.getBeanMetaData());
+      return handleParameterlessInfo(info, annotation, context.getBeanMetaData());
    }
 
-   protected abstract void handleParameterlessInfo(T info, C annotation, BeanMetaData beanMetaData);
+   protected abstract List<? extends MetaDataVisitorNode> handleParameterlessInfo(T info, C annotation, BeanMetaData beanMetaData);
 
    protected P createParametrizedMetaData(T info, C annotation, KernelControllerContext context)
    {
@@ -99,13 +100,12 @@ public abstract class AbstractParameterAnnotationPlugin<T extends AnnotatedInfo,
    protected abstract void setParameterizedMetaData(P parameterizedMetaData, BeanMetaData beanMetaData);
 
    @SuppressWarnings("unchecked")
-   protected void internalApplyAnnotation(T info, MetaDataRetrieval retrieval, C annotation, KernelControllerContext context) throws Throwable
+   protected List<? extends MetaDataVisitorNode> internalApplyAnnotation(T info, MetaDataRetrieval retrieval, C annotation, KernelControllerContext context) throws Throwable
    {
       ParameterInfo[] parameters = getParameters(info);
       if (parameters == null || parameters.length == 0)
       {
-         handleParameterlessInfo(info, annotation, context);
-         return;
+         return handleParameterlessInfo(info, annotation, context);
       }
 
       TypeInfo[] typeInfos = new TypeInfo[parameters.length];
@@ -149,7 +149,7 @@ public abstract class AbstractParameterAnnotationPlugin<T extends AnnotatedInfo,
       parameterizedMetaData.setParameters(pmds);
       if (parameterizedMetaData instanceof MetaDataVisitorNode == false)
          throw new IllegalArgumentException("ParameterizedMetaData not MetaDataVisitor: " + parameterizedMetaData);
-      executeVisit(context, (MetaDataVisitorNode)parameterizedMetaData);
+      return Collections.singletonList((MetaDataVisitorNode)parameterizedMetaData);
    }
 
 }

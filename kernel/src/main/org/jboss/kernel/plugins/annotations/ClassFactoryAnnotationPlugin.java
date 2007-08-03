@@ -23,6 +23,7 @@ package org.jboss.kernel.plugins.annotations;
 
 import java.lang.annotation.ElementType;
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 
 import org.jboss.beans.metadata.plugins.AbstractBeanMetaData;
@@ -31,6 +32,7 @@ import org.jboss.beans.metadata.plugins.AbstractParameterMetaData;
 import org.jboss.beans.metadata.plugins.annotations.Factory;
 import org.jboss.beans.metadata.plugins.annotations.Value;
 import org.jboss.beans.metadata.spi.BeanMetaData;
+import org.jboss.beans.metadata.spi.MetaDataVisitorNode;
 import org.jboss.beans.metadata.spi.ParameterMetaData;
 import org.jboss.kernel.spi.dependency.KernelControllerContext;
 import org.jboss.reflect.spi.ClassInfo;
@@ -55,7 +57,7 @@ public class ClassFactoryAnnotationPlugin extends AbstractAdaptersAnnotationPlug
       return beanMetaData.getConstructor() != null;
    }
 
-   protected void internalApplyAnnotation(ClassInfo info, Factory annotation, KernelControllerContext context) throws Throwable
+   protected List<? extends MetaDataVisitorNode> internalApplyAnnotation(ClassInfo info, Factory annotation, KernelControllerContext context) throws Throwable
    {
       AbstractBeanMetaData bean = (AbstractBeanMetaData)context.getBeanMetaData();
       AbstractConstructorMetaData constructor = new AbstractConstructorMetaData();
@@ -81,6 +83,6 @@ public class ClassFactoryAnnotationPlugin extends AbstractAdaptersAnnotationPlug
          constructor.setParameters(parameters);
       }
       bean.setConstructor(constructor);
-      executeVisit(context, constructor);
+      return Collections.singletonList(constructor);
    }
 }

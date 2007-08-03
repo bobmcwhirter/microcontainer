@@ -22,12 +22,15 @@
 package org.jboss.kernel.plugins.annotations;
 
 import java.lang.annotation.Annotation;
+import java.util.Collections;
+import java.util.List;
 
 import org.jboss.beans.metadata.plugins.AbstractBeanMetaData;
 import org.jboss.beans.metadata.plugins.AbstractConstructorMetaData;
 import org.jboss.beans.metadata.spi.BeanMetaData;
-import org.jboss.reflect.spi.ClassInfo;
+import org.jboss.beans.metadata.spi.MetaDataVisitorNode;
 import org.jboss.kernel.spi.dependency.KernelControllerContext;
+import org.jboss.reflect.spi.ClassInfo;
 
 /**
  * @param <C> annotation type
@@ -45,7 +48,7 @@ public abstract class ConstructorValueAnnotationPlugin<C extends Annotation> ext
       return beanMetaData.getConstructor() != null;
    }
 
-   protected void internalApplyAnnotation(ClassInfo info, C annotation, KernelControllerContext context) throws Throwable
+   protected List<? extends MetaDataVisitorNode> internalApplyAnnotation(ClassInfo info, C annotation, KernelControllerContext context) throws Throwable
    {
       AbstractBeanMetaData beanMetaData = (AbstractBeanMetaData)context.getBeanMetaData();
       AbstractConstructorMetaData constructor = new AbstractConstructorMetaData();
@@ -54,6 +57,6 @@ public abstract class ConstructorValueAnnotationPlugin<C extends Annotation> ext
       // reset, if present
       beanMetaData.setBean(null);
       context.setBeanInfo(null);
-      executeVisit(context, constructor);
+      return Collections.singletonList(constructor);
    }
 }

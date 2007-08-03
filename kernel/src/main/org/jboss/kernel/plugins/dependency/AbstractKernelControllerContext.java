@@ -42,6 +42,7 @@ import org.jboss.dependency.spi.DependencyInfo;
 import org.jboss.dependency.spi.DependencyItem;
 import org.jboss.kernel.Kernel;
 import org.jboss.kernel.plugins.config.Configurator;
+import org.jboss.kernel.plugins.annotations.BeanAnnotationAdapterFactory;
 import org.jboss.kernel.spi.dependency.KernelController;
 import org.jboss.kernel.spi.dependency.KernelControllerContext;
 import org.jboss.kernel.spi.metadata.KernelMetaDataRepository;
@@ -78,6 +79,9 @@ public class AbstractKernelControllerContext extends AbstractControllerContext i
 
    /** Did we do a describeVisit */
    protected boolean isDescribeProcessed;
+
+   /** Did we do the annotations check */
+   protected boolean areAnnotationsProcessed;
 
    /** The scope */
    protected ScopeKey scope;
@@ -273,7 +277,18 @@ public class AbstractKernelControllerContext extends AbstractControllerContext i
       return Configurator.getClassLoader(getBeanMetaData());
    }
 
-   protected abstract class AbstractMetaDataVistor implements MetaDataVisitor, PrivilegedAction<Object>
+   public void applyMetaData() throws Throwable
+   {
+      if (areAnnotationsProcessed == false)
+      {
+         // handle custom annotations
+         MetaDataVisitor annotationsVisitor = new AnnotationMetaDataVisitor(metaData);
+         BeanAnnotationAdapterFactory.getBeanAnnotationAdapter().applyAnnotations(annotationsVisitor);
+         areAnnotationsProcessed = true;
+      }
+   }
+
+   protected abstract class AbstractMetaDataVistor implements MetaDataVisitor
    {
       /**
        * The current context for when the dependencies are required
@@ -324,10 +339,54 @@ public class AbstractKernelControllerContext extends AbstractControllerContext i
 
       protected void internalInitialVisit(MetaDataVisitorNode node)
       {
+         boolean trace = log.isTraceEnabled();
+         if (trace)
+            log.trace("Initial visit node " + node);
+
+         // Visit the children of this node
+         Iterator children = node.getChildren();
+         if (children != null)
+         {
+            ControllerState restoreState = contextState;
+            while (children.hasNext())
+            {
+               MetaDataVisitorNode child = (MetaDataVisitorNode) children.next();
+               try
+               {
+                  child.initialVisit(this);
+               }
+               finally
+               {
+                  contextState = restoreState;
+               }
+            }
+         }
       }
 
       protected void internalDescribeVisit(MetaDataVisitorNode node)
       {
+         boolean trace = log.isTraceEnabled();
+         if (trace)
+            log.trace("Describe visit node " + node);
+
+         // Visit the children of this node
+         Iterator children = node.getChildren();
+         if (children != null)
+         {
+            ControllerState restoreState = contextState;
+            while (children.hasNext())
+            {
+               MetaDataVisitorNode child = (MetaDataVisitorNode) children.next();
+               try
+               {
+                  child.describeVisit(this);
+               }
+               finally
+               {
+                  contextState = restoreState;
+               }
+            }
+         }
       }
 
       public KernelControllerContext getControllerContext()
@@ -370,7 +429,7 @@ public class AbstractKernelControllerContext extends AbstractControllerContext i
    /**
     * A visitor for the metadata that looks for dependencies.
     */
-   protected class PreprocessMetaDataVisitor extends AbstractMetaDataVistor
+   protected class PreprocessMetaDataVisitor extends AbstractMetaDataVistor implements PrivilegedAction<Object>
    {
       /**
        * Create a new MetaDataVisitor.
@@ -391,44 +450,12 @@ public class AbstractKernelControllerContext extends AbstractControllerContext i
          visitorNodeStack = null;
          return null;
       }
-
-      /**
-       * Visit a node
-       *
-       * @param node the node
-       */
-      protected void internalInitialVisit(MetaDataVisitorNode node)
-      {
-         boolean trace = log.isTraceEnabled();
-         if (trace)
-            log.trace("Initial visit node " + node);
-
-         // Visit the children of this node
-         Iterator children = node.getChildren();
-         if (children != null)
-         {
-            ControllerState restoreState = contextState;
-            while (children.hasNext())
-            {
-               MetaDataVisitorNode child = (MetaDataVisitorNode) children.next();
-               try
-               {
-                  child.initialVisit(this);
-               }
-               finally
-               {
-                  contextState = restoreState;
-               }
-            }
-         }
-      }
-
    }
 
    /**
     * A visitor for the metadata that looks for dependencies.
     */
-   protected class DescribedMetaDataVisitor extends AbstractMetaDataVistor
+   protected class DescribedMetaDataVisitor extends AbstractMetaDataVistor implements PrivilegedAction<Object>
    {
       /**
        * Create a new MetaDataVisitor.
@@ -449,35 +476,41 @@ public class AbstractKernelControllerContext extends AbstractControllerContext i
          visitorNodeStack = null;
          return null;
       }
+   }
 
-      /**
-       * Visit a node
-       *
-       * @param node the node
-       */
-      protected void internalDescribeVisit(MetaDataVisitorNode node)
+   /**
+    * A visitor for the annotation meta data.
+    */
+   protected class AnnotationMetaDataVisitor extends AbstractMetaDataVistor
+   {
+      public AnnotationMetaDataVisitor(BeanMetaData bmd)
       {
-         boolean trace = log.isTraceEnabled();
-         if (trace)
-            log.trace("Describe visit node " + node);
+         super(bmd);
+      }
 
-         // Visit the children of this node
-         Iterator children = node.getChildren();
-         if (children != null)
+      public void initialVisit(MetaDataVisitorNode node)
+      {
+         visitorNodeStack.push(bmd);
+         try
          {
-            ControllerState restoreState = contextState;
-            while (children.hasNext())
-            {
-               MetaDataVisitorNode child = (MetaDataVisitorNode) children.next();
-               try
-               {
-                  child.describeVisit(this);
-               }
-               finally
-               {
-                  contextState = restoreState;
-               }
-            }
+            super.initialVisit(node);
+         }
+         finally
+         {
+            visitorNodeStack.pop();
+         }
+      }
+
+      public void describeVisit(MetaDataVisitorNode node)
+      {
+         visitorNodeStack.push(bmd);
+         try
+         {
+            super.describeVisit(node);
+         }
+         finally
+         {
+            visitorNodeStack.pop();
          }
       }
    }

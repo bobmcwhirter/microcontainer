@@ -23,12 +23,14 @@ package org.jboss.kernel.plugins.annotations;
 
 import java.lang.annotation.Annotation;
 import java.lang.annotation.ElementType;
+import java.util.Collections;
 import java.util.List;
 import java.util.Set;
 
 import org.jboss.beans.metadata.plugins.AbstractBeanMetaData;
 import org.jboss.beans.metadata.plugins.AbstractCallbackMetaData;
 import org.jboss.beans.metadata.spi.CallbackMetaData;
+import org.jboss.beans.metadata.spi.MetaDataVisitorNode;
 import org.jboss.dependency.spi.CallbackItem;
 import org.jboss.dependency.spi.DependencyInfo;
 import org.jboss.kernel.spi.dependency.KernelControllerContext;
@@ -70,13 +72,13 @@ public abstract class CallbackAnnotationPlugin<T extends AnnotatedInfo, C extend
 
    protected abstract Set<CallbackItem> getCallbacks(DependencyInfo dependency);
 
-   protected void internalApplyAnnotation(T info, C annotation, KernelControllerContext context)
+   protected List<? extends MetaDataVisitorNode> internalApplyAnnotation(T info, C annotation, KernelControllerContext context)
    {
       AbstractBeanMetaData beanMetaData = (AbstractBeanMetaData)context.getBeanMetaData();
       List<CallbackMetaData> callbacks = getCallbacks(beanMetaData);
       AbstractCallbackMetaData callback = createCallback(info, annotation);
       callbacks.add(callback);
-      executeVisit(context, callback);
+      return Collections.singletonList(callback);
    }
 
    protected abstract AbstractCallbackMetaData createCallback(T info, C annotation);

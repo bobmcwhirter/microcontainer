@@ -21,19 +21,21 @@
 */
 package org.jboss.kernel.plugins.annotations;
 
-import java.util.Set;
+import java.util.ArrayList;
 import java.util.HashSet;
+import java.util.List;
+import java.util.Set;
 
-import org.jboss.beans.metadata.plugins.annotations.Demands;
-import org.jboss.beans.metadata.plugins.annotations.Demand;
-import org.jboss.beans.metadata.plugins.AbstractDemandMetaData;
 import org.jboss.beans.metadata.plugins.AbstractBeanMetaData;
-import org.jboss.beans.metadata.spi.DemandMetaData;
+import org.jboss.beans.metadata.plugins.AbstractDemandMetaData;
+import org.jboss.beans.metadata.plugins.annotations.Demand;
+import org.jboss.beans.metadata.plugins.annotations.Demands;
 import org.jboss.beans.metadata.spi.BeanMetaData;
-import org.jboss.beans.metadata.spi.MetaDataVisitor;
-import org.jboss.reflect.spi.ClassInfo;
-import org.jboss.kernel.spi.dependency.KernelControllerContext;
+import org.jboss.beans.metadata.spi.DemandMetaData;
+import org.jboss.beans.metadata.spi.MetaDataVisitorNode;
 import org.jboss.dependency.spi.ControllerState;
+import org.jboss.kernel.spi.dependency.KernelControllerContext;
+import org.jboss.reflect.spi.ClassInfo;
 
 /**
  * @author <a href="mailto:ales.justin@jboss.com">Ales Justin</a>
@@ -45,7 +47,7 @@ public class DemandsAnnotationPlugin extends ClassAnnotationPlugin<Demands>
       super(Demands.class);
    }
 
-   protected void internalApplyAnnotation(ClassInfo info, Demands annotation, KernelControllerContext context)
+   protected List<? extends MetaDataVisitorNode> internalApplyAnnotation(ClassInfo info, Demands annotation, KernelControllerContext context)
    {
       BeanMetaData beanMetaData = context.getBeanMetaData();
       Set<DemandMetaData> demands = beanMetaData.getDemands();
@@ -54,14 +56,14 @@ public class DemandsAnnotationPlugin extends ClassAnnotationPlugin<Demands>
          demands = new HashSet<DemandMetaData>();
          ((AbstractBeanMetaData)beanMetaData).setDemands(demands);
       }
-      MetaDataVisitor visitor = getMetaDataVisitor(context);
+      List<MetaDataVisitorNode> nodes = new ArrayList<MetaDataVisitorNode>();
       for(Demand demand : annotation.value())
       {
          AbstractDemandMetaData admd = new AbstractDemandMetaData(demand.value());
          admd.setWhenRequired(new ControllerState(demand.whenRequired()));
          demands.add(admd);
-         admd.initialVisit(visitor);
-         admd.describeVisit(visitor);
+         nodes.add(admd);
       }
+      return nodes;
    }
 }

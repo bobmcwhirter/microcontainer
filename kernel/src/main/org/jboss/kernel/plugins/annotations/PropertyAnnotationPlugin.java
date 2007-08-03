@@ -23,13 +23,16 @@ package org.jboss.kernel.plugins.annotations;
 
 import java.lang.annotation.Annotation;
 import java.lang.annotation.ElementType;
+import java.util.Collections;
 import java.util.HashSet;
+import java.util.List;
 import java.util.Set;
 
 import org.jboss.beans.info.spi.PropertyInfo;
 import org.jboss.beans.metadata.plugins.AbstractBeanMetaData;
 import org.jboss.beans.metadata.plugins.AbstractPropertyMetaData;
 import org.jboss.beans.metadata.spi.BeanMetaData;
+import org.jboss.beans.metadata.spi.MetaDataVisitorNode;
 import org.jboss.beans.metadata.spi.PropertyMetaData;
 import org.jboss.beans.metadata.spi.ValueMetaData;
 import org.jboss.kernel.spi.dependency.KernelControllerContext;
@@ -65,12 +68,12 @@ public abstract class PropertyAnnotationPlugin<C extends Annotation> extends Abs
       return false;
    }
 
-   protected void internalApplyAnnotation(PropertyInfo info, C annotation, KernelControllerContext context)
+   protected List<? extends MetaDataVisitorNode> internalApplyAnnotation(PropertyInfo info, C annotation, KernelControllerContext context)
    {
       Set<PropertyMetaData> properties = getProperties(context);
       PropertyMetaData property = getPropertyMetaData(info, annotation, context);
       properties.add(property);
-      executeVisit(context, property);
+      return Collections.singletonList(property);
    }
 
    protected PropertyMetaData getPropertyMetaData(PropertyInfo info, C annotation, KernelControllerContext context)

@@ -22,11 +22,13 @@
 package org.jboss.kernel.plugins.annotations;
 
 import java.lang.annotation.ElementType;
+import java.util.List;
 
 import org.jboss.beans.metadata.plugins.AbstractBeanMetaData;
 import org.jboss.beans.metadata.plugins.AbstractConstructorMetaData;
 import org.jboss.beans.metadata.plugins.annotations.Constructor;
 import org.jboss.beans.metadata.spi.BeanMetaData;
+import org.jboss.beans.metadata.spi.MetaDataVisitorNode;
 import org.jboss.reflect.spi.ConstructorInfo;
 import org.jboss.reflect.spi.ParameterInfo;
 
@@ -55,9 +57,10 @@ public class ConstructorParameterAnnotationPlugin extends AbstractParameterAnnot
       return info.getParameters();
    }
 
-   protected void handleParameterlessInfo(ConstructorInfo info, Constructor annotation, BeanMetaData beanMetaData)
+   protected List<MetaDataVisitorNode> handleParameterlessInfo(ConstructorInfo info, Constructor annotation, BeanMetaData beanMetaData)
    {
       // do nothing, default will be used
+      return null;
    }
 
    protected AbstractConstructorMetaData createParametrizedMetaData(ConstructorInfo info)

@@ -113,4 +113,12 @@ public interface KernelControllerContext extends KernelRegistryEntry, InvokeDisp
     * @return true if context can be used for autowiring
     */
    boolean isAutowireCandidate();
+
+   /**
+    * Do apply meta data.
+    * Hide details of applying annotations.
+    *
+    * @throws Throwable for any error
+    */
+   void applyMetaData() throws Throwable;
 }

@@ -30,6 +30,7 @@ import java.util.Set;
 
 import org.jboss.beans.info.spi.BeanInfo;
 import org.jboss.beans.info.spi.PropertyInfo;
+import org.jboss.beans.metadata.spi.MetaDataVisitor;
 import org.jboss.kernel.Kernel;
 import org.jboss.kernel.plugins.config.Configurator;
 import org.jboss.kernel.spi.dependency.KernelControllerContext;
@@ -153,8 +154,9 @@ public class BasicBeanAnnotationAdapter implements BeanAnnotationAdapter
       }
    }
 
-   public void applyAnnotations(KernelControllerContext context) throws Throwable
+   public void applyAnnotations(MetaDataVisitor visitor) throws Throwable
    {
+      KernelControllerContext context = visitor.getControllerContext();
       Kernel kernel = context.getKernel();
       KernelMetaDataRepository repository = kernel.getMetaDataRepository();
       MetaDataRetrieval retrieval = repository.getMetaDataRetrieval(context);
@@ -165,7 +167,7 @@ public class BasicBeanAnnotationAdapter implements BeanAnnotationAdapter
       // class
       ClassInfo classInfo = info.getClassInfo();
       for(AnnotationPlugin plugin : classAnnotationPlugins)
-         plugin.applyAnnotation(classInfo, retrieval, context);
+         plugin.applyAnnotation(classInfo, retrieval, visitor);
 
       // constructors
       Set<ConstructorInfo> constructors = info.getConstructors();
@@ -178,7 +180,7 @@ public class BasicBeanAnnotationAdapter implements BeanAnnotationAdapter
             if (cmdr != null)
             {
                for(AnnotationPlugin plugin : constructorAnnotationPlugins)
-                  plugin.applyAnnotation(ci, cmdr, context);
+                  plugin.applyAnnotation(ci, cmdr, visitor);
             }
          }
       }
@@ -197,7 +199,7 @@ public class BasicBeanAnnotationAdapter implements BeanAnnotationAdapter
                if (cmdr != null)
                {
                   for(AnnotationPlugin plugin : propertyAnnotationPlugins)
-                     plugin.applyAnnotation(pi, cmdr, context);
+                     plugin.applyAnnotation(pi, cmdr, visitor);
                }
             }
          }
@@ -214,7 +216,7 @@ public class BasicBeanAnnotationAdapter implements BeanAnnotationAdapter
             if (cmdr != null)
             {
                for(AnnotationPlugin plugin : methodAnnotationPlugins)
-                  plugin.applyAnnotation(mi, cmdr, context);
+                  plugin.applyAnnotation(mi, cmdr, visitor);
             }
          }
       }
@@ -232,7 +234,7 @@ public class BasicBeanAnnotationAdapter implements BeanAnnotationAdapter
                if (cmdr != null)
                {
                   for(AnnotationPlugin plugin : methodAnnotationPlugins)
-                     plugin.applyAnnotation(smi, cmdr, context);
+                     plugin.applyAnnotation(smi, cmdr, visitor);
                }
             }
          }
@@ -249,7 +251,7 @@ public class BasicBeanAnnotationAdapter implements BeanAnnotationAdapter
             if (cmdr != null)
             {
                for(AnnotationPlugin plugin : fieldAnnotationPlugins)
-                  plugin.applyAnnotation(fi, cmdr, context);
+                  plugin.applyAnnotation(fi, cmdr, visitor);
             }
          }
       }

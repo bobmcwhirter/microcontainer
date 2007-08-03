@@ -22,9 +22,11 @@
 package org.jboss.kernel.plugins.annotations;
 
 import java.util.Set;
+import java.util.List;
 
 import org.jboss.beans.metadata.plugins.annotations.Aliases;
 import org.jboss.beans.metadata.spi.BeanMetaData;
+import org.jboss.beans.metadata.spi.MetaDataVisitorNode;
 import org.jboss.reflect.spi.ClassInfo;
 import org.jboss.kernel.spi.dependency.KernelControllerContext;
 import org.jboss.dependency.spi.Controller;
@@ -40,7 +42,7 @@ public class AliasesAnnotationPlugin extends ClassAnnotationPlugin<Aliases>
       super(Aliases.class);
    }
 
-   protected void internalApplyAnnotation(ClassInfo info, Aliases annotation, KernelControllerContext context) throws Throwable
+   protected List<? extends MetaDataVisitorNode> internalApplyAnnotation(ClassInfo info, Aliases annotation, KernelControllerContext context) throws Throwable
    {
       BeanMetaData beanMetaData = context.getBeanMetaData();
       Set<Object> aliases = beanMetaData.getAliases();
@@ -57,5 +59,7 @@ public class AliasesAnnotationPlugin extends ClassAnnotationPlugin<Aliases>
             controller.addAlias(alias, beanMetaData.getName());
          }
       }
+      // no metadata added
+      return null;
    }
 }

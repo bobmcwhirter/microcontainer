@@ -28,7 +28,6 @@ import org.jboss.classadapter.spi.DependencyBuilderListItem;
 import org.jboss.kernel.spi.dependency.KernelController;
 import org.jboss.kernel.spi.dependency.KernelControllerContext;
 import org.jboss.kernel.spi.metadata.KernelMetaDataRepository;
-import org.jboss.kernel.plugins.annotations.BeanAnnotationAdapterFactory;
 import org.jboss.metadata.spi.MetaData;
 
 /**
@@ -58,8 +57,7 @@ public class DescribeAction extends KernelControllerContextAction
                dependencyItem.addDependency(context);
             }
          }
-         // handle custom annotations
-         BeanAnnotationAdapterFactory.getBeanAnnotationAdapter().applyAnnotations(context);
+         context.applyMetaData();
       }
    }
 

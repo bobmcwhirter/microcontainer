@@ -21,17 +21,19 @@
 */
 package org.jboss.kernel.plugins.annotations;
 
-import java.util.Set;
+import java.util.ArrayList;
 import java.util.HashSet;
+import java.util.List;
+import java.util.Set;
 
-import org.jboss.beans.metadata.plugins.AbstractDependencyMetaData;
 import org.jboss.beans.metadata.plugins.AbstractBeanMetaData;
+import org.jboss.beans.metadata.plugins.AbstractDependencyMetaData;
 import org.jboss.beans.metadata.plugins.annotations.Depends;
-import org.jboss.beans.metadata.spi.DependencyMetaData;
 import org.jboss.beans.metadata.spi.BeanMetaData;
-import org.jboss.beans.metadata.spi.MetaDataVisitor;
-import org.jboss.reflect.spi.ClassInfo;
+import org.jboss.beans.metadata.spi.DependencyMetaData;
+import org.jboss.beans.metadata.spi.MetaDataVisitorNode;
 import org.jboss.kernel.spi.dependency.KernelControllerContext;
+import org.jboss.reflect.spi.ClassInfo;
 
 /**
  * @author <a href="mailto:ales.justin@jboss.com">Ales Justin</a>
@@ -43,7 +45,7 @@ public class DependsAnnotationPlugin extends ClassAnnotationPlugin<Depends>
       super(Depends.class);
    }
 
-   protected void internalApplyAnnotation(ClassInfo info, Depends annotation, KernelControllerContext context)
+   protected List<? extends MetaDataVisitorNode> internalApplyAnnotation(ClassInfo info, Depends annotation, KernelControllerContext context)
    {
       BeanMetaData beanMetaData = context.getBeanMetaData();
       Set<DependencyMetaData> dependencies = beanMetaData.getDepends();
@@ -52,13 +54,13 @@ public class DependsAnnotationPlugin extends ClassAnnotationPlugin<Depends>
          dependencies = new HashSet<DependencyMetaData>();
          ((AbstractBeanMetaData)beanMetaData).setDepends(dependencies);
       }
-      MetaDataVisitor visitor = getMetaDataVisitor(context);
+      List<MetaDataVisitorNode> nodes = new ArrayList<MetaDataVisitorNode>();
       for(String depends : annotation.value())
       {
          AbstractDependencyMetaData dependency = new AbstractDependencyMetaData(depends);
          dependencies.add(dependency);
-         dependency.initialVisit(visitor);
-         dependency.describeVisit(visitor);
+         nodes.add(dependency);
       }
+      return nodes;
    }
 }

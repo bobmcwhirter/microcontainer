@@ -27,17 +27,12 @@ import java.lang.annotation.Target;
 import java.util.Arrays;
 import java.util.Collections;
 import java.util.HashSet;
-import java.util.Iterator;
 import java.util.List;
 import java.util.Set;
-import java.util.Stack;
 
 import org.jboss.beans.metadata.spi.BeanMetaData;
 import org.jboss.beans.metadata.spi.MetaDataVisitor;
 import org.jboss.beans.metadata.spi.MetaDataVisitorNode;
-import org.jboss.dependency.spi.CallbackItem;
-import org.jboss.dependency.spi.ControllerState;
-import org.jboss.dependency.spi.DependencyItem;
 import org.jboss.kernel.spi.dependency.KernelControllerContext;
 import org.jboss.metadata.spi.retrieval.AnnotationItem;
 import org.jboss.metadata.spi.retrieval.MetaDataRetrieval;
@@ -102,156 +97,35 @@ public abstract class AbstractAnnotationPlugin<T extends AnnotatedInfo, C extend
       return false;
    }
 
-   protected void internalApplyAnnotation(T info, MetaDataRetrieval retrieval, C annotation, KernelControllerContext context) throws Throwable
+   protected List<? extends MetaDataVisitorNode> internalApplyAnnotation(T info, MetaDataRetrieval retrieval, C annotation, KernelControllerContext context) throws Throwable
    {
-      internalApplyAnnotation(info, annotation, context);
+      return internalApplyAnnotation(info, annotation, context);
    }
 
-   protected void internalApplyAnnotation(T info, C annotation, KernelControllerContext context) throws Throwable
+   protected List<? extends MetaDataVisitorNode> internalApplyAnnotation(T info, C annotation, KernelControllerContext context) throws Throwable
    {
-      internalApplyAnnotation(info, annotation, context.getBeanMetaData());
+      return internalApplyAnnotation(info, annotation, context.getBeanMetaData());
    }
 
-   protected void internalApplyAnnotation(T info, C annotation, BeanMetaData beanMetaData) throws Throwable
+   protected List<? extends MetaDataVisitorNode> internalApplyAnnotation(T info, C annotation, BeanMetaData beanMetaData) throws Throwable
    {
+      return Collections.emptyList();
    }
 
-   public final void applyAnnotation(T info, MetaDataRetrieval retrieval, KernelControllerContext context) throws Throwable
+   public final void applyAnnotation(T info, MetaDataRetrieval retrieval, MetaDataVisitor visitor) throws Throwable
    {
-      // todo - match multiple annotations?
       AnnotationItem<C> item = retrieval.retrieveAnnotation(getAnnotation());
-      if (item == null || isMetaDataAlreadyPresent(info, item.getAnnotation(), context))
+      if (item == null || isMetaDataAlreadyPresent(info, item.getAnnotation(), visitor.getControllerContext()))
          return;
-      internalApplyAnnotation(info, retrieval, item.getAnnotation(), context);
-   }
-
-   protected void executeVisit(KernelControllerContext context, MetaDataVisitorNode node)
-   {
-      MetaDataVisitor visitor = getMetaDataVisitor(context);
-      node.initialVisit(visitor);
-      node.describeVisit(visitor);
-   }
-
-   protected MetaDataVisitor getMetaDataVisitor(KernelControllerContext context)
-   {
-      return new PluginMetaDataVisitor(context);
-   }
-
-   protected class PluginMetaDataVisitor implements MetaDataVisitor
-   {
-      private ControllerState contextState = ControllerState.INSTANTIATED;
-      private KernelControllerContext context;
-      private Stack<MetaDataVisitorNode> visitorNodeStack;
-
-      public PluginMetaDataVisitor(KernelControllerContext context)
+      List<? extends MetaDataVisitorNode> nodes = internalApplyAnnotation(info, retrieval, item.getAnnotation(), visitor.getControllerContext());
+      if (nodes != null && nodes.isEmpty() == false)
       {
-         this.context = context;
-         this.visitorNodeStack = new Stack<MetaDataVisitorNode>();
-         // add bean meta data
-         this.visitorNodeStack.add(context.getBeanMetaData());
-      }
-
-      public KernelControllerContext getControllerContext()
-      {
-         return context;
-      }
-
-      public ControllerState getContextState()
-      {
-         return contextState;
-      }
-
-      public void setContextState(ControllerState contextState)
-      {
-         this.contextState = contextState;
-      }
-
-      public void addDependency(DependencyItem dependency)
-      {
-         context.getDependencyInfo().addIDependOn(dependency);
-      }
-
-      public void addInstallCallback(CallbackItem callback)
-      {
-         context.getDependencyInfo().addInstallItem(callback);
-      }
-
-      public void addUninstallCallback(CallbackItem callback)
-      {
-         context.getDependencyInfo().addUninstallItem(callback);
-      }
-
-      public void initialVisit(MetaDataVisitorNode node)
-      {
-         visitorNodeStack.push(node);
-         try
+         for(MetaDataVisitorNode node : nodes)
          {
-            boolean trace = log.isTraceEnabled();
-            if (trace)
-               log.trace("Initial visit node " + node);
-
-            // Visit the children of this node
-            Iterator children = node.getChildren();
-            if (children != null)
-            {
-               ControllerState restoreState = contextState;
-               while (children.hasNext())
-               {
-                  MetaDataVisitorNode child = (MetaDataVisitorNode) children.next();
-                  try
-                  {
-                     child.initialVisit(this);
-                  }
-                  finally
-                  {
-                     contextState = restoreState;
-                  }
-               }
-            }
-         }
-         finally
-         {
-            visitorNodeStack.pop();
+            node.initialVisit(visitor);
+            node.describeVisit(visitor);
          }
       }
-
-      public void describeVisit(MetaDataVisitorNode node)
-      {
-         visitorNodeStack.push(node);
-         try
-         {
-            boolean trace = log.isTraceEnabled();
-            if (trace)
-               log.trace("Describe visit node " + node);
-
-            // Visit the children of this node
-            Iterator children = node.getChildren();
-            if (children != null)
-            {
-               ControllerState restoreState = contextState;
-               while (children.hasNext())
-               {
-                  MetaDataVisitorNode child = (MetaDataVisitorNode) children.next();
-                  try
-                  {
-                     child.describeVisit(this);
-                  }
-                  finally
-                  {
-                     contextState = restoreState;
-                  }
-               }
-            }
-         }
-         finally
-         {
-            visitorNodeStack.pop();
-         }
-      }
-
-      public Stack<MetaDataVisitorNode> visitorNodeStack()
-      {
-         return visitorNodeStack;
-      }
    }
+
 }

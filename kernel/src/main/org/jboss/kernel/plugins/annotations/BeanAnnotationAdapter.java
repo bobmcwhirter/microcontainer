@@ -21,7 +21,7 @@
 */
 package org.jboss.kernel.plugins.annotations;
 
-import org.jboss.kernel.spi.dependency.KernelControllerContext;
+import org.jboss.beans.metadata.spi.MetaDataVisitor;
 
 /**
  * @author <a href="mailto:ales.justin@jboss.com">Ales Justin</a>
@@ -31,8 +31,8 @@ public interface BeanAnnotationAdapter
    /**
     * Apply the annotations.
     *
-    * @param context the context
+    * @param visitor the visitor
     * @throws Throwable for any error
     */
-   void applyAnnotations(KernelControllerContext context) throws Throwable;
+   void applyAnnotations(MetaDataVisitor visitor) throws Throwable;
 }

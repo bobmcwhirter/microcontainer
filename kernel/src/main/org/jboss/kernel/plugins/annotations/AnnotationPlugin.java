@@ -25,7 +25,7 @@ import java.lang.annotation.Annotation;
 import java.lang.annotation.ElementType;
 import java.util.Set;
 
-import org.jboss.kernel.spi.dependency.KernelControllerContext;
+import org.jboss.beans.metadata.spi.MetaDataVisitor;
 import org.jboss.metadata.spi.retrieval.MetaDataRetrieval;
 import org.jboss.reflect.spi.AnnotatedInfo;
 
@@ -40,5 +40,5 @@ public interface AnnotationPlugin<T extends AnnotatedInfo, C extends Annotation>
 
    Set<ElementType> getSupportedTypes();
 
-   void applyAnnotation(T info, MetaDataRetrieval retrieval, KernelControllerContext context) throws Throwable;
+   void applyAnnotation(T info, MetaDataRetrieval retrieval, MetaDataVisitor visitor) throws Throwable;
 }

@@ -23,10 +23,13 @@ package org.jboss.kernel.plugins.annotations;
 
 import java.lang.annotation.Annotation;
 import java.lang.annotation.ElementType;
+import java.util.List;
+import java.util.Collections;
 
 import org.jboss.beans.metadata.plugins.AbstractBeanMetaData;
 import org.jboss.beans.metadata.plugins.AbstractLifecycleMetaData;
 import org.jboss.beans.metadata.spi.BeanMetaData;
+import org.jboss.beans.metadata.spi.MetaDataVisitorNode;
 import org.jboss.reflect.spi.MethodInfo;
 import org.jboss.reflect.spi.ParameterInfo;
 
@@ -69,10 +72,12 @@ public abstract class LifecycleParameterAnnotationPlugin<C extends Annotation> e
       return info.getParameters();
    }
 
-   protected void handleParameterlessInfo(MethodInfo info, C annotation, BeanMetaData beanMetaData)
+   protected List<? extends MetaDataVisitorNode> handleParameterlessInfo(MethodInfo info, C annotation, BeanMetaData beanMetaData)
    {
       AbstractBeanMetaData abmd = (AbstractBeanMetaData)beanMetaData;
-      setLifecycleMetaData(abmd, createLifecycleMetaData(info.getName(), annotation));
+      AbstractLifecycleMetaData lifecycle = createLifecycleMetaData(info.getName(), annotation);
+      setLifecycleMetaData(abmd, lifecycle);
+      return Collections.singletonList(lifecycle);
    }
 
    protected AbstractLifecycleMetaData createParametrizedMetaData(MethodInfo info, C annotation)

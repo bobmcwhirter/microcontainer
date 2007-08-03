@@ -23,12 +23,15 @@ package org.jboss.kernel.plugins.annotations;
 
 import java.util.Set;
 import java.util.HashSet;
+import java.util.List;
+import java.util.ArrayList;
 
 import org.jboss.beans.metadata.plugins.AbstractSupplyMetaData;
 import org.jboss.beans.metadata.plugins.AbstractBeanMetaData;
 import org.jboss.beans.metadata.plugins.annotations.Supplys;
 import org.jboss.beans.metadata.spi.BeanMetaData;
 import org.jboss.beans.metadata.spi.SupplyMetaData;
+import org.jboss.beans.metadata.spi.MetaDataVisitorNode;
 import org.jboss.reflect.spi.ClassInfo;
 
 /**
@@ -41,7 +44,7 @@ public class SupplysAnnotationPlugin extends ClassAnnotationPlugin<Supplys>
       super(Supplys.class);
    }
 
-   protected void internalApplyAnnotation(ClassInfo info, Supplys annotation, BeanMetaData beanMetaData)
+   protected List<? extends MetaDataVisitorNode> internalApplyAnnotation(ClassInfo info, Supplys annotation, BeanMetaData beanMetaData)
    {
       Set<SupplyMetaData> supplies = beanMetaData.getSupplies();
       if (supplies == null)
@@ -49,9 +52,13 @@ public class SupplysAnnotationPlugin extends ClassAnnotationPlugin<Supplys>
          supplies = new HashSet<SupplyMetaData>();
          ((AbstractBeanMetaData)beanMetaData).setSupplies(supplies);
       }
+      List<MetaDataVisitorNode> nodes = new ArrayList<MetaDataVisitorNode>();
       for(String supply : annotation.value())
       {
-         supplies.add(new AbstractSupplyMetaData(supply));
+         AbstractSupplyMetaData asmd = new AbstractSupplyMetaData(supply);
+         supplies.add(asmd);
+         nodes.add(asmd);
       }
+      return nodes;
    }
 }

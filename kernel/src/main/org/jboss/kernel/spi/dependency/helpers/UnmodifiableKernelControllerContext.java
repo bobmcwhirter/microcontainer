@@ -126,4 +126,9 @@ public class UnmodifiableKernelControllerContext extends UnmodifiableControllerC
    {
       delegate.set(name, value);
    }
+
+   public void applyMetaData() throws Throwable
+   {
+      delegate.applyMetaData();
+   }
 }

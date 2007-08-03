@@ -45,5 +45,4 @@ public abstract class AbstractAdaptersAnnotationPlugin<T extends AnnotatedInfo, 
          throw new IllegalArgumentException("Annotation adapters are empty!");
       this.adapters.addAll(Arrays.asList(adapters));
    }
-
 }

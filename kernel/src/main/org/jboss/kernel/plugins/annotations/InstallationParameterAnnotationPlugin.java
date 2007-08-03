@@ -24,11 +24,13 @@ package org.jboss.kernel.plugins.annotations;
 import java.lang.annotation.Annotation;
 import java.lang.annotation.ElementType;
 import java.util.List;
+import java.util.Collections;
 
 import org.jboss.beans.metadata.plugins.AbstractInstallMetaData;
 import org.jboss.beans.metadata.spi.BeanMetaData;
 import org.jboss.beans.metadata.spi.InstallMetaData;
 import org.jboss.beans.metadata.spi.ParameterMetaData;
+import org.jboss.beans.metadata.spi.MetaDataVisitorNode;
 import org.jboss.reflect.spi.MethodInfo;
 import org.jboss.reflect.spi.ParameterInfo;
 
@@ -81,8 +83,10 @@ public abstract class InstallationParameterAnnotationPlugin<C extends Annotation
       return info.getParameters();
    }
 
-   protected void handleParameterlessInfo(MethodInfo info, C annotation, BeanMetaData beanMetaData)
+   protected List<? extends MetaDataVisitorNode> handleParameterlessInfo(MethodInfo info, C annotation, BeanMetaData beanMetaData)
    {
-      setParameterizedMetaData(createParametrizedMetaData(info, annotation), beanMetaData);
+      AbstractInstallMetaData parametrizedMetaData = createParametrizedMetaData(info, annotation);
+      setParameterizedMetaData(parametrizedMetaData, beanMetaData);
+      return Collections.singletonList(parametrizedMetaData);
    }
 }

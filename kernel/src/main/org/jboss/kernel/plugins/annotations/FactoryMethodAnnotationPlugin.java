@@ -22,11 +22,14 @@
 package org.jboss.kernel.plugins.annotations;
 
 import java.lang.annotation.ElementType;
+import java.util.List;
+import java.util.Collections;
 
 import org.jboss.beans.metadata.plugins.AbstractBeanMetaData;
 import org.jboss.beans.metadata.plugins.AbstractConstructorMetaData;
 import org.jboss.beans.metadata.plugins.annotations.FactoryMethod;
 import org.jboss.beans.metadata.spi.BeanMetaData;
+import org.jboss.beans.metadata.spi.MetaDataVisitorNode;
 import org.jboss.reflect.spi.MethodInfo;
 import org.jboss.reflect.spi.ParameterInfo;
 
@@ -55,9 +58,11 @@ public class FactoryMethodAnnotationPlugin extends AbstractParameterAnnotationPl
       return info.getParameters();
    }
 
-   protected void handleParameterlessInfo(MethodInfo info, FactoryMethod annotation, BeanMetaData beanMetaData)
+   protected List<? extends MetaDataVisitorNode> handleParameterlessInfo(MethodInfo info, FactoryMethod annotation, BeanMetaData beanMetaData)
    {
-      setParameterizedMetaData(createParametrizedMetaData(info, annotation, beanMetaData), beanMetaData);
+      AbstractConstructorMetaData constructorMetaData = createParametrizedMetaData(info, annotation, beanMetaData);
+      setParameterizedMetaData(constructorMetaData, beanMetaData);
+      return Collections.singletonList(constructorMetaData);
    }
 
    protected AbstractConstructorMetaData createParametrizedMetaData(MethodInfo info, FactoryMethod annotation, BeanMetaData beanMetaData)

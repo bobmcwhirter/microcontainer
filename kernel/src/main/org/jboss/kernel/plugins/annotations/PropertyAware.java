@@ -22,7 +22,7 @@
 package org.jboss.kernel.plugins.annotations;
 
 import org.jboss.beans.info.spi.PropertyInfo;
-import org.jboss.kernel.spi.dependency.KernelControllerContext;
+import org.jboss.beans.metadata.spi.MetaDataVisitor;
 import org.jboss.metadata.spi.retrieval.MetaDataRetrieval;
 
 /**
@@ -32,5 +32,5 @@ import org.jboss.metadata.spi.retrieval.MetaDataRetrieval;
  */
 public interface PropertyAware
 {
-   void applyAnnotation(PropertyInfo info, MetaDataRetrieval retrieval, KernelControllerContext context) throws Throwable;
+   void applyAnnotation(PropertyInfo info, MetaDataRetrieval retrieval, MetaDataVisitor visitor) throws Throwable;
 }

@@ -31,6 +31,7 @@ import org.jboss.beans.metadata.plugins.annotations.ExternalInstall;
 import org.jboss.beans.metadata.plugins.annotations.Value;
 import org.jboss.beans.metadata.spi.BeanMetaData;
 import org.jboss.beans.metadata.spi.InstallMetaData;
+import org.jboss.beans.metadata.spi.MetaDataVisitorNode;
 import org.jboss.beans.metadata.spi.ParameterMetaData;
 import org.jboss.beans.metadata.spi.ValueMetaData;
 import org.jboss.dependency.spi.ControllerState;
@@ -85,7 +86,7 @@ public abstract class ExternalInstallationAnnotationPlugin<C extends Annotation>
       return installMetaData;
    }
 
-   protected void internalApplyAnnotation(ClassInfo info, C annotation, KernelControllerContext context) throws Throwable
+   protected List<? extends MetaDataVisitorNode> internalApplyAnnotation(ClassInfo info, C annotation, KernelControllerContext context) throws Throwable
    {
       BeanMetaData beanMetaData = context.getBeanMetaData();
       List<InstallMetaData> existing = getExistingInstallMetaData(beanMetaData);
@@ -95,6 +96,7 @@ public abstract class ExternalInstallationAnnotationPlugin<C extends Annotation>
       List<InstallMetaData> installs = getInstallMetaData(annotation);
       if (installs != null && installs.isEmpty() == false)
       {
+         List<MetaDataVisitorNode> nodes = new ArrayList<MetaDataVisitorNode>();
          for(InstallMetaData install : installs)
          {
             boolean doAdd = true;
@@ -109,10 +111,12 @@ public abstract class ExternalInstallationAnnotationPlugin<C extends Annotation>
             if (doAdd)
             {
                existing.add(install);
-               executeVisit(context, install);
+               nodes.add(install);
             }
          }
+         return nodes;
       }
+      return null;
    }
 
    protected static boolean isDifferent(InstallMetaData first, InstallMetaData second)
