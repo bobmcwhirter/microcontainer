@@ -21,6 +21,8 @@
 */
 package org.jboss.beans.metadata.spi.builder;
 
+import java.util.Set;
+
 import org.jboss.beans.metadata.spi.BeanMetaData;
 import org.jboss.beans.metadata.spi.ValueMetaData;
 import org.jboss.dependency.spi.ControllerMode;
@@ -34,6 +36,8 @@ import org.jboss.dependency.spi.ControllerMode;
 public interface BeanMetaDataBuilder
 {
    BeanMetaData getBeanMetaData();
+
+   BeanMetaDataBuilder setAliases(Set<Object> aliases);
 
    BeanMetaDataBuilder setMode(String modeString);
 

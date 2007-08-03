@@ -22,30 +22,27 @@
 package org.jboss.test.kernel.dependency.test;
 
 import junit.framework.Test;
-import org.jboss.beans.metadata.plugins.AbstractBeanMetaData;
-import org.jboss.beans.metadata.spi.BeanMetaData;
-import org.jboss.test.kernel.dependency.support.AnnotatedSimpleBeanWithKernelControllerContextAware;
 
 /**
- * KernelControllerContextAware Test Case.
- *
- * @author <a href="ales.justin@jboss.com">Ales Justin</a>
+ * Test FromContext from XML.
+ * 
+ * @author <a href="mailto:ales.justin@jboss.com">Ales Justin</a>
  */
-public class KernelControllerContextAwareAnnotationTestCase extends KernelControllerContextAwareTestCase
+public class FromContextXMLTestCase extends FromContextTestCase
 {
+   public FromContextXMLTestCase(String name)
+         throws Throwable
+   {
+      super(name, true);
+   }
+
    public static Test suite()
    {
-      return suite(KernelControllerContextAwareAnnotationTestCase.class);
+      return suite(FromContextXMLTestCase.class);
    }
 
-   public KernelControllerContextAwareAnnotationTestCase(String name) throws Throwable
+   protected void setBeanMetaDatas() throws Throwable
    {
-      super(name);
-   }
-
-   public void kernelControllerContextAware() throws Throwable
-   {
-      AbstractBeanMetaData metaData1 = new AbstractBeanMetaData("Name1", AnnotatedSimpleBeanWithKernelControllerContextAware.class.getName());
-      setBeanMetaDatas(new BeanMetaData[] { metaData1 });
+      deploy(0);
    }
 }

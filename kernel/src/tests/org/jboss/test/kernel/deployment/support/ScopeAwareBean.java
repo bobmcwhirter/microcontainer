@@ -19,33 +19,22 @@
 * Software Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA
 * 02110-1301 USA, or see the FSF site: http://www.fsf.org.
 */
-package org.jboss.test.kernel.dependency.test;
+package org.jboss.test.kernel.deployment.support;
 
-import junit.framework.Test;
-import org.jboss.beans.metadata.plugins.AbstractBeanMetaData;
-import org.jboss.beans.metadata.spi.BeanMetaData;
-import org.jboss.test.kernel.dependency.support.AnnotatedSimpleBeanWithKernelControllerContextAware;
+import org.jboss.metadata.spi.scope.ScopeKey;
+import org.jboss.beans.metadata.plugins.annotations.Inject;
+import org.jboss.beans.metadata.plugins.annotations.FromContext;
 
 /**
- * KernelControllerContextAware Test Case.
+ * A simple bean with awareness
  *
  * @author <a href="ales.justin@jboss.com">Ales Justin</a>
  */
-public class KernelControllerContextAwareAnnotationTestCase extends KernelControllerContextAwareTestCase
+public class ScopeAwareBean extends NameAwareBean
 {
-   public static Test suite()
+   @Inject(fromContext = FromContext.SCOPE)
+   public void setScopeKey(ScopeKey scopeKey)
    {
-      return suite(KernelControllerContextAwareAnnotationTestCase.class);
-   }
-
-   public KernelControllerContextAwareAnnotationTestCase(String name) throws Throwable
-   {
-      super(name);
-   }
-
-   public void kernelControllerContextAware() throws Throwable
-   {
-      AbstractBeanMetaData metaData1 = new AbstractBeanMetaData("Name1", AnnotatedSimpleBeanWithKernelControllerContextAware.class.getName());
-      setBeanMetaDatas(new BeanMetaData[] { metaData1 });
+      super.setScopeKey(scopeKey);
    }
 }

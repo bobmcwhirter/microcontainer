@@ -91,6 +91,12 @@ class BeanMetaDataBuilderImpl implements BeanMetaDataBuilder
       return beanMetaData;
    }
 
+   public BeanMetaDataBuilder setAliases(Set<Object> aliases)
+   {
+      beanMetaData.setAliases(aliases);
+      return this;
+   }
+
    public BeanMetaDataBuilder setMode(String modeString)
    {
       return setMode(new ControllerMode(modeString));
