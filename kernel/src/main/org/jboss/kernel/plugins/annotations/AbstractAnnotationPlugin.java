@@ -38,6 +38,7 @@ import org.jboss.metadata.spi.retrieval.AnnotationItem;
 import org.jboss.metadata.spi.retrieval.MetaDataRetrieval;
 import org.jboss.reflect.spi.AnnotatedInfo;
 import org.jboss.util.JBossObject;
+import org.jboss.util.JBossStringBuilder;
 
 /**
  * @param <T> info type
@@ -109,6 +110,7 @@ public abstract class AbstractAnnotationPlugin<T extends AnnotatedInfo, C extend
 
    protected List<? extends MetaDataVisitorNode> internalApplyAnnotation(T info, C annotation, BeanMetaData beanMetaData) throws Throwable
    {
+      log.warn("Probably missing annotation apply implementation: " + this);
       return Collections.emptyList();
    }
 
@@ -128,4 +130,14 @@ public abstract class AbstractAnnotationPlugin<T extends AnnotatedInfo, C extend
       }
    }
 
+   protected void toString(JBossStringBuilder buffer)
+   {
+      buffer.append("@annotation=").append(annotation);
+      buffer.append(" ,types=").append(types);
+   }
+
+   public void toShortString(JBossStringBuilder buffer)
+   {
+      buffer.append("@annotation=").append(annotation);
+   }
 }
