@@ -22,8 +22,8 @@
 package org.jboss.test.kernel.config.test;
 
 import junit.framework.Test;
-import org.jboss.beans.metadata.plugins.builder.BeanMetaDataBuilderFactory;
-import org.jboss.beans.metadata.spi.builder.BeanMetaDataBuilder;
+import org.jboss.beans.metadata.plugins.AbstractBeanMetaData;
+import org.jboss.kernel.Kernel;
 import org.jboss.test.kernel.config.support.FromStringSimpleBean;
 import org.jboss.test.kernel.config.support.SimpleBean;
 
@@ -44,10 +44,12 @@ public class ConfigureFromStringAnnotationTestCase extends ConfigureFromStringTe
       super(name);
    }
 
-
    protected SimpleBean configure() throws Throwable
    {
-      BeanMetaDataBuilder builder = BeanMetaDataBuilderFactory.createBuilder("SimpleBean", FromStringSimpleBean.class.getName());
-      return (SimpleBean)instantiate(builder.getBeanMetaData());
+      Kernel kernel = bootstrap();
+      configurator = kernel.getConfigurator();
+      info = configurator.getBeanInfo(FromStringSimpleBean.class);
+      metaData = new AbstractBeanMetaData("SimpleBean", FromStringSimpleBean.class.getName());
+      return (SimpleBean)instantiate(kernel.getController(), metaData);
    }
 }
