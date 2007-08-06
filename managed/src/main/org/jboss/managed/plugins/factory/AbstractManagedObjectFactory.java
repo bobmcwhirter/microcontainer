@@ -338,6 +338,9 @@ public class AbstractManagedObjectFactory extends ManagedObjectFactory
 
    public void createObject(ManagedObject managedObject, Class<? extends Serializable> clazz)
    {
+      if (managedObject == null)
+         throw new IllegalArgumentException("Null managed object");
+      
       if (managedObject instanceof ManagedObjectImpl == false)
          throw new IllegalStateException("Unable to create object " + managedObject.getClass().getName());
       
