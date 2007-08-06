@@ -34,7 +34,7 @@ public interface PackageCapability extends Capability
     * 
     * @return the package name
     */
-   String getPackageName();
+   String getName();
    
    /**
     * Get the package version

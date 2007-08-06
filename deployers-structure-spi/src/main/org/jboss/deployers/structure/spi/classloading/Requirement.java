@@ -21,12 +21,14 @@
  */
 package org.jboss.deployers.structure.spi.classloading;
 
+import java.io.Serializable;
+
 /**
  * Requirement.
  * 
  * @author <a href="adrian@jboss.org">Adrian Brock</a>
  * @version $Revision: 1.1 $
  */
-public interface Requirement
+public interface Requirement extends Serializable
 {
 }

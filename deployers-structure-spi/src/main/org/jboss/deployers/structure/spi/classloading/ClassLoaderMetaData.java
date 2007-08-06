@@ -22,7 +22,7 @@
 package org.jboss.deployers.structure.spi.classloading;
 
 import java.io.Serializable;
-import java.util.Set;
+import java.util.List;
 
 /**
  * ClassLoaderMetaData.
@@ -58,10 +58,10 @@ public class ClassLoaderMetaData implements Serializable
    private boolean importAll;
    
    /** The requirements */
-   private Set<Requirement> requirements;
+   private List<Requirement> requirements;
    
    /** The capabilities */
-   private Set<Capability> capabilities;
+   private List<Capability> capabilities;
 
    /**
     * Get the name.
@@ -188,7 +188,7 @@ public class ClassLoaderMetaData implements Serializable
     * 
     * @return the capabilities.
     */
-   public Set<Capability> getCapabilities()
+   public List<Capability> getCapabilities()
    {
       return capabilities;
    }
@@ -198,7 +198,7 @@ public class ClassLoaderMetaData implements Serializable
     * 
     * @param capabilities the capabilities.
     */
-   public void setCapabilities(Set<Capability> capabilities)
+   public void setCapabilities(List<Capability> capabilities)
    {
       this.capabilities = capabilities;
    }
@@ -228,7 +228,7 @@ public class ClassLoaderMetaData implements Serializable
     * 
     * @return the requirements.
     */
-   public Set<Requirement> getRequirements()
+   public List<Requirement> getRequirements()
    {
       return requirements;
    }
@@ -238,7 +238,7 @@ public class ClassLoaderMetaData implements Serializable
     * 
     * @param requirements the requirements.
     */
-   public void setRequirements(Set<Requirement> requirements)
+   public void setRequirements(List<Requirement> requirements)
    {
       this.requirements = requirements;
    }

@@ -21,6 +21,8 @@
  */
 package org.jboss.deployers.structure.spi.classloading;
 
+import org.jboss.deployers.structure.spi.classloading.helpers.VersionImpl;
+
 /**
  * Version.
  * 
@@ -29,4 +31,6 @@ package org.jboss.deployers.structure.spi.classloading;
  */
 public interface Version extends Comparable<Version>
 {
+   /** The default version */
+   public static final Version DEFAULT_VERSION = new VersionImpl(null); 
 }

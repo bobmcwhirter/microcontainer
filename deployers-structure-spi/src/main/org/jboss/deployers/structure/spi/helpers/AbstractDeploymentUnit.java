@@ -114,6 +114,11 @@ public class AbstractDeploymentUnit extends AbstractMutableAttachments implement
       return deploymentContext.createClassLoader(factory);
    }
 
+   public void removeClassLoader(ClassLoaderFactory factory)
+   {
+      deploymentContext.removeClassLoader(factory);
+   }
+
    public DeploymentUnit getTopLevel()
    {
       DeploymentUnit top = getParent();

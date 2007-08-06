@@ -52,6 +52,14 @@ public abstract class AbstractClassLoaderDeployer extends AbstractDeployer imple
          factory = this;
       unit.createClassLoader(factory);
    }
+   
+   public void undeploy(DeploymentUnit unit)
+   {
+      ClassLoaderFactory factory = unit.getAttachment(ClassLoaderFactory.class);
+      if (factory == null)
+         factory = this;
+      unit.removeClassLoader(factory);
+   }
 
    public void removeClassLoader(DeploymentContext context) throws Exception
    {

@@ -175,6 +175,8 @@ public class AbstractStructureBuilder implements StructureBuilder
    protected void applyComparator(DeploymentContext context, ContextInfo contextInfo) throws Exception
    {
       String className = contextInfo.getComparatorClassName();
+      if (className == null)
+         return;
       Object o = null;
       try
       {

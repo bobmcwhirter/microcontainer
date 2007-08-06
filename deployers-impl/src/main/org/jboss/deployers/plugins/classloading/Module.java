@@ -21,14 +21,21 @@
  */
 package org.jboss.deployers.plugins.classloading;
 
+import java.util.ArrayList;
 import java.util.List;
 
+import org.jboss.classloader.spi.ClassLoaderPolicy;
 import org.jboss.classloader.spi.ClassLoaderSystem;
 import org.jboss.classloader.spi.DelegateLoader;
 import org.jboss.classloader.spi.ParentPolicy;
+import org.jboss.classloader.spi.filter.FilteredDelegateLoader;
+import org.jboss.dependency.spi.Controller;
 import org.jboss.deployers.structure.spi.DeploymentUnit;
+import org.jboss.deployers.structure.spi.classloading.Capability;
 import org.jboss.deployers.structure.spi.classloading.ClassLoaderMetaData;
 import org.jboss.deployers.structure.spi.classloading.ExportAll;
+import org.jboss.deployers.structure.spi.classloading.PackageCapability;
+import org.jboss.deployers.structure.spi.classloading.Requirement;
 
 /**
  * Module.
@@ -47,8 +54,8 @@ public class Module
    /** The classloader metadata */
    private ClassLoaderMetaData metadata;
 
-   /** The delegates */
-   private List<? extends DelegateLoader> delegates;
+   /** The requirements */
+   private List<RequirementDependencyItem> requirementDependencies;
    
    /**
     * Create a new Module.
@@ -71,6 +78,16 @@ public class Module
       this.metadata = metadata;
    }
 
+   /**
+    * Get the name of the module
+    * 
+    * @return the string
+    */
+   public String getName()
+   {
+      return deploymentUnit.getName(); 
+   }
+   
    /**
     * Get the deploymentUnit.
     * 
@@ -167,7 +184,50 @@ public class Module
     */
    public List<? extends DelegateLoader> getDelegates()
    {
-      return delegates;
+      // TODO JBMICROCONT-182 - this should be already determined
+      if (requirementDependencies == null || requirementDependencies.isEmpty())
+         return null;
+
+      List<DelegateLoader> result = new ArrayList<DelegateLoader>();
+      for (RequirementDependencyItem item : requirementDependencies)
+      {
+         String name = (String) item.getIDependOn();
+         Module module = domain.getModule(name);
+         if (module == null)
+            throw new IllegalStateException("Module not found with name: " + name);
+         result.add(module.getDelegateLoader());
+      }
+      return result;
+   }
+   
+   /**
+    * Get the delegate loader
+    * 
+    * @return the delegate loader
+    */
+   public DelegateLoader getDelegateLoader()
+   {
+      // TODO JBMICROCONT-182 - this should be already determined
+      ClassLoaderPolicy policy = deploymentUnit.getAttachment(ClassLoaderPolicy.class);
+      if (policy == null)
+         throw new IllegalStateException("No policy for " + deploymentUnit.getName());
+      return new FilteredDelegateLoader(policy);
+   }
+   
+   public String[] getPackageNames()
+   {
+      // TODO JBMICROCONT-182 - this should be first class to include "uses" processing
+      List<Capability> capabilities = metadata.getCapabilities();
+      if (capabilities == null)
+         return new String[0];
+      
+      List<String> packageNames = new ArrayList<String>();
+      for (Capability capability : capabilities)
+      {
+         if (capability instanceof PackageCapability)
+            packageNames.add(((PackageCapability) capability).getName());
+      }
+      return packageNames.toArray(new String[packageNames.size()]);
    }
    
    /**
@@ -175,7 +235,29 @@ public class Module
     */
    public void createDependencies()
    {
-      // TODO JBMICROCONT-186 createDependencies
+      List<Requirement> requirements = metadata.getRequirements();
+      if (requirements != null)
+      {
+         requirementDependencies = new ArrayList<RequirementDependencyItem>();
+         for (Requirement requirement : requirements)
+         {
+            RequirementDependencyItem item = new RequirementDependencyItem(this, requirement);
+            requirementDependencies.add(item);
+            deploymentUnit.addIDependOn(item);
+         }
+      }
+   }
+   
+   /**
+    * Resolve the requirement
+    * 
+    * @param controller the controller
+    * @param requirement the requirement
+    * @return the resolved name or null if not resolved
+    */
+   protected Object resolve(Controller controller, Requirement requirement)
+   {
+      return domain.resolve(controller, this, requirement);
    }
    
    /**
@@ -183,7 +265,6 @@ public class Module
     */
    public void reset()
    {
-      delegates = null;
    }
    
    /**

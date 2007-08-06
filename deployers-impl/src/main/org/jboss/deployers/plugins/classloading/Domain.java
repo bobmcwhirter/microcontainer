@@ -21,15 +21,20 @@
  */
 package org.jboss.deployers.plugins.classloading;
 
+import java.util.List;
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
 
+import org.jboss.dependency.spi.Controller;
 import org.jboss.deployers.structure.spi.DeploymentUnit;
+import org.jboss.deployers.structure.spi.classloading.Capability;
 import org.jboss.deployers.structure.spi.classloading.ClassLoaderMetaData;
+import org.jboss.deployers.structure.spi.classloading.Requirement;
 
 /**
  * Domain.
  * 
+ * TODO JBMICROCONT-182 - need to include some parent delegation as well
  * @author <a href="adrian@jboss.org">Adrian Brock</a>
  * @version $Revision: 1.1 $
  */
@@ -65,7 +70,7 @@ public class Domain
    }
 
    /**
-    * Add a deployment context
+    * Add a deployment unit
     * 
     * @param deploymentUnit the deployment unit
     * @param metadata the classloader metadata 
@@ -78,9 +83,52 @@ public class Domain
       units.put(deploymentUnit, module);
       module.createDependencies();
    }
+
+   /**
+    * Get a module for a name
+    * 
+    * @param name the name
+    * @return the module
+    */
+   protected Module getModule(String name)
+   {
+      for (Module module : units.values())
+      {
+         if (name.equals(module.getName()))
+            return module;
+      }
+      return null;
+   }
    
    /**
-    * Remove a deployment context
+    * Resolve the requirement
+    * 
+    * @param controller the controller
+    * @param module the module
+    * @param requirement the requirement
+    * @return the resolved name or null if not resolved
+    */
+   protected Object resolve(Controller controller, Module module, Requirement requirement)
+   {
+      // TODO JBMICROCONT-182 - do this properly
+      for (Module other : units.values())
+      {
+         ClassLoaderMetaData metadata = other.getMetadata();
+         List<Capability> capabilities = metadata.getCapabilities();
+         if (capabilities != null)
+         {
+            for (Capability capability : capabilities)
+            {
+               if (capability.resolves(module.getDeploymentUnit(), requirement))
+                  return other.getName();
+            }
+         }
+      }
+      return null;
+   }
+   
+   /**
+    * Remove a deployment
     * 
     * @param module the module
     * @throws IllegalArgumentException for a null parameter

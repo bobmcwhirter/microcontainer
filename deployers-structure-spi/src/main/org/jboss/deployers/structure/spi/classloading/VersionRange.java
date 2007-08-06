@@ -41,6 +41,9 @@ public class VersionRange
    /** Whether high is inclusive */
    private boolean highInclusive;
    
+   /** All versions */
+   public static final VersionRange ALL_VERSIONS = new VersionRange(Version.DEFAULT_VERSION);
+   
    /**
     * Create a new VersionRange with just a low inclusive check
     * 
@@ -148,5 +151,86 @@ public class VersionRange
             return false;
       }
       return true;
+   }
+
+   @Override
+   public boolean equals(Object obj)
+   {
+      if (obj == this)
+         return true;
+      if (obj == null || obj instanceof VersionRange == false)
+         return false;
+      
+      VersionRange other = (VersionRange) obj;
+      
+      Version thisLow = other.getLow();
+      Version otherLow = other.getLow();
+      if (thisLow == null)
+      {
+         if (otherLow != null)
+            return false;
+      }
+      else if (thisLow.equals(otherLow) == false)
+         return false;
+      
+      if (thisLow != null && isLowInclusive() != other.isLowInclusive())
+         return false;
+      
+      Version thisHigh = other.getHigh();
+      Version otherHigh = other.getHigh();
+      if (thisHigh == null)
+      {
+         if (otherHigh != null)
+            return false;
+      }
+      else if (thisHigh.equals(otherHigh) == false)
+         return false;
+      
+      if (thisHigh != null && isHighInclusive() != other.isHighInclusive())
+         return false;
+      
+      return true;
+   }
+   
+   @Override 
+   public int hashCode()
+   {
+      if (low != null)
+         return low.hashCode();
+      if (high != null)
+         return high.hashCode();
+      return 0;
+   }
+   
+   @Override
+   public String toString()
+   {
+      StringBuilder builder = new StringBuilder();
+      if (low != null)
+      {
+         if (isLowInclusive())
+            builder.append("[");
+         else
+            builder.append("(");
+         builder.append(low);
+      }
+      else
+      {
+         builder.append("[").append(Version.DEFAULT_VERSION);
+      }
+      builder.append(",");
+      if (high != null)
+      {
+         builder.append(high);
+         if (isHighInclusive())
+            builder.append("]");
+         else
+            builder.append(")");
+      }
+      else
+      {
+         builder.append("inf)");
+      }
+      return builder.toString();
    }
 }

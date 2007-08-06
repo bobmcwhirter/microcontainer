@@ -379,7 +379,8 @@ public class DeployersImpl implements Deployers, ControllerContextActions
             {
                controller.uninstall(deploymentControllerContext.getName());
                setState(context, DeploymentState.UNDEPLOYED, null);
-               // TODO JBMICROCONT-182 perform with the deployer that created the classloader?
+               // This is now in the abstract classloader deployer.undeploy,
+               // but left here in case somebody isn't using that.
                removeClassLoader(context);
                log.debug("Fully Undeployed " + context.getName());
             }

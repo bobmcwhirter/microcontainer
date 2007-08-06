@@ -184,6 +184,10 @@ public class ComponentDeploymentContext implements DeploymentContext
    {
    }
 
+   public void removeClassLoader(ClassLoaderFactory factory)
+   {
+   }
+
    public boolean isTopLevel()
    {
       return false;

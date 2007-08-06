@@ -19,37 +19,14 @@
 * Software Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA
 * 02110-1301 USA, or see the FSF site: http://www.fsf.org.
 */
-package org.jboss.test.deployers;
-
-import org.jboss.test.deployers.classloading.DeployersClassLoadingTestSuite;
-import org.jboss.test.deployers.deployer.DeployersDeployerTestSuite;
-import org.jboss.test.deployers.managed.DeployersManagedTestSuite;
-
-import junit.framework.Test;
-import junit.framework.TestSuite;
-import junit.textui.TestRunner;
+package org.jboss.test.deployers.classloading.support.a;
 
 /**
- * Deployers Impl Test Suite.
+ * A.
  * 
  * @author <a href="adrian@jboss.com">Adrian Brock</a>
- * @version $Revision: 37459 $
+ * @version $Revision: 1.1 $
  */
-public class DeployersImplTestSuite extends TestSuite
+public class A
 {
-   public static void main(String[] args)
-   {
-      TestRunner.run(suite());
-   }
-
-   public static Test suite()
-   {
-      TestSuite suite = new TestSuite("Deployers Impl Tests");
-
-      suite.addTest(DeployersDeployerTestSuite.suite());
-      suite.addTest(DeployersManagedTestSuite.suite());
-      suite.addTest(DeployersClassLoadingTestSuite.suite());
-
-      return suite;
-   }
 }

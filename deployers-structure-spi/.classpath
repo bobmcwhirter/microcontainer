@@ -34,6 +34,7 @@
   <classpathentry kind="var" path="M2_REPO/wutka-dtdparser/dtdparser121/1.2.1/dtdparser121-1.2.1.jar"/>
   <classpathentry kind="var" path="M2_REPO/apache-xerces/xml-apis/2.7.1/xml-apis-2.7.1.jar"/>
   <classpathentry kind="var" path="M2_REPO/ant/ant/1.6.5/ant-1.6.5.jar" sourcepath="M2_REPO/ant/ant/1.6.5/ant-1.6.5-sources.jar"/>
+  <classpathentry kind="var" path="M2_REPO/org/osgi/osgi_R4_core/1.0/osgi_R4_core-1.0.jar"/>
   <classpathentry kind="src" path="/jboss-deployers-core-spi"/>
   <classpathentry kind="src" path="/jboss-dependency"/>
 </classpath>

@@ -36,6 +36,7 @@ import org.jboss.deployers.spi.deployer.Deployer;
 import org.jboss.deployers.spi.deployer.Deployers;
 import org.jboss.deployers.spi.structure.ContextInfo;
 import org.jboss.deployers.structure.spi.DeploymentContext;
+import org.jboss.deployers.structure.spi.DeploymentUnit;
 import org.jboss.deployers.structure.spi.StructuralDeployers;
 import org.jboss.deployers.structure.spi.StructureBuilder;
 import org.jboss.deployers.structure.spi.helpers.AbstractStructuralDeployers;
@@ -135,6 +136,39 @@ public abstract class AbstractDeployerTest extends BaseTestCase
       DeploymentContext context = getDeploymentContext(main, name);
       assertNotNull(name + " not found", context);
       return context;
+   }
+   
+   protected DeploymentUnit getDeploymentUnit(DeployerClient main, String name)
+   {
+      MainDeployerImpl mainDeployerImpl = (MainDeployerImpl) main;
+      return mainDeployerImpl.getDeploymentUnit(name);
+   }
+   
+   protected DeploymentUnit assertDeploymentUnit(DeployerClient main, String name)
+   {
+      DeploymentUnit unit = getDeploymentUnit(main, name);
+      assertNotNull(name + " not found", unit);
+      return unit;
+   }
+   
+   protected DeploymentUnit deploy(DeployerClient main, Deployment deployment) throws Exception
+   {
+      main.deploy(deployment);
+      DeploymentUnit unit = assertDeploymentUnit(main, deployment.getName());
+      return unit;
+   }
+   
+   protected DeploymentUnit assertDeploy(DeployerClient main, Deployment deployment) throws Exception
+   {
+      main.deploy(deployment);
+      DeploymentUnit unit = assertDeploymentUnit(main, deployment.getName());
+      main.checkComplete();
+      return unit;
+   }
+   
+   protected void assertUndeploy(DeployerClient main, Deployment deployment) throws Exception
+   {
+      main.undeploy(deployment);
    }
    
    protected Deployment createSimpleDeployment(String name)

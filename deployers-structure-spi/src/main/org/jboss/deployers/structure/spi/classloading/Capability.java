@@ -21,7 +21,9 @@
  */
 package org.jboss.deployers.structure.spi.classloading;
 
-import org.jboss.deployers.structure.spi.DeploymentContext;
+import java.io.Serializable;
+
+import org.jboss.deployers.structure.spi.DeploymentUnit;
 
 /**
  * Capability.
@@ -29,15 +31,15 @@ import org.jboss.deployers.structure.spi.DeploymentContext;
  * @author <a href="adrian@jboss.org">Adrian Brock</a>
  * @version $Revision: 1.1 $
  */
-public interface Capability
+public interface Capability extends Serializable
 {
    /**
     * Whether this capability resolves the requirement
     * 
-    * @param context the deployment context
+    * @param unit the deployment 
     * @param requirement the requirement
     * @throws IllegalArgumentException for a null requirement
     * @return true when it is resolves the requirement
     */
-   boolean resolves(DeploymentContext context, Requirement requirement);
+   boolean resolves(DeploymentUnit unit, Requirement requirement);
 }

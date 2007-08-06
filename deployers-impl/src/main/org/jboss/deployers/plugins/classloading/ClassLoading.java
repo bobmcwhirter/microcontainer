@@ -28,6 +28,7 @@ import org.jboss.classloader.spi.ClassLoaderSystem;
 import org.jboss.deployers.structure.spi.DeploymentUnit;
 import org.jboss.deployers.structure.spi.classloading.ClassLoaderMetaData;
 import org.jboss.deployers.structure.spi.classloading.ExportAll;
+import org.jboss.deployers.structure.spi.classloading.Version;
 
 /**
  * ClassLoading.
@@ -54,11 +55,12 @@ public class ClassLoading
       ClassLoaderMetaData metadata = deploymentUnit.getAttachment(ClassLoaderMetaData.class);
       if (metadata == null)
       {
+         // REVIEW: There should probably be a warning here?
          metadata = new ClassLoaderMetaData();
          metadata.setName(deploymentUnit.getName());
          metadata.setExportAll(ExportAll.NON_EMPTY);
          metadata.setImportAll(true);
-         // TODO JBMICROCONT-182 default version
+         metadata.setVersion(Version.DEFAULT_VERSION);
          deploymentUnit.addAttachment(ClassLoaderMetaData.class, metadata);
       }
       

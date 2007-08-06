@@ -101,6 +101,13 @@ public interface DeploymentUnit extends MutableAttachments
    boolean createClassLoader(ClassLoaderFactory factory) throws DeploymentException;
    
    /**
+    * Remove the classloader
+    * 
+    * @param factory the original factory used to create the classloader
+    */
+   void removeClassLoader(ClassLoaderFactory factory);
+   
+   /**
     * Get all the metadata for the expected type
     * 
     * @param <T> the type to get

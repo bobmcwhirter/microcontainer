@@ -284,6 +284,12 @@ public class AbstractDeploymentContext extends ManagedObjectsWithTransientAttach
       setClassLoader(null);
    }
 
+   public void removeClassLoader(ClassLoaderFactory factory)
+   {
+      if (classLoaderFactory == factory)
+         removeClassLoader();
+   }
+
    public boolean isTopLevel()
    {
       return parent == null;

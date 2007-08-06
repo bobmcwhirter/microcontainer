@@ -19,23 +19,21 @@
 * Software Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA
 * 02110-1301 USA, or see the FSF site: http://www.fsf.org.
 */
-package org.jboss.test.deployers;
-
-import org.jboss.test.deployers.classloading.DeployersClassLoadingTestSuite;
-import org.jboss.test.deployers.deployer.DeployersDeployerTestSuite;
-import org.jboss.test.deployers.managed.DeployersManagedTestSuite;
+package org.jboss.test.deployers.classloading;
 
 import junit.framework.Test;
 import junit.framework.TestSuite;
 import junit.textui.TestRunner;
 
+import org.jboss.test.deployers.classloading.test.MockClassLoaderDependenciesUnitTestCase;
+
 /**
- * Deployers Impl Test Suite.
+ * Deployers Deployer Test Suite.
  * 
  * @author <a href="adrian@jboss.com">Adrian Brock</a>
  * @version $Revision: 37459 $
  */
-public class DeployersImplTestSuite extends TestSuite
+public class DeployersClassLoadingTestSuite extends TestSuite
 {
    public static void main(String[] args)
    {
@@ -44,11 +42,9 @@ public class DeployersImplTestSuite extends TestSuite
 
    public static Test suite()
    {
-      TestSuite suite = new TestSuite("Deployers Impl Tests");
+      TestSuite suite = new TestSuite("Deployers ClassLoading Tests");
 
-      suite.addTest(DeployersDeployerTestSuite.suite());
-      suite.addTest(DeployersManagedTestSuite.suite());
-      suite.addTest(DeployersClassLoadingTestSuite.suite());
+      suite.addTest(MockClassLoaderDependenciesUnitTestCase.suite());
 
       return suite;
    }

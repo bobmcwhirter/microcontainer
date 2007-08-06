@@ -178,6 +178,13 @@ public interface DeploymentContext extends ManagedObjectsWithTransientAttachment
     * Remove the classloader created by the factory
     */
    void removeClassLoader();
+   
+   /**
+    * Remove the classloader
+    * 
+    * @param factory the original factory used to create the classloader
+    */
+   void removeClassLoader(ClassLoaderFactory factory);
 
    /**
     * Whether this is a top level deployment

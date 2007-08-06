@@ -22,7 +22,7 @@
 package org.jboss.deployers.vfs.spi.deployer;
 
 import org.jboss.deployers.spi.DeploymentException;
-import org.jboss.deployers.spi.deployer.helpers.AbstractRealDeployer;
+import org.jboss.deployers.spi.deployer.helpers.AbstractOptionalRealDeployer;
 import org.jboss.deployers.structure.spi.DeploymentUnit;
 import org.jboss.deployers.vfs.spi.structure.VFSDeploymentUnit;
 
@@ -30,24 +30,22 @@ import org.jboss.deployers.vfs.spi.structure.VFSDeploymentUnit;
  * An abstract more complicated VFS real deployer where the input
  * is optional instead of mandatory.
  * 
+ * @param <T> the deployment type 
  * @author <a href="mailto:carlo.dewolf@jboss.com">Carlo de Wolf</a>
+ * @author adrian@jboss.org
  * @version $Revision$
  */
-public abstract class AbstractOptionalVFSRealDeployer<T> extends AbstractRealDeployer
+public abstract class AbstractOptionalVFSRealDeployer<T> extends AbstractOptionalRealDeployer<T>
 {
-   private Class<T> optionalInput;
-   
+   /**
+    * Create a new AbstractOptionalVFSRealDeployer.
+    * 
+    * @param optionalInput the optional input
+    * @throws IllegalArgumentException for null input
+    */
    public AbstractOptionalVFSRealDeployer(Class<T> optionalInput)
    {
-      if (optionalInput == null)
-         throw new IllegalArgumentException("Null optionallInput");
-      this.optionalInput = optionalInput;
-      setInputs(optionalInput);
-   }
-   
-   public void deploy(DeploymentUnit unit) throws DeploymentException
-   {
-      deploy(unit, unit.getAttachment(optionalInput));
+      super(optionalInput);
    }
 
    public void deploy(DeploymentUnit unit, T deployment) throws DeploymentException
@@ -69,11 +67,6 @@ public abstract class AbstractOptionalVFSRealDeployer<T> extends AbstractRealDep
    public abstract void deploy(VFSDeploymentUnit unit, T deployment) throws DeploymentException;
 
    @Override
-   public void undeploy(DeploymentUnit unit)
-   {
-      undeploy(unit, unit.getAttachment(optionalInput));
-   }
-   
    public void undeploy(DeploymentUnit unit, T deployment)
    {
       if (unit instanceof VFSDeploymentUnit == false)
