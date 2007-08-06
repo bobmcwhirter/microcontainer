@@ -1,0 +1,8 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<deployment xmlns="urn:jboss:bean-deployer:2.0">
+   <beanfactory name="Factory">
+      <constructor factoryMethod="staticCreateSimpleBean" factoryClass="org.jboss.test.kernel.config.support.SimpleBeanFactory"/>
+      <property name="anint">123</property>
+   </beanfactory>
+</deployment>

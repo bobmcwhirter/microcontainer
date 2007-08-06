@@ -86,9 +86,15 @@ public class GenericBeanFactory implements BeanFactory
    public Object createBean() throws Throwable
    {
       ClassLoader cl = Configurator.getClassLoader(classLoader);
-      BeanInfo info = configurator.getBeanInfo(bean, cl);
+      BeanInfo info = null;
+      if (bean != null)
+         info = configurator.getBeanInfo(bean, cl);
+
       Joinpoint joinpoint = configurator.getConstructorJoinPoint(info, constructor, null);
       Object result = joinpoint.dispatch();
+      if (info == null && result != null)
+         info = configurator.getBeanInfo(result.getClass());
+
       if (properties != null && properties.size() > 0)
       {
          for (Object o : properties.entrySet())

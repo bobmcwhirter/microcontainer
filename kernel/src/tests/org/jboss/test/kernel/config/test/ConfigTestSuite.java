@@ -45,6 +45,8 @@ public class ConfigTestSuite extends TestSuite
       suite.addTest(InstantiateTestCase.suite());
       suite.addTest(InstantiateXMLTestCase.suite());
       suite.addTest(InstantiateAnnotationTestCase.suite());
+      suite.addTest(GenericFactoryInstantiateTestCase.suite());
+      suite.addTest(GenericFactoryInstantiateXMLTestCase.suite());
       suite.addTest(FactoryTestCase.suite());
       suite.addTest(FactoryXMLTestCase.suite());
       suite.addTest(FactoryAnnotationTestCase.suite());
