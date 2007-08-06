@@ -26,12 +26,15 @@ import java.math.BigDecimal;
 import java.math.BigInteger;
 import java.util.Date;
 
+import org.jboss.managed.api.annotation.ManagementObject;
+
 /**
  * Simple.
  * 
  * @author <a href="adrian@jboss.com">Adrian Brock</a>
  * @version $Revision: 1.1 $
  */
+@ManagementObject
 public class Simple implements Serializable
 {
    /** The serialVersionUID */

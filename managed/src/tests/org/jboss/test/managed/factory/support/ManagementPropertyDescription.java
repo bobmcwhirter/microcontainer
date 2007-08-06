@@ -23,6 +23,7 @@ package org.jboss.test.managed.factory.support;
 
 import java.io.Serializable;
 
+import org.jboss.managed.api.annotation.ManagementObject;
 import org.jboss.managed.api.annotation.ManagementProperty;
 
 /**
@@ -31,6 +32,7 @@ import org.jboss.managed.api.annotation.ManagementProperty;
  * @author <a href="adrian@jboss.com">Adrian Brock</a>
  * @version $Revision: 1.1 $
  */
+@ManagementObject
 public class ManagementPropertyDescription implements Serializable
 {
    /** The serialVersionUID */
