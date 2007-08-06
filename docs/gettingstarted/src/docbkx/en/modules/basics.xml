@@ -587,8 +587,67 @@
    <section>
       <title>Value Factory</title>
 
-      <para>TODO - ValueFactory.
+      <para>Similar to using inject's property attribute, we sometimes want to use other beans to
+         create new values from bean's multi parameter methods.
       </para>
+
+      <programlisting>
+         &lt;bean name="PropHolder" class="org.jboss.test.kernel.config.support.PropHolder">
+            &lt;property name="value">
+               &lt;value-factory bean="ldap" method="getValue">
+                  &lt;parameter>xyz.key&lt;/parameter>
+                  &lt;parameter>xyz&lt;/parameter>
+                  &lt;parameter>&lt;bean name="t" class="org.jboss.test.kernel.config.support.TrimTransformer"/>&lt;/parameter>
+               &lt;/value-factory>
+            &lt;/property>
+         &lt;/bean>
+
+         &lt;bean name="ldap" class="org.jboss.test.kernel.config.support.LDAPFactory">
+            &lt;constructor>
+               &lt;parameter>
+                  &lt;map keyClass="java.lang.String" valueClass="java.lang.String">
+                     &lt;entry>
+                        &lt;key>foo.bar.key&lt;/key>
+                        &lt;value>QWERT&lt;/value>
+                     &lt;/entry>
+                     &lt;entry>
+                        &lt;key>xyz.key&lt;/key>
+                        &lt;value> QWERT &lt;/value>
+                     &lt;/entry>
+                  &lt;/map>
+               &lt;/parameter>
+            &lt;/constructor>
+         &lt;/bean>
+      </programlisting>
+
+      <para>For the quick usage there is also shorthand version of the value-factory element, having single parameter
+         as string attribute.
+      </para>
+
+      <programlisting>
+         &lt;bean name="PropHolder" class="org.jboss.test.kernel.config.support.PropHolder">
+            &lt;constructor>
+               &lt;parameter>
+                  &lt;value-factory bean="ldap" method="getValue" parameter="foo.bar.key"/>
+               &lt;/parameter>
+            &lt;/constructor>
+         &lt;/bean>
+      </programlisting>
+
+      <para>You can also define a default value for the value-factory return value.
+      </para>
+
+      <programlisting>
+         &lt;bean name="PropHolder" class="org.jboss.test.kernel.config.support.PropHolder">
+            &lt;property name="list">
+               &lt;list elementClass="java.lang.String">
+                  &lt;value-factory bean="ldap" method="getValue" default="QWERT">
+                     &lt;parameter>no.such.key&lt;/parameter>
+                  &lt;/value-factory>
+               &lt;/list>
+            &lt;property>
+         &lt;/bean>
+      </programlisting>
 
    </section>
 
@@ -740,9 +799,40 @@
          &lt;/bean>
       </programlisting>
 
-      <para>
-         TODO - preinstantiated and actual collection instantiation configuration options.
+      <para>When using collections in your bean configuration, this is the order Microcontainer will use for new
+         instantiation or using already existing collection instance.
+         <itemizedlist mark="bullet">
+            <listitem>
+               <para>if collection's class attribute is defined, a new instance of that class will be instantiated</para>
+            </listitem>
+            <listitem>
+               <para>if already instantiated collection exists and is available via getter, this instance will be used -
+                  unless you define preinstantiate attribute on the property to false
+               </para>
+            </listitem>
+            <listitem>
+               <para>if the collection references some non interface class, we'll try to instantiate a new instance of
+                  that class
+               </para>
+            </listitem>
+            <listitem>
+               <para>default collection instance will be used - Collection and List will use ArrayList, Set uses
+                  HashSet and Map will use HashMap
+               </para>
+            </listitem>
+         </itemizedlist>
       </para>
+
+      <programlisting>
+         &lt;bean name="SimpleBean" class="org.jboss.test.kernel.config.support.UnmodifiableGetterBean">
+            &lt;property name="list" preinstantiate="false">
+               &lt;list elementClass="java.lang.String">
+                  &lt;value>string1&lt;/value>
+                  &lt;value>string2&lt;/value>
+               &lt;/list>
+            &lt;/property>
+         &lt;/bean>
+      </programlisting>
 
    </section>
 
@@ -1113,7 +1203,12 @@
       </programlisting>
 
       <para>
-         TODO - alias as true dependency.
+         Newly added alias defined as a element on the deployment acts as a full dependency item. Meaning
+         it won't get registered (installed) until the original bean is installed. What this means that you can have
+         original beans defined in one deployment and aliases in another, and the order of deployment doesn't matter.
+         When the original bean is uninstalled, the alias gets unregistered (uninstalled) as well.
+         When the alias gets unregistered, all beans that depend on the alias get undeployed as well, regardless if
+         the original bean is still present.
       </para>
 
    </section>
@@ -1332,9 +1427,54 @@
    <section>
       <title>Injection from context</title>
 
-      <para>TODO - injection from context.
+      <para>Even though Microcontainer is aimed at POJOs, it doesn't mean you are not able to easily get into
+         the underlying architecture of its state machine.
+         Each bean is represented in Microcontainer's state machine (Controller) as a ControllerContext.
+         ControllerContext holds various information in order to consistently move between lifecycle states,
+         resolve dependencies, apply instance aspects, annotations, metadata ...
       </para>
 
+      <para>
+         With already known injection concept (&lt;inject\>), now you can also inject some information from the context.
+         This is what you can currently get a hold on from the underlying context:
+         <itemizedlist>
+            <listitem>
+               <para>name - &lt;inject fromContext="name"/></para>
+            </listitem>
+            <listitem>
+               <para>aliases - &lt;inject fromContext="aliases"/></para>
+            </listitem>
+            <listitem>
+               <para>metadata - &lt;inject fromContext="metadata"/></para>
+            </listitem>
+            <listitem>
+               <para>beaninfo - &lt;inject fromContext="beaninfo"/></para>
+            </listitem>
+            <listitem>
+               <para>scope - &lt;inject fromContext="scope"/></para>
+            </listitem>
+            <listitem>
+               <para>id - &lt;inject fromContext="id"/></para>
+            </listitem>
+            <listitem>
+               <para>context itself - &lt;inject fromContext="context"/></para>
+            </listitem>
+         </itemizedlist>
+      </para>
+
+      <para>All this information is wrapped into unmodifiable objects, preventing user to add or set additional
+         information outside Microcontainer's Controller.
+         As we already know, &lt;inject/> element can take bean attribute. In this case, if bean attribute is set,
+         we are not targeting bean's underlying context, but context that coresponds to set bean attribute.
+      </para>
+
+      <programlisting>
+         &lt;bean name="sndBean" class="org.jboss.test.kernel.deployment.support.NameAwareBean">
+            &lt;property name="beaninfo">&lt;inject bean="otherBean" fromContext="beaninfo"/>&lt;/property>
+         &lt;/bean>
+      </programlisting>
+
+      <para>In this example we inject otherBean's beaninfo information into sndBean bean.</para>
    </section>
 
 </section>
