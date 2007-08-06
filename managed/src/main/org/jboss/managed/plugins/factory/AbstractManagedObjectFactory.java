@@ -160,7 +160,10 @@ public class AbstractManagedObjectFactory extends ManagedObjectFactory
          throw new IllegalArgumentException("Null class");
 
       ManagedObjectBuilder builder = getBuilder(clazz);
-      return builder.buildManagedObject(clazz);
+      ManagedObject result = builder.buildManagedObject(clazz);
+      if (result == null)
+         throw new IllegalStateException("Builder returned null object: " + builder);
+      return result;
    }
    
    public ManagedObject buildManagedObject(Class<? extends Serializable> clazz)
