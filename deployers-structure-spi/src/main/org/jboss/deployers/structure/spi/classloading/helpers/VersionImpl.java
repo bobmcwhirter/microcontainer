@@ -51,8 +51,8 @@ public class VersionImpl implements Version
          return 0;
       if (o == null || o instanceof VersionImpl == false)
          throw new IllegalArgumentException("Not a version impl: " + o);
-      org.osgi.framework.Version other = (org.osgi.framework.Version) o;
-      return delegate.compareTo(other);
+      VersionImpl other = (VersionImpl) o;
+      return delegate.compareTo(other.delegate);
    }
    
    @Override
@@ -62,8 +62,8 @@ public class VersionImpl implements Version
          return true;
       if (obj == null || obj instanceof VersionImpl == false)
          return false;
-      org.osgi.framework.Version other = (org.osgi.framework.Version) obj;
-      return delegate.equals(other);
+      VersionImpl other = (VersionImpl) obj;
+      return delegate.equals(other.delegate);
    }
    
    @Override
