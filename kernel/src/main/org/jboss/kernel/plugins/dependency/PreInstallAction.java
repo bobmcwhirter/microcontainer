@@ -195,12 +195,12 @@ public class PreInstallAction extends KernelControllerContextAction
          }
          ScopedKernelController scopedController = controllerItem.getValue();
          scopedController.removeControllerContext(context);
+         context.setController(scopedController.getUnderlyingController());
          if (scopedController.isActive() == false)
          {
             try
             {
                ((MutableMetaData)mdr).removeMetaData(ScopedKernelController.class);
-               context.setController(scopedController.getUnderlyingController());
             }
             finally
             {
