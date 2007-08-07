@@ -9,7 +9,7 @@
       <title>A Simple IoC Examples</title>
 
       <para>The best way to learn the Microcontainer is through examples. The Microcontainer distribution is bundled
-         with several examples, which we will discuss in later this guide. In this section, let's first have a look at
+         with several examples, which we will discuss in later this guide. In this section, let us first have a look at
          the
          <varname>simple</varname>
          example. It shows the structure of a simple Microcontainer application and how to run the application in both
@@ -26,13 +26,17 @@
       </para>
 
       <programlisting>
-         public class SimpleBean
-         {
-         public SimpleBean()
-         {
+<![CDATA[
+
+   public class SimpleBean
+   {
+      public SimpleBean()
+      {
          System.out.println("SimpleBean() constructor");
-         }
-         }
+      }
+   }
+
+]]>
       </programlisting>
 
       <para>The
@@ -46,14 +50,18 @@
       </para>
 
       <programlisting>
-         &lt;deployment xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-         xsi:schemaLocation="urn:jboss:bean-deployer bean-deployer_2_0.xsd"
-         xmlns="urn:jboss:bean-deployer:2.0">
+<![CDATA[
 
-         &lt;bean name="Simple"
+   <deployment xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+      xsi:schemaLocation="urn:jboss:bean-deployer bean-deployer_2_0.xsd"
+      xmlns="urn:jboss:bean-deployer:2.0">
+
+      <bean name="Simple"
          class="org.jboss.example.microcontainer.simple.SimpleBean"/>
 
-         &lt;/deployment>
+   </deployment>
+
+]]>
       </programlisting>
 
       <para>This configuration file tells the Microcontainer to create an instance of the
@@ -62,13 +70,13 @@
          <varname>Simple</varname>
          . When other objects in the application need to access this
          <varname>SimpleBean</varname>
-         instance, they can simply ask for the
+         instance, they can simply ask the Microcontainer API for the
          <varname>Simple</varname>
-         object from the Microcontainer API. Essentially, we just created a
+         object. Essentially, we just created a
          <varname>SimpleBean</varname>
          singleton instance here. When we run this application, we are expected to see the
          <varname>"SimpleBean() constructor"</varname>
-         printout from the console when the Microcontainer creates the
+         printout on the console when the Microcontainer creates the
          <varname>Simple</varname>
          object.
       </para>
@@ -96,39 +104,45 @@
       </para>
 
       <programlisting>
-         &lt;target name="compile">
+<![CDATA[
 
-         &lt;mkdir dir="build"/>
+   <target name="compile">
 
-         &lt;javac destdir="build"
+      <mkdir dir="build"/>
+
+      <javac destdir="build"
          debug="on"
          deprecation="on"
          optimize="on"
          classpathref="compile.classpath">
-         &lt;src path="src"/>
-         &lt;/javac>
-         &lt;/target>
 
-         &lt;target name="dist" depends="compile">
+         <src path="src"/>
+      </javac>
 
-         &lt;copy todir="build">
-         &lt;fileset dir="src/resources"/>
-         &lt;/copy>
+   </target>
 
-         &lt;mkdir dir="dist"/>
+   <target name="dist" depends="compile">
 
-         &lt;jar jarfile="dist/${ant.project.name}.beans" basedir="build"/>
+      <copy todir="build">
+         <fileset dir="src/resources"/>
+      </copy>
 
-         &lt;/target>
+      <mkdir dir="dist"/>
+
+      <jar jarfile="dist/${ant.project.name}.beans" basedir="build"/>
+
+   </target>
+
+]]>
       </programlisting>
 
       <para>The
          <varname>compile</varname>
-         task compiles the Java source files into class files under the
+         target compiles the Java source files into class files under the
          <varname>build</varname>
          directory. Then, the
          <varname>dist</varname>
-         task packages the class files and the
+         target packages the class files and the
          <varname>META-INF/jboss-beans.xml</varname>
          file together in a JAR file named
          <varname>example-simple.jar</varname>
@@ -143,7 +157,7 @@
 
     <para>This just skims the surface of the Microcontainer, showing the most
   common usecases. Other more complicated examples can be found in the tests
-  (available from SVN).</para>
+  (available in the source code repository).</para>
 
   </section>
 </chapter>

@@ -29,6 +29,7 @@ import org.jboss.kernel.Kernel;
 import org.jboss.kernel.plugins.deployment.xml.BasicXMLDeployer;
 import org.jboss.kernel.spi.dependency.KernelController;
 import org.jboss.kernel.spi.dependency.KernelControllerContext;
+import org.jboss.kernel.spi.deployment.KernelDeployment;
 import org.jboss.test.kernel.AbstractKernelTest;
 
 /**
@@ -137,10 +138,11 @@ public class TestUtil
     * Deploy a url
     * 
     * @param url the url
+    * @return KernelDeployment the deployment
     * @throws Throwable for any error
     */
-   public void deploy(URL url) throws Throwable
+   public KernelDeployment deploy(URL url) throws Throwable
    {
-      deployer.deploy(url);
+      return deployer.deploy(url);
    }
 }

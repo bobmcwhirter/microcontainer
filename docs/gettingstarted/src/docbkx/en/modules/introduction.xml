@@ -9,15 +9,15 @@
       used standalone outside the JBoss Application Server.
    </para>
 
-   <para>As we mention JBoss Application Server, while rewritting its Microkernel to POJO environment, there were other
+   <para>As we mention JBoss Application Server, while rewriting its Microkernel to a POJO environment, there were other
       aspects that also needed to be considered while changing the core functionality. New modules or subprojects were
-      introduced to the Microcontainer project to tightly integrate those aspects with the new POJO direction and to
+      introduced to the Microcontainer project to tightly integrate those aspects with the new POJO approach and to
       eventually solve some of the basic problems that arose over the years with the changes application server went
       through.
-      We will discuss those modules or subproject later on.
+      We will discuss these modules and subproject later on.
    </para>
 
-   <para>At its core, the JBoss Microcontainer is a generic "dependency injection" framework. It's primary function is
+   <para>At its core, the JBoss Microcontainer is a generic "dependency injection" framework. Its primary function is
       to instantiate objects, figure out their dependencies (e.g., object A must be instantiated before object B), and
       then manage the relationship between those objects (e.g., object A is a property of object B). With the JBoss
       Microcontainer, you can build applications or shared services using simple POJOs. The JBoss Microcontainer is
@@ -29,7 +29,7 @@
       existing
       dependency injection frameworks such as the Spring framework and HiveMind framework. However, JBoss
       Microcontainer
-      also has several important new features that set it apart from existing frameworks.
+      also has several important new features that sets it apart from existing frameworks.
    </para>
 
    <itemizedlist mark="bullet">
@@ -50,7 +50,7 @@
          </para>
       </listitem>
       <listitem>
-         <para>JBoss Microcontainer is used as a replacement for JMX based kernel in the new JBoss AS 5.x and above.
+         <para>JBoss Microcontainer is used as a replacement for the JMX-based Microkernel in JBoss AS 5.x and above.
             All
             the existing features of MBeans are thightly integrated into new Microcontainer based ServiceController.
          </para>
@@ -106,9 +106,8 @@
    <para>This document takes you through some example deployments into
       JBoss Microcontainer 2.0 explaining how to configure POJOs and link them together
       through injection.
-      We will also explain how to use other Microcontainer modules inside new JBoss AS 5.x, specially the re-written
-      deployers and classloader modules.
-      Later will show how to do the same thing outside the application server.
+      We will also explain how to use other Microcontainer modules inside JBoss AS 5.x, especially the re-written
+      deployers and classloader modules.  Later, we will discuss how to do the same thing outside the application server.
    </para>
 
 </chapter>

@@ -25,20 +25,27 @@
          element acts as a container for many beans that are deployed together.
       </para>
 
-      <programlisting>&lt;?xml version="1.0" encoding="UTF-8"?&gt;
+      <programlisting>
+<![CDATA[
 
-         &lt;!-- Deployment holds beans --&gt;
-         &lt;deployment xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-         xsi:schemaLocation="urn:jboss:bean-deployer bean-deployer_2_0.xsd"
-         xmlns="urn:jboss:bean-deployer:2.0"&gt;
+         <?xml version="1.0" encoding="UTF-8"?>
 
-         &lt;!-- bean part of the deployment --&gt;
-         &lt;bean .../&gt;
+         <!-- Deployment holds beans -->
+         <deployment xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+            xsi:schemaLocation="urn:jboss:bean-deployer bean-deployer_2_0.xsd"
+            xmlns="urn:jboss:bean-deployer:2.0">
 
-         &lt;!-- bean part of the deployment --&gt;
-         &lt;bean .../&gt;
+         <!-- bean part of the deployment -->
+         <bean .../>
 
-         &lt;/deployment&gt;</programlisting>
+         <!-- bean part of the deployment -->
+         <bean .../>
+
+         </deployment&gt;
+
+]]>
+   </programlisting>
+
    </section>
 
    <section>
@@ -50,14 +57,18 @@
       </para>
 
       <programlisting>
-         &lt;deployment xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-         xsi:schemaLocation="urn:jboss:bean-deployer bean-deployer_2_0.xsd"
-         xmlns="urn:jboss:bean-deployer:2.0">
+<![CDATA[
 
-         &lt;bean name="Simple"
-         class="org.jboss.example.microcontainer.simple.SimpleBean"/>
+         <deployment xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+            xsi:schemaLocation="urn:jboss:bean-deployer bean-deployer_2_0.xsd"
+            xmlns="urn:jboss:bean-deployer:2.0">
 
-         &lt;/deployment>
+         <bean name="Simple"
+            class="org.jboss.example.microcontainer.simple.SimpleBean"/>
+
+         </deployment>
+
+]]>
       </programlisting>
 
       <para>The example above from the
@@ -87,14 +98,18 @@
       </para>
 
       <programlisting>
-         public class ConstructorBean
-         {
-         ... ...
+<![CDATA[
 
-         public ConstructorBean(int integer)
-         {
+   public class ConstructorBean
+   {
+      ... ...
+
+      public ConstructorBean(int integer)
+      {
          ... ...
-         }
+      }
+   }
+]]>
       </programlisting>
 
       <para>The
@@ -103,12 +118,17 @@
       </para>
 
       <programlisting>
-         &lt;bean name="Integer"
-         class="org.jboss.example.microcontainer.constructor.ConstructorBean">
-         &lt;constructor>
-         &lt;parameter>4&lt;/parameter>
-         &lt;/constructor>
-         &lt;/bean>
+<![CDATA[
+
+   <bean name="Integer"
+      class="org.jboss.example.microcontainer.constructor.ConstructorBean">
+
+      <constructor>
+         <parameter>4</parameter>
+      </constructor>
+   </bean>
+
+]]>
       </programlisting>
 
       <para>The microcontainer would just use the following to create the
@@ -137,13 +157,18 @@
       </para>
 
       <programlisting>
-         &lt;bean name="StringLong"
-         class="org.jboss.example.microcontainer.constructor.ConstructorBean">
-         &lt;constructor>
-         &lt;parameter>a string&lt;/parameter>
-         &lt;parameter class="long">10&lt;/parameter>
-         &lt;/constructor>
-         &lt;/bean>
+<![CDATA[
+
+   <bean name="StringLong"
+      class="org.jboss.example.microcontainer.constructor.ConstructorBean">
+
+      <constructor>
+         <parameter>a string</parameter>
+         <parameter class="long">10</parameter>
+      </constructor>
+   </bean>
+
+]]>
       </programlisting>
 
       <para>Behind the scene, the Micorcontainer invokes:</para>
@@ -168,13 +193,17 @@
       </para>
 
       <programlisting>
-         public class StaticFactory
-         {
-         public static FactoryCreatedBean createBean()
-         {
+<![CDATA[
+
+   public class StaticFactory
+   {
+      public static FactoryCreatedBean createBean()
+      {
          return new FactoryCreatedBean("StaticFactory.createBean()");
-         }
-         }
+      }
+   }
+
+]]>
       </programlisting>
 
       <para>The bean configuration tells the microcontainer to the use the
@@ -185,11 +214,17 @@
       </para>
 
       <programlisting>
-         &lt;bean name="StaticFactoryCreatedBean"
-         class="org.jboss.example.microcontainer.factory.FactoryCreatedBean">
-         &lt;constructor factoryMethod="createBean"
+<![CDATA[
+
+   <bean name="StaticFactoryCreatedBean"
+      class="org.jboss.example.microcontainer.factory.FactoryCreatedBean">
+
+      <constructor factoryMethod="createBean"
          factoryClass="org.jboss.example.microcontainer.factory.StaticFactory"/>
-         &lt;/bean>
+
+   </bean>
+
+]]>
       </programlisting>
 
       <para>Of course, the factory class itself does not have to be static. The microcontainer can create a non-static
@@ -200,27 +235,32 @@
       </para>
 
       <programlisting>
-         public class SingletonFactory
-         {
-         private static SingletonFactory singleton;
+<![CDATA[
 
-         public synchronized static SingletonFactory getInstance()
-         {
+   public class SingletonFactory
+   {
+      private static SingletonFactory singleton;
+
+      public synchronized static SingletonFactory getInstance()
+      {
          if (singleton == null)
-         singleton = new SingletonFactory();
+            singleton = new SingletonFactory();
+
          return singleton;
-         }
+      }
 
-         public FactoryCreatedBean createBean()
-         {
+      public FactoryCreatedBean createBean()
+      {
          return new FactoryCreatedBean("SingletonFactory.createBean()");
-         }
+      }
 
-         private SingletonFactory()
-         {
+      private SingletonFactory()
+      {
          System.out.println("SingletonFactory()");
-         }
-         }
+      }
+   }
+
+]]>
       </programlisting>
 
       <para>In the following configuration, we first create an instance of the
@@ -237,18 +277,26 @@
       </para>
 
       <programlisting>
-         &lt;bean name="SingletonFactory"
-         class="org.jboss.example.microcontainer.factory.SingletonFactory">
-         &lt;constructor factoryMethod="getInstance"
-         factoryClass="org.jboss.example.microcontainer.factory.SingletonFactory"/>
-         &lt;/bean>
+<![CDATA[
 
-         &lt;bean name="SingletonFactoryCreatedBean"
-         class="org.jboss.example.microcontainer.factory.FactoryCreatedBean">
-         &lt;constructor factoryMethod="createBean">
-         &lt;factory bean="SingletonFactory"/>
-         &lt;/constructor>
-         &lt;/bean>
+   <bean name="SingletonFactory"
+      class="org.jboss.example.microcontainer.factory.SingletonFactory">
+
+      <constructor factoryMethod="getInstance"
+         factoryClass="org.jboss.example.microcontainer.factory.SingletonFactory"/>
+
+   </bean>
+
+   <bean name="SingletonFactoryCreatedBean"
+      class="org.jboss.example.microcontainer.factory.FactoryCreatedBean">
+
+      <constructor factoryMethod="createBean">
+         <factory bean="SingletonFactory"/>
+      </constructor>
+
+   </bean>
+
+]]>
       </programlisting>
 
       <para>Like the constructor method we mentioned before, the factory method can also take call parameters via the
@@ -270,33 +318,37 @@
       </para>
 
       <programlisting>
-         public class PropertiesBean
-         {
-         public PropertiesBean()
-         {
+<![CDATA[
+
+   public class PropertiesBean
+   {
+      public PropertiesBean()
+      {
          System.out.println("PropertiesBean()");
-         }
+      }
 
-         public void setTitle(String title)
-         {
+      public void setTitle(String title)
+      {
          System.out.println("setTitle: " + title);
-         }
+      }
 
-         public void setSubTitle(String subTitle)
-         {
+      public void setSubTitle(String subTitle)
+      {
          System.out.println("setSubTitle: " + subTitle);
-         }
+      }
 
-         public void setLink(URL url)
-         {
+      public void setLink(URL url)
+      {
          System.out.println("setLink: " + url);
-         }
+      }
 
-         public void setNumber(Number number)
-         {
+      public void setNumber(Number number)
+      {
          System.out.println("setNumber: " + number + " type=" + number.getClass().getName());
-         }
-         }
+      }
+   }
+
+]]>
       </programlisting>
 
       <para>The configuration creates the
@@ -305,13 +357,18 @@
       </para>
 
       <programlisting>
-         &lt;bean name="PropertiesBean"
-         class="org.jboss.example.microcontainer.properties.PropertiesBean">
-         &lt;property name="title">JBoss Microcontainer property example&lt;/property>
-         &lt;property name="subTitle">&lt;null/>&lt;/property>
-         &lt;property name="link">http://www.jboss.org&lt;/property>
-         &lt;property name="number" class="java.lang.Long">4&lt;/property>
-         &lt;/bean>
+<![CDATA[
+
+   <bean name="PropertiesBean"
+      class="org.jboss.example.microcontainer.properties.PropertiesBean">
+
+      <property name="title">JBoss Microcontainer property example</property>
+      <property name="subTitle"><null/></property>
+      <property name="link">http://www.jboss.org</property>
+      <property name="number" class="java.lang.Long">4</property>
+   </bean>
+
+]]>
       </programlisting>
 
       <para>Here we use the string representation of various objects, including the
@@ -339,26 +396,36 @@
       </para>
 
       <programlisting>
-         import java.beans.PropertyEditorSupport;
-         public class URLEditor extends PropertyEditorSupport{
-         public void setAsText(final String text){
+<![CDATA[
+
+   import java.beans.PropertyEditorSupport;
+
+   public class URLEditor extends PropertyEditorSupport
+   {
+      public void setAsText(final String text)
+      {
          setValue(new URL(text));
-         }
-         }
+      }
+   }
 
-         public class Example{
-         public URL getLink() {}
-         public void setLink(URL url) {}
-         }
+   public class Example
+   {
+      public URL getLink() {}
 
-         &lt;bean name="Name1" class=com.acme.Example"&gt;
-         &lt;property name="link"&gt;http://acme.com/index.html&lt;/property&gt;
-         &lt;/bean&gt;
+      public void setLink(URL url) {}
 
-         Example example = new com.acme.Example();
-         PropertyEditor editor = PropertyEditorManager.findEditor(URL.class);
-         editor.setAsText("http://acme.com/index.html");
-         example.setLink((URL)editor.getValue());
+   }
+
+   <bean name="Name1" class=com.acme.Example">
+      <property name="link">http://acme.com/index.html</property>
+   </bean>
+
+   Example example = new com.acme.Example();
+   PropertyEditor editor = PropertyEditorManager.findEditor(URL.class);
+   editor.setAsText("http://acme.com/index.html");
+   example.setLink((URL)editor.getValue());
+
+]]>
       </programlisting>
 
       <para>Often the property takes an interface or abstract class, but you want to pass a specific implementation or a
@@ -368,90 +435,123 @@
       </para>
 
       <programlisting>
-         public class Example{
+<![CDATA[
+
+   public class Example
+   {
          public Number getNumber() {}
+
          public void setNumber(Number number) {}
-         }
 
-         &lt;bean name="Name1" class=com.acme.Example"&gt;
-         &lt;property name="number" class="java.lang.Long"&gt;4&lt;/property&gt;
-         &lt;/bean&gt;
+   }
 
-         Example example = new com.acme.Example();
-         example.setNumber(new Long(4));
+   <bean name="Name1" class=com.acme.Example">
+      <property name="number" class="java.lang.Long">4</property>
+   </bean>
+
+   Example example = new com.acme.Example();
+   example.setNumber(new Long(4));
+
+]]>
       </programlisting>
 
 
       <para>There is also a more long-winded form of value that we will see later when configuring collections.</para>
 
       <programlisting>
-         public class Example{
-         public Number getNumber() {}
-         public void setNumber(Number number) {}
-         }
+<![CDATA[
 
-         &lt;bean name="Name1" class=com.acme.Example"&gt;
-         &lt;property name="number"&gt;&lt;value class="java.lang.Long"&gt;4&lt;/value&gt;&lt;/property&gt;
-         &lt;/bean&gt;
+   public class Example
+   {
+      public Number getNumber() {}
 
-         Example example = new com.acme.Example();
-         example.setNumber(new Long(4));
+      public void setNumber(Number number) {}
+
+   }
+
+   <bean name="Name1" class=com.acme.Example">
+      <property name="number">
+         <value class="java.lang.Long">4</value>
+      </property>
+   </bean>
+
+   Example example = new com.acme.Example();
+   example.setNumber(new Long(4));
+
+]]>
       </programlisting>
 
 
       <para>Finally, the
          <varname>null</varname>
-         value is trivial, &lt;null/&gt;. But, it needs to differentiated from the string "null". Please see the example
+         value is trivial, <varname><![CDATA[<null/>]]></varname>. But, it needs to differentiated from the string "null". Please see the example
          below for the usage.
       </para>
 
       <programlisting>
-         public class Example{
+<![CDATA[
+
+   public class Example
+   {
          public String getTitle() {}
+
          public void setTitle(String string) {}
-         }
 
-         &lt;!-- Wrong --&gt;
-         &lt;bean name="Name1" class=com.acme.Example"&gt;
-         &lt;property name="title"&gt;null&lt;/property&gt;
-         &lt;/bean&gt;
+   }
 
-         Example example = new com.acme.Example();
-         example.setTitle(new String("null"));
+   <!-- Wrong -->
+   <bean name="Name1" class=com.acme.Example">
+      <property name="title">null</property>
+   </bean>
 
-         &lt;!-- Correct --&gt;
-         &lt;bean name="Name1" class=com.acme.Example"&gt;
-         &lt;property name="title"&gt;&lt;null/&gt;&lt;/property&gt;
-         &lt;/bean&gt;
+   Example example = new com.acme.Example();
+   example.setTitle(new String("null"));
 
-         Example example = new com.acme.Example();
-         example.setTitle(null);
+   <!-- Correct -->
+   <bean name="Name1" class=com.acme.Example">
+      <property name="title"><null/></property>
+   </bean>
+
+   Example example = new com.acme.Example();
+   example.setTitle(null);
+
+]]>
       </programlisting>
 
-      <para>Sometimes it is still usefull to be able to set or inject a value which can be morfed / progressed into
-         needed type althogh existing type is not compatible (normally getting ClassCastException). This is mostly true
-         for java.lang.Number subclasses. Let's see how <varname>progression</varname> is used on the following example
-         (here we use &lt;inject>, which is actually explained in the next chapter).
+      <para>Sometimes it is still usefull to be able to set or inject a value which can be morphed / progressed into
+         needed type althogh existing type is not compatible (normally getting <varname>ClassCastException</varname>). This is mostly true
+         for <varname>java.lang.Number</varname> subclasses. Let's see how <varname>progression</varname> is used on the following example
+         (here we use <varname><![CDATA[<inject />]]></varname>, which is actually explained in the next chapter).
       </para>
 
       <programlisting>
+<![CDATA[
 
-         &lt;bean name="FromBean" class="org.jboss.test.kernel.config.support.SimpleBean">
-            &lt;property name="adouble">123.456&lt;/property>
-            &lt;property name="AFloat" class="java.lang.Float">987.6543&lt;/property>
-            &lt;property name="anInt">314159&lt;/property>
-         &lt;/bean>
+   <bean name="FromBean" class="org.jboss.test.kernel.config.support.SimpleBean">
+      <property name="adouble">123.456</property>
+      <property name="AFloat" class="java.lang.Float">987.6543</property>
+      <property name="anInt">314159</property>
+   </bean>
 
-         &lt;bean name="SimpleBean" class="org.jboss.test.kernel.config.support.SimpleBean">
-            &lt;property name="anint">&lt;inject bean="FromBean" property="adouble" />&lt;/property>
-            &lt;property name="AShort">&lt;inject bean="FromBean" property="AFloat" />&lt;/property>
-            &lt;property name="AFloat">&lt;inject bean="FromBean" property="anInt" />&lt;/property>
-         &lt;/bean>
+   <bean name="SimpleBean" class="org.jboss.test.kernel.config.support.SimpleBean">
+      <property name="anint">
+         <inject bean="FromBean" property="adouble" />
+      </property>
 
+      <property name="AShort">
+         <inject bean="FromBean" property="AFloat" />
+      </property>
+
+      <property name="AFloat">
+         <inject bean="FromBean" property="anInt" />
+      </property>
+   </bean>
+
+]]>
       </programlisting>
 
       <para>SimpleBean is a plain JavaBean, property names reflect the field type: having a<varname>double</varname>
-         property name means that a field is of type double. A<varname>Float</varname> coresponds to Float type. Etc.
+         property name means that a field is of type double. A<varname>Float</varname> corresponds to Float type. Etc.
       </para>
 
       <para>You can change the progression behavior by setting System property
@@ -484,31 +584,35 @@
       </para>
 
       <programlisting>
-         public class InjectionBean
-         {
-         String name;
+<![CDATA[
 
-         public InjectionBean(String name)
-         {
+   public class InjectionBean
+   {
+      String name;
+
+      public InjectionBean(String name)
+      {
          this.name = name;
          System.out.println("InjectionBean() " + this);
-         }
+      }
 
-         public String toString()
-         {
+      public String toString()
+      {
          return name;
-         }
+      }
 
-         public void setHost(String host)
-         {
+      public void setHost(String host)
+      {
          System.out.println("setHost: " + host + " on " + this);
-         }
+      }
 
-         public void setOther(InjectionBean other)
-         {
+      public void setOther(InjectionBean other)
+      {
          System.out.println("setOther: " + other + " on " + this);
-         }
-         }
+      }
+   }
+
+]]>
       </programlisting>
 
       <para>The microcontainer creates the
@@ -521,19 +625,27 @@
       </para>
 
       <programlisting>
-         &lt;bean name="URL" class="java.net.URL">
-         &lt;constructor>
-         &lt;parameter>http://www.jboss.org/index.html&lt;/parameter>
-         &lt;/constructor>
-         &lt;/bean>
+<![CDATA[
 
-         &lt;bean name="InjectionBean1"
-         class="org.jboss.example.microcontainer.injection.InjectionBean">
-         &lt;constructor>
-         &lt;parameter>InjectionBean1&lt;/parameter>
-         &lt;/constructor>
-         &lt;property name="host">&lt;inject bean="URL" property="host"/>&lt;/property>
-         &lt;/bean>
+   <bean name="URL" class="java.net.URL">
+      <constructor>
+         <parameter>http://www.jboss.org/index.html</parameter>
+      </constructor>
+   </bean>
+
+   <bean name="InjectionBean1"
+      class="org.jboss.example.microcontainer.injection.InjectionBean">
+
+      <constructor>
+         <parameter>InjectionBean1</parameter>
+      </constructor>
+
+      <property name="host">
+         <inject bean="URL" property="host"/>
+      </property>
+   </bean>
+
+]]>
       </programlisting>
 
 
@@ -554,32 +666,47 @@
       </para>
 
       <programlisting>
-         &lt;bean name="Circular1"
-         class="org.jboss.example.microcontainer.injection.InjectionBean">
-         &lt;constructor>
-         &lt;parameter>Circular1&lt;/parameter>
-         &lt;/constructor>
-         &lt;property name="other">&lt;inject bean="Circular2"/>&lt;/property>
-         &lt;/bean>
+<![CDATA[
 
-         &lt;bean name="Circular2"
-         class="org.jboss.example.microcontainer.injection.InjectionBean">
-         &lt;constructor>
-         &lt;parameter>Circular2&lt;/parameter>
-         &lt;/constructor>
-         &lt;property name="other">
-         &lt;inject bean="Circular1" state="Instantiated"/>
-         &lt;/property>
-         &lt;/bean>
+   <bean name="Circular1"
+      class="org.jboss.example.microcontainer.injection.InjectionBean">
+
+      <constructor>
+         <parameter>Circular1</parameter>
+      </constructor>
+
+      <property name="other">
+         <inject bean="Circular2"/>
+      </property>
+
+   </bean>
+
+   <bean name="Circular2"
+      class="org.jboss.example.microcontainer.injection.InjectionBean">
+
+      <constructor>
+         <parameter>Circular2</parameter>
+      </constructor>
+
+      <property name="other">
+         <inject bean="Circular1" state="Instantiated"/>
+      </property>
+   </bean>
+
+]]>
       </programlisting>
 
       <para>Here is the order the microcontainer instantiates those objects.</para>
 
       <programlisting>
-         InjectionBean Circular1 = new InjectionBean ();
-         InjectionBean Circular2 = new InjectionBean ();
-         Circular1.setOther(Circular2); // don't wait for a fully configured Circular1
-         Circular2.setOther(Circular1); // Complete the confguration of Circular2
+<![CDATA[
+
+   InjectionBean Circular1 = new InjectionBean ();
+   InjectionBean Circular2 = new InjectionBean ();
+   Circular1.setOther(Circular2); // don't wait for a fully configured Circular1
+   Circular2.setOther(Circular1); // Complete the confguration of Circular2
+
+]]>
       </programlisting>
 
    </section>
@@ -587,37 +714,47 @@
    <section>
       <title>Value Factory</title>
 
-      <para>Similar to using inject's property attribute, we sometimes want to use other beans to
+      <para>Similar to using <varname>inject</varname>'s property attribute, we sometimes want to use other beans to
          create new values from bean's multi parameter methods.
       </para>
 
       <programlisting>
-         &lt;bean name="PropHolder" class="org.jboss.test.kernel.config.support.PropHolder">
-            &lt;property name="value">
-               &lt;value-factory bean="ldap" method="getValue">
-                  &lt;parameter>xyz.key&lt;/parameter>
-                  &lt;parameter>xyz&lt;/parameter>
-                  &lt;parameter>&lt;bean name="t" class="org.jboss.test.kernel.config.support.TrimTransformer"/>&lt;/parameter>
-               &lt;/value-factory>
-            &lt;/property>
-         &lt;/bean>
+<![CDATA[
 
-         &lt;bean name="ldap" class="org.jboss.test.kernel.config.support.LDAPFactory">
-            &lt;constructor>
-               &lt;parameter>
-                  &lt;map keyClass="java.lang.String" valueClass="java.lang.String">
-                     &lt;entry>
-                        &lt;key>foo.bar.key&lt;/key>
-                        &lt;value>QWERT&lt;/value>
-                     &lt;/entry>
-                     &lt;entry>
-                        &lt;key>xyz.key&lt;/key>
-                        &lt;value> QWERT &lt;/value>
-                     &lt;/entry>
-                  &lt;/map>
-               &lt;/parameter>
-            &lt;/constructor>
-         &lt;/bean>
+   <bean name="PropHolder" class="org.jboss.test.kernel.config.support.PropHolder">
+      <property name="value">
+         <value-factory bean="ldap" method="getValue">
+            <parameter>xyz.key</parameter>
+            <parameter>xyz</parameter>
+            <parameter>
+               <bean name="t" class="org.jboss.test.kernel.config.support.TrimTransformer"/>
+            </parameter>
+         </value-factory>
+      </property>
+   </bean>
+
+   <bean name="ldap" class="org.jboss.test.kernel.config.support.LDAPFactory">
+      <constructor>
+         <parameter>
+            <map keyClass="java.lang.String" valueClass="java.lang.String">
+
+               <entry>
+                  <key>foo.bar.key</key>
+                  <value>QWERT</value>
+               </entry>
+
+               <entry>
+                  <key>xyz.key</key>
+                  <value>QWERT</value>
+               </entry>
+
+            </map>
+
+         </parameter>
+      </constructor>
+   </bean>
+
+]]>
       </programlisting>
 
       <para>For the quick usage there is also shorthand version of the value-factory element, having single parameter
@@ -625,28 +762,36 @@
       </para>
 
       <programlisting>
-         &lt;bean name="PropHolder" class="org.jboss.test.kernel.config.support.PropHolder">
-            &lt;constructor>
-               &lt;parameter>
-                  &lt;value-factory bean="ldap" method="getValue" parameter="foo.bar.key"/>
-               &lt;/parameter>
-            &lt;/constructor>
-         &lt;/bean>
+<![CDATA[
+
+   <bean name="PropHolder" class="org.jboss.test.kernel.config.support.PropHolder">
+      <constructor>
+         <parameter>
+            <value-factory bean="ldap" method="getValue" parameter="foo.bar.key"/>
+         </parameter>
+      </constructor>
+   </bean>
+
+]]>
       </programlisting>
 
       <para>You can also define a default value for the value-factory return value.
       </para>
 
       <programlisting>
-         &lt;bean name="PropHolder" class="org.jboss.test.kernel.config.support.PropHolder">
-            &lt;property name="list">
-               &lt;list elementClass="java.lang.String">
-                  &lt;value-factory bean="ldap" method="getValue" default="QWERT">
-                     &lt;parameter>no.such.key&lt;/parameter>
-                  &lt;/value-factory>
-               &lt;/list>
-            &lt;property>
-         &lt;/bean>
+<![CDATA[
+
+   <bean name="PropHolder" class="org.jboss.test.kernel.config.support.PropHolder">
+      <property name="list">
+         <list elementClass="java.lang.String">
+            <value-factory bean="ldap" method="getValue" default="QWERT">
+               <parameter>no.such.key</parameter>
+            </value-factory>
+         </list>
+      <property>
+   </bean>
+
+]]>
       </programlisting>
 
    </section>
@@ -704,16 +849,24 @@
       </para>
 
       <programlisting>
-         &lt;bean name="PrintList"
-         class="org.jboss.example.microcontainer.collections.ObjectPrinter">
-         &lt;constructor>&lt;parameter>List&lt;/parameter>&lt;/constructor>
-         &lt;property name="print">
-         &lt;list elementClass="java.lang.String">
-         &lt;value>Value of type elementClass&lt;/value>
-         &lt;value class="java.lang.Integer">4&lt;/value>
-         &lt;/list>
-         &lt;/property>
-         &lt;/bean>
+<![CDATA[
+
+   <bean name="PrintList"
+      class="org.jboss.example.microcontainer.collections.ObjectPrinter">
+
+      <constructor>
+         <parameter>List</parameter>
+      </constructor>
+
+      <property name="print">
+         <list elementClass="java.lang.String">
+            <value>Value of type elementClass</value>
+            <value class="java.lang.Integer">4</value>
+         </list>
+      </property>
+   </bean>
+
+]]>
       </programlisting>
 
       <para>It is also possible to use a
@@ -724,39 +877,47 @@
       </para>
 
       <programlisting>
-         &lt;bean name="Name1" class=com.acme.Example"&gt;
-         &lt;property name="list"&gt;
-         &lt;list class="java.util.LinkedList" elementClass="java.lang.String"&gt;
+<![CDATA[
 
-         &lt;value&gt;A string&lt;/value&gt; &lt;!-- uses elementClass --&gt;
+   <bean name="Name1" class="com.acme.Example">
+      <property name="list">
+         <list class="java.util.LinkedList" elementClass="java.lang.String">
 
-         &lt;value class="java.lang.URL"&gt;http://acme.com/index.html&lt;/value&gt; &lt;!-- a URL --&gt;
+            <value>A string</value> <!-- uses elementClass -->
 
-         &lt;value&gt;&lt;inject bean="SomeBean"/&gt;&lt;/value&gt; &lt;!-- inject some other bean --&gt;
+            <value class="java.lang.URL">http://acme.com/index.html</value> <!-- a URL -->
 
-         &lt;value&gt; &lt;!-- a list inside a list --&gt;
-         &lt;list elementClass="java.lang.String"&gt;
-         &lt;value&gt;Another string&lt;/value&gt;
-         &lt;/list&gt;
-         &lt;/value&gt;
+            <value><inject bean="SomeBean"/></value> <!-- inject some other bean -->
 
-         &lt;/list&gt;
-         &lt;/property&gt;
-         &lt;/bean&gt;
+            <value> <!-- a list inside a list -->
+               <list elementClass="java.lang.String">
+                  <value>Another string</value>
+               </list>
+            </value>
+
+         </list>
+      </property>
+   </bean>
+
+]]>
       </programlisting>
 
       <para>Below is what happens inside the microcontainer.</para>
 
       <programlisting>
-         Example example = new com.acme.Example();
-         List list = new LinkedList();
-         list.add(new String("A string"));
-         list.add(new URL("http://acme.com/index.html"));
-         list.add(someBean);
-         List subList = new ArrayList();
-         subList.add(new String("Another string"));
-         list.add(subList);
-         element.setList(list);
+<![CDATA[
+
+   Example example = new com.acme.Example();
+   List list = new LinkedList();
+   list.add(new String("A string"));
+   list.add(new URL("http://acme.com/index.html"));
+   list.add(someBean);
+   List subList = new ArrayList();
+   subList.add(new String("Another string"));
+   list.add(subList);
+   element.setList(list);
+
+]]>
       </programlisting>
 
       <para>The other type of collection is a map which also covers Properties and Hashtables. The default is
@@ -777,26 +938,37 @@
       </para>
 
       <programlisting>
-         &lt;bean name="PrintMap"
-         class="org.jboss.example.microcontainer.collections.ObjectPrinter">
-         &lt;constructor>&lt;parameter>Map&lt;/parameter>&lt;/constructor>
-         &lt;property name="print">
-         &lt;map keyClass="java.lang.String" valueClass="java.lang.String">
-         &lt;entry>
-         &lt;key>Key1 of type keyClass&lt;/key>
-         &lt;value>Value1 of type valueClass&lt;/value>
-         &lt;/entry>
-         &lt;entry>
-         &lt;key>Key2 of type keyClass&lt;/key>
-         &lt;value class="java.lang.Integer">4&lt;/value>
-         &lt;/entry>
-         &lt;entry>
-         &lt;key class="java.lang.Long">4&lt;/key>
-         &lt;value>Value of type valueClass&lt;/value>
-         &lt;/entry>
-         &lt;/map>
-         &lt;/property>
-         &lt;/bean>
+<![CDATA[
+
+   <bean name="PrintMap"
+      class="org.jboss.example.microcontainer.collections.ObjectPrinter">
+
+      <constructor>
+         <parameter>Map</parameter>
+      </constructor>
+
+      <property name="print">
+         <map keyClass="java.lang.String" valueClass="java.lang.String">
+            <entry>
+               <key>Key1 of type keyClass</key>
+               <value>Value1 of type valueClass</value>
+            </entry>
+
+            <entry>
+               <key>Key2 of type keyClass</key>
+               <value class="java.lang.Integer">4</value>
+            </entry>
+
+            <entry>
+               <key class="java.lang.Long">4</key>
+               <value>Value of type valueClass</value>
+            </entry>
+         </map>
+      </property>
+
+   </bean>
+
+]]>
       </programlisting>
 
       <para>When using collections in your bean configuration, this is the order Microcontainer will use for new
@@ -824,14 +996,18 @@
       </para>
 
       <programlisting>
-         &lt;bean name="SimpleBean" class="org.jboss.test.kernel.config.support.UnmodifiableGetterBean">
-            &lt;property name="list" preinstantiate="false">
-               &lt;list elementClass="java.lang.String">
-                  &lt;value>string1&lt;/value>
-                  &lt;value>string2&lt;/value>
-               &lt;/list>
-            &lt;/property>
-         &lt;/bean>
+<![CDATA[
+
+   <bean name="SimpleBean" class="org.jboss.test.kernel.config.support.UnmodifiableGetterBean">
+      <property name="list" preinstantiate="false">
+         <list elementClass="java.lang.String">
+            <value>string1</value>
+            <value>string2</value>
+         </list>
+      </property>
+   </bean>
+
+]]>
       </programlisting>
 
    </section>
@@ -895,41 +1071,45 @@
       </para>
 
       <programlisting>
-         public class LifecycleBean
-         {
-         String name;
+<![CDATA[
 
-         public LifecycleBean(String name)
-         {
+   public class LifecycleBean
+   {
+      String name;
+
+      public LifecycleBean(String name)
+      {
          this.name = name;
          System.out.println("LifecycleBean() " + this);
-         }
+      }
 
-         public void create()
-         {
+      public void create()
+      {
          System.out.println("create: " + this);
-         }
+      }
 
-         public void start()
-         {
+      public void start()
+      {
          System.out.println("start: " + this);
-         }
+      }
 
-         public void stop()
-         {
+      public void stop()
+      {
          System.out.println("stop: " + this);
-         }
+      }
 
-         public void destroy()
-         {
+      public void destroy()
+      {
          System.out.println("destroy: " + this);
-         }
+      }
 
-         public String toString()
-         {
+      public String toString()
+      {
          return name;
-         }
-         }
+      }
+   }
+
+]]>
       </programlisting>
 
       <para>The
@@ -938,20 +1118,29 @@
       </para>
 
       <programlisting>
-         &lt;bean name="Lifecycle1"
-         class="org.jboss.example.microcontainer.lifecycle.LifecycleBean">
-         &lt;constructor>
-         &lt;parameter>Lifecycle1&lt;/parameter>
-         &lt;/constructor>
-         &lt;depends>Lifecycle2&lt;/depends>
-         &lt;/bean>
+<![CDATA[
 
-         &lt;bean name="Lifecycle2"
-         class="org.jboss.example.microcontainer.lifecycle.LifecycleBean">
-         &lt;constructor>
-         &lt;parameter>Lifecycle2&lt;/parameter>
-         &lt;/constructor>
-         &lt;/bean>
+   <bean name="Lifecycle1"
+      class="org.jboss.example.microcontainer.lifecycle.LifecycleBean">
+
+      <constructor>
+         <parameter>Lifecycle1</parameter>
+      </constructor>
+
+      <depends>Lifecycle2</depends>
+
+   </bean>
+
+   <bean name="Lifecycle2"
+      class="org.jboss.example.microcontainer.lifecycle.LifecycleBean">
+
+      <constructor>
+         <parameter>Lifecycle2</parameter>
+      </constructor>
+
+   </bean>
+
+]]>
       </programlisting>
 
       <para>The microcontainer resolves the dependency and starts both beans in the appropriate order. Below is the
@@ -990,15 +1179,20 @@
       </para>
 
       <programlisting>
-         public class Example{
-         public void initialize(Object someObject) {}
-         }
+<![CDATA[
 
-         &lt;bean name="Name1" class="com.acme.Example"&gt;
-         &lt;create method="initialize"&gt;
-         &lt;parameter&gt;&lt;inject bean="SomeBean"/&gt;&lt;/parameter&gt;
-         &lt;/create&gt;
-         &lt;/bean&gt;
+   public class Example
+   {
+      public void initialize(Object someObject) {}
+   }
+
+   <bean name="Name1" class="com.acme.Example">
+      <create method="initialize">
+         <parameter><inject bean="SomeBean"/></parameter>
+      </create>
+   </bean>
+
+]]>
       </programlisting>
 
       <para>They can also be ignored. See the
@@ -1007,13 +1201,18 @@
       </para>
 
       <programlisting>
-         public class Example{
-         public void start() {}
-         }
+<![CDATA[
 
-         &lt;bean name="Name1" class="com.acme.Example"&gt;
-         &lt;start ignore="true"/&gt;
-         &lt;/bean&gt;
+   public class Example
+   {
+      public void start() {}
+   }
+
+   <bean name="Name1" class="com.acme.Example">
+      <start ignore="true"/>
+   </bean>
+
+]]>
       </programlisting>
 
       <para>In this case Microcontainer would not
@@ -1032,23 +1231,30 @@
       </para>
 
       <programlisting>
-         &lt;bean name="Name1" class="java.util.Timer"/&gt;
-         &lt;bean name="Name2" ...&gt;
-         &lt;install bean="Name1" method="schedule"&gt;
-         &lt;parameter&gt;&lt;this/&gt;&lt;/parameter&gt;
-         &lt;parameter&gt;100&lt;/parameter&gt;
-         &lt;parameter&gt;10000&lt;/parameter&gt;
-         &lt;/install&gt;
-         &lt;uninstall method="cancel"/&gt;
-         &lt;/bean&gt;
+<![CDATA[
 
-         // Install
-         Name1 = new Timer();
-         Name2 = ...;
-         Name1.schedule(Name2, 100, 10000);
+   <bean name="name1" class="java.util.Timer"/>
 
-         // Uninstall
-         name2.cancel();
+   <bean name="name2" ...>
+      <install bean="name1" method="schedule">
+         <parameter><this/></parameter>
+         <parameter>100</parameter>
+         <parameter>10000</parameter>
+      </install>
+
+      <uninstall method="cancel"/>
+
+   </bean>
+
+   // Install
+   name1 = new Timer();
+   name2 = ...;
+   name1.schedule(Name2, 100, 10000);
+
+   // Uninstall
+   name2.cancel();
+
+]]>
       </programlisting>
    </section>
 
@@ -1060,23 +1266,29 @@
       </para>
 
       <programlisting>
-         // deployment level - applies to all beans in the deployment
-         &lt;deployment&gt;
-         &lt;classloader&gt;&lt;inject bean="ClassLoaderName"/&gt;&lt;/classloader&gt;
+<![CDATA[
 
-         // bean level
-         &lt;bean name="Name2" ...&gt;
-         &lt;classloader&gt;&lt;inject bean="ClassLoaderName"/&gt;&lt;/classloader&gt;
-         &lt;/bean&gt;
+   <!-- deployment level - applies to all beans in the deployment -->
+   <deployment>
+      <classloader><inject bean="ClassLoaderName"/></classloader>
 
-         // bean level will use any deployment level classloader
-         &lt;bean name="Name2" ...&gt;
-         &lt;/bean&gt;
+      <!-- bean level -->
+      <bean name="Name2" ...>
+         <classloader><inject bean="ClassLoaderName"/></classloader>
+      </bean>
 
-         // bean level as null to not use any deployment level classloader
-         &lt;bean name="Name2" ...&gt;
-         &lt;classloader&gt;&lt;null/&gt;&lt;/classloader&gt;
-         &lt;/bean&gt;
+      <!-- bean level will use any deployment level classloader -->
+      <bean name="Name2" ...>
+      </bean>
+
+      <!-- bean level as null to not use any deployment level classloader -->
+      <bean name="Name2" ...>
+         <classloader&gt;<null/></classloader>
+      </bean>
+
+   </deployment>
+
+]]>
       </programlisting>
    </section>
 
@@ -1084,7 +1296,7 @@
       <title>Annotations via XML</title>
 
       <para>With the new Microcontainer 2.0 we've added support for annotations via XML. Meaning you can have annotation
-         support even in Java 1.4 and before, depending on the retrowowen Microcontainer project.
+         support even in Java 1.4 and before, depending on the retrowoven Microcontainer project.
          Each annotation is set per bean instance and you can set annotations on the following types:
          <itemizedlist>
             <listitem>deployment (all beans inherit this annotations)</listitem>
@@ -1099,47 +1311,51 @@
       </para>
 
       <programlisting>
-         &lt;deployment name="SimpleDeployment" xmlns="urn:jboss:bean-deployer:2.0">
+<![CDATA[
 
-            &lt;annotation>@org.jboss.test.kernel.deployment.xml.support.Annotation1&lt;/annotation>
-            &lt;annotation>@org.jboss.test.kernel.deployment.xml.support.AnnotationWithAttributes(clazz=java.lang.Integer.class, integer=100, str="Annotations are nice")&lt;/annotation>
+   <deployment name="SimpleDeployment" xmlns="urn:jboss:bean-deployer:2.0">
 
-            &lt;bean name="bn1" class="org.jboss.test.Example1">
-               &lt;annotation>@org.jboss.test.kernel.deployment.xml.support.Annotation2&lt;/annotation>
-               &lt;annotation>@org.jboss.test.kernel.deployment.xml.support.Annotation3&lt;/annotation>
-            &lt;/bean>
+      <annotation>@org.jboss.test.kernel.deployment.xml.support.Annotation1</annotation>
+      <annotation>@org.jboss.test.kernel.deployment.xml.support.AnnotationWithAttributes(clazz=java.lang.Integer.class, integer=100, str="Annotations are nice")</annotation>
 
-            &lt;bean name="bn2" class="org.jboss.test.Example2">
-               &lt;constructor>
-                  &lt;annotation>@org.jboss.test.kernel.deployment.xml.support.Annotation3&lt;/annotation>
-               &lt;/constructor>
-            &lt;/bean>
+      <bean name="bn1" class="org.jboss.test.Example1">
+         <annotation>@org.jboss.test.kernel.deployment.xml.support.Annotation2</annotation>
+         <annotation>@org.jboss.test.kernel.deployment.xml.support.Annotation3</annotation>
+      </bean>
 
-            &lt;bean name="bn3" class="org.jboss.test.Example3">
-               &lt;install method="someMethod">
-                  &lt;annotation>@org.jboss.test.kernel.deployment.xml.support.Annotation1&lt;/annotation>
-               &lt;/install>
-            &lt;/bean>
+      <bean name="bn2" class="org.jboss.test.Example2">
+         <constructor>
+            <annotation>@org.jboss.test.kernel.deployment.xml.support.Annotation3</annotation>
+         </constructor>
+      </bean>
 
-            &lt;bean name="bn4" class="org.jboss.test.Example4">
-               &lt;create>
-                  &lt;annotation>@org.jboss.test.kernel.deployment.xml.support.Annotation1&lt;/annotation>
-               &lt;/create>
-            &lt;/bean>
+      <bean name="bn3" class="org.jboss.test.Example3">
+         <install method="someMethod">
+            <annotation>@org.jboss.test.kernel.deployment.xml.support.Annotation1</annotation>
+         </install>
+      </bean>
 
-            &lt;bean name="bn5" class="org.jboss.test.Example5">
-               &lt;property name="PropertyName">
-                  &lt;annotation>@org.jboss.test.kernel.deployment.xml.support.Annotation1&lt;/annotation>
-                  &lt;value>123&lt;/value>
-               &lt;/property>
-            &lt;/bean>
+      <bean name="bn4" class="org.jboss.test.Example4">
+         <create>
+            <annotation>@org.jboss.test.kernel.deployment.xml.support.Annotation1</annotation>
+         </create>
+      </bean>
 
-         &lt;/deployment>
+      <bean name="bn5" class="org.jboss.test.Example5">
+         <property name="PropertyName">
+            <annotation>@org.jboss.test.kernel.deployment.xml.support.Annotation1</annotation>
+            <value>123</value>
+         </property>
+      </bean>
+
+   </deployment>
+
+]]>
       </programlisting>
 
       <para>The only issue with having annotations defined via XML is that they are per instance basis - 
          as already mentioned, not added at compile time. In this case you need an external mechanism in
-         order to do the annotation inspection. In Microcontainer this is its MetaData Repository.
+         order to do the annotation inspection. In Microcontainer this is its metadata repository.
          See how this is done in Reference Manual, TODO.
       </para>
 
@@ -1148,58 +1364,73 @@
    <section>
       <title>Alias</title>
 
-      <para>Mostly bean will have one unique name, but sometimes it is useful to be able to have an extra name.
+      <para>Mostly each bean will have one unique name, but sometimes it is useful to be able to have an extra name.
          The extra ones are considered aliases.
       </para>
 
       <programlisting>
-         &lt;bean xmlns="urn:jboss:bean-deployer:2.0" class="org.acme.Example">
-            &lt;alias>SimpleAlias&lt;/alias>
-         &lt;/bean>
+<![CDATA[
+
+   <bean xmlns="urn:jboss:bean-deployer:2.0" class="org.acme.Example">
+      <alias>SimpleAlias</alias>
+   </bean>
+
+]]>
       </programlisting>
 
       <para>As with all String values you can have System property replacement as part of actual alias value.
          Additionally you can specify if this replacement is ignored. Or you can even convert final alias String value
-         into any other class supported by PropertyEditors by setting class attribute on alias element. Let see this
-         configuration on examples below.
+         into any other class supported by PropertyEditors by setting class attribute on alias element. Lets see this
+         configuration on the examples below.
       </para>
 
       <programlisting>
-         &lt;bean xmlns="urn:jboss:bean-deployer:2.0" class="org.acme.Example">
-            &lt;alias>${example.cluster.name}&lt;/alias>
-         &lt;/bean>
+<![CDATA[
 
-         &lt;bean xmlns="urn:jboss:bean-deployer:2.0" class="org.acme.Example">
-            &lt;alias replace="false">X${alias.test.name}X&lt;/alias>
-         &lt;/bean>
+   <bean xmlns="urn:jboss:bean-deployer:2.0" class="org.acme.Example">
+      <alias>${example.cluster.name}</alias>
+   </bean>
 
-         &lt;bean xmlns="urn:jboss:bean-deployer:2.0" class="org.acme.Example">
-            &lt;alias class="java.lang.Integer">12345&lt;/alias>
-         &lt;/bean>
+   <bean xmlns="urn:jboss:bean-deployer:2.0" class="org.acme.Example">
+      <alias replace="false">X${alias.test.name}X</alias>
+   </bean>
+
+   <bean xmlns="urn:jboss:bean-deployer:2.0" class="org.acme.Example">
+      <alias class="java.lang.Integer">12345</alias>
+   </bean>
+
+]]>
       </programlisting>
 
       <para>Having to specify all aliases when the bean is actually defined is not always adequate however. It is
          sometimes desirable to introduce an alias for a bean which is defined elsewhere. In XML-based configuration
-         metadata this may be accomplished via the use of the standalone &lt;alias/> element.
+         metadata this may be accomplished via the use of the standalone <varname><![CDATA[<alias/>]]></varname> element.
       </para>
 
       <programlisting>
-         &lt;deployment name="FirstDeployment" xmlns="urn:jboss:bean-deployer:2.0">
-            &lt;bean name="Bean1" class="java.lang.Object"/>
+<![CDATA[
 
-            &lt;bean name="Bean2" class="java.lang.Object"/>
-         &lt;/deployment>
+   <deployment name="FirstDeployment" xmlns="urn:jboss:bean-deployer:2.0">
 
-         &lt;deployment name="SecondDeployment" xmlns="urn:jboss:bean-deployer:2.0">
-            &lt;bean name="Xyz1" class="java.lang.Object">
-               &lt;property name="locker1">&lt;inject name="Lock1">&lt;/property>
-               &lt;property name="locker2">&lt;inject name="Lock2">&lt;/property>
-            &lt;/bean>
+      <bean name="Bean1" class="java.lang.Object"/>
 
-            &lt;alias name="Bean1">Lock1&lt;/alias>
+      <bean name="Bean2" class="java.lang.Object"/>
 
-            &lt;alias name="Bean2">Lock2&lt;/alias>
-         &lt;/deployment>
+   </deployment>
+
+   <deployment name="SecondDeployment" xmlns="urn:jboss:bean-deployer:2.0">
+
+      <bean name="Xyz1" class="java.lang.Object">
+         <property name="locker1"><inject name="Lock1"></property>
+         <property name="locker2"><inject name="Lock2"></property>
+      </bean>
+
+      <alias name="Bean1">Lock1</alias>
+
+      <alias name="Bean2">Lock2</alias>
+   </deployment>
+
+]]>
       </programlisting>
 
       <para>
@@ -1214,43 +1445,48 @@
    </section>
 
    <section>
-      <title>Demand / Supply</title>
+      <title>Supply and Demand</title>
 
       <para>
-         There is another useful definition of loosly coupled dependency.
+         There is another useful definition of loosely coupled dependency.
          Each bean can define which beans should be installed for it to move
          to certain state.
       </para>
 
       <programlisting>
-         &lt;bean name="TM" class="com.acme.SomeSingleton1"&gt;
-         &lt;property name="host">http://www.jboss.org&lt;/property>
-         &lt;/bean&gt;
+<![CDATA[
 
-         &lt;bean name="SM" class="com.acme.AnotherSingleton"&gt;
-         &lt;property name="treadSize">10&lt;/property>
-         &lt;/bean&gt;
+   <bean name="TM" class="com.acme.SomeSingleton">
+      <property name="host">http://www.jboss.org</property>
+   </bean>
 
-         &lt;bean name="Name2" class="com.acme.Example"&gt;
-         &lt;property name="threadPool">&lt;inject bean="pool"/>&lt;/property>
-         &lt;demand state="Start">TM&lt;/demand&gt;
-         &lt;demand state="Configure">SM&lt;/demand&gt;
-         &lt;/bean&gt;
+   <bean name="SM" class="com.acme.AnotherSingleton">
+      <property name="treadSize">10</property>
+   </bean>
 
-         // Example class
-         public class Example{
+   <bean name="Name2" class="com.acme.Example">
+      <property name="threadPool"><inject bean="pool"/></property>
+      <demand state="Start">TM</demand>
+      <demand state="Configure">SM</demand>
+   </bean>
 
-         public void start() {
+   // Example class
+   public class Example
+   {
+      public void start()
+      {
          SomeSingleton tm = ...; // should be there!
-         }
+      }
 
-         public void setThreadPool(ThreadPool pool) {
+      public void setThreadPool(ThreadPool pool)
+      {
          AnotherSingleton config = ...; // should be there
          pool.setThreadSize(config.getThreadSize());
-         }
+      }
 
-         }
+   }
 
+]]>
       </programlisting>
 
       <para>
@@ -1261,28 +1497,35 @@
       </para>
 
       <programlisting>
-         public class FooBarBinder extends JndiBinder {
+<![CDATA[
 
-         public void start() {
+   public class FooBarBinder extends JndiBinder
+   {
+      public void start()
+      {
          FooBar foobar = new FooBar();
          bindToJndi("fbName", foobar);
-         }
+      }
 
-         }
+   }
 
-         public class FooBarConsumer {
-         public FooBarConsumer() {
+   public class FooBarConsumer
+   {
+      public FooBarConsumer()
+      {
          FooBar foobar = ...; // get it from jndi. should be there
-         }
-         }
+      }
+   }
 
-         &lt;bean name="provider" class="com.acme.FooBarBinder"&gt;
-         &lt;supply>foobar&lt;/property>
-         &lt;/bean&gt;
+   <bean name="provider" class="com.acme.FooBarBinder">
+      <supply>foobar</supply>
+   </bean>
 
-         &lt;bean name="consumer" class="com.acme.FooBarConsumer"&gt;
-         &lt;demand state="Instantiate">foobar&lt;/>;
-         &lt;/bean&gt;
+   <bean name="consumer" class="com.acme.FooBarConsumer">
+      <demand state="Instantiate">foobar</demand>
+   </bean>
+
+]]>
       </programlisting>
    </section>
 
@@ -1314,8 +1557,11 @@
       </para>
 
       <programlisting>
-         &lt;bean name="ignored" class="com.acme.Example" autowire-candidate="false"&gt;
-         &lt;/bean&gt;
+<![CDATA[
+
+   <bean name="ignored" class="com.acme.Example" autowire-candidate="false" />
+
+]]>
       </programlisting>
 
       <para>
@@ -1323,8 +1569,11 @@
       </para>
 
       <programlisting>
-         &lt;bean name="autowired" class="com.acme.Example" autowire="true"&gt;
-         &lt;/bean&gt;
+<![CDATA[
+
+   <bean name="autowired" class="com.acme.Example" autowire="true" />
+
+]]>
       </programlisting>
 
       <para>
@@ -1337,28 +1586,39 @@
       </para>
 
       <programlisting>
-         &lt;bean name="propInj" class="com.acme.ThreadPoolImpl"/&gt;
+<![CDATA[
 
-         &lt;bean name="propInj" class="com.acme.Example"&gt;
-         &lt;property name="threadPool">&lt;inject/>&lt;/property>
-         &lt;/bean&gt;
+   <bean name="propInj" class="com.acme.ThreadPoolImpl"/>
 
-         &lt;bean name="paramInj" class="com.acme.Example"&gt;
-         &lt;constructor>
-         &lt;parameter name="threadPool">&lt;inject/>&lt;/parameter>
-         &lt;/constructor>
-         &lt;/bean&gt;
+   <bean name="propInj" class="com.acme.Example">
+      <property name="threadPool"><inject/></property>
+   </bean>
 
-         public class Example {
-         protected ThreadPool pool;
-         public Example() {}
-         public Example(ThreadPool pool) {
+   <bean name="paramInj" class="com.acme.Example">
+      <constructor>
+         <parameter name="threadPool"><inject/></parameter>
+      </constructor>
+   </bean>
+
+   public class Example
+   {
+      protected ThreadPool pool;
+
+      public Example() {}
+
+      public Example(ThreadPool pool)
+      {
          this.pool = pool;
-         }
-         public void setThreadPool(ThreadPool pool) {
+      }
+
+      public void setThreadPool(ThreadPool pool)
+      {
          this.pool = pool;
-         }
-         }
+      }
+
+   }
+
+]]>
       </programlisting>
 
       <para>
@@ -1370,23 +1630,33 @@
       </para>
 
       <programlisting>
-         &lt;bean name="editorHolder" class="com.acme.Example"&gt;
-         &lt;incallback method="addEditor" />
-         &lt;uncallback method="removeEditor" />
-         &lt;/bean&gt;
+<![CDATA[
 
-         &lt;bean name="fbEditor" class="com.acme.FooEditor"/&gt;
+   <bean name="editorHolder" class="com.acme.Example">
+      <incallback method="addEditor" />
+      <uncallback method="removeEditor" />
+   </bean>
 
-         public class Example {
-         protected Set&lt;Editor> editors = new HashSet&lt;Editor>();
-         public Example() {}
-         public void addEditor(Editor editor) {
+   <bean name="fbEditor" class="com.acme.FooEditor"/>
+
+   public class Example
+   {
+      protected Set<Editor> editors = new HashSet<Editor>();
+
+      public Example() {}
+
+      public void addEditor(Editor editor)
+      {
          editors.add(editor);
-         }
-         public void removeEditor(Editor editor) {
+      }
+
+      public void removeEditor(Editor editor)
+      {
          editors.remove(editor);
-         }
-         }
+      }
+   }
+
+]]>
       </programlisting>
 
       <para>
@@ -1398,21 +1668,30 @@
       </para>
 
       <programlisting>
-         &lt;bean name="editorHolder" class="com.acme.Example"&gt;
-         &lt;incallback property="editors" cardinality="2..n" />
-         &lt;uncallback property="editors" />
-         &lt;/bean&gt;
+<![CDATA[
 
-         &lt;bean name="fbEditor" class="com.acme.FooEditor"/&gt;
-         &lt;bean name="xyzEditor" class="com.acme.XYZEditor"/&gt;
+   <bean name="editorHolder" class="com.acme.Example">
+      <incallback property="editors" cardinality="2..n" />
+      <uncallback property="editors" />
+   </bean>
 
-         public class Example {
-         protected Set&lt;Editor> editors;
-         public Example() {}
-         public void setEditors(Set&lt;Editor> editors) {
+   <bean name="fbEditor" class="com.acme.FooEditor"/>
+
+   <bean name="xyzEditor" class="com.acme.XYZEditor"/>
+
+   public class Example
+   {
+      protected Set<Editor> editors;
+
+      public Example() {}
+
+      public void setEditors(Set<Editor> editors)
+      {
          this.editors = editors;
-         }
-         }
+      }
+   }
+
+]]>
       </programlisting>
 
       <para>While using callbacks on the Collection subclasses, currently only basic Collection subinterfaces
@@ -1435,43 +1714,47 @@
       </para>
 
       <para>
-         With already known injection concept (&lt;inject\>), now you can also inject some information from the context.
+         With already known injection concept (<varname><![CDATA[<inject />]]></varname>), now you can also inject some information from the context.
          This is what you can currently get a hold on from the underlying context:
          <itemizedlist>
             <listitem>
-               <para>name - &lt;inject fromContext="name"/></para>
+               <para>name - <varname><![CDATA[<inject fromContext="name"/>]]></varname></para>
             </listitem>
             <listitem>
-               <para>aliases - &lt;inject fromContext="aliases"/></para>
+               <para>aliases - <varname><![CDATA[<inject fromContext="aliases"/>]]></varname></para>
             </listitem>
             <listitem>
-               <para>metadata - &lt;inject fromContext="metadata"/></para>
+               <para>metadata - <varname><![CDATA[<inject fromContext="metadata"/>]]></varname></para>
             </listitem>
             <listitem>
-               <para>beaninfo - &lt;inject fromContext="beaninfo"/></para>
+               <para>beaninfo - <varname><![CDATA[<inject fromContext="beaninfo"/>]]></varname></para>
             </listitem>
             <listitem>
-               <para>scope - &lt;inject fromContext="scope"/></para>
+               <para>scope - <varname><![CDATA[<inject fromContext="scope"/>]]></varname></para>
             </listitem>
             <listitem>
-               <para>id - &lt;inject fromContext="id"/></para>
+               <para>id - <varname><![CDATA[<inject fromContext="id"/>]]></varname></para>
             </listitem>
             <listitem>
-               <para>context itself - &lt;inject fromContext="context"/></para>
+               <para>context itself - <varname><![CDATA[<inject fromContext="context"/>]]></varname></para>
             </listitem>
          </itemizedlist>
       </para>
 
       <para>All this information is wrapped into unmodifiable objects, preventing user to add or set additional
          information outside Microcontainer's Controller.
-         As we already know, &lt;inject/> element can take bean attribute. In this case, if bean attribute is set,
+         As we already know, <varname><![CDATA[<inject/>]]></varname> element can take bean attribute. In this case, if bean attribute is set,
          we are not targeting bean's underlying context, but context that coresponds to set bean attribute.
       </para>
 
       <programlisting>
-         &lt;bean name="sndBean" class="org.jboss.test.kernel.deployment.support.NameAwareBean">
-            &lt;property name="beaninfo">&lt;inject bean="otherBean" fromContext="beaninfo"/>&lt;/property>
-         &lt;/bean>
+<![CDATA[
+
+   <bean name="sndBean" class="org.jboss.test.kernel.deployment.support.NameAwareBean">
+      <property name="beaninfo"><inject bean="otherBean" fromContext="beaninfo"/></property>
+   </bean>
+
+]]>
       </programlisting>
 
       <para>In this example we inject otherBean's beaninfo information into sndBean bean.</para>

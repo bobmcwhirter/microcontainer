@@ -88,6 +88,9 @@ public class DependencyTestSuite extends TestSuite
       suite.addTest(FromContextTestCase.suite());
       suite.addTest(FromContextXMLTestCase.suite());
       suite.addTest(FromContextAnnotationTestCase.suite());
+      suite.addTest(PlainAliasTestCase.suite());
+      suite.addTest(PlainAliasXMLTestCase.suite());
+      suite.addTest(PlainAliasAnnotationTestCase.suite());
       return suite;
    }
 }

@@ -21,15 +21,16 @@
 */
 package org.jboss.kernel.plugins.annotations;
 
-import java.util.Set;
 import java.util.List;
+import java.util.Set;
 
 import org.jboss.beans.metadata.plugins.annotations.Aliases;
 import org.jboss.beans.metadata.spi.BeanMetaData;
 import org.jboss.beans.metadata.spi.MetaDataVisitorNode;
-import org.jboss.reflect.spi.ClassInfo;
-import org.jboss.kernel.spi.dependency.KernelControllerContext;
 import org.jboss.dependency.spi.Controller;
+import org.jboss.dependency.spi.ControllerContext;
+import org.jboss.kernel.spi.dependency.KernelControllerContext;
+import org.jboss.reflect.spi.ClassInfo;
 import org.jboss.util.StringPropertyReplacer;
 
 /**
@@ -55,8 +56,18 @@ public class AliasesAnnotationPlugin extends ClassAnnotationPlugin<Aliases>
 
          if (aliases == null || aliases.contains(alias) == false)
          {
-            // alias will get removed when original will be undeployed
-            controller.addAlias(alias, beanMetaData.getName());
+            // impl detail (_Alias)
+            if (controller.getContext(alias + "_Alias", null) == null)
+            {
+               // TODO!! impl remove
+               controller.addAlias(alias, beanMetaData.getName());
+            }
+            else
+            {
+               ControllerContext existingContext = controller.getContext(alias, null);
+               if (existingContext != null && existingContext != context)
+                  throw new IllegalArgumentException("Alias " + alias + " already registered for different bean: " + existingContext);
+            }
          }
       }
       // no metadata added

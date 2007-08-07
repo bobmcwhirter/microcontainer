@@ -6,7 +6,7 @@
    <title>Packaging</title>
 
    <para>We had a brief discussion on the
-      <varname>-beans.xml</varname>
+      <varname>jboss-beans.xml</varname>
       file in
       <xref
             linkend="examples"/>
@@ -43,18 +43,23 @@
    </para>
 
    <programlisting>
-      &lt;?xml version='1.0' encoding='UTF-8'?&gt;
+<![CDATA[
 
-      &lt;!DOCTYPE jboss-app
-      PUBLIC "-//JBoss//DTD J2EE Application 1.4//EN"
-      "http://www.jboss.org/j2ee/dtd/jboss-app_4_0.dtd"
-      &gt;
+   <xml version='1.0' encoding='UTF-8'?>
 
-      &lt;jboss-app&gt;
+      <!DOCTYPE jboss-app
+         PUBLIC "-//JBoss//DTD J2EE Application 1.4//EN"
+         "http://www.jboss.org/j2ee/dtd/jboss-app_4_0.dtd">
 
-      &lt;module&gt;&lt;service&gt;example.jar&lt;/service&gt;&lt;/module&gt;
+      <jboss-app>
 
-      &lt;/jboss-app&gt;
+         <module>
+            <service>example.jar</service>
+         </module>
+
+      </jboss-app>
+
+]]>
    </programlisting>
 
 </chapter>
