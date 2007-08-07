@@ -54,7 +54,7 @@ public class RequirementDependencyItem extends AbstractDependencyItem
     */
    public RequirementDependencyItem(Module module, Requirement requirement)
    {
-      super(module.getName(), null, CLASSLOADER, CLASSLOADER);
+      super(module != null ? module.getName() : null, null, CLASSLOADER, CLASSLOADER);
       if (module == null)
          throw new IllegalArgumentException("Null module");
       if (requirement == null)
