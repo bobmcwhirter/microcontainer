@@ -79,6 +79,25 @@ public class ArrayValueFactoryUnitTestCase extends AbstractMetaValueFactoryTest
       assertEquals(expected, actual);
    }
 
+   public void testCharArray()
+      throws Exception
+   {
+      char[] array = "Hello".toCharArray();
+      ArrayMetaType arrayType = assertInstanceOf(resolve(array.getClass()), ArrayMetaType.class);
+      MetaValue[] metaArray = { SimpleValueSupport.wrap('H'),
+            SimpleValueSupport.wrap('e'),
+            SimpleValueSupport.wrap('l'),
+            SimpleValueSupport.wrap('l'),
+            SimpleValueSupport.wrap('o')
+      };
+      ArrayValueSupport expected = new ArrayValueSupport(arrayType, metaArray);
+      
+      MetaValue result = createMetaValue(array);
+      ArrayValue actual = assertInstanceOf(result, ArrayValue.class);
+      getLog().debug("Array Value: " + actual);
+      assertEquals(expected, actual);      
+   }
+
    /**
     * Test the correct value is generated for a composite array
     * 
