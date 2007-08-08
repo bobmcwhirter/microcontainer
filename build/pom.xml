@@ -42,7 +42,7 @@
     <version.jboss.aop>2.0.0-SNAPSHOT</version.jboss.aop>
     <version.jboss.logging.spi>2.0.3.GA</version.jboss.logging.spi>
     <version.jboss.classloading.spi>5.0.0-SNAPSHOT</version.jboss.classloading.spi>
-    <version.jboss.test>1.0.4-SNAPSHOT</version.jboss.test>
+    <version.org.jboss.test>1.0.4-SNAPSHOT</version.org.jboss.test>
     <version.junit>3.8.1</version.junit>
     <version.jboss.profiler.jvmti>1.0.0.CR5</version.jboss.profiler.jvmti>
     <version.ant.junit>1.7.0</version.ant.junit>
@@ -84,18 +84,6 @@
         <configuration>
           <tagBase>https://svn.jboss.org/repos/jbossas/projects/microcontainer/tags</tagBase>
         </configuration>
-      </plugin>
-      <plugin>
-        <groupId>jboss.maven-plugins</groupId>
-        <artifactId>jboss-retro-maven-plugin</artifactId>
-        <version>0.5-beta</version>
-        <executions>
-          <execution>
-            <goals>
-              <goal>retro-compile</goal>
-            </goals>
-          </execution>
-        </executions>
       </plugin>
       <plugin>
         <groupId>org.jboss.maven.plugins</groupId>
@@ -379,9 +367,9 @@
       </dependency>
       <!-- test dependencies -->
       <dependency>
-        <groupId>jboss</groupId>
+        <groupId>org.jboss</groupId>
         <artifactId>jboss-test</artifactId>
-        <version>${version.jboss.test}</version>
+        <version>${version.org.jboss.test}</version>
         <scope>test</scope>
       </dependency>
       <dependency>

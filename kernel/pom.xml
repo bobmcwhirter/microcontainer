@@ -55,9 +55,9 @@
   <dependencyManagement>
     <dependencies>
       <dependency>
-        <groupId>jboss</groupId>
+        <groupId>org.jboss</groupId>
         <artifactId>jboss-test</artifactId>
-        <version>${version.jboss.test}</version>
+        <version>${version.org.jboss.test}</version>
         <scope>compile</scope>
       </dependency>
       <dependency>
@@ -80,7 +80,7 @@
       <artifactId>jboss-dependency</artifactId>
     </dependency>
     <dependency>
-      <groupId>jboss</groupId>
+      <groupId>org.jboss</groupId>
       <artifactId>jboss-test</artifactId>
     </dependency>
     <dependency>
