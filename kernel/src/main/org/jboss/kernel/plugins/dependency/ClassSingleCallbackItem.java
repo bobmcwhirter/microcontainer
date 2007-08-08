@@ -21,12 +21,17 @@
 */
 package org.jboss.kernel.plugins.dependency;
 
+import java.util.Set;
+
 import org.jboss.dependency.plugins.SingleCallbackItem;
 import org.jboss.dependency.spi.Cardinality;
 import org.jboss.dependency.spi.ControllerContext;
 import org.jboss.dependency.spi.ControllerState;
 import org.jboss.dependency.spi.DependencyItem;
+import org.jboss.dependency.spi.Controller;
 import org.jboss.dependency.spi.dispatch.InvokeDispatchContext;
+import org.jboss.kernel.spi.dependency.KernelController;
+import org.jboss.kernel.spi.dependency.KernelControllerContext;
 
 /**
  * Class single dependency item - class dependency.
@@ -56,6 +61,27 @@ public class ClassSingleCallbackItem extends SingleCallbackItem<Class>
    {
       super(name, whenRequired, dependentState, owner, method, signature);
       this.cardinality = cardinality;
+   }
+
+   public void ownerCallback(Controller controller, boolean isInstallPhase) throws Throwable
+   {
+      if (controller instanceof KernelController)
+      {
+         KernelController kc = (KernelController)controller;
+         Set<KernelControllerContext> contexts = kc.getContexts(getIDependOn(), getDependentState());
+         if (contexts != null && contexts.isEmpty() == false)
+         {
+            for(KernelControllerContext context : contexts)
+            {
+               Object target = context.getTarget();
+               if (signature == null)
+                  signature = target.getClass().getName();
+               owner.invoke(getAttributeName(), new Object[]{target}, new String[]{signature});
+            }
+         }
+      }
+      else
+         log.info("Controller not KernelController instance, cannot execute owner callback.");
    }
 
    protected DependencyItem createDependencyItem(ControllerContext owner)

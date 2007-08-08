@@ -23,10 +23,13 @@ package org.jboss.kernel.plugins.dependency;
 
 import org.jboss.dependency.plugins.AttributeCallbackItem;
 import org.jboss.dependency.spi.Cardinality;
+import org.jboss.dependency.spi.Controller;
 import org.jboss.dependency.spi.ControllerContext;
 import org.jboss.dependency.spi.ControllerState;
 import org.jboss.dependency.spi.DependencyItem;
 import org.jboss.dependency.spi.dispatch.AttributeDispatchContext;
+import org.jboss.kernel.spi.dependency.KernelController;
+import org.jboss.kernel.spi.dependency.KernelControllerContext;
 
 /**
  * Class callback item - class dependency.
@@ -46,6 +49,22 @@ public class ClassAttributeCallbackItem extends AttributeCallbackItem<Class>
    {
       super(name, whenRequired, dependentState, owner, attribute);
       this.cardinality = cardinality;
+   }
+
+   public void ownerCallback(Controller controller, boolean isInstallPhase) throws Throwable
+   {
+      if (controller instanceof KernelController)
+      {
+         KernelController kc = (KernelController)controller;
+         KernelControllerContext context = kc.getContextByClass(getIDependOn());
+         if (context != null)
+         {
+            Object target = context.getTarget();
+            owner.set(getAttributeName(), target);
+         }
+      }
+      else
+         log.info("Controller not KernelController instance, cannot execute owner callback.");
    }
 
    protected DependencyItem createDependencyItem(ControllerContext owner)

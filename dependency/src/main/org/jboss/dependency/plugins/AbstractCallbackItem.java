@@ -60,6 +60,7 @@ public abstract class AbstractCallbackItem<T> extends JBossObject implements Cal
 
    public void ownerCallback(Controller controller, boolean isInstallPhase) throws Throwable
    {
+      log.info("Owner callback not implemented.");
    }
 
    /**

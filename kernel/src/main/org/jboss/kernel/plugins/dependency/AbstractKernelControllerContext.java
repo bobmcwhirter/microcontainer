@@ -243,7 +243,9 @@ public class AbstractKernelControllerContext extends AbstractControllerContext i
          dependencys.addAll(dependencyInfo.getIDependOn(CallbackDependencyItem.class));
          for (DependencyItem di : dependencys)
          {
-            di.unresolved(getController());
+            // can cast because of getIDepend method impl
+            ClassDependencyItem cdi = (ClassDependencyItem)di;
+            cdi.clear(getController());
          }
       }
    }

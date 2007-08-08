@@ -91,6 +91,9 @@ public class DependencyTestSuite extends TestSuite
       suite.addTest(PlainAliasTestCase.suite());
       suite.addTest(PlainAliasXMLTestCase.suite());
       suite.addTest(PlainAliasAnnotationTestCase.suite());
+      suite.addTest(CallbackTestCase.suite());
+      suite.addTest(CallbackXMLTestCase.suite());
+      suite.addTest(CallbackAnnotationTestCase.suite());
       return suite;
    }
 }

@@ -83,10 +83,8 @@ public class CallbackDependencyItem extends ClassDependencyItem
       return isResolved();
    }
 
-   public boolean checkUnresolved(Controller controller, boolean previous)
+   public boolean unresolved(Controller controller)
    {
-      if (previous == false)
-         return false;
       if (getIDependOn() == null)
          return true;
       

@@ -22,8 +22,8 @@
 package org.jboss.kernel.plugins.dependency;
 
 import org.jboss.dependency.plugins.AbstractDependencyItem;
-import org.jboss.dependency.spi.Controller;
 import org.jboss.dependency.spi.ControllerState;
+import org.jboss.dependency.spi.Controller;
 import org.jboss.util.JBossStringBuilder;
 
 /**
@@ -43,23 +43,14 @@ public abstract class ClassDependencyItem extends AbstractDependencyItem
       return (Class)getIDependOn();
    }
 
-   public boolean unresolved(Controller controller)
-   {
-      boolean result = checkUnresolved(controller, super.unresolved(controller));
-      setIDependOn(null);
-      return result;
-   }
-
    /**
-    * Check some additionl dependency.
-    *
+    * Clear the class reference.
+    *  
     * @param controller the controller
-    * @param previous previous result
-    * @return see unresolved method
     */
-   protected boolean checkUnresolved(Controller controller, boolean previous)
+   public void clear(Controller controller)
    {
-      return previous;
+      setIDependOn(null);
    }
 
    public void toString(JBossStringBuilder buffer)
