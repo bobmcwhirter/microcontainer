@@ -261,7 +261,9 @@ public class BaseClassLoader extends SecureClassLoader implements BaseClassLoade
             ProtectionDomain protectionDomain = basePolicy.getProtectionDomain(name, resourcePath);
             try
             {
-              byteCode = policy.transform(name, byteCode, protectionDomain);
+               byte[] transformed = policy.transform(name, byteCode, protectionDomain);
+               if (transformed != null)
+                  byteCode = transformed;
             }
             catch (Throwable t)
             {
@@ -290,7 +292,7 @@ public class BaseClassLoader extends SecureClassLoader implements BaseClassLoade
     * @param name the resource name
     * @return the url if found
     */
-   URL getResourceLocally(String name)
+   public URL getResourceLocally(String name)
    {
       return getResourceLocally(name, log.isTraceEnabled());
    }
