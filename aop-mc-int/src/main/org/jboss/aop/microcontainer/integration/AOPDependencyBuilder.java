@@ -29,8 +29,8 @@ import java.util.LinkedHashMap;
 import java.util.LinkedHashSet;
 import java.util.List;
 import java.util.Map;
-import java.util.Set;
 import java.util.Map.Entry;
+import java.util.Set;
 
 import org.jboss.aop.Advisor;
 import org.jboss.aop.AspectManager;
@@ -73,6 +73,7 @@ public class AOPDependencyBuilder extends AbstractDependencyBuilder
 {
    private static final String DEPENDENCY_CLASS_NAME = Dependency.class.getName();
    private static final String DEPENDENCY_NAME_ATTRIBUTE = "name";
+   // FIXME - do not create new instance, use existing delegate in IntrospectionTypeInfoFactory 
    private static final IntrospectionTypeInfoFactoryImpl typeInfoFactory = new IntrospectionTypeInfoFactoryImpl();
 
    public List<DependencyBuilderListItem> getDependencies(ClassAdapter classAdapter, MetaData metaData)
