@@ -70,6 +70,26 @@ public class ArrayMetaTypeFactoryUnitTestCase extends AbstractMetaTypeFactoryTes
       testArray(expected, actual);
    }
 
+   public void testCharArray()
+      throws Exception
+   {
+      char[] array = {'H', 'e', 'l', 'l', 'o'};
+      MetaType result = resolve(array.getClass());
+
+      ArrayMetaType actual = assertInstanceOf(result, ArrayMetaType.class);
+      ArrayMetaType expected = new ArrayMetaType(1, SimpleMetaType.CHARACTER);
+      testArray(expected, actual);
+   }
+   public void testChar2DArray()
+      throws Exception
+   {
+      char[][] array = {{'H', 'e', 'l', 'l', 'o'}};
+      MetaType result = resolve(array.getClass());
+      ArrayMetaType actual = assertInstanceOf(result, ArrayMetaType.class);
+      ArrayMetaType expected = new ArrayMetaType(2, SimpleMetaType.CHARACTER);
+      testArray(expected, actual);
+   }
+
    /**
     * Test the correct meta type is generated for a composite array
     * 

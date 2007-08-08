@@ -23,6 +23,7 @@ package org.jboss.metatype.plugins.values;
 
 import java.io.Serializable;
 import java.lang.ref.WeakReference;
+import java.lang.reflect.Array;
 import java.lang.reflect.Type;
 import java.security.AccessController;
 import java.security.PrivilegedAction;
@@ -60,6 +61,7 @@ import org.jboss.metatype.api.values.TableValue;
 import org.jboss.metatype.api.values.TableValueSupport;
 import org.jboss.metatype.plugins.types.DefaultMetaTypeFactory;
 import org.jboss.metatype.spi.values.MetaValueBuilder;
+import org.jboss.reflect.spi.ArrayInfo;
 import org.jboss.reflect.spi.ClassInfo;
 import org.jboss.reflect.spi.TypeInfo;
 
@@ -165,6 +167,71 @@ public class DefaultMetaValueFactory extends MetaValueFactory
    }
 
    /**
+    * Transform a primitive array into an Object[]. Converts
+    * a primitive array like char[] to Object[]. 
+    * 
+    * @param type - the primitive array class type info.
+    * @param value - the primitive array instance.
+    * @return
+    */
+   public static Object[] convertPrimativeArray(TypeInfo type, Object value)
+   {
+      Object[] oa = null;
+      if( type instanceof ArrayInfo )
+      {
+         // Get the Object form of the element
+         ArrayInfo arrayInfo = ArrayInfo.class.cast(type);
+         TypeInfo etype = arrayInfo.getComponentType();
+         int size = Array.getLength(value);
+         oa = new Object[size];
+         for(int n = 0; n < size; n ++)
+         {
+            Object nvalue = Array.get(value, n);
+            // Recursively convert nested array elements
+            if (etype.isArray())
+            {
+               oa[n] = convertPrimativeArray(etype, nvalue);
+            }
+            oa[n] = nvalue;
+         }
+      }
+      else
+      {
+         oa = (Object[]) value;
+      }
+      
+      return oa;      
+   }
+   public static Object[] convertPrimativeArray(Object value)
+   {
+      Object[] oa = null;
+      Class type = value.getClass();
+      if( type.isArray() )
+      {
+         // Get the Object form of the element
+         Class etype = type.getComponentType();
+         int size = Array.getLength(value);
+         oa = new Object[size];
+         for(int n = 0; n < size; n ++)
+         {
+            Object nvalue = Array.get(value, n);
+            // Recursively convert nested array elements
+            if (etype.isArray())
+            {
+               oa[n] = convertPrimativeArray(nvalue);
+            }
+            oa[n] = nvalue;
+         }
+      }
+      else
+      {
+         oa = (Object[]) value;
+      }
+      
+      return oa;      
+   }
+
+   /**
     * Create an array value
     * 
     * @param type the type
@@ -198,7 +265,21 @@ public class DefaultMetaValueFactory extends MetaValueFactory
       
       ClassInfo classInfo = configuration.getClassInfo(value.getClass());
       if (classInfo.isArray())
-         oldArray = (Object[]) value;
+      {
+         // See if this is a primitive array
+         ArrayInfo arrayInfo = ArrayInfo.class.cast(classInfo);
+         TypeInfo compInfo = arrayInfo.getComponentType();
+         while(compInfo instanceof ArrayInfo)
+         {
+            arrayInfo = ArrayInfo.class.cast(compInfo);
+            compInfo = arrayInfo.getComponentType();
+         }
+         // Translate 
+         if (compInfo.isPrimitive())
+            oldArray = convertPrimativeArray(classInfo, value);
+         else
+            oldArray = (Object[]) value;
+      }
       else if (classInfo.isCollection())
       {
          Collection c = (Collection) value;
@@ -230,9 +311,13 @@ public class DefaultMetaValueFactory extends MetaValueFactory
       
       if (dimension > 1)
       {
+         Object[] nestedOld;
          for (int i = 0; i < oldArray.length; ++i)
          {
-            Object[] nestedOld = (Object[]) oldArray[i];
+            if ( !(oldArray[i] instanceof Object[]) )
+               nestedOld = convertPrimativeArray(oldArray[i]);
+            else
+               nestedOld = (Object[]) oldArray[i];
             Object[] result = createArray(elementType, componentType.getComponentType(), dimension-1, nestedOld);
             newArray[i] = result;
          }

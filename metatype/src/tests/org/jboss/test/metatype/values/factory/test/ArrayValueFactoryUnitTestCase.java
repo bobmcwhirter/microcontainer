@@ -95,7 +95,30 @@ public class ArrayValueFactoryUnitTestCase extends AbstractMetaValueFactoryTest
       MetaValue result = createMetaValue(array);
       ArrayValue actual = assertInstanceOf(result, ArrayValue.class);
       getLog().debug("Array Value: " + actual);
-      assertEquals(expected, actual);      
+      assertEquals(expected, actual);
+   }
+   public void test2DCharArray()
+   {
+      char[][] array = {"Hello".toCharArray(), "World".toCharArray()};
+      ArrayMetaType arrayType = assertInstanceOf(resolve(array.getClass()), ArrayMetaType.class);
+      MetaValue[][] metaArray = { {SimpleValueSupport.wrap('H'),
+            SimpleValueSupport.wrap('e'),
+            SimpleValueSupport.wrap('l'),
+            SimpleValueSupport.wrap('l'),
+            SimpleValueSupport.wrap('o')},
+
+            {SimpleValueSupport.wrap('W'),
+            SimpleValueSupport.wrap('o'),
+            SimpleValueSupport.wrap('r'),
+            SimpleValueSupport.wrap('l'),
+            SimpleValueSupport.wrap('d')}               
+      };
+      ArrayValueSupport expected = new ArrayValueSupport(arrayType, metaArray);
+
+      MetaValue result = createMetaValue(array);
+      ArrayValue actual = assertInstanceOf(result, ArrayValue.class);
+      getLog().debug("Array Value: " + actual);
+      assertEquals(expected, actual);
    }
 
    /**
@@ -141,4 +164,5 @@ public class ArrayValueFactoryUnitTestCase extends AbstractMetaValueFactoryTest
       getLog().debug("Array Value: " + actual);
       assertEquals(expected, actual);
    }
+
 }
