@@ -346,7 +346,7 @@
         <version>${version.jaxb.api}</version>
       </dependency>
       <dependency>
-        <groupId>org.jboss</groupId>
+        <groupId>org.jboss.aop</groupId>
         <artifactId>jboss-aop</artifactId>
         <version>${version.jboss.aop}</version>
       </dependency>

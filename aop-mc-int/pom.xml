@@ -193,7 +193,7 @@
   <dependencies>
     <!-- Global dependencies -->
     <dependency>
-      <groupId>org.jboss</groupId>
+      <groupId>org.jboss.aop</groupId>
       <artifactId>jboss-aop</artifactId>
       <exclusions>
         <exclusion>
