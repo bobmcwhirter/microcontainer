@@ -186,6 +186,7 @@ public class BasicBeanAnnotationAdapter implements BeanAnnotationAdapter
       }
 
       // properties
+      Set<MethodInfo> visitedMethods = new HashSet<MethodInfo>();
       Set<PropertyInfo> properties = info.getProperties();
       if (properties != null && properties.isEmpty() == false)
       {
@@ -194,6 +195,7 @@ public class BasicBeanAnnotationAdapter implements BeanAnnotationAdapter
             MethodInfo setter = pi.getSetter();
             if (setter != null)
             {
+               visitedMethods.add(setter);
                Signature sis = new MethodSignature(setter.getName(), Configurator.getParameterTypes(trace, setter.getParameterTypes()));
                MetaDataRetrieval cmdr = retrieval.getComponentMetaDataRetrieval(sis);
                if (cmdr != null)
@@ -211,12 +213,15 @@ public class BasicBeanAnnotationAdapter implements BeanAnnotationAdapter
       {
          for(MethodInfo mi : methods)
          {
-            Signature mis = new MethodSignature(mi.getName(), Configurator.getParameterTypes(trace, mi.getParameterTypes()));
-            MetaDataRetrieval cmdr = retrieval.getComponentMetaDataRetrieval(mis);
-            if (cmdr != null)
+            if (visitedMethods.contains(mi) == false)
             {
-               for(AnnotationPlugin plugin : methodAnnotationPlugins)
-                  plugin.applyAnnotation(mi, cmdr, visitor);
+               Signature mis = new MethodSignature(mi.getName(), Configurator.getParameterTypes(trace, mi.getParameterTypes()));
+               MetaDataRetrieval cmdr = retrieval.getComponentMetaDataRetrieval(mis);
+               if (cmdr != null)
+               {
+                  for(AnnotationPlugin plugin : methodAnnotationPlugins)
+                     plugin.applyAnnotation(mi, cmdr, visitor);
+               }
             }
          }
       }

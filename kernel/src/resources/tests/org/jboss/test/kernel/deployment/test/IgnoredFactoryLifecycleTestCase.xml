@@ -1,0 +1,20 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<deployment xmlns="urn:jboss:bean-deployer:2.0">
+
+   <beanfactory name="LifecycleBean1" class="org.jboss.test.kernel.deployment.support.IgnoredLifecycleBean">
+      <create ignored="true"/>
+      <start ignored="true"/>
+   </beanfactory>
+
+   <beanfactory name="LifecycleBean2" class="org.jboss.test.kernel.deployment.support.IgnoredLifecycleBean">
+      <create ignored="true"/>
+   </beanfactory>
+
+   <beanfactory name="LifecycleBean3" class="org.jboss.test.kernel.deployment.support.IgnoredLifecycleBean">
+      <start ignored="true"/>
+   </beanfactory>
+
+   <beanfactory name="LifecycleBean4" class="org.jboss.test.kernel.deployment.support.IgnoredLifecycleBean" />
+
+</deployment>

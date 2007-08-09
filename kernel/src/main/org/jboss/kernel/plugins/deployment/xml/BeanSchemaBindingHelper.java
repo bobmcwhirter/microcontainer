@@ -166,11 +166,13 @@ public class BeanSchemaBindingHelper
       // bean factory has uninstalls
       beanFactoryType.pushInterceptor(BeanSchemaBinding20.uninstallQName, BeanUninstallInterceptor.INTERCEPTOR);
 
+/*
       // bean has installs
       beanFactoryType.pushInterceptor(BeanSchemaBinding20.installCallbackQName, BeanInstallCallbackInterceptor.INTERCEPTOR);
 
       // bean has uninstalls
       beanFactoryType.pushInterceptor(BeanSchemaBinding20.uninstallCallbackQName, BeanUninstallCallbackInterceptor.INTERCEPTOR);
+*/
 
       // bean factory has depends
       beanFactoryType.pushInterceptor(BeanSchemaBinding20.dependsQName, BeanDependsInterceptor.INTERCEPTOR);

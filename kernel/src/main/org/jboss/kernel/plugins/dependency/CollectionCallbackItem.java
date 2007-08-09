@@ -112,7 +112,9 @@ public abstract class CollectionCallbackItem<T extends Collection<Object>> exten
 
    public void ownerCallback(Controller controller, boolean isInstallPhase) throws Throwable
    {
-      execute(fillHolder(controller));
+      // fill or just push in empty
+      T holder = isInstallPhase ? fillHolder(controller) : getCollectionParameterHolder();
+      execute(holder);
    }
 
    public void changeCallback(Controller controller, ControllerContext context, boolean isInstallPhase) throws Throwable

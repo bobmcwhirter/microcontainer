@@ -244,23 +244,26 @@ public class GenericBeanFactory implements BeanFactory
     */
    protected void invokeLifecycle(String methodName, LifecycleMetaData lifecycle, BeanInfo info, ClassLoader cl, Object target) throws Throwable
    {
-      String method = methodName;
-      if (lifecycle != null && lifecycle.getMethodName() != null)
-         method = lifecycle.getMethodName();
-      List<ParameterMetaData> parameters = null;
-      if (lifecycle != null)
-         parameters = lifecycle.getParameters();
-      MethodJoinpoint joinpoint;
-      try
+      if (lifecycle == null || lifecycle.isIgnored() == false)
       {
-         joinpoint = configurator.getMethodJoinPoint(info, cl, method, parameters, false, true);
+         String method = methodName;
+         if (lifecycle != null && lifecycle.getMethodName() != null)
+            method = lifecycle.getMethodName();
+         List<ParameterMetaData> parameters = null;
+         if (lifecycle != null)
+            parameters = lifecycle.getParameters();
+         MethodJoinpoint joinpoint;
+         try
+         {
+            joinpoint = configurator.getMethodJoinPoint(info, cl, method, parameters, false, true);
+         }
+         catch (JoinpointException ignored)
+         {
+            return;
+         }
+         joinpoint.setTarget(target);
+         joinpoint.dispatch();
       }
-      catch (JoinpointException ignored)
-      {
-         return;
-      }
-      joinpoint.setTarget(target);
-      joinpoint.dispatch();
    }
 
 }

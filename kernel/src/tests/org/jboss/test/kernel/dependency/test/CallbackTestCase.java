@@ -68,16 +68,15 @@ public class CallbackTestCase extends OldAbstractKernelDependencyTest
       ControllerContext context1 = assertInstall(0, "Name1");
       SimpleBeanRepository repository = (SimpleBeanRepository)context1.getTarget();
       assertNotNull(repository);
-      List beans = repository.getBeans();
-      assertEmpty(beans);
+      assertEmpty(repository.getBeans());
 
       ControllerContext context2 = assertInstall(1, "Name2");
       SimpleBean bean = (SimpleBean)context2.getTarget();
       assertNotNull(bean);
 
-      assertFalse(beans.isEmpty());
-      assertEquals(1, beans.size());
-      assertTrue(bean == beans.get(0));
+      assertFalse(repository.getBeans().isEmpty());
+      assertEquals(1, repository.getBeans().size());
+      assertTrue(bean == repository.getBeans().get(0));
    }
 
    protected void callbackCorrectOrder() throws Throwable
@@ -114,32 +113,30 @@ public class CallbackTestCase extends OldAbstractKernelDependencyTest
       ControllerContext context1 = assertInstall(0, "Name1");
       SimpleBeanRepository repository = (SimpleBeanRepository)context1.getTarget();
       assertNotNull(repository);
-      List beans = repository.getBeans();
-      assertEmpty(beans);
+      assertEmpty(repository.getBeans());
 
       ControllerContext context2 = assertInstall(1, "Name2");
       SimpleBean bean = (SimpleBean)context2.getTarget();
       assertNotNull(bean);
 
-      assertFalse(beans.isEmpty());
-      assertEquals(1, beans.size());
-      assertTrue(bean == beans.get(0));
+      assertFalse(repository.getBeans().isEmpty());
+      assertEquals(1, repository.getBeans().size());
+      assertTrue(bean == repository.getBeans().get(0));
 
       assertUninstall("Name1");
       assertEquals(ControllerState.ERROR, context1.getState());
-      assertEmpty(beans);
+      assertEmpty(repository.getBeans());
 
       context1 = assertInstall(0, "Name1");
       repository = (SimpleBeanRepository)context1.getTarget();
       assertNotNull(repository);
-      beans = repository.getBeans();
-      assertFalse(beans.isEmpty());
-      assertEquals(1, beans.size());
-      assertTrue(bean == beans.get(0));
+      assertFalse(repository.getBeans().isEmpty());
+      assertEquals(1, repository.getBeans().size());
+      assertTrue(bean == repository.getBeans().get(0));
 
       assertUninstall("Name2");
       assertEquals(ControllerState.ERROR, context2.getState());
-      assertEmpty(beans);
+      assertEmpty(repository.getBeans());
    }
 
    protected void callbackReinstall() throws Throwable
@@ -154,26 +151,25 @@ public class CallbackTestCase extends OldAbstractKernelDependencyTest
       ControllerContext context1 = assertInstall(0, "Name1", ControllerState.INSTANTIATED);
       SimpleBeanRepository repository = (SimpleBeanRepository)context1.getTarget();
       assertNotNull(repository);
-      List beans = repository.getBeans();
-      assertEmpty(beans);
+      assertEmpty(repository.getBeans());
 
       ControllerContext context2 = assertInstall(1, "Name2");
       SimpleBean bean1 = (SimpleBean)context2.getTarget();
       assertNotNull(bean1);
-      assertEmpty(beans);
+      assertEmpty(repository.getBeans());
 
       ControllerContext context3 = assertInstall(2, "Name3");
       SimpleBean bean2 = (SimpleBean)context3.getTarget();
       assertNotNull(bean2);
 
       assertEquals(ControllerState.INSTALLED, context1.getState());
-      assertFalse(beans.isEmpty());
-      assertEquals(2, beans.size());
-      boolean first = bean1 == beans.get(0);
+      assertFalse(repository.getBeans().isEmpty());
+      assertEquals(2, repository.getBeans().size());
+      boolean first = bean1 == repository.getBeans().get(0);
       if (first)
-         assertTrue(bean2 == beans.get(1));
+         assertTrue(bean2 == repository.getBeans().get(1));
       else
-         assertTrue(bean2 == beans.get(0));
+         assertTrue(bean2 == repository.getBeans().get(0));
    }
 
    protected void callbackCardinalityCorrectOrder() throws Throwable
@@ -196,15 +192,14 @@ public class CallbackTestCase extends OldAbstractKernelDependencyTest
       ControllerContext context1 = assertInstall(0, "Name1");
       SimpleBeanRepository repository = (SimpleBeanRepository)context1.getTarget();
       assertNotNull(repository);
-      List beans = repository.getBeans();
 
-      assertFalse(beans.isEmpty());
-      assertEquals(2, beans.size());
-      boolean first = bean1 == beans.get(0);
+      assertFalse(repository.getBeans().isEmpty());
+      assertEquals(2, repository.getBeans().size());
+      boolean first = bean1 == repository.getBeans().get(0);
       if (first)
-         assertTrue(bean2 == beans.get(1));
+         assertTrue(bean2 == repository.getBeans().get(1));
       else
-         assertTrue(bean2 == beans.get(0));
+         assertTrue(bean2 == repository.getBeans().get(0));
    }
 
    protected void callbackCardinalityWrongOrder() throws Throwable
@@ -220,45 +215,43 @@ public class CallbackTestCase extends OldAbstractKernelDependencyTest
       ControllerContext context1 = assertInstall(0, "Name1", ControllerState.INSTANTIATED);
       SimpleBeanRepository repository = (SimpleBeanRepository)context1.getTarget();
       assertNotNull(repository);
-      List beans = repository.getBeans();
-      assertEmpty(beans);
+      assertEmpty(repository.getBeans());
 
       ControllerContext context2 = assertInstall(1, "Name2");
       SimpleBean bean1 = (SimpleBean)context2.getTarget();
       assertNotNull(bean1);
-      assertEmpty(beans);
+      assertEmpty(repository.getBeans());
 
       ControllerContext context3 = assertInstall(2, "Name3");
       SimpleBean bean2 = (SimpleBean)context3.getTarget();
       assertNotNull(bean2);
       assertEquals(ControllerState.INSTALLED, context1.getState());
-      assertFalse(beans.isEmpty());
-      assertEquals(2, beans.size());
+      assertFalse(repository.getBeans().isEmpty());
+      assertEquals(2, repository.getBeans().size());
 
       assertUninstall("Name1");
       assertEquals(ControllerState.ERROR, context1.getState());
-      assertEmpty(beans);
+      assertEmpty(repository.getBeans());
 
       context1 = assertInstall(0, "Name1");
       repository = (SimpleBeanRepository)context1.getTarget();
       assertNotNull(repository);
-      beans = repository.getBeans();
-      assertFalse(beans.isEmpty());
-      assertEquals(2, beans.size());
+      assertFalse(repository.getBeans().isEmpty());
+      assertEquals(2, repository.getBeans().size());
 
       assertUninstall("Name2");
       assertEquals(ControllerState.ERROR, context2.getState());
       assertEquals(ControllerState.INSTANTIATED, context1.getState());
-      assertEmpty(beans);
+      assertEmpty(repository.getBeans());
 
       assertInstall(1, "Name2");
       assertEquals(ControllerState.INSTALLED, context1.getState());
-      assertEquals(2, beans.size());
+      assertEquals(2, repository.getBeans().size());
 
       assertUninstall("Name3");
       assertEquals(ControllerState.ERROR, context3.getState());
       assertEquals(ControllerState.INSTANTIATED, context1.getState());
-      assertEmpty(beans);
+      assertEmpty(repository.getBeans());
    }
 
    protected void callbackCardinalityReinstall() throws Throwable

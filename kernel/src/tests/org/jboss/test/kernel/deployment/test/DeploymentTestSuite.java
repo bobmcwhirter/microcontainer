@@ -51,6 +51,7 @@ public class DeploymentTestSuite extends TestSuite
       suite.addTest(AnnotatedLifecycleTestCase.suite());
       suite.addTest(IgnoredAnnotatedLifecycleTestCase.suite());
       suite.addTest(IgnoredLifecycleTestCase.suite());
+      suite.addTest(IgnoredFactoryLifecycleTestCase.suite());
       suite.addTest(MixedLifecycleTestCase.suite());
       suite.addTest(FineGrainedActionTestCase.suite());
       suite.addTest(ScopingTestCase.suite());

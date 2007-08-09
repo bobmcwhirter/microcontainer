@@ -46,7 +46,7 @@ public class IgnoredLifecycleTestCase extends AbstractManualDeploymentTest
       return suite(IgnoredLifecycleTestCase.class);
    }
 
-   public void testAnnotatedLifecycle() throws Throwable
+   public void testIgnoredLifecycle() throws Throwable
    {
       SimpleLifecycleBean target;
 

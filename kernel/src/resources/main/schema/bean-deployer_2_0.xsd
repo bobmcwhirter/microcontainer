@@ -174,8 +174,10 @@ $Id$
          <xsd:element name="supply" type="supplyType" minOccurs="0" maxOccurs="unbounded"/>
          <xsd:element name="install" type="installType" minOccurs="0" maxOccurs="unbounded"/>
          <xsd:element name="uninstall" type="installType" minOccurs="0" maxOccurs="unbounded"/>
+<!--
          <xsd:element name="incallback" type="callbackType" minOccurs="0" maxOccurs="unbounded"/>
          <xsd:element name="uncallback" type="callbackType" minOccurs="0" maxOccurs="unbounded"/>
+-->
       </xsd:sequence>
       <xsd:attribute name="name" type="xsd:string" use="optional"/>
       <xsd:attribute name="class" type="xsd:token" use="required"/>

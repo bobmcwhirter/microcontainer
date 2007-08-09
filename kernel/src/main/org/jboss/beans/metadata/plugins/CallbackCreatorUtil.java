@@ -80,13 +80,15 @@ public class CallbackCreatorUtil
          ControllerState dependentState,
          Cardinality cardinality)
    {
-      if (info instanceof ClassInfo && ((ClassInfo)info).getActualTypeArguments() != null)
+      if (info instanceof ClassInfo)
       {
          ClassInfo ci = (ClassInfo)info;
-         TypeInfo[] typeInfos = ci.getActualTypeArguments();
-         if (typeInfos.length != 1)
-            throw new IllegalArgumentException("Illegal size of actual type arguments: " + info);
-         Class clazz = typeInfos[0].getType();
+         TypeInfo componentType = ci.getComponentType();
+         if (componentType == null)
+            throw new IllegalArgumentException("Null component type: " + info);
+         Class clazz = componentType.getType();
+         if (Object.class.equals(clazz))
+            throw new IllegalArgumentException("Component type too general - equals Object: " + info);            
          return getCollectionFactory().createCollectionCallbackItem(info.getType(), clazz, whenRequired, dependentState, cardinality, context, attribute);
       }
       else
@@ -119,10 +121,7 @@ public class CallbackCreatorUtil
       else if (ai.isProperty())
          return new ClassAttributeCallbackItem(info.getType(), whenRequired, dependentState, cardinality, context, ai.getName());
       else
-      {
-         Class clazz = info.getType();
-         return new ClassSingleCallbackItem(clazz, whenRequired, dependentState, cardinality, context, ai.getName(), clazz.getName());
-      }
+         return new ClassSingleCallbackItem(info.getType(), whenRequired, dependentState, cardinality, context, ai.getName(), info.getName());
    }
 
    /**

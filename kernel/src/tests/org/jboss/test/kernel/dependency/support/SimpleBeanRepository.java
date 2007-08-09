@@ -28,11 +28,16 @@ public class SimpleBeanRepository
 {
    List<SimpleBean> beans = new ArrayList<SimpleBean>();
    
-   public List getBeans()
+   public List<SimpleBean> getBeans()
    {
       return beans;
    }
-   
+
+   public void setBeans(List<SimpleBean> beans)
+   {
+      this.beans = beans;
+   }
+
    public void addSimpleBean(SimpleBean bean)
    {
       beans.add(bean);

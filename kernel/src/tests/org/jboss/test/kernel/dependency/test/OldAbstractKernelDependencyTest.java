@@ -151,11 +151,16 @@ public class OldAbstractKernelDependencyTest extends AbstractKernelTest
       this.beanMetaDatas = beanMetaDatas;
    }
    
-   protected void deploy(int number) throws Throwable
+   protected String createName(int number)
    {
       String packageName = Classes.getPackageName(getClass());
       packageName = packageName.replace('.', '/');
-      String name = "/xml-test/" + packageName + '/' + getName() + number + ".xml";
+      return "/xml-test/" + packageName + '/' + getName() + number + ".xml";
+   }
+
+   protected void deploy(int number) throws Throwable
+   {
+      String name = createName(number);
       getLog().debug("Using " + name);
       URL url = getResource(name);
       if (url == null)
@@ -164,7 +169,7 @@ public class OldAbstractKernelDependencyTest extends AbstractKernelTest
       util.deploy(url);
 
    }
-   
+
    protected void configureLoggingAfterBootstrap()
    {
       //enableTrace("org.jboss.beans");
