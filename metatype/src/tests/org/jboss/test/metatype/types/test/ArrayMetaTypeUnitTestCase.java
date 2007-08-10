@@ -78,6 +78,16 @@ public class ArrayMetaTypeUnitTestCase extends AbstractMetaTypeTest
       assertTrue("Type should be an array", arrayType.isArray());
    }
 
+   public void testCharArrayType()
+   {
+      ArrayMetaType arrayType = ArrayMetaType.getPrimitiveArrayType(char[].class);
+      assertEquals("[C", arrayType.getClassName());
+      assertEquals("1-dimension array of char", arrayType.getDescription());
+      assertEquals("[C", arrayType.getTypeName());
+      assertTrue("Type should be an array", arrayType.isArray());
+      assertEquals(SimpleMetaType.CHARACTER, arrayType.getElementType());
+   }
+
    /**
     * Test the the dimension for an array meta type
     * 

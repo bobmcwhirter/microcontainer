@@ -195,7 +195,14 @@ public abstract class AbstractMetaType<T extends Serializable> implements MetaTy
          }
       }
       if (ok == false)
-         throw new IllegalArgumentException("Not a MetaType allowed class name: " + className);
+      {
+         // Check for a primative array type
+         int index = className.lastIndexOf('[');
+         if (index == className.length()-2)
+            ok = ArrayMetaType.isPrimitiveEncoding(className.substring(index+1));
+         if (ok == false)
+            throw new IllegalArgumentException("Not a MetaType allowed class name: " + className);
+      }
 
       // Looks ok
       this.className = className;

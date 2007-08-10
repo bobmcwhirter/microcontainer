@@ -52,6 +52,7 @@ public class ValuesTestSuite extends TestSuite
    {
       TestSuite suite = new TestSuite("Values Tests");
 
+      suite.addTest(ArrayValueSupportUnitTestCase.suite());
       suite.addTest(SimpleValueSupportUnitTestCase.suite());
       suite.addTest(CompositeValueSupportUnitTestCase.suite());
       suite.addTest(TableValueSupportUnitTestCase.suite());
