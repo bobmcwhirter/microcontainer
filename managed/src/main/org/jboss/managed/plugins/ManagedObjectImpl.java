@@ -22,33 +22,40 @@
 package org.jboss.managed.plugins;
 
 import java.io.Serializable;
+import java.lang.annotation.Annotation;
+import java.util.Collections;
+import java.util.HashMap;
 import java.util.HashSet;
+import java.util.Map;
 import java.util.Set;
 
 import org.jboss.managed.api.ManagedObject;
 import org.jboss.managed.api.ManagedOperation;
 import org.jboss.managed.api.ManagedProperty;
-import org.jboss.metatype.api.types.Name;
 
 /**
  * ManagedObjectImpl.
  * 
  * @author <a href="adrian@jboss.com">Adrian Brock</a>
+ * @author Scott.Stark@jboss.org
  * @version $Revision: 1.1 $
  */
 public class ManagedObjectImpl implements ManagedObject
 {
    /** The serialVersionUID */
-   private static final long serialVersionUID = -2588364350006686542L;
+   private static final long serialVersionUID = 2L;
 
-   /** The attachment name */
+   /** The object name used for ManagementRef resolution */
    private String name;
-   /** */
-   private Name externalName;
+   /** The name type/qualifier used for ManagementRef resolution */
+   private String nameType;
+   /** The attachment name */
+   private String attachmentName;
 
    /** The attachment */
    private Serializable attachment;
-   
+   /** The object annotations <Class name, Annotation> */
+   private Map<String, Annotation> annotations = Collections.emptyMap();
    /** The properties */
    private Set<ManagedProperty> properties;
    /** The operations */
@@ -57,7 +64,7 @@ public class ManagedObjectImpl implements ManagedObject
    /**
     * Create a new ManagedObjectImpl
     * 
-    * @param name the attachment name
+    * @param name - The object name used for ManagementRef resolution
     */
    public ManagedObjectImpl(String name)
    {
@@ -67,7 +74,7 @@ public class ManagedObjectImpl implements ManagedObject
    /**
     * Create a new ManagedObjectImpl
     * 
-    * @param name the attachment name
+    * @param name - The object name used for ManagementRef resolution
     * @param properties the properties 
     */
    public ManagedObjectImpl(String name, Set<ManagedProperty> properties)
@@ -78,7 +85,7 @@ public class ManagedObjectImpl implements ManagedObject
    /**
     * Create a new ManagedObjectImpl
     * 
-    * @param name the attachment name
+    * @param name - The object name used for ManagementRef resolution
     * @param properties the properties
     * @param operations the operations
     */
@@ -91,7 +98,7 @@ public class ManagedObjectImpl implements ManagedObject
    /**
     * Create a new ManagedObjectImpl
     * 
-    * @param name the attachment name
+    * @param name - The object name used for ManagementRef resolution
     * @param properties the properties
     * @param operations the operations
     * @param attachment the attachment
@@ -113,12 +120,13 @@ public class ManagedObjectImpl implements ManagedObject
    /**
     * Create a new ManagedObjectImpl
     * 
-    * @param name the attachment name
-    * @param externalName - the ManagedObjectRegistry name
+    * @param name - The object name used for ManagementRef resolution
+    * @param nameType - The name type/qualifier used for ManagementRef resolution
+    * @param attachmentName the attachment name
     * @param properties the properties 
     * @param attachment the attachment
     */
-   public ManagedObjectImpl(String name, Name externalName,
+   public ManagedObjectImpl(String name, String nameType, String attachmentName,
          Set<ManagedProperty> properties, Serializable attachment)
    {
       if (name == null)
@@ -127,7 +135,8 @@ public class ManagedObjectImpl implements ManagedObject
          throw new IllegalArgumentException("Null properties");
       
       this.name = name;
-      this.externalName = externalName;
+      this.nameType = nameType;
+      this.attachmentName = attachmentName;
       this.properties = properties;
       setAttachment(attachment);
    }
@@ -136,14 +145,43 @@ public class ManagedObjectImpl implements ManagedObject
    {
       return name;
    }
-
-   public Name getExternalName()
+   public void setName(String name)
    {
-      return externalName;
+      this.name = name;
    }
-   public void setExternalName(Name externalName)
+
+   public String getNameType()
    {
-      this.externalName = externalName;
+      return nameType;
+   }
+   public void setNameType(String nameType)
+   {
+      this.nameType = nameType;
+   }
+
+   public String getAttachmentName()
+   {
+      return attachmentName;
+   }
+   public void setAttachmentName(String attachmentName)
+   {
+      this.attachmentName = attachmentName;
+   }
+
+   /**
+    * Get the annotations associated with the property
+    * @return the annotations associated with the property
+    */
+   public Map<String, Annotation> getAnnotations()
+   {
+      return annotations;
+   }
+   public void setAnnotations(Map<String, Annotation> annotations)
+   {
+      if (this.annotations.isEmpty())
+         this.annotations = new HashMap<String, Annotation>();
+      this.annotations.clear();
+      this.annotations.putAll(annotations);
    }
 
    public Set<String> getPropertyNames()

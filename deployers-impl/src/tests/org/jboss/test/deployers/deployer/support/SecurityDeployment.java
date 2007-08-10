@@ -19,22 +19,30 @@
  * Software Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA
  * 02110-1301 USA, or see the FSF site: http://www.fsf.org.
  */
-package org.jboss.managed.api.annotation;
+package org.jboss.test.deployers.deployer.support;
 
-import java.lang.annotation.ElementType;
-import java.lang.annotation.Retention;
-import java.lang.annotation.RetentionPolicy;
-import java.lang.annotation.Target;
+import java.io.Serializable;
+
+import org.jboss.managed.api.annotation.ManagementObject;
+import org.jboss.managed.api.annotation.ManagementObjectID;
 
 /**
- * Indicates a property that references another ManagedComponent
- *  
  * @author Scott.Stark@jboss.org
  * @version $Revision$
  */
-@Target({ElementType.METHOD})
-@Retention(RetentionPolicy.RUNTIME)
-public @interface ManagementComponentRef
+@ManagementObject
+public class SecurityDeployment implements Serializable
 {
-   String name() default "";
+   private static final long serialVersionUID = 1;
+   private String domain;
+
+   @ManagementObjectID(type="SecurityDomain")
+   public String getDomainName()
+   {
+      return domain;
+   }
+   public void setDomainName(String name)
+   {
+      this.domain = name;
+   }
 }

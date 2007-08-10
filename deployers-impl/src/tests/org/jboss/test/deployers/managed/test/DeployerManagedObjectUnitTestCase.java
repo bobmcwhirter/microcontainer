@@ -169,10 +169,9 @@ public class DeployerManagedObjectUnitTestCase extends AbstractDeployerTest
       ArrayMetaType valueType = value.getMetaType();
       assertEquals(AbstractManagedObjectFactory.MANAGED_OBJECT_META_TYPE, valueType.getElementType());
 
-      Object[] values = value.getValue();
-      assertEquals(1, values.length);
+      assertEquals(1, value.getLength());
       // Validate the ConnMetaData ManagedObject
-      ManagedObject localConnMO = ManagedObject.class.cast(values[0]);
+      ManagedObject localConnMO = ManagedObject.class.cast(value.getValue(0));
       assertEquals(ConnMetaData.class.getName(), localConnMO.getName());
       props = localConnMO.getProperties();
       assertEquals(8, props.size());
@@ -202,7 +201,7 @@ public class DeployerManagedObjectUnitTestCase extends AbstractDeployerTest
       deployments.add(ds);
       deployments.add(xads);
       dsmd.setDeployments(deployments);
-      ManagedObject mo = mof.initManagedObject(dsmd);
+      ManagedObject mo = mof.initManagedObject(dsmd, null, null);
 
       // Validate the expected properties
       Set<ManagedProperty> props = mo.getProperties();
@@ -230,11 +229,10 @@ public class DeployerManagedObjectUnitTestCase extends AbstractDeployerTest
       ArrayMetaType valueType = value.getMetaType();
       assertEquals(AbstractManagedObjectFactory.MANAGED_OBJECT_META_TYPE, valueType.getElementType());
 
-      Object[] values = value.getValue();
-      assertEquals(2, values.length);
+      assertEquals(2, value.getLength());
       ManagedObject localConnMO = null;
       ManagedObject xaConnMO = null;
-      for(Object md : values)
+      for(Object md : value)
       {
          ManagedObject tmpMO = ManagedObject.class.cast(md);
          if (tmpMO.getName().equals(LocalDataSourceMetaData.class.getName()))

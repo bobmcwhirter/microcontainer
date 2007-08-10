@@ -2,7 +2,8 @@ package org.jboss.test.deployers.deployer.support;
 
 import java.io.Serializable;
 
-import org.jboss.managed.api.annotation.ManagementComponentRef;
+import org.jboss.managed.api.annotation.ManagementObject;
+import org.jboss.managed.api.annotation.ManagementObjectRef;
 import org.jboss.managed.api.annotation.ManagementProperty;
 
 /**
@@ -10,6 +11,7 @@ import org.jboss.managed.api.annotation.ManagementProperty;
  * @author Scott.Stark@jboss.org
  * @version $Revision$
  */
+@ManagementObject
 public class SecMetaData implements Serializable
 {
    private static final long serialVersionUID = 1;
@@ -25,7 +27,7 @@ public class SecMetaData implements Serializable
     * @return
     */
    @ManagementProperty(name="domain-name")
-   @ManagementComponentRef
+   @ManagementObjectRef(type="SecurityDomain")
    public String getDomain()
    {
       return domain;

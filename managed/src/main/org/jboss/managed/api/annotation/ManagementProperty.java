@@ -65,7 +65,7 @@ public @interface ManagementProperty
    /** The views this property should be used in */
    ViewUse[] use() default {ViewUse.RUNTIME};
 
-   /** */
+   /** The class to use for the ManagedProperty implementation */
    Class<? extends ManagedProperty> propertyFactory() default NULL_PROPERTY_FACTORY.class;
    /** The class to use for the ManagedProperty Fields implementation */
    Class<? extends Fields> fieldsFactory() default NULL_FIELDS_FACTORY.class;

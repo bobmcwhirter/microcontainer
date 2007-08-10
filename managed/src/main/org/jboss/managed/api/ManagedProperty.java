@@ -22,6 +22,8 @@
 package org.jboss.managed.api;
 
 import java.io.Serializable;
+import java.lang.annotation.Annotation;
+import java.util.Map;
 import java.util.Set;
 
 import org.jboss.metatype.api.types.MetaType;
@@ -31,17 +33,27 @@ import org.jboss.metatype.api.values.MetaValue;
  * ManagedProperty.
  * 
  * @author <a href="adrian@jboss.com">Adrian Brock</a>
+ * @author Scott.Stark@jboss.org
  * @version $Revision: 1.1 $
  */
 public interface ManagedProperty extends Serializable
 {
    /**
-    * Get the managed object
+    * Get the managed object the property is associated with.
     * 
     * @return the managed object
     */
    ManagedObject getManagedObject();
-   
+
+   /**
+    * Get the ManagedObject 
+    * @see {@linkplain ManagementObjectRef}
+    * @return the ManagedObject the property references, null
+    *    if there is no reference or its unresolved.
+    */
+   ManagedObject getTargetManagedObject();
+   void setTargetManagedObject(ManagedObject target);
+
    /**
     * Get the fields
     * 
@@ -97,6 +109,12 @@ public interface ManagedProperty extends Serializable
     * @return the type
     */
    MetaType getMetaType();
+
+   /**
+    * Get the annotations associated with the property
+    * @return the annotations associated with the property
+    */
+   Map<String, Annotation> getAnnotations();
 
    /**
     * Get the value

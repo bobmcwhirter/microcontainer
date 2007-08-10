@@ -52,10 +52,17 @@ public abstract class ManagedObjectFactory
     * Create a managed object from the given object
     * 
     * @param object the object
+    * @param name - the name of the managed object. If null, the name will
+    *    be derived from the object annotations or attachment name.
+    * @param type - the name of the managed object. If null, the name will
+    *    be derived from the object annotations or default to "".
+    * 
+    * @see ManagementObjectID
+    * 
     * @return the managed object
     * @throws IllegalArgumentException for a null object
     */
-   public abstract ManagedObject initManagedObject(Serializable object);
+   public abstract ManagedObject initManagedObject(Serializable object, String name, String nameType);
 
    /**
     * Create a shell managed object from the given class

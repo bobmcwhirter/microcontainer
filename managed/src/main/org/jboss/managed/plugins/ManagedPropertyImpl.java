@@ -26,6 +26,8 @@ import java.io.InvalidObjectException;
 import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
 import java.io.Serializable;
+import java.lang.annotation.Annotation;
+import java.util.Map;
 import java.util.Set;
 
 import org.jboss.managed.api.Fields;
@@ -56,6 +58,8 @@ public class ManagedPropertyImpl implements ManagedProperty
 
    /** The managed object */
    private ManagedObject managedObject;
+   /** The managed object target for a ManagementObjectRef */
+   private ManagedObject targetManagedObject;
    
    /** The fields */
    private Fields fields;
@@ -115,6 +119,15 @@ public class ManagedPropertyImpl implements ManagedProperty
    public void setManagedObject(ManagedObject managedObject)
    {
       this.managedObject = managedObject;
+   }
+
+   public ManagedObject getTargetManagedObject()
+   {
+      return targetManagedObject;
+   }
+   public void setTargetManagedObject(ManagedObject target)
+   {
+      this.targetManagedObject = target;
    }
 
    public Fields getFields()
@@ -185,6 +198,20 @@ public class ManagedPropertyImpl implements ManagedProperty
       setField(Fields.DESCRIPTION, description);
    }
 
+
+   /**
+    * Get the annotations associated with the property
+    * @return the annotations associated with the property
+    */
+   public Map<String, Annotation> getAnnotations()
+   {
+      Object set = getField(Fields.ANNOTATIONS, Object.class);
+      return (Map<String, Annotation>) set;
+   }
+   public void setAnnotations(Map<String, Annotation> annotations)
+   {
+      setField(Fields.ANNOTATIONS, (Serializable) annotations);      
+   }
 
    public MetaType getMetaType()
    {

@@ -22,31 +22,41 @@
 package org.jboss.managed.api;
 
 import java.io.Serializable;
+import java.lang.annotation.Annotation;
+import java.util.Map;
 import java.util.Set;
-
-import org.jboss.metatype.api.types.Name;
 
 /**
  * ManagedObject.
  * 
  * @author <a href="adrian@jboss.com">Adrian Brock</a>
+ * @author Scott.Stark@jboss.org
  * @version $Revision: 1.1 $
  */
 public interface ManagedObject extends Serializable
 {
    /**
+    * Get the external name by which the ManagedObject is known
+    * @see {@linkplain ManagementObject#name}}
+    * @see {@linkplain ManagementObjectID#name}}
+    * @return
+    */
+   String getName();
+   /**
+    * Get the external name type/qualifier.
+    * @see {@linkplain ManagementObject#type}
+    * @see {@linkplain ManagementObjectID#type}
+    * @return
+    */
+   String getNameType();
+
+   /**
     * Get the attachment name
+    * @see {@linkplain ManagementObject#attachmentName}}
     * 
     * @return the name
     */
-   String getName();
-
-   /**
-    * Get the external name by which the ManagedObject
-    * @see {@linkplain ManagedObjectRegistry}}
-    * @return
-    */
-   Name getExternalName();
+   String getAttachmentName();
 
    /**
     * Get the underlying object
@@ -54,6 +64,12 @@ public interface ManagedObject extends Serializable
     * @return the underlying object
     */
    Serializable getAttachment();
+
+   /**
+    * Get the annotations associated with the property
+    * @return the annotations associated with the property
+    */
+   public Map<String, Annotation> getAnnotations();
 
    /**
     * Get the property names

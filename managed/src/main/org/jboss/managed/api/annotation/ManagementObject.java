@@ -26,22 +26,44 @@ import java.lang.annotation.Retention;
 import java.lang.annotation.RetentionPolicy;
 import java.lang.annotation.Target;
 
+import org.jboss.managed.api.Fields;
+import org.jboss.managed.api.ManagedProperty;
+import org.jboss.managed.api.annotation.ManagementProperty.NULL_CONSTRAINTS;
+import org.jboss.managed.api.annotation.ManagementProperty.NULL_FIELDS_FACTORY;
+import org.jboss.managed.api.annotation.ManagementProperty.NULL_PROPERTY_FACTORY;
+import org.jboss.managed.spi.factory.ManagedPropertyConstraintsPopulatorFactory;
+
 /**
- * ManagementObject.
+ * ManagementObject annotation for describing ManagedObjects.
+ * @see {@linkplain ManagedObject}
  * 
  * @author <a href="adrian@jboss.com">Adrian Brock</a>
+ * @author Scott.Stark@jboss.org
  * @version $Revision: 1.1 $
  */
 @Target({ElementType.TYPE})
 @Retention(RetentionPolicy.RUNTIME)
 public @interface ManagementObject
 {
-   /** The name */
+   /** The name used for ManagementObjectRef resolution */
    String name() default ManagementConstants.GENERATED;
-   
+   /** The name type used for ManagementObjectRef resolution */
+   String type() default "";
+   /** The metadata attachment name for the ManagedObject */
+   String attachmentName() default "";
+
    /** What properties to include */
    ManagementProperties properties() default ManagementProperties.ALL;
 
    /** The exposed operations */
    ManagementOperation[] operations() default {};
+
+   /** The class to use for the ManagedProperty implementation */
+   Class<? extends ManagedProperty> propertyFactory() default NULL_PROPERTY_FACTORY.class;
+   /** The class to use for the ManagedProperty Fields implementation */
+   Class<? extends Fields> fieldsFactory() default NULL_FIELDS_FACTORY.class;
+   /** The constraints, allowed values populator factory */
+   Class<? extends ManagedPropertyConstraintsPopulatorFactory> constraintsFactory()
+      default NULL_CONSTRAINTS.class;
+
 }

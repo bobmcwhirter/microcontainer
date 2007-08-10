@@ -89,7 +89,7 @@ public abstract class AbstractManagedObjectFactoryTest extends BaseTestCase
     */
    protected ManagedObject initManagedObject(Serializable object)
    {
-      ManagedObject result = managedObjectFactory.initManagedObject(object);
+      ManagedObject result = managedObjectFactory.initManagedObject(object, null, null);
       getLog().debug("Inited managed: " + result + " for object=" + Strings.defaultToString(object));
       return result;
    }

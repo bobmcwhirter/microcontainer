@@ -59,9 +59,13 @@ public interface Fields extends Serializable
    /** The mandatory */
    String MANDATORY = "mandatory";
    
-   // TODO other standard fields here
    /** The PropertyInfo info for the ManagedObject attachment */
    String PROPERTY_INFO = "propertyInfo";
+
+   /** The annotations associated with the property */
+   String ANNOTATIONS = "annotations";
+
+   // TODO other standard fields here
 
    /**
     * Get a field with the given name

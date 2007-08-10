@@ -25,6 +25,7 @@ import java.io.Serializable;
 import java.util.Properties;
 
 import org.jboss.managed.api.annotation.ManagementObject;
+import org.jboss.managed.api.annotation.ManagementObjectID;
 import org.jboss.managed.api.annotation.ManagementProperty;
 import org.jboss.managed.plugins.WritethroughManagedPropertyImpl;
 
@@ -114,6 +115,7 @@ public class ConnMetaData implements Serializable
    }
 
    @ManagementProperty(name="security-domain", managed=true)
+   @ManagementObjectID(name="java:/jaas/DefaultDS", type="SecurityDomain")
    public SecMetaData getSecurityMetaData()
    {
       return securityMetaData;
