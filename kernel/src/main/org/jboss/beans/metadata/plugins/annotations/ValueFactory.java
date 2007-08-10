@@ -27,23 +27,60 @@ import java.lang.annotation.Target;
 import java.lang.annotation.ElementType;
 
 /**
+ * The value factory.
+ *
  * @author <a href="mailto:ales.justin@jboss.com">Ales Justin</a>
  */
 @Retention(RetentionPolicy.RUNTIME)
 @Target({ElementType.METHOD, ElementType.PARAMETER})
 public @interface ValueFactory
 {
+   /**
+    * Get the bean.
+    *
+    * @return the bean
+    */
    String bean();
 
+   /**
+    * Get the method.
+    *
+    * @return the method
+    */
    String method();
 
+   /**
+    * Get single parameter.
+    *
+    * @return the single parameter
+    */
    String parameter() default "";
 
+   /**
+    * Get parameters.
+    *
+    * @return the parameters
+    */
    Parameter[] parameters() default {};
 
+   /**
+    * Get default value.
+    *
+    * @return the default value
+    */
    String defaultValue() default "";
 
+   /**
+    * Get dependant state.
+    *
+    * @return the dependant state
+    */
    String dependantState() default "Installed";
 
+   /**
+    * Get when required state.
+    *
+    * @return the when required state
+    */
    String whenRequiredState() default "Configured";
 }

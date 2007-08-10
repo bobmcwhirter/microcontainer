@@ -27,15 +27,32 @@ import java.lang.annotation.Target;
 import java.lang.annotation.ElementType;
 
 /**
+ * Injecting array value.
+ *
  * @author <a href="mailto:ales.justin@jboss.com">Ales Justin</a>
  */
 @Retention(RetentionPolicy.RUNTIME)
 @Target({ElementType.METHOD, ElementType.PARAMETER})
 public @interface ArrayValue
 {
+   /**
+    * Set the array class.
+    *
+    * @return array class name
+    */
    String clazz() default "";
 
+   /**
+    * Array's element class.
+    *
+    * @return element class name
+    */
    String elementClass() default "";
 
+   /**
+    * Get the values.
+    *
+    * @return the values
+    */
    Value[] value();
 }

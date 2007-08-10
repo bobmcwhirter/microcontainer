@@ -31,7 +31,7 @@ import org.jboss.util.JBossStringBuilder;
  *  * Strict - exactly one matching context (default)
  *  * Callback - issue callback once context with matching is present
  *
- * @author <a href="mailto:ales.justin@genera-lynx.com">Ales Justin</a>
+ * @author <a href="mailto:ales.justin@jboss.com">Ales Justin</a>
  */
 public class InjectionOption extends JBossObject
       implements Serializable

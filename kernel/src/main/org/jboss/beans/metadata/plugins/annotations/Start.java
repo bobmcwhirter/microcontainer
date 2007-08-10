@@ -6,6 +6,8 @@ import java.lang.annotation.RetentionPolicy;
 import java.lang.annotation.Target;
 
 /**
+ * Mark start lifecycle method.
+ *
  * @author <a href="mailto:ales.justin@gmail.com">Ales Justin</a>
  */
 @Retention(RetentionPolicy.RUNTIME)

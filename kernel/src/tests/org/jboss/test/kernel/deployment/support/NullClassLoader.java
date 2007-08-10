@@ -22,7 +22,7 @@
 package org.jboss.test.kernel.deployment.support;
 
 /**
- * @author <a href="mailto:ales.justin@genera-lynx.com">Ales Justin</a>
+ * @author <a href="mailto:ales.justin@jboss.com">Ales Justin</a>
  */
 public class NullClassLoader extends ClassLoader
 {

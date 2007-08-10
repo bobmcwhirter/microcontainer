@@ -27,7 +27,7 @@ import org.jboss.test.kernel.deployment.support.SimpleBean;
 import org.jboss.test.kernel.deployment.support.SimpleObjectWithBean;
 
 /**
- * @author <a href="mailto:ales.justin@genera-lynx.com">Ales Justin</a>
+ * @author <a href="mailto:ales.justin@jboss.com">Ales Justin</a>
  */
 public abstract class AbstractBeanMetaDataTest extends AbstractDeploymentTest
 {

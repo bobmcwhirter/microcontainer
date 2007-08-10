@@ -27,11 +27,20 @@ import java.lang.annotation.Target;
 import java.lang.annotation.ElementType;
 
 /**
+ * Null value.
+ *
  * @author <a href="mailto:ales.justin@jboss.com">Ales Justin</a>
  */
 @Retention(RetentionPolicy.RUNTIME)
 @Target({ElementType.METHOD, ElementType.PARAMETER})
 public @interface NullValue
 {
+   /**
+    * Is valid.
+    * Used in @Parameter and @value to define
+    * unused value.
+    *
+    * @return is value valid
+    */
    boolean valid() default true;
 }

@@ -27,11 +27,21 @@ import java.lang.annotation.Target;
 import java.lang.annotation.ElementType;
 
 /**
+ * This value.
+ * Get the underlying target.
+ *
  * @author <a href="mailto:ales.justin@jboss.com">Ales Justin</a>
  */
 @Retention(RetentionPolicy.RUNTIME)
 @Target({ElementType.METHOD, ElementType.PARAMETER})
 public @interface ThisValue
 {
+   /**
+    * Is instance valid.
+    *
+    * @see @org.jboss.beans.metadata.plugins.annotations.Value
+    * @see @org.jboss.beans.metadata.plugins.annotations.Parameter
+    * @return true for valid
+    */
    boolean valid() default true;
 }

@@ -24,7 +24,7 @@ package org.jboss.test.kernel.deployment.test;
 import junit.framework.Test;
 
 /**
- * @author <a href="mailto:ales.justin@genera-lynx.com">Ales Justin</a>
+ * @author <a href="mailto:ales.justin@jboss.com">Ales Justin</a>
  */
 public class BeanMetaDataTestCase extends AbstractBeanMetaDataTest
 {

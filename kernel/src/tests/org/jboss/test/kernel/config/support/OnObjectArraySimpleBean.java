@@ -40,8 +40,7 @@ public class OnObjectArraySimpleBean extends SimpleBean
             @Value(string = @StringValue("string1")),
             @Value(string = @StringValue(value = "1", type = "java.lang.Integer"))
          },
-         elementClass = "java.lang.String",
-         clazz = "org.jboss.test.kernel.config.support.CustomArray"
+         elementClass = "java.lang.String"
    )
    public void setAnObject(Object object)
    {

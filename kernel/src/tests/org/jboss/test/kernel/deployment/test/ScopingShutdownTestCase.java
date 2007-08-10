@@ -31,7 +31,7 @@ import org.jboss.test.kernel.deployment.support.SimpleObjectWithBean;
  * Scoping shutdown tests.
  * Test includes same named beans.
  *
- * @author <a href="mailto:ales.justin@genera-lynx.com">Ales Justin</a>
+ * @author <a href="mailto:ales.justin@jboss.com">Ales Justin</a>
  */
 public class ScopingShutdownTestCase extends ScopingDeploymentTest
 {

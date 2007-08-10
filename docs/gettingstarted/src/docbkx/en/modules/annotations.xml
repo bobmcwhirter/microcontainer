@@ -1,0 +1,940 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE section PUBLIC "-//OASIS//DTD DocBook XML V4.4//EN"
+      "http://www.oasis-open.org/docbook/xml/4.4/docbookx.dtd">
+
+<section>
+   <title>Annotations support</title>
+
+   <para>We learned how to configure our POJOs with Microcontainer's XML elements.
+      In today's development most of the configuration is done with annotations.
+      Microcontainer is no exception.
+   </para>
+
+   <para>Almost all of the features available in XML are also present in Microcontainer's
+      annotations support, except for the classloading configuration, which for obvious reasons
+      doesn't have its equivalent (class needs to be loaded before we can check for annotations, right).
+      Let's now look at the annotations supported and some of its caveats.
+   </para>
+
+   <para>Like in most other configurations XML and predetermined bean metadata override annotations.
+      This is current list of supported annotations and their XML equivalents. Later we will show how
+      you can extend support for your own annotations directly into Microcontainer's configuration.
+   </para>
+
+      <itemizedlist>
+         <listitem>
+            <para>@Aliases - &lt;alias></para>
+            <para>
+               <programlisting>
+                  /**
+                   * The aliases.
+                   * Equivalent to deployment's alias element.
+                   *
+                   * @author &lt;a href="mailto:ales.justin@jboss.com">Ales Justin&lt;/a>
+                   */
+                  @Retention(RetentionPolicy.RUNTIME)
+                  @Target({ElementType.TYPE})
+                  public @interface Aliases
+                  {
+                     /**
+                      * Get aliases array.
+                      *
+                      * @return the aliases
+                      */
+                     String[] value();
+
+                     /**
+                      * Do system property replace.
+                      *
+                      * @return true to replace system property, false otherwise
+                      */
+                     boolean replace() default true;
+                  }
+               </programlisting>
+            </para>
+            <para>
+               Example:
+               <programlisting>
+                  @Aliases({"MyAlias", "YetAnotherSimpleBean"})
+                  public class AliasSimpleBeanImpl extends SimpleBeanImpl
+               </programlisting>
+            </para>
+         </listitem>
+
+         <listitem>
+            <para>@ArrayValue - &lt;array></para>
+            <para>@CollectionValue - &lt;collection></para>
+            <para>@ListValue - &lt;list></para>
+            <para>@SetValue - &lt;set></para>
+            <para>
+               <programlisting>
+                  /**
+                   * Injecting array value.
+                   *
+                   * @author &lt;a href="mailto:ales.justin@jboss.com">Ales Justin&lt;/a>
+                   */
+                  @Retention(RetentionPolicy.RUNTIME)
+                  @Target({ElementType.METHOD, ElementType.PARAMETER})
+                  public @interface ArrayValue
+                  {
+                     /**
+                      * Set the array class.
+                      *
+                      * @return array class name
+                      */
+                     String clazz() default "";
+
+                     /**
+                      * Array's element class.
+                      *
+                      * @return element class name
+                      */
+                     String elementClass() default "";
+
+                     /**
+                      * Get the values.
+                      *
+                      * @return the values
+                      */
+                     Value[] value();
+                  }
+               </programlisting>
+            </para>
+            <para>
+               Example:
+               <programlisting>
+                  @ArrayValue(
+                        value = {
+                           @Value(string = @StringValue("string1")),
+                           @Value(string = @StringValue("string2")),
+                           @Value(string = @StringValue("string2")),
+                           @Value(string = @StringValue("string1"))
+                        },
+                        elementClass = "java.lang.String",
+                        clazz = "[Ljava.lang.Comparable;"
+                  )
+                  public void setArray(Object[] array)
+                  {
+                     super.setArray(array);
+                  }
+
+                  @CollectionValue(
+                        value = {
+                           @Value(string = @StringValue("string1")),
+                           @Value(string = @StringValue("string2")),
+                           @Value(string = @StringValue("string2")),
+                           @Value(string = @StringValue("string1"))
+                        },
+                        elementClass = "java.lang.String",
+                        clazz = "java.util.ArrayList"
+                  )
+                  public void setCollection(Collection collection)
+                  {
+                     super.setCollection(collection);
+                  }
+               </programlisting>
+            </para>
+         </listitem>
+
+         <listitem>
+            <para>@Constructor - &lt;constructor></para>
+            <para>
+               <programlisting>
+                  /**
+                   * Mark the constructor used to instantiate bean.
+                   *
+                   * @author &lt;a href="mailto:ales.justin@jboss.com">Ales Justin&lt;/a>
+                   */
+                  @Retention(RetentionPolicy.RUNTIME)
+                  @Target({ElementType.CONSTRUCTOR})
+                  public @interface Constructor
+                  {
+                  }
+               </programlisting>
+            </para>
+            <para>
+               Example:
+               <programlisting>
+                  @Constructor
+                  public TestConstructorBean(@Inject(bean = "testBean") TestBean test)
+                  {
+                     ...
+                  }
+               </programlisting>
+            </para>
+         </listitem>
+
+         <listitem>
+            <para>@Create - &lt;create></para>
+            <para>@Start - &lt;start></para>
+            <para>@Stop - &lt;stop></para>
+            <para>@Destroy - &lt;destroy></para>
+            <para>
+               <programlisting>
+                  /**
+                   * Mark lifecycle create method.
+                   *
+                   * @author &lt;a href="mailto:ales.justin@jboss.com">Ales Justin&lt;/a>
+                   */
+                  @Retention(RetentionPolicy.RUNTIME)
+                  @Target({ElementType.METHOD})
+                  public @interface Create
+                  {
+                     /**
+                      * Is this lifecycle callback ignored.
+                      *
+                      * @return ignored
+                      */
+                     boolean ignored() default false;
+                  }
+               </programlisting>
+            </para>
+            <para>
+               Example:
+               <programlisting>
+                  @Create
+                  public void notCreate(@Inject(bean = "Name1") SimpleBeanWithLifecycle bean)
+                  {
+                     super.notCreate(bean);
+                  }
+
+                  @Start
+                  public void notStart(@Inject(bean = "Name2")SimpleBeanWithLifecycle bean)
+                  {
+                     super.notStart(bean);
+                  }
+
+                  @Stop
+                  public void notStop(@Inject(bean = "Name3")SimpleBeanWithLifecycle bean)
+                  {
+                     super.notStop(bean);
+                  }
+
+                  @Destroy
+                  public void notDestroy(@Inject(bean = "Name4")SimpleBeanWithLifecycle bean)
+                  {
+                     super.notDestroy(bean);
+                  }
+               </programlisting>
+            </para>
+         </listitem>
+
+         <listitem>
+            <para>@Demands - &lt;demands></para>
+            <para>
+               <programlisting>
+                  /**
+                   * The demands.
+                   *
+                   * @author &lt;a href="mailto:ales.justin@jboss.com">Ales Justin&lt;/a>
+                   */
+                  @Retention(RetentionPolicy.RUNTIME)
+                  @Target({ElementType.TYPE})
+                  public @interface Demands
+                  {
+                     /**
+                      * Get demands.
+                      *
+                      * @return the demands
+                      */
+                     Demand[] value();
+                  }
+               </programlisting>
+            </para>
+            <para>
+               Example:
+               <programlisting>
+                  @Demands({@Demand("WhatIWant")})
+                  public class DemandSimpleBeanImpl extends SimpleBeanImpl
+               </programlisting>
+            </para>
+         </listitem>
+
+         <listitem>
+            <para>@Depends - &lt;depends></para>
+            <para>
+               <programlisting>
+                  /**
+                   * The depends values.
+                   *
+                   * @author &lt;a href="mailto:ales.justin@jboss.com">Ales Justin&lt;/a>
+                   */
+                  @Retention(RetentionPolicy.RUNTIME)
+                  @Target({ElementType.TYPE})
+                  public @interface Depends
+                  {
+                     /**
+                      * Get the depends values.
+                      *
+                      * @return the depends
+                      */
+                     String[] value();
+                  }
+               </programlisting>
+            </para>
+            <para>
+               Example:
+               <programlisting>
+                  @Depends({"Name1"})
+                  public class DependSimpleBeanWithLifecycle extends SimpleBeanWithLifecycle
+               </programlisting>
+            </para>
+         </listitem>
+
+         <listitem>
+            <para>@ExternalInstalls - &lt;install bean="..." method="..."/></para>
+            <para>@ExternalUninstalls - &lt;uninstall bean="..." method="..."/></para>
+            <para>
+               <programlisting>
+                  /**
+                   * Array of external installs.
+                   *
+                   * @author &lt;a href="mailto:ales.justin@jboss.com">Ales Justin&lt;/a>
+                   */
+                  @Retention(RetentionPolicy.RUNTIME)
+                  @Target({ElementType.TYPE})
+                  public @interface ExternalUninstalls
+                  {
+                     /**
+                      * Get external installs.
+                      *
+                      * @return the external installs
+                      */
+                     ExternalInstall[] value();
+                  }
+               </programlisting>
+            </para>
+            <para>
+               Example:
+               <programlisting>
+                  @ExternalInstalls({@ExternalInstall(bean = "Name1", method = "addSimpleBean", parameters = {@Value(thisValue = @ThisValue)})})
+                  @ExternalUninstalls({@ExternalInstall(bean = "Name1", method = "removeSimpleBean", parameters = {@Value(thisValue = @ThisValue)})})
+                  public class ExternalInstallSimpleBeanImpl implements Serializable, SimpleBean
+               </programlisting>
+            </para>
+         </listitem>
+
+         <listitem>
+            <para>@Factory - &lt;constructor>&lt;factory ...></para>
+            <para>
+               <programlisting>
+                  /**
+                   * Define constructor factory.
+                   *
+                   * @author &lt;a href="mailto:ales.justin@jboss.com">Ales Justin&lt;/a>
+                   */
+                  @Retention(RetentionPolicy.RUNTIME)
+                  @Target({ElementType.TYPE})
+                  public @interface Factory
+                  {
+                     /**
+                      * Get the factory.
+                      *
+                      * @return the factory value
+                      */
+                     Value factory() default @Value();
+
+                     /**
+                      * Get the factory class.
+                      *
+                      * @return the factory class
+                      */
+                     String factoryClass() default "";
+
+                     /**
+                      * Get the factory method.
+                      *
+                      * @return the factory method
+                      */
+                     String factoryMethod();
+
+                     /**
+                      * Get parameters.
+                      *
+                      * @return the parameters
+                      */
+                     Value[] parameters() default {};
+                  }
+               </programlisting>
+            </para>
+            <para>
+               Example:
+               <programlisting>
+                  @Factory(
+                        factory = @Value(javabean = @JavaBeanValue("org.jboss.test.kernel.config.support.SimpleBeanFactory")),
+                        factoryMethod = "createSimpleBean",
+                        parameters = {@Value(string = @StringValue("Factory Value"))}
+                  )
+                  public class FromFactoryWithParamSimpleBean extends SimpleBean
+               </programlisting>
+            </para>
+         </listitem>
+
+         <listitem>
+            <para>@FactoryMethod - &lt;constructor>&lt;factory factoryMethod="..." ...></para>
+            <para>
+               <programlisting>
+                  /**
+                   * Mark static method as factory method.
+                   *
+                   * @author &lt;a href="mailto:ales.justin@jboss.com">Ales Justin&lt;/a>
+                   */
+                  @Retention(RetentionPolicy.RUNTIME)
+                  @Target({ElementType.METHOD})
+                  public @interface FactoryMethod
+                  {
+                  }
+               </programlisting>
+            </para>
+            <para>
+               Example:
+               <programlisting>
+                  @FactoryMethod
+                  public static SimpleInject getInstance(@NullValue Object someNull)
+                  {
+                     return new SimpleInject();
+                  }
+               </programlisting>
+            </para>
+         </listitem>
+
+         <listitem>
+            <para>@Inject - &lt;inject></para>
+            <para>
+               <programlisting>
+                  /**
+                   * Beans when injected by class type are by default changed to configured
+                   * state - if not yet configured.
+                   * You can change this behavior by setting state.
+                   *
+                   * @author &lt;a href="mailto:ales.justin@jboss.com">Ales Justin&lt;/a>
+                   */
+                  @Retention(RetentionPolicy.RUNTIME)
+                  @Target({ElementType.METHOD, ElementType.PARAMETER})
+                  public @interface Inject
+                  {
+                     /**
+                      * Get bean.
+                      * Default is no bean.
+                      *
+                      * @return bean name
+                      */
+                     String bean() default "";
+
+                     /**
+                      * Get property.
+                      * Default is no property.
+                      *
+                      * @return property name
+                      */
+                     String property() default "";
+
+                     /**
+                      * Get when required.
+                      *
+                      * @return when required.
+                      */
+                     String whenRequired() default "";
+
+                     /**
+                      * Get dependent state.
+                      * Default is Installed.
+                      *
+                      * @return dependent state.
+                      */
+                     String dependentState() default "Installed";
+
+                     /**
+                      * Get injection type.
+                      * Default is by class.
+                      *
+                      * @return injection type
+                      */
+                     InjectType type() default InjectType.BY_CLASS;
+
+                     /**
+                      * Get injection option.
+                      * Default is Strict.
+                      *
+                      * @return injection option
+                      */
+                     InjectOption option() default InjectOption.STRICT;
+
+                     /**
+                      * Get from context injection.
+                      *
+                      * @return from context type
+                      */
+                     FromContext fromContext() default FromContext.NONE;
+
+                     /**
+                      * Is this @Inject valid.
+                      * Used with @Value.
+                      *
+                      * @return is this instance valid
+                      */
+                     boolean valid() default true;
+                  }
+               </programlisting>
+            </para>
+            <para>
+               Example:
+               <programlisting>
+                  @Inject(bean = "Name1")
+                  public void setSimpleBean(SimpleBean bean)
+                  {
+                     super.setSimpleBean(bean);
+                  }
+
+                  @Start
+                  public void startMeUp(@Inject(bean = "lifecycleBean") TestBean bean, @ValueFactory(bean="valueBean", method = "getValue", parameter = "123") int value)
+                  {
+                     test = bean;
+                     intVF =- value;
+                  }
+               </programlisting>
+            </para>
+         </listitem>
+
+         <listitem>
+            <para>@Install - &lt;incallback></para>
+            <para>@Uninstall - &lt;uncallback></para>
+            <para>
+               <programlisting>
+                  /**
+                   * Install callback.
+                   *
+                   * @author &lt;a href="mailto:ales.justin@jboss.com">Ales Justin&lt;/a>
+                   */
+                  @Retention(RetentionPolicy.RUNTIME)
+                  @Target({ElementType.METHOD})
+                  public @interface Install
+                  {
+                     /**
+                      * Get the cardinality.
+                      * Default is no cardinality.
+                      *
+                      * @return cardinality
+                      */
+                     String cardinality() default "";
+
+                     /**
+                      * Get when required.
+                      * Default is Configured.
+                      *
+                      * @return when required.
+                      */
+                     String whenRequired() default "Configured";
+
+                     /**
+                      * Get dependent state.
+                      * Default is Installed.
+                      *
+                      * @return dependent state.
+                      */
+                     String dependentState() default "Installed";
+                  }
+               </programlisting>
+            </para>
+            <para>
+               Example:
+               <programlisting>
+                  @Install
+                  public void addDeployer(MyDeployer deployer)
+                  {
+                     if (deployers == null)
+                        deployers = new HashSet&lt;MyDeployer>();
+                     deployers.add(deployer);
+                  }
+
+                  @Uninstall
+                  public void removeDeployer(MyDeployer deployer)
+                  {
+                     deployers.remove(deployer);
+                  }
+               </programlisting>
+            </para>
+         </listitem>
+
+         <listitem>
+            <para>@InstallMethod - &lt;install></para>
+            <para>@UninstallMethod - &lt;uninstall></para>
+            <para>
+               <programlisting>
+                  /**
+                   * Internal installation method.
+                   *
+                   * @author &lt;a href="mailto:ales.justin@jboss.com">Ales Justin&lt;/a>
+                   */
+                  @Retention(RetentionPolicy.RUNTIME)
+                  @Target({ElementType.METHOD})
+                  public @interface InstallMethod
+                  {
+                     /**
+                      * Get dependant state.
+                      *
+                      * @return the dependant state
+                      */
+                     String dependantState() default "";
+                  }
+               </programlisting>
+            </para>
+            <para>
+               Example:
+               <programlisting>
+                  @InstallMethod
+                  public void install()
+                  {
+                     installed = true;
+                  }
+
+                  @UninstallMethod
+                  public void uninstall()
+                  {
+                     installed = false;
+                  }
+               </programlisting>
+            </para>
+         </listitem>
+
+         <listitem>
+            <para>@JavaBeanValue - &lt;javabean></para>
+            <para>
+               <programlisting>
+                  /**
+                   * Java bean value.
+                   *
+                   * @author &lt;a href="mailto:ales.justin@jboss.com">Ales Justin&lt;/a>
+                   */
+                  @Retention(RetentionPolicy.RUNTIME)
+                  @Target({ElementType.METHOD, ElementType.PARAMETER})
+                  public @interface JavaBeanValue
+                  {
+                     /**
+                      * Get java bean class name.
+                      * Must have default constructor.
+                      *
+                      * @return the class name
+                      */
+                     String value() default "";
+                  }
+               </programlisting>
+            </para>
+            <para>
+               Example:
+               <programlisting>
+                  @Factory(
+                        factory = @Value(javabean = @JavaBeanValue("org.jboss.test.kernel.config.support.SimpleBeanFactory")),
+                        factoryMethod = "createSimpleBean"
+                  )
+               </programlisting>
+            </para>
+         </listitem>
+
+         <listitem>
+            <para>@MapValue - &lt;map></para>
+            <para>
+               <programlisting>
+                  /**
+                   * Map value injection.
+                   *
+                   * @author &lt;a href="mailto:ales.justin@jboss.com">Ales Justin&lt;/a>
+                   */
+                  @Retention(RetentionPolicy.RUNTIME)
+                  @Target({ElementType.METHOD, ElementType.PARAMETER})
+                  public @interface MapValue
+                  {
+                     /**
+                      * Get the map class name.
+                      *
+                      * @return the map class name
+                      */
+                     String clazz() default "";
+
+                     /**
+                      * Get the key class name.
+                      *
+                      * @return the key class name
+                      */
+                     String keyClass() default "";
+
+                     /**
+                      * Get the value class name.
+                      *
+                      * @return the value class name
+                      */
+                     String valueClass() default "";
+
+                     /**
+                      * Get the entries.
+                      *
+                      * @return the entries
+                      */
+                     EntryValue[] value();
+                  }
+               </programlisting>
+            </para>
+            <para>
+               Example:
+               <programlisting>
+                  @Constructor
+                  public AnnotatedLDAPFactory(
+                        @MapValue(
+                              keyClass = "java.lang.String",
+                              valueClass = "java.lang.String",
+                              value = {
+                                 @EntryValue(
+                                    key = @Value(string = @StringValue("foo.bar.key")),
+                                    value = @Value(string = @StringValue("QWERT"))
+                                 ),
+                                 @EntryValue(
+                                    key = @Value(string = @StringValue("xyz.key")),
+                                    value = @Value(string = @StringValue(" QWERT "))
+                                 )
+                              }
+                        )
+                        Map&lt;String, String> map
+                  )
+                  {
+                     super(map);
+                  }
+               </programlisting>
+            </para>
+         </listitem>
+
+         <listitem>
+            <para>@NullValue - &lt;null></para>
+            <para>
+               <programlisting>
+                  /**
+                   * Null value.
+                   *
+                   * @author &lt;a href="mailto:ales.justin@jboss.com">Ales Justin&lt;/a>
+                   */
+                  @Retention(RetentionPolicy.RUNTIME)
+                  @Target({ElementType.METHOD, ElementType.PARAMETER})
+                  public @interface NullValue
+                  {
+                     /**
+                      * Is valid.
+                      * Used in @Parameter and @value to define
+                      * unused value.
+                      *
+                      * @return is value valid
+                      */
+                     boolean valid() default true;
+                  }
+               </programlisting>
+            </para>
+            <para>
+               Example:
+               <programlisting>
+                  @UninstallMethod
+                  public void withUninstall(@ThisValue SimpleInject me, @NullValue Object plainNull)
+                  {
+                     System.out.println(me == this);
+                     System.out.println("plainNull = " + plainNull);
+                  }
+               </programlisting>
+            </para>
+         </listitem>
+
+         <listitem>
+            <para>@StringValue - &lt;value>somestring&lt;/value></para>
+            <para>
+               <programlisting>
+                  /**
+                   * String value.
+                   *
+                   * @author &lt;a href="mailto:ales.justin@jboss.com">Ales Justin&lt;/a>
+                   */
+                  @Retention(RetentionPolicy.RUNTIME)
+                  @Target({ElementType.METHOD, ElementType.PARAMETER})
+                  public @interface StringValue
+                  {
+                     /**
+                      * Get the value.
+                      *
+                      * @return the value
+                      */
+                     String value();
+
+                     /**
+                      * Get type.
+                      *
+                      * @return the type
+                      */
+                     String type() default "";
+
+                     /**
+                      * Do replace with system properties.
+                      *
+                      * @return true for replace with system properties, false otherwise
+                      */
+                     boolean replace() default true;
+                  }
+               </programlisting>
+            </para>
+            <para>
+               Example:
+               <programlisting>
+                  @Constructor
+                  public ParamIntConstructorAnnBean(@StringValue("7") Integer string)
+                  {
+                     super(string);
+                  }
+               </programlisting>
+            </para>
+         </listitem>
+
+         <listitem>
+            <para>@Supplys - &lt;supply></para>
+            <para>
+               <programlisting>
+                  /**
+                   * The supplys.
+                   *
+                   * @author &lt;a href="mailto:ales.justin@jboss.com">Ales Justin&lt;/a>
+                   */
+                  @Retention(RetentionPolicy.RUNTIME)
+                  @Target({ElementType.TYPE})
+                  public @interface Supplys
+                  {
+                     /**
+                      * Get supply values.
+                      *
+                      * @return the supplys
+                      */
+                     String[] value();
+                  }
+               </programlisting>
+            </para>
+            <para>
+               Example:
+               <programlisting>
+                  @Supplys({"WhatIWant"})
+                  public class SupplyPlainDependecySimpleBeanImpl extends PlainDependecySimpleBeanImpl
+               </programlisting>
+            </para>
+         </listitem>
+
+         <listitem>
+            <para>@ThisValue - &lt;this/></para>
+            <para>
+               <programlisting>
+                  /**
+                   * This value.
+                   * Get the underlying target.
+                   *
+                   * @author &lt;a href="mailto:ales.justin@jboss.com">Ales Justin&lt;/a>
+                   */
+                  @Retention(RetentionPolicy.RUNTIME)
+                  @Target({ElementType.METHOD, ElementType.PARAMETER})
+                  public @interface ThisValue
+                  {
+                     /**
+                      * Is instance valid.
+                      *
+                      * @see @org.jboss.beans.metadata.plugins.annotations.Value
+                      * @see @org.jboss.beans.metadata.plugins.annotations.Parameter
+                      * @return true for valid
+                      */
+                     boolean valid() default true;
+                  }
+               </programlisting>
+            </para>
+            <para>
+               Example:
+               <programlisting>
+                  @InstallMethod
+                  public void whenInstalled(@ThisValue SimpleInject me, @NullValue Object plainNull)
+                  {
+                     System.out.println(me == this);
+                     System.out.println("plainNull = " + plainNull);
+                  }
+               </programlisting>
+            </para>
+         </listitem>
+
+         <listitem>
+            <para>@ValueFactory - &lt;value-factory></para>
+            <para>
+               <programlisting>
+                  /**
+                   * The value factory.
+                   *
+                   * @author &lt;a href="mailto:ales.justin@jboss.com">Ales Justin&lt;/a>
+                   */
+                  @Retention(RetentionPolicy.RUNTIME)
+                  @Target({ElementType.METHOD, ElementType.PARAMETER})
+                  public @interface ValueFactory
+                  {
+                     /**
+                      * Get the bean.
+                      *
+                      * @return the bean
+                      */
+                     String bean();
+
+                     /**
+                      * Get the method.
+                      *
+                      * @return the method
+                      */
+                     String method();
+
+                     /**
+                      * Get single parameter.
+                      *
+                      * @return the single parameter
+                      */
+                     String parameter() default "";
+
+                     /**
+                      * Get parameters.
+                      *
+                      * @return the parameters
+                      */
+                     Parameter[] parameters() default {};
+
+                     /**
+                      * Get default value.
+                      *
+                      * @return the default value
+                      */
+                     String defaultValue() default "";
+
+                     /**
+                      * Get dependant state.
+                      *
+                      * @return the dependant state
+                      */
+                     String dependantState() default "Installed";
+
+                     /**
+                      * Get when required state.
+                      *
+                      * @return the when required state
+                      */
+                     String whenRequiredState() default "Configured";
+                  }
+               </programlisting>
+            </para>
+            <para>
+               Example:
+               <programlisting>
+                  @ValueFactory(bean = "ldap", method = "getValue", parameter = "foo.bar.key")
+                  public void setValue(String value)
+                  {
+                     super.setValue(value);
+                  }
+               </programlisting>
+            </para>
+         </listitem>
+
+      </itemizedlist>
+
+   <para>TODO - extending annotations support.      
+   </para>
+
+</section>

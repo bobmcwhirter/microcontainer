@@ -27,15 +27,32 @@ import java.lang.annotation.RetentionPolicy;
 import java.lang.annotation.Target;
 
 /**
+ * List value injection.
+ *
  * @author <a href="mailto:ales.justin@jboss.com">Ales Justin</a>
  */
 @Retention(RetentionPolicy.RUNTIME)
 @Target({ElementType.METHOD, ElementType.PARAMETER})
 public @interface ListValue
 {
+   /**
+    * Get list class name.
+    *
+    * @return the list class name
+    */
    String clazz() default "";
 
+   /**
+    * Get the element class name.
+    *
+    * @return the element class name
+    */
    String elementClass() default "";
 
+   /**
+    * Get the values.
+    *
+    * @return the values
+    */
    Value[] value();
 }

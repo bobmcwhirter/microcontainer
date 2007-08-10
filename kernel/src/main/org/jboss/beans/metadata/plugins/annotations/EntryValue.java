@@ -27,13 +27,25 @@ import java.lang.annotation.Target;
 import java.lang.annotation.ElementType;
 
 /**
+ * Map entry value.
+ *
  * @author <a href="mailto:ales.justin@jboss.com">Ales Justin</a>
  */
 @Retention(RetentionPolicy.RUNTIME)
-@Target({ElementType.METHOD, ElementType.PARAMETER})
+@Target({ElementType.ANNOTATION_TYPE})
 public @interface EntryValue
 {
+   /**
+    * Get the key.
+    *
+    * @return the key
+    */
    Value key();
 
+   /**
+    * Get the value.
+    *
+    * @return the value
+    */
    Value value();
 }

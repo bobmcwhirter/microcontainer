@@ -27,11 +27,18 @@ import java.lang.annotation.Target;
 import java.lang.annotation.ElementType;
 
 /**
+ * Array of external uninstalls.
+ *
  * @author <a href="mailto:ales.justin@jboss.com">Ales Justin</a>
  */
 @Retention(RetentionPolicy.RUNTIME)
 @Target({ElementType.TYPE})
 public @interface ExternalUninstalls
 {
+   /**
+    * Get external uninstalls.
+    *
+    * @return the external uninstalls
+    */
    ExternalInstall[] value();
 }

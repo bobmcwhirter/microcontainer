@@ -22,7 +22,7 @@
 package org.jboss.test.kernel.inject.support;
 
 /**
- * @author <a href="mailto:ales.justin@genera-lynx.com">Ales Justin</a>
+ * @author <a href="mailto:ales.justin@jboss.com">Ales Justin</a>
  */
 public class ConstructorValueBean
 {

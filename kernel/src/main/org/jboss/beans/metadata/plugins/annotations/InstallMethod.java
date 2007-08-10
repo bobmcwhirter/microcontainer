@@ -27,11 +27,18 @@ import java.lang.annotation.Target;
 import java.lang.annotation.ElementType;
 
 /**
+ * Internal installation method.
+ *
  * @author <a href="mailto:ales.justin@jboss.com">Ales Justin</a>
  */
 @Retention(RetentionPolicy.RUNTIME)
 @Target({ElementType.METHOD})
 public @interface InstallMethod
 {
+   /**
+    * Get dependant state.
+    *
+    * @return the dependant state
+    */
    String dependantState() default "";
 }

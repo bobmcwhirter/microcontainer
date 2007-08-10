@@ -31,7 +31,7 @@ import java.lang.annotation.Target;
  * state - if not yet configured.
  * You can change this behavior by setting state.
  *
- * @author <a href="mailto:ales.justin@genera-lynx.com">Ales Justin</a>
+ * @author <a href="mailto:ales.justin@jboss.com">Ales Justin</a>
  */
 @Retention(RetentionPolicy.RUNTIME)
 @Target({ElementType.METHOD, ElementType.PARAMETER})

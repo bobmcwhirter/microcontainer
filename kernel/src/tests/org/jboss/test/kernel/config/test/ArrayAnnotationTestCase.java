@@ -114,14 +114,9 @@ public class ArrayAnnotationTestCase extends ArrayTestCase
       return (SimpleBean) instantiate(builder.getBeanMetaData(), ControllerState.ERROR);
    }
 
-   public void testArrayIsInterface() throws Throwable
-   {
-      arrayIsInterface();
-   }
-
    protected SimpleBean arrayIsInterface() throws Throwable
    {
       BeanMetaDataBuilder builder = BeanMetaDataBuilderFactory.createBuilder("SimpleBean", InterfaceArraySimpleBean.class.getName());
-      return (SimpleBean) instantiate(builder.getBeanMetaData(), ControllerState.ERROR);
+      return (SimpleBean) instantiate(builder.getBeanMetaData());
    }
 }

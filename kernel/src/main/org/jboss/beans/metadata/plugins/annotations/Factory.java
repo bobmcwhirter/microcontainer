@@ -27,17 +27,39 @@ import java.lang.annotation.Target;
 import java.lang.annotation.ElementType;
 
 /**
+ * Define constructor factory.
+ *
  * @author <a href="mailto:ales.justin@jboss.com">Ales Justin</a>
  */
 @Retention(RetentionPolicy.RUNTIME)
 @Target({ElementType.TYPE})
 public @interface Factory
 {
+   /**
+    * Get the factory.
+    *
+    * @return the factory value
+    */
    Value factory() default @Value();
 
+   /**
+    * Get the factory class.
+    *
+    * @return the factory class
+    */
    String factoryClass() default "";
 
+   /**
+    * Get the factory method.
+    *
+    * @return the factory method
+    */
    String factoryMethod();
 
+   /**
+    * Get parameters.
+    *
+    * @return the parameters
+    */
    Value[] parameters() default {};
 }

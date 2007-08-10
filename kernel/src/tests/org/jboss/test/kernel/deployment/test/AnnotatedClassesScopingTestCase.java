@@ -29,7 +29,7 @@ import org.jboss.test.kernel.deployment.support.SimpleBean;
  * Scoping tests.
  * With scope annotation at class level.
  *
- * @author <a href="mailto:ales.justin@genera-lynx.com">Ales Justin</a>
+ * @author <a href="mailto:ales.justin@jboss.com">Ales Justin</a>
  */
 public class AnnotatedClassesScopingTestCase extends ScopingDeploymentTest
 {

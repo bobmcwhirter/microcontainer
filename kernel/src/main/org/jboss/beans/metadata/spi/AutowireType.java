@@ -34,7 +34,7 @@ import org.jboss.util.JBossStringBuilder;
  *  * Auto - matching constructor or by type
  *  * None - do not autowire
  *
- * @author <a href="mailto:ales.justin@genera-lynx.com">Ales Justin</a>
+ * @author <a href="mailto:ales.justin@jboss.com">Ales Justin</a>
  */
 public class AutowireType extends JBossObject
    implements Serializable

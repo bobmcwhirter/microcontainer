@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<!DOCTYPE book PUBLIC "-//OASIS//DTD DocBook XML V4.4//EN"
+<!DOCTYPE chapter PUBLIC "-//OASIS//DTD DocBook XML V4.4//EN"
       "http://www.oasis-open.org/docbook/xml/4.4/docbookx.dtd">
 
 <chapter id="core">
@@ -9,6 +9,9 @@
    </para>
 
    <xi:include href="basics.xml"
+               xml:base="./"
+               xmlns:xi="http://www.w3.org/2001/XInclude"/>
+   <xi:include href="annotations.xml"
                xml:base="./"
                xmlns:xi="http://www.w3.org/2001/XInclude"/>
    <xi:include href="aop.xml"

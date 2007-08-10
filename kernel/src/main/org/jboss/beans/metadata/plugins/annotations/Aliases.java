@@ -27,13 +27,26 @@ import java.lang.annotation.Retention;
 import java.lang.annotation.RetentionPolicy;
 
 /**
+ * The aliases.
+ * Equivalent to deployment's alias element.
+ *
  * @author <a href="mailto:ales.justin@jboss.com">Ales Justin</a>
  */
 @Retention(RetentionPolicy.RUNTIME)
 @Target({ElementType.TYPE})
 public @interface Aliases
 {
+   /**
+    * Get aliases array.
+    *
+    * @return the aliases
+    */
    String[] value();
 
+   /**
+    * Do system property replace.
+    *
+    * @return true to replace system property, false otherwise
+    */
    boolean replace() default true;
 }

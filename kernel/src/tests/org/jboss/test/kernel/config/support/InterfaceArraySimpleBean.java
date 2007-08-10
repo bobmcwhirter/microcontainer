@@ -41,7 +41,7 @@ public class InterfaceArraySimpleBean extends SimpleBean
             @Value(string = @StringValue("string1"))
          },
          elementClass = "java.lang.String",
-         clazz = "java.util.Array"
+         clazz = "[Ljava.lang.Comparable;"
    )
    public void setArray(Object[] array)
    {

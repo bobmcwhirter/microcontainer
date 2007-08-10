@@ -27,17 +27,39 @@ import java.lang.annotation.Target;
 import java.lang.annotation.ElementType;
 
 /**
+ * Map value injection.
+ *
  * @author <a href="mailto:ales.justin@jboss.com">Ales Justin</a>
  */
 @Retention(RetentionPolicy.RUNTIME)
 @Target({ElementType.METHOD, ElementType.PARAMETER})
 public @interface MapValue
 {
+   /**
+    * Get the map class name.
+    *
+    * @return the map class name
+    */
    String clazz() default "";
 
+   /**
+    * Get the key class name.
+    *
+    * @return the key class name
+    */
    String keyClass() default "";
 
+   /**
+    * Get the value class name.
+    *
+    * @return the value class name
+    */
    String valueClass() default "";
 
+   /**
+    * Get the entries.
+    *
+    * @return the entries
+    */
    EntryValue[] value();
 }

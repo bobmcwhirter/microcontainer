@@ -27,15 +27,32 @@ import java.lang.annotation.Target;
 import java.lang.annotation.ElementType;
 
 /**
+ * Collection injection.
+ *
  * @author <a href="mailto:ales.justin@jboss.com">Ales Justin</a>
  */
 @Retention(RetentionPolicy.RUNTIME)
 @Target({ElementType.METHOD, ElementType.PARAMETER})
 public @interface CollectionValue
 {
+   /**
+    * Get collection class.
+    *
+    * @return the collection class
+    */
    String clazz() default "";
 
+   /**
+    * Get element class.
+    *
+    * @return the element class
+    */
    String elementClass() default "";
 
+   /**
+    * Get values.
+    *
+    * @return the values
+    */
    Value[] value();
 }

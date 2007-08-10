@@ -27,11 +27,18 @@ import java.lang.annotation.Target;
 import java.lang.annotation.ElementType;
 
 /**
+ * Array of external installs.
+ *
  * @author <a href="mailto:ales.justin@jboss.com">Ales Justin</a>
  */
 @Retention(RetentionPolicy.RUNTIME)
 @Target({ElementType.TYPE})
 public @interface ExternalInstalls
 {
+   /**
+    * Get external installs.
+    *
+    * @return the external installs
+    */
    ExternalInstall[] value();
 }

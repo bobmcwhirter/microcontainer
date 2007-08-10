@@ -30,7 +30,7 @@ import org.jboss.test.kernel.deployment.support.SimpleObjectWithBean;
  * Scoping tests.
  * Diff scopes.
  *
- * @author <a href="mailto:ales.justin@genera-lynx.com">Ales Justin</a>
+ * @author <a href="mailto:ales.justin@jboss.com">Ales Justin</a>
  */
 public class IllegalScopingTestCase extends ScopingDeploymentTest
 {

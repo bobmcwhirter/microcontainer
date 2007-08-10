@@ -27,15 +27,32 @@ import java.lang.annotation.Target;
 import java.lang.annotation.ElementType;
 
 /**
+ * Set value injection.
+ *
  * @author <a href="mailto:ales.justin@jboss.com">Ales Justin</a>
  */
 @Retention(RetentionPolicy.RUNTIME)
 @Target({ElementType.METHOD, ElementType.PARAMETER})
 public @interface SetValue
 {
+   /**
+    * Get the set class name.
+    *
+    * @return the set class name
+    */
    String clazz() default "";
 
+   /**
+    * Get the element class name.
+    *
+    * @return the element class name
+    */
    String elementClass() default "";
 
+   /**
+    * Get the values.
+    *
+    * @return the values
+    */
    Value[] value();
 }

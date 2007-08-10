@@ -26,7 +26,7 @@ import org.jboss.beans.metadata.spi.MetaDataVisitorNode;
 import org.jboss.reflect.spi.TypeInfo;
 
 /**
- * @author <a href="mailto:ales.justin@genera-lynx.com">Ales Justin</a>
+ * @author <a href="mailto:ales.justin@jboss.com">Ales Justin</a>
  */
 public interface TypeProvider
 {

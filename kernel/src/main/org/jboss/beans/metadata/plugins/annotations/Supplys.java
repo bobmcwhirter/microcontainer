@@ -27,11 +27,18 @@ import java.lang.annotation.Target;
 import java.lang.annotation.ElementType;
 
 /**
+ * The supplys.
+ *
  * @author <a href="mailto:ales.justin@jboss.com">Ales Justin</a>
  */
 @Retention(RetentionPolicy.RUNTIME)
 @Target({ElementType.TYPE})
 public @interface Supplys
 {
+   /**
+    * Get supply values.
+    *
+    * @return the supplys
+    */
    String[] value();
 }

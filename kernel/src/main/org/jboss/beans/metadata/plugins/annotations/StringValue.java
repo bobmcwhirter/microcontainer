@@ -27,15 +27,32 @@ import java.lang.annotation.Target;
 import java.lang.annotation.ElementType;
 
 /**
+ * String value.
+ *
  * @author <a href="mailto:ales.justin@jboss.com">Ales Justin</a>
  */
 @Retention(RetentionPolicy.RUNTIME)
 @Target({ElementType.METHOD, ElementType.PARAMETER})
 public @interface StringValue
 {
+   /**
+    * Get the value.
+    *
+    * @return the value
+    */
    String value();
 
+   /**
+    * Get type.
+    *
+    * @return the type
+    */
    String type() default "";
 
+   /**
+    * Do replace with system properties.
+    *
+    * @return true for replace with system properties, false otherwise
+    */
    boolean replace() default true;
 }

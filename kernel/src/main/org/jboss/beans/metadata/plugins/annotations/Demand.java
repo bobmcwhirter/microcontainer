@@ -27,13 +27,25 @@ import java.lang.annotation.Target;
 import java.lang.annotation.ElementType;
 
 /**
+ * The demand.
+ *
  * @author <a href="mailto:ales.justin@jboss.com">Ales Justin</a>
  */
 @Retention(RetentionPolicy.RUNTIME)
 @Target({ElementType.ANNOTATION_TYPE})
 public @interface Demand
 {
+   /**
+    * Get demand value.
+    *
+    * @return the demand
+    */
    String value();
 
+   /**
+    * Get when required.
+    *
+    * @return the when required state
+    */
    String whenRequired() default "Instantiated";
 }

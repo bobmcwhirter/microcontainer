@@ -27,21 +27,56 @@ import java.lang.annotation.Target;
 import java.lang.annotation.ElementType;
 
 /**
+ * The parameter.
+ * We must distingush between @Value and @Parameter,
+ * since annotations don't allow cyclic dependencies.
+ * ValueFactory uses @Parameter to break the cycle.
+ *
  * @author <a href="mailto:ales.justin@jboss.com">Ales Justin</a>
  */
 @Retention(RetentionPolicy.RUNTIME)
 @Target({ElementType.ANNOTATION_TYPE})
 public @interface Parameter
 {
+   /**
+    * Get they parameter type.
+    *
+    * @return the type
+    */
    String type() default "";
 
+   /**
+    * Get the string value.
+    *
+    * @return the string value
+    */
    StringValue string() default @StringValue(value="");
 
+   /**
+    * Get inject value.
+    *
+    * @return the inject value
+    */
    Inject inject() default @Inject(valid=false);
 
+   /**
+    * Get this value.
+    *
+    * @return this value
+    */
    ThisValue thisValue() default @ThisValue(valid = false);
 
+   /**
+    * Get null value.
+    *
+    * @return null value
+    */
    NullValue nullValue() default @NullValue(valid = false);
 
+   /**
+    * Get java bean value.
+    *
+    * @return java bean value
+    */
    JavaBeanValue javabean() default @JavaBeanValue;
 }

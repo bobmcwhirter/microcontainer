@@ -27,11 +27,19 @@ import java.lang.annotation.Target;
 import java.lang.annotation.ElementType;
 
 /**
+ * Java bean value.
+ *
  * @author <a href="mailto:ales.justin@jboss.com">Ales Justin</a>
  */
 @Retention(RetentionPolicy.RUNTIME)
 @Target({ElementType.METHOD, ElementType.PARAMETER})
 public @interface JavaBeanValue
 {
+   /**
+    * Get java bean class name.
+    * Must have default constructor.
+    *
+    * @return the class name
+    */
    String value() default "";
 }
