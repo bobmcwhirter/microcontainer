@@ -52,7 +52,6 @@ import org.jboss.kernel.spi.registry.KernelRegistryPlugin;
 public class ScopedKernelController extends AbstractKernelController
 {
    protected Kernel parentKernel;
-   protected AbstractController underlyingController;
 
    public ScopedKernelController(Kernel parentKernel, AbstractController parentController) throws Exception
    {
@@ -60,7 +59,7 @@ public class ScopedKernelController extends AbstractKernelController
       this.parentKernel = parentKernel;
       if (parentKernel.getController() instanceof AbstractController == false)
          throw new IllegalArgumentException("Underlying controller not AbstractController instance!");
-      this.underlyingController = (AbstractController)parentKernel.getController();
+      setUnderlyingController((AbstractController)parentKernel.getController());
       setParentController(parentController);
       KernelConfig config = new ScopedKernelConfig(System.getProperties());
       kernel = KernelFactory.newInstance(config);
@@ -81,29 +80,20 @@ public class ScopedKernelController extends AbstractKernelController
 
    // Scoped helper methods 
 
-   public AbstractController getUnderlyingController()
+   void addControllerContext(KernelControllerContext context)
    {
-      return underlyingController;
+      super.addControllerContext(context);
    }
 
-   // TODO See comments on super implementation
-   public void addControllerContext(ControllerContext context)
+   void removeControllerContext(KernelControllerContext context)
    {
-      underlyingController.removeControllerContext(context);
-      registerControllerContext(context);
+      super.removeControllerContext(context);
    }
 
-   // TODO See comments on super implementation
-   public void removeControllerContext(ControllerContext context)
-   {
-      unregisterControllerContext(context);
-      underlyingController.addControllerContext(context);
-   }
-
-   public void release()
+   void release()
    {
       getParentController().removeController(this);
-      underlyingController = null;
+      setUnderlyingController(null);
       setParentController(null);
       parentKernel = null;
    }

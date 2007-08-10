@@ -28,6 +28,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 import java.util.HashMap;
+import java.util.Collections;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.CopyOnWriteArrayList;
 import java.util.concurrent.CopyOnWriteArraySet;
@@ -136,7 +137,6 @@ public class AbstractController extends JBossObject implements Controller
       }
    }
 
-   // TODO need tests for shutdown
    public void shutdown()
    {
       lockWrite();
@@ -211,20 +211,30 @@ public class AbstractController extends JBossObject implements Controller
       }
    }
 
-   // TODO This api looks broken and unsafe
-   //      1) It should not be public
-   //      2) There should be parameter checking for public methods
-   //      3) There should be locking when updating state
-   //      4) Error handling?
-   public void addControllerContext(ControllerContext context)
+   void addControllerContext(ControllerContext context)
    {
-      registerControllerContext(context);
+      lockWrite();
+      try
+      {
+         registerControllerContext(context);
+      }
+      finally
+      {
+         unlockWrite();
+      }
    }
 
-   // TODO This api looks broken and unsafe see above
-   public void removeControllerContext(ControllerContext context)
+   void removeControllerContext(ControllerContext context)
    {
-      unregisterControllerContext(context);
+      lockWrite();
+      try
+      {
+         unregisterControllerContext(context);
+      }
+      finally
+      {
+         unlockWrite();
+      }
    }
 
    protected AbstractController getParentController()
@@ -239,19 +249,41 @@ public class AbstractController extends JBossObject implements Controller
 
    public Set<AbstractController> getControllers()
    {
-      return childControllers;
+      lockRead();
+      try
+      {
+         return Collections.unmodifiableSet(childControllers);
+      }
+      finally
+      {
+         unlockRead();
+      }
    }
-
-   // no need for locking - we are already locked
 
    public boolean addController(AbstractController controller)
    {
-      return childControllers.add(controller);
+      lockWrite();
+      try
+      {
+         return childControllers.add(controller);
+      }
+      finally
+      {
+         unlockWrite();
+      }
    }
 
    public boolean removeController(AbstractController controller)
    {
-      return childControllers.remove(controller);
+      lockWrite();
+      try
+      {
+         return childControllers.remove(controller);
+      }
+      finally
+      {
+         unlockWrite();
+      }
    }
 
    /**
@@ -452,7 +484,6 @@ public class AbstractController extends JBossObject implements Controller
                }
                parent = parent.getParentController();
             }
-
          }
          else
          {

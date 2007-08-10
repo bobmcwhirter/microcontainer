@@ -31,7 +31,7 @@ import java.util.concurrent.CopyOnWriteArrayList;
 
 import org.jboss.beans.metadata.spi.BeanMetaData;
 import org.jboss.beans.metadata.spi.SupplyMetaData;
-import org.jboss.dependency.plugins.AbstractController;
+import org.jboss.dependency.plugins.ScopedController;
 import org.jboss.dependency.spi.ControllerContext;
 import org.jboss.dependency.spi.ControllerState;
 import org.jboss.kernel.Kernel;
@@ -51,7 +51,7 @@ import org.jboss.kernel.spi.registry.KernelRegistryPlugin;
  * @author <a href="adrian@jboss.com">Adrian Brock</a>
  * @version $Revision$
  */
-public class AbstractKernelController extends AbstractController implements KernelController, KernelRegistryPlugin
+public class AbstractKernelController extends ScopedController implements KernelController, KernelRegistryPlugin
 {
    /** The kernel */
    protected Kernel kernel;
