@@ -60,7 +60,7 @@ public class JMXLifecycleCallback
       Object mbean = (registerDirectly ? context.getTarget() 
                                        : new StandardMBean(context.getTarget(), intfClass));
       server.registerMBean(mbean, objectName);
-      log.info("Registered MBean " + objectName);
+      log.debug("Registered MBean " + objectName);
    }
    
    public void uninstall(ControllerContext context) throws Exception
@@ -69,7 +69,7 @@ public class JMXLifecycleCallback
       JMX jmx = readJmxAnnotation(context);
       ObjectName objectName = createObjectName(context, jmx); 
 
-      log.info("Unregistering MBean " + objectName);
+      log.debug("Unregistering MBean " + objectName);
       server.unregisterMBean(objectName);
    }
    

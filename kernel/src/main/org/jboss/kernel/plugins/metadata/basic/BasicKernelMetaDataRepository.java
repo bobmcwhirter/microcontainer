@@ -31,6 +31,7 @@ import org.jboss.beans.metadata.spi.BeanMetaData;
 import org.jboss.beans.metadata.spi.PropertyMetaData;
 import org.jboss.kernel.plugins.config.Configurator;
 import org.jboss.kernel.plugins.metadata.AbstractKernelMetaDataRepository;
+import org.jboss.kernel.spi.config.KernelConfigurator;
 import org.jboss.kernel.spi.dependency.KernelControllerContext;
 import org.jboss.metadata.plugins.context.AbstractMetaDataContext;
 import org.jboss.metadata.plugins.loader.memory.MemoryMetaDataLoader;
@@ -153,7 +154,16 @@ public class BasicKernelMetaDataRepository extends AbstractKernelMetaDataReposit
          {
             if (scope.getScopeLevel() == CommonLevels.CLASS)
             {
-               ClassLoader cl = Thread.currentThread().getContextClassLoader();
+               BeanMetaData metaData = context.getBeanMetaData();
+               ClassLoader cl = null;
+               try
+               {
+                  cl = Configurator.getClassLoader(metaData);
+               }
+               catch (Throwable t)
+               {
+                  throw new RuntimeException("Error getting classloader for " + context.getName(), t);
+               }
                try
                {
                   Class clazz = cl.loadClass(scope.getQualifier());
