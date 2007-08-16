@@ -49,6 +49,9 @@ public abstract class ObjectModelFactoryDeployer<T> extends AbstractVFSParsingDe
    /** Whether the Unmarshaller will use schema validation */
    private boolean useSchemaValidation = true;
 
+   /** Whether to validate */
+   private boolean useValidation = true;
+   
    /**
     * Create a new SchemaResolverDeployer.
     * 
@@ -60,14 +63,44 @@ public abstract class ObjectModelFactoryDeployer<T> extends AbstractVFSParsingDe
       super(output);
    }
 
+   /**
+    * Get the useSchemaValidation.
+    * 
+    * @return the useSchemaValidation.
+    */
    public boolean isUseSchemaValidation()
    {
       return useSchemaValidation;
    }
 
+   /**
+    * Set the useSchemaValidation.
+    * 
+    * @param useSchemaValidation the useSchemaValidation.
+    */
    public void setUseSchemaValidation(boolean useSchemaValidation)
    {
       this.useSchemaValidation = useSchemaValidation;
+   }
+
+   /**
+    * Get the useValidation.
+    * 
+    * @return the useValidation.
+    */
+   public boolean isUseValidation()
+   {
+      return useValidation;
+   }
+
+   /**
+    * Set the useValidation.
+    * 
+    * @param useValidation the useValidation.
+    */
+   public void setUseValidation(boolean useValidation)
+   {
+      this.useValidation = useValidation;
    }
 
    @Override
@@ -77,7 +110,8 @@ public abstract class ObjectModelFactoryDeployer<T> extends AbstractVFSParsingDe
          throw new IllegalArgumentException("Null file");
 
       Unmarshaller unmarshaller = factory.newUnmarshaller();
-      unmarshaller.setSchemaValidation(useSchemaValidation);
+      unmarshaller.setSchemaValidation(isUseSchemaValidation());
+      unmarshaller.setValidation(isUseValidation());
       Object parsed = null;
       try
       {
