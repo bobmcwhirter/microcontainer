@@ -100,40 +100,6 @@
           <jbossDeployRoot>${jboss.repository.root}</jbossDeployRoot>
         </configuration>
       </plugin>
-      <plugin>
-        <groupId>org.jboss.maven.plugins</groupId>
-        <artifactId>maven-jboss-retro-plugin</artifactId>
-        <version>1.0-beta-2-SNAPSHOT</version>
-        <executions>
-          <execution>
-            <id>weave-classes</id>
-            <goals>
-              <goal>weave</goal>
-            </goals>
-            <configuration>
-              <outputDirectory>${project.build.directory}/classes-jdk14</outputDirectory>
-            </configuration>
-          </execution>
-          <execution>
-            <id>weave-test-classes</id>
-            <goals>
-              <goal>weave-tests</goal>
-            </goals>
-            <configuration>
-              <outputDirectory>${project.build.directory}/tests-classes-jdk14</outputDirectory>
-            </configuration>
-          </execution>
-        </executions>
-        <configuration>
-          <weaveClassifier>jdk14</weaveClassifier>
-          <weaverClass>org.jboss.weaver.retro.WeaverRetroJdk14</weaverClass>
-          <verbose>false</verbose>
-          
-          <installDependencies>true</installDependencies>
-          <localRepositoryPath>${user.home}/.m2/repository-jdk14</localRepositoryPath>
-          <!--<deployUrl>file://${maven-jdk14.repository.root}</deployUrl>-->
-        </configuration>
-      </plugin>
     </plugins>
     <pluginManagement>
       <plugins>
