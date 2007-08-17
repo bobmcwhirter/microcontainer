@@ -33,6 +33,8 @@ import org.jboss.beans.metadata.spi.ParameterMetaData;
 import org.jboss.beans.metadata.spi.MetaDataVisitorNode;
 import org.jboss.reflect.spi.MethodInfo;
 import org.jboss.reflect.spi.ParameterInfo;
+import org.jboss.reflect.spi.TypeInfo;
+import org.jboss.kernel.plugins.config.Configurator;
 
 /**
  * @param <C> annotation type
@@ -64,12 +66,22 @@ public abstract class InstallationParameterAnnotationPlugin<C extends Annotation
             {
                List<ParameterMetaData> parameters = install.getParameters();
                ParameterInfo[] parameterInfos = info.getParameters();
-               if (parameters != null && parameterInfos != null && parameters.size() == parameterInfos.length)
-                  return true;
                if (parameters == null && parameterInfos != null && parameterInfos.length == 0)
                   return true;
                if (parameters != null && parameters.size() == 0 && parameterInfos == null)
                   return true;
+               if (parameters != null && parameterInfos != null && parameters.size() == parameterInfos.length)
+               {
+                  int n = parameters.size();
+                  String[] typeNames = new String[n];
+                  TypeInfo[] typeInfos = new TypeInfo[n];
+                  for(int i = 0; i < n; i++)
+                  {
+                     typeNames[i] = parameters.get(i).getType();
+                     typeInfos[i] = parameterInfos[i].getParameterType();
+                  }
+                  return Configurator.equals(typeNames, typeInfos);
+               }
             }
          }
       }

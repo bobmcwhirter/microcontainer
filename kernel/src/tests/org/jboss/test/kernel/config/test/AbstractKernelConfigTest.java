@@ -114,7 +114,12 @@ public class AbstractKernelConfigTest extends AbstractKernelTest
       KernelControllerContext kernelControllerContext = controller.install(metaData);
       if (expectedState != null)
          assertEquals(expectedState, kernelControllerContext.getState());
+      afterInstall(controller, kernelControllerContext);
       return kernelControllerContext.getTarget();
+   }
+
+   protected void afterInstall(KernelController controller, KernelControllerContext context) throws Throwable
+   {
    }
 
    protected Object instantiate(KernelConfigurator configurator, BeanMetaData metaData) throws Throwable

@@ -35,6 +35,7 @@ import org.jboss.dependency.spi.DependencyItem;
 import org.jboss.kernel.spi.dependency.KernelControllerContext;
 import org.jboss.util.JBossObject;
 import org.jboss.util.JBossStringBuilder;
+import org.jboss.util.HashCode;
 
 /**
  * A demand.
@@ -130,6 +131,18 @@ public class AbstractDemandMetaData extends JBossObject
    public void toShortString(JBossStringBuilder buffer)
    {
       buffer.append(demand);
+   }
+
+   public boolean equals(Object obj)
+   {
+      if (obj instanceof AbstractDemandMetaData == false)
+         return false;
+      return equals(demand, ((AbstractDemandMetaData)obj).demand);
+   }
+
+   protected int getHashCode()
+   {
+      return HashCode.generate(demand);
    }
 
    /**

@@ -23,6 +23,7 @@ package org.jboss.kernel.plugins.annotations;
 
 import org.jboss.beans.info.spi.PropertyInfo;
 import org.jboss.beans.metadata.plugins.AbstractCallbackMetaData;
+import org.jboss.dependency.spi.CallbackItem;
 
 /**
  * @author <a href="mailto:ales.justin@jboss.com">Ales Justin</a>
@@ -34,9 +35,10 @@ public class PropertyUninstallCallbackAnnotationPlugin extends UninstallCallback
       super();
    }
 
-   protected boolean isNameEqual(PropertyInfo info, String attributeName)
+   protected boolean isEqual(PropertyInfo info, CallbackItem ci)
    {
-      return attributeName.equals(info.getName());
+      // todo - param matching
+      return info.getName().equals(ci.getAttributeName());
    }
 
    protected void applyInfo(AbstractCallbackMetaData callback, PropertyInfo info)

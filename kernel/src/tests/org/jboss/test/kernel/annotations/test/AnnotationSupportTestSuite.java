@@ -22,28 +22,29 @@
 package org.jboss.test.kernel.annotations.test;
 
 import junit.framework.Test;
-import org.jboss.test.kernel.deployment.test.AbstractDeploymentTest;
-import org.jboss.dependency.spi.ControllerContext;
+import junit.framework.TestSuite;
+import junit.textui.TestRunner;
 
 /**
+ * Additional annotation features tests.
+ *
  * @author <a href="mailto:ales.justin@jboss.com">Ales Justin</a>
  */
-public class InjectAnnotationTestCase extends AbstractDeploymentTest
+public class AnnotationSupportTestSuite extends TestSuite
 {
-   public InjectAnnotationTestCase(String name) throws Throwable
+   public static void main(String[] args)
    {
-      super(name);
+      TestRunner.run(suite());
    }
 
    public static Test suite()
    {
-      return suite(InjectAnnotationTestCase.class);
-   }
+      TestSuite suite = new TestSuite("Annotation Support Tests");
 
-   public void testInjection() throws Throwable
-   {
-      ControllerContext context = getControllerContext("SimpleBean");
-      assertNotNull(context);
-      System.out.println("context = " + context);
+      suite.addTest(FactoryMethodTestCase.suite());
+      suite.addTest(FactoryMethodXMLTestCase.suite());
+      suite.addTest(FactoryMethodBadTestCase.suite());
+
+      return suite;
    }
 }

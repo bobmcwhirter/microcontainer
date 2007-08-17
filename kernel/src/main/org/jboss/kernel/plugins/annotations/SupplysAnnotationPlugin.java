@@ -56,8 +56,8 @@ public class SupplysAnnotationPlugin extends ClassAnnotationPlugin<Supplys>
       for(String supply : annotation.value())
       {
          AbstractSupplyMetaData asmd = new AbstractSupplyMetaData(supply);
-         supplies.add(asmd);
-         nodes.add(asmd);
+         if (supplies.add(asmd))
+            nodes.add(asmd);
       }
       return nodes;
    }

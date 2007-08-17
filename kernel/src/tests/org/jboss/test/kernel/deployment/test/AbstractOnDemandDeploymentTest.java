@@ -19,30 +19,37 @@
 * Software Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA
 * 02110-1301 USA, or see the FSF site: http://www.fsf.org.
 */
-package org.jboss.kernel.plugins.annotations;
+package org.jboss.test.kernel.deployment.test;
 
-import org.jboss.reflect.spi.MethodInfo;
-import org.jboss.beans.metadata.plugins.AbstractCallbackMetaData;
-import org.jboss.dependency.spi.CallbackItem;
+import org.jboss.test.kernel.junit.MicrocontainerTest;
+import org.jboss.test.kernel.junit.MicrocontainerTestDelegate;
+import org.jboss.test.AbstractTestDelegate;
+import org.jboss.dependency.spi.ControllerMode;
 
 /**
- * @author <a href="mailto:ales.justin@jboss.com">Ales Justin</a>
+ * Abstract Deployment Test Case.
+ *
+ * @author <a href="ales.justin@jboss.com">Ales Justin</a>
  */
-public class MethodUninstallCallbackAnnotationPlugin extends UninstallCallbackAnnotationPlugin<MethodInfo>
+public class AbstractOnDemandDeploymentTest extends MicrocontainerTest
 {
-   public MethodUninstallCallbackAnnotationPlugin()
+   public AbstractOnDemandDeploymentTest(String name)
    {
-      super();
+      super(name);
    }
 
-   protected boolean isEqual(MethodInfo info, CallbackItem ci)
+   public static AbstractTestDelegate getDelegate(Class clazz) throws Exception
    {
-      // todo - param matching
-      return info.getName().equals(ci.getAttributeName());
+      MicrocontainerTestDelegate delegate = (MicrocontainerTestDelegate) MicrocontainerTest.getDelegate(clazz);
+      delegate.setDefaultMode(ControllerMode.ON_DEMAND);
+      delegate.enableSecurity = true;
+      return delegate;
    }
 
-   protected void applyInfo(AbstractCallbackMetaData callback, MethodInfo info)
+   protected void configureLogging()
    {
-      callback.setMethodInfo(info);
+      //enableTrace("org.jboss.dependency");
+      //enableTrace("org.jboss.kernel.plugins.dependency");
+      //enableTrace("org.jboss.kernel.plugins.deployment");
    }
 }

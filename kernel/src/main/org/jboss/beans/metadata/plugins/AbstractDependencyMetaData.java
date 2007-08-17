@@ -33,6 +33,7 @@ import org.jboss.dependency.spi.DependencyItem;
 import org.jboss.kernel.spi.dependency.KernelControllerContext;
 import org.jboss.util.JBossObject;
 import org.jboss.util.JBossStringBuilder;
+import org.jboss.util.HashCode;
 
 /**
  * A dependency.
@@ -112,6 +113,18 @@ public class AbstractDependencyMetaData extends JBossObject
       buffer.append(dependency);
    }
    
+   public boolean equals(Object obj)
+   {
+      if (obj instanceof AbstractDependencyMetaData == false)
+         return false;
+      return equals(dependency, ((AbstractDependencyMetaData)obj).dependency);
+   }
+
+   protected int getHashCode()
+   {
+      return HashCode.generate(dependency);
+   }
+
    /**
     * A LifecycleDependencyItem.
     */

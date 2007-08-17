@@ -21,30 +21,43 @@
 */
 package org.jboss.test.kernel.annotations.test;
 
-import junit.framework.TestSuite;
 import junit.framework.Test;
-import junit.textui.TestRunner;
-import org.jboss.test.kernel.annotations.test.override.AnnotationsOverrideTestSuite;
+import org.jboss.beans.metadata.plugins.AbstractBeanMetaData;
+import org.jboss.test.kernel.annotations.support.AnnotationTester;
+import org.jboss.test.kernel.annotations.support.FactoryMethodAnnotationTester;
+import org.jboss.test.kernel.config.test.AbstractKernelConfigTest;
 
 /**
- * Annotations tests.
- *
  * @author <a href="mailto:ales.justin@jboss.com">Ales Justin</a>
  */
-public class AnnotationsTestSuite extends TestSuite
+public class FactoryMethodTestCase extends AbstractKernelConfigTest
 {
-   public static void main(String[] args)
+   public FactoryMethodTestCase(String name) throws Throwable
    {
-      TestRunner.run(suite());
+      super(name);
+   }
+
+   public FactoryMethodTestCase(String name, boolean xmltest)
+   {
+      super(name, xmltest);
    }
 
    public static Test suite()
    {
-      TestSuite suite = new TestSuite("Annotations Tests");
+      return suite(FactoryMethodTestCase.class);
+   }
 
-      suite.addTest(AnnotationSupportTestSuite.suite());
-      suite.addTest(AnnotationsOverrideTestSuite.suite());
+   public void testFactoryMethod() throws Throwable
+   {
+      AnnotationTester tester = getTester();
+      assertEquals("FromAnnotations", tester.getValue());
+   }
 
-      return suite;
+   protected AnnotationTester getTester() throws Throwable
+   {
+      Object tester = instantiate(new AbstractBeanMetaData("Tester", FactoryMethodAnnotationTester.class.getName()));
+      assertNotNull(tester);
+      assertInstanceOf(tester, AnnotationTester.class);
+      return (AnnotationTester)tester;
    }
 }

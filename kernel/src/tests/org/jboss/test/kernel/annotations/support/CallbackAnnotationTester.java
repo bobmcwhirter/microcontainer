@@ -19,30 +19,32 @@
 * Software Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA
 * 02110-1301 USA, or see the FSF site: http://www.fsf.org.
 */
-package org.jboss.kernel.plugins.annotations;
+package org.jboss.test.kernel.annotations.support;
 
-import org.jboss.reflect.spi.MethodInfo;
-import org.jboss.beans.metadata.plugins.AbstractCallbackMetaData;
-import org.jboss.dependency.spi.CallbackItem;
+import org.jboss.beans.metadata.plugins.annotations.Install;
+import org.jboss.beans.metadata.plugins.annotations.Uninstall;
 
 /**
  * @author <a href="mailto:ales.justin@jboss.com">Ales Justin</a>
  */
-public class MethodUninstallCallbackAnnotationPlugin extends UninstallCallbackAnnotationPlugin<MethodInfo>
+public class CallbackAnnotationTester implements AnnotationTester
 {
-   public MethodUninstallCallbackAnnotationPlugin()
+   private int counter;
+
+   @Install
+   public void addMyDeployer(MyDeployer deployer)
    {
-      super();
+      counter++;
    }
 
-   protected boolean isEqual(MethodInfo info, CallbackItem ci)
+   @Uninstall
+   public void removeMyDeployer(MyDeployer deployer)
    {
-      // todo - param matching
-      return info.getName().equals(ci.getAttributeName());
+      counter--;      
    }
 
-   protected void applyInfo(AbstractCallbackMetaData callback, MethodInfo info)
+   public Object getValue()
    {
-      callback.setMethodInfo(info);
+      return counter;
    }
 }

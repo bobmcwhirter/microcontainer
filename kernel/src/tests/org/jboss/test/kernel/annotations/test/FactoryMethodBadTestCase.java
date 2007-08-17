@@ -19,30 +19,34 @@
 * Software Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA
 * 02110-1301 USA, or see the FSF site: http://www.fsf.org.
 */
-package org.jboss.kernel.plugins.annotations;
+package org.jboss.test.kernel.annotations.test;
 
-import org.jboss.reflect.spi.MethodInfo;
-import org.jboss.beans.metadata.plugins.AbstractCallbackMetaData;
-import org.jboss.dependency.spi.CallbackItem;
+import junit.framework.Test;
+import org.jboss.dependency.spi.ControllerState;
+import org.jboss.kernel.spi.dependency.KernelControllerContext;
+import org.jboss.test.kernel.deployment.test.AbstractOnDemandDeploymentTest;
 
 /**
  * @author <a href="mailto:ales.justin@jboss.com">Ales Justin</a>
  */
-public class MethodUninstallCallbackAnnotationPlugin extends UninstallCallbackAnnotationPlugin<MethodInfo>
+public class FactoryMethodBadTestCase extends AbstractOnDemandDeploymentTest
 {
-   public MethodUninstallCallbackAnnotationPlugin()
+   public FactoryMethodBadTestCase(String name) throws Throwable
    {
-      super();
+      super(name);
    }
 
-   protected boolean isEqual(MethodInfo info, CallbackItem ci)
+   public static Test suite()
    {
-      // todo - param matching
-      return info.getName().equals(ci.getAttributeName());
+      return suite(FactoryMethodBadTestCase.class);
    }
 
-   protected void applyInfo(AbstractCallbackMetaData callback, MethodInfo info)
+   public void testFactoryMethodBad() throws Throwable
    {
-      callback.setMethodInfo(info);
+      KernelControllerContext context = getControllerContext("Tester", null);
+      change(context, ControllerState.INSTALLED);
+      assertEquals(ControllerState.ERROR, context.getState());
+      assertNotNull(context.getError());
+      assertInstanceOf(context.getError(), IllegalArgumentException.class);
    }
 }

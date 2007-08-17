@@ -50,6 +50,8 @@ public class FactoryMethodAnnotationPlugin extends AbstractParameterAnnotationPl
 
    protected boolean isMetaDataAlreadyPresent(MethodInfo info, FactoryMethod annotation, BeanMetaData beanMetaData)
    {
+      if (info.isPublic() == false || info.isStatic() == false)
+         throw new IllegalArgumentException("Method marked as @FactoryMethod must be public and static");
       return beanMetaData.getConstructor() != null;
    }
 

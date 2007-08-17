@@ -19,30 +19,40 @@
 * Software Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA
 * 02110-1301 USA, or see the FSF site: http://www.fsf.org.
 */
-package org.jboss.kernel.plugins.annotations;
+package org.jboss.test.kernel.annotations.test.override;
 
-import org.jboss.reflect.spi.MethodInfo;
-import org.jboss.beans.metadata.plugins.AbstractCallbackMetaData;
-import org.jboss.dependency.spi.CallbackItem;
+import junit.framework.Test;
+import org.jboss.test.kernel.annotations.support.AnnotationTester;
+import org.jboss.test.kernel.config.support.XMLUtil;
 
 /**
  * @author <a href="mailto:ales.justin@jboss.com">Ales Justin</a>
  */
-public class MethodUninstallCallbackAnnotationPlugin extends UninstallCallbackAnnotationPlugin<MethodInfo>
+public class InstallationAnnotationOverrideXMLTestCase extends InstallationAnnotationOverrideTestCase
 {
-   public MethodUninstallCallbackAnnotationPlugin()
+   private XMLUtil util;
+
+   public InstallationAnnotationOverrideXMLTestCase(String name) throws Throwable
    {
-      super();
+      super(name, true);
    }
 
-   protected boolean isEqual(MethodInfo info, CallbackItem ci)
+   public static Test suite()
    {
-      // todo - param matching
-      return info.getName().equals(ci.getAttributeName());
+      return suite(InstallationAnnotationOverrideXMLTestCase.class);
    }
 
-   protected void applyInfo(AbstractCallbackMetaData callback, MethodInfo info)
+   protected AnnotationTester getTester() throws Throwable
    {
-      callback.setMethodInfo(info);
+      util = bootstrapXML(true);
+      Object tester = util.getBean(getTesterName());
+      assertInstanceOf(tester, AnnotationTester.class, false);
+      return (AnnotationTester)tester;
+   }
+
+   protected void doUndeploy()
+   {
+      util.undeploy();
+      util = null;
    }
 }

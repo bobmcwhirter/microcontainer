@@ -23,6 +23,7 @@ package org.jboss.kernel.plugins.annotations;
 
 import org.jboss.beans.metadata.plugins.AbstractCallbackMetaData;
 import org.jboss.reflect.spi.MethodInfo;
+import org.jboss.dependency.spi.CallbackItem;
 
 /**
  * @author <a href="mailto:ales.justin@jboss.com">Ales Justin</a>
@@ -34,9 +35,10 @@ public class MethodInstallCallbackAnnotationPlugin extends InstallCallbackAnnota
       super();
    }
 
-   protected boolean isNameEqual(MethodInfo info, String attributeName)
+   protected boolean isEqual(MethodInfo info, CallbackItem ci)
    {
-      return attributeName.equals(info.getName());
+      // todo - param matching
+      return info.getName().equals(ci.getAttributeName());
    }
 
    protected void applyInfo(AbstractCallbackMetaData callback, MethodInfo info)

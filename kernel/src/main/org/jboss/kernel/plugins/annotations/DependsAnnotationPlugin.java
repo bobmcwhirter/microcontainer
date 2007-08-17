@@ -58,8 +58,8 @@ public class DependsAnnotationPlugin extends ClassAnnotationPlugin<Depends>
       for(String depends : annotation.value())
       {
          AbstractDependencyMetaData dependency = new AbstractDependencyMetaData(depends);
-         dependencies.add(dependency);
-         nodes.add(dependency);
+         if (dependencies.add(dependency))
+            nodes.add(dependency);
       }
       return nodes;
    }

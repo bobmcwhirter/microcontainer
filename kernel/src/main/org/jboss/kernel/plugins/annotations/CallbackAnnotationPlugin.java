@@ -61,14 +61,14 @@ public abstract class CallbackAnnotationPlugin<T extends AnnotatedInfo, C extend
       {
          for(CallbackItem ci : callbacks)
          {
-            if (isNameEqual(info, ci.getAttributeName()))
+            if (isEqual(info, ci))
                return true;
          }
       }
       return false;
    }
 
-   protected abstract boolean isNameEqual(T info, String attributeName);
+   protected abstract boolean isEqual(T info, CallbackItem ci);
 
    protected abstract Set<CallbackItem> getCallbacks(DependencyInfo dependency);
 

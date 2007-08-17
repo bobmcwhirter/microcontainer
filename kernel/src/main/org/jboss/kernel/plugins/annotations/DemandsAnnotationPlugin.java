@@ -61,8 +61,8 @@ public class DemandsAnnotationPlugin extends ClassAnnotationPlugin<Demands>
       {
          AbstractDemandMetaData admd = new AbstractDemandMetaData(demand.value());
          admd.setWhenRequired(new ControllerState(demand.whenRequired()));
-         demands.add(admd);
-         nodes.add(admd);
+         if (demands.add(admd))
+            nodes.add(admd);
       }
       return nodes;
    }

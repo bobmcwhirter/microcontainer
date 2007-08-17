@@ -29,6 +29,7 @@ import org.jboss.beans.metadata.spi.MetaDataVisitorNode;
 import org.jboss.beans.metadata.spi.SupplyMetaData;
 import org.jboss.util.JBossObject;
 import org.jboss.util.JBossStringBuilder;
+import org.jboss.util.HashCode;
 
 /**
  * A supply.
@@ -101,4 +102,17 @@ public class AbstractSupplyMetaData extends JBossObject
    {
       buffer.append(supply);
    }
+
+   public boolean equals(Object obj)
+   {
+      if (obj instanceof AbstractSupplyMetaData == false)
+         return false;
+      return equals(supply, ((AbstractSupplyMetaData)obj).supply);
+   }
+
+   protected int getHashCode()
+   {
+      return HashCode.generate(supply);
+   }
+
 }
