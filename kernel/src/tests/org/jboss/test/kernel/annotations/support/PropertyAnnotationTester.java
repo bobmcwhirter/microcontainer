@@ -36,11 +36,15 @@ public class PropertyAnnotationTester implements AnnotationTester
    }
 
    @StringValue("FromAnnotation")
+   public void setValue(String value)
+   {
+      this.value = value;
+   }
+
    public void setValue(Object value)
    {
       if (value == null)
          throw new IllegalArgumentException("Null value.");
-      this.value = value.toString();
+      setValue(value.toString());
    }
-
 }
