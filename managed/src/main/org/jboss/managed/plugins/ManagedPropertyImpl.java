@@ -322,6 +322,8 @@ public class ManagedPropertyImpl implements ManagedProperty
          tmp.append(',');
          tmp.append(getMappedName());
       }
+      tmp.append(",metaType=");
+      tmp.append(this.getMetaType());
       tmp.append('}');
       return tmp.toString(); 
    }
