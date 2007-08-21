@@ -530,15 +530,15 @@ public class AbstractManagedObjectFactory extends ManagedObjectFactory
          if (MANAGED_OBJECT_META_TYPE == arrayType.getElementType())
          {
             Collection cvalue = getAsCollection(value);
-            ArrayMetaType moType = new ArrayMetaType(1, MANAGED_OBJECT_META_TYPE);
-            ArrayValueSupport moArrayValue = new ArrayValueSupport(moType);
-            ArrayList<ManagedObject> tmp = new ArrayList<ManagedObject>();
+            ArrayMetaType<GenericMetaType> moType = new ArrayMetaType<GenericMetaType>(1, MANAGED_OBJECT_META_TYPE);
+            ArrayValueSupport<GenericValueSupport> moArrayValue = new ArrayValueSupport(moType);
+            ArrayList<GenericValueSupport> tmp = new ArrayList<GenericValueSupport>();
             for(Object element : cvalue)
             {
                ManagedObject mo = initManagedObject((Serializable) element, null, null);
-               tmp.add(mo);
+               tmp.add(new GenericValueSupport(MANAGED_OBJECT_META_TYPE, mo));
             }
-            ManagedObject[] mos = new ManagedObject[tmp.size()];
+            GenericValueSupport[] mos = new GenericValueSupport[tmp.size()];
             tmp.toArray(mos);
             moArrayValue.setValue(mos);
             return moArrayValue;
