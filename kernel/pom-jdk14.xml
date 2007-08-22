@@ -19,7 +19,7 @@
   <modelVersion>4.0.0</modelVersion>
   <artifactId>jboss-kernel-jdk14</artifactId>
   <packaging>jar</packaging>
-  <name>JBoss Microcontainer Kernel</name>
+  <name>JBoss Microcontainer Kernel JDK 1.4</name>
   <url>http://www.jboss.com/products/jbossmc</url>
   <description>JBoss Microcontainer Kernel</description>  
   <build>
@@ -39,7 +39,6 @@
         <artifactId>maven-compiler-plugin</artifactId>
         <configuration>
           <showDeprecation>false</showDeprecation>
-          
         </configuration>
       </plugin>
       <plugin>
@@ -88,15 +87,6 @@
         <artifactId>maven-jar-plugin</artifactId>
         <executions>
           <execution>
-            <id>jar</id>
-            <goals>
-              <goal>jar</goal>
-            </goals>
-            <configuration>
-          		<classesDirectory>${project.build.directory}/classes-jdk14</classesDirectory>
-            </configuration>
-          </execution>
-          <execution>
             <id>test-jar</id>
             <goals>
               <goal>test-jar</goal>
@@ -106,6 +96,9 @@
             </configuration>
           </execution>
         </executions>
+        <configuration>
+          <classesDirectory>${project.build.directory}/classes-jdk14</classesDirectory>
+        </configuration>
       </plugin>
       <plugin>
         <!-- Skip the tests here because the jdk14 tests have

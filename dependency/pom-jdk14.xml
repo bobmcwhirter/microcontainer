@@ -23,10 +23,8 @@
   <url>http://www.jboss.com/products/jbossmc</url>
   <description>JBoss Microcontainer Dependency</description>
   <scm>
-    <connection>scm:svn:http://anonsvn.jboss.org/repos/jbossas/projects/microcontainer/trunk/dependency
-      </connection>
-    <developerConnection>scm:svn:http://anonsvn.jboss.org/repos/jbossas/projects/microcontainer/trunk/dependency
-      </developerConnection>
+    <connection>scm:svn:http://anonsvn.jboss.org/repos/jbossas/projects/microcontainer/trunk/dependency</connection>
+    <developerConnection>scm:svn:http://anonsvn.jboss.org/repos/jbossas/projects/microcontainer/trunk/dependency</developerConnection>
     <url>http://viewvc.jboss.org/cgi-bin/viewvc.cgi/jbossas/projects/microcontainer/trunk/dependency</url>
   </scm>
   <build>
@@ -151,6 +149,7 @@
       <groupId>junit</groupId>
 	    <artifactId>junit</artifactId>
 	  </dependency>
+    
     <!-- Runtime dependencies -->
     <dependency>
       <groupId>jboss</groupId>

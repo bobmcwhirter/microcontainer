@@ -175,7 +175,7 @@
     <dependencies>
       <dependency>
         <groupId>org.jboss.microcontainer-jdk14</groupId>
-        <artifactId>jboss-aop-mc-int</artifactId>
+        <artifactId>jboss-aop-mc-int-jdk14</artifactId>
         <version>${project.version}</version>
       </dependency>
       <dependency>
@@ -202,80 +202,80 @@
       </dependency>
       <dependency>
         <groupId>org.jboss.microcontainer-jdk14</groupId>
-        <artifactId>jboss-deployers</artifactId>
+        <artifactId>jboss-deployers-jdk14</artifactId>
         <version>${project.version}</version>
       </dependency>
       <dependency>
         <groupId>org.jboss.microcontainer-jdk14</groupId>
-        <artifactId>jboss-deployers-core-spi</artifactId>
+        <artifactId>jboss-deployers-core-spi-jdk14</artifactId>
         <version>${project.version}</version>
       </dependency>
       <dependency>
         <groupId>org.jboss.microcontainer-jdk14</groupId>
-        <artifactId>jboss-deployers-core</artifactId>
+        <artifactId>jboss-deployers-core-jdk14</artifactId>
         <version>${project.version}</version>
       </dependency>
       <dependency>
         <groupId>org.jboss.microcontainer-jdk14</groupId>
-        <artifactId>jboss-deployers-core</artifactId>
-        <version>${project.version}</version>
-        <type>test-jar</type>
-        <scope>test</scope>
-      </dependency>
-      <dependency>
-        <groupId>org.jboss.microcontainer-jdk14</groupId>
-        <artifactId>jboss-deployers-client-spi</artifactId>
-        <version>${project.version}</version>
-      </dependency>
-      <dependency>
-        <groupId>org.jboss.microcontainer-jdk14</groupId>
-        <artifactId>jboss-deployers-client</artifactId>
-        <version>${project.version}</version>
-      </dependency>
-      <dependency>
-        <groupId>org.jboss.microcontainer-jdk14</groupId>
-        <artifactId>jboss-deployers-client</artifactId>
+        <artifactId>jboss-deployers-core-jdk14</artifactId>
         <version>${project.version}</version>
         <type>test-jar</type>
         <scope>test</scope>
       </dependency>
       <dependency>
         <groupId>org.jboss.microcontainer-jdk14</groupId>
-        <artifactId>jboss-deployers-structure-spi</artifactId>
+        <artifactId>jboss-deployers-client-spi-jdk14</artifactId>
         <version>${project.version}</version>
       </dependency>
       <dependency>
         <groupId>org.jboss.microcontainer-jdk14</groupId>
-        <artifactId>jboss-deployers-structure-spi</artifactId>
-        <version>${project.version}</version>
-        <type>test-jar</type>
-        <scope>test</scope>
-      </dependency>
-      <dependency>
-        <groupId>org.jboss.microcontainer-jdk14</groupId>
-        <artifactId>jboss-deployers-spi</artifactId>
+        <artifactId>jboss-deployers-client-jdk14</artifactId>
         <version>${project.version}</version>
       </dependency>
       <dependency>
         <groupId>org.jboss.microcontainer-jdk14</groupId>
-        <artifactId>jboss-deployers-impl</artifactId>
-        <version>${project.version}</version>
-      </dependency>
-      <dependency>
-        <groupId>org.jboss.microcontainer-jdk14</groupId>
-        <artifactId>jboss-deployers-impl</artifactId>
+        <artifactId>jboss-deployers-client-jdk14</artifactId>
         <version>${project.version}</version>
         <type>test-jar</type>
         <scope>test</scope>
       </dependency>
       <dependency>
         <groupId>org.jboss.microcontainer-jdk14</groupId>
-        <artifactId>jboss-deployers-vfs-spi</artifactId>
+        <artifactId>jboss-deployers-structure-spi-jdk14</artifactId>
         <version>${project.version}</version>
       </dependency>
       <dependency>
         <groupId>org.jboss.microcontainer-jdk14</groupId>
-        <artifactId>jboss-deployers-vfs</artifactId>
+        <artifactId>jboss-deployers-structure-spi-jdk14</artifactId>
+        <version>${project.version}</version>
+        <type>test-jar</type>
+        <scope>test</scope>
+      </dependency>
+      <dependency>
+        <groupId>org.jboss.microcontainer-jdk14</groupId>
+        <artifactId>jboss-deployers-spi-jdk14</artifactId>
+        <version>${project.version}</version>
+      </dependency>
+      <dependency>
+        <groupId>org.jboss.microcontainer-jdk14</groupId>
+        <artifactId>jboss-deployers-impl-jdk14</artifactId>
+        <version>${project.version}</version>
+      </dependency>
+      <dependency>
+        <groupId>org.jboss.microcontainer-jdk14</groupId>
+        <artifactId>jboss-deployers-impl-jdk14</artifactId>
+        <version>${project.version}</version>
+        <type>test-jar</type>
+        <scope>test</scope>
+      </dependency>
+      <dependency>
+        <groupId>org.jboss.microcontainer-jdk14</groupId>
+        <artifactId>jboss-deployers-vfs-spi-jdk14</artifactId>
+        <version>${project.version}</version>
+      </dependency>
+      <dependency>
+        <groupId>org.jboss.microcontainer-jdk14</groupId>
+        <artifactId>jboss-deployers-vfs-jdk14</artifactId>
         <version>${project.version}</version>
       </dependency>
       <dependency>
@@ -292,27 +292,27 @@
       </dependency>
       <dependency>
         <groupId>org.jboss.microcontainer-jdk14</groupId>
-        <artifactId>jboss-managed</artifactId>
+        <artifactId>jboss-managed-jdk14</artifactId>
         <version>${project.version}</version>
       </dependency>
       <dependency>
         <groupId>org.jboss.microcontainer-jdk14</groupId>
-        <artifactId>jboss-metatype</artifactId>
+        <artifactId>jboss-metatype-jdk14</artifactId>
         <version>${project.version}</version>
       </dependency>
       <dependency>
         <groupId>org.jboss.microcontainer-jdk14</groupId>
-        <artifactId>jboss-spring-int</artifactId>
+        <artifactId>jboss-spring-int-jdk14</artifactId>
         <version>${project.version}</version>
       </dependency>
       <dependency>
         <groupId>org.jboss.microcontainer-jdk14</groupId>
-        <artifactId>jboss-osgi-int</artifactId>
+        <artifactId>jboss-osgi-int-jdk14</artifactId>
         <version>${project.version}</version>
       </dependency>
       <dependency>
         <groupId>org.jboss.microcontainer-jdk14</groupId>
-        <artifactId>jboss-osgi-repository-api</artifactId>
+        <artifactId>jboss-osgi-repository-api-jdk14</artifactId>
         <version>${project.version}</version>
       </dependency>
       <dependency>
@@ -356,8 +356,8 @@
         <version>${version.jaxb.api}</version>
       </dependency>
       <dependency>
-        <groupId>org.jboss.aop</groupId>
-        <artifactId>jboss-aop</artifactId>
+        <groupId>org.jboss.aop-jdk14</groupId>
+        <artifactId>jboss-aop-jdk14</artifactId>
         <version>${version.jboss.aop}</version>
       </dependency>
       <dependency>

@@ -17,11 +17,11 @@
     <relativePath>../build/pom-jdk14.xml</relativePath>
   </parent>
   <modelVersion>4.0.0</modelVersion>
-  <artifactId>jboss-metatype-jdk14</artifactId>
+  <artifactId>jboss-deployers-core-jdk14</artifactId>
   <packaging>jar</packaging>
-  <name>JBoss Microcontainer Metatype JDK 1.4</name>
+  <name>JBoss Deployers Core JDK 1.4</name>
   <url>http://www.jboss.com/products/jbossmc</url>
-  <description>JBoss Microcontainer Metatype</description>
+  <description>JBoss Deployers Core</description>
   
   <build>
     <plugins>
@@ -57,6 +57,17 @@
         <groupId>org.apache.maven.plugins</groupId>
         <artifactId>maven-jar-plugin</artifactId>
         <version>2.1</version>
+        <executions>
+          <execution>
+            <id>test-jar</id>
+            <goals>
+              <goal>test-jar</goal>
+            </goals>
+            <configuration>
+              <classesDirectory>${project.build.directory}/test-classes-jdk14</classesDirectory>
+            </configuration>
+          </execution>
+        </executions>
         <configuration>
           <classesDirectory>${project.build.directory}/classes-jdk14</classesDirectory>
         </configuration>
@@ -137,7 +148,7 @@
     <!-- Global dependencies -->
     <dependency>
       <groupId>org.jboss.microcontainer-jdk14</groupId>
-      <artifactId>jboss-container-jdk14</artifactId>
+      <artifactId>jboss-deployers-core-spi-jdk14</artifactId>
     </dependency>
     <dependency>
 	    <groupId>org.jboss</groupId>

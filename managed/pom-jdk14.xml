@@ -17,11 +17,11 @@
     <relativePath>../build/pom-jdk14.xml</relativePath>
   </parent>
   <modelVersion>4.0.0</modelVersion>
-  <artifactId>jboss-metatype-jdk14</artifactId>
+  <artifactId>jboss-managed-jdk14</artifactId>
   <packaging>jar</packaging>
-  <name>JBoss Microcontainer Metatype JDK 1.4</name>
+  <name>JBoss Microcontainer Managed JDK 1.4</name>
   <url>http://www.jboss.com/products/jbossmc</url>
-  <description>JBoss Microcontainer Metatype</description>
+  <description>JBoss Microcontainer Managed</description>  
   
   <build>
     <plugins>
@@ -136,21 +136,29 @@
   <dependencies>
     <!-- Global dependencies -->
     <dependency>
+      <groupId>org.jboss.aop-jdk14</groupId>
+      <artifactId>jboss-aop-jdk14</artifactId>
+    </dependency>
+    <dependency>
       <groupId>org.jboss.microcontainer-jdk14</groupId>
       <artifactId>jboss-container-jdk14</artifactId>
     </dependency>
     <dependency>
-	    <groupId>org.jboss</groupId>
-	    <artifactId>jboss-common-core-jdk14</artifactId>
-	  </dependency>
-	  <!-- Test dependencies -->
+      <groupId>org.jboss.microcontainer-jdk14</groupId>
+      <artifactId>jboss-metatype-jdk14</artifactId>
+    </dependency>
+    <dependency>
+      <groupId>org.jboss</groupId>
+      <artifactId>jboss-common-logging-spi-jdk14</artifactId>
+    </dependency>
+    <!-- Test dependencies -->
     <dependency>
       <groupId>org.jboss</groupId>
       <artifactId>jboss-test-jdk14</artifactId>
     </dependency>
     <dependency>
-	    <groupId>junit</groupId>
-	    <artifactId>junit</artifactId>
+      <groupId>junit</groupId>
+      <artifactId>junit</artifactId>
     </dependency>
-  </dependencies>  
+  </dependencies>
 </project>
