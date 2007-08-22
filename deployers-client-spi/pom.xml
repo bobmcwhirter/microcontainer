@@ -15,12 +15,16 @@
   <dependencies>
     <!-- Global dependencies -->
     <dependency>
-    <groupId>org.jboss.microcontainer</groupId>
+      <groupId>org.jboss.microcontainer</groupId>
       <artifactId>jboss-deployers-core-spi</artifactId>
     </dependency>
     <dependency>
-    <groupId>org.jboss.microcontainer</groupId>
+      <groupId>org.jboss.microcontainer</groupId>
       <artifactId>jboss-managed</artifactId>
+    </dependency>
+    <dependency>
+      <groupId>jboss</groupId>
+      <artifactId>jboss-common-core</artifactId>
     </dependency>
   </dependencies>  
 </project>
