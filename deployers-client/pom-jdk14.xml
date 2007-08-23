@@ -64,7 +64,7 @@
               <goal>test-jar</goal>
             </goals>
             <configuration>
-              <classesDirectory>${project.build.directory}/test-classes-jdk14</classesDirectory>
+              <testClassesDirectory>${project.build.directory}/test-classes-jdk14</testClassesDirectory>
             </configuration>
           </execution>
         </executions>
