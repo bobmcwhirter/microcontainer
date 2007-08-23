@@ -156,7 +156,7 @@ public class SimpleMetaType<T extends Serializable> extends AbstractMetaType<T>
          return BIGDECIMAL;
       if (className.equals(BIGINTEGER.getClassName()))
          return BIGINTEGER;
-      if (className.equals(VOID.getClassName()))
+      if (className.equals(VOID.getClassName()) || className.equals(Void.TYPE.getName()))
          return VOID;
       if (className.equals(DATE.getClassName()))
          return DATE;
