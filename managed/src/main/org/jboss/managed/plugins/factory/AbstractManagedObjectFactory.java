@@ -46,6 +46,8 @@ import org.jboss.managed.api.ManagedOperation;
 import org.jboss.managed.api.ManagedParameter;
 import org.jboss.managed.api.ManagedProperty;
 import org.jboss.managed.api.ManagedOperation.Impact;
+import org.jboss.managed.api.annotation.AnnotationDefaults;
+import org.jboss.managed.api.annotation.ManagementComponent;
 import org.jboss.managed.api.annotation.ManagementConstants;
 import org.jboss.managed.api.annotation.ManagementObject;
 import org.jboss.managed.api.annotation.ManagementObjectID;
@@ -70,6 +72,7 @@ import org.jboss.metatype.api.values.ArrayValueSupport;
 import org.jboss.metatype.api.values.GenericValueSupport;
 import org.jboss.metatype.api.values.MetaValue;
 import org.jboss.metatype.api.values.MetaValueFactory;
+import org.jboss.metatype.api.values.SimpleValue;
 import org.jboss.reflect.spi.ClassInfo;
 import org.jboss.reflect.spi.MethodInfo;
 import org.jboss.reflect.spi.ParameterInfo;
@@ -219,6 +222,10 @@ public class AbstractManagedObjectFactory extends ManagedObjectFactory
          attachmentName = managementObject.attachmentName();
          if (attachmentName.length() == 0)
             attachmentName = classInfo.getName();
+         // Check for a component specification
+         ManagementComponent mc = managementObject.componentType();
+         if (mc.equals(AnnotationDefaults.COMP_TYPE) == false)
+            moAnnotations.put(ManagementComponent.class.getName(), mc);
          // ManagementObject level default factory classes
          moFieldsFactory = managementObject.fieldsFactory();
          moConstraintsFactory = managementObject.constraintsFactory();
@@ -248,7 +255,11 @@ public class AbstractManagedObjectFactory extends ManagedObjectFactory
             if (managementProperty != null)
                propAnnotations.put(ManagementProperty.class.getName(), managementProperty);
             if (id != null)
+            {
                propAnnotations.put(ManagementObjectID.class.getName(), id);
+               // This overrides the MO nameType
+               nameType = id.type();
+            }
             if (ref != null)
                propAnnotations.put(ManagementObjectRef.class.getName(), ref);
 
@@ -468,6 +479,20 @@ public class AbstractManagedObjectFactory extends ManagedObjectFactory
             MetaValue value = getValue(beanInfo, property, object);
             if (value != null)
                property.setField(Fields.VALUE, value);
+            // Need to look for a 
+            Map<String, Annotation> annotations = property.getAnnotations();
+            ManagementObjectID id = (ManagementObjectID) annotations.get(ManagementObjectID.class.getName());
+            if (id != null)
+            {
+               if (value.getMetaType().isSimple() == false)
+               {
+                  log.warn("Cannot create String name from non-Simple property: "+property);
+                  continue;
+               }
+               SimpleValue svalue = (SimpleValue) value;
+               String name = "" + svalue.getValue();
+               managedObject.setName(name);
+            }
          }
       }
    }
