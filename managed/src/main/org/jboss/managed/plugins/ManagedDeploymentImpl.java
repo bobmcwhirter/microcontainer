@@ -31,6 +31,7 @@ import java.util.Set;
 import org.jboss.managed.api.DeploymentTemplateInfo;
 import org.jboss.managed.api.ManagedComponent;
 import org.jboss.managed.api.ManagedDeployment;
+import org.jboss.managed.api.ManagedObject;
 import org.jboss.managed.api.ManagedProperty;
 
 /**
@@ -39,31 +40,42 @@ import org.jboss.managed.api.ManagedProperty;
  * @author Scott.Stark@jboss.org
  * @version $Revision$
  */
-public class ManagedDeploymentImpl extends BaseManagedObject
+public class ManagedDeploymentImpl
    implements ManagedDeployment, Serializable
 {
    private static final long serialVersionUID = 1;
    private String name;
+   private String simpleName;
    private Set<String> types;
    private DeploymentPhase phase;
    private ManagedDeployment parent;
+   private Map<String, ManagedObject> unitMOs;
+   private Map<String, ManagedProperty> properties;
    private Map<String, ManagedComponent> components = new HashMap<String, ManagedComponent>();
    private ArrayList<ManagedDeployment> children = new ArrayList<ManagedDeployment>();
    
-   public ManagedDeploymentImpl(String name, DeploymentPhase phase,
-         Map<String, ManagedProperty> properties,
-         ManagedDeployment parent)
+   public ManagedDeploymentImpl(String name, String simpleName, DeploymentPhase phase,
+         ManagedDeployment parent, Map<String, ManagedObject> unitMOs)
    {
       // TODO: simple vs full deployment name
-      super(name, properties);
       this.name = name;
       this.phase = phase;
       this.parent = parent;
+      this.unitMOs = unitMOs;
+      properties = new HashMap<String, ManagedProperty>();
+      for(ManagedObject mo : unitMOs.values())
+      {
+         properties.putAll(mo.getProperties());
+      }
    }
-   
+
    public String getName()
    {
       return name;
+   }
+   public String getSimpleName()
+   {
+      return simpleName;
    }
 
    public boolean addType(String type)
@@ -130,11 +142,40 @@ public class ManagedDeploymentImpl extends BaseManagedObject
       return null;
    }
 
+   public Map<String, ManagedProperty> getProperties()
+   {
+      return properties;
+   }
+
+   public ManagedProperty getProperty(String name)
+   {
+      return properties.get(name);
+   }
+
+   public Set<String> getPropertyNames()
+   {
+      return properties.keySet();
+   }
+
+   public Set<String> getManagedObjectNames()
+   {
+      return unitMOs.keySet();
+   }
+   public Map<String, ManagedObject> getManagedObjects()
+   {
+      return unitMOs;
+   }
+   public ManagedObject getManagedObject(String name)
+   {
+      return unitMOs.get(name);
+   }
+
    public String toString()
    {
       StringBuilder tmp = new StringBuilder(super.toString());
       tmp.append('{');
-      super.toString(tmp);
+      tmp.append("name=");
+      tmp.append(getName());
       tmp.append(", types=");
       tmp.append(types);
       tmp.append(", phase=");

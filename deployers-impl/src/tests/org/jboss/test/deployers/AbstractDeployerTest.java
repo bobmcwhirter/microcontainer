@@ -31,9 +31,11 @@ import org.jboss.deployers.client.spi.DeploymentFactory;
 import org.jboss.deployers.plugins.deployers.DeployerWrapper;
 import org.jboss.deployers.plugins.deployers.DeployersImpl;
 import org.jboss.deployers.plugins.main.MainDeployerImpl;
+import org.jboss.deployers.plugins.managed.DefaultManagedDeploymentCreator;
 import org.jboss.deployers.spi.attachments.PredeterminedManagedObjectAttachments;
 import org.jboss.deployers.spi.deployer.Deployer;
 import org.jboss.deployers.spi.deployer.Deployers;
+import org.jboss.deployers.spi.deployer.managed.ManagedDeploymentCreator;
 import org.jboss.deployers.spi.structure.ContextInfo;
 import org.jboss.deployers.structure.spi.DeploymentContext;
 import org.jboss.deployers.structure.spi.DeploymentUnit;
@@ -70,6 +72,8 @@ public abstract class AbstractDeployerTest extends BaseTestCase
       mainDeployer.setStructuralDeployers(structure);
       Deployers theDeployers = createDeployers();
       mainDeployer.setDeployers(theDeployers);
+      ManagedDeploymentCreator mdc = createManagedDeploymentCreator();
+      mainDeployer.setMgtDeploymentCreator(mdc);
       if (deployers != null)
       {
          for (Deployer deployer : deployers)
@@ -82,7 +86,10 @@ public abstract class AbstractDeployerTest extends BaseTestCase
    {
       return new AbstractStructureBuilder();
    }
-   
+   protected ManagedDeploymentCreator createManagedDeploymentCreator()
+   {
+      return new DefaultManagedDeploymentCreator();
+   }
    protected StructuralDeployers createStructuralDeployers()
    {
       StructureBuilder builder = createStructureBuilder();

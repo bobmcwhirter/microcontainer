@@ -63,7 +63,7 @@ public @interface ManagementProperty
    boolean ignored() default false;
 
    /** The views this property should be used in */
-   ViewUse[] use() default {ViewUse.RUNTIME};
+   ViewUse[] use() default {ViewUse.CONFIGURATION};
 
    /** The class to use for the ManagedProperty implementation */
    Class<? extends ManagedProperty> propertyFactory() default NULL_PROPERTY_FACTORY.class;

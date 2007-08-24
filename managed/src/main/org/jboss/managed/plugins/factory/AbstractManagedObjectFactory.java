@@ -460,10 +460,10 @@ public class AbstractManagedObjectFactory extends ManagedObjectFactory
    {
       BeanInfo beanInfo = configuration.getBeanInfo(object.getClass());
 
-      Set<ManagedProperty> properties = managedObject.getProperties();
+      Map<String, ManagedProperty> properties = managedObject.getProperties();
       if (properties != null && properties.size() > 0)
       {
-         for (ManagedProperty property : properties)
+         for (ManagedProperty property : properties.values())
          {
             MetaValue value = getValue(beanInfo, property, object);
             if (value != null)

@@ -1,6 +1,6 @@
 /*
  * JBoss, Home of Professional Open Source
- * Copyright 2006, Red Hat Middleware LLC, and individual contributors
+ * Copyright 2007, Red Hat Middleware LLC, and individual contributors
  * by the @authors tag. See the copyright.txt in the distribution for a
  * full listing of individual contributors.
  *
@@ -19,37 +19,23 @@
  * Software Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA
  * 02110-1301 USA, or see the FSF site: http://www.fsf.org.
  */
-package org.jboss.test.deployers.deployer.support;
-
-import java.io.Serializable;
-
-import org.jboss.managed.api.annotation.ManagementObject;
-import org.jboss.managed.api.annotation.ManagementObjectID;
-import org.jboss.managed.api.annotation.ManagementOperation;
+package org.jboss.managed.api.annotation;
 
 /**
+ * Defaults for annotations
+ * 
  * @author Scott.Stark@jboss.org
  * @version $Revision$
  */
-@ManagementObject
-public class SecurityDeployment implements Serializable
+public class Defaults
 {
-   private static final long serialVersionUID = 1;
-   private String domain;
+   @ManagementComponent(type="", subtype="")
+   private static class COMP_TYPE_CLASS {}
+   /** The ManagementComponent uninitialized default */
+   public static final ManagementComponent COMP_TYPE = defaultCompType();
 
-   @ManagementObjectID(type="SecurityDomain")
-   public String getDomainName()
+   public static synchronized ManagementComponent defaultCompType()
    {
-      return domain;
-   }
-   public void setDomainName(String name)
-   {
-      this.domain = name;
-   }
-
-   @ManagementOperation
-   public void flush()
-   {
-      
+      return COMP_TYPE_CLASS.class.getAnnotation(ManagementComponent.class);
    }
 }

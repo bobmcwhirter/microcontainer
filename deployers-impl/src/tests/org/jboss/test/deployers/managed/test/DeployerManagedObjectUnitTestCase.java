@@ -144,14 +144,9 @@ public class DeployerManagedObjectUnitTestCase extends AbstractDeployerTest
       ManagedObject mo = mof.createManagedObject(DSMetaData.class);
 
       // Validate the expected properties
-      Set<ManagedProperty> props = mo.getProperties();
-      assertEquals(2, props.size());
-      HashMap<String, ManagedProperty> propsMap = new HashMap<String, ManagedProperty>();
-      for(ManagedProperty prop : props)
-      {
-         propsMap.put(prop.getName(), prop);
-      }
-      log.info("DSMetaData properties: "+props);
+      Map<String, ManagedProperty> propsMap = mo.getProperties();
+      assertEquals(2, propsMap.size());
+      log.info("DSMetaData properties: "+propsMap);
 
       // display-name
       ManagedProperty displayName = propsMap.get("display-name");
@@ -173,14 +168,9 @@ public class DeployerManagedObjectUnitTestCase extends AbstractDeployerTest
       // Validate the ConnMetaData ManagedObject
       ManagedObject localConnMO = ManagedObject.class.cast(value.getValue(0));
       assertEquals(ConnMetaData.class.getName(), localConnMO.getName());
-      props = localConnMO.getProperties();
-      assertEquals(8, props.size());
-      propsMap.clear();
-      for(ManagedProperty prop : props)
-      {
-         propsMap.put(prop.getName(), prop);
-      }
-      log.info("ConnMetaData properties: "+props);
+      propsMap = localConnMO.getProperties();
+      assertEquals(8, propsMap.size());
+      log.info("ConnMetaData properties: "+propsMap);
       ManagedProperty dsType = propsMap.get("datasource-type");
       assertNotNull(dsType);
       Set<MetaValue> dsTypeValues = dsType.getLegalValues();
@@ -204,14 +194,9 @@ public class DeployerManagedObjectUnitTestCase extends AbstractDeployerTest
       ManagedObject mo = mof.initManagedObject(dsmd, null, null);
 
       // Validate the expected properties
-      Set<ManagedProperty> props = mo.getProperties();
-      assertEquals(2, props.size());
-      HashMap<String, ManagedProperty> propsMap = new HashMap<String, ManagedProperty>();
-      for(ManagedProperty prop : props)
-      {
-         propsMap.put(prop.getName(), prop);
-      }
-      log.info("DSMetaData properties: "+props);
+      Map<String, ManagedProperty> propsMap = mo.getProperties();
+      assertEquals(2, propsMap.size());
+      log.info("DSMetaData properties: "+propsMap);
 
       // display-name
       ManagedProperty displayName = propsMap.get("display-name");
@@ -244,28 +229,18 @@ public class DeployerManagedObjectUnitTestCase extends AbstractDeployerTest
       assertNotNull(xaConnMO);
 
       // Validate the LocalDataSourceMetaData ManagedObject
-      props = localConnMO.getProperties();
-      assertEquals(8, props.size());
-      propsMap.clear();
-      for(ManagedProperty prop : props)
-      {
-         propsMap.put(prop.getName(), prop);
-      }
-      log.info("LocalDataSourceMetaData properties: "+props);
+      propsMap = localConnMO.getProperties();
+      assertEquals(8, propsMap.size());
+      log.info("LocalDataSourceMetaData properties: "+propsMap);
       ManagedProperty dsType = propsMap.get("datasource-type");
       assertNotNull(dsType);
       Set<MetaValue> dsTypeValues = dsType.getLegalValues();
       assertTrue(dsTypeValues.containsAll(AllowedDsTypes.values));
 
       // Validate the XADataSourceMetaData ManagedObject
-      props = xaConnMO.getProperties();
-      assertEquals(10, props.size());
-      propsMap.clear();
-      for(ManagedProperty prop : props)
-      {
-         propsMap.put(prop.getName(), prop);
-      }
-      log.info("XADataSourceMetaData properties: "+props);
+      propsMap = xaConnMO.getProperties();
+      assertEquals(10, propsMap.size());
+      log.info("XADataSourceMetaData properties: "+propsMap);
       ManagedProperty xaDataSourceClass = propsMap.get("xaDataSourceClass");
       assertNotNull(xaDataSourceClass);
       ManagedProperty xaResourceTimeout = propsMap.get("xaResourceTimeout");

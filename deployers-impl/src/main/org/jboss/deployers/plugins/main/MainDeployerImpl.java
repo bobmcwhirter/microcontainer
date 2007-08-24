@@ -32,7 +32,6 @@ import java.util.concurrent.atomic.AtomicBoolean;
 
 import org.jboss.deployers.client.spi.Deployment;
 import org.jboss.deployers.client.spi.main.MainDeployer;
-//import org.jboss.deployers.plugins.managed.DefaultManagedDeploymentCreator;
 import org.jboss.deployers.spi.DeploymentException;
 import org.jboss.deployers.spi.DeploymentState;
 import org.jboss.deployers.spi.deployer.Deployers;
@@ -44,7 +43,6 @@ import org.jboss.deployers.structure.spi.main.MainDeployerStructure;
 import org.jboss.logging.Logger;
 import org.jboss.managed.api.ManagedDeployment;
 import org.jboss.managed.api.ManagedObject;
-import org.jboss.managed.plugins.ManagedDeploymentImpl;
 import org.jboss.util.graph.Graph;
 import org.jboss.util.graph.Vertex;
 
@@ -53,7 +51,7 @@ import org.jboss.util.graph.Vertex;
  * 
  * @author <a href="adrian@jboss.com">Adrian Brock</a>
  * @author Scott.Stark@jboss.org
- * @version $Revision: 1.1 $
+ * @version $Revision$
  */
 public class MainDeployerImpl implements MainDeployer, MainDeployerStructure
 {
@@ -68,7 +66,8 @@ public class MainDeployerImpl implements MainDeployer, MainDeployerStructure
    
    /** The structural deployers */
    private StructuralDeployers structuralDeployers;
-   private ManagedDeploymentCreator mgtDeploymentCreator = null; // new DefaultManagedDeploymentCreator();
+   /** The ManagedDeploymentCreator plugin */
+   private ManagedDeploymentCreator mgtDeploymentCreator = null;
    
    /** The deployments by name */
    private Map<String, DeploymentContext> topLevelDeployments = new ConcurrentHashMap<String, DeploymentContext>();
@@ -132,6 +131,16 @@ public class MainDeployerImpl implements MainDeployer, MainDeployerStructure
       if (deployers == null)
          throw new IllegalArgumentException("Null deployers");
       structuralDeployers = deployers;
+   }
+
+   public ManagedDeploymentCreator getMgtDeploymentCreator()
+   {
+      return mgtDeploymentCreator;
+   }
+
+   public void setMgtDeploymentCreator(ManagedDeploymentCreator mgtDeploymentCreator)
+   {
+      this.mgtDeploymentCreator = mgtDeploymentCreator;
    }
 
    public Deployment getDeployment(String name)
@@ -420,8 +429,13 @@ public class MainDeployerImpl implements MainDeployer, MainDeployerStructure
       if (context == null)
          throw new IllegalArgumentException("Context not found: " + name);
       
-      ManagedDeployment md = mgtDeploymentCreator.build(context.getDeploymentUnit());
-      return md;
+      Map<String, ManagedObject> rootMOs = getManagedObjects(context);
+      ManagedDeployment root = mgtDeploymentCreator.build(context.getDeploymentUnit(), rootMOs, null);
+      for (DeploymentContext childContext : context.getChildren())
+      {
+         processManagedDeployment(childContext, root);
+      }
+      return root;
    }
 
    public Map<String, ManagedObject> getManagedObjects(String name) throws DeploymentException
@@ -476,6 +490,25 @@ public class MainDeployerImpl implements MainDeployer, MainDeployerStructure
          vertex.setData(managedObjects);
          graph.addEdge(parent, vertex, 0);
          processManagedObjects(child, graph, vertex);
+      }
+   }
+
+   /**
+    * Recursively process the DeploymentContext into ManagedDeployments.
+    * 
+    * @param context
+    * @param parent
+    * @throws DeploymentException
+    */
+   protected void processManagedDeployment(DeploymentContext context, ManagedDeployment parent)
+      throws DeploymentException
+   {
+      for (DeploymentContext childContext : context.getChildren())
+      {
+         DeploymentUnit childUnit = childContext.getDeploymentUnit();
+         Map<String, ManagedObject> childMOs = getManagedObjects(childContext);         
+         ManagedDeployment childMD = mgtDeploymentCreator.build(childUnit, childMOs, parent);
+         processManagedDeployment(childContext, childMD);
       }
    }
 

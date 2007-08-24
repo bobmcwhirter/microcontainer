@@ -21,6 +21,7 @@
 */
 package org.jboss.test.deployers.managed.support;
 
+import java.util.Collection;
 import java.util.Map;
 import java.util.Set;
 
@@ -63,7 +64,7 @@ public class TestManagedObjectDeployer extends AbstractDeployer implements Manag
          attachment = attachment.clone();
          ManagedObjectImpl managedObject = new ManagedObjectImpl(TestAttachment.class.getName());
          managedObject.setAttachment(attachment);
-         Set<ManagedProperty> properties = managedObject.getProperties();
+         Collection<ManagedProperty> properties = managedObject.getProperties().values();
          properties.add(new ManagedPropertyImpl(managedObject, new TestFields(attachment, "string1")));
          properties.add(new ManagedPropertyImpl(managedObject, new TestFields(attachment, "string2")));
          managedObjects.put(TestAttachment.class.getName(), managedObject);

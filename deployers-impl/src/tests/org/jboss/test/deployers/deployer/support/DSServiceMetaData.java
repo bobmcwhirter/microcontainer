@@ -21,34 +21,57 @@
  */
 package org.jboss.test.deployers.deployer.support;
 
-import java.io.Serializable;
-
+import org.jboss.managed.api.ManagedOperation.Impact;
 import org.jboss.managed.api.annotation.ManagementObject;
 import org.jboss.managed.api.annotation.ManagementObjectID;
 import org.jboss.managed.api.annotation.ManagementOperation;
+import org.jboss.managed.api.annotation.ManagementProperty;
 
 /**
+ * Sample mbean service metadata to test tieing together runtime
+ * properties/operations to the root DSMetaData ManagedObject
  * @author Scott.Stark@jboss.org
  * @version $Revision$
  */
-@ManagementObject
-public class SecurityDeployment implements Serializable
+@ManagementObject(isRuntime=true)
+public class DSServiceMetaData
 {
-   private static final long serialVersionUID = 1;
-   private String domain;
+   /** The name of the ManagedObject this runtime view augments */
+   private String managementName;
+   private String runtimeProp1;
+   private int runtimeProp2;
 
-   @ManagementObjectID(type="SecurityDomain")
-   public String getDomainName()
+   @ManagementObjectID(type="DataSource")
+   public String getManagementName()
    {
-      return domain;
+      return managementName;
    }
-   public void setDomainName(String name)
+   public void setManagementName(String managementName)
    {
-      this.domain = name;
+      this.managementName = managementName;
    }
 
-   @ManagementOperation
-   public void flush()
+   @ManagementProperty
+   public String getRuntimeProp1()
+   {
+      return runtimeProp1;
+   }
+   public void setRuntimeProp1(String runtimeProp1)
+   {
+      this.runtimeProp1 = runtimeProp1;
+   }
+   @ManagementProperty
+   public int getRuntimeProp2()
+   {
+      return runtimeProp2;
+   }
+   public void setRuntimeProp2(int runtimeProp2)
+   {
+      this.runtimeProp2 = runtimeProp2;
+   }
+
+   @ManagementOperation(description="Flush the connection pool", impact=Impact.WriteOnly)
+   public void flushPool()
    {
       
    }

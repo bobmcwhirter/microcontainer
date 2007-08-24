@@ -21,50 +21,20 @@
  */
 package org.jboss.managed.api;
 
-import java.util.Map;
-import java.util.Set;
-
-import org.jboss.managed.api.ManagedProperty;
-
 /**
  * A runtime component associated with a deployment.
  * 
  * @author Scott.Stark@jboss.org
  * @version $Revision$
  */
-public interface ManagedComponent
+public interface ManagedComponent extends ManagedObject
 {
-   /**
-    * The component name, typically only unique within the ManagedDeployment
-    * @return omponent name
-    */
-   public String getName();
    /**
     * The component classification as a type/subtype.
     * @return component type.
     */
    public ComponentType getType();
-   /**
-    * Get the managed property names
-    * 
-    * @return the property names
-    */
-   public Set<String> getPropertyNames();
-   /**
-    * Get a property
-    * 
-    * @param name the name
-    * @return the property
-    */
-   public ManagedProperty getProperty(String name);
    
-   /**
-    * Get the properties
-    * 
-    * @return the properties
-    */
-   public Map<String, ManagedProperty> getProperties();
-
    /**
     * The deployment the component is associated with.
     * @return component deployment.

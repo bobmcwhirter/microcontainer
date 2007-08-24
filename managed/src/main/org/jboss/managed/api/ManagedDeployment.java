@@ -100,6 +100,15 @@ public interface ManagedDeployment
    public Map<String, ManagedProperty> getProperties();
 
    /**
+    * Get the managed object names
+    * 
+    * @return the property names
+    */
+   public Set<String> getManagedObjectNames();
+   public Map<String, ManagedObject> getManagedObjects();
+   public ManagedObject getManagedObject(String name);
+
+   /**
     * 
     * @return the parent
     */

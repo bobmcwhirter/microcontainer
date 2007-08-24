@@ -33,9 +33,10 @@ import java.lang.annotation.Target;
  * @author Scott.Stark@jboss.org
  * @version $Revision$
  */
-@Target({ElementType.METHOD})
+@Target({ElementType.TYPE})
 @Retention(RetentionPolicy.RUNTIME)
 public @interface ManagementComponent
 {
-   String name() default "";
+   String type();
+   String subtype();
 }

@@ -1,6 +1,6 @@
 /*
  * JBoss, Home of Professional Open Source
- * Copyright 2006, Red Hat Middleware LLC, and individual contributors
+ * Copyright 2007, Red Hat Middleware LLC, and individual contributors
  * by the @authors tag. See the copyright.txt in the distribution for a
  * full listing of individual contributors.
  *
@@ -22,9 +22,12 @@
 package org.jboss.managed.plugins;
 
 import java.io.Serializable;
+import java.lang.annotation.Annotation;
 import java.util.Map;
 import java.util.Set;
 
+import org.jboss.managed.api.ManagedObject;
+import org.jboss.managed.api.ManagedOperation;
 import org.jboss.managed.api.ManagedProperty;
 
 /**
@@ -32,68 +35,61 @@ import org.jboss.managed.api.ManagedProperty;
  * @author Scott.Stark@jboss.org
  * @version $Revision$
  */
-public class BaseManagedObject implements Serializable
+public class DelegateManagedObjectImpl
+   implements ManagedObject
 {
    private static final long serialVersionUID = 1;
-   private String simpleName;
-   private Map<String, ManagedProperty> properties;
+   private ManagedObject delegate;
 
-   public BaseManagedObject(String simpleName, Map<String, ManagedProperty> properties)
+   public DelegateManagedObjectImpl(ManagedObject delegate)
    {
-      this.simpleName = simpleName;
-      this.properties = properties;
+      this.delegate = delegate;
    }
 
-   public String getSimpleName()
+   public Map<String, Annotation> getAnnotations()
    {
-      return simpleName;
+      return delegate.getAnnotations();
    }
+
+   public Serializable getAttachment()
+   {
+      return delegate.getAttachment();
+   }
+
+   public String getAttachmentName()
+   {
+      return delegate.getAttachmentName();
+   }
+
    public String getName()
    {
-      return simpleName;
+      return delegate.getName();
    }
 
-   /**
-    * Get the managed property names
-    * 
-    * @return the property names
-    */
-   public Set<String> getPropertyNames()
+   public String getNameType()
    {
-      return properties.keySet();
+      return delegate.getNameType();
    }
 
-   /**
-    * Get a property
-    * 
-    * @param name the name
-    * @return the property
-    */
-   public ManagedProperty getProperty(String name)
+   public Set<ManagedOperation> getOperations()
    {
-      ManagedProperty prop = properties.get(name);
-      return prop;
+      return delegate.getOperations();
    }
-   
-   /**
-    * Get the properties
-    * 
-    * @return the properties
-    */
+
    public Map<String, ManagedProperty> getProperties()
    {
-      return properties;
+      return delegate.getProperties();
    }
 
-   /**
-    * Append the name and props 
-    * @param sb the buffer to append the name and props to
-    */
-   protected void toString(StringBuilder sb)
+   public ManagedProperty getProperty(String name)
    {
-      sb.append("simpleName=");
-      sb.append(simpleName);
-      sb.append(", properties=");
-      sb.append(properties);
+      return delegate.getProperty(name);
    }
+
+   public Set<String> getPropertyNames()
+   {
+      return delegate.getPropertyNames();
+   }
+
+   
 }

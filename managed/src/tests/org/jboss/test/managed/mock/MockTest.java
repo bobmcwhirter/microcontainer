@@ -95,7 +95,7 @@ public class MockTest extends ManagedTest
       getLog().debug(mock.prettyPrint());
       
       getLog().debug("Displaying properties...");
-      for (ManagedProperty property : mo.getProperties())
+      for (ManagedProperty property : mo.getProperties().values())
          getLog().debug(property.getName() + "=" + property.getValue());
       
       ManagedProperty jndiName = mo.getProperty("jndi-name");

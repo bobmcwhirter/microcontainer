@@ -45,17 +45,32 @@ import org.jboss.managed.spi.factory.ManagedPropertyConstraintsPopulatorFactory;
 @Retention(RetentionPolicy.RUNTIME)
 public @interface ManagementObject
 {
-   /** The name used for ManagementObjectRef resolution */
+   /** The name used for ManagementObjectRef resolution. Generally
+    * this is taken from a property annotated with
+    * {@linkplain ManagementObjectID}.
+    */
    String name() default ManagementConstants.GENERATED;
-   /** The name type used for ManagementObjectRef resolution */
+   /** The name type used for ManagementObjectRef resolution. Generally
+    * this is taken from a property annotated with
+    * {@linkplain ManagementObjectID}.
+    */
    String type() default "";
    /** The metadata attachment name for the ManagedObject */
    String attachmentName() default "";
+   /** Is this a runtime extension of another ManagedObject. This
+    * is used to tie together
+    */
+   boolean isRuntime() default false;
+
+   /** The component type for MCs that are ManagedComponents */
+   ManagementComponent componentType() default @ManagementComponent(type="", subtype="");
 
    /** What properties to include */
    ManagementProperties properties() default ManagementProperties.ALL;
 
-   /** The exposed operations */
+   /** The exposed operations. If empty
+    * TODO: 
+    */
    ManagementOperation[] operations() default {};
 
    /** The class to use for the ManagedProperty implementation */

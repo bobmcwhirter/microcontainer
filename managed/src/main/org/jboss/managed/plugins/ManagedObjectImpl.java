@@ -57,7 +57,7 @@ public class ManagedObjectImpl implements ManagedObject
    /** The object annotations <Class name, Annotation> */
    private Map<String, Annotation> annotations = Collections.emptyMap();
    /** The properties */
-   private Set<ManagedProperty> properties;
+   private Map<String, ManagedProperty> properties;
    /** The operations */
    private Set<ManagedOperation> operations;
 
@@ -68,7 +68,7 @@ public class ManagedObjectImpl implements ManagedObject
     */
    public ManagedObjectImpl(String name)
    {
-      this(name, new HashSet<ManagedProperty>(), new HashSet<ManagedOperation>(), null);
+      this(name, name, null, toMap(null), new HashSet<ManagedOperation>(), null);
    }
    
    /**
@@ -79,7 +79,7 @@ public class ManagedObjectImpl implements ManagedObject
     */
    public ManagedObjectImpl(String name, Set<ManagedProperty> properties)
    {
-      this(name, properties, new HashSet<ManagedOperation>(), null);
+      this(name, name, null, properties, new HashSet<ManagedOperation>(), null);
    }
 
    /**
@@ -92,18 +92,37 @@ public class ManagedObjectImpl implements ManagedObject
    public ManagedObjectImpl(String name, Set<ManagedProperty> properties,
          HashSet<ManagedOperation> operations)
    {
-      this(name, properties, operations, null);
+      this(name, name, null, properties, operations, null);
    }
 
    /**
     * Create a new ManagedObjectImpl
     * 
     * @param name - The object name used for ManagementRef resolution
+    * @param nameType - The name type/qualifier used for ManagementRef resolution
+    * @param attachmentName the attachment name
     * @param properties the properties
     * @param operations the operations
     * @param attachment the attachment
     */
-   public ManagedObjectImpl(String name, Set<ManagedProperty> properties,
+   public ManagedObjectImpl(String name, String nameType,
+         String attachmentName,
+         Set<ManagedProperty> properties,
+         HashSet<ManagedOperation> operations, Serializable attachment)
+   {
+      if (name == null)
+         throw new IllegalArgumentException("Null name");
+      if (properties == null)
+         throw new IllegalArgumentException("Null properties");
+      
+      this.name = name;
+      this.properties = toMap(properties);
+      this.operations = operations;
+      setAttachment(attachment);
+   }
+   public ManagedObjectImpl(String name, String nameType,
+         String attachmentName,
+         Map<String, ManagedProperty> properties,
          HashSet<ManagedOperation> operations, Serializable attachment)
    {
       if (name == null)
@@ -114,30 +133,6 @@ public class ManagedObjectImpl implements ManagedObject
       this.name = name;
       this.properties = properties;
       this.operations = operations;
-      setAttachment(attachment);
-   }
-
-   /**
-    * Create a new ManagedObjectImpl
-    * 
-    * @param name - The object name used for ManagementRef resolution
-    * @param nameType - The name type/qualifier used for ManagementRef resolution
-    * @param attachmentName the attachment name
-    * @param properties the properties 
-    * @param attachment the attachment
-    */
-   public ManagedObjectImpl(String name, String nameType, String attachmentName,
-         Set<ManagedProperty> properties, Serializable attachment)
-   {
-      if (name == null)
-         throw new IllegalArgumentException("Null name");
-      if (properties == null)
-         throw new IllegalArgumentException("Null properties");
-      
-      this.name = name;
-      this.nameType = nameType;
-      this.attachmentName = attachmentName;
-      this.properties = properties;
       setAttachment(attachment);
    }
 
@@ -186,10 +181,7 @@ public class ManagedObjectImpl implements ManagedObject
 
    public Set<String> getPropertyNames()
    {
-      Set<String> result = new HashSet<String>(properties.size());
-      for (ManagedProperty property : properties)
-         result.add(property.getName());
-      return result;
+      return properties.keySet();
    }
    
    public ManagedProperty getProperty(String name)
@@ -197,15 +189,10 @@ public class ManagedObjectImpl implements ManagedObject
       if (name == null)
          throw new IllegalArgumentException("Null name");
       
-      for (ManagedProperty property : properties)
-      {
-         if (name.equals(property.getName()))
-            return property;
-      }
-      return null;
+      return properties.get(name);
    }
    
-   public Set<ManagedProperty> getProperties()
+   public Map<String, ManagedProperty> getProperties()
    {
       return properties;
    }
@@ -252,5 +239,34 @@ public class ManagedObjectImpl implements ManagedObject
    public String toString()
    {
       return "ManagedObject{" + name + "}"; 
+   }
+
+   /**
+    * Append the name and props 
+    * @param sb the buffer to append the name and props to
+    */
+   protected void toString(StringBuilder sb)
+   {
+      sb.append("name=");
+      sb.append(name);
+      sb.append(", nameType=");
+      sb.append(nameType);
+      sb.append(", attachmentName=");
+      sb.append(attachmentName);
+      sb.append(", properties=");
+      sb.append(properties);
+   }
+
+   private static Map<String, ManagedProperty> toMap(Set<ManagedProperty> props)
+   {
+      HashMap<String, ManagedProperty> properties = new HashMap<String, ManagedProperty>();
+      if (props != null)
+      {
+         for (ManagedProperty prop : props)
+         {
+            properties.put(prop.getName(), prop);
+         }
+      }
+      return properties;
    }
 }

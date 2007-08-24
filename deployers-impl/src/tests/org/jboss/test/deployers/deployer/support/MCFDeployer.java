@@ -5,18 +5,15 @@ import java.util.Map;
 
 import org.jboss.deployers.spi.DeploymentException;
 import org.jboss.deployers.spi.deployer.helpers.AbstractSimpleRealDeployer;
-import org.jboss.deployers.spi.deployer.managed.ManagedDeploymentCreator;
 import org.jboss.deployers.spi.deployer.managed.ManagedObjectCreator;
 import org.jboss.deployers.structure.spi.DeploymentUnit;
-import org.jboss.managed.api.ManagedDeployment;
 import org.jboss.managed.api.ManagedObject;
 import org.jboss.managed.api.factory.ManagedObjectFactory;
 import org.jboss.managed.plugins.factory.ManagedObjectFactoryBuilder;
 
 public class MCFDeployer
    extends AbstractSimpleRealDeployer<DSMetaData>
-   implements ManagedDeploymentCreator,
-   ManagedObjectCreator
+   implements ManagedObjectCreator
 
 {
    public MCFDeployer()
@@ -45,12 +42,6 @@ public class MCFDeployer
                managedObjects.put(mo.getName(), mo);
          }
       }
-   }
-
-   public ManagedDeployment build(DeploymentUnit unit)
-   {
-      ManagedDeployment md = null;
-      return md;
    }
 
 }

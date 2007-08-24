@@ -21,6 +21,7 @@
 */
 package org.jboss.test.managed.mock;
 
+import java.util.Map;
 import java.util.Set;
 
 import javax.xml.parsers.DocumentBuilder;
@@ -74,11 +75,11 @@ public class MockDataSourceManagedObject extends ManagedObjectImpl
          throw new RuntimeException("Error creating dom", e);
       }
       
-      Set<ManagedProperty> properties = getProperties();
-      properties.add(new ManagedPropertyImpl(this, new MockDOMFields(element, "jndi-name")));
-      properties.add(new ManagedPropertyImpl(this, new MockDOMFields(element, "connection-url")));
-      properties.add(new ManagedPropertyImpl(this, new MockDOMFields(element, "user")));
-      properties.add(new ManagedPropertyImpl(this, new MockDOMFields(element, "password")));
+      Map<String, ManagedProperty> properties = getProperties();
+      properties.put("jndi-name", new ManagedPropertyImpl(this, new MockDOMFields(element, "jndi-name")));
+      properties.put("connection-url", new ManagedPropertyImpl(this, new MockDOMFields(element, "connection-url")));
+      properties.put("user", new ManagedPropertyImpl(this, new MockDOMFields(element, "user")));
+      properties.put("password", new ManagedPropertyImpl(this, new MockDOMFields(element, "password")));
    }
    
    /**

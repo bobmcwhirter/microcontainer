@@ -91,7 +91,7 @@ public interface ManagedObject extends Serializable
     * 
     * @return the properties
     */
-   Set<ManagedProperty> getProperties();
+   Map<String, ManagedProperty> getProperties();
 
    /**
     * Get the operations

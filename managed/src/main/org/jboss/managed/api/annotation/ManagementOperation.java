@@ -38,10 +38,8 @@ import org.jboss.managed.api.ManagedOperation.Impact;
 @Retention(RetentionPolicy.RUNTIME)
 public @interface ManagementOperation
 {
-   /** The runtime target for the operation. TODO: how is this resolved? */
-   String target() ;
    /** The name of the operation */
-   String name();
+   String name() default "";
    /** The detyped signature (ala jmx) of the operation */
    String[] signature() default {};
 

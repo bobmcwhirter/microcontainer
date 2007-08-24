@@ -21,8 +21,11 @@
 */
 package org.jboss.deployers.spi.deployer.managed;
 
+import java.util.Map;
+
 import org.jboss.deployers.structure.spi.DeploymentUnit;
 import org.jboss.managed.api.ManagedDeployment;
+import org.jboss.managed.api.ManagedObject;
 
 /**
  * A plugin interface for building up a ManagedDeployment.
@@ -41,5 +44,6 @@ public interface ManagedDeploymentCreator
     * @param unit - the deployment unit to process
     * @param md - the unit ManagedDeployment
     */
-   public ManagedDeployment build(DeploymentUnit unit);
+   public ManagedDeployment build(DeploymentUnit unit, Map<String, ManagedObject> unitMOs,
+         ManagedDeployment parent);
 }

@@ -22,11 +22,14 @@
 package org.jboss.managed.plugins;
 
 import java.io.Serializable;
+import java.util.HashSet;
 import java.util.Map;
 
 import org.jboss.managed.api.ComponentType;
 import org.jboss.managed.api.ManagedComponent;
 import org.jboss.managed.api.ManagedDeployment;
+import org.jboss.managed.api.ManagedObject;
+import org.jboss.managed.api.ManagedOperation;
 import org.jboss.managed.api.ManagedProperty;
 
 /**
@@ -34,7 +37,7 @@ import org.jboss.managed.api.ManagedProperty;
  * @author Scott.Stark@jboss.org
  * @version $Revision$
  */
-public class ManagedComponentImpl extends BaseManagedObject
+public class ManagedComponentImpl extends DelegateManagedObjectImpl
    implements ManagedComponent, Serializable
 {
    private static final long serialVersionUID = 1;
@@ -42,13 +45,14 @@ public class ManagedComponentImpl extends BaseManagedObject
    private ManagedDeployment owner;
    private ComponentType type;
    
-   ManagedComponentImpl(String name, ComponentType type, Map<String, ManagedProperty> properties, ManagedDeployment owner)
+   public ManagedComponentImpl(ComponentType type, ManagedDeployment owner,
+         ManagedObject mo)
    {
-      super(name, properties);
+      super(mo);
       this.type = type;
       this.owner = owner;
    }
-   
+
    public ManagedDeployment getDeployment()
    {
       return owner;
@@ -63,7 +67,8 @@ public class ManagedComponentImpl extends BaseManagedObject
    {
       StringBuilder tmp = new StringBuilder(super.toString());
       tmp.append('{');
-      super.toString(tmp);
+      tmp.append("name=");
+      tmp.append(super.getName());
       tmp.append(", type=");
       tmp.append(type);
       tmp.append(", owner=ManagedDeployment@");
