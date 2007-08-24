@@ -269,7 +269,7 @@ public abstract class ClassLoaderSystem extends BaseClassLoaderSystem
       if (isDomainRegistered(domain) == false)
          throw new IllegalStateException("Domain is not registered " + domain);
 
-      if (ClassLoaderSystem.DEFAULT_DOMAIN_NAME.equals(domain.getName()))
+      if (DEFAULT_DOMAIN_NAME.equals(domain.getName()))
          throw new IllegalArgumentException("Cannot unregister the default domain");
       
       internalUnregisterDomain(domain);
