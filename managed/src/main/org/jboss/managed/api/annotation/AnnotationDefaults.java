@@ -22,12 +22,13 @@
 package org.jboss.managed.api.annotation;
 
 /**
- * Defaults for annotations
+ * Defaults for annotations to test whether object annotations
+ * are at their default value and unitialized.
  * 
  * @author Scott.Stark@jboss.org
  * @version $Revision$
  */
-public class Defaults
+public class AnnotationDefaults
 {
    @ManagementComponent(type="", subtype="")
    private static class COMP_TYPE_CLASS {}
