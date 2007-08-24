@@ -177,7 +177,7 @@ public class MockClassLoaderPolicy extends ClassLoaderPolicy
     */
    public void setPath(String path)
    {
-      setPaths(new String[] { path });
+      setPaths(path);
    }
    
    /**
@@ -198,7 +198,10 @@ public class MockClassLoaderPolicy extends ClassLoaderPolicy
    public void setPaths(Class... classes)
    {
       if (classes == null)
+      {
          paths = null;
+         return;
+      }
       paths = new String[classes.length];
       for (int i = 0; i < classes.length; ++i)
          paths[i] = ClassLoaderUtils.packageNameToPath(classes[i].getName());
@@ -228,7 +231,10 @@ public class MockClassLoaderPolicy extends ClassLoaderPolicy
    public void setPackageNames(Class... classes)
    {
       if (classes == null)
+      {
          packageNames = null;
+         return;
+      }
       packageNames = new String[classes.length];
       for (int i = 0; i < classes.length; ++i)
          packageNames[i] = ClassLoaderUtils.getClassPackageName(classes[i].getName());
@@ -242,7 +248,10 @@ public class MockClassLoaderPolicy extends ClassLoaderPolicy
    public void setIncluded(Class... classes)
    {
       if (classes == null)
+      {
          included = null;
+         return;
+      }
       included = new String[classes.length];
       for (int i = 0; i < classes.length; ++i)
          included[i] = ClassLoaderUtils.classNameToPath(classes[i].getName());
@@ -256,7 +265,10 @@ public class MockClassLoaderPolicy extends ClassLoaderPolicy
    public void setExcluded(Class... classes)
    {
       if (classes == null)
+      {
          excluded = null;
+         return;
+      }
       excluded = new String[classes.length];
       for (int i = 0; i < classes.length; ++i)
          excluded[i] = ClassLoaderUtils.classNameToPath(classes[i].getName());
