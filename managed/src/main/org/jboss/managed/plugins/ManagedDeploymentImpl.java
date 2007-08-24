@@ -107,6 +107,7 @@ public class ManagedDeploymentImpl
    }
    public void addComponent(String name, ManagedComponent comp)
    {
+      components.put(name, comp);
    }
    public ManagedComponent getComponent(String name)
    {
