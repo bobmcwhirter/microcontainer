@@ -36,6 +36,8 @@ import org.jboss.deployers.client.spi.Deployment;
 import org.jboss.deployers.plugins.attachments.AttachmentsImpl;
 import org.jboss.deployers.spi.attachments.MutableAttachments;
 import org.jboss.deployers.spi.attachments.PredeterminedManagedObjectAttachments;
+import org.jboss.managed.api.ComponentType;
+import org.jboss.managed.api.ManagedComponent;
 import org.jboss.managed.api.ManagedDeployment;
 import org.jboss.managed.api.ManagedObject;
 import org.jboss.managed.api.ManagedProperty;
@@ -151,34 +153,38 @@ public class DeployerManagedDeploymentUnitTestCase extends AbstractDeployerTest
       assertNotNull("deployment1 ManagedDeployment", mo1);
       ManagedProperty deploymentsProp = mo1.getProperty("deployments");
       assertNotNull("deployments prop", deploymentsProp);
+      // Get the deployments MCs
+      Map<String, ManagedComponent> mcs1 = mo1.getComponents();
+      assertEquals("deployment1 has 2 ManagedComponent", 2, mcs1.size());
+
       // Get the deployments property MOs
-      Object deploymentsValue = deploymentsProp.getValue();
-      assertTrue("deploymentsValue instanceof ArrayValue", deploymentsValue instanceof ArrayValue);
-      ArrayValue deploymentsArray = (ArrayValue) deploymentsValue;
-      ManagedObject localDataMO = null;
-      ManagedObject xaDataMO = null;
-      for(int n = 0; n < deploymentsArray.getLength(); n ++)
+      ManagedComponent localDataMO = null;
+      ManagedComponent xaDataMO = null;
+      for(ManagedComponent mc : mcs1.values())
       {
-         GenericValue gv = (GenericValue) deploymentsArray.getValue(n);
-         ManagedObject propMO = (ManagedObject) gv.getValue();
-         if (propMO.getAttachmentName().equals(LocalDataSourceMetaData.class.getName()))
-            localDataMO = propMO;
-         else if (propMO.getAttachmentName().equals(XADataSourceMetaData.class.getName()))
-            xaDataMO = propMO;
+         if (mc.getAttachmentName().equals(LocalDataSourceMetaData.class.getName()))
+            localDataMO = mc;
+         else if (mc.getAttachmentName().equals(XADataSourceMetaData.class.getName()))
+            xaDataMO = mc;
       }
       // Get the LocalDataSourceMetaData/SecMetaData/domain ManagedProperty
       assertNotNull("LocalDataSourceMetaData MO", localDataMO);
+      assertEquals("LocalDataSourceMetaData comp type", new ComponentType("DataSource", "LocalTx"), localDataMO.getType());
       log.debug("LocalDataSourceMetaData MO.props: "+localDataMO.getProperties());
+      assertNotNull("LocalDataSourceMetaData MO.props", localDataMO.getProperties());
       ManagedProperty localSecDomainProp = localDataMO.getProperty("security-domain");
       assertNotNull("localSecDomainProp", localSecDomainProp);
       GenericValue localSecDomainPropGV = (GenericValue) localSecDomainProp.getValue();
       ManagedObject localSecDomainPropMO = (ManagedObject) localSecDomainPropGV.getValue();
       ManagedProperty localSecDomainRefProp = localSecDomainPropMO.getProperty("domain-name");
       assertNotNull("localSecDomainRefProp", localSecDomainRefProp);
+
       // Get the XADataSourceMetaData/SecMetaData/domain ManagedProperty
       log.debug("XADataSourceMetaData MO: "+xaDataMO);
+      assertNotNull("XADataSourceMetaData", xaDataMO);
+      assertEquals("XADataSourceMetaData comp type", new ComponentType("DataSource", "XA"), xaDataMO.getType());
       assertNotNull("XADataSourceMetaData MO.props", xaDataMO.getProperties());
-      ManagedProperty xaSecDomainProp = localDataMO.getProperty("security-domain");
+      ManagedProperty xaSecDomainProp = xaDataMO.getProperty("security-domain");
       assertNotNull("xaSecDomainProp", xaSecDomainProp);
       GenericValue xaSecDomainPropGV = (GenericValue) xaSecDomainProp.getValue();
       ManagedObject xaSecDomainPropMO = (ManagedObject) xaSecDomainPropGV.getValue();
@@ -190,18 +196,20 @@ public class DeployerManagedDeploymentUnitTestCase extends AbstractDeployerTest
       log.info("unresolvedRefs: "+unresolvedRefs);
       assertEquals("Should be 0 ManagementObjectRef", 0, unresolvedRefs.size());
 
-      Map<String, ManagedObject> sd1MDs = main.getManagedObjects("sec-domain1");
-      Map<String, ManagedObject> sd2MDs = main.getManagedObjects("sec-domain2");
+      ManagedDeployment secMD1 = ps.getManagedDeployment("sec-domain1");
+      ManagedDeployment secMD2 = ps.getManagedDeployment("sec-domain2");
 
       // Validate that the sec-domain1 ManagedObject is the target of the localSecDomainRefProp
-      ManagedObject sd1MO = sd1MDs.get("org.jboss.test.deployers.deployer.support.SecurityDeployment");
-      assertNotNull("org.jboss.test.deployers.deployer.support.SecurityDeployment MO1", sd1MO);
+      log.info("sec-domain1 ManagedObjectNames: "+ secMD1.getManagedObjectNames());
+      ManagedObject sd1MO = secMD1.getManagedObject("java:/jaas/domain1");
+      
+      assertNotNull("java:/jaas/domain1 MO", sd1MO);
       ManagedObject localSecDomainPropTarget = localSecDomainRefProp.getTargetManagedObject();
       assertEquals(sd1MO, localSecDomainPropTarget);
 
       // Validate that the sec-domain2 ManagedObject is the target of the xaSecDomainRefProp
-      ManagedObject sd2MO = sd2MDs.get("org.jboss.test.deployers.deployer.support.SecurityDeployment");
-      assertNotNull("org.jboss.test.deployers.deployer.support.SecurityDeployment MO2", sd2MO);
+      ManagedObject sd2MO = secMD2.getManagedObject("java:/jaas/domain2");
+      assertNotNull("java:/jaas/domain2 MO", sd2MO);
       ManagedObject xaSecDomainPropTarget = xaSecDomainRefProp.getTargetManagedObject();
       assertEquals(sd2MO, xaSecDomainPropTarget);
    }

@@ -21,6 +21,8 @@
  */
 package org.jboss.test.deployers.deployer.support;
 
+import org.jboss.managed.api.annotation.ManagementComponent;
+import org.jboss.managed.api.annotation.ManagementObject;
 import org.jboss.managed.api.annotation.ManagementProperty;
 import org.jboss.managed.plugins.WritethroughManagedPropertyImpl;
 
@@ -29,6 +31,7 @@ import org.jboss.managed.plugins.WritethroughManagedPropertyImpl;
  * @author Scott.Stark@jboss.org
  * @version $Revision$
  */
+@ManagementObject(componentType=@ManagementComponent(type="DataSource", subtype="XA"))
 public class XADataSourceMetaData extends ConnMetaData
 {
    private static final long serialVersionUID = 1;

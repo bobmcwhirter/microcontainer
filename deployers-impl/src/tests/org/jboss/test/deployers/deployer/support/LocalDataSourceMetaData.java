@@ -21,11 +21,15 @@
  */
 package org.jboss.test.deployers.deployer.support;
 
+import org.jboss.managed.api.annotation.ManagementComponent;
+import org.jboss.managed.api.annotation.ManagementObject;
+
 /**
  * @author Scott.Stark@jboss.org
  * @version $Revision$
  */
+@ManagementObject(componentType=@ManagementComponent(type="DataSource", subtype="LocalTx"))
 public class LocalDataSourceMetaData extends ConnMetaData
 {
-
+   private static final long serialVersionUID = 1;
 }
