@@ -17,43 +17,14 @@
     <relativePath>../build/pom-jdk14.xml</relativePath>
   </parent>
   <modelVersion>4.0.0</modelVersion>
-  <artifactId>jboss-kernel-jdk14</artifactId>
+  <artifactId>jboss-osgi-repository-api-jdk14</artifactId>
   <packaging>jar</packaging>
-  <name>JBoss Microcontainer Kernel JDK 1.4</name>
+  <name>JBoss OSGi Repository API JDK 1.4</name>
   <url>http://www.jboss.com/products/jbossmc</url>
-  <description>JBoss Microcontainer Kernel</description>  
+  <description>JBoss OSGi Repository API</description>
+  
   <build>
-    <resources>
-      <resource>
-        <directory>src/resources/main</directory>
-      </resource>
-    </resources>
-    <testResources>
-      <testResource>
-        <directory>src/resources/tests</directory>
-      </testResource>
-    </testResources>
     <plugins>
-      <plugin>
-        <groupId>org.apache.maven.plugins</groupId>
-        <artifactId>maven-compiler-plugin</artifactId>
-        <configuration>
-          <showDeprecation>false</showDeprecation>
-        </configuration>
-      </plugin>
-      <plugin>
-        <artifactId>maven-surefire-plugin</artifactId>
-        <configuration>
-          <redirectTestOutputToFile>true</redirectTestOutputToFile>
-          <includes>
-            <include>org/jboss/test/**/*TestCase.java</include>
-          </includes>
-          <excludes>
-            <exclude>org/jboss/test/**/NoJavassistAnnotationCreatorTestCase.java</exclude>
-          </excludes>
-          <useSystemClassLoader>true</useSystemClassLoader>
-        </configuration>
-      </plugin>
       <plugin>
         <groupId>org.jboss.maven.plugins</groupId>
         <artifactId>maven-jboss-retro-plugin</artifactId>
@@ -85,17 +56,7 @@
       <plugin>
         <groupId>org.apache.maven.plugins</groupId>
         <artifactId>maven-jar-plugin</artifactId>
-        <executions>
-          <execution>
-            <id>test-jar</id>
-            <goals>
-              <goal>test-jar</goal>
-            </goals>
-            <configuration>
-          		<testClassesDirectory>${project.build.directory}/test-classes-jdk14</testClassesDirectory>
-            </configuration>
-          </execution>
-        </executions>
+        <version>2.1</version>
         <configuration>
           <classesDirectory>${project.build.directory}/classes-jdk14</classesDirectory>
         </configuration>
@@ -164,92 +125,18 @@
               <includes>
                 <include>**/*TestCase.java</include>
               </includes>
-              <excludes>
-                <exclude>**/CallbackCollectionAnnotationTestCase.java</exclude>
-                <exclude>**/CallbackAnnotationTestCase.java</exclude>
-              </excludes>
             </configuration>
           </plugin>
         </plugins>
       </build>
-      <dependencies>
-        <dependency>
-          <groupId>org.jboss.microcontainer-jdk14</groupId>
-          <artifactId>jboss-container-jdk14</artifactId>
-        </dependency>
-      </dependencies>
     </profile>
   </profiles>
   
-  <dependencyManagement>
-    <dependencies>
-      <dependency>
-        <groupId>org.jboss</groupId>
-        <artifactId>jboss-test-jdk14</artifactId>
-        <version>${version.org.jboss.test}</version>
-        <scope>compile</scope>
-      </dependency>
-      <dependency>
-        <groupId>junit</groupId>
-        <artifactId>junit</artifactId>
-        <version>${version.junit}</version>
-        <scope>compile</scope>
-      </dependency>
-    </dependencies>
-  </dependencyManagement>
   <!-- Do not add version information here, use ../build/pom.xml instead -->
   <dependencies>
-    <!-- Global dependencies -->
     <dependency>
-      <groupId>org.jboss.microcontainer</groupId>
-      <artifactId>jboss-container</artifactId>
-      <version>2.0.0-SNAPSHOT</version>
-      <scope>provided</scope>
-    </dependency>
-    <!--<dependency>
-      <groupId>org.jboss.microcontainer-jdk14</groupId>
-      <artifactId>jboss-container-jdk14</artifactId>
-      <scope>runtime</scope>
-    </dependency>-->
-    <dependency>
-      <groupId>org.jboss.microcontainer-jdk14</groupId>
-      <artifactId>jboss-dependency-jdk14</artifactId>
-    </dependency>
-    <dependency>
-      <groupId>org.jboss</groupId>
-      <artifactId>jboss-test-jdk14</artifactId>
-    </dependency>
-    <dependency>
-      <groupId>jboss</groupId>
-      <artifactId>jbossxb</artifactId>
-    </dependency>
-    <dependency>
-      <groupId>junit</groupId>
-      <artifactId>junit</artifactId>
-    </dependency>
-    <dependency>
-      <groupId>org.jboss</groupId>
-      <artifactId>jboss-common-logging-spi-jdk14</artifactId>
-    </dependency>
-    <!-- Test dependencies -->
-    <!-- None -->
-    
-    <!-- Runtime dependencies -->
-    <dependency>
-      <groupId>jboss</groupId>
-      <artifactId>jboss-backport-concurrent</artifactId>
-      <scope>runtime</scope>
-    </dependency>
-    <dependency>
-      <groupId>javax.management</groupId>
-      <artifactId>jmxri</artifactId>
-      <scope>runtime</scope>
-    </dependency>
-    <dependency>
-      <groupId>org.jboss</groupId>
-      <artifactId>jboss-retro</artifactId>
-      <classifier>rt</classifier>
-      <scope>runtime</scope>
+      <groupId>org.osgi</groupId>
+      <artifactId>osgi_R4_core</artifactId>
     </dependency>
   </dependencies>
 </project>

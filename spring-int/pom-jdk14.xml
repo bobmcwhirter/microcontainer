@@ -7,6 +7,8 @@
   - mvn -f pom-jdk14.xml install  -  This will build the jdk14 version of the project.
   - mvn -f pom-jdk14.xml -Prun-jdk14-tests surefire:test  -  This will run the tests using a jdk1.4 jvm  
   -    Note: the tests will not work by calling mvn test, it must be performed by calling surefire directly.
+  -  Warning: tests are not currently working do to missing javax.xml.namespace.QName, this needs to
+  -           be added to jboss-retro.
   -->
 <project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
   xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
@@ -17,11 +19,11 @@
     <relativePath>../build/pom-jdk14.xml</relativePath>
   </parent>
   <modelVersion>4.0.0</modelVersion>
-  <artifactId>jboss-kernel-jdk14</artifactId>
+  <artifactId>jboss-spring-int-jdk14</artifactId>
   <packaging>jar</packaging>
-  <name>JBoss Microcontainer Kernel JDK 1.4</name>
+  <name>JBoss Microcontainer Spring Int JDK 1.4</name>
   <url>http://www.jboss.com/products/jbossmc</url>
-  <description>JBoss Microcontainer Kernel</description>  
+  <description>JBoss Microcontainer Spring Integration</description>
   <build>
     <resources>
       <resource>
@@ -34,26 +36,6 @@
       </testResource>
     </testResources>
     <plugins>
-      <plugin>
-        <groupId>org.apache.maven.plugins</groupId>
-        <artifactId>maven-compiler-plugin</artifactId>
-        <configuration>
-          <showDeprecation>false</showDeprecation>
-        </configuration>
-      </plugin>
-      <plugin>
-        <artifactId>maven-surefire-plugin</artifactId>
-        <configuration>
-          <redirectTestOutputToFile>true</redirectTestOutputToFile>
-          <includes>
-            <include>org/jboss/test/**/*TestCase.java</include>
-          </includes>
-          <excludes>
-            <exclude>org/jboss/test/**/NoJavassistAnnotationCreatorTestCase.java</exclude>
-          </excludes>
-          <useSystemClassLoader>true</useSystemClassLoader>
-        </configuration>
-      </plugin>
       <plugin>
         <groupId>org.jboss.maven.plugins</groupId>
         <artifactId>maven-jboss-retro-plugin</artifactId>
@@ -85,17 +67,7 @@
       <plugin>
         <groupId>org.apache.maven.plugins</groupId>
         <artifactId>maven-jar-plugin</artifactId>
-        <executions>
-          <execution>
-            <id>test-jar</id>
-            <goals>
-              <goal>test-jar</goal>
-            </goals>
-            <configuration>
-          		<testClassesDirectory>${project.build.directory}/test-classes-jdk14</testClassesDirectory>
-            </configuration>
-          </execution>
-        </executions>
+        <version>2.1</version>
         <configuration>
           <classesDirectory>${project.build.directory}/classes-jdk14</classesDirectory>
         </configuration>
@@ -164,92 +136,39 @@
               <includes>
                 <include>**/*TestCase.java</include>
               </includes>
-              <excludes>
-                <exclude>**/CallbackCollectionAnnotationTestCase.java</exclude>
-                <exclude>**/CallbackAnnotationTestCase.java</exclude>
-              </excludes>
             </configuration>
           </plugin>
         </plugins>
       </build>
-      <dependencies>
-        <dependency>
-          <groupId>org.jboss.microcontainer-jdk14</groupId>
-          <artifactId>jboss-container-jdk14</artifactId>
-        </dependency>
-      </dependencies>
     </profile>
   </profiles>
   
-  <dependencyManagement>
-    <dependencies>
-      <dependency>
-        <groupId>org.jboss</groupId>
-        <artifactId>jboss-test-jdk14</artifactId>
-        <version>${version.org.jboss.test}</version>
-        <scope>compile</scope>
-      </dependency>
-      <dependency>
-        <groupId>junit</groupId>
-        <artifactId>junit</artifactId>
-        <version>${version.junit}</version>
-        <scope>compile</scope>
-      </dependency>
-    </dependencies>
-  </dependencyManagement>
   <!-- Do not add version information here, use ../build/pom.xml instead -->
   <dependencies>
     <!-- Global dependencies -->
-    <dependency>
-      <groupId>org.jboss.microcontainer</groupId>
-      <artifactId>jboss-container</artifactId>
-      <version>2.0.0-SNAPSHOT</version>
-      <scope>provided</scope>
-    </dependency>
-    <!--<dependency>
-      <groupId>org.jboss.microcontainer-jdk14</groupId>
-      <artifactId>jboss-container-jdk14</artifactId>
-      <scope>runtime</scope>
-    </dependency>-->
-    <dependency>
-      <groupId>org.jboss.microcontainer-jdk14</groupId>
-      <artifactId>jboss-dependency-jdk14</artifactId>
-    </dependency>
-    <dependency>
-      <groupId>org.jboss</groupId>
-      <artifactId>jboss-test-jdk14</artifactId>
-    </dependency>
     <dependency>
       <groupId>jboss</groupId>
       <artifactId>jbossxb</artifactId>
     </dependency>
     <dependency>
-      <groupId>junit</groupId>
-      <artifactId>junit</artifactId>
-    </dependency>
-    <dependency>
-      <groupId>org.jboss</groupId>
-      <artifactId>jboss-common-logging-spi-jdk14</artifactId>
+      <groupId>org.jboss.microcontainer-jdk14</groupId>
+      <artifactId>jboss-kernel-jdk14</artifactId>
     </dependency>
     <!-- Test dependencies -->
-    <!-- None -->
-    
-    <!-- Runtime dependencies -->
-    <dependency>
-      <groupId>jboss</groupId>
-      <artifactId>jboss-backport-concurrent</artifactId>
-      <scope>runtime</scope>
-    </dependency>
-    <dependency>
-      <groupId>javax.management</groupId>
-      <artifactId>jmxri</artifactId>
-      <scope>runtime</scope>
-    </dependency>
     <dependency>
       <groupId>org.jboss</groupId>
-      <artifactId>jboss-retro</artifactId>
-      <classifier>rt</classifier>
-      <scope>runtime</scope>
+      <artifactId>jboss-test-jdk14</artifactId>
+    </dependency>
+    <dependency>
+      <groupId>org.jboss.microcontainer-jdk14</groupId>
+      <artifactId>jboss-container-jdk14</artifactId>
+      <scope>test</scope>
+    </dependency>
+    <dependency>
+      <groupId>org.jboss.microcontainer-jdk14</groupId>
+      <artifactId>jboss-container-jdk14</artifactId>
+      <type>test-jar</type>
+      <scope>test</scope>
     </dependency>
   </dependencies>
 </project>
