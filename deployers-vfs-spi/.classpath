@@ -22,7 +22,7 @@
   <classpathentry kind="var" path="M2_REPO/apache-httpclient/commons-httpclient/2.0.2/commons-httpclient-2.0.2.jar"/>
   <classpathentry kind="var" path="M2_REPO/jboss/jboss-logging-spi/2.0.3.GA/jboss-logging-spi-2.0.3.GA.jar" sourcepath="M2_REPO/jboss/jboss-logging-spi/2.0.3.GA/jboss-logging-spi-2.0.3.GA-sources.jar"/>
   <classpathentry kind="var" path="M2_REPO/apache-xerces/xml-apis/2.7.1/xml-apis-2.7.1.jar"/>
-  <classpathentry kind="var" path="M2_REPO/org/jboss/jboss-aop/2.0.0-SNAPSHOT/jboss-aop-2.0.0-SNAPSHOT.jar" sourcepath="M2_REPO/org/jboss/jboss-aop/2.0.0-SNAPSHOT/jboss-aop-2.0.0-SNAPSHOT-sources.jar"/>
+  <classpathentry kind="var" path="M2_REPO/org/jboss/aop/jboss-aop/2.0.0-SNAPSHOT/jboss-aop-2.0.0-SNAPSHOT.jar" sourcepath="M2_REPO/org/jboss/jboss-aop/2.0.0-SNAPSHOT/jboss-aop-2.0.0-SNAPSHOT-sources.jar"/>
   <classpathentry kind="src" path="/jboss-deployers-client-spi"/>
   <classpathentry kind="src" path="/jboss-metatype"/>
   <classpathentry kind="var" path="M2_REPO/jboss/jboss-common-core/2.0.4.GA/jboss-common-core-2.0.4.GA.jar" sourcepath="M2_REPO/jboss/jboss-common-core/2.0.4.GA/jboss-common-core-2.0.4.GA-sources.jar"/>

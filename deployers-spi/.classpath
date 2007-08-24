@@ -9,7 +9,7 @@
   <classpathentry kind="var" path="M2_REPO/jboss/jboss-vfs/2.0.4.snapshot/jboss-vfs-2.0.4.snapshot.jar" sourcepath="M2_REPO/jboss/jboss-vfs/2.0.4.snapshot/jboss-vfs-2.0.4.snapshot-sources.jar"/>
   <classpathentry kind="src" path="/jboss-managed"/>
   <classpathentry kind="var" path="M2_REPO/trove/trove/2.1.1/trove-2.1.1.jar"/>
-  <classpathentry kind="var" path="M2_REPO/org/jboss/jboss-aop/2.0.0-SNAPSHOT/jboss-aop-2.0.0-SNAPSHOT.jar" sourcepath="M2_REPO/org/jboss/jboss-aop/2.0.0-SNAPSHOT/jboss-aop-2.0.0-SNAPSHOT-sources.jar"/>
+  <classpathentry kind="var" path="M2_REPO/org/jboss/aop/jboss-aop/2.0.0-SNAPSHOT/jboss-aop-2.0.0-SNAPSHOT.jar" sourcepath="M2_REPO/org/jboss/jboss-aop/2.0.0-SNAPSHOT/jboss-aop-2.0.0-SNAPSHOT-sources.jar"/>
   <classpathentry kind="src" path="/jboss-deployers-core-spi"/>
   <classpathentry kind="var" path="M2_REPO/apache-httpclient/commons-httpclient/2.0.2/commons-httpclient-2.0.2.jar"/>
   <classpathentry kind="src" path="/jboss-deployers-structure-spi"/>

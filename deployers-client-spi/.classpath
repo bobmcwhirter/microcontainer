@@ -6,7 +6,7 @@
   <classpathentry kind="var" path="M2_REPO/trove/trove/2.1.1/trove-2.1.1.jar"/>
   <classpathentry kind="var" path="M2_REPO/apache-httpclient/commons-httpclient/2.0.2/commons-httpclient-2.0.2.jar"/>
   <classpathentry kind="var" path="M2_REPO/org/jboss/javassist/3.6-beta/javassist-3.6-beta.jar" sourcepath="M2_REPO/org/jboss/javassist/3.6-beta/javassist-3.6-beta-sources.jar"/>
-  <classpathentry kind="var" path="M2_REPO/org/jboss/jboss-aop/2.0.0-SNAPSHOT/jboss-aop-2.0.0-SNAPSHOT.jar" sourcepath="M2_REPO/org/jboss/jboss-aop/2.0.0-SNAPSHOT/jboss-aop-2.0.0-SNAPSHOT-sources.jar"/>
+  <classpathentry kind="var" path="M2_REPO/org/jboss/aop/jboss-aop/2.0.0-SNAPSHOT/jboss-aop-2.0.0-SNAPSHOT.jar" sourcepath="M2_REPO/org/jboss/jboss-aop/2.0.0-SNAPSHOT/jboss-aop-2.0.0-SNAPSHOT-sources.jar"/>
   <classpathentry kind="var" path="M2_REPO/qdox/qdox/1.6/qdox-1.6.jar" sourcepath="M2_REPO/qdox/qdox/1.6/qdox-1.6-sources.jar"/>
   <classpathentry kind="var" path="M2_REPO/apache-xerces/xercesImpl/2.7.1/xercesImpl-2.7.1.jar"/>
   <classpathentry kind="var" path="M2_REPO/jboss/jboss-vfs/2.0.4.snapshot/jboss-vfs-2.0.4.snapshot.jar" sourcepath="M2_REPO/jboss/jboss-vfs/2.0.4.snapshot/jboss-vfs-2.0.4.snapshot-sources.jar"/>

@@ -6,7 +6,7 @@
   <classpathentry kind="var" path="M2_REPO/apache-xerces/xercesImpl/2.7.1/xercesImpl-2.7.1.jar"/>
   <classpathentry kind="src" path="/jboss-container"/>
   <classpathentry kind="var" path="M2_REPO/apache-httpclient/commons-httpclient/2.0.2/commons-httpclient-2.0.2.jar"/>
-  <classpathentry kind="var" path="M2_REPO/jboss/jboss-test/1.0.4-SNAPSHOT/jboss-test-1.0.4-SNAPSHOT.jar" sourcepath="M2_REPO/jboss/jboss-test/1.0.4-SNAPSHOT/jboss-test-1.0.4-SNAPSHOT-sources.jar"/>
+  <classpathentry kind="var" path="M2_REPO/org/jboss/jboss-test/1.0.4-SNAPSHOT/jboss-test-1.0.4-SNAPSHOT.jar" sourcepath="M2_REPO/jboss/jboss-test/1.0.4-SNAPSHOT/jboss-test-1.0.4-SNAPSHOT-sources.jar"/>
   <classpathentry kind="var" path="M2_REPO/jboss/jboss-common-logging-spi/2.0.4.GA/jboss-common-logging-spi-2.0.4.GA.jar" sourcepath="M2_REPO/jboss/jboss-common-logging-spi/2.0.4.GA/jboss-common-logging-spi-2.0.4.GA-sources.jar"/>
   <classpathentry kind="var" path="M2_REPO/org/apache/ant/ant-launcher/1.7.0/ant-launcher-1.7.0.jar"/>
   <classpathentry kind="var" path="M2_REPO/javax/activation/activation/1.0.2/activation-1.0.2.jar"/>
@@ -15,7 +15,7 @@
   <classpathentry kind="var" path="M2_REPO/org/jboss/javassist/3.6-beta/javassist-3.6-beta.jar" sourcepath="M2_REPO/org/jboss/javassist/3.6-beta/javassist-3.6-beta-sources.jar"/>
   <classpathentry kind="var" path="M2_REPO/oswego-concurrent/concurrent/1.3.4/concurrent-1.3.4.jar"/>
   <classpathentry kind="src" path="/jboss-deployers-core"/>
-  <classpathentry kind="var" path="M2_REPO/org/jboss/jboss-aop/2.0.0-SNAPSHOT/jboss-aop-2.0.0-SNAPSHOT.jar" sourcepath="M2_REPO/org/jboss/jboss-aop/2.0.0-SNAPSHOT/jboss-aop-2.0.0-SNAPSHOT-sources.jar"/>
+  <classpathentry kind="var" path="M2_REPO/org/jboss/aop/jboss-aop/2.0.0-SNAPSHOT/jboss-aop-2.0.0-SNAPSHOT.jar" sourcepath="M2_REPO/org/jboss/jboss-aop/2.0.0-SNAPSHOT/jboss-aop-2.0.0-SNAPSHOT-sources.jar"/>
   <classpathentry kind="var" path="M2_REPO/trove/trove/2.1.1/trove-2.1.1.jar"/>
   <classpathentry kind="var" path="M2_REPO/org/apache/ant/ant-junit/1.7.0/ant-junit-1.7.0.jar"/>
   <classpathentry kind="var" path="M2_REPO/junit/junit/3.8.1/junit-3.8.1.jar" sourcepath="M2_REPO/junit/junit/3.8.1/junit-3.8.1-sources.jar"/>
