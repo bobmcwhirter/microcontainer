@@ -32,6 +32,7 @@ import org.jboss.aop.microcontainer.beans.InstallLifecycleBeanMetaDataFactory;
 import org.jboss.aop.microcontainer.beans.InstantiateLifecycleBeanMetaDataFactory;
 import org.jboss.aop.microcontainer.beans.LifecycleBeanMetaDataFactory;
 import org.jboss.aop.microcontainer.beans.StartLifecycleBeanMetaDataFactory;
+import org.jboss.aop.microcontainer.beans.PreInstallLifecycleBeanMetaDataFactory;
 import org.jboss.kernel.plugins.deployment.xml.BeanFactoryHandler;
 import org.jboss.kernel.plugins.deployment.xml.BeanSchemaBinding20;
 import org.jboss.kernel.plugins.deployment.xml.BeanSchemaBindingHelper;
@@ -146,11 +147,15 @@ public class AOPBeansSchemaInitializer implements SchemaBindingInitializer
          {      
             return new InstantiateLifecycleBeanMetaDataFactory();
          }
-         if (localname.equals("lifecycle-start"))
+         if (localname.equals("lifecycle-preinstall"))
          {      
+            return new PreInstallLifecycleBeanMetaDataFactory();
+         }
+         if (localname.equals("lifecycle-start"))
+         {
             return new StartLifecycleBeanMetaDataFactory();
          }
-         
+
          throw new IllegalStateException(name + " is not a recognized element");
       }
 

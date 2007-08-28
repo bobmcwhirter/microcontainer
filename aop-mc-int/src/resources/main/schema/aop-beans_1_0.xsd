@@ -131,6 +131,16 @@ $Id$
       </xsd:annotation>
    </xsd:element>
    
+   <xsd:element name="lifecycle-preinstall" type="lifecycleType">
+      <xsd:annotation>
+         <xsd:documentation>
+           <![CDATA[
+           An aspect intercepting when a bean is preinstalled/unpreinstalled
+           ]]>
+         </xsd:documentation>
+      </xsd:annotation>
+   </xsd:element>
+
    <xsd:element name="lifecycle-start" type="lifecycleType">
       <xsd:annotation>
          <xsd:documentation>
