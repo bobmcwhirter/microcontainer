@@ -34,7 +34,7 @@
       <artifactId>jboss-deployers-core-spi</artifactId>
     </dependency>
     <dependency>
-	    <groupId>jboss</groupId>
+	    <groupId>org.jboss</groupId>
 	    <artifactId>jboss-common-core</artifactId>
 	  </dependency>
 	  <!-- Test dependencies -->

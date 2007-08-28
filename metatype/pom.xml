@@ -19,7 +19,7 @@
       <artifactId>jboss-container</artifactId>
     </dependency>
     <dependency>
-	    <groupId>jboss</groupId>
+	    <groupId>org.jboss</groupId>
 	    <artifactId>jboss-common-core</artifactId>
 	  </dependency>
 	  <!-- Test dependencies -->

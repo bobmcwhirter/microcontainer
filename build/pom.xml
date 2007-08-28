@@ -33,7 +33,7 @@
   </scm>
   
   <properties>
-    <version.jboss.common.core>2.0.4.GA</version.jboss.common.core>
+    <version.jboss.common.core>2.2.1-SNAPSHOT</version.jboss.common.core>
     <version.jbossxb>2.0.0.CR3</version.jbossxb>
     <version.osgi.r4.core>1.0</version.osgi.r4.core>
     <version.jboss.vfs>2.0.4.snapshot</version.jboss.vfs>
@@ -316,7 +316,7 @@
         <version>${project.version}</version>
       </dependency>
       <dependency>
-        <groupId>jboss</groupId>
+        <groupId>org.jboss</groupId>
         <artifactId>jboss-common-core</artifactId>
         <version>${version.jboss.common.core}</version>
       </dependency>
@@ -334,6 +334,13 @@
         <groupId>jboss</groupId>
         <artifactId>jboss-vfs</artifactId>
         <version>${version.jboss.vfs}</version>
+         <!-- FIXME http://www.jboss.com/index.html?module=bb&op=viewtopic&p=4077827#4077827 -->
+         <exclusions>
+           <exclusion>
+             <groupId>jboss</groupId>
+             <artifactId>jboss-common-core</artifactId>
+           </exclusion>
+         </exclusions>
       </dependency>
       <dependency>
         <groupId>org.jboss</groupId>

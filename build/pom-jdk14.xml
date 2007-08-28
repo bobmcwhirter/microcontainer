@@ -344,6 +344,13 @@
         <groupId>jboss</groupId>
         <artifactId>jboss-vfs</artifactId>
         <version>${version.jboss.vfs}</version>
+         <!-- FIXME http://www.jboss.com/index.html?module=bb&op=viewtopic&p=4077827#4077827 -->
+         <exclusions>
+           <exclusion>
+             <groupId>jboss</groupId>
+             <artifactId>jboss-common-core</artifactId>
+           </exclusion>
+         </exclusions>
       </dependency>
       <dependency>
         <groupId>org.jboss</groupId>
