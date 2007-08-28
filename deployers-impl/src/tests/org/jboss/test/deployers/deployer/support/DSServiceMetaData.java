@@ -27,6 +27,7 @@ import org.jboss.managed.api.ManagedOperation.Impact;
 import org.jboss.managed.api.annotation.ManagementObject;
 import org.jboss.managed.api.annotation.ManagementObjectID;
 import org.jboss.managed.api.annotation.ManagementOperation;
+import org.jboss.managed.api.annotation.ManagementParameter;
 import org.jboss.managed.api.annotation.ManagementProperty;
 
 /**
@@ -85,4 +86,18 @@ public class DSServiceMetaData
    {
       
    }
+   @ManagementOperation(description="Takes a string and returns it", impact=Impact.ReadOnly,
+         params={@ManagementParameter(name="input", description="The string to return")})
+   public String takesString(String arg1)
+   {
+      return arg1;
+   }
+   @ManagementOperation(description="Takes an int and multiples by 10", impact=Impact.ReadOnly,
+         params={@ManagementParameter(name="input", description="The int to multiple",
+         constraintsFactory=TestManagedParameterConstraintsPopulatorFactory.class)})
+   public int constrainedIntx10(int arg1)
+   {
+      return 10*arg1;
+   }
+   
 }

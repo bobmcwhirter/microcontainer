@@ -36,6 +36,31 @@ import org.jboss.metatype.api.values.MetaValue;
 public interface ManagedParameter extends Serializable
 {
    /**
+    * Get the fields
+    * 
+    * @return the fields
+    */
+   Fields getFields();
+   
+   /**
+    * Get a field
+    *
+    * @param <T> the expected type
+    * @param fieldName the field name
+    * @param expected the expected type
+    * @return the value
+    */
+   <T> T getField(String fieldName, Class<T> expected);
+   
+   /**
+    * Set a field
+    *
+    * @param fieldName the field name
+    * @param value the value
+    */
+   void setField(String fieldName, Serializable value);
+
+   /**
     * Get the property's name
     * 
     * @return the property's name

@@ -53,15 +53,19 @@ import org.jboss.managed.api.annotation.ManagementObject;
 import org.jboss.managed.api.annotation.ManagementObjectID;
 import org.jboss.managed.api.annotation.ManagementObjectRef;
 import org.jboss.managed.api.annotation.ManagementOperation;
+import org.jboss.managed.api.annotation.ManagementParameter;
 import org.jboss.managed.api.annotation.ManagementProperties;
 import org.jboss.managed.api.annotation.ManagementProperty;
 import org.jboss.managed.api.factory.ManagedObjectFactory;
 import org.jboss.managed.plugins.DefaultFieldsImpl;
 import org.jboss.managed.plugins.ManagedObjectImpl;
 import org.jboss.managed.plugins.ManagedOperationImpl;
+import org.jboss.managed.plugins.ManagedParameterImpl;
 import org.jboss.managed.plugins.ManagedPropertyImpl;
 import org.jboss.managed.spi.factory.ManagedObjectBuilder;
 import org.jboss.managed.spi.factory.ManagedObjectPopulator;
+import org.jboss.managed.spi.factory.ManagedParameterConstraintsPopulator;
+import org.jboss.managed.spi.factory.ManagedParameterConstraintsPopulatorFactory;
 import org.jboss.managed.spi.factory.ManagedPropertyConstraintsPopulator;
 import org.jboss.managed.spi.factory.ManagedPropertyConstraintsPopulatorFactory;
 import org.jboss.metatype.api.types.ArrayMetaType;
@@ -591,15 +595,60 @@ public class AbstractManagedObjectFactory extends ManagedObjectFactory
       String name = methodInfo.getName();
       String description = opAnnotation.description();
       Impact impact = opAnnotation.impact();
-      ParameterInfo[] params = methodInfo.getParameters();
+      ManagementParameter[] params = opAnnotation.params();
+      ParameterInfo[] paramInfo = methodInfo.getParameters();
       TypeInfo returnInfo = methodInfo.getReturnType();
       MetaType returnType = metaTypeFactory.resolve(returnInfo);
       ArrayList<ManagedParameter> mparams = new ArrayList<ManagedParameter>();
-      if( params != null )
+      Class<? extends ManagedParameterConstraintsPopulatorFactory> opConstraintsFactor
+         = opAnnotation.constraintsFactory();
+
+      if( paramInfo != null )
       {
-         for(ParameterInfo param : params)
+         for(int i = 0; i < paramInfo.length; i ++)
          {
-            
+            ParameterInfo pinfo = paramInfo[i];
+            String pname = pinfo.getName();
+            String pdescription = null;
+            ManagementParameter mpa = null;
+            // Look to ManagementParameter for info
+            if (i < params.length)
+            {
+               mpa = params[i];
+               if (mpa.name().equals(AnnotationDefaults.EMPTY_STRING) == false)
+                  pname = mpa.name();
+               if (mpa.description().equals(AnnotationDefaults.EMPTY_STRING) == false)
+                  pdescription = mpa.description();
+            }
+            // Generate a name if there is none
+            if (pname == null)
+               pname = "arg#" + i;
+            Fields fields =  new DefaultFieldsImpl(pname);
+            if (pdescription != null)
+               fields.setField(Fields.DESCRIPTION, pdescription);
+            MetaType metaType = metaTypeFactory.resolve(pinfo.getParameterType());
+            fields.setField(Fields.META_TYPE, metaType);
+            // Delegate others (legal values, min/max etc.) to the constraints factory
+            try
+            {
+               Class<? extends ManagedParameterConstraintsPopulatorFactory> factoryClass = opConstraintsFactor;
+               if (factoryClass == ManagementParameter.NULL_CONSTRAINTS.class)
+               {
+                  if (mpa != null)
+                     factoryClass = mpa.constraintsFactory();
+               }
+               ManagedParameterConstraintsPopulatorFactory factory = factoryClass.newInstance();
+               ManagedParameterConstraintsPopulator populator = factory.newInstance();
+               if (populator != null)
+                  populator.populateManagedParameter(name, pinfo, fields);
+            }
+            catch(Exception e)
+            {
+               log.debug("Failed to populate constraints for: "+pinfo, e);
+            }
+
+            ManagedParameterImpl mp = new ManagedParameterImpl(fields);
+            mparams.add(mp);
          }
       }
       ManagedParameter[] parameters = new ManagedParameter[mparams.size()];

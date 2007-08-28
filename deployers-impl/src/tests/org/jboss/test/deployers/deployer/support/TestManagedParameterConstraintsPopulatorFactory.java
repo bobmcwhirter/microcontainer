@@ -19,39 +19,40 @@
  * Software Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA
  * 02110-1301 USA, or see the FSF site: http://www.fsf.org.
  */
-package org.jboss.managed.api.annotation;
+package org.jboss.test.deployers.deployer.support;
 
-import java.lang.annotation.ElementType;
-import java.lang.annotation.Retention;
-import java.lang.annotation.RetentionPolicy;
-import java.lang.annotation.Target;
-
-import org.jboss.managed.api.ManagedOperation.Impact;
-import org.jboss.managed.api.annotation.ManagementParameter.NULL_CONSTRAINTS;
+import org.jboss.managed.api.Fields;
+import org.jboss.managed.spi.factory.ManagedParameterConstraintsPopulator;
 import org.jboss.managed.spi.factory.ManagedParameterConstraintsPopulatorFactory;
+import org.jboss.metatype.api.values.SimpleValueSupport;
+import org.jboss.reflect.spi.ParameterInfo;
 
 /**
- * An annotation for describing a ManagedOperation
- * 
+ * Example ManagedParameterConstraintsPopulatorFactory
  * @author Scott.Stark@jboss.org
  * @version $Revision$
  */
-@Target({ElementType.METHOD})
-@Retention(RetentionPolicy.RUNTIME)
-public @interface ManagementOperation
+public class TestManagedParameterConstraintsPopulatorFactory implements
+      ManagedParameterConstraintsPopulatorFactory
 {
-   /** The name of the operation */
-   String name() default AnnotationDefaults.EMPTY_STRING;
-   /** The parameters of the operation */
-   ManagementParameter[] params() default {};
+   public ManagedParameterConstraintsPopulator newInstance()
+   {
+      return new TestManagedParameterConstraintsPopulator();
+   }
 
-   /** The description */
-   String description() default AnnotationDefaults.EMPTY_STRING;
-   /** The side-effect impact of invoking the operation */
-   Impact impact() default Impact.Unknown;
+   static class TestManagedParameterConstraintsPopulator
+      implements ManagedParameterConstraintsPopulator
+   {
+      public void populateManagedParameter(String methodName, ParameterInfo info, Fields fields)
+      {
+         if (methodName.equals("constrainedIntx10"))
+            populateconstrainedIntx10Arg(fields);
+      }
 
-   /** The parameter constraints, allowed values populator factory */
-   Class<? extends ManagedParameterConstraintsPopulatorFactory> constraintsFactory()
-      default NULL_CONSTRAINTS.class;
-
+      void populateconstrainedIntx10Arg(Fields fields)
+      {
+         fields.setField(Fields.MINIMUM_VALUE, SimpleValueSupport.wrap(0));
+         fields.setField(Fields.MAXIMUM_VALUE, SimpleValueSupport.wrap(100));
+      }
+   }
 }

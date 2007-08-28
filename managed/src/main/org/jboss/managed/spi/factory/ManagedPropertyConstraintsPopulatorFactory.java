@@ -22,7 +22,8 @@
 package org.jboss.managed.spi.factory;
 
 /**
- * Stateless factory for obtaining 
+ * Stateless factory for obtaining a ManagedPropertyConstraintsPopulator
+ * 
  * @author Scott.Stark@jboss.org
  * @version $Revision$
  */

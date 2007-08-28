@@ -1,6 +1,6 @@
 /*
  * JBoss, Home of Professional Open Source
- * Copyright 2006, Red Hat Middleware LLC, and individual contributors
+ * Copyright 2007, Red Hat Middleware LLC, and individual contributors
  * by the @authors tag. See the copyright.txt in the distribution for a
  * full listing of individual contributors.
  *
@@ -19,31 +19,25 @@
  * Software Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA
  * 02110-1301 USA, or see the FSF site: http://www.fsf.org.
  */
-package org.jboss.managed.api.annotation;
+package org.jboss.managed.spi.factory;
 
-import java.lang.annotation.ElementType;
-import java.lang.annotation.Retention;
-import java.lang.annotation.RetentionPolicy;
-import java.lang.annotation.Target;
+import org.jboss.managed.api.Fields;
+import org.jboss.reflect.spi.ParameterInfo;
 
 /**
- * Indicates a property that references another ManagedObject
- *  
+ * Plugin for the {@linkplain ManagedParameter} constraint related info.
+ * 
  * @author Scott.Stark@jboss.org
  * @version $Revision$
  */
-@Target({ElementType.METHOD})
-@Retention(RetentionPolicy.RUNTIME)
-public @interface ManagementObjectRef
+public interface ManagedParameterConstraintsPopulator
 {
-   /** An explicit ManagedObject name. If empty, the name is
-    * taken from the annotated property.
-    * @see {@linkplain ManagedObject#getExternalName()}
+   /** Populate the ManagedParameter fields constraint related info.
+    * @param methodName - the name of the method the param is
+    *    associated with
+    * @param info - the ParameterInfo for the method param
+    * @param fields - the fields to add the constraints to
     */
-   String name() default AnnotationDefaults.EMPTY_STRING;
-   /** A qualifier for the name that provides a context to
-    * identify the type or scope of the ManagedObject name.
-    * @see {@linkplain ManagedObject#getExternalNameType()}
-    */
-   String type() default AnnotationDefaults.EMPTY_STRING;
+   public void populateManagedParameter(String methodName, ParameterInfo info, Fields fields);
+
 }

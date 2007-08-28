@@ -48,10 +48,10 @@ public @interface ManagementProperty
    /** The external name of the property. If undefined its taken
     * from the property the annotation is on.
     */
-   String name() default "";
+   String name() default AnnotationDefaults.EMPTY_STRING;
 
    /** The internal name of the property as it relates to metadata */
-   String mappedName() default "";
+   String mappedName() default AnnotationDefaults.EMPTY_STRING;
 
    /** Whether this property is mandatory */
    boolean mandatory() default false;

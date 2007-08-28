@@ -1,6 +1,6 @@
 /*
  * JBoss, Home of Professional Open Source
- * Copyright 2006, Red Hat Middleware LLC, and individual contributors
+ * Copyright 2007, Red Hat Middleware LLC, and individual contributors
  * by the @authors tag. See the copyright.txt in the distribution for a
  * full listing of individual contributors.
  *
@@ -19,31 +19,15 @@
  * Software Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA
  * 02110-1301 USA, or see the FSF site: http://www.fsf.org.
  */
-package org.jboss.managed.api.annotation;
-
-import java.lang.annotation.ElementType;
-import java.lang.annotation.Retention;
-import java.lang.annotation.RetentionPolicy;
-import java.lang.annotation.Target;
+package org.jboss.managed.spi.factory;
 
 /**
- * Indicates a property that references another ManagedObject
- *  
+ * Stateless factory for obtaining a ManagedParameterConstraintsPopulator
+ * 
  * @author Scott.Stark@jboss.org
  * @version $Revision$
  */
-@Target({ElementType.METHOD})
-@Retention(RetentionPolicy.RUNTIME)
-public @interface ManagementObjectRef
+public interface ManagedParameterConstraintsPopulatorFactory
 {
-   /** An explicit ManagedObject name. If empty, the name is
-    * taken from the annotated property.
-    * @see {@linkplain ManagedObject#getExternalName()}
-    */
-   String name() default AnnotationDefaults.EMPTY_STRING;
-   /** A qualifier for the name that provides a context to
-    * identify the type or scope of the ManagedObject name.
-    * @see {@linkplain ManagedObject#getExternalNameType()}
-    */
-   String type() default AnnotationDefaults.EMPTY_STRING;
+   ManagedParameterConstraintsPopulator newInstance();
 }

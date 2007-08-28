@@ -40,9 +40,9 @@ public @interface ManagementObjectID
    /** An explicit ManagedObject name. If empty, the name is
     * taken from the annotated property.
     */
-   String name() default "";
+   String name() default AnnotationDefaults.EMPTY_STRING;
    /** A qualifier for the name that provides a context to
     * identify the type or scope of the ManagedObject name.
     */
-   String type() default "";
+   String type() default AnnotationDefaults.EMPTY_STRING;
 }

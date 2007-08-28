@@ -54,9 +54,9 @@ public @interface ManagementObject
     * this is taken from a property annotated with
     * {@linkplain ManagementObjectID}.
     */
-   String type() default "";
+   String type() default AnnotationDefaults.EMPTY_STRING;
    /** The metadata attachment name for the ManagedObject */
-   String attachmentName() default "";
+   String attachmentName() default AnnotationDefaults.EMPTY_STRING;
    /** Is this a runtime extension of another ManagedObject. This
     * is used to tie together
     */

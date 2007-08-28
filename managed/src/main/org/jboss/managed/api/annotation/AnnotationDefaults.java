@@ -34,9 +34,16 @@ public class AnnotationDefaults
    private static class COMP_TYPE_CLASS {}
    /** The ManagementComponent uninitialized default */
    public static final ManagementComponent COMP_TYPE = defaultCompType();
+   /** The default uninitialized String value */
+   public static final String EMPTY_STRING = "";
 
+   /**
+    * The unitialized/default ManagementComponent value
+    * @return The unitialized/default ManagementComponent value
+    */
    public static synchronized ManagementComponent defaultCompType()
    {
       return COMP_TYPE_CLASS.class.getAnnotation(ManagementComponent.class);
    }
+
 }

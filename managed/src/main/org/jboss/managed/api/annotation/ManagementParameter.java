@@ -1,6 +1,6 @@
 /*
  * JBoss, Home of Professional Open Source
- * Copyright 2006, Red Hat Middleware LLC, and individual contributors
+ * Copyright 2007, Red Hat Middleware LLC, and individual contributors
  * by the @authors tag. See the copyright.txt in the distribution for a
  * full listing of individual contributors.
  *
@@ -21,29 +21,38 @@
  */
 package org.jboss.managed.api.annotation;
 
-import java.lang.annotation.ElementType;
-import java.lang.annotation.Retention;
-import java.lang.annotation.RetentionPolicy;
-import java.lang.annotation.Target;
+import org.jboss.managed.spi.factory.ManagedParameterConstraintsPopulator;
+import org.jboss.managed.spi.factory.ManagedParameterConstraintsPopulatorFactory;
 
 /**
- * Indicates a property that references another ManagedObject
- *  
+ * Annotation for documenting a ManagementOperation parameter.
+ * 
  * @author Scott.Stark@jboss.org
  * @version $Revision$
  */
-@Target({ElementType.METHOD})
-@Retention(RetentionPolicy.RUNTIME)
-public @interface ManagementObjectRef
+public @interface ManagementParameter
 {
-   /** An explicit ManagedObject name. If empty, the name is
-    * taken from the annotated property.
-    * @see {@linkplain ManagedObject#getExternalName()}
-    */
+   /** The parameter name */
    String name() default AnnotationDefaults.EMPTY_STRING;
-   /** A qualifier for the name that provides a context to
-    * identify the type or scope of the ManagedObject name.
-    * @see {@linkplain ManagedObject#getExternalNameType()}
+   /** The parameter description */
+   String description() default AnnotationDefaults.EMPTY_STRING;
+
+   /** The constraints, allowed values populator factory */
+   Class<? extends ManagedParameterConstraintsPopulatorFactory> constraintsFactory()
+      default NULL_CONSTRAINTS.class;
+
+   /**
+    * Used in {@link ManagementParameter#constraintsFactory()} to
+    * signal that the factory be inferred from the type
+    * of the property.
     */
-   String type() default AnnotationDefaults.EMPTY_STRING;
+   public static final class NULL_CONSTRAINTS
+      implements ManagedParameterConstraintsPopulatorFactory
+   {
+      public ManagedParameterConstraintsPopulator newInstance()
+      {
+         return null;
+      }
+   }
+
 }

@@ -36,9 +36,13 @@ import org.jboss.managed.api.ManagedComponent;
 import org.jboss.managed.api.ManagedDeployment;
 import org.jboss.managed.api.ManagedObject;
 import org.jboss.managed.api.ManagedOperation;
+import org.jboss.managed.api.ManagedParameter;
 import org.jboss.managed.api.ManagedProperty;
 import org.jboss.managed.api.factory.ManagedObjectFactory;
+import org.jboss.metatype.api.types.SimpleMetaType;
 import org.jboss.metatype.api.values.GenericValue;
+import org.jboss.metatype.api.values.SimpleValue;
+import org.jboss.metatype.api.values.SimpleValueSupport;
 import org.jboss.test.deployers.AbstractDeployerTest;
 import org.jboss.test.deployers.deployer.support.ConnMetaData;
 import org.jboss.test.deployers.deployer.support.DSMetaData;
@@ -212,23 +216,69 @@ public class DeployerManagedDeploymentUnitTestCase extends AbstractDeployerTest
 
       // Validate the operations on the localDataMO
       Set<ManagedOperation> localDataOps = localDataMO.getOperations();
-      assertEquals("localDataOps ops count is 2", 2, localDataOps.size());
+      assertEquals("localDataOps ops count is 4", 4, localDataOps.size());
       ManagedOperation flushPool = null;
       ManagedOperation closePool = null;
+      ManagedOperation takesString = null;
+      ManagedOperation constrainedIntx10 = null;
+      
       for(ManagedOperation op : localDataOps)
       {
          if (op.getName().equals("flushPool"))
             flushPool = op;
          if (op.getName().equals("closePool"))
             closePool = op;
+         if (op.getName().equals("takesString"))
+            takesString = op;
+         if (op.getName().equals("constrainedIntx10"))
+            constrainedIntx10 = op;
+         
       }
-      assertNotNull("flushPool find", flushPool);
-      assertNotNull("closePool find", closePool);
+      // flushPool
+      assertNotNull("flushPool found", flushPool);
+      assertEquals("flushPool", flushPool.getName());
+      assertEquals("Flush the connections in the pool", flushPool.getDescription());
+      assertEquals(ManagedOperation.Impact.WriteOnly, flushPool.getImpact());
+      assertEquals(SimpleMetaType.VOID, flushPool.getReturnType());
+      assertEquals("zero params", 0, flushPool.getParameters().length);
+      // closePool
+      assertNotNull("closePool found", closePool);
+      assertEquals("closePool", closePool.getName());
+      assertEquals("Close the connections in the pool", closePool.getDescription());
+      assertEquals(ManagedOperation.Impact.WriteOnly, closePool.getImpact());
+      assertEquals(SimpleMetaType.VOID, closePool.getReturnType());
+      assertEquals("zero params", 0, closePool.getParameters().length);
+      // takesString
+      assertNotNull("takesString found", takesString);
+      assertEquals("takesString", takesString.getName());
+      assertEquals("Takes a string and returns it", takesString.getDescription());
+      assertEquals(ManagedOperation.Impact.ReadOnly, takesString.getImpact());
+      assertEquals(SimpleMetaType.STRING, takesString.getReturnType());
+      ManagedParameter[] takesStringParams = takesString.getParameters();
+      assertEquals("one params", 1, takesStringParams.length);
+      assertEquals("param name", "input", takesStringParams[0].getName());
+      assertEquals("param description", "The string to return", takesStringParams[0].getDescription());
+      assertEquals("param type", SimpleMetaType.STRING, takesStringParams[0].getMetaType());
+      // constrainedIntx10
+      assertNotNull("constrainedIntx10 found", constrainedIntx10);
+      assertEquals("constrainedIntx10", constrainedIntx10.getName());
+      assertEquals("Takes an int and multiples by 10", constrainedIntx10.getDescription());
+      assertEquals(ManagedOperation.Impact.ReadOnly, constrainedIntx10.getImpact());
+      assertEquals(SimpleMetaType.INTEGER, constrainedIntx10.getReturnType());
+      ManagedParameter[] constrainedIntx10Params = constrainedIntx10.getParameters();
+      assertEquals("one params", 1, constrainedIntx10Params.length);
+      assertEquals("param name", "input", constrainedIntx10Params[0].getName());
+      assertEquals("param description", "The int to multiple", constrainedIntx10Params[0].getDescription());
+      assertEquals("param type", SimpleMetaType.INTEGER, constrainedIntx10Params[0].getMetaType());
+      Object min = constrainedIntx10Params[0].getMinimumValue();
+      assertEquals("param min is 0", new Integer(0), min);
+      assertEquals("param min is 100", new Integer(100), constrainedIntx10Params[0].getMaximumValue());
+      
       // Validate that the localDataMO includes the runtime properties
       ManagedProperty rtp1 = localDataProps.get("runtimeProp1");
       assertNotNull("runtimeProp1", rtp1);
       ManagedProperty rtp2 = localDataProps.get("runtimeProp2");
-      assertNotNull("runtimeProp2", rtp2);      
+      assertNotNull("runtimeProp2", rtp2);
    }
 
    protected DeployerClient getMainDeployer()
