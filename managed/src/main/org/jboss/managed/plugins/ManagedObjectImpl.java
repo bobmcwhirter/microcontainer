@@ -196,6 +196,10 @@ public class ManagedObjectImpl implements ManagedObject
    {
       return properties;
    }
+   public void setProperties(Map<String, ManagedProperty> properties)
+   {
+      this.properties = properties;
+   }
 
    public Serializable getAttachment()
    {
@@ -211,10 +215,18 @@ public class ManagedObjectImpl implements ManagedObject
    {
       this.attachment = attachment;
    }
-   
+
+   /**
+    * get the ManagedOperations
+    * @return 
+    */
    public Set<ManagedOperation> getOperations()
    {
       return operations;
+   }
+   public void setOperations(Set<ManagedOperation> operations)
+   {
+      this.operations = operations;
    }
 
    @Override

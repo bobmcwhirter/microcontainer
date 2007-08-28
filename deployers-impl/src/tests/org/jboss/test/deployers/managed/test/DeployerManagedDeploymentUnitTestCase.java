@@ -21,10 +21,7 @@
 */
 package org.jboss.test.deployers.managed.test;
 
-import java.lang.annotation.Annotation;
 import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
@@ -33,31 +30,25 @@ import junit.framework.TestSuite;
 
 import org.jboss.deployers.client.spi.DeployerClient;
 import org.jboss.deployers.client.spi.Deployment;
-import org.jboss.deployers.plugins.attachments.AttachmentsImpl;
 import org.jboss.deployers.spi.attachments.MutableAttachments;
-import org.jboss.deployers.spi.attachments.PredeterminedManagedObjectAttachments;
 import org.jboss.managed.api.ComponentType;
 import org.jboss.managed.api.ManagedComponent;
 import org.jboss.managed.api.ManagedDeployment;
 import org.jboss.managed.api.ManagedObject;
+import org.jboss.managed.api.ManagedOperation;
 import org.jboss.managed.api.ManagedProperty;
 import org.jboss.managed.api.factory.ManagedObjectFactory;
-import org.jboss.metatype.api.values.ArrayValue;
 import org.jboss.metatype.api.values.GenericValue;
-import org.jboss.reflect.plugins.ClassInfoImpl;
-import org.jboss.reflect.plugins.introspection.IntrospectionTypeInfoFactoryImpl;
-import org.jboss.reflect.spi.AnnotationValue;
-import org.jboss.reflect.spi.MethodInfo;
 import org.jboss.test.deployers.AbstractDeployerTest;
 import org.jboss.test.deployers.deployer.support.ConnMetaData;
 import org.jboss.test.deployers.deployer.support.DSMetaData;
+import org.jboss.test.deployers.deployer.support.DSServiceMetaData;
 import org.jboss.test.deployers.deployer.support.LocalDataSourceMetaData;
 import org.jboss.test.deployers.deployer.support.MCFDeployer;
 import org.jboss.test.deployers.deployer.support.SecMetaData;
 import org.jboss.test.deployers.deployer.support.SecurityDeployment;
 import org.jboss.test.deployers.deployer.support.XADataSourceMetaData;
 import org.jboss.test.deployers.managed.support.MockProfileService;
-import org.jboss.test.deployers.managed.support.TestManagedObjectDeployer;
 
 /**
  * ManagedDeployment unit tests.
@@ -99,6 +90,7 @@ public class DeployerManagedDeploymentUnitTestCase extends AbstractDeployerTest
       // Deploy a datasource with local and xa factories
       Deployment ctx1 = createSimpleDeployment("deployment1");
       DSMetaData dsmd = new DSMetaData();
+      // The base LocalDataSourceMeta
       LocalDataSourceMetaData ds = new LocalDataSourceMetaData();
       ds.setJndiName("java:DefaultDS1");
       ds.setMaxSize(100);
@@ -128,6 +120,10 @@ public class DeployerManagedDeploymentUnitTestCase extends AbstractDeployerTest
 
       MutableAttachments a1 = (MutableAttachments) ctx1.getPredeterminedManagedObjects();
       a1.addAttachment(DSMetaData.class, dsmd);
+      // The mbeans associated with the local DS
+      DSServiceMetaData localMBeans = new DSServiceMetaData();
+      localMBeans.setManagementName("java:DefaultDS1");
+      a1.addAttachment(DSServiceMetaData.class, localMBeans);
       ps.addDeployment(ctx1);
 
       // Deploy security domain1
@@ -170,8 +166,9 @@ public class DeployerManagedDeploymentUnitTestCase extends AbstractDeployerTest
       // Get the LocalDataSourceMetaData/SecMetaData/domain ManagedProperty
       assertNotNull("LocalDataSourceMetaData MO", localDataMO);
       assertEquals("LocalDataSourceMetaData comp type", new ComponentType("DataSource", "LocalTx"), localDataMO.getType());
-      log.debug("LocalDataSourceMetaData MO.props: "+localDataMO.getProperties());
-      assertNotNull("LocalDataSourceMetaData MO.props", localDataMO.getProperties());
+      Map<String, ManagedProperty> localDataProps = localDataMO.getProperties();
+      log.debug("LocalDataSourceMetaData MO.props: "+localDataProps);
+      assertNotNull("LocalDataSourceMetaData MO.props", localDataProps);
       ManagedProperty localSecDomainProp = localDataMO.getProperty("security-domain");
       assertNotNull("localSecDomainProp", localSecDomainProp);
       GenericValue localSecDomainPropGV = (GenericValue) localSecDomainProp.getValue();
@@ -212,6 +209,26 @@ public class DeployerManagedDeploymentUnitTestCase extends AbstractDeployerTest
       assertNotNull("java:/jaas/domain2 MO", sd2MO);
       ManagedObject xaSecDomainPropTarget = xaSecDomainRefProp.getTargetManagedObject();
       assertEquals(sd2MO, xaSecDomainPropTarget);
+
+      // Validate the operations on the localDataMO
+      Set<ManagedOperation> localDataOps = localDataMO.getOperations();
+      assertEquals("localDataOps ops count is 2", 2, localDataOps.size());
+      ManagedOperation flushPool = null;
+      ManagedOperation closePool = null;
+      for(ManagedOperation op : localDataOps)
+      {
+         if (op.getName().equals("flushPool"))
+            flushPool = op;
+         if (op.getName().equals("closePool"))
+            closePool = op;
+      }
+      assertNotNull("flushPool find", flushPool);
+      assertNotNull("closePool find", closePool);
+      // Validate that the localDataMO includes the runtime properties
+      ManagedProperty rtp1 = localDataProps.get("runtimeProp1");
+      assertNotNull("runtimeProp1", rtp1);
+      ManagedProperty rtp2 = localDataProps.get("runtimeProp2");
+      assertNotNull("runtimeProp2", rtp2);      
    }
 
    protected DeployerClient getMainDeployer()

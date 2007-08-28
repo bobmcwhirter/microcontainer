@@ -205,6 +205,7 @@ public class AbstractManagedObjectFactory extends ManagedObjectFactory
          moAnnotations.put(ManagementObjectID.class.getName(), moID);
 
       // Process the ManagementObject fields
+      boolean isRuntime = managementObject.isRuntime();
       String name = classInfo.getName();
       String nameType = null;
       String attachmentName = classInfo.getName();
@@ -235,6 +236,9 @@ public class AbstractManagedObjectFactory extends ManagedObjectFactory
       ManagementProperties propertyType = ManagementProperties.ALL;
       if (managementObject != null)
          propertyType = managementObject.properties();
+
+      log.debug("Building MangedObject(name="+name+",nameType="+nameType
+            +",attachmentName="+attachmentName+",isRuntime="+isRuntime+")");
 
       // Build the ManagedProperties
       Set<ManagedProperty> properties = new HashSet<ManagedProperty>();
@@ -408,6 +412,8 @@ public class AbstractManagedObjectFactory extends ManagedObjectFactory
          result.setNameType(nameType);
       if (attachmentName != null)
          result.setAttachmentName(attachmentName);
+      if (operations.size() > 0 )
+         result.setOperations(operations);
       for (ManagedProperty property : properties)
       {
          // FIXME: this either needs to be passed in via the factory or setter added to ManagedProperty

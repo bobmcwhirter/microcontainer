@@ -21,6 +21,7 @@
  */
 package org.jboss.test.deployers.managed.support;
 
+import java.lang.annotation.Annotation;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Map;
@@ -33,13 +34,14 @@ import org.jboss.logging.Logger;
 import org.jboss.managed.api.ComponentType;
 import org.jboss.managed.api.ManagedDeployment;
 import org.jboss.managed.api.ManagedObject;
+import org.jboss.managed.api.ManagedOperation;
 import org.jboss.managed.api.ManagedProperty;
-import org.jboss.managed.api.ManagedDeployment.DeploymentPhase;
 import org.jboss.managed.api.annotation.ManagementComponent;
+import org.jboss.managed.api.annotation.ManagementObject;
 import org.jboss.managed.api.annotation.ManagementObjectID;
 import org.jboss.managed.api.annotation.ManagementObjectRef;
 import org.jboss.managed.plugins.ManagedComponentImpl;
-import org.jboss.managed.plugins.ManagedDeploymentImpl;
+import org.jboss.managed.plugins.ManagedObjectImpl;
 import org.jboss.managed.plugins.factory.AbstractManagedObjectFactory;
 import org.jboss.metatype.api.types.ArrayMetaType;
 import org.jboss.metatype.api.types.MetaType;
@@ -60,9 +62,16 @@ public class MockProfileService
    private DeployerClient main;
    /** id/type key to ManagedObject map */
    private Map<String, ManagedObject> moRegistry = new HashMap<String, ManagedObject>();
+   /** The deployment map */
    private Map<String, Deployment> deployments = new HashMap<String, Deployment>();
+   /** The deployment name to ManagedDeployment map */
    private Map<String, ManagedDeployment> managedDeployments = new HashMap<String, ManagedDeployment>();
+   /** The ManagedPropertys with unresolved ManagementObjectRefs */
    private Map<String, Set<ManagedProperty>> unresolvedRefs = new HashMap<String, Set<ManagedProperty>>();
+   /** A map of runtime ManagedObjects needing to be merged with their
+    * mathing ManagedObject.
+    */
+   private Map<String, ManagedObject> runtimeMOs = new HashMap<String, ManagedObject>();
 
    public MockProfileService(DeployerClient main)
    {
@@ -113,6 +122,31 @@ public class MockProfileService
    {
       String key = mo.getName() + "/" + mo.getNameType();
       log.debug("ID for ManagedObject: "+key+", attachmentName: "+mo.getAttachmentName());
+
+      // See if this is a runtime ManagedObject
+      Map<String, Annotation> moAnns = mo.getAnnotations();
+      ManagementObject managementObject = (ManagementObject) moAnns.get(ManagementObject.class.getName());
+      if (managementObject.isRuntime())
+      {
+         // Merge this with the ManagedObject
+         ManagedObject parentMO = moRegistry.get(key);
+         if (parentMO == null)
+         {
+            // Save the runtime mo for merging
+            runtimeMOs.put(key, mo);
+            return;
+         }
+         mergeRuntimeMO(parentMO, mo);
+      }
+      else
+      {
+         // See if there is runtime info to merge
+         ManagedObject runtimeMO = runtimeMOs.get(key);
+         if (runtimeMO != null)
+            mergeRuntimeMO(mo, runtimeMO);
+      }
+
+      // Update the MO registry
       ManagedObject prevMO = moRegistry.put(key, mo);
       if( prevMO != null )
          log.warn("Duplicate mo for key: "+key+", prevMO: "+prevMO);
@@ -120,7 +154,7 @@ public class MockProfileService
       checkForReferences(key, mo);
 
       // Create ManagedComponents for 
-      ManagementComponent mc = (ManagementComponent) mo.getAnnotations().get(ManagementComponent.class.getName());
+      ManagementComponent mc = (ManagementComponent) moAnns.get(ManagementComponent.class.getName());
       if (mc != null)
       {
          ComponentType type = new ComponentType(mc.type(), mc.subtype());
@@ -217,5 +251,31 @@ public class MockProfileService
          }
          unresolvedRefs.remove(key);
       }      
+   }
+
+   /**
+    * Merge the runtime props and ops
+    * TODO: need a plugin to access the ManagedObject impl
+    * @param mo
+    * @param runtimeMO
+    */
+   protected void mergeRuntimeMO(ManagedObject mo, ManagedObject runtimeMO)
+   {
+      Map<String, ManagedProperty> moProps = mo.getProperties();
+      Set<ManagedOperation> moOps = mo.getOperations();
+      HashMap<String, ManagedProperty> props = new HashMap<String, ManagedProperty>(moProps);
+      HashSet<ManagedOperation> ops = new HashSet<ManagedOperation>(moOps);
+
+      Map<String, ManagedProperty> runtimeProps = runtimeMO.getProperties();
+      Set<ManagedOperation> runtimeOps = runtimeMO.getOperations();
+
+      if (runtimeProps != null)
+         props.putAll(runtimeProps);
+      if (runtimeOps != null)
+         ops.addAll(runtimeOps);
+
+      ManagedObjectImpl moi = (ManagedObjectImpl) mo;
+      moi.setProperties(props);
+      moi.setOperations(ops);
    }
 }

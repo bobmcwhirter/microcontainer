@@ -21,6 +21,8 @@
  */
 package org.jboss.test.deployers.deployer.support;
 
+import java.io.Serializable;
+
 import org.jboss.managed.api.ManagedOperation.Impact;
 import org.jboss.managed.api.annotation.ManagementObject;
 import org.jboss.managed.api.annotation.ManagementObjectID;
@@ -35,7 +37,10 @@ import org.jboss.managed.api.annotation.ManagementProperty;
  */
 @ManagementObject(isRuntime=true)
 public class DSServiceMetaData
+   implements Serializable
 {
+   private static final long serialVersionUID = 1;
+
    /** The name of the ManagedObject this runtime view augments */
    private String managementName;
    private String runtimeProp1;
@@ -70,8 +75,13 @@ public class DSServiceMetaData
       this.runtimeProp2 = runtimeProp2;
    }
 
-   @ManagementOperation(description="Flush the connection pool", impact=Impact.WriteOnly)
+   @ManagementOperation(description="Flush the connections in the pool", impact=Impact.WriteOnly)
    public void flushPool()
+   {
+      
+   }
+   @ManagementOperation(description="Close the connections in the pool", impact=Impact.WriteOnly)
+   public void closePool()
    {
       
    }

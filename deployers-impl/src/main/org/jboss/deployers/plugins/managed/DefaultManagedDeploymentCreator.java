@@ -47,23 +47,6 @@ public class DefaultManagedDeploymentCreator
    /** The metadata type to ManagedComponent handlers */
    private Map<Class, ManagedComponentCreator> mdCreators;
 
-   public ManagedObjectFactory getMoFactory()
-   {
-      return moFactory;
-   }
-   public void setMoFactory(ManagedObjectFactory moFactory)
-   {
-      this.moFactory = moFactory;
-   }
-
-   public <T> void addManagedComponentCreator(ManagedComponentCreator<T> mcc)
-   {
-      Type type = mcc.getClass().getGenericInterfaces()[0];
-      ParameterizedType pt = (ParameterizedType) type;
-      Class ptType = (Class) pt.getActualTypeArguments()[0];
-      mdCreators.put(ptType, mcc);
-   }
-
    public ManagedDeployment build(DeploymentUnit unit,
          Map<String, ManagedObject> unitMOs,
          ManagedDeployment parent)

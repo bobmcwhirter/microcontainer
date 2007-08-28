@@ -27,7 +27,15 @@ import java.util.Map;
 import java.util.Set;
 
 /**
- * ManagedObject.
+ * ManagedObject is an interface for a manageable element. It
+ * consists of:
+ * - a name/name type for a registry/references
+ * - an attachment name to associate the ManagedObject with a
+ *    deployment attachment
+ * - annotations from the metadata making up the ManagedObject
+ * - the attachment instance
+ * - the ManagedPropertys for the interface
+ * - the ManagedOperations for the interface 
  * 
  * @author <a href="adrian@jboss.com">Adrian Brock</a>
  * @author Scott.Stark@jboss.org
@@ -77,7 +85,7 @@ public interface ManagedObject extends Serializable
     * @return the property names
     */
    Set<String> getPropertyNames();
-   
+
    /**
     * Get a property
     * 
