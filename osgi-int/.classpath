@@ -43,5 +43,5 @@
   <classpathentry kind="var" path="M2_REPO/oswego-concurrent/concurrent/1.3.4/concurrent-1.3.4.jar"/>
   <classpathentry kind="var" path="M2_REPO/org/apache/ant/ant-junit/1.7.0/ant-junit-1.7.0.jar"/>
   <classpathentry kind="var" path="M2_REPO/javax/xml/bind/jsr173_api/1.0/jsr173_api-1.0.jar"/>
-  <classpathentry kind="var" path="M2_REPO/jboss/jboss-common-core/2.0.4.GA/jboss-common-core-2.0.4.GA.jar" sourcepath="M2_REPO/jboss/jboss-common-core/2.0.4.GA/jboss-common-core-2.0.4.GA-sources.jar"/>
+  <classpathentry kind="var" path="M2_REPO/org/jboss/jboss-common-core/2.2.1-SNAPSHOT/jboss-common-core-2.2.1-SNAPSHOT.jar" sourcepath="M2_REPO/org/jboss/jboss-common-core/2.2.1-SNAPSHOT/jboss-common-core-2.2.1-SNAPSHOT-sources.jar"/>
 </classpath>
