@@ -50,7 +50,7 @@ public class CardinalityTestCase extends AbstractTestCaseWithSetup
     * @return the delegate
     * @throws Exception for any error
     */
-   public static AbstractTestDelegate getDelegate(Class clazz) throws Exception
+   public static AbstractTestDelegate getDelegate(Class<?> clazz) throws Exception
    {
       return new AbstractTestDelegate(clazz);
    }

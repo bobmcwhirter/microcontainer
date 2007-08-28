@@ -47,7 +47,7 @@ public abstract class UninstallCallbackAnnotationPlugin<T extends AnnotatedInfo>
       super(Uninstall.class);
    }
 
-   protected Set<CallbackItem> getCallbacks(DependencyInfo dependency)
+   protected Set<CallbackItem<?>> getCallbacks(DependencyInfo dependency)
    {
       return dependency.getUninstallItems();
    }

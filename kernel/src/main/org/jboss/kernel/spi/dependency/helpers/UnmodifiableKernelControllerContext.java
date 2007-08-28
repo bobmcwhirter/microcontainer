@@ -97,11 +97,6 @@ public class UnmodifiableKernelControllerContext extends UnmodifiableControllerC
       throw new UnsupportedOperationException("Cannot execute set on unmodifiable wrapper.");
    }
 
-   public boolean isAutowireCandidate()
-   {
-      return delegate.isAutowireCandidate();
-   }
-
    public void setName(Object name)
    {
       throw new UnsupportedOperationException("Cannot execute set on unmodifiable wrapper.");
@@ -125,10 +120,5 @@ public class UnmodifiableKernelControllerContext extends UnmodifiableControllerC
    public void set(String name, Object value) throws Throwable
    {
       delegate.set(name, value);
-   }
-
-   public void applyMetaData() throws Throwable
-   {
-      delegate.applyMetaData();
    }
 }

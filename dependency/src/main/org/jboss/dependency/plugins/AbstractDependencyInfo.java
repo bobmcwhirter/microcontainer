@@ -54,15 +54,16 @@ public class AbstractDependencyInfo extends JBossObject implements DependencyInf
    private Set<DependencyItem> unresolved = new CopyOnWriteArraySet<DependencyItem>();
 
    /** Install callbacks */
-   private Set<CallbackItem> installCallbacks = new CopyOnWriteArraySet<CallbackItem>();
+   private Set<CallbackItem<?>> installCallbacks = new CopyOnWriteArraySet<CallbackItem<?>>();
 
    /** Uninstall callbacks */
-   private Set<CallbackItem> uninstallCallbacks = new CopyOnWriteArraySet<CallbackItem>();
+   private Set<CallbackItem<?>> uninstallCallbacks = new CopyOnWriteArraySet<CallbackItem<?>>();
    
    /** Lifecycle callbacks */
    private List<LifecycleCallbackItem> lifecycleCallbacks = new CopyOnWriteArrayList<LifecycleCallbackItem>();
-   
-   
+
+   /** Whether this is an autowire candidate */
+   private boolean autowireCandidate = true;
 
    /**
     * Create an abstract dependency info
@@ -71,7 +72,7 @@ public class AbstractDependencyInfo extends JBossObject implements DependencyInf
    {
    }
 
-   public Set<DependencyItem> getIDependOn(Class type)
+   public Set<DependencyItem> getIDependOn(Class<?> type)
    {
       if (type == null || iDependOn.isEmpty())
          return iDependOn;
@@ -101,7 +102,7 @@ public class AbstractDependencyInfo extends JBossObject implements DependencyInf
       flushJBossObjectCache();
    }
    
-   public Set<DependencyItem> getDependsOnMe(Class type)
+   public Set<DependencyItem> getDependsOnMe(Class<?> type)
    {
       if (type == null || dependsOnMe.isEmpty())
          return dependsOnMe;
@@ -151,36 +152,36 @@ public class AbstractDependencyInfo extends JBossObject implements DependencyInf
       return unresolved;
    }
 
-   public void addInstallItem(CallbackItem callbackItem)
+   public <T> void addInstallItem(CallbackItem<T> callbackItem)
    {
       installCallbacks.add(callbackItem);
       flushJBossObjectCache();
    }
 
-   public void removeInstallItem(CallbackItem callbackItem)
+   public <T> void removeInstallItem(CallbackItem<T> callbackItem)
    {
       installCallbacks.remove(callbackItem);
       flushJBossObjectCache();
    }
 
-   public Set<CallbackItem> getInstallItems()
+   public Set<CallbackItem<?>> getInstallItems()
    {
       return installCallbacks;
    }
 
-   public void addUninstallItem(CallbackItem callbackItem)
+   public <T> void addUninstallItem(CallbackItem<T> callbackItem)
    {
       uninstallCallbacks.add(callbackItem);
       flushJBossObjectCache();
    }
 
-   public void removeUninstallItem(CallbackItem callbackItem)
+   public <T> void removeUninstallItem(CallbackItem<T> callbackItem)
    {
       uninstallCallbacks.remove(callbackItem);
       flushJBossObjectCache();
    }
 
-   public Set<CallbackItem> getUninstallItems()
+   public Set<CallbackItem<?>> getUninstallItems()
    {
       return uninstallCallbacks;
    }
@@ -195,6 +196,16 @@ public class AbstractDependencyInfo extends JBossObject implements DependencyInf
       return lifecycleCallbacks;
    }
    
+   public boolean isAutowireCandidate()
+   {
+      return autowireCandidate;
+   }
+
+   public void setAutowireCandidate(boolean candidate)
+   {
+      this.autowireCandidate = candidate;
+   }
+
    public void toString(JBossStringBuilder buffer)
    {
       buffer.append("idependOn=").append(iDependOn);

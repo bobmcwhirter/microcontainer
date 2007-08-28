@@ -40,7 +40,7 @@ public class CallbackDependencyItem extends ClassDependencyItem
 {
    private Cardinality cardinality;
 
-   public CallbackDependencyItem(Object name, Class demandClass, ControllerState whenRequired, ControllerState dependentState, Cardinality cardinality)
+   public CallbackDependencyItem(Object name, Class<?> demandClass, ControllerState whenRequired, ControllerState dependentState, Cardinality cardinality)
    {
       super(name, demandClass, whenRequired, dependentState);
       if (cardinality == null)

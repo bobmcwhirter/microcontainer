@@ -23,26 +23,18 @@ package org.jboss.kernel.plugins.dependency;
 
 import java.security.AccessControlContext;
 import java.security.AccessController;
-import java.security.PrivilegedAction;
-import java.util.Iterator;
 import java.util.Set;
-import java.util.Stack;
 
 import org.jboss.beans.info.spi.BeanInfo;
 import org.jboss.beans.metadata.spi.BeanMetaData;
-import org.jboss.beans.metadata.spi.MetaDataVisitor;
-import org.jboss.beans.metadata.spi.MetaDataVisitorNode;
 import org.jboss.dependency.plugins.AbstractControllerContext;
 import org.jboss.dependency.plugins.AbstractDependencyInfo;
-import org.jboss.dependency.spi.CallbackItem;
 import org.jboss.dependency.spi.Controller;
 import org.jboss.dependency.spi.ControllerMode;
-import org.jboss.dependency.spi.ControllerState;
 import org.jboss.dependency.spi.DependencyInfo;
 import org.jboss.dependency.spi.DependencyItem;
 import org.jboss.kernel.Kernel;
 import org.jboss.kernel.plugins.config.Configurator;
-import org.jboss.kernel.plugins.annotations.BeanAnnotationAdapterFactory;
 import org.jboss.kernel.spi.dependency.KernelController;
 import org.jboss.kernel.spi.dependency.KernelControllerContext;
 import org.jboss.kernel.spi.metadata.KernelMetaDataRepository;
@@ -101,6 +93,8 @@ public class AbstractKernelControllerContext extends AbstractControllerContext i
       ControllerMode mode = metaData.getMode();
       if (mode != null)
          setMode(mode);
+      boolean autowireCandidate = metaData.isAutowireCandidate();
+      getDependencyInfo().setAutowireCandidate(autowireCandidate);
       if (System.getSecurityManager() != null)
          accessContext = AccessController.getContext();
    }
@@ -169,11 +163,6 @@ public class AbstractKernelControllerContext extends AbstractControllerContext i
       return installScope;
    }
 
-   public boolean isAutowireCandidate()
-   {
-      return metaData != null && metaData.isAutowireCandidate();
-   }
-
    public void setInstallScope(ScopeKey key)
    {
       this.installScope = key;
@@ -200,7 +189,7 @@ public class AbstractKernelControllerContext extends AbstractControllerContext i
       if (metaData == null)
          return;
       if (isInitialProcessed) return;
-      PreprocessMetaDataVisitor visitor = new PreprocessMetaDataVisitor(metaData);
+      PreprocessMetaDataVisitor visitor = new PreprocessMetaDataVisitor(metaData, this);
       AccessController.doPrivileged(visitor);
       isInitialProcessed = true;
    }
@@ -216,7 +205,7 @@ public class AbstractKernelControllerContext extends AbstractControllerContext i
          return;
       }
       if (isDescribeProcessed) return;
-      DescribedMetaDataVisitor visitor = new DescribedMetaDataVisitor(metaData);
+      DescribedMetaDataVisitor visitor = new DescribedMetaDataVisitor(metaData, this);
       AccessController.doPrivileged(visitor);
       isDescribeProcessed = true;
    }
@@ -274,234 +263,5 @@ public class AbstractKernelControllerContext extends AbstractControllerContext i
    public ClassLoader getClassLoader() throws Throwable
    {
       return Configurator.getClassLoader(getBeanMetaData());
-   }
-
-   public void applyMetaData() throws Throwable
-   {
-      // handle custom annotations
-      AnnotationMetaDataVisitor annotationsVisitor = new AnnotationMetaDataVisitor(metaData);
-      annotationsVisitor.before();
-      try
-      {
-         BeanAnnotationAdapterFactory.getBeanAnnotationAdapter().applyAnnotations(annotationsVisitor);
-      }
-      finally
-      {
-         annotationsVisitor.after();
-      }
-   }
-
-   protected abstract class AbstractMetaDataVistor implements MetaDataVisitor
-   {
-      /**
-       * The current context for when the dependencies are required
-       */
-      protected ControllerState contextState = ControllerState.INSTANTIATED;
-
-      /**
-       * The metadata
-       */
-      protected BeanMetaData bmd;
-
-      /**
-       * Visited branch stack
-       */
-      protected Stack<MetaDataVisitorNode> visitorNodeStack;
-
-      protected AbstractMetaDataVistor(BeanMetaData bmd)
-      {
-         this.bmd = bmd;
-         this.visitorNodeStack = new Stack<MetaDataVisitorNode>();
-      }
-
-      public void initialVisit(MetaDataVisitorNode node)
-      {
-         visitorNodeStack.push(node);
-         try
-         {
-            internalInitialVisit(node);
-         }
-         finally
-         {
-            visitorNodeStack.pop();
-         }
-      }
-
-      public void describeVisit(MetaDataVisitorNode node)
-      {
-         visitorNodeStack.push(node);
-         try
-         {
-            internalDescribeVisit(node);
-         }
-         finally
-         {
-            visitorNodeStack.pop();
-         }
-      }
-
-      protected void internalInitialVisit(MetaDataVisitorNode node)
-      {
-         boolean trace = log.isTraceEnabled();
-         if (trace)
-            log.trace("Initial visit node " + node);
-
-         // Visit the children of this node
-         Iterator children = node.getChildren();
-         if (children != null)
-         {
-            ControllerState restoreState = contextState;
-            while (children.hasNext())
-            {
-               MetaDataVisitorNode child = (MetaDataVisitorNode) children.next();
-               try
-               {
-                  child.initialVisit(this);
-               }
-               finally
-               {
-                  contextState = restoreState;
-               }
-            }
-         }
-      }
-
-      protected void internalDescribeVisit(MetaDataVisitorNode node)
-      {
-         boolean trace = log.isTraceEnabled();
-         if (trace)
-            log.trace("Describe visit node " + node);
-
-         // Visit the children of this node
-         Iterator children = node.getChildren();
-         if (children != null)
-         {
-            ControllerState restoreState = contextState;
-            while (children.hasNext())
-            {
-               MetaDataVisitorNode child = (MetaDataVisitorNode) children.next();
-               try
-               {
-                  child.describeVisit(this);
-               }
-               finally
-               {
-                  contextState = restoreState;
-               }
-            }
-         }
-      }
-
-      public KernelControllerContext getControllerContext()
-      {
-         return AbstractKernelControllerContext.this;
-      }
-
-      public ControllerState getContextState()
-      {
-         return contextState;
-      }
-
-      public void addDependency(DependencyItem dependency)
-      {
-         getDependencyInfo().addIDependOn(dependency);
-      }
-
-      public void addInstallCallback(CallbackItem callback)
-      {
-         getDependencyInfo().addInstallItem(callback);
-      }
-
-      public void addUninstallCallback(CallbackItem callback)
-      {
-         getDependencyInfo().addUninstallItem(callback);
-      }
-
-      public void setContextState(ControllerState contextState)
-      {
-         this.contextState = contextState;
-      }
-
-      public Stack<MetaDataVisitorNode> visitorNodeStack()
-      {
-         return visitorNodeStack;
-      }
-
-   }
-
-   /**
-    * A visitor for the metadata that looks for dependencies.
-    */
-   protected class PreprocessMetaDataVisitor extends AbstractMetaDataVistor implements PrivilegedAction<Object>
-   {
-      /**
-       * Create a new MetaDataVisitor.
-       * 
-       * @param bmd the bean metadata
-       */
-      public PreprocessMetaDataVisitor(BeanMetaData bmd)
-      {
-         super(bmd);
-      }
-
-      /**
-       * Visit the bean metadata node, this is the starting point
-       */
-      public Object run()
-      {
-         bmd.initialVisit(this);
-         visitorNodeStack = null;
-         return null;
-      }
-   }
-
-   /**
-    * A visitor for the metadata that looks for dependencies.
-    */
-   protected class DescribedMetaDataVisitor extends AbstractMetaDataVistor implements PrivilegedAction<Object>
-   {
-      /**
-       * Create a new MetaDataVisitor.
-       * 
-       * @param bmd the bean meta data
-       */
-      public DescribedMetaDataVisitor(BeanMetaData bmd)
-      {
-         super(bmd);
-      }
-
-      /**
-       * Visit the bean metadata node, this is the starting point
-       */
-      public Object run()
-      {
-         bmd.describeVisit(this);
-         visitorNodeStack = null;
-         return null;
-      }
-   }
-
-   /**
-    * A visitor for the annotation meta data.
-    */
-   private class AnnotationMetaDataVisitor extends AbstractMetaDataVistor
-   {
-      public AnnotationMetaDataVisitor(BeanMetaData bmd)
-      {
-         super(bmd);
-      }
-
-      // push bean meta data as first node
-      public void before()
-      {
-         visitorNodeStack.push(bmd);
-      }
-
-      // remove bean meta data
-      public void after()
-      {
-         visitorNodeStack.pop();
-         visitorNodeStack = null;
-      }
    }
 }

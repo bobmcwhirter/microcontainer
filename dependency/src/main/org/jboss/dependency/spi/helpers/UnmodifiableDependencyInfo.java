@@ -48,12 +48,12 @@ public class UnmodifiableDependencyInfo extends JBossObject implements Dependenc
       this.delegate = delegate;
    }
 
-   public Set<DependencyItem> getIDependOn(Class type)
+   public Set<DependencyItem> getIDependOn(Class<?> type)
    {
       return delegate.getIDependOn(type);
    }
 
-   public Set<DependencyItem> getDependsOnMe(Class type)
+   public Set<DependencyItem> getDependsOnMe(Class<?> type)
    {
       return delegate.getDependsOnMe(type);
    }
@@ -88,32 +88,32 @@ public class UnmodifiableDependencyInfo extends JBossObject implements Dependenc
       return delegate.getUnresolvedDependencies();
    }
 
-   public void addInstallItem(CallbackItem callbackItem)
+   public <T> void addInstallItem(CallbackItem<T> callbackItem)
    {
       throw new UnsupportedOperationException("Cannot execute add on unmodifiable wrapper.");
    }
 
-   public void removeInstallItem(CallbackItem callbackItem)
+   public <T> void removeInstallItem(CallbackItem<T> callbackItem)
    {
       throw new UnsupportedOperationException("Cannot execute remove on unmodifiable wrapper.");
    }
 
-   public Set<CallbackItem> getInstallItems()
+   public Set<CallbackItem<?>> getInstallItems()
    {
       return delegate.getInstallItems();
    }
 
-   public void addUninstallItem(CallbackItem callbackItem)
+   public <T> void addUninstallItem(CallbackItem<T> callbackItem)
    {
       throw new UnsupportedOperationException("Cannot execute add on unmodifiable wrapper.");
    }
 
-   public void removeUninstallItem(CallbackItem callbackItem)
+   public <T> void removeUninstallItem(CallbackItem<T> callbackItem)
    {
       throw new UnsupportedOperationException("Cannot execute remove on unmodifiable wrapper.");
    }
 
-   public Set<CallbackItem> getUninstallItems()
+   public Set<CallbackItem<?>> getUninstallItems()
    {
       return delegate.getUninstallItems();
    }
@@ -126,5 +126,15 @@ public class UnmodifiableDependencyInfo extends JBossObject implements Dependenc
    public List<LifecycleCallbackItem> getLifecycleCallbacks()
    {
       return delegate.getLifecycleCallbacks();
+   }
+
+   public boolean isAutowireCandidate()
+   {
+      return delegate.isAutowireCandidate();
+   }
+
+   public void setAutowireCandidate(boolean candidate)
+   {
+      throw new UnsupportedOperationException("Cannot execute set on unmodifiable wrapper.");
    }
 }

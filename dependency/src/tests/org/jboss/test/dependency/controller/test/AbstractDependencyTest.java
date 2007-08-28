@@ -171,7 +171,7 @@ public class AbstractDependencyTest extends AbstractTestCaseWithSetup
     * @return the delegate
     * @throws Exception for any error
     */
-   public static AbstractTestDelegate getDelegate(Class clazz) throws Exception
+   public static AbstractTestDelegate getDelegate(Class<?> clazz) throws Exception
    {
       AbstractTestDelegate delegate = new AbstractTestDelegate(clazz);
       delegate.enableSecurity = true;

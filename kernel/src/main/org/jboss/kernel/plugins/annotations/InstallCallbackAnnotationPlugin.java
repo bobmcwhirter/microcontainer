@@ -47,7 +47,7 @@ public abstract class InstallCallbackAnnotationPlugin<T extends AnnotatedInfo> e
       super(Install.class);
    }
 
-   protected Set<CallbackItem> getCallbacks(DependencyInfo dependency)
+   protected Set<CallbackItem<?>> getCallbacks(DependencyInfo dependency)
    {
       return dependency.getInstallItems();
    }

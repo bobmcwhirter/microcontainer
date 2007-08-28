@@ -84,8 +84,8 @@ public class AbstractController extends JBossObject implements Controller
    private Set<AbstractController> childControllers = new CopyOnWriteArraySet<AbstractController>();
 
    /** The callback items */
-   private Map<Object, Set<CallbackItem>> installCallbacks = new ConcurrentHashMap<Object, Set<CallbackItem>>();
-   private Map<Object, Set<CallbackItem>> uninstallCallbacks = new ConcurrentHashMap<Object, Set<CallbackItem>>();
+   private Map<Object, Set<CallbackItem<?>>> installCallbacks = new ConcurrentHashMap<Object, Set<CallbackItem<?>>>();
+   private Map<Object, Set<CallbackItem<?>>> uninstallCallbacks = new ConcurrentHashMap<Object, Set<CallbackItem<?>>>();
 
    /** Whether an on demand context has been enabled */
    private boolean onDemandEnabled = true;
@@ -548,7 +548,7 @@ public class AbstractController extends JBossObject implements Controller
             String dependsOn = null;
             if (dependencies != null)
             {
-               Set set = dependencies.getIDependOn(null);
+               Set<DependencyItem> set = dependencies.getIDependOn(null);
                if (set != null)
                   dependsOn = set.toString();
             }
@@ -685,7 +685,7 @@ public class AbstractController extends JBossObject implements Controller
       ControllerState fromState = context.getState();
 
       Controller fromController = context.getController();
-      Set fromContexts = null;
+      Set<ControllerContext> fromContexts = null;
 
       int currentIndex = -1;
       if (ControllerState.ERROR.equals(fromState))
@@ -1026,20 +1026,21 @@ public class AbstractController extends JBossObject implements Controller
    /**
     * Add callback item under demand name.
     *
+    * @param <T> the callback item type
     * @param name demand name
     * @param isInstallPhase install or uninstall phase
     * @param callback callback item
     */
-   protected void addCallback(Object name, boolean isInstallPhase, CallbackItem callback)
+   protected <T> void addCallback(Object name, boolean isInstallPhase, CallbackItem<T> callback)
    {
       lockWrite();
       try
       {
-         Map<Object, Set<CallbackItem>> map = (isInstallPhase ? installCallbacks : uninstallCallbacks);
-         Set<CallbackItem> callbacks = map.get(name);
+         Map<Object, Set<CallbackItem<?>>> map = (isInstallPhase ? installCallbacks : uninstallCallbacks);
+         Set<CallbackItem<?>> callbacks = map.get(name);
          if (callbacks == null)
          {
-            callbacks = new HashSet<CallbackItem>();
+            callbacks = new HashSet<CallbackItem<?>>();
             map.put(name, callbacks);
          }
          callbacks.add(callback);
@@ -1053,17 +1054,18 @@ public class AbstractController extends JBossObject implements Controller
    /**
     * Remove callback item under demand name.
     *
+    * @param <T> the callback item type
     * @param name demand name
     * @param isInstallPhase install or uninstall phase
     * @param callback callback item
     */
-   protected void removeCallback(Object name, boolean isInstallPhase, CallbackItem callback)
+   protected <T> void removeCallback(Object name, boolean isInstallPhase, CallbackItem<T> callback)
    {
       lockWrite();
       try
       {
-         Map<Object, Set<CallbackItem>> map = (isInstallPhase ? installCallbacks : uninstallCallbacks);
-         Set<CallbackItem> callbacks = map.get(name);
+         Map<Object, Set<CallbackItem<?>>> map = (isInstallPhase ? installCallbacks : uninstallCallbacks);
+         Set<CallbackItem<?>> callbacks = map.get(name);
          if (callbacks != null)
          {
             callbacks.remove(callback);
@@ -1084,7 +1086,7 @@ public class AbstractController extends JBossObject implements Controller
     * @param isInstallPhase install or uninstall phase
     * @return callback items from dependency info
     */
-   protected Set<CallbackItem> getDependencyCallbacks(ControllerContext context, boolean isInstallPhase)
+   protected Set<CallbackItem<?>> getDependencyCallbacks(ControllerContext context, boolean isInstallPhase)
    {
       DependencyInfo di = context.getDependencyInfo();
       if (di != null)
@@ -1101,14 +1103,14 @@ public class AbstractController extends JBossObject implements Controller
     * @param isInstallPhase install or uninstall phase
     * @return all matching registered callbacks or empty set if no such item
     */
-   protected Set<CallbackItem> getCallbacks(Object name, boolean isInstallPhase)
+   protected Set<CallbackItem<?>> getCallbacks(Object name, boolean isInstallPhase)
    {
       lockRead();
       try
       {
-         Map<Object, Set<CallbackItem>> map = (isInstallPhase ? installCallbacks : uninstallCallbacks);
-         Set<CallbackItem> callbacks = map.get(name);
-         return callbacks != null ? callbacks : new HashSet<CallbackItem>();
+         Map<Object, Set<CallbackItem<?>>> map = (isInstallPhase ? installCallbacks : uninstallCallbacks);
+         Set<CallbackItem<?>> callbacks = map.get(name);
+         return callbacks != null ? callbacks : new HashSet<CallbackItem<?>>();
       }
       finally
       {
@@ -1125,11 +1127,11 @@ public class AbstractController extends JBossObject implements Controller
     * @param isInstallPhase install or uninstall phase
     * @param type install or uninstall type
     */
-   protected void resolveCallbacks(Set<CallbackItem> callbacks, ControllerState state, boolean execute, boolean isInstallPhase, boolean type)
+   protected void resolveCallbacks(Set<CallbackItem<?>> callbacks, ControllerState state, boolean execute, boolean isInstallPhase, boolean type)
    {
       if (callbacks != null && callbacks.isEmpty() == false)
       {
-         for (CallbackItem callback : callbacks)
+         for (CallbackItem<?> callback : callbacks)
          {
             if (callback.getWhenRequired().equals(state))
             {
@@ -1169,21 +1171,22 @@ public class AbstractController extends JBossObject implements Controller
       try
       {
          // existing owner callbacks
-         Set<CallbackItem> installs = getDependencyCallbacks(context, true);
+         Set<CallbackItem<?>> installs = getDependencyCallbacks(context, true);
          resolveCallbacks(installs, state, isInstallPhase, isInstallPhase, true);
-         Set<CallbackItem> uninstalls = getDependencyCallbacks(context, false);
+         Set<CallbackItem<?>> uninstalls = getDependencyCallbacks(context, false);
          resolveCallbacks(uninstalls, state, isInstallPhase == false, isInstallPhase, false);
 
          // change callbacks, applied only if context is autowire candidate
-         if (isAutowireCandidate(context))
+         DependencyInfo dependencyInfo = context.getDependencyInfo();
+         if (dependencyInfo != null && dependencyInfo.isAutowireCandidate())
          {
             // match callbacks by name
-            Set<CallbackItem> existingCallbacks = getCallbacks(context.getName(), isInstallPhase);
+            Set<CallbackItem<?>> existingCallbacks = getCallbacks(context.getName(), isInstallPhase);
             // match by classes
             Collection<Class<?>> classes = getClassesImplemented(context.getTarget());
             if (classes != null && classes.isEmpty() == false)
             {
-               for (Class clazz : classes)
+               for (Class<?> clazz : classes)
                {
                   existingCallbacks.addAll(getCallbacks(clazz, isInstallPhase));
                }
@@ -1192,7 +1195,7 @@ public class AbstractController extends JBossObject implements Controller
             // Do the installs if we are at the required state
             if (existingCallbacks != null && existingCallbacks.isEmpty() == false)
             {
-               for(CallbackItem callback : existingCallbacks)
+               for(CallbackItem<?> callback : existingCallbacks)
                {
                   if (state.equals(callback.getDependentState()))
                   {
@@ -1276,15 +1279,15 @@ public class AbstractController extends JBossObject implements Controller
     * @param clazz current class
     * @param classes classes holder set
     */
-   protected void traverseClass(Class clazz, Set<Class<?>> classes)
+   protected void traverseClass(Class<?> clazz, Set<Class<?>> classes)
    {
       if (clazz != null && Object.class.equals(clazz) == false)
       {
          classes.add(clazz);
          traverseClass(clazz.getSuperclass(), classes);
-         Class[] interfaces = clazz.getInterfaces();
+         Class<?>[] interfaces = clazz.getInterfaces();
          // traverse interfaces
-         for (Class intface : interfaces)
+         for (Class<?> intface : interfaces)
          {
             traverseClass(intface, classes);
          }

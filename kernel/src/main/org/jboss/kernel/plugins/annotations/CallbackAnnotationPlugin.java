@@ -56,10 +56,10 @@ public abstract class CallbackAnnotationPlugin<T extends AnnotatedInfo, C extend
    protected boolean isMetaDataAlreadyPresent(T info, C annotation, KernelControllerContext context)
    {
       DependencyInfo dependency = context.getDependencyInfo();
-      Set<CallbackItem> callbacks = getCallbacks(dependency);
+      Set<CallbackItem<?>> callbacks = getCallbacks(dependency);
       if (callbacks != null && callbacks.isEmpty() == false)
       {
-         for(CallbackItem ci : callbacks)
+         for(CallbackItem<?> ci : callbacks)
          {
             if (isEqual(info, ci))
                return true;
@@ -68,9 +68,9 @@ public abstract class CallbackAnnotationPlugin<T extends AnnotatedInfo, C extend
       return false;
    }
 
-   protected abstract boolean isEqual(T info, CallbackItem ci);
+   protected abstract boolean isEqual(T info, CallbackItem<?> ci);
 
-   protected abstract Set<CallbackItem> getCallbacks(DependencyInfo dependency);
+   protected abstract Set<CallbackItem<?>> getCallbacks(DependencyInfo dependency);
 
    protected List<? extends MetaDataVisitorNode> internalApplyAnnotation(T info, C annotation, KernelControllerContext context)
    {

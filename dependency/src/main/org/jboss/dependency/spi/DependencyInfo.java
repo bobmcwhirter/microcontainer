@@ -40,7 +40,7 @@ public interface DependencyInfo extends JBossInterface
     * @param type the class of the dependency or null for all types 
     * @return our dependencies
     */
-   Set<DependencyItem> getIDependOn(Class type);
+   Set<DependencyItem> getIDependOn(Class<?> type);
 
    /**
     * Return what depends upon me
@@ -48,7 +48,7 @@ public interface DependencyInfo extends JBossInterface
     * @param type the class of the dependency or null for all types 
     * @return what depends upon this
     */
-   Set<DependencyItem> getDependsOnMe(Class type);
+   Set<DependencyItem> getDependsOnMe(Class<?> type);
 
    /**
     * Add a dependency
@@ -97,44 +97,48 @@ public interface DependencyInfo extends JBossInterface
    /**
     * Add a callback reference
     *
+    * @param <T> the callback item type
     * @param callbackItem the callback to add
     */
-   void addInstallItem(CallbackItem callbackItem);
+   <T> void addInstallItem(CallbackItem<T> callbackItem);
 
    /**
     * Remove a callback reference
     *
+    * @param <T> the callback item type
     * @param callbackItem the callback to remove
     */
-   void removeInstallItem(CallbackItem callbackItem);
+   <T> void removeInstallItem(CallbackItem<T> callbackItem);
 
    /**
     * Return install callbacks.
     *
     * @return our install callbacks
     */
-   Set<CallbackItem> getInstallItems();
+   Set<CallbackItem<?>> getInstallItems();
 
    /**
     * Add a callback reference
     *
+    * @param <T> the callback item type
     * @param callbackItem the callback to add
     */
-   void addUninstallItem(CallbackItem callbackItem);
+   <T> void addUninstallItem(CallbackItem<T> callbackItem);
 
    /**
     * Remove a callback reference
     *
+    * @param <T> the callback item type
     * @param callbackItem the callback to remove
     */
-   void removeUninstallItem(CallbackItem callbackItem);
+   <T> void removeUninstallItem(CallbackItem<T> callbackItem);
 
    /**
     * Return uninstall callbacks.
     *
     * @return our uninstall callbacks
     */
-   Set<CallbackItem> getUninstallItems();
+   Set<CallbackItem<?>> getUninstallItems();
    
    /**
     * Add a lifecycle callback
@@ -149,4 +153,18 @@ public interface DependencyInfo extends JBossInterface
     * @return our lifecycle callbacks
     */
    List<LifecycleCallbackItem> getLifecycleCallbacks();
+
+   /**
+    * Can we use this context for autowiring.
+    *
+    * @return true if context can be used for autowiring
+    */
+   boolean isAutowireCandidate();
+   
+   /**
+    * Set whether this is an autowire candidate
+    * 
+    * @param candidate true if it is a candidate for autowiring
+    */
+   void setAutowireCandidate(boolean candidate);
 }

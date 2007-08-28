@@ -67,16 +67,18 @@ public interface MetaDataVisitor
    /**
     * Add an install callback
     *
+    * @param <T> the callback item type
     * @param callback the callback
     */
-   void addInstallCallback(CallbackItem callback);
+   <T> void addInstallCallback(CallbackItem<T> callback);
 
    /**
     * Add an uninstall callback
     *
+    * @param <T> the callback item type
     * @param callback the callback
     */
-   void addUninstallCallback(CallbackItem callback);
+   <T> void addUninstallCallback(CallbackItem<T> callback);
 
    /**
     * Visit the node

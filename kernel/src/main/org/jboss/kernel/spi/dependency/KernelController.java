@@ -80,7 +80,7 @@ public interface KernelController extends KernelObject, Controller
     * @param clazz the type
     * @return the contexts
     */
-   Set<KernelControllerContext> getInstantiatedContexts(Class clazz);
+   Set<KernelControllerContext> getInstantiatedContexts(Class<?> clazz);
 
    /**
     * Get all contexts of a type which are at least in state.
@@ -89,7 +89,7 @@ public interface KernelController extends KernelObject, Controller
     * @param state the required state
     * @return the contexts
     */
-   Set<KernelControllerContext> getContexts(Class clazz, ControllerState state);
+   Set<KernelControllerContext> getContexts(Class<?> clazz, ControllerState state);
 
    /**
     * If zero or multiple instances match class clazz
@@ -98,7 +98,7 @@ public interface KernelController extends KernelObject, Controller
     * @param clazz the type
     * @return context whose target is instance of this class clazz param or null if zero or multiple such instances
     */
-   KernelControllerContext getContextByClass(Class clazz);
+   KernelControllerContext getContextByClass(Class<?> clazz);
 
    /**
     * Add instantiated context into contextsByClass map

@@ -63,7 +63,7 @@ public class AbstractKernelController extends ScopedController implements Kernel
    protected Map<Object, List<KernelControllerContext>> suppliers = new ConcurrentHashMap<Object, List<KernelControllerContext>>();
 
    /** The contexts by class Map<Class, Set<ControllerContext>> */
-   protected Map<Class, ClassContext> contextsByClass = new ConcurrentHashMap<Class, ClassContext>();
+   protected Map<Class<?>, ClassContext> contextsByClass = new ConcurrentHashMap<Class<?>, ClassContext>();
 
    /**
     * Create an abstract kernel controller
@@ -102,7 +102,7 @@ public class AbstractKernelController extends ScopedController implements Kernel
       if (list != null && list.isEmpty() == false)
          return list.get(0);
       else if (name instanceof Class)
-         return getContextByClass((Class)name);
+         return getContextByClass((Class<?>) name);
       else
          return null;
    }
@@ -230,7 +230,7 @@ public class AbstractKernelController extends ScopedController implements Kernel
     * @param clazz the class type
     * @return contexts by class
     */
-   protected Set<KernelControllerContext> getContexts(Class clazz)
+   protected Set<KernelControllerContext> getContexts(Class<?> clazz)
    {
       ClassContext classContext = contextsByClass.get(clazz);
       if (classContext != null)
@@ -248,7 +248,7 @@ public class AbstractKernelController extends ScopedController implements Kernel
    /**
     * @return all instantiated contexts whose target is instance of this class clazz param
     */
-   public Set<KernelControllerContext> getInstantiatedContexts(Class clazz)
+   public Set<KernelControllerContext> getInstantiatedContexts(Class<?> clazz)
    {
       lockRead();
       try
@@ -262,7 +262,7 @@ public class AbstractKernelController extends ScopedController implements Kernel
       }
    }
 
-   public Set<KernelControllerContext> getContexts(Class clazz, ControllerState state)
+   public Set<KernelControllerContext> getContexts(Class<?> clazz, ControllerState state)
    {
       lockRead();
       try
@@ -326,7 +326,7 @@ public class AbstractKernelController extends ScopedController implements Kernel
     * @param addition whether this is an addition
     * @param trace whether trace is enabled
     */
-   protected void traverseBean(KernelControllerContext context, Class clazz, boolean addition, boolean trace)
+   protected void traverseBean(KernelControllerContext context, Class<?> clazz, boolean addition, boolean trace)
    {
       if (clazz == null || clazz == Object.class)
       {
@@ -364,9 +364,9 @@ public class AbstractKernelController extends ScopedController implements Kernel
       }
       // traverse superclass
       traverseBean(context, clazz.getSuperclass(), addition, trace);
-      Class[] interfaces = clazz.getInterfaces();
+      Class<?>[] interfaces = clazz.getInterfaces();
       // traverse interfaces
-      for(Class intface : interfaces)
+      for(Class<?> intface : interfaces)
       {
          traverseBean(context, intface, addition, trace);
       }
@@ -384,7 +384,7 @@ public class AbstractKernelController extends ScopedController implements Kernel
     *
     * @return context whose target is instance of this class clazz param or null if zero or multiple such instances
     */
-   public KernelControllerContext getContextByClass(Class clazz)
+   public KernelControllerContext getContextByClass(Class<?> clazz)
    {
       Set<KernelControllerContext> contexts = getInstantiatedContexts(clazz);
       int numberOfMatchingBeans = 0;
@@ -407,14 +407,5 @@ public class AbstractKernelController extends ScopedController implements Kernel
          return null;
       }
       return contexts.iterator().next();
-   }
-
-   protected boolean isAutowireCandidate(ControllerContext context)
-   {
-      if (context instanceof KernelControllerContext)
-      {
-         return ((KernelControllerContext)context).isAutowireCandidate();
-      }
-      return super.isAutowireCandidate(context);
    }
 }
