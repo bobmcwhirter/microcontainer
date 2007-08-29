@@ -65,7 +65,8 @@ public class JNDIKernelRegistryPlugin implements KernelRegistryPlugin
       try
       {
          Object target = context.lookup(name.toString());
-         return new AbstractKernelRegistryEntry(name, target);
+         if (target != null)
+            return new AbstractKernelRegistryEntry(name, target);
       }
       catch (NamingException e)
       {
