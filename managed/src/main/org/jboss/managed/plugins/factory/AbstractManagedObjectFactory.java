@@ -491,6 +491,8 @@ public class AbstractManagedObjectFactory extends ManagedObjectFactory
                property.setField(Fields.VALUE, value);
             // Need to look for a 
             Map<String, Annotation> annotations = property.getAnnotations();
+            if (annotations == null)
+               continue;
             ManagementObjectID id = (ManagementObjectID) annotations.get(ManagementObjectID.class.getName());
             if (id != null)
             {
