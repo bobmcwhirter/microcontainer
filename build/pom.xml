@@ -46,6 +46,7 @@
     <version.junit>3.8.1</version.junit>
     <version.jboss.profiler.jvmti>1.0.0.CR5</version.jboss.profiler.jvmti>
     <version.ant.junit>1.7.0</version.ant.junit>
+    <version.apache-xerces.xml-apis>2.7.1</version.apache-xerces.xml-apis>
   </properties>
 
   <build>
@@ -324,6 +325,11 @@
         <groupId>jboss</groupId>
         <artifactId>jbossxb</artifactId>
         <version>${version.jbossxb}</version>
+      </dependency>
+      <dependency>
+        <groupId>apache-xerces</groupId>
+        <artifactId>xml-apis</artifactId>
+        <version>${version.apache-xerces.xml-apis}</version>
       </dependency>
       <dependency>
         <groupId>org.osgi</groupId>
