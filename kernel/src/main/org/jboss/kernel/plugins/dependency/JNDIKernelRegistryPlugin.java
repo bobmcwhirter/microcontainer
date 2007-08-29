@@ -1,6 +1,6 @@
 /*
 * JBoss, Home of Professional Open Source
-* Copyright 2005, JBoss Inc., and individual contributors as indicated
+* Copyright 2006, JBoss Inc., and individual contributors as indicated
 * by the @authors tag. See the copyright.txt in the distribution for a
 * full listing of individual contributors.
 *
@@ -21,31 +21,55 @@
 */
 package org.jboss.kernel.plugins.dependency;
 
-import org.jboss.kernel.spi.registry.KernelRegistryPlugin;
+import java.util.Hashtable;
+import javax.naming.Context;
+import javax.naming.InitialContext;
+import javax.naming.NamingException;
+
+import org.jboss.kernel.plugins.registry.AbstractKernelRegistryEntry;
 import org.jboss.kernel.spi.registry.KernelRegistryEntry;
-import org.jboss.kernel.spi.dependency.KernelController;
+import org.jboss.kernel.spi.registry.KernelRegistryPlugin;
 
 /**
- * Class aware KernelRegistryPlugin.
- * 
+ * JNDI aware KernelRegistryPlugin.
+ *
  * @author <a href="mailto:ales.justin@gmail.com">Ales Justin</a>
  */
-public class ClassContextKernelRegistryPlugin implements KernelRegistryPlugin
+public class JNDIKernelRegistryPlugin implements KernelRegistryPlugin
 {
-   private KernelController controller;
+   private Hashtable properties;
+   private Context context;
 
-   public ClassContextKernelRegistryPlugin(KernelController controller)
+   public void setProperties(Hashtable properties)
    {
-      this.controller = controller;
+      this.properties = properties;
+   }
+
+   public void create() throws NamingException
+   {
+      if (properties != null)
+         context = new InitialContext(properties);
+      else
+         context = new InitialContext();
+   }
+
+   public void destroy() throws NamingException
+   {
+      if (context != null)
+         context.close();
+      context = null;
    }
 
    public KernelRegistryEntry getEntry(Object name)
    {
-      if (name instanceof Class)
+      try
       {
-         return controller.getContextByClass((Class)name);
+         Object target = context.lookup(name.toString());
+         return new AbstractKernelRegistryEntry(name, target);
+      }
+      catch (NamingException e)
+      {
       }
       return null;
    }
-
 }
