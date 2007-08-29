@@ -489,7 +489,9 @@ public class AbstractManagedObjectFactory extends ManagedObjectFactory
             MetaValue value = getValue(beanInfo, property, object);
             if (value != null)
                property.setField(Fields.VALUE, value);
-            // Need to look for a 
+            /* Need to look for a ManagementObjectID at the property level which
+               defines the ManagedObject id name from the property value.
+             */
             Map<String, Annotation> annotations = property.getAnnotations();
             if (annotations == null)
                continue;
