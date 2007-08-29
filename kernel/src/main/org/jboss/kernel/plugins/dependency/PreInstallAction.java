@@ -121,7 +121,7 @@ public class PreInstallAction extends KernelControllerContextAction
       if (scopeKey != null)
       {
          scopeKey.freeze();
-         context.setInstallScope(scopeKey);
+         context.getScopeInfo().setInstallScope(scopeKey);
          // todo - should this be done (repare the current context scope key)
          //        or where to store this 'deployment' key?
 /*
@@ -177,7 +177,7 @@ public class PreInstallAction extends KernelControllerContextAction
    {
       KernelController controller = (KernelController)context.getController();
       KernelMetaDataRepository repository = controller.getKernel().getMetaDataRepository();
-      ScopeKey scopeKey = context.getInstallScope();
+      ScopeKey scopeKey = context.getScopeInfo().getInstallScope();
       if (scopeKey != null)
       {
          // find scoped controller

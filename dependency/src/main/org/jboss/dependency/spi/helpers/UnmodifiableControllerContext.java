@@ -29,6 +29,7 @@ import org.jboss.dependency.spi.ControllerContext;
 import org.jboss.dependency.spi.ControllerMode;
 import org.jboss.dependency.spi.ControllerState;
 import org.jboss.dependency.spi.DependencyInfo;
+import org.jboss.dependency.spi.ScopeInfo;
 import org.jboss.util.JBossObject;
 
 /**
@@ -43,6 +44,8 @@ public class UnmodifiableControllerContext<T extends ControllerContext> extends 
 
    public UnmodifiableControllerContext(T delegate)
    {
+      if (delegate == null)
+         throw new IllegalArgumentException("Null delegate");
       this.delegate = delegate;
    }
 
@@ -61,6 +64,12 @@ public class UnmodifiableControllerContext<T extends ControllerContext> extends 
    {
       DependencyInfo dependencyInfo = delegate.getDependencyInfo();
       return dependencyInfo != null ? new UnmodifiableDependencyInfo(dependencyInfo) : null;
+   }
+
+   public ScopeInfo getScopeInfo()
+   {
+      ScopeInfo scopeInfo = delegate.getScopeInfo();
+      return scopeInfo != null ? new UnmodifiableScopeInfo(scopeInfo) : null;
    }
 
    public Object getTarget()

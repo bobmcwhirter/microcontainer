@@ -27,7 +27,6 @@ import org.jboss.dependency.spi.dispatch.InvokeDispatchContext;
 import org.jboss.kernel.Kernel;
 import org.jboss.kernel.spi.registry.KernelRegistryEntry;
 import org.jboss.metadata.spi.MetaData;
-import org.jboss.metadata.spi.scope.ScopeKey;
 
 /**
  * Information about dependencies and state.
@@ -71,39 +70,4 @@ public interface KernelControllerContext extends KernelRegistryEntry, InvokeDisp
     * @param target the target
     */
    void setTarget(Object target);
-
-   /**
-    * Get the metadata
-    * 
-    * @return the metadata
-    */
-   MetaData getMetaData();
-
-   /**
-    * Get the scope
-    * 
-    * @return the scope
-    */
-   ScopeKey getScope();
-
-   /**
-    * Set the scope
-    * 
-    * @param key the scope key
-    */
-   void setScope(ScopeKey key);
-
-   /**
-    * Get the install scope
-    *
-    * @return the scope
-    */
-   ScopeKey getInstallScope();
-
-   /**
-    * Set the install scope
-    *
-    * @param key the scope key
-    */
-   void setInstallScope(ScopeKey key);
 }

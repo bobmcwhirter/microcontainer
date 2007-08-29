@@ -116,10 +116,26 @@ public abstract class AbstractAnnotationPlugin<T extends AnnotatedInfo, C extend
 
    public final void applyAnnotation(T info, MetaDataRetrieval retrieval, MetaDataVisitor visitor) throws Throwable
    {
-      AnnotationItem<C> item = retrieval.retrieveAnnotation(getAnnotation());
-      if (item == null || isMetaDataAlreadyPresent(info, item.getAnnotation(), visitor.getControllerContext()))
+      boolean trace = log.isTraceEnabled();
+      
+      Class<C> annotationClass = getAnnotation();
+      AnnotationItem<C> item = retrieval.retrieveAnnotation(annotationClass);
+      if (item == null)
+      {
+         if (trace)
+            log.trace("No annotation: " + annotationClass.getName());
          return;
-      List<? extends MetaDataVisitorNode> nodes = internalApplyAnnotation(info, retrieval, item.getAnnotation(), visitor.getControllerContext());
+      }
+      C annotation = item.getAnnotation();
+      if (isMetaDataAlreadyPresent(info, annotation, visitor.getControllerContext()))
+      {
+         if (trace)
+            log.trace("MetaDataAlreadyPresent, ignoring " + annotation);
+         return;
+      }
+      if (trace)
+         log.trace("Applying annotation: " + annotation);
+      List<? extends MetaDataVisitorNode> nodes = internalApplyAnnotation(info, retrieval, annotation, visitor.getControllerContext());
       if (nodes != null && nodes.isEmpty() == false)
       {
          for(MetaDataVisitorNode node : nodes)

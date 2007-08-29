@@ -21,15 +21,13 @@
 */
 package org.jboss.kernel.spi.dependency.helpers;
 
-import org.jboss.dependency.spi.helpers.UnmodifiableControllerContext;
-import org.jboss.kernel.spi.dependency.KernelControllerContext;
-import org.jboss.kernel.Kernel;
 import org.jboss.beans.info.spi.BeanInfo;
 import org.jboss.beans.info.spi.helpers.UnmodifiableBeanInfo;
 import org.jboss.beans.metadata.spi.BeanMetaData;
+import org.jboss.dependency.spi.helpers.UnmodifiableControllerContext;
+import org.jboss.kernel.Kernel;
+import org.jboss.kernel.spi.dependency.KernelControllerContext;
 import org.jboss.metadata.spi.MetaData;
-import org.jboss.metadata.spi.helpers.UnmodifiableMetaData;
-import org.jboss.metadata.spi.scope.ScopeKey;
 
 /**
  * Unmodifiable instance.
@@ -65,34 +63,6 @@ public class UnmodifiableKernelControllerContext extends UnmodifiableControllerC
    }
 
    public void setTarget(Object target)
-   {
-      throw new UnsupportedOperationException("Cannot execute set on unmodifiable wrapper.");
-   }
-
-   public MetaData getMetaData()
-   {
-      MetaData metaData = delegate.getMetaData();
-      return metaData != null ? new UnmodifiableMetaData(metaData) : null;
-   }
-
-   public ScopeKey getScope()
-   {
-      ScopeKey key = delegate.getScope();
-      return key != null ? key.clone() :null;
-   }
-
-   public void setScope(ScopeKey key)
-   {
-      throw new UnsupportedOperationException("Cannot execute set on unmodifiable wrapper.");
-   }
-
-   public ScopeKey getInstallScope()
-   {
-      ScopeKey key = delegate.getInstallScope();
-      return key != null ? key.clone() : null;
-   }
-
-   public void setInstallScope(ScopeKey key)
    {
       throw new UnsupportedOperationException("Cannot execute set on unmodifiable wrapper.");
    }

@@ -22,25 +22,24 @@
 package org.jboss.beans.metadata.plugins;
 
 import java.io.Serializable;
-import java.lang.reflect.Method;
 import java.lang.reflect.InvocationHandler;
+import java.lang.reflect.Method;
 import java.lang.reflect.Proxy;
-import java.util.Set;
 import java.util.Collections;
 import java.util.HashSet;
+import java.util.Set;
 
+import org.jboss.beans.info.spi.BeanInfo;
+import org.jboss.beans.info.spi.helpers.UnmodifiableBeanInfo;
+import org.jboss.dependency.spi.ControllerContext;
+import org.jboss.dependency.spi.helpers.UnmodifiableControllerContext;
 import org.jboss.kernel.spi.dependency.KernelControllerContext;
 import org.jboss.kernel.spi.dependency.helpers.UnmodifiableKernelControllerContext;
 import org.jboss.metadata.spi.MetaData;
 import org.jboss.metadata.spi.scope.ScopeKey;
-import org.jboss.metadata.spi.helpers.UnmodifiableMetaData;
+import org.jboss.reflect.plugins.introspection.ReflectionUtils;
 import org.jboss.util.JBossObject;
 import org.jboss.util.JBossStringBuilder;
-import org.jboss.reflect.plugins.introspection.ReflectionUtils;
-import org.jboss.dependency.spi.ControllerContext;
-import org.jboss.dependency.spi.helpers.UnmodifiableControllerContext;
-import org.jboss.beans.info.spi.BeanInfo;
-import org.jboss.beans.info.spi.helpers.UnmodifiableBeanInfo;
 
 /**
  * Inject from controller context:
@@ -242,8 +241,7 @@ public abstract class FromContext<T extends ControllerContext> extends JBossObje
 
       public MetaData internalExecute(KernelControllerContext context)
       {
-         MetaData metaData = context.getMetaData();
-         return metaData != null ? new UnmodifiableMetaData(metaData) : null;
+         return context.getScopeInfo().getMetaData();
       }
    }
 
@@ -274,8 +272,7 @@ public abstract class FromContext<T extends ControllerContext> extends JBossObje
 
       public ScopeKey internalExecute(KernelControllerContext context)
       {
-         ScopeKey key = context.getScope();
-         return key != null ? key.clone() : null;
+         return context.getScopeInfo().getScope();
       }
    }
 

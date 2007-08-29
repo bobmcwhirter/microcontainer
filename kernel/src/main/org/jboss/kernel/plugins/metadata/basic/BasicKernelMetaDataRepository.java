@@ -22,31 +22,18 @@
 package org.jboss.kernel.plugins.metadata.basic;
 
 import java.util.ArrayList;
-import java.util.Set;
 
-import org.jboss.beans.info.spi.BeanInfo;
-import org.jboss.beans.info.spi.PropertyInfo;
-import org.jboss.beans.metadata.spi.AnnotationMetaData;
-import org.jboss.beans.metadata.spi.BeanMetaData;
-import org.jboss.beans.metadata.spi.PropertyMetaData;
-import org.jboss.kernel.plugins.config.Configurator;
+import org.jboss.dependency.spi.ControllerContext;
+import org.jboss.dependency.spi.ScopeInfo;
 import org.jboss.kernel.plugins.metadata.AbstractKernelMetaDataRepository;
-import org.jboss.kernel.spi.config.KernelConfigurator;
-import org.jboss.kernel.spi.dependency.KernelControllerContext;
 import org.jboss.metadata.plugins.context.AbstractMetaDataContext;
 import org.jboss.metadata.plugins.loader.memory.MemoryMetaDataLoader;
-import org.jboss.metadata.plugins.loader.reflection.AnnotatedElementMetaDataLoader;
 import org.jboss.metadata.plugins.repository.basic.BasicMetaDataRepository;
 import org.jboss.metadata.spi.MetaData;
 import org.jboss.metadata.spi.repository.MutableMetaDataRepository;
 import org.jboss.metadata.spi.retrieval.MetaDataRetrieval;
-import org.jboss.metadata.spi.scope.CommonLevels;
 import org.jboss.metadata.spi.scope.Scope;
 import org.jboss.metadata.spi.scope.ScopeKey;
-import org.jboss.metadata.spi.signature.MethodSignature;
-import org.jboss.metadata.spi.stack.MetaDataStack;
-import org.jboss.reflect.spi.MethodInfo;
-import org.jboss.reflect.spi.TypeInfo;
 
 /**
  * BasicKernelMetaDataRepository.
@@ -64,10 +51,10 @@ public class BasicKernelMetaDataRepository extends AbstractKernelMetaDataReposit
       super(new BasicMetaDataRepository());
    }
 
-   public MetaData getMetaData(KernelControllerContext context)
+   public MetaData getMetaData(ControllerContext context)
    {
       MutableMetaDataRepository repository = getMetaDataRepository();
-      ScopeKey scope = context.getScope();
+      ScopeKey scope = context.getScopeInfo().getScope();
       MetaData metaData = repository.getMetaData(scope);
       if (metaData == null)
       {
@@ -77,74 +64,51 @@ public class BasicKernelMetaDataRepository extends AbstractKernelMetaDataReposit
       return metaData;
    }
 
-   public MetaDataRetrieval getMetaDataRetrieval(KernelControllerContext context)
+   public MetaDataRetrieval getMetaDataRetrieval(ControllerContext context)
    {
       MutableMetaDataRepository repository = getMetaDataRepository();
-      ScopeKey scope = context.getScope();
+      ScopeKey scope = context.getScopeInfo().getScope();
       MetaDataRetrieval metaDataRetrieval = repository.getMetaDataRetrieval(scope);
       if (metaDataRetrieval == null)
          metaDataRetrieval = initMetaDataRetrieval(context);
       return metaDataRetrieval;
    }
 
-   public void popMetaData(KernelControllerContext context)
-   {
-      MetaDataStack.pop();
-   }
-
-   public void addMetaData(KernelControllerContext context)
+   public void addMetaData(ControllerContext context)
    {
       MutableMetaDataRepository repository = getMetaDataRepository();
-      ScopeKey scope = getMutableScope(context);
-      MemoryMetaDataLoader mutable = new MemoryMetaDataLoader(scope);
-      repository.addMetaDataRetrieval(mutable);
-      addClassAnnotations(mutable, context);
-      addPropertyAnnotations(mutable, context);
+      ScopeInfo scopeInfo = context.getScopeInfo();
+      scopeInfo.addMetaData(repository, context);
    }
 
-   public void removeMetaData(KernelControllerContext context)
+   public void removeMetaData(ControllerContext context)
    {
       MutableMetaDataRepository repository = getMetaDataRepository();
-      // Remove the read only/full scope
-      ScopeKey scope = context.getScope();
-      repository.removeMetaDataRetrieval(scope);
-      // Remove the mutable scope
-      scope = getMutableScope(context);
-      repository.removeMetaDataRetrieval(scope);
+      ScopeInfo scopeInfo = context.getScopeInfo();
+      scopeInfo.removeMetaData(repository, context);
    }
 
-   public ScopeKey getFullScope(KernelControllerContext context)
+   public ScopeKey getFullScope(ControllerContext context)
    {
-      ScopeKey scope = ScopeKey.DEFAULT_SCOPE.clone();
-      scope.addScope(CommonLevels.INSTANCE, context.getName().toString());
-      BeanMetaData beanMetaData = context.getBeanMetaData();
-      if (beanMetaData != null)
-      {
-         String bean = beanMetaData.getBean();
-         if (bean != null)
-            scope.addScope(CommonLevels.CLASS, bean);
-      }
-      // todo - some other level
-      scope.addScope(CommonLevels.WORK, String.valueOf(context.hashCode()));
-      return scope;
+      return context.getScopeInfo().getScope();
    }
 
-   public ScopeKey getMutableScope(KernelControllerContext context)
+   public ScopeKey getMutableScope(ControllerContext context)
    {
-      return new ScopeKey(CommonLevels.INSTANCE, context.getName().toString());
+      return context.getScopeInfo().getMutableScope();
    }
 
    /**
     * Initialise metadata retrieval
     * 
-    * TODO lots more work
     * @param context the context
     * @return the retrieval
     */
-   protected MetaDataRetrieval initMetaDataRetrieval(KernelControllerContext context)
+   protected MetaDataRetrieval initMetaDataRetrieval(ControllerContext context)
    {
       MutableMetaDataRepository repository = getMetaDataRepository();
-      ScopeKey scopeKey = context.getScope();
+      ScopeInfo scopeInfo = context.getScopeInfo();
+      ScopeKey scopeKey = scopeInfo.getScope();
       ArrayList<MetaDataRetrieval> retrievals = new ArrayList<MetaDataRetrieval>();
       for (Scope scope : scopeKey.getScopes())
       {
@@ -152,29 +116,8 @@ public class BasicKernelMetaDataRepository extends AbstractKernelMetaDataReposit
          MetaDataRetrieval retrieval = repository.getMetaDataRetrieval(thisScope);
          if (retrieval == null)
          {
-            if (scope.getScopeLevel() == CommonLevels.CLASS)
-            {
-               BeanMetaData metaData = context.getBeanMetaData();
-               ClassLoader cl = null;
-               try
-               {
-                  cl = Configurator.getClassLoader(metaData);
-               }
-               catch (Throwable t)
-               {
-                  throw new RuntimeException("Error getting classloader for " + context.getName(), t);
-               }
-               try
-               {
-                  Class clazz = cl.loadClass(scope.getQualifier());
-                  retrieval = new AnnotatedElementMetaDataLoader(clazz);
-               }
-               catch (ClassNotFoundException e)
-               {
-                  throw new RuntimeException("Unable to load class: " + scope.getQualifier(), e);
-               }
-            }
-            else
+            retrieval = scopeInfo.initMetaDataRetrieval(repository, context, scope);
+            if (retrieval == null)
             {
                retrieval = new MemoryMetaDataLoader(thisScope);
                repository.addMetaDataRetrieval(retrieval);
@@ -185,130 +128,5 @@ public class BasicKernelMetaDataRepository extends AbstractKernelMetaDataReposit
       AbstractMetaDataContext metaDataContext = new AbstractMetaDataContext(null, retrievals);
       repository.addMetaDataRetrieval(metaDataContext);
       return metaDataContext;
-   }
-   
-   /**
-    * Add class annotations
-    * 
-    * @param mutable the mutable metadata
-    * @param context the context
-    */
-   private void addClassAnnotations(MemoryMetaDataLoader mutable, KernelControllerContext context)
-   {
-      BeanMetaData beanMetaData = context.getBeanMetaData();
-      if (beanMetaData != null)
-      {
-         try
-         {
-            ClassLoader cl = Configurator.getClassLoader(beanMetaData);
-            addAnnotations(cl, mutable, beanMetaData.getAnnotations());
-         }
-         catch(Throwable t)
-         {
-            throw new RuntimeException("Error getting classloader for metadata", t);
-         }
-      }
-   }
-
-   /**
-    * Add property annotations
-    * 
-    * @param mutable the mutable
-    * @param context the kernel controller contex
-    */
-   private void addPropertyAnnotations(MemoryMetaDataLoader mutable, KernelControllerContext context)
-   {
-      BeanMetaData beanMetaData = context.getBeanMetaData();
-      if (beanMetaData == null)
-         return;
-
-      Set<PropertyMetaData> properties = beanMetaData.getProperties();
-
-      if (properties == null || properties.size() == 0)
-         return;
-
-      BeanInfo beanInfo = context.getBeanInfo();
-      if (beanInfo == null)
-         return;
-      
-      try
-      {
-         ClassLoader cl = Configurator.getClassLoader(beanMetaData);
-         for (PropertyMetaData property : properties)
-            addPropertyAnnotations(cl, mutable, property, beanInfo);
-      }
-      catch(Throwable t)
-      {
-         throw new RuntimeException("Error getting classloader for metadata");
-      }
-   }
-
-   /**
-    * Add property annotations
-    * 
-    * @param classloader the classloader
-    * @param mutable the mutable
-    * @param propertyMetaData the property
-    * @param beanInfo the bean info
-    */
-   private void addPropertyAnnotations(ClassLoader classloader, MemoryMetaDataLoader mutable, PropertyMetaData propertyMetaData, BeanInfo beanInfo)
-   {
-      Set<AnnotationMetaData> propertyAnnotations = propertyMetaData.getAnnotations();
-      if (propertyAnnotations == null || propertyAnnotations.size() == 0)
-         return;
-
-      Set<PropertyInfo> propertyInfos = beanInfo.getProperties();
-      if (propertyInfos != null && propertyInfos.size() > 0)
-      {
-         for (PropertyInfo propertyInfo : propertyInfos)
-         {
-            if (propertyInfo.getName().equals(propertyMetaData.getName()))
-            {
-               MethodInfo methodInfo = propertyInfo.getGetter();
-               if (methodInfo != null)
-                  addAnnotations(classloader, mutable, methodInfo, propertyAnnotations);
-               methodInfo = propertyInfo.getSetter();
-               if (methodInfo != null)
-                  addAnnotations(classloader, mutable, methodInfo, propertyAnnotations);
-            }
-         }
-      }
-   }
-   
-   /**
-    * Add annotations for a method
-    *
-    * @param classloader the classloader
-    * @param mutable the mutable metadata
-    * @param methodInfo the method info
-    * @param annotations the annotations
-    */
-   private void addAnnotations(ClassLoader classloader, MemoryMetaDataLoader mutable, MethodInfo methodInfo, Set<AnnotationMetaData> annotations)
-   {
-      TypeInfo[] typeInfos = methodInfo.getParameterTypes();
-      String[] paramTypes = new String[typeInfos.length];
-      for (int i = 0; i < typeInfos.length; ++i)
-         paramTypes[i] = typeInfos[i].getName();
-
-      ScopeKey scope = new ScopeKey(CommonLevels.JOINPOINT_OVERRIDE, methodInfo.getName());
-      MemoryMetaDataLoader loader = new MemoryMetaDataLoader(scope);
-      addAnnotations(classloader, loader, annotations);
-      mutable.addComponentMetaDataRetrieval(new MethodSignature(methodInfo.getName(), paramTypes), loader);
-   }
-   
-   /**
-    * Add annotations to a mutable metadata
-    *
-    * @param classloader the classloader
-    * @param mutable the mutable metadata
-    * @param annotations the annotations
-    */
-   private void addAnnotations(ClassLoader classloader, MemoryMetaDataLoader mutable, Set<AnnotationMetaData> annotations)
-   {
-      if (annotations == null || annotations.size() == 0)
-         return;
-
-      for (AnnotationMetaData annotation : annotations)
-         mutable.addAnnotation(annotation.getAnnotationInstance(classloader));
    }
 }

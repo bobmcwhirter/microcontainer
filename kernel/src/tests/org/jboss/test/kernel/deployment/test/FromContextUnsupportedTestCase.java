@@ -98,7 +98,7 @@ public class FromContextUnsupportedTestCase extends AbstractDeploymentTest
       assertNotNull(key);
       assertInstanceOf(key, ScopeKey.class);
       KernelControllerContext context = getControllerContext("scopekey");
-      assertNotSame(key, context.getScope());
+      assertEquals(key, context.getScopeInfo().getScope());
 
       NameAwareBean dynamic = (NameAwareBean)getBean("dynamic");
       assertNotNull(dynamic);

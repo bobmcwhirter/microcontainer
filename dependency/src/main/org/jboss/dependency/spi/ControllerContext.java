@@ -55,6 +55,13 @@ public interface ControllerContext extends JBossInterface
    DependencyInfo getDependencyInfo();
    
    /**
+    * Get the scope information
+    * 
+    * @return the scope information
+    */
+   ScopeInfo getScopeInfo();
+   
+   /**
     * Get any target
     * 
     * @return the target

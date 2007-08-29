@@ -68,7 +68,7 @@ public class AbstractMetaDataTest extends MicrocontainerTest
    {
       KernelControllerContext context = getControllerContext(name);
       MetaDataRepository repository = getMetaDataRepository().getMetaDataRepository();
-      ScopeKey result = context.getScope();
+      ScopeKey result = context.getScopeInfo().getScope();
       assertNotNull(repository.getMetaDataRetrieval(result));
       assertNotNull(repository.getMetaDataRetrieval(new ScopeKey(CommonLevels.INSTANCE, name)));
       return result;

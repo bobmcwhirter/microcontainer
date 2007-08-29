@@ -21,8 +21,8 @@
 */
 package org.jboss.kernel.spi.metadata;
 
+import org.jboss.dependency.spi.ControllerContext;
 import org.jboss.kernel.spi.KernelObject;
-import org.jboss.kernel.spi.dependency.KernelControllerContext;
 import org.jboss.metadata.spi.MetaData;
 import org.jboss.metadata.spi.repository.MutableMetaDataRepository;
 import org.jboss.metadata.spi.retrieval.MetaDataRetrieval;
@@ -49,7 +49,7 @@ public interface KernelMetaDataRepository extends KernelObject
     * @param context the context
     * @return the metadata
     */
-   MetaData getMetaData(KernelControllerContext context);
+   MetaData getMetaData(ControllerContext context);
 
    /**
     * Get the MetaData retrieval
@@ -57,21 +57,21 @@ public interface KernelMetaDataRepository extends KernelObject
     * @param context the context
     * @return the metadata retrieval
     */
-   MetaDataRetrieval getMetaDataRetrieval(KernelControllerContext context);
+   MetaDataRetrieval getMetaDataRetrieval(ControllerContext context);
    
    /**
     * Add metadata to the bean.
     * 
     * @param context the context
     */
-   void addMetaData(KernelControllerContext context);
+   void addMetaData(ControllerContext context);
 
    /**
     * Remove any previously added metadata
     * 
     * @param context the context
     */
-   void removeMetaData(KernelControllerContext context);
+   void removeMetaData(ControllerContext context);
 
    /**
     * Get the default scope for a context
@@ -79,7 +79,7 @@ public interface KernelMetaDataRepository extends KernelObject
     * @param context the context
     * @return the default scope
     */
-   ScopeKey getFullScope(KernelControllerContext context);
+   ScopeKey getFullScope(ControllerContext context);
    
    /**
     * Get the mutable scope for a context
@@ -87,5 +87,5 @@ public interface KernelMetaDataRepository extends KernelObject
     * @param context the context
     * @return the default scope
     */
-   ScopeKey getMutableScope(KernelControllerContext context);
+   ScopeKey getMutableScope(ControllerContext context);
 }

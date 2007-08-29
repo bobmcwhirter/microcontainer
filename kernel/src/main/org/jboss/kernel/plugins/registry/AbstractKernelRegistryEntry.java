@@ -23,10 +23,12 @@ package org.jboss.kernel.plugins.registry;
 
 import java.util.Set;
 
+import org.jboss.dependency.plugins.AbstractScopeInfo;
 import org.jboss.dependency.spi.Controller;
 import org.jboss.dependency.spi.ControllerMode;
 import org.jboss.dependency.spi.ControllerState;
 import org.jboss.dependency.spi.DependencyInfo;
+import org.jboss.dependency.spi.ScopeInfo;
 import org.jboss.kernel.spi.registry.KernelRegistryEntry;
 import org.jboss.util.JBossObject;
 import org.jboss.util.JBossStringBuilder;
@@ -101,6 +103,15 @@ public class AbstractKernelRegistryEntry extends JBossObject implements KernelRe
       return null;
    }
 
+   public ScopeInfo getScopeInfo()
+   {
+      String className = null;
+      Object target = getTarget();
+      if (target != null)
+         className = target.getClass().getName();
+      return new AbstractScopeInfo(getName(), className);
+   }
+   
    public Throwable getError()
    {
       throw new NotImplementedException("getError");

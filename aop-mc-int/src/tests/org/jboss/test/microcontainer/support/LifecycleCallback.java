@@ -60,7 +60,7 @@ public class LifecycleCallback
       {
          for (int i = 0 ; i < lifecycleAnnotations.length ; i++)
          {
-            MetaData metaData = ((KernelControllerContext)context).getMetaData();
+            MetaData metaData = context.getScopeInfo().getMetaData();
             Object cur = metaData.getAnnotation(lifecycleAnnotations[i]);
             if (cur != null)
             {

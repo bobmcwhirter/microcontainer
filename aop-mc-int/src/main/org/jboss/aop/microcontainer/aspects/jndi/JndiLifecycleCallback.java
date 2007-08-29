@@ -30,6 +30,7 @@ import org.jboss.aop.joinpoint.MethodInvocation;
 import org.jboss.dependency.spi.ControllerContext;
 import org.jboss.kernel.spi.dependency.KernelControllerContext;
 import org.jboss.logging.Logger;
+import org.jboss.metadata.spi.MetaData;
 import org.jboss.util.naming.Util;
 
 /**
@@ -173,13 +174,9 @@ public class JndiLifecycleCallback
    
    private JndiBinding readJndiAnnotation(ControllerContext context)
    {
-      if (context instanceof KernelControllerContext)
-      {
-         if (((KernelControllerContext)context).getMetaData() != null)
-         {
-            return ((KernelControllerContext)context).getMetaData().getAnnotation(JndiBinding.class);
-         }
-      }
+      MetaData metaData = context.getScopeInfo().getMetaData();
+      if (metaData != null)
+         return metaData.getAnnotation(JndiBinding.class);
       return null;
    }
 }

@@ -26,8 +26,8 @@ import javax.management.ObjectName;
 import javax.management.StandardMBean;
 
 import org.jboss.dependency.spi.ControllerContext;
-import org.jboss.kernel.spi.dependency.KernelControllerContext;
 import org.jboss.logging.Logger;
+import org.jboss.metadata.spi.MetaData;
 
 /**
  * 
@@ -50,7 +50,7 @@ public class JMXLifecycleCallback
       JMX jmx = readJmxAnnotation(context);
       ObjectName objectName = createObjectName(context, jmx); 
 
-      Class intfClass = null;
+      Class<?> intfClass = null;
       boolean registerDirectly = false;
       if (jmx != null)
       {
@@ -83,13 +83,9 @@ public class JMXLifecycleCallback
    
    private JMX readJmxAnnotation(ControllerContext context) throws Exception
    {
-      if (context instanceof KernelControllerContext)
-      {
-         if (((KernelControllerContext)context).getMetaData() != null)
-         {
-            return ((KernelControllerContext)context).getMetaData().getAnnotation(JMX.class);
-         }
-      }
+      MetaData metaData = context.getScopeInfo().getMetaData();
+      if (metaData != null)
+         return metaData.getAnnotation(JMX.class);
       return null;
    }
    

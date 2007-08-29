@@ -163,6 +163,9 @@ public class BasicBeanAnnotationAdapter implements BeanAnnotationAdapter
 
       boolean trace = log.isTraceEnabled();
       BeanInfo info = context.getBeanInfo();
+      Object name = context.getName();
+      if (trace)
+         log.trace(name + " apply annotations");
 
       // class
       ClassInfo classInfo = info.getClassInfo();
@@ -182,8 +185,12 @@ public class BasicBeanAnnotationAdapter implements BeanAnnotationAdapter
                for(AnnotationPlugin plugin : constructorAnnotationPlugins)
                   plugin.applyAnnotation(ci, cmdr, visitor);
             }
+            else if (trace)
+               log.trace("No annotations for " + ci);
          }
       }
+      else if (trace)
+         log.trace("No constructors");
 
       // properties
       Set<MethodInfo> visitedMethods = new HashSet<MethodInfo>();
@@ -203,9 +210,13 @@ public class BasicBeanAnnotationAdapter implements BeanAnnotationAdapter
                   for(AnnotationPlugin plugin : propertyAnnotationPlugins)
                      plugin.applyAnnotation(pi, cmdr, visitor);
                }
+               else if (trace)
+                  log.trace("No annotations for property " + pi.getName());
             }
          }
       }
+      else if (trace)
+         log.trace("No properties");
 
       // methods
       Set<MethodInfo> methods = info.getMethods();
@@ -222,9 +233,13 @@ public class BasicBeanAnnotationAdapter implements BeanAnnotationAdapter
                   for(AnnotationPlugin plugin : methodAnnotationPlugins)
                      plugin.applyAnnotation(mi, cmdr, visitor);
                }
+               else if (trace)
+                  log.trace("No annotations for " + mi);
             }
          }
       }
+      else if (trace)
+         log.trace("No methods");
 
       // static methods
       MethodInfo[] staticMethods = classInfo.getDeclaredMethods();
@@ -241,9 +256,13 @@ public class BasicBeanAnnotationAdapter implements BeanAnnotationAdapter
                   for(AnnotationPlugin plugin : methodAnnotationPlugins)
                      plugin.applyAnnotation(smi, cmdr, visitor);
                }
+               else if (trace)
+                  log.trace("No annotations for " + smi);
             }
          }
       }
+      else if (trace)
+         log.trace("No static methods");
 
       // fields
       FieldInfo[] fields = classInfo.getDeclaredFields();
@@ -258,8 +277,12 @@ public class BasicBeanAnnotationAdapter implements BeanAnnotationAdapter
                for(AnnotationPlugin plugin : fieldAnnotationPlugins)
                   plugin.applyAnnotation(fi, cmdr, visitor);
             }
+            else if (trace)
+               log.trace("No annotations for field " + fi.getName());
          }
       }
+      else if (trace)
+         log.trace("No fields");
    }
 
 }

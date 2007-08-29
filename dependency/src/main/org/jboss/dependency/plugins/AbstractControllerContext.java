@@ -33,6 +33,7 @@ import org.jboss.dependency.spi.ControllerContextActions;
 import org.jboss.dependency.spi.ControllerMode;
 import org.jboss.dependency.spi.ControllerState;
 import org.jboss.dependency.spi.DependencyInfo;
+import org.jboss.dependency.spi.ScopeInfo;
 import org.jboss.util.JBossObject;
 import org.jboss.util.JBossStringBuilder;
 
@@ -71,6 +72,9 @@ public class AbstractControllerContext extends JBossObject implements Controller
    /** The dependencies */
    private DependencyInfo dependencies;
 
+   /** The scope info */
+   private ScopeInfo scopeInfo;
+   
    /** Any error */
    private Throwable error;
 
@@ -134,6 +138,7 @@ public class AbstractControllerContext extends JBossObject implements Controller
         this.dependencies = dependencies;
       this.target = target;
       setAliases(aliases);
+      initScopeInfo();
    }
 
    /**
@@ -149,6 +154,7 @@ public class AbstractControllerContext extends JBossObject implements Controller
 
       this.name = name;
       this.target = target;
+      initScopeInfo();
    }
    
    public Object getName()
@@ -263,6 +269,23 @@ public class AbstractControllerContext extends JBossObject implements Controller
       return dependencies;
    }
 
+   public ScopeInfo getScopeInfo()
+   {
+      return scopeInfo;
+   }
+
+   /**
+    * Set the scopeInfo.
+    * 
+    * @param scopeInfo the scopeInfo.
+    */
+   public void setScopeInfo(ScopeInfo scopeInfo)
+   {
+      if (scopeInfo == null)
+         throw new IllegalArgumentException("Null scope info");
+      this.scopeInfo = scopeInfo;
+   }
+
    public Object getTarget()
    {
       return target;
@@ -350,6 +373,18 @@ public class AbstractControllerContext extends JBossObject implements Controller
       }
       if (error != null)
          buffer.append(" error=").append(error.getClass().getName()).append(": ").append(error.getMessage());
+   }
+   
+   /**
+    * Initialise the scope info
+    */
+   protected void initScopeInfo()
+   {
+      String className = null;
+      Object target = getTarget();
+      if (target != null)
+         className = target.getClass().getName();
+      setScopeInfo(new AbstractScopeInfo(getName(), className));
    }
    
    /**

@@ -87,7 +87,7 @@ public class KernelControllerContextAction extends SimpleControllerContextAction
       if (md != null)
          MetaDataStack.push(md);
       else
-         staticLog.warn("NO METADATA! for " + context.getName() + " with scope " + context.getScope());
+         staticLog.warn("NO METADATA! for " + context.getName() + " with scope " + context.getScopeInfo().getScope());
       try
       {
 
