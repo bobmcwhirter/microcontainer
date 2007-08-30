@@ -62,10 +62,21 @@ public class EnumValueFactoryUnitTestCase extends AbstractMetaValueFactoryTest
     * 
     * @throws Exception for any problem
     */
-   public void testEnum() throws Exception
+   public void testEnumFromString() throws Exception
    {
       EnumMetaType enumType = assertInstanceOf(resolve(TestEnum.class), EnumMetaType.class);
       EnumValue expected = new EnumValueSupport(enumType, TestEnum.ONE.name());
+
+      MetaValue result = createMetaValue(TestEnum.ONE);
+      EnumValue actual = assertInstanceOf(result, EnumValue.class);
+      
+      getLog().debug("Enum Value: " + actual);
+      assertEquals(expected, actual);
+   }
+   public void testEnum() throws Exception
+   {
+      EnumMetaType enumType = assertInstanceOf(resolve(TestEnum.class), EnumMetaType.class);
+      EnumValue expected = new EnumValueSupport(enumType, TestEnum.ONE);
 
       MetaValue result = createMetaValue(TestEnum.ONE);
       EnumValue actual = assertInstanceOf(result, EnumValue.class);

@@ -55,6 +55,16 @@ public class EnumValueSupport extends AbstractMetaValue implements EnumValue
       this.metaType = metaType;
       this.value = value;
    }
+   /**
+    * Create a new EnumValueSupport from an Enum value.
+    * @param metaType the enum meta type
+    * @param value the enum instance
+    * @throws IllegalArgumentException for a null enum MetaType
+    */
+   public EnumValueSupport(EnumMetaType metaType, Enum value)
+   {
+      this(metaType, value.name());
+   }
 
    public EnumMetaType getMetaType()
    {

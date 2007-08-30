@@ -21,6 +21,7 @@
 */
 package org.jboss.metatype.api.types;
 
+import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 
@@ -53,6 +54,23 @@ public class EnumMetaType extends AbstractMetaType
          throw new IllegalArgumentException("Null valid values");
       this.validValues = validValues;
    }
+   /**
+    * Create a new EnumMetaType from the Enum values.
+    * 
+    * @param className the class name
+    * @param validValues the valid Enum values
+    */
+   public EnumMetaType(Enum[] validValues)
+   {
+      super(String.class.getName(), validValues[0].getClass().getName(), validValues[0].getClass().getName());
+      if (validValues == null)
+         throw new IllegalArgumentException("Null valid values");
+      ArrayList<String> values = new ArrayList<String>();
+      for (Enum e : validValues)
+         values.add(e.name());
+      this.validValues = values;
+   }
+   
    
    /**
     * Get the valid values
