@@ -28,6 +28,9 @@ import org.jboss.dependency.spi.DependencyInfo;
 import org.jboss.dependency.spi.DependencyItem;
 import org.jboss.deployers.spi.DeploymentException;
 import org.jboss.deployers.spi.attachments.MutableAttachments;
+import org.jboss.metadata.spi.MetaData;
+import org.jboss.metadata.spi.MutableMetaData;
+import org.jboss.metadata.spi.scope.ScopeKey;
 
 /**
  * DeploymentUnit.<p>
@@ -82,7 +85,49 @@ public interface DeploymentUnit extends MutableAttachments
     * in this deployment.
     */
    Set<String> getTypes();
+   
+   /**
+    * Get the scope
+    * 
+    * @return the scope
+    */
+   ScopeKey getScope();
+   
+   /**
+    * Set the scope
+    * 
+    * @param key the scope key
+    */
+   void setScope(ScopeKey key);
+   
+   /**
+    * Get the mutable scope
+    * 
+    * @return the mutable scope
+    */
+   ScopeKey getMutableScope();
+   
+   /**
+    * Set the mutable scope
+    * 
+    * @param key the mutable scope key
+    */
+   void setMutableScope(ScopeKey key);
 
+   /**
+    * Get the metadata for this deployment unit
+    * 
+    * @return the metadata
+    */
+   MetaData getMetaData();
+
+   /**
+    * Get the mutable metadata for this deployment unit
+    * 
+    * @return the metadata
+    */
+   MutableMetaData getMutableMetaData();
+   
    /**
     * Gets the classloader for this deployment unit
     * 
@@ -144,6 +189,13 @@ public interface DeploymentUnit extends MutableAttachments
     * @return the children
     */
    List<DeploymentUnit> getChildren();
+   
+   /**
+    * Get the components
+    * 
+    * @return the components
+    */
+   List<DeploymentUnit> getComponents();
    
    /**
     * Whether this unit is a component

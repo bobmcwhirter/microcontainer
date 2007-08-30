@@ -30,6 +30,9 @@ import org.jboss.deployers.client.spi.Deployment;
 import org.jboss.deployers.spi.DeploymentException;
 import org.jboss.deployers.spi.DeploymentState;
 import org.jboss.deployers.spi.attachments.ManagedObjectsWithTransientAttachments;
+import org.jboss.metadata.spi.MetaData;
+import org.jboss.metadata.spi.MutableMetaData;
+import org.jboss.metadata.spi.scope.ScopeKey;
 
 /**
  * DeploymentContext.
@@ -108,6 +111,48 @@ public interface DeploymentContext extends ManagedObjectsWithTransientAttachment
     */
    Set<String> getTypes();
    
+   /**
+    * Get the scope
+    * 
+    * @return the scope
+    */
+   ScopeKey getScope();
+   
+   /**
+    * Set the scope
+    * 
+    * @param key the scope key
+    */
+   void setScope(ScopeKey key);
+   
+   /**
+    * Get the mutable scope
+    * 
+    * @return the mutable scope
+    */
+   ScopeKey getMutableScope();
+   
+   /**
+    * Set the mutable scope
+    * 
+    * @param key the mutable scope key
+    */
+   void setMutableScope(ScopeKey key);
+
+   /**
+    * Get the metadata for this deployment context
+    * 
+    * @return the metadata
+    */
+   MetaData getMetaData();
+
+   /**
+    * Get the mutable metadata for this deployment context
+    * 
+    * @return the metadata
+    */
+   MutableMetaData getMutableMetaData();
+
    /**
     * Get the deployment state
     * 
@@ -320,4 +365,9 @@ public interface DeploymentContext extends ManagedObjectsWithTransientAttachment
     * @param problem the problem
     */
    void setProblem(Throwable problem);
+   
+   /**
+    * Cleanup the deployment context
+    */
+   void cleanup();
 }

@@ -39,7 +39,11 @@ import org.jboss.deployers.structure.spi.DeploymentContext;
 import org.jboss.deployers.structure.spi.DeploymentContextVisitor;
 import org.jboss.deployers.structure.spi.DeploymentResourceLoader;
 import org.jboss.deployers.structure.spi.DeploymentUnit;
+import org.jboss.deployers.structure.spi.scope.ScopeBuilder;
 import org.jboss.logging.Logger;
+import org.jboss.metadata.spi.MetaData;
+import org.jboss.metadata.spi.MutableMetaData;
+import org.jboss.metadata.spi.scope.ScopeKey;
 
 /**
  * AbstractDeploymentContext.
@@ -73,6 +77,12 @@ public class ComponentDeploymentContext implements DeploymentContext
    
    /** The managed objects */
    private transient MutableAttachments transientManagedObjects = AttachmentsFactory.createMutableAttachments();
+   
+   /** The scope */
+   private ScopeKey scope;
+   
+   /** The mutable scope */
+   private ScopeKey mutableScope;
    
    /**
     * For serialization
@@ -136,6 +146,46 @@ public class ComponentDeploymentContext implements DeploymentContext
    public Set<String> getTypes()
    {
       return parent.getTypes();
+   }
+
+   public ScopeKey getScope()
+   {
+      if (scope == null)
+      {
+         ScopeBuilder builder = AbstractDeploymentContext.getScopeBuilder(this);
+         scope = builder.getComponentScope(this);
+      }
+      return scope;
+   }
+
+   public void setScope(ScopeKey scope)
+   {
+      this.scope = scope;
+   }
+
+   public ScopeKey getMutableScope()
+   {
+      if (mutableScope == null)
+      {
+         ScopeBuilder builder = AbstractDeploymentContext.getScopeBuilder(this);
+         mutableScope = builder.getMutableComponentScope(this);
+      }
+      return mutableScope;
+   }
+
+   public void setMutableScope(ScopeKey mutableScope)
+   {
+      this.mutableScope = mutableScope;
+   }
+
+   public MetaData getMetaData()
+   {
+      return AbstractDeploymentContext.getMetaData(this);
+   }
+
+   public MutableMetaData getMutableMetaData()
+   {
+      return AbstractDeploymentContext.getMutableMetaData(this);
    }
 
    public DeploymentState getState()
@@ -254,7 +304,9 @@ public class ComponentDeploymentContext implements DeploymentContext
    {
       if (component == null)
          throw new IllegalArgumentException("Null component");
-      return components.remove(component);
+      boolean result = components.remove(component);
+      component.cleanup();
+      return result;
    }
 
    public ClassLoader getResourceClassLoader()
@@ -397,6 +449,11 @@ public class ComponentDeploymentContext implements DeploymentContext
    public boolean isDeployed()
    {
       return parent.isDeployed();
+   }
+
+   public void cleanup()
+   {
+      AbstractDeploymentContext.cleanupRepository(this);
    }
 
    public String toString()

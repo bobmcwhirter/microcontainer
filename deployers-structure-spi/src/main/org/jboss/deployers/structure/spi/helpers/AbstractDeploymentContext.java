@@ -45,7 +45,15 @@ import org.jboss.deployers.structure.spi.DeploymentContext;
 import org.jboss.deployers.structure.spi.DeploymentContextVisitor;
 import org.jboss.deployers.structure.spi.DeploymentResourceLoader;
 import org.jboss.deployers.structure.spi.DeploymentUnit;
+import org.jboss.deployers.structure.spi.scope.ScopeBuilder;
+import org.jboss.deployers.structure.spi.scope.helpers.DefaultScopeBuilder;
 import org.jboss.logging.Logger;
+import org.jboss.metadata.spi.MetaData;
+import org.jboss.metadata.spi.MutableMetaData;
+import org.jboss.metadata.spi.loader.MutableMetaDataLoader;
+import org.jboss.metadata.spi.repository.MutableMetaDataRepository;
+import org.jboss.metadata.spi.retrieval.MetaDataRetrieval;
+import org.jboss.metadata.spi.scope.ScopeKey;
 
 /**
  * AbstractDeploymentContext.
@@ -60,7 +68,7 @@ public class AbstractDeploymentContext extends ManagedObjectsWithTransientAttach
    private static final long serialVersionUID = 7368360479461613969L;
 
    /** The log */
-   protected Logger log = Logger.getLogger(getClass());
+   private static final Logger log = Logger.getLogger(AbstractDeploymentContext.class);
    
    /** The name */
    private String name;
@@ -112,6 +120,158 @@ public class AbstractDeploymentContext extends ManagedObjectsWithTransientAttach
 
    /** The context comparator */
    private Comparator<DeploymentContext> comparator = DefaultDeploymentContextComparator.INSTANCE;
+   
+   /** The scope */
+   private ScopeKey scope;
+   
+   /** The mutable scope */
+   private ScopeKey mutableScope;
+
+   /**
+    * Get the scope builder for a deployment context
+    * 
+    * @param deploymentContext the deployment context
+    * @return the scope builder
+    */
+   public static ScopeBuilder getScopeBuilder(DeploymentContext deploymentContext)
+   {
+      if (deploymentContext == null)
+         throw new IllegalArgumentException("Null deployment context");
+      ScopeBuilder builder = deploymentContext.getTransientAttachments().getAttachment(ScopeBuilder.class);
+      if (builder != null)
+         return builder;
+      DeploymentContext parent = deploymentContext.getParent();
+      if (parent != null)
+         return getScopeBuilder(parent);
+      return DefaultScopeBuilder.INSTANCE;
+   }
+
+   /**
+    * Get the repository for a deployment context
+    * 
+    * @param deploymentContext the deployment context
+    * @return the repository
+    */
+   public static MutableMetaDataRepository getRepository(DeploymentContext deploymentContext)
+   {
+      if (deploymentContext == null)
+         throw new IllegalArgumentException("Null deployment context");
+
+      MutableMetaDataRepository repository = deploymentContext.getTransientAttachments().getAttachment(MutableMetaDataRepository.class);
+      if (repository != null)
+         return repository;
+      DeploymentContext parent = deploymentContext.getParent();
+      if (parent == null)
+         return null;
+      return getRepository(parent);
+   }
+
+   /**
+    * Cleanup the repository
+    * 
+    * @param deploymentContext the deployment context
+    */
+   public static void cleanupRepository(DeploymentContext deploymentContext)
+   {
+      MutableMetaDataRepository repository = getRepository(deploymentContext);
+      if (repository == null)
+         return;
+      
+      try
+      {
+         ScopeKey scope = deploymentContext.getScope();
+         repository.removeMetaDataRetrieval(scope);
+      }
+      catch (Throwable ignored)
+      {
+      }
+
+      try
+      {
+         ScopeKey scope = deploymentContext.getMutableScope();
+         repository.removeMetaDataRetrieval(scope);
+      }
+      catch (Throwable ignored)
+      {
+      }
+   }
+
+   /**
+    * Get the metadata for a deployment context
+    * 
+    * @param deploymentContext the deployment context
+    * @return the metaData
+    */
+   public static MetaData getMetaData(DeploymentContext deploymentContext)
+   {
+      MutableMetaDataRepository repository = getRepository(deploymentContext);
+      if (repository == null)
+         return null;
+      
+      MetaData metaData = repository.getMetaData(deploymentContext.getScope());
+      if (metaData == null)
+      {
+         initMetaDataRetrieval(repository, deploymentContext);
+         metaData = repository.getMetaData(deploymentContext.getScope());
+      }
+      return metaData;
+   }
+
+   /**
+    * Get the mutable metadata for a deployment context
+    * 
+    * @param deploymentContext the deployment context
+    * @return the metaData
+    */
+   public static MutableMetaDataLoader getMutableMetaData(DeploymentContext deploymentContext)
+   {
+      MutableMetaDataRepository repository = getRepository(deploymentContext);
+      if (repository == null)
+         return null;
+
+      ScopeKey mutableScope = deploymentContext.getMutableScope();
+      MetaDataRetrieval retrieval = repository.getMetaDataRetrieval(mutableScope);
+      if (retrieval == null)
+      {
+         initMutableMetaDataRetrieval(repository, deploymentContext);
+         retrieval = repository.getMetaDataRetrieval(mutableScope);
+      }
+      if (retrieval == null || retrieval instanceof MutableMetaDataLoader == false)
+         return null;
+      return (MutableMetaDataLoader) retrieval;
+   }
+
+   /**
+    * Initialise the metadata retrieval for a deployment context
+    * 
+    * @param deploymentContext the deployment context
+    */
+   private static void initMetaDataRetrieval(MutableMetaDataRepository repository, DeploymentContext deploymentContext)
+   {
+      if (deploymentContext == null)
+         throw new IllegalArgumentException("Null deployment context");
+
+      ScopeBuilder builder = deploymentContext.getTransientAttachments().getAttachment(ScopeBuilder.class);
+      if (builder == null)
+         builder = DefaultScopeBuilder.INSTANCE;
+      builder.initMetaDataRetrieval(repository, deploymentContext);
+   }
+
+   /**
+    * Initialise the metadata retrieval for a deployment context
+    * 
+    * @param deploymentContext the deployment context
+    */
+   private static void initMutableMetaDataRetrieval(MutableMetaDataRepository repository, DeploymentContext deploymentContext)
+   {
+      if (deploymentContext == null)
+         throw new IllegalArgumentException("Null deployment context");
+
+      ScopeBuilder builder = deploymentContext.getTransientAttachments().getAttachment(ScopeBuilder.class);
+      if (builder == null)
+         builder = DefaultScopeBuilder.INSTANCE;
+      builder.initMutableMetaDataRetrieval(repository, deploymentContext);
+   }
    
    /**
     * For serialization
@@ -193,6 +353,46 @@ public class AbstractDeploymentContext extends ManagedObjectsWithTransientAttach
    public Set<String> getTypes()
    {
       return deploymentTypes;
+   }
+   
+   public ScopeKey getScope()
+   {
+      if (scope == null)
+      {
+         ScopeBuilder builder = getScopeBuilder(this);
+         scope = builder.getDeploymentScope(this);
+      }
+      return scope;
+   }
+
+   public void setScope(ScopeKey scope)
+   {
+      this.scope = scope;
+   }
+
+   public ScopeKey getMutableScope()
+   {
+      if (mutableScope == null)
+      {
+         ScopeBuilder builder = getScopeBuilder(this);
+         mutableScope = builder.getMutableDeploymentScope(this);
+      }
+      return mutableScope;
+   }
+
+   public void setMutableScope(ScopeKey mutableScope)
+   {
+      this.mutableScope = mutableScope;
+   }
+
+   public MetaData getMetaData()
+   {
+      return getMetaData(this);
+   }
+
+   public MutableMetaData getMutableMetaData()
+   {
+      return getMutableMetaData(this);
    }
 
    public DeploymentState getState()
@@ -373,6 +573,7 @@ public class AbstractDeploymentContext extends ManagedObjectsWithTransientAttach
       if (componentComponents.isEmpty() == false)
          log.warn("Removing component " + name + " which still has components " + componentComponents);
       boolean result = components.remove(component);
+      component.cleanup();
       if (result)
          log.debug("Removed component " + component.getName() + " from " + getName());
       return result;
@@ -514,6 +715,11 @@ public class AbstractDeploymentContext extends ManagedObjectsWithTransientAttach
       deployed = true;
    }
 
+   public void cleanup()
+   {
+      cleanupRepository(this);
+   }
+   
    @Override
    public String toString()
    {

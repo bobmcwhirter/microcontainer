@@ -31,6 +31,7 @@ import org.jboss.deployers.structure.spi.DeploymentUnit;
 import org.jboss.deployers.structure.spi.helpers.AbstractDeploymentContext;
 import org.jboss.deployers.vfs.spi.structure.VFSDeploymentContext;
 import org.jboss.deployers.vfs.spi.structure.VFSDeploymentResourceLoader;
+import org.jboss.logging.Logger;
 import org.jboss.virtual.VFSUtils;
 import org.jboss.virtual.VirtualFile;
 
@@ -44,6 +45,9 @@ public class AbstractVFSDeploymentContext extends AbstractDeploymentContext impl
 {
    /** The serialVersionUID */
    private static final long serialVersionUID = 4474515937180482776L;
+
+   /** The log */
+   private static final Logger log = Logger.getLogger(AbstractVFSDeploymentContext.class);
 
    /** The root virtual file */
    private VirtualFile root;

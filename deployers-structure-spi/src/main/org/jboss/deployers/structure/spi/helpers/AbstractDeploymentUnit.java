@@ -41,6 +41,9 @@ import org.jboss.deployers.structure.spi.ClassLoaderFactory;
 import org.jboss.deployers.structure.spi.DeploymentContext;
 import org.jboss.deployers.structure.spi.DeploymentResourceLoader;
 import org.jboss.deployers.structure.spi.DeploymentUnit;
+import org.jboss.metadata.spi.MetaData;
+import org.jboss.metadata.spi.MutableMetaData;
+import org.jboss.metadata.spi.scope.ScopeKey;
 
 /**
  * AbstractDeploymentUnit.<p>
@@ -100,6 +103,36 @@ public class AbstractDeploymentUnit extends AbstractMutableAttachments implement
       return deploymentContext.getTypes();
    }
 
+   public ScopeKey getScope()
+   {
+      return deploymentContext.getScope();
+   }
+
+   public void setScope(ScopeKey key)
+   {
+      deploymentContext.setScope(key);
+   }
+
+   public ScopeKey getMutableScope()
+   {
+      return deploymentContext.getMutableScope();
+   }
+
+   public void setMutableScope(ScopeKey key)
+   {
+      deploymentContext.setMutableScope(key);
+   }
+
+   public MetaData getMetaData()
+   {
+      return deploymentContext.getMetaData();
+   }
+
+   public MutableMetaData getMutableMetaData()
+   {
+      return deploymentContext.getMutableMetaData();
+   }
+
    public ClassLoader getClassLoader()
    {
       ClassLoader cl = deploymentContext.getClassLoader();
@@ -145,6 +178,21 @@ public class AbstractDeploymentUnit extends AbstractMutableAttachments implement
       for (DeploymentContext child : children)
       {
          DeploymentUnit unit = child.getDeploymentUnit();
+         result.add(unit);
+      }
+      return result;
+   }
+
+   public List<DeploymentUnit> getComponents()
+   {
+      List<DeploymentContext> components = deploymentContext.getComponents();
+      if (components == null || components.isEmpty())
+         return Collections.emptyList();
+      
+      List<DeploymentUnit> result = new ArrayList<DeploymentUnit>(components.size());
+      for (DeploymentContext component : components)
+      {
+         DeploymentUnit unit = component.getDeploymentUnit();
          result.add(unit);
       }
       return result;

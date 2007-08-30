@@ -52,8 +52,11 @@ import org.jboss.deployers.spi.deployer.DeploymentStages;
 import org.jboss.deployers.spi.deployer.managed.ManagedObjectCreator;
 import org.jboss.deployers.structure.spi.DeploymentContext;
 import org.jboss.deployers.structure.spi.DeploymentUnit;
+import org.jboss.deployers.structure.spi.scope.ScopeBuilder;
+import org.jboss.kernel.spi.dependency.KernelController;
 import org.jboss.logging.Logger;
 import org.jboss.managed.api.ManagedObject;
+import org.jboss.metadata.spi.repository.MutableMetaDataRepository;
 
 /**
  * DeployersImpl.
@@ -69,6 +72,9 @@ public class DeployersImpl implements Deployers, ControllerContextActions
    /** The dependency state machine */
    private AbstractController controller;
    
+   /** The repository */
+   private MutableMetaDataRepository repository;
+   
    /** The deployment stages by name */
    private Map<String, DeploymentStage> stages = new ConcurrentHashMap<String, DeploymentStage>();
    
@@ -77,6 +83,9 @@ public class DeployersImpl implements Deployers, ControllerContextActions
 
    /** The deployers by stage and type */
    private Map<String, List<Deployer>> deployersByStage = new HashMap<String, List<Deployer>>();
+   
+   /** The scope builder */
+   private ScopeBuilder scopeBuilder;
    
    /**
     * Create a new DeployersImpl.
@@ -270,6 +279,56 @@ public class DeployersImpl implements Deployers, ControllerContextActions
       log.debug("Added stage " + stageName + " before " + preceeds);
    }
 
+   /**
+    * Get the scopeBuilder.
+    * 
+    * @return the scopeBuilder.
+    */
+   public ScopeBuilder getScopeBuilder()
+   {
+      return scopeBuilder;
+   }
+
+   /**
+    * Set the scopeBuilder.
+    * 
+    * @param scopeBuilder the scopeBuilder.
+    */
+   public void setScopeBuilder(ScopeBuilder scopeBuilder)
+   {
+      this.scopeBuilder = scopeBuilder;
+   }
+
+   /**
+    * Get the repository.
+    * 
+    * @return the repository.
+    */
+   public MutableMetaDataRepository getRepository()
+   {
+      return repository;
+   }
+
+   /**
+    * Set the repository.
+    * 
+    * @param repository the repository.
+    */
+   public void setRepository(MutableMetaDataRepository repository)
+   {
+      this.repository = repository;
+   }
+
+   public void start()
+   {
+      // Bootstrap the repository
+      if (repository == null && controller instanceof KernelController)
+      {
+         KernelController kernelController = (KernelController) controller;
+         repository = kernelController.getKernel().getMetaDataRepository().getMetaDataRepository();
+      }
+   }
+   
    public Map<String, ManagedObject> getManagedObjects(DeploymentContext context) throws DeploymentException
    {
       if (context == null)
@@ -382,6 +441,7 @@ public class DeployersImpl implements Deployers, ControllerContextActions
                // This is now in the abstract classloader deployer.undeploy,
                // but left here in case somebody isn't using that.
                removeClassLoader(context);
+               cleanup(context);
                log.debug("Fully Undeployed " + context.getName());
             }
             catch (Throwable t)
@@ -406,6 +466,10 @@ public class DeployersImpl implements Deployers, ControllerContextActions
                context.setState(DeploymentState.DEPLOYING);
                log.debug("Deploying " + context.getName());
                context.getTransientAttachments().addAttachment(ControllerContext.class, deploymentControllerContext);
+               if (scopeBuilder != null)
+                  context.getTransientAttachments().addAttachment(ScopeBuilder.class, scopeBuilder);
+               if (repository != null)
+                  context.getTransientAttachments().addAttachment(MutableMetaDataRepository.class, repository);
             }
             catch (Throwable t)
             {
@@ -1021,6 +1085,28 @@ public class DeployersImpl implements Deployers, ControllerContextActions
       {
          for (DeploymentContext child : children)
             removeClassLoader(child);
+      }
+   }
+
+   /**
+    * Cleanup the deployment context
+    * 
+    * @param context the context
+    */
+   private static void cleanup(DeploymentContext context)
+   {
+      context.cleanup();
+      List<DeploymentContext> children = context.getChildren();
+      if (children != null && children.isEmpty() == false)
+      {
+         for (DeploymentContext child : children)
+            cleanup(child);
+      }
+      List<DeploymentContext> components = context.getComponents();
+      if (components != null && components.isEmpty() == false)
+      {
+         for (DeploymentContext component : components)
+            cleanup(component);
       }
    }
 }

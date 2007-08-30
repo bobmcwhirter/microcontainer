@@ -19,39 +19,25 @@
 * Software Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA
 * 02110-1301 USA, or see the FSF site: http://www.fsf.org.
 */
-package org.jboss.test.deployers;
-
-import org.jboss.test.deployers.classloading.DeployersClassLoadingTestSuite;
-import org.jboss.test.deployers.deployer.DeployersDeployerTestSuite;
-import org.jboss.test.deployers.managed.DeployersManagedTestSuite;
-import org.jboss.test.deployers.scope.DeployersScopeTestSuite;
-
-import junit.framework.Test;
-import junit.framework.TestSuite;
-import junit.textui.TestRunner;
+package org.jboss.test.deployers.scope.support;
 
 /**
- * Deployers Impl Test Suite.
+ * TestComponentMetaData.
  * 
  * @author <a href="adrian@jboss.com">Adrian Brock</a>
- * @version $Revision: 37459 $
+ * @version $Revision: 1.1 $
  */
-public class DeployersImplTestSuite extends TestSuite
+public class TestComponentMetaData
 {
-   public static void main(String[] args)
+   public String name;
+   
+   public TestComponentMetaData(String name)
    {
-      TestRunner.run(suite());
+      this.name = name;
    }
-
-   public static Test suite()
+   
+   public String toString()
    {
-      TestSuite suite = new TestSuite("Deployers Impl Tests");
-
-      suite.addTest(DeployersDeployerTestSuite.suite());
-      suite.addTest(DeployersManagedTestSuite.suite());
-      suite.addTest(DeployersClassLoadingTestSuite.suite());
-      suite.addTest(DeployersScopeTestSuite.suite());
-
-      return suite;
+      return name;
    }
 }
