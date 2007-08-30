@@ -41,8 +41,6 @@ import org.jboss.managed.api.ManagedProperty;
 import org.jboss.managed.api.factory.ManagedObjectFactory;
 import org.jboss.metatype.api.types.SimpleMetaType;
 import org.jboss.metatype.api.values.GenericValue;
-import org.jboss.metatype.api.values.SimpleValue;
-import org.jboss.metatype.api.values.SimpleValueSupport;
 import org.jboss.test.deployers.AbstractDeployerTest;
 import org.jboss.test.deployers.deployer.support.ConnMetaData;
 import org.jboss.test.deployers.deployer.support.DSMetaData;
@@ -51,6 +49,9 @@ import org.jboss.test.deployers.deployer.support.LocalDataSourceMetaData;
 import org.jboss.test.deployers.deployer.support.MCFDeployer;
 import org.jboss.test.deployers.deployer.support.SecMetaData;
 import org.jboss.test.deployers.deployer.support.SecurityDeployment;
+import org.jboss.test.deployers.deployer.support.TestServiceAttributeMetaData;
+import org.jboss.test.deployers.deployer.support.TestServiceMetaData;
+import org.jboss.test.deployers.deployer.support.TestServiceMetaDataICF;
 import org.jboss.test.deployers.deployer.support.XADataSourceMetaData;
 import org.jboss.test.deployers.managed.support.MockProfileService;
 
@@ -90,6 +91,9 @@ public class DeployerManagedDeploymentUnitTestCase extends AbstractDeployerTest
    {
       DeployerClient main = getMainDeployer();
       MockProfileService ps = new MockProfileService(main);
+      ManagedObjectFactory mof = ManagedObjectFactory.getInstance();
+      TestServiceMetaDataICF tsicf = new TestServiceMetaDataICF();
+      mof.setInstanceClassFactory(TestServiceMetaData.class, tsicf);
       
       // Deploy a datasource with local and xa factories
       Deployment ctx1 = createSimpleDeployment("deployment1");
@@ -125,9 +129,12 @@ public class DeployerManagedDeploymentUnitTestCase extends AbstractDeployerTest
       MutableAttachments a1 = (MutableAttachments) ctx1.getPredeterminedManagedObjects();
       a1.addAttachment(DSMetaData.class, dsmd);
       // The mbeans associated with the local DS
-      DSServiceMetaData localMBeans = new DSServiceMetaData();
-      localMBeans.setManagementName("java:DefaultDS1");
-      a1.addAttachment(DSServiceMetaData.class, localMBeans);
+      TestServiceMetaData localMBeans = new TestServiceMetaData();
+      localMBeans.setCode(DSServiceMetaData.class.getName());
+      ArrayList<TestServiceAttributeMetaData> localMBeanAttrs = new ArrayList<TestServiceAttributeMetaData>();
+      localMBeanAttrs.add(new TestServiceAttributeMetaData("java:DefaultDS1", "managementName"));
+      localMBeans.setAttributes(localMBeanAttrs);
+      a1.addAttachment(TestServiceMetaData.class, localMBeans);
       ps.addDeployment(ctx1);
 
       // Deploy security domain1

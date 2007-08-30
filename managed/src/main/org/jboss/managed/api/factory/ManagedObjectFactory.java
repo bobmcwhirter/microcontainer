@@ -25,6 +25,7 @@ import java.io.Serializable;
 
 import org.jboss.managed.api.ManagedObject;
 import org.jboss.managed.plugins.factory.ManagedObjectFactoryBuilder;
+import org.jboss.managed.spi.factory.InstanceClassFactory;
 import org.jboss.managed.spi.factory.ManagedObjectBuilder;
 
 /**
@@ -81,4 +82,10 @@ public abstract class ManagedObjectFactory
     * @param builder the builder (null to remove the builder)
     */
    public abstract void setBuilder(Class<?> clazz, ManagedObjectBuilder builder);
+   /**
+    * Set the InstanceClassFactory for an instance type.
+    * @param factory - the factory used to obtain the class to scan for
+    * management annotations.
+    */
+   public abstract void setInstanceClassFactory(Class<?> clazz, InstanceClassFactory factory);
 }

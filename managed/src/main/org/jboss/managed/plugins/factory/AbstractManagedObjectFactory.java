@@ -62,6 +62,7 @@ import org.jboss.managed.plugins.ManagedObjectImpl;
 import org.jboss.managed.plugins.ManagedOperationImpl;
 import org.jboss.managed.plugins.ManagedParameterImpl;
 import org.jboss.managed.plugins.ManagedPropertyImpl;
+import org.jboss.managed.spi.factory.InstanceClassFactory;
 import org.jboss.managed.spi.factory.ManagedObjectBuilder;
 import org.jboss.managed.spi.factory.ManagedObjectPopulator;
 import org.jboss.managed.spi.factory.ManagedParameterConstraintsPopulator;
@@ -90,7 +91,9 @@ import org.jboss.reflect.spi.TypeInfo;
  * @version $Revision: 1.1 $
  */
 public class AbstractManagedObjectFactory extends ManagedObjectFactory
-   implements ManagedObjectBuilder, ManagedObjectPopulator<Serializable>
+   implements ManagedObjectBuilder,
+   InstanceClassFactory,
+   ManagedObjectPopulator<Serializable>
 {
    private static final Logger log = Logger.getLogger(AbstractManagedObjectFactory.class);
 
@@ -108,6 +111,8 @@ public class AbstractManagedObjectFactory extends ManagedObjectFactory
    
    /** The managed object builders */
    private Map<Class, WeakReference<ManagedObjectBuilder>> builders = new WeakHashMap<Class, WeakReference<ManagedObjectBuilder>>();
+   /** The instance to class factories */
+   private Map<Class, WeakReference<InstanceClassFactory>> instanceFactories = new WeakHashMap<Class, WeakReference<InstanceClassFactory>>();
 
    static
    {
@@ -141,13 +146,23 @@ public class AbstractManagedObjectFactory extends ManagedObjectFactory
          throw new IllegalArgumentException("Null object");
 
       Class<? extends Serializable> clazz = object.getClass();
-      ManagedObject result = createSkeletonManagedObject(clazz);
-      if (result == null )
+      InstanceClassFactory icf = getInstanceFactory(clazz);
+      Class<? extends Serializable> moClass = null;
+      try
       {
-         log.debug("Null ManagedObject created for: "+clazz);
+         moClass = icf.getManagedObjectClass(object);
+      }
+      catch(ClassNotFoundException e)
+      {
          return null;
       }
-      ManagedObjectPopulator<Serializable> populator = getPopulator(clazz);
+      ManagedObject result = createSkeletonManagedObject(moClass);
+      if (result == null )
+      {
+         log.debug("Null ManagedObject created for: "+moClass);
+         return null;
+      }
+      ManagedObjectPopulator<Serializable> populator = getPopulator(moClass);
       populator.populateManagedObject(result, object);
 
       return result;
@@ -163,7 +178,27 @@ public class AbstractManagedObjectFactory extends ManagedObjectFactory
          builders.put(clazz, new WeakReference<ManagedObjectBuilder>(builder));
       }
    }
-   
+
+   @Override
+   public void setInstanceClassFactory(Class<?> clazz, InstanceClassFactory factory)
+   {
+      synchronized (instanceFactories)
+      {
+         if (instanceFactories == null)
+            instanceFactories.remove(clazz);
+         instanceFactories.put(clazz, new WeakReference<InstanceClassFactory>(factory));
+      }      
+   }
+
+   /**
+    * Default InstanceClassFactory implementation simply returns the
+    * instance class. 
+    */
+   public Class<? extends Serializable> getManagedObjectClass(Serializable instance)
+   {
+      return instance.getClass();
+   }
+
    /**
     * Create a skeleton managed object
     * 
@@ -479,14 +514,24 @@ public class AbstractManagedObjectFactory extends ManagedObjectFactory
     */
    protected void populateValues(ManagedObjectImpl managedObject, Serializable object)
    {
-      BeanInfo beanInfo = configuration.getBeanInfo(object.getClass());
+      InstanceClassFactory icf = getInstanceFactory(object.getClass());
+      Class moClass = null;
+      try
+      {
+         moClass = icf.getManagedObjectClass(object);
+      }
+      catch(ClassNotFoundException e)
+      {
+         throw new IllegalStateException(e);
+      }
+      BeanInfo beanInfo = configuration.getBeanInfo(moClass);
 
       Map<String, ManagedProperty> properties = managedObject.getProperties();
       if (properties != null && properties.size() > 0)
       {
          for (ManagedProperty property : properties.values())
          {
-            MetaValue value = getValue(beanInfo, property, object);
+            MetaValue value = icf.getValue(beanInfo, property, object);
             if (value != null)
                property.setField(Fields.VALUE, value);
             /* Need to look for a ManagementObjectID at the property level which
@@ -519,7 +564,7 @@ public class AbstractManagedObjectFactory extends ManagedObjectFactory
     * @param object the object
     * @return the meta value
     */
-   protected MetaValue getValue(BeanInfo beanInfo, ManagedProperty property, Serializable object)
+   public MetaValue getValue(BeanInfo beanInfo, ManagedProperty property, Serializable object)
    {
       // First look to the mapped name
       String name = property.getMappedName();
@@ -679,7 +724,24 @@ public class AbstractManagedObjectFactory extends ManagedObjectFactory
       }
       return this;
    }
-   
+
+   /**
+    * Get the instance factory for a class
+    * 
+    * @param clazz the class
+    * @return the InstanceClassFactory
+    */
+   protected InstanceClassFactory getInstanceFactory(Class<?> clazz)
+   {
+      synchronized (instanceFactories)
+      {
+         WeakReference<InstanceClassFactory> weak = instanceFactories.get(clazz);
+         if (weak != null)
+            return weak.get();
+      }
+      return this;
+   }
+
    /**
     * Get the populator for a class
     * 
