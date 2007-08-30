@@ -227,6 +227,7 @@ public class AbstractManagedObjectFactory extends ManagedObjectFactory
     */
    public ManagedObject buildManagedObject(Class<? extends Serializable> clazz)
    {
+      boolean trace = log.isTraceEnabled();
       BeanInfo beanInfo = configuration.getBeanInfo(clazz);
       ClassInfo classInfo = beanInfo.getClassInfo();
 
@@ -272,12 +273,15 @@ public class AbstractManagedObjectFactory extends ManagedObjectFactory
          moPropertyFactory = managementObject.propertyFactory();
       }
 
+      if (trace)
+      {
+         log.trace("Building MangedObject(name="+name+",nameType="+nameType
+               +",attachmentName="+attachmentName+",isRuntime="+isRuntime+")");
+      }
+
       ManagementProperties propertyType = ManagementProperties.ALL;
       if (managementObject != null)
          propertyType = managementObject.properties();
-
-      log.debug("Building MangedObject(name="+name+",nameType="+nameType
-            +",attachmentName="+attachmentName+",isRuntime="+isRuntime+")");
 
       // Build the ManagedProperties
       Set<ManagedProperty> properties = new HashSet<ManagedProperty>();
@@ -362,6 +366,13 @@ public class AbstractManagedObjectFactory extends ManagedObjectFactory
                   description = propertyName;
                fields.setField(Fields.DESCRIPTION, description);
 
+               if (trace)
+               {
+                  log.trace("Building MangedProperty(name="+propertyName
+                        +",mappedName="+mappedName
+                        +") ,annotations="+propAnnotations);
+               }
+
                boolean mandatory = false;
                if (managementProperty != null)
                   mandatory = managementProperty.mandatory();
@@ -423,6 +434,11 @@ public class AbstractManagedObjectFactory extends ManagedObjectFactory
                   property = new ManagedPropertyImpl(fields);
                properties.add(property);
             }
+            else if (trace)
+            {
+               log.trace("Ignoring property: "+propertyInfo);
+            }
+
          }
       }
 
