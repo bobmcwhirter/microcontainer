@@ -15,6 +15,10 @@
   <dependencies>
     <!-- Global dependencies -->
     <dependency>
+      <groupId>jboss</groupId>
+      <artifactId>jboss-vfs</artifactId>
+    </dependency>
+    <dependency>
       <groupId>org.jboss.microcontainer</groupId>
       <artifactId>jboss-deployers-spi</artifactId>
     </dependency>
