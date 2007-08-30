@@ -45,6 +45,8 @@ public class ConnMetaData implements Serializable
    private String jndiName;
    private String username;
    private char[] password;
+   private boolean localTransactions;
+   private TxSupportMetaData txSupportMetaData;
    private Properties connProperties;
    private SecMetaData securityMetaData;
 
@@ -114,6 +116,28 @@ public class ConnMetaData implements Serializable
    {
       this.connProperties = connProperties;
    }
+
+   @ManagementProperty(name="local-transaction")
+   public Boolean getLocalTransactions()
+   {
+      return localTransactions;
+   }
+
+   public void setLocalTransactions(Boolean localTransactions)
+   {
+      this.localTransactions = localTransactions;
+   }
+
+   @ManagementProperty(name="tx-metadata",
+         constraintsFactory=AllowedTxSupportMetaData.class)
+   public TxSupportMetaData getTransactionSupportMetaData()
+   {
+      return txSupportMetaData;
+   }
+   public void setTransactionSupportMetaData(TxSupportMetaData md)
+   {
+      this.txSupportMetaData = md;
+   }   
 
    @ManagementProperty(name="security-domain", managed=true)
    public SecMetaData getSecurityMetaData()
