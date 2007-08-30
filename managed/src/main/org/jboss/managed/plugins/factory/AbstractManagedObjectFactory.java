@@ -543,9 +543,10 @@ public class AbstractManagedObjectFactory extends ManagedObjectFactory
             ManagementObjectID id = (ManagementObjectID) annotations.get(ManagementObjectID.class.getName());
             if (id != null)
             {
-               if (value.getMetaType().isSimple() == false)
+               if (value == null || value.getMetaType().isSimple() == false)
                {
-                  log.warn("Cannot create String name from non-Simple property: "+property);
+                  log.warn("Cannot create String name from non-Simple property: "
+                        +property+", value="+value);
                   continue;
                }
                SimpleValue svalue = (SimpleValue) value;
