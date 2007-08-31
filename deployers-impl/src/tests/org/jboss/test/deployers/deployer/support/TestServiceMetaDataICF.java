@@ -46,7 +46,7 @@ public class TestServiceMetaDataICF implements InstanceClassFactory
    {
       TestServiceMetaData md = (TestServiceMetaData) instance;
       ClassLoader loader = instance.getClass().getClassLoader();
-      Class<? extends Serializable> moClass = (Class<? extends Serializable>)loader.loadClass(md.getCode());
+      Class moClass = loader.loadClass(md.getCode());
       return moClass;
    }
    public MetaValue getValue(BeanInfo beanInfo, ManagedProperty property, Serializable instance)

@@ -37,8 +37,7 @@ import org.jboss.managed.api.annotation.ManagementProperty;
  * @version $Revision$
  */
 @ManagementObject(isRuntime=true)
-public class DSServiceMetaData
-   implements Serializable
+public class DSService
 {
    private static final long serialVersionUID = 1;
 
