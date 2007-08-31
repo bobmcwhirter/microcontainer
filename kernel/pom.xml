@@ -84,7 +84,7 @@
       <artifactId>jboss-test</artifactId>
     </dependency>
     <dependency>
-      <groupId>jboss</groupId>
+      <groupId>org.jboss</groupId>
       <artifactId>jbossxb</artifactId>
     </dependency>
     <dependency>

@@ -223,7 +223,7 @@
       <artifactId>jboss-kernel</artifactId>
     </dependency>
     <dependency>
-      <groupId>jboss</groupId>
+      <groupId>org.jboss</groupId>
       <artifactId>jbossxb</artifactId>
     </dependency>
     <dependency>
