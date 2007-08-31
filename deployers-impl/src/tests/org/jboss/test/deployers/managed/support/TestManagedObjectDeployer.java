@@ -64,9 +64,9 @@ public class TestManagedObjectDeployer extends AbstractDeployer implements Manag
          attachment = attachment.clone();
          ManagedObjectImpl managedObject = new ManagedObjectImpl(TestAttachment.class.getName());
          managedObject.setAttachment(attachment);
-         Collection<ManagedProperty> properties = managedObject.getProperties().values();
-         properties.add(new ManagedPropertyImpl(managedObject, new TestFields(attachment, "string1")));
-         properties.add(new ManagedPropertyImpl(managedObject, new TestFields(attachment, "string2")));
+         Map<String, ManagedProperty> properties = managedObject.getProperties();
+         properties.put("string1", new ManagedPropertyImpl(managedObject, new TestFields(attachment, "string1")));
+         properties.put("string2", new ManagedPropertyImpl(managedObject, new TestFields(attachment, "string2")));
          managedObjects.put(TestAttachment.class.getName(), managedObject);
       }
    }
