@@ -40,6 +40,7 @@ import org.jboss.metatype.api.types.ArrayMetaType;
 import org.jboss.metatype.api.types.MetaType;
 import org.jboss.metatype.api.types.SimpleMetaType;
 import org.jboss.metatype.api.values.ArrayValue;
+import org.jboss.metatype.api.values.GenericValue;
 import org.jboss.metatype.api.values.MetaValue;
 import org.jboss.test.deployers.AbstractDeployerTest;
 import org.jboss.test.deployers.deployer.support.AllowedDsTypes;
@@ -166,10 +167,11 @@ public class DeployerManagedObjectUnitTestCase extends AbstractDeployerTest
 
       assertEquals(1, value.getLength());
       // Validate the ConnMetaData ManagedObject
-      ManagedObject localConnMO = ManagedObject.class.cast(value.getValue(0));
+      GenericValue localConnMOGV = GenericValue.class.cast(value.getValue(0));
+      ManagedObject localConnMO = ManagedObject.class.cast(localConnMOGV.getValue());
       assertEquals(ConnMetaData.class.getName(), localConnMO.getName());
       propsMap = localConnMO.getProperties();
-      assertEquals(8, propsMap.size());
+      assertEquals(10, propsMap.size());
       log.info("ConnMetaData properties: "+propsMap);
       ManagedProperty dsType = propsMap.get("datasource-type");
       assertNotNull(dsType);
@@ -219,7 +221,8 @@ public class DeployerManagedObjectUnitTestCase extends AbstractDeployerTest
       ManagedObject xaConnMO = null;
       for(Object md : value)
       {
-         ManagedObject tmpMO = ManagedObject.class.cast(md);
+         GenericValue tmpGV = GenericValue.class.cast(md);
+         ManagedObject tmpMO = ManagedObject.class.cast(tmpGV.getValue());
          if (tmpMO.getName().equals(LocalDataSourceMetaData.class.getName()))
             localConnMO = tmpMO;
          if (tmpMO.getName().equals(XADataSourceMetaData.class.getName()))
@@ -230,7 +233,7 @@ public class DeployerManagedObjectUnitTestCase extends AbstractDeployerTest
 
       // Validate the LocalDataSourceMetaData ManagedObject
       propsMap = localConnMO.getProperties();
-      assertEquals(8, propsMap.size());
+      assertEquals(10, propsMap.size());
       log.info("LocalDataSourceMetaData properties: "+propsMap);
       ManagedProperty dsType = propsMap.get("datasource-type");
       assertNotNull(dsType);
@@ -239,7 +242,7 @@ public class DeployerManagedObjectUnitTestCase extends AbstractDeployerTest
 
       // Validate the XADataSourceMetaData ManagedObject
       propsMap = xaConnMO.getProperties();
-      assertEquals(10, propsMap.size());
+      assertEquals(12, propsMap.size());
       log.info("XADataSourceMetaData properties: "+propsMap);
       ManagedProperty xaDataSourceClass = propsMap.get("xaDataSourceClass");
       assertNotNull(xaDataSourceClass);
@@ -281,6 +284,7 @@ public class DeployerManagedObjectUnitTestCase extends AbstractDeployerTest
       assertEquals("maxSize", 100, xaDS.getMaxSize());
    }
 
+   
    protected DeployerClient getMainDeployer()
    {
       return createMainDeployer(deployer);
