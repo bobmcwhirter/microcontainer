@@ -44,7 +44,7 @@ import org.jboss.metatype.api.values.GenericValue;
 import org.jboss.test.deployers.AbstractDeployerTest;
 import org.jboss.test.deployers.deployer.support.ConnMetaData;
 import org.jboss.test.deployers.deployer.support.DSMetaData;
-import org.jboss.test.deployers.deployer.support.DSServiceMetaData;
+import org.jboss.test.deployers.deployer.support.DSService;
 import org.jboss.test.deployers.deployer.support.LocalDataSourceMetaData;
 import org.jboss.test.deployers.deployer.support.MCFDeployer;
 import org.jboss.test.deployers.deployer.support.SecMetaData;
@@ -130,7 +130,7 @@ public class DeployerManagedDeploymentUnitTestCase extends AbstractDeployerTest
       a1.addAttachment(DSMetaData.class, dsmd);
       // The mbeans associated with the local DS
       TestServiceMetaData localMBeans = new TestServiceMetaData();
-      localMBeans.setCode(DSServiceMetaData.class.getName());
+      localMBeans.setCode(DSService.class.getName());
       ArrayList<TestServiceAttributeMetaData> localMBeanAttrs = new ArrayList<TestServiceAttributeMetaData>();
       localMBeanAttrs.add(new TestServiceAttributeMetaData("java:DefaultDS1", "managementName"));
       localMBeans.setAttributes(localMBeanAttrs);
