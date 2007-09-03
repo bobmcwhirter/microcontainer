@@ -47,6 +47,8 @@
     <version.jboss.profiler.jvmti>1.0.0.CR5</version.jboss.profiler.jvmti>
     <version.ant.junit>1.7.0</version.ant.junit>
     <version.apache-xerces.xml-apis>2.7.1</version.apache-xerces.xml-apis>
+    <version.jboss.drools>4.0.1</version.jboss.drools>
+    <version.jboss.jbpm>3.1.1</version.jboss.jbpm>
   </properties>
 
   <build>
@@ -317,6 +319,21 @@
         <version>${project.version}</version>
       </dependency>
       <dependency>
+        <groupId>org.jboss.microcontainer</groupId>
+        <artifactId>jboss-reliance-identity</artifactId>
+        <version>${project.version}</version>
+      </dependency>
+      <dependency>
+        <groupId>org.jboss.microcontainer</groupId>
+        <artifactId>jboss-reliance-rules</artifactId>
+        <version>${project.version}</version>
+      </dependency>
+      <dependency>
+        <groupId>org.jboss.microcontainer</groupId>
+        <artifactId>jboss-reliance-jbpm</artifactId>
+        <version>${project.version}</version>
+      </dependency>
+      <dependency>
         <groupId>org.jboss</groupId>
         <artifactId>jboss-common-core</artifactId>
         <version>${version.jboss.common.core}</version>
@@ -396,6 +413,36 @@
         <artifactId>jboss-profiler-jvmti</artifactId>
         <version>${version.jboss.profiler.jvmti}</version>
         <scope>test</scope>
+      </dependency>
+      <dependency>
+        <groupId>org.drools</groupId>
+        <artifactId>drools-core</artifactId>
+        <version>${version.jboss.drools}</version>
+      </dependency>
+      <dependency>
+        <groupId>org.drools</groupId>
+        <artifactId>drools-compiler</artifactId>
+        <version>${version.jboss.drools}</version>
+        <exclusions>
+          <exclusion>
+            <groupId>xml-apis</groupId>
+            <artifactId>xml-apis</artifactId>
+          </exclusion>
+          <exclusion>
+            <groupId>xerces</groupId>
+            <artifactId>xercesImpl</artifactId>
+          </exclusion>
+        </exclusions>
+      </dependency>
+      <dependency>
+        <groupId>org.drools</groupId>
+        <artifactId>drools-decisiontables</artifactId>
+        <version>${version.jboss.drools}</version>
+      </dependency>
+      <dependency>
+        <groupId>jboss</groupId>
+        <artifactId>jbpm</artifactId>
+        <version>${version.jboss.jbpm}</version>
       </dependency>
     </dependencies>
   </dependencyManagement>

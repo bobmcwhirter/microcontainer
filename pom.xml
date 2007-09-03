@@ -43,6 +43,9 @@
     <module>osgi-int</module>
     <module>classloader</module>
     <module>varia</module>
+    <module>reliance-identity</module>
+    <module>reliance-rules</module>
+    <module>reliance-jbpm</module>
   </modules>
 
   <profiles>
