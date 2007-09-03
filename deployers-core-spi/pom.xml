@@ -15,9 +15,13 @@
   <!-- Do not add version information here, use ../build/pom.xml instead -->
   <dependencies>
     <!-- Global dependencies -->
+    	<dependency>
+		<groupId>org.jboss</groupId>
+		<artifactId>jboss-common-core</artifactId>
+	</dependency>
     <dependency>
-	    <groupId>org.jboss</groupId>
-	    <artifactId>jboss-common-core</artifactId>
-	  </dependency>
+      <groupId>junit</groupId>
+      <artifactId>junit</artifactId>
+    </dependency>
   </dependencies>  
 </project>
