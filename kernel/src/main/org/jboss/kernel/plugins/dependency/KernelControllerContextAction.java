@@ -97,8 +97,6 @@ public class KernelControllerContextAction extends SimpleControllerContextAction
          {
             if (cl != null && access == null)
                Thread.currentThread().setContextClassLoader(cl);
-            if (joinpoint instanceof KernelControllerContextAware)
-               ((KernelControllerContextAware) joinpoint).setKernelControllerContext(context);
 
             if (access == null)
             {
@@ -121,8 +119,6 @@ public class KernelControllerContextAction extends SimpleControllerContextAction
          {
             if (cl != null && access == null)
                Thread.currentThread().setContextClassLoader(tcl);
-            if (joinpoint instanceof KernelControllerContextAware)
-               ((KernelControllerContextAware) joinpoint).unsetKernelControllerContext(null);
          }
       }
       finally

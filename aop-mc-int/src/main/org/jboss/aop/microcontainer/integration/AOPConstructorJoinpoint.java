@@ -21,9 +21,7 @@
 */
 package org.jboss.aop.microcontainer.integration;
 
-import java.lang.annotation.Annotation;
 import java.lang.reflect.Constructor;
-import java.util.List;
 
 import org.jboss.aop.Advisor;
 import org.jboss.aop.AspectManager;
@@ -35,15 +33,8 @@ import org.jboss.aop.proxy.container.AOPProxyFactoryParameters;
 import org.jboss.aop.proxy.container.ContainerCache;
 import org.jboss.aop.proxy.container.GeneratedAOPProxyFactory;
 import org.jboss.joinpoint.plugins.BasicConstructorJoinPoint;
-import org.jboss.kernel.Kernel;
-import org.jboss.kernel.spi.dependency.KernelControllerContext;
-import org.jboss.kernel.spi.dependency.KernelControllerContextAware;
-import org.jboss.kernel.spi.metadata.KernelMetaDataRepository;
 import org.jboss.metadata.spi.MetaData;
-import org.jboss.metadata.spi.context.MetaDataContext;
-import org.jboss.metadata.spi.retrieval.MetaDataRetrieval;
 import org.jboss.metadata.spi.scope.CommonLevels;
-import org.jboss.metadata.spi.scope.ScopeKey;
 import org.jboss.metadata.spi.signature.MethodSignature;
 import org.jboss.metadata.spi.stack.MetaDataStack;
 import org.jboss.reflect.spi.ClassInfo;
@@ -60,13 +51,12 @@ import org.jboss.reflect.spi.TypeInfo;
  * @author <a href="adrian@jboss.com">Adrian Brock</a>
  * @version $Revision$
  */
-public class AOPConstructorJoinpoint extends BasicConstructorJoinPoint implements KernelControllerContextAware
+public class AOPConstructorJoinpoint extends BasicConstructorJoinPoint
 {
    private final static String[] EMPTY_PARAM_ARRAY = new String[0];
    
    AOPProxyFactory proxyFactory = new GeneratedAOPProxyFactory();
-   
-   KernelControllerContext context;
+
    /**
     * Create a new AOPConstructorJoinpoint.
     *
@@ -76,17 +66,6 @@ public class AOPConstructorJoinpoint extends BasicConstructorJoinPoint implement
    {
       super(constructorInfo);
    }
-
-   public void setKernelControllerContext(KernelControllerContext context) throws Exception
-   {
-      this.context = context;
-   }
-
-   public void unsetKernelControllerContext(KernelControllerContext context) throws Exception
-   {
-      this.context = null;
-   }
-
 
    public Object dispatch() throws Throwable
    {
@@ -122,40 +101,13 @@ public class AOPConstructorJoinpoint extends BasicConstructorJoinPoint implement
          return false;
       }
 
-      if (context != null)
+      MetaData instanceMetaData = metaData.getScopeMetaData(CommonLevels.INSTANCE);
+      if (instanceMetaData != null && instanceMetaData.isEmpty() == false)
       {
-         //TODO We might need the context injected somehow by the GenericBeanFactory, since that is used for creating the aspect instances...
-         Kernel kernel = context.getKernel();
-         KernelMetaDataRepository repository = kernel.getMetaDataRepository();
-         MetaDataRetrieval retrieval = repository.getMetaDataRetrieval(context);
-
-         if (retrieval instanceof MetaDataContext)
-         {
-            ScopeKey instanceKey = new ScopeKey(CommonLevels.INSTANCE, (String)context.getName());
-            
-            List<MetaDataRetrieval> retrievals =((MetaDataContext)retrieval).getLocalRetrievals();
-            for (MetaDataRetrieval ret : retrievals)
-            {
-               ScopeKey key = ret.getScope();
-               if (instanceKey.equals(key))
-               {
-                  Annotation[] anns = ret.retrieveAnnotations().getValue();
-                  if (anns != MetaData.NO_ANNOTATIONS)
-                  {
-                     return true;
-                  }
-               }
-            }
-         }
-         
-         //Check for method annotations
-         if (hasMethodMetaData(metaData))
-         {
-            return true;
-         }
-      }      
-      
-      return false; 
+         return true;  
+      }
+      //Check for method annotations
+      return hasMethodMetaData(metaData);
    }
    
    private boolean hasMethodMetaData(MetaData metaData)
@@ -184,7 +136,7 @@ public class AOPConstructorJoinpoint extends BasicConstructorJoinPoint implement
    private boolean methodHasAnnotations(MetaData metaData, MethodInfo mi)
    {
       TypeInfo[] types = mi.getParameterTypes();
-      String[] typeStrings = null;
+      String[] typeStrings;
       
       if (types.length == 0)
       {

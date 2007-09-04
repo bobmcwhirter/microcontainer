@@ -64,16 +64,6 @@ public class BasicKernelMetaDataRepository extends AbstractKernelMetaDataReposit
       return metaData;
    }
 
-   public MetaDataRetrieval getMetaDataRetrieval(ControllerContext context)
-   {
-      MutableMetaDataRepository repository = getMetaDataRepository();
-      ScopeKey scope = context.getScopeInfo().getScope();
-      MetaDataRetrieval metaDataRetrieval = repository.getMetaDataRetrieval(scope);
-      if (metaDataRetrieval == null)
-         metaDataRetrieval = initMetaDataRetrieval(context);
-      return metaDataRetrieval;
-   }
-
    public void addMetaData(ControllerContext context)
    {
       MutableMetaDataRepository repository = getMetaDataRepository();
