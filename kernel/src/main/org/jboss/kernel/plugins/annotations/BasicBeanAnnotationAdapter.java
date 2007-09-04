@@ -36,7 +36,7 @@ import org.jboss.kernel.plugins.config.Configurator;
 import org.jboss.kernel.spi.dependency.KernelControllerContext;
 import org.jboss.kernel.spi.metadata.KernelMetaDataRepository;
 import org.jboss.logging.Logger;
-import org.jboss.metadata.spi.retrieval.MetaDataRetrieval;
+import org.jboss.metadata.spi.MetaData;
 import org.jboss.metadata.spi.signature.ConstructorSignature;
 import org.jboss.metadata.spi.signature.FieldSignature;
 import org.jboss.metadata.spi.signature.MethodSignature;
@@ -159,7 +159,7 @@ public class BasicBeanAnnotationAdapter implements BeanAnnotationAdapter
       KernelControllerContext context = visitor.getControllerContext();
       Kernel kernel = context.getKernel();
       KernelMetaDataRepository repository = kernel.getMetaDataRepository();
-      MetaDataRetrieval retrieval = repository.getMetaDataRetrieval(context);
+      MetaData retrieval = repository.getMetaData(context);
 
       boolean trace = log.isTraceEnabled();
       BeanInfo info = context.getBeanInfo();
@@ -179,7 +179,7 @@ public class BasicBeanAnnotationAdapter implements BeanAnnotationAdapter
          for(ConstructorInfo ci : constructors)
          {
             Signature cis = new ConstructorSignature(Configurator.getParameterTypes(trace, ci.getParameterTypes()));
-            MetaDataRetrieval cmdr = retrieval.getComponentMetaDataRetrieval(cis);
+            MetaData cmdr = retrieval.getComponentMetaData(cis);
             if (cmdr != null)
             {
                for(AnnotationPlugin plugin : constructorAnnotationPlugins)
@@ -204,7 +204,7 @@ public class BasicBeanAnnotationAdapter implements BeanAnnotationAdapter
             {
                visitedMethods.add(setter);
                Signature sis = new MethodSignature(setter.getName(), Configurator.getParameterTypes(trace, setter.getParameterTypes()));
-               MetaDataRetrieval cmdr = retrieval.getComponentMetaDataRetrieval(sis);
+               MetaData cmdr = retrieval.getComponentMetaData(sis);
                if (cmdr != null)
                {
                   for(AnnotationPlugin plugin : propertyAnnotationPlugins)
@@ -227,7 +227,7 @@ public class BasicBeanAnnotationAdapter implements BeanAnnotationAdapter
             if (visitedMethods.contains(mi) == false)
             {
                Signature mis = new MethodSignature(mi.getName(), Configurator.getParameterTypes(trace, mi.getParameterTypes()));
-               MetaDataRetrieval cmdr = retrieval.getComponentMetaDataRetrieval(mis);
+               MetaData cmdr = retrieval.getComponentMetaData(mis);
                if (cmdr != null)
                {
                   for(AnnotationPlugin plugin : methodAnnotationPlugins)
@@ -250,7 +250,7 @@ public class BasicBeanAnnotationAdapter implements BeanAnnotationAdapter
             if (smi.isStatic() && smi.isPublic())
             {
                Signature mis = new MethodSignature(smi.getName(), Configurator.getParameterTypes(trace, smi.getParameterTypes()));
-               MetaDataRetrieval cmdr = retrieval.getComponentMetaDataRetrieval(mis);
+               MetaData cmdr = retrieval.getComponentMetaData(mis);
                if (cmdr != null)
                {
                   for(AnnotationPlugin plugin : methodAnnotationPlugins)
@@ -271,7 +271,7 @@ public class BasicBeanAnnotationAdapter implements BeanAnnotationAdapter
          for(FieldInfo fi : fields)
          {
             Signature fis = new FieldSignature(fi.getName());
-            MetaDataRetrieval cmdr = retrieval.getComponentMetaDataRetrieval(fis);
+            MetaData cmdr = retrieval.getComponentMetaData(fis);
             if (cmdr != null)
             {
                for(AnnotationPlugin plugin : fieldAnnotationPlugins)

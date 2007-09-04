@@ -34,10 +34,9 @@ import org.jboss.kernel.spi.dependency.KernelController;
 import org.jboss.kernel.spi.dependency.KernelControllerContext;
 import org.jboss.kernel.spi.metadata.KernelMetaDataRepository;
 import org.jboss.metadata.plugins.loader.memory.MemoryMetaDataLoader;
+import org.jboss.metadata.spi.MetaData;
 import org.jboss.metadata.spi.MutableMetaData;
 import org.jboss.metadata.spi.repository.MutableMetaDataRepository;
-import org.jboss.metadata.spi.retrieval.AnnotationItem;
-import org.jboss.metadata.spi.retrieval.AnnotationsItem;
 import org.jboss.metadata.spi.retrieval.MetaDataItem;
 import org.jboss.metadata.spi.retrieval.MetaDataRetrieval;
 import org.jboss.metadata.spi.scope.Scope;
@@ -83,30 +82,25 @@ public class PreInstallAction extends KernelControllerContextAction
          KernelController controller,
          KernelMetaDataRepository repository) throws Throwable
    {
-      MetaDataRetrieval retrieval = repository.getMetaDataRetrieval(context);
+      MetaData retrieval = repository.getMetaData(context);
       if (retrieval != null)
       {
-         AnnotationsItem annotations = retrieval.retrieveAnnotations();
-         if (annotations != null)
+         Annotation[] annotations = retrieval.getAnnotations();
+         if (annotations != null && annotations.length > 0)
          {
-            AnnotationItem[] annotationItems = annotations.getAnnotations();
-            if (annotationItems != null && annotationItems.length > 0)
+            Collection<Scope> scopes = new HashSet<Scope>();
+            for (Annotation annotation : annotations)
             {
-               Collection<Scope> scopes = new HashSet<Scope>();
-               for (AnnotationItem annItem : annotationItems)
+               if (annotation.annotationType().isAnnotationPresent(ScopeFactoryLookup.class))
                {
-                  Annotation annotation = annItem.getAnnotation();
-                  if (annotation.annotationType().isAnnotationPresent(ScopeFactoryLookup.class))
-                  {
-                     ScopeFactoryLookup sfl = annotation.annotationType().getAnnotation(ScopeFactoryLookup.class);
-                     Scope scope = sfl.value().newInstance().create(annotation);
-                     scopes.add(scope);
-                  }
+                  ScopeFactoryLookup sfl = annotation.annotationType().getAnnotation(ScopeFactoryLookup.class);
+                  Scope scope = sfl.value().newInstance().create(annotation);
+                  scopes.add(scope);
                }
-               if (scopes.size() > 0)
-               {
-                  return new ScopeKey(scopes);
-               }
+            }
+            if (scopes.size() > 0)
+            {
+               return new ScopeKey(scopes);
             }
          }
       }

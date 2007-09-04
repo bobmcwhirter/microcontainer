@@ -21,6 +21,7 @@
 */
 package org.jboss.example.microcontainer.annotations;
 
+import java.lang.annotation.Annotation;
 import java.util.Map;
 import java.util.Set;
 
@@ -28,9 +29,7 @@ import org.jboss.kernel.Kernel;
 import org.jboss.kernel.spi.dependency.KernelController;
 import org.jboss.kernel.spi.dependency.KernelControllerContext;
 import org.jboss.kernel.spi.metadata.KernelMetaDataRepository;
-import org.jboss.metadata.spi.retrieval.AnnotationItem;
-import org.jboss.metadata.spi.retrieval.AnnotationsItem;
-import org.jboss.metadata.spi.retrieval.MetaDataRetrieval;
+import org.jboss.metadata.spi.MetaData;
 
 /**
  * @author <a href="mailto:ales.justin@jboss.com">Ales Justin</a>
@@ -70,21 +69,17 @@ public class AnnotationChecker
    public boolean check(KernelControllerContext context, String annotation)
    {
       KernelMetaDataRepository repository = kernel.getMetaDataRepository();
-      MetaDataRetrieval retrieval = repository.getMetaDataRetrieval(context);
+      MetaData retrieval = repository.getMetaData(context);
       if (retrieval != null)
       {
-         AnnotationsItem annotations = retrieval.retrieveAnnotations();
-         if (annotations != null)
+         Annotation[] annotations = retrieval.getAnnotations();
+         if (annotations != null && annotations.length > 0)
          {
-            AnnotationItem[] annotationItems = annotations.getAnnotations();
-            if (annotationItems != null && annotationItems.length > 0)
+            for (Annotation annItem : annotations)
             {
-               for (AnnotationItem annItem : annotationItems)
+               if (annItem.annotationType().getName().equals(annotation))
                {
-                  if (annItem.getAnnotation().annotationType().getName().equals(annotation))
-                  {
-                     return true;
-                  }
+                  return true;
                }
             }
          }

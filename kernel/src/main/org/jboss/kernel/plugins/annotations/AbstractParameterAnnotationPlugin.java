@@ -35,8 +35,7 @@ import org.jboss.beans.metadata.spi.ParameterMetaData;
 import org.jboss.beans.metadata.spi.ValueMetaData;
 import org.jboss.kernel.plugins.config.Configurator;
 import org.jboss.kernel.spi.dependency.KernelControllerContext;
-import org.jboss.metadata.spi.retrieval.AnnotationItem;
-import org.jboss.metadata.spi.retrieval.MetaDataRetrieval;
+import org.jboss.metadata.spi.MetaData;
 import org.jboss.metadata.spi.signature.MethodParametersSignature;
 import org.jboss.metadata.spi.signature.Signature;
 import org.jboss.reflect.spi.AnnotatedInfo;
@@ -100,7 +99,7 @@ public abstract class AbstractParameterAnnotationPlugin<T extends AnnotatedInfo,
    protected abstract void setParameterizedMetaData(P parameterizedMetaData, BeanMetaData beanMetaData);
 
    @SuppressWarnings("unchecked")
-   protected List<? extends MetaDataVisitorNode> internalApplyAnnotation(T info, MetaDataRetrieval retrieval, C annotation, KernelControllerContext context) throws Throwable
+   protected List<? extends MetaDataVisitorNode> internalApplyAnnotation(T info, MetaData retrieval, C annotation, KernelControllerContext context) throws Throwable
    {
       ParameterInfo[] parameters = getParameters(info);
       if (parameters == null || parameters.length == 0)
@@ -121,17 +120,17 @@ public abstract class AbstractParameterAnnotationPlugin<T extends AnnotatedInfo,
                Configurator.getParameterTypes(log.isTraceEnabled(), typeInfos),
                i
          );
-         MetaDataRetrieval mdr = retrieval.getComponentMetaDataRetrieval(pis);
+         MetaData mdr = retrieval.getComponentMetaData(pis);
          if (mdr != null)
          {
             ValueMetaData value = null;
             for(Annotation2ValueMetaDataAdapter adapter : adapters)
             {
                // todo - match multiple annotations?
-               AnnotationItem item = mdr.retrieveAnnotation(adapter.getAnnotation());
-               if (item != null)
+               Annotation adapterAnnotation = mdr.getAnnotation(adapter.getAnnotation());
+               if (adapterAnnotation != null)
                {
-                  value = adapter.createValueMetaData(item.getAnnotation());
+                  value = adapter.createValueMetaData(adapterAnnotation);
                   break;
                }
             }

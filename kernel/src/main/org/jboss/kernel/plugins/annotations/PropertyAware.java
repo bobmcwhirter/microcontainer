@@ -23,7 +23,7 @@ package org.jboss.kernel.plugins.annotations;
 
 import org.jboss.beans.info.spi.PropertyInfo;
 import org.jboss.beans.metadata.spi.MetaDataVisitor;
-import org.jboss.metadata.spi.retrieval.MetaDataRetrieval;
+import org.jboss.metadata.spi.MetaData;
 
 /**
  * Marker interface.
@@ -32,5 +32,5 @@ import org.jboss.metadata.spi.retrieval.MetaDataRetrieval;
  */
 public interface PropertyAware
 {
-   void applyAnnotation(PropertyInfo info, MetaDataRetrieval retrieval, MetaDataVisitor visitor) throws Throwable;
+   void applyAnnotation(PropertyInfo info, MetaData retrieval, MetaDataVisitor visitor) throws Throwable;
 }

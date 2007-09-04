@@ -122,14 +122,13 @@ public class AOPConstructorJoinpoint extends BasicConstructorJoinPoint implement
          return false;
       }
 
-      MetaDataRetrieval retrieval = null;
       if (context != null)
       {
          //TODO We might need the context injected somehow by the GenericBeanFactory, since that is used for creating the aspect instances...
          Kernel kernel = context.getKernel();
          KernelMetaDataRepository repository = kernel.getMetaDataRepository();
-         retrieval = repository.getMetaDataRetrieval(context);
-         
+         MetaDataRetrieval retrieval = repository.getMetaDataRetrieval(context);
+
          if (retrieval instanceof MetaDataContext)
          {
             ScopeKey instanceKey = new ScopeKey(CommonLevels.INSTANCE, (String)context.getName());

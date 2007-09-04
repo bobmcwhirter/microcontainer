@@ -34,8 +34,7 @@ import org.jboss.beans.metadata.spi.BeanMetaData;
 import org.jboss.beans.metadata.spi.MetaDataVisitor;
 import org.jboss.beans.metadata.spi.MetaDataVisitorNode;
 import org.jboss.kernel.spi.dependency.KernelControllerContext;
-import org.jboss.metadata.spi.retrieval.AnnotationItem;
-import org.jboss.metadata.spi.retrieval.MetaDataRetrieval;
+import org.jboss.metadata.spi.MetaData;
 import org.jboss.reflect.spi.AnnotatedInfo;
 import org.jboss.util.JBossObject;
 import org.jboss.util.JBossStringBuilder;
@@ -98,7 +97,7 @@ public abstract class AbstractAnnotationPlugin<T extends AnnotatedInfo, C extend
       return false;
    }
 
-   protected List<? extends MetaDataVisitorNode> internalApplyAnnotation(T info, MetaDataRetrieval retrieval, C annotation, KernelControllerContext context) throws Throwable
+   protected List<? extends MetaDataVisitorNode> internalApplyAnnotation(T info, MetaData retrieval, C annotation, KernelControllerContext context) throws Throwable
    {
       return internalApplyAnnotation(info, annotation, context);
    }
@@ -114,19 +113,18 @@ public abstract class AbstractAnnotationPlugin<T extends AnnotatedInfo, C extend
       return Collections.emptyList();
    }
 
-   public final void applyAnnotation(T info, MetaDataRetrieval retrieval, MetaDataVisitor visitor) throws Throwable
+   public final void applyAnnotation(T info, MetaData retrieval, MetaDataVisitor visitor) throws Throwable
    {
       boolean trace = log.isTraceEnabled();
       
       Class<C> annotationClass = getAnnotation();
-      AnnotationItem<C> item = retrieval.retrieveAnnotation(annotationClass);
-      if (item == null)
+      C annotation = retrieval.getAnnotation(annotationClass);
+      if (annotation == null)
       {
          if (trace)
             log.trace("No annotation: " + annotationClass.getName());
          return;
       }
-      C annotation = item.getAnnotation();
       if (isMetaDataAlreadyPresent(info, annotation, visitor.getControllerContext()))
       {
          if (trace)
