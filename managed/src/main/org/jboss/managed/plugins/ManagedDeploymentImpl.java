@@ -44,21 +44,30 @@ public class ManagedDeploymentImpl
    implements ManagedDeployment, Serializable
 {
    private static final long serialVersionUID = 1;
+   /** The full deployment name */
    private String name;
+   /** The simple deployment name */
    private String simpleName;
+   /** The set of types assigned to the deployment */
    private Set<String> types;
+   /** The profile service phase for the deployment */
    private DeploymentPhase phase;
+   /** The parent deployment if any */
    private ManagedDeployment parent;
+   /** The deployment ManagedObjects */
    private Map<String, ManagedObject> unitMOs;
+   /** The flattened map of all ManagedObject properties */   
    private Map<String, ManagedProperty> properties;
+   /** The ManagedComponent wrappers for ManagedObjects marked as components */
    private Map<String, ManagedComponent> components = new HashMap<String, ManagedComponent>();
+   /** The child deployemnts */
    private ArrayList<ManagedDeployment> children = new ArrayList<ManagedDeployment>();
    
    public ManagedDeploymentImpl(String name, String simpleName, DeploymentPhase phase,
          ManagedDeployment parent, Map<String, ManagedObject> unitMOs)
    {
-      // TODO: simple vs full deployment name
       this.name = name;
+      this.simpleName = simpleName;
       this.phase = phase;
       this.parent = parent;
       this.unitMOs = unitMOs;
