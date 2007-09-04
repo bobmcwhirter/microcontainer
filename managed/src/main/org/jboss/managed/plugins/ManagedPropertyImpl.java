@@ -51,6 +51,7 @@ public class ManagedPropertyImpl implements ManagedProperty
     * - int version
     * - Fields fields
     * - ManagedObject managedObject
+    * - ManagedObject targetManagedObject
     */
    private static final int VERSION1 = 1;
    /** The serialization version used by writeObject */
@@ -394,6 +395,7 @@ public class ManagedPropertyImpl implements ManagedProperty
       out.writeInt(STREAM_VERSION);
       out.writeObject(fields);
       out.writeObject(managedObject);
+      out.writeObject(targetManagedObject);
    }
 
    /**
@@ -409,5 +411,6 @@ public class ManagedPropertyImpl implements ManagedProperty
       if (name == null)
          throw new IOException("No " + Fields.NAME + " in fields");
       managedObject = (ManagedObject) in.readObject();      
+      targetManagedObject = (ManagedObject) in.readObject();      
    }
 }

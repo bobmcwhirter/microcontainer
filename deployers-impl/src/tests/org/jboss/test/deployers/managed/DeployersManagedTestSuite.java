@@ -25,6 +25,7 @@ import junit.framework.Test;
 import junit.framework.TestSuite;
 import junit.textui.TestRunner;
 
+import org.jboss.test.deployers.managed.test.DeployerManagedDeploymentUnitTestCase;
 import org.jboss.test.deployers.managed.test.DeployerManagedObjectUnitTestCase;
 
 /**
@@ -45,6 +46,7 @@ public class DeployersManagedTestSuite extends TestSuite
       TestSuite suite = new TestSuite("Deployers Managed Tests");
 
       suite.addTest(DeployerManagedObjectUnitTestCase.suite());
+      suite.addTest(DeployerManagedDeploymentUnitTestCase.suite());
 
       return suite;
    }

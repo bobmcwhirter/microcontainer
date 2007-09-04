@@ -22,6 +22,7 @@
 package org.jboss.test.deployers.deployer.support;
 
 import java.io.Serializable;
+import java.net.URL;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -40,6 +41,7 @@ public class DSMetaData implements Serializable
 {
    private static final long serialVersionUID = 1;
    private String diplayName;
+   private URL fileUrl;
    private List<String> aliases = new ArrayList<String>();
    private List<ConnMetaData> deployments = new ArrayList<ConnMetaData>();
 
@@ -57,6 +59,16 @@ public class DSMetaData implements Serializable
    public void setDiplayName(String diplayName)
    {
       this.diplayName = diplayName;
+   }
+
+   @ManagementProperty(description="The ds.xml url", ignored=true)
+   public URL getUrl()
+   {
+      return fileUrl;
+   }
+   public void setUrl(URL fileUrl)
+   {
+      this.fileUrl = fileUrl;
    }
 
    public List<String> getAliases()

@@ -21,6 +21,11 @@
 */
 package org.jboss.test.deployers.managed.test;
 
+import java.io.ByteArrayInputStream;
+import java.io.ByteArrayOutputStream;
+import java.io.ObjectInputStream;
+import java.io.ObjectOutputStream;
+import java.net.URL;
 import java.util.ArrayList;
 import java.util.Map;
 import java.util.Set;
@@ -82,8 +87,8 @@ public class DeployerManagedDeploymentUnitTestCase extends AbstractDeployerTest
       ManagedObject mo = mof.createManagedObject(DSMetaData.class);
 
       Map<String, ManagedProperty> props = mo.getProperties();
-      assertEquals(2, props.size());
-      
+      log.info("DSMetaData props: "+props);
+      assertEquals(3, props.size());
    }
 
    public void testManagedDeployment()
@@ -98,6 +103,8 @@ public class DeployerManagedDeploymentUnitTestCase extends AbstractDeployerTest
       // Deploy a datasource with local and xa factories
       Deployment ctx1 = createSimpleDeployment("deployment1");
       DSMetaData dsmd = new DSMetaData();
+      dsmd.setDiplayName("deployment1 DS");
+      // TODO: dsmd.setUrl(new URL("vfsfile:/tmp/some-ds.xml"));
       // The base LocalDataSourceMeta
       LocalDataSourceMetaData ds = new LocalDataSourceMetaData();
       ds.setJndiName("java:DefaultDS1");
@@ -157,6 +164,21 @@ public class DeployerManagedDeploymentUnitTestCase extends AbstractDeployerTest
 
       // Validate the deployment1 ManagedObjects
       ManagedDeployment mo1 = ps.getManagedDeployment("deployment1");
+      validateDeployment1(mo1, ps);
+
+      // Validate that the ManagedDeployment is serializable
+      ByteArrayOutputStream baos = new ByteArrayOutputStream();
+      ObjectOutputStream oos = new ObjectOutputStream(baos);
+      oos.writeObject(mo1);
+      ByteArrayInputStream bais = new ByteArrayInputStream(baos.toByteArray());
+      ObjectInputStream ois = new ObjectInputStream(bais);
+      ManagedDeployment mo1test = (ManagedDeployment) ois.readObject();
+      validateDeployment1(mo1test, ps);
+   }
+
+   protected void validateDeployment1(ManagedDeployment mo1, MockProfileService ps)
+   {
+      // Validate the deployment1 ManagedObjects
       assertNotNull("deployment1 ManagedDeployment", mo1);
       ManagedProperty deploymentsProp = mo1.getProperty("deployments");
       assertNotNull("deployments prop", deploymentsProp);
@@ -285,7 +307,7 @@ public class DeployerManagedDeploymentUnitTestCase extends AbstractDeployerTest
       ManagedProperty rtp1 = localDataProps.get("runtimeProp1");
       assertNotNull("runtimeProp1", rtp1);
       ManagedProperty rtp2 = localDataProps.get("runtimeProp2");
-      assertNotNull("runtimeProp2", rtp2);
+      assertNotNull("runtimeProp2", rtp2);      
    }
 
    protected DeployerClient getMainDeployer()

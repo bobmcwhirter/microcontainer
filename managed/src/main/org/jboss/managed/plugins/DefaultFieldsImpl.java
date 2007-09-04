@@ -21,8 +21,10 @@
  */
 package org.jboss.managed.plugins;
 
+import java.io.IOException;
 import java.io.Serializable;
 import java.util.HashMap;
+import java.util.Map;
 import java.util.Set;
 
 import org.jboss.managed.api.Fields;
@@ -286,4 +288,19 @@ public class DefaultFieldsImpl
       throw new IllegalStateException("Field " + fieldName + " with value " + field + " is  a of the expected type: " + expected.getName());
    }
 
+   /*
+   private void writeObject(java.io.ObjectOutputStream out)
+      throws IOException
+   {
+      for (Map.Entry<String, Serializable> entry : fields.entrySet())
+      {
+         
+      }
+   }
+   private void readObject(java.io.ObjectInputStream in)
+      throws IOException, ClassNotFoundException
+   {
+   
+   }
+   */
 }
