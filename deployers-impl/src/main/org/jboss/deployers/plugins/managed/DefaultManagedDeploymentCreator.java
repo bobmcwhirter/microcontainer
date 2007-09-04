@@ -21,17 +21,13 @@
  */
 package org.jboss.deployers.plugins.managed;
 
-import java.lang.reflect.ParameterizedType;
-import java.lang.reflect.Type;
 import java.util.Map;
 
-import org.jboss.deployers.spi.deployer.managed.ManagedComponentCreator;
 import org.jboss.deployers.spi.deployer.managed.ManagedDeploymentCreator;
 import org.jboss.deployers.structure.spi.DeploymentUnit;
 import org.jboss.managed.api.ManagedDeployment;
 import org.jboss.managed.api.ManagedObject;
 import org.jboss.managed.api.ManagedDeployment.DeploymentPhase;
-import org.jboss.managed.api.factory.ManagedObjectFactory;
 import org.jboss.managed.plugins.ManagedDeploymentImpl;
 
 /**
@@ -43,10 +39,6 @@ import org.jboss.managed.plugins.ManagedDeploymentImpl;
 public class DefaultManagedDeploymentCreator
    implements ManagedDeploymentCreator
 {
-   private ManagedObjectFactory moFactory = ManagedObjectFactory.getInstance();
-   /** The metadata type to ManagedComponent handlers */
-   private Map<Class, ManagedComponentCreator> mdCreators;
-
    public ManagedDeployment build(DeploymentUnit unit,
          Map<String, ManagedObject> unitMOs,
          ManagedDeployment parent)
