@@ -32,6 +32,8 @@ import org.jboss.config.plugins.property.PropertyConfiguration;
 import org.jboss.config.spi.Configuration;
 
 /**
+ * JavaBean value annotation plugin.
+ *
  * @author <a href="mailto:ales.justin@jboss.com">Ales Justin</a>
  */
 public class JavaBeanValueAnnotationPlugin extends PropertyAnnotationPlugin<JavaBeanValue>
@@ -43,6 +45,7 @@ public class JavaBeanValueAnnotationPlugin extends PropertyAnnotationPlugin<Java
 
    static
    {
+      // get Configuration instance
       configuration = AccessController.doPrivileged(new PrivilegedAction<Configuration>()
       {
          public Configuration run()

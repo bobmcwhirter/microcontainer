@@ -34,6 +34,8 @@ import org.jboss.reflect.spi.MethodInfo;
 import org.jboss.reflect.spi.ParameterInfo;
 
 /**
+ * Factory method annotation plugin.
+ *
  * @author <a href="mailto:ales.justin@jboss.com">Ales Justin</a>
  */
 public class FactoryMethodAnnotationPlugin extends AbstractParameterAnnotationPlugin<MethodInfo, FactoryMethod, AbstractConstructorMetaData>

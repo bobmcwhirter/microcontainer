@@ -38,6 +38,8 @@ import org.jboss.beans.metadata.spi.ValueMetaData;
 import org.jboss.kernel.spi.dependency.KernelControllerContext;
 
 /**
+ * Abstract property annotation plugin.
+ *
  * @param <C> annotation type
  * @author <a href="mailto:ales.justin@jboss.com">Ales Justin</a>
  */
@@ -76,22 +78,51 @@ public abstract class PropertyAnnotationPlugin<C extends Annotation> extends Abs
       return Collections.singletonList(property);
    }
 
+   /**
+    * Get PropertyMetaData instance.
+    *
+    * @param info the info
+    * @param annotation the annotation
+    * @param context the context
+    * @return get new PropertyMetaData instance
+    */
    protected PropertyMetaData getPropertyMetaData(PropertyInfo info, C annotation, KernelControllerContext context)
    {
       return getPropertyMetaData(info, annotation, context.getBeanMetaData());
    }
 
+   /**
+    * Get PropertyMetaData instance.
+    *
+    * @param info the info
+    * @param annotation the annotation
+    * @param beanMetaData the bean metadata
+    * @return get new PropertyMetaData instance
+    */
    protected PropertyMetaData getPropertyMetaData(PropertyInfo info, C annotation, BeanMetaData beanMetaData)
    {
       return getPropertyMetaData(info, annotation);
    }
 
+   /**
+    * Get PropertyMetaData instance.
+    *
+    * @param info the info
+    * @param annotation the annotation
+    * @return get new PropertyMetaData instance
+    */
    protected PropertyMetaData getPropertyMetaData(PropertyInfo info, C annotation)
    {
       ValueMetaData value = createValueMetaData(annotation);
       return new AbstractPropertyMetaData(info.getName(), value);
    }
 
+   /**
+    * Get the PropertyMetaData set.
+    *
+    * @param context the context
+    * @return set of existing PropertyMetaData
+    */
    protected Set<PropertyMetaData> getProperties(KernelControllerContext context)
    {
       BeanMetaData beanMetaData = context.getBeanMetaData();
@@ -104,5 +135,4 @@ public abstract class PropertyAnnotationPlugin<C extends Annotation> extends Abs
       }
       return properties;
    }
-
 }

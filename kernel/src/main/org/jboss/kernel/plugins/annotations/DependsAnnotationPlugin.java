@@ -36,6 +36,8 @@ import org.jboss.kernel.spi.dependency.KernelControllerContext;
 import org.jboss.reflect.spi.ClassInfo;
 
 /**
+ * Depends annotation plugin.
+ *
  * @author <a href="mailto:ales.justin@jboss.com">Ales Justin</a>
  */
 public class DependsAnnotationPlugin extends ClassAnnotationPlugin<Depends>

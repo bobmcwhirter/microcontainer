@@ -35,6 +35,8 @@ import org.jboss.beans.metadata.spi.MetaDataVisitorNode;
 import org.jboss.reflect.spi.ClassInfo;
 
 /**
+ * Supplys annotation plugin.
+ * 
  * @author <a href="mailto:ales.justin@jboss.com">Ales Justin</a>
  */
 public class SupplysAnnotationPlugin extends ClassAnnotationPlugin<Supplys>

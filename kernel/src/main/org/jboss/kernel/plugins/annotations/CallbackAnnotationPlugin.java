@@ -37,6 +37,8 @@ import org.jboss.kernel.spi.dependency.KernelControllerContext;
 import org.jboss.reflect.spi.AnnotatedInfo;
 
 /**
+ * Callback annotation plugin.
+ *
  * @param <T> info type
  * @param <C> annotation type
  * @author <a href="mailto:ales.justin@jboss.com">Ales Justin</a>
@@ -68,8 +70,21 @@ public abstract class CallbackAnnotationPlugin<T extends AnnotatedInfo, C extend
       return false;
    }
 
+   /**
+    * Does callback item corespond to info instance.
+    *
+    * @param info the info
+    * @param ci the callback item
+    * @return true if callback matches info
+    */
    protected abstract boolean isEqual(T info, CallbackItem<?> ci);
 
+   /**
+    * Get the callbacks.
+    *
+    * @param dependency the dependency info
+    * @return set of callback items
+    */
    protected abstract Set<CallbackItem<?>> getCallbacks(DependencyInfo dependency);
 
    protected List<? extends MetaDataVisitorNode> internalApplyAnnotation(T info, C annotation, KernelControllerContext context)
@@ -81,9 +96,28 @@ public abstract class CallbackAnnotationPlugin<T extends AnnotatedInfo, C extend
       return Collections.singletonList(callback);
    }
 
+   /**
+    * Create new CallbackMetaData instance.
+    *
+    * @param info the info
+    * @param annotation the annotation
+    * @return new CallbackMetaData instance
+    */
    protected abstract AbstractCallbackMetaData createCallback(T info, C annotation);
 
+   /**
+    * Apply additional information.
+    *
+    * @param callback the callback metadata
+    * @param info the info
+    */
    protected abstract void applyInfo(AbstractCallbackMetaData callback, T info);
 
+   /**
+    * Get the callback metadatas.
+    *
+    * @param beanMetaData the bean metadata
+    * @return list of callback metadatas
+    */
    protected abstract List<CallbackMetaData> getCallbacks(AbstractBeanMetaData beanMetaData);
 }

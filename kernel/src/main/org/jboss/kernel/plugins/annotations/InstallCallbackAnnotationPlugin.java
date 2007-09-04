@@ -37,6 +37,8 @@ import org.jboss.dependency.spi.ControllerState;
 import org.jboss.reflect.spi.AnnotatedInfo;
 
 /**
+ * Install callback annotation plugin.
+ * 
  * @param <T> info type
  * @author <a href="mailto:ales.justin@jboss.com">Ales Justin</a>
  */

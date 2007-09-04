@@ -33,6 +33,8 @@ import org.jboss.reflect.spi.ConstructorInfo;
 import org.jboss.reflect.spi.ParameterInfo;
 
 /**
+ * Constructor annotation plugin.
+ *
  * @author <a href="mailto:ales.justin@jboss.com">Ales Justin</a>
  */
 public class ConstructorParameterAnnotationPlugin extends AbstractParameterAnnotationPlugin<ConstructorInfo, Constructor, AbstractConstructorMetaData>

@@ -26,6 +26,8 @@ import org.jboss.reflect.spi.MethodInfo;
 import org.jboss.dependency.spi.CallbackItem;
 
 /**
+ * Method install annotation plugin.
+ *
  * @author <a href="mailto:ales.justin@jboss.com">Ales Justin</a>
  */
 public class MethodInstallCallbackAnnotationPlugin extends InstallCallbackAnnotationPlugin<MethodInfo>

@@ -38,6 +38,8 @@ import org.jboss.kernel.spi.dependency.KernelControllerContext;
 import org.jboss.reflect.spi.ClassInfo;
 
 /**
+ * Demands annotation plugin.
+ *
  * @author <a href="mailto:ales.justin@jboss.com">Ales Justin</a>
  */
 public class DemandsAnnotationPlugin extends ClassAnnotationPlugin<Demands>

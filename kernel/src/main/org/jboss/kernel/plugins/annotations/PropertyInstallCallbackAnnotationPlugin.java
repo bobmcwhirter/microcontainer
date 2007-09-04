@@ -26,6 +26,8 @@ import org.jboss.beans.metadata.plugins.AbstractCallbackMetaData;
 import org.jboss.dependency.spi.CallbackItem;
 
 /**
+ * Property install annotation plugin.
+ *
  * @author <a href="mailto:ales.justin@jboss.com">Ales Justin</a>
  */
 public class PropertyInstallCallbackAnnotationPlugin extends InstallCallbackAnnotationPlugin<PropertyInfo> implements PropertyAware

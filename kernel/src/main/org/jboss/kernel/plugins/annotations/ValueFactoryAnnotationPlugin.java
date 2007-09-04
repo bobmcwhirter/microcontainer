@@ -33,6 +33,8 @@ import org.jboss.beans.metadata.spi.ValueMetaData;
 import org.jboss.dependency.spi.ControllerState;
 
 /**
+ * Value factory annotation plugin.
+ * 
  * @author <a href="mailto:ales.justin@jboss.com">Ales Justin</a>
  */
 public class ValueFactoryAnnotationPlugin extends PropertyAnnotationPlugin<ValueFactory>

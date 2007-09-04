@@ -27,6 +27,8 @@ import org.jboss.beans.metadata.plugins.annotations.Start;
 import org.jboss.beans.metadata.spi.BeanMetaData;
 
 /**
+ * Start annotation plugin.
+ * 
  * @author <a href="mailto:ales.justin@jboss.com">Ales Justin</a>
  */
 public class StartLifecycleAnnotationPlugin extends LifecycleParameterAnnotationPlugin<Start>

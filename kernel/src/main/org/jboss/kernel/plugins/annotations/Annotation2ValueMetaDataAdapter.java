@@ -26,12 +26,25 @@ import java.lang.annotation.Annotation;
 import org.jboss.beans.metadata.spi.ValueMetaData;
 
 /**
+ * Create ValueMetaData from Annotation.
+ *
  * @param <C> annotation type
  * @author <a href="mailto:ales.justin@jboss.com">Ales Justin</a>
  */
 public interface Annotation2ValueMetaDataAdapter<C extends Annotation>
 {
+   /**
+    * Get the annotation class we are handling.
+    *
+    * @return the annotation class
+    */
    Class<C> getAnnotation();
 
+   /**
+    * Create ValueMetaData instance.
+    *
+    * @param annotation the annotation instance
+    * @return new ValueMetaData instance
+    */
    ValueMetaData createValueMetaData(C annotation);
 }

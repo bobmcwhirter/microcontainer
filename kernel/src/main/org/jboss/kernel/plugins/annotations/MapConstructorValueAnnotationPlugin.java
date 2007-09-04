@@ -25,6 +25,8 @@ import org.jboss.beans.metadata.plugins.annotations.MapValue;
 import org.jboss.beans.metadata.spi.ValueMetaData;
 
 /**
+ * Map constructor annotation plugin.
+ *
  * @author <a href="mailto:ales.justin@jboss.com">Ales Justin</a>
  */
 public class MapConstructorValueAnnotationPlugin extends ConstructorValueAnnotationPlugin<MapValue>

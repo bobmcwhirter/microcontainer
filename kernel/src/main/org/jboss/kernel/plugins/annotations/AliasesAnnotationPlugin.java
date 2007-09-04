@@ -34,6 +34,8 @@ import org.jboss.reflect.spi.ClassInfo;
 import org.jboss.util.StringPropertyReplacer;
 
 /**
+ * Aliases annotation plugin.
+ * 
  * @author <a href="mailto:ales.justin@jboss.com">Ales Justin</a>
  */
 public class AliasesAnnotationPlugin extends ClassAnnotationPlugin<Aliases>

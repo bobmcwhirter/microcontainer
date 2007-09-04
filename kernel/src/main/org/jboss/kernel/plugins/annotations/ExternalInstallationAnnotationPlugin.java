@@ -39,6 +39,8 @@ import org.jboss.kernel.spi.dependency.KernelControllerContext;
 import org.jboss.reflect.spi.ClassInfo;
 
 /**
+ * Abstract external installation annotation plugin.
+ *
  * @param <C> annotation type
  * @author <a href="mailto:ales.justin@jboss.com">Ales Justin</a>
  */
@@ -49,10 +51,28 @@ public abstract class ExternalInstallationAnnotationPlugin<C extends Annotation>
       super(annotation);
    }
 
+   /**
+    * Get existing InstallMetaData list.
+    *
+    * @param beanMetaData the bean metadata
+    * @return list of existing InstallMetaData
+    */
    protected abstract List<InstallMetaData> getExistingInstallMetaData(BeanMetaData beanMetaData);
 
+   /**
+    * Get ExternalInstall array from annotation.
+    *
+    * @param annotation the annotation
+    * @return array of ExternalInstall
+    */
    protected abstract ExternalInstall[] getExternalInstalls(C annotation);
 
+   /**
+    * Create InstallMetaData from array of ExternalInstall.
+    *
+    * @param annotation the annotation
+    * @return list of InstallMetaData
+    */
    protected List<InstallMetaData> getInstallMetaData(C annotation)
    {
       List<InstallMetaData> installs = new ArrayList<InstallMetaData>();
@@ -63,6 +83,12 @@ public abstract class ExternalInstallationAnnotationPlugin<C extends Annotation>
       return installs;
    }
 
+   /**
+    * Create InstallMetaData from ExternalInstall.
+    *
+    * @param install the existing install
+    * @return new InstallMetaData instance
+    */
    protected InstallMetaData createInstallMetaData(ExternalInstall install)
    {
       AbstractInstallMetaData installMetaData = new AbstractInstallMetaData();
@@ -119,6 +145,13 @@ public abstract class ExternalInstallationAnnotationPlugin<C extends Annotation>
       return null;
    }
 
+   /**
+    * Compare twi InstallMetaData instances.
+    *
+    * @param first first InstallMetaData instance
+    * @param second second InstallMetaData instance
+    * @return true if instances differ
+    */
    protected static boolean isDifferent(InstallMetaData first, InstallMetaData second)
    {
       if (notEqual(first.getBean(), second.getBean()))

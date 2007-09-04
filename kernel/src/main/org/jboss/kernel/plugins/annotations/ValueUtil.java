@@ -32,21 +32,40 @@ import org.jboss.beans.metadata.plugins.annotations.JavaBeanValue;
 import org.jboss.beans.metadata.spi.ValueMetaData;
 
 /**
+ * Simple util class.
+ *
  * @author <a href="mailto:ales.justin@jboss.com">Ales Justin</a>
  */
 final class ValueUtil
 {
+   /**
+    * Does value already exist.
+    *
+    * @param value the value to check
+    */
    private static void checkValueMetaData(ValueMetaData value)
    {
       if (value != null)
          throw new IllegalArgumentException("@Value/@Parameter annotation has too many values set!");
    }
 
+   /**
+    * Is attribute present.
+    *
+    * @param value the attribute value
+    * @return true if not null and not-empty
+    */
    static boolean isAttributePresent(String value)
    {
       return value != null && value.length() > 0;
    }
 
+   /**
+    * Create value meta data from @Value annotation.
+    *
+    * @param value the @Value annotation
+    * @return new ValueMetaData instance
+    */
    static ValueMetaData createValueMetaData(Value value)
    {
       ValueMetaData vmd = null;
@@ -98,6 +117,12 @@ final class ValueUtil
       return vmd;
    }
 
+   /**
+    * Create value meta data from @Parameter annotation.
+    *
+    * @param parameter the @Parameter annotation
+    * @return new ValueMetaData instance
+    */
    static ValueMetaData createValueMetaData(Parameter parameter)
    {
       ValueMetaData vmd = null;

@@ -22,12 +22,18 @@
 package org.jboss.kernel.plugins.annotations;
 
 /**
+ * BeanAnnotationAdapter factory.
+ *
  * @author <a href="mailto:ales.justin@jboss.com">Ales Justin</a>
  */
 public class BeanAnnotationAdapterFactory
 {
    private static final BeanAnnotationAdapter adapter = new BasicBeanAnnotationAdapter();
 
+   /**
+    * Get the BeanAnnotationAdapter instance.
+    * @return the BeanAnnotationAdapter instance
+    */
    public static BeanAnnotationAdapter getBeanAnnotationAdapter()
    {
       return adapter;

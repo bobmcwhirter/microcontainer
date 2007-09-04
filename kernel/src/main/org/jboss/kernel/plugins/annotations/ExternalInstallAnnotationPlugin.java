@@ -31,6 +31,8 @@ import org.jboss.beans.metadata.spi.BeanMetaData;
 import org.jboss.beans.metadata.spi.InstallMetaData;
 
 /**
+ * ExternalInstalls annotation plugin.
+ *
  * @author <a href="mailto:ales.justin@jboss.com">Ales Justin</a>
  */
 public class ExternalInstallAnnotationPlugin extends ExternalInstallationAnnotationPlugin<ExternalInstalls>

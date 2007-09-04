@@ -43,6 +43,8 @@ import org.jboss.reflect.spi.ParameterInfo;
 import org.jboss.reflect.spi.TypeInfo;
 
 /**
+ * Annotation plugin for handling annotations that take parameters.
+ *
  * @param <T> info type
  * @param <C> annotation type
  * @param <P> mutable parametrized type
@@ -55,6 +57,13 @@ public abstract class AbstractParameterAnnotationPlugin<T extends AnnotatedInfo,
       super(annotation, adapters);
    }
 
+   /**
+    * Check additional element type -
+    * apart from Parameter element type.
+    *
+    * @param type the type
+    * @return true if additional type is supported
+    */
    protected abstract boolean checkAnnotatedInfo(ElementType type);
 
    protected boolean isElementTypeSupported(ElementType type)
@@ -62,48 +71,114 @@ public abstract class AbstractParameterAnnotationPlugin<T extends AnnotatedInfo,
       return ElementType.PARAMETER == type || checkAnnotatedInfo(type);
    }
 
+   /**
+    * Get the parameters infos from type.
+    *
+    * @param info the type
+    * @return array of parameter info
+    */
    protected abstract ParameterInfo[] getParameters(T info);
 
+   /**
+    * Handle info which has zero parameters.
+    *
+    * @param info the info
+    * @param annotation the annotation
+    * @param context the context
+    * @return list of added meta data visitor nodes
+    */
    protected List<? extends MetaDataVisitorNode> handleParameterlessInfo(T info, C annotation, KernelControllerContext context)
    {
       return handleParameterlessInfo(info, annotation, context.getBeanMetaData());
    }
 
+   /**
+    * Handle info which has zero parameters.
+    *
+    * @param info the info
+    * @param annotation the annotation
+    * @param beanMetaData the bean metadata
+    * @return list of added meta data visitor nodes
+    */
    protected abstract List<? extends MetaDataVisitorNode> handleParameterlessInfo(T info, C annotation, BeanMetaData beanMetaData);
 
+   /**
+    * Create new Parametrized metadata.
+    *
+    * @param info the info
+    * @param annotation the annotation
+    * @param context the context
+    * @return new ParameterizedMetaData instance
+    */
    protected P createParametrizedMetaData(T info, C annotation, KernelControllerContext context)
    {
       return createParametrizedMetaData(info, annotation, context.getBeanMetaData());
    }
 
+   /**
+    * Create new Parametrized metadata.
+    *
+    * @param info the info
+    * @param annotation the annotation
+    * @param beanMetaData the bean metadata
+    * @return new ParameterizedMetaData instance
+    */
    protected P createParametrizedMetaData(T info, C annotation, BeanMetaData beanMetaData)
    {
       return createParametrizedMetaData(info, annotation);
    }
 
+   /**
+    * Create new Parametrized metadata.
+    *
+    * @param info the info
+    * @param annotation the annotation
+    * @return new ParameterizedMetaData instance
+    */
    protected P createParametrizedMetaData(T info, C annotation)
    {
       return createParametrizedMetaData(info);
    }
 
+   /**
+    * Create new Parametrized metadata.
+    *
+    * @param info the info
+    * @return new ParameterizedMetaData instance
+    */
    protected P createParametrizedMetaData(T info)
    {
       throw new IllegalArgumentException("Should implement one of createParameterizedMetaData methods!");
    }
 
+   /**
+    * Set the ParameterizedMetaData instance.
+    *
+    * @param parameterizedMetaData the parameterized metadata
+    * @param context the context
+    */
    protected void setParameterizedMetaData(P parameterizedMetaData, KernelControllerContext context)
    {
       setParameterizedMetaData(parameterizedMetaData, context.getBeanMetaData());
    }
 
+   /**
+    * Set the ParameterizedMetaData instance.
+    * @param parameterizedMetaData the parameterized metadata
+    * @param beanMetaData the bean metadata
+    */
    protected abstract void setParameterizedMetaData(P parameterizedMetaData, BeanMetaData beanMetaData);
 
    @SuppressWarnings("unchecked")
    protected List<? extends MetaDataVisitorNode> internalApplyAnnotation(T info, MetaData retrieval, C annotation, KernelControllerContext context) throws Throwable
    {
+      boolean trace = log.isTraceEnabled();
+
       ParameterInfo[] parameters = getParameters(info);
       if (parameters == null || parameters.length == 0)
       {
+         if (trace)
+            log.trace("Info " + info + " has zero parameters.");
          return handleParameterlessInfo(info, annotation, context);
       }
 
@@ -135,12 +210,14 @@ public abstract class AbstractParameterAnnotationPlugin<T extends AnnotatedInfo,
                }
             }
             if (value == null)
-               throw new IllegalArgumentException("No such Annotation2ValueMetaData adapter or no annotation on PropertyInfo: " + pi);
+               throw new IllegalArgumentException("No such Annotation2ValueMetaData adapter or no annotation on ParameterInfo: " + pi);
+            if (trace)
+               log.trace("Adding new ParameterMetaData for annotation: " + value);
             pmds.add(new AbstractParameterMetaData(pi.getParameterType().getName(), value));
          }
          else
          {
-            throw new IllegalArgumentException("MetaDataRetrieval for parameter must exist: " + pi);
+            throw new IllegalArgumentException("MetaData for parameter must exist: " + pi);
          }
       }
       P parameterizedMetaData = createParametrizedMetaData(info, annotation, context);

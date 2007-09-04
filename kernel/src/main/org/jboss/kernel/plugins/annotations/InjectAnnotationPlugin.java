@@ -30,6 +30,8 @@ import org.jboss.beans.metadata.spi.AutowireType;
 import org.jboss.dependency.spi.ControllerState;
 
 /**
+ * Inject value annotation plugin.
+ *
  * @author <a href="mailto:ales.justin@jboss.com">Ales Justin</a>
  */
 public class InjectAnnotationPlugin extends PropertyAnnotationPlugin<Inject>

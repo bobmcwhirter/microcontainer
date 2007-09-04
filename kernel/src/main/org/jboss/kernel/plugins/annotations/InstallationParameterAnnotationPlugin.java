@@ -37,6 +37,8 @@ import org.jboss.reflect.spi.TypeInfo;
 import org.jboss.kernel.plugins.config.Configurator;
 
 /**
+ * Abstract installation annotation plugin.
+ *
  * @param <C> annotation type
  * @author <a href="mailto:ales.justin@jboss.com">Ales Justin</a>
  */
@@ -88,6 +90,12 @@ public abstract class InstallationParameterAnnotationPlugin<C extends Annotation
       return false;
    }
 
+   /**
+    * Get the list of InstallMetaData from bean metadata.
+    *
+    * @param beanMetaData the bean metadata
+    * @return list of InstallMetaData
+    */
    protected abstract List<InstallMetaData> getInstalls(BeanMetaData beanMetaData);
 
    protected ParameterInfo[] getParameters(MethodInfo info)

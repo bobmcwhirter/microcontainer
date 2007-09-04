@@ -33,6 +33,8 @@ import org.jboss.dependency.spi.ControllerState;
 import org.jboss.reflect.spi.MethodInfo;
 
 /**
+ * Uninstall method annotation plugin.
+ * 
  * @author <a href="mailto:ales.justin@jboss.com">Ales Justin</a>
  */
 public class UninstallMethodParameterAnnotationPlugin extends InstallationParameterAnnotationPlugin<UninstallMethod>

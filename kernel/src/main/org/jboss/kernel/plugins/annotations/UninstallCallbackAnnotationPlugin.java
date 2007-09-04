@@ -37,6 +37,8 @@ import org.jboss.dependency.spi.DependencyInfo;
 import org.jboss.reflect.spi.AnnotatedInfo;
 
 /**
+ * Uninstall annotation plugin.
+ * 
  * @param <T> info type
  * @author <a href="mailto:ales.justin@jboss.com">Ales Justin</a>
  */

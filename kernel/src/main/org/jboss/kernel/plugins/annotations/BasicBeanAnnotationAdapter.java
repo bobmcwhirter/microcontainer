@@ -47,6 +47,8 @@ import org.jboss.reflect.spi.FieldInfo;
 import org.jboss.reflect.spi.MethodInfo;
 
 /**
+ * Basic bean annotation handler.
+ *
  * @author <a href="mailto:ales.justin@jboss.com">Ales Justin</a>
  */
 @SuppressWarnings("unchecked")

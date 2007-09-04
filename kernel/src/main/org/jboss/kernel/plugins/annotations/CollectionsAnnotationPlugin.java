@@ -27,6 +27,8 @@ import org.jboss.beans.metadata.plugins.annotations.Value;
 import org.jboss.beans.metadata.spi.ValueMetaData;
 
 /**
+ * Abstract collactions value annotaion plugin.
+ *
  * @param <C> annotation type
  * @author <a href="mailto:ales.justin@jboss.com">Ales Justin</a>
  */
@@ -37,6 +39,13 @@ public abstract class CollectionsAnnotationPlugin<C extends Annotation> extends 
       super(annotation);
    }
 
+   /**
+    * Create ValueMetaData instance.
+    * Helper method.
+    *
+    * @param value the value
+    * @return new ValueMetaData instance
+    */
    protected ValueMetaData createValueMetaData(Value value)
    {
       return ValueUtil.createValueMetaData(value);

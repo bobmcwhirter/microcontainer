@@ -26,6 +26,8 @@ import org.jboss.beans.metadata.plugins.StringValueMetaData;
 import org.jboss.beans.metadata.spi.ValueMetaData;
 
 /**
+ * String value annotation plugin.
+ * 
  * @author <a href="mailto:ales.justin@jboss.com">Ales Justin</a>
  */
 public class StringValueAnnotationPlugin extends PropertyAnnotationPlugin<StringValue>

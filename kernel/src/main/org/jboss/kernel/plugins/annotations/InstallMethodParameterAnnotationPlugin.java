@@ -33,6 +33,8 @@ import org.jboss.reflect.spi.MethodInfo;
 import org.jboss.dependency.spi.ControllerState;
 
 /**
+ * Install method annotation plugin.
+ *
  * @author <a href="mailto:ales.justin@jboss.com">Ales Justin</a>
  */
 public class InstallMethodParameterAnnotationPlugin extends InstallationParameterAnnotationPlugin<InstallMethod>

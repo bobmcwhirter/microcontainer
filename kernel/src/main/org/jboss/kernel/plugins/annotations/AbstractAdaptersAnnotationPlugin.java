@@ -29,6 +29,8 @@ import java.util.List;
 import org.jboss.reflect.spi.AnnotatedInfo;
 
 /**
+ * Adapters holder annotation plugin.
+ *
  * @param <T> info type
  * @param <C> annotation type
  * @author <a href="mailto:ales.justin@jboss.com">Ales Justin</a>

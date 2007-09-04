@@ -40,7 +40,10 @@ import org.jboss.util.JBossObject;
 import org.jboss.util.JBossStringBuilder;
 
 /**
+ * Abstract annotation plugin.
+ *
  * @param <T> info type
+ * @param <C> annotation type
  * @author <a href="mailto:ales.justin@jboss.com">Ales Justin</a>
  */
 public abstract class AbstractAnnotationPlugin<T extends AnnotatedInfo, C extends Annotation> extends JBossObject implements AnnotationPlugin<T, C>
@@ -70,11 +73,24 @@ public abstract class AbstractAnnotationPlugin<T extends AnnotatedInfo, C extend
       }
    }
 
+   /**
+    * Does attribute have value.
+    * Helper method.
+    *
+    * @param value the value
+    * @return true if atribute not null or non-empty
+    */
    protected static boolean isAttributePresent(String value)
    {
       return ValueUtil.isAttributePresent(value);
    }
 
+   /**
+    * Is type supported by plugin.
+    *
+    * @param type the annotation element type
+    * @return true if element supported
+    */
    protected abstract boolean isElementTypeSupported(ElementType type);
 
    public Set<ElementType> getSupportedTypes()
@@ -87,26 +103,70 @@ public abstract class AbstractAnnotationPlugin<T extends AnnotatedInfo, C extend
       return annotation;
    }
 
+   /**
+    * Is meta data already present.
+    *
+    * @param info the info
+    * @param annotation the annotation
+    * @param context the context
+    * @return true if meta data already present
+    */
    protected boolean isMetaDataAlreadyPresent(T info, C annotation, KernelControllerContext context)
    {
       return isMetaDataAlreadyPresent(info, annotation, context.getBeanMetaData());
    }
 
+   /**
+    * Is meta data already present.
+    *
+    * @param info the info
+    * @param annotation the annotation
+    * @param beanMetaData the bean meta data
+    * @return true if meta data already present
+    */
    protected boolean isMetaDataAlreadyPresent(T info, C annotation, BeanMetaData beanMetaData)
    {
       return false;
    }
 
+   /**
+    * Apply annotation since it's not present.
+    *
+    * @param info the info
+    * @param retrieval the metadata
+    * @param annotation the annotation
+    * @param context the context
+    * @return list of added meta data visitor nodes
+    * @throws Throwable for any error
+    */
    protected List<? extends MetaDataVisitorNode> internalApplyAnnotation(T info, MetaData retrieval, C annotation, KernelControllerContext context) throws Throwable
    {
       return internalApplyAnnotation(info, annotation, context);
    }
 
+   /**
+    * Apply annotation since it's not present.
+    *
+    * @param info the info
+    * @param annotation the annotation
+    * @param context the context
+    * @return list of added meta data visitor nodes
+    * @throws Throwable for any error
+    */
    protected List<? extends MetaDataVisitorNode> internalApplyAnnotation(T info, C annotation, KernelControllerContext context) throws Throwable
    {
       return internalApplyAnnotation(info, annotation, context.getBeanMetaData());
    }
 
+   /**
+    * Apply annotation since it's not present.
+    *
+    * @param info the info
+    * @param annotation the annotation
+    * @param beanMetaData the bean meta data
+    * @return list of added meta data visitor nodes
+    * @throws Throwable for any error
+    */
    protected List<? extends MetaDataVisitorNode> internalApplyAnnotation(T info, C annotation, BeanMetaData beanMetaData) throws Throwable
    {
       log.warn("Probably missing annotation apply implementation: " + this);

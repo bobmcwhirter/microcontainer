@@ -25,6 +25,8 @@ import org.jboss.beans.metadata.plugins.annotations.ValueFactory;
 import org.jboss.beans.metadata.spi.ValueMetaData;
 
 /**
+ * Value factory constructor annotation plugin.
+ * 
  * @author <a href="mailto:ales.justin@jboss.com">Ales Justin</a>
  */
 public class ValueFactoryConstructorValueAnnotationPlugin extends ConstructorValueAnnotationPlugin<ValueFactory>

@@ -26,6 +26,8 @@ import org.jboss.beans.metadata.plugins.annotations.NullValue;
 import org.jboss.beans.metadata.spi.ValueMetaData;
 
 /**
+ * Null value annotation plugin.
+ *
  * @author <a href="mailto:ales.justin@jboss.com">Ales Justin</a>
  */
 public class NullValueAnnotationPlugin extends PropertyAnnotationPlugin<NullValue>

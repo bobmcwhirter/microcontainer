@@ -27,6 +27,8 @@ import java.lang.annotation.ElementType;
 import org.jboss.reflect.spi.ConstructorInfo;
 
 /**
+ * Abstract constructor annoattion plugin.
+ *
  * @param <C> annotation type
  * @author <a href="mailto:ales.justin@jboss.com">Ales Justin</a>
  */

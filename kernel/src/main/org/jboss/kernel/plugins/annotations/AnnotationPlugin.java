@@ -30,15 +30,35 @@ import org.jboss.metadata.spi.MetaData;
 import org.jboss.reflect.spi.AnnotatedInfo;
 
 /**
+ * Annotation plugin contract.
+ *
  * @param <T> info type
  * @param <C> annotation type
  * @author <a href="mailto:ales.justin@jboss.com">Ales Justin</a>
  */
 public interface AnnotationPlugin<T extends AnnotatedInfo, C extends Annotation>
 {
+   /**
+    * Get the annotation class we are handling.
+    *
+    * @return annotation class
+    */
    Class<C> getAnnotation();
 
+   /**
+    * Get all supported types.
+    *
+    * @return set of supported types
+    */
    Set<ElementType> getSupportedTypes();
 
+   /**
+    * Apply the check for annotation.
+    *
+    * @param info the info
+    * @param retrieval metadata instance
+    * @param visitor current context visitor
+    * @throws Throwable for any error
+    */
    void applyAnnotation(T info, MetaData retrieval, MetaDataVisitor visitor) throws Throwable;
 }

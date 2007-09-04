@@ -34,6 +34,8 @@ import org.jboss.reflect.spi.MethodInfo;
 import org.jboss.reflect.spi.ParameterInfo;
 
 /**
+ * Abstract lifecycle annotation plugin.
+ *
  * @param <C> annotation type
  * @author <a href="mailto:ales.justin@jboss.com">Ales Justin</a>
  */
@@ -49,6 +51,12 @@ public abstract class LifecycleParameterAnnotationPlugin<C extends Annotation> e
       return ElementType.METHOD == type;
    }
 
+   /**
+    * Is lifecycle metadata present.
+    *
+    * @param beanMetaData the bean metadata
+    * @return true if lifecycle metadata exists
+    */
    protected abstract boolean isLifecyclePresent(BeanMetaData beanMetaData);
 
    protected AbstractLifecycleMetaData createLifecycleMetaData(String method, C annotation)
@@ -58,8 +66,20 @@ public abstract class LifecycleParameterAnnotationPlugin<C extends Annotation> e
       return lifecycle;
    }
 
+   /**
+    * Apply lifecycle annotation.
+    *
+    * @param lifecycle lifecycle metadata
+    * @param annotation the annotation
+    */
    protected abstract void applyLifecycleAnnotation(AbstractLifecycleMetaData lifecycle, C annotation);
 
+   /**
+    * Set lifecycle metadata.
+    *
+    * @param beanMetaData the bean metadata
+    * @param lifecycle the lifecycle metadata
+    */
    protected abstract void setLifecycleMetaData(AbstractBeanMetaData beanMetaData, AbstractLifecycleMetaData lifecycle);
 
    protected boolean isMetaDataAlreadyPresent(MethodInfo info, C annotation, BeanMetaData beanMetaData)
