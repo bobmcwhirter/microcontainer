@@ -24,6 +24,7 @@ package org.jboss.deployers.client.plugins.deployment;
 import java.io.IOException;
 import java.io.ObjectInput;
 import java.io.ObjectOutput;
+import java.util.Set;
 
 import org.jboss.deployers.client.spi.Deployment;
 import org.jboss.deployers.spi.attachments.helpers.PredeterminedManagedObjectAttachmentsImpl;
@@ -37,11 +38,13 @@ import org.jboss.deployers.spi.attachments.helpers.PredeterminedManagedObjectAtt
 public class AbstractDeployment extends PredeterminedManagedObjectAttachmentsImpl implements Deployment
 {
    /** The serialVersionUID */
-   private static final long serialVersionUID = -5443148970623594183L;
+   private static final long serialVersionUID = 2;
    
    /** The name of the deployment */
    private String name;
-   
+   /** The types associated with the deployment */
+   private Set<String> types;
+
    /**
     * Create a new AbstractDeployment.
     */
@@ -91,6 +94,15 @@ public class AbstractDeployment extends PredeterminedManagedObjectAttachmentsImp
       if (name == null)
           throw new IllegalArgumentException("Null name");
       this.name = name;
+   }
+
+   public Set<String> getTypes()
+   {
+      return types;
+   }
+   public void setTypes(Set<String> types)
+   {
+      this.types = types;
    }
 
    public void readExternal(ObjectInput in) throws IOException, ClassNotFoundException

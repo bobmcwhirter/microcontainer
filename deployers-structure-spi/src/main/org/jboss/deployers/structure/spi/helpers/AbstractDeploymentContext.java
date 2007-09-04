@@ -417,8 +417,9 @@ public class AbstractDeploymentContext extends ManagedObjectsWithTransientAttach
       if (deployment == null)
          throw new IllegalArgumentException("Null deployment");
       this.deployment = deployment;
+      this.deployment.setTypes(getTypes());
    }
-   
+
    public DeploymentUnit getDeploymentUnit()
    {
       if (unit == null)

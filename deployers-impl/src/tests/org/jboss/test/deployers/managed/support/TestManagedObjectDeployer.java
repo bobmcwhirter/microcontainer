@@ -43,7 +43,12 @@ import org.jboss.managed.plugins.ManagedPropertyImpl;
 public class TestManagedObjectDeployer extends AbstractDeployer implements ManagedObjectCreator
 {
    public static TestAttachment lastAttachment;
-   
+
+   public TestManagedObjectDeployer()
+   {
+      setType("TestManagedObjectDeployer");
+   }
+
    public void deploy(DeploymentUnit unit) throws DeploymentException
    {
       lastAttachment = unit.getAttachment(TestAttachment.class);
@@ -53,6 +58,7 @@ public class TestManagedObjectDeployer extends AbstractDeployer implements Manag
          lastAttachment.setProperty("string1", "initialString1");
          lastAttachment.setProperty("string2", "initialString2");
          unit.addAttachment(TestAttachment.class, lastAttachment);
+         unit.getTypes().add(getType());
       }
    }
 

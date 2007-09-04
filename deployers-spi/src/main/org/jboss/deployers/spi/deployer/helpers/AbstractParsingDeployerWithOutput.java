@@ -21,17 +21,26 @@
  */
 package org.jboss.deployers.spi.deployer.helpers;
 
+import java.io.Serializable;
+import java.util.Map;
+
 import org.jboss.deployers.spi.DeploymentException;
+import org.jboss.deployers.spi.deployer.managed.ManagedObjectCreator;
 import org.jboss.deployers.structure.spi.DeploymentUnit;
+import org.jboss.managed.api.ManagedObject;
+import org.jboss.managed.api.factory.ManagedObjectFactory;
+import org.jboss.managed.plugins.factory.ManagedObjectFactoryBuilder;
 
 /**
- * AbstractParsingDeployerWithOutput.
+ * AbstractParsingDeployerWithOutput. 
  * 
  * @param <T> the type of output
  * @author <a href="adrian@jboss.org">Adrian Brock</a>
+ * @author Scott.Stark@jboss.org
  * @version $Revision: 1.1 $
  */
 public abstract class AbstractParsingDeployerWithOutput<T> extends AbstractParsingDeployer
+   implements ManagedObjectCreator
 {
    /** The metadata file name */
    private String name;
@@ -41,6 +50,8 @@ public abstract class AbstractParsingDeployerWithOutput<T> extends AbstractParsi
    
    /** Include the deployment file */
    private boolean includeDeploymentFile = false;
+   /** Should the ManagedObjects be created for the output metadata */
+   private boolean buildManagedObject = false;
    
    /**
     * Create a new AbstractParsingDeployerWithOutput.
@@ -120,6 +131,16 @@ public abstract class AbstractParsingDeployerWithOutput<T> extends AbstractParsi
    public void setIncludeDeploymentFile(boolean includeDeploymentFile)
    {
       this.includeDeploymentFile = includeDeploymentFile;
+   }
+
+   public boolean isBuildManagedObject()
+   {
+      return buildManagedObject;
+   }
+
+   public void setBuildManagedObject(boolean buildManagedObject)
+   {
+      this.buildManagedObject = buildManagedObject;
    }
 
    /**
@@ -240,4 +261,28 @@ public abstract class AbstractParsingDeployerWithOutput<T> extends AbstractParsi
     * @throws Exception for any error
     */
    protected abstract T parse(DeploymentUnit unit, String name, String suffix, T root) throws Exception;
+
+   /**
+    * 
+    */
+   public void build(DeploymentUnit unit, Map<String, ManagedObject> managedObjects)
+      throws DeploymentException
+   {
+      if (buildManagedObject == false)
+         return;
+
+      T deployment = unit.getAttachment(getOutput());
+      if ((deployment instanceof Serializable) == false)
+         log.debug("Skipping ManagedObject since T("+getOutput()+") is not Serializable");
+
+      Serializable instance = (Serializable) deployment;
+      if (deployment != null)
+      {
+         ManagedObjectFactory factory = ManagedObjectFactoryBuilder.create();
+         ManagedObject mo = factory.initManagedObject(instance, null, null);
+         if (mo != null)
+            managedObjects.put(mo.getName(), mo);
+      }
+   }
+
 }
