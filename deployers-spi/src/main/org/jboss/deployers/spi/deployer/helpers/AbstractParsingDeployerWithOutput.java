@@ -50,6 +50,7 @@ public abstract class AbstractParsingDeployerWithOutput<T> extends AbstractParsi
    
    /** Include the deployment file */
    private boolean includeDeploymentFile = false;
+
    /** Should the ManagedObjects be created for the output metadata */
    private boolean buildManagedObject = false;
    
@@ -263,26 +264,33 @@ public abstract class AbstractParsingDeployerWithOutput<T> extends AbstractParsi
    protected abstract T parse(DeploymentUnit unit, String name, String suffix, T root) throws Exception;
 
    /**
-    * 
+    * Build managed object.
+    *
+    * @param unit the deployment unit
+    * @param managedObjects map of managed objects
+    * @throws DeploymentException for any deployment exception
     */
-   public void build(DeploymentUnit unit, Map<String, ManagedObject> managedObjects)
-      throws DeploymentException
+   public void build(DeploymentUnit unit, Map<String, ManagedObject> managedObjects) throws DeploymentException
    {
-      if (buildManagedObject == false)
-         return;
-
-      T deployment = unit.getAttachment(getOutput());
-      if ((deployment instanceof Serializable) == false)
-         log.debug("Skipping ManagedObject since T("+getOutput()+") is not Serializable");
-
-      Serializable instance = (Serializable) deployment;
-      if (deployment != null)
+      if (buildManagedObject)
       {
-         ManagedObjectFactory factory = ManagedObjectFactoryBuilder.create();
-         ManagedObject mo = factory.initManagedObject(instance, null, null);
-         if (mo != null)
-            managedObjects.put(mo.getName(), mo);
+         // we can check for Serializable w/o searching for attachment
+         if (Serializable.class.isAssignableFrom(getOutput()) == false)
+         {
+            log.debug("Skipping ManagedObject since T(" + getOutput() + ") is not Serializable");
+            return;
+         }
+
+         T deployment = unit.getAttachment(getOutput());
+         if (deployment != null)
+         {
+            // must be Serializable - see getAttachment method contract (expectedType.cast(result))
+            Serializable instance = (Serializable) deployment;
+            ManagedObjectFactory factory = ManagedObjectFactoryBuilder.create();
+            ManagedObject mo = factory.initManagedObject(instance, null, null);
+            if (mo != null)
+               managedObjects.put(mo.getName(), mo);
+         }
       }
    }
-
 }

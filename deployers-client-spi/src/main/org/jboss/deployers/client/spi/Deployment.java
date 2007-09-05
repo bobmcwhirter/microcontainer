@@ -58,7 +58,7 @@ public interface Deployment extends PredeterminedManagedObjectAttachments, Seria
    /**
     * Set the deployment types associated with this deployment.
     * 
-    * @param set of deployment type names deployers have identified
+    * @param types set of deployment type names deployers have identified
     * in this deployment.
     */
    void setTypes(Set<String> types);
