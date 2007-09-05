@@ -108,13 +108,28 @@ public class ManagedOperationImpl implements ManagedOperation
       this.returnType = returnType;
    }
 
-   /* (non-Javadoc)
-    * @see org.jboss.managed.api.ManagedOperation#invoke(MetaValue[])
+   /**
+    * This does not have a meaningful implementation because the target
+    * is unknown. A runtime aspect that understand the context of this
+    * operation needs to perform the invocation.
     */
    public Object invoke(MetaValue... param)
    {
-      // TODO Auto-generated method stub
       return null;
    }
 
+   public String toString()
+   {
+      StringBuilder tmp = new StringBuilder();
+      tmp.append("ManagedOperation(name=");
+      tmp.append(name);
+      tmp.append(",description=");
+      tmp.append(description);
+      tmp.append(",impact=");
+      tmp.append(impact);
+      tmp.append(")");
+
+      return tmp.toString();
+   }
+   
 }
