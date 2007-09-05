@@ -90,12 +90,12 @@ public class DRLFileDeployer extends AbstractVFSParsingDeployer<BeanMetaData>
       // check for dsl - with <name>.dsl
       VirtualFile dslFile = unit.getMetaDataFile(name.replaceFirst(getSuffix(), DSL));
       PackageBuilder builder = new PackageBuilder(configuration);
-      Reader drlReader = getDRLReader(file.openStream());
+      Reader drlReader = getDRLReader(SecurityActions.openStream(file));
       try
       {
          if (dslFile != null)
          {
-            Reader dslReader = new InputStreamReader(dslFile.openStream());
+            Reader dslReader = new InputStreamReader(SecurityActions.openStream(dslFile));
             try
             {
                builder.addPackageFromDrl(drlReader, dslReader);
