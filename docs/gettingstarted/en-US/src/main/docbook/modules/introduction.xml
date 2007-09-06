@@ -5,7 +5,7 @@
    <title>Introduction to the JBoss Microcontainer</title>
 
    <para>The JBoss Microcontainer provides an environment to configure and manage POJOs (plain old java objects). It is
-      designed to reproduce the existing JBoss JMX Microkernel but targetted at POJO environments. As such it can be
+      designed to reproduce the existing JBoss JMX Microkernel but targeted at POJO environments. As such it can be
       used standalone outside the JBoss Application Server.
    </para>
 
