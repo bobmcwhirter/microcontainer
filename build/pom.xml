@@ -33,16 +33,16 @@
   </scm>
   
   <properties>
-    <version.jboss.common.core>2.2.1-SNAPSHOT</version.jboss.common.core>
+    <version.jboss.common.core>2.2.1.GA</version.jboss.common.core>
     <version.jbossxb>2.0.0.CR4</version.jbossxb>
     <version.osgi.r4.core>1.0</version.osgi.r4.core>
-    <version.jboss.vfs>2.0.4.snapshot</version.jboss.vfs>
+    <version.jboss.vfs>2.0.0.Beta4</version.jboss.vfs>
     <version.javassist>3.6-beta</version.javassist>
     <version.jaxb.api>2.0</version.jaxb.api>
-    <version.jboss.aop>2.0.0-SNAPSHOT</version.jboss.aop>
+    <version.jboss.aop>2.0.0.alpha6</version.jboss.aop>
     <version.jboss.logging.spi>2.0.3.GA</version.jboss.logging.spi>
-    <version.jboss.classloading.spi>5.0.0-SNAPSHOT</version.jboss.classloading.spi>
-    <version.org.jboss.test>1.0.4-SNAPSHOT</version.org.jboss.test>
+    <version.jboss.classloading.spi>5.0.0.Beta3</version.jboss.classloading.spi>
+    <version.org.jboss.test>1.0.4.GA</version.org.jboss.test>
     <version.junit>3.8.1</version.junit>
     <version.jboss.profiler.jvmti>1.0.0.CR5</version.jboss.profiler.jvmti>
     <version.ant.junit>1.7.0</version.ant.junit>
@@ -354,7 +354,7 @@
         <version>${version.osgi.r4.core}</version>
       </dependency>
       <dependency>
-        <groupId>jboss</groupId>
+        <groupId>org.jboss</groupId>
         <artifactId>jboss-vfs</artifactId>
         <version>${version.jboss.vfs}</version>
          <!-- FIXME http://www.jboss.com/index.html?module=bb&op=viewtopic&p=4077827#4077827 -->
@@ -386,7 +386,7 @@
         <version>${version.jboss.logging.spi}</version>
       </dependency>
       <dependency>
-        <groupId>jboss</groupId>
+        <groupId>org.jboss</groupId>
         <artifactId>jboss-classloading-spi</artifactId>
         <version>${version.jboss.classloading.spi}</version>
       </dependency>

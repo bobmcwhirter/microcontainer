@@ -38,7 +38,7 @@
   <dependencies>
     <!-- Global dependencies -->
     <dependency>
-	    <groupId>jboss</groupId>
+	    <groupId>org.jboss</groupId>
 	    <artifactId>jboss-classloading-spi</artifactId>
      </dependency>
     <dependency>
