@@ -10,7 +10,7 @@
 	<classpathentry kind="src" path="/jboss-deployers-structure-spi"/>
 	<classpathentry kind="var" path="M2_REPO/org/jboss/jboss-test/1.0.4.GA/jboss-test-1.0.4.GA.jar"/>
 	<classpathentry kind="var" path="M2_REPO/qdox/qdox/1.6/qdox-1.6.jar" sourcepath="M2_REPO/qdox/qdox/1.6/qdox-1.6-sources.jar"/>
-	<classpathentry kind="var" path="M2_REPO/org/jboss/aop/jboss-aop/2.0.0-SNAPSHOT/jboss-aop-2.0.0-SNAPSHOT.jar" sourcepath="M2_REPO/org/jboss/jboss-aop/2.0.0-SNAPSHOT/jboss-aop-2.0.0-SNAPSHOT-sources.jar"/>
+	<classpathentry kind="var" path="M2_REPO/org/jboss/aop/jboss-aop/2.0.0.alpha6/jboss-aop-2.0.0.alpha6.jar" sourcepath="M2_REPO/org/jboss/jboss-aop/2.0.0-SNAPSHOT/jboss-aop-2.0.0-SNAPSHOT-sources.jar"/>
 	<classpathentry kind="var" path="M2_REPO/org/apache/ant/ant/1.7.0/ant-1.7.0.jar"/>
 	<classpathentry kind="var" path="M2_REPO/org/jboss/javassist/3.6-beta/javassist-3.6-beta.jar" sourcepath="M2_REPO/org/jboss/javassist/3.6-beta/javassist-3.6-beta-sources.jar"/>
 	<classpathentry kind="var" path="M2_REPO/javax/xml/bind/jsr173_api/1.0/jsr173_api-1.0.jar"/>

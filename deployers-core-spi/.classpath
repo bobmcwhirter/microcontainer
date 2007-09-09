@@ -1,7 +1,8 @@
+<?xml version="1.0" encoding="UTF-8"?>
 <classpath>
-  <classpathentry kind="src" path="src/main"/>
-  <classpathentry kind="src" path="src/tests" output="eclipse-target/tests-classes"/>
-  <classpathentry kind="var" path="M2_REPO/org/jboss/jboss-common-core/2.2.1-SNAPSHOT/jboss-common-core-2.2.1-SNAPSHOT.jar" sourcepath="M2_REPO/org/jboss/jboss-common-core/2.2.1-SNAPSHOT/jboss-common-core-2.2.1-SNAPSHOT-sources.jar"/>
-  <classpathentry kind="output" path="eclipse-target/classes"/>
-  <classpathentry kind="con" path="org.eclipse.jdt.launching.JRE_CONTAINER"/>
+	<classpathentry kind="src" path="src/main"/>
+	<classpathentry kind="src" output="eclipse-target/tests-classes" path="src/tests"/>
+	<classpathentry kind="var" path="M2_REPO/org/jboss/jboss-common-core/2.2.1.GA/jboss-common-core-2.2.1.GA.jar" sourcepath="M2_REPO/org/jboss/jboss-common-core/2.2.1-SNAPSHOT/jboss-common-core-2.2.1-SNAPSHOT-sources.jar"/>
+	<classpathentry kind="con" path="org.eclipse.jdt.launching.JRE_CONTAINER"/>
+	<classpathentry kind="output" path="eclipse-target/classes"/>
 </classpath>
