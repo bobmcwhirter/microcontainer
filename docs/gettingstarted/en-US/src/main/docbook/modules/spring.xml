@@ -1,9 +1,11 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<!DOCTYPE section PUBLIC "-//OASIS//DTD DocBook XML V4.4//EN"
+<!DOCTYPE chapter PUBLIC "-//OASIS//DTD DocBook XML V4.4//EN"
       "http://www.oasis-open.org/docbook/xml/4.4/docbookx.dtd">
 
-<section>
+<chapter id="spring">
    <title>Spring integration</title>
+<section>
+   <title>Overview</title>
 
    <para>Spring integration allows Spring XML files to be used for IoC without Spring BeanFactory/ApplicationContext.
       This is possible as JBoss Microcontainer supports the same set of IoC features as Spring.
@@ -107,3 +109,4 @@
       is the namespace on the staring Spring beans element or bean element.</para>
 
 </section>
+</chapter>
