@@ -1,9 +1,11 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<!DOCTYPE section PUBLIC "-//OASIS//DTD DocBook XML V4.4//EN"
+<!DOCTYPE chapter PUBLIC "-//OASIS//DTD DocBook XML V4.4//EN"
       "http://www.oasis-open.org/docbook/xml/4.4/docbookx.dtd">
 
-<section>
+<chapter id="basics">
    <title>Basic Configuration and Usage</title>
+<sect1>
+   <title>Introduction</title>
 
    <para>The Microcontainer's main purpose is to allow external configuration of
       POJOs. As we have seen in
@@ -17,7 +19,7 @@
       .
    </para>
 
-   <section>
+   <sect2>
       <title>Deployment</title>
 
       <para>The
@@ -46,9 +48,9 @@
 ]]>
    </programlisting>
 
-   </section>
+   </sect2>
 
-   <section>
+   <sect2>
       <title>Bean</title>
 
       <para>The
@@ -86,9 +88,9 @@
          <varname>"Simple"</varname>
          such that it can be referenced elsewhere.
       </para>
-   </section>
+   </sect2>
 
-   <section>
+   <sect2>
       <title>Construction</title>
 
       <para>The example above uses the default constructor. What if you don't want to use some other constructor. The
@@ -179,9 +181,9 @@
 
       <para>Note that you only have to be explicit enough to resolve the ambiguity.</para>
 
-   </section>
+   </sect2>
 
-   <section>
+   <sect2>
       <title>Factories</title>
 
       <para>Not all classes have pubic constructors. It is often good practice to use factories when you to have a
@@ -305,9 +307,9 @@
          element.
       </para>
 
-   </section>
+   </sect2>
 
-   <section>
+   <sect2>
       <title>Properties</title>
 
       <para>It is possible to create all objects using factories and constructors, however many people use the JavaBean
@@ -376,9 +378,9 @@
          value. They will be discussed in more detail in the next section.
       </para>
 
-   </section>
+   </sect2>
 
-   <section>
+   <sect2>
       <title>String Values</title>
 
       <para>Now, you probably noticed that we use string values to represent all kinds of objects in the
@@ -561,9 +563,9 @@
          NullProgressionConvertor, which doesn't do any actual progression.
       </para>
 
-   </section>
+   </sect2>
 
-   <section>
+   <sect2>
       <title>Injections</title>
 
       <para>Objects by themself are not very useful. They need to be linked together to form more complicated data
@@ -709,9 +711,9 @@
 ]]>
       </programlisting>
 
-   </section>
+   </sect2>
 
-   <section>
+   <sect2>
       <title>Value Factory</title>
 
       <para>Similar to using <varname>inject</varname>'s property attribute, we sometimes want to use other beans to
@@ -794,9 +796,9 @@
 ]]>
       </programlisting>
 
-   </section>
+   </sect2>
 
-   <section>
+   <sect2>
       <title>Collections</title>
 
       <para>The
@@ -1010,9 +1012,9 @@
 ]]>
       </programlisting>
 
-   </section>
+   </sect2>
 
-   <section>
+   <sect2>
       <title>Lifecycle</title>
 
       <para>Anybody familiar with the JBoss JMX microkernel will know about the lifecycle. The microcontainer extends
@@ -1218,9 +1220,9 @@
       <para>In this case Microcontainer would not
          invoke start method when passing over Start state.
       </para>
-   </section>
+   </sect2>
 
-   <section>
+   <sect2>
       <title>Installation</title>
 
       <para>As of 2.0.0, you can provide generic install/uninstall actions. Allowing you to dynamically setup
@@ -1256,9 +1258,9 @@
 
 ]]>
       </programlisting>
-   </section>
+   </sect2>
 
-   <section>
+   <sect2>
       <title>ClassLoader</title>
 
       <para>The Microcontainer supports configuration of the classloader at either the deployment or bean level. The
@@ -1290,22 +1292,22 @@
 
 ]]>
       </programlisting>
-   </section>
+   </sect2>
 
-   <section>
+   <sect2>
       <title>Annotations via XML</title>
 
       <para>With the new Microcontainer 2.0 we've added support for annotations via XML. Meaning you can have annotation
          support even in Java 1.4 and before, depending on the retrowoven Microcontainer project.
          Each annotation is set per bean instance and you can set annotations on the following types:
          <itemizedlist>
-            <listitem>deployment (all beans inherit this annotations)</listitem>
-            <listitem>bean</listitem>
-            <listitem>constructor</listitem>
-            <listitem>lifecycle</listitem>
-            <listitem>install / uninstall</listitem>
-            <listitem>callback</listitem>
-            <listitem>annotated value</listitem>
+            <listitem><simpara>deployment (all beans inherit this annotations)</simpara></listitem>
+            <listitem><simpara>bean</simpara></listitem>
+            <listitem><simpara>constructor</simpara></listitem>
+            <listitem><simpara>lifecycle</simpara></listitem>
+            <listitem><simpara>install / uninstall</simpara></listitem>
+            <listitem><simpara>callback</simpara></listitem>
+            <listitem><simpara>annotated value</simpara></listitem>
          </itemizedlist>
          Let's see some use cases on the examples below.
       </para>
@@ -1359,9 +1361,9 @@
          See how this is done in Reference Manual, TODO.
       </para>
 
-   </section>
+   </sect2>
 
-   <section>
+   <sect2>
       <title>Alias</title>
 
       <para>Mostly each bean will have one unique name, but sometimes it is useful to be able to have an extra name.
@@ -1442,9 +1444,9 @@
          the original bean is still present.
       </para>
 
-   </section>
+   </sect2>
 
-   <section>
+   <sect2>
       <title>Supply and Demand</title>
 
       <para>
@@ -1527,9 +1529,9 @@
 
 ]]>
       </programlisting>
-   </section>
+   </sect2>
 
-   <section>
+   <sect2>
       <title>Contextual awareness</title>
 
       <para>
@@ -1701,9 +1703,9 @@
          and putting CollectionCallbackItemFactory implementation fully qualified class name as a value.
       </para>
 
-   </section>
+   </sect2>
 
-   <section>
+   <sect2>
       <title>Injection from context</title>
 
       <para>Even though Microcontainer is aimed at POJOs, it doesn't mean you are not able to easily get into
@@ -1758,6 +1760,7 @@
       </programlisting>
 
       <para>In this example we inject otherBean's beaninfo information into sndBean bean.</para>
-   </section>
+   </sect2>
 
-</section>
+</sect1>
+</chapter>
