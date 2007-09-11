@@ -5,7 +5,211 @@
 <chapter id="managed">
    <title>Managed module</title>
 
-   <para>
-      Managed ...
-   </para>
+   <sect1>
+      <title>Overview</title>
+      <para>
+      The deployers support a management API based on the org.jboss.managed.api
+      classes, and org.jboss.metatype.api.types, org.jboss.metatype.api.values
+      MetaType/MetaValue classes.
+      </para>
+      <sect2>
+         <title>org.jboss.managed.api Classes</title>
+      <simpara>The management API provides an abstraction for editing
+      the metadata of a Deployment. The main management classes include:
+      </simpara>
+      <itemizedlist>
+         <listitem>
+            <para>org.jboss.managed.api.ManagedObject - is the root interface
+            for a manageable element. Its consists of:
+            <itemizedlist>
+               <listitem><simpara>a name/name type for a registry/references
+               </simpara>
+               </listitem>
+               <listitem><simpara>an attachment name to associate the
+               ManagedObject with a deployment attachment
+               </simpara>
+               </listitem>
+               <listitem><simpara>annotations from the metadata making up the ManagedObject
+               </simpara>
+               </listitem>
+               <listitem><simpara>the attachment instance
+               </simpara>
+               </listitem>
+               <listitem><simpara>the ManagedPropertys for the interface
+               </simpara>
+               </listitem>
+               <listitem><simpara>the ManagedOperations for the interface
+               </simpara>
+               </listitem>
+            </itemizedlist>
+            </para>
+         </listitem>
+         <listitem><simpara>org.jboss.managed.api.ManagedProperty is an interface
+         describing a manageable field in a ManagedObject. Its analogous to the
+         JavaBean property/JMX mbean attribute. Its a type safe wrapper around
+         the Fields interface.
+         </simpara>
+         </listitem>
+         <listitem><simpara>org.jboss.managed.api.ManagedOperation an interface
+            for representing an operation in a management interface.
+         </simpara>
+         </listitem>
+         <listitem><simpara>org.jboss.managed.api.ManagedParameter – a parameter
+            in a ManagedOperation
+         </simpara>
+         </listitem>
+         <listitem><simpara>org.jboss.managed.api.Fields is an interface for a
+            collection of named values that are associated with a managed property
+            or operation.
+         </simpara>
+         </listitem>
+         <listitem><simpara>org.jboss.managed.api.ManagedDeployment is an
+            interface describing a collection of ManagedComponent and structural
+            information about a deployment.
+         </simpara>
+         </listitem>
+         <listitem><simpara>org.jboss.managed.api.ManagedComponent is an
+            interface that extends ManagedObject to define a runtime component
+            associated with a deployment.
+         </simpara>
+         </listitem>
+         <listitem><simpara>org.jboss.managed.api.ComponentType – type/subtype
+            qualification of a ManagedComponent
+         </simpara>
+         </listitem>
+         <listitem><simpara>org.jboss.managed.api.DeploymentTemplateInfo – named
+         collection of ManagedPropertys needed to create a deployment or component
+         </simpara>
+         </listitem>
+      </itemizedlist>
+      </sect2>
+      <sect2>
+         <title>org.jboss.metatype.api.types Classes</title>
+         <simpara>The types classes define an abstraction for the types of values
+            found in the ManagedProperty and ManagedOperation interfaces. The
+            types are essentially simplified types that only rely on basic JDK
+            types. The main types classes include:
+         </simpara>
+         <itemizedlist>
+            <listitem>
+               <simpara>org.jboss.metatype.api.types.MetaType&lt;T extends Serializable&gt; - root interface for meta types</simpara>
+            </listitem>
+            <listitem>
+               <simpara>org.jboss.metatype.api.types.CompositeMetaType - a key/value collection type</simpara>
+            </listitem>
+            <listitem>
+               <simpara>org.jboss.metatype.api.types.TableMetaType - a table structure with the rows being a
+                  CompositeMetaType.</simpara>
+            </listitem>
+            <listitem>
+               <simpara>org.jboss.metatype.api.types.AbstractMetaType&lt;T extends Serializable&gt; - base
+                  abstract class implementing MetaType</simpara>
+            </listitem>
+            <listitem><simpara>org.jboss.metatype.api.types.AbstractCompositeMetaType
+            - base abstract class implementing CompositeMetaType
+            </simpara></listitem>
+            <listitem><simpara>org.jboss.metatype.api.types.ArrayMetaType - an
+            array or Collection of MetaType
+            </simpara></listitem>
+            <listitem><simpara>org.jboss.metatype.api.types.EnumMetaType - java
+            enum type or a fixed set of String values.
+            </simpara></listitem>
+            <listitem><simpara>org.jboss.metatype.api.types.GenericMetaType - an opaque pass through wrapper for types that don't fit into another MetaType.
+            </simpara></listitem>
+            <listitem><simpara>org.jboss.metatype.api.types.SimpleMetaType - a
+            wrapper type for primatives; BigDecimal, BigInteger, Boolean/boolean,
+            Byte/byte, Character/char, Date, Double/double, Float/float,
+            Integer/int, Long/long, Short/short, String, Void/void.
+            </simpara></listitem>
+         </itemizedlist>
+      </sect2>
+      <sect2>
+         <title>org.jboss.metatype.api.values Classes</title>
+         <simpara>The values API provides an value wrappers for the corresponding
+            MetaTypes. The main values classes include:
+         </simpara>
+         <itemizedlist>
+            <listitem><simpara>org.jboss.metatype.api.values.MetaValue - the base
+            value interface defining a type accessor and clone method.
+            </simpara></listitem>
+            <listitem><simpara>org.jboss.metatype.api.values.ArrayValue&lt;T extends Serializable&gt;
+               - a representation of an array or collection of MetaValues. It supports
+               an index getter as well as Iterable&lt;T&gt;.
+            </simpara></listitem>
+            <listitem><simpara>org.jboss.metatype.api.values.CompositeValue - A represention
+               of a map of MetaValues keyed by a String. CompositeValueSupport
+               is a concrete implementation of CompositeValue.
+            </simpara></listitem>
+            <listitem><simpara>org.jboss.metatype.api.values.EnumValue - A represention
+               of a java.lang.Enum set of values, or a set of Strings. EnumValueSupport
+               is a concrete implementation of EnumValue that represents a single
+               java.lang.Enum value or java.lang.String value.
+            </simpara></listitem>
+            <listitem><simpara>org.jboss.metatype.api.values.GenericValue - A represention
+               of a GenericMetaType. GenericValueSupport
+               is a concrete implementation of GenericValue that represents a single
+               java.io.Serializable value.
+            </simpara></listitem>
+            <listitem><simpara>org.jboss.metatype.api.values.SimpleValue -
+               the SimpleMetaType value. The org.jboss.metatype.api.values.SimpleValueSupport&lt;T extends Serializable&gt;
+               class provides wrap method for generating the correct SimpleValue
+               from the java value object.
+            </simpara></listitem>
+            <listitem><simpara>org.jboss.metatype.api.values.TableValue -
+               the TableMetaType value. The org.jboss.metatype.api.values.TableValueSupport
+               class provides a concrete implementation of TableValue.
+            </simpara></listitem>
+            <listitem><simpara>org.jboss.metatype.api.values.MetaValueFactory -
+            a factory for converting a java value into the corresponding MetaValue.
+            It support an org.jboss.metatype.spi.values.MetaValueBuilder plugin
+            for controlling how a given java.lang.Class type is converted into
+            a MetaValue.
+            </simpara></listitem>
+            <listitem><simpara>org.jboss.metatype.spi.values.MetaValueBuilder -
+               a plugin for converting a MetaType and object instance into a
+               MetaValue.
+            </simpara></listitem>
+         </itemizedlist>
+      </sect2>
+      <sect2>
+         <title>org.jboss.managed.api.annotation Annotations</title>
+         <simpara>The annotations available for defining the management
+         interfaces include:
+         </simpara>
+         <itemizedlist>
+            <listitem><simpara>org.jboss.managed.api.annotation.ManagementObject -
+               a class level annotation that identifies a metadata class as a ManagedObject.
+            </simpara></listitem>
+            <listitem><simpara>org.jboss.managed.api.annotation.ManagementObjectID
+            - identifies a ManagedObject key/type qualifier source.
+            </simpara></listitem>
+            <listitem><simpara>org.jboss.managed.api.annotation.ManagementObjectRef
+               - indicates a property that references another ManagedObject.
+            </simpara></listitem>
+            <listitem><simpara>org.jboss.managed.api.annotation.ManagementProperty
+               - annotation for describing a ManagedProperty.
+            </simpara></listitem>
+            <listitem><simpara>org.jboss.managed.api.annotation.ManagementComponent
+               - identifies a property as metadata identifying a ManagedComponent.
+            </simpara></listitem>
+            <listitem><simpara>org.jboss.managed.api.annotation.ManagementOperation
+               - An annotation for describing a ManagedOperation.
+            </simpara></listitem>
+            <listitem><simpara>org.jboss.managed.api.annotation.ManagementParameter
+            - Annotation for documenting a ManagementOperation parameter.
+            </simpara></listitem>
+         </itemizedlist>            
+         </sect2>
+   </sect1>         
+
+   <sect1>
+      <title>Annotation Examples</title>
+      <simpara></simpara>
+   </sect1>
+   <sect1>
+      <title>Adding ManagedObject Support to Deployers</title>
+      <simpara>Deployer implementors create ManagedObjects for their
+      associated metadata by having the Deployer implement the
+      </simpara>
+   </sect1>
 </chapter>
