@@ -1,11 +1,9 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<!DOCTYPE chapter PUBLIC "-//OASIS//DTD DocBook XML V4.4//EN"
+<!DOCTYPE sect1 PUBLIC "-//OASIS//DTD DocBook XML V4.4//EN"
       "http://www.oasis-open.org/docbook/xml/4.4/docbookx.dtd">
 
-<chapter id="basics">
-   <title>Basic Configuration and Usage</title>
 <sect1>
-   <title>Introduction</title>
+   <title>Basic Configuration and Usage</title>
 
    <para>The Microcontainer's main purpose is to allow external configuration of
       POJOs. As we have seen in
@@ -1763,4 +1761,3 @@
    </sect2>
 
 </sect1>
-</chapter>

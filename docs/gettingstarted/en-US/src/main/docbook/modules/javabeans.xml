@@ -1,11 +1,9 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<!DOCTYPE chapter PUBLIC "-//OASIS//DTD DocBook XML V4.4//EN"
+<!DOCTYPE section PUBLIC "-//OASIS//DTD DocBook XML V4.4//EN"
       "http://www.oasis-open.org/docbook/xml/4.4/docbookx.dtd">
 
-<chapter id="javabeans">
-   <title>Java Beans</title>
 <section>
-   <title>Introduction</title>
+   <title>Java Beans</title>
 
    <para>In Container module there is a simple support for
       <ulink url="http://java.sun.com/products/javabeans/">JavaBeans</ulink> configuration. When we have some existing
@@ -90,4 +88,3 @@
    <para>You can use JavaBean with Microcontainer beans in all cases where you could use plain value.</para>
 
 </section>
-</chapter>
