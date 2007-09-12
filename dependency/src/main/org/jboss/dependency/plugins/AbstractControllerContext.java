@@ -329,7 +329,6 @@ public class AbstractControllerContext extends JBossObject implements Controller
 
    public void uninstall(ControllerState fromState, ControllerState toState)
    {
-      this.error = null;
       flushJBossObjectCache();
       actions.uninstall(this, fromState, toState);
    }
