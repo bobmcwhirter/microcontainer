@@ -105,25 +105,36 @@ public class ManagedObjectImpl implements ManagedObject
     * @param operations the operations
     * @param attachment the attachment
     */
-   public ManagedObjectImpl(String name, String nameType,
+   public ManagedObjectImpl(
+         String name,
+         String nameType,
          String attachmentName,
          Set<ManagedProperty> properties,
-         HashSet<ManagedOperation> operations, Serializable attachment)
+         HashSet<ManagedOperation> operations,
+         Serializable attachment
+   )
    {
-      if (name == null)
-         throw new IllegalArgumentException("Null name");
-      if (properties == null)
-         throw new IllegalArgumentException("Null properties");
-      
-      this.name = name;
-      this.properties = toMap(properties);
-      this.operations = operations;
-      setAttachment(attachment);
+      this(name, nameType, attachmentName, toMap(properties), operations, attachment);
    }
-   public ManagedObjectImpl(String name, String nameType,
+
+   /**
+    * Create a new ManagedObjectImpl
+    *
+    * @param name - The object name used for ManagementRef resolution
+    * @param nameType - The name type/qualifier used for ManagementRef resolution
+    * @param attachmentName the attachment name
+    * @param properties the properties
+    * @param operations the operations
+    * @param attachment the attachment
+    */
+   public ManagedObjectImpl(
+         String name,
+         String nameType,
          String attachmentName,
          Map<String, ManagedProperty> properties,
-         HashSet<ManagedOperation> operations, Serializable attachment)
+         HashSet<ManagedOperation> operations,
+         Serializable attachment
+   )
    {
       if (name == null)
          throw new IllegalArgumentException("Null name");
@@ -131,6 +142,9 @@ public class ManagedObjectImpl implements ManagedObject
          throw new IllegalArgumentException("Null properties");
       
       this.name = name;
+      // todo - check for null?
+      this.nameType = nameType;
+      this.attachmentName = attachmentName;
       this.properties = properties;
       this.operations = operations;
       setAttachment(attachment);
@@ -140,6 +154,7 @@ public class ManagedObjectImpl implements ManagedObject
    {
       return name;
    }
+
    public void setName(String name)
    {
       this.name = name;
@@ -149,6 +164,7 @@ public class ManagedObjectImpl implements ManagedObject
    {
       return nameType;
    }
+
    public void setNameType(String nameType)
    {
       this.nameType = nameType;
@@ -158,6 +174,7 @@ public class ManagedObjectImpl implements ManagedObject
    {
       return attachmentName;
    }
+
    public void setAttachmentName(String attachmentName)
    {
       this.attachmentName = attachmentName;
@@ -171,11 +188,13 @@ public class ManagedObjectImpl implements ManagedObject
    {
       return annotations;
    }
+
    public void setAnnotations(Map<String, Annotation> annotations)
    {
       if (this.annotations.isEmpty())
          this.annotations = new HashMap<String, Annotation>();
-      this.annotations.clear();
+      else
+         this.annotations.clear();
       this.annotations.putAll(annotations);
    }
 
@@ -196,6 +215,7 @@ public class ManagedObjectImpl implements ManagedObject
    {
       return properties;
    }
+
    public void setProperties(Map<String, ManagedProperty> properties)
    {
       this.properties = properties;
@@ -218,12 +238,13 @@ public class ManagedObjectImpl implements ManagedObject
 
    /**
     * get the ManagedOperations
-    * @return 
+    * @return set of managed operations
     */
    public Set<ManagedOperation> getOperations()
    {
       return operations;
    }
+
    public void setOperations(Set<ManagedOperation> operations)
    {
       this.operations = operations;
