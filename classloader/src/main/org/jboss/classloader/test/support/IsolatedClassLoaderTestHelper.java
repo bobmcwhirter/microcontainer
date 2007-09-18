@@ -21,10 +21,13 @@
 */
 package org.jboss.classloader.test.support;
 
+import java.security.AccessController;
+import java.security.PrivilegedAction;
 import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
+import java.util.StringTokenizer;
 
 import junit.extensions.TestSetup;
 import junit.framework.Test;
@@ -109,6 +112,10 @@ public class IsolatedClassLoaderTestHelper
     * NOTE: The transient packages cannot be used directly by the test
     * unless explicity mentioned in this list.
     * 
+    * The list can be expanded by using the jboss.test.parent.pkgs system property with a 
+    * comma-separated list of package names, e.g. <br>
+    * -Djboss.test.parent.pkgs=org.jboss.package1, org.jboss.package2
+    * 
     * @return the test support packages
     */
    public static Set<String> getParentPackages()
@@ -122,6 +129,25 @@ public class IsolatedClassLoaderTestHelper
       result.add(PolicyPlugin.class.getPackage().getName());
       result.add(ClassLoaderSystem.class.getPackage().getName());
       result.add(IsolatedClassLoaderTest.class.getPackage().getName());
+      
+      String pkgString = AccessController.doPrivileged(new PrivilegedAction<String>() 
+      {
+         public String run() 
+         {
+            return System.getProperty("jboss.test.parent.pkgs");
+         }}
+      );
+
+      if (pkgString != null)
+      {
+         StringTokenizer tok = new StringTokenizer(pkgString, ",");
+         while(tok.hasMoreTokens())
+         {
+            String pkg = tok.nextToken();
+            result.add(pkg.trim());
+         }
+      }
+      
       return result;
    }
 
