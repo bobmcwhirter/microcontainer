@@ -49,6 +49,7 @@
     <version.apache-xerces.xml-apis>2.7.1</version.apache-xerces.xml-apis>
     <version.jboss.drools>4.0.1</version.jboss.drools>
     <version.jboss.jbpm>3.1.1</version.jboss.jbpm>
+    <version.google.guice>1.0</version.google.guice>
   </properties>
 
   <build>
@@ -310,6 +311,11 @@
       </dependency>
       <dependency>
         <groupId>org.jboss.microcontainer</groupId>
+        <artifactId>jboss-guice-int</artifactId>
+        <version>${project.version}</version>
+      </dependency>
+      <dependency>
+        <groupId>org.jboss.microcontainer</groupId>
         <artifactId>jboss-osgi-int</artifactId>
         <version>${project.version}</version>
       </dependency>
@@ -438,6 +444,11 @@
         <groupId>org.drools</groupId>
         <artifactId>drools-decisiontables</artifactId>
         <version>${version.jboss.drools}</version>
+      </dependency>
+      <dependency>
+        <groupId>com.google.code.guice</groupId>
+        <artifactId>guice</artifactId>
+        <version>${version.google.guice}</version>
       </dependency>
       <dependency>
         <groupId>jboss</groupId>

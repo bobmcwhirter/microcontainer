@@ -8,7 +8,7 @@
   <modelVersion>4.0.0</modelVersion>
   <artifactId>jboss-osgi-int</artifactId>
   <packaging>jar</packaging>
-  <name>JBoss Microcontainer OSGI INT</name>
+  <name>JBoss Microcontainer OSGi Int</name>
   <url>http://www.jboss.com/products/jbossmc</url>
   <description>JBoss Microcontainer</description>
   <build>

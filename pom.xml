@@ -40,6 +40,7 @@
     <module>deployers-vfs-spi</module>
     <module>deployers-vfs</module>
     <module>spring-int</module>
+    <module>guice-int</module>
     <module>osgi-int</module>
     <module>classloader</module>
     <module>varia</module>
