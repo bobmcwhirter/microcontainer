@@ -40,6 +40,8 @@ public class InvokeKernelRegistryEntryJoinpoint extends JBossObject implements K
 
    public InvokeKernelRegistryEntryJoinpoint(String methodName, Object[] args, String[] signature)
    {
+      if (methodName == null)
+         throw new IllegalArgumentException("Null method name.");
       this.methodName = methodName;
       this.args = args;
       this.signature = signature;

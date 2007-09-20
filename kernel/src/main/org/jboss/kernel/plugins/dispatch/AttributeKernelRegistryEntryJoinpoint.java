@@ -38,6 +38,8 @@ public class AttributeKernelRegistryEntryJoinpoint extends JBossObject implement
 
    public AttributeKernelRegistryEntryJoinpoint(String getterName)
    {
+      if (getterName == null)
+         throw new IllegalArgumentException("Null getter name.");
       this.getterName = getterName;
    }
 
