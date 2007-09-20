@@ -44,4 +44,14 @@ public interface KernelBus extends KernelObject
     * @throws Throwable for any error
     */
    Object invoke(Object name, TargettedJoinpoint joinPoint) throws Throwable;
+
+   /**
+    * Invoke an operation
+    *
+    * @param name the name of the object
+    * @param joinPoint the join point
+    * @return the result
+    * @throws Throwable for any error
+    */
+   Object invoke(Object name, KernelRegistryEntryJoinpoint joinPoint) throws Throwable;
 }

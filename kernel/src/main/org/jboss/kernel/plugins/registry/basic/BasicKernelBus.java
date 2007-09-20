@@ -24,6 +24,7 @@ package org.jboss.kernel.plugins.registry.basic;
 import org.jboss.joinpoint.spi.TargettedJoinpoint;
 import org.jboss.kernel.plugins.registry.AbstractKernelBus;
 import org.jboss.kernel.spi.registry.KernelRegistryEntry;
+import org.jboss.kernel.spi.registry.KernelRegistryEntryJoinpoint;
 
 /**
  * Basic Kernel bus.
@@ -47,6 +48,14 @@ public class BasicKernelBus extends AbstractKernelBus
       KernelRegistryEntry entry = registry.getEntry(name);
       Object target = entry.getTarget();
       joinPoint.setTarget(target);
+      return joinPoint.dispatch();
+   }
+
+   public Object invoke(Object name, KernelRegistryEntryJoinpoint joinPoint) throws Throwable
+   {
+      KernelRegistryEntry entry = registry.getEntry(name);
+      if (joinPoint.applyEntry(entry) == false)
+         throw new IllegalArgumentException("Cannot apply joinpoint " + joinPoint + " to entry " + entry);
       return joinPoint.dispatch();
    }
 }
