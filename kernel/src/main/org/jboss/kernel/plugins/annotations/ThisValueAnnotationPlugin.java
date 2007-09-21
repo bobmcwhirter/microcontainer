@@ -22,7 +22,7 @@
 package org.jboss.kernel.plugins.annotations;
 
 import org.jboss.beans.metadata.plugins.ThisValueMetaData;
-import org.jboss.beans.metadata.plugins.annotations.ThisValue;
+import org.jboss.beans.metadata.api.annotations.ThisValue;
 import org.jboss.beans.metadata.spi.ValueMetaData;
 
 /**

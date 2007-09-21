@@ -27,7 +27,7 @@ import java.util.Collections;
 
 import org.jboss.beans.metadata.plugins.AbstractBeanMetaData;
 import org.jboss.beans.metadata.plugins.AbstractConstructorMetaData;
-import org.jboss.beans.metadata.plugins.annotations.FactoryMethod;
+import org.jboss.beans.metadata.api.annotations.FactoryMethod;
 import org.jboss.beans.metadata.spi.BeanMetaData;
 import org.jboss.beans.metadata.spi.MetaDataVisitorNode;
 import org.jboss.reflect.spi.MethodInfo;

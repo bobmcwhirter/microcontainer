@@ -23,9 +23,9 @@ package org.jboss.test.kernel.config.support;
 
 import java.util.Collection;
 
-import org.jboss.beans.metadata.plugins.annotations.CollectionValue;
-import org.jboss.beans.metadata.plugins.annotations.JavaBeanValue;
-import org.jboss.beans.metadata.plugins.annotations.Value;
+import org.jboss.beans.metadata.api.annotations.CollectionValue;
+import org.jboss.beans.metadata.api.annotations.JavaBeanValue;
+import org.jboss.beans.metadata.api.annotations.Value;
 
 /**
  * A simple bean

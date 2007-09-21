@@ -21,8 +21,8 @@
 */
 package org.jboss.kernel.plugins.annotations;
 
-import org.jboss.beans.metadata.plugins.annotations.Inject;
-import org.jboss.beans.metadata.plugins.annotations.FromContext;
+import org.jboss.beans.metadata.api.annotations.Inject;
+import org.jboss.beans.metadata.api.annotations.FromContext;
 import org.jboss.beans.metadata.plugins.AbstractInjectionValueMetaData;
 import org.jboss.beans.metadata.plugins.InjectionOption;
 import org.jboss.beans.metadata.spi.ValueMetaData;

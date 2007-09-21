@@ -21,9 +21,9 @@
 */
 package org.jboss.test.kernel.config.support;
 
-import org.jboss.beans.metadata.plugins.annotations.JavaBeanValue;
-import org.jboss.beans.metadata.plugins.annotations.ArrayValue;
-import org.jboss.beans.metadata.plugins.annotations.Value;
+import org.jboss.beans.metadata.api.annotations.JavaBeanValue;
+import org.jboss.beans.metadata.api.annotations.ArrayValue;
+import org.jboss.beans.metadata.api.annotations.Value;
 
 /**
  * A simple bean

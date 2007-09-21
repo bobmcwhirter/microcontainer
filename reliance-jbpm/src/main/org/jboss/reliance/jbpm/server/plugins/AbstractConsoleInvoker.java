@@ -21,9 +21,9 @@
 */
 package org.jboss.reliance.jbpm.server.plugins;
 
+import org.jboss.beans.metadata.api.annotations.Inject;
 import org.jboss.reliance.jbpm.server.spi.ConsoleInvoker;
 import org.jboss.reliance.jbpm.server.spi.ConsoleServer;
-import org.jboss.beans.metadata.plugins.annotations.Inject;
 
 /**
  * @author <a href="mailto:ales.justin@jboss.com">Ales Justin</a>

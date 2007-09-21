@@ -23,10 +23,10 @@ package org.jboss.test.kernel.config.support;
 
 import java.util.Collection;
 
-import org.jboss.beans.metadata.plugins.annotations.CollectionValue;
-import org.jboss.beans.metadata.plugins.annotations.Constructor;
-import org.jboss.beans.metadata.plugins.annotations.StringValue;
-import org.jboss.beans.metadata.plugins.annotations.Value;
+import org.jboss.beans.metadata.api.annotations.CollectionValue;
+import org.jboss.beans.metadata.api.annotations.Constructor;
+import org.jboss.beans.metadata.api.annotations.StringValue;
+import org.jboss.beans.metadata.api.annotations.Value;
 
 /**
  * A simple annotated bean

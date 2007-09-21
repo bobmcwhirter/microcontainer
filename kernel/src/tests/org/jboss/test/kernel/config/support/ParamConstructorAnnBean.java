@@ -21,8 +21,8 @@
 */
 package org.jboss.test.kernel.config.support;
 
-import org.jboss.beans.metadata.plugins.annotations.Constructor;
-import org.jboss.beans.metadata.plugins.annotations.StringValue;
+import org.jboss.beans.metadata.api.annotations.Constructor;
+import org.jboss.beans.metadata.api.annotations.StringValue;
 
 /**
  * A simple annotated bean

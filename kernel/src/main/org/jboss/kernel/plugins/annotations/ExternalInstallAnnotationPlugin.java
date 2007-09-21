@@ -24,8 +24,8 @@ package org.jboss.kernel.plugins.annotations;
 import java.util.List;
 import java.util.ArrayList;
 
-import org.jboss.beans.metadata.plugins.annotations.ExternalInstalls;
-import org.jboss.beans.metadata.plugins.annotations.ExternalInstall;
+import org.jboss.beans.metadata.api.annotations.ExternalInstalls;
+import org.jboss.beans.metadata.api.annotations.ExternalInstall;
 import org.jboss.beans.metadata.plugins.AbstractBeanMetaData;
 import org.jboss.beans.metadata.spi.BeanMetaData;
 import org.jboss.beans.metadata.spi.InstallMetaData;

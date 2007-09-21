@@ -21,8 +21,8 @@
 */
 package org.jboss.test.kernel.dependency.support;
 
-import org.jboss.beans.metadata.plugins.annotations.Aliases;
-import org.jboss.beans.metadata.plugins.annotations.StringValue;
+import org.jboss.beans.metadata.api.annotations.Aliases;
+import org.jboss.beans.metadata.api.annotations.StringValue;
 
 /**
  * A simple bean

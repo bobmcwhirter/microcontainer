@@ -21,7 +21,7 @@
 */
 package org.jboss.kernel.plugins.annotations;
 
-import org.jboss.beans.metadata.plugins.annotations.StringValue;
+import org.jboss.beans.metadata.api.annotations.StringValue;
 import org.jboss.beans.metadata.plugins.StringValueMetaData;
 import org.jboss.beans.metadata.spi.ValueMetaData;
 

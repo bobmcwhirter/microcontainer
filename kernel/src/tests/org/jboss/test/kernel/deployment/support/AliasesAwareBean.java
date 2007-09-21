@@ -23,9 +23,9 @@ package org.jboss.test.kernel.deployment.support;
 
 import java.util.Set;
 
-import org.jboss.beans.metadata.plugins.annotations.Inject;
-import org.jboss.beans.metadata.plugins.annotations.FromContext;
-import org.jboss.beans.metadata.plugins.annotations.Aliases;
+import org.jboss.beans.metadata.api.annotations.Inject;
+import org.jboss.beans.metadata.api.annotations.FromContext;
+import org.jboss.beans.metadata.api.annotations.Aliases;
 
 /**
  * A simple bean with awareness

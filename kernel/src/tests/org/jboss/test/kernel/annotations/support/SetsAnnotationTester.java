@@ -21,10 +21,10 @@
 */
 package org.jboss.test.kernel.annotations.support;
 
-import org.jboss.beans.metadata.plugins.annotations.Demands;
-import org.jboss.beans.metadata.plugins.annotations.Demand;
-import org.jboss.beans.metadata.plugins.annotations.Depends;
-import org.jboss.beans.metadata.plugins.annotations.Supplys;
+import org.jboss.beans.metadata.api.annotations.Demands;
+import org.jboss.beans.metadata.api.annotations.Demand;
+import org.jboss.beans.metadata.api.annotations.Depends;
+import org.jboss.beans.metadata.api.annotations.Supplys;
 
 /**
  * @author <a href="mailto:ales.justin@jboss.com">Ales Justin</a>

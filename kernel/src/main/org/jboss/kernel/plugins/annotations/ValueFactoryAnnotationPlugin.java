@@ -26,8 +26,8 @@ import java.util.List;
 
 import org.jboss.beans.metadata.plugins.AbstractParameterMetaData;
 import org.jboss.beans.metadata.plugins.AbstractValueFactoryMetaData;
-import org.jboss.beans.metadata.plugins.annotations.Parameter;
-import org.jboss.beans.metadata.plugins.annotations.ValueFactory;
+import org.jboss.beans.metadata.api.annotations.Parameter;
+import org.jboss.beans.metadata.api.annotations.ValueFactory;
 import org.jboss.beans.metadata.spi.ParameterMetaData;
 import org.jboss.beans.metadata.spi.ValueMetaData;
 import org.jboss.dependency.spi.ControllerState;

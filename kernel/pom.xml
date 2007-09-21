@@ -47,6 +47,7 @@
           <descriptors>
             <descriptor>src/assembly/spi.xml</descriptor>
             <descriptor>src/assembly/plugins.xml</descriptor>
+            <descriptor>src/assembly/annotations.xml</descriptor>
           </descriptors>
         </configuration>
       </plugin>

@@ -21,11 +21,11 @@
 */
 package org.jboss.test.kernel.dependency.support;
 
-import org.jboss.beans.metadata.plugins.annotations.Create;
-import org.jboss.beans.metadata.plugins.annotations.Start;
-import org.jboss.beans.metadata.plugins.annotations.Stop;
-import org.jboss.beans.metadata.plugins.annotations.Destroy;
-import org.jboss.beans.metadata.plugins.annotations.Inject;
+import org.jboss.beans.metadata.api.annotations.Create;
+import org.jboss.beans.metadata.api.annotations.Start;
+import org.jboss.beans.metadata.api.annotations.Stop;
+import org.jboss.beans.metadata.api.annotations.Destroy;
+import org.jboss.beans.metadata.api.annotations.Inject;
 
 /**
  * A simple bean with a complicated lifecycle

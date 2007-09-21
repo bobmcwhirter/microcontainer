@@ -21,7 +21,7 @@
 */
 package org.jboss.test.kernel.deployment.support;
 
-import org.jboss.beans.metadata.plugins.annotations.Create;
+import org.jboss.beans.metadata.api.annotations.Create;
 
 /**
  * @author <a href="mailto:ales.justin@gmail.com">Ales Justin</a>

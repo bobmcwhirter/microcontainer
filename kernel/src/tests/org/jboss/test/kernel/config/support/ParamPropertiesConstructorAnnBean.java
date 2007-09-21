@@ -23,11 +23,11 @@ package org.jboss.test.kernel.config.support;
 
 import java.util.Hashtable;
 
-import org.jboss.beans.metadata.plugins.annotations.Constructor;
-import org.jboss.beans.metadata.plugins.annotations.EntryValue;
-import org.jboss.beans.metadata.plugins.annotations.MapValue;
-import org.jboss.beans.metadata.plugins.annotations.StringValue;
-import org.jboss.beans.metadata.plugins.annotations.Value;
+import org.jboss.beans.metadata.api.annotations.Constructor;
+import org.jboss.beans.metadata.api.annotations.EntryValue;
+import org.jboss.beans.metadata.api.annotations.MapValue;
+import org.jboss.beans.metadata.api.annotations.StringValue;
+import org.jboss.beans.metadata.api.annotations.Value;
 
 /**
  * A simple annotated bean

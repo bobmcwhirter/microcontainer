@@ -21,11 +21,11 @@
 */
 package org.jboss.test.kernel.annotations.support;
 
-import org.jboss.beans.metadata.plugins.annotations.ExternalInstall;
-import org.jboss.beans.metadata.plugins.annotations.ExternalInstalls;
-import org.jboss.beans.metadata.plugins.annotations.ExternalUninstalls;
-import org.jboss.beans.metadata.plugins.annotations.ThisValue;
-import org.jboss.beans.metadata.plugins.annotations.Value;
+import org.jboss.beans.metadata.api.annotations.ExternalInstall;
+import org.jboss.beans.metadata.api.annotations.ExternalInstalls;
+import org.jboss.beans.metadata.api.annotations.ExternalUninstalls;
+import org.jboss.beans.metadata.api.annotations.ThisValue;
+import org.jboss.beans.metadata.api.annotations.Value;
 
 /**
  * @author <a href="mailto:ales.justin@jboss.com">Ales Justin</a>

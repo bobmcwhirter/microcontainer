@@ -27,8 +27,8 @@ import java.util.UUID;
 
 import org.drools.compiler.PackageBuilder;
 import org.drools.compiler.PackageBuilderConfiguration;
-import org.jboss.beans.metadata.plugins.annotations.Constructor;
-import org.jboss.beans.metadata.plugins.annotations.Inject;
+import org.jboss.beans.metadata.api.annotations.Constructor;
+import org.jboss.beans.metadata.api.annotations.Inject;
 import org.jboss.beans.metadata.plugins.builder.BeanMetaDataBuilderFactory;
 import org.jboss.beans.metadata.spi.builder.BeanMetaDataBuilder;
 import org.jboss.kernel.plugins.bootstrap.basic.KernelConstants;

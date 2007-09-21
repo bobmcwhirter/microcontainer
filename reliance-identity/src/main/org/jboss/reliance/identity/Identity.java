@@ -37,7 +37,7 @@ import javax.security.auth.login.LoginContext;
 import javax.security.auth.login.LoginException;
 
 import org.jboss.logging.Logger;
-import org.jboss.beans.metadata.plugins.annotations.Inject;
+import org.jboss.beans.metadata.api.annotations.Inject;
 
 /**
  * Simple identity.

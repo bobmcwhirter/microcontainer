@@ -21,7 +21,7 @@
 */
 package org.jboss.kernel.plugins.annotations;
 
-import org.jboss.beans.metadata.plugins.annotations.MapValue;
+import org.jboss.beans.metadata.api.annotations.MapValue;
 import org.jboss.beans.metadata.spi.ValueMetaData;
 
 /**

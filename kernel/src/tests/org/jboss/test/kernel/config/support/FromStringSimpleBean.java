@@ -25,7 +25,7 @@ import java.util.Date;
 import java.math.BigInteger;
 import java.math.BigDecimal;
 
-import org.jboss.beans.metadata.plugins.annotations.StringValue;
+import org.jboss.beans.metadata.api.annotations.StringValue;
 
 /**
  * A simple bean

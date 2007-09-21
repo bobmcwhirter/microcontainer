@@ -21,9 +21,9 @@
 */
 package org.jboss.test.kernel.dependency.support;
 
-import org.jboss.beans.metadata.plugins.annotations.Demands;
-import org.jboss.beans.metadata.plugins.annotations.StringValue;
-import org.jboss.beans.metadata.plugins.annotations.Demand;
+import org.jboss.beans.metadata.api.annotations.Demands;
+import org.jboss.beans.metadata.api.annotations.StringValue;
+import org.jboss.beans.metadata.api.annotations.Demand;
 
 /**
  * A simple bean

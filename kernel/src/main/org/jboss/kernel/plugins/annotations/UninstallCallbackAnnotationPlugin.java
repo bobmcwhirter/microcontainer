@@ -28,7 +28,7 @@ import java.util.Set;
 import org.jboss.beans.metadata.plugins.AbstractBeanMetaData;
 import org.jboss.beans.metadata.plugins.AbstractCallbackMetaData;
 import org.jboss.beans.metadata.plugins.UninstallCallbackMetaData;
-import org.jboss.beans.metadata.plugins.annotations.Uninstall;
+import org.jboss.beans.metadata.api.annotations.Uninstall;
 import org.jboss.beans.metadata.spi.CallbackMetaData;
 import org.jboss.dependency.spi.CallbackItem;
 import org.jboss.dependency.spi.Cardinality;

@@ -22,8 +22,8 @@
 package org.jboss.test.kernel.dependency.support;
 
 import org.jboss.kernel.spi.dependency.KernelControllerContext;
-import org.jboss.beans.metadata.plugins.annotations.Inject;
-import org.jboss.beans.metadata.plugins.annotations.FromContext;
+import org.jboss.beans.metadata.api.annotations.Inject;
+import org.jboss.beans.metadata.api.annotations.FromContext;
 
 /**
  * A simple bean that is kernel controllercontext aware

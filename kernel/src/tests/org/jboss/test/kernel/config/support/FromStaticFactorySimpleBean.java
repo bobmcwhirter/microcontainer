@@ -27,7 +27,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
-import org.jboss.beans.metadata.plugins.annotations.Factory;
+import org.jboss.beans.metadata.api.annotations.Factory;
 
 /**
  * A simple bean

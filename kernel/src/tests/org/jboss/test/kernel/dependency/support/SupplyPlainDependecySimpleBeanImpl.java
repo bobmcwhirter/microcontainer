@@ -21,7 +21,7 @@
 */
 package org.jboss.test.kernel.dependency.support;
 
-import org.jboss.beans.metadata.plugins.annotations.Supplys;
+import org.jboss.beans.metadata.api.annotations.Supplys;
 
 /**
  * A simple bean

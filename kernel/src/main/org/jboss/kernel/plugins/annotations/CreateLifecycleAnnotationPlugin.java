@@ -24,7 +24,7 @@ package org.jboss.kernel.plugins.annotations;
 import org.jboss.beans.metadata.plugins.AbstractBeanMetaData;
 import org.jboss.beans.metadata.plugins.AbstractLifecycleMetaData;
 import org.jboss.beans.metadata.spi.BeanMetaData;
-import org.jboss.beans.metadata.plugins.annotations.Create;
+import org.jboss.beans.metadata.api.annotations.Create;
 
 /**
  * Create annotation plugin.

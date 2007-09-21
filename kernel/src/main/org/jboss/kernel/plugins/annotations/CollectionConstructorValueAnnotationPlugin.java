@@ -21,7 +21,7 @@
 */
 package org.jboss.kernel.plugins.annotations;
 
-import org.jboss.beans.metadata.plugins.annotations.CollectionValue;
+import org.jboss.beans.metadata.api.annotations.CollectionValue;
 import org.jboss.beans.metadata.spi.ValueMetaData;
 
 /**

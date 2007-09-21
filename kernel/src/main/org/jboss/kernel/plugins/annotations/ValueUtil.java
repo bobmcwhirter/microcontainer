@@ -21,14 +21,14 @@
 */
 package org.jboss.kernel.plugins.annotations;
 
-import org.jboss.beans.metadata.plugins.annotations.Inject;
-import org.jboss.beans.metadata.plugins.annotations.NullValue;
-import org.jboss.beans.metadata.plugins.annotations.Parameter;
-import org.jboss.beans.metadata.plugins.annotations.StringValue;
-import org.jboss.beans.metadata.plugins.annotations.ThisValue;
-import org.jboss.beans.metadata.plugins.annotations.Value;
-import org.jboss.beans.metadata.plugins.annotations.ValueFactory;
-import org.jboss.beans.metadata.plugins.annotations.JavaBeanValue;
+import org.jboss.beans.metadata.api.annotations.Inject;
+import org.jboss.beans.metadata.api.annotations.NullValue;
+import org.jboss.beans.metadata.api.annotations.Parameter;
+import org.jboss.beans.metadata.api.annotations.StringValue;
+import org.jboss.beans.metadata.api.annotations.ThisValue;
+import org.jboss.beans.metadata.api.annotations.Value;
+import org.jboss.beans.metadata.api.annotations.ValueFactory;
+import org.jboss.beans.metadata.api.annotations.JavaBeanValue;
 import org.jboss.beans.metadata.spi.ValueMetaData;
 
 /**

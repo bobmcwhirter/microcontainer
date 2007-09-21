@@ -21,8 +21,8 @@
 */
 package org.jboss.test.kernel.annotations.support;
 
-import org.jboss.beans.metadata.plugins.annotations.Constructor;
-import org.jboss.beans.metadata.plugins.annotations.StringValue;
+import org.jboss.beans.metadata.api.annotations.Constructor;
+import org.jboss.beans.metadata.api.annotations.StringValue;
 
 /**
  * @author <a href="mailto:ales.justin@jboss.com">Ales Justin</a>

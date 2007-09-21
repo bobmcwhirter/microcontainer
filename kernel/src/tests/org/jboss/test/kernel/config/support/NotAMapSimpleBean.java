@@ -21,10 +21,10 @@
 */
 package org.jboss.test.kernel.config.support;
 
-import org.jboss.beans.metadata.plugins.annotations.MapValue;
-import org.jboss.beans.metadata.plugins.annotations.Value;
-import org.jboss.beans.metadata.plugins.annotations.StringValue;
-import org.jboss.beans.metadata.plugins.annotations.EntryValue;
+import org.jboss.beans.metadata.api.annotations.MapValue;
+import org.jboss.beans.metadata.api.annotations.Value;
+import org.jboss.beans.metadata.api.annotations.StringValue;
+import org.jboss.beans.metadata.api.annotations.EntryValue;
 
 /**
  * A simple bean

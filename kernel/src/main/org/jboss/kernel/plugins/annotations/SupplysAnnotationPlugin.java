@@ -28,7 +28,7 @@ import java.util.ArrayList;
 
 import org.jboss.beans.metadata.plugins.AbstractSupplyMetaData;
 import org.jboss.beans.metadata.plugins.AbstractBeanMetaData;
-import org.jboss.beans.metadata.plugins.annotations.Supplys;
+import org.jboss.beans.metadata.api.annotations.Supplys;
 import org.jboss.beans.metadata.spi.BeanMetaData;
 import org.jboss.beans.metadata.spi.SupplyMetaData;
 import org.jboss.beans.metadata.spi.MetaDataVisitorNode;

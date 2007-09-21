@@ -21,7 +21,7 @@
 */
 package org.jboss.test.kernel.dependency.support;
 
-import org.jboss.beans.metadata.plugins.annotations.Depends;
+import org.jboss.beans.metadata.api.annotations.Depends;
 
 /**
  * A simple bean with a lifecycle

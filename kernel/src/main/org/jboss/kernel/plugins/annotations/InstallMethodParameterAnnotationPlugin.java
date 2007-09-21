@@ -26,7 +26,7 @@ import java.util.ArrayList;
 
 import org.jboss.beans.metadata.plugins.AbstractInstallMetaData;
 import org.jboss.beans.metadata.plugins.AbstractBeanMetaData;
-import org.jboss.beans.metadata.plugins.annotations.InstallMethod;
+import org.jboss.beans.metadata.api.annotations.InstallMethod;
 import org.jboss.beans.metadata.spi.BeanMetaData;
 import org.jboss.beans.metadata.spi.InstallMetaData;
 import org.jboss.reflect.spi.MethodInfo;

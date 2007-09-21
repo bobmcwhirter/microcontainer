@@ -28,7 +28,7 @@ import java.util.Set;
 
 import org.jboss.beans.metadata.plugins.AbstractBeanMetaData;
 import org.jboss.beans.metadata.plugins.AbstractDependencyMetaData;
-import org.jboss.beans.metadata.plugins.annotations.Depends;
+import org.jboss.beans.metadata.api.annotations.Depends;
 import org.jboss.beans.metadata.spi.BeanMetaData;
 import org.jboss.beans.metadata.spi.DependencyMetaData;
 import org.jboss.beans.metadata.spi.MetaDataVisitorNode;

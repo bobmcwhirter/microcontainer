@@ -28,8 +28,8 @@ import java.util.Set;
 
 import org.jboss.beans.metadata.plugins.AbstractBeanMetaData;
 import org.jboss.beans.metadata.plugins.AbstractDemandMetaData;
-import org.jboss.beans.metadata.plugins.annotations.Demand;
-import org.jboss.beans.metadata.plugins.annotations.Demands;
+import org.jboss.beans.metadata.api.annotations.Demand;
+import org.jboss.beans.metadata.api.annotations.Demands;
 import org.jboss.beans.metadata.spi.BeanMetaData;
 import org.jboss.beans.metadata.spi.DemandMetaData;
 import org.jboss.beans.metadata.spi.MetaDataVisitorNode;

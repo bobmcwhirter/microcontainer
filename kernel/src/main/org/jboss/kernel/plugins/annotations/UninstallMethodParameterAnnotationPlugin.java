@@ -26,7 +26,7 @@ import java.util.List;
 
 import org.jboss.beans.metadata.plugins.AbstractBeanMetaData;
 import org.jboss.beans.metadata.plugins.AbstractInstallMetaData;
-import org.jboss.beans.metadata.plugins.annotations.UninstallMethod;
+import org.jboss.beans.metadata.api.annotations.UninstallMethod;
 import org.jboss.beans.metadata.spi.BeanMetaData;
 import org.jboss.beans.metadata.spi.InstallMetaData;
 import org.jboss.dependency.spi.ControllerState;

@@ -22,8 +22,8 @@
 package org.jboss.kernel.plugins.annotations;
 
 import org.jboss.beans.metadata.plugins.AbstractArrayMetaData;
-import org.jboss.beans.metadata.plugins.annotations.ArrayValue;
-import org.jboss.beans.metadata.plugins.annotations.Value;
+import org.jboss.beans.metadata.api.annotations.ArrayValue;
+import org.jboss.beans.metadata.api.annotations.Value;
 import org.jboss.beans.metadata.spi.ValueMetaData;
 
 /**

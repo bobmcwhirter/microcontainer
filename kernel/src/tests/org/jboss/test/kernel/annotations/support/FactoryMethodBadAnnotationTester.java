@@ -21,7 +21,7 @@
 */
 package org.jboss.test.kernel.annotations.support;
 
-import org.jboss.beans.metadata.plugins.annotations.FactoryMethod;
+import org.jboss.beans.metadata.api.annotations.FactoryMethod;
 
 /**
  * @author <a href="mailto:ales.justin@jboss.com">Ales Justin</a>

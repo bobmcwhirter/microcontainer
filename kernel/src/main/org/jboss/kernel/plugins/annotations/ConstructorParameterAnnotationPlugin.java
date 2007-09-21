@@ -26,7 +26,7 @@ import java.util.List;
 
 import org.jboss.beans.metadata.plugins.AbstractBeanMetaData;
 import org.jboss.beans.metadata.plugins.AbstractConstructorMetaData;
-import org.jboss.beans.metadata.plugins.annotations.Constructor;
+import org.jboss.beans.metadata.api.annotations.Constructor;
 import org.jboss.beans.metadata.spi.BeanMetaData;
 import org.jboss.beans.metadata.spi.MetaDataVisitorNode;
 import org.jboss.reflect.spi.ConstructorInfo;

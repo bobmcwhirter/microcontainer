@@ -23,7 +23,7 @@ package org.jboss.kernel.plugins.annotations;
 
 import org.jboss.beans.metadata.plugins.AbstractBeanMetaData;
 import org.jboss.beans.metadata.plugins.AbstractLifecycleMetaData;
-import org.jboss.beans.metadata.plugins.annotations.Destroy;
+import org.jboss.beans.metadata.api.annotations.Destroy;
 import org.jboss.beans.metadata.spi.BeanMetaData;
 
 /**

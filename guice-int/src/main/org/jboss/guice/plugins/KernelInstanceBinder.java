@@ -25,11 +25,11 @@ import java.util.Map;
 
 import com.google.inject.Binder;
 import com.google.inject.spi.SourceProviders;
-import org.jboss.beans.metadata.plugins.annotations.EntryValue;
-import org.jboss.beans.metadata.plugins.annotations.Inject;
-import org.jboss.beans.metadata.plugins.annotations.MapValue;
-import org.jboss.beans.metadata.plugins.annotations.StringValue;
-import org.jboss.beans.metadata.plugins.annotations.Value;
+import org.jboss.beans.metadata.api.annotations.EntryValue;
+import org.jboss.beans.metadata.api.annotations.Inject;
+import org.jboss.beans.metadata.api.annotations.MapValue;
+import org.jboss.beans.metadata.api.annotations.StringValue;
+import org.jboss.beans.metadata.api.annotations.Value;
 import org.jboss.kernel.plugins.bootstrap.basic.KernelConstants;
 
 /**

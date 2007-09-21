@@ -28,7 +28,7 @@ import java.util.ArrayList;
 import org.jboss.beans.metadata.plugins.AbstractBeanMetaData;
 import org.jboss.beans.metadata.plugins.AbstractCallbackMetaData;
 import org.jboss.beans.metadata.plugins.InstallCallbackMetaData;
-import org.jboss.beans.metadata.plugins.annotations.Install;
+import org.jboss.beans.metadata.api.annotations.Install;
 import org.jboss.beans.metadata.spi.CallbackMetaData;
 import org.jboss.dependency.spi.CallbackItem;
 import org.jboss.dependency.spi.DependencyInfo;

@@ -23,8 +23,8 @@ package org.jboss.test.kernel.inject.support;
 
 import java.util.Set;
 
-import org.jboss.beans.metadata.plugins.annotations.Install;
-import org.jboss.beans.metadata.plugins.annotations.Uninstall;
+import org.jboss.beans.metadata.api.annotations.Install;
+import org.jboss.beans.metadata.api.annotations.Uninstall;
 
 /**
  * @author <a href="mailto:ales.justin@gmail.com">Ales Justin</a>

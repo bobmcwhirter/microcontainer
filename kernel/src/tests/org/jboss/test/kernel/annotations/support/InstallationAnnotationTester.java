@@ -21,8 +21,8 @@
 */
 package org.jboss.test.kernel.annotations.support;
 
-import org.jboss.beans.metadata.plugins.annotations.InstallMethod;
-import org.jboss.beans.metadata.plugins.annotations.UninstallMethod;
+import org.jboss.beans.metadata.api.annotations.InstallMethod;
+import org.jboss.beans.metadata.api.annotations.UninstallMethod;
 
 /**
  * @author <a href="mailto:ales.justin@jboss.com">Ales Justin</a>

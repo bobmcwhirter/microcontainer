@@ -25,8 +25,8 @@ import java.util.Set;
 import java.util.Collections;
 
 import org.jboss.reliance.identity.Identity;
-import org.jboss.beans.metadata.plugins.annotations.Constructor;
-import org.jboss.beans.metadata.plugins.annotations.Inject;
+import org.jboss.beans.metadata.api.annotations.Constructor;
+import org.jboss.beans.metadata.api.annotations.Inject;
 
 /**
  * @author <a href="mailto:ales.justin@jboss.com">Ales Justin</a>

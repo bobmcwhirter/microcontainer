@@ -21,8 +21,8 @@
 */
 package org.jboss.test.kernel.dependency.support;
 
-import org.jboss.beans.metadata.plugins.annotations.Install;
-import org.jboss.beans.metadata.plugins.annotations.Uninstall;
+import org.jboss.beans.metadata.api.annotations.Install;
+import org.jboss.beans.metadata.api.annotations.Uninstall;
 
 public class CallbackCardinalitySimpleBeanRepository extends SimpleBeanRepository
 {

@@ -24,7 +24,7 @@ package org.jboss.kernel.plugins.annotations;
 import java.util.List;
 import java.util.Set;
 
-import org.jboss.beans.metadata.plugins.annotations.Aliases;
+import org.jboss.beans.metadata.api.annotations.Aliases;
 import org.jboss.beans.metadata.spi.BeanMetaData;
 import org.jboss.beans.metadata.spi.MetaDataVisitorNode;
 import org.jboss.dependency.spi.Controller;

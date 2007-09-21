@@ -835,9 +835,9 @@
                      /**
                       * Is instance valid.
                       *
-                      * @see @org.jboss.beans.metadata.plugins.annotations.Value
-                      * @see @org.jboss.beans.metadata.plugins.annotations.Parameter
-                      * @return true for valid
+                      * @see @org.jboss.beans.metadata.api.annotations.Value
+                  * @see @org.jboss.beans.metadata.api.annotations.Parameter
+                  * @return true for valid
                       */
                      boolean valid() default true;
                   }

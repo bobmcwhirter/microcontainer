@@ -21,8 +21,8 @@
 */
 package org.jboss.test.kernel.dependency.support;
 
-import org.jboss.beans.metadata.plugins.annotations.InstallMethod;
-import org.jboss.beans.metadata.plugins.annotations.UninstallMethod;
+import org.jboss.beans.metadata.api.annotations.InstallMethod;
+import org.jboss.beans.metadata.api.annotations.UninstallMethod;
 
 /**
  * SimpleBeanInstallSelf.

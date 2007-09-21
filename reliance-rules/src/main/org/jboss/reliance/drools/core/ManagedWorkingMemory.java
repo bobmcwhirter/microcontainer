@@ -30,11 +30,11 @@ import org.drools.event.AgendaEventListener;
 import org.drools.event.RuleFlowEventListener;
 import org.drools.event.WorkingMemoryEventListener;
 import org.drools.spi.GlobalResolver;
-import org.jboss.beans.metadata.plugins.annotations.Destroy;
-import org.jboss.beans.metadata.plugins.annotations.Inject;
-import org.jboss.beans.metadata.plugins.annotations.Install;
-import org.jboss.beans.metadata.plugins.annotations.Uninstall;
-import org.jboss.beans.metadata.plugins.annotations.Constructor;
+import org.jboss.beans.metadata.api.annotations.Destroy;
+import org.jboss.beans.metadata.api.annotations.Inject;
+import org.jboss.beans.metadata.api.annotations.Install;
+import org.jboss.beans.metadata.api.annotations.Uninstall;
+import org.jboss.beans.metadata.api.annotations.Constructor;
 import org.jboss.dependency.spi.Controller;
 import org.jboss.kernel.plugins.bootstrap.basic.KernelConstants;
 

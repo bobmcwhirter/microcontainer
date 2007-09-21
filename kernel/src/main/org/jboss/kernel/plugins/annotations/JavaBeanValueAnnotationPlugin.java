@@ -25,7 +25,7 @@ import java.security.AccessController;
 import java.security.PrivilegedAction;
 
 import org.jboss.beans.metadata.plugins.AbstractValueMetaData;
-import org.jboss.beans.metadata.plugins.annotations.JavaBeanValue;
+import org.jboss.beans.metadata.api.annotations.JavaBeanValue;
 import org.jboss.beans.metadata.spi.ValueMetaData;
 import org.jboss.beans.info.spi.BeanInfo;
 import org.jboss.config.plugins.property.PropertyConfiguration;
