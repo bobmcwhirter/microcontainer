@@ -2,9 +2,9 @@
   <name>jboss-spring-int</name>
   <comment>JBoss Microcontainer Spring Integration</comment>
   <projects>
-    <project>jboss-container</project>
     <project>jboss-dependency</project>
     <project>jboss-kernel</project>
+    <project>jboss-container</project>
   </projects>
   <buildSpec>
     <buildCommand>
