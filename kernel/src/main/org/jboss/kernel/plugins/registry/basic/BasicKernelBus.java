@@ -21,10 +21,10 @@
 */
 package org.jboss.kernel.plugins.registry.basic;
 
-import org.jboss.joinpoint.spi.TargettedJoinpoint;
+import org.jboss.dependency.spi.dispatch.AttributeDispatchContext;
+import org.jboss.dependency.spi.dispatch.InvokeDispatchContext;
 import org.jboss.kernel.plugins.registry.AbstractKernelBus;
 import org.jboss.kernel.spi.registry.KernelRegistryEntry;
-import org.jboss.kernel.spi.registry.KernelRegistryEntryJoinpoint;
 
 /**
  * Basic Kernel bus.
@@ -42,20 +42,40 @@ public class BasicKernelBus extends AbstractKernelBus
    public BasicKernelBus() throws Exception
    {
    }
-   
-   public Object invoke(Object name, TargettedJoinpoint joinPoint) throws Throwable
+
+   public Object get(Object name, String getter) throws Throwable
    {
       KernelRegistryEntry entry = registry.getEntry(name);
-      Object target = entry.getTarget();
-      joinPoint.setTarget(target);
-      return joinPoint.dispatch();
+      if (entry instanceof AttributeDispatchContext)
+      {
+         AttributeDispatchContext dispatcher = (AttributeDispatchContext)entry;
+         return dispatcher.get(getter);
+      }
+      else
+         throw new IllegalArgumentException("Cannot execute get on non AttributeDispatchContext entry: " + entry);
    }
 
-   public Object invoke(Object name, KernelRegistryEntryJoinpoint joinPoint) throws Throwable
+   public void set(Object name, String setter, Object value) throws Throwable
    {
       KernelRegistryEntry entry = registry.getEntry(name);
-      if (joinPoint.applyEntry(entry) == false)
-         throw new IllegalArgumentException("Cannot apply joinpoint " + joinPoint + " to entry " + entry);
-      return joinPoint.dispatch();
+      if (entry instanceof AttributeDispatchContext)
+      {
+         AttributeDispatchContext dispatcher = (AttributeDispatchContext)entry;
+         dispatcher.set(setter, value);
+      }
+      else
+         throw new IllegalArgumentException("Cannot execute set on non AttributeDispatchContext entry: " + entry);
+   }
+
+   public Object invoke(Object name, String methodName, Object parameters[], String[] signature) throws Throwable
+   {
+      KernelRegistryEntry entry = registry.getEntry(name);
+      if (entry instanceof InvokeDispatchContext)
+      {
+         InvokeDispatchContext dispatcher = (InvokeDispatchContext)entry;
+         return dispatcher.invoke(methodName, parameters, signature);
+      }
+      else
+         throw new IllegalArgumentException("Cannot execute invoke on non InvokeDispatchContext entry: " + entry);
    }
 }

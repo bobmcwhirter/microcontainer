@@ -22,17 +22,15 @@
 package org.jboss.test.kernel.registry.test;
 
 import junit.framework.Test;
-
-import org.jboss.beans.info.spi.BeanInfo;
-import org.jboss.joinpoint.plugins.Config;
-import org.jboss.joinpoint.spi.JoinpointFactory;
-import org.jboss.joinpoint.spi.MethodJoinpoint;
-import org.jboss.joinpoint.spi.TargettedJoinpoint;
+import org.jboss.beans.metadata.plugins.AbstractBeanMetaData;
 import org.jboss.kernel.Kernel;
-import org.jboss.kernel.spi.config.KernelConfig;
+import org.jboss.kernel.plugins.dependency.AbstractKernelControllerContext;
 import org.jboss.kernel.spi.registry.KernelBus;
 import org.jboss.kernel.spi.registry.KernelRegistry;
+import org.jboss.kernel.spi.registry.KernelRegistryEntry;
+import org.jboss.kernel.spi.config.KernelConfigurator;
 import org.jboss.test.kernel.AbstractKernelTest;
+import org.jboss.test.kernel.registry.support.BusBean;
 
 /**
  * Bus Test Case.
@@ -52,25 +50,41 @@ public class BusTestCase extends AbstractKernelTest
       super(name);
    }
 
+   public void testSetAndGet() throws Throwable
+   {
+      Kernel kernel = bootstrap();
+      KernelRegistry registry = kernel.getRegistry();
+      KernelConfigurator configurator = kernel.getConfigurator();
+      registry.registerEntry("Bus", makeContext(configurator, "Name1", new BusBean()));
+      KernelBus bus = kernel.getBus();
+      Object result1 = bus.get("Bus", "value");
+      assertNull("Result 1", result1);
+      bus.set("Bus", "value", "BusBus");
+      Object result2 = bus.get("Bus", "value");
+      assertEquals("BusBus", result2);
+   }
+
    public void testInvoke() throws Throwable
    {
       Kernel kernel = bootstrap();
       KernelRegistry registry = kernel.getRegistry();
-      KernelConfig config = kernel.getConfig(); 
-      registry.registerEntry("Name1", makeEntry("A string"));
-      registry.registerEntry("Name2", makeEntry("B string"));
+      KernelConfigurator configurator = kernel.getConfigurator();
+      registry.registerEntry("Name1", makeContext(configurator, "Name1", "A string"));
+      registry.registerEntry("Name2", makeContext(configurator, "Name2", "B string"));
       KernelBus bus = kernel.getBus();
-      TargettedJoinpoint joinPoint = getMethodJoinpoint(config, String.class, "toString");
-      Object result1 = bus.invoke("Name1", joinPoint);
-      Object result2 = bus.invoke("Name2", joinPoint);
+      Object result1 = bus.invoke("Name1", "toString", new Object[]{}, new String[]{});
+      Object result2 = bus.invoke("Name2", "toString", new Object[]{}, new String[]{});
       assertEquals("A string", result1);
       assertEquals("B string", result2);
    }
 
-   protected MethodJoinpoint getMethodJoinpoint(KernelConfig config, Class clazz, String string) throws Throwable
+   protected static KernelRegistryEntry makeContext(KernelConfigurator configurator, String name, Object target)
+         throws Throwable
    {
-      BeanInfo info = config.getBeanInfo(clazz);
-      JoinpointFactory jpf = info.getJoinpointFactory();
-      return Config.getMethodJoinpoint(null, jpf, string, null, null);
+      return new AbstractKernelControllerContext(
+            configurator.getBeanInfo(target.getClass()),
+            new AbstractBeanMetaData(name, target.getClass().getName()),
+            target
+      );
    }
 }

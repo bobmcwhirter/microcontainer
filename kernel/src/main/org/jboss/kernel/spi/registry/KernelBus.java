@@ -21,7 +21,6 @@
 */
 package org.jboss.kernel.spi.registry;
 
-import org.jboss.joinpoint.spi.TargettedJoinpoint;
 import org.jboss.kernel.spi.KernelObject;
 
 /**
@@ -36,22 +35,34 @@ import org.jboss.kernel.spi.KernelObject;
 public interface KernelBus extends KernelObject
 {
    /**
-    * Invoke an operation
-    * 
-    * @param name the name of the object
-    * @param joinPoint the join point
-    * @return the result
+    * Getter property / attribute
+    *
+    * @param name entry name
+    * @param getter property / attribute name
+    * @return target's property / attribute instance
     * @throws Throwable for any error
     */
-   Object invoke(Object name, TargettedJoinpoint joinPoint) throws Throwable;
+   Object get(Object name, String getter) throws Throwable;
 
    /**
-    * Invoke an operation
+    * Setter property / attribute
     *
-    * @param name the name of the object
-    * @param joinPoint the join point
-    * @return the result
+    * @param name entry name
+    * @param setter property / attribute name
+    * @param value set target's property / attribute instance
     * @throws Throwable for any error
     */
-   Object invoke(Object name, KernelRegistryEntryJoinpoint joinPoint) throws Throwable;
+   void set(Object name, String setter, Object value) throws Throwable;
+
+   /**
+    * Invoke method / operation
+    *
+    * @param name entry name
+    * @param methodName method name
+    * @param parameters parameter values
+    * @param signature method's parameter types / signatures
+    * @return inovocation's return object
+    * @throws Throwable for any error
+    */
+   Object invoke(Object name, String methodName, Object[] parameters, String[] signature) throws Throwable;
 }

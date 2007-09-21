@@ -34,11 +34,10 @@ import org.jboss.dependency.spi.ControllerState;
 import org.jboss.dependency.spi.DependencyItem;
 import org.jboss.dependency.spi.dispatch.InvokeDispatchContext;
 import org.jboss.kernel.Kernel;
-import org.jboss.kernel.plugins.config.Configurator;
+import org.jboss.kernel.plugins.dispatch.InvokeDispatchHelper;
 import org.jboss.kernel.spi.config.KernelConfigurator;
 import org.jboss.kernel.spi.dependency.KernelController;
 import org.jboss.kernel.spi.dependency.KernelControllerContext;
-import org.jboss.reflect.spi.MethodInfo;
 import org.jboss.reflect.spi.TypeInfo;
 import org.jboss.util.JBossStringBuilder;
 
@@ -291,59 +290,16 @@ public class AbstractValueFactoryMetaData extends AbstractValueMetaData implemen
 
       Kernel kernel = controller.getKernel();
       KernelConfigurator configurator = kernel.getConfigurator();
-      Object result = invoke(configurator, (InvokeDispatchContext)lookup, getMethod(), getParameters());
+      Object result = InvokeDispatchHelper.invoke(
+            configurator,
+            lookup.getTarget(),
+            (InvokeDispatchContext)lookup,
+            getMethod(),
+            getParameters()
+      );
       if (result == null)
          result = defaultValue;
       return info != null ? info.convertValue(result) : result;
-   }
-
-   protected Object invoke(KernelConfigurator configurator, InvokeDispatchContext context, String name, List<ParameterMetaData> params) throws Throwable
-   {
-      String[] signature;
-      Object[] parameters;
-      if (params == null || params.isEmpty())
-      {
-         signature = new String[0];
-         parameters = new Object[0];
-      }
-      else
-      {
-         int size = params.size();
-         signature = Configurator.getParameterTypes(log.isTraceEnabled(), params);
-         Object target = context.getTarget();
-         // TODO - is this ok for non-POJO targets?
-         if (target != null)
-         {
-            MethodInfo methodInfo = Configurator.findMethodInfo(configurator.getClassInfo(target.getClass()), name, signature);
-            parameters = Configurator.getParameters(log.isTraceEnabled(), context.getClassLoader(), methodInfo.getParameterTypes(), params);
-            // add some more info, if not yet set
-            for(int i = 0; i < size; i++)
-            {
-               if (signature[i] == null)
-               {
-                  signature[i] = methodInfo.getParameterTypes()[i].getName();
-               }
-            }
-         }
-         else
-         {
-            parameters = new Object[size];
-            ClassLoader classLoader = context.getClassLoader();
-            for (int i = 0; i < size; i++)
-            {
-               ParameterMetaData pmd = params.get(i);
-               TypeInfo typeInfo = null;
-               if (signature[i] != null)
-               {
-                  typeInfo = configurator.getClassInfo(signature[i], classLoader);
-               }
-               // typeInfo might be null, but we can still get value in some cases
-               parameters[i] = pmd.getValue().getValue(typeInfo, classLoader);
-            }
-
-         }
-      }
-      return context.invoke(name, parameters, signature);
    }
 
    public void toString(JBossStringBuilder buffer)

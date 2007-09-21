@@ -24,16 +24,12 @@ package org.jboss.kernel.plugins.dependency;
 import java.security.AccessControlContext;
 import java.security.AccessController;
 import java.security.PrivilegedActionException;
-import java.util.List;
 
 import org.jboss.beans.metadata.spi.BeanMetaData;
-import org.jboss.beans.metadata.spi.ParameterMetaData;
 import org.jboss.dependency.plugins.action.SimpleControllerContextAction;
 import org.jboss.dependency.spi.ControllerContext;
-import org.jboss.dependency.spi.dispatch.InvokeDispatchContext;
 import org.jboss.joinpoint.spi.Joinpoint;
 import org.jboss.kernel.plugins.config.Configurator;
-import org.jboss.kernel.spi.config.KernelConfigurator;
 import org.jboss.kernel.spi.dependency.KernelController;
 import org.jboss.kernel.spi.dependency.KernelControllerContext;
 import org.jboss.kernel.spi.dependency.KernelControllerContextAware;
@@ -41,8 +37,6 @@ import org.jboss.kernel.spi.metadata.KernelMetaDataRepository;
 import org.jboss.logging.Logger;
 import org.jboss.metadata.spi.MetaData;
 import org.jboss.metadata.spi.stack.MetaDataStack;
-import org.jboss.reflect.spi.MethodInfo;
-import org.jboss.reflect.spi.TypeInfo;
 
 /**
  * KernelControllerContextAction.
@@ -202,56 +196,4 @@ public class KernelControllerContextAction extends SimpleControllerContextAction
          }
       }
    }
-
-   // DispatchContext util methods
-
-   protected Object invoke(KernelConfigurator configurator, InvokeDispatchContext context, String name, List<ParameterMetaData> params) throws Throwable
-   {
-      String[] signature;
-      Object[] parameters;
-      if (params == null || params.isEmpty())
-      {
-         signature = new String[0];
-         parameters = new Object[0];
-      }
-      else
-      {
-         int size = params.size();
-         signature = Configurator.getParameterTypes(log.isTraceEnabled(), params);
-         Object target = context.getTarget();
-         // TODO - is this ok for non-POJO targets?
-         if (target != null)
-         {
-            MethodInfo methodInfo = Configurator.findMethodInfo(configurator.getClassInfo(target.getClass()), name, signature);
-            parameters = Configurator.getParameters(log.isTraceEnabled(), context.getClassLoader(), methodInfo.getParameterTypes(), params);
-            // add some more info, if not yet set
-            for(int i = 0; i < size; i++)
-            {
-               if (signature[i] == null)
-               {
-                  signature[i] = methodInfo.getParameterTypes()[i].getName();
-               }
-            }
-         }
-         else
-         {
-            parameters = new Object[size];
-            ClassLoader classLoader = context.getClassLoader();
-            for (int i = 0; i < size; i++)
-            {
-               ParameterMetaData pmd = params.get(i);
-               TypeInfo typeInfo = null;
-               if (signature[i] != null)
-               {
-                  typeInfo = configurator.getClassInfo(signature[i], classLoader);
-               }
-               // typeInfo might be null, but we can still get value in some cases
-               parameters[i] = pmd.getValue().getValue(typeInfo, classLoader);
-            }
-
-         }
-      }
-      return context.invoke(name, parameters, signature);
-   }
-
 }

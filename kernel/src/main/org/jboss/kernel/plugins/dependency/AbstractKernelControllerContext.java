@@ -38,6 +38,7 @@ import org.jboss.kernel.plugins.config.Configurator;
 import org.jboss.kernel.spi.dependency.KernelController;
 import org.jboss.kernel.spi.dependency.KernelControllerContext;
 import org.jboss.util.JBossStringBuilder;
+import sun.security.util.SecurityConstants;
 
 /**
  * Controller context.
@@ -213,29 +214,34 @@ public class AbstractKernelControllerContext extends AbstractControllerContext i
       }
    }
 
-   public Object get(final String name) throws Throwable
+   protected BeanInfo getInfo()
    {
       if (info == null)
          throw new IllegalArgumentException("Null BeanInfo");
-      return info.getProperty(getTarget(), name);
+      return info;
+   }
+
+   public Object get(final String name) throws Throwable
+   {
+      return getInfo().getProperty(getTarget(), name);
    }
 
    public void set(final String name, final Object value) throws Throwable
    {
-      if (info == null)
-         throw new IllegalArgumentException("Null BeanInfo");
-      info.setProperty(getTarget(), name, value);
+      getInfo().setProperty(getTarget(), name, value);
    }
 
    public Object invoke(final String name, final Object[] parameters, final String[] signature) throws Throwable
    {
-      if (info == null)
-         throw new IllegalArgumentException("Null BeanInfo");
-      return info.invoke(getTarget(), name, signature, parameters);
+      return getInfo().invoke(getTarget(), name, signature, parameters);
    }
 
+   // todo - remove or better security
    public ClassLoader getClassLoader() throws Throwable
    {
+      SecurityManager sm = System.getSecurityManager();
+      if (sm != null)
+         sm.checkPermission(SecurityConstants.GET_CLASSLOADER_PERMISSION);
       return Configurator.getClassLoader(getBeanMetaData());
    }
 }

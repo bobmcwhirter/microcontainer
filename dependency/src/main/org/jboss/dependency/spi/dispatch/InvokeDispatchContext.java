@@ -44,13 +44,6 @@ public interface InvokeDispatchContext extends AttributeDispatchContext
    Object invoke(String name, Object parameters[], String[] signature) throws Throwable;
 
    /**
-    * Get any target
-    *
-    * @return the target
-    */
-   Object getTarget();
-
-   /**
     * Get context's classloader.
     * Used when determining type info for parameter and
     * getting the parameter actual value.

@@ -28,6 +28,7 @@ import org.jboss.beans.metadata.spi.InstallMetaData;
 import org.jboss.dependency.spi.ControllerContext;
 import org.jboss.dependency.spi.dispatch.InvokeDispatchContext;
 import org.jboss.kernel.Kernel;
+import org.jboss.kernel.plugins.dispatch.InvokeDispatchHelper;
 import org.jboss.kernel.spi.config.KernelConfigurator;
 import org.jboss.kernel.spi.dependency.InstallKernelControllerContextAware;
 import org.jboss.kernel.spi.dependency.KernelController;
@@ -65,7 +66,13 @@ public class InstallAction extends KernelControllerContextAction
                target = controller.getContext(install.getBean(), install.getDependentState());
             if (target instanceof InvokeDispatchContext)
             {
-               invoke(configurator, (InvokeDispatchContext)target, install.getMethodName(), install.getParameters());
+               InvokeDispatchHelper.invoke(
+                     configurator,
+                     target.getTarget(),
+                     (InvokeDispatchContext)target,
+                     install.getMethodName(),
+                     install.getParameters()
+               );
             }
             else
             {
@@ -109,7 +116,13 @@ public class InstallAction extends KernelControllerContextAction
             {
                try
                {
-                  invoke(configurator, (InvokeDispatchContext)target, uninstall.getMethodName(), uninstall.getParameters());
+                  InvokeDispatchHelper.invoke(
+                        configurator,
+                        target.getTarget(), 
+                        (InvokeDispatchContext)target,
+                        uninstall.getMethodName(),
+                        uninstall.getParameters()
+                  );
                }
                catch (Throwable t)
                {

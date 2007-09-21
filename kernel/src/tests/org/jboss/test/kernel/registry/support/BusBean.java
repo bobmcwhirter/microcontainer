@@ -19,24 +19,22 @@
 * Software Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA
 * 02110-1301 USA, or see the FSF site: http://www.fsf.org.
 */
-package org.jboss.kernel.spi.registry;
-
-import org.jboss.joinpoint.spi.Joinpoint;
+package org.jboss.test.kernel.registry.support;
 
 /**
- * A join point with a kernel registry entry
- *
  * @author <a href="mailto:ales.justin@jboss.com">Ales Justin</a>
  */
-public interface KernelRegistryEntryJoinpoint extends Joinpoint
+public class BusBean
 {
-   /**
-    * Apply the entry.
-    * Return false if the entry cannot be applied
-    * to joinpoint.
-    *
-    * @return false if entry cannot be applied to instance 
-    * @param entry the entry
-    */
-   boolean applyEntry(KernelRegistryEntry entry);
+   private String value;
+
+   public String getValue()
+   {
+      return value;
+   }
+
+   public void setValue(String value)
+   {
+      this.value = value;
+   }
 }
