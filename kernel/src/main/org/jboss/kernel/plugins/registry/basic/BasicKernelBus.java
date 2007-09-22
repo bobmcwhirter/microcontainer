@@ -58,7 +58,7 @@ public class BasicKernelBus extends AbstractKernelBus
       if (entry == null)
          throw new IllegalArgumentException("No such entry: " + name);
       if (clazz.isAssignableFrom(entry.getClass()) == false)
-         throw new IllegalArgumentException("Cannot execute " + dispatcher.info() + " on non " + clazz.getSimpleName() + " entry: " + entry);
+         throw new IllegalArgumentException("Cannot execute " + dispatcher + " on non " + clazz.getSimpleName() + " entry: " + entry);
       return dispatcher.dispatch(clazz.cast(entry));
    }
 
@@ -71,7 +71,7 @@ public class BasicKernelBus extends AbstractKernelBus
             return context.get(getter);
          }
 
-         public String info()
+         public String toString()
          {
             return "get";
          }
@@ -88,7 +88,7 @@ public class BasicKernelBus extends AbstractKernelBus
             return null;
          }
 
-         public String info()
+         public String toString()
          {
             return "set";
          }
@@ -104,7 +104,7 @@ public class BasicKernelBus extends AbstractKernelBus
             return context.invoke(methodName, parameters, signature);
          }
 
-         public String info()
+         public String toString()
          {
             return "invoke";
          }
@@ -121,12 +121,5 @@ public class BasicKernelBus extends AbstractKernelBus
        * @return
        */
       Object dispatch(T context) throws Throwable;
-
-      /**
-       * Get info.
-       *
-       * @return info
-       */
-      String info();
    }
 }
