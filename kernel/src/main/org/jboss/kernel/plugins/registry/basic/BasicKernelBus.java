@@ -46,6 +46,7 @@ public class BasicKernelBus extends AbstractKernelBus
    /**
     * Execute dispatch.
     *
+    * @param <T> exact context type
     * @param name the entry name
     * @param clazz the context class
     * @param dispatcher the dispatcher
@@ -111,6 +112,11 @@ public class BasicKernelBus extends AbstractKernelBus
       });
    }
 
+   /**
+    * Simple dispatch on context.
+    *
+    * @param <T> exact context type
+    */
    private interface Dispatcher<T>
    {
       /**
