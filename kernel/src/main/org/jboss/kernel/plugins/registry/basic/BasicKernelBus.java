@@ -43,39 +43,90 @@ public class BasicKernelBus extends AbstractKernelBus
    {
    }
 
-   public Object get(Object name, String getter) throws Throwable
+   /**
+    * Execute dispatch.
+    *
+    * @param name the entry name
+    * @param clazz the context class
+    * @param dispatcher the dispatcher
+    * @return dispatcher's result
+    * @throws Throwable for any error
+    */
+   protected <T> Object execute(Object name, Class<T> clazz, Dispatcher<T> dispatcher) throws Throwable
    {
       KernelRegistryEntry entry = registry.getEntry(name);
-      if (entry instanceof AttributeDispatchContext)
-      {
-         AttributeDispatchContext dispatcher = (AttributeDispatchContext)entry;
-         return dispatcher.get(getter);
-      }
-      else
-         throw new IllegalArgumentException("Cannot execute get on non AttributeDispatchContext entry: " + entry);
+      if (entry == null)
+         throw new IllegalArgumentException("No such entry: " + name);
+      if (clazz.isAssignableFrom(entry.getClass()) == false)
+         throw new IllegalArgumentException("Cannot execute " + dispatcher.info() + " on non " + clazz.getSimpleName() + " entry: " + entry);
+      return dispatcher.dispatch(clazz.cast(entry));
    }
 
-   public void set(Object name, String setter, Object value) throws Throwable
+   public Object get(Object name, final String getter) throws Throwable
    {
-      KernelRegistryEntry entry = registry.getEntry(name);
-      if (entry instanceof AttributeDispatchContext)
+      return execute(name, AttributeDispatchContext.class, new Dispatcher<AttributeDispatchContext>()
       {
-         AttributeDispatchContext dispatcher = (AttributeDispatchContext)entry;
-         dispatcher.set(setter, value);
-      }
-      else
-         throw new IllegalArgumentException("Cannot execute set on non AttributeDispatchContext entry: " + entry);
+         public Object dispatch(AttributeDispatchContext context) throws Throwable
+         {
+            return context.get(getter);
+         }
+
+         public String info()
+         {
+            return "get";
+         }
+      });
    }
 
-   public Object invoke(Object name, String methodName, Object parameters[], String[] signature) throws Throwable
+   public void set(Object name, final String setter, final Object value) throws Throwable
    {
-      KernelRegistryEntry entry = registry.getEntry(name);
-      if (entry instanceof InvokeDispatchContext)
+      execute(name, AttributeDispatchContext.class, new Dispatcher<AttributeDispatchContext>()
       {
-         InvokeDispatchContext dispatcher = (InvokeDispatchContext)entry;
-         return dispatcher.invoke(methodName, parameters, signature);
-      }
-      else
-         throw new IllegalArgumentException("Cannot execute invoke on non InvokeDispatchContext entry: " + entry);
+         public Object dispatch(AttributeDispatchContext context) throws Throwable
+         {
+            context.set(setter, value);
+            return null;
+         }
+
+         public String info()
+         {
+            return "set";
+         }
+      });
+   }
+
+   public Object invoke(Object name, final String methodName, final Object parameters[], final String[] signature) throws Throwable
+   {
+      return execute(name, InvokeDispatchContext.class, new Dispatcher<InvokeDispatchContext>()
+      {
+         public Object dispatch(InvokeDispatchContext context) throws Throwable
+         {
+            return context.invoke(methodName, parameters, signature);
+         }
+
+         public String info()
+         {
+            return "invoke";
+         }
+      });
+   }
+
+   private interface Dispatcher<T>
+   {
+      /**
+       * Invoke simple dispatcher.
+       *
+       * @param context the context
+       * @throws Throwable for any error
+       * @return
+       */
+      Object dispatch(T context) throws Throwable;
+
+      /**
+       * Get info.
+       *
+       * @return info
+       */
+      String info();
    }
 }
