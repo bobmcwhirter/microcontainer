@@ -30,7 +30,7 @@ import org.jboss.kernel.spi.registry.KernelRegistryEntry;
  * Basic Kernel bus.
  * 
  * @author <a href="adrian@jboss.com">Adrian Brock</a>
- * @version $Revision$
+ * @author <a href="ales.justin@jboss.com">Ales Justin</a>
  */
 public class BasicKernelBus extends AbstractKernelBus
 {
