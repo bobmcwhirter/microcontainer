@@ -107,6 +107,11 @@ public interface BeanMetaData extends FeatureMetaData, ValueMetaData
    boolean isAutowireCandidate();
 
    /**
+    * Get the annotations
+    * @return the bean annotations
+    */
+   Set<AnnotationMetaData> getAnnotations();
+   /**
     * Set the annotations
     *
     * @param annotations the annotations
