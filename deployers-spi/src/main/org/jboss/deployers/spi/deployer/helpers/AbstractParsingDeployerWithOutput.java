@@ -274,17 +274,17 @@ public abstract class AbstractParsingDeployerWithOutput<T> extends AbstractParsi
    {
       if (buildManagedObject)
       {
-         // we can check for Serializable w/o searching for attachment
-         if (Serializable.class.isAssignableFrom(getOutput()) == false)
-         {
-            log.debug("Skipping ManagedObject since T(" + getOutput() + ") is not Serializable");
-            return;
-         }
-
          T deployment = unit.getAttachment(getOutput());
          if (deployment != null)
          {
             // must be Serializable - see getAttachment method contract (expectedType.cast(result))
+            if ( (deployment instanceof Serializable) == false)
+            {
+               // Probably an error if the deployer enabled buildManagedObject?
+               log.debug("Skipping ManagedObject since T(" + deployment + ") is not Serializable");
+               return;
+            }
+            
             Serializable instance = (Serializable) deployment;
             ManagedObjectFactory factory = ManagedObjectFactoryBuilder.create();
             ManagedObject mo = factory.initManagedObject(instance, null, null);
