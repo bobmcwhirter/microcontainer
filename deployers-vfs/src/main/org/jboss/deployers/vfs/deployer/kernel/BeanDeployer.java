@@ -44,6 +44,8 @@ public class BeanDeployer extends SchemaResolverDeployer<KernelDeployment>
    {
       super(KernelDeployment.class);
       setSuffix("-beans.xml");
+      // Enable ManagedObject creation based on annotations by default
+      setBuildManagedObject(true);
    }
 
    @Override
