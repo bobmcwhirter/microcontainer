@@ -23,6 +23,8 @@ package org.jboss.metatype.api.types;
 
 import java.io.Serializable;
 
+import org.jboss.metatype.api.values.ArrayValue;
+
 /**
  * ArrayMetaType.
  *
@@ -302,7 +304,7 @@ public class ArrayMetaType<T extends Serializable> extends AbstractMetaType
          return false;
 
       Class clazz = obj.getClass();
-      if (clazz.isArray() == false)
+      if (clazz.isArray() == false && (obj instanceof ArrayValue) == false)
          return false;
       
       if (elementType instanceof SimpleMetaType)
@@ -310,6 +312,13 @@ public class ArrayMetaType<T extends Serializable> extends AbstractMetaType
       
       if (elementType instanceof TableMetaType || elementType instanceof CompositeMetaType)
       {
+         // If this is an ArrayValue check its MetaType
+         if (obj instanceof ArrayValue)
+         {
+            ArrayValue av = (ArrayValue) obj;
+            return this.equals(av.getMetaType());
+         }
+         // Check the element classes
          Class thisClass = null;
          try
          {
