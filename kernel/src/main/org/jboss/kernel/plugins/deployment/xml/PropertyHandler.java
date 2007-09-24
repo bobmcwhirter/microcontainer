@@ -57,7 +57,7 @@ public class PropertyHandler extends DefaultElementHandler
             property.setName(attrs.getValue(i));
          else if ("preinstantiate".equals(localName))
             property.setPreInstantiate(Boolean.parseBoolean(attrs.getValue(i)));
-         else if ("class".equals(localName) || "replace".equals(localName))
+         else if ("class".equals(localName) || "replace".equals(localName) || "trim".equals(localName))
          {
             StringValueMetaData svmd;
             ValueMetaData vmd = property.getValue();
@@ -74,6 +74,8 @@ public class PropertyHandler extends DefaultElementHandler
                svmd.setType(attrs.getValue(i));
             else if ("replace".equals(localName))
                svmd.setReplace(Boolean.parseBoolean(attrs.getValue(i)));
+            else if ("trim".equals(localName))
+               svmd.setTrim(Boolean.parseBoolean(attrs.getValue(i)));
          }
       }
    }

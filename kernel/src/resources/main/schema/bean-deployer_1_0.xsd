@@ -457,6 +457,7 @@ $Id$
       </xsd:annotation>
       <xsd:attribute name="class" type="classNameType" use="optional"/>
       <xsd:attribute name="replace" type="xsd:boolean" use="optional"/>
+      <xsd:attribute name="trim" type="xsd:boolean" use="optional"/>
    </xsd:complexType>
 
    <xsd:complexType name="valueType" mixed="true">

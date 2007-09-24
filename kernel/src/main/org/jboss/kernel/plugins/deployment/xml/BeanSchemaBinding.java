@@ -511,11 +511,21 @@ public class BeanSchemaBinding
                String localName = attrs.getLocalName(i);
                if ("class".equals(localName))
                   parameter.setType(attrs.getValue(i));
-               else if ("replace".equals(localName))
+               else if ("replace".equals(localName) || "trim".equals(localName))
                {
-                  StringValueMetaData svmd = new StringValueMetaData();
-                  svmd.setReplace(Boolean.parseBoolean(attrs.getValue(i)));
-                  parameter.setValue(svmd);
+                  ValueMetaData vmd = parameter.getValue();
+                  StringValueMetaData stringValueMetaData;
+                  if (vmd != null && vmd instanceof StringValueMetaData)
+                     stringValueMetaData = (StringValueMetaData)vmd;
+                  else
+                  {
+                     stringValueMetaData = new StringValueMetaData();
+                     parameter.setValue(stringValueMetaData);
+                  }
+                  if ("replace".equals(localName))
+                     stringValueMetaData.setReplace(Boolean.parseBoolean(attrs.getValue(i)));
+                  else if ("trim".equals(localName))
+                     stringValueMetaData.setTrim(Boolean.parseBoolean(attrs.getValue(i)));
                }
             }
          }
@@ -538,6 +548,7 @@ public class BeanSchemaBinding
             {
                StringValueMetaData previous = (StringValueMetaData) vmd;
                svmd.setReplace(previous.isReplace());
+               svmd.setTrim(previous.isTrim());
                String type = previous.getType();
                if (type != null)
                   svmd.setType(type);
@@ -808,7 +819,7 @@ public class BeanSchemaBinding
                   property.setName(attrs.getValue(i));
                else if ("preinstantiate".equals(localName))
                   property.setPreInstantiate(Boolean.parseBoolean(attrs.getValue(i)));
-               else if ("class".equals(localName) || "replace".equals(localName))
+               else if ("class".equals(localName) || "replace".equals(localName) || "trim".equals(localName))
                {
                   StringValueMetaData svmd;
                   ValueMetaData vmd = property.getValue();
@@ -825,6 +836,8 @@ public class BeanSchemaBinding
                      svmd.setType(attrs.getValue(i));
                   else if ("replace".equals(localName))
                      svmd.setReplace(Boolean.parseBoolean(attrs.getValue(i)));
+                  else if ("trim".equals(localName))
+                     svmd.setTrim(Boolean.parseBoolean(attrs.getValue(i)));
                }
             }
          }
@@ -856,6 +869,7 @@ public class BeanSchemaBinding
             {
                StringValueMetaData previous = (StringValueMetaData) vmd;
                svmd.setReplace(previous.isReplace());
+               svmd.setTrim(previous.isTrim());
                String type = previous.getType();
                if (type != null)
                   svmd.setType(type);
@@ -1075,6 +1089,8 @@ public class BeanSchemaBinding
                   value.setType(attrs.getValue(i));
                else if ("replace".equals(localName))
                   value.setReplace(Boolean.parseBoolean(attrs.getValue(i)));
+               else if ("trim".equals(localName))
+                  value.setTrim(Boolean.parseBoolean(attrs.getValue(i)));
             }
          }
       });
@@ -1115,6 +1131,8 @@ public class BeanSchemaBinding
                   string.setType(attrs.getValue(i));
                else if ("replace".equals(localName))
                   string.setReplace(Boolean.parseBoolean(attrs.getValue(i)));
+               else if ("trim".equals(localName))
+                  string.setTrim(Boolean.parseBoolean(attrs.getValue(i)));
             }
          }
       });

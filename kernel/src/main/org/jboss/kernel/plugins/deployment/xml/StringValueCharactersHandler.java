@@ -52,6 +52,7 @@ public abstract class StringValueCharactersHandler extends CharactersHandler
       {
          StringValueMetaData previous = (StringValueMetaData) vmd;
          svmd.setReplace(previous.isReplace());
+         svmd.setTrim(previous.isTrim());
          String type = previous.getType();
          if (type != null)
             svmd.setType(type);

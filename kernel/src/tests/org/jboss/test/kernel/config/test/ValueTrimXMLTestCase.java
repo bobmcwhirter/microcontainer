@@ -19,47 +19,46 @@
 * Software Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA
 * 02110-1301 USA, or see the FSF site: http://www.fsf.org.
 */
-package org.jboss.beans.metadata.api.annotations;
+package org.jboss.test.kernel.config.test;
 
-import java.lang.annotation.Retention;
-import java.lang.annotation.RetentionPolicy;
-import java.lang.annotation.Target;
-import java.lang.annotation.ElementType;
+import junit.framework.Test;
+import org.jboss.test.kernel.config.support.XMLUtil;
+import org.jboss.test.kernel.config.support.SimpleBean;
 
 /**
- * String value.
+ * Value trim xml test cases.
  *
  * @author <a href="mailto:ales.justin@jboss.com">Ales Justin</a>
  */
-@Retention(RetentionPolicy.RUNTIME)
-@Target({ElementType.METHOD, ElementType.PARAMETER})
-public @interface StringValue
+public class ValueTrimXMLTestCase extends ValueTrimTestCase
 {
-   /**
-    * Get the value.
-    *
-    * @return the value
-    */
-   String value();
+   public ValueTrimXMLTestCase(String name)
+   {
+      super(name, true);
+   }
 
-   /**
-    * Get type.
-    *
-    * @return the type
-    */
-   String type() default "";
+   public static Test suite()
+   {
+      return suite(ValueTrimXMLTestCase.class);
+   }
 
-   /**
-    * Do replace with system properties.
-    *
-    * @return true for replace with system properties, false otherwise
-    */
-   boolean replace() default true;
+   protected Object getTrimmedValue() throws Throwable
+   {
+      XMLUtil util = bootstrapXML(true);
+      SimpleBean bean = (SimpleBean)util.getBean("SimpleBean");
+      return bean.getAnInt();
+   }
 
-   /**
-    * Do we trim.
-    * 
-    * @return
-    */
-   boolean trim() default true;
+   protected Object getPlainValue() throws Throwable
+   {
+      XMLUtil util = bootstrapXML(true);
+      Object bean = util.getBean("SimpleBean");
+      util.validate();
+      return bean;
+   }
+
+   protected Class<? extends Exception> getExceptionClass()
+   {
+      return IllegalStateException.class;
+   }
 }

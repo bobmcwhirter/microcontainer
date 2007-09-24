@@ -26,6 +26,7 @@ import javax.xml.namespace.QName;
 
 import org.jboss.beans.metadata.plugins.AbstractParameterMetaData;
 import org.jboss.beans.metadata.plugins.StringValueMetaData;
+import org.jboss.beans.metadata.spi.ValueMetaData;
 import org.jboss.xb.binding.sunday.unmarshalling.DefaultElementHandler;
 import org.jboss.xb.binding.sunday.unmarshalling.ElementBinding;
 import org.xml.sax.Attributes;
@@ -56,11 +57,21 @@ public class ParameterHandler extends DefaultElementHandler
          String localName = attrs.getLocalName(i);
          if ("class".equals(localName))
             parameter.setType(attrs.getValue(i));
-         else if ("replace".equals(localName))
+         else if ("replace".equals(localName) || "trim".equals(localName))
          {
-            StringValueMetaData svmd = new StringValueMetaData();
-            svmd.setReplace(Boolean.parseBoolean(attrs.getValue(i)));
-            parameter.setValue(svmd);
+            ValueMetaData vmd = parameter.getValue();
+            StringValueMetaData stringValueMetaData;
+            if (vmd != null && vmd instanceof StringValueMetaData)
+               stringValueMetaData = (StringValueMetaData)vmd;
+            else
+            {
+               stringValueMetaData = new StringValueMetaData();
+               parameter.setValue(stringValueMetaData);
+            }
+            if ("replace".equals(localName))
+               stringValueMetaData.setReplace(Boolean.parseBoolean(attrs.getValue(i)));
+            else if ("trim".equals(localName))
+               stringValueMetaData.setTrim(Boolean.parseBoolean(attrs.getValue(i)));
          }
       }
    }

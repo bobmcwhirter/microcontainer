@@ -19,47 +19,25 @@
 * Software Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA
 * 02110-1301 USA, or see the FSF site: http://www.fsf.org.
 */
-package org.jboss.beans.metadata.api.annotations;
+package org.jboss.test.kernel.config.support;
 
-import java.lang.annotation.Retention;
-import java.lang.annotation.RetentionPolicy;
-import java.lang.annotation.Target;
-import java.lang.annotation.ElementType;
+import org.jboss.beans.metadata.api.annotations.StringValue;
 
 /**
- * String value.
- *
  * @author <a href="mailto:ales.justin@jboss.com">Ales Justin</a>
  */
-@Retention(RetentionPolicy.RUNTIME)
-@Target({ElementType.METHOD, ElementType.PARAMETER})
-public @interface StringValue
+public class TrimTester
 {
-   /**
-    * Get the value.
-    *
-    * @return the value
-    */
-   String value();
+   private Integer value;
 
-   /**
-    * Get type.
-    *
-    * @return the type
-    */
-   String type() default "";
+   public Integer getValue()
+   {
+      return value;
+   }
 
-   /**
-    * Do replace with system properties.
-    *
-    * @return true for replace with system properties, false otherwise
-    */
-   boolean replace() default true;
-
-   /**
-    * Do we trim.
-    * 
-    * @return
-    */
-   boolean trim() default true;
+   @StringValue(" 10 ")
+   public void setValue(Integer value)
+   {
+      this.value = value;
+   }
 }

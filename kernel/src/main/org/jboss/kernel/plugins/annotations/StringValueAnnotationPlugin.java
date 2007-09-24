@@ -45,6 +45,7 @@ public class StringValueAnnotationPlugin extends PropertyAnnotationPlugin<String
       if (isAttributePresent(annotation.type()))
          value.setType(annotation.type());
       value.setReplace(annotation.replace());
+      value.setTrim(annotation.trim());
       return value;
    }
 }

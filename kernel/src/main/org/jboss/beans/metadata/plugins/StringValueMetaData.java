@@ -46,6 +46,12 @@ public class StringValueMetaData extends AbstractTypeMetaData
    private boolean replace = true;
 
    /**
+    * Do we trim string value before usage,
+    * by default is true.
+    */
+   private boolean trim = true;
+
+   /**
     * Create a new string value
     */
    public StringValueMetaData()
@@ -96,9 +102,9 @@ public class StringValueMetaData extends AbstractTypeMetaData
       if (typeInfo != info && info != null)
       {
          Object typeValue = typeInfo.convertValue(getUnderlyingValue());
-         return info.convertValue(typeValue, replace);
+         return info.convertValue(typeValue, replace, trim);
       }
-      return typeInfo.convertValue(getUnderlyingValue(), replace);
+      return typeInfo.convertValue(getUnderlyingValue(), replace, trim);
    }
 
    protected Object getDefaultInstance()
@@ -123,5 +129,15 @@ public class StringValueMetaData extends AbstractTypeMetaData
    public void setReplace(boolean replace)
    {
       this.replace = replace;
+   }
+
+   public boolean isTrim()
+   {
+      return trim;
+   }
+
+   public void setTrim(boolean trim)
+   {
+      this.trim = trim;
    }
 }

@@ -57,6 +57,8 @@ public class ValueHandler extends DefaultElementHandler
             string.setType(attrs.getValue(i));
          else if ("replace".equals(localName))
             string.setReplace(Boolean.parseBoolean(attrs.getValue(i)));
+         else if ("trim".equals(localName))
+            string.setTrim(Boolean.parseBoolean(attrs.getValue(i)));
       }
    }
 }
