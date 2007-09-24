@@ -75,7 +75,7 @@ public interface KernelDeployment extends JBossInterface
     *
     * @return true if scoped, false if isolated, null by default
     */
-   Boolean isScoped();
+   Boolean getScoped();
 
    /**
     * Get the deployment annotations.

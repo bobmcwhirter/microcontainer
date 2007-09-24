@@ -41,6 +41,8 @@ import org.jboss.dependency.spi.ControllerMode;
 import org.jboss.dependency.spi.ControllerState;
 import org.jboss.kernel.spi.dependency.KernelControllerContext;
 import org.jboss.kernel.spi.deployment.KernelDeployment;
+import org.jboss.managed.api.annotation.ManagementObject;
+import org.jboss.managed.api.annotation.ManagementProperty;
 import org.jboss.util.JBossObject;
 import org.jboss.util.JBossStringBuilder;
 
@@ -50,6 +52,7 @@ import org.jboss.util.JBossStringBuilder;
  * @author <a href="adrian@jboss.com">Adrian Brock</a>
  * @version $Revision$
  */
+@ManagementObject
 public class AbstractKernelDeployment extends JBossObject
    implements KernelDeployment, MutableLifecycleHolder, Serializable
 {
@@ -119,6 +122,7 @@ public class AbstractKernelDeployment extends JBossObject
     * 
     * @param beanFactories a List<BeanMetaDataFactory>.
     */
+   @ManagementProperty(managed=true)
    public void setBeanFactories(List<BeanMetaDataFactory> beanFactories)
    {
       this.beanFactories = beanFactories;
@@ -220,7 +224,7 @@ public class AbstractKernelDeployment extends JBossObject
       return result;
    }
 
-   public Boolean isScoped()
+   public Boolean getScoped()
    {
       return scoped;
    }
