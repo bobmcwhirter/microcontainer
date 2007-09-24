@@ -234,6 +234,8 @@ public class AbstractManagedObjectFactory extends ManagedObjectFactory
       ManagementObject managementObject = classInfo.getUnderlyingAnnotation(ManagementObject.class);
       if( managementObject == null )
       {
+         if (trace)
+            log.trace("No ManagementObject annotation, skipping ManagedObject for class: "+clazz);
          // Skip the ManagedObject creation
          return null;
       }
