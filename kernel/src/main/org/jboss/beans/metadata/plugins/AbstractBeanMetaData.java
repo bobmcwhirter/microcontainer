@@ -50,6 +50,7 @@ import org.jboss.dependency.spi.ControllerMode;
 import org.jboss.dependency.spi.ControllerState;
 import org.jboss.dependency.spi.DependencyItem;
 import org.jboss.kernel.spi.dependency.KernelControllerContext;
+import org.jboss.managed.api.annotation.ManagementObject;
 import org.jboss.reflect.spi.TypeInfo;
 import org.jboss.util.JBossObject;
 import org.jboss.util.JBossStringBuilder;
@@ -60,6 +61,7 @@ import org.jboss.util.JBossStringBuilder;
  * @author <a href="adrian@jboss.com">Adrian Brock</a>
  * @version $Revision$
  */
+@ManagementObject
 public class AbstractBeanMetaData extends AbstractFeatureMetaData
    implements BeanMetaData, BeanMetaDataFactory, MutableLifecycleHolder, Serializable
 {
