@@ -19,34 +19,26 @@
 * Software Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA
 * 02110-1301 USA, or see the FSF site: http://www.fsf.org.
 */
-package org.jboss.test.guice.test;
+package org.jboss.test.guice.support;
 
-import junit.textui.TestRunner;
-import junit.framework.TestSuite;
-import junit.framework.Test;
+import org.jboss.beans.metadata.api.annotations.Constructor;
+import org.jboss.beans.metadata.api.annotations.Inject;
 
 /**
- * Guice test suite.
- * 
  * @author <a href="mailto:ales.justin@jboss.com">Ales Justin</a>
  */
-public class GuiceTestSuite extends TestSuite
+public class SingletonHolder
 {
+   private Singleton singleton;
 
-   public static void main(String[] args)
+   @Constructor
+   public SingletonHolder(@Inject Singleton singleton)
    {
-      TestRunner.run(suite());
+      this.singleton = singleton;
    }
 
-   public static Test suite()
+   public Singleton getSingleton()
    {
-      TestSuite suite = new TestSuite("Guice Tests");
-
-      suite.addTest(GuiceIntegrationTestCase.suite());
-      suite.addTest(GuiceObjectsTestCase.suite());
-      suite.addTest(GuiceToMCTestCase.suite());
-
-      return suite;
+      return singleton;
    }
-
 }

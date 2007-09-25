@@ -80,6 +80,12 @@
    <xi:include href="modules/osgi.xml"
                xml:base="./"
                xmlns:xi="http://www.w3.org/2001/XInclude"/>
+   <xi:include href="modules/reliance.xml"
+               xml:base="./"
+               xmlns:xi="http://www.w3.org/2001/XInclude"/>
+   <xi:include href="modules/guice.xml"
+               xml:base="./"
+               xmlns:xi="http://www.w3.org/2001/XInclude"/>
    <xi:include href="modules/standalone.xml"
                xml:base="./"
                xmlns:xi="http://www.w3.org/2001/XInclude"/>
