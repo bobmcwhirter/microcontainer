@@ -65,6 +65,9 @@ public interface Fields extends Serializable
    /** The annotations associated with the property */
    String ANNOTATIONS = "annotations";
 
+   /** The attachment */
+   String ATTACHMENT = "attachment";
+
    // TODO other standard fields here
 
    /**
