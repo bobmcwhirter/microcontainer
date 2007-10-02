@@ -62,6 +62,7 @@ import org.jboss.managed.plugins.ManagedObjectImpl;
 import org.jboss.managed.plugins.ManagedOperationImpl;
 import org.jboss.managed.plugins.ManagedParameterImpl;
 import org.jboss.managed.plugins.ManagedPropertyImpl;
+import org.jboss.managed.plugins.advice.WrapperAdvice;
 import org.jboss.managed.spi.factory.InstanceClassFactory;
 import org.jboss.managed.spi.factory.ManagedObjectBuilder;
 import org.jboss.managed.spi.factory.ManagedObjectPopulator;
@@ -91,9 +92,7 @@ import org.jboss.reflect.spi.TypeInfo;
  * @version $Revision: 1.1 $
  */
 public class AbstractManagedObjectFactory extends ManagedObjectFactory
-   implements ManagedObjectBuilder,
-   InstanceClassFactory,
-   ManagedObjectPopulator<Serializable>
+   implements ManagedObjectBuilder, InstanceClassFactory, ManagedObjectPopulator<Serializable>
 {
    private static final Logger log = Logger.getLogger(AbstractManagedObjectFactory.class);
 
@@ -111,6 +110,7 @@ public class AbstractManagedObjectFactory extends ManagedObjectFactory
    
    /** The managed object builders */
    private Map<Class, WeakReference<ManagedObjectBuilder>> builders = new WeakHashMap<Class, WeakReference<ManagedObjectBuilder>>();
+
    /** The instance to class factories */
    private Map<Class, WeakReference<InstanceClassFactory>> instanceFactories = new WeakHashMap<Class, WeakReference<InstanceClassFactory>>();
 
@@ -139,15 +139,14 @@ public class AbstractManagedObjectFactory extends ManagedObjectFactory
    }
 
    @Override
-   public ManagedObject initManagedObject(Serializable object,
-         String name, String nameType)
+   public ManagedObject initManagedObject(Serializable object, String name, String nameType)
    {
       if (object == null)
          throw new IllegalArgumentException("Null object");
 
       Class<? extends Serializable> clazz = object.getClass();
       InstanceClassFactory icf = getInstanceFactory(clazz);
-      Class<? extends Serializable> moClass = null;
+      Class<? extends Serializable> moClass;
       try
       {
          moClass = icf.getManagedObjectClass(object);
@@ -175,7 +174,8 @@ public class AbstractManagedObjectFactory extends ManagedObjectFactory
       {
          if (builder == null)
             builders.remove(clazz);
-         builders.put(clazz, new WeakReference<ManagedObjectBuilder>(builder));
+         else
+            builders.put(clazz, new WeakReference<ManagedObjectBuilder>(builder));
       }
    }
 
@@ -184,9 +184,10 @@ public class AbstractManagedObjectFactory extends ManagedObjectFactory
    {
       synchronized (instanceFactories)
       {
-         if (instanceFactories == null)
+         if (factory == null)
             instanceFactories.remove(clazz);
-         instanceFactories.put(clazz, new WeakReference<InstanceClassFactory>(factory));
+         else
+            instanceFactories.put(clazz, new WeakReference<InstanceClassFactory>(factory));
       }      
    }
 
@@ -214,14 +215,13 @@ public class AbstractManagedObjectFactory extends ManagedObjectFactory
          throw new IllegalArgumentException("Null class");
 
       ManagedObjectBuilder builder = getBuilder(clazz);
-      ManagedObject result = builder.buildManagedObject(clazz);
-      return result;
+      return builder.buildManagedObject(clazz);
    }
    
    /**
     * The ManagedObjectBuilder.buildManagedObject implementation. This is based
     * on the org.jboss.managed.api.annotation.* package annotations.
-    * @param clazz - 
+    * @param clazz the attachment class
     * @return the ManagementObject if clazz is properly annotated, null if
     *    it does not have a ManagementObject annotation.
     */
@@ -420,7 +420,10 @@ public class AbstractManagedObjectFactory extends ManagedObjectFactory
                {
                   log.debug("Failed to populate constraints for: "+propertyInfo, e);
                }
-               
+
+               // wrap fields
+               fields = WrapperAdvice.wrapFields(fields);
+
                ManagedProperty property = null;
                if (managementProperty != null)
                {
@@ -428,24 +431,20 @@ public class AbstractManagedObjectFactory extends ManagedObjectFactory
                   if (factory == ManagementProperty.NULL_PROPERTY_FACTORY.class)
                      factory = managementProperty.propertyFactory();
                   if (factory != ManagementProperty.NULL_PROPERTY_FACTORY.class)
-                  {
                      property = getManagedProperty(factory, fields);
-                  }
                }
                if (property == null)
                   property = new ManagedPropertyImpl(fields);
-               properties.add(property);
+               // wrap property
+               properties.add(WrapperAdvice.wrapManagedProperty(property));
             }
             else if (trace)
-            {
-               log.trace("Ignoring property: "+propertyInfo);
-            }
-
+               log.trace("Ignoring property: " + propertyInfo);
          }
       }
 
       /* TODO: Operations. In general the bean metadata does not contain
-       operation information.
+         operation information.
       */
       Set<ManagedOperation> operations = new HashSet<ManagedOperation>();
       
@@ -472,11 +471,7 @@ public class AbstractManagedObjectFactory extends ManagedObjectFactory
       if (operations.size() > 0 )
          result.setOperations(operations);
       for (ManagedProperty property : properties)
-      {
-         // FIXME: this either needs to be passed in via the factory or setter added to ManagedProperty
-         ManagedPropertyImpl managedPropertyImpl = (ManagedPropertyImpl) property;
-         managedPropertyImpl.setManagedObject(result);
-      }
+         property.setManagedObject(result);
       return result;
    }
 
@@ -490,6 +485,8 @@ public class AbstractManagedObjectFactory extends ManagedObjectFactory
       
       ManagedObjectImpl managedObjectImpl = (ManagedObjectImpl) managedObject;
       Serializable object = createUnderlyingObject(managedObjectImpl, clazz);
+      // todo - missing this?
+      // managedObjectImpl.setAttachment(object);
       populateManagedObject(managedObject, object);
    }
    
@@ -533,7 +530,7 @@ public class AbstractManagedObjectFactory extends ManagedObjectFactory
    protected void populateValues(ManagedObjectImpl managedObject, Serializable object)
    {
       InstanceClassFactory icf = getInstanceFactory(object.getClass());
-      Class moClass = null;
+      Class moClass;
       try
       {
          moClass = icf.getManagedObjectClass(object);
@@ -594,7 +591,7 @@ public class AbstractManagedObjectFactory extends ManagedObjectFactory
       if (propertyInfo == null)
          throw new IllegalStateException("Unable to find property: " + name + " for " + object.getClass().getName());
       
-      Object value = null;
+      Object value;
       try
       {
          value = propertyInfo.get(object);
@@ -633,8 +630,9 @@ public class AbstractManagedObjectFactory extends ManagedObjectFactory
          if (MANAGED_OBJECT_META_TYPE == arrayType.getElementType())
          {
             Collection cvalue = getAsCollection(value);
-            ArrayMetaType<GenericMetaType> moType = new ArrayMetaType<GenericMetaType>(1, MANAGED_OBJECT_META_TYPE);
-            ArrayValueSupport<GenericValueSupport> moArrayValue = new ArrayValueSupport(moType);
+            // todo - AJ: changed some generics by best guess
+            ArrayMetaType<GenericValueSupport> moType = new ArrayMetaType<GenericValueSupport>(1, MANAGED_OBJECT_META_TYPE);
+            ArrayValueSupport<GenericValueSupport> moArrayValue = new ArrayValueSupport<GenericValueSupport>(moType);
             ArrayList<GenericValueSupport> tmp = new ArrayList<GenericValueSupport>();
             for(Object element : cvalue)
             {
@@ -657,8 +655,7 @@ public class AbstractManagedObjectFactory extends ManagedObjectFactory
     * @param opAnnotation
     * @return
     */
-   protected ManagedOperation getManagedOperation(MethodInfo methodInfo,
-         ManagementOperation opAnnotation)
+   protected ManagedOperation getManagedOperation(MethodInfo methodInfo, ManagementOperation opAnnotation)
    {
       String name = methodInfo.getName();
       String description = opAnnotation.description();
@@ -668,8 +665,7 @@ public class AbstractManagedObjectFactory extends ManagedObjectFactory
       TypeInfo returnInfo = methodInfo.getReturnType();
       MetaType returnType = metaTypeFactory.resolve(returnInfo);
       ArrayList<ManagedParameter> mparams = new ArrayList<ManagedParameter>();
-      Class<? extends ManagedParameterConstraintsPopulatorFactory> opConstraintsFactor
-         = opAnnotation.constraintsFactory();
+      Class<? extends ManagedParameterConstraintsPopulatorFactory> opConstraintsFactor = opAnnotation.constraintsFactory();
 
       if( paramInfo != null )
       {
@@ -722,9 +718,7 @@ public class AbstractManagedObjectFactory extends ManagedObjectFactory
       ManagedParameter[] parameters = new ManagedParameter[mparams.size()];
       mparams.toArray(parameters);
 
-      ManagedOperationImpl op = new ManagedOperationImpl(name, description, impact,
-            parameters, returnType);
-      return op;
+      return new ManagedOperationImpl(name, description, impact, parameters, returnType);
    }
 
    /**

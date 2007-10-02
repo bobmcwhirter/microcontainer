@@ -293,7 +293,7 @@ public class ManagedObjectImpl implements ManagedObject
    private static Map<String, ManagedProperty> toMap(Set<ManagedProperty> props)
    {
       HashMap<String, ManagedProperty> properties = new HashMap<String, ManagedProperty>();
-      if (props != null)
+      if (props != null && props.isEmpty() == false)
       {
          for (ManagedProperty prop : props)
          {

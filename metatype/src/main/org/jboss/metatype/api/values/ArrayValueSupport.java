@@ -94,19 +94,17 @@ public class ArrayValueSupport<T extends Serializable> extends AbstractMetaValue
     */
    public int getLength()
    {
-      int length = Array.getLength(value);
-      return length;
+      return Array.getLength(value);
    }
 
    public Object getValue(int index)
    {
-      Object element = Array.get(value, index);
-      return element;
+      return Array.get(value, index);
    }
 
    public Iterator<T> iterator()
    {
-      return new ArrayValueIterator(value);
+      return new ArrayValueIterator<T>(value);
    }
 
    /**
@@ -235,6 +233,7 @@ public class ArrayValueSupport<T extends Serializable> extends AbstractMetaValue
          this.index = 0;
          this.length = Array.getLength(array);
       }
+
       public boolean hasNext()
       {
          return index < length;
@@ -243,8 +242,7 @@ public class ArrayValueSupport<T extends Serializable> extends AbstractMetaValue
       public T next()
       {
          Object next = Array.get(array, index ++);
-         T t = (T) next;
-         return t;
+         return (T) next;
       }
 
       public void remove()

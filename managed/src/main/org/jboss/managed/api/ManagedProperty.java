@@ -44,6 +44,7 @@ public interface ManagedProperty extends Serializable
     * @return the managed object
     */
    ManagedObject getManagedObject();
+   void setManagedObject(ManagedObject managedObject);
 
    /**
     * Get the ManagedObject 
