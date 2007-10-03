@@ -156,9 +156,16 @@ public interface DeployerClient
     * 
     * @param name - the name of the top-level DeploymentContext to process.
     * @return the graph of managed objects for the top-level DeploymentContex and its children.
-    * @throws DeploymentException
+    * @throws DeploymentException for any error
     */
    Graph<Map<String, ManagedObject>> getDeepManagedObjects(String name) throws DeploymentException;
 
+   /**
+    * Get the managed deployment.
+    *
+    * @param name the name of the deployment
+    * @return the managed deployment
+    * @throws DeploymentException for any error
+    */
    ManagedDeployment getManagedDeployment(String name) throws DeploymentException;
 }

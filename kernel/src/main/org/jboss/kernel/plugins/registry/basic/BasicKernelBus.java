@@ -56,8 +56,7 @@ public class BasicKernelBus extends AbstractKernelBus
    protected <T> Object execute(Object name, Class<T> clazz, Dispatcher<T> dispatcher) throws Throwable
    {
       KernelRegistryEntry entry = registry.getEntry(name);
-      if (entry == null)
-         throw new IllegalArgumentException("No such entry: " + name);
+      // entry is not null by KernelRegistry.getEntry contract
       if (clazz.isAssignableFrom(entry.getClass()) == false)
          throw new IllegalArgumentException("Cannot execute " + dispatcher + " on non " + clazz.getSimpleName() + " entry: " + entry);
       return dispatcher.dispatch(clazz.cast(entry));

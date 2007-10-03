@@ -22,15 +22,11 @@
 package org.jboss.managed.plugins;
 
 import java.io.Serializable;
-import java.util.HashSet;
-import java.util.Map;
 
 import org.jboss.managed.api.ComponentType;
 import org.jboss.managed.api.ManagedComponent;
 import org.jboss.managed.api.ManagedDeployment;
 import org.jboss.managed.api.ManagedObject;
-import org.jboss.managed.api.ManagedOperation;
-import org.jboss.managed.api.ManagedProperty;
 
 /**
  * 
@@ -45,8 +41,7 @@ public class ManagedComponentImpl extends DelegateManagedObjectImpl
    private ManagedDeployment owner;
    private ComponentType type;
    
-   public ManagedComponentImpl(ComponentType type, ManagedDeployment owner,
-         ManagedObject mo)
+   public ManagedComponentImpl(ComponentType type, ManagedDeployment owner, ManagedObject mo)
    {
       super(mo);
       this.type = type;
