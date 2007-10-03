@@ -25,6 +25,8 @@ import java.util.Collections;
 
 import com.google.inject.AbstractModule;
 import com.google.inject.Module;
+import com.google.inject.Key;
+import com.google.inject.name.Names;
 import junit.framework.Test;
 import org.jboss.beans.metadata.plugins.AbstractArrayMetaData;
 import org.jboss.beans.metadata.plugins.AbstractBeanMetaData;
@@ -39,6 +41,7 @@ import org.jboss.kernel.plugins.bootstrap.basic.BasicBootstrap;
 import org.jboss.kernel.spi.dependency.KernelController;
 import org.jboss.test.guice.support.Singleton;
 import org.jboss.test.guice.support.SingletonHolder;
+import org.jboss.test.guice.support.Prototype;
 import org.jboss.test.kernel.junit.MicrocontainerTest;
 
 /**
@@ -79,11 +82,14 @@ public class GuiceToMCTestCase extends MicrocontainerTest
          AbstractConstructorMetaData constructor = new AbstractConstructorMetaData();
          AbstractArrayMetaData arrayMetaData = new AbstractArrayMetaData();
          final Singleton singleton = new Singleton();
+         final Key<Prototype> prototypeKey = Key.get(Prototype.class, Names.named("prototype"));
+         final Prototype prototype = new Prototype();
          Module module = new AbstractModule()
          {
             protected void configure()
             {
                bind(Singleton.class).toInstance(singleton);
+               bind(prototypeKey).toInstance(prototype);
             }
          };
          arrayMetaData.add(new AbstractValueMetaData(module));
@@ -99,6 +105,10 @@ public class GuiceToMCTestCase extends MicrocontainerTest
          SingletonHolder holder = (SingletonHolder)holderContext.getTarget();
          assertNotNull(holder);
          assertEquals(singleton, holder.getSingleton());
+
+         ControllerContext prototypeContext = controller.getInstalledContext(prototypeKey);
+         assertNotNull(prototypeContext);
+         assertEquals(prototype, prototypeContext.getTarget());
       }
       finally
       {
