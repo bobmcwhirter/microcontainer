@@ -21,9 +21,11 @@
 */
 package org.jboss.kernel.plugins.bootstrap.basic;
 
+import org.jboss.beans.info.spi.BeanInfo;
 import org.jboss.kernel.Kernel;
 import org.jboss.kernel.plugins.bootstrap.AbstractKernelInitializer;
-import org.jboss.kernel.plugins.registry.AbstractKernelRegistryEntry;
+import org.jboss.kernel.plugins.registry.BeanKernelRegistryEntry;
+import org.jboss.kernel.spi.config.KernelConfig;
 import org.jboss.kernel.spi.config.KernelConfigurator;
 import org.jboss.kernel.spi.dependency.KernelController;
 import org.jboss.kernel.spi.event.KernelEventManager;
@@ -68,12 +70,6 @@ public class BasicKernelInitializer extends AbstractKernelInitializer
       eventManager.setKernel(kernel);
       kernel.setEventManager(eventManager);
       
-      KernelBus bus = createKernelBus(kernel);
-      if (trace)
-         log.trace("Using Bus: " + bus);
-      bus.setKernel(kernel);
-      kernel.setBus(bus);
-      
       KernelConfigurator configurator = createKernelConfigurator(kernel);
       if (trace)
          log.trace("Using Configurator: " + configurator);
@@ -86,6 +82,12 @@ public class BasicKernelInitializer extends AbstractKernelInitializer
       controller.setKernel(kernel);
       kernel.setController(controller);
       
+      KernelBus bus = createKernelBus(kernel);
+      if (trace)
+         log.trace("Using Bus: " + bus);
+      bus.setKernel(kernel);
+      kernel.setBus(bus);
+
       // Register everything
       register(kernel, KernelConstants.KERNEL_CONFIG_NAME, kernel.getConfig());
       register(kernel, KernelConstants.KERNEL_INITIALIZER_NAME, this);
@@ -220,10 +222,8 @@ public class BasicKernelInitializer extends AbstractKernelInitializer
     */
    protected KernelRegistryEntry createKernelRegistryEntry(Kernel kernel, Object object) throws Throwable
    {
-      // @TODO add beaninfo to registry entry?
-      // KernelConfig config = kernel.getConfig();
-      // BeanInfoFactory factory = config.getDefaultBeanInfoFactory();
-      // BeanInfo info = factory.getBeanInfo(object.getClass());
-      return new AbstractKernelRegistryEntry(object);
+      KernelConfig config = kernel.getConfig();
+      BeanInfo info = config.getBeanInfo(object.getClass());
+      return new BeanKernelRegistryEntry(object, info);
    }
 }

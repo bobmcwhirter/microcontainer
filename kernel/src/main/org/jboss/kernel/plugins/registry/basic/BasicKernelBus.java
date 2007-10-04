@@ -21,10 +21,10 @@
 */
 package org.jboss.kernel.plugins.registry.basic;
 
+import org.jboss.dependency.spi.ControllerContext;
 import org.jboss.dependency.spi.dispatch.AttributeDispatchContext;
 import org.jboss.dependency.spi.dispatch.InvokeDispatchContext;
 import org.jboss.kernel.plugins.registry.AbstractKernelBus;
-import org.jboss.kernel.spi.registry.KernelRegistryEntry;
 
 /**
  * Basic Kernel bus.
@@ -34,15 +34,6 @@ import org.jboss.kernel.spi.registry.KernelRegistryEntry;
  */
 public class BasicKernelBus extends AbstractKernelBus
 {
-   /**
-    * Create a new basic bus
-    * 
-    * @throws Exception for any error
-    */
-   public BasicKernelBus() throws Exception
-   {
-   }
-
    /**
     * Execute dispatch.
     *
@@ -55,11 +46,11 @@ public class BasicKernelBus extends AbstractKernelBus
     */
    protected <T> Object execute(Object name, Class<T> clazz, Dispatcher<T> dispatcher) throws Throwable
    {
-      KernelRegistryEntry entry = registry.getEntry(name);
+      ControllerContext context = controller.getInstalledContext(name);
       // entry is not null by KernelRegistry.getEntry contract
-      if (clazz.isAssignableFrom(entry.getClass()) == false)
-         throw new IllegalArgumentException("Cannot execute " + dispatcher + " on non " + clazz.getSimpleName() + " entry: " + entry);
-      return dispatcher.dispatch(clazz.cast(entry));
+      if (clazz.isAssignableFrom(context.getClass()) == false)
+         throw new IllegalArgumentException("Cannot execute " + dispatcher + " on non " + clazz.getSimpleName() + " context: " + context);
+      return dispatcher.dispatch(clazz.cast(context));
    }
 
    public Object get(Object name, final String getter) throws Throwable
@@ -123,7 +114,7 @@ public class BasicKernelBus extends AbstractKernelBus
        *
        * @param context the context
        * @throws Throwable for any error
-       * @return
+       * @return dispatch's invocation result
        */
       Object dispatch(T context) throws Throwable;
    }

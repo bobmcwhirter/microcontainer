@@ -23,32 +23,23 @@ package org.jboss.kernel.plugins.registry;
 
 import org.jboss.kernel.Kernel;
 import org.jboss.kernel.plugins.AbstractKernelObject;
+import org.jboss.kernel.spi.dependency.KernelController;
 import org.jboss.kernel.spi.registry.KernelBus;
-import org.jboss.kernel.spi.registry.KernelRegistry;
 
 /**
  * Abstract Kernel bus.
  * 
  * @author <a href="adrian@jboss.com">Adrian Brock</a>
- * @version $Revision$
+ * @author <a href="ales.justin@jboss.com">Ales Justin</a>
  */
 public abstract class AbstractKernelBus extends AbstractKernelObject implements KernelBus
 {
-   /** The registry */
-   protected KernelRegistry registry;
-   
-   /**
-    * Create an abstract kernel bus
-    * 
-    * @throws Exception for any error
-    */
-   public AbstractKernelBus() throws Exception
-   {
-   }
+   /** The controller */
+   protected KernelController controller;
    
    public void setKernel(Kernel kernel) throws Throwable
    {
       super.setKernel(kernel);
-      registry = kernel.getRegistry();
+      controller = kernel.getController();
    }
 }

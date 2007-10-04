@@ -40,13 +40,6 @@ public abstract class AbstractKernelObject extends AbstractEventEmitter implemen
    /** The kernel */
    protected Kernel kernel;
 
-   /**
-    * Create a new abstract kernel object
-    */
-   public AbstractKernelObject()
-   {
-   }
-
    public Kernel getKernel()
    {
       Kernel.checkAccess();
