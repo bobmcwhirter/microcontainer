@@ -496,19 +496,19 @@ public class MainDeployerImpl implements MainDeployer, MainDeployerStructure
    /**
     * Recursively process the DeploymentContext into ManagedDeployments.
     * 
-    * @param context
-    * @param parent
-    * @throws DeploymentException
+    * @param context the context
+    * @param parent the parent
+    * @throws DeploymentException for any error
     */
    protected void processManagedDeployment(DeploymentContext context, ManagedDeployment parent)
       throws DeploymentException
    {
+      DeploymentUnit unit = context.getDeploymentUnit();
+      Map<String, ManagedObject> MOs = getManagedObjects(context);
+      ManagedDeployment md = mgtDeploymentCreator.build(unit, MOs, parent);
       for (DeploymentContext childContext : context.getChildren())
       {
-         DeploymentUnit childUnit = childContext.getDeploymentUnit();
-         Map<String, ManagedObject> childMOs = getManagedObjects(childContext);         
-         ManagedDeployment childMD = mgtDeploymentCreator.build(childUnit, childMOs, parent);
-         processManagedDeployment(childContext, childMD);
+         processManagedDeployment(childContext, md);
       }
    }
 
