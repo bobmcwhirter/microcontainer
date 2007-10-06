@@ -63,8 +63,18 @@ public class MicrocontainerTest extends AbstractTestCaseWithSetup
    protected void setUp() throws Exception
    {
       super.setUp();
+      afterSetUp();
+   }
+
+   /**
+    * Configure after set up.
+    *
+    * @throws Exception for any error
+    */
+   protected void afterSetUp() throws Exception
+   {
       configureLogging();
-      // Validate everything deployed 
+      // Validate everything deployed
       getMCDelegate().validate();
    }
 
