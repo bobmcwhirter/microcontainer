@@ -29,11 +29,12 @@ import org.jboss.managed.api.ManagedDeployment;
 import org.jboss.managed.api.ManagedObject;
 
 /**
- * 
+ * Managed component impl.
+ *
  * @author Scott.Stark@jboss.org
  * @version $Revision$
  */
-public class ManagedComponentImpl extends DelegateManagedObjectImpl
+public class ManagedComponentImpl extends DelegateManagedCommonImpl
    implements ManagedComponent, Serializable
 {
    private static final long serialVersionUID = 1;

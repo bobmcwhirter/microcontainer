@@ -24,7 +24,6 @@ package org.jboss.managed.api;
 import java.io.Serializable;
 import java.lang.annotation.Annotation;
 import java.util.Map;
-import java.util.Set;
 
 /**
  * ManagedObject is an interface for a manageable element. It
@@ -41,31 +40,8 @@ import java.util.Set;
  * @author Scott.Stark@jboss.org
  * @version $Revision: 1.1 $
  */
-public interface ManagedObject extends Serializable
+public interface ManagedObject extends ManagedCommon
 {
-   /**
-    * Get the external name by which the ManagedObject is known
-    * @see {@linkplain ManagementObject#name}}
-    * @see {@linkplain ManagementObjectID#name}}
-    * @return
-    */
-   String getName();
-   /**
-    * Get the external name type/qualifier.
-    * @see {@linkplain ManagementObject#type}
-    * @see {@linkplain ManagementObjectID#type}
-    * @return
-    */
-   String getNameType();
-
-   /**
-    * Get the attachment name
-    * @see {@linkplain ManagementObject#attachmentName}}
-    * 
-    * @return the name
-    */
-   String getAttachmentName();
-
    /**
     * Get the underlying object
     * 
@@ -80,31 +56,10 @@ public interface ManagedObject extends Serializable
    public Map<String, Annotation> getAnnotations();
 
    /**
-    * Get the property names
-    * 
-    * @return the property names
+    * Get the runtime component name.
+    *
+    * @see {@linkplain ManagementRuntimeRef}
+    * @return name of runtime component if one exists, null if no component exists.
     */
-   Set<String> getPropertyNames();
-
-   /**
-    * Get a property
-    * 
-    * @param name the name
-    * @return the property
-    */
-   ManagedProperty getProperty(String name);
-   
-   /**
-    * Get the properties
-    * 
-    * @return the properties
-    */
-   Map<String, ManagedProperty> getProperties();
-
-   /**
-    * Get the operations
-    * 
-    * @return the operations
-    */
-   Set<ManagedOperation> getOperations();
+   Object getComponentName();
 }

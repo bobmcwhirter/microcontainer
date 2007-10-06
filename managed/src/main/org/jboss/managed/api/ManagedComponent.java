@@ -27,7 +27,7 @@ package org.jboss.managed.api;
  * @author Scott.Stark@jboss.org
  * @version $Revision$
  */
-public interface ManagedComponent extends ManagedObject
+public interface ManagedComponent extends ManagedCommon
 {
    /**
     * The component classification as a type/subtype.

@@ -21,6 +21,7 @@
  */
 package org.jboss.managed.plugins;
 
+import java.io.ObjectStreamException;
 import java.io.Serializable;
 import java.lang.reflect.UndeclaredThrowableException;
 
@@ -30,7 +31,8 @@ import org.jboss.managed.api.ManagedObject;
 import org.jboss.metatype.api.values.MetaValue;
 
 /**
- * An extension of
+ * An extension of ManagedPropertyImpl.
+ *
  * @author Scott.Stark@jboss.org
  * @version $Revision$
  */
@@ -42,10 +44,12 @@ public class WritethroughManagedPropertyImpl extends ManagedPropertyImpl
    {
       super(name);
    }
+
    public WritethroughManagedPropertyImpl(Fields fields)
    {
       super(fields);
    }
+
    public WritethroughManagedPropertyImpl(ManagedObject managedObject, Fields fields)
    {
       super(managedObject, fields);
@@ -58,9 +62,9 @@ public class WritethroughManagedPropertyImpl extends ManagedPropertyImpl
     * primative
     */
    @Override
-   public void setField(String name, Serializable value)
+   public void setValue(Serializable value)
    {
-      super.setField(name, value);
+      super.setValue(value);
       // Skip MetaValues
       if( (value instanceof MetaValue) )
          return;
@@ -81,5 +85,14 @@ public class WritethroughManagedPropertyImpl extends ManagedPropertyImpl
       }
    }
 
-   
+   /**
+    * Expose only plain ManangedPropertyImpl.
+    *
+    * @return simpler ManagedPropertyImpl
+    * @throws ObjectStreamException for any error
+    */
+   private Object writeReplace() throws ObjectStreamException
+   {
+      return new ManagedPropertyImpl(getManagedObject(), getFields());
+   }
 }

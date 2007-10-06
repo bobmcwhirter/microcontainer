@@ -38,12 +38,13 @@ public @interface ManagementObjectRef
 {
    /** An explicit ManagedObject name. If empty, the name is
     * taken from the annotated property.
-    * @see {@linkplain ManagedObject#getExternalName()}
+    * @see {@linkplain ManagedObject#getName()}
     */
+
    String name() default AnnotationDefaults.EMPTY_STRING;
    /** A qualifier for the name that provides a context to
     * identify the type or scope of the ManagedObject name.
-    * @see {@linkplain ManagedObject#getExternalNameType()}
+    * @see {@linkplain ManagedObject#getNameType()}
     */
    String type() default AnnotationDefaults.EMPTY_STRING;
 }

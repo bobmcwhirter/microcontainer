@@ -61,6 +61,9 @@ public class ManagedObjectImpl implements ManagedObject
    /** The operations */
    private Set<ManagedOperation> operations;
 
+   /** The runtime component name */
+   private transient Object componentName;
+
    /**
     * Create a new ManagedObjectImpl
     * 
@@ -248,6 +251,16 @@ public class ManagedObjectImpl implements ManagedObject
    public void setOperations(Set<ManagedOperation> operations)
    {
       this.operations = operations;
+   }
+
+   public Object getComponentName()
+   {
+      return componentName;
+   }
+
+   public void setComponentName(Object name)
+   {
+      this.componentName = name;
    }
 
    @Override

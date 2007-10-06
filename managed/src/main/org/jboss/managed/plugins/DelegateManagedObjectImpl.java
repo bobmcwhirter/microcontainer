@@ -35,8 +35,7 @@ import org.jboss.managed.api.ManagedProperty;
  * @author Scott.Stark@jboss.org
  * @version $Revision$
  */
-public class DelegateManagedObjectImpl
-   implements ManagedObject
+public class DelegateManagedObjectImpl implements ManagedObject
 {
    private static final long serialVersionUID = 1;
    private ManagedObject delegate;
@@ -91,5 +90,8 @@ public class DelegateManagedObjectImpl
       return delegate.getPropertyNames();
    }
 
-   
+   public Object getComponentName()
+   {
+      return delegate.getComponentName();
+   }
 }

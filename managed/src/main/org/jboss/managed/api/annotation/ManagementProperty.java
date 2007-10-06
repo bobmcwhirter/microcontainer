@@ -70,37 +70,34 @@ public @interface ManagementProperty
    /** The class to use for the ManagedProperty Fields implementation */
    Class<? extends Fields> fieldsFactory() default NULL_FIELDS_FACTORY.class;
    /** The constraints, allowed values populator factory */
-   Class<? extends ManagedPropertyConstraintsPopulatorFactory> constraintsFactory()
-      default NULL_CONSTRAINTS.class;
+   Class<? extends ManagedPropertyConstraintsPopulatorFactory> constraintsFactory() default NULL_CONSTRAINTS.class;
 
    /**
     * Used in {@link ManagementProperty#constraintsFactory()} to
     * signal that the factory be inferred from the type
     * of the property.
     */
-   public static final class NULL_CONSTRAINTS
-      implements ManagedPropertyConstraintsPopulatorFactory
+   public static final class NULL_CONSTRAINTS implements ManagedPropertyConstraintsPopulatorFactory
    {
       public ManagedPropertyConstraintsPopulator newInstance()
       {
          return null;
       }
    }
+
    /**
     * Used in {@link ManagementProperty#fieldsFactory()} to
     * indicate that no Fields factory is defined.
     */
-   public static abstract class NULL_FIELDS_FACTORY
-      implements Fields
-   {
-   }
-   /**
-    * Used in {@link ManagementProperty#fieldsFactory()} to
-    * indicate that no Fields factory is defined.
-    */
-   public static abstract class NULL_PROPERTY_FACTORY
-      implements ManagedProperty
+   public static abstract class NULL_FIELDS_FACTORY implements Fields
    {
    }
 
+   /**
+    * Used in {@link ManagementProperty#propertyFactory()} to
+    * indicate that no ManagedProperty factory is defined.
+    */
+   public static abstract class NULL_PROPERTY_FACTORY implements ManagedProperty
+   {
+   }
 }

@@ -25,6 +25,7 @@ import java.io.Serializable;
 import java.lang.annotation.Annotation;
 import java.lang.ref.WeakReference;
 import java.lang.reflect.Constructor;
+import java.lang.reflect.UndeclaredThrowableException;
 import java.security.AccessController;
 import java.security.PrivilegedAction;
 import java.util.ArrayList;
@@ -35,6 +36,7 @@ import java.util.HashSet;
 import java.util.Map;
 import java.util.Set;
 import java.util.WeakHashMap;
+
 import org.jboss.beans.info.spi.BeanInfo;
 import org.jboss.beans.info.spi.PropertyInfo;
 import org.jboss.config.plugins.property.PropertyConfiguration;
@@ -43,9 +45,9 @@ import org.jboss.logging.Logger;
 import org.jboss.managed.api.Fields;
 import org.jboss.managed.api.ManagedObject;
 import org.jboss.managed.api.ManagedOperation;
+import org.jboss.managed.api.ManagedOperation.Impact;
 import org.jboss.managed.api.ManagedParameter;
 import org.jboss.managed.api.ManagedProperty;
-import org.jboss.managed.api.ManagedOperation.Impact;
 import org.jboss.managed.api.annotation.AnnotationDefaults;
 import org.jboss.managed.api.annotation.ManagementComponent;
 import org.jboss.managed.api.annotation.ManagementConstants;
@@ -56,13 +58,13 @@ import org.jboss.managed.api.annotation.ManagementOperation;
 import org.jboss.managed.api.annotation.ManagementParameter;
 import org.jboss.managed.api.annotation.ManagementProperties;
 import org.jboss.managed.api.annotation.ManagementProperty;
+import org.jboss.managed.api.annotation.ManagementRuntimeRef;
 import org.jboss.managed.api.factory.ManagedObjectFactory;
 import org.jboss.managed.plugins.DefaultFieldsImpl;
 import org.jboss.managed.plugins.ManagedObjectImpl;
 import org.jboss.managed.plugins.ManagedOperationImpl;
 import org.jboss.managed.plugins.ManagedParameterImpl;
-import org.jboss.managed.plugins.ManagedPropertyImpl;
-import org.jboss.managed.plugins.advice.WrapperAdvice;
+import org.jboss.managed.plugins.WritethroughManagedPropertyImpl;
 import org.jboss.managed.spi.factory.InstanceClassFactory;
 import org.jboss.managed.spi.factory.ManagedObjectBuilder;
 import org.jboss.managed.spi.factory.ManagedObjectPopulator;
@@ -70,6 +72,7 @@ import org.jboss.managed.spi.factory.ManagedParameterConstraintsPopulator;
 import org.jboss.managed.spi.factory.ManagedParameterConstraintsPopulatorFactory;
 import org.jboss.managed.spi.factory.ManagedPropertyConstraintsPopulator;
 import org.jboss.managed.spi.factory.ManagedPropertyConstraintsPopulatorFactory;
+import org.jboss.managed.spi.factory.RuntimeComponentNameTransformer;
 import org.jboss.metatype.api.types.ArrayMetaType;
 import org.jboss.metatype.api.types.GenericMetaType;
 import org.jboss.metatype.api.types.MetaType;
@@ -113,6 +116,9 @@ public class AbstractManagedObjectFactory extends ManagedObjectFactory
 
    /** The instance to class factories */
    private Map<Class, WeakReference<InstanceClassFactory>> instanceFactories = new WeakHashMap<Class, WeakReference<InstanceClassFactory>>();
+
+   /** The instance to name transformers */
+   private Map<Class<?>, WeakReference<RuntimeComponentNameTransformer>> transformers = new WeakHashMap<Class<?>, WeakReference<RuntimeComponentNameTransformer>>();
 
    static
    {
@@ -189,6 +195,17 @@ public class AbstractManagedObjectFactory extends ManagedObjectFactory
          else
             instanceFactories.put(clazz, new WeakReference<InstanceClassFactory>(factory));
       }      
+   }
+
+   public void setNameTransformers(Class<?> clazz, RuntimeComponentNameTransformer transformer)
+   {
+      synchronized (transformers)
+      {
+         if (transformer == null)
+            transformers.remove(clazz);
+         else
+            transformers.put(clazz, new WeakReference<RuntimeComponentNameTransformer>(transformer));
+      }
    }
 
    /**
@@ -421,9 +438,6 @@ public class AbstractManagedObjectFactory extends ManagedObjectFactory
                   log.debug("Failed to populate constraints for: "+propertyInfo, e);
                }
 
-               // wrap fields
-               fields = WrapperAdvice.wrapFields(fields);
-
                ManagedProperty property = null;
                if (managementProperty != null)
                {
@@ -433,10 +447,11 @@ public class AbstractManagedObjectFactory extends ManagedObjectFactory
                   if (factory != ManagementProperty.NULL_PROPERTY_FACTORY.class)
                      property = getManagedProperty(factory, fields);
                }
+               // we should have write-through by default
+               // use factory to change this default behavior
                if (property == null)
-                  property = new ManagedPropertyImpl(fields);
-               // wrap property
-               properties.add(WrapperAdvice.wrapManagedProperty(property));
+                  property = new WritethroughManagedPropertyImpl(fields);
+               properties.add(property);
             }
             else if (trace)
                log.trace("Ignoring property: " + propertyInfo);
@@ -485,8 +500,6 @@ public class AbstractManagedObjectFactory extends ManagedObjectFactory
       
       ManagedObjectImpl managedObjectImpl = (ManagedObjectImpl) managedObject;
       Serializable object = createUnderlyingObject(managedObjectImpl, clazz);
-      // todo - missing this?
-      // managedObjectImpl.setAttachment(object);
       populateManagedObject(managedObject, object);
    }
    
@@ -540,6 +553,37 @@ public class AbstractManagedObjectFactory extends ManagedObjectFactory
          throw new IllegalStateException(e);
       }
       BeanInfo beanInfo = configuration.getBeanInfo(moClass);
+
+      Set<PropertyInfo> propertyInfos = beanInfo.getProperties();
+      if (propertyInfos != null && propertyInfos.isEmpty() == false)
+      {
+         for(PropertyInfo propertyInfo : propertyInfos)
+         {
+            ManagementRuntimeRef componentRef = propertyInfo.getUnderlyingAnnotation(ManagementRuntimeRef.class);
+            if (componentRef != null)
+            {
+               try
+               {
+                  Class<? extends RuntimeComponentNameTransformer> tClass = componentRef.transformer();
+                  RuntimeComponentNameTransformer transformer;
+                  if (tClass != ManagementRuntimeRef.DEFAULT_NAME_TRANSFORMER.class)
+                     transformer = getComponentNameTransformer(tClass);
+                  else
+                     transformer = getComponentNameTransformer(propertyInfo.getType().getType());
+
+                  Object value = propertyInfo.get(object);
+                  Object componentName = (transformer != null) ? transformer.transform(value) : value;
+
+                  managedObject.setComponentName(componentName);
+                  break;
+               }
+               catch (Throwable t)
+               {
+                  throw new UndeclaredThrowableException(t);
+               }
+            }
+         }
+      }
 
       Map<String, ManagedProperty> properties = managedObject.getProperties();
       if (properties != null && properties.size() > 0)
@@ -753,6 +797,33 @@ public class AbstractManagedObjectFactory extends ManagedObjectFactory
             return weak.get();
       }
       return this;
+   }
+
+   /**
+    * Get component name transformer.
+    *
+    * @param clazz the transformer class
+    * @return transformer instance
+    * @throws Exception for any error
+    */
+   protected RuntimeComponentNameTransformer getComponentNameTransformer(Class<?> clazz)
+         throws Exception
+   {
+      synchronized(transformers)
+      {
+         WeakReference<RuntimeComponentNameTransformer> weak = transformers.get(clazz);
+         if (weak != null)
+            return weak.get();
+
+         if (RuntimeComponentNameTransformer.class.isAssignableFrom(clazz))
+         {
+            RuntimeComponentNameTransformer transformer = (RuntimeComponentNameTransformer)clazz.newInstance();
+            transformers.put(clazz, new WeakReference<RuntimeComponentNameTransformer>(transformer));
+            return transformer;
+         }
+
+         return null;
+      }
    }
 
    /**
