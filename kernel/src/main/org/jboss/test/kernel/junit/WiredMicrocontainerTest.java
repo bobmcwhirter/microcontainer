@@ -30,8 +30,7 @@ import org.jboss.beans.metadata.plugins.AbstractBeanMetaData;
 /**
  * A Wired MicrocontainerTest.
  *
- * @author <a href="adrian@jboss.com">Adrian Brock</a>
- * @version $Revision: 64256 $
+ * @author <a href="ales.justin@jboss.com">Ales Justin</a>
  */
 public abstract class WiredMicrocontainerTest extends MicrocontainerTest
 {
@@ -62,6 +61,11 @@ public abstract class WiredMicrocontainerTest extends MicrocontainerTest
       super.afterSetUp();
    }
 
+   /**
+    * Get the underlying controller.
+    *
+    * @return the controller
+    */
    private KernelController getController()
    {
       MicrocontainerTestDelegate delegate = getMCDelegate();
