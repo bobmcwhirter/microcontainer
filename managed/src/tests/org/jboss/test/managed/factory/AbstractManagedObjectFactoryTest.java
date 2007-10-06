@@ -25,8 +25,6 @@ import java.io.Serializable;
 import java.util.Arrays;
 import java.util.Set;
 
-import junit.framework.TestSuite;
-
 import org.jboss.managed.api.ManagedObject;
 import org.jboss.managed.api.ManagedProperty;
 import org.jboss.managed.api.factory.ManagedObjectFactory;
@@ -59,18 +57,6 @@ public abstract class AbstractManagedObjectFactoryTest extends BaseTestCase
    /** The meta value factory */
    private static final MetaValueFactory metaValueFactory = MetaValueFactory.getInstance();
    
-   /**
-    * Create a new testsuite for the class
-    * 
-    * TODO move to BaseTestCase
-    * @param clazz the class
-    * @return the suite
-    */
-   public static TestSuite suite(Class<?> clazz)
-   {
-      return new TestSuite(clazz);
-   }
-
    /**
     * Create a new AbstractManagedObjectFactoryTest.
     * 
