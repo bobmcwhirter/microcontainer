@@ -47,7 +47,8 @@ public class BasicKernelBus extends AbstractKernelBus
    protected <T> Object execute(Object name, Class<T> clazz, Dispatcher<T> dispatcher) throws Throwable
    {
       ControllerContext context = controller.getInstalledContext(name);
-      // entry is not null by KernelRegistry.getEntry contract
+      if (context == null)
+         throw new IllegalArgumentException("No such context: " + name);
       if (clazz.isAssignableFrom(context.getClass()) == false)
          throw new IllegalArgumentException("Cannot execute " + dispatcher + " on non " + clazz.getSimpleName() + " context: " + context);
       return dispatcher.dispatch(clazz.cast(context));
