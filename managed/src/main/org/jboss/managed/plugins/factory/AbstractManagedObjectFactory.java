@@ -450,7 +450,7 @@ public class AbstractManagedObjectFactory extends ManagedObjectFactory
                // we should have write-through by default
                // use factory to change this default behavior
                if (property == null)
-                  property = new WritethroughManagedPropertyImpl(fields);
+                  property = createDefaultManagedProperty(fields);
                properties.add(property);
             }
             else if (trace)
@@ -488,6 +488,18 @@ public class AbstractManagedObjectFactory extends ManagedObjectFactory
       for (ManagedProperty property : properties)
          property.setManagedObject(result);
       return result;
+   }
+
+   /**
+    * Create default MangedProperty instance.
+    * Override this method for different default.
+    *
+    * @param fields the fields
+    * @return new ManagedProperty instance
+    */
+   protected ManagedProperty createDefaultManagedProperty(Fields fields)
+   {
+      return new WritethroughManagedPropertyImpl(fields);
    }
 
    public void createObject(ManagedObject managedObject, Class<? extends Serializable> clazz)
