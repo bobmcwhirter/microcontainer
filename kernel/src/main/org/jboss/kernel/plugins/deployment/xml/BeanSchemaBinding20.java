@@ -56,6 +56,18 @@ public class BeanSchemaBinding20
    /** The beanfactory element name */
    public static final QName beanFactoryQName = new QName(BEAN_DEPLOYER_NS, "beanfactory");
 
+   /** The lazy binding */
+   public static final QName lazyTypeQName = new QName(BEAN_DEPLOYER_NS, "lazyType");
+
+   /** The lazy element name */
+   public static final QName lazyQName = new QName(BEAN_DEPLOYER_NS, "lazy");
+
+   /** The interface binding */
+   public static final QName interfaceTypeQName = new QName(BEAN_DEPLOYER_NS,  "interfaceType");
+
+   /** The interface element name */
+   public static final QName interfaceQName = new QName(BEAN_DEPLOYER_NS, "interface");
+
    /** The alias binding */
    public static final QName aliasTypeQName = new QName(BEAN_DEPLOYER_NS,  "aliasType");
 
@@ -234,6 +246,7 @@ public class BeanSchemaBinding20
       initDeployment(schemaBinding);
       initBean(schemaBinding);
       initBeanFactory(schemaBinding);
+      initLazy(schemaBinding);
       initArtifacts(schemaBinding);
    }
 
@@ -274,6 +287,18 @@ public class BeanSchemaBinding20
    }
 
    /**
+    * Initialize lazy part of the schema binding
+    *
+    * @param schemaBinding the schema binding
+    */
+   public static void initLazy(SchemaBinding schemaBinding)
+   {
+      // lazy binding
+      TypeBinding beanFactoryType = schemaBinding.getType(lazyTypeQName);
+      BeanSchemaBindingHelper.initLazyHandlers(beanFactoryType);
+   }
+
+   /**
     * Initialize other parts of the schema binding
     * 
     * @param schemaBinding the schema binding
@@ -299,6 +324,10 @@ public class BeanSchemaBinding20
       // named alias binding
       TypeBinding namedAliasType = schemaBinding.getType(namedAliasTypeQName);
       BeanSchemaBindingHelper.initNamedAliasHandlers(namedAliasType);
+
+      // interface binding
+      TypeBinding interfaceType = schemaBinding.getType(interfaceTypeQName);
+      BeanSchemaBindingHelper.initInterfaceHandlers(interfaceType);
 
       // alias binding
       TypeBinding aliasType = schemaBinding.getType(aliasTypeQName);

@@ -176,7 +176,7 @@ public class Configurator extends Config
          }
 
          // Find the constructor
-         ConstructorJoinpoint joinPoint = findConstructor(trace, info, metaData, beanMetaData);
+         ConstructorJoinpoint joinPoint = findConstructor(trace, info, metaData);
          ConstructorInfo cinfo = joinPoint.getConstructorInfo();
 
          // Set the parameters
@@ -190,7 +190,21 @@ public class Configurator extends Config
       }
 
       // Default constructor
-      return findConstructor(trace, info, metaData, beanMetaData);
+      return findConstructor(trace, info, metaData);
+   }
+
+   /**
+    * Find a constructor
+    *
+    * @param trace whether trace is enabled
+    * @param info the bean info
+    * @param metaData the bean metadata
+    * @return the constructor join point
+    * @throws Exception for any error
+    */
+   public static ConstructorJoinpoint findConstructor(boolean trace, BeanInfo info, BeanMetaData metaData) throws Exception
+   {
+      return findConstructor(trace, info, metaData.getConstructor());
    }
 
    /**
@@ -199,11 +213,10 @@ public class Configurator extends Config
     * @param trace whether trace is enabled
     * @param info the bean info
     * @param metaData the constructor metadata
-    * @param beanMetaData
     * @return the constructor join point
     * @throws Exception for any error
     */
-   public static ConstructorJoinpoint findConstructor(boolean trace, BeanInfo info, ConstructorMetaData metaData, BeanMetaData beanMetaData) throws Exception
+   public static ConstructorJoinpoint findConstructor(boolean trace, BeanInfo info, ConstructorMetaData metaData) throws Exception
    {
       ConstructorInfo cinfo = resolveConstructor(trace, info, metaData);
       JoinpointFactory jpf = info.getJoinpointFactory();

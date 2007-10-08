@@ -71,6 +71,9 @@ public class BeanSchemaBindingHelper
       // deployment has a list beanfactorys
       deploymentType.pushInterceptor(BeanSchemaBinding20.beanFactoryQName, DeploymentBeanInterceptor.INTERCEPTOR);
 
+      // deployment has a list lazys
+      deploymentType.pushInterceptor(BeanSchemaBinding20.lazyQName, DeploymentBeanInterceptor.INTERCEPTOR);
+
       // Deployment can take wildcards
       deploymentType.getWildcard().setWildcardHandler(DeploymentWildcardHandler.HANDLER);
    }
@@ -182,6 +185,19 @@ public class BeanSchemaBindingHelper
 
       // bean factory has supplies
       beanFactoryType.pushInterceptor(BeanSchemaBinding20.supplyQName, BeanSuppliesInterceptor.INTERCEPTOR);
+   }
+
+   /**
+    * Initialize the handlers for the lazy type
+    *
+    * @param beanFactoryType the lazy type
+    */
+   public static void initLazyHandlers(TypeBinding beanFactoryType)
+   {
+      beanFactoryType.setHandler(LazyHandler.HANDLER);
+
+      // lazy has interfaces
+      beanFactoryType.pushInterceptor(BeanSchemaBinding20.interfaceQName, LazyInterfaceInterceptor.INTERCEPTOR);
    }
 
    /**
@@ -309,6 +325,19 @@ public class BeanSchemaBindingHelper
 
       // alias can take characters
       aliasType.setSimpleType(AliasCharactersHandler.HANDLER);
+   }
+
+   /**
+    * Initialize the handlers for the interface type
+    *
+    * @param interfaceType the interface type
+    */
+   public static void initInterfaceHandlers(TypeBinding interfaceType)
+   {
+      interfaceType.setHandler(ClassHandler.HANDLER);
+
+      // interface can take characters
+      interfaceType.setSimpleType(ClassCharactersHandler.HANDLER);
    }
 
    /**

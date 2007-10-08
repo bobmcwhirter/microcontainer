@@ -57,6 +57,7 @@ $Id$
          <xsd:element name="destroy" type="lifecycleType" minOccurs="0"/>
          <xsd:element name="bean" type="beanType" minOccurs="0" maxOccurs="unbounded"/>
          <xsd:element name="beanfactory" type="beanfactoryType" minOccurs="0" maxOccurs="unbounded"/>
+         <xsd:element name="lazy" type="lazyType" minOccurs="0" maxOccurs="unbounded"/>
          <xsd:any namespace="##other" processContents="strict" minOccurs="0">
             <xsd:annotation>
                <xsd:documentation>An extension value</xsd:documentation>
@@ -183,6 +184,29 @@ $Id$
       <xsd:attribute name="class" type="xsd:token" use="required"/>
    </xsd:complexType>
 
+   <xsd:complexType name="lazyType">
+      <xsd:annotation>
+         <xsd:documentation>
+           <![CDATA[
+           Wrap the exisgin bean into lazy proxy.
+           Expose the full class or just interfaces.
+           Name is optional, and if no name is provided bean+'Proxy' will be used.
+
+           e.g.
+           <lazy name="UserProxy" bean="User">
+              <interface>org.acme.domain.IUser</interface>
+           </lazy>
+           ]]>
+         </xsd:documentation>
+      </xsd:annotation>
+      <xsd:sequence>
+         <xsd:element name="interface" type="interfaceType" minOccurs="0" maxOccurs="unbounded"/>
+      </xsd:sequence>
+      <xsd:attribute name="name" type="xsd:string" use="optional"/>
+      <xsd:attribute name="bean" type="xsd:string" use="required"/>
+      <xsd:attribute name="exposeClass" type="xsd:boolean" default="false" use="optional"/>
+   </xsd:complexType>
+
    <xsd:complexType name="constructorType">
       <xsd:annotation>
          <xsd:documentation>
@@ -221,6 +245,7 @@ $Id$
                <xsd:element name="parameter" type="parameterType" minOccurs="0" maxOccurs="unbounded"/>
             </xsd:sequence>
             <xsd:element name="bean" type="beanType"/>
+            <xsd:element name="lazy" type="lazyType"/>
             <xsd:element name="value" type="plainValueType"/>
             <xsd:element name="collection" type="collectionType"/>
             <xsd:element name="list" type="listType"/>
@@ -602,6 +627,19 @@ $Id$
       </xsd:simpleContent>
    </xsd:complexType>
 
+   <xsd:complexType name="interfaceType">
+      <xsd:annotation>
+         <xsd:documentation>
+           <![CDATA[
+           The interface type represents an interface class.
+           ]]>
+         </xsd:documentation>
+      </xsd:annotation>
+      <xsd:simpleContent>
+         <xsd:extension base="xsd:string" />
+      </xsd:simpleContent>
+   </xsd:complexType>
+
    <xsd:simpleType name="classNameType">
       <xsd:annotation>
          <xsd:documentation> The elements that use this type designate the name
@@ -643,6 +681,7 @@ $Id$
       </xsd:annotation>
       <xsd:choice>
          <!--<xsd:element name="bean" type="beanType"/>-->
+         <!--<xsd:element name="lazy" type="lazyType"/>-->
          <xsd:element name="value" type="plainValueType"/>
          <xsd:element name="inject" type="injectionType"/>
          <xsd:element name="value-factory" type="valueFactoryType"/>
@@ -1066,5 +1105,15 @@ $Id$
      then use schema imports.
    -->
    <xsd:element name="beanfactory" type="beanfactoryType"/>
+
+   <!--
+     WARN:
+     Do not use this in the bean deployer, it won't work!
+     FIXME:
+     The correct way to do this is to have two separate
+     schemas (one for deployments the other for beans)
+     then use schema imports.
+   -->
+   <xsd:element name="lazy" type="lazyType"/>
 
 </xsd:schema>
