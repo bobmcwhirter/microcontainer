@@ -673,10 +673,10 @@ public class AbstractManagedObjectFactory extends ManagedObjectFactory
       {
          if (value instanceof Serializable == false)
             throw new IllegalStateException("Object is not serializable: " + value.getClass().getName());
-         // Look for a ManagementObjectID
-         ManagementObjectID id = (ManagementObjectID) property.getAnnotations().get(ManagementObjectID.class.getName());
-         String moName = (id != null ? id.name() : value.getClass().getName());
-         String moNameType = (id != null ? id.type() : "");
+         // Look for a ManagementObjectRef
+         ManagementObjectRef ref = (ManagementObjectRef) property.getAnnotations().get(ManagementObjectRef.class.getName());
+         String moName = (ref != null ? ref.name() : value.getClass().getName());
+         String moNameType = (ref != null ? ref.type() : "");
          ManagedObject mo = initManagedObject((Serializable) value, moName, moNameType);
          return new GenericValueSupport(MANAGED_OBJECT_META_TYPE, mo);
       }
