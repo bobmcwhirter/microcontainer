@@ -36,4 +36,92 @@
     <para>It can even be used to deploy services inside other (non-JBoss) Java EE runtime environments such as  WebLogic, Tomcat or Glassfish  thanks to it pluggable classloading features.   </para>
     <para>Finally JBoss Microcontainer can be used to create  services  using dependency injection to wire individual POJOs together.  Configuration is performed using either XML or annotations depending on where the information is best located. In common with other dependency injection frameworks  JBoss Microcontainer can easily be used to create  unit tests for POJOs within a service and can also   facilitate integration testing of  services that depend on each other. </para>
   </chapter>
+  <chapter>
+    <title>Downloading and installing</title>
+  </chapter>
+  <chapter>
+    <title>Services</title>
+    <section>
+      <title>What is a service?</title>
+      <para/>
+    </section>
+    <section>
+      <title>Creating a service</title>
+    </section>
+    <section>
+      <title>Testing a service</title>
+    </section>
+    <section>
+      <title>Deploying a service</title>
+    </section>
+    <section>
+      <title>Looking up a service</title>
+      <section>
+        <title>Microcontainer Registry</title>
+      </section>
+      <section>
+        <title>JNDI Registry</title>
+      </section>
+    </section>
+  </chapter>
+  <chapter>
+    <title>Building services with POJOs </title>
+    <section>
+      <title>Creating POJOs</title>
+    </section>
+    <section>
+      <title>Testing POJOs</title>
+    </section>
+    <section>
+      <title>Wiring POJOs together </title>
+    </section>
+  </chapter>
+  <chapter>
+    <title>Using services within your applications </title>
+    <section>
+      <title>Desktop applications</title>
+      <section>
+        <title>Classloading</title>
+      </section>
+      <section>
+        <title>Deploying services</title>
+      </section>
+    </section>
+    <section>
+      <title>Web applications</title>
+      <section>
+        <title>Classloading</title>
+      </section>
+      <section>
+        <title>Deploying services</title>
+      </section>
+    </section>
+    <section>
+      <title>Enterprise applications</title>
+      <section>
+        <title>Classloading</title>
+      </section>
+      <section>
+        <title>Deploying services</title>
+      </section>
+    </section>
+  </chapter>
+  <chapter>
+    <title>Where to go next...</title>
+    <section>
+      <title>User Guide</title>
+    </section>
+    <section>
+      <title>Developer Guide</title>
+    </section>
+  </chapter>
+  <appendix>
+    <title>Additional Resources</title>
+    <section>
+      <title>Wiki</title>
+    </section>
+    <section>
+      <title>Forums</title>
+    </section>
+  </appendix>
 </book>
