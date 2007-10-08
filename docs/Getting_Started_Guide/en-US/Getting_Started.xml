@@ -1,0 +1,39 @@
+<?xml version='1.0' encoding='UTF-8'?>
+<!DOCTYPE book PUBLIC "-//OASIS//DTD DocBook XML V4.3//EN" "http://www.oasis-open.org/docbook/xml/4.3/docbookx.dtd" [
+<!ENTITY % RH-ENTITIES SYSTEM "Common_Config/rh-entities.ent">
+]>
+<book>
+  <bookinfo>
+    <title>JBoss Microcontainer 2.0.0</title>
+    <subtitle>Getting Started Guide</subtitle>
+    <issuenum>2.0</issuenum>
+    <productnumber>2</productnumber>
+    <xi:include xmlns:xi="http://www.w3.org/2001/XInclude" href="Author_Group.xml"/>
+    <xi:include xmlns:xi="http://www.w3.org/2001/XInclude" href="Legal_Notice.xml"/>
+  </bookinfo>
+  <preface>
+    <title>What this Book Covers</title>
+    <para>This book aims to help you become familiar with  JBoss Microconainer if you are new to the technology.</para>
+  </preface>
+  <chapter id="overview">
+    <title>Overview</title>
+    <para>The Java  platform has traditionally been distributed  in 3 editions, each  providing a different kind of runtime environment: </para>
+    <itemizedlist>
+      <listitem>
+        <para>Java ME - Mobile or other small-scale devices</para>
+      </listitem>
+      <listitem>
+        <para>Java SE - Desktop machines or servers (typically running 2-tier applications)</para>
+      </listitem>
+      <listitem>
+        <para>Java EE - Servers (typically running 3-tier applications)</para>
+      </listitem>
+    </itemizedlist>
+    <para>Each environment aims to provide a base level of functionality on top of which  developers can add their own code to create applications. For example Java SE provides networking and security libraries together with graphical user interface toolkits to facilitate the development of desktop   and simple client-server applications. Java EE takes this a stage further by adding a number of &apos;enterprise&apos;  services such as transactions, messaging and persistence that allow much more robust and scalable &apos;enterprise&apos; applications to be developed.  These services are  typically combined together inside a JEE application server to provide a standard runtime environment for enterprise applications  but there are frequent occasions when some are not used.</para>
+    <para>Having unused services in your  environment is undesirable as  they often take  up valuable resources such as CPU and memory. They can also clutter up the environment with unecessary configuration files which complicates maintenance and causes confusion.   It would  therefore be good if there was a  controlled way to remove them without breaking any dependencies they might have. Similarly there are often occasions when  applications need services that aren&apos;t provided by  JEE  so  it would be good if there was a  controlled way to add them, again  making sure that any dependencies are first satisfied.</para>
+    <para>JBoss Microcontainer aims to provide  these capabilities by allowing services, created using Plain Old Java Objects (POJOs), to be deployed into a standard Java SE runtime environment in a controlled manner to create a customized environment  for your applications. Dependencies between services are fully managed by the microcontainer to ensure that new services cannot be deployed until services they depend on have been deployed. Likewise undeploying a service causes all dependent services to first be undeployed to maintain the integrity of the system. </para>
+    <para>As JBoss Microcontainer is very lightweight and deals with POJOs it can also be used to deploy services into a Java ME runtime environment. This opens us new possibilities for mobile applications that can now take advantage of  enterprise services without requiring a full JEE application server. </para>
+    <para>It can even be used to deploy services inside other (non-JBoss) Java EE runtime environments such as  WebLogic, Tomcat or Glassfish  thanks to it pluggable classloading features.   </para>
+    <para>Finally JBoss Microcontainer can be used to create  services  using dependency injection to wire individual POJOs together.  Configuration is performed using either XML or annotations depending on where the information is best located. In common with other dependency injection frameworks  JBoss Microcontainer can easily be used to create  unit tests for POJOs within a service and can also   facilitate integration testing of  services that depend on each other. </para>
+  </chapter>
+</book>
