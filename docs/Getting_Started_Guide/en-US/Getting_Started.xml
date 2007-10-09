@@ -17,16 +17,16 @@
   </preface>
   <chapter id="overview">
     <title>Overview</title>
-    <para>The Java  platform has traditionally been distributed  in 3 editions, each  providing a different kind of runtime environment: </para>
+    <para>The Java  platform has traditionally been distributed  in 3 editions, each  providing a different type of runtime environment: </para>
     <itemizedlist>
       <listitem>
-        <para>Java ME - Mobile or other small-scale devices</para>
+        <para>Java ME (Micro Edition) - Mobile or other embedded devices</para>
       </listitem>
       <listitem>
-        <para>Java SE - Desktop machines or servers (typically running 2-tier applications)</para>
+        <para>Java SE (Standard Edition) - Desktop machines or servers (typically running 2-tier applications)</para>
       </listitem>
       <listitem>
-        <para>Java EE - Servers (typically running 3-tier applications)</para>
+        <para>Java EE (Enterprise Edition) - Servers (typically running 3-tier applications)</para>
       </listitem>
     </itemizedlist>
     <para>Each environment aims to provide a base level of functionality on top of which  developers can add their own code to create applications. For example Java SE provides networking and security libraries together with graphical user interface toolkits to facilitate the development of desktop   and simple client-server applications. Java EE takes this a stage further by adding a number of &apos;enterprise&apos;  services such as transactions, messaging and persistence that allow much more robust and scalable &apos;enterprise&apos; applications to be developed.  These services are  typically combined together inside a JEE application server to provide a standard runtime environment for enterprise applications  but there are frequent occasions when some are not used.</para>
@@ -38,12 +38,40 @@
   </chapter>
   <chapter>
     <title>Downloading and installing</title>
+    <para>To download  JBoss Microcontainer 2.0.0   go to http://labs.jboss.com/jbossmc/downloads and click on the corresponding link.</para>
+    <note>
+      <para>The distribution is available in a number of different packaging formats offering varying levels of compression; tar.gz, tar.bz2 or zip. Simply pick whichever one you have decompression utilities for (e.g. WinZIP on Windows can decompress zip files) and click on the link  to download it to your machine.</para>
+    </note>
+    <para> Installation is performed simply by decompressing and unpacking the downloaded file into a directory on your machine, for example using WinZIP or gzip. The contents of the distribution are as follows:</para>
+    <para>Diagram here....</para>
   </chapter>
   <chapter>
     <title>Services</title>
     <section>
       <title>What is a service?</title>
-      <para/>
+      <para>The word &apos;service&apos;  has many definitions in the English language  but in the context of developing Java applications it is helpful to consider the following points:</para>
+      <orderedlist>
+        <listitem>
+          <para>A service  should perform  work that is useful to multiple   clients, thereby preventing each client from having to perform the work themselves.</para>
+        </listitem>
+        <listitem>
+          <para>Clients should be able to lookup services by name so that they don&apos;t have to know how to create each one individually.</para>
+        </listitem>
+        <listitem>
+          <para>Clients should not be affected by internal changes to a service. In practice this means that clients should  access a service using a well defined interface so that the service implementation can be changed without having to recompile the client.  </para>
+        </listitem>
+      </orderedlist>
+      <para>If we wish to create services using POJOs then  we need to answer a couple of simple questions:</para>
+      <para>Q) Is a POJO a service?</para>
+      <para>A) No, because although it performs work that is useful to multiple clients you cannot access it using a name (you have to use a direct reference).</para>
+      <para>Q) Does a POJO class have to implement an interface to provide a &apos;well-defined&apos; interface?</para>
+      <para>A) Not necessarily. Providing that we don&apos;t change the public method signatures of the class then we can always change its implementation without needing to recompile our client. The  &apos;well-defined&apos; interface is therefore the public method signatures.</para>
+      <note>
+        <para>Implementing an  interface is  necessary  if we want to allow a client to <emphasis role="bold">choose</emphasis> between <emphasis role="bold">different</emphasis> POJO implementations. i.e. if the client is compiled against an interface then we can provide as many different implementations of the interface as we like without having to recompile the client.</para>
+      </note>
+      <para>What then must we do in order to create a service using a POJO? The answer is to provide a registry that allows us to register a reference to the POJO  with a name. Clients can then lookup the POJO reference using the name at runtime and use it to perform work. The POJO class is not required to implement an interface unless it is important that the client can choose between different implementations. </para>
+      <para>JBoss Microcontainer provides such a registry in order that we can  deploy our POJO  services into a runtime environment such as Java SE and look them up from within our applications.</para>
+      <para>In the following sections we will  create, test, deploy and lookup a simple service using a  POJO to show you  how this works in practice.</para>
     </section>
     <section>
       <title>Creating a service</title>
