@@ -373,7 +373,7 @@ public class AbstractManagedObjectFactory extends ManagedObjectFactory
                // This should probably always the the propertyInfo name?
                String mappedName = propertyInfo.getName();
                if (managementProperty != null)
-                  managementProperty.mappedName();
+                  mappedName = managementProperty.mappedName();
                if( mappedName.length() == 0 )
                   mappedName = propertyInfo.getName();
                fields.setField(Fields.MAPPED_NAME, mappedName);
