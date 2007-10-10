@@ -29,9 +29,9 @@
         <para>Java EE (Enterprise Edition) - Servers (typically running 3-tier applications)</para>
       </listitem>
     </itemizedlist>
-    <para>Each environment aims to provide a base level of functionality on top of which  developers can add their own code to create applications. For example Java SE provides networking and security libraries together with graphical user interface toolkits to facilitate the development of desktop   and simple client-server applications. Java EE takes this a stage further by adding a number of &apos;enterprise&apos;  services such as transactions, messaging and persistence that allow much more robust and scalable &apos;enterprise&apos; applications to be developed.  These services are  typically combined together inside a JEE application server to provide a standard runtime environment for enterprise applications  but there are frequent occasions when some are not used.</para>
-    <para>Having unused services in your  environment is undesirable as  they often take  up valuable resources such as CPU and memory. They can also clutter up the environment with unecessary configuration files which complicates maintenance and causes confusion.   It would  therefore be good if there was a  controlled way to remove them without breaking any dependencies they might have. Similarly there are often occasions when  applications need services that aren&apos;t provided by  JEE  so  it would be good if there was a  controlled way to add them, again  making sure that any dependencies are first satisfied.</para>
-    <para>JBoss Microcontainer aims to provide  these capabilities by allowing services, created using Plain Old Java Objects (POJOs), to be deployed into a standard Java SE runtime environment in a controlled manner to create a customized environment  for your applications. Dependencies between services are fully managed by the microcontainer to ensure that new services cannot be deployed until services they depend on have been deployed. Likewise undeploying a service causes all dependent services to first be undeployed to maintain the integrity of the system. </para>
+    <para>Each environment aims to provide a base level of functionality on top of which  developers can add their own code to create applications. For example Java SE provides networking and security libraries together with graphical user interface toolkits to facilitate the development of desktop   and simple client-server applications. Java EE takes this a stage further by adding a number of &apos;enterprise&apos;  services such as transactions, messaging and persistence that allow much more robust and scalable &apos;enterprise&apos; applications to be developed.  These services are  typically combined together inside a JEE application server to provide a standard runtime environment for enterprise applications  however it is often the case that we do not need to use them all.</para>
+    <para>Having unused services in your  environment is undesirable as  they can take  up valuable resources such as CPU and memory. They can also clutter up the environment with unecessary configuration files which complicates maintenance and causes confusion.   It would  therefore be good if there was a  controlled way to remove them without breaking any dependencies they might have. Similarly there are often occasions when  applications need services that aren&apos;t provided by  JEE  so  it would be good if there was a  controlled way to add them, again  making sure that any dependencies are first satisfied.</para>
+    <para>JBoss Microcontainer aims to provide  these capabilities by allowing services, created using Plain Old Java Objects (POJOs), to be deployed into a standard Java SE runtime environment in a controlled manner to create a customized environment  for your applications. Dependencies between services are fully managed by the microcontainer to ensure that new services cannot be deployed until services they depend on have first been deployed. Likewise undeploying a service causes all dependent services to first be undeployed to maintain the integrity of the system. </para>
     <para>As JBoss Microcontainer is very lightweight and deals with POJOs it can also be used to deploy services into a Java ME runtime environment. This opens us new possibilities for mobile applications that can now take advantage of  enterprise services without requiring a full JEE application server. </para>
     <para>It can even be used to deploy services inside other (non-JBoss) Java EE runtime environments such as  WebLogic, Tomcat or Glassfish  thanks to it pluggable classloading features.   </para>
     <para>Finally JBoss Microcontainer can be used to create  services  using dependency injection to wire individual POJOs together.  Configuration is performed using either XML or annotations depending on where the information is best located. In common with other dependency injection frameworks  JBoss Microcontainer can easily be used to create  unit tests for POJOs within a service and can also   facilitate integration testing of  services that depend on each other. </para>
@@ -42,32 +42,32 @@
     <note>
       <para>The distribution is available in a number of different packaging formats offering varying levels of compression; tar.gz, tar.bz2 or zip. Simply pick whichever one you have decompression utilities for (e.g. WinZIP on Windows can decompress zip files) and click on the link  to download it to your machine.</para>
     </note>
-    <para> Installation is performed simply by decompressing and unpacking the downloaded file into a directory on your machine, for example using WinZIP or gzip. The contents of the distribution are as follows:</para>
+    <para> Installation is performed  by decompressing and unpacking the downloaded file into a directory on your machine, for example using WinZIP or gzip. The contents of the distribution are as follows:</para>
     <para>Diagram here....</para>
   </chapter>
   <chapter>
     <title>Services</title>
     <section>
       <title>What is a service?</title>
-      <para>The word &apos;service&apos;  has many definitions in the English language  but in the context of developing Java applications it is helpful to consider the following points:</para>
+      <para>The word &apos;service&apos;  has many definitions in the English language  but in the context of developing Java applications it is helpful to define it as follows:</para>
       <orderedlist>
         <listitem>
           <para>A service  should perform  work that is useful to multiple   clients, thereby preventing each client from having to perform the work themselves.</para>
         </listitem>
         <listitem>
-          <para>Clients should be able to lookup services by name so that they don&apos;t have to know how to create each one individually.</para>
+          <para>A service should have a name that  clients  can lookup at runtime to gain access. This prevents clients from having to  create services themselves.</para>
         </listitem>
         <listitem>
-          <para>Clients should not be affected by internal changes to a service. In practice this means that clients should  access a service using a well defined interface so that the service implementation can be changed without having to recompile the client.  </para>
+          <para>Internal changes to a service should not affect any clients.  In practice this means that clients should  access a service using a well defined interface so that the service implementation can be changed without having to recompile any clients.  </para>
         </listitem>
       </orderedlist>
-      <para>If we wish to create services using POJOs then  we need to answer a couple of simple questions:</para>
+      <para>Using this definition  we can now answer some simple questions:</para>
       <para>Q) Is a POJO a service?</para>
-      <para>A) No, because although it performs work that is useful to multiple clients you cannot access it using a name (you have to use a direct reference).</para>
-      <para>Q) Does a POJO class have to implement an interface to provide a &apos;well-defined&apos; interface?</para>
-      <para>A) Not necessarily. Providing that we don&apos;t change the public method signatures of the class then we can always change its implementation without needing to recompile our client. The  &apos;well-defined&apos; interface is therefore the public method signatures.</para>
+      <para>A) No, because although it performs work that is useful to multiple clients you cannot access it using a name. Clients have to create a POJO themselves either directly using the <code>new</code> operator or indirectly using a factory. </para>
+      <para>Q) Does a  class have to implement an interface in order  to provide a &apos;well-defined&apos; interface?</para>
+      <para>A) Not necessarily. Providing that we don&apos;t change the public method signatures of the class then we can always change its implementation without needing to recompile our client. The  &apos;well-defined&apos; interface in this respect is composed from  the public method signatures.</para>
       <note>
-        <para>Implementing an  interface is  necessary  if we want to allow a client to <emphasis role="bold">choose</emphasis> between <emphasis role="bold">different</emphasis> POJO implementations. i.e. if the client is compiled against an interface then we can provide as many different implementations of the interface as we like without having to recompile the client.</para>
+        <para>Implementing an  interface is  only necessary  if we want to allow a client to <emphasis role="bold">choose</emphasis> between <emphasis role="bold">different implementations</emphasis>. i.e. if the client is compiled against an interface then we can provide as many different implementations of the interface as we like without having to recompile the client.</para>
       </note>
       <para>What then must we do in order to create a service using a POJO? The answer is to provide a registry that allows us to register a reference to the POJO  with a name. Clients can then lookup the POJO reference using the name at runtime and use it to perform work. The POJO class is not required to implement an interface unless it is important that the client can choose between different implementations. </para>
       <para>JBoss Microcontainer provides such a registry in order that we can  deploy our POJO  services into a runtime environment such as Java SE and look them up from within our applications.</para>
