@@ -61,10 +61,19 @@ public class JavassistLazyInitializer extends AbstractLazyInitializer
          ClassLoader cl = Configurator.getClassLoader(context.getBeanMetaData());
          factory.setInterfaces(getClasses(kernel.getConfigurator(), interfaces, cl));
       }
-      Class proxyClass = AccessController.doPrivileged(new ClassCreator(factory));
+      Class proxyClass = getProxyClass(factory);
       ProxyObject proxy = (ProxyObject)proxyClass.newInstance();
       proxy.setHandler(new LazyHandler(bean, kernel.getBus(), beanInfo.getClassInfo().getType()));
       return proxy;
+   }
+
+   protected Class getProxyClass(ProxyFactory factory)
+   {
+      SecurityManager sm = System.getSecurityManager();
+      if (sm == null)
+         return factory.createClass();
+      else
+         return AccessController.doPrivileged(new ClassCreator(factory));
    }
 
    private static final MethodFilter FINALIZE_FILTER = new MethodFilter()

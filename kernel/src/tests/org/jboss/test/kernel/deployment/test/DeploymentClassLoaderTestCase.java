@@ -21,6 +21,9 @@
 */
 package org.jboss.test.kernel.deployment.test;
 
+import java.security.AccessController;
+import java.security.PrivilegedAction;
+
 import junit.framework.Test;
 import org.jboss.beans.metadata.spi.factory.BeanFactory;
 import org.jboss.kernel.spi.deployment.KernelDeployment;
@@ -43,6 +46,24 @@ public class DeploymentClassLoaderTestCase extends AbstractDeploymentTest
       super(name);
    }
 
+   protected ClassLoader getClassLoader(final Class clazz)
+   {
+      if (clazz == null)
+         throw new IllegalArgumentException("Null clazz.");
+
+      SecurityManager sm = System.getSecurityManager();
+      if (sm == null)
+         return clazz.getClassLoader();
+      else
+         return AccessController.doPrivileged(new PrivilegedAction<ClassLoader>()
+         {
+            public ClassLoader run()
+            {
+               return clazz.getClassLoader();
+            }
+         });
+   }
+
    public void testDeploymentClassLoader() throws Throwable
    {
       KernelDeployment deployment = deploy("DeploymentClassLoaderTestCase_NotAutomatic.xml");
@@ -53,21 +74,21 @@ public class DeploymentClassLoaderTestCase extends AbstractDeploymentTest
          ClassLoader deploymentCL = (ClassLoader) getBean("DeploymentClassLoader");
          ClassLoader beanCL = (ClassLoader) getBean("BeanClassLoader");
          Object bean = getBean("DeploymentConfiguredClassLoader");
-         assertEquals(deploymentCL, bean.getClass().getClassLoader());
+         assertEquals(deploymentCL, getClassLoader(bean.getClass()));
          bean = getBean("BeanConfiguredClassLoader");
-         assertEquals(beanCL, bean.getClass().getClassLoader());
+         assertEquals(beanCL, getClassLoader(bean.getClass()));
          bean = getBean("NotConfiguredClassLoader");
-         assertEquals(getClass().getClassLoader(), bean.getClass().getClassLoader());
+         assertEquals(getClassLoader(getClass()), getClassLoader(bean.getClass()));
          
          BeanFactory factory = (BeanFactory) getBean("FactoryDeploymentConfiguredClassLoader");
          bean = factory.createBean();
-         assertEquals(deploymentCL, bean.getClass().getClassLoader());
+         assertEquals(deploymentCL, getClassLoader(bean.getClass()));
          factory = (BeanFactory) getBean("FactoryBeanConfiguredClassLoader");
          bean = factory.createBean();
-         assertEquals(beanCL, bean.getClass().getClassLoader());
+         assertEquals(beanCL, getClassLoader(bean.getClass()));
          factory = (BeanFactory) getBean("FactoryNotConfiguredClassLoader");
          bean = factory.createBean();
-         assertEquals(getClass().getClassLoader(), bean.getClass().getClassLoader());
+         assertEquals(getClassLoader(getClass()), getClassLoader(bean.getClass()));
       }
       finally
       {
