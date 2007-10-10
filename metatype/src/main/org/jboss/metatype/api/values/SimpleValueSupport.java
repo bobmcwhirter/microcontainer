@@ -72,7 +72,7 @@ public class SimpleValueSupport<T extends Serializable> extends AbstractMetaValu
       if (metaType == null)
          throw new IllegalArgumentException("Null simple meta type");
       this.metaType = metaType;
-      this.value = value;
+      setValue(value);
    }
 
    public SimpleMetaType<T> getMetaType()
@@ -98,7 +98,7 @@ public class SimpleValueSupport<T extends Serializable> extends AbstractMetaValu
    public void setValue(T value)
    {
       this.value = value;
-   } 
+   }
 
    @Override
    public boolean equals(Object obj)
