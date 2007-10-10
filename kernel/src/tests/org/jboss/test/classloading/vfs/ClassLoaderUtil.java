@@ -22,10 +22,12 @@
 package org.jboss.test.classloading.vfs;
 
 import java.net.URL;
+import java.security.PrivilegedAction;
+import java.security.AccessController;
 
 /**
  * A ClassLoaderUtil.
- * 
+ *
  * @author <a href="adrian@jboss.com">Adrian Brock</a>
  * @version $Revision$
  */
@@ -33,7 +35,7 @@ public class ClassLoaderUtil
 {
    /**
     * Get the location of a class
-    * 
+    *
     * @param className the class name
     * @return the location
     * @throws ClassNotFoundException if the class is not found
@@ -42,5 +44,29 @@ public class ClassLoaderUtil
    {
       Class clazz = Class.forName(className);
       return clazz.getProtectionDomain().getCodeSource().getLocation();
+   }
+
+   /**
+    * Get the classloader.
+    *
+    * @param clazz the class
+    * @return the classloader
+    */
+   public static ClassLoader getClassLoader(final Class clazz)
+   {
+      if (clazz == null)
+         throw new IllegalArgumentException("Null clazz.");
+
+      SecurityManager sm = System.getSecurityManager();
+      if (sm == null)
+         return clazz.getClassLoader();
+      else
+         return AccessController.doPrivileged(new PrivilegedAction<ClassLoader>()
+         {
+            public ClassLoader run()
+            {
+               return clazz.getClassLoader();
+            }
+         });
    }
 }

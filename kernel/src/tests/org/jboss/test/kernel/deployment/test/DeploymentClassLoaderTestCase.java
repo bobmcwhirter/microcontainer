@@ -21,12 +21,10 @@
 */
 package org.jboss.test.kernel.deployment.test;
 
-import java.security.AccessController;
-import java.security.PrivilegedAction;
-
 import junit.framework.Test;
 import org.jboss.beans.metadata.spi.factory.BeanFactory;
 import org.jboss.kernel.spi.deployment.KernelDeployment;
+import static org.jboss.test.classloading.vfs.ClassLoaderUtil.getClassLoader;
 
 /**
  * Deployment ClassLoader Test Case.
@@ -44,24 +42,6 @@ public class DeploymentClassLoaderTestCase extends AbstractDeploymentTest
    public DeploymentClassLoaderTestCase(String name) throws Throwable
    {
       super(name);
-   }
-
-   protected ClassLoader getClassLoader(final Class clazz)
-   {
-      if (clazz == null)
-         throw new IllegalArgumentException("Null clazz.");
-
-      SecurityManager sm = System.getSecurityManager();
-      if (sm == null)
-         return clazz.getClassLoader();
-      else
-         return AccessController.doPrivileged(new PrivilegedAction<ClassLoader>()
-         {
-            public ClassLoader run()
-            {
-               return clazz.getClassLoader();
-            }
-         });
    }
 
    public void testDeploymentClassLoader() throws Throwable
