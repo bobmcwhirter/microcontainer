@@ -23,6 +23,7 @@ package org.jboss.beans.metadata.plugins;
 
 import java.util.ArrayList;
 import java.util.Collection;
+import java.lang.reflect.Array;
 
 import org.jboss.reflect.spi.ClassInfo;
 import org.jboss.reflect.spi.TypeInfo;
@@ -77,8 +78,11 @@ public class AbstractArrayMetaData extends AbstractListMetaData
          typeInfo = info;
       }
 
-      Object[] array = typeInfo.newArrayInstance(result.size());
-      return result.toArray(array);
+      Object array = typeInfo.newArrayInstance(result.size());
+      int i = 0;
+      for(Object element : result)
+         Array.set(array, i++, element);
+      return array;
    }
 
    protected <T> T getTypeInstance(TypeInfo info, ClassLoader cl, Class<T> expected) throws Throwable

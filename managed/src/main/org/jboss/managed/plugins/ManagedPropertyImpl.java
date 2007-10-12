@@ -209,6 +209,7 @@ public class ManagedPropertyImpl implements ManagedProperty
       Object set = getField(Fields.ANNOTATIONS, Object.class);
       return (Map<String, Annotation>) set;
    }
+
    public void setAnnotations(Map<String, Annotation> annotations)
    {
       setField(Fields.ANNOTATIONS, (Serializable) annotations);      

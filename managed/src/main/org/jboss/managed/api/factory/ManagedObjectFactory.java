@@ -82,10 +82,24 @@ public abstract class ManagedObjectFactory
     * @param builder the builder (null to remove the builder)
     */
    public abstract void setBuilder(Class<?> clazz, ManagedObjectBuilder builder);
+
    /**
     * Set the InstanceClassFactory for an instance type.
+    *
+    * @param <T> the class type
+    * @param clazz the class
     * @param factory - the factory used to obtain the class to scan for
     * management annotations.
     */
-   public abstract void setInstanceClassFactory(Class<?> clazz, InstanceClassFactory factory);
+   public abstract <T extends Serializable> void setInstanceClassFactory(Class<T> clazz, InstanceClassFactory<T> factory);
+
+   /**
+    * Get the InstanceClassFactory for an instance type.
+    *
+    * @param <T> the class type
+    * @param clazz the class
+    * @return the factory used to obtain the class to scan for
+    * management annotations. 
+    */
+   public abstract <T extends Serializable> InstanceClassFactory<T> getInstanceClassFactory(Class<T> clazz);
 }

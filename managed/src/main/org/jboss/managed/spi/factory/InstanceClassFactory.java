@@ -30,20 +30,52 @@ import org.jboss.metatype.api.values.MetaValue;
 /**
  * A plugin for obtaining the class to scan for management object
  * related annotations.
- * 
+ *
+ * @param <T> actual attachment type
  * @author Scott.Stark@jboss.org
+ * @author Ales.Justin@jboss.org
  * @version $Revision$
  */
-public interface InstanceClassFactory
+public interface InstanceClassFactory<T>
 {
    /**
     * Return the Class that represents the root ManagedObject to scan
     * for management object related annotations.
     * 
-    * @param instance - the instance a ManagedObject is to be created for.
+    * @param attachment - the instance a ManagedObject is to be created for.
     * @return the Class that represents the root ManagedObject.
+    * @throws ClassNotFoundException if MO class not found
     */
-   public Class<? extends Serializable> getManagedObjectClass(Serializable instance)
-      throws ClassNotFoundException;
-   public MetaValue getValue(BeanInfo beanInfo, ManagedProperty property, Serializable object);
+   Class<? extends Serializable> getManagedObjectClass(T attachment) throws ClassNotFoundException;
+
+   /**
+    * Get the value from object.
+    *
+    * @param beanInfo managed object's bean info
+    * @param property managed property
+    * @param attachment attachment
+    * @return meta value
+    */
+   MetaValue getValue(BeanInfo beanInfo, ManagedProperty property, T attachment);
+
+   /**
+    * Set the value to object.
+    *
+    * @param beanInfo managed object's bean info
+    * @param property managed property
+    * @param attachment attachment
+    * @param value meta value
+    */
+   void setValue(BeanInfo beanInfo, ManagedProperty property, T attachment, MetaValue value);
+
+   /**
+    * Get the runtime component name.
+    *
+    * @param beanInfo managed object's bean info
+    * @param property managed property
+    * @param attachment attachment
+    * @param value original value
+    * @return meta value
+    */
+   Object getComponentName(BeanInfo beanInfo, ManagedProperty property, T attachment, MetaValue value);
 }

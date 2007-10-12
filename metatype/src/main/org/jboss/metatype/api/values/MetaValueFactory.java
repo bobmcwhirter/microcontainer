@@ -81,4 +81,24 @@ public abstract class MetaValueFactory
     * @param builder the builder
     */
    public abstract void setBuilder(Class<?> clazz, MetaValueBuilder builder);
+
+   /**
+    * Unwrap meta value.
+    * Supports simple and generic meta value.
+    *
+    * @param metaValue meta value
+    * @param type the type
+    * @return meta value's value
+    */
+   public abstract Object unwrap(MetaValue metaValue, Type type);
+
+   /**
+    * Unwrap meta value.
+    * Supports simple and generic meta value.
+    *
+    * @param metaValue meta value
+    * @param type the type
+    * @return meta value's value
+    */
+   public abstract Object unwrap(MetaValue metaValue, TypeInfo type);
 }

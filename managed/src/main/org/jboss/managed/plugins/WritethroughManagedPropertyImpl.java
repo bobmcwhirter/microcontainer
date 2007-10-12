@@ -23,27 +23,34 @@ package org.jboss.managed.plugins;
 
 import java.io.ObjectStreamException;
 import java.io.Serializable;
-import java.lang.reflect.UndeclaredThrowableException;
 
+import org.jboss.beans.info.spi.BeanInfo;
 import org.jboss.beans.info.spi.PropertyInfo;
 import org.jboss.managed.api.Fields;
 import org.jboss.managed.api.ManagedObject;
+import org.jboss.managed.api.factory.ManagedObjectFactory;
+import org.jboss.managed.plugins.factory.ManagedObjectFactoryBuilder;
+import org.jboss.managed.spi.factory.InstanceClassFactory;
 import org.jboss.metatype.api.values.MetaValue;
+import org.jboss.metatype.api.values.MetaValueFactory;
+import org.jboss.metatype.api.types.MetaType;
+import org.jboss.metatype.plugins.values.MetaValueFactoryBuilder;
 
 /**
  * An extension of ManagedPropertyImpl.
  *
  * @author Scott.Stark@jboss.org
+ * @author Ales.Justin@jboss.org
  * @version $Revision$
  */
 public class WritethroughManagedPropertyImpl extends ManagedPropertyImpl
 {
    private static final long serialVersionUID = 1;
 
-   public WritethroughManagedPropertyImpl(String name)
-   {
-      super(name);
-   }
+   /** The meta value factory */
+   private transient MetaValueFactory valueFactory;
+   /** The managed object factory */
+   private transient ManagedObjectFactory objectFactory;
 
    public WritethroughManagedPropertyImpl(Fields fields)
    {
@@ -55,32 +62,56 @@ public class WritethroughManagedPropertyImpl extends ManagedPropertyImpl
       super(managedObject, fields);
    }
 
+   public WritethroughManagedPropertyImpl(Fields fields, MetaValueFactory valueFactory, ManagedObjectFactory objectFactory)
+   {
+      super(fields);
+      this.valueFactory = valueFactory;
+      this.objectFactory = objectFactory;
+   }
+
+   protected ManagedObjectFactory getObjectFactory()
+   {
+      if (objectFactory == null)
+         objectFactory = ManagedObjectFactoryBuilder.create();
+      return objectFactory;
+   }
+
+   protected MetaValueFactory getValueFactory()
+   {
+      if (valueFactory == null)
+         valueFactory = MetaValueFactoryBuilder.create();
+      return valueFactory;
+   }
+
    /**
     * Write the value back to the attachment if there is a PropertyInfo
     * in the Fields.PROPERTY_INFO field.
-    * TODO: this ignored MetaValues as the tests pass in the corresponding
-    * primative
     */
    @Override
+   @SuppressWarnings("unchecked")
    public void setValue(Serializable value)
    {
       super.setValue(value);
-      // Skip MetaValues
-      if( (value instanceof MetaValue) )
-         return;
 
-      // Write the value back to the attachment if there is a PropertyInfo
-      PropertyInfo info = super.getField(Fields.PROPERTY_INFO, PropertyInfo.class);
-      if (info != null)
+      PropertyInfo propertyInfo = getField(Fields.PROPERTY_INFO, PropertyInfo.class);
+      if (propertyInfo != null)
       {
-         Object bean = getManagedObject().getAttachment();
-         try
+         Serializable attachment = getManagedObject().getAttachment();
+         if (attachment != null)
          {
-            info.set(bean, value);
-         }
-         catch(Throwable t)
-         {
-            throw new UndeclaredThrowableException(t);
+            MetaValue metaValue;
+            if (value instanceof MetaValue == false)
+               metaValue = getValueFactory().create(value, propertyInfo.getType());
+            else
+               metaValue = (MetaValue)value;
+
+            MetaType metaType = metaValue.getMetaType();
+            if (metaType.isTable() == false && metaType.isComposite() == false)
+            {
+               InstanceClassFactory icf = getObjectFactory().getInstanceClassFactory(attachment.getClass());
+               BeanInfo beanInfo = propertyInfo.getBeanInfo();
+               icf.setValue(beanInfo, this, attachment, metaValue);
+            }
          }
       }
    }

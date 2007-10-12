@@ -95,7 +95,7 @@ import org.jboss.reflect.spi.TypeInfo;
  * @version $Revision: 1.1 $
  */
 public class AbstractManagedObjectFactory extends ManagedObjectFactory
-   implements ManagedObjectBuilder, InstanceClassFactory, ManagedObjectPopulator<Serializable>
+   implements ManagedObjectBuilder, InstanceClassFactory<Serializable>, ManagedObjectPopulator<Serializable>
 {
    private static final Logger log = Logger.getLogger(AbstractManagedObjectFactory.class);
 
@@ -109,7 +109,7 @@ public class AbstractManagedObjectFactory extends ManagedObjectFactory
    private MetaTypeFactory metaTypeFactory = MetaTypeFactory.getInstance(); 
 
    /** The meta value factory */
-   private MetaValueFactory metaValueFactory = MetaValueFactory.getInstance(); 
+   private MetaValueFactory metaValueFactory = MetaValueFactory.getInstance();
    
    /** The managed object builders */
    private Map<Class, WeakReference<ManagedObjectBuilder>> builders = new WeakHashMap<Class, WeakReference<ManagedObjectBuilder>>();
@@ -118,7 +118,7 @@ public class AbstractManagedObjectFactory extends ManagedObjectFactory
    private Map<Class, WeakReference<InstanceClassFactory>> instanceFactories = new WeakHashMap<Class, WeakReference<InstanceClassFactory>>();
 
    /** The instance to name transformers */
-   private Map<Class<?>, WeakReference<RuntimeComponentNameTransformer>> transformers = new WeakHashMap<Class<?>, WeakReference<RuntimeComponentNameTransformer>>();
+   private Map<TypeInfo, WeakReference<RuntimeComponentNameTransformer>> transformers = new WeakHashMap<TypeInfo, WeakReference<RuntimeComponentNameTransformer>>();
 
    static
    {
@@ -145,13 +145,14 @@ public class AbstractManagedObjectFactory extends ManagedObjectFactory
    }
 
    @Override
+   @SuppressWarnings("unchecked")
    public ManagedObject initManagedObject(Serializable object, String name, String nameType)
    {
       if (object == null)
          throw new IllegalArgumentException("Null object");
 
       Class<? extends Serializable> clazz = object.getClass();
-      InstanceClassFactory icf = getInstanceFactory(clazz);
+      InstanceClassFactory icf = getInstanceClassFactory(clazz);
       Class<? extends Serializable> moClass;
       try
       {
@@ -186,7 +187,7 @@ public class AbstractManagedObjectFactory extends ManagedObjectFactory
    }
 
    @Override
-   public void setInstanceClassFactory(Class<?> clazz, InstanceClassFactory factory)
+   public <T extends Serializable> void setInstanceClassFactory(Class<T> clazz, InstanceClassFactory<T> factory)
    {
       synchronized (instanceFactories)
       {
@@ -199,12 +200,18 @@ public class AbstractManagedObjectFactory extends ManagedObjectFactory
 
    public void setNameTransformers(Class<?> clazz, RuntimeComponentNameTransformer transformer)
    {
+      TypeInfo type = configuration.getTypeInfo(clazz);
+      setNameTransformers(type, transformer);
+   }
+
+   public void setNameTransformers(TypeInfo type, RuntimeComponentNameTransformer transformer)
+   {
       synchronized (transformers)
       {
          if (transformer == null)
-            transformers.remove(clazz);
+            transformers.remove(type);
          else
-            transformers.put(clazz, new WeakReference<RuntimeComponentNameTransformer>(transformer));
+            transformers.put(type, new WeakReference<RuntimeComponentNameTransformer>(transformer));
       }
    }
 
@@ -317,6 +324,7 @@ public class AbstractManagedObjectFactory extends ManagedObjectFactory
             ManagementProperty managementProperty = propertyInfo.getUnderlyingAnnotation(ManagementProperty.class);
             ManagementObjectID id = propertyInfo.getUnderlyingAnnotation(ManagementObjectID.class);
             ManagementObjectRef ref = propertyInfo.getUnderlyingAnnotation(ManagementObjectRef.class);
+            ManagementRuntimeRef runtimeRef = propertyInfo.getUnderlyingAnnotation(ManagementRuntimeRef.class);
             HashMap<String, Annotation> propAnnotations = new HashMap<String, Annotation>();
             if (managementProperty != null)
                propAnnotations.put(ManagementProperty.class.getName(), managementProperty);
@@ -328,6 +336,8 @@ public class AbstractManagedObjectFactory extends ManagedObjectFactory
             }
             if (ref != null)
                propAnnotations.put(ManagementObjectRef.class.getName(), ref);
+            if (runtimeRef != null)
+               propAnnotations.put(ManagementRuntimeRef.class.getName(), runtimeRef);
 
             // Check for a simple property
             boolean includeProperty = (propertyType == ManagementProperties.ALL);
@@ -499,7 +509,7 @@ public class AbstractManagedObjectFactory extends ManagedObjectFactory
     */
    protected ManagedProperty createDefaultManagedProperty(Fields fields)
    {
-      return new WritethroughManagedPropertyImpl(fields);
+      return new WritethroughManagedPropertyImpl(fields, metaValueFactory, this);
    }
 
    public void createObject(ManagedObject managedObject, Class<? extends Serializable> clazz)
@@ -552,9 +562,10 @@ public class AbstractManagedObjectFactory extends ManagedObjectFactory
     * @param managedObject the managed object
     * @param object the object
     */
+   @SuppressWarnings("unchecked")
    protected void populateValues(ManagedObjectImpl managedObject, Serializable object)
    {
-      InstanceClassFactory icf = getInstanceFactory(object.getClass());
+      InstanceClassFactory icf = getInstanceClassFactory(object.getClass());
       Class moClass;
       try
       {
@@ -566,37 +577,7 @@ public class AbstractManagedObjectFactory extends ManagedObjectFactory
       }
       BeanInfo beanInfo = configuration.getBeanInfo(moClass);
 
-      Set<PropertyInfo> propertyInfos = beanInfo.getProperties();
-      if (propertyInfos != null && propertyInfos.isEmpty() == false)
-      {
-         for(PropertyInfo propertyInfo : propertyInfos)
-         {
-            ManagementRuntimeRef componentRef = propertyInfo.getUnderlyingAnnotation(ManagementRuntimeRef.class);
-            if (componentRef != null)
-            {
-               try
-               {
-                  Class<? extends RuntimeComponentNameTransformer> tClass = componentRef.transformer();
-                  RuntimeComponentNameTransformer transformer;
-                  if (tClass != ManagementRuntimeRef.DEFAULT_NAME_TRANSFORMER.class)
-                     transformer = getComponentNameTransformer(tClass);
-                  else
-                     transformer = getComponentNameTransformer(propertyInfo.getType().getType());
-
-                  Object value = propertyInfo.get(object);
-                  Object componentName = (transformer != null) ? transformer.transform(value) : value;
-
-                  managedObject.setComponentName(componentName);
-                  break;
-               }
-               catch (Throwable t)
-               {
-                  throw new UndeclaredThrowableException(t);
-               }
-            }
-         }
-      }
-
+      Object componentName = null;
       Map<String, ManagedProperty> properties = managedObject.getProperties();
       if (properties != null && properties.size() > 0)
       {
@@ -624,8 +605,66 @@ public class AbstractManagedObjectFactory extends ManagedObjectFactory
                String name = "" + svalue.getValue();
                managedObject.setName(name);
             }
+            ManagementRuntimeRef runtimeRef = (ManagementRuntimeRef) annotations.get(ManagementRuntimeRef.class.getName());
+            if (runtimeRef != null)
+            {
+               componentName = icf.getComponentName(beanInfo, property, object, value);
+               // let's try this as well
+               if (componentName == null && icf != this)
+                  componentName = getComponentName(beanInfo, property, object, value);
+            }
          }
       }
+      if (componentName == null)
+         componentName = icf.getComponentName(null, null, object, null);
+      // set it, even if it's null
+      managedObject.setComponentName(componentName);
+   }
+
+   /**
+    * Get the property name.
+    *
+    * @param property managed property
+    * @return property name
+    */
+   protected String getPropertyName(ManagedProperty property)
+   {
+      // First look to the mapped name
+      String name = property.getMappedName();
+      if (name == null)
+         property.getName();
+      return name;
+   }
+
+   public Object getComponentName(BeanInfo beanInfo, ManagedProperty property, Serializable object, MetaValue value)
+   {
+      if (beanInfo != null && property != null && value != null)
+      {
+         String name = getPropertyName(property);
+         PropertyInfo propertyInfo = beanInfo.getProperty(name);
+
+         ManagementRuntimeRef componentRef = propertyInfo.getUnderlyingAnnotation(ManagementRuntimeRef.class);
+         if (componentRef != null)
+         {
+            Object original = metaValueFactory.unwrap(value, propertyInfo.getType());
+            try
+            {
+               Class<? extends RuntimeComponentNameTransformer> tClass = componentRef.transformer();
+               RuntimeComponentNameTransformer transformer;
+               if (tClass != ManagementRuntimeRef.DEFAULT_NAME_TRANSFORMER.class)
+                  transformer = getComponentNameTransformer(configuration.getTypeInfo(tClass));
+               else
+                  transformer = getComponentNameTransformer(propertyInfo.getType());
+
+               return (transformer != null) ? transformer.transform(original) : original;
+            }
+            catch (Throwable t)
+            {
+               throw new UndeclaredThrowableException(t);
+            }
+         }
+      }
+      return null;
    }
 
    /**
@@ -638,15 +677,9 @@ public class AbstractManagedObjectFactory extends ManagedObjectFactory
     */
    public MetaValue getValue(BeanInfo beanInfo, ManagedProperty property, Serializable object)
    {
-      // First look to the mapped name
-      String name = property.getMappedName();
-      if (name == null)
-         property.getName();
-
+      String name = getPropertyName(property);
       PropertyInfo propertyInfo = beanInfo.getProperty(name);
-      if (propertyInfo == null)
-         throw new IllegalStateException("Unable to find property: " + name + " for " + object.getClass().getName());
-      
+
       Object value;
       try
       {
@@ -703,6 +736,30 @@ public class AbstractManagedObjectFactory extends ManagedObjectFactory
       }
       
       return metaValueFactory.create(value, propertyInfo.getType());
+   }
+
+   /**
+    * Set a value
+    *
+    * @param beanInfo the bean info
+    * @param property the property
+    * @param object the object
+    * @param the meta value
+    */
+   public void setValue(BeanInfo beanInfo, ManagedProperty property, Serializable object, MetaValue value)
+   {
+      String name = getPropertyName(property);
+      PropertyInfo propertyInfo = beanInfo.getProperty(name);
+
+      Object plainValue = metaValueFactory.unwrap(value, propertyInfo.getType());
+      try
+      {
+         propertyInfo.set(object, plainValue);
+      }
+      catch (Throwable t)
+      {
+         throw new UndeclaredThrowableException(t);
+      }
    }
 
    /**
@@ -800,7 +857,8 @@ public class AbstractManagedObjectFactory extends ManagedObjectFactory
     * @param clazz the class
     * @return the InstanceClassFactory
     */
-   protected InstanceClassFactory getInstanceFactory(Class<?> clazz)
+   @SuppressWarnings("unchecked")
+   public <T extends Serializable> InstanceClassFactory<T> getInstanceClassFactory(Class<T> clazz)
    {
       synchronized (instanceFactories)
       {
@@ -808,29 +866,30 @@ public class AbstractManagedObjectFactory extends ManagedObjectFactory
          if (weak != null)
             return weak.get();
       }
-      return this;
+      return (InstanceClassFactory<T>)this;
    }
 
    /**
     * Get component name transformer.
     *
-    * @param clazz the transformer class
+    * @param type the type info
     * @return transformer instance
     * @throws Exception for any error
     */
-   protected RuntimeComponentNameTransformer getComponentNameTransformer(Class<?> clazz)
-         throws Exception
+   protected RuntimeComponentNameTransformer getComponentNameTransformer(TypeInfo type) throws Throwable
    {
       synchronized(transformers)
       {
-         WeakReference<RuntimeComponentNameTransformer> weak = transformers.get(clazz);
+         WeakReference<RuntimeComponentNameTransformer> weak = transformers.get(type);
          if (weak != null)
             return weak.get();
 
-         if (RuntimeComponentNameTransformer.class.isAssignableFrom(clazz))
+         TypeInfo rcntType = configuration.getTypeInfo(RuntimeComponentNameTransformer.class);
+         if (rcntType.isAssignableFrom(type))
          {
-            RuntimeComponentNameTransformer transformer = (RuntimeComponentNameTransformer)clazz.newInstance();
-            transformers.put(clazz, new WeakReference<RuntimeComponentNameTransformer>(transformer));
+            BeanInfo beanInfo = configuration.getBeanInfo(type);
+            RuntimeComponentNameTransformer transformer = (RuntimeComponentNameTransformer)beanInfo.newInstance();
+            transformers.put(type, new WeakReference<RuntimeComponentNameTransformer>(transformer));
             return transformer;
          }
 

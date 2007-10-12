@@ -36,44 +36,63 @@ import org.jboss.metatype.api.values.MetaValueFactory;
  * @author Scott.Stark@jboss.org
  * @version $Revision$
  */
-public class TestServiceMetaDataICF implements InstanceClassFactory
+public class TestServiceMetaDataICF implements InstanceClassFactory<TestServiceMetaData>
 {
    /** The meta value factory */
    private MetaValueFactory metaValueFactory = MetaValueFactory.getInstance(); 
 
-   public Class<? extends Serializable> getManagedObjectClass(Serializable instance)
+   public Class<? extends Serializable> getManagedObjectClass(TestServiceMetaData instance)
       throws ClassNotFoundException
    {
-      TestServiceMetaData md = (TestServiceMetaData) instance;
       ClassLoader loader = instance.getClass().getClassLoader();
-      Class moClass = loader.loadClass(md.getCode());
+      Class moClass = loader.loadClass(instance.getCode());
       return moClass;
    }
-   public MetaValue getValue(BeanInfo beanInfo, ManagedProperty property, Serializable instance)
+
+   protected String getPropertyName(ManagedProperty property)
    {
-      TestServiceMetaData md = (TestServiceMetaData) instance;
       // First look to the mapped name
       String name = property.getMappedName();
       if (name == null)
          property.getName();
+      return name;
+   }
+
+   public MetaValue getValue(BeanInfo beanInfo, ManagedProperty property, TestServiceMetaData instance)
+   {
+      String name = getPropertyName(property);
 
       Object value = null;
-      for (TestServiceAttributeMetaData amd : md.getAttributes())
+      for (TestServiceAttributeMetaData amd : instance.getAttributes())
       {
          if (amd.getName().equals(name))
          {
             value = amd.getValue();
+            break;
          }
       }
 
       PropertyInfo propertyInfo = beanInfo.getProperty(name);
-      if (propertyInfo == null)
-      {
-         throw new IllegalStateException("Unable to find property: " + name
-               + " for " + instance.getClass().getName());
-      }
-
       return metaValueFactory.create(value, propertyInfo.getType());
    }
 
+   public void setValue(BeanInfo beanInfo, ManagedProperty property, TestServiceMetaData object, MetaValue value)
+   {
+      String name = getPropertyName(property);
+
+      for (TestServiceAttributeMetaData amd : object.getAttributes())
+      {
+         if (amd.getName().equals(name))
+         {
+            Class clazz = value != null ? value.getClass() : null;
+            amd.setValue(metaValueFactory.unwrap(value, clazz));
+            break;
+         }
+      }
+   }
+
+   public Object getComponentName(BeanInfo beanInfo, ManagedProperty property, TestServiceMetaData object, MetaValue value)
+   {
+      return (beanInfo == null || property == null || value == null) ? object.getObjectName() : null;
+   }
 }

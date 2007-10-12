@@ -25,6 +25,7 @@ import java.io.Serializable;
 import java.lang.ref.WeakReference;
 import java.lang.reflect.Array;
 import java.lang.reflect.Type;
+import java.lang.reflect.UndeclaredThrowableException;
 import java.security.AccessController;
 import java.security.PrivilegedAction;
 import java.util.Collection;
@@ -97,7 +98,6 @@ public class DefaultMetaValueFactory extends MetaValueFactory
       {
          return new Stack<Map<Object, MetaValue>>();
       }
-      
    };
 
    /** The builders */
@@ -172,11 +172,14 @@ public class DefaultMetaValueFactory extends MetaValueFactory
     * 
     * @param type - the primitive array class type info.
     * @param value - the primitive array instance.
-    * @return
+    * @return object array
     */
    public static Object[] convertPrimativeArray(TypeInfo type, Object value)
    {
-      Object[] oa = null;
+      if (value == null)
+         return null;
+
+      Object[] oa;
       if( type instanceof ArrayInfo )
       {
          // Get the Object form of the element
@@ -202,33 +205,19 @@ public class DefaultMetaValueFactory extends MetaValueFactory
       
       return oa;      
    }
+
+   /**
+    * Transform a primitive array into an Object[]. Converts
+    * a primitive array like char[] to Object[].
+    *
+    * @param value - the primitive array instance.
+    * @return object array
+    */
    public static Object[] convertPrimativeArray(Object value)
    {
-      Object[] oa = null;
-      Class type = value.getClass();
-      if( type.isArray() )
-      {
-         // Get the Object form of the element
-         Class etype = type.getComponentType();
-         int size = Array.getLength(value);
-         oa = new Object[size];
-         for(int n = 0; n < size; n ++)
-         {
-            Object nvalue = Array.get(value, n);
-            // Recursively convert nested array elements
-            if (etype.isArray())
-            {
-               oa[n] = convertPrimativeArray(nvalue);
-            }
-            oa[n] = nvalue;
-         }
-      }
-      else
-      {
-         oa = (Object[]) value;
-      }
-      
-      return oa;      
+      if (value == null)
+         return null;
+      return convertPrimativeArray(configuration.getTypeInfo(value.getClass()), value);
    }
 
    /**
@@ -247,12 +236,12 @@ public class DefaultMetaValueFactory extends MetaValueFactory
       ArrayValueSupport result = new ArrayValueSupport(type);
       mapping.put(value, result);
       
-      Object[] array = null;
+      Object[] array;
       
       MetaType elementType = type.getElementType();
       int dimension = type.getDimension();
       
-      Object[] oldArray = null;
+      Object[] oldArray;
       Class<?> componentType;
       try
       {
@@ -347,7 +336,6 @@ public class DefaultMetaValueFactory extends MetaValueFactory
       CompositeValueSupport result = new CompositeValueSupport(type);
       mapping.put(value, result);
 
-      
       BeanInfo beanInfo;
       try
       {
@@ -365,7 +353,7 @@ public class DefaultMetaValueFactory extends MetaValueFactory
       for (String name : type.keySet())
       {
          MetaType itemType = type.getType(name);
-         Object itemValue = null;
+         Object itemValue;
          try
          {
             itemValue = beanInfo.getProperty(value, name);
@@ -441,7 +429,62 @@ public class DefaultMetaValueFactory extends MetaValueFactory
    {
       return internalCreate(value, type, null);
    }
-   
+
+   public Object unwrap(MetaValue metaValue, Type type)
+   {
+      TypeInfo typeInfo = configuration.getTypeInfo(type);
+      return unwrap(metaValue, typeInfo);
+   }
+
+   public Object unwrap(MetaValue metaValue, TypeInfo type)
+   {
+      if (metaValue == null)
+         return null;
+
+      if (type == null)
+         throw new IllegalArgumentException("Null type info.");
+
+      MetaType metaType = metaValue.getMetaType();
+      if (metaType.isTable() || metaType.isComposite())
+         throw new IllegalArgumentException("Cannot get value from " + metaValue + ", unsupported.");
+
+      if (metaType.isSimple())
+         return convertValue(((SimpleValue)metaValue).getValue(), type);
+      else if (metaType.isEnum())
+         return convertValue(((EnumValue)metaValue).getValue(), type);
+      else if (metaType.isGeneric())
+      {
+         // todo
+         return convertValue(((GenericValue)metaValue).getValue(), type);
+      }
+      else if (metaType.isArray())
+      {
+         ArrayValue arrayValue = (ArrayValue)metaValue;
+         Object array;
+         try
+         {
+            array = type.newArrayInstance(arrayValue.getLength());
+         }
+         catch (Throwable t)
+         {
+            throw new UndeclaredThrowableException(t);
+         }
+         for (int i = 0; i < Array.getLength(array); i++)
+         {
+            Object element = arrayValue.getValue(i);
+            if (element instanceof MetaValue)
+            {
+               TypeInfo elementType = configuration.getTypeInfo(element.getClass());
+               element = unwrap((MetaValue)element, elementType);
+            }
+            Array.set(array, i, element);
+         }
+         return array;
+      }
+
+      throw new IllegalArgumentException("Unsupported meta value: " + metaValue);
+   }
+
    /**
     * Create a meta value from the object
     * 
@@ -457,16 +500,19 @@ public class DefaultMetaValueFactory extends MetaValueFactory
 
       if (type == null)
          type = configuration.getTypeInfo(value.getClass());
-      
-      boolean start = (metaType == null);
+
+      value = convertValue(value, type);
+
+      boolean start = false;
       if (metaType == null)
       {
+         start = true;
          metaType = metaTypeFactory.resolve(type);
       }
       
       // For more complicated values we need to keep a mapping of objects to meta values
       // this avoids duplicate meta value construction and recursion 
-      Map<Object, MetaValue> mapping = null;
+      Map<Object, MetaValue> mapping;
       if (start)
       {
          // This is the start of the mapping
@@ -512,7 +558,27 @@ public class DefaultMetaValueFactory extends MetaValueFactory
             mappingStack.get().pop();
       }
    }
-   
+
+   /**
+    * Convert the value.
+    *
+    * @param value the value
+    * @param typeInfo type info
+    * @return converted value if type info not null
+    * @throws UndeclaredThrowableException for any error
+    */
+   protected Object convertValue(Object value, TypeInfo typeInfo)
+   {
+      try
+      {
+         return typeInfo != null ? typeInfo.convertValue(value) : value;
+      }
+      catch (Throwable t)
+      {
+         throw new UndeclaredThrowableException(t);
+      }
+   }
+
    /**
     * Check for a builder
     * 
