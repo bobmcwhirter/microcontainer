@@ -51,7 +51,6 @@ import org.jboss.dependency.spi.ControllerState;
 import org.jboss.dependency.spi.DependencyItem;
 import org.jboss.kernel.spi.dependency.KernelControllerContext;
 import org.jboss.managed.api.annotation.ManagementObject;
-import org.jboss.managed.api.annotation.ManagementRuntimeRef;
 import org.jboss.reflect.spi.TypeInfo;
 import org.jboss.util.JBossObject;
 import org.jboss.util.JBossStringBuilder;
@@ -327,7 +326,6 @@ public class AbstractBeanMetaData extends AbstractFeatureMetaData
       flushJBossObjectCache();
    }
 
-   @ManagementRuntimeRef
    public String getName()
    {
       return name;
