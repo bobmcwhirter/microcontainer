@@ -36,7 +36,8 @@ import org.jboss.xb.binding.sunday.unmarshalling.SingletonSchemaResolverFactory;
  * 
  * @param <T> the expected type 
  * @author <a href="adrian@jboss.com">Adrian Brock</a>
- * @version $Revision: 1.1 $
+ * @author Scott.Stark@jboss.org
+ * @version $Revision 1.1 $
  */
 public abstract class SchemaResolverDeployer<T> extends AbstractVFSParsingDeployer<T>
 {
@@ -45,7 +46,13 @@ public abstract class SchemaResolverDeployer<T> extends AbstractVFSParsingDeploy
 
    /** The resolver */
    private static final SchemaBindingResolver resolver = SingletonSchemaResolverFactory.getInstance().getSchemaBindingResolver();
-   
+
+   /** Whether the Unmarshaller will use schema validation */
+   private boolean useSchemaValidation = true;
+
+   /** Whether to validate */
+   private boolean useValidation = true;
+
    /**
     * Create a new SchemaResolverDeployer.
     * 
@@ -57,6 +64,46 @@ public abstract class SchemaResolverDeployer<T> extends AbstractVFSParsingDeploy
       super(output);
    }
 
+   /**
+    * Get the useSchemaValidation.
+    * 
+    * @return the useSchemaValidation.
+    */
+   public boolean isUseSchemaValidation()
+   {
+      return useSchemaValidation;
+   }
+
+   /**
+    * Set the useSchemaValidation.
+    * 
+    * @param useSchemaValidation the useSchemaValidation.
+    */
+   public void setUseSchemaValidation(boolean useSchemaValidation)
+   {
+      this.useSchemaValidation = useSchemaValidation;
+   }
+
+   /**
+    * Get the useValidation.
+    * 
+    * @return the useValidation.
+    */
+   public boolean isUseValidation()
+   {
+      return useValidation;
+   }
+
+   /**
+    * Set the useValidation.
+    * 
+    * @param useValidation the useValidation.
+    */
+   public void setUseValidation(boolean useValidation)
+   {
+      this.useValidation = useValidation;
+   }
+
    protected T parse(VFSDeploymentUnit unit, VirtualFile file, T root) throws Exception
    {
       if (file == null)
@@ -64,6 +111,8 @@ public abstract class SchemaResolverDeployer<T> extends AbstractVFSParsingDeploy
 
       log.debug("Parsing file: "+file+" for deploymentType: " + getOutput());
       Unmarshaller unmarshaller = factory.newUnmarshaller();
+      unmarshaller.setSchemaValidation(isUseSchemaValidation());
+      unmarshaller.setValidation(isUseValidation());
       InputStream is = file.openStream();
       Object parsed = null;
       try
