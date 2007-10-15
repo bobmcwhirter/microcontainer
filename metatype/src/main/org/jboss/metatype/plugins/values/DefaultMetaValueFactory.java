@@ -547,6 +547,11 @@ public class DefaultMetaValueFactory extends MetaValueFactory
     */
    protected ClassInfo getClassInfo(MetaType metaType, Object array)
    {
+      if (metaType == null)
+         throw new IllegalArgumentException("Null meta type, cannot determine class name.");
+      if (array == null)
+         throw new IllegalArgumentException("Null array, cannot determine classloader.");
+
       try
       {
          // get the classloader from the array we plan to fill
