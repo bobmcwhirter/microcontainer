@@ -88,9 +88,9 @@ public class UnwrapValueUnitTestCase extends AbstractMetaValueFactoryTest
          generics[i] = new TestGeneric("#" + i);
          for(int j = 0; j < 128; j++)
          {
-            integers[i][j] = i * j;
+            integers[i][j] = 128 * i + j;
             for(int k = 0; k < 128; k++)
-               triple[i % 10][j % 10][k % 10] = (i * j * k) % 1000;
+               triple[i % 10][j % 10][k % 10] = (100 * i + 10 * j + k) % 1000;
          }
       }
 
