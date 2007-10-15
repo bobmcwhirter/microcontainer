@@ -507,7 +507,7 @@ public class DefaultMetaValueFactory extends MetaValueFactory
       {
          Object subElement = Array.get(element, i);
          if (subElement instanceof MetaValue)
-            subElement = unwrapMetaValue((MetaValue)subElement, elementType, array);
+            subElement = unwrapMetaValue((MetaValue)subElement, elementType, newElement);
          if (subElement != null && subElement.getClass().isArray())
             subElement = unwrapArray(newElement, subElement);
 
