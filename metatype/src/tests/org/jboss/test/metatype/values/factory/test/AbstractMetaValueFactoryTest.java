@@ -100,4 +100,16 @@ public abstract class AbstractMetaValueFactoryTest extends AbstractMetaTypeTest
    {
       return metaValueFactory.create(value, type);
    }
+
+   /**
+    * Unwrap meta value.
+    *
+    * @param value the meta value
+    * @param type expecyed type
+    * @return unwrapped 
+    */
+   protected Object unwrapMetaValue(MetaValue value, Type type)
+   {
+      return metaValueFactory.unwrap(value, type);
+   }
 }

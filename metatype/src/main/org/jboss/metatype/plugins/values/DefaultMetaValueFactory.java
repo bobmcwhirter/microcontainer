@@ -453,36 +453,110 @@ public class DefaultMetaValueFactory extends MetaValueFactory
       else if (metaType.isEnum())
          return convertValue(((EnumValue)metaValue).getValue(), type);
       else if (metaType.isGeneric())
-      {
-         // todo
          return convertValue(((GenericValue)metaValue).getValue(), type);
-      }
       else if (metaType.isArray())
       {
          ArrayValue arrayValue = (ArrayValue)metaValue;
-         Object array;
-         try
-         {
-            array = type.newArrayInstance(arrayValue.getLength());
-         }
-         catch (Throwable t)
-         {
-            throw new UndeclaredThrowableException(t);
-         }
+         Object array = newArrayInstance(type, arrayValue.getLength());
          for (int i = 0; i < Array.getLength(array); i++)
          {
             Object element = arrayValue.getValue(i);
             if (element instanceof MetaValue)
-            {
-               TypeInfo elementType = configuration.getTypeInfo(element.getClass());
-               element = unwrap((MetaValue)element, elementType);
-            }
+               element = unwrapMetaValue((MetaValue)element, type, array);
+            else if (element != null && element.getClass().isArray())
+               element = unwrapArray(array, element);
+
             Array.set(array, i, element);
          }
          return array;
       }
 
       throw new IllegalArgumentException("Unsupported meta value: " + metaValue);
+   }
+
+   /**
+    * Unwrap MetaValue.
+    *
+    * @param element the meta value
+    * @param type parent type
+    * @param array parent array
+    * @return unwrapped value
+    */
+   protected Object unwrapMetaValue(MetaValue element, TypeInfo type, Object array)
+   {
+      TypeInfo elementType;
+      if (type instanceof ClassInfo)
+         elementType = ((ClassInfo)type).getComponentType();
+      else
+         elementType = getClassInfo(element.getMetaType(), array);
+      return unwrap(element, elementType);
+   }
+
+   /**
+    * Unwrap array.
+    * @param array parent array
+    * @param element current array element
+    * @return unwrapped array element
+    */
+   protected Object unwrapArray(Object array, Object element)
+   {
+      TypeInfo elementType = configuration.getTypeInfo(array.getClass().getComponentType());
+      int subSize = Array.getLength(element);
+      Object newElement = newArrayInstance(elementType, subSize);
+      for(int i = 0; i < subSize; i++)
+      {
+         Object subElement = Array.get(element, i);
+         if (subElement instanceof MetaValue)
+            subElement = unwrapMetaValue((MetaValue)subElement, elementType, array);
+         if (subElement != null && subElement.getClass().isArray())
+            subElement = unwrapArray(newElement, subElement);
+
+         Array.set(newElement, i, subElement);
+      }
+      return newElement;
+   }
+
+   /**
+    * Get new array instance.
+    *
+    * @param typeInfo the type info
+    * @param size the size
+    * @return new array instance
+    */
+   protected Object newArrayInstance(TypeInfo typeInfo, int size)
+   {
+      if (typeInfo == null)
+         throw new IllegalArgumentException("Null type info.");
+
+      try
+      {
+         return typeInfo.newArrayInstance(size);
+      }
+      catch (Throwable t)
+      {
+         throw new UndeclaredThrowableException(t);
+      }
+   }
+
+   /**
+    * Get the class info from meta type.
+    *
+    * @param metaType the meta type
+    * @param array the array to fill
+    * @return class info
+    */
+   protected ClassInfo getClassInfo(MetaType metaType, Object array)
+   {
+      try
+      {
+         // get the classloader from the array we plan to fill
+         ClassLoader cl = array.getClass().getClassLoader();
+         return configuration.getClassInfo(metaType.getClassName(), cl);
+      }
+      catch (ClassNotFoundException e)
+      {
+         throw new UndeclaredThrowableException(e);
+      }
    }
 
    /**
