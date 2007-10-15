@@ -21,18 +21,13 @@
 */
 package org.jboss.test.deployers.managed.test;
 
-import java.io.ByteArrayInputStream;
-import java.io.ByteArrayOutputStream;
-import java.io.ObjectInputStream;
-import java.io.ObjectOutputStream;
-import java.net.URL;
+import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.Map;
 import java.util.Set;
 
 import junit.framework.Test;
 import junit.framework.TestSuite;
-
 import org.jboss.deployers.client.spi.DeployerClient;
 import org.jboss.deployers.client.spi.Deployment;
 import org.jboss.deployers.spi.attachments.MutableAttachments;
@@ -72,7 +67,7 @@ public class DeployerManagedDeploymentUnitTestCase extends AbstractDeployerTest
    
    public static Test suite()
    {
-      return new TestSuite(DeployerManagedObjectUnitTestCase.class);
+      return new TestSuite(DeployerManagedDeploymentUnitTestCase.class);
    }
 
    public DeployerManagedDeploymentUnitTestCase(String name)
@@ -88,7 +83,7 @@ public class DeployerManagedDeploymentUnitTestCase extends AbstractDeployerTest
 
       Map<String, ManagedProperty> props = mo.getProperties();
       log.info("DSMetaData props: "+props);
-      assertEquals(3, props.size());
+      assertEquals(2, props.size());
    }
 
    public void testManagedDeployment()
@@ -167,13 +162,10 @@ public class DeployerManagedDeploymentUnitTestCase extends AbstractDeployerTest
       validateDeployment1(mo1, ps);
 
       // Validate that the ManagedDeployment is serializable
-      ByteArrayOutputStream baos = new ByteArrayOutputStream();
-      ObjectOutputStream oos = new ObjectOutputStream(baos);
-      oos.writeObject(mo1);
-      ByteArrayInputStream bais = new ByteArrayInputStream(baos.toByteArray());
-      ObjectInputStream ois = new ObjectInputStream(bais);
-      ManagedDeployment mo1test = (ManagedDeployment) ois.readObject();
-      validateDeployment1(mo1test, ps);
+      assertInstanceOf(mo1, Serializable.class);
+      byte[] bytes = serialize((Serializable)mo1);
+      ManagedDeployment dmo1 = (ManagedDeployment)deserialize(bytes);
+      validateDeployment1(dmo1, ps);
    }
 
    protected void validateDeployment1(ManagedDeployment mo1, MockProfileService ps)

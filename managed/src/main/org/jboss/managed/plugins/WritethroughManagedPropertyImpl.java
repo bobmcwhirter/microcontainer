@@ -124,6 +124,8 @@ public class WritethroughManagedPropertyImpl extends ManagedPropertyImpl
     */
    private Object writeReplace() throws ObjectStreamException
    {
-      return new ManagedPropertyImpl(getManagedObject(), getFields());
+      ManagedPropertyImpl managedProperty = new ManagedPropertyImpl(getManagedObject(), getFields());
+      managedProperty.setTargetManagedObject(getTargetManagedObject());
+      return managedProperty;
    }
 }

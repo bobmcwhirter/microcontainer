@@ -126,6 +126,7 @@ public class ManagedPropertyImpl implements ManagedProperty
    {
       return targetManagedObject;
    }
+
    public void setTargetManagedObject(ManagedObject target)
    {
       this.targetManagedObject = target;
