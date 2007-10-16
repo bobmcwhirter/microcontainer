@@ -48,6 +48,7 @@ import org.jboss.metatype.api.types.MetaType;
 import org.jboss.metatype.api.values.ArrayValue;
 import org.jboss.metatype.api.values.GenericValue;
 import org.jboss.metatype.api.values.SimpleValue;
+import org.jboss.metatype.api.values.MetaValue;
 
 /**
  * Mock profile service for testing implementation details.
@@ -170,8 +171,7 @@ public class MockProfileService
          ManagementObjectID id = (ManagementObjectID) prop.getAnnotations().get(ManagementObjectID.class.getName());
          if (id != null)
          {
-            SimpleValue refValue = (SimpleValue) prop.getValue();
-            String refName = (String) refValue.getValue();
+            Object refName = getRefName(prop.getValue());
             if (refName == null)
                refName = id.name();
             String propKey = refName + "/" + id.type();
@@ -186,8 +186,7 @@ public class MockProfileService
          {
             // The reference key is the prop value + ref.type()
             log.debug("Property("+prop.getName()+") references: "+ref);
-            SimpleValue refValue = (SimpleValue) prop.getValue();
-            String refName = (String) refValue.getValue();
+            Object refName = getRefName(prop.getValue());
             if (refName == null)
                refName = ref.name();
             String targetKey = refName + "/" + ref.type();
@@ -232,6 +231,18 @@ public class MockProfileService
             }
          }
       }
+   }
+
+   protected Object getRefName(Object value)
+   {
+      if (value instanceof MetaValue)
+      {
+         MetaValue metaValue = (MetaValue)value;
+         if (metaValue.getMetaType().isSimple() == false)
+            throw new IllegalArgumentException("Can only get ref from simple value: " + value);
+         return ((SimpleValue)metaValue).getValue();
+      }
+      return value;
    }
 
    public Map<String, Set<ManagedProperty>> getUnresolvedRefs()
