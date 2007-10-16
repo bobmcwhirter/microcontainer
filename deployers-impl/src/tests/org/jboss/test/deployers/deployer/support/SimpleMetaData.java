@@ -26,6 +26,7 @@ import java.io.Serializable;
 import org.jboss.managed.api.annotation.ManagementComponent;
 import org.jboss.managed.api.annotation.ManagementObject;
 import org.jboss.managed.api.annotation.ManagementObjectID;
+import org.jboss.managed.api.annotation.ManagementObjectRef;
 import org.jboss.managed.api.annotation.ManagementProperty;
 
 /**
@@ -42,9 +43,10 @@ public class SimpleMetaData implements Serializable
 
    private String domain;
    private SimpleMetaData.SecurityDeploymentType type;
+   private String jndiName;
 
    @ManagementProperty(name="domain-name")
-   @ManagementObjectID(type="SimpleDomain")
+   @ManagementObjectID(type="SecurityDomain")
    public String getDomain()
    {
       return domain;
@@ -66,4 +68,15 @@ public class SimpleMetaData implements Serializable
       this.type = type;
    }
 
+   @ManagementProperty(name="jndi-name")
+   @ManagementObjectRef(type="DataSource")
+   public String getJndiName()
+   {
+      return jndiName;
+   }
+
+   public void setJndiName(String jndiName)
+   {
+      this.jndiName = jndiName;
+   }
 }

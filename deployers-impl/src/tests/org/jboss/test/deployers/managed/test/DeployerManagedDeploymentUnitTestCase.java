@@ -98,12 +98,33 @@ public class DeployerManagedDeploymentUnitTestCase extends AbstractDeployerTest
       // Deploy a datasource with local and xa factories
       Deployment ctx1 = createSimpleDeployment("deployment1");
       MutableAttachments a1 = (MutableAttachments) ctx1.getPredeterminedManagedObjects();
+
+      DSMetaData dsmd = new DSMetaData();
+      dsmd.setDiplayName("deployment1 DS");
+      // The base LocalDataSourceMeta
+      LocalDataSourceMetaData ds = new LocalDataSourceMetaData();
+      ds.setJndiName("java:DefaultDS1");
+      ds.setMaxSize(100);
+      ds.setMinSize(10);
+      ds.setPassword("password1".toCharArray());
+      ds.setUsername("username1");
+      SecMetaData smd1 = new SecMetaData();
+      smd1.setDomain("java:/jaas/domain1");
+      ds.setSecurityMetaData(smd1);
+
+      ArrayList<ConnMetaData> deployments = new ArrayList<ConnMetaData>();
+      deployments.add(ds);
+      dsmd.setDeployments(deployments);
+
+      a1.addAttachment(DSMetaData.class, dsmd);
+
       // The mbeans associated with the local DS
       TestServiceMetaData localMBeans = new TestServiceMetaData();
       localMBeans.setObjectName("jboss.jca:service.SecurityDomain");
       localMBeans.setCode(SimpleMetaData.class.getName());
       ArrayList<TestServiceAttributeMetaData> localMBeanAttrs = new ArrayList<TestServiceAttributeMetaData>();
       localMBeanAttrs.add(new TestServiceAttributeMetaData("java:/jaas/domain1", "domain"));
+      localMBeanAttrs.add(new TestServiceAttributeMetaData("java:DefaultDS1", "jndiName"));
       TestServiceAttributeMetaData typeAttribute = new TestServiceAttributeMetaData(SimpleMetaData.SecurityDeploymentType.NONE, "type");
       localMBeanAttrs.add(typeAttribute);
       localMBeans.setAttributes(localMBeanAttrs);
@@ -112,7 +133,7 @@ public class DeployerManagedDeploymentUnitTestCase extends AbstractDeployerTest
 
       ps.process();
 
-      ManagedObject mo = ps.getManagedObject("java:/jaas/domain1/SimpleDomain");
+      ManagedObject mo = ps.getManagedObject("java:/jaas/domain1/SecurityDomain");
       assertNotNull(mo);
       assertEquals(localMBeans.getObjectName(), mo.getComponentName());
 
@@ -125,6 +146,11 @@ public class DeployerManagedDeploymentUnitTestCase extends AbstractDeployerTest
       assertEquals(typeAttribute.getValue(), SimpleMetaData.SecurityDeploymentType.NONE);
       prop.setValue(SimpleMetaData.SecurityDeploymentType.APPLICATION);
       assertEquals(typeAttribute.getValue(), SimpleMetaData.SecurityDeploymentType.APPLICATION);
+
+      ManagedProperty targetProp = mc.getProperty("jndi-name");
+      assertNotNull(targetProp);
+      targetProp.setValue("java:DefaultDS2");
+      // test target runtime component invocation (if intendet here)      
    }
 
    public void testManagedDeployment() throws Exception
