@@ -50,6 +50,7 @@ import org.jboss.deployers.structure.spi.scope.helpers.DefaultScopeBuilder;
 import org.jboss.logging.Logger;
 import org.jboss.metadata.spi.MetaData;
 import org.jboss.metadata.spi.MutableMetaData;
+import org.jboss.metadata.spi.context.MetaDataContext;
 import org.jboss.metadata.spi.loader.MutableMetaDataLoader;
 import org.jboss.metadata.spi.repository.MutableMetaDataRepository;
 import org.jboss.metadata.spi.retrieval.MetaDataRetrieval;
@@ -236,9 +237,30 @@ public class AbstractDeploymentContext extends ManagedObjectsWithTransientAttach
          initMutableMetaDataRetrieval(repository, deploymentContext);
          retrieval = repository.getMetaDataRetrieval(mutableScope);
       }
-      if (retrieval == null || retrieval instanceof MutableMetaDataLoader == false)
+      
+      // Nothing
+      if (retrieval == null)
          return null;
-      return (MutableMetaDataLoader) retrieval;
+
+      // This is mutable
+      if (retrieval instanceof MutableMetaDataLoader)
+         return (MutableMetaDataLoader) retrieval;
+
+      // We have a context, see if there is a mutable in the locals
+      if (retrieval instanceof MetaDataContext)
+      {
+         MetaDataContext context = (MetaDataContext) retrieval;
+         List<MetaDataRetrieval> locals = context.getLocalRetrievals();
+         if (locals != null)
+         {
+            for (MetaDataRetrieval local : locals)
+            {
+               if (local instanceof MutableMetaDataLoader)
+                  return (MutableMetaDataLoader) local;
+            }
+         }
+      }
+      return null;
    }
 
    /**

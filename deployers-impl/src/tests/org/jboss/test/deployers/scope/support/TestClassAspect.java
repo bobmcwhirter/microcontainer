@@ -1,6 +1,6 @@
 /*
 * JBoss, Home of Professional Open Source
-* Copyright 2006, JBoss Inc., and individual contributors as indicated
+* Copyright 2007, JBoss Inc., and individual contributors as indicated
 * by the @authors tag. See the copyright.txt in the distribution for a
 * full listing of individual contributors.
 *
@@ -19,37 +19,30 @@
 * Software Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA
 * 02110-1301 USA, or see the FSF site: http://www.fsf.org.
 */
-package org.jboss.test.deployers.scope;
+package org.jboss.test.deployers.scope.support;
 
-import junit.framework.Test;
-import junit.framework.TestSuite;
-import junit.textui.TestRunner;
-
-import org.jboss.test.deployers.scope.test.DeployerScopeUnitTestCase;
-import org.jboss.test.deployers.scope.test.LoaderMetaDataRepositoryUnitTestCase;
-import org.jboss.test.deployers.scope.test.PopulateMetaDataRepositoryUnitTestCase;
+import org.jboss.aop.advice.Interceptor;
+import org.jboss.aop.joinpoint.Invocation;
 
 /**
- * Deployers Scope Test Suite.
+ * TestClassAspect.
  * 
  * @author <a href="adrian@jboss.com">Adrian Brock</a>
- * @version $Revision: 37459 $
+ * @version $Revision: 1.1 $
  */
-public class DeployersScopeTestSuite extends TestSuite
+public class TestClassAspect implements Interceptor
 {
-   public static void main(String[] args)
+   public static TestClassAnnotation classAnnotation;
+   
+   public String getName()
    {
-      TestRunner.run(suite());
+      return getClass().getName();
    }
 
-   public static Test suite()
+   public Object invoke(Invocation invocation) throws Throwable
    {
-      TestSuite suite = new TestSuite("Deployers Scope Tests");
-
-      suite.addTest(DeployerScopeUnitTestCase.suite());
-      suite.addTest(PopulateMetaDataRepositoryUnitTestCase.suite());
-      suite.addTest(LoaderMetaDataRepositoryUnitTestCase.suite());
-
-      return suite;
+      classAnnotation = invocation.getAdvisor().getMetadata().getAnnotation(TestClassAnnotation.class);
+      return invocation.invokeNext();
    }
+
 }

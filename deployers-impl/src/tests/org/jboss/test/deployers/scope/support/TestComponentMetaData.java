@@ -21,6 +21,10 @@
 */
 package org.jboss.test.deployers.scope.support;
 
+import java.lang.annotation.Annotation;
+import java.util.ArrayList;
+import java.util.List;
+
 /**
  * TestComponentMetaData.
  * 
@@ -30,6 +34,10 @@ package org.jboss.test.deployers.scope.support;
 public class TestComponentMetaData
 {
    public String name;
+
+   public Class<?> clazz;
+   
+   public List<Annotation> classAnnotations = new ArrayList<Annotation>();
    
    public TestComponentMetaData(String name)
    {
