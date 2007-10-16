@@ -79,13 +79,13 @@ public class TestServiceMetaDataICF implements InstanceClassFactory<TestServiceM
    public void setValue(BeanInfo beanInfo, ManagedProperty property, TestServiceMetaData object, MetaValue value)
    {
       String name = getPropertyName(property);
+      PropertyInfo propertyInfo = beanInfo.getProperty(name);
 
       for (TestServiceAttributeMetaData amd : object.getAttributes())
       {
          if (amd.getName().equals(name))
          {
-            Class clazz = value != null ? value.getClass() : null;
-            amd.setValue(metaValueFactory.unwrap(value, clazz));
+            amd.setValue(metaValueFactory.unwrap(value, propertyInfo.getType()));
             break;
          }
       }

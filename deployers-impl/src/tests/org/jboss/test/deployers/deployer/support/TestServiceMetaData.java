@@ -24,14 +24,16 @@ package org.jboss.test.deployers.deployer.support;
 import java.io.Serializable;
 import java.util.List;
 
+import org.jboss.managed.api.annotation.ManagementObject;
+
 /**
  * The mbean service metadata
  * 
  * @author Scott.Stark@jboss.org
  * @version $Revision$
  */
-public class TestServiceMetaData
-   implements Serializable
+@ManagementObject
+public class TestServiceMetaData implements Serializable
 {
    private static final long serialVersionUID = 1;
 
@@ -40,6 +42,8 @@ public class TestServiceMetaData
    
    /** The code */
    private String code;
+
+   /**The attributes */
    private List<TestServiceAttributeMetaData> attributes;
 
    public String getCode()
@@ -61,7 +65,6 @@ public class TestServiceMetaData
    {
       this.objectName = objectName;
    }
-
    
    public List<TestServiceAttributeMetaData> getAttributes()
    {

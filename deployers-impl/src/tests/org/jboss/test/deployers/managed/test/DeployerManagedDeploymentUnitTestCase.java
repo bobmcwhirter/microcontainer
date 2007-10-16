@@ -49,6 +49,7 @@ import org.jboss.test.deployers.deployer.support.LocalDataSourceMetaData;
 import org.jboss.test.deployers.deployer.support.MCFDeployer;
 import org.jboss.test.deployers.deployer.support.SecMetaData;
 import org.jboss.test.deployers.deployer.support.SecurityDeployment;
+import org.jboss.test.deployers.deployer.support.SimpleMetaData;
 import org.jboss.test.deployers.deployer.support.TestServiceAttributeMetaData;
 import org.jboss.test.deployers.deployer.support.TestServiceMetaData;
 import org.jboss.test.deployers.deployer.support.TestServiceMetaDataICF;
@@ -59,6 +60,7 @@ import org.jboss.test.deployers.managed.support.MockProfileService;
  * ManagedDeployment unit tests.
  * 
  * @author Scott.Stark@jboss.org
+ * @author Ales.Justin@jboss.org
  * @version $Revision$
  */
 public class DeployerManagedDeploymentUnitTestCase extends AbstractDeployerTest
@@ -75,8 +77,7 @@ public class DeployerManagedDeploymentUnitTestCase extends AbstractDeployerTest
       super(name);
    }
 
-   public void testAnnotationScan()
-      throws Exception
+   public void testAnnotationScan() throws Exception
    {
       ManagedObjectFactory mof = ManagedObjectFactory.getInstance();
       ManagedObject mo = mof.createManagedObject(DSMetaData.class);
@@ -86,8 +87,47 @@ public class DeployerManagedDeploymentUnitTestCase extends AbstractDeployerTest
       assertEquals(2, props.size());
    }
 
-   public void testManagedDeployment()
-      throws Exception
+   public void testComponentNameAndSetValue() throws Exception
+   {
+      DeployerClient main = getMainDeployer();
+      MockProfileService ps = new MockProfileService(main);
+      ManagedObjectFactory mof = ManagedObjectFactory.getInstance();
+      TestServiceMetaDataICF tsicf = new TestServiceMetaDataICF();
+      mof.setInstanceClassFactory(TestServiceMetaData.class, tsicf);
+
+      // Deploy a datasource with local and xa factories
+      Deployment ctx1 = createSimpleDeployment("deployment1");
+      MutableAttachments a1 = (MutableAttachments) ctx1.getPredeterminedManagedObjects();
+      // The mbeans associated with the local DS
+      TestServiceMetaData localMBeans = new TestServiceMetaData();
+      localMBeans.setObjectName("jboss.jca:service.SecurityDomain");
+      localMBeans.setCode(SimpleMetaData.class.getName());
+      ArrayList<TestServiceAttributeMetaData> localMBeanAttrs = new ArrayList<TestServiceAttributeMetaData>();
+      localMBeanAttrs.add(new TestServiceAttributeMetaData("java:/jaas/domain1", "domain"));
+      TestServiceAttributeMetaData typeAttribute = new TestServiceAttributeMetaData(SimpleMetaData.SecurityDeploymentType.NONE, "type");
+      localMBeanAttrs.add(typeAttribute);
+      localMBeans.setAttributes(localMBeanAttrs);
+      a1.addAttachment(TestServiceMetaData.class, localMBeans);
+      ps.addDeployment(ctx1);
+
+      ps.process();
+
+      ManagedObject mo = ps.getManagedObject("java:/jaas/domain1/SimpleDomain");
+      assertNotNull(mo);
+      assertEquals(localMBeans.getObjectName(), mo.getComponentName());
+
+      ManagedDeployment md = ps.getManagedDeployment("deployment1");
+      assertNotNull(md);
+      ManagedComponent mc = md.getComponent("java:/jaas/domain1");
+      assertNotNull(mc);
+      ManagedProperty prop = mc.getProperty("security-criteria");
+      assertNotNull(prop);
+      assertEquals(typeAttribute.getValue(), SimpleMetaData.SecurityDeploymentType.NONE);
+      prop.setValue(SimpleMetaData.SecurityDeploymentType.APPLICATION);
+      assertEquals(typeAttribute.getValue(), SimpleMetaData.SecurityDeploymentType.APPLICATION);
+   }
+
+   public void testManagedDeployment() throws Exception
    {
       DeployerClient main = getMainDeployer();
       MockProfileService ps = new MockProfileService(main);
