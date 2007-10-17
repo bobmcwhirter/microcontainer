@@ -430,33 +430,51 @@ public class DefaultMetaValueFactory extends MetaValueFactory
       return internalCreate(value, type, null);
    }
 
+   public Object unwrap(MetaValue metaValue)
+   {
+      return internalUnwrap(metaValue, null);
+   }
+
    public Object unwrap(MetaValue metaValue, Type type)
    {
       TypeInfo typeInfo = configuration.getTypeInfo(type);
-      return unwrap(metaValue, typeInfo);
+      return internalUnwrap(metaValue, typeInfo);
    }
 
    public Object unwrap(MetaValue metaValue, TypeInfo type)
    {
+      return internalUnwrap(metaValue, type);
+   }
+
+   protected Object internalUnwrap(MetaValue metaValue, TypeInfo type)
+   {
       if (metaValue == null)
          return null;
-
-      if (type == null)
-         throw new IllegalArgumentException("Null type info.");
 
       MetaType metaType = metaValue.getMetaType();
       if (metaType.isTable() || metaType.isComposite())
          throw new IllegalArgumentException("Cannot get value from " + metaValue + ", unsupported.");
 
       if (metaType.isSimple())
+      {
          return convertValue(((SimpleValue)metaValue).getValue(), type);
+      }
       else if (metaType.isEnum())
-         return convertValue(((EnumValue)metaValue).getValue(), type);
+      {
+         EnumValue enumValue = ((EnumValue)metaValue);
+         if (type == null)
+            type = getTypeInfo(metaType, null);
+         return convertValue(enumValue.getValue(), type);
+      }
       else if (metaType.isGeneric())
+      {
          return convertValue(((GenericValue)metaValue).getValue(), type);
+      }
       else if (metaType.isArray())
       {
          ArrayValue arrayValue = (ArrayValue)metaValue;
+         if (type == null)
+            type= getTypeInfo(metaType, arrayValue.getValue());
          Object array = newArrayInstance(type, arrayValue.getLength());
          for (int i = 0; i < Array.getLength(array); i++)
          {
@@ -488,7 +506,7 @@ public class DefaultMetaValueFactory extends MetaValueFactory
       if (type instanceof ClassInfo)
          elementType = ((ClassInfo)type).getComponentType();
       else
-         elementType = getClassInfo(element.getMetaType(), array);
+         elementType = getTypeInfo(element.getMetaType(), array);
       return unwrap(element, elementType);
    }
 
@@ -545,18 +563,47 @@ public class DefaultMetaValueFactory extends MetaValueFactory
     * @param array the array to fill
     * @return class info
     */
-   protected ClassInfo getClassInfo(MetaType metaType, Object array)
+   protected TypeInfo getTypeInfo(MetaType metaType, Object array)
    {
       if (metaType == null)
          throw new IllegalArgumentException("Null meta type, cannot determine class name.");
       if (array == null)
          throw new IllegalArgumentException("Null array, cannot determine classloader.");
 
+      // get the classloader from the array we plan to fill
+      ClassLoader cl = array.getClass().getClassLoader();
+      return getTypeInfo(metaType, cl);
+   }
+
+   /**
+    * Get the class info from meta type.
+    *
+    * @param metaType the meta type
+    * @param cl the classloader
+    * @return class info
+    */
+   protected TypeInfo getTypeInfo(MetaType metaType, ClassLoader cl)
+   {
+      if (cl == null)
+         cl = Thread.currentThread().getContextClassLoader();
+
       try
       {
-         // get the classloader from the array we plan to fill
-         ClassLoader cl = array.getClass().getClassLoader();
-         return configuration.getClassInfo(metaType.getClassName(), cl);
+         if (metaType.isArray())
+         {
+            ArrayMetaType arrayMetaType = (ArrayMetaType)metaType;
+            MetaType elementMetaType = arrayMetaType.getElementType();
+            TypeInfo elementTypeInfo = configuration.getClassInfo(elementMetaType.getTypeName(), cl);
+            int dimension = arrayMetaType.getDimension() - 1; // minus 1, since we already use first in next line
+            TypeInfo typeInfo = elementTypeInfo.getArrayType();
+            while(dimension > 0)
+            {
+               typeInfo = typeInfo.getArrayType();
+               dimension--;
+            }
+            return typeInfo;
+         }
+         return configuration.getClassInfo(metaType.getTypeName(), cl);
       }
       catch (ClassNotFoundException e)
       {

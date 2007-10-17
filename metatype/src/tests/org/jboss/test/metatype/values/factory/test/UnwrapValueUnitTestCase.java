@@ -58,18 +58,22 @@ public class UnwrapValueUnitTestCase extends AbstractMetaValueFactoryTest
 
    public void testSimpleUnwrap() throws Exception
    {
-      checkSingle(123);
-      checkSingle(new Date());
+      checkSingle(123, true);
+      checkSingle(123, false);
+      checkSingle(new Date(), true);
+      checkSingle(new Date(), false);
    }
 
    public void testEnumUnwrap() throws Exception
    {
-      checkSingle(TestEnum.ONE);
+      checkSingle(TestEnum.ONE, true);
+      checkSingle(TestEnum.ONE, false);
    }
 
    public void testGenericUnwrap() throws Exception
    {
-      checkSingle(new TestGeneric("123"));
+      checkSingle(new TestGeneric("123"), true);
+      checkSingle(new TestGeneric("123"), false);
    }
 
    public void testArrayUnwrap() throws Exception
@@ -94,15 +98,34 @@ public class UnwrapValueUnitTestCase extends AbstractMetaValueFactoryTest
          }
       }
 
-      checkArray(shorts, new Asserter()
+      checkArray(shorts, true, new Asserter()
       {
          public boolean assertArray(final Object original, final Object unwrapped)
          {
             return Arrays.equals((short[])original, (short[])unwrapped);
          }
       });
+      checkArray(shorts, false, new Asserter()
+      {
+         public boolean assertArray(final Object original, final Object unwrapped)
+         {
+            short[] so = (short[])original;
+            Short[] SO = (Short[])unwrapped;
+            for (int i = 0; i < so.length; i++)
+               if (so[i] != SO[i])
+                  return false;
+            return true;
+         }
+      });
 
-      checkArray(doubles, new Asserter()
+      checkArray(doubles, true, new Asserter()
+      {
+         public boolean assertArray(final Object original, final Object unwrapped)
+         {
+            return Arrays.equals((Double[])original, (Double[])unwrapped);
+         }
+      });
+      checkArray(doubles, false, new Asserter()
       {
          public boolean assertArray(final Object original, final Object unwrapped)
          {
@@ -110,7 +133,14 @@ public class UnwrapValueUnitTestCase extends AbstractMetaValueFactoryTest
          }
       });
 
-      checkArray(enums, new Asserter()
+      checkArray(enums, true, new Asserter()
+      {
+         public boolean assertArray(final Object original, final Object unwrapped)
+         {
+            return Arrays.equals((Object[])original, (Object[])unwrapped);
+         }
+      });
+      checkArray(enums, false, new Asserter()
       {
          public boolean assertArray(final Object original, final Object unwrapped)
          {
@@ -118,7 +148,14 @@ public class UnwrapValueUnitTestCase extends AbstractMetaValueFactoryTest
          }
       });
 
-      checkArray(generics, new Asserter()
+      checkArray(generics, true, new Asserter()
+      {
+         public boolean assertArray(final Object original, final Object unwrapped)
+         {
+            return Arrays.equals((Object[])original, (Object[])unwrapped);
+         }
+      });
+      checkArray(generics, false, new Asserter()
       {
          public boolean assertArray(final Object original, final Object unwrapped)
          {
@@ -126,50 +163,61 @@ public class UnwrapValueUnitTestCase extends AbstractMetaValueFactoryTest
          }
       });
 
-      checkArray(integers, new Asserter()
+      Asserter integersAsserter = new Asserter()
       {
          public boolean assertArray(final Object original, final Object unwrapped)
          {
             Integer[][] first = (Integer[][])original;
             Integer[][] second = (Integer[][])unwrapped;
-            for(int i = 0; i < first.length; i++)
-               for(int j = 0; j < first[0].length; j++)
+            for (int i = 0; i < first.length; i++)
+               for (int j = 0; j < first[0].length; j++)
                   if (first[i][j].equals(second[i][j]) == false)
                      return false;
             return true;
          }
-      });
+      };
+      checkArray(integers, true, integersAsserter);
+      checkArray(integers, false, integersAsserter);
 
-      checkArray(triple, new Asserter()
+      Asserter tripleAsserter = new Asserter()
       {
          public boolean assertArray(final Object original, final Object unwrapped)
          {
             Integer[][][] first = (Integer[][][])original;
             Integer[][][] second = (Integer[][][])unwrapped;
-            for(int i = 0; i < first.length; i++)
-               for(int j = 0; j < first[0].length; j++)
-                  for(int k = 0; k < first[0][0].length; k++)
-                  if (first[i][j][k].equals(second[i][j][k]) == false)
-                     return false;
+            for (int i = 0; i < first.length; i++)
+               for (int j = 0; j < first[0].length; j++)
+                  for (int k = 0; k < first[0][0].length; k++)
+                     if (first[i][j][k].equals(second[i][j][k]) == false)
+                        return false;
             return true;
          }
-      });
+      };
+      checkArray(triple, true, tripleAsserter);
+      checkArray(triple, false, tripleAsserter);
    }
 
-   protected void checkSingle(Object object)
+   protected void checkSingle(Object object, boolean typeInfoFromObject)
    {
       MetaValue metaValue = createMetaValue(object);
       assertNotNull(metaValue);
-      Object unwrapped = unwrapMetaValue(metaValue, object.getClass());
+      Object unwrapped;
+      if (typeInfoFromObject)
+         unwrapped = unwrapMetaValue(metaValue, object.getClass());
+      else
+         unwrapped = unwrapMetaValue(metaValue);
       assertEquals(object, unwrapped);
    }
 
-   protected void checkArray(Object object, Asserter asserter)
+   protected void checkArray(Object object, boolean typeInfoFromObject, Asserter asserter)
    {
       MetaValue metaValue = createMetaValue(object);
       assertNotNull(metaValue);
-      Class<? extends Object> clazz = object.getClass();
-      Object unwrapped = unwrapMetaValue(metaValue, clazz);
+      Object unwrapped;
+      if (typeInfoFromObject)
+         unwrapped = unwrapMetaValue(metaValue, object.getClass());
+      else
+         unwrapped = unwrapMetaValue(metaValue);
       assertTrue("Different arrays.", asserter.assertArray(object, unwrapped));
    }
 

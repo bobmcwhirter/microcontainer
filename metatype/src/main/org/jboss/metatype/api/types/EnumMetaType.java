@@ -57,21 +57,34 @@ public class EnumMetaType extends AbstractMetaType
    /**
     * Create a new EnumMetaType from the Enum values.
     * 
-    * @param className the class name
     * @param validValues the valid Enum values
     */
    public EnumMetaType(Enum[] validValues)
    {
-      super(String.class.getName(), validValues[0].getClass().getName(), validValues[0].getClass().getName());
-      if (validValues == null)
-         throw new IllegalArgumentException("Null valid values");
+      super(
+            String.class.getName(),
+            isValid(validValues) ? validValues[0].getClass().getName() : null,
+            isValid(validValues) ? validValues[0].getClass().getName() : null
+      );
+      if (isValid(validValues) == false)
+         throw new IllegalArgumentException("Null or empty valid values");
       ArrayList<String> values = new ArrayList<String>();
       for (Enum e : validValues)
          values.add(e.name());
       this.validValues = values;
    }
-   
-   
+
+   /**
+    * Are enums valid.
+    *
+    * @param values the enums
+    * @return true if not null and not empty
+    */
+   protected static boolean isValid(Enum[] values)
+   {
+      return values != null && values.length > 0;
+   }
+
    /**
     * Get the valid values
     * 

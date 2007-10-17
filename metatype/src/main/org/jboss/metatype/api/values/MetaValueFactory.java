@@ -87,6 +87,15 @@ public abstract class MetaValueFactory
     * Supports simple and generic meta value.
     *
     * @param metaValue meta value
+    * @return meta value's value
+    */
+   public abstract Object unwrap(MetaValue metaValue);
+
+   /**
+    * Unwrap meta value.
+    * Supports simple and generic meta value.
+    *
+    * @param metaValue meta value
     * @param type the type
     * @return meta value's value
     */
