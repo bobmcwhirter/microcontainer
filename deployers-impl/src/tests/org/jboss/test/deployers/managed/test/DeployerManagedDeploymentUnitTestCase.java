@@ -54,6 +54,8 @@ import org.jboss.test.deployers.deployer.support.TestServiceAttributeMetaData;
 import org.jboss.test.deployers.deployer.support.TestServiceMetaData;
 import org.jboss.test.deployers.deployer.support.TestServiceMetaDataICF;
 import org.jboss.test.deployers.deployer.support.XADataSourceMetaData;
+import org.jboss.test.deployers.deployer.support.RuntimeComponentMetaData;
+import org.jboss.test.deployers.deployer.support.CustomName;
 import org.jboss.test.deployers.managed.support.MockProfileService;
 
 /**
@@ -131,11 +133,28 @@ public class DeployerManagedDeploymentUnitTestCase extends AbstractDeployerTest
       a1.addAttachment(TestServiceMetaData.class, localMBeans);
       ps.addDeployment(ctx1);
 
+      Deployment ctx2 = createSimpleDeployment("deployment2");
+      MutableAttachments a2 = (MutableAttachments)ctx2.getPredeterminedManagedObjects();
+
+      TestServiceMetaData localMBeans2 = new TestServiceMetaData();
+      localMBeans2.setCode(RuntimeComponentMetaData.class.getName());
+      ArrayList<TestServiceAttributeMetaData> localMBeanAttrs2 = new ArrayList<TestServiceAttributeMetaData>();
+      localMBeanAttrs2.add(new TestServiceAttributeMetaData("java:/jaas/domain2", "domain"));
+      CustomName customName = new CustomName("runtime-name-1");
+      localMBeanAttrs2.add(new TestServiceAttributeMetaData(customName, "customName"));
+      localMBeans2.setAttributes(localMBeanAttrs2);
+      a2.addAttachment(TestServiceMetaData.class, localMBeans2);
+      ps.addDeployment(ctx2);
+
       ps.process();
 
       ManagedObject mo = ps.getManagedObject("java:/jaas/domain1/SecurityDomain");
       assertNotNull(mo);
       assertEquals(localMBeans.getObjectName(), mo.getComponentName());
+
+      ManagedObject mo2 = ps.getManagedObject("java:/jaas/domain2/SecurityDomain");
+      assertNotNull(mo2);
+      assertEquals(customName.getName(), mo2.getComponentName());
 
       ManagedDeployment md = ps.getManagedDeployment("deployment1");
       assertNotNull(md);
