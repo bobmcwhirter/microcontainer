@@ -31,6 +31,7 @@ import org.jboss.test.deployers.vfs.deploymentfactory.VFSDeploymentFactoryTestSu
 import org.jboss.test.deployers.vfs.metadata.VFSMetaDataTestSuite;
 import org.jboss.test.deployers.vfs.structure.VFSStructureTestSuite;
 import org.jboss.test.deployers.vfs.structurebuilder.VFSStructureBuilderTestSuite;
+import org.jboss.test.deployers.vfs.managed.VFSManagedTestSuite;
 
 /**
  * Deployers VFS Test Suite.
@@ -55,6 +56,7 @@ public class DeployersVFSTestSuite extends TestSuite
       suite.addTest(VFSMetaDataTestSuite.suite());
       suite.addTest(VFSDeployerTestSuite.suite());
       suite.addTest(BeanDeployerTestSuite.suite());
+      suite.addTest(VFSManagedTestSuite.suite());
 
       return suite;
    }

@@ -55,7 +55,7 @@ public abstract class ManagedObjectFactory
     * @param object the object
     * @param name - the name of the managed object. If null, the name will
     *    be derived from the object annotations or attachment name.
-    * @param type - the name of the managed object. If null, the name will
+    * @param nameType - the name of the managed object. If null, the name will
     *    be derived from the object annotations or default to "".
     * 
     * @see ManagementObjectID

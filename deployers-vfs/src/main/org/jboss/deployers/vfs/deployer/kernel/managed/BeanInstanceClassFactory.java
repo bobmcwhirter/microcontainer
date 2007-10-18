@@ -23,11 +23,13 @@ package org.jboss.deployers.vfs.deployer.kernel.managed;
 
 import java.io.Serializable;
 import java.lang.reflect.UndeclaredThrowableException;
+import java.util.Set;
 
 import org.jboss.beans.info.spi.BeanInfo;
 import org.jboss.beans.info.spi.PropertyInfo;
 import org.jboss.beans.metadata.plugins.AbstractPropertyMetaData;
 import org.jboss.beans.metadata.plugins.AbstractValueMetaData;
+import org.jboss.beans.metadata.plugins.AbstractBeanMetaData;
 import org.jboss.beans.metadata.spi.BeanMetaData;
 import org.jboss.beans.metadata.spi.PropertyMetaData;
 import org.jboss.beans.metadata.spi.ValueMetaData;
@@ -42,7 +44,7 @@ import org.jboss.metatype.api.values.MetaValueFactory;
  *
  * @author <a href="mailto:ales.justin@jboss.com">Ales Justin</a>
  */
-public class BeanInstanceClassFactory implements InstanceClassFactory<BeanMetaData>
+public class BeanInstanceClassFactory implements InstanceClassFactory<AbstractBeanMetaData>
 {
    /** The meta value factory */
    private MetaValueFactory metaValueFactory = MetaValueFactory.getInstance();
@@ -67,10 +69,9 @@ public class BeanInstanceClassFactory implements InstanceClassFactory<BeanMetaDa
    }
 
    @SuppressWarnings("unchecked")
-   public Class<? extends Serializable> getManagedObjectClass(BeanMetaData attachment) throws ClassNotFoundException
+   public Class<? extends Serializable> getManagedObjectClass(AbstractBeanMetaData attachment) throws ClassNotFoundException
    {
-      Class clazz = getClassLoader(attachment).loadClass(attachment.getBean());
-      return clazz;
+      return (Class)getClassLoader(attachment).loadClass(attachment.getBean());
    }
 
    /**
@@ -80,15 +81,19 @@ public class BeanInstanceClassFactory implements InstanceClassFactory<BeanMetaDa
     * @param name property name
     * @return property meta data or null if no match
     */
-   protected PropertyMetaData getPropertyMetaData(BeanMetaData attachment, String name)
+   protected PropertyMetaData getPropertyMetaData(AbstractBeanMetaData attachment, String name)
    {
       PropertyMetaData propertyMetaData = null;
-      for(PropertyMetaData pmd : attachment.getProperties())
+      Set<PropertyMetaData> properties = attachment.getProperties();
+      if (properties != null && properties.isEmpty() == false)
       {
-         if (name.equals(pmd.getName()))
+         for(PropertyMetaData pmd : properties)
          {
-            propertyMetaData = pmd;
-            break;
+            if (name.equals(pmd.getName()))
+            {
+               propertyMetaData = pmd;
+               break;
+            }
          }
       }
       return propertyMetaData;
@@ -102,7 +107,7 @@ public class BeanInstanceClassFactory implements InstanceClassFactory<BeanMetaDa
     * @return property meta data or exception if no match
     * @throws IllegalArgumentException for no matching property meta data
     */
-   protected PropertyMetaData getExactPropertyMetaData(BeanMetaData attachment, String name)
+   protected PropertyMetaData getExactPropertyMetaData(AbstractBeanMetaData attachment, String name)
    {
       PropertyMetaData propertyMetaData = getPropertyMetaData(attachment, name);
       if (propertyMetaData == null)
@@ -110,7 +115,7 @@ public class BeanInstanceClassFactory implements InstanceClassFactory<BeanMetaDa
       return propertyMetaData;
    }
 
-   public MetaValue getValue(BeanInfo beanInfo, ManagedProperty property, BeanMetaData attachment)
+   public MetaValue getValue(BeanInfo beanInfo, ManagedProperty property, AbstractBeanMetaData attachment)
    {
       String name = property.getName();
       PropertyMetaData pmd = getExactPropertyMetaData(attachment, name);
@@ -127,7 +132,7 @@ public class BeanInstanceClassFactory implements InstanceClassFactory<BeanMetaDa
       }
    }
 
-   public void setValue(BeanInfo beanInfo, ManagedProperty property, BeanMetaData attachment, MetaValue value)
+   public void setValue(BeanInfo beanInfo, ManagedProperty property, AbstractBeanMetaData attachment, MetaValue value)
    {
       String name = property.getName();
       PropertyMetaData pmd = getExactPropertyMetaData(attachment, name);
@@ -139,7 +144,7 @@ public class BeanInstanceClassFactory implements InstanceClassFactory<BeanMetaDa
       }
    }
 
-   public Object getComponentName(BeanInfo beanInfo, ManagedProperty property, BeanMetaData attachment, MetaValue value)
+   public Object getComponentName(BeanInfo beanInfo, ManagedProperty property, AbstractBeanMetaData attachment, MetaValue value)
    {
       return (beanInfo == null || property == null || value == null) ? attachment.getName() : null;
    }

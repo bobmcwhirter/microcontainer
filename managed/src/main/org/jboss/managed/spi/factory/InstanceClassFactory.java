@@ -36,7 +36,7 @@ import org.jboss.metatype.api.values.MetaValue;
  * @author Ales.Justin@jboss.org
  * @version $Revision$
  */
-public interface InstanceClassFactory<T>
+public interface InstanceClassFactory<T extends Serializable>
 {
    /**
     * Return the Class that represents the root ManagedObject to scan
