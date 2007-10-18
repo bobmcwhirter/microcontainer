@@ -255,7 +255,7 @@ public class DefaultMetaTypeFactory extends MetaTypeFactory
          componentType = ((ArrayInfo) componentType).getComponentType();
       }
       MetaType componentMetaType = resolve(componentType);
-      return new ArrayMetaType(dimension, componentMetaType);
+      return new ArrayMetaType(dimension, componentMetaType, componentType.isPrimitive());
    }
    
    /**

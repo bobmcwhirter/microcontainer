@@ -28,6 +28,7 @@ import org.jboss.metatype.api.values.ArrayValue;
 /**
  * ArrayMetaType.
  *
+ * @param <T> exact type
  * @author <a href="adrian@jboss.com">Adrian Brock</a>
  * @version $Revision: 1.1 $
  */
@@ -41,6 +42,7 @@ public class ArrayMetaType<T extends Serializable> extends AbstractMetaType
 
    /** The element type for the array */
    private MetaType elementType;
+
    /** Is elementType a primative array */
    private boolean primitiveArray;
 
@@ -66,7 +68,13 @@ public class ArrayMetaType<T extends Serializable> extends AbstractMetaType
        { Double.class.getName(),    double.class.getName(),  "D", SimpleMetaType.DOUBLE }
    };
 
-   static boolean isPrimitiveEncoding(final String primitiveKey)
+   /**
+    * Is primitive key.
+    *
+    * @param primitiveKey the key to check
+    * @return true if key is primitive
+    */
+   public static boolean isPrimitiveEncoding(final String primitiveKey)
    {
       for (Object[] typeDescr : PRIMITIVE_ARRAY_TYPES)
       {
@@ -77,7 +85,14 @@ public class ArrayMetaType<T extends Serializable> extends AbstractMetaType
       }
       return false;
    }
-   static SimpleMetaType<?> getPrimitiveMetaType(String primitiveTypeName)
+
+   /**
+    * Get primitive meta type.
+    *
+    * @param primitiveTypeName primitive type name
+    * @return primitive meta type or null if param is not primitive
+    */
+   public static SimpleMetaType<?> getPrimitiveMetaType(String primitiveTypeName)
    {
       for (Object[] typeDescr : PRIMITIVE_ARRAY_TYPES)
       {
@@ -86,12 +101,14 @@ public class ArrayMetaType<T extends Serializable> extends AbstractMetaType
       }
       return null;
    }
+
    /**
     * Get the char encoding string for the type name.
+    *
     * @param typeName - the primitive wrapper type name
     * @return char encoding string.
     */
-   static String getPrimativeEncoding(String typeName)
+   public static String getPrimitiveEncoding(String typeName)
    {
       for (Object[] typeDescr : PRIMITIVE_ARRAY_TYPES)
       {
@@ -100,12 +117,14 @@ public class ArrayMetaType<T extends Serializable> extends AbstractMetaType
       }
       return null;
    }
+
    /**
     * Get the char encoding string for the type name.
+    *
     * @param typeName - the primitive wrapper type name
     * @return primitive type name string.
     */
-   static String getPrimativeName(String typeName)
+   public static String getPrimitiveName(String typeName)
    {
       for (Object[] typeDescr : PRIMITIVE_ARRAY_TYPES)
       {
@@ -115,11 +134,23 @@ public class ArrayMetaType<T extends Serializable> extends AbstractMetaType
       return null;
    }
 
+   /**
+    * Get array meta type.
+    *
+    * @param elementType the element meta type
+    * @return array meta type
+    */
    public static <E extends Serializable> ArrayMetaType<E[]> getArrayType(MetaType<E> elementType)
    {
-      ArrayMetaType<E[]> arrayType = new ArrayMetaType<E[]>(1, elementType);
-      return arrayType;
+      return new ArrayMetaType<E[]>(1, elementType);
    }
+
+   /**
+    * Get primitive array meta type.
+    *
+    * @param arrayClass array class
+    * @return array meta type
+    */
    public static <T extends Serializable> ArrayMetaType<T> getPrimitiveArrayType(Class<T> arrayClass)
    {
       if (!arrayClass.isArray())
@@ -157,10 +188,10 @@ public class ArrayMetaType<T extends Serializable> extends AbstractMetaType
     * 
     * @param dimension the dimension
     * @param elementType the element type
-    * @param isPrimative is this a primitive type
+    * @param isPrimitive is this a primitive type
     * @return the class name
     */
-   private static String genName(int dimension, MetaType elementType, boolean isPrimative)
+   private static String genName(int dimension, MetaType elementType, boolean isPrimitive)
    {
       if (dimension < 1)
          throw new IllegalArgumentException("negative dimension");
@@ -171,9 +202,9 @@ public class ArrayMetaType<T extends Serializable> extends AbstractMetaType
       StringBuilder buffer = new StringBuilder();
       for (int i=0; i < dimension; i++)
          buffer.append('[');
-      if (isPrimative)
+      if (isPrimitive)
       {
-         buffer.append(getPrimativeEncoding(elementType.getClassName()));
+         buffer.append(getPrimitiveEncoding(elementType.getClassName()));
       }
       else
       {
@@ -189,10 +220,10 @@ public class ArrayMetaType<T extends Serializable> extends AbstractMetaType
     * 
     * @param dimension the dimension
     * @param elementType the element type
-    * @param isPrimative is this a primitive type
+    * @param isPrimitive is this a primitive type
     * @return the type name
     */
-   private static String genType(int dimension, MetaType elementType, boolean isPrimative)
+   private static String genType(int dimension, MetaType elementType, boolean isPrimitive)
    {
       if (dimension < 1)
          throw new IllegalArgumentException("negative dimension");
@@ -203,9 +234,9 @@ public class ArrayMetaType<T extends Serializable> extends AbstractMetaType
       StringBuilder buffer = new StringBuilder();
       for (int i=0; i < dimension; i++)
          buffer.append('[');
-      if (isPrimative)
+      if (isPrimitive)
       {
-         buffer.append(getPrimativeEncoding(elementType.getClassName()));
+         buffer.append(getPrimitiveEncoding(elementType.getClassName()));
       }
       else
       {
@@ -221,16 +252,16 @@ public class ArrayMetaType<T extends Serializable> extends AbstractMetaType
     * 
     * @param dimension the dimension
     * @param elementType the element type
-    * @param isPrimative is this a primitive type
+    * @param isPrimitive is this a primitive type
     * @return the description
     */
-   private static String genDesc(int dimension, MetaType elementType, boolean isPrimative)
+   private static String genDesc(int dimension, MetaType elementType, boolean isPrimitive)
    {
       StringBuilder buffer = new StringBuilder();
       buffer.append(new Integer(dimension));
       buffer.append("-dimension array of ");
-      if (isPrimative)
-         buffer.append(getPrimativeName(elementType.getTypeName()));
+      if (isPrimitive)
+         buffer.append(getPrimitiveName(elementType.getTypeName()));
       else
          buffer.append(elementType.getTypeName());
       return buffer.toString();
@@ -252,16 +283,27 @@ public class ArrayMetaType<T extends Serializable> extends AbstractMetaType
       this.elementType = elementType;
       this.primitiveArray = false;
    }
+
    /**
     * Construct an ArrayMetaType.
-    * @param elementType
-    * @param primitiveArray
+    *
+    * @param elementType the element type
+    * @param primitiveArray is primitive array
     */
    public ArrayMetaType(SimpleMetaType<?> elementType, boolean primitiveArray)
    {
       this(1, elementType, primitiveArray);
    }
-   public ArrayMetaType(int dimension, SimpleMetaType<?> elementType, boolean primitiveArray)
+
+   /**
+    * Construct an ArrayMetaType.
+    *
+    * @param dimension the number of dimensions in the array
+    * @param elementType the open type of the array elements
+    * @param primitiveArray is primitive array
+    * @throws IllegalArgumentException for a null argument or non-negative dimension or when meta type is an ArrayMetaType
+    */
+   public ArrayMetaType(int dimension, MetaType<?> elementType, boolean primitiveArray)
    {
       super(genName(dimension, elementType, primitiveArray),
             genType(dimension, elementType, primitiveArray),
@@ -291,6 +333,11 @@ public class ArrayMetaType<T extends Serializable> extends AbstractMetaType
       return elementType;
    }
 
+   /**
+    * Is primitive array.
+    *
+    * @return true for primitive array
+    */
    public boolean isPrimitiveArray()
    {
       return primitiveArray;

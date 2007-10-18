@@ -65,6 +65,7 @@ import org.jboss.metatype.spi.values.MetaValueBuilder;
 import org.jboss.reflect.spi.ArrayInfo;
 import org.jboss.reflect.spi.ClassInfo;
 import org.jboss.reflect.spi.TypeInfo;
+import org.jboss.reflect.spi.TypeInfoFactory;
 
 /**
  * DefaultMetaValueFactory.
@@ -446,6 +447,13 @@ public class DefaultMetaValueFactory extends MetaValueFactory
       return internalUnwrap(metaValue, type);
    }
 
+   /**
+    * Unwrap value from meta value.
+    *
+    * @param metaValue the meta value
+    * @param type expected type info
+    * @return unwrapped value
+    */
    protected Object internalUnwrap(MetaValue metaValue, TypeInfo type)
    {
       if (metaValue == null)
@@ -589,11 +597,15 @@ public class DefaultMetaValueFactory extends MetaValueFactory
 
       try
       {
+         TypeInfoFactory tif = configuration.getTypeInfoFactory();
          if (metaType.isArray())
          {
             ArrayMetaType arrayMetaType = (ArrayMetaType)metaType;
             MetaType elementMetaType = arrayMetaType.getElementType();
-            TypeInfo elementTypeInfo = configuration.getClassInfo(elementMetaType.getTypeName(), cl);
+            String elementTypeName = elementMetaType.getTypeName();
+            if (arrayMetaType.isPrimitiveArray())
+               elementTypeName = ArrayMetaType.getPrimitiveName(elementTypeName);
+            TypeInfo elementTypeInfo = tif.getTypeInfo(elementTypeName, cl);
             int dimension = arrayMetaType.getDimension() - 1; // minus 1, since we already use first in next line
             TypeInfo typeInfo = elementTypeInfo.getArrayType();
             while(dimension > 0)
@@ -603,7 +615,7 @@ public class DefaultMetaValueFactory extends MetaValueFactory
             }
             return typeInfo;
          }
-         return configuration.getClassInfo(metaType.getTypeName(), cl);
+         return tif.getTypeInfo(metaType.getTypeName(), cl);
       }
       catch (ClassNotFoundException e)
       {

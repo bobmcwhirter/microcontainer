@@ -109,12 +109,7 @@ public class UnwrapValueUnitTestCase extends AbstractMetaValueFactoryTest
       {
          public boolean assertArray(final Object original, final Object unwrapped)
          {
-            short[] so = (short[])original;
-            Short[] SO = (Short[])unwrapped;
-            for (int i = 0; i < so.length; i++)
-               if (so[i] != SO[i])
-                  return false;
-            return true;
+            return Arrays.equals((short[])original, (short[])unwrapped);
          }
       });
 
