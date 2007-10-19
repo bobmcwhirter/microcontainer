@@ -174,8 +174,10 @@ public abstract class AbstractTopLevelClassLoaderSystemDeployer extends Abstract
       {
          // Reset the module to avoid possible memory leaks
          Module module = context.getTransientAttachments().getAttachment(Module.class);
+         
          if (module == null)
             throw new IllegalStateException("Deployment Context has no module: " + context);
+         cleanup(context, module);
          module.reset();
       }
    }
@@ -232,4 +234,15 @@ public abstract class AbstractTopLevelClassLoaderSystemDeployer extends Abstract
     * @throws Exception for any error
     */
    protected abstract ClassLoaderPolicy createTopLevelClassLoaderPolicy(DeploymentContext context, Module module) throws Exception;
+   
+   /**
+    * Hook to perform cleanup on destruction of classloaader
+    * 
+    * @param context the deployment context
+    * @param module the module
+    * @throws Exception for any error
+    */
+   protected void cleanup(DeploymentContext context, Module module) throws Exception
+   {
+   }
 }

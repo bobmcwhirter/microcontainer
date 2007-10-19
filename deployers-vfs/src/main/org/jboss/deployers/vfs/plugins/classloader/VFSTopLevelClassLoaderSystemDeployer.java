@@ -30,7 +30,6 @@ import org.jboss.deployers.structure.spi.DeploymentContext;
 import org.jboss.deployers.vfs.spi.structure.helpers.ClassPathVisitor;
 import org.jboss.virtual.VirtualFile;
 import org.jboss.virtual.plugins.context.memory.MemoryContextFactory;
-import org.jboss.virtual.spi.VFSContext;
 
 /**
  * VFSTopLevelClassLoaderSystemDeployer.
@@ -53,7 +52,7 @@ public class VFSTopLevelClassLoaderSystemDeployer extends AbstractTopLevelClassL
          roots[i++] = path;
       
       MemoryContextFactory factory = MemoryContextFactory.getInstance();
-      VFSContext ctx = factory.createRoot(module.getDynamicClassRoot());
+      factory.createRoot(module.getDynamicClassRoot());
       
       URL url = new URL(module.getDynamicClassRoot() + "/classes");
       roots[i++] = factory.createDirectory(url).getVirtualFile();
@@ -64,4 +63,12 @@ public class VFSTopLevelClassLoaderSystemDeployer extends AbstractTopLevelClassL
       // TODO JBMICROCONT-182 more policy from "module"
       return policy;
    }
+
+   @Override
+   protected void cleanup(DeploymentContext context, Module module) throws Exception
+   {
+      MemoryContextFactory factory = MemoryContextFactory.getInstance();
+      factory.deleteRoot(module.getDynamicClassRoot());
+   }
+   
 }
