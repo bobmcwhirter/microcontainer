@@ -509,6 +509,16 @@ public class BaseClassLoader extends SecureClassLoader implements BaseClassLoade
       return null;
    }
 
+   public void clearBlackList(String name)
+   {
+      if (blackList != null)
+      {
+         log.trace(this + " removing from blacklist " + name);
+         blackList.remove(name);
+         policy.clearBlackList(name);
+      }
+   }
+   
    /**
     * A long version of the classloader
     * 

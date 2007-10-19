@@ -983,4 +983,22 @@ public abstract class BaseClassLoaderDomain implements Loader
          log.warn("Error in afterUnegisterClassLoader: " + this + " classLoader=" + classLoader.toLongString(), t);
       }
    }
+   
+   /**
+    * Cleans the entry with the given name from the blackList
+    *
+    * @param name the name of the resource to clear from the blackList
+    */
+   protected void clearBlackList(String name)
+   {
+      if (globalClassBlackList != null)
+      {
+         globalClassBlackList.remove(name);
+      }
+      if (globalResourceBlackList != null)
+      {
+         globalResourceBlackList.remove(name);
+      }
+   }
+   
 }

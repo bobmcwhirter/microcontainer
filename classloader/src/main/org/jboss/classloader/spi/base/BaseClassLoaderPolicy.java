@@ -289,4 +289,17 @@ public abstract class BaseClassLoaderPolicy
       this.classLoader = null;
       classLoader.shutdownClassLoader();
    }
+   
+   /**
+    * Cleans the entry with the given name from the blackList
+    *
+    * @param name the name of the resource to clear from the blackList
+    */
+   protected void clearBlackList(String name)
+   {
+       if (domain != null)
+       {
+          domain.clearBlackList(name);
+       }
+   }
 }
