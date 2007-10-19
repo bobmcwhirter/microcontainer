@@ -466,18 +466,18 @@ public class DefaultMetaValueFactory extends MetaValueFactory
 
       if (metaType.isSimple())
       {
-         return convertValue(((SimpleValue)metaValue).getValue(), type);
+         Serializable value = ((SimpleValue)metaValue).getValue();
+         return getValue(metaType, type, value);
       }
       else if (metaType.isEnum())
       {
-         EnumValue enumValue = ((EnumValue)metaValue);
-         if (type == null)
-            type = getTypeInfo(metaType, null);
-         return convertValue(enumValue.getValue(), type);
+         String value = ((EnumValue)metaValue).getValue();
+         return getValue(metaType, type, value);
       }
       else if (metaType.isGeneric())
       {
-         return convertValue(((GenericValue)metaValue).getValue(), type);
+         Serializable value = ((GenericValue)metaValue).getValue();
+         return getValue(metaType, type, value);
       }
       else if (metaType.isArray())
       {
@@ -504,6 +504,39 @@ public class DefaultMetaValueFactory extends MetaValueFactory
       }
 
       throw new IllegalArgumentException("Unsupported meta value: " + metaValue);
+   }
+
+   /**
+    * Do a simple check.
+    * If current type param is null,
+    * try getting type info from meta type
+    * and value's classloader.
+    *
+    * @param type the type info
+    * @param value tester value
+    * @param metaType the meta type
+    * @return type info
+    */
+   protected TypeInfo checkTypeInfo(TypeInfo type, Object value, MetaType metaType)
+   {
+      if (type == null && value != null)
+         type = getTypeInfo(metaType, value);
+      return type;
+   }
+
+   /**
+    * Get the value.
+    * Join type check and value conversion.
+    *
+    * @param metaType the meta type
+    * @param typeInfo the type info
+    * @param value the value
+    * @return the converted value
+    */
+   protected Object getValue(MetaType metaType, TypeInfo typeInfo, Object value)
+   {
+      typeInfo = checkTypeInfo(typeInfo, value, metaType);
+      return convertValue(value, typeInfo);
    }
 
    /**
@@ -623,18 +656,18 @@ public class DefaultMetaValueFactory extends MetaValueFactory
     * Get the class info from meta type.
     *
     * @param metaType the meta type
-    * @param array the array to fill
-    * @return class info
+    * @param value the value which can provide classloader
+    * @return type info
     */
-   protected TypeInfo getTypeInfo(MetaType metaType, Object array)
+   protected TypeInfo getTypeInfo(MetaType metaType, Object value)
    {
       if (metaType == null)
          throw new IllegalArgumentException("Null meta type, cannot determine class name.");
-      if (array == null)
-         throw new IllegalArgumentException("Null array, cannot determine classloader.");
+      if (value == null)
+         throw new IllegalArgumentException("Null value, cannot determine classloader.");
 
       // get the classloader from the array we plan to fill
-      ClassLoader cl = array.getClass().getClassLoader();
+      ClassLoader cl = value.getClass().getClassLoader();
       return getTypeInfo(metaType, cl);
    }
 
