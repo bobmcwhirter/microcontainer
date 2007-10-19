@@ -36,7 +36,7 @@
     <version.jboss.common.core>2.2.1.GA</version.jboss.common.core>
     <version.jbossxb>2.0.0.CR4</version.jbossxb>
     <version.osgi.r4.core>1.0</version.osgi.r4.core>
-    <version.jboss.vfs>2.0.0.Beta4</version.jboss.vfs>
+    <version.jboss.vfs>2.0.0.Beta5</version.jboss.vfs>
     <version.javassist>3.6.0.GA</version.javassist>
     <version.jaxb.api>2.0</version.jaxb.api>
     <version.jboss.aop>2.0.0.beta1</version.jboss.aop>
