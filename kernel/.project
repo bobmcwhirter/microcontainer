@@ -2,8 +2,10 @@
   <name>jboss-kernel</name>
   <comment>JBoss Microcontainer Kernel</comment>
   <projects>
-    <project>jboss-container</project>
     <project>jboss-dependency</project>
+    <project>jboss-managed</project>
+    <project>jboss-container</project>
+    <project>jboss-metatype</project>
   </projects>
   <buildSpec>
     <buildCommand>

@@ -3,14 +3,14 @@
   <comment>JBoss Deployers VFS SPI</comment>
   <projects>
     <project>jboss-deployers-spi</project>
-    <project>jboss-deployers-structure-spi</project>
-    <project>jboss-managed</project>
-    <project>jboss-deployers-core-spi</project>
-    <project>jboss-dependency</project>
-    <project>jboss-classloader</project>
     <project>jboss-metatype</project>
-    <project>jboss-container</project>
+    <project>jboss-managed</project>
+    <project>jboss-dependency</project>
+    <project>jboss-deployers-core-spi</project>
     <project>jboss-deployers-client-spi</project>
+    <project>jboss-deployers-structure-spi</project>
+    <project>jboss-container</project>
+    <project>jboss-classloader</project>
   </projects>
   <buildSpec>
     <buildCommand>
