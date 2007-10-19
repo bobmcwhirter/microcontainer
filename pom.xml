@@ -21,7 +21,10 @@
     The JBoss Microcontainer provides a lightweight container for managing POJOs, their deployment 
     and configuration.
   </description>
-  
+  <scm>
+    <connection>scm:svn:https://svn.jboss.org/repos/jbossas/projects/microcontainer/trunk</connection>
+  </scm>
+
   <modules>
     <module>build</module>
     <module>container</module>
