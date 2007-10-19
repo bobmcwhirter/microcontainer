@@ -23,7 +23,6 @@ package org.jboss.managed.plugins.factory;
 
 import java.io.Serializable;
 import java.lang.annotation.Annotation;
-import java.lang.ref.WeakReference;
 import java.lang.reflect.Constructor;
 import java.lang.reflect.UndeclaredThrowableException;
 import java.security.AccessController;
@@ -112,13 +111,13 @@ public class AbstractManagedObjectFactory extends ManagedObjectFactory
    private MetaValueFactory metaValueFactory = MetaValueFactory.getInstance();
    
    /** The managed object builders */
-   private Map<Class, WeakReference<ManagedObjectBuilder>> builders = new WeakHashMap<Class, WeakReference<ManagedObjectBuilder>>();
+   private Map<Class, ManagedObjectBuilder> builders = new WeakHashMap<Class, ManagedObjectBuilder>();
 
    /** The instance to class factories */
-   private Map<Class, WeakReference<InstanceClassFactory>> instanceFactories = new WeakHashMap<Class, WeakReference<InstanceClassFactory>>();
+   private Map<Class, InstanceClassFactory> instanceFactories = new WeakHashMap<Class, InstanceClassFactory>();
 
    /** The instance to name transformers */
-   private Map<TypeInfo, WeakReference<RuntimeComponentNameTransformer>> transformers = new WeakHashMap<TypeInfo, WeakReference<RuntimeComponentNameTransformer>>();
+   private Map<TypeInfo, RuntimeComponentNameTransformer> transformers = new WeakHashMap<TypeInfo, RuntimeComponentNameTransformer>();
 
    static
    {
@@ -182,7 +181,7 @@ public class AbstractManagedObjectFactory extends ManagedObjectFactory
          if (builder == null)
             builders.remove(clazz);
          else
-            builders.put(clazz, new WeakReference<ManagedObjectBuilder>(builder));
+            builders.put(clazz, builder);
       }
    }
 
@@ -194,7 +193,7 @@ public class AbstractManagedObjectFactory extends ManagedObjectFactory
          if (factory == null)
             instanceFactories.remove(clazz);
          else
-            instanceFactories.put(clazz, new WeakReference<InstanceClassFactory>(factory));
+            instanceFactories.put(clazz, factory);
       }      
    }
 
@@ -211,7 +210,7 @@ public class AbstractManagedObjectFactory extends ManagedObjectFactory
          if (transformer == null)
             transformers.remove(type);
          else
-            transformers.put(type, new WeakReference<RuntimeComponentNameTransformer>(transformer));
+            transformers.put(type, transformer);
       }
    }
 
@@ -844,9 +843,9 @@ public class AbstractManagedObjectFactory extends ManagedObjectFactory
    {
       synchronized (builders)
       {
-         WeakReference<ManagedObjectBuilder> weak = builders.get(clazz);
-         if (weak != null)
-            return weak.get();
+         ManagedObjectBuilder builder = builders.get(clazz);
+         if (builder != null)
+            return builder;
       }
       return this;
    }
@@ -862,9 +861,9 @@ public class AbstractManagedObjectFactory extends ManagedObjectFactory
    {
       synchronized (instanceFactories)
       {
-         WeakReference<InstanceClassFactory> weak = instanceFactories.get(clazz);
-         if (weak != null)
-            return weak.get();
+         InstanceClassFactory factory = instanceFactories.get(clazz);
+         if (factory != null)
+            return factory;
       }
       return (InstanceClassFactory<T>)this;
    }
@@ -880,17 +879,17 @@ public class AbstractManagedObjectFactory extends ManagedObjectFactory
    {
       synchronized(transformers)
       {
-         WeakReference<RuntimeComponentNameTransformer> weak = transformers.get(type);
-         if (weak != null)
-            return weak.get();
+         RuntimeComponentNameTransformer transformer = transformers.get(type);
+         if (transformer != null)
+            return transformer;
 
          TypeInfo rcntType = configuration.getTypeInfo(RuntimeComponentNameTransformer.class);
          if (rcntType.isAssignableFrom(type))
          {
             BeanInfo beanInfo = configuration.getBeanInfo(type);
-            RuntimeComponentNameTransformer transformer = (RuntimeComponentNameTransformer)beanInfo.newInstance();
-            transformers.put(type, new WeakReference<RuntimeComponentNameTransformer>(transformer));
-            return transformer;
+            RuntimeComponentNameTransformer newTransformer = (RuntimeComponentNameTransformer)beanInfo.newInstance();
+            transformers.put(type, newTransformer);
+            return newTransformer;
          }
 
          return null;
