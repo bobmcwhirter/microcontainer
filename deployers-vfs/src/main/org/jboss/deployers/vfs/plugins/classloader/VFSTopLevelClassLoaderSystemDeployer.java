@@ -21,6 +21,7 @@
  */
 package org.jboss.deployers.vfs.plugins.classloader;
 
+import java.net.URL;
 import java.util.Set;
 
 import org.jboss.deployers.plugins.classloading.AbstractTopLevelClassLoaderSystemDeployer;
@@ -28,6 +29,8 @@ import org.jboss.deployers.plugins.classloading.Module;
 import org.jboss.deployers.structure.spi.DeploymentContext;
 import org.jboss.deployers.vfs.spi.structure.helpers.ClassPathVisitor;
 import org.jboss.virtual.VirtualFile;
+import org.jboss.virtual.plugins.context.memory.MemoryContextFactory;
+import org.jboss.virtual.spi.VFSContext;
 
 /**
  * VFSTopLevelClassLoaderSystemDeployer.
@@ -44,10 +47,17 @@ public class VFSTopLevelClassLoaderSystemDeployer extends AbstractTopLevelClassL
       context.visit(visitor);
       Set<VirtualFile> classPath = visitor.getClassPath();
       
-      VirtualFile[] roots = new VirtualFile[classPath.size()];
+      VirtualFile[] roots = new VirtualFile[classPath.size() + 1];
       int i = 0;
       for (VirtualFile path : classPath)
          roots[i++] = path;
+      
+      MemoryContextFactory factory = MemoryContextFactory.getInstance();
+      VFSContext ctx = factory.createRoot(module.getDynamicClassRoot());
+      
+      URL url = new URL(module.getDynamicClassRoot() + "/classes");
+      roots[i++] = factory.createDirectory(url).getVirtualFile();
+      
       VFSClassLoaderPolicy policy = new VFSClassLoaderPolicy(roots);
       policy.setExportAll(module.getExportAll());
       policy.setImportAll(module.isImportAll());

@@ -21,6 +21,8 @@
  */
 package org.jboss.deployers.plugins.classloading;
 
+import java.net.MalformedURLException;
+import java.net.URL;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -36,6 +38,7 @@ import org.jboss.deployers.structure.spi.classloading.ClassLoaderMetaData;
 import org.jboss.deployers.structure.spi.classloading.ExportAll;
 import org.jboss.deployers.structure.spi.classloading.PackageCapability;
 import org.jboss.deployers.structure.spi.classloading.Requirement;
+import org.jboss.util.id.GUID;
 
 /**
  * Module.
@@ -56,6 +59,9 @@ public class Module
 
    /** The requirements */
    private List<RequirementDependencyItem> requirementDependencies;
+   
+   /** The URL for the dynamic classes */
+   private URL dynamicClassRoot;
    
    /**
     * Create a new Module.
@@ -273,5 +279,21 @@ public class Module
    public void release()
    {
       domain.removeModule(this);
+   }
+   
+   public URL getDynamicClassRoot()
+   {
+      if (dynamicClassRoot == null)
+      {
+         try
+         {
+            dynamicClassRoot = new URL("vfsmemory://" + new GUID());
+         }
+         catch (MalformedURLException e)
+         {
+            throw new RuntimeException(e);
+         }
+      }
+      return dynamicClassRoot;
    }
 }
