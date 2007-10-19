@@ -63,7 +63,7 @@ public interface CompositeMetaType extends MetaType
    Set<String> itemSet();
 
    /**
-    * Retrieve an unmodifiable Set view of all the item names in ascending order.
+    * Retrieve an unmodifiable Set view of all the key names in ascending order.
     *
     * @return the Set
     */

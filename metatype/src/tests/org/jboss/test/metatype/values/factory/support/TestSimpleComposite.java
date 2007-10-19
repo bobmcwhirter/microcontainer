@@ -32,6 +32,14 @@ public class TestSimpleComposite
    private String something;
 
    /**
+    * Default constructor.
+    * Needed with unwrap.
+    */
+   public TestSimpleComposite()
+   {
+   }
+
+   /**
     * Create a new TestSimpleComposite.
     * 
     * @param something the something

@@ -36,6 +36,7 @@ import java.util.Stack;
 import java.util.WeakHashMap;
 
 import org.jboss.beans.info.spi.BeanInfo;
+import org.jboss.beans.info.spi.PropertyInfo;
 import org.jboss.config.plugins.property.PropertyConfiguration;
 import org.jboss.config.spi.Configuration;
 import org.jboss.metatype.api.types.ArrayMetaType;
@@ -460,7 +461,7 @@ public class DefaultMetaValueFactory extends MetaValueFactory
          return null;
 
       MetaType metaType = metaValue.getMetaType();
-      if (metaType.isTable() || metaType.isComposite())
+      if (metaType.isTable())
          throw new IllegalArgumentException("Cannot get value from " + metaValue + ", unsupported.");
 
       if (metaType.isSimple())
@@ -495,6 +496,11 @@ public class DefaultMetaValueFactory extends MetaValueFactory
             Array.set(array, i, element);
          }
          return array;
+      }
+      else if (metaType.isComposite())
+      {
+         CompositeValue compositeValue = (CompositeValue)metaValue;
+         return unwrapComposite(compositeValue, type);
       }
 
       throw new IllegalArgumentException("Unsupported meta value: " + metaValue);
@@ -540,6 +546,55 @@ public class DefaultMetaValueFactory extends MetaValueFactory
          Array.set(newElement, i, subElement);
       }
       return newElement;
+   }
+
+   /**
+    * Unwrap composite.
+    *
+    * @param compositeValue the composite value
+    * @param typeInfo expected type info
+    * @return unwrapped value
+    */
+   protected Object unwrapComposite(CompositeValue compositeValue, TypeInfo typeInfo)
+   {
+      CompositeMetaType compositeMetaType = compositeValue.getMetaType();
+      String typeName = compositeMetaType.getTypeName();
+      ClassLoader cl;
+      if (typeInfo != null)
+         cl = typeInfo.getType().getClassLoader();
+      else
+         cl = Thread.currentThread().getContextClassLoader();
+      
+      try
+      {
+         BeanInfo beanInfo = configuration.getBeanInfo(typeName, cl);
+         Object bean = createNewInstance(beanInfo);
+         for (String name : compositeMetaType.keySet())
+         {
+            MetaValue itemValue = compositeValue.get(name);
+            PropertyInfo propertyInfo = beanInfo.getProperty(name);
+            Object value = unwrap(itemValue, propertyInfo.getType());
+            propertyInfo.set(bean, value);
+         }
+         return bean;
+      }
+      catch (Throwable t)
+      {
+         throw new UndeclaredThrowableException(t);
+      }
+   }
+
+   /**
+    * Create new instance.
+    *
+    * @param beanInfo the bean info
+    * @return new instance
+    * @throws Throwable for any error
+    */
+   protected Object createNewInstance(BeanInfo beanInfo) throws Throwable
+   {
+      // todo - some 'instantiator' map?
+      return beanInfo.newInstance();
    }
 
    /**

@@ -28,6 +28,8 @@ import junit.framework.Test;
 import org.jboss.metatype.api.values.MetaValue;
 import org.jboss.test.metatype.values.factory.support.TestEnum;
 import org.jboss.test.metatype.values.factory.support.TestGeneric;
+import org.jboss.test.metatype.values.factory.support.TestSimpleComposite;
+import org.jboss.test.metatype.values.factory.support.TestRecursiveSimpleComposite;
 
 /**
  * UnwrapValueUnitTestCase.
@@ -76,12 +78,24 @@ public class UnwrapValueUnitTestCase extends AbstractMetaValueFactoryTest
       checkSingle(new TestGeneric("123"), false);
    }
 
+   public void testCompositeUnwrap() throws Exception
+   {
+      TestSimpleComposite composite = new TestSimpleComposite("something");
+      checkSingle(composite, true);
+      checkSingle(composite, false);
+
+      checkSingle(new TestRecursiveSimpleComposite("something", composite), true);         
+      checkSingle(new TestRecursiveSimpleComposite("something", composite), false);
+   }
+
    public void testArrayUnwrap() throws Exception
    {
       short[] shorts = new short[128];
       Double[] doubles = new Double[128];
       TestEnum[] enums = new TestEnum[128];
       TestGeneric[] generics = new TestGeneric[128];
+      TestSimpleComposite[] composits = new TestSimpleComposite[128];
+      TestRecursiveSimpleComposite[] recursiveComposites = new TestRecursiveSimpleComposite[128];
       Integer[][] integers = new Integer[128][128];
       Integer[][][] triple = new Integer[10][10][10];
       for(int i = 0; i < 128; i++)
@@ -90,6 +104,8 @@ public class UnwrapValueUnitTestCase extends AbstractMetaValueFactoryTest
          doubles[i] = i / Math.PI;
          enums[i] = TestEnum.values()[i % 3];
          generics[i] = new TestGeneric("#" + i);
+         composits[i] = new TestSimpleComposite("#" + i);
+         recursiveComposites[i] = new TestRecursiveSimpleComposite("#" + i, composits[i]);
          for(int j = 0; j < 128; j++)
          {
             integers[i][j] = 128 * i + j;
@@ -128,35 +144,25 @@ public class UnwrapValueUnitTestCase extends AbstractMetaValueFactoryTest
          }
       });
 
-      checkArray(enums, true, new Asserter()
+      Asserter objectsAsserter = new Asserter()
       {
          public boolean assertArray(final Object original, final Object unwrapped)
          {
             return Arrays.equals((Object[])original, (Object[])unwrapped);
          }
-      });
-      checkArray(enums, false, new Asserter()
-      {
-         public boolean assertArray(final Object original, final Object unwrapped)
-         {
-            return Arrays.equals((Object[])original, (Object[])unwrapped);
-         }
-      });
+      };
 
-      checkArray(generics, true, new Asserter()
-      {
-         public boolean assertArray(final Object original, final Object unwrapped)
-         {
-            return Arrays.equals((Object[])original, (Object[])unwrapped);
-         }
-      });
-      checkArray(generics, false, new Asserter()
-      {
-         public boolean assertArray(final Object original, final Object unwrapped)
-         {
-            return Arrays.equals((Object[])original, (Object[])unwrapped);
-         }
-      });
+      checkArray(enums, true, objectsAsserter);
+      checkArray(enums, false, objectsAsserter);
+
+      checkArray(generics, true, objectsAsserter);
+      checkArray(generics, false, objectsAsserter);
+
+      checkArray(composits, true, objectsAsserter);
+      checkArray(composits, false, objectsAsserter);
+
+      checkArray(recursiveComposites, true, objectsAsserter);
+      checkArray(recursiveComposites, false, objectsAsserter);
 
       Asserter integersAsserter = new Asserter()
       {

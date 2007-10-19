@@ -113,7 +113,7 @@ public class WritethroughManagedPropertyImpl extends ManagedPropertyImpl
             else
             {
                MetaType metaType = metaValue.getMetaType();
-               setValue = (metaType.isTable() == false && metaType.isComposite() == false);
+               setValue = (metaType.isTable() == false);
             }
             if (setValue)
             {
