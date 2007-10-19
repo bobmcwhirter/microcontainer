@@ -33,7 +33,6 @@ import org.jboss.managed.plugins.factory.ManagedObjectFactoryBuilder;
 import org.jboss.managed.spi.factory.InstanceClassFactory;
 import org.jboss.metatype.api.values.MetaValue;
 import org.jboss.metatype.api.values.MetaValueFactory;
-import org.jboss.metatype.api.types.MetaType;
 import org.jboss.metatype.plugins.values.MetaValueFactoryBuilder;
 
 /**
@@ -105,17 +104,7 @@ public class WritethroughManagedPropertyImpl extends ManagedPropertyImpl
             else
                metaValue = (MetaValue)value;
 
-            boolean setValue;
-            if (metaValue == null)
-            {
-               setValue = true;
-            }
-            else
-            {
-               MetaType metaType = metaValue.getMetaType();
-               setValue = (metaType.isTable() == false);
-            }
-            if (setValue)
+            if (metaValue == null || metaValue.getMetaType().isTable() == false)
             {
                InstanceClassFactory icf = getObjectFactory().getInstanceClassFactory(attachment.getClass());
                BeanInfo beanInfo = propertyInfo.getBeanInfo();
