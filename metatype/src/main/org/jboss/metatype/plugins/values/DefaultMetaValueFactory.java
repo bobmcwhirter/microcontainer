@@ -432,17 +432,20 @@ public class DefaultMetaValueFactory extends MetaValueFactory
       return internalCreate(value, type, null);
    }
 
+   @Override
    public Object unwrap(MetaValue metaValue)
    {
       return internalUnwrap(metaValue, null);
    }
 
+   @Override
    public Object unwrap(MetaValue metaValue, Type type)
    {
       TypeInfo typeInfo = configuration.getTypeInfo(type);
       return internalUnwrap(metaValue, typeInfo);
    }
 
+   @Override
    public Object unwrap(MetaValue metaValue, TypeInfo type)
    {
       return internalUnwrap(metaValue, type);
