@@ -513,7 +513,9 @@ public class BaseClassLoader extends SecureClassLoader implements BaseClassLoade
    {
       if (blackList != null)
       {
-         log.trace(this + " removing from blacklist " + name);
+         boolean trace = log.isTraceEnabled();
+         if (trace)
+            log.trace(this + " removing from blacklist " + name);
          blackList.remove(name);
          policy.clearBlackList(name);
       }
