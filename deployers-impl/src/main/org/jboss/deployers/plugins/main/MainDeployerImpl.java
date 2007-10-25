@@ -572,12 +572,8 @@ public class MainDeployerImpl implements MainDeployer, MainDeployerStructure
       allDeployments.remove(name);
       errorDeployments.remove(name);
       missingDeployers.remove(name);
-      if (context.getState() == DeploymentState.ERROR)
-      {
-         log.debug("Not scheduling removal of context already in error: " + name);
-         return;
-      }
-      context.setState(DeploymentState.UNDEPLOYING);
+      if (DeploymentState.ERROR.equals(context.getState()) == false)
+         context.setState(DeploymentState.UNDEPLOYING);
       DeploymentContext parent = context.getParent();
       log.debug("Scheduling undeployment: " + name + " parent=" + parent);
 

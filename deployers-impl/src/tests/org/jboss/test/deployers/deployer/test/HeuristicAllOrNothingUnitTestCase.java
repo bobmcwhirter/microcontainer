@@ -138,6 +138,10 @@ public class HeuristicAllOrNothingUnitTestCase extends AbstractDeployerTest
       assertEquals(expectedParent, deployer2.getDeployedUnits());
       assertEquals(expectedNothing, deployer2.getUndeployedUnits());
       assertEquals(DeploymentState.DEPLOYED, main.getDeploymentState(deployment.getName()));
+      
+      main.removeDeployment(deployment);
+      main.process();
+      main.checkComplete();
    }
 
    public void testDeployParentFailInParentDeployer1() throws Exception
@@ -154,6 +158,10 @@ public class HeuristicAllOrNothingUnitTestCase extends AbstractDeployerTest
       assertEquals(expectedNothing, deployer2.getDeployedUnits());
       assertEquals(expectedNothing, deployer2.getUndeployedUnits());
       assertEquals(DeploymentState.ERROR, main.getDeploymentState(deployment.getName()));
+      
+      main.removeDeployment(deployment);
+      main.process();
+      main.checkComplete();
    }
 
    public void testDeployParentFailInParentDeployer2() throws Exception
@@ -172,6 +180,10 @@ public class HeuristicAllOrNothingUnitTestCase extends AbstractDeployerTest
       assertEquals(expectedParent, deployer2.getDeployedUnits());
       assertEquals(expectedNothing, deployer2.getUndeployedUnits());
       assertEquals(DeploymentState.ERROR, main.getDeploymentState(deployment.getName()));
+      
+      main.removeDeployment(deployment);
+      main.process();
+      main.checkComplete();
    }
 
    public void testDeployParentOneChildNoErrors() throws Exception
@@ -189,6 +201,10 @@ public class HeuristicAllOrNothingUnitTestCase extends AbstractDeployerTest
       assertEquals(expectedNothing, deployer2.getUndeployedUnits());
       assertEquals(DeploymentState.DEPLOYED, main.getDeploymentState(deployment.getName()));
       assertEquals(DeploymentState.DEPLOYED, main.getDeploymentState(childName));
+      
+      main.removeDeployment(deployment);
+      main.process();
+      main.checkComplete();
    }
    
    public void testDeployParentOneChildFailInParentDeployer1() throws Exception
@@ -207,6 +223,10 @@ public class HeuristicAllOrNothingUnitTestCase extends AbstractDeployerTest
       assertEquals(expectedNothing, deployer2.getUndeployedUnits());
       assertEquals(DeploymentState.ERROR, main.getDeploymentState(deployment.getName()));
       assertEquals(DeploymentState.UNDEPLOYED, main.getDeploymentState(childName));
+      
+      main.removeDeployment(deployment);
+      main.process();
+      main.checkComplete();
    }
    
    public void testDeployParentOneChildFailInParentDeployer2() throws Exception
@@ -225,6 +245,10 @@ public class HeuristicAllOrNothingUnitTestCase extends AbstractDeployerTest
       assertEquals(expectedNothing, deployer2.getUndeployedUnits());
       assertEquals(DeploymentState.ERROR, main.getDeploymentState(deployment.getName()));
       assertEquals(DeploymentState.UNDEPLOYED, main.getDeploymentState(childName));
+      
+      main.removeDeployment(deployment);
+      main.process();
+      main.checkComplete();
    }
    
    public void testDeployParentOneChildFailInChildDeployer1() throws Exception
@@ -243,6 +267,10 @@ public class HeuristicAllOrNothingUnitTestCase extends AbstractDeployerTest
       assertEquals(expectedNothing, deployer2.getUndeployedUnits());
       assertEquals(DeploymentState.ERROR, main.getDeploymentState(deployment.getName()));
       assertEquals(DeploymentState.ERROR, main.getDeploymentState(childName));
+      
+      main.removeDeployment(deployment);
+      main.process();
+      main.checkComplete();
    }
    
    public void testDeployParentOneChildFailInChildDeployer2() throws Exception
@@ -261,6 +289,10 @@ public class HeuristicAllOrNothingUnitTestCase extends AbstractDeployerTest
       assertEquals(expectedParent, deployer2.getUndeployedUnits());
       assertEquals(DeploymentState.ERROR, main.getDeploymentState(deployment.getName()));
       assertEquals(DeploymentState.ERROR, main.getDeploymentState(childName));
+      
+      main.removeDeployment(deployment);
+      main.process();
+      main.checkComplete();
    }
 
    public void testDeployParentMultipleChildrenNoErrors() throws Exception
@@ -280,6 +312,10 @@ public class HeuristicAllOrNothingUnitTestCase extends AbstractDeployerTest
       assertEquals(DeploymentState.DEPLOYED, main.getDeploymentState(deployment.getName()));
       assertEquals(DeploymentState.DEPLOYED, main.getDeploymentState(child1Name));
       assertEquals(DeploymentState.DEPLOYED, main.getDeploymentState(child2Name));
+      
+      main.removeDeployment(deployment);
+      main.process();
+      main.checkComplete();
    }
 
    public void testDeployParentMultipleChildrenFailInParentDeployer1() throws Exception
@@ -300,6 +336,10 @@ public class HeuristicAllOrNothingUnitTestCase extends AbstractDeployerTest
       assertEquals(DeploymentState.ERROR, main.getDeploymentState(deployment.getName()));
       assertEquals(DeploymentState.UNDEPLOYED, main.getDeploymentState(child1Name));
       assertEquals(DeploymentState.UNDEPLOYED, main.getDeploymentState(child2Name));
+      
+      main.removeDeployment(deployment);
+      main.process();
+      main.checkComplete();
    }
 
    public void testDeployParentMultipleChildrenFailInParentDeployer2() throws Exception
@@ -320,6 +360,10 @@ public class HeuristicAllOrNothingUnitTestCase extends AbstractDeployerTest
       assertEquals(DeploymentState.ERROR, main.getDeploymentState(deployment.getName()));
       assertEquals(DeploymentState.UNDEPLOYED, main.getDeploymentState(child1Name));
       assertEquals(DeploymentState.UNDEPLOYED, main.getDeploymentState(child2Name));
+      
+      main.removeDeployment(deployment);
+      main.process();
+      main.checkComplete();
    }
 
    public void testDeployParentMultipleChildrenFailInChild1Deployer1() throws Exception
@@ -340,6 +384,10 @@ public class HeuristicAllOrNothingUnitTestCase extends AbstractDeployerTest
       assertEquals(DeploymentState.ERROR, main.getDeploymentState(deployment.getName()));
       assertEquals(DeploymentState.ERROR, main.getDeploymentState(child1Name));
       assertEquals(DeploymentState.UNDEPLOYED, main.getDeploymentState(child2Name));
+      
+      main.removeDeployment(deployment);
+      main.process();
+      main.checkComplete();
    }
 
    public void testDeployParentMultipleChildrenFailInChild1Deployer2() throws Exception
@@ -360,6 +408,10 @@ public class HeuristicAllOrNothingUnitTestCase extends AbstractDeployerTest
       assertEquals(DeploymentState.ERROR, main.getDeploymentState(deployment.getName()));
       assertEquals(DeploymentState.ERROR, main.getDeploymentState(child1Name));
       assertEquals(DeploymentState.UNDEPLOYED, main.getDeploymentState(child2Name));
+      
+      main.removeDeployment(deployment);
+      main.process();
+      main.checkComplete();
    }
 
    public void testDeployParentMultipleChildrenFailInChild2Deployer1() throws Exception
@@ -380,6 +432,10 @@ public class HeuristicAllOrNothingUnitTestCase extends AbstractDeployerTest
       assertEquals(DeploymentState.ERROR, main.getDeploymentState(deployment.getName()));
       assertEquals(DeploymentState.UNDEPLOYED, main.getDeploymentState(child1Name));
       assertEquals(DeploymentState.ERROR, main.getDeploymentState(child2Name));
+      
+      main.removeDeployment(deployment);
+      main.process();
+      main.checkComplete();
    }
 
    public void testDeployParentMultipleChildrenFailInChild2Deployer2() throws Exception
@@ -400,6 +456,10 @@ public class HeuristicAllOrNothingUnitTestCase extends AbstractDeployerTest
       assertEquals(DeploymentState.ERROR, main.getDeploymentState(deployment.getName()));
       assertEquals(DeploymentState.UNDEPLOYED, main.getDeploymentState(child1Name));
       assertEquals(DeploymentState.ERROR, main.getDeploymentState(child2Name));
+      
+      main.removeDeployment(deployment);
+      main.process();
+      main.checkComplete();
    }
 
    public void testDeployParentMultipleChildrenAndComponentsNoErrors() throws Exception
@@ -424,6 +484,10 @@ public class HeuristicAllOrNothingUnitTestCase extends AbstractDeployerTest
       assertEquals(DeploymentState.DEPLOYED, main.getDeploymentState(deployment.getName()));
       assertEquals(DeploymentState.DEPLOYED, main.getDeploymentState(child1Name));
       assertEquals(DeploymentState.DEPLOYED, main.getDeploymentState(child2Name));
+      
+      main.removeDeployment(deployment);
+      main.process();
+      main.checkComplete();
    }
 
    public void testDeployParentMultipleChildrenAndComponentsParentComponent1Fails() throws Exception
@@ -448,6 +512,10 @@ public class HeuristicAllOrNothingUnitTestCase extends AbstractDeployerTest
       assertEquals(DeploymentState.ERROR, main.getDeploymentState(deployment.getName()));
       assertEquals(DeploymentState.UNDEPLOYED, main.getDeploymentState(child1Name));
       assertEquals(DeploymentState.UNDEPLOYED, main.getDeploymentState(child2Name));
+      
+      main.removeDeployment(deployment);
+      main.process();
+      main.checkComplete();
    }
 
    public void testDeployParentMultipleChildrenAndComponentsParentComponent2Fails() throws Exception
@@ -472,6 +540,10 @@ public class HeuristicAllOrNothingUnitTestCase extends AbstractDeployerTest
       assertEquals(DeploymentState.ERROR, main.getDeploymentState(deployment.getName()));
       assertEquals(DeploymentState.UNDEPLOYED, main.getDeploymentState(child1Name));
       assertEquals(DeploymentState.UNDEPLOYED, main.getDeploymentState(child2Name));
+      
+      main.removeDeployment(deployment);
+      main.process();
+      main.checkComplete();
    }
 
    public void testDeployParentMultipleChildrenAndComponentsChild1Component1Fails() throws Exception
@@ -496,6 +568,10 @@ public class HeuristicAllOrNothingUnitTestCase extends AbstractDeployerTest
       assertEquals(DeploymentState.ERROR, main.getDeploymentState(deployment.getName()));
       assertEquals(DeploymentState.ERROR, main.getDeploymentState(child1Name));
       assertEquals(DeploymentState.UNDEPLOYED, main.getDeploymentState(child2Name));
+      
+      main.removeDeployment(deployment);
+      main.process();
+      main.checkComplete();
    }
 
    public void testDeployParentMultipleChildrenAndComponentsChild1Component2Fails() throws Exception
@@ -520,6 +596,10 @@ public class HeuristicAllOrNothingUnitTestCase extends AbstractDeployerTest
       assertEquals(DeploymentState.ERROR, main.getDeploymentState(deployment.getName()));
       assertEquals(DeploymentState.ERROR, main.getDeploymentState(child1Name));
       assertEquals(DeploymentState.UNDEPLOYED, main.getDeploymentState(child2Name));
+      
+      main.removeDeployment(deployment);
+      main.process();
+      main.checkComplete();
    }
 
    public void testDeployParentMultipleChildrenAndComponentsChild2Component1Fails() throws Exception
@@ -544,6 +624,10 @@ public class HeuristicAllOrNothingUnitTestCase extends AbstractDeployerTest
       assertEquals(DeploymentState.ERROR, main.getDeploymentState(deployment.getName()));
       assertEquals(DeploymentState.UNDEPLOYED, main.getDeploymentState(child1Name));
       assertEquals(DeploymentState.ERROR, main.getDeploymentState(child2Name));
+      
+      main.removeDeployment(deployment);
+      main.process();
+      main.checkComplete();
    }
 
    public void testDeployParentMultipleChildrenAndComponentsChild2Component2Fails() throws Exception
@@ -568,6 +652,10 @@ public class HeuristicAllOrNothingUnitTestCase extends AbstractDeployerTest
       assertEquals(DeploymentState.ERROR, main.getDeploymentState(deployment.getName()));
       assertEquals(DeploymentState.UNDEPLOYED, main.getDeploymentState(child1Name));
       assertEquals(DeploymentState.ERROR, main.getDeploymentState(child2Name));
+      
+      main.removeDeployment(deployment);
+      main.process();
+      main.checkComplete();
    }
 
    protected static void addMetaData(PredeterminedManagedObjectAttachments attachments, TestComponentMetaDataContainer md)

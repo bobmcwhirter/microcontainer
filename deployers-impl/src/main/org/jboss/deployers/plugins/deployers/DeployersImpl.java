@@ -392,12 +392,13 @@ public class DeployersImpl implements Deployers, ControllerContextActions
          for (int i = undeploy.size()-1; i >= 0; --i)
          {
             DeploymentContext context = undeploy.get(i);
-            context.setState(DeploymentState.UNDEPLOYING);
+            if (DeploymentState.ERROR.equals(context.getState()) == false)
+               context.setState(DeploymentState.UNDEPLOYING);
             log.debug("Undeploying " + context.getName());
             DeploymentControllerContext deploymentControllerContext = context.getTransientAttachments().getAttachment(ControllerContext.class.getName(), DeploymentControllerContext.class);
             if (deploymentControllerContext == null)
             {
-               log.warn("DeploymentContext has no DeploymentControllerContext during undeploy request, ignoring: " + context);
+               log.debug("DeploymentContext has no DeploymentControllerContext during undeploy request, ignoring: " + context);
             }
             else
             {
