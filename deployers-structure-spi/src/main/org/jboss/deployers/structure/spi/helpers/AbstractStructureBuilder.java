@@ -51,12 +51,14 @@ public class AbstractStructureBuilder implements StructureBuilder
    {
       if (deployment == null)
          throw new IllegalArgumentException("Null deployment");
+      if (metaData == null)
+         throw new IllegalArgumentException("Null metaData");
 
       boolean trace = log.isTraceEnabled();
       if (trace)
          log.trace("Populating deployment " + deployment.getName() + " metaData=" + metaData);
       
-      DeploymentContext result = null;
+      DeploymentContext result;
       try
       {
          result = createRootDeploymentContext(deployment);
@@ -77,11 +79,8 @@ public class AbstractStructureBuilder implements StructureBuilder
       
       try
       {
-         if (metaData != null)
-         {
-            result.getTransientManagedObjects().addAttachment(StructureMetaData.class, metaData);
-            populateContext(result, metaData);
-         }
+         result.getTransientManagedObjects().addAttachment(StructureMetaData.class, metaData);
+         populateContext(result, metaData);
       }
       catch (Throwable t)
       {
