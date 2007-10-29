@@ -5,7 +5,7 @@
 <book>
   <bookinfo>
     <title>JBoss Microcontainer 2.0.0</title>
-    <subtitle>Getting Started Guide</subtitle>
+    <subtitle>User Guide</subtitle>
     <issuenum>2.0</issuenum>
     <productnumber>2</productnumber>
     <xi:include xmlns:xi="http://www.w3.org/2001/XInclude" href="Author_Group.xml"/>
@@ -13,10 +13,10 @@
   </bookinfo>
   <preface>
     <title>What this Book Covers</title>
-    <para>This book aims to help you become familiar with  JBoss Microconainer if you are new to the technology.</para>
+    <para>This book aims to help you become familiar with  JBoss Microcontainer if you are new to the technology. Part 1 is Getting Started (with multiple chapters), Chapter 2 is Deploying, part 3 is adding behaviour. Don&apos;t change examples mid-way through a chapter. </para>
   </preface>
   <chapter id="overview">
-    <title>Overview</title>
+    <title>Getting Started</title>
     <para>The Java  platform has traditionally been distributed  in 3 editions, each  providing a different type of runtime environment: </para>
     <itemizedlist>
       <listitem>
@@ -29,33 +29,30 @@
         <para>Java EE (Enterprise Edition) - Servers (typically running 3-tier applications)</para>
       </listitem>
     </itemizedlist>
-    <para>Each environment aims to provide a base level of functionality on top of which  developers can add their own code to create applications. For example Java SE provides networking and security libraries together with graphical user interface toolkits to facilitate the development of desktop   and simple client-server applications. Java EE takes this a stage further by adding a number of &apos;enterprise&apos;  services such as transactions, messaging and persistence that allow much more robust and scalable &apos;enterprise&apos; applications to be developed.  These services are  typically combined together inside a JEE application server to provide a standard runtime environment for enterprise applications  however it is often the case that we do not need to use them all.</para>
+    <para>Each environment aims to provide a base level of functionality on top of which  developers can add their own code to create applications. For example Java SE provides networking and security libraries together with graphical user interface toolkits to facilitate the development of desktop   and simple client-server applications. Java EE takes this a stage further by adding a number of &apos;enterprise&apos;  services such as transactions, messaging, and persistence that allow much more robust and scalable &apos;enterprise&apos; applications to be developed.  These services are  typically combined together inside a JEE application server to provide a standard runtime environment for enterprise applications  however it is often the case that we do not need to use them all.</para>
     <para>Having unused services in your  environment is undesirable as  they can take  up valuable resources such as CPU and memory. They can also clutter up the environment with unecessary configuration files which complicates maintenance and causes confusion.   It would  therefore be good if there was a  controlled way to remove them without breaking any dependencies they might have. Similarly there are often occasions when  applications need services that aren&apos;t provided by  JEE  so  it would be good if there was a  controlled way to add them, again  making sure that any dependencies are first satisfied.</para>
     <para>JBoss Microcontainer aims to provide  these capabilities by allowing services, created using Plain Old Java Objects (POJOs), to be deployed into a standard Java SE runtime environment in a controlled manner to create a customized environment  for your applications. Dependencies between services are fully managed by the microcontainer to ensure that new services cannot be deployed until services they depend on have first been deployed. Likewise undeploying a service causes all dependent services to first be undeployed to maintain the integrity of the system. </para>
-    <para>As JBoss Microcontainer is very lightweight and deals with POJOs it can also be used to deploy services into a Java ME runtime environment. This opens us new possibilities for mobile applications that can now take advantage of  enterprise services without requiring a full JEE application server. </para>
-    <para>It can even be used to deploy services inside other (non-JBoss) Java EE runtime environments such as  WebLogic, Tomcat or Glassfish  thanks to it pluggable classloading features.   </para>
-    <para>Finally JBoss Microcontainer can be used to create  services  using dependency injection to wire individual POJOs together.  Configuration is performed using either XML or annotations depending on where the information is best located. In common with other dependency injection frameworks  JBoss Microcontainer can easily be used to create  unit tests for POJOs within a service and can also   facilitate integration testing of  services that depend on each other. </para>
-  </chapter>
-  <chapter>
-    <title>Downloading and installing</title>
-    <para>To download  JBoss Microcontainer 2.0.0   go to http://labs.jboss.com/jbossmc/downloads and click on the corresponding link.</para>
-    <note>
-      <para>The distribution is available in a number of different packaging formats offering varying levels of compression; tar.gz, tar.bz2 or zip. Simply pick whichever one you have decompression utilities for (e.g. WinZIP on Windows can decompress zip files) and click on the link  to download it to your machine.</para>
-    </note>
-    <para> Installation is performed  by decompressing and unpacking the downloaded file into a directory on your machine, for example using WinZIP or gzip. The contents of the distribution are as follows:</para>
-    <para>Diagram here....</para>
-  </chapter>
-  <chapter>
-    <title>Services</title>
+    <para>Deploying services in this way, on top of a Java SE environment,   is exactly how we have created the latest version of JBoss Application Server  (JBoss AS 5.0)   which provides a standard Java EE environment. If you need additional services then you can simply deploy these on top of Java EE to provide the functionality you need. This even applies to different Java EE environments such as Glassfish since you can plug in different classloading models during the service deployment phase.</para>
+    <para>Since  JBoss Microcontainer is very lightweight and deals with POJOs it can also be used to deploy services into a Java ME runtime environment. This opens us new possibilities for mobile applications that can now take advantage of  enterprise services without requiring a full JEE application server. </para>
+    <para>In common with other lightweight containers JBoss Microcontainer uses  dependency injection to wire individual POJOs together to create services.  Configuration is performed using either XML or annotations depending on where the information is best located. Finally unit testing is made extremely simple thanks to a helper class that extends JUnit to setup the runtime environment, allowing you to access  POJOs and services from your test methods using just a few lines of code.</para>
     <section>
-      <title>What is a service?</title>
+      <title>Downloading and Installing</title>
+      <para>To download  JBoss Microcontainer 2.0.0   go to http://labs.jboss.com/jbossmc/downloads and click on the corresponding link.</para>
+      <note>
+        <para>The distribution is available in a number of different packaging formats offering varying levels of compression; tar.gz, tar.bz2 or zip. Simply pick whichever one you have decompression utilities for (e.g. WinZIP on Windows can decompress zip files) and click on the link  to download it to your machine.</para>
+      </note>
+      <para> Installation is performed  by decompressing and unpacking the downloaded file into a directory on your machine, for example using WinZIP or gzip. The contents of the distribution are as follows:</para>
+      <para>Diagram here....</para>
+    </section>
+    <section>
+      <title>What is a Service?</title>
       <para>The word &apos;service&apos;  has many definitions in the English language  but in the context of developing Java applications it is helpful to define it as follows:</para>
       <orderedlist>
         <listitem>
           <para>A service  should perform  work that is useful to multiple   clients, thereby preventing each client from having to perform the work themselves.</para>
         </listitem>
         <listitem>
-          <para>A service should have a name that  clients  can lookup at runtime to gain access. This prevents clients from having to  create services themselves.</para>
+          <para>A service should have a name that  clients  can lookup at runtime to gain access. This provides a standard way to access different kinds of services and  removes the need for clients to explicitly create services  before they can be used.   </para>
         </listitem>
         <listitem>
           <para>Internal changes to a service should not affect any clients.  In practice this means that clients should  access a service using a well defined interface so that the service implementation can be changed without having to recompile any clients.  </para>
@@ -69,56 +66,51 @@
       <note>
         <para>Implementing an  interface is  only necessary  if we want to allow a client to <emphasis role="bold">choose</emphasis> between <emphasis role="bold">different implementations</emphasis>. i.e. if the client is compiled against an interface then we can provide as many different implementations of the interface as we like without having to recompile the client.</para>
       </note>
-      <para>What then must we do in order to create a service using a POJO? The answer is to provide a registry that allows us to register a reference to the POJO  with a name. Clients can then lookup the POJO reference using the name at runtime and use it to perform work. The POJO class is not required to implement an interface unless it is important that the client can choose between different implementations. </para>
+      <para>What then must we do in order to create a service using a POJO? The answer is to provide a registry that allows us to register a reference to the POJO  instance with a name. Clients can then lookup the POJO reference using the name at runtime and use it to perform work. The POJO class is not required to implement an interface unless it is important that the client can choose between different implementations. </para>
       <para>JBoss Microcontainer provides such a registry in order that we can  deploy our POJO  services into a runtime environment such as Java SE and look them up from within our applications.</para>
-      <para>In the following sections we will  create, test, deploy and lookup a simple service using a  POJO to show you  how this works in practice.</para>
+      <para>In the next chapter we will  create, configure and  test a simple service using  POJOs to show you  how this works in practice.</para>
+    </section>
+  </chapter>
+  <chapter>
+    <title>Building Services</title>
+    <para>Since robust implementations of Java EE services  are already available from  JBoss.org and other communities, it is common for companies to focus on creating more &apos;business-oriented&apos; services. For this reason we shall look at creating a simple Human Resources service that can be used in a wide-variety of companies.</para>
+    <section>
+      <title>Creating POJOs</title>
+      <para>Hibernate 115 - (page 114 describes what a POJO is) Mention the bridge to bean through the Java Bean spec.</para>
     </section>
     <section>
-      <title>Creating a service</title>
+      <title>Wiring POJOs together </title>
+      <para>Mention that because all the beans have names, they are by definition services. The fact is that we use a registry for both internal wiring and service registration. So it may be that within the registry there are a large number of beans but you will typically only use a small number of these as the service entry points.</para>
+    </section>
+    <section>
+      <title>Configuring a service</title>
     </section>
     <section>
       <title>Testing a service</title>
     </section>
-    <section>
-      <title>Deploying a service</title>
-    </section>
-    <section>
-      <title>Looking up a service</title>
-      <section>
-        <title>Microcontainer Registry</title>
-      </section>
-      <section>
-        <title>JNDI Registry</title>
-      </section>
-    </section>
   </chapter>
   <chapter>
-    <title>Building services with POJOs </title>
+    <title>Using services </title>
     <section>
-      <title>Creating POJOs</title>
+      <title>Deploying the service</title>
     </section>
     <section>
-      <title>Testing POJOs</title>
+      <title>Accessing the service (registry)</title>
     </section>
     <section>
-      <title>Wiring POJOs together </title>
+      <title>Swapping a service</title>
+      <section>
+        <title>Accessing the service (bus)</title>
+      </section>
+      <section>
+        <title>Redeploying the service</title>
+      </section>
     </section>
-  </chapter>
-  <chapter>
-    <title>Using services within your applications </title>
     <section>
       <title>Desktop applications</title>
       <section>
         <title>Classloading</title>
-      </section>
-      <section>
-        <title>Deploying services</title>
-      </section>
-    </section>
-    <section>
-      <title>Web applications</title>
-      <section>
-        <title>Classloading</title>
+        <para>Give an example of 2 directories on the filesystem and show how we can configure this using 2 different classloaders.</para>
       </section>
       <section>
         <title>Deploying services</title>
@@ -128,6 +120,7 @@
       <title>Enterprise applications</title>
       <section>
         <title>Classloading</title>
+        <para>Explain that the default classloading goes to the unified repository.</para>
       </section>
       <section>
         <title>Deploying services</title>
@@ -135,13 +128,28 @@
     </section>
   </chapter>
   <chapter>
-    <title>Where to go next...</title>
+    <title>Advanced deployment</title>
     <section>
-      <title>User Guide</title>
+      <title>Bean Deployer </title>
+      <para>Give example of using aspectized bean deployer and show how it&apos;s the same.</para>
+      <section>
+        <title>Changing the package structure</title>
+        <para>Give an example where we move the jboss-beans.xml file out of the META-INF directory and change the location of the classes.</para>
+      </section>
+      <section>
+        <title>Changing the XML file for properties</title>
+        <para>Give an example of changing the jboss-beans.xml file for a jboss-beans.properties file.</para>
+      </section>
+      <section>
+        <title>Adding a deployment stage</title>
+      </section>
     </section>
-    <section>
-      <title>Developer Guide</title>
-    </section>
+  </chapter>
+  <chapter>
+    <title>Adding behaviour through AOP</title>
+    <para>Give examples as follows: Annotation in the class (JDK way), Annotation in XML, plain pointcut expression. The advice is an Audit advice.</para>
+    <para>Follow this with an example that shows how we can declare the AuditAspect as a bean within MC and have a dependency between it and the AuditService class. This means that the AuditAspect will not be deployed until the Audit.jar in is the classpath. This then means that the HRManager service also cannot start since it depends on the AuditAspect.</para>
+    <para>Start chapters with an introduction paragraph. This helps people to learn if they need to read on. Start each section with &apos;Imagine...&apos;. This catches peoples attention. If you intro simething then you need a summary at the end (ideally in a different way). Don&apos;t have one section like 1.2.1, always have a least 2 i.e. 1.2.1 and 1.2.2. Make the chapters and sections balanced. i.e. width ways and length ways. The outer chapters and sections always contain less information than the inner sections. They basically wrap the main content. When you write seques then you need to say what&apos;s going to happen without saying what&apos;s going to happen.</para>
   </chapter>
   <appendix>
     <title>Additional Resources</title>
