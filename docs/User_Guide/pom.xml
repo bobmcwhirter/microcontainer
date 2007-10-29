@@ -5,10 +5,10 @@
     <modelVersion>4.0.0</modelVersion>
 
     <groupId>org.jboss.microcontainer</groupId>
-    <artifactId>microcontainer-getting-started-guide-${translation}</artifactId>
+    <artifactId>microcontainer-user-guide-${translation}</artifactId>
     <version>1.0-SNAPSHOT</version>
     <packaging>jdocbook</packaging>
-    <name>Getting Started Guide (${translation})</name>
+    <name>User Guide (${translation})</name>
 
     <build>
         <plugins>
@@ -26,7 +26,7 @@
                     </dependency>
                 </dependencies-->
                 <configuration>
-                    <sourceDocumentName>Getting_Started.xml</sourceDocumentName>
+                    <sourceDocumentName>User_Guide.xml</sourceDocumentName>
                     <imageResource>
                         <directory>en-US</directory>
                         <excludes>
@@ -43,7 +43,7 @@
                         <format>
                             <formatName>pdf</formatName>
                             <!--stylesheetResource>classpath:/standard/fopdf.xsl</stylesheetResource-->
-			    <finalName>Getting_Started_Guide.pdf</finalName>
+			    <finalName>User_Guide.pdf</finalName>
                         </format>
                         <format>
                             <formatName>html</formatName>
