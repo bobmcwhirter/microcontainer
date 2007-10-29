@@ -54,6 +54,8 @@ public class DemandHandler extends DefaultElementHandler
          String localName = attrs.getLocalName(i);
          if ("state".equals(localName))
             demand.setWhenRequired(new ControllerState(attrs.getValue(i)));
+         else if ("transformer".equals(localName))
+            demand.setTransformer(attrs.getValue(i));
       }
    }
    

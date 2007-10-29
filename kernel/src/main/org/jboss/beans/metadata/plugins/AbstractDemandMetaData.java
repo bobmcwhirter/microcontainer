@@ -33,6 +33,8 @@ import org.jboss.dependency.spi.ControllerContext;
 import org.jboss.dependency.spi.ControllerState;
 import org.jboss.dependency.spi.DependencyItem;
 import org.jboss.kernel.spi.dependency.KernelControllerContext;
+import org.jboss.kernel.api.dependency.MatcherFactory;
+import org.jboss.kernel.api.dependency.Matcher;
 import org.jboss.util.JBossObject;
 import org.jboss.util.JBossStringBuilder;
 import org.jboss.util.HashCode;
@@ -53,7 +55,10 @@ public class AbstractDemandMetaData extends JBossObject
    
    /** When the dependency is required */
    protected ControllerState whenRequired = ControllerState.DESCRIBED;
-   
+
+   /** The transformer */
+   protected String transformer;
+
    /**
     * Create a new demand
     */
@@ -103,6 +108,26 @@ public class AbstractDemandMetaData extends JBossObject
       return whenRequired;
    }
 
+   /**
+    * Get the transformer class name.
+    *
+    * @return the transformer class name
+    */
+   public String getTransformer()
+   {
+      return transformer;
+   }
+
+   /**
+    * Set the transformer class name.
+    *
+    * @param transformer the transformer class name
+    */
+   public void setTransformer(String transformer)
+   {
+      this.transformer = transformer;
+   }
+
    public void initialVisit(MetaDataVisitor visitor)
    {
       KernelControllerContext context = visitor.getControllerContext();
@@ -150,6 +175,9 @@ public class AbstractDemandMetaData extends JBossObject
     */
    public class DemandDependencyItem extends AbstractDependencyItem 
    {
+      /** The matcher */
+      private Matcher matcher;
+
       /**
        * Create a new demand dependecy
        * 
@@ -158,11 +186,14 @@ public class AbstractDemandMetaData extends JBossObject
       public DemandDependencyItem(Object name)
       {
          super(name, null, whenRequired, null);
+         if (getTransformer() != null)
+            matcher = MatcherFactory.getInstance().createMatcher(getTransformer(), getDemand());
       }
       
       public boolean resolve(Controller controller)
       {
-         ControllerContext context = controller.getInstalledContext(demand);
+         Object name = (matcher != null) ? matcher : getDemand();
+         ControllerContext context = controller.getInstalledContext(name);
          if (context != null)
          {
             setIDependOn(context.getName());

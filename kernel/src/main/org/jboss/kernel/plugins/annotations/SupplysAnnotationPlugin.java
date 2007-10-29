@@ -29,6 +29,7 @@ import java.util.ArrayList;
 import org.jboss.beans.metadata.plugins.AbstractSupplyMetaData;
 import org.jboss.beans.metadata.plugins.AbstractBeanMetaData;
 import org.jboss.beans.metadata.api.annotations.Supplys;
+import org.jboss.beans.metadata.api.annotations.Supply;
 import org.jboss.beans.metadata.spi.BeanMetaData;
 import org.jboss.beans.metadata.spi.SupplyMetaData;
 import org.jboss.beans.metadata.spi.MetaDataVisitorNode;
@@ -55,9 +56,12 @@ public class SupplysAnnotationPlugin extends ClassAnnotationPlugin<Supplys>
          ((AbstractBeanMetaData)beanMetaData).setSupplies(supplies);
       }
       List<MetaDataVisitorNode> nodes = new ArrayList<MetaDataVisitorNode>();
-      for(String supply : annotation.value())
+      for(Supply supply : annotation.value())
       {
-         AbstractSupplyMetaData asmd = new AbstractSupplyMetaData(supply);
+         AbstractSupplyMetaData asmd = new AbstractSupplyMetaData(supply.value());
+         if (isAttributePresent(supply.type()))
+            asmd.setType(supply.type());
+         
          if (supplies.add(asmd))
             nodes.add(asmd);
       }

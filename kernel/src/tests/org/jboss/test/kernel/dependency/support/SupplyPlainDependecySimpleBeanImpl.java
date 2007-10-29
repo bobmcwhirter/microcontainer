@@ -22,13 +22,14 @@
 package org.jboss.test.kernel.dependency.support;
 
 import org.jboss.beans.metadata.api.annotations.Supplys;
+import org.jboss.beans.metadata.api.annotations.Supply;
 
 /**
  * A simple bean
  *
  * @author <a href="ales.justin@jboss.com">Ales Justin</a>
  */
-@Supplys({"WhatIWant"})
+@Supplys({@Supply("WhatIWant")})
 public class SupplyPlainDependecySimpleBeanImpl extends PlainDependecySimpleBeanImpl
 {
    private static final long serialVersionUID = 3258132440433243443L;

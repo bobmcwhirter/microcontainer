@@ -19,26 +19,34 @@
 * Software Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA
 * 02110-1301 USA, or see the FSF site: http://www.fsf.org.
 */
-package org.jboss.beans.metadata.api.annotations;
+package org.jboss.test.kernel.dependency.support;
 
-import java.lang.annotation.Retention;
-import java.lang.annotation.RetentionPolicy;
-import java.lang.annotation.Target;
-import java.lang.annotation.ElementType;
+import org.jboss.kernel.api.dependency.Matcher;
+import org.jboss.kernel.api.dependency.NonNullMatcherTransformer;
+import org.jboss.kernel.api.dependency.StringMatcher;
 
 /**
- * The supplys.
- *
  * @author <a href="mailto:ales.justin@jboss.com">Ales Justin</a>
  */
-@Retention(RetentionPolicy.RUNTIME)
-@Target({ElementType.TYPE})
-public @interface Supplys
+public class CustomMatcherTransfomer extends NonNullMatcherTransformer
 {
-   /**
-    * Get supply values.
-    *
-    * @return the supplys
-    */
-   Supply[] value();
+   protected Matcher internalTransform(Object value)
+   {
+      return new FragmentMatcher(value.toString());
+   }
+
+   private class FragmentMatcher extends StringMatcher
+   {
+      private String fragment;
+
+      public FragmentMatcher(String string)
+      {
+         this.fragment = string;
+      }
+
+      protected boolean matchByType(String other)
+      {
+         return other.contains(fragment);
+      }
+   }
 }

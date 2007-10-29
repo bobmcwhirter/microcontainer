@@ -22,10 +22,12 @@
 package org.jboss.kernel.plugins.deployment.xml;
 
 import javax.xml.namespace.QName;
+import javax.xml.namespace.NamespaceContext;
 
 import org.jboss.beans.metadata.plugins.AbstractSupplyMetaData;
 import org.jboss.xb.binding.sunday.unmarshalling.DefaultElementHandler;
 import org.jboss.xb.binding.sunday.unmarshalling.ElementBinding;
+import org.xml.sax.Attributes;
 
 /**
  * SupplyHandler.
@@ -43,11 +45,21 @@ public class SupplyHandler extends DefaultElementHandler
       return new AbstractSupplyMetaData();
    }
    
+   public void attributes(Object o, QName elementName, ElementBinding element, Attributes attrs, NamespaceContext nsCtx)
+   {
+      AbstractSupplyMetaData supply = (AbstractSupplyMetaData) o;
+      for (int i = 0; i < attrs.getLength(); ++i)
+      {
+         if ("class".equals(attrs.getLocalName(i)))
+            supply.setType(attrs.getValue(i));
+      }
+   }
+
    public Object endElement(Object o, QName qName, ElementBinding element)
    {
       AbstractSupplyMetaData x = (AbstractSupplyMetaData) o;
-      String name = (String) x.getSupply();
-      if (name == null || name.trim().length() == 0)
+      Object supply = x.getSupply();
+      if (supply == null || supply.toString().length() == 0)
          throw new IllegalArgumentException("Null or empty supply.");
       return o;
    }

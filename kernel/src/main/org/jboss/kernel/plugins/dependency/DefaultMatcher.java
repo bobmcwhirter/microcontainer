@@ -19,26 +19,33 @@
 * Software Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA
 * 02110-1301 USA, or see the FSF site: http://www.fsf.org.
 */
-package org.jboss.beans.metadata.api.annotations;
+package org.jboss.kernel.plugins.dependency;
 
-import java.lang.annotation.Retention;
-import java.lang.annotation.RetentionPolicy;
-import java.lang.annotation.Target;
-import java.lang.annotation.ElementType;
+import java.io.Serializable;
+
+import org.jboss.kernel.api.dependency.Matcher;
+import org.jboss.util.JBossObject;
 
 /**
- * The supplys.
+ * Default Matcher.
  *
  * @author <a href="mailto:ales.justin@jboss.com">Ales Justin</a>
  */
-@Retention(RetentionPolicy.RUNTIME)
-@Target({ElementType.TYPE})
-public @interface Supplys
+class DefaultMatcher implements Matcher, Serializable
 {
-   /**
-    * Get supply values.
-    *
-    * @return the supplys
-    */
-   Supply[] value();
+   private static final long serialVersionUID = -6608028542574356737L;
+
+   // Should be serializable if we want to serialize this Matcher instance
+   private Object value;
+
+   public DefaultMatcher(Object value)
+   {
+      this.value = value;
+   }
+
+   public boolean match(Object other)
+   {
+      return JBossObject.equals(value, other);
+   }
 }
+

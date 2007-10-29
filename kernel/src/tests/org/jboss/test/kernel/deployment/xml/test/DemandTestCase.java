@@ -62,6 +62,13 @@ public class DemandTestCase extends AbstractXMLTest
       assertEquals(ControllerState.CONFIGURED, demand.getWhenRequired());
    }
 
+   public void testDemandWithTransformer() throws Exception
+   {
+      AbstractDemandMetaData demand = getDemand("DemandWithTransformer.xml");
+      assertEquals("Demand", demand.getDemand());
+      assertEquals("default", demand.getTransformer());
+   }
+
    public void testDemandBadNoValue() throws Exception
    {
       try

@@ -33,12 +33,19 @@ import java.lang.annotation.ElementType;
  */
 @Retention(RetentionPolicy.RUNTIME)
 @Target({ElementType.TYPE})
-public @interface Supplys
+public @interface Supply
 {
    /**
-    * Get supply values.
+    * Get suppl values.
     *
-    * @return the supplys
+    * @return the supply value
     */
-   Supply[] value();
+   String value();
+
+   /**
+    * Get class type.
+    *
+    * @return the class type
+    */
+   String type() default "";
 }

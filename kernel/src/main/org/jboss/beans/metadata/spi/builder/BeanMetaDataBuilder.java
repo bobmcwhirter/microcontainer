@@ -85,7 +85,11 @@ public interface BeanMetaDataBuilder
 
    BeanMetaDataBuilder addSupply(Object supply);
 
+   BeanMetaDataBuilder addSupply(Object supply, String type);
+
    BeanMetaDataBuilder addDemand(Object demand);
+
+   BeanMetaDataBuilder addDemand(Object demand, String whenRequired, String transformer);
 
    BeanMetaDataBuilder addDependency(Object dependency);
 

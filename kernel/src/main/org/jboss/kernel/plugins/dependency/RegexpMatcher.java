@@ -19,26 +19,32 @@
 * Software Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA
 * 02110-1301 USA, or see the FSF site: http://www.fsf.org.
 */
-package org.jboss.beans.metadata.api.annotations;
+package org.jboss.kernel.plugins.dependency;
 
-import java.lang.annotation.Retention;
-import java.lang.annotation.RetentionPolicy;
-import java.lang.annotation.Target;
-import java.lang.annotation.ElementType;
+import java.util.regex.Pattern;
+import java.io.Serializable;
+
+import org.jboss.kernel.api.dependency.StringMatcher;
 
 /**
- * The supplys.
+ * Regular expression matcher.
  *
  * @author <a href="mailto:ales.justin@jboss.com">Ales Justin</a>
  */
-@Retention(RetentionPolicy.RUNTIME)
-@Target({ElementType.TYPE})
-public @interface Supplys
+public class RegexpMatcher extends StringMatcher implements Serializable
 {
-   /**
-    * Get supply values.
-    *
-    * @return the supplys
-    */
-   Supply[] value();
+   private static final long serialVersionUID = 1L;
+
+   private Pattern pattern;
+
+   public RegexpMatcher(String regexp)
+   {
+      pattern = Pattern.compile(regexp);
+   }
+
+   protected boolean matchByType(String other)
+   {
+      boolean b = pattern.matcher(other).matches();
+      return b;
+   }
 }

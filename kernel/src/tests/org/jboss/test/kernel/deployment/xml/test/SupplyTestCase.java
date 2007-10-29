@@ -53,6 +53,13 @@ public class SupplyTestCase extends AbstractXMLTest
       assertEquals("Supply", supply.getSupply());
    }
 
+   public void testSupplyWithClass() throws Exception
+   {
+      AbstractSupplyMetaData supply = getSupply("SupplyWithClass.xml");
+      assertEquals(123, supply.getSupply());
+      assertEquals("java.lang.Integer", supply.getType());
+   }
+
    public void testSupplyBadNoValue() throws Exception
    {
       try

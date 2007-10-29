@@ -19,26 +19,29 @@
 * Software Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA
 * 02110-1301 USA, or see the FSF site: http://www.fsf.org.
 */
-package org.jboss.beans.metadata.api.annotations;
-
-import java.lang.annotation.Retention;
-import java.lang.annotation.RetentionPolicy;
-import java.lang.annotation.Target;
-import java.lang.annotation.ElementType;
+package org.jboss.kernel.api.dependency;
 
 /**
- * The supplys.
+ * Non null matcher transfomer.
+ * Throws exception if value to transform is null.
  *
  * @author <a href="mailto:ales.justin@jboss.com">Ales Justin</a>
  */
-@Retention(RetentionPolicy.RUNTIME)
-@Target({ElementType.TYPE})
-public @interface Supplys
+public abstract class NonNullMatcherTransformer implements MatcherTransformer
 {
+   public Matcher transform(Object value)
+   {
+      if (value == null)
+         throw new IllegalArgumentException("Null value");
+
+      return internalTransform(value);
+   }
+
    /**
-    * Get supply values.
+    * Transform non null value.
     *
-    * @return the supplys
+    * @param value the value
+    * @return matcher instance
     */
-   Supply[] value();
+   protected abstract Matcher internalTransform(Object value);
 }

@@ -35,6 +35,7 @@ import org.jboss.dependency.plugins.ScopedController;
 import org.jboss.dependency.spi.ControllerContext;
 import org.jboss.dependency.spi.ControllerState;
 import org.jboss.kernel.Kernel;
+import org.jboss.kernel.api.dependency.Matcher;
 import org.jboss.kernel.plugins.event.AbstractEventEmitter;
 import org.jboss.kernel.spi.dependency.KernelController;
 import org.jboss.kernel.spi.dependency.KernelControllerContext;
@@ -98,13 +99,33 @@ public class AbstractKernelController extends ScopedController implements Kernel
 
    public KernelRegistryEntry getEntry(Object name)
    {
-      List<KernelControllerContext> list = suppliers.get(name);
+      List<KernelControllerContext> list;
+      if (name instanceof Matcher)
+         list = matchSupplies((Matcher)name);
+      else
+         list = suppliers.get(name);
       if (list != null && list.isEmpty() == false)
          return list.get(0);
       else if (name instanceof Class)
          return getContextByClass((Class<?>) name);
       else
          return null;
+   }
+
+   /**
+    * Try matching supplies.
+    *
+    * @param matcher the matcher
+    * @return list of context's who have a matching supply
+    */
+   protected List<KernelControllerContext> matchSupplies(Matcher matcher)
+   {
+      for(Map.Entry<Object, List<KernelControllerContext>> entry : suppliers.entrySet())
+      {
+         if (matcher.match(entry.getKey()))
+            return entry.getValue();
+      }
+      return null;
    }
 
    public ControllerContext getContext(Object name, ControllerState state)

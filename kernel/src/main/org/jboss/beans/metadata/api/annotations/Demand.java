@@ -48,4 +48,11 @@ public @interface Demand
     * @return the when required state
     */
    String whenRequired() default "Instantiated";
+
+   /**
+    * Get the transfomer.
+    *
+    * @return the transformer
+    */
+   String transformer() default "";
 }

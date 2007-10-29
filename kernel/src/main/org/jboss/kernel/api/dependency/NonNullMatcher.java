@@ -19,26 +19,23 @@
 * Software Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA
 * 02110-1301 USA, or see the FSF site: http://www.fsf.org.
 */
-package org.jboss.beans.metadata.api.annotations;
-
-import java.lang.annotation.Retention;
-import java.lang.annotation.RetentionPolicy;
-import java.lang.annotation.Target;
-import java.lang.annotation.ElementType;
+package org.jboss.kernel.api.dependency;
 
 /**
- * The supplys.
- *
  * @author <a href="mailto:ales.justin@jboss.com">Ales Justin</a>
  */
-@Retention(RetentionPolicy.RUNTIME)
-@Target({ElementType.TYPE})
-public @interface Supplys
+public abstract class NonNullMatcher implements Matcher
 {
+   public boolean match(Object other)
+   {
+      return other != null && internalMatch(other);
+   }
+
    /**
-    * Get supply values.
+    * Do internal match.
     *
-    * @return the supplys
+    * @param other the other param to match
+    * @return true if matched, false otherwise
     */
-   Supply[] value();
+   protected abstract boolean internalMatch(Object other);
 }

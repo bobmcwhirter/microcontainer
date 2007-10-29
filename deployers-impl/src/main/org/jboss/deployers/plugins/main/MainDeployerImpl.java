@@ -66,6 +66,7 @@ public class MainDeployerImpl implements MainDeployer, MainDeployerStructure
    
    /** The structural deployers */
    private StructuralDeployers structuralDeployers;
+
    /** The ManagedDeploymentCreator plugin */
    private ManagedDeploymentCreator mgtDeploymentCreator = null;
    

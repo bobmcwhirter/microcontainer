@@ -19,26 +19,17 @@
 * Software Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA
 * 02110-1301 USA, or see the FSF site: http://www.fsf.org.
 */
-package org.jboss.beans.metadata.api.annotations;
-
-import java.lang.annotation.Retention;
-import java.lang.annotation.RetentionPolicy;
-import java.lang.annotation.Target;
-import java.lang.annotation.ElementType;
+package org.jboss.kernel.api.dependency;
 
 /**
- * The supplys.
+ * String matcher.
  *
  * @author <a href="mailto:ales.justin@jboss.com">Ales Justin</a>
  */
-@Retention(RetentionPolicy.RUNTIME)
-@Target({ElementType.TYPE})
-public @interface Supplys
+public abstract class StringMatcher extends ClassMatcher<String>
 {
-   /**
-    * Get supply values.
-    *
-    * @return the supplys
-    */
-   Supply[] value();
+   protected StringMatcher()
+   {
+      super(String.class);
+   }
 }

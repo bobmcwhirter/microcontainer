@@ -19,26 +19,45 @@
 * Software Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA
 * 02110-1301 USA, or see the FSF site: http://www.fsf.org.
 */
-package org.jboss.beans.metadata.api.annotations;
+package org.jboss.kernel.api.dependency;
 
-import java.lang.annotation.Retention;
-import java.lang.annotation.RetentionPolicy;
-import java.lang.annotation.Target;
-import java.lang.annotation.ElementType;
+import org.jboss.kernel.plugins.dependency.MatcherFactoryBuilder;
 
 /**
- * The supplys.
+ * Matcher factory.
+ * Holding the obvious Matcher implementations.
  *
  * @author <a href="mailto:ales.justin@jboss.com">Ales Justin</a>
  */
-@Retention(RetentionPolicy.RUNTIME)
-@Target({ElementType.TYPE})
-public @interface Supplys
+public abstract class MatcherFactory
 {
+   /** The singleton builder */
+   private static final MatcherFactoryBuilder builder = new MatcherFactoryBuilder();
+
    /**
-    * Get supply values.
+    * Get the matcher factory
     *
-    * @return the supplys
+    * @return the instance
     */
-   Supply[] value();
+   public static final MatcherFactory getInstance()
+   {
+      return builder.create();
+   }
+
+   /**
+    * Add matcher transfomer.
+    *
+    * @param key the key
+    * @param transformer the transfomer
+    */
+   public abstract void addMatcherTransfomer(String key, MatcherTransformer transformer);
+
+   /**
+    * Create the Matcher.
+    *
+    * @param transformer the transformer
+    * @param value the value to wrap
+    * @return new Matcher instance
+    */
+   public abstract Matcher createMatcher(String transformer, Object value);
 }

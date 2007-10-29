@@ -41,6 +41,7 @@ import org.jboss.beans.metadata.spi.SupplyMetaData;
 import org.jboss.beans.metadata.spi.ValueMetaData;
 import org.jboss.beans.metadata.spi.builder.BeanMetaDataBuilder;
 import org.jboss.dependency.spi.ControllerMode;
+import org.jboss.dependency.spi.ControllerState;
 
 /**
  * Helper class.
@@ -258,17 +259,30 @@ class BeanMetaDataBuilderImpl implements BeanMetaDataBuilder
 
    public BeanMetaDataBuilder addSupply(Object supply)
    {
+      return addSupply(supply, null);
+   }
+
+   public BeanMetaDataBuilder addSupply(Object supply, String type)
+   {
       Set<SupplyMetaData> supplies = beanMetaData.getSupplies();
       if (supplies == null)
       {
          supplies = new HashSet<SupplyMetaData>();
          beanMetaData.setSupplies(supplies);
       }
-      supplies.add(new AbstractSupplyMetaData(supply));
+      AbstractSupplyMetaData asmd = new AbstractSupplyMetaData(supply);
+      if (type != null)
+         asmd.setType(type);
+      supplies.add(asmd);
       return this;
    }
 
    public BeanMetaDataBuilder addDemand(Object demand)
+   {
+      return addDemand(demand, null, null);
+   }
+
+   public BeanMetaDataBuilder addDemand(Object demand, String whenRequired, String transformer)
    {
       Set<DemandMetaData> demands = beanMetaData.getDemands();
       if (demands == null)
@@ -276,7 +290,12 @@ class BeanMetaDataBuilderImpl implements BeanMetaDataBuilder
          demands = new HashSet<DemandMetaData>();
          beanMetaData.setDemands(demands);
       }
-      demands.add(new AbstractDemandMetaData(demand));
+      AbstractDemandMetaData admd = new AbstractDemandMetaData(demand);
+      if (whenRequired != null)
+         admd.setWhenRequired(new ControllerState(whenRequired));
+      if (transformer != null)
+         admd.setTransformer(transformer);
+      demands.add(admd);
       return this;
    }
 

@@ -25,13 +25,14 @@ import org.jboss.beans.metadata.api.annotations.Demands;
 import org.jboss.beans.metadata.api.annotations.Demand;
 import org.jboss.beans.metadata.api.annotations.Depends;
 import org.jboss.beans.metadata.api.annotations.Supplys;
+import org.jboss.beans.metadata.api.annotations.Supply;
 
 /**
  * @author <a href="mailto:ales.justin@jboss.com">Ales Justin</a>
  */
 @Demands({@Demand("deployer")})
 @Depends({"deployer"})
-@Supplys({"somesupply"})
+@Supplys({@Supply("somesupply")})
 public class SetsAnnotationTester implements AnnotationTester
 {
    public Object getValue()

@@ -21,15 +21,18 @@
 */
 package org.jboss.beans.metadata.plugins;
 
+import java.beans.PropertyEditor;
 import java.io.Serializable;
 import java.util.Iterator;
 
 import org.jboss.beans.metadata.spi.MetaDataVisitor;
 import org.jboss.beans.metadata.spi.MetaDataVisitorNode;
 import org.jboss.beans.metadata.spi.SupplyMetaData;
+import org.jboss.logging.Logger;
+import org.jboss.util.HashCode;
 import org.jboss.util.JBossObject;
 import org.jboss.util.JBossStringBuilder;
-import org.jboss.util.HashCode;
+import org.jboss.util.propertyeditor.PropertyEditors;
 
 /**
  * A supply.
@@ -42,8 +45,25 @@ public class AbstractSupplyMetaData extends JBossObject
 {
    private static final long serialVersionUID = 1L;
 
+   private static Logger log = Logger.getLogger(AbstractSupplyMetaData.class);
+
+   static
+   {
+      try
+      {
+         PropertyEditors.init();
+      }
+      catch (Throwable t)
+      {
+         log.debug("Unable to initialise property editors", t);
+      }
+   }
+
    /** The supply */
    protected Object supply;
+
+   /** The type */
+   protected String type;
 
    /**
     * Create a new supply
@@ -73,9 +93,47 @@ public class AbstractSupplyMetaData extends JBossObject
       flushJBossObjectCache();
    }
 
+   /**
+    * Get the class type.
+    *
+    * @return the class type
+    */
+   public String getType()
+   {
+      return type;
+   }
+
+   /**
+    * Set the class type
+    *
+    * @param type the type
+    */
+   public void setType(String type)
+   {
+      this.type = type;
+   }
+
    public Object getSupply()
    {
+      if (supply instanceof String && type != null)
+      {
+         PropertyEditor editor = getPropertyEditor();
+         editor.setAsText((String)supply);
+         return editor.getValue();
+      }
       return supply;
+   }
+
+   protected PropertyEditor getPropertyEditor()
+   {
+      try
+      {
+         return PropertyEditors.getEditor(type);
+      }
+      catch (ClassNotFoundException e)
+      {
+         throw new RuntimeException(e);
+      }
    }
 
    public void initialVisit(MetaDataVisitor visitor)
@@ -96,6 +154,8 @@ public class AbstractSupplyMetaData extends JBossObject
    public void toString(JBossStringBuilder buffer)
    {
       buffer.append("supply=").append(supply);
+      if (type != null)
+         buffer.append(" class=").append(type);
    }
    
    public void toShortString(JBossStringBuilder buffer)
@@ -107,12 +167,11 @@ public class AbstractSupplyMetaData extends JBossObject
    {
       if (obj instanceof AbstractSupplyMetaData == false)
          return false;
-      return equals(supply, ((AbstractSupplyMetaData)obj).supply);
+      return equals(supply, ((AbstractSupplyMetaData)obj).supply) && equals(type, ((AbstractSupplyMetaData)obj).type);
    }
 
    protected int getHashCode()
    {
       return HashCode.generate(supply);
    }
-
 }

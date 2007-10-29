@@ -970,6 +970,7 @@ $Id$
       <xsd:simpleContent>
          <xsd:extension base="xsd:string">
             <xsd:attribute name="state" type="controllerStateType" use="optional"/>
+            <xsd:attribute name="transformer" type="xsd:token" use="optional"/>
          </xsd:extension>
       </xsd:simpleContent>
    </xsd:complexType>
@@ -991,7 +992,9 @@ $Id$
          </xsd:documentation>
       </xsd:annotation>
       <xsd:simpleContent>
-         <xsd:extension base="xsd:string"/>
+         <xsd:extension base="xsd:string">
+            <xsd:attribute name="class" type="classNameType" use="optional"/>
+         </xsd:extension>
       </xsd:simpleContent>
    </xsd:complexType>
 

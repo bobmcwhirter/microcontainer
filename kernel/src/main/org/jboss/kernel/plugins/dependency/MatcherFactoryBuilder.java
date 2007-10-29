@@ -19,26 +19,28 @@
 * Software Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA
 * 02110-1301 USA, or see the FSF site: http://www.fsf.org.
 */
-package org.jboss.beans.metadata.api.annotations;
+package org.jboss.kernel.plugins.dependency;
 
-import java.lang.annotation.Retention;
-import java.lang.annotation.RetentionPolicy;
-import java.lang.annotation.Target;
-import java.lang.annotation.ElementType;
+import org.jboss.kernel.api.dependency.MatcherFactory;
 
 /**
- * The supplys.
+ * Matcher factory builder.
  *
+ * TODO this class only creates a singleton fixed implementation for now
  * @author <a href="mailto:ales.justin@jboss.com">Ales Justin</a>
  */
-@Retention(RetentionPolicy.RUNTIME)
-@Target({ElementType.TYPE})
-public @interface Supplys
+public class MatcherFactoryBuilder
 {
+   /** The singleton */
+   private static final MatcherFactory singleton = new DefaultMatcherFactory();
+
    /**
-    * Get supply values.
+    * Create the factory
     *
-    * @return the supplys
+    * @return the factory
     */
-   Supply[] value();
+   public MatcherFactory create()
+   {
+      return singleton;
+   }
 }
