@@ -22,7 +22,9 @@ public class HRManagerTestCase extends HRServiceTest
 		assertEquals(false, manager.isHiringFreeze());
 		assertEquals(true, manager.addEmployee(bob));
 		assertEquals(1, manager.getEmployees().size());
+		assertEquals((Integer) 10000, manager.getSalary(bob));
 		
+		// Test setting a salary without using a salary strategy
 		Employee employee = manager.getEmployee("Bob", "Smith");
 		assertNotNull(employee);
 		manager.setSalary(employee, 600);

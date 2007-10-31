@@ -1,0 +1,17 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<deployment xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+            xsi:schemaLocation="urn:jboss:bean-deployer:2.0 bean-deployer_2_0.xsd"
+            xmlns="urn:jboss:bean-deployer:2.0">
+
+   <bean name="HRService" class="org.jboss.example.service.HRManager">
+     <property name="hiringFreeze">false</property>
+     <property name="salaryStrategy"><inject bean="LocationBasedSalary"/></property>
+   </bean>
+
+   <bean name="LocationBasedSalary" class="org.jboss.example.service.LocationBasedSalaryStrategy">
+     <property name="minSalary">2000</property>
+     <property name="maxSalary">70000</property>
+   </bean>
+       
+</deployment>
