@@ -1,6 +1,8 @@
-package org.jboss.example.service;
+package org.jboss.example.service.util;
 
 import java.util.Calendar;
+
+import org.jboss.example.service.Employee;
 
 /**
  * Check that the salary is relative to the employee's age in years.

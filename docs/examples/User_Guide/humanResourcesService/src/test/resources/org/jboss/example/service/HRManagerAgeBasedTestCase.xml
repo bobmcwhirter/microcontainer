@@ -9,7 +9,7 @@
      <property name="salaryStrategy"><inject bean="AgeBasedSalary"/></property>
    </bean>
 
-   <bean name="AgeBasedSalary" class="org.jboss.example.service.AgeBasedSalaryStrategy">
+   <bean name="AgeBasedSalary" class="org.jboss.example.service.util.AgeBasedSalaryStrategy">
      <property name="minSalary">1000</property>
      <property name="maxSalary">80000</property>
    </bean>

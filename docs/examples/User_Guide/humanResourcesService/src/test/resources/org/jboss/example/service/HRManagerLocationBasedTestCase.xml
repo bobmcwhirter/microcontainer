@@ -9,7 +9,7 @@
      <property name="salaryStrategy"><inject bean="LocationBasedSalary"/></property>
    </bean>
 
-   <bean name="LocationBasedSalary" class="org.jboss.example.service.LocationBasedSalaryStrategy">
+   <bean name="LocationBasedSalary" class="org.jboss.example.service.util.LocationBasedSalaryStrategy">
      <property name="minSalary">2000</property>
      <property name="maxSalary">70000</property>
    </bean>

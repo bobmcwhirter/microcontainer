@@ -1,5 +1,7 @@
 package org.jboss.example.service;
 
+import org.jboss.example.service.util.SalaryStrategyTestSuite;
+
 import junit.framework.Test;
 import junit.framework.TestSuite;
 import junit.textui.TestRunner;
@@ -11,11 +13,13 @@ public class HRServiceTestSuite extends TestSuite
    }
 
    public static Test suite() {
-      TestSuite suite = new TestSuite("Human Resources Service Tests");
+      TestSuite suite = new TestSuite("Human Resources Manager Tests");
       
       suite.addTestSuite(HRManagerTestCase.class);
-      suite.addTestSuite(AgeBasedSalaryTestCase.class);
-      suite.addTestSuite(LocationBasedSalaryTestCase.class);
+      suite.addTestSuite(HRManagerAgeBasedTestCase.class);
+      suite.addTestSuite(HRManagerLocationBasedTestCase.class);
+      
+      suite.addTest(SalaryStrategyTestSuite.suite());
       
       return suite;
    }

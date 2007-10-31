@@ -4,6 +4,8 @@ import java.util.Map;
 import java.util.Set;
 import java.util.concurrent.ConcurrentHashMap;
 
+import org.jboss.example.service.util.SalaryStrategy;
+
 /**
  * An Manager keeps track of a set of employees and their associated salaries.
  */

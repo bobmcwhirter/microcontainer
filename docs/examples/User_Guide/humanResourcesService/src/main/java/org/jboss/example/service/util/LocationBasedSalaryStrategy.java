@@ -1,4 +1,6 @@
-package org.jboss.example.service;
+package org.jboss.example.service.util;
+
+import org.jboss.example.service.Employee;
 
 /**
  * Check that the salary is relative to the employee's location.

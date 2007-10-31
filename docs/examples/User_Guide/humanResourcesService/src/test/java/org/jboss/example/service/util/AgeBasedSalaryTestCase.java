@@ -1,6 +1,7 @@
-package org.jboss.example.service;
+package org.jboss.example.service.util;
 
-import org.jboss.example.service.SalaryStrategy;
+import org.jboss.example.service.HRServiceTest;
+import org.jboss.example.service.util.SalaryStrategy;
 
 public class AgeBasedSalaryTestCase extends HRServiceTest
 {
