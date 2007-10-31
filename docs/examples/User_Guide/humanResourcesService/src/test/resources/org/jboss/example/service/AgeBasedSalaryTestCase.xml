@@ -4,8 +4,9 @@
             xsi:schemaLocation="urn:jboss:bean-deployer:2.0 bean-deployer_2_0.xsd"
             xmlns="urn:jboss:bean-deployer:2.0">
 
-   <bean name="HRService" class="org.jboss.example.service.HRManager">
-     <property name="hiringFreeze">true</property>
+   <bean name="AgeBasedSalary" class="org.jboss.example.service.AgeBasedSalaryStrategy">
+     <property name="minSalary">1000</property>
+     <property name="maxSalary">80000</property>
    </bean>
-      
+   
 </deployment>

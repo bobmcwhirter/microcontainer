@@ -38,8 +38,16 @@ public class LocationBasedSalaryStrategy implements SalaryStrategy {
 		return salary;
 	}
 
+	public int getMinSalary() {
+		return minSalary;
+	}
+	
 	public void setMinSalary(int minSalary) {
 		this.minSalary = minSalary;
+	}
+	
+	public int getMaxSalary() {
+		return maxSalary;
 	}
 	
 	public void setMaxSalary(int maxSalary) {

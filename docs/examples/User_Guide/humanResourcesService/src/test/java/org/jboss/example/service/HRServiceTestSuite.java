@@ -13,7 +13,9 @@ public class HRServiceTestSuite extends TestSuite
    public static Test suite() {
       TestSuite suite = new TestSuite("Human Resources Service Tests");
       
-      suite.addTest(HRManagerTestCase.suite());
+      suite.addTestSuite(HRManagerTestCase.class);
+      suite.addTestSuite(AgeBasedSalaryTestCase.class);
+      suite.addTestSuite(LocationBasedSalaryTestCase.class);
       
       return suite;
    }
