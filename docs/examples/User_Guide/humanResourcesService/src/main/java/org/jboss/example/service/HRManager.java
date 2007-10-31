@@ -7,7 +7,7 @@ import java.util.concurrent.ConcurrentHashMap;
 /**
  * An Manager keeps track of a set of employees and their associated salaries.
  */
-public class Manager {
+public class HRManager {
     
 	private static final Integer STANDARD_SALARY = 10000;
 	
@@ -17,8 +17,8 @@ public class Manager {
 	
 	private SalaryStrategy salaryStrategy = null;
 	
-	public Manager() {
-		System.out.println("Hello from the manager...");
+	public HRManager() {
+		System.out.println("Hello from the HR manager...");
 		employees =  new ConcurrentHashMap<Employee, Integer>();
  	}
 	

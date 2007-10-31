@@ -9,6 +9,22 @@
   <name>Human Resources Service</name>
   <description>A simple service created using a POJO.</description>
 
+
+  <build>
+    <plugins>
+      <plugin>
+        <artifactId>maven-compiler-plugin</artifactId>
+        <configuration>
+          <source>1.5</source>
+          <target>1.5</target>
+          <showDeprecation>true</showDeprecation>
+          <showWarnings>true</showWarnings>
+          <optimize>true</optimize>
+        </configuration>
+      </plugin>
+    </plugins>
+  </build>
+     
   <dependencies>
     <dependency>
       <groupId>org.jboss.microcontainer</groupId>

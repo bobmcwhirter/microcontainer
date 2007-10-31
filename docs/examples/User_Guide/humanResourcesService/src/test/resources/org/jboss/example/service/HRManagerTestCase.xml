@@ -4,6 +4,6 @@
             xsi:schemaLocation="urn:jboss:bean-deployer:2.0 bean-deployer_2_0.xsd"
             xmlns="urn:jboss:bean-deployer:2.0">
 
-   <bean name="HumanResources" class="org.jboss.example.service.Manager"/>
+   <bean name="HRService" class="org.jboss.example.service.HRManager"/>
       
 </deployment>
