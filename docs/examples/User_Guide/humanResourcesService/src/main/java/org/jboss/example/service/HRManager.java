@@ -7,7 +7,8 @@ import java.util.concurrent.ConcurrentHashMap;
 import org.jboss.example.service.util.SalaryStrategy;
 
 /**
- * An Manager keeps track of a set of employees and their associated salaries.
+ * An HRManager (Human Resource Manager) keeps track
+ * of a set of employees and their associated salaries.
  */
 public class HRManager {
     
@@ -20,7 +21,6 @@ public class HRManager {
 	private SalaryStrategy salaryStrategy = null;
 	
 	public HRManager() {
-		System.out.println("Hello from the HR manager...");
 		employees =  new ConcurrentHashMap<Employee, Integer>();
  	}
 	

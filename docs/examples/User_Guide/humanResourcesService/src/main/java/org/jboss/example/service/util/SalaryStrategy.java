@@ -2,6 +2,9 @@ package org.jboss.example.service.util;
 
 import org.jboss.example.service.Employee;
 
+/**
+ * Apply some rules to calculate an employee's minimum and maximum salary. 
+ */
 public interface SalaryStrategy {
 
 	public int getMinSalary();

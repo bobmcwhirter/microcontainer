@@ -12,6 +12,9 @@ public class AgeBasedSalaryStrategy implements SalaryStrategy {
 	private int minSalary = 5000;
 	private int maxSalary = 100000;
 	
+	private static final int JUNIOR_MIN_SALARY = 25000;
+	private static final int SENIOR_MIN_SALARY = 50000;
+
 	public Integer checkSalary(Employee employee, Integer salary) {
 		
 		Calendar dateOfBirth = Calendar.getInstance();
@@ -37,12 +40,12 @@ public class AgeBasedSalaryStrategy implements SalaryStrategy {
 		}
 
 		// Set minimum salaries depending on the age of the employee
-		if (age >= 21 && age < 30 && salary < 25000) {
-			salary = 25000; 
+		if (age >= 21 && age < 30 && salary < JUNIOR_MIN_SALARY) {
+			salary = JUNIOR_MIN_SALARY; 
 		}
 		
-		if (age >= 30 && age < 50 && salary < 50000) {
-			salary = 50000; 
+		if (age >= 30 && age < 50 && salary < SENIOR_MIN_SALARY) {
+			salary = SENIOR_MIN_SALARY; 
 		}
 		
 		// Apply company-wide ranges
