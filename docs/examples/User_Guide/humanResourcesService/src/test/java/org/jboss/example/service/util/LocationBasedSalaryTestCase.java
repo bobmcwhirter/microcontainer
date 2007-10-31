@@ -1,9 +1,9 @@
 package org.jboss.example.service.util;
 
-import org.jboss.example.service.HRServiceTest;
+import org.jboss.example.service.HRManagerTest;
 import org.jboss.example.service.util.SalaryStrategy;
 
-public class LocationBasedSalaryTestCase extends HRServiceTest
+public class LocationBasedSalaryTestCase extends HRManagerTest
 {
 	public LocationBasedSalaryTestCase(String name) {
 		super(name);

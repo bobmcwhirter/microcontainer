@@ -4,11 +4,11 @@ import java.util.Calendar;
 
 import org.jboss.test.kernel.junit.MicrocontainerTest;
 
-public abstract class HRServiceTest extends MicrocontainerTest
+public abstract class HRManagerTest extends MicrocontainerTest
 {
 	protected Employee bob, rebecca, karen, joe;
 
-	public HRServiceTest(String name) {
+	public HRManagerTest(String name) {
 		super(name);
 	}
 	   

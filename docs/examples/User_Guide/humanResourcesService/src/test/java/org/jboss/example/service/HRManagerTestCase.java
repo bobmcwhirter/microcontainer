@@ -2,7 +2,7 @@ package org.jboss.example.service;
 
 import org.jboss.example.service.HRManager;
 
-public class HRManagerTestCase extends HRServiceTest
+public class HRManagerTestCase extends HRManagerTest
 {	
     public HRManagerTestCase(String name) {
 		super(name);

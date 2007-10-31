@@ -6,7 +6,7 @@ import junit.framework.Test;
 import junit.framework.TestSuite;
 import junit.textui.TestRunner;
 
-public class HRServiceTestSuite extends TestSuite
+public class HRManagerTestSuite extends TestSuite
 {
    public static void main(String[] args) {
       TestRunner.run(suite());
