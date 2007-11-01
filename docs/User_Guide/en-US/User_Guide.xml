@@ -48,7 +48,7 @@
       <para>Diagram here....</para>
     </chapter>
     <chapter>
-      <title>Building Services</title>
+      <title>Building services</title>
       <para><emphasis role="bold">
           <emphasis role="underline">POJOs</emphasis>
         </emphasis></para>
@@ -87,6 +87,7 @@
       <para>Since robust implementations of Java EE services  are already available from  JBoss.org and other communities, it is common for companies to focus on creating more &apos;business-oriented&apos; services. For this reason we shall look at creating, configuring and testing a simple Human Resources service that can be used in a wide-variety of companies.</para>
       <section>
         <title>Creating POJOs</title>
+        <para/>
       </section>
       <section>
         <title>Wiring POJOs together </title>
@@ -106,20 +107,30 @@
       <title>Using services </title>
       <section>
         <title>Deploying a service</title>
+        <para>I need to mention deploying a packaged service vs deploying an unpackaged service.</para>
       </section>
       <section>
         <title>Using the kernel registry</title>
-      </section>
-      <section>
-        <title>Swapping a service</title>
+        <para>This is equivalent to how you access beans using Spring.</para>
       </section>
       <section>
         <title>Using the kernel bus</title>
+        <para>This provides the decoupling we need so that we can swap the service at runtime.</para>
+      </section>
+      <section>
+        <title>Swapping a service</title>
+        <para>I need to show here how you can alter the jboss-beans.xml file in the unpackaged service and redeploy the service.</para>
       </section>
       <section>
         <title>Classloading</title>
-        <para>Give an example of 2 directories on the filesystem and show how we can configure this using 2 different classloaders.</para>
+        <para>I can show how we can remove the ./deploy/humanResourcesService.jar from the classpath and then deploy the jboss-beans.xml file directly in the unpackaged service. We can then configure the &lt;classloader&gt; element of the deployment to point to the classes directory since they won&apos;t be available on the Application classpath anymore. We can even move the util package to another directory and show how we can set up a &lt;classloader&gt; element at the bean level.</para>
       </section>
+    </chapter>
+    <chapter>
+      <title>Adding behaviour through AOP</title>
+      <para>Give examples as follows: Annotation in the class (JDK way), Annotation in XML, plain pointcut expression. The advice is an Audit advice.</para>
+      <para>Follow this with an example that shows how we can declare the AuditAspect as a bean within MC and have a dependency between it and the AuditService class. This means that the AuditAspect will not be deployed until the Audit.jar in is the classpath. This then means that the HRManager service also cannot start since it depends on the AuditAspect.</para>
+      <para>Start chapters with an introduction paragraph. This helps people to learn if they need to read on. Start each section with &apos;Imagine...&apos;. This catches peoples attention. If you intro simething then you need a summary at the end (ideally in a different way). Don&apos;t have one section like 1.2.1, always have a least 2 i.e. 1.2.1 and 1.2.2. Make the chapters and sections balanced. i.e. width ways and length ways. The outer chapters and sections always contain less information than the inner sections. They basically wrap the main content. When you write seques then you need to say what&apos;s going to happen without saying what&apos;s going to happen.</para>
     </chapter>
     <chapter>
       <title>Advanced deployment</title>
@@ -141,12 +152,6 @@
       <section>
         <title>Adding a deployment stage</title>
       </section>
-    </chapter>
-    <chapter>
-      <title>Adding behaviour through AOP</title>
-      <para>Give examples as follows: Annotation in the class (JDK way), Annotation in XML, plain pointcut expression. The advice is an Audit advice.</para>
-      <para>Follow this with an example that shows how we can declare the AuditAspect as a bean within MC and have a dependency between it and the AuditService class. This means that the AuditAspect will not be deployed until the Audit.jar in is the classpath. This then means that the HRManager service also cannot start since it depends on the AuditAspect.</para>
-      <para>Start chapters with an introduction paragraph. This helps people to learn if they need to read on. Start each section with &apos;Imagine...&apos;. This catches peoples attention. If you intro simething then you need a summary at the end (ideally in a different way). Don&apos;t have one section like 1.2.1, always have a least 2 i.e. 1.2.1 and 1.2.2. Make the chapters and sections balanced. i.e. width ways and length ways. The outer chapters and sections always contain less information than the inner sections. They basically wrap the main content. When you write seques then you need to say what&apos;s going to happen without saying what&apos;s going to happen.</para>
     </chapter>
   </part>
   <part>
