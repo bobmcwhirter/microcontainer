@@ -13,7 +13,7 @@ public class HRManagerTestSuite extends TestSuite
    }
 
    public static Test suite() {
-      TestSuite suite = new TestSuite("Human Resources Manager Tests");
+      TestSuite suite = new TestSuite("HRManager Tests");
       
       suite.addTestSuite(HRManagerTestCase.class);
       suite.addTestSuite(HRManagerAgeBasedTestCase.class);

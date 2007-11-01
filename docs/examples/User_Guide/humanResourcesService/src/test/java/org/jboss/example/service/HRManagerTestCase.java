@@ -17,9 +17,9 @@ public class HRManagerTestCase extends HRManagerTest
 		assertEquals(false, manager.addEmployee(bob));
 		assertEquals(0, manager.getEmployees().size());
 		
-		manager.setHiringFreeze(false);
-		
+		manager.setHiringFreeze(false);		
 		assertEquals(false, manager.isHiringFreeze());
+
 		assertEquals(true, manager.addEmployee(bob));
 		assertEquals(1, manager.getEmployees().size());
 		assertEquals((Integer) 10000, manager.getSalary(bob));
@@ -27,8 +27,8 @@ public class HRManagerTestCase extends HRManagerTest
 		// Test setting a salary without using a salary strategy
 		Employee employee = manager.getEmployee("Bob", "Smith");
 		assertNotNull(employee);
-		manager.setSalary(employee, 600);
-		
+
+		manager.setSalary(employee, 600);		
 		assertEquals((Integer) 600, manager.getSalary(employee));
 		
 		manager.removeEmployee(bob);

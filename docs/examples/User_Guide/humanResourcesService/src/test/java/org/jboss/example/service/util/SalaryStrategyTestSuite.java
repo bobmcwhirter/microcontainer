@@ -14,7 +14,7 @@ public class SalaryStrategyTestSuite extends TestSuite
    }
 
    public static Test suite() {
-      TestSuite suite = new TestSuite("Salary Strategy Unit Tests");
+      TestSuite suite = new TestSuite("SalaryStrategy Tests");
       
       suite.addTestSuite(AgeBasedSalaryTestCase.class);
       suite.addTestSuite(LocationBasedSalaryTestCase.class);

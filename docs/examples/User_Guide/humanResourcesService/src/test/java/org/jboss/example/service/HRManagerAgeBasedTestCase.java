@@ -11,6 +11,7 @@ public class HRManagerAgeBasedTestCase extends HRManagerTest
 	public void testSalaryStrategy() throws Exception {
 		HRManager manager = (HRManager) getBean("HRService");
 		assertNotNull(manager);
+
 		assertEquals(false, manager.isHiringFreeze());
 		assertEquals(true, manager.addEmployee(bob));
 		assertEquals((Integer) 10000, manager.getSalary(bob));
