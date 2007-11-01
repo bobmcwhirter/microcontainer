@@ -118,7 +118,7 @@
         <para>This provides the decoupling we need so that we can swap the service at runtime.</para>
       </section>
       <section>
-        <title>Swapping a service</title>
+        <title>Redeploying a service</title>
         <para>I need to show here how you can alter the jboss-beans.xml file in the unpackaged service and redeploy the service.</para>
       </section>
       <section>
