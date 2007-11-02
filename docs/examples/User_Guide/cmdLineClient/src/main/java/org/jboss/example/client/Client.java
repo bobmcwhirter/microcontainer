@@ -17,7 +17,7 @@ import org.jboss.kernel.spi.dependency.KernelControllerContext;
 import org.jboss.kernel.spi.registry.KernelBus;
 import org.jboss.kernel.spi.registry.KernelRegistry;
 
-public class CmdLineClient {
+public class Client {
     
 	protected boolean useBus = false;
 		
@@ -38,10 +38,10 @@ public class CmdLineClient {
 			System.exit(1);
 		}
 
-		new CmdLineClient(args.length == 1);
+		new Client(args.length == 1);
     }
 
-	public CmdLineClient(final boolean useBus) throws Exception {
+	public Client(final boolean useBus) throws Exception {
 		
 		this.useBus = useBus;
 		

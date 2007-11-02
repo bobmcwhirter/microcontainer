@@ -13,7 +13,7 @@ import org.jboss.example.service.Employee;
 
 public class ConsoleInput {
 	
-	public ConsoleInput(final CmdLineClient client, final EmbeddedBootstrap bootstrap, final boolean useBus, final URL url) {
+	public ConsoleInput(final Client client, final EmbeddedBootstrap bootstrap, final boolean useBus, final URL url) {
 		printMenu();
 		
 		Thread eventThread = new Thread(new Runnable() {
