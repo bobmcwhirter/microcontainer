@@ -28,7 +28,7 @@ public class CmdLineClientTestCase extends TestCase
 
    public void testConfigure() throws Exception
    {
-      CmdLineClient client = new CmdLineClient();
+      CmdLineClient client = new CmdLineClient(false);
       assertNotNull(client);
    }
 

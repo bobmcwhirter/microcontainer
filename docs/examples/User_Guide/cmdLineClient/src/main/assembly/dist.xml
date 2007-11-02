@@ -19,10 +19,13 @@
       <outputDirectory>/lib</outputDirectory>
       <unpack>false</unpack>
       <scope>compile</scope>
+       <excludes>
+        <exclude>org.jboss.microcontainer.examples:humanResourcesService</exclude>
+      </excludes>
     </dependencySet>
     <dependencySet>
       <outputDirectory>/deploy</outputDirectory>
-      <unpack>false</unpack>
+      <unpack>true</unpack>
       <scope>runtime</scope>
       <includes>
         <include>org.jboss.microcontainer.examples:humanResourcesService</include>
