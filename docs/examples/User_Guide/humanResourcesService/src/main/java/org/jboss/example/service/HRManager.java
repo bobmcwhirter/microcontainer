@@ -73,6 +73,10 @@ public class HRManager {
 	public void setHiringFreeze(boolean hiringFreeze) {
 		this.hiringFreeze = hiringFreeze;
 	}
+	
+	public SalaryStrategy getSalaryStrategy() {
+		return salaryStrategy;
+	}
 
 	public void setSalaryStrategy(SalaryStrategy salaryStrategy) {
 		this.salaryStrategy = salaryStrategy;

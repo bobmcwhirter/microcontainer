@@ -1,5 +1,6 @@
 package org.jboss.example.service;
 
+import java.text.SimpleDateFormat;
 import java.util.Date;
 
 public class Employee {
@@ -70,5 +71,16 @@ public class Employee {
 		} else if (!lastName.equals(other.lastName))
 			return false;
 		return true;
+	}
+	
+	@Override
+	public String toString() {
+		SimpleDateFormat formatter = new SimpleDateFormat("dd/MM/yyyy");
+		StringBuffer buffer = new StringBuffer();
+		
+		buffer.append("(" + firstName + " " + lastName + ", ");
+		buffer.append(address + " - " + formatter.format(dateOfBirth) + ")");
+		
+		return buffer.toString();
 	}
 }
