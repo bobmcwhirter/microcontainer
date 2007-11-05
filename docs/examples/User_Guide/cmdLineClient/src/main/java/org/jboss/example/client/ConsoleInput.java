@@ -3,7 +3,6 @@ package org.jboss.example.client;
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
-import java.net.URL;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.Date;
@@ -11,10 +10,12 @@ import java.util.Date;
 import org.jboss.example.service.Address;
 import org.jboss.example.service.Employee;
 
-public class ConsoleInput {
+public class ConsoleInput implements UserInterface {
 	
-	public ConsoleInput(final Client client, final EmbeddedBootstrap bootstrap, final boolean useBus, final URL url) {
-		printMenu();
+	private static BufferedReader in = new BufferedReader(new InputStreamReader(System.in));
+
+	public ConsoleInput(final Client client) {
+		System.out.println(getMenu());
 		
 		Thread eventThread = new Thread(new Runnable() {
 			private boolean initialDeployment = false;
@@ -29,31 +30,31 @@ public class ConsoleInput {
 					try {
 						String input = in.readLine();
 						if (input.length() != 1) {
+							System.out.println("Please enter a valid option.");
 							continue;
 						}
 	
 						char option = input.charAt(0);
-						if ((option == '2' || option == '3' || option == 'a' || option == 'l' || option == 'r'
-							    || option == 'g' || option == 's' || option == 't' || option == 'p')
-								&& !useBus && initialDeployment == false) {
+						if (initialDeployment == false &&
+						    (option == 'u' || option == 'a' || option == 'l' || option == 'r' ||
+							 option == 'g' || option == 's' || option == 't' || option == 'p')) {
 							System.out.println("Service has not been deployed yet.");
 							continue;
 						}
 						
 						switch (option) {
-							case '1': bootstrap.deploy(url); client.cacheServiceRef(); initialDeployment = true; break;
-							case '2': bootstrap.undeploy(url); bootstrap.deploy(url); client.cacheServiceRef(); break;
-							case '3': bootstrap.undeploy(url); break;
-							case 'a': client.addEmployee(); break;
-							case 'l': client.listEmployees(); break;
+							case 'd': client.deploy(); initialDeployment = true; break;
+							case 'u': client.undeploy(); break;
+							case 'a': System.out.println("Added employee: " + client.addEmployee()); break;
+							case 'l': System.out.println("Employees: " + client.listEmployees()); break;
 							case 'r': client.removeEmployee(); break;
-							case 'g': client.getSalary(); break;
+							case 'g': System.out.println("Salary: " + client.getSalary()); break;
 							case 's': client.setSalary(); break;
-							case 't': client.toggleHiringFreeze(); break;
-							case 'm': printMenu(); break;
-							case 'p': client.printStatus(); break;
+							case 't': System.out.println("Hiring Freeze: " + client.toggleHiringFreeze()); break;
+							case 'm': System.out.println(getMenu()); break;
+							case 'p': System.out.println(client.printStatus()); break;
 							case 'q': quit = true; break;
-							default: break;
+							default: System.out.println("Invalid option."); break;
 						}
 					} catch (ParseException e) {
 						System.out.println(e.getMessage());
@@ -71,29 +72,28 @@ public class ConsoleInput {
 		eventThread.start();			
 	}
 	
-	private void printMenu() {
-		System.out.println("-----------------------------------");
-		System.out.println("Menu:");
-		System.out.println();
-		System.out.println("1) Deploy Human Resources service");
-		System.out.println("2) Redeploy Human Resources service");
-		System.out.println("3) Undeploy Human Resources service");
-		System.out.println();
-		System.out.println("a) Add employee");
-		System.out.println("l) List employees");
-		System.out.println("r) Remove employee");
-		System.out.println("g) Get a salary");
-		System.out.println("s) Set a salary");
-		System.out.println("t) Toggle hiring freeze");
-		System.out.println();
-		System.out.println("m) Display menu");
-		System.out.println("p) Print service status");
-		System.out.println("q) Quit");
+	private String getMenu() {
+		StringBuffer buffer = new StringBuffer();
+		buffer.append("-----------------------------------\n");
+		buffer.append("Menu:\n");
+		buffer.append("\n");
+		buffer.append("d) Deploy Human Resources service\n");
+		buffer.append("u) Undeploy Human Resources service\n");
+		buffer.append("\n");
+		buffer.append("a) Add employee\n");
+		buffer.append("l) List employees\n");
+		buffer.append("r) Remove employee\n");
+		buffer.append("g) Get a salary\n");
+		buffer.append("s) Set a salary\n");
+		buffer.append("t) Toggle hiring freeze\n");
+		buffer.append("\n");
+		buffer.append("m) Display menu\n");
+		buffer.append("p) Print service status\n");
+		buffer.append("q) Quit");
+		return buffer.toString();
 	}
 
-	private static BufferedReader in = new BufferedReader(new InputStreamReader(System.in));
-
-	public static Employee getEmployee() throws IllegalArgumentException, IOException {	
+	public Employee getEmployee() throws IllegalArgumentException, IOException {	
 
 		System.out.println("Please enter the employee's name [firstName lastName]:");
 		String name = in.readLine();
@@ -102,7 +102,7 @@ public class ConsoleInput {
 		return new Employee(names[0], names[1]);
 	}
 	
-	public static Address getAddress() throws NumberFormatException, IllegalArgumentException, IOException {
+	public Address getAddress() throws NumberFormatException, IllegalArgumentException, IOException {
 	
 		System.out.println("Please enter the employee's address [number,street,city]:");
 		String address = in.readLine();
@@ -111,14 +111,14 @@ public class ConsoleInput {
 		return new Address(Integer.parseInt(lines[0]), lines[1], lines[2]);
 	}
 	
-	public static Date getDateOfBirth() throws ParseException, IOException {
+	public Date getDateOfBirth() throws ParseException, IOException {
 	
 		System.out.println("Please enter the employee's date of birth [dd/MM/yyyy]:");
 		String date = in.readLine();
 		return new SimpleDateFormat("dd/MM/yyyy").parse(date);
 	}
 	
-	public static Integer getSalary()  throws NumberFormatException, IOException {	
+	public Integer getSalary()  throws NumberFormatException, IOException {	
 	
 		System.out.println("Please enter the employee's new salary [integer]: ");
 		String salary = in.readLine();

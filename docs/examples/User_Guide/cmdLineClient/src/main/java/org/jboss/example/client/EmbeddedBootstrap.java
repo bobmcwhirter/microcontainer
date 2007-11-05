@@ -23,7 +23,8 @@ public class EmbeddedBootstrap extends BasicBootstrap {
 		try {
 			// Workaround the fact that the BasicXMLDeployer does not handle redeployment correctly
 			if (deployer.getDeploymentNames().contains(url.toString())) {
-				throw new IllegalArgumentException("Already installed " + url.toString());
+				System.out.println("Service is already deployed.");
+				return;
 			}
 			deployer.deploy(url);
 		} catch (Throwable t) {
@@ -32,6 +33,10 @@ public class EmbeddedBootstrap extends BasicBootstrap {
 	}
 
 	public void undeploy(URL url) {
+		if (!deployer.getDeploymentNames().contains(url.toString())) {
+			System.out.println("Service is already undeployed.");
+			return;
+		}
 		try {
 			deployer.undeploy(url);
 		} catch (Throwable t) {

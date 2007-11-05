@@ -6,19 +6,15 @@ import junit.textui.TestRunner;
 
 public class ClientTestSuite extends TestSuite
 {
-
-   public static void main(String[] args)
-   {
+   public static void main(String[] args) {
       TestRunner.run(suite());
    }
 
-   public static Test suite()
-   {
-      TestSuite suite = new TestSuite("CmdLineClient Tests");
+   public static Test suite() {
+      TestSuite suite = new TestSuite("Client Tests");
 
-      suite.addTest(ClientTestCase.suite());
+      suite.addTestSuite(ClientTestCase.class);
 
       return suite;
    }
-
 }

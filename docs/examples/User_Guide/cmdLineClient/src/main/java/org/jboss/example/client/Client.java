@@ -19,30 +19,30 @@ import org.jboss.kernel.spi.registry.KernelRegistry;
 
 public class Client {
     
-	protected boolean useBus = false;
-		
+	private boolean useBus = false;
+	private URL url;
+	private UserInterface userInterface;
+	private HRManager manager;
+	
 	private EmbeddedBootstrap bootstrap;
 	private Kernel kernel;
 	private KernelRegistry registry;
 	private KernelBus bus;
-
-	private URL url;
-	private HRManager manager;
 
 	private final static String HRSERVICE = "HRService";
 	private final static String EMPLOYEE = "org.jboss.example.service.Employee";
 
 	public static void main(String[] args) throws Exception {
 		if ((args.length == 1 && !args[0].equals("bus")) || args.length > 1) {
-			System.out.println("Usage: java -jar cmdLineClient-1.0.0.jar [bus]");
+			System.out.println("Usage: java -jar client-1.0.0.jar [bus]");
 			System.exit(1);
 		}
 
-		new Client(args.length == 1);
+		Client client = new Client(args.length == 1);
+		client.setUserInterface(new ConsoleInput(client));
     }
 
 	public Client(final boolean useBus) throws Exception {
-		
 		this.useBus = useBus;
 		
 		ClassLoader cl = Thread.currentThread().getContextClassLoader();
@@ -51,20 +51,28 @@ public class Client {
 		// Start JBoss Microcontainer
 		bootstrap = new EmbeddedBootstrap();
 		bootstrap.run();
+		
 		kernel = bootstrap.getKernel();
 		registry = kernel.getRegistry();
-		bus = kernel.getBus();
-		
-		new ConsoleInput(this, bootstrap, useBus, url);		
+		bus = kernel.getBus();		
  	}
 	
-	void cacheServiceRef() {
+	public void setUserInterface(UserInterface userInterface) {
+		this.userInterface = userInterface;
+	}
+	
+	void deploy() {
+		bootstrap.deploy(url);
 		if (manager == null) {
 			KernelControllerContext context = (KernelControllerContext) registry.getEntry(HRSERVICE);
 			if (context != null) { manager = (HRManager) context.getTarget(); }
 		}
 	}
-
+	
+	void undeploy() {
+		bootstrap.undeploy(url);
+	}
+	
 	private Object invoke(String serviceName, String methodName, Object[] args, String[] types) {
 		Object result = null;
 		try {
@@ -75,34 +83,29 @@ public class Client {
 		return result;
 	}
 	
-	void addEmployee() throws ParseException, NumberFormatException, IllegalArgumentException, IOException {
-		Employee newEmployee = ConsoleInput.getEmployee();		
-		Address address = ConsoleInput.getAddress();
-		Date dateOfBirth = ConsoleInput.getDateOfBirth();
-		
+	boolean addEmployee() throws ParseException, NumberFormatException, IllegalArgumentException, IOException {
+		Employee newEmployee = userInterface.getEmployee();		
+		Address address = userInterface.getAddress();
+		Date dateOfBirth = userInterface.getDateOfBirth();		
 		newEmployee.setAddress(address);
 		newEmployee.setDateOfBirth(dateOfBirth);
 		
-		boolean added;	
 		if (useBus)
-			added = (Boolean) invoke(HRSERVICE, "addEmployee", new Object[] {newEmployee}, new String[] {EMPLOYEE});
+			return (Boolean) invoke(HRSERVICE, "addEmployee", new Object[] {newEmployee}, new String[] {EMPLOYEE});
 		else
-			added = manager.addEmployee(newEmployee);			
-		System.out.println("Added employee: " + added);
+			return manager.addEmployee(newEmployee);			
 	}
 	
 	@SuppressWarnings("unchecked")
-	void listEmployees() {			
-		Set<Employee> employees;
+	Set<Employee> listEmployees() {			
 		if (useBus)
-			employees = (Set<Employee>) invoke(HRSERVICE, "getEmployees", new Object[] {}, new String[] {});
+			return (Set<Employee>) invoke(HRSERVICE, "getEmployees", new Object[] {}, new String[] {});
 		else
-			employees = manager.getEmployees();
-		System.out.println("Employees: " + employees);					
+			return manager.getEmployees();
 	}
 	
 	void removeEmployee() throws IllegalArgumentException, IOException {			
-		Employee employee = ConsoleInput.getEmployee();
+		Employee employee = userInterface.getEmployee();
 		
 		if (useBus)
 			invoke(HRSERVICE, "removeEmployee", new Object[] {employee}, new String[] {EMPLOYEE});
@@ -110,20 +113,18 @@ public class Client {
 			manager.removeEmployee(employee);
 	}
 	
-	void getSalary() throws IllegalArgumentException, IOException {
-		Employee employee = ConsoleInput.getEmployee();
+	Integer getSalary() throws IllegalArgumentException, IOException {
+		Employee employee = userInterface.getEmployee();
 
-		Integer salary = null;
 		if (useBus)
-			salary = (Integer) invoke(HRSERVICE, "getSalary", new Object[] {employee}, new String[] {EMPLOYEE});
+			return(Integer) invoke(HRSERVICE, "getSalary", new Object[] {employee}, new String[] {EMPLOYEE});
 		else
-			salary = manager.getSalary(employee);
-		System.out.println("Salary: " + salary);			
+			return manager.getSalary(employee);
 	}
 	
 	void setSalary() throws NumberFormatException, IllegalArgumentException, IOException {
-		Employee employee = ConsoleInput.getEmployee();	
-		Integer salary = ConsoleInput.getSalary();		
+		Employee employee = userInterface.getEmployee();	
+		Integer salary = userInterface.getSalary();		
 		
 		Employee actualEmployee;
 		if (useBus) {
@@ -135,7 +136,7 @@ public class Client {
 		}			
 	}
 	
-	void toggleHiringFreeze() {
+	boolean toggleHiringFreeze() {
 		boolean hiringFreeze;
 		if (useBus) {
 			hiringFreeze = (Boolean) invoke(HRSERVICE, "isHiringFreeze", new Object[] {}, new String[] {});	
@@ -143,42 +144,39 @@ public class Client {
 		} else {
 			hiringFreeze = manager.isHiringFreeze();
 			manager.setHiringFreeze(!hiringFreeze);
-		}		
+		}
+		return !hiringFreeze;
 	}
 	
 	@SuppressWarnings("unchecked")
-	void printStatus() {
+	String printStatus() {
 		boolean hiringFreeze;
 		int totalEmployees;
 		SalaryStrategy salaryStrategy;
 		
 		if (useBus) {
-			try {
-				hiringFreeze = (Boolean) invoke(HRSERVICE, "isHiringFreeze", new Object[] {}, new String[] {});
-				Set<Employee> employees = (Set<Employee>) invoke(HRSERVICE, "getEmployees", new Object[] {}, new String[] {});
-				totalEmployees = employees.size();				
-				salaryStrategy = (SalaryStrategy) invoke(HRSERVICE, "getSalaryStrategy", new Object[] {}, new String[] {});
-			} catch (Exception e) {
-				System.out.println("HRService is not deployed.");
-				return;
-			}
+			hiringFreeze = (Boolean) invoke(HRSERVICE, "isHiringFreeze", new Object[] {}, new String[] {});
+			Set<Employee> employees = (Set<Employee>) invoke(HRSERVICE, "getEmployees", new Object[] {}, new String[] {});
+			totalEmployees = employees.size();				
+			salaryStrategy = (SalaryStrategy) invoke(HRSERVICE, "getSalaryStrategy", new Object[] {}, new String[] {});
 		} else {
 			hiringFreeze = manager.isHiringFreeze();
 			totalEmployees = manager.getEmployees().size();
 			salaryStrategy = manager.getSalaryStrategy();		
 		}	
 		
-		System.out.println("Total number of employees: " + totalEmployees);
-		System.out.println("Hiring Freeze: " + hiringFreeze);
-		String strategy = "";
+		String strategy = "Unknown";
 		if (salaryStrategy == null) { strategy = "None"; }
 		else if (salaryStrategy instanceof AgeBasedSalaryStrategy ) { strategy = "AgeBased"; }
 		else if (salaryStrategy instanceof LocationBasedSalaryStrategy ) { strategy = "LocationBased"; }
 		
-		System.out.print("Salary Strategy: " + strategy);
+		StringBuffer buffer = new StringBuffer();
+		buffer.append("Total number of employees: " + totalEmployees);
+		buffer.append("\nHiring Freeze: " + hiringFreeze);	
+		buffer.append("\nSalary Strategy: " + strategy);
 		if (salaryStrategy != null) {
-			System.out.print(" - MinSalary: " + salaryStrategy.getMinSalary() + " MaxSalary: " + salaryStrategy.getMaxSalary());
+			buffer.append(" - MinSalary: " + salaryStrategy.getMinSalary() + " MaxSalary: " + salaryStrategy.getMaxSalary());
 		}
-		System.out.println();
+		return buffer.toString();
 	}
 }
