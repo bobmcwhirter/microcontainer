@@ -1,0 +1,18 @@
+<?xml version="1.0" encoding="UTF-8"?>
+ 
+<deployment xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+            xsi:schemaLocation="urn:jboss:bean-deployer:2.0 bean-deployer_2_0.xsd"
+            xmlns="urn:jboss:bean-deployer:2.0">
+   
+   <bean name="AspectManager" class="org.jboss.aop.AspectManager">
+     <constructor factoryClass="org.jboss.aop.AspectManager" factoryMethod="instance"/>
+   </bean>
+   
+   <aop:aspect xmlns:aop="urn:jboss:aop-beans:1.0"
+               name="AuditAspect" class="org.jboss.example.aspect.AuditAspect"
+               method="audit" pointcut="execution(public * org.jboss.example.service.HRManager->*(..))"/>
+     
+   <bean name="HRService" class="org.jboss.example.service.HRManager"/>
+   
+</deployment>
+

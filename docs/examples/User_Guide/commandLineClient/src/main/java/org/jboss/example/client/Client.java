@@ -46,7 +46,7 @@ public class Client {
 		this.useBus = useBus;
 		
 		ClassLoader cl = Thread.currentThread().getContextClassLoader();
-		url = cl.getResource("META-INF/jboss-beans.xml");
+		url = cl.getResource("service-beans.xml");
 	
 		// Start JBoss Microcontainer
 		bootstrap = new EmbeddedBootstrap();

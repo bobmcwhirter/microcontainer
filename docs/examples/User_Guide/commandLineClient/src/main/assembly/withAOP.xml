@@ -1,5 +1,5 @@
 <assembly>
-  <id>dist</id>
+  <id>withAOP</id>
   <formats>
     <format>dir</format>
   </formats>
@@ -15,7 +15,7 @@
   </fileSets>
   <files>
     <file>
-      <source>src/main/config/withoutAOP-beans.xml</source>
+      <source>src/main/config/withAOP-beans.xml</source>
       <outputDirectory/>
       <destName>service-beans.xml</destName>
     </file>
@@ -28,9 +28,6 @@
       <scope>runtime</scope>
        <excludes>
         <exclude>org.jboss.microcontainer.examples:humanResourcesService</exclude>
-        <exclude>org.jboss:javassist</exclude>
-        <exclude>org.jboss.aop:jboss-aop</exclude>
-        <exclude>org.jboss.microcontainer:jboss-aop-mc-int</exclude>
         <exclude>org.jboss.microcontainer.examples:auditAspect</exclude>
       </excludes>
     </dependencySet>
@@ -40,6 +37,7 @@
       <scope>runtime</scope>
       <includes>
         <include>org.jboss.microcontainer.examples:humanResourcesService</include>
+        <include>org.jboss.microcontainer.examples:auditAspect</include>
       </includes>
     </dependencySet>
   </dependencySets>
