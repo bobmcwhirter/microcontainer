@@ -4,6 +4,19 @@
             xsi:schemaLocation="urn:jboss:bean-deployer:2.0 bean-deployer_2_0.xsd"
             xmlns="urn:jboss:bean-deployer:2.0">
 
-   <bean name="HRService" class="org.jboss.example.service.HRManager"/>
+   <bean name="HRService" class="org.jboss.example.service.HRManager">
+     <!-- <property name="hiringFreeze">true</property>    
+     <property name="salaryStrategy"><inject bean="AgeBasedSalary"/></property> -->
+   </bean>
       
+   <!-- <bean name="AgeBasedSalary" class="org.jboss.example.service.util.AgeBasedSalaryStrategy">
+     <property name="minSalary">1000</property>
+     <property name="maxSalary">80000</property>
+   </bean>
+   
+   <bean name="LocationBasedSalary" class="org.jboss.example.service.util.LocationBasedSalaryStrategy">
+     <property name="minSalary">2000</property>
+     <property name="maxSalary">90000</property>
+   </bean> -->
+         
 </deployment>

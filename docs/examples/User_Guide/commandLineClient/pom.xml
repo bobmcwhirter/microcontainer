@@ -65,7 +65,7 @@
         <artifactId>maven-assembly-plugin</artifactId>
         <configuration>
           <descriptors>
-            <descriptor>src/main/assembly/dist.xml</descriptor>
+            <descriptor>src/main/assembly/withoutAOP.xml</descriptor>
             <descriptor>src/main/assembly/withAOP.xml</descriptor>
           </descriptors>
         </configuration>

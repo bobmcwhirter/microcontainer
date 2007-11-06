@@ -1,5 +1,5 @@
 <assembly>
-  <id>dist</id>
+  <id>withoutAOP</id>
   <formats>
     <format>dir</format>
   </formats>
