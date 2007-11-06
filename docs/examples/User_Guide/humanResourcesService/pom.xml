@@ -9,6 +9,20 @@
   <name>Human Resources Service</name>
   <description>A simple service created using a POJO.</description>
 
+  <dependencies>
+    <dependency>
+      <groupId>org.jboss.microcontainer</groupId>
+      <artifactId>jboss-kernel</artifactId>
+      <version>2.0.0-SNAPSHOT</version>
+      <scope>test</scope>      
+    </dependency>
+    <dependency>
+      <groupId>junit</groupId>
+      <artifactId>junit</artifactId>
+      <version>3.8.1</version>
+      <scope>test</scope>
+    </dependency>
+  </dependencies>
 
   <build>
     <resources>
@@ -33,20 +47,5 @@
       </plugin>
     </plugins>
   </build>
-     
-  <dependencies>
-    <dependency>
-      <groupId>org.jboss.microcontainer</groupId>
-      <artifactId>jboss-kernel</artifactId>
-      <version>2.0.0-SNAPSHOT</version>
-      <scope>test</scope>      
-    </dependency>
-    <dependency>
-      <groupId>junit</groupId>
-      <artifactId>junit</artifactId>
-      <version>3.8.1</version>
-      <scope>test</scope>
-    </dependency>
-  </dependencies>
 
 </project>
