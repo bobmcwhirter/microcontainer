@@ -10,7 +10,8 @@
    
    <aop:aspect xmlns:aop="urn:jboss:aop-beans:1.0"
                name="AuditAspect" class="org.jboss.example.aspect.AuditAspect"
-               method="audit" pointcut="execution(public * org.jboss.example.service.HRManager->*(..))"/>
+               method="audit" pointcut="execution(public * org.jboss.example.service.HRManager->*(..))">
+   </aop:aspect>
      
    <bean name="HRService" class="org.jboss.example.service.HRManager">
      <!-- <property name="hiringFreeze">true</property>    

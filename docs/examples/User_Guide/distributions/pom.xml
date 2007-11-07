@@ -1,0 +1,33 @@
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+  xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
+
+  <modelVersion>4.0.0</modelVersion>
+  <groupId>org.jboss.microcontainer.examples</groupId>
+  <artifactId>distributions</artifactId>
+  <packaging>pom</packaging>
+  <version>1.0.0</version>
+  <name>Distributions</name>
+  <description>Common dependencies for the getting started distributions.</description>
+
+  <dependencies>
+    <dependency>
+      <groupId>org.jboss.microcontainer</groupId>
+      <artifactId>jboss-kernel</artifactId>
+      <version>2.0.0-SNAPSHOT</version>
+      <scope>runtime</scope>      
+    </dependency>
+    <dependency>
+      <groupId>org.jboss.microcontainer.examples</groupId>
+      <artifactId>humanResourcesService</artifactId>
+      <version>1.0.0</version>
+      <scope>runtime</scope>
+    </dependency>
+    <dependency>
+      <groupId>org.jboss.microcontainer.examples</groupId>
+      <artifactId>client</artifactId>
+      <version>1.0.0</version>
+      <scope>runtime</scope>
+    </dependency>
+  </dependencies>
+
+</project>
