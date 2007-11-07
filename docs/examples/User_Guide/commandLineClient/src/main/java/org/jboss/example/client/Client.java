@@ -6,6 +6,7 @@ import java.text.ParseException;
 import java.util.Date;
 import java.util.Set;
 
+import org.jboss.dependency.spi.ControllerContext;
 import org.jboss.example.service.Address;
 import org.jboss.example.service.Employee;
 import org.jboss.example.service.HRManager;
@@ -13,6 +14,7 @@ import org.jboss.example.service.util.AgeBasedSalaryStrategy;
 import org.jboss.example.service.util.LocationBasedSalaryStrategy;
 import org.jboss.example.service.util.SalaryStrategy;
 import org.jboss.kernel.Kernel;
+import org.jboss.kernel.spi.dependency.KernelController;
 import org.jboss.kernel.spi.dependency.KernelControllerContext;
 import org.jboss.kernel.spi.registry.KernelBus;
 import org.jboss.kernel.spi.registry.KernelRegistry;
@@ -26,7 +28,7 @@ public class Client {
 	
 	private EmbeddedBootstrap bootstrap;
 	private Kernel kernel;
-	private KernelRegistry registry;
+	private KernelController controller;
 	private KernelBus bus;
 
 	private final static String HRSERVICE = "HRService";
@@ -53,7 +55,7 @@ public class Client {
 		bootstrap.run();
 		
 		kernel = bootstrap.getKernel();
-		registry = kernel.getRegistry();
+		controller = kernel.getController();
 		bus = kernel.getBus();		
  	}
 	
@@ -64,7 +66,7 @@ public class Client {
 	void deploy() {
 		bootstrap.deploy(url);
 		if (manager == null) {
-			KernelControllerContext context = (KernelControllerContext) registry.getEntry(HRSERVICE);
+			ControllerContext context = controller.getInstalledContext(HRSERVICE);
 			if (context != null) { manager = (HRManager) context.getTarget(); }
 		}
 	}
