@@ -21,10 +21,10 @@
 */
 package org.jboss.deployers.vfs.spi.deployer;
 
-import java.io.InputStream;
 import java.util.jar.Manifest;
 
 import org.jboss.deployers.vfs.spi.structure.VFSDeploymentUnit;
+import org.jboss.virtual.VFSUtils;
 import org.jboss.virtual.VirtualFile;
 
 /**
@@ -60,23 +60,7 @@ public abstract class ManifestDeployer<T extends ManifestMetaData> extends Abstr
    @Override
    protected T parse(VFSDeploymentUnit unit, VirtualFile file, T root) throws Exception
    {
-      // todo JBMICROCONT-183 - update once we have new vfs snapshot
-      InputStream is = SecurityActions.openStream(file);
-      Manifest manifest;
-      try
-      {
-         manifest = new Manifest(is);
-      }
-      finally
-      {
-         try
-         {
-            is.close();
-         }
-         catch (Exception ignored)
-         {
-         }
-      }
+      Manifest manifest = VFSUtils.readManifest(file);
       return createMetaData(manifest);
    }
 }
