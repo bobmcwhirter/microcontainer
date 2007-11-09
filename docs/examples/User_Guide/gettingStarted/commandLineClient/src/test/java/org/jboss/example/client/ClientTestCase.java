@@ -2,6 +2,12 @@ package org.jboss.example.client;
 
 import junit.framework.TestCase;
 
+/**
+ * Use a mock User Interface to pass values into the client
+ * and check that the Human Resources service is called correctly.
+ * 
+ * @author <a href="mailto:mark.newton@jboss.org">Mark Newton</a>
+ */
 public class ClientTestCase extends TestCase
 {	
     public ClientTestCase(String name) {

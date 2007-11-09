@@ -15,10 +15,15 @@ import org.jboss.example.service.util.LocationBasedSalaryStrategy;
 import org.jboss.example.service.util.SalaryStrategy;
 import org.jboss.kernel.Kernel;
 import org.jboss.kernel.spi.dependency.KernelController;
-import org.jboss.kernel.spi.dependency.KernelControllerContext;
 import org.jboss.kernel.spi.registry.KernelBus;
-import org.jboss.kernel.spi.registry.KernelRegistry;
 
+/**
+ * A simple client that starts JBoss Microcontainer and then  
+ * uses the command line as a User Interface to pass requests
+ * to the Human Resources service either directly or via the bus.
+ * 
+ * @author <a href="mailto:mark.newton@jboss.org">Mark Newton</a>
+ */
 public class Client {
     
 	private boolean useBus = false;

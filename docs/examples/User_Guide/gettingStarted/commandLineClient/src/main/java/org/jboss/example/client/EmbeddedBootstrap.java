@@ -5,6 +5,12 @@ import java.net.URL;
 import org.jboss.kernel.plugins.bootstrap.basic.BasicBootstrap;
 import org.jboss.kernel.plugins.deployment.xml.BasicXMLDeployer;
 
+/**
+ * Add a BasicXMLDeployer to the BasicBootstrap so that we can parse
+ * XML descriptors for the beans (*-beans.xml).
+ * 
+ * @author <a href="mailto:mark.newton@jboss.org">Mark Newton</a>
+ */
 public class EmbeddedBootstrap extends BasicBootstrap {
 	
 	protected BasicXMLDeployer deployer;

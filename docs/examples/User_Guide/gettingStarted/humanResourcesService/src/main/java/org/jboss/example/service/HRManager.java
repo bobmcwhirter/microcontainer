@@ -9,6 +9,8 @@ import org.jboss.example.service.util.SalaryStrategy;
 /**
  * An HRManager (Human Resource Manager) keeps track
  * of a set of employees and their associated salaries.
+ * 
+ * @author <a href="mailto:mark.newton@jboss.org">Mark Newton</a>
  */
 public class HRManager {
     
@@ -57,13 +59,11 @@ public class HRManager {
 	}
 	
 	public void setSalary(Employee employee, Integer salary) {
-		
 		if (employee == null || !employees.containsKey(employee)) {
 			return;
 		}
 		
 		int adjustedSalary = salary;
-		
 		if (salaryStrategy != null) {
 			adjustedSalary = salaryStrategy.checkSalary(employee, salary);
 		}

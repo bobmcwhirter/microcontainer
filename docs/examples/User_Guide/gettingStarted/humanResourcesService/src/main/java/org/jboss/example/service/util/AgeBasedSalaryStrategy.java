@@ -6,6 +6,8 @@ import org.jboss.example.service.Employee;
 
 /**
  * Check that the salary is relative to the employee's age in years.
+ * 
+ * @author <a href="mailto:mark.newton@jboss.org">Mark Newton</a>
  */
 public class AgeBasedSalaryStrategy implements SalaryStrategy {
 

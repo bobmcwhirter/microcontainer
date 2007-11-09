@@ -10,6 +10,12 @@ import java.util.Date;
 import org.jboss.example.service.Address;
 import org.jboss.example.service.Employee;
 
+/**
+ * A simple Text User Interface (TUI) so a user can access
+ * the Human Resources service from the command line.
+ * 
+ * @author <a href="mailto:mark.newton@jboss.org">Mark Newton</a>
+ */
 public class ConsoleInput implements UserInterface {
 	
 	private static BufferedReader in = new BufferedReader(new InputStreamReader(System.in));

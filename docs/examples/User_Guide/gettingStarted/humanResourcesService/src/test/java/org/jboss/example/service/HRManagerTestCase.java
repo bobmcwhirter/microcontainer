@@ -2,6 +2,12 @@ package org.jboss.example.service;
 
 import org.jboss.example.service.HRManager;
 
+/**
+ * Check that the HRManager behaves as expected when no
+ * salary strategy is used.
+ * 
+ * @author <a href="mailto:mark.newton@jboss.org">Mark Newton</a>
+ */
 public class HRManagerTestCase extends HRManagerTest
 {	
     public HRManagerTestCase(String name) {

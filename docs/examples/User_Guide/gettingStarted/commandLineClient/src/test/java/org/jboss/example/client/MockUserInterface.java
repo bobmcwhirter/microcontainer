@@ -8,6 +8,11 @@ import java.util.Date;
 import org.jboss.example.service.Address;
 import org.jboss.example.service.Employee;
 
+/**
+ * A mock user interface to simulate values being passed in by a user.
+ * 
+ * @author <a href="mailto:mark.newton@jboss.org">Mark Newton</a>
+ */
 public class MockUserInterface implements UserInterface {
 
 	public Address getAddress() throws IOException {

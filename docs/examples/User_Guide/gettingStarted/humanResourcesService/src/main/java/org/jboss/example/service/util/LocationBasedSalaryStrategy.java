@@ -4,6 +4,8 @@ import org.jboss.example.service.Employee;
 
 /**
  * Check that the salary is relative to the employee's location.
+ * 
+ * @author <a href="mailto:mark.newton@jboss.org">Mark Newton</a>
  */
 public class LocationBasedSalaryStrategy implements SalaryStrategy {
 

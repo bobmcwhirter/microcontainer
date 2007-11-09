@@ -3,6 +3,11 @@ package org.jboss.example.service;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 
+/**
+ * A basic employee.
+ * 
+ * @author <a href="mailto:mark.newton@jboss.org">Mark Newton</a>
+ */
 public class Employee {
 
 	private String firstName;

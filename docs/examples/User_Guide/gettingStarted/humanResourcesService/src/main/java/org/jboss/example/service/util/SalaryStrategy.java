@@ -3,7 +3,9 @@ package org.jboss.example.service.util;
 import org.jboss.example.service.Employee;
 
 /**
- * Apply some rules to calculate an employee's minimum and maximum salary. 
+ * Apply some rules to calculate an employee's minimum and maximum salary.
+ * 
+ * @author <a href="mailto:mark.newton@jboss.org">Mark Newton</a>
  */
 public interface SalaryStrategy {
 

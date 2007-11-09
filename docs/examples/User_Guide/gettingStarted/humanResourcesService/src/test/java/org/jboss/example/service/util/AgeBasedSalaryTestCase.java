@@ -3,6 +3,11 @@ package org.jboss.example.service.util;
 import org.jboss.example.service.HRManagerTest;
 import org.jboss.example.service.util.SalaryStrategy;
 
+/**
+ * Check the behaviour of the AgeBasedSalaryStrategy.
+ * 
+ * @author <a href="mailto:mark.newton@jboss.org">Mark Newton</a>
+ */
 public class AgeBasedSalaryTestCase extends HRManagerTest
 {
 	public AgeBasedSalaryTestCase(String name) {

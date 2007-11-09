@@ -4,6 +4,11 @@ import java.util.Calendar;
 
 import org.jboss.test.kernel.junit.MicrocontainerTest;
 
+/**
+ * Setup a number of test employees for the various tests.
+ * 
+ * @author <a href="mailto:mark.newton@jboss.org">Mark Newton</a>
+ */
 public abstract class HRManagerTest extends MicrocontainerTest
 {
 	protected Employee bob, rebecca, karen, joe;

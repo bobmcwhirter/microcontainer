@@ -1,5 +1,10 @@
 package org.jboss.example.service;
 
+/**
+ * A basic address.
+ * 
+ * @author <a href="mailto:mark.newton@jboss.org">Mark Newton</a>
+ */
 public class Address {
 
 	private int number;

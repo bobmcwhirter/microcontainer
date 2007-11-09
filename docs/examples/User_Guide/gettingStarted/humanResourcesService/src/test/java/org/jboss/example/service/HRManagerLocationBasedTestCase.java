@@ -2,6 +2,12 @@ package org.jboss.example.service;
 
 import org.jboss.example.service.HRManager;
 
+/**
+ * Check that the LocationBasedSalaryStrategy behaves as expected
+ * when used by the HRManager.
+ * 
+ * @author <a href="mailto:mark.newton@jboss.org">Mark Newton</a>
+ */
 public class HRManagerLocationBasedTestCase extends HRManagerTest
 {	
     public HRManagerLocationBasedTestCase(String name) {
