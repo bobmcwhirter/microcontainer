@@ -15,17 +15,4 @@
   <name>Client Distribution</name>
   <description>A simple command line client that uses the Human Resources Service.</description>
 
-  <build>
-    <plugins>
-      <plugin>
-        <artifactId>maven-assembly-plugin</artifactId>
-        <configuration>
-          <descriptors>
-            <descriptor>src/main/assembly/dist.xml</descriptor>
-          </descriptors>
-        </configuration>
-      </plugin> 
-    </plugins>
-  </build>
-
 </project>

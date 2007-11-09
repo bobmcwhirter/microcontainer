@@ -9,7 +9,7 @@
       <source>src/main/config/service-beans.xml</source>
     </file>
     <file>
-      <source>src/main/config/run.sh</source>
+      <source>../run.sh</source>
       <fileMode>0744</fileMode>
     </file>
   </files>
