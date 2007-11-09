@@ -58,6 +58,10 @@ public class HRManager {
 	
 	public void setSalary(Employee employee, Integer salary) {
 		
+		if (employee == null || !employees.containsKey(employee)) {
+			return;
+		}
+		
 		int adjustedSalary = salary;
 		
 		if (salaryStrategy != null) {
