@@ -1,0 +1,25 @@
+<assembly>
+  <id>aop</id>
+  <formats>
+    <format>dir</format>
+  </formats>
+  <includeBaseDirectory>false</includeBaseDirectory>
+  <files>
+    <file>
+      <source>src/main/config/aop-beans.xml</source>
+      <destName>service-beans.xml</destName>
+    </file>
+  </files>
+  <dependencySets>
+    <dependencySet>
+      <outputDirectory>/lib</outputDirectory>
+      <unpack>false</unpack>
+      <excludes>
+        <exclude>junit:junit</exclude>
+      </excludes>
+    </dependencySet>
+  </dependencySets>
+  <componentDescriptors>
+    <componentDescriptor>src/main/assembly/common.xml</componentDescriptor>
+  </componentDescriptors>
+</assembly>

@@ -21,8 +21,21 @@
       <artifactId>jboss-kernel</artifactId>
     </dependency>
     <dependency>
+      <groupId>org.jboss.aop</groupId>
+      <artifactId>jboss-aop</artifactId>
+    </dependency>
+    <dependency>
+      <groupId>org.jboss.microcontainer</groupId>
+      <artifactId>jboss-aop-mc-int</artifactId>
+    </dependency>
+    <dependency>
       <groupId>org.jboss.microcontainer.examples</groupId>
       <artifactId>humanResourcesService</artifactId>
+      <version>1.0.0</version>
+    </dependency>
+    <dependency>
+      <groupId>org.jboss.microcontainer.examples</groupId>
+      <artifactId>auditAspect</artifactId>
       <version>1.0.0</version>
     </dependency>
     <dependency>
@@ -41,6 +54,25 @@
             <addMavenDescriptor>false</addMavenDescriptor>
           </archive>
         </configuration>
+      </plugin>
+      <plugin>
+        <artifactId>maven-assembly-plugin</artifactId>
+        <configuration>
+          <descriptors>
+            <descriptor>src/main/assembly/pojo.xml</descriptor>
+            <descriptor>src/main/assembly/aop.xml</descriptor>
+            <descriptor>src/main/assembly/classloader.xml</descriptor>
+          </descriptors>
+          <finalName>${pom.artifactId}</finalName>
+        </configuration>
+        <executions>
+          <execution>
+            <phase>package</phase>
+            <goals>
+              <goal>attached</goal>
+            </goals>
+          </execution>
+        </executions>
       </plugin>
     </plugins>
   </build>

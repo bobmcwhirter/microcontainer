@@ -1,0 +1,27 @@
+<component>
+  <fileSets>
+    <fileSet>
+      <directory>target</directory>
+      <outputDirectory/>
+      <includes>
+        <include>*.jar</include>
+      </includes>
+    </fileSet>
+  </fileSets>
+  <files>
+    <file>
+      <source>src/main/config/run.sh</source>
+      <fileMode>0744</fileMode>
+    </file>
+  </files>
+ <!-- <dependencySets>
+    <dependencySet>
+      <outputDirectory>/lib</outputDirectory>
+      <unpack>false</unpack>
+      <scope>compile</scope>
+       <excludes>
+        <exclude>org.jboss.microcontainer.:jboss-profiler-jvmti</exclude>
+      </excludes>
+    </dependencySet>
+  </dependencySets>-->
+</component>
