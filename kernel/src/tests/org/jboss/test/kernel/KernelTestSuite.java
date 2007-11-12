@@ -31,6 +31,7 @@ import org.jboss.test.kernel.controller.test.ControllerTestSuite;
 import org.jboss.test.kernel.dependency.test.DependencyTestSuite;
 import org.jboss.test.kernel.deployment.test.DeploymentTestSuite;
 import org.jboss.test.kernel.deployment.xml.test.XMLTestSuite;
+import org.jboss.test.kernel.deployment.props.test.PropsTestSuite;
 import org.jboss.test.kernel.event.test.EventTestSuite;
 import org.jboss.test.kernel.registry.test.RegistryTestSuite;
 import org.jboss.test.kernel.inject.test.ContextualInjectionTestSuite;
@@ -67,6 +68,7 @@ public class KernelTestSuite extends TestSuite
       suite.addTest(MetaDataTestSuite.suite());
       suite.addTest(AnnotationsTestSuite.suite());
       suite.addTest(LazyTestSuite.suite());
+      suite.addTest(PropsTestSuite.suite());
 
       return suite;
    }
