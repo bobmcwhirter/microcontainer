@@ -75,4 +75,9 @@ public class AgeBasedSalaryStrategy implements SalaryStrategy {
 	public void setMaxSalary(int maxSalary) {
 		this.maxSalary = maxSalary;
 	}
+	
+	@Override
+	public String toString() {
+		return "AgeBased - MinSalary: " + minSalary + " MaxSalary: " + maxSalary;
+	}
 }

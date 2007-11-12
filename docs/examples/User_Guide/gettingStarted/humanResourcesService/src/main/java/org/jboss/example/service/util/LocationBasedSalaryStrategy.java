@@ -57,4 +57,9 @@ public class LocationBasedSalaryStrategy implements SalaryStrategy {
 	public void setMaxSalary(int maxSalary) {
 		this.maxSalary = maxSalary;
 	}
+	
+	@Override
+	public String toString() {
+		return "LocationBased - MinSalary: " + minSalary + " MaxSalary: " + maxSalary;
+	}
 }

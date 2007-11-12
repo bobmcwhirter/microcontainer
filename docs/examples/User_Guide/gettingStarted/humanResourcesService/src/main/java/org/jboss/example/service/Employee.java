@@ -84,7 +84,12 @@ public class Employee {
 		StringBuffer buffer = new StringBuffer();
 		
 		buffer.append("(" + firstName + " " + lastName + ", ");
-		buffer.append(address + " - " + formatter.format(dateOfBirth) + ")");
+		buffer.append(address + " - ");
+		if (dateOfBirth == null) {
+			buffer.append("Birth date unknown" + ")");
+		} else {
+			buffer.append(formatter.format(dateOfBirth) + ")");
+		}
 		
 		return buffer.toString();
 	}

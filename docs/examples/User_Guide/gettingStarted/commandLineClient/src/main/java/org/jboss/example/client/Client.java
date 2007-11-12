@@ -172,17 +172,14 @@ public class Client {
 			salaryStrategy = manager.getSalaryStrategy();		
 		}	
 		
-		String strategy = "Unknown";
-		if (salaryStrategy == null) { strategy = "None"; }
-		else if (salaryStrategy instanceof AgeBasedSalaryStrategy ) { strategy = "AgeBased"; }
-		else if (salaryStrategy instanceof LocationBasedSalaryStrategy ) { strategy = "LocationBased"; }
-		
 		StringBuffer buffer = new StringBuffer();
 		buffer.append("Total number of employees: " + totalEmployees);
 		buffer.append("\nHiring Freeze: " + hiringFreeze);	
-		buffer.append("\nSalary Strategy: " + strategy);
-		if (salaryStrategy != null) {
-			buffer.append(" - MinSalary: " + salaryStrategy.getMinSalary() + " MaxSalary: " + salaryStrategy.getMaxSalary());
+		buffer.append("\nSalary Strategy: ");
+		if (salaryStrategy == null) {
+			buffer.append("None");
+		} else {
+			buffer.append(salaryStrategy.toString());
 		}
 		return buffer.toString();
 	}
