@@ -14,14 +14,24 @@
       <fileMode>0744</fileMode>
     </file>
   </files>
- <!-- <dependencySets>
+  <dependencySets>
     <dependencySet>
       <outputDirectory>/lib</outputDirectory>
       <unpack>false</unpack>
-      <scope>compile</scope>
-       <excludes>
-        <exclude>org.jboss.microcontainer.:jboss-profiler-jvmti</exclude>
-      </excludes>
+      <scope>runtime</scope>
+       <!-- Need to explicity include dependencies here until optional dependencies are sorted out. -->
+       <includes>
+        <include>org.jboss.microcontainer:jboss-kernel</include>
+        <include>org.jboss.microcontainer:jboss-dependency</include>
+        <include>org.jboss.microcontainer:jboss-container</include>
+        <include>org.jboss:jboss-common-core</include>
+        <include>jboss:jboss-common-core</include>
+        <include>jboss:jboss-common-logging-spi</include>
+        <include>jboss:jboss-common-logging-log4j</include>
+        <include>log4j:log4j</include>
+        <include>org.jboss:jbossxb</include>
+        <include>apache-xerces:xercesImpl</include>
+      </includes>
     </dependencySet>
-  </dependencySets>-->
+  </dependencySets>
 </component>

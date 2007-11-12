@@ -12,16 +12,6 @@
   </files>
   <dependencySets>
     <dependencySet>
-      <outputDirectory>/lib</outputDirectory>
-      <unpack>false</unpack>
-      <scope>runtime</scope>
-       <excludes>
-        <exclude>org.jboss.microcontainer.examples:humanResourcesService</exclude>
-        <exclude>org.jboss.microcontainer:jboss-aop-mc-int</exclude>
-        <exclude>junit:junit</exclude>
-      </excludes>
-    </dependencySet>
-    <dependencySet>
       <outputDirectory>/otherLib</outputDirectory>
       <unpack>false</unpack>
       <scope>runtime</scope>

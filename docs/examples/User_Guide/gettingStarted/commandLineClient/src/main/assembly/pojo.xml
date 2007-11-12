@@ -15,11 +15,10 @@
       <outputDirectory>/lib</outputDirectory>
       <unpack>false</unpack>
       <scope>runtime</scope>
-       <excludes>
-        <exclude>org.jboss.microcontainer:jboss-aop-mc-int</exclude>
-        <exclude>junit:junit</exclude>
-      </excludes>
-    </dependencySet>
+       <includes>
+        <include>org.jboss.microcontainer.examples:humanResourcesService</include>
+       </includes>
+     </dependencySet>
   </dependencySets>
   <componentDescriptors>
     <componentDescriptor>src/main/assembly/common.xml</componentDescriptor>

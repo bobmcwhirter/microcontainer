@@ -13,15 +13,11 @@
    <bean name="customCL" class="java.net.URLClassLoader">
       <constructor>
          <parameter>
-            <array elementClass="java.net.URL">
-               <value><inject bean="URL"/></value>
+            <array>
+               <inject bean="URL"/>
             </array>
          </parameter>
       </constructor>
-
-      <install method="addURL">
-         <parameter><inject bean="URL"/></parameter>
-      </install>
    </bean>
 
    <bean name="HRService" class="org.jboss.example.service.HRManager">
