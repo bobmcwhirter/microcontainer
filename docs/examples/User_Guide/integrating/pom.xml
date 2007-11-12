@@ -9,6 +9,10 @@
   <name></name>
   <description></description>
 
+  <modules>
+    <module>mbeans</module>
+  </modules>
+
   <dependencyManagement>
   </dependencyManagement>
 
