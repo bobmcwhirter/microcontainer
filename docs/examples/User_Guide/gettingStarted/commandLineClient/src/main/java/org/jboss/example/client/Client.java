@@ -41,7 +41,7 @@ public class Client {
 
 	public static void main(String[] args) throws Exception {
 		if ((args.length == 1 && !args[0].equals("bus")) || args.length > 1) {
-			System.out.println("Usage: java -jar client-1.0.0.jar [bus]");
+			System.out.println("Usage: ./run.sh [bus]");
 			System.exit(1);
 		}
 
@@ -70,7 +70,7 @@ public class Client {
 	
 	void deploy() {
 		bootstrap.deploy(url);
-		if (manager == null) {
+		if (!useBus && manager == null) {
 			ControllerContext context = controller.getInstalledContext(HRSERVICE);
 			if (context != null) { manager = (HRManager) context.getTarget(); }
 		}

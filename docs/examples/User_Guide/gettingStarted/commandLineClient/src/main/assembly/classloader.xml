@@ -8,6 +8,7 @@
     <file>
       <source>src/main/config/classloader-beans.xml</source>
       <destName>jboss-beans.xml</destName>
+      <filtered>true</filtered>
     </file>
   </files>
   <dependencySets>

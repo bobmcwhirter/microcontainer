@@ -6,7 +6,7 @@
 
    <bean name="URL" class="java.net.URL"> 
       <constructor> 
-         <parameter>file:///Users/newtonm/jbossmc/microcontainer/trunk/docs/examples/User_Guide/gettingStarted/commandLineClient/target/client-cl.dir/otherLib/humanResourcesService-1.0.0.jar</parameter> 
+         <parameter>file:${project.build.directory}/client-cl.dir/otherLib/humanResourcesService-1.0.0.jar</parameter>
       </constructor> 
    </bean> 
 
