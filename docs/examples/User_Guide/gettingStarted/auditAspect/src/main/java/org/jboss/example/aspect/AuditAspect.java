@@ -3,6 +3,7 @@ package org.jboss.example.aspect;
 import java.io.BufferedWriter;
 import java.io.File;
 import java.io.FileWriter;
+import java.text.SimpleDateFormat;
 import java.util.Calendar;
 
 import org.jboss.aop.joinpoint.ConstructorInvocation;
@@ -30,7 +31,11 @@ public class AuditAspect {
 	}
 	
 	public Object audit(ConstructorInvocation inv) throws Throwable {
-		File auditLog = new File(logDir + "/" + createFilename());
+		SimpleDateFormat formatter = new SimpleDateFormat("ddMMyyyy-kkmmss");
+		Calendar now = Calendar.getInstance();
+		String filename = "auditLog-" + formatter.format(now.getTime());
+
+		File auditLog = new File(logDir + "/" + filename);
 		auditLog.createNewFile();
 		out = new BufferedWriter(new FileWriter(auditLog));
 		return inv.invokeNext();		
@@ -61,17 +66,5 @@ public class AuditAspect {
 			out.flush();
 		}
 		return retVal;
-	}
-	
-	private String createFilename() {
-		Calendar now = Calendar.getInstance();
-		String year = Integer.toString(now.get(Calendar.YEAR));
-		String month = Integer.toString(now.get(Calendar.MONTH));
-		String day = Integer.toString(now.get(Calendar.DAY_OF_MONTH));
-		String hour = Integer.toString(now.get(Calendar.HOUR_OF_DAY));
-		String min = Integer.toString(now.get(Calendar.MINUTE));
-		String sec = Integer.toString(now.get(Calendar.SECOND));
-		
-		return "auditLog-" + day + month + year + "-" + hour + min + sec;			
 	}
 }
