@@ -9,6 +9,8 @@
   <name></name>
   <description></description>
 
+  <!-- We need to build auditAspect before commandLineClient
+       as the client-aop assembly depends on it. -->
   <modules>
     <module>humanResourcesService</module>
     <module>auditAspect</module>
@@ -41,9 +43,6 @@
       </dependency>
     </dependencies>
   </dependencyManagement>
-
-  <dependencies>
-  </dependencies>
 
   <build>
     <plugins> 
