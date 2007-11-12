@@ -9,6 +9,12 @@
   <name></name>
   <description></description>
 
+  <modules>
+    <module>humanResourcesService</module>
+    <module>auditAspect</module>
+    <module>commandLineClient</module>
+  </modules>
+
   <dependencyManagement>
     <dependencies>
       <dependency>

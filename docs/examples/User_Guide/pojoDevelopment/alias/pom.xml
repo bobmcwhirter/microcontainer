@@ -15,4 +15,15 @@
   <name>Alias</name>
   <description></description>
 
+  <dependencies>
+    <dependency>
+      <groupId>org.jboss.microcontainer</groupId>
+      <artifactId>jboss-kernel</artifactId>
+      <scope>compile</scope>
+    </dependency>
+  </dependencies>
+
+  <properties>
+    <parent.relative.dir>..</parent.relative.dir>
+  </properties>
 </project>

@@ -23,4 +23,7 @@
     </dependency>
   </dependencies>
 
+  <properties>
+    <parent.relative.dir>..</parent.relative.dir>
+  </properties>
 </project>

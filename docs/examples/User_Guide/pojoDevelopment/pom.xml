@@ -9,6 +9,26 @@
   <name></name>
   <description></description>
 
+  <modules>
+    <module>simple</module>
+    <module>constructor</module>
+    <module>factory</module>
+    <module>properties</module>
+    <module>injection</module>
+    <module>collections</module>
+    <module>lifecycle</module>
+    <module>installation</module>
+    <module>classloader</module>
+    <module>annotations</module>
+    <module>alias</module>
+    <module>supply</module>
+    <module>demand</module>
+    <module>autowiring</module>
+    <module>javabeans</module>
+    <module>spring</module>
+    <module>locator</module>
+  </modules>
+
   <dependencyManagement>
     <dependencies>
       <dependency>
@@ -66,7 +86,7 @@
         <artifactId>maven-assembly-plugin</artifactId>
         <configuration>
           <descriptors>
-            <descriptor>../dist.xml</descriptor>
+            <descriptor>${parent.relative.dir}/dist.xml</descriptor>
           </descriptors>
           <finalName>${pom.artifactId}</finalName>
         </configuration>
@@ -82,4 +102,7 @@
     </plugins>
   </build>
 
+  <properties>
+    <parent.relative.dir>.</parent.relative.dir>
+  </properties>
 </project>

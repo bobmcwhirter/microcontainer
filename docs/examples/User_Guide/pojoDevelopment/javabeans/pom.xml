@@ -15,4 +15,7 @@
   <name>Javabeans</name>
   <description></description>
 
+  <properties>
+    <parent.relative.dir>..</parent.relative.dir>
+  </properties>
 </project>
