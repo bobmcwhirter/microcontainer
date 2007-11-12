@@ -99,7 +99,7 @@ public class PropertiesGraphFactory
    {
       graph = new Graph<String>();
       root = vertexFactory.rootVertex();
-      graph.addVertex(root);
+      graph.setRootVertex(root);
       for(String key : properties.keySet())
       {
          String value = properties.get(key);
