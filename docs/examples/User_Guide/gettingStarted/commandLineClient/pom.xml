@@ -69,7 +69,7 @@
           <execution>
             <phase>package</phase>
             <goals>
-              <goal>attached</goal>
+              <goal>directory-inline</goal>
             </goals>
           </execution>
         </executions>
