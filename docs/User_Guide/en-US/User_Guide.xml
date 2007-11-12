@@ -31,9 +31,9 @@
           <para>Java EE (Enterprise Edition) - Servers (typically running 3-tier applications)</para>
         </listitem>
       </itemizedlist>
-      <para>Each environment aims to provide a base level of functionality on top of which  developers can add their own code to create applications. For example Java SE provides networking and security libraries together with graphical user interface toolkits to facilitate the development of desktop   and simple client-server applications. Java EE takes this a stage further by adding a number of &apos;enterprise&apos;  services such as transactions, messaging, and persistence that allow much more robust and scalable &apos;enterprise&apos; applications to be developed.  These services are  typically combined together inside a JEE application server to provide a standard runtime environment for enterprise applications,  however it is often the case that we do not need to use them all.</para>
-      <para>Having unused services in your  environment is undesirable as  they can take  up valuable resources such as CPU and memory. They can also clutter up the environment with unecessary configuration files which complicates maintenance and causes confusion.   It would  therefore be good if there was a  controlled way to remove them without breaking any dependencies they might have. Similarly there are often occasions when  applications need services that aren&apos;t provided by  JEE  so  it would be good if there was a  controlled way to add them, again  making sure that any dependencies are first satisfied.</para>
-      <para>JBoss Microcontainer aims to provide  these capabilities by allowing services, created using Plain Old Java Objects (POJOs), to be deployed into a standard Java SE runtime environment in a controlled manner to create a customized environment  for your applications. Dependencies between services are fully managed by the microcontainer to ensure that new services cannot be deployed until services they depend on have first been deployed. Likewise undeploying a service causes all dependent services to first be undeployed to maintain the integrity of the system. </para>
+      <para>Each environment aims to provide a base level of functionality on top of which  developers can add their own code to create applications. For example Java SE provides networking and security libraries together with graphical user interface toolkits to facilitate the development of desktop   and simple client-server applications. Java EE takes this a stage further by adding a number of &apos;enterprise&apos;  services such as transactions, messaging, and persistence that allow much more robust and scalable &apos;enterprise&apos; applications to be developed.  These services are  typically combined together inside a JEE application server to provide a standard runtime environment for enterprise applications,  however it is often the case that they are not all used.</para>
+      <para>Having unused services in your  environment is undesirable as  they can take  up valuable resources such as CPU and memory. They can also clutter up the environment with unecessary configuration files,  complicating maintenance and   adding unecessary complexity.   It would   be better if there was a  controlled way to remove such services without breaking any dependencies they might have. Similarly there are often occasions when  applications need services that aren&apos;t provided by  JEE  so  it would be better if there was a  controlled way to add them, again  making sure that any dependencies were first satisfied.</para>
+      <para>JBoss Microcontainer aims to provide  these capabilities by allowing services, created using Plain Old Java Objects (POJOs), to be deployed into a standard Java SE runtime environment in a controlled manner to create a customized environment  for your applications. Dependencies between services are fully managed by the microcontainer to ensure that new services cannot be deployed until services they depend on have first been deployed. Likewise undeploying a service causes all dependent services to first be undeployed in order  to maintain the integrity of the system. </para>
       <para>Deploying services in this way, on top of a Java SE environment,   is exactly how we have created the latest version of JBoss Application Server  (JBoss AS 5.0)   which provides a standard Java EE environment. If you need additional services then you can simply deploy these on top of Java EE to provide the functionality you need. This even applies when using the microcontainer in different  Java EE environments such as Glassfish since you can plug in different classloading models  during the service deployment phase.</para>
       <para>Since  JBoss Microcontainer is very lightweight and deals with POJOs it can also be used to deploy services into a Java ME runtime environment. This opens us new possibilities for mobile applications that can now take advantage of  enterprise services without requiring a full JEE application server. </para>
       <para>In common with other lightweight containers JBoss Microcontainer uses  dependency injection to wire individual POJOs together to create services.  Configuration is performed using either XML or annotations depending on where the information is best located. Finally unit testing is made extremely simple thanks to a helper class that extends JUnit to setup the test environment, allowing you to access  POJOs and services from your test methods using just a few lines of code.</para>
@@ -87,7 +87,10 @@
       <para>Since robust implementations of Java EE services  are already available from  JBoss.org and other communities, it is common for companies to focus on creating more &apos;business-oriented&apos; services. For this reason we shall look at creating, configuring and testing a simple Human Resources service that can be used in a wide-variety of companies.</para>
       <section>
         <title>Creating POJOs</title>
-        <para/>
+        <para><code>public class MyClass {</code><code>next line</code><code>next line</code><programlisting>hghg
+ghgh
+ghg
+</programlisting></para>
       </section>
       <section>
         <title>Wiring POJOs together </title>
@@ -187,7 +190,7 @@
         <title>Java EE Deployers</title>
       </section>
       <section>
-        <title>Backwards compatibility with MBeans</title>
+        <title>MBean Compatibility</title>
       </section>
       <section>
         <title>Managing POJOs</title>
