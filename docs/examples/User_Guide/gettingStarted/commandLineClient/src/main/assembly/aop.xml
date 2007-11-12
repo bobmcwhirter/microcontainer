@@ -7,7 +7,7 @@
   <files>
     <file>
       <source>src/main/config/aop-beans.xml</source>
-      <destName>service-beans.xml</destName>
+      <destName>jboss-beans.xml</destName>
     </file>
   </files>
   <dependencySets>
