@@ -160,17 +160,100 @@
       <para>Since robust implementations of Java EE services  are already available from  JBoss.org and other communities, it is common for companies to focus on creating more &apos;business-oriented&apos; services. For this reason we shall look at creating, configuring and testing a simple Human Resources service that could potentially be used  in a wide-variety of companies.</para>
       <section>
         <title>Creating POJOs</title>
-        <para><code>public class MyClass {</code><code>next line</code><code>next line</code><programlisting>hghg
-ghgh
-ghg
-</programlisting></para>
+        <para>The example that relates to this section can be found in the <code>examples/User_Guide/gettingStarted/humanResourcesService</code> directory. The directory layout, as with all of the examples for this User Guide,  follows the <ulink url="http://maven.apache.org/guides/introduction/introduction-to-the-standard-directory-layout.html">Maven Standard Directory Layout</ulink>.</para>
+        <para><programlisting>humanResourcesService/pom.xml
+                     /src/main/java
+                         /test/java
+                         /test/resources</programlisting></para>
+        <para>Java source files are located in packages beneath the src/main/java directory:</para>
+        <para><programlisting>org/jboss/example/service/Address.java
+                         /Employee.java
+                         /HRManager.java
+
+org/jboss/example/service/util/SalaryStrategy.java
+                              /AgeBasedSalaryStrategy.java
+                              /LocationBasedSalaryStrategy.java</programlisting></para>
+        <para>As you can see from looking at the source code, each of these classes represents a simple POJO that doesn&apos;t implement any special interfaces. The most important class  is the HRManager as this represents the service entry point and therefore provides all of the public methods that clients will call.</para>
+        <para/>
+        <itemizedlist>
+          <listitem>
+            <para>addEmployee(Employee employee)</para>
+          </listitem>
+          <listitem>
+            <para>getEmployees()</para>
+          </listitem>
+          <listitem>
+            <para>getEmployee(String firstName, String lastName)</para>
+          </listitem>
+          <listitem>
+            <para>removeEmployee(Employee employee)</para>
+          </listitem>
+          <listitem>
+            <para>getSalary(Employee employee)</para>
+          </listitem>
+          <listitem>
+            <para>setSalary(Employee employee, Integer newSalary)</para>
+          </listitem>
+          <listitem>
+            <para>isHiringFreeze()</para>
+          </listitem>
+          <listitem>
+            <para>setHiringFreeze(boolean freeze)</para>
+          </listitem>
+          <listitem>
+            <para>getSalaryStrategy()</para>
+          </listitem>
+          <listitem>
+            <para>setSalaryStrategy(SalaryStrategy strategy)</para>
+          </listitem>
+        </itemizedlist>
+        <para>The Human Resources Service is therefore composed of the above 6 classes which work together to allow a list of employees, together with details of their addresses and salaries, to be maintained by an HR Manger. In addition it is possible to configure the service so that different salary strategies are followed by the manager. The use of such strategies places minimum and maximum limits on the salaries that can be awarded to employees depending on various rules.</para>
+        <para>To compile the source code you simply need to enter <code>mvn compile</code> from the <code>humanResourcesService/</code> directory. This will create a new directory  called <code>target/classes</code>  containing the compiled code. To clean up the humanResourcesService project and remove the <code>target</code> directory simply enter <code>mvn clean</code>. </para>
+        <para>Now that we  have compiled our POJO classes we  need to determine how to create instances of them. This is done by creating an XML deployment descriptor  that contains a list of beans representing individual instances. Each bean is given a name so that the instance can be looked up at runtime by clients.</para>
+        <programlisting>&lt;?xml version=&quot;1.0&quot; encoding=&quot;UTF-8&quot;?&gt;
+
+&lt;deployment xmlns:xsi=&quot;http://www.w3.org/2001/XMLSchema-instance&quot;
+            xsi:schemaLocation=&quot;urn:jboss:bean-deployer:2.0 bean-deployer_2_0.xsd&quot;
+            xmlns=&quot;urn:jboss:bean-deployer:2.0&quot;&gt;
+
+   &lt;bean name=&quot;HRService&quot; class=&quot;org.jboss.example.service.HRManager&quot;/&gt;
+      
+&lt;/deployment&gt;</programlisting>
+        <para>Here we have declared that we want to create an instance of the HRManager class and register it with the name &apos;HRService&apos;. </para>
       </section>
       <section>
         <title>Wiring POJOs together </title>
-        <para>Mention that because all the beans have names, they are by definition services. The fact is that we use a registry for both internal wiring and service registration. So it may be that within the registry there are a large number of beans but you will typically only use a small number of these as the service entry points.</para>
+        <para>So far we have seen how to  create POJOs and declare instances of them together with names in the XML deployment descriptor. However, individual POJO instances  can only provide relatively simple behaviour. Things really get interesting when we combine POJOs together to perform more complex tasks. In our example we know that we can choose  a number of different salary strategies for the HRManager to use so how do we go about wiring the POJOs together?</para>
+        <para>The answer is to use the XML deployment descriptor again as follows:</para>
+        <programlisting>&lt;?xml version=&quot;1.0&quot; encoding=&quot;UTF-8&quot;?&gt;
+
+&lt;deployment xmlns:xsi=&quot;http://www.w3.org/2001/XMLSchema-instance&quot;
+            xsi:schemaLocation=&quot;urn:jboss:bean-deployer:2.0 bean-deployer_2_0.xsd&quot;
+            xmlns=&quot;urn:jboss:bean-deployer:2.0&quot;&gt;
+
+   &lt;bean name=&quot;HRService&quot; class=&quot;org.jboss.example.service.HRManager&quot;&gt;
+     &lt;property name=&quot;salaryStrategy&quot;&gt;&lt;inject bean=&quot;AgeBasedSalary&quot;/&gt;&lt;/property&gt;
+   &lt;/bean&gt;
+
+   &lt;bean name=&quot;AgeBasedSalary&quot;
+         class=&quot;org.jboss.example.service.util.AgeBasedSalaryStrategy&quot;/&gt;
+       
+&lt;/deployment&gt;</programlisting>
+        <para>We first need to create an instance of our chosen salary strategy by including an additional &lt;bean&gt; element. Here we have chosen the AgeBasedSalaryStrategy. Next we need to inject a reference to this bean into the instance of HRManager created using the HRService bean. Injection is possible here as the HRManager class contains a <code>setSalaryStrategy(SalaryStrategy strategy)</code> method. Behind the scenes JBoss Microcontainer will call this method on the newly created HRManager instance and pass in a reference to the AgeBasedSalaryStrategy instance.</para>
+        <para>In other words the XML deployment descriptor causes the same sequence of events to occur as if you had written the following code:</para>
+        <programlisting>HRManager hrService = new HRManager();
+AgeBasedSalaryStrategy ageBasedSalary = new AgeBasedSalaryStrategy();
+hrService.setSalaryStrategy(ageBasedSalary);</programlisting>
+        <para>In addition to performing injection via property setter methods JBoss Microcontainer can also perform injection via constructor parameters if necessary. For more details please see the &apos;Injection&apos; chapter in Part II &apos;POJO Development&apos;. </para>
+        <note>
+          <para>Although we can create instances of our classes using the &lt;bean&gt; element in the deployment descriptor it is not always appropriate to do so. For example we do not need to create instances of the Employee and Address classes since these will be created by the client. As such they remain part of the service but are not mentioned in the deployment descriptor. </para>
+          <para>Also note that it is possible to define multiple beans within a deployment descriptor providing that each has a unique name. These names are required in order to perform injection as shown above.  This does not mean to say however that all of these beans represent services. While a service could be implemented using a single bean it is most often the case that multiple beans are used together as in our example. In these cases there is usually one bean that represents the service entry point containing the public methods intended for the clients to call. In our example this is the HRService bean. As such there is nothing in the XML deployment descriptor  to say which beans represent a service or indeed which bean if any is the service entry point. Care must therefore be taken when creating deployment descriptors to ensure that sufficient comments are included to describe what the beans are used for. Alternatively a naming convention such as ending  each bean name that represents a service entry point  with &apos;Service&apos;, i.e. HRService can be used instead.</para>
+        </note>
+        <para/>
       </section>
       <section>
         <title>Configuring a service</title>
+        <para>Injecting reference to other POJO instances is one way of configuring a service.</para>
       </section>
       <section>
         <title>Testing a service</title>
