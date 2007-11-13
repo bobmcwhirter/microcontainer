@@ -13,7 +13,12 @@
   </bookinfo>
   <preface>
     <title>What this Book Covers</title>
-    <para>This book aims to help you become familiar with  JBoss Microcontainer if you are new to the technology. Part 1 is Getting Started (with multiple chapters), Chapter 2 is Deploying, part 3 is adding behaviour. Don&apos;t change examples mid-way through a chapter. </para>
+    <para>This book aims to help you become familiar with  JBoss Microcontainer in order that you can use it to develop your own services or applications.</para>
+    <para>Part I &apos;Getting Started&apos; introduces  the technology and explains how it relates to Java development in general. It then goes on to cover a complete use-case so that you can quickly see how the microcontainer may typically be used in real-life.</para>
+    <para>Part II &apos;POJO Development&apos; takes a look at the various methods you can use  to construct POJOs and wire them together using injections together with   other features.</para>
+    <para>Part III &apos;AOP Development&apos; goes on to look at how you can add behaviour to your POJOs using Aspects and covers the various ways this can be done.</para>
+    <para> Part IV &apos;Extending the Microcontainer&apos; shows how you can write your own extensions by creating new dependencies and gives some examples of how this has already been done.</para>
+    <para>Part V &apos;Integrating the Microcontainer&apos; covers how the microcontainer is used in JBoss AS 5 as the integration technology for the various services and core infrastructure. We also look at how legacy services, developed using MBeans, remain compatible with the new microcontainer and see how it is possible to manage POJO services at runtime.</para>
   </preface>
   <part>
     <title>Getting Started</title>
@@ -31,7 +36,7 @@
           <para>Java EE (Enterprise Edition) - Servers (typically running 3-tier applications)</para>
         </listitem>
       </itemizedlist>
-      <para>Each environment aims to provide a base level of functionality on top of which  developers can add their own code to create applications. For example Java SE provides networking and security libraries together with graphical user interface toolkits to facilitate the development of desktop   and simple client-server applications. Java EE takes this a stage further by adding a number of &apos;enterprise&apos;  services such as transactions, messaging, and persistence that allow much more robust and scalable &apos;enterprise&apos; applications to be developed.  These services are  typically combined together inside a JEE application server to provide a standard runtime environment for enterprise applications,  however it is often the case that they are not all used.</para>
+      <para>Each environment aims to provide a base level of functionality on top of which  developers can add their own code to create applications. For example Java SE provides networking and security libraries together with graphical user interface toolkits to facilitate the development of desktop   and simple client-server applications. Java EE takes this a stage further by adding a number of &apos;enterprise&apos;  services such as transactions, messaging, and persistence that allow much more robust and scalable &apos;enterprise&apos; applications to be developed.  These services are  typically combined together inside a JEE application server to provide a standard runtime environment for enterprise applications,  however they are not always  all used.</para>
       <para>Having unused services in your  environment is undesirable as  they can take  up valuable resources such as CPU and memory. They can also clutter up the environment with unecessary configuration files,  complicating maintenance and   adding unecessary complexity.   It would   be better if there was a  controlled way to remove such services without breaking any dependencies they might have. Similarly there are often occasions when  applications need services that aren&apos;t provided by  JEE  so  it would be better if there was a  controlled way to add them, again  making sure that any dependencies were first satisfied.</para>
       <para>JBoss Microcontainer aims to provide  these capabilities by allowing services, created using Plain Old Java Objects (POJOs), to be deployed into a standard Java SE runtime environment in a controlled manner to create a customized environment  for your applications. Dependencies between services are fully managed by the microcontainer to ensure that new services cannot be deployed until services they depend on have first been deployed. Likewise undeploying a service causes all dependent services to first be undeployed in order  to maintain the integrity of the system. </para>
       <para>Deploying services in this way, on top of a Java SE environment,   is exactly how we have created the latest version of JBoss Application Server  (JBoss AS 5.0)   which provides a standard Java EE environment. If you need additional services then you can simply deploy these on top of Java EE to provide the functionality you need. This even applies when using the microcontainer in different  Java EE environments such as Glassfish since you can plug in different classloading models  during the service deployment phase.</para>
@@ -40,12 +45,78 @@
     </chapter>
     <chapter>
       <title>Download and Installing</title>
-      <para>To download  JBoss Microcontainer 2.0.0   go to http://labs.jboss.com/jbossmc/downloads and click on the corresponding link.</para>
+      <para>JBoss Microcontainer 2.0.0 is currently only available as a beta release via Maven2. This means that you need to install and configure Maven before you can begin development. Once this is done then you can create a maven project that depends on the JBoss Microcontainer JARs in order to download and install them into your local maven repository. You can then create an assembly for your final application in order to package the relevant JARs into a distributable format.</para>
+      <para>The examples created for this User Guide use Maven2 to achieve exactly this so it is highly recommended that you download these first and take a look at how they work:</para>
+      <para>http://labs.jboss.com/jbossmc/downloads</para>
       <note>
-        <para>The distribution is available in a number of different packaging formats offering varying levels of compression; tar.gz, tar.bz2 or zip. Simply pick whichever one you have decompression utilities for (e.g. WinZIP on Windows can decompress zip files) and click on the link  to download it to your machine.</para>
+        <para>To build and run the examples you first need to install and configure Maven 2.0.7 available from http://maven.apache.org/</para>
       </note>
-      <para> Installation is performed  by decompressing and unpacking the downloaded file into a directory on your machine, for example using WinZIP or gzip. The contents of the distribution are as follows:</para>
-      <para>Diagram here....</para>
+      <para>Installation is performed by downloading and unzipping the  maven-2.0.7-bin.zip file to a convenient location on your local disk. Configuration then consists of adding $MAVEN_HOME/bin to your path and adding the following profile to your ~/.m2/settings.xml file:</para>
+      <para><programlisting>&lt;settings&gt;
+  &lt;profiles&gt;
+    &lt;profile&gt;
+      &lt;id&gt;jboss.repository&lt;/id&gt;
+      &lt;activation&gt;
+        &lt;property&gt;          
+          &lt;name&gt;!jboss.repository.off&lt;/name&gt;
+        &lt;/property&gt;
+      &lt;/activation&gt;
+      &lt;repositories&gt;
+        &lt;repository&gt;
+          &lt;id&gt;snapshots.jboss.org&lt;/id&gt;
+          &lt;url&gt;http://snapshots.jboss.org/maven2&lt;/url&gt;
+          &lt;snapshots&gt;
+            &lt;enabled&gt;true&lt;/enabled&gt;
+          &lt;/snapshots&gt;
+        &lt;/repository&gt;
+        &lt;repository&gt;
+          &lt;id&gt;repository.jboss.org&lt;/id&gt;
+          &lt;url&gt;http://repository.jboss.org/maven2&lt;/url&gt;
+          &lt;snapshots&gt;
+            &lt;enabled&gt;false&lt;/enabled&gt;
+          &lt;/snapshots&gt;
+        &lt;/repository&gt;
+      &lt;/repositories&gt;
+      &lt;pluginRepositories&gt;
+        &lt;pluginRepository&gt;
+          &lt;id&gt;repository.jboss.org&lt;/id&gt;
+          &lt;url&gt;http://repository.jboss.org/maven2&lt;/url&gt;
+          &lt;snapshots&gt;
+            &lt;enabled&gt;false&lt;/enabled&gt;
+          &lt;/snapshots&gt;
+        &lt;/pluginRepository&gt;
+        &lt;pluginRepository&gt;
+          &lt;id&gt;snapshots.jboss.org&lt;/id&gt;
+          &lt;url&gt;http://snapshots.jboss.org/maven2&lt;/url&gt;
+          &lt;snapshots&gt;
+            &lt;enabled&gt;true&lt;/enabled&gt;
+          &lt;/snapshots&gt;
+        &lt;/pluginRepository&gt;
+      &lt;/pluginRepositories&gt;
+    &lt;/profile&gt;
+  &lt;/profiles&gt;
+&lt;/settings&gt;</programlisting></para>
+      <para>This profile informs maven of the two JBoss repositories (snapshots and releases) that are needed to download the JBoss Microcontainer and dependant JARs.</para>
+      <para>Once you have configured Maven and downloaded the examples then you can go to one of the following directories in the examples/User_Guide directory and enter <code>mvn install</code> to perform a build:</para>
+      <para/>
+      <itemizedlist>
+        <listitem>
+          <para>gettingStarted -  projects for creating and using a service together with AOP</para>
+        </listitem>
+        <listitem>
+          <para>pojoDevelopment -  examples of creating and configuring POJOs using XML and Annotations</para>
+        </listitem>
+        <listitem>
+          <para>aopDevelopment - examples of using AOP to add behaviour to POJOs</para>
+        </listitem>
+        <listitem>
+          <para>extending - examples of how we have created various extensions to the core microcontainer by creating new dependencies</para>
+        </listitem>
+        <listitem>
+          <para>integrating - examples of how the microcontainer forms the basis of JBoss AS 5 and how you can deploy MBean services alongside POJO services for backwards compatibility</para>
+        </listitem>
+      </itemizedlist>
+      <para>Instructions on how to run the individual examples can be found in the relevant parts of this guide.</para>
     </chapter>
     <chapter>
       <title>Building services</title>
@@ -56,8 +127,8 @@
       <para><emphasis role="bold">Definition:</emphasis> <emphasis role="italic">A POJO declares business methods, which define behaviour, and properties, which represent state. Some properties represent associations to other POJOs.</emphasis></para>
       <para>For experienced developers this should sound  familiar as it mimicks almost exactly the proposals set out in the JavaBeans specification. JavaBeans describes a component model for User Interface development emphasizing simplicity and standardized naming conventions for property accessor methods. The idea was that this would allow automatic discovery of an object&apos;s properties so that an instance could easily be created and populated with state at runtime.  The main use case was creating  and configuring visual user interface components such as text boxes,  buttons, and tables from within an integrated development environment (IDE).</para>
       <para><emphasis role="bold">Definition:</emphasis> <emphasis role="italic">A Java Bean is a reusable software component that can be manipulated visually in a builder tool.</emphasis></para>
-      <para> Importantly a Java Bean is not required to inherit from any particular base class or interface. Also while Java Beans are  primarily targeted at builder tools they are entirely usable by human programmers.</para>
-      <para>Strictly speaking a Java Bean should include support for events and persistence but in many cases developers choose not to implement these features and simply follow the standardized naming conventions for property accessor methods; i.e. get and set. This &apos;lightweight&apos; form of Java Bean is commonly referred to as just a &apos;bean&apos; and is semantically equivalent to a POJO.</para>
+      <para> Importantly a Java Bean is not required to inherit from any particular base class or interface. Also while Java Beans are  primarily targeted at builder tools they are entirely usable by human programmers with conventional text editors.</para>
+      <para>Strictly speaking a Java Bean should include support for events and persistence but in many cases developers choose not to implement these features and simply follow the standardized naming conventions for property accessor methods; i.e. get and set. This &apos;lightweight&apos; form of Java Bean is commonly referred to as simply a &apos;bean&apos; and is semantically equivalent to a POJO.</para>
       <para>The terms POJO and bean are therefore interchangeable and you will encounter both in the microcontainer documentation and configuration files.</para>
       <para><emphasis role="bold">
           <emphasis role="underline">Services</emphasis>
@@ -78,13 +149,15 @@
       <para>Q) Is a POJO a service?</para>
       <para>A) No, because although it performs work that is useful to multiple clients you cannot access it using a name. Clients have to create a POJO themselves either directly using the <code>new</code> operator or indirectly using a factory. </para>
       <para>Q) Does a  class have to implement an interface in order  to provide a &apos;well-defined&apos; interface?</para>
-      <para>A) Not necessarily. Providing that we don&apos;t change the public method signatures of the class then we can always change its implementation without needing to recompile our client. The  &apos;well-defined&apos; interface in this respect is composed from  the public method signatures.</para>
+      <para>A) Not necessarily. Providing that we don&apos;t remove fields or methods from a class, or restrict access to them, then  we can always change  its implementation without needing to recompile the client. See the following extract from the Java Language Specification for more details:</para>
+      <para>http://java.sun.com/docs/books/jls/second_edition/html/execution.doc.html#44524</para>
+      <para>The  &apos;well-defined&apos; interface in this respect is composed from  the original class&apos;s fields and method signatures together with their access modifiers.</para>
       <note>
         <para>Implementing an  interface is  only necessary  if we want to allow a client to <emphasis role="bold">choose</emphasis> between <emphasis role="bold">alternative implementations</emphasis>. i.e. if the client is compiled against an interface then we can provide as many different implementations of the interface as we like without having to recompile the client.</para>
       </note>
-      <para>What then must we do in order to create a service using a POJO? The answer is to provide a registry that allows us to register a reference to the POJO  instance with a name. Clients can then lookup the POJO reference using the name at runtime and use it to perform work. The POJO class is not required to implement an interface unless it is important that the client can choose between alternative implementations. </para>
-      <para>JBoss Microcontainer provides such a registry in order that we can  deploy our POJO  services into a runtime environment such as Java SE and look them up from within our applications.</para>
-      <para>Since robust implementations of Java EE services  are already available from  JBoss.org and other communities, it is common for companies to focus on creating more &apos;business-oriented&apos; services. For this reason we shall look at creating, configuring and testing a simple Human Resources service that can be used in a wide-variety of companies.</para>
+      <para>What then must we do in order to create a service using a POJO? The answer is to provide a naming mechanism that allows us to register a reference to the POJO  instance with a name. Clients can then lookup the POJO reference using the name at runtime and use it to perform work. The POJO class is not required to implement an interface unless it is important that the client can choose between alternative implementations. </para>
+      <para>JBoss Microcontainer provides such a naming mechanism in order that we can  deploy our POJO  services into a runtime environment such as Java SE and look them up from within our applications.</para>
+      <para>Since robust implementations of Java EE services  are already available from  JBoss.org and other communities, it is common for companies to focus on creating more &apos;business-oriented&apos; services. For this reason we shall look at creating, configuring and testing a simple Human Resources service that could potentially be used  in a wide-variety of companies.</para>
       <section>
         <title>Creating POJOs</title>
         <para><code>public class MyClass {</code><code>next line</code><code>next line</code><programlisting>hghg
@@ -113,7 +186,7 @@ ghg
         <para>I need to mention deploying a packaged service vs deploying an unpackaged service.</para>
       </section>
       <section>
-        <title>Using the kernel registry</title>
+        <title>Using the kernel controller</title>
         <para>This is equivalent to how you access beans using Spring.</para>
       </section>
       <section>
