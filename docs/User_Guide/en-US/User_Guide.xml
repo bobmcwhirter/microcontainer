@@ -198,7 +198,7 @@ org/jboss/example/service/util/SalaryStrategy.java
             <para>isHiringFreeze()</para>
           </listitem>
           <listitem>
-            <para>setHiringFreeze(boolean freeze)</para>
+            <para>setHiringFreeze(boolean hiringFreeze)</para>
           </listitem>
           <listitem>
             <para>getSalaryStrategy()</para>
@@ -249,11 +249,29 @@ hrService.setSalaryStrategy(ageBasedSalary);</programlisting>
           <para>Although we can create instances of our classes using the &lt;bean&gt; element in the deployment descriptor it is not always appropriate to do so. For example we do not need to create instances of the Employee and Address classes since these will be created by the client. As such they remain part of the service but are not mentioned in the deployment descriptor. </para>
           <para>Also note that it is possible to define multiple beans within a deployment descriptor providing that each has a unique name. These names are required in order to perform injection as shown above.  This does not mean to say however that all of these beans represent services. While a service could be implemented using a single bean it is most often the case that multiple beans are used together as in our example. In these cases there is usually one bean that represents the service entry point containing the public methods intended for the clients to call. In our example this is the HRService bean. As such there is nothing in the XML deployment descriptor  to say which beans represent a service or indeed which bean if any is the service entry point. Care must therefore be taken when creating deployment descriptors to ensure that sufficient comments are included to describe what the beans are used for. Alternatively a naming convention such as ending  each bean name that represents a service entry point  with &apos;Service&apos;, i.e. HRService can be used instead.</para>
         </note>
-        <para/>
       </section>
       <section>
         <title>Configuring a service</title>
-        <para>Injecting reference to other POJO instances is one way of configuring a service.</para>
+        <para>Injecting references between POJO instances is one way of configuring a service however we can also inject values into POJO properties. The following deployment descriptor shows how we can configure the HRManager instance to have a hiring freeze and the AgeBasedSalaryStrategy to have new minimum and maximum salary values:</para>
+        <programlisting>&lt;?xml version=&quot;1.0&quot; encoding=&quot;UTF-8&quot;?&gt;
+
+&lt;deployment xmlns:xsi=&quot;http://www.w3.org/2001/XMLSchema-instance&quot;
+            xsi:schemaLocation=&quot;urn:jboss:bean-deployer:2.0 bean-deployer_2_0.xsd&quot;
+            xmlns=&quot;urn:jboss:bean-deployer:2.0&quot;&gt;
+
+   &lt;bean name=&quot;HRService&quot; class=&quot;org.jboss.example.service.HRManager&quot;&gt;
+     &lt;property name=&quot;hiringFreeze&quot;&gt;false&lt;/property&gt;
+     &lt;property name=&quot;salaryStrategy&quot;&gt;&lt;inject bean=&quot;AgeBasedSalary&quot;/&gt;&lt;/property&gt;
+   &lt;/bean&gt;
+
+   &lt;bean name=&quot;AgeBasedSalary&quot; class=&quot;org.jboss.example.service.util.AgeBasedSalaryStrategy&quot;&gt;
+     &lt;property name=&quot;minSalary&quot;&gt;1000&lt;/property&gt;
+     &lt;property name=&quot;maxSalary&quot;&gt;80000&lt;/property&gt;
+   &lt;/bean&gt;
+       
+&lt;/deployment&gt;</programlisting>
+        <para>As with wiring POJOs together the classes need to have public setter methods for the relevant properties so that values can be injected in. For example the HRManager class has a <code>setHiringFreeze(boolean hiringFreeze)</code> method and the AgeBasedSalaryStrategy class has <code>setMinSalary(int minSalary)</code> and <code>setMaxSalary(int maxSalary)</code> methods.</para>
+        <para>The values in the deployment descriptor are converted from strings into the relevant types (boolean, integer etc...) by JavaBean <ulink url="http://java.sun.com/j2se/1.5.0/docs/api/java/beans/PropertyEditor.html">PropertyEditors</ulink>. A large number of these  are provided by default for standard types but you can easily create your own if necessary. See the Properties chapter in Part II &apos;POJO Development&apos; for more details.</para>
       </section>
       <section>
         <title>Testing a service</title>
