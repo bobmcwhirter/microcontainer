@@ -303,6 +303,21 @@ org/jboss/example/service/util/AgeBasedSalaryTestCase.java
       </section>
       <section>
         <title>Packaging a service</title>
+        <para>Now that we have successfully created and tested our service it is time to package it up so that others can use it. The simplest way to do this is to create a JAR containing all of the classes. You can also choose to  include the XML deployment descriptor if there is a sensible default way to configure the service but you are not required to.</para>
+        <para>If you do choose to include the deployment descriptor then by convention you should call it <code>jboss-beans.xml</code> and put it in the META-INF directory. This helps if you want to later deploy the service in JBoss AS 5 as the default JAR deployer recognises this layout and will automatically deploy the service.</para>
+        <para>In our case we will not include it as we want to easily configure the service in different ways by editing the descriptor directly. To generate a JAR in the <code>target</code> directory containing all of the compiled classes simply enter <code>mvn package</code> from the humanResourcesService/ directory. </para>
+        <para>To make the JAR available to other maven projects you then need to enter <code>mvn install</code> in order to copy it to your local maven repository.</para>
+        <para>The final layout of the JAR is as follows:</para>
+        <programlisting>org/jboss/example/service/Address.class
+                         /Employee.class
+                         /HRManager.class
+org/jboss/example/service/util/AgeBasedSalaryStrategy.class
+                              /LocationBasedSalaryStrategy.class
+                              /SalaryStrategy.class
+META-INF/MANIFEST.MF
+META-INF/maven/org.jboss.microcontainer.examples/humanResourcesService/pom.xml
+                                                                       /pom.properties</programlisting>
+        <para>The META-INF/maven directory is automatically produced by maven and is required so that other maven projects can use this JAR as a dependency. If you are not using maven as your build system then you will not have this directory.</para>
       </section>
     </chapter>
     <chapter>
