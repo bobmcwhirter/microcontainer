@@ -275,6 +275,31 @@ hrService.setSalaryStrategy(ageBasedSalary);</programlisting>
       </section>
       <section>
         <title>Testing a service</title>
+        <para>We should now have a good idea about how to create POJOs and configure them using an XML deployment descriptor so how do we go about testing them? Thankfully JBoss Microcontainer makes it extremely easy to unit test individual POJOs as well as POJOs that are wired together through the use of a MicrocontainerTest class.</para>
+        <para>The org.jboss.test.kernel.junit.MicrocontainerTest class inherits from junit.framework.TestCase and as such it sets up each test by bootstrapping JBoss Microcontainer and adding a BasicXMLDeployer. It then looks on the classpath for an XML deployment descriptor with the same name as the test class (but ending in .xml) and residing in the same directory structure. Any beans found in this file are deployed and can then be accessed using a convenience method called <code>getBean(String name)</code>. </para>
+        <para>You can see examples of these XML files in the src/test/resources directory:</para>
+        <programlisting>org/jboss/example/service/HRManagerTestCase.xml
+                         /HRManagerAgeBasedTestCase.java
+                         /HRManagerLocationBasedTestCase.java
+
+org/jboss/example/service/util/AgeBasedSalaryTestCase.xml
+                              /LocationBasedSalaryTestCase.xml</programlisting>
+        <para>Our java test  source code is located in the src/test/java directory:</para>
+        <programlisting>org/jboss/example/service/HRManagerTestCase.java
+                         /HRManagerAgeBasedTestCase.xml
+                         /HRManagerLocationBasedTestCase.xml
+                         /HRManagerTest.java
+                         /HRManagerTestSuite.java
+
+org/jboss/example/service/util/AgeBasedSalaryTestCase.java
+                              /LocationBasedSalaryTestVase.java
+                              /SalaryStrategyTestSuite.java</programlisting>
+        <para>The HRManagerTest class extends MicrocontainerTest to set up a number of employees to use as the basis for the tests. The individual test cases then subclass this to perform the actual tests. You can also see a couple of TestSuite classes that are used to group individual test cases together for convenience.</para>
+        <para>To run the tests simply enter <code>mvn test</code> from the humanResourcesService/ directory. You should see some DEBUG log output which shows  JBoss Microcontainer booting up and deploying the relevant XML file before running each test. At the end of the test it then undeploys the file and shuts down the microcontainer.</para>
+        <note>
+          <para>Some of the tests such as HRManagerTestCase, AgeBasedSalaryTestCase and LocationBasedSalaryTestCase simply unit test individual POJOs whilst other tests such as HRManagerAgeBasedTestCase and HRManagerLocationBasedTestCase unit test the whole service  consisting of multiple POJOs wired together. Either way the method for conducting the tests remains the same. Thanks to the MicrocontainerTest class it is trivial to set up and conduct comprehensive tests for any part of your code.</para>
+          <para>Finally note that we didn&apos;t unit test the Address or Employee classes here. They were deliberately left out as they contain only trivial logic which is very unlikely to break.</para>
+        </note>
       </section>
       <section>
         <title>Packaging a service</title>
