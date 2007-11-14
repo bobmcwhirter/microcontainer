@@ -45,7 +45,7 @@
     <version.org.jboss.test>1.0.4.GA</version.org.jboss.test>
     <version.junit>3.8.1</version.junit>
     <version.jboss.profiler.jvmti>1.0.0.CR5</version.jboss.profiler.jvmti>
-    <version.ant.junit>1.7.0</version.ant.junit>
+    <version.ant.junit>1.6.5</version.ant.junit>
     <version.apache-xerces.xml-apis>2.7.1</version.apache-xerces.xml-apis>
     <version.jboss.drools>4.0.1</version.jboss.drools>
     <version.jboss.jbpm>3.1.1</version.jboss.jbpm>
@@ -72,8 +72,10 @@
       <plugin>
         <groupId>org.apache.maven.plugins</groupId>
         <artifactId>maven-surefire-plugin</artifactId>
+		<version>2.3</version>
         <configuration>
           <testFailureIgnore>true</testFailureIgnore>
+          <redirectTestOutputToFile>true</redirectTestOutputToFile>
           <includes>
             <include>org/jboss/test/**/*TestCase.java</include>
           </includes>
@@ -397,7 +399,7 @@
         <version>${version.jboss.classloading.spi}</version>
       </dependency>
       <dependency>
-        <groupId>org.apache.ant</groupId>
+        <groupId>ant</groupId>
         <artifactId>ant-junit</artifactId>
         <version>${version.ant.junit}</version>
       </dependency>

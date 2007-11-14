@@ -381,13 +381,17 @@
       <build>
         <plugins>
           <plugin>
+			      <groupId>org.apache.maven.plugins</groupId>
             <artifactId>maven-antrun-plugin</artifactId>
+			      <version>1.1</version>
             <executions>
               <execution>
                 <id>ant-tests-weave</id>
                 <phase>test</phase>
                 <configuration>
                   <tasks>
+                    <property name="plugin_classpath" refid="maven.plugin.classpath"/>
+					          <echo message="plugin classpath:  ${plugin_classpath}"/>
                     <mkdir dir="${project.build.directory}/surefire-reports/ant-weave"/>
                     <property name="build.testlog" value="${project.build.directory}/log"/>
                     <mkdir dir="${build.testlog}"/>
@@ -432,9 +436,14 @@
             </executions> 
             <dependencies>
               <dependency>
-                <groupId>org.apache.ant</groupId>
+                <groupId>ant</groupId>
                 <artifactId>ant-junit</artifactId>
                 <version>${version.ant.junit}</version>
+              </dependency>
+              <dependency>
+                <groupId>junit</groupId>
+                <artifactId>junit</artifactId>
+                <version>${version.junit}</version>
               </dependency>
             </dependencies>     
           </plugin>
@@ -510,9 +519,14 @@
             </executions> 
             <dependencies>
               <dependency>
-                <groupId>org.apache.ant</groupId>
+                <groupId>ant</groupId>
                 <artifactId>ant-junit</artifactId>
                 <version>${version.ant.junit}</version>
+              </dependency>
+              <dependency>
+                <groupId>junit</groupId>
+                <artifactId>junit</artifactId>
+                <version>${version.junit}</version>
               </dependency>
             </dependencies>     
           </plugin>
