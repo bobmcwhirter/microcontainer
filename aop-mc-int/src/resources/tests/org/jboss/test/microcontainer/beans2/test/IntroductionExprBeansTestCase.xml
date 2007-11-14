@@ -1,0 +1,44 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<deployment xmlns="urn:jboss:bean-deployer:2.0">
+
+   <bean name="AspectManager" class="org.jboss.aop.AspectManager">
+      <constructor factoryClass="org.jboss.aop.AspectManager" factoryMethod="instance"/>
+   </bean>
+
+   <bean name="IntroductionBinding" class="org.jboss.aop.microcontainer.beans2.IntroductionBinding">
+      <property name="expr">has(* *->method())</property>
+      <property name="manager"><inject bean="AspectManager"/></property>
+     	<property name="interfaces">
+         <list elementClass="java.lang.String">
+            <value>org.jboss.test.microcontainer.beans2.IntroductionInterface</value>
+         </list>
+   	</property>
+   </bean>
+	
+   <beanfactory name="Factory$org.jboss.test.microcontainer.beans2.TestAspect" class="org.jboss.test.microcontainer.beans2.TestAspect"/>
+   
+   <bean name="org.jboss.test.microcontainer.beans2.TestAspect" class="org.jboss.aop.microcontainer.beans2.Aspect">
+      <property name="advice"><inject bean="Factory$org.jboss.test.microcontainer.beans2.TestAspect"/></property>
+      <property name="manager"><inject bean="AspectManager"/></property>
+   </bean>
+
+   <bean name="TestAspectBinding" class="org.jboss.aop.microcontainer.beans2.AspectBinding">
+      <property name="pointcut">execution(* $instanceof{org.jboss.test.microcontainer.beans2.IntroductionInterface}->*(..))</property>
+      <property name="manager"><inject bean="AspectManager"/></property>
+     	<property name="advices">
+         <list>
+            <bean name="TestAspectBinding$1" class="org.jboss.aop.microcontainer.beans2.InterceptorEntry">
+			      <property name="manager"><inject bean="AspectManager"/></property>
+               <property name="aspect"><inject bean="org.jboss.test.microcontainer.beans2.TestAspect"/></property>
+               <property name="aspectMethod">advice</property>
+               <property name="aspectBinding"><inject bean="TestAspectBinding" state="Instantiated"/></property>
+            </bean>
+         </list>
+   	</property>
+   </bean>
+
+   
+   <bean name="Bean" class="org.jboss.test.microcontainer.beans2.POJO"/>
+   
+</deployment>

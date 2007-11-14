@@ -1,0 +1,133 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<deployment xmlns="urn:jboss:bean-deployer:2.0">
+
+   <bean name="AspectManager" class="org.jboss.aop.AspectManager">
+      <constructor factoryClass="org.jboss.aop.AspectManager" factoryMethod="instance"/>
+   </bean>
+
+   <beanfactory name="Factory$org.jboss.test.microcontainer.beans2.TestAspectWithDependency" class="org.jboss.test.microcontainer.beans2.TestAspectWithDependency">
+   	<property name="dependency"><inject bean="Dependency1"/></property>
+	   <!-- Need to be able to configure with attributes and stuff -->
+	   <install bean="org.jboss.test.microcontainer.beans2.TestAspectWithDependency" method="install">
+	   	<parameter><this/></parameter>
+	   </install>
+	   <uninstall bean="org.jboss.test.microcontainer.beans2.TestAspectWithDependency" method="uninstall"/>
+   </beanfactory>
+   
+   <bean name="org.jboss.test.microcontainer.beans2.TestAspectWithDependency" class="org.jboss.aop.microcontainer.beans2.Aspect">
+      <property name="adviceBean">Factory$org.jboss.test.microcontainer.beans2.TestAspectWithDependency</property>
+      <property name="manager"><inject bean="AspectManager"/></property>
+   </bean>
+
+   <beanfactory name="Factory$org.jboss.test.microcontainer.beans2.TestAspect" class="org.jboss.test.microcontainer.beans2.TestAspect"/>
+   
+   <bean name="org.jboss.test.microcontainer.beans2.TestAspect" class="org.jboss.aop.microcontainer.beans2.Aspect">
+      <property name="advice"><inject bean="Factory$org.jboss.test.microcontainer.beans2.TestAspect"/></property>
+      <property name="manager"><inject bean="AspectManager"/></property>
+   </bean>
+
+
+   <beanfactory name="Factory$org.jboss.test.microcontainer.beans2.TestInterceptorWithDependency" class="org.jboss.test.microcontainer.beans2.TestInterceptorWithDependency">
+   	<property name="dependency"><inject bean="Dependency2"/></property>
+	   <!-- Need to be able to configure with attributes and stuff -->
+	   <install bean="org.jboss.test.microcontainer.beans2.TestInterceptorWithDependency" method="install">
+	   	<parameter><this/></parameter>
+	   </install>
+	   <uninstall bean="org.jboss.test.microcontainer.beans2.TestInterceptorWithDependency" method="uninstall"/>
+   </beanfactory>
+   
+   <bean name="org.jboss.test.microcontainer.beans2.TestInterceptorWithDependency" class="org.jboss.aop.microcontainer.beans2.Aspect">
+      <property name="adviceBean">Factory$org.jboss.test.microcontainer.beans2.TestInterceptorWithDependency</property>
+      <property name="manager"><inject bean="AspectManager"/></property>
+   </bean>
+
+   <beanfactory name="Factory$org.jboss.test.microcontainer.beans2.TestInterceptor" class="org.jboss.test.microcontainer.beans2.TestInterceptor"/>
+   
+   <bean name="org.jboss.test.microcontainer.beans2.TestInterceptor" class="org.jboss.aop.microcontainer.beans2.Aspect">
+      <property name="advice"><inject bean="Factory$org.jboss.test.microcontainer.beans2.TestInterceptor"/></property>
+      <property name="manager"><inject bean="AspectManager"/></property>
+   </bean>
+
+   <bean name="AspectStack" class="org.jboss.aop.microcontainer.beans2.Stack">
+   	<property name="manager"><inject bean="AspectManager"/></property>
+   	<property name="name">AspectStack</property>
+   	<property name="advices">
+         <list>
+            <bean name="AspectStack$1" class="org.jboss.aop.microcontainer.beans2.InterceptorEntry">
+			      <property name="manager"><inject bean="AspectManager"/></property>
+               <property name="aspect"><inject bean="org.jboss.test.microcontainer.beans2.TestAspectWithDependency"/></property>
+               <property name="aspectMethod">advice</property>
+               <property name="aspectBinding"><inject bean="TestAspectBinding" state="Instantiated"/></property>
+            </bean>
+            <bean name="AspectStack$2" class="org.jboss.aop.microcontainer.beans2.InterceptorEntry">
+			      <property name="manager"><inject bean="AspectManager"/></property>
+               <property name="aspect"><inject bean="org.jboss.test.microcontainer.beans2.TestAspect"/></property>
+               <property name="aspectMethod">advice</property>
+               <property name="aspectBinding"><inject bean="TestAspectBinding" state="Instantiated"/></property>
+            </bean>
+         </list>
+   	</property>
+   </bean>
+
+   <bean name="InterceptorStack" class="org.jboss.aop.microcontainer.beans2.Stack">
+   	<property name="manager"><inject bean="AspectManager"/></property>
+   	<property name="name">InterceptorStack</property>
+   	<property name="advices">
+         <list>
+            <bean name="InterceptorStack$1" class="org.jboss.aop.microcontainer.beans2.InterceptorEntry">
+			      <property name="manager"><inject bean="AspectManager"/></property>
+               <property name="aspect"><inject bean="org.jboss.test.microcontainer.beans2.TestInterceptorWithDependency"/></property>
+               <property name="aspectBinding"><inject bean="TestInterceptorBinding" state="Instantiated"/></property>
+            </bean>
+            <bean name="InterceptorStack$2" class="org.jboss.aop.microcontainer.beans2.InterceptorEntry">
+			      <property name="manager"><inject bean="AspectManager"/></property>
+               <property name="aspect"><inject bean="org.jboss.test.microcontainer.beans2.TestInterceptor"/></property>
+               <property name="aspectBinding"><inject bean="TestInterceptorBinding" state="Instantiated"/></property>
+            </bean>
+         </list>
+   	</property>
+   </bean>
+
+   <bean name="TestAspectBinding" class="org.jboss.aop.microcontainer.beans2.AspectBinding">
+      <property name="pointcut">execution(* @org.jboss.test.microcontainer.beans2.Annotation1->*(..))</property>
+      <property name="manager"><inject bean="AspectManager"/></property>
+     	<property name="advices">
+         <list>
+            <bean name="TestAspectBinding$1" class="org.jboss.aop.microcontainer.beans2.StackEntry">
+			      <property name="manager"><inject bean="AspectManager"/></property>
+               <property name="stack"><inject bean="AspectStack"/></property>
+               <property name="aspectBinding"><inject bean="TestAspectBinding" state="Instantiated"/></property>
+            </bean>
+         </list>
+   	</property>
+   </bean>
+	
+   <bean name="TestInterceptorBinding" class="org.jboss.aop.microcontainer.beans2.AspectBinding">
+      <property name="pointcut">execution(* @org.jboss.test.microcontainer.beans2.Annotation2->*(..))</property>
+      <property name="manager"><inject bean="AspectManager"/></property>
+     	<property name="advices">
+         <list>
+            <bean name="TestInterceptorBinding$1" class="org.jboss.aop.microcontainer.beans2.StackEntry">
+			      <property name="manager"><inject bean="AspectManager"/></property>
+               <property name="stack"><inject bean="InterceptorStack"/></property>
+               <property name="aspectBinding"><inject bean="TestInterceptorBinding" state="Instantiated"/></property>
+            </bean>
+         </list>
+   	</property>
+   </bean>
+   
+   <bean name="Intercepted1" class="org.jboss.test.microcontainer.beans2.POJO">
+   	<annotation>@org.jboss.test.microcontainer.beans2.Annotation1</annotation>
+   </bean>
+   
+   <bean name="Intercepted2" class="org.jboss.test.microcontainer.beans2.POJO">
+   	<annotation>@org.jboss.test.microcontainer.beans2.Annotation2</annotation>
+   </bean>
+   
+   <bean name="Intercepted3" class="org.jboss.test.microcontainer.beans2.POJO">
+   	<annotation>@org.jboss.test.microcontainer.beans2.Annotation1</annotation>
+   	<annotation>@org.jboss.test.microcontainer.beans2.Annotation2</annotation>
+   </bean>
+   
+</deployment>
