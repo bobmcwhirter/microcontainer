@@ -14,7 +14,7 @@
   <preface>
     <title>What this Book Covers</title>
     <para>This book aims to help you become familiar with  JBoss Microcontainer in order that you can use it to develop your own services or applications.</para>
-    <para>Part I &apos;Getting Started&apos; introduces  the technology and explains how it relates to Java development in general. It then goes on to cover a complete use-case so that you can quickly see how the microcontainer may typically be used in real-life.</para>
+    <para>Part I &apos;Getting Started&apos; introduces  the technology and explains how it relates to Java development in general. It then goes on to cover a complete use-case so that you can quickly see how the microcontainer works in real-life.</para>
     <para>Part II &apos;POJO Development&apos; takes a look at the various methods you can use  to construct POJOs and wire them together using injections together with   other features.</para>
     <para>Part III &apos;AOP Development&apos; goes on to look at how you can add behaviour to your POJOs using Aspects and covers the various ways this can be done.</para>
     <para> Part IV &apos;Extending the Microcontainer&apos; shows how you can write your own extensions by creating new dependencies and gives some examples of how this has already been done.</para>
@@ -36,8 +36,8 @@
           <para>Java EE (Enterprise Edition) - Servers (typically running 3-tier applications)</para>
         </listitem>
       </itemizedlist>
-      <para>Each environment aims to provide a base level of functionality on top of which  developers can add their own code to create applications. For example Java SE provides networking and security libraries together with graphical user interface toolkits to facilitate the development of desktop   and simple client-server applications. Java EE takes this a stage further by adding a number of &apos;enterprise&apos;  services such as transactions, messaging, and persistence that allow much more robust and scalable &apos;enterprise&apos; applications to be developed.  These services are  typically combined together inside a JEE application server to provide a standard runtime environment for enterprise applications,  however they are not always  all used.</para>
-      <para>Having unused services in your  environment is undesirable as  they can take  up valuable resources such as CPU and memory. They can also clutter up the environment with unecessary configuration files,  complicating maintenance and   adding unecessary complexity.   It would   be better if there was a  controlled way to remove such services without breaking any dependencies they might have. Similarly there are often occasions when  applications need services that aren&apos;t provided by  JEE  so  it would be better if there was a  controlled way to add them, again  making sure that any dependencies were first satisfied.</para>
+      <para>Each environment aims to provide a base level of functionality on top of which  developers can add their own code to create applications. For example Java SE provides networking and security libraries together with graphical user interface toolkits to facilitate the development of desktop   and simple client-server applications. Java EE takes this a stage further by adding a number of &apos;enterprise&apos;  services such as transactions, messaging, and persistence that allow much more robust and scalable &apos;enterprise&apos; applications to be developed.  These services are  typically combined together inside a JEE application server to provide a standard runtime environment for enterprise applications but there are often occasions when some services are never used.</para>
+      <para>Having unused services in your  environment is undesirable as  they can take  up valuable resources such as CPU and memory. They can also clutter up the environment with unnecessary configuration files,  complicating maintenance and   adding unnecessary complexity.   It would   be better if there was a  controlled way to remove such services without breaking any dependencies they might have. Similarly there are often occasions when  applications need services that aren&apos;t provided by  JEE  so  it would be better if there was a  controlled way to add them, again  making sure that any dependencies were first satisfied.</para>
       <para>JBoss Microcontainer aims to provide  these capabilities by allowing services, created using Plain Old Java Objects (POJOs), to be deployed into a standard Java SE runtime environment in a controlled manner to create a customized environment  for your applications. Dependencies between services are fully managed by the microcontainer to ensure that new services cannot be deployed until services they depend on have first been deployed. Likewise undeploying a service causes all dependent services to first be undeployed in order  to maintain the integrity of the system. </para>
       <para>Deploying services in this way, on top of a Java SE environment,   is exactly how we have created the latest version of JBoss Application Server  (JBoss AS 5.0)   which provides a standard Java EE environment. If you need additional services then you can simply deploy these on top of Java EE to provide the functionality you need. This even applies when using the microcontainer in different  Java EE environments such as Glassfish since you can plug in different classloading models  during the service deployment phase.</para>
       <para>Since  JBoss Microcontainer is very lightweight and deals with POJOs it can also be used to deploy services into a Java ME runtime environment. This opens us new possibilities for mobile applications that can now take advantage of  enterprise services without requiring a full JEE application server. </para>
@@ -46,12 +46,11 @@
     <chapter>
       <title>Download and Installing</title>
       <para>JBoss Microcontainer 2.0.0 is currently only available as a beta release via Maven2. This means that you need to install and configure Maven before you can begin development. Once this is done then you can create a maven project that depends on the JBoss Microcontainer JARs in order to download and install them into your local maven repository. You can then create an assembly for your final application in order to package the relevant JARs into a distributable format.</para>
-      <para>The examples created for this User Guide use Maven2 to achieve exactly this so it is highly recommended that you download these first and take a look at how they work:</para>
-      <para>http://labs.jboss.com/jbossmc/downloads</para>
+      <para>The examples created for this User Guide use Maven2 to achieve exactly this so it is highly recommended that you <ulink url="http://labs.jboss.com/file-access/default/members/jbossmc/downloads/userGuide-examples-13112007.zip">download</ulink> these first and take a look at how they work.</para>
       <note>
-        <para>To build and run the examples you first need to install and configure Maven 2.0.7 available from http://maven.apache.org/</para>
+        <para>To build and run the examples you first need to install and configure Maven 2.0.7 available from <ulink url="http://maven.apache.org/">http://maven.apache.org/</ulink></para>
       </note>
-      <para>Installation is performed by downloading and unzipping the  maven-2.0.7-bin.zip file to a convenient location on your local disk. Configuration then consists of adding $MAVEN_HOME/bin to your path and adding the following profile to your ~/.m2/settings.xml file:</para>
+      <para>Installation is performed by downloading and unzipping the  maven-2.0.7-bin.zip file to a convenient location on your local disk. Configuration  consists of adding $MAVEN_HOME/bin to your path and adding the following profile to your ~/.m2/settings.xml file:</para>
       <para><programlisting>&lt;settings&gt;
   &lt;profiles&gt;
     &lt;profile&gt;
@@ -97,7 +96,7 @@
   &lt;/profiles&gt;
 &lt;/settings&gt;</programlisting></para>
       <para>This profile informs maven of the two JBoss repositories (snapshots and releases) that are needed to download the JBoss Microcontainer and dependant JARs.</para>
-      <para>Once you have configured Maven and downloaded the examples then you can go to one of the following directories in the examples/User_Guide directory and enter <code>mvn install</code> to perform a build:</para>
+      <para>Once you have configured Maven and downloaded the examples then you can go to one of the following directories in the <code>examples/User_Guide</code> directory and enter <code>mvn install</code> to perform a build:</para>
       <para/>
       <itemizedlist>
         <listitem>
@@ -149,8 +148,7 @@
       <para>Q) Is a POJO a service?</para>
       <para>A) No, because although it performs work that is useful to multiple clients you cannot access it using a name. Clients have to create a POJO themselves either directly using the <code>new</code> operator or indirectly using a factory. </para>
       <para>Q) Does a  class have to implement an interface in order  to provide a &apos;well-defined&apos; interface?</para>
-      <para>A) Not necessarily. Providing that we don&apos;t remove fields or methods from a class, or restrict access to them, then  we can always change  its implementation without needing to recompile the client. See the following extract from the Java Language Specification for more details:</para>
-      <para>http://java.sun.com/docs/books/jls/second_edition/html/execution.doc.html#44524</para>
+      <para>A) Not necessarily. Providing that we don&apos;t remove fields or methods from a class, or restrict access to them, then  we can always change  its implementation without needing to recompile the client. See the  section entitled <ulink url="http://java.sun.com/docs/books/jls/second_edition/html/execution.doc.html#44524">Resolution of Symbolic References</ulink> from the Java Language Specification for more details:</para>
       <para>The  &apos;well-defined&apos; interface in this respect is composed from  the original class&apos;s fields and method signatures together with their access modifiers.</para>
       <note>
         <para>Implementing an  interface is  only necessary  if we want to allow a client to <emphasis role="bold">choose</emphasis> between <emphasis role="bold">alternative implementations</emphasis>. i.e. if the client is compiled against an interface then we can provide as many different implementations of the interface as we like without having to recompile the client.</para>
@@ -173,7 +171,7 @@
 org/jboss/example/service/util/SalaryStrategy.java
                               /AgeBasedSalaryStrategy.java
                               /LocationBasedSalaryStrategy.java</programlisting></para>
-        <para>As you can see from looking at the source code, each of these classes represents a simple POJO that doesn&apos;t implement any special interfaces. The most important class  is the HRManager as this represents the service entry point and therefore provides all of the public methods that clients will call.</para>
+        <para>As you can see from looking at the source code, each of these classes represents a simple POJO that doesn&apos;t implement any special interfaces. The most important class is HRManager as this represents the service entry point and therefore provides all of the public methods that clients will call.</para>
         <para/>
         <itemizedlist>
           <listitem>
@@ -207,7 +205,7 @@ org/jboss/example/service/util/SalaryStrategy.java
             <para>setSalaryStrategy(SalaryStrategy strategy)</para>
           </listitem>
         </itemizedlist>
-        <para>The Human Resources Service is therefore composed of the above 6 classes which work together to allow a list of employees, together with details of their addresses and salaries, to be maintained by an HR Manger. In addition it is possible to configure the service so that different salary strategies are followed by the manager. The use of such strategies places minimum and maximum limits on the salaries that can be awarded to employees depending on various rules.</para>
+        <para>The Human Resources Service is therefore composed of the above 6 classes which work together to allow a list of employees, together with details of their addresses and salaries, to be maintained by an HRManger. In addition it is possible to configure HRManager so that different salary strategies are used. These place minimum and maximum limits on the salaries that can be awarded to employees depending on various rules.</para>
         <para>To compile the source code you simply need to enter <code>mvn compile</code> from the <code>humanResourcesService/</code> directory. This will create a new directory  called <code>target/classes</code>  containing the compiled code. To clean up the humanResourcesService project and remove the <code>target</code> directory simply enter <code>mvn clean</code>. </para>
         <para>Now that we  have compiled our POJO classes we  need to determine how to create instances of them. This is done by creating an XML deployment descriptor  that contains a list of beans representing individual instances. Each bean is given a name so that the instance can be looked up at runtime by clients.</para>
         <programlisting>&lt;?xml version=&quot;1.0&quot; encoding=&quot;UTF-8&quot;?&gt;
@@ -219,11 +217,11 @@ org/jboss/example/service/util/SalaryStrategy.java
    &lt;bean name=&quot;HRService&quot; class=&quot;org.jboss.example.service.HRManager&quot;/&gt;
       
 &lt;/deployment&gt;</programlisting>
-        <para>Here we have declared that we want to create an instance of the HRManager class and register it with the name &apos;HRService&apos;. </para>
+        <para>Here we have declared that we want to create an instance of the HRManager class and register it with the name HRService. This file is  passed to  a deployer associated with the microcontainer at runtime which performs the actual deployment and instantiates the beans.</para>
       </section>
       <section>
         <title>Wiring POJOs together </title>
-        <para>So far we have seen how to  create POJOs and declare instances of them together with names in the XML deployment descriptor. However, individual POJO instances  can only provide relatively simple behaviour. Things really get interesting when we combine POJOs together to perform more complex tasks. In our example we know that we can choose  a number of different salary strategies for the HRManager to use so how do we go about wiring the POJOs together?</para>
+        <para>So far we have seen how to  create POJOs and declare instances of them together with names in the XML deployment descriptor. However, individual POJO instances  can only provide relatively simple behaviour. Things really get interesting when we combine POJOs together to perform more complex tasks. In our example we know that we can choose  a number of different salary strategies for the HRManager so how do we go about wiring the POJOs together?</para>
         <para>The answer is to use the XML deployment descriptor again as follows:</para>
         <programlisting>&lt;?xml version=&quot;1.0&quot; encoding=&quot;UTF-8&quot;?&gt;
 
@@ -239,7 +237,7 @@ org/jboss/example/service/util/SalaryStrategy.java
          class=&quot;org.jboss.example.service.util.AgeBasedSalaryStrategy&quot;/&gt;
        
 &lt;/deployment&gt;</programlisting>
-        <para>We first need to create an instance of our chosen salary strategy by including an additional &lt;bean&gt; element. Here we have chosen the AgeBasedSalaryStrategy. Next we need to inject a reference to this bean into the instance of HRManager created using the HRService bean. Injection is possible here as the HRManager class contains a <code>setSalaryStrategy(SalaryStrategy strategy)</code> method. Behind the scenes JBoss Microcontainer will call this method on the newly created HRManager instance and pass in a reference to the AgeBasedSalaryStrategy instance.</para>
+        <para>We first need to create an instance of our chosen salary strategy by including an additional &lt;bean&gt; element. Here we have chosen the AgeBasedSalaryStrategy. Next we need to inject a reference to this bean into the instance of HRManager created using the HRService bean. Injection is possible  as the HRManager class contains a <code>setSalaryStrategy(SalaryStrategy strategy)</code> method. Behind the scenes JBoss Microcontainer will call this method on the newly created HRManager instance and pass in a reference to the AgeBasedSalaryStrategy instance.</para>
         <para>In other words the XML deployment descriptor causes the same sequence of events to occur as if you had written the following code:</para>
         <programlisting>HRManager hrService = new HRManager();
 AgeBasedSalaryStrategy ageBasedSalary = new AgeBasedSalaryStrategy();
@@ -247,7 +245,7 @@ hrService.setSalaryStrategy(ageBasedSalary);</programlisting>
         <para>In addition to performing injection via property setter methods JBoss Microcontainer can also perform injection via constructor parameters if necessary. For more details please see the &apos;Injection&apos; chapter in Part II &apos;POJO Development&apos;. </para>
         <note>
           <para>Although we can create instances of our classes using the &lt;bean&gt; element in the deployment descriptor it is not always appropriate to do so. For example we do not need to create instances of the Employee and Address classes since these will be created by the client. As such they remain part of the service but are not mentioned in the deployment descriptor. </para>
-          <para>Also note that it is possible to define multiple beans within a deployment descriptor providing that each has a unique name. These names are required in order to perform injection as shown above.  This does not mean to say however that all of these beans represent services. While a service could be implemented using a single bean it is most often the case that multiple beans are used together as in our example. In these cases there is usually one bean that represents the service entry point containing the public methods intended for the clients to call. In our example this is the HRService bean. As such there is nothing in the XML deployment descriptor  to say which beans represent a service or indeed which bean if any is the service entry point. Care must therefore be taken when creating deployment descriptors to ensure that sufficient comments are included to describe what the beans are used for. Alternatively a naming convention such as ending  each bean name that represents a service entry point  with &apos;Service&apos;, i.e. HRService can be used instead.</para>
+          <para>Also note that it is possible to define multiple beans within a deployment descriptor provided that each has a unique name. These names are required in order to perform injection as shown above.  This does not mean to say however that all of these beans represent services. While a service could be implemented using a single bean it is most often the case that multiple beans are used together as in our example. In these cases there is usually one bean that represents the service entry point containing the public methods intended for the clients to call. In our example this is the HRService bean. Notice that there is nothing in the XML deployment descriptor  to say which beans represent a service or indeed which bean if any is the service entry point. Care must therefore be taken when creating deployment descriptors to ensure that sufficient comments are included to describe what the beans are used for. Alternatively a naming convention such as ending  each bean name that represents a service entry point  with &apos;Service&apos;, i.e. HRService can be used instead.</para>
         </note>
       </section>
       <section>
@@ -270,7 +268,7 @@ hrService.setSalaryStrategy(ageBasedSalary);</programlisting>
    &lt;/bean&gt;
        
 &lt;/deployment&gt;</programlisting>
-        <para>As with wiring POJOs together the classes need to have public setter methods for the relevant properties so that values can be injected in. For example the HRManager class has a <code>setHiringFreeze(boolean hiringFreeze)</code> method and the AgeBasedSalaryStrategy class has <code>setMinSalary(int minSalary)</code> and <code>setMaxSalary(int maxSalary)</code> methods.</para>
+        <para>As with wiring POJOs together the classes need to have public setter methods for the relevant properties so that values can be injected. For example the HRManager class has a <code>setHiringFreeze(boolean hiringFreeze)</code> method and the AgeBasedSalaryStrategy class has <code>setMinSalary(int minSalary)</code> and <code>setMaxSalary(int maxSalary)</code> methods.</para>
         <para>The values in the deployment descriptor are converted from strings into the relevant types (boolean, integer etc...) by JavaBean <ulink url="http://java.sun.com/j2se/1.5.0/docs/api/java/beans/PropertyEditor.html">PropertyEditors</ulink>. A large number of these  are provided by default for standard types but you can easily create your own if necessary. See the Properties chapter in Part II &apos;POJO Development&apos; for more details.</para>
       </section>
       <section>
@@ -294,8 +292,8 @@ org/jboss/example/service/util/AgeBasedSalaryTestCase.xml
 org/jboss/example/service/util/AgeBasedSalaryTestCase.java
                               /LocationBasedSalaryTestVase.java
                               /SalaryStrategyTestSuite.java</programlisting>
-        <para>The HRManagerTest class extends MicrocontainerTest to set up a number of employees to use as the basis for the tests. The individual test cases then subclass this to perform the actual tests. You can also see a couple of TestSuite classes that are used to group individual test cases together for convenience.</para>
-        <para>To run the tests simply enter <code>mvn test</code> from the humanResourcesService/ directory. You should see some DEBUG log output which shows  JBoss Microcontainer booting up and deploying the relevant XML file before running each test. At the end of the test it then undeploys the file and shuts down the microcontainer.</para>
+        <para>The HRManagerTest class extends MicrocontainerTest to set up a number of employees to use as the basis for the tests.  Individual test cases then subclass this to perform the actual tests. You can also see a couple of TestSuite classes that are used to group individual test cases together for convenience.</para>
+        <para>To run the tests simply enter <code>mvn test</code> from the <code>humanResourcesService/</code> directory. You should see some DEBUG log output which shows  JBoss Microcontainer booting up and deploying the relevant XML file before running each test. At the end of the test it then undeploys the file and shuts down the microcontainer.</para>
         <note>
           <para>Some of the tests such as HRManagerTestCase, AgeBasedSalaryTestCase and LocationBasedSalaryTestCase simply unit test individual POJOs whilst other tests such as HRManagerAgeBasedTestCase and HRManagerLocationBasedTestCase unit test the whole service  consisting of multiple POJOs wired together. Either way the method for conducting the tests remains the same. Thanks to the MicrocontainerTest class it is trivial to set up and conduct comprehensive tests for any part of your code.</para>
           <para>Finally note that we didn&apos;t unit test the Address or Employee classes here. They were deliberately left out as they contain only trivial logic which is very unlikely to break.</para>
@@ -303,9 +301,9 @@ org/jboss/example/service/util/AgeBasedSalaryTestCase.java
       </section>
       <section>
         <title>Packaging a service</title>
-        <para>Now that we have successfully created and tested our service it is time to package it up so that others can use it. The simplest way to do this is to create a JAR containing all of the classes. You can also choose to  include the XML deployment descriptor if there is a sensible default way to configure the service but you are not required to.</para>
+        <para>Now that we have successfully created and tested our service it is time to package it up so that others can use it. The simplest way to do this is to create a JAR containing all of the classes. You can  choose to  include the XML deployment descriptor if there is a sensible default way to configure the service but you are not required to.</para>
         <para>If you do choose to include the deployment descriptor then by convention you should call it <code>jboss-beans.xml</code> and put it in the META-INF directory. This helps if you want to later deploy the service in JBoss AS 5 as the default JAR deployer recognises this layout and will automatically deploy the service.</para>
-        <para>In our case we will not include it as we want to easily configure the service in different ways by editing the descriptor directly. To generate a JAR in the <code>target</code> directory containing all of the compiled classes simply enter <code>mvn package</code> from the humanResourcesService/ directory. </para>
+        <para>In our case we will not include it as we want to easily configure the service in different ways by editing the descriptor directly. To generate a JAR in the <code>target</code> directory containing all of the compiled classes simply enter <code>mvn package</code> from the <code>humanResourcesService/</code> directory. </para>
         <para>To make the JAR available to other maven projects you then need to enter <code>mvn install</code> in order to copy it to your local maven repository.</para>
         <para>The final layout of the JAR is as follows:</para>
         <programlisting>org/jboss/example/service/Address.class
@@ -316,7 +314,7 @@ org/jboss/example/service/util/AgeBasedSalaryStrategy.class
                               /SalaryStrategy.class
 META-INF/MANIFEST.MF
 META-INF/maven/org.jboss.microcontainer.examples/humanResourcesService/pom.xml
-                                                                       /pom.properties</programlisting>
+                                                                      /pom.properties</programlisting>
         <para>The META-INF/maven directory is automatically produced by maven and is required so that other maven projects can use this JAR as a dependency. If you are not using maven as your build system then you will not have this directory.</para>
       </section>
     </chapter>
@@ -324,7 +322,7 @@ META-INF/maven/org.jboss.microcontainer.examples/humanResourcesService/pom.xml
       <title>Using services </title>
       <section>
         <title>Deploying a service</title>
-        <para>I need to mention deploying a packaged service vs deploying an unpackaged service.</para>
+        <para>Mention deploying a packaged service vs deploying an unpackaged service.</para>
       </section>
       <section>
         <title>Using the kernel controller</title>
@@ -332,28 +330,28 @@ META-INF/maven/org.jboss.microcontainer.examples/humanResourcesService/pom.xml
       </section>
       <section>
         <title>Using the kernel bus</title>
-        <para>This provides the decoupling we need so that we can swap the service at runtime.</para>
+        <para>This provides the decoupling we need so that we can swap a service at runtime.</para>
       </section>
       <section>
         <title>Redeploying a service</title>
-        <para>I need to show here how you can alter the jboss-beans.xml file in the unpackaged service and redeploy the service.</para>
+        <para>Show here how you can alter the jboss-beans.xml file in the unpackaged service and redeploy the service.</para>
       </section>
       <section>
         <title>Classloading</title>
-        <para>I can show how we can remove the ./deploy/humanResourcesService.jar from the classpath and then deploy the jboss-beans.xml file directly in the unpackaged service. We can then configure the &lt;classloader&gt; element of the deployment to point to the classes directory since they won&apos;t be available on the Application classpath anymore. We can even move the util package to another directory and show how we can set up a &lt;classloader&gt; element at the bean level.</para>
+        <para>Show how we can remove the ./deploy/humanResourcesService.jar from the classpath and then deploy the jboss-beans.xml file directly in the unpackaged service. We can then configure the &lt;classloader&gt; element of the deployment to point to the classes directory since they won&apos;t be available on the Application classpath anymore. We can even move the util package to another directory and show how we can set up a &lt;classloader&gt; element at the bean level.</para>
       </section>
     </chapter>
     <chapter>
       <title>Adding behaviour through AOP</title>
-      <para>Give examples as follows: Annotation in the class (JDK way), Annotation in XML, plain pointcut expression. The advice is an Audit advice.</para>
-      <para>Follow this with an example that shows how we can declare the AuditAspect as a bean within MC and have a dependency between it and the AuditService class. This means that the AuditAspect will not be deployed until the Audit.jar in is the classpath. This then means that the HRManager service also cannot start since it depends on the AuditAspect.</para>
-      <para>Start chapters with an introduction paragraph. This helps people to learn if they need to read on. Start each section with &apos;Imagine...&apos;. This catches peoples attention. If you intro simething then you need a summary at the end (ideally in a different way). Don&apos;t have one section like 1.2.1, always have a least 2 i.e. 1.2.1 and 1.2.2. Make the chapters and sections balanced. i.e. width ways and length ways. The outer chapters and sections always contain less information than the inner sections. They basically wrap the main content. When you write seques then you need to say what&apos;s going to happen without saying what&apos;s going to happen.</para>
+      <para/>
+      <para/>
+      <para/>
     </chapter>
     <chapter>
       <title>Advanced deployment</title>
       <section>
         <title>Aspectized Deployers </title>
-        <para>Give example of using aspectized bean deployer and show how it&apos;s the same.</para>
+        <para>Give example of using aspectized bean deployer and show how it&apos;s the same as the BasicXMLDeployer.</para>
       </section>
       <section>
         <title>Changing the package structure</title>
