@@ -5,7 +5,7 @@
     <modelVersion>4.0.0</modelVersion>
 
     <groupId>org.jboss.microcontainer</groupId>
-    <artifactId>microcontainer-user-guide-${translation}</artifactId>
+    <artifactId>user-guide-${translation}</artifactId>
     <version>1.0-SNAPSHOT</version>
     <packaging>jdocbook</packaging>
     <name>User Guide (${translation})</name>
@@ -17,51 +17,49 @@
                 <artifactId>maven-jdocbook-plugin</artifactId>
                 <version>2.0.0</version>
                 <extensions>true</extensions>
-                <!--dependencies>
-                    <dependency>
+                <dependencies>
+                    <!--<dependency>
                         <groupId>org.hibernate</groupId>
                         <artifactId>hibernate-docbook-xslt</artifactId>
                         <type>jdocbook-style</type>
                         <version>0.1</version>
-                    </dependency>
-                </dependencies-->
+                    </dependency>-->
+                    <!--<dependency>
+                        <groupId>org.hibernate</groupId>
+                        <artifactId>hibernate-jdocbook-style</artifactId>
+                        <version>1.0.0</version>
+                        <type>jdocbook-style</type>
+                    </dependency>-->
+                </dependencies>
                 <configuration>
                     <sourceDocumentName>User_Guide.xml</sourceDocumentName>
                     <imageResource>
-                        <directory>en-US</directory>
-                        <excludes>
-                            <exclude>*.xml</exclude>
-                        </excludes>
+                        <directory>src/main/images</directory>
                     </imageResource>
                     <cssResource>
-                        <directory>en-US</directory>
-                        <excludes>
-                            <exclude>*.xml</exclude>
-                        </excludes>
+                        <directory>src/main/css</directory>
                     </cssResource>
                     <formats>
-                        <format>
+                    <!--<format>
                             <formatName>pdf</formatName>
-                            <!--stylesheetResource>classpath:/standard/fopdf.xsl</stylesheetResource-->
+                            <stylesheetResource>classpath:/xslt/standard/fopdf.xsl</stylesheetResource>
 			    <finalName>User_Guide.pdf</finalName>
-                        </format>
+                        </format>-->
                         <format>
                             <formatName>html</formatName>
-			    <!--stylesheetResource>classpath:/standard/html_chunk.xsl</stylesheetResource-->
+			    <!--<stylesheetResource>classpath:/xslt/standard/html_chunk.xsl</stylesheetResource>-->
+			    <stylesheetResource>file:${basedir}/src/main/xsl/main-html.xsl</stylesheetResource>
                             <finalName>index.html</finalName>
                         </format>
-<!--
-                        <format>
+                    <!--<format>
                             <formatName>html_single</formatName>
                             <stylesheetResource>classpath:/xslt/nochunk-html.xsl</stylesheetResource>
-                        </format>
--->
-<!--                        <format>
+                        </format>-->
+                    <!--<format>
                             <formatName>eclipse</formatName>
                             <stylesheetResource>classpath:/xslt/main-eclipse.xsl</stylesheetResource>
                             <finalName>index.html</finalName>
-                        </format>
--->
+                        </format>-->
                     </formats>
                     <options>
                         <xincludeSupported>true</xincludeSupported>
@@ -70,8 +68,6 @@
                         <!--     could also locate the docbook dependency and inspect its version... -->
                         <docbookVersion>1.72.0</docbookVersion>
                     </options>
-
-		<sourceDirectory>${basedir}/en-US</sourceDirectory>
                 </configuration>
             </plugin>
         </plugins>
@@ -79,6 +75,5 @@
 
     <properties>
         <translation>en-US</translation>
-    </properties>
-
+    </properties> 
 </project>
