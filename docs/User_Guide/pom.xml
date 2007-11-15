@@ -18,27 +18,26 @@
                 <version>2.0.0</version>
                 <extensions>true</extensions>
                 <dependencies>
-                    <!--<dependency>
-                        <groupId>org.hibernate</groupId>
-                        <artifactId>hibernate-docbook-xslt</artifactId>
-                        <type>jdocbook-style</type>
-                        <version>0.1</version>
-                    </dependency>-->
-                    <!--<dependency>
-                        <groupId>org.hibernate</groupId>
-                        <artifactId>hibernate-jdocbook-style</artifactId>
+                    <dependency>
+                        <groupId>org.jboss</groupId>
+                        <artifactId>jbossorg-docbook-xslt</artifactId>
+                        <version>1.0.0</version>
+                    </dependency>
+                    <dependency>
+                        <groupId>org.jboss</groupId>
+                        <artifactId>jbossorg-jdocbook-style</artifactId>
                         <version>1.0.0</version>
                         <type>jdocbook-style</type>
-                    </dependency>-->
+                    </dependency>
                 </dependencies>
                 <configuration>
                     <sourceDocumentName>User_Guide.xml</sourceDocumentName>
-                    <imageResource>
+                    <!--<imageResource>
                         <directory>src/main/images</directory>
                     </imageResource>
                     <cssResource>
                         <directory>src/main/css</directory>
-                    </cssResource>
+                    </cssResource>-->
                     <formats>
                     <!--<format>
                             <formatName>pdf</formatName>
@@ -47,8 +46,7 @@
                         </format>-->
                         <format>
                             <formatName>html</formatName>
-			    <!--<stylesheetResource>classpath:/xslt/standard/html_chunk.xsl</stylesheetResource>-->
-			    <stylesheetResource>file:${basedir}/src/main/xsl/main-html.xsl</stylesheetResource>
+			    <stylesheetResource>classpath:/xslt/org/jboss/main-html.xsl</stylesheetResource>
                             <finalName>index.html</finalName>
                         </format>
                     <!--<format>
