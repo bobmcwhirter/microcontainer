@@ -1,5 +1,14 @@
 <project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
   xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
+  <!--
+    -  AOP Integration module.
+    -  This modules includes 4 different test configurations: weave, no-weave, weave-secure, and no-weave-secure
+    -  By default all four test configurations will run.  These can be turned off using the property aop.tests.skip
+    -    mvn -Daop.tests.skip install
+    - 
+    -  Individual test suites can be run by turning off all tests, then activating individual profiles
+    -    mvn -Daop.tests.skip -Ptests-weave install
+    -->
   <parent>
     <groupId>org.jboss.microcontainer</groupId>
     <artifactId>jboss-microcontainer</artifactId>
@@ -251,7 +260,7 @@
       <id>tests-weave</id>
       <activation>
         <property>
-          <name>tests-weave</name>
+          <name>!aop.tests.skip</name>
         </property>
       </activation>
       <build>
@@ -282,7 +291,7 @@
       <id>tests-weave-secure</id>
       <activation>
         <property>
-          <name>tests-weave-secure</name>
+          <name>!aop.tests.skip</name>
         </property>
       </activation>
       <build>
@@ -313,7 +322,7 @@
       <id>tests-no-weave</id>
       <activation>
         <property>
-          <name>tests-no-weave</name>
+          <name>!aop.tests.skip</name>
         </property>
       </activation>
       <build>
@@ -344,7 +353,7 @@
       <id>tests-no-weave-secure</id>
       <activation>
         <property>
-          <name>tests-no-weave-secure</name>
+          <name>!aop.tests.skip</name>
         </property>
       </activation>
       <build>
