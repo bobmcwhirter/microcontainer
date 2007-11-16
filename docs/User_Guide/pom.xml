@@ -39,11 +39,11 @@
                         <directory>src/main/css</directory>
                     </cssResource>-->
                     <formats>
-                    <!--<format>
+                    <format>
                             <formatName>pdf</formatName>
-                            <stylesheetResource>classpath:/xslt/standard/fopdf.xsl</stylesheetResource>
+                            <stylesheetResource>classpath:/xslt/org/jboss/main-pdf.xsl</stylesheetResource>
 			    <finalName>User_Guide.pdf</finalName>
-                        </format>-->
+                        </format>
                         <format>
                             <formatName>html</formatName>
 			    <stylesheetResource>classpath:/xslt/org/jboss/main-html.xsl</stylesheetResource>
