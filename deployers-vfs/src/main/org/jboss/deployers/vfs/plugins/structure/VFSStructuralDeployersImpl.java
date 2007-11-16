@@ -133,7 +133,7 @@ public class VFSStructuralDeployersImpl extends AbstractStructuralDeployers impl
       log.debug("Removed structure deployer " + deployer);
    }
    
-   public boolean determineStructure(VirtualFile root, VirtualFile parent, VirtualFile file, StructureMetaData structureMetaData)
+   public boolean determineStructure(VirtualFile root, VirtualFile parent, VirtualFile file, StructureMetaData structureMetaData) throws DeploymentException
    {
       StructureMetaData structure = StructureMetaDataFactory.createStructureMetaData();
       boolean result = doDetermineStructure(root, parent, file, structure);
@@ -169,8 +169,9 @@ public class VFSStructuralDeployersImpl extends AbstractStructuralDeployers impl
     * @param file the file
     * @param structureMetaData the structure metadata
     * @return true when recognised
+    * @throws DeploymentException for any error
     */
-   protected boolean doDetermineStructure(VirtualFile root, VirtualFile parent, VirtualFile file, StructureMetaData structureMetaData)
+   protected boolean doDetermineStructure(VirtualFile root, VirtualFile parent, VirtualFile file, StructureMetaData structureMetaData) throws DeploymentException
    {
       StructureDeployer[] theDeployers; 
       synchronized (this)

@@ -74,9 +74,9 @@ public abstract class AbstractComponentDeployer<D, C> extends AbstractRealDeploy
       addInput(componentType);
    }
 
-   public void deploy(DeploymentUnit unit) throws DeploymentException
+   public void internalDeploy(DeploymentUnit unit) throws DeploymentException
    {
-      super.deploy(unit);
+      super.internalDeploy(unit);
       
       try
       {
@@ -89,9 +89,9 @@ public abstract class AbstractComponentDeployer<D, C> extends AbstractRealDeploy
       }
    }
    
-   public void undeploy(DeploymentUnit unit)
+   public void internalUndeploy(DeploymentUnit unit)
    {
-      super.undeploy(unit);
+      super.internalUndeploy(unit);
       undeployComponents(unit);
    }
 

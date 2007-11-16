@@ -46,7 +46,7 @@ public class TestDescribeDeployer extends AbstractRealDeployer
       setStage(DeploymentStages.DESCRIBE);
    }
    
-   public void deploy(DeploymentUnit unit) throws DeploymentException
+   public void internalDeploy(DeploymentUnit unit) throws DeploymentException
    {
       deployed.add(unit.getName());
       TestDependencyMetaData dependencies = unit.getAttachment(TestDependencyMetaData.class);
@@ -58,7 +58,7 @@ public class TestDescribeDeployer extends AbstractRealDeployer
    }
    
    @Override
-   public void undeploy(DeploymentUnit unit)
+   public void internalUndeploy(DeploymentUnit unit)
    {
       undeployed.add(unit.getName());
       TestDependencyMetaData dependencies = unit.getAttachment(TestDependencyMetaData.class);

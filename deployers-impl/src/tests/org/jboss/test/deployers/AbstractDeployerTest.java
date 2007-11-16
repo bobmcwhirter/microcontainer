@@ -157,22 +157,27 @@ public abstract class AbstractDeployerTest extends BaseTestCase
       assertNotNull(name + " not found", unit);
       return unit;
    }
-   
+
+   @Deprecated
    protected DeploymentUnit deploy(DeployerClient main, Deployment deployment) throws Exception
    {
       main.deploy(deployment);
-      DeploymentUnit unit = assertDeploymentUnit(main, deployment.getName());
-      return unit;
+      return assertDeploymentUnit(main, deployment.getName());
    }
    
    protected DeploymentUnit assertDeploy(DeployerClient main, Deployment deployment) throws Exception
    {
       main.deploy(deployment);
-      DeploymentUnit unit = assertDeploymentUnit(main, deployment.getName());
-      main.checkComplete();
-      return unit;
+      return assertDeploymentUnit(main, deployment.getName());
    }
-   
+
+   protected DeploymentUnit addDeployment(DeployerClient main, Deployment deployment) throws Exception
+   {
+      main.addDeployment(deployment);
+      main.process();
+      return assertDeploymentUnit(main, deployment.getName());
+   }
+
    protected void assertUndeploy(DeployerClient main, Deployment deployment) throws Exception
    {
       main.undeploy(deployment);

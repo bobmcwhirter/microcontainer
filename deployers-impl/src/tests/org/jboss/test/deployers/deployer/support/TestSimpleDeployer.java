@@ -122,7 +122,7 @@ public class TestSimpleDeployer extends AbstractRealDeployer
       return undeployed;
    }
 
-   public void deploy(DeploymentUnit unit) throws DeploymentException
+   public void internalDeploy(DeploymentUnit unit) throws DeploymentException
    {
       log.debug(this + " deploy  : " + unit.getName());
       unit.getTypes().add(getType());
@@ -131,7 +131,7 @@ public class TestSimpleDeployer extends AbstractRealDeployer
          throw new DeploymentException("Asked to fail");
    }
 
-   public void undeploy(DeploymentUnit unit)
+   public void internalUndeploy(DeploymentUnit unit)
    {
       log.debug(this + " undeploy: " + unit.getName());
       undeployed.put(unit.getName(), ++order);

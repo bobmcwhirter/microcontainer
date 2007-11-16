@@ -87,7 +87,7 @@ public abstract class AbstractRealDeployerWithInput<T> extends AbstractRealDeplo
    }
 
    @SuppressWarnings("unchecked")
-   public void deploy(DeploymentUnit unit) throws DeploymentException
+   public void internalDeploy(DeploymentUnit unit) throws DeploymentException
    {
       if (visitor == null)
       {
@@ -126,7 +126,7 @@ public abstract class AbstractRealDeployerWithInput<T> extends AbstractRealDeplo
       }
    }
 
-   public void undeploy(DeploymentUnit unit)
+   public void internalUndeploy(DeploymentUnit unit)
    {
       if (visitor == null)
          return;

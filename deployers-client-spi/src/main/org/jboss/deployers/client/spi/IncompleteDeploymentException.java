@@ -21,11 +21,6 @@
 */
 package org.jboss.deployers.client.spi;
 
-import java.util.Collection;
-import java.util.HashMap;
-import java.util.Map;
-import java.util.Set;
-
 import org.jboss.deployers.spi.DeploymentException;
 
 /**
@@ -72,86 +67,20 @@ public class IncompleteDeploymentException extends DeploymentException
       return incompleteDeployments;
    }
 
-   // TODO JBMICROCONT-188 Some of the calculations done in this method should be done upfront in IncompleteDeployments instead!
    @Override
    public String getMessage()
    {
       StringBuilder buffer = new StringBuilder();
       buffer.append("Summary of incomplete deployments (SEE PREVIOUS ERRORS FOR DETAILS):\n");
-
       // Display all the missing deployers
-      Collection<String> deploymentsMissingDeployers = incompleteDeployments.getDeploymentsMissingDeployer();
-      if (deploymentsMissingDeployers.isEmpty() == false)
-      {
-         buffer.append("\n*** DEPLOYMENTS MISSING DEPLOYERS: Name\n\n");
-         for (String name : deploymentsMissingDeployers)
-            buffer.append(name).append('\n');
-      }
-
+      buffer.append(incompleteDeployments.getDeploymentsMissingDeployerInfo());
       // Display all the incomplete deployments
-      Map<String, Throwable> deploymentsInError = incompleteDeployments.getDeploymentsInError();
-      if (deploymentsInError.isEmpty() == false)
-      {
-         buffer.append("\n*** DEPLOYMENTS IN ERROR: Name -> Error\n\n");
-         for (Map.Entry<String, Throwable> entry : deploymentsInError.entrySet())
-            buffer.append(entry.getKey()).append(" -> ").append(entry.getValue().toString()).append("\n\n");
-      }
-
-      // Popluate the potential root causes
-      Map<String, String> rootCauses = new HashMap<String, String>();
-
-      // Missing dependencies are root causes
-      Map<String, Set<MissingDependency>> contextsMissingDependencies = incompleteDeployments.getContextsMissingDependencies();
-      if (contextsMissingDependencies.isEmpty() == false)
-      {
-         for (Map.Entry<String, Set<MissingDependency>> entry : contextsMissingDependencies.entrySet())
-         {
-            for (MissingDependency dependency : entry.getValue())
-               rootCauses.put(dependency.getDependency(), dependency.getActualState());
-         }
-      }
-
-      // Errors are root causes
-      Map<String, Throwable> contextsInError = incompleteDeployments.getContextsInError();
-      if (contextsInError.isEmpty() == false)
-      {
-         for (Map.Entry<String, Throwable> entry : contextsInError.entrySet())
-         {
-            Throwable t = entry.getValue();
-            if (t == null)
-               rootCauses.put(entry.getKey(), "** UNKNOWN ERROR **");
-            else
-               rootCauses.put(entry.getKey(), t.toString());
-         }
-      }
-
+      buffer.append(incompleteDeployments.getDeploymentsInErrorInfo());
       // Display all the missing dependencies
-      if (contextsMissingDependencies.isEmpty() == false)
-      {
-         buffer.append("\n*** CONTEXTS MISSING DEPENDENCIES: Name -> Dependency{Required State:Actual State}\n\n");
-         for (Map.Entry<String, Set<MissingDependency>> entry : contextsMissingDependencies.entrySet())
-         {
-            String name = entry.getKey();
-            buffer.append(name).append("\n");
-            for (MissingDependency dependency : entry.getValue())
-            {
-               buffer.append(" -> ").append(dependency.getDependency());
-               buffer.append('{').append(dependency.getRequiredState());
-               buffer.append(':').append(dependency.getActualState()).append("}");
-               buffer.append("\n");
-            }
-            buffer.append('\n');
-            
-            // It is not a root cause if it has missing dependencies
-            rootCauses.remove(name);
-         }
-      }
-      if (rootCauses.isEmpty() == false)
-      {
-         buffer.append("\n*** CONTEXTS IN ERROR: Name -> Error\n\n");
-         for (Map.Entry<String, String> entry : rootCauses.entrySet())
-            buffer.append(entry.getKey()).append(" -> ").append(entry.getValue()).append("\n\n");
-      }
+      buffer.append(incompleteDeployments.getContextsMissingDependenciesInfo());
+      // Display all contexts in error
+      buffer.append(incompleteDeployments.getContextsInErrorInfo());
+      // buffer to string
       return buffer.toString();
    }
 }

@@ -66,7 +66,7 @@ public class TestSimpleDeployer3 extends AbstractRealDeployer
       undeployed.clear();
    }
 
-   public void deploy(DeploymentUnit unit) throws DeploymentException
+   public void internalDeploy(DeploymentUnit unit) throws DeploymentException
    {
       log.debug(this + " deploy  : " + unit.getName());
       deployed.add(unit.getName());
@@ -74,7 +74,7 @@ public class TestSimpleDeployer3 extends AbstractRealDeployer
          throw new RuntimeException("Asked to fail");
    }
 
-   public void undeploy(DeploymentUnit unit)
+   public void internalUndeploy(DeploymentUnit unit)
    {
       log.debug(this + " undeploy: " + unit.getName());
       undeployed.add(unit.getName());

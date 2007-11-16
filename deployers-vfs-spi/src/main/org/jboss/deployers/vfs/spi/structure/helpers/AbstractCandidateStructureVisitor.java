@@ -176,7 +176,6 @@ public class AbstractCandidateStructureVisitor extends AbstractVirtualFileVisito
          catch (Exception e)
          {
             log.debug("Ignoring " + file + " reason=" + e);
-            return;
          }
       }
    }

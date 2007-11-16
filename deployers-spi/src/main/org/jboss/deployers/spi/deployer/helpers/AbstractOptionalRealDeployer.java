@@ -53,7 +53,7 @@ public abstract class AbstractOptionalRealDeployer<T> extends AbstractRealDeploy
       setInputs(optionalInput);
    }
 
-   public void deploy(DeploymentUnit unit) throws DeploymentException
+   public void internalDeploy(DeploymentUnit unit) throws DeploymentException
    {
       deploy(unit, unit.getAttachment(optionalInput));
    }
@@ -69,7 +69,7 @@ public abstract class AbstractOptionalRealDeployer<T> extends AbstractRealDeploy
 
 
    @Override
-   public void undeploy(DeploymentUnit unit)
+   public void internalUndeploy(DeploymentUnit unit)
    {
       undeploy(unit, unit.getAttachment(optionalInput));
    }

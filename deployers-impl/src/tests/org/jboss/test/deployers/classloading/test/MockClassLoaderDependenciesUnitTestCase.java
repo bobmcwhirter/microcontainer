@@ -160,7 +160,7 @@ public class MockClassLoaderDependenciesUnitTestCase extends AbstractDeployerTes
       Deployment deploymentA = createSimpleDeployment(NameA);
       ClassLoaderMetaData classLoaderMetaData = addMetaData(deploymentA, null, A.class);
       addRequireModule(classLoaderMetaData, "B", null);
-      DeploymentUnit unitA = deploy(deployer, deploymentA);
+      DeploymentUnit unitA = addDeployment(deployer, deploymentA);
       
       assertNoClassLoader(unitA);
 
@@ -200,7 +200,7 @@ public class MockClassLoaderDependenciesUnitTestCase extends AbstractDeployerTes
       Deployment deploymentA = createSimpleDeployment(NameA);
       ClassLoaderMetaData classLoaderMetaData = addMetaData(deploymentA, null, A.class);
       addRequireModule(classLoaderMetaData, "B", null);
-      DeploymentUnit unitA = deploy(deployer, deploymentA);
+      DeploymentUnit unitA = addDeployment(deployer, deploymentA);
       
       assertNoClassLoader(unitA);
 
@@ -241,7 +241,7 @@ public class MockClassLoaderDependenciesUnitTestCase extends AbstractDeployerTes
       Deployment deploymentA = createSimpleDeployment(NameA);
       ClassLoaderMetaData classLoaderMetaData = addMetaData(deploymentA, null, A.class);
       addRequireModule(classLoaderMetaData, "B", null);
-      DeploymentUnit unitA = deploy(deployer, deploymentA);
+      DeploymentUnit unitA = addDeployment(deployer, deploymentA);
       
       assertNoClassLoader(unitA);
 

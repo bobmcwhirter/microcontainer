@@ -23,7 +23,6 @@ package org.jboss.deployers.structure.spi.helpers;
 
 import org.jboss.deployers.client.spi.Deployment;
 import org.jboss.deployers.spi.DeploymentException;
-import org.jboss.deployers.spi.DeploymentState;
 import org.jboss.deployers.spi.attachments.Attachments;
 import org.jboss.deployers.spi.structure.StructureMetaData;
 import org.jboss.deployers.spi.structure.StructureMetaDataFactory;
@@ -68,8 +67,6 @@ public class AbstractStructuralDeployers implements StructuralDeployers
       if (builder == null)
          throw new IllegalStateException("No structure builder has been configured");
       
-      Throwable problem = null;
-
       Attachments attachments = deployment.getPredeterminedManagedObjects();
       StructureMetaData structureMetaData = attachments.getAttachment(StructureMetaData.class);
       if (structureMetaData == null)
@@ -79,19 +76,17 @@ public class AbstractStructuralDeployers implements StructuralDeployers
          {
             determineStructure(deployment, structureMetaData);
          }
+         catch (DeploymentException e)
+         {
+            throw e;
+         }
          catch (Throwable t)
          {
-            problem = t;
+            throw DeploymentException.rethrowAsDeploymentException("Exception determining structure: " + deployment, t);
          }
       }
       
-      DeploymentContext result = structureBuilder.populateContext(deployment, structureMetaData);
-      if (problem != null)
-      {
-         result.setState(DeploymentState.ERROR);
-         result.setProblem(problem);
-      }
-      return result;
+      return structureBuilder.populateContext(deployment, structureMetaData);
    }
    
    protected void determineStructure(Deployment deployment, StructureMetaData structure) throws Exception

@@ -28,6 +28,7 @@ import java.util.Map;
 import java.util.Set;
 import java.util.TreeMap;
 import java.util.TreeSet;
+import java.util.HashMap;
 
 /**
  * IncompleteDeployments.
@@ -51,6 +52,18 @@ public class IncompleteDeployments implements Serializable
 
    /** Contexts missing dependencies */
    private Map<String, Set<MissingDependency>> contextsMissingDependencies;
+
+   /** Deployments in error info */
+   private String deploymentsInErrorInfo;
+
+   /** Missing deployers info */
+   private String deploymentsMissingDeployerInfo;
+
+   /** Contexts in error info */
+   private String contextsInErrorInfo;
+
+   /** Contexts missing dependencies info */
+   private String contextsMissingDependenciesInfo;
 
    /**
     * Create a new IncompleteDeploymentException.
@@ -138,6 +151,147 @@ public class IncompleteDeployments implements Serializable
          return true;
 
       return false;
+   }
+
+   /**
+    * Get the info about deployments in error.
+    *
+    * @return string info
+    */
+   public String getDeploymentsInErrorInfo()
+   {
+      if (deploymentsInErrorInfo == null)
+      {
+         StringBuilder buffer = new StringBuilder();
+         // Display all the incomplete deployments
+         Map<String, Throwable> deploymentsInError = getDeploymentsInError();
+         if (deploymentsInError.isEmpty() == false)
+         {
+            buffer.append("\n*** DEPLOYMENTS IN ERROR: Name -> Error\n\n");
+            for (Map.Entry<String, Throwable> entry : deploymentsInError.entrySet())
+               buffer.append(entry.getKey()).append(" -> ").append(entry.getValue().toString()).append("\n\n");
+         }
+         deploymentsInErrorInfo = buffer.toString();
+      }
+      return deploymentsInErrorInfo;
+   }
+
+   /**
+    * Get the info about missing deployers.
+    *
+    * @return string info
+    */
+   public String getDeploymentsMissingDeployerInfo()
+   {
+      if (deploymentsMissingDeployerInfo == null)
+      {
+         StringBuilder buffer = new StringBuilder();
+         // Display all the missing deployers
+         Collection<String> deploymentsMissingDeployers = getDeploymentsMissingDeployer();
+         if (deploymentsMissingDeployers.isEmpty() == false)
+         {
+            buffer.append("\n*** DEPLOYMENTS MISSING DEPLOYERS: Name\n\n");
+            for (String name : deploymentsMissingDeployers)
+               buffer.append(name).append('\n');
+         }
+         deploymentsMissingDeployerInfo = buffer.toString();
+      }
+      return deploymentsMissingDeployerInfo;
+   }
+
+   /**
+    * Calculate upfront context errors.
+    */
+   protected void calculateContextsError()
+   {
+      // Popluate the potential root causes
+      Map<String, String> rootCauses = new HashMap<String, String>();
+
+      // Missing dependencies are root causes
+      Map<String, Set<MissingDependency>> contextsMissingDependencies = getContextsMissingDependencies();
+      if (contextsMissingDependencies.isEmpty() == false)
+      {
+         for (Map.Entry<String, Set<MissingDependency>> entry : contextsMissingDependencies.entrySet())
+         {
+            for (MissingDependency dependency : entry.getValue())
+               rootCauses.put(dependency.getDependency(), dependency.getActualState());
+         }
+      }
+
+      // Errors are root causes
+      Map<String, Throwable> contextsInError = getContextsInError();
+      if (contextsInError.isEmpty() == false)
+      {
+         for (Map.Entry<String, Throwable> entry : contextsInError.entrySet())
+         {
+            Throwable t = entry.getValue();
+            if (t == null)
+               rootCauses.put(entry.getKey(), "** UNKNOWN ERROR **");
+            else
+               rootCauses.put(entry.getKey(), t.toString());
+         }
+      }
+
+      StringBuilder buffer = new StringBuilder();
+
+      // Display all the missing dependencies
+      if (contextsMissingDependencies.isEmpty() == false)
+      {
+         buffer.append("\n*** CONTEXTS MISSING DEPENDENCIES: Name -> Dependency{Required State:Actual State}\n\n");
+         for (Map.Entry<String, Set<MissingDependency>> entry : contextsMissingDependencies.entrySet())
+         {
+            String name = entry.getKey();
+            buffer.append(name).append("\n");
+            for (MissingDependency dependency : entry.getValue())
+            {
+               buffer.append(" -> ").append(dependency.getDependency());
+               buffer.append('{').append(dependency.getRequiredState());
+               buffer.append(':').append(dependency.getActualState()).append("}");
+               buffer.append("\n");
+            }
+            buffer.append('\n');
+
+            // It is not a root cause if it has missing dependencies
+            rootCauses.remove(name);
+         }
+      }
+      contextsMissingDependenciesInfo = buffer.toString();
+
+      // reset buffer
+      buffer.setLength(0);
+
+      if (rootCauses.isEmpty() == false)
+      {
+         buffer.append("\n*** CONTEXTS IN ERROR: Name -> Error\n\n");
+         for (Map.Entry<String, String> entry : rootCauses.entrySet())
+            buffer.append(entry.getKey()).append(" -> ").append(entry.getValue()).append("\n\n");
+      }
+      contextsInErrorInfo = buffer.toString();
+   }
+
+   /**
+    * Get the contexts in error info.
+    *
+    * @return string info
+    */
+   public String getContextsInErrorInfo()
+   {
+      if (contextsInErrorInfo == null)
+         calculateContextsError();
+
+      return contextsInErrorInfo;
+   }
+
+   /**
+    * Get the contexts missing dependecies info
+    * @return
+    */
+   public String getContextsMissingDependenciesInfo()
+   {
+      if (contextsMissingDependenciesInfo == null)
+         calculateContextsError();
+
+      return contextsMissingDependenciesInfo;
    }
 
    /**

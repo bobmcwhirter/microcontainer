@@ -19,31 +19,22 @@
 * Software Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA
 * 02110-1301 USA, or see the FSF site: http://www.fsf.org.
 */
-package org.jboss.osgi.plugins.deployers;
+package org.jboss.deployers.vfs.plugins.structure.file;
 
-import org.jboss.deployers.spi.structure.StructureMetaData;
-import org.jboss.deployers.spi.DeploymentException;
-import org.jboss.deployers.vfs.spi.structure.VFSStructuralDeployers;
-import org.jboss.deployers.vfs.spi.structure.helpers.AbstractStructureDeployer;
 import org.jboss.virtual.VirtualFile;
 
 /**
- * OSGi structure deployer.
- * Reads manifest for OSGi classpath.
+ * Matches virtual file to check if it can be deployed.
  *
  * @author <a href="mailto:ales.justin@jboss.com">Ales Justin</a>
  */
-public class OSGiStructure extends AbstractStructureDeployer
+public interface FileMatcher
 {
-   public OSGiStructure()
-   {
-      /* one after jar */
-      setRelativeOrder(10001);
-   }
-
-   public boolean determineStructure(VirtualFile root, VirtualFile parent, VirtualFile file, StructureMetaData metaData, VFSStructuralDeployers deployers) throws DeploymentException
-   {
-      // todo - see JarStructure
-      return false;
-   }
+   /**
+    * Check if file param is deployable.
+    *
+    * @param file the virtual file
+    * @return true if we have a match, false otherwise
+    */
+   boolean isDeployable(VirtualFile file);
 }

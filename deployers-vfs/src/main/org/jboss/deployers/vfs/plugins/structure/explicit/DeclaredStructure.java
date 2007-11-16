@@ -25,6 +25,7 @@ import java.io.IOException;
 import java.net.URL;
 
 import org.jboss.deployers.spi.structure.StructureMetaData;
+import org.jboss.deployers.spi.DeploymentException;
 import org.jboss.deployers.vfs.spi.structure.VFSStructuralDeployers;
 import org.jboss.deployers.vfs.spi.structure.helpers.AbstractStructureDeployer;
 import org.jboss.virtual.VirtualFile;
@@ -48,7 +49,7 @@ public class DeclaredStructure extends AbstractStructureDeployer
       setRelativeOrder(0);
    }
 
-   public boolean determineStructure(VirtualFile root, VirtualFile parent, VirtualFile file, StructureMetaData metaData, VFSStructuralDeployers deployers)
+   public boolean determineStructure(VirtualFile root, VirtualFile parent, VirtualFile file, StructureMetaData metaData, VFSStructuralDeployers deployers) throws DeploymentException
    {
       try
       {
@@ -81,7 +82,7 @@ public class DeclaredStructure extends AbstractStructureDeployer
       }
       catch (Exception e)
       {
-         log.warn("Error determining structure: " + file.getName(), e);
+         throw DeploymentException.rethrowAsDeploymentException("Error determining structure: " + file.getName(), e);
       }
       return false;
    }

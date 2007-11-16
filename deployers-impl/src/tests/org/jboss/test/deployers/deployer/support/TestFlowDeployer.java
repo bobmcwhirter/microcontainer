@@ -100,13 +100,13 @@ public class TestFlowDeployer extends AbstractRealDeployer
       return undeployed;
    }
 
-   public void deploy(DeploymentUnit unit) throws DeploymentException
+   public void internalDeploy(DeploymentUnit unit) throws DeploymentException
    {
       unit.getTypes().add(getType());
       deployed.put(unit.getName(), ++order);
    }
 
-   public void undeploy(DeploymentUnit unit)
+   public void internalUndeploy(DeploymentUnit unit)
    {
       undeployed.put(unit.getName(), ++order);
    }

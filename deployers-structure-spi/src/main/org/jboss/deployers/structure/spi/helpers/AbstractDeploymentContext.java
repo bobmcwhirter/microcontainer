@@ -31,6 +31,7 @@ import java.util.List;
 import java.util.Set;
 import java.util.SortedSet;
 import java.util.TreeSet;
+import java.util.HashSet;
 import java.util.concurrent.CopyOnWriteArrayList;
 import java.util.concurrent.CopyOnWriteArraySet;
 
@@ -73,7 +74,10 @@ public class AbstractDeploymentContext extends ManagedObjectsWithTransientAttach
    
    /** The name */
    private String name;
-   
+
+   /** The controller context names - should be serializable */
+   private Set<Object> controllerContextNames;
+
    /** The simple name */
    private String simpleName;
 
@@ -338,6 +342,30 @@ public class AbstractDeploymentContext extends ManagedObjectsWithTransientAttach
    public String getName()
    {
       return name;
+   }
+
+   public Set<Object> getControllerContextNames()
+   {
+      return controllerContextNames != null ? Collections.unmodifiableSet(getControllerContextNames()) : null;
+   }
+
+   public synchronized void addControllerContextName(Object name)
+   {
+      if (controllerContextNames == null)
+         controllerContextNames = new HashSet<Object>();
+      controllerContextNames.add(name);
+   }
+
+   public synchronized void removeControllerContextName(Object name)
+   {
+      if (controllerContextNames != null)
+      {
+         controllerContextNames.remove(name);
+         if (controllerContextNames.isEmpty())
+            controllerContextNames = null;
+      }
+      else
+         log.warn("Removing name on null names: " + name);
    }
 
    public String getSimpleName()

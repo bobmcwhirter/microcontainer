@@ -27,6 +27,7 @@ import java.util.Map;
 
 import org.jboss.deployers.spi.DeploymentException;
 import org.jboss.deployers.structure.spi.DeploymentContext;
+import org.jboss.deployers.client.spi.Deployment;
 import org.jboss.managed.api.ManagedObject;
 
 /**
@@ -61,13 +62,21 @@ public interface Deployers
     * @param missingDeployer the deployments missing a deployer
     * @throws DeploymentException when some deployment is not complete
     */
-   void checkComplete(Collection<DeploymentContext> errors, Collection<DeploymentContext> missingDeployer) throws DeploymentException;
+   void checkComplete(Collection<DeploymentContext> errors, Collection<Deployment> missingDeployer) throws DeploymentException;
 
    /**
-    * Check a single deployment is complete
+    * Check if deployments are complete
     * 
-    * @param context the deployment
+    * @param contexts the deployments
     * @throws DeploymentException when the deployment is not complete
     */
-   void checkComplete(DeploymentContext context) throws DeploymentException;
+   void checkComplete(DeploymentContext... contexts) throws DeploymentException;
+
+   /**
+    * Check if deployments are structurally complete
+    *
+    * @param contexts the deployments
+    * @throws DeploymentException when the deployment is not complete
+    */
+   void checkStructureComplete(DeploymentContext... contexts) throws DeploymentException;
 }

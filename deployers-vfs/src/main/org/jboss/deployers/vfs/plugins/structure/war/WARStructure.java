@@ -26,6 +26,7 @@ import java.util.List;
 
 import org.jboss.deployers.spi.structure.ContextInfo;
 import org.jboss.deployers.spi.structure.StructureMetaData;
+import org.jboss.deployers.spi.DeploymentException;
 import org.jboss.deployers.vfs.spi.structure.VFSStructuralDeployers;
 import org.jboss.deployers.vfs.spi.structure.helpers.AbstractStructureDeployer;
 import org.jboss.virtual.VirtualFile;
@@ -79,7 +80,7 @@ public class WARStructure extends AbstractStructureDeployer
       this.webInfLibFilter = webInfLibFilter;
    }
 
-   public boolean determineStructure(VirtualFile root, VirtualFile parent, VirtualFile file, StructureMetaData metaData, VFSStructuralDeployers deployers)
+   public boolean determineStructure(VirtualFile root, VirtualFile parent, VirtualFile file, StructureMetaData metaData, VFSStructuralDeployers deployers) throws DeploymentException
    {
       ContextInfo context = null;
       try
@@ -145,11 +146,11 @@ public class WARStructure extends AbstractStructureDeployer
       }
       catch (Exception e)
       {
-         log.warn("Error determining structure: " + file.getName(), e);
          // Remove the invalid context
          if (context != null)
             metaData.removeContext(context);
-         return false;
+
+         throw DeploymentException.rethrowAsDeploymentException("Error determining structure: " + file.getName(), e);
       }
    }
 }

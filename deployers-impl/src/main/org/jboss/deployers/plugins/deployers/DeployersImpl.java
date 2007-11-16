@@ -38,6 +38,7 @@ import org.jboss.dependency.spi.ControllerContextActions;
 import org.jboss.dependency.spi.ControllerState;
 import org.jboss.dependency.spi.DependencyInfo;
 import org.jboss.dependency.spi.DependencyItem;
+import org.jboss.deployers.client.spi.Deployment;
 import org.jboss.deployers.client.spi.IncompleteDeploymentException;
 import org.jboss.deployers.client.spi.IncompleteDeployments;
 import org.jboss.deployers.client.spi.MissingDependency;
@@ -86,7 +87,7 @@ public class DeployersImpl implements Deployers, ControllerContextActions
    
    /** The scope builder */
    private ScopeBuilder scopeBuilder;
-   
+
    /**
     * Create a new DeployersImpl.
     *
@@ -526,7 +527,7 @@ public class DeployersImpl implements Deployers, ControllerContextActions
       return result;
    }
 
-   public void checkComplete(Collection<DeploymentContext> errors, Collection<DeploymentContext> missingDeployer) throws DeploymentException
+   public void checkComplete(Collection<DeploymentContext> errors, Collection<Deployment> missingDeployer) throws DeploymentException
    {
       Map<String, Throwable> deploymentsInError = null;
       Collection<String> deploymentsMissingDeployer = null;
@@ -543,106 +544,217 @@ public class DeployersImpl implements Deployers, ControllerContextActions
       if (missingDeployer != null && missingDeployer.isEmpty() == false)
       {
          deploymentsMissingDeployer = new HashSet<String>();
-         for (DeploymentContext context : missingDeployer)
+         for (Deployment context : missingDeployer)
             deploymentsMissingDeployer.add(context.getName());
       }
-      
-      if (controller != null)
+
+      List<ControllerState> states = controller.getStates();
+
+      Set<ControllerContext> notInstalled = controller.getNotInstalled();
+      if (notInstalled.isEmpty() == false)
       {
-         List<ControllerState> states = controller.getStates();
-         
-         Set<ControllerContext> notInstalled = controller.getNotInstalled();
+         for (Iterator<ControllerContext> i = notInstalled.iterator(); i.hasNext();)
+         {
+            ControllerContext context = i.next();
+            if (context.getState().equals(context.getRequiredState()))
+               i.remove();
+         }
          if (notInstalled.isEmpty() == false)
          {
-            for (Iterator<ControllerContext> i = notInstalled.iterator(); i.hasNext();)
+            contextsInError = new HashMap<String, Throwable>();
+            contextsMissingDependencies = new HashMap<String, Set<MissingDependency>>();
+            for (ControllerContext context : notInstalled)
             {
-               ControllerContext context = i.next();
-               if (context.getState().equals(context.getRequiredState()))
-                  i.remove();
-            }
-            if (notInstalled.isEmpty() == false)
-            {
-               contextsInError = new HashMap<String, Throwable>();
-               contextsMissingDependencies = new HashMap<String, Set<MissingDependency>>();
-               for (ControllerContext context : notInstalled)
-               {
-                  if (context.getState().equals(ControllerState.ERROR))
-                     contextsInError.put(context.getName().toString(), getRootCause(context.getError()));
-                  else
-                  {
-                     String name = context.getName().toString();
-                     Set<MissingDependency> dependencies = new HashSet<MissingDependency>();
-                     DependencyInfo dependsInfo = context.getDependencyInfo();
-                     for (DependencyItem item : dependsInfo.getIDependOn(null))
-                     {
-                        if (item.isResolved() == false)
-                        {
-                           String dependency;
-                           ControllerState actualState = null;
-                           String actualStateString;
-                           Object iDependOn = item.getIDependOn();
-                           if (iDependOn == null)
-                           {
-                              dependency = "<UNKNOWN>";
-                              actualStateString = "** UNRESOLVED " + item.toHumanReadableString() + " **";
-                           }
-                           else
-                           {
-                              dependency = iDependOn.toString();
-                              ControllerContext other = controller.getContext(item.getIDependOn(), null);
-                              if (other == null)
-                                 actualStateString = "** NOT FOUND **";
-                              else
-                              {
-                                 actualState = other.getState();
-                                 actualStateString = actualState.getStateString();
-                              }
-                           }
-                           ControllerState requiredState = item.getWhenRequired();
-                           String requiredStateString = requiredState.getStateString();
-                           int required = states.indexOf(requiredState);
-                           int actual = actualState == null ? -1 : states.indexOf(actualState);
-                           if (required > actual)
-                           {
-                              MissingDependency missing = new MissingDependency(name, dependency, requiredStateString, actualStateString);
-                              dependencies.add(missing);
-                           }
-                        }
-                     }
-                     contextsMissingDependencies.put(name, dependencies);
-                  }
-               }
+               checkControllerContext(context, contextsInError, contextsMissingDependencies, states);
             }
          }
       }
-      
+
       IncompleteDeployments incomplete = new IncompleteDeployments(deploymentsInError, deploymentsMissingDeployer, contextsInError, contextsMissingDependencies);
       if (incomplete.isIncomplete())
          throw new IncompleteDeploymentException(incomplete);
    }
 
-   public void checkComplete(DeploymentContext context) throws DeploymentException
+   /**
+    * Check controller context.
+    *
+    * @param context the controller context
+    * @param contextsInError contexts in error map
+    * @param contextsMissingDependencies contexts missing dependecies map
+    * @param states controller states
+    */
+   protected final void checkControllerContext(
+         ControllerContext context,
+         Map<String, Throwable> contextsInError,
+         Map<String, Set<MissingDependency>> contextsMissingDependencies,
+         List<ControllerState> states)
    {
-      Map<String, Throwable> deploymentsInError = null;
-      Collection<String> deploymentsMissingDeployer = null;
-      Map<String, Throwable> contextsInError = null;
-      Map<String, Set<MissingDependency>> contextsMissingDependencies = null;
+      if (context.getState().equals(ControllerState.ERROR))
+         contextsInError.put(context.getName().toString(), getRootCause(context.getError()));
+      else
+      {
+         String name = context.getName().toString();
+         Set<MissingDependency> dependencies = new HashSet<MissingDependency>();
+         DependencyInfo dependsInfo = context.getDependencyInfo();
+         for (DependencyItem item : dependsInfo.getIDependOn(null))
+         {
+            if (item.isResolved() == false)
+            {
+               String dependency;
+               ControllerState actualState = null;
+               String actualStateString;
+               Object iDependOn = item.getIDependOn();
+               if (iDependOn == null)
+               {
+                  dependency = "<UNKNOWN>";
+                  actualStateString = "** UNRESOLVED " + item.toHumanReadableString() + " **";
+               }
+               else
+               {
+                  dependency = iDependOn.toString();
+                  ControllerContext other = controller.getContext(item.getIDependOn(), null);
+                  if (other == null)
+                     actualStateString = "** NOT FOUND **";
+                  else
+                  {
+                     actualState = other.getState();
+                     actualStateString = actualState.getStateString();
+                  }
+               }
+               ControllerState requiredState = item.getWhenRequired();
+               String requiredStateString = requiredState.getStateString();
+               int required = states.indexOf(requiredState);
+               int actual = actualState == null ? -1 : states.indexOf(actualState);
+               if (required > actual)
+               {
+                  MissingDependency missing = new MissingDependency(name, dependency, requiredStateString, actualStateString);
+                  dependencies.add(missing);
+               }
+            }
+         }
+         contextsMissingDependencies.put(name, dependencies);
+      }
+   }
 
-      if (context == null)
-         throw new IllegalArgumentException("Null context");
-      
-      Throwable problem = context.getProblem();
-      if (problem != null)
-         deploymentsInError = Collections.singletonMap(context.getName(), problem);
-      
-      if (context.isDeployed() == false)
-         deploymentsMissingDeployer = Collections.singleton(context.getName());
+   public void checkComplete(DeploymentContext... contexts) throws DeploymentException
+   {
+      checkComplete(true, contexts);
+   }
 
-      // TODO JBMICROCONT-187 go through controller contexts for the deployment + related contexts
-      
+   public void checkStructureComplete(DeploymentContext... contexts) throws DeploymentException
+   {
+      checkComplete(false, contexts);
+   }
+
+   /**
+    * Check if deployments are complete.
+    *
+    * @param contexts the deployment contexts
+    * @param checkContexts do we check contexts
+    * @throws DeploymentException throw error if deployment is incomplete
+    */
+   protected void checkComplete(boolean checkContexts, DeploymentContext... contexts) throws DeploymentException
+   {
+      if (contexts == null)
+         throw new IllegalArgumentException("Null contexts");
+
+      Map<String, Throwable> deploymentsInError = new HashMap<String, Throwable>();
+      Collection<String> deploymentsMissingDeployer = new HashSet<String>();
+      Map<String, Throwable> contextsInError = new HashMap<String, Throwable>();
+      Map<String, Set<MissingDependency>> contextsMissingDependencies = new HashMap<String, Set<MissingDependency>>();
+
+      for(DeploymentContext context : contexts)
+      {
+         Throwable problem = context.getProblem();
+         if (problem != null)
+            deploymentsInError.put(context.getName(), problem);
+
+         if (context.isDeployed() == false)
+            deploymentsMissingDeployer.add(context.getName());
+
+         if (checkContexts)
+         {
+            Set<ControllerContext> notInstalled = controller.getNotInstalled();
+            List<ControllerState> states = controller.getStates();
+            checkComplete(context, contextsInError, contextsMissingDependencies, notInstalled, states);
+         }
+      }
+
+      // reset if not used
+      if (deploymentsInError.isEmpty())
+         deploymentsInError = null;
+      if (deploymentsMissingDeployer.isEmpty())
+         deploymentsMissingDeployer = null;
+      if (contextsInError.isEmpty())
+         contextsInError = null;
+      if (contextsMissingDependencies.isEmpty())
+         contextsMissingDependencies = null;
+
       IncompleteDeployments incomplete = new IncompleteDeployments(deploymentsInError, deploymentsMissingDeployer, contextsInError, contextsMissingDependencies);
       if (incomplete.isIncomplete())
          throw new IncompleteDeploymentException(incomplete);
+   }
+
+   /**
+    * Check complete on deployment context.
+    *
+    * @param context the deployment context
+    * @param contextsInError contexts in error map
+    * @param contextsMissingDependencies contexts missing dependecies map
+    * @param notInstalled the not installed contexts
+    * @param states controller states
+    */
+   protected final void checkComplete(
+         DeploymentContext context,
+         Map<String, Throwable> contextsInError,
+         Map<String, Set<MissingDependency>> contextsMissingDependencies,
+         Set<ControllerContext> notInstalled,
+         List<ControllerState> states)
+   {
+      DeploymentControllerContext dcc = context.getTransientAttachments().getAttachment(ControllerContext.class.getName(), DeploymentControllerContext.class);
+      checkControllerContext(dcc, contextsInError, contextsMissingDependencies, notInstalled, states);
+
+      Set<Object> names = context.getControllerContextNames();
+      if (names != null && names.isEmpty() == false)
+      {
+         for(Object name : names)
+         {
+            ControllerContext cc = controller.getContext(name, null);
+            checkControllerContext(cc, contextsInError, contextsMissingDependencies, notInstalled, states);
+         }
+      }
+
+      List<DeploymentContext> children = context.getChildren();
+      if (children != null && children.isEmpty() == false)
+      {
+         for(DeploymentContext child : children)
+            checkComplete(child, contextsInError, contextsMissingDependencies, notInstalled, states);
+      }
+   }
+
+   /**
+    * Check complete on deployment context.
+    *
+    * @param context the deployment context
+    * @param contextsInError contexts in error map
+    * @param contextsMissingDependencies contexts missing dependecies map
+    * @param notInstalled the not installed contexts
+    * @param states controller states
+    */
+   protected void checkControllerContext(
+         ControllerContext context,
+         Map<String, Throwable> contextsInError,
+         Map<String, Set<MissingDependency>> contextsMissingDependencies,
+         Set<ControllerContext> notInstalled,
+         List<ControllerState> states)
+   {
+      if (context != null)
+      {
+         if (context.getState().equals(context.getRequiredState()) == false && notInstalled.contains(context))
+         {
+            checkControllerContext(context, contextsInError, contextsMissingDependencies, states);
+         }
+      }
    }
 
    public void install(ControllerContext context, ControllerState fromState, ControllerState toState) throws Throwable

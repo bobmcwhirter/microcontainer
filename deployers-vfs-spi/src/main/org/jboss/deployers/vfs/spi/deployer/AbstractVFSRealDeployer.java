@@ -36,7 +36,7 @@ import org.jboss.deployers.vfs.spi.structure.VFSDeploymentUnit;
 @Deprecated
 public abstract class AbstractVFSRealDeployer extends AbstractRealDeployer
 {
-   public void deploy(DeploymentUnit unit) throws DeploymentException
+   public void internalDeploy(DeploymentUnit unit) throws DeploymentException
    {
       if (unit instanceof VFSDeploymentUnit == false)
          return;
@@ -45,7 +45,7 @@ public abstract class AbstractVFSRealDeployer extends AbstractRealDeployer
       deploy(vfsDeploymentUnit);
    }
 
-   public void undeploy(DeploymentUnit unit)
+   public void internalUndeploy(DeploymentUnit unit)
    {
       if (unit instanceof VFSDeploymentUnit == false)
          return;

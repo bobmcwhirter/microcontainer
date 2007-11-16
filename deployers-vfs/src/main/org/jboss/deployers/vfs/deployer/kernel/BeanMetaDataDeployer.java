@@ -57,6 +57,7 @@ public class BeanMetaDataDeployer extends AbstractSimpleRealDeployer<BeanMetaDat
          throw new IllegalArgumentException("Null kernel");
       controller = kernel.getController();
       setComponentsOnly(true);
+      setUseUnitName(true);
    }
 
    @Override

@@ -22,6 +22,7 @@
 package org.jboss.deployers.vfs.spi.structure;
 
 import org.jboss.deployers.spi.structure.StructureMetaData;
+import org.jboss.deployers.spi.DeploymentException;
 import org.jboss.virtual.VirtualFile;
 
 /**
@@ -40,6 +41,7 @@ public interface VFSStructuralDeployers
     * @param file the virtual file
     * @param structureMetaData the structure metadata
     * @return true when recognised, false otherwise
+    * @throws DeploymentException for any error
     */
-   boolean determineStructure(VirtualFile root, VirtualFile parent, VirtualFile file, StructureMetaData structureMetaData);
+   boolean determineStructure(VirtualFile root, VirtualFile parent, VirtualFile file, StructureMetaData structureMetaData) throws DeploymentException;
 }

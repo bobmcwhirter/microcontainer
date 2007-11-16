@@ -85,21 +85,20 @@ public interface DeployerClient
    void process();
 
    /**
-    * Deploy a deployment
+    * Deploy the deployments
     * 
-    * @param deployment the deployment
+    * @param deployments the deployments
     * @throws DeploymentException for any error
     */
-   void deploy(Deployment deployment) throws DeploymentException;
+   void deploy(Deployment... deployments) throws DeploymentException;
 
    /**
-    * Undeploy a deployment
+    * Undeploy the deployments
     * 
-    * @param deployment the deployment
-    * @return true when the deployment was undeployed
+    * @param deployments the deployments
     * @throws DeploymentException for any error
     */
-   boolean undeploy(Deployment deployment) throws DeploymentException;
+   void undeploy(Deployment... deployments) throws DeploymentException;
 
    /**
     * Check all the deployments are complete
@@ -109,29 +108,44 @@ public interface DeployerClient
    void checkComplete() throws DeploymentException;
 
    /**
-    * Check a single deployment is complete
+    * Check if deployments are complete
     * 
     * @param deployment the deployment
-    * @throws DeploymentException when the deployment is not complete
+    * @throws DeploymentException when some deployments are not complete
     */
-   void checkComplete(Deployment deployment) throws DeploymentException;
+   void checkComplete(Deployment... deployment) throws DeploymentException;
 
    /**
-    * Check a single deployment is complete
+    * Check if deployments are complete
     * 
-    * @param name the deployment name
-    * @throws DeploymentException when the deployment is not complete
+    * @param names the deployment name
+    * @throws DeploymentException when some deployments are not complete
     */
-   void checkComplete(String name) throws DeploymentException;
+   void checkComplete(String... names) throws DeploymentException;
    
    /**
-    * Undeploy a deployment by name
+    * Check if deployments are recognized
+    *
+    * @param deployments the deployments
+    * @throws DeploymentException when some deployments are not recognized
+    */
+   void checkStructureComplete(Deployment... deployments) throws DeploymentException;
+
+   /**
+    * Check if deployments are recognized
+    *
+    * @param names the deployment names
+    * @throws DeploymentException when some deployments are not recognized
+    */
+   void checkStructureComplete(String... names) throws DeploymentException;
+
+   /**
+    * Undeploy a deployments by name
     * 
-    * @param name the name of the deployment
-    * @return true when the deployment was undeployed
+    * @param names the names of the deployments
     * @throws DeploymentException for any error
     */
-   boolean undeploy(String name) throws DeploymentException;
+   void undeploy(String... names) throws DeploymentException;
 
    /**
     * Get a the state of deployment

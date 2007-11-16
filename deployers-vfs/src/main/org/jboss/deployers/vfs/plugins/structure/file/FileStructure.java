@@ -26,9 +26,12 @@ import java.util.concurrent.CopyOnWriteArraySet;
 
 import org.jboss.deployers.spi.structure.ContextInfo;
 import org.jboss.deployers.spi.structure.StructureMetaData;
+import org.jboss.deployers.spi.DeploymentException;
 import org.jboss.deployers.vfs.spi.structure.VFSStructuralDeployers;
 import org.jboss.deployers.vfs.spi.structure.helpers.AbstractStructureDeployer;
 import org.jboss.virtual.VirtualFile;
+import org.jboss.beans.metadata.api.annotations.Install;
+import org.jboss.beans.metadata.api.annotations.Uninstall;
 
 /**
  * FileStructure is a simple suffix recognition structure deployer.
@@ -40,6 +43,9 @@ public class FileStructure extends AbstractStructureDeployer
 {
    /** The file suffixes */
    private static Set<String> fileSuffixes = new CopyOnWriteArraySet<String>();
+
+   /** The file matchers */
+   private Set<FileMatcher> fileMatchers = new CopyOnWriteArraySet<FileMatcher>();
 
    // Initialise known suffixes
    static
@@ -110,6 +116,18 @@ public class FileStructure extends AbstractStructureDeployer
       return fileSuffixes.remove(suffix);
    }
    
+   @Install
+   public boolean addFileMatcher(FileMatcher fm)
+   {
+      return fileMatchers.add(fm);
+   }
+
+   @Uninstall
+   public boolean removeFileMatcher(FileMatcher fm)
+   {
+      return fileMatchers.remove(fm);   
+   }
+
    /**
     * Whether this is an archive
     *
@@ -121,15 +139,32 @@ public class FileStructure extends AbstractStructureDeployer
    {
       if (name == null)
          throw new IllegalArgumentException("Null name");
-      
-      int index = name.lastIndexOf('-');
-      if (index == -1)
-         return false;
-      String suffix = name.substring(index);
-      return fileSuffixes.contains(suffix);
+
+      for(String suffix : fileSuffixes)
+      {
+         if (name.endsWith(suffix))
+            return true;
+      }
+      return false;
    }
 
-   public boolean determineStructure(VirtualFile root, VirtualFile parent, VirtualFile file, StructureMetaData metaData, VFSStructuralDeployers deployers)
+   /**
+    * Check is some file matcher recognizes the file.
+    *
+    * @param file the virtual file
+    * @return true if recognized, false otherwise
+    */
+   protected boolean checkFileMatchers(VirtualFile file)
+   {
+      for(FileMatcher fm : fileMatchers)
+      {
+         if (fm.isDeployable(file))
+            return true;
+      }
+      return false;
+   }
+
+   public boolean determineStructure(VirtualFile root, VirtualFile parent, VirtualFile file, StructureMetaData metaData, VFSStructuralDeployers deployers) throws DeploymentException
    {
       ContextInfo context = null;
       try
@@ -143,7 +178,7 @@ public class FileStructure extends AbstractStructureDeployer
             // See if this is a top-level by checking the parent
             if (isTopLevel(parent) == false)
             {
-               if (isKnownFile(file.getName()) == false)
+               if (isKnownFile(file.getName()) == false && checkFileMatchers(file) == false)
                {
                   if (trace)
                      log.trace("... no - it is not a top level file and not a known name");
@@ -178,10 +213,10 @@ public class FileStructure extends AbstractStructureDeployer
       }
       catch (Exception e)
       {
-         log.warn("Error determining structure: " + file.getName(), e);
          if (context != null)
             metaData.removeContext(context);
-         return false;
+
+         throw DeploymentException.rethrowAsDeploymentException("Error determining structure: " + file.getName(), e);
       }
    }
 }

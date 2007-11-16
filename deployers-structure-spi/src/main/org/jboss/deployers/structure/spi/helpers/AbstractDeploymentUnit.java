@@ -87,7 +87,22 @@ public class AbstractDeploymentUnit extends AbstractMutableAttachments implement
    {
       return deploymentContext.getName();
    }
-   
+
+   public Set<Object> getControllerContextNames()
+   {
+      return deploymentContext.getControllerContextNames();
+   }
+
+   public void addControllerContextName(Object name)
+   {
+      deploymentContext.addControllerContextName(name);
+   }
+
+   public void removeControllerContextName(Object name)
+   {
+      deploymentContext.removeControllerContextName(name);
+   }
+
    public String getSimpleName()
    {
       return deploymentContext.getSimpleName();

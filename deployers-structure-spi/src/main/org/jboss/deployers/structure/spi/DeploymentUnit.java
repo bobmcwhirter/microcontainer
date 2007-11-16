@@ -52,6 +52,27 @@ public interface DeploymentUnit extends MutableAttachments
    String getName();
 
    /**
+    * Get the controller context names.
+    *
+    * @return the names
+    */
+   Set<Object> getControllerContextNames();
+
+   /**
+    * Add controller context name.
+    *
+    * @param name the controller context name
+    */
+   void addControllerContextName(Object name);
+
+   /**
+    * Remove controller context name.
+    *
+    * @param name the controller context name
+    */
+   void removeControllerContextName(Object name);
+
+   /**
     * Get the simple vfs name of the deployment unit. This is the simple
     * name of the virtual file .
     * 

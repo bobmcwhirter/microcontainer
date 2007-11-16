@@ -25,6 +25,7 @@ import java.util.Collections;
 import java.util.Comparator;
 import java.util.List;
 import java.util.Set;
+import java.util.HashSet;
 import java.util.concurrent.CopyOnWriteArrayList;
 
 import org.jboss.dependency.spi.DependencyInfo;
@@ -62,7 +63,10 @@ public class ComponentDeploymentContext implements DeploymentContext
    
    /** The name */
    private String name;
-   
+
+   /** The controller context names - should be serializable */
+   private Set<Object> controllerContextNames;
+
    /** The deployment unit */
    private DeploymentUnit unit;
 
@@ -111,6 +115,30 @@ public class ComponentDeploymentContext implements DeploymentContext
    public String getName()
    {
       return name;
+   }
+
+   public Set<Object> getControllerContextNames()
+   {
+      return controllerContextNames != null ? Collections.unmodifiableSet(getControllerContextNames()) : null;
+   }
+
+   public synchronized void addControllerContextName(Object name)
+   {
+      if (controllerContextNames == null)
+         controllerContextNames = new HashSet<Object>();
+      controllerContextNames.add(name);
+   }
+
+   public synchronized void removeControllerContextName(Object name)
+   {
+      if (controllerContextNames != null)
+      {
+         controllerContextNames.remove(name);
+         if (controllerContextNames.isEmpty())
+            controllerContextNames = null;
+      }
+      else
+         log.warn("Removing name on null names: " + name);
    }
 
    public String getSimpleName()

@@ -55,7 +55,7 @@ public abstract class AbstractSimpleRealDeployer<T> extends AbstractRealDeployer
       return (Class<? extends T>) input;
    }
 
-   public void deploy(DeploymentUnit unit) throws DeploymentException
+   public void internalDeploy(DeploymentUnit unit) throws DeploymentException
    {
       T deployment = unit.getAttachment(getInput());
       if (deployment != null)
@@ -66,7 +66,7 @@ public abstract class AbstractSimpleRealDeployer<T> extends AbstractRealDeployer
       }
    }
 
-   public void undeploy(DeploymentUnit unit)
+   public void internalUndeploy(DeploymentUnit unit)
    {
       T deployment = unit.getAttachment(getInput());
       if (deployment != null)
