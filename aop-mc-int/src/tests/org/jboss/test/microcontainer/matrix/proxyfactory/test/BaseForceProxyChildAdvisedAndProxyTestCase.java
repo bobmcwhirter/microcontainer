@@ -77,7 +77,7 @@ public class BaseForceProxyChildAdvisedAndProxyTestCase extends AbstractProxyTes
       {
          DynamicAspectDeployer.removeBinding(name);
       }
-}
+   }
    
    public void testAdvisedChild() throws Exception
    {
