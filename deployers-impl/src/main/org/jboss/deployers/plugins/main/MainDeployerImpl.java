@@ -90,7 +90,7 @@ public class MainDeployerImpl implements MainDeployer, MainDeployerStructure
    private List<DeploymentContext> deploy = new CopyOnWriteArrayList<DeploymentContext>();
 
    /** The process lock */
-   private ReentrantReadWriteLock processLock = new ReentrantReadWriteLock();
+   private ReentrantReadWriteLock lock = new ReentrantReadWriteLock();
 
    /**
     * Get the deployers
@@ -352,15 +352,18 @@ public class MainDeployerImpl implements MainDeployer, MainDeployerStructure
       if (deployments == null)
          throw new IllegalArgumentException("Null deployments.");
 
-      lockProcess();
+      lockRead();
       try
       {
+         if (shutdown.get())
+            throw new IllegalStateException("The main deployer is shutdown");
+
          DeploymentContext[] contexts = new DeploymentContext[deployments.length];
          for(int i = 0; i < deployments.length; i++)
          {
             try
             {
-               addDeployment(deployments[i]);
+               addDeployment(deployments[i], false);
                DeploymentContext context = getDeploymentContext(deployments[i].getName(), true);
                deployers.process(Collections.singletonList(context), null);
                contexts[i] = context;
@@ -389,7 +392,7 @@ public class MainDeployerImpl implements MainDeployer, MainDeployerStructure
       }
       finally
       {
-         unlockProcess();
+         unlockRead();
       }
    }
 
@@ -398,9 +401,12 @@ public class MainDeployerImpl implements MainDeployer, MainDeployerStructure
       if (deployments == null)
          throw new IllegalArgumentException("Null deployments.");
 
-      lockProcess();
+      lockRead();
       try
       {
+         if (shutdown.get())
+            throw new IllegalStateException("The main deployer is shutdown");
+
          for(Deployment deployment : deployments)
          {
             DeploymentContext context = getDeploymentContext(deployment.getName());
@@ -425,7 +431,7 @@ public class MainDeployerImpl implements MainDeployer, MainDeployerStructure
       }
       finally
       {
-         unlockProcess();
+         unlockRead();
       }
    }
 
@@ -499,7 +505,7 @@ public class MainDeployerImpl implements MainDeployer, MainDeployerStructure
    // enable locking - so that we don't pick up current single deployments
    public void shutdown()
    {
-      lockProcess();
+      lockWrite();
       try
       {
          while (topLevelDeployments.isEmpty() == false)
@@ -519,7 +525,7 @@ public class MainDeployerImpl implements MainDeployer, MainDeployerStructure
       }
       finally
       {
-         unlockProcess();
+         unlockWrite();
       }
    }
 
@@ -781,18 +787,34 @@ public class MainDeployerImpl implements MainDeployer, MainDeployerStructure
    }
 
    /**
-    * Lock process.
+    * Lock for read
     */
-   protected void lockProcess()
+   protected void lockRead()
    {
-      processLock.writeLock().lock();
+      lock.readLock().lock();
    }
 
    /**
-    * Unlock process.
+    * Unlock for read
     */
-   protected void unlockProcess()
+   protected void unlockRead()
    {
-      processLock.writeLock().unlock();
+      lock.readLock().unlock();
+   }
+
+   /**
+    * Lock for write
+    */
+   protected void lockWrite()
+   {
+      lock.writeLock().lock();
+   }
+
+   /**
+    * Unlock for write
+    */
+   protected void unlockWrite()
+   {
+      lock.writeLock().unlock();
    }
 }
