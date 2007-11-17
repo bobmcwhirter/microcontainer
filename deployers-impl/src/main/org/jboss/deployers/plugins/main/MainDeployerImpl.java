@@ -250,47 +250,55 @@ public class MainDeployerImpl implements MainDeployer, MainDeployerStructure
       if (shutdown.get())
          throw new DeploymentException("The main deployer is shutdown");
 
-      String name = deployment.getName();
-      log.debug("Add deployment: " + name);
-
-      DeploymentContext previous = topLevelDeployments.get(name);
-      boolean topLevelFound = false;
-      if (previous != null)
-      {
-         log.debug("Removing previous deployment: " + previous.getName());
-         removeContext(previous, addToDeploy);
-         topLevelFound = true;
-      }
-
-      if (topLevelFound == false)
-      {
-         previous = allDeployments.get(name);
-         if (previous != null)
-            throw new IllegalStateException("Deployment already exists as a subdeployment: " + name);
-      }
-
-      DeploymentContext context = null;
+      lockRead();
       try
       {
+         String name = deployment.getName();
+         log.debug("Add deployment: " + name);
+
+         DeploymentContext previous = topLevelDeployments.get(name);
+         boolean topLevelFound = false;
+         if (previous != null)
+         {
+            log.debug("Removing previous deployment: " + previous.getName());
+            removeContext(previous, addToDeploy);
+            topLevelFound = true;
+         }
+
+         if (topLevelFound == false)
+         {
+            previous = allDeployments.get(name);
+            if (previous != null)
+               throw new IllegalStateException("Deployment already exists as a subdeployment: " + name);
+         }
+
+         DeploymentContext context = null;
+         try
+      {
          context = determineStructure(deployment);
-         if (DeploymentState.ERROR.equals(context.getState()))
-            errorDeployments.put(name, context);
+            if (DeploymentState.ERROR.equals(context.getState()))
+               errorDeployments.put(name, context);
 
-         topLevelDeployments.put(name, context);
-         addContext(context, addToDeploy);
-      }
-      catch (DeploymentException e)
-      {
-         missingDeployers.put(name, deployment);
-         throw e;
-      }
-      catch (Throwable t)
-      {
-         // was structure determined?
-         if (context != null)
+            topLevelDeployments.put(name, context);
+            addContext(context, addToDeploy);
+         }
+         catch (DeploymentException e)
+         {
             missingDeployers.put(name, deployment);
+            throw e;
+         }
+         catch (Throwable t)
+         {
+            // was structure determined?
+            if (context != null)
+               missingDeployers.put(name, deployment);
 
-         throw DeploymentException.rethrowAsDeploymentException("Error determining deployment structure for " + name, t);
+            throw DeploymentException.rethrowAsDeploymentException("Error determining deployment structure for " + name, t);
+         }
+      }
+      finally
+      {
+         unlockRead();
       }
    }
 
@@ -336,15 +344,23 @@ public class MainDeployerImpl implements MainDeployer, MainDeployerStructure
       if (shutdown.get())
          throw new IllegalStateException("The main deployer is shutdown");
 
-      log.debug("Remove deployment context: " + name);
+      lockRead();
+      try
+      {
+         log.debug("Remove deployment context: " + name);
 
-      DeploymentContext context = topLevelDeployments.remove(name);
-      if (context == null)
-         return false;
+         DeploymentContext context = topLevelDeployments.remove(name);
+         if (context == null)
+            return false;
 
-      removeContext(context, addToUndeploy);
+         removeContext(context, addToUndeploy);
 
-      return true;
+         return true;
+      }
+      finally
+      {
+         unlockRead();
+      }
    }
 
    public void deploy(Deployment... deployments) throws DeploymentException
@@ -455,50 +471,58 @@ public class MainDeployerImpl implements MainDeployer, MainDeployerStructure
 
    public void process()
    {
-      if (shutdown.get())
-         throw new IllegalStateException("The main deployer is shutdown");
-
-      List<DeploymentContext> undeployContexts = null;
-      List<DeploymentContext> deployContexts = null;
-
-      if (deployers == null)
-         throw new IllegalStateException("No deployers");
-
-      if (undeploy.isEmpty() == false)
-      {
-         // Undeploy in reverse order (subdeployments first)
-         undeployContexts = new ArrayList<DeploymentContext>(undeploy.size());
-         for (int i = undeploy.size() - 1; i >= 0; --i)
-            undeployContexts.add(undeploy.get(i));
-         undeploy.clear();
-      }
-      if (deploy.isEmpty() == false)
-      {
-         deployContexts = new ArrayList<DeploymentContext>(deploy);
-         deploy.clear();
-      }
-
-      if (undeployContexts == null && deployContexts == null)
-      {
-         log.debug("Asked to process() when there is nothing to do.");
-         return;
-      }
-
+      lockRead();
       try
       {
+         if (shutdown.get())
+            throw new IllegalStateException("The main deployer is shutdown");
+
+         List<DeploymentContext> undeployContexts = null;
+         List<DeploymentContext> deployContexts = null;
+
+         if (deployers == null)
+            throw new IllegalStateException("No deployers");
+
+         if (undeploy.isEmpty() == false)
+         {
+            // Undeploy in reverse order (subdeployments first)
+            undeployContexts = new ArrayList<DeploymentContext>(undeploy.size());
+            for (int i = undeploy.size() - 1; i >= 0; --i)
+               undeployContexts.add(undeploy.get(i));
+            undeploy.clear();
+         }
+         if (deploy.isEmpty() == false)
+         {
+            deployContexts = new ArrayList<DeploymentContext>(deploy);
+            deploy.clear();
+         }
+
+         if (undeployContexts == null && deployContexts == null)
+         {
+            log.debug("Asked to process() when there is nothing to do.");
+            return;
+         }
+
+         try
+      {
          deployers.process(deployContexts, undeployContexts);
+         }
+         catch (RuntimeException e)
+         {
+            throw e;
+         }
+         catch (Error e)
+         {
+            throw e;
+         }
+         catch (Throwable t)
+         {
+            throw new RuntimeException("Unexpected error in process()", t);
+         }
       }
-      catch (RuntimeException e)
+      finally
       {
-         throw e;
-      }
-      catch (Error e)
-      {
-         throw e;
-      }
-      catch (Throwable t)
-      {
-         throw new RuntimeException("Unexpected error in process()", t);
+         unlockRead();
       }
    }
 
