@@ -247,12 +247,12 @@ public class MainDeployerImpl implements MainDeployer, MainDeployerStructure
       if (deployment == null)
          throw new DeploymentException("Null context");
       
-      if (shutdown.get())
-         throw new DeploymentException("The main deployer is shutdown");
-
       lockRead();
       try
       {
+         if (shutdown.get())
+            throw new DeploymentException("The main deployer is shutdown");
+
          String name = deployment.getName();
          log.debug("Add deployment: " + name);
 
@@ -341,12 +341,12 @@ public class MainDeployerImpl implements MainDeployer, MainDeployerStructure
       if (name == null)
          throw new DeploymentException("Null name");
 
-      if (shutdown.get())
-         throw new IllegalStateException("The main deployer is shutdown");
-
       lockRead();
       try
       {
+         if (shutdown.get())
+            throw new IllegalStateException("The main deployer is shutdown");
+
          log.debug("Remove deployment context: " + name);
 
          DeploymentContext context = topLevelDeployments.remove(name);
