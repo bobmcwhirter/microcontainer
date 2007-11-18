@@ -30,6 +30,7 @@ import org.jboss.test.deployers.vfs.structure.explicit.test.DeclaredStructureUni
 import org.jboss.test.deployers.vfs.structure.file.test.CombinedFileStructureUnitTestCase;
 import org.jboss.test.deployers.vfs.structure.file.test.ConfiguredSuffixFileStructureUnitTestCase;
 import org.jboss.test.deployers.vfs.structure.file.test.FileStructureUnitTestCase;
+import org.jboss.test.deployers.vfs.structure.file.test.FileMatcherTestCase;
 import org.jboss.test.deployers.vfs.structure.jar.test.CombinedJARStructureUnitTestCase;
 import org.jboss.test.deployers.vfs.structure.jar.test.ConfiguredSuffixJARStructureUnitTestCase;
 import org.jboss.test.deployers.vfs.structure.jar.test.JARStructureUnitTestCase;
@@ -58,12 +59,14 @@ public class VFSStructureTestSuite extends TestSuite
       suite.addTest(WARStructureUnitTestCase.suite());
       suite.addTest(ConfiguredSuffixFileStructureUnitTestCase.suite());
       suite.addTest(FileStructureUnitTestCase.suite());
+      suite.addTest(FileMatcherTestCase.suite());
       suite.addTest(DeclaredStructureUnitTestCase.suite());
       suite.addTest(EARStructureUnitTestCase.suite());
       suite.addTest(CombinedJARStructureUnitTestCase.suite());
       suite.addTest(CombinedWARStructureUnitTestCase.suite());
       suite.addTest(CombinedFileStructureUnitTestCase.suite());
-           
+      suite.addTest(TerminateStructureTestCase.suite());
+
       return suite;
    }
 }

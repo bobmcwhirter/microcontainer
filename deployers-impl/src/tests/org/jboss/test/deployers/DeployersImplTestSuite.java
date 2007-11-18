@@ -25,6 +25,7 @@ import org.jboss.test.deployers.classloading.DeployersClassLoadingTestSuite;
 import org.jboss.test.deployers.deployer.DeployersDeployerTestSuite;
 import org.jboss.test.deployers.managed.DeployersManagedTestSuite;
 import org.jboss.test.deployers.scope.DeployersScopeTestSuite;
+import org.jboss.test.deployers.main.DeployersMainTestSuite;
 
 import junit.framework.Test;
 import junit.framework.TestSuite;
@@ -51,6 +52,7 @@ public class DeployersImplTestSuite extends TestSuite
       suite.addTest(DeployersManagedTestSuite.suite());
       suite.addTest(DeployersClassLoadingTestSuite.suite());
       suite.addTest(DeployersScopeTestSuite.suite());
+      suite.addTest(DeployersMainTestSuite.suite());
 
       return suite;
    }
