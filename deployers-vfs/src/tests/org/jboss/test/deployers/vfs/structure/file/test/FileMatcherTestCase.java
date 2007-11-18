@@ -21,9 +21,22 @@
 */
 package org.jboss.test.deployers.vfs.structure.file.test;
 
+import java.net.URI;
+
 import junit.framework.Test;
 import junit.framework.TestSuite;
+import org.jboss.beans.metadata.plugins.AbstractBeanMetaData;
+import org.jboss.beans.metadata.spi.BeanMetaData;
+import org.jboss.dependency.spi.ControllerState;
+import org.jboss.kernel.Kernel;
+import org.jboss.kernel.plugins.bootstrap.basic.BasicBootstrap;
+import org.jboss.kernel.spi.dependency.KernelController;
+import org.jboss.kernel.spi.dependency.KernelControllerContext;
 import org.jboss.test.BaseTestCase;
+import org.jboss.test.deployers.vfs.structure.file.support.BshFileMatcher;
+import org.jboss.test.deployers.vfs.structure.file.support.TmpFileStructure;
+import org.jboss.virtual.VFS;
+import org.jboss.virtual.VirtualFile;
 
 /**
  * FileMatcherTestCase.
@@ -44,6 +57,33 @@ public class FileMatcherTestCase extends BaseTestCase
 
    public void testMatcher() throws Throwable
    {
-      // todo
+      BasicBootstrap bootstrap = new BasicBootstrap();
+      bootstrap.run();
+      Kernel kernel = bootstrap.getKernel();
+      KernelController controller = kernel.getController();
+      try
+      {
+         BeanMetaData fsMD = new AbstractBeanMetaData("fileStructure", TmpFileStructure.class.getName());
+         KernelControllerContext fsCC = controller.install(fsMD);
+         assertEquals(fsCC.getState(), ControllerState.INSTALLED);
+         TmpFileStructure fs = (TmpFileStructure)fsCC.getTarget();
+         assertNotNull(fs);
+
+         VirtualFile file = VFS.getRoot(new URI("vfsmemory://somefile.bsh"));
+         assertFalse(fs.checkFileMatchers(file));
+
+         BeanMetaData fmMD = new AbstractBeanMetaData("bshFileMatcher", BshFileMatcher.class.getName());
+         controller.install(fmMD);
+
+         assertTrue(fs.checkFileMatchers(file));
+
+         controller.uninstall(fmMD.getName());
+
+         assertFalse(fs.checkFileMatchers(file));
+      }
+      finally
+      {
+         controller.shutdown();
+      }
    }
 }
