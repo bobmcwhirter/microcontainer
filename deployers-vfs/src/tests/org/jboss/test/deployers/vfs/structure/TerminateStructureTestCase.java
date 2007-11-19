@@ -21,9 +21,15 @@
 */
 package org.jboss.test.deployers.vfs.structure;
 
-import org.jboss.deployers.vfs.spi.structure.VFSDeploymentContext;
-import org.jboss.deployers.vfs.spi.client.VFSDeployment;
 import junit.framework.Test;
+import org.jboss.deployers.spi.DeploymentException;
+import org.jboss.deployers.spi.structure.StructureMetaData;
+import org.jboss.deployers.vfs.spi.client.VFSDeployment;
+import org.jboss.deployers.vfs.spi.structure.StructureDeployer;
+import org.jboss.deployers.vfs.spi.structure.VFSDeploymentContext;
+import org.jboss.deployers.vfs.spi.structure.VFSStructuralDeployers;
+import org.jboss.deployers.vfs.spi.structure.helpers.AbstractStructureDeployer;
+import org.jboss.virtual.VirtualFile;
 
 /**
  * Terminate test case.
@@ -42,13 +48,67 @@ public class TerminateStructureTestCase extends AbstractStructureTest
       return suite(TerminateStructureTestCase.class);
    }
 
+   protected StructureDeployer[] getStructureDeployers(int failNumber, int size)
+   {
+      StructureDeployer[] deployers = new StructureDeployer[size];
+      for(int i = 0; i < size; i++)
+         deployers[i] = (i == failNumber) ? new FailStructureDeployer(i) : new PassStructureDeployer(i);
+      return deployers;
+   }
+
+   protected void checkFailedNumber(VFSDeployment deployment, int failNumber, int size)
+         throws Exception
+   {
+      try
+      {
+         determineStructureWithStructureDeployers(deployment, getStructureDeployers(failNumber, size));
+         fail("Should not be here.");
+      }
+      catch (DeploymentException e)
+      {
+         String msg = e.getMessage();
+         int number = Integer.parseInt(msg);
+         assertEquals(failNumber, number);
+      }
+   }
+
    public void testTerminate() throws Exception
    {
-      // todo
+      // some deployment
+      VFSDeployment deployment = createDeployment("/structure/file", "simple");
+      checkFailedNumber(deployment, 0, 3);
+      checkFailedNumber(deployment, 1, 3);
+      checkFailedNumber(deployment, 2, 3);
    }
 
    protected VFSDeploymentContext determineStructure(VFSDeployment deployment) throws Exception
    {
       throw new UnsupportedOperationException("No use case.");
+   }
+
+   private class PassStructureDeployer extends AbstractStructureDeployer
+   {
+      public PassStructureDeployer(int order)
+      {
+         setRelativeOrder(order);
+      }
+
+      public boolean determineStructure(VirtualFile root, VirtualFile parent, VirtualFile file, StructureMetaData metaData, VFSStructuralDeployers deployers) throws DeploymentException
+      {
+         return false;
+      }
+   }
+
+   private class FailStructureDeployer extends AbstractStructureDeployer
+   {
+      public FailStructureDeployer(int order)
+      {
+         setRelativeOrder(order);
+      }
+
+      public boolean determineStructure(VirtualFile root, VirtualFile parent, VirtualFile file, StructureMetaData metaData, VFSStructuralDeployers deployers) throws DeploymentException
+      {
+         throw new DeploymentException(String.valueOf(getRelativeOrder()));
+      }
    }
 }
