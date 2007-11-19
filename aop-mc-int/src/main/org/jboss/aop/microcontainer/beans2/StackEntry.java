@@ -66,7 +66,7 @@ public class StackEntry extends BindingEntry
       {
          throw new IllegalArgumentException("Null stack");
       }
-      advices = stack.getClonedAdvices();
+      advices = stack.getClonedAdvices(aspectBinding);
       if (advices == null)
       {
          throw new IllegalArgumentException("Null advices");

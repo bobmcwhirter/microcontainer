@@ -70,13 +70,15 @@ public class Stack
       this.advices = advices;
    }
    
-   public List<InterceptorEntry> getClonedAdvices()
+   public List<InterceptorEntry> getClonedAdvices(AspectBinding binding)
    {
       List<InterceptorEntry> entries = new ArrayList<InterceptorEntry>();
  
       for (InterceptorEntry entry : advices)
       {
-         entries.add((InterceptorEntry)entry.clone());
+         InterceptorEntry cloned = (InterceptorEntry)entry.clone();
+         cloned.setAspectBinding(binding);
+         entries.add(cloned);
       }
       
       return entries;

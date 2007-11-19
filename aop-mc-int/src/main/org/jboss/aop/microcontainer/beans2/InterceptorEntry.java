@@ -36,6 +36,7 @@ public class InterceptorEntry extends BindingEntry implements Cloneable
    Aspect aspect;
    String aspectMethod;
    InterceptorFactory interceptorFactory;
+   boolean forStack;
    
    public Aspect getAspect(Aspect aspect)
    {
@@ -45,6 +46,11 @@ public class InterceptorEntry extends BindingEntry implements Cloneable
    public void setAspect(Aspect aspect)
    {
       this.aspect = aspect;
+   }
+   
+   public void setForStack(boolean forStack)
+   {
+      this.forStack = forStack;
    }
    
    public String getAspectMethod()
@@ -73,7 +79,7 @@ public class InterceptorEntry extends BindingEntry implements Cloneable
       {
          throw new IllegalArgumentException("Null manager");
       }
-      if (aspectBinding == null)
+      if (aspectBinding == null && !forStack)
       {
          throw new IllegalArgumentException("Null aspect binding");
       }
@@ -85,13 +91,19 @@ public class InterceptorEntry extends BindingEntry implements Cloneable
             new ScopedInterceptorFactory(aspect.getDefinition()) : new AdviceFactory(aspect.getDefinition(), aspectMethod);
             
       manager.addInterceptorFactory(name, interceptorFactory);
-      aspect.addAspectBinding(aspectBinding);
+      if (aspectBinding != null)
+      {
+         aspect.addAspectBinding(aspectBinding);
+      }
    }
    
    public void stop()
    {
       manager.removeInterceptorFactory(name);
-      aspect.removeAspectBinding(aspectBinding);
+      if (aspectBinding != null)
+      {
+         aspect.removeAspectBinding(aspectBinding);
+      }
       interceptorFactory = null;
    }
    

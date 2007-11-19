@@ -58,13 +58,13 @@
 			      <property name="manager"><inject bean="AspectManager"/></property>
                <property name="aspect"><inject bean="org.jboss.test.microcontainer.beans2.TestAspectWithDependency"/></property>
                <property name="aspectMethod">advice</property>
-               <property name="aspectBinding"><inject bean="TestAspectBinding" state="Instantiated"/></property>
+               <property name="forStack">true</property>
             </bean>
             <bean name="AspectStack$2" class="org.jboss.aop.microcontainer.beans2.InterceptorEntry">
 			      <property name="manager"><inject bean="AspectManager"/></property>
                <property name="aspect"><inject bean="org.jboss.test.microcontainer.beans2.TestAspect"/></property>
                <property name="aspectMethod">advice</property>
-               <property name="aspectBinding"><inject bean="TestAspectBinding" state="Instantiated"/></property>
+               <property name="forStack">true</property>
             </bean>
          </list>
    	</property>
@@ -78,12 +78,12 @@
             <bean name="InterceptorStack$1" class="org.jboss.aop.microcontainer.beans2.InterceptorEntry">
 			      <property name="manager"><inject bean="AspectManager"/></property>
                <property name="aspect"><inject bean="org.jboss.test.microcontainer.beans2.TestInterceptorWithDependency"/></property>
-               <property name="aspectBinding"><inject bean="TestInterceptorBinding" state="Instantiated"/></property>
+               <property name="forStack">true</property>
             </bean>
             <bean name="InterceptorStack$2" class="org.jboss.aop.microcontainer.beans2.InterceptorEntry">
 			      <property name="manager"><inject bean="AspectManager"/></property>
                <property name="aspect"><inject bean="org.jboss.test.microcontainer.beans2.TestInterceptor"/></property>
-               <property name="aspectBinding"><inject bean="TestInterceptorBinding" state="Instantiated"/></property>
+               <property name="forStack">true</property>
             </bean>
          </list>
    	</property>
