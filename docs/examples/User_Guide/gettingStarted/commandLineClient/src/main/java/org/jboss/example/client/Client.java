@@ -10,8 +10,6 @@ import org.jboss.dependency.spi.ControllerContext;
 import org.jboss.example.service.Address;
 import org.jboss.example.service.Employee;
 import org.jboss.example.service.HRManager;
-import org.jboss.example.service.util.AgeBasedSalaryStrategy;
-import org.jboss.example.service.util.LocationBasedSalaryStrategy;
 import org.jboss.example.service.util.SalaryStrategy;
 import org.jboss.kernel.Kernel;
 import org.jboss.kernel.spi.dependency.KernelController;
