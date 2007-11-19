@@ -21,7 +21,13 @@
 */
 package org.jboss.test.deployers.vfs.structure.file.test;
 
+import java.io.IOException;
+import java.io.InputStream;
+import java.net.MalformedURLException;
 import java.net.URI;
+import java.net.URISyntaxException;
+import java.net.URL;
+import java.util.List;
 
 import junit.framework.Test;
 import junit.framework.TestSuite;
@@ -35,8 +41,9 @@ import org.jboss.kernel.spi.dependency.KernelControllerContext;
 import org.jboss.test.BaseTestCase;
 import org.jboss.test.deployers.vfs.structure.file.support.BshFileMatcher;
 import org.jboss.test.deployers.vfs.structure.file.support.TmpFileStructure;
-import org.jboss.virtual.VFS;
 import org.jboss.virtual.VirtualFile;
+import org.jboss.virtual.spi.VFSContext;
+import org.jboss.virtual.spi.VirtualFileHandler;
 
 /**
  * FileMatcherTestCase.
@@ -55,6 +62,11 @@ public class FileMatcherTestCase extends BaseTestCase
       super(name);
    }
 
+   protected VirtualFile getVirtualFile() throws Throwable
+   {
+      return new MyVirtualFile();
+   }
+
    public void testMatcher() throws Throwable
    {
       BasicBootstrap bootstrap = new BasicBootstrap();
@@ -69,7 +81,7 @@ public class FileMatcherTestCase extends BaseTestCase
          TmpFileStructure fs = (TmpFileStructure)fsCC.getTarget();
          assertNotNull(fs);
 
-         VirtualFile file = VFS.getRoot(new URI("vfsmemory://somefile.bsh"));
+         VirtualFile file = getVirtualFile();
          assertFalse(fs.checkFileMatchers(file));
 
          BeanMetaData fmMD = new AbstractBeanMetaData("bshFileMatcher", BshFileMatcher.class.getName());
@@ -84,6 +96,115 @@ public class FileMatcherTestCase extends BaseTestCase
       finally
       {
          controller.shutdown();
+      }
+   }
+
+   private static class MyVirtualFile extends VirtualFile
+   {
+      public MyVirtualFile()
+      {
+         super(getVirtualFileHandler());
+      }
+
+      private static VirtualFileHandler getVirtualFileHandler()
+      {
+         return new VirtualFileHandler()
+         {
+            public String getName()
+            {
+               return null;
+            }
+
+            public String getPathName()
+            {
+               return null;
+            }
+
+            public URL toVfsUrl() throws MalformedURLException, URISyntaxException
+            {
+               return null;
+            }
+
+            public URI toURI() throws URISyntaxException
+            {
+               return null;
+            }
+
+            public URL toURL() throws MalformedURLException, URISyntaxException
+            {
+               return null;
+            }
+
+            public long getLastModified() throws IOException
+            {
+               return 0;
+            }
+
+            public boolean hasBeenModified() throws IOException
+            {
+               return false;
+            }
+
+            public long getSize() throws IOException
+            {
+               return 0;
+            }
+
+            public boolean exists() throws IOException
+            {
+               return false;
+            }
+
+            public boolean isLeaf() throws IOException
+            {
+               return false;
+            }
+
+            public boolean isHidden() throws IOException
+            {
+               return false;
+            }
+
+            public InputStream openStream() throws IOException
+            {
+               return null;
+            }
+
+            public VirtualFileHandler getParent() throws IOException
+            {
+               return null;
+            }
+
+            public List<VirtualFileHandler> getChildren(boolean ignoreErrors) throws IOException
+            {
+               return null;
+            }
+
+            public VirtualFileHandler findChild(String path) throws IOException
+            {
+               return null;
+            }
+
+            public VFSContext getVFSContext()
+            {
+               return null;
+            }
+
+            public VirtualFile getVirtualFile()
+            {
+               return null;
+            }
+
+            public void close()
+            {
+               
+            }
+         };
+      }
+
+      public String getName()
+      {
+         return "somefile.bsh";
       }
    }
 }

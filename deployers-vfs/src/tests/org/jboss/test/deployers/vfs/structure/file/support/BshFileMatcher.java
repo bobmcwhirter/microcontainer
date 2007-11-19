@@ -21,8 +21,6 @@
 */
 package org.jboss.test.deployers.vfs.structure.file.support;
 
-import java.net.URI;
-
 import org.jboss.deployers.vfs.plugins.structure.file.FileMatcher;
 import org.jboss.virtual.VirtualFile;
 
@@ -35,9 +33,8 @@ public class BshFileMatcher implements FileMatcher
    {
       try
       {
-         URI uri = file.toURI();
-         String toString = uri.toString();
-         return toString.endsWith(".bsh/");
+         String toString = file.getName();
+         return toString.endsWith(".bsh");
       }
       catch (Exception e)
       {
