@@ -21,7 +21,16 @@
 */
 package org.jboss.test.deployers.main.test;
 
+import java.util.Map;
+import java.util.HashMap;
+import java.util.Collection;
+import java.util.HashSet;
+import java.util.Set;
+import java.util.Collections;
+
 import org.jboss.test.deployers.AbstractDeployerTest;
+import org.jboss.deployers.client.spi.IncompleteDeployments;
+import org.jboss.deployers.client.spi.MissingDependency;
 import junit.framework.Test;
 
 /**
@@ -43,6 +52,43 @@ public class DeployerIncompleteDeploymentsTestCase extends AbstractDeployerTest
 
    public void testMessage() throws Exception
    {
-      // todo
+      Map<String, Throwable> deploymentsInError = new HashMap<String, Throwable>();
+      Collection<String> deploymentsMissingDeployer = new HashSet<String>();
+      Map<String, Throwable> contextsInError = new HashMap<String, Throwable>();
+      Map<String, Set<MissingDependency>> contextsMissingDependencies = new HashMap<String, Set<MissingDependency>>();
+
+      deploymentsInError.put("deployment1", new Throwable("sd1"));
+      deploymentsMissingDeployer.add("deployment2");
+      contextsInError.put("context1", new Throwable("sc1"));
+      contextsMissingDependencies.put("context2", Collections.singleton(new MissingDependency()));
+
+      IncompleteDeployments deployments = new IncompleteDeployments(
+            deploymentsInError,
+            deploymentsMissingDeployer,
+            contextsInError,
+            contextsMissingDependencies
+      );
+
+      assertTrue(deployments.isIncomplete());
+      assertTrue(deployments.isInvalidDeployment("deployment1"));
+      assertTrue(deployments.isInvalidDeployment("deployment2"));
+      assertTrue(deployments.isInvalidContext("context1"));
+      assertTrue(deployments.isInvalidContext("context2"));
+
+      String deInfo = deployments.getDeploymentsInErrorInfo();
+      assertNotNull(deInfo);
+      assertSame(deInfo, deployments.getDeploymentsInErrorInfo());
+
+      String dmInfo = deployments.getDeploymentsMissingDeployerInfo();
+      assertNotNull(dmInfo);
+      assertSame(dmInfo, deployments.getDeploymentsMissingDeployerInfo());
+
+      String ceInfo = deployments.getContextsInErrorInfo();
+      assertNotNull(ceInfo);
+      assertSame(ceInfo, deployments.getContextsInErrorInfo());
+
+      String cmInfo = deployments.getContextsMissingDependenciesInfo();
+      assertNotNull(cmInfo);
+      assertSame(cmInfo, deployments.getContextsMissingDependenciesInfo());
    }
 }
