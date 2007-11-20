@@ -669,7 +669,7 @@ public class DeployersImpl implements Deployers, ControllerContextActions
          if (problem != null)
             deploymentsInError.put(context.getName(), problem);
 
-         if (context.isDeployed() == false)
+         if (isDeployed(context) == false)
             deploymentsMissingDeployer.add(context.getName());
 
          if (checkContexts)
@@ -693,6 +693,17 @@ public class DeployersImpl implements Deployers, ControllerContextActions
       IncompleteDeployments incomplete = new IncompleteDeployments(deploymentsInError, deploymentsMissingDeployer, contextsInError, contextsMissingDependencies);
       if (incomplete.isIncomplete())
          throw new IncompleteDeploymentException(incomplete);
+   }
+
+   /**
+    * Is context deployed.
+    *
+    * @param context the deployment context
+    * @return true if context deployed, false otherwise
+    */
+   protected boolean isDeployed(DeploymentContext context)
+   {
+      return context.isDeployed() || DeploymentState.DEPLOYED.equals(context.getState());
    }
 
    /**

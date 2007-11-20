@@ -26,6 +26,7 @@ import java.util.Collection;
 import java.util.Collections;
 import java.util.List;
 import java.util.Map;
+import java.util.Arrays;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.CopyOnWriteArrayList;
 import java.util.concurrent.atomic.AtomicBoolean;
@@ -274,8 +275,8 @@ public class MainDeployerImpl implements MainDeployer, MainDeployerStructure
 
          DeploymentContext context = null;
          try
-      {
-         context = determineStructure(deployment);
+         {
+            context = determineStructure(deployment);
             if (DeploymentState.ERROR.equals(context.getState()))
                errorDeployments.put(name, context);
 
@@ -386,9 +387,9 @@ public class MainDeployerImpl implements MainDeployer, MainDeployerStructure
             }
             catch(Throwable t)
             {
-               Deployment[] deployedDeployments = new Deployment[i];
-               System.arraycopy(deployments, 0, deployedDeployments, 0, i);
-               undeploy(deployedDeployments);
+               DeploymentContext[] deployedContexts = new DeploymentContext[i];
+               System.arraycopy(contexts, 0, deployedContexts, 0, i);
+               deployers.process(null, Arrays.asList(deployedContexts));
                throw DeploymentException.rethrowAsDeploymentException("Unable to deploy deployments.", t);
             }
          }
@@ -398,11 +399,7 @@ public class MainDeployerImpl implements MainDeployer, MainDeployerStructure
          }
          catch (DeploymentException e)
          {
-            Deployment[] deployedDeployments = new Deployment[contexts.length];
-            for(int i = 0; i < contexts.length; i++)
-               deployedDeployments[i] = contexts[i].getDeployment();
-
-            undeploy(deployedDeployments);
+            deployers.process(null, Arrays.asList(contexts));
             throw e;
          }
       }

@@ -119,7 +119,7 @@ public class ComponentDeploymentContext implements DeploymentContext
 
    public Set<Object> getControllerContextNames()
    {
-      return controllerContextNames != null ? Collections.unmodifiableSet(getControllerContextNames()) : null;
+      return controllerContextNames != null ? Collections.unmodifiableSet(controllerContextNames) : null;
    }
 
    public synchronized void addControllerContextName(Object name)

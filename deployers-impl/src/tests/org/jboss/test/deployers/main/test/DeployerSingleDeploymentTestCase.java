@@ -21,15 +21,22 @@
 */
 package org.jboss.test.deployers.main.test;
 
-import org.jboss.test.deployers.AbstractDeployerTest;
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.List;
+
 import junit.framework.Test;
+import org.jboss.deployers.client.spi.DeployerClient;
+import org.jboss.deployers.client.spi.Deployment;
+import org.jboss.deployers.client.spi.main.MainDeployer;
+import org.jboss.deployers.spi.DeploymentException;
 
 /**
  * Single deployment API test case.
  *
  * @author <a href="mailto:ales.justin@jboss.com">Ales Justin</a>
  */
-public class DeployerSingleDeploymentTestCase extends AbstractDeployerTest
+public class DeployerSingleDeploymentTestCase extends AbstractMainDeployerTest
 {
    public DeployerSingleDeploymentTestCase(String name)
    {
@@ -41,12 +48,160 @@ public class DeployerSingleDeploymentTestCase extends AbstractDeployerTest
       return suite(DeployerSingleDeploymentTestCase.class);
    }
 
-   public void testSingleDeployment() throws Exception
+   protected void checkFailedDeploy(DeployerClient mainDeployer, int failed, int size) throws Throwable
+   {
+      Deployment[] deployments = new Deployment[size];
+      for(int i = 0; i < size; i++)
+      {
+         deployments[i] = createSimpleDeployment("deployment" + i);
+         if (i == failed)
+            makeFail(deployments[i], deployer);
+      }
+      try
+      {
+         mainDeployer.deploy(deployments);
+         fail("Should not be here.");
+      }
+      catch (DeploymentException e)
+      {
+         assertEquals(size, deployer.getUndeployedUnits().size() + deployer.getFailed().size());
+         assertEquals(Collections.singletonList("deployment" + failed), deployer.getFailed());
+      }
+      deployer.clear();
+   }
+
+   public void testFailedDeploy() throws Throwable
+   {
+      DeployerClient main = getMainDeployer();
+      checkFailedDeploy(main, 0, 3);
+      checkFailedDeploy(main, 1, 3);
+      checkFailedDeploy(main, 2, 3);
+   }
+
+   public void testRedeploy() throws Throwable
+   {
+      DeployerClient main = getMainDeployer();
+
+      Deployment context = createSimpleDeployment("redeploy");
+      main.deploy(context);
+      List<String> expected = new ArrayList<String>();
+      expected.add(context.getName());
+      assertEquals(expected, deployer.getDeployedUnits());
+
+      main.undeploy(context);
+      assertEquals(expected, deployer.getUndeployedUnits());
+
+      deployer.clear();
+      main.deploy(context);
+      expected.clear();
+      expected.add(context.getName());
+      assertEquals(expected, deployer.getDeployedUnits());
+   }
+
+   public void testDeployRemoveProcess() throws Throwable
+   {
+      DeployerClient main = getMainDeployer();
+
+      Deployment context = createSimpleDeployment("drp");
+      main.deploy(context);
+      List<String> expected = new ArrayList<String>();
+      expected.add(context.getName());
+      assertEquals(expected, deployer.getDeployedUnits());
+
+      main.removeDeployment(context);
+      main.process();
+      assertEquals(expected, deployer.getUndeployedUnits());
+   }
+
+   public void testAddProcessUndeploy() throws Throwable
+   {
+      DeployerClient main = getMainDeployer();
+
+      Deployment context = createSimpleDeployment("apu");
+      main.addDeployment(context);
+      main.process();
+      List<String> expected = new ArrayList<String>();
+      expected.add(context.getName());
+      assertEquals(expected, deployer.getDeployedUnits());
+
+      main.undeploy(context);
+      assertEquals(expected, deployer.getUndeployedUnits());
+   }
+
+   public void testDeployShutdown() throws Throwable
+   {
+      MainDeployer main = (MainDeployer)getMainDeployer();
+
+      Deployment context = createSimpleDeployment("shutdown");
+      main.deploy(context);
+      List<String> expected = new ArrayList<String>();
+      expected.add(context.getName());
+      assertEquals(expected, deployer.getDeployedUnits());
+
+      main.shutdown();
+      assertEquals(expected, deployer.getUndeployedUnits());
+   }
+
+   public void testSingleAndMultipleMix() throws Throwable
+   {
+      DeployerClient main = getMainDeployer();
+
+      Deployment single = createSimpleDeployment("single");
+      main.deploy(single);
+      List<String> expected = new ArrayList<String>();
+      expected.add(single.getName());
+      assertEquals(expected, deployer.getDeployedUnits());
+
+      Deployment normal = createSimpleDeployment("normal");
+      main.addDeployment(normal);
+      main.process();
+      expected.add(normal.getName());
+      assertEquals(expected, deployer.getDeployedUnits());
+
+      main.undeploy(single);
+      expected.clear();
+      expected.add(single.getName());
+      assertEquals(expected, deployer.getUndeployedUnits());
+
+      main.removeDeployment(normal.getName());
+      main.process();
+      expected.add(normal.getName());
+      assertEquals(expected, deployer.getUndeployedUnits());
+   }
+
+   public void testSingleAndMultipleMix2() throws Throwable
+   {
+      DeployerClient main = getMainDeployer();
+
+      Deployment single = createSimpleDeployment("single");
+      main.deploy(single);
+      List<String> expected = new ArrayList<String>();
+      expected.add(single.getName());
+      assertEquals(expected, deployer.getDeployedUnits());
+
+      Deployment normal = createSimpleDeployment("normal");
+      main.addDeployment(normal);
+      main.process();
+      expected.add(normal.getName());
+      assertEquals(expected, deployer.getDeployedUnits());
+
+      main.removeDeployment(normal.getName());
+      main.process();
+      expected.clear();
+      expected.add(normal.getName());
+      assertEquals(expected, deployer.getUndeployedUnits());
+
+      main.undeploy(single);
+      expected.add(single.getName());
+      assertEquals(expected, deployer.getUndeployedUnits());
+   }
+
+   public void testMultiThreads() throws Exception
    {
       // todo
    }
 
-   public void testThreadUsage() throws Exception
+   public void testMultiThreadsAndShutdown() throws Exception
    {
       // todo
    }

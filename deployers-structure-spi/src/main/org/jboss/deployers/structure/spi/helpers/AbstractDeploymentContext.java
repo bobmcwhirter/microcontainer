@@ -270,6 +270,7 @@ public class AbstractDeploymentContext extends ManagedObjectsWithTransientAttach
    /**
     * Initialise the metadata retrieval for a deployment context
     * 
+    * @param repository the meta data repository
     * @param deploymentContext the deployment context
     */
    private static void initMetaDataRetrieval(MutableMetaDataRepository repository, DeploymentContext deploymentContext)
@@ -285,7 +286,8 @@ public class AbstractDeploymentContext extends ManagedObjectsWithTransientAttach
 
    /**
     * Initialise the metadata retrieval for a deployment context
-    * 
+    *
+    * @param repository the meta data repository
     * @param deploymentContext the deployment context
     */
    private static void initMutableMetaDataRetrieval(MutableMetaDataRepository repository, DeploymentContext deploymentContext)
@@ -346,7 +348,7 @@ public class AbstractDeploymentContext extends ManagedObjectsWithTransientAttach
 
    public Set<Object> getControllerContextNames()
    {
-      return controllerContextNames != null ? Collections.unmodifiableSet(getControllerContextNames()) : null;
+      return controllerContextNames != null ? Collections.unmodifiableSet(controllerContextNames) : null;
    }
 
    public synchronized void addControllerContextName(Object name)

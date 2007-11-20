@@ -92,14 +92,17 @@ public abstract class AbstractRealDeployer extends AbstractDeployer
 
    public final void undeploy(DeploymentUnit unit)
    {
-      try
+      if (isControllerContextNameCandidate(unit))
       {
-         removeControllerContextName(unit);
-      }
-      catch (Throwable t)
-      {
-         if (log.isTraceEnabled())
-            log.trace("Exception while removing unit name: " + t);
+         try
+         {
+            removeControllerContextName(unit);
+         }
+         catch (Throwable t)
+         {
+            if (log.isTraceEnabled())
+               log.trace("Exception while removing unit name: " + t);
+         }
       }
 
       internalUndeploy(unit);
