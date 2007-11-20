@@ -48,25 +48,37 @@ public class TerminateStructureTestCase extends AbstractStructureTest
       return suite(TerminateStructureTestCase.class);
    }
 
-   protected StructureDeployer[] getStructureDeployers(int failNumber, int size)
+   protected StructureDeployer[] getStructureDeployers(int failNumber, int size, boolean checkCause)
    {
       StructureDeployer[] deployers = new StructureDeployer[size];
       for(int i = 0; i < size; i++)
-         deployers[i] = (i == failNumber) ? new FailStructureDeployer(i) : new PassStructureDeployer(i);
+      {
+         if (i == failNumber)
+         {
+            if (checkCause)
+               deployers[i] = new REStructureDeployer(i);
+            else
+               deployers[i] = new FailStructureDeployer(i);
+         }
+         else
+            deployers[i] = new PassStructureDeployer(i);
+      }
       return deployers;
    }
 
-   protected void checkFailedNumber(VFSDeployment deployment, int failNumber, int size)
+   protected void checkFailedNumber(VFSDeployment deployment, int failNumber, int size, boolean checkCause)
          throws Exception
    {
       try
       {
-         determineStructureWithStructureDeployers(deployment, getStructureDeployers(failNumber, size));
+         determineStructureWithStructureDeployers(deployment, getStructureDeployers(failNumber, size, checkCause));
          fail("Should not be here.");
       }
-      catch (DeploymentException e)
+      catch (Throwable t)
       {
-         String msg = e.getMessage();
+         if (checkCause)
+            t = t.getCause();
+         String msg = t.getMessage();
          int number = Integer.parseInt(msg);
          assertEquals(failNumber, number);
       }
@@ -76,9 +88,18 @@ public class TerminateStructureTestCase extends AbstractStructureTest
    {
       // some deployment
       VFSDeployment deployment = createDeployment("/structure/file", "simple");
-      checkFailedNumber(deployment, 0, 3);
-      checkFailedNumber(deployment, 1, 3);
-      checkFailedNumber(deployment, 2, 3);
+      checkFailedNumber(deployment, 0, 3, false);
+      checkFailedNumber(deployment, 1, 3, false);
+      checkFailedNumber(deployment, 2, 3, false);
+   }
+
+   public void testRuntimeTerminate() throws Exception
+   {
+      // some deployment
+      VFSDeployment deployment = createDeployment("/structure/file", "simple");
+      checkFailedNumber(deployment, 0, 3, true);
+      checkFailedNumber(deployment, 1, 3, true);
+      checkFailedNumber(deployment, 2, 3, true);
    }
 
    protected VFSDeploymentContext determineStructure(VFSDeployment deployment) throws Exception
@@ -109,6 +130,19 @@ public class TerminateStructureTestCase extends AbstractStructureTest
       public boolean determineStructure(VirtualFile root, VirtualFile parent, VirtualFile file, StructureMetaData metaData, VFSStructuralDeployers deployers) throws DeploymentException
       {
          throw new DeploymentException(String.valueOf(getRelativeOrder()));
+      }
+   }
+
+   private class REStructureDeployer extends AbstractStructureDeployer
+   {
+      public REStructureDeployer(int order)
+      {
+         setRelativeOrder(order);
+      }
+
+      public boolean determineStructure(VirtualFile root, VirtualFile parent, VirtualFile file, StructureMetaData metaData, VFSStructuralDeployers deployers) throws DeploymentException
+      {
+         throw new RuntimeException(String.valueOf(getRelativeOrder()));
       }
    }
 }
