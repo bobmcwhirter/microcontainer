@@ -157,7 +157,6 @@ public class PopulateMetaDataRepositoryUnitTestCase extends AbstractDeployerTest
       DeployersImpl deployers = (DeployersImpl) super.createDeployers();
       repository = new BasicMetaDataRepository();
       deployers.setRepository(repository);
-      deployer2.setRepository(repository);
       return deployers;
    }
 }

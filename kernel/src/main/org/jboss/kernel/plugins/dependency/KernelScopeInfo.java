@@ -33,15 +33,12 @@ import org.jboss.dependency.spi.ControllerContext;
 import org.jboss.kernel.plugins.config.Configurator;
 import org.jboss.kernel.spi.dependency.KernelControllerContext;
 import org.jboss.metadata.plugins.loader.memory.MemoryMetaDataLoader;
-import org.jboss.metadata.plugins.loader.reflection.AnnotatedElementMetaDataLoader;
 import org.jboss.metadata.spi.repository.MutableMetaDataRepository;
-import org.jboss.metadata.spi.retrieval.MetaDataRetrieval;
 import org.jboss.metadata.spi.scope.CommonLevels;
 import org.jboss.metadata.spi.scope.Scope;
 import org.jboss.metadata.spi.scope.ScopeKey;
 import org.jboss.metadata.spi.signature.MethodSignature;
 import org.jboss.reflect.spi.MethodInfo;
-import org.jboss.reflect.spi.TypeInfo;
 
 /**
  * KernelScopeInfo.
@@ -51,67 +48,55 @@ import org.jboss.reflect.spi.TypeInfo;
  */
 public class KernelScopeInfo extends AbstractScopeInfo
 {
+   /** The bean metadata */
+   private BeanMetaData beanMetaData;
+   
    /**
     * Create a new KernelScopeInfo.
     * 
     * @param name the name
     * @param className the class name
+    * @param beanMetaData the bean metadata
     */
-   public KernelScopeInfo(Object name, String className)
+   public KernelScopeInfo(Object name, String className, BeanMetaData beanMetaData)
    {
       super(name, className);
-   }
-
-   /**
-    * Create a new KernelScopeInfo.
-    * 
-    * @param name the name
-    */
-   public KernelScopeInfo(Object name)
-   {
-      super(name);
-   }
-
-   /**
-    * Create a new KernelScopeInfo.
-    * 
-    * @param key the scope
-    * @param mutable the mutable scope
-    */
-   public KernelScopeInfo(ScopeKey key, ScopeKey mutable)
-   {
-      super(key, mutable);
+      this.beanMetaData = beanMetaData;
    }
 
    @Override
-   public MetaDataRetrieval initMetaDataRetrieval(MutableMetaDataRepository repository, ControllerContext context, Scope scope)
+   public ScopeKey getScope()
    {
-      if (scope.getScopeLevel() == CommonLevels.CLASS)
+      // THIS IS A HACK - the scope originally gets initialise with a class name, we fix it to have the class
+      ScopeKey key = super.getScope();
+      Scope scope = key.getScope(CommonLevels.CLASS);
+      if (scope == null)
+         return key;
+      Object qualifier = scope.getQualifier();
+      if (qualifier instanceof Class)
+         return key;
+
+      String className = (String) qualifier;
+      ClassLoader cl = null;
+      try
       {
-         if (context instanceof KernelControllerContext == false)
-            return null;
-         KernelControllerContext theContext = (KernelControllerContext) context;
-         BeanMetaData metaData = theContext.getBeanMetaData();
-         ClassLoader cl = null;
-         try
-         {
-            cl = Configurator.getClassLoader(metaData);
-         }
-         catch (Throwable t)
-         {
-            throw new RuntimeException("Error getting classloader for " + context.getName(), t);
-         }
-         try
-         {
-            Class<?> clazz = cl.loadClass(scope.getQualifier());
-            return new AnnotatedElementMetaDataLoader(clazz);
-         }
-         catch (ClassNotFoundException e)
-         {
-            throw new RuntimeException("Unable to load class: " + scope.getQualifier(), e);
-         }
+         cl = Configurator.getClassLoader(beanMetaData);
       }
-      return null;
+      catch (Throwable t)
+      {
+         throw new RuntimeException("Error getting classloader for " + key, t);
+      }
+      Class<?> clazz = null;
+      try
+      {
+         clazz = cl.loadClass(className);
+      }
+      catch (ClassNotFoundException e)
+      {
+         throw new RuntimeException("Unable to load class: " + className + " for " + key, e);
+      }
+      key.addScope(new Scope(CommonLevels.CLASS, clazz));
+      return key;
    }
 
    @Override
@@ -123,7 +108,6 @@ public class KernelScopeInfo extends AbstractScopeInfo
       addClassAnnotations(mutable, theContext);
       addPropertyAnnotations(mutable, theContext);
    }
-
    
    /**
     * Add class annotations
@@ -136,15 +120,16 @@ public class KernelScopeInfo extends AbstractScopeInfo
       BeanMetaData beanMetaData = context.getBeanMetaData();
       if (beanMetaData != null)
       {
+         ClassLoader cl = null;
          try
          {
-            ClassLoader cl = Configurator.getClassLoader(beanMetaData);
-            addAnnotations(cl, mutable, beanMetaData.getAnnotations());
+            cl = Configurator.getClassLoader(beanMetaData);
          }
          catch(Throwable t)
          {
-            throw new RuntimeException("Error getting classloader for metadata", t);
+            throw new RuntimeException("Error getting classloader for " + beanMetaData.getName(), t);
          }
+         addAnnotations(cl, mutable, beanMetaData.getAnnotations());
       }
    }
 
@@ -168,17 +153,18 @@ public class KernelScopeInfo extends AbstractScopeInfo
       BeanInfo beanInfo = context.getBeanInfo();
       if (beanInfo == null)
          return;
-      
+
+      ClassLoader cl = null;
       try
       {
-         ClassLoader cl = Configurator.getClassLoader(beanMetaData);
-         for (PropertyMetaData property : properties)
-            addPropertyAnnotations(cl, mutable, property, beanInfo);
+         cl = Configurator.getClassLoader(beanMetaData);
       }
       catch(Throwable t)
       {
          throw new RuntimeException("Error getting classloader for metadata");
       }
+      for (PropertyMetaData property : properties)
+         addPropertyAnnotations(cl, mutable, property, beanInfo);
    }
 
    /**
@@ -223,15 +209,10 @@ public class KernelScopeInfo extends AbstractScopeInfo
     */
    private void addAnnotations(ClassLoader classloader, MemoryMetaDataLoader mutable, MethodInfo methodInfo, Set<AnnotationMetaData> annotations)
    {
-      TypeInfo[] typeInfos = methodInfo.getParameterTypes();
-      String[] paramTypes = new String[typeInfos.length];
-      for (int i = 0; i < typeInfos.length; ++i)
-         paramTypes[i] = typeInfos[i].getName();
-
       ScopeKey scope = new ScopeKey(CommonLevels.JOINPOINT_OVERRIDE, methodInfo.getName());
       MemoryMetaDataLoader loader = new MemoryMetaDataLoader(scope);
       addAnnotations(classloader, loader, annotations);
-      mutable.addComponentMetaDataRetrieval(new MethodSignature(methodInfo.getName(), paramTypes), loader);
+      mutable.addComponentMetaDataRetrieval(new MethodSignature(methodInfo), loader);
    }
    
    /**

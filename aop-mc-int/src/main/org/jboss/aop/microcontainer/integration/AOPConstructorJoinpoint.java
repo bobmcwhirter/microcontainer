@@ -53,8 +53,6 @@ import org.jboss.reflect.spi.TypeInfo;
  */
 public class AOPConstructorJoinpoint extends BasicConstructorJoinPoint
 {
-   private final static String[] EMPTY_PARAM_ARRAY = new String[0];
-   
    AOPProxyFactory proxyFactory = new GeneratedAOPProxyFactory();
 
    /**
@@ -135,22 +133,7 @@ public class AOPConstructorJoinpoint extends BasicConstructorJoinPoint
    
    private boolean methodHasAnnotations(MetaData metaData, MethodInfo mi)
    {
-      TypeInfo[] types = mi.getParameterTypes();
-      String[] typeStrings;
-      
-      if (types.length == 0)
-      {
-         typeStrings = EMPTY_PARAM_ARRAY;
-      }
-      else
-      {
-         typeStrings = new String[types.length];
-         for (int j = 0 ; j < types.length ; j++)
-         {
-            typeStrings[j] = types[j].getName();
-         }
-      }
-      MethodSignature sig = new MethodSignature(mi.getName(), typeStrings);
+      MethodSignature sig = new MethodSignature(mi);
       MetaData methodMD = metaData.getComponentMetaData(sig);
       if (methodMD != null)
       {

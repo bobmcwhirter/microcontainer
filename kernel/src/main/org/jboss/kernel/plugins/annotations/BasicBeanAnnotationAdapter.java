@@ -205,7 +205,7 @@ public class BasicBeanAnnotationAdapter implements BeanAnnotationAdapter
             if (setter != null)
             {
                visitedMethods.add(setter);
-               Signature sis = new MethodSignature(setter.getName(), Configurator.getParameterTypes(trace, setter.getParameterTypes()));
+               Signature sis = new MethodSignature(setter);
                MetaData cmdr = retrieval.getComponentMetaData(sis);
                if (cmdr != null)
                {
@@ -228,7 +228,7 @@ public class BasicBeanAnnotationAdapter implements BeanAnnotationAdapter
          {
             if (visitedMethods.contains(mi) == false)
             {
-               Signature mis = new MethodSignature(mi.getName(), Configurator.getParameterTypes(trace, mi.getParameterTypes()));
+               Signature mis = new MethodSignature(mi);
                MetaData cmdr = retrieval.getComponentMetaData(mis);
                if (cmdr != null)
                {
@@ -251,7 +251,7 @@ public class BasicBeanAnnotationAdapter implements BeanAnnotationAdapter
          {
             if (smi.isStatic() && smi.isPublic())
             {
-               Signature mis = new MethodSignature(smi.getName(), Configurator.getParameterTypes(trace, smi.getParameterTypes()));
+               Signature mis = new MethodSignature(smi);
                MetaData cmdr = retrieval.getComponentMetaData(mis);
                if (cmdr != null)
                {

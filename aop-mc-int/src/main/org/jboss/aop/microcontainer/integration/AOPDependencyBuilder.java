@@ -228,11 +228,7 @@ public class AOPDependencyBuilder extends AbstractDependencyBuilder
    {
       if (metaData != null)
       {
-         TypeInfo[] typeInfos = method.getParameterTypes();
-         Class[] params = new Class[typeInfos.length];
-         for (int i = 0; i < typeInfos.length; ++i)
-            params[i] = typeInfos[i].getType();
-         MetaData methodMetaData = metaData.getComponentMetaData(new MethodSignature(method.getName(), params));
+         MetaData methodMetaData = metaData.getComponentMetaData(new MethodSignature(method));
          if (methodMetaData != null)
          {
             for (Object annotation : methodMetaData.getAnnotations())

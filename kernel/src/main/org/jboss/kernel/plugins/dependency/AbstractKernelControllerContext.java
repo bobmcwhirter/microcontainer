@@ -153,7 +153,7 @@ public class AbstractKernelControllerContext extends AbstractControllerContext i
          if (bean != null)
             className = bean;
       }
-      setScopeInfo(new KernelScopeInfo(getName(), className));
+      setScopeInfo(new KernelScopeInfo(getName(), className, bmd));
    }
 
    /**

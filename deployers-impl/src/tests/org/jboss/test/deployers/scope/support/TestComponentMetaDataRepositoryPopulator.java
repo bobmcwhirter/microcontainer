@@ -27,10 +27,9 @@ import org.jboss.deployers.spi.DeploymentException;
 import org.jboss.deployers.spi.deployer.helpers.AbstractRealDeployerWithInput;
 import org.jboss.deployers.spi.deployer.helpers.DeploymentVisitor;
 import org.jboss.deployers.structure.spi.DeploymentUnit;
-import org.jboss.metadata.plugins.loader.reflection.AnnotatedElementMetaDataLoader;
 import org.jboss.metadata.plugins.repository.basic.BasicMetaDataRepository;
 import org.jboss.metadata.spi.MutableMetaData;
-import org.jboss.metadata.spi.scope.Scope;
+import org.jboss.metadata.spi.scope.CommonLevels;
 import org.jboss.metadata.spi.scope.ScopeKey;
 
 /**
@@ -41,18 +40,11 @@ import org.jboss.metadata.spi.scope.ScopeKey;
  */
 public class TestComponentMetaDataRepositoryPopulator extends AbstractRealDeployerWithInput<TestComponentMetaData>
 {
-   private BasicMetaDataRepository repository;
-
    public TestComponentMetaDataRepositoryPopulator()
    {
       setDeploymentVisitor(new TestComponentMetaDataVisitor());
       setWantComponents(true);
       setOutput(TestComponentMetaData.class);
-   }
-   
-   public void setRepository(BasicMetaDataRepository repository)
-   {
-      this.repository = repository;
    }
    
    public class TestComponentMetaDataVisitor implements DeploymentVisitor<TestComponentMetaData>
@@ -64,14 +56,9 @@ public class TestComponentMetaDataRepositoryPopulator extends AbstractRealDeploy
 
       public void deploy(DeploymentUnit unit, TestComponentMetaData deployment) throws DeploymentException
       {
-         // Create a scope for the class
-         AnnotatedElementMetaDataLoader loader = new AnnotatedElementMetaDataLoader(deployment.clazz);
-         repository.addMetaDataRetrieval(loader);
-
-         // Add it to our scope
+         // Add in the class scope
          ScopeKey key = unit.getScope();
-         for (Scope scope : loader.getScope().getScopes())
-            key.addScope(scope);
+         key.addScope(CommonLevels.CLASS, deployment.clazz);
          
          // Populate the instance annotations
          MutableMetaData mutable = unit.getMutableMetaData();
@@ -81,9 +68,6 @@ public class TestComponentMetaDataRepositoryPopulator extends AbstractRealDeploy
 
       public void undeploy(DeploymentUnit unit, TestComponentMetaData deployment)
       {
-         // Remove the scope
-         AnnotatedElementMetaDataLoader loader = new AnnotatedElementMetaDataLoader(deployment.getClass());
-         repository.removeMetaDataRetrieval(loader.getScope());
       }
    }
 }

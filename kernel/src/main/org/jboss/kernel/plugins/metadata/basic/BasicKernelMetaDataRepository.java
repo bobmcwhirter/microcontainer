@@ -60,6 +60,8 @@ public class BasicKernelMetaDataRepository extends AbstractKernelMetaDataReposit
       {
          initMetaDataRetrieval(context);
          metaData = repository.getMetaData(scope);
+         if (metaData == null)
+            throw new IllegalStateException("Error initialising metadata state: " + scope);
       }
       return metaData;
    }
