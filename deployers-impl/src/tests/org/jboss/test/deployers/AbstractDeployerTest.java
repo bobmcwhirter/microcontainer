@@ -185,11 +185,16 @@ public abstract class AbstractDeployerTest extends BaseTestCase
    
    protected Deployment createSimpleDeployment(String name)
    {
-      AbstractDeployment unit = new AbstractDeployment(name);
+      AbstractDeployment unit = createAbstractDeployment(name);
       factory.addContext(unit, "");
       return unit;
    }
-   
+
+   protected AbstractDeployment createAbstractDeployment(String name)
+   {
+      return new AbstractDeployment(name);
+   }
+
    protected ContextInfo addChild(PredeterminedManagedObjectAttachments parent, String name)
    {
       return factory.addContext(parent, name);

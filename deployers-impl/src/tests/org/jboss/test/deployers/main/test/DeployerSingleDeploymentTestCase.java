@@ -23,13 +23,25 @@ package org.jboss.test.deployers.main.test;
 
 import java.util.ArrayList;
 import java.util.Collections;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
+import java.util.Random;
 
 import junit.framework.Test;
 import org.jboss.deployers.client.spi.DeployerClient;
 import org.jboss.deployers.client.spi.Deployment;
 import org.jboss.deployers.client.spi.main.MainDeployer;
 import org.jboss.deployers.spi.DeploymentException;
+import org.jboss.test.deployers.main.support.AddDeploymentRunnable;
+import org.jboss.test.deployers.main.support.AddProcessRemoveProcessRunnable;
+import org.jboss.test.deployers.main.support.DeployRunnable;
+import org.jboss.test.deployers.main.support.DeployUndeployRunnable;
+import org.jboss.test.deployers.main.support.DeployerTestRunnable;
+import org.jboss.test.deployers.main.support.FailedDeployUndeployRunnable;
+import org.jboss.test.deployers.main.support.ShutdownRunnable;
+import org.jboss.test.deployers.main.support.TestDeployment;
+import org.jboss.test.deployers.main.support.UndeployRunnable;
 
 /**
  * Single deployment API test case.
@@ -198,11 +210,62 @@ public class DeployerSingleDeploymentTestCase extends AbstractMainDeployerTest
 
    public void testMultiThreads() throws Exception
    {
-      // todo
+      DeployerClient main = getMainDeployer();
+      int n = 30;
+      DeployerTestRunnable[] runnables = new DeployerTestRunnable[n];
+      for(int i = 0; i < n; i++)
+      {
+         if (i % 3 == 0)
+            runnables[i] = new DeployUndeployRunnable(main, createSimpleDeployment("deployundeploy" + i));
+         else if (i % 3 == 1)
+            runnables[i] = new AddProcessRemoveProcessRunnable(main, createSimpleDeployment("aprp" + i));
+         else
+            runnables[i] = new FailedDeployUndeployRunnable(main, createSimpleDeployment("failed" + i), deployer);
+      }
+      Thread[] threads = new Thread[n];
+      for(int i = 0; i < n; i++)
+      {
+         threads[i] = new Thread(runnables[i]);
+         threads[i].start();
+      }
+      for(int i = 0; i < n; i++)
+      {
+         threads[i].join();
+         assertTrue(runnables[i].toString(), runnables[i].isValid());
+      }
    }
 
    public void testMultiThreadsAndShutdown() throws Exception
    {
-      // todo
+      DeployerClient main = getMainDeployer();
+      int n = 30;
+      int shutdown = new Random().nextInt(n / 2);
+      log.info("Shutdown order: " + shutdown);
+      DeployerTestRunnable[] runnables = new DeployerTestRunnable[n];
+      Set<String> names = new HashSet<String>();
+      for(int i = 0; i < n; i++)
+      {
+         Deployment deployment = new TestDeployment("td" + i, names);
+         if (i == shutdown)
+            runnables[i] = new ShutdownRunnable(main);
+         else if (i % 3 == 0)
+            runnables[i] = new DeployRunnable(main, deployment);
+         else if (i % 3 == 1)
+            runnables[i] = new AddDeploymentRunnable(main, deployment);
+         else
+            runnables[i] = new UndeployRunnable(main, deployment);
+      }
+      Thread[] threads = new Thread[n];
+      for(int i = 0; i < n; i++)
+      {
+         threads[i] = new Thread(runnables[i]);
+         threads[i].start();
+      }
+      for(int i = 0; i < n; i++)
+      {
+         threads[i].join();
+         assertTrue(runnables[i].toString(), runnables[i].isValid());
+      }
+      log.info("Names: " + names.size() + " - " + names);
    }
 }

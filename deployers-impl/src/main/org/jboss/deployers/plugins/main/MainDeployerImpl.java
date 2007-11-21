@@ -50,43 +50,44 @@ import org.jboss.util.graph.Vertex;
 
 /**
  * MainDeployerImpl.
- * 
+ *
  * @author <a href="adrian@jboss.com">Adrian Brock</a>
- * @author Scott.Stark@jboss.org
+ * @author <a href="scott.stark@jboss.org">Scott Stark</a>
+ * @author <a href="ales.justin@jboss.com">Ales Justin</a>
  * @version $Revision$
  */
 public class MainDeployerImpl implements MainDeployer, MainDeployerStructure
 {
    /** The log */
    private static final Logger log = Logger.getLogger(MainDeployerImpl.class);
-   
+
    /** Whether we are shutdown */
    private AtomicBoolean shutdown = new AtomicBoolean(false);
-   
+
    /** The deployers */
    private Deployers deployers;
-   
+
    /** The structural deployers */
    private StructuralDeployers structuralDeployers;
 
    /** The ManagedDeploymentCreator plugin */
    private ManagedDeploymentCreator mgtDeploymentCreator = null;
-   
+
    /** The deployments by name */
    private Map<String, DeploymentContext> topLevelDeployments = new ConcurrentHashMap<String, DeploymentContext>();
-   
+
    /** All deployments by name */
    private Map<String, DeploymentContext> allDeployments = new ConcurrentHashMap<String, DeploymentContext>();
-   
+
    /** Deployments in error by name */
    private Map<String, DeploymentContext> errorDeployments = new ConcurrentHashMap<String, DeploymentContext>();
-   
+
    /** Deployments missing deployers */
    private Map<String, Deployment> missingDeployers = new ConcurrentHashMap<String, Deployment>();
 
    /** The undeploy work */
    private List<DeploymentContext> undeploy = new CopyOnWriteArrayList<DeploymentContext>();
-   
+
    /** The deploy work */
    private List<DeploymentContext> deploy = new CopyOnWriteArrayList<DeploymentContext>();
 
@@ -95,7 +96,7 @@ public class MainDeployerImpl implements MainDeployer, MainDeployerStructure
 
    /**
     * Get the deployers
-    * 
+    *
     * @return the deployers
     */
    public synchronized Deployers getDeployers()
@@ -105,7 +106,7 @@ public class MainDeployerImpl implements MainDeployer, MainDeployerStructure
 
    /**
     * Set the deployers
-    * 
+    *
     * @param deployers the deployers
     * @throws IllegalArgumentException for null deployers
     */
@@ -115,10 +116,10 @@ public class MainDeployerImpl implements MainDeployer, MainDeployerStructure
          throw new IllegalArgumentException("Null deployers");
       this.deployers = deployers;
    }
-   
+
    /**
     * Get the structural deployers
-    * 
+    *
     * @return the structural deployers
     */
    public synchronized StructuralDeployers getStructuralDeployers()
@@ -128,7 +129,7 @@ public class MainDeployerImpl implements MainDeployer, MainDeployerStructure
 
    /**
     * Set the structural deployers
-    * 
+    *
     * @param deployers the deployers
     * @throws IllegalArgumentException for null deployers
     */
@@ -191,7 +192,7 @@ public class MainDeployerImpl implements MainDeployer, MainDeployerStructure
 
    /**
     * Get a top level deployment context by name
-    * 
+    *
     * @param name the name
     * @return the context
     */
@@ -247,7 +248,7 @@ public class MainDeployerImpl implements MainDeployer, MainDeployerStructure
    {
       if (deployment == null)
          throw new DeploymentException("Null context");
-      
+
       lockRead();
       try
       {
@@ -326,7 +327,7 @@ public class MainDeployerImpl implements MainDeployer, MainDeployerStructure
 
    public boolean removeDeployment(String name) throws DeploymentException
    {
-      return removeDeployment(name, true);  
+      return removeDeployment(name, true);
    }
 
    /**
@@ -501,8 +502,8 @@ public class MainDeployerImpl implements MainDeployer, MainDeployerStructure
          }
 
          try
-      {
-         deployers.process(deployContexts, undeployContexts);
+         {
+            deployers.process(deployContexts, undeployContexts);
          }
          catch (RuntimeException e)
          {
@@ -682,13 +683,13 @@ public class MainDeployerImpl implements MainDeployer, MainDeployerStructure
       Map<String, ManagedObject> managedObjects = getManagedObjects(context);
       parent.setData(managedObjects);
       processManagedObjects(context, managedObjectsGraph, parent);
-      
+
       return managedObjectsGraph;
    }
 
    /**
-    * Get the managed objects for a context 
-    * 
+    * Get the managed objects for a context
+    *
     * @param context the context
     * @param graph the graph
     * @param parent the parent node
@@ -710,7 +711,7 @@ public class MainDeployerImpl implements MainDeployer, MainDeployerStructure
 
    /**
     * Recursively process the DeploymentContext into ManagedDeployments.
-    * 
+    *
     * @param context the context
     * @param parent the parent
     * @throws DeploymentException for any error
@@ -729,7 +730,7 @@ public class MainDeployerImpl implements MainDeployer, MainDeployerStructure
 
    /**
     * Determine the structure of a deployment
-    * 
+    *
     * @param deployment the deployment
     * @return the deployment context
     * @throws DeploymentException for an error determining the deployment structure
@@ -745,7 +746,7 @@ public class MainDeployerImpl implements MainDeployer, MainDeployerStructure
       }
       throw new DeploymentException("No structural deployers.");
    }
-   
+
    /**
     * Add a context.
     *
@@ -767,7 +768,7 @@ public class MainDeployerImpl implements MainDeployer, MainDeployerStructure
       // Process the top level only
       if (context.isTopLevel() && addToDeploy)
          deploy.add(context);
-      
+
       // Add all the children
       List<DeploymentContext> children = context.getChildren();
       if (children != null)
@@ -776,7 +777,7 @@ public class MainDeployerImpl implements MainDeployer, MainDeployerStructure
             addContext(child, addToDeploy);
       }
    }
-   
+
    /**
     * Remove a context
     *
@@ -797,7 +798,7 @@ public class MainDeployerImpl implements MainDeployer, MainDeployerStructure
       // Process the top level only
       if (context.isTopLevel() && addToUndeploy)
          undeploy.add(context);
-      
+
       // Remove all the children
       List<DeploymentContext> children = context.getChildren();
       if (children != null)
