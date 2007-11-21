@@ -245,6 +245,7 @@ public class DeployerSingleDeploymentTestCase extends AbstractMainDeployerTest
       log.info("Shutdown order: " + shutdown);
       DeployerTestRunnable[] runnables = new DeployerTestRunnable[n];
       Set<String> names = new HashSet<String>();
+      String[] dname = new String[]{"deploy", "add", "undeploy", "error"};
       for(int i = 0; i < n; i++)
       {
          if (i == shutdown)
@@ -253,7 +254,7 @@ public class DeployerSingleDeploymentTestCase extends AbstractMainDeployerTest
             runnables[i] = new ProcessRunnable(main);
          else
          {
-            Deployment deployment = new TestDeployment("td" + i, names);
+            Deployment deployment = new TestDeployment(dname[i % 4] + i, names);
 
             if (i % 4 == 0)
                runnables[i] = new DeployRunnable(main, deployment);
