@@ -292,7 +292,7 @@ public class MainDeployerImpl implements MainDeployer, MainDeployerStructure
          catch (Throwable t)
          {
             // was structure determined?
-            if (context != null)
+            if (context == null)
                missingDeployers.put(name, deployment);
 
             throw DeploymentException.rethrowAsDeploymentException("Error determining deployment structure for " + name, t);
