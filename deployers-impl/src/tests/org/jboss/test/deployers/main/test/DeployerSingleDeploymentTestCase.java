@@ -42,6 +42,7 @@ import org.jboss.test.deployers.main.support.FailedDeployUndeployRunnable;
 import org.jboss.test.deployers.main.support.ShutdownRunnable;
 import org.jboss.test.deployers.main.support.TestDeployment;
 import org.jboss.test.deployers.main.support.UndeployRunnable;
+import org.jboss.test.deployers.main.support.ProcessRunnable;
 
 /**
  * Single deployment API test case.
@@ -248,15 +249,17 @@ public class DeployerSingleDeploymentTestCase extends AbstractMainDeployerTest
       {
          if (i == shutdown)
             runnables[i] = new ShutdownRunnable(main);
+         else if (i % 4 == 3)
+            runnables[i] = new ProcessRunnable(main);
          else
          {
             Deployment deployment = new TestDeployment("td" + i, names);
 
-            if (i % 3 == 0)
+            if (i % 4 == 0)
                runnables[i] = new DeployRunnable(main, deployment);
-            else if (i % 3 == 1)
+            else if (i % 4 == 1)
                runnables[i] = new AddDeploymentRunnable(main, deployment);
-            else
+            else if (i % 4 == 2)
                runnables[i] = new UndeployRunnable(main, deployment);
          }
       }
