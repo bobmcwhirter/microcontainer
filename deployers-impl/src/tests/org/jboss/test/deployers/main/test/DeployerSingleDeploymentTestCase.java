@@ -239,21 +239,26 @@ public class DeployerSingleDeploymentTestCase extends AbstractMainDeployerTest
    {
       DeployerClient main = getMainDeployer();
       int n = 30;
+      // let the shutdown be in first half of started threads
       int shutdown = new Random().nextInt(n / 2);
       log.info("Shutdown order: " + shutdown);
       DeployerTestRunnable[] runnables = new DeployerTestRunnable[n];
       Set<String> names = new HashSet<String>();
       for(int i = 0; i < n; i++)
       {
-         Deployment deployment = new TestDeployment("td" + i, names);
          if (i == shutdown)
             runnables[i] = new ShutdownRunnable(main);
-         else if (i % 3 == 0)
-            runnables[i] = new DeployRunnable(main, deployment);
-         else if (i % 3 == 1)
-            runnables[i] = new AddDeploymentRunnable(main, deployment);
          else
-            runnables[i] = new UndeployRunnable(main, deployment);
+         {
+            Deployment deployment = new TestDeployment("td" + i, names);
+
+            if (i % 3 == 0)
+               runnables[i] = new DeployRunnable(main, deployment);
+            else if (i % 3 == 1)
+               runnables[i] = new AddDeploymentRunnable(main, deployment);
+            else
+               runnables[i] = new UndeployRunnable(main, deployment);
+         }
       }
       Thread[] threads = new Thread[n];
       for(int i = 0; i < n; i++)
