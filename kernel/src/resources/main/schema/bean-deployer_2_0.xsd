@@ -181,7 +181,7 @@ $Id$
 -->
       </xsd:sequence>
       <xsd:attribute name="name" type="xsd:string" use="optional"/>
-      <xsd:attribute name="class" type="xsd:token" use="required"/>
+      <xsd:attribute name="class" type="xsd:token" use="optional"/>
    </xsd:complexType>
 
    <xsd:complexType name="lazyType">
