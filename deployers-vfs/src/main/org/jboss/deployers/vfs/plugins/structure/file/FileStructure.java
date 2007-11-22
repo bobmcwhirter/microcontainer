@@ -174,7 +174,7 @@ public class FileStructure extends AbstractStructureDeployer
          {
             boolean isFile = false;
             if( trace )
-               log.trace(file + " is not a leaf");
+               log.trace(file + " is a leaf");
             // See if this is a top-level by checking the parent
             if (isTopLevel(parent) == false)
             {
