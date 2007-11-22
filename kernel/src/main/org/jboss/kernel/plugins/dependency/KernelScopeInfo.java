@@ -77,7 +77,7 @@ public class KernelScopeInfo extends AbstractScopeInfo
          return key;
 
       String className = (String) qualifier;
-      ClassLoader cl = null;
+      ClassLoader cl;
       try
       {
          cl = Configurator.getClassLoader(beanMetaData);
@@ -86,7 +86,7 @@ public class KernelScopeInfo extends AbstractScopeInfo
       {
          throw new RuntimeException("Error getting classloader for " + key, t);
       }
-      Class<?> clazz = null;
+      Class<?> clazz;
       try
       {
          clazz = cl.loadClass(className);
@@ -120,7 +120,7 @@ public class KernelScopeInfo extends AbstractScopeInfo
       BeanMetaData beanMetaData = context.getBeanMetaData();
       if (beanMetaData != null)
       {
-         ClassLoader cl = null;
+         ClassLoader cl;
          try
          {
             cl = Configurator.getClassLoader(beanMetaData);
@@ -154,7 +154,7 @@ public class KernelScopeInfo extends AbstractScopeInfo
       if (beanInfo == null)
          return;
 
-      ClassLoader cl = null;
+      ClassLoader cl;
       try
       {
          cl = Configurator.getClassLoader(beanMetaData);
