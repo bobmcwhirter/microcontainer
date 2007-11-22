@@ -25,24 +25,30 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.HashSet;
 import java.util.List;
-import java.util.Set;
 import java.util.Random;
+import java.util.Set;
 
 import junit.framework.Test;
 import org.jboss.deployers.client.spi.DeployerClient;
 import org.jboss.deployers.client.spi.Deployment;
 import org.jboss.deployers.client.spi.main.MainDeployer;
 import org.jboss.deployers.spi.DeploymentException;
+import org.jboss.deployers.spi.structure.StructureMetaDataFactory;
+import org.jboss.deployers.structure.spi.DeploymentContext;
+import org.jboss.deployers.structure.spi.StructuralDeployers;
+import org.jboss.deployers.structure.spi.StructureBuilder;
+import org.jboss.deployers.structure.spi.helpers.AbstractStructureBuilder;
+import org.jboss.deployers.plugins.main.MainDeployerImpl;
 import org.jboss.test.deployers.main.support.AddDeploymentRunnable;
 import org.jboss.test.deployers.main.support.AddProcessRemoveProcessRunnable;
 import org.jboss.test.deployers.main.support.DeployRunnable;
 import org.jboss.test.deployers.main.support.DeployUndeployRunnable;
 import org.jboss.test.deployers.main.support.DeployerTestRunnable;
 import org.jboss.test.deployers.main.support.FailedDeployUndeployRunnable;
+import org.jboss.test.deployers.main.support.ProcessRunnable;
 import org.jboss.test.deployers.main.support.ShutdownRunnable;
 import org.jboss.test.deployers.main.support.TestDeployment;
 import org.jboss.test.deployers.main.support.UndeployRunnable;
-import org.jboss.test.deployers.main.support.ProcessRunnable;
 
 /**
  * Single deployment API test case.
@@ -59,6 +65,47 @@ public class DeployerSingleDeploymentTestCase extends AbstractMainDeployerTest
    public static Test suite()
    {
       return suite(DeployerSingleDeploymentTestCase.class);
+   }
+
+   protected void checkFailedDeployOnStructure(DeployerClient mainDeployer, final int failed, int size) throws Throwable
+   {
+      final StructureBuilder builder = new AbstractStructureBuilder();
+      StructuralDeployers structuralDeployers = new StructuralDeployers()
+      {
+         public DeploymentContext determineStructure(Deployment deployment) throws DeploymentException
+         {
+            String name = deployment.getName();
+            if (name.endsWith("deployment" + failed))
+               throw new RuntimeException(String.valueOf(failed));
+            return builder.populateContext(deployment, StructureMetaDataFactory.createStructureMetaData());
+         }
+      };
+      ((MainDeployerImpl)mainDeployer).setStructuralDeployers(structuralDeployers);
+      
+      Deployment[] deployments = new Deployment[size];
+      for(int i = 0; i < size; i++)
+         deployments[i] = createSimpleDeployment("deployment" + i);
+      try
+      {
+         mainDeployer.deploy(deployments);
+         fail("Should not be here.");
+      }
+      catch (DeploymentException e)
+      {
+         Throwable cause = e.getCause();
+         assertNotNull(cause);
+         String msg = cause.getMessage();
+         assertEquals(failed, Integer.parseInt(msg));
+      }
+      deployer.clear();
+   }
+
+   public void testFailedDeployOnStructure() throws Throwable
+   {
+      DeployerClient main = getMainDeployer();
+      checkFailedDeployOnStructure(main, 0, 3);
+      checkFailedDeployOnStructure(main, 1, 3);
+      checkFailedDeployOnStructure(main, 2, 3);
    }
 
    protected void checkFailedDeploy(DeployerClient mainDeployer, int failed, int size) throws Throwable

@@ -391,7 +391,7 @@ public class MainDeployerImpl implements MainDeployer, MainDeployerStructure
                DeploymentContext[] deployedContexts = new DeploymentContext[i];
                System.arraycopy(contexts, 0, deployedContexts, 0, i);
                deployers.process(null, Arrays.asList(deployedContexts));
-               throw DeploymentException.rethrowAsDeploymentException("Unable to deploy deployments.", t);
+               throw DeploymentException.rethrowAsDeploymentException("Unable to deploy deployments, cause: " + deployments[i], t);
             }
          }
          try
