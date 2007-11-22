@@ -22,6 +22,7 @@
 package org.jboss.deployers.structure.spi.helpers;
 
 import java.util.Comparator;
+import java.io.Serializable;
 
 import org.jboss.deployers.structure.spi.DeploymentContext;
 
@@ -31,11 +32,13 @@ import org.jboss.deployers.structure.spi.DeploymentContext;
  * @author <a href="adrian@jboss.com">Adrian Brock</a>
  * @version $Revision: 1.1 $
  */
-public class DefaultDeploymentContextComparator implements Comparator<DeploymentContext>
+public class DefaultDeploymentContextComparator implements Comparator<DeploymentContext>, Serializable
 {
+   private static final long serialVersionUID = 4933914203587980050L;
+
    /** The singleton */
-   public static final DefaultDeploymentContextComparator INSTANCE = new DefaultDeploymentContextComparator(); 
-   
+   public static final DefaultDeploymentContextComparator INSTANCE = new DefaultDeploymentContextComparator();
+
    public int compare(DeploymentContext o1, DeploymentContext o2)
    {
       int relative = o1.getRelativeOrder() - o2.getRelativeOrder();
@@ -43,5 +46,10 @@ public class DefaultDeploymentContextComparator implements Comparator<Deployment
          return relative;
       else
          return o1.getSimpleName().compareTo(o2.getRelativePath());
+   }
+
+   Object readResolve()
+   {
+      return INSTANCE;
    }
 }
