@@ -46,7 +46,6 @@ public class AspectMCAllTestSuite extends TestSuite
       suite.addTest(BeanNoDefaultCtorUsingParamTestCase.suite());
       suite.addTest(ConstructorInterceptorWithDependencyTestCase.suite());
       suite.addTest(InterceptedTestCase.suite());
-      suite.addTest(InterceptedUseCaseXmlTestCase.suite());
       suite.addTest(InterceptorWithAnnotationDependencyTestCase.suite());
       suite.addTest(InterceptorWithDependencyTestCase.suite());
       suite.addTest(InterceptorWithNestedAnnotationDependencyTestCase.suite());

@@ -6,12 +6,13 @@
       <constructor factoryClass="org.jboss.aop.AspectManager" factoryMethod="instance"/>
    </bean>
 
-   <aop:aspect xmlns:aop="urn:jboss:aop-beans:1.0"
-               name="InterceptedAdvice"
-               class="org.jboss.test.microcontainer.support.InterceptorWithAnnotationDependency"
-               pointcut="execution(* @org.jboss.test.microcontainer.support.Test->@org.jboss.test.microcontainer.support.Test(..))">
+   <aop:interceptor xmlns:aop="urn:jboss:aop-beans:1.0" name="InterceptedAdvice" class="org.jboss.test.microcontainer.support.InterceptorWithAnnotationDependency">
       <property name="controller"><inject bean="jboss.kernel:service=KernelController"/></property>
-   </aop:aspect>
+   </aop:interceptor>
+   
+   <bind xmlns="urn:jboss:aop-beans:1.0" pointcut="execution(* @org.jboss.test.microcontainer.support.Test->@org.jboss.test.microcontainer.support.Test(..))">
+      <interceptor-ref name="InterceptedAdvice"/>
+   </bind>
 
    <bean name="NotDeployable" class="org.jboss.test.microcontainer.support.OverriddenPropertyAnnotatedChild">
    </bean>

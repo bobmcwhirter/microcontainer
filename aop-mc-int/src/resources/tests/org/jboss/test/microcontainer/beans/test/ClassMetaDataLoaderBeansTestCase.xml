@@ -1,0 +1,52 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<deployment xmlns="urn:jboss:bean-deployer:2.0">
+
+   <bean name="AspectManager" class="org.jboss.aop.AspectManager">
+      <constructor factoryClass="org.jboss.aop.AspectManager" factoryMethod="instance"/>
+   </bean>
+
+	<bean name="custom$loader" class="org.jboss.aop.microcontainer.beans.ClassMetaDataLoader">
+      <property name="manager"><inject bean="AspectManager"/></property>
+		<property name="tag">custom</property>
+		<property name="className">org.jboss.test.microcontainer.beans.TestMetaDataLoader</property>
+	</bean>
+
+	<bean name="ClassMetaData" class="org.jboss.aop.microcontainer.beans.ClassMetaData">
+      <property name="manager"><inject bean="AspectManager"/></property>
+		<property name="tag">custom</property>
+		<property name="className">org.jboss.test.microcontainer.beans.POJO</property>
+		<property name="element">
+      <![CDATA[
+         <metadata>
+            <data>custom1</data>
+         </metadata>
+      ]]>
+		</property>
+	</bean>
+
+   <beanfactory name="Factory$org.jboss.test.microcontainer.beans.TestClassMetaDataAspect" class="org.jboss.test.microcontainer.beans.TestClassMetaDataAspect"/>
+   
+   <bean name="org.jboss.test.microcontainer.beans.TestClassMetaDataAspect" class="org.jboss.aop.microcontainer.beans.Aspect">
+      <property name="advice"><inject bean="Factory$org.jboss.test.microcontainer.beans.TestClassMetaDataAspect"/></property>
+      <property name="manager"><inject bean="AspectManager"/></property>
+   </bean>
+
+   <bean name="TestAspectBinding" class="org.jboss.aop.microcontainer.beans.AspectBinding">
+      <property name="pointcut">execution(org.jboss.test.microcontainer.beans.POJO->new(..)) OR execution(* org.jboss.test.microcontainer.beans.POJO->*(..))</property>
+      <property name="manager"><inject bean="AspectManager"/></property>
+     	<property name="advices">
+         <list>
+            <bean name="TestAspectBinding1$" class="org.jboss.aop.microcontainer.beans.InterceptorEntry">
+			      <property name="manager"><inject bean="AspectManager"/></property>
+               <property name="aspect"><inject bean="org.jboss.test.microcontainer.beans.TestClassMetaDataAspect"/></property>
+               <property name="aspectMethod">advice</property>
+               <property name="aspectBinding"><inject bean="TestAspectBinding" state="Instantiated"/></property>
+            </bean>
+         </list>
+   	</property>
+   </bean>
+   
+   <bean name="Bean" class="org.jboss.test.microcontainer.beans.POJO"/>
+
+</deployment>

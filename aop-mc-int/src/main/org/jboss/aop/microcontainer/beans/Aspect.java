@@ -21,15 +21,22 @@
 */
 package org.jboss.aop.microcontainer.beans;
 
+import java.util.ArrayList;
+import java.util.Collection;
+import java.util.Collections;
+import java.util.LinkedHashMap;
+import java.util.Map;
+
 import org.jboss.aop.AspectManager;
 import org.jboss.aop.advice.AspectDefinition;
+import org.jboss.aop.advice.AspectFactory;
+import org.jboss.aop.advice.AspectFactoryDelegator;
 import org.jboss.aop.advice.GenericAspectFactory;
 import org.jboss.aop.advice.Scope;
 import org.jboss.aop.advice.ScopeUtil;
 import org.jboss.aop.instrument.Untransformable;
 import org.jboss.beans.metadata.plugins.factory.GenericBeanFactory;
 import org.jboss.dependency.spi.ControllerContext;
-import org.jboss.kernel.Kernel;
 import org.jboss.kernel.spi.dependency.ConfigureKernelControllerContextAware;
 import org.jboss.kernel.spi.dependency.KernelControllerContext;
 import org.jboss.logging.Logger;
@@ -37,6 +44,7 @@ import org.jboss.util.id.GUID;
 
 /**
  * An Aspect.
+ * This installs the AspectDefinition and AspectFactory into aop
  *
  * @author <a href="adrian@jboss.com">Adrian Brock</a>
  * @version $Revision$
@@ -45,14 +53,22 @@ public class Aspect implements ConfigureKernelControllerContextAware, Untransfor
 {
    private static final Logger log = Logger.getLogger(Aspect.class);
 
+   /**
+    * The AspectManager/Domain we are creating this aspect for
+    */
    protected AspectManager manager;
 
    protected String adviceName = GUID.asString();
+   
+   /**
+    * True if aspect is an aspect factory, rather than the aspect itself
+    */
+   protected boolean factory; 
 
    /**
     * The scope of the aspect we are creating
     */
-   Scope scope;
+   protected Scope scope;
 
    protected ManagedAspectDefinition definition;
 
@@ -83,10 +99,10 @@ public class Aspect implements ConfigureKernelControllerContextAware, Untransfor
    protected String aspectDefName;
 
    /**
-    * Reference to the kernel
+    * All the AspectBindings referencing this Aspect
     */
-   protected Kernel kernel;
-
+   protected Map<String, AspectBinding> aspectBindings = new LinkedHashMap<String, AspectBinding>();
+   
    /**
     * Get the adviceName.
     *
@@ -95,6 +111,14 @@ public class Aspect implements ConfigureKernelControllerContextAware, Untransfor
    public String getAdviceName()
    {
       return adviceName;
+   }
+
+   /**
+    * Sets if we are an aspect factory or not
+    */
+   public void setFactory(boolean factory)
+   {
+      this.factory = factory;
    }
 
    /**
@@ -201,7 +225,6 @@ public class Aspect implements ConfigureKernelControllerContextAware, Untransfor
    {
       myname = (String)context.getName();
       this.context = context;
-      kernel = context.getKernel();
    }
 
    public void unsetKernelControllerContext(KernelControllerContext context) throws Exception
@@ -244,22 +267,41 @@ public class Aspect implements ConfigureKernelControllerContextAware, Untransfor
          GenericBeanAspectFactory factory = (GenericBeanAspectFactory)definition.getFactory();
          factory.setBeanFactory(advice);
       }
+      
+      //Copy the aspectbindings to avoid ConcurrentModificationExceptions
+      ArrayList<AspectBinding> clonedBindings = new ArrayList<AspectBinding>();
+      for (AspectBinding aspectBinding : aspectBindings.values())
+      {
+         clonedBindings.add(aspectBinding);
+      }
+      
+      for (AspectBinding aspectBinding : clonedBindings)
+      {
+         aspectBinding.rebind();
+      }
+         
       log.debug("Bound aspect " + aspectDefName + "; deployed:" + definition.isDeployed());
    }
 
    protected ManagedAspectDefinition getAspectDefinitionNoDependencies()
    {
-      return new ManagedAspectDefinition(aspectDefName, scope, new GenericBeanAspectFactory(adviceName, advice));
+      AspectFactory factory = this.factory ?  
+            new DelegatingBeanAspectFactory(adviceName, advice) : new GenericBeanAspectFactory(adviceName, advice);
+      return new ManagedAspectDefinition(aspectDefName, scope, factory);
    }
 
    protected ManagedAspectDefinition getAspectDefintionDependencies()
    {
-      return new ManagedAspectDefinition(aspectDefName, scope, new GenericBeanAspectFactory(aspectDefName, advice), false);
+      AspectFactory factory = this.factory ?  
+            new DelegatingBeanAspectFactory(aspectDefName, advice) : new GenericBeanAspectFactory(aspectDefName, advice);
+      return new ManagedAspectDefinition(aspectDefName, scope, factory, false);
    }
 
    protected ManagedAspectDefinition getAspectDefinitionPlainAspectFactory()
    {
-      return new ManagedAspectDefinition(aspectDefName, scope, new GenericAspectFactory(adviceName, null));
+      AspectFactory factory = this.factory ?  
+            new AspectFactoryDelegator(adviceName, null) : new GenericAspectFactory(adviceName, null);
+      return new ManagedAspectDefinition(aspectDefName, scope, factory);
    }
 
    protected void addDefinitionToManager()
@@ -283,5 +325,15 @@ public class Aspect implements ConfigureKernelControllerContextAware, Untransfor
          definition.undeploy();
          definition = null;
       }
+   }
+   
+   void addAspectBinding(AspectBinding binding)
+   {
+      aspectBindings.put(binding.getName(), binding);
+   }
+   
+   void removeAspectBinding(AspectBinding binding)
+   {
+      aspectBindings.remove(binding.getName());
    }
 }

@@ -6,18 +6,11 @@
       <constructor factoryClass="org.jboss.aop.AspectManager" factoryMethod="instance"/>
    </bean>
 
-   <beanfactory name="InterceptedAdvice" class="org.jboss.test.microcontainer.advisor.test.TestInterceptor"/>
-
-   <bean name="InterceptedAspect" class="org.jboss.aop.microcontainer.beans.Aspect">
-      <property name="advice"><inject bean="InterceptedAdvice"/></property>
-      <property name="manager"><inject bean="AspectManager"/></property>
-   </bean>
-
-   <bean name="InterceptedBinding" class="org.jboss.aop.microcontainer.beans.AspectBinding">
-      <property name="pointcut">execution(* @org.jboss.test.microcontainer.advisor.test.TestAnnotation->*(..))</property>
-      <property name="aspect"><inject bean="InterceptedAspect" property="definition"/></property>
-      <property name="manager"><inject bean="AspectManager"/></property>
-   </bean>
+   <interceptor xmlns="urn:jboss:aop-beans:1.0" name="InterceptedAdvice" class="org.jboss.test.microcontainer.advisor.test.TestInterceptor"/>
+   
+   <bind xmlns="urn:jboss:aop-beans:1.0" pointcut="execution(* @org.jboss.test.microcontainer.advisor.test.TestAnnotation->*(..))">
+      <interceptor-ref name="InterceptedAdvice"/>
+   </bind>
 
    <bean name="Test" class="org.jboss.test.microcontainer.advisor.test.TestObject">
       <annotation>@org.jboss.test.microcontainer.advisor.test.TestAnnotation</annotation>

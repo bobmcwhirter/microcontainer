@@ -21,10 +21,11 @@
 */
 package org.jboss.aop.microcontainer.beans;
 
+import java.util.List;
+
 import org.jboss.aop.AspectManager;
 import org.jboss.aop.advice.AdviceBinding;
-import org.jboss.aop.advice.AdviceFactory;
-import org.jboss.aop.advice.AspectDefinition;
+import org.jboss.aop.advice.InterceptorFactory;
 import org.jboss.logging.Logger;
 import org.jboss.util.id.GUID;
 
@@ -32,6 +33,7 @@ import org.jboss.util.id.GUID;
  * An AspectBinding.
  *
  * @author <a href="adrian@jboss.com">Adrian Brock</a>
+ * @author <a href="kabir.khan@jboss.com">Kabir Khan</a>
  * @version $Revision$
  */
 public class AspectBinding
@@ -44,30 +46,9 @@ public class AspectBinding
 
    protected String pointcut;
 
-   protected AspectDefinition aspect;
+   protected List<BindingEntry> advices;
 
-   protected String method = "invoke";
-
-   /**
-    * Get the aspectDefinition.
-    *
-    * @return the aspectDefinition.
-    */
-   public AspectDefinition getAspect()
-   {
-      return aspect;
-   }
-
-   /**
-    * Set the aspectDefinition.
-    *
-    * @param aspect The aspectDefinition to set.
-    */
-   public void setAspect(AspectDefinition aspect)
-   {
-      this.aspect = aspect;
-   }
-
+   protected String cflow;
    /**
     * Get the manager.
     *
@@ -88,24 +69,15 @@ public class AspectBinding
       this.manager = manager;
    }
 
-   /**
-    * Get the method.
-    *
-    * @return the method.
-    */
-   public String getMethod()
+   
+   public String getCflow()
    {
-      return method;
+      return cflow;
    }
 
-   /**
-    * Set the method.
-    *
-    * @param method The method to set.
-    */
-   public void setMethod(String method)
+   public void setCflow(String cflow)
    {
-      this.method = method;
+      this.cflow = cflow;
    }
 
    /**
@@ -118,6 +90,16 @@ public class AspectBinding
       return pointcut;
    }
 
+   public String getName()
+   {
+      return name;
+   }
+   
+   public void setName(String name)
+   {
+      this.name = name;
+   }
+   
    /**
     * Set the pointcut.
     *
@@ -128,16 +110,36 @@ public class AspectBinding
       this.pointcut = pointcut;
    }
 
+   public List<BindingEntry> getAdvices()
+   {
+      return advices;
+   }
+
+   public void setAdvices(List<BindingEntry> advices)
+   {
+      this.advices = advices;
+   }
+
    public void start() throws Exception
    {
       if (pointcut == null)
          throw new IllegalArgumentException("Null pointcut");
       if (manager == null)
          throw new IllegalArgumentException("Null manager");
-      if (aspect == null)
-         throw new IllegalArgumentException("Null aspect definition");
-      AdviceBinding binding = new AdviceBinding(name, pointcut, null);
-      binding.addInterceptorFactory(new AdviceFactory(aspect, method));
+      AdviceBinding binding = new AdviceBinding(name, pointcut, cflow);
+
+      if (advices != null)
+      {
+         for (BindingEntry entry : advices)
+         {
+            entry.start();
+            InterceptorFactory[] factories = entry.getInterceptorFactories();
+            for (InterceptorFactory ifac : factories)
+            {
+               binding.addInterceptorFactory(ifac);
+            }
+         }
+      }
       manager.addBinding(binding);
       log.debug("Bound binding " + name);
    }
@@ -145,6 +147,13 @@ public class AspectBinding
    public void stop() throws Exception
    {
       manager.removeBinding(name);
+      if (advices != null)
+      {
+         for (BindingEntry entry : advices)
+         {
+            entry.stop();
+         }
+      }
    }
 
    public void uninstall() throws Exception
@@ -152,9 +161,8 @@ public class AspectBinding
       stop();
    }
 
-   public void rebind(AspectDefinition aspect) throws Exception
+   public void rebind() throws Exception
    {
-      this.aspect = aspect;
       stop();
       start();
    }

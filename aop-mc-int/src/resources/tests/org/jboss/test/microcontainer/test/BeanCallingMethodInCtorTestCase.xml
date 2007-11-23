@@ -6,11 +6,11 @@
       <constructor factoryClass="org.jboss.aop.AspectManager" factoryMethod="instance"/>
    </bean>
 
-   <aop:aspect xmlns:aop="urn:jboss:aop-beans:1.0"
-               name="InterceptedAdvice"
-               class="org.jboss.test.microcontainer.support.CalledInterceptor"
-               pointcut="execution(* org.jboss.test.microcontainer.support.BeanCallingMethodInCtor->*(..))">
-   </aop:aspect>
+   <interceptor xmlns="urn:jboss:aop-beans:1.0" name="InterceptedAdvice" class="org.jboss.test.microcontainer.support.CalledInterceptor"/>
+   
+   <bind xmlns="urn:jboss:aop-beans:1.0" pointcut="execution(* org.jboss.test.microcontainer.support.BeanCallingMethodInCtor->*(..))">
+      <interceptor-ref name="InterceptedAdvice"/>
+   </bind>
 
    <bean name="Bean" class="org.jboss.test.microcontainer.support.BeanCallingMethodInCtor"/>
 </deployment>

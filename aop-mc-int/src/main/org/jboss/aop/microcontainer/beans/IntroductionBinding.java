@@ -21,10 +21,13 @@
 */
 package org.jboss.aop.microcontainer.beans;
 
+import java.io.StringReader;
 import java.util.List;
 
 import org.jboss.aop.AspectManager;
 import org.jboss.aop.introduction.InterfaceIntroduction;
+import org.jboss.aop.pointcut.ast.ASTStart;
+import org.jboss.aop.pointcut.ast.TypeExpressionParser;
 import org.jboss.util.id.GUID;
 
 /**
@@ -33,15 +36,49 @@ import org.jboss.util.id.GUID;
  * @author <a href="adrian@jboss.com">Adrian Brock</a>
  * @version $Revision$
  */
-public class IntroductionBinding
+public class IntroductionBinding 
 {
    protected AspectManager manager;
-   
    protected String name = GUID.asString();
-   
    protected String classes;
-   
+   protected String expr;
    protected List<String> interfaces;
+   protected List<MixinEntry> mixins;
+
+   public IntroductionBinding()
+   {
+      super();
+   }
+
+   /**
+    * Get the interfaces.
+    * 
+    * @return the interfaces.
+    */
+   public List<String> getInterfaces()
+   {
+      return interfaces;
+   }
+
+   /**
+    * Set the interfaces.
+    * 
+    * @param interfaces The interfaces to set.
+    */
+   public void setInterfaces(List<String> interfaces)
+   {
+      this.interfaces = interfaces;
+   }
+
+   public List<MixinEntry> getMixins()
+   {
+      return mixins;
+   }
+
+   public void setMixins(List<MixinEntry> mixins)
+   {
+      this.mixins = mixins;
+   }
 
    public String getName()
    {
@@ -73,24 +110,14 @@ public class IntroductionBinding
       this.classes = classes;
    }
 
-   /**
-    * Get the interfaces.
-    * 
-    * @return the interfaces.
-    */
-   public List getInterfaces()
+   public String getExpr()
    {
-      return interfaces;
+      return expr;
    }
 
-   /**
-    * Set the interfaces.
-    * 
-    * @param interfaces The interfaces to set.
-    */
-   public void setInterfaces(List<String> interfaces)
+   public void setExpr(String expr)
    {
-      this.interfaces = interfaces;
+      this.expr = expr;
    }
 
    /**
@@ -117,12 +144,39 @@ public class IntroductionBinding
    {
       if (manager == null)
          throw new IllegalArgumentException("Null manager");
-      if (classes == null)
-         throw new IllegalArgumentException("Null classes");
-      if (interfaces == null)
-         throw new IllegalArgumentException("Null interfaces");
-      String[] intfs = interfaces.toArray(new String[interfaces.size()]);
-      InterfaceIntroduction introduction = new InterfaceIntroduction(name, classes, intfs);
+      if (classes == null && expr == null)
+         throw new IllegalArgumentException("Neither classes nor expr set");
+      if (classes != null && expr != null)
+         throw new IllegalArgumentException("Cannot set both classes and expr");
+      if (interfaces == null && mixins == null)
+         throw new IllegalArgumentException("Neither interfaces nor mixins set");
+      
+      String[] intfs = (interfaces != null) ? interfaces.toArray(new String[interfaces.size()]) : null;
+      
+      InterfaceIntroduction introduction = null;
+      if (classes != null)
+      {
+         introduction = new InterfaceIntroduction(name, classes, intfs);
+      }
+      else
+      {
+         ASTStart start = new TypeExpressionParser(new StringReader(expr)).Start();
+         introduction = new InterfaceIntroduction(name, start, intfs);
+      }
+      
+      if (mixins != null)
+      {
+         for (MixinEntry entry : mixins)
+         {
+            if (entry.getInterfaces() == null)
+               throw new IllegalArgumentException("MixinEntry with null interfaces");
+            if (entry.getMixin() == null)
+               throw new IllegalArgumentException("MixinEntry with null mixin");
+            String[] intfaces = entry.getInterfaces().toArray(new String[entry.getInterfaces().size()]);
+            
+            introduction.addMixin(new InterfaceIntroduction.Mixin(entry.getMixin(), intfaces, entry.getConstruction(), entry.isTransient()));
+         }
+      }      
       manager.addInterfaceIntroduction(introduction);
    }
    

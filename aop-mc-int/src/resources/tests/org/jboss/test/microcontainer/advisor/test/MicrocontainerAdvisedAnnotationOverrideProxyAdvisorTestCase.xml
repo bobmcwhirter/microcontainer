@@ -3,12 +3,14 @@
    <bean name="AspectManager" class="org.jboss.aop.AspectManager">
       <constructor factoryClass="org.jboss.aop.AspectManager" factoryMethod="instance"/>
    </bean>
-   <aop:aspect xmlns:aop="urn:jboss:aop-beans:1.0"
-               name="InterceptedAdvice"
-               class="org.jboss.test.microcontainer.support.MetaDataContextInterceptor"
-               pointcut="execution(* @org.jboss.test.microcontainer.advisor.test.AnnotationWithValue->doSomething(..)) OR execution(* @org.jboss.test.microcontainer.advisor.test.AnnotationWithValue->@org.jboss.test.microcontainer.advisor.test.AnnotationWithValue(..))">
+   
+   <aop:interceptor xmlns:aop="urn:jboss:aop-beans:1.0" name="InterceptedAdvice" class="org.jboss.test.microcontainer.support.MetaDataContextInterceptor">
       <property name="annotation">org.jboss.test.microcontainer.advisor.test.AnnotationWithValue</property>
-   </aop:aspect>
+   </aop:interceptor>
+   
+   <bind xmlns="urn:jboss:aop-beans:1.0" pointcut="execution(* @org.jboss.test.microcontainer.advisor.test.AnnotationWithValue->doSomething(..)) OR execution(* @org.jboss.test.microcontainer.advisor.test.AnnotationWithValue->@org.jboss.test.microcontainer.advisor.test.AnnotationWithValue(..))">
+      <interceptor-ref name="InterceptedAdvice"/>
+   </bind>
 
    <bean name="Intercepted" class="org.jboss.test.microcontainer.advisor.test.SomeBean"/>
 </deployment>

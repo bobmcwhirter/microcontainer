@@ -26,6 +26,7 @@ import java.util.HashSet;
 import java.util.Iterator;
 import java.util.List;
 
+import org.jboss.aop.microcontainer.beans.beanmetadatafactory.BeanMetaDataUtil;
 import org.jboss.beans.metadata.plugins.AbstractBeanMetaData;
 import org.jboss.beans.metadata.plugins.AbstractDependencyValueMetaData;
 import org.jboss.beans.metadata.plugins.factory.GenericBeanFactoryMetaData;
@@ -50,7 +51,7 @@ implements BeanMetaDataFactory
    private String installMethod;
    private String uninstallMethod;
 
-   AspectBeanMetaDataUtil util = new AspectBeanMetaDataUtil();
+   BeanMetaDataUtil util = new BeanMetaDataUtil();
    HashSet<PropertyMetaData> properties = new HashSet<PropertyMetaData>();
 
    public void setManagerBean(String managerBean)

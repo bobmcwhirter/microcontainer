@@ -1,0 +1,34 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<deployment xmlns="urn:jboss:bean-deployer:2.0">
+
+   <bean name="AspectManager" class="org.jboss.aop.AspectManager">
+      <constructor factoryClass="org.jboss.aop.AspectManager" factoryMethod="instance"/>
+   </bean>
+
+   <beanfactory name="Factory$org.jboss.test.microcontainer.beans.TestInterceptor" class="org.jboss.test.microcontainer.beans.TestInterceptor"/>
+   
+   <bean name="org.jboss.test.microcontainer.beans.TestInterceptor" class="org.jboss.aop.microcontainer.beans.Aspect">
+      <property name="advice"><inject bean="Factory$org.jboss.test.microcontainer.beans.TestInterceptor"/></property>
+      <property name="manager"><inject bean="AspectManager"/></property>
+   </bean>
+
+   <bean name="TestAspectBinding" class="org.jboss.aop.microcontainer.beans.AspectBinding">
+      <property name="pointcut">execution(* org.jboss.test.microcontainer.beans.POJO->*(..))</property>
+      <property name="manager"><inject bean="AspectManager"/></property>
+     	<property name="advices">
+         <list>
+         	<inject bean="TestAspectBinding$1"/>
+         </list>
+   	</property>
+   </bean>
+	
+   <bean name="TestAspectBinding$1" class="org.jboss.aop.microcontainer.beans.InterceptorEntry">
+      <property name="manager"><inject bean="AspectManager"/></property>
+      <property name="aspect"><inject bean="org.jboss.test.microcontainer.beans.TestInterceptor"/></property>
+      <property name="aspectBinding"><inject bean="TestAspectBinding" state="Instantiated"/></property>
+   </bean>
+   
+   <bean name="Bean" class="org.jboss.test.microcontainer.beans.POJO"/>
+   
+</deployment>

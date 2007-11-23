@@ -1,0 +1,26 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<deployment xmlns="urn:jboss:bean-deployer:2.0">
+
+   <bean name="AspectManager" class="org.jboss.aop.AspectManager">
+      <constructor factoryClass="org.jboss.aop.AspectManager" factoryMethod="instance"/>
+   </bean>
+
+   <aop:aspect xmlns:aop="urn:jboss:aop-beans:1.0" class="org.jboss.test.microcontainer.beans.TestAspectWithDependency">
+      <property name="dependency"><inject bean="Dependency"/></property>
+   </aop:aspect>
+
+   <interceptor xmlns="urn:jboss:aop-beans:1.0" class="org.jboss.test.microcontainer.beans.TestInterceptor"/>
+
+   <stack xmlns="urn:jboss:aop-beans:1.0" name="TestStack">
+      <advice aspect="org.jboss.test.microcontainer.beans.TestAspectWithDependency" name="advice"/>
+      <interceptor-ref name="org.jboss.test.microcontainer.beans.TestInterceptor"/>
+   </stack>
+
+   <bind xmlns="urn:jboss:aop-beans:1.0" pointcut="execution(* org.jboss.test.microcontainer.beans.POJO->*(..))">
+      <stack-ref name="TestStack"/>
+   </bind>
+   
+   <bean name="Intercepted" class="org.jboss.test.microcontainer.beans.POJO"/>
+   
+</deployment>

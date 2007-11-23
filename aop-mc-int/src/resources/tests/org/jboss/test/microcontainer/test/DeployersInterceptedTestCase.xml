@@ -6,21 +6,11 @@
       <constructor factoryClass="org.jboss.aop.AspectManager" factoryMethod="instance"/>
    </bean>
 
-   <beanfactory name="DeployersAdvice" class="org.jboss.test.microcontainer.support.deployers.DeployerAspects">
-   </beanfactory>
-
-   <bean name="DeployersAspect" class="org.jboss.aop.microcontainer.beans.Aspect">
-      <property name="advice"><inject bean="DeployersAdvice"/></property>
-      <property name="manager"><inject bean="AspectManager"/></property>
-   </bean>
-
-   <bean name="DeployersBinding" class="org.jboss.aop.microcontainer.beans.AspectBinding">
-      <!-- This fails to match anything
-      -->
-      <property name="pointcut">execution(* $instanceof{org.jboss.test.microcontainer.support.deployers.IDeployer}->$implements{org.jboss.test.microcontainer.support.deployers.IDeployer}(..))</property>
-      <property name="aspect"><inject bean="DeployersAspect" property="definition"/></property>
-      <property name="manager"><inject bean="AspectManager"/></property>
-   </bean>
+   <aspect xmlns="urn:jboss:aop-beans:1.0" name="DeployersAdvice" class="org.jboss.test.microcontainer.support.deployers.DeployerAspects"/>
+   
+   <bind xmlns="urn:jboss:aop-beans:1.0" pointcut="execution(* $instanceof{org.jboss.test.microcontainer.support.deployers.IDeployer}->$implements{org.jboss.test.microcontainer.support.deployers.IDeployer}(..))">
+      <advice aspect="DeployersAdvice" name="invoke"/>
+   </bind>
 
    <bean name="MainDeployer" class="org.jboss.test.microcontainer.support.deployers.SampleMainDeployer">
       <property name="deployers">

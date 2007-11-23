@@ -21,7 +21,6 @@
   */
 package org.jboss.test.microcontainer.test;
 
-import javax.management.InstanceNotFoundException;
 import javax.management.MBeanAttributeInfo;
 import javax.management.MBeanInfo;
 import javax.management.MBeanOperationInfo;

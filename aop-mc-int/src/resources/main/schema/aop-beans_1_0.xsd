@@ -10,7 +10,7 @@ $Id$
    attributeFormDefault="unqualified"
    version="1.0"
 >
-
+   
    <xsd:import namespace="urn:jboss:bean-deployer:2.0"/>
 
    <xsd:annotation>
@@ -21,7 +21,17 @@ $Id$
       </xsd:documentation>
    </xsd:annotation>
 
-   <xsd:element name="aspect" type="aspectType">
+   <xsd:element name="interceptor" type="aspectOrInterceptorType">
+      <xsd:annotation>
+         <xsd:documentation>
+           <![CDATA[
+           An interceptor
+           ]]>
+         </xsd:documentation>
+      </xsd:annotation>
+   </xsd:element>
+   
+   <xsd:element name="aspect" type="aspectOrInterceptorType">
       <xsd:annotation>
          <xsd:documentation>
            <![CDATA[
@@ -31,24 +41,204 @@ $Id$
       </xsd:annotation>
    </xsd:element>
    
-   <xsd:complexType name="aspectBaseType">
+   <xsd:complexType name="aspectOrInterceptorType">
       <xsd:annotation>
          <xsd:documentation>
            <![CDATA[
-           Base type for aspects or lifecycle aspects
+           aspects or interceptors 
            ]]>
          </xsd:documentation>
       </xsd:annotation>
       <xsd:complexContent>
          <xsd:extension base="mc:beanfactoryType">
+            <!--  xsd:choice minOccurs="0" maxOccurs="1">
+               <xsd:element name="attribute" type="mc:propertyType" minOccurs="0" maxOccurs="unbounded"/>
+               <xsd:element name="property" type="mc:propertyType" minOccurs="0" maxOccurs="unbounded"/>
+            </xsd:choice -->
+            <xsd:attribute name="scope" type="xsd:string" use="optional"/>
+            <xsd:attribute name="factory" type="xsd:string" use="optional"/>
             <xsd:attribute name="manager-bean" type="xsd:string" use="optional"/>
             <xsd:attribute name="manager-property" type="xsd:string" use="optional"/>
-            <xsd:attribute name="method" type="xsd:string" use="optional"/>
          </xsd:extension>
       </xsd:complexContent>
    </xsd:complexType>
+
+   <xsd:element name="bind" type="bindType">
+      <xsd:annotation>
+         <xsd:documentation>
+           <![CDATA[
+           A binding
+           ]]>
+         </xsd:documentation>
+      </xsd:annotation>
+   </xsd:element>
    
-   <xsd:complexType name="aspectType">
+   <xsd:complexType name="bindType">
+      <xsd:annotation>
+         <xsd:documentation>
+            <![CDATA[
+           A binding
+           ]]>
+         </xsd:documentation>
+      </xsd:annotation>
+      <xsd:choice minOccurs="1" maxOccurs="unbounded">
+         <xsd:element name="interceptor-ref" type="interceptorRefType" minOccurs="0" maxOccurs="unbounded"/>
+         <xsd:element name="stack-ref" type="stackRefType" minOccurs="0" maxOccurs="unbounded"/>
+         <xsd:element name="advice" type="adviceType" minOccurs="0" maxOccurs="unbounded"/>
+         <xsd:element name="around" type="adviceType" minOccurs="0" maxOccurs="unbounded"/>
+         <xsd:element name="before" type="beforeType" minOccurs="0" maxOccurs="unbounded"/>
+         <xsd:element name="after" type="afterType" minOccurs="0" maxOccurs="unbounded"/>
+         <xsd:element name="throwing" type="throwingType" minOccurs="0" maxOccurs="unbounded"/>
+         <xsd:element name="finally" type="finallyType" minOccurs="0" maxOccurs="unbounded"/>
+      </xsd:choice>
+      <xsd:attribute name="name" type="xsd:string" use="optional" />
+      <xsd:attribute name="pointcut" type="xsd:string" use="required" />
+      <xsd:attribute name="cflow" type="xsd:string" use="optional" />
+      <xsd:attribute name="manager-bean" type="xsd:string" use="optional"/>
+      <xsd:attribute name="manager-property" type="xsd:string" use="optional"/>
+   </xsd:complexType>
+
+   <xsd:element name="stack" type="stackType">
+      <xsd:annotation>
+         <xsd:documentation>
+           <![CDATA[
+           A binding
+           ]]>
+         </xsd:documentation>
+      </xsd:annotation>
+   </xsd:element>
+   
+   <xsd:complexType name="stackType">
+      <xsd:annotation>
+         <xsd:documentation>
+            <![CDATA[
+           A binding
+           ]]>
+         </xsd:documentation>
+      </xsd:annotation>
+      <xsd:choice minOccurs="1" maxOccurs="unbounded">
+         <xsd:element name="interceptor-ref" type="interceptorRefType" minOccurs="0" maxOccurs="unbounded"/>
+         <xsd:element name="stack-ref" type="stackRefType" minOccurs="0" maxOccurs="unbounded"/>
+         <xsd:element name="advice" type="adviceType" minOccurs="0" maxOccurs="unbounded"/>
+         <xsd:element name="around" type="adviceType" minOccurs="0" maxOccurs="unbounded"/>
+         <xsd:element name="before" type="beforeType" minOccurs="0" maxOccurs="unbounded"/>
+         <xsd:element name="after" type="afterType" minOccurs="0" maxOccurs="unbounded"/>
+         <xsd:element name="throwing" type="throwingType" minOccurs="0" maxOccurs="unbounded"/>
+         <xsd:element name="finally" type="finallyType" minOccurs="0" maxOccurs="unbounded"/>
+      </xsd:choice>
+      <xsd:attribute name="name" type="xsd:string" use="required" />
+      <xsd:attribute name="manager-bean" type="xsd:string" use="optional"/>
+      <xsd:attribute name="manager-property" type="xsd:string" use="optional"/>
+   </xsd:complexType>
+
+   <xsd:complexType name="bindContentType">
+      <xsd:annotation>
+         <xsd:documentation>
+            <![CDATA[
+           base type for bind content: stack-ref, interceptor-ref and advice
+           ]]>
+         </xsd:documentation>
+      </xsd:annotation>
+      <xsd:attribute name="name" use="required"/>
+   </xsd:complexType>
+
+   <xsd:complexType name="interceptorRefType">
+      <xsd:annotation>
+         <xsd:documentation>
+            <![CDATA[
+           A interceptor-ref within a bind or intereptor-stack
+           ]]>
+         </xsd:documentation>
+      </xsd:annotation>
+      <xsd:complexContent>
+         <xsd:extension base="bindContentType">
+         </xsd:extension>
+      </xsd:complexContent>
+   </xsd:complexType>
+
+   <xsd:complexType name="stackRefType">
+      <xsd:annotation>
+         <xsd:documentation>
+            <![CDATA[
+           A stack-ref within a bind or interceptor-stack
+           ]]>
+         </xsd:documentation>
+      </xsd:annotation>
+      <xsd:complexContent>
+         <xsd:extension base="bindContentType">
+         </xsd:extension>
+      </xsd:complexContent>
+   </xsd:complexType>
+
+   <xsd:complexType name="adviceType">
+      <xsd:annotation>
+         <xsd:documentation>
+            <![CDATA[
+           A advice or around within a bind or interceptor-stack
+           ]]>
+         </xsd:documentation>
+      </xsd:annotation>
+      <xsd:complexContent>
+         <xsd:extension base="bindContentType">
+            <xsd:attribute name="aspect" type="xsd:string" use="required"/>
+         </xsd:extension>
+      </xsd:complexContent>
+   </xsd:complexType>
+
+   <xsd:complexType name="beforeType">
+      <xsd:annotation>
+         <xsd:documentation>
+            <![CDATA[
+           A before within a bind or interceptor-stack
+           
+           ]]>
+         </xsd:documentation>
+      </xsd:annotation>
+      <xsd:complexContent>
+         <xsd:extension base="adviceType"/>
+      </xsd:complexContent>
+   </xsd:complexType>
+
+   <xsd:complexType name="afterType">
+      <xsd:annotation>
+         <xsd:documentation>
+            <![CDATA[
+           A after within a bind or interceptor-stack
+           ]]>
+         </xsd:documentation>
+      </xsd:annotation>
+      <xsd:complexContent>
+         <xsd:extension base="adviceType"/>
+      </xsd:complexContent>
+   </xsd:complexType>
+
+   <xsd:complexType name="throwingType">
+      <xsd:annotation>
+         <xsd:documentation>
+            <![CDATA[
+           A throwing within a bind or interceptor-stack
+           ]]>
+         </xsd:documentation>
+      </xsd:annotation>
+      <xsd:complexContent>
+         <xsd:extension base="adviceType"/>
+      </xsd:complexContent>
+   </xsd:complexType>
+
+   <xsd:complexType name="finallyType">
+      <xsd:annotation>
+         <xsd:documentation>
+            <![CDATA[
+           A finally within a bind or interceptor-stack
+           ]]>
+         </xsd:documentation>
+      </xsd:annotation>
+      <xsd:complexContent>
+         <xsd:extension base="adviceType"/>
+      </xsd:complexContent>
+   </xsd:complexType>
+
+   <xsd:element name="typedef" type="typedefType">
       <xsd:annotation>
          <xsd:documentation>
            <![CDATA[
@@ -56,11 +246,300 @@ $Id$
            ]]>
          </xsd:documentation>
       </xsd:annotation>
+   </xsd:element>
+   
+   <xsd:complexType name="typedefType">
+      <xsd:annotation>
+         <xsd:documentation>
+           <![CDATA[
+           aspects or interceptors 
+           ]]>
+         </xsd:documentation>
+      </xsd:annotation>
+      <xsd:attribute name="name" type="xsd:string" use="required"/>
+      <xsd:attribute name="expr" type="xsd:string" use="required"/>
+      <xsd:attribute name="manager-bean" type="xsd:string" use="optional"/>
+      <xsd:attribute name="manager-property" type="xsd:string" use="optional"/>
+   </xsd:complexType>
+
+   <xsd:element name="cflow-stack" type="cflowStackType">
+      <xsd:annotation>
+         <xsd:documentation>
+           <![CDATA[
+           A cflow-stack
+           ]]>
+         </xsd:documentation>
+      </xsd:annotation>
+   </xsd:element>
+   
+   <xsd:complexType name="cflowStackType">
+      <xsd:annotation>
+         <xsd:documentation>
+           <![CDATA[
+           A cflow-stack 
+           ]]>
+         </xsd:documentation>
+      </xsd:annotation>
+      <xsd:choice minOccurs="1" maxOccurs="unbounded">
+         <xsd:element name="called" type="cflowStackEntryType" minOccurs="0" maxOccurs="unbounded"/>
+         <xsd:element name="not-called" type="cflowStackEntryType" minOccurs="0" maxOccurs="unbounded"/>
+      </xsd:choice>
+      <xsd:attribute name="name" type="xsd:string" use="required"/>
+      <xsd:attribute name="manager-bean" type="xsd:string" use="optional"/>
+      <xsd:attribute name="manager-property" type="xsd:string" use="optional"/>
+   </xsd:complexType>
+   
+   <xsd:complexType name="cflowStackEntryType">
+      <xsd:annotation>
+         <xsd:documentation>
+            <![CDATA[
+           The called or not-called children of cflow-stack
+           ]]>
+         </xsd:documentation>
+      </xsd:annotation>
+      <xsd:attribute name="expr" use="required"/>
+   </xsd:complexType>
+
+   <xsd:element name="dynamic-cflow" type="dynamicCflowStackType">
+      <xsd:annotation>
+         <xsd:documentation>
+           <![CDATA[
+           A dynamic cflow
+           ]]>
+         </xsd:documentation>
+      </xsd:annotation>
+   </xsd:element>
+
+   <xsd:complexType name="dynamicCflowStackType">
+      <xsd:annotation>
+         <xsd:documentation>
+           <![CDATA[
+           A dynamic cflow
+           ]]>
+         </xsd:documentation>
+      </xsd:annotation>
+      <xsd:attribute name="name" type="xsd:string" use="required"/>
+      <xsd:attribute name="class" type="xsd:string" use="required"/>
+      <xsd:attribute name="manager-bean" type="xsd:string" use="optional"/>
+      <xsd:attribute name="manager-property" type="xsd:string" use="optional"/>
+   </xsd:complexType>
+   
+   <xsd:element name="pointcut" type="pointcutType">
+      <xsd:annotation>
+         <xsd:documentation>
+           <![CDATA[
+           A named pointcut
+           ]]>
+         </xsd:documentation>
+      </xsd:annotation>
+   </xsd:element>
+
+   <xsd:complexType name="pointcutType">
+      <xsd:annotation>
+         <xsd:documentation>
+           <![CDATA[
+           A named pointcut
+           ]]>
+         </xsd:documentation>
+      </xsd:annotation>
+      <xsd:attribute name="name" type="xsd:string" use="required"/>
+      <xsd:attribute name="expr" type="xsd:string" use="required"/>
+      <xsd:attribute name="manager-bean" type="xsd:string" use="optional"/>
+      <xsd:attribute name="manager-property" type="xsd:string" use="optional"/>
+   </xsd:complexType>
+   
+   <xsd:element name="prepare" type="prepareType">
+      <xsd:annotation>
+         <xsd:documentation>
+           <![CDATA[
+           A prepare statement
+           ]]>
+         </xsd:documentation>
+      </xsd:annotation>
+   </xsd:element>
+
+   <xsd:complexType name="prepareType">
+      <xsd:annotation>
+         <xsd:documentation>
+           <![CDATA[
+           A prepare statement
+           ]]>
+         </xsd:documentation>
+      </xsd:annotation>
+      <xsd:attribute name="name" type="xsd:string" use="optional"/>
+      <xsd:attribute name="expr" type="xsd:string" use="required"/>
+      <xsd:attribute name="manager-bean" type="xsd:string" use="optional"/>
+      <xsd:attribute name="manager-property" type="xsd:string" use="optional"/>
+   </xsd:complexType>
+
+   <xsd:element name="annotation-introduction" type="annotationIntroductionType">
+      <xsd:annotation>
+         <xsd:documentation>
+           <![CDATA[
+           A annotation-introduction
+           ]]>
+         </xsd:documentation>
+      </xsd:annotation>
+   </xsd:element>
+
+   <xsd:complexType name="annotationIntroductionType">
+      <xsd:annotation>
+         <xsd:documentation>
+           <![CDATA[
+           A annotation-introduction
+           ]]>
+         </xsd:documentation>
+      </xsd:annotation>
+      <xsd:attribute name="expr" type="xsd:string" use="required"/>
+      <xsd:attribute name="invisible" type="xsd:string" use="required"/>
+      <xsd:attribute name="manager-bean" type="xsd:string" use="optional"/>
+      <xsd:attribute name="manager-property" type="xsd:string" use="optional"/>
+   </xsd:complexType>
+
+   <xsd:element name="annotation" type="annotationType">
+      <xsd:annotation>
+         <xsd:documentation>
+           <![CDATA[
+           A annotation override
+           ]]>
+         </xsd:documentation>
+      </xsd:annotation>
+   </xsd:element>
+
+   <xsd:complexType name="annotationType">
+      <xsd:annotation>
+         <xsd:documentation>
+           <![CDATA[
+           A annotation override
+           ]]>
+         </xsd:documentation>
+      </xsd:annotation>
       <xsd:complexContent>
-         <xsd:extension base="aspectBaseType">
-            <xsd:attribute name="pointcut" type="xsd:string" use="required"/>
-         </xsd:extension>
+         <xsd:extension base="annotationIntroductionType"/>
       </xsd:complexContent>
+   </xsd:complexType>
+   
+   <xsd:element name="precedence" type="precedenceType">
+      <xsd:annotation>
+         <xsd:documentation>
+           <![CDATA[
+           A precedence
+           ]]>
+         </xsd:documentation>
+      </xsd:annotation>
+   </xsd:element>
+
+   <xsd:complexType name="precedenceType">
+      <xsd:annotation>
+         <xsd:documentation>
+            <![CDATA[
+           A annotation override
+           ]]>
+         </xsd:documentation>
+      </xsd:annotation>
+      <xsd:choice minOccurs="1" maxOccurs="unbounded">
+         <xsd:element name="interceptor-ref" type="interceptorRefType" minOccurs="0" maxOccurs="unbounded" />
+         <xsd:element name="advice" type="adviceType" minOccurs="0" maxOccurs="unbounded" />
+      </xsd:choice>
+      <xsd:attribute name="name" type="xsd:string" use="optional"></xsd:attribute>
+      <xsd:attribute name="manager-bean" type="xsd:string" use="optional"/>
+      <xsd:attribute name="manager-property" type="xsd:string" use="optional"/>
+   </xsd:complexType>
+
+   <xsd:element name="introduction" type="introductionType">
+      <xsd:annotation>
+         <xsd:documentation>
+           <![CDATA[
+           A interface introduction
+           ]]>
+         </xsd:documentation>
+      </xsd:annotation>
+   </xsd:element>
+
+   <xsd:complexType name="introductionType">
+      <xsd:annotation>
+         <xsd:documentation>
+            <![CDATA[
+           A interface introduction
+           ]]>
+         </xsd:documentation>
+      </xsd:annotation>
+      <xsd:choice minOccurs="1" maxOccurs="1">
+         <xsd:element name="interfaces" type="interfacesType" minOccurs="0" maxOccurs="1" />
+         <xsd:element name="mixin" type="mixinType" minOccurs="0" maxOccurs="unbounded" />
+      </xsd:choice>
+      <xsd:attribute name="class" type="xsd:string" use="optional"></xsd:attribute>
+      <xsd:attribute name="expr" type="xsd:string" use="optional"></xsd:attribute>
+      <xsd:attribute name="manager-bean" type="xsd:string" use="optional"/>
+      <xsd:attribute name="manager-property" type="xsd:string" use="optional"/>
+   </xsd:complexType>
+
+   <xsd:complexType name="mixinType">
+      <xsd:annotation>
+         <xsd:documentation>
+            <![CDATA[
+           A mixin within an interface introduction
+           ]]>
+         </xsd:documentation>
+      </xsd:annotation>
+      <xsd:choice minOccurs="1" maxOccurs="1">
+         <xsd:element name="interfaces" type="interfacesType" minOccurs="1" maxOccurs="1" />
+         <xsd:element name="class" type="classType" minOccurs="1" maxOccurs="1" />
+         <xsd:element name="construction" type="constructionType" minOccurs="0" maxOccurs="1" />
+         <xsd:element name="transient" type="transientType" minOccurs="0" maxOccurs="1" />
+      </xsd:choice>
+   </xsd:complexType>
+
+   <xsd:complexType name="interfacesType">
+      <xsd:annotation>
+         <xsd:documentation>
+            <![CDATA[
+           A interfaces within an introduction or an introduction/mixin
+           ]]>
+         </xsd:documentation>
+      </xsd:annotation>
+      <xsd:simpleContent>
+         <xsd:extension base="xsd:string"/>
+      </xsd:simpleContent>
+   </xsd:complexType>
+
+   <xsd:complexType name="classType">
+      <xsd:annotation>
+         <xsd:documentation>
+            <![CDATA[
+           A class within an interface/mixin
+           ]]>
+         </xsd:documentation>
+      </xsd:annotation>
+      <xsd:simpleContent>
+         <xsd:extension base="xsd:string"/>
+      </xsd:simpleContent>
+   </xsd:complexType>
+
+   <xsd:complexType name="constructionType">
+      <xsd:annotation>
+         <xsd:documentation>
+            <![CDATA[
+           A class within an interface/mixin
+           ]]>
+         </xsd:documentation>
+      </xsd:annotation>
+      <xsd:simpleContent>
+         <xsd:extension base="xsd:string"/>
+      </xsd:simpleContent>
+   </xsd:complexType>
+
+   <xsd:complexType name="transientType">
+      <xsd:annotation>
+         <xsd:documentation>
+            <![CDATA[
+           A class within an interface/mixin
+           ]]>
+         </xsd:documentation>
+      </xsd:annotation>
+      <xsd:simpleContent>
+         <xsd:extension base="xsd:string"/>
+      </xsd:simpleContent>
    </xsd:complexType>
 
    <xsd:complexType name="lifecycleType">
@@ -72,7 +551,10 @@ $Id$
          </xsd:documentation>
       </xsd:annotation>
       <xsd:complexContent>
-         <xsd:extension base="aspectBaseType">
+         <xsd:extension base="mc:beanfactoryType">
+            <xsd:attribute name="manager-bean" type="xsd:string" use="optional"/>
+            <xsd:attribute name="manager-property" type="xsd:string" use="optional"/>
+            <xsd:attribute name="method" type="xsd:string" use="optional"/>
             <xsd:attribute name="classes" type="xsd:string" use="optional"/>
             <xsd:attribute name="expr" type="xsd:string" use="optional"/>
             <xsd:attribute name="install" type="xsd:string" use="optional"/>

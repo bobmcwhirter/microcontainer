@@ -10,45 +10,25 @@
       <constructor factoryClass="org.jboss.aop.AspectManager" factoryMethod="instance"/>
    </bean>
 
-   <beanfactory name="JMXAdvice" class="org.jboss.aop.microcontainer.aspects.jmx.JMXIntroduction">
+   <aop:interceptor xmlns:aop="urn:jboss:aop-beans:1.0" name="JMXAspect" class="org.jboss.aop.microcontainer.aspects.jmx.JMXIntroduction">
       <property name="mbeanServer"><inject bean="MBeanServer"/></property>
-   </beanfactory>
-
-   <beanfactory name="MetaDataContextAdvice" class="org.jboss.test.microcontainer.support.MetaDataContextInterceptor">
+   </aop:interceptor>
+   
+   <aop:interceptor xmlns:aop="urn:jboss:aop-beans:1.0" name="MetaDataContextAspect" class="org.jboss.test.microcontainer.support.MetaDataContextInterceptor">
       <property name="annotation">org.jboss.aop.microcontainer.aspects.jmx.JMX</property>
-   </beanfactory>
+   </aop:interceptor>
+   
+   <introduction xmlns="urn:jboss:aop-beans:1.0" class="@org.jboss.aop.microcontainer.aspects.jmx.JMX">
+      <interfaces>org.jboss.kernel.spi.dependency.KernelControllerContextAware</interfaces>
+   </introduction>
 
-   <bean name="JMXAspect" class="org.jboss.aop.microcontainer.beans.Aspect">
-      <property name="advice"><inject bean="JMXAdvice"/></property>
-      <property name="manager"><inject bean="AspectManager"/></property>
-   </bean>
-
-   <bean name="MetaDataContextAspect" class="org.jboss.aop.microcontainer.beans.Aspect">
-      <property name="advice"><inject bean="MetaDataContextAdvice"/></property>
-      <property name="manager"><inject bean="AspectManager"/></property>
-   </bean>
-
-   <bean name="JMXIntroduction" class="org.jboss.aop.microcontainer.beans.IntroductionBinding">
-      <property name="classes">@org.jboss.aop.microcontainer.aspects.jmx.JMX</property>
-      <property name="interfaces">
-         <list elementClass="java.lang.String">
-            <value>org.jboss.kernel.spi.dependency.KernelControllerContextAware</value>
-         </list>
-      </property>
-      <property name="manager"><inject bean="AspectManager"/></property>
-   </bean>
-
-   <bean name="JMXBinding" class="org.jboss.aop.microcontainer.beans.AspectBinding">
-      <property name="pointcut">execution(* $instanceof{org.jboss.kernel.spi.dependency.KernelControllerContextAware}->$implements{org.jboss.kernel.spi.dependency.KernelControllerContextAware}(..))</property>
-      <property name="aspect"><inject bean="JMXAspect" property="definition"/></property>
-      <property name="manager"><inject bean="AspectManager"/></property>
-   </bean>
-
-   <bean name="MetaDataContextBinding" class="org.jboss.aop.microcontainer.beans.AspectBinding">
-      <property name="pointcut">execution(* org.jboss.test.microcontainer.support.SimpleBeanImpl->*(..))</property>
-      <property name="aspect"><inject bean="MetaDataContextAspect" property="definition"/></property>
-      <property name="manager"><inject bean="AspectManager"/></property>
-   </bean>
+   <bind xmlns="urn:jboss:aop-beans:1.0" pointcut="execution(* $instanceof{org.jboss.kernel.spi.dependency.KernelControllerContextAware}->$implements{org.jboss.kernel.spi.dependency.KernelControllerContextAware}(..))">
+      <interceptor-ref name="JMXAspect"/>
+   </bind>
+   
+   <bind xmlns="urn:jboss:aop-beans:1.0" pointcut="execution(* org.jboss.test.microcontainer.support.SimpleBeanImpl->*(..))">
+      <interceptor-ref name="MetaDataContextAspect"/>
+   </bind>
 
    <bean name="Bean" class="org.jboss.test.microcontainer.support.SimpleBeanImpl">
       <annotation>@org.jboss.aop.microcontainer.aspects.jmx.JMX(name="", exposedInterface=org.jboss.test.microcontainer.support.SimpleBean.class)</annotation>

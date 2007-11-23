@@ -131,6 +131,7 @@
               <reportsDirectory>${project.build.directory}/surefire-reports/no-weave</reportsDirectory>     
               <includes>
                 <include>org/jboss/test/microcontainer/test/**/*TestCase.java</include>
+                <include>org/jboss/test/microcontainer/beans/test/**/*TestCase.java</include>
               </includes>
               <systemProperties>
                 <property>
@@ -154,6 +155,7 @@
               <reportsDirectory>${project.build.directory}/surefire-reports/no-weave-secure</reportsDirectory>     
               <includes>
                 <include>org/jboss/test/microcontainer/test/**/*TestCase.java</include>
+                <include>org/jboss/test/microcontainer/beans/test/**/*TestCase.java</include>
               </includes>
               <systemProperties>
                 <property>

@@ -1,7 +1,0 @@
-<?xml version="1.0" encoding="UTF-8"?>
-
-<deployment xmlns="urn:jboss:bean-deployer:2.0">
-
-   <bean name="Dependency2" class="org.jboss.test.microcontainer.beans2.Dependency"/>
-   
-</deployment>

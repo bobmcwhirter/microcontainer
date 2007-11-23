@@ -6,19 +6,12 @@
       <constructor factoryClass="org.jboss.aop.AspectManager" factoryMethod="instance"/>
    </bean>
    
-   <beanfactory name="InterceptedAdvice" class="org.jboss.test.microcontainer.support.CalledInterceptor"/>
+   <interceptor xmlns="urn:jboss:aop-beans:1.0" name="InterceptedAdvice" class="org.jboss.test.microcontainer.support.CalledInterceptor"/>
    
-   <bean name="InterceptedAspect" class="org.jboss.aop.microcontainer.beans.Aspect">
-      <property name="advice"><inject bean="InterceptedAdvice"/></property>
-      <property name="manager"><inject bean="AspectManager"/></property>
-   </bean>
-   
-   <bean name="InterceptedBinding" class="org.jboss.aop.microcontainer.beans.AspectBinding">
-      <property name="pointcut">execution(* $instanceof{org.jboss.test.microcontainer.support.SimpleBean}->*(..))</property>
-      <property name="aspect"><inject bean="InterceptedAspect" property="definition"/></property>
-      <property name="manager"><inject bean="AspectManager"/></property>
-   </bean>
-            
+   <bind xmlns="urn:jboss:aop-beans:1.0" pointcut="execution(* $instanceof{org.jboss.test.microcontainer.support.SimpleBean}->*(..))">
+      <interceptor-ref name="InterceptedAdvice"/>
+   </bind>
+
    <bean name="Intercepted" class="org.jboss.test.microcontainer.support.SimpleBeanImpl"/>
    
 </deployment>

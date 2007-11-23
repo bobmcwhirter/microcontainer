@@ -39,20 +39,17 @@ public class AspectTestCase extends AbstractAOPXMLTest
 {
    public void testDeployment() throws Exception
    {
-      List beans = unmarshalBeans("Aspect.xml", 3);
+      List beans = unmarshalBeans("Aspect.xml", 2);
       
       GenericBeanFactoryMetaData adviceFactory = (GenericBeanFactoryMetaData) assertType(beans, 0, GenericBeanFactoryMetaData.class);
-      assertEquals("TestAspect", adviceFactory.getName());
+      assertEquals("Factory$TestAspect", adviceFactory.getName());
       assertEquals("TestClass", adviceFactory.getBeanClass());
       ValueMetaData vmd = adviceFactory.getBeanProperty("testProperty");
       assertNotNull(vmd);
       assertEquals("Hello", vmd.getUnderlyingValue());
       
       BeanMetaData aspect = (BeanMetaData) assertType(beans, 1, BeanMetaData.class);
-      assertEquals("TestAspect$Aspect", aspect.getName());
-      
-      BeanMetaData aspectBinding = (BeanMetaData) assertType(beans, 2, BeanMetaData.class);
-      assertEquals("TestAspect$AspectBinding", aspectBinding.getName());
+      assertEquals("TestAspect", aspect.getName());
    }
    
    public static Test suite()

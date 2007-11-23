@@ -2,6 +2,6 @@
 
 <aspect xmlns="urn:jboss:aop-beans:1.0"
         xmlns:mc="urn:jboss:bean-deployer:2.0"
-        name="TestAspect" class="TestClass">
+        name="TestAspect" class="TestClass" scope="PER_VM">
     <mc:property name="testProperty">Hello</mc:property>
 </aspect>

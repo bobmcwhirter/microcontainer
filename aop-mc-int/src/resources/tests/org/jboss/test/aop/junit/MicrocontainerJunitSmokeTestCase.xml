@@ -5,20 +5,13 @@
    <bean name="AspectManager" class="org.jboss.aop.AspectManager">
       <constructor factoryClass="org.jboss.aop.AspectManager" factoryMethod="instance"/>
    </bean>
+
+   <interceptor xmlns="urn:jboss:aop-beans:1.0" name="TestInterceptor" class="org.jboss.test.aop.junit.TestInterceptor"/>
    
-   <beanfactory name="TestInterceptor" class="org.jboss.test.aop.junit.TestInterceptor"/>
+   <bind xmlns="urn:jboss:aop-beans:1.0" pointcut="execution(* org.jboss.test.aop.junit.TestIntercepted->*(..))">
+      <interceptor-ref name="TestInterceptor"/>
+   </bind>
    
-   <bean name="TestInterceptorAspect" class="org.jboss.aop.microcontainer.beans.Aspect">
-      <property name="advice"><inject bean="TestInterceptor"/></property>
-      <property name="manager"><inject bean="AspectManager"/></property>
-   </bean>
-   
-   <bean name="TestInterceptorBinding" class="org.jboss.aop.microcontainer.beans.AspectBinding">
-      <property name="pointcut">execution(* org.jboss.test.aop.junit.TestIntercepted->*(..))</property>
-      <property name="aspect"><inject bean="TestInterceptorAspect" property="definition"/></property>
-      <property name="manager"><inject bean="AspectManager"/></property>
-   </bean>
-            
    <bean name="TestIntercepted" class="org.jboss.test.aop.junit.TestIntercepted"/>
    
 </deployment>

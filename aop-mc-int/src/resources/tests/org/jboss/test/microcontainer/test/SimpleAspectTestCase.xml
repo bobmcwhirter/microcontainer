@@ -5,28 +5,17 @@
    <bean name="AspectManager" class="org.jboss.aop.AspectManager">
       <constructor factoryClass="org.jboss.aop.AspectManager" factoryMethod="instance"/>
    </bean>
+
+   <aspect xmlns="urn:jboss:aop-beans:1.0" name="InterceptedAdvice" class="org.jboss.test.microcontainer.support.TestAspect"/>
    
-   <beanfactory name="InterceptedAdvice" class="org.jboss.test.microcontainer.support.TestAspect"/>
-   
-   <bean name="InterceptedAspect" class="org.jboss.aop.microcontainer.beans.Aspect">
-      <property name="advice"><inject bean="InterceptedAdvice"/></property>
-      <property name="manager"><inject bean="AspectManager"/></property>
-   </bean>
-   
-   <bean name="FooBinding" class="org.jboss.aop.microcontainer.beans.AspectBinding">
-      <property name="pointcut">execution(* $instanceof{org.jboss.test.microcontainer.support.SimpleBean}->someMethod(..))</property>
-      <property name="aspect"><inject bean="InterceptedAspect" property="definition"/></property>
-      <property name="manager"><inject bean="AspectManager"/></property>
-      <property name="method">foo</property>
-   </bean>
-            
-   <bean name="BarBinding" class="org.jboss.aop.microcontainer.beans.AspectBinding">
-      <property name="pointcut">execution(* $instanceof{org.jboss.test.microcontainer.support.SimpleBean}->someOtherMethod(..))</property>
-      <property name="aspect"><inject bean="InterceptedAspect" property="definition"/></property>
-      <property name="manager"><inject bean="AspectManager"/></property>
-      <property name="method">bar</property>
-   </bean>
-            
+   <bind xmlns="urn:jboss:aop-beans:1.0" pointcut="execution(* $instanceof{org.jboss.test.microcontainer.support.SimpleBean}->someMethod(..))">
+      <advice aspect="InterceptedAdvice" name="foo"/>
+   </bind>
+
+   <bind xmlns="urn:jboss:aop-beans:1.0" pointcut="execution(* $instanceof{org.jboss.test.microcontainer.support.SimpleBean}->someOtherMethod(..))">
+      <advice aspect="InterceptedAdvice" name="bar"/>
+   </bind>
+
    <bean name="Intercepted" class="org.jboss.test.microcontainer.support.SimpleBeanImpl"/>
    
 </deployment>

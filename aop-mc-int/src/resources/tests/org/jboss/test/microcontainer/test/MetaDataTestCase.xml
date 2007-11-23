@@ -6,20 +6,13 @@
       <constructor factoryClass="org.jboss.aop.AspectManager" factoryMethod="instance"/>
    </bean>
 
-   <beanfactory name="MetaDataContextAdvice" class="org.jboss.test.microcontainer.support.MetaDataContextInterceptor">
+   <aop:interceptor xmlns:aop="urn:jboss:aop-beans:1.0" name="MetaDataContextAspect" class="org.jboss.test.microcontainer.support.MetaDataContextInterceptor">
       <property name="annotation">org.jboss.test.microcontainer.support.Test</property>
-   </beanfactory>
+   </aop:interceptor>
 
-   <bean name="MetaDataContextAspect" class="org.jboss.aop.microcontainer.beans.Aspect">
-      <property name="advice"><inject bean="MetaDataContextAdvice"/></property>
-      <property name="manager"><inject bean="AspectManager"/></property>
-   </bean>
-
-   <bean name="MetaDataContextBinding" class="org.jboss.aop.microcontainer.beans.AspectBinding">
-      <property name="pointcut">execution(* org.jboss.test.microcontainer.support.PropertyBean->*(..))</property>
-      <property name="aspect"><inject bean="MetaDataContextAspect" property="definition"/></property>
-      <property name="manager"><inject bean="AspectManager"/></property>
-   </bean>
+   <bind xmlns="urn:jboss:aop-beans:1.0" pointcut="execution(* org.jboss.test.microcontainer.support.PropertyBean->*(..))">
+      <interceptor-ref name="MetaDataContextAspect"/>
+   </bind>
 
    <bean name="Bean" class="org.jboss.test.microcontainer.support.PropertyBean">
       <annotation>@org.jboss.test.microcontainer.support.Test</annotation>

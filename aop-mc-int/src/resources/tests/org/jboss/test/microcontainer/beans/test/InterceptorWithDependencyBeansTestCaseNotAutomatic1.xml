@@ -1,0 +1,40 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<deployment xmlns="urn:jboss:bean-deployer:2.0">
+
+   <bean name="AspectManager" class="org.jboss.aop.AspectManager">
+      <constructor factoryClass="org.jboss.aop.AspectManager" factoryMethod="instance"/>
+   </bean>
+
+   <beanfactory name="Factory$org.jboss.test.microcontainer.beans.TestInterceptorWithDependency" class="org.jboss.test.microcontainer.beans.TestInterceptorWithDependency">
+      <property name="dependency"><inject bean="Dependency"/></property>
+      <install bean="org.jboss.test.microcontainer.beans.TestInterceptorWithDependency" method="install">
+         <parameter><this/></parameter>
+      </install>
+      <uninstall bean="org.jboss.test.microcontainer.beans.TestInterceptorWithDependency" method="uninstall"/>
+   </beanfactory>
+   
+   <bean name="org.jboss.test.microcontainer.beans.TestInterceptorWithDependency" class="org.jboss.aop.microcontainer.beans.Aspect">
+      <property name="adviceBean">Factory$org.jboss.test.microcontainer.beans.TestInterceptorWithDependency</property>
+      <property name="manager"><inject bean="AspectManager"/></property>
+   </bean>
+
+   <bean name="TestInterceptorBinding" class="org.jboss.aop.microcontainer.beans.AspectBinding">
+      <!-- We need cflow as well -->
+      <property name="pointcut">execution(* org.jboss.test.microcontainer.beans.POJO->*(..))</property>
+      <property name="manager"><inject bean="AspectManager"/></property>
+        <property name="advices">
+         <list>
+            <inject bean="TestInterceptorBinding$1"/>
+         </list>
+      </property>
+   </bean>
+   <bean name="TestInterceptorBinding$1" class="org.jboss.aop.microcontainer.beans.InterceptorEntry">
+      <property name="manager"><inject bean="AspectManager"/></property>
+      <property name="aspect"><inject bean="org.jboss.test.microcontainer.beans.TestInterceptorWithDependency"/></property>
+      <property name="aspectBinding"><inject bean="TestInterceptorBinding" state="Instantiated"/></property>
+   </bean>
+   
+   <bean name="Intercepted" class="org.jboss.test.microcontainer.beans.POJO"/>
+   
+</deployment>
