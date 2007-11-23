@@ -66,9 +66,13 @@ public abstract class AbstractRealDeployer extends AbstractDeployer
       return useUnitName && unit.isComponent();
    }
 
-   protected void internalDeploy(DeploymentUnit unit) throws DeploymentException
-   {
-   }
+   /**
+    * Deploy a deployment
+    *
+    * @param unit the unit
+    * @throws DeploymentException for any error
+    */
+   protected abstract void internalDeploy(DeploymentUnit unit) throws DeploymentException;
 
    /**
     * Add controller context name.
@@ -108,6 +112,11 @@ public abstract class AbstractRealDeployer extends AbstractDeployer
       internalUndeploy(unit);
    }
 
+   /**
+    * Undeploy an deployment
+    *
+    * @param unit the unit
+    */
    protected void internalUndeploy(DeploymentUnit unit)
    {
       // nothing
