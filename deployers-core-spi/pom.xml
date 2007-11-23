@@ -12,13 +12,18 @@
   <url>http://www.jboss.com/products/jbossmc</url>
   <description>JBoss Deployers Core SPI</description>
   <!-- Do not add version information here, use ../build/pom.xml instead -->
-  <!-- Do not add version information here, use ../build/pom.xml instead -->
+  <!-- Global dependencies -->
   <dependencies>
-    <!-- Global dependencies -->
-    	<dependency>
-		<groupId>org.jboss</groupId>
-		<artifactId>jboss-common-core</artifactId>
-	</dependency>
+    <dependency>
+      <groupId>org.jboss</groupId>
+      <artifactId>jboss-common-core</artifactId>
+      <exclusions>
+        <exclusion>
+          <groupId>jboss</groupId>
+          <artifactId>jboss-common-logging-spi</artifactId>
+        </exclusion>
+      </exclusions>
+    </dependency>
     <dependency>
       <groupId>junit</groupId>
       <artifactId>junit</artifactId>
