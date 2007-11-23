@@ -55,7 +55,6 @@
     <dependency>
     <groupId>org.jboss.microcontainer</groupId>
       <artifactId>jboss-deployers-core-spi</artifactId>
-      <scope>test</scope>
     </dependency>
     <dependency>
     <groupId>org.jboss.microcontainer</groupId>
