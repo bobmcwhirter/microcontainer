@@ -29,7 +29,6 @@ import java.util.List;
 import org.jboss.aop.microcontainer.beans.LifecycleBinding;
 import org.jboss.beans.metadata.plugins.AbstractBeanMetaData;
 import org.jboss.beans.metadata.plugins.AbstractDependencyValueMetaData;
-import org.jboss.beans.metadata.plugins.factory.GenericBeanFactoryMetaData;
 import org.jboss.beans.metadata.spi.BeanMetaData;
 import org.jboss.beans.metadata.spi.BeanMetaDataFactory;
 import org.jboss.beans.metadata.spi.MetaDataVisitorNode;
@@ -42,7 +41,7 @@ import org.jboss.dependency.spi.ControllerState;
  * @version $Revision: 1.1 $
  */
 public abstract class LifecycleBeanMetaDataFactory extends AspectManagerAwareBeanMetaDataFactory
-implements BeanMetaDataFactory
+   implements BeanMetaDataFactory
 {
    private static final long serialVersionUID = 1L;
 

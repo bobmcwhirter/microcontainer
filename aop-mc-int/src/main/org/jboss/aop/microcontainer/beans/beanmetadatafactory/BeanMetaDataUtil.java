@@ -22,6 +22,8 @@
 package org.jboss.aop.microcontainer.beans.beanmetadatafactory;
 
 
+import java.io.Serializable;
+
 import org.jboss.beans.metadata.plugins.AbstractBeanMetaData;
 import org.jboss.beans.metadata.plugins.AbstractDependencyValueMetaData;
 import org.jboss.beans.metadata.plugins.AbstractPropertyMetaData;
@@ -33,7 +35,7 @@ import org.jboss.dependency.spi.ControllerState;
  * @author <a href="kabir.khan@jboss.com">Kabir Khan</a>
  * @version $Revision: 1.1 $
  */
-public class BeanMetaDataUtil
+public class BeanMetaDataUtil implements Serializable
 {
    private static final long serialVersionUID = 1L;
 
@@ -165,8 +167,5 @@ public class BeanMetaDataUtil
       {
          return state;
       }
-      
-      
    }
-   
 }

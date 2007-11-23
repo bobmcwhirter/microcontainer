@@ -40,7 +40,7 @@ import org.jboss.util.id.GUID;
 public class PrecedenceBeanMetaDataFactory extends AspectManagerAwareBeanMetaDataFactory
 {
    private static final long serialVersionUID = 1L;
-   private ArrayList<BaseInterceptorData> entries = new ArrayList<BaseInterceptorData>();
+   private List<BaseInterceptorData> entries = new ArrayList<BaseInterceptorData>();
    
    public PrecedenceBeanMetaDataFactory()
    {
