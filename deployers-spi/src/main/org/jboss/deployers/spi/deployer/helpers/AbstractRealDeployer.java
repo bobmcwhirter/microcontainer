@@ -95,7 +95,9 @@ public abstract class AbstractRealDeployer extends AbstractDeployer
       try
       {
          if (isControllerContextNameCandidate(unit))
+         {
             removeControllerContextName(unit);
+         }
       }
       catch (Throwable t)
       {
