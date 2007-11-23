@@ -32,10 +32,13 @@
                 </dependencies>
                 <configuration>
                     <sourceDocumentName>User_Guide.xml</sourceDocumentName>
-                    <!--<imageResource>
-                        <directory>src/main/images</directory>
+                    <imageResource>
+                        <directory>src/main/docbook</directory>
+                        <includes>
+                          <include>images/*.png</include>
+                        </includes>
                     </imageResource>
-                    <cssResource>
+                    <!--<cssResource>
                         <directory>src/main/css</directory>
                     </cssResource>-->
                     <formats>

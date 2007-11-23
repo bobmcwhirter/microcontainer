@@ -39,7 +39,7 @@
       <para>Each environment aims to provide a base level of functionality on top of which  developers can add their own code to create applications. For example Java SE provides networking and security libraries together with graphical user interface toolkits to facilitate the development of desktop   and simple client-server applications. Java EE takes this a stage further by adding a number of &apos;enterprise  services&apos; such as transactions, messaging, and persistence that allow much more robust and scalable &apos;enterprise applications&apos; to be developed.  These services are  typically combined together inside a JEE application server in order to provide a standard runtime environment for enterprise applications but it is often the case that some are never used.</para>
       <para>Services that are never used  are undesirable as they can  take  up valuable resources such as CPU and memory resulting in lower performance. They may also clutter up the environment with redundant configuration files,  complicating maintenance and   adding unnecessary complexity.   Given these drawbacks it would   be better if there was a   way to create a custom runtime environment containing only those services  that were needed. You would then be able to create your own custom &apos;Java Edition&apos; tailored to your requirements.</para>
       <para>JBoss Microcontainer aims to provide  these capabilities by allowing services, created using Plain Old Java Objects (POJOs), to be deployed into a standard Java SE runtime environment in a controlled manner to create a customized  environment  for your applications. Dependencies are fully managed to ensure that new services cannot be deployed until services they depend on have first been deployed. Likewise undeploying a service causes all dependent services to first be undeployed in order  to maintain the integrity of the system. You can even redeploy services at runtime providing that you access them via the microcontainer bus.</para>
-      <para>JBoss Application Server   5.0 uses the microcontainer to integrate enterprise services together with deployers and management utilities in order to     provide a standard Java EE environment. If you need additional services then you can simply deploy these on top of Java EE to provide the functionality you need. Likewise you are free to remove any services that you don&apos;t need simply by changing the  configuration. You can even use the microcontainer to do this in other   environments such as Glassfish since you can plug in different classloading models  during the service deployment phase.</para>
+      <para>JBoss Application Server   5.0 uses the microcontainer to integrate enterprise services together with a Servlet/JSP container, EJB container, deployers and management utilities in order to     provide a standard Java EE environment. If you need additional services then you can simply deploy these on top of Java EE to provide the functionality you need. Likewise you are free to remove any services that you don&apos;t need simply by changing the  configuration. You can even use the microcontainer to do this in other   environments such as Glassfish since you can plug in different classloading models  during the service deployment phase.</para>
       <para>Since  JBoss Microcontainer is very lightweight and deals with POJOs it can also be used to deploy services into a Java ME runtime environment. This opens up new possibilities for mobile applications that can now take advantage of  enterprise services without requiring a full JEE application server. </para>
       <para>In common with other lightweight containers JBoss Microcontainer uses  dependency injection to wire individual POJOs together to create services.  Configuration is performed using either XML or annotations depending on where the information is best located. Finally unit testing is made extremely simple thanks to a helper class that extends JUnit to setup the test environment, allowing you to access  POJOs and services from your test methods using just a few lines of code.</para>
     </chapter>
@@ -49,8 +49,8 @@
       <para>The examples created for this User Guide use Maven2 to achieve exactly this so it is highly recommended that you <ulink url="http://labs.jboss.com/file-access/default/members/jbossmc/downloads/userGuide-examples-13112007.zip">download</ulink> these first and take a look at how they work.</para>
       <note>
         <para>To build and run the examples you first need to install and configure Maven 2.0.7 available from <ulink url="http://maven.apache.org/">http://maven.apache.org/</ulink></para>
+        <para>Installation is performed by downloading and unzipping the  maven-2.0.7-bin.zip file to a convenient location on your local disk. Configuration  consists of adding $MAVEN_HOME/bin to your path and adding the following profile to your ~/.m2/settings.xml file:</para>
       </note>
-      <para>Installation is performed by downloading and unzipping the  maven-2.0.7-bin.zip file to a convenient location on your local disk. Configuration  consists of adding $MAVEN_HOME/bin to your path and adding the following profile to your ~/.m2/settings.xml file:</para>
       <para><programlisting>&lt;settings&gt;
   &lt;profiles&gt;
     &lt;profile&gt;
@@ -96,8 +96,7 @@
   &lt;/profiles&gt;
 &lt;/settings&gt;</programlisting></para>
       <para>This profile informs maven of the two JBoss repositories (snapshots and releases) that are needed to download the JBoss Microcontainer and dependant JARs.</para>
-      <para>Once you have configured Maven and downloaded the examples then you can go to one of the following directories in the <code>examples/User_Guide</code> directory and enter <code>mvn install</code> to perform a build:</para>
-      <para/>
+      <para>Once you have configured Maven and downloaded the examples then you can go to one of the following subdirectories in the <code>examples/User_Guide</code> directory and enter <code>mvn install</code> to perform a build:</para>
       <itemizedlist>
         <listitem>
           <para>gettingStarted -  projects for creating and using a service together with AOP</para>
@@ -109,7 +108,7 @@
           <para>aopDevelopment - examples of using AOP to add behaviour to POJOs</para>
         </listitem>
         <listitem>
-          <para>extending - examples of how we  created various extensions to the core microcontainer by creating new dependencies</para>
+          <para>extending - examples of how we  created various extensions to the microcontainer by creating new dependencies</para>
         </listitem>
         <listitem>
           <para>integrating - examples of how JBoss Microcontainer forms the basis of JBoss AS 5 and how you can deploy MBean services alongside POJO services for backwards compatibility</para>
@@ -171,7 +170,7 @@
 org/jboss/example/service/util/SalaryStrategy.java
                               /AgeBasedSalaryStrategy.java
                               /LocationBasedSalaryStrategy.java</programlisting></para>
-        <para>As you can see from looking at the source code, each of these classes represents a simple POJO that doesn&apos;t implement any special interfaces. The most important class is HRManager as this represents the service entry point  providing all of the public methods that clients will call.</para>
+        <para>Each of these classes represents a simple POJO that doesn&apos;t implement any special interfaces. The most important class is HRManager as this represents the service entry point  providing all of the public methods that clients will call.</para>
         <itemizedlist>
           <listitem>
             <para>addEmployee(Employee employee)</para>
@@ -204,7 +203,7 @@ org/jboss/example/service/util/SalaryStrategy.java
             <para>setSalaryStrategy(SalaryStrategy strategy)</para>
           </listitem>
         </itemizedlist>
-        <para>The Human Resources Service is therefore composed of  6 classes which work together to allow a list of employees, together with details of their addresses and salaries, to be maintained by an HRManger. In addition it is possible to configure the HRManager so that different salary strategies are used. These place minimum and maximum limits on the salaries that can be awarded to employees depending on various rules.</para>
+        <para>The Human Resources Service is therefore composed of a handful of classes which work together to allow a list of employees, together with details of their addresses and salaries, to be maintained by an HRManger. Thanks to the SalaryStrategy interface it is possible to configure the HRManager so that different salary strategy implementations are used. These place minimum and maximum limits on the salaries that can be awarded to employees depending on various rules.</para>
         <para>To compile the source code you simply need to enter <code>mvn compile</code> from the <code>humanResourcesService/</code> directory. This will create a new directory  called <code>target/classes</code>  containing the compiled code. To clean up the humanResourcesService project and remove the <code>target</code> directory simply enter <code>mvn clean</code>. </para>
         <para>Now that we  have compiled our POJO classes we  need to create instances of them. This is done by creating an XML deployment descriptor  that contains a list of beans representing individual instances. Each bean is given a name so that the instance can be looked up at runtime by clients.</para>
         <programlisting>&lt;?xml version=&quot;1.0&quot; encoding=&quot;UTF-8&quot;?&gt;
@@ -274,7 +273,7 @@ hrService.setSalaryStrategy(ageBasedSalary);</programlisting>
       <section>
         <title>Testing a service</title>
         <para>We should now have a good idea about how to create POJOs and configure them using an XML deployment descriptor so how do we go about testing them? Thankfully JBoss Microcontainer makes it extremely easy to unit test individual POJOs as well as POJOs that are wired together through the use of a MicrocontainerTest class.</para>
-        <para>The org.jboss.test.kernel.junit.MicrocontainerTest class inherits from junit.framework.TestCase and as such it sets up each test by bootstrapping JBoss Microcontainer and adding a BasicXMLDeployer. It then looks on the classpath for an XML deployment descriptor with the same name as the test class (ending in .xml) and residing in a directory structure representing the class&apos;s package. Any beans found in this file are deployed and can then be accessed using a convenience method called <code>getBean(String name)</code>. </para>
+        <para>The org.jboss.test.kernel.junit.MicrocontainerTest class inherits from junit.framework.TestCase and as such it sets up each test by bootstrapping JBoss Microcontainer and adding a BasicXMLDeployer. It then looks on the classpath for an XML deployment descriptor with the same name as the test class (ending in .xml) and residing in a directory structure representing the class&apos;s package name. Any beans found in this file are deployed and can then be accessed using a convenience method called <code>getBean(String name)</code>. </para>
         <para>You can see examples of these files in the src/test/resources directory:</para>
         <programlisting>org/jboss/example/service/HRManagerTestCase.xml
                          /HRManagerAgeBasedTestCase.xml
@@ -282,7 +281,7 @@ hrService.setSalaryStrategy(ageBasedSalary);</programlisting>
 
 org/jboss/example/service/util/AgeBasedSalaryTestCase.xml
                               /LocationBasedSalaryTestCase.xml</programlisting>
-        <para>Our java test  source code is located in the src/test/java directory:</para>
+        <para>Our  test   code is located in the src/test/java directory:</para>
         <programlisting>org/jboss/example/service/HRManagerTestCase.java
                          /HRManagerAgeBasedTestCase.xml
                          /HRManagerLocationBasedTestCase.xml
@@ -292,18 +291,18 @@ org/jboss/example/service/util/AgeBasedSalaryTestCase.xml
 org/jboss/example/service/util/AgeBasedSalaryTestCase.java
                               /LocationBasedSalaryTestVase.java
                               /SalaryStrategyTestSuite.java</programlisting>
-        <para>The HRManagerTest class extends MicrocontainerTest in order to set up a number of employees to use as the basis for the tests.  Individual test cases then subclass this to perform the actual tests. You can also see a couple of TestSuite classes that are used to group individual test cases together for convenience.</para>
-        <para>To run the tests simply enter <code>mvn test</code> from the <code>humanResourcesService/</code> directory. You should see some DEBUG log output which shows  JBoss Microcontainer booting up and deploying the relevant XML file before running each test. At the end of the test it then undeploys the beans from the file and shuts down the microcontainer.</para>
+        <para>The HRManagerTest class extends MicrocontainerTest in order to set up a number of employees to use as the basis for the tests.  Individual test cases then subclass this to perform the actual work. You can also see a couple of TestSuite classes that are used to group individual test cases together for convenience.</para>
+        <para>To run the tests simply enter <code>mvn test</code> from the <code>humanResourcesService/</code> directory. You should see some DEBUG log output which shows  JBoss Microcontainer booting up and deploying beans from the relevant XML file before running each test. At the end of the test it then undeploys the beans and shuts down the microcontainer.</para>
         <note>
           <para>Some of the tests such as HRManagerTestCase, AgeBasedSalaryTestCase and LocationBasedSalaryTestCase simply unit test individual POJOs whilst other tests such as HRManagerAgeBasedTestCase and HRManagerLocationBasedTestCase unit test the whole service  consisting of multiple POJOs wired together. Either way the method for conducting the tests remains the same. Thanks to the MicrocontainerTest class it is trivial to set up and conduct comprehensive tests for any part of your code.</para>
-          <para>Finally note that we didn&apos;t unit test the Address or Employee classes here. They were deliberately left out as they contain only trivial logic which is very unlikely to break.</para>
+          <para>Finally note that we didn&apos;t unit test the Address or Employee classes here. They were deliberately left out as they only contain trivial logic which is very unlikely to break.</para>
         </note>
       </section>
       <section>
         <title>Packaging a service</title>
-        <para>Now that we have successfully created and tested our service it is time to package it up so that others can use it. The simplest way to do this is to create a JAR containing all of the classes. You can  choose to  include the XML deployment descriptor if there is a sensible default way to configure the service but you are not required to.</para>
-        <para>If you do choose to include the deployment descriptor then by convention you should call it <code>jboss-beans.xml</code> and put it in the META-INF directory. This helps if you want to later deploy the service in JBoss AS 5 as the  JAR deployer recognises this layout by default and will automatically perform the deployment.</para>
-        <para>In our case we will not include it as we want to easily configure the service by editing the descriptor directly as a separate file. To generate a JAR in the <code>target</code> directory containing all of the compiled classes simply enter <code>mvn package</code> from the <code>humanResourcesService/</code> directory. </para>
+        <para>Now that we have successfully created and tested our service it is time to package it up so that others can use it. The simplest way to do this is to create a JAR containing all of the classes. You can  choose to  include the XML deployment descriptor if there is a sensible default way to configure the service but you are not required to do so.</para>
+        <para>If you do choose to include the deployment descriptor then by convention you should call it <code>jboss-beans.xml</code> and put it in a META-INF directory. This helps if you want to later deploy the service in JBoss AS 5 as the  JAR deployer recognises this layout by default and will automatically perform the deployment.</para>
+        <para>In our case we will not include it as we want to configure the service by editing the descriptor directly as a separate file. To generate a JAR in the <code>target</code> directory containing all of the compiled classes simply enter <code>mvn package</code> from the <code>humanResourcesService/</code> directory. </para>
         <para>To make the JAR available to other maven projects you then need to enter <code>mvn install</code> in order to copy it to your local maven repository.</para>
         <para>The final layout of the JAR is as follows:</para>
         <programlisting>org/jboss/example/service/Address.class
@@ -320,25 +319,221 @@ META-INF/maven/org.jboss.microcontainer.examples/humanResourcesService/pom.xml
     </chapter>
     <chapter>
       <title>Using services </title>
-      <para/>
+      <para>In the previous chapter we looked at how to create, configure, test and package a service. It is now time to move on and create a client so that we can use the service to perform actual work.</para>
+      <para>In order to keep things simple the client uses a Text User Interface (TUI) to accept input from the user and output results. In the real-world  a Graphical User Interface (GUI) would almost certainly be used but here we are more concerned with demonstrating how the client interacts with the service than showing how to develop a rich desktop application.</para>
+      <para>You will find all of the necessary files in the <code>examples/User_Guide/gettingstarted/commandLineClient</code> directory.  As with the Human Resources Service example this follows the Maven Standard Directory Layout: </para>
+      <programlisting>commandLineClient/pom.xml
+                 /src/main/assembly
+                 /src/main/config
+                 /src/main/java
+                 /src/main/resources
+                     /test/java
+                     /test/resources</programlisting>
+      <para>The client consists of 3 classes and 1 interface, located in the <code>src/main/java</code> directory:</para>
+      <programlisting>org/jboss/example/client/Client.java
+                        /ConsoleInput.java
+                        /EmbeddedBootstrap.java
+                        /UserInterface.java</programlisting>
+      <para>UserInterface describes methods that the client will call at runtime to request data from the user. ConsoleInput is an  implementation of this  that creates a TUI allowing the user to operate the client from the command line. The advantage of this design is that we can easily create a Swing implementation of UserInterface  at a later date and replace the TUI with a GUI if we decide to improve usability. We can also create a mock implementation for testing purposes that simulates a user entering data. This allows us to check the behaviour of the client automatically using conventional JUnit test cases, as demonstrated by the code in the <code>src/test/java</code> directory:</para>
+      <programlisting>org/jboss/example/client/ClientTestCase.java
+                        /ClientTestSuite.java
+                        /MockUserInterface.java</programlisting>
+      <para>To compile the source code, run the unit tests, build a client JAR  and assemble a distribution containing all of the necessary files simply type <code>mvn package</code> from the <code>commandLineClient</code> directory.   </para>
+      <warning>
+        <para>For the build to work you must first have built and installed  auditAspect.jar from the  <code>examples/User_Guide/gettingStarted/auditAspect</code> directory using the <code>mvn install</code> command. This is because we actually create a number of different  client distributions including one based on  AOP which relies on auditAspect.jar being available in the local maven repositiory.</para>
+        <para>If you previously typed <code>mvn install</code> from the <code>examples/User_Guide/gettingStarted</code> directory then you will have already built and installed   humanResourcesService.jar together with  auditAspect.jar and the client will have already been packaged so this step will not be necessary.</para>
+      </warning>
+      <para>Once you have successfully compiled and packaged the client you will find the following subdirectories  in the <code>commandLineClient/target</code> directory:</para>
+      <itemizedlist>
+        <listitem>
+          <para>client-pojo.dir - used to call the service without any AOP</para>
+        </listitem>
+        <listitem>
+          <para>client-cl.dir - used to demonstrate classloading features</para>
+        </listitem>
+        <listitem>
+          <para>client-aop.dir - used in Chapter 5. Adding behaviour through AOP</para>
+        </listitem>
+      </itemizedlist>
+      <para>Each of these subdirectories represents a different distribution containing all of the shell scripts, JARs,  and XML deployment descriptors that we need to run the client in different configurations. For the moment we will use the client-pojo distribution which looks as follows:</para>
+      <programlisting>run.sh
+client-1.0.0.jar
+jboss-beans.xml
+lib/concurrent-1.3.4.jar
+   /humanResourcesService-1.0.0.jar
+   /jboss-common-core-2.0.4.GA.jar
+   /jboss-common-core-2.2.1.GA.jar
+   /jboss-common-logging-log4j-2.0.4.GA.jar
+   /jboss-common-logging-spi-2.0.4.GA.jar
+   /jboss-container-2.0.0.Beta6.jar
+   /jboss-dependency-2.0.0.Beta6.jar
+   /jboss-kernel-2.0.0.Beta6.jar
+   /jbossxb-2.0.0.CR4.jar
+   /log4j-1.2.14.jar
+   /xercesImpl-2.7.1.jar</programlisting>
+      <para>To run the client simply <code>cd</code> into the client-pojo.dir and type <code>./run.sh</code>. You will then be presented with the following menu of options:  </para>
+      <mediaobject>
+        <imageobject>
+          <imagedata align="center" fileref="images/tuiMenu.png"/>
+        </imageobject>
+      </mediaobject>
+      <para>To select an option enter the  letter shown on the left-hand side and press return. For example to redisplay the menu options enter &apos;m&apos; followed by return. This is useful  if they scroll off the top of the screen as you input data and read responses. Entering more than one letter or entering an invalid option will result in an appropriate error message.</para>
+      <important>
+        <para>The run.sh script sets up the runtime environment by  adding all of the JARs found in the <code>lib</code> directory to the  classpath using the <code>java.ext.dirs</code> system property. It also adds the current directory and the client-1.0.0.jar using the <code>-cp</code> flag so that the jboss-beans.xml descriptor can be found at runtime together with the org.jboss.example.client.Client class which is called to start the application.</para>
+      </important>
       <section>
-        <title>Deploying a service</title>
-        <para>Mention deploying a packaged service vs deploying an unpackaged service.</para>
+        <title>Bootstrapping the microcontainer</title>
+        <para>Before we use the client to deploy and call our service, lets take a closer look at what  happened during its construction:</para>
+        <programlisting>public Client(final boolean useBus) throws Exception {
+    this.useBus = useBus;
+
+    ClassLoader cl = Thread.currentThread().getContextClassLoader();
+    url = cl.getResource(&quot;jboss-beans.xml&quot;);
+
+    // Start JBoss Microcontainer
+    bootstrap = new EmbeddedBootstrap();
+    bootstrap.run();
+
+    kernel = bootstrap.getKernel();
+    controller = kernel.getController();
+    bus = kernel.getBus();
+ }</programlisting>
+        <para>First of all a url representing the jboss-beans.xml deployment descriptor was created. This is required later on by the deployer so that we can deploy and undeploy beans declared in the file. Here we have chosen to use the getResource() method of the application classloader as we deliberately placed the jboss-beans.xml file  on the classpath.  However, this is not a requirement  and you are free to call the deployment descriptor anything you like and place it anywhere you want provided that the URL is valid and reachable.</para>
+        <para>Next we created an instance of JBoss Microcontainer together with a deployer. This process  is called bootstrapping and for convenience a  BasicBootstrap class is provided  as part of the microcontainer to allow for configuration via system properties. In order to add a deployer we simply extended BasicBootstrap to create an EmbeddedBootstrap class  and overrided the protected bootstrap() method as follows:</para>
+        <programlisting>public class EmbeddedBootstrap extends BasicBootstrap {
+
+    protected BasicXMLDeployer deployer;
+
+    public EmbeddedBootstrap() throws Exception {
+        super();
+    }
+
+    public void bootstrap() throws Throwable {
+        super.bootstrap();
+        deployer = new BasicXMLDeployer(getKernel());
+        Runtime.getRuntime().addShutdownHook(new Shutdown());
+    }
+
+    public void deploy(URL url) {
+        ...
+        deployer.deploy(url);
+        ...
+    }
+
+    public void undeploy(URL url) {
+        ...
+        deployer.undeploy(url);
+        ...
+    }
+
+    protected class Shutdown extends Thread {
+        public void run() {
+            log.info(&quot;Shutting down&quot;);
+            deployer.shutdown();
+        }
+    }
+}</programlisting>
+        <para>The shutdown hook ensures that when the JVM is exited all of the beans are undeployed in the correct order. The public deploy/undeploy methods simply delegate to the BasicXMLDeployer so that we can deploy and undeploy beans declared in our jboss-beans.xml file.</para>
+        <para>Finally we stored references to the microcontainer controller and bus so that we can lookup bean references by name and invoke them either directly or indirectly as necessary.</para>
+      </section>
+      <section>
+        <title>Deploying and undeploying the service</title>
+        <para>Once the client has been created we can proceed to deploy the Human Resources service. This is done by entering the &apos;d&apos; option. You should see the following log output indicating that the BasicXMLDeployer has parsed the jboss-beans.xml file using the url and instantiated the beans found within.</para>
+        <mediaobject>
+          <imageobject>
+            <imagedata align="center" fileref="images/deployOutput.png"/>
+          </imageobject>
+        </mediaobject>
+        <note>
+          <para>The microcontainer is able to instantiate the beans as their classes are available in the application classpath inside the <code>lib/humanResourcesService.jar</code> file. We could have equally placed these classes in an exploded directory structure and added this to the classpath but in general you will package them in a JAR for convenience. </para>
+        </note>
+        <para>Notice that our deployment descriptor is entirely separate from the humanResourcesService.jar file. This is done on purpose so that you can easily edit it and test your changes by undeploying and deploying the beans again at runtime. You can test this by uncommenting fragments of the file to configure the HRService bean in different ways:</para>
+        <programlisting>&lt;?xml version=&quot;1.0&quot; encoding=&quot;UTF-8&quot;?&gt;
+&lt;deployment xmlns:xsi=&quot;http://www.w3.org/2001/XMLSchema-instance&quot;            xsi:schemaLocation=&quot;urn:jboss:bean-deployer:2.0 bean-deployer_2_0.xsd&quot;            xmlns=&quot;urn:jboss:bean-deployer:2.0&quot;&gt;
+
+    &lt;bean name=&quot;HRService&quot; class=&quot;org.jboss.example.service.HRManager&quot;&gt;
+        &lt;!-- &lt;property name=&quot;hiringFreeze&quot;&gt;true&lt;/property&gt;
+        &lt;property name=&quot;salaryStrategy&quot;&gt;&lt;inject bean=&quot;AgeBasedSalary&quot;/&gt;&lt;/property&gt; --&gt;
+    &lt;/bean&gt;
+
+    &lt;!-- &lt;bean name=&quot;AgeBasedSalary&quot; class=&quot;org.jboss.example.service.util.AgeBasedSalaryStrategy&quot;&gt;
+        &lt;property name=&quot;minSalary&quot;&gt;1000&lt;/property&gt;
+        &lt;property name=&quot;maxSalary&quot;&gt;80000&lt;/property&gt;
+    &lt;/bean&gt;
+
+    &lt;bean name=&quot;LocationBasedSalary&quot;
+class=&quot;org.jboss.example.service.util.LocationBasedSalaryStrategy&quot;&gt;
+        &lt;property name=&quot;minSalary&quot;&gt;2000&lt;/property&gt;
+        &lt;property name=&quot;maxSalary&quot;&gt;90000&lt;/property&gt;
+    &lt;/bean&gt; --&gt;
+
+&lt;/deployment&gt;</programlisting>
+        <para>To undeploy the service type &apos;u&apos; followed by return. You can then deploy it again using the &apos;d&apos; option, remembering to save any changes to the jboss-beans.xml file first. You can confirm that your changes have been applied by printing out the status of the HRService using the &apos;p&apos; option.</para>
+        <important>
+          <para>The act of deploying a bean, as we already know, consists of creating an instance of the bean class and associating a reference to it with the bean name. This prevents clients from having to create the bean themselves as they can simply access it using the name at runtime. So what happens during undeployment?</para>
+          <para>The answer is that the microcontainer releases its reference to the bean instance, the intention being that it becomes available for garbage collection. Whether it can be garbage collected or not depends on whether any clients have cached their own copy of the reference that they looked up. The impact of this is discussed in the next section.</para>
+        </important>
       </section>
       <section>
         <title>Using the kernel controller</title>
-        <para>This is equivalent to how you access beans using Spring.</para>
+        <para>If no parameter is given to the <code>run.sh</code> script when  the client is started then a reference to the HRService bean is looked up using the microcontainer controller once the service is deployed:</para>
+        <programlisting>private final static String HRSERVICE = &quot;HRService&quot;;
+
+...
+
+void deploy() {
+    bootstrap.deploy(url);
+    if (!useBus &amp;&amp; manager == null) {
+        ControllerContext context = controller.getInstalledContext(HRSERVICE);
+        if (context != null) { manager = (HRManager) context.getTarget(); }
+    }
+}</programlisting>
+        <para>Rather than directly lookup a reference to the bean instance we actually lookup a reference to a <code>ControllerContext</code>. We then obtain a reference to the bean instance from the context using the <code>getTarget()</code> method.  The reason for this is because the bean can exist in many states within the microcontainer e.g. DESCRIBED, INSTANTIATED, CONFIGURED, INSTALLED. In order to keep a track of which state the bean is in we need to wrap it in another object called a context that describes the current state. The name of the context is the same as the bean name. Once a context reaches the INSTALLED state then the bean it represents is considered to be deployed.</para>
+        <para>Now that we have a reference to the bean instance representing our service entry point we can call methods on it at runtime to perform work:</para>
+        <programlisting>@SuppressWarnings(&quot;unchecked&quot;)
+Set&lt;Employee&gt; listEmployees() {
+    if (useBus)
+        ...
+    else
+        return manager.getEmployees();
+}</programlisting>
+        <para>So far, so good, but what happens if we want to reconfigure the service and redeploy it at runtime? As we know from the previous section the microcontainer will release its reference to the bean instance and create another instance representing the new configuration. If we have cached the reference to the first instance in our client then undeploying the service has no affect as it  can still be used to access the bean. Similarly deploying the service again will not cause another lookup so the client will continue to use the cached  reference.</para>
+        <important>
+          <para>If a client caches its own reference to a bean instance looked up from the microcontainer then this prevents the instance from being garbage collected when it is undeployed.  Deploying the bean again simply creates another instance which is totally separate from the first. Subsequent lookups will then return references to this second instance resulting in two different versions of the service running at the same time.</para>
+          <para>Care must therefore be taken to ensure that you understand the effects of caching references to bean instances looked up from the microcontainer. </para>
+        </important>
+        <para>If we really want to reconfigure and redeploy our service at runtime then we either need to recache the reference to the bean instance each time we deploy the service or we need to use a bus. Using a bus is the preferred method as it is not always practical to keep track of which clients have copies of the bean reference or if they have passed them on to others.</para>
       </section>
       <section>
         <title>Using the kernel bus</title>
-        <para>This provides the decoupling we need so that we can swap a service at runtime.</para>
+        <para>The run.sh script can be called with an optional parameter &apos;bus&apos; to specify that calls to the Human Resources service should take place using the microcontainer bus:</para>
+        <programlisting>./run.sh bus</programlisting>
+        <para>Since we no longer have a direct reference to the bean instance we must specify all of the information needed to call a method at runtime. This consists of the bean name, method name, method arguments and method types. The bus takes this information using the invoke() method and uses it to call the bean on the client&apos;s behalf.</para>
+        <programlisting>private final static String HRSERVICE = &quot;HRService&quot;;
+
+...
+
+@SuppressWarnings(&quot;unchecked&quot;)
+Set&lt;Employee&gt; listEmployees() {
+    if (useBus)
+        return (Set&lt;Employee&gt;) invoke(HRSERVICE, &quot;getEmployees&quot;, new Object[] {}, new String[] {});
+    else
+        return manager.getEmployees();
+}
+
+private Object invoke(String serviceName, String methodName, Object[] args, String[] types) {
+    Object result = null;
+    try {
+        result = bus.invoke(serviceName, methodName, args, types);
+    } catch (Throwable t) {
+        t.printStackTrace();
+    }
+    return result;
+}</programlisting>
+        <para>Behind the scenes the bus looks up the reference to the bean instance and calls the method using reflecton. As the bus does not cache the reference we can  safely make changes to our service configuration and redeploy it at runtime. Subsequent calls by the client will then result in the new reference to the service being used as expected.   In technical terms we say that the client and service have been decoupled. You can test this behaviour out for yourself by deploying the service, adding a new employee, listing the employees to check they have been added and then redeploying the service. You should find that listing the employees again results in an empty list as employees aren&apos;t persisted between redeployments.</para>
       </section>
       <section>
-        <title>Redeploying a service</title>
-        <para>Show here how you can alter the jboss-beans.xml file in the unpackaged service and redeploy the service.</para>
-      </section>
-      <section>
-        <title>Classloading</title>
+        <title>Controlling Classloading</title>
         <para>Show how we can remove the ./deploy/humanResourcesService.jar from the classpath and then deploy the jboss-beans.xml file directly in the unpackaged service. We can then configure the &lt;classloader&gt; element of the deployment to point to the classes directory since they won&apos;t be available on the Application classpath anymore. We can even move the util package to another directory and show how we can set up a &lt;classloader&gt; element at the bean level.</para>
       </section>
     </chapter>
@@ -396,11 +591,11 @@ META-INF/maven/org.jboss.microcontainer.examples/humanResourcesService/pom.xml
     <chapter>
       <title>JBoss AS</title>
       <section>
-        <title>Classloading</title>
-        <para>Explain that the default classloading goes to the unified repository.</para>
+        <title>Java EE Deployers</title>
       </section>
       <section>
-        <title>Java EE Deployers</title>
+        <title>Classloading</title>
+        <para>Explain that the default classloading goes to the unified repository.</para>
       </section>
       <section>
         <title>MBean Compatibility</title>
