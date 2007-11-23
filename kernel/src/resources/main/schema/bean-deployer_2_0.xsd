@@ -132,6 +132,35 @@ $Id$
       </xsd:complexContent>
    </xsd:complexType>
 
+   <xsd:complexType name="abstractBeanfactoryType">
+      <xsd:annotation>
+         <xsd:documentation>
+           <![CDATA[
+           Base type for beanfatoryType.
+           ]]>
+           
+         </xsd:documentation>
+      </xsd:annotation>
+      <xsd:sequence>
+         <xsd:element name="alias" type="aliasType" minOccurs="0" maxOccurs="unbounded"/>
+         <xsd:element name="classloader" type="classloaderType" minOccurs="0"/>
+         <xsd:element name="constructor" type="constructorType" minOccurs="0"/>
+         <xsd:element name="property" type="propertyType" minOccurs="0" maxOccurs="unbounded"/>
+         <xsd:element name="create" type="lifecycleType" minOccurs="0"/>
+         <xsd:element name="start" type="lifecycleType" minOccurs="0"/>
+         <xsd:element name="depends" type="dependsType" minOccurs="0" maxOccurs="unbounded"/>
+         <xsd:element name="demand" type="demandType" minOccurs="0" maxOccurs="unbounded"/>
+         <xsd:element name="supply" type="supplyType" minOccurs="0" maxOccurs="unbounded"/>
+         <xsd:element name="install" type="installType" minOccurs="0" maxOccurs="unbounded"/>
+         <xsd:element name="uninstall" type="installType" minOccurs="0" maxOccurs="unbounded"/>
+<!--
+         <xsd:element name="incallback" type="callbackType" minOccurs="0" maxOccurs="unbounded"/>
+         <xsd:element name="uncallback" type="callbackType" minOccurs="0" maxOccurs="unbounded"/>
+-->
+      </xsd:sequence>
+      <xsd:attribute name="name" type="xsd:string" use="optional"/>
+   </xsd:complexType>
+
    <xsd:complexType name="beanfactoryType">
       <xsd:annotation>
          <xsd:documentation>
@@ -163,25 +192,11 @@ $Id$
            
          </xsd:documentation>
       </xsd:annotation>
-      <xsd:sequence>
-         <xsd:element name="alias" type="aliasType" minOccurs="0" maxOccurs="unbounded"/>
-         <xsd:element name="classloader" type="classloaderType" minOccurs="0"/>
-         <xsd:element name="constructor" type="constructorType" minOccurs="0"/>
-         <xsd:element name="property" type="propertyType" minOccurs="0" maxOccurs="unbounded"/>
-         <xsd:element name="create" type="lifecycleType" minOccurs="0"/>
-         <xsd:element name="start" type="lifecycleType" minOccurs="0"/>
-         <xsd:element name="depends" type="dependsType" minOccurs="0" maxOccurs="unbounded"/>
-         <xsd:element name="demand" type="demandType" minOccurs="0" maxOccurs="unbounded"/>
-         <xsd:element name="supply" type="supplyType" minOccurs="0" maxOccurs="unbounded"/>
-         <xsd:element name="install" type="installType" minOccurs="0" maxOccurs="unbounded"/>
-         <xsd:element name="uninstall" type="installType" minOccurs="0" maxOccurs="unbounded"/>
-<!--
-         <xsd:element name="incallback" type="callbackType" minOccurs="0" maxOccurs="unbounded"/>
-         <xsd:element name="uncallback" type="callbackType" minOccurs="0" maxOccurs="unbounded"/>
--->
-      </xsd:sequence>
-      <xsd:attribute name="name" type="xsd:string" use="optional"/>
-      <xsd:attribute name="class" type="xsd:token" use="optional"/>
+      <xsd:complexContent>
+         <xsd:extension base="abstractBeanfactoryType">
+            <xsd:attribute name="class" type="xsd:token" use="required"/>
+         </xsd:extension>
+      </xsd:complexContent>
    </xsd:complexType>
 
    <xsd:complexType name="lazyType">

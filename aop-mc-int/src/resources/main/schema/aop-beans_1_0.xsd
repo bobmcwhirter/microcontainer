@@ -20,6 +20,38 @@ $Id$
          ]]>
       </xsd:documentation>
    </xsd:annotation>
+<!-- 
+	<xsd:element name="domain" type="domainType">
+      <xsd:annotation>
+         <xsd:documentation>
+           <![CDATA[
+           A domain
+           ]]>
+         </xsd:documentation>
+      </xsd:annotation>
+   </xsd:element>
+
+   <xsd:complexType name="domainType">
+      <xsd:annotation>
+         <xsd:documentation>
+           <![CDATA[
+           aspects or interceptors 
+           ]]>
+         </xsd:documentation>
+      </xsd:annotation>
+      <xsd:complexContent>
+         <xsd:choice minOccurs="0" maxOccurs="1">
+               <xsd:element name="interceptor" type="mc:propertyType" minOccurs="0" maxOccurs="unbounded"/>
+               <xsd:element name="property" type="mc:propertyType" minOccurs="0" maxOccurs="unbounded"/>
+         </xsd:choice>
+         <xsd:attribute name="name" type="xsd:string" use="required"/>
+         <xsd:attribute name="parentFirst" type="xsd:string" use="optional" default="false"/>
+         <xsd:attribute name="inheritDefinitions" type="xsd:string" use="optional" default="true"/>
+         <xsd:attribute name="inheritBindings" type="xsd:boolean" use="optional" default="false"/>
+         <xsd:attribute name="extends" type="xsd:string" use="optional"/>
+         </xsd:extension>
+      </xsd:complexContent>
+   </xsd:complexType> -->
 
    <xsd:element name="interceptor" type="aspectOrInterceptorType">
       <xsd:annotation>
@@ -41,6 +73,19 @@ $Id$
       </xsd:annotation>
    </xsd:element>
    
+   <xsd:complexType name="aopBeanfactoryType">
+      <xsd:annotation>
+         <xsd:documentation>
+				Similar to the beans beanfactoryType, but with an optional class           
+         </xsd:documentation>
+      </xsd:annotation>
+      <xsd:complexContent>
+         <xsd:extension base="mc:abstractBeanfactoryType">
+            <xsd:attribute name="class" type="xsd:token" use="required"/>
+         </xsd:extension>
+      </xsd:complexContent>
+   </xsd:complexType>
+   
    <xsd:complexType name="aspectOrInterceptorType">
       <xsd:annotation>
          <xsd:documentation>
@@ -50,7 +95,7 @@ $Id$
          </xsd:documentation>
       </xsd:annotation>
       <xsd:complexContent>
-         <xsd:extension base="mc:beanfactoryType">
+         <xsd:extension base="aopBeanfactoryType">
             <!--  xsd:choice minOccurs="0" maxOccurs="1">
                <xsd:element name="attribute" type="mc:propertyType" minOccurs="0" maxOccurs="unbounded"/>
                <xsd:element name="property" type="mc:propertyType" minOccurs="0" maxOccurs="unbounded"/>
@@ -551,7 +596,7 @@ $Id$
          </xsd:documentation>
       </xsd:annotation>
       <xsd:complexContent>
-         <xsd:extension base="mc:beanfactoryType">
+         <xsd:extension base="aopBeanfactoryType">
             <xsd:attribute name="manager-bean" type="xsd:string" use="optional"/>
             <xsd:attribute name="manager-property" type="xsd:string" use="optional"/>
             <xsd:attribute name="method" type="xsd:string" use="optional"/>
