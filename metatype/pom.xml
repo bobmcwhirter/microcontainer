@@ -19,13 +19,33 @@
       <artifactId>jboss-container</artifactId>
     </dependency>
     <dependency>
-	    <groupId>org.jboss</groupId>
-	    <artifactId>jboss-common-core</artifactId>
-	  </dependency>
+      <groupId>org.jboss</groupId>
+      <artifactId>jboss-common-core</artifactId>
+      <exclusions>
+        <exclusion>
+          <groupId>jboss</groupId>
+          <artifactId>jboss-common-logging-spi</artifactId>
+        </exclusion>
+      </exclusions>
+    </dependency>
+    <dependency>
+      <groupId>jboss</groupId>
+      <artifactId>jboss-logging-spi</artifactId>
+    </dependency>
 	  <!-- Test dependencies -->
     <dependency>
       <groupId>org.jboss</groupId>
       <artifactId>jboss-test</artifactId>
+      <exclusions>
+        <exclusion>
+          <groupId>jboss</groupId>
+          <artifactId>jboss-common-core</artifactId>
+        </exclusion>
+        <exclusion>
+          <groupId>jboss</groupId>
+          <artifactId>jboss-common-logging-spi</artifactId>
+        </exclusion>
+      </exclusions>
     </dependency>
     <dependency>
 	    <groupId>junit</groupId>
