@@ -21,7 +21,7 @@
     and configuration.
   </description>
   <scm>
-    <connection>scm:svn:https://svn.jboss.org/repos/jbossas/projects/microcontainer/tags/2.0.0.Beta6</connection>
+    <connection>scm:svn:https://svn.jboss.org/repos/jbossas/projects/microcontainer/trunk</connection>
   </scm>
 
   <modules>

@@ -20,11 +20,43 @@
     </dependency>
     <dependency>
       <groupId>org.jboss.microcontainer</groupId>
-      <artifactId>jboss-deployers-spi</artifactId>
+      <artifactId>jboss-deployers-core-spi</artifactId>
     </dependency>
     <dependency>
       <groupId>org.jboss.microcontainer</groupId>
-      <artifactId>jboss-classloader</artifactId>
+      <artifactId>jboss-deployers-client-spi</artifactId>
+    </dependency>
+    <dependency>
+      <groupId>org.jboss.microcontainer</groupId>
+      <artifactId>jboss-deployers-structure-spi</artifactId>
+    </dependency>
+    <dependency>
+      <groupId>org.jboss.microcontainer</groupId>
+      <artifactId>jboss-deployers-spi</artifactId>
+    </dependency>
+    <dependency>
+      <groupId>org.jboss</groupId>
+      <artifactId>jboss-common-core</artifactId>
+      <exclusions>
+        <exclusion>
+          <groupId>jboss</groupId>
+          <artifactId>jboss-common-logging-spi</artifactId>
+        </exclusion>
+      </exclusions>
+    </dependency>
+    <dependency>
+      <groupId>org.jboss</groupId>
+      <artifactId>jbossxb</artifactId>
+      <exclusions>
+        <exclusion>
+          <groupId>jboss</groupId>
+          <artifactId>jboss-common-core</artifactId>
+        </exclusion>
+        <exclusion>
+          <groupId>jboss</groupId>
+          <artifactId>jboss-common-logging-spi</artifactId>
+        </exclusion>
+      </exclusions>
     </dependency>
     <dependency>
       <groupId>javax.xml.bind</groupId>
@@ -33,6 +65,10 @@
     <dependency>
       <groupId>jboss</groupId>
       <artifactId>jboss-logging-spi</artifactId>
+    </dependency>
+    <dependency>
+      <groupId>apache-xerces</groupId>
+      <artifactId>xml-apis</artifactId>
     </dependency>
   </dependencies>  
 </project>

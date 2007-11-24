@@ -27,35 +27,13 @@
   <dependencies>
     <!-- Global dependencies -->
     <dependency>
-      <groupId>org.jboss</groupId>
-      <artifactId>jbossxb</artifactId>
-    </dependency>
-    <dependency>
       <groupId>org.jboss.microcontainer</groupId>
       <artifactId>jboss-kernel</artifactId>
-    </dependency>
-    <dependency>
-      <groupId>org.jboss.microcontainer</groupId>
-      <artifactId>jboss-aop-mc-int</artifactId>
-    </dependency>
-    <dependency>
-      <groupId>org.jboss.microcontainer</groupId>
-      <artifactId>jboss-deployers-vfs</artifactId>
     </dependency>
     <dependency>
       <groupId>jboss</groupId>
       <artifactId>jbpm</artifactId>
     </dependency>
     <!-- Test dependencies -->
-    <dependency>
-      <groupId>org.jboss</groupId>
-      <artifactId>jboss-test</artifactId>
-    </dependency>
-    <dependency>
-      <groupId>org.jboss.microcontainer</groupId>
-      <artifactId>jboss-container</artifactId>
-      <type>test-jar</type>
-      <scope>test</scope>
-    </dependency>
   </dependencies>
 </project>
