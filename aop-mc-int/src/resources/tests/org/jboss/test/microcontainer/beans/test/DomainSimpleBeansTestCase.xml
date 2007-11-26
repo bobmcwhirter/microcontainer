@@ -157,18 +157,38 @@
       <property name="manager"><inject bean="AOPDomain" property="domain"/></property>
       <property name="aspect"><inject bean="org.jboss.test.microcontainer.beans.TestAspectWithProperty"/></property>
       <property name="aspectMethod">advice</property>
-      <property name="aspectBinding"><inject bean="TestAspectBinding" state="Instantiated"/></property>
+      <property name="binding"><inject bean="TestAspectBinding" state="Instantiated"/></property>
    </bean>
    <bean name="TestAspectBinding$2" class="org.jboss.aop.microcontainer.beans.InterceptorEntry">
       <property name="manager"><inject bean="AOPDomain" property="domain"/></property>
       <property name="aspect"><inject bean="org.jboss.test.microcontainer.beans.TestInterceptor"/></property>
-      <property name="aspectBinding"><inject bean="TestAspectBinding" state="Instantiated"/></property>
+      <property name="binding"><inject bean="TestAspectBinding" state="Instantiated"/></property>
    </bean>
    <bean name="TestAspectBinding$3" class="org.jboss.aop.microcontainer.beans.StackEntry">
       <property name="manager"><inject bean="AOPDomain" property="domain"/></property>
       <property name="stack"><inject bean="TestStack"/></property>
-      <property name="aspectBinding"><inject bean="TestAspectBinding" state="Instantiated"/></property>
+      <property name="binding"><inject bean="TestAspectBinding" state="Instantiated"/></property>
    </bean>
-   
-   
+
+   <bean name="TestArrayReplacement" class="org.jboss.aop.microcontainer.beans.ArrayReplacement">
+      <property name="manager"><inject bean="AOPDomain" property="domain"/></property>
+      <property name="classes">org.jboss.test.microcontainer.beans.woven.test.ClassWithArray</property>
+   </bean>
+
+   <bean name="TestArrayBinding" class="org.jboss.aop.microcontainer.beans.ArrayBinding">
+      <property name="name">TestArrayBinding</property>
+      <property name="type">READ_WRITE</property>
+      <property name="manager"><inject bean="AOPDomain" property="domain"/></property>
+      <property name="advices">
+         <list>
+            <inject bean="TestArrayBinding$1"/>
+         </list>
+      </property>
+   </bean>
+   <bean name="TestArrayBinding$1" class="org.jboss.aop.microcontainer.beans.InterceptorEntry">
+      <property name="manager"><inject bean="AOPDomain" property="domain"/></property>
+      <property name="aspect"><inject bean="org.jboss.test.microcontainer.beans.TestInterceptor"/></property>
+      <property name="binding"><inject bean="TestArrayBinding" state="Instantiated"/></property>
+   </bean>
+
 </deployment>

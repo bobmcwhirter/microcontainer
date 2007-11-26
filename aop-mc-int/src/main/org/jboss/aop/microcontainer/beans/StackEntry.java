@@ -58,7 +58,7 @@ public class StackEntry extends BindingEntry
       {
          throw new IllegalArgumentException("Null manager");
       }
-      if (aspectBinding == null)
+      if (binding == null)
       {
          throw new IllegalArgumentException("Null aspect binding");
       }
@@ -66,7 +66,7 @@ public class StackEntry extends BindingEntry
       {
          throw new IllegalArgumentException("Null stack");
       }
-      advices = stack.getClonedAdvices(aspectBinding);
+      advices = stack.getClonedAdvices(binding);
       if (advices == null)
       {
          throw new IllegalArgumentException("Null advices");

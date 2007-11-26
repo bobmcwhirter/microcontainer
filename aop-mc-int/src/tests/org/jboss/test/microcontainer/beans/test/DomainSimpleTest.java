@@ -105,6 +105,20 @@ public abstract class DomainSimpleTest extends DomainProxyTest
       
       Map map = manager.getPrecedenceDefs();
       checkShouldBeThere(map, shouldBeThere);
+      
+      map = manager.getArrayReplacements();
+      checkShouldBeThere(map, shouldBeThere);
+      
+      try
+      {
+         o = manager.getArrayBinding("TestArrayBinding");
+         checkShouldBeThere(o, shouldBeThere);
+      }
+      catch (ClassCastException expected)
+      {
+         // TODO remove after AOP 2.0.0.CR1 which fixes the bug
+      }
+      
    }
    
    private void checkShouldBeThere(Object o, boolean shouldBeThere)

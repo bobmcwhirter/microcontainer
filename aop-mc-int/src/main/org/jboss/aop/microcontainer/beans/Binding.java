@@ -21,52 +21,14 @@
 */ 
 package org.jboss.aop.microcontainer.beans;
 
-import org.jboss.aop.AspectManager;
-import org.jboss.aop.advice.InterceptorFactory;
-import org.jboss.util.id.GUID;
-
 /**
- * Abstract base class for things that can go inside bindings (stack refs, advice and interceptor-ref)
  * 
  * @author <a href="kabir.khan@jboss.com">Kabir Khan</a>
  * @version $Revision: 1.1 $
  */
-public abstract class BindingEntry
+public interface Binding
 {
-   String name = new GUID().toString();
-   AspectManager manager;
-   Binding binding;
-
-   public abstract InterceptorFactory[] getInterceptorFactories();
+   String getName();
    
-   public abstract void start();
-   
-   public abstract void stop();
-
-   public Binding getBinding()
-   {
-      return binding;
-   }
-
-   public void setBinding(Binding binding)
-   {
-      this.binding = binding;
-   }
-
-   public AspectManager getManager()
-   {
-      return manager;
-   }
-
-   public void setManager(AspectManager manager)
-   {
-      this.manager = manager;
-   }
-
-   public String getName()
-   {
-      return name;
-   }
-   
-
+   void rebind() throws Exception;
 }

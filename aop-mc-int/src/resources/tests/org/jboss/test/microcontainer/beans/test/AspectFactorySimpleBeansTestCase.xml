@@ -7,7 +7,7 @@
    </bean>
 
    <beanfactory name="Factory$org.jboss.test.microcontainer.beans.SimpleAspectFactory" class="org.jboss.test.microcontainer.beans.SimpleAspectFactory"/>
-   
+
    <bean name="org.jboss.test.microcontainer.beans.SimpleAspectFactory" class="org.jboss.aop.microcontainer.beans.Aspect">
       <property name="advice"><inject bean="Factory$org.jboss.test.microcontainer.beans.SimpleAspectFactory"/></property>
       <property name="manager"><inject bean="AspectManager"/></property>
@@ -27,10 +27,10 @@
       <property name="manager"><inject bean="AspectManager"/></property>
       <property name="aspect"><inject bean="org.jboss.test.microcontainer.beans.SimpleAspectFactory"/></property>
       <property name="aspectMethod">advice</property>
-      <property name="aspectBinding"><inject bean="TestAspectBinding" state="Instantiated"/></property>
+      <property name="binding"><inject bean="TestAspectBinding" state="Instantiated"/></property>
    </bean>
 
-   
+
    <bean name="Bean" class="org.jboss.test.microcontainer.beans.POJO"/>
-   
+
 </deployment>

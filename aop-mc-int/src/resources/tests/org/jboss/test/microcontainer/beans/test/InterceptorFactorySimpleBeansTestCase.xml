@@ -27,7 +27,7 @@
    <bean name="TestAspectBinding$1" class="org.jboss.aop.microcontainer.beans.InterceptorEntry">
       <property name="manager"><inject bean="AspectManager"/></property>
       <property name="aspect"><inject bean="org.jboss.test.microcontainer.beans.SimpleInterceptorFactory"/></property>
-      <property name="aspectBinding"><inject bean="TestAspectBinding" state="Instantiated"/></property>
+      <property name="binding"><inject bean="TestAspectBinding" state="Instantiated"/></property>
    </bean>
 
    <bean name="Bean" class="org.jboss.test.microcontainer.beans.POJO"/>

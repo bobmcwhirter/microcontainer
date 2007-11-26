@@ -53,6 +53,8 @@ $Id$
          <xsd:element name="annotation" type="annotationType" minOccurs="0" maxOccurs="unbounded"/>
          <xsd:element name="precedence" type="precedenceType" minOccurs="0" maxOccurs="unbounded"/>
          <xsd:element name="introduction" type="introductionType" minOccurs="0" maxOccurs="unbounded"/>
+         <xsd:element name="arrayreplacement" type="arrayreplacementType" minOccurs="0" maxOccurs="unbounded"/>
+         <xsd:element name="arraybind" type="arraybindType" minOccurs="0" maxOccurs="unbounded"/>
       </xsd:choice>
       <xsd:attribute name="name" type="xsd:string" use="required"/>
       <xsd:attribute name="parentFirst" type="xsd:string" use="optional" default="false"/>
@@ -569,7 +571,7 @@ $Id$
       <xsd:annotation>
          <xsd:documentation>
             <![CDATA[
-           A class within an interface/mixin
+           How to construct an interface/mixin
            ]]>
          </xsd:documentation>
       </xsd:annotation>
@@ -582,13 +584,70 @@ $Id$
       <xsd:annotation>
          <xsd:documentation>
             <![CDATA[
-           A class within an interface/mixin
+           Whether an interface/mixin should be transient
            ]]>
          </xsd:documentation>
       </xsd:annotation>
       <xsd:simpleContent>
          <xsd:extension base="xsd:string"/>
       </xsd:simpleContent>
+   </xsd:complexType>
+
+   <xsd:element name="arrayreplacement" type="arrayreplacementType">
+      <xsd:annotation>
+         <xsd:documentation>
+           <![CDATA[
+           A interface introduction
+           ]]>
+         </xsd:documentation>
+      </xsd:annotation>
+   </xsd:element>
+
+   <xsd:complexType name="arrayreplacementType">
+      <xsd:annotation>
+         <xsd:documentation>
+            <![CDATA[
+           A interface introduction
+           ]]>
+         </xsd:documentation>
+      </xsd:annotation>
+      <xsd:attribute name="name" type="xsd:string" use="optional"></xsd:attribute>
+      <xsd:attribute name="class" type="xsd:string" use="optional"></xsd:attribute>
+      <xsd:attribute name="expr" type="xsd:string" use="optional"></xsd:attribute>
+   </xsd:complexType>
+
+   <xsd:element name="arraybind" type="arraybindType">
+      <xsd:annotation>
+         <xsd:documentation>
+           <![CDATA[
+           A interface introduction
+           ]]>
+         </xsd:documentation>
+      </xsd:annotation>
+   </xsd:element>
+
+   <xsd:complexType name="arraybindType">
+      <xsd:annotation>
+         <xsd:documentation>
+            <![CDATA[
+           A interface introduction
+           ]]>
+         </xsd:documentation>
+      </xsd:annotation>
+      <xsd:choice minOccurs="1" maxOccurs="unbounded">
+         <xsd:element name="interceptor-ref" type="interceptorRefType" minOccurs="0" maxOccurs="unbounded"/>
+         <xsd:element name="stack-ref" type="stackRefType" minOccurs="0" maxOccurs="unbounded"/>
+         <xsd:element name="advice" type="adviceType" minOccurs="0" maxOccurs="unbounded"/>
+         <xsd:element name="around" type="adviceType" minOccurs="0" maxOccurs="unbounded"/>
+         <!-- b/a/t/f is not supported yet for arrays 
+         <xsd:element name="before" type="beforeType" minOccurs="0" maxOccurs="unbounded"/>
+         <xsd:element name="after" type="afterType" minOccurs="0" maxOccurs="unbounded"/>
+         <xsd:element name="throwing" type="throwingType" minOccurs="0" maxOccurs="unbounded"/>
+         <xsd:element name="finally" type="finallyType" minOccurs="0" maxOccurs="unbounded"/>
+         -->
+      </xsd:choice>
+      <xsd:attribute name="name" type="xsd:string" use="optional"></xsd:attribute>
+      <xsd:attribute name="type" type="xsd:string" use="required"></xsd:attribute>
    </xsd:complexType>
 
    <xsd:complexType name="lifecycleType">

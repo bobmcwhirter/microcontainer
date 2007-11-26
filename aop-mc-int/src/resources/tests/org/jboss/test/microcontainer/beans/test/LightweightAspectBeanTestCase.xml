@@ -7,14 +7,14 @@
    </bean>
 
    <beanfactory name="Factory$org.jboss.test.microcontainer.beans.TestAspect" class="org.jboss.test.microcontainer.beans.TestAspect"/>
-   
+
    <bean name="org.jboss.test.microcontainer.beans.TestAspect" class="org.jboss.aop.microcontainer.beans.Aspect">
       <property name="advice"><inject bean="Factory$org.jboss.test.microcontainer.beans.TestAspect"/></property>
       <property name="manager"><inject bean="AspectManager"/></property>
    </bean>
 
    <beanfactory name="Factory$org.jboss.test.microcontainer.beans.LightweightAspect" class="org.jboss.test.microcontainer.beans.LightweightAspect"/>
-   
+
    <bean name="org.jboss.test.microcontainer.beans.LightweightAspect" class="org.jboss.aop.microcontainer.beans.Aspect">
       <property name="advice"><inject bean="Factory$org.jboss.test.microcontainer.beans.LightweightAspect"/></property>
       <property name="manager"><inject bean="AspectManager"/></property>
@@ -39,37 +39,37 @@
       <property name="aspect"><inject bean="org.jboss.test.microcontainer.beans.LightweightAspect"/></property>
       <property name="aspectMethod">before</property>
       <property name="type">BEFORE</property>
-      <property name="aspectBinding"><inject bean="Binding" state="Instantiated"/></property>
+      <property name="binding"><inject bean="Binding" state="Instantiated"/></property>
    </bean>
    <bean name="TestAspectBinding$2" class="org.jboss.aop.microcontainer.beans.InterceptorEntry">
       <property name="manager"><inject bean="AspectManager"/></property>
       <property name="aspect"><inject bean="org.jboss.test.microcontainer.beans.TestAspect"/></property>
       <property name="aspectMethod">advice</property>
-      <property name="aspectBinding"><inject bean="Binding" state="Instantiated"/></property>
+      <property name="binding"><inject bean="Binding" state="Instantiated"/></property>
    </bean>
    <bean name="TestAspectBinding$3" class="org.jboss.aop.microcontainer.beans.InterceptorEntry">
       <property name="manager"><inject bean="AspectManager"/></property>
       <property name="aspect"><inject bean="org.jboss.test.microcontainer.beans.LightweightAspect"/></property>
       <property name="aspectMethod">after</property>
       <property name="type">AFTER</property>
-      <property name="aspectBinding"><inject bean="Binding" state="Instantiated"/></property>
+      <property name="binding"><inject bean="Binding" state="Instantiated"/></property>
    </bean>
    <bean name="TestAspectBinding$4" class="org.jboss.aop.microcontainer.beans.InterceptorEntry">
       <property name="manager"><inject bean="AspectManager"/></property>
       <property name="aspect"><inject bean="org.jboss.test.microcontainer.beans.LightweightAspect"/></property>
       <property name="aspectMethod">throwing</property>
       <property name="type">THROWING</property>
-      <property name="aspectBinding"><inject bean="Binding" state="Instantiated"/></property>
+      <property name="binding"><inject bean="Binding" state="Instantiated"/></property>
    </bean>
    <bean name="TestAspectBinding$5" class="org.jboss.aop.microcontainer.beans.InterceptorEntry">
       <property name="manager"><inject bean="AspectManager"/></property>
       <property name="aspect"><inject bean="org.jboss.test.microcontainer.beans.LightweightAspect"/></property>
       <property name="aspectMethod">finally</property>
       <property name="type">FINALLY</property>
-      <property name="aspectBinding"><inject bean="Binding" state="Instantiated"/></property>
+      <property name="binding"><inject bean="Binding" state="Instantiated"/></property>
    </bean>
-	
-<!-- TODO: Test should be run with weaving	
+
+<!-- TODO: Test should be run with weaving
    <bean name="Bean" class="org.jboss.test.microcontainer.beans.POJO"/>
- -->   
+ -->
 </deployment>

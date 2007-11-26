@@ -19,54 +19,37 @@
 * Software Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA
 * 02110-1301 USA, or see the FSF site: http://www.fsf.org.
 */ 
-package org.jboss.aop.microcontainer.beans;
+package org.jboss.test.microcontainer.beans.woven.test;
 
-import org.jboss.aop.AspectManager;
-import org.jboss.aop.advice.InterceptorFactory;
-import org.jboss.util.id.GUID;
+import org.jboss.aop.array.IntArrayElementReadInvocation;
+import org.jboss.aop.array.IntArrayElementWriteInvocation;
 
 /**
- * Abstract base class for things that can go inside bindings (stack refs, advice and interceptor-ref)
  * 
  * @author <a href="kabir.khan@jboss.com">Kabir Khan</a>
  * @version $Revision: 1.1 $
  */
-public abstract class BindingEntry
+public class TestArrayAspect
 {
-   String name = new GUID().toString();
-   AspectManager manager;
-   Binding binding;
-
-   public abstract InterceptorFactory[] getInterceptorFactories();
+   public static int value;
+   public static int index;
    
-   public abstract void start();
-   
-   public abstract void stop();
-
-   public Binding getBinding()
+   public Object advice(IntArrayElementWriteInvocation invocation) throws Throwable
    {
-      return binding;
-   }
-
-   public void setBinding(Binding binding)
-   {
-      this.binding = binding;
-   }
-
-   public AspectManager getManager()
-   {
-      return manager;
-   }
-
-   public void setManager(AspectManager manager)
-   {
-      this.manager = manager;
-   }
-
-   public String getName()
-   {
-      return name;
+      value = invocation.getIntValue();
+      index = invocation.getIndex();
+      return invocation.invokeNext();
    }
    
+   public Object advice(IntArrayElementReadInvocation invocation) throws Throwable
+   {
+      index = invocation.getIndex();
+      return invocation.invokeNext();
+   }
 
+   public static void reset()
+   {
+      value = -1;
+      index = -1;
+   }
 }

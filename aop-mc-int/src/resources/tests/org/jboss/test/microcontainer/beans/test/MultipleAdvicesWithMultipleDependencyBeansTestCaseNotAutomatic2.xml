@@ -14,7 +14,7 @@
 	   </install>
 	   <uninstall bean="org.jboss.test.microcontainer.beans.TestAspectWithDependency" method="uninstall"/>
    </beanfactory>
-   
+
    <bean name="org.jboss.test.microcontainer.beans.TestAspectWithDependency" class="org.jboss.aop.microcontainer.beans.Aspect">
       <property name="adviceBean">Factory$org.jboss.test.microcontainer.beans.TestAspectWithDependency</property>
       <property name="manager"><inject bean="AspectManager"/></property>
@@ -27,7 +27,7 @@
 	   </install>
 	   <uninstall bean="org.jboss.test.microcontainer.beans.TestInterceptorWithDependency" method="uninstall"/>
    </beanfactory>
-   
+
    <bean name="org.jboss.test.microcontainer.beans.TestInterceptorWithDependency" class="org.jboss.aop.microcontainer.beans.Aspect">
       <property name="adviceBean">Factory$org.jboss.test.microcontainer.beans.TestInterceptorWithDependency</property>
       <property name="manager"><inject bean="AspectManager"/></property>
@@ -46,9 +46,9 @@
       <property name="manager"><inject bean="AspectManager"/></property>
       <property name="aspect"><inject bean="org.jboss.test.microcontainer.beans.TestAspectWithDependency"/></property>
       <property name="aspectMethod">advice</property>
-      <property name="aspectBinding"><inject bean="TestAspectBinding" state="Instantiated"/></property>
+      <property name="binding"><inject bean="TestAspectBinding" state="Instantiated"/></property>
    </bean>
-	
+
    <bean name="TestInterceptorBinding" class="org.jboss.aop.microcontainer.beans.AspectBinding">
       <property name="pointcut">execution(* @org.jboss.test.microcontainer.beans.Annotation2->*(..))</property>
       <property name="manager"><inject bean="AspectManager"/></property>
@@ -61,20 +61,20 @@
    <bean name="TestInterceptorBinding$1" class="org.jboss.aop.microcontainer.beans.InterceptorEntry">
       <property name="manager"><inject bean="AspectManager"/></property>
       <property name="aspect"><inject bean="org.jboss.test.microcontainer.beans.TestInterceptorWithDependency"/></property>
-      <property name="aspectBinding"><inject bean="TestInterceptorBinding" state="Instantiated"/></property>
+      <property name="binding"><inject bean="TestInterceptorBinding" state="Instantiated"/></property>
    </bean>
-   
+
    <bean name="Intercepted1" class="org.jboss.test.microcontainer.beans.POJO">
    	<annotation>@org.jboss.test.microcontainer.beans.Annotation1</annotation>
    </bean>
-   
+
    <bean name="Intercepted2" class="org.jboss.test.microcontainer.beans.POJO">
    	<annotation>@org.jboss.test.microcontainer.beans.Annotation2</annotation>
    </bean>
-   
+
    <bean name="Intercepted3" class="org.jboss.test.microcontainer.beans.POJO">
    	<annotation>@org.jboss.test.microcontainer.beans.Annotation1</annotation>
    	<annotation>@org.jboss.test.microcontainer.beans.Annotation2</annotation>
    </bean>
-   
+
 </deployment>

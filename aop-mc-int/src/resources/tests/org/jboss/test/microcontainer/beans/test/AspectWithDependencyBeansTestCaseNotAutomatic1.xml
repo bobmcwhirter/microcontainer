@@ -13,7 +13,7 @@
 	   </install>
 	   <uninstall bean="org.jboss.test.microcontainer.beans.TestAspectWithDependency" method="uninstall"/>
    </beanfactory>
-   
+
    <bean name="org.jboss.test.microcontainer.beans.TestAspectWithDependency" class="org.jboss.aop.microcontainer.beans.Aspect">
       <property name="adviceBean">Factory$org.jboss.test.microcontainer.beans.TestAspectWithDependency</property>
       <property name="manager"><inject bean="AspectManager"/></property>
@@ -32,9 +32,9 @@
       <property name="manager"><inject bean="AspectManager"/></property>
       <property name="aspect"><inject bean="org.jboss.test.microcontainer.beans.TestAspectWithDependency"/></property>
       <property name="aspectMethod">advice</property>
-      <property name="aspectBinding"><inject bean="TestAspectBinding" state="Instantiated"/></property>
+      <property name="binding"><inject bean="TestAspectBinding" state="Instantiated"/></property>
    </bean>
-   
+
    <bean name="Intercepted" class="org.jboss.test.microcontainer.beans.POJO"/>
-   
+
 </deployment>

@@ -24,7 +24,7 @@ package org.jboss.aop.microcontainer.beans.beanmetadatafactory;
 import java.util.ArrayList;
 import java.util.List;
 
-import org.jboss.aop.microcontainer.beans.AspectBinding;
+import org.jboss.aop.microcontainer.beans.ArrayBinding;
 import org.jboss.beans.metadata.plugins.AbstractBeanMetaData;
 import org.jboss.beans.metadata.plugins.AbstractInjectionValueMetaData;
 import org.jboss.beans.metadata.plugins.AbstractListMetaData;
@@ -36,27 +36,30 @@ import org.jboss.util.id.GUID;
  * @author <a href="kabir.khan@jboss.com">Kabir Khan</a>
  * @version $Revision: 1.1 $
  */
-public class BindBeanMetaDataFactory extends AspectManagerAwareBeanMetaDataFactory
+public class ArrayBindBeanMetaDataFactory extends AspectManagerAwareBeanMetaDataFactory
 {
-   private static final long serialVersionUID = 1L;
-   private String pointcut;
-   private String cflow;
-   private List<BaseInterceptorData> interceptors = new ArrayList<BaseInterceptorData>();
 
-   public BindBeanMetaDataFactory()
+   private static final long serialVersionUID = 1L;
+   
+   String name;
+   
+   String type;
+
+   private List<BaseInterceptorData> interceptors = new ArrayList<BaseInterceptorData>();
+   
+   public ArrayBindBeanMetaDataFactory()
    {
-      //Meeded to satisfy validation in BeanFactoryHandler.endElement()
       setBeanClass("IGNORED");
    }
-   
-   public void setPointcut(String pointcut)
+
+   public void setName(String name)
    {
-      this.pointcut = pointcut;
+      this.name = name;
    }
-   
-   public void setCflow(String cflow)
+
+   public void setType(String type)
    {
-      this.cflow = cflow;
+      this.type = type;
    }
    
    @Override
@@ -72,14 +75,8 @@ public class BindBeanMetaDataFactory extends AspectManagerAwareBeanMetaDataFacto
       }
       binding.setName(name);
       BeanMetaDataUtil.setSimpleProperty(binding, "name", name);
-      binding.setBean(AspectBinding.class.getName());
-
-      BeanMetaDataUtil.setSimpleProperty(binding, "pointcut", pointcut);
-      
-      if (cflow != null)
-      {
-         BeanMetaDataUtil.setSimpleProperty(binding, "cflow", cflow);
-      }
+      binding.setBean(ArrayBinding.class.getName());
+      BeanMetaDataUtil.setSimpleProperty(binding, "type", type);
       util.setAspectManagerProperty(binding, "manager");
       result.add(binding);
       

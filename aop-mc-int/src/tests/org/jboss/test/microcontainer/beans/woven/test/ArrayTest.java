@@ -18,55 +18,43 @@
 * License along with this software; if not, write to the Free
 * Software Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA
 * 02110-1301 USA, or see the FSF site: http://www.fsf.org.
-*/ 
-package org.jboss.aop.microcontainer.beans;
+*/
+package org.jboss.test.microcontainer.beans.woven.test;
 
-import org.jboss.aop.AspectManager;
-import org.jboss.aop.advice.InterceptorFactory;
-import org.jboss.util.id.GUID;
+import org.jboss.aop.Advised;
+import org.jboss.aop.microcontainer.junit.AOPMicrocontainerTest;
+import org.jboss.test.microcontainer.beans.TestInterceptor;
 
 /**
- * Abstract base class for things that can go inside bindings (stack refs, advice and interceptor-ref)
  * 
  * @author <a href="kabir.khan@jboss.com">Kabir Khan</a>
  * @version $Revision: 1.1 $
  */
-public abstract class BindingEntry
+public abstract class ArrayTest extends AOPMicrocontainerTest
 {
-   String name = new GUID().toString();
-   AspectManager manager;
-   Binding binding;
-
-   public abstract InterceptorFactory[] getInterceptorFactories();
-   
-   public abstract void start();
-   
-   public abstract void stop();
-
-   public Binding getBinding()
+   public ArrayTest(String name)
    {
-      return binding;
+      super(name);
    }
 
-   public void setBinding(Binding binding)
+   public void testIntercepted() throws Exception
    {
-      this.binding = binding;
-   }
-
-   public AspectManager getManager()
-   {
-      return manager;
-   }
-
-   public void setManager(AspectManager manager)
-   {
-      this.manager = manager;
-   }
-
-   public String getName()
-   {
-      return name;
+      ClassWithArray pojo = (ClassWithArray)getBean("Bean");
+      assertTrue(pojo instanceof Advised);
+      
+      TestInterceptor.invoked = false;
+      TestArrayAspect.reset();
+      pojo.setValue(1, 100);
+      assertEquals(1, TestArrayAspect.index);
+      assertEquals(100, TestArrayAspect.value);
+      assertTrue(TestInterceptor.invoked);
+      
+      TestInterceptor.invoked = false;
+      TestArrayAspect.reset();
+      int i = pojo.getValue(1);
+      assertEquals(1, TestArrayAspect.index);
+      assertEquals(100, i);
+      assertTrue(TestInterceptor.invoked);
    }
    
-
 }

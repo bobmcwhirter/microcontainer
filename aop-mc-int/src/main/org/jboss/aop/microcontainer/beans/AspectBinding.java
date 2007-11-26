@@ -36,7 +36,7 @@ import org.jboss.util.id.GUID;
  * @author <a href="kabir.khan@jboss.com">Kabir Khan</a>
  * @version $Revision$
  */
-public class AspectBinding
+public class AspectBinding implements Binding
 {
    private static final Logger log = Logger.getLogger(AspectBinding.class);
 

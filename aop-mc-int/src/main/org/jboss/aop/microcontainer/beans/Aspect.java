@@ -99,7 +99,7 @@ public class Aspect implements ConfigureKernelControllerContextAware, Untransfor
    /**
     * All the AspectBindings referencing this Aspect
     */
-   protected Map<String, AspectBinding> aspectBindings = new LinkedHashMap<String, AspectBinding>();
+   protected Map<String, Binding> bindings = new LinkedHashMap<String, Binding>();
    
    /**
     * Get the adviceName.
@@ -267,15 +267,15 @@ public class Aspect implements ConfigureKernelControllerContextAware, Untransfor
       }
       
       //Copy the aspectbindings to avoid ConcurrentModificationExceptions
-      ArrayList<AspectBinding> clonedBindings = new ArrayList<AspectBinding>();
-      for (AspectBinding aspectBinding : aspectBindings.values())
+      ArrayList<Binding> clonedBindings = new ArrayList<Binding>();
+      for (Binding aspectBinding : bindings.values())
       {
          clonedBindings.add(aspectBinding);
       }
       
-      for (AspectBinding aspectBinding : clonedBindings)
+      for (Binding binding : clonedBindings)
       {
-         aspectBinding.rebind();
+         binding.rebind();
       }
          
       log.debug("Bound aspect " + aspectDefName + "; deployed:" + definition.isDeployed());
@@ -325,13 +325,13 @@ public class Aspect implements ConfigureKernelControllerContextAware, Untransfor
       }
    }
    
-   void addAspectBinding(AspectBinding binding)
+   void addBinding(Binding binding)
    {
-      aspectBindings.put(binding.getName(), binding);
+      bindings.put(binding.getName(), binding);
    }
    
-   void removeAspectBinding(AspectBinding binding)
+   void removeBinding(Binding binding)
    {
-      aspectBindings.remove(binding.getName());
+      bindings.remove(binding.getName());
    }
 }

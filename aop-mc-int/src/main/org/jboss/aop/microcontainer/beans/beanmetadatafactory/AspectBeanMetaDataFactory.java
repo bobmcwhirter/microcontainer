@@ -99,36 +99,13 @@ public class AspectBeanMetaDataFactory extends AspectManagerAwareBeanMetaDataFac
       AbstractBeanMetaData aspect = new AbstractBeanMetaData();
       aspect.setName(aspectName);
       aspect.setBean(Aspect.class.getName());
-      util.setSimpleProperty(aspect, "scope", scope);
+      BeanMetaDataUtil.setSimpleProperty(aspect, "scope", scope);
       util.setAspectManagerProperty(aspect, "manager");
       if (factory != null)
       {
-         util.setSimpleProperty(aspect, "factory", Boolean.TRUE);
+         BeanMetaDataUtil.setSimpleProperty(aspect, "factory", Boolean.TRUE);
       }
       result.add(aspect);
-      
-//      String aspectBindingName = name + "$AspectBinding";
-//      AbstractBeanMetaData aspectBinding = new AbstractBeanMetaData();
-//      aspectBinding.setName(aspectBindingName);
-//      aspectBinding.setBean(AspectBinding.class.getName());
-//      util.setSimpleProperty(aspectBinding, "pointcut", pointcut);
-//      util.setDependencyProperty(aspectBinding, "aspect", aspectName, "definition");
-//      util.setAspectManagerProperty(aspectBinding, "manager");
-//      if (adviceMethod != null)
-//      {
-//         util.setSimpleProperty(aspectBinding, "method", adviceMethod);
-//      }
-//      result.add(aspectBinding);
-//      
-//      if (hasInjectedBeans())
-//      {
-//         configureWithDependencies(aspect, aspectBinding);
-//      }
-//      else
-//      {
-//         configureNoDependencies(aspect, aspectBinding);
-//      }
-      
       
       if (hasInjectedBeans())
       {
@@ -153,23 +130,6 @@ public class AspectBeanMetaDataFactory extends AspectManagerAwareBeanMetaDataFac
       parameters.add(new AbstractParameterMetaData(new ThisValueMetaData()));
       installAspect.setParameters(parameters);
       
-/*      <beanfactory name="Factory$org.jboss.test.microcontainer.beans2.TestAspectWithDependency" class="org.jboss.test.microcontainer.beans2.TestAspectWithDependency">
-      <property name="dependency"><inject bean="Dependency"/></property>
-      <!-- Need to be able to configure with attributes and stuff -->
-      <install bean="org.jboss.test.microcontainer.beans2.TestAspectWithDependency" method="install">
-         <parameter><this/></parameter>
-      </install>
-      <uninstall bean="org.jboss.test.microcontainer.beans2.TestAspectWithDependency" method="uninstall"/>
-   </beanfactory>
-*/      
-      
-//      AbstractInstallMetaData installBinding = new AbstractInstallMetaData();
-//      installBinding.setBean(aspectBinding.getName());
-//      installBinding.setMethodName("rebind");
-//      parameters = new ArrayList<ParameterMetaData>();
-//      parameters.add(new AbstractParameterMetaData(new AbstractDependencyValueMetaData(aspect.getName(), "definition")));
-//      installBinding.setParameters(parameters);
-
       List<InstallMetaData> installs = getInstalls();
       if (installs == null)
          installs = new ArrayList<InstallMetaData>();

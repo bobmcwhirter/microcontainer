@@ -27,6 +27,7 @@ import javax.xml.namespace.QName;
 import org.jboss.aop.advice.AdviceType;
 import org.jboss.aop.microcontainer.beans.AnnotationIntroduction;
 import org.jboss.aop.microcontainer.beans.AnnotationOverride;
+import org.jboss.aop.microcontainer.beans.ArrayReplacement;
 import org.jboss.aop.microcontainer.beans.CFlowStackEntry;
 import org.jboss.aop.microcontainer.beans.DynamicCFlowDef;
 import org.jboss.aop.microcontainer.beans.MixinEntry;
@@ -34,6 +35,7 @@ import org.jboss.aop.microcontainer.beans.NamedPointcut;
 import org.jboss.aop.microcontainer.beans.Prepare;
 import org.jboss.aop.microcontainer.beans.TypeDef;
 import org.jboss.aop.microcontainer.beans.beanmetadatafactory.AdviceData;
+import org.jboss.aop.microcontainer.beans.beanmetadatafactory.ArrayBindBeanMetaDataFactory;
 import org.jboss.aop.microcontainer.beans.beanmetadatafactory.AspectBeanMetaDataFactory;
 import org.jboss.aop.microcontainer.beans.beanmetadatafactory.BeanMetaDataUtil;
 import org.jboss.aop.microcontainer.beans.beanmetadatafactory.AspectManagerAwareBeanMetaDataFactory;
@@ -190,10 +192,14 @@ public class AOPBeansSchemaInitializer implements SchemaBindingInitializer
    private static final QName constructionQName = new QName(AOP_BEANS_NS, "construction");
 
    private static final QName constructionTypeQName = new QName(AOP_BEANS_NS, "constructionType");
-   
-//   private static final QName propertyQName = new QName(AOP_BEANS_NS, "property");
-//
-//   private static final QName attributeQName = new QName(AOP_BEANS_NS, "attribute");
+  
+   private static final QName arrayreplacementQName = new QName(AOP_BEANS_NS, "arrayreplacement");
+
+   private static final QName arrayreplacementTypeQName = new QName(AOP_BEANS_NS, "arrayreplacementType");
+
+   private static final QName arraybindQName = new QName(AOP_BEANS_NS, "arraybind");
+
+   private static final QName arraybindTypeQName = new QName(AOP_BEANS_NS, "arraybindType");
    
    /** The lifecycle configure aspect binding */
    private static final QName lifecycleTypeQName = new QName(AOP_BEANS_NS, "lifecycleType");
@@ -233,6 +239,8 @@ public class AOPBeansSchemaInitializer implements SchemaBindingInitializer
       initAnnotationType(schema);
       initPrecedenceType(schema);
       initIntroductionType(schema);
+      initArrayBindType(schema);
+      initArrayReplacementType(schema);
       initLifecycleType(schema);
    }
 
@@ -271,6 +279,8 @@ public class AOPBeansSchemaInitializer implements SchemaBindingInitializer
       type.pushInterceptor(annotationIntroductionQName, DomainBeanMetaDataInterceptor.INTERCEPTOR);
       type.pushInterceptor(precedenceQName, DomainAspectManagerAwareBeanMetaDataFactoryInterceptor.INTERCEPTOR);
       type.pushInterceptor(introductionQName, DomainAspectManagerAwareBeanMetaDataFactoryInterceptor.INTERCEPTOR);
+      type.pushInterceptor(arrayreplacementQName, DomainBeanMetaDataInterceptor.INTERCEPTOR);
+      type.pushInterceptor(arraybindQName, DomainAspectManagerAwareBeanMetaDataFactoryInterceptor.INTERCEPTOR);
 
    }
    
@@ -294,6 +304,16 @@ public class AOPBeansSchemaInitializer implements SchemaBindingInitializer
       type.pushInterceptor(throwingQName, BindContentInterceptor.INTERCEPTOR);
       type.pushInterceptor(finallyQName, BindContentInterceptor.INTERCEPTOR);
       type.setHandler(new BindBeanFactoryHandler());
+   }
+   
+   private void initArrayBindType(SchemaBinding schema)
+   {
+      TypeBinding type = schema.getType(arraybindTypeQName);
+      type.pushInterceptor(stackRefQName, ArrayBindContentInterceptor.INTERCEPTOR);
+      type.pushInterceptor(interceptorRefQName, ArrayBindContentInterceptor.INTERCEPTOR);
+      type.pushInterceptor(adviceQName, ArrayBindContentInterceptor.INTERCEPTOR);
+      type.pushInterceptor(aroundQName, ArrayBindContentInterceptor.INTERCEPTOR);
+      type.setHandler(new ArrayBindBeanFactoryHandler());
    }
    
    private void initStackType(SchemaBinding schema)
@@ -340,6 +360,12 @@ public class AOPBeansSchemaInitializer implements SchemaBindingInitializer
    {
       TypeBinding type = schema.getType(prepareTypeQName);
       type.setHandler(PrepareHandler.HANDLER);
+   }
+
+   private void initArrayReplacementType(SchemaBinding schema)
+   {
+      TypeBinding type = schema.getType(arrayreplacementTypeQName);
+      type.setHandler(ArrayReplacementHandler.HANDLER);
    }
 
    private void initAnnotationIntroductionType(SchemaBinding schema)
@@ -661,6 +687,41 @@ public class AOPBeansSchemaInitializer implements SchemaBindingInitializer
       }
    }
    
+   private static class ArrayBindBeanFactoryHandler extends AspectManagerAwareBeanFactoryHandler
+   {
+      @Override
+      public Object startElement(Object parent, QName name, ElementBinding element)
+      {
+         return new ArrayBindBeanMetaDataFactory();
+      }
+      
+      @Override
+      public void attributes(Object o, QName elementName, ElementBinding element, Attributes attrs, NamespaceContext nsCtx)
+      {
+         super.attributes(o, elementName, element, attrs, nsCtx);
+
+         ArrayBindBeanMetaDataFactory factory = (ArrayBindBeanMetaDataFactory) o;
+         for (int i = 0; i < attrs.getLength(); ++i)
+         {
+            String localName = attrs.getLocalName(i);
+            if ("type".equals(localName))
+            {
+               factory.setType(attrs.getValue(i));
+            }
+            else if ("name".equals(localName))
+            {
+               factory.setName(attrs.getValue(i));
+            }
+         }
+      }
+
+      @Override
+      public Object endElement(Object o, QName name, ElementBinding element)
+      {
+         return super.endElement(o, name, element);
+      }
+   }
+   
    private static class StackBeanFactoryHandler extends AspectManagerAwareBeanFactoryHandler
    {
       @Override
@@ -751,7 +812,60 @@ public class AOPBeansSchemaInitializer implements SchemaBindingInitializer
          }
       }
    }
+   
+   private static class ArrayReplacementHandler  extends DefaultElementHandler
+   {
+      public static final ArrayReplacementHandler HANDLER = new ArrayReplacementHandler();
 
+      @Override
+      public Object startElement(Object parent, QName name, ElementBinding element)
+      {
+         return new AbstractBeanMetaData(ArrayReplacement.class.getName());
+      }
+
+      @Override
+      public void attributes(Object o, QName elementName, ElementBinding element, Attributes attrs, NamespaceContext nsCtx)
+      {
+         AbstractBeanMetaData arrayReplacement = (AbstractBeanMetaData)o;
+         BeanMetaDataUtil util = new BeanMetaDataUtil();
+         String name = null;
+         for (int i = 0; i < attrs.getLength(); ++i)
+         {
+            String localName = attrs.getLocalName(i);
+            if ("name".equals(localName))
+            {
+               name = attrs.getValue(i);
+            }
+            else if ("class".equals(localName))
+            {
+               BeanMetaDataUtil.setSimpleProperty(arrayReplacement, "classes", attrs.getValue(i));
+            }
+            else if ("expr".equals(localName))
+            {
+               BeanMetaDataUtil.setSimpleProperty(arrayReplacement, "expr", attrs.getValue(i));
+            }
+            else if (MANAGER_BEAN_NAME.equals(localName))
+            {
+               util.setManagerBean(attrs.getValue(i));
+            }
+            else if (MANAGER_PROPERTY_NAME.equals(localName))
+            {
+               util.setManagerProperty(attrs.getValue(i));
+            }
+         }
+         util.setAspectManagerProperty(arrayReplacement, "manager");
+         
+         if (name == null)
+         {
+            name = GUID.asString();
+         }
+         arrayReplacement.setName(name);
+         BeanMetaDataUtil.setSimpleProperty(arrayReplacement, "name", name);
+      }
+   }
+
+   
+   
    private static class StackRefHandler  extends DefaultElementHandler
    {
       public static final StackRefHandler HANDLER = new StackRefHandler();
@@ -981,14 +1095,13 @@ public class AOPBeansSchemaInitializer implements SchemaBindingInitializer
       {
          BeanMetaDataUtil util = new BeanMetaDataUtil();
          AbstractBeanMetaData pointcut = (AbstractBeanMetaData)o;
-
+         String name = null;
          for (int i = 0; i < attrs.getLength(); ++i)
          {
             String localName = attrs.getLocalName(i);
             if ("name".equals(localName))
             {
-               pointcut.setName(attrs.getValue(i));
-               BeanMetaDataUtil.setSimpleProperty(pointcut, "name", attrs.getValue(i));
+               name = attrs.getValue(i);
             }
             else if ("expr".equals(localName))
             {
@@ -1004,6 +1117,13 @@ public class AOPBeansSchemaInitializer implements SchemaBindingInitializer
             }
          }
          util.setAspectManagerProperty(pointcut, "manager");
+         
+         if (name == null)
+         {
+            name = GUID.asString();
+         }
+         pointcut.setName(name);
+         BeanMetaDataUtil.setSimpleProperty(pointcut, "name", name);
       }
    }
    
@@ -1123,6 +1243,19 @@ public class AOPBeansSchemaInitializer implements SchemaBindingInitializer
       public void add (Object parent, Object child, QName name)
       {
          BindBeanMetaDataFactory factory = (BindBeanMetaDataFactory) parent;
+         BaseInterceptorData interceptorData = (BaseInterceptorData)child;
+         factory.addInterceptor(interceptorData);
+      }
+   }
+   
+   private static class ArrayBindContentInterceptor extends DefaultElementInterceptor
+   {
+      public static final ArrayBindContentInterceptor INTERCEPTOR = new ArrayBindContentInterceptor();
+      
+      @Override
+      public void add (Object parent, Object child, QName name)
+      {
+         ArrayBindBeanMetaDataFactory factory = (ArrayBindBeanMetaDataFactory) parent;
          BaseInterceptorData interceptorData = (BaseInterceptorData)child;
          factory.addInterceptor(interceptorData);
       }

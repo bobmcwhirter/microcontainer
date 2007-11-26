@@ -19,54 +19,26 @@
 * Software Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA
 * 02110-1301 USA, or see the FSF site: http://www.fsf.org.
 */ 
-package org.jboss.aop.microcontainer.beans;
+package org.jboss.test.microcontainer.beans.woven.test;
 
-import org.jboss.aop.AspectManager;
-import org.jboss.aop.advice.InterceptorFactory;
-import org.jboss.util.id.GUID;
+import junit.framework.Test;
 
 /**
- * Abstract base class for things that can go inside bindings (stack refs, advice and interceptor-ref)
  * 
  * @author <a href="kabir.khan@jboss.com">Kabir Khan</a>
  * @version $Revision: 1.1 $
  */
-public abstract class BindingEntry
+public class ArrayAopTestCase extends ArrayTest
 {
-   String name = new GUID().toString();
-   AspectManager manager;
-   Binding binding;
 
-   public abstract InterceptorFactory[] getInterceptorFactories();
-   
-   public abstract void start();
-   
-   public abstract void stop();
-
-   public Binding getBinding()
+   public static Test suite()
    {
-      return binding;
+      return suite(ArrayAopTestCase.class);
    }
 
-   public void setBinding(Binding binding)
+   public ArrayAopTestCase(String name)
    {
-      this.binding = binding;
+      super(name);
    }
-
-   public AspectManager getManager()
-   {
-      return manager;
-   }
-
-   public void setManager(AspectManager manager)
-   {
-      this.manager = manager;
-   }
-
-   public String getName()
-   {
-      return name;
-   }
-   
 
 }

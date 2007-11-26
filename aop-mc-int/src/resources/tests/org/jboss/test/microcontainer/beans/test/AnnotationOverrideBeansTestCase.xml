@@ -21,12 +21,12 @@
    </bean>
 
    <beanfactory name="Factory$org.jboss.test.microcontainer.beans.TestAspect" class="org.jboss.test.microcontainer.beans.TestAspect"/>
-   
+
    <bean name="org.jboss.test.microcontainer.beans.TestAspect" class="org.jboss.aop.microcontainer.beans.Aspect">
       <property name="advice"><inject bean="Factory$org.jboss.test.microcontainer.beans.TestAspect"/></property>
       <property name="manager"><inject bean="AspectManager"/></property>
    </bean>
-   
+
    <bean name="TestAspectBinding" class="org.jboss.aop.microcontainer.beans.AspectBinding">
       <property name="pointcut">execution(* @org.jboss.test.microcontainer.beans.Annotation1->@org.jboss.test.microcontainer.beans.Annotation2(..))</property>
       <property name="manager"><inject bean="AspectManager"/></property>
@@ -36,12 +36,12 @@
 			      <property name="manager"><inject bean="AspectManager"/></property>
                <property name="aspect"><inject bean="org.jboss.test.microcontainer.beans.TestAspect"/></property>
                <property name="aspectMethod">advice</property>
-               <property name="aspectBinding"><inject bean="TestAspectBinding" state="Instantiated"/></property>
+               <property name="binding"><inject bean="TestAspectBinding" state="Instantiated"/></property>
             </bean>
          </list>
    	</property>
    </bean>
-   
+
    <bean name="Bean" class="org.jboss.test.microcontainer.beans.POJO"/>
-   
+
 </deployment>

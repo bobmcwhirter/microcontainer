@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
 <deployment xmlns="urn:jboss:bean-deployer:2.0">
-	
+
    <bean name="AspectManager" class="org.jboss.aop.AspectManager">
       <constructor factoryClass="org.jboss.aop.AspectManager" factoryMethod="instance"/>
    </bean>
@@ -9,7 +9,7 @@
    <beanfactory name="Factory$AspectA" class="org.jboss.test.microcontainer.beans.TestAspectWithProperty">
    	<property name="someProperty">PropertyA</property>
    </beanfactory>
-   
+
    <bean name="AspectA" class="org.jboss.aop.microcontainer.beans.Aspect">
       <property name="advice"><inject bean="Factory$AspectA"/></property>
       <property name="manager"><inject bean="AspectManager"/></property>
@@ -18,7 +18,7 @@
    <beanfactory name="Factory$AspectB" class="org.jboss.test.microcontainer.beans.TestAspectWithProperty">
    	<property name="someProperty">PropertyB</property>
    </beanfactory>
-   
+
    <bean name="AspectB" class="org.jboss.aop.microcontainer.beans.Aspect">
       <property name="advice"><inject bean="Factory$AspectB"/></property>
       <property name="manager"><inject bean="AspectManager"/></property>
@@ -33,7 +33,7 @@
 			      <property name="manager"><inject bean="AspectManager"/></property>
                <property name="aspect"><inject bean="AspectA"/></property>
                <property name="aspectMethod">advice</property>
-               <property name="aspectBinding"><inject bean="BindingA" state="Instantiated"/></property>
+               <property name="binding"><inject bean="BindingA" state="Instantiated"/></property>
             </bean>
          </list>
    	</property>
@@ -48,16 +48,16 @@
 			      <property name="manager"><inject bean="AspectManager"/></property>
                <property name="aspect"><inject bean="AspectB"/></property>
                <property name="aspectMethod">advice</property>
-               <property name="aspectBinding"><inject bean="BindingB" state="Instantiated"/></property>
+               <property name="binding"><inject bean="BindingB" state="Instantiated"/></property>
             </bean>
          </list>
    	</property>
    </bean>
 
 	<bean name="Intercepted" class="org.jboss.test.microcontainer.beans.POJO"/>
-   
+
 </deployment>
 
 
 
-   
+
