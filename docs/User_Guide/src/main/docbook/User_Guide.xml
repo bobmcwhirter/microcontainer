@@ -537,16 +537,111 @@ private Object invoke(String serviceName, String methodName, Object[] args, Stri
       </section>
       <section>
         <title>Dynamic classloading</title>
-        <para>So far we have been using the external and application classloaders to load all of the classes in our application. The application classpath  was setup by the run.sh script using the -cp flag to include the current directory and the client-1.0.0.jar.</para>
+        <para>So far we have been using the extension and application classloaders to load all of the classes in our application. The application classpath  was setup by the run.sh script using the -cp flag to include the current directory and the client-1.0.0.jar.</para>
         <programlisting>java -Djava.ext.dirs=`pwd`/lib -cp .:client-1.0.0.jar org.jboss.example.client.Client $1</programlisting>
-        <para>For convenience the JARs in the lib directory were added to the external classloader&apos;s classpath  using the <code>java.ext.dirs</code> system property as this prevents us from having to list the full path to each of the JARs after the -cp flag. Since the external classloader is the parent of the application classloader our client classes can find all of the microcontainer classes together with the Human Resources service classes at runtime.</para>
+        <para>For convenience the JARs in the lib directory were added to the extenion classloader&apos;s classpath  using the <code>java.ext.dirs</code> system property as this prevents us from having to list the full path to each of the JARs after the -cp flag. Since the extension classloader is the parent of the application classloader our client classes can find all of the microcontainer classes together with the Human Resources service classes at runtime.</para>
         <note>
-          <para>If you are using Java 6+ then you can use a wildcard to include all JARs in a directory with the -cp flag.<programlisting>java -cp `pwd`/lib/*:.:client-1.0.0.jar org.jboss.example.client.Client $1</programlisting>This means that all of the classes in our application will be added to the application classloader&apos;s classpath.</para>
+          <para>If you are using Java 6+ then you can use a wildcard to include all JARs in a directory with the -cp flag.<programlisting>java -cp `pwd`/lib/*:.:client-1.0.0.jar org.jboss.example.client.Client $1</programlisting>This means that all of the classes in our application will be added to the application classloader&apos;s classpath and the extension classloader&apos;s classpath will retain its default value.</para>
         </note>
-        <para>This is all well and good but what happens if we now want to deploy an additional service at runtime? If the new service is packaged in a JAR file then it needs to be visible to a classloader before any of the classes can be loaded.   The trouble is we have already setup the classpath for the application classloader (and external classloader) on startup so we cannot easily add the url of the JAR. The same situation applies if the service classes are contained in a directory structure. Unless the top-level directory is located in the current directory (which is on the application classpath) then the classes will not be found by the application classloader.</para>
-        <para>It&apos;s also possible that  we wish to redeploy an existing service with changes to some of its classes. Since it is forbidden for an existing classloader to reload classes (due to security constraints) how can this be done?</para>
-        <para>What we need is the ability to create a new classloader that knows the location of the new service&apos;s classes, or that can load in new versions of an existing service&apos;s classes,  so that we can  deploy the service&apos;s beans. JBoss Microcontainer allows us to do this using the &lt;classloader&gt; element in the  deployment descriptor.</para>
-        <para> It is  the deployer which is responsible for creating a classloader and in doing so it must also consider what the parent of the newly created classloader should be.</para>
+        <para>This is all well and good but what happens if we now want to deploy an additional service at runtime? If the new service is packaged in a JAR file then it needs to be visible to a classloader before any of its classes can be loaded.   The trouble is we have already setup the classpath for the application classloader (and extension classloader) on startup so we cannot easily add the url of the JAR. The same situation applies if the service classes are contained in a directory structure. Unless the top-level directory is located in the current directory (which is on the application classpath) then the classes will not be found by the application classloader.</para>
+        <para>It&apos;s also possible that  we may wish to redeploy an existing service with changes to some of its classes. Since it is forbidden for an existing classloader to reload classes due to security constraints how can this be done?</para>
+        <para>What we need is the ability to create a new classloader that knows the location of the new service&apos;s classes, or that can load new versions of an existing service&apos;s classes,  so that we can  deploy the service&apos;s beans. JBoss Microcontainer allows us to do this using the &lt;classloader&gt; element in the  deployment descriptor.</para>
+        <para>The client-cl distribution in the <code>commandLineClient/target/client-cl.dir</code> directory contains the following files that demonstrate how this works: </para>
+        <programlisting>run.sh
+client-1.0.0.jar
+jboss-beans.xml
+lib/concurrent-1.3.4.jar
+   /jboss-common-core-2.0.4.GA.jar
+   /jboss-common-core-2.2.1.GA.jar
+   /jboss-common-logging-log4j-2.0.4.GA.jar
+   /jboss-common-logging-spi-2.0.4.GA.jar
+   /jboss-container-2.0.0.Beta6.jar
+   /jboss-dependency-2.0.0.Beta6.jar
+   /jboss-kernel-2.0.0.Beta6.jar
+   /jbossxb-2.0.0.CR4.jar
+   /log4j-1.2.14.jar
+   /xercesImpl-2.7.1.jar
+otherLib/humanResourcesService-1.0.0.jar</programlisting>
+        <para>As you can see the humanResourcesService.jar file has been moved to a new subdirectory called <code>otherLib</code>. In this location it is no longer available to either the extension or application classloaders whose classpaths are setup in the run.sh script:</para>
+        <programlisting>java -Djava.ext.dirs=`pwd`/lib -cp .:client-1.0.0.jar org.jboss.example.client.Client $1</programlisting>
+        <para>We must therefore create a new classloader during the deployment of the service so that we can load in the service classes and create instances of the beans. You can see how this is done by looking at the contents of the jboss-beans.xml file:</para>
+        <programlisting>&lt;?xml version=&quot;1.0&quot; encoding=&quot;UTF-8&quot;?&gt;
+
+&lt;deployment xmlns:xsi=&quot;http://www.w3.org/2001/XMLSchema-instance&quot;            
+                              xsi:schemaLocation=&quot;urn:jboss:bean-deployer:2.0 bean-deployer_2_0.xsd&quot;
+                              xmlns=&quot;urn:jboss:bean-deployer:2.0&quot;&gt;
+
+  &lt;bean name=&quot;URL&quot; class=&quot;java.net.URL&quot;&gt;
+    &lt;constructor&gt;
+&lt;parameter&gt;file:/Users/newtonm/jbossmc/microcontainer/trunk/docs/examples/User_Guide/gettingStarted/commandLineClient/target/client-cl.dir/otherLib/humanResourcesService-1.0.0.jar&lt;/parameter&gt;
+    &lt;/constructor&gt;
+  &lt;/bean&gt;
+
+  &lt;bean name=&quot;customCL&quot; class=&quot;java.net.URLClassLoader&quot;&gt;
+    &lt;constructor&gt;
+      &lt;parameter&gt;
+        &lt;array&gt;
+          &lt;inject bean=&quot;URL&quot;/&gt; 
+        &lt;/array&gt;
+      &lt;/parameter&gt;
+    &lt;/constructor&gt;
+  &lt;/bean&gt;
+
+  &lt;bean name=&quot;HRService&quot; class=&quot;org.jboss.example.service.HRManager&quot;&gt;
+    &lt;classloader&gt;&lt;inject bean=&quot;customCL&quot;/&gt;&lt;/classloader&gt;
+    &lt;!-- &lt;property name=&quot;hiringFreeze&quot;&gt;true&lt;/property&gt;
+    &lt;property name=&quot;salaryStrategy&quot;&gt;&lt;inject bean=&quot;AgeBasedSalary&quot;/&gt;&lt;/property&gt; --&gt;
+  &lt;/bean&gt;
+
+   &lt;!-- &lt;bean name=&quot;AgeBasedSalary&quot; class=&quot;org.jboss.example.service.util.AgeBasedSalaryStrategy&quot;&gt;
+    &lt;property name=&quot;minSalary&quot;&gt;1000&lt;/property&gt;
+    &lt;property name=&quot;maxSalary&quot;&gt;80000&lt;/property&gt;
+  &lt;/bean&gt;
+
+  &lt;bean name=&quot;LocationBasedSalary&quot; class=&quot;org.jboss.example.service.util.LocationBasedSalaryStrategy&quot;&gt;
+    &lt;property name=&quot;minSalary&quot;&gt;2000&lt;/property&gt;
+    &lt;property name=&quot;maxSalary&quot;&gt;90000&lt;/property&gt;
+  &lt;/bean&gt; --&gt;
+
+&lt;/deployment&gt;</programlisting>
+        <para>First of all we create an instance of  java.net.URL called URL using  parameter injection in the constructor to specify the location of the humanResourcesService.jar file on our local filesystem. Then we create an instance of a URLClassloader by  injecting the URL bean into the constructor as the only element in an array. Once this is done then we simply include a &lt;classloader&gt; element in our HRService bean definition to specify that the HRManager class needs to be loaded by the customCL classloader bean.</para>
+        <para>But how do we know which classloader to use for the other beans in the deployment?</para>
+        <para>The answer is that by default all beans in the deployment use the current thread&apos;s context classloader. In our case the thread that handles deployment is the main thread of the application which has its context classloader set to the application classloader on startup. If you wish, you can choose to specify a different classloader for the entire deployment using a  &lt;classloader&gt; element as follows:</para>
+        <programlisting>&lt;?xml version=&quot;1.0&quot; encoding=&quot;UTF-8&quot;?&gt;
+
+&lt;deployment xmlns:xsi=&quot;http://www.w3.org/2001/XMLSchema-instance&quot;            
+                              xsi:schemaLocation=&quot;urn:jboss:bean-deployer:2.0 bean-deployer_2_0.xsd&quot;
+                              xmlns=&quot;urn:jboss:bean-deployer:2.0&quot;&gt;
+
+  &lt;classloader&gt;&lt;inject bean=&quot;customCL&quot;/&gt;&lt;/classloader&gt;
+
+  &lt;bean name=&quot;URL&quot; class=&quot;java.net.URL&quot;&gt;
+    &lt;constructor&gt;
+&lt;parameter&gt;file:/Users/newtonm/jbossmc/microcontainer/trunk/docs/examples/User_Guide/gettingStarted/commandLineClient/target/client-cl.dir/otherLib/humanResourcesService-1.0.0.jar&lt;/parameter&gt;
+    &lt;/constructor&gt;
+  &lt;/bean&gt;
+
+  &lt;bean name=&quot;customCL&quot; class=&quot;java.net.URLClassLoader&quot;&gt;
+    &lt;constructor&gt;
+      &lt;parameter&gt;
+        &lt;array&gt;
+          &lt;inject bean=&quot;URL&quot;/&gt; 
+        &lt;/array&gt;
+      &lt;/parameter&gt;
+    &lt;/constructor&gt;
+  &lt;/bean&gt;
+
+  ...
+
+&lt;/deployment&gt;</programlisting>
+        <para>This would be necessary for example if you wished to reconfigure the service by uncommenting the AgeBasedSalary or LocationBasedSalary beans. As you might expect, classloader&apos;s specified at the bean level override the deployment level classloader and if you wish to ignore the deployment level classloader altogether, and use the default thread context classloader for a bean, then you can use the &lt;null/&gt; value as follows:</para>
+        <programlisting>  &lt;bean name=&quot;HRService&quot; class=&quot;org.jboss.example.service.HRManager&quot;&gt;
+    &lt;classloader&gt;&lt;null/&gt;&lt;/classloader&gt;
+  &lt;/bean&gt;</programlisting>
+        <warning>
+          <para>If you decide to create a new classloader for your service using the deployment descriptor then be aware that you may not be able to access classes loaded by it from the application classloader anymore. In our example this means that the client will no longer be able to cache a direct reference to the bean instance when using the microcontainer controller. You can see this for yourself by starting the client using the <code>run.sh</code> command and then trying to deploy the service. You should see that a java.lang.NoClassDefFoundError exception is thrown and the application will then exit.</para>
+          <para>You must therefore use the bus to access the service indirectly and provide access to any classes shared by the client in the application classpath. In our example this means the Address, Employee, and SalaryStrategy classes.</para>
+        </warning>
       </section>
     </chapter>
     <chapter>
