@@ -534,7 +534,15 @@ private Object invoke(String serviceName, String methodName, Object[] args, Stri
       </section>
       <section>
         <title>Controlling Classloading</title>
-        <para>Show how we can remove the ./deploy/humanResourcesService.jar from the classpath and then deploy the jboss-beans.xml file directly in the unpackaged service. We can then configure the &lt;classloader&gt; element of the deployment to point to the classes directory since they won&apos;t be available on the Application classpath anymore. We can even move the util package to another directory and show how we can set up a &lt;classloader&gt; element at the bean level.</para>
+        <para>So far we have been using the application classloader to load all of the classes in our application. The application classpath  was setup by the run.sh script using the -cp flag to include the current directory and the client-1.0.0.jar.</para>
+        <programlisting>java -Djava.ext.dirs=`pwd`/lib -cp .:client-1.0.0.jar org.jboss.example.client.Client $1</programlisting>
+        <para>For convenience the JARs in the lib directory were added using the <code>java.ext.dirs</code> system property as this prevents us from having to list the full path to each of the JARs after the -cp flag.</para>
+        <note>
+          <para>If you are using Java 6+ then you can use a wildcard to include all JARs in a directorywith the -cp flag.<programlisting>java -cp `pwd`/lib/*:.:client-1.0.0.jar org.jboss.example.client.Client $1</programlisting></para>
+        </note>
+        <para>This is all well and good but what happens if we now want to deploy an additional service at runtime? If the new service is packaged in a JAR file then it needs to be visible to a classloader before any of the classes can be loaded.   The trouble is we have already setup the classpath for the application classloader on startup so we cannot easily add the url of the JAR. The same situation applies if the service classes are contained in a directory structure. Unless the top-level directory is located in the current directory (which is on the application classpath) then the classes will not be found by the application classloader.</para>
+        <para>What we need is the ability to create a new classloader that knows the location of the new service&apos;s classes so that we can load them and deploy the service&apos;s beans. JBoss Microcontainer allows us to do this using the &lt;classloader&gt; element in the  deployment descriptor.</para>
+        <para>Also mention the fact that we need to create a new classloader if we want to reload the service after we have recompiled the classes.</para>
       </section>
     </chapter>
     <chapter>
@@ -545,6 +553,7 @@ private Object invoke(String serviceName, String methodName, Object[] args, Stri
     </chapter>
     <chapter>
       <title>Advanced deployment</title>
+      <para>Mention the need for a main deployer and explain how we add various deployers to this.</para>
       <section>
         <title>Aspectized Deployers </title>
         <para>Give example of using aspectized bean deployer and show how it&apos;s the same as the BasicXMLDeployer.</para>
