@@ -120,7 +120,7 @@ public class ArrayReplacement
 
    public void stop()
    {
-      manager.removeArrayReplacement(name);
+      //manager.removeArrayReplacement(name);
    }
 
 }

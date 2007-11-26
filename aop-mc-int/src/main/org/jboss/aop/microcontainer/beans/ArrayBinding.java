@@ -119,14 +119,15 @@ public class ArrayBinding implements Binding
 
    public void stop() throws Exception
    {
-      manager.removeArrayBinding(name);
-      if (advices != null)
-      {
-         for (BindingEntry entry : advices)
-         {
-            entry.stop();
-         }
-      }
+		System.out.println("ENABLE COMMENTED OUT CODE");
+      //manager.removeArrayBinding(name);
+      //if (advices != null)
+      //{
+      //   for (BindingEntry entry : advices)
+      //   {
+      //      entry.stop();
+      //   }
+      //}
    }
 
    public void uninstall() throws Exception
