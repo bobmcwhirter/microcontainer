@@ -93,7 +93,7 @@ public class ArrayBinding implements Binding
       {
          throw new IllegalArgumentException("Null type");
       }
-      Type theType = Type.valueOf(type);
+      //Type theType = Type.valueOf(type);
 
       ArrayList<InterceptorFactory> interceptors = null;
       if (advices != null)
