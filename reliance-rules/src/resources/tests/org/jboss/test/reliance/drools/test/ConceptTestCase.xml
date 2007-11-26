@@ -9,33 +9,40 @@
    </bean>
 
    <!-- intercepts any StatefulSession creation from our RuleBase bean -->
-   <aop:aspect xmlns:aop="urn:jboss:aop-beans:1.0"
+   <aop:interceptor xmlns:aop="urn:jboss:aop-beans:1.0"
                name="WrapStatefulSessionAdvice"
-               class="org.jboss.reliance.drools.core.aspects.StatefulSessionCreationInterceptor"
-               pointcut="execution(* org.jboss.reliance.drools.core.RuleBaseBean->newStatefulSession(..))"/>
+               class="org.jboss.reliance.drools.core.aspects.StatefulSessionCreationInterceptor"/>
+   <aop:bind xmlns:aop="urn:jboss:aop-beans:1.0" pointcut="execution(* org.jboss.reliance.drools.core.RuleBaseBean->newStatefulSession(..))">
+      <aop:interceptor-ref name="WrapStatefulSessionAdvice"/>
+   </aop:bind>
 
    <!-- invokes fireAllRules after any CRUD method invocation on WorkingMemory instance -->
    <aop:aspect xmlns:aop="urn:jboss:aop-beans:1.0"
                name="FireAllRulesCheckAdvice"
-               class="org.jboss.reliance.drools.core.aspects.CRUDAwareAspect"
-               pointcut="execution(* $instanceof{org.drools.StatefulSession}->$implements{org.drools.WorkingMemory}(..))" />
+               class="org.jboss.reliance.drools.core.aspects.CRUDAwareAspect"/>
+   <aop:bind xmlns:aop="urn:jboss:aop-beans:1.0" pointcut="execution(* $instanceof{org.drools.StatefulSession}->$implements{org.drools.WorkingMemory}(..))">
+      <aop:advice aspect="FireAllRulesCheckAdvice" name="invoke"/>
+   </aop:bind>
 
    <!-- disables fireAllRules if @DisableFireAllRules is present -->
-   <aop:aspect xmlns:aop="urn:jboss:aop-beans:1.0"
+   <aop:interceptor xmlns:aop="urn:jboss:aop-beans:1.0"
                name="DisableFireAllRulesAdvice"
-               class="org.jboss.reliance.drools.core.aspects.DisableFireAllRulesInterceptor"
-               pointcut="execution(* @org.jboss.reliance.drools.core.aspects.DisableFireAllRules->*(..)) OR execution(* *->@org.jboss.reliance.drools.core.aspects.DisableFireAllRulesAllRules(..))" />
+               class="org.jboss.reliance.drools.core.aspects.DisableFireAllRulesInterceptor"/>
+   <aop:bind xmlns:aop="urn:jboss:aop-beans:1.0" pointcut="execution(* @org.jboss.reliance.drools.core.aspects.DisableFireAllRules->*(..)) OR execution(* *->@org.jboss.reliance.drools.core.aspects.DisableFireAllRulesAllRules(..))">
+      <aop:interceptor-ref name="DisableFireAllRulesAdvice"/>
+   </aop:bind>
 
    <!-- only invokes fireAllRules at the end of invocation -->
-   <aop:aspect xmlns:aop="urn:jboss:aop-beans:1.0"
+   <aop:interceptor xmlns:aop="urn:jboss:aop-beans:1.0"
                name="FireAllRulesAfterInvocationAdvice"
-               class="org.jboss.reliance.drools.core.aspects.FireAllRulesAfterInvocationInterceptor"
-               pointcut="execution(* @org.jboss.reliance.drools.core.aspects.FireAllRulesAfter->*(..)) OR execution(* *->@org.jboss.reliance.drools.core.aspects.FireAllRulesAfterlesAfter(..))">
+               class="org.jboss.reliance.drools.core.aspects.FireAllRulesAfterInvocationInterceptor">
       <constructor>
          <parameter><inject bean="WorkingMemory" property="statefulSession"/></parameter>
       </constructor>
-   </aop:aspect>
-
+   </aop:interceptor>
+   <aop:bind xmlns:aop="urn:jboss:aop-beans:1.0" pointcut="execution(* @org.jboss.reliance.drools.core.aspects.FireAllRulesAfter->*(..)) OR execution(* *->@org.jboss.reliance.drools.core.aspects.FireAllRulesAfterlesAfter(..))">
+      <aop:interceptor-ref name="FireAllRulesAfterInvocationAdvice"/>
+   </aop:bind>
    <!-- applies RuleBasedDependencyItem to all @RulesAware beans -->
    <aop:lifecycle-describe xmlns:aop="urn:jboss:aop-beans:1.0"
                name="RulesMapper"
