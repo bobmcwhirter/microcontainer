@@ -2,7 +2,7 @@
 * JBoss, Home of Professional Open Source.
 * Copyright 2006, Red Hat Middleware LLC, and individual contributors
 * as indicated by the @author tags. See the copyright.txt file in the
-* distribution for a full listing of individual contributors. 
+* distribution for a full listing of individual contributors.
 *
 * This is free software; you can redistribute it and/or modify it
 * under the terms of the GNU Lesser General Public License as
@@ -18,14 +18,14 @@
 * License along with this software; if not, write to the Free
 * Software Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA
 * 02110-1301 USA, or see the FSF site: http://www.fsf.org.
-*/ 
+*/
 package org.jboss.test.microcontainer.beans.woven.test;
 
-import org.jboss.aop.array.IntArrayElementReadInvocation;
-import org.jboss.aop.array.IntArrayElementWriteInvocation;
+//import org.jboss.aop.array.IntArrayElementReadInvocation;
+//import org.jboss.aop.array.IntArrayElementWriteInvocation;
 
 /**
- * 
+ *
  * @author <a href="kabir.khan@jboss.com">Kabir Khan</a>
  * @version $Revision: 1.1 $
  */
@@ -33,19 +33,19 @@ public class TestArrayAspect
 {
    public static int value;
    public static int index;
-   
-   public Object advice(IntArrayElementWriteInvocation invocation) throws Throwable
-   {
-      value = invocation.getIntValue();
-      index = invocation.getIndex();
-      return invocation.invokeNext();
-   }
-   
-   public Object advice(IntArrayElementReadInvocation invocation) throws Throwable
-   {
-      index = invocation.getIndex();
-      return invocation.invokeNext();
-   }
+
+//   public Object advice(IntArrayElementWriteInvocation invocation) throws Throwable
+//   {
+//      value = invocation.getIntValue();
+//      index = invocation.getIndex();
+//      return invocation.invokeNext();
+//   }
+//
+//   public Object advice(IntArrayElementReadInvocation invocation) throws Throwable
+//   {
+//      index = invocation.getIndex();
+//      return invocation.invokeNext();
+//   }
 
    public static void reset()
    {
