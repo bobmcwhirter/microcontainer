@@ -30,7 +30,6 @@ import org.jboss.beans.metadata.plugins.AbstractInjectionValueMetaData;
 import org.jboss.beans.metadata.plugins.AbstractListMetaData;
 import org.jboss.beans.metadata.spi.BeanMetaData;
 import org.jboss.beans.metadata.spi.BeanMetaDataFactory;
-import org.jboss.beans.metadata.spi.PropertyMetaData;
 
 /**
  * AspectBeanMetaDataFactory.
@@ -57,7 +56,7 @@ public class CFlowStackBeanMetaDataFactory extends AspectManagerAwareBeanMetaDat
       //Add the Aspect
       AbstractBeanMetaData cflowStack = new AbstractBeanMetaData(CFlowStack.class.getName());
       cflowStack.setName(getName());
-      util.setSimpleProperty(cflowStack, "name", getName());
+      BeanMetaDataUtil.setSimpleProperty(cflowStack, "name", getName());
       util.setAspectManagerProperty(cflowStack, "manager");
       result.add(cflowStack);
       

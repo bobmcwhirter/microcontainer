@@ -101,7 +101,16 @@ public class BeanMetaDataUtil implements Serializable
       {
          advmd.setDependentState(new ControllerState(builder.getState()));
       }
-      builder.getBean().addProperty(new AbstractPropertyMetaData(builder.getPropertyName(), advmd));
+      AbstractBeanMetaData bean = builder.getBean();
+      AbstractPropertyMetaData existing = (AbstractPropertyMetaData)bean.getProperty(builder.getPropertyName());
+      if (existing != null)
+      {
+         existing.setValue(advmd);
+      }
+      else
+      {
+         bean.addProperty(new AbstractPropertyMetaData(builder.getPropertyName(), advmd));
+      }
    }
 
    public void setAspectManagerProperty(AbstractBeanMetaData bean, String propertyName)

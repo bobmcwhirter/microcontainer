@@ -21,7 +21,6 @@
 */ 
 package org.jboss.aop.microcontainer.beans;
 
-import java.util.ArrayList;
 import java.util.List;
 
 import org.jboss.aop.AspectManager;

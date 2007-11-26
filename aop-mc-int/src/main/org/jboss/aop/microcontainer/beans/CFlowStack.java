@@ -21,7 +21,6 @@
 */ 
 package org.jboss.aop.microcontainer.beans;
 
-import java.util.LinkedHashMap;
 import java.util.List;
 
 import org.jboss.aop.AspectManager;

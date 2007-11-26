@@ -26,7 +26,6 @@ import java.util.List;
 import java.util.StringTokenizer;
 
 import org.jboss.aop.microcontainer.beans.IntroductionBinding;
-import org.jboss.aop.microcontainer.beans.PrecedenceDefEntry;
 import org.jboss.beans.metadata.plugins.AbstractBeanMetaData;
 import org.jboss.beans.metadata.plugins.AbstractInjectionValueMetaData;
 import org.jboss.beans.metadata.plugins.AbstractListMetaData;
@@ -105,6 +104,7 @@ public class IntroductionBeanMetaDataFactory extends AspectManagerAwareBeanMetaD
          name = GUID.asString();
       }
       introduction.setName(name);
+      BeanMetaDataUtil.setSimpleProperty(introduction, "name", name);
       util.setAspectManagerProperty(introduction, "manager");
       if (clazz != null)
       {

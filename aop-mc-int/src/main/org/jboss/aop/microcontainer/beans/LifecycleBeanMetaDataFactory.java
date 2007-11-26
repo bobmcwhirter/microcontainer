@@ -107,24 +107,24 @@ implements BeanMetaDataFactory
       aspectBinding.setName(aspectBindingName);
       aspectBinding.setBean(LifecycleBinding.class.getName());
 
-      util.setSimpleProperty(aspectBinding, "callbackBean", name);
+      BeanMetaDataUtil.setSimpleProperty(aspectBinding, "callbackBean", name);
       util.setAspectManagerProperty(aspectBinding, "manager");
       if (expr != null)
       {
-         util.setSimpleProperty(aspectBinding, "expr", expr);
+         BeanMetaDataUtil.setSimpleProperty(aspectBinding, "expr", expr);
       }
       else if (classes != null) 
       {
-         util.setSimpleProperty(aspectBinding, "classes", classes);         
+         BeanMetaDataUtil.setSimpleProperty(aspectBinding, "classes", classes);         
       }
-      util.setSimpleProperty(aspectBinding, "state", getState());
+      BeanMetaDataUtil.setSimpleProperty(aspectBinding, "state", getState());
       if (installMethod != null)
       {
-         util.setSimpleProperty(aspectBinding, "installMethod", installMethod);
+         BeanMetaDataUtil.setSimpleProperty(aspectBinding, "installMethod", installMethod);
       }
       if (uninstallMethod != null)
       {
-         util.setSimpleProperty(aspectBinding, "uninstallMethod", uninstallMethod);
+         BeanMetaDataUtil.setSimpleProperty(aspectBinding, "uninstallMethod", uninstallMethod);
       }
       result.add(aspectBinding);
       
@@ -149,13 +149,13 @@ implements BeanMetaDataFactory
 
    private void getDependencies(ArrayList<AbstractDependencyValueMetaData> dependencies, MetaDataVisitorNode node)
    {
-      Iterator children = node.getChildren();
+      Iterator<? extends MetaDataVisitorNode> children = node.getChildren();
       
       if (children != null)
       {
          while (children.hasNext())
          {
-            MetaDataVisitorNode child = (MetaDataVisitorNode)children.next();
+            MetaDataVisitorNode child = children.next();
             if (child instanceof AbstractDependencyValueMetaData)
             {
                dependencies.add((AbstractDependencyValueMetaData)child);

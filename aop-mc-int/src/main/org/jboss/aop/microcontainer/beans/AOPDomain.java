@@ -22,30 +22,22 @@
 package org.jboss.aop.microcontainer.beans;
 
 import org.jboss.aop.AspectManager;
-import org.jboss.aop.advice.DynamicCFlowDefinition;
+import org.jboss.aop.DomainDefinition;
 
 /**
- * Bean to install a DynamicCFlow
  * 
  * @author <a href="kabir.khan@jboss.com">Kabir Khan</a>
  * @version $Revision: 1.1 $
  */
-public class DynamicCFlowDef
+public class AOPDomain
 {
-   /**
-    * The AspectManager
-    */
-   private AspectManager manager;
-   
-   /**
-    * The name of the resulting DynamicCFlow
-    */
-   private String name;
-   
-   /**
-    * The name of the class implementing the dynamic cflow 
-    */
-   private String className;
+   String name;
+   AspectManager manager;
+   boolean parentFirst=false;
+   boolean inheritDefinitions=true;
+   boolean inheritBindings=false;
+   String extendz;
+   DomainDefinition definition;
 
    public AspectManager getManager()
    {
@@ -61,37 +53,77 @@ public class DynamicCFlowDef
    {
       return name;
    }
-   
+
    public void setName(String name)
    {
       this.name = name;
    }
+
+   public boolean isParentFirst()
+   {
+      return parentFirst;
+   }
+
+   public void setParentFirst(boolean parentFirst)
+   {
+      this.parentFirst = parentFirst;
+   }
+
+   public boolean isInheritDefinitions()
+   {
+      return inheritDefinitions;
+   }
+
+   public void setInheritDefinitions(boolean inheritDefinitions)
+   {
+      this.inheritDefinitions = inheritDefinitions;
+   }
+
+   public boolean isInheritBindings()
+   {
+      return inheritBindings;
+   }
+
+   public void setInheritBindings(boolean inheritBindings)
+   {
+      this.inheritBindings = inheritBindings;
+   }
+
+   public String getExtends()
+   {
+      return extendz;
+   }
+
+   public void setExtends(String extendz)
+   {
+      this.extendz = extendz;
+   }
+
+   public AspectManager getDomain()
+   {
+      return definition.getManager();
+   }
    
-   public String getClassName()
-   {
-      return className;
-   }
-
-   public void setClassName(String className)
-   {
-      this.className = className;
-   }
-
    public void start()
    {
-      if (name == null || name.length() == 0)
-         throw new IllegalArgumentException("Null name");
-      if (className == null || className.length() == 0)
-         throw new IllegalArgumentException("Null className");
-      if (manager == null)
-         throw new IllegalArgumentException("Null manager");
-      
-      DynamicCFlowDefinition dynamic = new DynamicCFlowDefinition(null, className, name);
-      manager.addDynamicCFlow(name, dynamic);
+      AspectManager parent = manager;
+      if (extendz != null)
+      {
+         DomainDefinition parentDef = manager.getContainer(extendz);
+         if (parentDef == null)
+         {
+            throw new RuntimeException("unable to find parent Domain: " + extendz);
+         }
+         parent = parentDef.getManager();
+      }
+         
+      definition = new DomainDefinition(name, parent, parentFirst, inheritDefinitions, inheritBindings);
+      manager.addContainer(definition);
    }
    
    public void stop()
    {
-      manager.removeCFlowStack(name);
+      manager.removeContainer(name);
    }
+   
 }

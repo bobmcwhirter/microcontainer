@@ -43,6 +43,7 @@ import org.jboss.aop.microcontainer.beans.beanmetadatafactory.CFlowStackBeanMeta
 import org.jboss.aop.microcontainer.beans.beanmetadatafactory.ConfigureLifecycleBeanMetaDataFactory;
 import org.jboss.aop.microcontainer.beans.beanmetadatafactory.CreateLifecycleBeanMetaDataFactory;
 import org.jboss.aop.microcontainer.beans.beanmetadatafactory.DescribeLifecycleBeanMetaDataFactory;
+import org.jboss.aop.microcontainer.beans.beanmetadatafactory.DomainBeanMetaDataFactory;
 import org.jboss.aop.microcontainer.beans.beanmetadatafactory.InstallLifecycleBeanMetaDataFactory;
 import org.jboss.aop.microcontainer.beans.beanmetadatafactory.InstantiateLifecycleBeanMetaDataFactory;
 import org.jboss.aop.microcontainer.beans.beanmetadatafactory.IntroductionBeanMetaDataFactory;
@@ -80,11 +81,21 @@ public class AOPBeansSchemaInitializer implements SchemaBindingInitializer
    /** The namespace */
    private static final String AOP_BEANS_NS = "urn:jboss:aop-beans:1.0";
 
+   private static final QName domainTypeQName = new QName(AOP_BEANS_NS, "domainType");
+   
+   private static final QName aspectQName = new QName(AOP_BEANS_NS, "aspect");
+   
+   private static final QName interceptorQName = new QName(AOP_BEANS_NS, "interceptor");
+   
    /** The aspect or interceptor binding */
    private static final QName aspectOrInterceptorTypeQName = new QName(AOP_BEANS_NS, "aspectOrInterceptorType");
 
+   private static final QName bindQName = new QName(AOP_BEANS_NS, "bind");
+
    /** The aspect or interceptor binding */
    private static final QName bindTypeQName = new QName(AOP_BEANS_NS, "bindType");
+   
+   private static final QName stackQName = new QName(AOP_BEANS_NS, "stack");
    
    private static final QName stackTypeQName = new QName(AOP_BEANS_NS, "stackType");
 
@@ -118,7 +129,11 @@ public class AOPBeansSchemaInitializer implements SchemaBindingInitializer
 
    private static final QName finallyTypeQName = new QName(AOP_BEANS_NS, "finallyType");
 
+   private static final QName typedefQName = new QName(AOP_BEANS_NS, "typedef");
+   
    private static final QName typedefTypeQName = new QName(AOP_BEANS_NS, "typedefType");
+   
+   private static final QName cflowStackQName = new QName(AOP_BEANS_NS, "cflow-stack");
    
    private static final QName cflowStackTypeQName = new QName(AOP_BEANS_NS, "cflowStackType");
 
@@ -128,17 +143,31 @@ public class AOPBeansSchemaInitializer implements SchemaBindingInitializer
    
    private static final QName notCalledQName = new QName(AOP_BEANS_NS, "not-called");
    
+   private static final QName dynamicCflowQName = new QName(AOP_BEANS_NS, "dynamic-cflow");
+   
    private static final QName dynamicCflowStackTypeQName = new QName(AOP_BEANS_NS, "dynamicCflowStackType");
+   
+   private static final QName pointcutQName = new QName(AOP_BEANS_NS, "pointcut");
    
    private static final QName pointcutTypeQName = new QName(AOP_BEANS_NS, "pointcutType"); 
    
+   private static final QName prepareQName = new QName(AOP_BEANS_NS, "prepare");
+   
    private static final QName prepareTypeQName = new QName(AOP_BEANS_NS, "prepareType"); 
+   
+   private static final QName annotationQName = new QName(AOP_BEANS_NS, "annotation");
    
    private static final QName annotationTypeQName = new QName(AOP_BEANS_NS, "annotationType"); 
    
+   private static final QName annotationIntroductionQName = new QName(AOP_BEANS_NS, "annotation-introduction");
+   
    private static final QName annotationIntroductionTypeQName = new QName(AOP_BEANS_NS, "annotationIntroductionType");
    
+   private static final QName precedenceQName = new QName(AOP_BEANS_NS, "precedence");
+   
    private static final QName precedenceTypeQName = new QName(AOP_BEANS_NS, "precedenceType");
+   
+   private static final QName introductionQName = new QName(AOP_BEANS_NS, "introduction");
    
    private static final QName introductionTypeQName = new QName(AOP_BEANS_NS, "introductionType");
 
@@ -169,6 +198,9 @@ public class AOPBeansSchemaInitializer implements SchemaBindingInitializer
    /** The lifecycle configure aspect binding */
    private static final QName lifecycleTypeQName = new QName(AOP_BEANS_NS, "lifecycleType");
    
+
+   
+
    
    public SchemaBinding init(SchemaBinding schema)
    {
@@ -188,6 +220,7 @@ public class AOPBeansSchemaInitializer implements SchemaBindingInitializer
    
    private void initTopLevelBindings(SchemaBinding schema)
    {
+      initDomainType(schema);
       initAspectOrInterceptorType(schema);   // aspect and interceptor binding
       initBindType(schema); // bind binding
       initStackType(schema);
@@ -220,6 +253,26 @@ public class AOPBeansSchemaInitializer implements SchemaBindingInitializer
       initTransientType(schema);
       initConstructionType(schema);
    }
+
+   private void initDomainType(SchemaBinding schema)
+   {
+      TypeBinding type = schema.getType(domainTypeQName);
+      type.setHandler(DomainHandler.HANDLER);
+      type.pushInterceptor(interceptorQName, DomainAspectManagerAwareBeanMetaDataFactoryInterceptor.INTERCEPTOR);
+      type.pushInterceptor(aspectQName, DomainAspectManagerAwareBeanMetaDataFactoryInterceptor.INTERCEPTOR);
+      type.pushInterceptor(bindQName, DomainAspectManagerAwareBeanMetaDataFactoryInterceptor.INTERCEPTOR);
+      type.pushInterceptor(stackQName, DomainAspectManagerAwareBeanMetaDataFactoryInterceptor.INTERCEPTOR);
+      type.pushInterceptor(typedefQName, DomainBeanMetaDataInterceptor.INTERCEPTOR);
+      type.pushInterceptor(cflowStackQName, DomainAspectManagerAwareBeanMetaDataFactoryInterceptor.INTERCEPTOR);
+      type.pushInterceptor(dynamicCflowQName, DomainBeanMetaDataInterceptor.INTERCEPTOR);
+      type.pushInterceptor(prepareQName, DomainBeanMetaDataInterceptor.INTERCEPTOR);
+      type.pushInterceptor(pointcutQName, DomainBeanMetaDataInterceptor.INTERCEPTOR);
+      type.pushInterceptor(annotationQName, DomainBeanMetaDataInterceptor.INTERCEPTOR);
+      type.pushInterceptor(annotationIntroductionQName, DomainBeanMetaDataInterceptor.INTERCEPTOR);
+      type.pushInterceptor(precedenceQName, DomainAspectManagerAwareBeanMetaDataFactoryInterceptor.INTERCEPTOR);
+      type.pushInterceptor(introductionQName, DomainAspectManagerAwareBeanMetaDataFactoryInterceptor.INTERCEPTOR);
+
+   }
    
    private void initAspectOrInterceptorType(SchemaBinding schema)
    {
@@ -227,8 +280,6 @@ public class AOPBeansSchemaInitializer implements SchemaBindingInitializer
       BeanSchemaBindingHelper.initBeanFactoryHandlers(type);
       type.setHandler(new AspectBeanFactoryHandler());
 
-//      type.pushInterceptor(propertyQName, BeanFactoryPropertyInterceptor.INTERCEPTOR);
-//      type.pushInterceptor(attributeQName, BeanFactoryPropertyInterceptor.INTERCEPTOR);
    }
    
    private void initBindType(SchemaBinding schema)
@@ -439,7 +490,46 @@ public class AOPBeansSchemaInitializer implements SchemaBindingInitializer
          }
       }
    }
-   
+
+   private static class DomainHandler  extends AspectManagerAwareBeanFactoryHandler
+   {
+      public static final DomainHandler HANDLER = new DomainHandler();
+
+      @Override
+      public Object startElement(Object parent, QName name, ElementBinding element)
+      {
+         return new DomainBeanMetaDataFactory();
+      }
+
+      @Override
+      public void attributes(Object o, QName elementName, ElementBinding element, Attributes attrs, NamespaceContext nsCtx)
+      {
+         super.attributes(o, elementName, element, attrs, nsCtx);
+         DomainBeanMetaDataFactory bean = (DomainBeanMetaDataFactory)o;
+         for (int i = 0; i < attrs.getLength(); ++i)
+         {
+            String localName = attrs.getLocalName(i);
+            if ("parentFirst".equals(localName))
+            {
+               bean.setParentFirst(attrs.getValue(i));
+            }
+            else if ("inheritDefinitions".equals(localName))
+            {
+               bean.setInheritDefinitions(attrs.getValue(i));
+            }
+            else if ("inheritBindings".equals(localName))
+            {
+               BeanMetaDataUtil.setSimpleProperty(bean, "inheritBindings", attrs.getValue(i));
+            }
+            else if ("extends".equals(localName))
+            {
+               BeanMetaDataUtil.setSimpleProperty(bean, "extends", attrs.getValue(i));
+            }
+         }
+
+      }
+   }
+
    private static class AspectBeanFactoryHandler extends AspectManagerAwareBeanFactoryHandler
    {
       @Override
@@ -1168,7 +1258,42 @@ public class AOPBeansSchemaInitializer implements SchemaBindingInitializer
          IntroductionBeanMetaDataFactory.addInterfaces(mixin, "interfaces", ((StringBuffer)child).toString());
       }      
    }
+
+   private static class DomainAspectManagerAwareBeanMetaDataFactoryInterceptor extends DefaultElementInterceptor
+   {
+      public static final DomainAspectManagerAwareBeanMetaDataFactoryInterceptor INTERCEPTOR = new DomainAspectManagerAwareBeanMetaDataFactoryInterceptor();
+      
+      @Override
+      public void add(Object parent, Object child, QName name)
+      {
+         DomainBeanMetaDataFactory domain = (DomainBeanMetaDataFactory)parent;
+         AspectManagerAwareBeanMetaDataFactory factory = (AspectManagerAwareBeanMetaDataFactory)child;
+         //Overwrite the manager property
+         factory.setManagerBean(domain.getName());
+         factory.setManagerProperty("domain");
+         domain.addChildBean(factory);
+      }      
+   }
    
+   private static class DomainBeanMetaDataInterceptor extends DefaultElementInterceptor
+   {
+      public static final DomainBeanMetaDataInterceptor INTERCEPTOR = new DomainBeanMetaDataInterceptor();
+      
+      @Override
+      public void add(Object parent, Object child, QName name)
+      {
+         DomainBeanMetaDataFactory domain = (DomainBeanMetaDataFactory)parent;
+         AbstractBeanMetaData bean = (AbstractBeanMetaData)child;
+         //Overwrite the manager property
+         BeanMetaDataUtil util = new BeanMetaDataUtil();
+         util.setManagerBean(domain.getName());
+         util.setManagerProperty("domain");
+         util.setAspectManagerProperty(bean, "manager");
+         
+         domain.addChildBean(bean);
+      }      
+      
+   }
    ///////////////////////////////////////////////////////////////////////////////////////
    //Characters Handlers
    private static class AnnotationCharactersHandler extends CharactersHandler
