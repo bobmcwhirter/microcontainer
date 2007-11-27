@@ -652,9 +652,26 @@ otherLib/humanResourcesService-1.0.0.jar</programlisting>
     </chapter>
     <chapter>
       <title>Adding behaviour through AOP</title>
-      <para/>
-      <para/>
-      <para/>
+      <section>
+        <title>Configuring JBoss AOP</title>
+        <para/>
+      </section>
+      <section>
+        <title>Creating an aspect</title>
+        <para/>
+      </section>
+      <section>
+        <title>Applying an aspect</title>
+        <para/>
+      </section>
+      <section>
+        <title>Lifecycle aspects</title>
+        <para/>
+      </section>
+      <section>
+        <title>Using JNDI for service lookup</title>
+        <para/>
+      </section>
     </chapter>
     <chapter>
       <title>Advanced deployment</title>
@@ -673,9 +690,11 @@ otherLib/humanResourcesService-1.0.0.jar</programlisting>
       </section>
       <section>
         <title>Changing the classloading strategy</title>
+        <para/>
       </section>
       <section>
         <title>Adding a deployment stage</title>
+        <para/>
       </section>
     </chapter>
   </part>
@@ -704,6 +723,9 @@ otherLib/humanResourcesService-1.0.0.jar</programlisting>
     <title>Integrating the Microcontainer</title>
     <chapter>
       <title>JBoss AS</title>
+      <section>
+        <title>Bootstrapping the microcontainer</title>
+      </section>
       <section>
         <title>Java EE Deployers</title>
       </section>
