@@ -3,11 +3,15 @@
   <!--
     -  AOP Integration module.
     -  This modules includes 4 different test configurations: weave, no-weave, weave-secure, and no-weave-secure
-    -  By default all four test configurations will run.  These can be turned off using the property aop.tests.skip
-    -    mvn -Daop.tests.skip install
-    - 
-    -  Individual test suites can be run by turning off all tests, then activating individual profiles
-    -    mvn -Daop.tests.skip -Ptests-weave install
+    -  By default, none of the configurations will run.  A single test configuration can be called using the
+    -  appropriate profile:
+    -    mvn -Ptests-weave-secure install
+    -  
+    -  All four surefire test configurations can be run using the property aop.tests.all
+    -    mvn -Daop.tests.all install
+    -
+    -  Individual tests can be run by activating the appropriate profiles, then specifying the tests to run
+    -    mvn -Ptests-weave,tests-no-weave-secure -Dtest=TypeDefAopTestCase install
     -->
   <parent>
     <groupId>org.jboss.microcontainer</groupId>
@@ -308,7 +312,7 @@
       <id>tests-weave</id>
       <activation>
         <property>
-          <name>!aop.tests.skip</name>
+          <name>aop.tests.all</name>
         </property>
       </activation>
       <build>
@@ -339,7 +343,7 @@
       <id>tests-weave-secure</id>
       <activation>
         <property>
-          <name>!aop.tests.skip</name>
+          <name>aop.tests.all</name>
         </property>
       </activation>
       <build>
@@ -370,7 +374,7 @@
       <id>tests-no-weave</id>
       <activation>
         <property>
-          <name>!aop.tests.skip</name>
+          <name>aop.tests.all</name>
         </property>
       </activation>
       <build>
@@ -401,7 +405,7 @@
       <id>tests-no-weave-secure</id>
       <activation>
         <property>
-          <name>!aop.tests.skip</name>
+          <name>aop.tests.all</name>
         </property>
       </activation>
       <build>
