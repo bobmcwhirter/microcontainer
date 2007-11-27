@@ -325,9 +325,9 @@ META-INF/maven/org.jboss.microcontainer.examples/humanResourcesService/pom.xml
       <para>You will find all of the necessary files in the <code>examples/User_Guide/gettingstarted/commandLineClient</code> directory.  As with the previous example this follows the Maven Standard Directory Layout: </para>
       <programlisting>commandLineClient/pom.xml
                  /src/main/assembly
-                 /src/main/config
-                 /src/main/java
-                 /src/main/resources
+                     /main/config
+                     /main/java
+                     /main/resources
                      /test/java
                      /test/resources</programlisting>
       <para>The client consists of 3 classes and 1 interface, located in the <code>src/main/java</code> directory:</para>
@@ -356,7 +356,7 @@ META-INF/maven/org.jboss.microcontainer.examples/humanResourcesService/pom.xml
           <para>client-aop.dir - used in Chapter 5. Adding behaviour through AOP</para>
         </listitem>
       </itemizedlist>
-      <para>Each of these subdirectories represents a different distribution containing all of the shell scripts, JARs,  and XML deployment descriptors that we need to run the client in different configurations. For the moment we will use the client-pojo distribution which looks as follows:</para>
+      <para>Each of these represents a different distribution containing all of the shell scripts, JARs,  and XML deployment descriptors that we need to run the client in different configurations. For the moment we will use the client-pojo distribution which can be found in the client-pojo.dir subdirectory:</para>
       <programlisting>run.sh
 client-1.0.0.jar
 jboss-beans.xml
@@ -372,7 +372,7 @@ lib/concurrent-1.3.4.jar
    /jbossxb-2.0.0.CR4.jar
    /log4j-1.2.14.jar
    /xercesImpl-2.7.1.jar</programlisting>
-      <para>To run the client simply <code>cd</code> into the client-pojo.dir and type <code>./run.sh</code>. You will then be presented with the following menu of options:  </para>
+      <para>To run the client simply <code>cd</code> into client-pojo.dir and type <code>./run.sh</code>. You will then be presented with the following menu of options:  </para>
       <mediaobject>
         <imageobject>
           <imagedata align="center" fileref="images/tuiMenu.png"/>
@@ -435,7 +435,7 @@ lib/concurrent-1.3.4.jar
     }
 }</programlisting>
         <para>The shutdown hook ensures that when the JVM is exited all of the beans are undeployed in the correct order. The public deploy/undeploy methods simply delegate to the BasicXMLDeployer so that we can deploy and undeploy beans declared in our jboss-beans.xml file.</para>
-        <para>Finally we stored references to the microcontainer controller and bus so that we can lookup bean references by name and invoke them either directly or indirectly as necessary.</para>
+        <para>Finally we stored references to the microcontainer controller and bus so that we can lookup bean references by name and access them directly or indirectly as necessary.</para>
       </section>
       <section>
         <title>Deploying the service</title>
@@ -446,7 +446,7 @@ lib/concurrent-1.3.4.jar
           </imageobject>
         </mediaobject>
         <note>
-          <para>The microcontainer is able to instantiate the beans as their classes are available in the application classpath inside the <code>lib/humanResourcesService.jar</code> file. We could have equally placed these classes in an exploded directory structure and added this to the classpath but in general you will package them in a JAR for convenience. </para>
+          <para>The microcontainer is able to instantiate the beans as their classes are available in the extension classpath inside the <code>lib/humanResourcesService.jar</code> file. We could have equally placed these classes in an exploded directory structure and added this to the application classpath but in general you will package them in a JAR for convenience. </para>
         </note>
         <para>Notice that our deployment descriptor is entirely separate from the humanResourcesService.jar file. This is done on purpose so that you can easily edit it and test your changes by redeploying the service. The jboss-beans.xml file in the example contains some commented out fragments of XML that you can uncomment to configure it  in different ways:</para>
         <programlisting>&lt;?xml version=&quot;1.0&quot; encoding=&quot;UTF-8&quot;?&gt;
@@ -469,12 +469,16 @@ class=&quot;org.jboss.example.service.util.LocationBasedSalaryStrategy&quot;&gt;
     &lt;/bean&gt; --&gt;
 
 &lt;/deployment&gt;</programlisting>
-        <para>Depending on how you access the service at runtime you may need to shutdown the application and restart it again to  redeploy the service and see your changes. This reduces the flexibility of the application but  results in faster performance at runtime.  Alternatively you may be able to simply redeploy the service whilst the application is running. This increases  flexilibity but results in slower runtime performance. Careful consideration of these tradeoffs must   be made  before deciding on the approach you will take.</para>
+        <important>
+          <para>Depending on how you access the service at runtime you may need to shutdown the application and restart it again to  redeploy the service and see your changes. This reduces the flexibility of the application but  results in faster performance at runtime.  Alternatively you may be able to simply redeploy the service whilst the application is running. This increases  flexilibity but results in slower runtime performance. Careful consideration of these tradeoffs must   be made  before deciding on the approach you will take.</para>
+        </important>
       </section>
       <section>
         <title>Direct access</title>
         <para>If no parameter is given to the <code>run.sh</code> script when  the client is started then a reference to the HRService bean is looked up using the microcontainer controller once the service is deployed:</para>
-        <programlisting>private final static String HRSERVICE = &quot;HRService&quot;;
+        <programlisting>private HRManager manager;
+...
+private final static String HRSERVICE = &quot;HRService&quot;;
 
 ...
 
@@ -495,19 +499,21 @@ Set&lt;Employee&gt; listEmployees() {
         return manager.getEmployees();
 }</programlisting>
         <para>The client is said to be accessing the service directly since it&apos;s using a reference to the actual bean instance.   Performance is good as each method call goes directly to the bean but  what happens if we want to reconfigure the service and redeploy it whilst the application is running? </para>
-        <para>Reconfiguration as we know is achieved by making changes to the XML deployment descriptor and saving the file but in order to redeploy the service we must first undeploy the current one. During undeployment the microcontainer  controller releases its reference to the bean instance representing the service entry point together with any beans that depend on it. The intention is that these beans will subsequently become available for garbage collection as they are no longer required by the application. Deploying the service again creates  new bean  instances representing the new configuration. Any subsequent lookups from clients will then retrieve references to these new instances and  they will be able to access the reconfigured service.</para>
-        <para>The problem is that  we  cache the reference to the bean instance in our client when we deploy the service for the first time. Undeploying the service therefore has no affect as the bean instance can still be accessed using the cached reference and it will not be garbage collected until the client releases it. Similarly deploying the service again will not cause another lookup as the client already has a cached reference. It will therefore continue to use the bean instance representing the initial service configuration.</para>
+        <para>Reconfiguration as we know is achieved by making changes to the XML deployment descriptor and saving the file but in order to redeploy the service we must first undeploy the current one. During undeployment the microcontainer  controller releases its reference to the bean instance together with any beans that depend on it. The intention is that these beans will subsequently become available for garbage collection as they are no longer required by the application. Deploying the service again creates  new bean  instances representing the new configuration. Any subsequent lookups from clients will then retrieve references to these new instances and  they will be able to access the reconfigured service.</para>
+        <para>The problem is that  we  cache the reference to the bean instance representing our service entry point in our client when we deploy the service for the first time. Undeploying the service therefore has no affect as the bean instance can still be accessed using the cached reference and it will not be garbage collected until the client releases it. Similarly deploying the service again will not cause another lookup as the client already has a cached reference. It will therefore continue to use the bean instance representing the initial service configuration.</para>
         <note>
-          <para>You can test this behaviour for yourself by typing  &apos;u&apos; followed by return to undeploy the current service. You should still be able to access the service from the client even though it is &apos;undeployed&apos;. Now make some changes to the configuration using the jboss-beans.xml file and deploy it again using the &apos;d&apos; option (remember to save any changes you make to jboss-beans.xml first). Printing out the status of the service using the &apos;p&apos; option should allow you to see that the client is still accessing the initial service that was deployed.</para>
+          <para>You can test this behaviour for yourself by typing  &apos;u&apos; followed by return to undeploy the current service. You should still be able to access the service from the client even though it is &apos;undeployed&apos;. Now make some changes to the configuration using the jboss-beans.xml file and deploy it again using the &apos;d&apos; option (remember to save any changes you make to jboss-beans.xml first). Printing out the status of the service using the &apos;p&apos; option should allow you to see that the client is still accessing the initial instance of the service that was deployed.</para>
         </note>
-        <para>Even if we change our client so that we lookup a new reference each time the service is redeployed there is nothing to prevent new developers from coming along and mistakedly handing out copies of this reference to other objects. If all of these references are not cleaned up during redeployment then this then puts us in the same situation as before with access to older instances of the service still possible.</para>
-        <para>To reliably redeploy the reconfigured service you must therefore shutdown the application completely using the &apos;q&apos; option and then restart it using the run.sh script. For enterprise  services such as Transactions, Messaging and Persistance this is not considered a problem since they are  generally always in use. As such they cannot be redeployed at runtime and benefit from the high performance given by using direct access. If your service falls into this category then you too should consider using direct access via the microcontainer controller.</para>
+        <warning>
+          <para>Even if we change our client so that we lookup a new reference each time the service is redeployed there is nothing to prevent new developers from coming along and mistakedly handing out copies of this reference to other objects. If all of these references are not cleaned up during redeployment then this then puts us in the same situation as before with access to older instances of the service still possible.</para>
+        </warning>
+        <para>To reliably redeploy the reconfigured service you must therefore shutdown the application completely using the &apos;q&apos; option and restart it again using the <code>run.sh</code> script. For enterprise  services such as transactions, messaging and persistance this is perfectly acceptable since they are  generally always in use. As such they cannot be redeployed at runtime and benefit from the high performance given by using direct access. If your service falls into this category then you too should consider using direct access via the microcontainer controller.</para>
       </section>
       <section>
         <title>Indirect access</title>
-        <para>The run.sh script can be called with an optional parameter &apos;bus&apos; to specify that calls to the Human Resources service should take place using the microcontainer bus:</para>
+        <para>The <code>run.sh</code> script can be called with an optional parameter &apos;bus&apos; to specify that calls to the Human Resources service should take place using the microcontainer bus:</para>
         <programlisting>./run.sh bus</programlisting>
-        <para>We no longer lookup a direct reference to the bean instance using the microcontainer controller but instead call an invoke() method on the bus passing in the bean name, method name, method arguments and method types. The bus takes this information and uses it to call the bean on the client&apos;s behalf.</para>
+        <para>Instead of using a direct reference to the bean instance obtained from the microcontainer controller we now call an invoke() method on the bus passing in the bean name, method name, method arguments and method types. The bus takes this information and uses it to call the bean on the client&apos;s behalf.</para>
         <programlisting>private final static String HRSERVICE = &quot;HRService&quot;;
 
 ...
@@ -529,15 +535,15 @@ private Object invoke(String serviceName, String methodName, Object[] args, Stri
     }
     return result;
 }</programlisting>
-        <para>Behind the scenes the bus looks up the reference to the bean instance and calls the method using reflecton. Since the client never has a direct reference to the bean instance we say that it accesses the service &apos;indirectly&apos;. As the bus does not cache the reference we can  safely make changes to our service configuration and redeploy it at runtime. Subsequent calls by the client will then result in the new reference to the service being used as expected.   In technical terms we say that the client and service have been decoupled.</para>
+        <para>Behind the scenes the bus looks up the reference to the bean instance specified by the bean name and calls the chosen method using reflecton. Since the client never has a direct reference to the bean instance we say that it accesses the service &apos;indirectly&apos;. As the bus does not cache the reference we can  safely make changes to our service configuration and redeploy it at runtime. Subsequent calls by the client will then result in the new reference to the service being used as expected.   In technical terms we say that the client and service have been decoupled.</para>
         <note>
-          <para>You can test this behaviour out for yourself by deploying the service and using the &apos;p&apos; option to print out the status. Undeploy the service using the &apos;u&apos; option and check that you cannot access it anymore. Now make some changes to the configuration using the jboss-beans.xml file and deploy it again using the &apos;d&apos; option (remember to save any changes you make to jboss-beans.xml first). Printing out the status again using the &apos;p&apos; option should reveal that the client is accessing the new service configuration.</para>
+          <para>You can test this behaviour for yourself by deploying the service and using the &apos;p&apos; option to print out the status. Undeploy the service using the &apos;u&apos; option and check that you cannot access it anymore. Now make some changes to the configuration using the jboss-beans.xml file and deploy it again using the &apos;d&apos; option (remember to save any changes you make to jboss-beans.xml first). Printing out the status again using the &apos;p&apos; option should reveal that the client is accessing the new service configuration.</para>
         </note>
-        <para>As the bus uses reflection to call bean instances it is slower than using direct access. The benefit however is that only the bus references the bean instances directly. This means that when a service is redeployed we can clean up all of the existing references and replace them with new ones, allowing us to reliably redeploy a service at runtime. Services that are not used very often or that are specific to certain applications are good candidates for indirect access using the microcontainer bus. This is either because the lack in performance does not matter if the service is used rarely or the service can be deployed and undeployed together with the relevant applications to keep the runtime environment clean.</para>
+        <para>As the bus uses reflection to call bean instances it is slower than using direct access. The benefit however is that only the bus has references to the bean instances. This means that when a service is redeployed we can clean up all of the existing references and replace them with new ones, allowing us to reliably redeploy a service at runtime. Services that are not used very often or that are specific to certain applications are good candidates for indirect access using the microcontainer bus. This is either because the reduction in performance does not matter if the service is used rarely or the service can be deployed and undeployed together with the relevant applications to keep the runtime environment clean.</para>
       </section>
       <section>
         <title>Dynamic classloading</title>
-        <para>So far we have been using the extension and application classloaders to load all of the classes in our application. The application classpath  was setup by the run.sh script using the -cp flag to include the current directory and the client-1.0.0.jar.</para>
+        <para>So far we have been using the extension and application classloaders to load all of the classes in our application. The application classpath  was setup by the <code>run.sh</code> script using the -cp flag to include the current directory and the client-1.0.0.jar.</para>
         <programlisting>java -Djava.ext.dirs=`pwd`/lib -cp .:client-1.0.0.jar org.jboss.example.client.Client $1</programlisting>
         <para>For convenience the JARs in the lib directory were added to the extenion classloader&apos;s classpath  using the <code>java.ext.dirs</code> system property as this prevents us from having to list the full path to each of the JARs after the -cp flag. Since the extension classloader is the parent of the application classloader our client classes can find all of the microcontainer classes together with the Human Resources service classes at runtime.</para>
         <note>
@@ -562,7 +568,7 @@ lib/concurrent-1.3.4.jar
    /log4j-1.2.14.jar
    /xercesImpl-2.7.1.jar
 otherLib/humanResourcesService-1.0.0.jar</programlisting>
-        <para>As you can see the humanResourcesService.jar file has been moved to a new subdirectory called <code>otherLib</code>. In this location it is no longer available to either the extension or application classloaders whose classpaths are setup in the run.sh script:</para>
+        <para>As you can see the humanResourcesService.jar file has been moved to a new subdirectory called <code>otherLib</code>. In this location it is no longer available to either the extension or application classloaders whose classpaths are setup in the <code>run.sh</code> script:</para>
         <programlisting>java -Djava.ext.dirs=`pwd`/lib -cp .:client-1.0.0.jar org.jboss.example.client.Client $1</programlisting>
         <para>We must therefore create a new classloader during the deployment of the service so that we can load in the service classes and create instances of the beans. You can see how this is done by looking at the contents of the jboss-beans.xml file:</para>
         <programlisting>&lt;?xml version=&quot;1.0&quot; encoding=&quot;UTF-8&quot;?&gt;
@@ -604,7 +610,7 @@ otherLib/humanResourcesService-1.0.0.jar</programlisting>
   &lt;/bean&gt; --&gt;
 
 &lt;/deployment&gt;</programlisting>
-        <para>First of all we create an instance of  java.net.URL called URL using  parameter injection in the constructor to specify the location of the humanResourcesService.jar file on our local filesystem. Then we create an instance of a URLClassloader by  injecting the URL bean into the constructor as the only element in an array. Once this is done then we simply include a &lt;classloader&gt; element in our HRService bean definition to specify that the HRManager class needs to be loaded by the customCL classloader bean.</para>
+        <para>First of all we create an instance of  java.net.URL called URL using  parameter injection in the constructor to specify the location of the humanResourcesService.jar file on our local filesystem. Then we create an instance of a URLClassLoader by  injecting the URL bean into the constructor as the only element in an array. Once this is done then we simply include a &lt;classloader&gt; element in our HRService bean definition and inject the customCL bean. This specifies that the HRManager class needs to be loaded by the customCL classloader.</para>
         <para>But how do we know which classloader to use for the other beans in the deployment?</para>
         <para>The answer is that by default all beans in the deployment use the current thread&apos;s context classloader. In our case the thread that handles deployment is the main thread of the application which has its context classloader set to the application classloader on startup. If you wish, you can choose to specify a different classloader for the entire deployment using a  &lt;classloader&gt; element as follows:</para>
         <programlisting>&lt;?xml version=&quot;1.0&quot; encoding=&quot;UTF-8&quot;?&gt;
@@ -634,7 +640,7 @@ otherLib/humanResourcesService-1.0.0.jar</programlisting>
   ...
 
 &lt;/deployment&gt;</programlisting>
-        <para>This would be necessary for example if you wished to reconfigure the service by uncommenting the AgeBasedSalary or LocationBasedSalary beans. As you might expect, classloader&apos;s specified at the bean level override the deployment level classloader and if you wish to ignore the deployment level classloader altogether, and use the default thread context classloader for a bean, then you can use the &lt;null/&gt; value as follows:</para>
+        <para>This would be necessary for example if you wished to reconfigure the service by uncommenting the AgeBasedSalary or LocationBasedSalary beans. As you might expect, classloaders specified at the bean level override the deployment level classloader and if you wish to ignore the deployment level classloader altogether, and use the default thread context classloader for a bean, then you can use the &lt;null/&gt; value as follows:</para>
         <programlisting>  &lt;bean name=&quot;HRService&quot; class=&quot;org.jboss.example.service.HRManager&quot;&gt;
     &lt;classloader&gt;&lt;null/&gt;&lt;/classloader&gt;
   &lt;/bean&gt;</programlisting>
