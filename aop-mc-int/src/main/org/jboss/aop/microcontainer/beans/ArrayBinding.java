@@ -26,7 +26,7 @@ import java.util.List;
 
 import org.jboss.aop.AspectManager;
 import org.jboss.aop.advice.InterceptorFactory;
-//import org.jboss.aop.array.Type;
+import org.jboss.aop.array.Type;
 import org.jboss.logging.Logger;
 import org.jboss.util.id.GUID;
 
@@ -93,7 +93,7 @@ public class ArrayBinding implements Binding
       {
          throw new IllegalArgumentException("Null type");
       }
-      //Type theType = Type.valueOf(type);
+      Type theType = Type.valueOf(type);
 
       ArrayList<InterceptorFactory> interceptors = null;
       if (advices != null)
@@ -111,23 +111,21 @@ public class ArrayBinding implements Binding
          }
       }
       InterceptorFactory[] facs = interceptors != null ? interceptors.toArray(new InterceptorFactory[interceptors.size()]) : new InterceptorFactory[0];
-		System.out.println("ENABLE COMMENTED OUT CODE");
-      //org.jboss.aop.array.ArrayBinding binding = new org.jboss.aop.array.ArrayBinding(name, facs, theType);
-      //manager.addArrayBinding(binding);
-      //log.debug("Bound array binding " + name);
+      org.jboss.aop.array.ArrayBinding binding = new org.jboss.aop.array.ArrayBinding(name, facs, theType);
+      manager.addArrayBinding(binding);
+      log.debug("Bound array binding " + name);
    }
 
    public void stop() throws Exception
    {
-		System.out.println("ENABLE COMMENTED OUT CODE");
-      //manager.removeArrayBinding(name);
-      //if (advices != null)
-      //{
-      //   for (BindingEntry entry : advices)
-      //   {
-      //      entry.stop();
-      //   }
-      //}
+      manager.removeArrayBinding(name);
+      if (advices != null)
+      {
+         for (BindingEntry entry : advices)
+         {
+            entry.stop();
+         }
+      }
    }
 
    public void uninstall() throws Exception

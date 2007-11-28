@@ -96,31 +96,30 @@ public class ArrayReplacement
          throw new IllegalArgumentException("Cannot define both expr and classes");
       }
 
-		System.out.println("ENABLE COMMENTED OUT CODE");
-      //org.jboss.aop.array.ArrayReplacement pcut = null;
-      //if (classes != null)
-      //{
-      //   pcut = new org.jboss.aop.array.ArrayReplacement(name, classes);
-      //}
-      //else
-      //{
-      //   try
-      //   {
-      //      ASTStart start = new TypeExpressionParser(new StringReader(expr)).Start();
-      //      pcut = new org.jboss.aop.array.ArrayReplacement(name, start);
-      //   }
-      //   catch (ParseException e)
-      //   {
-      //      throw new IllegalArgumentException("Could not parse type expression " + expr, e);
-      //   }
-      //}
-      //manager.addArrayReplacement(pcut);
+      org.jboss.aop.array.ArrayReplacement pcut = null;
+      if (classes != null)
+      {
+         pcut = new org.jboss.aop.array.ArrayReplacement(name, classes);
+      }
+      else
+      {
+         try
+         {
+            ASTStart start = new TypeExpressionParser(new StringReader(expr)).Start();
+            pcut = new org.jboss.aop.array.ArrayReplacement(name, start);
+         }
+         catch (ParseException e)
+         {
+            throw new IllegalArgumentException("Could not parse type expression " + expr, e);
+         }
+      }
+      manager.addArrayReplacement(pcut);
 
    }
 
    public void stop()
    {
-      //manager.removeArrayReplacement(name);
+      manager.removeArrayReplacement(name);
    }
 
 }

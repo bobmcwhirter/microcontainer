@@ -106,14 +106,11 @@ public abstract class DomainSimpleTest extends DomainProxyTest
       Map map = manager.getPrecedenceDefs();
       checkShouldBeThere(map, shouldBeThere);
 
-      fail("enable following aop release");
-      //map = manager.getArrayReplacements();
-      //checkShouldBeThere(map, shouldBeThere);
+      map = manager.getArrayReplacements();
+      checkShouldBeThere(map, shouldBeThere);
 
-      fail("enable following aop release");
-      //o = manager.getArrayBinding("TestArrayBinding");
-      //checkShouldBeThere(o, shouldBeThere);
-
+      o = manager.getArrayBinding("TestArrayBinding");
+      checkShouldBeThere(o, shouldBeThere);
    }
 
    private void checkShouldBeThere(Object o, boolean shouldBeThere)

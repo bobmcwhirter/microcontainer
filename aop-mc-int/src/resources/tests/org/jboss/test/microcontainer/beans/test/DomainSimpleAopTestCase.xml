@@ -59,6 +59,12 @@
          <interceptor-ref name="org.jboss.test.microcontainer.beans.TestInterceptor"/>
          <stack-ref name="TestStack"/>
       </bind>
+
+      <arrayreplacement class="org.jboss.test.microcontainer.beans.woven.test.ClassWithArray"/>
+      
+      <arraybind name="TestArrayBinding" type="READ_WRITE">
+         <interceptor-ref name="org.jboss.test.microcontainer.beans.TestInterceptor"/>
+      </arraybind>
    </domain>   
    
 </deployment>

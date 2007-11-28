@@ -21,8 +21,8 @@
 */
 package org.jboss.test.microcontainer.beans.woven.test;
 
-//import org.jboss.aop.array.IntArrayElementReadInvocation;
-//import org.jboss.aop.array.IntArrayElementWriteInvocation;
+import org.jboss.aop.array.IntArrayElementReadInvocation;
+import org.jboss.aop.array.IntArrayElementWriteInvocation;
 
 /**
  *
@@ -34,18 +34,18 @@ public class TestArrayAspect
    public static int value;
    public static int index;
 
-//   public Object advice(IntArrayElementWriteInvocation invocation) throws Throwable
-//   {
-//      value = invocation.getIntValue();
-//      index = invocation.getIndex();
-//      return invocation.invokeNext();
-//   }
-//
-//   public Object advice(IntArrayElementReadInvocation invocation) throws Throwable
-//   {
-//      index = invocation.getIndex();
-//      return invocation.invokeNext();
-//   }
+   public Object advice(IntArrayElementWriteInvocation invocation) throws Throwable
+   {
+      value = invocation.getIntValue();
+      index = invocation.getIndex();
+      return invocation.invokeNext();
+   }
+
+   public Object advice(IntArrayElementReadInvocation invocation) throws Throwable
+   {
+      index = invocation.getIndex();
+      return invocation.invokeNext();
+   }
 
    public static void reset()
    {
