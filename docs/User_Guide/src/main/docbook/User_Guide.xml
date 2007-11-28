@@ -651,22 +651,144 @@ otherLib/humanResourcesService-1.0.0.jar</programlisting>
       </section>
     </chapter>
     <chapter>
-      <title>Adding behaviour through AOP</title>
+      <title>Adding behaviour with AOP</title>
       <para>Object Oriented Programming (OOP) contains many useful techniques for software development including encapsulation, inheritance, and polymorphism but does not solve the problem of how to address logic that  is often repeated in many different classes. Examples of this include logging, security, and transactional logic  which is traditionally hard-coded into each class making the source code difficult to maintain. We call logic of this nature a  &apos;cross-cutting concern&apos; as it typically applies across class hierarchies.</para>
-      <para>Aspect Oriented Programming (AOP) provides a  solution to this by allowing cross-cutting concerns to be applied to classes after they have been compiled. This keeps  the source code free of logic which is not central to the  main purpose of the class and aids maintenance.   If the class implements an interface then this is usually done by ensuring that all method calls to an instance of the class first pass through a proxy that implements the same interface and adds in the required behaviour. Alternatively, if an interface is not used, then  the java bytecode of the compiled class is modified so that the original methods  are renamed and replaced by methods that implement the cross-cutting logic. These  new methods  then call the original methods  after the cross-cutting logic has been executed. The same result can be achieved by modifying the bytecode to create a subclass of the original class that overrides its methods. The overriden methods then execute the cross-cutting logic before calling the corresponding methods of the super class. </para>
-      <para>JBoss AOP is a framework for Aspect-Oriented Programming that allows you to create cross-cutting concerns using conventional java classes and methods. In AOP terminology each concern is represented by an aspect that you implement using a simple POJO. Behaviour is provided by methods within the aspect  called advices that follow certain rules for their parameter and return types. Other than this you are free to use conventional object-oriented notions such as inheritance, encapsulation, and composition in order to make your cross-cutting concern as maintainable as possible.  Aspects are applied to code using an expression language that allows you to specify which constructors, methods and even fields to target. This means that you can quickly change the behaviour of a number of classes simply by editing a configuration file. </para>
-      <para>In this chapter we are going to look at using JBoss AOP to create and apply an aspect to the Human Resources Service to provide auditing behaviour. We could choose to place auditing code within the  HRManager class but it would detract from the main purpose of the class and add unnecessary complexity. The design of the aspect will ensure that it can also be used with other classes if our requirements change at a later date.</para>
+      <para>Aspect Oriented Programming (AOP) provides a  solution to this by allowing cross-cutting concerns to be applied to classes after they have been compiled. This keeps  the source code free of logic which is not central to the  main purpose of the class and aids maintenance. The way it is done varies depending on the AOP implementation. Typically if a class implements an interface then  all method calls to an instance of the class first pass through a proxy that implements the same interface and adds in the required behaviour. Alternatively, if an interface is not used, then  the java bytecode of the compiled class is modified so that the original methods  are renamed and replaced by methods that implement the cross-cutting logic. These  new methods  then call the original methods  after the cross-cutting logic has been executed. The same result can be achieved by modifying the bytecode to create a subclass of the original class that overrides its methods. The overriden methods then execute the cross-cutting logic before calling the corresponding methods of the super class. </para>
+      <para>JBoss AOP is a framework for Aspect-Oriented Programming that allows you to create cross-cutting concerns using conventional java classes and methods. In AOP terminology each concern is represented by an aspect that you implement using a simple POJO. Behaviour is provided by methods within the aspect  called advices that follow certain rules for their parameter and return types together with any exceptions that they throw. Other than this you are free to use conventional object-oriented notions such as inheritance, encapsulation, and composition in order to make your cross-cutting concerns as maintainable as possible.  Aspects are applied to code using an expression language that allows you to specify which constructors, methods and even fields to target. This means that you can quickly change the behaviour of a number of classes simply by editing a configuration file. </para>
+      <para>In this chapter we are going to look at using JBoss AOP together with the microcontainer to create and apply an auditing aspect to the Human Resources Service. We could choose to place auditing code within the  HRManager class but it would detract from the main purpose of the class and add unnecessary complexity. The design of the aspect will ensure that it can also be used with other classes if our requirements change at a later date.</para>
+      <para>We shall also look at how AOP can be used to apply additional behaviour during the deployment phase. Specifically we will show how you can create and bind a proxy to a bean instance into a basic JNDI service so that you can access it using a JNDI lookup instead of the microcontainer controller.</para>
       <section>
         <title>Creating an aspect</title>
-        <para/>
+        <para>The <code>examples/User_Guide/gettingStarted/auditAspect</code> directory contains all the files you need to create the aspect.</para>
+        <programlisting>auditAspect/pom.xml
+           /src/main/java/org/jboss/example/aspect/AuditAspect.java</programlisting>
+        <para>As you can see from the source code below all we need is a simple POJO.</para>
+        <programlisting>public class AuditAspect {
+
+    private String logDir;
+    private BufferedWriter out;
+
+    public AuditAspect() {
+        logDir = System.getProperty(&quot;user.dir&quot;) + &quot;/log&quot;;
+
+        File directory = new File(logDir);
+        if (!directory.exists()) {
+            directory.mkdir();
+        }
+    }
+
+    public Object audit(ConstructorInvocation inv) throws Throwable {
+        SimpleDateFormat formatter = new SimpleDateFormat(&quot;ddMMyyyy-kkmmss&quot;);
+        Calendar now = Calendar.getInstance();
+        String filename = &quot;auditLog-&quot; + formatter.format(now.getTime());
+
+        File auditLog = new File(logDir + &quot;/&quot; + filename);
+        auditLog.createNewFile();
+        out = new BufferedWriter(new FileWriter(auditLog));
+        return inv.invokeNext();
+    }
+
+    public Object audit(MethodInvocation inv) throws Throwable {
+        String name = inv.getMethod().getName();
+        Object[] args = inv.getArguments();
+        Object retVal = inv.invokeNext();
+
+        StringBuffer buffer = new StringBuffer();
+        for (int i=0; i &lt; args.length; i++) {
+            if (i &gt; 0) {
+                buffer.append(&quot;, &quot;);
+            }
+            buffer.append(args[i].toString());
+        }
+
+        if (out != null) {
+            out.write(&quot;Method: &quot; + name);
+            if (buffer.length() &gt; 0) {
+                out.write(&quot; Args: &quot; + buffer.toString());
+            }
+            if (retVal != null) {
+                 out.write(&quot; Return: &quot; + retVal.toString());
+            }
+            out.write(&quot;\n&quot;);
+            out.flush();
+        }
+        return retVal;
+    }
+}</programlisting>
+        <para>The constructor checks for the presence of a <code>log</code> directory in the current working directory and creates one if not found. After this we define an advice that will be called whenever the constructor of our target class is called. The purpose of this is to create a new log file within the log directory so that we can record method calls made on different instances of our target class in separate files. Finally we define an advice that will apply to each method call made on the target class. Here we store the method name and arguments together with the return value so that we can construct an audit record and write it to the current log file. Notice how each advice calls <code>inv.invokeNext()</code>. This is required in order to call the  next advice, if more than one cross-cutting concern has been applied, or to call the target constructor/method.</para>
+        <note>
+          <para>Each advice is implemented using a method that takes an invocation object as a parameter, throws Throwable and returns  Object. This is necessary as we do not know at design time which constructors or methods  our advices will be applied to  so the types must be as generic as possible. For more information on creating aspects and advices together with additional examples of how to apply them to various classes please consult the JBoss AOP project documentation.</para>
+        </note>
+        <para>To compile the class and create an auditAspect.jar file that can be used by  other examples simply type <code>mvn install</code> from the auditAspect directory.</para>
       </section>
       <section>
         <title>Configuring the microcontainer</title>
-        <para/>
+        <para>Before we can apply the audit aspect to our service we must first add a number of JARs to the extension classpath. These can be found in the <code>lib</code> subdirectory of the  client-aop distribution located in the <code>examples/User_Guide/gettingStarted/commandLineClient/target/client-aop.dir</code> directory:</para>
+        <programlisting>run.sh
+client-1.0.0.jar
+jboss-beans.xml
+lib/<code>auditAspect-1.0.0.jar</code>
+   /concurrent-1.3.4.jar
+   /humanResourcesService-1.0.0.jar
+   /<code>javassist-3.6.0.GA.jar</code>
+   /<code>jboss-aop-2.0.0.beta1.jar</code>
+   /<code>jboss-aop-mc-int-2.0.0.Beta6.jar</code>
+   /jboss-common-core-2.0.4.GA.jar
+   /jboss-common-core-2.2.1.GA.jar
+   /jboss-common-logging-log4j-2.0.4.GA.jar
+   /jboss-common-logging-spi-2.0.4.GA.jar
+   /jboss-container-2.0.0.Beta6.jar
+   /jboss-dependency-2.0.0.Beta6.jar
+   /jboss-kernel-2.0.0.Beta6.jar
+   /jbossxb-2.0.0.CR4.jar
+   /log4j-1.2.14.jar
+   /<code>trove-2.1.1.jar</code>
+   /xercesImpl-2.7.1.jar</programlisting>
+        <para>First of all we need to include the <code>auditAspect</code> jar  as we need to create an instance of our aspect at runtime in order to execute the logic.  We then need to include the jar file for JBoss AOP  (<code>jboss-aop</code>) together with its dependencies; <code>javassist</code> and <code>trove</code>.  Finally we need to add the<code> jboss-aop-mc-int</code> jar as this contains an XML schema definition that allows us to define aspects inside our XML deployment descriptor. It also contains integration code to create dependencies between normal beans and aspect beans within the microcontainer so that we can add behaviour during the deployment and undeployment phases.</para>
+        <note>
+          <para>Since we are using Maven2 to assemble the client-aop distribution we can easily add these JAR files by declaring the appropriate dependencies in our <code>pom.xml</code> file and creating a valid assembly descriptor. If you are using Ant to perform your build then you will need to do this in a different way.</para>
+        </note>
       </section>
       <section>
         <title>Applying an aspect</title>
-        <para/>
+        <para>Now that we have a valid distribution containing everything we need we can configure our jboss-beans.xml file to apply the audit aspect. This can be found in the <code>examples/User_Guide/gettingStarted/commandLineClient/target/client-aop.dir</code> directory:</para>
+        <programlisting>&lt;?xml version=&quot;1.0&quot; encoding=&quot;UTF-8&quot;?&gt;
+
+&lt;deployment xmlns:xsi=&quot;http://www.w3.org/2001/XMLSchema-instance&quot;
+            xsi:schemaLocation=&quot;urn:jboss:bean-deployer:2.0 bean-deployer_2_0.xsd&quot;
+            xmlns=&quot;urn:jboss:bean-deployer:2.0&quot;&gt;
+
+    &lt;bean name=&quot;AspectManager&quot; class=&quot;org.jboss.aop.AspectManager&quot;&gt;
+        &lt;constructor factoryClass=&quot;org.jboss.aop.AspectManager&quot;
+                             factoryMethod=&quot;instance&quot;/&gt;
+    &lt;/bean&gt;
+
+    &lt;aop:aspect xmlns:aop=&quot;urn:jboss:aop-beans:1.0&quot;
+                       name=&quot;AuditAspect&quot; class=&quot;org.jboss.example.aspect.AuditAspect&quot;
+                       method=&quot;audit&quot; pointcut=&quot;execution(public org.jboss.example.service.HRManager-&gt;new(..)) OR                                        execution(public * org.jboss.example.service.HRManager-&gt;*(..))&quot;&gt;
+    &lt;/aop:aspect&gt;
+
+    ...
+
+&lt;/deployment&gt;</programlisting>
+        <para>Before we can apply our aspect to any classes we need to create an instance of org.jboss.aop.AspectManager using a &lt;bean&gt; element. We use a factory method instead of calling a conventional constructor as we only want one instance of the AspectManager in the JVM at runtime i.e. it is a singleton.</para>
+        <para>Next we create an instance of our aspect called AuditAspect using the &lt;aop:aspect&gt; element. This looks much like the &lt;bean&gt; element as it has <code>name</code> and <code>class</code> attributes that you can use in the same way.  However it also has <code>method</code> and <code>pointcut</code> attributes that you can use to apply or &apos;bind&apos;  an advice within the aspect to constructors and methods within other classes. We use these attributes to bind the audit advice to all public constructors and methods within the HRManager class. We only need to specify one method called audit as we have overloaded this method within our AuditAspect class with different parameters. JBoss AOP knows at runtime which one to select based on whether a constructor or method invocation is being made.</para>
+        <para>This additional configuration is all we need to apply the audit aspect at runtime and add auditing behaviour to the Human Resources service. You can test this out for yourself by running the client using the <code>run.sh</code> script. A <code>log</code> directory will be created on startup alongside the <code>lib</code> directory as the AuditAspect bean is created by the microcontainer. Each deployment of the Human Resources service will then cause a new log file to appear within the <code>log</code> directory containing a record of any calls made from the client to the service:</para>
+        <programlisting>log/auditLog-28112007-163902
+   /auditLog-28112007-164055
+   /auditLog-28112007-164108</programlisting>
+        <para>The audit records inside the log files will look something like this:</para>
+        <programlisting>Method: getEmployees Return: []
+Method: addEmployee Args: (Santa Claus, 1 Reindeer Avenue, Lapland City - 25/12/1860) Return: true
+Method: getSalary Args: (Santa Claus, null - Birth date unknown) Return: 10000
+Method: getEmployees Return: [(Santa Claus, 1 Reindeer Avenue, Lapland City - 25/12/1860)]
+Method: isHiringFreeze Return: false
+Method: getEmployees Return: [(Santa Claus, 1 Reindeer Avenue, Lapland City - 25/12/1860)]
+Method: getSalaryStrategy</programlisting>
+        <para>If you wish to remove the auditing behaviour then you can simply comment out the relevant fragments of XML in the deployment descriptor and restart the application.</para>
+        <warning>
+          <para>The order of deployment for aspects declared in this way relative to normal beans matters in the deployment descriptor. Specifically each aspect must be declared before the beans that it applies to so that the microcontainer deploys them in that order. This is because the microcontainer may need to alter the bytecode of the normal bean class in order to add the cross-cutting logic before it creates an instance and stores a  reference to it in the controller. If a normal bean instance has already been created then this is not possible. </para>
+        </warning>
       </section>
       <section>
         <title>Lifecycle aspects</title>
@@ -681,7 +803,7 @@ otherLib/humanResourcesService-1.0.0.jar</programlisting>
       <title>Advanced deployment</title>
       <para>Mention the need for a main deployer and explain how we add various deployers to this.</para>
       <section>
-        <title>Aspectized Deployers </title>
+        <title>Aspectized deployers </title>
         <para>Give example of using aspectized bean deployer and show how it&apos;s the same as the BasicXMLDeployer.</para>
       </section>
       <section>
