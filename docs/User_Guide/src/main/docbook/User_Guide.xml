@@ -652,12 +652,16 @@ otherLib/humanResourcesService-1.0.0.jar</programlisting>
     </chapter>
     <chapter>
       <title>Adding behaviour through AOP</title>
+      <para>Object Oriented Programming (OOP) contains many useful techniques for software development including encapsulation, inheritance, and polymorphism but does not solve the problem of how to address logic that  is often repeated in many different classes. Examples of this include logging, security, and transactional logic  which is traditionally hard-coded into each class making the source code difficult to maintain. We call logic of this nature a  &apos;cross-cutting concern&apos; as it typically applies across class hierarchies.</para>
+      <para>Aspect Oriented Programming (AOP) provides a  solution to this by allowing cross-cutting concerns to be applied to classes after they have been compiled. This keeps  the source code free of logic which is not central to the  main purpose of the class and aids maintenance.   If the class implements an interface then this is usually done by ensuring that all method calls to an instance of the class first pass through a proxy that implements the same interface and adds in the required behaviour. Alternatively, if an interface is not used, then  the java bytecode of the compiled class is modified so that the original methods  are renamed and replaced by methods that implement the cross-cutting logic. These  new methods  then call the original methods  after the cross-cutting logic has been executed. The same result can be achieved by modifying the bytecode to create a subclass of the original class that overrides its methods. The overriden methods then execute the cross-cutting logic before calling the corresponding methods of the super class. </para>
+      <para>JBoss AOP is a framework for Aspect-Oriented Programming that allows you to create cross-cutting concerns using conventional java classes and methods. In AOP terminology each concern is represented by an aspect that you implement using a simple POJO. Behaviour is provided by methods within the aspect  called advices that follow certain rules for their parameter and return types. Other than this you are free to use conventional object-oriented notions such as inheritance, encapsulation, and composition in order to make your cross-cutting concern as maintainable as possible.  Aspects are applied to code using an expression language that allows you to specify which constructors, methods and even fields to target. This means that you can quickly change the behaviour of a number of classes simply by editing a configuration file. </para>
+      <para>In this chapter we are going to look at using JBoss AOP to create and apply an aspect to the Human Resources Service to provide auditing behaviour. We could choose to place auditing code within the  HRManager class but it would detract from the main purpose of the class and add unnecessary complexity. The design of the aspect will ensure that it can also be used with other classes if our requirements change at a later date.</para>
       <section>
-        <title>Configuring JBoss AOP</title>
+        <title>Creating an aspect</title>
         <para/>
       </section>
       <section>
-        <title>Creating an aspect</title>
+        <title>Configuring the microcontainer</title>
         <para/>
       </section>
       <section>
@@ -669,7 +673,7 @@ otherLib/humanResourcesService-1.0.0.jar</programlisting>
         <para/>
       </section>
       <section>
-        <title>Using JNDI for service lookup</title>
+        <title>Adding service lookup through JNDI</title>
         <para/>
       </section>
     </chapter>
