@@ -852,7 +852,31 @@ public class LifecycleCallback {
       </section>
       <section>
         <title>Adding service lookup through JNDI</title>
-        <para/>
+        <para>Until now we have looked up references to bean instances representing services through the microcontainer controller. Whilst there is nothing wrong with this it is not ideal since we must first have a reference to the microcontainer kernel before we can access the controller: </para>
+        <programlisting>private HRManager manager;
+
+private EmbeddedBootstrap bootstrap;
+private Kernel kernel;
+private KernelController controller;
+
+private final static String HRSERVICE = &quot;HRService&quot;;
+
+...
+
+// Start JBoss Microcontainer
+bootstrap = new EmbeddedBootstrap();
+bootstrap.run();
+
+kernel = bootstrap.getKernel();
+controller = kernel.getController();
+
+...
+
+ControllerContext context = controller.getInstalledContext(HRSERVICE);
+if (context != null) { manager = (HRManager) context.getTarget(); }</programlisting>
+        <para>Handing out kernel references to every client that looks up a service represents a significant risk as it provides wide-spread access to the microcontainer configuration. It would be better to apply the ServiceLocator pattern and have a class that performs lookups on behalf of the clients. Better still we could pass the bean references, together with their names, to  the ServiceLocator at deployment time using a lifecycle callback so that it could look them up without knowing about the microcontainer at all. Undeployment would subsequently remove the bean references from the ServiceLocator to prevent further lookups. </para>
+        <para>While it would not be too difficult to write our own ServiceLocator implementation we can save time and follow industry standards  by integrating an existing one such as JBoss NS that implements the Java Naming and Directory Interface (JNDI) specification. JNDI enables clients to access different, possibly multiple, naming services using a common API.  </para>
+        <para>All that we need to do is create an instance of  JBoss NS using the microcontainer and then add a lifecycle callback to perform the binding and unbinding of our bean references during deployment/undeployment. We can then  mark  the bean classes that we wish to do this for using annotations and find them at runtime using the shorthand pointcut expression as shown earlier.</para>
       </section>
     </chapter>
     <chapter>
