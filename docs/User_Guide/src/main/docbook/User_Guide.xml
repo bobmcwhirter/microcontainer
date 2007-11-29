@@ -489,7 +489,7 @@ void deploy() {
         if (context != null) { manager = (HRManager) context.getTarget(); }
     }
 }</programlisting>
-        <para>Rather than immediately looking up a reference to the bean instance we first lookup a reference to a <code>ControllerContext</code>. We then obtain a reference to the bean instance from the context using the <code>getTarget()</code> method.  The reason for this is because the bean can exist in many states within the microcontainer e.g. DESCRIBED, INSTANTIATED, CONFIGURED, INSTALLED. In order to keep track of which state the bean is in we need to wrap it in another object called a context that describes the current state. The name of the context is the same as the bean name. Once a context reaches the INSTALLED state then the bean it represents is considered to be deployed.</para>
+        <para>Rather than immediately looking up a reference to the bean instance we first lookup a reference to a <code>ControllerContext</code>. We then obtain a reference to the bean instance from the context using the <code>getTarget()</code> method.  The reason for this is because the bean can exist in many states within the microcontainer e.g. NOT_INSTALLED, DESCRIBED, INSTANTIATED, CONFIGURED, INSTALLED. In order to keep track of which state the bean is in we need to wrap it in another object called a context that describes the current state. The name of the context is the same as the bean name. Once a context reaches the INSTALLED state then the bean it represents is considered to be deployed.</para>
         <para>Now that we have a reference to the bean instance representing our service entry point we can call methods on it to perform work:</para>
         <programlisting>@SuppressWarnings(&quot;unchecked&quot;)
 Set&lt;Employee&gt; listEmployees() {
@@ -791,8 +791,64 @@ Method: getSalaryStrategy</programlisting>
         </warning>
       </section>
       <section>
-        <title>Lifecycle aspects</title>
-        <para/>
+        <title>Lifecycle callbacks</title>
+        <para>In addition to applying aspects to beans that we instantiate using the microcontainer we can also add behaviour during the deployment and undeployment process. As you may recall from the Direct access section of Chapter 4, a bean goes through several different states as it is deployed. These include:<itemizedlist>
+            <listitem>
+              <para>NOT_INSTALLED - the deployment descriptor containing the bean has been parsed along with any annotations on the bean itself.</para>
+            </listitem>
+            <listitem>
+              <para>DESCRIBED - any dependencies created by AOP have been added to the bean and custom annotations have been processed.</para>
+            </listitem>
+            <listitem>
+              <para>INSTANTIATED - an instance of the bean has been created.</para>
+            </listitem>
+            <listitem>
+              <para>CONFIGURED - properties have been injected into the bean along with any references to other beans.</para>
+            </listitem>
+            <listitem>
+              <para>CREATE - the create method, if defined on the bean,  has been called.</para>
+            </listitem>
+            <listitem>
+              <para>START - the start method, if defined on the bean, has been called.</para>
+            </listitem>
+            <listitem>
+              <para>INSTALLED - any custom install actions that were defined in the deployment descriptor have been executed and the bean is ready to access.</para>
+            </listitem>
+          </itemizedlist></para>
+        <important>
+          <para>The CREATE and START states are included in order to allow services that used to be implemented as MBeans in JBoss AS 3.x and 4.x to function correctly when implemented as beans in JBoss AS 5.x. If you do not define any corresponding create/start methods in your bean then it will simply pass straight through these states.</para>
+        </important>
+        <para>Together these states represent the bean&apos;s lifecycle and using an additional set of &lt;aop&gt; elements you can define a number of callbacks to be applied to any point:</para>
+        <programlisting>&lt;aop:lifecycle-describe&gt; - applied when entering/leaving the DESCRIBED state
+&lt;aop:lifecycle-instantiate&gt; - applied when entering/leaving the INSTANTIATED state
+&lt;aop:lifecycle-configure&gt; - applied when entering/leaving the CONFIGURED state
+&lt;aop:lifecycle-create&gt; - applied when entering/leaving the CREATE state
+&lt;aop:lifecycle-start&gt; - applied when entering/leaving the START state
+&lt;aop:lifecycle-install&gt; - applied when entering/leaving the INSTALLED state</programlisting>
+        <para>Just like the &lt;bean&gt; element and the &lt;aop:aspect&gt; element the &lt;aop:lifecycle-&gt; elements contain <code>name</code> and <code>class</code> attributes. These allow the microcontainer to create an instance of the callback class and give it a name so that it can be used as beans enter/leave the relevant state during deployment and undeployment. You can specify which beans are affected by the callback using the <code>classes</code> attribute:</para>
+        <programlisting>&lt;aop:lifecycle-install xmlns:aop=&quot;urn:jboss:aop-beans:1.0&quot;
+    name=&quot;InstallAdvice&quot;
+    class=&quot;org.jboss.test.microcontainer.support.LifecycleCallback&quot;
+    classes=&quot;@org.jboss.test.microcontainer.support.Install&quot;&gt;
+&lt;/aop:lifecycle-install&gt;</programlisting>
+        <para>Here we have specified that additional logic in the LifecycleCallback class should be applied  to any bean classes that are annotated with @org.jboss.test.microcontainer.support.Install before they enter and after they leave the INSTALLED state. </para>
+        <para>In order for the callback class to work it must contain <code>install</code> and <code>uninstall</code> methods  that take ControllerContext as a parameter:</para>
+        <programlisting>import org.jboss.dependency.spi.ControllerContext;
+
+public class LifecycleCallback {
+
+    public void install(ControllerContext ctx) {
+        System.out.println(&quot;Bean &quot; + ctx.getName() + &quot; is being installed&quot;;
+    }
+
+    public void uninstall(ControllerContext ctx) {
+        System.out.println(&quot;Bean &quot; + ctx.getName() + &quot; is being uninstalled&quot;;
+    }
+} </programlisting>
+        <para>The install method will be called during the bean&apos;s deployment and the uninstall method during its undeployment.</para>
+        <note>
+          <para>Although we are adding behaviour to the deployment and undeployment process using callbacks we are not actually using AOP to achieve this. The reason we have included them in this section, and the reason why they are part of the aop XML schema, is that they use the pointcut expression functionality of JBoss AOP to determine which bean classes they should apply to. We have already shown how the <code>classes</code> attribute allows you to write a shorthand pointcut expression to target annotated bean classes. Later in Part III - AOP Development we will show how it is possible to use regular pointcut expressions to target classes in a much more powerful way.</para>
+        </note>
       </section>
       <section>
         <title>Adding service lookup through JNDI</title>
