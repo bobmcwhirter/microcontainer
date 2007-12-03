@@ -906,12 +906,106 @@ if (context != null) { manager = (HRManager) context.getTarget(); }</programlist
   </part>
   <part>
     <title>POJO Development</title>
+    <chapter>
+      <title>Introduction</title>
+      <para/>
+    </chapter>
+    <chapter>
+      <title>Running the examples</title>
+      <para>To give you</para>
+    </chapter>
+    <chapter>
+      <title>Creating POJOs</title>
+      <section>
+        <title>Defining classloaders</title>
+      </section>
+      <section>
+        <title>Using constructors</title>
+      </section>
+      <section>
+        <title>Using factory methods</title>
+      </section>
+      <section>
+        <title>Using JavaBean XML</title>
+      </section>
+      <section>
+        <title>Using Spring XML</title>
+      </section>
+    </chapter>
+    <chapter>
+      <title>Injecting properties</title>
+      <section>
+        <title>Defining values</title>
+        <para>Defining collections</para>
+      </section>
+      <section>
+        <title>Calling methods</title>
+        <para>Value-factory</para>
+      </section>
+      <section>
+        <title>Using bean references</title>
+      </section>
+      <section>
+        <title>Injecting context information</title>
+      </section>
+      <section>
+        <title>Auto-wiring</title>
+      </section>
+    </chapter>
+    <chapter>
+      <title>Adding dependencies</title>
+      <section>
+        <title>POJO dependencies</title>
+      </section>
+      <section>
+        <title>Service dependencies</title>
+      </section>
+      <section>
+        <title>Supply and Demand</title>
+      </section>
+    </chapter>
+    <chapter>
+      <title>Adding deployment behaviour</title>
+      <section>
+        <title>Deploy/Undeploy actions</title>
+      </section>
+      <section>
+        <title>Service Lifecycle</title>
+      </section>
+    </chapter>
+    <chapter>
+      <title>Miscellaneous</title>
+      <section>
+        <title>Defining annotations in XML</title>
+      </section>
+      <section>
+        <title>Giving beans more than one name</title>
+      </section>
+    </chapter>
   </part>
   <part>
     <title>AOP Development</title>
+    <chapter>
+      <title>Introduction</title>
+    </chapter>
+    <chapter>
+      <title>Configuration</title>
+    </chapter>
+    <chapter>
+      <title>Using Aspects</title>
+    </chapter>
+    <chapter>
+      <title>Using Lifecycle Callbacks</title>
+    </chapter>
+    <chapter>
+      <title>AOP Dependencies</title>
+    </chapter>
   </part>
   <part>
     <title>Extending the Microcontainer</title>
+    <chapter>
+      <title>Introduction</title>
+    </chapter>
     <chapter>
       <title>Guice Extensions </title>
     </chapter>
@@ -923,28 +1017,6 @@ if (context != null) { manager = (HRManager) context.getTarget(); }</programlist
     </chapter>
     <chapter>
       <title>jBPM Extensions</title>
-    </chapter>
-  </part>
-  <part>
-    <title>Integrating the Microcontainer</title>
-    <chapter>
-      <title>JBoss AS</title>
-      <section>
-        <title>Bootstrapping the microcontainer</title>
-      </section>
-      <section>
-        <title>Java EE Deployers</title>
-      </section>
-      <section>
-        <title>Classloading</title>
-        <para>Explain that the default classloading goes to the unified repository.</para>
-      </section>
-      <section>
-        <title>MBean Compatibility</title>
-      </section>
-      <section>
-        <title>Managing POJOs</title>
-      </section>
     </chapter>
   </part>
   <appendix>
