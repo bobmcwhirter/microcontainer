@@ -907,11 +907,166 @@ if (context != null) { manager = (HRManager) context.getTarget(); }</programlist
     <title>POJO Development</title>
     <chapter>
       <title>Introduction</title>
-      <para/>
+      <para>In Part I of this guide we looked at a complete use-case showing how to  develop a service using POJOs and access it from one or more clients. This should have given you a good overview of how the microcontainer is intended to be used in   real applications. In Part II we look more closely at the various features available for creating POJOs, wiring them together, deploying them into the runtime environment, and managing their dependencies.  With this knowledge you should be able to create flexible and reusable services that can be integrated together to provide a custom runtime suited to your needs.</para>
     </chapter>
     <chapter>
       <title>Running the examples</title>
-      <para>To give you</para>
+      <para>You can find examples of how to use each of the features described here  in the <code>examples/User_Guide/pojoDevelopment</code> directory:</para>
+      <programlisting>alias
+annotations
+autowiring
+classloader
+collections
+constructor
+demand
+factory
+injection
+installation
+javabeans
+lifecycle
+locator
+properties
+simple
+spring
+supply</programlisting>
+      <para>To build these simply <command>cd</command> to this directory and enter <command>mvn package</command>. A <code>target</code> directory will then be created in each subdirectory as follows:</para>
+      <programlisting>target/archive-tmp
+      /classes
+      /&lt;exampleName&gt;-1.0.0.jar
+      /&lt;exampleName&gt;-dist.dir</programlisting>
+      <para>The contents of the &lt;exampleName&gt;-dist.dir will be similar for each example:</para>
+      <programlisting>&lt;exampleName&gt;-1.0.0.jar
+log4j.properties
+lib/concurrent-1.3.4.jar
+   /jboss-common-core-2.0.4.GA.jar
+   /jboss-common-core-2.2.1.GA.jar
+   /jboss-common-logging-log4j-2.0.4.GA.jar
+   /jboss-common-logging-spi-2.0.4.GA.jar
+   /jboss-container-2.0.0.Beta6.jar
+   /jboss-dependency-2.0.0.Beta6.jar
+   /jboss-kernel-2.0.0.Beta6.jar
+   /jbossxb-2.0.0.CR4.jar
+   /log4j-1.2.14.jar
+   /xercesImpl-2.7.1.jar</programlisting>
+      <para>If you previously used the examples from Part I you will notice that we no longer have a <code>run.sh</code> script.  Instead we have made  &lt;exampleName&gt;-1.0.0.jar  executable. This means that it contains a META-INF/MANIFEST.MF file with Main-Class and Class-Path attributes:</para>
+      <programlisting>Main-Class: org.jboss.kernel.plugins.bootstrap.standalone.StandaloneBootstrap
+Class-Path: .
+            lib/jboss-common-core-2.0.4.GA.jar
+            lib/junit-3.8.1.jar
+            l ib/jboss-common-logging-spi-2.0.4.GA.jar
+            lib/xercesImpl-2.7.1.jar
+            lib /ant-1.6.5.jar
+            lib/jboss-container-2.0.0.Beta6.jar
+            lib/jboss-common-c ore-2.2.1.GA.jar
+            lib/dtdparser121-1.2.1.jar
+            lib/jbossxb-2.0.0.CR4.jar 
+            lib/jboss-aop-2.0.0.beta1.jar
+            lib/jboss-common-logging-log4j-2.0.4.G A.jar
+            lib/activation-1.0.2.jar
+            lib/jboss-test-1.0.4.GA.jar
+            lib/xml-ap is-2.7.1.jar
+            lib/concurrent-1.3.4.jar
+            lib/webdavlib-2.0.jar
+            lib/jboss -profiler-jvmti-1.0.0.CR5.jar
+            lib/jboss-kernel-2.0.0.Beta6.jar
+            lib/jb oss-managed-2.0.0.Beta6.jar
+            lib/jboss-metatype-2.0.0.Beta6.jar
+            lib/co mmons-httpclient-2.0.2.jar
+            lib/javassist-3.6.0.GA.jar
+            lib/jboss-loggi ng-spi-2.0.3.GA.jar
+            lib/log4j-1.2.14.jar
+            lib/jboss-dependency-2.0.0.B eta6.jar
+            lib/ant-junit-1.6.5.jar</programlisting>
+      <note>
+        <para>Certain JAR files included in the Class-Path attribute are not present in the <code>lib</code> directory. This is because the maven-jar-plugin is creating the Class-Path  value using its internal dependency resolution mechanism and including JARs that are not actually needed at runtime. This is the fault of  the pom.xml descriptors in  projects such as jbossxb, which the microcontainer depends on, that do not currently mark their dependencies as optional. For clarity we have prevented all of these JARs appearing in the lib directory of the distribution by explicitly listing only those that are required in the <code>examples/User_Guide/pojoDevelopment/<code>dist.xml</code></code> file which is passed to the maven-assembly-plugin. </para>
+        <para>Once we have fixed  the  pom.xml files in the projects that the microcontainer depends on then this filtering will no longer be necessary. </para>
+      </note>
+      <para>The Main-Class attribute contains the name of a StandaloneBootstrap class that is provided with the microcontainer. This class is very similar to the EmbeddedBootstrap class that we used in Part I with the addition of a main() method so that it can be called from the command line:</para>
+      <programlisting>public class StandaloneBootstrap extends BasicBootstrap
+{
+   protected BasicXMLDeployer deployer;
+   protected String[] args;
+   
+   public static void main(String[] args) throws Exception {
+      StandaloneBootstrap bootstrap = new StandaloneBootstrap(args);
+      bootstrap.run();
+   }
+
+   public StandaloneBootstrap(String[] args) throws Exception {
+      super();
+      this.args = args;
+   }
+   
+   public void bootstrap() throws Throwable {
+      super.bootstrap();
+      
+      deployer = new BasicXMLDeployer(getKernel());
+      
+      Runtime.getRuntime().addShutdownHook(new Shutdown());
+      
+      ClassLoader cl = Thread.currentThread().getContextClassLoader();
+      for (Enumeration e = cl.getResources(StandaloneKernelConstants.DEPLOYMENT_XML_NAME); e.hasMoreElements(); ) {
+         URL url = (URL) e.nextElement();
+         deploy(url);
+      }
+      for (Enumeration e = cl.getResources(&quot;META-INF/&quot; + StandaloneKernelConstants.DEPLOYMENT_XML_NAME); e.hasMoreElements(); ) {
+         URL url = (URL) e.nextElement();
+         deploy(url);
+      }
+      
+      // Validate that everything is ok
+      deployer.validate();
+   }
+   
+   protected void deploy(URL url) throws Throwable {
+      deployer.deploy(url);
+   }
+   
+   protected void undeploy(URL url) {
+      try {
+         deployer.undeploy(url);
+      }  catch (Throwable t) {
+         log.warn(&quot;Error during undeployment: &quot; + url, t);
+      }
+   }
+   
+   protected class Shutdown extends Thread  {
+      public void run()  {
+         log.info(&quot;Shutting down&quot;);
+         deployer.shutdown();
+      }
+   }
+}
+</programlisting>
+      <para>The bootstrap() method also includes code to automatically scan the classpath for files called jboss-beans.xml (the value of StandaloneKernelConstants.DEPLOYMENT_XML_NAME) that may or may not reside in a META-INF directory. If any such files are found then their URLs are passed to the BasicXMLDeployer to deploy any beans declared inside. In our examples we place a jboss-beans.xml file  into the META-INF directory of our &lt;exampleName&gt;-1.0.0.jar so that it can be found in this way.</para>
+      <para>The sequence of events that occurs when running each example is therefore as follows:</para>
+      <orderedlist>
+        <listitem>
+          <para>The &lt;exampleName&gt;-1.0.0.jar is executed using the <command>java -jar &lt;exampleName&gt;-1.0.0.jar</command> command, replacing &lt;exampleName&gt;  with the name of the example you are running, .e.g <command>java -jar constructor-1.0.0.jar</command></para>
+        </listitem>
+        <listitem>
+          <para>The StandaloneBootstrap class defined in the Main-Class attribute of the META-INF/MANIFEST.MF file is run which bootstraps the microcontainer and searches the classpath for files called jboss-beans.xml.</para>
+        </listitem>
+        <listitem>
+          <para>The META-INF/jboss-beans.xml file in the &lt;exampleName&gt;-1.0.0.jar is found and the beans within it are deployed.</para>
+        </listitem>
+        <listitem>
+          <para>The main() method of the StandaloneBootstrap class ends and the JVM shuts down undeploying the beans in reverse order.</para>
+        </listitem>
+      </orderedlist>
+      <para>If you would like to use the StandaloneBootstrap class within your own applications to deploy beans on startup then you can do so as follows:</para>
+      <programlisting>import org.jboss.kernel.plugins.bootstrap.standalone.StandaloneBootstrap;
+
+public class MyApp {
+    public static void main(String[] args) throws Exception
+    {
+        StandaloneBootstrap.main(args);
+        // your application code...
+    }
+}</programlisting>
+      <note>
+        <para>Because the deploy() and undeploy() methods of the StandaloneBootstrap are protected you will not be able to call them from your application after the initial startup. If you wish to deploy and undeploy beans at runtime then the EmbeddedBootstrap class may be a better choice. Alternatively you are free to create your own bootstrap class that uses BasicBootstrap and BasicXMLDeployer to provide whatever functionality you need.</para>
+      </note>
     </chapter>
     <chapter>
       <title>Creating POJOs</title>
