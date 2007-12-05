@@ -15,10 +15,9 @@
     <title>What this Book Covers</title>
     <para>This book aims to help you become familiar with  JBoss Microcontainer in order that you can use it to develop your own services or applications.</para>
     <para>Part I &apos;Getting Started&apos; introduces  the technology and explains how it relates to Java development in general. It then goes on to cover a complete use-case so that you can quickly see how the microcontainer works in real-life.</para>
-    <para>Part II &apos;POJO Development&apos; takes a look at the various methods you can use  to construct POJOs and wire them together using injections together with   other features.</para>
-    <para>Part III &apos;AOP Development&apos; goes on to look at how you can add behaviour to your POJOs using Aspects and covers the various ways this can be done.</para>
+    <para>Part II &apos;POJO Development&apos; takes a look at the various methods you can use  to construct POJOs and wire them together using injection together with   other features.</para>
+    <para>Part III &apos;AOP Development&apos; goes on to look at how you can add behaviour to your POJOs using aspects and modify the deployment/undeployment process with lifecycle callbacks.</para>
     <para> Part IV &apos;Extending the Microcontainer&apos; shows how you can write your own extensions by creating new dependencies and gives some examples of how this has already been done.</para>
-    <para>Part V &apos;Integrating the Microcontainer&apos; covers how the microcontainer is used in JBoss AS 5 as the integration technology for the various services and core infrastructure. We also look at how legacy services, developed using MBeans, remain compatible with the new microcontainer and see how it is possible to manage POJO services at runtime.</para>
   </preface>
   <part>
     <title>Getting Started</title>
