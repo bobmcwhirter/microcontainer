@@ -1072,6 +1072,125 @@ public class MyApp {
       <title>Creating POJOs</title>
       <section>
         <title>Defining classloaders</title>
+        <para>In order to create POJO instances we must first load the corresponding POJO classes into the JVM using a classloader. By default JBoss Microcontainer uses the classloader associated with the current thread of execution, i.e. the thread context classloader. But what do we mean by the current thread of execution and who sets its context  classloader?</para>
+        <para>In all of our examples so far we have created applications that only use a  single thread. This is the &apos;primordial&apos; thread created by the main() function:</para>
+        <programlisting>public static void main(String[] args) {}</programlisting>
+        <para>As the only thread in the application (other than the garbage collecton thread which is created for every Java application) this executes all of the code including calling the deploy()  method of our BasicXMLDeployer:</para>
+        <programlisting>public class BasicXMLDeployer extends BasicKernelDeployer
+{
+    ...
+    public KernelDeployment deploy(final URL url) throws Throwable
+   {
+       ...
+
+        long start = System.currentTimeMillis();
+
+        Unmarshaller unmarshaller = factory.newUnmarshaller();
+        KernelDeployment deployment = (KernelDeployment) unmarshaller.unmarshal(url.toString(), resolver);
+         if (deployment == null)
+            throw new RuntimeException(&quot;The xml &quot; + url + &quot; is not well formed!&quot;);
+        deployment.setName(url.toString());
+
+        if (trace)
+        {
+            long now = System.currentTimeMillis();
+            log.trace(&quot;Parsing &quot; + url + &quot; took &quot; + (now-start) + &quot; milliseconds&quot;);
+        }
+
+        <emphasis>deploy(deployment);</emphasis>
+
+        if (trace)
+        {
+            long now = System.currentTimeMillis();
+            log.trace(&quot;Deploying &quot; + url + &quot; took &quot; + (now-start) + &quot; milliseconds&quot;);
+        }
+
+        return deployment;
+    }
+
+    ...
+}</programlisting>
+        <para>The deploy() method takes a URL representing the location of the XML deployment descriptor and passes it as a string to an unmarshaller. The unmarshaller then parses the XML,  converts it into an object representation called a  KernelDeployment and sets its name to the string value of the URL. The KernelDeployment object is  then passed to the deploy() method of the superclass BasicKernelDeployer. The BasicKernelDeployer deploy() method iterates through all of the beans in the deployment   creating a context for each one which it subsequently passes to the microcontainer contoller&apos;s install() method to peform the deployment. The controller then performs actions on the contexts to take them from one state to another: NOT_INSTALLED, DESCRIBED, CONFIGURED, INSTANTIATED, CREATE, START, INSTALLED. Once a context reaches the INSTALLED state then the bean that it contains is considered to be deployed.</para>
+        <important>
+          <para>During the deployment process, as the controller performs the Instantiate action, the thread context classloader is used as the default classloader to load the bean&apos;s class into the JVM.  Since the controller code must be executed by a single thread in order to preserve the integrity of the state machine, the thread that calls the controller.install() method is by definition the current thread of execution.</para>
+        </important>
+        <para>Therefore when using the BasicXMLDeployer the default classloader is retrieved from the thread that calls the BasicXMLDeployer&apos;s deploy() method as this goes on to call controller.install() which subsequently executes the Instantiate action. For all of our examples this is the primordial thread. The context class loader of the primordial thread is set to the classloader that loaded the application, i.e. the application classloader. This means that by default this classloader can load any classes present on the application, extension or boot classpaths which is why we are able to load the bean classes in the examples.</para>
+        <para>What happens though if we create our own threads in the application and use these to call the deploy() method of our BasicXMLDeployer?</para>
+        <para>If you create a thread then by default its context classloader will be set to the parent thread&apos;s context classloader. As any hierarchy of threads is ultimately rooted at the primordial thread this means that they will all use the application classloader providing you don&apos;t explicitly call setContextClassLoader() at any point. If you do call setContextClassLoader() on a thread then any threads that it creates will inherit the classloader that you set.</para>
+        <note>
+          <para>If you choose not to use the BasicXMLDeployer and instead use the equivalent aspectized deployer then the default classloader is taken from the thread that calls the process() method of the MainDeployer.  This is because the MainDeployer process() method iterates through all of the registered deployers calling their process() methods which in turn call controller.install() to perform the deployment. </para>
+        </note>
+        <para>Now that we know how the microcontainer gets it default classloader how can we change this to use our own?</para>
+        <para>If you are using the BasicXMLDeployer or its equivalent aspectized deployer then you can define classloaders for entire deployments or individual beans by including &lt;classloader&gt; elements within the XML deployment descriptor. To specify a different classloader for all the beans in a deployment you need to include a &lt;classloader&gt; element above all of the &lt;bean&gt; elements:</para>
+        <programlisting>&lt;deployment&gt;
+    &lt;classloader&gt;&lt;inject bean=&quot;deploymentCL&quot;/&gt;&lt;/classloader&gt;
+
+    &lt;bean name=&quot;Bean1&quot; ... &gt;
+        ...
+    &lt;/bean&gt;
+
+    &lt;bean name=&quot;Bean2&quot; ... &gt;
+        ...
+    &lt;/bean&gt;
+
+&lt;/deployment&gt;</programlisting>
+        <para>If instead you wish to override either the default classloader or a deployment classloader for a particular bean then you need to include a &lt;classloader&gt; element within the &lt;bean&gt; definition itself:</para>
+        <programlisting>&lt;deployment&gt;
+    &lt;classloader&gt;&lt;inject bean=&quot;deploymentCL&quot;/&gt;&lt;/classloader&gt;
+
+    &lt;bean name=&quot;Bean1&quot; ... &gt;
+        &lt;classloader&gt;&lt;inject bean=&quot;beanCL&quot;/&gt;&lt;/classloader&gt;
+        ...
+    &lt;/bean&gt;
+
+    &lt;bean name=&quot;Bean2&quot; ... &gt;
+        ...
+    &lt;/bean&gt;
+
+&lt;/deployment&gt;</programlisting>
+        <para>Finally you can choose to use the default classloader for  a bean instead of the deployment classloader, if one is defined, by including a &lt;classloader&gt; element with a &lt;/null&gt; value:</para>
+        <programlisting>&lt;deployment&gt;
+    &lt;classloader&gt;&lt;inject bean=&quot;deploymentCL&quot;/&gt;&lt;/classloader&gt;
+
+    &lt;bean name=&quot;Bean1&quot; ... &gt;
+        &lt;classloader&gt;&lt;inject bean=&quot;beanCL&quot;/&gt;&lt;/classloader&gt;
+        ...
+    &lt;/bean&gt;
+
+    &lt;bean name=&quot;Bean2&quot; ... &gt;
+        &lt;classloader&gt;&lt;/null&gt;&lt;/classloader&gt;
+        ...
+    &lt;/bean&gt;
+
+&lt;/deployment&gt;</programlisting>
+        <para>The classloader beans that you inject must be deployed in the runtime environment before bean classes can be loaded. Typically this is done by declaring them in the XML deployment descriptor:</para>
+        <programlisting>&lt;deployment xmlns:xsi=&quot;http://www.w3.org/2001/XMLSchema-instance&quot;
+            xsi:schemaLocation=&quot;urn:jboss:bean-deployer:2.0 bean-deployer_2_0.xsd&quot;
+            xmlns=&quot;urn:jboss:bean-deployer:2.0&quot;&gt;
+
+    &lt;bean name=&quot;URL&quot; class=&quot;java.net.URL&quot;&gt;
+        &lt;constructor&gt;       &lt;parameter&gt;file:/Users/newtonm/jbossmc/microcontainer/trunk/docs/examples/User_Guide/gettingStarted/commandLineClient/target/client-cl.dir/otherLib/humanResourcesService-1.0.0.jar&lt;/parameter&gt;
+        &lt;/constructor&gt;
+    &lt;/bean&gt;
+
+    &lt;bean name=&quot;customCL&quot; class=&quot;java.net.URLClassLoader&quot;&gt;
+        &lt;constructor&gt;
+            &lt;parameter&gt;
+                &lt;array&gt;
+                    &lt;inject bean=&quot;URL&quot;/&gt;
+                &lt;/array&gt;
+            &lt;/parameter&gt;
+        &lt;/constructor&gt;
+    &lt;/bean&gt;
+
+    &lt;bean name=&quot;HRService&quot; class=&quot;org.jboss.example.service.HRManager&quot;&gt;
+        &lt;classloader&gt;&lt;inject bean=&quot;customCL&quot;/&gt;&lt;/classloader&gt;
+        ...
+&lt;/bean&gt;</programlisting>
+        <para>If a classloader is not available for a bean when an attempt is made to deploy it then the bean will remain in a pre INSTANTIATED state. Once the classloader is deployed then the bean will automatically continue to deploy. </para>
+        <note>
+          <para>User defined classloaders are detected by the microcontainer during the deployment process as the bean moves to the INSTANTIATED state.  They are used instead of the default classloader by calling setContextClassLoader() on the current thread. After deployment the default classloader is put back by calling setContexClassLoader() again.</para>
+        </note>
       </section>
       <section>
         <title>Using constructors</title>
