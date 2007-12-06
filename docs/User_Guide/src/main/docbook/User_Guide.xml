@@ -1110,17 +1110,17 @@ public class MyApp {
 
     ...
 }</programlisting>
-        <para>The deploy() method takes a URL representing the location of the XML deployment descriptor and passes it as a string to an unmarshaller. The unmarshaller then parses the XML,  converts it into an object representation called a  KernelDeployment and sets its name to the string value of the URL. The KernelDeployment object is  then passed to the deploy() method of the superclass BasicKernelDeployer. The BasicKernelDeployer deploy() method iterates through all of the beans in the deployment   creating a context for each one which it subsequently passes to the microcontainer contoller&apos;s install() method to peform the deployment. The controller then performs actions on the contexts to take them from one state to another: NOT_INSTALLED, DESCRIBED, CONFIGURED, INSTANTIATED, CREATE, START, INSTALLED. Once a context reaches the INSTALLED state then the bean that it contains is considered to be deployed.</para>
+        <para>The deploy() method takes a URL representing the location of the XML deployment descriptor and passes it as a string to an unmarshaller. The unmarshaller then parses the XML,  converts it into an object representation called a  KernelDeployment and sets its name to the string value of the URL. The KernelDeployment object is  then passed to the deploy() method of the superclass BasicKernelDeployer. The BasicKernelDeployer deploy() method iterates through all of the beans in the deployment   creating a context for each one which it subsequently passes to the microcontainer contoller&apos;s install() method to peform the deployment. The controller then performs actions on each context to take the bean from one state to another: NOT_INSTALLED, DESCRIBED, CONFIGURED, INSTANTIATED, CREATE, START, INSTALLED. Once a bean reaches the INSTALLED state then it&apos;s considered to be deployed.</para>
         <important>
           <para>During the deployment process, as the controller performs the Instantiate action, the thread context classloader is used as the default classloader to load the bean&apos;s class into the JVM.  Since the controller code must be executed by a single thread in order to preserve the integrity of the state machine, the thread that calls the controller.install() method is by definition the current thread of execution.</para>
         </important>
-        <para>Therefore when using the BasicXMLDeployer the default classloader is retrieved from the thread that calls the BasicXMLDeployer&apos;s deploy() method as this goes on to call controller.install() which subsequently executes the Instantiate action. For all of our examples this is the primordial thread. The context class loader of the primordial thread is set to the classloader that loaded the application, i.e. the application classloader. This means that by default this classloader can load any classes present on the application, extension or boot classpaths which is why we are able to load the bean classes in the examples.</para>
+        <para>Therefore when using the BasicXMLDeployer the default classloader is retrieved from the thread that calls the BasicXMLDeployer&apos;s deploy() method as this goes on to call controller.install() which subsequently executes the Instantiate action. For all of our examples this is the primordial thread. The context class loader of the primordial thread is set to the classloader that loaded the application, i.e. the application classloader. This means that by default this classloader can load any classes present on the application, extension or boot classpaths which is why we are able to load the bean classes in our examples.</para>
         <para>What happens though if we create our own threads in the application and use these to call the deploy() method of our BasicXMLDeployer?</para>
         <para>If you create a thread then by default its context classloader will be set to the parent thread&apos;s context classloader. As any hierarchy of threads is ultimately rooted at the primordial thread this means that they will all use the application classloader providing you don&apos;t explicitly call setContextClassLoader() at any point. If you do call setContextClassLoader() on a thread then any threads that it creates will inherit the classloader that you set.</para>
         <note>
           <para>If you choose not to use the BasicXMLDeployer and instead use the equivalent aspectized deployer then the default classloader is taken from the thread that calls the process() method of the MainDeployer.  This is because the MainDeployer process() method iterates through all of the registered deployers calling their process() methods which in turn call controller.install() to perform the deployment. </para>
         </note>
-        <para>Now that we know how the microcontainer gets it default classloader how can we change this to use our own?</para>
+        <para>Now that we know how the microcontainer gets the default classloader how can we change this to use our own?</para>
         <para>If you are using the BasicXMLDeployer or its equivalent aspectized deployer then you can define classloaders for entire deployments or individual beans by including &lt;classloader&gt; elements within the XML deployment descriptor. To specify a different classloader for all the beans in a deployment you need to include a &lt;classloader&gt; element above all of the &lt;bean&gt; elements:</para>
         <programlisting>&lt;deployment&gt;
     &lt;classloader&gt;&lt;inject bean=&quot;deploymentCL&quot;/&gt;&lt;/classloader&gt;
@@ -1163,7 +1163,7 @@ public class MyApp {
     &lt;/bean&gt;
 
 &lt;/deployment&gt;</programlisting>
-        <para>The classloader beans that you inject must be deployed in the runtime environment before bean classes can be loaded. Typically this is done by declaring them in the XML deployment descriptor:</para>
+        <para>The classloader beans that you inject must be deployed in the runtime environment before bean classes can be loaded. Typically this is done by also declaring them in the XML deployment descriptor:</para>
         <programlisting>&lt;deployment xmlns:xsi=&quot;http://www.w3.org/2001/XMLSchema-instance&quot;
             xsi:schemaLocation=&quot;urn:jboss:bean-deployer:2.0 bean-deployer_2_0.xsd&quot;
             xmlns=&quot;urn:jboss:bean-deployer:2.0&quot;&gt;
@@ -1189,7 +1189,7 @@ public class MyApp {
 &lt;/bean&gt;</programlisting>
         <para>If a classloader is not available for a bean when an attempt is made to deploy it then the bean will remain in a pre INSTANTIATED state. Once the classloader is deployed then the bean will automatically continue to deploy. </para>
         <note>
-          <para>User defined classloaders are detected by the microcontainer during the deployment process as the bean moves to the INSTANTIATED state.  They are used instead of the default classloader by calling setContextClassLoader() on the current thread. After deployment the default classloader is put back by calling setContexClassLoader() again.</para>
+          <para>User defined classloaders are detected by the microcontainer during the deployment process as the controller performs the Instantiate action.  They are used instead of the default classloader by calling setContextClassLoader() on the current thread. After deployment the default classloader is put back by calling setContexClassLoader() again.</para>
         </note>
       </section>
       <section>
