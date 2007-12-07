@@ -1039,13 +1039,16 @@ Class-Path: .
 }
 </programlisting>
       <para>The bootstrap() method also includes code to automatically scan the classpath for files called jboss-beans.xml (the value of StandaloneKernelConstants.DEPLOYMENT_XML_NAME) that may or may not reside in a META-INF directory. If any such files are found then their URLs are passed to the BasicXMLDeployer to deploy any beans declared inside. In our examples we place a jboss-beans.xml file  into the META-INF directory of our &lt;exampleName&gt;-1.0.0.jar so that it can be found in this way.</para>
-      <para>The sequence of events that occurs when running each example is therefore as follows:</para>
+      <important>
+        <para>To run any of the examples simply  <command>cd</command> to the relevant <code>target/&lt;exampleName&gt;-dist.dir</code> directory and execute the JAR file using the  <command>java -jar &lt;exampleName&gt;-1.0.0.jar</command> command, replacing &lt;exampleName&gt;  with the name of the example you are running, .e.g <command>java -jar constructor-1.0.0.jar</command></para>
+      </important>
+      <para>Running an example causes the following sequence of events to occur:</para>
       <orderedlist>
         <listitem>
-          <para>The &lt;exampleName&gt;-1.0.0.jar is executed using the <command>java -jar &lt;exampleName&gt;-1.0.0.jar</command> command, replacing &lt;exampleName&gt;  with the name of the example you are running, .e.g <command>java -jar constructor-1.0.0.jar</command></para>
+          <para>The &lt;exampleName&gt;-1.0.0.jar is executed. </para>
         </listitem>
         <listitem>
-          <para>The StandaloneBootstrap class defined in the Main-Class attribute of the META-INF/MANIFEST.MF file is run which bootstraps the microcontainer and searches the classpath for files called jboss-beans.xml.</para>
+          <para>The StandaloneBootstrap class defined in the Main-Class attribute of the META-INF/MANIFEST.MF file within the JAR  is run which bootstraps the microcontainer and searches the classpath for files called jboss-beans.xml.</para>
         </listitem>
         <listitem>
           <para>The META-INF/jboss-beans.xml file in the &lt;exampleName&gt;-1.0.0.jar is found and the beans within it are deployed.</para>
