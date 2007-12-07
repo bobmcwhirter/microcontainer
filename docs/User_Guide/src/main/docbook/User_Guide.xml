@@ -1074,6 +1074,9 @@ public class MyApp {
     <chapter>
       <title>Creating POJOs</title>
       <section>
+        <title>Writing deployment descriptors</title>
+      </section>
+      <section>
         <title>Defining classloaders</title>
         <para>In order to create POJO instances we must first load the corresponding POJO classes into the JVM using a classloader. JBoss Microcontainer does this by using  the classloader associated with the current thread of execution, i.e. the thread context classloader. But what do we mean by the current thread of execution and who sets its context  classloader?</para>
         <para>In all of our examples so far we have created applications that only use a  single thread. This is the &apos;primordial&apos; thread created by the main() function:</para>
@@ -1196,10 +1199,7 @@ public class MyApp {
         </note>
       </section>
       <section>
-        <title>Using constructors</title>
-      </section>
-      <section>
-        <title>Using factory methods</title>
+        <title>Using constructors and factories</title>
       </section>
       <section>
         <title>Using JavaBean XML</title>
