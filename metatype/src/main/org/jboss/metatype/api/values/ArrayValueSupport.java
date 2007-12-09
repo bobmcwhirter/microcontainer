@@ -239,10 +239,10 @@ public class ArrayValueSupport<T extends Serializable> extends AbstractMetaValue
          return index < length;
       }
 
+      @SuppressWarnings("unchecked")
       public T next()
       {
-         Object next = Array.get(array, index ++);
-         return (T) next;
+         return (T) Array.get(array, index ++);
       }
 
       public void remove()

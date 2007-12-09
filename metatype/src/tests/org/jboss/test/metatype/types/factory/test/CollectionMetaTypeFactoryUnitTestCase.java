@@ -28,8 +28,7 @@ import java.util.List;
 import java.util.Set;
 
 import junit.framework.Test;
-
-import org.jboss.metatype.api.types.ArrayMetaType;
+import org.jboss.metatype.api.types.CollectionMetaType;
 import org.jboss.metatype.api.types.MetaType;
 import org.jboss.test.metatype.types.factory.support.TestSimpleComposite;
 
@@ -128,7 +127,7 @@ public class CollectionMetaTypeFactoryUnitTestCase extends AbstractMetaTypeFacto
     */
    public void testSimpleCollection() throws Exception
    {
-      testCollection("simpleCollection", String.class);
+      testCollection("simpleCollection", String.class, Collection.class);
    }
 
    /**
@@ -138,7 +137,7 @@ public class CollectionMetaTypeFactoryUnitTestCase extends AbstractMetaTypeFacto
     */
    public void testSimpleCompositeCollection() throws Exception
    {
-      testCollection("simpleCompositeCollection", TestSimpleComposite.class);
+      testCollection("simpleCompositeCollection", TestSimpleComposite.class, Collection.class);
    }
 
    /**
@@ -148,7 +147,7 @@ public class CollectionMetaTypeFactoryUnitTestCase extends AbstractMetaTypeFacto
     */
    public void testSimpleList() throws Exception
    {
-      testCollection("simpleList", String.class);
+      testCollection("simpleList", String.class, List.class);
    }
 
    /**
@@ -158,7 +157,7 @@ public class CollectionMetaTypeFactoryUnitTestCase extends AbstractMetaTypeFacto
     */
    public void testSimpleCompositeList() throws Exception
    {
-      testCollection("simpleCompositeList", TestSimpleComposite.class);
+      testCollection("simpleCompositeList", TestSimpleComposite.class, List.class);
    }
 
    /**
@@ -168,7 +167,7 @@ public class CollectionMetaTypeFactoryUnitTestCase extends AbstractMetaTypeFacto
     */
    public void testSimpleSet() throws Exception
    {
-      testCollection("simpleSet", String.class);
+      testCollection("simpleSet", String.class, Set.class);
    }
 
    /**
@@ -178,7 +177,7 @@ public class CollectionMetaTypeFactoryUnitTestCase extends AbstractMetaTypeFacto
     */
    public void testSimpleCompositeSet() throws Exception
    {
-      testCollection("simpleCompositeSet", TestSimpleComposite.class);
+      testCollection("simpleCompositeSet", TestSimpleComposite.class, Set.class);
    }
    
    /**
@@ -186,16 +185,18 @@ public class CollectionMetaTypeFactoryUnitTestCase extends AbstractMetaTypeFacto
     * 
     * @param methodName the method name to lookup the connection signature
     * @param elementClass the expected element type of the collection
+    * @param collectionClass the expected type of the collection
     * @throws Exception for any problem
     */
-   protected void testCollection(String methodName, Type elementClass) throws Exception
+   @SuppressWarnings("unchecked")
+   protected void testCollection(String methodName, Type elementClass, Class collectionClass) throws Exception
    {
-      Method method = getClass().getMethod(methodName, null);
+      Method method = getClass().getMethod(methodName);
       Type collectionType = method.getGenericReturnType();
       MetaType result = resolve(collectionType);
-      ArrayMetaType actual = assertInstanceOf(result, ArrayMetaType.class);
+      CollectionMetaType actual = assertInstanceOf(result, CollectionMetaType.class);
       MetaType elementType = resolve(elementClass);
-      ArrayMetaType expected = new ArrayMetaType(1, elementType);
-      testArray(expected, actual);
+      CollectionMetaType expected = new CollectionMetaType(collectionClass.getName(), elementType);
+      testCollection(expected, actual);
    }
 }

@@ -21,8 +21,11 @@
 */
 package org.jboss.test.metatype.values.factory.test;
 
-import java.util.Date;
+import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Collection;
+import java.util.HashSet;
+import java.util.Date;
 
 import junit.framework.Test;
 import org.jboss.metatype.api.values.MetaValue;
@@ -86,6 +89,30 @@ public class UnwrapValueUnitTestCase extends AbstractMetaValueFactoryTest
 
       checkSingle(new TestRecursiveSimpleComposite("something", composite), true);         
       checkSingle(new TestRecursiveSimpleComposite("something", composite), false);
+   }
+
+   public void testCollectionUnwrap() throws Exception
+   {
+      Integer i1 = 123;
+      Integer i2 = 123;
+      checkCollection(new ArrayList<Integer>(), i1, i2);
+      checkCollection(new HashSet<Integer>(), i1, i2);
+
+      TestEnum one = TestEnum.ONE;
+      TestEnum two = TestEnum.TWO;
+      TestEnum three = TestEnum.THREE;
+      checkCollection(new ArrayList<TestEnum>(), one, two, three, one);
+      checkCollection(new HashSet<TestEnum>(), one, two, three, one);
+
+      TestGeneric g1 = new TestGeneric("123");
+      TestGeneric g2 = new TestGeneric("123");
+      checkCollection(new ArrayList<TestGeneric>(), g1, g2);
+      checkCollection(new HashSet<TestGeneric>(), g1, g2);
+
+      TestSimpleComposite c1 = new TestSimpleComposite("123");
+      TestSimpleComposite c2 = new TestSimpleComposite("123");
+      checkCollection(new ArrayList<TestSimpleComposite>(), c1, c2);
+      checkCollection(new HashSet<TestSimpleComposite>(), c1, c2);
    }
 
    public void testArrayUnwrap() throws Exception
@@ -208,6 +235,13 @@ public class UnwrapValueUnitTestCase extends AbstractMetaValueFactoryTest
       else
          unwrapped = unwrapMetaValue(metaValue);
       assertEquals(object, unwrapped);
+   }
+
+   protected <T> void checkCollection(Collection<T> collection, T... params) throws Exception
+   {
+      collection.addAll(Arrays.asList(params));
+      checkSingle(collection, true);
+      checkSingle(collection, false);
    }
 
    protected void checkArray(Object object, boolean typeInfoFromObject, Asserter asserter)

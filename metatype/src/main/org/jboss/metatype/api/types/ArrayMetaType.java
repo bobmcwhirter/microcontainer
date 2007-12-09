@@ -412,7 +412,8 @@ public class ArrayMetaType<T extends Serializable> extends AbstractMetaType
       buffer.append(getTypeName());
       buffer.append(" dims=");
       buffer.append(dimension);
-      buffer.append(" elementType=" + elementType);
+      buffer.append(" elementType=");
+      buffer.append(elementType);
       cachedToString = buffer.toString();
       return cachedToString;
    }
@@ -422,6 +423,7 @@ public class ArrayMetaType<T extends Serializable> extends AbstractMetaType
     * 
     * @param elements the elements
     * @param dimension the dimension
+    * @return true if elements match, false otherwise
     */
    private boolean recursiveCheck(Object[] elements, int dimension)
    {

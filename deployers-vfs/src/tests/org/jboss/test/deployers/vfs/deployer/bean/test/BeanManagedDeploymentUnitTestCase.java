@@ -25,7 +25,6 @@ import java.util.Map;
 
 import junit.framework.Test;
 import junit.framework.TestSuite;
-
 import org.jboss.deployers.vfs.deployer.kernel.BeanDeployer;
 import org.jboss.deployers.vfs.deployer.kernel.BeanMetaDataDeployer;
 import org.jboss.deployers.vfs.deployer.kernel.KernelDeploymentDeployer;
@@ -34,13 +33,10 @@ import org.jboss.kernel.Kernel;
 import org.jboss.managed.api.ManagedObject;
 import org.jboss.managed.api.ManagedProperty;
 import org.jboss.managed.api.factory.ManagedObjectFactory;
-import org.jboss.managed.plugins.factory.AbstractManagedObjectFactory;
 import org.jboss.metatype.api.types.ArrayMetaType;
 import org.jboss.metatype.api.values.ArrayValue;
-import org.jboss.metatype.api.values.CompositeValue;
+import org.jboss.metatype.api.values.CollectionValue;
 import org.jboss.metatype.api.values.GenericValue;
-import org.jboss.metatype.api.values.MetaValue;
-import org.jboss.metatype.api.values.SimpleValue;
 
 /**
  * Tests of bean deployment ManagedObject/ManagedDeployment creation.
@@ -91,7 +87,8 @@ public class BeanManagedDeploymentUnitTestCase extends AbstractDeployerUnitTestC
       log.info("beanFactories.ManagedProperties: "+beanFactoriesMO.getProperties());
       ManagedProperty properties = beanFactoriesMO.getProperty("properties");
       assertNotNull(properties);
-      ArrayValue<CompositeValue> propertiesArray = ArrayValue.class.cast(properties.getValue());
+      CollectionValue propertiesArray = CollectionValue.class.cast(properties.getValue());
+      assertNotNull(propertiesArray);
    }
 
    public void testBeanManagedDeployment()

@@ -29,17 +29,16 @@ import java.util.LinkedHashSet;
 import java.util.List;
 import java.util.Set;
 
-import org.jboss.metatype.api.types.ArrayMetaType;
+import junit.framework.Test;
+import org.jboss.metatype.api.types.CollectionMetaType;
 import org.jboss.metatype.api.types.CompositeMetaType;
-import org.jboss.metatype.api.values.ArrayValue;
-import org.jboss.metatype.api.values.ArrayValueSupport;
+import org.jboss.metatype.api.values.CollectionValue;
+import org.jboss.metatype.api.values.CollectionValueSupport;
 import org.jboss.metatype.api.values.CompositeValue;
 import org.jboss.metatype.api.values.CompositeValueSupport;
 import org.jboss.metatype.api.values.MetaValue;
 import org.jboss.metatype.api.values.SimpleValueSupport;
 import org.jboss.test.metatype.values.factory.support.TestSimpleComposite;
-
-import junit.framework.Test;
 
 /**
  * CollectionValueFactoryUnitTestCase.
@@ -216,15 +215,15 @@ public class CollectionValueFactoryUnitTestCase extends AbstractMetaValueFactory
     */
    public void testSimple(String methodName, Collection<String> collection) throws Exception
    {
-      Method method = getClass().getMethod(methodName, null); 
+      Method method = getClass().getMethod(methodName);
       Type type = method.getGenericReturnType();
 
-      ArrayMetaType arrayType = assertInstanceOf(resolve(type), ArrayMetaType.class);
+      CollectionMetaType arrayType = assertInstanceOf(resolve(type), CollectionMetaType.class);
       MetaValue[] metaArray = { SimpleValueSupport.wrap("Hello"), SimpleValueSupport.wrap("Goodbye") };
-      ArrayValueSupport expected = new ArrayValueSupport(arrayType, metaArray);
+      CollectionValueSupport expected = new CollectionValueSupport(arrayType, metaArray);
       
       MetaValue result = createMetaValue(collection, type);
-      ArrayValue actual = assertInstanceOf(result, ArrayValue.class);
+      CollectionValue actual = assertInstanceOf(result, CollectionValue.class);
       getLog().debug("Collection Value: " + actual);
       assertEquals(expected, actual);
    }
@@ -238,10 +237,10 @@ public class CollectionValueFactoryUnitTestCase extends AbstractMetaValueFactory
     */
    public void testComposite(String methodName, Collection<TestSimpleComposite> collection) throws Exception
    {
-      Method method = getClass().getMethod(methodName, null); 
+      Method method = getClass().getMethod(methodName);
       Type type = method.getGenericReturnType();
       
-      ArrayMetaType arrayType = assertInstanceOf(resolve(type), ArrayMetaType.class);
+      CollectionMetaType arrayType = assertInstanceOf(resolve(type), CollectionMetaType.class);
       CompositeMetaType compositeType = assertInstanceOf(resolve(TestSimpleComposite.class), CompositeMetaType.class);
       String[] itemNames = { "something" };
       MetaValue[] itemValues = { SimpleValueSupport.wrap("Hello") };
@@ -249,10 +248,10 @@ public class CollectionValueFactoryUnitTestCase extends AbstractMetaValueFactory
       itemValues = new MetaValue[] { SimpleValueSupport.wrap("Goodbye") };
       CompositeValue goodbyeValue = new CompositeValueSupport(compositeType, itemNames, itemValues);
       MetaValue[] metaArray = { helloValue, goodbyeValue };
-      ArrayValueSupport expected = new ArrayValueSupport(arrayType, metaArray);
+      CollectionValueSupport expected = new CollectionValueSupport(arrayType, metaArray);
       
       MetaValue result = createMetaValue(collection, type);
-      ArrayValue actual = assertInstanceOf(result, ArrayValue.class);
+      CollectionValue actual = assertInstanceOf(result, CollectionValue.class);
       getLog().debug("Collection Value: " + actual);
       assertEquals(expected, actual);
    }

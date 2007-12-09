@@ -155,6 +155,11 @@ public abstract class AbstractMetaType<T extends Serializable> implements MetaTy
       return array;
    }
 
+   public boolean isCollection()
+   {
+      return false;
+   }
+
    public abstract boolean isValue(Object obj);
 
    /**
@@ -177,31 +182,34 @@ public abstract class AbstractMetaType<T extends Serializable> implements MetaTy
       if (description == null || description.trim().equals(""))
          throw new IllegalArgumentException("null or empty description");
 
-      // Calculate the underlying class and whether this is an array
-      String testClassName = getBaseClassName(className);
-      if (testClassName == null)
-         throw new IllegalArgumentException("Invalid array declaration (see the javadocs for java.lang.Class): " + className);
-      if (testClassName.equals(className) == false)
-         array = true;
+      if (isCollection() == false)
+      {
+         // Calculate the underlying class and whether this is an array
+         String testClassName = getBaseClassName(className);
+         if (testClassName == null)
+            throw new IllegalArgumentException("Invalid array declaration (see the javadocs for java.lang.Class): " + className);
+         if (testClassName.equals(className) == false)
+            array = true;
 
-      // Check the underlying class
-      boolean ok = false;
-      for (int i = 0; i < ALLOWED_CLASSNAMES.size(); i++)
-      {
-         if (testClassName.equals(ALLOWED_CLASSNAMES.get(i)))
+         // Check the underlying class
+         boolean ok = false;
+         for (int i = 0; i < ALLOWED_CLASSNAMES.size(); i++)
          {
-            ok = true;
-            break;
+            if (testClassName.equals(ALLOWED_CLASSNAMES.get(i)))
+            {
+               ok = true;
+               break;
+            }
          }
-      }
-      if (ok == false)
-      {
-         // Check for a primative array type
-         int index = className.lastIndexOf('[');
-         if (index == className.length()-2)
-            ok = ArrayMetaType.isPrimitiveEncoding(className.substring(index+1));
          if (ok == false)
-            throw new IllegalArgumentException("Not a MetaType allowed class name: " + className);
+         {
+            // Check for a primative array type
+            int index = className.lastIndexOf('[');
+            if (index == className.length()-2)
+               ok = ArrayMetaType.isPrimitiveEncoding(className.substring(index+1));
+            if (ok == false)
+               throw new IllegalArgumentException("Not a MetaType allowed class name: " + className);
+         }
       }
 
       // Looks ok

@@ -30,6 +30,7 @@ import org.jboss.metatype.api.types.ImmutableCompositeMetaType;
 import org.jboss.metatype.api.types.MetaType;
 import org.jboss.metatype.api.types.SimpleMetaType;
 import org.jboss.metatype.api.types.TableMetaType;
+import org.jboss.metatype.api.types.CollectionMetaType;
 import org.jboss.metatype.api.values.MetaValue;
 import org.jboss.metatype.api.values.SimpleValue;
 import org.jboss.metatype.api.values.SimpleValueSupport;
@@ -294,6 +295,19 @@ public abstract class AbstractMetaTypeTest extends BaseTestCase
    protected void testArray(ArrayMetaType expected, ArrayMetaType actual) throws Exception
    {
       getLog().debug("Array MetaType: className=" + actual.getClassName() + " typeName=" + actual.getTypeName() + " description=" + actual.getDescription() + " dim=" + actual.getDimension());
+      assertEquals(expected, actual);
+   }
+
+   /**
+    * Test an array type
+    *
+    * @param expected the expected
+    * @param actual the actual
+    * @throws Exception for any problem
+    */
+   protected void testCollection(CollectionMetaType expected, CollectionMetaType actual) throws Exception
+   {
+      getLog().debug("Collection MetaType: className=" + actual.getClassName() + " typeName=" + actual.getTypeName() + " description=" + actual.getDescription());
       assertEquals(expected, actual);
    }
 

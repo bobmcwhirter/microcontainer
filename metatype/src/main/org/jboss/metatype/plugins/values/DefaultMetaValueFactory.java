@@ -47,6 +47,7 @@ import org.jboss.metatype.api.types.MetaType;
 import org.jboss.metatype.api.types.MetaTypeFactory;
 import org.jboss.metatype.api.types.SimpleMetaType;
 import org.jboss.metatype.api.types.TableMetaType;
+import org.jboss.metatype.api.types.CollectionMetaType;
 import org.jboss.metatype.api.values.ArrayValue;
 import org.jboss.metatype.api.values.ArrayValueSupport;
 import org.jboss.metatype.api.values.CompositeValue;
@@ -61,6 +62,8 @@ import org.jboss.metatype.api.values.SimpleValue;
 import org.jboss.metatype.api.values.SimpleValueSupport;
 import org.jboss.metatype.api.values.TableValue;
 import org.jboss.metatype.api.values.TableValueSupport;
+import org.jboss.metatype.api.values.CollectionValue;
+import org.jboss.metatype.api.values.CollectionValueSupport;
 import org.jboss.metatype.plugins.types.DefaultMetaTypeFactory;
 import org.jboss.metatype.spi.values.MetaValueBuilder;
 import org.jboss.reflect.spi.ArrayInfo;
@@ -81,7 +84,7 @@ public class DefaultMetaValueFactory extends MetaValueFactory
    
    /** The configuration */
    private static Configuration configuration;
-   
+
    static
    {
       configuration = AccessController.doPrivileged(new PrivilegedAction<Configuration>()
@@ -105,6 +108,9 @@ public class DefaultMetaValueFactory extends MetaValueFactory
    /** The builders */
    private Map<Class, WeakReference<MetaValueBuilder>> builders = new WeakHashMap<Class, WeakReference<MetaValueBuilder>>();
  
+   /** The Object type info */
+   private static final TypeInfo OBJECT_TYPE_INFO = configuration.getTypeInfo(Object.class);
+
    public void setBuilder(Class<?> clazz, MetaValueBuilder builder)
    {
       synchronized (builders)
@@ -153,7 +159,7 @@ public class DefaultMetaValueFactory extends MetaValueFactory
     * @param type the type
     * @param value the value
     * @param mapping the mapping
-    * @return the enum value
+    * @return the generic value
     */
    public static GenericValue createGenericValue(GenericMetaType type, Object value, Map<Object, MetaValue> mapping)
    {
@@ -164,6 +170,34 @@ public class DefaultMetaValueFactory extends MetaValueFactory
          throw new IllegalArgumentException("Not serializable: " + value.getClass().getName());
 
       GenericValue result = new GenericValueSupport(type, (Serializable) value);
+      mapping.put(value, result);
+      return result;
+   }
+
+   /**
+    * Create a collection value
+    *
+    * @param type the type
+    * @param value the value
+    * @param mapping the mapping
+    * @return the generic value
+    */
+   public CollectionValue createCollectionValue(CollectionMetaType type, Object value, Map<Object, MetaValue> mapping)
+   {
+      if (value == null)
+         return null;
+
+      Collection collection = (Collection)value;
+      MetaValue[] elements = new MetaValue[collection.size()];
+      int i = 0;
+      for(Object ce : collection)
+      {
+         // recalculate element info, since usually more deterministic
+         TypeInfo typeInfo = configuration.getTypeInfo(ce.getClass());
+         MetaType metaType = metaTypeFactory.resolve(typeInfo);
+         elements[i++] = internalCreate(ce, typeInfo, metaType);             
+      }
+      CollectionValue result = new CollectionValueSupport(type, elements);
       mapping.put(value, result);
       return result;
    }
@@ -270,11 +304,6 @@ public class DefaultMetaValueFactory extends MetaValueFactory
             oldArray = convertPrimativeArray(classInfo, value);
          else
             oldArray = (Object[]) value;
-      }
-      else if (classInfo.isCollection())
-      {
-         Collection c = (Collection) value;
-         oldArray = c.toArray();
       }
       else
          throw new UnsupportedOperationException("Cannot construct array for " + value.getClass());
@@ -505,6 +534,11 @@ public class DefaultMetaValueFactory extends MetaValueFactory
          CompositeValue compositeValue = (CompositeValue)metaValue;
          return unwrapComposite(compositeValue, type);
       }
+      else if (metaType.isCollection())
+      {
+         CollectionValue collectionValue = (CollectionValue)metaValue;
+         return unwrapCollection(collectionValue, type);
+      }
 
       throw new IllegalArgumentException("Unsupported meta value: " + metaValue);
    }
@@ -613,6 +647,46 @@ public class DefaultMetaValueFactory extends MetaValueFactory
             propertyInfo.set(bean, value);
          }
          return bean;
+      }
+      catch (Throwable t)
+      {
+         throw new UndeclaredThrowableException(t);
+      }
+   }
+
+   /**
+    * Unwrap collection meta value.
+    *
+    * @param collectionValue the collection value
+    * @param type the type info
+    * @return unwrapped collection
+    */
+   protected Object unwrapCollection(CollectionValue collectionValue, TypeInfo type)
+   {
+      try
+      {
+         BeanInfo collectionInfo;
+         if (type != null)
+         {
+            collectionInfo = configuration.getBeanInfo(type);
+         }
+         else
+         {
+            MetaType metaType = collectionValue.getMetaType();
+            collectionInfo = configuration.getBeanInfo(metaType.getTypeName(), Thread.currentThread().getContextClassLoader());
+         }
+         Collection collection = (Collection)createNewInstance(collectionInfo);
+         Iterator<MetaValue> iter = collectionValue.iterator();
+         while (iter.hasNext())
+         {
+            MetaValue metaValue = iter.next();
+            TypeInfo componentType = collectionInfo.getClassInfo().getComponentType();
+            // try better
+            if (OBJECT_TYPE_INFO.equals(componentType))
+               componentType = getTypeInfo(metaValue.getMetaType(), null);
+            collection.add(unwrap(metaValue, componentType));
+         }
+         return collection;
       }
       catch (Throwable t)
       {
@@ -775,7 +849,9 @@ public class DefaultMetaValueFactory extends MetaValueFactory
                result = createTableValue((TableMetaType) metaType, (Map) value, mapping);
             else if (metaType.isGeneric())
                result = createGenericValue((GenericMetaType) metaType, value, mapping);
-            else 
+            else if (metaType.isCollection())
+               result = createCollectionValue((CollectionMetaType) metaType, value, mapping);
+            else
                throw new IllegalStateException("Unknown metaType: " + metaType);
          }
          return result;

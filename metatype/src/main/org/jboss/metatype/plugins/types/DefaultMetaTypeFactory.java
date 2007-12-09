@@ -48,6 +48,7 @@ import org.jboss.metatype.api.types.MetaType;
 import org.jboss.metatype.api.types.MetaTypeFactory;
 import org.jboss.metatype.api.types.SimpleMetaType;
 import org.jboss.metatype.api.types.TableMetaType;
+import org.jboss.metatype.api.types.CollectionMetaType;
 import org.jboss.metatype.spi.types.MetaTypeBuilder;
 import org.jboss.reflect.spi.ArrayInfo;
 import org.jboss.reflect.spi.ClassInfo;
@@ -264,7 +265,8 @@ public class DefaultMetaTypeFactory extends MetaTypeFactory
     * @param typeInfo the type info
     * @return the metatype
     */
-   public ArrayMetaType generateCollection(ClassInfo typeInfo)
+   @SuppressWarnings("unchecked")
+   public CollectionMetaType generateCollection(ClassInfo typeInfo)
    {
       TypeInfo elementType = objectTypeInfo;
       
@@ -273,7 +275,7 @@ public class DefaultMetaTypeFactory extends MetaTypeFactory
          elementType = types[0];
       
       MetaType elementMetaType = resolve(elementType);
-      return new ArrayMetaType(1, elementMetaType);
+      return new CollectionMetaType(typeInfo.getName(), elementMetaType);
    }
    
    /**

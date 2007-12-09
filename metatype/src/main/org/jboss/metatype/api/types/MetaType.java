@@ -125,6 +125,13 @@ public interface MetaType<T extends Serializable> extends Serializable
    boolean isArray();
 
    /**
+    * Retrieve whether the class name of the type is a collection
+    *
+    * @return true when it is a collection or false otherwise
+    */
+   boolean isCollection();
+
+   /**
     * Retrieve whether the class name of the type is an enum
     *
     * @return true when it is an enum or false otherwise
