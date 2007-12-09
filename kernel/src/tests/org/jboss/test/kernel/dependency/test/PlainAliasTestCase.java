@@ -134,11 +134,12 @@ public class PlainAliasTestCase extends AbstractKernelDependencyTest
       assertUninstall("OriginalBean");
       assertEquals(ControllerState.ERROR, context1.getState());
       assertEquals(ControllerState.ERROR, alias.getState());
-      assertEquals(ControllerState.START, directAlias.getState());
+      assertEquals(getDirectAliasUnistallState(), directAlias.getState());
       assertNull(getUtil().getContext("OriginalBean"));
       assertNull(getUtil().getContext("MyAlias"));
 
       context1 = assertInstall(0, "OriginalBean");
+      directAlias = assertContext("MyAlias_Alias");
       assertEquals(ControllerState.INSTALLED, directAlias.getState());
       assertEquals(context1, assertContext("MyAlias"));
 
@@ -148,6 +149,11 @@ public class PlainAliasTestCase extends AbstractKernelDependencyTest
       assertNull(getUtil().getContext("MyAlias"));
 
       checkLastSimpleAliasInstall(context1);
+   }
+
+   protected ControllerState getDirectAliasUnistallState()
+   {
+      return ControllerState.START;
    }
 
    protected void checkLastSimpleAliasInstall(ControllerContext context) throws Throwable

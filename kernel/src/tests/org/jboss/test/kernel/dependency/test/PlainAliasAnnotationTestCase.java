@@ -26,6 +26,7 @@ import org.jboss.beans.metadata.spi.BeanMetaData;
 import org.jboss.beans.metadata.plugins.AbstractBeanMetaData;
 import org.jboss.test.kernel.dependency.support.AliasSimpleBeanImpl;
 import org.jboss.dependency.spi.ControllerContext;
+import org.jboss.dependency.spi.ControllerState;
 
 /**
  * Plain alias tests.
@@ -63,5 +64,10 @@ public class PlainAliasAnnotationTestCase extends PlainAliasTestCase
    protected void installAlias() throws Throwable
    {
       // do nothing should be part of @annotations
+   }
+
+   protected ControllerState getDirectAliasUnistallState()
+   {
+      return ControllerState.ERROR;
    }
 }

@@ -37,4 +37,12 @@ public interface BeanAnnotationAdapter
     * @throws Throwable for any error
     */
    void applyAnnotations(MetaDataVisitor visitor) throws Throwable;
+
+   /**
+    * Clean the annotations.
+    *
+    * @param visitor the visitor
+    * @throws Throwable for any error
+    */
+   void cleanAnnotations(MetaDataVisitor visitor) throws Throwable;
 }

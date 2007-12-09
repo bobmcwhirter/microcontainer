@@ -33,6 +33,8 @@ import java.util.Set;
 import org.jboss.beans.metadata.spi.BeanMetaData;
 import org.jboss.beans.metadata.spi.MetaDataVisitor;
 import org.jboss.beans.metadata.spi.MetaDataVisitorNode;
+import org.jboss.beans.metadata.api.annotations.Cleanup;
+import org.jboss.beans.metadata.api.annotations.CleanupOnly;
 import org.jboss.kernel.spi.dependency.KernelControllerContext;
 import org.jboss.metadata.spi.MetaData;
 import org.jboss.reflect.spi.AnnotatedInfo;
@@ -50,6 +52,8 @@ public abstract class AbstractAnnotationPlugin<T extends AnnotatedInfo, C extend
 {
    private Class<C> annotation;
    private Set<ElementType> types;
+   private boolean isCleanup;
+   private boolean isCleanupOnly;
 
    protected AbstractAnnotationPlugin(Class<C> annotation)
    {
@@ -71,6 +75,8 @@ public abstract class AbstractAnnotationPlugin<T extends AnnotatedInfo, C extend
                log.warn("Unsupported type " + type + " on annotation " + annotation);
          }
       }
+      isCleanupOnly = annotation.isAnnotationPresent(CleanupOnly.class);
+      isCleanup = isCleanupOnly || annotation.isAnnotationPresent(Cleanup.class);
    }
 
    /**
@@ -177,37 +183,82 @@ public abstract class AbstractAnnotationPlugin<T extends AnnotatedInfo, C extend
    {
       boolean trace = log.isTraceEnabled();
       
-      Class<C> annotationClass = getAnnotation();
-      C annotation = retrieval.getAnnotation(annotationClass);
-      if (annotation == null)
+      if (isCleanupOnly == false)
       {
-         if (trace)
-            log.trace("No annotation: " + annotationClass.getName());
-         return;
-      }
-      if (isMetaDataAlreadyPresent(info, annotation, visitor.getControllerContext()))
-      {
-         if (trace)
-            log.trace("MetaDataAlreadyPresent, ignoring " + annotation);
-         return;
-      }
-      if (trace)
-         log.trace("Applying annotation: " + annotation);
-      List<? extends MetaDataVisitorNode> nodes = internalApplyAnnotation(info, retrieval, annotation, visitor.getControllerContext());
-      if (nodes != null && nodes.isEmpty() == false)
-      {
-         for(MetaDataVisitorNode node : nodes)
+         Class<C> annotationClass = getAnnotation();
+         C annotation = retrieval.getAnnotation(annotationClass);
+         if (annotation == null)
          {
-            node.initialVisit(visitor);
-            node.describeVisit(visitor);
+            if (trace)
+               log.trace("No annotation: " + annotationClass.getName());
+            return;
+         }
+         if (isMetaDataAlreadyPresent(info, annotation, visitor.getControllerContext()))
+         {
+            if (trace)
+               log.trace("MetaDataAlreadyPresent, ignoring " + annotation);
+            return;
+         }
+         if (trace)
+            log.trace("Applying annotation: " + annotation);
+         List<? extends MetaDataVisitorNode> nodes = internalApplyAnnotation(info, retrieval, annotation, visitor.getControllerContext());
+         if (nodes != null && nodes.isEmpty() == false)
+         {
+            for(MetaDataVisitorNode node : nodes)
+            {
+               node.initialVisit(visitor);
+               node.describeVisit(visitor);
+            }
          }
       }
+      else if (trace)
+         log.trace("Annotation " + annotation + " is @CleanupOnly, nothing to apply on install.");
+   }
+
+   public void cleanAnnotation(T info, MetaData retrieval, MetaDataVisitor visitor) throws Throwable
+   {
+      boolean trace = log.isTraceEnabled();
+
+      if (isCleanup)
+      {
+         Class<C> annotationClass = getAnnotation();
+         C annotation = retrieval.getAnnotation(annotationClass);
+         if (annotation == null)
+         {
+            if (trace)
+               log.trace("No annotation: " + annotationClass.getName());
+         }
+         else
+         {
+            if (trace)
+               log.trace("Cleaning annotation: " + annotation);
+            internalCleanAnnotation(info, retrieval, annotation, visitor.getControllerContext());
+         }
+      }
+      else if (trace)
+         log.trace("Annotation " + annotation + " is not a @Cleanup annotation.");
+   }
+
+   /**
+    * Clean annotation's actions.
+    *
+    * @param info the info
+    * @param retrieval the metadata
+    * @param annotation the annotation
+    * @param context the context
+    * @throws Throwable for any error
+    */
+   protected void internalCleanAnnotation(T info, MetaData retrieval, C annotation, KernelControllerContext context) throws Throwable
+   {
+      // empty      
    }
 
    protected void toString(JBossStringBuilder buffer)
    {
       buffer.append("@annotation=").append(annotation);
       buffer.append(" ,types=").append(types);
+      buffer.append(" ,cleanup=").append(isCleanup);
+      buffer.append(" ,cleanupOnly=").append(isCleanupOnly);
    }
 
    public void toShortString(JBossStringBuilder buffer)

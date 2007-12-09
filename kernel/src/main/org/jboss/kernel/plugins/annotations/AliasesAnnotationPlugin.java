@@ -32,6 +32,7 @@ import org.jboss.dependency.spi.ControllerContext;
 import org.jboss.kernel.spi.dependency.KernelControllerContext;
 import org.jboss.reflect.spi.ClassInfo;
 import org.jboss.util.StringPropertyReplacer;
+import org.jboss.metadata.spi.MetaData;
 
 /**
  * Aliases annotation plugin.
@@ -61,7 +62,6 @@ public class AliasesAnnotationPlugin extends ClassAnnotationPlugin<Aliases>
             // impl detail (_Alias)
             if (controller.getContext(alias + "_Alias", null) == null)
             {
-               // TODO!! impl remove
                controller.addAlias(alias, beanMetaData.getName());
             }
             else
@@ -74,5 +74,27 @@ public class AliasesAnnotationPlugin extends ClassAnnotationPlugin<Aliases>
       }
       // no metadata added
       return null;
+   }
+
+   protected void internalCleanAnnotation(ClassInfo info, MetaData retrieval, Aliases annotation, KernelControllerContext context) throws Throwable
+   {
+      BeanMetaData beanMetaData = context.getBeanMetaData();
+      Set<Object> aliases = beanMetaData.getAliases();
+      Controller controller = context.getController();
+      for(String alias : annotation.value())
+      {
+         // check for ${property}
+         if (annotation.replace())
+            alias = StringPropertyReplacer.replaceProperties(alias);
+
+         if (aliases == null || aliases.contains(alias) == false)
+         {
+            // impl detail (_Alias)
+            if (controller.getContext(alias + "_Alias", null) != null)
+            {
+               controller.removeAlias(alias);
+            }
+         }         
+      }
    }
 }

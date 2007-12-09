@@ -27,27 +27,12 @@ import java.lang.annotation.Retention;
 import java.lang.annotation.RetentionPolicy;
 
 /**
- * The aliases.
- * Equivalent to deployment's alias element.
+ * Marks that an annotation is only used while uninstalling.
  *
  * @author <a href="mailto:ales.justin@jboss.com">Ales Justin</a>
  */
+@Target(ElementType.ANNOTATION_TYPE)
 @Retention(RetentionPolicy.RUNTIME)
-@Target({ElementType.TYPE})
-@Cleanup
-public @interface Aliases
+public @interface CleanupOnly
 {
-   /**
-    * Get aliases array.
-    *
-    * @return the aliases
-    */
-   String[] value();
-
-   /**
-    * Do system property replace.
-    *
-    * @return true to replace system property, false otherwise
-    */
-   boolean replace() default true;
 }

@@ -61,4 +61,14 @@ public interface AnnotationPlugin<T extends AnnotatedInfo, C extends Annotation>
     * @throws Throwable for any error
     */
    void applyAnnotation(T info, MetaData retrieval, MetaDataVisitor visitor) throws Throwable;
+
+   /**
+    * Check if the annotation requires cleaning after itself.
+    *
+    * @param info the info
+    * @param retrieval metadata instance
+    * @param visitor current context visitor
+    * @throws Throwable for any error
+    */
+   void cleanAnnotation(T info, MetaData retrieval, MetaDataVisitor visitor) throws Throwable;
 }

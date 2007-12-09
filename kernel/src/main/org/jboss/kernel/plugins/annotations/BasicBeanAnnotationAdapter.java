@@ -158,6 +158,23 @@ public class BasicBeanAnnotationAdapter implements BeanAnnotationAdapter
 
    public void applyAnnotations(MetaDataVisitor visitor) throws Throwable
    {
+      handleAnnotations(visitor, true);
+   }
+
+   public void cleanAnnotations(MetaDataVisitor visitor) throws Throwable
+   {
+      handleAnnotations(visitor, false);
+   }
+
+   /**
+    * Handle apply or cleanup of annotations.
+    *
+    * @param visitor the metadata visitor
+    * @param isApplyPhase is this apply phase
+    * @throws Throwable for any error
+    */
+   protected void handleAnnotations(MetaDataVisitor visitor, boolean isApplyPhase) throws Throwable
+   {
       KernelControllerContext context = visitor.getControllerContext();
       Kernel kernel = context.getKernel();
       KernelMetaDataRepository repository = kernel.getMetaDataRepository();
@@ -172,7 +189,12 @@ public class BasicBeanAnnotationAdapter implements BeanAnnotationAdapter
       // class
       ClassInfo classInfo = info.getClassInfo();
       for(AnnotationPlugin plugin : classAnnotationPlugins)
-         plugin.applyAnnotation(classInfo, retrieval, visitor);
+      {
+         if (isApplyPhase)
+            plugin.applyAnnotation(classInfo, retrieval, visitor);
+         else
+            plugin.cleanAnnotation(classInfo, retrieval, visitor);
+      }
 
       // constructors
       Set<ConstructorInfo> constructors = info.getConstructors();
@@ -185,7 +207,12 @@ public class BasicBeanAnnotationAdapter implements BeanAnnotationAdapter
             if (cmdr != null)
             {
                for(AnnotationPlugin plugin : constructorAnnotationPlugins)
-                  plugin.applyAnnotation(ci, cmdr, visitor);
+               {
+                  if (isApplyPhase)
+                     plugin.applyAnnotation(ci, cmdr, visitor);
+                  else
+                     plugin.cleanAnnotation(ci, cmdr, visitor);
+               }
             }
             else if (trace)
                log.trace("No annotations for " + ci);
@@ -210,7 +237,12 @@ public class BasicBeanAnnotationAdapter implements BeanAnnotationAdapter
                if (cmdr != null)
                {
                   for(AnnotationPlugin plugin : propertyAnnotationPlugins)
-                     plugin.applyAnnotation(pi, cmdr, visitor);
+                  {
+                     if (isApplyPhase)
+                        plugin.applyAnnotation(pi, cmdr, visitor);
+                     else
+                        plugin.cleanAnnotation(pi, cmdr, visitor);
+                  }
                }
                else if (trace)
                   log.trace("No annotations for property " + pi.getName());
@@ -233,7 +265,12 @@ public class BasicBeanAnnotationAdapter implements BeanAnnotationAdapter
                if (cmdr != null)
                {
                   for(AnnotationPlugin plugin : methodAnnotationPlugins)
-                     plugin.applyAnnotation(mi, cmdr, visitor);
+                  {
+                     if (isApplyPhase)
+                        plugin.applyAnnotation(mi, cmdr, visitor);
+                     else
+                        plugin.cleanAnnotation(mi, cmdr, visitor);
+                  }
                }
                else if (trace)
                   log.trace("No annotations for " + mi);
@@ -256,7 +293,12 @@ public class BasicBeanAnnotationAdapter implements BeanAnnotationAdapter
                if (cmdr != null)
                {
                   for(AnnotationPlugin plugin : methodAnnotationPlugins)
-                     plugin.applyAnnotation(smi, cmdr, visitor);
+                  {
+                     if (isApplyPhase)
+                        plugin.applyAnnotation(smi, cmdr, visitor);
+                     else
+                        plugin.cleanAnnotation(smi, cmdr, visitor);
+                  }
                }
                else if (trace)
                   log.trace("No annotations for " + smi);
@@ -277,7 +319,12 @@ public class BasicBeanAnnotationAdapter implements BeanAnnotationAdapter
             if (cmdr != null)
             {
                for(AnnotationPlugin plugin : fieldAnnotationPlugins)
-                  plugin.applyAnnotation(fi, cmdr, visitor);
+               {
+                  if (isApplyPhase)
+                     plugin.applyAnnotation(fi, cmdr, visitor);
+                  else
+                     plugin.cleanAnnotation(fi, cmdr, visitor);
+               }
             }
             else if (trace)
                log.trace("No annotations for field " + fi.getName());

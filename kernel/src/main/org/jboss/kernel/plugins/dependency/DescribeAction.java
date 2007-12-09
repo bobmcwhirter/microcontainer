@@ -72,4 +72,22 @@ public class DescribeAction extends KernelControllerContextAction
       }
    }
 
+   protected void uninstallActionInternal(KernelControllerContext context)
+   {
+      // handle custom annotations
+      AnnotationMetaDataVisitor annotationsVisitor = new AnnotationMetaDataVisitor(context);
+      annotationsVisitor.before();
+      try
+      {
+         BeanAnnotationAdapterFactory.getBeanAnnotationAdapter().cleanAnnotations(annotationsVisitor);
+      }
+      catch(Throwable t)
+      {
+         log.debug("Error while cleaning the annotations: " + t);
+      }
+      finally
+      {
+         annotationsVisitor.after();
+      }
+   }
 }
