@@ -175,6 +175,9 @@ public class BasicBeanAnnotationAdapter implements BeanAnnotationAdapter
     */
    protected void handleAnnotations(MetaDataVisitor visitor, boolean isApplyPhase) throws Throwable
    {
+      if (visitor == null)
+         throw new IllegalArgumentException("Null meta data visitor.");
+
       KernelControllerContext context = visitor.getControllerContext();
       Kernel kernel = context.getKernel();
       KernelMetaDataRepository repository = kernel.getMetaDataRepository();
