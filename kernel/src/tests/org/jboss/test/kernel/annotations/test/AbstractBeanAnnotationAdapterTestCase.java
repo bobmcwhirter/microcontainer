@@ -58,22 +58,6 @@ public abstract class AbstractBeanAnnotationAdapterTestCase extends BaseTestCase
 
    protected void runAnnotations(Object bean) throws Throwable
    {
-      applyAnnotations(bean);
-      cleanAnnotations(bean);
-   }
-
-   protected void applyAnnotations(Object bean) throws Throwable
-   {
-      handleAnnotations(bean, true);
-   }
-
-   protected void cleanAnnotations(Object bean) throws Throwable
-   {
-      handleAnnotations(bean, false);
-   }
-
-   protected void handleAnnotations(Object bean, boolean isApplyPhase) throws Throwable
-   {
       // bootstrap
       BasicBootstrap bootstrap = new BasicBootstrap(new TestKernelConfig());
       bootstrap.run();
