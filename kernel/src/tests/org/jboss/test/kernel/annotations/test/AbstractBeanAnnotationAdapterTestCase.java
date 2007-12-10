@@ -58,12 +58,7 @@ public abstract class AbstractBeanAnnotationAdapterTestCase extends BaseTestCase
 
    protected void runAnnotations(Object bean) throws Throwable
    {
-      // bootstrap
-      BasicBootstrap bootstrap = new BasicBootstrap(new TestKernelConfig());
-      bootstrap.run();
-      Kernel kernel = bootstrap.getKernel();
-      KernelController controller = kernel.getController();
-      assertInstanceOf(controller, TestController.class);
+      KernelController controller = getController();
       String name = bean.toString();
       AbstractBeanMetaData beanMetaData = new AbstractBeanMetaData(name, bean.getClass().getName());
       try
@@ -74,6 +69,17 @@ public abstract class AbstractBeanAnnotationAdapterTestCase extends BaseTestCase
       {
          controller.uninstall(name);
       }
+   }
+
+   protected KernelController getController() throws Throwable
+   {
+      // bootstrap
+      BasicBootstrap bootstrap = new BasicBootstrap(new TestKernelConfig());
+      bootstrap.run();
+      Kernel kernel = bootstrap.getKernel();
+      KernelController controller = kernel.getController();
+      assertInstanceOf(controller, TestController.class);
+      return controller;
    }
 
    private class TestKernelConfig extends PropertyKernelConfig
