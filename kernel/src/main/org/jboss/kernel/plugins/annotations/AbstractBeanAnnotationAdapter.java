@@ -62,15 +62,31 @@ public abstract class AbstractBeanAnnotationAdapter implements BeanAnnotationAda
    protected Set<AnnotationPlugin> methodAnnotationPlugins = new HashSet<AnnotationPlugin>();
    protected Set<AnnotationPlugin> fieldAnnotationPlugins = new HashSet<AnnotationPlugin>();
 
+   /**
+    * Add the annotation plugin.
+    * Breaks down the plugin usage into
+    * different ElementType support collections.
+    *
+    * @param plugin the annotation plugin
+    */
    protected void addAnnotationPlugin(AnnotationPlugin plugin)
    {
+      if (plugin == null)
+         throw new IllegalArgumentException("Null plugin.");
+      
       Class<? extends Annotation> annotation = plugin.getAnnotation();
+      if (annotation == null)
+         throw new IllegalArgumentException("Null annotation class: " + plugin);
+      
       if (annotation.getAnnotation(Target.class) == null)
          log.warn("Annotation " + annotation + " missing @Target annotation!");
       if (annotation.getAnnotation(Retention.class) == null)
          log.warn("Annotation " + annotation + " missing @Retention annotation!");
 
       Set supported = plugin.getSupportedTypes();
+      if (supported == null || supported.isEmpty())
+         throw new IllegalArgumentException("Null or empty support types: " + plugin);
+
       if (supported.contains(ElementType.TYPE))
       {
          classAnnotationPlugins.add(plugin);

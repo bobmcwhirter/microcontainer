@@ -21,90 +21,45 @@
 */
 package org.jboss.kernel.plugins.dependency;
 
-import java.util.Iterator;
 import java.util.Set;
 
 import org.jboss.beans.info.spi.BeanInfo;
+import org.jboss.beans.info.spi.PropertyInfo;
+import org.jboss.beans.info.plugins.BeanInfoUtil;
 import org.jboss.beans.metadata.spi.BeanMetaData;
-import org.jboss.joinpoint.spi.TargettedJoinpoint;
-import org.jboss.kernel.Kernel;
-import org.jboss.kernel.spi.config.KernelConfigurator;
-import org.jboss.kernel.spi.dependency.CreateKernelControllerContextAware;
-import org.jboss.kernel.spi.dependency.DescribeKernelControllerContextAware;
-import org.jboss.kernel.spi.dependency.InstallKernelControllerContextAware;
-import org.jboss.kernel.spi.dependency.InstantiateKernelControllerContextAware;
-import org.jboss.kernel.spi.dependency.KernelController;
+import org.jboss.beans.metadata.spi.PropertyMetaData;
+import org.jboss.beans.metadata.spi.ValueMetaData;
+import org.jboss.kernel.plugins.config.Configurator;
 import org.jboss.kernel.spi.dependency.KernelControllerContext;
-import org.jboss.kernel.spi.dependency.KernelControllerContextAware;
-import org.jboss.kernel.spi.dependency.ConfigureKernelControllerContextAware;
-import org.jboss.kernel.spi.dependency.StartKernelControllerContextAware;
 
 /**
- * ConfigureAction.
+ * New ConfigureAction.
+ * @see org.jboss.kernel.plugins.dependency.OldConfigureAction
  *
- * @author <a href="adrian@jboss.com">Adrian Brock</a>
- * @version $Revision$
+ * @author <a href="ales.justin@jboss.com">Ales Justin</a>
  */
-public class ConfigureAction extends KernelControllerContextAction
+public class ConfigureAction extends AbstractConfigureAction
 {
    protected void installActionInternal(KernelControllerContext context) throws Throwable
    {
-      KernelController controller = (KernelController) context.getController();
-      Kernel kernel = controller.getKernel();
-      KernelConfigurator configurator = kernel.getConfigurator();
-
       Object object = context.getTarget();
       BeanInfo info = context.getBeanInfo();
       BeanMetaData metaData = context.getBeanMetaData();
-      Set joinPoints = configurator.getPropertySetterJoinPoints(info, metaData);
-      setAttributes(context, object, joinPoints, false);
+      setAttributes(object, info, metaData, false);
 
-      //TODO remove this?
-      //In case the class is EXACTLY KernelControllerContextAware, we call it from here, 
-      //required for KernelControllerContextAwareTestCase and KernelControllerContextAwareXMLTestCase
-      if (isExactlyKernelControllerContextAware(object))
-      {
-         ((KernelControllerContextAware) object).setKernelControllerContext(context);            
-      }
-   }
-
-   protected Class<? extends KernelControllerContextAware> getActionAwareInterface()
-   {
-      return ConfigureKernelControllerContextAware.class;
+      installKernelControllerContextAware(context);
    }
 
    protected void uninstallActionInternal(KernelControllerContext context)
    {
-      KernelController controller = (KernelController) context.getController();
-      Kernel kernel = controller.getKernel();
-      KernelConfigurator configurator = kernel.getConfigurator();
+      uninstallKernelControllerContextAware(context);
 
       Object object = context.getTarget();
-
-      try
-      {
-         if (object != null)
-         {
-            //TODO remove this?
-            //In case the class is EXACTLY KernelControllerContextAware, we call it from here, 
-            //required for KernelControllerContextAwareTestCase and KernelControllerContextAwareXMLTestCase
-            if (isExactlyKernelControllerContextAware(object))
-            {
-               ((KernelControllerContextAware) object).unsetKernelControllerContext(context);
-            }
-         }
-      }
-      catch (Throwable ignored)
-      {
-         log.debug("Ignored error unsetting context ", ignored);
-      }
-
       BeanInfo info = context.getBeanInfo();
       BeanMetaData metaData = context.getBeanMetaData();
       try
       {
-         Set joinPoints = configurator.getPropertyNullerJoinPoints(info, metaData);
-         setAttributes(context, object, joinPoints, true);
+         setAttributes(object, info, metaData, true);
       }
       catch (Throwable t)
       {
@@ -113,53 +68,55 @@ public class ConfigureAction extends KernelControllerContextAction
    }
 
    /**
-    * Set the attributes
+    * Set attributes/properties.
     *
-    * @param context      the context
-    * @param target       the target
-    * @param joinPoints   the attribute setter joinpoints
-    * @param ignoreErrors whether to ignore errors
-    * @throws Throwable for any unignored error
+    * @param target the target
+    * @param info the bean info
+    * @param metaData the bean metadata
+    * @param nullyfy should we nullyfy attributes/properties
+    * @throws Throwable for any error
     */
-   protected void setAttributes(KernelControllerContext context, Object target, Set joinPoints, boolean ignoreErrors) throws Throwable
+   protected void setAttributes(Object target, BeanInfo info, BeanMetaData metaData, boolean nullyfy) throws Throwable
    {
-      if (joinPoints.isEmpty() == false)
+      Set<PropertyMetaData> propertys = metaData.getProperties();
+      if (propertys != null && propertys.isEmpty() == false)
       {
-         boolean trace = log.isTraceEnabled();
+         ClassLoader cl = null;
+         if (nullyfy == false)
+            cl = Configurator.getClassLoader(metaData);
 
-         for (Iterator i = joinPoints.iterator(); i.hasNext();)
+         for(PropertyMetaData property : propertys)
          {
-            TargettedJoinpoint joinPoint = (TargettedJoinpoint) i.next();
-            joinPoint.setTarget(target);
-            try
-            {
-               dispatchJoinPoint(context, joinPoint);
-            }
-            catch (Throwable t)
-            {
-               if (ignoreErrors)
-               {
-                  if (trace)
-                     log.trace("Ignored for " + joinPoint, t);
-               }
-               else
-               {
-                  throw t;
-               }
-            }
+            dispatchSetProperty(property, nullyfy, info, target, cl);
          }
       }
    }
 
-   private boolean isExactlyKernelControllerContextAware(Object o)
+   /**
+    * Dispatch property set
+    *
+    * @param property the property
+    * @param nullyfy should we nullyfy
+    * @param info the bean info
+    * @param target the target
+    * @param cl classloader
+    * @throws Throwable for any error
+    */
+   // TODO - wrap with MetaDataStack push and ContextCL change?
+   protected void dispatchSetProperty(PropertyMetaData property, boolean nullyfy, BeanInfo info, Object target, ClassLoader cl)
+         throws Throwable
    {
-      Class clazz = o.getClass();
-      return KernelControllerContextAware.class.isAssignableFrom(clazz) &&
-               (!ConfigureKernelControllerContextAware.class.isAssignableFrom(clazz) &&
-               !CreateKernelControllerContextAware.class.isAssignableFrom(clazz) &&
-               !DescribeKernelControllerContextAware.class.isAssignableFrom(clazz) &&
-               !InstallKernelControllerContextAware.class.isAssignableFrom(clazz) &&
-               !InstantiateKernelControllerContextAware.class.isAssignableFrom(clazz) &&
-               !StartKernelControllerContextAware.class.isAssignableFrom(clazz));
+      String name = property.getName();
+      if (nullyfy)
+      {
+         info.setProperty(target, name, null);
+      }
+      else
+      {
+         PropertyInfo propertyInfo = BeanInfoUtil.getPropertyInfo(info, target, name);
+         ValueMetaData valueMetaData = property.getValue();
+         Object value = valueMetaData.getValue(propertyInfo.getType(), cl);
+         info.setProperty(target, name, value);
+      }
    }
 }

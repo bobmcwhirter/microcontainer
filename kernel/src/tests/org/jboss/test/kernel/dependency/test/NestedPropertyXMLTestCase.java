@@ -19,54 +19,35 @@
 * Software Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA
 * 02110-1301 USA, or see the FSF site: http://www.fsf.org.
 */
-package org.jboss.test.beaninfo.support;
+package org.jboss.test.kernel.dependency.test;
+
+import java.util.HashSet;
+
+import junit.framework.Test;
+import org.jboss.dependency.spi.ControllerContext;
+import org.jboss.dependency.spi.ControllerState;
+import org.jboss.dependency.spi.Controller;
+import org.jboss.test.kernel.dependency.support.SimpleBean;
+import org.jboss.test.kernel.dependency.support.SimpleBeanImpl;
+import org.jboss.beans.metadata.plugins.AbstractBeanMetaData;
+import org.jboss.beans.metadata.plugins.AbstractPropertyMetaData;
+import org.jboss.beans.metadata.spi.PropertyMetaData;
+import org.jboss.beans.metadata.spi.BeanMetaData;
 
 /**
+ * Nested property xml tests.
+ *
  * @author <a href="mailto:ales.justin@jboss.com">Ales Justin</a>
  */
-public class NestedBean
+public class NestedPropertyXMLTestCase extends NestedPropertyTestCase
 {
-   private NestedBean bean;
-   private String string;
-
-   public NestedBean()
+   public NestedPropertyXMLTestCase(String name) throws Throwable
    {
+      super(name, true);
    }
 
-   public NestedBean(NestedBean bean)
+   public static Test suite()
    {
-      this.bean = bean;
-   }
-
-   public NestedBean getNestedBean()
-   {
-      return bean;
-   }
-
-   public void setNestedBean(NestedBean bean)
-   {
-      this.bean = bean;
-   }
-
-   public NestedBean getDifferentGetter()
-   {
-      return null;
-   }
-
-   public NestedBean getOtherBean()
-   {
-      NestedBean other = new NestedBean();
-      other.setString(string);
-      return other;
-   }
-
-   public String getString()
-   {
-      return string;
-   }
-
-   public void setString(String string)
-   {
-      this.string = string;
+      return suite(NestedPropertyXMLTestCase.class);
    }
 }

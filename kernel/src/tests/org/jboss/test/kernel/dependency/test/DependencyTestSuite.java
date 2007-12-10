@@ -100,6 +100,8 @@ public class DependencyTestSuite extends TestSuite
       suite.addTest(MatcherDemandSupplyTestCase.suite());
       suite.addTest(MatcherDemandSupplyXMLTestCase.suite());
       suite.addTest(MatcherDemandSupplyAnnotationTestCase.suite());
+      suite.addTest(NestedPropertyTestCase.suite());
+      suite.addTest(NestedPropertyXMLTestCase.suite());
       return suite;
    }
 }

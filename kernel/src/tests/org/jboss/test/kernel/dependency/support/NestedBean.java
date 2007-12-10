@@ -19,45 +19,31 @@
 * Software Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA
 * 02110-1301 USA, or see the FSF site: http://www.fsf.org.
 */
-package org.jboss.test.beaninfo.support;
+package org.jboss.test.kernel.dependency.support;
 
 /**
  * @author <a href="mailto:ales.justin@jboss.com">Ales Justin</a>
  */
 public class NestedBean
 {
+   private int limit;
    private NestedBean bean;
    private String string;
 
-   public NestedBean()
+   public NestedBean(int limit)
    {
+      if (limit > 0)
+         bean = new NestedBean(limit - 1);
    }
 
-   public NestedBean(NestedBean bean)
-   {
-      this.bean = bean;
-   }
-
-   public NestedBean getNestedBean()
+   public NestedBean getBean()
    {
       return bean;
    }
 
-   public void setNestedBean(NestedBean bean)
+   public void setBean(NestedBean bean)
    {
       this.bean = bean;
-   }
-
-   public NestedBean getDifferentGetter()
-   {
-      return null;
-   }
-
-   public NestedBean getOtherBean()
-   {
-      NestedBean other = new NestedBean();
-      other.setString(string);
-      return other;
    }
 
    public String getString()
