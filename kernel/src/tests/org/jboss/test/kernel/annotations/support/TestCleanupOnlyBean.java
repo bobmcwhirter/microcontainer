@@ -19,33 +19,16 @@
 * Software Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA
 * 02110-1301 USA, or see the FSF site: http://www.fsf.org.
 */
-package org.jboss.test.kernel.annotations.test;
-
-import junit.framework.Test;
-import junit.framework.TestSuite;
-import junit.textui.TestRunner;
+package org.jboss.test.kernel.annotations.support;
 
 /**
- * Additional annotation features tests.
- *
  * @author <a href="mailto:ales.justin@jboss.com">Ales Justin</a>
  */
-public class AnnotationSupportTestSuite extends TestSuite
+public class TestCleanupOnlyBean
 {
-   public static void main(String[] args)
+   @TestCleanupOnly
+   public String getName()
    {
-      TestRunner.run(suite());
-   }
-
-   public static Test suite()
-   {
-      TestSuite suite = new TestSuite("Annotation Support Tests");
-
-      suite.addTest(FactoryMethodTestCase.suite());
-      suite.addTest(FactoryMethodXMLTestCase.suite());
-      suite.addTest(FactoryMethodBadTestCase.suite());
-      suite.addTest(CleanupAnnotationTestCase.suite());
-
-      return suite;
+      return null;
    }
 }

@@ -26,6 +26,7 @@ import java.util.List;
 import org.jboss.beans.info.spi.BeanInfo;
 import org.jboss.classadapter.spi.DependencyBuilderListItem;
 import org.jboss.kernel.plugins.annotations.BeanAnnotationAdapterFactory;
+import org.jboss.kernel.plugins.annotations.BeanAnnotationAdapter;
 import org.jboss.kernel.spi.dependency.KernelController;
 import org.jboss.kernel.spi.dependency.KernelControllerContext;
 import org.jboss.kernel.spi.metadata.KernelMetaDataRepository;
@@ -63,7 +64,7 @@ public class DescribeAction extends KernelControllerContextAction
          annotationsVisitor.before();
          try
          {
-            BeanAnnotationAdapterFactory.getBeanAnnotationAdapter().applyAnnotations(annotationsVisitor);
+            getBeanAnnotationAdapter().applyAnnotations(annotationsVisitor);
          }
          finally
          {
@@ -79,7 +80,7 @@ public class DescribeAction extends KernelControllerContextAction
       annotationsVisitor.before();
       try
       {
-         BeanAnnotationAdapterFactory.getBeanAnnotationAdapter().cleanAnnotations(annotationsVisitor);
+         getBeanAnnotationAdapter().cleanAnnotations(annotationsVisitor);
       }
       catch(Throwable t)
       {
@@ -89,5 +90,11 @@ public class DescribeAction extends KernelControllerContextAction
       {
          annotationsVisitor.after();
       }
+   }
+
+   protected BeanAnnotationAdapter getBeanAnnotationAdapter()
+   {
+      BeanAnnotationAdapterFactory factory = BeanAnnotationAdapterFactory.getInstance();
+      return factory.getBeanAnnotationAdapter();
    }
 }
