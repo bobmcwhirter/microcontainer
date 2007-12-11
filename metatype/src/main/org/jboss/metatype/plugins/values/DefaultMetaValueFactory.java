@@ -494,9 +494,6 @@ public class DefaultMetaValueFactory extends MetaValueFactory
          return null;
 
       MetaType metaType = metaValue.getMetaType();
-      // TODO - impl this support as well
-      if (metaType.isTable())
-         throw new IllegalArgumentException("Cannot get value from " + metaValue + ", unsupported.");
 
       if (metaType.isSimple())
       {
@@ -711,8 +708,8 @@ public class DefaultMetaValueFactory extends MetaValueFactory
     */
    protected Object unwrapTable(TableValue tableValue, TypeInfo type)
    {
-      // TODO - impl
-      return null;
+      // TODO - impl this support
+      throw new UnsupportedOperationException("Cannot get unwrap value from " + tableValue + ", type unsupported.");
    }
 
    /**
