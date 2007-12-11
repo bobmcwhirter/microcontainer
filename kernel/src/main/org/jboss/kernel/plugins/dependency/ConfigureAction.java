@@ -73,21 +73,21 @@ public class ConfigureAction extends AbstractConfigureAction
     * @param target the target
     * @param info the bean info
     * @param metaData the bean metadata
-    * @param nullyfy should we nullyfy attributes/properties
+    * @param nullify should we nullify attributes/properties
     * @throws Throwable for any error
     */
-   protected void setAttributes(Object target, BeanInfo info, BeanMetaData metaData, boolean nullyfy) throws Throwable
+   protected void setAttributes(Object target, BeanInfo info, BeanMetaData metaData, boolean nullify) throws Throwable
    {
       Set<PropertyMetaData> propertys = metaData.getProperties();
       if (propertys != null && propertys.isEmpty() == false)
       {
          ClassLoader cl = null;
-         if (nullyfy == false)
+         if (nullify == false)
             cl = Configurator.getClassLoader(metaData);
 
          for(PropertyMetaData property : propertys)
          {
-            dispatchSetProperty(property, nullyfy, info, target, cl);
+            dispatchSetProperty(property, nullify, info, target, cl);
          }
       }
    }
@@ -96,18 +96,18 @@ public class ConfigureAction extends AbstractConfigureAction
     * Dispatch property set
     *
     * @param property the property
-    * @param nullyfy should we nullyfy
+    * @param nullify should we nullify
     * @param info the bean info
     * @param target the target
     * @param cl classloader
     * @throws Throwable for any error
     */
    // TODO - wrap with MetaDataStack push and ContextCL change?
-   protected void dispatchSetProperty(PropertyMetaData property, boolean nullyfy, BeanInfo info, Object target, ClassLoader cl)
+   protected void dispatchSetProperty(PropertyMetaData property, boolean nullify, BeanInfo info, Object target, ClassLoader cl)
          throws Throwable
    {
       String name = property.getName();
-      if (nullyfy)
+      if (nullify)
       {
          try
          {
