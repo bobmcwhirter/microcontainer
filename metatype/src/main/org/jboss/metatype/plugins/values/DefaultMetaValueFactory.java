@@ -671,7 +671,8 @@ public class DefaultMetaValueFactory extends MetaValueFactory
       try
       {
          BeanInfo collectionInfo;
-         if (type != null)
+         // null is not instance of
+         if (type instanceof ClassInfo && ((ClassInfo)type).isInterface() == false)
          {
             collectionInfo = configuration.getBeanInfo(type);
          }
