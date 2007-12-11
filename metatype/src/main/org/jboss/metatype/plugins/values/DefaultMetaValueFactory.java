@@ -74,6 +74,7 @@ import org.jboss.reflect.spi.TypeInfoFactory;
 /**
  * DefaultMetaValueFactory.
  * 
+ * @author <a href="ales.justin@jboss.com">Ales Justin</a>
  * @author <a href="adrian@jboss.com">Adrian Brock</a>
  * @version $Revision: 1.1 $
  */
@@ -429,7 +430,7 @@ public class DefaultMetaValueFactory extends MetaValueFactory
       CompositeMetaType entryType = type.getRowType();
       MetaType keyType = entryType.getType(DefaultMetaTypeFactory.MAP_KEY);
       MetaType valType = entryType.getType(DefaultMetaTypeFactory.MAP_VALUE);
-      
+
       for (Iterator<Map.Entry> i = value.entrySet().iterator(); i.hasNext();)
       {
          Map.Entry entry = i.next();
@@ -438,7 +439,7 @@ public class DefaultMetaValueFactory extends MetaValueFactory
          CompositeValueSupport data = new CompositeValueSupport(entryType, DefaultMetaTypeFactory.MAP_ITEM_NAMES, new MetaValue[] { key, val });
          table.put(data);
       }
-      
+
       return table;
    }
    
@@ -493,6 +494,7 @@ public class DefaultMetaValueFactory extends MetaValueFactory
          return null;
 
       MetaType metaType = metaValue.getMetaType();
+      // TODO - impl this support as well
       if (metaType.isTable())
          throw new IllegalArgumentException("Cannot get value from " + metaValue + ", unsupported.");
 
@@ -538,6 +540,11 @@ public class DefaultMetaValueFactory extends MetaValueFactory
       {
          CollectionValue collectionValue = (CollectionValue)metaValue;
          return unwrapCollection(collectionValue, type);
+      }
+      else if (metaType.isTable())
+      {
+         TableValue tableValue = (TableValue)metaValue;
+         return unwrapTable(tableValue, type);
       }
 
       throw new IllegalArgumentException("Unsupported meta value: " + metaValue);
@@ -661,6 +668,7 @@ public class DefaultMetaValueFactory extends MetaValueFactory
     * @param type the type info
     * @return unwrapped collection
     */
+   @SuppressWarnings("unchecked")
    protected Object unwrapCollection(CollectionValue collectionValue, TypeInfo type)
    {
       try
@@ -695,6 +703,19 @@ public class DefaultMetaValueFactory extends MetaValueFactory
    }
 
    /**
+    * Unwrap table meta value.
+    *
+    * @param tableValue the table value
+    * @param type the type info
+    * @return unwrapped table (map)
+    */
+   protected Object unwrapTable(TableValue tableValue, TypeInfo type)
+   {
+      // TODO - impl
+      return null;
+   }
+
+   /**
     * Create new instance.
     *
     * @param beanInfo the bean info
@@ -703,7 +724,7 @@ public class DefaultMetaValueFactory extends MetaValueFactory
     */
    protected Object createNewInstance(BeanInfo beanInfo) throws Throwable
    {
-      // todo - some 'instantiator' map?
+      // TODO - some 'instantiator' map, which knows how to instantiate beaninfo (non default constructor)?
       return beanInfo.newInstance();
    }
 
