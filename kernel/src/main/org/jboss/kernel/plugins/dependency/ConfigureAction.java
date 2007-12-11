@@ -109,7 +109,15 @@ public class ConfigureAction extends AbstractConfigureAction
       String name = property.getName();
       if (nullyfy)
       {
-         info.setProperty(target, name, null);
+         try
+         {
+            info.setProperty(target, name, null);
+         }
+         catch (Throwable t)
+         {
+            if (log.isTraceEnabled())
+               log.trace("Ignored for " + target + "." + name, t);
+         }
       }
       else
       {
