@@ -105,6 +105,8 @@ public class ConfigureAction extends AbstractConfigureAction
          throws Throwable
    {
       ExecutionWrapper wrapper = new PropertyDispatchWrapper(property, nullify, info, target, cl);
-      dispatchExecutionWrapper(context, wrapper);
+      // FIXME - http://www.jboss.org/index.html?module=bb&op=viewtopic&p=4112356
+//      dispatchExecutionWrapper(context, wrapper);
+      wrapper.execute(null);      
    }
 }
