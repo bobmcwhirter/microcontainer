@@ -24,11 +24,8 @@ package org.jboss.kernel.plugins.dependency;
 import java.util.Set;
 
 import org.jboss.beans.info.spi.BeanInfo;
-import org.jboss.beans.info.spi.PropertyInfo;
-import org.jboss.beans.info.plugins.BeanInfoUtil;
 import org.jboss.beans.metadata.spi.BeanMetaData;
 import org.jboss.beans.metadata.spi.PropertyMetaData;
-import org.jboss.beans.metadata.spi.ValueMetaData;
 import org.jboss.kernel.plugins.config.Configurator;
 import org.jboss.kernel.spi.dependency.KernelControllerContext;
 
@@ -45,7 +42,7 @@ public class ConfigureAction extends AbstractConfigureAction
       Object object = context.getTarget();
       BeanInfo info = context.getBeanInfo();
       BeanMetaData metaData = context.getBeanMetaData();
-      setAttributes(object, info, metaData, false);
+      setAttributes(context, object, info, metaData, false);
 
       installKernelControllerContextAware(context);
    }
@@ -59,7 +56,7 @@ public class ConfigureAction extends AbstractConfigureAction
       BeanMetaData metaData = context.getBeanMetaData();
       try
       {
-         setAttributes(object, info, metaData, true);
+         setAttributes(context, object, info, metaData, true);
       }
       catch (Throwable t)
       {
@@ -70,13 +67,14 @@ public class ConfigureAction extends AbstractConfigureAction
    /**
     * Set attributes/properties.
     *
+    * @param context the context
     * @param target the target
     * @param info the bean info
     * @param metaData the bean metadata
     * @param nullify should we nullify attributes/properties
     * @throws Throwable for any error
     */
-   protected void setAttributes(Object target, BeanInfo info, BeanMetaData metaData, boolean nullify) throws Throwable
+   protected void setAttributes(KernelControllerContext context, Object target, BeanInfo info, BeanMetaData metaData, boolean nullify) throws Throwable
    {
       Set<PropertyMetaData> propertys = metaData.getProperties();
       if (propertys != null && propertys.isEmpty() == false)
@@ -87,7 +85,7 @@ public class ConfigureAction extends AbstractConfigureAction
 
          for(PropertyMetaData property : propertys)
          {
-            dispatchSetProperty(property, nullify, info, target, cl);
+            dispatchSetProperty(context, property, nullify, info, target, cl);
          }
       }
    }
@@ -95,6 +93,7 @@ public class ConfigureAction extends AbstractConfigureAction
    /**
     * Dispatch property set
     *
+    * @param context the context
     * @param property the property
     * @param nullify should we nullify
     * @param info the bean info
@@ -102,29 +101,10 @@ public class ConfigureAction extends AbstractConfigureAction
     * @param cl classloader
     * @throws Throwable for any error
     */
-   // TODO - wrap with MetaDataStack push and ContextCL change?
-   protected void dispatchSetProperty(PropertyMetaData property, boolean nullify, BeanInfo info, Object target, ClassLoader cl)
+   protected void dispatchSetProperty(KernelControllerContext context, PropertyMetaData property, boolean nullify, BeanInfo info, Object target, ClassLoader cl)
          throws Throwable
    {
-      String name = property.getName();
-      if (nullify)
-      {
-         try
-         {
-            info.setProperty(target, name, null);
-         }
-         catch (Throwable t)
-         {
-            if (log.isTraceEnabled())
-               log.trace("Ignored for " + target + "." + name, t);
-         }
-      }
-      else
-      {
-         PropertyInfo propertyInfo = BeanInfoUtil.getPropertyInfo(info, target, name);
-         ValueMetaData valueMetaData = property.getValue();
-         Object value = valueMetaData.getValue(propertyInfo.getType(), cl);
-         info.setProperty(target, name, value);
-      }
+      ExecutionWrapper wrapper = new PropertyDispatchWrapper(property, nullify, info, target, cl);
+      dispatchExecutionWrapper(context, wrapper);
    }
 }

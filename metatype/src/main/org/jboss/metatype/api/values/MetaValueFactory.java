@@ -83,6 +83,15 @@ public abstract class MetaValueFactory
    public abstract void setBuilder(Class<?> clazz, MetaValueBuilder builder);
 
    /**
+    * Set an instance factory.
+    *
+    * @param <T> exact instance type
+    * @param clazz the class
+    * @param factory the factory
+    */
+   public abstract <T> void setInstanceFactory(Class<T> clazz, InstanceFactory<T> factory);
+
+   /**
     * Unwrap meta value.
     * Supports simple and generic meta value.
     *

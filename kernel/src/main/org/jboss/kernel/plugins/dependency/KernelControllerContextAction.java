@@ -22,8 +22,7 @@
 package org.jboss.kernel.plugins.dependency;
 
 import java.security.AccessControlContext;
-import java.security.AccessController;
-import java.security.PrivilegedActionException;
+import java.security.PrivilegedExceptionAction;
 
 import org.jboss.beans.metadata.spi.BeanMetaData;
 import org.jboss.dependency.plugins.action.SimpleControllerContextAction;
@@ -66,6 +65,20 @@ public class KernelControllerContextAction extends SimpleControllerContextAction
     */
    static Object dispatchJoinPoint(final KernelControllerContext context, final Joinpoint joinpoint) throws Throwable
    {
+      ExecutionWrapper wrapper = new JoinpointDispatchWrapper(joinpoint);
+      return dispatchExecutionWrapper(context, wrapper);
+   }
+   
+   /**
+    * Dispatch a wrapper
+    *
+    * @param context   the context
+    * @param wrapper the wrapper
+    * @return the result
+    * @throws Throwable for any error
+    */
+   static Object dispatchExecutionWrapper(final KernelControllerContext context, final ExecutionWrapper wrapper) throws Throwable
+   {
       BeanMetaData metaData = context.getBeanMetaData();
       ClassLoader cl = Configurator.getClassLoader(metaData);
       AccessControlContext access = null;
@@ -92,22 +105,7 @@ public class KernelControllerContextAction extends SimpleControllerContextAction
             if (cl != null && access == null)
                Thread.currentThread().setContextClassLoader(cl);
 
-            if (access == null)
-            {
-               return joinpoint.dispatch();
-            }
-            else
-            {
-               DispatchJoinPoint action = new DispatchJoinPoint(joinpoint);
-               try
-               {
-                  return AccessController.doPrivileged(action, access);
-               }
-               catch (PrivilegedActionException e)
-               {
-                  throw e.getCause();
-               }
-            }
+            return wrapper.execute(access);
          }
          finally
          {
@@ -194,6 +192,31 @@ public class KernelControllerContextAction extends SimpleControllerContextAction
                log.debug("Ignored error unsetting context " + context.getName(), ignored);
             }
          }
+      }
+   }
+
+   /**
+    * Joinpoint dispatch execution wrapper.
+    */
+   private static class JoinpointDispatchWrapper extends ExecutionWrapper
+   {
+      private Joinpoint joinpoint;
+
+      public JoinpointDispatchWrapper(Joinpoint joinpoint)
+      {
+         if (joinpoint == null)
+            throw new IllegalArgumentException("Null joinpoint");
+         this.joinpoint = joinpoint;
+      }
+
+      protected Object execute() throws Throwable
+      {
+         return joinpoint.dispatch();
+      }
+
+      protected PrivilegedExceptionAction<Object> getAction()
+      {
+         return new DispatchJoinPoint(joinpoint);
       }
    }
 }

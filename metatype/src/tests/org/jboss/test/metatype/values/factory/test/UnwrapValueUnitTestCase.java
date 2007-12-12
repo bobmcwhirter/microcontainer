@@ -25,6 +25,8 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collection;
 import java.util.HashSet;
+import java.util.List;
+import java.util.Set;
 import java.util.Date;
 
 import junit.framework.Test;
@@ -33,6 +35,8 @@ import org.jboss.test.metatype.values.factory.support.TestEnum;
 import org.jboss.test.metatype.values.factory.support.TestGeneric;
 import org.jboss.test.metatype.values.factory.support.TestSimpleComposite;
 import org.jboss.test.metatype.values.factory.support.TestRecursiveSimpleComposite;
+import org.jboss.test.metatype.values.factory.support.TestSimpleCompositeInterface;
+import org.jboss.test.metatype.values.factory.support.SimpleCompositeInterface;
 
 /**
  * UnwrapValueUnitTestCase.
@@ -87,8 +91,10 @@ public class UnwrapValueUnitTestCase extends AbstractMetaValueFactoryTest
       checkSingle(composite, true);
       checkSingle(composite, false);
 
-      checkSingle(new TestRecursiveSimpleComposite("something", composite), true);         
+      checkSingle(new TestRecursiveSimpleComposite("something", composite), true);
       checkSingle(new TestRecursiveSimpleComposite("something", composite), false);
+
+      checkSingle(new TestSimpleCompositeInterface("something"), SimpleCompositeInterface.class);
    }
 
    public void testCollectionUnwrap() throws Exception
@@ -96,23 +102,31 @@ public class UnwrapValueUnitTestCase extends AbstractMetaValueFactoryTest
       Integer i1 = 123;
       Integer i2 = 123;
       checkCollection(new ArrayList<Integer>(), i1, i2);
+      checkCollection(new ArrayList<Integer>(), List.class, i1, i2);
       checkCollection(new HashSet<Integer>(), i1, i2);
+      checkCollection(new HashSet<Integer>(), Set.class, i1, i2);
 
       TestEnum one = TestEnum.ONE;
       TestEnum two = TestEnum.TWO;
       TestEnum three = TestEnum.THREE;
       checkCollection(new ArrayList<TestEnum>(), one, two, three, one);
+      checkCollection(new ArrayList<TestEnum>(), List.class, one, two, three, one);
       checkCollection(new HashSet<TestEnum>(), one, two, three, one);
+      checkCollection(new HashSet<TestEnum>(), Set.class, one, two, three, one);
 
       TestGeneric g1 = new TestGeneric("123");
       TestGeneric g2 = new TestGeneric("123");
       checkCollection(new ArrayList<TestGeneric>(), g1, g2);
+      checkCollection(new ArrayList<TestGeneric>(), List.class, g1, g2);
       checkCollection(new HashSet<TestGeneric>(), g1, g2);
+      checkCollection(new HashSet<TestGeneric>(), Set.class, g1, g2);
 
       TestSimpleComposite c1 = new TestSimpleComposite("123");
       TestSimpleComposite c2 = new TestSimpleComposite("123");
       checkCollection(new ArrayList<TestSimpleComposite>(), c1, c2);
+      checkCollection(new ArrayList<TestSimpleComposite>(), List.class, c1, c2);
       checkCollection(new HashSet<TestSimpleComposite>(), c1, c2);
+      checkCollection(new HashSet<TestSimpleComposite>(), Set.class, c1, c2);
    }
 
    public void testArrayUnwrap() throws Exception
@@ -237,11 +251,25 @@ public class UnwrapValueUnitTestCase extends AbstractMetaValueFactoryTest
       assertEquals(object, unwrapped);
    }
 
+   protected void checkSingle(Object object, Class<?> clazz)
+   {
+      MetaValue metaValue = createMetaValue(object, clazz);
+      assertNotNull(metaValue);
+      Object unwrapped = unwrapMetaValue(metaValue, clazz);
+      assertEquals(object, unwrapped);
+   }
+
    protected <T> void checkCollection(Collection<T> collection, T... params) throws Exception
    {
       collection.addAll(Arrays.asList(params));
       checkSingle(collection, true);
       checkSingle(collection, false);
+   }
+
+   protected <T> void checkCollection(Collection<T> collection, Class<? extends Collection> clazz,  T... params) throws Exception
+   {
+      collection.addAll(Arrays.asList(params));
+      checkSingle(collection, clazz);
    }
 
    protected void checkArray(Object object, boolean typeInfoFromObject, Asserter asserter)

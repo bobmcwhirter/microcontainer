@@ -29,7 +29,6 @@ import org.jboss.metatype.api.types.CollectionMetaType;
 /**
  * CollectionValueSupport.
  *
- * TODO tests
  * @author <a href="ales.justin@jboss.com">Ales Justin</a>
  */
 public class CollectionValueSupport extends AbstractMetaValue implements CollectionValue
@@ -184,6 +183,5 @@ public class CollectionValueSupport extends AbstractMetaValue implements Collect
       {
          throw new UnsupportedOperationException();
       }
-
    }
 }

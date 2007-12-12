@@ -26,6 +26,8 @@ import java.lang.ref.WeakReference;
 import java.lang.reflect.Array;
 import java.lang.reflect.Type;
 import java.lang.reflect.UndeclaredThrowableException;
+import java.lang.reflect.Proxy;
+import java.lang.reflect.InvocationHandler;
 import java.security.AccessController;
 import java.security.PrivilegedAction;
 import java.util.Collection;
@@ -34,6 +36,9 @@ import java.util.Iterator;
 import java.util.Map;
 import java.util.Stack;
 import java.util.WeakHashMap;
+import java.util.List;
+import java.util.Set;
+import java.util.SortedSet;
 
 import org.jboss.beans.info.spi.BeanInfo;
 import org.jboss.beans.info.spi.PropertyInfo;
@@ -64,6 +69,7 @@ import org.jboss.metatype.api.values.TableValue;
 import org.jboss.metatype.api.values.TableValueSupport;
 import org.jboss.metatype.api.values.CollectionValue;
 import org.jboss.metatype.api.values.CollectionValueSupport;
+import org.jboss.metatype.api.values.InstanceFactory;
 import org.jboss.metatype.plugins.types.DefaultMetaTypeFactory;
 import org.jboss.metatype.spi.values.MetaValueBuilder;
 import org.jboss.reflect.spi.ArrayInfo;
@@ -112,6 +118,17 @@ public class DefaultMetaValueFactory extends MetaValueFactory
    /** The Object type info */
    private static final TypeInfo OBJECT_TYPE_INFO = configuration.getTypeInfo(Object.class);
 
+   /** The instance factory builders */
+   private Map<Class, InstanceFactory> instanceFactoryMap = new WeakHashMap<Class, InstanceFactory>();
+
+   public DefaultMetaValueFactory()
+   {
+      // set default collection instance factories
+      setInstanceFactory(List.class, ListInstanceFactory.INSTANCE);
+      setInstanceFactory(Set.class, SetInstanceFactory.INSTANCE);
+      setInstanceFactory(SortedSet.class, SortedSetInstanceFactory.INSTANCE);
+   }
+
    public void setBuilder(Class<?> clazz, MetaValueBuilder builder)
    {
       synchronized (builders)
@@ -121,7 +138,18 @@ public class DefaultMetaValueFactory extends MetaValueFactory
          builders.put(clazz, new WeakReference<MetaValueBuilder>(builder));
       }
    }
-   
+
+   public <T> void setInstanceFactory(Class<T> clazz, InstanceFactory<T> factory)
+   {
+      synchronized(instanceFactoryMap)
+      {
+         if (factory == null)
+            instanceFactoryMap.remove(clazz);
+         else
+            instanceFactoryMap.put(clazz, factory);
+      }
+   }
+
    /**
     * Create a simple value
     * 
@@ -642,6 +670,14 @@ public class DefaultMetaValueFactory extends MetaValueFactory
       try
       {
          BeanInfo beanInfo = configuration.getBeanInfo(typeName, cl);
+         ClassInfo classInfo = beanInfo.getClassInfo();
+         if (classInfo.isInterface())
+         {
+            InvocationHandler handler = createCompositeValueInvocationHandler(compositeValue);
+            Class clazz = classInfo.getType();
+            Class[] interfaces = new Class[]{clazz};
+            return Proxy.newProxyInstance(clazz.getClassLoader(), interfaces, handler);            
+         }
          Object bean = createNewInstance(beanInfo);
          for (String name : compositeMetaType.keySet())
          {
@@ -659,6 +695,17 @@ public class DefaultMetaValueFactory extends MetaValueFactory
    }
 
    /**
+    * Create composite invocation handler.
+    *
+    * @param compositeValue the composite value
+    * @return composite invocation handler
+    */
+   protected InvocationHandler createCompositeValueInvocationHandler(CompositeValue compositeValue)
+   {
+      return new CompositeValueInvocationHandler(compositeValue);
+   }
+
+   /**
     * Unwrap collection meta value.
     *
     * @param collectionValue the collection value
@@ -672,7 +719,7 @@ public class DefaultMetaValueFactory extends MetaValueFactory
       {
          BeanInfo collectionInfo;
          // null is not instance of
-         if (type instanceof ClassInfo && ((ClassInfo)type).isInterface() == false)
+         if (type instanceof ClassInfo)
          {
             collectionInfo = configuration.getBeanInfo(type);
          }
@@ -681,12 +728,13 @@ public class DefaultMetaValueFactory extends MetaValueFactory
             MetaType metaType = collectionValue.getMetaType();
             collectionInfo = configuration.getBeanInfo(metaType.getTypeName(), Thread.currentThread().getContextClassLoader());
          }
+         ClassInfo classInfo = collectionInfo.getClassInfo();
          Collection collection = (Collection)createNewInstance(collectionInfo);
          Iterator<MetaValue> iter = collectionValue.iterator();
          while (iter.hasNext())
          {
             MetaValue metaValue = iter.next();
-            TypeInfo componentType = collectionInfo.getClassInfo().getComponentType();
+            TypeInfo componentType = classInfo.getComponentType();
             // try better
             if (OBJECT_TYPE_INFO.equals(componentType))
                componentType = getTypeInfo(metaValue.getMetaType(), null);
@@ -722,7 +770,15 @@ public class DefaultMetaValueFactory extends MetaValueFactory
     */
    protected Object createNewInstance(BeanInfo beanInfo) throws Throwable
    {
-      // TODO - some 'instantiator' map, which knows how to instantiate beaninfo (non default constructor)?
+      ClassInfo classInfo = beanInfo.getClassInfo();
+      if (classInfo.isInterface())
+      {
+         InstanceFactory instanceFactory = instanceFactoryMap.get(classInfo.getType());
+         if (instanceFactory == null)
+            throw new IllegalArgumentException("Cannot instantiate interface BeanInfo, missing InstanceFactory: " + classInfo);
+
+         return instanceFactory.instantiate(beanInfo);
+      }
       return beanInfo.newInstance();
    }
 
