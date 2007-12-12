@@ -40,7 +40,7 @@
       <para>JBoss Microcontainer aims to provide  these capabilities by allowing services, created using Plain Old Java Objects (POJOs), to be deployed into a standard Java SE runtime environment in a controlled manner to create a customized  environment  for your applications. Dependencies are fully managed to ensure that new services cannot be deployed until services they depend on have first been deployed. Where it makes sense to do so you can even redeploy services at runtime providing that you access them via the microcontainer bus. Undeploying a service  causes all dependent services to be undeployed first in order  to maintain the integrity of the system. </para>
       <para>JBoss Application Server   5.0 uses the microcontainer to integrate enterprise services together with a Servlet/JSP container, EJB container, deployers and management utilities in order to     provide a standard Java EE environment. If you need additional services then you can simply deploy these on top of Java EE to provide the functionality you need. Likewise you are free to remove any services that you don&apos;t need simply by changing the  configuration. You can even use the microcontainer to do this in other   environments such as GlassFish and Tomcat since you can plug in different classloading models  during the service deployment phase.</para>
       <para>Since  JBoss Microcontainer is very lightweight and deals with POJOs it can also be used to deploy services into a Java ME runtime environment. This opens up new possibilities for mobile applications that can now take advantage of  enterprise services without requiring a full JEE application server. </para>
-      <para>In common with other lightweight containers JBoss Microcontainer uses  dependency injection to wire individual POJOs together to create services.  Configuration is performed using either XML or annotations depending on where the information is best located. Finally unit testing is made extremely simple thanks to a helper class that extends JUnit to setup the test environment, allowing you to access  POJOs and services from your test methods using just a few lines of code.</para>
+      <para>In common with other lightweight containers JBoss Microcontainer uses  dependency injection to wire individual POJOs together to create services.  Configuration is performed using either annotations or XML depending on where the information is best located. Finally unit testing is made extremely simple thanks to a helper class that extends JUnit to setup the test environment, allowing you to access  POJOs and services from your test methods using just a few lines of code.</para>
     </chapter>
     <chapter>
       <title>Download and Installing</title>
@@ -874,7 +874,7 @@ controller = kernel.getController();
 ControllerContext context = controller.getInstalledContext(HRSERVICE);
 if (context != null) { manager = (HRManager) context.getTarget(); }</programlisting>
         <para>Handing out kernel references to every client that looks up a service represents a significant risk as it provides wide-spread access to the microcontainer configuration. It would be better to apply the ServiceLocator pattern and have a class that performs lookups on behalf of the clients. Better still we could pass the bean references, together with their names, to  the ServiceLocator at deployment time using a lifecycle callback so that it could look them up without knowing about the microcontainer at all. Undeployment would subsequently remove the bean references from the ServiceLocator to prevent further lookups. </para>
-        <para>While it would not be too difficult to write our own ServiceLocator implementation to do this we can save time  by integrating an existing one such as JBoss Naming Service (JBoss NS). This has the additional benefit of complying to  the Java Naming and Directory Interface (JNDI) specification. JNDI enables clients to access different, possibly multiple, naming services using a common API.  </para>
+        <para>While it would not be too difficult to write our own ServiceLocator implementation we can save time  by integrating an existing one such as JBoss Naming Service (JBoss NS). This has the additional benefit of complying to  the Java Naming and Directory Interface (JNDI) specification. JNDI enables clients to access different, possibly multiple, naming services using a common API.  </para>
         <para>All that we need to do is create an instance of  JBoss NS using the microcontainer and then add a lifecycle callback to perform the binding and unbinding of our bean references during deployment/undeployment. We can then  mark  the bean classes that we wish to bind references for using annotations and find them at runtime using the shorthand pointcut expression as shown earlier.</para>
       </section>
     </chapter>
@@ -1051,7 +1051,7 @@ Class-Path: .
           <para>The StandaloneBootstrap class defined in the Main-Class attribute of the META-INF/MANIFEST.MF file within the JAR  is run which bootstraps the microcontainer and searches the classpath for files called jboss-beans.xml.</para>
         </listitem>
         <listitem>
-          <para>The META-INF/jboss-beans.xml file in the &lt;exampleName&gt;-1.0.0.jar is found and the beans within it are deployed.</para>
+          <para>The META-INF/jboss-beans.xml file in the &lt;exampleName&gt;-1.0.0.jar is found and the beans declared within it are deployed.</para>
         </listitem>
         <listitem>
           <para>The main() method of the StandaloneBootstrap class ends and the JVM shuts down undeploying the beans in reverse order.</para>
@@ -1072,10 +1072,94 @@ public class MyApp {
       </note>
     </chapter>
     <chapter>
-      <title>Creating POJOs</title>
+      <title>Configuring POJOs</title>
+      <para>In accordance with modern  development  methods JBoss Microcontainer supports POJO configuration via annotations and/or deployment descriptors. The decision to use one or the other depends on what you are trying to achieve. If there is a sensible default configuration for your POJOs then it may be worthwhile defining this using annotations so that users do not have to maintain a separate deployment descriptor. Since annotations are overriden by deployment descriptors at runtime it is always possible for users to  change the default configuration using a descriptor if necessary.</para>
+      <important>
+        <para>Annotations are overriden by deployment descriptors at runtime.</para>
+      </important>
+      <para>If there is no sensible default configuration then it may be worthwhile using a deployment descriptor instead of annotations. This  keeps the source code free of potentially redundant information and allows for easy customization since the initial deployment descriptor acts as a template for further changes.</para>
+      <para>Sometimes a mixture of annotations and a deployment descriptor is best. It&apos;s up to you to discover what makes most sense for your particular situation. </para>
+      <section>
+        <title>Using annotations</title>
+        <para>With the notable exception of defining classloaders nearly all of the microcontainer features can be used  by adding annotations to your POJO classes. </para>
+        <note>
+          <para>We are not able to define classloaders using annotations for the simple reason that in order to read any annotations we must first load the class. Once the class is loaded we cannot change its classloader so a classloader annotation would be useless.</para>
+        </note>
+        <para>The microcontainer annotations live in the <code>org.jboss.beans.metadata.api.annotations</code> package and to use them you need Java 1.5 or above.</para>
+        <para>If you are using Java 1.4 or below then JBoss Microcontainer allows you to define a subset of the annotations in the XML deployment descriptor.  The caveat is that these apply to bean instances instead of bean classes. As with normal annotations you are free to add as many as necessary at a single point. However you must always specify the fully-qualified class name since there is no way to &apos;import&apos; packages in XML. Currently you can place annotations inside the following elements:</para>
+        <itemizedlist>
+          <listitem>
+            <para>&lt;deployment&gt; -all beans in the deployment inherit this annotation </para>
+            <programlisting>&lt;deployment name=&quot;SimpleDeployment&quot; xmlns=&quot;urn:jboss:bean-deployer:2.0&quot;&gt;
+    &lt;annotation&gt;@org.jboss.test.TestAnnotation&lt;/annotation&gt;
+&lt;/deployment&gt;</programlisting>
+          </listitem>
+          <listitem>
+            <para>&lt;bean&gt;</para>
+            <programlisting>&lt;bean name=&quot;example&quot; class=&quot;org.jboss.test.Example&quot;&gt;
+    &lt;annotation&gt;@org.jboss.test.TestAnnotation1&lt;/annotation&gt;
+    &lt;annotation&gt;@org.jboss.test.TestAnnotation2&lt;/annotation&gt;
+&lt;/bean&gt;</programlisting>
+          </listitem>
+          <listitem>
+            <para>&lt;constructor&gt;</para>
+            <programlisting>&lt;bean name=&quot;example&quot; class=&quot;org.jboss.test.Example&quot;&gt;
+    &lt;constructor&gt;
+        &lt;annotation&gt;@org.jboss.test.TestAnnotation&lt;/annotation&gt;
+    &lt;/constructor&gt;
+&lt;/bean&gt; </programlisting>
+          </listitem>
+          <listitem>
+            <para>&lt;create&gt;, &lt;start&gt;, &lt;stop&gt;, &lt;destroy&gt;</para>
+            <programlisting>&lt;bean name=&quot;example&quot; class=&quot;org.jboss.test.Example&quot;&gt;
+    &lt;create&gt;
+        &lt;annotation&gt;@org.jboss.test.TestAnnotation&lt;/annotation&gt;
+    &lt;/create&gt;
+&lt;/bean&gt;</programlisting>
+          </listitem>
+          <listitem>
+            <para>&lt;install&gt;, &lt;uninstall&gt;</para>
+            <programlisting>&lt;bean name=&quot;example&quot; class=&quot;org.jboss.test.Example&quot;&gt;
+    &lt;install method=&quot;someMethod&quot;&gt;
+        &lt;annotation&gt;@org.jboss.test.TestAnnotation&lt;/annotation&gt;
+    &lt;/install&gt;
+&lt;/bean&gt; </programlisting>
+          </listitem>
+          <listitem>
+            <para>&lt;incallback&gt;, &lt;uncallback&gt;</para>
+            <programlisting/>
+          </listitem>
+          <listitem>
+            <para>&lt;value&gt;</para>
+            <programlisting>&lt;bean name=&quot;example&quot; class=&quot;org.jboss.test.Example&quot;&gt;
+    &lt;property name=&quot;PropertyName&quot;&gt;
+        &lt;annotation&gt;@org.jboss.test.TestAnnotation&lt;/annotation&gt;
+        &lt;value&gt;123&lt;/value&gt;
+    &lt;/property&gt;
+&lt;/bean&gt;</programlisting>
+          </listitem>
+        </itemizedlist>
+        <important>
+          <para>Annotations declared in XML apply to bean instances instead of bean classes.</para>
+        </important>
+        <para>Examples of how to use both normal and XML annotations will be given in the following sections.</para>
+      </section>
       <section>
         <title>Writing deployment descriptors</title>
+        <para/>
       </section>
+      <section>
+        <title>Using JavaBean XML</title>
+      </section>
+      <section>
+        <title>Using Spring XML</title>
+      </section>
+      <section>
+        <title>Using Java Properties</title>
+      </section>
+    </chapter>
+    <chapter>
+      <title>Creating POJOs</title>
       <section>
         <title>Defining classloaders</title>
         <para>In order to create POJO instances we must first load the corresponding POJO classes into the JVM using a classloader. JBoss Microcontainer does this by using  the classloader associated with the current thread of execution, i.e. the thread context classloader. But what do we mean by the current thread of execution and who sets its context  classloader?</para>
@@ -1199,13 +1283,14 @@ public class MyApp {
         </note>
       </section>
       <section>
-        <title>Using constructors and factories</title>
+        <title>Calling constructors</title>
+        <para/>
       </section>
       <section>
-        <title>Using JavaBean XML</title>
+        <title>Using factories</title>
       </section>
       <section>
-        <title>Using Spring XML</title>
+        <title>Creating bean aliases</title>
       </section>
     </chapter>
     <chapter>
@@ -1229,33 +1314,27 @@ public class MyApp {
       </section>
     </chapter>
     <chapter>
-      <title>Adding dependencies</title>
+      <title>Defining dependencies</title>
       <section>
         <title>POJO dependencies</title>
       </section>
       <section>
-        <title>Service dependencies</title>
+        <title>Supply and Demand</title>
       </section>
       <section>
-        <title>Supply and Demand</title>
+        <title>Service dependencies</title>
       </section>
     </chapter>
     <chapter>
       <title>Adding deployment behaviour</title>
       <section>
-        <title>Deploy/Undeploy actions</title>
+        <title>Deployment actions</title>
       </section>
       <section>
-        <title>Service Lifecycle</title>
-      </section>
-    </chapter>
-    <chapter>
-      <title>Miscellaneous</title>
-      <section>
-        <title>Defining annotations in XML</title>
+        <title>Deployment callbacks</title>
       </section>
       <section>
-        <title>Giving beans more than one name</title>
+        <title>Service lifecycle</title>
       </section>
     </chapter>
   </part>
