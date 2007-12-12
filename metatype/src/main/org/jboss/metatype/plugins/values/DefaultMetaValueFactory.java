@@ -24,27 +24,28 @@ package org.jboss.metatype.plugins.values;
 import java.io.Serializable;
 import java.lang.ref.WeakReference;
 import java.lang.reflect.Array;
+import java.lang.reflect.InvocationHandler;
+import java.lang.reflect.Proxy;
 import java.lang.reflect.Type;
 import java.lang.reflect.UndeclaredThrowableException;
-import java.lang.reflect.Proxy;
-import java.lang.reflect.InvocationHandler;
 import java.security.AccessController;
 import java.security.PrivilegedAction;
 import java.util.Collection;
 import java.util.HashMap;
 import java.util.Iterator;
-import java.util.Map;
-import java.util.Stack;
-import java.util.WeakHashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.Set;
 import java.util.SortedSet;
+import java.util.Stack;
+import java.util.WeakHashMap;
 
 import org.jboss.beans.info.spi.BeanInfo;
 import org.jboss.beans.info.spi.PropertyInfo;
 import org.jboss.config.plugins.property.PropertyConfiguration;
 import org.jboss.config.spi.Configuration;
 import org.jboss.metatype.api.types.ArrayMetaType;
+import org.jboss.metatype.api.types.CollectionMetaType;
 import org.jboss.metatype.api.types.CompositeMetaType;
 import org.jboss.metatype.api.types.EnumMetaType;
 import org.jboss.metatype.api.types.GenericMetaType;
@@ -52,26 +53,26 @@ import org.jboss.metatype.api.types.MetaType;
 import org.jboss.metatype.api.types.MetaTypeFactory;
 import org.jboss.metatype.api.types.SimpleMetaType;
 import org.jboss.metatype.api.types.TableMetaType;
-import org.jboss.metatype.api.types.CollectionMetaType;
 import org.jboss.metatype.api.values.ArrayValue;
 import org.jboss.metatype.api.values.ArrayValueSupport;
+import org.jboss.metatype.api.values.CollectionValue;
+import org.jboss.metatype.api.values.CollectionValueSupport;
 import org.jboss.metatype.api.values.CompositeValue;
 import org.jboss.metatype.api.values.CompositeValueSupport;
 import org.jboss.metatype.api.values.EnumValue;
 import org.jboss.metatype.api.values.EnumValueSupport;
 import org.jboss.metatype.api.values.GenericValue;
 import org.jboss.metatype.api.values.GenericValueSupport;
+import org.jboss.metatype.api.values.InstanceFactory;
 import org.jboss.metatype.api.values.MetaValue;
 import org.jboss.metatype.api.values.MetaValueFactory;
 import org.jboss.metatype.api.values.SimpleValue;
 import org.jboss.metatype.api.values.SimpleValueSupport;
 import org.jboss.metatype.api.values.TableValue;
 import org.jboss.metatype.api.values.TableValueSupport;
-import org.jboss.metatype.api.values.CollectionValue;
-import org.jboss.metatype.api.values.CollectionValueSupport;
-import org.jboss.metatype.api.values.InstanceFactory;
 import org.jboss.metatype.plugins.types.DefaultMetaTypeFactory;
 import org.jboss.metatype.spi.values.MetaValueBuilder;
+import org.jboss.reflect.plugins.introspection.ParameterizedClassInfo;
 import org.jboss.reflect.spi.ArrayInfo;
 import org.jboss.reflect.spi.ClassInfo;
 import org.jboss.reflect.spi.TypeInfo;
@@ -757,8 +758,45 @@ public class DefaultMetaValueFactory extends MetaValueFactory
     */
    protected Object unwrapTable(TableValue tableValue, TypeInfo type)
    {
-      // TODO - impl this support
-      throw new UnsupportedOperationException("Cannot get unwrap value from " + tableValue + ", type unsupported.");
+      TableMetaType metaType = tableValue.getMetaType();
+      if (type instanceof ParameterizedClassInfo)
+      {
+         ParameterizedClassInfo parameterizedType = (ParameterizedClassInfo)type;
+         ClassInfo rawType = parameterizedType.getRawType();
+         if (Map.class.isAssignableFrom(rawType.getType()))
+         {
+            TypeInfo keyType = parameterizedType.getActualTypeArguments()[0];
+            TypeInfo valueType = parameterizedType.getActualTypeArguments()[1];
+            return createMap(metaType, keyType, valueType, tableValue);
+         }
+      }
+      throw new UnsupportedOperationException("Insufficient information to unwrap table: " + tableValue + ", " + type);
+   }
+
+   /**
+    * Create a map
+    *
+    * @param metaType the meta type
+    * @param keyType the key type
+    * @param valueType the value type
+    * @param tableValue the table value
+    * @param context the context
+    * @return the map
+    */
+   protected Map createMap(TableMetaType metaType, TypeInfo keyType, TypeInfo valueType, TableValue tableValue)
+   {
+      if (tableValue == null)
+         return null;
+
+      Map<Object, Object> result = new HashMap<Object, Object>();
+      Collection<CompositeValue> values = tableValue.values();
+      for (CompositeValue entry : values)
+      {
+         Object key = unwrap(entry.get(DefaultMetaTypeFactory.MAP_KEY), keyType);
+         Object val = unwrap(entry.get(DefaultMetaTypeFactory.MAP_VALUE), valueType);
+         result.put(key, val);
+      }
+      return result;
    }
 
    /**

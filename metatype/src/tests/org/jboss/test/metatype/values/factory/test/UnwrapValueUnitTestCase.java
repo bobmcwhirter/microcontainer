@@ -21,22 +21,26 @@
 */
 package org.jboss.test.metatype.values.factory.test;
 
+import java.lang.reflect.Method;
+import java.lang.reflect.Type;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collection;
+import java.util.Date;
+import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
+import java.util.Map;
 import java.util.Set;
-import java.util.Date;
 
 import junit.framework.Test;
 import org.jboss.metatype.api.values.MetaValue;
+import org.jboss.test.metatype.values.factory.support.SimpleCompositeInterface;
 import org.jboss.test.metatype.values.factory.support.TestEnum;
 import org.jboss.test.metatype.values.factory.support.TestGeneric;
-import org.jboss.test.metatype.values.factory.support.TestSimpleComposite;
 import org.jboss.test.metatype.values.factory.support.TestRecursiveSimpleComposite;
+import org.jboss.test.metatype.values.factory.support.TestSimpleComposite;
 import org.jboss.test.metatype.values.factory.support.TestSimpleCompositeInterface;
-import org.jboss.test.metatype.values.factory.support.SimpleCompositeInterface;
 
 /**
  * UnwrapValueUnitTestCase.
@@ -239,6 +243,21 @@ public class UnwrapValueUnitTestCase extends AbstractMetaValueFactoryTest
       checkArray(triple, false, tripleAsserter);
    }
 
+   public void testTableUnwrap() throws Exception
+   {
+      Method method = getClass().getMethod("compositeValueMap");
+      Type mapType = method.getGenericReturnType();
+
+      Map<Integer, String> map = new HashMap<Integer, String>();
+      map.put(123, "123");
+      checkSingle(map, mapType);
+   }
+
+   public Map<Integer, String> compositeValueMap()
+   {
+      return null;
+   }
+
    protected void checkSingle(Object object, boolean typeInfoFromObject)
    {
       MetaValue metaValue = createMetaValue(object);
@@ -251,11 +270,11 @@ public class UnwrapValueUnitTestCase extends AbstractMetaValueFactoryTest
       assertEquals(object, unwrapped);
    }
 
-   protected void checkSingle(Object object, Class<?> clazz)
+   protected void checkSingle(Object object, Type type)
    {
-      MetaValue metaValue = createMetaValue(object, clazz);
+      MetaValue metaValue = createMetaValue(object, type);
       assertNotNull(metaValue);
-      Object unwrapped = unwrapMetaValue(metaValue, clazz);
+      Object unwrapped = unwrapMetaValue(metaValue, type);
       assertEquals(object, unwrapped);
    }
 
