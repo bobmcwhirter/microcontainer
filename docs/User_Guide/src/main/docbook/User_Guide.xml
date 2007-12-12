@@ -1146,16 +1146,186 @@ public class MyApp {
       </section>
       <section>
         <title>Writing deployment descriptors</title>
-        <para/>
+        <para>Deployment descriptors externalize the configuration of POJOs into one or more files that are separate from the source code. This means that changes can be made without having to recompile any classes. The usual way to define a deployment descriptor is using the bean-deployer XML schema whose root element is &lt;deployment&gt;. This is used to group multiple beans together so that they are deployed as a unit:</para>
+        <programlisting>&lt;deployment xmlns:xsi=&quot;http://www.w3.org/2001/XMLSchema-instance&quot;
+                    xsi:schemaLocation=&quot;urn:jboss:bean-deployer bean-deployer_2_0.xsd&quot;
+                    xmlns=&quot;urn:jboss:bean-deployer:2.0&quot;&gt;
+
+    &lt;!-- Bean definitions --&gt;
+
+&lt;/deployment&gt;</programlisting>
+        <para>The bean definitions are created using &lt;bean&gt; elements that each describe a single POJO instance. Each bean is given a name so that it can be referenced elsewhere in the deployment descriptor or looked up by a client at runtime.</para>
+        <programlisting>&lt;deployment xmlns:xsi=&quot;http://www.w3.org/2001/XMLSchema-instance&quot;
+                    xsi:schemaLocation=&quot;urn:jboss:bean-deployer bean-deployer_2_0.xsd&quot;
+                    xmlns=&quot;urn:jboss:bean-deployer:2.0&quot;&gt;
+
+    &lt;bean name=&quot;Person&quot; class=&quot;org.jboss.example.microcontainer.PersonBean&quot;/&gt;
+
+    &lt;bean name=&quot;Address&quot; class=&quot;org.jboss.example.microcontainer.AddressBean&quot;/&gt;
+
+&lt;/deployment&gt; </programlisting>
+        <para>The name of the file containing these elements can be anything you like providing that a deployer can access it and parse the contents correctly. By convention it is called jboss-beans.xml as anything that ends in -beans.xml is found by default using the FileStructure deployer.</para>
+        <note>
+          <para>Although deployment descriptors are usually created using the bean-deployer XML schema it is also possible to use other XML schemas or even Java properties as shown in the following sections.</para>
+        </note>
       </section>
       <section>
         <title>Using JavaBean XML</title>
+        <para>Together with the bean-deployer XML schema the microcontainer also contains a javabean XML schema. This is a lightweight version of  bean-deployer that allows for  the construction and configuration of   <ulink url="http://java.sun.com/products/javabeans/">JavaBeans</ulink> without any advanced features like bean injection, callbacks or dependencies. It is intended to be used in situations where the microcontainer has been customised to remove all of the advanced functionality so that it can be bootstrapped in very small runtime environments. </para>
+        <para>Construction of POJOs is performed using either a normal constructor or a static factory method. In either case constructor or method parameters can be added as necessary:  </para>
+        <itemizedlist>
+          <listitem>
+            <para>Default constructor</para>
+            <programlisting>&lt;javabean xmlns=&quot;urn:jboss:javabean:2.0&quot; class=&quot;org.jboss.test.javabean.support.SimpleBean&quot;/&gt;</programlisting>
+          </listitem>
+          <listitem>
+            <para>Contructor with parameters</para>
+            <programlisting>&lt;javabean xmlns=&quot;urn:jboss:javabean:2.0&quot; class=&quot;org.jboss.test.javabean.support.SimpleBean&quot;&gt;
+    &lt;constructor&gt;
+        &lt;property name=&quot;ABoolean&quot;&gt;true&lt;/property&gt;
+        &lt;property name=&quot;ACharacter&quot;&gt;x&lt;/property&gt;
+        &lt;property name=&quot;AShort&quot;&gt;123&lt;/property&gt; 
+    &lt;/constructor&gt;
+&lt;/javabean&gt;</programlisting>
+          </listitem>
+          <listitem>
+            <para>Static factory method</para>
+            <programlisting>&lt;javabean xmlns=&quot;urn:jboss:javabean:2.0&quot; class=&quot;org.jboss.test.javabean.support.SimpleBean&quot;&gt;
+    &lt;constructor factoryClass=&quot;org.jboss.test.javabean.support.SimpleBeanFactory&quot;
+                 factoryMethod=&quot;newInstance&quot;/&gt;
+&lt;/javabean&gt;</programlisting>
+          </listitem>
+          <listitem>
+            <para>Static factory method with parameters</para>
+            <programlisting>&lt;javabean xmlns=&quot;urn:jboss:javabean:2.0&quot; class=&quot;org.jboss.test.javabean.support.SimpleBean&quot;&gt;
+    &lt;constructor factoryClass=&quot;org.jboss.test.javabean.support.SimpleBeanFactory&quot;
+                 factoryMethod=&quot;newInstance&quot;&gt;
+        &lt;property name=&quot;AString&quot;&gt;StringValue&lt;/property&gt;
+        &lt;property name=&quot;AByte&quot;&gt;12&lt;/property&gt;
+    &lt;/constructor&gt;
+&lt;/javabean&gt;</programlisting>
+          </listitem>
+        </itemizedlist>
+        <note>
+          <para>JavaBean declarations do not include a <code>name</code> attribute which means that you cannot inject references into other JavaBeans or lookup a reference to a JavaBean instance from a client at runtime.</para>
+        </note>
+        <para>Once a JavaBean has been constructed then simple injection of property values is possible using the &lt;property&gt; element: </para>
+        <programlisting>&lt;javabean xmlns=&quot;urn:jboss:javabean:2.0&quot; class=&quot;org.jboss.test.javabean.support.SimpleBean&quot;&gt;
+    &lt;property name=&quot;ADouble&quot;&gt;3.14e12&lt;/property&gt;
+    &lt;property name=&quot;ADate&quot;&gt;Jan 01 00:00:00 CET 2001&lt;/property&gt;
+    &lt;property name=&quot;ABigDecimal&quot;&gt;12e4&lt;/property&gt;
+    &lt;property name=&quot;ABigInteger&quot;&gt;123456&lt;/property&gt;
+    &lt;property name=&quot;abyte&quot;&gt;12&lt;/property&gt; 
+&lt;/javabean&gt;</programlisting>
+        <para>As with properties defined using the bean-deployer XML schema the string values are converted into objects of the correct type using JavaBean <ulink url="http://java.sun.com/j2se/1.5.0/docs/api/java/beans/PropertyEditor.html">PropertyEditors</ulink>. For cases where the type is ambiguous, e.g. when defining numbers, you can specify the required type by including a <code>class</code> attribute: </para>
+        <programlisting>&lt;javabean xmlns=&quot;urn:jboss:javabean:2.0&quot; class=&quot;org.jboss.test.javabean.support.SimpleBean&quot;&gt;
+    &lt;property name=&quot;ANumber&quot; class=&quot;java.lang.Long&quot;&gt;12345&lt;/property&gt; 
+&lt;/javabean&gt;</programlisting>
+        <important>
+          <para>Beans created using the bean-deployer XML schema  can include JavaBeans  created using the javabean XML schema instead of string values. This provides a simple way to inject objects composed of multiple values into a bean property without having to write a complicated property editor:</para>
+          <programlisting>&lt;bean name=&quot;example&quot; class=&quot;org.jboss.acme.Example&quot;&gt;
+    &lt;property name=&quot;myProperty&quot;&gt;
+        &lt;javabean xmlns=&quot;urn:jboss:javabean:1.0&quot; class=&quot;org.jboss.test.javabean.support.SimpleBean&quot;&gt;
+            &lt;property name=&quot;ADate&quot;&gt;Jan 01 00:00:00 CET 2001&lt;/property&gt;
+            &lt;property name=&quot;ABigDecimal&quot;&gt;12e4&lt;/property&gt;
+        &lt;/javabean&gt;
+    &lt;/property&gt;
+&lt;/bean&gt; </programlisting>
+        </important>
       </section>
       <section>
         <title>Using Spring XML</title>
+        <para>Spring like JBoss Microcontainer allows POJOs to be created and configured using an XML schema. As the microcontainer largely supports the same set of features as Spring it is possible to  use the spring-beans  schema to define beans instead of the bean-deployer schema. This makes migrating services built and tested using Spring to JBoss Microcontainer very straightforward.</para>
+        <para>To define beans using the spring-beans schema you need to include <code>spring-int.jar</code> on the microcontainer classpath. You can then create a deployment descriptor containing a &lt;beans&gt; element at the root instead of the usual &lt;deployment&gt; element:</para>
+        <programlisting>&lt;beans xmlns=&quot;urn:jboss:spring-beans:2.0&quot;&gt;
+    &lt;bean id=&quot;testBean&quot; class=&quot;org.jboss.test.spring.support.SimpleBean&quot;&gt;
+        &lt;constructor-arg index=&quot;2&quot;&gt;
+            &lt;value&gt;SpringBean&lt;/value&gt;
+        &lt;/constructor-arg&gt;
+        &lt;constructor-arg index=&quot;0&quot;&gt;
+            &lt;value&gt;1&lt;/value&gt;
+        &lt;/constructor-arg&gt;
+        &lt;constructor-arg index=&quot;1&quot;&gt;
+            &lt;value&gt;3.14159&lt;/value&gt;
+        &lt;/constructor-arg&gt;
+
+        &lt;property name=&quot;mylist&quot;&gt;
+            &lt;list value-type=&quot;java.lang.String&quot;&gt;
+                &lt;value&gt;onel&lt;/value&gt;
+                &lt;value&gt;twol&lt;/value&gt;
+                &lt;value&gt;threel&lt;/value&gt;
+            &lt;/list&gt;
+        &lt;/property&gt;
+
+        &lt;property name=&quot;myset&quot;&gt;
+            &lt;set value-type=&quot;java.lang.String&quot;&gt;
+                &lt;value&gt;ones&lt;/value&gt;
+                &lt;value&gt;twos&lt;/value&gt;
+                &lt;value&gt;ones&lt;/value&gt;
+            &lt;/set&gt;
+        &lt;/property&gt;
+
+        &lt;property name=&quot;mymap&quot;&gt;
+            &lt;map key-type=&quot;java.lang.String&quot;&gt;
+                &lt;entry&gt;
+                    &lt;key&gt;
+                        &lt;value&gt;test_key&lt;/value&gt;
+                    &lt;/key&gt;
+                    &lt;value type=&quot;java.lang.String&quot;&gt;myvalue&lt;/value&gt;
+                &lt;/entry&gt;
+            &lt;/map&gt;
+        &lt;/property&gt;
+    &lt;/bean&gt;
+&lt;/beans&gt;</programlisting>
+        <para>The namespace declaration <code>xmlns=&quot;urn:jboss:spring-beans:2.0&quot;</code> tells the microcontainer that it should interpret the XML according to the spring-bean schema.</para>
+        <para>You can even mix beans declared using the bean-deployer schema with those declared using the spring-beans schema just like we did with the javabean schema. All that you need to do is include the correct namespace declarations in the relevant elements:</para>
+        <itemizedlist>
+          <listitem>
+            <para>JBoss Microcontainer deployment containing Spring defined beans</para>
+            <programlisting>&lt;deployment xmlns=&quot;urn:jboss:bean-deployer:2.0&quot;&gt;
+
+    &lt;bean name=&quot;oldBean&quot; class=&quot;org.jboss.test.spring.support.OldBean&quot;&gt;
+        &lt;property name=&quot;testBean&quot;&gt;
+            &lt;inject/&gt;
+        &lt;/property&gt;
+    &lt;/bean&gt;
+
+    &lt;bean xmlns=&quot;urn:jboss:spring-beans:2.0&quot; id=&quot;testBean&quot; class=&quot;org.jboss.test.TestBean&quot;&gt;
+        &lt;property name=&quot;mylist&quot;&gt;
+            &lt;list value-type=&quot;java.lang.String&quot;&gt;
+                &lt;value&gt;onel&lt;/value&gt;
+                &lt;value&gt;twol&lt;/value&gt;
+                &lt;value&gt;threel&lt;/value&gt;
+            &lt;/list&gt;
+        &lt;/property&gt;
+    &lt;/bean&gt;
+
+&lt;/deployment&gt; </programlisting>
+          </listitem>
+          <listitem>
+            <para>Spring defined deployment containing JBoss Microcontainer beans</para>
+            <programlisting>&lt;beans xmlns=&quot;urn:jboss:spring-beans:2.0&quot;&gt;
+
+    &lt;bean id=&quot;testBean&quot; class=&quot;org.jboss.test.spring.support.SimpleBean&quot;&gt;
+        &lt;property name=&quot;refBean&quot;&gt;
+            &lt;ref bean=&quot;oldBean&quot;/&gt;
+        &lt;/property&gt;
+    &lt;/bean&gt;
+
+    &lt;bean xmlns=&quot;urn:jboss:bean-deployer:2.0&quot; name=&quot;oldBean&quot; class=&quot;org.jboss.test.spring.support.OldBean&quot;&gt;
+        &lt;property name=&quot;myString&quot;&gt;I&apos;m an old bean&lt;/property&gt;
+    &lt;/bean&gt;
+
+&lt;/beans&gt;</programlisting>
+          </listitem>
+        </itemizedlist>
+        <note>
+          <para>Adding  <code>spring-int.jar</code> to the microcontainer classpath simply adds the ability to define beans using the spring-beans XML schema. It does not integrate JBoss Microcontainer with Spring libraries.</para>
+        </note>
       </section>
       <section>
         <title>Using Java Properties</title>
+        <para>Using XML schemas to create deployment descriptors provides us wth a powerful way to express complex configuration information. However  the XML parsers that are needed to interpret this information are often large in size which doesn&apos;t help when  bootstrapping the microcontainer in small runtime environments. For this reason you can also choose to create deployment descriptors using Java properties.</para>
       </section>
     </chapter>
     <chapter>
