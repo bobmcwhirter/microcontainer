@@ -758,7 +758,6 @@ public class DefaultMetaValueFactory extends MetaValueFactory
     */
    protected Object unwrapTable(TableValue tableValue, TypeInfo type)
    {
-      TableMetaType metaType = tableValue.getMetaType();
       if (type instanceof ParameterizedClassInfo)
       {
          ParameterizedClassInfo parameterizedType = (ParameterizedClassInfo)type;
@@ -767,7 +766,7 @@ public class DefaultMetaValueFactory extends MetaValueFactory
          {
             TypeInfo keyType = parameterizedType.getActualTypeArguments()[0];
             TypeInfo valueType = parameterizedType.getActualTypeArguments()[1];
-            return createMap(metaType, keyType, valueType, tableValue);
+            return createMap(tableValue, keyType, valueType);
          }
       }
       throw new UnsupportedOperationException("Insufficient information to unwrap table: " + tableValue + ", " + type);
@@ -776,14 +775,12 @@ public class DefaultMetaValueFactory extends MetaValueFactory
    /**
     * Create a map
     *
-    * @param metaType the meta type
+    * @param tableValue the table value
     * @param keyType the key type
     * @param valueType the value type
-    * @param tableValue the table value
-    * @param context the context
     * @return the map
     */
-   protected Map createMap(TableMetaType metaType, TypeInfo keyType, TypeInfo valueType, TableValue tableValue)
+   protected Map createMap(TableValue tableValue, TypeInfo keyType, TypeInfo valueType)
    {
       if (tableValue == null)
          return null;
