@@ -1451,7 +1451,7 @@ public class MyApp {
       </section>
       <section>
         <title>Calling constructors</title>
-        <para>Creating POJO instances is performed either by calling a constructor or using a factory method. The &lt;constructor&gt; element is used in both cases and parameters can be passed if necessary using nested &lt;parameter&gt; elements. Annotations also exist for either case but the constructor annotation takes no parameters since these are already present in the constructor.</para>
+        <para>Creating POJO instances is performed either by calling a constructor or using a factory method. The &lt;constructor&gt; element is used in both cases and parameters can be passed if necessary using nested &lt;parameter&gt; elements. Annotations also exist for either case but the constructor annotation takes no parameters since these are declared in the constructor itself.</para>
         <important>
           <para>At present it is not possible to create a POJO instance only using annotations. This is because classes are not automatically loaded and scanned whenever they are added to the classpath. Doing so would significantly reduce the performance of the deployment process as all classes would need to be loaded, even if they were not yet required. Instead you must always define beans using a deployment descriptor as  this tells the  microcontainer which classes to load. These classes are subsequently scanned for annotations such as @Constructor and @Factory to discover how to create  instances.</para>
           <programlisting>&lt;bean name=&quot;SimpleBean&quot; class=&quot;org.jboss.example.SimpleBean&quot;/&gt;</programlisting>
@@ -1468,7 +1468,7 @@ public TestConstructorBean() {
           <listitem>
             <para>Constructor with parameters</para>
             <programlisting>@Constructor
-public TestConstructorBean(String testString, int testNumber) {
+public TestConstructorBean(@StringValue(&quot;this is a test contructor&quot;) String testString, @StringValue(&quot;25&quot;) int testNumber) {
  ...
 }</programlisting>
             <programlisting>&lt;bean name=&quot;Test&quot; class=&quot;org.jboss.example.constructor.TestConstructorBean&quot;&gt;
@@ -1485,7 +1485,7 @@ public TestConstructorBean(String testString, int testNumber) {
 }
 
 @Constructor
-public TestConstructorBean(String testString, long testNumber) {
+public TestConstructorBean(@StringValue(&quot;this is a test constructor&quot;) String testString, @StringValue(value=&quot;25&quot;, type=&quot;long&quot;) long testNumber) {
     ...
 }</programlisting>
             <programlisting>&lt;bean name=&quot;Test&quot; class=&quot;org.jboss.example.constructor.TestConstructorBean&quot;&gt;
@@ -1520,7 +1520,7 @@ public class SimpleBean {
             <para>Static factory method with parameters</para>
             <programlisting>@Factory (factoryClass=&quot;org.jboss.example.MyFactory&quot;,
           factoryMethod=&quot;newInstance&quot;,
-          parameters={@Value(string=@StringValue(value=&quot;a string&quot;)),@Value(string=@StringValue(value=&quot;7&quot;))})
+          parameters={@Value(string=@StringValue(&quot;a string&quot;)),@Value(string=@StringValue(&quot;7&quot;))})
 public class SimpleBean {
    ...
 }</programlisting>
@@ -1551,7 +1551,7 @@ public class SimpleBean {
             <para>Non-static factory method with parameters</para>
             <programlisting>@Factory (factory=@Value(javabean=@JavaBeanValue(&quot;org.jboss.example.MyOtherFactory&quot;)),
           factoryMethod=&quot;createBean&quot;,
-          parameters={@Value(string=@StringValue(value=&quot;a string&quot;)),@Value(string=@StringValue(value=&quot;7&quot;))})
+          parameters={@Value(string=@StringValue(&quot;a string&quot;)),@Value(string=@StringValue(&quot;7&quot;))})
 public class SimpleBean {
     ...
 }</programlisting>
@@ -1573,7 +1573,7 @@ public class SimpleBean {
             <programlisting>public class SimpleBean {
 
     @FactoryMethod
-    public static newInstance(String name, int level) {
+    public static newInstance(@StringValue(&quot;a string&quot;) String name, @StringValue(&quot;5&quot;) int level) {
         ...
     }
 }</programlisting>
@@ -1583,7 +1583,7 @@ public class SimpleBean {
         &lt;parameter&gt;5&lt;/parameter&gt;
     &lt;/constructor&gt;
 &lt;/bean&gt; </programlisting>
-            <para>Note that the @FactoryMethod annotation doesn&apos;t have a parameter attribute as the parameters are already specified in the method.</para>
+            <para>Note that the @FactoryMethod annotation doesn&apos;t have a parameter attribute as the parameters are declared in the method itself.</para>
           </listitem>
         </itemizedlist>
       </section>
@@ -1604,7 +1604,7 @@ public class SimpleBean {
           </listitem>
           <listitem>
             <para>Disabling System property replacement</para>
-            <programlisting>@Aliases(value={&quot;MyAlias&quot;, &quot;Test: ${test.name}&quot;} replace=&quot;false&quot;)
+            <programlisting>@Aliases({&quot;MyAlias&quot;, &quot;Test: ${test.name}&quot;} replace=&quot;false&quot;)
 public class SimpleBean {
     ...
 }</programlisting>
@@ -1657,7 +1657,74 @@ public class SimpleBean {
       <title>Injecting properties</title>
       <section>
         <title>Defining values</title>
-        <para>Defining collections</para>
+        <para>Once a POJO instance has been created then it can be configured by injecting property values. Like most other features this can be done using either annotations or a deployment descriptor. For each property that you wish to inject the bean must define an appropriate setter method for the microcontainer to call.</para>
+        <programlisting>public class PropertiesBean {
+
+    public void setTitle(@StringValue(&quot;JBoss Microcontainer&quot;) String title) {
+        ...
+   }
+
+    public void setLink(@StringValue(&quot;http://www.jboss.org&quot;) URL link) {
+        ...
+    }
+
+    public void setNumber(@StringValue(&quot;4&quot;) int number) {
+        ...
+    }
+}</programlisting>
+        <programlisting>&lt;bean name=&quot;PropertiesBean&quot; class=&quot;org.jboss.example.microcontainer.properties.PropertiesBean&quot;&gt;
+    &lt;property name=&quot;title&quot;&gt;JBoss Microcontainer&lt;/property&gt;
+    &lt;property name=&quot;link&quot;&gt;http://www.jboss.org&lt;/property&gt;
+    &lt;property name=&quot;number&quot;&gt;4&lt;/property&gt;
+&lt;/bean&gt; </programlisting>
+        <para>As you have probably noticed we are required to enter all of our values as strings since we are dealing with text files. These strings are converted into objects of the correct type using JavaBean <ulink url="http://java.sun.com/j2se/1.5.0/docs/api/java/beans/PropertyEditor.html">PropertyEditors</ulink>. If the property takes an interface or abstract class then you can pass a specific implementation using a <code>type</code> or  <code>class</code> attribute depending on whether you&apos;re using annotations or not.</para>
+        <programlisting>public class PropertiesBean {
+
+    public void setNumber(@StringValue(value=&quot;4&quot;, type=&quot;java.lang.Long&quot;) Number number) {
+        ...
+   }
+}</programlisting>
+        <programlisting>&lt;bean name=&quot;PropertiesBean&quot; class=&quot;org.jboss.example.microcontainer.properties.PropertiesBean&quot;&gt;
+    &lt;property name=&quot;number&quot; class=&quot;java.lang.Long&quot;&gt;4&lt;/property&gt;
+&lt;/bean&gt; </programlisting>
+        <para>Sometimes you may want to pass in a value that isn&apos;t of the same type as the property but can be progressed into it. Progression is typically used for converting numbers from one type to another, e.g. Short to Int or Float to Double. JBoss Microcontainer by default will automatically perform progression using a <code>SimpleProgressionConverter</code> implementation.</para>
+        <programlisting>&lt;bean name=&quot;SimpleBean&quot; class=&quot;org.jboss.test.SimpleBean&quot;&gt;
+    &lt;property name=&quot;anInt&quot;&gt;
+        &lt;javabean xmlns=&quot;urn:jboss:javabean:2.0&quot; class=&quot;java.lang.Double&quot;&gt;
+            &lt;constructor&gt;
+                &lt;property name=&quot;aDouble&quot;&gt;123.456&lt;/property&gt;
+            &lt;/constructor&gt;
+        &lt;/javabean&gt;
+    &lt;/property&gt;
+    &lt;property name=&quot;aShort&quot;&gt;
+        &lt;javabean xmlns=&quot;urn:jboss:javabean:2.0&quot; class=&quot;java.lang.Float&quot;&gt;
+            &lt;constructor&gt;
+                &lt;property name=&quot;aFloat&quot;&gt;987.6543&lt;/property&gt;
+            &lt;/constructor&gt;
+        &lt;/javabean&gt;
+    &lt;/property&gt;
+    &lt;property name=&quot;aFloat&quot;&gt;
+        &lt;javabean xmlns=&quot;urn:jboss:javabean:2.0&quot; class=&quot;java.lang.Integer&quot;&gt;
+            &lt;constructor&gt;
+                &lt;property name=&quot;anInt&quot;&gt;314159&lt;/property&gt;
+            &lt;/constructor&gt;
+        &lt;/javabean&gt;
+    &lt;/property&gt;
+&lt;/bean&gt;</programlisting>
+        <para>You can replace  the default progression converter implementation with one of your own by setting the <code>org.jboss.reflect.plugins.progressionConverter</code> system property using a fully-qualified class name. If you want to prevent progression from occuring altogether then you can use the <code>NullProgressionConverter</code> which is also provided.</para>
+        <programlisting>-Dorg.jboss.reflect.plugins.progressionConverter=org.jboss.reflect.plugins.NullProgressionConvertor</programlisting>
+        <para>If you want to use a null value then you need to use the @NullValue annotation or &lt;null/&gt; element. This is because we have to differentiate it from the string &apos;null&apos;.</para>
+        <programlisting>example</programlisting>
+        <para>Similarly if you want to refer to the current object then you should use the @ThisValue annotation or &lt;this/&gt; element.</para>
+        <programlisting>example</programlisting>
+        <para>Property values can also be defined using a longer form of XML if you prefer.</para>
+        <programlisting>&lt;bean name=&quot;PropertiesBean&quot; class=&quot;org.jboss.example.microcontainer.properties.PropertiesBean&quot;&gt;
+    &lt;property name=&quot;number&quot;&gt;
+        &lt;value class=&quot;java.lang.Long&quot;&gt;4&lt;/value&gt;
+    &lt;/property&gt;
+&lt;/bean&gt; </programlisting>
+        <para>This is primarily used when configuring values representing collections such as lists, sets, maps and arrays.</para>
+        <para/>
       </section>
       <section>
         <title>Calling methods</title>
