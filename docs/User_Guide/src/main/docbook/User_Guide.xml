@@ -1451,13 +1451,206 @@ public class MyApp {
       </section>
       <section>
         <title>Calling constructors</title>
-        <para>Remember to describe annotations aswell as XML.</para>
+        <para>Creating POJO instances is performed either by calling a constructor or using a factory method. The &lt;constructor&gt; element is used in both cases and parameters can be passed if necessary using nested &lt;parameter&gt; elements. Annotations also exist for either case but the constructor annotation takes no parameters since these are already present in the constructor.</para>
+        <important>
+          <para>At present it is not possible to create a POJO instance only using annotations. This is because classes are not automatically loaded and scanned whenever they are added to the classpath. Doing so would significantly reduce the performance of the deployment process as all classes would need to be loaded, even if they were not yet required. Instead you must always define beans using a deployment descriptor as  this tells the  microcontainer which classes to load. These classes are subsequently scanned for annotations such as @Constructor and @Factory to discover how to create  instances.</para>
+          <programlisting>&lt;bean name=&quot;SimpleBean&quot; class=&quot;org.jboss.example.SimpleBean&quot;/&gt;</programlisting>
+        </important>
+        <itemizedlist>
+          <listitem>
+            <para>Default constructor</para>
+            <programlisting>@Constructor
+public TestConstructorBean() {
+ ...
+}</programlisting>
+            <programlisting>&lt;bean name=&quot;Test&quot; class=&quot;org.jboss.example.constructor.TestConstructorBean&quot;/&gt;       </programlisting>
+          </listitem>
+          <listitem>
+            <para>Constructor with parameters</para>
+            <programlisting>@Constructor
+public TestConstructorBean(String testString, int testNumber) {
+ ...
+}</programlisting>
+            <programlisting>&lt;bean name=&quot;Test&quot; class=&quot;org.jboss.example.constructor.TestConstructorBean&quot;&gt;
+    &lt;constructor&gt;
+        &lt;parameter&gt;this is a test constructor&lt;/parameter&gt;
+        &lt;parameter&gt;25&lt;/parameter&gt;
+    &lt;/constructor&gt;
+&lt;/bean&gt;</programlisting>
+          </listitem>
+          <listitem>
+            <para>Choosing between two constructors with the same number of parameters</para>
+            <programlisting>public TestConstructorBean(String testString, int testNumber) {
+    ...
+}
+
+@Constructor
+public TestConstructorBean(String testString, long testNumber) {
+    ...
+}</programlisting>
+            <programlisting>&lt;bean name=&quot;Test&quot; class=&quot;org.jboss.example.constructor.TestConstructorBean&quot;&gt;
+    &lt;constructor&gt;
+        &lt;parameter&gt;this is a test constructor&lt;/parameter&gt;
+        &lt;parameter class=&quot;long&quot;&gt;25&lt;/parameter&gt;
+    &lt;/constructor&gt;
+&lt;/bean&gt;</programlisting>
+            <note>
+              <para>You only need to include the  <code>class</code> attribute on enough parameters to resolve the ambiguity.</para>
+            </note>
+          </listitem>
+        </itemizedlist>
       </section>
       <section>
         <title>Using factories</title>
+        <para>If you have a choice of implementations for an interface then you may want to use a factory to create your POJO instances. JBoss Microcontainer provides support for static or non-static factory methods which can also take parameters if necessary.</para>
+        <itemizedlist>
+          <listitem>
+            <para>Static factory method</para>
+            <programlisting>@Factory (factoryClass=&quot;org.jboss.example.MyFactory&quot;,
+          factoryMethod=&quot;newInstance&quot;)
+public class SimpleBean {
+   ...
+}</programlisting>
+            <programlisting>&lt;bean name=&quot;SimpleBean&quot; class=&quot;org.jboss.example.SimpleBean&quot;&gt;
+    &lt;constructor factoryMethod=&quot;newInstance&quot;
+                 factoryClass=&quot;org.jboss.example.MyFactory&quot;/&gt;
+&lt;/bean&gt; </programlisting>
+          </listitem>
+          <listitem>
+            <para>Static factory method with parameters</para>
+            <programlisting>@Factory (factoryClass=&quot;org.jboss.example.MyFactory&quot;,
+          factoryMethod=&quot;newInstance&quot;,
+          parameters={@Value(string=@StringValue(value=&quot;a string&quot;)),@Value(string=@StringValue(value=&quot;7&quot;))})
+public class SimpleBean {
+   ...
+}</programlisting>
+            <programlisting>&lt;bean name=&quot;SimpleBean&quot; class=&quot;org.jboss.example.SimpleBean&quot;&gt;
+    &lt;constructor factoryMethod=&quot;newInstance&quot;
+                 factoryClass=&quot;org.jboss.example.MyFactory&quot;&gt;
+        &lt;parameter&gt;a string&lt;/parameter&gt;
+        &lt;parameter&gt;7&lt;/parameter&gt;
+    &lt;/constructor&gt;
+&lt;/bean&gt; </programlisting>
+          </listitem>
+          <listitem>
+            <para>Non-static factory method</para>
+            <programlisting>@Factory (factory=@Value(javabean=@JavaBeanValue(&quot;org.jboss.example.MyOtherFactory&quot;)),
+          factoryMethod=&quot;createBean&quot;)
+public class SimpleBean {
+    ...
+}</programlisting>
+            <programlisting>&lt;bean name=&quot;MyOtherFactory&quot; class=&quot;org.jboss.example.MyOtherFactory&quot;/&gt;
+
+&lt;bean name=&quot;SimpleBean&quot; class=&quot;org.jboss.example.SimpleBean&quot;&gt;
+    &lt;constructor factoryMethod=&quot;createBean&quot;&gt;
+        &lt;factory bean=&quot;MyOtherFactory&quot;/&gt;
+    &lt;/constructor&gt;
+&lt;/bean&gt;</programlisting>
+          </listitem>
+          <listitem>
+            <para>Non-static factory method with parameters</para>
+            <programlisting>@Factory (factory=@Value(javabean=@JavaBeanValue(&quot;org.jboss.example.MyOtherFactory&quot;)),
+          factoryMethod=&quot;createBean&quot;,
+          parameters={@Value(string=@StringValue(value=&quot;a string&quot;)),@Value(string=@StringValue(value=&quot;7&quot;))})
+public class SimpleBean {
+    ...
+}</programlisting>
+            <programlisting>&lt;bean name=&quot;MyOtherFactory&quot; class=&quot;org.jboss.example.MyOtherFactory&quot;/&gt;
+
+&lt;bean name=&quot;SimpleBean&quot; class=&quot;org.jboss.example.SimpleBean&quot;&gt;
+    &lt;constructor factoryMethod=&quot;createBean&quot;&gt;
+        &lt;factory bean=&quot;MyOtherFactory&quot;/&gt;
+        &lt;parameter&gt;a string&lt;/parameter&gt;
+        &lt;parameter&gt;7&lt;/parameter&gt;
+    &lt;/constructor&gt;
+&lt;/bean&gt;</programlisting>
+          </listitem>
+        </itemizedlist>
+        <para>For the special case where a bean implements its own  static factory method in order to create itself then you can also use a shorthand notation:</para>
+        <itemizedlist>
+          <listitem>
+            <para>Bean implementing its own static factory method</para>
+            <programlisting>public class SimpleBean {
+
+    @FactoryMethod
+    public static newInstance(String name, int level) {
+        ...
+    }
+}</programlisting>
+            <programlisting>&lt;bean name=&quot;SimpleBean&quot; class=&quot;org.jboss.example.SimpleBean&quot;&gt;
+    &lt;constructor factoryMethod=&quot;newInstance&quot;&gt;
+        &lt;parameter&gt;a string&lt;/parameter&gt;
+        &lt;parameter&gt;5&lt;/parameter&gt;
+    &lt;/constructor&gt;
+&lt;/bean&gt; </programlisting>
+            <para>Note that the @FactoryMethod annotation doesn&apos;t have a parameter attribute as the parameters are already specified in the method.</para>
+          </listitem>
+        </itemizedlist>
       </section>
       <section>
         <title>Creating bean aliases</title>
+        <para>By default each bean declared in the deployment descriptor has a unique name that is used to inject it into other beans or to  provide a reference to clients at runtime. Sometimes however it is useful to define additional names or aliases. This can be done using the @Aliases annotation or &lt;alias&gt; XML element. System property replacement is used by default to change the value of the alias at runtime but you can disable this if required. </para>
+        <itemizedlist>
+          <listitem>
+            <para>Defining extra bean names</para>
+            <programlisting>@Aliases({&quot;MyAlias&quot;, &quot;Test: ${test.name}&quot;})
+public class SimpleBean {
+    ...
+}</programlisting>
+            <programlisting>&lt;bean name=&quot;MyBean&quot; class=&quot;org.acme.SimpleBean&quot;&gt;
+    &lt;alias&gt;MyAlias&lt;/alias&gt;
+    &lt;alias&gt;Test: ${test.name}&lt;/alias&gt;
+&lt;/bean&gt;</programlisting>
+          </listitem>
+          <listitem>
+            <para>Disabling System property replacement</para>
+            <programlisting>@Aliases(value={&quot;MyAlias&quot;, &quot;Test: ${test.name}&quot;} replace=&quot;false&quot;)
+public class SimpleBean {
+    ...
+}</programlisting>
+            <programlisting>&lt;bean name=&quot;MyBean&quot; class=&quot;org.acme.SimpleBean&quot;&gt;
+    &lt;alias&gt;MyAlias&lt;/alias&gt;
+    &lt;alias replace=&quot;false&quot;&gt;Test: ${test.name}&lt;/alias&gt;
+&lt;/bean&gt;</programlisting>
+          </listitem>
+        </itemizedlist>
+        <para>The type of an alias doesn&apos;t have to be a string. If you want to choose a different type then you can specify a <code>class</code> attribute in the &lt;alias&gt; XML element. At present you cannot do this using the @Aliases annotation.</para>
+        <itemizedlist>
+          <listitem>
+            <para>Choosing a different alias type</para>
+            <programlisting>&lt;bean name=&quot;MyBean&quot; class=&quot;org.acme.SimpleBean&quot;&gt;
+    &lt;alias class=&quot;java.lang.Integer&quot;&gt;12345&lt;/alias&gt; 
+&lt;/bean&gt;</programlisting>
+          </listitem>
+        </itemizedlist>
+        <para>Sometimes you may wish to define an alias for a bean after it has been deployed. This can be done using the standalone  &lt;alias&gt; element in the deployment descriptor. There is no equivalent annotation in this case as there is no sensible place to put it.</para>
+        <itemizedlist>
+          <listitem>
+            <para>Defining a standalone alias</para>
+            <programlisting>&lt;deployment name=&quot;FirstDeployment&quot; xmlns=&quot;urn:jboss:bean-deployer:2.0&quot;&gt;
+
+    &lt;bean name=&quot;Bean1&quot; class=&quot;java.lang.Object&quot;/&gt;
+    &lt;bean name=&quot;Bean2&quot; class=&quot;java.lang.Object&quot;/&gt;
+
+&lt;/deployment&gt;
+
+&lt;deployment name=&quot;SecondDeployment&quot; xmlns=&quot;urn:jboss:bean-deployer:2.0&quot;&gt;
+
+    &lt;bean name=&quot;Xyz1&quot; class=&quot;java.lang.Object&quot;&gt;
+        &lt;property name=&quot;locker1&quot;&gt;&lt;inject name=&quot;Lock1&quot;&gt;&lt;/property&gt;
+        &lt;property name=&quot;locker2&quot;&gt;&lt;inject name=&quot;Lock2&quot;&gt;&lt;/property&gt;
+    &lt;/bean&gt;
+
+    &lt;alias name=&quot;Bean1&quot;&gt;Lock1&lt;/alias&gt;
+    &lt;alias name=&quot;Bean2&quot;&gt;Lock2&lt;/alias&gt;
+
+&lt;/deployment&gt; </programlisting>
+          </listitem>
+        </itemizedlist>
+        <note>
+          <para>Standalone aliases behave just like normal beans with respect to dependencies. Specifically they won&apos;t be deployed until the beans that they represent have been deployed first. Likewise when a bean is undeployed then any corresponding standalone aliases are undeployed first.</para>
+          <para>Furthermore if any beans depend on a standalone alias then they will not be deployed until the alias is deployed first. Similarly undeploying a standalone alias will cause all dependent beans to be undeployed, regardless of whether  the bean that it represents remains deployed.  </para>
+        </note>
       </section>
     </chapter>
     <chapter>
