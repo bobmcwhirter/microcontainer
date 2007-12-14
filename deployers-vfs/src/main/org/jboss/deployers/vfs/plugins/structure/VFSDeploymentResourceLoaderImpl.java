@@ -59,8 +59,7 @@ public class VFSDeploymentResourceLoaderImpl implements VFSDeploymentResourceLoa
    {
       try
       {
-         VirtualFile child = root.findChild(path);
-         return child;
+         return root.findChild(path);
       }
       catch (IOException e)
       {
