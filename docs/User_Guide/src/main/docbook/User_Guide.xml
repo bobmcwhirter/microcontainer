@@ -1656,7 +1656,7 @@ public class SimpleBean {
     <chapter>
       <title>Injecting properties</title>
       <section>
-        <title>Defining values</title>
+        <title>Using values</title>
         <para>Once a POJO instance has been created then it can be configured by injecting property values. Like most other features this can be done using either annotations or a deployment descriptor. For each property that you wish to inject the bean must define an appropriate setter method for the microcontainer to call.</para>
         <programlisting>public class PropertiesBean {
 
@@ -1677,7 +1677,7 @@ public class SimpleBean {
     &lt;property name=&quot;link&quot;&gt;http://www.jboss.org&lt;/property&gt;
     &lt;property name=&quot;number&quot;&gt;4&lt;/property&gt;
 &lt;/bean&gt; </programlisting>
-        <para>As you have probably noticed we are required to enter all of our values as strings since we are dealing with text files. These strings are converted into objects of the correct type using JavaBean <ulink url="http://java.sun.com/j2se/1.5.0/docs/api/java/beans/PropertyEditor.html">PropertyEditors</ulink>. If the property takes an interface or abstract class then you can pass a specific implementation using a <code>type</code> or  <code>class</code> attribute depending on whether you&apos;re using annotations or not.</para>
+        <para>As you have probably noticed we are required to enter all of our values as strings since we are dealing with text files. These strings are converted into objects of the correct type using JavaBean <ulink url="http://java.sun.com/j2se/1.5.0/docs/api/java/beans/PropertyEditor.html">PropertyEditors</ulink>. If the property takes an interface or abstract class then you can pass a specific implementation using a <code>type</code> or  <code>class</code> attribute depending on whether you&apos;re using annotations or XML.</para>
         <programlisting>public class PropertiesBean {
 
     public void setNumber(@StringValue(value=&quot;4&quot;, type=&quot;java.lang.Long&quot;) Number number) {
@@ -1713,18 +1713,213 @@ public class SimpleBean {
 &lt;/bean&gt;</programlisting>
         <para>You can replace  the default progression converter implementation with one of your own by setting the <code>org.jboss.reflect.plugins.progressionConverter</code> system property using a fully-qualified class name. If you want to prevent progression from occuring altogether then you can use the <code>NullProgressionConverter</code> which is also provided.</para>
         <programlisting>-Dorg.jboss.reflect.plugins.progressionConverter=org.jboss.reflect.plugins.NullProgressionConvertor</programlisting>
-        <para>If you want to use a null value then you need to use the @NullValue annotation or &lt;null/&gt; element. This is because we have to differentiate it from the string &apos;null&apos;.</para>
-        <programlisting>example</programlisting>
-        <para>Similarly if you want to refer to the current object then you should use the @ThisValue annotation or &lt;this/&gt; element.</para>
-        <programlisting>example</programlisting>
+        <para>If you want to use a null value then you need to use the @NullValue annotation or &lt;null/&gt; element. This is so we can differentiate it from the string &apos;null&apos;.</para>
+        <programlisting>public void setTitle(@NullValue String title) {
+    ...
+} </programlisting>
+        <programlisting>&lt;bean name=&quot;PropertiesBean&quot; class=&quot;org.jboss.example.microcontainer.properties.PropertiesBean&quot;&gt;
+    &lt;property name=&quot;title&quot;&gt;&lt;null/&gt;&lt;/property&gt;
+&lt;/bean&gt; </programlisting>
+        <para>Similarly if you want to refer to the current object then you  should use the @ThisValue annotation or &lt;this/&gt; element.</para>
+        <programlisting>public void setObject(@ThisValue Object target) {
+    ...
+} </programlisting>
+        <programlisting>&lt;bean name=&quot;PropertiesBean&quot; class=&quot;org.jboss.example.microcontainer.properties.PropertiesBean&quot;&gt;
+    &lt;property name=&quot;target&quot;&gt;&lt;this/&gt;&lt;/property&gt;
+&lt;/bean&gt; </programlisting>
         <para>Property values can also be defined using a longer form of XML if you prefer.</para>
         <programlisting>&lt;bean name=&quot;PropertiesBean&quot; class=&quot;org.jboss.example.microcontainer.properties.PropertiesBean&quot;&gt;
     &lt;property name=&quot;number&quot;&gt;
         &lt;value class=&quot;java.lang.Long&quot;&gt;4&lt;/value&gt;
     &lt;/property&gt;
 &lt;/bean&gt; </programlisting>
-        <para>This is primarily used when configuring values representing collections such as lists, sets, maps and arrays.</para>
-        <para/>
+        <para>This is primarily used when configuring values representing collections such as lists, sets and arrays. Elements of a collection are defined by listing annotations or nesting &lt;value&gt; elements as follows:</para>
+        <programlisting>@CollectionValue({@Value(string=@StringValue(&quot;string1&quot;)),
+                  @Value(string=@StringValue(&quot;string2&quot;)),
+                  @Value(string=@StringValue(&quot;string3&quot;)),
+                  @Value(string=@StringValue(&quot;string4&quot;))},
+                  elementClass=&quot;java.lang.String&quot;)
+public void setCollection(Collection collection) {
+    ...
+} </programlisting>
+        <programlisting>&lt;bean name=&quot;SimpleBean&quot;
+ class=&quot;org.jboss.example.SimpleBean&quot;&gt;
+    &lt;property name=&quot;collection&quot;&gt;
+        &lt;collection elementClass=&quot;java.lang.String&quot;&gt;
+            &lt;value&gt;string1&lt;/value&gt;
+            &lt;value&gt;string2&lt;/value&gt;
+            &lt;value&gt;string3&lt;/value&gt;
+            &lt;value&gt;string4&lt;/value&gt;
+       &lt;/collection&gt;
+    &lt;/property&gt;
+&lt;/bean&gt; </programlisting>
+        <para>The <code>elementClass</code> attribute specifies the default class for the values. This can be overriden for individual values using the <code>type</code> or <code>class</code> attributes.</para>
+        <programlisting>@CollectionValue({@Value(string=@StringValue(&quot;string1&quot;)),
+                  @Value(string=@StringValue(&quot;string2&quot;)),
+                  @Value(string=@StringValue(value=&quot;3.0&quot;, type=&quot;java.lang.Float&quot;)),
+                  @Value(string=@StringValue(value=&quot;4&quot;, type=&quot;java.lang.Integer&quot;))},
+                  elementClass=&quot;java.lang.String&quot;)
+public void setCollection(Collection collection) {
+    ...
+} </programlisting>
+        <programlisting>&lt;bean name=&quot;SimpleBean&quot;
+ class=&quot;org.jboss.example.SimpleBean&quot;&gt;
+    &lt;property name=&quot;collection&quot;&gt;
+        &lt;collection elementClass=&quot;java.lang.String&quot;&gt;
+            &lt;value&gt;string1&lt;/value&gt;
+            &lt;value&gt;string2&lt;/value&gt;
+            &lt;value class=&quot;java.lang.Float&quot;&gt;3.0&lt;/value&gt;
+            &lt;value class=&quot;java.lang.Integer&quot;&gt;4&lt;/value&gt;
+       &lt;/collection&gt;
+    &lt;/property&gt;
+&lt;/bean&gt; </programlisting>
+        <warning>
+          <para>The type of each value must be specified using either the <code>elementClass</code> or <code>type/class</code> attribute in order for the collection to be created.</para>
+        </warning>
+        <para>Lists, sets and arrays take the same form as the collection annotation and XML element. </para>
+        <programlisting>@ListValue({@Value(string=@StringValue(&quot;my first string&quot;)),
+            @Value(string=@StringValue(&quot;my second string&quot;))},
+            elementClass=&quot;java.lang.String&quot;)
+public void setList(List list) {
+    ...
+}
+
+@SetValue({@Value(string=@StringValue(&quot;50&quot;)),
+           @Value(string=@StringValue(&quot;55&quot;))},
+           elementClass=&quot;java.lang.Integer&quot;)
+public void setSet(Set set) {
+    ...
+}
+
+@ArrayValue({@Value(string=@StringValue(&quot;1.0&quot;)),
+             @Value(string=@StringValue(&quot;2.0&quot;))},
+             elementClass=&quot;java.lang.Float&quot;)
+public void setArray(Object[] array) {
+    ...
+} </programlisting>
+        <programlisting>&lt;bean name=&quot;SimpleBean&quot;
+ class=&quot;org.jboss.example.SimpleBean&quot;&gt;
+    &lt;property name=&quot;list&quot;&gt;
+        &lt;list elementClass=&quot;java.lang.String&quot;&gt;
+            &lt;value&gt;my first string&lt;/value&gt;
+            &lt;value&gt;my second string&lt;/value&gt;
+        &lt;/list&gt;
+    &lt;/property&gt;
+
+    &lt;property name=&quot;set&quot;&gt;
+        &lt;set elementClass=&quot;java.lang.Integer&quot;&gt;
+            &lt;value&gt;50&lt;/value&gt;
+            &lt;value&gt;55&lt;/value&gt;
+        &lt;/set&gt;
+    &lt;/property&gt;
+
+    &lt;property name=&quot;array&quot;&gt;
+        &lt;array elementClass=&quot;java.lang.Float&quot;&gt;
+            &lt;value&gt;1.0&lt;/value&gt;
+            &lt;value&gt;2.0&lt;/value&gt;
+        &lt;/array&gt;
+    &lt;/array&gt;
+&lt;/bean&gt; </programlisting>
+        <para>They can even be nested within one another if required. </para>
+        <programlisting>@ListValue({@Value(string=@StringValue(&quot;my first string&quot;)),
+            @Value(string=@SetValue({@Value(string=@StringValue(&quot;1&quot;)),
+                                     @Value(string=@StringValue=&quot;2&quot;))},
+                                     elementClass=&quot;java.lang.Integer&quot;))},
+            elementClass=&quot;java.lang.String&quot;)
+public void setList(List list) {
+    ...
+}</programlisting>
+        <programlisting>&lt;bean name=&quot;SimpleBean&quot;
+ class=&quot;org.jboss.example.SimpleBean&quot;&gt;
+    &lt;property name=&quot;list&quot;&gt;
+        &lt;list elementClass=&quot;java.lang.String&quot;&gt;
+            &lt;value&gt;my first string&lt;/value&gt;
+            &lt;value&gt;
+                &lt;set elementClass=&quot;java.lang.Integer&quot;&gt;
+                    &lt;value&gt;1&lt;/value&gt;
+                    &lt;value&gt;2&lt;/value&gt;
+                &lt;/set&gt;
+            &lt;/value&gt;
+        &lt;/list&gt;
+    &lt;/property&gt;
+&lt;/bean&gt;</programlisting>
+        <para>Maps can also be created using multiple entries of key/value pairs. As we now have two types to consider we must use the <code>keyClass</code> and <code>valueClass</code> attributes to specify the default classes for each entry. Again these can be overriden for individual entries if necessary.</para>
+        <programlisting>@MapValue(keyClass=&quot;java.lang.String&quot;,
+          valueClass=&quot;java.lang.String&quot;,
+          value={@EntryValue(key=@Value(string=@StringValue(&quot;foo.bar.key&quot;)),
+                             value=@Value(string=@StringValue(&quot;QWERT&quot;))),
+                 @EntryValue(key=@Value(string=@StringValue(&quot;xyz.key&quot;)),
+                             value=@Value(string=@StringValue(&quot;QWERTY&quot;)))
+                })
+public void setMap(Map&lt;String, String&gt; map) {
+    ...
+} </programlisting>
+        <programlisting>&lt;bean name=&quot;SimpleBean&quot; class=&quot;org.jboss.example.SimpleBean&quot;&gt;
+    &lt;property name=&quot;map&quot;&gt;
+        &lt;map keyClass=&quot;java.lang.String&quot; valueClass=&quot;java.lang.String&quot;&gt;
+            &lt;entry&gt;
+                &lt;key&gt;foo.bar.key&lt;/key&gt;
+                &lt;value&gt;QWERT&lt;/value&gt;
+            &lt;/entry&gt;
+            &lt;entry&gt;
+                &lt;key&gt;xyz.key&lt;/key&gt;
+                &lt;value&gt;QWERTY&lt;/value&gt;
+            &lt;/entry&gt;
+        &lt;/map&gt;
+    &lt;/property&gt;
+&lt;/bean&gt; </programlisting>
+        <para>So far we have defined collections, lists, sets, arrays and maps but all of these have multiple implementations, e.g. java.util.ArrayList, java.util.LinkedList,  so which are we using at runtime? By default JBoss Microcontainer will look for an existing instance using the corresponding getter method for the property. If one is found then it is used. If not then the type of the property is analysed and providing that it represents a class (not an interface) then this is used to create a new instance. Failing that a default instance will be created as follows:</para>
+        <itemizedlist>
+          <listitem>
+            <para>Collection - java.util.ArrayList</para>
+          </listitem>
+          <listitem>
+            <para>List - java.util.ArrayList</para>
+          </listitem>
+          <listitem>
+            <para>Set - java.util.HashSet</para>
+          </listitem>
+          <listitem>
+            <para>Array - java.lang.Object[]</para>
+          </listitem>
+          <listitem>
+            <para>Map - java.util.HashMap</para>
+          </listitem>
+        </itemizedlist>
+        <para>If you want to override this behaviour and specify your own class then you can simply add a <code>clazz</code> attribute to your annotation or <code>class</code> attribute to your XML element containing the fully-qualified class name. This causes the microcontainer to create a new instance using the specified class.</para>
+        <programlisting>@SetValue({@Value(string=@StringValue(&quot;50&quot;)),
+           @Value(string=@StringValue(&quot;55&quot;))},
+           clazz=&quot;java.util.TreeSet&quot;,
+           elementClass=&quot;java.lang.Integer&quot;)
+public void setSet(Set set) {
+    ...
+}</programlisting>
+        <programlisting>&lt;bean name=&quot;SimpleBean&quot;
+ class=&quot;org.jboss.example.SimpleBean&quot;&gt;
+    &lt;property name=&quot;set&quot;&gt;
+        &lt;set class=&quot;java.util.TreeSet&quot; elementClass=&quot;java.lang.Integer&quot;&gt;
+            &lt;value&gt;50&lt;/value&gt;
+            &lt;value&gt;55&lt;/value&gt;
+        &lt;/set&gt;
+    &lt;/property&gt;
+&lt;/bean&gt; </programlisting>
+        <note>
+          <para>If you don&apos;t specify a <code>clazz</code><code>/class</code> attribute but you want to ensure that a new instance is created then you can prevent the microcontainer from looking for a existing instance by specifying a <code>preinstantiate</code> attribute in the &lt;property&gt; element. Currently this cannot be achieved using annotations.</para>
+          <programlisting>&lt;bean name=&quot;SimpleBean&quot; class=&quot;org.jboss.example.SimpleBean&quot;&gt;
+    &lt;property name=&quot;list&quot; preinstantiate=&quot;false&quot;&gt;
+        &lt;list elementClass=&quot;java.lang.String&quot;&gt;
+            &lt;value&gt;string1&lt;/value&gt;
+            &lt;value&gt;string2&lt;/value&gt;
+        &lt;/list&gt;
+    &lt;/property&gt;
+&lt;/bean&gt; </programlisting>
+        </note>
+        <note>
+          <para>If you want to define a <code>clazz</code><code>/class</code> attribute for an array then you must use the following syntax:</para>
+          <para> <code>[L</code><emphasis>&lt;fully-qualified class name&gt;</emphasis><code>;</code></para>
+          <para>e.g. an array of strings - [Ljava.lang.String;</para>
+          <para>or an array of integers - [Ljava.lang.Integer;</para>
+        </note>
       </section>
       <section>
         <title>Calling methods</title>
