@@ -21,8 +21,8 @@
 */
 package org.jboss.test.deployers.main.support;
 
-import java.util.ArrayList;
 import java.util.List;
+import java.util.concurrent.CopyOnWriteArrayList;
 
 import org.jboss.deployers.spi.DeploymentException;
 import org.jboss.deployers.spi.deployer.DeploymentStage;
@@ -37,9 +37,9 @@ import org.jboss.deployers.structure.spi.DeploymentUnit;
  */
 public class TestSimpleDeployer extends AbstractRealDeployer
 {
-   private List<String> deployed = new ArrayList<String>();
-   private List<String> undeployed = new ArrayList<String>();
-   private List<String> failed = new ArrayList<String>();
+   private List<String> deployed = new CopyOnWriteArrayList<String>();
+   private List<String> undeployed = new CopyOnWriteArrayList<String>();
+   private List<String> failed = new CopyOnWriteArrayList<String>();
 
    private String name;
 
