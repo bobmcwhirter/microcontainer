@@ -1679,7 +1679,6 @@ public class SimpleBean {
 &lt;/bean&gt; </programlisting>
         <para>As you have probably noticed we are required to enter all of our values as strings since we are dealing with text files. These strings are converted into objects of the correct type using JavaBean <ulink url="http://java.sun.com/j2se/1.5.0/docs/api/java/beans/PropertyEditor.html">PropertyEditors</ulink>. If the property takes an interface or abstract class then you can pass a specific implementation using a <code>type</code> or  <code>class</code> attribute depending on whether you&apos;re using annotations or XML.</para>
         <programlisting>public class PropertiesBean {
-
     public void setNumber(@StringValue(value=&quot;4&quot;, type=&quot;java.lang.Long&quot;) Number number) {
         ...
    }
@@ -1734,16 +1733,15 @@ public class SimpleBean {
     &lt;/property&gt;
 &lt;/bean&gt; </programlisting>
         <para>This is primarily used when configuring values representing collections such as lists, sets and arrays. Elements of a collection are defined by listing annotations or nesting &lt;value&gt; elements as follows:</para>
-        <programlisting>@CollectionValue({@Value(string=@StringValue(&quot;string1&quot;)),
+        <programlisting>@CollectionValue(elementClass=&quot;java.lang.String&quot;,
+                 {@Value(string=@StringValue(&quot;string1&quot;)),
                   @Value(string=@StringValue(&quot;string2&quot;)),
                   @Value(string=@StringValue(&quot;string3&quot;)),
-                  @Value(string=@StringValue(&quot;string4&quot;))},
-                  elementClass=&quot;java.lang.String&quot;)
+                  @Value(string=@StringValue(&quot;string4&quot;))})
 public void setCollection(Collection collection) {
     ...
 } </programlisting>
-        <programlisting>&lt;bean name=&quot;SimpleBean&quot;
- class=&quot;org.jboss.example.SimpleBean&quot;&gt;
+        <programlisting>&lt;bean name=&quot;SimpleBean&quot; class=&quot;org.jboss.example.SimpleBean&quot;&gt;
     &lt;property name=&quot;collection&quot;&gt;
         &lt;collection elementClass=&quot;java.lang.String&quot;&gt;
             &lt;value&gt;string1&lt;/value&gt;
@@ -1754,16 +1752,15 @@ public void setCollection(Collection collection) {
     &lt;/property&gt;
 &lt;/bean&gt; </programlisting>
         <para>The <code>elementClass</code> attribute specifies the default class for the values. This can be overriden for individual values using the <code>type</code> or <code>class</code> attributes.</para>
-        <programlisting>@CollectionValue({@Value(string=@StringValue(&quot;string1&quot;)),
+        <programlisting>@CollectionValue(elementClass=&quot;java.lang.String&quot;,
+                 {@Value(string=@StringValue(&quot;string1&quot;)),
                   @Value(string=@StringValue(&quot;string2&quot;)),
                   @Value(string=@StringValue(value=&quot;3.0&quot;, type=&quot;java.lang.Float&quot;)),
-                  @Value(string=@StringValue(value=&quot;4&quot;, type=&quot;java.lang.Integer&quot;))},
-                  elementClass=&quot;java.lang.String&quot;)
+                  @Value(string=@StringValue(value=&quot;4&quot;, type=&quot;java.lang.Integer&quot;))})
 public void setCollection(Collection collection) {
     ...
 } </programlisting>
-        <programlisting>&lt;bean name=&quot;SimpleBean&quot;
- class=&quot;org.jboss.example.SimpleBean&quot;&gt;
+        <programlisting>&lt;bean name=&quot;SimpleBean&quot; class=&quot;org.jboss.example.SimpleBean&quot;&gt;
     &lt;property name=&quot;collection&quot;&gt;
         &lt;collection elementClass=&quot;java.lang.String&quot;&gt;
             &lt;value&gt;string1&lt;/value&gt;
@@ -1777,28 +1774,27 @@ public void setCollection(Collection collection) {
           <para>The type of each value must be specified using either the <code>elementClass</code> or <code>type/class</code> attribute in order for the collection to be created.</para>
         </warning>
         <para>Lists, sets and arrays take the same form as the collection annotation and XML element. </para>
-        <programlisting>@ListValue({@Value(string=@StringValue(&quot;my first string&quot;)),
-            @Value(string=@StringValue(&quot;my second string&quot;))},
-            elementClass=&quot;java.lang.String&quot;)
+        <programlisting>@ListValue(elementClass=&quot;java.lang.String&quot;,
+           {@Value(string=@StringValue(&quot;my first string&quot;)),
+            @Value(string=@StringValue(&quot;my second string&quot;))})
 public void setList(List list) {
     ...
 }
 
-@SetValue({@Value(string=@StringValue(&quot;50&quot;)),
-           @Value(string=@StringValue(&quot;55&quot;))},
-           elementClass=&quot;java.lang.Integer&quot;)
+@SetValue(elementClass=&quot;java.lang.Integer&quot;,
+          {@Value(string=@StringValue(&quot;50&quot;)),
+           @Value(string=@StringValue(&quot;55&quot;))})
 public void setSet(Set set) {
     ...
 }
 
-@ArrayValue({@Value(string=@StringValue(&quot;1.0&quot;)),
-             @Value(string=@StringValue(&quot;2.0&quot;))},
-             elementClass=&quot;java.lang.Float&quot;)
+@ArrayValue(elementClass=&quot;java.lang.Float&quot;,
+            {@Value(string=@StringValue(&quot;1.0&quot;)),
+             @Value(string=@StringValue(&quot;2.0&quot;))})
 public void setArray(Object[] array) {
     ...
 } </programlisting>
-        <programlisting>&lt;bean name=&quot;SimpleBean&quot;
- class=&quot;org.jboss.example.SimpleBean&quot;&gt;
+        <programlisting>&lt;bean name=&quot;SimpleBean&quot; class=&quot;org.jboss.example.SimpleBean&quot;&gt;
     &lt;property name=&quot;list&quot;&gt;
         &lt;list elementClass=&quot;java.lang.String&quot;&gt;
             &lt;value&gt;my first string&lt;/value&gt;
@@ -1821,16 +1817,16 @@ public void setArray(Object[] array) {
     &lt;/array&gt;
 &lt;/bean&gt; </programlisting>
         <para>They can even be nested within one another if required. </para>
-        <programlisting>@ListValue({@Value(string=@StringValue(&quot;my first string&quot;)),
-            @Value(string=@SetValue({@Value(string=@StringValue(&quot;1&quot;)),
-                                     @Value(string=@StringValue=&quot;2&quot;))},
-                                     elementClass=&quot;java.lang.Integer&quot;))},
-            elementClass=&quot;java.lang.String&quot;)
+        <programlisting>@ListValue(elementClass=&quot;java.lang.String&quot;,
+           {@Value(string=@StringValue(&quot;my first string&quot;)),
+            @Value(string=@SetValue(elementClass=&quot;java.lang.Integer&quot;,
+                                    {@Value(string=@StringValue(&quot;1&quot;)),
+                                     @Value(string=@StringValue=&quot;2&quot;))})
+                  )})
 public void setList(List list) {
     ...
 }</programlisting>
-        <programlisting>&lt;bean name=&quot;SimpleBean&quot;
- class=&quot;org.jboss.example.SimpleBean&quot;&gt;
+        <programlisting>&lt;bean name=&quot;SimpleBean&quot; class=&quot;org.jboss.example.SimpleBean&quot;&gt;
     &lt;property name=&quot;list&quot;&gt;
         &lt;list elementClass=&quot;java.lang.String&quot;&gt;
             &lt;value&gt;my first string&lt;/value&gt;
@@ -1887,10 +1883,10 @@ public void setMap(Map&lt;String, String&gt; map) {
           </listitem>
         </itemizedlist>
         <para>If you want to override this behaviour and specify your own class then you can simply add a <code>clazz</code> attribute to your annotation or <code>class</code> attribute to your XML element containing the fully-qualified class name. This causes the microcontainer to create a new instance using the specified class.</para>
-        <programlisting>@SetValue({@Value(string=@StringValue(&quot;50&quot;)),
-           @Value(string=@StringValue(&quot;55&quot;))},
-           clazz=&quot;java.util.TreeSet&quot;,
-           elementClass=&quot;java.lang.Integer&quot;)
+        <programlisting>@SetValue(clazz=&quot;java.util.TreeSet&quot;,
+          elementClass=&quot;java.lang.Integer&quot;,
+          {@Value(string=@StringValue(&quot;50&quot;)),
+           @Value(string=@StringValue(&quot;55&quot;))})
 public void setSet(Set set) {
     ...
 }</programlisting>
