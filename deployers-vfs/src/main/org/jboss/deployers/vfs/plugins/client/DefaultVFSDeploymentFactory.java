@@ -38,5 +38,4 @@ public class DefaultVFSDeploymentFactory extends VFSDeploymentFactory
    {
       return new AbstractVFSDeployment(root);
    }
-
 }

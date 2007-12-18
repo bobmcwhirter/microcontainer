@@ -44,23 +44,23 @@ public interface VFSDeploymentContext extends DeploymentContext
    /**
     * Set the meta data path relative to the root
     * 
-    * @param path the path
+    * @param paths the path
     */
-   void setMetaDataPath(String path);
+   void setMetaDataPath(List<String> paths);
 
    /**
-    * Get the meta data location
+    * Get the meta data locations
     * 
-    * @return the meta data location
+    * @return the meta data locations
     */
-   VirtualFile getMetaDataLocation();
+   List<VirtualFile> getMetaDataLocations();
    
    /**
-    * Set the meta data location
+    * Set the meta data locations
     * 
-    * @param location the meta data location
+    * @param locations the meta data location
     */
-   void setMetaDataLocation(VirtualFile location);
+   void setMetaDataLocations(List<VirtualFile> locations);
    
    /**
     * Gets a metadata file

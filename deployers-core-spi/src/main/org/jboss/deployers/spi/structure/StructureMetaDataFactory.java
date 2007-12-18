@@ -92,6 +92,20 @@ public abstract class StructureMetaDataFactory
    }
 
    /**
+    * Create a new ContextInfo.
+    *
+    * @param path the path
+    * @param metaDataPath the metadata path
+    * @param classPath the class path
+    * @return the context info
+    * @throws IllegalArgumentException for a null path or metadata path
+    */
+   public static ContextInfo createContextInfo(String path, List<String> metaDataPath, List<ClassPathEntry> classPath)
+   {
+      return StructureMetaDataBuilder.getInstance().newContextInfo(path, metaDataPath, classPath);
+   }
+
+   /**
     * Create a new classpath entry
     * 
     * @return the classpath entry
@@ -163,6 +177,17 @@ public abstract class StructureMetaDataFactory
     */
    protected abstract ContextInfo newContextInfo(String path, String metaDataPath, List<ClassPathEntry> classPath);
    
+   /**
+    * Create a new ContextInfo.
+    *
+    * @param path the path
+    * @param metaDataPath the metadata path
+    * @param classPath the class path
+    * @return the context info
+    * @throws IllegalArgumentException for a null path or metadata path
+    */
+   protected abstract ContextInfo newContextInfo(String path, List<String> metaDataPath, List<ClassPathEntry> classPath);
+
    /**
     * Create a new classpath entry
     * 

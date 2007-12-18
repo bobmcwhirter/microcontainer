@@ -107,16 +107,19 @@ public class VFSStructureBuilderUnitTestCase extends StructureBuilderTest
    
    protected void checkMetaDataLocation(VFSDeploymentContext context, ContextInfo contextInfo) throws Exception
    {
-      String metaDataPath = contextInfo.getMetaDataPath();
-      VirtualFile metaDataLocation = context.getMetaDataLocation();
+      List<String> metaDataPaths = contextInfo.getMetaDataPath();
+      assertNotNull(metaDataPaths);
+      List<VirtualFile> metaDataLocations = context.getMetaDataLocations();
+      assertNotNull(metaDataLocations);
 
-      if (metaDataPath == null)
-         assertNull(metaDataLocation);
+      if (metaDataPaths.isEmpty())
+         assertEmpty(metaDataLocations);
       else
       {
          VirtualFile root = context.getRoot();
-         VirtualFile expected = root.findChild(metaDataPath);
-         assertEquals(expected, metaDataLocation);
+         VirtualFile expected = root.findChild(metaDataPaths.get(0));
+         assertEquals(1, metaDataLocations.size());
+         assertEquals(expected, metaDataLocations.get(0));
       }
    }
    

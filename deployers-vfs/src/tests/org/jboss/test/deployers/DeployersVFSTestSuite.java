@@ -27,6 +27,7 @@ import junit.textui.TestRunner;
 
 import org.jboss.test.deployers.vfs.deployer.bean.BeanDeployerTestSuite;
 import org.jboss.test.deployers.vfs.deployer.jaxp.VFSDeployerTestSuite;
+import org.jboss.test.deployers.vfs.deployer.nonmetadata.NonMetadataDeployersTestSuite;
 import org.jboss.test.deployers.vfs.deploymentfactory.VFSDeploymentFactoryTestSuite;
 import org.jboss.test.deployers.vfs.metadata.VFSMetaDataTestSuite;
 import org.jboss.test.deployers.vfs.structure.VFSStructureTestSuite;
@@ -57,6 +58,7 @@ public class DeployersVFSTestSuite extends TestSuite
       suite.addTest(VFSDeployerTestSuite.suite());
       suite.addTest(BeanDeployerTestSuite.suite());
       suite.addTest(VFSManagedTestSuite.suite());
+      suite.addTest(NonMetadataDeployersTestSuite.suite());
 
       return suite;
    }

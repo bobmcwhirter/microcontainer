@@ -26,6 +26,7 @@ import java.io.IOException;
 import java.io.ObjectInput;
 import java.io.ObjectOutput;
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 
 import org.jboss.deployers.spi.attachments.helpers.PredeterminedManagedObjectAttachmentsImpl;
@@ -36,6 +37,7 @@ import org.jboss.deployers.spi.structure.ContextInfo;
  * ContextInfoImpl.
  * 
  * @author <a href="adrian@jboss.org">Adrian Brock</a>
+ * @author <a href="ales.justin@jboss.org">Ales Justin</a>
  * @author Scott.Stark@jboss.org
  * @version $Revision: 1.1 $
  */
@@ -49,7 +51,7 @@ public class ContextInfoImpl extends PredeterminedManagedObjectAttachmentsImpl
    private String path;
    
    /** The metadata path */
-   private String metaDataPath;
+   private List<String> metaDataPath;
    
    /** The class path entries */
    private List<ClassPathEntry> classPath = ClassPathEntryImpl.DEFAULT;
@@ -95,17 +97,34 @@ public class ContextInfoImpl extends PredeterminedManagedObjectAttachmentsImpl
     * Create a new ContextInfoImpl.
     * 
     * @param path the path
-    * @param metaDataPath the metadata path
+    * @param metaDataPath a single metadata path
     * @param classPath the class path
     * @throws IllegalArgumentException for a null path or metadata path
     */
    public ContextInfoImpl(String path, String metaDataPath, List<ClassPathEntry> classPath)
    {
       setPath(path);
-      setMetaDataPath(metaDataPath);
+      if (metaDataPath == null)
+         throw new IllegalArgumentException("Null metadata path.");
+      setMetaDataPath(Collections.singletonList(metaDataPath));
       setClassPath(classPath);
    }
    
+   /**
+    * Create a new ContextInfoImpl.
+    *
+    * @param path the path
+    * @param metaDataPath the metadata paths
+    * @param classPath the class path
+    * @throws IllegalArgumentException for a null path or metadata path
+    */
+   public ContextInfoImpl(String path, List<String> metaDataPath, List<ClassPathEntry> classPath)
+   {
+      setPath(path);
+      setMetaDataPath(metaDataPath);
+      setClassPath(classPath);
+   }
+
    public String getPath()
    {
       return path;
@@ -124,22 +143,39 @@ public class ContextInfoImpl extends PredeterminedManagedObjectAttachmentsImpl
       this.path = path;
    }
 
-   public String getMetaDataPath()
+   public List<String> getMetaDataPath()
    {
+      if (metaDataPath == null)
+         return Collections.emptyList();
       return metaDataPath;
    }
 
    /**
-    * Set the metaDataPath.
-    * 
-    * @param metaDataPath the metaDataPath.
-    * @throws IllegalArgumentException for a null path
+    * Set the meta data paths.
+    *
+    * @param metaDataPath the meta data paths
     */
-   public void setMetaDataPath(String metaDataPath)
+   public void setMetaDataPath(List<String> metaDataPath)
    {
-      if (metaDataPath == null)
-         throw new IllegalArgumentException("Null metaDataPath");
       this.metaDataPath = metaDataPath;
+   }
+
+   public void addMetaDataPath(String path)
+   {
+      if (path == null)
+         throw new IllegalArgumentException("Null path");
+
+      if (metaDataPath == null)
+         metaDataPath = Collections.singletonList(path);
+      else if (metaDataPath.size() == 1)
+      {
+         List<String> paths = new ArrayList<String>();
+         paths.addAll(metaDataPath);
+         paths.add(path);
+         metaDataPath = paths;
+      }
+      else
+         metaDataPath.add(path);
    }
 
    public List<ClassPathEntry> getClassPath()
@@ -161,6 +197,7 @@ public class ContextInfoImpl extends PredeterminedManagedObjectAttachmentsImpl
    {
       if (entry == null)
          throw new IllegalArgumentException("Null entry");
+
       if (classPath == null || classPath == ClassPathEntryImpl.DEFAULT)
       {
          List<ClassPathEntry> old = classPath;
@@ -230,10 +267,8 @@ public class ContextInfoImpl extends PredeterminedManagedObjectAttachmentsImpl
       if (getPath().equals(other.getPath()) == false)
          return false;
 
-      String thisMetaDataPath = getMetaDataPath();
-      String otherMetaDataPath = other.getMetaDataPath();
-      if (thisMetaDataPath == null)
-         return otherMetaDataPath == null;
+      List<String> thisMetaDataPath = getMetaDataPath();
+      List<String> otherMetaDataPath = other.getMetaDataPath();
       if (thisMetaDataPath.equals(otherMetaDataPath) == false)
          return false;
 
@@ -255,9 +290,9 @@ public class ContextInfoImpl extends PredeterminedManagedObjectAttachmentsImpl
    {
       super.readExternal(in);
       setPath(in.readUTF());
-      boolean isNullMetaDataPath = in.readBoolean();
-      if (isNullMetaDataPath == false)
-         setMetaDataPath(in.readUTF());
+      boolean isEmptyMetaDataPath = in.readBoolean();
+      if (isEmptyMetaDataPath == false)
+         setMetaDataPath((List<String>)in.readObject());
       setClassPath((List) in.readObject());
       setRelativeOrder(in.readInt());
       boolean isNullComparator = in.readBoolean();
@@ -276,11 +311,11 @@ public class ContextInfoImpl extends PredeterminedManagedObjectAttachmentsImpl
    {
       super.writeExternal(out);
       out.writeUTF(getPath());
-      String metaDataPath = getMetaDataPath();
-      boolean isNullMetaDataPath = (metaDataPath == null);
-      out.writeBoolean(isNullMetaDataPath);
-      if (isNullMetaDataPath == false)
-         out.writeUTF(metaDataPath);
+      List<String> metaDataPath = getMetaDataPath();
+      boolean isEmptyMetaDataPath = metaDataPath.isEmpty();
+      out.writeBoolean(isEmptyMetaDataPath);
+      if (isEmptyMetaDataPath == false)
+         out.writeObject(metaDataPath);
       out.writeObject(getClassPath());
       out.writeInt(getRelativeOrder());
       String comparator = getComparatorClassName();

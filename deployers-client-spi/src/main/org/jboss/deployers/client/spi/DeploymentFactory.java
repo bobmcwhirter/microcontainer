@@ -94,6 +94,24 @@ public class DeploymentFactory
    }
    
    /**
+    * Add a context to a deployment
+    *
+    * @param context the context
+    * @param path the path
+    * @param metaDataPath the meta data path
+    * @param classPath the classpath
+    * @return the context info
+    * @throws IllegalArgumentException for a null parameter
+    */
+   public ContextInfo addContext(PredeterminedManagedObjectAttachments context, String path, List<String> metaDataPath, List<ClassPathEntry> classPath)
+   {
+      StructureMetaData structure = assureStructure(context);
+      ContextInfo result = StructureMetaDataFactory.createContextInfo(path, metaDataPath, classPath);
+      structure.addContext(result);
+      return result;
+   }
+
+   /**
     * Create a new classpath entry
     * 
     * @param path the path

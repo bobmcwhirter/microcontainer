@@ -61,7 +61,9 @@ public abstract class AbstractStructureTest extends BaseTestCase
 
    protected static void assertDefaultMetaDataPath(ContextInfo contextInfo)
    {
-      assertNull(contextInfo.getMetaDataPath());
+      assertNotNull(contextInfo);
+      assertNotNull(contextInfo.getMetaDataPath());
+      assertTrue(contextInfo.getMetaDataPath().isEmpty());
    }
    
    protected static void assertDefaultClassPath(List<ClassPathEntry> classPath)

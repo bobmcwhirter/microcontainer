@@ -22,6 +22,7 @@
 package org.jboss.deployers.vfs.plugins.structure.explicit;
 
 import java.util.ArrayList;
+import java.util.LinkedHashSet;
 
 import org.jboss.deployers.plugins.structure.ClassPathEntryImpl;
 import org.jboss.deployers.plugins.structure.ContextInfoImpl;
@@ -41,7 +42,7 @@ public class StructureMetaDataObjectFactory implements ObjectModelFactory
 {
    public StructureMetaDataImpl newRoot(Object root, UnmarshallingContext navigator, String namespaceURI, String localName, Attributes attrs)
    {
-      StructureMetaDataImpl metaData = null;
+      StructureMetaDataImpl metaData;
       if (root != null)
          metaData = (StructureMetaDataImpl) root;
       else
@@ -66,24 +67,34 @@ public class StructureMetaDataObjectFactory implements ObjectModelFactory
    public Object newChild(ContextInfoImpl parent, UnmarshallingContext navigator, String namespaceURI, String localName, Attributes attrs)
    {
       Object child = null;
-      if (localName.equals("classpath"))
-         child = new ArrayList<ClassPathEntry>();
-      else if (localName.equals("path"))
+      if("path".equals(localName))
       {
          String path = attrs.getValue("name");
          parent.setPath(path);
       }
-      else if (localName.equals("metaDataPath"))
+      else if ("metaDataPath".equals(localName))
+         child = new LinkedHashSet<String>();
+      else if (localName.equals("classpath"))
+         child = new ArrayList<ClassPathEntry>();
+
+      return child;
+   }
+
+   public Object newChild(LinkedHashSet<String> parent, UnmarshallingContext navigator, String namespaceURI, String localName, Attributes attrs)
+   {
+      Object child = null;
+      if("path".equals(localName))
       {
          String path = attrs.getValue("name");
-         parent.setMetaDataPath(path);
+         parent.add(path);
       }
       return child;
    }
+
    public Object newChild(ArrayList<ClassPathEntry> parent, UnmarshallingContext navigator, String namespaceURI, String localName, Attributes attrs)
    {
       Object child = null;
-      if( localName.equals("path") )
+      if("path".equals(localName))
       {
          String name = attrs.getValue("name");
          String suffixes = attrs.getValue("suffixes");
@@ -98,6 +109,11 @@ public class StructureMetaDataObjectFactory implements ObjectModelFactory
       parent.addContext(context);
    }
    
+   public void addChild(ContextInfoImpl context, LinkedHashSet<String> metaDataPath, UnmarshallingContext navigator, String namespaceURI, String localName)
+   {
+      context.setMetaDataPath(new ArrayList<String>(metaDataPath));
+   }
+
    public void addChild(ContextInfoImpl context, ArrayList<ClassPathEntry> classpath, UnmarshallingContext navigator, String namespaceURI, String localName)
    {
       context.setClassPath(classpath);

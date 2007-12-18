@@ -33,8 +33,7 @@ import org.jboss.kernel.Kernel;
 import org.jboss.managed.api.ManagedObject;
 import org.jboss.managed.api.ManagedProperty;
 import org.jboss.managed.api.factory.ManagedObjectFactory;
-import org.jboss.metatype.api.types.ArrayMetaType;
-import org.jboss.metatype.api.values.ArrayValue;
+import org.jboss.metatype.api.types.CollectionMetaType;
 import org.jboss.metatype.api.values.CollectionValue;
 import org.jboss.metatype.api.values.GenericValue;
 
@@ -77,10 +76,10 @@ public class BeanManagedDeploymentUnitTestCase extends AbstractDeployerUnitTestC
       log.info("KernelDeployment.ManagedProperties: "+kdMO.getProperties());
       ManagedProperty beanFactories = kdMO.getProperty("beanFactories");
       assertNotNull(beanFactories);
-      ArrayValue beanFactoriesAV = ArrayValue.class.cast(beanFactories.getValue());
-      ArrayMetaType valueType = beanFactoriesAV.getMetaType();
-      assertEquals("BeanFactories size", 2, beanFactoriesAV.getLength());
-      GenericValue beanFactoriesGV = (GenericValue) beanFactoriesAV.getValue(0);
+      CollectionValue beanFactoriesAV = CollectionValue.class.cast(beanFactories.getValue());
+      CollectionMetaType valueType = beanFactoriesAV.getMetaType();
+      assertEquals("BeanFactories size", 2, beanFactoriesAV.getSize());
+      GenericValue beanFactoriesGV = (GenericValue) beanFactoriesAV.getElements()[0];
       log.info("BeanFactories[0].GV: "+beanFactoriesGV);
       ManagedObject beanFactoriesMO = (ManagedObject) beanFactoriesGV.getValue();
       assertNotNull(beanFactoriesMO);

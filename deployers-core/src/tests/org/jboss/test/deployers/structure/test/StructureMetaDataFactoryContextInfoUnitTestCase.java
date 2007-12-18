@@ -25,7 +25,6 @@ import java.util.List;
 
 import junit.framework.Test;
 import junit.framework.TestSuite;
-
 import org.jboss.deployers.spi.structure.ClassPathEntry;
 import org.jboss.deployers.spi.structure.ContextInfo;
 import org.jboss.deployers.spi.structure.StructureMetaDataFactory;
@@ -69,6 +68,12 @@ public class StructureMetaDataFactoryContextInfoUnitTestCase extends AbstractCon
    
    @Override
    protected ContextInfo createPathAndMetaDataAndClassPath(String path, String metaDataPath, List<ClassPathEntry> classPath)
+   {
+      return StructureMetaDataFactory.createContextInfo(path, metaDataPath, classPath);
+   }
+
+   @Override
+   protected ContextInfo createPathAndMetaDataAndClassPath(String path, List<String> metaDataPath, List<ClassPathEntry> classPath)
    {
       return StructureMetaDataFactory.createContextInfo(path, metaDataPath, classPath);
    }

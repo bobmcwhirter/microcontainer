@@ -31,6 +31,7 @@ import org.jboss.deployers.spi.attachments.PredeterminedManagedObjectAttachments
  *  
  * @author Scott.Stark@jboss.org
  * @author adrian@jboss.org
+ * @author ales.justin@jboss.org
  * @version $Revision: 1.1$
  */
 public interface ContextInfo extends PredeterminedManagedObjectAttachments, Serializable
@@ -50,7 +51,15 @@ public interface ContextInfo extends PredeterminedManagedObjectAttachments, Seri
     * 
     * @return the path of the metdata location.
     */
-   String getMetaDataPath();
+   List<String> getMetaDataPath();
+
+   /**
+    * Add the metaDataPath.
+    *
+    * @param path the metaDataPath.
+    * @throws IllegalArgumentException for a null path
+    */
+   void addMetaDataPath(String path);
 
    /**
     * Get the classpath locations within the context

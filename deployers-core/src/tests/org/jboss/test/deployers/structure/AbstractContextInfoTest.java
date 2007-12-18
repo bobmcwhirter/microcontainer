@@ -105,18 +105,26 @@ public abstract class AbstractContextInfoTest extends AbstractStructureTest
    
    protected abstract ContextInfo createPathAndMetaDataAndClassPath(String path, String metaDataPath, List<ClassPathEntry> classPath);
 
+   protected abstract ContextInfo createPathAndMetaDataAndClassPath(String path, List<String> metaDataPath, List<ClassPathEntry> classPath);
+
+   protected static void assertDefaultMetaDataPath(List<String> metaDataPath)
+   {
+      assertEquals(1, metaDataPath.size());
+      assertEquals("metaDataPath", metaDataPath.get(0));
+   }
+
    public void testConstructorPathAndMetaDataAndClassPath()
    {
       List<ClassPathEntry> classPath = createClassPath("ClassPath");
       ContextInfo context = createPathAndMetaDataAndClassPath("path", "metaDataPath", classPath);
       assertEquals("path", context.getPath());
-      assertEquals("metaDataPath", context.getMetaDataPath());
+      assertDefaultMetaDataPath(context.getMetaDataPath());
       assertEquals(classPath, context.getClassPath());
 
       classPath = null;
       context = createPathAndMetaDataAndClassPath("path", "metaDataPath", classPath);
       assertEquals("path", context.getPath());
-      assertEquals("metaDataPath", context.getMetaDataPath());
+      assertDefaultMetaDataPath(context.getMetaDataPath());
       assertNull(context.getClassPath());
    }
    
@@ -135,7 +143,7 @@ public abstract class AbstractContextInfoTest extends AbstractStructureTest
 
       try
       {
-         createPathAndMetaDataAndClassPath("path", null, classPath);
+         createPathAndMetaDataAndClassPath("path", (String)null, classPath);
          fail("Should not be here");
       }
       catch (Exception e)
@@ -236,12 +244,12 @@ public abstract class AbstractContextInfoTest extends AbstractStructureTest
       List<ClassPathEntry> classPath = createClassPath("ClassPath");
       context = createPathAndMetaDataAndClassPath("path", "metaDataPath", classPath);
       assertEquals("path", context.getPath());
-      assertEquals("metaDataPath", context.getMetaDataPath());
+      assertDefaultMetaDataPath(context.getMetaDataPath());
       assertEquals(classPath, context.getClassPath());
 
       context = serializeDeserialize(context, ContextInfo.class);
       assertEquals("path", context.getPath());
-      assertEquals("metaDataPath", context.getMetaDataPath());
+      assertDefaultMetaDataPath(context.getMetaDataPath());
       assertEquals(classPath, context.getClassPath());
    }
 }

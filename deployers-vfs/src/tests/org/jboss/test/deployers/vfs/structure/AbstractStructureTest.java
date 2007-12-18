@@ -108,11 +108,26 @@ public abstract class AbstractStructureTest extends BaseTestCase
    protected void assertMetaData(VFSDeploymentContext context, String metaDataPath) throws Exception
    {
       VirtualFile root = context.getRoot();
-      VirtualFile metaDataLocation = context.getMetaDataLocation();
+      List<VirtualFile> metaDataLocation = context.getMetaDataLocations();
       VirtualFile expected = root.findChild(metaDataPath);
-      assertEquals(expected, metaDataLocation);
+      assertNotNull(metaDataLocation);
+      assertEquals(1, metaDataLocation.size());
+      assertEquals(expected, metaDataLocation.get(0));
    }
    
+   protected void assertMetaDatas(VFSDeploymentContext context, String... metaDataPath) throws Exception
+   {
+      VirtualFile root = context.getRoot();
+      List<VirtualFile> metaDataLocations = context.getMetaDataLocations();
+      assertNotNull(metaDataLocations);
+      int i = 0;
+      for(String path : metaDataPath)
+      {
+         VirtualFile expected = root.findChild(path);
+         assertEquals(expected, metaDataLocations.get(i++));
+      }
+   }
+
    protected VFSDeploymentContext assertChildContext(VFSDeploymentContext context, String name) throws Exception
    {
       List<DeploymentContext> children = context.getChildren();

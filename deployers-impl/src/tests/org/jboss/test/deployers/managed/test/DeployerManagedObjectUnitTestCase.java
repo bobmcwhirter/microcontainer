@@ -22,14 +22,13 @@
 package org.jboss.test.deployers.managed.test;
 
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.HashSet;
+import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
 import junit.framework.Test;
 import junit.framework.TestSuite;
-
 import org.jboss.deployers.client.spi.DeployerClient;
 import org.jboss.deployers.client.spi.Deployment;
 import org.jboss.deployers.spi.attachments.MutableAttachments;
@@ -37,10 +36,10 @@ import org.jboss.managed.api.ManagedObject;
 import org.jboss.managed.api.ManagedProperty;
 import org.jboss.managed.api.factory.ManagedObjectFactory;
 import org.jboss.managed.plugins.factory.AbstractManagedObjectFactory;
-import org.jboss.metatype.api.types.ArrayMetaType;
+import org.jboss.metatype.api.types.CollectionMetaType;
 import org.jboss.metatype.api.types.MetaType;
 import org.jboss.metatype.api.types.SimpleMetaType;
-import org.jboss.metatype.api.values.ArrayValue;
+import org.jboss.metatype.api.values.CollectionValue;
 import org.jboss.metatype.api.values.GenericValue;
 import org.jboss.metatype.api.values.MetaValue;
 import org.jboss.test.deployers.AbstractDeployerTest;
@@ -165,15 +164,15 @@ public class DeployerManagedObjectUnitTestCase extends AbstractDeployerTest
       ManagedProperty deployments = propsMap.get("deployments");
       assertNotNull(deployments);
       assertEquals("The DS connection factories", deployments.getDescription());
-      MetaType deploymentsType = new ArrayMetaType(1, AbstractManagedObjectFactory.MANAGED_OBJECT_META_TYPE);
+      MetaType deploymentsType = new CollectionMetaType(List.class.getName(), AbstractManagedObjectFactory.MANAGED_OBJECT_META_TYPE);
       assertEquals(deploymentsType, deployments.getMetaType());
-      ArrayValue value = ArrayValue.class.cast(deployments.getValue());
-      ArrayMetaType valueType = value.getMetaType();
+      CollectionValue value = CollectionValue.class.cast(deployments.getValue());
+      CollectionMetaType valueType = value.getMetaType();
       assertEquals(AbstractManagedObjectFactory.MANAGED_OBJECT_META_TYPE, valueType.getElementType());
 
-      assertEquals(1, value.getLength());
+      assertEquals(1, value.getSize());
       // Validate the ConnMetaData ManagedObject
-      GenericValue localConnMOGV = GenericValue.class.cast(value.getValue(0));
+      GenericValue localConnMOGV = GenericValue.class.cast(value.getElements()[0]);
       ManagedObject localConnMO = ManagedObject.class.cast(localConnMOGV.getValue());
       assertEquals(ConnMetaData.class.getName(), localConnMO.getName());
       propsMap = localConnMO.getProperties();
@@ -216,13 +215,13 @@ public class DeployerManagedObjectUnitTestCase extends AbstractDeployerTest
       ManagedProperty dsDeployments = propsMap.get("deployments");
       assertNotNull(deployments);
       assertEquals("The DS connection factories", dsDeployments.getDescription());
-      MetaType deploymentsType = new ArrayMetaType(1, AbstractManagedObjectFactory.MANAGED_OBJECT_META_TYPE);
+      MetaType deploymentsType = new CollectionMetaType(List.class.getName(), AbstractManagedObjectFactory.MANAGED_OBJECT_META_TYPE);
       assertEquals(deploymentsType, dsDeployments.getMetaType());
-      ArrayValue value = ArrayValue.class.cast(dsDeployments.getValue());
-      ArrayMetaType valueType = value.getMetaType();
+      CollectionValue value = CollectionValue.class.cast(dsDeployments.getValue());
+      CollectionMetaType valueType = value.getMetaType();
       assertEquals(AbstractManagedObjectFactory.MANAGED_OBJECT_META_TYPE, valueType.getElementType());
 
-      assertEquals(2, value.getLength());
+      assertEquals(2, value.getSize());
       ManagedObject localConnMO = null;
       ManagedObject xaConnMO = null;
       for(Object md : value)

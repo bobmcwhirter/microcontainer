@@ -56,6 +56,11 @@ public class DefaultStructureMetaDataFactory extends StructureMetaDataFactory
       return new ContextInfoImpl(path, metaDataPath, classPath);
    }
    
+   protected ContextInfo newContextInfo(String path, List<String> metaDataPath, List<ClassPathEntry> classPath)
+   {
+      return new ContextInfoImpl(path, metaDataPath, classPath);
+   }
+
    protected ClassPathEntry newClassPathEntry(String path, String suffixes)
    {
       return new ClassPathEntryImpl(path, suffixes);

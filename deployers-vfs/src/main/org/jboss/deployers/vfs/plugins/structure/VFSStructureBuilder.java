@@ -90,8 +90,8 @@ public class VFSStructureBuilder extends AbstractStructureBuilder
          log.trace("Apply context: " + context.getName() + " " + contextInfo);
          
          VFSDeploymentContext vfsContext = (VFSDeploymentContext) context;
-         String metaDataPath = contextInfo.getMetaDataPath();
-         if (metaDataPath != null)
+         List<String> metaDataPath = contextInfo.getMetaDataPath();
+         if (metaDataPath != null && metaDataPath.isEmpty() == false)
             vfsContext.setMetaDataPath(contextInfo.getMetaDataPath());
          
          boolean classPathHadVF = false;

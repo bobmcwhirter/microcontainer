@@ -25,6 +25,7 @@ import java.util.Arrays;
 import java.util.HashSet;
 import java.util.Set;
 import java.util.TreeSet;
+import java.util.List;
 
 import org.jboss.deployers.client.spi.Deployment;
 import org.jboss.deployers.spi.DeploymentException;
@@ -148,8 +149,8 @@ public class VFSStructuralDeployersImpl extends AbstractStructuralDeployers impl
          
          // Create the context in the parent structure
          ContextInfo parentContext;
-         String metaDataPath = recognised.getMetaDataPath();
-         if (metaDataPath == null)
+         List<String> metaDataPath = recognised.getMetaDataPath();
+         if (metaDataPath == null || metaDataPath.isEmpty())
             parentContext = StructureMetaDataFactory.createContextInfo(relativePath, recognised.getClassPath());
          else
             parentContext = StructureMetaDataFactory.createContextInfo(relativePath, metaDataPath, recognised.getClassPath());

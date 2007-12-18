@@ -32,6 +32,7 @@ import java.util.Arrays;
 import java.util.Collection;
 import java.util.HashMap;
 import java.util.HashSet;
+import java.util.List;
 import java.util.Map;
 import java.util.Set;
 import java.util.WeakHashMap;
@@ -73,10 +74,12 @@ import org.jboss.managed.spi.factory.ManagedPropertyConstraintsPopulator;
 import org.jboss.managed.spi.factory.ManagedPropertyConstraintsPopulatorFactory;
 import org.jboss.managed.spi.factory.RuntimeComponentNameTransformer;
 import org.jboss.metatype.api.types.ArrayMetaType;
+import org.jboss.metatype.api.types.CollectionMetaType;
 import org.jboss.metatype.api.types.GenericMetaType;
 import org.jboss.metatype.api.types.MetaType;
 import org.jboss.metatype.api.types.MetaTypeFactory;
 import org.jboss.metatype.api.values.ArrayValueSupport;
+import org.jboss.metatype.api.values.CollectionValueSupport;
 import org.jboss.metatype.api.values.GenericValueSupport;
 import org.jboss.metatype.api.values.MetaValue;
 import org.jboss.metatype.api.values.MetaValueFactory;
@@ -415,8 +418,10 @@ public class AbstractManagedObjectFactory extends ManagedObjectFactory
                if (managed)
                {
                   TypeInfo typeInfo = propertyInfo.getType();
-                  if( typeInfo.isArray() || typeInfo.isCollection() )
+                  if(typeInfo.isArray())
                      metaType = new ArrayMetaType(1, MANAGED_OBJECT_META_TYPE);
+                  else if (typeInfo.isCollection())
+                     metaType = new CollectionMetaType(typeInfo.getName(), MANAGED_OBJECT_META_TYPE);
                   else
                      metaType = MANAGED_OBJECT_META_TYPE;
                }
@@ -721,19 +726,35 @@ public class AbstractManagedObjectFactory extends ManagedObjectFactory
             // todo - AJ: changed some generics by best guess
             ArrayMetaType<GenericValueSupport> moType = new ArrayMetaType<GenericValueSupport>(1, MANAGED_OBJECT_META_TYPE);
             ArrayValueSupport<GenericValueSupport> moArrayValue = new ArrayValueSupport<GenericValueSupport>(moType);
-            ArrayList<GenericValueSupport> tmp = new ArrayList<GenericValueSupport>();
+            List<GenericValueSupport> tmp = new ArrayList<GenericValueSupport>();
             for(Object element : cvalue)
             {
                ManagedObject mo = initManagedObject((Serializable) element, null, null);
                tmp.add(new GenericValueSupport(MANAGED_OBJECT_META_TYPE, mo));
             }
             GenericValueSupport[] mos = new GenericValueSupport[tmp.size()];
-            tmp.toArray(mos);
-            moArrayValue.setValue(mos);
+            moArrayValue.setValue(tmp.toArray(mos));
             return moArrayValue;
          }
       }
-      
+      else if (propertyType.isCollection())
+      {
+         CollectionMetaType collectionType = CollectionMetaType.class.cast(propertyType);
+         if (MANAGED_OBJECT_META_TYPE == collectionType.getElementType())
+         {
+            Collection cvalue = getAsCollection(value);
+            List<GenericValueSupport> tmp = new ArrayList<GenericValueSupport>();
+            for(Object element : cvalue)
+            {
+               ManagedObject mo = initManagedObject((Serializable) element, null, null);
+               tmp.add(new GenericValueSupport(MANAGED_OBJECT_META_TYPE, mo));
+            }
+            GenericValueSupport[] mos = new GenericValueSupport[tmp.size()];
+            CollectionMetaType moType = new CollectionMetaType(propertyType.getClassName(), MANAGED_OBJECT_META_TYPE);
+            return new CollectionValueSupport(moType, tmp.toArray(mos));
+         }
+      }
+
       return metaValueFactory.create(value, propertyInfo.getType());
    }
 

@@ -45,10 +45,12 @@ import org.jboss.managed.plugins.ManagedObjectImpl;
 import org.jboss.managed.plugins.factory.AbstractManagedObjectFactory;
 import org.jboss.metatype.api.types.ArrayMetaType;
 import org.jboss.metatype.api.types.MetaType;
+import org.jboss.metatype.api.types.CollectionMetaType;
 import org.jboss.metatype.api.values.ArrayValue;
 import org.jboss.metatype.api.values.GenericValue;
 import org.jboss.metatype.api.values.SimpleValue;
 import org.jboss.metatype.api.values.MetaValue;
+import org.jboss.metatype.api.values.CollectionValue;
 
 /**
  * Mock profile service for testing implementation details.
@@ -225,6 +227,22 @@ public class MockProfileService
                for(int n = 0; n < avalue.getLength(); n ++)
                {
                   GenericValue gv = (GenericValue) avalue.getValue(n);
+                  ManagedObject propMO = (ManagedObject) gv.getValue();
+                  processManagedObject(propMO, md);
+               }
+            }
+         }
+         else if (propType.isCollection())
+         {
+            CollectionMetaType amt = (CollectionMetaType) propType;
+            MetaType etype = amt.getElementType();
+            if (etype == AbstractManagedObjectFactory.MANAGED_OBJECT_META_TYPE)
+            {
+               CollectionValue avalue = (CollectionValue) prop.getValue();
+               MetaValue[] elements = avalue.getElements();
+               for(int n = 0; n < avalue.getSize(); n ++)
+               {
+                  GenericValue gv = (GenericValue) elements[n];
                   ManagedObject propMO = (ManagedObject) gv.getValue();
                   processManagedObject(propMO, md);
                }

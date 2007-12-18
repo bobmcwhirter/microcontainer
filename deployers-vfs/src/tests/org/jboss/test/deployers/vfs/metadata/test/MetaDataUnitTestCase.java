@@ -24,6 +24,7 @@ package org.jboss.test.deployers.vfs.metadata.test;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
+import java.util.Collections;
 
 import junit.framework.Test;
 import junit.framework.TestSuite;
@@ -80,7 +81,7 @@ public class MetaDataUnitTestCase extends BaseDeployersVFSTest
    public void testExactMatchMetaInf() throws Exception
    {
       VFSDeploymentContext context = createDeploymentContext("/metadata", "toplevel/metadata.jar");
-      context.setMetaDataPath("META-INF");
+      context.setMetaDataPath(Collections.singletonList("META-INF"));
       String expected = getVfsURL("/metadata/toplevel/metadata.jar/META-INF/jboss-service.xml");
       assertMetaDataMatch(context, expected, "jboss-service.xml");
    }
@@ -88,28 +89,28 @@ public class MetaDataUnitTestCase extends BaseDeployersVFSTest
    public void testNotExactMatchMetaInf() throws Exception
    {
       VFSDeploymentContext context = createDeploymentContext("/metadata", "toplevel/metadata.jar");
-      context.setMetaDataPath("META-INF");
+      context.setMetaDataPath(Collections.singletonList("META-INF"));
       assertNoMetaDataMatch(context, "not-correct.xml");
    }
 
    public void testExactMatchNoMetaInf() throws Exception
    {
       VFSDeploymentContext context = createDeploymentContext("/metadata", "toplevel/metadata-nometainf.jar");
-      context.setMetaDataPath("META-INF");
+      context.setMetaDataPath(Collections.singletonList("META-INF"));
       assertNoMetaDataMatch(context, "jboss-service.xml");
    }
 
    public void testNotExactMatchNoMetaInf() throws Exception
    {
       VFSDeploymentContext context = createDeploymentContext("/metadata", "toplevel/metadata-nometainf.jar");
-      context.setMetaDataPath("META-INF");
+      context.setMetaDataPath(Collections.singletonList("META-INF"));
       assertNoMetaDataMatch(context, "not-correct.xml");
    }
 
    public void testPartialMatchMetaInf() throws Exception
    {
       VFSDeploymentContext context = createDeploymentContext("/metadata", "toplevel/metadata.jar");
-      context.setMetaDataPath("META-INF");
+      context.setMetaDataPath(Collections.singletonList("META-INF"));
       Set<String> expected = new HashSet<String>();
       expected.add(getVfsURL("/metadata/toplevel/metadata.jar/META-INF/1-ds.xml"));
       expected.add(getVfsURL("/metadata/toplevel/metadata.jar/META-INF/2-ds.xml"));
@@ -119,28 +120,28 @@ public class MetaDataUnitTestCase extends BaseDeployersVFSTest
    public void testNotPartialMatchMetaInf() throws Exception
    {
       VFSDeploymentContext context = createDeploymentContext("/metadata", "toplevel/metadata.jar");
-      context.setMetaDataPath("META-INF");
+      context.setMetaDataPath(Collections.singletonList("META-INF"));
       assertNoMetaDataMatch(context, null, "-not.xml");
    }
 
    public void testPartialMatchNoMetaInf() throws Exception
    {
       VFSDeploymentContext context = createDeploymentContext("/metadata", "toplevel/metadata-nometainf.jar");
-      context.setMetaDataPath("META-INF");
+      context.setMetaDataPath(Collections.singletonList("META-INF"));
       assertNoMetaDataMatch(context, null, "-ds.xml");
    }
 
    public void testNotPartialMatchNoMetaInf() throws Exception
    {
       VFSDeploymentContext context = createDeploymentContext("/metadata", "toplevel/metadata-nometainf.jar");
-      context.setMetaDataPath("META-INF");
+      context.setMetaDataPath(Collections.singletonList("META-INF"));
       assertNoMetaDataMatch(context, null, "-not.xml");
    }
 
    public void testExactAndPartialMatchMetaInf() throws Exception
    {
       VFSDeploymentContext context = createDeploymentContext("/metadata", "toplevel/metadata.jar");
-      context.setMetaDataPath("META-INF");
+      context.setMetaDataPath(Collections.singletonList("META-INF"));
       Set<String> expected = new HashSet<String>();
       expected.add(getVfsURL("/metadata/toplevel/metadata.jar/META-INF/jboss-service.xml"));
       expected.add(getVfsURL("/metadata/toplevel/metadata.jar/META-INF/1-ds.xml"));
@@ -151,21 +152,21 @@ public class MetaDataUnitTestCase extends BaseDeployersVFSTest
    public void testNotExactAndPartialMatchMetaInf() throws Exception
    {
       VFSDeploymentContext context = createDeploymentContext("/metadata", "toplevel/metadata.jar");
-      context.setMetaDataPath("META-INF");
+      context.setMetaDataPath(Collections.singletonList("META-INF"));
       assertNoMetaDataMatch(context, "not-correct.xml", "-not.xml");
    }
 
    public void testExactAndPartialMatchNoMetaInf() throws Exception
    {
       VFSDeploymentContext context = createDeploymentContext("/metadata", "toplevel/metadata-nometainf.jar");
-      context.setMetaDataPath("META-INF");
+      context.setMetaDataPath(Collections.singletonList("META-INF"));
       assertNoMetaDataMatch(context, "jboss-service.xml", "-ds.xml");
    }
 
    public void testNotExactAndPartialMatchNoMetaInf() throws Exception
    {
       VFSDeploymentContext context = createDeploymentContext("/metadata", "toplevel/metadata-nometainf.jar");
-      context.setMetaDataPath("META-INF");
+      context.setMetaDataPath(Collections.singletonList("META-INF"));
       assertNoMetaDataMatch(context, "jboss-service.xml", "-not.xml");
    }
    

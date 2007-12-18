@@ -22,14 +22,14 @@
 package org.jboss.test.deployers.structure.test;
 
 import java.util.List;
+import java.util.Arrays;
+import java.util.ArrayList;
 
 import junit.framework.Test;
 import junit.framework.TestSuite;
-
 import org.jboss.deployers.plugins.attachments.AttachmentsImpl;
 import org.jboss.deployers.plugins.structure.ClassPathEntryImpl;
 import org.jboss.deployers.plugins.structure.ContextInfoImpl;
-import org.jboss.deployers.spi.attachments.MutableAttachments;
 import org.jboss.deployers.spi.structure.ClassPathEntry;
 import org.jboss.deployers.spi.structure.ContextInfo;
 import org.jboss.test.deployers.structure.AbstractContextInfoTest;
@@ -77,6 +77,12 @@ public class ContextInfoImplUnitTestCase extends AbstractContextInfoTest
    }
 
    @Override
+   protected ContextInfo createPathAndMetaDataAndClassPath(String path, List<String> metaDataPath, List<ClassPathEntry> classPath)
+   {
+      return new ContextInfoImpl(path, metaDataPath, classPath);
+   }
+
+   @Override
    protected ClassPathEntry createClassPathEntry(String path)
    {
       return new ClassPathEntryImpl(path);
@@ -114,21 +120,35 @@ public class ContextInfoImplUnitTestCase extends AbstractContextInfoTest
       }
    }
    
-   public void testSetMetaDataPath()
+   public void testAddMetaDataPath()
    {
       ContextInfoImpl context = createDefault();
       assertEquals("", context.getPath());
       assertDefaultNonPath(context);
       
-      context.setMetaDataPath("metaDataPath");
-      assertEquals("metaDataPath", context.getMetaDataPath());
+      context.addMetaDataPath("metaDataPath");
+      assertDefaultMetaDataPath(context.getMetaDataPath());
       assertDefaultClassPath(context.getClassPath());
 
-      context.setMetaDataPath("changed");
-      assertEquals("changed", context.getMetaDataPath());
+      context.addMetaDataPath("added");
+      assertEquals(Arrays.asList("metaDataPath", "added"), context.getMetaDataPath());
       assertDefaultClassPath(context.getClassPath());
    }
    
+   public void testAddToDefaultMetaDataPath()
+   {
+      List<ClassPathEntry> classPath = new ArrayList<ClassPathEntry>();
+      classPath.add(new ClassPathEntryImpl());
+      ContextInfo context = createPathAndMetaDataAndClassPath("", "metaDataPath", classPath);
+      assertEquals("", context.getPath());
+      assertDefaultMetaDataPath(context.getMetaDataPath());
+      assertDefaultClassPath(context.getClassPath());
+
+      context.addMetaDataPath("added");
+      assertEquals(Arrays.asList("metaDataPath", "added"), context.getMetaDataPath());
+      assertDefaultClassPath(context.getClassPath());
+   }
+
    public void testSetMetaDataPathErrors()
    {
       ContextInfoImpl context = createDefault();
@@ -137,7 +157,7 @@ public class ContextInfoImplUnitTestCase extends AbstractContextInfoTest
 
       try
       {
-         context.setMetaDataPath(null);
+         context.addMetaDataPath(null);
          fail("Should not be here!");
       }
       catch (Exception e)

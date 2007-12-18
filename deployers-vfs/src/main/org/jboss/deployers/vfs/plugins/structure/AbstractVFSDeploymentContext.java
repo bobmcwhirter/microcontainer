@@ -26,6 +26,7 @@ import java.io.ObjectInput;
 import java.io.ObjectOutput;
 import java.util.Collections;
 import java.util.List;
+import java.util.ArrayList;
 
 import org.jboss.deployers.structure.spi.DeploymentUnit;
 import org.jboss.deployers.structure.spi.helpers.AbstractDeploymentContext;
@@ -52,8 +53,8 @@ public class AbstractVFSDeploymentContext extends AbstractDeploymentContext impl
    /** The root virtual file */
    private VirtualFile root;
    
-   /** The meta data location */
-   private VirtualFile metaDataLocation;
+   /** The meta data locations */
+   private List<VirtualFile> metaDataLocations;
    
    /** The class paths */
    private List<VirtualFile> classPath;
@@ -105,28 +106,43 @@ public class AbstractVFSDeploymentContext extends AbstractDeploymentContext impl
       return root;
    }
    
-   public void setMetaDataPath(String path)
+   public void setMetaDataPath(List<String> paths)
    {
-      if (path == null)
-         setMetaDataLocation(null);
+      if (paths == null)
+      {
+         setMetaDataLocations(null);
+         return;
+      }
+
       try
       {
-         setMetaDataLocation(root.findChild(path));
+         List<VirtualFile> locations = new ArrayList<VirtualFile>();
+         for (String path : paths)
+         {
+            if (path == null)
+               throw new IllegalArgumentException("Null path in paths: " + paths);
+
+            locations.add(root.findChild(path));
+         }
+         setMetaDataLocations(locations);
       }
       catch (IOException e)
       {
-         log.debug("Meta data path does not exist: root=" + root.getPathName() + " path=" + path);
+         log.debug("Meta data path does not exist: root=" + root.getPathName() + " paths=" + paths);
       }
    }
 
-   public VirtualFile getMetaDataLocation()
+   public List<VirtualFile> getMetaDataLocations()
    {
-      return metaDataLocation;
+      if (metaDataLocations == null)
+         return Collections.emptyList();
+      
+      return metaDataLocations;
    }
 
-   public void setMetaDataLocation(VirtualFile location)
+   public void setMetaDataLocations(List<VirtualFile> locations)
    {
-      this.metaDataLocation = location;
+      this.metaDataLocations = locations;
    }
    
    public VirtualFile getMetaDataFile(String name)
@@ -135,8 +151,8 @@ public class AbstractVFSDeploymentContext extends AbstractDeploymentContext impl
          throw new IllegalArgumentException("Null name");
       try
       {
-         // There isn't a metadata location so let's see whether the root matches.
-         if (metaDataLocation == null)
+         // There isn't a metadata locations so let's see whether the root matches.
+         if (metaDataLocations == null || metaDataLocations.isEmpty())
          {
             // It has to be a plain file
             if (root != null && SecurityActions.isLeaf(root))
@@ -149,20 +165,43 @@ public class AbstractVFSDeploymentContext extends AbstractDeploymentContext impl
             // No match
             return null;
          }
-         // Look in the meta data location
-         VirtualFile result = metaDataLocation.findChild(name);
-         if (result != null)
-         {
-            log.trace("Found " + name + " in " + metaDataLocation.getName());
-            deployed();
-         }
-         return result;
+         // Look in the meta data locations
+         return searchMetaDataLocations(name);
       }
       catch (Exception e)
       {
          log.trace("Error retrieving meta data: " + name + " reason=" + e);
          return null;
       }
+   }
+
+   /**
+    * Search the metadata locations.
+    * In this impl the first one matching is returned.
+    *
+    * @param name the file name to find
+    * @return found file or null if not found
+    */
+   protected VirtualFile searchMetaDataLocations(String name)
+   {
+      VirtualFile result = null;
+      for(VirtualFile location : getMetaDataLocations())
+      {
+         try
+         {
+            result = location.findChild(name);
+            if (result != null)
+            {
+               log.trace("Found " + name + " in " + location.getName());
+               deployed();
+               break;
+            }
+         }
+         catch (IOException ignored)
+         {
+         }
+      }
+      return result;
    }
 
    public List<VirtualFile> getMetaDataFiles(String name, String suffix)
@@ -173,7 +212,7 @@ public class AbstractVFSDeploymentContext extends AbstractDeploymentContext impl
       {
          // There isn't a metadata location so let's see whether the root matches.
          // i.e. the top level is an xml
-         if (metaDataLocation == null)
+         if (metaDataLocations == null || metaDataLocations.isEmpty())
          {
             // It has to be a plain file
             if (root != null && SecurityActions.isLeaf(root))
@@ -189,13 +228,18 @@ public class AbstractVFSDeploymentContext extends AbstractDeploymentContext impl
             return Collections.emptyList();
          }
          // Look in the meta data location
-         List<VirtualFile> result = metaDataLocation.getChildren(new MetaDataMatchFilter(name, suffix));
-         if (result != null && result.isEmpty() == false)
+         List<VirtualFile> results = new ArrayList<VirtualFile>();
+         for (VirtualFile location : metaDataLocations)
          {
-            log.trace("Found " + name + " in " + metaDataLocation.getName());
-            deployed();
+            List<VirtualFile> result = location.getChildren(new MetaDataMatchFilter(name, suffix));
+            if (result != null && result.isEmpty() == false)
+            {
+               log.trace("Found " + name + " in " + location.getName());
+               results.addAll(result);
+               deployed();
+            }
          }
-         return result;
+         return results;
       }
       catch (Exception e)
       {
@@ -247,7 +291,9 @@ public class AbstractVFSDeploymentContext extends AbstractDeploymentContext impl
    {
       super.readExternal(in);
       root = (VirtualFile) in.readObject();
-      metaDataLocation = (VirtualFile) in.readObject();
+      boolean isNullOrEmpty = in.readBoolean();
+      if (isNullOrEmpty == false)
+         metaDataLocations = (List<VirtualFile>) in.readObject();
       classPath = (List) in.readObject();
    }
 
@@ -262,7 +308,10 @@ public class AbstractVFSDeploymentContext extends AbstractDeploymentContext impl
    {
       super.writeExternal(out);
       out.writeObject(root);
-      out.writeObject(metaDataLocation);
+      boolean isNullOrEmpty = metaDataLocations == null || metaDataLocations.isEmpty();
+      out.writeBoolean(isNullOrEmpty);
+      if (isNullOrEmpty == false)
+         out.writeObject(metaDataLocations);
       out.writeObject(classPath);
    }
 }

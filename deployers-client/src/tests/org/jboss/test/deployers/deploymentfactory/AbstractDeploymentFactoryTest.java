@@ -67,7 +67,15 @@ public abstract class AbstractDeploymentFactoryTest extends BaseTestCase
 
    protected static void assertDefaultMetaDataPath(ContextInfo contextInfo)
    {
-      assertNull(contextInfo.getMetaDataPath());
+      assertNotNull(contextInfo);
+      assertNotNull(contextInfo.getMetaDataPath());
+      assertTrue(contextInfo.getMetaDataPath().isEmpty());
+   }
+
+   protected static void assertDefaultMetaDataPath(List<String> metaDataPath)
+   {
+      assertEquals(1, metaDataPath.size());
+      assertEquals("metaDataPath", metaDataPath.get(0));
    }
 
    protected static void assertDefaultClassPath(List<ClassPathEntry> classPath)
@@ -294,7 +302,7 @@ public abstract class AbstractDeploymentFactoryTest extends BaseTestCase
       List<ClassPathEntry> classPath = factory.createClassPath("ClassPath");
       ContextInfo context = factory.addContext(deployment, "path", "metaDataPath", classPath);
       assertEquals("path", context.getPath());
-      assertEquals("metaDataPath", context.getMetaDataPath());
+      assertDefaultMetaDataPath(context.getMetaDataPath());
       assertEquals(classPath, context.getClassPath());
 
       assertContexts(deployment, context);
@@ -303,7 +311,7 @@ public abstract class AbstractDeploymentFactoryTest extends BaseTestCase
       deployment = createDeployment();
       context = factory.addContext(deployment, "path", "metaDataPath", classPath);
       assertEquals("path", context.getPath());
-      assertEquals("metaDataPath", context.getMetaDataPath());
+      assertDefaultMetaDataPath(context.getMetaDataPath());
       assertNull(context.getClassPath());
 
       assertContexts(deployment, context);
@@ -336,7 +344,7 @@ public abstract class AbstractDeploymentFactoryTest extends BaseTestCase
 
       try
       {
-         factory.addContext(deployment, "path", null, classPath);
+         factory.addContext(deployment, "path", (String)null, classPath);
          fail("Should not be here");
       }
       catch (Exception e)
@@ -397,7 +405,7 @@ public abstract class AbstractDeploymentFactoryTest extends BaseTestCase
       List<ClassPathEntry> classPath = factory.createClassPath("ClassPath");
       ContextInfo context1 = factory.addContext(deployment, "path1", "metaDataPath", classPath);
       assertEquals("path1", context1.getPath());
-      assertEquals("metaDataPath", context1.getMetaDataPath());
+      assertDefaultMetaDataPath(context1.getMetaDataPath());
       assertEquals(classPath, context1.getClassPath());
       
       StructureMetaData structure = assertStructureMetaData(deployment);
