@@ -294,6 +294,7 @@ public class DefaultFieldsImpl
     * Only write out the fields that should be usable by a remote client.
     * Excludes:
     * PROPERTY_INFO
+    * ATTACHMENT
     * 
     * @param out
     * @throws IOException
@@ -304,6 +305,8 @@ public class DefaultFieldsImpl
       for (Map.Entry<String, Serializable> entry : fields.entrySet())
       {
          if(entry.getKey().equals(PROPERTY_INFO))
+            continue;
+         if(entry.getKey().equals(ATTACHMENT))
             continue;
          out.writeUTF(entry.getKey());
          out.writeObject(entry.getValue());
