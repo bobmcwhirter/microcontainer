@@ -7,10 +7,9 @@
   <classpathentry kind="con" path="org.eclipse.jdt.launching.JRE_CONTAINER"/>
   <classpathentry kind="src" path="/jboss-dependency"/>
   <classpathentry kind="var" path="M2_REPO/org/jboss/jbossxb/2.0.0.CR4/jbossxb-2.0.0.CR4.jar" sourcepath="M2_REPO/org/jboss/jbossxb/2.0.0.CR4/jbossxb-2.0.0.CR4-sources.jar"/>
-  <classpathentry kind="var" path="M2_REPO/jboss/jboss-common-core/2.0.4.GA/jboss-common-core-2.0.4.GA.jar" sourcepath="M2_REPO/jboss/jboss-common-core/2.0.4.GA/jboss-common-core-2.0.4.GA-sources.jar"/>
   <classpathentry kind="var" path="M2_REPO/apache-xerces/xercesImpl/2.7.1/xercesImpl-2.7.1.jar"/>
   <classpathentry kind="var" path="M2_REPO/jboss/jboss-common-logging-spi/2.0.4.GA/jboss-common-logging-spi-2.0.4.GA.jar" sourcepath="M2_REPO/jboss/jboss-common-logging-spi/2.0.4.GA/jboss-common-logging-spi-2.0.4.GA-sources.jar"/>
-  <classpathentry kind="var" path="M2_REPO/org/jboss/jboss-common-core/2.2.1.GA/jboss-common-core-2.2.1.GA.jar" sourcepath="M2_REPO/org/jboss/jboss-common-core/2.2.1.GA/jboss-common-core-2.2.1.GA-sources.jar"/>
+  <classpathentry kind="var" path="M2_REPO/org/jboss/jboss-common-core/2.2.3.GA/jboss-common-core-2.2.3.GA.jar" sourcepath="M2_REPO/org/jboss/jboss-common-core/2.2.3.GA/jboss-common-core-2.2.3.GA-sources.jar"/>
   <classpathentry kind="src" path="/jboss-managed"/>
   <classpathentry kind="var" path="M2_REPO/org/jboss/jboss-test/1.0.4.GA/jboss-test-1.0.4.GA.jar" sourcepath="M2_REPO/org/jboss/jboss-test/1.0.4.GA/jboss-test-1.0.4.GA-sources.jar"/>
   <classpathentry kind="var" path="M2_REPO/apache-xerces/xml-apis/2.7.1/xml-apis-2.7.1.jar"/>

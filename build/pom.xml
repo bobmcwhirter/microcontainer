@@ -33,7 +33,7 @@
   </scm>
   
   <properties>
-    <version.jboss.common.core>2.2.1.GA</version.jboss.common.core>
+    <version.jboss.common.core>2.2.3.GA</version.jboss.common.core>
     <version.jbossxb>2.0.0.CR4</version.jbossxb>
     <version.osgi.r4.core>1.0</version.osgi.r4.core>
     <version.jboss.vfs>2.0.0.Beta6</version.jboss.vfs>
