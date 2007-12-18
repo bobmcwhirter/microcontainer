@@ -1,5 +1,4 @@
-<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-  xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
   <!--
     -  AOP Integration module.
     -  This modules includes 4 different test configurations: weave, no-weave, weave-secure, and no-weave-secure
@@ -16,7 +15,7 @@
   <parent>
     <groupId>org.jboss.microcontainer</groupId>
     <artifactId>jboss-microcontainer</artifactId>
-    <version>2.0.0-SNAPSHOT</version>
+    <version>2.0.0.Beta8</version>
   </parent>
   <modelVersion>4.0.0</modelVersion>
   <artifactId>jboss-aop-mc-int</artifactId>
@@ -451,40 +450,32 @@
                 <phase>test</phase>
                 <configuration>
                   <tasks>
-                    <property name="plugin_classpath" refid="maven.plugin.classpath"/>
-					          <echo message="plugin classpath:  ${plugin_classpath}"/>
-                    <mkdir dir="${project.build.directory}/surefire-reports/ant-weave"/>
-                    <property name="build.testlog" value="${project.build.directory}/log"/>
-                    <mkdir dir="${build.testlog}"/>
+                    <property name="plugin_classpath" refid="maven.plugin.classpath" />
+					          <echo message="plugin classpath: ${plugin_classpath}" />
+                    <mkdir dir="${project.build.directory}/surefire-reports/ant-weave" />
+                    <property name="build.testlog" value="${project.build.directory}/log" />
+                    <mkdir dir="${build.testlog}" />
                     <!-- Remove the test.log so each run has a fresh log -->
-                    <delete file="${build.testlog}/test.log"/>
-                    <junit dir="${project.build.directory}"
-                       printsummary="yes"
-                       haltonerror="false"
-                       haltonfailure="false"
-                       fork="true">
+                    <delete file="${build.testlog}/test.log" />
+                    <junit dir="${project.build.directory}" printsummary="yes" haltonerror="false" haltonfailure="false" fork="true">
               
-                       <sysproperty key="jboss.aop.exclude" value="org.jboss.,org.apache."/>
-                       <sysproperty key="jboss.aop.include" value="org.jboss.test."/>
-                       <sysproperty key="jboss-junit-configuration" value="weave"/>
-                       <sysproperty key="build.testlog" value="${build.testlog}"/>
-                       <sysproperty key="java.system.class.loader" value="org.jboss.aop.standalone.SystemClassLoader"/>
+                       <sysproperty key="jboss.aop.exclude" value="org.jboss.,org.apache." />
+                       <sysproperty key="jboss.aop.include" value="org.jboss.test." />
+                       <sysproperty key="jboss-junit-configuration" value="weave" />
+                       <sysproperty key="build.testlog" value="${build.testlog}" />
+                       <sysproperty key="java.system.class.loader" value="org.jboss.aop.standalone.SystemClassLoader" />
               
                        <classpath>
-                          <path refid="maven.test.classpath"/>
+                          <path refid="maven.test.classpath" />
                        </classpath>
               
-                       <formatter type="plain" usefile="true" extension=".txt"/>
-                       <formatter classname="org.jboss.ant.taskdefs.XMLJUnitMultipleResultFormatter"
-                                  usefile="true" extension=".xml"/>
+                       <formatter type="plain" usefile="true" extension=".txt" />
+                       <formatter classname="org.jboss.ant.taskdefs.XMLJUnitMultipleResultFormatter" usefile="true" extension=".xml" />
               
-                       <batchtest todir="${project.build.directory}/surefire-reports/ant-weave"
-                          haltonerror="false"
-                          haltonfailure="false"
-                          fork="true">
+                       <batchtest todir="${project.build.directory}/surefire-reports/ant-weave" haltonerror="false" haltonfailure="false" fork="true">
               
                           <fileset dir="${project.build.directory}/tests-classes">
-                             <include name="org/jboss/test/**/*TestCase.class"/>
+                             <include name="org/jboss/test/**/*TestCase.class" />
                           </fileset>
                        </batchtest>
                     </junit>
@@ -537,34 +528,29 @@
                 <phase>test</phase>
                 <configuration>
                   <tasks>
-                    <property name="plugin_classpath" refid="maven.plugin.classpath"/>
-					          <echo message="plugin classpath:  ${plugin_classpath}"/>
-                    <mkdir dir="${project.build.directory}/surefire-reports/ant-one-weave"/>
-                    <property name="build.testlog" value="${project.build.directory}/log"/>
-                    <mkdir dir="${build.testlog}"/>
+                    <property name="plugin_classpath" refid="maven.plugin.classpath" />
+					          <echo message="plugin classpath: ${plugin_classpath}" />
+                    <mkdir dir="${project.build.directory}/surefire-reports/ant-one-weave" />
+                    <property name="build.testlog" value="${project.build.directory}/log" />
+                    <mkdir dir="${build.testlog}" />
                     <!-- Remove the test.log so each run has a fresh log -->
-                    <delete file="${build.testlog}/test.log"/>
-                    <junit dir="${project.build.directory}"
-                       printsummary="yes"
-                       haltonerror="false"
-                       haltonfailure="false"
-                       fork="true">
+                    <delete file="${build.testlog}/test.log" />
+                    <junit dir="${project.build.directory}" printsummary="yes" haltonerror="false" haltonfailure="false" fork="true">
               
-                       <sysproperty key="jboss.aop.exclude" value="org.jboss.,org.apache."/>
-                       <sysproperty key="jboss.aop.include" value="org.jboss.test."/>
-                       <sysproperty key="jboss-junit-configuration" value="weave"/>
-                       <sysproperty key="build.testlog" value="${build.testlog}"/>
-                       <sysproperty key="java.system.class.loader" value="org.jboss.aop.standalone.SystemClassLoader"/>
+                       <sysproperty key="jboss.aop.exclude" value="org.jboss.,org.apache." />
+                       <sysproperty key="jboss.aop.include" value="org.jboss.test." />
+                       <sysproperty key="jboss-junit-configuration" value="weave" />
+                       <sysproperty key="build.testlog" value="${build.testlog}" />
+                       <sysproperty key="java.system.class.loader" value="org.jboss.aop.standalone.SystemClassLoader" />
               
                        <classpath>
-                          <path refid="maven.test.classpath"/>
+                          <path refid="maven.test.classpath" />
                        </classpath>
               
-                       <formatter type="plain" usefile="true" extension=".txt"/>
-                       <formatter classname="org.jboss.ant.taskdefs.XMLJUnitMultipleResultFormatter"
-                                  usefile="true" extension=".xml"/>
+                       <formatter type="plain" usefile="true" extension=".txt" />
+                       <formatter classname="org.jboss.ant.taskdefs.XMLJUnitMultipleResultFormatter" usefile="true" extension=".xml" />
               
-                       <test todir="${project.build.directory}/surefire-reports/ant-one-weave" name="${test}" haltonerror="false" haltonfailure="false" fork="true"/>
+                       <test todir="${project.build.directory}/surefire-reports/ant-one-weave" name="${test}" haltonerror="false" haltonfailure="false" fork="true" />
                        
                     </junit>
                   </tasks>
@@ -614,39 +600,31 @@
                 <phase>test</phase>
                 <configuration>
                   <tasks>
-                    <mkdir dir="${project.build.directory}/surefire-reports/ant-weave-secure"/>
-                    <property name="build.testlog" value="${project.build.directory}/log"/>
-                    <mkdir dir="${build.testlog}"/>
+                    <mkdir dir="${project.build.directory}/surefire-reports/ant-weave-secure" />
+                    <property name="build.testlog" value="${project.build.directory}/log" />
+                    <mkdir dir="${build.testlog}" />
                     <!-- Remove the test.log so each run has a fresh log -->
-                    <delete file="${build.testlog}/test.log"/>
-                    <junit dir="${project.build.directory}"
-                       printsummary="yes"
-                       haltonerror="false"
-                       haltonfailure="false"
-                       fork="true">
+                    <delete file="${build.testlog}/test.log" />
+                    <junit dir="${project.build.directory}" printsummary="yes" haltonerror="false" haltonfailure="false" fork="true">
               
-                       <sysproperty key="jboss.aop.exclude" value="org.jboss.,org.apache."/>
-                       <sysproperty key="jboss.aop.include" value="org.jboss.test."/>
-                       <sysproperty key="jboss-junit-configuration" value="weave-secure"/>
-                       <sysproperty key="build.testlog" value="${build.testlog}"/>
-                       <sysproperty key="java.system.class.loader" value="org.jboss.aop.standalone.SystemClassLoader"/>
-                       <sysproperty key="jboss.mc.secure" value="true"/>
+                       <sysproperty key="jboss.aop.exclude" value="org.jboss.,org.apache." />
+                       <sysproperty key="jboss.aop.include" value="org.jboss.test." />
+                       <sysproperty key="jboss-junit-configuration" value="weave-secure" />
+                       <sysproperty key="build.testlog" value="${build.testlog}" />
+                       <sysproperty key="java.system.class.loader" value="org.jboss.aop.standalone.SystemClassLoader" />
+                       <sysproperty key="jboss.mc.secure" value="true" />
               
                        <classpath>
-                          <path refid="maven.test.classpath"/>
+                          <path refid="maven.test.classpath" />
                        </classpath>
               
-                       <formatter type="plain" usefile="true" extension=".txt"/>
-                       <formatter classname="org.jboss.ant.taskdefs.XMLJUnitMultipleResultFormatter"
-                                  usefile="true" extension=".xml"/>
+                       <formatter type="plain" usefile="true" extension=".txt" />
+                       <formatter classname="org.jboss.ant.taskdefs.XMLJUnitMultipleResultFormatter" usefile="true" extension=".xml" />
               
-                       <batchtest todir="${project.build.directory}/surefire-reports/ant-weave-secure"
-                          haltonerror="false"
-                          haltonfailure="false"
-                          fork="true">
+                       <batchtest todir="${project.build.directory}/surefire-reports/ant-weave-secure" haltonerror="false" haltonfailure="false" fork="true">
               
                           <fileset dir="${project.build.directory}/tests-classes">
-                             <include name="org/jboss/test/**/*TestCase.class"/>
+                             <include name="org/jboss/test/**/*TestCase.class" />
                           </fileset>
                        </batchtest>
                     </junit>
