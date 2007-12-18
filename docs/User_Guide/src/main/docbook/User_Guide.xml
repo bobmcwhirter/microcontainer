@@ -2137,12 +2137,247 @@ public void setThreadPool(ThreadPool pool) {
       <title>Defining dependencies</title>
       <section>
         <title>POJO dependencies</title>
+        <para>Dependencies between beans (POJO instances) are created when they are wired together through the use of the @Inject annotation or &lt;inject&gt; element. Specifically a bean which has another bean injected into it is said to be dependent on the other bean. For example here we have a Person bean that is dependent on an Address bean.</para>
+        <programlisting>public class Person {
+    @Inject(bean=&quot;AddressBean&quot;)
+    public void setAddress(Address address) {
+        ...
+    }
+}</programlisting>
+        <programlisting>&lt;bean name=&quot;Person&quot; class=&quot;org.jboss.test.Person&quot;&gt;
+    &lt;property name=&quot;address&quot;&gt;
+        &lt;inject bean=&quot;AddressBean&quot;/&gt;
+    &lt;/property&gt;
+&lt;/bean&gt;</programlisting>
+        <para>The reason for the dependency is because the address property of the Person bean cannot be configured until the Address bean has been deployed. Internally JBoss Microcontainer enforces this by moving each bean through a series of states during deployment. Consequently the Person bean will be prevented from moving to the CONFIGURED state until the Address bean has reached the INSTALLED state representing a deployed bean.</para>
+        <para>By default there are 8 states that a bean can be in during deployment and undeployment:</para>
+        <itemizedlist>
+          <listitem>
+            <para>NOT_INSTALLED - Metadata describing the bean has been parsed from annotations or a deployment descriptor.</para>
+          </listitem>
+          <listitem>
+            <para>PRE_INSTALL - the scope of the bean within the microcontainer has been discovered and classloading dependencies have been resolved.</para>
+          </listitem>
+          <listitem>
+            <para>DESCRIBED - Any AOP dependencies have been added.</para>
+          </listitem>
+          <listitem>
+            <para>INSTANTIATED -All dependencies have been resolved to construct the bean. These include; a classloader exists, the class can be found, a constructor or factory method can be found and any parameter injections can be resolved.</para>
+          </listitem>
+          <listitem>
+            <para>CONFIGURED - All the property injections can be resolved. This includes any injections within collections.</para>
+          </listitem>
+          <listitem>
+            <para>CREATE - All the beans metioned in the @Depends annotation or &lt;depends&gt; element have reached the CREATE state including any parameter injections in the create method.</para>
+          </listitem>
+          <listitem>
+            <para>START - All the beans metioned in the @Depends annotation or &lt;depends&gt; element have reached the START state including any parameter injections in the start method.</para>
+          </listitem>
+          <listitem>
+            <para>INSTALLED - Any deployment actions have been processed and the bean has been added to the list of items that the controller supplies.</para>
+          </listitem>
+        </itemizedlist>
+        <para>You may notice that we refer to injections being resolved in the above list. This is a shorthand way of saying that an injected bean has reached a certain state. In our simple example we can say that the injected Address bean has been resolved when it reaches the INSTALLED state. If necessary you can change the state that an injected bean must reach before being considered resolved by using the <code>dependentState</code>/<code>state</code> attribute.</para>
+        <programlisting>public class Person {
+    @Inject(bean=&quot;OtherBean&quot;,
+            dependentState=&quot;Instantiated&quot;)
+    public void setAddress(Address address) {
+        ...
+    }
+}</programlisting>
+        <programlisting>&lt;bean name=&quot;Person&quot; class=&quot;org.jboss.test.Person&quot;&gt;
+    &lt;property name=&quot;address&quot;&gt;
+        &lt;inject bean=&quot;Address&quot; state=&quot;Instantiated&quot;/&gt;
+    &lt;/property&gt;
+&lt;/bean&gt;</programlisting>
+        <para>Here we are saying the Address bean needs to reach the INSTANTIATED state before the Person bean can use it to configure the address property and thus move to the CONFIGURED state. Be aware that setting the state value to <code>Described</code> in this case would not be appropriate since we must first have an instance of the Address bean before we can inject a reference to it into another bean.</para>
+        <note>
+          <para>The following six values can be used for the <code>dependentState</code>/<code>state</code> attribute to control injection. If no value is specified then by default the Installed state is used.</para>
+          <itemizedlist>
+            <listitem>
+              <para>Described</para>
+            </listitem>
+            <listitem>
+              <para>Instantiated</para>
+            </listitem>
+            <listitem>
+              <para>Configured</para>
+            </listitem>
+            <listitem>
+              <para>Create</para>
+            </listitem>
+            <listitem>
+              <para>Start</para>
+            </listitem>
+            <listitem>
+              <para>Installed</para>
+            </listitem>
+          </itemizedlist>
+        </note>
+        <para>The ability to control when injection occurs is especially useful when dealing with circular dependencies. A circular dependency happens when one bean depends on another which in turn depends on the first bean:</para>
+        <programlisting>&lt;bean name=&quot;Circular1&quot; class=&quot;org.jboss.example.InjectionBean&quot;&gt;
+    &lt;constructor&gt;
+        &lt;parameter&gt;Circular1&lt;/parameter&gt;
+    &lt;/constructor&gt;
+
+    &lt;property name=&quot;other&quot;&gt;
+        &lt;inject bean=&quot;Circular2&quot;/&gt;
+    &lt;/property&gt;
+&lt;/bean&gt;
+
+&lt;bean name=&quot;Circular2&quot; class=&quot;org.jboss.example.InjectionBean&quot;&gt;
+    &lt;constructor&gt;
+        &lt;parameter&gt;Circular2&lt;/parameter&gt;
+    &lt;/constructor&gt;
+
+    &lt;property name=&quot;other&quot;&gt;
+        &lt;inject bean=&quot;Circular1&quot;/&gt;
+    &lt;/property&gt;
+&lt;/bean&gt; </programlisting>
+        <para>In this configuration the microcontainer is unable to deploy either bean since each one is waiting in the INSTANTIATED state waiting for the other to reach the INSTALLED state. To solve this we can use the <code>state</code> attribute to  specify that Circular1 can be injected into Circular2 as soon as it reaches the INSTANTIATED state. </para>
+        <programlisting>&lt;bean name=&quot;Circular1&quot; class=&quot;org.jboss.example.InjectionBean&quot;&gt;
+    &lt;constructor&gt;
+        &lt;parameter&gt;Circular1&lt;/parameter&gt;
+    &lt;/constructor&gt;
+
+    &lt;property name=&quot;other&quot;&gt;
+        &lt;inject bean=&quot;Circular2&quot;/&gt;
+    &lt;/property&gt;
+&lt;/bean&gt;
+
+&lt;bean name=&quot;Circular2&quot; class=&quot;org.jboss.example.InjectionBean&quot;&gt;
+    &lt;constructor&gt;
+        &lt;parameter&gt;Circular2&lt;/parameter&gt;
+    &lt;/constructor&gt;
+
+    &lt;property name=&quot;other&quot;&gt;
+        &lt;inject bean=&quot;Circular1&quot; state=&quot;Instantiated&quot;/&gt;
+    &lt;/property&gt;
+&lt;/bean&gt;</programlisting>
+        <para>Circular2 can thus progress to the INSTALLED state whereupon Circular1 will inject it into its <code>other</code> property and continue deploying.</para>
       </section>
       <section>
         <title>Supply and Demand</title>
+        <para>Sometimes dependencies may exist between beans that are not wired together using injections. One example would be a bean representing a service that requires a transaction manager to be present in JNDI before it can  start. In these situations we can use a @Demand annotation or &lt;demand&gt; element to specify that we need another bean to be deployed before we can reach a certain state.</para>
+        <programlisting>@Demands(@Demand(&quot;TransactionManager&quot;))
+public class Example {
+    ...
+}</programlisting>
+        <programlisting>&lt;bean name=&quot;TransactionManager&quot; class=&quot;com.acme.TransactionManager&quot;/&gt;
+
+&lt;bean name=&quot;Name2&quot; class=&quot;com.acme.Example&quot;&gt;
+    &lt;demand&gt;TransactionManager&lt;/demand&gt;
+&lt;/bean&gt;</programlisting>
+        <para>By default the bean declaring the demand will wait until the beans it requires have been deployed before it moves to the INSTANTIATED state. However you can change this using the <code>whenRequired</code>/<code>state</code> attribute to specify a different state that can only be reached once all the beans listed as demands have been deployed.</para>
+        <programlisting>@Demands(@Demand(&quot;TransactionManager&quot;, whenRequired=&quot;Start&quot;))
+public class Example {
+    ...
+}</programlisting>
+        <programlisting>&lt;bean name=&quot;TransactionManager&quot; class=&quot;com.acme.TransactionManager&quot;/&gt;
+
+&lt;bean name=&quot;Name2&quot; class=&quot;com.acme.Example&quot;&gt;
+    &lt;demand state=&quot;Start&quot;&gt;TransactionManager&lt;/demand&gt;
+&lt;/bean&gt;</programlisting>
+        <para>Here we are stating that the TransactionManager bean must be deployed before the Name2 bean can reach the Start state. To specify multiple dependencies on other beans you simply need to list @Demand annotations or nest &lt;demand&gt; elements:</para>
+        <programlisting>@Demands(@Demand(&quot;TransactionManager&quot;, whenRequired=&quot;Start&quot;),
+         @Demand(&quot;OtherBean&quot;))
+public class Example {
+    ...
+}</programlisting>
+        <programlisting>&lt;bean name=&quot;TransactionManager&quot; class=&quot;com.acme.SomeSingleton&quot;&gt;
+    &lt;property name=&quot;host&quot;&gt;http://www.jboss.org&lt;/property&gt;
+&lt;/bean&gt;
+
+&lt;bean name=&quot;Name2&quot; class=&quot;com.acme.Example&quot;&gt;
+    &lt;demand state=&quot;Start&quot;&gt;TransactionManager&lt;/demand&gt;
+    &lt;demand&gt;OtherBean&lt;/demand&gt;
+&lt;/bean&gt;</programlisting>
+        <para>In addition to specifying dependencies on other beans you can also specify dependencies on arbitrary objects that other beans supply. This can be useful if a bean depends on something  that is provided by multiple beans but doesn&apos;t necessarily care which one provides it. To create these arbitrary objects you need to use the @Supply annotation or &lt;supply&gt; element.</para>
+        <programlisting>@Supplies(@Supply(&quot;SomethingUseful&quot;))
+public class Provider {
+    ...
+}
+
+@Demands(@Demand(&quot;SomethingUseful&quot;))
+public class Consumer {
+    ...
+}</programlisting>
+        <programlisting>&lt;bean name=&quot;Provider&quot; class=&quot;com.acme.Provider&quot;&gt;
+    &lt;supply&gt;SomethingUseful&lt;/supply&gt;
+&lt;/bean&gt;
+
+&lt;bean name=&quot;Consumer&quot; class=&quot;com.acme.Consumer&quot;&gt;
+    &lt;demand&gt;SomethingUseful&lt;/demand&gt;
+&lt;/bean&gt; </programlisting>
+        <para>A bean can also supply multiple objects if necessary:</para>
+        <programlisting>@Supplies(@Supply(&quot;SomethingUseful&quot;),
+          @Supply(&quot;SomethingElse&quot;))
+public class Provider {
+    ...
+}
+
+@Demands(@Demand(&quot;SomethingUseful&quot;))
+public class Consumer {
+    ...
+}
+
+@Demand(@Demand(&quot;SomethingElse&quot;))
+public class OtherConsumer {
+    ...
+}</programlisting>
+        <programlisting>&lt;bean name=&quot;Provider&quot; class=&quot;com.acme.Provider&quot;&gt;
+    &lt;supply&gt;SomethingUseful&lt;/supply&gt;
+    &lt;supply&gt;SomethingElse&lt;/supply&gt;
+&lt;/bean&gt;
+
+&lt;bean name=&quot;Consumer&quot; class=&quot;com.acme.Consumer&quot;&gt;
+    &lt;demand&gt;SomethingUseful&lt;/demand&gt;
+&lt;/bean&gt;
+
+&lt;bean name=&quot;OtherConsumer&quot; class=&quot;com.acme.Consumer&quot;&gt;
+    &lt;demand&gt;SomethingElse&lt;/demand&gt;
+&lt;/bean&gt; </programlisting>
+        <para>Behind the scenes JBoss Microcontainer creates a bean of type java.lang.Object for each @Supply annotation or &lt;supply&gt; element named after its value. These beans are then moved automatically through all of the states to reach the INSTALLED state and become deployed. From this point onwards the @Demand annotation and &lt;demand&gt; element work in exactly the same way as before, checking to see if the named bean has been deployed before allowing the bean declaring the demand/s to move to a certain state.</para>
       </section>
       <section>
         <title>Service dependencies</title>
+        <para>So far we have considered how POJOs depend on each other either explictly through injections or implicitly through the use of arbitrary objects supplied during deployment. These dependencies help us to assemble POJOs in a well defined order to create services but what about when one service depends on another?</para>
+        <para>Services typically consist of many individual POJOs wired together in order to perform a well-defined function. Once a service is deployed it can be stopped and started as many times as necessary in order to make best use of valuable resources such as CPU and memory. This is possible thanks to the service lifecycle:</para>
+        <itemizedlist>
+          <listitem>
+            <para>create - the service has been deployed</para>
+          </listitem>
+          <listitem>
+            <para>start - the service is started</para>
+          </listitem>
+          <listitem>
+            <para>stop - the service is stopped</para>
+          </listitem>
+          <listitem>
+            <para>destroy - the service is being undeployed</para>
+          </listitem>
+        </itemizedlist>
+        <para>If one service depends on another then we need someway to ensure that they are created and started in the correct order. Similarly we also need to ensure that they are stopped and destroyed correctly. This is done by adding a @Depends annotation or &lt;depends&gt; element to the POJO that defines a service&apos;s public methods and specifying the name of the bean that represents the other service.</para>
+        <programlisting>@Depends(&quot;AnotherBean&quot;)
+public class MyBean {
+    ...
+}</programlisting>
+        <programlisting>&lt;bean name=&quot;AnotherBean&quot; class=&quot;org.jboss.test.Example&quot;/&gt;
+
+&lt;bean name=&quot;MyBean&quot; class=&quot;org.jboss.test.Example&quot;&gt;
+    &lt;depends&gt;AnotherBean&lt;/depends&gt;
+&lt;/bean&gt;</programlisting>
+        <para>The microcontainer will then ensure that the beans, representing the two services, are deployed in the correct order. Specifically the beans named in the @Depends or &lt;depends&gt; values will reach their CREATE states before the bean declaring the dependencies reaches its CREATE state. The same is true for the START, STOP and DESTROY states. It&apos;s possible to define multiple dependencies on other services simply by listing names or nesting &lt;depends&gt; elements:</para>
+        <programlisting>@Depends(&quot;AnotherBean&quot;, &quot;YetAnotherBean&quot;)
+public class MyBean {
+    ...
+}</programlisting>
+        <programlisting>&lt;bean name=&quot;AnotherBean&quot; class=&quot;org.jboss.test.Example&quot;/&gt;
+
+&lt;bean name=&quot;MyBean&quot; class=&quot;org.jboss.test.Example&quot;&gt;
+    &lt;depends&gt;AnotherBean&lt;/depends&gt;
+    &lt;depends&gt;YetAnotherBean&lt;/depends&gt;
+&lt;/bean&gt;</programlisting>
       </section>
     </chapter>
     <chapter>
