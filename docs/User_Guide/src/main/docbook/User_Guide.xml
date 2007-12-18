@@ -1451,7 +1451,7 @@ public class MyApp {
       </section>
       <section>
         <title>Calling constructors</title>
-        <para>Creating POJO instances is performed either by calling a constructor or using a factory method. The &lt;constructor&gt; element is used in both cases and parameters can be passed if necessary using nested &lt;parameter&gt; elements. Annotations also exist for either case but the constructor annotation takes no parameters since these are declared in the constructor itself.</para>
+        <para>Creating POJO instances is performed either by calling a constructor or using a factory method. The &lt;constructor&gt; element is used in both cases and parameters can be passed if necessary using nested &lt;parameter&gt; elements. Annotations also exist for either case with parameter values represented as annotations of the constructor parameters themselves.</para>
         <important>
           <para>At present it is not possible to create a POJO instance only using annotations. This is because classes are not automatically loaded and scanned whenever they are added to the classpath. Doing so would significantly reduce the performance of the deployment process as all classes would need to be loaded, even if they were not yet required. Instead you must always define beans using a deployment descriptor as  this tells the  microcontainer which classes to load. These classes are subsequently scanned for annotations such as @Constructor and @Factory to discover how to create  instances.</para>
           <programlisting>&lt;bean name=&quot;SimpleBean&quot; class=&quot;org.jboss.example.SimpleBean&quot;/&gt;</programlisting>
@@ -1499,10 +1499,44 @@ public TestConstructorBean(@StringValue(&quot;this is a test constructor&quot;) 
             </note>
           </listitem>
         </itemizedlist>
+        <para>You can also specify javabeans as parameters if required using the @JavaBeanValue annotation or &lt;javabean&gt; element. In this particular case the annotation is not very useful as it can only call the default constructor of the javabean class to create an instance. If you want to use a different constructor or inject properties then you should use the XML element instead.</para>
+        <programlisting>@Constructor
+public TestConstructorBean(@StringValue(&quot;this is a test constructor&quot;) String testString, @JavaBeanValue(&quot;org.jboss.test.Person&quot;) Person testPerson) {
+    ...
+}</programlisting>
+        <programlisting>&lt;bean name=&quot;Test&quot; class=&quot;org.jboss.example.constructor.TestConstructorBean&quot;&gt;
+    &lt;constructor&gt;
+        &lt;parameter&gt;this is a test constructor&lt;/parameter&gt;
+        &lt;parameter&gt;
+            &lt;javabean xmlns=&quot;urn:jboss:javabean:2.0&quot; class=&quot;org.jboss.test.Person&quot;&gt;
+                &lt;constructor&gt;
+                    &lt;property name=&quot;age&quot;&gt;21&lt;/property&gt;
+                &lt;/constructor&gt;
+                &lt;property name=&quot;firstName&quot;&gt;Mark&lt;/property&gt;
+                &lt;property name=&quot;lastName&quot;&gt;Newton&lt;/property&gt;
+            &lt;/javabean&gt;
+        &lt;/parameter&gt;
+    &lt;/constructor&gt;
+&lt;/bean&gt;</programlisting>
+        <para>Finally you can inject references to other beans or their properties into constructor parameters giving you complete control of the construction of your POJOs.</para>
+        <programlisting>@Constructor
+public TestConstructorBean(@Inject(bean=&quot;TestPerson&quot;) Person testPerson, @Inject(bean=&quot;TestAddress&quot;, property=&quot;street&quot;) String street) {
+    ...
+}</programlisting>
+        <programlisting>&lt;bean name=&quot;Test&quot; class=&quot;org.jboss.example.constructor.TestConstructorBean&quot;&gt;
+    &lt;constructor&gt;
+        &lt;parameter&gt;
+            &lt;inject bean=&quot;TestPerson&quot;/&gt;
+        &lt;/parameter&gt;
+        &lt;parameter&gt;
+            &lt;inject bean=&quot;TestAddress&quot; property=&quot;street&quot;/&gt;
+        &lt;/parameter&gt;
+    &lt;/constructor&gt;
+&lt;/bean&gt;</programlisting>
       </section>
       <section>
         <title>Using factories</title>
-        <para>If you have a choice of implementations for an interface then you may want to use a factory to create your POJO instances. JBoss Microcontainer provides support for static or non-static factory methods which can also take parameters if necessary.</para>
+        <para>If you have a number of classes that share the same interface then you may want to use a factory to create your POJO instances. JBoss Microcontainer provides support for static or non-static factory methods which can also take parameters if necessary.</para>
         <itemizedlist>
           <listitem>
             <para>Static factory method</para>
@@ -1512,8 +1546,8 @@ public class SimpleBean {
    ...
 }</programlisting>
             <programlisting>&lt;bean name=&quot;SimpleBean&quot; class=&quot;org.jboss.example.SimpleBean&quot;&gt;
-    &lt;constructor factoryMethod=&quot;newInstance&quot;
-                 factoryClass=&quot;org.jboss.example.MyFactory&quot;/&gt;
+    &lt;constructor factoryClass=&quot;org.jboss.example.MyFactory&quot;
+                 factoryMethod=&quot;newInstance&quot;/&gt;
 &lt;/bean&gt; </programlisting>
           </listitem>
           <listitem>
@@ -1525,8 +1559,8 @@ public class SimpleBean {
    ...
 }</programlisting>
             <programlisting>&lt;bean name=&quot;SimpleBean&quot; class=&quot;org.jboss.example.SimpleBean&quot;&gt;
-    &lt;constructor factoryMethod=&quot;newInstance&quot;
-                 factoryClass=&quot;org.jboss.example.MyFactory&quot;&gt;
+    &lt;constructor factoryClass=&quot;org.jboss.example.MyFactory&quot;
+                 factoryMethod=&quot;newInstance&quot;&gt;
         &lt;parameter&gt;a string&lt;/parameter&gt;
         &lt;parameter&gt;7&lt;/parameter&gt;
     &lt;/constructor&gt;
@@ -1583,9 +1617,12 @@ public class SimpleBean {
         &lt;parameter&gt;5&lt;/parameter&gt;
     &lt;/constructor&gt;
 &lt;/bean&gt; </programlisting>
-            <para>Note that the @FactoryMethod annotation doesn&apos;t have a parameter attribute as the parameters are declared in the method itself.</para>
+            <para>Note that the @FactoryMethod annotation doesn&apos;t have a parameter attribute as the method parameters themselves are annotated.</para>
           </listitem>
         </itemizedlist>
+        <note>
+          <para>Factory method parameters can also be configured using JavaBeans and injected bean references if necessary just like constructor parameters. </para>
+        </note>
       </section>
       <section>
         <title>Creating bean aliases</title>
@@ -1842,11 +1879,11 @@ public void setList(List list) {
         <para>Maps can also be created using multiple entries of key/value pairs. As we now have two types to consider we must use the <code>keyClass</code> and <code>valueClass</code> attributes to specify the default classes for each entry. Again these can be overriden for individual entries if necessary.</para>
         <programlisting>@MapValue(keyClass=&quot;java.lang.String&quot;,
           valueClass=&quot;java.lang.String&quot;,
-          value={@EntryValue(key=@Value(string=@StringValue(&quot;foo.bar.key&quot;)),
-                             value=@Value(string=@StringValue(&quot;QWERT&quot;))),
-                 @EntryValue(key=@Value(string=@StringValue(&quot;xyz.key&quot;)),
-                             value=@Value(string=@StringValue(&quot;QWERTY&quot;)))
-                })
+          {@EntryValue(key=@Value(string=@StringValue(&quot;foo.bar.key&quot;)),
+                       value=@Value(string=@StringValue(&quot;QWERT&quot;))),
+           @EntryValue(key=@Value(string=@StringValue(&quot;xyz.key&quot;)),
+                       value=@Value(string=@StringValue(&quot;QWERTY&quot;)))
+          })
 public void setMap(Map&lt;String, String&gt; map) {
     ...
 } </programlisting>
@@ -1919,16 +1956,181 @@ public void setSet(Set set) {
       </section>
       <section>
         <title>Calling methods</title>
-        <para>Value-factory</para>
+        <para>Using PropertyEditors to create instances of objects from strings is fine in many situations but sometimes you need to inject a return value from a method call. As the method is responsible for creating the value we refer to it as a value factory. Hence the @ValueFactory annotation or &lt;value-factory&gt; element can be used in place of @StringValue or &lt;value&gt; to call a method and inject the returned value during deployment.</para>
+        <programlisting>@ValueFactory(bean=&quot;SimpleBean&quot;,
+              method=&quot;getFullName&quot;)
+public void setName(String name) {
+    ...
+} </programlisting>
+        <programlisting>&lt;bean name=&quot;PropHolder&quot; class=&quot;org.jboss.test.kernel.config.support.PropHolder&quot;&gt;
+    &lt;property name=&quot;name&quot;&gt;
+        &lt;value-factory bean=&quot;SimpleBean&quot; method=&quot;getFullName&quot;/&gt;
+    &lt;/property&gt;
+&lt;/bean&gt; </programlisting>
+        <para>If you need to pass any parameters to the method then you can use multiple  @Parameter annotations or nested &lt;parameter&gt; elements. </para>
+        <programlisting>@ValueFactory(bean=&quot;SimpleBean&quot;,
+              method=&quot;getFullName&quot;,
+              parameters=&quot;{@Parameter(string=@StringValue(&quot;Bob&quot;)),
+                           @Parameter(string=@StringValue(&quot;Smith&quot;))}&quot;)
+public void setName(String name) {
+    ...
+} </programlisting>
+        <programlisting>&lt;bean name=&quot;PropHolder&quot; class=&quot;org.jboss.test.kernel.config.support.PropHolder&quot;&gt;
+    &lt;property name=&quot;name&quot;&gt;
+        &lt;value-factory bean=&quot;SimpleBean&quot; method=&quot;getFullName&quot;&gt;
+            &lt;parameter&gt;Bob&lt;/parameter&gt;
+            &lt;parameter&gt;Smith&lt;/parameter&gt;
+        &lt;/value-factory&gt;
+    &lt;/property&gt;
+&lt;/bean&gt; </programlisting>
+        <para>Alternatively if only one parameter is required then you can use the <code>parameter</code> attribute to create a shorthand version. However this only works for values that can be created from strings.</para>
+        <programlisting>@ValueFactory(bean=&quot;SimpleBean&quot;,
+              method=&quot;getFullName&quot;,
+              parameter=&quot;@Parameter(string=@StringValue(&quot;Bob&quot;))&quot;)
+public void setName(String name) {
+    ...
+} </programlisting>
+        <programlisting>&lt;bean name=&quot;PropHolder&quot; class=&quot;org.jboss.test.kernel.config.support.PropHolder&quot;&gt;
+    &lt;property name=&quot;name&quot;&gt;
+        &lt;value-factory bean=&quot;SimpleBean&quot; method=&quot;getFullName&quot; parameter=&quot;Bob&quot;/&gt;
+    &lt;/property&gt;
+&lt;/bean&gt; </programlisting>
+        <para>It is also possible to specify a default value to use in case the method returns null. This is done using the <code>defaultValue</code>/<code>default</code> attribute which like the <code>parameter</code> attribute  only accepts values created using strings. </para>
+        <programlisting>@ValueFactory(bean=&quot;SimpleBean&quot;,
+              method=&quot;getFullName&quot;,
+              defaultValue=&quot;Mark Newton&quot;)
+public void setName(String name) {
+    ...
+} </programlisting>
+        <programlisting>&lt;bean name=&quot;PropHolder&quot; class=&quot;org.jboss.test.kernel.config.support.PropHolder&quot;&gt;
+    &lt;property name=&quot;name&quot;&gt;
+        &lt;value-factory bean=&quot;SimpleBean&quot; method=&quot;getFullName&quot; default=&quot;Mark Newton&quot;/&gt;
+    &lt;/property&gt;
+&lt;/bean&gt; </programlisting>
       </section>
       <section>
         <title>Using bean references</title>
+        <para>Injecting string-based properties or the return values of method calls into individual beans allows us to perform simple configurations. To create more complex configurations we need to wire beans together by injecting references using the @Inject annotation or &lt;inject&gt; element. </para>
+        <programlisting>@Inject(bean = &quot;Name1&quot;)
+public void setSimpleBean(SimpleBean bean) {
+    ...
+} </programlisting>
+        <programlisting>&lt;bean name=&quot;SimpleBean&quot; class=&quot;org.jboss.test.SimpleBean&quot;&gt;
+    &lt;property name=&quot;simpleBean&quot;&gt;
+        &lt;inject bean=&quot;Name1&quot;/&gt;
+    &lt;/property&gt;
+&lt;/bean&gt;</programlisting>
+        <para>Bean injections can be used anywhere a string value is used but you must ensure that the type of bean being injected is compatible with the type of property being set. It is also possible to inject a property from  one bean into another  using the <code>property</code> attribute.</para>
+        <programlisting>@Inject(bean = &quot;Name1&quot;, property=&quot;age&quot;)
+public void setAge(Integer age) {
+    ...
+} </programlisting>
+        <programlisting>&lt;bean name=&quot;SimpleBean&quot; class=&quot;org.jboss.test.SimpleBean&quot;&gt;
+    &lt;property name=&quot;age&quot;&gt;
+        &lt;inject bean=&quot;Name1&quot; property=&quot;age&quot;/&gt;
+    &lt;/property&gt;
+&lt;/bean&gt;</programlisting>
+        <para>Although injection is simple to use it provides a very powerful way to create  arbitrary relationships between POJO instances. The dependencies that are formed by these relationships are discussed in the next chapter &apos;Defining Dependencies&apos;.</para>
+        <note>
+          <para>Sometimes you may wish to declare a bean simply so that you can inject it into a single property. In this case you can replace the &lt;inject&gt; element with the bean declaration itself to reduce the amount of XML required. This is not possible using annotations as there is no annotation to declare a bean.</para>
+          <programlisting>&lt;bean name=&quot;SimpleBean&quot; class=&quot;org.jboss.test.SimpleBean&quot;&gt;
+    &lt;property name=&quot;testBean&quot;&gt;
+        &lt;bean=&quot;TestBean&quot; class=&quot;org.jboss.test.TestBean&quot;&gt;
+            &lt;property name=&quot;age&quot;&gt;25&lt;/property&gt;
+        &lt;/bean&gt;
+    &lt;/property&gt;
+&lt;/bean&gt;</programlisting>
+        </note>
       </section>
       <section>
         <title>Injecting context information</title>
+        <para>You may recall that inside the microcontainer each bean is represented by a context which holds amongst other things the bean&apos;s current state. This context information can be injected into bean properties or constructor/factory-method parameters using the @Inject annotation or &lt;inject&gt; element together with a <code>fromContext</code> attribute.</para>
+        <programlisting>@Inject(bean=&quot;otherBean&quot;,
+        fromContext=&quot;beanInfo&quot;)
+public void setBeanInfo(BeanInfo beanInfo) {
+    ...
+}</programlisting>
+        <programlisting>&lt;bean name=&quot;sndBean&quot; class=&quot;org.jboss.test.NameAwareBean&quot;&gt;
+    &lt;property name=&quot;beaninfo&quot;&gt;
+        &lt;inject bean=&quot;otherBean&quot; fromContext=&quot;beaninfo&quot;/&gt;
+    &lt;/property&gt;
+&lt;/bean&gt;</programlisting>
+        <para>If you want to inject information about the current bean&apos;s context then you can simply omit the <code>bean</code> attribute.</para>
+        <programlisting>@Inject(fromContext=&quot;beanInfo&quot;)
+public void setBeanInfo(BeanInfo beanInfo) {
+    ...
+}</programlisting>
+        <programlisting>&lt;bean name=&quot;sndBean&quot; class=&quot;org.jboss.test.NameAwareBean&quot;&gt;
+    &lt;property name=&quot;beaninfo&quot;&gt;
+        &lt;inject fromContext=&quot;beaninfo&quot;/&gt;
+    &lt;/property&gt;
+&lt;/bean&gt;</programlisting>
+        <para>The <code>fromContext</code> attribute can take the following values:</para>
+        <itemizedlist>
+          <listitem>
+            <para>name - the name of the bean</para>
+          </listitem>
+          <listitem>
+            <para>aliases - a list of the bean&apos;s other names</para>
+          </listitem>
+          <listitem>
+            <para>metadata - information about the bean from  annotations or deployment descriptors</para>
+          </listitem>
+          <listitem>
+            <para>beaninfo - information about the bean from the bean class</para>
+          </listitem>
+          <listitem>
+            <para>scope - the microcontainer scope that the bean belongs to</para>
+          </listitem>
+          <listitem>
+            <para>id - the internal id of the bean within the microcontainer</para>
+          </listitem>
+          <listitem>
+            <para>context - the bean context</para>
+          </listitem>
+        </itemizedlist>
+        <important>
+          <para>All context information is wrapped into  unmodifiable objects to prevent the user from changing anything outside of the microcontainer&apos;s control.  </para>
+        </important>
       </section>
       <section>
         <title>Auto-wiring</title>
+        <para>Having to write large amounts of configuration information just to wire together sometimes trivial beans can often be frustrating. For this reason JBoss Microcontainer provides the ability to autowire beans. Auto-wiring means that a bean&apos;s properties or constructor/factory-method parameters are set by automatically searching for matching beans. The benefit is that you don&apos;t have to specify the names of the beans  to inject yourself but the drawback is that this only works reliably for small environments. If you have an environment where more than one bean matches the property or parameter being set then it becomes unclear from the configuration information which one will be chosen during deployment. </para>
+        <para>To use auto-wiring you simply need to specify an @Inject annotation or &lt;inject&gt; element without a <code>bean</code> attribute for the parameter or property that you wish to set.</para>
+        <programlisting>@Inject
+public class Example(ThreadPool pool) {
+    ...
+}</programlisting>
+        <programlisting>&lt;bean name=&quot;paramInj&quot; class=&quot;com.acme.Example&quot;&gt;
+    &lt;constructor&gt;
+        &lt;parameter name=&quot;threadPool&quot;&gt;&lt;inject/&gt;&lt;/parameter&gt;
+    &lt;/constructor&gt;
+&lt;/bean&gt; </programlisting>
+        <programlisting>@Inject
+public void setThreadPool(ThreadPool pool) {
+    ...
+}</programlisting>
+        <programlisting>&lt;bean name=&quot;propInj&quot; class=&quot;com.acme.Example&quot;&gt;
+    &lt;property name=&quot;threadPool&quot;&gt;&lt;inject/&gt;&lt;/property&gt;
+&lt;/bean&gt; </programlisting>
+        <para>By default the microcontainer will search for a bean whose class matches that of the parameter/property. However you can change this behaviour when auto-wiring properties so that the microcontainer searches for a bean whose name matches the property name. This is done using the <code>type</code> attribute of the &lt;inject&gt; element.</para>
+        <programlisting>@Inject(type=&quot;ByName&quot;)
+public void setThreadPool(ThreadPool pool) {
+    ...
+}</programlisting>
+        <programlisting>&lt;bean name=&quot;propInj&quot; class=&quot;com.acme.Example&quot;&gt;
+    &lt;property name=&quot;threadPool&quot;&gt;&lt;inject type=&quot;ByName&quot;/&gt;&lt;/property&gt;
+&lt;/bean&gt; </programlisting>
+        <para>If no match is found then by default the deployment will fail but for certain properties it may be acceptable for injection to occur after deployment. In these cases you can specify that a property should be set using a callback mechanism whenever a suitable bean becomes available. This is done using the <code>option</code> attribute.</para>
+        <programlisting>@Inject(type=&quot;ByName&quot;, option=&quot;Callback&quot;)
+public void setThreadPool(ThreadPool pool) {
+    ...
+}</programlisting>
+        <programlisting>&lt;bean name=&quot;propInj&quot; class=&quot;com.acme.Example&quot;&gt;
+    &lt;property name=&quot;threadPool&quot;&gt;&lt;inject type=&quot;ByName&quot; option=&quot;Callback&quot;/&gt;&lt;/property&gt;
+&lt;/bean&gt; </programlisting>
+        <para>Sometimes you may want to prevent a bean from being injected automatically using auto-wiring. In these situations you can set its <code>autowire-candidate</code> attribute to false so that it&apos;s not included in the search for matching beans. This is not currently possible using annotations as there is no annotation to declare a bean.</para>
+        <programlisting>&lt;bean name=&quot;ignored&quot; class=&quot;com.acme.Example&quot; autowire-candidate=&quot;false&quot; /&gt;</programlisting>
       </section>
     </chapter>
     <chapter>
