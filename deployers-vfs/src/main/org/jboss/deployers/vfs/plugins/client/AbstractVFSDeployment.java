@@ -93,6 +93,13 @@ public class AbstractVFSDeployment extends AbstractDeployment implements VFSDepl
       return root.getPathName();
    }
 
+   
+   @Override
+   public String toString()
+   {
+      return "AbstractVFSDeployment("+getSimpleName()+")";
+   }
+
    public void readExternal(ObjectInput in) throws IOException, ClassNotFoundException
    {
       super.readExternal(in);
