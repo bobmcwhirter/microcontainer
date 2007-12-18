@@ -41,6 +41,8 @@ import org.jboss.metatype.api.values.SimpleValue;
 public class DefaultFieldsImpl
    implements Fields
 {
+   private static String END_MARKER = "__END_OF_FIELDS__";
+
    /** The serialVersionUID */
    private static final long serialVersionUID = 1;
 
@@ -288,19 +290,41 @@ public class DefaultFieldsImpl
       throw new IllegalStateException("Field " + fieldName + " with value " + field + " is  a of the expected type: " + expected.getName());
    }
 
-   /*
+   /**
+    * Only write out the fields that should be usable by a remote client.
+    * Excludes:
+    * PROPERTY_INFO
+    * 
+    * @param out
+    * @throws IOException
+    */
    private void writeObject(java.io.ObjectOutputStream out)
       throws IOException
    {
       for (Map.Entry<String, Serializable> entry : fields.entrySet())
       {
-         
+         if(entry.getKey().equals(PROPERTY_INFO))
+            continue;
+         out.writeUTF(entry.getKey());
+         out.writeObject(entry.getValue());
       }
+      out.writeUTF(END_MARKER);
    }
    private void readObject(java.io.ObjectInputStream in)
       throws IOException, ClassNotFoundException
    {
-   
+      fields = new HashMap<String, Serializable>();
+      String key;
+      do
+      {
+         key = in.readUTF();
+         if(key.equals(END_MARKER))
+            key = null;
+         else
+         {
+            Serializable value = (Serializable) in.readObject();
+            fields.put(key, value);
+         }
+      } while(key != null);
    }
-   */
 }
