@@ -2384,9 +2384,178 @@ public class MyBean {
       <title>Adding deployment behaviour</title>
       <section>
         <title>Deployment actions</title>
+        <para>In Part I - Getting Started we covered how to add behaviour to beans during the deployment and undeployment process using AOP lifecycle callbacks. This gave us a powerful way to apply common logic to a number of beans, identified using pointcut expressions, at various points in their lifecycles. However setting up AOP lifecycle callbacks for occasions when an individual bean needs to call arbitrary methods  before deployment or after undeployment can be time consuming. Fortunately JBoss Microcontainer provides an alternative way to do this using deployment/undeployment actions specified with  annotations or a deployment descriptor.</para>
+        <para>To specify a method within a bean that should be called after the bean reaches the START state you should use the @InstallMethod annotation or &lt;install&gt; element as follows:</para>
+        <programlisting>@InstallMethod
+public String doSomething() {
+    ...
+}</programlisting>
+        <programlisting>&lt;bean name=&quot;SimpleBean&quot; class=&quot;org.jboss.example.SimpleBean&quot;&gt;
+    &lt;install method=&quot;doSomething&quot;/&gt;
+&lt;/bean&gt;</programlisting>
+        <para>Parameters can also be passed in using nested &lt;parameter&gt; elements or by defining values with annotations.</para>
+        <programlisting>@InstallMethod
+public String doSomething(@StringValue(&quot;10&quot;) Integer integer, @StringValue(&quot;my string&quot;) String string) {
+    ...
+}</programlisting>
+        <programlisting>&lt;bean name=&quot;SimpleBean&quot; class=&quot;org.jboss.example.SimpleBean&quot;&gt;
+    &lt;install method=&quot;doSomething&quot;&gt;
+        &lt;parameter&gt;10&lt;/parameter&gt;
+        &lt;parameter&gt;my string&lt;/parameter&gt;
+    &lt;/install&gt;
+&lt;/bean&gt;</programlisting>
+        <para>If necessary multiple install methods can be defined. They will be called in the order in which they appear as annotations or in the deployment descriptor.</para>
+        <programlisting>@InstallMethod
+public String doSomething() {
+    ...
+}
+
+@InstallMethod
+public String doSomethingElse() {
+    ...
+}</programlisting>
+        <programlisting>&lt;bean name=&quot;SimpleBean&quot; class=&quot;org.jboss.example.SimpleBean&quot;&gt;
+    &lt;install method=&quot;doSomething&quot;/&gt;
+    &lt;install method=&quot;doSomethingElse&quot;/&gt;
+&lt;/bean&gt;</programlisting>
+        <para>During undeployment uninstall methods can also be defined which will be called before the bean reaches the STOP state.</para>
+        <programlisting>@UninstallMethod
+public String doSomething() {
+    ...
+}
+
+@UninstallMethod
+public String doSomethingElse() {
+    ...
+}</programlisting>
+        <programlisting>&lt;bean name=&quot;SimpleBean&quot; class=&quot;org.jboss.example.SimpleBean&quot;&gt;
+    &lt;uninstall method=&quot;doSomething&quot;/&gt;
+    &lt;uninstall method=&quot;doSomethingElse&quot;/&gt;
+&lt;/bean&gt;</programlisting>
+        <para>If you want a bean to call a method on another bean during deployment or undeployment then you can use the @ExternalInstalls/@ExternalUninstalls annotations or the  <code>bean</code> attribute of the &lt;install&gt;/&lt;uninstall&gt; elements. You can also define parameters to pass in if necessary.</para>
+        <programlisting>@ExternalInstalls(@ExternalInstall(bean=&quot;OtherBean&quot;, method=&quot;doWork&quot;)
+@ExternalUninstalls(@ExternalInstall(bean=&quot;OtherBean&quot;, method=&quot;doBye&quot;, parameters=&quot;{@Value(string=@StringValue(&quot;Goodbye&quot;)),@Value(string=@StringValue(&quot;Saturday&quot;))}&quot;))
+public class MyBean {
+    ...
+}</programlisting>
+        <programlisting>&lt;bean name=&quot;SimpleBean&quot; class=&quot;org.jboss.example.SimpleBean&quot;&gt;
+    &lt;install bean=&quot;OtherBean&quot; method=&quot;doWork&quot;/&gt;
+    &lt;uninstall bean=&quot;OtherBean&quot; method=&quot;doBye&quot;&gt;
+        &lt;parameter name=&quot;message&quot;&gt;Goodbye&lt;/parameter&gt;
+        &lt;parameter name=&quot;day&quot;&gt;Saturday&lt;/parameter&gt;
+    &lt;/uninstall&gt;
+&lt;/bean&gt;</programlisting>
+        <note>
+          <para>Currently both the @ExternalInstalls and @ExternalUninstalls annotations take a list of @ExternalInstall annotations. </para>
+        </note>
+        <para>By default the other bean must have reached the INSTALLED state before its method will be called. This can be changed by using the <code>dependentState</code>/<code>state</code> attribute.</para>
+        <programlisting>@ExternalInstalls(@ExternalInstall(bean=&quot;OtherBean&quot;, method=&quot;doWork&quot;, dependentState=&quot;Configured&quot;)
+public class MyBean {
+    ...
+}</programlisting>
+        <programlisting>&lt;bean name=&quot;SimpleBean&quot; class=&quot;org.jboss.example.SimpleBean&quot;&gt;
+    &lt;install bean=&quot;OtherBean&quot; method=&quot;doWork&quot; state=&quot;Configured&quot;/&gt;
+&lt;/bean&gt;</programlisting>
       </section>
       <section>
         <title>Deployment callbacks</title>
+        <para>Sometimes it is useful for a bean to know when other beans have been deployed. For example a manager bean might want to keep a list of all of the beans it manages. Rather than placing code into each managed bean to register itself with the manager when deployed, it would be better if the manager was automatically  called back each time to notify it. JBoss Microcontainer allows such callbacks to occur during deployment and undeployment using the @Install/@Uninstall annotations and &lt;incallback&gt;/&lt;uncallback&gt; elements.</para>
+        <note>
+          <para>&lt;incallback&gt; is an abbreviation of installCallback and &lt;uncallback&gt; is an abbreviation of uninstallCallback.</para>
+        </note>
+        <programlisting>public class Example {
+    @Install
+    public void addEditor(Editor editor) {
+        ...
+    }
+
+    @Uninstall
+    public void removeEditor(Editor editor) {
+        ...
+    }
+}</programlisting>
+        <programlisting>&lt;bean name=&quot;editorHolder&quot; class=&quot;com.acme.Example&quot;&gt;
+    &lt;incallback method=&quot;addEditor&quot;/&gt;
+    &lt;uncallback method=&quot;removeEditor&quot;/&gt;
+&lt;/bean&gt; </programlisting>
+        <para>In the above example the addEditor method of the editorHolder bean will be called each time a bean of class Editor is deployed. Similarly the removeEditor method will be called each time a bean of class Editor is undeployed. By default the bean class to look for is determined by the class of the parameter in the callback method. If there are multiple methods with the same name but different parameter types then you can  add a <code>signature</code> attribute to the &lt;incallback&gt;/&lt;uncallback&gt; element to specify the correct one. This is not required when using annotations as we simply annotate the method we want.</para>
+        <programlisting>public class Example {
+    public void addEditor(Editor editor) {
+        ...
+    }
+
+    @Install
+    public void addEditor(DifferentEditor editor) {
+        ...
+    }
+}</programlisting>
+        <programlisting>&lt;bean name=&quot;editorHolder&quot; class=&quot;com.acme.Example&quot;&gt;
+    &lt;incallback method=&quot;addEditor&quot; signature=&quot;org.jboss.example.DifferentEditor&quot;/&gt;
+&lt;/bean&gt; </programlisting>
+        <para>Multiple callback methods can be defined per bean. They will be called in the order that they appear as annotations or in the deployment descriptor.</para>
+        <programlisting>public class Example {
+    @Install
+    public void addEditor(Editor editor) {
+        ...
+    }
+
+    @Install
+    public void addViewer(Viewer viewer) {
+        ...
+    }
+
+    @Uninstall
+    public void removeEditor(Editor editor) {
+        ...
+    }
+
+    @Uninstall
+    public void removeViewer(Viewer viewer) {
+        ...
+    }
+}</programlisting>
+        <programlisting>&lt;bean name=&quot;editorHolder&quot; class=&quot;com.acme.Example&quot;&gt;
+    &lt;incallback method=&quot;addEditor&quot;/&gt;
+    &lt;incallback method=&quot;addViewer&quot;/&gt;
+    &lt;uncallback method=&quot;removeEditor&quot;/&gt;
+    &lt;uncallback method=&quot;removeViewer&quot;/&gt;
+&lt;/bean&gt; </programlisting>
+        <para>By default each callback will be executed when beans matching the parameter types reach the INSTALLED state. This can be changed if necessary using the <code>dependentState</code>/<code>state</code> attribute.</para>
+        <programlisting>public class Example {
+    @Install(dependentState=&quot;Configured&quot;)
+    public void addEditor(Editor editor) {
+        ...
+    }
+}</programlisting>
+        <programlisting>&lt;bean name=&quot;editorHolder&quot; class=&quot;com.acme.Example&quot;&gt;
+    &lt;incallback method=&quot;addEditor&quot; state=&quot;Configured&quot;/&gt;
+&lt;/bean&gt; </programlisting>
+        <para>Here we are declaring that the addEditor method of the editorHolder bean should be called when any beans of class Editor reach the CONFIGURED state.</para>
+        <para>It is also possible to  configure when the callback methods are executed during the deployment of the bean using the <code>whenRequired</code> attribute.</para>
+        <programlisting>public class Example {
+    @Install(whenRequired=&quot;Installed&quot;)
+    public void addEditor(Editor editor) {
+        ...
+    }
+}</programlisting>
+        <programlisting>&lt;bean name=&quot;editorHolder&quot; class=&quot;com.acme.Example&quot;&gt;
+    &lt;incallback method=&quot;addEditor&quot; whenRequired=&quot;Installed&quot;/&gt;
+&lt;/bean&gt; </programlisting>
+        <para>Here we are declaring that the addEditor method will be called before the editorHolder bean reaches the INSTALLED state. By default the callbacks are exceuted before the bean reaches the CONFIGURED state.</para>
+        <para>Finally we can also control when the callback methods are executed depending on how many beans matching the parameter class have been deployed. This is done using the <code>cardinality</code> attribute.</para>
+        <programlisting>public class Example {
+    @Install(cardinality=&quot;2..n&quot;)
+    public void addEditor(Editor editor) {
+        ...
+    }
+}</programlisting>
+        <programlisting>&lt;bean name=&quot;editorHolder&quot; class=&quot;com.acme.Example&quot;&gt;
+    &lt;incallback method=&quot;addEditor&quot; cardinality=&quot;2..n&quot;/&gt;
+&lt;/bean&gt; </programlisting>
+        <para>Here we are declaring that the addEditor method of the editorHolder bean will only be called when two or more  beans of class Editor have been deployed.</para>
+        <note>
+          <para>When using callbacks with collection classes as parameters only the following basic interfaces are currently supported; List, Set and Queue. This is done using the <code>BasicCollectionCallbackItemFactory</code> implementation. You can change this if required by setting the <code>org.jboss.dependency.collectionCallbackItemFactory</code> system property to the fully-qualified class name of your <code>CollectionCallbackItemFactory</code> implementation.</para>
+        </note>
       </section>
       <section>
         <title>Service lifecycle</title>
