@@ -104,12 +104,9 @@ public class WritethroughManagedPropertyImpl extends ManagedPropertyImpl
             else
                metaValue = (MetaValue)value;
 
-            if (metaValue == null || metaValue.getMetaType().isTable() == false)
-            {
-               InstanceClassFactory icf = getObjectFactory().getInstanceClassFactory(attachment.getClass());
-               BeanInfo beanInfo = propertyInfo.getBeanInfo();
-               icf.setValue(beanInfo, this, attachment, metaValue);
-            }
+            InstanceClassFactory icf = getObjectFactory().getInstanceClassFactory(attachment.getClass());
+            BeanInfo beanInfo = propertyInfo.getBeanInfo();
+            icf.setValue(beanInfo, this, attachment, metaValue);
          }
       }
    }
