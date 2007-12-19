@@ -40,8 +40,7 @@ import org.jboss.managed.api.ManagedProperty;
  * @author Scott.Stark@jboss.org
  * @version $Revision$
  */
-public class ManagedDeploymentImpl
-   implements ManagedDeployment, Serializable
+public class ManagedDeploymentImpl implements ManagedDeployment, Serializable
 {
    private static final long serialVersionUID = 1;
    /** The full deployment name */
@@ -61,7 +60,7 @@ public class ManagedDeploymentImpl
    /** The ManagedComponent wrappers for ManagedObjects marked as components */
    private Map<String, ManagedComponent> components = new HashMap<String, ManagedComponent>();
    /** The child deployemnts */
-   private ArrayList<ManagedDeployment> children = new ArrayList<ManagedDeployment>();
+   private List<ManagedDeployment> children = new ArrayList<ManagedDeployment>();
    
    public ManagedDeploymentImpl(String name, String simpleName, DeploymentPhase phase,
          ManagedDeployment parent, Map<String, ManagedObject> unitMOs)
@@ -124,10 +123,8 @@ public class ManagedDeploymentImpl
    }
    public ManagedComponent getComponent(String name)
    {
-      ManagedComponent mc = components.get(name);
-      return mc;
+      return components.get(name);
    }
-
 
    public Map<String, ManagedComponent> getComponents()
    {
@@ -211,5 +208,4 @@ public class ManagedDeploymentImpl
       tmp.append('}');
       return tmp.toString();
    }
-
 }
