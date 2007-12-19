@@ -76,6 +76,10 @@ public class ManagedDeploymentImpl
       {
          properties.putAll(mo.getProperties());
       }
+      if(parent != null)
+      {
+         parent.getChildren().add(this);
+      }
    }
 
    public String getName()
