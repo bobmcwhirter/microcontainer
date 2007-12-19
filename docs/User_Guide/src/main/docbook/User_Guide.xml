@@ -2384,7 +2384,7 @@ public class MyBean {
       <title>Adding deployment behaviour</title>
       <section>
         <title>Deployment actions</title>
-        <para>In Part I - Getting Started we covered how to add behaviour to beans during the deployment and undeployment process using AOP lifecycle callbacks. This gave us a powerful way to apply common logic to a number of beans, identified using pointcut expressions, at various points in their lifecycles. However setting up AOP lifecycle callbacks for occasions when an individual bean needs to call arbitrary methods  before deployment or after undeployment can be time consuming. Fortunately JBoss Microcontainer provides an alternative way to do this using deployment/undeployment actions specified with  annotations or a deployment descriptor.</para>
+        <para>In Part I - Getting Started we covered how to add behaviour to beans during the deployment and undeployment process using AOP lifecycle callbacks. This gave us a powerful way to apply common logic to a number of beans, identified using pointcut expressions, at various points in their lifecycles. However setting up AOP lifecycle callbacks for occasions when an individual bean needs to call arbitrary methods  before deployment or after undeployment can be time consuming. Fortunately JBoss Microcontainer provides an alternative way to do this using deployment/undeployment actions.</para>
         <para>To specify a method within a bean that should be called after the bean reaches the START state you should use the @InstallMethod annotation or &lt;install&gt; element as follows:</para>
         <programlisting>@InstallMethod
 public String doSomething() {
@@ -2559,6 +2559,78 @@ public class MyBean {
       </section>
       <section>
         <title>Service lifecycle</title>
+        <para>So far we have discussed how to define deployment/undeployment actions for beans together with callback methods for notification when other beans have been deployed/undeployed. These features are useful for adding behaviours to POJOs but what about adding behaviour to services?</para>
+        <para>As explained in the previous chapter services have a lifecycle consisting of 4 stages; create, start, stop and destroy. The reason for this is because we want the ability to start and stop a deployed service repeatably at runtime to make best use of valuable resources such as CPU and memory. At each point in this lifecycle the microcontainer will look for a method to call in order to perform appropriate actions. For example starting a service may require that an object is bound into JNDI. By default these methods are named after the lifecycle stage that they represent.</para>
+        <programlisting>public class LifecycleBean {
+    public void create() {
+        ...
+    }
+
+    public void start() {
+        ...
+    }
+
+    public void stop() {
+        ...
+    }
+
+    public void destroy() {
+        ...
+    }
+} </programlisting>
+        <para>If methods like these are defined in your bean then they will be called as the bean is deployed and undeployed. Specifically the create and start methods are called as the bean reaches the CREATE and START states during deployment. The stop and destroy methods are called when the bean passes through the START and CREATE states during undeployment. Only those methods that are defined will be called. For example if you omit the start method then the bean will move to the START state without anything happening.</para>
+        <para>If you want a different method to be called for any of the  stages then you can provide an annotation or XML element to specify which one to use.</para>
+        <programlisting>public class Example {
+    @Create
+    public void initialize() {
+        ...
+    }
+
+    @Start
+    public void go() {
+        ...
+    }
+
+    @Stop
+    public void halt() {
+        ...
+    }
+
+    @Destroy
+    public void remove() {
+        ...
+    }
+}</programlisting>
+        <programlisting>&lt;bean name=&quot;Name1&quot; class=&quot;com.acme.Example&quot;&gt;
+    &lt;create method=&quot;initialize&quot;/&gt;
+    &lt;start method=&quot;go&quot;/&gt;
+    &lt;stop method=&quot;halt&quot;/&gt;
+    &lt;destroy method=&quot;remove&quot;/&gt;
+&lt;/bean&gt; </programlisting>
+        <para>You can also specify parameters if necessary.</para>
+        <programlisting>public class Example {
+    @Start
+    public void go(@StringValue(&quot;MyService&quot;) String serviceName,
+                   @StringValue(&quot;5&quot;) Integer priority) {
+        ...
+    }
+}</programlisting>
+        <programlisting>&lt;bean name=&quot;Name1&quot; class=&quot;com.acme.Example&quot;&gt;
+    &lt;start method=&quot;go&quot;&gt;
+        &lt;parameter&gt;MyService&lt;/parameter&gt;
+        &lt;parameter&gt;5&lt;/parameter&gt;
+    &lt;/start&gt;
+&lt;/bean&gt; </programlisting>
+        <para>Sometimes you may want lifecycle methods to be ignored. This can be done using the <code>ignore</code> attribute which if set to true prevents the microcontainer from calling the method when the corresponding lifecycle stage is reached.</para>
+        <programlisting>public class Example {
+    @Stop(ignored=&quot;true&quot;)
+    public void halt() {
+        ...
+    }
+}</programlisting>
+        <programlisting>&lt;bean name=&quot;Name1&quot; class=&quot;com.acme.Example&quot;&gt;
+    &lt;start method=&quot;stop&quot; ignored=&quot;true&quot;/&gt;
+&lt;/bean&gt; </programlisting>
       </section>
     </chapter>
   </part>
