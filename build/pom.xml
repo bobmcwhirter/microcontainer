@@ -34,6 +34,7 @@
   <properties>
     <version.jboss.common.core>2.2.3.GA</version.jboss.common.core>
     <version.jbossxb>2.0.0.CR4</version.jbossxb>
+    <version.jbossxb.builder>1.0.0-SNAPSHOT</version.jbossxb.builder>
     <version.osgi.r4.core>1.0</version.osgi.r4.core>
     <version.jboss.vfs>2.0.0.Beta6</version.jboss.vfs>
     <version.javassist>3.6.0.GA</version.javassist>
@@ -349,6 +350,11 @@
         <groupId>org.jboss</groupId>
         <artifactId>jbossxb</artifactId>
         <version>${version.jbossxb}</version>
+      </dependency>
+      <dependency>
+        <groupId>org.jboss</groupId>
+        <artifactId>jbossxb-builder</artifactId>
+        <version>${version.jbossxb.builder}</version>
       </dependency>
       <dependency>
         <groupId>apache-xerces</groupId>
