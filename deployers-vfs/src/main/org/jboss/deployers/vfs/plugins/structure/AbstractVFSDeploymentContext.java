@@ -170,7 +170,8 @@ public class AbstractVFSDeploymentContext extends AbstractDeploymentContext impl
       }
       catch (Exception e)
       {
-         log.trace("Error retrieving meta data: " + name + " reason=" + e);
+         if (log.isTraceEnabled())
+            log.trace("Error retrieving meta data: " + name + " reason=" + e);
          return null;
       }
    }
@@ -192,7 +193,8 @@ public class AbstractVFSDeploymentContext extends AbstractDeploymentContext impl
             result = location.findChild(name);
             if (result != null)
             {
-               log.trace("Found " + name + " in " + location.getName());
+               if (log.isTraceEnabled())
+                  log.trace("Found " + name + " in " + location.getName());
                deployed();
                break;
             }
@@ -234,7 +236,8 @@ public class AbstractVFSDeploymentContext extends AbstractDeploymentContext impl
             List<VirtualFile> result = location.getChildren(new MetaDataMatchFilter(name, suffix));
             if (result != null && result.isEmpty() == false)
             {
-               log.trace("Found " + name + " in " + location.getName());
+               if (log.isTraceEnabled())
+                  log.trace("Found " + name + " in " + location.getName());
                results.addAll(result);
                deployed();
             }
