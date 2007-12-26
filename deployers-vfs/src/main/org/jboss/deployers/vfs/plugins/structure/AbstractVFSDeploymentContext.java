@@ -201,6 +201,8 @@ public class AbstractVFSDeploymentContext extends AbstractDeploymentContext impl
          }
          catch (IOException ignored)
          {
+            if (log.isTraceEnabled())
+               log.trace("Ignoring search exception invocation for metafile " + name + " in " + location.getName() + ", reason: " + ignored);
          }
       }
       return result;
