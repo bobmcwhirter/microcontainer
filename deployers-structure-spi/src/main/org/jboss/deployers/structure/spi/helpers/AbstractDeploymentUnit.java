@@ -459,4 +459,9 @@ public class AbstractDeploymentUnit extends AbstractMutableAttachments implement
       super.writeExternal(out);
       out.writeObject(deploymentContext);
    }
+
+   public String toString()
+   {
+      return String.valueOf(deploymentContext);
+   }
 }

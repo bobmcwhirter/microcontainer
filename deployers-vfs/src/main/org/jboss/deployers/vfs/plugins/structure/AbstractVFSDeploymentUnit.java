@@ -21,9 +21,6 @@
  */
 package org.jboss.deployers.vfs.plugins.structure;
 
-import java.io.IOException;
-import java.io.ObjectInput;
-import java.io.ObjectOutput;
 import java.util.List;
 
 import org.jboss.deployers.structure.spi.helpers.AbstractDeploymentUnit;
@@ -119,19 +116,5 @@ public class AbstractVFSDeploymentUnit extends AbstractDeploymentUnit implements
    protected VFSDeploymentContext getDeploymentContext()
    {
       return (VFSDeploymentContext) super.getDeploymentContext();
-   }
-
-   public void readExternal(ObjectInput in) throws IOException, ClassNotFoundException
-   {
-      super.readExternal(in);
-   }
-
-   /**
-    * @param out the output
-    * @throws IOException for any error
-    */
-   public void writeExternal(ObjectOutput out) throws IOException
-   {
-      super.writeExternal(out);
    }
 }
