@@ -24,15 +24,37 @@ package org.jboss.beans.metadata.plugins;
 import org.jboss.beans.metadata.spi.LifecycleMetaData;
 
 /**
+ * Lifecycle metadata holder.
+ *
  * @author <a href="mailto:ales.justin@jboss.com">Ales Justin</a>
  */
 public interface MutableLifecycleHolder
 {
+   /**
+    * Set create lifecycle metadata.
+    *
+    * @param create the lifecycle meta data
+    */
    void setCreate(LifecycleMetaData create);
    
+   /**
+    * Set start lifecycle metadata.
+    *
+    * @param start the lifecycle meta data
+    */
    void setStart(LifecycleMetaData start);
 
+   /**
+    * Set stop lifecycle metadata.
+    *
+    * @param stop the lifecycle meta data
+    */
    void setStop(LifecycleMetaData stop);
 
+   /**
+    * Set destroy lifecycle metadata.
+    *
+    * @param destroy the lifecycle meta data
+    */
    void setDestroy(LifecycleMetaData destroy);
 }
