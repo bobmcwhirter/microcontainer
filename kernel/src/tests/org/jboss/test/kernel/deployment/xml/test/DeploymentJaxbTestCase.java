@@ -24,6 +24,7 @@ package org.jboss.test.kernel.deployment.xml.test;
 import java.util.List;
 
 import junit.framework.Test;
+import org.jboss.beans.metadata.plugins.factory.GenericBeanFactory;
 import org.jboss.beans.metadata.spi.BeanMetaData;
 import org.jboss.beans.metadata.spi.BeanMetaDataFactory;
 import org.jboss.kernel.plugins.deployment.AbstractKernelDeployment;
@@ -110,7 +111,7 @@ public class DeploymentJaxbTestCase extends AbstractMCTest
       BeanMetaData bean = (BeanMetaData) beans.get(0);
       assertNotNull(bean);
       assertEquals("Bean1", bean.getName());
-      assertEquals("GenericBeanFactory", bean.getBean());
+      assertEquals(GenericBeanFactory.class.getName(), bean.getBean());
    }
 
    public void testDeploymentWithMultipleBeanFactorys() throws Exception
@@ -124,15 +125,15 @@ public class DeploymentJaxbTestCase extends AbstractMCTest
       BeanMetaData bean = (BeanMetaData) beans.get(0);
       assertNotNull(bean);
       assertEquals("Bean1", bean.getName());
-      assertEquals("GenericBeanFactory", bean.getBean());
+      assertEquals(GenericBeanFactory.class.getName(), bean.getBean());
       bean = (BeanMetaData) beans.get(1);
       assertNotNull(bean);
       assertEquals("Bean2", bean.getName());
-      assertEquals("GenericBeanFactory", bean.getBean());
+      assertEquals(GenericBeanFactory.class.getName(), bean.getBean());
       bean = (BeanMetaData) beans.get(2);
       assertNotNull(bean);
       assertEquals("Bean3", bean.getName());
-      assertEquals("GenericBeanFactory", bean.getBean());
+      assertEquals(GenericBeanFactory.class.getName(), bean.getBean());
    }
 
    public void testDeploymentWithMultipleBeanMetaDataFactorys() throws Exception
@@ -208,7 +209,7 @@ public class DeploymentJaxbTestCase extends AbstractMCTest
       bean = (BeanMetaData) beans.get(1);
       assertNotNull(bean);
       assertEquals("Bean2", bean.getName());
-      assertEquals("GenericBeanFactory", bean.getBean());
+      assertEquals(GenericBeanFactory.class.getName(), bean.getBean());
       bean = (BeanMetaData) beans.get(2);
       assertNotNull(bean);
       assertEquals("Bean1", bean.getBean());
@@ -222,7 +223,7 @@ public class DeploymentJaxbTestCase extends AbstractMCTest
       bean = (BeanMetaData) beans.get(5);
       assertNotNull(bean);
       assertEquals("Bean4", bean.getName());
-      assertEquals("GenericBeanFactory", bean.getBean());
+      assertEquals(GenericBeanFactory.class.getName(), bean.getBean());
       bean = (BeanMetaData) beans.get(6);
       assertNotNull(bean);
       assertEquals("Bean3", bean.getBean());

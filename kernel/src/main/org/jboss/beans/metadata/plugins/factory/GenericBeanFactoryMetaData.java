@@ -26,6 +26,7 @@ import java.util.HashSet;
 import java.util.Iterator;
 import java.util.Map;
 import java.util.Set;
+import javax.xml.bind.annotation.XmlAttribute;
 import javax.xml.bind.annotation.XmlElement;
 import javax.xml.bind.annotation.XmlNsForm;
 import javax.xml.bind.annotation.XmlRootElement;
@@ -106,7 +107,6 @@ public class GenericBeanFactoryMetaData extends AbstractBeanMetaData
     * 
     * @return the class
     */
-   @XmlTransient
    public String getBeanClass()
    {
       AbstractPropertyMetaData prop = (AbstractPropertyMetaData) getProperty("bean");
@@ -124,12 +124,19 @@ public class GenericBeanFactoryMetaData extends AbstractBeanMetaData
     * 
     * @param beanClass the class
     */
+   @XmlAttribute(name="class")
    public void setBeanClass(String beanClass)
    {
       Set<PropertyMetaData> properties = getProperties();
       properties.add(new AbstractPropertyMetaData("bean", new AbstractValueMetaData(beanClass)));
    }
-   
+
+   @XmlTransient
+   public void setBean(String bean)
+   {
+      super.setBean(bean);
+   }
+
    @XmlElement(name="classloader", type=AbstractClassLoaderMetaData.class)
    public void setClassLoader(ClassLoaderMetaData classLoader)
    {
