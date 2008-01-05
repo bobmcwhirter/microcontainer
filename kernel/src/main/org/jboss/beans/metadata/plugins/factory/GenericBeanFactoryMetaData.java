@@ -37,6 +37,7 @@ import org.jboss.beans.metadata.plugins.AbstractBeanMetaData;
 import org.jboss.beans.metadata.plugins.AbstractClassLoaderMetaData;
 import org.jboss.beans.metadata.plugins.AbstractConstructorMetaData;
 import org.jboss.beans.metadata.plugins.AbstractDependencyValueMetaData;
+import org.jboss.beans.metadata.plugins.AbstractLifecycleMetaData;
 import org.jboss.beans.metadata.plugins.AbstractMapMetaData;
 import org.jboss.beans.metadata.plugins.AbstractParameterMetaData;
 import org.jboss.beans.metadata.plugins.AbstractPropertyMetaData;
@@ -60,7 +61,7 @@ import org.jboss.xb.annotations.JBossXmlSchema;
  */
 @JBossXmlSchema(namespace="urn:jboss:bean-deployer:2.0", elementFormDefault= XmlNsForm.QUALIFIED)
 @XmlRootElement(name="beanfactory")
-@XmlType(propOrder={"aliases", "annotations", "classLoader", "constructor", "properties", "create", "start", "depends", "demands", "supplies", "installs", "uninstalls", "installCallbacks", "uninstallCallbacks"})
+@XmlType(propOrder={"aliases", "annotations", "classLoader", "constructor", "properties", "create", "start", "depends", "demands", "supplies", "installs", "uninstalls"})
 public class GenericBeanFactoryMetaData extends AbstractBeanMetaData
 {
    private static final long serialVersionUID = 2L;
@@ -131,12 +132,6 @@ public class GenericBeanFactoryMetaData extends AbstractBeanMetaData
       properties.add(new AbstractPropertyMetaData("bean", new AbstractValueMetaData(beanClass)));
    }
 
-   @XmlTransient
-   public void setBean(String bean)
-   {
-      super.setBean(bean);
-   }
-
    @XmlElement(name="classloader", type=AbstractClassLoaderMetaData.class)
    public void setClassLoader(ClassLoaderMetaData classLoader)
    {
@@ -150,6 +145,7 @@ public class GenericBeanFactoryMetaData extends AbstractBeanMetaData
     * 
     * @param constructor the constructor
     */
+   @XmlElement(name="constructor", type=AbstractConstructorMetaData.class)
    public void setBeanConstructor(ConstructorMetaData constructor)
    {
       Set<PropertyMetaData> properties = getProperties();
@@ -208,16 +204,24 @@ public class GenericBeanFactoryMetaData extends AbstractBeanMetaData
       valueMetaData = new AbstractValueMetaData(valueMetaData);
       map.put(new AbstractValueMetaData(property.getName()), valueMetaData);
    }
-   
+
+   @XmlElement(name="create", type= AbstractLifecycleMetaData.class)
    public void setBeanCreate(LifecycleMetaData lifecycle)
    {
       Set<PropertyMetaData> properties = getProperties();
       properties.add(new AbstractPropertyMetaData("create", new AbstractValueMetaData(lifecycle)));
    }
-   
+
+   @XmlElement(name="start", type=AbstractLifecycleMetaData.class)
    public void setBeanStart(LifecycleMetaData lifecycle)
    {
       Set<PropertyMetaData> properties = getProperties();
       properties.add(new AbstractPropertyMetaData("start", new AbstractValueMetaData(lifecycle)));
+   }
+
+   @XmlTransient
+   public void setBean(String bean)
+   {
+      super.setBean(bean);
    }
 }
