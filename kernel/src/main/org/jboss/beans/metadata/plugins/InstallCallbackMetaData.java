@@ -21,6 +21,8 @@
 */
 package org.jboss.beans.metadata.plugins;
 
+import javax.xml.bind.annotation.XmlType;
+
 import org.jboss.beans.metadata.spi.MetaDataVisitor;
 import org.jboss.dependency.spi.CallbackItem;
 
@@ -29,16 +31,18 @@ import org.jboss.dependency.spi.CallbackItem;
  *
  * @author <a href="ales.justin@jboss.com">Ales Justin</a>
  */
+@XmlType
 public class InstallCallbackMetaData extends AbstractCallbackMetaData
 {
    /** The serialVersionUID */
-   private static final long serialVersionUID = -8687489846562385403L;
+   private static final long serialVersionUID = 2L;
 
    public InstallCallbackMetaData()
    {
       super();
    }
 
+   @SuppressWarnings("unchecked")
    protected void addCallback(MetaDataVisitor visitor, CallbackItem callback)
    {
       visitor.addInstallCallback(callback);

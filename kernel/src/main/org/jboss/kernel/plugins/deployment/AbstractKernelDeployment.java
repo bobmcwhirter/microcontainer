@@ -28,9 +28,22 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 import java.util.concurrent.CopyOnWriteArrayList;
+import javax.xml.bind.annotation.XmlAnyElement;
+import javax.xml.bind.annotation.XmlAttribute;
+import javax.xml.bind.annotation.XmlElement;
+import javax.xml.bind.annotation.XmlElements;
+import javax.xml.bind.annotation.XmlNsForm;
+import javax.xml.bind.annotation.XmlRootElement;
+import javax.xml.bind.annotation.XmlType;
 
+import org.jboss.beans.metadata.plugins.AbstractAnnotationMetaData;
 import org.jboss.beans.metadata.plugins.AbstractBeanMetaData;
+import org.jboss.beans.metadata.plugins.AbstractClassLoaderMetaData;
+import org.jboss.beans.metadata.plugins.AbstractLazyMetaData;
+import org.jboss.beans.metadata.plugins.AbstractLifecycleMetaData;
+import org.jboss.beans.metadata.plugins.AbstractNamedAliasMetaData;
 import org.jboss.beans.metadata.plugins.MutableLifecycleHolder;
+import org.jboss.beans.metadata.plugins.factory.GenericBeanFactoryMetaData;
 import org.jboss.beans.metadata.spi.AnnotationMetaData;
 import org.jboss.beans.metadata.spi.BeanMetaData;
 import org.jboss.beans.metadata.spi.BeanMetaDataFactory;
@@ -42,21 +55,27 @@ import org.jboss.dependency.spi.ControllerState;
 import org.jboss.kernel.spi.dependency.KernelControllerContext;
 import org.jboss.kernel.spi.deployment.KernelDeployment;
 import org.jboss.managed.api.annotation.ManagementObject;
+import org.jboss.managed.api.annotation.ManagementProperties;
 import org.jboss.managed.api.annotation.ManagementProperty;
 import org.jboss.util.JBossObject;
 import org.jboss.util.JBossStringBuilder;
+import org.jboss.xb.annotations.JBossXmlSchema;
 
 /**
  * An abstract kernel deployment.
  * 
+ * @author <a href="ales.justin@jboss.com">Ales Justin</a>
  * @author <a href="adrian@jboss.com">Adrian Brock</a>
  * @version $Revision$
  */
-@ManagementObject
+@ManagementObject(properties = ManagementProperties.EXPLICIT) // TODO - explicitly add props we want to manage 
+@JBossXmlSchema(namespace="urn:jboss:bean-deployer:2.0", elementFormDefault= XmlNsForm.QUALIFIED)
+@XmlRootElement(name="deployment")
+@XmlType(propOrder={"annotations", "classLoader", "beanFactories", "create", "start", "stop", "destroy", "aliases"})
 public class AbstractKernelDeployment extends JBossObject
    implements KernelDeployment, MutableLifecycleHolder, Serializable
 {
-   private static final long serialVersionUID = 2l;
+   private static final long serialVersionUID = 3l;
 
    /** The name of the deployment */
    protected String name;
@@ -123,6 +142,13 @@ public class AbstractKernelDeployment extends JBossObject
     * @param beanFactories a List<BeanMetaDataFactory>.
     */
    @ManagementProperty(managed=true)
+   @XmlElements
+   ({
+      @XmlElement(name="bean", type=AbstractBeanMetaData.class),
+      @XmlElement(name="beanfactory", type=GenericBeanFactoryMetaData.class),
+      @XmlElement(name="lazy", type=AbstractLazyMetaData.class)
+   })
+   @XmlAnyElement
    public void setBeanFactories(List<BeanMetaDataFactory> beanFactories)
    {
       this.beanFactories = beanFactories;
@@ -134,6 +160,7 @@ public class AbstractKernelDeployment extends JBossObject
       return name;
    }
 
+   @XmlAttribute
    public void setName(String name)
    {
       this.name = name;
@@ -229,11 +256,13 @@ public class AbstractKernelDeployment extends JBossObject
       return scoped;
    }
 
+   @XmlAttribute
    public void setScoped(Boolean scoped)
    {
       this.scoped = scoped;
    }
 
+   @XmlElement(name="annotation", type= AbstractAnnotationMetaData.class)
    public Set<AnnotationMetaData> getAnnotations()
    {
       return annotations;
@@ -259,6 +288,7 @@ public class AbstractKernelDeployment extends JBossObject
     * 
     * @param classLoader the classloader metadata
     */
+   @XmlElement(name="classloader", type=AbstractClassLoaderMetaData.class)
    public void setClassLoader(ClassLoaderMetaData classLoader)
    {
       this.classLoader = classLoader;
@@ -269,6 +299,7 @@ public class AbstractKernelDeployment extends JBossObject
       return create;
    }
 
+   @XmlElement(name="create", type=AbstractLifecycleMetaData.class)
    public void setCreate(LifecycleMetaData create)
    {
       create.setState(ControllerState.CREATE);
@@ -280,6 +311,7 @@ public class AbstractKernelDeployment extends JBossObject
       return start;
    }
 
+   @XmlElement(name="start", type=AbstractLifecycleMetaData.class)
    public void setStart(LifecycleMetaData start)
    {
       start.setState(ControllerState.START);
@@ -291,6 +323,7 @@ public class AbstractKernelDeployment extends JBossObject
       return stop;
    }
 
+   @XmlElement(name="stop", type=AbstractLifecycleMetaData.class)
    public void setStop(LifecycleMetaData stop)
    {
       stop.setState(ControllerState.START);
@@ -302,6 +335,7 @@ public class AbstractKernelDeployment extends JBossObject
       return destroy;
    }
 
+   @XmlElement(name="destroy", type=AbstractLifecycleMetaData.class)
    public void setDestroy(LifecycleMetaData destroy)
    {
       destroy.setState(ControllerState.CREATE);
@@ -313,6 +347,7 @@ public class AbstractKernelDeployment extends JBossObject
       return aliases;
    }
 
+   @XmlElement(name="alias", type=AbstractNamedAliasMetaData.class)
    public void setAliases(Set<NamedAliasMetaData> aliases)
    {
       this.aliases = aliases;
@@ -323,6 +358,7 @@ public class AbstractKernelDeployment extends JBossObject
       return mode;
    }
 
+   @XmlAttribute
    public void setMode(ControllerMode mode)
    {
       this.mode = mode;
@@ -349,5 +385,4 @@ public class AbstractKernelDeployment extends JBossObject
       in.defaultReadObject();
       installedContexts = new CopyOnWriteArrayList<KernelControllerContext>();
    }
-
 }

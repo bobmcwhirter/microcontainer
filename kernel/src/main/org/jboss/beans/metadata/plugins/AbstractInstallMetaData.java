@@ -23,6 +23,9 @@ package org.jboss.beans.metadata.plugins;
 
 import java.io.Serializable;
 
+import javax.xml.bind.annotation.XmlType;
+import javax.xml.bind.annotation.XmlAttribute;
+
 import org.jboss.beans.metadata.spi.InstallMetaData;
 import org.jboss.beans.metadata.spi.MetaDataVisitor;
 import org.jboss.dependency.plugins.AbstractDependencyItem;
@@ -38,13 +41,15 @@ import org.jboss.util.JBossStringBuilder;
 /**
  * Metadata for installation.
  * 
+ * @author <a href="ales.justin@jboss.com">Ales Justin</a>
  * @author <a href="adrian@jboss.com">Adrian Brock</a>
  * @version $Revision$
  */
+@XmlType(propOrder={"annotations", "parameters"})
 public class AbstractInstallMetaData extends AbstractLifecycleMetaData
    implements InstallMetaData, Serializable
 {
-   private static final long serialVersionUID = 1L;
+   private static final long serialVersionUID = 2L;
 
    /** The bean name */
    protected String bean;
@@ -70,6 +75,7 @@ public class AbstractInstallMetaData extends AbstractLifecycleMetaData
     * 
     * @param bean the bean
     */
+   @XmlAttribute
    public void setBean(String bean)
    {
       this.bean = bean;
@@ -80,6 +86,7 @@ public class AbstractInstallMetaData extends AbstractLifecycleMetaData
     * 
     * @param dependentState the required state or null if it must be in the registry
     */
+   @XmlAttribute(name="state")
    public void setDependentState(ControllerState dependentState)
    {
       this.dependentState = dependentState;

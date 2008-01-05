@@ -24,6 +24,11 @@ package org.jboss.beans.metadata.plugins;
 import java.io.Serializable;
 import java.util.Iterator;
 
+import javax.xml.bind.annotation.XmlType;
+import javax.xml.bind.annotation.XmlValue;
+import javax.xml.bind.annotation.XmlAttribute;
+import javax.xml.bind.annotation.XmlTransient;
+
 import org.jboss.beans.metadata.spi.AliasMetaData;
 import org.jboss.beans.metadata.spi.MetaDataVisitor;
 import org.jboss.beans.metadata.spi.MetaDataVisitorNode;
@@ -39,10 +44,11 @@ import org.jboss.util.StringPropertyReplacer;
  *
  * @author <a href="ales.justin@jboss.com">Ales Justin</a>
  */
+@XmlType
 public class AbstractAliasMetaData extends JBossObject
       implements AliasMetaData, Serializable
 {
-   private static final long serialVersionUID = 1L;
+   private static final long serialVersionUID = 2L;
    private static TypeInfoFactory typeInfoFactory = new IntrospectionTypeInfoFactory();
 
    public String alias;
@@ -63,6 +69,7 @@ public class AbstractAliasMetaData extends JBossObject
       return alias;
    }
 
+   @XmlValue
    public void setAlias(String alias)
    {
       this.alias = alias;
@@ -73,6 +80,7 @@ public class AbstractAliasMetaData extends JBossObject
       return replace;
    }
 
+   @XmlAttribute
    public void setReplace(boolean replace)
    {
       this.replace = replace;
@@ -83,11 +91,13 @@ public class AbstractAliasMetaData extends JBossObject
       return clazz;
    }
 
+   @XmlAttribute(name="class")
    public void setClazz(String clazz)
    {
       this.clazz = clazz;
    }
 
+   @XmlTransient
    public Object getAliasValue()
    {
       try
@@ -153,5 +163,4 @@ public class AbstractAliasMetaData extends JBossObject
       // this is what we probably want? - never saw duplicate annotation on a bean/prop/...
       return alias.equals(amd.alias) && (replace == amd.replace) && (clazz != null && clazz.equals(amd.clazz));
    }
-
 }

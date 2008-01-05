@@ -21,6 +21,9 @@
 */
 package org.jboss.beans.metadata.plugins;
 
+import javax.xml.bind.annotation.XmlType;
+import javax.xml.bind.annotation.XmlAttribute;
+
 import org.jboss.beans.metadata.spi.MetaDataVisitor;
 import org.jboss.beans.metadata.spi.NamedAliasMetaData;
 import org.jboss.util.JBossStringBuilder;
@@ -30,10 +33,11 @@ import org.jboss.util.JBossStringBuilder;
  *
  * @author <a href="ales.justin@jboss.com">Ales Justin</a>
  */
+@XmlType
 public class AbstractNamedAliasMetaData extends AbstractAliasMetaData implements NamedAliasMetaData
 {
    /** The serialVersionUID */
-   private static final long serialVersionUID = -6917262743964306852L;
+   private static final long serialVersionUID = 2L;
    
    /** The name */
    protected Object name;
@@ -51,6 +55,7 @@ public class AbstractNamedAliasMetaData extends AbstractAliasMetaData implements
       return name;
    }
 
+   @XmlAttribute(required = true)
    public void setName(Object name)
    {
       this.name = name;
@@ -81,5 +86,4 @@ public class AbstractNamedAliasMetaData extends AbstractAliasMetaData implements
       AbstractNamedAliasMetaData amd = (AbstractNamedAliasMetaData)object;
       return name.equals(amd.name);
    }
-
 }

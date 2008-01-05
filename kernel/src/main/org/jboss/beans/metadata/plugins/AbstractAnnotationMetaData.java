@@ -25,6 +25,10 @@ import java.io.Serializable;
 import java.lang.annotation.Annotation;
 import java.util.Iterator;
 
+import javax.xml.bind.annotation.XmlType;
+import javax.xml.bind.annotation.XmlValue;
+import javax.xml.bind.annotation.XmlTransient;
+
 import org.jboss.annotation.factory.AnnotationCreator;
 import org.jboss.annotation.factory.ast.TokenMgrError;
 import org.jboss.beans.metadata.spi.AnnotationMetaData;
@@ -37,13 +41,15 @@ import org.jboss.util.StringPropertyReplacer;
 /**
  * Metadata for an annotation.
  * 
+ * @author <a href="ales.justin@jboss.com">Ales Justin</a>
  * @author <a href="adrian@jboss.com">Adrian Brock</a>
  * @version $Revision$
  */
+@XmlType(propOrder={"annotation"})
 public class AbstractAnnotationMetaData extends JBossObject
    implements AnnotationMetaData, Serializable
 {
-   private static final long serialVersionUID = 1L;
+   private static final long serialVersionUID = 2L;
 
    public String annotation;
 
@@ -64,6 +70,7 @@ public class AbstractAnnotationMetaData extends JBossObject
       return annotation;
    }
 
+   @XmlValue
    public void setAnnotation(String annotation)
    {
       this.annotation = annotation;
@@ -79,6 +86,7 @@ public class AbstractAnnotationMetaData extends JBossObject
       this.replace = replace;
    }
 
+   @XmlTransient
    public Annotation getAnnotationInstance()
    {
       return getAnnotationInstance(null);
@@ -150,5 +158,4 @@ public class AbstractAnnotationMetaData extends JBossObject
       // this is what we probably want? - never saw duplicate annotation on a bean/prop/...
       return (replace == amd.replace) && annotation.equals(amd.annotation);
    }
-
 }

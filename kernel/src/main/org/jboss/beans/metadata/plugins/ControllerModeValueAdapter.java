@@ -21,30 +21,20 @@
 */
 package org.jboss.beans.metadata.plugins;
 
-import javax.xml.bind.annotation.XmlType;
-
-import org.jboss.beans.metadata.spi.MetaDataVisitor;
-import org.jboss.dependency.spi.CallbackItem;
+import org.jboss.dependency.spi.ControllerMode;
+import org.jboss.xb.binding.sunday.unmarshalling.ValueAdapter;
 
 /**
- * Metadata for uninstall callback.
+ * ControllerModeValueAdapter.
  *
- * @author <a href="ales.justin@jboss.com">Ales Justin</a>
+ * @author <a href="mailto:ales.justin@jboss.com">Ales Justin</a>
+ * @author <a href="adrian@jboss.com">Adrian Brock</a>
+ * @version $Revision: 1.1 $
  */
-@XmlType
-public class UninstallCallbackMetaData extends AbstractCallbackMetaData
+public class ControllerModeValueAdapter implements ValueAdapter
 {
-   /** The serialVersionUID */
-   private static final long serialVersionUID = 2L;
-
-   public UninstallCallbackMetaData()
+   public Object cast(Object o, Class c)
    {
-      super();
-   }
-
-   @SuppressWarnings("unchecked")
-   protected void addCallback(MetaDataVisitor visitor, CallbackItem callback)
-   {
-      visitor.addUninstallCallback(callback);
+      return new ControllerMode((String)o);
    }
 }

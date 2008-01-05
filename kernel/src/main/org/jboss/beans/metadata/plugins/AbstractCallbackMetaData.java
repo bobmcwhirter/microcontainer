@@ -23,6 +23,8 @@ package org.jboss.beans.metadata.plugins;
 
 import java.io.Serializable;
 
+import javax.xml.bind.annotation.XmlAttribute;
+
 import org.jboss.beans.info.spi.PropertyInfo;
 import org.jboss.beans.metadata.spi.CallbackMetaData;
 import org.jboss.beans.metadata.spi.MetaDataVisitor;
@@ -43,7 +45,7 @@ import org.jboss.util.JBossStringBuilder;
 public abstract class AbstractCallbackMetaData extends AbstractLifecycleMetaData
    implements CallbackMetaData, Serializable
 {
-   private static final long serialVersionUID = 1L;
+   private static final long serialVersionUID = 2L;
 
    /** The cardinality */
    protected Cardinality cardinality;
@@ -81,6 +83,7 @@ public abstract class AbstractCallbackMetaData extends AbstractLifecycleMetaData
     *
     * @param property property name
     */
+   @XmlAttribute
    public void setProperty(String property)
    {
       this.property = property;
@@ -97,6 +100,7 @@ public abstract class AbstractCallbackMetaData extends AbstractLifecycleMetaData
     *
     * @param cardinality the cardinality
     */
+   @XmlAttribute
    public void setCardinality(Cardinality cardinality)
    {
       this.cardinality = cardinality;
@@ -113,6 +117,7 @@ public abstract class AbstractCallbackMetaData extends AbstractLifecycleMetaData
     *
     * @param whenRequired when is this call back required (default Configured)
     */
+   @XmlAttribute(name="whenRequired")
    public void setWhenRequired(ControllerState whenRequired)
    {
       this.whenRequired = whenRequired;
@@ -129,6 +134,7 @@ public abstract class AbstractCallbackMetaData extends AbstractLifecycleMetaData
     *
     * @param signature method / property parameter signature
     */
+   @XmlAttribute
    public void setSignature(String signature)
    {
       this.signature = signature;
@@ -140,6 +146,7 @@ public abstract class AbstractCallbackMetaData extends AbstractLifecycleMetaData
     *
     * @param dependentState the required state or null if it must be in the registry
     */
+   @XmlAttribute(name="state")
    public void setDependentState(ControllerState dependentState)
    {
       this.dependentState = dependentState;
@@ -233,5 +240,4 @@ public abstract class AbstractCallbackMetaData extends AbstractLifecycleMetaData
       if (methodName != null)
          buffer.append("method=").append(methodName);
    }
-
 }

@@ -25,6 +25,12 @@ import java.io.Serializable;
 import java.util.List;
 import java.util.Set;
 
+import javax.xml.bind.annotation.XmlType;
+import javax.xml.bind.annotation.XmlElement;
+import javax.xml.bind.annotation.XmlElements;
+import javax.xml.bind.annotation.XmlAnyElement;
+import javax.xml.bind.annotation.XmlAttribute;
+
 import org.jboss.beans.info.spi.BeanInfo;
 import org.jboss.beans.metadata.plugins.builder.MutableParameterizedMetaData;
 import org.jboss.beans.metadata.spi.ConstructorMetaData;
@@ -41,17 +47,20 @@ import org.jboss.reflect.spi.MethodInfo;
 import org.jboss.reflect.spi.TypeInfo;
 import org.jboss.util.JBossObject;
 import org.jboss.util.JBossStringBuilder;
+import org.jboss.managed.api.annotation.ManagementProperty;
 
 /**
  * Metadata for construction.
  *
+ * @author <a href="ales.justin@jboss.com">Ales Justin</a>
  * @author <a href="adrian@jboss.com">Adrian Brock</a>
  * @version $Revision$
  */
+@XmlType(propOrder={"annotations", "factory", "parameters", "value"})
 public class AbstractConstructorMetaData extends AbstractFeatureMetaData
    implements ConstructorMetaData, MutableParameterizedMetaData, ValueMetaDataAware, Serializable
 {
-   private static final long serialVersionUID = 1L;
+   private static final long serialVersionUID = 2L;
 
    /**
     * The paramaters List<ParameterMetaData>
@@ -90,6 +99,7 @@ public class AbstractConstructorMetaData extends AbstractFeatureMetaData
     *
     * @param parameters List<ParameterMetaData>
     */
+   @XmlElement(name="parameter", type=AbstractParameterMetaData.class)
    public void setParameters(List<ParameterMetaData> parameters)
    {
       this.parameters = parameters;
@@ -101,10 +111,32 @@ public class AbstractConstructorMetaData extends AbstractFeatureMetaData
     *
     * @param value the value
     */
+   @XmlElements
+   ({
+      @XmlElement(name="array", type=AbstractArrayMetaData.class),
+      @XmlElement(name="collection", type=AbstractCollectionMetaData.class),
+      @XmlElement(name="list", type=AbstractListMetaData.class),
+      @XmlElement(name="map", type=AbstractMapMetaData.class),
+      @XmlElement(name="set", type=AbstractSetMetaData.class),
+      @XmlElement(name="value", type=StringValueMetaData.class),
+      @XmlElement(name="value-factory", type=AbstractValueFactoryMetaData.class)
+   })
    public void setValue(ValueMetaData value)
    {
       this.value = value;
       flushJBossObjectCache();
+   }
+
+   @XmlAnyElement
+   @ManagementProperty(ignored = true)
+   public void setValueObject(Object value)
+   {
+      if (value == null)
+         setValue(null);
+      else if (value instanceof ValueMetaData)
+         setValue((ValueMetaData) value);
+      else
+         setValue(new AbstractValueMetaData(value));
    }
 
    /**
@@ -112,8 +144,17 @@ public class AbstractConstructorMetaData extends AbstractFeatureMetaData
     *
     * @param factory the factory
     */
+   @XmlElement(name="factory", type=AbstractDependencyValueMetaData.class)
    public void setFactory(ValueMetaData factory)
    {
+      // HACK to have wildcard factories
+      if (factory != null && factory instanceof AbstractDependencyValueMetaData)
+      {
+         Object underlying = factory.getUnderlyingValue();
+         if (underlying != null && underlying instanceof ValueMetaData)
+            factory = (ValueMetaData) underlying;
+      }
+
       this.factory = factory;
       flushJBossObjectCache();
    }
@@ -123,6 +164,7 @@ public class AbstractConstructorMetaData extends AbstractFeatureMetaData
     *
     * @param name the factory class name
     */
+   @XmlAttribute(name="factoryClass")
    public void setFactoryClass(String name)
    {
       this.factoryClassName = name;
@@ -134,6 +176,7 @@ public class AbstractConstructorMetaData extends AbstractFeatureMetaData
     *
     * @param name the factory method
     */
+   @XmlAttribute(name="factoryMethod")
    public void setFactoryMethod(String name)
    {
       this.factoryMethod = name;

@@ -21,7 +21,12 @@
 */
 package org.jboss.beans.metadata.plugins;
 
+import javax.xml.bind.annotation.XmlType;
+import javax.xml.bind.annotation.XmlAttribute;
+import javax.xml.bind.annotation.XmlAnyElement;
+
 import org.jboss.beans.metadata.spi.MetaDataVisitor;
+import org.jboss.beans.metadata.spi.ValueMetaData;
 import org.jboss.dependency.plugins.AbstractDependencyItem;
 import org.jboss.dependency.spi.Controller;
 import org.jboss.dependency.spi.ControllerContext;
@@ -31,16 +36,20 @@ import org.jboss.dependency.spi.dispatch.AttributeDispatchContext;
 import org.jboss.kernel.spi.dependency.KernelControllerContext;
 import org.jboss.reflect.spi.TypeInfo;
 import org.jboss.util.JBossStringBuilder;
+import org.jboss.xb.annotations.JBossXmlAttribute;
+import org.jboss.managed.api.annotation.ManagementProperty;
 
 /**
  * Dependency value.
  *
+ * @author <a href="ales.justin@jboss.com">Ales Justin</a>
  * @author <a href="adrian@jboss.com">Adrian Brock</a>
  * @version $Revision$
  */
+@XmlType
 public class AbstractDependencyValueMetaData extends AbstractValueMetaData
 {
-   private static final long serialVersionUID = 2L;
+   private static final long serialVersionUID = 3L;
 
    /**
     * The context
@@ -106,6 +115,7 @@ public class AbstractDependencyValueMetaData extends AbstractValueMetaData
     *
     * @param property the property name
     */
+   @XmlAttribute
    public void setProperty(String property)
    {
       this.property = property;
@@ -116,6 +126,7 @@ public class AbstractDependencyValueMetaData extends AbstractValueMetaData
     *
     * @param whenRequiredState the when required state or null if it uses current context state
     */
+   @XmlAttribute(name="whenRequired")
    public void setWhenRequiredState(ControllerState whenRequiredState)
    {
       this.whenRequiredState = whenRequiredState;
@@ -132,6 +143,7 @@ public class AbstractDependencyValueMetaData extends AbstractValueMetaData
     *
     * @param dependentState the required state or null if it must be in the registry
     */
+   @XmlAttribute(name="state")
    public void setDependentState(ControllerState dependentState)
    {
       this.dependentState = dependentState;
@@ -141,6 +153,25 @@ public class AbstractDependencyValueMetaData extends AbstractValueMetaData
    public ControllerState getDependentState()
    {
       return dependentState;
+   }
+
+   @XmlAttribute(name="bean")
+   @JBossXmlAttribute(type=String.class)
+   public void setValue(Object value)
+   {
+      super.setValue(value);
+   }
+
+   @XmlAnyElement
+   @ManagementProperty(ignored = true)
+   public void setValueObject(Object value)
+   {
+      if (value == null)
+         setValue(null);
+      else if (value instanceof ValueMetaData)
+         setValue(value);
+      else
+         setValue(new AbstractValueMetaData(value));
    }
 
    protected boolean isLookupValid(ControllerContext lookup)

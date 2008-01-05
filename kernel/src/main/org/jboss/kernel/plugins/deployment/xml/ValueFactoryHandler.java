@@ -82,6 +82,7 @@ public class ValueFactoryHandler extends DefaultElementHandler
          List<ParameterMetaData> parameters = new ArrayList<ParameterMetaData>();
          parameters.add(new AbstractParameterMetaData(String.class.getName(), vf.getParameter()));
          vf.setParameters(parameters);
+         vf.setParameter(null);
       }
       return vf;
    }

@@ -25,6 +25,13 @@ import java.io.Serializable;
 import java.util.Set;
 import java.util.Stack;
 
+import javax.xml.bind.annotation.XmlType;
+import javax.xml.bind.annotation.XmlAttribute;
+import javax.xml.bind.annotation.XmlElements;
+import javax.xml.bind.annotation.XmlElement;
+import javax.xml.bind.annotation.XmlAnyElement;
+import javax.xml.bind.annotation.XmlValue;
+
 import org.jboss.beans.metadata.spi.MetaDataVisitor;
 import org.jboss.beans.metadata.spi.MetaDataVisitorNode;
 import org.jboss.beans.metadata.spi.ParameterMetaData;
@@ -35,17 +42,20 @@ import org.jboss.kernel.spi.dependency.KernelController;
 import org.jboss.kernel.spi.dependency.KernelControllerContext;
 import org.jboss.util.JBossStringBuilder;
 import org.jboss.reflect.spi.TypeInfo;
+import org.jboss.managed.api.annotation.ManagementProperty;
 
 /**
  * Metadata for a parameter.
  *
+ * @author <a href="ales.justin@jboss.com">Ales Justin</a>
  * @author <a href="adrian@jboss.com">Adrian Brock</a>
  * @version $Revision$
  */
+@XmlType(propOrder={"annotations", "value"})
 public class AbstractParameterMetaData extends AbstractFeatureMetaData
    implements ParameterMetaData, ValueMetaDataAware, Serializable
 {
-   private static final long serialVersionUID = 1L;
+   private static final long serialVersionUID = 2L;
 
    /**
     * The parameter type
@@ -131,6 +141,7 @@ public class AbstractParameterMetaData extends AbstractFeatureMetaData
       return type;
    }
 
+   @XmlAttribute(name="class")
    public void setType(String type)
    {
       this.type = type;
@@ -152,10 +163,48 @@ public class AbstractParameterMetaData extends AbstractFeatureMetaData
       this.index = index;
    }
 
+   @XmlElements
+   ({
+      @XmlElement(name="array", type=AbstractArrayMetaData.class),
+      @XmlElement(name="collection", type=AbstractCollectionMetaData.class),
+      @XmlElement(name="inject", type=AbstractInjectionValueMetaData.class),
+      @XmlElement(name="list", type=AbstractListMetaData.class),
+      @XmlElement(name="map", type=AbstractMapMetaData.class),
+      @XmlElement(name="set", type=AbstractSetMetaData.class),
+      @XmlElement(name="this", type=ThisValueMetaData.class),
+      @XmlElement(name="value", type=StringValueMetaData.class),
+      @XmlElement(name="value-factory", type=AbstractValueFactoryMetaData.class)
+   })
    public void setValue(ValueMetaData value)
    {
       this.value = value;
       flushJBossObjectCache();
+   }
+
+   @XmlAnyElement
+   @ManagementProperty(ignored = true)
+   public void setValueObject(Object value)
+   {
+      if (value == null)
+         setValue(null);
+      else if (value instanceof ValueMetaData)
+         setValue((ValueMetaData) value);
+      else
+         setValue(new AbstractValueMetaData(value));
+   }
+
+   @XmlValue
+   @ManagementProperty(ignored = true)
+   public void setValueString(String value)
+   {
+      if (value == null)
+         setValue(null);
+      else
+      {
+         StringValueMetaData stringValue = new StringValueMetaData(value);
+         stringValue.setType(getType());
+         setValue(stringValue);
+      }
    }
 
    protected void addChildren(Set<MetaDataVisitorNode> children)

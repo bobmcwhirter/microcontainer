@@ -23,6 +23,9 @@ package org.jboss.beans.metadata.plugins;
 
 import java.util.List;
 
+import javax.xml.bind.annotation.XmlType;
+import javax.xml.bind.annotation.XmlAttribute;
+
 import org.jboss.beans.metadata.spi.AutowireType;
 import org.jboss.beans.metadata.spi.MetaDataVisitor;
 import org.jboss.beans.metadata.spi.MetaDataVisitorNode;
@@ -41,9 +44,10 @@ import org.jboss.util.JBossStringBuilder;
  *
  * @author <a href="ales.justin@gmail.com">Ales Justin</a>
  */
+@XmlType
 public class AbstractInjectionValueMetaData extends AbstractDependencyValueMetaData
 {
-   private static final long serialVersionUID = 2L;
+   private static final long serialVersionUID = 3L;
 
    protected AutowireType injectionType = AutowireType.BY_CLASS;
 
@@ -89,6 +93,7 @@ public class AbstractInjectionValueMetaData extends AbstractDependencyValueMetaD
       return injectionType;
    }
 
+   @XmlAttribute(name="type")
    public void setInjectionType(AutowireType injectionType)
    {
       this.injectionType = injectionType;
@@ -99,6 +104,7 @@ public class AbstractInjectionValueMetaData extends AbstractDependencyValueMetaD
       return injectionOption;
    }
 
+   @XmlAttribute(name="option")
    public void setInjectionOption(InjectionOption injectionOption)
    {
       this.injectionOption = injectionOption;
@@ -109,6 +115,7 @@ public class AbstractInjectionValueMetaData extends AbstractDependencyValueMetaD
       return fromContext;
    }
 
+   @XmlAttribute
    public void setFromContext(FromContext fromContext)
    {
       this.fromContext = fromContext;

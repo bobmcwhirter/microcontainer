@@ -21,20 +21,27 @@
 */
 package org.jboss.beans.metadata.plugins;
 
+import javax.xml.bind.annotation.XmlType;
+import javax.xml.bind.annotation.XmlValue;
+
 import org.jboss.beans.metadata.spi.MetaDataVisitor;
 import org.jboss.beans.metadata.spi.MetaDataVisitorNode;
 import org.jboss.logging.Logger;
 import org.jboss.reflect.spi.TypeInfo;
+import org.jboss.xb.annotations.JBossXmlNoElements;
 
 /**
  * String value.
  * 
+ * @author <a href="ales.justin@jboss.com">Ales Justin</a>
  * @author <a href="adrian@jboss.com">Adrian Brock</a>
  * @version $Revision$
  */
+@XmlType
+@JBossXmlNoElements
 public class StringValueMetaData extends AbstractTypeMetaData
 {
-   private static final long serialVersionUID = 1L;
+   private static final long serialVersionUID = 2L;
 
    /** The log */
    private static final Logger log = Logger.getLogger(StringValueMetaData.class);
@@ -73,6 +80,7 @@ public class StringValueMetaData extends AbstractTypeMetaData
     * 
     * @param value the value
     */
+   @XmlValue
    public void setValue(String value)
    {
       super.setValue(value);

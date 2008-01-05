@@ -26,18 +26,41 @@ import java.util.Collection;
 import java.util.List;
 import java.util.ListIterator;
 
+import javax.xml.bind.annotation.XmlType;
+
 import org.jboss.beans.metadata.spi.MetaDataVisitorNode;
+import org.jboss.xb.annotations.JBossXmlNoElements;
+import org.jboss.xb.annotations.JBossXmlChildren;
+import org.jboss.xb.annotations.JBossXmlChild;
+import org.jboss.xb.annotations.JBossXmlChildWildcard;
 
 /**
  * List metadata.
  * 
+ * @author <a href="ales.justin@jboss.com">Ales Justin</a>
  * @author <a href="adrian@jboss.com">Adrian Brock</a>
  * @version $Revision$
  */
+@XmlType
+@JBossXmlNoElements
+@JBossXmlChildren
+({
+   @JBossXmlChild(name="array", type=AbstractArrayMetaData.class),
+   @JBossXmlChild(name="collection", type=AbstractCollectionMetaData.class),
+   @JBossXmlChild(name="inject", type=AbstractInjectionValueMetaData.class),
+   @JBossXmlChild(name="list", type=AbstractListMetaData.class),
+   @JBossXmlChild(name="map", type=AbstractMapMetaData.class),
+   @JBossXmlChild(name="null", type=AbstractValueMetaData.class),
+   @JBossXmlChild(name="set", type=AbstractSetMetaData.class),
+   @JBossXmlChild(name="this", type=ThisValueMetaData.class),
+   @JBossXmlChild(name="value", type=StringValueMetaData.class),
+   @JBossXmlChild(name="value-factory", type=AbstractValueFactoryMetaData.class)
+})
+@JBossXmlChildWildcard(wrapper=AbstractValueMetaData.class, property="value")
 public class AbstractListMetaData extends AbstractCollectionMetaData
    implements List<MetaDataVisitorNode>, Serializable
 {
-   private static final long serialVersionUID = 1L;
+   private static final long serialVersionUID = 2L;
 
    /**
     * Create a new list value
@@ -95,5 +118,4 @@ public class AbstractListMetaData extends AbstractCollectionMetaData
    {
       return collection.subList(fromIndex, toIndex);
    }
-
 }

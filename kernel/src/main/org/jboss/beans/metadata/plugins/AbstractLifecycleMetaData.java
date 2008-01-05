@@ -25,6 +25,10 @@ import java.io.Serializable;
 import java.util.List;
 import java.util.Set;
 
+import javax.xml.bind.annotation.XmlType;
+import javax.xml.bind.annotation.XmlAttribute;
+import javax.xml.bind.annotation.XmlElement;
+
 import org.jboss.beans.metadata.plugins.builder.MutableParameterizedMetaData;
 import org.jboss.beans.metadata.spi.LifecycleMetaData;
 import org.jboss.beans.metadata.spi.MetaDataVisitor;
@@ -42,13 +46,15 @@ import org.jboss.util.JBossStringBuilder;
 /**
  * Metadata for lifecycle.
  * 
+ * @author <a href="ales.justin@jboss.com">Ales Justin</a>
  * @author <a href="adrian@jboss.com">Adrian Brock</a>
  * @version $Revision$
  */
+@XmlType(propOrder={"annotations", "parameters"})
 public class AbstractLifecycleMetaData extends AbstractFeatureMetaData
    implements LifecycleMetaData, MutableParameterizedMetaData, Serializable
 {
-   private static final long serialVersionUID = 1L;
+   private static final long serialVersionUID = 2L;
 
    /** The state */
    protected ControllerState state;
@@ -97,6 +103,7 @@ public class AbstractLifecycleMetaData extends AbstractFeatureMetaData
     * 
     * @param name the factory method
     */
+   @XmlAttribute(name="method")
    public void setMethodName(String name)
    {
       this.methodName = name;
@@ -113,6 +120,7 @@ public class AbstractLifecycleMetaData extends AbstractFeatureMetaData
     *
     * @param ignored the ignored
     */
+   @XmlAttribute
    public void setIgnored(boolean ignored)
    {
       this.ignored = ignored;
@@ -128,6 +136,7 @@ public class AbstractLifecycleMetaData extends AbstractFeatureMetaData
     * 
     * @param parameters List<ParameterMetaData>
     */
+   @XmlElement(name="parameter", type=AbstractParameterMetaData.class)
    public void setParameters(List<ParameterMetaData> parameters)
    {
       this.parameters = parameters;

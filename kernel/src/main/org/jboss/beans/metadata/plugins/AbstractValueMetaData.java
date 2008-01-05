@@ -26,6 +26,8 @@ import java.util.Collections;
 import java.util.Iterator;
 import java.util.Stack;
 
+import javax.xml.bind.annotation.XmlType;
+
 import org.jboss.beans.metadata.spi.MetaDataVisitor;
 import org.jboss.beans.metadata.spi.MetaDataVisitorNode;
 import org.jboss.beans.metadata.spi.ValueMetaData;
@@ -33,17 +35,21 @@ import org.jboss.reflect.spi.TypeInfo;
 import org.jboss.util.JBossObject;
 import org.jboss.util.JBossStringBuilder;
 import org.jboss.dependency.plugins.JMXObjectNameFix;
+import org.jboss.xb.annotations.JBossXmlNoElements;
 
 /**
  * Plain value.
  *
+ * @author <a href="ales.justin@jboss.com">Ales Justin</a>
  * @author <a href="adrian@jboss.com">Adrian Brock</a>
  * @version $Revision$
  */
+@XmlType
+@JBossXmlNoElements
 public class AbstractValueMetaData extends JBossObject
    implements ValueMetaData, TypeProvider, Serializable
 {
-   private static final long serialVersionUID = 1L;
+   private static final long serialVersionUID = 2L;
 
    /**
     * The value

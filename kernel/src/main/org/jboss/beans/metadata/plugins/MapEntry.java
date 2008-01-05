@@ -23,28 +23,41 @@ package org.jboss.beans.metadata.plugins;
 
 import javax.xml.bind.annotation.XmlType;
 
-import org.jboss.beans.metadata.spi.MetaDataVisitor;
-import org.jboss.dependency.spi.CallbackItem;
+import org.jboss.beans.metadata.spi.ValueMetaData;
+
 
 /**
- * Metadata for uninstall callback.
+ * MapEntry.
  *
  * @author <a href="ales.justin@jboss.com">Ales Justin</a>
+ * @author <a href="adrian@jboss.com">Adrian Brock</a>
  */
-@XmlType
-public class UninstallCallbackMetaData extends AbstractCallbackMetaData
+@XmlType(propOrder= {"key", "value"})
+public class MapEntry
 {
-   /** The serialVersionUID */
-   private static final long serialVersionUID = 2L;
+   /** The key */
+   private ValueMetaData key;
 
-   public UninstallCallbackMetaData()
+   /** The value */
+   private ValueMetaData value;
+
+   public ValueMetaData getKey()
    {
-      super();
+      return key;
    }
 
-   @SuppressWarnings("unchecked")
-   protected void addCallback(MetaDataVisitor visitor, CallbackItem callback)
+   public void setKey(ValueMetaData key)
    {
-      visitor.addUninstallCallback(callback);
+      this.key = key;
+   }
+
+   public ValueMetaData getValue()
+   {
+      return value;
+   }
+
+   public void setValue(ValueMetaData value)
+   {
+      this.value = value;
    }
 }

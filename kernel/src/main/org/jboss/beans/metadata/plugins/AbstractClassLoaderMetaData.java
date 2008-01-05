@@ -27,6 +27,11 @@ import java.util.Collections;
 import java.util.Iterator;
 import java.util.List;
 
+import javax.xml.bind.annotation.XmlType;
+import javax.xml.bind.annotation.XmlElements;
+import javax.xml.bind.annotation.XmlElement;
+import javax.xml.bind.annotation.XmlAnyElement;
+
 import org.jboss.beans.metadata.spi.BeanMetaData;
 import org.jboss.beans.metadata.spi.BeanMetaDataFactory;
 import org.jboss.beans.metadata.spi.ClassLoaderMetaData;
@@ -36,17 +41,20 @@ import org.jboss.beans.metadata.spi.ValueMetaData;
 import org.jboss.dependency.spi.ControllerState;
 import org.jboss.util.JBossObject;
 import org.jboss.util.JBossStringBuilder;
+import org.jboss.managed.api.annotation.ManagementProperty;
 
 /**
  * A classloader.
  * 
+ * @author <a href="ales.justin@jboss.com">Ales Justin</a>
  * @author <a href="adrian@jboss.com">Adrian Brock</a>
  * @version $Revision$
  */
+@XmlType(propOrder="classLoader")
 public class AbstractClassLoaderMetaData extends JBossObject
    implements ClassLoaderMetaData, BeanMetaDataFactory, Serializable
 {
-   private static final long serialVersionUID = 1L;
+   private static final long serialVersionUID = 2L;
 
    /** The classloader */
    protected ValueMetaData classloader;
@@ -73,6 +81,12 @@ public class AbstractClassLoaderMetaData extends JBossObject
     * 
     * @param classloader the classloader value
     */
+   @XmlElements
+   ({
+      @XmlElement(name="bean", type=AbstractBeanMetaData.class),
+      @XmlElement(name="inject", type=AbstractDependencyValueMetaData.class),
+      @XmlElement(name="null", type=AbstractValueMetaData.class)
+   })
    public void setClassLoader(ValueMetaData classloader)
    {
       this.classloader = classloader;
@@ -82,6 +96,18 @@ public class AbstractClassLoaderMetaData extends JBossObject
    public ValueMetaData getClassLoader()
    {
       return classloader;
+   }
+
+   @XmlAnyElement
+   @ManagementProperty(ignored = true)
+   public void setClassLoaderObject(Object classloader)
+   {
+      if (classloader == null)
+         setClassLoader(null);
+      else if (classloader instanceof ValueMetaData)
+         setClassLoader((ValueMetaData) classloader);
+      else
+         setClassLoader(new AbstractValueMetaData(classloader));
    }
 
    public List<BeanMetaData> getBeans()

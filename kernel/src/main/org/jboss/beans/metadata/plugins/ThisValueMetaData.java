@@ -21,6 +21,8 @@
 */
 package org.jboss.beans.metadata.plugins;
 
+import javax.xml.bind.annotation.XmlType;
+
 import org.jboss.beans.metadata.spi.MetaDataVisitor;
 import org.jboss.dependency.plugins.AbstractDependencyItem;
 import org.jboss.dependency.spi.Controller;
@@ -28,16 +30,20 @@ import org.jboss.dependency.spi.ControllerContext;
 import org.jboss.dependency.spi.ControllerState;
 import org.jboss.dependency.spi.DependencyItem;
 import org.jboss.reflect.spi.TypeInfo;
+import org.jboss.xb.annotations.JBossXmlNoElements;
 
 /**
  * Dependency value.
  * 
+ * @author <a href="ales.justin@jboss.com">Ales Justin</a>
  * @author <a href="adrian@jboss.com">Adrian Brock</a>
  * @version $Revision$
  */
+@XmlType
+@JBossXmlNoElements
 public class ThisValueMetaData extends AbstractValueMetaData
 {
-   private static final long serialVersionUID = 2L;
+   private static final long serialVersionUID = 3L;
 
    /** The context */
    protected transient ControllerContext context;

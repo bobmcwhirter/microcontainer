@@ -25,6 +25,10 @@ import java.beans.PropertyEditor;
 import java.io.Serializable;
 import java.util.Iterator;
 
+import javax.xml.bind.annotation.XmlType;
+import javax.xml.bind.annotation.XmlValue;
+import javax.xml.bind.annotation.XmlAttribute;
+
 import org.jboss.beans.metadata.spi.MetaDataVisitor;
 import org.jboss.beans.metadata.spi.MetaDataVisitorNode;
 import org.jboss.beans.metadata.spi.SupplyMetaData;
@@ -37,13 +41,15 @@ import org.jboss.util.propertyeditor.PropertyEditors;
 /**
  * A supply.
  * 
+ * @author <a href="ales.justin@jboss.com">Ales Justin</a>
  * @author <a href="adrian@jboss.com">Adrian Brock</a>
  * @version $Revision$
  */
+@XmlType
 public class AbstractSupplyMetaData extends JBossObject
    implements SupplyMetaData, Serializable
 {
-   private static final long serialVersionUID = 1L;
+   private static final long serialVersionUID = 2L;
 
    private static Logger log = Logger.getLogger(AbstractSupplyMetaData.class);
 
@@ -87,6 +93,7 @@ public class AbstractSupplyMetaData extends JBossObject
     * 
     * @param supply the supply
     */
+   @XmlValue
    public void setSupply(Object supply)
    {
       this.supply = supply;
@@ -108,6 +115,7 @@ public class AbstractSupplyMetaData extends JBossObject
     *
     * @param type the type
     */
+   @XmlAttribute(name="class")
    public void setType(String type)
    {
       this.type = type;

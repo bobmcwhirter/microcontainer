@@ -24,6 +24,10 @@ package org.jboss.beans.metadata.plugins;
 import java.io.Serializable;
 import java.util.Iterator;
 
+import javax.xml.bind.annotation.XmlType;
+import javax.xml.bind.annotation.XmlAttribute;
+import javax.xml.bind.annotation.XmlValue;
+
 import org.jboss.beans.metadata.spi.DemandMetaData;
 import org.jboss.beans.metadata.spi.MetaDataVisitor;
 import org.jboss.beans.metadata.spi.MetaDataVisitorNode;
@@ -42,13 +46,15 @@ import org.jboss.util.HashCode;
 /**
  * A demand.
  * 
+ * @author <a href="ales.justin@jboss.com">Ales Justin</a>
  * @author <a href="adrian@jboss.com">Adrian Brock</a>
  * @version $Revision$
  */
+@XmlType
 public class AbstractDemandMetaData extends JBossObject
    implements DemandMetaData, Serializable
 {
-   private static final long serialVersionUID = 2L;
+   private static final long serialVersionUID = 3L;
 
    /** The demand */
    protected Object demand;
@@ -81,6 +87,7 @@ public class AbstractDemandMetaData extends JBossObject
     * 
     * @param whenRequired when the dependecy is required
     */
+   @XmlAttribute(name="state")
    public void setWhenRequired(ControllerState whenRequired)
    {
       this.whenRequired = whenRequired;
@@ -92,6 +99,7 @@ public class AbstractDemandMetaData extends JBossObject
     * 
     * @param demand the demand
     */
+   @XmlValue
    public void setDemand(Object demand)
    {
       this.demand = demand;
@@ -123,6 +131,7 @@ public class AbstractDemandMetaData extends JBossObject
     *
     * @param transformer the transformer class name
     */
+   @XmlAttribute
    public void setTransformer(String transformer)
    {
       this.transformer = transformer;

@@ -19,32 +19,21 @@
 * Software Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA
 * 02110-1301 USA, or see the FSF site: http://www.fsf.org.
 */
+@JBossXmlAdaptedTypes
+({
+   @JBossXmlAdaptedType(type=Cardinality.class, valueAdapter=CardinalityValueAdapter.class),
+   @JBossXmlAdaptedType(type=ControllerMode.class, valueAdapter=ControllerModeValueAdapter.class),
+   @JBossXmlAdaptedType(type=ControllerState.class, valueAdapter=ControllerStateValueAdapter.class),
+   @JBossXmlAdaptedType(type=FromContext.class, valueAdapter=FromContextValueAdapter.class),
+   @JBossXmlAdaptedType(type=InjectionOption.class, valueAdapter=InjectionOptionValueAdapter.class),
+   @JBossXmlAdaptedType(type=AutowireType.class, valueAdapter=AutowireTypeValueAdapter.class)
+})
 package org.jboss.beans.metadata.plugins;
 
-import javax.xml.bind.annotation.XmlType;
+import org.jboss.xb.annotations.JBossXmlAdaptedType;
+import org.jboss.xb.annotations.JBossXmlAdaptedTypes;
+import org.jboss.dependency.spi.ControllerState;
+import org.jboss.dependency.spi.ControllerMode;
+import org.jboss.dependency.spi.Cardinality;
+import org.jboss.beans.metadata.spi.AutowireType;
 
-import org.jboss.beans.metadata.spi.MetaDataVisitor;
-import org.jboss.dependency.spi.CallbackItem;
-
-/**
- * Metadata for uninstall callback.
- *
- * @author <a href="ales.justin@jboss.com">Ales Justin</a>
- */
-@XmlType
-public class UninstallCallbackMetaData extends AbstractCallbackMetaData
-{
-   /** The serialVersionUID */
-   private static final long serialVersionUID = 2L;
-
-   public UninstallCallbackMetaData()
-   {
-      super();
-   }
-
-   @SuppressWarnings("unchecked")
-   protected void addCallback(MetaDataVisitor visitor, CallbackItem callback)
-   {
-      visitor.addUninstallCallback(callback);
-   }
-}

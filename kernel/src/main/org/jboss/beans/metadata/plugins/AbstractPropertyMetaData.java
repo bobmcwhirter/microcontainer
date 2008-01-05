@@ -24,6 +24,13 @@ package org.jboss.beans.metadata.plugins;
 import java.io.Serializable;
 import java.util.Set;
 
+import javax.xml.bind.annotation.XmlType;
+import javax.xml.bind.annotation.XmlAttribute;
+import javax.xml.bind.annotation.XmlElements;
+import javax.xml.bind.annotation.XmlElement;
+import javax.xml.bind.annotation.XmlAnyElement;
+import javax.xml.bind.annotation.XmlValue;
+
 import org.jboss.beans.info.spi.PropertyInfo;
 import org.jboss.beans.metadata.spi.MetaDataVisitor;
 import org.jboss.beans.metadata.spi.MetaDataVisitorNode;
@@ -35,17 +42,20 @@ import org.jboss.kernel.spi.config.KernelConfigurator;
 import org.jboss.kernel.spi.dependency.KernelControllerContext;
 import org.jboss.reflect.spi.TypeInfo;
 import org.jboss.util.JBossStringBuilder;
+import org.jboss.managed.api.annotation.ManagementProperty;
 
 /**
  * Metadata for a property.
  * 
+ * @author <a href="ales.justin@jboss.com">Ales Justin</a>
  * @author <a href="adrian@jboss.com">Adrian Brock</a>
  * @version $Revision$
  */
+@XmlType(propOrder={"annotations", "value"})
 public class AbstractPropertyMetaData extends AbstractFeatureMetaData
    implements PropertyMetaData, ValueMetaDataAware, TypeProvider, Serializable
 {
-   private static final long serialVersionUID = 2L;
+   private static final long serialVersionUID = 3L;
 
    /** The property name */
    protected String name;
@@ -124,6 +134,7 @@ public class AbstractPropertyMetaData extends AbstractFeatureMetaData
     * 
     * @param name the name
     */
+   @XmlAttribute
    public void setName(String name)
    {
       this.name = name;
@@ -144,6 +155,7 @@ public class AbstractPropertyMetaData extends AbstractFeatureMetaData
       return preInstantiate;
    }
 
+   @XmlAttribute
    public void setPreInstantiate(boolean preInstantiate)
    {
       this.preInstantiate = preInstantiate;
@@ -159,10 +171,99 @@ public class AbstractPropertyMetaData extends AbstractFeatureMetaData
     * 
     * @param value the value
     */
+   @XmlElements
+   ({
+      @XmlElement(name="array", type=AbstractArrayMetaData.class),
+      @XmlElement(name="collection", type=AbstractCollectionMetaData.class),
+      @XmlElement(name="inject", type=AbstractInjectionValueMetaData.class),
+      @XmlElement(name="list", type=AbstractListMetaData.class),
+      @XmlElement(name="map", type=AbstractMapMetaData.class),
+      @XmlElement(name="set", type=AbstractSetMetaData.class),
+      @XmlElement(name="this", type=ThisValueMetaData.class),
+      @XmlElement(name="value", type=StringValueMetaData.class),
+      @XmlElement(name="value-factory", type=AbstractValueFactoryMetaData.class)
+   })
    public void setValue(ValueMetaData value)
    {
       this.value = value;
       flushJBossObjectCache();
+   }
+
+   @XmlAnyElement
+   @ManagementProperty(ignored = true)
+   public void setValueObject(Object value)
+   {
+      if (value == null)
+         setValue(null);
+      else if (value instanceof ValueMetaData)
+         setValue((ValueMetaData) value);
+      else
+         setValue(new AbstractValueMetaData(value));
+   }
+
+   @XmlValue
+   @ManagementProperty(ignored = true)
+   public void setValueString(String value)
+   {
+      if (value == null)
+         setValue(null);
+      else
+      {
+         ValueMetaData valueMetaData = getValue();
+         if (valueMetaData instanceof StringValueMetaData)
+         {
+            ((StringValueMetaData) valueMetaData).setValue(value);
+            return;
+         }
+         StringValueMetaData stringValue = new StringValueMetaData(value);
+         stringValue.setType(getType());
+         setValue(stringValue);
+      }
+   }
+
+   @XmlAttribute(name="class")
+   @ManagementProperty(ignored = true)
+   public void setPropertyType(String type)
+   {
+      ValueMetaData valueMetaData = getValue();
+      if (valueMetaData != null && valueMetaData instanceof StringValueMetaData == false)
+         throw new IllegalArgumentException("Property is not a string");
+      if (valueMetaData == null)
+      {
+         valueMetaData = new StringValueMetaData();
+         setValue(valueMetaData);
+      }
+      ((StringValueMetaData) valueMetaData).setType(type);
+   }
+
+   @XmlAttribute(name="replace")
+   @ManagementProperty(ignored = true)
+   public void setPropertyReplace(boolean replace)
+   {
+      ValueMetaData valueMetaData = getValue();
+      if (valueMetaData != null && valueMetaData instanceof StringValueMetaData == false)
+         throw new IllegalArgumentException("Property is not a string");
+      if (valueMetaData == null)
+      {
+         valueMetaData = new StringValueMetaData();
+         setValue(valueMetaData);
+      }
+      ((StringValueMetaData) valueMetaData).setReplace(replace);
+   }
+
+   @XmlAttribute(name="trim")
+   @ManagementProperty(ignored = true)
+   public void setPropertyTrim(boolean trim)
+   {
+      ValueMetaData valueMetaData = getValue();
+      if (valueMetaData != null && valueMetaData instanceof StringValueMetaData == false)
+         throw new IllegalArgumentException("Property is not a string");
+      if (valueMetaData == null)
+      {
+         valueMetaData = new StringValueMetaData();
+         setValue(valueMetaData);
+      }
+      ((StringValueMetaData) valueMetaData).setTrim(trim);
    }
 
    public void initialVisit(MetaDataVisitor visitor)

@@ -26,6 +26,11 @@ import java.util.Collections;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Set;
+import javax.xml.bind.annotation.XmlAttribute;
+import javax.xml.bind.annotation.XmlNsForm;
+import javax.xml.bind.annotation.XmlRootElement;
+import javax.xml.bind.annotation.XmlType;
+import javax.xml.bind.annotation.XmlElement;
 
 import org.jboss.beans.metadata.spi.BeanMetaData;
 import org.jboss.beans.metadata.spi.LazyMetaData;
@@ -36,15 +41,19 @@ import org.jboss.dependency.plugins.AbstractDependencyItem;
 import org.jboss.dependency.spi.ControllerState;
 import org.jboss.kernel.Kernel;
 import org.jboss.kernel.spi.dependency.KernelController;
+import org.jboss.xb.annotations.JBossXmlSchema;
 
 /**
  * Lazy metadata.
  *
  * @author <a href="mailto:ales.justin@jboss.com">Ales Justin</a>
  */
+@JBossXmlSchema(namespace="urn:jboss:bean-deployer:2.0", elementFormDefault=XmlNsForm.QUALIFIED)
+@XmlRootElement(name="lazy")
+@XmlType(propOrder={"interfaces"})
 public class AbstractLazyMetaData extends AbstractBeanMetaData implements LazyMetaData
 {
-   private static final long serialVersionUID = 1L;
+   private static final long serialVersionUID = 2L;
 
    private String beanName;
    private boolean exposeClass;
@@ -112,6 +121,7 @@ public class AbstractLazyMetaData extends AbstractBeanMetaData implements LazyMe
       return beanName;
    }
 
+   @XmlAttribute(name="bean")
    public void setBeanName(String beanName)
    {
       this.beanName = beanName;
@@ -124,6 +134,7 @@ public class AbstractLazyMetaData extends AbstractBeanMetaData implements LazyMe
       return exposeClass;
    }
 
+   @XmlAttribute
    public void setExposeClass(boolean exposeClass)
    {
       this.exposeClass = exposeClass;
@@ -134,6 +145,7 @@ public class AbstractLazyMetaData extends AbstractBeanMetaData implements LazyMe
       return interfaces;
    }
 
+   @XmlElement(name="interface", type=String.class)
    public void setInterfaces(Set<String> interfaces)
    {
       this.interfaces = interfaces;

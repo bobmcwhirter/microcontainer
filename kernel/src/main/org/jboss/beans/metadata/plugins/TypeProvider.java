@@ -26,6 +26,9 @@ import org.jboss.beans.metadata.spi.MetaDataVisitorNode;
 import org.jboss.reflect.spi.TypeInfo;
 
 /**
+ * The class is able to provide exact type info for
+ * contextual injection.
+ * 
  * @author <a href="mailto:ales.justin@jboss.com">Ales Justin</a>
  */
 public interface TypeProvider
@@ -42,5 +45,4 @@ public interface TypeProvider
     * @throws Throwable if could not determine class
     */
    TypeInfo getType(MetaDataVisitor visitor, MetaDataVisitorNode previous) throws Throwable;
-
 }

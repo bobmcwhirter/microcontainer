@@ -24,6 +24,9 @@ package org.jboss.beans.metadata.plugins;
 import java.io.Serializable;
 import java.util.Iterator;
 
+import javax.xml.bind.annotation.XmlType;
+import javax.xml.bind.annotation.XmlValue;
+
 import org.jboss.beans.metadata.spi.DependencyMetaData;
 import org.jboss.beans.metadata.spi.MetaDataVisitor;
 import org.jboss.beans.metadata.spi.MetaDataVisitorNode;
@@ -38,9 +41,11 @@ import org.jboss.util.HashCode;
 /**
  * A dependency.
  * 
+ * @author <a href="ales.justin@jboss.com">Ales Justin</a>
  * @author <a href="adrian@jboss.com">Adrian Brock</a>
  * @version $Revision$
  */
+@XmlType
 public class AbstractDependencyMetaData extends JBossObject
    implements DependencyMetaData, Serializable
 {
@@ -71,6 +76,7 @@ public class AbstractDependencyMetaData extends JBossObject
     * 
     * @param dependency the dependency
     */
+   @XmlValue
    public void setDependency(Object dependency)
    {
       this.dependency = dependency;

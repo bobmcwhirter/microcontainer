@@ -25,6 +25,8 @@ import java.io.Serializable;
 import java.util.Iterator;
 import java.util.Set;
 
+import javax.xml.bind.annotation.XmlElement;
+
 import org.jboss.beans.metadata.spi.AnnotationMetaData;
 import org.jboss.beans.metadata.spi.FeatureMetaData;
 import org.jboss.beans.metadata.spi.MetaDataVisitor;
@@ -44,7 +46,7 @@ import org.jboss.util.collection.CollectionsFactory;
 public abstract class AbstractFeatureMetaData extends JBossObject
    implements FeatureMetaData, TypeProvider, Serializable
 {
-   private static final long serialVersionUID = 1;
+   private static final long serialVersionUID = 2L;
 
    /** The description */
    protected String description;
@@ -75,6 +77,7 @@ public abstract class AbstractFeatureMetaData extends JBossObject
     * 
     * @param annotations Set<AnnotationMetaData>
     */
+   @XmlElement(name="annotation", type=AbstractAnnotationMetaData.class)
    public void setAnnotations(Set<AnnotationMetaData> annotations)
    {
       this.annotations = annotations;

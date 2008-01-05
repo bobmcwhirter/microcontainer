@@ -29,22 +29,35 @@ import java.util.Iterator;
 import java.util.Map;
 import java.util.Set;
 
+import javax.xml.bind.annotation.XmlType;
+import javax.xml.bind.annotation.XmlAttribute;
+
 import org.jboss.beans.metadata.spi.MetaDataVisitor;
 import org.jboss.beans.metadata.spi.MetaDataVisitorNode;
 import org.jboss.beans.metadata.spi.ValueMetaData;
 import org.jboss.reflect.spi.ClassInfo;
 import org.jboss.reflect.spi.TypeInfo;
+import org.jboss.xb.annotations.JBossXmlNoElements;
+import org.jboss.xb.annotations.JBossXmlChildren;
+import org.jboss.xb.annotations.JBossXmlChild;
 
 /**
  * Map metadata.
  * 
+ * @author <a href="ales.justin@jboss.com">Ales Justin</a>
  * @author <a href="adrian@jboss.com">Adrian Brock</a>
  * @version $Revision$
  */
+@XmlType
+@JBossXmlNoElements
+@JBossXmlChildren
+({
+   @JBossXmlChild(name="entry", type=MapEntry.class)
+})
 public class AbstractMapMetaData extends AbstractTypeMetaData
    implements Map<MetaDataVisitorNode, MetaDataVisitorNode>, Serializable
 {
-   private static final long serialVersionUID = 1L;
+   private static final long serialVersionUID = 2L;
 
    /** The map */
    private HashMap<MetaDataVisitorNode, MetaDataVisitorNode> map = new HashMap<MetaDataVisitorNode, MetaDataVisitorNode>();
@@ -77,6 +90,7 @@ public class AbstractMapMetaData extends AbstractTypeMetaData
     * 
     * @param keyType the key type
     */
+   @XmlAttribute(name="keyClass")
    public void setKeyType(String keyType)
    {
       this.keyType = keyType;
@@ -97,6 +111,7 @@ public class AbstractMapMetaData extends AbstractTypeMetaData
     * 
     * @param valueType the value type
     */
+   @XmlAttribute(name="valueClass")
    public void setValueType(String valueType)
    {
       this.valueType = valueType;

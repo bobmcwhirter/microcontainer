@@ -23,6 +23,11 @@ package org.jboss.beans.metadata.plugins;
 
 import java.util.Iterator;
 import java.util.List;
+import java.util.ArrayList;
+
+import javax.xml.bind.annotation.XmlType;
+import javax.xml.bind.annotation.XmlElement;
+import javax.xml.bind.annotation.XmlAttribute;
 
 import org.jboss.beans.metadata.plugins.builder.MutableParameterizedMetaData;
 import org.jboss.beans.metadata.spi.MetaDataVisitor;
@@ -45,10 +50,12 @@ import org.jboss.util.JBossStringBuilder;
  * ValueFactory value.
  *
  * @author <a href="adrian@jboss.com">Adrian Brock</a>
+ * @author <a href="ales.justin@jboss.com">Ales Justin</a>
  */
+@XmlType
 public class AbstractValueFactoryMetaData extends AbstractValueMetaData implements MutableParameterizedMetaData
 {
-   private static final long serialVersionUID = 1L;
+   private static final long serialVersionUID = 2L;
 
    /**
     * The context
@@ -125,6 +132,12 @@ public class AbstractValueFactoryMetaData extends AbstractValueMetaData implemen
       this.defaultValue = defaultValue;
    }
 
+   @XmlAttribute(name="bean", required = true)
+   public void setValue(Object value)
+   {
+      super.setValue(value);
+   }
+
    /**
     * Get the method
     *
@@ -140,6 +153,7 @@ public class AbstractValueFactoryMetaData extends AbstractValueMetaData implemen
     *
     * @param method the property name
     */
+   @XmlAttribute(required = true)
    public void setMethod(String method)
    {
       this.method = method;
@@ -160,6 +174,7 @@ public class AbstractValueFactoryMetaData extends AbstractValueMetaData implemen
     *
     * @param parameter the parameter
     */
+   @XmlAttribute
    public void setParameter(String parameter)
    {
       this.parameter = parameter;
@@ -170,6 +185,7 @@ public class AbstractValueFactoryMetaData extends AbstractValueMetaData implemen
     *
     * @param whenRequiredState the when required state or null if it uses current context state
     */
+   @XmlAttribute(name="whenRequired")
    public void setWhenRequiredState(ControllerState whenRequiredState)
    {
       this.whenRequiredState = whenRequiredState;
@@ -191,6 +207,7 @@ public class AbstractValueFactoryMetaData extends AbstractValueMetaData implemen
     *
     * @param dependentState the required state or null if it must be in the registry
     */
+   @XmlAttribute(name="state")
    public void setDependentState(ControllerState dependentState)
    {
       this.dependentState = dependentState;
@@ -222,6 +239,7 @@ public class AbstractValueFactoryMetaData extends AbstractValueMetaData implemen
     *
     * @param defaultValue default value
     */
+   @XmlAttribute(name="default")
    public void setDefaultValue(String defaultValue)
    {
       this.defaultValue = defaultValue;
@@ -242,6 +260,7 @@ public class AbstractValueFactoryMetaData extends AbstractValueMetaData implemen
     *
     * @param parameters the parameters
     */
+   @XmlElement(name="parameter", type=AbstractParameterMetaData.class)
    public void setParameters(List<ParameterMetaData> parameters)
    {
       this.parameters = parameters;
@@ -249,6 +268,16 @@ public class AbstractValueFactoryMetaData extends AbstractValueMetaData implemen
 
    public void initialVisit(MetaDataVisitor visitor)
    {
+      if (getParameter() != null && getParameters() != null)
+         throw new IllegalArgumentException("Both parameter and parameters cannot be set: " + this);
+      if (getParameter() != null)
+      {
+         List<ParameterMetaData> parameters = new ArrayList<ParameterMetaData>();
+         parameters.add(new AbstractParameterMetaData(String.class.getName(), getParameter()));
+         setParameters(parameters);
+         setParameter(null);
+      }
+
       context = visitor.getControllerContext();
       Object name = context.getName();
       Object iDependOn = getUnderlyingValue();

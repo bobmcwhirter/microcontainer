@@ -21,30 +21,19 @@
 */
 package org.jboss.beans.metadata.plugins;
 
-import javax.xml.bind.annotation.XmlType;
-
-import org.jboss.beans.metadata.spi.MetaDataVisitor;
-import org.jboss.dependency.spi.CallbackItem;
+import org.jboss.beans.metadata.spi.AutowireType;
+import org.jboss.xb.binding.sunday.unmarshalling.ValueAdapter;
 
 /**
- * Metadata for uninstall callback.
+ * AutowireTypeValueAdapter.
  *
- * @author <a href="ales.justin@jboss.com">Ales Justin</a>
+ * @author <a href="mailto:ales.justin@jboss.com">Ales Justin</a>
+ * @version $Revision: 1.1 $
  */
-@XmlType
-public class UninstallCallbackMetaData extends AbstractCallbackMetaData
+public class AutowireTypeValueAdapter implements ValueAdapter
 {
-   /** The serialVersionUID */
-   private static final long serialVersionUID = 2L;
-
-   public UninstallCallbackMetaData()
+   public Object cast(Object o, Class c)
    {
-      super();
-   }
-
-   @SuppressWarnings("unchecked")
-   protected void addCallback(MetaDataVisitor visitor, CallbackItem callback)
-   {
-      visitor.addUninstallCallback(callback);
+      return AutowireType.getInstance((String)o);
    }
 }

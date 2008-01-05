@@ -24,6 +24,8 @@ package org.jboss.beans.metadata.plugins;
 import java.io.Serializable;
 import java.util.Stack;
 
+import javax.xml.bind.annotation.XmlAttribute;
+
 import org.jboss.beans.info.spi.BeanInfo;
 import org.jboss.beans.info.spi.PropertyInfo;
 import org.jboss.beans.metadata.spi.BeanMetaData;
@@ -52,7 +54,7 @@ import org.jboss.joinpoint.spi.Joinpoint;
 public abstract class AbstractTypeMetaData extends AbstractValueMetaData
    implements Serializable
 {
-   private static final long serialVersionUID = 2L;
+   private static final long serialVersionUID = 3L;
 
    /**
     * The type
@@ -101,6 +103,7 @@ public abstract class AbstractTypeMetaData extends AbstractValueMetaData
     *
     * @param type the type
     */
+   @XmlAttribute(name="class")
    public void setType(String type)
    {
       this.type = type;

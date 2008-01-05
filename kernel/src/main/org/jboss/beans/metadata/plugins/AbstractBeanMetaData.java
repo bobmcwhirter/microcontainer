@@ -28,6 +28,11 @@ import java.util.HashSet;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Set;
+import javax.xml.bind.annotation.XmlAttribute;
+import javax.xml.bind.annotation.XmlElement;
+import javax.xml.bind.annotation.XmlNsForm;
+import javax.xml.bind.annotation.XmlRootElement;
+import javax.xml.bind.annotation.XmlType;
 
 import org.jboss.beans.metadata.spi.AutowireType;
 import org.jboss.beans.metadata.spi.BeanMetaData;
@@ -51,21 +56,28 @@ import org.jboss.dependency.spi.ControllerState;
 import org.jboss.dependency.spi.DependencyItem;
 import org.jboss.kernel.spi.dependency.KernelControllerContext;
 import org.jboss.managed.api.annotation.ManagementObject;
+import org.jboss.managed.api.annotation.ManagementProperties;
+import org.jboss.managed.api.annotation.ManagementProperty;
 import org.jboss.reflect.spi.TypeInfo;
 import org.jboss.util.JBossObject;
 import org.jboss.util.JBossStringBuilder;
+import org.jboss.xb.annotations.JBossXmlSchema;
 
 /**
  * Metadata for a bean.
  *
+ * @author <a href="ales.justin@jboss.com">Ales Justin</a>
  * @author <a href="adrian@jboss.com">Adrian Brock</a>
  * @version $Revision$
  */
-@ManagementObject
+@ManagementObject(properties = ManagementProperties.EXPLICIT) // TODO - explicitly add props we want to manage
+@JBossXmlSchema(namespace="urn:jboss:bean-deployer:2.0", elementFormDefault= XmlNsForm.QUALIFIED)
+@XmlRootElement(name="bean")
+@XmlType(propOrder={"aliases", "annotations", "classLoader", "constructor", "properties", "create", "start", "stop", "destroy", "depends", "demands", "supplies", "installs", "uninstalls", "installCallbacks", "uninstallCallbacks"})
 public class AbstractBeanMetaData extends AbstractFeatureMetaData
    implements BeanMetaData, BeanMetaDataFactory, MutableLifecycleHolder, Serializable
 {
-   private static final long serialVersionUID = 2L;
+   private static final long serialVersionUID = 3L;
 
    /** The bean fully qualified class name */
    protected String bean;
@@ -220,6 +232,7 @@ public class AbstractBeanMetaData extends AbstractFeatureMetaData
     *
     * @param bean The bean class name to set.
     */
+   @XmlAttribute(name="class")
    public void setBean(String bean)
    {
       this.bean = bean;
@@ -267,6 +280,8 @@ public class AbstractBeanMetaData extends AbstractFeatureMetaData
     *
     * @param properties Set<PropertyMetaData>
     */
+   @ManagementProperty(managed=true) // TODO - this ok? 
+   @XmlElement(name="property", type=AbstractPropertyMetaData.class)
    public void setProperties(Set<PropertyMetaData> properties)
    {
       this.properties = properties;
@@ -278,6 +293,7 @@ public class AbstractBeanMetaData extends AbstractFeatureMetaData
       return classLoader;
    }
 
+   @XmlElement(name="classloader", type=AbstractClassLoaderMetaData.class)
    public void setClassLoader(ClassLoaderMetaData classLoader)
    {
       this.classLoader = classLoader;
@@ -288,6 +304,7 @@ public class AbstractBeanMetaData extends AbstractFeatureMetaData
     *
     * @param constructor the constructor metadata
     */
+   @XmlElement(name="constructor", type=AbstractConstructorMetaData.class)
    public void setConstructor(ConstructorMetaData constructor)
    {
       this.constructor = constructor;
@@ -298,6 +315,7 @@ public class AbstractBeanMetaData extends AbstractFeatureMetaData
     *
     * @param demands Set<DemandMetaData>
     */
+   @XmlElement(name="demand", type=AbstractDemandMetaData.class)
    public void setDemands(Set<DemandMetaData> demands)
    {
       this.demands = demands;
@@ -309,6 +327,7 @@ public class AbstractBeanMetaData extends AbstractFeatureMetaData
     *
     * @param supplies Set<SupplyMetaData>
     */
+   @XmlElement(name="supply", type=AbstractSupplyMetaData.class)
    public void setSupplies(Set<SupplyMetaData> supplies)
    {
       this.supplies = supplies;
@@ -320,6 +339,7 @@ public class AbstractBeanMetaData extends AbstractFeatureMetaData
     *
     * @param depends Set<DependencyMetaData>
     */
+   @XmlElement(name="depends", type=AbstractDependencyMetaData.class)
    public void setDepends(Set<DependencyMetaData> depends)
    {
       this.depends = depends;
@@ -336,6 +356,7 @@ public class AbstractBeanMetaData extends AbstractFeatureMetaData
     *
     * @param name The name to set.
     */
+   @XmlAttribute
    public void setName(String name)
    {
       this.name = name;
@@ -347,6 +368,7 @@ public class AbstractBeanMetaData extends AbstractFeatureMetaData
       return aliases;
    }
 
+   @XmlElement(name="alias", type=String.class)
    public void setAliases(Set<Object> aliases)
    {
       this.aliases = aliases;
@@ -362,6 +384,7 @@ public class AbstractBeanMetaData extends AbstractFeatureMetaData
     *
     * @param parent the parent name
     */
+   @XmlAttribute
    public void setParent(String parent)
    {
       this.parent = parent;
@@ -377,6 +400,7 @@ public class AbstractBeanMetaData extends AbstractFeatureMetaData
     *
     * @param anAbstract is abstract
     */
+   @XmlAttribute
    public void setAbstract(boolean anAbstract)
    {
       isAbstract = anAbstract;
@@ -392,6 +416,7 @@ public class AbstractBeanMetaData extends AbstractFeatureMetaData
     *
     * @param autowireType the type
     */
+   @XmlAttribute(name="autowire-type")
    public void setAutowireType(AutowireType autowireType)
    {
       this.autowireType = autowireType;
@@ -402,6 +427,7 @@ public class AbstractBeanMetaData extends AbstractFeatureMetaData
       return mode;
    }
 
+   @XmlAttribute
    public void setMode(ControllerMode mode)
    {
       this.mode = mode;
@@ -413,6 +439,7 @@ public class AbstractBeanMetaData extends AbstractFeatureMetaData
       return autowireCandidate;
    }
 
+   @XmlAttribute(name="autowire-candidate")
    public void setAutowireCandidate(boolean autowireCandidate)
    {
       this.autowireCandidate = autowireCandidate;
@@ -438,6 +465,7 @@ public class AbstractBeanMetaData extends AbstractFeatureMetaData
     *
     * @param lifecycle the lifecycle metadata
     */
+   @XmlElement(name="create", type=AbstractLifecycleMetaData.class)
    public void setCreate(LifecycleMetaData lifecycle)
    {
       lifecycle.setState(ControllerState.CREATE);
@@ -454,6 +482,7 @@ public class AbstractBeanMetaData extends AbstractFeatureMetaData
     *
     * @param lifecycle the lifecycle metadata
     */
+   @XmlElement(name="start", type=AbstractLifecycleMetaData.class)
    public void setStart(LifecycleMetaData lifecycle)
    {
       lifecycle.setState(ControllerState.START);
@@ -470,6 +499,7 @@ public class AbstractBeanMetaData extends AbstractFeatureMetaData
     *
     * @param lifecycle the lifecycle metadata
     */
+   @XmlElement(name="stop", type=AbstractLifecycleMetaData.class)
    public void setStop(LifecycleMetaData lifecycle)
    {
       lifecycle.setState(ControllerState.START);
@@ -486,6 +516,7 @@ public class AbstractBeanMetaData extends AbstractFeatureMetaData
     *
     * @param lifecycle the lifecycle metadata
     */
+   @XmlElement(name="destroy", type=AbstractLifecycleMetaData.class)
    public void setDestroy(LifecycleMetaData lifecycle)
    {
       lifecycle.setState(ControllerState.CREATE);
@@ -517,6 +548,7 @@ public class AbstractBeanMetaData extends AbstractFeatureMetaData
     *
     * @param installs List<InstallMetaData>
     */
+   @XmlElement(name="install", type=AbstractInstallMetaData.class)
    public void setInstalls(List<InstallMetaData> installs)
    {
       this.installs = installs;
@@ -533,6 +565,7 @@ public class AbstractBeanMetaData extends AbstractFeatureMetaData
     *
     * @param uninstalls List<InstallMetaData>
     */
+   @XmlElement(name="uninstall", type=AbstractInstallMetaData.class)
    public void setUninstalls(List<InstallMetaData> uninstalls)
    {
       this.uninstalls = uninstalls;
@@ -544,6 +577,7 @@ public class AbstractBeanMetaData extends AbstractFeatureMetaData
       return installCallbacks;
    }
 
+   @XmlElement(name="incallback", type=InstallCallbackMetaData.class)
    public void setInstallCallbacks(List<CallbackMetaData> installCallbacks)
    {
       this.installCallbacks = installCallbacks;
@@ -555,6 +589,7 @@ public class AbstractBeanMetaData extends AbstractFeatureMetaData
       return uninstallCallbacks;
    }
 
+   @XmlElement(name="uncallback", type=UninstallCallbackMetaData.class)
    public void setUninstallCallbacks(List<CallbackMetaData> uninstallCallbacks)
    {
       this.uninstallCallbacks = uninstallCallbacks;
