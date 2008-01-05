@@ -21,8 +21,22 @@
 */
 package org.jboss.beans.metadata.spi;
 
+import org.jboss.beans.metadata.plugins.AbstractArrayMetaData;
+import org.jboss.beans.metadata.plugins.AbstractCollectionMetaData;
+import org.jboss.beans.metadata.plugins.AbstractDependencyValueMetaData;
+import org.jboss.beans.metadata.plugins.AbstractListMetaData;
+import org.jboss.beans.metadata.plugins.AbstractMapMetaData;
+import org.jboss.beans.metadata.plugins.AbstractSetMetaData;
+import org.jboss.beans.metadata.plugins.AbstractValueFactoryMetaData;
+import org.jboss.beans.metadata.plugins.AbstractValueMetaData;
+import org.jboss.beans.metadata.plugins.StringValueMetaData;
+import org.jboss.beans.metadata.plugins.ThisValueMetaData;
 import org.jboss.reflect.spi.TypeInfo;
 import org.jboss.util.JBossInterface;
+import org.jboss.xb.annotations.JBossXmlChild;
+import org.jboss.xb.annotations.JBossXmlGroup;
+import org.jboss.xb.annotations.JBossXmlGroupText;
+import org.jboss.xb.annotations.JBossXmlGroupWildcard;
 
 /**
  * Metadata about a value.
@@ -30,6 +44,21 @@ import org.jboss.util.JBossInterface;
  * @author <a href="adrian@jboss.com">Adrian Brock</a>
  * @version $Revision$
  */
+@JBossXmlGroup
+({
+   @JBossXmlChild(name="array", type=AbstractArrayMetaData.class),
+   @JBossXmlChild(name="collection", type=AbstractCollectionMetaData.class),
+   @JBossXmlChild(name="inject", type=AbstractDependencyValueMetaData.class),
+   @JBossXmlChild(name="list", type=AbstractListMetaData.class),
+   @JBossXmlChild(name="map", type=AbstractMapMetaData.class),
+   @JBossXmlChild(name="null", type=AbstractValueMetaData.class),
+   @JBossXmlChild(name="set", type=AbstractSetMetaData.class),
+   @JBossXmlChild(name="this", type=ThisValueMetaData.class),
+   @JBossXmlChild(name="value", type=StringValueMetaData.class),
+   @JBossXmlChild(name="value-factory", type= AbstractValueFactoryMetaData.class)
+})
+@JBossXmlGroupText(wrapper= StringValueMetaData.class, property="value")
+@JBossXmlGroupWildcard(wrapper= AbstractValueMetaData.class, property="value")
 public interface ValueMetaData extends JBossInterface, MetaDataVisitorNode
 {
    /**

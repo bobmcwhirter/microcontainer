@@ -21,6 +21,8 @@
 */
 package org.jboss.beans.metadata.spi;
 
+import javax.xml.bind.annotation.XmlTransient;
+
 import org.jboss.util.JBossInterface;
 
 /**
@@ -30,5 +32,6 @@ import org.jboss.util.JBossInterface;
  */
 public interface AliasMetaData extends JBossInterface, MetaDataVisitorNode
 {
+   @XmlTransient
    Object getAliasValue();
 }

@@ -24,7 +24,6 @@ package org.jboss.beans.metadata.plugins;
 import java.io.Serializable;
 import java.util.Iterator;
 import java.util.Set;
-
 import javax.xml.bind.annotation.XmlElement;
 
 import org.jboss.beans.metadata.spi.AnnotationMetaData;
@@ -49,10 +48,10 @@ public abstract class AbstractFeatureMetaData extends JBossObject
    private static final long serialVersionUID = 2L;
 
    /** The description */
-   protected String description;
+   private String description;
 
    /** The annotations */
-   protected Set<AnnotationMetaData> annotations;
+   private Set<AnnotationMetaData> annotations;
 
    /**
     * Create a new meta data

@@ -71,7 +71,7 @@ import org.jboss.xb.annotations.JBossXmlSchema;
  * @version $Revision$
  */
 @ManagementObject(properties = ManagementProperties.EXPLICIT) // TODO - explicitly add props we want to manage
-@JBossXmlSchema(namespace="urn:jboss:bean-deployer:2.0", elementFormDefault= XmlNsForm.QUALIFIED)
+@JBossXmlSchema(namespace="urn:jboss:bean-deployer:2.0", elementFormDefault=XmlNsForm.QUALIFIED)
 @XmlRootElement(name="bean")
 @XmlType(propOrder={"aliases", "annotations", "classLoader", "constructor", "properties", "create", "start", "stop", "destroy", "depends", "demands", "supplies", "installs", "uninstalls", "installCallbacks", "uninstallCallbacks"})
 public class AbstractBeanMetaData extends AbstractFeatureMetaData

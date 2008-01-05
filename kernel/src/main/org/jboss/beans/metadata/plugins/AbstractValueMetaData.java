@@ -25,16 +25,16 @@ import java.io.Serializable;
 import java.util.Collections;
 import java.util.Iterator;
 import java.util.Stack;
-
+import javax.xml.bind.annotation.XmlTransient;
 import javax.xml.bind.annotation.XmlType;
 
 import org.jboss.beans.metadata.spi.MetaDataVisitor;
 import org.jboss.beans.metadata.spi.MetaDataVisitorNode;
 import org.jboss.beans.metadata.spi.ValueMetaData;
+import org.jboss.dependency.plugins.JMXObjectNameFix;
 import org.jboss.reflect.spi.TypeInfo;
 import org.jboss.util.JBossObject;
 import org.jboss.util.JBossStringBuilder;
-import org.jboss.dependency.plugins.JMXObjectNameFix;
 import org.jboss.xb.annotations.JBossXmlNoElements;
 
 /**
@@ -131,6 +131,7 @@ public class AbstractValueMetaData extends JBossObject
       }
    }
 
+   @XmlTransient
    public Iterator<? extends MetaDataVisitorNode> getChildren()
    {
       if (value instanceof MetaDataVisitorNode)

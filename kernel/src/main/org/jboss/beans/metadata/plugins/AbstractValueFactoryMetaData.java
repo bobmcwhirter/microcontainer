@@ -21,13 +21,13 @@
 */
 package org.jboss.beans.metadata.plugins;
 
+import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
-import java.util.ArrayList;
-
-import javax.xml.bind.annotation.XmlType;
-import javax.xml.bind.annotation.XmlElement;
 import javax.xml.bind.annotation.XmlAttribute;
+import javax.xml.bind.annotation.XmlElement;
+import javax.xml.bind.annotation.XmlTransient;
+import javax.xml.bind.annotation.XmlType;
 
 import org.jboss.beans.metadata.plugins.builder.MutableParameterizedMetaData;
 import org.jboss.beans.metadata.spi.MetaDataVisitor;
@@ -298,6 +298,7 @@ public class AbstractValueFactoryMetaData extends AbstractValueMetaData implemen
       super.initialVisit(visitor);
    }
 
+   @XmlTransient
    public Iterator<? extends MetaDataVisitorNode> getChildren()
    {
       if (getParameters() != null)

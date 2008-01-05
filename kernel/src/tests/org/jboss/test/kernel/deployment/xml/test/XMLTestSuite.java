@@ -69,6 +69,31 @@ public class XMLTestSuite extends TestSuite
       suite.addTest(AliasTestCase.suite());
       suite.addTest(CallbackTestCase.suite());
       suite.addTest(ValueFactoryTestCase.suite());
+      // jaxb
+      suite.addTest(DeploymentJaxbTestCase.suite());
+      suite.addTest(BeanJaxbTestCase.suite());
+      suite.addTest(BeanFactoryJaxbTestCase.suite());
+      suite.addTest(ClassLoaderJaxbTestCase.suite());
+      suite.addTest(ConstructorJaxbTestCase.suite());
+      suite.addTest(FactoryJaxbTestCase.suite());
+      suite.addTest(ParameterJaxbTestCase.suite());
+      suite.addTest(PropertyJaxbTestCase.suite());
+      suite.addTest(LifecycleJaxbTestCase.suite());
+      suite.addTest(DependencyJaxbTestCase.suite());
+      suite.addTest(DemandJaxbTestCase.suite());
+      suite.addTest(SupplyJaxbTestCase.suite());
+      suite.addTest(InstallJaxbTestCase.suite());
+      suite.addTest(ValueJaxbTestCase.suite());
+      suite.addTest(InjectionJaxbTestCase.suite());
+      suite.addTest(CollectionJaxbTestCase.suite());
+      suite.addTest(ListJaxbTestCase.suite());
+      suite.addTest(SetJaxbTestCase.suite());
+      suite.addTest(ArrayJaxbTestCase.suite());
+      suite.addTest(MapJaxbTestCase.suite());
+      suite.addTest(AnnotationJaxbTestCase.suite());
+      suite.addTest(AliasJaxbTestCase.suite());
+      suite.addTest(CallbackJaxbTestCase.suite());
+      suite.addTest(ValueFactoryJaxbTestCase.suite());
 
       return suite;
    }

@@ -28,12 +28,20 @@
    @JBossXmlAdaptedType(type=InjectionOption.class, valueAdapter=InjectionOptionValueAdapter.class),
    @JBossXmlAdaptedType(type=AutowireType.class, valueAdapter=AutowireTypeValueAdapter.class)
 })
-package org.jboss.beans.metadata.plugins;
+package org.jboss.kernel.plugins.deployment;
 
+import org.jboss.beans.metadata.plugins.AutowireTypeValueAdapter;
+import org.jboss.beans.metadata.plugins.CardinalityValueAdapter;
+import org.jboss.beans.metadata.plugins.ControllerModeValueAdapter;
+import org.jboss.beans.metadata.plugins.ControllerStateValueAdapter;
+import org.jboss.beans.metadata.plugins.FromContext;
+import org.jboss.beans.metadata.plugins.FromContextValueAdapter;
+import org.jboss.beans.metadata.plugins.InjectionOption;
+import org.jboss.beans.metadata.plugins.InjectionOptionValueAdapter;
+import org.jboss.beans.metadata.spi.AutowireType;
+import org.jboss.dependency.spi.Cardinality;
+import org.jboss.dependency.spi.ControllerMode;
+import org.jboss.dependency.spi.ControllerState;
 import org.jboss.xb.annotations.JBossXmlAdaptedType;
 import org.jboss.xb.annotations.JBossXmlAdaptedTypes;
-import org.jboss.dependency.spi.ControllerState;
-import org.jboss.dependency.spi.ControllerMode;
-import org.jboss.dependency.spi.Cardinality;
-import org.jboss.beans.metadata.spi.AutowireType;
 

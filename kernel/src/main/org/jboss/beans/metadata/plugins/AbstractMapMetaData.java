@@ -28,18 +28,17 @@ import java.util.HashMap;
 import java.util.Iterator;
 import java.util.Map;
 import java.util.Set;
-
-import javax.xml.bind.annotation.XmlType;
 import javax.xml.bind.annotation.XmlAttribute;
+import javax.xml.bind.annotation.XmlType;
 
 import org.jboss.beans.metadata.spi.MetaDataVisitor;
 import org.jboss.beans.metadata.spi.MetaDataVisitorNode;
 import org.jboss.beans.metadata.spi.ValueMetaData;
 import org.jboss.reflect.spi.ClassInfo;
 import org.jboss.reflect.spi.TypeInfo;
-import org.jboss.xb.annotations.JBossXmlNoElements;
-import org.jboss.xb.annotations.JBossXmlChildren;
 import org.jboss.xb.annotations.JBossXmlChild;
+import org.jboss.xb.annotations.JBossXmlChildren;
+import org.jboss.xb.annotations.JBossXmlNoElements;
 
 /**
  * Map metadata.
@@ -60,7 +59,7 @@ public class AbstractMapMetaData extends AbstractTypeMetaData
    private static final long serialVersionUID = 2L;
 
    /** The map */
-   private HashMap<MetaDataVisitorNode, MetaDataVisitorNode> map = new HashMap<MetaDataVisitorNode, MetaDataVisitorNode>();
+   private Map<MetaDataVisitorNode, MetaDataVisitorNode> map = new HashMap<MetaDataVisitorNode, MetaDataVisitorNode>();
 
    /** The key type */
    protected String keyType;

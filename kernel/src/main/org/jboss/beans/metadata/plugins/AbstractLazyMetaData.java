@@ -27,10 +27,10 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.Set;
 import javax.xml.bind.annotation.XmlAttribute;
+import javax.xml.bind.annotation.XmlElement;
 import javax.xml.bind.annotation.XmlNsForm;
 import javax.xml.bind.annotation.XmlRootElement;
 import javax.xml.bind.annotation.XmlType;
-import javax.xml.bind.annotation.XmlElement;
 
 import org.jboss.beans.metadata.spi.BeanMetaData;
 import org.jboss.beans.metadata.spi.LazyMetaData;
@@ -97,7 +97,7 @@ public class AbstractLazyMetaData extends AbstractBeanMetaData implements LazyMe
       constructor.setParameters(parameters);
       setConstructor(constructor);
 
-      vistor.addDependency(new AbstractDependencyItem(name, beanName, ControllerState.INSTANTIATED, ControllerState.DESCRIBED));
+      vistor.addDependency(new AbstractDependencyItem(getName(), beanName, ControllerState.INSTANTIATED, ControllerState.DESCRIBED));
       super.initialVisit(vistor);
    }
 
@@ -125,7 +125,7 @@ public class AbstractLazyMetaData extends AbstractBeanMetaData implements LazyMe
    public void setBeanName(String beanName)
    {
       this.beanName = beanName;
-      if (name == null)
+      if (getName() == null)
          setName(beanName + "Proxy");
    }
 

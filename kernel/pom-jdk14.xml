@@ -50,6 +50,7 @@
           </includes>
           <excludes>
             <exclude>org/jboss/test/**/NoJavassistAnnotationCreatorTestCase.java</exclude>
+            <exclude>org/jboss/test/**/*JaxbTestCase.java</exclude>
           </excludes>
           <useSystemClassLoader>true</useSystemClassLoader>
         </configuration>

@@ -22,9 +22,9 @@
 package org.jboss.beans.metadata.plugins;
 
 import java.util.List;
-
-import javax.xml.bind.annotation.XmlType;
 import javax.xml.bind.annotation.XmlAttribute;
+import javax.xml.bind.annotation.XmlTransient;
+import javax.xml.bind.annotation.XmlType;
 
 import org.jboss.beans.metadata.spi.AutowireType;
 import org.jboss.beans.metadata.spi.MetaDataVisitor;
@@ -126,6 +126,7 @@ public class AbstractInjectionValueMetaData extends AbstractDependencyValueMetaD
       return propertyMetaData;
    }
 
+   @XmlTransient
    public void setPropertyMetaData(AbstractPropertyMetaData propertyMetaData)
    {
       this.propertyMetaData = propertyMetaData;
