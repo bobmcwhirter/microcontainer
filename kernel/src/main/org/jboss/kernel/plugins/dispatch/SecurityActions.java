@@ -53,10 +53,6 @@ class SecurityActions
                    {
                       return context.getClassLoader();
                    }
-                   catch (RuntimeException e)
-                   {
-                      throw e;
-                   }
                    catch (Exception e)
                    {
                       throw e;
