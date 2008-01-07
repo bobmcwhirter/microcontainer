@@ -21,11 +21,11 @@
 */
 package org.jboss.beans.metadata.plugins.factory;
 
+import java.io.Serializable;
 import java.util.Collections;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
-
 import javax.xml.bind.annotation.XmlAttribute;
 import javax.xml.bind.annotation.XmlElement;
 import javax.xml.bind.annotation.XmlNsForm;
@@ -71,7 +71,7 @@ import org.jboss.xb.annotations.JBossXmlSchema;
 @JBossXmlSchema(namespace="urn:jboss:bean-deployer:2.0", elementFormDefault=XmlNsForm.QUALIFIED)
 @XmlRootElement(name="beanfactory")
 @XmlType(propOrder={"aliases", "annotations", "classLoader", "constructor", "properties", "create", "start", "depends", "demands", "supplies", "installs", "uninstalls", "installCallbacks", "uninstallCallbacks"})
-public class GenericBeanFactoryMetaData2 extends JBossObject implements BeanMetaDataFactory
+public class GenericBeanFactoryMetaData2 extends JBossObject implements BeanMetaDataFactory, Serializable
 {
    private static final long serialVersionUID = 1L;
    
@@ -330,12 +330,26 @@ public class GenericBeanFactoryMetaData2 extends JBossObject implements BeanMeta
       gbf.setUninstallCallbacks(uninstallCallbacks);
       return Collections.singletonList((BeanMetaData) gbf);
    }
-   
+
+   /**
+    * Create property.
+    *
+    * @param name the property name
+    * @param value the value
+    * @return property meta data
+    */
    protected PropertyMetaData createProperty(String name, Object value)
    {
       return new AbstractPropertyMetaData(name, value);
    }
-   
+
+   /**
+    * Create property with map value.
+    *
+    * @param name the property name
+    * @param properties the properties
+    * @return property meta data
+    */
    protected PropertyMetaData createMapProperty(String name, Set<PropertyMetaData> properties)
    {
       AbstractMapMetaData map = new AbstractMapMetaData();
