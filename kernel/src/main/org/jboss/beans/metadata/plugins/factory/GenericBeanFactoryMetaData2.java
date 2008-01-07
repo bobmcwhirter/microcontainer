@@ -321,7 +321,13 @@ public class GenericBeanFactoryMetaData2 extends JBossObject implements BeanMeta
       properties.add(createMapProperty("properties", properties));
       properties.add(createProperty("start", start));
       properties.add(createProperty("create", create));
-      // etc.
+      gbf.setDemands(demands);
+      gbf.setDepends(depends);
+      gbf.setSupplies(supplies);
+      gbf.setInstalls(installs);
+      gbf.setUninstalls(uninstalls);
+      gbf.setInstallCallbacks(installCallbacks);
+      gbf.setUninstallCallbacks(uninstallCallbacks);
       return Collections.singletonList((BeanMetaData) gbf);
    }
    
