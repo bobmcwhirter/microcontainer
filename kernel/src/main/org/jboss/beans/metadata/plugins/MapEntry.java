@@ -21,7 +21,6 @@
 */
 package org.jboss.beans.metadata.plugins;
 
-import java.util.Map;
 import javax.xml.bind.annotation.XmlType;
 
 import org.jboss.beans.metadata.spi.ValueMetaData;
@@ -34,7 +33,7 @@ import org.jboss.beans.metadata.spi.ValueMetaData;
  * @author <a href="adrian@jboss.com">Adrian Brock</a>
  */
 @XmlType(propOrder= {"key", "value"})
-public class MapEntry implements Map.Entry<ValueMetaData, ValueMetaData>
+public class MapEntry
 {
    /** The key */
    private ValueMetaData key;
@@ -57,9 +56,8 @@ public class MapEntry implements Map.Entry<ValueMetaData, ValueMetaData>
       return value;
    }
 
-   public ValueMetaData setValue(ValueMetaData value)
+   public void setValue(ValueMetaData value)
    {
       this.value = value;
-      return null;
    }
 }
