@@ -29,6 +29,7 @@ import org.jboss.beans.metadata.plugins.AbstractConstructorMetaData;
 import org.jboss.beans.metadata.plugins.AbstractParameterMetaData;
 import org.jboss.beans.metadata.plugins.AbstractPropertyMetaData;
 import org.jboss.beans.metadata.plugins.AbstractValueMetaData;
+import org.jboss.beans.metadata.plugins.policy.AbstractBindingMetaData;
 import org.jboss.beans.metadata.spi.ValueMetaData;
 import org.jboss.xb.binding.sunday.unmarshalling.DefaultElementInterceptor;
 
@@ -72,6 +73,12 @@ public class ValueMetaDataElementInterceptor extends DefaultElementInterceptor
       else if (parent instanceof AbstractConstructorMetaData)
       {
          AbstractConstructorMetaData valueMetaData = (AbstractConstructorMetaData) parent;
+         ValueMetaData value = (ValueMetaData) child;
+         valueMetaData.setValue(value);
+      }
+      else if (parent instanceof AbstractBindingMetaData)
+      {
+         AbstractBindingMetaData valueMetaData = (AbstractBindingMetaData) parent;
          ValueMetaData value = (ValueMetaData) child;
          valueMetaData.setValue(value);
       }

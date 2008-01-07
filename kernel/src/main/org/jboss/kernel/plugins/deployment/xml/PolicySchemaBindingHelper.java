@@ -53,6 +53,7 @@ public class PolicySchemaBindingHelper
    public static void initBindingHandlers(TypeBinding bindingType)
    {
       bindingType.setHandler(BindingHandler.HANDLER);
+      BeanSchemaBindingHelper.configureValueBindings(bindingType);
       // binding can take characters
       bindingType.setSimpleType(BindingCharactersHandler.HANDLER);
       // type has wildcard
