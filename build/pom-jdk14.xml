@@ -35,7 +35,6 @@
   <properties>
     <version.jboss.common.core>2.2.1-SNAPSHOT</version.jboss.common.core>
     <version.jbossxb>2.0.0.CR3</version.jbossxb>
-    <version.jbossxb.builder>1.0.0.Beta1</version.jbossxb.builder>
     <version.osgi.r4.core>1.0</version.osgi.r4.core>
     <version.jboss.vfs>2.0.4.snapshot</version.jboss.vfs>
     <version.javassist>3.6-beta</version.javassist>
@@ -335,11 +334,6 @@
             <artifactId>jboss-common-core</artifactId>
           </exclusion>
         </exclusions>
-      </dependency>
-      <dependency>
-        <groupId>org.jboss</groupId>
-        <artifactId>jbossxb-builder</artifactId>
-        <version>${version.jbossxb.builder}</version>
       </dependency>
       <dependency>
         <groupId>org.osgi</groupId>

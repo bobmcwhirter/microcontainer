@@ -351,11 +351,6 @@
         <version>${version.jbossxb}</version>
       </dependency>
       <dependency>
-        <groupId>org.jboss</groupId>
-        <artifactId>jbossxb-builder</artifactId>
-        <version>${version.jbossxb.builder}</version>
-      </dependency>
-      <dependency>
         <groupId>apache-xerces</groupId>
         <artifactId>xml-apis</artifactId>
         <version>${version.apache-xerces.xml-apis}</version>
