@@ -70,10 +70,11 @@ public class InvokeDispatchHelper
          int size = params.size();
          signature = Configurator.getParameterTypes(log.isTraceEnabled(), params);
          // TODO - is this ok for non-POJO targets?
+         ClassLoader classLoader = SecurityActions.getClassLoader(context);
          if (target != null)
          {
             MethodInfo methodInfo = Configurator.findMethodInfo(configurator.getClassInfo(target.getClass()), methodName, signature);
-            parameters = Configurator.getParameters(log.isTraceEnabled(), context.getClassLoader(), methodInfo.getParameterTypes(), params);
+            parameters = Configurator.getParameters(log.isTraceEnabled(), classLoader, methodInfo.getParameterTypes(), params);
             // add some more info, if not yet set
             for(int i = 0; i < size; i++)
             {
@@ -86,7 +87,6 @@ public class InvokeDispatchHelper
          else
          {
             parameters = new Object[size];
-            ClassLoader classLoader = context.getClassLoader();
             for (int i = 0; i < size; i++)
             {
                ParameterMetaData pmd = params.get(i);
