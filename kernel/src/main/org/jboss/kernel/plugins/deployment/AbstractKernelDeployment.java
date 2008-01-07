@@ -44,6 +44,7 @@ import org.jboss.beans.metadata.plugins.AbstractLifecycleMetaData;
 import org.jboss.beans.metadata.plugins.AbstractNamedAliasMetaData;
 import org.jboss.beans.metadata.plugins.MutableLifecycleHolder;
 import org.jboss.beans.metadata.plugins.factory.GenericBeanFactoryMetaData;
+import org.jboss.beans.metadata.plugins.factory.GenericBeanFactoryMetaData2;
 import org.jboss.beans.metadata.spi.AnnotationMetaData;
 import org.jboss.beans.metadata.spi.BeanMetaData;
 import org.jboss.beans.metadata.spi.BeanMetaDataFactory;
@@ -145,7 +146,7 @@ public class AbstractKernelDeployment extends JBossObject
    @XmlElements
    ({
       @XmlElement(name="bean", type=AbstractBeanMetaData.class),
-      @XmlElement(name="beanfactory", type=GenericBeanFactoryMetaData.class),
+      @XmlElement(name="beanfactory", type=GenericBeanFactoryMetaData2.class),
       @XmlElement(name="lazy", type=AbstractLazyMetaData.class)
    })
    @XmlAnyElement

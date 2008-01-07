@@ -38,6 +38,7 @@ import org.jboss.beans.metadata.plugins.AbstractValueMetaData;
 import org.jboss.beans.metadata.plugins.StringValueMetaData;
 import org.jboss.beans.metadata.plugins.ThisValueMetaData;
 import org.jboss.beans.metadata.plugins.factory.GenericBeanFactoryMetaData;
+import org.jboss.beans.metadata.plugins.factory.GenericBeanFactoryMetaData2;
 import org.jboss.beans.metadata.spi.AnnotationMetaData;
 import org.jboss.beans.metadata.spi.CallbackMetaData;
 import org.jboss.beans.metadata.spi.DemandMetaData;
@@ -76,9 +77,9 @@ public class AbstractMCTest extends AbstractBuilderTest
       return unmarshalObject(AbstractBeanMetaData.class, AbstractKernelDeployment.class, JavaBean.class);
    }
 
-   protected GenericBeanFactoryMetaData unmarshalBeanFactory() throws Exception
+   protected GenericBeanFactoryMetaData2 unmarshalBeanFactory() throws Exception
    {
-      return unmarshalObject(GenericBeanFactoryMetaData.class, AbstractKernelDeployment.class, JavaBean.class);
+      return unmarshalObject(GenericBeanFactoryMetaData2.class, AbstractKernelDeployment.class, JavaBean.class);
    }
 
    protected void assertAnnotations(Set<String> expected, Set<AnnotationMetaData> annotations)
