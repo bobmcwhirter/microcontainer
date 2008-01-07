@@ -24,6 +24,7 @@ package org.jboss.beans.metadata.plugins;
 import java.io.Serializable;
 
 import javax.xml.bind.annotation.XmlAttribute;
+import javax.xml.bind.annotation.XmlTransient;
 
 import org.jboss.beans.info.spi.PropertyInfo;
 import org.jboss.beans.metadata.spi.CallbackMetaData;
@@ -158,12 +159,14 @@ public abstract class AbstractCallbackMetaData extends AbstractLifecycleMetaData
       return dependentState;
    }
 
+   @XmlTransient
    public void setPropertyInfo(PropertyInfo propertyInfo)
    {
       this.propertyInfo = propertyInfo;
       this.property = propertyInfo.getName();
    }
 
+   @XmlTransient
    public void setMethodInfo(MethodInfo methodInfo)
    {
       this.methodInfo = methodInfo;

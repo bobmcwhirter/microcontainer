@@ -131,6 +131,7 @@ public class AbstractAliasMetaData extends JBossObject
       vistor.describeVisit(this);
    }
 
+   @XmlTransient
    public Iterator<? extends MetaDataVisitorNode> getChildren()
    {
       return null;

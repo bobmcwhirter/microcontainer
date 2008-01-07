@@ -24,6 +24,7 @@ package org.jboss.beans.metadata.plugins;
 import java.io.Serializable;
 import java.util.Iterator;
 
+import javax.xml.bind.annotation.XmlTransient;
 import javax.xml.bind.annotation.XmlType;
 import javax.xml.bind.annotation.XmlValue;
 
@@ -104,6 +105,7 @@ public class AbstractDependencyMetaData extends JBossObject
       vistor.describeVisit(this);
    }
 
+   @XmlTransient
    public Iterator<? extends MetaDataVisitorNode> getChildren()
    {
       return null;

@@ -28,7 +28,6 @@ import org.jboss.beans.metadata.spi.MetaDataVisitor;
 import org.jboss.beans.metadata.spi.MetaDataVisitorNode;
 import org.jboss.logging.Logger;
 import org.jboss.reflect.spi.TypeInfo;
-import org.jboss.xb.annotations.JBossXmlNoElements;
 
 /**
  * String value.
@@ -38,7 +37,6 @@ import org.jboss.xb.annotations.JBossXmlNoElements;
  * @version $Revision$
  */
 @XmlType
-@JBossXmlNoElements
 public class StringValueMetaData extends AbstractTypeMetaData
 {
    private static final long serialVersionUID = 2L;
@@ -75,6 +73,12 @@ public class StringValueMetaData extends AbstractTypeMetaData
       super(value);
    }
 
+   @Override
+   public String getValue()
+   {
+      return (String) super.getValue();
+   }
+   
    /**
     * Set the value
     * 

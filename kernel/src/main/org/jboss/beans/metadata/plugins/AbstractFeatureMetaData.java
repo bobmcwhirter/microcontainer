@@ -25,6 +25,7 @@ import java.io.Serializable;
 import java.util.Iterator;
 import java.util.Set;
 import javax.xml.bind.annotation.XmlElement;
+import javax.xml.bind.annotation.XmlTransient;
 
 import org.jboss.beans.metadata.spi.AnnotationMetaData;
 import org.jboss.beans.metadata.spi.FeatureMetaData;
@@ -120,6 +121,7 @@ public abstract class AbstractFeatureMetaData extends JBossObject
       return typeInfo;
    }
 
+   @XmlTransient
    public Iterator<? extends MetaDataVisitorNode> getChildren()
    {
       Set<MetaDataVisitorNode> children = CollectionsFactory.createLazySet();

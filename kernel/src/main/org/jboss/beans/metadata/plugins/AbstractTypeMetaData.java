@@ -25,6 +25,7 @@ import java.io.Serializable;
 import java.util.Stack;
 
 import javax.xml.bind.annotation.XmlAttribute;
+import javax.xml.bind.annotation.XmlTransient;
 
 import org.jboss.beans.info.spi.BeanInfo;
 import org.jboss.beans.info.spi.PropertyInfo;
@@ -302,6 +303,7 @@ public abstract class AbstractTypeMetaData extends AbstractValueMetaData
     *
     * @param configurator the configurator
     */
+   @XmlTransient
    public void setConfigurator(KernelConfigurator configurator)
    {
       this.configurator = configurator;
