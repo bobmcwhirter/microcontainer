@@ -7,7 +7,11 @@
   <files>
     <file>
       <source>src/main/config/deployer-beans.xml</source>
-      <destName>jboss-beans.xml</destName>
+      <!--<destName>jboss-beans.xml</destName>-->
+    </file>
+    <file>
+      <source>src/main/config/hrService-beans.xml</source>
+      <!--<destName>jboss-beans.xml</destName>-->
     </file>
   </files>
   <dependencySets>

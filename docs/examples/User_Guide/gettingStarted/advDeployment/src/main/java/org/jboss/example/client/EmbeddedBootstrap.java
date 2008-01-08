@@ -29,7 +29,7 @@ public class EmbeddedBootstrap extends BasicBootstrap {
 		try {
 			// Workaround the fact that the BasicXMLDeployer does not handle redeployment correctly
 			if (deployer.getDeploymentNames().contains(url.toString())) {
-				System.out.println("Service is already deployed.");
+				System.out.println("Aspectized deployers are already deployed.");
 				return;
 			}
 			deployer.deploy(url);
@@ -40,7 +40,7 @@ public class EmbeddedBootstrap extends BasicBootstrap {
 
 	public void undeploy(URL url) {
 		if (!deployer.getDeploymentNames().contains(url.toString())) {
-			System.out.println("Service is already undeployed.");
+			System.out.println("Aspectized deployers are already undeployed.");
 			return;
 		}
 		try {

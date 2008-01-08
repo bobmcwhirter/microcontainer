@@ -1,12 +1,18 @@
 package org.jboss.example.client;
 
+import java.io.File;
 import java.io.IOException;
+import java.net.URISyntaxException;
 import java.net.URL;
 import java.text.ParseException;
 import java.util.Date;
 import java.util.Set;
 
 import org.jboss.dependency.spi.ControllerContext;
+import org.jboss.deployers.client.spi.Deployment;
+import org.jboss.deployers.plugins.main.MainDeployerImpl;
+import org.jboss.deployers.spi.DeploymentException;
+import org.jboss.deployers.vfs.spi.client.VFSDeploymentFactory;
 import org.jboss.example.service.Address;
 import org.jboss.example.service.Employee;
 import org.jboss.example.service.HRManager;
@@ -14,6 +20,8 @@ import org.jboss.example.service.util.SalaryStrategy;
 import org.jboss.kernel.Kernel;
 import org.jboss.kernel.spi.dependency.KernelController;
 import org.jboss.kernel.spi.registry.KernelBus;
+import org.jboss.virtual.VFS;
+import org.jboss.virtual.VirtualFile;
 
 /**
  * A simple client that starts JBoss Microcontainer and then  
@@ -25,7 +33,7 @@ import org.jboss.kernel.spi.registry.KernelBus;
 public class Client {
     
 	private boolean useBus = false;
-	private URL url;
+	private URL deployerBeansUrl, hrServiceBeansUrl;
 	private UserInterface userInterface;
 	private HRManager manager;
 	
@@ -33,7 +41,10 @@ public class Client {
 	private Kernel kernel;
 	private KernelController controller;
 	private KernelBus bus;
+	private MainDeployerImpl mainDeployer;
+	private Deployment deployment;
 
+	private final static String MAIN_DEPLOYER = "MainDeployer";
 	private final static String HRSERVICE = "HRService";
 	private final static String EMPLOYEE = "org.jboss.example.service.Employee";
 
@@ -51,8 +62,9 @@ public class Client {
 		this.useBus = useBus;
 		
 		ClassLoader cl = Thread.currentThread().getContextClassLoader();
-		url = cl.getResource("jboss-beans.xml");
-	
+		deployerBeansUrl = cl.getResource("deployer-beans.xml");
+		hrServiceBeansUrl = cl.getResource("hrService-beans.xml");
+		
 		// Start JBoss Microcontainer
 		bootstrap = new EmbeddedBootstrap();
 		bootstrap.run();
@@ -67,15 +79,53 @@ public class Client {
 	}
 	
 	void deploy() {
-		bootstrap.deploy(url);
-		if (!useBus && manager == null) {
-			ControllerContext context = controller.getInstalledContext(HRSERVICE);
-			if (context != null) { manager = (HRManager) context.getTarget(); }
+		bootstrap.deploy(deployerBeansUrl);
+		
+		ControllerContext context = controller.getInstalledContext(MAIN_DEPLOYER);
+		if (context != null) {
+			mainDeployer = (MainDeployerImpl) context.getTarget();
+		}
+	}
+
+	/**
+	 * Check whether the MainDeployer has already deployed the hrService-beans.xml file.
+	 * If not then create a VFSDeployment and deploy it. Cache the resulting HRManager service.
+	 * 
+	 * @throws IOException
+	 * @throws URISyntaxException
+	 * @throws DeploymentException
+	 */
+	void deployService() throws IOException, URISyntaxException, DeploymentException {
+		if (mainDeployer != null) {
+			File hrServiceBeans = new File(hrServiceBeansUrl.getFile());
+		    VirtualFile root = VFS.getRoot(hrServiceBeans.toURI());
+		    String deploymentName = root.toURI().toString();
+		    deployment = mainDeployer.getDeployment(deploymentName);
+		    
+		    if (deployment == null) {
+				VFSDeploymentFactory deploymentFactory = VFSDeploymentFactory.getInstance();
+			    deployment = deploymentFactory.createVFSDeployment(root);
+		        mainDeployer.addDeployment(deployment);
+		        mainDeployer.process();
+				
+				if (!useBus && manager == null) {
+					ControllerContext hrServiceCtx = controller.getInstalledContext(HRSERVICE);
+					if (hrServiceCtx != null) { manager = (HRManager) hrServiceCtx.getTarget(); }
+				}
+			}
+		}
+	}
+
+	void undeployService() throws IOException, URISyntaxException, DeploymentException {
+		if (mainDeployer != null && deployment != null) {
+			mainDeployer.removeDeployment(deployment);
+		    mainDeployer.process();	
+			manager = null;
 		}
 	}
 	
 	void undeploy() {
-		bootstrap.undeploy(url);
+		bootstrap.undeploy(deployerBeansUrl);
 	}
 	
 	private Object invoke(String serviceName, String methodName, Object[] args, String[] types) {

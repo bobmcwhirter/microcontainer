@@ -3,10 +3,12 @@ package org.jboss.example.client;
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
+import java.net.URISyntaxException;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 
+import org.jboss.deployers.spi.DeploymentException;
 import org.jboss.example.service.Address;
 import org.jboss.example.service.Employee;
 
@@ -24,7 +26,7 @@ public class ConsoleInput implements UserInterface {
 		System.out.println(getMenu());
 		
 		Thread eventThread = new Thread(new Runnable() {
-			private boolean initialDeployment = false;
+			private boolean deployersDeployed = false, hrServiceDeployed = false;
 			private boolean quit = false;
 			
 			public void run() {
@@ -41,7 +43,13 @@ public class ConsoleInput implements UserInterface {
 						}
 	
 						char option = input.charAt(0);
-						if (initialDeployment == false &&
+						if (deployersDeployed == false &&
+						    (option == 'D' || option == 'U' ||option == 'u' || option == 'a' ||
+						     option == 'l' || option == 'r' || option == 'g' || option == 's' ||
+						     option == 't' || option == 'p')) {
+							System.out.println("Aspectized deployers have not been deployed yet.");
+							continue;
+						} else if (hrServiceDeployed == false &&
 						    (option == 'u' || option == 'a' || option == 'l' || option == 'r' ||
 							 option == 'g' || option == 's' || option == 't' || option == 'p')) {
 							System.out.println("Service has not been deployed yet.");
@@ -49,7 +57,9 @@ public class ConsoleInput implements UserInterface {
 						}
 						
 						switch (option) {
-							case 'd': client.deploy(); initialDeployment = true; break;
+							case 'd': client.deploy(); deployersDeployed = true; break;
+							case 'D': client.deployService(); hrServiceDeployed = true; break;
+							case 'U': client.undeployService(); break;
 							case 'u': client.undeploy(); break;
 							case 'a': System.out.println("Added employee: " + client.addEmployee()); break;
 							case 'l': System.out.println("Employees: " + client.listEmployees()); break;
@@ -70,7 +80,11 @@ public class ConsoleInput implements UserInterface {
 						System.out.println(e.getMessage());
 					} catch (IOException e) {
 						e.printStackTrace();
-					}					
+					} catch (URISyntaxException e) {
+						e.printStackTrace();
+					} catch (DeploymentException e) {
+						e.printStackTrace();
+					}
 				}
 			}
 		});
@@ -83,8 +97,10 @@ public class ConsoleInput implements UserInterface {
 		buffer.append("-----------------------------------\n");
 		buffer.append("Menu:\n");
 		buffer.append("\n");
-		buffer.append("d) Deploy Human Resources service\n");
-		buffer.append("u) Undeploy Human Resources service\n");
+		buffer.append("d) Deploy Aspectized Deployers\n");
+		buffer.append("D) Deploy Human Resources service\n");
+		buffer.append("U) Undeploy Human Resources service\n");
+		buffer.append("u) Undeploy Aspectized Deployers\n");
 		buffer.append("\n");
 		buffer.append("a) Add employee\n");
 		buffer.append("l) List employees\n");
