@@ -63,6 +63,14 @@ public class Client {
 		deployerBeansUrl = cl.getResource("deployer-beans.xml");
 		hrServiceBeansUrl = cl.getResource("hrService-beans.xml");
 		
+		if (hrServiceBeansUrl == null) {
+			hrServiceBeansUrl = cl.getResource("hrService-beans.properties");
+		}
+		
+		if (hrServiceBeansUrl == null) {
+			hrServiceBeansUrl = cl.getResource("humanResourcesService-1.0.0.jar");
+		}
+		
 		// Create VFSDeployment to use with aspectized deployers
 		File hrServiceBeans = new File(hrServiceBeansUrl.getFile());
 		VirtualFile root = VFS.getRoot(hrServiceBeans.toURI());	    

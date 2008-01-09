@@ -1,16 +1,13 @@
 <assembly>
-  <id>bean-xml</id>
+  <id>bean-jar</id>
   <formats>
     <format>zip</format>
   </formats>
   <includeBaseDirectory>false</includeBaseDirectory>
   <files>
     <file>
-      <source>src/main/config/deployer-beans-xml.xml</source>
+      <source>src/main/config/deployer-beans-jar.xml</source>
       <destName>deployer-beans.xml</destName>
-    </file>
-    <file>
-      <source>src/main/config/hrService-beans.xml</source>
     </file>
   </files>
   <dependencySets>
