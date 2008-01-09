@@ -106,7 +106,7 @@
         <artifactId>maven-assembly-plugin</artifactId>
         <configuration>
           <descriptors>
-            <descriptor>src/main/assembly/pojo.xml</descriptor>
+            <descriptor>src/main/assembly/bean-xml.xml</descriptor>
             <!--<descriptor>src/main/assembly/aop.xml</descriptor>
             <descriptor>src/main/assembly/classloader.xml</descriptor>-->
           </descriptors>

@@ -1,5 +1,5 @@
 <assembly>
-  <id>pojo</id>
+  <id>bean-xml</id>
   <formats>
     <format>zip</format>
   </formats>

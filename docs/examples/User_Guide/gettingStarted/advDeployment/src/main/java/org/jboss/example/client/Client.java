@@ -2,7 +2,6 @@ package org.jboss.example.client;
 
 import java.io.File;
 import java.io.IOException;
-import java.net.URISyntaxException;
 import java.net.URL;
 import java.text.ParseException;
 import java.util.Date;
@@ -17,7 +16,6 @@ import org.jboss.example.service.Address;
 import org.jboss.example.service.Employee;
 import org.jboss.example.service.HRManager;
 import org.jboss.example.service.util.SalaryStrategy;
-import org.jboss.kernel.Kernel;
 import org.jboss.kernel.spi.dependency.KernelController;
 import org.jboss.kernel.spi.registry.KernelBus;
 import org.jboss.virtual.VFS;
@@ -36,15 +34,15 @@ public class Client {
 	private URL deployerBeansUrl, hrServiceBeansUrl;
 	private UserInterface userInterface;
 	private HRManager manager;
-	
-	private EmbeddedBootstrap bootstrap;
-	private Kernel kernel;
-	private KernelController controller;
-	private KernelBus bus;
 	private MainDeployerImpl mainDeployer;
 	private Deployment deployment;
+	
+	private EmbeddedBootstrap bootstrap;
+	private KernelController controller;
+	private KernelBus bus;
 
 	private final static String MAIN_DEPLOYER = "MainDeployer";
+	private final static String DEPLOYMENT = "org.jboss.deployers.client.spi.Deployment";
 	private final static String HRSERVICE = "HRService";
 	private final static String EMPLOYEE = "org.jboss.example.service.Employee";
 
@@ -65,13 +63,18 @@ public class Client {
 		deployerBeansUrl = cl.getResource("deployer-beans.xml");
 		hrServiceBeansUrl = cl.getResource("hrService-beans.xml");
 		
+		// Create VFSDeployment to use with aspectized deployers
+		File hrServiceBeans = new File(hrServiceBeansUrl.getFile());
+		VirtualFile root = VFS.getRoot(hrServiceBeans.toURI());	    
+		VFSDeploymentFactory deploymentFactory = VFSDeploymentFactory.getInstance();
+	    deployment = deploymentFactory.createVFSDeployment(root);
+		
 		// Start JBoss Microcontainer
 		bootstrap = new EmbeddedBootstrap();
 		bootstrap.run();
 		
-		kernel = bootstrap.getKernel();
-		controller = kernel.getController();
-		bus = kernel.getBus();		
+		controller = bootstrap.getKernel().getController();
+		bus = bootstrap.getKernel().getBus();		
  	}
 	
 	public void setUserInterface(UserInterface userInterface) {
@@ -79,48 +82,10 @@ public class Client {
 	}
 	
 	void deploy() {
-		bootstrap.deploy(deployerBeansUrl);
-		
-		ControllerContext context = controller.getInstalledContext(MAIN_DEPLOYER);
-		if (context != null) {
-			mainDeployer = (MainDeployerImpl) context.getTarget();
-		}
-	}
-
-	/**
-	 * Check whether the MainDeployer has already deployed the hrService-beans.xml file.
-	 * If not then create a VFSDeployment and deploy it. Cache the resulting HRManager service.
-	 * 
-	 * @throws IOException
-	 * @throws URISyntaxException
-	 * @throws DeploymentException
-	 */
-	void deployService() throws IOException, URISyntaxException, DeploymentException {
-		if (mainDeployer != null) {
-			File hrServiceBeans = new File(hrServiceBeansUrl.getFile());
-		    VirtualFile root = VFS.getRoot(hrServiceBeans.toURI());
-		    String deploymentName = root.toURI().toString();
-		    deployment = mainDeployer.getDeployment(deploymentName);
-		    
-		    if (deployment == null) {
-				VFSDeploymentFactory deploymentFactory = VFSDeploymentFactory.getInstance();
-			    deployment = deploymentFactory.createVFSDeployment(root);
-		        mainDeployer.addDeployment(deployment);
-		        mainDeployer.process();
-				
-				if (!useBus && manager == null) {
-					ControllerContext hrServiceCtx = controller.getInstalledContext(HRSERVICE);
-					if (hrServiceCtx != null) { manager = (HRManager) hrServiceCtx.getTarget(); }
-				}
-			}
-		}
-	}
-
-	void undeployService() throws IOException, URISyntaxException, DeploymentException {
-		if (mainDeployer != null && deployment != null) {
-			mainDeployer.removeDeployment(deployment);
-		    mainDeployer.process();	
-			manager = null;
+		bootstrap.deploy(deployerBeansUrl);	
+		if (!useBus && mainDeployer == null) {
+			ControllerContext context = controller.getInstalledContext(MAIN_DEPLOYER);
+			if (context != null) { mainDeployer = (MainDeployerImpl) context.getTarget(); }			
 		}
 	}
 	
@@ -128,6 +93,51 @@ public class Client {
 		bootstrap.undeploy(deployerBeansUrl);
 	}
 	
+	void deployService() throws DeploymentException { 
+		if (useBus) {
+			if (invoke(MAIN_DEPLOYER, "getDeployment", new Object[] {deployment.getName()}, new String[] {"java.lang.String"}) != null) {
+				System.out.println("Service is already deployed.");
+				return;
+			}			
+			
+			invoke(MAIN_DEPLOYER, "addDeployment", new Object[] {deployment}, new String[] {DEPLOYMENT});
+			invoke(MAIN_DEPLOYER, "process", new Object[] {}, new String[] {});
+		} else {
+			if (mainDeployer.getDeployment(deployment.getName()) != null) {
+				System.out.println("Service is already deployed.");
+				return;
+			}
+			
+	        mainDeployer.addDeployment(deployment);
+	        mainDeployer.process();
+	        
+	        if (manager == null) {
+				ControllerContext hrServiceCtx = controller.getInstalledContext(HRSERVICE);
+				if (hrServiceCtx != null) { manager = (HRManager) hrServiceCtx.getTarget(); }	        	
+	        }
+		}
+	}
+
+	void undeployService() throws DeploymentException {		
+		if (useBus) {
+			if (invoke(MAIN_DEPLOYER, "getDeployment", new Object[] {deployment.getName()}, new String[] {"java.lang.String"}) == null) {
+				System.out.println("Service is already undeployed.");
+				return;
+			}			
+			
+			invoke(MAIN_DEPLOYER, "removeDeployment", new Object[] {deployment}, new String[] {DEPLOYMENT});
+			invoke(MAIN_DEPLOYER, "process", new Object[] {}, new String[] {});
+		} else {
+			if (mainDeployer.getDeployment(deployment.getName()) == null) {
+				System.out.println("Service is already undeployed.");
+				return;
+			}
+			
+			mainDeployer.removeDeployment(deployment);
+		    mainDeployer.process();
+		}
+	}
+
 	private Object invoke(String serviceName, String methodName, Object[] args, String[] types) {
 		Object result = null;
 		try {

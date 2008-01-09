@@ -50,7 +50,7 @@ public class ConsoleInput implements UserInterface {
 							System.out.println("Aspectized deployers have not been deployed yet.");
 							continue;
 						} else if (hrServiceDeployed == false &&
-						    (option == 'u' || option == 'a' || option == 'l' || option == 'r' ||
+						    (option == 'U' || option == 'a' || option == 'l' || option == 'r' ||
 							 option == 'g' || option == 's' || option == 't' || option == 'p')) {
 							System.out.println("Service has not been deployed yet.");
 							continue;
@@ -80,10 +80,8 @@ public class ConsoleInput implements UserInterface {
 						System.out.println(e.getMessage());
 					} catch (IOException e) {
 						e.printStackTrace();
-					} catch (URISyntaxException e) {
-						e.printStackTrace();
 					} catch (DeploymentException e) {
-						e.printStackTrace();
+						System.out.println("Error during deployment/undeployment: " + e.getMessage());
 					}
 				}
 			}
