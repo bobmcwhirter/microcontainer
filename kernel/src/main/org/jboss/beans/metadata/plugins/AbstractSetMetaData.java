@@ -25,14 +25,13 @@ import java.io.Serializable;
 import java.util.Collection;
 import java.util.HashSet;
 import java.util.Set;
-
 import javax.xml.bind.annotation.XmlType;
 
 import org.jboss.beans.metadata.spi.MetaDataVisitorNode;
-import org.jboss.xb.annotations.JBossXmlNoElements;
-import org.jboss.xb.annotations.JBossXmlChildren;
 import org.jboss.xb.annotations.JBossXmlChild;
 import org.jboss.xb.annotations.JBossXmlChildWildcard;
+import org.jboss.xb.annotations.JBossXmlChildren;
+import org.jboss.xb.annotations.JBossXmlNoElements;
 
 /**
  * Set metadata.
@@ -45,6 +44,7 @@ import org.jboss.xb.annotations.JBossXmlChildWildcard;
 @JBossXmlNoElements
 @JBossXmlChildren
 ({
+   @JBossXmlChild(name="bean", type=AbstractBeanMetaData.class),
    @JBossXmlChild(name="array", type=AbstractArrayMetaData.class),
    @JBossXmlChild(name="collection", type=AbstractCollectionMetaData.class),
    @JBossXmlChild(name="inject", type=AbstractInjectionValueMetaData.class),

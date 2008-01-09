@@ -24,7 +24,6 @@ package org.jboss.test.kernel.deployment.xml.test;
 import java.util.Set;
 
 import junit.framework.Test;
-
 import org.jboss.beans.metadata.plugins.AbstractBeanMetaData;
 import org.jboss.beans.metadata.plugins.factory.GenericBeanFactoryMetaData2;
 

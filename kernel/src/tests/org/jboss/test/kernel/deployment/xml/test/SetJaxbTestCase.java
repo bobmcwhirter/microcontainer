@@ -152,6 +152,14 @@ public class SetJaxbTestCase extends AbstractMCTest
       assertWildcard(getValue(collection));
    }
    
+   public void testSetWithBean() throws Exception
+   {
+      AbstractSetMetaData collection = getCollection();
+      assertNull(collection.getType());
+      assertNull(collection.getElementType());
+      assertBean(getValue(collection));
+   }
+
    protected ValueMetaData getValue(AbstractSetMetaData collection)
    {
       assertEquals(1, collection.size());

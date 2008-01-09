@@ -24,7 +24,6 @@ package org.jboss.test.kernel.deployment.xml.test;
 import java.util.Set;
 
 import junit.framework.Test;
-
 import org.jboss.beans.metadata.plugins.AbstractBeanMetaData;
 import org.jboss.beans.metadata.plugins.AbstractCollectionMetaData;
 import org.jboss.beans.metadata.spi.PropertyMetaData;
@@ -153,6 +152,14 @@ public class CollectionTestCase extends AbstractXMLTest
       assertWildcard(getValue(collection));
    }
    
+   public void testCollectionWithBean() throws Exception
+   {
+      AbstractCollectionMetaData collection = getCollection("CollectionWithBean.xml");
+      assertNull(collection.getType());
+      assertNull(collection.getElementType());
+      assertBean(getValue(collection));
+   }
+
    protected ValueMetaData getValue(AbstractCollectionMetaData collection)
    {
       assertEquals(1, collection.size());

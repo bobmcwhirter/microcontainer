@@ -24,7 +24,6 @@ package org.jboss.test.kernel.deployment.xml.test;
 import java.util.Set;
 
 import junit.framework.Test;
-
 import org.jboss.beans.metadata.plugins.AbstractBeanMetaData;
 import org.jboss.beans.metadata.plugins.AbstractMapMetaData;
 import org.jboss.beans.metadata.spi.PropertyMetaData;
@@ -184,6 +183,16 @@ public class MapTestCase extends AbstractXMLTest
       assertWildcard(getValue(map));
    }
    
+   public void testMapWithBean() throws Exception
+   {
+      AbstractMapMetaData map = getMap("MapWithBean.xml");
+      assertNull(map.getType());
+      assertNull(map.getKeyType());
+      assertNull(map.getValueType());
+      assertBean(getKey(map));
+      assertBean(getValue(map));
+   }
+
    protected ValueMetaData getKey(AbstractMapMetaData map)
    {
       assertEquals(1, map.size());

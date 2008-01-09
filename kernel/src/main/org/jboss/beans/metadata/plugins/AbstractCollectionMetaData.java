@@ -25,21 +25,20 @@ import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Iterator;
-
-import javax.xml.bind.annotation.XmlType;
 import javax.xml.bind.annotation.XmlAttribute;
+import javax.xml.bind.annotation.XmlType;
 
 import org.jboss.beans.metadata.spi.MetaDataVisitor;
 import org.jboss.beans.metadata.spi.MetaDataVisitorNode;
 import org.jboss.beans.metadata.spi.ValueMetaData;
-import org.jboss.reflect.spi.TypeInfo;
 import org.jboss.reflect.spi.ClassInfo;
+import org.jboss.reflect.spi.TypeInfo;
 import org.jboss.util.JBossObject;
 import org.jboss.util.JBossStringBuilder;
-import org.jboss.xb.annotations.JBossXmlNoElements;
-import org.jboss.xb.annotations.JBossXmlChildren;
 import org.jboss.xb.annotations.JBossXmlChild;
 import org.jboss.xb.annotations.JBossXmlChildWildcard;
+import org.jboss.xb.annotations.JBossXmlChildren;
+import org.jboss.xb.annotations.JBossXmlNoElements;
 
 /**
  * Collection metadata.
@@ -52,6 +51,7 @@ import org.jboss.xb.annotations.JBossXmlChildWildcard;
 @JBossXmlNoElements
 @JBossXmlChildren
 ({
+   @JBossXmlChild(name="bean", type=AbstractBeanMetaData.class),
    @JBossXmlChild(name="array", type=AbstractArrayMetaData.class),
    @JBossXmlChild(name="collection", type=AbstractCollectionMetaData.class),
    @JBossXmlChild(name="inject", type=AbstractInjectionValueMetaData.class),

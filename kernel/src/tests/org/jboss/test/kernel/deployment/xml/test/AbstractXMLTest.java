@@ -40,6 +40,7 @@ import org.jboss.beans.metadata.plugins.StringValueMetaData;
 import org.jboss.beans.metadata.plugins.ThisValueMetaData;
 import org.jboss.beans.metadata.plugins.factory.GenericBeanFactoryMetaData;
 import org.jboss.beans.metadata.spi.AnnotationMetaData;
+import org.jboss.beans.metadata.spi.BeanMetaData;
 import org.jboss.beans.metadata.spi.CallbackMetaData;
 import org.jboss.beans.metadata.spi.DemandMetaData;
 import org.jboss.beans.metadata.spi.DependencyMetaData;
@@ -347,6 +348,12 @@ public class AbstractXMLTest extends AbstractTestCaseWithSetup
       assertTrue(value instanceof ThisValueMetaData);
    }
    
+   protected void assertBean(ValueMetaData value)
+   {
+      assertNotNull(value);
+      assertTrue(value instanceof BeanMetaData);
+   }
+
    protected void checkJBossXBException(Class<? extends Throwable> expected, Throwable throwable)
    {
       checkThrowable(JBossXBException.class, throwable);

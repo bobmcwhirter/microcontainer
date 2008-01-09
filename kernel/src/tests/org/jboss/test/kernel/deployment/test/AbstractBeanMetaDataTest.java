@@ -74,14 +74,17 @@ public abstract class AbstractBeanMetaDataTest extends AbstractDeploymentTest
       assertEquals(2, beans6.size());
       SimpleBean inner61 = beans6.get(0);
       assertNotNull(inner61);
+      assertSame(inner61, getBean("inner61"));
       SimpleBean inner71 = inner61.getBean();
       assertNotNull(inner71);
       assertEquals("InnerBean71", inner71.getString());
+      assertSame(inner71, getBean("inner71"));
       SimpleBean inner62 = beans6.get(1);
       assertNotNull(inner62);
+      assertSame(inner61, getBean("inner61"));
       SimpleBean inner72 = inner62.getBean();
       assertNotNull(inner72);
       assertEquals("InnerBean72", inner72.getString());
+      assertSame(inner72, getBean("inner72"));
    }
-
 }

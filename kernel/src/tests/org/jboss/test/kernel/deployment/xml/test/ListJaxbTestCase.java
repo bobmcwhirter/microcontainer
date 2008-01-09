@@ -152,6 +152,14 @@ public class ListJaxbTestCase extends AbstractMCTest
       assertWildcard(getValue(collection));
    }
    
+   public void testListWithBean() throws Exception
+   {
+      AbstractListMetaData collection = getCollection();
+      assertNull(collection.getType());
+      assertNull(collection.getElementType());
+      assertBean(getValue(collection));
+   }
+
    protected ValueMetaData getValue(AbstractListMetaData collection)
    {
       assertEquals(1, collection.size());

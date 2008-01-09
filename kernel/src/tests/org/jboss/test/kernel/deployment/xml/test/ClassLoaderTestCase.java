@@ -21,11 +21,9 @@
 */
 package org.jboss.test.kernel.deployment.xml.test;
 
-import org.jboss.beans.metadata.spi.ClassLoaderMetaData;
-import org.jboss.beans.metadata.spi.BeanMetaData;
-import org.jboss.kernel.plugins.deployment.AbstractKernelDeployment;
-
 import junit.framework.Test;
+import org.jboss.beans.metadata.spi.ClassLoaderMetaData;
+import org.jboss.kernel.plugins.deployment.AbstractKernelDeployment;
 
 /**
  * ClassLoaderTestCase.
@@ -46,8 +44,7 @@ public class ClassLoaderTestCase extends AbstractXMLTest
    public void testClassLoaderWithBean() throws Exception
    {
       ClassLoaderMetaData classLoader = getClassLoader("ClassLoaderWithBean.xml");
-      assertNotNull(classLoader.getClassLoader());
-      assertTrue(classLoader.getClassLoader() instanceof BeanMetaData);
+      assertBean(classLoader.getClassLoader());
    }
 
    public void testClassLoaderWithInject() throws Exception

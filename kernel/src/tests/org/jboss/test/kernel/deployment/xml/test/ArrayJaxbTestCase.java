@@ -152,6 +152,14 @@ public class ArrayJaxbTestCase extends AbstractMCTest
       assertWildcard(getValue(collection));
    }
    
+   public void testArrayWithBean() throws Exception
+   {
+      AbstractArrayMetaData collection = getCollection();
+      assertNull(collection.getType());
+      assertNull(collection.getElementType());
+      assertBean(getValue(collection));
+   }
+
    protected ValueMetaData getValue(AbstractArrayMetaData collection)
    {
       assertEquals(1, collection.size());

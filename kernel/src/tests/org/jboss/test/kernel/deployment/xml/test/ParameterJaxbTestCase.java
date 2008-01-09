@@ -26,7 +26,6 @@ import java.util.List;
 
 import junit.framework.Test;
 import org.jboss.beans.metadata.plugins.AbstractBeanMetaData;
-import org.jboss.beans.metadata.spi.BeanMetaData;
 import org.jboss.beans.metadata.spi.ConstructorMetaData;
 import org.jboss.beans.metadata.spi.ParameterMetaData;
 import org.jboss.test.kernel.deployment.xml.support.Annotation1;
@@ -66,8 +65,7 @@ public class ParameterJaxbTestCase extends AbstractMCTest
    {
       ParameterMetaData parameter = getParameter();
       assertNull(parameter.getAnnotations());
-      assertNotNull(parameter.getValue());
-      assertTrue(parameter.getValue() instanceof BeanMetaData);
+      assertBean(parameter.getValue());
    }
    
    public void testParameterWithClass() throws Exception

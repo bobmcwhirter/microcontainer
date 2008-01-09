@@ -183,6 +183,16 @@ public class MapJaxbTestCase extends AbstractMCTest
       assertWildcard(getValue(map));
    }
    
+   public void testMapWithBean() throws Exception
+   {
+      AbstractMapMetaData map = getMap();
+      assertNull(map.getType());
+      assertNull(map.getKeyType());
+      assertNull(map.getValueType());
+      assertBean(getKey(map));
+      assertBean(getValue(map));
+   }
+
    protected ValueMetaData getKey(AbstractMapMetaData map)
    {
       assertEquals(1, map.size());

@@ -26,7 +26,6 @@ import java.util.HashSet;
 
 import junit.framework.Test;
 import org.jboss.beans.metadata.plugins.AbstractBeanMetaData;
-import org.jboss.beans.metadata.spi.BeanMetaData;
 import org.jboss.beans.metadata.spi.ConstructorMetaData;
 import org.jboss.test.kernel.deployment.xml.support.Annotation1;
 import org.jboss.test.kernel.deployment.xml.support.Annotation2;
@@ -67,8 +66,7 @@ public class ConstructorJaxbTestCase extends AbstractMCTest
       assertNull(constructor.getAnnotations());
       assertNull(constructor.getFactory());
       assertNull(constructor.getParameters());
-      assertNotNull(constructor.getValue());
-      assertTrue(constructor.getValue() instanceof BeanMetaData);
+      assertBean(constructor.getValue());
    }
 
    public void testConstructorWithFactoryClass() throws Exception

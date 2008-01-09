@@ -1,0 +1,16 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<bean xmlns="urn:jboss:bean-deployer:2.0" class="Dummy">
+   <property name="PropertyName">
+      <map>
+         <entry>
+            <key>
+               <bean class="org.jboss.test.kernel.deployment.xml.support.SerializableObject"/>
+            </key>
+            <value>
+               <bean class="org.jboss.test.kernel.deployment.xml.support.SerializableObject"/>
+            </value>
+         </entry>
+      </map>
+   </property>
+</bean>

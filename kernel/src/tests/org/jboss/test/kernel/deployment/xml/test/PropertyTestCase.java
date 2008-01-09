@@ -24,13 +24,11 @@ package org.jboss.test.kernel.deployment.xml.test;
 import java.util.HashSet;
 import java.util.Set;
 
+import junit.framework.Test;
 import org.jboss.beans.metadata.plugins.AbstractBeanMetaData;
 import org.jboss.beans.metadata.plugins.StringValueMetaData;
 import org.jboss.beans.metadata.spi.PropertyMetaData;
 import org.jboss.beans.metadata.spi.ValueMetaData;
-import org.jboss.beans.metadata.spi.BeanMetaData;
-
-import junit.framework.Test;
 
 /**
  * PropertyTestCase.
@@ -65,8 +63,7 @@ public class PropertyTestCase extends AbstractXMLTest
       assertNotNull("PropertyName", property.getName());
       assertNull(property.getAnnotations());
       ValueMetaData value = property.getValue();
-      assertNotNull(value);
-      assertTrue(value instanceof BeanMetaData);
+      assertBean(value);
    }
    
    public void testPropertyWithClass() throws Exception

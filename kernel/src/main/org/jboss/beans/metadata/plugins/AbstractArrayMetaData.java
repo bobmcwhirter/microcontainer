@@ -21,18 +21,17 @@
 */
 package org.jboss.beans.metadata.plugins;
 
+import java.lang.reflect.Array;
 import java.util.ArrayList;
 import java.util.Collection;
-import java.lang.reflect.Array;
-
 import javax.xml.bind.annotation.XmlType;
 
 import org.jboss.reflect.spi.ClassInfo;
 import org.jboss.reflect.spi.TypeInfo;
-import org.jboss.xb.annotations.JBossXmlNoElements;
-import org.jboss.xb.annotations.JBossXmlChildren;
 import org.jboss.xb.annotations.JBossXmlChild;
 import org.jboss.xb.annotations.JBossXmlChildWildcard;
+import org.jboss.xb.annotations.JBossXmlChildren;
+import org.jboss.xb.annotations.JBossXmlNoElements;
 
 /**
  * Array metadata.
@@ -45,6 +44,7 @@ import org.jboss.xb.annotations.JBossXmlChildWildcard;
 @JBossXmlNoElements
 @JBossXmlChildren
 ({
+   @JBossXmlChild(name="bean", type=AbstractBeanMetaData.class),
    @JBossXmlChild(name="array", type=AbstractArrayMetaData.class),
    @JBossXmlChild(name="collection", type=AbstractCollectionMetaData.class),
    @JBossXmlChild(name="inject", type=AbstractInjectionValueMetaData.class),

@@ -26,7 +26,6 @@ import java.util.HashSet;
 import java.util.List;
 
 import junit.framework.Test;
-
 import org.jboss.beans.metadata.plugins.factory.GenericBeanFactoryMetaData2;
 import org.jboss.dependency.spi.ControllerMode;
 
