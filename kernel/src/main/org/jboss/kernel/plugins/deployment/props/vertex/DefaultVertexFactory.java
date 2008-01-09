@@ -102,7 +102,7 @@ public class DefaultVertexFactory implements VertexFactory
       if (isValueComplex(value))
          return new ComplexValueVertex(value);
       else
-         return new ValueVertex(value);
+         return new SimpleValueVertex(value);
    }
 
    public Visitor<String> visitor()

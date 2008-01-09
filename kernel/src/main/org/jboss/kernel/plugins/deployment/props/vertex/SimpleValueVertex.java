@@ -29,13 +29,14 @@ import org.jboss.kernel.plugins.deployment.props.TreeVertex;
 import org.jboss.util.graph.Vertex;
 
 /**
- * Value vertex.
+ * Simple value vertex.
+ * Single string value.
  *
  * @author <a href="mailto:ales.justin@jboss.com">Ales Justin</a>
  */
-public class ValueVertex extends TreeVertex<Vertex<String>>
+public class SimpleValueVertex extends TreeVertex<Vertex<String>>
 {
-   public ValueVertex(String value)
+   public SimpleValueVertex(String value)
    {
       super(value);
    }
