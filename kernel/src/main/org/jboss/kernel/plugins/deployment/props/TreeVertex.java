@@ -62,7 +62,7 @@ public abstract class TreeVertex<T extends Vertex<String>> extends Vertex<String
    /**
     * Get the last token.
     *
-    * @return
+    * @return last token string
     */
    protected String getLastToken()
    {

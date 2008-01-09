@@ -85,9 +85,24 @@ public class DefaultVertexFactory implements VertexFactory
       throw new IllegalArgumentException("No matching level factory: " + name + " / " + level);
    }
 
+   /**
+    * Is value complex.
+    * e.g. injection
+    *
+    * @param value
+    * @return
+    */
+   protected boolean isValueComplex(String value)
+   {
+      return value.contains(".");
+   }
+
    public TreeVertex valueVertex(String value)
    {
-      return new ValueVertex(value);
+      if (isValueComplex(value))
+         return new ComplexValueVertex(value);
+      else
+         return new ValueVertex(value);
    }
 
    public Visitor<String> visitor()
