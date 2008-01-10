@@ -40,6 +40,9 @@ public class PatternClassFilter implements ClassFilter
 
    /** The resource patterns as regular expressions */
    private Pattern[] resourcePatterns;
+
+   /** The package patterns as regular expressions */
+   private Pattern[] packagePatterns;
    
    /** Whether to include java */
    private boolean includeJava = false;
@@ -49,9 +52,10 @@ public class PatternClassFilter implements ClassFilter
     * 
     * @param classPatterns the class patterns
     * @param resourcePatterns the resource patterns
+    * @param packagePatterns the package patterns
     * @throws IllegalArgumentException for a null pattern
     */
-   public PatternClassFilter(String[] classPatterns, String[] resourcePatterns)
+   public PatternClassFilter(String[] classPatterns, String[] resourcePatterns, String[] packagePatterns)
    {
       if (classPatterns == null)
          throw new IllegalArgumentException("Null patterns");
@@ -76,6 +80,20 @@ public class PatternClassFilter implements ClassFilter
          if (resourcePatterns[i] == null)
             throw new IllegalArgumentException("Null pattern in " + Arrays.asList(resourcePatterns));
          this.resourcePatterns[i] = Pattern.compile(resourcePatterns[i]);
+      }
+
+      if (packagePatterns == null)
+      {
+         this.packagePatterns = this.classPatterns;
+         return;
+      }
+      
+      this.packagePatterns = new Pattern[packagePatterns.length];
+      for (int i = 0; i < packagePatterns.length; ++i)
+      {
+         if (packagePatterns[i] == null)
+            throw new IllegalArgumentException("Null pattern in " + Arrays.asList(packagePatterns));
+         this.packagePatterns[i] = Pattern.compile(packagePatterns[i]);
       }
    }
 
@@ -129,6 +147,22 @@ public class PatternClassFilter implements ClassFilter
       if (includeJava == false)
          return false;
       return JavaOnlyClassFilter.INSTANCE.matchesResourcePath(resourcePath);
+   }
+
+   public boolean matchesPackageName(String packageName)
+   {
+      if (packageName == null)
+         return false;
+      
+      for (int i = 0; i < packagePatterns.length; ++i)
+      {
+         Matcher matcher = packagePatterns[i].matcher(packageName);
+         if (matcher.matches())
+            return true;
+      }
+      if (includeJava == false)
+         return false;
+      return JavaOnlyClassFilter.INSTANCE.matchesPackageName(packageName);
    }
 
    @Override

@@ -52,6 +52,9 @@ public class PackageFilterUnitTestCase extends AbstractClassLoaderTestWithSecuri
       assertFilterNoMatchClassName("", filter);
       assertFilterNoMatchClassName(null, filter);
       assertFilterNoMatchResourcePath("x.xml", filter);
+      assertFilterNoMatchPackageName("gibberish", filter);
+      assertFilterNoMatchPackageName("", filter);
+      assertFilterNoMatchPackageName(null, filter);
    }
    
    public void testJavaLang() throws Exception
@@ -66,6 +69,12 @@ public class PackageFilterUnitTestCase extends AbstractClassLoaderTestWithSecuri
       assertFilterNoMatchClassName("", filter);
       assertFilterNoMatchClassName(null, filter);
       assertFilterMatchesResourcePath("java/lang/something.xml", filter);
+      assertFilterMatchesPackageName("java.lang", filter);
+      assertFilterNoMatchPackageName("java.langx", filter);
+      assertFilterNoMatchPackageName("java.lang.X.", filter);
+      assertFilterNoMatchPackageName("gibberish", filter);
+      assertFilterNoMatchPackageName("", filter);
+      assertFilterNoMatchPackageName(null, filter);
    }
    
    public void testJavaLangAndJavaLangReflect() throws Exception
@@ -83,5 +92,14 @@ public class PackageFilterUnitTestCase extends AbstractClassLoaderTestWithSecuri
       assertFilterNoMatchClassName("gibberish", filter);
       assertFilterNoMatchClassName("", filter);
       assertFilterNoMatchClassName(null, filter);
+      assertFilterMatchesPackageName("java.lang", filter);
+      assertFilterNoMatchPackageName("java.langx", filter);
+      assertFilterNoMatchPackageName("java.lang.X.", filter);
+      assertFilterMatchesPackageName("java.lang.reflect", filter);
+      assertFilterNoMatchPackageName("java.lang.reflectx", filter);
+      assertFilterNoMatchPackageName("java.lang.reflect.X", filter);
+      assertFilterNoMatchPackageName("gibberish", filter);
+      assertFilterNoMatchPackageName("", filter);
+      assertFilterNoMatchPackageName(null, filter);
    }
 }

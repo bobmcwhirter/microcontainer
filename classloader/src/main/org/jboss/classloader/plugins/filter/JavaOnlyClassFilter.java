@@ -37,7 +37,9 @@ public class JavaOnlyClassFilter extends PatternClassFilter
     */
    private JavaOnlyClassFilter()
    {
-      super(new String[] { "java\\..+", "javax\\..+" }, new String[] { "java/.+", "javax/.+" } );
+      super(new String[] { "java\\..+", "javax\\..+" }, 
+            new String[] { "java/.+", "javax/.+" },
+            new String[] { "java", "java\\..*", "javax", "javax\\..*" });
    }
 
    public String toString()

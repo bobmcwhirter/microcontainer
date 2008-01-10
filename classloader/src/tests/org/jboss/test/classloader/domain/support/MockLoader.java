@@ -63,4 +63,14 @@ public class MockLoader implements Loader
          return null;
       }
    }
+
+   public Package getPackage(String name)
+   {
+      return null;
+   }
+
+   public void getPackages(Set<Package> packages)
+   {
+      // Nothing
+   }
 }

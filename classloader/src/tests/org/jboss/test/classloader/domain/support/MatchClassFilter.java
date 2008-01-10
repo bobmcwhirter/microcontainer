@@ -36,7 +36,7 @@ public class MatchClassFilter implements ClassFilter
    
    public boolean filtered = false;
    
-   public MatchClassFilter(Class clazz)
+   public MatchClassFilter(Class<?> clazz)
    {
       this.className = clazz.getName();
    }
@@ -51,6 +51,13 @@ public class MatchClassFilter implements ClassFilter
    public boolean matchesResourcePath(String resourcePath)
    {
       if (ClassLoaderUtils.classNameToPath(this.className).equals(resourcePath))
+         filtered = true;
+      return true;
+   }
+   
+   public boolean matchesPackageName(String packageName)
+   {
+      if (ClassLoaderUtils.getClassPackageName(this.className).equals(packageName))
          filtered = true;
       return true;
    }

@@ -50,6 +50,12 @@ public class FilterUnitTestCase extends AbstractClassLoaderTestWithSecurity
       assertFilterMatchesClassName("gibberish", filter);
       assertFilterMatchesClassName("", filter);
       assertFilterMatchesClassName(null, filter);
+      assertFilterMatchesResourcePath("gibberish", filter);
+      assertFilterMatchesResourcePath("", filter);
+      assertFilterMatchesResourcePath(null, filter);
+      assertFilterMatchesPackageName("gibberish", filter);
+      assertFilterMatchesPackageName("", filter);
+      assertFilterMatchesPackageName(null, filter);
    }
    
    public void testNothing() throws Exception
@@ -58,6 +64,12 @@ public class FilterUnitTestCase extends AbstractClassLoaderTestWithSecurity
       assertFilterNoMatchClassName("gibberish", filter);
       assertFilterNoMatchClassName("", filter);
       assertFilterNoMatchClassName(null, filter);
+      assertFilterNoMatchResourcePath("gibberish", filter);
+      assertFilterNoMatchResourcePath("", filter);
+      assertFilterNoMatchResourcePath(null, filter);
+      assertFilterNoMatchPackageName("gibberish", filter);
+      assertFilterNoMatchPackageName("", filter);
+      assertFilterNoMatchPackageName(null, filter);
    }
    
    public void testJavaOnly() throws Exception
@@ -80,5 +92,35 @@ public class FilterUnitTestCase extends AbstractClassLoaderTestWithSecurity
       assertFilterNoMatchClassName("gibberish", filter);
       assertFilterNoMatchClassName("", filter);
       assertFilterNoMatchClassName(null, filter);
+      assertFilterMatchesResourcePath("java/x", filter);
+      assertFilterMatchesResourcePath("java/lang/Object", filter);
+      assertFilterMatchesResourcePath("java/lang/ref/Method", filter);
+      assertFilterMatchesResourcePath("java/util/Collection", filter);
+      assertFilterMatchesResourcePath("javax/x", filter);
+      assertFilterMatchesResourcePath("javax/naming/Context", filter);
+      assertFilterNoMatchResourcePath("java/", filter);
+      assertFilterNoMatchResourcePath("java", filter);
+      assertFilterNoMatchResourcePath("javaa.", filter);
+      assertFilterNoMatchResourcePath("javaa/whatever", filter);
+      assertFilterNoMatchResourcePath("javax", filter);
+      assertFilterNoMatchResourcePath("javax/", filter);
+      assertFilterNoMatchResourcePath("javaxa/", filter);
+      assertFilterNoMatchResourcePath("javaxa/whatever", filter);
+      assertFilterNoMatchResourcePath("gibberish", filter);
+      assertFilterNoMatchResourcePath("", filter);
+      assertFilterNoMatchResourcePath(null, filter);
+      assertFilterMatchesPackageName("java", filter);
+      assertFilterMatchesPackageName("java.lang", filter);
+      assertFilterMatchesPackageName("java.lang.ref", filter);
+      assertFilterMatchesPackageName("java.util", filter);
+      assertFilterMatchesPackageName("javax", filter);
+      assertFilterMatchesPackageName("javax.naming", filter);
+      assertFilterNoMatchPackageName("javaa.", filter);
+      assertFilterNoMatchPackageName("javaa.whatever", filter);
+      assertFilterNoMatchPackageName("javaxa.", filter);
+      assertFilterNoMatchPackageName("javaxa.whatever", filter);
+      assertFilterNoMatchPackageName("gibberish", filter);
+      assertFilterNoMatchPackageName("", filter);
+      assertFilterNoMatchPackageName(null, filter);
    }
 }

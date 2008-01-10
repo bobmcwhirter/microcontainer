@@ -103,9 +103,9 @@ public class AbstractJDKChecker implements JDKChecker
     * @param stack the class stack 
     * @return the requesting class
     */
-   protected Class<?> getRequestingClass(Class[] stack)
+   protected Class<?> getRequestingClass(Class<?>[] stack)
    {
-      for (Class clazz : stack)
+      for (Class<?> clazz : stack)
       {
          if (Hack.class.isAssignableFrom(clazz) == false &&
              JDKChecker.class.isAssignableFrom(clazz) == false &&
@@ -146,7 +146,7 @@ public class AbstractJDKChecker implements JDKChecker
    private static class Hack extends SecurityManager
    {
       @Override
-      public Class[] getClassContext()
+      public Class<?>[] getClassContext()
       {
          return super.getClassContext();
       }

@@ -52,6 +52,11 @@ public class EverythingClassFilter implements ClassFilter
       return true;
    }
    
+   public boolean matchesPackageName(String packageName)
+   {
+      return true;
+   }
+   
    @Override
    public String toString()
    {

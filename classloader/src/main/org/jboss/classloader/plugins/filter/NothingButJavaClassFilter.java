@@ -37,7 +37,9 @@ public class NothingButJavaClassFilter extends PatternClassFilter
     */
    private NothingButJavaClassFilter()
    {
-      super(new String[] { "java\\..+" }, new String[] { "java/.+" });
+      super(new String[] { "java\\..+" }, 
+            new String[] { "java/.+" },
+            new String[] { "java", "java\\..*" });
    }
 
    public String toString()

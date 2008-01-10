@@ -68,7 +68,7 @@ public class CircularityErrorUnitTestCase extends AbstractClassLoaderTest
       ClassLoaderSystem system = createClassLoaderSystemWithModifiedBootstrap();
       final ClassLoader cl = system.registerClassLoaderPolicy(new TestClassLoaderPolicy());
 
-      Class cls = assertLoadClass(Support.class, cl);
+      Class<?> cls = assertLoadClass(Support.class, cl);
 
       Thread thread1 = new Thread(new Runnable()
       {

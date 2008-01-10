@@ -47,7 +47,7 @@ public class ConcurrentLoaderUnitTestCase extends AbstractClassLoaderTestWithSec
    public final static int MAX_CLASSES = 10;
    public final static int NUMBER_OF_LOADING = 10;
    public final static int NUMBER_OF_THREADS = 20;
-   private HashSet<Class> classes = new HashSet<Class>();
+   private HashSet<Class<?>> classes = new HashSet<Class<?>>();
    private Vector<Loader> loaders = new Vector<Loader>();
    private Timer newInstanceTimer;
    private int doneCount;
@@ -114,14 +114,14 @@ public class ConcurrentLoaderUnitTestCase extends AbstractClassLoaderTestWithSec
       public void run()
       {
          int size = classes.size();
-         Class[] theClasses = new Class[size];
+         Class<?>[] theClasses = new Class<?>[size];
          classes.toArray(theClasses);
          getLog().trace("NewInstanceTask, creating " + size + " instances");
          for (int c = 0; c < theClasses.length; ++c)
          {
             try
             {
-               Class clazz = theClasses[c];
+               Class<?> clazz = theClasses[c];
                Object obj = clazz.newInstance();
                getLog().trace("Created instance=" + obj);
             }
@@ -170,7 +170,7 @@ public class ConcurrentLoaderUnitTestCase extends AbstractClassLoaderTestWithSec
                getLog().trace("before load...");
                long sleep = (long) (500 * Math.random());
                Thread.sleep(sleep);
-               Class clazz = cl.loadClass (className);
+               Class<?> clazz = cl.loadClass(className);
                classes.add(clazz);
                Object obj = clazz.newInstance();
                getLog().trace("Class " + className + " loaded, obj=" + obj);

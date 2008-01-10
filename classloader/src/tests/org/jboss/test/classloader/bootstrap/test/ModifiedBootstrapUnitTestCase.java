@@ -80,8 +80,8 @@ public class ModifiedBootstrapUnitTestCase extends AbstractClassLoaderTestWithSe
       policy.setPathsAndPackageNames(TestClass.class);
       ClassLoader classLoader = system.registerClassLoaderPolicy(policy);
       
-      Class clazz = assertLoadClass(TestClass.class, classLoader);
-      Constructor constructor = clazz.getConstructor((Class[]) null);
+      Class<?> clazz = assertLoadClass(TestClass.class, classLoader);
+      Constructor<?> constructor = clazz.getConstructor((Class[]) null);
       
       Object object = constructor.newInstance((Object[]) null);
       

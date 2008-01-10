@@ -52,6 +52,11 @@ public class NothingClassFilter implements ClassFilter
       return false;
    }
    
+   public boolean matchesPackageName(String packageName)
+   {
+      return false;
+   }
+   
    @Override
    public String toString()
    {

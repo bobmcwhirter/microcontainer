@@ -415,6 +415,129 @@ public abstract class BaseClassLoaderDomain implements Loader
    }
    
    /**
+    * Load a package from the domain
+    * 
+    * @param classLoader the classloader
+    * @param name the resource name
+    * @param allExports whether we should look at all exports
+    * @return the package
+    */
+   Package getPackage(BaseClassLoader classLoader, String name, boolean allExports)
+   {
+      boolean trace = log.isTraceEnabled();
+
+      if (getClassLoaderSystem() == null)
+         throw new IllegalStateException("Domain is not registered with a classloader system: " + toLongString());
+
+      // Try the before attempt
+      Package result = beforeGetPackage(name);
+      if (result != null)
+         return result;
+
+      // Work out the rules
+      ClassLoaderInformation info = null;
+      BaseClassLoaderPolicy policy = null;
+      if (classLoader != null)
+      {
+         policy = classLoader.getPolicy();
+         info = infos.get(classLoader);
+         if (policy.isImportAll())
+            allExports = true;
+      }
+
+      // Next we try the old "big ball of mud" model      
+      if (allExports)
+      {
+         result = getPackageFromExports(classLoader, name, trace);
+         if (result != null)
+            return result;
+      }
+      else if (trace)
+         log.trace(this + " not getting package " + name + " from all exports");
+      
+      // Next we try the imports
+      if (info != null)
+      {
+         result = getPackageFromImports(info, name, trace);
+         if (result != null)
+            return result;
+      }
+
+      // Finally use any requesting classloader
+      if (classLoader != null)
+      {
+         if (trace)
+            log.trace(this + " trying to get package " + name + " from requesting " + classLoader);
+         result = classLoader.getPackageLocally(name);
+         if (result != null)
+         {
+            if (trace)
+               log.trace(this + " got package from requesting " + classLoader + " " + result);
+            return result;
+         }
+      }
+
+      // Try the after attempt
+      result = afterGetPackage(name);
+      if (result != null)
+         return result;
+      
+      // Didn't find it
+      return null;
+   }
+   
+   /**
+    * Load packages from the domain
+    * 
+    * @param classLoader the classloader
+    * @param name the package name
+    * @param allExports whether we should look at all exports
+    * @param packages the packages to add to
+    */
+   void getPackages(BaseClassLoader classLoader, Set<Package> packages, boolean allExports)
+   {
+      boolean trace = log.isTraceEnabled();
+
+      if (getClassLoaderSystem() == null)
+         throw new IllegalStateException("Domain is not registered with a classloader system: " + toLongString());
+
+      // Try the before attempt
+      beforeGetPackages(packages);
+
+      // Work out the rules
+      ClassLoaderInformation info = null;
+      BaseClassLoaderPolicy policy = null;
+      if (classLoader != null)
+      {
+         policy = classLoader.getPolicy();
+         info = infos.get(classLoader);
+         if (policy.isImportAll())
+            allExports = true;
+      }
+
+      // Next we try the old "big ball of mud" model      
+      if (allExports)
+         getPackagesFromExports(classLoader, packages, trace);
+      else if (trace)
+         log.trace(this + " not getting packages from all exports");
+      
+      // Next we try the imports
+      if (info != null)
+         getPackagesFromImports(info, packages, trace);
+
+      // Finally use any requesting classloader
+      if (classLoader != null)
+      {
+         if (trace)
+            log.trace(this + " trying to get packages from requesting " + classLoader);
+         classLoader.getPackagesLocally(packages);
+      }
+
+      // Try the after attempt
+      afterGetPackages(packages);
+   }
+   
+   /**
     * Find a loader for class in exports
     * 
     * @param classLoader the classloader
@@ -556,6 +679,55 @@ public abstract class BaseClassLoaderDomain implements Loader
          }
       }
    }
+   
+   /**
+    * Load a package from the exports
+    * 
+    * @param classLoader the classloader
+    * @param name the package name
+    * @param trace whether trace is enabled
+    * @return the package
+    */
+   private Package getPackageFromExports(BaseClassLoader classLoader, String name, boolean trace)
+   {
+      List<ClassLoaderInformation> list = classLoadersByPackageName.get(name);
+      if (trace)
+         log.trace(this + " trying to get package " + name + " from all exports " + list);
+      if (list != null && list.isEmpty() == false)
+      {
+         for (ClassLoaderInformation info : list)
+         {
+            BaseDelegateLoader loader = info.getExported();
+
+            Package result = loader.getPackage(name);
+            if (result != null)
+               return result;
+         }
+      }
+      return null;
+   }
+   
+   /**
+    * Load packages from the exports
+    * 
+    * @param classLoader the classloader
+    * @param packages the packages to add to
+    * @param trace whether trace is enabled
+    */
+   void getPackagesFromExports(BaseClassLoader classLoader, Set<Package> packages, boolean trace)
+   {
+      List<ClassLoaderInformation> list = classLoaders;
+      if (trace)
+         log.trace(this + " trying to get all packages from all exports " + list);
+      if (list != null && list.isEmpty() == false)
+      {
+         for (ClassLoaderInformation info : list)
+         {
+            BaseDelegateLoader loader = info.getExported();
+            loader.getPackages(packages);
+         }
+      }
+   }
 
    /**
     * Find a loader for a class in imports
@@ -676,6 +848,58 @@ public abstract class BaseClassLoaderDomain implements Loader
       for (DelegateLoader delegate : delegates)
          delegate.getResources(name, urls);
    }
+   
+   /**
+    * Load a package from the imports
+    * 
+    * @param info the classloader information
+    * @param name the pacakge name
+    * @param trace whether trace is enabled
+    * @return the package
+    */
+   private Package getPackageFromImports(ClassLoaderInformation info, String name, boolean trace)
+   {
+      List<? extends DelegateLoader> delegates = info.getDelegates();
+      if (delegates == null || delegates.isEmpty())
+      {
+         if (trace)
+            log.trace(this + " not getting package " + name + " from imports it has no delegates");
+         return null;
+      }
+
+      if (trace)
+         log.trace(this + " trying to get package " + name + " from imports " + delegates + " for " + info.getClassLoader());
+
+      for (DelegateLoader delegate : delegates)
+      {
+         Package result = delegate.getPackage(name);
+         if (result != null)
+            return result;
+      }
+      return null;
+   }
+   
+   /**
+    * Load packages from the imports
+    * 
+    * @param info the classloader info
+    * @param packages the packages to add to
+    * @param trace whether trace is enabled
+    */
+   void getPackagesFromImports(ClassLoaderInformation info, Set<Package> packages, boolean trace)
+   {
+      List<? extends DelegateLoader> delegates = info.getDelegates();
+      if (delegates == null || delegates.isEmpty())
+      {
+         if (trace)
+            log.trace(this + " not getting all packages from imports it has no delegates");
+         return;
+      }
+      if (trace)
+         log.trace(this + " trying to get all pacakges from imports " + delegates + " for " + info.getClassLoader());
+      for (DelegateLoader delegate : delegates)
+         delegate.getPackages(packages);
+   }
 
    /**
     * Invoked before classloading is attempted to allow a preload attempt, e.g. from the parent
@@ -722,10 +946,40 @@ public abstract class BaseClassLoaderDomain implements Loader
    /**
     * Invoked after getResource is attempted to allow a postload attempt, e.g. from the parent
     * 
-    * @param name the class name
+    * @param name the resource name
     * @return the url if found or null otherwise
     */
    protected abstract URL afterGetResource(String name);
+   
+   /**
+    * Invoked before getPackages is attempted to allow a preload attempt, e.g. from the parent
+    * 
+    * @param packages the packages to add to
+    */
+   protected abstract void beforeGetPackages(Set<Package> packages);
+   
+   /**
+    * Invoked after getPackages is attempted to allow a postload attempt, e.g. from the parent
+    * 
+    * @param packages the packages to add to
+    */
+   protected abstract void afterGetPackages(Set<Package> packages);
+   
+   /**
+    * Invoked before getPackage is attempted to allow a preload attempt, e.g. from the parent
+    * 
+    * @param name the package name
+    * @return the package if found or null otherwise
+    */
+   protected abstract Package beforeGetPackage(String name);
+   
+   /**
+    * Invoked after getPackage is attempted to allow a postload attempt, e.g. from the parent
+    * 
+    * @param name the package name
+    * @return the url if found or null otherwise
+    */
+   protected abstract Package afterGetPackage(String name);
    
    public Class<?> loadClass(String name)
    {
@@ -785,6 +1039,39 @@ public abstract class BaseClassLoaderDomain implements Loader
    void getResources(BaseClassLoader classLoader, String name, Set<URL> urls) throws IOException
    {
       getResources(classLoader, name, urls, false);
+   }
+   
+   public Package getPackage(String name)
+   {
+      return getPackage(null, name, true);
+   }
+   
+   /**
+    * Get a package from the specified classloader
+    * 
+    * @param classLoader the classloader
+    * @param name the package name
+    * @return the package
+    */
+   Package getPackage(BaseClassLoader classLoader, String name)
+   {
+      return getPackage(classLoader, name, false);
+   }
+   
+   public void getPackages(Set<Package> packages)
+   {
+      getPackages(null, packages, true);
+   }
+   
+   /**
+    * Get the packages from a specified classloader 
+    * 
+    * @param classLoader the classloader
+    * @param packages the packages
+    */
+   void getPackages(BaseClassLoader classLoader, Set<Package> packages)
+   {
+      getPackages(classLoader, packages, false);
    }
 
    /**

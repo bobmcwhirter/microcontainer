@@ -87,6 +87,16 @@ public abstract class BaseClassLoaderPolicy
    protected abstract DelegateLoader getExported();
 
    /**
+    * Get a simple name for the classloader
+    * 
+    * @return the name
+    */
+   protected String getName()
+   {
+      return "";
+   }
+   
+   /**
     * Get the exported packages<p>
     *
     * Provides a hint for indexing

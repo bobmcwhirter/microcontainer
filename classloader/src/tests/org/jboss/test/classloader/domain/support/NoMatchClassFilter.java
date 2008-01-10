@@ -36,7 +36,7 @@ public class NoMatchClassFilter implements ClassFilter
    
    public boolean filtered = false;
    
-   public NoMatchClassFilter(Class clazz)
+   public NoMatchClassFilter(Class<?> clazz)
    {
       this.className = clazz.getName();
    }
@@ -58,6 +58,13 @@ public class NoMatchClassFilter implements ClassFilter
          filtered = true;
          return false;
       }
+      return true;
+   }
+   
+   public boolean matchesPackageName(String packageName)
+   {
+      if (ClassLoaderUtils.getClassPackageName(this.className).equals(packageName))
+         return false;
       return true;
    }
 }

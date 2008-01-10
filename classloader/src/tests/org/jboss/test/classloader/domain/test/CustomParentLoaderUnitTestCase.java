@@ -133,7 +133,7 @@ public class CustomParentLoaderUnitTestCase extends AbstractClassLoaderTestWithS
       assertTrue("Should have been filtered", filter.filtered);
    }
    
-   protected void checkGetResource(MockLoader loader, Class... classes)
+   protected void checkGetResource(MockLoader loader, Class<?>... classes)
    {
       if (classes == null || classes.length == 0)
       {
@@ -141,12 +141,12 @@ public class CustomParentLoaderUnitTestCase extends AbstractClassLoaderTestWithS
          return;
       }
       Set<String> resourcePaths = new HashSet<String>();
-      for (Class clazz : classes)
+      for (Class<?> clazz : classes)
          resourcePaths.add(ClassLoaderUtils.classNameToPath(clazz.getName()));
       assertEquals(resourcePaths, loader.getResource);
    }
    
-   protected void checkLoadClass(MockLoader loader, Class... classes)
+   protected void checkLoadClass(MockLoader loader, Class<?>... classes)
    {
       if (classes == null || classes.length == 0)
       {
@@ -154,7 +154,7 @@ public class CustomParentLoaderUnitTestCase extends AbstractClassLoaderTestWithS
          return;
       }
       Set<String> classNames = new HashSet<String>();
-      for (Class clazz : classes)
+      for (Class<?> clazz : classes)
          classNames.add(clazz.getName());
       assertEquals(classNames, loader.loadClass);
    }

@@ -60,7 +60,9 @@ public class ParentPolicyUnitTestCase extends AbstractClassLoaderTestWithSecurit
       ClassLoader classLoader = system.registerClassLoaderPolicy(domain, policy);
       
       assertLoadClass(Object.class, classLoader, null, true);
+      assertPackage(ClassLoaderDomain.class, classLoader);
       assertLoadClass(ClassLoaderDomain.class, classLoader, null, true);
+      assertPackage(ClassLoaderDomain.class, classLoader);
    }
    
    public void testBefore() throws Exception
@@ -74,6 +76,7 @@ public class ParentPolicyUnitTestCase extends AbstractClassLoaderTestWithSecurit
       
       assertLoadClass(Object.class, classLoader, null, true);
       assertLoadClass(ClassLoaderDomain.class, classLoader, null, true);
+      assertPackage(ClassLoaderDomain.class, classLoader);
    }
    
    public void testBeforeButJavaOnly() throws Exception
@@ -87,6 +90,7 @@ public class ParentPolicyUnitTestCase extends AbstractClassLoaderTestWithSecurit
       
       assertLoadClass(Object.class, classLoader, null, true);
       assertLoadClass(ClassLoaderDomain.class, classLoader);
+      assertPackage(ClassLoaderDomain.class, classLoader, policy);
    }
    
    public void testBeforeButJavaOnlyNotFound() throws Exception
@@ -112,6 +116,7 @@ public class ParentPolicyUnitTestCase extends AbstractClassLoaderTestWithSecurit
       
       assertLoadClass(Object.class, classLoader, null, true);
       assertLoadClass(ClassLoaderDomain.class, classLoader);
+      assertPackage(ClassLoaderDomain.class, classLoader);
    }
    
    public void testAfterReached() throws Exception
@@ -124,6 +129,7 @@ public class ParentPolicyUnitTestCase extends AbstractClassLoaderTestWithSecurit
       
       assertLoadClass(Object.class, classLoader, null, true);
       assertLoadClass(ClassLoaderDomain.class, classLoader, null, true);
+      assertPackage(ClassLoaderDomain.class, classLoader);
    }
    
    public void testAfterButJavaBeforeNotReached() throws Exception
@@ -137,6 +143,7 @@ public class ParentPolicyUnitTestCase extends AbstractClassLoaderTestWithSecurit
       
       assertLoadClass(Object.class, classLoader, null, true);
       assertLoadClass(ClassLoaderDomain.class, classLoader);
+      assertPackage(ClassLoaderDomain.class, classLoader);
    }
    
    public void testAfterButJavaBeforeReached() throws Exception
@@ -149,6 +156,7 @@ public class ParentPolicyUnitTestCase extends AbstractClassLoaderTestWithSecurit
       
       assertLoadClass(Object.class, classLoader, null, true);
       assertLoadClass(ClassLoaderDomain.class, classLoader, null, true);
+      assertPackage(ClassLoaderDomain.class, classLoader);
    }
    
    public void testBeforeFilteredNotMatched() throws Exception
@@ -165,6 +173,7 @@ public class ParentPolicyUnitTestCase extends AbstractClassLoaderTestWithSecurit
       assertLoadClass(Object.class, classLoader, null, true);
       assertLoadClass(ClassLoaderDomain.class, classLoader);
       assertTrue("Should have been filtered", filter.filtered);
+      assertPackage(ClassLoaderDomain.class, classLoader, policy);
    }
    
    public void testBeforeFilteredMatched() throws Exception
@@ -181,6 +190,7 @@ public class ParentPolicyUnitTestCase extends AbstractClassLoaderTestWithSecurit
       assertLoadClass(Object.class, classLoader, null, true);
       assertLoadClass(ClassLoaderDomain.class, classLoader, null, true);
       assertTrue("Should have been filtered", filter.filtered);
+      assertPackage(ClassLoaderDomain.class, classLoader);
    }
    
    public void testAfterFilteredNotReached() throws Exception
@@ -197,6 +207,7 @@ public class ParentPolicyUnitTestCase extends AbstractClassLoaderTestWithSecurit
       assertLoadClass(Object.class, classLoader, null, true);
       assertLoadClass(ClassLoaderDomain.class, classLoader);
       assertFalse("Should NOT have been filtered", filter.filtered);
+      assertPackage(ClassLoaderDomain.class, classLoader, policy);
    }
    
    public void testAfterFilteredReachedNotMatched() throws Exception
@@ -227,6 +238,7 @@ public class ParentPolicyUnitTestCase extends AbstractClassLoaderTestWithSecurit
       assertLoadClass(Object.class, classLoader, null, true);
       assertLoadClass(ClassLoaderDomain.class, classLoader, null, true);
       assertTrue("Should have been filtered", filter.filtered);
+      assertPackage(ClassLoaderDomain.class, classLoader);
    }
    
    public void testNoMatchBeforeAndAfter() throws Exception

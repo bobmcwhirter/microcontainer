@@ -89,16 +89,16 @@ public class CircularLoadUnitTestCase extends AbstractClassLoaderTestWithSecurit
 
          // Load and create an instance of the UserOfBase class
          Class<?> userOfBaseClass = assertLoadClass(UserOfBase.class, cl0);
-         Constructor ctor0 = userOfBaseClass.getConstructor((Class[]) null);
+         Constructor<?> ctor0 = userOfBaseClass.getConstructor((Class[]) null);
          Object userOfBase = ctor0.newInstance((Object[]) null);
 
          // Load and create an instance of the Support class
          Class<?> supportClass = assertLoadClass(Support.class, cl1);
-         Constructor ctor1 = supportClass.getConstructor((Class[]) null);
+         Constructor<?> ctor1 = supportClass.getConstructor((Class[]) null);
          Object support = ctor1.newInstance((Object[]) null);
 
          // Now invoke UserOfBase.testBase(Support)
-         Class[] sig = { supportClass };
+         Class<?>[] sig = { supportClass };
          Method testBase = userOfBaseClass.getMethod("testBase", sig);
          getLog().info(testBase.toString());
          Object[] args = { support };
@@ -124,21 +124,21 @@ public class CircularLoadUnitTestCase extends AbstractClassLoaderTestWithSecurit
       {
          // Load and create an instance of the UserOfLoginInfo class
          Class<?> c0 = assertLoadClass(UserOfLoginInfo.class, cl);
-         Class[] ctorsig0 = {String.class, String.class};
-         Constructor ctor0 = c0.getConstructor(ctorsig0);
+         Class<?>[] ctorsig0 = {String.class, String.class};
+         Constructor<?> ctor0 = c0.getConstructor(ctorsig0);
          Object[] args0 = {"jduke", "theduke"};
          ctor0.newInstance(args0);
 
          // Load and create an instance of the UserOfUsrMgr class
          Class<?> c1 = assertLoadClass(UserOfUsrMgr.class, cl);
-         Class[] ctorsig1 = {String.class, String.class};
-         Constructor ctor1 = c1.getConstructor(ctorsig1);
+         Class<?>[] ctorsig1 = {String.class, String.class};
+         Constructor<?> ctor1 = c1.getConstructor(ctorsig1);
          Object[] args1 = {"jduke", "theduke"};
          Object o1 = ctor1.newInstance(args1);
 
          // Now invoke UserOfUsrMgr.changePassword(char[] password)
          char[] password = "theduke2".toCharArray();
-         Class[] sig = {password.getClass()};
+         Class<?>[] sig = {password.getClass()};
          Method changePassword = c1.getMethod("changePassword", sig);
          getLog().info(changePassword.toString());
          Object[] args = {password};
@@ -282,7 +282,7 @@ public class CircularLoadUnitTestCase extends AbstractClassLoaderTestWithSecurit
       String classname;
       ClassLoader loader;
       ClassLoader expected;
-      Class loadedClass;
+      Class<?> loadedClass;
       Throwable loadError;
       boolean fails;
 

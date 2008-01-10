@@ -129,7 +129,7 @@ public class IsolatedClassLoaderUnitTestCase extends IsolatedClassLoaderTest
    
    public void testJavaClass() throws Exception
    {
-      Class clazz = getClass().getClassLoader().loadClass("java.util.Set");
+      Class<?> clazz = getClass().getClassLoader().loadClass("java.util.Set");
       assertEquals(Set.class, clazz);
       clazz = getClass().getClassLoader().loadClass("javax.naming.InitialContext");
       assertEquals(InitialContext.class, clazz);

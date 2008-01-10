@@ -162,7 +162,7 @@ public class IsolatedClassLoaderTestHelper
    public Class<?> initializeClassLoader(Class<?> clazz, boolean importAll, Class<?>... packages)
    {
       MockClassLoaderPolicy policy = new MockClassLoaderPolicy();
-      Set<Class> classes = new HashSet<Class>();
+      Set<Class<?>> classes = new HashSet<Class<?>>();
       classes.add(clazz);
       for (Class<?> c : packages)
          classes.add(c);
@@ -242,7 +242,7 @@ public class IsolatedClassLoaderTestHelper
    public Class<?> initializeClassLoader(Class<?> clazz, ClassFilter parentFilter, boolean importAll, Class<?>... packages)
    {
       MockClassLoaderPolicy policy = new MockClassLoaderPolicy();
-      Set<Class> classes = new HashSet<Class>();
+      Set<Class<?>> classes = new HashSet<Class<?>>();
       classes.add(clazz);
       for (Class<?> c : packages)
          classes.add(c);

@@ -25,6 +25,7 @@ import java.io.IOException;
 import java.net.URL;
 import java.security.AccessController;
 import java.security.PrivilegedAction;
+import java.util.HashSet;
 import java.util.Set;
 
 import org.jboss.classloader.plugins.loader.ClassLoaderToLoaderAdapter;
@@ -333,6 +334,122 @@ public class ClassLoaderDomain extends BaseClassLoaderDomain implements Loader
          log.trace(this + " get resources from parent " + name + " parent=" + parentLoader);
       
       parentLoader.getResources(name, urls);
+   }
+   
+   @Override
+   protected Package beforeGetPackage(String name)
+   {
+      boolean trace = log.isTraceEnabled();
+      ClassFilter filter = getParentPolicy().getBeforeFilter();
+      if (filter.matchesPackageName(name))
+      {
+         if (trace)
+            log.trace(this + " " + name + " matches parent beforeFilter=" + filter);
+         return getPackageFromParent(name);
+      }
+      if (trace)
+         log.trace(this + " " + name + " does NOT match parent beforeFilter=" + filter);
+      return null;
+   }
+
+   @Override
+   protected Package afterGetPackage(String name)
+   {
+      boolean trace = log.isTraceEnabled();
+      ClassFilter filter = getParentPolicy().getAfterFilter();
+      if (filter.matchesPackageName(name))
+      {
+         if (trace)
+            log.trace(this + " " + name + " matches parent afterFilter=" + filter);
+         return getPackageFromParent(name);
+      }
+      if (trace)
+         log.trace(this + " " + name + " does NOT match parent afterFilter=" + filter);
+      return null;
+   }
+
+   /**
+    * Try to get a package from the parent
+    * 
+    * @param name the name
+    * @return the package if found
+    */
+   protected Package getPackageFromParent(String name)
+   {
+      Loader parentLoader = getParent();
+
+      boolean trace = log.isTraceEnabled();
+      if (parentLoader == null)
+      {
+         if (trace)
+            log.trace(this + " not getting package from non-existant parent");
+         return null;
+      }
+
+      if (trace)
+         log.trace(this + " get package from parent " + name + " parent=" + parentLoader);
+      
+      Package result = parentLoader.getPackage(name);
+
+      if (trace)
+      {
+         if (result != null)
+            log.trace(this + " got package from parent " + name + " parent=" + parentLoader + " " + result);
+         else
+            log.trace(this + " package not found in parent " + name + " parent=" + parentLoader);
+      }
+      
+      return result;
+   }
+   
+   @Override
+   protected void beforeGetPackages(Set<Package> packages)
+   {
+      ClassFilter filter = getParentPolicy().getBeforeFilter();
+      getPackagesFromParent(packages, filter);
+   }
+
+   @Override
+   protected void afterGetPackages(Set<Package> packages)
+   {
+      ClassFilter filter = getParentPolicy().getAfterFilter();
+      getPackagesFromParent(packages, filter);
+   }
+
+   /**
+    * Try to get packages from the parent
+    * 
+    * @param packages the packages to add to
+    * @param filter the filter
+    */
+   protected void getPackagesFromParent(Set<Package> packages, ClassFilter filter)
+   {
+      Loader parentLoader = getParent();
+
+      boolean trace = log.isTraceEnabled();
+      if (parentLoader == null)
+      {
+         if (trace)
+            log.trace(this + " not getting packages from non-existant parent");
+         return;
+      }
+
+      if (trace)
+         log.trace(this + " get packages from parent=" + parentLoader + " filter=" + filter);
+      
+      Set<Package> parentPackages = new HashSet<Package>();
+      parentLoader.getPackages(parentPackages);
+      for (Package parentPackage : parentPackages)
+      {
+         if (filter.matchesPackageName(parentPackage.getName()))
+         {
+            if (trace)
+               log.trace(this + " parentPackage=" + parentPackage + " matches filter=" + filter);
+            packages.add(parentPackage);
+         }
+         else if (trace)
+            log.trace(this + " parentPackage=" + parentPackage + " does NOT match filter=" + filter);
+      }
    }
 
    /**

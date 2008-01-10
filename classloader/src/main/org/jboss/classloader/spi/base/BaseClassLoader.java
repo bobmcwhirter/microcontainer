@@ -25,6 +25,7 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.net.URL;
 import java.security.AccessController;
+import java.security.CodeSource;
 import java.security.PrivilegedAction;
 import java.security.PrivilegedActionException;
 import java.security.PrivilegedExceptionAction;
@@ -128,6 +129,83 @@ public class BaseClassLoader extends SecureClassLoader implements BaseClassLoade
       return loader;
    }
 
+   @Override
+   protected Package getPackage(String name)
+   {
+      boolean trace = log.isTraceEnabled();
+      if (trace)
+         log.trace(this + " getPackage " + name);
+
+      if (name == null)
+         return null;
+      
+      // Did we already load this package?
+      Package result = super.getPackage(name);
+      if (result != null && trace)
+         log.trace(this + " already loaded package " + name + " " + result.getName());
+      
+      // Not already loaded use the domain
+      if (result == null)
+      {
+         BaseClassLoaderPolicy basePolicy = policy;
+         BaseClassLoaderDomain domain = basePolicy.getClassLoaderDomain();
+         if (domain == null)
+            return null;
+         if (trace)
+            log.trace(this + " getPackage " + name + " domain=" + domain);
+         result = domain.getPackage(this, name);
+      }
+      
+      // Still not found
+      if (result == null)
+      {
+         if (trace)
+            log.trace(this + " package not found " + name);
+      }
+      
+      return result;
+   }
+
+   @Override
+   protected Package[] getPackages()
+   {
+      BaseClassLoaderPolicy basePolicy = policy;
+      BaseClassLoaderDomain domain = basePolicy.getClassLoaderDomain();
+      if (domain == null)
+         return super.getPackages();
+      boolean trace = log.isTraceEnabled();
+      if (trace)
+         log.trace(this + " getPackages domain=" + domain);
+
+      Set<Package> packages = new HashSet<Package>();
+      if (domain != null)
+         domain.getPackages(this, packages);
+      return packages.toArray(new Package[packages.size()]);
+   }
+
+   /**
+    * Get a package locally
+    * 
+    * @param name the package name
+    * @return the package
+    */
+   Package getPackageLocally(String name)
+   {
+      return super.getPackage(name);
+   }
+
+   /**
+    * Get the packages locally
+    * 
+    * @param packages the packages
+    */
+   void getPackagesLocally(Set<Package> packages)
+   {
+      Package[] pkgs = super.getPackages();
+      for (Package pkg : pkgs)
+         packages.add(pkg);
+   }
+   
    @Override
    protected synchronized Class<?> loadClass(String name, boolean resolve) throws ClassNotFoundException
    {
@@ -241,7 +319,7 @@ public class BaseClassLoader extends SecureClassLoader implements BaseClassLoade
       // Look for the resource
       final String resourcePath = ClassLoaderUtils.classNameToPath(name);
       
-      return AccessController.doPrivileged(new PrivilegedAction<Class>()
+      return AccessController.doPrivileged(new PrivilegedAction<Class<?>>()
       {
          public Class<?> run()
          {
@@ -271,7 +349,14 @@ public class BaseClassLoader extends SecureClassLoader implements BaseClassLoade
             }
             
             // Create the package if necessary
-            definePackage(name);
+            URL codeSourceURL = null;
+            if (protectionDomain != null)
+            {
+               CodeSource codeSource = protectionDomain.getCodeSource();
+               if (codeSource != null)
+                  codeSourceURL = codeSource.getLocation();
+            }
+            definePackage(name, codeSourceURL);
             
             // Finally we can define the class
             Class<?> result;
@@ -413,26 +498,44 @@ public class BaseClassLoader extends SecureClassLoader implements BaseClassLoade
     * Define the package for the class if not already done
     *
     * @param className the class name
+    * @param codeSourceURL the code source url
     */
-   protected void definePackage(String className)
+   protected void definePackage(String className, URL codeSourceURL)
    {
       String packageName = ClassLoaderUtils.getClassPackageName(className);
       if (packageName.length() == 0)
          return;
       
+      // Ask the policy for the information
+      PackageInformation pi = policy.getPackageInformation(packageName);
+      
       // Already defined?
       Package pkge = getPackage(packageName);
       if (pkge != null)
+      {
+         // Check sealing
+         if (pkge.isSealed())
+         {
+            // Are we trying to add outside the seal?
+            if (codeSourceURL == null || pkge.isSealed(codeSourceURL) == false)
+               throw new SecurityException("Sealing violation for package " + packageName);
+         }
+         // Can we seal now?
+         else if (pi != null && pi.sealBase != null)
+         {
+            throw new SecurityException("Can't seal package " + packageName +" it is already loaded");
+         }
          return;
-      
-      // Ask the policy for the information
-      PackageInformation pi = policy.getPackageInformation(packageName);
+      }
+
       try
       {
          if (pi != null)
             definePackage(packageName, pi.specTitle, pi.specVersion, pi.specVendor, pi.implTitle, pi.implVersion, pi.implVendor, pi.sealBase);
          else
             definePackage(packageName, null, null, null, null, null, null, null);
+         if (log.isTraceEnabled())
+            log.trace(this + " defined package: " + packageName);
       }
       catch (IllegalArgumentException alreadyDone)
       {
@@ -564,6 +667,7 @@ public class BaseClassLoader extends SecureClassLoader implements BaseClassLoade
       StringBuilder builder = new StringBuilder();
       builder.append(getClass().getSimpleName());
       builder.append('@').append(Integer.toHexString(System.identityHashCode(this)));
+      builder.append("{").append(policy.getName()).append("}");
       return builder.toString();
    }
 

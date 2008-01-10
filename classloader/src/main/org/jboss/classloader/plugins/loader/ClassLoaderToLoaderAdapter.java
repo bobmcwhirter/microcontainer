@@ -22,6 +22,7 @@
 package org.jboss.classloader.plugins.loader;
 
 import java.io.IOException;
+import java.lang.reflect.Method;
 import java.net.URL;
 import java.security.AccessControlContext;
 import java.security.AccessController;
@@ -47,9 +48,44 @@ public class ClassLoaderToLoaderAdapter implements Loader
    
    /** The classloader */
    private ClassLoader classLoader;
-
+   
    /** The access control context of the creator of this adapter */
    private AccessControlContext accessControlContext;
+   
+   /** The get package method */
+   private static Method getPackage;
+   
+   /** The get packages method */
+   private static Method getPackages;
+   
+   static
+   {
+      AccessController.doPrivileged(new PrivilegedAction<Object>()
+      {
+         public Object run()
+         {
+            try
+            {
+               getPackage = ClassLoader.class.getDeclaredMethod("getPackage", String.class);
+               getPackage.setAccessible(true);
+            }
+            catch (Exception e)
+            {
+               log.warn("Unable to set accessible on ClassLoader.getPackage()", e);
+            }
+            try
+            {
+               getPackages = ClassLoader.class.getDeclaredMethod("getPackages");
+               getPackages.setAccessible(true);
+            }
+            catch (Exception e)
+            {
+               log.warn("Unable to set accessible on ClassLoader.getPackages()", e);
+            }
+            return null;
+         }
+      });
+   }
    
    /**
     * Create a new ClassLoaderToLoaderAdapter.
@@ -139,6 +175,37 @@ public class ClassLoaderToLoaderAdapter implements Loader
       catch (ClassNotFoundException e)
       {
          return null;
+      }
+   }
+
+   public Package getPackage(String name)
+   {
+      if  (getPackage == null)
+         return null;
+
+      try
+      {
+         return (Package) getPackage.invoke(classLoader, new Object[] { name });
+      }
+      catch (Exception e)
+      {
+         log.warn("Unexpected error retrieving package " + name + " from classloader " + classLoader, e);
+         return null;
+      }
+   }
+
+   public void getPackages(Set<Package> packages)
+   {
+      if  (getPackages == null)
+         return;
+
+      try
+      {
+         getPackages.invoke(classLoader);
+      }
+      catch (Exception e)
+      {
+         log.warn("Unexpected error retrieving packages from classloader " + classLoader, e);
       }
    }
 

@@ -57,4 +57,19 @@ public interface Loader
     * @throws IOException for any error
     */
    void getResources(String name, Set<URL> urls) throws IOException;
+   
+   /**
+    * Get a package
+    * 
+    * @param name the package name
+    * @return the package
+    */
+   Package getPackage(String name);
+   
+   /**
+    * Get all the packages visible from this  loader
+    * 
+    * @param packages the packages
+    */
+   void getPackages(Set<Package> packages);
 }

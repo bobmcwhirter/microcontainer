@@ -34,7 +34,7 @@ public class TestClass
 {
    public Object doSomething() throws Exception
    {
-      Constructor constructor = getClass().getConstructor((Class[]) null);
+      Constructor<?> constructor = getClass().getConstructor((Class[]) null);
       
       Object object = constructor.newInstance((Object[]) null);
       

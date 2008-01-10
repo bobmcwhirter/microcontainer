@@ -110,7 +110,9 @@ public class PackageClassFilter extends PatternClassFilter
     */
    public PackageClassFilter(String[] packageNames)
    {
-      super(convertPackageNamesToClassPatterns(packageNames), convertPackageNamesToResourcePatterns(packageNames));
+      super(convertPackageNamesToClassPatterns(packageNames), 
+            convertPackageNamesToResourcePatterns(packageNames),
+            packageNames);
       this.packageNames = packageNames;
    }
 

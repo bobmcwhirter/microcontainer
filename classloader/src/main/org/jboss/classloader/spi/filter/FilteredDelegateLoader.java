@@ -23,6 +23,7 @@ package org.jboss.classloader.spi.filter;
 
 import java.io.IOException;
 import java.net.URL;
+import java.util.HashSet;
 import java.util.Set;
 
 import org.jboss.classloader.spi.ClassLoaderPolicy;
@@ -119,6 +120,39 @@ public class FilteredDelegateLoader extends DelegateLoader
       }
       if (trace)
          log.trace(this + " " + name + " does NOT match filter=" + filter);
+   }
+
+   public Package getPackage(String name)
+   {
+      boolean trace = log.isTraceEnabled();
+      if (filter.matchesPackageName(name))
+      {
+         if (trace)
+            log.trace(this + " " + name + " matches package filter=" + filter);
+         return super.getPackage(name);
+      }
+      if (trace)
+         log.trace(this + " " + name + " does NOT match package filter=" + filter);
+      return null;
+   }
+
+   public void getPackages(Set<Package> packages)
+   {
+      boolean trace = log.isTraceEnabled();
+      
+      Set<Package> allPackages = new HashSet<Package>();
+      super.getPackages(allPackages);
+      for (Package pkge : allPackages)
+      {
+         if (filter.matchesPackageName(pkge.getName()))
+         {
+            if (trace)
+               log.trace(this + " " + pkge + " matches package filter=" + filter);
+            packages.add(pkge);
+         }
+         else if (trace)
+            log.trace(this + " pkge=" + pkge + " does NOT match package filter=" + filter);
+      }
    }
 
    @Override

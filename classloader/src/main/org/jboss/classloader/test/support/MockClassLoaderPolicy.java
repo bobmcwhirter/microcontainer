@@ -39,6 +39,7 @@ import org.jboss.classloader.plugins.ClassLoaderUtils;
 import org.jboss.classloader.plugins.filter.PatternClassFilter;
 import org.jboss.classloader.spi.ClassLoaderPolicy;
 import org.jboss.classloader.spi.DelegateLoader;
+import org.jboss.classloader.spi.PackageInformation;
 import org.jboss.classloader.spi.filter.ClassFilter;
 
 /**
@@ -92,7 +93,9 @@ public class MockClassLoaderPolicy extends ClassLoaderPolicy
     */
    public MockClassLoaderPolicy(String name)
    {
-      this(name, new String[] { "org\\.jboss\\..+" }, new String[] { "org/jboss/.+" });
+      this(name, new String[] { "org\\.jboss\\..+" }, 
+                 new String[] { "org/jboss/.+" },
+                 new String[] { "org\\.jboss", "org\\.jboss\\..*" });
    }
 
    /**
@@ -101,10 +104,11 @@ public class MockClassLoaderPolicy extends ClassLoaderPolicy
     * @param name the name
     * @param classPatterns the class patterns
     * @param resourcePatterns the resourcePatterns
+    * @param packagePatterns the packagePatterns
     */
-   public MockClassLoaderPolicy(String name, String[] classPatterns, String[] resourcePatterns)
+   public MockClassLoaderPolicy(String name, String[] classPatterns, String[] resourcePatterns, String[] packagePatterns)
    {
-      this(name, new PatternClassFilter(classPatterns, resourcePatterns));
+      this(name, new PatternClassFilter(classPatterns, resourcePatterns, packagePatterns));
    }
 
    /**
@@ -122,6 +126,11 @@ public class MockClassLoaderPolicy extends ClassLoaderPolicy
       if (nonJDKFilter == null)
          throw new IllegalArgumentException("Null filter");
       this.nonJDKFilter = nonJDKFilter;
+   }
+   
+   public String getName()
+   {
+      return name;
    }
    
    @Override
@@ -195,7 +204,7 @@ public class MockClassLoaderPolicy extends ClassLoaderPolicy
     * 
     * @param classes the classes to reference to determine the package paths
     */
-   public void setPaths(Class... classes)
+   public void setPaths(Class<?>... classes)
    {
       if (classes == null)
       {
@@ -228,7 +237,7 @@ public class MockClassLoaderPolicy extends ClassLoaderPolicy
     * 
     * @param classes the classes to reference to determine the package names
     */
-   public void setPackageNames(Class... classes)
+   public void setPackageNames(Class<?>... classes)
    {
       if (classes == null)
       {
@@ -245,7 +254,7 @@ public class MockClassLoaderPolicy extends ClassLoaderPolicy
     * 
     * @param classes the classes to include from the paths
     */
-   public void setIncluded(Class... classes)
+   public void setIncluded(Class<?>... classes)
    {
       if (classes == null)
       {
@@ -262,7 +271,7 @@ public class MockClassLoaderPolicy extends ClassLoaderPolicy
     * 
     * @param classes the classes to exclude from the paths
     */
-   public void setExcluded(Class... classes)
+   public void setExcluded(Class<?>... classes)
    {
       if (classes == null)
       {
@@ -279,7 +288,7 @@ public class MockClassLoaderPolicy extends ClassLoaderPolicy
     * 
     * @param classes the classes to reference
     */
-   public void setPathsAndPackageNames(Class... classes)
+   public void setPathsAndPackageNames(Class<?>... classes)
    {
       setPaths(classes);
       setPackageNames(classes);
@@ -404,7 +413,7 @@ public class MockClassLoaderPolicy extends ClassLoaderPolicy
    @Override
    protected ProtectionDomain getProtectionDomain(String className, String path)
    {
-      final Class clazz;
+      final Class<?> clazz;
       try
       {
          clazz = getClass().getClassLoader().loadClass(className);
@@ -420,6 +429,14 @@ public class MockClassLoaderPolicy extends ClassLoaderPolicy
             return clazz.getProtectionDomain();
          }
       }, getAccessControlContext());
+   }
+
+   @Override
+   public PackageInformation getPackageInformation(String packageName)
+   {
+      PackageInformation pi = new PackageInformation(packageName);
+      pi.implTitle = name;
+      return pi;
    }
 
    /*

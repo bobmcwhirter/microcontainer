@@ -61,4 +61,12 @@ public interface ClassFilter
     * @return true when it matches the filter
     */
    boolean matchesResourcePath(String resourcePath);
+   
+   /** 
+    * Whether the package name matches the filter
+    * 
+    * @param packageName the package path
+    * @return true when it matches the filter
+    */
+   boolean matchesPackageName(String packageName);
 }

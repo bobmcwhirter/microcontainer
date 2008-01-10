@@ -105,6 +105,36 @@ public class BaseDelegateLoader implements Loader
       classLoader.getResourcesLocally(name, urls);
    }
 
+   public Package getPackage(String name)
+   {
+      BaseClassLoader classLoader;
+      try
+      {
+         classLoader = delegate.getClassLoader();
+      }
+      catch (IllegalStateException e)
+      {
+         log.warn("Not getting package from policy that has no classLoader: " + toLongString());
+         return null;
+      }
+      return classLoader.getPackageLocally(name);
+   }
+
+   public void getPackages(Set<Package> packages)
+   {
+      BaseClassLoader classLoader;
+      try
+      {
+         classLoader = delegate.getClassLoader();
+      }
+      catch (IllegalStateException e)
+      {
+         log.warn("Not getting packages from policy that has no classLoader: " + toLongString());
+         return;
+      }
+      classLoader.getPackagesLocally(packages);
+   }
+   
    /**
     * A long version of toString()
     * 

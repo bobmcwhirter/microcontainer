@@ -265,6 +265,21 @@ public abstract class AbstractClassLoaderTest extends AbstractTestCaseWithSetup
       }
    }
    
+   protected void assertPackage(Class<?> reference, ClassLoader classLoader) throws Exception
+   {
+      Class<?> clazz = classLoader.loadClass(reference.getName());
+      Package pkge = Package.getPackage(ClassLoaderUtils.getClassPackageName(clazz.getName()));
+      assertEquals(pkge,clazz.getPackage());
+   }
+   
+   protected void assertPackage(Class<?> reference, ClassLoader classLoader, MockClassLoaderPolicy policy) throws Exception
+   {
+      Class<?> clazz = classLoader.loadClass(reference.getName());
+      Package pkge = clazz.getPackage();
+      assertNotNull("Expected a package for " + clazz.getName(), pkge);
+      assertEquals(policy.getName(), pkge.getImplementationTitle());
+   }
+   
    protected void assertFilterMatchesClassName(String test, ClassFilter filter)
    {
       getLog().debug("Checking " + test + " expect it to match filter=" + filter);
@@ -293,6 +308,22 @@ public abstract class AbstractClassLoaderTest extends AbstractTestCaseWithSetup
    {
       getLog().debug("Checking " + test + " expect it NOT to match filter=" + filter);
       boolean result = filter.matchesResourcePath(test);
+      getLog().debug("Checked " + test + " result was " + result + " for filter=" + filter);
+      assertFalse("Expected " + test + " NOT to match " + filter, result);
+   }
+   
+   protected void assertFilterMatchesPackageName(String test, ClassFilter filter)
+   {
+      getLog().debug("Checking " + test + " expect it to match filter=" + filter);
+      boolean result = filter.matchesPackageName(test);
+      getLog().debug("Checked " + test + " result was " + result + " for filter=" + filter);
+      assertTrue("Expected " + test + " to match " + filter, result);
+   }
+   
+   protected void assertFilterNoMatchPackageName(String test, ClassFilter filter)
+   {
+      getLog().debug("Checking " + test + " expect it NOT to match filter=" + filter);
+      boolean result = filter.matchesPackageName(test);
       getLog().debug("Checked " + test + " result was " + result + " for filter=" + filter);
       assertFalse("Expected " + test + " NOT to match " + filter, result);
    }

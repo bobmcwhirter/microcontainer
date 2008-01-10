@@ -78,6 +78,16 @@ public class CombiningClassFilter implements ClassFilter
       }
       return false;
    }
+
+   public boolean matchesPackageName(String packageName)
+   {
+      for (ClassFilter filter : filters)
+      {
+         if (filter.matchesPackageName(packageName))
+            return true;
+      }
+      return false;
+   }
    
    @Override
    public String toString()
