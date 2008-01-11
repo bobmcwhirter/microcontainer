@@ -102,4 +102,21 @@ public class PackageFilterUnitTestCase extends AbstractClassLoaderTestWithSecuri
       assertFilterNoMatchPackageName("", filter);
       assertFilterNoMatchPackageName(null, filter);
    }
+   
+   public void testDefaultPackage() throws Exception
+   {
+      ClassFilter filter = PackageClassFilter.createPackageClassFilter("");
+      assertFilterMatchesClassName("Root", filter);
+      assertFilterNoMatchClassName("java.NotRoot", filter);
+      assertFilterMatchesClassName("", filter);
+      assertFilterNoMatchClassName(null, filter);
+      assertFilterMatchesResourcePath("Root", filter);
+      assertFilterMatchesResourcePath("Root.xml", filter);
+      assertFilterMatchesResourcePath("", filter);
+      assertFilterNoMatchResourcePath("java/Root.xml", filter);
+      assertFilterNoMatchResourcePath(null, filter);
+      assertFilterMatchesPackageName("", filter);
+      assertFilterNoMatchPackageName("java", filter);
+      assertFilterNoMatchPackageName(null, filter);
+   }
 }
