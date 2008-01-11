@@ -36,7 +36,10 @@ import java.util.concurrent.ConcurrentHashMap;
 import java.util.jar.Manifest;
 
 import org.jboss.classloader.spi.ClassLoaderPolicy;
+import org.jboss.classloader.spi.DelegateLoader;
 import org.jboss.classloader.spi.PackageInformation;
+import org.jboss.classloader.spi.filter.ClassFilter;
+import org.jboss.classloader.spi.filter.FilteredDelegateLoader;
 import org.jboss.deployers.structure.spi.classloading.ExportAll;
 import org.jboss.logging.Logger;
 import org.jboss.virtual.VFSUtils;
@@ -174,7 +177,7 @@ public class VFSClassLoaderPolicy extends ClassLoaderPolicy
     * 
     * @return the exportAll.
     */
-   public ExportAll isExportAll()
+   public ExportAll getExportAll()
    {
       return exportAll;
    }
@@ -223,6 +226,14 @@ public class VFSClassLoaderPolicy extends ClassLoaderPolicy
    public void setExportedPackages(String[] exportedPackages)
    {
       this.exportedPackages = exportedPackages;
+   }
+
+   @Override
+   protected DelegateLoader getExported()
+   {
+      if (getExportAll() != null)
+         return new FilteredDelegateLoader(this, ClassFilter.EVERYTHING);
+      return super.getExported();
    }
 
    @Override
