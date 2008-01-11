@@ -57,7 +57,7 @@ public class VFSTopLevelClassLoaderSystemDeployer extends AbstractTopLevelClassL
       URL url = new URL(module.getDynamicClassRoot() + "/classes");
       roots[i++] = factory.createDirectory(url).getVirtualFile();
       
-      VFSClassLoaderPolicy policy = new VFSClassLoaderPolicy(roots);
+      VFSClassLoaderPolicy policy = new VFSClassLoaderPolicy(module.getName(), roots);
       policy.setExportAll(module.getExportAll());
       policy.setImportAll(module.isImportAll());
       // TODO JBMICROCONT-182 more policy from "module"

@@ -50,6 +50,9 @@ public class VFSClassLoaderPolicy extends ClassLoaderPolicy
 {
    /** The log */
    private static Logger log = Logger.getLogger(VFSClassLoaderPolicy.class);
+
+   /** A name for the policy */
+   private String name;
    
    /** The roots */
    private VirtualFile[] roots;
@@ -64,6 +67,28 @@ public class VFSClassLoaderPolicy extends ClassLoaderPolicy
    private boolean importAll;
    
    /**
+    * Determine a name from the roots
+    * 
+    * @param roots the roots
+    * @return the name
+    */
+   private static String determineName(VirtualFile[] roots)
+   {
+      if (roots == null)
+         return "";
+      
+      try
+      {
+         for (VirtualFile root : roots)
+            return root.toURL().toString();
+      }
+      catch (Exception ignored)
+      {
+      }
+      return "";
+   }
+   
+   /**
     * Create a new VFSClassLoaderPolicy.
     * 
     * @param roots the roots
@@ -73,6 +98,19 @@ public class VFSClassLoaderPolicy extends ClassLoaderPolicy
    public static VFSClassLoaderPolicy createVFSClassLoaderPolicy(VirtualFile... roots)
    {
       return new VFSClassLoaderPolicy(roots);
+   }
+   
+   /**
+    * Create a new VFSClassLoaderPolicy.
+    * 
+    * @param name a name of the policy
+    * @param roots the roots
+    * @return the classloader policy
+    * @throws IllegalArgumentException for null roots
+    */
+   public static VFSClassLoaderPolicy createVFSClassLoaderPolicy(String name, VirtualFile... roots)
+   {
+      return new VFSClassLoaderPolicy(name, roots);
    }
 
    /**
@@ -92,6 +130,35 @@ public class VFSClassLoaderPolicy extends ClassLoaderPolicy
       }
 
       this.roots = roots;
+   }
+
+   /**
+    * Create a new VFSClassLoaderPolicy.
+    * 
+    * @param name the name
+    * @param roots the roots
+    * @throws IllegalArgumentException for null roots
+    */
+   public VFSClassLoaderPolicy(String name, VirtualFile[] roots)
+   {
+      if (name == null)
+         throw new IllegalArgumentException("Null name");
+      if (roots == null)
+         throw new IllegalArgumentException("Null roots");
+      for (VirtualFile root : roots)
+      {
+         if (root == null)
+            throw new IllegalArgumentException("Null root in " + Arrays.asList(roots));
+      }
+
+      this.name = name;
+      this.roots = roots;
+   }
+
+   @Override
+   public String getName()
+   {
+      return name;
    }
 
    /**
