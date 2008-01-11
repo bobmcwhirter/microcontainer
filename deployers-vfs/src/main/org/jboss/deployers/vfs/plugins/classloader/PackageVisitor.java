@@ -46,6 +46,9 @@ class PackageVisitor implements VirtualFileVisitor
    /** The root */
    private String rootPath;
    
+   /** The root with slash*/
+   private String rootPathWithSlash;
+   
    /** The exportAll policy */
    private ExportAll exportAll;
 
@@ -72,7 +75,8 @@ class PackageVisitor implements VirtualFileVisitor
    {
       if (root == null)
          throw new IllegalArgumentException("Null root");
-      rootPath = root.getPathName() + "/";
+      rootPath = root.getPathName();
+      rootPathWithSlash = rootPath + "/";
    }
    
    /**
@@ -125,8 +129,10 @@ class PackageVisitor implements VirtualFileVisitor
             if (empty == false)
             {
                String path = file.getPathName();
-               if (path.startsWith(rootPath))
-                  path = path.substring(rootPath.length());
+               if (path.equals(rootPath))
+                  path = "";
+               else if (path.startsWith(rootPathWithSlash))
+                  path = path.substring(rootPathWithSlash.length());
                packages.add(path.replace('/', '.'));
             }
          }
