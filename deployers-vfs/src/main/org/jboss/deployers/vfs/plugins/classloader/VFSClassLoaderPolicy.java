@@ -132,15 +132,7 @@ public class VFSClassLoaderPolicy extends ClassLoaderPolicy
     */
    public VFSClassLoaderPolicy(VirtualFile[] roots)
    {
-      if (roots == null)
-         throw new IllegalArgumentException("Null roots");
-      for (VirtualFile root : roots)
-      {
-         if (root == null)
-            throw new IllegalArgumentException("Null root in " + Arrays.asList(roots));
-      }
-
-      this.roots = roots;
+      this(determineName(roots), roots);
    }
 
    /**
