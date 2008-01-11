@@ -89,7 +89,7 @@ public class KernelScopeInfo extends AbstractScopeInfo
       Class<?> clazz;
       try
       {
-         clazz = cl.loadClass(className);
+         clazz = Class.forName(className, false, cl);
       }
       catch (ClassNotFoundException e)
       {

@@ -81,7 +81,7 @@ public abstract class MetaTypeFactory
          throw new IllegalArgumentException("Null className");
       if (classLoader == null)
          throw new IllegalArgumentException("Null classLoader");
-      Class clazz = classLoader.loadClass(className);
+      Class clazz = Class.forName(className, false, classLoader);
       return resolve(clazz);
    }
    

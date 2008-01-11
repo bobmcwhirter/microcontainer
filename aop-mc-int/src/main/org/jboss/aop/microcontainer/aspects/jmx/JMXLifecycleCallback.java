@@ -43,22 +43,22 @@ public class JMXLifecycleCallback
    {
       this.server = server;
    }
- 
+
+   @SuppressWarnings("unchecked")
    public void install(ControllerContext context) throws Exception
    {
       validateServer();
       JMX jmx = readJmxAnnotation(context);
       ObjectName objectName = createObjectName(context, jmx); 
 
-      Class<?> intfClass = null;
+      Class intfClass = null;
       boolean registerDirectly = false;
       if (jmx != null)
       {
          intfClass = jmx.exposedInterface();
          registerDirectly = jmx.registerDirectly();
       }
-      Object mbean = (registerDirectly ? context.getTarget() 
-                                       : new StandardMBean(context.getTarget(), intfClass));
+      Object mbean = (registerDirectly ? context.getTarget() : new StandardMBean(context.getTarget(), intfClass));
       server.registerMBean(mbean, objectName);
       log.debug("Registered MBean " + objectName);
    }

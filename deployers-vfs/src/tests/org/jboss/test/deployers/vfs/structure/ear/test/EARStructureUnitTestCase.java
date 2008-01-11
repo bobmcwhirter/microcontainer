@@ -26,7 +26,6 @@ import java.util.Set;
 
 import junit.framework.Test;
 import junit.framework.TestSuite;
-
 import org.jboss.deployers.vfs.plugins.structure.file.FileStructure;
 import org.jboss.deployers.vfs.plugins.structure.jar.JARStructure;
 import org.jboss.deployers.vfs.plugins.structure.war.WARStructure;
@@ -34,6 +33,7 @@ import org.jboss.deployers.vfs.spi.client.VFSDeployment;
 import org.jboss.deployers.vfs.spi.structure.VFSDeploymentContext;
 import org.jboss.test.deployers.vfs.structure.AbstractStructureTest;
 import org.jboss.test.deployers.vfs.structure.ear.support.MockEarStructureDeployer;
+import org.jboss.virtual.plugins.context.jar.JarUtils;
 
 /**
  * Mock ear structure deployer tests
@@ -63,11 +63,19 @@ public class EARStructureUnitTestCase extends AbstractStructureTest
 
    protected VFSDeploymentContext determineStructure(VFSDeployment deployment) throws Exception
    {
+      Set<String> defaultSuffixes = JarUtils.getSuffixes();
       JARStructure jarStructure = new JARStructure();
-      Set<String> suffixes = new HashSet<String>(jarStructure.getSuffixes());
-      suffixes.add(".ejb3");
-      jarStructure.setSuffixes(suffixes);
-      return determineStructureWithStructureDeployers(deployment, new FileStructure(), new WARStructure(), jarStructure, new MockEarStructureDeployer());
+      try
+      {
+         Set<String> suffixes = new HashSet<String>(jarStructure.getSuffixes());
+         suffixes.add(".ejb3");
+         jarStructure.setSuffixes(suffixes);
+         return determineStructureWithStructureDeployers(deployment, new FileStructure(), new WARStructure(), jarStructure, new MockEarStructureDeployer());
+      }
+      finally
+      {
+         jarStructure.setSuffixes(defaultSuffixes);
+      }
    }
    
    public void testNotAnEAR() throws Throwable

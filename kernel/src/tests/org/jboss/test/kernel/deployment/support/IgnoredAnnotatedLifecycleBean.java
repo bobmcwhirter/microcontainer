@@ -32,7 +32,7 @@ import org.jboss.beans.metadata.api.annotations.Stop;
 public class IgnoredAnnotatedLifecycleBean extends AnnotatedLifecycleBean
 {
    @Create(ignored = true)
-   public void ignoredCreate()
+   public void annotatedCreate()
    {
       m_create = true;
    }
@@ -51,10 +51,9 @@ public class IgnoredAnnotatedLifecycleBean extends AnnotatedLifecycleBean
    }
 
    @Destroy(ignored = true)
-   public void ignoredDestroy()
+   public void annotatedDestroy()
    {
       m_create = false;
       m_destroy = true;
    }
-
 }

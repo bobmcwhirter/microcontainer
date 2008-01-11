@@ -170,7 +170,7 @@ public class ClassLoaderToLoaderAdapter implements Loader
    {
       try
       {
-         return classLoader.loadClass(className);
+         return Class.forName(className, false, classLoader);
       }
       catch (ClassNotFoundException e)
       {

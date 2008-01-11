@@ -366,10 +366,11 @@ public class ArrayMetaType<T extends Serializable> extends AbstractMetaType
             return this.equals(av.getMetaType());
          }
          // Check the element classes
-         Class thisClass = null;
+         Class thisClass;
          try
          {
-            thisClass = Thread.currentThread().getContextClassLoader().loadClass(getClassName());
+            ClassLoader loader = Thread.currentThread().getContextClassLoader();
+            thisClass = Class.forName(getClassName(), false, loader);
          }
          catch (ClassNotFoundException e)
          {

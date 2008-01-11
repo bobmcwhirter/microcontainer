@@ -201,7 +201,7 @@ public abstract class BaseClassLoaderDomain implements Loader
          {
             if (trace)
                log.trace(this + " trying to load " + name + " using hack " + hack);
-            Class<?> result = hack.loadClass(name);
+            Class<?> result = Class.forName(name, false, hack);
             if (result != null)
             {
                if (trace)
@@ -250,7 +250,7 @@ public abstract class BaseClassLoaderDomain implements Loader
 
       // Work out the rules
       ClassLoaderInformation info = null;
-      BaseClassLoaderPolicy policy = null;
+      BaseClassLoaderPolicy policy;
       if (classLoader != null)
       {
          info = infos.get(classLoader);
@@ -312,7 +312,7 @@ public abstract class BaseClassLoaderDomain implements Loader
 
       // Work out the rules
       ClassLoaderInformation info = null;
-      BaseClassLoaderPolicy policy = null;
+      BaseClassLoaderPolicy policy;
       if (classLoader != null)
       {
          policy = classLoader.getPolicy();
@@ -383,7 +383,7 @@ public abstract class BaseClassLoaderDomain implements Loader
 
       // Work out the rules
       ClassLoaderInformation info = null;
-      BaseClassLoaderPolicy policy = null;
+      BaseClassLoaderPolicy policy;
       if (classLoader != null)
       {
          policy = classLoader.getPolicy();
@@ -436,7 +436,7 @@ public abstract class BaseClassLoaderDomain implements Loader
 
       // Work out the rules
       ClassLoaderInformation info = null;
-      BaseClassLoaderPolicy policy = null;
+      BaseClassLoaderPolicy policy;
       if (classLoader != null)
       {
          policy = classLoader.getPolicy();
@@ -506,7 +506,7 @@ public abstract class BaseClassLoaderDomain implements Loader
 
       // Work out the rules
       ClassLoaderInformation info = null;
-      BaseClassLoaderPolicy policy = null;
+      BaseClassLoaderPolicy policy;
       if (classLoader != null)
       {
          policy = classLoader.getPolicy();

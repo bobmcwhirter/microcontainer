@@ -50,7 +50,7 @@ public class JDKCheckerFactory
             String className = System.getProperty(JDKChecker.class.getName(), defaultChecker);
             try
             {
-               Class<?> clazz = null;
+               Class<?> clazz;
                try
                {
                   clazz = Thread.currentThread().getContextClassLoader().loadClass(className);

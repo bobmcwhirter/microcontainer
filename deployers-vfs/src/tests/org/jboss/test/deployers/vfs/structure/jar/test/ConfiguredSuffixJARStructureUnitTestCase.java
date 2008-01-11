@@ -24,12 +24,11 @@ package org.jboss.test.deployers.vfs.structure.jar.test;
 import java.util.HashSet;
 import java.util.Set;
 
+import junit.framework.Test;
+import junit.framework.TestSuite;
 import org.jboss.deployers.vfs.plugins.structure.jar.JARStructure;
 import org.jboss.test.BaseTestCase;
 import org.jboss.virtual.plugins.context.jar.JarUtils;
-
-import junit.framework.Test;
-import junit.framework.TestSuite;
 
 /**
  * ConfiguredSuffixJARStructureUnitTestCase.
@@ -65,7 +64,7 @@ public class ConfiguredSuffixJARStructureUnitTestCase extends BaseTestCase
 
       Set<String> suffixes = structure.getSuffixes();
       assertNotNull(suffixes);
-      assertEquals(defaultSuffixes.size(), suffixes.size());
+      assertEquals(defaultSuffixes + " != " + suffixes, defaultSuffixes.size(), suffixes.size());
       for (String suff : defaultSuffixes)
       {
          suffixes.contains(suff);
@@ -87,7 +86,7 @@ public class ConfiguredSuffixJARStructureUnitTestCase extends BaseTestCase
          assertEquals(3, suffixes.size());
          assertTrue(suffixes.contains(".bar"));
          assertTrue(suffixes.contains(".tar"));
-         assertTrue(suffixes.contains(".bar"));
+         assertTrue(suffixes.contains(".far"));
       }
       finally
       {
