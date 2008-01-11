@@ -101,6 +101,9 @@ public class FileMatcherTestCase extends BaseTestCase
 
    private static class MyVirtualFile extends VirtualFile
    {
+      /** The serialVersionUID */
+      private static final long serialVersionUID = 1L;
+
       public MyVirtualFile()
       {
          super(getVirtualFileHandler());
@@ -110,6 +113,9 @@ public class FileMatcherTestCase extends BaseTestCase
       {
          return new VirtualFileHandler()
          {
+            /** The serialVersionUID */
+            private static final long serialVersionUID = 1L;
+
             public String getName()
             {
                return null;

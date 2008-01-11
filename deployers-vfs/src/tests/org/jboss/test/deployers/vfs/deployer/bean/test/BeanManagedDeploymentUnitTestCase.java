@@ -25,6 +25,7 @@ import java.util.Map;
 
 import junit.framework.Test;
 import junit.framework.TestSuite;
+
 import org.jboss.deployers.vfs.deployer.kernel.BeanDeployer;
 import org.jboss.deployers.vfs.deployer.kernel.BeanMetaDataDeployer;
 import org.jboss.deployers.vfs.deployer.kernel.KernelDeploymentDeployer;
@@ -33,7 +34,6 @@ import org.jboss.kernel.Kernel;
 import org.jboss.managed.api.ManagedObject;
 import org.jboss.managed.api.ManagedProperty;
 import org.jboss.managed.api.factory.ManagedObjectFactory;
-import org.jboss.metatype.api.types.CollectionMetaType;
 import org.jboss.metatype.api.values.CollectionValue;
 import org.jboss.metatype.api.values.GenericValue;
 
@@ -68,7 +68,7 @@ public class BeanManagedDeploymentUnitTestCase extends AbstractDeployerUnitTestC
       VFSDeployment context = createDeployment("/managed", "annotated-beans.xml");
       assertDeploy(context);
 
-      ManagedObjectFactory mof = ManagedObjectFactory.getInstance();
+      ManagedObjectFactory.getInstance();
       Map<String, ManagedObject> mos = main.getManagedObjects(context.getName());
       log.info("annotated-beans.xml ManagedObjects: "+mos);
       assertEquals("annotated-beans.xml has 1 ManagedObject", 1, mos.size());
@@ -77,7 +77,7 @@ public class BeanManagedDeploymentUnitTestCase extends AbstractDeployerUnitTestC
       ManagedProperty beanFactories = kdMO.getProperty("beanFactories");
       assertNotNull(beanFactories);
       CollectionValue beanFactoriesAV = CollectionValue.class.cast(beanFactories.getValue());
-      CollectionMetaType valueType = beanFactoriesAV.getMetaType();
+      beanFactoriesAV.getMetaType();
       assertEquals("BeanFactories size", 2, beanFactoriesAV.getSize());
       GenericValue beanFactoriesGV = (GenericValue) beanFactoriesAV.getElements()[0];
       log.info("BeanFactories[0].GV: "+beanFactoriesGV);
