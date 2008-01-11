@@ -327,7 +327,7 @@ public class BaseClassLoader extends SecureClassLoader implements BaseClassLoade
             if (is == null)
             {
                if (trace)
-                  BaseClassLoader.log.trace(this + " resource not found locally " + resourcePath + " for " + name);
+                  BaseClassLoader.log.trace(BaseClassLoader.this + " resource not found locally " + resourcePath + " for " + name);
                return null;
             }
 
@@ -365,7 +365,7 @@ public class BaseClassLoader extends SecureClassLoader implements BaseClassLoade
             else
                result = defineClass(name, byteCode, 0, byteCode.length);
             if (trace)
-               BaseClassLoader.log.trace(this + " loaded class locally " + ClassLoaderUtils.classToString(result));
+               BaseClassLoader.log.trace(BaseClassLoader.this + " loaded class locally " + ClassLoaderUtils.classToString(result));
             return result;
          }
       }, policy.getAccessControlContext());
@@ -424,11 +424,11 @@ public class BaseClassLoader extends SecureClassLoader implements BaseClassLoade
             if (result == null)
             {
                if (trace)
-                  BaseClassLoader.log.trace(this + " resource not found locally " + name);
+                  BaseClassLoader.log.trace(BaseClassLoader.this + " resource not found locally " + name);
                return null;
             }
             if (trace)
-               BaseClassLoader.log.trace(this + " got resource locally " + name);
+               BaseClassLoader.log.trace(BaseClassLoader.this + " got resource locally " + name);
             return result;
          }
       }, policy.getAccessControlContext());

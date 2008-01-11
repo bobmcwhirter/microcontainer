@@ -208,6 +208,7 @@ public abstract class BaseClassLoaderPolicy
       StringBuilder builder = new StringBuilder();
       builder.append(getClass().getSimpleName());
       builder.append("@").append(Integer.toHexString(System.identityHashCode(this)));
+      builder.append("{").append(getName()).append("}");
       return builder.toString();
    }
    
