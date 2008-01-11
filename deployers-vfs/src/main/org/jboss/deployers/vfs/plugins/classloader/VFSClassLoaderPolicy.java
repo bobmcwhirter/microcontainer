@@ -30,7 +30,9 @@ import java.security.Policy;
 import java.security.ProtectionDomain;
 import java.security.cert.Certificate;
 import java.util.Arrays;
+import java.util.Map;
 import java.util.Set;
+import java.util.concurrent.ConcurrentHashMap;
 import java.util.jar.Manifest;
 
 import org.jboss.classloader.spi.ClassLoaderPolicy;
@@ -51,6 +53,9 @@ public class VFSClassLoaderPolicy extends ClassLoaderPolicy
    /** The log */
    private static Logger log = Logger.getLogger(VFSClassLoaderPolicy.class);
 
+   /** Tag for no manifest */
+   private static final Manifest NO_MANIFEST = new Manifest();
+
    /** A name for the policy */
    private String name;
    
@@ -65,6 +70,9 @@ public class VFSClassLoaderPolicy extends ClassLoaderPolicy
    
    /** The import all */
    private boolean importAll;
+   
+   /** Manifest cache */
+   private Map<URL, Manifest> manifestCache = new ConcurrentHashMap<URL, Manifest>();
    
    /**
     * Determine a name from the roots
@@ -293,24 +301,61 @@ public class VFSClassLoaderPolicy extends ClassLoaderPolicy
       }
       return null;
    }
+
+   /**
+    * Find a root from a path
+    * 
+    * @param path the path
+    * @return the root if found in the roots
+    */
+   protected VirtualFile findRoot(String path)
+   {
+      for (VirtualFile root : roots)
+      {
+         try
+         {
+            if (root.findChild(path) != null)
+               return root;
+         }
+         catch (Exception ignored)
+         {
+            // not found
+         }
+      }
+      return null;
+   }
    
    @Override
    public PackageInformation getPackageInformation(String packageName)
    {
       String path = packageName.replace('.', '/');
-      VirtualFile pkge = findChild(path);
-      if (pkge == null)
-         return null;
-      try
+      VirtualFile root = findRoot(path);
+      Manifest manifest = null;
+      URL rootURL = null;
+      if (root != null)
       {
-         Manifest manifest = VFSUtils.getManifest(pkge.getVFS());
-         return new PackageInformation(packageName, manifest);
+         try
+         {
+            rootURL = root.toURL();
+            manifest = manifestCache.get(rootURL);
+            if (manifest == null)
+            {
+               manifest = VFSUtils.getManifest(root);
+               if (manifest == null)
+                  manifestCache.put(rootURL, NO_MANIFEST);
+               else
+                  manifestCache.put(rootURL, manifest);
+            }
+            
+            if (manifest == NO_MANIFEST)
+               manifest = null;
+         }
+         catch (Exception ignored)
+         {
+            log.trace("Unable to retrieve manifest for " + path + " url=" + rootURL + " error="  + ignored.getMessage());
+         }
       }
-      catch (IOException ignored)
-      {
-         log.trace("Unable to retrieve manifest for " + pkge + " " + ignored.getMessage());
-         return null;
-      }
+      return new PackageInformation(packageName, manifest);
    }
 
    @Override
