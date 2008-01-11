@@ -57,13 +57,12 @@ public class ExportAllUnitTestCase extends BaseTestCase
 
    protected void testExportAll(ExportAll exportAll, Map<String, String> expected, Set<String> empty, String... urls) throws Exception
    {
-      VirtualFile[] files = new VirtualFile[urls.length];
-      for (int i = 0; i < urls.length; ++i)
-      {
-         URL url = getResource(urls[i]);
-         assertNotNull("Cannot find resource: " + urls[i], url);
-         files[i]= VFS.getRoot(url);
-      }
+      testExportAllAbsolute(exportAll, expected, empty, urls);
+      testExportAllFromBase(exportAll, expected, empty, urls);
+   }
+
+   protected void testExportAllCommon(ExportAll exportAll, Map<String, String> expected, Set<String> empty, VirtualFile[] files) throws Exception
+   {
       VFSClassLoaderPolicy policy = VFSClassLoaderPolicy.createVFSClassLoaderPolicy(files);
       policy.setExportAll(exportAll);
       
@@ -92,6 +91,32 @@ public class ExportAllUnitTestCase extends BaseTestCase
          }
       }
    }
+
+   protected void testExportAllFromBase(ExportAll exportAll, Map<String, String> expected, Set<String> empty, String... urls) throws Exception
+   {
+      URL baseURL = getResource("/classloader");
+      assertNotNull(baseURL);
+      VirtualFile base = VFS.getRoot(baseURL);
+      VirtualFile[] files = new VirtualFile[urls.length];
+      for (int i = 0; i < urls.length; ++i)
+         files[i]= base.findChild(urls[i]);
+      
+      testExportAllCommon(exportAll, expected, empty, files);
+   }
+
+   protected void testExportAllAbsolute(ExportAll exportAll, Map<String, String> expected, Set<String> empty, String... urls) throws Exception
+   {
+      VirtualFile[] files = new VirtualFile[urls.length];
+      for (int i = 0; i < urls.length; ++i)
+      {
+         String urlString = "/classloader/" + urls[i];
+         URL url = getResource(urlString);
+         assertNotNull("Expected to find resource: " + urlString, url);
+         files[i]= VFS.getRoot(url);
+      }
+      
+      testExportAllCommon(exportAll, expected, empty, files);
+   }
    
    public void testExportAllJar1() throws Exception
    {
@@ -104,7 +129,7 @@ public class ExportAllUnitTestCase extends BaseTestCase
             "package2.subpackage3"
       );
 
-      testExportAll(ExportAll.ALL, expected, "/classloader/testjar1");
+      testExportAll(ExportAll.ALL, expected, "testjar1");
    }
 
    public void testExportAllJar1NonEmpty() throws Exception
@@ -118,7 +143,7 @@ public class ExportAllUnitTestCase extends BaseTestCase
             "package2.subpackage3"
       );
 
-      testExportAll(ExportAll.NON_EMPTY, expected, "/classloader/testjar1");
+      testExportAll(ExportAll.NON_EMPTY, expected, "testjar1");
    }
    
    public void testExportAllJar2() throws Exception
@@ -130,7 +155,7 @@ public class ExportAllUnitTestCase extends BaseTestCase
       
       Set<String> empty = makeSet("");
 
-      testExportAll(ExportAll.ALL, expected, empty, "/classloader/testjar2");
+      testExportAll(ExportAll.ALL, expected, empty, "testjar2");
    }
 
    public void testExportAllJar2NonEmpty() throws Exception
@@ -139,7 +164,7 @@ public class ExportAllUnitTestCase extends BaseTestCase
             "package1"
       );
 
-      testExportAll(ExportAll.NON_EMPTY, expected, "/classloader/testjar2");
+      testExportAll(ExportAll.NON_EMPTY, expected, "testjar2");
    }
    
    public void testExportAllJar1And2() throws Exception
@@ -153,7 +178,7 @@ public class ExportAllUnitTestCase extends BaseTestCase
             "package2.subpackage3"
       );
 
-      testExportAll(ExportAll.ALL, expected, "/classloader/testjar1", "/classloader/testjar2");
+      testExportAll(ExportAll.ALL, expected, "testjar1", "testjar2");
    }
 
    public void testExportAllJar1And2NonEmpty() throws Exception
@@ -167,7 +192,7 @@ public class ExportAllUnitTestCase extends BaseTestCase
             "package2.subpackage3"
       );
 
-      testExportAll(ExportAll.NON_EMPTY, expected, "/classloader/testjar1", "/classloader/testjar2");
+      testExportAll(ExportAll.NON_EMPTY, expected, "testjar1", "testjar2");
    }
    
    public void testExportAllJar2And1() throws Exception
@@ -181,7 +206,7 @@ public class ExportAllUnitTestCase extends BaseTestCase
             "package2.subpackage3", "testjar1"
       );
 
-      testExportAll(ExportAll.ALL, expected, "/classloader/testjar2", "/classloader/testjar1");
+      testExportAll(ExportAll.ALL, expected, "testjar2", "testjar1");
    }
 
    public void testExportAllJar2And1NonEmpty() throws Exception
@@ -195,7 +220,7 @@ public class ExportAllUnitTestCase extends BaseTestCase
             "package2.subpackage3", "testjar1"
       );
 
-      testExportAll(ExportAll.NON_EMPTY, expected, "/classloader/testjar2", "/classloader/testjar1");
+      testExportAll(ExportAll.NON_EMPTY, expected, "testjar2", "testjar1");
    }
 
    protected String getContents(InputStream is) throws Exception
