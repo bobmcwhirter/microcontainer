@@ -32,7 +32,6 @@ import java.util.Set;
 
 import junit.framework.Test;
 import junit.framework.TestSuite;
-
 import org.jboss.classloader.plugins.system.DefaultClassLoaderSystem;
 import org.jboss.classloader.spi.ClassLoaderSystem;
 import org.jboss.deployers.structure.spi.classloading.ExportAll;
@@ -76,12 +75,9 @@ public class ExportAllUnitTestCase extends BaseTestCase
       for (Map.Entry<String, String> entry : expected.entrySet())
       {
          String packageName = entry.getKey();
-         packageName.replace('.', '/');
-         String resource = entry.getKey();
-         resource = resource.replace('.', '/');
-         resource += "/notempty";
+         String resource = packageName.replace('.', '/') + "/notempty";
          InputStream is = classLoader.getResourceAsStream(resource);
-         if (empty.contains(entry.getKey()))
+         if (empty.contains(packageName))
             assertNull("Did not expect resource: " + resource, is);
          else
          {
