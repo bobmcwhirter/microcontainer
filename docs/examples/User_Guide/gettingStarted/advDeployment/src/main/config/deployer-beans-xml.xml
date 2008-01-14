@@ -54,10 +54,5 @@
       <property name="type">beans</property>
    </bean>
    
-   <!-- Your deployer here! -->
-   <bean name="MyDeployer" class="org.jboss.example.deployment.MyDeployer">
-      <property name="type">beans</property>
-   </bean>
-   
 </deployment>
 

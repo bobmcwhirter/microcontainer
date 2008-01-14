@@ -64,6 +64,10 @@
        </property>
     </bean>
 
+   <bean name="MyClassLoaderDeployer" class="org.jboss.example.deployment.MyClassLoaderDeployer">
+      <property name="type">beans</property>
+   </bean>
+
    <!-- POJO Deployment -->
    <bean name="BeanDeployer" class="org.jboss.deployers.vfs.deployer.kernel.BeanDeployer">
       <property name="type">beans</property>
@@ -76,9 +80,5 @@
       <property name="type">beans</property>
    </bean>
    
-   <bean name="MyClassLoaderDeployer" class="org.jboss.example.deployment.MyClassLoaderDeployer">
-      <property name="type">beans</property>
-   </bean>
-
 </deployment>
 

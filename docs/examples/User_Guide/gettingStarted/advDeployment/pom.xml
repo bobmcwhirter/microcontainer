@@ -99,6 +99,7 @@
             <descriptor>src/main/assembly/bean-jar.xml</descriptor>
             <descriptor>src/main/assembly/bean-structure.xml</descriptor>
             <descriptor>src/main/assembly/bean-classloader.xml</descriptor>
+            <descriptor>src/main/assembly/bean-addStage.xml</descriptor>
           </descriptors>
           <finalName>${pom.artifactId}</finalName>
         </configuration>

@@ -16,4 +16,8 @@ public class MyDeployer extends AbstractDeployer {
 	public void deploy(DeploymentUnit unit) throws DeploymentException {
 		System.out.println("Calling deploy() within MyDeployer...");
 	}
+	
+	public void undeploy(DeploymentUnit unit) {
+		System.out.println("Calling undeploy() within MyDeployer...");
+	}
 }

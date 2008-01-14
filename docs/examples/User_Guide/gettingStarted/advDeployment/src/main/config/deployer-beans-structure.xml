@@ -27,7 +27,6 @@
       <uncallback method="removeDeployer"/>
    </bean>
 
-    <!-- Declared Structure -->
     <bean name="DeclaredStructure" class="org.jboss.deployers.vfs.plugins.structure.explicit.DeclaredStructure"/>
 
    <!-- POJO Deployment -->
@@ -42,7 +41,5 @@
       <property name="type">beans</property>
    </bean>
    
-   <!-- Your deployer here! -->
-
 </deployment>
 

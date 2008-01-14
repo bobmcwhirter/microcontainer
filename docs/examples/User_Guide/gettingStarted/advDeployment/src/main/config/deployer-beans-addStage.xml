@@ -42,8 +42,12 @@
        </constructor>
     </bean>
 
+   <bean name="MyDeployer" class="org.jboss.example.deployment.MyDeployer">
+      <property name="type">beans</property>
+   </bean>
+   
    <!-- POJO Deployment -->
-   <bean name="BeanDeployer" class="org.jboss.deployers.vfs.deployer.kernel.Properties2BeansDeployer">
+   <bean name="BeanDeployer" class="org.jboss.deployers.vfs.deployer.kernel.BeanDeployer">
       <property name="type">beans</property>
    </bean>
    <bean name="KernelDeploymentDeployer" class="org.jboss.deployers.vfs.deployer.kernel.KernelDeploymentDeployer">

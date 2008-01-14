@@ -76,7 +76,5 @@
       <property name="type">beans</property>
    </bean>
    
-   <!-- Your deployer here! -->
-
 </deployment>
 
