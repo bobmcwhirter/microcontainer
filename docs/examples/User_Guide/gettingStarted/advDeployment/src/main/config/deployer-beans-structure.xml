@@ -27,20 +27,8 @@
       <uncallback method="removeDeployer"/>
    </bean>
 
-    <!-- File Structure -->
-    <bean name="FileStructure" class="org.jboss.deployers.vfs.plugins.structure.file.FileStructure">
-       <!-- Unless specified the default list of suffixes is -service.xml, -beans.xml, -ds.xml, -aop.xml -->
-       <constructor>
-          <parameter>
-             <set elementClass="java.lang.String">
-                <value>-service.xml</value>
-                <value>-beans.xml</value>
-                <value>-ds.xml</value>
-                <value>-aop.xml</value>
-             </set>
-          </parameter>
-       </constructor>
-    </bean>
+    <!-- Declared Structure -->
+    <bean name="DeclaredStructure" class="org.jboss.deployers.vfs.plugins.structure.explicit.DeclaredStructure"/>
 
    <!-- POJO Deployment -->
    <bean name="BeanDeployer" class="org.jboss.deployers.vfs.deployer.kernel.BeanDeployer">
@@ -55,9 +43,6 @@
    </bean>
    
    <!-- Your deployer here! -->
-   <bean name="MyDeployer" class="org.jboss.example.deployment.MyDeployer">
-      <property name="type">beans</property>
-   </bean>
-   
+
 </deployment>
 

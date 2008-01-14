@@ -97,6 +97,8 @@
             <descriptor>src/main/assembly/bean-xml.xml</descriptor>
             <descriptor>src/main/assembly/bean-properties.xml</descriptor>
             <descriptor>src/main/assembly/bean-jar.xml</descriptor>
+            <descriptor>src/main/assembly/bean-structure.xml</descriptor>
+            <descriptor>src/main/assembly/bean-classloader.xml</descriptor>
           </descriptors>
           <finalName>${pom.artifactId}</finalName>
         </configuration>

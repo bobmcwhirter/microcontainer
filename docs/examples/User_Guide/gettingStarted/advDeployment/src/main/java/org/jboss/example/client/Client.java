@@ -68,7 +68,11 @@ public class Client {
 		}
 		
 		if (hrServiceBeansUrl == null) {
-			hrServiceBeansUrl = cl.getResource("humanResourcesService-1.0.0.jar");
+			hrServiceBeansUrl = cl.getResource("lib/humanResourcesService-1.0.0.jar");
+		}
+		
+		if (hrServiceBeansUrl == null) {
+			hrServiceBeansUrl = cl.getResource("otherLib/humanResourcesService-1.0.0.jar");
 		}
 		
 		// Create VFSDeployment to use with aspectized deployers

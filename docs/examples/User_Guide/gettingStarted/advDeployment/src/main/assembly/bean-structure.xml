@@ -1,17 +1,21 @@
 <assembly>
-  <id>bean-jar</id>
+  <id>bean-structure</id>
   <formats>
     <format>zip</format>
   </formats>
   <includeBaseDirectory>false</includeBaseDirectory>
   <files>
     <file>
-      <source>src/main/config/deployer-beans-jar.xml</source>
+      <source>src/main/config/deployer-beans-structure.xml</source>
       <destName>deployer-beans.xml</destName>
     </file>
     <file>
       <source>src/main/config/hrService-beans.xml</source>
-      <destName>lib/humanResourcesService-1.0.0.jar/META-INF/jboss-beans.xml</destName>
+      <destName>lib/humanResourcesService-1.0.0.jar/OTHER-DIR/jboss-beans.xml</destName>
+    </file>
+    <file>
+      <source>src/main/config/jboss-structure.xml</source>
+      <destName>lib/humanResourcesService-1.0.0.jar/META-INF/jboss-structure.xml</destName>
     </file>
   </files>
   <dependencySets>
