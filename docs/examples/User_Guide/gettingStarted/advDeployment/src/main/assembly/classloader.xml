@@ -1,22 +1,22 @@
 <assembly>
-  <id>bean-jar</id>
+  <id>classloader</id>
   <formats>
     <format>zip</format>
   </formats>
   <includeBaseDirectory>false</includeBaseDirectory>
   <files>
     <file>
-      <source>src/main/config/deployer-beans-jar.xml</source>
+      <source>src/main/config/deployer-beans-classloader.xml</source>
       <destName>deployer-beans.xml</destName>
     </file>
     <file>
       <source>src/main/config/hrService-beans.xml</source>
-      <destName>lib/humanResourcesService-1.0.0.jar/META-INF/jboss-beans.xml</destName>
+      <destName>otherLib/humanResourcesService-1.0.0.jar/META-INF/jboss-beans.xml</destName>
     </file>
   </files>
   <dependencySets>
     <dependencySet>
-      <outputDirectory>/lib</outputDirectory>
+      <outputDirectory>/otherLib</outputDirectory>
       <unpack>true</unpack>
       <scope>runtime</scope>
        <includes>

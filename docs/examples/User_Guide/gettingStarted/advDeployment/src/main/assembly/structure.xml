@@ -1,22 +1,27 @@
 <assembly>
-  <id>bean-addStage</id>
+  <id>structure</id>
   <formats>
     <format>zip</format>
   </formats>
   <includeBaseDirectory>false</includeBaseDirectory>
   <files>
     <file>
-      <source>src/main/config/deployer-beans-addStage.xml</source>
+      <source>src/main/config/deployer-beans-structure.xml</source>
       <destName>deployer-beans.xml</destName>
     </file>
     <file>
       <source>src/main/config/hrService-beans.xml</source>
+      <destName>lib/humanResourcesService-1.0.0.jar/OTHER-DIR/jboss-beans.xml</destName>
+    </file>
+    <file>
+      <source>src/main/config/jboss-structure.xml</source>
+      <destName>lib/humanResourcesService-1.0.0.jar/META-INF/jboss-structure.xml</destName>
     </file>
   </files>
   <dependencySets>
     <dependencySet>
       <outputDirectory>/lib</outputDirectory>
-      <unpack>false</unpack>
+      <unpack>true</unpack>
       <scope>runtime</scope>
        <includes>
         <include>org.jboss.microcontainer.examples:humanResourcesService</include>

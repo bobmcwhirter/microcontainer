@@ -94,12 +94,12 @@
         <artifactId>maven-assembly-plugin</artifactId>
         <configuration>
           <descriptors>
-            <descriptor>src/main/assembly/bean-xml.xml</descriptor>
-            <descriptor>src/main/assembly/bean-properties.xml</descriptor>
-            <descriptor>src/main/assembly/bean-jar.xml</descriptor>
-            <descriptor>src/main/assembly/bean-structure.xml</descriptor>
-            <descriptor>src/main/assembly/bean-classloader.xml</descriptor>
-            <descriptor>src/main/assembly/bean-addStage.xml</descriptor>
+            <descriptor>src/main/assembly/xml.xml</descriptor>
+            <descriptor>src/main/assembly/jar.xml</descriptor>
+            <descriptor>src/main/assembly/properties.xml</descriptor>
+            <descriptor>src/main/assembly/structure.xml</descriptor>
+            <descriptor>src/main/assembly/classloader.xml</descriptor>
+            <descriptor>src/main/assembly/addStage.xml</descriptor>
           </descriptors>
           <finalName>${pom.artifactId}</finalName>
         </configuration>
