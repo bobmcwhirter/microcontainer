@@ -879,23 +879,23 @@ if (context != null) { manager = (HRManager) context.getTarget(); }</programlist
       <title>Advanced deployment</title>
       <para>Mention the need for a main deployer and explain how we add various deployers to this.</para>
       <section>
-        <title>Aspectized deployers </title>
+        <title>Deployment stages and actions</title>
         <para>Give example of using aspectized bean deployer and show how it&apos;s the same as the BasicXMLDeployer.</para>
       </section>
       <section>
-        <title>Changing the package structure</title>
+        <title>Changing the descriptor file format</title>
         <para>Give an example where we move the jboss-beans.xml file out of the META-INF directory and change the location of the classes.</para>
       </section>
       <section>
-        <title>Changing the XML file format</title>
+        <title>Changing the archive structure</title>
         <para>Give an example of changing the jboss-beans.xml file for a jboss-beans.properties file.</para>
       </section>
       <section>
-        <title>Changing the classloading strategy</title>
+        <title>Changing the classloader</title>
         <para/>
       </section>
       <section>
-        <title>Adding a deployment stage</title>
+        <title>Adding a deployment action</title>
         <para/>
       </section>
     </chapter>
@@ -2653,21 +2653,104 @@ public class MyBean {
     </chapter>
   </part>
   <part>
+    <title>The Deployment Framework</title>
+    <chapter>
+      <title>Introduction</title>
+      <para>JBoss Microcontainer allows POJO-based services to be deployed into a runtime environment in a controlled manner but that is not all it can do. Thanks to an innovative deployment framework you can easily customize it to deploy other artifacts such as Hibernate  or JBoss AOP archives.</para>
+    </chapter>
+    <chapter>
+      <title>The Virtual File System</title>
+    </chapter>
+    <chapter>
+      <title>Identifying a deployment</title>
+      <para/>
+      <section>
+        <title>Descriptor Files</title>
+      </section>
+      <section>
+        <title>Java Archives (JARs)</title>
+      </section>
+      <section>
+        <title>Nested deployments</title>
+      </section>
+      <section>
+        <title>Declaring a custom archive</title>
+      </section>
+      <section>
+        <title>Adding a new deployment type</title>
+      </section>
+    </chapter>
+    <chapter>
+      <title>Creating a deployment context</title>
+      <section>
+        <title>Standard information</title>
+      </section>
+      <section>
+        <title>Attaching extra information</title>
+      </section>
+      <section>
+        <title>Nested deployments</title>
+      </section>
+    </chapter>
+    <chapter>
+      <title>Processing a deployment context</title>
+      <section>
+        <title>Deployment stages</title>
+      </section>
+      <section>
+        <title>Deployment actions</title>
+      </section>
+      <section>
+        <title>Inputs and outputs</title>
+      </section>
+      <section>
+        <title>Ordering deployment actions</title>
+      </section>
+      <section>
+        <title>Adding a new deployment action</title>
+      </section>
+    </chapter>
+    <chapter>
+      <title>Putting it all together</title>
+      <section>
+        <title>Defining the Main Deployer</title>
+      </section>
+      <section>
+        <title>Adding deployment types</title>
+      </section>
+      <section>
+        <title>Adding deployment actions</title>
+      </section>
+    </chapter>
+  </part>
+  <part>
+    <title>Managing Deployments</title>
+  </part>
+  <part>
+    <title>Classloading</title>
+    <chapter>
+      <title>Defining Policies</title>
+    </chapter>
+    <chapter>
+      <title>Using OSGi</title>
+    </chapter>
+  </part>
+  <part>
     <title>Extending the Microcontainer</title>
     <chapter>
       <title>Introduction</title>
     </chapter>
     <chapter>
-      <title>Guice Extensions </title>
+      <title>Guice Extension</title>
     </chapter>
     <chapter>
-      <title>OSGi Extensions</title>
+      <title>Identity Extension</title>
     </chapter>
     <chapter>
-      <title>Drools Extensions</title>
+      <title>jBPM Extension</title>
     </chapter>
     <chapter>
-      <title>jBPM Extensions</title>
+      <title>Drools Extension</title>
     </chapter>
   </part>
   <appendix>
