@@ -69,7 +69,7 @@ public class VFSStructureBuilder extends AbstractStructureBuilder
          try
          {
             VirtualFile parentFile = vfsParent.getRoot();
-            VirtualFile file = parentFile.findChild(path);
+            VirtualFile file = parentFile.findChild(path); // leaving the findChild usage
             return new AbstractVFSDeploymentContext(file, path);
          }
          catch (Throwable t)
@@ -115,7 +115,7 @@ public class VFSStructureBuilder extends AbstractStructureBuilder
                {
                   try
                   {
-                     child = root.findChild(entry.getPath());
+                     child = root.findChild(entry.getPath()); // leaving the findChild
                   }
                   catch (Throwable t)
                   {

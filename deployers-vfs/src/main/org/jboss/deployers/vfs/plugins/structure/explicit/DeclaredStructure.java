@@ -24,8 +24,8 @@ package org.jboss.deployers.vfs.plugins.structure.explicit;
 import java.io.IOException;
 import java.net.URL;
 
-import org.jboss.deployers.spi.structure.StructureMetaData;
 import org.jboss.deployers.spi.DeploymentException;
+import org.jboss.deployers.spi.structure.StructureMetaData;
 import org.jboss.deployers.vfs.spi.structure.VFSStructuralDeployers;
 import org.jboss.deployers.vfs.spi.structure.helpers.AbstractStructureDeployer;
 import org.jboss.virtual.VirtualFile;
@@ -61,19 +61,21 @@ public class DeclaredStructure extends AbstractStructureDeployer
                log.trace(file + " is not a leaf");
             try
             {
-               VirtualFile jbossStructure = file.findChild("META-INF/jboss-structure.xml");
-               log.trace("... context has a META-INF/jboss-structure.xml");
-               URL url = jbossStructure.toURL();
-               UnmarshallerFactory factory = UnmarshallerFactory.newInstance();
-               Unmarshaller unmarshaller = factory.newUnmarshaller();
-               StructureMetaDataObjectFactory ofactory = new StructureMetaDataObjectFactory();
-               unmarshaller.unmarshal(url.toString(), ofactory, metaData);
-               isJBossStructure = true;
+               VirtualFile jbossStructure = file.getChild("META-INF/jboss-structure.xml");
+               if (jbossStructure != null)
+               {
+                  log.trace("... context has a META-INF/jboss-structure.xml");
+                  URL url = jbossStructure.toURL();
+                  UnmarshallerFactory factory = UnmarshallerFactory.newInstance();
+                  Unmarshaller unmarshaller = factory.newUnmarshaller();
+                  StructureMetaDataObjectFactory ofactory = new StructureMetaDataObjectFactory();
+                  unmarshaller.unmarshal(url.toString(), ofactory, metaData);
+                  isJBossStructure = true;
+               }
             }
             catch (IOException e)
             {
-               if (trace)
-                  log.trace("... no META-INF/jboss-structure.xml.");
+               log.warn("Exception while looking for META-INF/jboss-structure.xml: " + e);
             }
             if (trace)
                log.trace(file + " isJBossStructure: " + isJBossStructure);

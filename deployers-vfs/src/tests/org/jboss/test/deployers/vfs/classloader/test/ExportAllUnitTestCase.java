@@ -95,7 +95,7 @@ public class ExportAllUnitTestCase extends BaseTestCase
       VirtualFile base = VFS.getRoot(baseURL);
       VirtualFile[] files = new VirtualFile[urls.length];
       for (int i = 0; i < urls.length; ++i)
-         files[i]= base.findChild(urls[i]);
+         files[i] = base.findChild(urls[i]);
       
       testExportAllCommon(exportAll, expected, empty, files);
    }

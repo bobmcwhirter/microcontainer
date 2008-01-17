@@ -24,9 +24,9 @@ package org.jboss.deployers.vfs.plugins.structure.war;
 import java.io.IOException;
 import java.util.List;
 
+import org.jboss.deployers.spi.DeploymentException;
 import org.jboss.deployers.spi.structure.ContextInfo;
 import org.jboss.deployers.spi.structure.StructureMetaData;
-import org.jboss.deployers.spi.DeploymentException;
 import org.jboss.deployers.vfs.spi.structure.VFSStructuralDeployers;
 import org.jboss.deployers.vfs.spi.structure.helpers.AbstractStructureDeployer;
 import org.jboss.virtual.VirtualFile;
@@ -85,6 +85,8 @@ public class WARStructure extends AbstractStructureDeployer
       ContextInfo context = null;
       try
       {
+         boolean trace = log.isTraceEnabled();
+
          if (isLeaf(file) == false)
          {
             // We require either a WEB-INF or the name ends in .war
@@ -92,16 +94,26 @@ public class WARStructure extends AbstractStructureDeployer
             {
                try
                {
-                  file.findChild("WEB-INF");
-                  log.trace("... ok - directory has a WEB-INF subdirectory");
+                  VirtualFile child = file.getChild("WEB-INF");
+                  if (child != null)
+                  {
+                     if (trace)
+                        log.trace("... ok - directory has a WEB-INF subdirectory");
+                  }
+                  else
+                  {
+                     if (trace)
+                        log.trace("... no - doesn't look like a war and no WEB-INF subdirectory.");
+                     return false;
+                  }
                }
                catch (IOException e)
                {
-                  log.trace("... no - doesn't look like a war and no WEB-INF subdirectory.");
+                  log.warn("Exception while checking if file is a war: " + e);
                   return false;
                }
             }
-            else
+            else if (trace)
             {
                log.trace("... ok - name ends in .war.");
             }
@@ -114,25 +126,33 @@ public class WARStructure extends AbstractStructureDeployer
             try
             {
                // The classpath is WEB-INF/classes
-               VirtualFile classes = file.findChild("WEB-INF/classes");
+               VirtualFile classes = file.getChild("WEB-INF/classes");
                // Add the war manifest classpath entries
-               addClassPath(root, classes, true, false, context);               
+               if (classes != null)
+                  addClassPath(root, classes, true, false, context);
+               else if (trace)
+                  log.trace("No WEB-INF/classes for: " + file.getPathName());
             }
             catch(IOException e)
             {
-               log.trace("No WEB-INF/classes for: " + file.getPathName());               
+               log.warn("Exception while looking for classes, " + file.getPathName() + ", " + e);
             }
             // and the top level jars in WEB-INF/lib
             try
             {
-               VirtualFile webinfLib = file.findChild("WEB-INF/lib");
-               List<VirtualFile> archives = webinfLib.getChildren(webInfLibFilter);
-               for (VirtualFile jar : archives)
-                  addClassPath(root, jar, true, true, context);
+               VirtualFile webinfLib = file.getChild("WEB-INF/lib");
+               if (webinfLib != null)
+               {
+                  List<VirtualFile> archives = webinfLib.getChildren(webInfLibFilter);
+                  for (VirtualFile jar : archives)
+                     addClassPath(root, jar, true, true, context);
+               }
+               else if (trace)
+                  log.trace("No WEB-INF/lib for: " + file.getPathName());
             }
-            catch (IOException ignored)
+            catch (IOException e)
             {
-               log.trace("No WEB-INF/lib for: " + file.getPathName());
+               log.warn("Exception looking for WEB-INF/lib, " + file.getPathName() + ", " + e);
             }
 
             // There are no subdeployments for wars
@@ -140,7 +160,8 @@ public class WARStructure extends AbstractStructureDeployer
          }
          else
          {
-            log.trace("... no - not a directory or an archive.");
+            if (trace)
+               log.trace("... no - not a directory or an archive.");
             return false;
          }
       }

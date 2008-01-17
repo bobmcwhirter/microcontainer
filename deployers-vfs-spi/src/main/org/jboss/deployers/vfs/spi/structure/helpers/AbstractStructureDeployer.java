@@ -252,12 +252,13 @@ public abstract class AbstractStructureDeployer implements StructureDeployer
       {
          try
          {
-            root.findChild(metaDataPath);
+            VirtualFile child = root.getChild(metaDataPath);
+            if (child == null)
+               metaDataPath = null;
          }
-         catch (IOException ignored)
+         catch (IOException e)
          {
-            if (trace)
-               log.trace("Not using metadata path " + metaDataPath + " for " + root.getName() + " reason: " + ignored.getMessage());
+            log.warn("Not using metadata path " + metaDataPath + " for " + root.getName() + " reason: " + e.getMessage());
             metaDataPath = null;
          }
       }

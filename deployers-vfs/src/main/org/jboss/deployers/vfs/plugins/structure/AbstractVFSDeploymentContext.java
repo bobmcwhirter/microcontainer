@@ -24,9 +24,9 @@ package org.jboss.deployers.vfs.plugins.structure;
 import java.io.IOException;
 import java.io.ObjectInput;
 import java.io.ObjectOutput;
+import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
-import java.util.ArrayList;
 
 import org.jboss.deployers.structure.spi.DeploymentUnit;
 import org.jboss.deployers.structure.spi.helpers.AbstractDeploymentContext;
@@ -122,13 +122,17 @@ public class AbstractVFSDeploymentContext extends AbstractDeploymentContext impl
             if (path == null)
                throw new IllegalArgumentException("Null path in paths: " + paths);
 
-            locations.add(root.findChild(path));
+            VirtualFile child = root.getChild(path);
+            if (child != null)
+               locations.add(child);
+            else
+               log.debug("Meta data path does not exist: root=" + root.getPathName() + " path=" + path);
          }
          setMetaDataLocations(locations);
       }
       catch (IOException e)
       {
-         log.debug("Meta data path does not exist: root=" + root.getPathName() + " paths=" + paths);
+         log.warn("Exception while applying paths: root=" + root.getPathName() + " paths=" + paths);
       }
    }
 
@@ -190,7 +194,7 @@ public class AbstractVFSDeploymentContext extends AbstractDeploymentContext impl
       {
          try
          {
-            result = location.findChild(name);
+            result = location.getChild(name);
             if (result != null)
             {
                if (log.isTraceEnabled())
@@ -199,10 +203,9 @@ public class AbstractVFSDeploymentContext extends AbstractDeploymentContext impl
                break;
             }
          }
-         catch (IOException ignored)
+         catch (IOException e)
          {
-            if (log.isTraceEnabled())
-               log.trace("Ignoring search exception invocation for metafile " + name + " in " + location.getName() + ", reason: " + ignored);
+            log.warn("Search exception invocation for metafile " + name + " in " + location.getName() + ", reason: " + e);
          }
       }
       return result;

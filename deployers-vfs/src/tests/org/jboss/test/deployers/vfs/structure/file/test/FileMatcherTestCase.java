@@ -186,7 +186,7 @@ public class FileMatcherTestCase extends BaseTestCase
                return null;
             }
 
-            public VirtualFileHandler findChild(String path) throws IOException
+            public VirtualFileHandler getChild(String path) throws IOException
             {
                return null;
             }

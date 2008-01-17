@@ -240,7 +240,8 @@ public class VFSClassLoaderPolicy extends ClassLoaderPolicy
          }
          catch (Exception ignored)
          {
-            log.trace("Error determining URL for " + child, ignored);
+            if (log.isTraceEnabled())
+               log.trace("Error determining URL for " + child, ignored);
             return null;
          }
       }
@@ -259,7 +260,8 @@ public class VFSClassLoaderPolicy extends ClassLoaderPolicy
          }
          catch (Exception ignored)
          {
-            log.trace("Error opening stream for " + child, ignored);
+            if (log.isTraceEnabled())
+               log.trace("Error opening stream for " + child, ignored);
             return null;
          }
       }
@@ -273,12 +275,14 @@ public class VFSClassLoaderPolicy extends ClassLoaderPolicy
       {
          try
          {
-            VirtualFile child = root.findChild(name);
-            urls.add(child.toURL());
+            VirtualFile child = root.getChild(name);
+            if (child != null)
+               urls.add(child.toURL());
          }
-         catch (Exception ignored)
+         catch (Exception e)
          {
-            log.trace("Error getting resources for " + root, ignored);
+            if (log.isTraceEnabled())
+               log.trace("Error getting resources for " + root, e);
          }
       }
    }
@@ -295,7 +299,9 @@ public class VFSClassLoaderPolicy extends ClassLoaderPolicy
       {
          try
          {
-            return root.findChild(path);
+            VirtualFile child = root.getChild(path);
+            if (child != null)
+               return child;
          }
          catch (Exception ignored)
          {
@@ -317,7 +323,7 @@ public class VFSClassLoaderPolicy extends ClassLoaderPolicy
       {
          try
          {
-            if (root.findChild(path) != null)
+            if (root.getChild(path) != null)
                return root;
          }
          catch (Exception ignored)
@@ -355,7 +361,8 @@ public class VFSClassLoaderPolicy extends ClassLoaderPolicy
          }
          catch (Exception ignored)
          {
-            log.trace("Unable to retrieve manifest for " + path + " url=" + rootURL + " error="  + ignored.getMessage());
+            if (log.isTraceEnabled())
+               log.trace("Unable to retrieve manifest for " + path + " url=" + rootURL + " error="  + ignored.getMessage());
          }
       }
       return new PackageInformation(packageName, manifest);

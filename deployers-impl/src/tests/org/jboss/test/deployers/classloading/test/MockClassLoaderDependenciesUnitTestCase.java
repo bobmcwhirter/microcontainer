@@ -27,13 +27,12 @@ import java.util.List;
 
 import junit.framework.Test;
 import junit.framework.TestSuite;
-
 import org.jboss.classloader.plugins.system.DefaultClassLoaderSystem;
 import org.jboss.classloader.spi.ClassLoaderSystem;
 import org.jboss.classloader.spi.ParentPolicy;
 import org.jboss.deployers.client.spi.DeployerClient;
 import org.jboss.deployers.client.spi.Deployment;
-import org.jboss.deployers.plugins.classloading.AbstractClassLoaderDesribeDeployer;
+import org.jboss.deployers.plugins.classloading.AbstractClassLoaderDescribeDeployer;
 import org.jboss.deployers.plugins.classloading.ClassLoading;
 import org.jboss.deployers.spi.attachments.MutableAttachments;
 import org.jboss.deployers.spi.attachments.PredeterminedManagedObjectAttachments;
@@ -79,7 +78,7 @@ public class MockClassLoaderDependenciesUnitTestCase extends AbstractDeployerTes
       return result;
    }
    
-   private AbstractClassLoaderDesribeDeployer deployer1;
+   private AbstractClassLoaderDescribeDeployer deployer1;
    private MockTopLevelClassLoaderSystemDeployer deployer2;
    
    public static Test suite()
@@ -384,7 +383,7 @@ public class MockClassLoaderDependenciesUnitTestCase extends AbstractDeployerTes
       ClassLoaderSystem system = new DefaultClassLoaderSystem();
       system.getDefaultDomain().setParentPolicy(ParentPolicy.BEFORE_BUT_JAVA_ONLY);
       
-      deployer1 = new AbstractClassLoaderDesribeDeployer();
+      deployer1 = new AbstractClassLoaderDescribeDeployer();
       deployer1.setClassLoading(classLoading);
       
       deployer2 = new MockTopLevelClassLoaderSystemDeployer();

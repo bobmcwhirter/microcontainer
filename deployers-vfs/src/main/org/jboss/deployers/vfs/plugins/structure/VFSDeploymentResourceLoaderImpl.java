@@ -59,7 +59,7 @@ public class VFSDeploymentResourceLoaderImpl implements VFSDeploymentResourceLoa
    {
       try
       {
-         return root.findChild(path);
+         return root.getChild(path);
       }
       catch (IOException e)
       {
@@ -71,8 +71,8 @@ public class VFSDeploymentResourceLoaderImpl implements VFSDeploymentResourceLoa
    {
       try
       {
-         VirtualFile child = root.findChild(name);
-         return child.toURL();
+         VirtualFile child = root.getChild(name);
+         return child != null ? child.toURL() : null;
       }
       catch (URISyntaxException e)
       {
@@ -92,10 +92,15 @@ public class VFSDeploymentResourceLoaderImpl implements VFSDeploymentResourceLoa
    {
       try
       {
-         VirtualFile child = root.findChild(name);
-         Vector<URL> vector = new Vector<URL>();
-         vector.add(child.toURL());
-         return vector.elements();
+         VirtualFile child = root.getChild(name);
+         if (child != null)
+         {
+            Vector<URL> vector = new Vector<URL>();
+            vector.add(child.toURL());
+            return vector.elements();
+         }
+         else
+            return null;
       }
       catch (URISyntaxException e)
       {
