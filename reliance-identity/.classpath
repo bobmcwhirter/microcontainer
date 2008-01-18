@@ -11,7 +11,7 @@
   <classpathentry kind="var" path="M2_REPO/ant/ant-junit/1.6.5/ant-junit-1.6.5.jar"/>
   <classpathentry kind="src" path="/jboss-deployers-impl"/>
   <classpathentry kind="src" path="/jboss-container"/>
-  <classpathentry kind="var" path="M2_REPO/org/jboss/jbossxb/2.0.0.CR4/jbossxb-2.0.0.CR4.jar" sourcepath="M2_REPO/org/jboss/jbossxb/2.0.0.CR4/jbossxb-2.0.0.CR4-sources.jar"/>
+  <classpathentry kind="var" path="M2_REPO/org/jboss/jbossxb/2.0.0.CR5/jbossxb-2.0.0.CR5.jar" sourcepath="M2_REPO/org/jboss/jbossxb/2.0.0.CR5/jbossxb-2.0.0.CR5-sources.jar"/>
   <classpathentry kind="var" path="M2_REPO/apache-xerces/xml-apis/2.7.1/xml-apis-2.7.1.jar"/>
   <classpathentry kind="src" path="/jboss-deployers-core"/>
   <classpathentry kind="var" path="M2_REPO/junit/junit/3.8.1/junit-3.8.1.jar" sourcepath="M2_REPO/junit/junit/3.8.1/junit-3.8.1-sources.jar"/>
@@ -23,7 +23,7 @@
   <classpathentry kind="var" path="M2_REPO/javax/activation/activation/1.0.2/activation-1.0.2.jar"/>
   <classpathentry kind="src" path="/jboss-classloader"/>
   <classpathentry kind="src" path="/jboss-deployers-core-spi"/>
-  <classpathentry kind="var" path="M2_REPO/org/jboss/jboss-vfs/2.0.0.Beta5/jboss-vfs-2.0.0.Beta5.jar" sourcepath="M2_REPO/org/jboss/jboss-vfs/2.0.0.Beta5/jboss-vfs-2.0.0.Beta5-sources.jar"/>
+  <classpathentry kind="var" path="M2_REPO/org/jboss/jboss-vfs/2.0.0.Beta7/jboss-vfs-2.0.0.Beta7.jar" sourcepath="M2_REPO/org/jboss/jboss-vfs/2.0.0.Beta7/jboss-vfs-2.0.0.Beta7-sources.jar"/>
   <classpathentry kind="var" path="M2_REPO/org/jboss/javassist/3.6.0.GA/javassist-3.6.0.GA.jar" sourcepath="M2_REPO/org/jboss/javassist/3.6.0.GA/javassist-3.6.0.GA-sources.jar"/>
   <classpathentry kind="src" path="/jboss-managed"/>
   <classpathentry kind="src" path="/jboss-kernel"/>
@@ -43,7 +43,7 @@
   <classpathentry kind="src" path="/jboss-deployers-client-spi"/>
   <classpathentry kind="var" path="M2_REPO/javax/xml/bind/jaxb-api/2.0/jaxb-api-2.0.jar"/>
   <classpathentry kind="var" path="M2_REPO/javax/xml/bind/jsr173_api/1.0/jsr173_api-1.0.jar"/>
-  <classpathentry kind="var" path="M2_REPO/org/jboss/aop/jboss-aop/2.0.0.beta1/jboss-aop-2.0.0.beta1.jar" sourcepath="M2_REPO/org/jboss/aop/jboss-aop/2.0.0.beta1/jboss-aop-2.0.0.beta1-sources.jar"/>
+  <classpathentry kind="var" path="M2_REPO/org/jboss/aop/jboss-aop/2.0.0.CR1/jboss-aop-2.0.0.CR1.jar" sourcepath="M2_REPO/org/jboss/aop/jboss-aop/2.0.0.CR1/jboss-aop-2.0.0.CR1-sources.jar"/>
   <classpathentry kind="var" path="M2_REPO/apache-slide/webdavlib/2.0/webdavlib-2.0.jar"/>
   <classpathentry kind="src" path="/jboss-deployers-client"/>
   <classpathentry kind="var" path="M2_REPO/apache-xerces/xercesImpl/2.7.1/xercesImpl-2.7.1.jar"/>
