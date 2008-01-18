@@ -19,7 +19,7 @@
 	<classpathentry kind="src" path="/jboss-dependency"/>
 	<classpathentry kind="var" path="M2_REPO/org/jboss/jboss-common-core/2.2.3.GA/jboss-common-core-2.2.3.GA.jar" sourcepath="M2_REPO/org/jboss/jboss-common-core/2.2.3.GA/jboss-common-core-2.2.3.GA-sources.jar"/>
 	<classpathentry kind="var" path="M2_REPO/oswego-concurrent/concurrent/1.3.4/concurrent-1.3.4.jar"/>
-	<classpathentry kind="var" path="M2_REPO/org/jboss/jbossxb/2.0.0.CR4/jbossxb-2.0.0.CR4.jar" sourcepath="M2_REPO/org/jboss/jbossxb/2.0.0.CR4/jbossxb-2.0.0.CR4-sources.jar"/>
+	<classpathentry kind="var" path="M2_REPO/org/jboss/jbossxb/2.0.0.CR5/jbossxb-2.0.0.CR5.jar" sourcepath="M2_REPO/org/jboss/jbossxb/2.0.0.CR4/jbossxb-2.0.0.CR4-sources.jar"/>
 	<classpathentry kind="var" path="M2_REPO/apache-httpclient/commons-httpclient/2.0.2/commons-httpclient-2.0.2.jar"/>
 	<classpathentry kind="var" path="M2_REPO/ant/ant-junit/1.6.5/ant-junit-1.6.5.jar"/>
 	<classpathentry kind="var" path="M2_REPO/apache-xerces/xercesImpl/2.7.1/xercesImpl-2.7.1.jar"/>
