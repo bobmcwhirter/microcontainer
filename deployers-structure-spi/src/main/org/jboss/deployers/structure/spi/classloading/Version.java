@@ -26,11 +26,18 @@ import org.jboss.deployers.structure.spi.classloading.helpers.VersionImpl;
 /**
  * Version.
  * 
+ * @author <a href="mailto:ales.justin@jboss.org">Ales Justin</a>
  * @author <a href="adrian@jboss.org">Adrian Brock</a>
  * @version $Revision: 1.1 $
  */
-public interface Version extends Comparable<Version>
+public abstract class Version implements Comparable<Version>
 {
    /** The default version */
-   public static final Version DEFAULT_VERSION = new VersionImpl(null); 
+   public static final Version DEFAULT_VERSION = VersionImpl.parseVersion(null);
+
+   public int compareTo(Version v)
+   {
+      VersionComparatorRegistry registry = VersionComparatorRegistry.getInstance();
+      return registry.compare(this, v);
+   }
 }

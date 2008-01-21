@@ -21,60 +21,230 @@
 */
 package org.jboss.deployers.structure.spi.classloading.helpers;
 
+import java.util.NoSuchElementException;
+import java.util.StringTokenizer;
+import java.util.regex.Pattern;
+
 import org.jboss.deployers.structure.spi.classloading.Version;
 
 /**
  * VersionImpl.
- * 
+ * OSGi kind of version impl.
+ *
+ * @author <a href="mailto:ales.justin@jboss.org">Ales Justin</a>
  * @author <a href="adrian@jboss.com">Adrian Brock</a>
  * @version $Revision: 1.1 $
  */
-public class VersionImpl implements Version
+public class VersionImpl extends Version
 {
-   /** The delegate */
-   private org.osgi.framework.Version delegate;
-   
+   private static final String SEPARATOR = ".";
+   private static Pattern QUALIFIER_PATTERN = Pattern.compile("[a-zA-Z0-9_-]*");
+
    /**
-    * Create a new VersionImpl.
-    * 
-    * @param version the version - pass null for the default version
-    * @throws IllegalArgumentException if the string does not conform to an OSGi version
+    * The empty version.
     */
+   private static final VersionImpl emptyVersion = new VersionImpl(0, 0, 0);
+
+   private int major;
+   private int minor;
+   private int micro;
+   private String qualifier;
+
+   public VersionImpl(int major, int minor, int micro)
+   {
+      this(major, minor, micro, null);
+   }
+
+   public VersionImpl(int major, int minor, int micro, String qualifier)
+   {
+      this.major = major;
+      this.minor = minor;
+      this.micro = micro;
+      if (qualifier == null)
+         qualifier = "";
+      this.qualifier = qualifier;
+      validate();
+   }
+
    public VersionImpl(String version)
    {
-      delegate = org.osgi.framework.Version.parseVersion(version);
+      if (version == null)
+         throw new IllegalArgumentException("Null version");
+      
+      int major = 0;
+      int minor = 0;
+      int micro = 0;
+      String qualifier = "";
+
+      try
+      {
+         StringTokenizer st = new StringTokenizer(version, SEPARATOR, true);
+         major = Integer.parseInt(st.nextToken());
+
+         if (st.hasMoreTokens())
+         {
+            st.nextToken();
+            minor = Integer.parseInt(st.nextToken());
+
+            if (st.hasMoreTokens())
+            {
+               st.nextToken();
+               micro = Integer.parseInt(st.nextToken());
+
+               if (st.hasMoreTokens())
+               {
+                  st.nextToken();
+                  qualifier = st.nextToken();
+
+                  if (st.hasMoreTokens())
+                  {
+                     throw new IllegalArgumentException("invalid format");
+                  }
+               }
+            }
+         }
+      }
+      catch (NoSuchElementException e)
+      {
+         throw new IllegalArgumentException("invalid format");
+      }
+
+      this.major = major;
+      this.minor = minor;
+      this.micro = micro;
+      this.qualifier = qualifier;
+      validate();
    }
-   
-   public int compareTo(Version o)
+
+   /**
+    * Validate arguments.
+    */
+   protected void validate()
    {
-      if (o == this)
-         return 0;
-      if (o == null || o instanceof VersionImpl == false)
-         throw new IllegalArgumentException("Not a version impl: " + o);
-      VersionImpl other = (VersionImpl) o;
-      return delegate.compareTo(other.delegate);
+      if (major < 0)
+         throw new IllegalArgumentException("negative major: " + major);
+      if (minor < 0)
+         throw new IllegalArgumentException("negative minor: " + minor);
+      if (micro < 0)
+         throw new IllegalArgumentException("negative micro: " + micro);
+      if (QUALIFIER_PATTERN.matcher(qualifier).matches() == false)
+         throw new IllegalArgumentException("invalid qualifier: " + qualifier);
    }
-   
-   @Override
-   public boolean equals(Object obj)
+
+   /**
+    * Parses a version identifier from the specified string.
+    * See <code>Version(String)</code> for the format of the version string.
+    *
+    * @param version String representation of the version identifier. Leading
+    *                and trailing whitespace will be ignored.
+    * @return A <code>Version</code> object representing the version
+    *         identifier. If <code>version</code> is <code>null</code> or
+    *         the empty string then <code>emptyVersion</code> will be
+    *         returned.
+    * @throws IllegalArgumentException If <code>version</code> is improperly
+    *                                  formatted.
+    */
+   public static VersionImpl parseVersion(String version)
    {
-      if (obj == this)
-         return true;
-      if (obj == null || obj instanceof VersionImpl == false)
-         return false;
-      VersionImpl other = (VersionImpl) obj;
-      return delegate.equals(other.delegate);
+      if (version == null)
+         return emptyVersion;
+
+      version = version.trim();
+      if (version.length() == 0)
+         return emptyVersion;
+
+      return new VersionImpl(version);
    }
-   
-   @Override
-   public int hashCode()
+
+   /**
+    * Returns the major component of this version identifier.
+    *
+    * @return The major component.
+    */
+   public int getMajor()
    {
-      return delegate.hashCode();
+      return major;
    }
-   
-   @Override
+
+   /**
+    * Returns the minor component of this version identifier.
+    *
+    * @return The minor component.
+    */
+   public int getMinor()
+   {
+      return minor;
+   }
+
+   /**
+    * Returns the micro component of this version identifier.
+    *
+    * @return The micro component.
+    */
+   public int getMicro()
+   {
+      return micro;
+   }
+
+   /**
+    * Returns the qualifier component of this version identifier.
+    *
+    * @return The qualifier component.
+    */
+   public String getQualifier()
+   {
+      return qualifier;
+   }
+
    public String toString()
    {
-      return delegate.toString();
+      StringBuilder builder = new StringBuilder();
+      builder.append(major).append(SEPARATOR).append(minor).append(SEPARATOR).append(micro);
+      if (qualifier.length() > 0)
+         builder.append(SEPARATOR).append(qualifier);
+      return builder.toString();
+   }
+
+   public int hashCode()
+   {
+      return (major << 24) + (minor << 16) + (micro << 8) + qualifier.hashCode();
+   }
+
+   public boolean equals(Object object)
+   {
+      if (object == this)
+         return true;
+
+      if (object instanceof VersionImpl == false)
+         return false;
+
+      VersionImpl other = (VersionImpl)object;
+      return (major == other.major) && (minor == other.minor) && (micro == other.micro) && qualifier.equals(other.qualifier);
+   }
+
+   /**
+    * Compare two VersionImpls.
+    *
+    * @param version the other version impl
+    * @return compare result
+    */
+   int compareTo(VersionImpl version)
+   {
+      if (version == this)
+         return 0;
+
+      int result = major - version.major;
+      if (result != 0)
+         return result;
+
+      result = minor - version.minor;
+      if (result != 0)
+         return result;
+
+      result = micro - version.micro;
+      if (result != 0)
+         return result;
+
+      return qualifier.compareTo(version.qualifier);
    }
 }

@@ -24,9 +24,9 @@ package org.jboss.test.deployers;
 import junit.framework.Test;
 import junit.framework.TestSuite;
 import junit.textui.TestRunner;
-
 import org.jboss.test.deployers.structure.attachments.StructureAttachmentsTestSuite;
 import org.jboss.test.deployers.structure.structurebuilder.StructureBuilderTestSuite;
+import org.jboss.test.deployers.structure.version.test.VersionTestSuite;
 
 /**
  * Deployers Structure Test Suite.
@@ -47,6 +47,7 @@ public class DeployersStructureTestSuite extends TestSuite
 
       suite.addTest(StructureAttachmentsTestSuite.suite());
       suite.addTest(StructureBuilderTestSuite.suite());
+      suite.addTest(VersionTestSuite.suite());
 
       return suite;
    }

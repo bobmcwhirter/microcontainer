@@ -128,7 +128,7 @@ public class VersionRange
     * @return true when the version is in range
     * @throws IllegalArgumentException for a null version
     */
-   public  boolean isInRange(Version version)
+   public boolean isInRange(Version version)
    {
       if (version == null)
          throw new IllegalArgumentException("Null version");
