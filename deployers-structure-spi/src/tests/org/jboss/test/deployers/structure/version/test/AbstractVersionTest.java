@@ -30,7 +30,7 @@ import org.jboss.test.deployers.structure.version.support.DummyVersion;
 import org.jboss.test.deployers.structure.version.support.DummyVersionComparator;
 
 /**
- * Abstarct Version test.
+ * Abstract Version test.
  *
  * @author <a href="mailto:ales.justin@jboss.com">Ales Justin</a>
  */
