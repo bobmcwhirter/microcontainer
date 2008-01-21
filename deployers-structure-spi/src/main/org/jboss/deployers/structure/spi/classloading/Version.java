@@ -33,7 +33,7 @@ import org.jboss.deployers.structure.spi.classloading.helpers.VersionImpl;
 public abstract class Version implements Comparable<Version>
 {
    /** The default version */
-   public static final Version DEFAULT_VERSION = VersionImpl.parseVersion(null);
+   public static final Version DEFAULT_VERSION = new VersionImpl(0, 0, 0);
 
    public int compareTo(Version v)
    {

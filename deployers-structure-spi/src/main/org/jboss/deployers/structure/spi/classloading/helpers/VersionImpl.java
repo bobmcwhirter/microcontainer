@@ -38,7 +38,7 @@ import org.jboss.deployers.structure.spi.classloading.Version;
 public class VersionImpl extends Version
 {
    private static final String SEPARATOR = ".";
-   private static Pattern QUALIFIER_PATTERN = Pattern.compile("[a-zA-Z0-9_-]*");
+   private static volatile Pattern QUALIFIER_PATTERN;
 
    /**
     * The empty version.
@@ -66,7 +66,7 @@ public class VersionImpl extends Version
       validate();
    }
 
-   public VersionImpl(String version)
+   private VersionImpl(String version)
    {
       if (version == null)
          throw new IllegalArgumentException("Null version");
@@ -127,6 +127,10 @@ public class VersionImpl extends Version
          throw new IllegalArgumentException("negative minor: " + minor);
       if (micro < 0)
          throw new IllegalArgumentException("negative micro: " + micro);
+
+      if (QUALIFIER_PATTERN == null)
+         QUALIFIER_PATTERN = Pattern.compile("[a-zA-Z0-9_-]*");
+
       if (QUALIFIER_PATTERN.matcher(qualifier).matches() == false)
          throw new IllegalArgumentException("invalid qualifier: " + qualifier);
    }

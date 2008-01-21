@@ -22,14 +22,20 @@
 package org.jboss.test.deployers.structure.version.test;
 
 import junit.framework.Test;
-import org.jboss.test.BaseTestCase;
+import org.jboss.deployers.structure.spi.classloading.VersionComparatorRegistry;
+import org.jboss.deployers.structure.spi.classloading.helpers.VersionImpl;
+import org.jboss.deployers.structure.spi.classloading.helpers.VersionImplComparator;
+import org.jboss.test.deployers.structure.version.support.DVIVersionComparator;
+import org.jboss.test.deployers.structure.version.support.DummyVersion;
+import org.jboss.test.deployers.structure.version.support.DummyVersionComparator;
+import org.jboss.test.deployers.structure.version.support.ZeroVersion;
 
 /**
  * Version comparator registry tests.
  *
  * @author <a href="mailto:ales.justin@jboss.com">Ales Justin</a>
  */
-public class VersionComparatorRegistryTestCase extends BaseTestCase
+public class VersionComparatorRegistryTestCase extends AbstractVersionTest
 {
    public VersionComparatorRegistryTestCase(String name)
    {
@@ -41,18 +47,33 @@ public class VersionComparatorRegistryTestCase extends BaseTestCase
       return suite(VersionComparatorRegistryTestCase.class);
    }
 
-   public void testRegisterComparator() throws Exception
+   public void testRegistry() throws Exception
    {
-      // todo
-   }
+      VersionComparatorRegistry registry = VersionComparatorRegistry.getInstance();
 
-   public void testRemoveComparator() throws Exception
-   {
-      // todo
-   }
+      DummyVersionComparator dummyVersionComparator = new DummyVersionComparator();
+      DVIVersionComparator dviVersionComparator = new DVIVersionComparator();
+      try
+      {
+         registry.registerVersionComparator(DummyVersion.class, dummyVersionComparator);
+         registry.registerVersionComparator(DummyVersion.class, VersionImpl.class, dviVersionComparator);
 
-   public void testGetComparator() throws Exception
-   {
-      // todo
+         assertSame(dummyVersionComparator, registry.getComparator(DummyVersion.class, DummyVersion.class));
+         assertSame(dviVersionComparator, registry.getComparator(DummyVersion.class, VersionImpl.class));
+         // expecting pre-registered
+         assertInstanceOf(registry.getComparator(VersionImpl.class, VersionImpl.class), VersionImplComparator.class);
+         // expecting switch
+         assertNotNull(registry.getComparator(VersionImpl.class, DummyVersion.class));
+         // expecting nulls
+         assertNull(registry.getComparator(ZeroVersion.class, ZeroVersion.class));
+         assertNull(registry.getComparator(ZeroVersion.class, DummyVersion.class));
+         assertNull(registry.getComparator(ZeroVersion.class, VersionImpl.class));
+         assertNull(registry.getComparator(DummyVersion.class, ZeroVersion.class));
+         assertNull(registry.getComparator(VersionImpl.class, ZeroVersion.class));
+      }
+      finally
+      {
+         clearVersionComparators();
+      }
    }
 }

@@ -155,7 +155,7 @@ public class VersionComparatorRegistry
     * @return the matching comparator
     */
    @SuppressWarnings("unchecked")
-   protected VersionComparator getComparator(Class<? extends Version> t, Class<? extends Version> u)
+   public VersionComparator getComparator(Class<? extends Version> t, Class<? extends Version> u)
    {
       Map<Class<? extends Version>, VersionComparator> map = comparatorMap.get(t);
       if (map == null)

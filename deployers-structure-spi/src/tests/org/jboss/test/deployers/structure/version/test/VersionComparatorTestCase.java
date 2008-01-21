@@ -22,14 +22,17 @@
 package org.jboss.test.deployers.structure.version.test;
 
 import junit.framework.Test;
-import org.jboss.test.BaseTestCase;
+import org.jboss.deployers.structure.spi.classloading.Version;
+import org.jboss.deployers.structure.spi.classloading.helpers.VersionImpl;
+import org.jboss.test.deployers.structure.version.support.DummyVersion;
+import org.jboss.test.deployers.structure.version.support.ZeroVersion;
 
 /**
  * Version comparator tests.
  * 
  * @author <a href="mailto:ales.justin@jboss.com">Ales Justin</a>
  */
-public class VersionComparatorTestCase extends BaseTestCase
+public class VersionComparatorTestCase extends AbstractVersionTest
 {
    public VersionComparatorTestCase(String name)
    {
@@ -43,11 +46,57 @@ public class VersionComparatorTestCase extends BaseTestCase
 
    public void testSameImpl() throws Exception
    {
-      // todo
+      registerVersionComparators();
+      try
+      {
+         Version vi1 = VersionImpl.parseVersion("1.2.3");
+         Version vi2 = VersionImpl.parseVersion("2.0.0.GA");
+         assertLess(vi1, vi2);
+         assertGreater(vi2, vi1);
+         assertEquals(vi2, new VersionImpl(2, 0, 0, "GA"));
+
+         DummyVersion dv1 = new DummyVersion(1);
+         DummyVersion dv2 = new DummyVersion(2);
+         DummyVersion dv3 = new DummyVersion(2);
+         assertLess(dv1, dv2);
+         assertGreater(dv2, dv1);
+         assertEquals(dv2, dv3);
+      }
+      finally
+      {
+         clearVersionComparators();
+      }
    }
 
    public void testDifferentImpl() throws Exception
    {
-      // todo
+      registerVersionComparators();
+      try
+      {
+         Version vi1 = VersionImpl.parseVersion("1.2.3");
+         Version vi2 = VersionImpl.parseVersion("2.0.0.GA");
+         DummyVersion dv1 = new DummyVersion(1);
+         DummyVersion dv2 = new DummyVersion(2);
+
+         assertLess(dv1, vi2);
+         assertLess(vi1, dv2);
+         assertGreater(vi2, dv1);
+         assertGreater(dv2, vi1);
+         assertEquals(vi2, dv2);
+         assertEquals(dv2, vi2);
+      }
+      finally
+      {
+         clearVersionComparators();
+      }
+   }
+
+   public void testFailure() throws Exception
+   {
+      ZeroVersion z1 = new ZeroVersion();
+      assertFailVersion(z1, Version.DEFAULT_VERSION);
+      assertFailVersion(z1, new DummyVersion(0));
+      assertFailVersion(Version.DEFAULT_VERSION, z1);
+      assertFailVersion(new DummyVersion(0), z1);
    }
 }
