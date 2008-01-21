@@ -129,7 +129,7 @@ public class VersionComparatorRegistry
                uKeyMap = new HashMap<Class<? extends Version>, VersionComparator>();
                comparatorMap.put(u, uKeyMap);
             }
-            uKeyMap.put(t, comparator);
+            uKeyMap.put(t, new SwitchVersionComparator<U, T>(comparator));
          }
       }
    }
@@ -178,5 +178,28 @@ public class VersionComparatorRegistry
          throw new IllegalArgumentException("Missing version comparator for Version impl pair: (" + t.getClass().getName() + "," + u.getClass().getName() + ")");
 
       return comparator.compare(t, u);
+   }
+
+   /**
+    * Switch the compare value.
+    *
+    * @param <T> exact version type
+    * @param <U> exact version type
+    */
+   private class SwitchVersionComparator<T extends Version, U extends Version> implements VersionComparator<T, U>
+   {
+      private VersionComparator<U, T> delegate;
+
+      public SwitchVersionComparator(VersionComparator<U, T> delegate)
+      {
+         if (delegate == null)
+            throw new IllegalArgumentException("Null delegate");
+         this.delegate = delegate;
+      }
+
+      public int compare(T t, U u)
+      {
+         return delegate.compare(u, t) * (-1); 
+      }
    }
 }
