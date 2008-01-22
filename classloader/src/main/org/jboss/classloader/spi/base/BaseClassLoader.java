@@ -39,7 +39,6 @@ import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.CopyOnWriteArraySet;
 import java.util.concurrent.TimeUnit;
 import java.util.concurrent.locks.ReentrantLock;
-
 import javax.management.ObjectName;
 
 import org.jboss.classloader.plugins.ClassLoaderUtils;
@@ -178,8 +177,7 @@ public class BaseClassLoader extends SecureClassLoader implements BaseClassLoade
          log.trace(this + " getPackages domain=" + domain);
 
       Set<Package> packages = new HashSet<Package>();
-      if (domain != null)
-         domain.getPackages(this, packages);
+      domain.getPackages(this, packages);
       return packages.toArray(new Package[packages.size()]);
    }
 
