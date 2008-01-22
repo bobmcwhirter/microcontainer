@@ -127,6 +127,35 @@ public class ExportAllUnitTestCase extends BaseTestCase
 
       testExportAll(ExportAll.ALL, expected, "testjar1");
    }
+   public void testJar1Resources()
+      throws Exception
+   {
+      URL testjar1URL = getResource("/classloader/testjar1");
+      VirtualFile testjar1 = VFS.getRoot(testjar1URL);
+      VFSClassLoaderPolicy policy = VFSClassLoaderPolicy.createVFSClassLoaderPolicy(testjar1);
+      policy.setExportAll(ExportAll.ALL);
+      
+      ClassLoaderSystem system = new DefaultClassLoaderSystem();
+      ClassLoader classLoader = system.registerClassLoaderPolicy(policy);
+      URL notempty = classLoader.getResource("notempty");
+      assertNotNull(notempty);
+   }
+   public void testWar1Resources()
+      throws Exception
+   {
+      URL testwar1URL = getResource("/classloader/testwar1.war");
+      VirtualFile testwar1 = VFS.getRoot(testwar1URL);
+      VFSClassLoaderPolicy policy = VFSClassLoaderPolicy.createVFSClassLoaderPolicy(testwar1);
+      policy.setExportAll(ExportAll.NON_EMPTY);
+      policy.setImportAll(true);
+
+      ClassLoaderSystem system = new DefaultClassLoaderSystem();
+      ClassLoader classLoader = system.registerClassLoaderPolicy(policy);
+      URL resURL = classLoader.getResource("test-resource.txt");
+      assertNull(resURL);
+      resURL = classLoader.getResource("WEB-INF/test-resource.txt");
+      assertNotNull(resURL);
+   }
 
    public void testExportAllJar1NonEmpty() throws Exception
    {
