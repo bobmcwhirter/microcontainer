@@ -211,7 +211,7 @@ public class ResourceUnitTestCase extends AbstractClassLoaderTestWithSecurity
       policy2.setPath("com/acme/p1");
       ClassLoader classLoader = system.registerClassLoaderPolicy(child, policy2);
       
-      assertGetResource("a/", "com/acme/p1/testResource", classLoader);
+      assertGetResource("b/", "com/acme/p1/testResource", classLoader);
    }
    
    public void testGetResourceFromParentAfter() throws Exception
