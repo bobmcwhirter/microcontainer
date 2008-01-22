@@ -182,6 +182,7 @@ public class FilteredExportUnitTestCase extends BaseTestCase
             "pkg1.ifaces"
       );
       VirtualFile ejb1Root = earRoot.getChild("ejb1.jar");
+      log.info(ejb1Root);
       VirtualFile[] ejb1Files = {ejb1Root};
       ClassLoader ejb1Loader = buildClassLoader(ExportAll.NON_EMPTY, expectedEjb1, ejb1Files);
 
