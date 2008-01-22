@@ -136,7 +136,8 @@ public class FilteredExportUnitTestCase extends BaseTestCase
       );
       URL ejb1URL = getResource("/classloader/testear1.ear/ejb1.jar");
       assertNotNull(ejb1URL);
-      VirtualFile ejb1Root = VFS.getRoot(ejb1URL);
+      //VirtualFile ejb1Root = VFS.getRoot(ejb1URL);
+      VirtualFile ejb1Root = earRoot.getChild("ejb1.jar");
       VirtualFile[] ejb1Files = {ejb1Root};
       ClassLoader ejb1Loader = buildClassLoader(ExportAll.NON_EMPTY, expectedEjb1, ejb1Files);
 
@@ -157,4 +158,47 @@ public class FilteredExportUnitTestCase extends BaseTestCase
       assertEquals("Saw 2 users.properties", 2, count);
    }
 
+   /**
+    * Compressed ear version of testEar1
+    * @throws Exception
+    */
+   public void testEar1x() throws Exception
+   {
+      Map<String,String> expectedEar = makeSimpleMap("testear1x.ear",
+            "",
+            "util"
+      );
+      URL ear1URL = getResource("/classloader/testear1x.ear");
+      log.info(ear1URL);
+      assertNotNull(ear1URL);
+      VirtualFile earRoot = VFS.getRoot(ear1URL);
+      log.info(earRoot);
+      VirtualFile[] ear1Files = {earRoot.getChild("lib/jar1.jar")};
+      ClassLoader ear1Loader = buildClassLoader(ExportAll.NON_EMPTY, expectedEar, ear1Files);
+      // ejb1.jar
+      Map<String,String> expectedEjb1 = makeSimpleMap("testear1x.ear",
+            "",
+            "pkg1.ejbs",
+            "pkg1.ifaces"
+      );
+      VirtualFile ejb1Root = earRoot.getChild("ejb1.jar");
+      VirtualFile[] ejb1Files = {ejb1Root};
+      ClassLoader ejb1Loader = buildClassLoader(ExportAll.NON_EMPTY, expectedEjb1, ejb1Files);
+
+      URL usersURL = ejb1Loader.getResource("users.properties");
+      log.info("users.properties: "+usersURL);
+      assertNotNull(usersURL);
+      assertTrue(usersURL.toString().contains("ejb1"));
+
+      Enumeration<URL> userURLs = ejb1Loader.getResources("users.properties");
+      assertNotNull(userURLs);
+      int count = 0;
+      while(userURLs.hasMoreElements())
+      {
+         URL url = userURLs.nextElement();
+         log.info(url);
+         count ++;
+      }
+      assertEquals("Saw 2 users.properties", 2, count);
+   }
 }
