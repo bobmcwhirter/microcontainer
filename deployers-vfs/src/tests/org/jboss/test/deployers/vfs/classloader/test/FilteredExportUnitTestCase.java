@@ -24,6 +24,7 @@ package org.jboss.test.deployers.vfs.classloader.test;
 import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.net.URL;
+import java.util.Enumeration;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Map;
@@ -143,6 +144,17 @@ public class FilteredExportUnitTestCase extends BaseTestCase
       log.info("users.properties: "+usersURL);
       assertNotNull(usersURL);
       assertTrue(usersURL.toString().contains("ejb1"));
+
+      Enumeration<URL> userURLs = ejb1Loader.getResources("users.properties");
+      assertNotNull(userURLs);
+      int count = 0;
+      while(userURLs.hasMoreElements())
+      {
+         URL url = userURLs.nextElement();
+         log.info(url);
+         count ++;
+      }
+      assertEquals("Saw 2 users.properties", 2, count);
    }
 
 }
