@@ -302,6 +302,20 @@ public abstract class BaseClassLoaderDomain implements Loader
    {
       boolean trace = log.isTraceEnabled();
 
+      // Try the classloader first
+      if (classLoader != null)
+      {
+         if (trace)
+            log.trace(this + " trying to get resource " + name + " from requesting " + classLoader);
+         URL result = classLoader.getResourceLocally(name);
+         if (result != null)
+         {
+            if (trace)
+               log.trace(this + " got resource from requesting " + classLoader + " " + result);
+            return result;
+         }
+      }
+
       if (getClassLoaderSystem() == null)
          throw new IllegalStateException("Domain is not registered with a classloader system: " + toLongString());
 
@@ -337,20 +351,6 @@ public abstract class BaseClassLoaderDomain implements Loader
          result = getResourceFromImports(info, name, trace);
          if (result != null)
             return result;
-      }
-
-      // Finally use any requesting classloader
-      if (classLoader != null)
-      {
-         if (trace)
-            log.trace(this + " trying to get resource " + name + " from requesting " + classLoader);
-         result = classLoader.getResourceLocally(name);
-         if (result != null)
-         {
-            if (trace)
-               log.trace(this + " got resource from requesting " + classLoader + " " + result);
-            return result;
-         }
       }
 
       // Try the after attempt
