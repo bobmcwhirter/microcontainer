@@ -24,7 +24,6 @@ package org.jboss.test.deployers.vfs.classloader.test;
 import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.net.URL;
-import java.util.Collections;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Map;
@@ -41,9 +40,10 @@ import org.jboss.virtual.VFS;
 import org.jboss.virtual.VirtualFile;
 
 /**
- * ExportAllUnitTestCase.
+ * FilteredExportUnitTestCase tests of multiple bundle behavior.
  * 
  * @author <a href="adrian@jboss.com">Adrian Brock</a>
+ * @author Scott.Stark@jboss.org
  * @version $Revision$
  */
 public class FilteredExportUnitTestCase extends BaseTestCase
