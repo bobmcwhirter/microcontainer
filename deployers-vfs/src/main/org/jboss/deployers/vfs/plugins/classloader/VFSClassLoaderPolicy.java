@@ -70,7 +70,10 @@ public class VFSClassLoaderPolicy extends ClassLoaderPolicy
    
    /** The exported packages */
    private String[] exportedPackages;
-   
+
+   /** Package */
+   private Set<String> excludedPackages;
+
    /** The import all */
    private boolean importAll;
    
@@ -186,6 +189,23 @@ public class VFSClassLoaderPolicy extends ClassLoaderPolicy
          exportedPackages = determineAllPackages().toArray(new String[0]);
       else
          exportedPackages = null;
+   }
+
+   
+   
+   public Set<String> getExcludedPackages()
+   {
+      return excludedPackages;
+   }
+
+   public void setExcludedPackages(Set<String> excludedPackages)
+   {
+      this.excludedPackages = excludedPackages;
+   }
+
+   public String[] getExportedPackages()
+   {
+      return exportedPackages;
    }
 
    @Override
@@ -409,7 +429,7 @@ public class VFSClassLoaderPolicy extends ClassLoaderPolicy
     */
    protected Set<String> determineAllPackages()
    {
-      PackageVisitor visitor = new PackageVisitor(exportAll);
+      PackageVisitor visitor = new PackageVisitor(exportAll, excludedPackages);
       for (VirtualFile root : roots)
       {
          try

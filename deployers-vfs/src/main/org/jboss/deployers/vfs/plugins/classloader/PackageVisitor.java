@@ -51,6 +51,8 @@ class PackageVisitor implements VirtualFileVisitor
    
    /** The exportAll policy */
    private ExportAll exportAll;
+   private Set<String> excludedPackages;
+
 
    /**
     * Create a new PackageVisitor.
@@ -60,9 +62,14 @@ class PackageVisitor implements VirtualFileVisitor
     */
    public PackageVisitor(ExportAll exportAll)
    {
+      this(exportAll, null);
+   }
+   public PackageVisitor(ExportAll exportAll, Set<String> excludedPackages)
+   {
       if (exportAll == null)
          throw new IllegalArgumentException("Null exportAll policy");
       this.exportAll = exportAll;
+      this.excludedPackages = excludedPackages;
    }
 
    /**
@@ -133,7 +140,28 @@ class PackageVisitor implements VirtualFileVisitor
                   path = "";
                else if (path.startsWith(rootPathWithSlash))
                   path = path.substring(rootPathWithSlash.length());
-               packages.add(path.replace('/', '.'));
+               String pkg = path.replace('/', '.');
+               // Check for excluded package prefixes
+               if(excludedPackages != null)
+               {
+                  // Look at each package up to the root
+                  String prefix = pkg;
+                  while(prefix.length() >= 0)
+                  {
+                     if(excludedPackages.contains(prefix))
+                     {
+                        pkg = null;
+                        break;
+                     }
+                     int dot = prefix.lastIndexOf('.');
+                     if(dot > 0)
+                        prefix = prefix.substring(0, dot);
+                     else
+                        break;
+                  }
+               }
+               if(pkg != null)
+                  packages.add(pkg);
             }
          }
       }
