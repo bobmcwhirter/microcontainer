@@ -149,13 +149,21 @@ public class FilteredExportUnitTestCase extends BaseTestCase
       Enumeration<URL> userURLs = ejb1Loader.getResources("users.properties");
       assertNotNull(userURLs);
       int count = 0;
+      boolean sawEarUsersProperties = false;
+      boolean sawEjbUsersProperties = false;
       while(userURLs.hasMoreElements())
       {
          URL url = userURLs.nextElement();
+         if(url.toString().contains("lib/jar1.jar"))
+            sawEarUsersProperties = true;
+         if(url.toString().contains("ejb1.jar"))
+            sawEjbUsersProperties = true;
          log.info(url);
          count ++;
       }
       assertEquals("Saw 2 users.properties", 2, count);
+      assertTrue("sawEarUsersProperties", sawEarUsersProperties);
+      assertTrue("sawEjbUsersProperties", sawEjbUsersProperties);
    }
 
    /**
@@ -194,12 +202,20 @@ public class FilteredExportUnitTestCase extends BaseTestCase
       Enumeration<URL> userURLs = ejb1Loader.getResources("users.properties");
       assertNotNull(userURLs);
       int count = 0;
+      boolean sawEarUsersProperties = false;
+      boolean sawEjbUsersProperties = false;
       while(userURLs.hasMoreElements())
       {
          URL url = userURLs.nextElement();
+         if(url.toString().contains("lib/jar1.jar"))
+            sawEarUsersProperties = true;
+         if(url.toString().contains("ejb1.jar"))
+            sawEjbUsersProperties = true;
          log.info(url);
          count ++;
       }
       assertEquals("Saw 2 users.properties", 2, count);
+      assertTrue("sawEarUsersProperties", sawEarUsersProperties);
+      assertTrue("sawEjbUsersProperties", sawEjbUsersProperties);
    }
 }
