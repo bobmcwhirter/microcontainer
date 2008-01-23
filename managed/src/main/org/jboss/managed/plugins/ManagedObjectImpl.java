@@ -53,7 +53,7 @@ public class ManagedObjectImpl implements ManagedObject
    private String attachmentName;
 
    /** The attachment */
-   private Serializable attachment;
+   private transient Serializable attachment;
    /** The object annotations <Class name, Annotation> */
    private Map<String, Annotation> annotations = Collections.emptyMap();
    /** The properties */
