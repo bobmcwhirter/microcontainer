@@ -51,8 +51,9 @@ class PackageVisitor implements VirtualFileVisitor
    
    /** The exportAll policy */
    private ExportAll exportAll;
-   private Set<String> excludedPackages;
 
+   /** The excluded packages */
+   private Set<String> excludedPackages;
 
    /**
     * Create a new PackageVisitor.
@@ -64,6 +65,14 @@ class PackageVisitor implements VirtualFileVisitor
    {
       this(exportAll, null);
    }
+
+   /**
+    * Create a new PackageVisitor.
+    *
+    * @param exportAll the export all policy
+    * @param excludedPackages the excluded packages
+    * @throws IllegalArgumentException for a null exportAll policy
+    */
    public PackageVisitor(ExportAll exportAll, Set<String> excludedPackages)
    {
       if (exportAll == null)
