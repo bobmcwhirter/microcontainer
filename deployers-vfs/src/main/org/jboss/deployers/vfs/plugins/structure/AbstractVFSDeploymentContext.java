@@ -205,7 +205,7 @@ public class AbstractVFSDeploymentContext extends AbstractDeploymentContext impl
          }
          catch (IOException e)
          {
-            log.warn("Search exception invocation for metafile " + name + " in " + location.getName() + ", reason: " + e);
+            log.debug("Search exception invocation for metafile " + name + " in " + location.getName() + ", reason: " + e);
          }
       }
       return result;
