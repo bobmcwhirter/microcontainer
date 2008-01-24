@@ -78,7 +78,9 @@ public class FilteredExportUnitTestCase extends BaseTestCase
       policy.setImportAll(true);
       String[] packageNames = policy.getPackageNames();
       Set<String> actual = makeSet(packageNames);
-      assertEquals(expected.keySet(), actual);
+      log.info(policy+" : packages: "+actual);
+      if(expected != null)
+         assertEquals(expected.keySet(), actual);
       
       ClassLoader classLoader = system.registerClassLoaderPolicy(policy);
       return classLoader;
@@ -207,8 +209,24 @@ public class FilteredExportUnitTestCase extends BaseTestCase
       ClassLoader war1LoaderAll = buildClassLoader(ExportAll.NON_EMPTY, expectedWeb1, war1Files, null, excludedPkgs);
       URL jdkClassURL = war1Loader.getResource("java/lang/JdkClass.class");
       assertNull(jdkClassURL);
+      // Test that the java.* package was excluded
+      try
+      {
+         Class<?> jdkClass = war1LoaderAll.loadClass("java.lang.JdkClass");
+         fail("Was able to load java.lang.JdkClass: "+jdkClass.getProtectionDomain());
+      }
+      catch(ClassNotFoundException e)
+      {
+         log.debug("CNFE for java.lang.JdkClass");
+      }
       jdkClassURL = war1LoaderAll.getResource("java/lang/JdkClass.class");
-      assertNotNull(jdkClassURL);
+      assertNull(jdkClassURL);
+      system.unregisterClassLoader(war1LoaderAll);
+      // Should be able to load java/lang/JdkClass.class as resource if java is not excluded
+      war1LoaderAll = buildClassLoader(ExportAll.NON_EMPTY, null, war1Files, null);
+      jdkClassURL = war1LoaderAll.getResource("java/lang/JdkClass.class");
+      assertNull(jdkClassURL);
+      
    }
 
    /**
