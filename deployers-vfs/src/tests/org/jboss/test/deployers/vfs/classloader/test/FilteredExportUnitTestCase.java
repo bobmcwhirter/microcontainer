@@ -24,9 +24,6 @@ package org.jboss.test.deployers.vfs.classloader.test;
 import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.net.URL;
-import java.net.URLClassLoader;
-import java.util.Arrays;
-import java.util.Collections;
 import java.util.Enumeration;
 import java.util.HashMap;
 import java.util.HashSet;
@@ -36,7 +33,9 @@ import java.util.Set;
 import junit.framework.Test;
 import junit.framework.TestSuite;
 import org.jboss.classloader.plugins.system.DefaultClassLoaderSystem;
+import org.jboss.classloader.spi.ClassLoaderDomain;
 import org.jboss.classloader.spi.ClassLoaderSystem;
+import org.jboss.classloader.spi.ParentPolicy;
 import org.jboss.deployers.structure.spi.classloading.ExportAll;
 import org.jboss.deployers.vfs.plugins.classloader.VFSClassLoaderPolicy;
 import org.jboss.test.BaseTestCase;
@@ -52,13 +51,27 @@ import org.jboss.virtual.VirtualFile;
  */
 public class FilteredExportUnitTestCase extends BaseTestCase
 {
-   ClassLoaderSystem system = new DefaultClassLoaderSystem();
-   
+   ClassLoaderSystem system;
+
    public FilteredExportUnitTestCase(String name)
    {
       super(name);
    }
 
+   protected void setUp()
+      throws Exception
+   {
+      super.setUp();
+      system = new DefaultClassLoaderSystem();
+      ClassLoaderDomain domain = system.getDefaultDomain();
+      domain.setParentPolicy(ParentPolicy.BEFORE_BUT_JAVA_ONLY);
+   }
+   protected void tearDown()
+      throws Exception
+   {
+      system.shutdown();
+      super.tearDown();
+   }
    protected ClassLoader buildClassLoader(ExportAll exportAll, Map<String, String> expected, VirtualFile[] files, String[] exportPkgs)
       throws Exception
    {
@@ -187,11 +200,9 @@ public class FilteredExportUnitTestCase extends BaseTestCase
          log.info(url);
          count ++;
       }
-      /* TODO: this is now picking up parent classpath file:resources
       assertEquals("Saw 2 users.properties", 2, count);
       assertTrue("sawEarUsersProperties", sawEarUsersProperties);
       assertTrue("sawEjbUsersProperties", sawEjbUsersProperties);
-      */
 
       // war1.war
       Map<String,String> expectedWeb1 = makeSimpleMap("testear1.ear",
@@ -277,10 +288,8 @@ public class FilteredExportUnitTestCase extends BaseTestCase
          log.info(url);
          count ++;
       }
-      /* TODO: this is now picking up parent classpath file:resources
       assertEquals("Saw 2 users.properties", 2, count);
       assertTrue("sawEarUsersProperties", sawEarUsersProperties);
       assertTrue("sawEjbUsersProperties", sawEjbUsersProperties);
-      */
    }
 }
