@@ -19,37 +19,45 @@
 * Software Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA
 * 02110-1301 USA, or see the FSF site: http://www.fsf.org.
 */
-package org.jboss.test.deployers.vfs.deployer.bean.support;
+package org.jboss.test.deployers.vfs.structure.support;
 
-import org.jboss.test.AbstractTestCaseWithSetup;
+import org.jboss.deployers.spi.DeploymentException;
+import org.jboss.deployers.spi.structure.StructureMetaData;
+import org.jboss.deployers.vfs.spi.structure.VFSStructuralDeployers;
+import org.jboss.deployers.vfs.spi.structure.helpers.AbstractStructureDeployer;
+import org.jboss.virtual.VirtualFile;
 
 /**
- * Simple.
+ * TestDummyClassLoaderStructureDeployer.
  * 
  * @author <a href="adrian@jboss.com">Adrian Brock</a>
  * @version $Revision: 1.1 $
  */
-public class Simple
+public class TestDummyClassLoaderStructureDeployer extends AbstractStructureDeployer
 {
    private static ClassLoader classLoader;
- 
+
    public static ClassLoader getAndResetClassLoader()
    {
       ClassLoader result = classLoader;
       classLoader = null;
       return result;
    }
-   
-   public Simple()
+
+   protected static void checkClassLoader()
    {
-      SecurityManager sm = AbstractTestCaseWithSetup.suspendSecurity();
-      try
-      {
-         classLoader = Thread.currentThread().getContextClassLoader();
-      }
-      finally
-      {
-         AbstractTestCaseWithSetup.resumeSecurity(sm);
-      }
+      classLoader = Thread.currentThread().getContextClassLoader();
+   }
+
+   public TestDummyClassLoaderStructureDeployer()
+   {
+      setRelativeOrder(-1);
+   }
+   
+   public boolean determineStructure(VirtualFile root, VirtualFile parent, VirtualFile file,
+         StructureMetaData metaData, VFSStructuralDeployers deployers) throws DeploymentException
+   {
+      checkClassLoader();
+      return false;
    }
 }

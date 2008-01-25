@@ -21,6 +21,7 @@
 */
 package org.jboss.test.deployers.vfs.deployer.bean;
 
+import org.jboss.test.deployers.vfs.deployer.bean.test.BeanDeployerClassLoaderUnitTestCase;
 import org.jboss.test.deployers.vfs.deployer.bean.test.BeanDeployerUnitTestCase;
 import org.jboss.test.deployers.vfs.deployer.bean.test.KernelDeployerUnitTestCase;
 import org.jboss.test.deployers.vfs.deployer.bean.test.AliasDeployerUnitTestCase;
@@ -49,6 +50,7 @@ public class BeanDeployerTestSuite extends TestSuite
       suite.addTest(BeanDeployerUnitTestCase.suite());
       suite.addTest(KernelDeployerUnitTestCase.suite());
       suite.addTest(AliasDeployerUnitTestCase.suite());
+      suite.addTest(BeanDeployerClassLoaderUnitTestCase.suite());
 
       return suite;
    }

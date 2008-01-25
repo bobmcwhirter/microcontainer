@@ -21,7 +21,11 @@
 */
 package org.jboss.deployers.vfs.deployer.kernel;
 
+import org.jboss.beans.metadata.plugins.AbstractClassLoaderMetaData;
+import org.jboss.beans.metadata.plugins.AbstractValueMetaData;
 import org.jboss.beans.metadata.spi.BeanMetaData;
+import org.jboss.beans.metadata.spi.ClassLoaderMetaData;
+import org.jboss.beans.metadata.spi.ValueMetaData;
 import org.jboss.deployers.spi.DeploymentException;
 import org.jboss.deployers.spi.deployer.helpers.AbstractSimpleRealDeployer;
 import org.jboss.deployers.structure.spi.DeploymentUnit;
@@ -63,6 +67,21 @@ public class BeanMetaDataDeployer extends AbstractSimpleRealDeployer<BeanMetaDat
    @Override
    public void deploy(DeploymentUnit unit, BeanMetaData deployment) throws DeploymentException
    {
+      // No explicit classloader, use the deployment's classloader
+      if (deployment.getClassLoader() == null)
+      {
+         try
+         {
+            // Check the unit has a classloader
+            unit.getClassLoader();
+            // TODO clone the metadata?
+            deployment.setClassLoader(new DeploymentClassLoaderMetaData(unit));
+         }
+         catch (Exception e)
+         {
+            log.debug("Unable to retrieve classloader for deployment: " + unit.getName() + " reason=" + e.toString());
+         }
+      }
       KernelControllerContext context = new AbstractKernelControllerContext(null, deployment, null);
       try
       {
@@ -78,5 +97,40 @@ public class BeanMetaDataDeployer extends AbstractSimpleRealDeployer<BeanMetaDat
    public void undeploy(DeploymentUnit unit, BeanMetaData deployment)
    {
       controller.uninstall(deployment.getName());
+      
+      // Remove any classloader metadata we added (not necessary if we clone above)
+      ClassLoaderMetaData classLoader = deployment.getClassLoader();
+      if (classLoader instanceof DeploymentClassLoaderMetaData)
+         deployment.setClassLoader(null);
+   }
+   
+   /**
+    * DeploymentClassLoaderMetaData.
+    */
+   private class DeploymentClassLoaderMetaData extends AbstractClassLoaderMetaData
+   {
+      /** The serialVersionUID */
+      private static final long serialVersionUID = 1L;
+      
+      /** The deployment unit */
+      private DeploymentUnit unit;
+
+      /**
+       * Create a new DeploymentClassLoaderMetaData.
+       * 
+       * @param unit the deployment unit
+       */
+      public DeploymentClassLoaderMetaData(DeploymentUnit unit)
+      {
+         if (unit == null)
+            throw new IllegalArgumentException("Null unit");
+         this.unit = unit;
+      }
+      
+      @Override
+      public ValueMetaData getClassLoader()
+      {
+         return new AbstractValueMetaData(unit.getClassLoader());
+      }
    }
 }

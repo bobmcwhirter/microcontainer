@@ -34,6 +34,8 @@ import org.jboss.test.deployers.vfs.structure.file.test.FileMatcherTestCase;
 import org.jboss.test.deployers.vfs.structure.jar.test.CombinedJARStructureUnitTestCase;
 import org.jboss.test.deployers.vfs.structure.jar.test.ConfiguredSuffixJARStructureUnitTestCase;
 import org.jboss.test.deployers.vfs.structure.jar.test.JARStructureUnitTestCase;
+import org.jboss.test.deployers.vfs.structure.test.StructureDeployerContextClassLoaderTestCase;
+import org.jboss.test.deployers.vfs.structure.test.TerminateStructureTestCase;
 import org.jboss.test.deployers.vfs.structure.war.test.CombinedWARStructureUnitTestCase;
 import org.jboss.test.deployers.vfs.structure.war.test.WARStructureUnitTestCase;
 
@@ -66,6 +68,7 @@ public class VFSStructureTestSuite extends TestSuite
       suite.addTest(CombinedWARStructureUnitTestCase.suite());
       suite.addTest(CombinedFileStructureUnitTestCase.suite());
       suite.addTest(TerminateStructureTestCase.suite());
+      suite.addTest(StructureDeployerContextClassLoaderTestCase.suite());
 
       return suite;
    }

@@ -1,6 +1,6 @@
 /*
 * JBoss, Home of Professional Open Source
-* Copyright 2006, JBoss Inc., and individual contributors as indicated
+* Copyright 2007, JBoss Inc., and individual contributors as indicated
 * by the @authors tag. See the copyright.txt in the distribution for a
 * full listing of individual contributors.
 *
@@ -21,35 +21,16 @@
 */
 package org.jboss.test.deployers.vfs.deployer.bean.support;
 
-import org.jboss.test.AbstractTestCaseWithSetup;
-
 /**
- * Simple.
+ * TestClassLoader.
  * 
  * @author <a href="adrian@jboss.com">Adrian Brock</a>
  * @version $Revision: 1.1 $
  */
-public class Simple
+public class TestClassLoader extends ClassLoader
 {
-   private static ClassLoader classLoader;
- 
-   public static ClassLoader getAndResetClassLoader()
+   public TestClassLoader()
    {
-      ClassLoader result = classLoader;
-      classLoader = null;
-      return result;
-   }
-   
-   public Simple()
-   {
-      SecurityManager sm = AbstractTestCaseWithSetup.suspendSecurity();
-      try
-      {
-         classLoader = Thread.currentThread().getContextClassLoader();
-      }
-      finally
-      {
-         AbstractTestCaseWithSetup.resumeSecurity(sm);
-      }
+      super(TestClassLoader.class.getClassLoader());
    }
 }

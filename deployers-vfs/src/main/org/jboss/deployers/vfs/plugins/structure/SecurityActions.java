@@ -24,6 +24,7 @@ package org.jboss.deployers.vfs.plugins.structure;
 import java.io.IOException;
 import java.lang.reflect.UndeclaredThrowableException;
 import java.security.AccessController;
+import java.security.PrivilegedAction;
 import java.security.PrivilegedActionException;
 import java.security.PrivilegedExceptionAction;
 
@@ -86,5 +87,68 @@ public class SecurityActions
          return FileActions.PRIVILEGED.isLeaf(f);
       else
          return FileActions.NON_PRIVILEGED.isLeaf(f);
+   }
+
+   static ClassLoader getContextClassLoader()
+   {
+      if (System.getSecurityManager() == null)
+      {
+         return Thread.currentThread().getContextClassLoader();
+      }
+      else
+      {
+         return AccessController.doPrivileged(GetContextClassLoader.INSTANCE);
+      }
+   }
+
+   static class GetContextClassLoader implements PrivilegedAction<ClassLoader>
+   {
+      static GetContextClassLoader INSTANCE = new GetContextClassLoader();
+      
+      public ClassLoader run()
+      {
+         return Thread.currentThread().getContextClassLoader();
+      }
+   }
+   
+   static ClassLoader setContextClassLoader(final ClassLoader classLoader)
+   {
+      if (System.getSecurityManager() == null)
+      {
+         ClassLoader previous = Thread.currentThread().getContextClassLoader();
+         Thread.currentThread().setContextClassLoader(classLoader);
+         return previous;
+      }
+      else
+      {
+         return AccessController.doPrivileged(new PrivilegedAction<ClassLoader>()
+         {
+            public ClassLoader run()
+            {
+               ClassLoader previous = Thread.currentThread().getContextClassLoader();
+               Thread.currentThread().setContextClassLoader(classLoader);
+               return previous;
+            }
+         });
+      }
+   }
+
+   static void resetContextClassLoader(final ClassLoader classLoader)
+   {
+      if (System.getSecurityManager() == null)
+      {
+         Thread.currentThread().setContextClassLoader(classLoader);
+      }
+      else
+      {
+         AccessController.doPrivileged(new PrivilegedAction<Object>()
+         {
+            public Object run()
+            {
+               Thread.currentThread().setContextClassLoader(classLoader);
+               return null;
+            }
+         });
+      }
    }
 }

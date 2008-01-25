@@ -1,6 +1,6 @@
 /*
 * JBoss, Home of Professional Open Source
-* Copyright 2006, JBoss Inc., and individual contributors as indicated
+* Copyright 2007, JBoss Inc., and individual contributors as indicated
 * by the @authors tag. See the copyright.txt in the distribution for a
 * full listing of individual contributors.
 *
@@ -19,37 +19,18 @@
 * Software Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA
 * 02110-1301 USA, or see the FSF site: http://www.fsf.org.
 */
-package org.jboss.test.deployers.vfs.deployer.bean.support;
-
-import org.jboss.test.AbstractTestCaseWithSetup;
+package org.jboss.test.deployers.vfs.structure.support;
 
 /**
- * Simple.
+ * TestDummyClassLoader.
  * 
  * @author <a href="adrian@jboss.com">Adrian Brock</a>
  * @version $Revision: 1.1 $
  */
-public class Simple
+public class TestDummyClassLoader extends ClassLoader
 {
-   private static ClassLoader classLoader;
- 
-   public static ClassLoader getAndResetClassLoader()
+   public TestDummyClassLoader()
    {
-      ClassLoader result = classLoader;
-      classLoader = null;
-      return result;
-   }
-   
-   public Simple()
-   {
-      SecurityManager sm = AbstractTestCaseWithSetup.suspendSecurity();
-      try
-      {
-         classLoader = Thread.currentThread().getContextClassLoader();
-      }
-      finally
-      {
-         AbstractTestCaseWithSetup.resumeSecurity(sm);
-      }
+      super(TestDummyClassLoader.class.getClassLoader());
    }
 }
