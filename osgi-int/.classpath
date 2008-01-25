@@ -19,7 +19,6 @@
   <classpathentry kind="var" path="M2_REPO/org/jboss/javassist/3.6.0.GA/javassist-3.6.0.GA.jar" sourcepath="M2_REPO/org/jboss/javassist/3.6.0.GA/javassist-3.6.0.GA-sources.jar"/>
   <classpathentry kind="src" path="/jboss-kernel"/>
   <classpathentry kind="var" path="M2_REPO/apache-httpclient/commons-httpclient/2.0.2/commons-httpclient-2.0.2.jar"/>
-  <classpathentry kind="var" path="M2_REPO/oswego-concurrent/concurrent/1.3.4/concurrent-1.3.4.jar"/>
   <classpathentry kind="var" path="M2_REPO/qdox/qdox/1.6/qdox-1.6.jar" sourcepath="M2_REPO/qdox/qdox/1.6/qdox-1.6-sources.jar"/>
   <classpathentry kind="var" path="M2_REPO/apache-xerces/xercesImpl/2.7.1/xercesImpl-2.7.1.jar"/>
   <classpathentry kind="var" path="M2_REPO/wutka-dtdparser/dtdparser121/1.2.1/dtdparser121-1.2.1.jar"/>
