@@ -51,6 +51,9 @@ public class DeployerWrapper implements Deployer, ManagedObjectCreator
 
    /** The managed object creator */
    private ManagedObjectCreator managedObjectCreator;
+ 
+   /** The context classloader of the person registering the deployer */
+   private ClassLoader classLoader;
    
    /**
     * Create a new DeployerWrapper.
@@ -65,6 +68,7 @@ public class DeployerWrapper implements Deployer, ManagedObjectCreator
       if (deployer instanceof ManagedObjectCreator)
          managedObjectCreator = (ManagedObjectCreator) deployer;
       this.log = Logger.getLogger(deployer.getClass());
+      this.classLoader = SecurityActions.getContextClassLoader();
    }
 
    /**
@@ -163,6 +167,7 @@ public class DeployerWrapper implements Deployer, ManagedObjectCreator
       if (unit == null)
          throw new IllegalArgumentException("Null unit");
 
+      ClassLoader previous = SecurityActions.setContextClassLoader(classLoader);
       try
       {
          log.trace("Deploying: " + unit.getName());
@@ -174,6 +179,10 @@ public class DeployerWrapper implements Deployer, ManagedObjectCreator
          log.debug("Error during deploy: " + unit.getName(), t);
          throw DeploymentException.rethrowAsDeploymentException("Error during deploy: " + unit.getName(), t);
       }
+      finally
+      {
+         SecurityActions.resetContextClassLoader(previous);
+      }
    }
 
    public void undeploy(DeploymentUnit unit)
@@ -181,6 +190,7 @@ public class DeployerWrapper implements Deployer, ManagedObjectCreator
       if (unit == null)
          throw new IllegalArgumentException("Null unit");
 
+      ClassLoader previous = SecurityActions.setContextClassLoader(classLoader);
       try
       {
          log.trace("Undeploying: " + unit.getName());
@@ -191,10 +201,15 @@ public class DeployerWrapper implements Deployer, ManagedObjectCreator
       {
          log.error("Error during undeploy: " + unit.getName(), t);
       }
+      finally
+      {
+         SecurityActions.resetContextClassLoader(previous);
+      }
    }
 
    public void build(DeploymentUnit unit, Map<String, ManagedObject> managedObjects) throws DeploymentException
    {
+      ClassLoader previous = SecurityActions.setContextClassLoader(classLoader);
       try
       {
          ManagedObjectCreator creator = getManagedObjectCreator();
@@ -204,6 +219,10 @@ public class DeployerWrapper implements Deployer, ManagedObjectCreator
       catch (Throwable t)
       {
          throw DeploymentException.rethrowAsDeploymentException("Error building managed objects for " + unit.getName(), t);
+      }
+      finally
+      {
+         SecurityActions.resetContextClassLoader(previous);
       }
    }
 

@@ -27,6 +27,7 @@ import junit.textui.TestRunner;
 
 import org.jboss.test.deployers.deployer.test.ComponentUnitTestCase;
 import org.jboss.test.deployers.deployer.test.DeployerClassLoaderUnitTestCase;
+import org.jboss.test.deployers.deployer.test.DeployerContextClassLoaderUnitTestCase;
 import org.jboss.test.deployers.deployer.test.DeployerFlowUnitTestCase;
 import org.jboss.test.deployers.deployer.test.DeployerOrderingUnitTestCase;
 import org.jboss.test.deployers.deployer.test.DeployerProtocolUnitTestCase;
@@ -63,6 +64,7 @@ public class DeployersDeployerTestSuite extends TestSuite
       suite.addTest(MultipleComponentTypeUnitTestCase.suite());
       suite.addTest(HeuristicAllOrNothingUnitTestCase.suite());
       suite.addTest(HeuristicRussionDollUnitTestCase.suite());
+      suite.addTest(DeployerContextClassLoaderUnitTestCase.suite());
 
       return suite;
    }
