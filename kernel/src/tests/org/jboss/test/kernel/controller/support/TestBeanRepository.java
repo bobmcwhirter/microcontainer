@@ -1,6 +1,6 @@
 /*
 * JBoss, Home of Professional Open Source
-* Copyright 2005, JBoss Inc., and individual contributors as indicated
+* Copyright 2007, JBoss Inc., and individual contributors as indicated
 * by the @authors tag. See the copyright.txt in the distribution for a
 * full listing of individual contributors.
 *
@@ -19,35 +19,42 @@
 * Software Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA
 * 02110-1301 USA, or see the FSF site: http://www.fsf.org.
 */
-package org.jboss.test.kernel.controller.test;
+package org.jboss.test.kernel.controller.support;
 
-import junit.framework.Test;
-import junit.framework.TestSuite;
-import junit.textui.TestRunner;
+import java.util.HashSet;
+import java.util.Set;
 
 /**
- * Controller Test Suite.
+ * TestBeanRepository.
  * 
  * @author <a href="adrian@jboss.com">Adrian Brock</a>
- * @version $Revision$
+ * @version $Revision: 1.1 $
  */
-public class ControllerTestSuite extends TestSuite
+public class TestBeanRepository
 {
-   public static void main(String[] args)
+   private Set<TestBean> beans = new HashSet<TestBean>();
+   
+   public Set<TestBean> getBeans()
    {
-      TestRunner.run(suite());
+      return beans;
    }
 
-   public static Test suite()
+   public void setBeans(Set<TestBean> beans)
    {
-      TestSuite suite = new TestSuite("Controller Tests");
+      this.beans = beans;
+   }
 
-      suite.addTest(AccessControlTestCase.suite());
-      suite.addTest(NoInstantiateTestCase.suite());
-      suite.addTest(RedeployAfterErrorTestCase.suite());
-      suite.addTest(ContextClassLoaderTestCase.suite());
-      suite.addTest(InstallErrorTestCase.suite());
-      
-      return suite;
+   public void add(TestBean bean)
+   {
+      if (bean.isThrowError() == false)
+         bean.setThrowError(true);
+      else
+         throw new Error();
+      beans.add(bean);
+   }
+
+   public void remove(TestBean bean)
+   {
+      beans.remove(bean);
    }
 }

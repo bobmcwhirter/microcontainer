@@ -1,0 +1,14 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<deployment xmlns="urn:jboss:bean-deployer:2.0">
+
+   <classloader><inject bean="ClassLoader"/></classloader>
+
+   <bean name="ClassLoader" class="org.jboss.test.kernel.controller.support.TestClassLoader">
+      <classloader><null/></classloader>
+   </bean>
+
+   <bean name="Name1" class="org.jboss.test.kernel.controller.support.TestClassLoaderBean">
+      <constructor factoryClass="org.jboss.test.kernel.controller.support.TestClassLoaderBean" factoryMethod="createInstance"/>
+   </bean>
+</deployment>

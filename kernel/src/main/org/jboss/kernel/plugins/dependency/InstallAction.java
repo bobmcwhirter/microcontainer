@@ -54,31 +54,69 @@ public class InstallAction extends KernelControllerContextAction
       BeanMetaData metaData = context.getBeanMetaData();
       Object name = metaData.getName();
       registry.registerEntry(name, context);
-      controller.addSupplies(context);
-
-      List<InstallMetaData> installs = metaData.getInstalls();
-      if (installs != null)
+      try
       {
-         for (InstallMetaData install : installs)
+         controller.addSupplies(context);
+         try
          {
-            ControllerContext target = context;
-            if (install.getBean() != null)
-               target = controller.getContext(install.getBean(), install.getDependentState());
-            if (target instanceof InvokeDispatchContext)
+            List<InstallMetaData> installs = metaData.getInstalls();
+            if (installs != null)
             {
-               InvokeDispatchHelper.invoke(
-                     configurator,
-                     target.getTarget(),
-                     (InvokeDispatchContext)target,
-                     install.getMethodName(),
-                     install.getParameters()
-               );
-            }
-            else
-            {
-               throw new IllegalArgumentException("Cannot install, context " + target + " does not implement InvokeDispatchContext");
+               for (InstallMetaData install : installs)
+               {
+                  ControllerContext target = context;
+                  if (install.getBean() != null)
+                     target = controller.getContext(install.getBean(), install.getDependentState());
+                  if (target instanceof InvokeDispatchContext)
+                  {
+                     ClassLoader previous = SecurityActions.setContextClassLoader(context);
+                     try
+                     {
+                        InvokeDispatchHelper.invoke(
+                              configurator,
+                              target.getTarget(),
+                              (InvokeDispatchContext)target,
+                              install.getMethodName(),
+                              install.getParameters()
+                        );
+                     }
+                     finally
+                     {
+                        SecurityActions.resetContextClassLoader(previous);
+                     }
+                  }
+                  else
+                  {
+                     throw new IllegalArgumentException("Cannot install, context " + target + " does not implement InvokeDispatchContext");
+                  }
+               }
             }
          }
+         catch (Throwable t)
+         {
+            doUninstalls(context);
+            try
+            {
+               controller.removeSupplies(context);
+            }
+            catch (Throwable x)
+            {
+               log.warn("Ignoring error reversing supplies, throwing original error " + name, x);
+            }
+            throw t;
+         }
+      }
+      catch (Throwable t)
+      {
+         try
+         {
+            registry.unregisterEntry(name);
+         }
+         catch (Throwable x)
+         {
+            log.warn("Ignoring error reversing install, throwing original error " + name, x);
+         }
+         throw t;
       }
    }
 
@@ -89,12 +127,37 @@ public class InstallAction extends KernelControllerContextAction
 
    protected void uninstallActionInternal(KernelControllerContext context)
    {
+      doUninstalls(context);
       KernelController controller = (KernelController) context.getController();
       Kernel kernel = controller.getKernel();
       KernelRegistry registry = kernel.getRegistry();
+      Object name = context.getName();
+
+      try
+      {
+         controller.removeSupplies(context);
+      }
+      catch (Throwable t)
+      {
+         log.warn("Ignoring removing supplies at uninstall " + name, t);
+      }
+
+      try
+      {
+         registry.unregisterEntry(name);
+      }
+      catch (Throwable t)
+      {
+         log.warn("Ignoring unregistered entry at uninstall " + name, t);
+      }
+   }
+
+   protected void doUninstalls(KernelControllerContext context)
+   {
+      KernelController controller = (KernelController) context.getController();
+      Kernel kernel = controller.getKernel();
       KernelConfigurator configurator = kernel.getConfigurator();
       BeanMetaData metaData = context.getBeanMetaData();
-      Object name = metaData.getName();
 
       List<InstallMetaData> uninstalls = metaData.getUninstalls();
       if (uninstalls != null)
@@ -114,8 +177,10 @@ public class InstallAction extends KernelControllerContextAction
             }
             if (target instanceof InvokeDispatchContext)
             {
+               ClassLoader previous = null;
                try
                {
+                  previous = SecurityActions.setContextClassLoader(context);
                   InvokeDispatchHelper.invoke(
                         configurator,
                         target.getTarget(), 
@@ -128,23 +193,17 @@ public class InstallAction extends KernelControllerContextAction
                {
                   log.warn("Ignoring uninstall action on target " + uninstall, t);
                }
+               finally
+               {
+                  if (previous != null)
+                     SecurityActions.resetContextClassLoader(previous);
+               }
             }
             else
             {
-               throw new IllegalArgumentException("Cannot uninstall, context " + target + " does not implement InvokeDispatchContext");
+               log.warn("Cannot uninstall, context " + target + " does not implement InvokeDispatchContext for " + uninstall.getBean());
             }
          }
       }
-
-      try
-      {
-         controller.removeSupplies(context);
-         registry.unregisterEntry(name);
-      }
-      catch (Throwable t)
-      {
-         log.warn("Ignoring unregistered entry at uninstall " + name);
-      }
    }
-
 }

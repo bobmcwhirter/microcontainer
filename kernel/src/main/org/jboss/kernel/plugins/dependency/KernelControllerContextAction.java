@@ -102,15 +102,14 @@ public class KernelControllerContextAction extends SimpleControllerContextAction
          ClassLoader tcl = Thread.currentThread().getContextClassLoader();
          try
          {
-            if (cl != null && access == null)
+            if (cl != null)
                Thread.currentThread().setContextClassLoader(cl);
 
             return wrapper.execute(access);
          }
          finally
          {
-            if (cl != null && access == null)
-               Thread.currentThread().setContextClassLoader(tcl);
+            Thread.currentThread().setContextClassLoader(tcl);
          }
       }
       finally
