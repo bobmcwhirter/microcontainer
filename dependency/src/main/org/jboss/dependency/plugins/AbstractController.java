@@ -1168,8 +1168,10 @@ public class AbstractController extends JBossObject implements Controller
     */
    protected void resolveCallbacks(ControllerContext context, ControllerState state, boolean isInstallPhase)
    {
+      ClassLoader previous = null;
       try
       {
+         previous = SecurityActions.setContextClassLoader(context);
          // existing owner callbacks
          Set<CallbackItem<?>> installs = getDependencyCallbacks(context, true);
          resolveCallbacks(installs, state, isInstallPhase, isInstallPhase, true);
@@ -1216,6 +1218,11 @@ public class AbstractController extends JBossObject implements Controller
       catch (Throwable t)
       {
          log.warn("Cannot resolve callbacks.", t);
+      }
+      finally
+      {
+         if (previous != null)
+            SecurityActions.resetContextClassLoader(previous);
       }
    }
 
