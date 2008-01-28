@@ -90,8 +90,8 @@ public class StackBeanMetaDataFactory extends AspectManagerAwareBeanMetaDataFact
             }
             result.add(bmd);
             almd.add(new AbstractInjectionValueMetaData(intName));
-            BeanMetaDataUtil.setSimpleProperty(stack, "advices", almd);
          }         
+         BeanMetaDataUtil.setSimpleProperty(stack, "advices", almd);
       }
       
       return result;
