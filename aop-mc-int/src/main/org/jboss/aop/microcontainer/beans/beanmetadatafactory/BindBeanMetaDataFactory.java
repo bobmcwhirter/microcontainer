@@ -113,8 +113,8 @@ public class BindBeanMetaDataFactory extends AspectManagerAwareBeanMetaDataFacto
             }
             result.add(bmd);
             almd.add(new AbstractInjectionValueMetaData(intName));
-            BeanMetaDataUtil.setSimpleProperty(binding, "advices", almd);
          }         
+         BeanMetaDataUtil.setSimpleProperty(binding, "advices", almd);
       }
       
       return result;
