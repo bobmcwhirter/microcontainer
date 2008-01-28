@@ -742,6 +742,13 @@ public class DeployersImpl implements Deployers, ControllerContextActions
          for(DeploymentContext child : children)
             checkComplete(child, contextsInError, contextsMissingDependencies, notInstalled, states);
       }
+
+      List<DeploymentContext> components = context.getComponents();
+      if (components != null && components.isEmpty() == false)
+      {
+         for(DeploymentContext component : components)
+            checkComplete(component, contextsInError, contextsMissingDependencies, notInstalled, states);
+      }
    }
 
    /**

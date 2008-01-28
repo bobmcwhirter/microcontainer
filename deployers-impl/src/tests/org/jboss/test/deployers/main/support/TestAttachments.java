@@ -21,34 +21,28 @@
 */
 package org.jboss.test.deployers.main.support;
 
-import org.jboss.dependency.spi.Controller;
-import org.jboss.deployers.structure.spi.DeploymentUnit;
+import java.io.Serializable;
+import java.util.ArrayList;
+import java.util.List;
 
 /**
- * Dependency test deployer.
- *
+ * Test attachments.
+ * 
  * @author <a href="mailto:ales.justin@jboss.com">Ales Justin</a>
  */
-public class DependencyDeployer extends AbstractTestAttachmentDeployer
+public class TestAttachments implements Serializable
 {
-   public DependencyDeployer(Controller controller)
+   private static final long serialVersionUID = -1034970512310610762L;
+
+   private List<TestAttachment> attachments = new ArrayList<TestAttachment>();
+
+   public void addAttachment(TestAttachment attachment)
    {
-      super(controller);
-      setUseUnitName(true);
+      attachments.add(attachment);
    }
 
-   protected boolean isControllerContextNameCandidate(DeploymentUnit unit)
+   public List<TestAttachment> getAttachments()
    {
-      return true;
-   }
-
-   protected void addControllerContextName(DeploymentUnit unit)
-   {
-      unit.addControllerContextName("x" + unit.getName());
-   }
-
-   protected void removeControllerContextName(DeploymentUnit unit)
-   {
-      unit.removeControllerContextName("x" + unit.getName());
+      return attachments;
    }
 }

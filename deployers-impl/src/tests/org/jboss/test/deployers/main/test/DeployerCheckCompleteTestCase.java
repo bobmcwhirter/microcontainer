@@ -34,6 +34,9 @@ import org.jboss.deployers.structure.spi.DeploymentContext;
 import org.jboss.deployers.structure.spi.StructuralDeployers;
 import org.jboss.test.deployers.main.support.DependencyDeployer;
 import org.jboss.test.deployers.main.support.TestAttachment;
+import org.jboss.test.deployers.main.support.TestAttachmentDeployer;
+import org.jboss.test.deployers.main.support.TestAttachments;
+import org.jboss.test.deployers.main.support.TestAttachmentsDeployer;
 
 /**
  * Check complete deployment test case.
@@ -176,6 +179,35 @@ public class DeployerCheckCompleteTestCase extends AbstractMainDeployerTest
       }
    }
 
+   public void testComponentAllThenHalf() throws Exception
+   {
+      DeployerClient main = getComponentMainDeployer();
+
+      Deployment dA = createSimpleDeployment("A");
+      addComponentAttachment(dA, "xB");
+
+      main.addDeployment(dA);
+      main.process();
+
+      Deployment dB = createSimpleDeployment("B");
+      addComponentAttachment(dB, null);
+      main.deploy(dB);
+
+      main.checkComplete(dA);
+
+      main.undeploy(dB);
+
+      try
+      {
+         main.checkComplete(dA);
+         fail("Should not be here.");
+      }
+      catch (DeploymentException e)
+      {
+         assertInstanceOf(e, IncompleteDeploymentException.class);
+      }
+   }
+
    protected DeployerClient getDependencyMainDeployer()
    {
       MainDeployerImpl main = new MainDeployerImpl();
@@ -187,9 +219,30 @@ public class DeployerCheckCompleteTestCase extends AbstractMainDeployerTest
       return main;
    }
 
+   protected DeployerClient getComponentMainDeployer()
+   {
+      MainDeployerImpl main = new MainDeployerImpl();
+      main.setStructuralDeployers(createStructuralDeployers());
+      AbstractController controller = new AbstractController();
+      DeployersImpl deployers = new DeployersImpl(controller);
+      deployers.addDeployer(new TestAttachmentsDeployer());
+      deployers.addDeployer(new TestAttachmentDeployer(controller));
+      main.setDeployers(deployers);
+      return main;
+   }
+
    protected void addAttachment(Deployment deployment, Object dependency)
    {
       MutableAttachments mutableAttachments = (MutableAttachments)deployment.getPredeterminedManagedObjects();
       mutableAttachments.addAttachment(TestAttachment.class, new TestAttachment("x" + deployment.getName(), dependency));
+   }
+
+   protected void addComponentAttachment(Deployment deployment, Object dependency)
+   {
+      MutableAttachments mutableAttachments = (MutableAttachments)deployment.getPredeterminedManagedObjects();
+      TestAttachment testAttachment = new TestAttachment("x" + deployment.getName(), dependency);
+      TestAttachments testAttachments = new TestAttachments();
+      testAttachments.addAttachment(testAttachment);
+      mutableAttachments.addAttachment(TestAttachments.class, testAttachments);
    }
 }

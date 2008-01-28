@@ -22,33 +22,17 @@
 package org.jboss.test.deployers.main.support;
 
 import org.jboss.dependency.spi.Controller;
-import org.jboss.deployers.structure.spi.DeploymentUnit;
 
 /**
- * Dependency test deployer.
+ * Test attachments deployer.
  *
  * @author <a href="mailto:ales.justin@jboss.com">Ales Justin</a>
  */
-public class DependencyDeployer extends AbstractTestAttachmentDeployer
+public class TestAttachmentDeployer extends AbstractTestAttachmentDeployer
 {
-   public DependencyDeployer(Controller controller)
+   public TestAttachmentDeployer(Controller controller)
    {
       super(controller);
-      setUseUnitName(true);
-   }
-
-   protected boolean isControllerContextNameCandidate(DeploymentUnit unit)
-   {
-      return true;
-   }
-
-   protected void addControllerContextName(DeploymentUnit unit)
-   {
-      unit.addControllerContextName("x" + unit.getName());
-   }
-
-   protected void removeControllerContextName(DeploymentUnit unit)
-   {
-      unit.removeControllerContextName("x" + unit.getName());
+      setComponentsOnly(true);
    }
 }
