@@ -22,7 +22,7 @@
   <name>JBoss Microcontainer Build</name>
   <url>http://www.jboss.com/products/jbossmc</url>
   <description>
-    The JBoss Microcontainer provides a lightweight container for managing POJOs, their deployment 
+    The JBoss Microcontainer provides a lightweight container for managing POJOs, their deployment
     and configuration.
   </description>
   <scm>
@@ -30,7 +30,7 @@
     <developerConnection>scm:svn:https://svn.jboss.org/repos/jbossas/projects/microcontainer/trunk/</developerConnection>
     <url>http://viewvc.jboss.org/cgi-bin/viewvc.cgi/jbossas/projects/microcontainer/trunk/</url>
   </scm>
-  
+
   <properties>
     <version.jboss.common.core>2.2.3.GA</version.jboss.common.core>
     <version.jbossxb>2.0.0.CR5</version.jbossxb>
@@ -38,7 +38,7 @@
     <version.jboss.vfs>2.0.0.Beta7</version.jboss.vfs>
     <version.javassist>3.6.0.GA</version.javassist>
     <version.jaxb.api>2.0</version.jaxb.api>
-    <version.jboss.aop>2.0.0.CR1</version.jboss.aop>
+    <version.jboss.aop>2.0.0.CR3</version.jboss.aop>
     <version.jboss.logging.spi>2.0.3.GA</version.jboss.logging.spi>
     <version.jboss.classloading.spi>5.0.0.Beta3</version.jboss.classloading.spi>
     <version.org.jboss.test>1.0.4.GA</version.org.jboss.test>
@@ -358,7 +358,7 @@
         <groupId>apache-xerces</groupId>
         <artifactId>xercesImpl</artifactId>
         <version>${version.apache-xerces.xml-apis}</version>
-      </dependency>  
+      </dependency>
       <dependency>
         <groupId>org.osgi</groupId>
         <artifactId>osgi_R4_core</artifactId>
@@ -462,7 +462,7 @@
       </dependency>
     </dependencies>
   </dependencyManagement>
-  
+
   <profiles>
     <profile>
       <id>default</id>
