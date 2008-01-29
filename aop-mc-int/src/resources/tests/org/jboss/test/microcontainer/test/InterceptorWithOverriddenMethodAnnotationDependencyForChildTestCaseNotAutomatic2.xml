@@ -32,6 +32,7 @@
    </bean>
 
    <bean name="Depends1" class="org.jboss.test.microcontainer.support.OverriddenPropertyAnnotatedChild">
+      <annotation>@org.jboss.test.microcontainer.support.Test</annotation>
       <property name="propertyA">10
          <annotation>@org.jboss.test.microcontainer.support.Test</annotation>
          <annotation>@org.jboss.test.microcontainer.support.TestAnnotationDependency(data="Dependency1")</annotation>
@@ -43,6 +44,7 @@
    </bean>
 
    <bean name="Depends2" class="org.jboss.test.microcontainer.support.OverriddenPropertyAnnotatedChild">
+      <annotation>@org.jboss.test.microcontainer.support.Test</annotation>
       <property name="propertyA">10
          <annotation>@org.jboss.test.microcontainer.support.Test</annotation>
 	      <annotation>@org.jboss.test.microcontainer.support.TestAnnotationDependency(data="Dependency2")</annotation>
@@ -54,6 +56,7 @@
    </bean>
 
    <bean name="Depends1And2" class="org.jboss.test.microcontainer.support.OverriddenPropertyAnnotatedChild">
+      <annotation>@org.jboss.test.microcontainer.support.Test</annotation>
       <property name="propertyA">10
          <annotation>@org.jboss.test.microcontainer.support.Test</annotation>
 	      <annotation>@org.jboss.test.microcontainer.support.TestAnnotationDependency(data="Dependency1")</annotation>
