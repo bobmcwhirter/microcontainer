@@ -56,8 +56,6 @@ public class Aspect implements ConfigureKernelControllerContextAware, Untransfor
     */
    protected AspectManager manager;
 
-   protected String adviceName = GUID.asString();
-   
    /**
     * True if aspect is an aspect factory, rather than the aspect itself
     */
@@ -108,7 +106,7 @@ public class Aspect implements ConfigureKernelControllerContextAware, Untransfor
     */
    public String getAdviceName()
    {
-      return adviceName;
+      return myname;
    }
 
    /**
@@ -126,7 +124,7 @@ public class Aspect implements ConfigureKernelControllerContextAware, Untransfor
     */
    public void setAdviceName(String adviceName)
    {
-      this.adviceName = adviceName;
+      this.myname = adviceName;
    }
 
    /**
@@ -284,7 +282,7 @@ public class Aspect implements ConfigureKernelControllerContextAware, Untransfor
    protected ManagedAspectDefinition getAspectDefinitionNoDependencies()
    {
       AspectFactory factory = this.factory ?  
-            new DelegatingBeanAspectFactory(adviceName, advice) : new GenericBeanAspectFactory(adviceName, advice);
+            new DelegatingBeanAspectFactory(myname, advice) : new GenericBeanAspectFactory(myname, advice);
       return new ManagedAspectDefinition(aspectDefName, scope, factory);
    }
 
@@ -298,7 +296,7 @@ public class Aspect implements ConfigureKernelControllerContextAware, Untransfor
    protected ManagedAspectDefinition getAspectDefinitionPlainAspectFactory()
    {
       AspectFactory factory = this.factory ?  
-            new AspectFactoryDelegator(adviceName, null) : new GenericAspectFactory(adviceName, null);
+            new AspectFactoryDelegator(myname, null) : new GenericAspectFactory(myname, null);
       return new ManagedAspectDefinition(aspectDefName, scope, factory);
    }
 
