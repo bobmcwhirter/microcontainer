@@ -23,8 +23,20 @@
       <annotation>@org.jboss.metadata.plugins.scope.ApplicationScope("testApp")</annotation>
       <annotation>@org.jboss.metadata.plugins.scope.DeploymentScope("deployment1")</annotation>
       <property name="pointcut">execution(* $instanceof{org.jboss.test.microcontainer.support.SimpleBeanImpl}->*(..))</property>
-      <property name="aspect"><inject bean="InterceptedAspect" property="definition"/></property>
       <property name="manager"><inject bean="AspectManagerDeployment1"/></property>
+      <property name="advices">
+         <list>
+            <inject bean="InterceptedBinding$1"/>
+         </list>
+      </property>
+   </bean>
+
+   <bean name="InterceptedBinding$1" class="org.jboss.aop.microcontainer.beans.InterceptorEntry">
+      <annotation>@org.jboss.metadata.plugins.scope.ApplicationScope("testApp")</annotation>
+      <annotation>@org.jboss.metadata.plugins.scope.DeploymentScope("deployment1")</annotation>
+      <property name="manager"><inject bean="AspectManagerDeployment1"/></property>
+      <property name="aspect"><inject bean="InterceptedAspect"/></property>
+      <property name="binding"><inject bean="InterceptedBinding" state="Instantiated"/></property>
    </bean>
 
    <bean name="simple1" class="org.jboss.test.microcontainer.support.SimpleBeanImpl">
