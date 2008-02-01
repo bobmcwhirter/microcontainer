@@ -55,7 +55,10 @@ public abstract class AbstractStructureDeployer implements StructureDeployer
 
    /** The candidate structure visitor factory */
    private CandidateStructureVisitorFactory candidateStructureVisitorFactory = DefaultCandidateStructureVisitorFactory.INSTANCE;
-   
+
+   /** The context info order */
+   private Integer contextInfoOrder;
+
    /**
     * Get the relative path between two virtual files
     * 
@@ -101,7 +104,11 @@ public abstract class AbstractStructureDeployer implements StructureDeployer
    {
       this.relativeOrder = order;
    }
-   
+
+   public void setContextInfoOrder(Integer contextInfoOrder)
+   {
+      this.contextInfoOrder = contextInfoOrder;
+   }
 
    /**
     * Get the candidateStructureVisitorFactory.
@@ -269,6 +276,10 @@ public abstract class AbstractStructureDeployer implements StructureDeployer
          result = StructureMetaDataFactory.createContextInfo("", metaDataPath, null);
       else
          result = StructureMetaDataFactory.createContextInfo("", null);
+
+      if (result != null && contextInfoOrder != null)
+         result.setRelativeOrder(contextInfoOrder);
+
       structureMetaData.addContext(result);
       if (trace)
          log.trace("Added context " + result + " from " + root.getName());

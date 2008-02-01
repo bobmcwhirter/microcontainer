@@ -22,11 +22,12 @@
 package org.jboss.deployers.plugins.main;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Collection;
 import java.util.Collections;
+import java.util.Comparator;
 import java.util.List;
 import java.util.Map;
-import java.util.Arrays;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.CopyOnWriteArrayList;
 import java.util.concurrent.atomic.AtomicBoolean;
@@ -41,6 +42,8 @@ import org.jboss.deployers.spi.deployer.managed.ManagedDeploymentCreator;
 import org.jboss.deployers.structure.spi.DeploymentContext;
 import org.jboss.deployers.structure.spi.DeploymentUnit;
 import org.jboss.deployers.structure.spi.StructuralDeployers;
+import org.jboss.deployers.structure.spi.helpers.RelativeDeploymentContextComparator;
+import org.jboss.deployers.structure.spi.helpers.RevertedDeploymentContextComparator;
 import org.jboss.deployers.structure.spi.main.MainDeployerStructure;
 import org.jboss.logging.Logger;
 import org.jboss.managed.api.ManagedDeployment;
@@ -93,6 +96,28 @@ public class MainDeployerImpl implements MainDeployer, MainDeployerStructure
 
    /** The process lock */
    private ReentrantReadWriteLock lock = new ReentrantReadWriteLock();
+
+   /** The top deployment context comparator */
+   private Comparator<DeploymentContext> comparator;
+   private Comparator<DeploymentContext> reverted;
+
+   public MainDeployerImpl()
+   {
+      setComparator(RelativeDeploymentContextComparator.INSTANCE);
+   }
+
+   /**
+    * Set the top deployment context comparator.
+    *
+    * @param comparator the deployment context comparator
+    */
+   public void setComparator(Comparator<DeploymentContext> comparator)
+   {
+      if (comparator == null)
+         throw new IllegalArgumentException("Null comparator");
+      this.comparator = comparator;
+      this.reverted = new RevertedDeploymentContextComparator(comparator);
+   }
 
    /**
     * Get the deployers
@@ -487,11 +512,13 @@ public class MainDeployerImpl implements MainDeployer, MainDeployerStructure
             undeployContexts = new ArrayList<DeploymentContext>(undeploy.size());
             for (int i = undeploy.size() - 1; i >= 0; --i)
                undeployContexts.add(undeploy.get(i));
+            Collections.sort(undeployContexts, reverted);
             undeploy.clear();
          }
          if (deploy.isEmpty() == false)
          {
             deployContexts = new ArrayList<DeploymentContext>(deploy);
+            Collections.sort(deployContexts, comparator);
             deploy.clear();
          }
 

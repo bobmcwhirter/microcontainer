@@ -19,31 +19,32 @@
 * Software Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA
 * 02110-1301 USA, or see the FSF site: http://www.fsf.org.
 */
-package org.jboss.deployers.vfs.plugins.structure.war;
+package org.jboss.deployers.structure.spi.helpers;
 
-import org.jboss.deployers.spi.structure.ContextInfo;
-import org.jboss.deployers.spi.structure.StructureMetaData;
-import org.jboss.virtual.VirtualFile;
+import java.io.Serializable;
+import java.util.Comparator;
+
+import org.jboss.deployers.structure.spi.DeploymentContext;
 
 /**
- * ExplicitOrderWARStructure.
- * By default we put war context at the end.
+ * RelativeDeploymentContextComparator.
  *
  * @author <a href="ales.justin@jboss.com">Ales Justin</a>
  */
-public class ExplicitOrderWARStructure extends WARStructure
+public class RelativeDeploymentContextComparator implements Comparator<DeploymentContext>, Serializable
 {
-   private int contextOrder = Integer.MAX_VALUE;
+   private static final long serialVersionUID = 4933914203587980050L;
 
-   protected ContextInfo createContext(VirtualFile root, String metaDataPath, StructureMetaData structureMetaData)
+   /** The singleton */
+   public static final RelativeDeploymentContextComparator INSTANCE = new RelativeDeploymentContextComparator();
+
+   public int compare(DeploymentContext o1, DeploymentContext o2)
    {
-      ContextInfo contextInfo = super.createContext(root, metaDataPath, structureMetaData);
-      contextInfo.setRelativeOrder(contextOrder);
-      return contextInfo;
+      return o1.getRelativeOrder() - o2.getRelativeOrder();
    }
 
-   public void setContextOrder(int contextOrder)
+   Object readResolve()
    {
-      this.contextOrder = contextOrder;
+      return INSTANCE;
    }
 }
