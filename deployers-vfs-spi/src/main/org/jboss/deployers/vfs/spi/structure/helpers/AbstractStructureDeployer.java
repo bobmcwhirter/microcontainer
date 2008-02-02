@@ -277,12 +277,24 @@ public abstract class AbstractStructureDeployer implements StructureDeployer
       else
          result = StructureMetaDataFactory.createContextInfo("", null);
 
-      if (result != null && contextInfoOrder != null)
-         result.setRelativeOrder(contextInfoOrder);
+      applyContextInfoOrder(root, result);
 
       structureMetaData.addContext(result);
       if (trace)
          log.trace("Added context " + result + " from " + root.getName());
       return result;
+   }
+
+   /**
+    * Apply context info order.
+    * Can be overridden for specific root.
+    *
+    * @param root the root file
+    * @param result the new context info
+    */
+   protected void applyContextInfoOrder(VirtualFile root, ContextInfo result)
+   {
+      if (result != null && contextInfoOrder != null)
+         result.setRelativeOrder(contextInfoOrder);
    }
 }
