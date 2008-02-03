@@ -43,6 +43,11 @@ public class RelativeDeploymentContextComparator implements Comparator<Deploymen
       return o1.getRelativeOrder() - o2.getRelativeOrder();
    }
 
+   public static Comparator<DeploymentContext> getInstance()
+   {
+      return INSTANCE;
+   }
+
    Object readResolve()
    {
       return INSTANCE;

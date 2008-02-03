@@ -42,7 +42,6 @@ import org.jboss.deployers.spi.deployer.managed.ManagedDeploymentCreator;
 import org.jboss.deployers.structure.spi.DeploymentContext;
 import org.jboss.deployers.structure.spi.DeploymentUnit;
 import org.jboss.deployers.structure.spi.StructuralDeployers;
-import org.jboss.deployers.structure.spi.helpers.RelativeDeploymentContextComparator;
 import org.jboss.deployers.structure.spi.helpers.RevertedDeploymentContextComparator;
 import org.jboss.deployers.structure.spi.main.MainDeployerStructure;
 import org.jboss.logging.Logger;
@@ -100,11 +99,6 @@ public class MainDeployerImpl implements MainDeployer, MainDeployerStructure
    /** The top deployment context comparator */
    private Comparator<DeploymentContext> comparator;
    private Comparator<DeploymentContext> reverted;
-
-   public MainDeployerImpl()
-   {
-      setComparator(RelativeDeploymentContextComparator.INSTANCE);
-   }
 
    /**
     * Set the top deployment context comparator.
@@ -512,13 +506,15 @@ public class MainDeployerImpl implements MainDeployer, MainDeployerStructure
             undeployContexts = new ArrayList<DeploymentContext>(undeploy.size());
             for (int i = undeploy.size() - 1; i >= 0; --i)
                undeployContexts.add(undeploy.get(i));
-            Collections.sort(undeployContexts, reverted);
+            if (reverted != null)
+               Collections.sort(undeployContexts, reverted);
             undeploy.clear();
          }
          if (deploy.isEmpty() == false)
          {
             deployContexts = new ArrayList<DeploymentContext>(deploy);
-            Collections.sort(deployContexts, comparator);
+            if (comparator != null)
+               Collections.sort(deployContexts, comparator);
             deploy.clear();
          }
 

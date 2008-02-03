@@ -21,8 +21,8 @@
 */
 package org.jboss.deployers.structure.spi.helpers;
 
-import java.util.Comparator;
 import java.io.Serializable;
+import java.util.Comparator;
 
 import org.jboss.deployers.structure.spi.DeploymentContext;
 
@@ -46,6 +46,11 @@ public class DefaultDeploymentContextComparator implements Comparator<Deployment
          return relative;
       else
          return o1.getSimpleName().compareTo(o2.getRelativePath());
+   }
+
+   public static Comparator<DeploymentContext> getInstance()
+   {
+      return INSTANCE;
    }
 
    Object readResolve()
