@@ -2656,8 +2656,8 @@ public class MyBean {
     <title>The Deployment Framework</title>
     <chapter>
       <title>Introduction</title>
-      <para>JBoss Microcontainer allows POJO-based services to be deployed into a runtime environment but that is not all it can do. Thanks to an innovative deployment framework you can easily deploy other things such as Hibernate or JBoss AOP archives. In addition the framework is highly customizable thanks to its  design which is based on the &quot;chain of responsibility&quot; pattern. Essentially each deployment is processed by a series of deployment actions that are linked together to perform the necessary work. For example one action could take care of parsing the deployment metadata and another could take care of creating a classloader. This separation of concerns allows actions to be reused to process different kinds of deployments. Behaviour can also be easily added or removed   by inserting custom actions or removing actions that are not applicable.</para>
-      <para>Let&apos;s see how this approach compares to the BasicXMLDeployer that we used in Chapter 4.2 Deploying the service. Below we can see the source code for the  deploy(URL) method:</para>
+      <para>JBoss Microcontainer allows POJO-based services to be deployed into a runtime environment but that is not all it can do. Thanks to an innovative deployment framework you can easily deploy other things such as Hibernate or JBoss AOP archives. In addition the framework is highly customizable thanks to its  &quot;chain of responsibility&quot; design pattern where each deployment is processed by a series of deployment actions that are linked together to perform the necessary work. For example one action could take care of parsing the deployment metadata and another could take care of creating a classloader. This separation of concerns allows actions to be reused in order to process different kinds of deployments. Behaviour can also be easily added or removed   by inserting custom actions or removing actions that are not applicable.</para>
+      <para>Let&apos;s see how this approach compares to the BasicXMLDeployer that we used in Chapter 4.2 Deploying the service:</para>
       <programlisting>public class BasicXMLDeployer extends BasicKernelDeployer
 {
    ...
@@ -2695,13 +2695,10 @@ public class MyBean {
 
    ...
 }</programlisting>
-      <para>First of all an unmarshaller is created so that we can convert the XML deployment descriptor identified in the url into an object representation called a KernelDeployment. We then set the name of the KernelDeployment object to the string representation of the url. This represents the parsing stage of the deployment.</para>
-      <para>However, what if the deployment descriptor was not an XML file but a java property file instead? We could alter this code to check the file format but this would not be very flexible and would also require the name of the class to be changed. By using the deployment framework we can simply create two deployment actions, one for parsing an XML file and another for parsing a property file. Both actions would  then  be called during the parsing stage of the deployment process with each one checking the file suffix of the url (-beans.xml or -beans.properties) before deciding whether or not to parse it. It now becomes easy to parse other, possible custom, file formats simply by creating additional deployment actions and adding them to the parsing stage.</para>
-      <para>The remainder of the work carried out by the BasicXMLDeployer can also be divided up into a series of deployment actions that relate to different stages of deployment:</para>
+      <para>The first thing we do is create an unmarshaller to convert the XML deployment descriptor identified in the url into an object representation called a KernelDeployment. We then set the name of the KernelDeployment object to the string representation of the url. This represents the parsing stage of the deployment. However, what if the deployment descriptor was not an XML file but a java property file instead? We could create another subclass of BasicKernelDeployer called BasicPropertyDeployer to parse a property file but we would still need to determine which class to call at runtime depending on the file suffix.</para>
+      <para>The deployment framework takes care of  such issues by  allowing multiple parsing actions, e.g. one for an XML file and another for  a property file, to  be called during the parsing stage of the deployment process. Each action checks the file suffix of the deployment (-beans.xml or -beans.properties) before deciding whether or not to parse it. Using this design it now becomes easy to parse other, possible custom, file formats simply by creating additional parsing actions and adding them to the parsing stage.</para>
+      <para>The remainder of the work carried out by the deploy() method of BasicKernelDeployer can also be divided up into a series of deployment actions that relate to different stages of deployment:</para>
       <itemizedlist>
-        <listitem>
-          <para>PARSE - deployment metadata is read</para>
-        </listitem>
         <listitem>
           <para>DESCRIBE - dependencies are discovered</para>
         </listitem>
@@ -2715,7 +2712,7 @@ public class MyBean {
           <para>REAL - beans are deployed into the microcontainer</para>
         </listitem>
       </itemizedlist>
-      <para>This means that  it&apos;s possible to use the deployment framework to deploy POJO-based services instead of the BasicXMLDeployer. So why then do we need a BasicXMLDeployer you ask? The answer is because we use the BasicXMLDeployer to assemble the POJOs required by the deployment framework when the microcontainer is booted up. In other words the deployment framework represents a POJO-based service. Once the deployment framework has been deployed then it is then used to deploy everything else in the microcontainer, including any further -bean.xml files.</para>
+      <para>This means that  it&apos;s possible to use the deployment framework instead of the BasicXMLDeployer to deploy POJO-based services specified with XML deployment descriptors. So why then do we need a BasicXMLDeployer? The answer is because the deployment framework itself a POJO-based service specified with  an XML deployment descriptor (usually called bootstrap-beans.xml). We therefore need the BasicXMLDeployer to deploy it  when the microcontainer is booted up. Once deployed then it is used to deploy everything else including any other POJO-based services.</para>
       <para>Now that you understand the reasoning for the deployment framework and how it relates to the BasicXMLDeployer  the following sections go on the cover the various parts of the framework in more detail.</para>
     </chapter>
     <chapter>
