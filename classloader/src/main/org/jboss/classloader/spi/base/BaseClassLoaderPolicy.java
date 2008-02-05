@@ -261,6 +261,7 @@ public abstract class BaseClassLoaderPolicy
       shutdownPolicy();
       this.domain = null;
    }
+   
    /**
     * Get the classloader
     * 
@@ -270,6 +271,16 @@ public abstract class BaseClassLoaderPolicy
    {
       if (classLoader == null)
          throw new IllegalStateException("No classloader associated with policy therefore it is no longer registered " + toLongString());
+      return classLoader;
+   }
+   
+   /**
+    * Get the classloader
+    * 
+    * @return the classloader
+    */
+   synchronized BaseClassLoader getClassLoaderUnchecked()
+   {
       return classLoader;
    }
    

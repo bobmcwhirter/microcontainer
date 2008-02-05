@@ -216,11 +216,27 @@ public class BaseClassLoader extends SecureClassLoader implements BaseClassLoade
       
       // Did we already load this class?
       Class<?> result = findLoadedClass(name);
+      if (result != null)
+      {
+         // Has this classloader been undeployed?
+         ClassLoader otherClassLoader = getClassLoader(result);
+         if (otherClassLoader != null && otherClassLoader != this && otherClassLoader instanceof RealClassLoader)
+         {
+            RealClassLoader rcl = (RealClassLoader) otherClassLoader;
+            // Ignore when undeployed
+            if (rcl.isValid() == false)
+            {
+               if (trace)
+                  log.trace(this + " ignoring already loaded class from undeployed classloader " + ClassLoaderUtils.classToString(result));
+               result = null;
+            }
+         }
+      }
       if (result != null && trace)
-         log.trace(this + " already loaded class " + name + " " + ClassLoaderUtils.classToString(result));
+         log.trace(this + " already loaded class " + ClassLoaderUtils.classToString(result));
 
       // If this is an array, use Class.forName() to resolve it
-      if (name.charAt(0) == '[')
+      if (result == null && name.charAt(0) == '[')
       {
          if (trace)
             log.trace(this + " resolving array class " + name + " using Class.forName()");
@@ -595,7 +611,7 @@ public class BaseClassLoader extends SecureClassLoader implements BaseClassLoade
    public boolean isValid()
    {
       BaseClassLoaderPolicy basePolicy = policy;
-      return basePolicy.getClassLoader() != null;
+      return basePolicy.getClassLoaderUnchecked() != null;
    }
    
    public Class<?> getCachedClass(String name)
@@ -814,5 +830,26 @@ public class BaseClassLoader extends SecureClassLoader implements BaseClassLoade
       {
          notifyAll();
       }
+   }
+   
+   /**
+    * Get the classloader for a class
+    * 
+    * @param clazz the class
+    * @return the classloader or null if it doesn't have one
+    */
+   private static final ClassLoader getClassLoader(final Class<?> clazz)
+   {
+      SecurityManager sm = System.getSecurityManager();
+      if (sm == null)
+         return clazz.getClassLoader();
+      
+      return AccessController.doPrivileged(new PrivilegedAction<ClassLoader>()
+      {
+         public ClassLoader run()
+         {
+            return clazz.getClassLoader();
+         }
+      });
    }
 }
