@@ -21,7 +21,6 @@
  */
 package org.jboss.metatype.api.types;
 
-import org.jboss.metatype.api.types.MetaType;
 import org.jboss.metatype.plugins.types.AbstractCompositeMetaType;
 
 /**
@@ -37,7 +36,7 @@ public class MapCompositeMetaType extends AbstractCompositeMetaType
 
    /**
     * Create a MapCompositeMetaType with the given value metatype.
-    * @param valueType
+    * @param valueType the value meta type
     */
    public MapCompositeMetaType(MetaType valueType)
    {
@@ -47,10 +46,10 @@ public class MapCompositeMetaType extends AbstractCompositeMetaType
 
    /**
     * Add a new key/item to the type
-    * @param itemName
+    * @param itemName the item name
     */
    public void addItem(String itemName)
    {
-      super.addItem(itemName, itemName, valueType);
+      addItem(itemName, itemName, valueType);
    }
 }

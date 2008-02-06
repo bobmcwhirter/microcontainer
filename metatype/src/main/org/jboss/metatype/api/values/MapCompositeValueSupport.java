@@ -24,15 +24,12 @@ package org.jboss.metatype.api.values;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 import org.jboss.metatype.api.types.CompositeMetaType;
 import org.jboss.metatype.api.types.MapCompositeMetaType;
 import org.jboss.metatype.api.types.MetaType;
-import org.jboss.metatype.api.types.SimpleMetaType;
-import org.jboss.metatype.api.values.AbstractMetaValue;
-import org.jboss.metatype.api.values.CompositeValue;
-import org.jboss.metatype.api.values.MetaValue;
 
 /**
  * A CompositeValue for Map<String,MetaValue> 
@@ -40,25 +37,37 @@ import org.jboss.metatype.api.values.MetaValue;
  * @author Scott.Stark@jboss.org
  * @version $Revision$
  */
-public class MapCompositeValueSupport extends AbstractMetaValue
-   implements CompositeValue
+public class MapCompositeValueSupport extends AbstractMetaValue implements CompositeValue
 {
    private static final long serialVersionUID = 1;
    private Map<String, MetaValue> map;
-   private MapCompositeMetaType mapType = new MapCompositeMetaType(SimpleMetaType.STRING);
+   private MapCompositeMetaType mapType;
 
    public MapCompositeValueSupport(MetaType valueType)
    {
       this(null, valueType);
    }
+
    public MapCompositeValueSupport(Map<String, MetaValue> map, MetaType valueType)
    {
-      this.map = new HashMap<String, MetaValue>();
+      this.map = createMap();
+      this.mapType = new MapCompositeMetaType(valueType);
       if(map != null)
       {
          for(Map.Entry<String, MetaValue> entry : map.entrySet())
             this.put(entry.getKey(), entry.getValue());
       }
+   }
+
+   /**
+    * Create map instance.
+    * Default is hash map.
+    *
+    * @return the map
+    */
+   protected Map<String, MetaValue> createMap()
+   {
+      return new HashMap<String, MetaValue>();
    }
 
    public boolean containsKey(String key)
@@ -75,6 +84,7 @@ public class MapCompositeValueSupport extends AbstractMetaValue
    {
       return map.get(key);
    }
+
    public void put(String key, MetaValue value)
    {
       if(mapType.containsItem(key) == false)
@@ -84,7 +94,7 @@ public class MapCompositeValueSupport extends AbstractMetaValue
 
    public MetaValue[] getAll(String[] keys)
    {
-      ArrayList<MetaValue> values = new ArrayList();
+      List<MetaValue> values = new ArrayList<MetaValue>();
       if(keys != null)
       {
          for(String key : keys)
@@ -93,7 +103,7 @@ public class MapCompositeValueSupport extends AbstractMetaValue
             values.add(value);
          }
       }
-      MetaValue[] mvs = {};
+      MetaValue[] mvs = new MetaValue[values.size()];
       return values.toArray(mvs);
    }
 
