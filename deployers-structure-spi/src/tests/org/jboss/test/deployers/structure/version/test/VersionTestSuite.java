@@ -44,6 +44,7 @@ public class VersionTestSuite extends TestSuite
       suite.addTest(VersionImplTestCase.suite());
       suite.addTest(VersionComparatorTestCase.suite());
       suite.addTest(VersionComparatorRegistryTestCase.suite());
+      suite.addTest(VersionRangeTestCase.suite());
 
       return suite;
    }

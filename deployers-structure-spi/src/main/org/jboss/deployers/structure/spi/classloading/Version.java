@@ -40,4 +40,20 @@ public abstract class Version implements Comparable<Version>
       VersionComparatorRegistry registry = VersionComparatorRegistry.getInstance();
       return registry.compare(this, v);
    }
+
+/*
+   public boolean equals(Object obj)
+   {
+      if (obj instanceof Version == false)
+         return false;
+
+      VersionComparatorRegistry registry = VersionComparatorRegistry.getInstance();
+      return registry.compare(this, Version.class.cast(obj)) == 0;
+   }
+
+   public int hashCode()
+   {
+      return toString().hashCode();
+   }
+*/
 }

@@ -137,7 +137,7 @@ public class VersionRange
       if (low != null)
       {
          comparison = low.compareTo(version);
-         if (comparison < 0)
+         if (comparison > 0)
             return false;
          if (lowInclusive == false && comparison == 0)
             return false;
@@ -145,7 +145,7 @@ public class VersionRange
       if (high != null)
       {
          comparison = high.compareTo(version);
-         if (comparison > 0)
+         if (comparison < 0)
             return false;
          if (highInclusive == false && comparison == 0)
             return false;
