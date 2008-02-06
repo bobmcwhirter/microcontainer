@@ -22,18 +22,20 @@
 package org.jboss.dependency.plugins;
 
 import java.util.Collection;
+import java.util.Collections;
+import java.util.HashMap;
 import java.util.HashSet;
 import java.util.LinkedHashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
-import java.util.HashMap;
-import java.util.Collections;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.CopyOnWriteArrayList;
 import java.util.concurrent.CopyOnWriteArraySet;
 import java.util.concurrent.locks.ReentrantReadWriteLock;
 
+import org.jboss.dependency.plugins.action.ControllerContextAction;
+import org.jboss.dependency.plugins.action.SimpleControllerContextAction;
 import org.jboss.dependency.spi.CallbackItem;
 import org.jboss.dependency.spi.Controller;
 import org.jboss.dependency.spi.ControllerContext;
@@ -43,8 +45,6 @@ import org.jboss.dependency.spi.ControllerState;
 import org.jboss.dependency.spi.DependencyInfo;
 import org.jboss.dependency.spi.DependencyItem;
 import org.jboss.dependency.spi.LifecycleCallbackItem;
-import org.jboss.dependency.plugins.action.ControllerContextAction;
-import org.jboss.dependency.plugins.action.SimpleControllerContextAction;
 import org.jboss.util.JBossObject;
 import org.jboss.util.JBossStringBuilder;
 
@@ -1217,7 +1217,7 @@ public class AbstractController extends JBossObject implements Controller
       // let's make sure we suppress any exceptions
       catch (Throwable t)
       {
-         log.warn("Cannot resolve callbacks.", t);
+         log.warn("Cannot resolve callbacks, state= " + state + ", isInstall= " + isInstallPhase + ", context= " + context, t);
       }
       finally
       {
