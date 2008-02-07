@@ -28,6 +28,7 @@ import java.lang.annotation.Target;
 
 import org.jboss.managed.api.Fields;
 import org.jboss.managed.api.ManagedProperty;
+import org.jboss.managed.spi.factory.InstanceClassFactory;
 import org.jboss.managed.spi.factory.ManagedPropertyConstraintsPopulator;
 import org.jboss.managed.spi.factory.ManagedPropertyConstraintsPopulatorFactory;
 
@@ -62,6 +63,9 @@ public @interface ManagementProperty
    /** Whether to ignore this property */
    boolean ignored() default false;
 
+   /** Whether this property should be included in a deployment template */
+   boolean includeInTemplate() default false;
+
    /** The views this property should be used in */
    ViewUse[] use() default {ViewUse.CONFIGURATION};
 
@@ -71,6 +75,8 @@ public @interface ManagementProperty
    Class<? extends Fields> fieldsFactory() default NULL_FIELDS_FACTORY.class;
    /** The constraints, allowed values populator factory */
    Class<? extends ManagedPropertyConstraintsPopulatorFactory> constraintsFactory() default NULL_CONSTRAINTS.class;
+   /** The constraints, allowed values populator factory */
+   Class<? extends InstanceClassFactory> marshallerFactory() default NULL_MARSHALLER_FACTORY.class;
 
    /**
     * Used in {@link ManagementProperty#constraintsFactory()} to
@@ -98,6 +104,14 @@ public @interface ManagementProperty
     * indicate that no ManagedProperty factory is defined.
     */
    public static abstract class NULL_PROPERTY_FACTORY implements ManagedProperty
+   {
+   }
+
+   /**
+    * Used in {@link ManagementProperty#propertyFactory()} to
+    * indicate that no ManagedProperty factory is defined.
+    */
+   public static abstract class NULL_MARSHALLER_FACTORY implements InstanceClassFactory
    {
    }
 }
