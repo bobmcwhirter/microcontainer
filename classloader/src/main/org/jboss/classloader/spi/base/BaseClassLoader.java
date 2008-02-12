@@ -824,11 +824,13 @@ public class BaseClassLoader extends SecureClassLoader implements BaseClassLoade
       lock.unlock();      
       
       if (lock.getHoldCount() == 0)
+      {
          ClassLoaderManager.unregisterLoaderThread(this, thread);
 
-      synchronized (this)
-      {
-         notifyAll();
+         synchronized (this)
+         {
+            notifyAll();
+         }
       }
    }
    
