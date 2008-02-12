@@ -39,12 +39,6 @@ public abstract class AbstractBootstrap extends AbstractKernelObject implements 
    protected KernelConfig config;
 
    /**
-    * The kernel created by the bootstrap implementation during the
-    * bootstrap process.
-    */
-   protected Kernel kernel;
-
-   /**
     * Create a new abstract bootstrap
     */
    public AbstractBootstrap()
