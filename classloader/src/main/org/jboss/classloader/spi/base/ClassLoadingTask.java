@@ -138,7 +138,7 @@ class ClassLoadingTask
     * 
     * @return the numCCE.
     */
-   int getNumCCE()
+   synchronized int incrementNumCCE()
    {
       return numCCE;
    }

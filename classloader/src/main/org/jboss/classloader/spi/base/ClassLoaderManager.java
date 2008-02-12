@@ -44,6 +44,9 @@ public class ClassLoaderManager
    /** The log */
    private static Logger log = Logger.getLogger("org.jboss.detailed.classloader.ClassLoaderManager");
 
+   /** The maximum number of CCEs */
+   private static final int MAX_CCE = 10;
+   
    /** The threads owning the classloader lock */
    private static Map<BaseClassLoader, Thread> loadClassThreads = new HashMap<BaseClassLoader, Thread>();
    
@@ -256,7 +259,7 @@ public class ClassLoaderManager
          if (trace)
             log.trace("Run failed with exception", e);
          boolean retry = e instanceof ClassCircularityError || e.getClass().equals(LinkageError.class);
-         if (retry)
+         if (retry && loadTask.incrementNumCCE() < MAX_CCE)
          {
             /* Reschedule this task after all existing tasks to allow the
             current load tasks which are conflicting to complete.
