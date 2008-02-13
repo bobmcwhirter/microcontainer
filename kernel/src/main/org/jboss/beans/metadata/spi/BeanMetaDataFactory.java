@@ -23,15 +23,13 @@ package org.jboss.beans.metadata.spi;
 
 import java.util.List;
 
-import org.jboss.util.JBossInterface;
-
 /**
  * BeanMetaDataFactory.
  * 
  * @author <a href="adrian@jboss.com">Adrian Brock</a>
  * @version $Revision$
  */
-public interface BeanMetaDataFactory extends JBossInterface
+public interface BeanMetaDataFactory 
 {
    /**
     * Get the beans
