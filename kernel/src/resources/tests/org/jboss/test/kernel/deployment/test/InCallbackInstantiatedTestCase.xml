@@ -1,0 +1,10 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<deployment xmlns="urn:jboss:bean-deployer:2.0">
+
+   <bean name="Repository" class="org.jboss.test.kernel.deployment.support.InCallbackInstantiatedRepository">
+      <incallback method="add" state="Instantiated"/>
+      <uncallback method="remove" state="Instantiated"/>
+   </bean>
+
+</deployment>
