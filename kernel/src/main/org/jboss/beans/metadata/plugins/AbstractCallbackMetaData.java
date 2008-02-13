@@ -55,7 +55,7 @@ public abstract class AbstractCallbackMetaData extends AbstractLifecycleMetaData
    protected String property;
 
    /** The required state of the dependency */
-   protected ControllerState whenRequired = ControllerState.CONFIGURED;
+   protected ControllerState whenRequired = ControllerState.INSTALLED;
 
    /** The required state of the dependency */
    protected ControllerState dependentState = ControllerState.INSTALLED;
@@ -71,7 +71,7 @@ public abstract class AbstractCallbackMetaData extends AbstractLifecycleMetaData
 
    public AbstractCallbackMetaData()
    {
-      setState(ControllerState.CONFIGURED);
+      setState(ControllerState.INSTALLED);
    }
 
    public String getProperty()

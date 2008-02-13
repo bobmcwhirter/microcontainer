@@ -148,7 +148,7 @@ public class CallbackTestCase extends OldAbstractKernelDependencyTest
    {
       callbackCardinalityCorrectOrder();
 
-      ControllerContext context1 = assertInstall(0, "Name1", ControllerState.INSTANTIATED);
+      ControllerContext context1 = assertInstall(0, "Name1", ControllerState.START);
       SimpleBeanRepository repository = (SimpleBeanRepository)context1.getTarget();
       assertNotNull(repository);
       assertEmpty(repository.getBeans());
@@ -212,7 +212,7 @@ public class CallbackTestCase extends OldAbstractKernelDependencyTest
    {
       callbackCardinalityReinstall();
 
-      ControllerContext context1 = assertInstall(0, "Name1", ControllerState.INSTANTIATED);
+      ControllerContext context1 = assertInstall(0, "Name1", ControllerState.START);
       SimpleBeanRepository repository = (SimpleBeanRepository)context1.getTarget();
       assertNotNull(repository);
       assertEmpty(repository.getBeans());
@@ -241,7 +241,7 @@ public class CallbackTestCase extends OldAbstractKernelDependencyTest
 
       assertUninstall("Name2");
       assertEquals(ControllerState.ERROR, context2.getState());
-      assertEquals(ControllerState.INSTANTIATED, context1.getState());
+      assertEquals(ControllerState.START, context1.getState());
       assertEmpty(repository.getBeans());
 
       assertInstall(1, "Name2");
@@ -250,7 +250,7 @@ public class CallbackTestCase extends OldAbstractKernelDependencyTest
 
       assertUninstall("Name3");
       assertEquals(ControllerState.ERROR, context3.getState());
-      assertEquals(ControllerState.INSTANTIATED, context1.getState());
+      assertEquals(ControllerState.START, context1.getState());
       assertEmpty(repository.getBeans());
    }
 

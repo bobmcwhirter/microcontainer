@@ -49,7 +49,7 @@ public @interface Install
     *
     * @return when required.
     */
-   String whenRequired() default "Configured";
+   String whenRequired() default "Installed";
 
    /**
     * Get dependent state.
