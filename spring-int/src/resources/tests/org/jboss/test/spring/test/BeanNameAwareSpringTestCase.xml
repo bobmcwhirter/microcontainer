@@ -1,0 +1,32 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<beans xmlns="urn:jboss:spring-beans:2.0">
+
+   <!-- Adding @Spring annotation handler -->
+   <bean xmlns="urn:jboss:bean-deployer:2.0" name="AnnotationHandlerFactory">
+      <constructor factoryClass="org.jboss.kernel.plugins.annotations.BeanAnnotationAdapterFactory" factoryMethod="getInstance" />
+   </bean>
+   <bean xmlns="urn:jboss:bean-deployer:2.0" name="AnnotationHandler">
+      <constructor factoryMethod="getBeanAnnotationAdapter">
+         <factory bean="AnnotationHandlerFactory"/>
+      </constructor>
+      <incallback method="addAnnotationPlugin" />
+      <uncallback method="removeAnnotationPlugin" />
+   </bean>
+   <bean id="SpringAnnotationPlugin" class="org.jboss.spring.annotations.SpringBeanAnnotationPlugin" />
+
+   <bean id="testBean" class="org.jboss.test.spring.support.BeanNameAwareBean" />
+   <bean id="subTestBean" class="org.jboss.test.spring.support.SubBeanNameAwareBean" />
+   <bean id="intTestBean" class="org.jboss.test.spring.support.IntBeanNameAwareBean" />
+
+	<bean id="testBeanWithExisingName" class="org.jboss.test.spring.support.BeanNameAwareBean">
+		<property name="beanName">OtherBean</property>
+	</bean>
+	<bean id="subTestBeanWithExisingName" class="org.jboss.test.spring.support.SubBeanNameAwareBean">
+		<property name="beanName">subOtherBean</property>
+	</bean>
+	<bean id="intTestBeanWithExisingName" class="org.jboss.test.spring.support.IntBeanNameAwareBean">
+		<property name="beanName">intOtherBean</property>
+	</bean>
+
+</beans>

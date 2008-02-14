@@ -19,38 +19,21 @@
 * Software Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA
 * 02110-1301 USA, or see the FSF site: http://www.fsf.org.
 */
-package org.jboss.test.spring.test;
+package org.jboss.spring.annotations;
 
-import junit.framework.Test;
-import junit.framework.TestSuite;
-import junit.textui.TestRunner;
+import java.lang.annotation.ElementType;
+import java.lang.annotation.Retention;
+import java.lang.annotation.RetentionPolicy;
+import java.lang.annotation.Target;
 
 /**
- * @author <a href="mailto:ales.justin@jboss.com">Ales Justin</a>
+ * Marker annotation.
+ *
+ * @author John Bailey
+ * @author Davide Panelli
  */
-public class SpringTestSuite extends TestSuite
+@Target(ElementType.TYPE)
+@Retention(RetentionPolicy.RUNTIME)
+public @interface SpringBean
 {
-
-   public static void main(String[] args)
-   {
-      TestRunner.run(suite());
-   }
-
-   public static Test suite()
-   {
-      TestSuite suite = new TestSuite("Spring Tests");
-
-      suite.addTest(DescribeSpringTestCase.suite());
-      suite.addTest(InstantiateSpringTestCase.suite());
-      suite.addTest(InstantiateMixedTestCase.suite());
-      suite.addTest(InstantiateMixed2TestCase.suite());
-      suite.addTest(AliasSpringTestCase.suite());
-      suite.addTest(DependsSpringTestCase.suite());
-      suite.addTest(LazySpringTestCase.suite());
-      suite.addTest(ImportSpringTestCase.suite());
-      suite.addTest(BeanNameAwareSpringTestCase.suite());
-
-      return suite;
-   }
-
 }

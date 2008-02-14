@@ -29,22 +29,26 @@ import java.util.TreeSet;
 import javax.xml.namespace.NamespaceContext;
 import javax.xml.namespace.QName;
 
+import org.jboss.beans.metadata.plugins.AbstractAnnotationMetaData;
 import org.jboss.beans.metadata.plugins.AbstractBeanMetaData;
 import org.jboss.beans.metadata.plugins.AbstractConstructorMetaData;
 import org.jboss.beans.metadata.plugins.AbstractDemandMetaData;
 import org.jboss.beans.metadata.plugins.AbstractDependencyValueMetaData;
 import org.jboss.beans.metadata.plugins.AbstractLifecycleMetaData;
+import org.jboss.beans.metadata.spi.AnnotationMetaData;
 import org.jboss.beans.metadata.spi.AutowireType;
 import org.jboss.beans.metadata.spi.ConstructorMetaData;
 import org.jboss.beans.metadata.spi.DemandMetaData;
 import org.jboss.beans.metadata.spi.ParameterMetaData;
 import org.jboss.dependency.spi.ControllerMode;
+import org.jboss.spring.annotations.SpringBean;
 import org.jboss.spring.metadata.AbstractConstructorArg;
 import org.jboss.xb.binding.sunday.unmarshalling.DefaultElementHandler;
 import org.jboss.xb.binding.sunday.unmarshalling.ElementBinding;
 import org.xml.sax.Attributes;
 
 /**
+ * 
  * @author <a href="mailto:ales.justin@jboss.com">Ales Justin</a>
  */
 public class SpringBeanHandler extends DefaultElementHandler
@@ -61,7 +65,18 @@ public class SpringBeanHandler extends DefaultElementHandler
 
    public Object startElement(Object parent, QName name, ElementBinding element)
    {
-      return new AbstractBeanMetaData();
+      AbstractBeanMetaData bean = new AbstractBeanMetaData();
+      Set<AnnotationMetaData> annotations = bean.getAnnotations();
+      if(annotations == null)
+      {
+         annotations = new HashSet<AnnotationMetaData>();
+         bean.setAnnotations(annotations);
+      }
+      // It's a bit of a hack, but it's a transparent one
+      AbstractAnnotationMetaData springAnnotation = new AbstractAnnotationMetaData();
+      springAnnotation.setAnnotation("@" + SpringBean.class.getName());
+      annotations.add(springAnnotation);
+      return bean;
    }
 
    public void attributes(Object o, QName elementName, ElementBinding element, Attributes attrs, NamespaceContext nsCtx)

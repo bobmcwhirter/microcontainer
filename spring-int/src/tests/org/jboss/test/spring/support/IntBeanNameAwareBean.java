@@ -19,38 +19,25 @@
 * Software Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA
 * 02110-1301 USA, or see the FSF site: http://www.fsf.org.
 */
-package org.jboss.test.spring.test;
-
-import junit.framework.Test;
-import junit.framework.TestSuite;
-import junit.textui.TestRunner;
+package org.jboss.test.spring.support;
 
 /**
- * @author <a href="mailto:ales.justin@jboss.com">Ales Justin</a>
+ * Tester bean.
+ *
+ * @author John Bailey
+ * @author Davide Panelli
  */
-public class SpringTestSuite extends TestSuite
+public class IntBeanNameAwareBean implements MyInterface
 {
+   private String name;
 
-   public static void main(String[] args)
+   public void setBeanName(String beanName)
    {
-      TestRunner.run(suite());
+      name = beanName;
    }
 
-   public static Test suite()
+   public String getName()
    {
-      TestSuite suite = new TestSuite("Spring Tests");
-
-      suite.addTest(DescribeSpringTestCase.suite());
-      suite.addTest(InstantiateSpringTestCase.suite());
-      suite.addTest(InstantiateMixedTestCase.suite());
-      suite.addTest(InstantiateMixed2TestCase.suite());
-      suite.addTest(AliasSpringTestCase.suite());
-      suite.addTest(DependsSpringTestCase.suite());
-      suite.addTest(LazySpringTestCase.suite());
-      suite.addTest(ImportSpringTestCase.suite());
-      suite.addTest(BeanNameAwareSpringTestCase.suite());
-
-      return suite;
+      return name;
    }
-
 }
