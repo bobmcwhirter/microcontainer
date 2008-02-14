@@ -21,30 +21,30 @@
 */
 package org.jboss.kernel.plugins.annotations;
 
-import java.util.Set;
-import java.util.HashSet;
 import java.lang.annotation.Annotation;
-import java.lang.annotation.Target;
-import java.lang.annotation.Retention;
 import java.lang.annotation.ElementType;
+import java.lang.annotation.Retention;
+import java.lang.annotation.Target;
+import java.util.HashSet;
+import java.util.Set;
 
-import org.jboss.logging.Logger;
-import org.jboss.beans.metadata.spi.MetaDataVisitor;
 import org.jboss.beans.info.spi.BeanInfo;
 import org.jboss.beans.info.spi.PropertyInfo;
-import org.jboss.kernel.spi.dependency.KernelControllerContext;
-import org.jboss.kernel.spi.metadata.KernelMetaDataRepository;
+import org.jboss.beans.metadata.spi.MetaDataVisitor;
 import org.jboss.kernel.Kernel;
 import org.jboss.kernel.plugins.config.Configurator;
+import org.jboss.kernel.spi.dependency.KernelControllerContext;
+import org.jboss.kernel.spi.metadata.KernelMetaDataRepository;
+import org.jboss.logging.Logger;
 import org.jboss.metadata.spi.MetaData;
-import org.jboss.metadata.spi.signature.Signature;
 import org.jboss.metadata.spi.signature.ConstructorSignature;
-import org.jboss.metadata.spi.signature.MethodSignature;
 import org.jboss.metadata.spi.signature.FieldSignature;
+import org.jboss.metadata.spi.signature.MethodSignature;
+import org.jboss.metadata.spi.signature.Signature;
 import org.jboss.reflect.spi.ClassInfo;
 import org.jboss.reflect.spi.ConstructorInfo;
-import org.jboss.reflect.spi.MethodInfo;
 import org.jboss.reflect.spi.FieldInfo;
+import org.jboss.reflect.spi.MethodInfo;
 
 /**
  * Abstract bean annotation handler.
@@ -69,7 +69,7 @@ public abstract class AbstractBeanAnnotationAdapter implements BeanAnnotationAda
     *
     * @param plugin the annotation plugin
     */
-   protected void addAnnotationPlugin(AnnotationPlugin plugin)
+   public void addAnnotationPlugin(AnnotationPlugin plugin)
    {
       if (plugin == null)
          throw new IllegalArgumentException("Null plugin.");
@@ -105,6 +105,42 @@ public abstract class AbstractBeanAnnotationAdapter implements BeanAnnotationAda
       if (supported.contains(ElementType.FIELD))
       {
          fieldAnnotationPlugins.add(plugin);
+      }
+   }
+
+   /**
+    * Remove the plugin.
+    * TODO - test it
+    *
+    * @param plugin the annotation plugin
+    */
+   public void removeAnnotationPlugin(AnnotationPlugin plugin)
+   {
+      if (plugin == null)
+         return;
+
+      Set supported = plugin.getSupportedTypes();
+      if (supported == null || supported.isEmpty())
+         throw new IllegalArgumentException("Null or empty support types: " + plugin);
+
+      if (supported.contains(ElementType.TYPE))
+      {
+         classAnnotationPlugins.remove(plugin);
+      }
+      if (supported.contains(ElementType.CONSTRUCTOR))
+      {
+         constructorAnnotationPlugins.remove(plugin);
+      }
+      if (supported.contains(ElementType.METHOD))
+      {
+         if (plugin instanceof PropertyAware)
+            propertyAnnotationPlugins.remove(plugin);
+         else
+            methodAnnotationPlugins.remove(plugin);
+      }
+      if (supported.contains(ElementType.FIELD))
+      {
+         fieldAnnotationPlugins.remove(plugin);
       }
    }
 
