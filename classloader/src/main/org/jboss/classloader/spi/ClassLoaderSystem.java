@@ -365,7 +365,7 @@ public abstract class ClassLoaderSystem extends BaseClassLoaderSystem
                // See whether the parent domain exists
                ClassLoaderDomain parentDomain = getDomain(parentDomainName);
                if (parentDomain == null)
-                  throw new IllegalStateException("Parent domain: " + parentDomainName + "does not exist.");
+                  throw new IllegalStateException("Parent domain: " + parentDomainName + " does not exist.");
                
                // Create the domain with a parent
                domain = createAndRegisterDomain(domainName, parentPolicy, parentDomain);
