@@ -194,11 +194,12 @@ public class AbstractKernelDeployer
     */
    protected void internalValidate(Set<ControllerContext> notInstalled) throws Throwable
    {
+      List<ControllerState> states = controller.getStates();
       if (notInstalled.isEmpty() == false)
       {
-         for (Iterator i = notInstalled.iterator(); i.hasNext();)
+         for (Iterator<ControllerContext> i = notInstalled.iterator(); i.hasNext();)
          {
-            ControllerContext context = (ControllerContext) i.next();
+            ControllerContext context = i.next();
             if (context.getState().equals(context.getRequiredState()))
                i.remove();
          }
@@ -228,31 +229,57 @@ public class AbstractKernelDeployer
                buffer.append("\n*** DEPLOYMENTS MISSING DEPENDENCIES: Name -> Dependency{Required State:Actual State}\n");
                for (ControllerContext ctx : incomplete)
                {
-                  buffer.append(ctx.getName()).append(" -> ");
+                  Object name = ctx.getName();
+                  buffer.append(name).append(" -> ");
                   DependencyInfo dependsInfo = ctx.getDependencyInfo();
-                  Set depends = dependsInfo.getIDependOn(null);
-                  for (Iterator j = depends.iterator(); j.hasNext();)
+                  Set<DependencyItem> depends = dependsInfo.getIDependOn(null);
+                  boolean first = true;
+                  for (DependencyItem item : depends)
                   {
-                     DependencyItem item = (DependencyItem)j.next();
-                     buffer.append(item.getIDependOn()).append('{').append(item.getWhenRequired().getStateString());
-                     buffer.append(':');
+                     ControllerState dependentState = item.getDependentState();
+                     ControllerState otherState = null;
+                     ControllerContext other = null; 
                      Object iDependOn = item.getIDependOn();
-                     if (iDependOn == null)
+                     if (iDependOn != null)
                      {
-                        // FIXME needs to print something better than item.toString()
-                        buffer.append("** UNRESOLVED " + item + " **");
+                        other = controller.getContext(iDependOn, null);
+                        if (other != null)
+                           otherState = other.getState();
                      }
-                     else
+
+                     boolean print = true;
+                     if (name.equals(iDependOn))
+                        print = false;
+                     if (otherState != null && otherState.equals(ControllerState.ERROR) == false)
                      {
-                        ControllerContext other = controller.getContext(item.getIDependOn(), null);
-                        if (other == null)
-                           buffer.append("** NOT FOUND **");
+                        int index1 = states.indexOf(dependentState);
+                        int index2 = states.indexOf(otherState);
+                        if (index2 >= index1)
+                           print = false;
+                     }
+                      
+                     if (print)
+                     {
+                        if (first)
+                           first = false;
                         else
-                           buffer.append(other.getState().getStateString());
+                           buffer.append(", ");
+                        
+                        buffer.append(iDependOn).append('{').append(dependentState.getStateString());
+                        buffer.append(':');
+                        if (iDependOn == null)
+                        {
+                           buffer.append("** UNRESOLVED " + item.toHumanReadableString() + " **");
+                        }
+                        else
+                        {
+                           if (other == null)
+                              buffer.append("** NOT FOUND **");
+                           else
+                              buffer.append(otherState.getStateString());
+                        }
+                        buffer.append('}');
                      }
-                     buffer.append('}');
-                     if (j.hasNext())
-                        buffer.append(", ");
                   }
                   buffer.append('\n');
                }
@@ -352,12 +379,12 @@ public class AbstractKernelDeployer
     */
    protected void undeployBeans(KernelController controller, KernelDeployment deployment)
    {
-      List contexts = deployment.getInstalledContexts();
+      List<KernelControllerContext> contexts = deployment.getInstalledContexts();
       if (contexts.isEmpty() == false)
       {
-         for (ListIterator i = contexts.listIterator(contexts.size()); i.hasPrevious();)
+         for (ListIterator<KernelControllerContext> i = contexts.listIterator(contexts.size()); i.hasPrevious();)
          {
-            KernelControllerContext context = (KernelControllerContext) i.previous();
+            KernelControllerContext context = i.previous();
             try
             {
                undeployBean(controller, context);
