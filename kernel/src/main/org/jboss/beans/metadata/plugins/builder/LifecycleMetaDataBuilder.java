@@ -25,17 +25,18 @@ import org.jboss.beans.metadata.plugins.AbstractBeanMetaData;
 import org.jboss.beans.metadata.plugins.AbstractLifecycleMetaData;
 import org.jboss.beans.metadata.spi.LifecycleMetaData;
 import org.jboss.beans.metadata.spi.ValueMetaData;
+import org.jboss.beans.metadata.spi.builder.ParameterMetaDataBuilder;
 
 /**
  * Helper class.
  * @see BeanMetaDataBuilderImpl
- * @see ParameterMetaDataBuilder
+ * @see ParameterMetaDataBuilderImpl
  *
  * @author <a href="mailto:ales.justin@jboss.com">Ales Justin</a>
  */
 public abstract class LifecycleMetaDataBuilder extends StateMetaDataBuilder
 {
-   protected ParameterMetaDataBuilder<AbstractLifecycleMetaData> builder;
+   protected ParameterMetaDataBuilderImpl<AbstractLifecycleMetaData> builder;
 
    public LifecycleMetaDataBuilder(AbstractBeanMetaData beanMetaData)
    {
@@ -51,7 +52,7 @@ public abstract class LifecycleMetaDataBuilder extends StateMetaDataBuilder
 
    protected void applyAfterSet(AbstractLifecycleMetaData lifecycle)
    {
-      builder = new ParameterMetaDataBuilder<AbstractLifecycleMetaData>(lifecycle);
+      builder = new ParameterMetaDataBuilderImpl<AbstractLifecycleMetaData>(lifecycle);
    }
 
    protected void checkLlifecycle()
@@ -63,13 +64,13 @@ public abstract class LifecycleMetaDataBuilder extends StateMetaDataBuilder
       }
    }
 
-   public LifecycleMetaData addParameterMetaData(String type, Object value)
+   public ParameterMetaDataBuilder addParameterMetaData(String type, Object value)
    {
       checkLlifecycle();
       return builder.addParameterMetaData(type, value);
    }
 
-   public LifecycleMetaData addParameterMetaData(String type, ValueMetaData value)
+   public ParameterMetaDataBuilder addParameterMetaData(String type, ValueMetaData value)
    {
       checkLlifecycle();
       return builder.addParameterMetaData(type, value);

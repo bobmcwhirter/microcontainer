@@ -29,6 +29,7 @@ import org.jboss.beans.metadata.plugins.AbstractInstallMetaData;
  * AbstractInstallMetaDataBuilder.
  *
  * @author <a href="ales.justin@jboss.com">Ales Justin</a>
+ * @author <a href="adrian@jboss.com">Adrian Brock</a>
  */
 public abstract class AbstractInstallMetaDataBuilder extends StateMetaDataBuilder
 {
@@ -51,11 +52,4 @@ public abstract class AbstractInstallMetaDataBuilder extends StateMetaDataBuilde
    {
       // do nothing
    }
-
-   public void addParameter(AbstractInstallMetaData installMetaData, String type, Object value)
-   {
-      ParameterMetaDataBuilder<AbstractInstallMetaData> builder = new ParameterMetaDataBuilder<AbstractInstallMetaData>(installMetaData);
-      builder.addParameterMetaData(type, value);
-   }
-
 }

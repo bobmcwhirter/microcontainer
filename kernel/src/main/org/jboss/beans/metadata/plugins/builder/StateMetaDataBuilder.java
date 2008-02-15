@@ -28,7 +28,7 @@ import org.jboss.beans.metadata.spi.LifecycleMetaData;
 /**
  * Helper class.
  * @see BeanMetaDataBuilderImpl
- * @see org.jboss.beans.metadata.plugins.builder.ParameterMetaDataBuilder
+ * @see org.jboss.beans.metadata.plugins.builder.ParameterMetaDataBuilderImpl
  *
  * @author <a href="mailto:ales.justin@jboss.com">Ales Justin</a>
  */

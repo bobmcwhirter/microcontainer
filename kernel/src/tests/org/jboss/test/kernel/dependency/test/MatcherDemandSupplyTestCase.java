@@ -78,17 +78,17 @@ public class MatcherDemandSupplyTestCase extends AbstractKernelDependencyTest
    protected void setBeanMetaDatas() throws Throwable
    {
       BeanMetaDataBuilder b0 = BeanMetaDataBuilderFactory.createBuilder("regexpDemander", Object.class.getName());
-      b0.addDemand("^[a-zA-Z0-9._%+-]+@acme\\.((org)|(com))$", null, "regexp");
+      b0.addDemand("^[a-zA-Z0-9._%+-]+@acme\\.((org)|(com))$", (String) null, "regexp");
       BeanMetaDataBuilder b1 = BeanMetaDataBuilderFactory.createBuilder("regexpSupplier", Object.class.getName());
       b1.addSupply("aj@acme.org");
 
       BeanMetaDataBuilder b2 = BeanMetaDataBuilderFactory.createBuilder("intervalDemander", Object.class.getName());
-      b2.addDemand("(1,10]", null, "interval");
+      b2.addDemand("(1,10]", (String) null, "interval");
       BeanMetaDataBuilder b3 = BeanMetaDataBuilderFactory.createBuilder("intervalSupplier", Object.class.getName());
       b3.addSupply("5", "java.lang.Integer");
 
       BeanMetaDataBuilder b4 = BeanMetaDataBuilderFactory.createBuilder("customDemander", Object.class.getName());
-      b4.addDemand("fragment", null, CustomMatcherTransfomer.class.getName());
+      b4.addDemand("fragment", (String) null, CustomMatcherTransfomer.class.getName());
       BeanMetaDataBuilder b5 = BeanMetaDataBuilderFactory.createBuilder("customSupplier", Object.class.getName());
       b5.addSupply("i supply fragment word");
 

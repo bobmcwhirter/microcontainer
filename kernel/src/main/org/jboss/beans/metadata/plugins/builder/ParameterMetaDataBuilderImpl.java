@@ -27,34 +27,59 @@ import java.util.List;
 import org.jboss.beans.metadata.plugins.AbstractParameterMetaData;
 import org.jboss.beans.metadata.spi.ParameterMetaData;
 import org.jboss.beans.metadata.spi.ValueMetaData;
+import org.jboss.beans.metadata.spi.builder.ParameterMetaDataBuilder;
 
 /**
  * Helper class.
  *
  * @param <T> the parameter holder type
- * @see BeanMetaDataBuilderImpl
  * @see LifecycleMetaDataBuilder
  * @author <a href="mailto:ales.justin@jboss.com">Ales Justin</a>
+ * @author <a href="mailto:adrian@jboss.org">Adrian Brock</a>
  */
-public class ParameterMetaDataBuilder<T extends MutableParameterizedMetaData>
+public class ParameterMetaDataBuilderImpl<T extends MutableParameterizedMetaData> implements ParameterMetaDataBuilder
 {
+   /** The parameter holder */
    private T parameterHolder;
 
-   public ParameterMetaDataBuilder(T parameterHolder) throws IllegalArgumentException
+   /**
+    * Create a new ParameterMetaDataBuilder.
+    * 
+    * @param parameterHolder the parameter holder
+    * @throws IllegalArgumentException for a null parameter
+    */
+   public ParameterMetaDataBuilderImpl(T parameterHolder)
    {
+      if (parameterHolder == null)
+         throw new IllegalArgumentException("Null parameter holder");
       this.parameterHolder = parameterHolder;
    }
 
+   /**
+    * Get the parameters
+    * 
+    * @return the parameters
+    */
    private List<ParameterMetaData> getParameters()
    {
       return parameterHolder.getParameters();
    }
 
+   /**
+    * Set the parameters
+    * 
+    * @param parameters the parameters
+    */
    private void setParameters(List<ParameterMetaData> parameters)
    {
       parameterHolder.setParameters(parameters);
    }
 
+   /**
+    * Check the parameters
+    * 
+    * @return the parameters
+    */
    private List<ParameterMetaData> checkParameters()
    {
       List<ParameterMetaData> parameters = getParameters();
@@ -66,18 +91,38 @@ public class ParameterMetaDataBuilder<T extends MutableParameterizedMetaData>
       return parameters;
    }
 
-   public T addParameterMetaData(String type, Object value)
+   /**
+    * Add a parameter
+    * 
+    * @param type the type
+    * @param value the value
+    * @return the parameter
+    */
+   public ParameterMetaDataBuilder addParameterMetaData(String type, Object value)
    {
       List<ParameterMetaData> parameters = checkParameters();
       parameters.add(new AbstractParameterMetaData(type, value));
-      return parameterHolder;
+      return this;
    }
 
-   public T addParameterMetaData(String type, ValueMetaData value)
+   /**
+    * Add a parameter
+    * 
+    * @param type the type
+    * @param value the value
+    * @return the parameter
+    */
+   public ParameterMetaDataBuilder addParameterMetaData(String type, String value)
    {
       List<ParameterMetaData> parameters = checkParameters();
       parameters.add(new AbstractParameterMetaData(type, value));
-      return parameterHolder;
+      return this;
    }
 
+   public ParameterMetaDataBuilder addParameterMetaData(String type, ValueMetaData value)
+   {
+      List<ParameterMetaData> parameters = checkParameters();
+      parameters.add(new AbstractParameterMetaData(type, value));
+      return this;
+   }
 }

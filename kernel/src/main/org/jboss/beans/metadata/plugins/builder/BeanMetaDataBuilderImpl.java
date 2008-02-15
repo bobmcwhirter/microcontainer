@@ -21,18 +21,29 @@
 */
 package org.jboss.beans.metadata.plugins.builder;
 
+import java.util.Collection;
 import java.util.HashSet;
+import java.util.List;
+import java.util.Map;
 import java.util.Set;
 
+import org.jboss.beans.metadata.plugins.AbstractArrayMetaData;
 import org.jboss.beans.metadata.plugins.AbstractBeanMetaData;
 import org.jboss.beans.metadata.plugins.AbstractClassLoaderMetaData;
+import org.jboss.beans.metadata.plugins.AbstractCollectionMetaData;
 import org.jboss.beans.metadata.plugins.AbstractConstructorMetaData;
 import org.jboss.beans.metadata.plugins.AbstractDemandMetaData;
 import org.jboss.beans.metadata.plugins.AbstractDependencyMetaData;
+import org.jboss.beans.metadata.plugins.AbstractDependencyValueMetaData;
 import org.jboss.beans.metadata.plugins.AbstractInstallMetaData;
+import org.jboss.beans.metadata.plugins.AbstractListMetaData;
+import org.jboss.beans.metadata.plugins.AbstractMapMetaData;
 import org.jboss.beans.metadata.plugins.AbstractPropertyMetaData;
+import org.jboss.beans.metadata.plugins.AbstractSetMetaData;
 import org.jboss.beans.metadata.plugins.AbstractSupplyMetaData;
 import org.jboss.beans.metadata.plugins.AbstractValueMetaData;
+import org.jboss.beans.metadata.plugins.StringValueMetaData;
+import org.jboss.beans.metadata.plugins.ThisValueMetaData;
 import org.jboss.beans.metadata.spi.BeanMetaData;
 import org.jboss.beans.metadata.spi.DemandMetaData;
 import org.jboss.beans.metadata.spi.DependencyMetaData;
@@ -40,6 +51,7 @@ import org.jboss.beans.metadata.spi.PropertyMetaData;
 import org.jboss.beans.metadata.spi.SupplyMetaData;
 import org.jboss.beans.metadata.spi.ValueMetaData;
 import org.jboss.beans.metadata.spi.builder.BeanMetaDataBuilder;
+import org.jboss.beans.metadata.spi.builder.ParameterMetaDataBuilder;
 import org.jboss.dependency.spi.ControllerMode;
 import org.jboss.dependency.spi.ControllerState;
 
@@ -50,30 +62,60 @@ import org.jboss.dependency.spi.ControllerState;
  * TODO - add on demand, when building OSGi, Spring, ...
  *
  * @author <a href="mailto:ales.justin@jboss.com">Ales Justin</a>
+ * @author <a href="mailto:adrian@jboss.org">Adrian Brock</a>
  */
-class BeanMetaDataBuilderImpl implements BeanMetaDataBuilder
+class BeanMetaDataBuilderImpl extends BeanMetaDataBuilder
 {
+   /** The bean metadata */
    private AbstractBeanMetaData beanMetaData;
-   // parameter builders
-   private ParameterMetaDataBuilder<AbstractConstructorMetaData> constructorBuilder;
+
+   /** The constructor builder */
+   private ParameterMetaDataBuilderImpl<AbstractConstructorMetaData> constructorBuilder;
+   
+   /** The create lifecycle builder */
    private LifecycleMetaDataBuilder createBuilder;
+   
+   /** The start lifecycle builder */
    private LifecycleMetaDataBuilder startBuilder;
+   
+   /** The stop lifecycle builder */
    private LifecycleMetaDataBuilder stopBuilder;
+   
+   /** The destroy lifecycle builder */
    private LifecycleMetaDataBuilder destroyBuilder;
-   // install
+
+   /** The install builder */
    private AbstractInstallMetaDataBuilder installBuilder;
+   
+   /** The uninstall builder */
    private AbstractInstallMetaDataBuilder uninstallBuilder;
 
+   /**
+    * Create a new BeanMetaDataBuilderImpl.
+    * 
+    * @param bean the bean
+    */
    public BeanMetaDataBuilderImpl(String bean)
    {
       this(new AbstractBeanMetaData(bean));
    }
 
+   /**
+    * Create a new BeanMetaDataBuilderImpl.
+    * 
+    * @param name the bean name
+    * @param bean the bean
+    */
    public BeanMetaDataBuilderImpl(String name, String bean)
    {
       this(new AbstractBeanMetaData(name, bean));
    }
 
+   /**
+    * Create a new BeanMetaDataBuilderImpl.
+    * 
+    * @param beanMetaData the bean metadata
+    */
    public BeanMetaDataBuilderImpl(AbstractBeanMetaData beanMetaData)
    {
       this.beanMetaData = beanMetaData;
@@ -98,20 +140,15 @@ class BeanMetaDataBuilderImpl implements BeanMetaDataBuilder
       return this;
    }
 
-   public BeanMetaDataBuilder setMode(String modeString)
-   {
-      return setMode(new ControllerMode(modeString));
-   }
-
    public BeanMetaDataBuilder setMode(ControllerMode mode)
    {
       beanMetaData.setMode(mode);
       return this;
    }
 
-   public BeanMetaDataBuilder setClassLoader(Object classLoader)
+   public BeanMetaDataBuilder setClassLoader(ValueMetaData classLoader)
    {
-      beanMetaData.setClassLoader(new AbstractClassLoaderMetaData(new AbstractValueMetaData(classLoader)));
+      beanMetaData.setClassLoader(new AbstractClassLoaderMetaData(classLoader));
       return this;
    }
 
@@ -122,13 +159,32 @@ class BeanMetaDataBuilderImpl implements BeanMetaDataBuilder
       {
          constructor = new AbstractConstructorMetaData();
          beanMetaData.setConstructor(constructor);
-         constructorBuilder = new ParameterMetaDataBuilder<AbstractConstructorMetaData>(constructor);
+         constructorBuilder = new ParameterMetaDataBuilderImpl<AbstractConstructorMetaData>(constructor);
       }
    }
 
-   public BeanMetaDataBuilder setConstructorValue(Object value)
+   public BeanMetaDataBuilder setFactory(ValueMetaData factory)
    {
-      return setConstructorValue(new AbstractValueMetaData(value));
+      checkConstructorBuilder();
+      AbstractConstructorMetaData constructor = (AbstractConstructorMetaData) beanMetaData.getConstructor();
+      constructor.setFactory(factory);
+      return this;
+   }
+
+   public BeanMetaDataBuilder setFactoryClass(String factoryClass)
+   {
+      checkConstructorBuilder();
+      AbstractConstructorMetaData constructor = (AbstractConstructorMetaData) beanMetaData.getConstructor();
+      constructor.setFactoryClass(factoryClass);
+      return this;
+   }
+
+   public BeanMetaDataBuilder setFactoryMethod(String factoryMethod)
+   {
+      checkConstructorBuilder();
+      AbstractConstructorMetaData constructor = (AbstractConstructorMetaData) beanMetaData.getConstructor();
+      constructor.setFactoryMethod(factoryMethod);
+      return this;
    }
 
    public BeanMetaDataBuilder setConstructorValue(ValueMetaData value)
@@ -140,6 +196,13 @@ class BeanMetaDataBuilderImpl implements BeanMetaDataBuilder
    }
 
    public BeanMetaDataBuilder addConstructorParameter(String type, Object value)
+   {
+      checkConstructorBuilder();
+      constructorBuilder.addParameterMetaData(type, value);
+      return this;
+   }
+
+   public BeanMetaDataBuilder addConstructorParameter(String type, String value)
    {
       checkConstructorBuilder();
       constructorBuilder.addParameterMetaData(type, value);
@@ -197,6 +260,12 @@ class BeanMetaDataBuilderImpl implements BeanMetaDataBuilder
       return this;
    }
 
+   public BeanMetaDataBuilder addCreateParameter(String type, String value)
+   {
+      createBuilder.addParameterMetaData(type, value);
+      return this;
+   }
+
    public BeanMetaDataBuilder addCreateParameter(String type, ValueMetaData value)
    {
       createBuilder.addParameterMetaData(type, value);
@@ -210,6 +279,12 @@ class BeanMetaDataBuilderImpl implements BeanMetaDataBuilder
    }
 
    public BeanMetaDataBuilder addStartParameter(String type, Object value)
+   {
+      startBuilder.addParameterMetaData(type, value);
+      return this;
+   }
+
+   public BeanMetaDataBuilder addStartParameter(String type, String value)
    {
       startBuilder.addParameterMetaData(type, value);
       return this;
@@ -233,6 +308,12 @@ class BeanMetaDataBuilderImpl implements BeanMetaDataBuilder
       return this;
    }
 
+   public BeanMetaDataBuilder addStopParameter(String type, String value)
+   {
+      stopBuilder.addParameterMetaData(type, value);
+      return this;
+   }
+
    public BeanMetaDataBuilder addStopParameter(String type, ValueMetaData value)
    {
       stopBuilder.addParameterMetaData(type, value);
@@ -251,15 +332,16 @@ class BeanMetaDataBuilderImpl implements BeanMetaDataBuilder
       return this;
    }
 
-   public BeanMetaDataBuilder addDestroyParameter(String type, ValueMetaData value)
+   public BeanMetaDataBuilder addDestroyParameter(String type, String value)
    {
       destroyBuilder.addParameterMetaData(type, value);
       return this;
    }
 
-   public BeanMetaDataBuilder addSupply(Object supply)
+   public BeanMetaDataBuilder addDestroyParameter(String type, ValueMetaData value)
    {
-      return addSupply(supply, null);
+      destroyBuilder.addParameterMetaData(type, value);
+      return this;
    }
 
    public BeanMetaDataBuilder addSupply(Object supply, String type)
@@ -277,12 +359,7 @@ class BeanMetaDataBuilderImpl implements BeanMetaDataBuilder
       return this;
    }
 
-   public BeanMetaDataBuilder addDemand(Object demand)
-   {
-      return addDemand(demand, null, null);
-   }
-
-   public BeanMetaDataBuilder addDemand(Object demand, String whenRequired, String transformer)
+   public BeanMetaDataBuilder addDemand(Object demand, ControllerState whenRequired, String transformer)
    {
       Set<DemandMetaData> demands = beanMetaData.getDemands();
       if (demands == null)
@@ -292,7 +369,7 @@ class BeanMetaDataBuilderImpl implements BeanMetaDataBuilder
       }
       AbstractDemandMetaData admd = new AbstractDemandMetaData(demand);
       if (whenRequired != null)
-         admd.setWhenRequired(new ControllerState(whenRequired));
+         admd.setWhenRequired(whenRequired);
       if (transformer != null)
          admd.setTransformer(transformer);
       demands.add(admd);
@@ -311,76 +388,110 @@ class BeanMetaDataBuilderImpl implements BeanMetaDataBuilder
       return this;
    }
 
-   public BeanMetaDataBuilder addInstall(String methodName)
+   public ParameterMetaDataBuilder addInstallWithParameters(String methodName, String bean, ControllerState state)
    {
-      return addInstall(methodName, null);
-   }
-
-   public BeanMetaDataBuilder addInstall(String methodName, String bean)
-   {
-      return addInstall(methodName, bean, new String[]{}, new Object[]{});
-   }
-
-   public BeanMetaDataBuilder addInstall(String methodName, String type, Object value)
-   {
-      return addInstall(methodName, null, type, value);
-   }
-
-   public BeanMetaDataBuilder addInstall(String methodName, String bean, String type, Object value)
-   {
-      return addInstall(methodName, bean, new String[]{type}, new Object[]{value});
-   }
-
-   public BeanMetaDataBuilder addInstall(String methodName, String[] types, Object[] values)
-   {
-      return addInstall(methodName, null, types, values);
-   }
-
-   public BeanMetaDataBuilder addInstall(String methodName, String bean, String[] types, Object[] values)
-   {
-      AbstractInstallMetaData install = (AbstractInstallMetaData)installBuilder.createLifecycleMetaData(methodName);
+      AbstractInstallMetaData install = (AbstractInstallMetaData) installBuilder.createLifecycleMetaData(methodName);
       install.setBean(bean);
-      for(int i = 0; i < types.length; i++)
-      {
-         installBuilder.addParameter(install, types[i], values[i]);
-      }
-      return this;
+      if (state != null)
+         install.setDependentState(state);
+      return new ParameterMetaDataBuilderImpl<AbstractInstallMetaData>(install);
    }
 
-   public BeanMetaDataBuilder addUninstall(String methodName)
+   public ParameterMetaDataBuilder addUninstallWithParameters(String methodName, String bean, ControllerState state)
    {
-      return addUninstall(methodName, null);
-   }
-
-   public BeanMetaDataBuilder addUninstall(String methodName, String type, Object value)
-   {
-      return addUninstall(methodName, new String[]{type}, new Object[]{value});
-   }
-
-   public BeanMetaDataBuilder addUninstall(String methodName, String[] types, Object[] values)
-   {
-      return addUninstall(methodName, null, types, values);
-   }
-
-   public BeanMetaDataBuilder addUninstall(String methodName, String bean)
-   {
-      return addUninstall(methodName, bean, new String[]{}, new Object[]{});
-   }
-
-   public BeanMetaDataBuilder addUninstall(String methodName, String bean, String type, Object value)
-   {
-      return addUninstall(methodName, bean, new String[]{type}, new Object[]{value});
-   }
-
-   public BeanMetaDataBuilder addUninstall(String methodName, String bean, String[] types, Object[] values)
-   {
-      AbstractInstallMetaData uninstall = (AbstractInstallMetaData)uninstallBuilder.createLifecycleMetaData(methodName);
+      AbstractInstallMetaData uninstall = (AbstractInstallMetaData) uninstallBuilder.createLifecycleMetaData(methodName);
       uninstall.setBean(bean);
-      for(int i = 0; i < types.length; i++)
-      {
-         uninstallBuilder.addParameter(uninstall, types[i], values[i]);
-      }
-      return this;
+      if (state != null)
+         uninstall.setDependentState(state);
+      return new ParameterMetaDataBuilderImpl<AbstractInstallMetaData>(uninstall);
    }
 
+   public ValueMetaData createNull()
+   {
+      return new AbstractValueMetaData();
+   }
+   
+   public ValueMetaData createThis()
+   {
+      return new ThisValueMetaData();
+   }
+   
+   public ValueMetaData createValue(Object value)
+   {
+      return new AbstractValueMetaData(value);
+   }
+   
+   public ValueMetaData createString(String type, String value)
+   {
+      StringValueMetaData result = new StringValueMetaData(value);
+      result.setType(type);
+      return result;
+   }
+   
+   public ValueMetaData createInject(Object bean, String property, ControllerState whenRequired, ControllerState dependentState)
+   {
+      AbstractDependencyValueMetaData result = new AbstractDependencyValueMetaData(bean, property);
+      if (whenRequired != null)
+         result.setWhenRequiredState(whenRequired);
+      if (dependentState != null)
+         result.setDependentState(dependentState);
+      return result;
+   }
+   
+   @SuppressWarnings("unchecked")
+   public Collection<ValueMetaData> createCollection(String collectionType, String elementType)
+   {
+      AbstractCollectionMetaData collection = new AbstractCollectionMetaData();
+      if (collectionType != null)
+         collection.setType(collectionType);
+      if (elementType != null)
+         collection.setElementType(elementType);
+      return (Collection) collection;
+   }
+   
+   @SuppressWarnings("unchecked")
+   public List<ValueMetaData> createList(String listType, String elementType)
+   {
+      AbstractListMetaData collection = new AbstractListMetaData();
+      if (listType != null)
+         collection.setType(listType);
+      if (elementType != null)
+         collection.setElementType(elementType);
+      return (List) collection;
+   }
+   
+   @SuppressWarnings("unchecked")
+   public Set<ValueMetaData> createSet(String setType, String elementType)
+   {
+      AbstractSetMetaData collection = new AbstractSetMetaData();
+      if (setType != null)
+         collection.setType(setType);
+      if (elementType != null)
+         collection.setElementType(elementType);
+      return (Set) collection;
+   }
+   
+   @SuppressWarnings("unchecked")
+   public List<ValueMetaData> createArray(String arrayType, String elementType)
+   {
+      AbstractArrayMetaData collection = new AbstractArrayMetaData();
+      if (arrayType != null)
+         collection.setType(arrayType);
+      if (elementType != null)
+         collection.setElementType(elementType);
+      return (List) collection;
+   }
+   
+   @SuppressWarnings("unchecked")
+   public Map<ValueMetaData, ValueMetaData> createMap(String mapType, String keyType, String valueType)
+   {
+      AbstractMapMetaData map = new AbstractMapMetaData();
+      if (mapType != null)
+         map.setType(mapType);
+      if (keyType != null)
+         map.setKeyType(keyType);
+      if (valueType != null)
+         map.setValue(valueType);
+      return (Map) map;
+   }
 }
