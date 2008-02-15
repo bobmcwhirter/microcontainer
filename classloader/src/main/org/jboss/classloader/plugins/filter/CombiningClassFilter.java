@@ -31,6 +31,9 @@ import org.jboss.classloader.spi.filter.ClassFilter;
  */
 public class CombiningClassFilter implements ClassFilter
 {
+   /** Whether it is an "and" filter */
+   private boolean and = false;
+   
    /** The filters */
    private ClassFilter[] filters;
    
@@ -43,19 +46,34 @@ public class CombiningClassFilter implements ClassFilter
     */
    public static CombiningClassFilter create(ClassFilter... filters)
    {
-      return new CombiningClassFilter(filters);
+      return new CombiningClassFilter(false, filters);
    }
    
    /**
     * Create a new CombiningClassFilter.
     * 
+    * @param and whether it is an "and" filter
+    * @param filters the filters
+    * @return the filter
+    * @throws IllegalArgumentException for null filters
+    */
+   public static CombiningClassFilter create(boolean and, ClassFilter... filters)
+   {
+      return new CombiningClassFilter(and, filters);
+   }
+   
+   /**
+    * Create a new CombiningClassFilter.
+    * 
+    * @param and whether it is an "and" filter
     * @param filters the filters
     * @throws IllegalArgumentException for null filters
     */
-   public CombiningClassFilter(ClassFilter[] filters)
+   public CombiningClassFilter(boolean and, ClassFilter[] filters)
    {
       if (filters == null)
          throw new IllegalArgumentException("Null filters");
+      this.and = and;
       this.filters = filters;
    }
    
@@ -65,6 +83,8 @@ public class CombiningClassFilter implements ClassFilter
       {
          if (filter.matchesClassName(className))
             return true;
+         else if (and)
+            return false;
       }
       return false;
    }
@@ -75,6 +95,8 @@ public class CombiningClassFilter implements ClassFilter
       {
          if (filter.matchesResourcePath(resourcePath))
             return true;
+         else if (and)
+            return false;
       }
       return false;
    }
@@ -85,6 +107,8 @@ public class CombiningClassFilter implements ClassFilter
       {
          if (filter.matchesPackageName(packageName))
             return true;
+         else if (and)
+            return false;
       }
       return false;
    }
