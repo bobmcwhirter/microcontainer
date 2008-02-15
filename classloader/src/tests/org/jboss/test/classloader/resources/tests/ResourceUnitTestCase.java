@@ -111,7 +111,6 @@ public class ResourceUnitTestCase extends AbstractClassLoaderTestWithSecurity
    
    public void testGetResourceWithDotFromDelegate() throws Exception
    {
-      enableTrace("org.jboss.classloader");
       ClassLoaderSystem system = createClassLoaderSystem();
       MockClassLoaderPolicy policy = createMockClassLoaderPolicy();
       policy.setPrefix("a/");
@@ -129,7 +128,6 @@ public class ResourceUnitTestCase extends AbstractClassLoaderTestWithSecurity
    
    public void testGetResourceWithDotFromDelegatNotFound() throws Exception
    {
-      enableTrace("org.jboss.classloader");
       ClassLoaderSystem system = createClassLoaderSystem();
       MockClassLoaderPolicy policy = createMockClassLoaderPolicy();
       policy.setPrefix("a/");
