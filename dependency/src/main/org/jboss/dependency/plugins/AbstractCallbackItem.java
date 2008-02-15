@@ -37,7 +37,7 @@ import org.jboss.util.JBossStringBuilder;
 public abstract class AbstractCallbackItem<T> extends JBossObject implements CallbackItem<T>
 {
    protected T name;
-   protected ControllerState whenRequired = ControllerState.CONFIGURED;
+   protected ControllerState whenRequired = ControllerState.INSTALLED;
    protected ControllerState dependentState = ControllerState.INSTALLED;
    protected String attributeName;
 
