@@ -163,7 +163,7 @@ public class FilteredExportUnitTestCase extends BaseTestCase
 
       VirtualFile earRoot = VFS.getRoot(ear1URL);
       VirtualFile[] ear1Files = {earRoot.getChild("lib/jar1.jar")};
-      ClassLoader ear1Loader = buildClassLoader(ExportAll.NON_EMPTY, expectedEar, ear1Files, null);
+      buildClassLoader(ExportAll.NON_EMPTY, expectedEar, ear1Files, null);
       // ejb1.jar
       Map<String,String> expectedEjb1 = makeSimpleMap("testear1.ear",
             "",
@@ -256,7 +256,7 @@ public class FilteredExportUnitTestCase extends BaseTestCase
       VirtualFile earRoot = VFS.getRoot(ear1URL);
       log.info(earRoot);
       VirtualFile[] ear1Files = {earRoot.getChild("lib/jar1.jar")};
-      ClassLoader ear1Loader = buildClassLoader(ExportAll.NON_EMPTY, expectedEar, ear1Files, null);
+      buildClassLoader(ExportAll.NON_EMPTY, expectedEar, ear1Files, null);
       // ejb1.jar
       Map<String,String> expectedEjb1 = makeSimpleMap("testear1x.ear",
             "",
