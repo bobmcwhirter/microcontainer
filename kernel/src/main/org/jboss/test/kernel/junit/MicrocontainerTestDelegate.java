@@ -23,6 +23,7 @@ package org.jboss.test.kernel.junit;
 
 import java.net.URL;
 
+import org.jboss.beans.metadata.spi.BeanMetaData;
 import org.jboss.dependency.spi.Controller;
 import org.jboss.dependency.spi.ControllerMode;
 import org.jboss.dependency.spi.ControllerState;
@@ -59,7 +60,7 @@ public class MicrocontainerTestDelegate extends AbstractTestDelegate
     * @param clazz the test class
     * @throws Exception for any error
     */
-   public MicrocontainerTestDelegate(Class clazz) throws Exception
+   public MicrocontainerTestDelegate(Class<?> clazz) throws Exception
    {
       super(clazz);
    }
@@ -274,6 +275,80 @@ public class MicrocontainerTestDelegate extends AbstractTestDelegate
       }
    }
    
+   /**
+    * Deploy a bean
+    *
+    * @param beanMetaData the bean metadata
+    * @return the deployment
+    * @throws Exception for any error  
+    */
+   protected KernelControllerContext deploy(BeanMetaData beanMetaData) throws Exception
+   {
+      KernelController controller = kernel.getController();
+      log.debug("Deploying " + beanMetaData);
+      try
+      {
+         KernelControllerContext result = controller.install(beanMetaData);
+         log.debug("Deployed " + result.getName());
+         return result;
+      }
+      catch (Exception e)
+      {
+         throw e;
+      }
+      catch (Error e)
+      {
+         throw e;
+      }
+      catch (Throwable t)
+      {
+         throw new RuntimeException("Error deploying bean: " + beanMetaData, t);
+      }
+   }
+   
+   /**
+    * Deploy a deployment
+    *
+    * @param deployment the deployment
+    * @throws Exception for any error  
+    */
+   protected void deploy(KernelDeployment deployment) throws Exception
+   {
+      log.debug("Deploying " + deployment);
+      try
+      {
+         deployer.deploy(deployment);
+         log.debug("Deployed " + deployment);
+      }
+      catch (Exception e)
+      {
+         throw e;
+      }
+      catch (Error e)
+      {
+         throw e;
+      }
+      catch (Throwable t)
+      {
+         throw new RuntimeException("Error deploying deployment: " + deployment, t);
+      }
+   }
+   
+   /**
+    * Undeploy a bean
+    *
+    * @param context the context
+    */
+   protected void undeploy(KernelControllerContext context)
+   {
+      if (context == null)
+         throw new IllegalArgumentException("Null context");
+      log.debug("Undeploying " + context.getName());
+      KernelController controller = kernel.getController();
+      controller.uninstall(context.getName());
+      log.debug("Undeployed " + context.getName());
+   }
+
    /**
     * Undeploy a deployment
     * 

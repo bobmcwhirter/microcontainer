@@ -23,6 +23,7 @@ package org.jboss.test.kernel.junit;
 
 import java.net.URL;
 
+import org.jboss.beans.metadata.spi.BeanMetaData;
 import org.jboss.dependency.spi.ControllerState;
 import org.jboss.kernel.spi.dependency.KernelControllerContext;
 import org.jboss.kernel.spi.deployment.KernelDeployment;
@@ -45,7 +46,7 @@ public class MicrocontainerTest extends AbstractTestCaseWithSetup
     * @return the delegate
     * @throws Exception for any error
     */
-   public static AbstractTestDelegate getDelegate(Class clazz) throws Exception
+   public static AbstractTestDelegate getDelegate(Class<?> clazz) throws Exception
    {
       return new MicrocontainerTestDelegate(clazz);
    }
@@ -166,6 +167,39 @@ public class MicrocontainerTest extends AbstractTestCaseWithSetup
       if (url == null)
          throw new IllegalArgumentException("Resource not found: " + resource);
       return getMCDelegate().deploy(url);
+   }
+   
+   /**
+    * Deploy a bean
+    *
+    * @param beanMetaData the bean metadata
+    * @return the deployment
+    * @throws Exception for any error  
+    */
+   protected KernelControllerContext deploy(BeanMetaData beanMetaData) throws Exception
+   {
+      return getMCDelegate().deploy(beanMetaData);
+   }
+   
+   /**
+    * Deploy a deployment
+    *
+    * @param deployment the deployment
+    * @throws Exception for any error  
+    */
+   protected void deploy(KernelDeployment deployment) throws Exception
+   {
+      getMCDelegate().deploy(deployment);
+   }
+   
+   /**
+    * Undeploy a bean
+    *
+    * @param context the context
+    */
+   protected void undeploy(KernelControllerContext context)
+   {
+      getMCDelegate().undeploy(context);
    }
    
    /**
