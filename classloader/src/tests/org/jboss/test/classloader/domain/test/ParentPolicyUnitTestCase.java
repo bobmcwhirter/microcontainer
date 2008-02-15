@@ -248,7 +248,6 @@ public class ParentPolicyUnitTestCase extends AbstractClassLoaderTestWithSecurit
       ClassLoaderDomain domain = system.createAndRegisterDomain("test", parentPolicy, null);
       MockClassLoaderPolicy policy = createMockClassLoaderPolicy();
       ClassLoader classLoader = system.registerClassLoaderPolicy(domain, policy);
-      enableTrace("org.jboss.classloader");
       assertLoadClassFail(Object.class, classLoader);
    }
    
