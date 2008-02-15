@@ -241,7 +241,7 @@ public class VFSClassLoaderPolicy extends ClassLoaderPolicy
    }
 
    @Override
-   protected DelegateLoader getExported()
+   public DelegateLoader getExported()
    {
       if (getExportAll() != null)
          return new FilteredDelegateLoader(this, ClassFilter.EVERYTHING);
