@@ -107,12 +107,27 @@ public abstract class AbstractClassLoaderTest extends AbstractTestCaseWithSetup
    
    protected ClassLoader createAndRegisterMockClassLoader(ClassLoaderSystem system, String name)
    {
-      return MockClassLoaderHelper.createAndRegisterMockClassLoader(system, null, name);
+      return MockClassLoaderHelper.createAndRegisterMockClassLoader(system, (ClassLoaderDomain) null, name);
    }
    
    protected ClassLoader createAndRegisterMockClassLoader(ClassLoaderSystem system, ClassLoaderDomain domain)
    {
       return createAndRegisterMockClassLoader(system, domain, "mock");
+   }
+   
+   protected ClassLoader createAndRegisterMockClassLoader(ClassLoaderSystem system, String domainName, String name)
+   {
+      return MockClassLoaderHelper.createAndRegisterMockClassLoader(system, domainName, name);
+   }
+   
+   protected ClassLoader createAndRegisterMockClassLoader(ClassLoaderSystem system, String domainName, ParentPolicy parentPolicy, String name)
+   {
+      return MockClassLoaderHelper.createAndRegisterMockClassLoader(system, domainName, parentPolicy, name);
+   }
+   
+   protected ClassLoader createAndRegisterMockClassLoader(ClassLoaderSystem system, String domainName, ParentPolicy parentPolicy, String parentDomainName, String name)
+   {
+      return MockClassLoaderHelper.createAndRegisterMockClassLoader(system, domainName, parentPolicy, parentDomainName, name);
    }
    
    protected ClassLoader createAndRegisterMockClassLoader(ClassLoaderSystem system, ClassLoaderDomain domain, String name)

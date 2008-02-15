@@ -29,6 +29,7 @@ import junit.framework.Test;
 
 import org.jboss.classloader.spi.ClassLoaderDomain;
 import org.jboss.classloader.spi.ClassLoaderSystem;
+import org.jboss.classloader.spi.ParentPolicy;
 import org.jboss.classloader.test.support.MockClassLoaderHelper;
 import org.jboss.classloader.test.support.MockClassLoaderPolicy;
 import org.jboss.test.classloader.AbstractClassLoaderTestWithSecurity;
@@ -340,6 +341,94 @@ public class ClassLoaderSystemUnitTestCase extends AbstractClassLoaderTestWithSe
       assertEquals(expected, domain.added);
       assertEmpty(domain.removed);
    }
+   
+   public void testRegisterClassLoaderConstructDomain() throws Exception
+   {
+      MockClassLoaderSystem system = createMockClassLoaderSystem();
+      ClassLoader cl1 = createAndRegisterMockClassLoader(system, "test", "mock");
+      MockClassLoaderDomain domain = (MockClassLoaderDomain) system.getDomain("test");
+      assertEquals(ParentPolicy.BEFORE, domain.getParentPolicy());
+      assertFalse(domain.getParent() instanceof ClassLoaderDomain);
+      
+      List<ClassLoader> expected = new ArrayList<ClassLoader>();
+      expected.add(cl1);
+      
+      assertEquals(expected, domain.added);
+      assertEmpty(domain.removed);
+   }
+   
+   public void testRegisterClassLoaderConstructDomainWithoutParentDomain() throws Exception
+   {
+      MockClassLoaderSystem system = createMockClassLoaderSystem();
+      ClassLoader cl1 = createAndRegisterMockClassLoader(system, "test", ParentPolicy.AFTER, "mock");
+      MockClassLoaderDomain domain = (MockClassLoaderDomain) system.getDomain("test");
+      assertEquals(ParentPolicy.AFTER, domain.getParentPolicy());
+      assertFalse(domain.getParent() instanceof ClassLoaderDomain);
+      
+      List<ClassLoader> expected = new ArrayList<ClassLoader>();
+      expected.add(cl1);
+      
+      assertEquals(expected, domain.added);
+      assertEmpty(domain.removed);
+   }
+   
+   public void testRegisterClassLoaderConstructDomainWithParentDomain() throws Exception
+   {
+      MockClassLoaderSystem system = createMockClassLoaderSystem();
+      ClassLoader cl1 = createAndRegisterMockClassLoader(system, "test", ParentPolicy.AFTER, ClassLoaderSystem.DEFAULT_DOMAIN_NAME, "mock");
+      MockClassLoaderDomain domain = (MockClassLoaderDomain) system.getDomain("test");
+      MockClassLoaderDomain parent = (MockClassLoaderDomain) system.getDomain(ClassLoaderSystem.DEFAULT_DOMAIN_NAME);
+      assertEquals(ParentPolicy.AFTER, domain.getParentPolicy());
+      assertEquals(parent, domain.getParent());
+      
+      List<ClassLoader> expected = new ArrayList<ClassLoader>();
+      expected.add(cl1);
+      
+      assertEquals(expected, domain.added);
+      assertEmpty(domain.removed);
+   }
+   
+   public void testRegisterClassLoaderConstructDomainWithParentDomainAlreadyExists() throws Exception
+   {
+      MockClassLoaderSystem system = createMockClassLoaderSystem();
+      MockClassLoaderDomain domain = new MockClassLoaderDomain("test");
+      system.registerDomain(domain);
+      ClassLoader cl1 = createAndRegisterMockClassLoader(system, "test", ParentPolicy.AFTER, ClassLoaderSystem.DEFAULT_DOMAIN_NAME, "mock");
+      
+      List<ClassLoader> expected = new ArrayList<ClassLoader>();
+      expected.add(cl1);
+      
+      assertEquals(expected, domain.added);
+      assertEmpty(domain.removed);
+   }
+   
+   public void testRegisterClassLoaderConstructDomainWithParentPolicyAlreadyExists() throws Exception
+   {
+      MockClassLoaderSystem system = createMockClassLoaderSystem();
+      MockClassLoaderDomain domain = new MockClassLoaderDomain("test");
+      system.registerDomain(domain);
+      ClassLoader cl1 = createAndRegisterMockClassLoader(system, "test", ParentPolicy.AFTER, "mock");
+      
+      List<ClassLoader> expected = new ArrayList<ClassLoader>();
+      expected.add(cl1);
+      
+      assertEquals(expected, domain.added);
+      assertEmpty(domain.removed);
+   }
+   
+   public void testRegisterClassLoaderConstructDomainAlreadyExists() throws Exception
+   {
+      MockClassLoaderSystem system = createMockClassLoaderSystem();
+      MockClassLoaderDomain domain = new MockClassLoaderDomain("test");
+      system.registerDomain(domain);
+      ClassLoader cl1 = createAndRegisterMockClassLoader(system, "test", "mock");
+      
+      List<ClassLoader> expected = new ArrayList<ClassLoader>();
+      expected.add(cl1);
+      
+      assertEquals(expected, domain.added);
+      assertEmpty(domain.removed);
+   }
 
    public void testRegisterNullClassLoaderPolicyDefaultDomain()
    {
@@ -377,7 +466,7 @@ public class ClassLoaderSystemUnitTestCase extends AbstractClassLoaderTestWithSe
       MockClassLoaderPolicy policy = createMockClassLoaderPolicy();
       try
       {
-         system.registerClassLoaderPolicy(null, policy);
+         system.registerClassLoaderPolicy((ClassLoaderDomain) null, policy);
          fail("Should not be here!");
       }
       catch (Exception e)
@@ -471,6 +560,80 @@ public class ClassLoaderSystemUnitTestCase extends AbstractClassLoaderTestWithSe
       catch (Exception e)
       {
          checkThrowable(IllegalStateException.class, e);
+      }
+   }
+
+   public void testRegisterClassLoaderPolicyAndConstructDomainNoParentDomain()
+   {
+      MockClassLoaderSystem system = createMockClassLoaderSystem();
+      MockClassLoaderPolicy policy = createMockClassLoaderPolicy();
+      try
+      {
+         system.registerClassLoaderPolicy("test", ParentPolicy.BEFORE, "DOESNOTEXIST", policy);
+         fail("Should not be here!");
+      }
+      catch (Exception e)
+      {
+         checkThrowable(IllegalStateException.class, e);
+      }
+      assertFalse(system.isRegistered("test"));
+   }
+
+   public void testRegisterClassLoaderPolicyAndConstructDomainNoParentPolicy()
+   {
+      MockClassLoaderSystem system = createMockClassLoaderSystem();
+      MockClassLoaderPolicy policy = createMockClassLoaderPolicy();
+      try
+      {
+         system.registerClassLoaderPolicy("test", null, ClassLoaderSystem.DEFAULT_DOMAIN_NAME, policy);
+         fail("Should not be here!");
+      }
+      catch (Exception e)
+      {
+         checkThrowable(IllegalArgumentException.class, e);
+      }
+      try
+      {
+         system.registerClassLoaderPolicy("test", null, policy);
+         fail("Should not be here!");
+      }
+      catch (Exception e)
+      {
+         checkThrowable(IllegalArgumentException.class, e);
+      }
+      assertFalse(system.isRegistered("test"));
+   }
+
+   public void testRegisterClassLoaderPolicyAndConstructDomainNoDomainName()
+   {
+      MockClassLoaderSystem system = createMockClassLoaderSystem();
+      MockClassLoaderPolicy policy = createMockClassLoaderPolicy();
+      try
+      {
+         system.registerClassLoaderPolicy(null, ParentPolicy.BEFORE, ClassLoaderSystem.DEFAULT_DOMAIN_NAME, policy);
+         fail("Should not be here!");
+      }
+      catch (Exception e)
+      {
+         checkThrowable(IllegalArgumentException.class, e);
+      }
+      try
+      {
+         system.registerClassLoaderPolicy(null, ParentPolicy.BEFORE, policy);
+         fail("Should not be here!");
+      }
+      catch (Exception e)
+      {
+         checkThrowable(IllegalArgumentException.class, e);
+      }
+      try
+      {
+         system.registerClassLoaderPolicy((String) null, policy);
+         fail("Should not be here!");
+      }
+      catch (Exception e)
+      {
+         checkThrowable(IllegalArgumentException.class, e);
       }
    }
    
