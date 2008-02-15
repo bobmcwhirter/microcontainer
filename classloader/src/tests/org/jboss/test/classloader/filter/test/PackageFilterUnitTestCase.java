@@ -103,6 +103,32 @@ public class PackageFilterUnitTestCase extends AbstractClassLoaderTestWithSecuri
       assertFilterNoMatchPackageName(null, filter);
    }
    
+   public void testFromString() throws Exception
+   {
+      ClassFilter filter = PackageClassFilter.createPackageClassFilterFromString("java.lang,java.lang.reflect");
+      assertFilterMatchesClassName("java.lang.Object", filter);
+      assertFilterMatchesClassName("java.lang.X", filter);
+      assertFilterMatchesClassName("java.lang.reflect.Method", filter);
+      assertFilterMatchesClassName("java.lang.reflect.X", filter);
+      assertFilterMatchesClassName("java.lang.reflect", filter);
+      assertFilterNoMatchClassName("java.lang", filter);
+      assertFilterNoMatchClassName("java.lang.", filter);
+      assertFilterNoMatchClassName("java.lang.reflect.", filter);
+      assertFilterNoMatchClassName("java.lang.reflect.subpackage.Something", filter);
+      assertFilterNoMatchClassName("gibberish", filter);
+      assertFilterNoMatchClassName("", filter);
+      assertFilterNoMatchClassName(null, filter);
+      assertFilterMatchesPackageName("java.lang", filter);
+      assertFilterNoMatchPackageName("java.langx", filter);
+      assertFilterNoMatchPackageName("java.lang.X.", filter);
+      assertFilterMatchesPackageName("java.lang.reflect", filter);
+      assertFilterNoMatchPackageName("java.lang.reflectx", filter);
+      assertFilterNoMatchPackageName("java.lang.reflect.X", filter);
+      assertFilterNoMatchPackageName("gibberish", filter);
+      assertFilterNoMatchPackageName("", filter);
+      assertFilterNoMatchPackageName(null, filter);
+   }
+   
    public void testDefaultPackage() throws Exception
    {
       ClassFilter filter = PackageClassFilter.createPackageClassFilter("");

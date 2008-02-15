@@ -21,7 +21,10 @@
  */
 package org.jboss.classloader.spi.filter;
 
+import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.List;
+import java.util.StringTokenizer;
 
 import org.jboss.classloader.plugins.filter.PatternClassFilter;
 
@@ -89,6 +92,23 @@ public class PackageClassFilter extends PatternClassFilter
       }
       return patterns;
    }
+
+   /**
+    * Create a package class filter<p>
+    * 
+    * Creates the filter from a comma seperated list
+    * 
+    * @param string the string
+    * @return the filter
+    */
+   public static PackageClassFilter createPackageClassFilterFromString(String string)
+   {
+      StringTokenizer tokenizer = new StringTokenizer(string, ",");
+      List<String> packages = new ArrayList<String>();
+      while (tokenizer.hasMoreTokens())
+         packages.add(tokenizer.nextToken());
+      return createPackageClassFilter(packages);
+   }
    
    /**
     * Create a new package class filter
@@ -100,6 +120,23 @@ public class PackageClassFilter extends PatternClassFilter
    public static PackageClassFilter createPackageClassFilter(String... packageNames)
    {
       return new PackageClassFilter(packageNames);
+   }
+   
+   /**
+    * Create a new package class filter
+    * 
+    * @param packageNames the package names
+    * @return the filter
+    * @throws IllegalArgumentException for null packageNames
+    */
+   public static PackageClassFilter createPackageClassFilter(List<String> packageNames)
+   {
+      String[] packages;
+      if (packageNames == null)
+         packages = new String[0];
+      else
+         packages = packageNames.toArray(new String[packageNames.size()]);
+      return new PackageClassFilter(packages);
    }
    
    /**
