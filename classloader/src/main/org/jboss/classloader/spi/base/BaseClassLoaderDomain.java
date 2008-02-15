@@ -577,7 +577,7 @@ public abstract class BaseClassLoaderDomain implements Loader
             
             // See whether the policies allow caching/blacklisting
             BaseClassLoaderPolicy loaderPolicy = exported.getPolicy();
-            if (loaderPolicy.isCachable() == false)
+            if (loaderPolicy.isCacheable() == false)
                canCache = false;
             if (loaderPolicy.isBlackListable() == false)
                canBlackList = false;
@@ -635,7 +635,7 @@ public abstract class BaseClassLoaderDomain implements Loader
             
             // See whether the policies allow caching/blacklisting
             BaseClassLoaderPolicy loaderPolicy = loader.getPolicy();
-            if (loaderPolicy.isCachable() == false)
+            if (loaderPolicy.isCacheable() == false)
                canCache = false;
             if (loaderPolicy.isBlackListable() == false)
                canBlackList = false;

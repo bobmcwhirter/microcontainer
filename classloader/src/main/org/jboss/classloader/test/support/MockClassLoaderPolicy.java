@@ -252,6 +252,16 @@ public class MockClassLoaderPolicy extends ClassLoaderPolicy
    /**
     * Set the included classes
     * 
+    * @param included the classes to include from the paths
+    */
+   public void setIncluded(String... included)
+   {
+      this.included = included;
+   }
+   
+   /**
+    * Set the included classes
+    * 
     * @param classes the classes to include from the paths
     */
    public void setIncluded(Class<?>... classes)
@@ -264,6 +274,16 @@ public class MockClassLoaderPolicy extends ClassLoaderPolicy
       included = new String[classes.length];
       for (int i = 0; i < classes.length; ++i)
          included[i] = ClassLoaderUtils.classNameToPath(classes[i].getName());
+   }
+   
+   /**
+    * Set the excluded classes
+    * 
+    * @param excluded the classes to include from the paths
+    */
+   public void setExcluded(String... excluded)
+   {
+      this.excluded = excluded;
    }
    
    /**

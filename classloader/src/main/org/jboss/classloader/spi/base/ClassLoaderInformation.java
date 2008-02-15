@@ -86,7 +86,7 @@ public class ClassLoaderInformation
       this.exported = policy.getExported();
       this.delegates = policy.getDelegates();
       
-      boolean canCache = policy.isCachable();
+      boolean canCache = policy.isCacheable();
       boolean canBlackList = policy.isBlackListable();
       if (delegates != null && delegates.isEmpty() == false)
       {
@@ -94,7 +94,7 @@ public class ClassLoaderInformation
          {
             BaseDelegateLoader baseDelegate = delegate;
             BaseClassLoaderPolicy delegatePolicy = baseDelegate.getPolicy();
-            if (delegatePolicy.isCachable() == false)
+            if (delegatePolicy.isCacheable() == false)
                canCache = false;
             if (delegatePolicy.isBlackListable() == false)
                canBlackList = false;

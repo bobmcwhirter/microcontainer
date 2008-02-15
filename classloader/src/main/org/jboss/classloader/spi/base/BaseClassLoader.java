@@ -94,7 +94,7 @@ public class BaseClassLoader extends SecureClassLoader implements BaseClassLoade
 
       loader = new DelegateLoader(policy);
 
-      if (basePolicy.isCachable())
+      if (basePolicy.isCacheable())
          resourceCache = new ConcurrentHashMap<String, URL>();
 
       if (basePolicy.isBlackListable())
@@ -821,14 +821,13 @@ public class BaseClassLoader extends SecureClassLoader implements BaseClassLoade
       if (trace)
          log.trace(this + " unlock " + thread + " holding=" + lock.getHoldCount());
 
-      lock.unlock();      
-      
-      if (lock.getHoldCount() == 0)
+      synchronized (this)
       {
-         ClassLoaderManager.unregisterLoaderThread(this, thread);
-
-         synchronized (this)
+         lock.unlock();      
+      
+         if (lock.getHoldCount() == 0)
          {
+            ClassLoaderManager.unregisterLoaderThread(this, thread);
             notifyAll();
          }
       }

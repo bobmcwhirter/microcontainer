@@ -27,6 +27,7 @@ import java.security.PrivilegedAction;
 import org.jboss.classloader.plugins.system.DefaultClassLoaderSystem;
 import org.jboss.classloader.spi.ClassLoaderDomain;
 import org.jboss.classloader.spi.ClassLoaderSystem;
+import org.jboss.classloader.spi.ParentPolicy;
 
 /**
  * MockClassLoaderHelper<p>
@@ -89,6 +90,78 @@ public class MockClassLoaderHelper
                return system.registerClassLoaderPolicy(policy);
             else
                return system.registerClassLoaderPolicy(domain, policy);
+         }
+      });
+   }
+   
+   /**
+    * Create and register a mock classloader policy<p>
+    * 
+    * No security problem here. The user needs access to a ClassLoaderSystem
+    * to register a classloader with it.
+    * 
+    * @param system the system
+    * @param domainName the domain name
+    * @param name the name
+    * @return the classloader
+    */
+   public static ClassLoader createAndRegisterMockClassLoader(final ClassLoaderSystem system, final String domainName, final String name)
+   {
+      return AccessController.doPrivileged(new PrivilegedAction<ClassLoader>()
+      {
+         public ClassLoader run()
+         {
+            MockClassLoaderPolicy policy = new MockClassLoaderPolicy(name);
+            return system.registerClassLoaderPolicy(domainName, policy);
+         }
+      });
+   }
+   
+   /**
+    * Create and register a mock classloader policy<p>
+    * 
+    * No security problem here. The user needs access to a ClassLoaderSystem
+    * to register a classloader with it.
+    * 
+    * @param system the system
+    * @param domainName the domain name
+    * @param parentPolicy the parent policy
+    * @param name the name
+    * @return the classloader
+    */
+   public static ClassLoader createAndRegisterMockClassLoader(final ClassLoaderSystem system, final String domainName, final ParentPolicy parentPolicy, final String name)
+   {
+      return AccessController.doPrivileged(new PrivilegedAction<ClassLoader>()
+      {
+         public ClassLoader run()
+         {
+            MockClassLoaderPolicy policy = new MockClassLoaderPolicy(name);
+            return system.registerClassLoaderPolicy(domainName, parentPolicy, policy);
+         }
+      });
+   }
+   
+   /**
+    * Create and register a mock classloader policy<p>
+    * 
+    * No security problem here. The user needs access to a ClassLoaderSystem
+    * to register a classloader with it.
+    * 
+    * @param system the system
+    * @param domainName the domain name
+    * @param parentPolicy the parent policy
+    * @param parentDomainName the parent domain name
+    * @param name the name
+    * @return the classloader
+    */
+   public static ClassLoader createAndRegisterMockClassLoader(final ClassLoaderSystem system, final String domainName, final ParentPolicy parentPolicy, final String parentDomainName, final String name)
+   {
+      return AccessController.doPrivileged(new PrivilegedAction<ClassLoader>()
+      {
+         public ClassLoader run()
+         {
+            MockClassLoaderPolicy policy = new MockClassLoaderPolicy(name);
+            return system.registerClassLoaderPolicy(domainName, parentPolicy, parentDomainName, policy);
          }
       });
    }

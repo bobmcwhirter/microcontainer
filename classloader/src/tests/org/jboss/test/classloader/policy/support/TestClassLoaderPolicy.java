@@ -87,7 +87,7 @@ public class TestClassLoaderPolicy extends ClassLoaderPolicy
    }
 
    @Override
-   protected DelegateLoader getExported()
+   public DelegateLoader getExported()
    {
       if (exported != null)
          return exported;

@@ -58,11 +58,9 @@ public abstract class ClassLoaderPolicy extends BaseClassLoaderPolicy
     *
     * By default this uses {@link #getPackageNames()} to create a {@link FilteredDelegateLoader}
     * 
-    * NOTE: Protected access for security reasons
-    * 
     * @return the delegate loader
     */
-   protected DelegateLoader getExported()
+   public DelegateLoader getExported()
    {
       String[] packageNames = getPackageNames();
       if (packageNames == null)
@@ -121,7 +119,7 @@ public abstract class ClassLoaderPolicy extends BaseClassLoaderPolicy
     * 
     * @return true to cache
     */
-   protected boolean isCachable()
+   protected boolean isCacheable()
    {
       return true;
    }

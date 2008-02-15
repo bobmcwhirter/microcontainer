@@ -156,7 +156,7 @@ public abstract class BaseClassLoaderPolicy
     * 
     * @return true to cache
     */
-   protected abstract boolean isCachable();
+   protected abstract boolean isCacheable();
 
    /**
     * Whether to cache misses<p>
@@ -183,7 +183,11 @@ public abstract class BaseClassLoaderPolicy
       StringBuilder builder = new StringBuilder();
       builder.append(getClass().getSimpleName());
       builder.append("@").append(Integer.toHexString(System.identityHashCode(this)));
-      builder.append("{domain=");
+      builder.append("{");
+      String name = getName();
+      if (name != null)
+         builder.append("name=").append(name).append(" ");
+      builder.append("domain=");
       if (domain == null)
          builder.append("null");
       else
