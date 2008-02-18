@@ -55,11 +55,13 @@ public class FilterImpl implements KernelEventFilter, Filter
       return false;  //To change body of implemented methods use File | Settings | File Templates.
    }
 
+   @SuppressWarnings("unchecked")
    public boolean match(Dictionary dictionary)
    {
       return false;  //To change body of implemented methods use File | Settings | File Templates.
    }
 
+   @SuppressWarnings("unchecked")
    public boolean matchCase(Dictionary dictionary)
    {
       return false;  //To change body of implemented methods use File | Settings | File Templates.

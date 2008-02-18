@@ -56,20 +56,20 @@ public class ServiceFactoryProxy implements InvocationHandler
    }
 */
    protected Object serviceFactory;
-   protected Class[] interfaces;
+   protected Class<?>[] interfaces;
    protected Object service;
    protected Boolean checked;
 
-   private ServiceFactoryProxy(Object serviceFactory, Class[] interfaces)
+   private ServiceFactoryProxy(Object serviceFactory, Class<?>[] interfaces)
    {
       this.serviceFactory = serviceFactory;
       this.interfaces = interfaces;
    }
 
-   public static Object createProxy(Object serviceFactory, Class[] interfaces)
+   public static Object createProxy(Object serviceFactory, Class<?>[] interfaces)
    {
       int lenght = interfaces.length;
-      Class[] allIntefaces = new Class[lenght + 1];
+      Class<?>[] allIntefaces = new Class[lenght + 1];
       System.arraycopy(interfaces, 0, allIntefaces, 0, lenght);
       allIntefaces[lenght] = ServiceFactory.class;
       InvocationHandler handler = new ServiceFactoryProxy(serviceFactory, interfaces);
@@ -85,8 +85,8 @@ public class ServiceFactoryProxy implements InvocationHandler
       if (service == null)
          return true;
 
-      Class serviceInterface = service.getClass();
-      for(Class exposedInterface : interfaces)
+      Class<?> serviceInterface = service.getClass();
+      for(Class<?> exposedInterface : interfaces)
       {
          if (exposedInterface.isAssignableFrom(serviceInterface) == false)
          {

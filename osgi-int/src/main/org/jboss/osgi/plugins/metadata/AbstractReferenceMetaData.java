@@ -91,7 +91,7 @@ public class AbstractReferenceMetaData extends AbstractHolderMetaData implements
       return properties;
    }
 
-   public Class getType(MetaDataVisitor visitor, MetaDataVisitorNode previous) throws Throwable
+   public Class<?> getType(MetaDataVisitor visitor, MetaDataVisitorNode previous) throws Throwable
    {
       return null;
    }

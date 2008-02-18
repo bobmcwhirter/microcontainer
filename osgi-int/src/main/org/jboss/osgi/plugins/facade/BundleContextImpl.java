@@ -78,7 +78,7 @@ public class BundleContextImpl implements BundleContext, KernelEventEmitter
    protected KernelEventEmitter emitterDelegate; // todo - get it
    protected KernelConfigurator configurator; // todo - get it
 
-   protected Map<EventListener, AbstractDelegateListener> listeners = Collections.synchronizedMap(new HashMap<EventListener, AbstractDelegateListener>());
+   protected Map<EventListener, AbstractDelegateListener<?>> listeners = Collections.synchronizedMap(new HashMap<EventListener, AbstractDelegateListener<?>>());
    protected Map<ServiceListener, KernelEventFilter> filters = Collections.synchronizedMap(new HashMap<ServiceListener, KernelEventFilter>());
 
    public BundleContextImpl(DeploymentUnit context)
@@ -198,7 +198,7 @@ public class BundleContextImpl implements BundleContext, KernelEventEmitter
    public void removeServiceListener(ServiceListener serviceListener)
    {
       validateBundle();
-      AbstractDelegateListener listener = listeners.get(serviceListener);
+      AbstractDelegateListener<?> listener = listeners.get(serviceListener);
       if (listener != null)
       {
          listener.removeValidate();
@@ -244,7 +244,7 @@ public class BundleContextImpl implements BundleContext, KernelEventEmitter
    public void removeBundleListener(BundleListener bundleListener)
    {
       validateBundle();
-      AbstractDelegateListener listener = listeners.get(bundleListener);
+      AbstractDelegateListener<?> listener = listeners.get(bundleListener);
       if (listener != null)
       {
          listener.removeValidate();
@@ -285,7 +285,7 @@ public class BundleContextImpl implements BundleContext, KernelEventEmitter
    public void removeFrameworkListener(FrameworkListener frameworkListener)
    {
       validateBundle();
-      AbstractDelegateListener listener = listeners.get(frameworkListener);
+      AbstractDelegateListener<?> listener = listeners.get(frameworkListener);
       if (listener != null)
       {
          listener.removeValidate();
@@ -304,6 +304,7 @@ public class BundleContextImpl implements BundleContext, KernelEventEmitter
       }
    }
 
+   @SuppressWarnings("unchecked")
    public ServiceRegistration registerService(String[] clazzes, Object service, Dictionary properties)
    {
       validateBundle();
@@ -315,7 +316,7 @@ public class BundleContextImpl implements BundleContext, KernelEventEmitter
 
       ClassInfo serviceInfo;
       ClassInfo[] infos = new ClassInfo[clazzes.length];
-      Class[] interfaces = new Class[clazzes.length];
+      Class<?>[] interfaces = new Class[clazzes.length];
       try
       {
          serviceInfo = configurator.getClassInfo(service.getClass());
@@ -363,6 +364,7 @@ public class BundleContextImpl implements BundleContext, KernelEventEmitter
       return new ServiceRegistrationImpl(this, context, serviceId, serviceMap);
    }
 
+   @SuppressWarnings("unchecked")
    public ServiceRegistration registerService(String clazz, Object service, Dictionary properties)
    {
       return registerService(new String[]{clazz}, service, properties);

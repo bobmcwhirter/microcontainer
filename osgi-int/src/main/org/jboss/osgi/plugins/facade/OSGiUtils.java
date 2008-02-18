@@ -42,6 +42,7 @@ public abstract class OSGiUtils
     * @param dictionary dictionary to transform
     * @return Map<String, Object>
     */
+   @SuppressWarnings("unchecked")
    public static Map<String, Object> toMap(Dictionary dictionary)
    {
       Map<String, Object> map = new HashMap<String, Object>();

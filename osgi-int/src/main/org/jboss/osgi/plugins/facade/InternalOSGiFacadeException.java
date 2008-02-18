@@ -28,6 +28,9 @@ package org.jboss.osgi.plugins.facade;
  */
 public class InternalOSGiFacadeException extends RuntimeException
 {
+   /** The serialVersionUID */
+   private static final long serialVersionUID = 9213483035127929387L;
+
    public InternalOSGiFacadeException()
    {
       super();

@@ -76,6 +76,7 @@ public class BundleImpl implements Bundle
       //To change body of implemented methods use File | Settings | File Templates.
    }
 
+   @SuppressWarnings("unchecked")
    public Dictionary getHeaders()
    {
       return null;  //To change body of implemented methods use File | Settings | File Templates.
@@ -111,6 +112,7 @@ public class BundleImpl implements Bundle
       return null;  //To change body of implemented methods use File | Settings | File Templates.
    }
 
+   @SuppressWarnings("unchecked")
    public Dictionary getHeaders(String string)
    {
       return null;  //To change body of implemented methods use File | Settings | File Templates.
@@ -121,16 +123,18 @@ public class BundleImpl implements Bundle
       return null;  //To change body of implemented methods use File | Settings | File Templates.
    }
 
-   public Class loadClass(String string) throws ClassNotFoundException
+   public Class<?> loadClass(String string) throws ClassNotFoundException
    {
       return null;  //To change body of implemented methods use File | Settings | File Templates.
    }
 
+   @SuppressWarnings("unchecked")
    public Enumeration getResources(String string) throws IOException
    {
       return null;  //To change body of implemented methods use File | Settings | File Templates.
    }
 
+   @SuppressWarnings("unchecked")
    public Enumeration getEntryPaths(String string)
    {
       return null;  //To change body of implemented methods use File | Settings | File Templates.
@@ -146,6 +150,7 @@ public class BundleImpl implements Bundle
       return 0;  //To change body of implemented methods use File | Settings | File Templates.
    }
 
+   @SuppressWarnings("unchecked")
    public Enumeration findEntries(String string, String string1, boolean b)
    {
       return null;  //To change body of implemented methods use File | Settings | File Templates.

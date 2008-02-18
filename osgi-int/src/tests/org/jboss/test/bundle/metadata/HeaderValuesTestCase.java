@@ -233,7 +233,7 @@ public class HeaderValuesTestCase extends AbstractManifestTestCase
 
    public void testIllegalManifest() throws Exception
    {
-      Manifest manifest = getManifest(createName("Illegal"));
+      getManifest(createName("Illegal"));
       // todo
    }
 

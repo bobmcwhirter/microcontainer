@@ -38,6 +38,9 @@ import org.jboss.util.JBossStringBuilder;
  */
 public class AbstractParameter extends JBossObject implements Parameter, Serializable
 {
+   /** The serialVersionUID */
+   private static final long serialVersionUID = -7920499358318841779L
+   ;
    protected Collection<String> values;
 
    public AbstractParameter()

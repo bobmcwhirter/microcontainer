@@ -79,6 +79,7 @@ public class ServiceRegistrationImpl implements ServiceRegistration
       return null;  //To change body of implemented methods use File | Settings | File Templates.
    }
 
+   @SuppressWarnings("unchecked")
    public void setProperties(Dictionary properties)
    {
       validateServiceRegistration();

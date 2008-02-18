@@ -24,8 +24,6 @@ package org.jboss.osgi.plugins.metadata;
 import java.net.MalformedURLException;
 import java.net.URL;
 
-import org.jboss.logging.Logger;
-
 /**
  * Create URL from string.
  *
@@ -33,8 +31,6 @@ import org.jboss.logging.Logger;
 */
 class URLValueCreator extends AbstractValueCreator<URL>
 {
-   private static Logger log = Logger.getLogger(URLValueCreator.class);
-
    public URLValueCreator()
    {
       super();
