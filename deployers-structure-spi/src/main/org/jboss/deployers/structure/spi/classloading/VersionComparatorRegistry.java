@@ -37,6 +37,7 @@ public class VersionComparatorRegistry
 {
    private static VersionComparatorRegistry registry = new VersionComparatorRegistry();
 
+   @SuppressWarnings("unchecked")
    private Map<Class<? extends Version>, Map<Class<? extends Version>, VersionComparator>> comparatorMap = new ConcurrentHashMap<Class<? extends Version>, Map<Class<? extends Version>, VersionComparator>>();
 
    private VersionComparatorRegistry()
@@ -53,6 +54,8 @@ public class VersionComparatorRegistry
    /**
     * Remove the version comparator.
     *
+    * @param <T> the first version type
+    * @param <U> the second version type
     * @param t first version impl
     * @param u second version impl
     */
@@ -64,6 +67,7 @@ public class VersionComparatorRegistry
    /**
     * Remove the version comparator.
     *
+    * @param <T> the version type
     * @param t version impl
     */
    public <T extends Version> void removeVersionComparator(Class<T> t)
@@ -75,6 +79,7 @@ public class VersionComparatorRegistry
     * Register version comparator.
     * If comparator parameter is null, it's actually a removal.
     *
+    * @param <T> the version type
     * @param t version impl
     * @param comparator the version comparator
     */
@@ -87,10 +92,13 @@ public class VersionComparatorRegistry
     * Register version comparator.
     * If comparator parameter is null, it's actually a removal.
     *
+    * @param <T> the first version type
+    * @param <U> the second version type
     * @param t first version impl
     * @param u second version impl
     * @param comparator the version comparator
     */
+   @SuppressWarnings("unchecked")
    public <T extends Version, U extends Version> void registerVersionComparator(Class<T> t, Class<U> u, VersionComparator<T, U> comparator)
    {
       if (t == null || u == null)
@@ -137,6 +145,8 @@ public class VersionComparatorRegistry
    /**
     * Get the comparator.
     *
+    * @param <T> the first version type
+    * @param <U> the second version type
     * @param t first version impl
     * @param u second version impl 
     * @return the matching comparator
@@ -167,6 +177,8 @@ public class VersionComparatorRegistry
    /**
     * Compare two version impls.
     *
+    * @param <T> the first version type
+    * @param <U> the second version type
     * @param t T version impl
     * @param u U version impl
     * @return the compare result
