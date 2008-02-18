@@ -117,8 +117,8 @@ public class SimpleValueFactoryUnitTestCase extends AbstractMetaValueFactoryTest
       {
          Object value = values[i];
          MetaValue result = createMetaValue(value);
-         SimpleValue actual = assertInstanceOf(result, SimpleValue.class);
-         SimpleValue expected = metaValues[i]; 
+         SimpleValue<?> actual = assertInstanceOf(result, SimpleValue.class);
+         SimpleValue<?> expected = metaValues[i]; 
          getLog().debug("Simple Value: expected=" + expected + " actual=" + actual);
          assertEquals(expected, actual);
       }

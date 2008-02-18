@@ -21,6 +21,7 @@
 */
 package org.jboss.metatype.api.types;
 
+import java.io.Serializable;
 import java.util.Set;
 
 /**
@@ -29,7 +30,7 @@ import java.util.Set;
  * @author <a href="adrian@jboss.com">Adrian Brock</a>
  * @version $Revision: 1.1 $
  */
-public interface CompositeMetaType extends MetaType
+public interface CompositeMetaType extends MetaType<Serializable>
 {
    /**
     * Determine whether this CompositeMetaType contains the itemName
@@ -53,7 +54,7 @@ public interface CompositeMetaType extends MetaType
     * @param itemName the item name
     * @return the open type or null when there is no such item name
     */
-   MetaType getType(String itemName);
+   MetaType<?> getType(String itemName);
 
    /**
     * Retrieve an unmodifiable Set view of all the item names in ascending order.

@@ -218,7 +218,7 @@ public class CollectionValueFactoryUnitTestCase extends AbstractMetaValueFactory
       Method method = getClass().getMethod(methodName);
       Type type = method.getGenericReturnType();
 
-      CollectionMetaType arrayType = assertInstanceOf(resolve(type), CollectionMetaType.class);
+      CollectionMetaType<?> arrayType = assertInstanceOf(resolve(type), CollectionMetaType.class);
       MetaValue[] metaArray = { SimpleValueSupport.wrap("Hello"), SimpleValueSupport.wrap("Goodbye") };
       CollectionValueSupport expected = new CollectionValueSupport(arrayType, metaArray);
       
@@ -240,7 +240,7 @@ public class CollectionValueFactoryUnitTestCase extends AbstractMetaValueFactory
       Method method = getClass().getMethod(methodName);
       Type type = method.getGenericReturnType();
       
-      CollectionMetaType arrayType = assertInstanceOf(resolve(type), CollectionMetaType.class);
+      CollectionMetaType<?> arrayType = assertInstanceOf(resolve(type), CollectionMetaType.class);
       CompositeMetaType compositeType = assertInstanceOf(resolve(TestSimpleComposite.class), CompositeMetaType.class);
       String[] itemNames = { "something" };
       MetaValue[] itemValues = { SimpleValueSupport.wrap("Hello") };

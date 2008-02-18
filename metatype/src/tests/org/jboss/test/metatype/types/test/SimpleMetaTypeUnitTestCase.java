@@ -62,7 +62,7 @@ public class SimpleMetaTypeUnitTestCase extends AbstractMetaTypeTest
       super(name);
    }
 
-   SimpleMetaType[] types = new SimpleMetaType[]
+   SimpleMetaType<?>[] types = new SimpleMetaType<?>[]
    {
       SimpleMetaType.BIGDECIMAL,
       SimpleMetaType.BIGINTEGER,
@@ -80,7 +80,7 @@ public class SimpleMetaTypeUnitTestCase extends AbstractMetaTypeTest
       SimpleMetaType.NAMEDOBJECT
    };
 
-   Class[] classes = new Class[]
+   Class<?>[] classes = new Class[]
    {
       BigDecimal.class,
       BigInteger.class,
@@ -261,7 +261,7 @@ public class SimpleMetaTypeUnitTestCase extends AbstractMetaTypeTest
       {
          getLog().debug("serialization: " + types[i].getClassName() + " original=" + types[i]);
          byte[] bytes = serialize(types[i]);
-         SimpleMetaType result = (SimpleMetaType) deserialize(bytes);
+         SimpleMetaType<?> result = (SimpleMetaType<?>) deserialize(bytes);
          getLog().debug("serialization: " + types[i].getClassName() + " result  =" + types[i]);
 
          assertTrue("Should resolve to same object after serialization " + types[i], types[i] == result);

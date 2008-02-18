@@ -66,19 +66,21 @@ public class ArrayValueFactoryUnitTestCase extends AbstractMetaValueFactoryTest
     * 
     * @throws Exception for any problem
     */
+   @SuppressWarnings("unchecked")
    public void testSimpleArray() throws Exception
    {
       String[] array = { "Hello", "Goodbye" };
-      ArrayMetaType arrayType = assertInstanceOf(resolve(array.getClass()), ArrayMetaType.class);
+      ArrayMetaType<String> arrayType = assertInstanceOf(resolve(array.getClass()), ArrayMetaType.class);
       MetaValue[] metaArray = { SimpleValueSupport.wrap("Hello"), SimpleValueSupport.wrap("Goodbye") };
-      ArrayValueSupport expected = new ArrayValueSupport(arrayType, metaArray);
+      ArrayValueSupport<String> expected = new ArrayValueSupport<String>(arrayType, metaArray);
       
       MetaValue result = createMetaValue(array);
-      ArrayValue actual = assertInstanceOf(result, ArrayValue.class);
+      ArrayValue<String> actual = assertInstanceOf(result, ArrayValue.class);
       getLog().debug("Array Value: " + actual);
       assertEquals(expected, actual);
    }
 
+   @SuppressWarnings("unchecked")
    public void testCharArray()
       throws Exception
    {
@@ -97,6 +99,8 @@ public class ArrayValueFactoryUnitTestCase extends AbstractMetaValueFactoryTest
       getLog().debug("Array Value: " + actual);
       assertEquals(expected, actual);
    }
+   
+   @SuppressWarnings("unchecked")
    public void test2DCharArray()
    {
       char[][] array = {"Hello".toCharArray(), "World".toCharArray()};
@@ -126,6 +130,7 @@ public class ArrayValueFactoryUnitTestCase extends AbstractMetaValueFactoryTest
     * 
     * @throws Exception for any problem
     */
+   @SuppressWarnings("unchecked")
    public void testCompositeArray() throws Exception
    {
       TestSimpleComposite hello = new TestSimpleComposite("Hello");
@@ -152,6 +157,7 @@ public class ArrayValueFactoryUnitTestCase extends AbstractMetaValueFactoryTest
     * 
     * @throws Exception for any problem
     */
+   @SuppressWarnings("unchecked")
    public void testMultipleArray() throws Exception
    {
       String[][] array = { { "Hello" }, { "Goodbye" } };

@@ -32,6 +32,7 @@ import org.jboss.metatype.api.types.ArrayMetaType;
  * ArrayValue.
  * 
  * TODO tests
+ * @param <T> the array type
  * @author <a href="adrian@jboss.com">Adrian Brock</a>
  * @version $Revision: 1.1 $
  */
@@ -126,7 +127,7 @@ public class ArrayValueSupport<T extends Serializable> extends AbstractMetaValue
       if (obj == null || obj instanceof ArrayValue == false)
          return false;
 
-      ArrayValue<T> other = (ArrayValue<T>) obj;
+      ArrayValue<?> other = (ArrayValue<?>) obj;
       if (metaType.equals(other.getMetaType()) == false)
          return false;
 
@@ -178,7 +179,7 @@ public class ArrayValueSupport<T extends Serializable> extends AbstractMetaValue
    @Override
    public MetaValue clone()
    {
-      ArrayValueSupport result = (ArrayValueSupport) super.clone();
+      ArrayValueSupport<?> result = (ArrayValueSupport<?>) super.clone();
       int length = getLength();
       if (value != null && length > 0)
       {
@@ -191,7 +192,7 @@ public class ArrayValueSupport<T extends Serializable> extends AbstractMetaValue
 
    /**
     * 
-    * @return
+    * @return the deep string
     */
    protected String deepToString()
    {

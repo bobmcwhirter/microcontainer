@@ -32,6 +32,7 @@ import org.jboss.beans.info.spi.BeanInfo;
  * 
  * @author <a href="mailto:ales.justin@jboss.com">Ales Justin</a>
  */
+@SuppressWarnings("unchecked")
 public class ListInstanceFactory implements InstanceFactory<List>
 {
    public static ListInstanceFactory INSTANCE = new ListInstanceFactory();

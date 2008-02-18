@@ -99,7 +99,7 @@ public class CompositeValueSupport extends AbstractMetaValue implements Composit
             throw new IllegalArgumentException("Item name " + i + " is null or empty");
          if (contents.get(itemNames[i]) != null)
             throw new IllegalArgumentException("duplicate item name " + itemNames[i]);
-         MetaType itemType = metaType.getType(itemNames[i]);
+         MetaType<?> itemType = metaType.getType(itemNames[i]);
          if (itemType == null)
             throw new IllegalArgumentException("item name not in composite type: " + itemNames[i]);
          if (itemValues[i] != null && itemType.isValue(itemValues[i]) == false)
@@ -160,7 +160,7 @@ public class CompositeValueSupport extends AbstractMetaValue implements Composit
     */
    public void set(String key, MetaValue value)
    {
-      MetaType itemType = validateKey(key);
+      MetaType<?> itemType = validateKey(key);
       if (value != null && itemType.isValue(value) == false)
          throw new IllegalArgumentException("item value " + value + " for item name " + key + " is not a " + itemType);
       contents.put(key, value);
@@ -245,7 +245,7 @@ public class CompositeValueSupport extends AbstractMetaValue implements Composit
       buffer.append(": metaType=[");
       buffer.append(metaType);
       buffer.append("] items=[");
-      Iterator keys = metaType.keySet().iterator();
+      Iterator<String> keys = metaType.keySet().iterator();
       while(keys.hasNext())
       {
          Object key = keys.next();
@@ -267,12 +267,12 @@ public class CompositeValueSupport extends AbstractMetaValue implements Composit
     * @throws IllegalArgumentException for a null or empty key or when 
     *         the key not a valid item name for the composite type
     */
-   private MetaType validateKey(String key)
+   private MetaType<?> validateKey(String key)
    {
       if (key == null || key.length() == 0)
          throw new IllegalArgumentException("null or empty key");
       CompositeMetaType metaType = getMetaType();
-      MetaType result = metaType.getType(key);
+      MetaType<?> result = metaType.getType(key);
       if (result == null)
          throw new IllegalArgumentException("no such item name " + key + " for composite type " + metaType);
       return result;
@@ -305,7 +305,7 @@ public class CompositeValueSupport extends AbstractMetaValue implements Composit
          String key = entry.getKey();
          if (key == null || key.length() == 0)
             throw new IllegalArgumentException("Key is null or empty");
-         MetaType itemType = metaType.getType(key);
+         MetaType<?> itemType = metaType.getType(key);
          if (itemType == null)
             throw new IllegalArgumentException("item name not in composite type " + key);
          MetaValue value = items.get(key);

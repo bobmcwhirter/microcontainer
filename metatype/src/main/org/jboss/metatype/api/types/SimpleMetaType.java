@@ -87,7 +87,7 @@ public class SimpleMetaType<T extends Serializable> extends AbstractMetaType<T>
    public static final SimpleMetaType<Name> NAMEDOBJECT;
 
    /** The simple type for java.lang.Void */
-   public static final SimpleMetaType VOID;
+   public static final SimpleMetaType<?> VOID;
 
    static
    {
@@ -104,7 +104,13 @@ public class SimpleMetaType<T extends Serializable> extends AbstractMetaType<T>
       SHORT = new SimpleMetaType<Short>(Short.class.getName());
       STRING = new SimpleMetaType<String>(String.class.getName());
       NAMEDOBJECT = new SimpleMetaType<Name>(Name.class.getName());
-      VOID = new SimpleMetaType(Void.class.getName());
+      VOID = createVoid();
+   }
+   
+   @SuppressWarnings("unchecked")
+   private static SimpleMetaType<?> createVoid()
+   {
+      return new SimpleMetaType(Void.class.getName());
    }
 
    /**
@@ -114,9 +120,9 @@ public class SimpleMetaType<T extends Serializable> extends AbstractMetaType<T>
     * @return the simple type
     * @throws IllegalArgumentException for a null className or if it is not a simple type
     */
-   public static SimpleMetaType resolve(String className)
+   public static SimpleMetaType<?> resolve(String className)
    {
-      SimpleMetaType result = isSimpleType(className);
+      SimpleMetaType<?> result = isSimpleType(className);
       if (result != null)
          return result;
       throw new IllegalArgumentException("Class is not a simple type: " + className);
@@ -130,7 +136,7 @@ public class SimpleMetaType<T extends Serializable> extends AbstractMetaType<T>
     * @return the simple type
     * @throws IllegalArgumentException for a null className
     */
-   public static SimpleMetaType isSimpleType(String className)
+   public static SimpleMetaType<?> isSimpleType(String className)
    {
       if (className == null)
          throw new IllegalArgumentException("Null class name");
@@ -194,7 +200,7 @@ public class SimpleMetaType<T extends Serializable> extends AbstractMetaType<T>
       if (obj == null || obj instanceof SimpleValue == false)
          return false;
 
-      SimpleValue value = (SimpleValue) obj;
+      SimpleValue<?> value = (SimpleValue<?>) obj;
       return equals(value.getMetaType());
    }
 
@@ -205,7 +211,7 @@ public class SimpleMetaType<T extends Serializable> extends AbstractMetaType<T>
          return true;
       if (obj == null || obj instanceof SimpleMetaType == false)
          return false;
-      SimpleMetaType other = (SimpleMetaType) obj;
+      SimpleMetaType<?> other = (SimpleMetaType<?>) obj;
       return getClassName().equals(other.getClassName());
    }
 

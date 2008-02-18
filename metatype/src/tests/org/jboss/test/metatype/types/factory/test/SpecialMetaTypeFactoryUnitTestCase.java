@@ -68,7 +68,7 @@ public class SpecialMetaTypeFactoryUnitTestCase extends AbstractMetaTypeFactoryT
     */
    public void testClass() throws Exception
    {
-      MetaType actual = resolve(Class.class);
+      MetaType<?> actual = resolve(Class.class);
       getLog().debug("Class MetaType: " + " className=" + actual.getClassName() + " typeName=" + actual.getTypeName() + " description=" + actual.getDescription());
       assertEquals(ClassMetaTypeBuilder.CLASS_META_TYPE, actual);
    }
@@ -80,7 +80,7 @@ public class SpecialMetaTypeFactoryUnitTestCase extends AbstractMetaTypeFactoryT
     */
    public void testGeneric() throws Exception
    {
-      MetaType actual = resolve(TestGeneric.class);
+      MetaType<?> actual = resolve(TestGeneric.class);
       getLog().debug("Generic MetaType: " + " className=" + actual.getClassName() + " typeName=" + actual.getTypeName() + " description=" + actual.getDescription());
       GenericMetaType expected = new GenericMetaType(TestGeneric.class.getName(), TestGeneric.class.getName());
       assertEquals(expected, actual);
@@ -93,7 +93,7 @@ public class SpecialMetaTypeFactoryUnitTestCase extends AbstractMetaTypeFactoryT
     */
    public void testGenericComposite() throws Exception
    {
-      MetaType actual = resolve(TestGenericComposite.class);
+      MetaType<?> actual = resolve(TestGenericComposite.class);
       printComposite("GenericComposite MetaType: ", assertInstanceOf(actual, CompositeMetaType.class));
       MutableCompositeMetaType expected = new MutableCompositeMetaType(TestGenericComposite.class.getName(), TestGenericComposite.class.getName());
       GenericMetaType generic = new GenericMetaType(TestGeneric.class.getName(), TestGeneric.class.getName());
@@ -113,8 +113,8 @@ public class SpecialMetaTypeFactoryUnitTestCase extends AbstractMetaTypeFactoryT
       setBuilder(TestOverrideComposite.class, builder);
       try
       {
-         MetaType expected = builder.buildMetaType();
-         MetaType actual = resolve(TestOverrideComposite.class);
+         MetaType<?> expected = builder.buildMetaType();
+         MetaType<?> actual = resolve(TestOverrideComposite.class);
          getLog().debug("Builder: " + actual);
          assertEquals(expected, actual);
       }

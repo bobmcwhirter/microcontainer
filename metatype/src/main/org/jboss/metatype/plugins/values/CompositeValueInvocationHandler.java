@@ -120,8 +120,8 @@ public class CompositeValueInvocationHandler implements InvocationHandler
 
       StringBuilder fieldName = null;
 
-      Class returnType = method.getReturnType();
-      Class[] paramTypes = method.getParameterTypes();
+      Class<?> returnType = method.getReturnType();
+      Class<?>[] paramTypes = method.getParameterTypes();
       if (Void.TYPE.equals(returnType) == false && paramTypes.length == 0)
       {
          String name = method.getName();

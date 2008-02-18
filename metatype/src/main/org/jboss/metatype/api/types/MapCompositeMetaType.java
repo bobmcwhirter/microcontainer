@@ -32,13 +32,13 @@ import org.jboss.metatype.plugins.types.AbstractCompositeMetaType;
 public class MapCompositeMetaType extends AbstractCompositeMetaType
 {
    private static final long serialVersionUID = 1;
-   private MetaType valueType;
+   private MetaType<?> valueType;
 
    /**
     * Create a MapCompositeMetaType with the given value metatype.
     * @param valueType the value meta type
     */
-   public MapCompositeMetaType(MetaType valueType)
+   public MapCompositeMetaType(MetaType<?> valueType)
    {
       super("java.lang.Map", "Map<String,MetaValue>");
       this.valueType = valueType;

@@ -56,7 +56,7 @@ public class SimpleValueSupport<T extends Serializable> extends AbstractMetaValu
       if (object == null)
          return null;
       String className = object.getClass().getName();
-      SimpleMetaType<T> metaType = SimpleMetaType.resolve(className);
+      SimpleMetaType<T> metaType = (SimpleMetaType) SimpleMetaType.resolve(className);
       return new SimpleValueSupport<T>(metaType, object);
    }
    
@@ -109,7 +109,7 @@ public class SimpleValueSupport<T extends Serializable> extends AbstractMetaValu
       if (obj == null || obj instanceof SimpleValue == false)
          return false;
 
-      SimpleValue other = (SimpleValue) obj;
+      SimpleValue<?> other = (SimpleValue<?>) obj;
       if (metaType.equals(other.getMetaType()) == false)
          return false;
 

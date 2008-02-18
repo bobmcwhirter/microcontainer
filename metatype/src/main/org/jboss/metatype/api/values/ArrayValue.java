@@ -28,6 +28,7 @@ import org.jboss.metatype.api.types.ArrayMetaType;
 /**
  * ArrayValue.
  * 
+ * @param <T> the array type
  * @author <a href="adrian@jboss.com">Adrian Brock</a>
  * @author Scott.Stark@jboss.org
  * @version $Revision: 1.1 $

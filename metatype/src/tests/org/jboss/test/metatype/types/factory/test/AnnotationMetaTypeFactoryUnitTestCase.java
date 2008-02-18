@@ -64,7 +64,7 @@ public class AnnotationMetaTypeFactoryUnitTestCase extends AbstractMetaTypeFacto
     */
    public void testSimpleAnnotation() throws Exception
    {
-      MetaType result = resolve(TestSimpleAnnotation.class);
+      MetaType<?> result = resolve(TestSimpleAnnotation.class);
       CompositeMetaType actual = assertInstanceOf(result, CompositeMetaType.class);
       
       MutableCompositeMetaType expected = new MutableCompositeMetaType(TestSimpleAnnotation.class.getName(), TestSimpleAnnotation.class.getName());

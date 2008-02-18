@@ -36,5 +36,5 @@ public interface MetaTypeBuilder
     * 
     * @return the meta type
     */
-   MetaType buildMetaType();
+   MetaType<?> buildMetaType();
 }

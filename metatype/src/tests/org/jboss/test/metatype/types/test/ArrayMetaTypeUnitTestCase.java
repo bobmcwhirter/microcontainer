@@ -69,6 +69,7 @@ public class ArrayMetaTypeUnitTestCase extends AbstractMetaTypeTest
     * 
     * @throws Exception for any problem
     */
+   @SuppressWarnings("unchecked")
    public void testArrayTypeMetaType() throws Exception
    {
       ArrayMetaType arrayType = new ArrayMetaType(3, SimpleMetaType.STRING);
@@ -78,6 +79,7 @@ public class ArrayMetaTypeUnitTestCase extends AbstractMetaTypeTest
       assertTrue("Type should be an array", arrayType.isArray());
    }
 
+   @SuppressWarnings("unchecked")
    public void testCharArrayType()
    {
       ArrayMetaType arrayType = ArrayMetaType.getPrimitiveArrayType(char[].class);
@@ -93,6 +95,7 @@ public class ArrayMetaTypeUnitTestCase extends AbstractMetaTypeTest
     * 
     * @throws Exception for any problem
     */
+   @SuppressWarnings("unchecked")
    public void testGetDimension() throws Exception
    {
       ArrayMetaType arrayType = new ArrayMetaType(3, SimpleMetaType.STRING);
@@ -104,6 +107,7 @@ public class ArrayMetaTypeUnitTestCase extends AbstractMetaTypeTest
     * 
     * @throws Exception for any problem
     */
+   @SuppressWarnings("unchecked")
    public void testElementType() throws Exception
    {
       ArrayMetaType arrayType = new ArrayMetaType(3, SimpleMetaType.STRING);
@@ -118,20 +122,20 @@ public class ArrayMetaTypeUnitTestCase extends AbstractMetaTypeTest
    public void testIsValueSimpleValue() throws Exception
    {
       SimpleMetaType<String> simpleType = SimpleMetaType.STRING;
-      MockSimpleValue sv = new MockSimpleValue<String>(simpleType);
-      MockSimpleValue[][] compData1 = new MockSimpleValue[][]
+      MockSimpleValue<?> sv = new MockSimpleValue<String>(simpleType);
+      MockSimpleValue<?>[][] compData1 = new MockSimpleValue[][]
       {
          { sv, null }, { sv, sv }
       };
             
-      ArrayMetaType compArrayType1 = new ArrayMetaType(2, SimpleMetaType.STRING);
+      ArrayMetaType<String> compArrayType1 = new ArrayMetaType<String>(2, SimpleMetaType.STRING);
       assertTrue("compData1 should be a value of array type", compArrayType1.isValue(compData1));
 
-      ArrayMetaType compArrayType2 = new ArrayMetaType(1, SimpleMetaType.STRING);
+      ArrayMetaType<String> compArrayType2 = new ArrayMetaType<String>(1, SimpleMetaType.STRING);
       assertFalse("compData1 should not be a value of array type, wrong dimension", compArrayType2.isValue(compData1));
 
       SimpleMetaType<Integer> simpleType2 = SimpleMetaType.INTEGER;
-      ArrayMetaType compArrayType3 = new ArrayMetaType(2, simpleType2);
+      ArrayMetaType<Integer> compArrayType3 = new ArrayMetaType<Integer>(2, simpleType2);
       assertFalse("compData1 should not be a value of array type, wrong element type", compArrayType3.isValue(compData1));
    }
 
@@ -140,11 +144,12 @@ public class ArrayMetaTypeUnitTestCase extends AbstractMetaTypeTest
     * 
     * @throws Exception for any problem
     */
+   @SuppressWarnings("unchecked")
    public void testIsValueComposite() throws Exception
    {
       String[] itemNames = new String[] { "name1", "name2" };
       String[] itemDescriptions = new String[] { "desc1", "desc2" };
-      MetaType[] itemTypes = new MetaType[] { SimpleMetaType.STRING, SimpleMetaType.INTEGER };
+      MetaType<?>[] itemTypes = new MetaType<?>[] { SimpleMetaType.STRING, SimpleMetaType.INTEGER };
       CompositeMetaType compositeType = new ImmutableCompositeMetaType("typeName", "description", itemNames, itemDescriptions, itemTypes);
       MockCompositeValue cv = new MockCompositeValue(compositeType);
       MockCompositeValue[][] compData1 = new MockCompositeValue[][]
@@ -168,6 +173,7 @@ public class ArrayMetaTypeUnitTestCase extends AbstractMetaTypeTest
     * 
     * @throws Exception for any problem
     */
+   @SuppressWarnings("unchecked")
    public void testIsValueTable() throws Exception
    {
       String[] itemNames = new String[] { "name1", "name2" };
@@ -197,6 +203,7 @@ public class ArrayMetaTypeUnitTestCase extends AbstractMetaTypeTest
     * 
     * @throws Exception for any problem
     */
+   @SuppressWarnings("unchecked")
    public void testEquals() throws Exception
    {
       ArrayMetaType arrayType = new ArrayMetaType(3, SimpleMetaType.STRING);
@@ -224,6 +231,7 @@ public class ArrayMetaTypeUnitTestCase extends AbstractMetaTypeTest
     * 
     * @throws Exception for any problem
     */
+   @SuppressWarnings("unchecked")
    public void testHashCode() throws Exception
    {
       ArrayMetaType arrayType = new ArrayMetaType(3, SimpleMetaType.STRING);
@@ -237,6 +245,7 @@ public class ArrayMetaTypeUnitTestCase extends AbstractMetaTypeTest
     * 
     * @throws Exception for any problem
     */
+   @SuppressWarnings("unchecked")
    public void testToString() throws Exception
    {
       ArrayMetaType arrayType = new ArrayMetaType(3, SimpleMetaType.STRING);
@@ -253,6 +262,7 @@ public class ArrayMetaTypeUnitTestCase extends AbstractMetaTypeTest
     * 
     * @throws Exception for any problem
     */
+   @SuppressWarnings("unchecked")
    public void testSerialization() throws Exception
    {
       ArrayMetaType arrayType = new ArrayMetaType(3, SimpleMetaType.STRING);
@@ -268,6 +278,7 @@ public class ArrayMetaTypeUnitTestCase extends AbstractMetaTypeTest
     * 
     * @throws Exception for any problem
     */
+   @SuppressWarnings("unchecked")
    public void testErrors() throws Exception
    {
       try

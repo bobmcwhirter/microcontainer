@@ -21,6 +21,7 @@
 */
 package org.jboss.metatype.api.types;
 
+import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Iterator;
@@ -34,7 +35,7 @@ import org.jboss.metatype.api.values.TableValue;
  * @author <a href="adrian@jboss.com">Adrian Brock</a>
  * @version $Revision: 1.1 $
  */
-public class ImmutableTableMetaType extends AbstractMetaType implements TableMetaType
+public class ImmutableTableMetaType extends AbstractMetaType<Serializable> implements TableMetaType
 {
    /** The serialVersionUID */
    private static final long serialVersionUID = 5791103660662775558L;
@@ -149,7 +150,7 @@ public class ImmutableTableMetaType extends AbstractMetaType implements TableMet
          return cachedHashCode;
       cachedHashCode = getTypeName().hashCode();
       cachedHashCode += getRowType().hashCode();
-      for (Iterator i = indexNames.iterator(); i.hasNext();)
+      for (Iterator<String> i = indexNames.iterator(); i.hasNext();)
          cachedHashCode += i.next().hashCode();
       return cachedHashCode;
    }
@@ -165,7 +166,7 @@ public class ImmutableTableMetaType extends AbstractMetaType implements TableMet
       buffer.append("] rowType=[");
       buffer.append(getRowType());
       buffer.append("] indexNames=[");
-      Iterator thisNames = getIndexNames().iterator();
+      Iterator<String> thisNames = getIndexNames().iterator();
       while(thisNames.hasNext())
       {
          buffer.append(thisNames.next());

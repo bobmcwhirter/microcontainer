@@ -38,7 +38,7 @@ public interface MetaValue extends Serializable, Cloneable
     * 
     * @return the metatype
     */
-   MetaType getMetaType();
+   MetaType<?> getMetaType();
    
    /**
     * Clone the meta value

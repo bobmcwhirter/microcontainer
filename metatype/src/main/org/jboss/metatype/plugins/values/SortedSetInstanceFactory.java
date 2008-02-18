@@ -32,6 +32,7 @@ import org.jboss.metatype.api.values.InstanceFactory;
  *
  * @author <a href="mailto:ales.justin@jboss.com">Ales Justin</a>
  */
+@SuppressWarnings("unchecked")
 public class SortedSetInstanceFactory implements InstanceFactory<SortedSet>
 {
    public static SortedSetInstanceFactory INSTANCE = new SortedSetInstanceFactory();

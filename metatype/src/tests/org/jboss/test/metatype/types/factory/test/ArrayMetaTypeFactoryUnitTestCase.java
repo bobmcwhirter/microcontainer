@@ -61,15 +61,17 @@ public class ArrayMetaTypeFactoryUnitTestCase extends AbstractMetaTypeFactoryTes
     * 
     * @throws Exception for any problem
     */
+   @SuppressWarnings("unchecked")
    public void testSimpleArray() throws Exception
    {
       String[] array = new String[0];
-      MetaType result = resolve(array.getClass());
-      ArrayMetaType actual = assertInstanceOf(result, ArrayMetaType.class);
-      ArrayMetaType expected = new ArrayMetaType(1, SimpleMetaType.STRING);
+      MetaType<?> result = resolve(array.getClass());
+      ArrayMetaType<String> actual = assertInstanceOf(result, ArrayMetaType.class);
+      ArrayMetaType<String> expected = new ArrayMetaType<String>(1, SimpleMetaType.STRING);
       testArray(expected, actual);
    }
 
+   @SuppressWarnings("unchecked")
    public void testCharArray()
       throws Exception
    {
@@ -80,6 +82,7 @@ public class ArrayMetaTypeFactoryUnitTestCase extends AbstractMetaTypeFactoryTes
       ArrayMetaType expected = new ArrayMetaType(1, SimpleMetaType.CHARACTER);
       testArray(expected, actual);
    }
+   @SuppressWarnings("unchecked")
    public void testChar2DArray()
       throws Exception
    {
@@ -95,6 +98,7 @@ public class ArrayMetaTypeFactoryUnitTestCase extends AbstractMetaTypeFactoryTes
     * 
     * @throws Exception for any problem
     */
+   @SuppressWarnings("unchecked")
    public void testSimpleCompositeArray() throws Exception
    {
       TestSimpleComposite[] array = new TestSimpleComposite[0];
@@ -110,6 +114,7 @@ public class ArrayMetaTypeFactoryUnitTestCase extends AbstractMetaTypeFactoryTes
     * 
     * @throws Exception for any problem
     */
+   @SuppressWarnings("unchecked")
    public void testMultiSimpleArray() throws Exception
    {
       String[][] array = new String[0][0];
@@ -124,6 +129,7 @@ public class ArrayMetaTypeFactoryUnitTestCase extends AbstractMetaTypeFactoryTes
     * 
     * @throws Exception for any problem
     */
+   @SuppressWarnings("unchecked")
    public void testMultiSimpleCompositeArray() throws Exception
    {
       TestSimpleComposite[][] array = new TestSimpleComposite[0][0];

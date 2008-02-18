@@ -80,7 +80,7 @@ public abstract class MetaValueFactory
     * @param clazz the class
     * @param builder the builder
     */
-   public abstract void setBuilder(Class<?> clazz, MetaValueBuilder builder);
+   public abstract void setBuilder(Class<?> clazz, MetaValueBuilder<?> builder);
 
    /**
     * Set an instance factory.

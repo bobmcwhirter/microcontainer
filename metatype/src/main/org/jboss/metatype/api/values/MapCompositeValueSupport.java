@@ -43,12 +43,12 @@ public class MapCompositeValueSupport extends AbstractMetaValue implements Compo
    private Map<String, MetaValue> map;
    private MapCompositeMetaType mapType;
 
-   public MapCompositeValueSupport(MetaType valueType)
+   public MapCompositeValueSupport(MetaType<?> valueType)
    {
       this(null, valueType);
    }
 
-   public MapCompositeValueSupport(Map<String, MetaValue> map, MetaType valueType)
+   public MapCompositeValueSupport(Map<String, MetaValue> map, MetaType<?> valueType)
    {
       this.map = createMap();
       this.mapType = new MapCompositeMetaType(valueType);

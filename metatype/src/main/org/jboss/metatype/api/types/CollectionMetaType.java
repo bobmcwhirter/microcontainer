@@ -32,13 +32,13 @@ import org.jboss.metatype.api.values.CollectionValue;
  * @param <T> exact type
  * @author <a href="ales.justin@jboss.com">Ales Justin</a>
  */
-public class CollectionMetaType<T extends Serializable> extends AbstractMetaType
+public class CollectionMetaType<T extends Serializable> extends AbstractMetaType<T>
 {
    /** The serialVersionUID */
    private static final long serialVersionUID = -2062790692152055156L;
 
    /** The element type for the array */
-   private MetaType elementType;
+   private MetaType<?> elementType;
 
    /** Cached hash code */
    private transient int cachedHashCode = Integer.MIN_VALUE;
@@ -78,6 +78,7 @@ public class CollectionMetaType<T extends Serializable> extends AbstractMetaType
    /**
     * Get collection meta type.
     *
+    * @param <E> the element type
     * @param collectionType the element meta type
     * @param elementType the element meta type
     * @return collection meta type
@@ -92,7 +93,7 @@ public class CollectionMetaType<T extends Serializable> extends AbstractMetaType
     *
     * @return the element type
     */
-   public MetaType getElementType()
+   public MetaType<?> getElementType()
    {
       return elementType;
    }
@@ -130,7 +131,7 @@ public class CollectionMetaType<T extends Serializable> extends AbstractMetaType
          return true;
       if (obj == null || obj instanceof CollectionMetaType == false)
          return false;
-      CollectionMetaType other = (CollectionMetaType) obj;
+      CollectionMetaType<?> other = (CollectionMetaType<?>) obj;
       return getTypeName().equals(other.getTypeName()) && getElementType().equals(other.getElementType());
    }
 

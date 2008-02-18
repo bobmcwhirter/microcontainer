@@ -231,7 +231,7 @@ public class ImmutableCompositeMetaTypeUnitTestCase extends AbstractMetaTypeTest
    {
       String[] itemNames = new String[] { "name1", "name2" };
       String[] itemDescriptions = new String[] { "desc1", "desc2" };
-      MetaType[] itemTypes = new MetaType[] { SimpleMetaType.STRING, SimpleMetaType.INTEGER };
+      MetaType<?>[] itemTypes = new MetaType[] { SimpleMetaType.STRING, SimpleMetaType.INTEGER };
 
       try
       {
@@ -325,7 +325,7 @@ public class ImmutableCompositeMetaTypeUnitTestCase extends AbstractMetaTypeTest
          checkThrowable(IllegalArgumentException.class, t);
       }
       
-      MetaType[] nullItemTypes = new MetaType[] { SimpleMetaType.STRING, null };
+      MetaType<?>[] nullItemTypes = new MetaType[] { SimpleMetaType.STRING, null };
       try
       {
          new ImmutableCompositeMetaType("typeName", "description", itemNames, itemDescriptions, nullItemTypes);
@@ -358,7 +358,7 @@ public class ImmutableCompositeMetaTypeUnitTestCase extends AbstractMetaTypeTest
          checkThrowable(IllegalArgumentException.class, t);
       }
       
-      MetaType[] wrongItemTypes = new MetaType[] { SimpleMetaType.STRING };
+      MetaType<?>[] wrongItemTypes = new MetaType[] { SimpleMetaType.STRING };
       try
       {
          new ImmutableCompositeMetaType("typeName", "description", itemNames, itemDescriptions, wrongItemTypes);
@@ -401,7 +401,7 @@ public class ImmutableCompositeMetaTypeUnitTestCase extends AbstractMetaTypeTest
    {
       String[] itemNames = new String[] { "name1", "name2" };
       String[] itemDescriptions = new String[] { "desc1", "desc2" };
-      MetaType[] itemTypes = new MetaType[] { SimpleMetaType.STRING, SimpleMetaType.INTEGER };
+      MetaType<?>[] itemTypes = new MetaType[] { SimpleMetaType.STRING, SimpleMetaType.INTEGER };
       CompositeMetaType compositeType = new ImmutableCompositeMetaType("typeName", "description", itemNames, itemDescriptions, itemTypes);
       return compositeType;
    }
@@ -415,7 +415,7 @@ public class ImmutableCompositeMetaTypeUnitTestCase extends AbstractMetaTypeTest
    {
       String[] itemNames = new String[] { "name1", "name2" };
       String[] itemDescriptions = new String[] { "desc1", "desc2" };
-      MetaType[] itemTypes = new MetaType[] { SimpleMetaType.STRING, SimpleMetaType.LONG };
+      MetaType<?>[] itemTypes = new MetaType[] { SimpleMetaType.STRING, SimpleMetaType.LONG };
       CompositeMetaType compositeType = new ImmutableCompositeMetaType("typeName", "description", itemNames, itemDescriptions, itemTypes);
       return compositeType;
    }
@@ -429,7 +429,7 @@ public class ImmutableCompositeMetaTypeUnitTestCase extends AbstractMetaTypeTest
    {
       String[] itemNames = new String[] { "name1", "name2" };
       String[] itemDescriptions = new String[] { "desc1", "desc2" };
-      MetaType[] itemTypes = new MetaType[] { SimpleMetaType.STRING, SimpleMetaType.INTEGER };
+      MetaType<?>[] itemTypes = new MetaType[] { SimpleMetaType.STRING, SimpleMetaType.INTEGER };
       CompositeMetaType compositeType = new ImmutableCompositeMetaType("typeName2", "description", itemNames, itemDescriptions, itemTypes);
       return compositeType;
    }
@@ -443,7 +443,7 @@ public class ImmutableCompositeMetaTypeUnitTestCase extends AbstractMetaTypeTest
    {
       String[] itemNames = new String[] { "nameX", "name2" };
       String[] itemDescriptions = new String[] { "desc1", "desc2" };
-      MetaType[] itemTypes = new MetaType[] { SimpleMetaType.STRING, SimpleMetaType.INTEGER };
+      MetaType<?>[] itemTypes = new MetaType[] { SimpleMetaType.STRING, SimpleMetaType.INTEGER };
       CompositeMetaType compositeType = new ImmutableCompositeMetaType("typeName", "description", itemNames, itemDescriptions, itemTypes);
       return compositeType;
    }

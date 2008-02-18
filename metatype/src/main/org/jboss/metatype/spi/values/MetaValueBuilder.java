@@ -40,5 +40,5 @@ public interface MetaValueBuilder<T>
     * @param object the object
     * @return the meta value
     */
-   MetaValue buildMetaValue(MetaType metaType, T object);
+   MetaValue buildMetaValue(MetaType<?> metaType, T object);
 }

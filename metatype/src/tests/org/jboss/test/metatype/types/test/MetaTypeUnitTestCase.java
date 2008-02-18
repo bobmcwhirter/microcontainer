@@ -103,9 +103,10 @@ public class MetaTypeUnitTestCase extends AbstractMetaTypeTest
     * 
     * @throws Exception for any problem
     */
+   @SuppressWarnings("unchecked")
    public void testConstructorSimple() throws Exception
    {
-      MetaType test = new MockMetaType("java.lang.Void", "type", "description");
+      MetaType<?> test = new MockMetaType("java.lang.Void", "type", "description");
       assertEquals("java.lang.Void", test.getClassName());
       assertEquals("type", test.getTypeName());
       assertEquals("description", test.getDescription());
@@ -117,6 +118,7 @@ public class MetaTypeUnitTestCase extends AbstractMetaTypeTest
     * 
     * @throws Exception for any problem
     */
+   @SuppressWarnings("unchecked")
    public void testConstructorArray() throws Exception
    {
       MetaType test = new MockMetaType("[[Ljava.lang.Void;", "type", "description");
@@ -151,6 +153,7 @@ public class MetaTypeUnitTestCase extends AbstractMetaTypeTest
     * 
     * @throws Exception for any problem
     */
+   @SuppressWarnings("unchecked")
    public void testErrors() throws Exception
    {
       try
@@ -254,6 +257,7 @@ public class MetaTypeUnitTestCase extends AbstractMetaTypeTest
       }
    }
    
+   @SuppressWarnings("unchecked")
    private void testSerialization(String className, String type, String description) throws Exception
    {
       MetaType original = new MockMetaType(className, type, description);
@@ -265,6 +269,7 @@ public class MetaTypeUnitTestCase extends AbstractMetaTypeTest
       assertEquals(original.isArray(), result.isArray());
    }
 
+   @SuppressWarnings("unchecked")
    private void checkMetaType(List names, Class clazz) throws Exception
    {
       String name = clazz.getName();

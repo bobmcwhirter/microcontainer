@@ -61,7 +61,7 @@ public class EnumValueSupport extends AbstractMetaValue implements EnumValue
     * @param value the enum instance
     * @throws IllegalArgumentException for a null enum MetaType
     */
-   public EnumValueSupport(EnumMetaType metaType, Enum value)
+   public EnumValueSupport(EnumMetaType metaType, Enum<?> value)
    {
       this(metaType, value.name());
    }

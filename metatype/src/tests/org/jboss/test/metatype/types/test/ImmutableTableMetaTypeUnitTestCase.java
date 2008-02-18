@@ -314,7 +314,7 @@ public class ImmutableTableMetaTypeUnitTestCase extends AbstractMetaTypeTest
    {
       String[] itemNames = new String[] { "name1", "name2" };
       String[] itemDescriptions = new String[] { "desc1", "desc2" };
-      MetaType[] itemTypes = new MetaType[] { SimpleMetaType.STRING, SimpleMetaType.INTEGER };
+      MetaType<?>[] itemTypes = new MetaType[] { SimpleMetaType.STRING, SimpleMetaType.INTEGER };
       CompositeMetaType rowType = new ImmutableCompositeMetaType("rowTypeName", "rowDescription", itemNames, itemDescriptions, itemTypes);
       return rowType;
    }
@@ -359,7 +359,7 @@ public class ImmutableTableMetaTypeUnitTestCase extends AbstractMetaTypeTest
    {
       String[] itemNames = new String[] { "name1", "name2" };
       String[] itemDescriptions = new String[] { "desc1", "desc2" };
-      MetaType[] itemTypes = new MetaType[] { SimpleMetaType.STRING, SimpleMetaType.INTEGER };
+      MetaType<?>[] itemTypes = new MetaType[] { SimpleMetaType.STRING, SimpleMetaType.INTEGER };
       CompositeMetaType rowType = new ImmutableCompositeMetaType("rowTypeName2", "rowDescription", itemNames, itemDescriptions, itemTypes);
       return rowType;
    }

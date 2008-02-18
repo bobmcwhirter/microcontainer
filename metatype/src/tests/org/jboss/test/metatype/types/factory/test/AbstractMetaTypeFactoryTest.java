@@ -55,7 +55,7 @@ public abstract class AbstractMetaTypeFactoryTest extends AbstractMetaTypeTest
     * @param clazz the clazz
     * @param builder the builder
     */
-   protected void setBuilder(Class clazz, MetaTypeBuilder builder)
+   protected void setBuilder(Class<?> clazz, MetaTypeBuilder builder)
    {
       metaTypeFactory.setBuilder(clazz, builder);
    }
@@ -66,7 +66,7 @@ public abstract class AbstractMetaTypeFactoryTest extends AbstractMetaTypeTest
     * @param type the type
     * @return the meta type
     */
-   protected MetaType resolve(Type type)
+   protected MetaType<?> resolve(Type type)
    {
       return metaTypeFactory.resolve(type);
    }

@@ -154,7 +154,7 @@ public class SpecialValueFactoryUnitTestCase extends AbstractMetaValueFactoryTes
       {
          TestOverrideComposite value = new TestOverrideComposite("Hello");
          
-         MetaType metaType = builder.buildMetaType();
+         MetaType<?> metaType = builder.buildMetaType();
          MetaValue expected = builder.buildMetaValue(metaType, value);
 
          MetaValue actual = createMetaValue(value);

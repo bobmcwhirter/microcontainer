@@ -316,6 +316,7 @@ public class UnwrapValueUnitTestCase extends AbstractMetaValueFactoryTest
       boolean assertArray(final Object original, final Object unwrapped);
    }
 
+   @SuppressWarnings("unchecked")
    protected Type getType(String type, Class<? extends Collection> clazz) throws Exception
    {
       Method method = getClass().getDeclaredMethod("get" + type + "s" + clazz.getSimpleName());

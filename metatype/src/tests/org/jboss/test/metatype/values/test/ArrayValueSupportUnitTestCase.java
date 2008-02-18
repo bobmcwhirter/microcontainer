@@ -58,6 +58,7 @@ public class ArrayValueSupportUnitTestCase extends AbstractMetaTypeTest
       super(name);
    }
 
+   @SuppressWarnings("unchecked")
    static <T> T[] convert(Object array, T[] t)
    {
       int length = Array.getLength(array);
@@ -94,6 +95,8 @@ public class ArrayValueSupportUnitTestCase extends AbstractMetaTypeTest
          assertEquals(value[n], raw[n]);
       }
    }
+   
+   @SuppressWarnings("unchecked")
    public void testCharacterArray() throws Exception
    {
       ArrayMetaType type = new ArrayMetaType(1, SimpleMetaType.CHARACTER);

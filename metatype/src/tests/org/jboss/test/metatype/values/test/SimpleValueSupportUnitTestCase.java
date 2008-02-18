@@ -115,7 +115,7 @@ public class SimpleValueSupportUnitTestCase extends AbstractMetaTypeTest
       assertNotSame("data should not equal empty value", v, initStringEmpty());
       assertNotSame("data should not equal non SimpleValue", v, new Object());
 
-      SimpleValue v2 = initStringValue1();
+      SimpleValue<?> v2 = initStringValue1();
 
       assertEquals("data should equal with data2 with different instance of the same simple type", v, v2);
       assertEquals("data should equal with data2 with different instance of the same simple type", v2, v);

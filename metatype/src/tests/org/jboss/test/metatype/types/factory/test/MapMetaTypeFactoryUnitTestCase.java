@@ -135,11 +135,11 @@ public class MapMetaTypeFactoryUnitTestCase extends AbstractMetaTypeFactoryTest
    {
       Method method = getClass().getMethod(methodName, null);
       Type collectionType = method.getGenericReturnType();
-      MetaType result = resolve(collectionType);
+      MetaType<?> result = resolve(collectionType);
       TableMetaType actual = assertInstanceOf(result, TableMetaType.class);
-      MetaType keyType = resolve(keyClass);
-      MetaType valueType = resolve(valueClass);
-      MetaType[] itemTypes = { keyType, valueType };
+      MetaType<?> keyType = resolve(keyClass);
+      MetaType<?> valueType = resolve(valueClass);
+      MetaType<?>[] itemTypes = { keyType, valueType };
       String entryName = Map.Entry.class.getName();
       CompositeMetaType entryType = new ImmutableCompositeMetaType(entryName, entryName, DefaultMetaTypeFactory.MAP_ITEM_NAMES, DefaultMetaTypeFactory.MAP_ITEM_NAMES, itemTypes);
       TableMetaType expected = new ImmutableTableMetaType(Map.class.getName(), Map.class.getName(), entryType, DefaultMetaTypeFactory.MAP_INDEX_NAMES);

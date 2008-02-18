@@ -48,9 +48,10 @@ public class MockSimpleValue<T extends Serializable> extends MockMetaValue imple
       super(metaType);
    }
 
+   @SuppressWarnings("unchecked")
    public SimpleMetaType<T> getMetaType()
    {
-      return (SimpleMetaType<T>) super.getMetaType();
+      return (SimpleMetaType) super.getMetaType();
    }
 
    public T getValue()

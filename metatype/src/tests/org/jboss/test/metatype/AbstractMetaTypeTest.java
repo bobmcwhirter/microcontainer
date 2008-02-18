@@ -255,7 +255,7 @@ public abstract class AbstractMetaTypeTest extends BaseTestCase
    {
       String[] itemNames = new String[] { "name1", "name2" };
       String[] itemDescriptions = new String[] { "desc1", "desc2" };
-      MetaType[] itemTypes = new MetaType[] { SimpleMetaType.STRING, SimpleMetaType.INTEGER };
+      MetaType<?>[] itemTypes = new MetaType[] { SimpleMetaType.STRING, SimpleMetaType.INTEGER };
       CompositeMetaType compositeMetaType = new ImmutableCompositeMetaType("typeName", "description", itemNames, itemDescriptions, itemTypes);
       return compositeMetaType;
    }
@@ -269,7 +269,7 @@ public abstract class AbstractMetaTypeTest extends BaseTestCase
    {
       String[] itemNames = new String[] { "name1", "name2" };
       String[] itemDescriptions = new String[] { "desc1", "desc2" };
-      MetaType[] itemTypes = new MetaType[] { SimpleMetaType.STRING, SimpleMetaType.INTEGER };
+      MetaType<?>[] itemTypes = new MetaType[] { SimpleMetaType.STRING, SimpleMetaType.INTEGER };
       CompositeMetaType compositeMetaType = new ImmutableCompositeMetaType("typeName2", "description", itemNames, itemDescriptions, itemTypes);
       return compositeMetaType;
    }
@@ -292,7 +292,7 @@ public abstract class AbstractMetaTypeTest extends BaseTestCase
     * @param actual the actual
     * @throws Exception for any problem
     */
-   protected void testArray(ArrayMetaType expected, ArrayMetaType actual) throws Exception
+   protected void testArray(ArrayMetaType<?> expected, ArrayMetaType<?> actual) throws Exception
    {
       getLog().debug("Array MetaType: className=" + actual.getClassName() + " typeName=" + actual.getTypeName() + " description=" + actual.getDescription() + " dim=" + actual.getDimension());
       assertEquals(expected, actual);
@@ -305,7 +305,7 @@ public abstract class AbstractMetaTypeTest extends BaseTestCase
     * @param actual the actual
     * @throws Exception for any problem
     */
-   protected void testCollection(CollectionMetaType expected, CollectionMetaType actual) throws Exception
+   protected void testCollection(CollectionMetaType<?> expected, CollectionMetaType<?> actual) throws Exception
    {
       getLog().debug("Collection MetaType: className=" + actual.getClassName() + " typeName=" + actual.getTypeName() + " description=" + actual.getDescription());
       assertEquals(expected, actual);

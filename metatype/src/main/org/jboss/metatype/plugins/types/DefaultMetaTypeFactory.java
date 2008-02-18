@@ -95,7 +95,7 @@ public class DefaultMetaTypeFactory extends MetaTypeFactory
    private TypeInfo objectTypeInfo = configuration.getTypeInfo(Object.class); 
 
    /** The builders */
-   private Map<Class, WeakReference<MetaTypeBuilder>> builders = new WeakHashMap<Class, WeakReference<MetaTypeBuilder>>();
+   private Map<Class<?>, WeakReference<MetaTypeBuilder>> builders = new WeakHashMap<Class<?>, WeakReference<MetaTypeBuilder>>();
 
    /**
     * Create a new DefaultMetaTypeFactory.
@@ -107,7 +107,7 @@ public class DefaultMetaTypeFactory extends MetaTypeFactory
    }
    
    @Override
-   public MetaType resolve(Type type)
+   public MetaType<?> resolve(Type type)
    {
       TypeInfo typeInfo = configuration.getTypeInfo(type);
       return resolve(typeInfo);
@@ -119,10 +119,10 @@ public class DefaultMetaTypeFactory extends MetaTypeFactory
     * @param typeInfo the type
     * @return the meta type
     */
-   public MetaType resolve(TypeInfo typeInfo)
+   public MetaType<?> resolve(TypeInfo typeInfo)
    {
       // Look for a cached value
-      MetaType result = typeInfo.getAttachment(MetaType.class);
+      MetaType<?> result = typeInfo.getAttachment(MetaType.class);
       if (result == null)
       {
          // Generate it
@@ -152,9 +152,9 @@ public class DefaultMetaTypeFactory extends MetaTypeFactory
     * @param typeInfo the type info
     * @return the metatype
     */
-   public MetaType generate(TypeInfo typeInfo)
+   public MetaType<?> generate(TypeInfo typeInfo)
    {
-      MetaType result = isBuilder(typeInfo);
+      MetaType<?> result = isBuilder(typeInfo);
       if (result != null)
          return result;
 
@@ -246,7 +246,8 @@ public class DefaultMetaTypeFactory extends MetaTypeFactory
     * @param typeInfo the type info
     * @return the metatype
     */
-   public ArrayMetaType generateArray(ArrayInfo typeInfo)
+   @SuppressWarnings("unchecked")
+   public ArrayMetaType<?> generateArray(ArrayInfo typeInfo)
    {
       int dimension = 1;
       TypeInfo componentType = typeInfo.getComponentType();
@@ -255,7 +256,7 @@ public class DefaultMetaTypeFactory extends MetaTypeFactory
          ++dimension;
          componentType = ((ArrayInfo) componentType).getComponentType();
       }
-      MetaType componentMetaType = resolve(componentType);
+      MetaType<?> componentMetaType = resolve(componentType);
       return new ArrayMetaType(dimension, componentMetaType, componentType.isPrimitive());
    }
    
@@ -308,7 +309,7 @@ public class DefaultMetaTypeFactory extends MetaTypeFactory
    public TableMetaType createMapType(TypeInfo keyType, TypeInfo valueType)
    {
       String name = Map.class.getName();
-      MetaType[] itemTypes = { resolve(keyType), resolve(valueType) };
+      MetaType<?>[] itemTypes = { resolve(keyType), resolve(valueType) };
       CompositeMetaType entryType = createMapEntryType(itemTypes);
       return new ImmutableTableMetaType(name, name, entryType, MAP_INDEX_NAMES);
    }
@@ -319,7 +320,7 @@ public class DefaultMetaTypeFactory extends MetaTypeFactory
     * @param itemTypes the item types
     * @return the map entry type
     */
-   public static CompositeMetaType createMapEntryType(MetaType[] itemTypes)
+   public static CompositeMetaType createMapEntryType(MetaType<?>[] itemTypes)
    {
       String entryName = Map.Entry.class.getName();
       return new ImmutableCompositeMetaType(entryName, entryName, MAP_ITEM_NAMES, MAP_ITEM_NAMES, itemTypes);
@@ -347,7 +348,7 @@ public class DefaultMetaTypeFactory extends MetaTypeFactory
             if ("class".equals(name) == false)
             {
                TypeInfo itemTypeInfo = property.getType();
-               MetaType metaType = resolve(itemTypeInfo);
+               MetaType<?> metaType = resolve(itemTypeInfo);
                result.addItem(name, name, metaType);
                if (property.isAnnotationPresent(CompositeKey.class))
                {
@@ -370,7 +371,7 @@ public class DefaultMetaTypeFactory extends MetaTypeFactory
     * @param typeInfo the type info
     * @return the meta type when it is special
     */
-   public MetaType isBuilder(TypeInfo typeInfo)
+   public MetaType<?> isBuilder(TypeInfo typeInfo)
    {
       MetaTypeBuilder builder = null;
       synchronized (builders)

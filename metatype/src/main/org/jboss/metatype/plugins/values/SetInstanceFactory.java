@@ -32,6 +32,7 @@ import org.jboss.metatype.api.values.InstanceFactory;
  *
  * @author <a href="mailto:ales.justin@jboss.com">Ales Justin</a>
  */
+@SuppressWarnings("unchecked")
 public class SetInstanceFactory implements InstanceFactory<Set>
 {
    public static SetInstanceFactory INSTANCE = new SetInstanceFactory();
