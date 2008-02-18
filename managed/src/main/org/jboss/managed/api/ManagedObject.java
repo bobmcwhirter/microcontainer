@@ -25,6 +25,8 @@ import java.io.Serializable;
 import java.lang.annotation.Annotation;
 import java.util.Map;
 
+import org.jboss.managed.api.annotation.ManagementRuntimeRef;
+
 /**
  * ManagedObject is an interface for a manageable element. It
  * consists of:

@@ -25,6 +25,9 @@ import java.io.Serializable;
 import java.util.Map;
 import java.util.Set;
 
+import org.jboss.managed.api.annotation.ManagementObject;
+import org.jboss.managed.api.annotation.ManagementObjectID;
+
 /**
  * ManagedCommon is used to hold common
  * properties that both, server side and client side,
@@ -46,14 +49,14 @@ public interface ManagedCommon extends Serializable
     * Get the external name by which the ManagedObject is known
     * @see {@linkplain ManagementObject#name}}
     * @see {@linkplain ManagementObjectID#name}}
-    * @return
+    * @return the name
     */
    String getName();
    /**
     * Get the external name type/qualifier.
     * @see {@linkplain ManagementObject#type}
     * @see {@linkplain ManagementObjectID#type}
-    * @return
+    * @return the name type
     */
    String getNameType();
 

@@ -21,6 +21,7 @@
 */
 package org.jboss.managed.api.annotation;
 
+import java.io.Serializable;
 import java.lang.annotation.ElementType;
 import java.lang.annotation.Retention;
 import java.lang.annotation.RetentionPolicy;
@@ -76,7 +77,7 @@ public @interface ManagementProperty
    /** The constraints, allowed values populator factory */
    Class<? extends ManagedPropertyConstraintsPopulatorFactory> constraintsFactory() default NULL_CONSTRAINTS.class;
    /** The constraints, allowed values populator factory */
-   Class<? extends InstanceClassFactory> marshallerFactory() default NULL_MARSHALLER_FACTORY.class;
+   Class<? extends InstanceClassFactory<? extends Serializable>> marshallerFactory() default NULL_MARSHALLER_FACTORY.class;
 
    /**
     * Used in {@link ManagementProperty#constraintsFactory()} to
@@ -111,7 +112,7 @@ public @interface ManagementProperty
     * Used in {@link ManagementProperty#propertyFactory()} to
     * indicate that no ManagedProperty factory is defined.
     */
-   public static abstract class NULL_MARSHALLER_FACTORY implements InstanceClassFactory
+   public static abstract class NULL_MARSHALLER_FACTORY implements InstanceClassFactory<Serializable>
    {
    }
 }

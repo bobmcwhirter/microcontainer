@@ -26,6 +26,7 @@ import java.lang.annotation.Annotation;
 import java.util.Map;
 import java.util.Set;
 
+import org.jboss.managed.api.annotation.ManagementObjectRef;
 import org.jboss.metatype.api.types.MetaType;
 import org.jboss.metatype.api.values.MetaValue;
 
@@ -109,7 +110,7 @@ public interface ManagedProperty extends Serializable
     * 
     * @return the type
     */
-   MetaType getMetaType();
+   MetaType<?> getMetaType();
 
    /**
     * Get the annotations associated with the property
@@ -143,14 +144,14 @@ public interface ManagedProperty extends Serializable
     * 
     * @return the minimum value
     */
-   Comparable getMinimumValue();
+   Comparable<?> getMinimumValue();
 
    /**
     * Get the miximum value
     * 
     * @return the maximum value
     */
-   Comparable getMaximumValue();
+   Comparable<?> getMaximumValue();
 
    /**
     * Check whether this is a valid value

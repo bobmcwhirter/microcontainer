@@ -40,7 +40,7 @@ public class ManagedOperationImpl implements ManagedOperation
    private Impact impact;
    private String name;
    private ManagedParameter[] parameters;
-   private MetaType returnType;
+   private MetaType<?> returnType;
 
 
    public ManagedOperationImpl(String name, String description)
@@ -48,7 +48,7 @@ public class ManagedOperationImpl implements ManagedOperation
       this(description, name, Impact.Unknown, new ManagedParameter[0], SimpleMetaType.VOID);
    }
    public ManagedOperationImpl(String name, String description, Impact impact,
-         ManagedParameter[] parameters, MetaType returnType)
+         ManagedParameter[] parameters, MetaType<?> returnType)
    {
       super();
       this.description = description;
@@ -98,12 +98,12 @@ public class ManagedOperationImpl implements ManagedOperation
       this.parameters = parameters;
    }
 
-   public MetaType getReturnType()
+   public MetaType<?> getReturnType()
    {
       return returnType;
    }
 
-   public void setReturnType(MetaType returnType)
+   public void setReturnType(MetaType<?> returnType)
    {
       this.returnType = returnType;
    }

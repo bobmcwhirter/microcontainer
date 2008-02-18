@@ -22,7 +22,6 @@
 package org.jboss.test.managed.mock;
 
 import java.util.Map;
-import java.util.Set;
 
 import javax.xml.parsers.DocumentBuilder;
 import javax.xml.parsers.DocumentBuilderFactory;

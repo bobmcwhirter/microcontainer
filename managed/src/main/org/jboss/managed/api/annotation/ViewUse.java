@@ -21,6 +21,8 @@
   */
 package org.jboss.managed.api.annotation;
 
+import org.jboss.managed.api.ManagedProperty;
+
 /**
  * An enum for the types of management views a {@link ManagedProperty property}
  * is associated with.

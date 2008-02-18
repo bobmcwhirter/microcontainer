@@ -46,7 +46,7 @@ public @interface ManagementRuntimeRef
    Class<? extends RuntimeComponentNameTransformer> transformer() default DEFAULT_NAME_TRANSFORMER.class;
 
    /**
-    * Used in {@link @ManagementRuntimeRef#transformer()} to
+    * Used in {@link ManagementRuntimeRef#transformer()} to
     * indicate that no name transformation is defined.
     */
    public static final class DEFAULT_NAME_TRANSFORMER implements RuntimeComponentNameTransformer

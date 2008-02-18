@@ -111,7 +111,7 @@ public class DefaultFieldsImpl
     * 
     * @return the meta type
     */
-   public MetaType getMetaType()
+   public MetaType<?> getMetaType()
    {
       return getField(META_TYPE, MetaType.class);
    }
@@ -121,7 +121,7 @@ public class DefaultFieldsImpl
     * 
     * @param type the meta type
     */
-   public void setMetaType(MetaType type)
+   public void setMetaType(MetaType<?> type)
    {
       setField(META_TYPE, type);
    }
@@ -172,7 +172,7 @@ public class DefaultFieldsImpl
     * 
     * @return the minimum value
     */
-   public Comparable getMinimumValue()
+   public Comparable<?> getMinimumValue()
    {
       return getField(MINIMUM_VALUE, Comparable.class);
    }
@@ -182,7 +182,7 @@ public class DefaultFieldsImpl
     * 
     * @param value the value
     */
-   public void setMinimumValue(Comparable value)
+   public void setMinimumValue(Comparable<?> value)
    {
       setField(MINIMUM_VALUE, (Serializable)value);
    }
@@ -192,7 +192,7 @@ public class DefaultFieldsImpl
     * 
     * @return the value
     */
-   public Comparable getMaximumValue()
+   public Comparable<?> getMaximumValue()
    {
       return getField(MAXIMUM_VALUE, Comparable.class);
    }
@@ -202,7 +202,7 @@ public class DefaultFieldsImpl
     * 
     * @param value the value
     */
-   public void setMaximumValue(Comparable value)
+   public void setMaximumValue(Comparable<?> value)
    {
       setField(MAXIMUM_VALUE, (Serializable)value);
    }

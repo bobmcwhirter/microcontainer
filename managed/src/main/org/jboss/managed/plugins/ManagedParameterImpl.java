@@ -157,7 +157,7 @@ public class ManagedParameterImpl implements ManagedParameter
       setField(Fields.ANNOTATIONS, (Serializable) annotations);      
    }
 
-   public MetaType getMetaType()
+   public MetaType<?> getMetaType()
    {
       return getField(Fields.META_TYPE, MetaType.class);
    }
@@ -167,7 +167,7 @@ public class ManagedParameterImpl implements ManagedParameter
     * 
     * @param type the meta type
     */
-   public void setMetaType(MetaType type)
+   public void setMetaType(MetaType<?> type)
    {
       setField(Fields.META_TYPE, type);
    }
@@ -198,7 +198,7 @@ public class ManagedParameterImpl implements ManagedParameter
       setField(Fields.LEGAL_VALUES, (Serializable)values);
    }
 
-   public Comparable getMinimumValue()
+   public Comparable<?> getMinimumValue()
    {
       return getField(Fields.MINIMUM_VALUE, Comparable.class);
    }
@@ -208,12 +208,12 @@ public class ManagedParameterImpl implements ManagedParameter
     * 
     * @param value the value
     */
-   public void setMinimumValue(Comparable value)
+   public void setMinimumValue(Comparable<?> value)
    {
       setField(Fields.MINIMUM_VALUE, (Serializable)value);
    }
 
-   public Comparable getMaximumValue()
+   public Comparable<?> getMaximumValue()
    {
       return getField(Fields.MAXIMUM_VALUE, Comparable.class);
    }
@@ -223,7 +223,7 @@ public class ManagedParameterImpl implements ManagedParameter
     * 
     * @param value the value
     */
-   public void setMaximumValue(Comparable value)
+   public void setMaximumValue(Comparable<?> value)
    {
       setField(Fields.MAXIMUM_VALUE, (Serializable)value);
    }

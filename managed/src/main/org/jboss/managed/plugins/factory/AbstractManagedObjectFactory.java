@@ -114,10 +114,10 @@ public class AbstractManagedObjectFactory extends ManagedObjectFactory
    private MetaValueFactory metaValueFactory = MetaValueFactory.getInstance();
    
    /** The managed object builders */
-   private Map<Class, ManagedObjectBuilder> builders = new WeakHashMap<Class, ManagedObjectBuilder>();
+   private Map<Class<?>, ManagedObjectBuilder> builders = new WeakHashMap<Class<?>, ManagedObjectBuilder>();
 
    /** The instance to class factories */
-   private Map<Class, InstanceClassFactory> instanceFactories = new WeakHashMap<Class, InstanceClassFactory>();
+   private Map<Class<?>, InstanceClassFactory<? extends Serializable>> instanceFactories = new WeakHashMap<Class<?>, InstanceClassFactory<? extends Serializable>>();
 
    /** The instance to name transformers */
    private Map<TypeInfo, RuntimeComponentNameTransformer> transformers = new WeakHashMap<TypeInfo, RuntimeComponentNameTransformer>();
@@ -233,7 +233,7 @@ public class AbstractManagedObjectFactory extends ManagedObjectFactory
     * @param clazz the clazz
     * @return the skeleton managed object, null if clazz is not
     *    marked as a ManagementObject.
-    * @see {@linkplain ManagementObject}
+    * {@linkplain ManagementObject}
     */
    protected <T extends Serializable> ManagedObject createSkeletonManagedObject(Class<T> clazz)
    {
@@ -251,6 +251,7 @@ public class AbstractManagedObjectFactory extends ManagedObjectFactory
     * @return the ManagementObject if clazz is properly annotated, null if
     *    it does not have a ManagementObject annotation.
     */
+   @SuppressWarnings("unchecked")
    public ManagedObject buildManagedObject(Class<? extends Serializable> clazz)
    {
       boolean trace = log.isTraceEnabled();
@@ -679,6 +680,7 @@ public class AbstractManagedObjectFactory extends ManagedObjectFactory
     * @param object the object
     * @return the meta value
     */
+   @SuppressWarnings("unchecked")
    public MetaValue getValue(BeanInfo beanInfo, ManagedProperty property, Serializable object)
    {
       String name = getPropertyName(property);
@@ -719,10 +721,10 @@ public class AbstractManagedObjectFactory extends ManagedObjectFactory
       }
       else if (propertyType.isArray())
       {
-         ArrayMetaType arrayType = ArrayMetaType.class.cast(propertyType);
+         ArrayMetaType<?> arrayType = ArrayMetaType.class.cast(propertyType);
          if (MANAGED_OBJECT_META_TYPE == arrayType.getElementType())
          {
-            Collection cvalue = getAsCollection(value);
+            Collection<?> cvalue = getAsCollection(value);
             // todo - AJ: changed some generics by best guess
             ArrayMetaType<GenericValueSupport> moType = new ArrayMetaType<GenericValueSupport>(1, MANAGED_OBJECT_META_TYPE);
             ArrayValueSupport<GenericValueSupport> moArrayValue = new ArrayValueSupport<GenericValueSupport>(moType);
@@ -742,7 +744,7 @@ public class AbstractManagedObjectFactory extends ManagedObjectFactory
          CollectionMetaType collectionType = CollectionMetaType.class.cast(propertyType);
          if (MANAGED_OBJECT_META_TYPE == collectionType.getElementType())
          {
-            Collection cvalue = getAsCollection(value);
+            Collection<?> cvalue = getAsCollection(value);
             List<GenericValueSupport> tmp = new ArrayList<GenericValueSupport>();
             for(Object element : cvalue)
             {
@@ -764,7 +766,7 @@ public class AbstractManagedObjectFactory extends ManagedObjectFactory
     * @param beanInfo the bean info
     * @param property the property
     * @param object the object
-    * @param the meta value
+    * @param value the meta value
     */
    public void setValue(BeanInfo beanInfo, ManagedProperty property, Serializable object, MetaValue value)
    {
@@ -786,7 +788,7 @@ public class AbstractManagedObjectFactory extends ManagedObjectFactory
     * 
     * @param methodInfo
     * @param opAnnotation
-    * @return
+    * @return the managed operation
     */
    protected ManagedOperation getManagedOperation(MethodInfo methodInfo, ManagementOperation opAnnotation)
    {
@@ -796,7 +798,7 @@ public class AbstractManagedObjectFactory extends ManagedObjectFactory
       ManagementParameter[] params = opAnnotation.params();
       ParameterInfo[] paramInfo = methodInfo.getParameters();
       TypeInfo returnInfo = methodInfo.getReturnType();
-      MetaType returnType = metaTypeFactory.resolve(returnInfo);
+      MetaType<?> returnType = metaTypeFactory.resolve(returnInfo);
       ArrayList<ManagedParameter> mparams = new ArrayList<ManagedParameter>();
       Class<? extends ManagedParameterConstraintsPopulatorFactory> opConstraintsFactor = opAnnotation.constraintsFactory();
 
@@ -823,7 +825,7 @@ public class AbstractManagedObjectFactory extends ManagedObjectFactory
             Fields fields =  new DefaultFieldsImpl(pname);
             if (pdescription != null)
                fields.setField(Fields.DESCRIPTION, pdescription);
-            MetaType metaType = metaTypeFactory.resolve(pinfo.getParameterType());
+            MetaType<?> metaType = metaTypeFactory.resolve(pinfo.getParameterType());
             fields.setField(Fields.META_TYPE, metaType);
             // Delegate others (legal values, min/max etc.) to the constraints factory
             try
@@ -894,7 +896,7 @@ public class AbstractManagedObjectFactory extends ManagedObjectFactory
     *
     * @param type the type info
     * @return transformer instance
-    * @throws Exception for any error
+    * @throws Throwable for any error
     */
    protected RuntimeComponentNameTransformer getComponentNameTransformer(TypeInfo type) throws Throwable
    {
@@ -932,7 +934,7 @@ public class AbstractManagedObjectFactory extends ManagedObjectFactory
       return this;
    }
 
-   protected Collection getAsCollection(Object value)
+   protected Collection<?> getAsCollection(Object value)
    {
       if( value.getClass().isArray() )
          return Arrays.asList(value);
@@ -945,14 +947,14 @@ public class AbstractManagedObjectFactory extends ManagedObjectFactory
     * Look for ctor(Fields)
     * @param factory - the ManagedProperty implementation class
     * @param fields - the fields to pass to the ctor
-    * @return
+    * @return the managed property
     */
    protected ManagedProperty getManagedProperty(Class<? extends ManagedProperty> factory, Fields fields)
    {
       ManagedProperty property = null;
       try
       {
-         Class[] sig = {Fields.class};
+         Class<?>[] sig = {Fields.class};
          Constructor<? extends ManagedProperty> ctor = factory.getConstructor(sig);
          Object[] args = {fields};
          property = ctor.newInstance(args);

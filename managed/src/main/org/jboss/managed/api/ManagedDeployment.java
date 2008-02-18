@@ -136,13 +136,14 @@ public interface ManagedDeployment
 
    /**
     * Add a component to this deployment
-    * @param name
-    * @param comp
+    * @param name the name
+    * @param comp the component
     */
    public void addComponent(String name, ManagedComponent comp);
    /**
     * 
-    * @param name
+    * @param name the name
+    * @return true when it was removed
     */
    public boolean removeComponent(String name);
 

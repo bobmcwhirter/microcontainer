@@ -22,6 +22,7 @@
 package org.jboss.managed.spi.factory;
 
 import org.jboss.managed.api.Fields;
+import org.jboss.managed.api.ManagedParameter;
 import org.jboss.reflect.spi.ParameterInfo;
 
 /**

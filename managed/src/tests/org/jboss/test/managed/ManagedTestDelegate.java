@@ -48,7 +48,7 @@ public class ManagedTestDelegate extends AbstractTestDelegate
     * @param clazz the class
     * @throws Exception for any error
     */
-   public ManagedTestDelegate(Class clazz) throws Exception
+   public ManagedTestDelegate(Class<?> clazz) throws Exception
    {
       super(clazz);
    }
@@ -84,7 +84,7 @@ public class ManagedTestDelegate extends AbstractTestDelegate
     *    false otherwise.
     * @throws Exception on failure to deploy the aop descriptor.
     */
-   protected boolean deployAOP(Class referenceClass) throws Exception
+   protected boolean deployAOP(Class<?> referenceClass) throws Exception
    {
       String testName = referenceClass.getName();
       testName = testName.replace('.', '/') + "-aop.xml";

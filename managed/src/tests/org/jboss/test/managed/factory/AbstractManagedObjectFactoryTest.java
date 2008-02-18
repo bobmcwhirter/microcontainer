@@ -111,7 +111,7 @@ public abstract class AbstractManagedObjectFactoryTest extends BaseTestCase
     * @param clazz the class
     * @return the meta type
     */
-   protected MetaType resolve(Class<?> clazz)
+   protected MetaType<?> resolve(Class<?> clazz)
    {
       return metaTypeFactory.resolve(clazz);
    }
@@ -270,7 +270,7 @@ public abstract class AbstractManagedObjectFactoryTest extends BaseTestCase
     */
    protected void checkProperty(ManagedObject managedObject, String name, Class<?> clazz, String description, boolean mandatory, Object value)
    {
-      MetaType expectedType = resolve(clazz);
+      MetaType<?> expectedType = resolve(clazz);
       MetaValue expectedValue = metaValueFactory.create(value, clazz);
       checkProperty(managedObject, name, expectedType, expectedValue, description, mandatory);
    }
@@ -301,7 +301,7 @@ public abstract class AbstractManagedObjectFactoryTest extends BaseTestCase
     * @param description the property description
     * @param mandatory whether the property is expected mandatory
     */
-   protected void checkProperty(ManagedObject managedObject, String name, MetaType expectedType, MetaValue expectedValue, String description, boolean mandatory)
+   protected void checkProperty(ManagedObject managedObject, String name, MetaType<?> expectedType, MetaValue expectedValue, String description, boolean mandatory)
    {
       getLog().debug("checkProperty name=" + name + " type=" + expectedType + " desc=" + description + " mandatory=" + mandatory + " value=" + expectedValue);
       ManagedProperty managedProperty = managedObject.getProperty(name);
@@ -317,7 +317,7 @@ public abstract class AbstractManagedObjectFactoryTest extends BaseTestCase
       getLog().debug("... mandatory=" + propertyMandatory);
       assertEquals("Property '" + name + "' has the wrong mandatory flag", mandatory, propertyMandatory);
       getLog().debug("... expected metaType=" + expectedType);
-      MetaType actualType = managedProperty.getMetaType();
+      MetaType<?> actualType = managedProperty.getMetaType();
       getLog().debug("..... actual metaType=" + expectedType);
       assertEquals("Property '" + name + "' has the wrong type", expectedType, actualType);
       getLog().debug("... expected value=" + expectedValue);

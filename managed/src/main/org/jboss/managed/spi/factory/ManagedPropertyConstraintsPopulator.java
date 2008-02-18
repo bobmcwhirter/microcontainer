@@ -38,5 +38,6 @@ public interface ManagedPropertyConstraintsPopulator
     * @param info - the PropertyInfo for the attachment class property
     * @param fields - the fields to add the constraints to
     */
+   @SuppressWarnings("unchecked")
    public void populateManagedProperty(Class attachmentClass, PropertyInfo info, Fields fields);
 }

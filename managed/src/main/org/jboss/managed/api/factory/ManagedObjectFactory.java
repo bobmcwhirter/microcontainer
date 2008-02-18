@@ -24,6 +24,7 @@ package org.jboss.managed.api.factory;
 import java.io.Serializable;
 
 import org.jboss.managed.api.ManagedObject;
+import org.jboss.managed.api.annotation.ManagementObjectID;
 import org.jboss.managed.plugins.factory.ManagedObjectFactoryBuilder;
 import org.jboss.managed.spi.factory.InstanceClassFactory;
 import org.jboss.managed.spi.factory.ManagedObjectBuilder;

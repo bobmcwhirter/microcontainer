@@ -27,6 +27,7 @@ import java.lang.annotation.RetentionPolicy;
 import java.lang.annotation.Target;
 
 import org.jboss.managed.api.Fields;
+import org.jboss.managed.api.ManagedObject;
 import org.jboss.managed.api.ManagedProperty;
 import org.jboss.managed.api.annotation.ManagementProperty.NULL_CONSTRAINTS;
 import org.jboss.managed.api.annotation.ManagementProperty.NULL_FIELDS_FACTORY;
@@ -35,7 +36,7 @@ import org.jboss.managed.spi.factory.ManagedPropertyConstraintsPopulatorFactory;
 
 /**
  * ManagementObject annotation for describing ManagedObjects.
- * @see {@linkplain ManagedObject}
+ * {@linkplain ManagedObject}
  * 
  * @author <a href="adrian@jboss.com">Adrian Brock</a>
  * @author Scott.Stark@jboss.org

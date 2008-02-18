@@ -79,7 +79,7 @@ public interface ManagedParameter extends Serializable
     * 
     * @return the type
     */
-   MetaType getMetaType();
+   MetaType<?> getMetaType();
 
    /**
     * Get the value
@@ -107,14 +107,14 @@ public interface ManagedParameter extends Serializable
     * 
     * @return the minimum value
     */
-   Comparable getMinimumValue();
+   Comparable<?> getMinimumValue();
 
    /**
     * Get the miximum value
     * 
     * @return the maximum value
     */
-   Comparable getMaximumValue();
+   Comparable<?> getMaximumValue();
 
    /**
     * Check whether this is a valid value

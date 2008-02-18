@@ -69,7 +69,7 @@ public interface ManagedOperation extends Serializable
     * The MetaType for the operation return value.
     * @return MetaType for the operation return value.
     */
-   public MetaType getReturnType();
+   public MetaType<?> getReturnType();
 
    /**
     * The parameter information for the operation arguments. An empty
