@@ -613,7 +613,7 @@ public class DeployersImpl implements Deployers, ControllerContextActions
                else
                {
                   dependency = iDependOn.toString();
-                  ControllerContext other = controller.getContext(item.getIDependOn(), null);
+                  ControllerContext other = controller.getContext(iDependOn, null);
                   if (other == null)
                      actualStateString = "** NOT FOUND **";
                   else
