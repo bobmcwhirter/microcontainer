@@ -24,6 +24,7 @@ package org.jboss.test.microcontainer.xml.test;
 import java.net.URL;
 import java.util.List;
 
+import org.jboss.beans.metadata.spi.BeanMetaData;
 import org.jboss.beans.metadata.spi.BeanMetaDataFactory;
 import org.jboss.test.AbstractTestCaseWithSetup;
 import org.jboss.test.AbstractTestDelegate;
@@ -43,7 +44,8 @@ public class AbstractAOPXMLTest extends AbstractTestCaseWithSetup
       super(name);
    }
 
-   protected Object assertType(List beans, int index, Class clazz)
+   @SuppressWarnings("unchecked")
+   protected Object assertType(List beans, int index, Class<?> clazz)
    {
       Object object = beans.get(index);
       assertNotNull("Got null, expected bean " + index + " to be a " + clazz.getName(), object);
@@ -59,10 +61,10 @@ public class AbstractAOPXMLTest extends AbstractTestCaseWithSetup
     * @return the unmarshalled beans
     * @throws Exception for any error
     */
-   protected List unmarshalBeans(String name, int size) throws Exception
+   protected List<BeanMetaData> unmarshalBeans(String name, int size) throws Exception
    {
       BeanMetaDataFactory factory = (BeanMetaDataFactory) unmarshal(name, BeanMetaDataFactory.class);
-      List beans = factory.getBeans();
+      List<BeanMetaData> beans = factory.getBeans();
       assertNotNull(beans);
       assertEquals(size, beans.size());
       return beans;
@@ -100,7 +102,7 @@ public class AbstractAOPXMLTest extends AbstractTestCaseWithSetup
       return url.toString();
    }
    
-   protected void checkJBossXBException(Class expected, Throwable throwable)
+   protected void checkJBossXBException(Class<? extends Throwable> expected, Throwable throwable)
    {
       checkThrowable(JBossXBException.class, throwable);
       JBossXBException e = (JBossXBException) throwable;
@@ -114,7 +116,7 @@ public class AbstractAOPXMLTest extends AbstractTestCaseWithSetup
     * @return the delegate
     * @throws Exception for any error
     */
-   public static AbstractTestDelegate getDelegate(Class clazz) throws Exception
+   public static AbstractTestDelegate getDelegate(Class<?> clazz) throws Exception
    {
       return new XMLTestDelegate(clazz);
    }

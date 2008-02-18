@@ -99,12 +99,12 @@ public class LifecycleTestCase extends AOPMicrocontainerTest
       assertNotNull(bean);
    }
    
-   public void checkExpectedAnnotations(String name, Class annotation)
+   public void checkExpectedAnnotations(String name, Class<?> annotation)
    {
-      ArrayList<Class> events = LifecycleCallback.interceptions.get(name);
+      ArrayList<Class<?>> events = LifecycleCallback.interceptions.get(name);
       assertNotNull(events);
       assertEquals("Wrong events, expected one element only " + events, 1, events.size());
-      Class actualAnnotation = events.get(0);
+      Class<?> actualAnnotation = events.get(0);
       assertEquals(annotation, actualAnnotation);
    }
 }

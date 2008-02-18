@@ -21,9 +21,6 @@
 */
 package org.jboss.test.microcontainer.beans.test;
 
-import java.util.HashSet;
-import java.util.Set;
-
 import org.jboss.aop.AspectManager;
 import org.jboss.aop.DomainDefinition;
 import org.jboss.aop.microcontainer.junit.AOPMicrocontainerTest;

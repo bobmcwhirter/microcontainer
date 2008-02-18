@@ -31,14 +31,14 @@ import java.util.List;
  */
 public class Interceptions
 {
-   private static List interceptions = new ArrayList();
+   private static List<Object> interceptions = new ArrayList<Object>();
    
    public static void add(Object o)
    {
       interceptions.add(o);
    }
    
-   public static List interceptions()
+   public static List<Object> interceptions()
    {
       return interceptions;
    }

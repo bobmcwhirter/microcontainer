@@ -32,7 +32,7 @@ import org.jboss.aop.pointcut.ast.ParseException;
  */
 public class DynamicAspectDeployer
 {
-   public static String addBinding(String pointcut, Class interceptor) throws ParseException
+   public static String addBinding(String pointcut, Class<?> interceptor) throws ParseException
    {
       AdviceBinding binding = new AdviceBinding(pointcut, null);
       String name = binding.getName();

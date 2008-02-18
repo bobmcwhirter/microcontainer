@@ -38,7 +38,7 @@ import org.jboss.test.kernel.junit.MicrocontainerTestDelegate;
 public class AOPMicrocontainerTestDelegate extends MicrocontainerTestDelegate
 {
    /** The deployed urls */
-   private static final CopyOnWriteArrayList urls = new CopyOnWriteArrayList();
+   private static final CopyOnWriteArrayList<URL> urls = new CopyOnWriteArrayList<URL>();
 
    /**
     * Create a new AOPMicrocontainerTestDelegate.
@@ -46,7 +46,7 @@ public class AOPMicrocontainerTestDelegate extends MicrocontainerTestDelegate
     * @param clazz the class
     * @throws Exception for any error
     */
-   public AOPMicrocontainerTestDelegate(Class clazz) throws Exception
+   public AOPMicrocontainerTestDelegate(Class<?> clazz) throws Exception
    {
       super(clazz);
    }
@@ -76,9 +76,9 @@ public class AOPMicrocontainerTestDelegate extends MicrocontainerTestDelegate
    {
 
       super.undeploy();
-      for (Iterator i = urls.iterator(); i.hasNext();)
+      for (Iterator<URL> i = urls.iterator(); i.hasNext();)
       {
-         URL url = (URL) i.next();
+         URL url = i.next();
          undeployAOP(url);
       }
    }

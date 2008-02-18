@@ -265,7 +265,7 @@ public class AOPBeansSchemaInitializer implements SchemaBindingInitializer
    private void initDomainType(SchemaBinding schema)
    {
       TypeBinding type = schema.getType(domainTypeQName);
-      type.setHandler(DomainHandler.HANDLER);
+      type.setHandler(DomainHandler.DOMAIN_HANDLER);
       type.pushInterceptor(interceptorQName, DomainAspectManagerAwareBeanMetaDataFactoryInterceptor.INTERCEPTOR);
       type.pushInterceptor(aspectQName, DomainAspectManagerAwareBeanMetaDataFactoryInterceptor.INTERCEPTOR);
       type.pushInterceptor(bindQName, DomainAspectManagerAwareBeanMetaDataFactoryInterceptor.INTERCEPTOR);
@@ -341,7 +341,7 @@ public class AOPBeansSchemaInitializer implements SchemaBindingInitializer
       TypeBinding type = schema.getType(cflowStackTypeQName);
       type.pushInterceptor(calledQName, CFlowStackCalledInterceptor.INTERCEPTOR);
       type.pushInterceptor(notCalledQName, CFlowStackNotCalledInterceptor.INTERCEPTOR);
-      type.setHandler(CFlowStackHandler.HANDLER);
+      type.setHandler(CFlowStackHandler.CFLOW_STACK_HANDLER);
    }
 
    private void initDynamicCFlowStackType(SchemaBinding schema)
@@ -353,7 +353,7 @@ public class AOPBeansSchemaInitializer implements SchemaBindingInitializer
    private void initPointcutType(SchemaBinding schema)
    {
       TypeBinding type = schema.getType(pointcutTypeQName);
-      type.setHandler(PointcutHandler.HANDLER);
+      type.setHandler(PointcutHandler.POINTCUT_HANDLER);
    }
 
    private void initPrepareType(SchemaBinding schema)
@@ -378,14 +378,14 @@ public class AOPBeansSchemaInitializer implements SchemaBindingInitializer
    private void initAnnotationType(SchemaBinding schema)
    {
       TypeBinding type = schema.getType(annotationTypeQName);
-      type.setHandler(AnnotationOverrideHandler.HANDLER);
+      type.setHandler(AnnotationOverrideHandler.ANNOTATION_OVERRIDE_HANDLER);
       type.setSimpleType(AnnotationCharactersHandler.HANDLER);
    }
    
    private void initPrecedenceType(SchemaBinding schema)
    {
       TypeBinding type = schema.getType(precedenceTypeQName);
-      type.setHandler(PrecedenceHandler.HANDLER);
+      type.setHandler(PrecedenceHandler.PRECEDENCE_HANDLER);
       type.pushInterceptor(adviceQName, PrecedenceInterceptor.INTERCEPTOR);
       type.pushInterceptor(interceptorRefQName, PrecedenceInterceptor.INTERCEPTOR);
    }
@@ -395,7 +395,7 @@ public class AOPBeansSchemaInitializer implements SchemaBindingInitializer
       TypeBinding type = schema.getType(introductionTypeQName);
       type.pushInterceptor(interfacesQName, IntroductionInterfacesInterceptor.INTERCEPTOR);
       type.pushInterceptor(mixinQName, IntroductionMixinInterceptor.INTERCEPTOR);
-      type.setHandler(IntroductionHandler.HANDLER);
+      type.setHandler(IntroductionHandler.INTRODUCTION_HANDLER);
    }
    
    private void initLifecycleType(SchemaBinding schema)
@@ -426,25 +426,25 @@ public class AOPBeansSchemaInitializer implements SchemaBindingInitializer
    private void initBeforeType(SchemaBinding schema)
    {
       TypeBinding type = schema.getType(beforeTypeQName);
-      type.setHandler(BeforeHandler.HANDLER);
+      type.setHandler(BeforeHandler.BEFORE_HANDLER);
    }
 
    private void initAfterType(SchemaBinding schema)
    {
       TypeBinding type = schema.getType(afterTypeQName);
-      type.setHandler(AfterHandler.HANDLER);
+      type.setHandler(AfterHandler.AFTER_HANDLER);
    }
 
    private void initThrowingType(SchemaBinding schema)
    {
       TypeBinding type = schema.getType(throwingTypeQName);
-      type.setHandler(ThrowingHandler.HANDLER);
+      type.setHandler(ThrowingHandler.THROWING_HANDLER);
    }
 
    private void initFinallyType(SchemaBinding schema)
    {
       TypeBinding type = schema.getType(finallyTypeQName);
-      type.setHandler(FinallyHandler.HANDLER);
+      type.setHandler(FinallyHandler.FINALLY_HANDLER);
    }
 
    private void initCFlowStackEntryType(SchemaBinding schema)
@@ -519,7 +519,7 @@ public class AOPBeansSchemaInitializer implements SchemaBindingInitializer
 
    private static class DomainHandler  extends AspectManagerAwareBeanFactoryHandler
    {
-      public static final DomainHandler HANDLER = new DomainHandler();
+      public static final DomainHandler DOMAIN_HANDLER = new DomainHandler();
 
       @Override
       public Object startElement(Object parent, QName name, ElementBinding element)
@@ -733,7 +733,7 @@ public class AOPBeansSchemaInitializer implements SchemaBindingInitializer
    
    private static class CFlowStackHandler extends AspectManagerAwareBeanFactoryHandler
    {
-      public static final CFlowStackHandler HANDLER = new CFlowStackHandler();
+      public static final CFlowStackHandler CFLOW_STACK_HANDLER = new CFlowStackHandler();
 
       @Override
       public Object startElement(Object parent, QName name, ElementBinding element)
@@ -744,7 +744,7 @@ public class AOPBeansSchemaInitializer implements SchemaBindingInitializer
 
    private static class PrecedenceHandler extends AspectManagerAwareBeanFactoryHandler
    {
-      public static final PrecedenceHandler HANDLER = new PrecedenceHandler();
+      public static final PrecedenceHandler PRECEDENCE_HANDLER = new PrecedenceHandler();
       
       @Override
       public Object startElement(Object parent, QName name, ElementBinding element)
@@ -755,7 +755,7 @@ public class AOPBeansSchemaInitializer implements SchemaBindingInitializer
    
    private static class IntroductionHandler extends AspectManagerAwareBeanFactoryHandler
    {
-      public static final IntroductionHandler HANDLER = new IntroductionHandler();
+      public static final IntroductionHandler INTRODUCTION_HANDLER = new IntroductionHandler();
       
       @Override
       public Object startElement(Object parent, QName name, ElementBinding element)
@@ -923,7 +923,7 @@ public class AOPBeansSchemaInitializer implements SchemaBindingInitializer
       
    private static class BeforeHandler extends AdviceHandler
    {
-      public static final BeforeHandler HANDLER = new BeforeHandler();
+      public static final BeforeHandler BEFORE_HANDLER = new BeforeHandler();
 
       @Override
       public void attributes(Object o, QName elementName, ElementBinding element, Attributes attrs, NamespaceContext nsCtx)
@@ -936,7 +936,7 @@ public class AOPBeansSchemaInitializer implements SchemaBindingInitializer
       
    private static class AfterHandler extends AdviceHandler
    {
-      public static final AfterHandler HANDLER = new AfterHandler();
+      public static final AfterHandler AFTER_HANDLER = new AfterHandler();
 
       @Override
       public void attributes(Object o, QName elementName, ElementBinding element, Attributes attrs, NamespaceContext nsCtx)
@@ -949,7 +949,7 @@ public class AOPBeansSchemaInitializer implements SchemaBindingInitializer
 
    private static class ThrowingHandler extends AdviceHandler
    {
-      public static final ThrowingHandler HANDLER = new ThrowingHandler();
+      public static final ThrowingHandler THROWING_HANDLER = new ThrowingHandler();
 
       @Override
       public void attributes(Object o, QName elementName, ElementBinding element, Attributes attrs, NamespaceContext nsCtx)
@@ -962,7 +962,7 @@ public class AOPBeansSchemaInitializer implements SchemaBindingInitializer
       
    private static class FinallyHandler extends AdviceHandler
    {
-      public static final FinallyHandler HANDLER = new FinallyHandler();
+      public static final FinallyHandler FINALLY_HANDLER = new FinallyHandler();
 
       @Override
       public void attributes(Object o, QName elementName, ElementBinding element, Attributes attrs, NamespaceContext nsCtx)
@@ -1129,7 +1129,7 @@ public class AOPBeansSchemaInitializer implements SchemaBindingInitializer
    
    private static class PointcutHandler extends PrepareHandler
    {
-      public static final PointcutHandler HANDLER = new PointcutHandler();
+      public static final PointcutHandler POINTCUT_HANDLER = new PointcutHandler();
 
       @Override
       public Object startElement(Object parent, QName name, ElementBinding element)
@@ -1189,7 +1189,7 @@ public class AOPBeansSchemaInitializer implements SchemaBindingInitializer
    
    private static class AnnotationOverrideHandler extends AnnotationIntroductionHandler
    {
-      public static final AnnotationOverrideHandler HANDLER = new AnnotationOverrideHandler(); 
+      public static final AnnotationOverrideHandler ANNOTATION_OVERRIDE_HANDLER = new AnnotationOverrideHandler(); 
 
       @Override
       public Object startElement(Object parent, QName name, ElementBinding element)

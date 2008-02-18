@@ -29,12 +29,8 @@ import javax.management.ObjectName;
 
 import junit.framework.Test;
 
-import org.jboss.aop.microcontainer.aspects.jmx.JMX;
 import org.jboss.aop.microcontainer.junit.AOPMicrocontainerTest;
 import org.jboss.test.microcontainer.support.JmxRegistrant;
-import org.jboss.test.microcontainer.support.MetaDataContextInterceptor;
-import org.jboss.test.microcontainer.support.SimpleBean;
-import org.jboss.test.microcontainer.support.SimpleBeanImplMBean;
 
 public class JMXLifecycleTestCase extends AOPMicrocontainerTest
 {

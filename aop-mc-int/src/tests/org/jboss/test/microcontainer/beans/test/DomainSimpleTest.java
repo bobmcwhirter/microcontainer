@@ -77,6 +77,7 @@ public abstract class DomainSimpleTest extends DomainProxyTest
       checkArtifacts(manager, false);
    }
 
+   @SuppressWarnings("unchecked")
    private void checkArtifacts(AspectManager manager, boolean shouldBeThere)
    {
       Object o = manager.getTypedef("TypeDef");
@@ -119,6 +120,7 @@ public abstract class DomainSimpleTest extends DomainProxyTest
       else assertNull(o);
    }
 
+   @SuppressWarnings("unchecked")
    private void checkShouldBeThere(Collection coll, boolean shouldBeThere)
    {
       if (shouldBeThere)
@@ -135,6 +137,7 @@ public abstract class DomainSimpleTest extends DomainProxyTest
       }
    }
 
+   @SuppressWarnings("unchecked")
    private void checkShouldBeThere(Map coll, boolean shouldBeThere)
    {
       if (shouldBeThere)

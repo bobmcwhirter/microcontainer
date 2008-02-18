@@ -23,16 +23,11 @@ package org.jboss.test.microcontainer.beans.test;
 
 import java.util.List;
 
-import org.jboss.aop.Advised;
 import org.jboss.aop.advice.AdviceType;
 import org.jboss.aop.microcontainer.beans.AspectBinding;
 import org.jboss.aop.microcontainer.beans.BindingEntry;
 import org.jboss.aop.microcontainer.beans.InterceptorEntry;
 import org.jboss.aop.microcontainer.junit.AOPMicrocontainerTest;
-import org.jboss.aop.proxy.container.AspectManaged;
-import org.jboss.test.microcontainer.beans.Interceptions;
-import org.jboss.test.microcontainer.beans.POJO;
-import org.jboss.test.microcontainer.beans.TestAspect;
 
 /**
  * 

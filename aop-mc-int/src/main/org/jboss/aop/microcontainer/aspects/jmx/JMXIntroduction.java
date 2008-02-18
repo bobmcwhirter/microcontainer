@@ -93,7 +93,7 @@ public class JMXIntroduction implements Interceptor
       
       if ("setKernelControllerContext".equals(mi.getMethod().getName()))
       {
-         Class intfClass = null;
+         Class<?> intfClass = null;
          boolean registerDirectly = false;
          if (jmx != null)
          {

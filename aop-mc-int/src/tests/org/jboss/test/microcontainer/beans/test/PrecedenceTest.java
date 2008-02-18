@@ -48,7 +48,7 @@ public abstract class PrecedenceTest extends AOPMicrocontainerTest
       POJO pojo = (POJO)getBean("Bean");
       pojo.method(2);
       
-      List interceptions = Interceptions.interceptions();
+      List<Object> interceptions = Interceptions.interceptions();
       assertEquals(2, interceptions.size());
       
       assertEquals(TestInterceptor.class, interceptions.get(0).getClass());

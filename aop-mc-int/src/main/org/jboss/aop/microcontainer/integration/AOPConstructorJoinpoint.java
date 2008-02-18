@@ -67,7 +67,7 @@ public class AOPConstructorJoinpoint extends BasicConstructorJoinPoint
 
    public Object dispatch() throws Throwable
    {
-      Class clazz = constructorInfo.getDeclaringClass().getType();
+      Class<?> clazz = constructorInfo.getDeclaringClass().getType();
       MetaData metaData = MetaDataStack.peek();
       AspectManager manager = AspectManagerFactory.getAspectManager(metaData);
 
@@ -160,13 +160,13 @@ public class AOPConstructorJoinpoint extends BasicConstructorJoinPoint
          
          if (getConstructorInfo().getParameterTypes().length > 0)
          {
-            Constructor constructor = null;
+            Constructor<?> constructor = null;
             if (aopinfo == null)
             {
                //Fall back to using the class;
-               Class clazz = advisor.getClazz();
-               Constructor[] ctors = clazz.getConstructors();
-               for (Constructor ctor : ctors)
+               Class<?> clazz = advisor.getClazz();
+               Constructor<?>[] ctors = clazz.getConstructors();
+               for (Constructor<?> ctor : ctors)
                {
                   if (matchConstructor(ctor))
                   {
@@ -199,10 +199,10 @@ public class AOPConstructorJoinpoint extends BasicConstructorJoinPoint
       return null;
    }
    
-   private boolean matchConstructor(Constructor ctor)
+   private boolean matchConstructor(Constructor<?> ctor)
    {
       TypeInfo[] params = constructorInfo.getParameterTypes();
-      Class[] ctorParams = ctor.getParameterTypes();
+      Class<?>[] ctorParams = ctor.getParameterTypes();
       if (params.length == ctorParams.length)
       {
          boolean match = true;

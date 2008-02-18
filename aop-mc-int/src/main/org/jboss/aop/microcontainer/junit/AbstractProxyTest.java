@@ -50,7 +50,7 @@ public abstract class AbstractProxyTest extends AbstractTestCaseWithSetup
     * @return the delegate
     * @throws Exception for any error
     */
-   public static AbstractTestDelegate getDelegate(Class clazz) throws Exception
+   public static AbstractTestDelegate getDelegate(Class<?> clazz) throws Exception
    {
       String property = System.getProperty("jboss.mc.secure", "false");
       boolean enableSecurity = Boolean.valueOf(property).booleanValue();
@@ -99,7 +99,7 @@ public abstract class AbstractProxyTest extends AbstractTestCaseWithSetup
     * @return the proxy
     * @throws Exception for any error
     */
-   protected Object assertCreateProxy(Object target, Class expected) throws Exception
+   protected Object assertCreateProxy(Object target, Class<?> expected) throws Exception
    {
       Object proxy = createProxy(target);
       assertNotNull(proxy);
@@ -115,7 +115,7 @@ public abstract class AbstractProxyTest extends AbstractTestCaseWithSetup
     * @return the proxy
     * @throws Exception for any error
     */
-   protected Object createProxy(Object target, Class[] interfaces) throws Exception
+   protected Object createProxy(Object target, Class<?>[] interfaces) throws Exception
    {
       AOPProxyFactoryParameters params = new AOPProxyFactoryParameters();
       params.setProxiedClass(target.getClass());
@@ -150,7 +150,7 @@ public abstract class AbstractProxyTest extends AbstractTestCaseWithSetup
     * @return the proxy
     * @throws Exception for any error
     */
-   protected Object createProxy(Object target, Class[] interfaces, AOPProxyFactoryMixin[] mixins) throws Exception
+   protected Object createProxy(Object target, Class<?>[] interfaces, AOPProxyFactoryMixin[] mixins) throws Exception
    {
       AOPProxyFactoryParameters params = new AOPProxyFactoryParameters();
       params.setProxiedClass(target.getClass());
@@ -168,7 +168,7 @@ public abstract class AbstractProxyTest extends AbstractTestCaseWithSetup
     * @return the proxy
     * @throws Exception for any error
     */
-   protected Object assertCreateProxy(Object target, AOPProxyFactoryMixin[] mixins, Class expected) throws Exception
+   protected Object assertCreateProxy(Object target, AOPProxyFactoryMixin[] mixins, Class<?> expected) throws Exception
    {
       Object proxy = createProxy(target, mixins);
       assertNotNull(proxy);
@@ -186,7 +186,7 @@ public abstract class AbstractProxyTest extends AbstractTestCaseWithSetup
     * @return the proxy
     * @throws Exception for any error
     */
-   protected Object assertCreateProxy(Object target, Class[] interfaces, AOPProxyFactoryMixin[] mixins, Class[] expected) throws Exception
+   protected Object assertCreateProxy(Object target, Class<?>[] interfaces, AOPProxyFactoryMixin[] mixins, Class<?>[] expected) throws Exception
    {
       Object proxy = createProxy(target, interfaces, mixins);
       assertNotNull(proxy);
@@ -206,7 +206,7 @@ public abstract class AbstractProxyTest extends AbstractTestCaseWithSetup
     * @return the proxy
     * @throws Exception for any error
     */
-   protected Object assertCreateProxy(Object target, Class[] interfaces, Class expected) throws Exception
+   protected Object assertCreateProxy(Object target, Class<?>[] interfaces, Class<?> expected) throws Exception
    {
       Object proxy = createProxy(target, interfaces);
       assertNotNull(proxy);
@@ -223,7 +223,7 @@ public abstract class AbstractProxyTest extends AbstractTestCaseWithSetup
     * @return the proxy
     * @throws Exception for any error
     */
-   protected Object createProxy(Object target, Class[] interfaces, SimpleMetaData metaData) throws Exception
+   protected Object createProxy(Object target, Class<?>[] interfaces, SimpleMetaData metaData) throws Exception
    {
       AOPProxyFactoryParameters params = new AOPProxyFactoryParameters();
       params.setProxiedClass(target.getClass());
@@ -243,7 +243,7 @@ public abstract class AbstractProxyTest extends AbstractTestCaseWithSetup
     * @return the proxy
     * @throws Exception for any error
     */
-   protected Object assertCreateProxy(Object target, Class[] interfaces, SimpleMetaData metaData, Class expected) throws Exception
+   protected Object assertCreateProxy(Object target, Class<?>[] interfaces, SimpleMetaData metaData, Class<?> expected) throws Exception
    {
       Object proxy = createProxy(target, interfaces, metaData);
       assertNotNull(proxy);
@@ -259,7 +259,7 @@ public abstract class AbstractProxyTest extends AbstractTestCaseWithSetup
     * @return the proxy
     * @throws Exception for any error
     */
-   protected Object createHollowProxy(Class[] interfaces, SimpleMetaData metaData) throws Exception
+   protected Object createHollowProxy(Class<?>[] interfaces, SimpleMetaData metaData) throws Exception
    {
       AOPProxyFactoryParameters params = new AOPProxyFactoryParameters();
       params.setInterfaces(interfaces);
@@ -292,7 +292,7 @@ public abstract class AbstractProxyTest extends AbstractTestCaseWithSetup
     * @return the proxy
     * @throws Exception for any error
     */
-   protected Object createHollowProxy(Class[] interfaces, AOPProxyFactoryMixin[] mixins, SimpleMetaData metaData) throws Exception
+   protected Object createHollowProxy(Class<?>[] interfaces, AOPProxyFactoryMixin[] mixins, SimpleMetaData metaData) throws Exception
    {
       AOPProxyFactoryParameters params = new AOPProxyFactoryParameters();
       params.setInterfaces(interfaces);
@@ -310,7 +310,7 @@ public abstract class AbstractProxyTest extends AbstractTestCaseWithSetup
     * @return the proxy
     * @throws Exception for any error
     */
-   protected Object assertCreateHollowProxy(Class[] interfaces, SimpleMetaData metaData, Class expected) throws Exception
+   protected Object assertCreateHollowProxy(Class<?>[] interfaces, SimpleMetaData metaData, Class<?> expected) throws Exception
    {
       Object proxy = createHollowProxy(interfaces, metaData);
       assertNotNull(proxy);
@@ -327,7 +327,7 @@ public abstract class AbstractProxyTest extends AbstractTestCaseWithSetup
     * @return the proxy
     * @throws Exception for any error
     */
-   protected Object assertCreateHollowProxy(AOPProxyFactoryMixin[] mixins, SimpleMetaData metaData, Class expected) throws Exception
+   protected Object assertCreateHollowProxy(AOPProxyFactoryMixin[] mixins, SimpleMetaData metaData, Class<?> expected) throws Exception
    {
       Object proxy = createHollowProxy(mixins, metaData);
       assertNotNull(proxy);
@@ -345,7 +345,7 @@ public abstract class AbstractProxyTest extends AbstractTestCaseWithSetup
     * @return the proxy
     * @throws Exception for any error
     */
-   protected Object assertCreateHollowProxy(Class[] interfaces, AOPProxyFactoryMixin[] mixins, SimpleMetaData metaData, Class[] expected) throws Exception
+   protected Object assertCreateHollowProxy(Class<?>[] interfaces, AOPProxyFactoryMixin[] mixins, SimpleMetaData metaData, Class<?>[] expected) throws Exception
    {
       Object proxy = createHollowProxy(interfaces, mixins, metaData);
       assertNotNull(proxy);
@@ -361,9 +361,9 @@ public abstract class AbstractProxyTest extends AbstractTestCaseWithSetup
     * @param object the object
     * @return the set of interfaces
     */
-   protected Set getInterfaces(Object object)
+   protected Set<Class<?>> getInterfaces(Object object)
    {
-      Set<Class> interfaces = new HashSet<Class>();
+      Set<Class<?>> interfaces = new HashSet<Class<?>>();
       addInterfaces(interfaces, object.getClass());
       return interfaces;
    }
@@ -374,12 +374,12 @@ public abstract class AbstractProxyTest extends AbstractTestCaseWithSetup
     * @param interfaces the interfaces to add to
     * @param clazz the class
     */
-   protected void addInterfaces(Set<Class> interfaces, Class clazz)
+   protected void addInterfaces(Set<Class<?>> interfaces, Class<?> clazz)
    {
-      Class[] intfs = clazz.getInterfaces();
+      Class<?>[] intfs = clazz.getInterfaces();
       for (int i = 0; i < intfs.length; ++i)
          interfaces.add(intfs[i]);
-      Class superClass = clazz.getSuperclass();
+      Class<?> superClass = clazz.getSuperclass();
       if (superClass != null)
          addInterfaces(interfaces, superClass);
    }

@@ -44,7 +44,7 @@ public @interface JMX
     * 
     * @return the mbean interface
     */
-   Class exposedInterface();
+   Class<?> exposedInterface();
    
    /**
     * String form of the ObjectName for the mbean.

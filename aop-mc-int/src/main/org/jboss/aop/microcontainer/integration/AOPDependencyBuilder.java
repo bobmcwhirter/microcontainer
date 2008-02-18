@@ -75,6 +75,7 @@ public class AOPDependencyBuilder extends AbstractDependencyBuilder
    private static final String DEPENDENCY_NAME_ATTRIBUTE = "name";
    private static final IntrospectionAnnotationHelper helper = new IntrospectionAnnotationHelper();
 
+   @SuppressWarnings("unchecked")
    public List<DependencyBuilderListItem> getDependencies(ClassAdapter classAdapter, MetaData metaData)
    {
       AspectManager manager = AspectManagerFactory.getAspectManager(metaData);
@@ -89,7 +90,7 @@ public class AOPDependencyBuilder extends AbstractDependencyBuilder
             {
                loader = Thread.currentThread().getContextClassLoader();
             }
-            Class clazz = loader.loadClass(className);
+            Class<?> clazz = loader.loadClass(className);
 
             Advisor advisor;
             synchronized (ContainerCache.mapLock)
@@ -192,6 +193,7 @@ public class AOPDependencyBuilder extends AbstractDependencyBuilder
       }
    }
 
+   @SuppressWarnings("unchecked")
    private void getMethodAnnotationDependencies(ClassInfo classInfo, MetaData metaData, HashSet<String> dependencies) throws Exception
    {
       Map methodMap = ClassInfoMethodHashing.getMethodMap(classInfo);
@@ -242,7 +244,7 @@ public class AOPDependencyBuilder extends AbstractDependencyBuilder
    private void getDependenciesForMetaDataAnnotation(Object annotation, HashMap<String, ArrayList<String>> dependencies) throws Exception
    {
       AnnotationInfo info;
-      Class clazz = annotation.getClass().getInterfaces()[0];
+      Class<?> clazz = annotation.getClass().getInterfaces()[0];
       try
       {
          info = (AnnotationInfo)helper.getTypeInfo(clazz);

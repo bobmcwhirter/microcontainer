@@ -35,7 +35,7 @@ import org.jboss.kernel.spi.dependency.KernelControllerContext;
  */
 public class ScopingAOPMicrocontainerTestDelegate extends AOPMicrocontainerTestDelegate
 {
-   public ScopingAOPMicrocontainerTestDelegate(Class clazz)
+   public ScopingAOPMicrocontainerTestDelegate(Class<?> clazz)
          throws Exception
    {
       super(clazz);

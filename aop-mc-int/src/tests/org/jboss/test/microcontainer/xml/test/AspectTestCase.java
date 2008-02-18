@@ -39,7 +39,7 @@ public class AspectTestCase extends AbstractAOPXMLTest
 {
    public void testDeployment() throws Exception
    {
-      List beans = unmarshalBeans("Aspect.xml", 2);
+      List<BeanMetaData> beans = unmarshalBeans("Aspect.xml", 2);
       
       GenericBeanFactoryMetaData adviceFactory = (GenericBeanFactoryMetaData) assertType(beans, 0, GenericBeanFactoryMetaData.class);
       assertEquals("Factory$TestAspect", adviceFactory.getName());

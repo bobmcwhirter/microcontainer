@@ -63,6 +63,7 @@ public class TestMetaDataLoader implements ClassMetaDataLoader
       }
    }
 
+   @SuppressWarnings("unchecked")
    public void bind(Advisor advisor, ClassMetaDataBinding data, Method[] methods, Field[] fields, Constructor[] constructors) throws Exception
    {
       for (int i = 0 ; i < methods.length ; i++)

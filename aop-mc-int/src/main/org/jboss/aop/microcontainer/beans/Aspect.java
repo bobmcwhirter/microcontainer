@@ -38,7 +38,6 @@ import org.jboss.dependency.spi.ControllerContext;
 import org.jboss.kernel.spi.dependency.ConfigureKernelControllerContextAware;
 import org.jboss.kernel.spi.dependency.KernelControllerContext;
 import org.jboss.logging.Logger;
-import org.jboss.util.id.GUID;
 
 /**
  * An Aspect.
@@ -111,6 +110,8 @@ public class Aspect implements ConfigureKernelControllerContextAware, Untransfor
 
    /**
     * Sets if we are an aspect factory or not
+    * 
+    * @param factory true if we are a factory
     */
    public void setFactory(boolean factory)
    {

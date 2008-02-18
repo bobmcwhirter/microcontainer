@@ -53,7 +53,7 @@ public class ScopingAopTestCase extends AOPMicrocontainerTest
     * @return the delegate
     * @throws Exception for any error
     */
-   public static AbstractTestDelegate getDelegate(Class clazz) throws Exception
+   public static AbstractTestDelegate getDelegate(Class<?> clazz) throws Exception
    {
       String property = System.getProperty("jboss.mc.secure", "false");
       boolean enableSecurity = Boolean.valueOf(property);

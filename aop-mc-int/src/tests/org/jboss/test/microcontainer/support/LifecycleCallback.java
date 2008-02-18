@@ -36,7 +36,8 @@ import org.jboss.metadata.spi.MetaData;
  */
 public class LifecycleCallback
 {
-   public static Map<String, ArrayList<Class>> interceptions = new HashMap<String, ArrayList<Class>>();
+   public static Map<String, ArrayList<Class<?>>> interceptions = new HashMap<String, ArrayList<Class<?>>>();
+   @SuppressWarnings("unchecked")
    Class[] lifecycleAnnotations = new Class[] {Configure.class, Create.class, Describe.class, Install.class, Instantiate.class, Start.class}; 
    public String getName()
    {
@@ -74,13 +75,13 @@ public class LifecycleCallback
       }
    }
    
-   private void addInterception(ControllerContext context, Class annotation)
+   private void addInterception(ControllerContext context, Class<?> annotation)
    {
       String name = (String)context.getName();
-      ArrayList<Class> beanInterceptions = interceptions.get(name);
+      ArrayList<Class<?>> beanInterceptions = interceptions.get(name);
       if (beanInterceptions == null)
       {
-         beanInterceptions = new ArrayList<Class>();
+         beanInterceptions = new ArrayList<Class<?>>();
          interceptions.put(name, beanInterceptions);
       }
       beanInterceptions.add(annotation);

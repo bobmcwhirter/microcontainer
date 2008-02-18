@@ -77,7 +77,7 @@ public class ClassMetaDataLoader
       {
          //FIXME Probably need to use something else
          ClassLoader cl = SecurityActions.getContextClassLoader();
-         Class clazz = cl.loadClass(className);
+         Class<?> clazz = cl.loadClass(className);
          org.jboss.aop.metadata.ClassMetaDataLoader loader = (org.jboss.aop.metadata.ClassMetaDataLoader)clazz.newInstance();
          
          manager.addClassMetaDataLoader(tag, loader);

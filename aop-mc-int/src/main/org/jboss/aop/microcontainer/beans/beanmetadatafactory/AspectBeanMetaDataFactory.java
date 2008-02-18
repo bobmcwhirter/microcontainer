@@ -171,13 +171,13 @@ public class AspectBeanMetaDataFactory extends AspectManagerAwareBeanMetaDataFac
    
    private void getDependencies(ArrayList<AbstractDependencyValueMetaData> dependencies, MetaDataVisitorNode node)
    {
-      Iterator children = node.getChildren();
+      Iterator<? extends MetaDataVisitorNode> children = node.getChildren();
       
       if (children != null)
       {
          while (children.hasNext())
          {
-            MetaDataVisitorNode child = (MetaDataVisitorNode)children.next();
+            MetaDataVisitorNode child = children.next();
             if (child instanceof AbstractDependencyValueMetaData)
             {
                dependencies.add((AbstractDependencyValueMetaData)child);

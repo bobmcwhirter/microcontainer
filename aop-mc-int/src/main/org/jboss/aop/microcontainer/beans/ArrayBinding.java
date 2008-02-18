@@ -99,7 +99,6 @@ public class ArrayBinding implements Binding
       if (advices != null)
       {
          interceptors = new ArrayList<InterceptorFactory>();
-         int i = 0;
          for (BindingEntry entry : advices)
          {
             entry.start();

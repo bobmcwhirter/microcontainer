@@ -34,7 +34,7 @@ public class MetaDataContextInterceptor implements Interceptor
    public static Object classAnnotation;
    public static Object joinpointAnnotation;
    
-   private Class annotationType;
+   private Class<?> annotationType;
    
    public static void reset()
    {

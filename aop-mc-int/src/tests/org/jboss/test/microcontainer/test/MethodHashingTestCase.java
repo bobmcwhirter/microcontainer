@@ -54,9 +54,10 @@ public class MethodHashingTestCase  extends TestCase
    }
 
 
+   @SuppressWarnings("unchecked")
    public void testDeclaredMethodHashing() throws Exception
    {
-      Class clazz = SubClass.class;
+      Class<?> clazz = SubClass.class;
       CtClass ctclass = getCtClass(clazz);
       ClassInfo classInfoReflect = getIntrospectTypeInfo(clazz);
       ClassInfo classInfoJavassist = getJavassistTypeInfo(clazz);
@@ -88,6 +89,7 @@ public class MethodHashingTestCase  extends TestCase
       }
    }
 
+   @SuppressWarnings("unchecked")
    public void testMethodHashing() throws Exception
    {
       Class clazz = SubClass.class;
@@ -122,25 +124,26 @@ public class MethodHashingTestCase  extends TestCase
       }
    }
 
-   private CtClass getCtClass(Class clazz) throws Exception
+   private CtClass getCtClass(Class<?> clazz) throws Exception
    {
       return ReflectToJavassist.classToJavassist(clazz);
    }
 
-   private ClassInfo getIntrospectTypeInfo(Class clazz)
+   private ClassInfo getIntrospectTypeInfo(Class<?> clazz)
    {
       IntrospectionTypeInfoFactory typeInfoFactory = new IntrospectionTypeInfoFactory();
       ClassInfo classInfo = (ClassInfo)typeInfoFactory.getTypeInfo(clazz);
       return classInfo;
    }
 
-   private ClassInfo getJavassistTypeInfo(Class clazz)
+   private ClassInfo getJavassistTypeInfo(Class<?> clazz)
    {
       JavassistTypeInfoFactory typeInfoFactory = new JavassistTypeInfoFactory();
       ClassInfo classInfo = (ClassInfo)typeInfoFactory.getTypeInfo(clazz);
       return classInfo;
    }
 
+   @SuppressWarnings("unchecked")
    private void compareMaps(Map mapA, Map mapB, int expecedSize)
    {
       assertEquals(expecedSize, mapA.size());
