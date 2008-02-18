@@ -59,6 +59,7 @@
     <finalName>${artifactId}</finalName>
     <plugins>
       <plugin>
+        <groupId>org.apache.maven.plugins</groupId>
         <artifactId>maven-compiler-plugin</artifactId>
         <configuration>
           <source>1.5</source>
@@ -66,21 +67,6 @@
           <showDeprecation>true</showDeprecation>
           <showWarnings>true</showWarnings>
           <optimize>true</optimize>
-        </configuration>
-      </plugin>
-      <plugin>
-        <groupId>org.apache.maven.plugins</groupId>
-        <artifactId>maven-surefire-plugin</artifactId>
-        <version>2.3</version>
-        <configuration>
-          <testFailureIgnore>true</testFailureIgnore>
-          <redirectTestOutputToFile>true</redirectTestOutputToFile>
-          <includes>
-            <include>org/jboss/test/**/*TestCase.java</include>
-          </includes>
-          <excludes>
-             <exclude>org/jboss/test/**/*AnnotationCallbackTestCase.java</exclude>
-          </excludes>
         </configuration>
       </plugin>
       <plugin>
@@ -124,6 +110,17 @@
           <groupId>org.apache.maven.plugins</groupId>
           <artifactId>maven-jar-plugin</artifactId>
           <version>2.2</version>
+        </plugin>
+        <plugin>
+          <groupId>org.apache.maven.plugins</groupId>
+          <artifactId>maven-surefire-plugin</artifactId>
+          <version>2.4.1</version>
+          <configuration>
+            <redirectTestOutputToFile>true</redirectTestOutputToFile>
+            <includes>
+              <include>org/jboss/test/**/*TestCase.java</include>
+            </includes>
+          </configuration>
         </plugin>
       </plugins>
     </pluginManagement>
