@@ -50,7 +50,7 @@ public class DescribeAction extends KernelControllerContextAction
          KernelMetaDataRepository repository = controller.getKernel().getMetaDataRepository();
          MetaData md = repository.getMetaData(context);
          // add custom dependencies (e.g. AOP layer).
-         List<DependencyBuilderListItem> dependencies = info.getDependencies(md);
+         List<DependencyBuilderListItem> dependencies = (List) info.getDependencies(md);
          log.trace("Extra dependencies for " + context.getName() + " " + dependencies);
          if (dependencies != null && dependencies.isEmpty() == false)
          {

@@ -40,6 +40,7 @@ import org.jboss.metadata.spi.repository.MutableMetaDataRepository;
 import org.jboss.metadata.spi.retrieval.MetaDataItem;
 import org.jboss.metadata.spi.retrieval.MetaDataRetrieval;
 import org.jboss.metadata.spi.scope.Scope;
+import org.jboss.metadata.spi.scope.ScopeFactory;
 import org.jboss.metadata.spi.scope.ScopeFactoryLookup;
 import org.jboss.metadata.spi.scope.ScopeKey;
 
@@ -94,7 +95,8 @@ public class PreInstallAction extends KernelControllerContextAction
                if (annotation.annotationType().isAnnotationPresent(ScopeFactoryLookup.class))
                {
                   ScopeFactoryLookup sfl = annotation.annotationType().getAnnotation(ScopeFactoryLookup.class);
-                  Scope scope = sfl.value().newInstance().create(annotation);
+                  ScopeFactory<Annotation> scf = (ScopeFactory) sfl.value().newInstance();
+                  Scope scope = scf.create(annotation);
                   scopes.add(scope);
                }
             }

@@ -23,6 +23,7 @@ package org.jboss.beans.metadata.plugins;
 
 import java.security.AccessController;
 import java.security.PrivilegedAction;
+import java.util.Collection;
 
 import org.jboss.beans.info.spi.PropertyInfo;
 import org.jboss.dependency.spi.CallbackItem;
@@ -89,7 +90,7 @@ public class CallbackCreatorUtil
          Class clazz = componentType.getType();
          if (Object.class.equals(clazz))
             throw new IllegalArgumentException("Component type too general - equals Object: " + info);            
-         return getCollectionFactory().createCollectionCallbackItem(info.getType(), clazz, whenRequired, dependentState, cardinality, context, attribute);
+         return getCollectionFactory().createCollectionCallbackItem((Class<Collection<?>>) info.getType(), clazz, whenRequired, dependentState, cardinality, context, attribute);
       }
       else
          throw new IllegalArgumentException("Unable to determine collection element class type: " + info);

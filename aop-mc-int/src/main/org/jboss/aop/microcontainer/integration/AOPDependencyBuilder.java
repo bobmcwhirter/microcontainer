@@ -76,7 +76,7 @@ public class AOPDependencyBuilder extends AbstractDependencyBuilder
    private static final IntrospectionAnnotationHelper helper = new IntrospectionAnnotationHelper();
 
    @SuppressWarnings("unchecked")
-   public List<DependencyBuilderListItem> getDependencies(ClassAdapter classAdapter, MetaData metaData)
+   public List<DependencyBuilderListItem<?>> getDependencies(ClassAdapter classAdapter, MetaData metaData)
    {
       AspectManager manager = AspectManagerFactory.getAspectManager(metaData);
       try
@@ -101,7 +101,7 @@ public class AOPDependencyBuilder extends AbstractDependencyBuilder
             ReflectiveAspectBinder binder = new ReflectiveAspectBinder(clazz, advisor);
             Set aspects = binder.getAspects();
 
-            ArrayList<DependencyBuilderListItem> depends = new ArrayList<DependencyBuilderListItem>();
+            ArrayList<DependencyBuilderListItem<?>> depends = new ArrayList<DependencyBuilderListItem<?>>();
             if (aspects != null && aspects.size() > 0)
             {
                Iterator it = aspects.iterator();
