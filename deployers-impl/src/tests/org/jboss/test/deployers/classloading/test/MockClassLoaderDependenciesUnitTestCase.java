@@ -21,32 +21,12 @@
 */
 package org.jboss.test.deployers.classloading.test;
 
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.List;
-
 import junit.framework.Test;
 import junit.framework.TestSuite;
-import org.jboss.classloader.plugins.system.DefaultClassLoaderSystem;
-import org.jboss.classloader.spi.ClassLoaderSystem;
-import org.jboss.classloader.spi.ParentPolicy;
 import org.jboss.deployers.client.spi.DeployerClient;
 import org.jboss.deployers.client.spi.Deployment;
-import org.jboss.deployers.plugins.classloading.AbstractClassLoaderDescribeDeployer;
-import org.jboss.deployers.plugins.classloading.ClassLoading;
-import org.jboss.deployers.spi.attachments.MutableAttachments;
-import org.jboss.deployers.spi.attachments.PredeterminedManagedObjectAttachments;
 import org.jboss.deployers.structure.spi.DeploymentUnit;
-import org.jboss.deployers.structure.spi.classloading.Capability;
 import org.jboss.deployers.structure.spi.classloading.ClassLoaderMetaData;
-import org.jboss.deployers.structure.spi.classloading.Requirement;
-import org.jboss.deployers.structure.spi.classloading.Version;
-import org.jboss.deployers.structure.spi.classloading.VersionRange;
-import org.jboss.deployers.structure.spi.classloading.helpers.ModuleCapabilityImpl;
-import org.jboss.deployers.structure.spi.classloading.helpers.PackageCapabilityImpl;
-import org.jboss.deployers.structure.spi.classloading.helpers.RequireModuleImpl;
-import org.jboss.test.deployers.AbstractDeployerTest;
-import org.jboss.test.deployers.classloading.support.MockTopLevelClassLoaderSystemDeployer;
 import org.jboss.test.deployers.classloading.support.a.A;
 import org.jboss.test.deployers.classloading.support.b.B;
 
@@ -56,31 +36,8 @@ import org.jboss.test.deployers.classloading.support.b.B;
  * @author <a href="adrian@jboss.com">Adrian Brock</a>
  * @version $Revision: 1.1 $
  */
-public class MockClassLoaderDependenciesUnitTestCase extends AbstractDeployerTest
+public class MockClassLoaderDependenciesUnitTestCase extends ClassLoaderDependenciesTest
 {
-   public static final String NameA = "A";
-   public static final String NameB = "B";
-   
-   public static final List<String> NONE = Collections.emptyList();
-   public static final List<String> A = makeList(NameA);
-   public static final List<String> B = makeList(NameB);
-   public static final List<String> AB = makeList(NameA, NameB);
-   public static final List<String> BA = makeList(NameB, NameA);
-   public static final List<String> BAA = makeList(NameB, NameA, NameA);
-   public static final List<String> BABA = makeList(NameB, NameA, NameB, NameA);
-   
-   @SuppressWarnings("unchecked")
-   private static <T> List<T> makeList(T... objects)
-   {
-      List<T> result = new ArrayList<T>();
-      for (T object : objects)
-         result.add(object);
-      return result;
-   }
-   
-   private AbstractClassLoaderDescribeDeployer deployer1;
-   private MockTopLevelClassLoaderSystemDeployer deployer2;
-   
    public static Test suite()
    {
       return new TestSuite(MockClassLoaderDependenciesUnitTestCase.class);
@@ -96,7 +53,7 @@ public class MockClassLoaderDependenciesUnitTestCase extends AbstractDeployerTes
       DeployerClient deployer = getMainDeployer();
 
       Deployment deployment = createSimpleDeployment(NameA);
-      addMetaData(deployment, null, A.class);
+      addClassLoaderMetaData(deployment, null, A.class);
       
       DeploymentUnit unit = assertDeploy(deployer, deployment);
 
@@ -119,7 +76,7 @@ public class MockClassLoaderDependenciesUnitTestCase extends AbstractDeployerTes
       DeployerClient deployer = getMainDeployer();
 
       Deployment deploymentB = createSimpleDeployment(NameB);
-      addMetaData(deploymentB, null, B.class);
+      addClassLoaderMetaData(deploymentB, null, B.class);
       DeploymentUnit unitB = assertDeploy(deployer, deploymentB);
       
       ClassLoader clB = unitB.getClassLoader();
@@ -129,7 +86,7 @@ public class MockClassLoaderDependenciesUnitTestCase extends AbstractDeployerTes
       assertEquals(NONE, deployer2.undeployed);
 
       Deployment deploymentA = createSimpleDeployment(NameA);
-      ClassLoaderMetaData classLoaderMetaData = addMetaData(deploymentA, null, A.class);
+      ClassLoaderMetaData classLoaderMetaData = addClassLoaderMetaData(deploymentA, null, A.class);
       addRequireModule(classLoaderMetaData, "B", null);
       DeploymentUnit unitA = assertDeploy(deployer, deploymentA);
       
@@ -157,7 +114,7 @@ public class MockClassLoaderDependenciesUnitTestCase extends AbstractDeployerTes
       DeployerClient deployer = getMainDeployer();
 
       Deployment deploymentA = createSimpleDeployment(NameA);
-      ClassLoaderMetaData classLoaderMetaData = addMetaData(deploymentA, null, A.class);
+      ClassLoaderMetaData classLoaderMetaData = addClassLoaderMetaData(deploymentA, null, A.class);
       addRequireModule(classLoaderMetaData, "B", null);
       DeploymentUnit unitA = addDeployment(deployer, deploymentA);
       
@@ -167,7 +124,7 @@ public class MockClassLoaderDependenciesUnitTestCase extends AbstractDeployerTes
       assertEquals(NONE, deployer2.undeployed);
 
       Deployment deploymentB = createSimpleDeployment(NameB);
-      addMetaData(deploymentB, null, B.class);
+      addClassLoaderMetaData(deploymentB, null, B.class);
       DeploymentUnit unitB = assertDeploy(deployer, deploymentB);
       
       ClassLoader clB = unitB.getClassLoader();
@@ -197,7 +154,7 @@ public class MockClassLoaderDependenciesUnitTestCase extends AbstractDeployerTes
       DeployerClient deployer = getMainDeployer();
 
       Deployment deploymentA = createSimpleDeployment(NameA);
-      ClassLoaderMetaData classLoaderMetaData = addMetaData(deploymentA, null, A.class);
+      ClassLoaderMetaData classLoaderMetaData = addClassLoaderMetaData(deploymentA, null, A.class);
       addRequireModule(classLoaderMetaData, "B", null);
       DeploymentUnit unitA = addDeployment(deployer, deploymentA);
       
@@ -207,7 +164,7 @@ public class MockClassLoaderDependenciesUnitTestCase extends AbstractDeployerTes
       assertEquals(NONE, deployer2.undeployed);
 
       Deployment deploymentB = createSimpleDeployment(NameB);
-      addMetaData(deploymentB, null, B.class);
+      addClassLoaderMetaData(deploymentB, null, B.class);
       DeploymentUnit unitB = assertDeploy(deployer, deploymentB);
       
       ClassLoader clB = unitB.getClassLoader();
@@ -238,7 +195,7 @@ public class MockClassLoaderDependenciesUnitTestCase extends AbstractDeployerTes
       DeployerClient deployer = getMainDeployer();
 
       Deployment deploymentA = createSimpleDeployment(NameA);
-      ClassLoaderMetaData classLoaderMetaData = addMetaData(deploymentA, null, A.class);
+      ClassLoaderMetaData classLoaderMetaData = addClassLoaderMetaData(deploymentA, null, A.class);
       addRequireModule(classLoaderMetaData, "B", null);
       DeploymentUnit unitA = addDeployment(deployer, deploymentA);
       
@@ -248,7 +205,7 @@ public class MockClassLoaderDependenciesUnitTestCase extends AbstractDeployerTes
       assertEquals(NONE, deployer2.undeployed);
 
       Deployment deploymentB = createSimpleDeployment(NameB);
-      addMetaData(deploymentB, null, B.class);
+      addClassLoaderMetaData(deploymentB, null, B.class);
       DeploymentUnit unitB = assertDeploy(deployer, deploymentB);
       
       ClassLoader clB = unitB.getClassLoader();
@@ -275,121 +232,5 @@ public class MockClassLoaderDependenciesUnitTestCase extends AbstractDeployerTes
 
       assertEquals(BABA, deployer2.deployed);
       assertEquals(AB, deployer2.undeployed);
-   }
-
-   protected Class assertLoadClass(ClassLoader start, Class reference) throws Exception
-   {
-      return assertLoadClass(start, reference, start);
-   }
-
-   protected Class assertLoadClass(ClassLoader start, Class reference, ClassLoader expected) throws Exception
-   {
-      Class clazz = start.loadClass(reference.getName());
-      if (expected != null)
-         assertEquals(expected, clazz.getClassLoader());
-      return clazz;
-   }
-
-   protected void assertLoadClassFail(ClassLoader start, Class reference) throws Exception
-   {
-      try
-      {
-         start.loadClass(reference.getName());
-         fail("Should not be here!");
-      }
-      catch (Exception e)
-      {
-         checkThrowable(ClassNotFoundException.class, e);
-      }
-   }
-
-   protected void assertLoadClassIllegal(ClassLoader start, Class reference) throws Exception
-   {
-      try
-      {
-         start.loadClass(reference.getName());
-         fail("Should not be here!");
-      }
-      catch (Exception e)
-      {
-         checkThrowable(IllegalStateException.class, e);
-      }
-   }
-
-   protected void assertNoClassLoader(DeploymentUnit unit) throws Exception
-   {
-      try
-      {
-         unit.getClassLoader();
-         fail("Should not be here!");
-      }
-      catch (Exception e)
-      {
-         checkThrowable(IllegalStateException.class, e);
-      }
-   }
-   
-   protected static ClassLoaderMetaData addMetaData(Deployment deployment, Version version, Class... packages)
-   {
-      ClassLoaderMetaData classLoaderMetaData = createMetaData(deployment, version, packages);
-      addMetaData(deployment, classLoaderMetaData);
-      return classLoaderMetaData;
-   }
-   
-   protected static ClassLoaderMetaData createMetaData(Deployment deployment, Version version, Class... packages)
-   {
-      ClassLoaderMetaData classLoaderMetaData = new ClassLoaderMetaData();
-      classLoaderMetaData.setName(deployment.getName());
-      
-      List<Capability> capabilities = new ArrayList<Capability>();
-      Capability capability = new ModuleCapabilityImpl(deployment.getName(), version);
-      capabilities.add(capability);
-
-      if (packages != null)
-      {
-         for (Class pkg : packages)
-         {
-            capability = new PackageCapabilityImpl(pkg.getName());
-            capabilities.add(capability);
-         }
-      }
-
-      classLoaderMetaData.setCapabilities(capabilities);
-      return classLoaderMetaData;
-   }
-   
-   protected static void addRequireModule(ClassLoaderMetaData classLoaderMetaData, String moduleName, VersionRange versionRange)
-   {
-      List<Requirement> requirements = classLoaderMetaData.getRequirements();
-      if (requirements == null)
-      {
-         requirements = new ArrayList<Requirement>();
-         classLoaderMetaData.setRequirements(requirements);
-      }
-      
-      Requirement requirement = new RequireModuleImpl(moduleName, versionRange);
-      requirements.add(requirement);
-   }
-
-   protected static void addMetaData(PredeterminedManagedObjectAttachments attachments, ClassLoaderMetaData md)
-   {
-      MutableAttachments mutable = (MutableAttachments) attachments.getPredeterminedManagedObjects();
-      mutable.addAttachment(ClassLoaderMetaData.class, md);
-   }
-   
-   protected DeployerClient getMainDeployer()
-   {
-      ClassLoading classLoading = new ClassLoading();
-      ClassLoaderSystem system = new DefaultClassLoaderSystem();
-      system.getDefaultDomain().setParentPolicy(ParentPolicy.BEFORE_BUT_JAVA_ONLY);
-      
-      deployer1 = new AbstractClassLoaderDescribeDeployer();
-      deployer1.setClassLoading(classLoading);
-      
-      deployer2 = new MockTopLevelClassLoaderSystemDeployer();
-      deployer2.setClassLoading(classLoading);
-      deployer2.setSystem(system);
-
-      return createMainDeployer(deployer1, deployer2);
    }
 }
