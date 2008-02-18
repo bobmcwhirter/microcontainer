@@ -189,6 +189,16 @@
       </dependency>
       <dependency>
         <groupId>org.jboss.microcontainer</groupId>
+        <artifactId>jboss-classloading</artifactId>
+        <version>${project.version}</version>
+      </dependency>
+      <dependency>
+        <groupId>org.jboss.microcontainer</groupId>
+        <artifactId>jboss-classloading-vfs</artifactId>
+        <version>${project.version}</version>
+      </dependency>
+      <dependency>
+        <groupId>org.jboss.microcontainer</groupId>
         <artifactId>jboss-container</artifactId>
         <version>${project.version}</version>
       </dependency>

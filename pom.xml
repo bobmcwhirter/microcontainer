@@ -50,6 +50,8 @@
     <module>guice-int</module>
     <module>osgi-int</module>
     <module>classloader</module>
+    <module>classloading</module>
+    <module>classloading-vfs</module>
     <module>varia</module>
     <module>reliance-identity</module>
     <module>reliance-rules</module>
