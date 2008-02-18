@@ -66,7 +66,7 @@ public interface KernelConfigurator extends KernelObject
     * @return the bean info
     * @throws Throwable for any error
     */
-   BeanInfo getBeanInfo(Class clazz) throws Throwable;
+   BeanInfo getBeanInfo(Class<?> clazz) throws Throwable;
    
    /**
     * Get the BeanInfo
@@ -103,7 +103,7 @@ public interface KernelConfigurator extends KernelObject
     * @return the class info
     * @throws Throwable for any error
     */
-   ClassInfo getClassInfo(Class clazz) throws Throwable;
+   ClassInfo getClassInfo(Class<?> clazz) throws Throwable;
    
    /**
     * Get a constructor join point

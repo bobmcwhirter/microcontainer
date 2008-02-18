@@ -21,6 +21,8 @@
 */
 package org.jboss.test.kernel.config.support;
 
+import java.util.Set;
+
 import org.jboss.beans.metadata.api.annotations.StringValue;
 import org.jboss.beans.metadata.api.annotations.Value;
 import org.jboss.beans.metadata.api.annotations.SetValue;
@@ -32,6 +34,9 @@ import org.jboss.beans.metadata.api.annotations.SetValue;
  */
 public class FromStringsSetUnmodifiableObject extends UnmodifiableGetterBean
 {
+   /** The serialVersionUID */
+   private static final long serialVersionUID = 1L;
+
    @SetValue(
          value = {
             @Value(string = @StringValue("string1")),
@@ -42,7 +47,7 @@ public class FromStringsSetUnmodifiableObject extends UnmodifiableGetterBean
          elementClass = "java.lang.String",
          clazz = "java.util.HashSet"
    )
-   public void setSet(java.util.Set set)
+   public void setSet(Set<?> set)
    {
       super.setSet(set);
    }

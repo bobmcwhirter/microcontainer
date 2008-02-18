@@ -91,7 +91,7 @@ public class SetsAnnotationOverrideTestCase extends AbstractAnnotationOverrideTe
       return context.getBeanMetaData();
    }
 
-   protected void assertSet(Set set)
+   protected void assertSet(Set<?> set)
    {
       assertNotNull(set);
       assertEquals(1, set.size());

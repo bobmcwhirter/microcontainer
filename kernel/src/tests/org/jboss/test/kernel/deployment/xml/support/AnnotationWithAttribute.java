@@ -28,5 +28,5 @@ package org.jboss.test.kernel.deployment.xml.support;
  */
 public @interface AnnotationWithAttribute 
 {
-   Class attribute();
+   Class<?> attribute();
 }

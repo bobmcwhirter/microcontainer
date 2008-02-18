@@ -33,12 +33,13 @@ import org.jboss.util.JBossStringBuilder;
  */
 public abstract class ClassDependencyItem extends AbstractDependencyItem
 {
-   public ClassDependencyItem(Object name, Class demandClass, ControllerState whenRequired, ControllerState dependentState)
+   public ClassDependencyItem(Object name, Class<?> demandClass, ControllerState whenRequired, ControllerState dependentState)
    {
       super(name, demandClass, whenRequired, dependentState);
    }
 
-   protected Class getDemandClass()
+   @SuppressWarnings("unchecked")
+   protected Class<?> getDemandClass()
    {
       return (Class)getIDependOn();
    }

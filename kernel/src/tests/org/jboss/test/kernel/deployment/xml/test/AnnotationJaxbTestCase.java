@@ -27,6 +27,7 @@ import java.util.Set;
 import junit.framework.Test;
 import org.jboss.beans.metadata.plugins.AbstractAnnotationMetaData;
 import org.jboss.beans.metadata.plugins.AbstractBeanMetaData;
+import org.jboss.beans.metadata.spi.AnnotationMetaData;
 import org.jboss.beans.metadata.spi.ConstructorMetaData;
 import org.jboss.test.kernel.deployment.xml.support.Annotation1;
 import org.jboss.test.kernel.deployment.xml.support.AnnotationWithAttribute;
@@ -45,7 +46,7 @@ public class AnnotationJaxbTestCase extends AbstractMCTest
       AbstractBeanMetaData bean = unmarshalBean();
       ConstructorMetaData constructor = bean.getConstructor();
       assertNotNull(constructor);
-      Set annotations = constructor.getAnnotations();
+      Set<AnnotationMetaData> annotations = constructor.getAnnotations();
       assertEquals(1, annotations.size());
       AbstractAnnotationMetaData annotation = (AbstractAnnotationMetaData) annotations.iterator().next();
       assertNotNull(annotation);

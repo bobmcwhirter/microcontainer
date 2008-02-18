@@ -32,6 +32,7 @@ import org.jboss.beans.metadata.spi.MetaDataVisitorNode;
 import org.jboss.metadata.spi.MetaData;
 
 /**
+ * @param <T> the annotation type
  * @author <a href="mailto:ales.justin@jboss.com">Ales Justin</a>
  */
 public class TestAnnotationPlugin<T extends Annotation> extends AbstractAnnotationPlugin<MethodInfo, T>

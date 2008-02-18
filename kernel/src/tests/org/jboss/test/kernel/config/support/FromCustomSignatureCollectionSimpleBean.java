@@ -32,6 +32,9 @@ import org.jboss.beans.metadata.api.annotations.StringValue;
  */
 public class FromCustomSignatureCollectionSimpleBean extends SimpleBean
 {
+   /** The serialVersionUID */
+   private static final long serialVersionUID = 1L;
+
    @CollectionValue(
          value = {
             @Value(string = @StringValue("string1")),

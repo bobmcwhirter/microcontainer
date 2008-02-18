@@ -32,6 +32,7 @@ import org.jboss.xb.binding.sunday.unmarshalling.ValueAdapter;
  */
 public class AutowireTypeValueAdapter implements ValueAdapter
 {
+   @SuppressWarnings("unchecked")
    public Object cast(Object o, Class c)
    {
       return AutowireType.getInstance((String)o);

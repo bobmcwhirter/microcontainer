@@ -139,11 +139,11 @@ public class AbstractEventEmitter implements KernelEventEmitter
          log.trace("Firing event: " + event + " on object " + this);
       if (eventListenerRegistry.isEmpty() == false)
       {
-         for (Iterator i = eventListenerRegistry.entrySet().iterator(); i.hasNext();)
+         for (Iterator<Map.Entry<KernelEventFilter, Map<Object, List<KernelEventListener>>>> i = eventListenerRegistry.entrySet().iterator(); i.hasNext();)
          {
-            Map.Entry registryEntry = (Map.Entry) i.next();
+            Map.Entry<KernelEventFilter, Map<Object, List<KernelEventListener>>> registryEntry = i.next();
 
-            Map handbacks = (Map) registryEntry.getValue();
+            Map<Object, List<KernelEventListener>> handbacks = registryEntry.getValue();
             if (handbacks != null)
             {
                KernelEventFilter filter = null;
@@ -151,19 +151,19 @@ public class AbstractEventEmitter implements KernelEventEmitter
                if (filterObject != NULL_FILTER)
                   filter = (KernelEventFilter) filterObject;
 
-               for (Iterator j = handbacks.entrySet().iterator(); j.hasNext();)
+               for (Iterator<Map.Entry<Object, List<KernelEventListener>>> j = handbacks.entrySet().iterator(); j.hasNext();)
                {
-                  Map.Entry handbackEntry = (Map.Entry) j.next();
-                  List listeners = (List) handbackEntry.getValue();
+                  Map.Entry<Object, List<KernelEventListener>> handbackEntry = j.next();
+                  List<KernelEventListener> listeners = handbackEntry.getValue();
                   if (listeners != null)
                   {
                      Object handback = handbackEntry.getKey();
                      if (handback == NULL)
                         handback = null;
 
-                     for (ListIterator k = listeners.listIterator(); k.hasNext();)
+                     for (ListIterator<KernelEventListener> k = listeners.listIterator(); k.hasNext();)
                      {
-                        KernelEventListener listener = (KernelEventListener) k.next();
+                        KernelEventListener listener = k.next();
                         try
                         {
                            if (filter == null || filter.wantEvent(event, handback))

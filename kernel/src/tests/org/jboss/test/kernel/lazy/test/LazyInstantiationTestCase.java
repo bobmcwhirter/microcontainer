@@ -52,7 +52,7 @@ public abstract class LazyInstantiationTestCase extends AbstractKernelTest
     * @return the delegate
     * @throws Exception for any error
     */
-   public static AbstractTestDelegate getDelegate(Class clazz) throws Exception
+   public static AbstractTestDelegate getDelegate(Class<?> clazz) throws Exception
    {
       return new AbstractTestDelegate(clazz);
    }
@@ -105,6 +105,9 @@ public abstract class LazyInstantiationTestCase extends AbstractKernelTest
 
    private class ModifiedLazyMetaData extends AbstractLazyMetaData
    {
+      /** The serialVersionUID */
+      private static final long serialVersionUID = 1L;
+
       public ModifiedLazyMetaData(String beanName, String factoryClassName)
       {
          super(beanName);

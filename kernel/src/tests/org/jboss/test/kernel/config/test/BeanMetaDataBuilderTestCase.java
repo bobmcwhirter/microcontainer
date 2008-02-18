@@ -70,7 +70,7 @@ public class BeanMetaDataBuilderTestCase extends AbstractKernelConfigTest
       BeanMetaDataBuilder builder = BeanMetaDataBuilderFactory.createBuilder("PropBMD", SimpleBean.class.getName())
             .addPropertyMetaData("adouble", 3.1459)
             .addPropertyMetaData("anint", "123")
-            .addPropertyMetaData("collection", new ArrayList());
+            .addPropertyMetaData("collection", new ArrayList<Object>());
       BeanMetaData beanMetaData = builder.getBeanMetaData();
       SimpleBean pbmd = (SimpleBean)instantiateAndConfigure(beanMetaData);
 

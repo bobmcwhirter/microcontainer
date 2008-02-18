@@ -46,7 +46,7 @@ public class XMLTestDelegate extends AbstractTestDelegate
     * 
     * @param clazz the test class
     */
-   public XMLTestDelegate(Class clazz)
+   public XMLTestDelegate(Class<?> clazz)
    {
       super(clazz);
    }

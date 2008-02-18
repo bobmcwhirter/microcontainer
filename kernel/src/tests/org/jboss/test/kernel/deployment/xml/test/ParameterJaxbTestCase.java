@@ -45,10 +45,10 @@ public class ParameterJaxbTestCase extends AbstractMCTest
       AbstractBeanMetaData bean = unmarshalBean();
       ConstructorMetaData constructor = bean.getConstructor();
       assertNotNull(constructor);
-      List parameters = constructor.getParameters();
+      List<ParameterMetaData> parameters = constructor.getParameters();
       assertNotNull(parameters);
       assertEquals(1, parameters.size());
-      ParameterMetaData parameter = (ParameterMetaData) parameters.get(0);
+      ParameterMetaData parameter = parameters.get(0);
       assertNotNull(parameter);
       return parameter;
    }

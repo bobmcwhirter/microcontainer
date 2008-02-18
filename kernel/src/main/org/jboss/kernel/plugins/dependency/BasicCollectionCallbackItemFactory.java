@@ -37,18 +37,18 @@ import org.jboss.dependency.spi.dispatch.InvokeDispatchContext;
  */
 public class BasicCollectionCallbackItemFactory implements CollectionCallbackItemFactory
 {
-   public CollectionCallbackItem createCollectionCallbackItem(
-         Class<? extends Collection> parameterClass,
-         Class name,
+   public CollectionCallbackItem <? extends Collection<Object>>createCollectionCallbackItem(
+         Class<? extends Collection<Object>> parameterClass,
+         Class<?> name,
          InvokeDispatchContext context,
          AttributeInfo attribute)
    {
       return createCollectionCallbackItem(parameterClass, name, null, null, null, context, attribute);
    }
 
-   public CollectionCallbackItem createCollectionCallbackItem(
-         Class<? extends Collection> parameterClass,
-         Class name,
+   public CollectionCallbackItem<? extends Collection<Object>> createCollectionCallbackItem(
+         Class<? extends Collection<Object>> parameterClass,
+         Class<?> name,
          ControllerState whenRequired,
          ControllerState dependentState,
          Cardinality cardinality,
@@ -81,9 +81,9 @@ public class BasicCollectionCallbackItemFactory implements CollectionCallbackIte
     * @param attribute the attribute
     * @return new exact collection callback item
     */
-   protected CollectionCallbackItem handleAdditionalCollectionClass(
-         Class<? extends Collection> parameterClass,
-         Class name,
+   protected CollectionCallbackItem<? extends Collection<Object>> handleAdditionalCollectionClass(
+         Class<? extends Collection<Object>> parameterClass,
+         Class<?> name,
          ControllerState whenRequired,
          ControllerState dependentState,
          Cardinality cardinality,

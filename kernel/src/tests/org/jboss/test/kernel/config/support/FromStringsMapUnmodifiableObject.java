@@ -35,6 +35,9 @@ import org.jboss.beans.metadata.api.annotations.Value;
  */
 public class FromStringsMapUnmodifiableObject extends UnmodifiableGetterBean
 {
+   /** The serialVersionUID */
+   private static final long serialVersionUID = 1L;
+
    @MapValue(
          value = {
             @EntryValue(
@@ -50,7 +53,7 @@ public class FromStringsMapUnmodifiableObject extends UnmodifiableGetterBean
          valueClass = "java.lang.String",
          clazz = "java.util.HashMap"
    )
-   public void setMap(Map map)
+   public void setMap(Map<?,?> map)
    {
       super.setMap(map);
    }

@@ -34,6 +34,9 @@ import org.jboss.beans.metadata.api.annotations.Value;
  */
 public class FromObjectsSetSimpleBean extends SimpleBean
 {
+   /** The serialVersionUID */
+   private static final long serialVersionUID = 1L;
+
    @SetValue(
          value = {
             @Value(javabean = @JavaBeanValue("org.jboss.test.kernel.config.support.MyObject1")),
@@ -43,7 +46,7 @@ public class FromObjectsSetSimpleBean extends SimpleBean
          },
          elementClass = "java.lang.Object"
    )
-   public void setSet(Set collection)
+   public void setSet(Set<?> collection)
    {
       super.setSet(collection);
    }

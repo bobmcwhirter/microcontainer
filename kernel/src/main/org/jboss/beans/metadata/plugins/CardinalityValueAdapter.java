@@ -33,6 +33,7 @@ import org.jboss.dependency.spi.Cardinality;
  */
 public class CardinalityValueAdapter implements ValueAdapter
 {
+   @SuppressWarnings("unchecked")
    public Object cast(Object o, Class c)
    {
       return Cardinality.toCardinality((String)o);

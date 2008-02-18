@@ -118,19 +118,19 @@ public class SimpleBean implements Serializable
    private Number aNumber;
 
    /** collection */
-   private Collection collection;
+   private Collection<?> collection;
 
    /** preInstantiated */
    private CustomCollection preInstantiatedCollection = new CustomCollection(true);
 
    /** set */
-   private Set set;
+   private Set<?> set;
 
    /** preInstantiated */
    private CustomSet preInstantiatedSet = new CustomSet(true);
 
    /** list */
-   private List list;
+   private List<?> list;
 
    /** preInstantiated */
    private CustomList preInstantiatedList = new CustomList(true);
@@ -142,7 +142,7 @@ public class SimpleBean implements Serializable
    private Object[] preInstantiatedArray = new Object[]{"string1", "string2", "string2", "string1"};
 
    /** map */
-   private Map map;
+   private Map<?,?> map;
 
    /** preInstantiated */
    private CustomMap preInstantiatedMap = new CustomMap(true);
@@ -155,16 +155,16 @@ public class SimpleBean implements Serializable
    // public just for testing purpose
 
    /** Just a setter for this collection */
-   public Collection setterCollection;
+   public Collection<?> setterCollection;
 
    /** Just a setter for this set */
-   public Set setterSet;
+   public Set<?> setterSet;
 
    /** Just a setter for this list */
-   public List setterList;
+   public List<?> setterList;
 
    /** Just a setter for this map */
-   public Map setterMap;
+   public Map<?,?> setterMap;
 
    // Static --------------------------------------------------------
 
@@ -196,25 +196,25 @@ public class SimpleBean implements Serializable
       anInt = integer;
    }
 
-   public SimpleBean(Comparable comparable)
+   public SimpleBean(Comparable<?> comparable)
    {
       constructorUsed = "java.lang.Comparable:" + comparable.getClass().getName() + ":" + comparable.toString();
       anObject = comparable;
    }
 
-   public SimpleBean(Collection collection)
+   public SimpleBean(Collection<?> collection)
    {
       constructorUsed = "java.util.Collection:" + collection.getClass().getName() + ":" + collection.toString();
       this.collection = collection;
    }
 
-   public SimpleBean(List list)
+   public SimpleBean(List<?> list)
    {
       constructorUsed = "java.util.List:" + list.getClass().getName() + ":" + list.toString();
       this.list = list;
    }
 
-   public SimpleBean(Set set)
+   public SimpleBean(Set<?> set)
    {
       constructorUsed = "java.util.Set:" + set.getClass().getName() + ":" + set.toString();
       this.set = set;
@@ -226,13 +226,13 @@ public class SimpleBean implements Serializable
       this.array = array;
    }
 
-   public SimpleBean(Map map)
+   public SimpleBean(Map<?, ?> map)
    {
       constructorUsed = "java.util.Map:" + map.getClass().getName() + ":" + map.toString();
       this.map = map;
    }
 
-   public SimpleBean(Hashtable hashtable)
+   public SimpleBean(Hashtable<?, ?> hashtable)
    {
       constructorUsed = "java.util.Hashtable:" + hashtable.getClass().getName() + ":" + hashtable.toString();
       this.map = hashtable;
@@ -465,12 +465,12 @@ public class SimpleBean implements Serializable
       aString = string;
    }
 
-   public Set getSet()
+   public Set<?> getSet()
    {
       return set;
    }
    
-   public void setSet(Set set)
+   public void setSet(Set<?> set)
    {
       this.set = set;
    }
@@ -495,12 +495,12 @@ public class SimpleBean implements Serializable
       this.preInstantiatedSet = preInstantiatedSet;
    }
 
-   public Collection getCollection()
+   public Collection<?> getCollection()
    {
       return collection;
    }
    
-   public void setCollection(Collection collection)
+   public void setCollection(Collection<?> collection)
    {
       this.collection = collection;
    }
@@ -525,12 +525,12 @@ public class SimpleBean implements Serializable
       this.preInstantiatedCollection = preInstantiatedCollection;
    }
 
-   public List getList()
+   public List<?> getList()
    {
       return list;
    }
    
-   public void setList(List list)
+   public void setList(List<?> list)
    {
       this.list = list;
    }
@@ -585,12 +585,12 @@ public class SimpleBean implements Serializable
       this.array = array;
    }
 
-   public Map getMap()
+   public Map<?,?> getMap()
    {
       return map;
    }
    
-   public void setMap(Map map)
+   public void setMap(Map<?,?> map)
    {
       this.map = map;
    }
@@ -645,22 +645,22 @@ public class SimpleBean implements Serializable
       this.enumProperty = enumProperty;
    }
 
-   public void setSetterCollection(Collection setterCollection)
+   public void setSetterCollection(Collection<?> setterCollection)
    {
       this.setterCollection = setterCollection;
    }
 
-   public void setSetterSet(Set setterSet)
+   public void setSetterSet(Set<?> setterSet)
    {
       this.setterSet = setterSet;
    }
 
-   public void setSetterList(List setterList)
+   public void setSetterList(List<?> setterList)
    {
       this.setterList = setterList;
    }
 
-   public void setSetterMap(Map setterMap)
+   public void setSetterMap(Map<?, ?> setterMap)
    {
       this.setterMap = setterMap;
    }

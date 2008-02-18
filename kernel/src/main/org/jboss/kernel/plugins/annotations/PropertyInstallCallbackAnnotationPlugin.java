@@ -37,7 +37,7 @@ public class PropertyInstallCallbackAnnotationPlugin extends InstallCallbackAnno
       super();
    }
 
-   protected boolean isEqual(PropertyInfo info, CallbackItem ci)
+   protected boolean isEqual(PropertyInfo info, CallbackItem<?> ci)
    {
       // todo - param matching
       return info.getName().equals(ci.getAttributeName());

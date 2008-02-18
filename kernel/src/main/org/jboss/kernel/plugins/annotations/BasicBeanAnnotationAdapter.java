@@ -21,6 +21,8 @@
 */
 package org.jboss.kernel.plugins.annotations;
 
+import java.lang.annotation.Annotation;
+
 /**
  * Basic bean annotation handler.
  *
@@ -31,7 +33,8 @@ public class BasicBeanAnnotationAdapter extends AbstractBeanAnnotationAdapter
    public BasicBeanAnnotationAdapter()
    {
       // -- adapters
-      Annotation2ValueMetaDataAdapter[] adapters = new Annotation2ValueMetaDataAdapter[]{
+      @SuppressWarnings("unchecked")
+      Annotation2ValueMetaDataAdapter<? extends Annotation>[] adapters = new Annotation2ValueMetaDataAdapter[]{
          InjectAnnotationPlugin.INSTANCE,
          StringValueAnnotationPlugin.INSTANCE,
          ValueFactoryAnnotationPlugin.INSTANCE,

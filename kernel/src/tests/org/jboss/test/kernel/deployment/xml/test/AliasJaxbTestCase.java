@@ -24,6 +24,7 @@ package org.jboss.test.kernel.deployment.xml.test;
 import java.util.Set;
 
 import junit.framework.Test;
+
 import org.jboss.beans.metadata.plugins.AbstractBeanMetaData;
 import org.jboss.beans.metadata.plugins.factory.GenericBeanFactoryMetaData2;
 
@@ -47,7 +48,7 @@ public class AliasJaxbTestCase extends AbstractMCTest
    protected Object getAlias() throws Exception
    {
       AbstractBeanMetaData bean = unmarshalBean();
-      Set aliases = bean.getAliases();
+      Set<Object> aliases = bean.getAliases();
       assertNotNull(aliases);
       assertEquals(1, aliases.size());
       Object alias = aliases.iterator().next();
@@ -105,7 +106,7 @@ public class AliasJaxbTestCase extends AbstractMCTest
    public void testMultipleAlias() throws Exception
    {
       AbstractBeanMetaData bean = unmarshalBean();
-      Set aliases = bean.getAliases();
+      Set<Object> aliases = bean.getAliases();
       assertNotNull(aliases);
       int size = aliases.size();
       assertTrue(size > 1);
@@ -116,7 +117,7 @@ public class AliasJaxbTestCase extends AbstractMCTest
    public void testAliasWithBeanFactory() throws Exception
    {
       GenericBeanFactoryMetaData2 bean = unmarshalBeanFactory();
-      Set aliases = bean.getAliases();
+      Set<Object> aliases = bean.getAliases();
       assertNotNull(aliases);
       assertFalse(aliases.isEmpty());
    }

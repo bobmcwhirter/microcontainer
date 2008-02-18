@@ -40,17 +40,17 @@ import org.jboss.kernel.spi.dependency.KernelControllerContext;
  * @param <T> expected collection type
  * @author <a href="mailto:ales.justin@jboss.com">Ales Justin</a>
  */
-public abstract class CollectionCallbackItem<T extends Collection<Object>> extends OwnerCallbackItem<Class, InvokeDispatchContext>
+public abstract class CollectionCallbackItem<T extends Collection<Object>> extends OwnerCallbackItem<Class<?>, InvokeDispatchContext>
 {
    protected Cardinality cardinality;
    protected AttributeInfo attribute;
 
-   public CollectionCallbackItem(Class name, InvokeDispatchContext owner, AttributeInfo attribute)
+   public CollectionCallbackItem(Class<?> name, InvokeDispatchContext owner, AttributeInfo attribute)
    {
       this(name, null, null, null, owner, attribute);
    }
 
-   public CollectionCallbackItem(Class name, ControllerState whenRequired, ControllerState dependentState, Cardinality cardinality, InvokeDispatchContext context, AttributeInfo attribute)
+   public CollectionCallbackItem(Class<?> name, ControllerState whenRequired, ControllerState dependentState, Cardinality cardinality, InvokeDispatchContext context, AttributeInfo attribute)
    {
       super(name, whenRequired, dependentState, attribute != null ? attribute.getName() : null, context);
       this.attribute = attribute;

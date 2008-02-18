@@ -37,7 +37,7 @@ public class MethodInstallCallbackAnnotationPlugin extends InstallCallbackAnnota
       super();
    }
 
-   protected boolean isEqual(MethodInfo info, CallbackItem ci)
+   protected boolean isEqual(MethodInfo info, CallbackItem<?> ci)
    {
       // todo - param matching
       return info.getName().equals(ci.getAttributeName());

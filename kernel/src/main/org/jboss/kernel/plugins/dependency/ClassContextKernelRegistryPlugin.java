@@ -39,6 +39,7 @@ public class ClassContextKernelRegistryPlugin implements KernelRegistryPlugin
       this.controller = controller;
    }
 
+   @SuppressWarnings("unchecked")
    public KernelRegistryEntry getEntry(Object name)
    {
       if (name instanceof Class)

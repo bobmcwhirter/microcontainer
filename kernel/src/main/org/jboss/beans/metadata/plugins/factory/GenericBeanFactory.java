@@ -59,7 +59,7 @@ public class GenericBeanFactory implements BeanFactory
    protected ConstructorMetaData constructor;
    
    /** The properties Map<propertyName, ValueMetaData> */
-   protected Map properties;
+   protected Map<String, ValueMetaData> properties;
 
    /** The create lifecycle method */
    protected LifecycleMetaData create;
@@ -97,11 +97,10 @@ public class GenericBeanFactory implements BeanFactory
 
       if (properties != null && properties.size() > 0)
       {
-         for (Object o : properties.entrySet())
+         for (Map.Entry<String, ValueMetaData> entry : properties.entrySet())
          {
-            Map.Entry entry = (Map.Entry)o;
-            String property = (String)entry.getKey();
-            ValueMetaData vmd = (ValueMetaData)entry.getValue();
+            String property = entry.getKey();
+            ValueMetaData vmd = entry.getValue();
             TargettedJoinpoint jp = configurator.getPropertySetterJoinPoint(info, property, cl, vmd);
             jp.setTarget(result);
             jp.dispatch();
@@ -177,7 +176,7 @@ public class GenericBeanFactory implements BeanFactory
     * 
     * @return the properties Map<propertyName, ValueMetaData>
     */
-   public Map getProperties()
+   public Map<String, ValueMetaData> getProperties()
    {
       return properties;
    }
@@ -187,7 +186,7 @@ public class GenericBeanFactory implements BeanFactory
     * 
     * @param properties the properties Map<propertyName, ValueMetaData>
     */
-   public void setProperties(Map properties)
+   public void setProperties(Map<String, ValueMetaData> properties)
    {
       this.properties = properties;
    }

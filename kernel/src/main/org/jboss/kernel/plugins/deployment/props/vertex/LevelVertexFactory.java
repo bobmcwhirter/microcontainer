@@ -39,7 +39,7 @@ public interface LevelVertexFactory
     * @param name the name
     * @return new vertex instance or null if cannot create vertex from name
     */
-   TreeVertex createVertex(String name);
+   TreeVertex<?> createVertex(String name);
 
    /**
     * Get the order.

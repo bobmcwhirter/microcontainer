@@ -34,6 +34,9 @@ import org.jboss.beans.metadata.api.annotations.Value;
  */
 public class FromStringsListUnmodifiableObject extends UnmodifiableGetterBean
 {
+   /** The serialVersionUID */
+   private static final long serialVersionUID = 1L;
+
    @ListValue(
          value = {
             @Value(string = @StringValue("string1")),
@@ -44,7 +47,7 @@ public class FromStringsListUnmodifiableObject extends UnmodifiableGetterBean
          elementClass = "java.lang.String",
          clazz = "java.util.ArrayList"
    )
-   public void setList(List list)
+   public void setList(List<?> list)
    {
       super.setList(list);
    }

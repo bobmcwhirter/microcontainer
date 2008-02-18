@@ -31,6 +31,7 @@ import org.jboss.xb.binding.sunday.unmarshalling.ValueAdapter;
  */
 public class FromContextValueAdapter implements ValueAdapter
 {
+   @SuppressWarnings("unchecked")
    public Object cast(Object o, Class c)
    {
       return FromContext.getInstance((String)o);

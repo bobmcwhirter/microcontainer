@@ -49,9 +49,9 @@ public abstract class AbstractLazyInitializer implements LazyInitializer
    {
       private String bean;
       private KernelBus bus;
-      private Class proxyClass;
+      private Class<?> proxyClass;
 
-      protected AbstractInvokeHandler(String bean, KernelBus bus, Class proxyClass)
+      protected AbstractInvokeHandler(String bean, KernelBus bus, Class<?> proxyClass)
       {
          if (bean == null)
             throw new IllegalArgumentException("Null bean name.");
@@ -110,8 +110,8 @@ public abstract class AbstractLazyInitializer implements LazyInitializer
    protected static boolean isGetter(Method minfo)
    {
       String name = minfo.getName();
-      Class returnType = minfo.getReturnType();
-      Class[] parameters = minfo.getParameterTypes();
+      Class<?> returnType = minfo.getReturnType();
+      Class<?>[] parameters = minfo.getParameterTypes();
       if ((name.length() > 3 && name.startsWith("get")) || (name.length() > 2 && name.startsWith("is")))
       {
          // isBoolean() is not a getter for java.lang.Boolean
@@ -132,8 +132,8 @@ public abstract class AbstractLazyInitializer implements LazyInitializer
    protected static boolean isSetter(Method minfo)
    {
       String name = minfo.getName();
-      Class returnType = minfo.getReturnType();
-      Class[] parameters = minfo.getParameterTypes();
+      Class<?> returnType = minfo.getReturnType();
+      Class<?>[] parameters = minfo.getParameterTypes();
       if ((name.length() > 3 && name.startsWith("set")))
       {
          if (parameters.length == 1 && Void.TYPE.equals(returnType))
@@ -209,10 +209,10 @@ public abstract class AbstractLazyInitializer implements LazyInitializer
     * @return  array of classes
     * @throws Throwable for any error
     */
-   protected static Class[] getClasses(KernelConfigurator configurator, Set<String> classNames, ClassLoader cl)
+   protected static Class<?>[] getClasses(KernelConfigurator configurator, Set<String> classNames, ClassLoader cl)
          throws Throwable
    {
-      Class[] classes = new Class[classNames.size()];
+      Class<?>[] classes = new Class[classNames.size()];
       int i = 0;
       for (String className : classNames)
       {

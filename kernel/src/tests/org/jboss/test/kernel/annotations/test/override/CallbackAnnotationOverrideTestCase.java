@@ -21,20 +21,20 @@
 */
 package org.jboss.test.kernel.annotations.test.override;
 
-import java.util.List;
 import java.util.ArrayList;
+import java.util.List;
 
-import org.jboss.dependency.spi.Controller;
-import org.jboss.dependency.spi.ControllerContext;
+import junit.framework.Test;
+
 import org.jboss.beans.metadata.plugins.AbstractBeanMetaData;
 import org.jboss.beans.metadata.plugins.InstallCallbackMetaData;
 import org.jboss.beans.metadata.plugins.UninstallCallbackMetaData;
 import org.jboss.beans.metadata.spi.CallbackMetaData;
-import org.jboss.test.kernel.annotations.support.AnnotationTester;
-import org.jboss.test.kernel.annotations.support.MyDeployer;
+import org.jboss.dependency.spi.Controller;
 import org.jboss.kernel.spi.dependency.KernelController;
 import org.jboss.kernel.spi.dependency.KernelControllerContext;
-import junit.framework.Test;
+import org.jboss.test.kernel.annotations.support.AnnotationTester;
+import org.jboss.test.kernel.annotations.support.MyDeployer;
 
 /**
  * @author <a href="mailto:ales.justin@jboss.com">Ales Justin</a>
@@ -42,7 +42,6 @@ import junit.framework.Test;
 public class CallbackAnnotationOverrideTestCase extends AbstractAnnotationOverrideTestCase
 {
    private Controller controller;
-   private ControllerContext context;
 
    public CallbackAnnotationOverrideTestCase(String name) throws Throwable
    {
@@ -100,13 +99,11 @@ public class CallbackAnnotationOverrideTestCase extends AbstractAnnotationOverri
    {
       controller.install(new AbstractBeanMetaData("deployer", MyDeployer.class.getName()));
       this.controller = controller;
-      this.context = context;
    }
 
    protected void doUndeploy()
    {
       controller.uninstall("deployer");
       controller = null;
-      context = null;
    }
 }

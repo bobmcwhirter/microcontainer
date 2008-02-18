@@ -27,6 +27,7 @@ import junit.framework.Test;
 
 import org.jboss.beans.metadata.plugins.AbstractBeanMetaData;
 import org.jboss.beans.metadata.plugins.AbstractSupplyMetaData;
+import org.jboss.beans.metadata.spi.SupplyMetaData;
 
 /**
  * SupplyTestCase.
@@ -39,7 +40,7 @@ public class SupplyTestCase extends AbstractXMLTest
    protected AbstractSupplyMetaData getSupply(String name) throws Exception
    {
       AbstractBeanMetaData bean = unmarshalBean(name);
-      Set supplies = bean.getSupplies();
+      Set<SupplyMetaData> supplies = bean.getSupplies();
       assertNotNull(supplies);
       assertEquals(1, supplies.size());
       AbstractSupplyMetaData supply = (AbstractSupplyMetaData) supplies.iterator().next();

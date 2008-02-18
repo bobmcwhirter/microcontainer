@@ -40,10 +40,10 @@ public class CollectionTestCase extends AbstractXMLTest
    protected AbstractCollectionMetaData getCollection(String name) throws Exception
    {
       AbstractBeanMetaData bean = unmarshalBean(name);
-      Set properties = bean.getProperties();
+      Set<PropertyMetaData> properties = bean.getProperties();
       assertNotNull(properties);
       assertEquals(1, properties.size());
-      PropertyMetaData property = (PropertyMetaData) properties.iterator().next();
+      PropertyMetaData property = properties.iterator().next();
       assertNotNull(property);
       ValueMetaData value = property.getValue();
       assertNotNull(property);

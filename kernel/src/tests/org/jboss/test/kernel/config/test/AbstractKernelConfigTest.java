@@ -136,10 +136,10 @@ public class AbstractKernelConfigTest extends AbstractKernelTest
 
    protected void configure(KernelConfigurator configurator, Object bean, BeanInfo info, BeanMetaData metaData) throws Throwable
    {
-      Set joinPoints = configurator.getPropertySetterJoinPoints(info, metaData);
-      for (Iterator i = joinPoints.iterator(); i.hasNext();)
+      Set<TargettedJoinpoint> joinPoints = configurator.getPropertySetterJoinPoints(info, metaData);
+      for (Iterator<TargettedJoinpoint> i = joinPoints.iterator(); i.hasNext();)
       {
-         TargettedJoinpoint joinPoint = (TargettedJoinpoint) i.next();
+         TargettedJoinpoint joinPoint = i.next();
          joinPoint.setTarget(bean);
          joinPoint.dispatch();
       }
@@ -155,10 +155,10 @@ public class AbstractKernelConfigTest extends AbstractKernelTest
 
    protected void unconfigure(KernelConfigurator configurator, Object bean, BeanInfo info, BeanMetaData metaData) throws Throwable
    {
-      Set joinPoints = configurator.getPropertyNullerJoinPoints(info, metaData);
-      for (Iterator i = joinPoints.iterator(); i.hasNext();)
+      Set<TargettedJoinpoint> joinPoints = configurator.getPropertyNullerJoinPoints(info, metaData);
+      for (Iterator<TargettedJoinpoint> i = joinPoints.iterator(); i.hasNext();)
       {
-         TargettedJoinpoint joinPoint = (TargettedJoinpoint) i.next();
+         TargettedJoinpoint joinPoint = i.next();
          joinPoint.setTarget(bean);
          try
          {

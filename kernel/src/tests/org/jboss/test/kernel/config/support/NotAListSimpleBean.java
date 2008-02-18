@@ -32,6 +32,9 @@ import org.jboss.beans.metadata.api.annotations.StringValue;
  */
 public class NotAListSimpleBean extends SimpleBean
 {
+   /** The serialVersionUID */
+   private static final long serialVersionUID = 1L;
+
    @ListValue(
          value = {
             @Value(string = @StringValue("string1")),

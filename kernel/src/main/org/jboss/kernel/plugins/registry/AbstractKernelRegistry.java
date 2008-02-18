@@ -79,9 +79,9 @@ public abstract class AbstractKernelRegistry extends AbstractKernelObject implem
 
    public KernelRegistryEntry getEntry(Object name)
    {
-      for (ListIterator i = factories.listIterator(); i.hasNext();)
+      for (ListIterator<KernelRegistryPlugin> i = factories.listIterator(); i.hasNext();)
       {
-         KernelRegistryPlugin factory = (KernelRegistryPlugin) i.next();
+         KernelRegistryPlugin factory = i.next();
          KernelRegistryEntry entry = factory.getEntry(name);
          if (entry != null)
             return entry;
@@ -91,10 +91,10 @@ public abstract class AbstractKernelRegistry extends AbstractKernelObject implem
 
    public boolean containsEntry(Object name)
    {
-      Iterator i = factories.iterator();
+      Iterator<KernelRegistryPlugin> i = factories.iterator();
       while (i.hasNext())
       {
-         KernelRegistryPlugin factory = (KernelRegistryPlugin) i.next();
+         KernelRegistryPlugin factory = i.next();
          KernelRegistryEntry entry = factory.getEntry(name);
          if (entry != null)
             return true;

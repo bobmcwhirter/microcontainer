@@ -28,4 +28,7 @@ package org.jboss.test.kernel.dependency.support;
  */
 public class InstallSimpleBeanImpl extends SimpleBeanImpl
 {
+
+   /** The serialVersionUID */
+   private static final long serialVersionUID = 1L;
 }

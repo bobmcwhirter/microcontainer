@@ -69,7 +69,7 @@ public class SetTestCase extends AbstractKernelConfigTest
       SimpleBean bean = simpleSetFromObjects();
       assertNotNull(bean);
       
-      Set result = bean.getSet();
+      Set<?> result = bean.getSet();
       assertNotNull("Should be a set", result);
       
       HashSet<Object> expected = new HashSet<Object>();
@@ -107,7 +107,7 @@ public class SetTestCase extends AbstractKernelConfigTest
       SimpleBean bean = simpleSetFromStrings();
       assertNotNull(bean);
       
-      Set result = bean.getSet();
+      Set<?> result = bean.getSet();
       assertNotNull("Should be a set", result);
       
       HashSet<Object> expected = new HashSet<Object>();
@@ -150,7 +150,7 @@ public class SetTestCase extends AbstractKernelConfigTest
       SimpleBean bean = customSetExplicit();
       assertNotNull(bean);
       
-      Set result = bean.getSet();
+      Set<?> result = bean.getSet();
       assertNotNull("Should be a set", result);
       assertTrue("Not a CustomSet: " + result.getClass(), result instanceof CustomSet);
       
@@ -195,7 +195,7 @@ public class SetTestCase extends AbstractKernelConfigTest
       SimpleBean bean = customSetFromSignature();
       assertNotNull(bean);
       
-      Set result = bean.getCustomSet();
+      Set<?> result = bean.getCustomSet();
       assertNotNull("Should be a set", result);
       assertTrue("Not a CustomSet: " + result.getClass(), result instanceof CustomSet);
       
@@ -239,7 +239,7 @@ public class SetTestCase extends AbstractKernelConfigTest
       SimpleBean bean = customSetPreInstantiated();
       assertNotNull(bean);
       
-      Set result = bean.getPreInstantiatedSet();
+      Set<?> result = bean.getPreInstantiatedSet();
       assertNotNull("Should be a set", result);
       assertTrue("Not a CustomSet: " + result.getClass(), result instanceof CustomSet);
       assertTrue("Not preinstantiated", ((CustomSet) result).getPreInstantiated());
@@ -251,7 +251,7 @@ public class SetTestCase extends AbstractKernelConfigTest
       expected.add(string1);
       assertEquals(expected, result);
 
-      Set setter = bean.setterSet;
+      Set<?> setter = bean.setterSet;
       assertNotNull(setter);
       assertFalse("Empty setterSet", setter.isEmpty());
    }
@@ -293,7 +293,7 @@ public class SetTestCase extends AbstractKernelConfigTest
       UnmodifiableGetterBean bean = unmodifiableSetPreInstantiated();
       assertNotNull(bean);
 
-      Set result = bean.getSet();
+      Set<?> result = bean.getSet();
       assertNotNull("Should be a set", result);
 
       HashSet<Object> expected = new HashSet<Object>();
@@ -336,7 +336,7 @@ public class SetTestCase extends AbstractKernelConfigTest
       SimpleBean bean = setWithValueTypeOverride();
       assertNotNull(bean);
       
-      Set result = bean.getSet();
+      Set<?> result = bean.getSet();
       assertNotNull("Should be a set", result);
       assertTrue("Not a CustomSet: " + result.getClass(), result instanceof CustomSet);
       

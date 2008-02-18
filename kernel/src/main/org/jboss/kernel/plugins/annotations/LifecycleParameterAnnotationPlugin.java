@@ -41,7 +41,7 @@ import org.jboss.reflect.spi.ParameterInfo;
  */
 public abstract class LifecycleParameterAnnotationPlugin<C extends Annotation> extends AbstractParameterAnnotationPlugin<MethodInfo, C, AbstractLifecycleMetaData>
 {
-   protected LifecycleParameterAnnotationPlugin(Class<C> annotation, Annotation2ValueMetaDataAdapter... adapters)
+   protected LifecycleParameterAnnotationPlugin(Class<C> annotation, Annotation2ValueMetaDataAdapter<? extends Annotation>... adapters)
    {
       super(annotation, adapters);
    }

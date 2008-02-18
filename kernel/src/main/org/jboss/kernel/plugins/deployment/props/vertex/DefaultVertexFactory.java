@@ -70,7 +70,7 @@ public class DefaultVertexFactory implements VertexFactory
       return new BaseDeploymentVertex();
    }
 
-   public TreeVertex createVertex(int level, String name)
+   public TreeVertex<?> createVertex(int level, String name)
    {
       Set<LevelVertexFactory> factories = levelFactories.get(level);
       if (factories == null)
@@ -78,7 +78,7 @@ public class DefaultVertexFactory implements VertexFactory
 
       for(LevelVertexFactory factory : factories)
       {
-         TreeVertex vertex = factory.createVertex(name);
+         TreeVertex<?> vertex = factory.createVertex(name);
          if (vertex != null)
             return vertex;
       }
@@ -90,14 +90,14 @@ public class DefaultVertexFactory implements VertexFactory
     * e.g. injection
     *
     * @param value
-    * @return
+    * @return true when it is complex
     */
    protected boolean isValueComplex(String value)
    {
       return value.contains(".");
    }
 
-   public TreeVertex valueVertex(String value)
+   public TreeVertex<? extends Vertex<String>> valueVertex(String value)
    {
       if (isValueComplex(value))
          return new ComplexValueVertex(value);

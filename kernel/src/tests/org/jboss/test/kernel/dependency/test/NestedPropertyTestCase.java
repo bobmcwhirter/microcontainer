@@ -21,24 +21,21 @@
 */
 package org.jboss.test.kernel.dependency.test;
 
-import java.util.HashSet;
 import java.util.Collections;
+import java.util.HashSet;
 
 import junit.framework.Test;
-import org.jboss.dependency.spi.ControllerContext;
-import org.jboss.dependency.spi.ControllerState;
-import org.jboss.dependency.spi.Controller;
-import org.jboss.test.kernel.dependency.support.SimpleBean;
-import org.jboss.test.kernel.dependency.support.SimpleBeanImpl;
-import org.jboss.test.kernel.dependency.support.NestedBean;
+
 import org.jboss.beans.metadata.plugins.AbstractBeanMetaData;
-import org.jboss.beans.metadata.plugins.AbstractPropertyMetaData;
-import org.jboss.beans.metadata.plugins.AbstractDependencyValueMetaData;
 import org.jboss.beans.metadata.plugins.AbstractConstructorMetaData;
+import org.jboss.beans.metadata.plugins.AbstractDependencyValueMetaData;
 import org.jboss.beans.metadata.plugins.AbstractParameterMetaData;
-import org.jboss.beans.metadata.spi.PropertyMetaData;
+import org.jboss.beans.metadata.plugins.AbstractPropertyMetaData;
 import org.jboss.beans.metadata.spi.BeanMetaData;
 import org.jboss.beans.metadata.spi.ParameterMetaData;
+import org.jboss.beans.metadata.spi.PropertyMetaData;
+import org.jboss.dependency.spi.ControllerContext;
+import org.jboss.test.kernel.dependency.support.NestedBean;
 
 /**
  * Nested property tests.

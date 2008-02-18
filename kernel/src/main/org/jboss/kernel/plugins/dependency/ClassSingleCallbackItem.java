@@ -38,26 +38,26 @@ import org.jboss.kernel.spi.dependency.KernelControllerContext;
  * 
  * @author <a href="mailto:ales.justin@jboss.com">Ales Justin</a>
  */
-public class ClassSingleCallbackItem extends SingleCallbackItem<Class>
+public class ClassSingleCallbackItem extends SingleCallbackItem<Class<?>>
 {
    protected Cardinality cardinality;
 
-   public ClassSingleCallbackItem(Class name, InvokeDispatchContext owner, String method)
+   public ClassSingleCallbackItem(Class<?> name, InvokeDispatchContext owner, String method)
    {
       super(name, owner, method);
    }
 
-   public ClassSingleCallbackItem(Class name, InvokeDispatchContext owner, String method, String signature)
+   public ClassSingleCallbackItem(Class<?> name, InvokeDispatchContext owner, String method, String signature)
    {
       super(name, owner, method, signature);
    }
 
-   public ClassSingleCallbackItem(Class name, ControllerState whenRequired, ControllerState dependentState, Cardinality cardinality, InvokeDispatchContext owner, String method)
+   public ClassSingleCallbackItem(Class<?> name, ControllerState whenRequired, ControllerState dependentState, Cardinality cardinality, InvokeDispatchContext owner, String method)
    {
       super(name, whenRequired, dependentState, owner, method);
    }
 
-   public ClassSingleCallbackItem(Class name, ControllerState whenRequired, ControllerState dependentState, Cardinality cardinality, InvokeDispatchContext owner, String method, String signature)
+   public ClassSingleCallbackItem(Class<?> name, ControllerState whenRequired, ControllerState dependentState, Cardinality cardinality, InvokeDispatchContext owner, String method, String signature)
    {
       super(name, whenRequired, dependentState, owner, method, signature);
       this.cardinality = cardinality;

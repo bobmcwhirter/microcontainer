@@ -26,7 +26,6 @@ package org.jboss.test.kernel.dependency.support;
  */
 public class NestedBean
 {
-   private int limit;
    private NestedBean bean;
    private String string;
 

@@ -33,6 +33,9 @@ import org.jboss.beans.metadata.api.annotations.Value;
  */
 public class FromStringsArraySimpleBean extends SimpleBean
 {
+   /** The serialVersionUID */
+   private static final long serialVersionUID = 1L;
+
    @ArrayValue(
          value = {
             @Value(string = @StringValue("string1")),

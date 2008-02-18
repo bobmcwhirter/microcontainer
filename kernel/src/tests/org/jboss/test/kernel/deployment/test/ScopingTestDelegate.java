@@ -35,7 +35,7 @@ import org.jboss.test.kernel.junit.MicrocontainerTestDelegate;
  */
 public class ScopingTestDelegate extends MicrocontainerTestDelegate
 {
-   public ScopingTestDelegate(Class clazz) throws Exception
+   public ScopingTestDelegate(Class<?> clazz) throws Exception
    {
       super(clazz);
    }

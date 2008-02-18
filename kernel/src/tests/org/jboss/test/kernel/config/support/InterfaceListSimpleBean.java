@@ -34,6 +34,9 @@ import org.jboss.beans.metadata.api.annotations.Value;
  */
 public class InterfaceListSimpleBean extends SimpleBean
 {
+   /** The serialVersionUID */
+   private static final long serialVersionUID = 1L;
+
    @ListValue(
          value = {
             @Value(string = @StringValue("string1")),
@@ -44,7 +47,7 @@ public class InterfaceListSimpleBean extends SimpleBean
          elementClass = "java.lang.String",
          clazz = "java.util.List"
    )
-   public void setList(List collection)
+   public void setList(List<?> collection)
    {
       super.setList(collection);
    }

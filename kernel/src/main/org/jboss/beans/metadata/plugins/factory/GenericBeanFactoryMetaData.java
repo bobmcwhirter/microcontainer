@@ -45,6 +45,7 @@ import org.jboss.beans.metadata.plugins.AbstractValueMetaData;
 import org.jboss.beans.metadata.spi.ClassLoaderMetaData;
 import org.jboss.beans.metadata.spi.ConstructorMetaData;
 import org.jboss.beans.metadata.spi.LifecycleMetaData;
+import org.jboss.beans.metadata.spi.MetaDataVisitorNode;
 import org.jboss.beans.metadata.spi.ParameterMetaData;
 import org.jboss.beans.metadata.spi.PropertyMetaData;
 import org.jboss.beans.metadata.spi.ValueMetaData;
@@ -166,9 +167,9 @@ public class GenericBeanFactoryMetaData extends AbstractBeanMetaData
       if (properties == null)
          return null;
       AbstractMapMetaData map = (AbstractMapMetaData) properties.getValue();
-      for (Iterator i = map.entrySet().iterator(); i.hasNext();)
+      for (Iterator<Map.Entry<MetaDataVisitorNode, MetaDataVisitorNode>> i = map.entrySet().iterator(); i.hasNext();)
       {
-         Map.Entry entry = (Map.Entry) i.next();
+         Map.Entry<MetaDataVisitorNode, MetaDataVisitorNode> entry = i.next();
          ValueMetaData key = (ValueMetaData) entry.getKey();
          if (key.getUnderlyingValue().equals(name))
          {

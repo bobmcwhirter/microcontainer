@@ -33,6 +33,7 @@ import org.jboss.xb.binding.sunday.unmarshalling.ValueAdapter;
  */
 public class ControllerStateValueAdapter implements ValueAdapter
 {
+   @SuppressWarnings("unchecked")
    public Object cast(Object o, Class c)
    {
       return new ControllerState((String)o);

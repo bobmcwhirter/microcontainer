@@ -31,12 +31,15 @@ import org.jboss.beans.metadata.api.annotations.StringValue;
  */
 public class ParamCompConstructorAnnBean extends SimpleBean
 {
+   /** The serialVersionUID */
+   private static final long serialVersionUID = 1L;
+
    public ParamCompConstructorAnnBean()
    {
    }
 
    @Constructor
-   public ParamCompConstructorAnnBean(@StringValue(value = "12", type="java.lang.Integer") Comparable comparable)
+   public ParamCompConstructorAnnBean(@StringValue(value = "12", type="java.lang.Integer") Comparable<?> comparable)
    {
       super(comparable);
    }

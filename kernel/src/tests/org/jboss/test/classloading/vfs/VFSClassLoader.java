@@ -53,7 +53,7 @@ public class VFSClassLoader extends URLClassLoader
       
       if (name.startsWith("org.jboss.test") == false)
          return getClass().getClassLoader().loadClass(name);
-      Class c;
+      Class<?> c;
       try
       {
          c = super.loadClass(name, flag);

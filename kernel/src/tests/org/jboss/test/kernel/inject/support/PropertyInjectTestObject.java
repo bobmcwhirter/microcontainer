@@ -32,8 +32,8 @@ public class PropertyInjectTestObject
 
    private TesterInterface testerInterface;
    private DuplicateTester duplicateTester;
-   private Collection collection;
-   private Map map;
+   private Collection<?> collection;
+   private Map<?,?> map;
 
    public TesterInterface getTesterInterface()
    {
@@ -55,22 +55,22 @@ public class PropertyInjectTestObject
       this.duplicateTester = duplicateTester;
    }
 
-   public Collection getCollection()
+   public Collection<?> getCollection()
    {
       return collection;
    }
 
-   public void setCollection(Collection collection)
+   public void setCollection(Collection<?> collection)
    {
       this.collection = collection;
    }
 
-   public Map getMap()
+   public Map<?,?> getMap()
    {
       return map;
    }
 
-   public void setMap(Map map)
+   public void setMap(Map<?,?> map)
    {
       this.map = map;
    }

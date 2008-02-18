@@ -321,7 +321,7 @@ public class BeanSchemaBindingHelper
     */
    public static void initNamedAliasHandlers(TypeBinding aliasType)
    {
-      aliasType.setHandler(NamedAliasHandler.HANDLER);
+      aliasType.setHandler(NamedAliasHandler.NAMED_ALIAS_HANDLER);
 
       // alias can take characters
       aliasType.setSimpleType(AliasCharactersHandler.HANDLER);

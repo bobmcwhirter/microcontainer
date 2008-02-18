@@ -44,7 +44,7 @@ public interface VertexFactory
     * @param name full name
     * @return new tree vertex
     */
-   TreeVertex createVertex(int level, String name);
+   TreeVertex<?> createVertex(int level, String name);
 
    /**
     * Create value vertext.
@@ -52,7 +52,7 @@ public interface VertexFactory
     * @param value the text value
     * @return new value vertex
     */
-   TreeVertex valueVertex(String value);
+   TreeVertex<?> valueVertex(String value);
 
    /**
     * Get the visitor.

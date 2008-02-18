@@ -44,10 +44,10 @@ public class InstallJaxbTestCase extends AbstractMCTest
    protected InstallMetaData getInstall() throws Exception
    {
       AbstractBeanMetaData bean = unmarshalBean();
-      List installs = bean.getInstalls();
+      List<InstallMetaData> installs = bean.getInstalls();
       assertNotNull(installs);
       assertEquals(1, installs.size());
-      InstallMetaData install = (InstallMetaData) installs.get(0);
+      InstallMetaData install = installs.get(0);
       assertNotNull(install);
       return install;
    }

@@ -88,7 +88,7 @@ public abstract class AbstractConfigureAction extends KernelControllerContextAct
     */
    protected boolean isExactlyKernelControllerContextAware(Object o)
    {
-      Class clazz = o.getClass();
+      Class<?> clazz = o.getClass();
       return KernelControllerContextAware.class.isAssignableFrom(clazz) &&
                (!ConfigureKernelControllerContextAware.class.isAssignableFrom(clazz) &&
                !CreateKernelControllerContextAware.class.isAssignableFrom(clazz) &&

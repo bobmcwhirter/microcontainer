@@ -43,9 +43,9 @@ public interface CollectionCallbackItemFactory
     * @param attribute the attribute
     * @return new exact collection callback item
     */
-   CollectionCallbackItem createCollectionCallbackItem(
-         Class<? extends Collection> parameterClass,
-         Class name,
+   CollectionCallbackItem<? extends Collection<Object>> createCollectionCallbackItem(
+         Class<? extends Collection<Object>> parameterClass,
+         Class<?> name,
          InvokeDispatchContext context,
          AttributeInfo attribute);
 
@@ -61,9 +61,9 @@ public interface CollectionCallbackItemFactory
     * @param attribute the attribute
     * @return new exact collection callback item
     */
-   CollectionCallbackItem createCollectionCallbackItem(
-         Class<? extends Collection> parameterClass,
-         Class name,
+   CollectionCallbackItem<? extends Collection<Object>> createCollectionCallbackItem(
+         Class<? extends Collection<Object>> parameterClass,
+         Class<?> name,
          ControllerState whenRequired,
          ControllerState dependentState,
          Cardinality cardinality,

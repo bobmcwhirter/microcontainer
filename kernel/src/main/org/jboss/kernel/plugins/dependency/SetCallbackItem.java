@@ -34,12 +34,12 @@ import org.jboss.dependency.spi.dispatch.InvokeDispatchContext;
  */
 public class SetCallbackItem extends CollectionCreatorCallbackItem<Set<Object>>
 {
-   public SetCallbackItem(Class name, InvokeDispatchContext owner, AttributeInfo attribute)
+   public SetCallbackItem(Class<?> name, InvokeDispatchContext owner, AttributeInfo attribute)
    {
       super(CollectionCreator.SET, name, owner, attribute);
    }
 
-   public SetCallbackItem(Class name, ControllerState whenRequired, ControllerState dependentState, Cardinality cardinality, InvokeDispatchContext context, AttributeInfo attribute)
+   public SetCallbackItem(Class<?> name, ControllerState whenRequired, ControllerState dependentState, Cardinality cardinality, InvokeDispatchContext context, AttributeInfo attribute)
    {
       super(CollectionCreator.SET, name, whenRequired, dependentState, cardinality, context, attribute);
    }

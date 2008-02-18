@@ -38,7 +38,7 @@ public class ClassVertexFactory extends KeywordLevelVertexFactory
       super("(class)");
    }
 
-   protected TreeVertex createVertex(String name, String keyword)
+   protected TreeVertex<?> createVertex(String name, String keyword)
    {
       return new ClassVertex(name);
    }

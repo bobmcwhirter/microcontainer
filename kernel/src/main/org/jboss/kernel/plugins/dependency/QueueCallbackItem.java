@@ -34,12 +34,12 @@ import org.jboss.dependency.spi.dispatch.InvokeDispatchContext;
  */
 public class QueueCallbackItem extends CollectionCreatorCallbackItem<Queue<Object>>
 {
-   public QueueCallbackItem(Class name, InvokeDispatchContext owner, AttributeInfo attribute)
+   public QueueCallbackItem(Class<?> name, InvokeDispatchContext owner, AttributeInfo attribute)
    {
       super(CollectionCreator.QUEUE, name, owner, attribute);
    }
 
-   public QueueCallbackItem(Class name, ControllerState whenRequired, ControllerState dependentState, Cardinality cardinality, InvokeDispatchContext context, AttributeInfo attribute)
+   public QueueCallbackItem(Class<?> name, ControllerState whenRequired, ControllerState dependentState, Cardinality cardinality, InvokeDispatchContext context, AttributeInfo attribute)
    {
       super(CollectionCreator.QUEUE, name, whenRequired, dependentState, cardinality, context, attribute);
    }

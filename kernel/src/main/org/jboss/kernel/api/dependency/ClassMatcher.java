@@ -24,6 +24,7 @@ package org.jboss.kernel.api.dependency;
 /**
  * Match the class type.
  *
+ * @param <T> the class to match
  * @author <a href="mailto:ales.justin@jboss.com">Ales Justin</a>
  */
 public abstract class ClassMatcher<T> extends NonNullMatcher

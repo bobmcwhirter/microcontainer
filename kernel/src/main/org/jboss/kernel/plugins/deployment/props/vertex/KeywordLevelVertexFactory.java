@@ -39,7 +39,7 @@ public abstract class KeywordLevelVertexFactory extends AbstractLevelVertexFacto
       this.keyword = keyword;
    }
 
-   public TreeVertex createVertex(String name)
+   public TreeVertex<?> createVertex(String name)
    {
       int p = name.lastIndexOf(".") + 1;
       String keyword = name.substring(p);
@@ -57,5 +57,5 @@ public abstract class KeywordLevelVertexFactory extends AbstractLevelVertexFacto
     * @param keyword the keyword
     * @return new vertex instance
     */
-   protected  abstract TreeVertex createVertex(String name, String keyword);
+   protected  abstract TreeVertex<?> createVertex(String name, String keyword);
 }

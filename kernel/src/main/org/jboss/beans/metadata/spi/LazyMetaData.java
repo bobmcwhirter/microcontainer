@@ -47,7 +47,7 @@ public interface LazyMetaData extends BeanMetaData, BeanMetaDataFactory
    /**
     * Get the intefaces.
     *
-    * @return
+    * @return the interfaces
     */
    Set<String> getInterfaces();
 }

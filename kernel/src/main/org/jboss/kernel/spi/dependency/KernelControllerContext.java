@@ -26,7 +26,6 @@ import org.jboss.beans.metadata.spi.BeanMetaData;
 import org.jboss.dependency.spi.dispatch.InvokeDispatchContext;
 import org.jboss.kernel.Kernel;
 import org.jboss.kernel.spi.registry.KernelRegistryEntry;
-import org.jboss.metadata.spi.MetaData;
 
 /**
  * Information about dependencies and state.

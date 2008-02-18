@@ -30,6 +30,9 @@ import org.jboss.beans.metadata.api.annotations.Constructor;
  */
 public class SimpleConstructorAnnBean extends SimpleBean
 {
+   /** The serialVersionUID */
+   private static final long serialVersionUID = 1L;
+
    @Constructor
    public SimpleConstructorAnnBean()
    {

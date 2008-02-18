@@ -52,7 +52,7 @@ import org.jboss.reflect.spi.TypeInfo;
  */
 public abstract class AbstractParameterAnnotationPlugin<T extends AnnotatedInfo, C extends Annotation, P extends MutableParameterizedMetaData> extends AbstractAdaptersAnnotationPlugin<T, C>
 {
-   protected AbstractParameterAnnotationPlugin(Class<C> annotation, Annotation2ValueMetaDataAdapter... adapters)
+   protected AbstractParameterAnnotationPlugin(Class<C> annotation, Annotation2ValueMetaDataAdapter<? extends Annotation>... adapters)
    {
       super(annotation, adapters);
    }

@@ -59,7 +59,7 @@ public @interface StringValue
    /**
     * Do we trim.
     * 
-    * @return
+    * @return true to trim
     */
    boolean trim() default true;
 }

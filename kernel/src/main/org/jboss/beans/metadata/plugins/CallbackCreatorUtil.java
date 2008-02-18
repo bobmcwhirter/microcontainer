@@ -33,6 +33,7 @@ import org.jboss.kernel.plugins.dependency.AttributeInfo;
 import org.jboss.kernel.plugins.dependency.BasicCollectionCallbackItemFactory;
 import org.jboss.kernel.plugins.dependency.ClassAttributeCallbackItem;
 import org.jboss.kernel.plugins.dependency.ClassSingleCallbackItem;
+import org.jboss.kernel.plugins.dependency.CollectionCallbackItem;
 import org.jboss.kernel.plugins.dependency.CollectionCallbackItemFactory;
 import org.jboss.kernel.plugins.dependency.MethodAttributeInfo;
 import org.jboss.kernel.plugins.dependency.PropertyAttributeInfo;
@@ -73,7 +74,7 @@ public class CallbackCreatorUtil
     * @return collection callback item
     */
    @SuppressWarnings("unchecked")
-   private static CallbackItem<Class> createCollectionCallback(
+   private static CallbackItem<Class<?>> createCollectionCallback(
          TypeInfo info,
          KernelControllerContext context,
          AttributeInfo attribute,
@@ -87,10 +88,13 @@ public class CallbackCreatorUtil
          TypeInfo componentType = ci.getComponentType();
          if (componentType == null)
             throw new IllegalArgumentException("Null component type: " + info);
-         Class clazz = componentType.getType();
+         Class<?> clazz = componentType.getType();
          if (Object.class.equals(clazz))
-            throw new IllegalArgumentException("Component type too general - equals Object: " + info);            
-         return getCollectionFactory().createCollectionCallbackItem((Class<Collection<?>>) info.getType(), clazz, whenRequired, dependentState, cardinality, context, attribute);
+            throw new IllegalArgumentException("Component type too general - equals Object: " + info);
+         Class<? extends Collection<Object>> collectionType = (Class) info.getType();
+         CollectionCallbackItemFactory factory = getCollectionFactory();
+         CollectionCallbackItem collectionCallback = factory.createCollectionCallbackItem(collectionType, clazz, whenRequired, dependentState, cardinality, context, attribute);
+         return collectionCallback;
       }
       else
          throw new IllegalArgumentException("Unable to determine collection element class type: " + info);
@@ -106,7 +110,8 @@ public class CallbackCreatorUtil
     * @param cardinality cardinality
     * @return callback item
     */
-   public static CallbackItem<Class> createCallback(
+   @SuppressWarnings("unchecked")
+   public static CallbackItem<Class<?>> createCallback(
          KernelControllerContext context,
          AttributeInfo ai,
          ControllerState whenRequired,
@@ -135,7 +140,7 @@ public class CallbackCreatorUtil
     * @param cardinality cardinality
     * @return callback item
     */
-   public static CallbackItem<Class> createCallback(
+   public static CallbackItem<Class<?>> createCallback(
          KernelControllerContext context,
          PropertyInfo pi,
          ControllerState whenRequired,
@@ -155,7 +160,7 @@ public class CallbackCreatorUtil
     * @param cardinality cardinality
     * @return callback item
     */
-   public static CallbackItem<Class> createCallback(
+   public static CallbackItem<Class<?>> createCallback(
          KernelControllerContext context,
          MethodInfo mi,
          ControllerState whenRequired,

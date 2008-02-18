@@ -28,6 +28,7 @@ import org.jboss.beans.info.spi.BeanInfo;
 import org.jboss.beans.info.spi.PropertyInfo;
 import org.jboss.beans.metadata.spi.BeanMetaData;
 import org.jboss.beans.metadata.spi.ConstructorMetaData;
+import org.jboss.beans.metadata.spi.ParameterMetaData;
 import org.jboss.beans.metadata.spi.PropertyMetaData;
 import org.jboss.beans.metadata.spi.ValueMetaData;
 import org.jboss.joinpoint.spi.Joinpoint;
@@ -65,7 +66,7 @@ public class AbstractKernelConfigurator extends AbstractKernelObject implements 
       return config.getBeanInfo(className, cl);
    }
 
-   public BeanInfo getBeanInfo(Class clazz) throws Throwable
+   public BeanInfo getBeanInfo(Class<?> clazz) throws Throwable
    {
       return config.getBeanInfo(clazz);
    }
@@ -89,7 +90,7 @@ public class AbstractKernelConfigurator extends AbstractKernelObject implements 
       return config.getClassInfo(className, cl);
    }
 
-   public ClassInfo getClassInfo(Class clazz) throws Throwable
+   public ClassInfo getClassInfo(Class<?> clazz) throws Throwable
    {
       return config.getClassInfo(clazz);
    }
@@ -150,7 +151,7 @@ public class AbstractKernelConfigurator extends AbstractKernelObject implements 
       return Configurator.getPropertyNullerJoinPoint(info, metaData);
    }
    
-   public MethodJoinpoint getMethodJoinPoint(BeanInfo info, ClassLoader cl, String name, List parameters, boolean isStatic, boolean isPublic) throws Throwable
+   public MethodJoinpoint getMethodJoinPoint(BeanInfo info, ClassLoader cl, String name, List<ParameterMetaData> parameters, boolean isStatic, boolean isPublic) throws Throwable
    {
       return Configurator.findMethod(info, cl, name, parameters, isStatic, isPublic);
    }

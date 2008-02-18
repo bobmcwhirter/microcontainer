@@ -37,12 +37,12 @@ public abstract class CollectionCreatorCallbackItem<T extends Collection<Object>
 {
    protected CollectionCreator<T> creator;
 
-   public CollectionCreatorCallbackItem(CollectionCreator<T> creator, Class name, InvokeDispatchContext owner, AttributeInfo attribute)
+   public CollectionCreatorCallbackItem(CollectionCreator<T> creator, Class<?> name, InvokeDispatchContext owner, AttributeInfo attribute)
    {
       this(creator, name, null, null, null, owner, attribute);
    }
 
-   public CollectionCreatorCallbackItem(CollectionCreator<T> creator, Class name, ControllerState whenRequired, ControllerState dependentState, Cardinality cardinality, InvokeDispatchContext context, AttributeInfo attribute)
+   public CollectionCreatorCallbackItem(CollectionCreator<T> creator, Class<?> name, ControllerState whenRequired, ControllerState dependentState, Cardinality cardinality, InvokeDispatchContext context, AttributeInfo attribute)
    {
       super(name, whenRequired, dependentState, cardinality, context, attribute);
       if (creator == null)

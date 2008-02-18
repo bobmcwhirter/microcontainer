@@ -60,7 +60,7 @@ public class BasicBootstrap extends AbstractBootstrap
       if (props == null)
          props = getSystemProperties();
       final PropertyKernelConfig config = new PropertyKernelConfig(props);
-      PrivilegedAction<?> action = new PrivilegedAction()
+      PrivilegedAction<Object> action = new PrivilegedAction<Object>()
       {
          public Object run()
          {
@@ -79,7 +79,7 @@ public class BasicBootstrap extends AbstractBootstrap
     */
    public BasicBootstrap(final KernelConfig config) throws Exception
    {
-      PrivilegedAction<?> action = new PrivilegedAction()
+      PrivilegedAction<Object> action = new PrivilegedAction<Object>()
       {
          public Object run()
          {

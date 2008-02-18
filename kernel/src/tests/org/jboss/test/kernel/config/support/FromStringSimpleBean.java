@@ -34,6 +34,9 @@ import org.jboss.beans.metadata.api.annotations.StringValue;
  */
 public class FromStringSimpleBean extends SimpleBean
 {
+   /** The serialVersionUID */
+   private static final long serialVersionUID = 1L;
+
    public FromStringSimpleBean()
    {
       super();

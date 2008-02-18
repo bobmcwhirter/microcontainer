@@ -55,7 +55,7 @@ public abstract class AbstractKernelConfig extends AbstractKernelObject implemen
       return configuration.getBeanInfo(className, cl);
    }
    
-   public BeanInfo getBeanInfo(Class clazz) throws Throwable
+   public BeanInfo getBeanInfo(Class<?> clazz) throws Throwable
    {
       return configuration.getBeanInfo(clazz);
    }
@@ -70,7 +70,7 @@ public abstract class AbstractKernelConfig extends AbstractKernelObject implemen
       return configuration.getClassInfo(className, cl);
    }
    
-   public ClassInfo getClassInfo(Class clazz) throws Throwable
+   public ClassInfo getClassInfo(Class<?> clazz) throws Throwable
    {
       return configuration.getClassInfo(clazz);
    }

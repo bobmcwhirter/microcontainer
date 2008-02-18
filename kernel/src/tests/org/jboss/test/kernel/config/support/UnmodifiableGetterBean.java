@@ -50,7 +50,7 @@ public class UnmodifiableGetterBean implements Serializable
       return Collections.unmodifiableCollection(collection);
    }
 
-   public void setCollection(Collection collection)
+   public void setCollection(Collection<?> collection)
    {
       this.collection = collection;
    }
@@ -60,7 +60,7 @@ public class UnmodifiableGetterBean implements Serializable
       return Collections.unmodifiableList(list);
    }
 
-   public void setList(List list)
+   public void setList(List<?> list)
    {
       this.list = list;
    }
@@ -70,7 +70,7 @@ public class UnmodifiableGetterBean implements Serializable
       return Collections.unmodifiableSet(set);
    }
 
-   public void setSet(Set set)
+   public void setSet(Set<?> set)
    {
       this.set = set;
    }
@@ -80,7 +80,7 @@ public class UnmodifiableGetterBean implements Serializable
       return Collections.unmodifiableMap(map);
    }
 
-   public void setMap(Map map)
+   public void setMap(Map<?,?> map)
    {
       this.map = map;
    }

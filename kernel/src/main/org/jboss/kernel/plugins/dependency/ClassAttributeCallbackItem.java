@@ -36,16 +36,16 @@ import org.jboss.kernel.spi.dependency.KernelControllerContext;
  * 
  * @author <a href="mailto:ales.justin@jboss.com">Ales Justin</a>
  */
-public class ClassAttributeCallbackItem extends AttributeCallbackItem<Class>
+public class ClassAttributeCallbackItem extends AttributeCallbackItem<Class<?>>
 {
    protected Cardinality cardinality;
 
-   public ClassAttributeCallbackItem(Class name, AttributeDispatchContext owner, String attribute)
+   public ClassAttributeCallbackItem(Class<?> name, AttributeDispatchContext owner, String attribute)
    {
       super(name, owner, attribute);
    }
 
-   public ClassAttributeCallbackItem(Class name, ControllerState whenRequired, ControllerState dependentState, Cardinality cardinality, AttributeDispatchContext owner, String attribute)
+   public ClassAttributeCallbackItem(Class<?> name, ControllerState whenRequired, ControllerState dependentState, Cardinality cardinality, AttributeDispatchContext owner, String attribute)
    {
       super(name, whenRequired, dependentState, owner, attribute);
       this.cardinality = cardinality;

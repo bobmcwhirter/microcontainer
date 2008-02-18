@@ -25,12 +25,9 @@ import java.util.List;
 
 import junit.framework.Test;
 
-import org.jboss.beans.metadata.spi.ClassLoaderMetaData;
-import org.jboss.beans.metadata.spi.ValueMetaData;
 import org.jboss.kernel.spi.deployment.KernelDeployment;
 import org.jboss.test.kernel.deployment.support.InCallbackInstantiated;
 import org.jboss.test.kernel.deployment.support.InCallbackInstantiatedRepository;
-import org.jboss.test.kernel.deployment.support.WildcardClassLoader;
 
 /**
  * Deployment ClassLoader Test Case.

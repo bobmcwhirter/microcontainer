@@ -160,7 +160,7 @@ public class ScopedKernelController extends AbstractKernelController
       }
    }
 
-   public Set<KernelControllerContext> getInstantiatedContexts(Class clazz)
+   public Set<KernelControllerContext> getInstantiatedContexts(Class<?> clazz)
    {
       lockRead();
       try
@@ -186,7 +186,7 @@ public class ScopedKernelController extends AbstractKernelController
       }
    }
 
-   public Set<KernelControllerContext> getContexts(Class clazz, ControllerState state)
+   public Set<KernelControllerContext> getContexts(Class<?> clazz, ControllerState state)
    {
       lockRead();
       try

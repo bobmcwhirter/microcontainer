@@ -73,7 +73,7 @@ public class PropertyKernelConfig extends AbstractKernelConfig
       {
          log.trace("Dumping properties");
          TreeSet<Object> names = new TreeSet<Object>(properties.keySet());
-         for (Iterator i = names.iterator(); i.hasNext();)
+         for (Iterator<Object> i = names.iterator(); i.hasNext();)
          {
             String name = (String) i.next();
             log.trace(name + "=" + properties.get(name));

@@ -70,7 +70,7 @@ public class ListTestCase extends AbstractKernelConfigTest
       SimpleBean bean = simpleListFromObjects();
       assertNotNull(bean);
       
-      List result = bean.getList();
+      List<?> result = bean.getList();
       assertNotNull("Should be a list", result);
       
       ArrayList<Object> expected = new ArrayList<Object>();
@@ -108,7 +108,7 @@ public class ListTestCase extends AbstractKernelConfigTest
       SimpleBean bean = simpleListFromStrings();
       assertNotNull(bean);
       
-      List result = bean.getList();
+      List<?> result = bean.getList();
       assertNotNull("Should be a list", result);
       
       ArrayList<Object> expected = new ArrayList<Object>();
@@ -151,7 +151,7 @@ public class ListTestCase extends AbstractKernelConfigTest
       SimpleBean bean = customListExplicit();
       assertNotNull(bean);
       
-      List result = bean.getList();
+      List<?> result = bean.getList();
       assertNotNull("Should be a list", result);
       assertTrue("Not a CustomList: " + result.getClass(), result instanceof CustomList);
       
@@ -196,7 +196,7 @@ public class ListTestCase extends AbstractKernelConfigTest
       SimpleBean bean = customListFromSignature();
       assertNotNull(bean);
       
-      List result = bean.getCustomList();
+      List<?> result = bean.getCustomList();
       assertNotNull("Should be a list", result);
       assertTrue("Not a CustomList: " + result.getClass(), result instanceof CustomList);
       
@@ -240,7 +240,7 @@ public class ListTestCase extends AbstractKernelConfigTest
       SimpleBean bean = customListPreInstantiated();
       assertNotNull(bean);
       
-      List result = bean.getPreInstantiatedList();
+      List<?> result = bean.getPreInstantiatedList();
       assertNotNull("Should be a list", result);
       assertTrue("Not a CustomList: " + result.getClass(), result instanceof CustomList);
       assertTrue("Not preinstantiated", ((CustomList) result).getPreInstantiated());
@@ -252,7 +252,7 @@ public class ListTestCase extends AbstractKernelConfigTest
       expected.add(string1);
       assertEquals(expected, result);
 
-      List setter = bean.setterList;
+      List<?> setter = bean.setterList;
       assertNotNull(setter);
       assertFalse("Empty setterList", setter.isEmpty());
    }
@@ -294,7 +294,7 @@ public class ListTestCase extends AbstractKernelConfigTest
       UnmodifiableGetterBean bean = unmodifiableListPreInstantiated();
       assertNotNull(bean);
 
-      List result = bean.getList();
+      List<?> result = bean.getList();
       assertNotNull("Should be a list", result);
 
       ArrayList<Object> expected = new ArrayList<Object>();
@@ -337,7 +337,7 @@ public class ListTestCase extends AbstractKernelConfigTest
       SimpleBean bean = listWithValueTypeOverride();
       assertNotNull(bean);
       
-      List result = bean.getList();
+      List<?> result = bean.getList();
       assertNotNull("Should be a list", result);
       assertTrue("Not a CustomList: " + result.getClass(), result instanceof CustomList);
       

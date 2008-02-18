@@ -36,7 +36,7 @@ public class GenericBeanFactoryRepository
 {
    List<GenericBeanFactory> beans = new ArrayList<GenericBeanFactory>();
    
-   public List getBeans()
+   public List<GenericBeanFactory> getBeans()
    {
       return beans;
    }

@@ -40,10 +40,10 @@ public class ValueJaxbTestCase extends AbstractMCTest
    protected StringValueMetaData getValue() throws Exception
    {
       AbstractBeanMetaData bean = unmarshalBean();
-      Set properties = bean.getProperties();
+      Set<PropertyMetaData> properties = bean.getProperties();
       assertNotNull(properties);
       assertEquals(1, properties.size());
-      PropertyMetaData property = (PropertyMetaData) properties.iterator().next();
+      PropertyMetaData property = properties.iterator().next();
       assertNotNull(property);
       ValueMetaData value = property.getValue();
       assertNotNull(property);

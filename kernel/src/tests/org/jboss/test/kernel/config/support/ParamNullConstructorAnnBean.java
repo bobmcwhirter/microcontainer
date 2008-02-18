@@ -31,6 +31,9 @@ import org.jboss.beans.metadata.api.annotations.NullValue;
  */
 public class ParamNullConstructorAnnBean extends SimpleBean
 {
+   /** The serialVersionUID */
+   private static final long serialVersionUID = 1L;
+
    public ParamNullConstructorAnnBean()
    {
    }

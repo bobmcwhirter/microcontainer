@@ -33,6 +33,9 @@ import org.jboss.beans.metadata.api.annotations.ArrayValue;
  */
 public class ParamArrayConstructorAnnBean extends SimpleBean
 {
+   /** The serialVersionUID */
+   private static final long serialVersionUID = 1L;
+
    public ParamArrayConstructorAnnBean()
    {
    }

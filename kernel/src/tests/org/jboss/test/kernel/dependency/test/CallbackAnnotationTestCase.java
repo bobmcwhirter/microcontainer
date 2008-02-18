@@ -47,7 +47,7 @@ public class CallbackAnnotationTestCase extends CallbackTestCase
 
    protected AbstractBeanMetaData buildRepository(Cardinality cardinality)
    {
-      Class clazz = cardinality != null ? CallbackCardinalitySimpleBeanRepository.class : CallbackSimpleBeanRepository.class;
+      Class<?> clazz = cardinality != null ? CallbackCardinalitySimpleBeanRepository.class : CallbackSimpleBeanRepository.class;
       return new AbstractBeanMetaData("Name1", clazz.getName());
    }
 }

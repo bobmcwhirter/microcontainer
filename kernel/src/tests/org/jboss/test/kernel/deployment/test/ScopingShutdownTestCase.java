@@ -52,7 +52,7 @@ public class ScopingShutdownTestCase extends ScopingDeploymentTest
     * @return the delegate
     * @throws Exception for any error
     */
-   public static AbstractTestDelegate getDelegate(Class clazz) throws Exception
+   public static AbstractTestDelegate getDelegate(Class<?> clazz) throws Exception
    {
       AbstractTestDelegate delegate = new ScopingShutdownTestDelegate(clazz);
       delegate.enableSecurity = true;

@@ -21,7 +21,6 @@
 */
 package org.jboss.beans.metadata.plugins.policy;
 
-import java.util.Map;
 import java.util.Set;
 
 import org.jboss.kernel.Kernel;
@@ -46,7 +45,7 @@ public class MetaDataRepositoryInstaller
    private Set<Scope> scopes;
    
    /* TODO What is this for, it is unreferenced? */
-   private Map<String, Object> bindings;
+   // private Map<String, Object> bindings;
 
    public void setKernel(Kernel kernel)
    {
@@ -58,10 +57,12 @@ public class MetaDataRepositoryInstaller
       this.scopes = scopes;
    }
 
+   /* TODO What is this for?
    public void setBindings(Map<String, Object> bindings)
    {
       this.bindings = bindings;
    }
+   */
 
    public void start()
    {
@@ -88,7 +89,7 @@ public class MetaDataRepositoryInstaller
             kernel = item.getValue();
       }
       // Create a scoped kernel Kernel
-      Kernel scopedKernel = null;//new ScopedKernel(kernel);
+      Kernel scopedKernel = kernel;// TODO new ScopedKernel(kernel);
 
       mmd.addMetaData(scopedKernel, Kernel.class);
 

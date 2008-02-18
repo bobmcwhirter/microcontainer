@@ -26,8 +26,6 @@ import java.security.PrivilegedAction;
 import java.security.PrivilegedActionException;
 import java.security.PrivilegedExceptionAction;
 
-import org.jboss.dependency.spi.ControllerContext;
-import org.jboss.dependency.spi.dispatch.InvokeDispatchContext;
 import org.jboss.kernel.spi.dependency.KernelControllerContext;
 
 /**

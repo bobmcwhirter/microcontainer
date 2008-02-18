@@ -42,7 +42,7 @@ public class ClassLoaderUtil
     */
    public static URL getLocation(String className) throws ClassNotFoundException
    {
-      Class clazz = Class.forName(className);
+      Class<?> clazz = Class.forName(className);
       return clazz.getProtectionDomain().getCodeSource().getLocation();
    }
 
@@ -52,7 +52,7 @@ public class ClassLoaderUtil
     * @param clazz the class
     * @return the classloader
     */
-   public static ClassLoader getClassLoader(final Class clazz)
+   public static ClassLoader getClassLoader(final Class<?> clazz)
    {
       if (clazz == null)
          throw new IllegalArgumentException("Null clazz.");

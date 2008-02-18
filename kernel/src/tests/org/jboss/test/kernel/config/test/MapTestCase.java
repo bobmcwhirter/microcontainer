@@ -71,7 +71,7 @@ public class MapTestCase extends AbstractKernelConfigTest
       SimpleBean bean = simpleMapFromObjects();
       assertNotNull(bean);
       
-      Map result = bean.getMap();
+      Map<?,?> result = bean.getMap();
       assertNotNull("Should be a map", result);
       
       Map<Object, Object> expected = new HashMap<Object, Object>();
@@ -106,7 +106,7 @@ public class MapTestCase extends AbstractKernelConfigTest
       SimpleBean bean = simpleMapFromStrings();
       assertNotNull(bean);
       
-      Map result = bean.getMap();
+      Map<?,?> result = bean.getMap();
       assertNotNull("Should be a map", result);
       
       Map<Object, Object> expected = new HashMap<Object, Object>();
@@ -147,7 +147,7 @@ public class MapTestCase extends AbstractKernelConfigTest
       SimpleBean bean = customMapExplicit();
       assertNotNull(bean);
       
-      Map result = bean.getMap();
+      Map<?,?> result = bean.getMap();
       assertNotNull("Should be a map", result);
       assertTrue("Not a CustomMap: " + result.getClass(), result instanceof CustomMap);
       
@@ -190,7 +190,7 @@ public class MapTestCase extends AbstractKernelConfigTest
       SimpleBean bean = customMapFromSignature();
       assertNotNull(bean);
       
-      Map result = bean.getCustomMap();
+      Map<?,?> result = bean.getCustomMap();
       assertNotNull("Should be a map", result);
       assertTrue("Not a CustomMap: " + result.getClass(), result instanceof CustomMap);
       
@@ -232,7 +232,7 @@ public class MapTestCase extends AbstractKernelConfigTest
       SimpleBean bean = customMapPreInstantiated();
       assertNotNull(bean);
       
-      Map result = bean.getPreInstantiatedMap();
+      Map<?,?> result = bean.getPreInstantiatedMap();
       assertNotNull("Should be a map", result);
       assertTrue("Not a CustomMap: " + result.getClass(), result instanceof CustomMap);
       assertTrue("Not preinstantiated", ((CustomMap) result).getPreInstantiated());
@@ -242,7 +242,7 @@ public class MapTestCase extends AbstractKernelConfigTest
       expected.put(string2, string1);
       assertEquals(expected, result);
 
-      Map setter = bean.setterMap;
+      Map<?,?> setter = bean.setterMap;
       assertNotNull(setter);
       assertFalse("Empty setterMap", setter.isEmpty());
    }
@@ -285,7 +285,7 @@ public class MapTestCase extends AbstractKernelConfigTest
       UnmodifiableGetterBean bean = unmodifiableMapPreInstantiated();
       assertNotNull(bean);
 
-      Map result = bean.getMap();
+      Map<?,?> result = bean.getMap();
       assertNotNull("Should be a map", result);
 
       Map<Object, Object> expected = new HashMap<Object, Object>();
@@ -326,7 +326,7 @@ public class MapTestCase extends AbstractKernelConfigTest
       SimpleBean bean = mapWithKeyTypeOverride();
       assertNotNull(bean);
       
-      Map result = bean.getMap();
+      Map<?,?> result = bean.getMap();
       assertNotNull("Should be a map", result);
       assertTrue("Not a CustomMap: " + result.getClass(), result instanceof CustomMap);
       
@@ -375,7 +375,7 @@ public class MapTestCase extends AbstractKernelConfigTest
       SimpleBean bean = mapWithValueTypeOverride();
       assertNotNull(bean);
       
-      Map result = bean.getMap();
+      Map<?,?> result = bean.getMap();
       assertNotNull("Should be a map", result);
       assertTrue("Not a CustomMap: " + result.getClass(), result instanceof CustomMap);
       

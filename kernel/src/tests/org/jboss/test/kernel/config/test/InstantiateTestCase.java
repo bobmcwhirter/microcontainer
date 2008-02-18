@@ -430,7 +430,7 @@ public class InstantiateTestCase extends AbstractKernelConfigTest
       Object object = valueInstantiateFromCollection();
       assertNotNull(object);
       assertTrue(object instanceof Collection);
-      assertEquals(new ArrayList(), object);
+      assertEquals(new ArrayList<Object>(), object);
    }
 
    protected Object valueInstantiateFromCollection() throws Throwable
@@ -452,7 +452,7 @@ public class InstantiateTestCase extends AbstractKernelConfigTest
       Object object = valueInstantiateFromList();
       assertNotNull(object);
       assertTrue(object instanceof List);
-      assertEquals(new ArrayList(), object);
+      assertEquals(new ArrayList<Object>(), object);
    }
 
    protected Object valueInstantiateFromList() throws Throwable
@@ -474,7 +474,7 @@ public class InstantiateTestCase extends AbstractKernelConfigTest
       Object object = valueInstantiateFromSet();
       assertNotNull(object);
       assertTrue(object instanceof Set);
-      assertEquals(new HashSet(), object);
+      assertEquals(new HashSet<Object>(), object);
    }
 
    protected Object valueInstantiateFromSet() throws Throwable

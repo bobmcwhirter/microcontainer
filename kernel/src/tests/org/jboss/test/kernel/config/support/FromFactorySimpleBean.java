@@ -42,6 +42,9 @@ import org.jboss.beans.metadata.api.annotations.Value;
 )
 public class FromFactorySimpleBean extends SimpleBean
 {
+   /** The serialVersionUID */
+   private static final long serialVersionUID = 1L;
+
    public FromFactorySimpleBean()
    {
    }
@@ -61,22 +64,22 @@ public class FromFactorySimpleBean extends SimpleBean
       super(integer);
    }
 
-   public FromFactorySimpleBean(Comparable comparable)
+   public FromFactorySimpleBean(Comparable<?> comparable)
    {
       super(comparable);
    }
 
-   public FromFactorySimpleBean(Collection collection)
+   public FromFactorySimpleBean(Collection<?> collection)
    {
       super(collection);
    }
 
-   public FromFactorySimpleBean(List list)
+   public FromFactorySimpleBean(List<?> list)
    {
       super(list);
    }
 
-   public FromFactorySimpleBean(Set set)
+   public FromFactorySimpleBean(Set<?> set)
    {
       super(set);
    }
@@ -86,12 +89,12 @@ public class FromFactorySimpleBean extends SimpleBean
       super(array);
    }
 
-   public FromFactorySimpleBean(Map map)
+   public FromFactorySimpleBean(Map<?,?> map)
    {
       super(map);
    }
 
-   public FromFactorySimpleBean(Hashtable hashtable)
+   public FromFactorySimpleBean(Hashtable<?,?> hashtable)
    {
       super(hashtable);
    }

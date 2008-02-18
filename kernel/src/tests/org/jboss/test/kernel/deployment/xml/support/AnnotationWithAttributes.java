@@ -28,7 +28,7 @@ package org.jboss.test.kernel.deployment.xml.support;
  */
 public @interface AnnotationWithAttributes 
 {
-   Class clazz();
+   Class<?> clazz();
    int integer();
    String str();
 }

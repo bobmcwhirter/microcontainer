@@ -75,14 +75,14 @@ public class StandaloneBootstrap extends BasicBootstrap
       Runtime.getRuntime().addShutdownHook(new Shutdown());
       
       ClassLoader cl = Thread.currentThread().getContextClassLoader();
-      for (Enumeration e = cl.getResources(StandaloneKernelConstants.DEPLOYMENT_XML_NAME); e.hasMoreElements(); )
+      for (Enumeration<URL> e = cl.getResources(StandaloneKernelConstants.DEPLOYMENT_XML_NAME); e.hasMoreElements(); )
       {
-         URL url = (URL) e.nextElement();
+         URL url = e.nextElement();
          deploy(url);
       }
-      for (Enumeration e = cl.getResources("META-INF/" + StandaloneKernelConstants.DEPLOYMENT_XML_NAME); e.hasMoreElements(); )
+      for (Enumeration<URL> e = cl.getResources("META-INF/" + StandaloneKernelConstants.DEPLOYMENT_XML_NAME); e.hasMoreElements(); )
       {
-         URL url = (URL) e.nextElement();
+         URL url = e.nextElement();
          deploy(url);
       }
       

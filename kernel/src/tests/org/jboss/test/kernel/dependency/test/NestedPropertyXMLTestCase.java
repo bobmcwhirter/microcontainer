@@ -21,18 +21,7 @@
 */
 package org.jboss.test.kernel.dependency.test;
 
-import java.util.HashSet;
-
 import junit.framework.Test;
-import org.jboss.dependency.spi.ControllerContext;
-import org.jboss.dependency.spi.ControllerState;
-import org.jboss.dependency.spi.Controller;
-import org.jboss.test.kernel.dependency.support.SimpleBean;
-import org.jboss.test.kernel.dependency.support.SimpleBeanImpl;
-import org.jboss.beans.metadata.plugins.AbstractBeanMetaData;
-import org.jboss.beans.metadata.plugins.AbstractPropertyMetaData;
-import org.jboss.beans.metadata.spi.PropertyMetaData;
-import org.jboss.beans.metadata.spi.BeanMetaData;
 
 /**
  * Nested property xml tests.

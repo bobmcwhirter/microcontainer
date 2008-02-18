@@ -62,7 +62,7 @@ public class SpringSchemaBindingHelper
 
    public static void initAliasHandler(TypeBinding typeBinding)
    {
-      typeBinding.setHandler(NamedAliasHandler.HANDLER);
+      typeBinding.setHandler(NamedAliasHandler.NAMED_ALIAS_HANDLER);
    }
 
    public static void initImportHandler(TypeBinding typeBinding)

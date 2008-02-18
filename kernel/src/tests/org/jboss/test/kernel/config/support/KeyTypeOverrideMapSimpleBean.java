@@ -35,6 +35,9 @@ import org.jboss.beans.metadata.api.annotations.Value;
  */
 public class KeyTypeOverrideMapSimpleBean extends SimpleBean
 {
+   /** The serialVersionUID */
+   private static final long serialVersionUID = 1L;
+
    @MapValue(
          value = {
             @EntryValue(
@@ -53,7 +56,7 @@ public class KeyTypeOverrideMapSimpleBean extends SimpleBean
          keyClass = "java.lang.String", valueClass = "java.lang.String",
          clazz = "org.jboss.test.kernel.config.support.CustomMap"
    )
-   public void setMap(Map collection)
+   public void setMap(Map<?,?> collection)
    {
       super.setMap(collection);
    }

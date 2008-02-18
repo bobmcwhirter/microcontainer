@@ -179,14 +179,14 @@ public abstract class AbstractCallbackMetaData extends AbstractLifecycleMetaData
     * @param visitor the meta data visitor
     * @param callback the callback item
     */
-   protected abstract void addCallback(MetaDataVisitor visitor, CallbackItem callback);
+   protected abstract void addCallback(MetaDataVisitor visitor, CallbackItem<?> callback);
 
    public void describeVisit(MetaDataVisitor vistor)
    {
       try
       {
          KernelControllerContext context = vistor.getControllerContext();
-         CallbackItem callback;
+         CallbackItem<?> callback;
          if (property != null)
          {
             if (propertyInfo == null)
@@ -211,7 +211,7 @@ public abstract class AbstractCallbackMetaData extends AbstractLifecycleMetaData
          // demand name is Class in this case
          if (cardinality != null)
          {
-            vistor.addDependency(new CallbackDependencyItem(context.getName(), (Class)callback.getIDependOn(), whenRequired, dependentState, cardinality));
+            vistor.addDependency(new CallbackDependencyItem(context.getName(), (Class<?>)callback.getIDependOn(), whenRequired, dependentState, cardinality));
          }
       }
       catch (Throwable t)

@@ -48,7 +48,7 @@ public class AliasTestCase extends AbstractXMLTest
    protected Object getAlias(String name) throws Exception
    {
       AbstractBeanMetaData bean = unmarshalBean(name);
-      Set aliases = bean.getAliases();
+      Set<Object> aliases = bean.getAliases();
       assertNotNull(aliases);
       assertEquals(1, aliases.size());
       Object alias = aliases.iterator().next();
@@ -101,7 +101,7 @@ public class AliasTestCase extends AbstractXMLTest
    public void testMultipleAliases() throws Exception
    {
       AbstractBeanMetaData bean = unmarshalBean("MultipleAlias.xml");
-      Set aliases = bean.getAliases();
+      Set<Object> aliases = bean.getAliases();
       assertNotNull(aliases);
       int size = aliases.size();
       assertTrue(size > 1);
@@ -112,7 +112,7 @@ public class AliasTestCase extends AbstractXMLTest
    public void testAliasAndBeanFactory() throws Exception
    {
       AbstractBeanMetaData bean = unmarshalBean("AliasWithBeanFactory.xml");
-      Set aliases = bean.getAliases();
+      Set<Object> aliases = bean.getAliases();
       assertNotNull(aliases);
       assertFalse(aliases.isEmpty());
    }

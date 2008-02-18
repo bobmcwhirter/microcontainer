@@ -35,6 +35,9 @@ import org.jboss.beans.metadata.api.annotations.Value;
  */
 public class ParamCollectionConstructorAnnBean extends SimpleBean
 {
+   /** The serialVersionUID */
+   private static final long serialVersionUID = 1L;
+
    public ParamCollectionConstructorAnnBean()
    {
    }
@@ -48,7 +51,7 @@ public class ParamCollectionConstructorAnnBean extends SimpleBean
                   @Value(string = @StringValue("2"))
                      }
          )
-         Collection collection)
+         Collection<?> collection)
    {
       super(collection);
    }

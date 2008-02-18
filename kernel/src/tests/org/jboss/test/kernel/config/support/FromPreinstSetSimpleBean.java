@@ -34,6 +34,9 @@ import org.jboss.beans.metadata.api.annotations.Value;
  */
 public class FromPreinstSetSimpleBean extends SimpleBean
 {
+   /** The serialVersionUID */
+   private static final long serialVersionUID = 1L;
+
    @SetValue(
          value = {
             @Value(string = @StringValue("string1")),
@@ -54,7 +57,7 @@ public class FromPreinstSetSimpleBean extends SimpleBean
          },
          elementClass = "java.lang.String"
    )
-   public void setSetterSet(Set setterSet)
+   public void setSetterSet(Set<?> setterSet)
    {
       super.setSetterSet(setterSet);
    }

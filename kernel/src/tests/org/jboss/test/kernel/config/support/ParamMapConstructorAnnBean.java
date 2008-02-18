@@ -36,6 +36,9 @@ import org.jboss.beans.metadata.api.annotations.Value;
  */
 public class ParamMapConstructorAnnBean extends SimpleBean
 {
+   /** The serialVersionUID */
+   private static final long serialVersionUID = 1L;
+
    public ParamMapConstructorAnnBean()
    {
    }
@@ -52,7 +55,7 @@ public class ParamMapConstructorAnnBean extends SimpleBean
                )
                      }
          )
-         Map collection)
+         Map<?,?> collection)
    {
       super(collection);
    }

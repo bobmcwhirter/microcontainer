@@ -44,7 +44,7 @@ import org.jboss.kernel.plugins.config.Configurator;
  */
 public abstract class InstallationParameterAnnotationPlugin<C extends Annotation> extends AbstractParameterAnnotationPlugin<MethodInfo, C, AbstractInstallMetaData>
 {
-   protected InstallationParameterAnnotationPlugin(Class<C> annotation, Annotation2ValueMetaDataAdapter... adapters)
+   protected InstallationParameterAnnotationPlugin(Class<C> annotation, Annotation2ValueMetaDataAdapter<? extends Annotation>... adapters)
    {
       super(annotation, adapters);
    }

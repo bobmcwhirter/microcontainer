@@ -33,6 +33,9 @@ import org.jboss.beans.metadata.api.annotations.EntryValue;
  */
 public class OnObjectMapSimpleBean extends SimpleBean
 {
+   /** The serialVersionUID */
+   private static final long serialVersionUID = 1L;
+
    @MapValue(
          value = {
             @EntryValue(

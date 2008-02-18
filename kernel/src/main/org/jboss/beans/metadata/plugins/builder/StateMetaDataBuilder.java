@@ -24,10 +24,11 @@ package org.jboss.beans.metadata.plugins.builder;
 import org.jboss.beans.metadata.plugins.AbstractBeanMetaData;
 import org.jboss.beans.metadata.plugins.AbstractLifecycleMetaData;
 import org.jboss.beans.metadata.spi.LifecycleMetaData;
+import org.jboss.beans.metadata.spi.builder.BeanMetaDataBuilder;
 
 /**
  * Helper class.
- * @see BeanMetaDataBuilderImpl
+ * @see BeanMetaDataBuilder
  * @see org.jboss.beans.metadata.plugins.builder.ParameterMetaDataBuilderImpl
  *
  * @author <a href="mailto:ales.justin@jboss.com">Ales Justin</a>

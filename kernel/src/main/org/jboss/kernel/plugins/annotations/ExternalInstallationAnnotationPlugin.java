@@ -177,8 +177,8 @@ public abstract class ExternalInstallationAnnotationPlugin<C extends Annotation>
          // values
          ValueMetaData fstValue = fstParameter.getValue();
          ValueMetaData sndValue = sndParameter.getValue();
-         Class fstClass = fstValue != null ? fstValue.getClass() : null;
-         Class sndClass = sndValue != null ? sndValue.getClass() : null;
+         Class<?> fstClass = fstValue != null ? fstValue.getClass() : null;
+         Class<?> sndClass = sndValue != null ? sndValue.getClass() : null;
          // class guess
          if (notEqual(fstClass, sndClass))
             return true;

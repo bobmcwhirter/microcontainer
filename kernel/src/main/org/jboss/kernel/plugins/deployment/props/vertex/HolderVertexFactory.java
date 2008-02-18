@@ -38,7 +38,7 @@ public class HolderVertexFactory extends AbstractLevelVertexFactory
       super(Integer.MAX_VALUE);
    }
 
-   public TreeVertex createVertex(String name)
+   public TreeVertex<?> createVertex(String name)
    {
       return new HolderVertex(name);
    }

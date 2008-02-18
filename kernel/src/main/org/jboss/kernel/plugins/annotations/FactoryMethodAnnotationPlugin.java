@@ -21,6 +21,7 @@
 */
 package org.jboss.kernel.plugins.annotations;
 
+import java.lang.annotation.Annotation;
 import java.lang.annotation.ElementType;
 import java.util.List;
 import java.util.Collections;
@@ -40,7 +41,7 @@ import org.jboss.reflect.spi.ParameterInfo;
  */
 public class FactoryMethodAnnotationPlugin extends AbstractParameterAnnotationPlugin<MethodInfo, FactoryMethod, AbstractConstructorMetaData>
 {
-   public FactoryMethodAnnotationPlugin(Annotation2ValueMetaDataAdapter... adapters)
+   public FactoryMethodAnnotationPlugin(Annotation2ValueMetaDataAdapter<? extends Annotation>... adapters)
    {
       super(FactoryMethod.class, adapters);
    }

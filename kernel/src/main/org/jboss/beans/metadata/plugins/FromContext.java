@@ -61,25 +61,25 @@ public abstract class FromContext<T extends ControllerContext> extends JBossObje
    private static final long serialVersionUID = 1L;
 
    /** name */
-   public static final FromContext NAME = new NameFromContext("name");
+   public static final FromContext<? extends ControllerContext> NAME = new NameFromContext("name");
 
    /** alias */
-   public static final FromContext ALIASES = new AliasesFromContext("aliases");
+   public static final FromContext<? extends ControllerContext> ALIASES = new AliasesFromContext("aliases");
 
    /** metadata */
-   public static final FromContext METADATA = new MetaDataFromContext("metadata");
+   public static final FromContext<? extends ControllerContext> METADATA = new MetaDataFromContext("metadata");
 
    /** beaninfo */
-   public static final FromContext BEANINFO = new BeanInfoFromContext("beaninfo");
+   public static final FromContext<? extends ControllerContext> BEANINFO = new BeanInfoFromContext("beaninfo");
 
    /** scope */
-   public static final FromContext SCOPE = new ScopeFromContext("scope");
+   public static final FromContext<? extends ControllerContext> SCOPE = new ScopeFromContext("scope");
 
    /** id */
-   public static final FromContext ID = new IdFromContext("id");
+   public static final FromContext<? extends ControllerContext> ID = new IdFromContext("id");
 
    /** context */
-   public static final FromContext CONTEXT = new ThisContext("context");
+   public static final FromContext<? extends ControllerContext> CONTEXT = new ThisContext("context");
 
    /** The type string */
    protected final String fromString;
@@ -102,7 +102,7 @@ public abstract class FromContext<T extends ControllerContext> extends JBossObje
     * @param fromString type
     * @return FromContext instance
     */
-   public static FromContext getInstance(String fromString)
+   public static FromContext<? extends ControllerContext> getInstance(String fromString)
    {
       if (NAME.getFromString().equalsIgnoreCase(fromString))
          return NAME;
@@ -165,6 +165,7 @@ public abstract class FromContext<T extends ControllerContext> extends JBossObje
       return fromString;
    }
 
+   @SuppressWarnings("unchecked")
    public boolean equals(Object object)
    {
       if (object == null || object instanceof FromContext == false)
@@ -199,7 +200,7 @@ public abstract class FromContext<T extends ControllerContext> extends JBossObje
       }
    }
 
-   private static class NameFromContext extends FromContext
+   private static class NameFromContext extends FromContext<ControllerContext>
    {
       private static final long serialVersionUID = 1L;
 
@@ -214,7 +215,7 @@ public abstract class FromContext<T extends ControllerContext> extends JBossObje
       }
    }
 
-   private static class AliasesFromContext extends FromContext
+   private static class AliasesFromContext extends FromContext<ControllerContext>
    {
       private static final long serialVersionUID = 1L;
 
@@ -276,7 +277,7 @@ public abstract class FromContext<T extends ControllerContext> extends JBossObje
       }
    }
 
-   private static class IdFromContext extends FromContext
+   private static class IdFromContext extends FromContext<ControllerContext>
    {
       private static final long serialVersionUID = 1L;
 
@@ -292,7 +293,7 @@ public abstract class FromContext<T extends ControllerContext> extends JBossObje
       }
    }
 
-   private static class ThisContext extends FromContext
+   private static class ThisContext extends FromContext<ControllerContext>
    {
       private static final long serialVersionUID = 1L;
 
@@ -309,7 +310,7 @@ public abstract class FromContext<T extends ControllerContext> extends JBossObje
       }
    }
 
-   private static class DynamicFromContext extends FromContext
+   private static class DynamicFromContext extends FromContext<ControllerContext>
    {
       private static final long serialVersionUID = 1L;
 
@@ -318,7 +319,7 @@ public abstract class FromContext<T extends ControllerContext> extends JBossObje
          super(fromString);
       }
 
-      protected Method findMethod(Class clazz)
+      protected Method findMethod(Class<?> clazz)
       {
          if (clazz == null || clazz == Object.class)
             return null;
@@ -336,7 +337,7 @@ public abstract class FromContext<T extends ControllerContext> extends JBossObje
          if (method != null)
             return method;
 
-         for(Class infc : clazz.getInterfaces())
+         for(Class<?> infc : clazz.getInterfaces())
          {
             Method m = findMethod(infc);
             if (m != null)
@@ -345,11 +346,11 @@ public abstract class FromContext<T extends ControllerContext> extends JBossObje
          return null;
       }
 
-      protected void getInterfaces(Class clazz, Set<Class> interfaces)
+      protected void getInterfaces(Class<?> clazz, Set<Class<?>> interfaces)
       {
          if (clazz == Object.class || clazz == null)
             return;
-         for (Class iface : clazz.getInterfaces())
+         for (Class<?>  iface : clazz.getInterfaces())
             interfaces.add(iface);
          getInterfaces(clazz.getSuperclass(), interfaces);         
       }
@@ -362,7 +363,7 @@ public abstract class FromContext<T extends ControllerContext> extends JBossObje
          Object result = ReflectionUtils.invoke(method, context, new Object[]{});
          if (result != null)
          {
-            Set<Class> interfaces = new HashSet<Class>();
+            Set<Class<?>> interfaces = new HashSet<Class<?>>();
             getInterfaces(result.getClass(), interfaces);
             return Proxy.newProxyInstance(
                      ControllerContext.class.getClassLoader(),

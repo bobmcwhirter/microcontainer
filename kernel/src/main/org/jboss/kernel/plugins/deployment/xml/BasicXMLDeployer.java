@@ -78,7 +78,7 @@ public class BasicXMLDeployer extends BasicKernelDeployer
       super(kernel, mode);
    }
 
-   public Collection getDeploymentNames()
+   public Collection<String> getDeploymentNames()
    {
       return deploymentsByName.keySet();
    }

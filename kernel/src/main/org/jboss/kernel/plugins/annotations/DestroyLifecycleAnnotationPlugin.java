@@ -21,6 +21,8 @@
 */
 package org.jboss.kernel.plugins.annotations;
 
+import java.lang.annotation.Annotation;
+
 import org.jboss.beans.metadata.plugins.AbstractBeanMetaData;
 import org.jboss.beans.metadata.plugins.AbstractLifecycleMetaData;
 import org.jboss.beans.metadata.api.annotations.Destroy;
@@ -33,7 +35,7 @@ import org.jboss.beans.metadata.spi.BeanMetaData;
  */
 public class DestroyLifecycleAnnotationPlugin extends LifecycleParameterAnnotationPlugin<Destroy>
 {
-   protected DestroyLifecycleAnnotationPlugin(Annotation2ValueMetaDataAdapter... adapters)
+   protected DestroyLifecycleAnnotationPlugin(Annotation2ValueMetaDataAdapter<? extends Annotation>... adapters)
    {
       super(Destroy.class, adapters);
    }

@@ -53,7 +53,7 @@ public class AbstractInjectionValueMetaData extends AbstractDependencyValueMetaD
 
    protected InjectionOption injectionOption = InjectionOption.STRICT;
 
-   protected FromContext fromContext;
+   protected FromContext<? extends ControllerContext> fromContext;
 
    /**
     * Simplyifies things with AutowireType.BY_NAME
@@ -110,13 +110,13 @@ public class AbstractInjectionValueMetaData extends AbstractDependencyValueMetaD
       this.injectionOption = injectionOption;
    }
 
-   public FromContext getFromContext()
+   public FromContext<? extends ControllerContext> getFromContext()
    {
       return fromContext;
    }
 
    @XmlAttribute
-   public void setFromContext(FromContext fromContext)
+   public void setFromContext(FromContext<? extends ControllerContext> fromContext)
    {
       this.fromContext = fromContext;
    }
@@ -289,7 +289,7 @@ public class AbstractInjectionValueMetaData extends AbstractDependencyValueMetaD
                   if (node instanceof TypeProvider)
                   {
                      TypeProvider typeProvider = (TypeProvider)node;
-                     Class injectionClass = typeProvider.getType(visitor, this).getType();
+                     Class<?> injectionClass = typeProvider.getType(visitor, this).getType();
                      log.debug("Contextual injection usage (class -> classloader): " + injectionClass + " -> " + injectionClass.getClassLoader());
                      // set when required
                      ControllerState whenRequired = whenRequiredState;

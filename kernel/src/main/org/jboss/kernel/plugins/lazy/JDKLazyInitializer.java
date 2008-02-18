@@ -60,7 +60,7 @@ public class JDKLazyInitializer extends AbstractLazyInitializer
     */
    public class LazyHandler extends AbstractInvokeHandler implements InvocationHandler
    {
-      public LazyHandler(String bean, KernelBus bus, Class proxyClass)
+      public LazyHandler(String bean, KernelBus bus, Class<?> proxyClass)
       {
          super(bean, bus, proxyClass);
       }

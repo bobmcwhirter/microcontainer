@@ -87,9 +87,9 @@ public class AbstractMCTest extends AbstractBuilderTest
       assertNotNull(annotations);
       assertEquals(expected.size(), annotations.size());
       HashSet<String> clonedExpected = new HashSet<String>(expected);
-      for (Iterator i = annotations.iterator(); i.hasNext();)
+      for (Iterator<AnnotationMetaData> i = annotations.iterator(); i.hasNext();)
       {
-         AnnotationMetaData annotation = (AnnotationMetaData) i.next();
+         AnnotationMetaData annotation = i.next();
          if (clonedExpected.remove(annotation.getAnnotationInstance().annotationType().getName()) == false)
             fail("Did not expect " + annotation + " expected " + expected);
       }
@@ -102,9 +102,9 @@ public class AbstractMCTest extends AbstractBuilderTest
       assertNotNull(properties);
       assertEquals(expected.size(), properties.size());
       HashSet<String> clonedExpected = new HashSet<String>(expected);
-      for (Iterator i = properties.iterator(); i.hasNext();)
+      for (Iterator<PropertyMetaData> i = properties.iterator(); i.hasNext();)
       {
-         PropertyMetaData property = (PropertyMetaData) i.next();
+         PropertyMetaData property = i.next();
          if (clonedExpected.remove(property.getName()) == false)
             fail("Did not expect " + property + " expected " + expected);
       }
@@ -145,9 +145,9 @@ public class AbstractMCTest extends AbstractBuilderTest
       assertNotNull(supplies);
       assertEquals(expected.size(), supplies.size());
       HashSet<String> clonedExpected = new HashSet<String>(expected);
-      for (Iterator i = supplies.iterator(); i.hasNext();)
+      for (Iterator<SupplyMetaData> i = supplies.iterator(); i.hasNext();)
       {
-         SupplyMetaData supply = (SupplyMetaData) i.next();
+         SupplyMetaData supply = i.next();
          if (clonedExpected.remove(supply.getSupply()) == false)
             fail("Did not expect " + supply + " expected " + expected);
       }
@@ -155,38 +155,38 @@ public class AbstractMCTest extends AbstractBuilderTest
          fail("Expected " + expected + " got " + supplies);
    }
 
-   protected void assertInstalls(List expected, List installs)
+   protected void assertInstalls(List<String> expected, List<InstallMetaData> installs)
    {
       assertNotNull(installs);
       assertEquals(expected.size(), installs.size());
       for (int i = 0; i < expected.size(); ++i)
       {
-         InstallMetaData install = (InstallMetaData) installs.get(i);
-         String method = (String) expected.get(i);
+         InstallMetaData install = installs.get(i);
+         String method = expected.get(i);
          assertEquals(method, install.getMethodName());
       }
    }
 
-   protected void assertCallbacks(List expected, List callbacks)
+   protected void assertCallbacks(List<String> expected, List<CallbackMetaData> callbacks)
    {
       assertNotNull(callbacks);
       assertEquals(expected.size(), callbacks.size());
       for (int i = 0; i < expected.size(); ++i)
       {
-         CallbackMetaData callback = (CallbackMetaData) callbacks.get(i);
-         String method = (String) expected.get(i);
+         CallbackMetaData callback = callbacks.get(i);
+         String method = expected.get(i);
          assertEquals(method, callback.getMethodName());
       }
    }
 
-   protected void assertParameters(List expected, List parameters)
+   protected void assertParameters(List<String> expected, List<ParameterMetaData> parameters)
    {
       assertNotNull(parameters);
       assertEquals(expected.size(), parameters.size());
       for (int i = 0; i < expected.size(); ++i)
       {
-         ParameterMetaData parameter = (ParameterMetaData) parameters.get(i);
-         String method = (String) expected.get(i);
+         ParameterMetaData parameter = parameters.get(i);
+         String method = expected.get(i);
          assertEquals(method, parameter.getType());
       }
    }
@@ -267,7 +267,7 @@ public class AbstractMCTest extends AbstractBuilderTest
       assertTrue(value instanceof BeanMetaData);
    }
 
-   protected void checkJBossXBException(Class expected, Throwable throwable)
+   protected void checkJBossXBException(Class<? extends Throwable> expected, Throwable throwable)
    {
       checkThrowable(JBossXBException.class, throwable);
       JBossXBException e = (JBossXBException) throwable;

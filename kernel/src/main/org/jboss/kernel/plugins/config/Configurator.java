@@ -133,7 +133,7 @@ public class Configurator extends Config
             Object factory = vmd.getValue(null, cl);
 
             // Get the parameters
-            List parameters = metaData.getParameters();
+            List<ParameterMetaData> parameters = metaData.getParameters();
 
             // Describe the factory
             BeanInfo factoryInfo = config.getBeanInfo(factory.getClass());
@@ -157,7 +157,7 @@ public class Configurator extends Config
          if (factoryClassName != null)
          {
             // Get the parameters
-            List parameters = metaData.getParameters();
+            List<ParameterMetaData> parameters = metaData.getParameters();
 
             BeanInfo factoryInfo = config.getBeanInfo(factoryClassName, cl);
 
@@ -236,16 +236,16 @@ public class Configurator extends Config
       if (info == null)
          throw new IllegalArgumentException("Null bean info");
 
-      List params = Collections.EMPTY_LIST;
+      List<ParameterMetaData> params = Collections.emptyList();
       if (metaData != null && metaData.getParameters() != null)
          params = metaData.getParameters();
       String[] paramTypes = new String[params.size()];
       if (params.isEmpty() == false)
       {
          int x = 0;
-         for (Iterator i = params.iterator(); i.hasNext();)
+         for (Iterator<ParameterMetaData> i = params.iterator(); i.hasNext();)
          {
-            ParameterMetaData pdata = (ParameterMetaData) i.next();
+            ParameterMetaData pdata = i.next();
             paramTypes[x++] = pdata.getType();
          }
       }
@@ -271,14 +271,14 @@ public class Configurator extends Config
       if (metaData == null)
          throw new IllegalArgumentException("Null bean metadata");
 
-      Set properties = metaData.getProperties();
+      Set<PropertyMetaData> properties = metaData.getProperties();
       if (properties != null && properties.isEmpty() == false)
       {
          ClassLoader cl = getClassLoader(metaData);
 
-         for (Iterator i = metaData.getProperties().iterator(); i.hasNext();)
+         for (Iterator<PropertyMetaData> i = metaData.getProperties().iterator(); i.hasNext();)
          {
-            PropertyMetaData property = (PropertyMetaData) i.next();
+            PropertyMetaData property = i.next();
             configure(trace, object, info, cl, property);
          }
       }
@@ -415,9 +415,9 @@ public class Configurator extends Config
       {
          ClassLoader cl = getClassLoader(metaData);
 
-         for (Iterator i = metaData.getProperties().iterator(); i.hasNext();)
+         for (Iterator<PropertyMetaData> i = metaData.getProperties().iterator(); i.hasNext();)
          {
-            PropertyMetaData property = (PropertyMetaData) i.next();
+            PropertyMetaData property = i.next();
             TargettedJoinpoint joinPoint = getPropertySetterJoinPoint(trace, info, cl, property);
             result.add(joinPoint);
          }
@@ -537,12 +537,12 @@ public class Configurator extends Config
          throw new IllegalArgumentException("Null bean metadata");
 
       ClassLoader cl = getClassLoader(metaData);
-      Set propertys = metaData.getProperties();
+      Set<PropertyMetaData> propertys = metaData.getProperties();
       if (propertys != null && propertys.isEmpty() == false)
       {
-         for (Iterator i = metaData.getProperties().iterator(); i.hasNext();)
+         for (Iterator<PropertyMetaData> i = metaData.getProperties().iterator(); i.hasNext();)
          {
-            PropertyMetaData property = (PropertyMetaData) i.next();
+            PropertyMetaData property = i.next();
             unconfigure(object, cl, info, property);
          }
       }
@@ -606,9 +606,9 @@ public class Configurator extends Config
       Set<PropertyMetaData> propertys = metaData.getProperties();
       if (propertys != null && propertys.isEmpty() == false)
       {
-         for (Iterator i = metaData.getProperties().iterator(); i.hasNext();)
+         for (Iterator<PropertyMetaData> i = metaData.getProperties().iterator(); i.hasNext();)
          {
-            PropertyMetaData property = (PropertyMetaData) i.next();
+            PropertyMetaData property = i.next();
             TargettedJoinpoint joinPoint = getPropertyNullerJoinPoint(info, property);
             result.add(joinPoint);
          }
@@ -748,7 +748,7 @@ public class Configurator extends Config
     * @return the method join point
     * @throws Throwable for any error
     */
-   public static MethodJoinpoint findMethod(BeanInfo info, ClassLoader cl, String name, List parameters, boolean isStatic, boolean isPublic) throws Throwable
+   public static MethodJoinpoint findMethod(BeanInfo info, ClassLoader cl, String name, List<ParameterMetaData> parameters, boolean isStatic, boolean isPublic) throws Throwable
    {
       boolean trace = log.isTraceEnabled();
       return findMethod(trace, info, cl, name, parameters, isStatic, isPublic);
@@ -767,7 +767,7 @@ public class Configurator extends Config
     * @return the method join point
     * @throws Throwable for any error
     */
-   public static MethodJoinpoint findMethod(boolean trace, BeanInfo info, ClassLoader cl, String name, List parameters, boolean isStatic, boolean isPublic) throws Throwable
+   public static MethodJoinpoint findMethod(boolean trace, BeanInfo info, ClassLoader cl, String name, List<ParameterMetaData> parameters, boolean isStatic, boolean isPublic) throws Throwable
    {
       if (info == null)
          throw new IllegalArgumentException("Null bean info");
@@ -798,16 +798,16 @@ public class Configurator extends Config
     * @return an array of parameter types
     * @throws Throwable for any error
     */
-   public static String[] getParameterTypes(boolean trace, List parameters) throws Throwable
+   public static String[] getParameterTypes(boolean trace, List<ParameterMetaData> parameters) throws Throwable
    {
       if (parameters == null)
          return null;
 
       String[] paramTypes = new String[parameters.size()];
       int x = 0;
-      for (Iterator i = parameters.iterator(); i.hasNext();)
+      for (Iterator<ParameterMetaData> i = parameters.iterator(); i.hasNext();)
       {
-         ParameterMetaData pmd = (ParameterMetaData) i.next();
+         ParameterMetaData pmd = i.next();
          paramTypes[x++] = pmd.getType();
       }
       return paramTypes;
@@ -843,16 +843,16 @@ public class Configurator extends Config
     * @return an array of parameters
     * @throws Throwable for any error
     */
-   public static Object[] getParameters(boolean trace, ClassLoader cl, TypeInfo[] pinfos, List parameters) throws Throwable
+   public static Object[] getParameters(boolean trace, ClassLoader cl, TypeInfo[] pinfos, List<ParameterMetaData> parameters) throws Throwable
    {
       if (parameters == null)
          return null;
 
       Object[] params = new Object[parameters.size()];
       int x = 0;
-      for (Iterator i = parameters.iterator(); i.hasNext();)
+      for (Iterator<ParameterMetaData> i = parameters.iterator(); i.hasNext();)
       {
-         ParameterMetaData pdata = (ParameterMetaData) i.next();
+         ParameterMetaData pdata = i.next();
          ValueMetaData vmd = pdata.getValue();
          params[x] = vmd.getValue(pinfos[x], cl);
          x++;

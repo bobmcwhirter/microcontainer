@@ -241,6 +241,7 @@ public class AbstractMapMetaData extends AbstractTypeMetaData
       return new HashMap<Object, Object>();
    }
 
+   @SuppressWarnings("unchecked")
    protected Class<? extends Map> getExpectedClass()
    {
       return Map.class;

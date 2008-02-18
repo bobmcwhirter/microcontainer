@@ -34,6 +34,9 @@ import org.jboss.beans.metadata.api.annotations.Value;
  */
 public class TypeOverrideListSimpleBean extends SimpleBean
 {
+   /** The serialVersionUID */
+   private static final long serialVersionUID = 1L;
+
    @ListValue(
          value = {
             @Value(string = @StringValue("string1")),
@@ -45,7 +48,7 @@ public class TypeOverrideListSimpleBean extends SimpleBean
          elementClass = "java.lang.String",
          clazz = "org.jboss.test.kernel.config.support.CustomList"
    )
-   public void setList(List collection)
+   public void setList(List<?> collection)
    {
       super.setList(collection);
    }

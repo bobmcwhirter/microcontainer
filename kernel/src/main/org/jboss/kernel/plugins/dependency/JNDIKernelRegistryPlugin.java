@@ -37,10 +37,10 @@ import org.jboss.kernel.spi.registry.KernelRegistryPlugin;
  */
 public class JNDIKernelRegistryPlugin implements KernelRegistryPlugin
 {
-   private Hashtable properties;
+   private Hashtable<?,?> properties;
    private Context context;
 
-   public void setProperties(Hashtable properties)
+   public void setProperties(Hashtable<?,?> properties)
    {
       this.properties = properties;
    }

@@ -38,6 +38,7 @@ public class AbstractPropertiesMetaData extends AbstractMapMetaData
       return new Properties();
    }
 
+   @SuppressWarnings("unchecked")
    protected Class<? extends Map> getExpectedClass()
    {
       return Properties.class;

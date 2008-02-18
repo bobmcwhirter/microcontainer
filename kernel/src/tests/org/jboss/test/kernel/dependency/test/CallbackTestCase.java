@@ -95,7 +95,7 @@ public class CallbackTestCase extends OldAbstractKernelDependencyTest
       ControllerContext context1 = assertInstall(0, "Name1");
       SimpleBeanRepository repository = (SimpleBeanRepository)context1.getTarget();
       assertNotNull(repository);
-      List beans = repository.getBeans();
+      List<SimpleBean> beans = repository.getBeans();
       assertFalse(beans.isEmpty());
       assertEquals(1, beans.size());
       assertTrue(bean == beans.get(0));

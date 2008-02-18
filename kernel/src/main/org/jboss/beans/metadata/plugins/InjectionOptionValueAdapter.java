@@ -31,6 +31,7 @@ import org.jboss.xb.binding.sunday.unmarshalling.ValueAdapter;
  */
 public class InjectionOptionValueAdapter implements ValueAdapter
 {
+   @SuppressWarnings("unchecked")
    public Object cast(Object o, Class c)
    {
       return InjectionOption.getInstance((String)o);

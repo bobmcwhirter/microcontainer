@@ -32,6 +32,9 @@ import org.jboss.beans.metadata.api.annotations.FromContext;
  */
 public class AnnotatedSimpleBeanWithKernelControllerContextAware extends SimpleBeanWithKernelControllerContextAware
 {
+   /** The serialVersionUID */
+   private static final long serialVersionUID = 1L;
+
    @Inject(fromContext = FromContext.CONTEXT)
    public void setKernelControllerContext(KernelControllerContext context) throws Exception
    {

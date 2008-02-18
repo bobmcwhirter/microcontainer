@@ -95,10 +95,10 @@ public class BasicKernelDeployer extends AbstractKernelDeployer
     */
    public void shutdown()
    {
-      ListIterator iterator = deployments.listIterator(deployments.size());
+      ListIterator<KernelDeployment> iterator = deployments.listIterator(deployments.size());
       while (iterator.hasPrevious())
       {
-         KernelDeployment deployment = (KernelDeployment) iterator.previous();
+         KernelDeployment deployment = iterator.previous();
          undeploy(deployment);
       }
    }

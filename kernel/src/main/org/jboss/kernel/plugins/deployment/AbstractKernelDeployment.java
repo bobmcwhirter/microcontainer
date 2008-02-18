@@ -28,6 +28,7 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 import java.util.concurrent.CopyOnWriteArrayList;
+
 import javax.xml.bind.annotation.XmlAnyElement;
 import javax.xml.bind.annotation.XmlAttribute;
 import javax.xml.bind.annotation.XmlElement;
@@ -43,7 +44,6 @@ import org.jboss.beans.metadata.plugins.AbstractLazyMetaData;
 import org.jboss.beans.metadata.plugins.AbstractLifecycleMetaData;
 import org.jboss.beans.metadata.plugins.AbstractNamedAliasMetaData;
 import org.jboss.beans.metadata.plugins.MutableLifecycleHolder;
-import org.jboss.beans.metadata.plugins.factory.GenericBeanFactoryMetaData;
 import org.jboss.beans.metadata.plugins.factory.GenericBeanFactoryMetaData2;
 import org.jboss.beans.metadata.spi.AnnotationMetaData;
 import org.jboss.beans.metadata.spi.BeanMetaData;

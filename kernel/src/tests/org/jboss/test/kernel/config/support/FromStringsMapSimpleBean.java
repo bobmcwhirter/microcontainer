@@ -35,6 +35,9 @@ import org.jboss.beans.metadata.api.annotations.Value;
  */
 public class FromStringsMapSimpleBean extends SimpleBean
 {
+   /** The serialVersionUID */
+   private static final long serialVersionUID = 1L;
+
    @MapValue(
          value = {
             @EntryValue(
@@ -49,7 +52,7 @@ public class FromStringsMapSimpleBean extends SimpleBean
          keyClass = "java.lang.String",
          valueClass = "java.lang.String"
    )
-   public void setMap(Map collection)
+   public void setMap(Map<?,?> collection)
    {
       super.setMap(collection);
    }

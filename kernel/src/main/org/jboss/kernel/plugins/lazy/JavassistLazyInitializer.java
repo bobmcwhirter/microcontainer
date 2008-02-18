@@ -61,13 +61,13 @@ public class JavassistLazyInitializer extends AbstractLazyInitializer
          ClassLoader cl = Configurator.getClassLoader(context.getBeanMetaData());
          factory.setInterfaces(getClasses(kernel.getConfigurator(), interfaces, cl));
       }
-      Class proxyClass = getProxyClass(factory);
+      Class<?> proxyClass = getProxyClass(factory);
       ProxyObject proxy = (ProxyObject)proxyClass.newInstance();
       proxy.setHandler(new LazyHandler(bean, kernel.getBus(), beanInfo.getClassInfo().getType()));
       return proxy;
    }
 
-   protected Class getProxyClass(ProxyFactory factory)
+   protected Class<?> getProxyClass(ProxyFactory factory)
    {
       SecurityManager sm = System.getSecurityManager();
       if (sm == null)
@@ -90,7 +90,7 @@ public class JavassistLazyInitializer extends AbstractLazyInitializer
     */
    public class LazyHandler extends AbstractInvokeHandler implements MethodHandler
    {
-      public LazyHandler(String bean, KernelBus bus, Class proxyClass)
+      public LazyHandler(String bean, KernelBus bus, Class<?> proxyClass)
       {
          super(bean, bus, proxyClass);
       }
@@ -104,7 +104,7 @@ public class JavassistLazyInitializer extends AbstractLazyInitializer
    /**
     * Privileged class creator.
     */
-   protected class ClassCreator implements PrivilegedAction<Class>
+   protected class ClassCreator implements PrivilegedAction<Class<?>>
    {
       private ProxyFactory factory;
 
@@ -113,7 +113,7 @@ public class JavassistLazyInitializer extends AbstractLazyInitializer
          this.factory = factory;
       }
 
-      public Class run()
+      public Class<?> run()
       {
          return factory.createClass();
       }

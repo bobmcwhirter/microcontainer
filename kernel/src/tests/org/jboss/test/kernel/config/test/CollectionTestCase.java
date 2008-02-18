@@ -71,7 +71,7 @@ public class CollectionTestCase extends AbstractKernelConfigTest
       SimpleBean bean = simpleCollectionFromObjects();
       assertNotNull(bean);
       
-      Collection result = bean.getCollection();
+      Collection<?> result = bean.getCollection();
       assertNotNull("Should be a collection", result);
       
       ArrayList<Object> expected = new ArrayList<Object>();
@@ -109,7 +109,7 @@ public class CollectionTestCase extends AbstractKernelConfigTest
       SimpleBean bean = simpleCollectionFromStrings();
       assertNotNull(bean);
       
-      Collection result = bean.getCollection();
+      Collection<?> result = bean.getCollection();
       assertNotNull("Should be a collection", result);
       
       ArrayList<Object> expected = new ArrayList<Object>();
@@ -152,7 +152,7 @@ public class CollectionTestCase extends AbstractKernelConfigTest
       SimpleBean bean = customCollectionExplicit();
       assertNotNull(bean);
       
-      Collection result = bean.getCollection();
+      Collection<?> result = bean.getCollection();
       assertNotNull("Should be a collection", result);
       assertTrue("Not a CustomCollection: " + result.getClass(), result instanceof CustomCollection);
       
@@ -197,7 +197,7 @@ public class CollectionTestCase extends AbstractKernelConfigTest
       SimpleBean bean = customCollectionFromSignature();
       assertNotNull(bean);
       
-      Collection result = bean.getCustomCollection();
+      Collection<?> result = bean.getCustomCollection();
       assertNotNull("Should be a collection", result);
       assertTrue("Not a CustomCollection: " + result.getClass(), result instanceof CustomCollection);
       
@@ -241,7 +241,7 @@ public class CollectionTestCase extends AbstractKernelConfigTest
       SimpleBean bean = customCollectionPreInstantiated();
       assertNotNull(bean);
       
-      Collection result = bean.getPreInstantiatedCollection();
+      Collection<?> result = bean.getPreInstantiatedCollection();
       assertNotNull("Should be a collection", result);
       assertTrue("Not a CustomCollection: " + result.getClass(), result instanceof CustomCollection);
       assertTrue("Not preinstantiated", ((CustomCollection) result).getPreInstantiated());
@@ -253,7 +253,7 @@ public class CollectionTestCase extends AbstractKernelConfigTest
       expected.add(string1);
       assertEquals(expected, result);
 
-      Collection setter = bean.setterCollection;
+      Collection<?> setter = bean.setterCollection;
       assertNotNull(setter);
       assertFalse("Empty setterCollection", setter.isEmpty());
    }
@@ -295,7 +295,7 @@ public class CollectionTestCase extends AbstractKernelConfigTest
       UnmodifiableGetterBean bean = unmodifiableCollectionPreInstantiated();
       assertNotNull(bean);
 
-      Collection result = bean.getCollection();
+      Collection<?> result = bean.getCollection();
       assertNotNull("Should be a collection", result);
 
       Collection<Object> expected = new ArrayList<Object>();
@@ -305,8 +305,8 @@ public class CollectionTestCase extends AbstractKernelConfigTest
       expected.add(string1);
 
       assertEquals(expected.size(), result.size());
-      Iterator i1 = expected.iterator();
-      Iterator i2 = result.iterator();
+      Iterator<?> i1 = expected.iterator();
+      Iterator<?> i2 = result.iterator();
       while(i1.hasNext() && i2.hasNext())
       {
          assertEquals(i1.next(), i2.next());
@@ -345,7 +345,7 @@ public class CollectionTestCase extends AbstractKernelConfigTest
       SimpleBean bean = collectionWithValueTypeOverride();
       assertNotNull(bean);
       
-      Collection result = bean.getCollection();
+      Collection<?> result = bean.getCollection();
       assertNotNull("Should be a collection", result);
       assertTrue("Not a CustomCollection: " + result.getClass(), result instanceof CustomCollection);
       

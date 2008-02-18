@@ -33,7 +33,7 @@ import org.jboss.kernel.spi.dependency.KernelControllerContext;
  */
 public class ScopingShutdownTestDelegate extends ScopingTestDelegate
 {
-   public ScopingShutdownTestDelegate(Class clazz) throws Exception
+   public ScopingShutdownTestDelegate(Class<?> clazz) throws Exception
    {
       super(clazz);
    }

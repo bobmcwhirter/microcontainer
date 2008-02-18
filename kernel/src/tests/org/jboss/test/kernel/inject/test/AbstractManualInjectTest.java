@@ -39,7 +39,7 @@ public class AbstractManualInjectTest extends MicrocontainerTest
       super(name);
    }
    
-   public static AbstractTestDelegate getDelegate(Class clazz) throws Exception
+   public static AbstractTestDelegate getDelegate(Class<?> clazz) throws Exception
    {
       MicrocontainerTestDelegate delegate = (MicrocontainerTestDelegate) MicrocontainerTest.getDelegate(clazz);
       delegate.setDefaultMode(ControllerMode.MANUAL);

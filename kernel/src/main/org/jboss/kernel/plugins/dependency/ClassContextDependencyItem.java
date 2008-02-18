@@ -32,7 +32,7 @@ import org.jboss.dependency.spi.ControllerState;
  */
 public class ClassContextDependencyItem extends ClassDependencyItem
 {
-   public ClassContextDependencyItem(Object name, Class demandClass, ControllerState whenRequired, ControllerState dependentState)
+   public ClassContextDependencyItem(Object name, Class<?> demandClass, ControllerState whenRequired, ControllerState dependentState)
    {
       super(name, demandClass, whenRequired, dependentState);
    }

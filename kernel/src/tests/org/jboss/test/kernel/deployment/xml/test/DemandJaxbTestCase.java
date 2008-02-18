@@ -26,6 +26,7 @@ import java.util.Set;
 import junit.framework.Test;
 import org.jboss.beans.metadata.plugins.AbstractBeanMetaData;
 import org.jboss.beans.metadata.plugins.AbstractDemandMetaData;
+import org.jboss.beans.metadata.spi.DemandMetaData;
 import org.jboss.dependency.spi.ControllerState;
 
 /**
@@ -39,7 +40,7 @@ public class DemandJaxbTestCase extends AbstractMCTest
    protected AbstractDemandMetaData getDemand() throws Exception
    {
       AbstractBeanMetaData bean = unmarshalBean();
-      Set demands = bean.getDemands();
+      Set<DemandMetaData> demands = bean.getDemands();
       assertNotNull(demands);
       assertEquals(1, demands.size());
       AbstractDemandMetaData demand = (AbstractDemandMetaData) demands.iterator().next();

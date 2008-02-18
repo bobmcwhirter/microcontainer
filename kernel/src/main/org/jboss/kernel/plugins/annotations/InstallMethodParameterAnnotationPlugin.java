@@ -21,6 +21,7 @@
 */
 package org.jboss.kernel.plugins.annotations;
 
+import java.lang.annotation.Annotation;
 import java.util.List;
 import java.util.ArrayList;
 
@@ -39,7 +40,7 @@ import org.jboss.dependency.spi.ControllerState;
  */
 public class InstallMethodParameterAnnotationPlugin extends InstallationParameterAnnotationPlugin<InstallMethod>
 {
-   protected InstallMethodParameterAnnotationPlugin(Annotation2ValueMetaDataAdapter... adapters)
+   protected InstallMethodParameterAnnotationPlugin(Annotation2ValueMetaDataAdapter<? extends Annotation>... adapters)
    {
       super(InstallMethod.class, adapters);
    }

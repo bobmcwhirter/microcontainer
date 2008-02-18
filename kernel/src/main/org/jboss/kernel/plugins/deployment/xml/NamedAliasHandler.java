@@ -38,7 +38,7 @@ public class NamedAliasHandler extends AliasHandler
    /**
     * The alias handler
     */
-   public static final NamedAliasHandler HANDLER = new NamedAliasHandler();
+   public static final NamedAliasHandler NAMED_ALIAS_HANDLER = new NamedAliasHandler();
 
    public Object startElement(Object parent, QName name, ElementBinding element)
    {

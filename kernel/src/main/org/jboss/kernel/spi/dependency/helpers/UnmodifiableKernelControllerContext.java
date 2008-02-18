@@ -27,7 +27,6 @@ import org.jboss.beans.metadata.spi.BeanMetaData;
 import org.jboss.dependency.spi.helpers.UnmodifiableControllerContext;
 import org.jboss.kernel.Kernel;
 import org.jboss.kernel.spi.dependency.KernelControllerContext;
-import org.jboss.metadata.spi.MetaData;
 
 /**
  * Unmodifiable instance.
