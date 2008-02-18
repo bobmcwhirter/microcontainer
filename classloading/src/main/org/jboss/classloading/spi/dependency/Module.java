@@ -316,7 +316,7 @@ public abstract class Module extends NameAndVersionSupport
          Requirement requirement = item.getRequirement();
          
          // If we are looking at everything or this is a re-export
-         if (reExport == false || requirement.isReExport());
+         if (reExport == false || requirement.isReExport())
          {
             // Sanity checks
             if (item.isResolved() == false)
@@ -331,7 +331,7 @@ public abstract class Module extends NameAndVersionSupport
                throw new IllegalStateException("No iDependOn for item: " + item);
             }
             Module iDependOnModule = checkDomain().getModule(name);
-            if (module == null)
+            if (iDependOnModule == null)
                throw new IllegalStateException("Module not found with name: " + name);
 
             // Determine the delegate loader for the module
