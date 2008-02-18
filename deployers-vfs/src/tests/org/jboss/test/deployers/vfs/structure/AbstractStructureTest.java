@@ -21,10 +21,7 @@
 */
 package org.jboss.test.deployers.vfs.structure;
 
-import java.lang.reflect.Field;
 import java.net.URL;
-import java.net.URLStreamHandler;
-import java.net.URLStreamHandlerFactory;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
@@ -43,7 +40,6 @@ import org.jboss.deployers.vfs.spi.structure.VFSDeploymentContext;
 import org.jboss.test.BaseTestCase;
 import org.jboss.virtual.VFS;
 import org.jboss.virtual.VirtualFile;
-import org.jboss.virtual.protocol.vfsfile.Handler;
 
 /**
  * AbstractStructureUnitTestCase.
@@ -264,25 +260,7 @@ public abstract class AbstractStructureTest extends BaseTestCase
 
    protected VirtualFile getVirtualFile(String root, String path) throws Exception
    {
-      // TODO JBMICROCONT-185 THIS IS HACK TO MAKE THE TEST WORK IN MAVEN ???
-      try
-      {
-         URL.setURLStreamHandlerFactory(new URLStreamHandlerFactory()
-         {
-            public URLStreamHandler createURLStreamHandler(String protocol)
-            {
-               if ("vfsfile".equals(protocol))
-                  return new Handler();
-               return null;
-            }
-         });
-      }
-      catch (Error ignored)
-      {
-      }
       URL url = getResource(root);
-      Field field = URL.class.getDeclaredField("factory");
-      field.setAccessible(true);
       return VFS.getVirtualFile(url, path);
    }
 
