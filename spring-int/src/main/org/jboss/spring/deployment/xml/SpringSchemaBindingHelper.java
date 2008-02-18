@@ -105,7 +105,7 @@ public class SpringSchemaBindingHelper
    // here value only takes simple type
    public static void initValueHandler(TypeBinding typeBinding)
    {
-      typeBinding.setHandler(SpringPlainValueHandler.HANDLER);
+      typeBinding.setHandler(SpringPlainValueHandler.SPRING_PLAIN_VALUE_HANDLER);
       // value can take characters
       typeBinding.setSimpleType(PlainValueCharactersHandler.HANDLER);
    }
@@ -145,7 +145,7 @@ public class SpringSchemaBindingHelper
       typeBinding.pushInterceptor(SpringSchemaBinding.refQName, EntryValueInterceptor.INTERCEPTOR);
 
       // entry has value
-      typeBinding.pushInterceptor(SpringSchemaBinding.valueQName, StringEntryValueInterceptor.INTERCEPTOR);
+      typeBinding.pushInterceptor(SpringSchemaBinding.valueQName, StringEntryValueInterceptor.STRING_ENTRY_VALUE_INTERCEPTOR);
 
       // entry can take a list
       typeBinding.pushInterceptor(SpringSchemaBinding.listQName, EntryValueInterceptor.INTERCEPTOR);

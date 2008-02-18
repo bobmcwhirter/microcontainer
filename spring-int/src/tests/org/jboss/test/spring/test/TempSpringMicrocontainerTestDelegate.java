@@ -33,7 +33,7 @@ import org.jboss.kernel.plugins.deployment.xml.BasicXMLDeployer;
  */
 public class TempSpringMicrocontainerTestDelegate extends MicrocontainerTestDelegate
 {
-   public TempSpringMicrocontainerTestDelegate(Class clazz) throws Exception
+   public TempSpringMicrocontainerTestDelegate(Class<?> clazz) throws Exception
    {
       super(clazz);
    }

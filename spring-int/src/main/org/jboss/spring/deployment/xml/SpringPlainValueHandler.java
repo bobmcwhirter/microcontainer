@@ -37,7 +37,7 @@ import org.xml.sax.Attributes;
 public class SpringPlainValueHandler extends PlainValueHandler
 {
    /** The interceptor */
-   public static final SpringPlainValueHandler HANDLER = new SpringPlainValueHandler();
+   public static final SpringPlainValueHandler SPRING_PLAIN_VALUE_HANDLER = new SpringPlainValueHandler();
 
    public void attributes(Object o, QName elementName, ElementBinding element, Attributes attrs, NamespaceContext nsCtx)
    {

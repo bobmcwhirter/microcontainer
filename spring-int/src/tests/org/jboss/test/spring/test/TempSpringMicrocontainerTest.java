@@ -42,7 +42,7 @@ public class TempSpringMicrocontainerTest extends MicrocontainerTest
     * @return the delegate
     * @throws Exception for any error
     */
-   public static AbstractTestDelegate getDelegate(Class clazz) throws Exception
+   public static AbstractTestDelegate getDelegate(Class<?> clazz) throws Exception
    {
       return new TempSpringMicrocontainerTestDelegate(clazz);
    }

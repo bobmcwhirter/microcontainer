@@ -31,7 +31,7 @@ import org.jboss.xb.binding.sunday.unmarshalling.DefaultSchemaResolver;
 public class TempSpringSchemaTestDelegate extends IoCTestDelegate
 {
 
-   public TempSpringSchemaTestDelegate(Class clazz)
+   public TempSpringSchemaTestDelegate(Class<?> clazz)
    {
       super(clazz);
    }

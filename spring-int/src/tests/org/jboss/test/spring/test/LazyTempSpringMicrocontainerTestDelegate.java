@@ -31,7 +31,7 @@ import org.jboss.kernel.spi.dependency.KernelControllerContext;
  */
 public class LazyTempSpringMicrocontainerTestDelegate extends TempSpringMicrocontainerTestDelegate
 {
-   public LazyTempSpringMicrocontainerTestDelegate(Class clazz) throws Exception
+   public LazyTempSpringMicrocontainerTestDelegate(Class<?> clazz) throws Exception
    {
       super(clazz);
    }

@@ -34,9 +34,9 @@ public class SimpleBean
    private int x;
    private double y;
    private String s;
-   private List mylist;
-   private Set myset;
-   private Map mymap;
+   private List<?> mylist;
+   private Set<?> myset;
+   private Map<?,?> mymap;
    private OldBean refBean;
 
    public SimpleBean()
@@ -65,32 +65,32 @@ public class SimpleBean
       return s;
    }
 
-   public List getMylist()
+   public List<?> getMylist()
    {
       return mylist;
    }
 
-   public void setMylist(List mylist)
+   public void setMylist(List<?> mylist)
    {
       this.mylist = mylist;
    }
 
-   public Set getMyset()
+   public Set<?> getMyset()
    {
       return myset;
    }
 
-   public void setMyset(Set myset)
+   public void setMyset(Set<?> myset)
    {
       this.myset = myset;
    }
 
-   public Map getMymap()
+   public Map<?,?> getMymap()
    {
       return mymap;
    }
 
-   public void setMymap(Map mymap)
+   public void setMymap(Map<?,?> mymap)
    {
       this.mymap = mymap;
    }

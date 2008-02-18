@@ -34,7 +34,7 @@ import org.jboss.kernel.plugins.deployment.xml.EntryValueInterceptor;
 public class StringEntryValueInterceptor extends EntryValueInterceptor
 {
    /** The interceptor */
-   public static final StringEntryValueInterceptor INTERCEPTOR = new StringEntryValueInterceptor();
+   public static final StringEntryValueInterceptor STRING_ENTRY_VALUE_INTERCEPTOR = new StringEntryValueInterceptor();
 
    public void add(Object parent, Object child, QName name)
    {

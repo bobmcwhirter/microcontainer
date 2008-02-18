@@ -40,7 +40,7 @@ public class LazyTempSpringMicrocontainerTest extends TempSpringMicrocontainerTe
     * @return the lazy delegate
     * @throws Exception for any error
     */
-   public static AbstractTestDelegate getDelegate(Class clazz) throws Exception
+   public static AbstractTestDelegate getDelegate(Class<?> clazz) throws Exception
    {
       return new LazyTempSpringMicrocontainerTestDelegate(clazz);
    }
