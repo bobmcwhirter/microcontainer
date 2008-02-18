@@ -1,0 +1,10 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<classloader xmlns="urn:jboss:classloader:1.0"
+              name="test">
+   <requirements>
+      <module name="export1" from="1.0.0" to="1.1.0"/>
+      <module name="export2" from="2.0.0" to="2.1.0"/>
+      <module name="export3" from="3.0.0" to="3.1.0"/>
+   </requirements>
+</classloader>

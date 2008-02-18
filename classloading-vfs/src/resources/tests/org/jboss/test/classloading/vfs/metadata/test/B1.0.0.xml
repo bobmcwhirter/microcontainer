@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<deployment xmlns="urn:jboss:bean-deployer:2.0">
+
+   <classloader name="b" version="1.0.0" xmlns="urn:jboss:classloader:1.0">
+      <requirements>
+         <module name="a" version="1.0.0"/>
+      </requirements>
+   </classloader>
+
+</deployment>

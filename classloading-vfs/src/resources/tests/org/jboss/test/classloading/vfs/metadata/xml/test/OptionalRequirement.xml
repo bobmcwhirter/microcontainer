@@ -1,0 +1,9 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<classloader xmlns="urn:jboss:classloader:1.0"
+              name="test">
+   <requirements>
+      <module name="test1" from="1.0.0" optional="true"/>
+      <package name="test1" from="1.0.0" optional="true"/>
+   </requirements>
+</classloader>
