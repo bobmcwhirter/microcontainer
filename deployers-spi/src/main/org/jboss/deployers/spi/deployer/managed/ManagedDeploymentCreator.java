@@ -41,8 +41,11 @@ public interface ManagedDeploymentCreator
 {
    /**
     * Build up the deployment management view.
+    * 
     * @param unit - the deployment unit to process
-    * @param md - the unit ManagedDeployment
+    * @param unitMOs - the managed objects
+    * @param parent - the parent
+    * @return the managed deployment
     */
    public ManagedDeployment build(DeploymentUnit unit, Map<String, ManagedObject> unitMOs,
          ManagedDeployment parent);

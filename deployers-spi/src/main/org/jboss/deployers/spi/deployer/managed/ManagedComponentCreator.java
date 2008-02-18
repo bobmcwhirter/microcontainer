@@ -30,6 +30,7 @@ import org.jboss.managed.api.ManagedDeployment;
  * A plugin interface for building up the ManagedComponents of
  * a ManagedDeployment. 
  * 
+ * @param <T> the metadata type
  * @author Scott.Stark@jboss.org
  * @version $Revision$
  */
