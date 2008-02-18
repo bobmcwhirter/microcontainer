@@ -49,6 +49,7 @@ public class AllowedTxSupportMetaData implements
       values.add(new EnumValueSupport(TYPE, TxSupportMetaData.XA));
    }
 
+   @SuppressWarnings("unchecked")
    public void populateManagedProperty(Class attachmentClass, PropertyInfo info, Fields fields)
    {
       fields.setField(Fields.LEGAL_VALUES, values);

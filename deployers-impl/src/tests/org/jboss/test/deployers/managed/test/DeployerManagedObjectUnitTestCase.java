@@ -144,6 +144,7 @@ public class DeployerManagedObjectUnitTestCase extends AbstractDeployerTest
     * Validate the ManagedObjectFactory for DSMetaData class
     *
     */
+   @SuppressWarnings("unchecked")
    public void testDSMetaDataManagedObjectFactory()
    {
       ManagedObjectFactory mof = ManagedObjectFactory.getInstance();
@@ -188,6 +189,7 @@ public class DeployerManagedObjectUnitTestCase extends AbstractDeployerTest
     * Validate the ManagedObjectFactory for DSMetaData instance
     *
     */
+   @SuppressWarnings("unchecked")
    public void testDSMetaDataManagedObjectFactoryInit()
    {
       ManagedObjectFactory mof = ManagedObjectFactory.getInstance();

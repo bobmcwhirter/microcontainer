@@ -121,6 +121,7 @@ public class MockProfileService
     * @param mo
     * @param md - 
     */
+   @SuppressWarnings("unchecked")
    protected void processManagedObject(ManagedObject mo, ManagedDeployment md)
    {
       String key = mo.getName() + "/" + mo.getNameType();
@@ -251,6 +252,7 @@ public class MockProfileService
       }
    }
 
+   @SuppressWarnings("unchecked")
    protected Object getRefName(Object value)
    {
       if (value instanceof MetaValue)

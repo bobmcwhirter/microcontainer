@@ -34,7 +34,7 @@ import static org.jboss.deployers.spi.Ordered.COMPARATOR;
  * @author <a href="mailto:ales.justin@jboss.com">Ales Justin</a>
  * @param <T> exact domino type
  */
-public class DominoOrdering<T extends Domino>
+public class DominoOrdering<T extends Domino<?>>
 {
    protected String message;
 

@@ -27,7 +27,6 @@ import org.jboss.deployers.spi.DeploymentException;
 import org.jboss.deployers.spi.deployer.helpers.AbstractRealDeployerWithInput;
 import org.jboss.deployers.spi.deployer.helpers.DeploymentVisitor;
 import org.jboss.deployers.structure.spi.DeploymentUnit;
-import org.jboss.metadata.plugins.repository.basic.BasicMetaDataRepository;
 import org.jboss.metadata.spi.MutableMetaData;
 import org.jboss.metadata.spi.scope.CommonLevels;
 import org.jboss.metadata.spi.scope.ScopeKey;

@@ -82,20 +82,20 @@ public abstract class ClassLoaderDependenciesTest extends AbstractDeployerTest
       super(name);
    }
 
-   protected Class assertLoadClass(ClassLoader start, Class reference) throws Exception
+   protected Class<?> assertLoadClass(ClassLoader start, Class<?> reference) throws Exception
    {
       return assertLoadClass(start, reference, start);
    }
 
-   protected Class assertLoadClass(ClassLoader start, Class reference, ClassLoader expected) throws Exception
+   protected Class<?> assertLoadClass(ClassLoader start, Class<?> reference, ClassLoader expected) throws Exception
    {
-      Class clazz = start.loadClass(reference.getName());
+      Class<?> clazz = start.loadClass(reference.getName());
       if (expected != null)
          assertEquals(expected, clazz.getClassLoader());
       return clazz;
    }
 
-   protected void assertLoadClassFail(ClassLoader start, Class reference) throws Exception
+   protected void assertLoadClassFail(ClassLoader start, Class<?> reference) throws Exception
    {
       try
       {
@@ -108,7 +108,7 @@ public abstract class ClassLoaderDependenciesTest extends AbstractDeployerTest
       }
    }
 
-   protected void assertLoadClassIllegal(ClassLoader start, Class reference) throws Exception
+   protected void assertLoadClassIllegal(ClassLoader start, Class<?> reference) throws Exception
    {
       try
       {
@@ -134,24 +134,24 @@ public abstract class ClassLoaderDependenciesTest extends AbstractDeployerTest
       }
    }
 
-   protected static ClassLoaderMetaData addClassLoaderMetaData(Deployment deployment, Version version, Class... packages)
+   protected static ClassLoaderMetaData addClassLoaderMetaData(Deployment deployment, Version version, Class<?>... packages)
    {
       return addClassLoaderMetaData(deployment, version, false, packages);
    }
 
-   protected static ClassLoaderMetaData addClassLoaderMetaData(Deployment deployment, Version version, boolean useVersionOnPackages, Class... packages)
+   protected static ClassLoaderMetaData addClassLoaderMetaData(Deployment deployment, Version version, boolean useVersionOnPackages, Class<?>... packages)
    {
       ClassLoaderMetaData classLoaderMetaData = createMetaData(deployment, version, useVersionOnPackages, packages);
       addMetaData(deployment, classLoaderMetaData);
       return classLoaderMetaData;
    }
 
-   protected static ClassLoaderMetaData createMetaData(Deployment deployment, Version version, Class... packages)
+   protected static ClassLoaderMetaData createMetaData(Deployment deployment, Version version, Class<?>... packages)
    {
       return createMetaData(deployment, version, false, packages);
    }
 
-   protected static ClassLoaderMetaData createMetaData(Deployment deployment, Version version, boolean useVersionOnPackages, Class... packages)
+   protected static ClassLoaderMetaData createMetaData(Deployment deployment, Version version, boolean useVersionOnPackages, Class<?>... packages)
    {
       ClassLoaderMetaData classLoaderMetaData = new ClassLoaderMetaData();
       classLoaderMetaData.setName(deployment.getName());
@@ -162,7 +162,7 @@ public abstract class ClassLoaderDependenciesTest extends AbstractDeployerTest
 
       if (packages != null)
       {
-         for (Class pkg : packages)
+         for (Class<?> pkg : packages)
          {
             if (useVersionOnPackages)
                capability = new PackageCapabilityImpl(pkg.getName(), version);
@@ -189,7 +189,7 @@ public abstract class ClassLoaderDependenciesTest extends AbstractDeployerTest
       requirements.add(requirement);
    }
 
-   protected static void addRequirePackage(ClassLoaderMetaData classLoaderMetaData, Class pck, VersionRange versionRange)
+   protected static void addRequirePackage(ClassLoaderMetaData classLoaderMetaData, Class<?> pck, VersionRange versionRange)
    {
       List<Requirement> requirements = classLoaderMetaData.getRequirements();
       if (requirements == null)

@@ -49,6 +49,7 @@ public class AllowedDsTypes
       values.add(SimpleValueSupport.wrap("tx-connection-factory"));
    }
 
+   @SuppressWarnings("unchecked")
    public void populateManagedProperty(Class attachmentClass, PropertyInfo info, Fields fields)
    {
       fields.setField(Fields.LEGAL_VALUES, values);

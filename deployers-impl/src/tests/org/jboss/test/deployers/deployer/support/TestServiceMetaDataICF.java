@@ -41,6 +41,7 @@ public class TestServiceMetaDataICF implements InstanceClassFactory<TestServiceM
    /** The meta value factory */
    private MetaValueFactory metaValueFactory = MetaValueFactory.getInstance(); 
 
+   @SuppressWarnings("unchecked")
    public Class<? extends Serializable> getManagedObjectClass(TestServiceMetaData instance)
       throws ClassNotFoundException
    {

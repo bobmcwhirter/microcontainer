@@ -21,8 +21,6 @@
  */
 package org.jboss.test.deployers.deployer.support;
 
-import java.io.Serializable;
-
 import org.jboss.managed.api.ManagedOperation.Impact;
 import org.jboss.managed.api.annotation.ManagementObject;
 import org.jboss.managed.api.annotation.ManagementObjectID;

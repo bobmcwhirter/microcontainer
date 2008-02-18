@@ -24,7 +24,7 @@ public class SecMetaData implements Serializable
    /**
     * The domain value refers to a security domain component if type is either
     * DOMAIN, DOMAIN_AND_APPLICATION
-    * @return
+    * @return the domain
     */
    @ManagementProperty(name="domain-name")
    @ManagementObjectRef(type="SecurityDomain")
