@@ -122,10 +122,11 @@ public class RequirementDependencyItem extends AbstractDependencyItem
       return isResolved();
    }
 
-   public void unresolved()
+   public boolean unresolved(Controller controller)
    {
       setIDependOn(null);
       setResolved(false);
+      return true;
    }
    
    public void toString(JBossStringBuilder buffer)
