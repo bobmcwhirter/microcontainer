@@ -21,6 +21,7 @@
 */
 package org.jboss.test.deployers.vfs.classloader;
 
+import org.jboss.test.deployers.vfs.classloader.test.InMemoryClasesUnitTestCase;
 import org.jboss.test.deployers.vfs.classloader.test.VFSClassLoaderDependenciesUnitTestCase;
 import org.jboss.test.deployers.vfs.classloader.test.VFSUndeployOrderClassLoaderUnitTestCase;
 
@@ -47,6 +48,7 @@ public class ClassLoaderTestSuite extends TestSuite
 
       suite.addTest(VFSClassLoaderDependenciesUnitTestCase.suite());
       suite.addTest(VFSUndeployOrderClassLoaderUnitTestCase.suite());
+      suite.addTest(InMemoryClasesUnitTestCase.suite());
 
       return suite;
    }
