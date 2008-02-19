@@ -1,6 +1,6 @@
 /*
 * JBoss, Home of Professional Open Source
-* Copyright 2006, JBoss Inc., and individual contributors as indicated
+* Copyright 2008, JBoss Inc., and individual contributors as indicated
 * by the @authors tag. See the copyright.txt in the distribution for a
 * full listing of individual contributors.
 *
@@ -19,17 +19,18 @@
 * Software Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA
 * 02110-1301 USA, or see the FSF site: http://www.fsf.org.
 */
-package org.jboss.test.deployers.classloading.test;
+package org.jboss.test.deployers.vfs.classloader.test;
 
+import java.net.URL;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 
+import org.jboss.classloader.plugins.jdk.AbstractJDKChecker;
 import org.jboss.classloader.plugins.system.DefaultClassLoaderSystem;
 import org.jboss.classloader.spi.ClassLoaderSystem;
 import org.jboss.classloader.spi.ParentPolicy;
 import org.jboss.classloading.spi.dependency.ClassLoading;
-import org.jboss.classloading.spi.dependency.policy.mock.MockClassLoadingMetaData;
 import org.jboss.classloading.spi.metadata.CapabilitiesMetaData;
 import org.jboss.classloading.spi.metadata.Capability;
 import org.jboss.classloading.spi.metadata.ClassLoadingMetaData;
@@ -38,22 +39,28 @@ import org.jboss.classloading.spi.metadata.Requirement;
 import org.jboss.classloading.spi.metadata.RequirementsMetaData;
 import org.jboss.classloading.spi.version.Version;
 import org.jboss.classloading.spi.version.VersionRange;
+import org.jboss.deployers.client.plugins.deployment.AbstractDeployment;
 import org.jboss.deployers.client.spi.DeployerClient;
 import org.jboss.deployers.client.spi.Deployment;
+import org.jboss.deployers.client.spi.DeploymentFactory;
 import org.jboss.deployers.plugins.classloading.AbstractClassLoaderDescribeDeployer;
 import org.jboss.deployers.spi.attachments.MutableAttachments;
 import org.jboss.deployers.spi.attachments.PredeterminedManagedObjectAttachments;
 import org.jboss.deployers.structure.spi.DeploymentUnit;
-import org.jboss.test.deployers.AbstractDeployerTest;
-import org.jboss.test.deployers.classloading.support.MockClassLoaderDescribeDeployer;
-import org.jboss.test.deployers.classloading.support.MockTopLevelClassLoaderSystemDeployer;
+import org.jboss.deployers.vfs.plugins.classloader.VFSClassLoaderDescribeDeployer;
+import org.jboss.deployers.vfs.spi.client.VFSDeployment;
+import org.jboss.deployers.vfs.spi.client.VFSDeploymentFactory;
+import org.jboss.test.deployers.BaseDeployersVFSTest;
+import org.jboss.test.deployers.vfs.classloader.support.TestTopLevelClassLoaderSystemDeployer;
+import org.jboss.virtual.VFS;
+import org.jboss.virtual.VirtualFile;
 
 /**
  * ClassLoadersDependencies test.
  *
  * @author <a href="ales.justin@jboss.com">Ales Justin</a>
  */
-public abstract class ClassLoaderDependenciesTest extends AbstractDeployerTest
+public abstract class VFSClassLoaderDependenciesTest extends BaseDeployersVFSTest
 {
    private static ClassLoadingMetaDataFactory classLoadingMetaDataFactory = ClassLoadingMetaDataFactory.getInstance();
    
@@ -61,12 +68,12 @@ public abstract class ClassLoaderDependenciesTest extends AbstractDeployerTest
    public static final String NameB = "B";
 
    public static final List<String> NONE = Collections.emptyList();
-   public static final List<String> A = makeList(NameA);
-   public static final List<String> B = makeList(NameB);
-   public static final List<String> AB = makeList(NameA, NameB);
-   public static final List<String> BA = makeList(NameB, NameA);
-   public static final List<String> BAA = makeList(NameB, NameA, NameA);
-   public static final List<String> BABA = makeList(NameB, NameA, NameB, NameA);
+   public static final List<String> XA = makeList(NameA);
+   public static final List<String> XB = makeList(NameB);
+   public static final List<String> XAB = makeList(NameA, NameB);
+   public static final List<String> XBA = makeList(NameB, NameA);
+   public static final List<String> XBAA = makeList(NameB, NameA, NameA);
+   public static final List<String> XBABA = makeList(NameB, NameA, NameB, NameA);
 
    @SuppressWarnings("unchecked")
    protected static <T> List<T> makeList(T... objects)
@@ -78,11 +85,29 @@ public abstract class ClassLoaderDependenciesTest extends AbstractDeployerTest
    }
 
    protected AbstractClassLoaderDescribeDeployer deployer1;
-   protected MockTopLevelClassLoaderSystemDeployer deployer2;
+   protected TestTopLevelClassLoaderSystemDeployer deployer2;
 
-   protected ClassLoaderDependenciesTest(String name)
+   protected VFSClassLoaderDependenciesTest(String name)
    {
       super(name);
+   }
+   
+   /**
+    * Create a deployment
+    * 
+    * @param name the name
+    * @return the deployment
+    * @throws Exception for any error
+    */
+   protected VFSDeployment createDeployment(String name) throws Exception
+   {
+      URL url = getClass().getProtectionDomain().getCodeSource().getLocation();
+      VirtualFile file = VFS.getRoot(url);
+      VFSDeployment deployment = VFSDeploymentFactory.getInstance().createVFSDeployment(file);
+      DeploymentFactory factory = new DeploymentFactory();
+      factory.addContext(deployment, "");
+      ((AbstractDeployment) deployment).setName(name);
+      return deployment;
    }
 
    protected Class<?> assertLoadClass(ClassLoader start, Class<?> reference) throws Exception
@@ -157,9 +182,21 @@ public abstract class ClassLoaderDependenciesTest extends AbstractDeployerTest
    protected static ClassLoadingMetaData createMetaData(Deployment deployment, Version version, boolean useVersionOnPackages, Class<?>... packages)
    {
       String name = deployment.getName();
-      MockClassLoadingMetaData classLoadingMetaData = new MockClassLoadingMetaData(name, version);
+      ClassLoadingMetaData classLoadingMetaData = new ClassLoadingMetaData();
+      classLoadingMetaData.setName(name);
+      classLoadingMetaData.setVersion(version);
 
-      classLoadingMetaData.setPaths(packages);
+      StringBuffer included = new StringBuffer();
+      boolean first = true;
+      for (Class<?> pkg : packages)
+      {
+         if (first)
+            first = false;
+         else
+            included.append(",");
+         included.append(pkg.getPackage().getName());
+      }
+      classLoadingMetaData.setIncludedPackages(included.toString());
       
       CapabilitiesMetaData capabilities = classLoadingMetaData.getCapabilities();
       Capability capability = classLoadingMetaDataFactory.createModule(name, version);
@@ -205,14 +242,16 @@ public abstract class ClassLoaderDependenciesTest extends AbstractDeployerTest
 
    protected DeployerClient getMainDeployer()
    {
+      AbstractJDKChecker.getExcluded().add(VFSClassLoaderDependenciesTest.class);
+      
       ClassLoading classLoading = new ClassLoading();
       ClassLoaderSystem system = new DefaultClassLoaderSystem();
       system.getDefaultDomain().setParentPolicy(ParentPolicy.BEFORE_BUT_JAVA_ONLY);
 
-      deployer1 = new MockClassLoaderDescribeDeployer();
+      deployer1 = new VFSClassLoaderDescribeDeployer();
       deployer1.setClassLoading(classLoading);
 
-      deployer2 = new MockTopLevelClassLoaderSystemDeployer();
+      deployer2 = new TestTopLevelClassLoaderSystemDeployer();
       deployer2.setClassLoading(classLoading);
       deployer2.setSystem(system);
 

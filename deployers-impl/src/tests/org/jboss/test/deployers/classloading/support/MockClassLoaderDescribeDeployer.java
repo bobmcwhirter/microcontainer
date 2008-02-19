@@ -19,19 +19,24 @@
 * Software Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA
 * 02110-1301 USA, or see the FSF site: http://www.fsf.org.
 */
-package org.jboss.test.deployers.structure.version.support;
+package org.jboss.test.deployers.classloading.support;
 
-import org.jboss.deployers.structure.spi.classloading.VersionComparator;
+import org.jboss.classloading.spi.dependency.policy.ClassLoaderPolicyModule;
+import org.jboss.classloading.spi.metadata.ClassLoadingMetaData;
+import org.jboss.deployers.plugins.classloading.AbstractClassLoaderDescribeDeployer;
+import org.jboss.deployers.spi.DeploymentException;
+import org.jboss.deployers.structure.spi.DeploymentUnit;
 
 /**
- * Dummy version comparator.
+ * MockClassLoaderDescribeDeployer.
  * 
- * @author <a href="mailto:ales.justin@jboss.com">Ales Justin</a>
+ * @author <a href="adrian@jboss.com">Adrian Brock</a>
+ * @version $Revision: 1.1 $
  */
-public class DummyVersionComparator implements VersionComparator<DummyVersion, DummyVersion>
+public class MockClassLoaderDescribeDeployer extends AbstractClassLoaderDescribeDeployer
 {
-   public int compare(DummyVersion d1, DummyVersion d2)
+   protected ClassLoaderPolicyModule createModule(DeploymentUnit unit, ClassLoadingMetaData metaData) throws DeploymentException
    {
-      return d1.getVersion() - d2.getVersion();
+      return new MockDeploymentClassLoaderPolicyModule(unit);
    }
 }

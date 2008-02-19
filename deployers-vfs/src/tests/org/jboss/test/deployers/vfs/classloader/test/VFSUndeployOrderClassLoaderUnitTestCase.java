@@ -19,7 +19,7 @@
 * Software Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA
 * 02110-1301 USA, or see the FSF site: http://www.fsf.org.
 */
-package org.jboss.test.deployers.classloading.test;
+package org.jboss.test.deployers.vfs.classloader.test;
 
 import junit.framework.Test;
 
@@ -30,24 +30,24 @@ import org.jboss.deployers.client.spi.DeployerClient;
 import org.jboss.deployers.client.spi.Deployment;
 import org.jboss.deployers.client.spi.IncompleteDeploymentException;
 import org.jboss.deployers.spi.DeploymentException;
-import org.jboss.test.deployers.classloading.support.a.A;
-import org.jboss.test.deployers.classloading.support.b.B;
+import org.jboss.test.deployers.vfs.classloader.support.a.A;
+import org.jboss.test.deployers.vfs.classloader.support.b.B;
 
 /**
  * Undeploy order test case.
  *
  * @author <a href="mailto:ales.justin@jboss.com">Ales Justin</a>
  */
-public class UndeployOrderClassLoaderUnitTestCase extends ClassLoaderDependenciesTest
+public class VFSUndeployOrderClassLoaderUnitTestCase extends VFSClassLoaderDependenciesTest
 {
-   public UndeployOrderClassLoaderUnitTestCase(String name)
+   public VFSUndeployOrderClassLoaderUnitTestCase(String name)
    {
       super(name);
    }
 
    public static Test suite()
    {
-      return suite(UndeployOrderClassLoaderUnitTestCase.class);
+      return suite(VFSUndeployOrderClassLoaderUnitTestCase.class);
    }
 
    public void testUndeployOrder() throws Exception
@@ -56,16 +56,16 @@ public class UndeployOrderClassLoaderUnitTestCase extends ClassLoaderDependencie
       Version v1 = Version.parseVersion("1");
       Version v2 = Version.parseVersion("2");
 
-      Deployment ad = createSimpleDeployment("A");
+      Deployment ad = createDeployment("A");
       addClassLoadingMetaData(ad, v1, true, A.class);
       assertDeploy(mainDeployer, ad);
 
-      Deployment bd = createSimpleDeployment("B");
+      Deployment bd = createDeployment("B");
       addClassLoadingMetaData(bd, v2, true, B.class);
       assertDeploy(mainDeployer, bd);
       mainDeployer.checkComplete(bd);
 
-      Deployment cd = createSimpleDeployment("C");
+      Deployment cd = createDeployment("C");
       ClassLoadingMetaData clmd = addClassLoadingMetaData(cd, null);
       addRequirePackage(clmd, A.class, new VersionRange(v1, true, v2, true));
       addRequirePackage(clmd, B.class, new VersionRange(v1, true, v2, true));

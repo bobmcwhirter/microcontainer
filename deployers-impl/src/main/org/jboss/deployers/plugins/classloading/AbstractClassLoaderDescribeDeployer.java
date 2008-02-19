@@ -21,11 +21,14 @@
 */
 package org.jboss.deployers.plugins.classloading;
 
+import org.jboss.classloading.spi.dependency.ClassLoading;
+import org.jboss.classloading.spi.dependency.Module;
+import org.jboss.classloading.spi.dependency.policy.ClassLoaderPolicyModule;
+import org.jboss.classloading.spi.metadata.ClassLoadingMetaData;
 import org.jboss.deployers.spi.DeploymentException;
 import org.jboss.deployers.spi.deployer.DeploymentStages;
 import org.jboss.deployers.spi.deployer.helpers.AbstractOptionalRealDeployer;
 import org.jboss.deployers.structure.spi.DeploymentUnit;
-import org.jboss.deployers.structure.spi.classloading.ClassLoaderMetaData;
 
 /**
  * AbstractClassLoaderDescribeDeployer.
@@ -33,7 +36,7 @@ import org.jboss.deployers.structure.spi.classloading.ClassLoaderMetaData;
  * @author <a href="adrian@jboss.com">Adrian Brock</a>
  * @version $Revision: 1.1 $
  */
-public class AbstractClassLoaderDescribeDeployer extends AbstractOptionalRealDeployer<ClassLoaderMetaData>
+public abstract class AbstractClassLoaderDescribeDeployer extends AbstractOptionalRealDeployer<ClassLoadingMetaData>
 {
    /** The classloading */
    private ClassLoading classLoading;
@@ -43,7 +46,7 @@ public class AbstractClassLoaderDescribeDeployer extends AbstractOptionalRealDep
     */
    public AbstractClassLoaderDescribeDeployer()
    {
-      super(ClassLoaderMetaData.class);
+      super(ClassLoadingMetaData.class);
       setStage(DeploymentStages.DESCRIBE);
    }
 
@@ -78,13 +81,28 @@ public class AbstractClassLoaderDescribeDeployer extends AbstractOptionalRealDep
          throw new DeploymentException("Classloading has not been configured");
    }
 
-   public void deploy(DeploymentUnit unit, ClassLoaderMetaData deployment) throws DeploymentException
+   public void deploy(DeploymentUnit unit, ClassLoadingMetaData deployment) throws DeploymentException
    {
-      classLoading.addDeploymentUnit(unit);
+      if (unit.isTopLevel() == false)
+         return;
+      ClassLoaderPolicyModule module = createModule(unit, deployment);
+      if (module != null)
+      {
+         classLoading.addModule(module);
+         unit.addAttachment(Module.class, module);
+      }
    }
 
-   public void undeploy(DeploymentUnit unit, ClassLoaderMetaData deployment)
+   public void undeploy(DeploymentUnit unit, ClassLoadingMetaData deployment)
    {
-      classLoading.removeDeploymentUnit(unit);
+      if (unit.isTopLevel() == false)
+         return;
+      
+      Module module = unit.removeAttachment(Module.class);
+      if (module == null)
+         return;
+      classLoading.removeModule(module);
    }
+   
+   protected abstract ClassLoaderPolicyModule createModule(DeploymentUnit unit, ClassLoadingMetaData metaData) throws DeploymentException;
 }

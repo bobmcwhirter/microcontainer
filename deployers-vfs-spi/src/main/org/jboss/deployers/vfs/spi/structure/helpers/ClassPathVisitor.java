@@ -26,9 +26,9 @@ import java.util.List;
 import java.util.Set;
 
 import org.jboss.deployers.spi.DeploymentException;
-import org.jboss.deployers.structure.spi.DeploymentContext;
-import org.jboss.deployers.structure.spi.DeploymentContextVisitor;
-import org.jboss.deployers.vfs.spi.structure.VFSDeploymentContext;
+import org.jboss.deployers.structure.spi.DeploymentUnit;
+import org.jboss.deployers.structure.spi.DeploymentUnitVisitor;
+import org.jboss.deployers.vfs.spi.structure.VFSDeploymentUnit;
 import org.jboss.virtual.VirtualFile;
 
 /**
@@ -37,7 +37,7 @@ import org.jboss.virtual.VirtualFile;
  * @author <a href="adrian@jboss.com">Adrian Brock</a>
  * @version $Revision: 1.1 $
  */
-public class ClassPathVisitor implements DeploymentContextVisitor
+public class ClassPathVisitor implements DeploymentUnitVisitor
 {
    /** The full classpath */
    private Set<VirtualFile> classPath = new LinkedHashSet<VirtualFile>();
@@ -52,15 +52,17 @@ public class ClassPathVisitor implements DeploymentContextVisitor
       return classPath;
    }
    
-   public void visit(DeploymentContext context) throws DeploymentException
+   public void visit(DeploymentUnit unit) throws DeploymentException
    {
-      VFSDeploymentContext vfsContext = (VFSDeploymentContext) context;
-      List<VirtualFile> paths = vfsContext.getClassPath();
+      if (unit instanceof VFSDeploymentUnit == false)
+         return;
+      VFSDeploymentUnit vfsUnit = (VFSDeploymentUnit) unit;
+      List<VirtualFile> paths = vfsUnit.getClassPath();
       if (paths != null)
          classPath.addAll(paths);
    }
 
-   public void error(DeploymentContext context)
+   public void error(DeploymentUnit context)
    {
       // nothing
    }

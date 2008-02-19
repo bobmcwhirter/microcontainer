@@ -24,12 +24,8 @@ package org.jboss.test.deployers.classloading.support;
 import java.util.ArrayList;
 import java.util.List;
 
-import org.jboss.classloader.spi.ClassLoaderPolicy;
-import org.jboss.classloader.test.support.MockClassLoaderPolicy;
 import org.jboss.deployers.plugins.classloading.AbstractTopLevelClassLoaderSystemDeployer;
-import org.jboss.deployers.plugins.classloading.Module;
 import org.jboss.deployers.spi.DeploymentException;
-import org.jboss.deployers.structure.spi.DeploymentContext;
 import org.jboss.deployers.structure.spi.DeploymentUnit;
 
 /**
@@ -42,20 +38,6 @@ public class MockTopLevelClassLoaderSystemDeployer extends AbstractTopLevelClass
 {
    public List<String> deployed = new ArrayList<String>();
    public List<String> undeployed = new ArrayList<String>();
-
-   @Override
-   protected MockClassLoaderPolicy createTopLevelClassLoaderPolicy(DeploymentContext context, Module module) throws Exception
-   {
-      MockClassLoaderPolicy policy = new MockClassLoaderPolicy(context.getName());
-      policy.setImportAll(module.isImportAll());
-      policy.setDelegates(module.getDelegates());
-      policy.setPathsAndPackageNames(module.getPackageNames());
-
-      // TODO JBMICROCONT-182 - remove this hack
-      context.getTransientAttachments().addAttachment(ClassLoaderPolicy.class, policy);
-      
-      return policy;
-   }
 
    public void deploy(DeploymentUnit unit) throws DeploymentException
    {

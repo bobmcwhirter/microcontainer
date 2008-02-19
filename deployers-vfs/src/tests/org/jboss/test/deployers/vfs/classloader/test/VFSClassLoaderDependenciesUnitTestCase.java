@@ -1,6 +1,6 @@
 /*
 * JBoss, Home of Professional Open Source
-* Copyright 2006, JBoss Inc., and individual contributors as indicated
+* Copyright 2008, JBoss Inc., and individual contributors as indicated
 * by the @authors tag. See the copyright.txt in the distribution for a
 * full listing of individual contributors.
 *
@@ -19,7 +19,7 @@
 * Software Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA
 * 02110-1301 USA, or see the FSF site: http://www.fsf.org.
 */
-package org.jboss.test.deployers.classloading.test;
+package org.jboss.test.deployers.vfs.classloader.test;
 
 import junit.framework.Test;
 import junit.framework.TestSuite;
@@ -28,23 +28,23 @@ import org.jboss.classloading.spi.metadata.ClassLoadingMetaData;
 import org.jboss.deployers.client.spi.DeployerClient;
 import org.jboss.deployers.client.spi.Deployment;
 import org.jboss.deployers.structure.spi.DeploymentUnit;
-import org.jboss.test.deployers.classloading.support.a.A;
-import org.jboss.test.deployers.classloading.support.b.B;
+import org.jboss.test.deployers.vfs.classloader.support.a.A;
+import org.jboss.test.deployers.vfs.classloader.support.b.B;
 
 /**
- * HeuristicAllOrNothingUnitTestCase.
+ * VFSClassLoaderDependenciesUnitTestCase.
  * 
  * @author <a href="adrian@jboss.com">Adrian Brock</a>
  * @version $Revision: 1.1 $
  */
-public class MockClassLoaderDependenciesUnitTestCase extends ClassLoaderDependenciesTest
+public class VFSClassLoaderDependenciesUnitTestCase extends VFSClassLoaderDependenciesTest
 {
    public static Test suite()
    {
-      return new TestSuite(MockClassLoaderDependenciesUnitTestCase.class);
+      return new TestSuite(VFSClassLoaderDependenciesUnitTestCase.class);
    }
    
-   public MockClassLoaderDependenciesUnitTestCase(String name)
+   public VFSClassLoaderDependenciesUnitTestCase(String name)
    {
       super(name);
    }
@@ -53,40 +53,41 @@ public class MockClassLoaderDependenciesUnitTestCase extends ClassLoaderDependen
    {
       DeployerClient deployer = getMainDeployer();
 
-      Deployment deployment = createSimpleDeployment(NameA);
+      Deployment deployment = createDeployment(NameA);
       addClassLoadingMetaData(deployment, null, A.class);
       
       DeploymentUnit unit = assertDeploy(deployer, deployment);
-
-      assertEquals(A, deployer2.deployed);
+      
+      assertEquals(XA, deployer2.deployed);
       assertEquals(NONE, deployer2.undeployed);
       
       ClassLoader cl = unit.getClassLoader();
+      enableTrace("org.jboss.classloader");
       assertLoadClass(cl, A.class);
       
       assertUndeploy(deployer, deployment);
 
       assertLoadClass(cl, A.class);
 
-      assertEquals(A, deployer2.deployed);
-      assertEquals(A, deployer2.undeployed);
+      assertEquals(XA, deployer2.deployed);
+      assertEquals(XA, deployer2.undeployed);
    }
 
    public void testADependsUponModuleBCorrectWay() throws Exception
    {
       DeployerClient deployer = getMainDeployer();
 
-      Deployment deploymentB = createSimpleDeployment(NameB);
+      Deployment deploymentB = createDeployment(NameB);
       addClassLoadingMetaData(deploymentB, null, B.class);
       DeploymentUnit unitB = assertDeploy(deployer, deploymentB);
       
       ClassLoader clB = unitB.getClassLoader();
       assertLoadClass(clB, B.class);
 
-      assertEquals(B, deployer2.deployed);
+      assertEquals(XB, deployer2.deployed);
       assertEquals(NONE, deployer2.undeployed);
 
-      Deployment deploymentA = createSimpleDeployment(NameA);
+      Deployment deploymentA = createDeployment(NameA);
       ClassLoadingMetaData classLoadingMetaData = addClassLoadingMetaData(deploymentA, null, A.class);
       addRequireModule(classLoadingMetaData, "B", null);
       DeploymentUnit unitA = assertDeploy(deployer, deploymentA);
@@ -94,27 +95,27 @@ public class MockClassLoaderDependenciesUnitTestCase extends ClassLoaderDependen
       ClassLoader clA = unitA.getClassLoader();
       assertLoadClass(clA, B.class, clB);
 
-      assertEquals(BA, deployer2.deployed);
+      assertEquals(XBA, deployer2.deployed);
       assertEquals(NONE, deployer2.undeployed);
       
       assertUndeploy(deployer, deploymentA);
       assertLoadClassIllegal(clA, B.class);
 
-      assertEquals(BA, deployer2.deployed);
-      assertEquals(A, deployer2.undeployed);
+      assertEquals(XBA, deployer2.deployed);
+      assertEquals(XA, deployer2.undeployed);
       
       assertUndeploy(deployer, deploymentB);
       assertLoadClass(clB, B.class);
 
-      assertEquals(BA, deployer2.deployed);
-      assertEquals(AB, deployer2.undeployed);
+      assertEquals(XBA, deployer2.deployed);
+      assertEquals(XAB, deployer2.undeployed);
    }
 
    public void testADependsUponModuleBWrongWay() throws Exception
    {
       DeployerClient deployer = getMainDeployer();
 
-      Deployment deploymentA = createSimpleDeployment(NameA);
+      Deployment deploymentA = createDeployment(NameA);
       ClassLoadingMetaData classLoaderMetaData = addClassLoadingMetaData(deploymentA, null, A.class);
       addRequireModule(classLoaderMetaData, "B", null);
       DeploymentUnit unitA = addDeployment(deployer, deploymentA);
@@ -124,14 +125,14 @@ public class MockClassLoaderDependenciesUnitTestCase extends ClassLoaderDependen
       assertEquals(NONE, deployer2.deployed);
       assertEquals(NONE, deployer2.undeployed);
 
-      Deployment deploymentB = createSimpleDeployment(NameB);
+      Deployment deploymentB = createDeployment(NameB);
       addClassLoadingMetaData(deploymentB, null, B.class);
       DeploymentUnit unitB = assertDeploy(deployer, deploymentB);
       
       ClassLoader clB = unitB.getClassLoader();
       assertLoadClass(clB, B.class);
 
-      assertEquals(BA, deployer2.deployed);
+      assertEquals(XBA, deployer2.deployed);
       assertEquals(NONE, deployer2.undeployed);
 
       ClassLoader clA = unitA.getClassLoader();
@@ -140,21 +141,21 @@ public class MockClassLoaderDependenciesUnitTestCase extends ClassLoaderDependen
       assertUndeploy(deployer, deploymentA);
       assertLoadClassIllegal(clA, B.class);
 
-      assertEquals(BA, deployer2.deployed);
-      assertEquals(A, deployer2.undeployed);
+      assertEquals(XBA, deployer2.deployed);
+      assertEquals(XA, deployer2.undeployed);
       
       assertUndeploy(deployer, deploymentB);
       assertLoadClass(clB, B.class);
 
-      assertEquals(BA, deployer2.deployed);
-      assertEquals(AB, deployer2.undeployed);
+      assertEquals(XBA, deployer2.deployed);
+      assertEquals(XAB, deployer2.undeployed);
    }
 
    public void testADependsUponModuleBRedeployA() throws Exception
    {
       DeployerClient deployer = getMainDeployer();
 
-      Deployment deploymentA = createSimpleDeployment(NameA);
+      Deployment deploymentA = createDeployment(NameA);
       ClassLoadingMetaData classLoaderMetaData = addClassLoadingMetaData(deploymentA, null, A.class);
       addRequireModule(classLoaderMetaData, "B", null);
       DeploymentUnit unitA = addDeployment(deployer, deploymentA);
@@ -164,14 +165,14 @@ public class MockClassLoaderDependenciesUnitTestCase extends ClassLoaderDependen
       assertEquals(NONE, deployer2.deployed);
       assertEquals(NONE, deployer2.undeployed);
 
-      Deployment deploymentB = createSimpleDeployment(NameB);
+      Deployment deploymentB = createDeployment(NameB);
       addClassLoadingMetaData(deploymentB, null, B.class);
       DeploymentUnit unitB = assertDeploy(deployer, deploymentB);
       
       ClassLoader clB = unitB.getClassLoader();
       assertLoadClass(clB, B.class);
 
-      assertEquals(BA, deployer2.deployed);
+      assertEquals(XBA, deployer2.deployed);
       assertEquals(NONE, deployer2.undeployed);
 
       ClassLoader clA = unitA.getClassLoader();
@@ -180,22 +181,22 @@ public class MockClassLoaderDependenciesUnitTestCase extends ClassLoaderDependen
       assertUndeploy(deployer, deploymentA);
       assertLoadClassIllegal(clA, B.class);
 
-      assertEquals(BA, deployer2.deployed);
-      assertEquals(A, deployer2.undeployed);
+      assertEquals(XBA, deployer2.deployed);
+      assertEquals(XA, deployer2.undeployed);
       
       unitA = assertDeploy(deployer, deploymentA);
       clA = unitA.getClassLoader();
       assertLoadClass(clA, B.class, clB);
 
-      assertEquals(BAA, deployer2.deployed);
-      assertEquals(A, deployer2.undeployed);
+      assertEquals(XBAA, deployer2.deployed);
+      assertEquals(XA, deployer2.undeployed);
    }
 
    public void testADependsUponModuleBRedeployB() throws Exception
    {
       DeployerClient deployer = getMainDeployer();
 
-      Deployment deploymentA = createSimpleDeployment(NameA);
+      Deployment deploymentA = createDeployment(NameA);
       ClassLoadingMetaData classLoaderMetaData = addClassLoadingMetaData(deploymentA, null, A.class);
       addRequireModule(classLoaderMetaData, "B", null);
       DeploymentUnit unitA = addDeployment(deployer, deploymentA);
@@ -205,14 +206,14 @@ public class MockClassLoaderDependenciesUnitTestCase extends ClassLoaderDependen
       assertEquals(NONE, deployer2.deployed);
       assertEquals(NONE, deployer2.undeployed);
 
-      Deployment deploymentB = createSimpleDeployment(NameB);
+      Deployment deploymentB = createDeployment(NameB);
       addClassLoadingMetaData(deploymentB, null, B.class);
       DeploymentUnit unitB = assertDeploy(deployer, deploymentB);
       
       ClassLoader clB = unitB.getClassLoader();
       assertLoadClass(clB, B.class);
 
-      assertEquals(BA, deployer2.deployed);
+      assertEquals(XBA, deployer2.deployed);
       assertEquals(NONE, deployer2.undeployed);
 
       ClassLoader clA = unitA.getClassLoader();
@@ -223,15 +224,15 @@ public class MockClassLoaderDependenciesUnitTestCase extends ClassLoaderDependen
       assertUndeploy(deployer, deploymentB);
       assertLoadClassIllegal(clA, B.class);
 
-      assertEquals(BA, deployer2.deployed);
-      assertEquals(AB, deployer2.undeployed);
+      assertEquals(XBA, deployer2.deployed);
+      assertEquals(XAB, deployer2.undeployed);
       
       unitB = assertDeploy(deployer, deploymentB);
       clA = unitA.getClassLoader();
       clB = unitB.getClassLoader();
       assertLoadClass(clA, B.class, clB);
 
-      assertEquals(BABA, deployer2.deployed);
-      assertEquals(AB, deployer2.undeployed);
+      assertEquals(XBABA, deployer2.deployed);
+      assertEquals(XAB, deployer2.undeployed);
    }
 }

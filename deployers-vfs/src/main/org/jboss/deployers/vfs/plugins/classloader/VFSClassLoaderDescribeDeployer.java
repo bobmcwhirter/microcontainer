@@ -19,15 +19,27 @@
 * Software Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA
 * 02110-1301 USA, or see the FSF site: http://www.fsf.org.
 */
-package org.jboss.test.deployers.structure.version.support;
+package org.jboss.deployers.vfs.plugins.classloader;
 
-import org.jboss.deployers.structure.spi.classloading.Version;
+import org.jboss.classloading.spi.dependency.policy.ClassLoaderPolicyModule;
+import org.jboss.classloading.spi.metadata.ClassLoadingMetaData;
+import org.jboss.deployers.plugins.classloading.AbstractClassLoaderDescribeDeployer;
+import org.jboss.deployers.spi.DeploymentException;
+import org.jboss.deployers.structure.spi.DeploymentUnit;
+import org.jboss.deployers.vfs.spi.structure.VFSDeploymentUnit;
 
 /**
- * Zero version.
- *
- * @author <a href="mailto:ales.justin@jboss.com">Ales Justin</a>
+ * VFSClassLoaderDescribeDeployer.
+ * 
+ * @author <a href="adrian@jboss.com">Adrian Brock</a>
+ * @version $Revision: 1.1 $
  */
-public class ZeroVersion extends Version
+public class VFSClassLoaderDescribeDeployer extends AbstractClassLoaderDescribeDeployer
 {
+   protected ClassLoaderPolicyModule createModule(DeploymentUnit unit, ClassLoadingMetaData metaData) throws DeploymentException
+   {
+      if (unit instanceof VFSDeploymentUnit == false)
+         return null;
+      return new VFSDeploymentClassLoaderPolicyModule((VFSDeploymentUnit) unit);
+   }
 }

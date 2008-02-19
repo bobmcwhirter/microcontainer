@@ -24,11 +24,11 @@ package org.jboss.deployers.plugins.classloading;
 import javax.management.MBeanServer;
 import javax.management.ObjectName;
 
-import org.jboss.classloader.spi.ClassLoaderDomain;
-import org.jboss.classloader.spi.ClassLoaderPolicy;
 import org.jboss.classloader.spi.ClassLoaderSystem;
-import org.jboss.classloader.spi.ParentPolicy;
 import org.jboss.classloading.spi.RealClassLoader;
+import org.jboss.classloading.spi.dependency.ClassLoading;
+import org.jboss.classloading.spi.dependency.Module;
+import org.jboss.classloading.spi.dependency.policy.ClassLoaderPolicyModule;
 import org.jboss.deployers.spi.deployer.helpers.AbstractTopLevelClassLoaderDeployer;
 import org.jboss.deployers.structure.spi.DeploymentContext;
 
@@ -108,7 +108,7 @@ public abstract class AbstractTopLevelClassLoaderSystemDeployer extends Abstract
    {
       this.mbeanServer = mbeanServer;
    }
-
+   
    @Override
    protected ClassLoader createTopLevelClassLoader(DeploymentContext context) throws Exception
    {
@@ -117,30 +117,16 @@ public abstract class AbstractTopLevelClassLoaderSystemDeployer extends Abstract
       if (system == null)
          throw new IllegalStateException("The system has not been set");
 
+      // No module means no classloader for the deployment, use the deployer's classloader
       Module module = context.getTransientAttachments().getAttachment(Module.class);
       if (module == null)
-         throw new IllegalStateException("Deployment Context has no module: " + context);
+         return null;
 
-      ClassLoaderPolicy policy = createTopLevelClassLoaderPolicy(context, module);
+      if (module instanceof ClassLoaderPolicyModule == false)
+         throw new IllegalStateException("Module is not an instance of " + ClassLoaderPolicyModule.class.getName() + " actual=" + module.getClass().getName());
+      ClassLoaderPolicyModule classLoaderPolicyModule = (ClassLoaderPolicyModule) module;
       
-      ClassLoaderDomain domain;
-      synchronized (this)
-      {
-         String domainName = module.getDomainName();
-         domain = system.getDomain(domainName);
-         if (domain == null)
-         {
-            ClassLoaderDomain parent = null;
-            String parentDomain = module.getParentDomain();
-            if (parentDomain != null)
-               parent = system.getDomain(parentDomain);
-            
-            ParentPolicy parentPolicy = module.getParentPolicy(); 
-
-            domain = system.createAndRegisterDomain(domainName, parentPolicy, parent);
-         }
-      }
-      ClassLoader classLoader = system.registerClassLoaderPolicy(domain, policy);
+      ClassLoader classLoader = classLoaderPolicyModule.registerClassLoaderPolicy(system);
       try
       {
          registerClassLoaderWithMBeanServer(classLoader);
@@ -155,6 +141,11 @@ public abstract class AbstractTopLevelClassLoaderSystemDeployer extends Abstract
    @Override
    protected void removeTopLevelClassLoader(DeploymentContext context) throws Exception
    {
+      // No module means no for the deployment classloader
+      Module module = context.getTransientAttachments().getAttachment(Module.class);
+      if (module == null)
+         return;
+
       ClassLoader classLoader = context.getClassLoader();
       try
       {
@@ -172,11 +163,6 @@ public abstract class AbstractTopLevelClassLoaderSystemDeployer extends Abstract
       }
       finally
       {
-         // Reset the module to avoid possible memory leaks
-         Module module = context.getTransientAttachments().getAttachment(Module.class);
-         
-         if (module == null)
-            throw new IllegalStateException("Deployment Context has no module: " + context);
          cleanup(context, module);
          module.reset();
       }
@@ -224,16 +210,6 @@ public abstract class AbstractTopLevelClassLoaderSystemDeployer extends Abstract
          return;
       mbeanServer.unregisterMBean(name);
    }
-   
-   /**
-    * Create a top level classloader policy
-    * 
-    * @param context the deployment context
-    * @param module the module
-    * @return the classloader
-    * @throws Exception for any error
-    */
-   protected abstract ClassLoaderPolicy createTopLevelClassLoaderPolicy(DeploymentContext context, Module module) throws Exception;
    
    /**
     * Hook to perform cleanup on destruction of classloaader

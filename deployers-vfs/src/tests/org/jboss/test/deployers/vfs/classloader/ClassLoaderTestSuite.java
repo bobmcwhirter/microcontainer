@@ -21,11 +21,12 @@
 */
 package org.jboss.test.deployers.vfs.classloader;
 
+import org.jboss.test.deployers.vfs.classloader.test.VFSClassLoaderDependenciesUnitTestCase;
+import org.jboss.test.deployers.vfs.classloader.test.VFSUndeployOrderClassLoaderUnitTestCase;
+
 import junit.framework.Test;
 import junit.framework.TestSuite;
 import junit.textui.TestRunner;
-
-import org.jboss.test.deployers.vfs.classloader.test.ExportAllUnitTestCase;
 
 /**
  * BeanDeployerTestSuite.
@@ -44,7 +45,8 @@ public class ClassLoaderTestSuite extends TestSuite
    {
       TestSuite suite = new TestSuite("VFS ClassLoader Tests");
 
-      suite.addTest(ExportAllUnitTestCase.suite());
+      suite.addTest(VFSClassLoaderDependenciesUnitTestCase.suite());
+      suite.addTest(VFSUndeployOrderClassLoaderUnitTestCase.suite());
 
       return suite;
    }

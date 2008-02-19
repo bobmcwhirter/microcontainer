@@ -1,6 +1,6 @@
 /*
 * JBoss, Home of Professional Open Source
-* Copyright 2006, JBoss Inc., and individual contributors as indicated
+* Copyright 2007, JBoss Inc., and individual contributors as indicated
 * by the @authors tag. See the copyright.txt in the distribution for a
 * full listing of individual contributors.
 *
@@ -19,35 +19,15 @@
 * Software Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA
 * 02110-1301 USA, or see the FSF site: http://www.fsf.org.
 */
-package org.jboss.test.deployers;
-
-import junit.framework.Test;
-import junit.framework.TestSuite;
-import junit.textui.TestRunner;
-
-import org.jboss.test.deployers.structure.attachments.StructureAttachmentsTestSuite;
-import org.jboss.test.deployers.structure.structurebuilder.StructureBuilderTestSuite;
+package org.jboss.test.deployers.vfs.classloader.support.a;
 
 /**
- * Deployers Structure Test Suite.
+ * A.
  * 
  * @author <a href="adrian@jboss.com">Adrian Brock</a>
- * @version $Revision: 37459 $
+ * @version $Revision: 1.1 $
  */
-public class DeployersStructureTestSuite extends TestSuite
+public class A
 {
-   public static void main(String[] args)
-   {
-      TestRunner.run(suite());
-   }
 
-   public static Test suite()
-   {
-      TestSuite suite = new TestSuite("Deployers Structure Tests");
-
-      suite.addTest(StructureAttachmentsTestSuite.suite());
-      suite.addTest(StructureBuilderTestSuite.suite());
-
-      return suite;
-   }
 }

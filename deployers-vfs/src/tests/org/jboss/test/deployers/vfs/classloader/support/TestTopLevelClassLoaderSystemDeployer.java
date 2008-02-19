@@ -1,6 +1,6 @@
 /*
  * JBoss, Home of Professional Open Source.
- * Copyright 2007, Red Hat Middleware LLC, and individual contributors
+ * Copyright 2008, Red Hat Middleware LLC, and individual contributors
  * as indicated by the @author tags. See the copyright.txt file in the
  * distribution for a full listing of individual contributors.
  *
@@ -19,27 +19,35 @@
  * Software Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA
  * 02110-1301 USA, or see the FSF site: http://www.fsf.org.
  */
-package org.jboss.deployers.structure.spi.classloading;
+package org.jboss.test.deployers.vfs.classloader.support;
 
-import java.io.Serializable;
+import java.util.ArrayList;
+import java.util.List;
 
+import org.jboss.deployers.plugins.classloading.AbstractTopLevelClassLoaderSystemDeployer;
+import org.jboss.deployers.spi.DeploymentException;
 import org.jboss.deployers.structure.spi.DeploymentUnit;
 
 /**
- * Capability.
+ * TestTopLevelClassLoaderSystemDeployer.
  * 
- * @author <a href="adrian@jboss.org">Adrian Brock</a>
+ * @author <a href="adrian@jboss.com">Adrian Brock</a>
  * @version $Revision: 1.1 $
  */
-public interface Capability extends Serializable
+public class TestTopLevelClassLoaderSystemDeployer extends AbstractTopLevelClassLoaderSystemDeployer
 {
-   /**
-    * Whether this capability resolves the requirement
-    * 
-    * @param unit the deployment 
-    * @param requirement the requirement
-    * @throws IllegalArgumentException for a null requirement
-    * @return true when it is resolves the requirement
-    */
-   boolean resolves(DeploymentUnit unit, Requirement requirement);
+   public List<String> deployed = new ArrayList<String>();
+   public List<String> undeployed = new ArrayList<String>();
+
+   public void deploy(DeploymentUnit unit) throws DeploymentException
+   {
+      deployed.add(unit.getName());
+      super.deploy(unit);
+   }
+
+   public void undeploy(DeploymentUnit unit)
+   {
+      undeployed.add(unit.getName());
+      super.undeploy(unit);
+   }
 }
