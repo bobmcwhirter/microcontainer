@@ -55,7 +55,19 @@ public class VFSStructureBuilder extends AbstractStructureBuilder
       if (deployment instanceof VFSDeployment)
       {
          VFSDeployment vfsDeployment = (VFSDeployment) deployment;
-         return new AbstractVFSDeploymentContext(vfsDeployment.getRoot(), "");
+         String name = deployment.getName();
+         String simpleName = deployment.getSimpleName();
+         if (name == null)
+         {
+            return new AbstractVFSDeploymentContext(vfsDeployment.getRoot(), "");
+         }
+         else
+         {
+            if (simpleName == null)
+               return new AbstractVFSDeploymentContext(name, name, vfsDeployment.getRoot(), "");
+            else
+               return new AbstractVFSDeploymentContext(name, simpleName, vfsDeployment.getRoot(), "");
+         }
       }
       return super.createRootDeploymentContext(deployment);
    }

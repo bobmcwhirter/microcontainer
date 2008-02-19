@@ -92,6 +92,20 @@ public class AbstractVFSDeploymentContext extends AbstractDeploymentContext impl
    /**
     * Create a new AbstractVFSDeploymentContext.
     * 
+    * @param name the name
+    * @param simpleName the simple name
+    * @param root the virtual file
+    * @param relativePath the relative path
+    */
+   public AbstractVFSDeploymentContext(String name, String simpleName, VirtualFile root, String relativePath)
+   {
+      super(name, simpleName, relativePath);
+      this.root = root;
+   }
+
+   /**
+    * Create a new AbstractVFSDeploymentContext.
+    * 
     * @param root the virtual file
     * @param relativePath the relative path
     */
