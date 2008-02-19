@@ -41,6 +41,7 @@ import org.jboss.deployers.structure.spi.ClassLoaderFactory;
 import org.jboss.deployers.structure.spi.DeploymentContext;
 import org.jboss.deployers.structure.spi.DeploymentResourceLoader;
 import org.jboss.deployers.structure.spi.DeploymentUnit;
+import org.jboss.deployers.structure.spi.DeploymentUnitVisitor;
 import org.jboss.metadata.spi.MetaData;
 import org.jboss.metadata.spi.MutableMetaData;
 import org.jboss.metadata.spi.scope.ScopeKey;
@@ -167,12 +168,15 @@ public class AbstractDeploymentUnit extends AbstractMutableAttachments implement
       deploymentContext.removeClassLoader(factory);
    }
 
+   public boolean isTopLevel()
+   {
+      return deploymentContext.isTopLevel();
+   }
+   
    public DeploymentUnit getTopLevel()
    {
-      DeploymentUnit top = getParent();
-      if (top == null)
-         top = this;
-      return top;
+      DeploymentContext context = deploymentContext.getTopLevel();
+      return context.getDeploymentUnit();
    }
 
    public DeploymentUnit getParent()
@@ -421,6 +425,12 @@ public class AbstractDeploymentUnit extends AbstractMutableAttachments implement
    public void addIDependOn(DependencyItem dependency)
    {
       getDependencyInfo().addIDependOn(dependency);
+   }
+
+   public void visit(DeploymentUnitVisitor visitor) throws DeploymentException
+   {
+      UnitVisitorToContextVisitor contextVisitor = new UnitVisitorToContextVisitor(visitor); 
+      deploymentContext.visit(contextVisitor);
    }
 
    public DependencyInfo getDependencyInfo()

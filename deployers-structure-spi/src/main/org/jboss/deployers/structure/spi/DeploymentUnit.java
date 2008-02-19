@@ -191,6 +191,13 @@ public interface DeploymentUnit extends MutableAttachments
    MutableAttachments getTransientManagedObjects();
    
    /**
+    * Whether this unit is a top level deployment
+    * 
+    * @return true if a top level deployment
+    */
+   boolean isTopLevel();
+   
+   /**
     * Get the top leve deployment unit
     * 
     * @return the top level deployment unit
@@ -256,7 +263,16 @@ public interface DeploymentUnit extends MutableAttachments
     * @return the resource classloader loader
     */
    ClassLoader getResourceClassLoader();
-   
+
+   /**
+    * Visit the unit and the children
+    *
+    * @param visitor the visitor
+    * @throws DeploymentException for any error in the visitor
+    * @throws IllegalArgumentException for a null visitor
+    */
+   void visit(DeploymentUnitVisitor visitor) throws DeploymentException;
+
    /**
     * Get the dependency info
     * 
