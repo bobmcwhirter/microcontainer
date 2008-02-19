@@ -218,6 +218,7 @@ public class AbstractDemandMetaData extends JBossObject
          return isResolved();
       }
 
+      @Override
       public void unresolved()
       {
          setIDependOn(null);
