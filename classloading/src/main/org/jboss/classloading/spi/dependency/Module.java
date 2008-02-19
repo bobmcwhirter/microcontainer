@@ -560,9 +560,8 @@ public abstract class Module extends NameAndVersionSupport
    /**
     * Reset the module
     */
-   protected void reset()
+   public void reset()
    {
-      this.context = null;
       this.capabilities = null;
    }
 

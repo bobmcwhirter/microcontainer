@@ -204,7 +204,7 @@ public class VFSClassLoaderPolicyModule extends ClassLoaderPolicyModule implemen
    }
 
    @Override
-   protected void reset()
+   public void reset()
    {
       super.reset();
       vfsRoots = null;
