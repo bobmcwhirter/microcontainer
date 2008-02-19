@@ -142,7 +142,6 @@ public class VersionComparatorRegistry
       
       if (comparator == null)
       {
-         
          Map<Class<?>, VersionComparator<?, ?>> tKeyMap = comparatorMap.get(t);
          if (tKeyMap != null)
             tKeyMap.remove(u);
@@ -266,8 +265,6 @@ public class VersionComparatorRegistry
     *
     * @param <T> the first version type
     * @param <U> the second version type
-    * @param <T> exact version type
-    * @param <U> exact version type
     */
    private class SwitchVersionComparator<T, U> implements VersionComparator<T, U>
    {
