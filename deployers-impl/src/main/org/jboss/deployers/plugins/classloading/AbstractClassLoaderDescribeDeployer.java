@@ -48,6 +48,7 @@ public abstract class AbstractClassLoaderDescribeDeployer extends AbstractOption
    {
       super(ClassLoadingMetaData.class);
       setStage(DeploymentStages.DESCRIBE);
+      setTopLevelOnly(true);
    }
 
    /**
@@ -83,8 +84,6 @@ public abstract class AbstractClassLoaderDescribeDeployer extends AbstractOption
 
    public void deploy(DeploymentUnit unit, ClassLoadingMetaData deployment) throws DeploymentException
    {
-      if (unit.isTopLevel() == false)
-         return;
       ClassLoaderPolicyModule module = createModule(unit, deployment);
       if (module != null)
       {
@@ -95,9 +94,6 @@ public abstract class AbstractClassLoaderDescribeDeployer extends AbstractOption
 
    public void undeploy(DeploymentUnit unit, ClassLoadingMetaData deployment)
    {
-      if (unit.isTopLevel() == false)
-         return;
-      
       Module module = unit.removeAttachment(Module.class);
       if (module == null)
          return;
