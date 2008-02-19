@@ -513,6 +513,11 @@ public class AbstractDeploymentContext extends ManagedObjectsWithTransientAttach
             setClassLoader(cl);
             this.classLoaderFactory = factory;
          }
+         else
+         {
+            // No classloader, use the deployer's classloader
+            setClassLoader(Thread.currentThread().getContextClassLoader());
+         }
       }
       catch (Throwable t)
       {
