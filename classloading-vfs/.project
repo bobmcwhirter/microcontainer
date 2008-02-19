@@ -1,5 +1,5 @@
 <projectDescription>
-  <name>jboss-classloading vfs</name>
+  <name>jboss-classloading-vfs</name>
   <comment>JBoss VFS ClassLoading</comment>
   <projects/>
   <buildSpec>
