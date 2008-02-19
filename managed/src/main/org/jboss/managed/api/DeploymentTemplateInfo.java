@@ -33,7 +33,20 @@ import org.jboss.managed.api.ManagedProperty;
  */
 public interface DeploymentTemplateInfo
 {
+   /**
+    * The name of the DeploymentTemplate this info corresponds to
+    * @return name of the deployment template
+    */
    public String getName();
+   /**
+    * Information about the deployment template
+    * @return Information about the deployment template
+    */
    public String getDescription();
+   /**
+    * Get the template properties.
+    * @return A name to property mapping of the properties that can be set
+    * for use by the deployment template.
+    */
    public Map<String, ManagedProperty> getProperties();
 }
