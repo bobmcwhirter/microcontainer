@@ -105,6 +105,20 @@ public interface VFSDeploymentContext extends DeploymentContext
    void setClassPath(List<VirtualFile> paths);
    
    /**
+    * Add virtual files to the classpath
+    * 
+    * @param files a virtual file
+    */
+   void addClassPath(VirtualFile... files);
+   
+   /**
+    * Add virtual files to the classpath
+    * 
+    * @param files a virtual file
+    */
+   void addClassPath(List<VirtualFile> files);
+
+   /**
     * Get the top level deployment context
     * 
     * @return the top level deployment context

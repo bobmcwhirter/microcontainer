@@ -91,6 +91,20 @@ public interface VFSDeploymentUnit extends DeploymentUnit
    void setClassPath(List<VirtualFile> classPath);
    
    /**
+    * Add virtual files to the classpath
+    * 
+    * @param files a virtual file
+    */
+   void addClassPath(VirtualFile... files);
+   
+   /**
+    * Add virtual files to the classpath
+    * 
+    * @param files a virtual file
+    */
+   void addClassPath(List<VirtualFile> files);
+   
+   /**
     * Get the top leve deployment unit
     * 
     * @return the top level deployment unit

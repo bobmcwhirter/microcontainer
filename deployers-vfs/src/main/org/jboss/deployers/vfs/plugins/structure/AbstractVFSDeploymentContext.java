@@ -287,6 +287,42 @@ public class AbstractVFSDeploymentContext extends AbstractDeploymentContext impl
          log.trace("ClassPath for " + root.getPathName() + " is " + VFSUtils.getPathsString(paths));
    }
 
+   public void addClassPath(List<VirtualFile> files)
+   {
+      if (files == null)
+         throw new IllegalArgumentException("Null files");
+
+      List<VirtualFile> classPath = getClassPath();
+      if (classPath == null)
+         classPath = new ArrayList<VirtualFile>();
+      
+      for (VirtualFile file : files)
+      {
+         if (file == null)
+            throw new IllegalArgumentException("Null virtual file in " + files);
+         classPath.add(file);
+      }
+      setClassPath(classPath);
+   }
+
+   public void addClassPath(VirtualFile... files)
+   {
+      if (files == null)
+         throw new IllegalArgumentException("Null files");
+
+      List<VirtualFile> classPath = getClassPath();
+      if (classPath == null)
+         classPath = new ArrayList<VirtualFile>();
+      
+      for (VirtualFile file : files)
+      {
+         if (file == null)
+            throw new IllegalArgumentException("Null virtual file in " + files);
+         classPath.add(file);
+      }
+      setClassPath(classPath);
+   }
+
    @Override
    public VFSDeploymentContext getTopLevel()
    {
