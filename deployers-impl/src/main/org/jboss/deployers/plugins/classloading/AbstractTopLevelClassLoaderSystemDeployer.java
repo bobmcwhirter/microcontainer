@@ -30,7 +30,7 @@ import org.jboss.classloading.spi.dependency.ClassLoading;
 import org.jboss.classloading.spi.dependency.Module;
 import org.jboss.classloading.spi.dependency.policy.ClassLoaderPolicyModule;
 import org.jboss.deployers.spi.deployer.helpers.AbstractTopLevelClassLoaderDeployer;
-import org.jboss.deployers.structure.spi.DeploymentContext;
+import org.jboss.deployers.structure.spi.DeploymentUnit;
 
 /**
  * AbstractTopLevelClassLoaderSystemDeployer.
@@ -110,7 +110,7 @@ public abstract class AbstractTopLevelClassLoaderSystemDeployer extends Abstract
    }
    
    @Override
-   protected ClassLoader createTopLevelClassLoader(DeploymentContext context) throws Exception
+   protected ClassLoader createTopLevelClassLoader(DeploymentUnit unit) throws Exception
    {
       if (classLoading == null)
          throw new IllegalStateException("The classLoading has not been set");
@@ -118,7 +118,7 @@ public abstract class AbstractTopLevelClassLoaderSystemDeployer extends Abstract
          throw new IllegalStateException("The system has not been set");
 
       // No module means no classloader for the deployment, use the deployer's classloader
-      Module module = context.getTransientAttachments().getAttachment(Module.class);
+      Module module = unit.getAttachment(Module.class);
       if (module == null)
          return null;
 
@@ -139,14 +139,14 @@ public abstract class AbstractTopLevelClassLoaderSystemDeployer extends Abstract
    }
    
    @Override
-   protected void removeTopLevelClassLoader(DeploymentContext context) throws Exception
+   protected void removeTopLevelClassLoader(DeploymentUnit unit) throws Exception
    {
       // No module means no for the deployment classloader
-      Module module = context.getTransientAttachments().getAttachment(Module.class);
+      Module module = unit.getAttachment(Module.class);
       if (module == null)
          return;
 
-      ClassLoader classLoader = context.getClassLoader();
+      ClassLoader classLoader = unit.getClassLoader();
       try
       {
          unregisterClassLoaderFromMBeanServer(classLoader);
@@ -163,7 +163,7 @@ public abstract class AbstractTopLevelClassLoaderSystemDeployer extends Abstract
       }
       finally
       {
-         cleanup(context, module);
+         cleanup(unit, module);
          module.reset();
       }
    }
@@ -214,11 +214,11 @@ public abstract class AbstractTopLevelClassLoaderSystemDeployer extends Abstract
    /**
     * Hook to perform cleanup on destruction of classloaader
     * 
-    * @param context the deployment context
+    * @param unit the deployment unit
     * @param module the module
     * @throws Exception for any error
     */
-   protected void cleanup(DeploymentContext context, Module module) throws Exception
+   protected void cleanup(DeploymentUnit unit, Module module) throws Exception
    {
    }
 }

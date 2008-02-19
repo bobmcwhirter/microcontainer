@@ -507,7 +507,7 @@ public class AbstractDeploymentContext extends ManagedObjectsWithTransientAttach
 
       try
       {
-         cl = factory.createClassLoader(this);
+         cl = factory.createClassLoader(getDeploymentUnit());
          if (cl != null)
          {
             setClassLoader(cl);
@@ -532,7 +532,7 @@ public class AbstractDeploymentContext extends ManagedObjectsWithTransientAttach
          return;
       try
       {
-         classLoaderFactory.removeClassLoader(this);
+         classLoaderFactory.removeClassLoader(getDeploymentUnit());
       }
       catch (Throwable t)
       {

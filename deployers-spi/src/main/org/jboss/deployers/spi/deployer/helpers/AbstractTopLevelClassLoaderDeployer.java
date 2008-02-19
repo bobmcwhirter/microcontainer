@@ -21,7 +21,7 @@
 */
 package org.jboss.deployers.spi.deployer.helpers;
 
-import org.jboss.deployers.structure.spi.DeploymentContext;
+import org.jboss.deployers.structure.spi.DeploymentUnit;
 
 /**
  * AbstractTopLevelClassLoaderDeployer.
@@ -31,37 +31,37 @@ import org.jboss.deployers.structure.spi.DeploymentContext;
  */
 public abstract class AbstractTopLevelClassLoaderDeployer extends AbstractClassLoaderDeployer
 {
-   public ClassLoader createClassLoader(DeploymentContext context) throws Exception
+   public ClassLoader createClassLoader(DeploymentUnit unit) throws Exception
    {
-      if (context.isTopLevel())
-         return createTopLevelClassLoader(context);
+      if (unit.isTopLevel())
+         return createTopLevelClassLoader(unit);
       
-      return context.getTopLevel().getClassLoader();
+      return unit.getTopLevel().getClassLoader();
    }
 
    @Override
-   public void removeClassLoader(DeploymentContext context) throws Exception
+   public void removeClassLoader(DeploymentUnit unit) throws Exception
    {
-      if (context.isTopLevel())
-         removeTopLevelClassLoader(context);
+      if (unit.isTopLevel())
+         removeTopLevelClassLoader(unit);
    }
 
    /**
     * Create a top level classloader
     * 
-    * @param context the context
+    * @param unit the deployment unit
     * @return the classloader
     * @throws Exception for any error
     */
-   protected abstract ClassLoader createTopLevelClassLoader(DeploymentContext context) throws Exception;
+   protected abstract ClassLoader createTopLevelClassLoader(DeploymentUnit unit) throws Exception;
 
    /**
     * Remove a top level classloader
     * 
-    * @param context the context
+    * @param unit the deployment unit
     * @throws Exception for any error
     */
-   protected void removeTopLevelClassLoader(DeploymentContext context) throws Exception
+   protected void removeTopLevelClassLoader(DeploymentUnit unit) throws Exception
    {
    }
 }

@@ -24,7 +24,6 @@ package org.jboss.deployers.spi.deployer.helpers;
 import org.jboss.deployers.spi.DeploymentException;
 import org.jboss.deployers.spi.deployer.DeploymentStages;
 import org.jboss.deployers.structure.spi.ClassLoaderFactory;
-import org.jboss.deployers.structure.spi.DeploymentContext;
 import org.jboss.deployers.structure.spi.DeploymentUnit;
 
 /**
@@ -61,7 +60,7 @@ public abstract class AbstractClassLoaderDeployer extends AbstractDeployer imple
       unit.removeClassLoader(factory);
    }
 
-   public void removeClassLoader(DeploymentContext context) throws Exception
+   public void removeClassLoader(DeploymentUnit unit) throws Exception
    {
    }
 }

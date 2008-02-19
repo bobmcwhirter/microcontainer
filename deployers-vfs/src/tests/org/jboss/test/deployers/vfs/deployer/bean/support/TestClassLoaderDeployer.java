@@ -22,7 +22,7 @@
 package org.jboss.test.deployers.vfs.deployer.bean.support;
 
 import org.jboss.deployers.spi.deployer.helpers.AbstractTopLevelClassLoaderDeployer;
-import org.jboss.deployers.structure.spi.DeploymentContext;
+import org.jboss.deployers.structure.spi.DeploymentUnit;
 
 /**
  * TestClassLoaderDeployer.
@@ -32,7 +32,7 @@ import org.jboss.deployers.structure.spi.DeploymentContext;
  */
 public class TestClassLoaderDeployer extends AbstractTopLevelClassLoaderDeployer
 {
-   protected ClassLoader createTopLevelClassLoader(DeploymentContext context) throws Exception
+   protected ClassLoader createTopLevelClassLoader(DeploymentUnit unit) throws Exception
    {
       return new TestClassLoader();
    }

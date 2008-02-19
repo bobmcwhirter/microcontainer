@@ -27,7 +27,7 @@ import java.net.URLClassLoader;
 import org.jboss.deployers.spi.DeploymentException;
 import org.jboss.deployers.spi.deployer.helpers.AbstractTopLevelClassLoaderDeployer;
 import org.jboss.deployers.structure.spi.ClassLoaderFactory;
-import org.jboss.deployers.structure.spi.DeploymentContext;
+import org.jboss.deployers.structure.spi.DeploymentUnit;
 
 /**
  * TestDeployerOrdering.
@@ -39,14 +39,14 @@ public class TestClassLoaderDeployer extends AbstractTopLevelClassLoaderDeployer
 {
    public ClassLoader cl = new URLClassLoader(new URL[0]);
 
-   public ClassLoader createTopLevelClassLoader(DeploymentContext context) throws DeploymentException
+   public ClassLoader createTopLevelClassLoader(DeploymentUnit unit) throws DeploymentException
    {
-      log.debug("Created classloader: " + context.getName());
+      log.debug("Created classloader: " + unit.getName());
       return cl;
    }
 
-   public void removeTopLevelClassLoader(DeploymentContext context) throws Exception
+   public void removeTopLevelClassLoader(DeploymentUnit unit) throws Exception
    {
-      log.debug("Removed classloader: " + context.getName());
+      log.debug("Removed classloader: " + unit.getName());
    }
 }

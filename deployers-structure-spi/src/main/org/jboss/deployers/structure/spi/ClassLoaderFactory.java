@@ -32,17 +32,17 @@ public interface ClassLoaderFactory
    /**
     * Create a classloader for this deployment
     * 
-    * @param context the deployment context
+    * @param unit the deployment unit
     * @return classloader or null if not created
     * @throws Exception for any error
     */
-   ClassLoader createClassLoader(DeploymentContext context) throws Exception;
+   ClassLoader createClassLoader(DeploymentUnit unit) throws Exception;
    
    /**
     * Remove a classloader for this deployment
     * 
-    * @param context the deployment context
+    * @param unit the deployment unit
     * @throws Exception for any error
     */
-   void removeClassLoader(DeploymentContext context) throws Exception;
+   void removeClassLoader(DeploymentUnit unit) throws Exception;
 }
