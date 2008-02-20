@@ -38,7 +38,7 @@ import org.jboss.deployers.structure.spi.DeploymentUnit;
  * @author <a href="adrian@jboss.org">Adrian Brock</a>
  * @version $Revision: 1.1 $
  */
-public abstract class AbstractTopLevelClassLoaderSystemDeployer extends AbstractTopLevelClassLoaderDeployer
+public class AbstractTopLevelClassLoaderSystemDeployer extends AbstractTopLevelClassLoaderDeployer
 {
    /** The classloading */
    private ClassLoading classLoading;
