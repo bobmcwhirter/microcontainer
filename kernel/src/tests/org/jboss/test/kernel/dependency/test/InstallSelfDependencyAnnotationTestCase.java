@@ -25,6 +25,7 @@ import junit.framework.Test;
 import org.jboss.beans.metadata.plugins.AbstractBeanMetaData;
 import org.jboss.beans.metadata.spi.BeanMetaData;
 import org.jboss.test.kernel.dependency.support.AnnotatedSimpleBeanInstallSelf;
+import org.jboss.test.kernel.dependency.support.AnnotatedSimpleBeanInstallsAware;
 
 /**
  * Install Dependency Test Case.
@@ -46,6 +47,7 @@ public class InstallSelfDependencyAnnotationTestCase extends InstallSelfDependen
    protected void setupBeanMetaDatas() throws Throwable
    {
       AbstractBeanMetaData metaData1 = new AbstractBeanMetaData("Name1", AnnotatedSimpleBeanInstallSelf.class.getName());
-      setBeanMetaDatas(new BeanMetaData[] { metaData1 });
+      AbstractBeanMetaData metaData2 = new AbstractBeanMetaData("Name2", AnnotatedSimpleBeanInstallsAware.class.getName());
+      setBeanMetaDatas(new BeanMetaData[] { metaData1, metaData2 });
    }
 }

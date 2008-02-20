@@ -41,4 +41,8 @@
       <property name="context"><inject bean="set_name_bean" fromContext="context"/></property>
    </bean>
 
+   <bean name="state" class="org.jboss.test.kernel.deployment.support.NameAwareBean">
+      <property name="state"><inject fromContext="state"/></property>
+   </bean>
+
 </deployment>

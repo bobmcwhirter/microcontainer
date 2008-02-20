@@ -41,4 +41,11 @@ public @interface UninstallMethod
     * @return the dependant state
     */
    String dependantState() default "";
+
+   /**
+    * Get when required state.
+    *
+    * @return the when required state
+    */
+   String whenRequired() default "";
 }

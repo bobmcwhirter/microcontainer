@@ -94,6 +94,8 @@ public abstract class ExternalInstallationAnnotationPlugin<C extends Annotation>
       AbstractInstallMetaData installMetaData = new AbstractInstallMetaData();
       installMetaData.setBean(install.bean());
       installMetaData.setMethodName(install.method());
+      if (isAttributePresent(install.whenRequired()))
+         installMetaData.setState(new ControllerState(install.whenRequired()));
       if (isAttributePresent(install.dependantState()))
          installMetaData.setDependentState(new ControllerState(install.dependantState()));
       for (Value value : install.parameters())
@@ -158,6 +160,12 @@ public abstract class ExternalInstallationAnnotationPlugin<C extends Annotation>
          return true;
 
       if (notEqual(first.getMethodName(), second.getMethodName()))
+         return true;
+
+      if (notEqual(first.getState(), second.getState()))
+         return true;
+
+      if (notEqual(first.getDependentState(), second.getDependentState()))
          return true;
 
       List<ParameterMetaData> fstParameters = first.getParameters();

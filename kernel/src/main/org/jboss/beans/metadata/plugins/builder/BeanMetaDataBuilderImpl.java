@@ -388,21 +388,25 @@ class BeanMetaDataBuilderImpl extends BeanMetaDataBuilder
       return this;
    }
 
-   public ParameterMetaDataBuilder addInstallWithParameters(String methodName, String bean, ControllerState state)
+   public ParameterMetaDataBuilder addInstallWithParameters(String methodName, String bean, ControllerState state, ControllerState whenRequired)
    {
       AbstractInstallMetaData install = (AbstractInstallMetaData) installBuilder.createLifecycleMetaData(methodName);
       install.setBean(bean);
       if (state != null)
          install.setDependentState(state);
+      if (whenRequired != null)
+         install.setState(whenRequired);
       return new ParameterMetaDataBuilderImpl<AbstractInstallMetaData>(install);
    }
 
-   public ParameterMetaDataBuilder addUninstallWithParameters(String methodName, String bean, ControllerState state)
+   public ParameterMetaDataBuilder addUninstallWithParameters(String methodName, String bean, ControllerState state, ControllerState whenRequired)
    {
       AbstractInstallMetaData uninstall = (AbstractInstallMetaData) uninstallBuilder.createLifecycleMetaData(methodName);
       uninstall.setBean(bean);
       if (state != null)
          uninstall.setDependentState(state);
+      if (whenRequired != null)
+         uninstall.setState(whenRequired);
       return new ParameterMetaDataBuilderImpl<AbstractInstallMetaData>(uninstall);
    }
 

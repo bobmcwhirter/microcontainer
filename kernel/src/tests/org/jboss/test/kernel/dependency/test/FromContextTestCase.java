@@ -35,6 +35,7 @@ import org.jboss.beans.metadata.spi.BeanMetaData;
 import org.jboss.beans.metadata.spi.builder.BeanMetaDataBuilder;
 import org.jboss.beans.metadata.spi.factory.BeanFactory;
 import org.jboss.dependency.spi.ControllerContext;
+import org.jboss.dependency.spi.ControllerState;
 import org.jboss.test.kernel.deployment.support.NameAwareBean;
 
 /**
@@ -119,6 +120,10 @@ public class FromContextTestCase extends AbstractKernelDependencyTest
       NameAwareBean context = (NameAwareBean)getBean(8, "context");
       assertNotNull(context);
       assertNotNull(context.getContext());
+
+      NameAwareBean state = (NameAwareBean)getBean(9, "state");
+      assertNotNull(state);
+      assertEquals(ControllerState.INSTANTIATED, state.getState());
    }
 
    protected void checkAliases(Set<Object> aliases) throws Throwable
@@ -181,6 +186,10 @@ public class FromContextTestCase extends AbstractKernelDependencyTest
       v9.setFromContext(FromContext.CONTEXT);
       b9.addPropertyMetaData("context", v9);
 
+      BeanMetaDataBuilder b10 = BeanMetaDataBuilderFactory.createBuilder("state", NameAwareBean.class.getName());
+      AbstractInjectionValueMetaData v10 = new AbstractInjectionValueMetaData();
+      v10.setFromContext(FromContext.STATE);
+      b10.addPropertyMetaData("state", v10);
 
       setBeanMetaDatas(new BeanMetaData[]
             {
@@ -193,6 +202,7 @@ public class FromContextTestCase extends AbstractKernelDependencyTest
                b7.getBeanMetaData(),
                b8.getBeanMetaData(),
                b9.getBeanMetaData(),
+               b10.getBeanMetaData(),
             }
       );
    }

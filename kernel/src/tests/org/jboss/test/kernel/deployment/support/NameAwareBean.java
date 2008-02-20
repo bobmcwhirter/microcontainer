@@ -27,6 +27,7 @@ import org.jboss.metadata.spi.MetaData;
 import org.jboss.metadata.spi.scope.ScopeKey;
 import org.jboss.beans.info.spi.BeanInfo;
 import org.jboss.dependency.spi.ControllerContext;
+import org.jboss.dependency.spi.ControllerState;
 
 /**
  * A simple bean with name
@@ -42,6 +43,7 @@ public class NameAwareBean
    private ScopeKey scopeKey;
    private Object dynamic;
    private ControllerContext context;
+   private ControllerState state;
 
    public String getName()
    {
@@ -116,5 +118,15 @@ public class NameAwareBean
    public void setContext(ControllerContext context)
    {
       this.context = context;
+   }
+
+   public ControllerState getState()
+   {
+      return state;
+   }
+
+   public void setState(ControllerState state)
+   {
+      this.state = state;
    }
 }

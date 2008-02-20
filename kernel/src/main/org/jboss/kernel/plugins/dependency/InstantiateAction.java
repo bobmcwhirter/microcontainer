@@ -23,14 +23,15 @@ package org.jboss.kernel.plugins.dependency;
 
 import org.jboss.beans.info.spi.BeanInfo;
 import org.jboss.beans.metadata.spi.BeanMetaData;
+import org.jboss.dependency.spi.ControllerState;
 import org.jboss.dependency.spi.DependencyInfo;
 import org.jboss.joinpoint.spi.Joinpoint;
 import org.jboss.kernel.Kernel;
 import org.jboss.kernel.spi.config.KernelConfigurator;
-import org.jboss.kernel.spi.dependency.InstantiateKernelControllerContextAware;
 import org.jboss.kernel.spi.dependency.KernelController;
 import org.jboss.kernel.spi.dependency.KernelControllerContext;
 import org.jboss.kernel.spi.dependency.KernelControllerContextAware;
+import org.jboss.kernel.spi.dependency.InstantiateKernelControllerContextAware;
 
 /**
  * InstantiateAction.
@@ -38,7 +39,7 @@ import org.jboss.kernel.spi.dependency.KernelControllerContextAware;
  * @author <a href="adrian@jboss.com">Adrian Brock</a>
  * @version $Revision$
  */
-public class InstantiateAction extends KernelControllerContextAction
+public class InstantiateAction extends InstallsAwareAction
 {
    protected void installActionInternal(KernelControllerContext context) throws Throwable
    {
@@ -74,11 +75,6 @@ public class InstantiateAction extends KernelControllerContextAction
       }
    }
 
-   protected Class<? extends KernelControllerContextAware> getActionAwareInterface()
-   {
-      return InstantiateKernelControllerContextAware.class;
-   }
-
    protected void uninstallActionInternal(KernelControllerContext context)
    {
       try
@@ -104,5 +100,15 @@ public class InstantiateAction extends KernelControllerContextAction
       {
          context.setTarget(null);
       }
+   }
+
+   protected ControllerState getState()
+   {
+      return ControllerState.INSTANTIATED;
+   }
+
+   protected Class<? extends KernelControllerContextAware> getActionAwareInterface()
+   {
+      return InstantiateKernelControllerContextAware.class;
    }
 }

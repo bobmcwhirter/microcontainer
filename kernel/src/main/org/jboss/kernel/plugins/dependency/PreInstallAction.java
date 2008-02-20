@@ -28,6 +28,7 @@ import java.util.HashSet;
 import org.jboss.beans.info.spi.BeanInfo;
 import org.jboss.beans.metadata.spi.BeanMetaData;
 import org.jboss.dependency.plugins.AbstractController;
+import org.jboss.dependency.spi.ControllerState;
 import org.jboss.kernel.Kernel;
 import org.jboss.kernel.spi.config.KernelConfigurator;
 import org.jboss.kernel.spi.dependency.KernelController;
@@ -49,7 +50,7 @@ import org.jboss.metadata.spi.scope.ScopeKey;
  *
  * @author <a href="ales.justin@jboss.com">Ales Justin</a>
  */
-public class PreInstallAction extends KernelControllerContextAction
+public class PreInstallAction extends InstallsAwareAction
 {
    protected void installActionInternal(KernelControllerContext context) throws Throwable
    {
@@ -238,5 +239,10 @@ public class PreInstallAction extends KernelControllerContextAction
       {
          log.warn("Unexpected error removing metadata: ", ignored);
       }
+   }
+
+   protected ControllerState getState()
+   {
+      return ControllerState.PRE_INSTALL;
    }
 }

@@ -42,7 +42,7 @@ import org.jboss.kernel.spi.dependency.KernelControllerContext;
  * @author <a href="ales.justin@jboss.com">Ales Justin</a>
  * @version $Revision$
  */
-public abstract class LifecycleAction extends KernelControllerContextAction
+public abstract class LifecycleAction extends InstallsAwareAction
 {
    /**
     * Create a new AbstractLifecycleAction.

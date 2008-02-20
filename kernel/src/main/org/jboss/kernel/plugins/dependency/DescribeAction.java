@@ -31,6 +31,7 @@ import org.jboss.kernel.spi.dependency.KernelController;
 import org.jboss.kernel.spi.dependency.KernelControllerContext;
 import org.jboss.kernel.spi.metadata.KernelMetaDataRepository;
 import org.jboss.metadata.spi.MetaData;
+import org.jboss.dependency.spi.ControllerState;
 
 /**
  * DescribeAction.
@@ -38,7 +39,7 @@ import org.jboss.metadata.spi.MetaData;
  * @author <a href="adrian@jboss.com">Adrian Brock</a>
  * @version $Revision$
  */
-public class DescribeAction extends KernelControllerContextAction
+public class DescribeAction extends InstallsAwareAction
 {
    @SuppressWarnings("unchecked")
    protected void installActionInternal(KernelControllerContext context) throws Throwable
@@ -96,5 +97,10 @@ public class DescribeAction extends KernelControllerContextAction
    {
       BeanAnnotationAdapterFactory factory = BeanAnnotationAdapterFactory.getInstance();
       return factory.getBeanAnnotationAdapter();
+   }
+
+   protected ControllerState getState()
+   {
+      return ControllerState.DESCRIBED;
    }
 }

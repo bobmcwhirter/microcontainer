@@ -30,7 +30,7 @@ import org.jboss.kernel.spi.deployment.KernelDeployment;
 import org.jboss.test.kernel.controller.support.TestBeanRepository;
 
 /**
- * ContextClassLoaderFactoryTestCase.
+ * InstallErrorTestCase 
  * 
  * TODO test others, e.g. ControllerContextAware
  * @author <a href="adrian@jboss.com">Adrian Brock</a>
@@ -38,8 +38,6 @@ import org.jboss.test.kernel.controller.support.TestBeanRepository;
  */
 public class InstallErrorTestCase extends AbstractControllerTest
 {
-   ClassLoader cl = null;
-   
    public static Test suite()
    {
       return suite(InstallErrorTestCase.class);

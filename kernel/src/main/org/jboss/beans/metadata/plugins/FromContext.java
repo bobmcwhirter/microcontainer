@@ -32,6 +32,7 @@ import java.util.Set;
 import org.jboss.beans.info.spi.BeanInfo;
 import org.jboss.beans.info.spi.helpers.UnmodifiableBeanInfo;
 import org.jboss.dependency.spi.ControllerContext;
+import org.jboss.dependency.spi.ControllerState;
 import org.jboss.dependency.spi.helpers.UnmodifiableControllerContext;
 import org.jboss.kernel.spi.dependency.KernelControllerContext;
 import org.jboss.kernel.spi.dependency.helpers.UnmodifiableKernelControllerContext;
@@ -75,6 +76,9 @@ public abstract class FromContext<T extends ControllerContext> extends JBossObje
    /** scope */
    public static final FromContext<? extends ControllerContext> SCOPE = new ScopeFromContext("scope");
 
+   /** state */
+   public static final FromContext<? extends ControllerContext> STATE = new StateFromContext("state");
+
    /** id */
    public static final FromContext<? extends ControllerContext> ID = new IdFromContext("id");
 
@@ -114,6 +118,8 @@ public abstract class FromContext<T extends ControllerContext> extends JBossObje
          return BEANINFO;
       else if (SCOPE.getFromString().equalsIgnoreCase(fromString))
          return SCOPE;
+      else if (STATE.getFromString().equalsIgnoreCase(fromString))
+         return STATE;
       else if (ID.getFromString().equalsIgnoreCase(fromString))
          return ID;
       else if (CONTEXT.getFromString().equalsIgnoreCase(fromString))
@@ -274,6 +280,21 @@ public abstract class FromContext<T extends ControllerContext> extends JBossObje
       public ScopeKey internalExecute(KernelControllerContext context)
       {
          return context.getScopeInfo().getScope();
+      }
+   }
+
+   private static class StateFromContext extends FromContext<ControllerContext>
+   {
+      private static final long serialVersionUID = 1L;
+
+      public StateFromContext(String fromString)
+      {
+         super(fromString);
+      }
+
+      public ControllerState internalExecute(ControllerContext context)
+      {
+         return context.getState();
       }
    }
 

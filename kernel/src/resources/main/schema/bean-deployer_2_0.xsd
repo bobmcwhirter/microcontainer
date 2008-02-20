@@ -339,6 +339,7 @@ $Id$
       <xsd:attribute name="bean" type="xsd:string" use="optional"/>
       <xsd:attribute name="method" type="xsd:token" use="required"/>
       <xsd:attribute name="state" type="controllerStateType" use="optional"/>
+      <xsd:attribute name="whenRequired" type="controllerStateType" use="optional"/>
    </xsd:complexType>
 
    <xsd:complexType name="callbackType">

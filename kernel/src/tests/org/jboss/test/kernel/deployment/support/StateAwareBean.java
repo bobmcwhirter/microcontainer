@@ -19,33 +19,22 @@
 * Software Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA
 * 02110-1301 USA, or see the FSF site: http://www.fsf.org.
 */
-package org.jboss.beans.metadata.api.annotations;
+package org.jboss.test.kernel.deployment.support;
 
-import java.lang.annotation.Retention;
-import java.lang.annotation.RetentionPolicy;
-import java.lang.annotation.Target;
-import java.lang.annotation.ElementType;
+import org.jboss.beans.metadata.api.annotations.FromContext;
+import org.jboss.beans.metadata.api.annotations.Inject;
+import org.jboss.dependency.spi.ControllerState;
 
 /**
- * Internal installation method.
+ * A simple bean with awareness
  *
- * @author <a href="mailto:ales.justin@jboss.com">Ales Justin</a>
+ * @author <a href="ales.justin@jboss.com">Ales Justin</a>
  */
-@Retention(RetentionPolicy.RUNTIME)
-@Target({ElementType.METHOD})
-public @interface InstallMethod
+public class StateAwareBean extends NameAwareBean
 {
-   /**
-    * Get dependant state.
-    *
-    * @return the dependant state
-    */
-   String dependantState() default "";
-
-   /**
-    * Get when required state.
-    *
-    * @return the when required state
-    */
-   String whenRequired() default "";
+   @Inject(fromContext = FromContext.STATE)
+   public void setState(ControllerState state)
+   {
+      super.setState(state);
+   }
 }

@@ -57,6 +57,7 @@ public class InstallJaxbTestCase extends AbstractMCTest
       InstallMetaData install = getInstall();
       assertEquals("Bean", install.getBean());
       assertEquals(ControllerState.INSTALLED, install.getDependentState());
+      assertEquals(ControllerState.INSTALLED, install.getState());
       assertEquals("Dummy", install.getMethodName());
       assertNull(install.getAnnotations());
       assertNull(install.getParameters());
@@ -67,6 +68,18 @@ public class InstallJaxbTestCase extends AbstractMCTest
       InstallMetaData install = getInstall();
       assertNull(install.getBean());
       assertEquals(ControllerState.CONFIGURED, install.getDependentState());
+      assertEquals(ControllerState.INSTALLED, install.getState());
+      assertEquals("Dummy", install.getMethodName());
+      assertNull(install.getAnnotations());
+      assertNull(install.getParameters());
+   }
+
+   public void testInstallWithWhenRequired() throws Exception
+   {
+      InstallMetaData install = getInstall();
+      assertNull(install.getBean());
+      assertEquals(ControllerState.INSTALLED, install.getDependentState());
+      assertEquals(ControllerState.CONFIGURED, install.getState());
       assertEquals("Dummy", install.getMethodName());
       assertNull(install.getAnnotations());
       assertNull(install.getParameters());
@@ -77,6 +90,7 @@ public class InstallJaxbTestCase extends AbstractMCTest
       InstallMetaData install = getInstall();
       assertNull(install.getBean());
       assertEquals(ControllerState.INSTALLED, install.getDependentState());
+      assertEquals(ControllerState.INSTALLED, install.getState());
       assertEquals("Method", install.getMethodName());
       assertNull(install.getAnnotations());
       assertNull(install.getParameters());
@@ -87,6 +101,7 @@ public class InstallJaxbTestCase extends AbstractMCTest
       InstallMetaData install = getInstall();
       assertNull(install.getBean());
       assertEquals(ControllerState.INSTALLED, install.getDependentState());
+      assertEquals(ControllerState.INSTALLED, install.getState());
       assertEquals("Dummy", install.getMethodName());
       HashSet<String> expected = new HashSet<String>();
       expected.add(Annotation1.class.getName());
@@ -99,6 +114,7 @@ public class InstallJaxbTestCase extends AbstractMCTest
       InstallMetaData install = getInstall();
       assertNull(install.getBean());
       assertEquals(ControllerState.INSTALLED, install.getDependentState());
+      assertEquals(ControllerState.INSTALLED, install.getState());
       assertEquals("Dummy", install.getMethodName());
       HashSet<String> expected = new HashSet<String>();
       expected.add(Annotation1.class.getName());
@@ -113,6 +129,7 @@ public class InstallJaxbTestCase extends AbstractMCTest
       InstallMetaData install = getInstall();
       assertNull(install.getBean());
       assertEquals(ControllerState.INSTALLED, install.getDependentState());
+      assertEquals(ControllerState.INSTALLED, install.getState());
       assertEquals("Dummy", install.getMethodName());
       assertNull(install.getAnnotations());
       ArrayList<String> expected = new ArrayList<String>();
@@ -125,6 +142,7 @@ public class InstallJaxbTestCase extends AbstractMCTest
       InstallMetaData install = getInstall();
       assertNull(install.getBean());
       assertEquals(ControllerState.INSTALLED, install.getDependentState());
+      assertEquals(ControllerState.INSTALLED, install.getState());
       assertEquals("Dummy", install.getMethodName());
       assertNull(install.getAnnotations());
       ArrayList<String> expected = new ArrayList<String>();

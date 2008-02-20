@@ -58,6 +58,13 @@ public @interface ExternalInstall
    String dependantState() default "";
 
    /**
+    * Get the when required state.
+    *
+    * @return the when required state
+    */
+   String whenRequired() default "";
+
+   /**
     * Get parameters.
     *
     * @return the parameters

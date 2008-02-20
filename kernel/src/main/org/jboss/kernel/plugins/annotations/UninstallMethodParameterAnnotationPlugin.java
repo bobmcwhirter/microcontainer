@@ -54,6 +54,8 @@ public class UninstallMethodParameterAnnotationPlugin extends InstallationParame
    {
       AbstractInstallMetaData uninstall = new AbstractInstallMetaData();
       uninstall.setMethodName(info.getName());
+      if (isAttributePresent(annotation.whenRequired()))
+         uninstall.setState(new ControllerState(annotation.whenRequired()));
       if (isAttributePresent(annotation.dependantState()))
          uninstall.setDependentState(new ControllerState(annotation.dependantState()));
       return uninstall;

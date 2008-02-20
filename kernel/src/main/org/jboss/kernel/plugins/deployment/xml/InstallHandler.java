@@ -58,6 +58,8 @@ public class InstallHandler extends DefaultElementHandler
             install.setMethodName(attrs.getValue(i));
          else if ("state".equals(localName))
             install.setDependentState(new ControllerState(attrs.getValue(i)));
+         else if ("whenRequired".equals(localName))
+            install.setState(new ControllerState(attrs.getValue(i)));
       }
    }
 

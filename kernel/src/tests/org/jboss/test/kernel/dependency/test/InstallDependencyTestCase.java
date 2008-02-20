@@ -22,6 +22,9 @@
 package org.jboss.test.kernel.dependency.test;
 
 import java.util.ArrayList;
+import java.util.Collections;
+import java.util.List;
+import java.util.Set;
 
 import junit.framework.Test;
 
@@ -29,6 +32,8 @@ import org.jboss.beans.metadata.plugins.AbstractBeanMetaData;
 import org.jboss.beans.metadata.plugins.AbstractInstallMetaData;
 import org.jboss.beans.metadata.plugins.AbstractParameterMetaData;
 import org.jboss.beans.metadata.plugins.ThisValueMetaData;
+import org.jboss.beans.metadata.plugins.AbstractInjectionValueMetaData;
+import org.jboss.beans.metadata.plugins.FromContext;
 import org.jboss.beans.metadata.spi.BeanMetaData;
 import org.jboss.beans.metadata.spi.InstallMetaData;
 import org.jboss.beans.metadata.spi.ParameterMetaData;
@@ -147,6 +152,40 @@ public class InstallDependencyTestCase extends AbstractKernelDependencyTest
       assertEquals(expected, bean1.getBeans());
    }
 
+   public void testWhenRequiredInstalls() throws Throwable
+   {
+      setupBeanMetaDatas();
+
+      ControllerContext context1 = assertInstall(0, "Name1");
+      ControllerContext context2 = assertInstall(2, "Name3");
+
+      SimpleBeanRepository bean1 = (SimpleBeanRepository) context1.getTarget();
+      assertNotNull(bean1);
+      Set<ControllerState> states = bean1.getStates();
+      assertNotNull(states);
+      assertEquals(getExpectedInstallSize(), states.size());
+
+      assertUninstall(context2.getName().toString());
+
+      int uninstallSize = getExpectedUninstallSize();
+      assertEquals(uninstallSize, states.size());
+      if (uninstallSize > 0)
+      {
+         ControllerState state = states.iterator().next();
+         assertEquals(ControllerState.NOT_INSTALLED, state);
+      }
+   }
+
+   protected int getExpectedInstallSize()
+   {
+      return 6;
+   }
+
+   protected int getExpectedUninstallSize()
+   {
+      return 1;
+   }
+
    protected void setupBeanMetaDatas() throws Throwable
    {
       AbstractBeanMetaData metaData1 = new AbstractBeanMetaData("Name1", SimpleBeanRepository.class.getName());
@@ -173,6 +212,50 @@ public class InstallDependencyTestCase extends AbstractKernelDependencyTest
       uninstalls.add(uninstall);
       metaData2.setUninstalls(uninstalls);
 
-      setBeanMetaDatas(new BeanMetaData[] { metaData1, metaData2 });
+      AbstractBeanMetaData metaData3 = new AbstractBeanMetaData("Name3", SimpleBeanImpl.class.getName());
+
+      ArrayList<InstallMetaData> stateInstalls = new ArrayList<InstallMetaData>();
+      addInstallMetaData(ControllerState.PRE_INSTALL, stateInstalls);
+      addInstallMetaData(ControllerState.DESCRIBED, stateInstalls);
+      addInstallMetaData(ControllerState.INSTANTIATED, stateInstalls);
+      addInstallMetaData(ControllerState.CONFIGURED, stateInstalls);
+      addInstallMetaData(ControllerState.CREATE, stateInstalls);
+      addInstallMetaData(ControllerState.START, stateInstalls);
+
+      ArrayList<InstallMetaData> stateUninstalls = new ArrayList<InstallMetaData>();
+      addUninstallMetaData(ControllerState.PRE_INSTALL, stateUninstalls);
+      addUninstallMetaData(ControllerState.DESCRIBED, stateUninstalls);
+      addUninstallMetaData(ControllerState.INSTANTIATED, stateUninstalls);
+      addUninstallMetaData(ControllerState.CONFIGURED, stateUninstalls);
+      addUninstallMetaData(ControllerState.CREATE, stateUninstalls);
+      addUninstallMetaData(ControllerState.START, stateUninstalls);
+
+      metaData3.setInstalls(stateInstalls);
+      metaData3.setUninstalls(stateUninstalls);
+
+      setBeanMetaDatas(new BeanMetaData[] { metaData1, metaData2, metaData3 });
+   }
+
+   protected void addInstallMetaData(ControllerState state, List<InstallMetaData> states)
+   {
+      addInstallMetaData(state, states, "add");
+   }
+
+   protected void addUninstallMetaData(ControllerState state, List<InstallMetaData> states)
+   {
+      addInstallMetaData(state, states, "remove");         
+   }
+
+   protected void addInstallMetaData(ControllerState state, List<InstallMetaData> states, String prefix)
+   {
+      AbstractInstallMetaData install = new AbstractInstallMetaData();
+      install.setBean("Name1");
+      install.setMethodName(prefix + "State");
+      AbstractInjectionValueMetaData injection = new AbstractInjectionValueMetaData();
+      injection.setFromContext(FromContext.STATE);
+      ParameterMetaData parameter = new AbstractParameterMetaData(injection);
+      install.setParameters(Collections.singletonList(parameter));
+      install.setState(state);
+      states.add(install);
    }
 }

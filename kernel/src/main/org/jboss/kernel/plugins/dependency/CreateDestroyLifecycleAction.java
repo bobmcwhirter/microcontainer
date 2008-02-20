@@ -25,6 +25,7 @@ import org.jboss.beans.metadata.spi.BeanMetaData;
 import org.jboss.beans.metadata.spi.LifecycleMetaData;
 import org.jboss.kernel.spi.dependency.CreateKernelControllerContextAware;
 import org.jboss.kernel.spi.dependency.KernelControllerContextAware;
+import org.jboss.dependency.spi.ControllerState;
 
 /**
  * CreateDestroyLifecycleAction.
@@ -58,5 +59,10 @@ public class CreateDestroyLifecycleAction extends LifecycleAction
    public String getDefaultUninstallMethod()
    {
       return "destroy";
+   }
+
+   protected ControllerState getState()
+   {
+      return ControllerState.CREATE;
    }
 }

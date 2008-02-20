@@ -109,7 +109,7 @@ public class AbstractKernelDependencyTest extends AbstractKernelTest
    protected ControllerContext assertInstall(int number, String name, ControllerState expected) throws Throwable
    {
       ControllerContext context = install(number, name);
-      assertNotNull(context);
+      assertNotNull("Missing context with name: " + name, context);
       assertEquals(expected, context.getState());
       return context;
    }

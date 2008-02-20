@@ -55,6 +55,7 @@ public class InstallTestCase extends AbstractXMLTest
       InstallMetaData install = getInstall("InstallWithBean.xml");
       assertEquals("Bean", install.getBean());
       assertEquals(ControllerState.INSTALLED, install.getDependentState());
+      assertEquals(ControllerState.INSTALLED, install.getState());
       assertEquals("Dummy", install.getMethodName());
       assertNull(install.getAnnotations());
       assertNull(install.getParameters());
@@ -65,6 +66,18 @@ public class InstallTestCase extends AbstractXMLTest
       InstallMetaData install = getInstall("InstallWithState.xml");
       assertNull(install.getBean());
       assertEquals(ControllerState.CONFIGURED, install.getDependentState());
+      assertEquals(ControllerState.INSTALLED, install.getState());
+      assertEquals("Dummy", install.getMethodName());
+      assertNull(install.getAnnotations());
+      assertNull(install.getParameters());
+   }
+
+   public void testInstallWithWhenRequired() throws Exception
+   {
+      InstallMetaData install = getInstall("InstallWithWhenRequired.xml");
+      assertNull(install.getBean());
+      assertEquals(ControllerState.INSTALLED, install.getDependentState());
+      assertEquals(ControllerState.CONFIGURED, install.getState());
       assertEquals("Dummy", install.getMethodName());
       assertNull(install.getAnnotations());
       assertNull(install.getParameters());
@@ -75,6 +88,7 @@ public class InstallTestCase extends AbstractXMLTest
       InstallMetaData install = getInstall("InstallWithMethod.xml");
       assertNull(install.getBean());
       assertEquals(ControllerState.INSTALLED, install.getDependentState());
+      assertEquals(ControllerState.INSTALLED, install.getState());
       assertEquals("Method", install.getMethodName());
       assertNull(install.getAnnotations());
       assertNull(install.getParameters());
@@ -85,6 +99,7 @@ public class InstallTestCase extends AbstractXMLTest
       InstallMetaData install = getInstall("InstallWithAnnotation.xml");
       assertNull(install.getBean());
       assertEquals(ControllerState.INSTALLED, install.getDependentState());
+      assertEquals(ControllerState.INSTALLED, install.getState());
       assertEquals("Dummy", install.getMethodName());
       HashSet<String> expected = new HashSet<String>();
       expected.add("org.jboss.test.kernel.deployment.xml.support.Annotation1");
@@ -97,6 +112,7 @@ public class InstallTestCase extends AbstractXMLTest
       InstallMetaData install = getInstall("InstallWithAnnotations.xml");
       assertNull(install.getBean());
       assertEquals(ControllerState.INSTALLED, install.getDependentState());
+      assertEquals(ControllerState.INSTALLED, install.getState());
       assertEquals("Dummy", install.getMethodName());
       HashSet<String> expected = new HashSet<String>();
       expected.add("org.jboss.test.kernel.deployment.xml.support.Annotation1");
@@ -111,6 +127,7 @@ public class InstallTestCase extends AbstractXMLTest
       InstallMetaData install = getInstall("InstallWithParameter.xml");
       assertNull(install.getBean());
       assertEquals(ControllerState.INSTALLED, install.getDependentState());
+      assertEquals(ControllerState.INSTALLED, install.getState());
       assertEquals("Dummy", install.getMethodName());
       assertNull(install.getAnnotations());
       ArrayList<String> expected = new ArrayList<String>();
@@ -123,6 +140,7 @@ public class InstallTestCase extends AbstractXMLTest
       InstallMetaData install = getInstall("InstallWithParameters.xml");
       assertNull(install.getBean());
       assertEquals(ControllerState.INSTALLED, install.getDependentState());
+      assertEquals(ControllerState.INSTALLED, install.getState());
       assertEquals("Dummy", install.getMethodName());
       assertNull(install.getAnnotations());
       ArrayList<String> expected = new ArrayList<String>();

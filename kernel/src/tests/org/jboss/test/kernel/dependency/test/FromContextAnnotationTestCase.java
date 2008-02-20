@@ -39,6 +39,7 @@ import org.jboss.test.kernel.deployment.support.BeanInfoAwareBean;
 import org.jboss.test.kernel.deployment.support.ScopeAwareBean;
 import org.jboss.test.kernel.deployment.support.ContextAwareBean;
 import org.jboss.test.kernel.deployment.support.OtherAwareBean;
+import org.jboss.test.kernel.deployment.support.StateAwareBean;
 import org.jboss.dependency.spi.ControllerContext;
 
 /**
@@ -88,7 +89,7 @@ public class FromContextAnnotationTestCase extends FromContextTestCase
 
       BeanMetaDataBuilder b8 = BeanMetaDataBuilderFactory.createBuilder("other", OtherAwareBean.class.getName());
       BeanMetaDataBuilder b9 = BeanMetaDataBuilderFactory.createBuilder("context", ContextAwareBean.class.getName());
-
+      BeanMetaDataBuilder b10 = BeanMetaDataBuilderFactory.createBuilder("state", StateAwareBean.class.getName());
 
       setBeanMetaDatas(new BeanMetaData[]
             {
@@ -101,6 +102,7 @@ public class FromContextAnnotationTestCase extends FromContextTestCase
                b7.getBeanMetaData(),
                b8.getBeanMetaData(),
                b9.getBeanMetaData(),
+               b10.getBeanMetaData(),
             }
       );
    }

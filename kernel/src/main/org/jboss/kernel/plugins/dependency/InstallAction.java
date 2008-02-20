@@ -21,14 +21,9 @@
 */
 package org.jboss.kernel.plugins.dependency;
 
-import java.util.List;
-
 import org.jboss.beans.metadata.spi.BeanMetaData;
-import org.jboss.beans.metadata.spi.InstallMetaData;
-import org.jboss.dependency.spi.ControllerContext;
-import org.jboss.dependency.spi.dispatch.InvokeDispatchContext;
+import org.jboss.dependency.spi.ControllerState;
 import org.jboss.kernel.Kernel;
-import org.jboss.kernel.plugins.dispatch.InvokeDispatchHelper;
 import org.jboss.kernel.spi.config.KernelConfigurator;
 import org.jboss.kernel.spi.dependency.InstallKernelControllerContextAware;
 import org.jboss.kernel.spi.dependency.KernelController;
@@ -42,7 +37,7 @@ import org.jboss.kernel.spi.registry.KernelRegistry;
  * @author <a href="adrian@jboss.com">Adrian Brock</a>
  * @version $Revision$
  */
-public class InstallAction extends KernelControllerContextAction
+public class InstallAction extends InstallsAwareAction
 {
    protected void installActionInternal(KernelControllerContext context) throws Throwable
    {
@@ -57,54 +52,6 @@ public class InstallAction extends KernelControllerContextAction
       try
       {
          controller.addSupplies(context);
-         try
-         {
-            List<InstallMetaData> installs = metaData.getInstalls();
-            if (installs != null)
-            {
-               for (InstallMetaData install : installs)
-               {
-                  ControllerContext target = context;
-                  if (install.getBean() != null)
-                     target = controller.getContext(install.getBean(), install.getDependentState());
-                  if (target instanceof InvokeDispatchContext)
-                  {
-                     ClassLoader previous = SecurityActions.setContextClassLoader(context);
-                     try
-                     {
-                        InvokeDispatchHelper.invoke(
-                              configurator,
-                              target.getTarget(),
-                              (InvokeDispatchContext)target,
-                              install.getMethodName(),
-                              install.getParameters()
-                        );
-                     }
-                     finally
-                     {
-                        SecurityActions.resetContextClassLoader(previous);
-                     }
-                  }
-                  else
-                  {
-                     throw new IllegalArgumentException("Cannot install, context " + target + " does not implement InvokeDispatchContext");
-                  }
-               }
-            }
-         }
-         catch (Throwable t)
-         {
-            doUninstalls(context);
-            try
-            {
-               controller.removeSupplies(context);
-            }
-            catch (Throwable x)
-            {
-               log.warn("Ignoring error reversing supplies, throwing original error " + name, x);
-            }
-            throw t;
-         }
       }
       catch (Throwable t)
       {
@@ -127,7 +74,6 @@ public class InstallAction extends KernelControllerContextAction
 
    protected void uninstallActionInternal(KernelControllerContext context)
    {
-      doUninstalls(context);
       KernelController controller = (KernelController) context.getController();
       Kernel kernel = controller.getKernel();
       KernelRegistry registry = kernel.getRegistry();
@@ -152,58 +98,8 @@ public class InstallAction extends KernelControllerContextAction
       }
    }
 
-   protected void doUninstalls(KernelControllerContext context)
+   protected ControllerState getState()
    {
-      KernelController controller = (KernelController) context.getController();
-      Kernel kernel = controller.getKernel();
-      KernelConfigurator configurator = kernel.getConfigurator();
-      BeanMetaData metaData = context.getBeanMetaData();
-
-      List<InstallMetaData> uninstalls = metaData.getUninstalls();
-      if (uninstalls != null)
-      {
-         for (int i = uninstalls.size()-1; i >= 0; --i)
-         {
-            InstallMetaData uninstall = uninstalls.get(i);
-            ControllerContext target = context;
-            if (uninstall.getBean() != null)
-            {
-               target = controller.getContext(uninstall.getBean(), uninstall.getDependentState());
-               if (target == null)
-               {
-                  log.warn("Ignoring uninstall action on target in incorrect state " + uninstall.getBean());
-                  continue;
-               }
-            }
-            if (target instanceof InvokeDispatchContext)
-            {
-               ClassLoader previous = null;
-               try
-               {
-                  previous = SecurityActions.setContextClassLoader(context);
-                  InvokeDispatchHelper.invoke(
-                        configurator,
-                        target.getTarget(), 
-                        (InvokeDispatchContext)target,
-                        uninstall.getMethodName(),
-                        uninstall.getParameters()
-                  );
-               }
-               catch (Throwable t)
-               {
-                  log.warn("Ignoring uninstall action on target " + uninstall, t);
-               }
-               finally
-               {
-                  if (previous != null)
-                     SecurityActions.resetContextClassLoader(previous);
-               }
-            }
-            else
-            {
-               log.warn("Cannot uninstall, context " + target + " does not implement InvokeDispatchContext for " + uninstall.getBean());
-            }
-         }
-      }
+      return ControllerState.INSTALLED;
    }
 }

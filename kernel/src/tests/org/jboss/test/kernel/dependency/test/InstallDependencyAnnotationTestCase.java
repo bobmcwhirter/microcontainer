@@ -26,6 +26,7 @@ import org.jboss.beans.metadata.plugins.AbstractBeanMetaData;
 import org.jboss.beans.metadata.spi.BeanMetaData;
 import org.jboss.test.kernel.dependency.support.SimpleBeanRepository;
 import org.jboss.test.kernel.dependency.support.ExternalInstallSimpleBeanImpl;
+import org.jboss.test.kernel.dependency.support.ExternalInstallWithStateSimpleBeanImpl;
 
 /**
  * Install Dependency Test Case.
@@ -44,10 +45,22 @@ public class InstallDependencyAnnotationTestCase extends InstallDependencyTestCa
       super(name);
    }
 
+   // we don't expect PreInstall
+   protected int getExpectedInstallSize()
+   {
+      return 5;
+   }
+
+   protected int getExpectedUninstallSize()
+   {
+      return 0;
+   }
+
    protected void setupBeanMetaDatas() throws Throwable
    {
       AbstractBeanMetaData metaData1 = new AbstractBeanMetaData("Name1", SimpleBeanRepository.class.getName());
       AbstractBeanMetaData metaData2 = new AbstractBeanMetaData("Name2", ExternalInstallSimpleBeanImpl.class.getName());
-      setBeanMetaDatas(new BeanMetaData[] { metaData1, metaData2 });
+      AbstractBeanMetaData metaData3 = new AbstractBeanMetaData("Name3", ExternalInstallWithStateSimpleBeanImpl.class.getName());
+      setBeanMetaDatas(new BeanMetaData[] { metaData1, metaData2, metaData3 });
    }
 }

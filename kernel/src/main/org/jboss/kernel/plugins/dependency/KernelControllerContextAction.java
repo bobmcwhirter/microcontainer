@@ -135,7 +135,13 @@ public class KernelControllerContextAction extends SimpleControllerContextAction
       setKernelControllerContext(context);
    }
 
-   private void setKernelControllerContext(KernelControllerContext context) throws Throwable
+   /**
+    * Set the context.
+    *
+    * @param context the context
+    * @throws Throwable for any error
+    */
+   protected void setKernelControllerContext(KernelControllerContext context) throws Throwable
    {
       Object target = context.getTarget();
       if (target != null)
@@ -151,10 +157,21 @@ public class KernelControllerContextAction extends SimpleControllerContextAction
       }
    }
 
+   /**
+    * Execute install action.
+    *
+    * @param context the context
+    * @throws Throwable for any error
+    */
    protected void installActionInternal(KernelControllerContext context) throws Throwable
    {
    }
 
+   /**
+    * Get the action aware interface.
+    *
+    * @return the action aware interface
+    */
    protected Class<? extends KernelControllerContextAware> getActionAwareInterface()
    {
       return null;
@@ -166,11 +183,21 @@ public class KernelControllerContextAction extends SimpleControllerContextAction
       uninstallActionInternal(context);
    }
 
+   /**
+    * Execute uninstall action.
+    *
+    * @param context the context
+    */
    protected void uninstallActionInternal(KernelControllerContext context)
    {
    }
 
-   private void unsetKernelControllerContext(KernelControllerContext context)
+   /**
+    * Unset the context.
+    *
+    * @param context the context
+    */
+   protected void unsetKernelControllerContext(KernelControllerContext context)
    {
       Object target = context.getTarget();
 

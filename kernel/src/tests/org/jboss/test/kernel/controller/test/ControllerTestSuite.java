@@ -47,7 +47,8 @@ public class ControllerTestSuite extends TestSuite
       suite.addTest(RedeployAfterErrorTestCase.suite());
       suite.addTest(ContextClassLoaderTestCase.suite());
       suite.addTest(InstallErrorTestCase.suite());
-      
+      suite.addTest(InstallWhenRequiredErrorTestCase.suite());
+
       return suite;
    }
 }

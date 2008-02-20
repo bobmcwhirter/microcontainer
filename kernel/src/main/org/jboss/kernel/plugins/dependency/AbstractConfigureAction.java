@@ -29,13 +29,14 @@ import org.jboss.kernel.spi.dependency.InstantiateKernelControllerContextAware;
 import org.jboss.kernel.spi.dependency.KernelControllerContextAware;
 import org.jboss.kernel.spi.dependency.StartKernelControllerContextAware;
 import org.jboss.kernel.spi.dependency.KernelControllerContext;
+import org.jboss.dependency.spi.ControllerState;
 
 /**
  * AbstractConfigureAction.
  *
  * @author <a href="ales.justin@jboss.com">Ales Justin</a>
  */
-public abstract class AbstractConfigureAction extends KernelControllerContextAction
+public abstract class AbstractConfigureAction extends InstallsAwareAction
 {
    protected Class<? extends KernelControllerContextAware> getActionAwareInterface()
    {
@@ -48,6 +49,7 @@ public abstract class AbstractConfigureAction extends KernelControllerContextAct
 
    /**
     * Execute KCCA install.
+    * 
     * @param context the controller context
     * @throws Throwable for any erroor
     */
@@ -96,5 +98,10 @@ public abstract class AbstractConfigureAction extends KernelControllerContextAct
                !InstallKernelControllerContextAware.class.isAssignableFrom(clazz) &&
                !InstantiateKernelControllerContextAware.class.isAssignableFrom(clazz) &&
                !StartKernelControllerContextAware.class.isAssignableFrom(clazz));
+   }
+
+   protected ControllerState getState()
+   {
+      return ControllerState.CONFIGURED;
    }
 }

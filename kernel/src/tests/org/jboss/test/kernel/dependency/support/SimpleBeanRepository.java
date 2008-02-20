@@ -23,11 +23,16 @@ package org.jboss.test.kernel.dependency.support;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Set;
+import java.util.HashSet;
+
+import org.jboss.dependency.spi.ControllerState;
 
 public class SimpleBeanRepository
 {
    List<SimpleBean> beans = new ArrayList<SimpleBean>();
-   
+   Set<ControllerState> states = new HashSet<ControllerState>();
+
    public List<SimpleBean> getBeans()
    {
       return beans;
@@ -46,5 +51,20 @@ public class SimpleBeanRepository
    public void removeSimpleBean(SimpleBean bean)
    {
       beans.remove(bean);
+   }
+
+   public Set<ControllerState> getStates()
+   {
+      return states;
+   }
+
+   public boolean addState(ControllerState state)
+   {
+      return states.add(state);
+   }
+
+   public boolean removeState(ControllerState state)
+   {
+      return states.remove(state);
    }
 }

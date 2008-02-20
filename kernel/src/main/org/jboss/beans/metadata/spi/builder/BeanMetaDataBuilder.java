@@ -596,12 +596,26 @@ public abstract class BeanMetaDataBuilder
     * 
     * @param methodName the method name
     * @param bean the bean name
-    * @param state the state when to install
+    * @param state the state of the bean
     * @return the builder
     */
    public BeanMetaDataBuilder addInstallWithThis(String methodName, String bean, ControllerState state)
    {
-      ParameterMetaDataBuilder parameters = addInstallWithParameters(methodName, bean, state);
+      return addInstallWithThis(methodName, bean, state, null);
+   }
+
+   /**
+    * Add an install with a this parameter
+    *
+    * @param methodName the method name
+    * @param bean the bean name
+    * @param state the state of the bean
+    * @param whenRequired the state when to install
+    * @return the builder
+    */
+   public BeanMetaDataBuilder addInstallWithThis(String methodName, String bean, ControllerState state, ControllerState whenRequired)
+   {
+      ParameterMetaDataBuilder parameters = addInstallWithParameters(methodName, bean, state, whenRequired);
       parameters.addParameterMetaData(null, createThis());
       return this;
    }
@@ -746,10 +760,24 @@ public abstract class BeanMetaDataBuilder
     * 
     * @param methodName the method name
     * @param bean the bean name
-    * @param state the state when to install
+    * @param state the state of the bean
     * @return the parameter builder
     */
-   public abstract ParameterMetaDataBuilder addInstallWithParameters(String methodName, String bean, ControllerState state);
+   public ParameterMetaDataBuilder addInstallWithParameters(String methodName, String bean, ControllerState state)
+   {
+      return addInstallWithParameters(methodName, bean, state, null);
+   }
+
+   /**
+    * Add an install
+    *
+    * @param methodName the method name
+    * @param bean the bean name
+    * @param state the state of the bean
+    * @param whenRequired the state when to install
+    * @return the parameter builder
+    */
+   public abstract ParameterMetaDataBuilder addInstallWithParameters(String methodName, String bean, ControllerState state, ControllerState whenRequired);
 
    /**
     * Add an uninstall
@@ -862,7 +890,21 @@ public abstract class BeanMetaDataBuilder
     */
    public BeanMetaDataBuilder addUninstallWithThis(String methodName, String bean, ControllerState state)
    {
-      ParameterMetaDataBuilder parameters = addUninstallWithParameters(methodName, bean, state);
+      return addUninstallWithThis(methodName, bean, state, null);
+   }
+
+   /**
+    * Add an uninstall with a this parameter
+    *
+    * @param methodName the method name
+    * @param bean the bean name
+    * @param state the state of the bean
+    * @param whenRequired the state when to uninstall
+    * @return the builder
+    */
+   public BeanMetaDataBuilder addUninstallWithThis(String methodName, String bean, ControllerState state, ControllerState whenRequired)
+   {
+      ParameterMetaDataBuilder parameters = addUninstallWithParameters(methodName, bean, state, whenRequired);
       parameters.addParameterMetaData(null, createThis());
       return this;
    }
@@ -1007,11 +1049,25 @@ public abstract class BeanMetaDataBuilder
     * 
     * @param methodName the method name
     * @param bean the bean name
-    * @param state the state when to install
+    * @param state the state of the bean
     * @return the parameter builder
     */
-   public abstract ParameterMetaDataBuilder addUninstallWithParameters(String methodName, String bean, ControllerState state);
+   public ParameterMetaDataBuilder addUninstallWithParameters(String methodName, String bean, ControllerState state)
+   {
+      return addUninstallWithParameters(methodName, bean, state, null);
+   }
    
+   /**
+    * Add an uninstall
+    *
+    * @param methodName the method name
+    * @param bean the bean name
+    * @param state the state of the bean
+    * @param whenRequired the state when to uninstall
+    * @return the parameter builder
+    */
+   public abstract ParameterMetaDataBuilder addUninstallWithParameters(String methodName, String bean, ControllerState state, ControllerState whenRequired);
+
    /**
     * Create a null value
     * 

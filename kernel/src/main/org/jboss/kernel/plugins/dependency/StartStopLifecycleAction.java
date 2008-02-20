@@ -25,6 +25,7 @@ import org.jboss.beans.metadata.spi.BeanMetaData;
 import org.jboss.beans.metadata.spi.LifecycleMetaData;
 import org.jboss.kernel.spi.dependency.KernelControllerContextAware;
 import org.jboss.kernel.spi.dependency.StartKernelControllerContextAware;
+import org.jboss.dependency.spi.ControllerState;
 
 /**
  * StartStopLifecycleAction.
@@ -58,5 +59,10 @@ public class StartStopLifecycleAction extends LifecycleAction
    public String getDefaultUninstallMethod()
    {
       return "stop";
+   }
+
+   protected ControllerState getState()
+   {
+      return ControllerState.START;
    }
 }

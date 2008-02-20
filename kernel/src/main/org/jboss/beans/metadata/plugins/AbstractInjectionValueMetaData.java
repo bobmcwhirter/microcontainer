@@ -197,7 +197,8 @@ public class AbstractInjectionValueMetaData extends AbstractDependencyValueMetaD
    public Object getUnderlyingValue()
    {
       Object original = super.getUnderlyingValue();
-      return (fromContext != null && original == null) ? context.getName() : original;
+      // might be used for internal compare, in that case context will still be null
+      return (fromContext != null && original == null) ? (context != null ? context.getName() : null) : original;
    }
 
    public void initialVisit(MetaDataVisitor visitor)

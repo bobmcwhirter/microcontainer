@@ -88,9 +88,11 @@ public class AbstractLifecycleMetaData extends AbstractFeatureMetaData
       return state;
    }
 
+   @XmlAttribute(name="whenRequired")
    public void setState(ControllerState state)
    {
       this.state = state;
+      flushJBossObjectCache();
    }
 
    public String getMethodName()
@@ -190,6 +192,7 @@ public class AbstractLifecycleMetaData extends AbstractFeatureMetaData
    {
       if (methodName != null)
          buffer.append("method=").append(methodName);
+      buffer.append(" whenRequired=").append(state);
       buffer.append(" parameters=");
       JBossObject.list(buffer, parameters);
       buffer.append(" ");

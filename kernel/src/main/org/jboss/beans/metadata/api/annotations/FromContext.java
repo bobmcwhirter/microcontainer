@@ -35,6 +35,7 @@ public enum FromContext
    METADATA("metadata"),
    BEANINFO("beaninfo"),
    SCOPE("scope"),
+   STATE("state"),
    ID("id"),
    CONTEXT("context");
 
