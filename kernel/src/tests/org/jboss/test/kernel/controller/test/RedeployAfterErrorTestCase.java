@@ -22,14 +22,15 @@
 package org.jboss.test.kernel.controller.test;
 
 import junit.framework.Test;
-
 import org.jboss.dependency.spi.ControllerContext;
 import org.jboss.dependency.spi.ControllerState;
 import org.jboss.kernel.spi.deployment.KernelDeployment;
+import org.jboss.kernel.spi.dependency.KernelControllerContext;
+import org.jboss.beans.metadata.plugins.AbstractBeanMetaData;
 
 /**
  * RedeployAfterErrorTestCase.
- * 
+ *
  * @author <a href="adrian@jboss.com">Adrian Brock</a>
  * @version $Revision: 1.1 $
  */
@@ -60,12 +61,37 @@ public class RedeployAfterErrorTestCase extends AbstractControllerTest
       }
 
       validate();
-      
+
       deployment = deploy("RedeployAfterErrorTestCase_good.xml");
       try
       {
          validate();
          assertNotNull(getBean("Name1"));
+      }
+      finally
+      {
+         undeploy(deployment);
+      }
+   }
+
+   public void testChangeUsage() throws Throwable
+   {
+      KernelDeployment deployment = deploy("RedeployAfterErrorTestCase_bad.xml");
+      try
+      {
+         KernelControllerContext context = getControllerContext("Name1", null);
+         assertEquals(ControllerState.ERROR, context.getState());
+         checkThrowable(ClassNotFoundException.class, context.getError());
+
+         // a hacky fix, but the point is to get the error away :-)
+         AbstractBeanMetaData bmd = (AbstractBeanMetaData)context.getBeanMetaData();
+         bmd.setBean(Object.class.getName());
+
+         // we suspect the error was resolved, let's try to install
+         change(context, ControllerState.INSTALLED);
+
+         // nope, still in error
+         assertEquals(ControllerState.ERROR, context.getState());
       }
       finally
       {
