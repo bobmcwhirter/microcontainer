@@ -157,6 +157,24 @@ public class MicrocontainerTestDelegate extends AbstractTestDelegate
    }
    
    /**
+    * Get a bean
+    *
+    * @param <T> the expected type
+    * @param name the name of the bean
+    * @param state the state of the bean
+    * @param expected the expected type
+    * @return the bean
+    * @throws IllegalStateException when the bean does not exist at that state
+    */
+   protected <T> T getBean(final Object name, final ControllerState state, final Class<T> expected)
+   {
+      if (expected == null)
+         throw new IllegalArgumentException("Null expected");
+      Object bean = getBean(name, state);
+      return expected.cast(bean);
+   }
+   
+   /**
     * Get the metadata repository
     * @return the metadata repository
     * @throws IllegalStateException when the bean does not exist at that state

@@ -103,6 +103,35 @@ public class MicrocontainerTest extends AbstractTestCaseWithSetup
    {
       return getMCDelegate().getBean(name, state);
    }
+   
+   /**
+    * Get a bean
+    * 
+    * @param <T> the expected type
+    * @param name the name of the bean
+    * @param state the state of the bean
+    * @param expected the expected type
+    * @return the bean
+    * @throws IllegalStateException when the bean does not exist at that state
+    */
+   protected <T> T assertBean(Object name, ControllerState state, Class<T> expected)
+   {
+      return getMCDelegate().getBean(name, state, expected);
+   }
+   
+   /**
+    * Get a bean
+    * 
+    * @param <T> the expected type
+    * @param name the name of the bean
+    * @param expected the expected type
+    * @return the bean
+    * @throws IllegalStateException when the bean does not exist at that state
+    */
+   protected <T> T assertBean(Object name, Class<T> expected)
+   {
+      return assertBean(name, ControllerState.INSTALLED, expected);
+   }
 
    /**
     * Get a context
