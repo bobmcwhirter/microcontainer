@@ -24,7 +24,6 @@ package org.jboss.kernel.plugins.dependency;
 import org.jboss.beans.metadata.spi.BeanMetaData;
 import org.jboss.dependency.spi.ControllerState;
 import org.jboss.kernel.Kernel;
-import org.jboss.kernel.spi.config.KernelConfigurator;
 import org.jboss.kernel.spi.dependency.InstallKernelControllerContextAware;
 import org.jboss.kernel.spi.dependency.KernelController;
 import org.jboss.kernel.spi.dependency.KernelControllerContext;
@@ -44,7 +43,6 @@ public class InstallAction extends InstallsAwareAction
       KernelController controller = (KernelController) context.getController();
       Kernel kernel = controller.getKernel();
       KernelRegistry registry = kernel.getRegistry();
-      KernelConfigurator configurator = kernel.getConfigurator();
 
       BeanMetaData metaData = context.getBeanMetaData();
       Object name = metaData.getName();
