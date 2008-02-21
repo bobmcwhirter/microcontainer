@@ -100,7 +100,10 @@
    <bean name="ClassLoaderSystem" class="org.jboss.classloader.spi.ClassLoaderSystem">
       <constructor factoryClass="org.jboss.classloader.spi.ClassLoaderSystem" factoryMethod="getInstance"/>
    </bean>
-   <bean name="ClassLoading" class="org.jboss.classloading.spi.dependency.ClassLoading"/>
+   <bean name="ClassLoading" class="org.jboss.classloading.spi.dependency.ClassLoading">
+      <incallback method="addModule" state="Configured"/>
+      <uncallback method="removeModule" state="Configured"/>
+   </bean>
    <bean name="ClassLoadingMetaDataParser" class="org.jboss.deployers.vfs.spi.deployer.SchemaResolverDeployer">
       <constructor>
          <parameter>org.jboss.classloading.spi.metadata.ClassLoadingMetaData</parameter>

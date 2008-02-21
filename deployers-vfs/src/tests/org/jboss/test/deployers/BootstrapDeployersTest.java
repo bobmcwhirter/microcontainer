@@ -107,6 +107,14 @@ public abstract class BootstrapDeployersTest extends MicrocontainerTest
       return (VFSDeploymentUnit) getMainDeployerStructure().getDeploymentUnit(deployment.getName(), true);
    }
    
+   protected VFSDeploymentUnit addDeployment(String root, String child) throws Exception
+   {
+      VFSDeployment deployment = createVFSDeployment(root, child);
+      getDeployerClient().addDeployment(deployment);
+      getDeployerClient().process();
+      return (VFSDeploymentUnit) getMainDeployerStructure().getDeploymentUnit(deployment.getName(), true);
+   }
+   
    protected void undeploy(DeploymentUnit unit)
    {
       try
@@ -231,6 +239,18 @@ public abstract class BootstrapDeployersTest extends MicrocontainerTest
    protected ClassLoader getClassLoader(DeploymentUnit unit)
    {
       return unit.getClassLoader();
+   }
+   
+   protected void assertNoClassLoader(DeploymentUnit unit)
+   {
+      try
+      {
+         assertNull("Should not be a classloader: " + unit.getClassLoader());
+      }
+      catch (Throwable e)
+      {
+         checkThrowable(IllegalStateException.class, e);
+      }
    }
    
    protected ClassLoader getClassLoader(Object name)
