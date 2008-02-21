@@ -659,7 +659,7 @@ public class BaseClassLoader extends SecureClassLoader implements BaseClassLoade
     */
    protected void shutdownClassLoader()
    {
-      log.debug(toLongString() + " shutdown!");
+      log.debug(toString() + " shutdown!");
       if (resourceCache != null)
          resourceCache.clear();
       if (blackList != null)

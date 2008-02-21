@@ -119,7 +119,7 @@ public abstract class BaseClassLoaderDomain implements Loader
     */
    protected void shutdownDomain()
    {
-      log.debug(toLongString() + " shutdown!");
+      log.debug(toString() + " shutdown!");
 
       // Unregister all classloaders
       while (true)
@@ -1160,7 +1160,7 @@ public abstract class BaseClassLoaderDomain implements Loader
     */
    void registerClassLoader(BaseClassLoader classLoader)
    {
-      log.debug(this + " registerClassLoader " + classLoader.toLongString());
+      log.debug(this + " registerClassLoader " + classLoader.toString());
 
       if (getClassLoaderSystem() == null)
          throw new IllegalStateException("Domain is not registered with a classloader system: " + toLongString());
@@ -1221,7 +1221,7 @@ public abstract class BaseClassLoaderDomain implements Loader
     */
    synchronized void unregisterClassLoader(BaseClassLoader classLoader)
    {
-      log.debug(this + " unregisterClassLoader " + classLoader.toLongString());
+      log.debug(this + " unregisterClassLoader " + classLoader.toString());
 
       try
       {

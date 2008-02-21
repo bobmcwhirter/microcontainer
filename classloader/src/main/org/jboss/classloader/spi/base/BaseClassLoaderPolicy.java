@@ -310,7 +310,7 @@ public abstract class BaseClassLoaderPolicy
     */
    synchronized protected void shutdownPolicy()
    {
-      log.debug(toLongString() + " shutdown!");
+      log.debug(toString() + " shutdown!");
       BaseClassLoader classLoader = this.classLoader;
       this.classLoader = null;
       classLoader.shutdownClassLoader();
