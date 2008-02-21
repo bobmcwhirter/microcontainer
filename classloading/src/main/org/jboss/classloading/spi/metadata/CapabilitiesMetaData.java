@@ -40,7 +40,7 @@ import org.jboss.classloading.plugins.metadata.PackageCapability;
  * @version $Revision: 1.1 $
  */
 @XmlType(propOrder= {"capabilities"})
-public class CapabilitiesMetaData implements Serializable
+public class CapabilitiesMetaData implements Serializable, Cloneable
 {
    /** The serialVersionUID */
    private static final long serialVersionUID = -7910704924025591308L;
@@ -102,5 +102,24 @@ public class CapabilitiesMetaData implements Serializable
       if (capabilities == null)
          return;
       capabilities.remove(capability);
+   }
+
+   @Override
+   public CapabilitiesMetaData clone()
+   {
+      try
+      {
+         CapabilitiesMetaData clone = (CapabilitiesMetaData) super.clone();
+         if (capabilities != null)
+         {
+            List<Capability> clonedCapabilities = new CopyOnWriteArrayList<Capability>(capabilities);
+            clone.setCapabilities(clonedCapabilities);
+         }
+         return clone;
+      }
+      catch (CloneNotSupportedException e)
+      {
+         throw new RuntimeException("Unexpected", e);
+      }
    }
 }

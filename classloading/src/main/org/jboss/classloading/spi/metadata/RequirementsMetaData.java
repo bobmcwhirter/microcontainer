@@ -41,7 +41,7 @@ import org.jboss.classloading.plugins.metadata.UsesPackageRequirement;
  * @version $Revision: 1.1 $
  */
 @XmlType(propOrder={"requirements"})
-public class RequirementsMetaData implements Serializable
+public class RequirementsMetaData implements Serializable, Cloneable
 {
    /** The serialVersionUID */
    private static final long serialVersionUID = 3282035888494128833L;
@@ -104,5 +104,24 @@ public class RequirementsMetaData implements Serializable
       if (requirements == null)
          return;
       requirements.remove(requirement);
+   }
+
+   @Override
+   public RequirementsMetaData clone()
+   {
+      try
+      {
+         RequirementsMetaData clone = (RequirementsMetaData) super.clone();
+         if (requirements != null)
+         {
+            List<Requirement> clonedRequirements = new CopyOnWriteArrayList<Requirement>(requirements);
+            clone.setRequirements(clonedRequirements);
+         }
+         return clone;
+      }
+      catch (CloneNotSupportedException e)
+      {
+         throw new RuntimeException("Unexpected", e);
+      }
    }
 }

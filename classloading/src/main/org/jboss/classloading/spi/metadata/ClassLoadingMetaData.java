@@ -539,4 +539,13 @@ public class ClassLoadingMetaData extends NameAndVersionSupport
          return false;
       return one.equals(two);
    }
+
+   @Override
+   public ClassLoadingMetaData clone()
+   {
+      ClassLoadingMetaData clone = (ClassLoadingMetaData) super.clone();
+      requirements = clone.requirements.clone();
+      capabilities = clone.capabilities.clone();
+      return clone;
+   }
 }

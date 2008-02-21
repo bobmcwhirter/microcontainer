@@ -35,7 +35,7 @@ import org.jboss.classloading.spi.version.VersionComparatorRegistry;
  * @author <a href="adrian@jboss.com">Adrian Brock</a>
  * @version $Revision: 1.1 $
  */
-public class NameAndVersionSupport implements Serializable
+public class NameAndVersionSupport implements Serializable, Cloneable
 {
    /** The serialVersionUID */
    private static final long serialVersionUID = 6943685422194480909L;
@@ -176,5 +176,19 @@ public class NameAndVersionSupport implements Serializable
    public String toString()
    {
       return getClass().getSimpleName() + " " + getName() + ":" + getVersion();
+   }
+
+   @Override
+   public NameAndVersionSupport clone()
+   {
+      try
+      {
+         NameAndVersionSupport clone = (NameAndVersionSupport) super.clone();
+         return clone;
+      }
+      catch (CloneNotSupportedException e)
+      {
+         throw new RuntimeException("Unexpected", e);
+      }
    }
 }
