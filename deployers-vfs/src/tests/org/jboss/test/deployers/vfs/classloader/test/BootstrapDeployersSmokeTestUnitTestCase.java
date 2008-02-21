@@ -26,6 +26,8 @@ import java.util.List;
 
 import junit.framework.Test;
 
+import org.jboss.classloading.spi.metadata.ClassLoadingMetaData;
+import org.jboss.classloading.spi.metadata.ExportAll;
 import org.jboss.deployers.structure.spi.DeploymentUnit;
 import org.jboss.deployers.vfs.spi.structure.VFSDeploymentUnit;
 import org.jboss.test.deployers.BootstrapDeployersTest;
@@ -60,13 +62,47 @@ public class BootstrapDeployersSmokeTestUnitTestCase extends BootstrapDeployersT
    
    public void testDeployBeans() throws Exception
    {
-      VFSDeploymentUnit unit = assertDeploy("/bootstrap/test");
-      List<DeploymentUnit> components = unit.getComponents();
-      assertNotNull(components);
-      assertEquals(1, components.size());
-      DeploymentUnit component = components.get(0);
-      assertEquals("Test", component.getName());
-      
-      assertBean("Test", ArrayList.class);
+      VFSDeploymentUnit unit = assertDeploy("/bootstrap", "test");
+      try
+      {
+         List<DeploymentUnit> components = unit.getComponents();
+         assertNotNull(components);
+         assertEquals(1, components.size());
+         DeploymentUnit component = components.get(0);
+         assertEquals("Test", component.getName());
+         
+         assertBean("Test", ArrayList.class);
+         
+         assertNoResource("META-INF/test-beans.xml", getClass().getClassLoader());
+         ClassLoader unitCl = getClassLoader(unit);
+         assertGetResource("META-INF/test-beans.xml", unitCl);
+         ClassLoader beanCl = getClassLoader("Test");
+         assertGetResource("META-INF/test-beans.xml", beanCl);
+         
+         ClassLoadingMetaData metaData = unit.getAttachment(ClassLoadingMetaData.class);
+         assertEquals(unit.getSimpleName(), metaData.getName());
+         assertEquals(ExportAll.NON_EMPTY, metaData.getExportAll());
+         assertTrue(metaData.isImportAll());
+      }
+      finally
+      {
+         undeploy(unit);
+      }
+   }
+   
+   public void testClassLoadingMetaData() throws Exception
+   {
+      VFSDeploymentUnit unit = assertDeploy("/bootstrap", "test-classloader");
+      try
+      {
+         ClassLoadingMetaData metaData = unit.getAttachment(ClassLoadingMetaData.class);
+         assertEquals("test-classloading", metaData.getName());
+         assertNull(metaData.getExportAll());
+         assertFalse(metaData.isImportAll());
+      }
+      finally
+      {
+         undeploy(unit);
+      }
    }
 }

@@ -39,7 +39,7 @@ import org.jboss.xb.binding.sunday.unmarshalling.SingletonSchemaResolverFactory;
  * @author Scott.Stark@jboss.org
  * @version $Revision 1.1 $
  */
-public abstract class SchemaResolverDeployer<T> extends AbstractVFSParsingDeployer<T>
+public class SchemaResolverDeployer<T> extends AbstractVFSParsingDeployer<T>
 {
    /** Unmarshaller factory */
    private static final UnmarshallerFactory factory = UnmarshallerFactory.newInstance();

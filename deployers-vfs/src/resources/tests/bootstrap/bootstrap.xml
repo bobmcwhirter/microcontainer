@@ -97,15 +97,26 @@
    </bean>
 
    <!-- VFS ClassLoader -->
-   <!--bean name="ClassLoaderSystem" class="org.jboss.classloader.spi.ClassLoaderSystem">
+   <bean name="ClassLoaderSystem" class="org.jboss.classloader.spi.ClassLoaderSystem">
       <constructor factoryClass="org.jboss.classloader.spi.ClassLoaderSystem" factoryMethod="getInstance"/>
    </bean>
    <bean name="ClassLoading" class="org.jboss.classloading.spi.dependency.ClassLoading"/>
+   <bean name="ClassLoadingMetaDataParser" class="org.jboss.deployers.vfs.spi.deployer.SchemaResolverDeployer">
+      <constructor>
+         <parameter>org.jboss.classloading.spi.metadata.ClassLoadingMetaData</parameter>
+      </constructor>
+      <property name="name">jboss-classloading.xml</property>
+   </bean>
+   <bean name="ClassLoadingDefaultDeployer" class="org.jboss.deployers.plugins.classloading.ClassLoadingDefaultDeployer">
+      <property name="defaultMetaData">
+         <classloading xmlns="urn:jboss:classloading:1.0" export-all="NON_EMPTY" import-all="true"/>
+      </property>
+   </bean>
    <bean name="ClassLoaderDescribeDeployer" class="org.jboss.deployers.vfs.plugins.classloader.VFSClassLoaderDescribeDeployer">
       <property name="classLoading"><inject bean="ClassLoading"/></property>
    </bean>
    <bean name="ClassLoaderDeployer" class="org.jboss.deployers.plugins.classloading.AbstractTopLevelClassLoaderSystemDeployer">
       <property name="classLoading"><inject bean="ClassLoading"/></property>
       <property name="system"><inject bean="ClassLoaderSystem"/></property>
-   </bean-->
+   </bean>
 </deployment>

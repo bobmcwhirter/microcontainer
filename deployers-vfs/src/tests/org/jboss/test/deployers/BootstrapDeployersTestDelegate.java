@@ -23,9 +23,13 @@ package org.jboss.test.deployers;
 
 import java.net.URL;
 
+import org.jboss.classloading.spi.metadata.ClassLoadingMetaData10;
+import org.jboss.classloading.spi.vfs.metadata.VFSClassLoaderFactory10;
 import org.jboss.dependency.spi.ControllerState;
 import org.jboss.deployers.plugins.main.MainDeployerImpl;
 import org.jboss.test.kernel.junit.MicrocontainerTestDelegate;
+import org.jboss.xb.binding.sunday.unmarshalling.DefaultSchemaResolver;
+import org.jboss.xb.binding.sunday.unmarshalling.SingletonSchemaResolverFactory;
 
 /**
  * BootstrapDeployersTestDelegate.
@@ -36,6 +40,13 @@ import org.jboss.test.kernel.junit.MicrocontainerTestDelegate;
 public class BootstrapDeployersTestDelegate extends MicrocontainerTestDelegate
 {
    private MainDeployerImpl mainDeployer;
+
+   static
+   {
+      DefaultSchemaResolver resolver = (DefaultSchemaResolver) SingletonSchemaResolverFactory.getInstance().getSchemaBindingResolver();
+      resolver.addClassBinding("urn:jboss:classloader:1.0", VFSClassLoaderFactory10.class);
+      resolver.addClassBinding("urn:jboss:classloading:1.0", ClassLoadingMetaData10.class);
+   }
    
    public BootstrapDeployersTestDelegate(Class<?> clazz) throws Exception
    {
