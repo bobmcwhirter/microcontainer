@@ -87,7 +87,7 @@ public class ClassLoadingDefaultDeployer extends AbstractOptionalRealDeployer<Cl
          cloned.setName(unit.getSimpleName());
          unit.addAttachment(ClassLoadingMetaData.class, cloned);
       }
-      else if (deployment.getName() == null)
+      else if ("<unknown>".equals(deployment.getName()))
       {
          deployment.setName(unit.getSimpleName());
       }
