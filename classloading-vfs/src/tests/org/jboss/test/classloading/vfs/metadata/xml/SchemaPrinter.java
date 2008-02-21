@@ -25,6 +25,7 @@ import java.util.Collection;
 import java.util.Iterator;
 
 import javax.xml.XMLConstants;
+import javax.xml.namespace.QName;
 
 import org.jboss.xb.binding.sunday.unmarshalling.AllBinding;
 import org.jboss.xb.binding.sunday.unmarshalling.AttributeBinding;
@@ -119,6 +120,12 @@ public class SchemaPrinter
 
    public static void printType(StringBuilder builder, int pad, TypeBinding type)
    {
+      QName name = type.getQName();
+      if (name != null)
+      {
+         if (XMLConstants.W3C_XML_SCHEMA_NS_URI.equals(name.getNamespaceURI()))
+            return;
+      }
       if (type.isSimple())
          printSimpleType(builder, pad, type);
       else

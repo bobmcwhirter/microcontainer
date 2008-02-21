@@ -40,7 +40,7 @@ import org.jboss.classloading.plugins.metadata.UsesPackageRequirement;
  * @author <a href="adrian@jboss.com">Adrian Brock</a>
  * @version $Revision: 1.1 $
  */
-@XmlType(propOrder={"requirements"})
+@XmlType(name="requirements", propOrder={"requirements"})
 public class RequirementsMetaData implements Serializable, Cloneable
 {
    /** The serialVersionUID */

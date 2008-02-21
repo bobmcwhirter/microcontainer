@@ -27,6 +27,7 @@ import java.util.concurrent.CopyOnWriteArrayList;
 
 import javax.xml.bind.annotation.XmlAttribute;
 import javax.xml.bind.annotation.XmlElement;
+import javax.xml.bind.annotation.XmlTransient;
 
 import org.jboss.beans.metadata.spi.BeanMetaData;
 import org.jboss.beans.metadata.spi.BeanMetaDataFactory;
@@ -166,6 +167,7 @@ public class VFSClassLoaderFactory extends ClassLoadingMetaData implements BeanM
       this.roots = roots;
    }
 
+   @XmlTransient
    public List<BeanMetaData> getBeans()
    {
       // Determine some properties

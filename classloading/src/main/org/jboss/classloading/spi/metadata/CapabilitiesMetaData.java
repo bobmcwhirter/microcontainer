@@ -39,7 +39,7 @@ import org.jboss.classloading.plugins.metadata.PackageCapability;
  * @author <a href="adrian@jboss.com">Adrian Brock</a>
  * @version $Revision: 1.1 $
  */
-@XmlType(propOrder= {"capabilities"})
+@XmlType(name="capabilties", propOrder= {"capabilities"})
 public class CapabilitiesMetaData implements Serializable, Cloneable
 {
    /** The serialVersionUID */
