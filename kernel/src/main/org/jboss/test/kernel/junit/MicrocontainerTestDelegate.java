@@ -200,6 +200,21 @@ public class MicrocontainerTestDelegate extends AbstractTestDelegate
          return handleNotFoundContext(controller, name, state);
       return context;
    }
+   
+   /**
+    * Assert there is no context at the given state
+    * 
+    * @param name the name of the bean
+    * @param state the state of the bean
+    * @throws IllegalStateException when the context exists at that state
+    */
+   protected void assertNoControllerContext(final Object name, final ControllerState state)
+   {
+      KernelController controller = kernel.getController();
+      KernelControllerContext context = (KernelControllerContext) controller.getContext(name, state);
+      if (context != null)
+         throw new IllegalStateException("Did not expect context at state " + state + " ctx=" + context);
+   }
 
    /**
     * Handle not found context.

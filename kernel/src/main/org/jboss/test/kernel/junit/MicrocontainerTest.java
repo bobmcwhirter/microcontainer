@@ -132,6 +132,29 @@ public class MicrocontainerTest extends AbstractTestCaseWithSetup
    {
       return assertBean(name, ControllerState.INSTALLED, expected);
    }
+   
+   /**
+    * Assert there is no bean
+    * 
+    * @param name the name of the bean
+    * @throws IllegalStateException when the bean exists
+    */
+   protected void assertNoBean(Object name)
+   {
+      assertNoBean(name, ControllerState.INSTALLED);
+   }
+   
+   /**
+    * Assert there is no bean
+    * 
+    * @param name the name of the bean
+    * @param state the context state
+    * @throws IllegalStateException when the bean exists
+    */
+   protected void assertNoBean(Object name, ControllerState state)
+   {
+      assertNoControllerContext(name, state);
+   }
 
    /**
     * Get a context
@@ -156,6 +179,18 @@ public class MicrocontainerTest extends AbstractTestCaseWithSetup
    protected KernelControllerContext getControllerContext(Object name, ControllerState state)
    {
       return getMCDelegate().getControllerContext(name, state);
+   }
+
+   /**
+    * Assert there is no context at the given state
+    * 
+    * @param name the name of the bean
+    * @param state the state of the bean
+    * @throws IllegalStateException when the context exists at that state
+    */
+   protected void assertNoControllerContext(Object name, ControllerState state)
+   {
+      getMCDelegate().assertNoControllerContext(name, state);
    }
 
    /**
