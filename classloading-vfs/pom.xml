@@ -12,6 +12,11 @@
   <url>http://www.jboss.com/products/jbossmc</url>
   <description>JBoss ClassLoading VFS</description>
   <build>
+    <resources>
+      <resource>
+        <directory>src/resources/main</directory>
+      </resource>
+    </resources>
     <testResources>
       <testResource>
         <directory>src/resources/tests</directory>
