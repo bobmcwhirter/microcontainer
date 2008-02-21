@@ -41,7 +41,7 @@ public class NameAndVersionSupport implements Serializable, Cloneable
    private static final long serialVersionUID = 6943685422194480909L;
 
    /** The name  */
-   private String name = "<unknwown>";
+   private String name = "<unknown>";
    
    /** The version */
    private Object version = Version.DEFAULT_VERSION;
