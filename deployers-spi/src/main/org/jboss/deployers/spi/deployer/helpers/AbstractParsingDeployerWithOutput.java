@@ -26,6 +26,7 @@ import java.util.Map;
 
 import org.jboss.deployers.spi.DeploymentException;
 import org.jboss.deployers.spi.deployer.managed.ManagedObjectCreator;
+import org.jboss.deployers.spi.deployer.matchers.JarExtensionProvider;
 import org.jboss.deployers.structure.spi.DeploymentUnit;
 import org.jboss.managed.api.ManagedObject;
 import org.jboss.managed.api.factory.ManagedObjectFactory;
@@ -40,7 +41,7 @@ import org.jboss.managed.plugins.factory.ManagedObjectFactoryBuilder;
  * @version $Revision: 1.1 $
  */
 public abstract class AbstractParsingDeployerWithOutput<T> extends AbstractParsingDeployer
-   implements ManagedObjectCreator
+   implements ManagedObjectCreator, JarExtensionProvider
 {
    /** The metadata file name */
    private String name;
@@ -48,6 +49,9 @@ public abstract class AbstractParsingDeployerWithOutput<T> extends AbstractParsi
    /** The suffix */
    private String suffix;
    
+   /** The jar extension */
+   private String jarExtension;
+
    /** Include the deployment file */
    private boolean includeDeploymentFile = false;
 
@@ -112,6 +116,26 @@ public abstract class AbstractParsingDeployerWithOutput<T> extends AbstractParsi
    public void setSuffix(String suffix)
    {
       this.suffix = suffix;
+   }
+
+   /**
+    * Get the jar extension.
+    *
+    * @return the jar extension
+    */
+   public String getJarExtension()
+   {
+      return jarExtension;
+   }
+
+   /**
+    * Set the jar extension.
+    *
+    * @param jarExtension the jar extension
+    */
+   public void setJarExtension(String jarExtension)
+   {
+      this.jarExtension = jarExtension;
    }
 
    /**

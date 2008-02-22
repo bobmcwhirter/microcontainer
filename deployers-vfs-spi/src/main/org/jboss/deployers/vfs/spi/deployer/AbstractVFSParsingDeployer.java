@@ -36,7 +36,7 @@ import org.jboss.virtual.VirtualFile;
  * @author <a href="adrian@jboss.org">Adrian Brock</a>
  * @version $Revision: 1.1 $
  */
-public abstract class AbstractVFSParsingDeployer<T> extends AbstractParsingDeployerWithOutput<T>
+public abstract class AbstractVFSParsingDeployer<T> extends AbstractParsingDeployerWithOutput<T> implements FileMatcher
 {
    /**
     * Create a new AbstractVFSParsingDeployer.
@@ -47,6 +47,11 @@ public abstract class AbstractVFSParsingDeployer<T> extends AbstractParsingDeplo
    public AbstractVFSParsingDeployer(Class<T> output)
    {
       super(output);
+   }
+
+   public boolean isDeployable(VirtualFile file)
+   {
+      return file.getName().endsWith(getSuffix());
    }
 
    /**

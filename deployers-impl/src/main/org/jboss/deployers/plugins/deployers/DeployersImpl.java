@@ -32,7 +32,7 @@ import java.util.Map;
 import java.util.Set;
 import java.util.concurrent.ConcurrentHashMap;
 
-import org.jboss.dependency.plugins.AbstractController;
+import org.jboss.dependency.spi.Controller;
 import org.jboss.dependency.spi.ControllerContext;
 import org.jboss.dependency.spi.ControllerContextActions;
 import org.jboss.dependency.spi.ControllerState;
@@ -72,7 +72,7 @@ public class DeployersImpl implements Deployers, ControllerContextActions
    private static final Logger log = Logger.getLogger(DeployersImpl.class);
    
    /** The dependency state machine */
-   private AbstractController controller;
+   private Controller controller;
    
    /** The repository */
    private MutableMetaDataRepository repository;
@@ -95,7 +95,7 @@ public class DeployersImpl implements Deployers, ControllerContextActions
     * @param controller the controller
     * @throws IllegalArgumentException for a null controller
     */
-   public DeployersImpl(AbstractController controller)
+   public DeployersImpl(Controller controller)
    {
       this(controller, null);
    }
@@ -107,7 +107,7 @@ public class DeployersImpl implements Deployers, ControllerContextActions
     * @param deployers the deployers
     * @throws IllegalArgumentException for a null controller
     */
-   public DeployersImpl(AbstractController controller, Set<Deployer> deployers)
+   public DeployersImpl(Controller controller, Set<Deployer> deployers)
    {
       if (controller == null)
          throw new IllegalArgumentException("Null controller");

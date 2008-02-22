@@ -19,26 +19,33 @@
 * Software Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA
 * 02110-1301 USA, or see the FSF site: http://www.fsf.org.
 */
-package org.jboss.test.deployers.vfs.structure.file.support;
+package org.jboss.test.deployers.vfs.matchers;
 
-import org.jboss.deployers.vfs.spi.deployer.FileMatcher;
-import org.jboss.virtual.VirtualFile;
+import junit.framework.Test;
+import junit.framework.TestSuite;
+import junit.textui.TestRunner;
+import org.jboss.test.deployers.vfs.matchers.test.FileMatchersTestCase;
+import org.jboss.test.deployers.vfs.matchers.test.JarExtensionsTestCase;
 
 /**
+ * Matchers test suite.
+ *
  * @author <a href="mailto:ales.justin@jboss.com">Ales Justin</a>
  */
-public class BshFileMatcher implements FileMatcher
+public class VFSMatchersTestSuite extends TestSuite
 {
-   public boolean isDeployable(VirtualFile file)
+   public static void main(String[] args)
    {
-      try
-      {
-         String toString = file.getName();
-         return toString.endsWith(".bsh");
-      }
-      catch (Exception e)
-      {
-         throw new RuntimeException(e);
-      }
+      TestRunner.run(suite());
+   }
+
+   public static Test suite()
+   {
+      TestSuite suite = new TestSuite("VFS Matchers Tests");
+
+      suite.addTest(FileMatchersTestCase.suite());
+      suite.addTest(JarExtensionsTestCase.suite());
+
+      return suite;
    }
 }

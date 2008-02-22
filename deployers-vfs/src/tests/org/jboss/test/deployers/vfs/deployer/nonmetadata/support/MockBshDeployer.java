@@ -25,7 +25,7 @@ import java.io.InputStream;
 import java.util.Set;
 import java.util.HashSet;
 
-import org.jboss.deployers.vfs.plugins.structure.file.FileMatcher;
+import org.jboss.deployers.vfs.spi.deployer.FileMatcher;
 import org.jboss.deployers.vfs.spi.deployer.AbstractVFSParsingDeployer;
 import org.jboss.deployers.vfs.spi.structure.VFSDeploymentUnit;
 import org.jboss.virtual.VirtualFile;
@@ -61,11 +61,6 @@ public class MockBshDeployer extends AbstractVFSParsingDeployer<BshScript> imple
    protected void init(VFSDeploymentUnit unit, BshScript metaData, VirtualFile file) throws Exception
    {
       scipts.add(metaData);
-   }
-
-   public boolean isDeployable(VirtualFile file)
-   {
-      return file.getName().endsWith(getSuffix());
    }
 
    public Set<BshScript> getScipts()

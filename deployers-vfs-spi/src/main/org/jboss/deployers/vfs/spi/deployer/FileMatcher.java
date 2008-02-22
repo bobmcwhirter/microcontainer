@@ -19,26 +19,22 @@
 * Software Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA
 * 02110-1301 USA, or see the FSF site: http://www.fsf.org.
 */
-package org.jboss.test.deployers.vfs.structure.file.support;
+package org.jboss.deployers.vfs.spi.deployer;
 
-import org.jboss.deployers.vfs.spi.deployer.FileMatcher;
 import org.jboss.virtual.VirtualFile;
 
 /**
+ * Matches virtual file to check if it can be deployed.
+ *
  * @author <a href="mailto:ales.justin@jboss.com">Ales Justin</a>
  */
-public class BshFileMatcher implements FileMatcher
+public interface FileMatcher
 {
-   public boolean isDeployable(VirtualFile file)
-   {
-      try
-      {
-         String toString = file.getName();
-         return toString.endsWith(".bsh");
-      }
-      catch (Exception e)
-      {
-         throw new RuntimeException(e);
-      }
-   }
+   /**
+    * Check if file param is deployable.
+    *
+    * @param file the virtual file
+    * @return true if we have a match, false otherwise
+    */
+   boolean isDeployable(VirtualFile file);
 }

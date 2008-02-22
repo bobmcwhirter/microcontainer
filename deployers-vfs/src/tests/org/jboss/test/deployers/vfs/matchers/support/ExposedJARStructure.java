@@ -19,26 +19,36 @@
 * Software Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA
 * 02110-1301 USA, or see the FSF site: http://www.fsf.org.
 */
-package org.jboss.test.deployers.vfs.structure.file.support;
+package org.jboss.test.deployers.vfs.matchers.support;
 
-import org.jboss.deployers.vfs.spi.deployer.FileMatcher;
+import java.util.HashSet;
+import java.util.Set;
+
+import org.jboss.deployers.spi.DeploymentException;
+import org.jboss.deployers.spi.structure.StructureMetaData;
+import org.jboss.deployers.vfs.plugins.structure.jar.JARStructure;
+import org.jboss.deployers.vfs.spi.structure.VFSStructuralDeployers;
 import org.jboss.virtual.VirtualFile;
 
 /**
+ * Exposes recognized files.
+ *
  * @author <a href="mailto:ales.justin@jboss.com">Ales Justin</a>
  */
-public class BshFileMatcher implements FileMatcher
+public class ExposedJARStructure extends JARStructure
 {
-   public boolean isDeployable(VirtualFile file)
+   protected Set<String> recognized = new HashSet<String>();
+
+   public Set<String> getRecognized()
    {
-      try
-      {
-         String toString = file.getName();
-         return toString.endsWith(".bsh");
-      }
-      catch (Exception e)
-      {
-         throw new RuntimeException(e);
-      }
+      return recognized;
+   }
+
+   public boolean determineStructure(VirtualFile root, VirtualFile parent, VirtualFile file, StructureMetaData metaData, VFSStructuralDeployers deployers) throws DeploymentException
+   {
+      boolean determined = super.determineStructure(root, parent, file, metaData, deployers);
+      if (determined)
+         recognized.add(file.getName());
+      return determined;
    }
 }

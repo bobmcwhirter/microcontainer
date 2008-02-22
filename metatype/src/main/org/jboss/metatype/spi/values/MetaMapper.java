@@ -114,7 +114,7 @@ public abstract class MetaMapper<T>
     * Create the meta value
     * 
     * @param metaType the metatype
-    * @param object
+    * @param object the object
     * @return the meta value
     */
    public abstract MetaValue createMetaValue(MetaType<?> metaType, T object);

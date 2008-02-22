@@ -29,6 +29,7 @@ import org.jboss.deployers.spi.structure.StructureMetaData;
 import org.jboss.deployers.spi.DeploymentException;
 import org.jboss.deployers.vfs.spi.structure.VFSStructuralDeployers;
 import org.jboss.deployers.vfs.spi.structure.helpers.AbstractStructureDeployer;
+import org.jboss.deployers.vfs.spi.deployer.FileMatcher;
 import org.jboss.virtual.VirtualFile;
 import org.jboss.beans.metadata.api.annotations.Install;
 import org.jboss.beans.metadata.api.annotations.Uninstall;

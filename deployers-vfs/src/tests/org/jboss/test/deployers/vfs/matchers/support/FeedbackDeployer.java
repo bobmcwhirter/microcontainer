@@ -19,22 +19,37 @@
 * Software Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA
 * 02110-1301 USA, or see the FSF site: http://www.fsf.org.
 */
-package org.jboss.deployers.vfs.plugins.structure.file;
+package org.jboss.test.deployers.vfs.matchers.support;
 
+import java.util.Set;
+import java.util.HashSet;
+
+import org.jboss.deployers.vfs.spi.deployer.AbstractVFSParsingDeployer;
+import org.jboss.deployers.vfs.spi.structure.VFSDeploymentUnit;
 import org.jboss.virtual.VirtualFile;
 
 /**
- * Matches virtual file to check if it can be deployed.
- *
+ * Gather feedback from deployer units.
+ * 
  * @author <a href="mailto:ales.justin@jboss.com">Ales Justin</a>
  */
-public interface FileMatcher
+public abstract class FeedbackDeployer extends AbstractVFSParsingDeployer<Object>
 {
-   /**
-    * Check if file param is deployable.
-    *
-    * @param file the virtual file
-    * @return true if we have a match, false otherwise
-    */
-   boolean isDeployable(VirtualFile file);
+   private Set<String> files = new HashSet<String>();
+
+   protected FeedbackDeployer()
+   {
+      super(Object.class);
+   }
+
+   protected Object parse(VFSDeploymentUnit unit, VirtualFile file, Object root) throws Exception
+   {
+      files.add(file.getName());
+      return null;
+   }
+
+   public Set<String> getFiles()
+   {
+      return files;
+   }
 }

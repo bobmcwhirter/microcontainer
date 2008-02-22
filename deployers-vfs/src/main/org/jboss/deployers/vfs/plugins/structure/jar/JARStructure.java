@@ -25,12 +25,15 @@ import java.io.IOException;
 import java.util.Set;
 
 import org.jboss.deployers.spi.DeploymentException;
+import org.jboss.deployers.spi.deployer.matchers.JarExtensionProvider;
 import org.jboss.deployers.spi.structure.ContextInfo;
 import org.jboss.deployers.spi.structure.StructureMetaData;
 import org.jboss.deployers.vfs.spi.structure.VFSStructuralDeployers;
 import org.jboss.deployers.vfs.spi.structure.helpers.AbstractStructureDeployer;
 import org.jboss.virtual.VirtualFile;
 import org.jboss.virtual.plugins.context.jar.JarUtils;
+import org.jboss.beans.metadata.api.annotations.Install;
+import org.jboss.beans.metadata.api.annotations.Uninstall;
 
 /**
  * JARStructure.
@@ -77,6 +80,22 @@ public class JARStructure extends AbstractStructureDeployer
    public void setSuffixes(Set<String> suffixes)
    {
       JarUtils.setJarSuffixes(suffixes);
+   }
+
+   @Install
+   public void addJarExtension(JarExtensionProvider provider)
+   {
+      String extension = provider.getJarExtension();
+      if (extension != null)
+         JarUtils.addJarSuffix(extension);
+   }
+
+   @Uninstall
+   public void removeJarExtension(JarExtensionProvider provider)
+   {
+      String extension = provider.getJarExtension();
+      if (extension != null)
+         JarUtils.removeJarSuffix(extension);
    }
 
    public boolean determineStructure(VirtualFile root, VirtualFile parent, VirtualFile file, StructureMetaData metaData, VFSStructuralDeployers deployers) throws DeploymentException

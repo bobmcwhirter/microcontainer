@@ -58,5 +58,4 @@ public class VersionMetaMapper extends MetaMapper<Version>
       String value = (String) simple.getValue();
       return Version.parseVersion(value);
    }
-
 }

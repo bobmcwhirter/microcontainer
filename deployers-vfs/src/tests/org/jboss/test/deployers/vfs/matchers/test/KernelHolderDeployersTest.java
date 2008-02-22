@@ -19,26 +19,52 @@
 * Software Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA
 * 02110-1301 USA, or see the FSF site: http://www.fsf.org.
 */
-package org.jboss.test.deployers.vfs.structure.file.support;
+package org.jboss.test.deployers.vfs.matchers.test;
 
-import org.jboss.deployers.vfs.spi.deployer.FileMatcher;
-import org.jboss.virtual.VirtualFile;
+import org.jboss.kernel.Kernel;
+import org.jboss.kernel.plugins.bootstrap.basic.BasicBootstrap;
+import org.jboss.kernel.spi.dependency.KernelController;
+import org.jboss.test.deployers.BaseDeployersVFSTest;
 
 /**
+ * Holds a Kernel instance
+ *
  * @author <a href="mailto:ales.justin@jboss.com">Ales Justin</a>
  */
-public class BshFileMatcher implements FileMatcher
+public abstract class KernelHolderDeployersTest extends BaseDeployersVFSTest
 {
-   public boolean isDeployable(VirtualFile file)
+   private Kernel kernel;
+   private KernelController controller;
+
+   protected KernelHolderDeployersTest(String name)
    {
-      try
-      {
-         String toString = file.getName();
-         return toString.endsWith(".bsh");
-      }
-      catch (Exception e)
-      {
-         throw new RuntimeException(e);
-      }
+      super(name);
+   }
+
+   protected void setUp() throws Exception
+   {
+      super.setUp();
+
+      BasicBootstrap bootstrap = new BasicBootstrap();
+      bootstrap.run();
+
+      kernel = bootstrap.getKernel();
+      controller = kernel.getController();
+   }
+
+   protected KernelController getController()
+   {
+      return controller;
+   }
+
+   protected void tearDown() throws Exception
+   {
+      super.tearDown();
+
+      if (controller != null)
+         controller.shutdown();
+
+      controller = null;
+      kernel = null;
    }
 }

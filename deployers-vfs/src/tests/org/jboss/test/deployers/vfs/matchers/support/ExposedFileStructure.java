@@ -19,26 +19,41 @@
 * Software Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA
 * 02110-1301 USA, or see the FSF site: http://www.fsf.org.
 */
-package org.jboss.test.deployers.vfs.structure.file.support;
+package org.jboss.test.deployers.vfs.matchers.support;
 
+import java.util.Set;
+import java.util.HashSet;
+
+import org.jboss.deployers.vfs.plugins.structure.file.FileStructure;
 import org.jboss.deployers.vfs.spi.deployer.FileMatcher;
-import org.jboss.virtual.VirtualFile;
+import org.jboss.beans.metadata.api.annotations.Install;
+import org.jboss.beans.metadata.api.annotations.Uninstall;
 
 /**
+ * Exposes matchers.
+ *
  * @author <a href="mailto:ales.justin@jboss.com">Ales Justin</a>
  */
-public class BshFileMatcher implements FileMatcher
+public class ExposedFileStructure extends FileStructure
 {
-   public boolean isDeployable(VirtualFile file)
+   protected Set<FileMatcher> matchers = new HashSet<FileMatcher>();
+
+   public Set<FileMatcher> getMatchers()
    {
-      try
-      {
-         String toString = file.getName();
-         return toString.endsWith(".bsh");
-      }
-      catch (Exception e)
-      {
-         throw new RuntimeException(e);
-      }
+      return matchers;
+   }
+
+   @Install
+   public boolean addFileMatcher(FileMatcher fm)
+   {
+      super.addFileMatcher(fm);
+      return matchers.add(fm);
+   }
+
+   @Uninstall
+   public boolean removeFileMatcher(FileMatcher fm)
+   {
+      matchers.remove(fm);
+      return super.removeFileMatcher(fm);
    }
 }

@@ -38,6 +38,10 @@ import org.jboss.metatype.spi.values.MetaMapper;
 @Retention(RetentionPolicy.RUNTIME)
 public @interface MetaMapping
 {
-   /** The meta mapper */
+   /**
+    * The meta mapper
+    *
+    * @return mapper class
+    */
    Class<? extends MetaMapper<?>> value();
 }

@@ -24,6 +24,7 @@ package org.jboss.test.deployers;
 import java.util.Set;
 
 import org.jboss.dependency.plugins.AbstractController;
+import org.jboss.dependency.spi.Controller;
 import org.jboss.deployers.client.plugins.deployment.AbstractDeployment;
 import org.jboss.deployers.client.spi.DeployerClient;
 import org.jboss.deployers.client.spi.Deployment;
@@ -97,10 +98,15 @@ public abstract class AbstractDeployerTest extends BaseTestCase
       structure.setStructureBuilder(builder);
       return structure;
    }
-   
+
+   protected Controller getController()
+   {
+      return new AbstractController();
+   }
+
    protected Deployers createDeployers()
    {
-      AbstractController controller = new AbstractController();
+      Controller controller = getController();
       return new DeployersImpl(controller);
    }
    

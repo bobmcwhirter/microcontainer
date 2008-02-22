@@ -389,6 +389,9 @@ public class MainDeployerImpl implements MainDeployer, MainDeployerStructure
       if (deployments == null)
          throw new IllegalArgumentException("Null deployments.");
 
+      if (deployers == null)
+         throw new IllegalStateException("No deployers");
+
       lockRead();
       try
       {
@@ -433,6 +436,9 @@ public class MainDeployerImpl implements MainDeployer, MainDeployerStructure
    {
       if (deployments == null)
          throw new IllegalArgumentException("Null deployments.");
+
+      if (deployers == null)
+         throw new IllegalStateException("No deployers");
 
       lockRead();
       try
