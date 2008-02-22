@@ -111,11 +111,30 @@ public abstract class InstallsAwareAction extends KernelControllerContextAction
          }
          catch (Throwable t)
          {
-            doUninstalls(context);
+            considerUninstalls(context, index);
             undoInstallAction(context);
             throw t;
          }
       }
+   }
+
+   /**
+    * Consider the uninstalls.
+    *
+    * This method is here to be able to override
+    * the behavior after installs failed.
+    * e.g. perhaps only running uninstalls from the index.
+    *
+    * By default we run all uninstalls in the case
+    * at least one install failed.
+    *
+    * @param context the context
+    * @param index current installs index
+    */
+   protected void considerUninstalls(KernelControllerContext context, int index)
+   {
+      if (index > 0)
+         doUninstalls(context);
    }
 
    /**
