@@ -53,6 +53,10 @@ public @interface ManagementObject
     * {@linkplain ManagementObjectID}.
     */
    String name() default ManagementConstants.GENERATED;
+   /**
+    * A description for the managed object. 
+    */
+   String description() default ManagementConstants.GENERATED;
    /** The name type used for ManagementObjectRef resolution. Generally
     * this is taken from a property annotated with
     * {@linkplain ManagementObjectID}.

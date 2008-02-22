@@ -181,6 +181,8 @@ public class ManagedObjectImpl implements ManagedObject
    public void setAttachmentName(String attachmentName)
    {
       this.attachmentName = attachmentName;
+      if(attachmentName.endsWith("LocalDataSourceDeploymentMetaData"))
+         System.err.println("LocalDataSourceDeploymentMetaData MO");
    }
 
    /**
@@ -237,6 +239,8 @@ public class ManagedObjectImpl implements ManagedObject
    public void setAttachment(Serializable attachment)
    {
       this.attachment = attachment;
+      if(attachment != null && attachment.getClass().getSimpleName().endsWith("LocalDataSourceDeploymentMetaData"))
+         System.err.println("LocalDataSourceDeploymentMetaData MO");
    }
 
    /**
