@@ -19,21 +19,43 @@
 * Software Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA
 * 02110-1301 USA, or see the FSF site: http://www.fsf.org.
 */
-package org.jboss.metatype.api.annotations;
+package org.jboss.test.metatype.values.factory.support;
 
-import java.lang.annotation.ElementType;
-import java.lang.annotation.Retention;
-import java.lang.annotation.RetentionPolicy;
-import java.lang.annotation.Target;
+import java.lang.reflect.Type;
+
+import org.jboss.metatype.api.types.MetaType;
+import org.jboss.metatype.api.types.SimpleMetaType;
+import org.jboss.metatype.api.values.MetaValue;
+import org.jboss.metatype.api.values.SimpleValue;
+import org.jboss.metatype.api.values.SimpleValueSupport;
+import org.jboss.metatype.spi.values.MetaMapper;
 
 /**
- * CompositeKey.
+ * TestMetaMapper.
  * 
  * @author <a href="adrian@jboss.com">Adrian Brock</a>
  * @version $Revision: 1.1 $
  */
-@Target({ElementType.METHOD})
-@Retention(RetentionPolicy.RUNTIME)
-public @interface CompositeKey
+public class TestMetaMapper extends MetaMapper<TestMetaMapped>
 {
+   @Override
+   public Type mapToType()
+   {
+      return String.class;
+   }
+
+   public MetaValue createMetaValue(MetaType<?> metaType, TestMetaMapped object)
+   {
+      return SimpleValueSupport.wrap(object.getValue());
+   }
+
+   public TestMetaMapped unwrapMetaValue(MetaValue metaValue)
+   {
+      if (SimpleMetaType.STRING.equals(metaValue.getMetaType()) == false)
+         throw new IllegalArgumentException("Not a string: " + metaValue);
+      
+      SimpleValue<?> simple = (SimpleValue<?>) metaValue;
+      String value = (String) simple.getValue();
+      return new TestMetaMapped(value);
+   }
 }

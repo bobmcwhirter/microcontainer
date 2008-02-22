@@ -28,7 +28,9 @@ import org.jboss.metatype.api.types.CompositeMetaType;
 import org.jboss.metatype.api.types.MetaType;
 import org.jboss.metatype.api.types.SimpleMetaType;
 import org.jboss.metatype.plugins.types.MutableCompositeMetaType;
+import org.jboss.test.metatype.types.factory.support.TestIgnoredCompositeItem;
 import org.jboss.test.metatype.types.factory.support.TestRecursiveComposite;
+import org.jboss.test.metatype.types.factory.support.TestRenamedCompositeItem;
 import org.jboss.test.metatype.types.factory.support.TestSimpleComposite;
 
 import junit.framework.Test;
@@ -91,6 +93,35 @@ public class CompositeMetaTypeFactoryUnitTestCase extends AbstractMetaTypeFactor
       MutableCompositeMetaType expected = new MutableCompositeMetaType(TestRecursiveComposite.class.getName(), TestRecursiveComposite.class.getName());
       expected.addItem("id", "id", SimpleMetaType.STRING);
       expected.addItem("other", "other", expected);
+      Set<String> keys = Collections.singleton("id");
+      expected.setKeys(keys);
+      expected.freeze();
+      
+      testComposite(expected, actual);
+   }
+   
+   public void testIgnoredItem() throws Exception
+   {
+      MetaType<?> result = resolve(TestIgnoredCompositeItem.class);
+      CompositeMetaType actual = assertInstanceOf(result, CompositeMetaType.class);
+
+      MutableCompositeMetaType expected = new MutableCompositeMetaType(TestIgnoredCompositeItem.class.getName(), TestIgnoredCompositeItem.class.getName());
+      expected.addItem("id", "id", SimpleMetaType.STRING);
+      Set<String> keys = Collections.singleton("id");
+      expected.setKeys(keys);
+      expected.freeze();
+      
+      testComposite(expected, actual);
+   }
+   
+   public void testRenamedItem() throws Exception
+   {
+      MetaType<?> result = resolve(TestRenamedCompositeItem.class);
+      CompositeMetaType actual = assertInstanceOf(result, CompositeMetaType.class);
+      
+      MutableCompositeMetaType expected = new MutableCompositeMetaType(TestRenamedCompositeItem.class.getName(), TestRenamedCompositeItem.class.getName());
+      expected.addItem("id", "id", SimpleMetaType.STRING);
+      expected.addItem("renamed", "renamed", SimpleMetaType.STRING);
       Set<String> keys = Collections.singleton("id");
       expected.setKeys(keys);
       expected.freeze();

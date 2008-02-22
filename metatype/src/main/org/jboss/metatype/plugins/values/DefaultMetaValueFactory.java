@@ -71,6 +71,7 @@ import org.jboss.metatype.api.values.SimpleValueSupport;
 import org.jboss.metatype.api.values.TableValue;
 import org.jboss.metatype.api.values.TableValueSupport;
 import org.jboss.metatype.plugins.types.DefaultMetaTypeFactory;
+import org.jboss.metatype.spi.values.MetaMapper;
 import org.jboss.metatype.spi.values.MetaValueBuilder;
 import org.jboss.reflect.plugins.introspection.ParameterizedClassInfo;
 import org.jboss.reflect.spi.ArrayInfo;
@@ -412,7 +413,7 @@ public class DefaultMetaValueFactory extends MetaValueFactory
          throw new RuntimeException("Error retrieving BeanInfo for " + type);
       }
 
-      for (String name : type.keySet())
+      for (String name : type.itemSet())
       {
          MetaType<?> itemType = type.getType(name);
          Object itemValue;
@@ -523,6 +524,10 @@ public class DefaultMetaValueFactory extends MetaValueFactory
       if (metaValue == null)
          return null;
 
+      MetaMapper<?> mapper = MetaMapper.getMetaMapper(type);
+      if (mapper != null)
+         return mapper.unwrapMetaValue(metaValue);
+      
       MetaType<?> metaType = metaValue.getMetaType();
 
       if (metaType.isSimple())
@@ -681,7 +686,7 @@ public class DefaultMetaValueFactory extends MetaValueFactory
             return Proxy.newProxyInstance(clazz.getClassLoader(), interfaces, handler);            
          }
          Object bean = createNewInstance(beanInfo);
-         for (String name : compositeMetaType.keySet())
+         for (String name : compositeMetaType.itemSet())
          {
             MetaValue itemValue = compositeValue.get(name);
             PropertyInfo propertyInfo = beanInfo.getProperty(name);
@@ -947,6 +952,14 @@ public class DefaultMetaValueFactory extends MetaValueFactory
       try
       {
          MetaValue result = isBuilder(metaType, type, value, mapping);
+
+         if (result == null)
+         {
+            MetaMapper<Object> mapper = (MetaMapper) MetaMapper.getMetaMapper(type);
+            if (mapper != null)
+               result = mapper.createMetaValue(metaType, value);
+         }
+
          if (result == null)
          {
             if (metaType.isSimple())

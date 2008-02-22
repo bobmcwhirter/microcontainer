@@ -30,7 +30,9 @@ import org.jboss.metatype.api.values.CompositeValueSupport;
 import org.jboss.metatype.api.values.MetaValue;
 import org.jboss.metatype.api.values.SimpleValueSupport;
 import org.jboss.metatype.plugins.types.MutableCompositeMetaType;
+import org.jboss.test.metatype.values.factory.support.TestIgnoredCompositeItem;
 import org.jboss.test.metatype.values.factory.support.TestRecursiveComposite;
+import org.jboss.test.metatype.values.factory.support.TestRenamedCompositeItem;
 import org.jboss.test.metatype.values.factory.support.TestSimpleComposite;
 
 import junit.framework.Test;
@@ -103,6 +105,48 @@ public class CompositeValueFactoryUnitTestCase extends AbstractMetaValueFactoryT
       
       TestRecursiveComposite object = new TestRecursiveComposite("Hello");
       object.setOther(object);
+      MetaValue result = createMetaValue(object);
+      CompositeValue actual = assertInstanceOf(result, CompositeValue.class);
+      getLog().debug("Composite Value: " + actual);
+      assertEquals(expected, actual);
+   }
+
+   public void testIgnoreItem() throws Exception
+   {
+      MutableCompositeMetaType compositeType = new MutableCompositeMetaType(TestIgnoredCompositeItem.class.getName(), TestIgnoredCompositeItem.class.getName());
+      compositeType.addItem("id", "id", SimpleMetaType.STRING);
+      Set<String> keys = Collections.singleton("id");
+      compositeType.setKeys(keys);
+      compositeType.freeze();
+
+      CompositeValueSupport expected = new CompositeValueSupport(compositeType);
+      expected.set("id", SimpleValueSupport.wrap("Hello"));
+      
+      TestIgnoredCompositeItem object = new TestIgnoredCompositeItem();
+      object.setId("Hello");
+      object.setIgnored("Ignored?");
+      MetaValue result = createMetaValue(object);
+      CompositeValue actual = assertInstanceOf(result, CompositeValue.class);
+      getLog().debug("Composite Value: " + actual);
+      assertEquals(expected, actual);
+   }
+
+   public void testRenameItem() throws Exception
+   {
+      MutableCompositeMetaType compositeType = new MutableCompositeMetaType(TestRenamedCompositeItem.class.getName(), TestRenamedCompositeItem.class.getName());
+      compositeType.addItem("id", "id", SimpleMetaType.STRING);
+      compositeType.addItem("renamed", "renamed", SimpleMetaType.STRING);
+      Set<String> keys = Collections.singleton("id");
+      compositeType.setKeys(keys);
+      compositeType.freeze();
+
+      CompositeValueSupport expected = new CompositeValueSupport(compositeType);
+      expected.set("id", SimpleValueSupport.wrap("Hello"));
+      expected.set("renamed", SimpleValueSupport.wrap("Renamed"));
+      
+      TestRenamedCompositeItem object = new TestRenamedCompositeItem();
+      object.setId("Hello");
+      object.setValue("Renamed");
       MetaValue result = createMetaValue(object);
       CompositeValue actual = assertInstanceOf(result, CompositeValue.class);
       getLog().debug("Composite Value: " + actual);

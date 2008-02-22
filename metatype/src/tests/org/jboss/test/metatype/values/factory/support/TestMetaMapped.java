@@ -19,21 +19,28 @@
 * Software Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA
 * 02110-1301 USA, or see the FSF site: http://www.fsf.org.
 */
-package org.jboss.metatype.api.annotations;
+package org.jboss.test.metatype.values.factory.support;
 
-import java.lang.annotation.ElementType;
-import java.lang.annotation.Retention;
-import java.lang.annotation.RetentionPolicy;
-import java.lang.annotation.Target;
+import org.jboss.metatype.api.annotations.MetaMapping;
 
 /**
- * CompositeKey.
+ * TestMetaMapped.
  * 
  * @author <a href="adrian@jboss.com">Adrian Brock</a>
  * @version $Revision: 1.1 $
  */
-@Target({ElementType.METHOD})
-@Retention(RetentionPolicy.RUNTIME)
-public @interface CompositeKey
+@MetaMapping(TestMetaMapper.class)
+public class TestMetaMapped
 {
+   private String value;
+   
+   public TestMetaMapped(String value)
+   {
+      this.value = value;
+   }
+   
+   public String getValue()
+   {
+      return value;
+   }
 }

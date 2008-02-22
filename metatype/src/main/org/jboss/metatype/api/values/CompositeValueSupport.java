@@ -85,7 +85,7 @@ public class CompositeValueSupport extends AbstractMetaValue implements Composit
       if (itemNames.length != itemValues.length)
          throw new IllegalArgumentException("itemNames has size " + itemNames.length + " but itemValues has size " + itemValues.length);
 
-      Set<String> compositeNames = metaType.keySet();
+      Set<String> compositeNames = metaType.itemSet();
       int compositeNameSize = compositeNames.size();
       if (itemNames.length > compositeNameSize)
          throw new IllegalArgumentException("itemNames has size " + itemNames.length + " but composite type has size " + compositeNameSize);
@@ -292,7 +292,7 @@ public class CompositeValueSupport extends AbstractMetaValue implements Composit
       if (items == null)
          items = Collections.emptyMap();
 
-      Set<String> compositeNames = metaType.keySet();
+      Set<String> compositeNames = metaType.itemSet();
       int compositeNameSize = compositeNames.size();
       if (items.size() > compositeNameSize)
          throw new IllegalArgumentException("items has size " + items.size() + " but composite type has size " + compositeNameSize);

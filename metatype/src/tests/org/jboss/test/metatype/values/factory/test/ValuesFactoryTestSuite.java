@@ -61,6 +61,7 @@ public class ValuesFactoryTestSuite extends TestSuite
       suite.addTest(CompositeValueFactoryUnitTestCase.suite());
       suite.addTest(AnnotationValueFactoryUnitTestCase.suite());
       suite.addTest(UnwrapValueUnitTestCase.suite());
+      suite.addTest(MetaMapperUnitTestCase.suite());
 
       return suite;
    }

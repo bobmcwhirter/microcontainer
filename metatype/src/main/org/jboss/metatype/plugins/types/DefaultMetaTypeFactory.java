@@ -37,8 +37,11 @@ import org.jboss.beans.info.spi.PropertyInfo;
 import org.jboss.config.plugins.property.PropertyConfiguration;
 import org.jboss.config.spi.Configuration;
 import org.jboss.metatype.api.annotations.CompositeKey;
+import org.jboss.metatype.api.annotations.CompositeValue;
 import org.jboss.metatype.api.annotations.Generic;
+import org.jboss.metatype.api.annotations.MetaTypeConstants;
 import org.jboss.metatype.api.types.ArrayMetaType;
+import org.jboss.metatype.api.types.CollectionMetaType;
 import org.jboss.metatype.api.types.CompositeMetaType;
 import org.jboss.metatype.api.types.EnumMetaType;
 import org.jboss.metatype.api.types.GenericMetaType;
@@ -48,8 +51,8 @@ import org.jboss.metatype.api.types.MetaType;
 import org.jboss.metatype.api.types.MetaTypeFactory;
 import org.jboss.metatype.api.types.SimpleMetaType;
 import org.jboss.metatype.api.types.TableMetaType;
-import org.jboss.metatype.api.types.CollectionMetaType;
 import org.jboss.metatype.spi.types.MetaTypeBuilder;
+import org.jboss.metatype.spi.values.MetaMapper;
 import org.jboss.reflect.spi.ArrayInfo;
 import org.jboss.reflect.spi.ClassInfo;
 import org.jboss.reflect.spi.EnumConstantInfo;
@@ -158,6 +161,10 @@ public class DefaultMetaTypeFactory extends MetaTypeFactory
       if (result != null)
          return result;
 
+      MetaMapper<?> mapper = MetaMapper.getMetaMapper(typeInfo);
+      if (mapper != null)
+         return mapper.getMetaType();
+      
       result = isGeneric(typeInfo);
       if (result != null)
          return result;
@@ -344,9 +351,21 @@ public class DefaultMetaTypeFactory extends MetaTypeFactory
       {
          for (PropertyInfo property : properties)
          {
+            // Do we ignore this property?
+            CompositeValue compositeValue = property.getUnderlyingAnnotation(CompositeValue.class);
+            if (compositeValue != null && compositeValue.ignore())
+               continue;
+            
             String name = property.getName();
             if ("class".equals(name) == false)
             {
+               if (compositeValue != null)
+               {
+                  String compositeValueName = compositeValue.name();
+                  if (MetaTypeConstants.DEFAULT.equals(compositeValueName) == false)
+                     name = compositeValueName;
+               }
+
                TypeInfo itemTypeInfo = property.getType();
                MetaType<?> metaType = resolve(itemTypeInfo);
                result.addItem(name, name, metaType);

@@ -19,21 +19,64 @@
 * Software Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA
 * 02110-1301 USA, or see the FSF site: http://www.fsf.org.
 */
-package org.jboss.metatype.api.annotations;
+package org.jboss.test.metatype.values.factory.support;
 
-import java.lang.annotation.ElementType;
-import java.lang.annotation.Retention;
-import java.lang.annotation.RetentionPolicy;
-import java.lang.annotation.Target;
+import org.jboss.metatype.api.annotations.CompositeKey;
+import org.jboss.metatype.api.annotations.CompositeValue;
 
 /**
- * CompositeKey.
+ * TestIgnoredCompositeItem.
  * 
  * @author <a href="adrian@jboss.com">Adrian Brock</a>
  * @version $Revision: 1.1 $
  */
-@Target({ElementType.METHOD})
-@Retention(RetentionPolicy.RUNTIME)
-public @interface CompositeKey
+public class TestIgnoredCompositeItem
 {
+   /** The id */
+   private String id;
+   
+   /** The ignored */
+   private Object ignored;
+   
+   /**
+    * Get the id
+    * 
+    * @return the id
+    */
+   @CompositeKey
+   public String getId()
+   {
+      return id;
+   }
+
+   /**
+    * Set the id
+    * 
+    * @param id the id
+    */
+   public void setId(String id)
+   {
+      this.id = id;
+   }
+
+   /**
+    * Get the ignored.
+    * 
+    * @return the ignored.
+    */
+   public Object getIgnored()
+   {
+      return ignored;
+   }
+
+   /**
+    * Set the ignored.
+    * 
+    * @param ignored the ignored.
+    */
+   @CompositeValue(ignore=true)
+   public void setIgnored(Object ignored)
+   {
+      this.ignored = ignored;
+   }
 }

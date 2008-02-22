@@ -21,19 +21,14 @@
 */
 package org.jboss.metatype.api.annotations;
 
-import java.lang.annotation.ElementType;
-import java.lang.annotation.Retention;
-import java.lang.annotation.RetentionPolicy;
-import java.lang.annotation.Target;
-
 /**
- * CompositeKey.
+ * MetaTypeConstants.
  * 
  * @author <a href="adrian@jboss.com">Adrian Brock</a>
  * @version $Revision: 1.1 $
  */
-@Target({ElementType.METHOD})
-@Retention(RetentionPolicy.RUNTIME)
-public @interface CompositeKey
+public interface MetaTypeConstants
 {
+   /** A default value */
+   public static final String DEFAULT = "##DEFAULT";
 }

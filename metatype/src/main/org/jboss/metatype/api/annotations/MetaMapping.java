@@ -26,14 +26,18 @@ import java.lang.annotation.Retention;
 import java.lang.annotation.RetentionPolicy;
 import java.lang.annotation.Target;
 
+import org.jboss.metatype.spi.values.MetaMapper;
+
 /**
- * CompositeKey.
+ * MetaMapper.
  * 
  * @author <a href="adrian@jboss.com">Adrian Brock</a>
  * @version $Revision: 1.1 $
  */
-@Target({ElementType.METHOD})
+@Target({ElementType.TYPE})
 @Retention(RetentionPolicy.RUNTIME)
-public @interface CompositeKey
+public @interface MetaMapping
 {
+   /** The meta mapper */
+   Class<? extends MetaMapper<?>> value();
 }

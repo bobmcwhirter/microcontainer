@@ -34,11 +34,14 @@ import java.util.Map;
 import java.util.Set;
 
 import junit.framework.Test;
+
 import org.jboss.metatype.api.values.MetaValue;
 import org.jboss.test.metatype.values.factory.support.SimpleCompositeInterface;
 import org.jboss.test.metatype.values.factory.support.TestEnum;
 import org.jboss.test.metatype.values.factory.support.TestGeneric;
+import org.jboss.test.metatype.values.factory.support.TestIgnoredCompositeItem;
 import org.jboss.test.metatype.values.factory.support.TestRecursiveSimpleComposite;
+import org.jboss.test.metatype.values.factory.support.TestRenamedCompositeItem;
 import org.jboss.test.metatype.values.factory.support.TestSimpleComposite;
 import org.jboss.test.metatype.values.factory.support.TestSimpleCompositeInterface;
 
@@ -261,6 +264,34 @@ public class UnwrapValueUnitTestCase extends AbstractMetaValueFactoryTest
       checkSingle(map, mapType);
    }
 
+   public void testIgnoreItemUnwrap()
+   {
+      TestIgnoredCompositeItem ignored = new TestIgnoredCompositeItem();
+      ignored.setId("Id");
+      ignored.setIgnored("Ignored?");
+
+      MetaValue metaValue = createMetaValue(ignored);
+      assertNotNull(metaValue);
+      Object unwrapped = unwrapMetaValue(metaValue, TestIgnoredCompositeItem.class);
+      TestIgnoredCompositeItem result = assertInstanceOf(unwrapped, TestIgnoredCompositeItem.class);
+      assertEquals("Id", result.getId());
+      assertNull(result.getIgnored());
+   }
+
+   public void testRenamedItemUnwrap()
+   {
+      TestRenamedCompositeItem renamedCompositeItem = new TestRenamedCompositeItem();
+      renamedCompositeItem.setId("Id");
+      renamedCompositeItem.setValue("Renamed");
+
+      MetaValue metaValue = createMetaValue(renamedCompositeItem);
+      assertNotNull(metaValue);
+      Object unwrapped = unwrapMetaValue(metaValue, TestRenamedCompositeItem.class);
+      TestRenamedCompositeItem result = assertInstanceOf(unwrapped, TestRenamedCompositeItem.class);
+      assertEquals("Id", result.getId());
+      assertEquals("Renamed", result.getValue());
+   }
+   
    public Map<Integer, String> compositeValueMap()
    {
       return null;

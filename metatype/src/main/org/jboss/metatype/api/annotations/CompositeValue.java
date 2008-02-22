@@ -34,6 +34,11 @@ import java.lang.annotation.Target;
  */
 @Target({ElementType.METHOD})
 @Retention(RetentionPolicy.RUNTIME)
-public @interface CompositeKey
+public @interface CompositeValue
 {
+   /** The item name */
+   String name() default MetaTypeConstants.DEFAULT;
+
+   /** Whether to ignore this item */
+   boolean ignore() default false;
 }

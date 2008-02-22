@@ -275,7 +275,7 @@ public abstract class AbstractCompositeMetaType extends AbstractMetaType<Seriali
    {
       StringBuilder buffer = new StringBuilder(getClass().getSimpleName());
       buffer.append('{').append(getTypeName());
-      Iterator<String> thisNames = keySet().iterator();
+      Iterator<String> thisNames = itemSet().iterator();
       if (thisNames.hasNext())
       {
          buffer.append(" items=");

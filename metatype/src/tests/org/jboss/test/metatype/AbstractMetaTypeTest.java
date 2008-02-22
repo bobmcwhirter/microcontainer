@@ -282,7 +282,7 @@ public abstract class AbstractMetaTypeTest extends BaseTestCase
     */
    protected void printComposite(String context, CompositeMetaType type)
    {
-      getLog().debug(context + " className=" + type.getClassName() + " typeName=" + type.getTypeName() + " description=" + type.getDescription() + " items=" + type.keySet());
+      getLog().debug(context + " className=" + type.getClassName() + " typeName=" + type.getTypeName() + " description=" + type.getDescription() + " keys=" + type.keySet() + " items=" + type.itemSet());
    }
 
    /**
