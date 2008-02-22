@@ -22,11 +22,16 @@
 package org.jboss.test.metatype.types.factory.test;
 
 import java.util.Collections;
+import java.util.HashMap;
+import java.util.Map;
 import java.util.Set;
 
 import org.jboss.metatype.api.types.CompositeMetaType;
 import org.jboss.metatype.api.types.MetaType;
 import org.jboss.metatype.api.types.SimpleMetaType;
+import org.jboss.metatype.api.values.CompositeValueSupport;
+import org.jboss.metatype.api.values.MetaValue;
+import org.jboss.metatype.api.values.SimpleValueSupport;
 import org.jboss.metatype.plugins.types.MutableCompositeMetaType;
 import org.jboss.test.metatype.types.factory.support.TestIgnoredCompositeItem;
 import org.jboss.test.metatype.types.factory.support.TestRecursiveComposite;
@@ -128,4 +133,24 @@ public class CompositeMetaTypeFactoryUnitTestCase extends AbstractMetaTypeFactor
       
       testComposite(expected, actual);
    }
+
+   public void testMapComposite() throws Exception
+   {
+      Map<String, String> x = new HashMap<String, String>();
+      CompositeMetaType result = (CompositeMetaType) resolve(x.getClass());
+//      CompositeMetaType actual = assertInstanceOf(result, CompositeMetaType.class);
+      MutableCompositeMetaType expected = new MutableCompositeMetaType(HashMap.class.getName(), "HashMap<String,String>");
+      expected.addItem("key1", "key1", SimpleMetaType.STRING);
+      expected.addItem("key2", "key2", SimpleMetaType.STRING);
+      expected.addItem("key3", "key3", SimpleMetaType.STRING);
+      expected.freeze();
+      
+      testComposite(expected, result);
+
+      String[] itemNames = {"key1", "key2", "key3"};
+      MetaValue[] itemValues = {SimpleValueSupport.wrap("value1"), SimpleValueSupport.wrap("value3"), SimpleValueSupport.wrap("value3")};
+      CompositeValueSupport mapValue = new CompositeValueSupport(expected, itemNames, itemValues);
+      MetaValue value1 = mapValue.get("key1");
+   }
+
 }
