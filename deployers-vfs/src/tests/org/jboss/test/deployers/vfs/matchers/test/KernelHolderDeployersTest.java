@@ -59,12 +59,17 @@ public abstract class KernelHolderDeployersTest extends BaseDeployersVFSTest
 
    protected void tearDown() throws Exception
    {
-      super.tearDown();
+      try
+      {
+         if (controller != null)
+            controller.shutdown();
 
-      if (controller != null)
-         controller.shutdown();
-
-      controller = null;
-      kernel = null;
+         controller = null;
+         kernel = null;
+      }
+      finally
+      {
+         super.tearDown();
+      }
    }
 }
