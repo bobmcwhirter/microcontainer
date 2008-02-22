@@ -21,10 +21,13 @@
 */
 package org.jboss.test.metatype.types.factory.test;
 
+import java.lang.reflect.Field;
+import java.lang.reflect.Type;
 import java.util.Collections;
 import java.util.HashMap;
-import java.util.Map;
 import java.util.Set;
+
+import junit.framework.Test;
 
 import org.jboss.metatype.api.types.CompositeMetaType;
 import org.jboss.metatype.api.types.MetaType;
@@ -37,8 +40,6 @@ import org.jboss.test.metatype.types.factory.support.TestIgnoredCompositeItem;
 import org.jboss.test.metatype.types.factory.support.TestRecursiveComposite;
 import org.jboss.test.metatype.types.factory.support.TestRenamedCompositeItem;
 import org.jboss.test.metatype.types.factory.support.TestSimpleComposite;
-
-import junit.framework.Test;
 
 /**
  * CompositeMetaTypeFactoryUnitTestCase.
@@ -134,11 +135,13 @@ public class CompositeMetaTypeFactoryUnitTestCase extends AbstractMetaTypeFactor
       testComposite(expected, actual);
    }
 
+   public HashMap<String, String> compositeSignature;
+   
    public void testMapComposite() throws Exception
    {
-      Map<String, String> x = new HashMap<String, String>();
-      CompositeMetaType result = (CompositeMetaType) resolve(x.getClass());
-//      CompositeMetaType actual = assertInstanceOf(result, CompositeMetaType.class);
+      Field field = getClass().getField("compositeSignature");
+      Type mapSignature = field.getGenericType();
+      CompositeMetaType result = assertInstanceOf(resolve(mapSignature), CompositeMetaType.class);
       MutableCompositeMetaType expected = new MutableCompositeMetaType(HashMap.class.getName(), "HashMap<String,String>");
       expected.addItem("key1", "key1", SimpleMetaType.STRING);
       expected.addItem("key2", "key2", SimpleMetaType.STRING);
@@ -150,7 +153,7 @@ public class CompositeMetaTypeFactoryUnitTestCase extends AbstractMetaTypeFactor
       String[] itemNames = {"key1", "key2", "key3"};
       MetaValue[] itemValues = {SimpleValueSupport.wrap("value1"), SimpleValueSupport.wrap("value3"), SimpleValueSupport.wrap("value3")};
       CompositeValueSupport mapValue = new CompositeValueSupport(expected, itemNames, itemValues);
-      MetaValue value1 = mapValue.get("key1");
+      assertEquals("value1", mapValue.get("key1"));
    }
 
 }

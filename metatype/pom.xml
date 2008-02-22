@@ -11,6 +11,17 @@
   <url>http://www.jboss.com/products/jbossmc</url>
   <description>JBoss Microcontainer Metatype</description>
   <!-- Do not add version information here, use ../build/pom.xml instead -->
+  <build>
+    <plugins>
+      <plugin>
+        <groupId>org.apache.maven.plugins</groupId>
+        <artifactId>maven-surefire-plugin</artifactId>
+        <configuration>
+          <testFailureIgnore>true</testFailureIgnore>
+        </configuration>
+      </plugin>   	   
+    </plugins>
+  </build>
   <dependencies>
     <!-- Global dependencies -->
     <dependency>
