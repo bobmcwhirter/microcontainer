@@ -27,6 +27,7 @@ import junit.textui.TestRunner;
 
 import org.jboss.test.classloading.vfs.metadata.test.DomainUnitTestCase;
 import org.jboss.test.classloading.vfs.metadata.test.ImportAllUnitTestCase;
+import org.jboss.test.classloading.vfs.metadata.test.ManagedObjectVFSClassLoaderFactoryUnitTestCase;
 import org.jboss.test.classloading.vfs.metadata.test.ModuleDependencyUnitTestCase;
 import org.jboss.test.classloading.vfs.metadata.test.PackageDependencyUnitTestCase;
 import org.jboss.test.classloading.vfs.metadata.test.ReExportModuleUnitTestCase;
@@ -70,6 +71,7 @@ public class ClassLoadingVFSTestSuite extends TestSuite
       suite.addTest(ModuleDependencyUnitTestCase.suite());
       suite.addTest(PackageDependencyUnitTestCase.suite());
       suite.addTest(VFSClassLoaderFactoryUnitTestCase.suite());
+      suite.addTest(ManagedObjectVFSClassLoaderFactoryUnitTestCase.suite());
       suite.addTest(ReExportModuleUnitTestCase.suite());
       suite.addTest(ReExportPackageUnitTestCase.suite());
       suite.addTest(UsesPackageUnitTestCase.suite());

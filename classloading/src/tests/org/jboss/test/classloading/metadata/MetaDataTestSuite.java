@@ -28,6 +28,7 @@ import junit.textui.TestRunner;
 import org.jboss.test.classloading.metadata.test.CapabilitiesMetaDataUnitTestCase;
 import org.jboss.test.classloading.metadata.test.ClassLoadingMetaDataFactoryUnitTestCase;
 import org.jboss.test.classloading.metadata.test.ClassLoadingMetaDataUnitTestCase;
+import org.jboss.test.classloading.metadata.test.ManagedObjectClassLoadingMetaDataUnitTestCase;
 import org.jboss.test.classloading.metadata.test.ModuleCapabilityUnitTestCase;
 import org.jboss.test.classloading.metadata.test.ModuleRequirementUnitTestCase;
 import org.jboss.test.classloading.metadata.test.NameAndVersionRangeUnitTestCase;
@@ -74,6 +75,7 @@ public class MetaDataTestSuite extends TestSuite
       suite.addTest(RequirementsMetaDataUnitTestCase.suite());
       suite.addTest(ClassLoadingMetaDataFactoryUnitTestCase.suite());
       suite.addTest(ClassLoadingMetaDataUnitTestCase.suite());
+      suite.addTest(ManagedObjectClassLoadingMetaDataUnitTestCase.suite());
       suite.addTest(ClassLoadingMetaDataXmlUnitTestCase.suite());
       
       return suite;

@@ -26,6 +26,9 @@ import java.util.NoSuchElementException;
 import java.util.StringTokenizer;
 import java.util.regex.Pattern;
 
+import org.jboss.classloading.plugins.metadata.VersionMetaMapper;
+import org.jboss.metatype.api.annotations.MetaMapping;
+
 /**
  * Version.
  * 
@@ -33,6 +36,7 @@ import java.util.regex.Pattern;
  * @author <a href="adrian@jboss.org">Adrian Brock</a>
  * @version $Revision: 1.1 $
  */
+@MetaMapping(VersionMetaMapper.class)
 public class Version implements Serializable, Comparable<Version>  
 {
    /** The serialVersionUID */

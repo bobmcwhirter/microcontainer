@@ -28,6 +28,9 @@ import javax.xml.bind.annotation.XmlTransient;
 
 import org.jboss.classloading.spi.version.Version;
 import org.jboss.classloading.spi.version.VersionComparatorRegistry;
+import org.jboss.managed.api.annotation.ManagementProperty;
+import org.jboss.metatype.api.annotations.CompositeKey;
+import org.jboss.metatype.api.annotations.CompositeValue;
 
 /**
  * NameAndVersionSupport.
@@ -96,6 +99,8 @@ public class NameAndVersionSupport implements Serializable, Cloneable
     * 
     * @param name the name.
     */
+   @CompositeKey
+   @ManagementProperty
    @XmlAttribute
    public void setName(String name)
    {
@@ -119,6 +124,7 @@ public class NameAndVersionSupport implements Serializable, Cloneable
     * 
     * @param version the version.
     */
+   @CompositeValue(ignore=true)
    @XmlTransient
    public void setVersion(Object version)
    {
@@ -147,6 +153,9 @@ public class NameAndVersionSupport implements Serializable, Cloneable
     * 
     * @param version the version.
     */
+   @CompositeKey
+   @CompositeValue(name="version")
+   @ManagementProperty(name="version")
    @XmlAttribute(name="version")
    public void setTheVersion(Version version)
    {

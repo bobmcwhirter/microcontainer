@@ -36,6 +36,7 @@ import org.jboss.classloader.spi.ClassLoaderSystem;
 import org.jboss.classloading.spi.metadata.ClassLoadingMetaData;
 import org.jboss.classloading.spi.version.Version;
 import org.jboss.classloading.spi.vfs.dependency.VFSClassLoaderPolicyModule;
+import org.jboss.managed.api.annotation.ManagementProperty;
 
 /**
  * VFSClassLoaderFactory.
@@ -115,6 +116,7 @@ public class VFSClassLoaderFactory extends ClassLoadingMetaData implements BeanM
     * 
     * @param classLoaderSystemName the classLoaderSystemName.
     */
+   @ManagementProperty(name="system")
    @XmlAttribute(name="system")
    public void setClassLoaderSystemName(String classLoaderSystemName)
    {
@@ -138,6 +140,7 @@ public class VFSClassLoaderFactory extends ClassLoadingMetaData implements BeanM
     * 
     * @param contextName the contextName.
     */
+   @ManagementProperty(name="context")
    @XmlAttribute(name="context")
    public void setContextName(String contextName)
    {
@@ -159,6 +162,7 @@ public class VFSClassLoaderFactory extends ClassLoadingMetaData implements BeanM
     * 
     * @param roots the roots.
     */
+   @ManagementProperty(name="roots")
    @XmlElement(name="root")
    public void setRoots(List<String> roots)
    {

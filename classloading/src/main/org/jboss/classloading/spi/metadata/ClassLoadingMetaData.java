@@ -30,6 +30,9 @@ import org.jboss.classloader.plugins.filter.CombiningClassFilter;
 import org.jboss.classloader.spi.filter.ClassFilter;
 import org.jboss.classloader.spi.filter.PackageClassFilter;
 import org.jboss.classloading.spi.helpers.NameAndVersionSupport;
+import org.jboss.managed.api.annotation.ManagementObject;
+import org.jboss.managed.api.annotation.ManagementProperties;
+import org.jboss.managed.api.annotation.ManagementProperty;
 
 /**
  * ClassLoadingMetaData.
@@ -37,6 +40,7 @@ import org.jboss.classloading.spi.helpers.NameAndVersionSupport;
  * @author <a href="adrian@jboss.org">Adrian Brock</a>
  * @version $Revision: 1.1 $
  */
+@ManagementObject(properties=ManagementProperties.EXPLICIT, name="org.jboss.classloading.spi.metadata.ClassLoadingMetaData")
 public class ClassLoadingMetaData extends NameAndVersionSupport
 {
    /** The serialVersionUID */
@@ -102,6 +106,7 @@ public class ClassLoadingMetaData extends NameAndVersionSupport
     * 
     * @param domain the domain.
     */
+   @ManagementProperty
    @XmlAttribute
    public void setDomain(String domain)
    {
@@ -123,6 +128,7 @@ public class ClassLoadingMetaData extends NameAndVersionSupport
     * 
     * @param parentDomain the parentDomain.
     */
+   @ManagementProperty
    @XmlAttribute
    public void setParentDomain(String parentDomain)
    {
@@ -144,6 +150,7 @@ public class ClassLoadingMetaData extends NameAndVersionSupport
     * 
     * @param exportAll the exportAll.
     */
+   @ManagementProperty
    @XmlAttribute(name="export-all")
    public void setExportAll(ExportAll exportAll)
    {
@@ -165,6 +172,7 @@ public class ClassLoadingMetaData extends NameAndVersionSupport
     * 
     * @param includedPackages the includedPackages.
     */
+   @ManagementProperty(name="included")
    @XmlAttribute(name="included")
    public void setIncludedPackages(String includedPackages)
    {
@@ -215,6 +223,7 @@ public class ClassLoadingMetaData extends NameAndVersionSupport
     * 
     * @param excludedPackages the excludedPackages.
     */
+   @ManagementProperty(name="excluded")
    @XmlAttribute(name="excluded")
    public void setExcludedPackages(String excludedPackages)
    {
@@ -265,6 +274,7 @@ public class ClassLoadingMetaData extends NameAndVersionSupport
     * 
     * @param excludedExportPackages the excludedExportPackages.
     */
+   @ManagementProperty(name="excludedExport")
    @XmlAttribute(name="excludedExport")
    public void setExcludedExportPackages(String excludedExportPackages)
    {
@@ -315,6 +325,7 @@ public class ClassLoadingMetaData extends NameAndVersionSupport
     * 
     * @param importAll the importAll.
     */
+   @ManagementProperty
    @XmlAttribute(name="import-all")
    public void setImportAll(boolean importAll)
    {
@@ -336,6 +347,7 @@ public class ClassLoadingMetaData extends NameAndVersionSupport
     * 
     * @param classLoadingCompliance the j2seClassLoadingCompliance.
     */
+   @ManagementProperty(name="parentFirst")
    @XmlAttribute(name="parent-first")
    public void setJ2seClassLoadingCompliance(boolean classLoadingCompliance)
    {
@@ -357,6 +369,7 @@ public class ClassLoadingMetaData extends NameAndVersionSupport
     * 
     * @param cacheable the cacheable.
     */
+   @ManagementProperty(name="cache")
    @XmlAttribute(name="cache")
    public void setCacheable(boolean cacheable)
    {
@@ -378,6 +391,7 @@ public class ClassLoadingMetaData extends NameAndVersionSupport
     * 
     * @param blackListable the blackListable.
     */
+   @ManagementProperty(name="blackList")
    @XmlAttribute(name="blackList")
    public void setBlackListable(boolean blackListable)
    {
@@ -400,6 +414,7 @@ public class ClassLoadingMetaData extends NameAndVersionSupport
     * @param capabilities the capabilities.
     * @throws IllegalArgumentException for null capabilities
     */
+   @ManagementProperty
    public void setCapabilities(CapabilitiesMetaData capabilities)
    {
       if (capabilities == null)
@@ -435,6 +450,7 @@ public class ClassLoadingMetaData extends NameAndVersionSupport
     * @param requirements the requirements.
     * @throws IllegalArgumentException for null requirements
     */
+   @ManagementProperty
    public void setRequirements(RequirementsMetaData requirements)
    {
       if (requirements == null)

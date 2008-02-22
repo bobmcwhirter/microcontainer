@@ -109,6 +109,7 @@
          <parameter>org.jboss.classloading.spi.metadata.ClassLoadingMetaData</parameter>
       </constructor>
       <property name="name">jboss-classloading.xml</property>
+      <property name="buildManagedObject">true</property>
    </bean>
    <bean name="ClassLoadingDefaultDeployer" class="org.jboss.deployers.plugins.classloading.ClassLoadingDefaultDeployer">
       <property name="defaultMetaData">

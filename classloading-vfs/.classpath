@@ -27,6 +27,8 @@
 	<classpathentry combineaccessrules="false" kind="src" path="/jboss-container"/>
 	<classpathentry combineaccessrules="false" kind="src" path="/jboss-dependency"/>
 	<classpathentry combineaccessrules="false" kind="src" path="/jboss-kernel"/>
+	<classpathentry combineaccessrules="false" kind="src" path="/jboss-metatype"/>
+	<classpathentry combineaccessrules="false" kind="src" path="/jboss-managed"/>
 	<classpathentry combineaccessrules="false" kind="src" path="/jboss-classloading"/>
 	<classpathentry kind="output" path="target/classes"/>
 </classpath>

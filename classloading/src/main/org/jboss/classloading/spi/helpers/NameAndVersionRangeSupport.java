@@ -28,6 +28,8 @@ import javax.xml.bind.annotation.XmlTransient;
 
 import org.jboss.classloading.spi.version.Version;
 import org.jboss.classloading.spi.version.VersionRange;
+import org.jboss.metatype.api.annotations.CompositeKey;
+import org.jboss.metatype.api.annotations.CompositeValue;
 
 /**
  * NameAndVersionRangeSupport.
@@ -97,6 +99,7 @@ public class NameAndVersionRangeSupport implements Serializable
     * 
     * @param name the name.
     */
+   @CompositeKey
    @XmlAttribute
    public void setName(String name)
    {
@@ -120,6 +123,7 @@ public class NameAndVersionRangeSupport implements Serializable
     * 
     * @param versionRange the versionRange.
     */
+   @CompositeValue(ignore=true)
    @XmlTransient
    public void setVersionRange(VersionRange versionRange)
    {
@@ -143,6 +147,7 @@ public class NameAndVersionRangeSupport implements Serializable
     * 
     * @param fromVersion the fromVersion.
     */
+   @CompositeValue(ignore=true)
    @XmlTransient
    public void setFrom(Object fromVersion)
    {
@@ -171,6 +176,8 @@ public class NameAndVersionRangeSupport implements Serializable
     * 
     * @param fromVersion the fromVersion.
     */
+   @CompositeKey
+   @CompositeValue(name="from")
    @XmlAttribute(name="from")
    public void setFromVersion(Version fromVersion)
    {
@@ -192,6 +199,7 @@ public class NameAndVersionRangeSupport implements Serializable
     * 
     * @param fromVersionInclusive the fromVersionInclusive.
     */
+   @CompositeKey
    @XmlAttribute(name="from-inclusive")
    public void setFromVersionInclusive(boolean fromVersionInclusive)
    {
@@ -213,6 +221,7 @@ public class NameAndVersionRangeSupport implements Serializable
     * 
     * @param toVersion the toVersion.
     */
+   @CompositeValue(ignore=true)
    @XmlTransient
    public void setTo(Object toVersion)
    {
@@ -224,7 +233,6 @@ public class NameAndVersionRangeSupport implements Serializable
     * 
     * @return the toVersion.
     */
-   @XmlAttribute(name="to")
    public Version getToVersion()
    {
       Object to = getTo();
@@ -242,6 +250,9 @@ public class NameAndVersionRangeSupport implements Serializable
     * 
     * @param toVersion the toVersion.
     */
+   @CompositeKey
+   @CompositeValue(name="to")
+   @XmlAttribute(name="to")
    public void setToVersion(Version toVersion)
    {
       setTo(toVersion);
@@ -262,6 +273,7 @@ public class NameAndVersionRangeSupport implements Serializable
     * 
     * @param toVersionInclusive the toVersionInclusive.
     */
+   @CompositeKey
    @XmlAttribute(name="to-inclusive")
    public void setToVersionInclusive(boolean toVersionInclusive)
    {
@@ -273,6 +285,7 @@ public class NameAndVersionRangeSupport implements Serializable
     * 
     * @param version the version
     */
+   @CompositeValue(ignore=true)
    @XmlAttribute(name="version")
    public void setVersion(Version version)
    {
