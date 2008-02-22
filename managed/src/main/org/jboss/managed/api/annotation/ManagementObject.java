@@ -22,6 +22,7 @@
 package org.jboss.managed.api.annotation;
 
 import java.lang.annotation.ElementType;
+import java.lang.annotation.Inherited;
 import java.lang.annotation.Retention;
 import java.lang.annotation.RetentionPolicy;
 import java.lang.annotation.Target;
@@ -42,6 +43,7 @@ import org.jboss.managed.spi.factory.ManagedPropertyConstraintsPopulatorFactory;
  * @author Scott.Stark@jboss.org
  * @version $Revision: 1.1 $
  */
+@Inherited
 @Target({ElementType.TYPE})
 @Retention(RetentionPolicy.RUNTIME)
 public @interface ManagementObject
