@@ -25,26 +25,23 @@ import java.lang.annotation.Annotation;
 import java.util.Collections;
 import java.util.Set;
 
-import org.jboss.beans.metadata.plugins.AbstractBeanMetaData;
 import org.jboss.dependency.spi.ControllerContext;
 import org.jboss.dependency.spi.ControllerState;
-import org.jboss.kernel.Kernel;
 import org.jboss.kernel.plugins.annotations.BeanAnnotationAdapter;
-import org.jboss.kernel.plugins.bootstrap.basic.BasicBootstrap;
 import org.jboss.kernel.plugins.config.property.PropertyKernelConfig;
 import org.jboss.kernel.plugins.dependency.AbstractKernelController;
 import org.jboss.kernel.plugins.dependency.DescribeAction;
 import org.jboss.kernel.spi.dependency.KernelController;
-import org.jboss.test.BaseTestCase;
+import org.jboss.kernel.spi.config.KernelConfig;
 
 /**
  * Abstract bean annotation adapter test.
  *
  * @author <a href="mailto:ales.justin@jboss.com">Ales Justin</a>
  */
-public abstract class AbstractBeanAnnotationAdapterTestCase extends BaseTestCase
+public abstract class AbstractBeanAnnotationAdapterTest extends AbstractRunAnnotationsTest
 {
-   protected AbstractBeanAnnotationAdapterTestCase(String name)
+   protected AbstractBeanAnnotationAdapterTest(String name)
    {
       super(name);
    }
@@ -56,30 +53,9 @@ public abstract class AbstractBeanAnnotationAdapterTestCase extends BaseTestCase
       return Collections.emptySet();
    }
 
-   protected void runAnnotations(Object bean) throws Throwable
+   protected KernelConfig createKernelConfig()
    {
-      KernelController controller = getController();
-      String name = bean.toString();
-      AbstractBeanMetaData beanMetaData = new AbstractBeanMetaData(name, bean.getClass().getName());
-      try
-      {
-         controller.install(beanMetaData, bean);
-      }
-      finally
-      {
-         controller.uninstall(name);
-      }
-   }
-
-   protected KernelController getController() throws Throwable
-   {
-      // bootstrap
-      BasicBootstrap bootstrap = new BasicBootstrap(new TestKernelConfig());
-      bootstrap.run();
-      Kernel kernel = bootstrap.getKernel();
-      KernelController controller = kernel.getController();
-      assertInstanceOf(controller, TestController.class);
-      return controller;
+      return new TestKernelConfig();
    }
 
    private class TestKernelConfig extends PropertyKernelConfig

@@ -19,34 +19,34 @@
 * Software Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA
 * 02110-1301 USA, or see the FSF site: http://www.fsf.org.
 */
-package org.jboss.test.kernel.annotations.test;
+package org.jboss.test.kernel.annotations.test.inheritance;
 
-import junit.framework.TestSuite;
-import junit.framework.Test;
-import junit.textui.TestRunner;
-import org.jboss.test.kernel.annotations.test.override.AnnotationsOverrideTestSuite;
-import org.jboss.test.kernel.annotations.test.inheritance.AnnotationsInheritanceTestSuite;
+import org.jboss.test.kernel.annotations.test.AbstractRunAnnotationsTest;
 
 /**
- * Annotations tests.
+ * Testing annotations inheritance.
  *
  * @author <a href="mailto:ales.justin@jboss.com">Ales Justin</a>
  */
-public class AnnotationsTestSuite extends TestSuite
+public abstract class AbstractAnnotationInheritanceTest extends AbstractRunAnnotationsTest
 {
-   public static void main(String[] args)
+   protected AbstractAnnotationInheritanceTest(String name)
    {
-      TestRunner.run(suite());
+      super(name);
    }
 
-   public static Test suite()
+   protected void doTestAfterInstall(Class<?> clazz, Object target)
    {
-      TestSuite suite = new TestSuite("Annotations Tests");
+      assertInstanceOf(target, clazz);
+      doTestAfterInstall(clazz.cast(target));
+   }
 
-      suite.addTest(AnnotationSupportTestSuite.suite());
-      suite.addTest(AnnotationsOverrideTestSuite.suite());
-      suite.addTest(AnnotationsInheritanceTestSuite.suite());
+   protected void doTestAfterInstall(Object target)
+   {
+      doTestAfterInstall();
+   }
 
-      return suite;
+   protected void doTestAfterInstall()
+   {
    }
 }

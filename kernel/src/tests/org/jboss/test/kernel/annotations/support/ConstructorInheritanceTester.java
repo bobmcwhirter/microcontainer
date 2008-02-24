@@ -19,34 +19,30 @@
 * Software Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA
 * 02110-1301 USA, or see the FSF site: http://www.fsf.org.
 */
-package org.jboss.test.kernel.annotations.test;
+package org.jboss.test.kernel.annotations.support;
 
-import junit.framework.TestSuite;
-import junit.framework.Test;
-import junit.textui.TestRunner;
-import org.jboss.test.kernel.annotations.test.override.AnnotationsOverrideTestSuite;
-import org.jboss.test.kernel.annotations.test.inheritance.AnnotationsInheritanceTestSuite;
+import org.jboss.beans.metadata.api.annotations.Constructor;
+import org.jboss.beans.metadata.api.annotations.Inject;
 
 /**
- * Annotations tests.
- *
  * @author <a href="mailto:ales.justin@jboss.com">Ales Justin</a>
  */
-public class AnnotationsTestSuite extends TestSuite
+public class ConstructorInheritanceTester implements AnnotationTester
 {
-   public static void main(String[] args)
+   private Object value;
+
+   public ConstructorInheritanceTester()
    {
-      TestRunner.run(suite());
    }
 
-   public static Test suite()
+   @Constructor
+   public ConstructorInheritanceTester(@Inject(bean = "somebean") Object value)
    {
-      TestSuite suite = new TestSuite("Annotations Tests");
+      this.value = value;
+   }
 
-      suite.addTest(AnnotationSupportTestSuite.suite());
-      suite.addTest(AnnotationsOverrideTestSuite.suite());
-      suite.addTest(AnnotationsInheritanceTestSuite.suite());
-
-      return suite;
+   public Object getValue()
+   {
+      return value;
    }
 }

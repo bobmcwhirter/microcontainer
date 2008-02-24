@@ -72,14 +72,14 @@ public class LifecycleAnnotationTester implements AnnotationTester
    public void fromAnnStop()
    {
       value[1] = null;
-      value[2] = "dewdwe";
+      value[2] = "dewdew";
    }
 
    @Destroy
    public void fromAnnDestroy()
    {
       value[0] = null;
-      value[3] = "dwefwf";
+      value[3] = "dew";
    }
 
    public Object[] getValue()

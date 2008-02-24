@@ -19,34 +19,28 @@
 * Software Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA
 * 02110-1301 USA, or see the FSF site: http://www.fsf.org.
 */
-package org.jboss.test.kernel.annotations.test;
+package org.jboss.test.kernel.annotations.test.inheritance;
 
-import junit.framework.TestSuite;
 import junit.framework.Test;
-import junit.textui.TestRunner;
-import org.jboss.test.kernel.annotations.test.override.AnnotationsOverrideTestSuite;
-import org.jboss.test.kernel.annotations.test.inheritance.AnnotationsInheritanceTestSuite;
 
 /**
- * Annotations tests.
+ * Callback annotation inheritance test.
  *
  * @author <a href="mailto:ales.justin@jboss.com">Ales Justin</a>
  */
-public class AnnotationsTestSuite extends TestSuite
+public class CallbackAnnotationInheritanceTestCase extends AbstractAnnotationInheritanceTest
 {
-   public static void main(String[] args)
+   public CallbackAnnotationInheritanceTestCase(String name)
    {
-      TestRunner.run(suite());
+      super(name);
    }
 
    public static Test suite()
    {
-      TestSuite suite = new TestSuite("Annotations Tests");
+      return suite(CallbackAnnotationInheritanceTestCase.class);
+   }
 
-      suite.addTest(AnnotationSupportTestSuite.suite());
-      suite.addTest(AnnotationsOverrideTestSuite.suite());
-      suite.addTest(AnnotationsInheritanceTestSuite.suite());
-
-      return suite;
+   public void testInheritance() throws Throwable
+   {
    }
 }

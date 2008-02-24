@@ -36,7 +36,7 @@ import org.jboss.test.kernel.annotations.support.TestApplyOnlyBean;
  *
  * @author <a href="mailto:ales.justin@jboss.com">Ales Justin</a>
  */
-public class CleanupAnnotationTestCase extends AbstractBeanAnnotationAdapterTestCase
+public class CleanupAnnotationTestCase extends AbstractBeanAnnotationAdapterTest
 {
    public CleanupAnnotationTestCase(String name)
    {
@@ -63,7 +63,7 @@ public class CleanupAnnotationTestCase extends AbstractBeanAnnotationAdapterTest
    public void testCleanup() throws Throwable
    {
       reset();
-      runAnnotations(new TestCleanupBean());
+      runAnnotationsOnTarget(new TestCleanupBean());
       assertTrue(TestCleanupPlugin.INSTANCE.isApplied());
       assertTrue(TestCleanupPlugin.INSTANCE.isCleaned());
       assertFalse(TestCleanupOnlyPlugin.INSTANCE.isApplied());
@@ -75,7 +75,7 @@ public class CleanupAnnotationTestCase extends AbstractBeanAnnotationAdapterTest
    public void testCleanupOnly() throws Throwable
    {
       reset();
-      runAnnotations(new TestCleanupOnlyBean());
+      runAnnotationsOnTarget(new TestCleanupOnlyBean());
       assertFalse(TestCleanupPlugin.INSTANCE.isApplied());
       assertFalse(TestCleanupPlugin.INSTANCE.isCleaned());
       assertFalse(TestCleanupOnlyPlugin.INSTANCE.isApplied());
@@ -87,7 +87,7 @@ public class CleanupAnnotationTestCase extends AbstractBeanAnnotationAdapterTest
    public void testApplyOnly() throws Throwable
    {
       reset();
-      runAnnotations(new TestApplyOnlyBean());
+      runAnnotationsOnTarget(new TestApplyOnlyBean());
       assertFalse(TestCleanupPlugin.INSTANCE.isApplied());
       assertFalse(TestCleanupPlugin.INSTANCE.isCleaned());
       assertFalse(TestCleanupOnlyPlugin.INSTANCE.isApplied());
