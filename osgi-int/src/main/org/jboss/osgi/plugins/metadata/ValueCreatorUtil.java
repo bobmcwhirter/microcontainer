@@ -28,13 +28,13 @@ package org.jboss.osgi.plugins.metadata;
  */
 public class ValueCreatorUtil
 {
-   static StringValueCreator STRING_VC = new StringValueCreator();
-   static IntegerValueCreator INTEGER_VC = new IntegerValueCreator();
-   static BooleanValueCreator BOOLEAN_VC = new BooleanValueCreator();
-   static VersionValueCreator VERSION_VC = new VersionValueCreator();
-   static VersionRangeValueCreator VERSION_RANGE_VC = new VersionRangeValueCreator();
-   static URLValueCreator URL_VC = new URLValueCreator();
-   static StringListValueCreator STRING_LIST_VC = new StringListValueCreator();
+   public static StringValueCreator STRING_VC = new StringValueCreator();
+   public static IntegerValueCreator INTEGER_VC = new IntegerValueCreator();
+   public static BooleanValueCreator BOOLEAN_VC = new BooleanValueCreator();
+   public static VersionValueCreator VERSION_VC = new VersionValueCreator();
+   public static VersionRangeValueCreator VERSION_RANGE_VC = new VersionRangeValueCreator();
+   public static URLValueCreator URL_VC = new URLValueCreator();
+   public static StringListValueCreator STRING_LIST_VC = new StringListValueCreator();
    public static ParameterizedAttributeValueCreator PARAM_ATTRIB_VC = new ParameterizedAttributeValueCreator();
    public static ParameterizedAttributeListValueCreator QNAME_ATTRIB_LIST_VC = new QNameAttributeListValueCreator();
    public static ParameterizedAttributeListValueCreator PATH_ATTRIB_LIST_VC = new PathAttributeListValueCreator();

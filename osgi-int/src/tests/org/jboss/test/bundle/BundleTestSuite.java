@@ -42,6 +42,8 @@ public class BundleTestSuite extends TestSuite
    {
       TestSuite suite = new TestSuite("Bundle Tests");
 
+      suite.addTest(BundleImplTestCase.suite());
+      suite.addTest(BundleHeaderTestCase.suite());
       suite.addTest(MetaDataTestSuite.suite());
 
       return suite;
