@@ -92,6 +92,8 @@ public class ClassLoaderInformation
       {
          for (DelegateLoader delegate : delegates)
          {
+            if (delegate == null)
+               throw new IllegalStateException(policy + " null delegate in " + delegates);
             BaseDelegateLoader baseDelegate = delegate;
             BaseClassLoaderPolicy delegatePolicy = baseDelegate.getPolicy();
             if (delegatePolicy.isCacheable() == false)

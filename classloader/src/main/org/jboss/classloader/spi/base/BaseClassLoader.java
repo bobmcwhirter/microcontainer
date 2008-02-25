@@ -31,17 +31,22 @@ import java.security.PrivilegedActionException;
 import java.security.PrivilegedExceptionAction;
 import java.security.ProtectionDomain;
 import java.security.SecureClassLoader;
+import java.util.ArrayList;
+import java.util.Collections;
 import java.util.Enumeration;
 import java.util.HashSet;
+import java.util.List;
 import java.util.Map;
 import java.util.Set;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.CopyOnWriteArraySet;
 import java.util.concurrent.TimeUnit;
 import java.util.concurrent.locks.ReentrantLock;
+
 import javax.management.ObjectName;
 
 import org.jboss.classloader.plugins.ClassLoaderUtils;
+import org.jboss.classloader.spi.ClassLoaderDomain;
 import org.jboss.classloader.spi.ClassLoaderPolicy;
 import org.jboss.classloader.spi.DelegateLoader;
 import org.jboss.classloader.spi.PackageInformation;
@@ -68,6 +73,9 @@ public class BaseClassLoader extends SecureClassLoader implements BaseClassLoade
    
    /** Our Loader front end */
    private DelegateLoader loader;
+   
+   /** The loaded classes */
+   private Set<String> loadedClasses = new CopyOnWriteArraySet<String>();
    
    /** Our resource cache */
    private Map<String, URL> resourceCache;
@@ -108,6 +116,106 @@ public class BaseClassLoader extends SecureClassLoader implements BaseClassLoade
       return policy.getObjectName();
    }
    
+   public ObjectName getClassLoaderDomain()
+   {
+      BaseClassLoaderPolicy basePolicy = policy;
+      ClassLoaderDomain domain = (ClassLoaderDomain) basePolicy.getClassLoaderDomain();
+      return domain.getObjectName();
+   }
+
+   public String getName()
+   {
+      return policy.getName();
+   }
+   
+   public boolean isBlackListable()
+   {
+      BaseClassLoaderPolicy basePolicy = policy;
+      return basePolicy.isBlackListable();
+   }
+
+   public boolean isCacheable()
+   {
+      BaseClassLoaderPolicy basePolicy = policy;
+      return basePolicy.isCacheable();
+   }
+
+   public boolean isImportAll()
+   {
+      BaseClassLoaderPolicy basePolicy = policy;
+      return basePolicy.isImportAll();
+   }
+
+   public Set<String> getExportedPackages()
+   {
+      HashSet<String> result = new HashSet<String>();
+      String[] packageNames = policy.getPackageNames();
+      if (packageNames != null)
+         Collections.addAll(result, packageNames);
+      return result;
+   }
+
+   public List<ObjectName> getImports()
+   {
+      ArrayList<ObjectName> result = new ArrayList<ObjectName>();
+      BaseClassLoaderPolicy basePolicy = policy;
+      List<? extends DelegateLoader> delegates = basePolicy.getDelegates();
+      if (delegates != null)
+      {
+         for (DelegateLoader delegate : delegates)
+         {
+            BaseDelegateLoader baseDelegate = delegate;
+            BaseClassLoaderPolicy otherPolicy = baseDelegate.getPolicy();
+            result.add(otherPolicy.getObjectName());
+         }
+      }
+      return result;
+   }
+   
+   public String getPolicyDetails()
+   {
+      return policy.toLongString();
+   }
+
+   public ObjectName findClassLoaderForClass(String name) throws ClassNotFoundException
+   {
+      final Class<?> clazz = loadClass(name);
+      if (clazz == null)
+         return null;
+      
+      ClassLoader cl = AccessController.doPrivileged(new PrivilegedAction<ClassLoader>()
+      {
+         public ClassLoader run()
+         {
+            return clazz.getClassLoader(); 
+         }
+      });
+      
+      if (cl != null && cl instanceof RealClassLoader)
+         return ((RealClassLoader) cl).getObjectName();
+      
+      return null;
+   }
+
+   public Set<String> getLoadedClasses()
+   {
+      return new HashSet<String>(loadedClasses);
+   }
+
+   public Set<String> getLoadedResourceNames()
+   {
+      if (resourceCache == null)
+         return Collections.emptySet();
+      return new HashSet<String>(resourceCache.keySet());
+   }
+
+   public Set<URL> getLoadedResources()
+   {
+      if (resourceCache == null)
+         return Collections.emptySet();
+      return new HashSet<URL>(resourceCache.values());
+   }
+
    /**
     * Get the policy.
     * 
@@ -204,17 +312,15 @@ public class BaseClassLoader extends SecureClassLoader implements BaseClassLoade
          packages.add(pkg);
    }
    
-   @Override
-   protected synchronized Class<?> loadClass(String name, boolean resolve) throws ClassNotFoundException
+   /**
+    * Check to see if the class is already loaded
+    * 
+    * @param name the name of the class
+    * @param trace whether trace is enabled
+    * @return the class is if it is already loaded, null otherwise
+    */
+   protected Class<?> isLoadedClass(String name, boolean trace)
    {
-      boolean trace = log.isTraceEnabled();
-      if (trace)
-         log.trace(this + " loadClass " + name + " resolve=" + resolve);
-      
-      // Validate the class name makes sense
-      ClassLoaderUtils.checkClassName(name);
-      
-      // Did we already load this class?
       Class<?> result = findLoadedClass(name);
       if (result != null)
       {
@@ -234,6 +340,21 @@ public class BaseClassLoader extends SecureClassLoader implements BaseClassLoade
       }
       if (result != null && trace)
          log.trace(this + " already loaded class " + ClassLoaderUtils.classToString(result));
+      return result;
+   }
+   
+   @Override
+   protected synchronized Class<?> loadClass(String name, boolean resolve) throws ClassNotFoundException
+   {
+      boolean trace = log.isTraceEnabled();
+      if (trace)
+         log.trace(this + " loadClass " + name + " resolve=" + resolve);
+      
+      // Validate the class name makes sense
+      ClassLoaderUtils.checkClassName(name);
+      
+      // Did we already load this class?
+      Class<?> result = isLoadedClass(name, trace);
 
       // If this is an array, use Class.forName() to resolve it
       if (result == null && name.charAt(0) == '[')
@@ -286,6 +407,12 @@ public class BaseClassLoader extends SecureClassLoader implements BaseClassLoade
    @SuppressWarnings("unchecked")
    protected Enumeration<URL> findResources(String name) throws IOException
    {
+      Set<URL> resourceURLs = loadResources(name);
+      return Iterators.toEnumeration(resourceURLs.iterator());
+   }
+
+   public Set<URL> loadResources(String name) throws IOException
+   {
       BaseClassLoaderPolicy basePolicy = policy;
       BaseClassLoaderDomain domain = basePolicy.getClassLoaderDomain();
       boolean trace = log.isTraceEnabled();
@@ -295,9 +422,9 @@ public class BaseClassLoader extends SecureClassLoader implements BaseClassLoade
       Set<URL> resourceURLs = new HashSet<URL>();
       if (domain != null)
          domain.getResources(this, name, resourceURLs);
-      return Iterators.toEnumeration(resourceURLs.iterator());
+      return resourceURLs;
    }
-
+   
    /**
     * Try to load the class locally
     * 
@@ -322,18 +449,14 @@ public class BaseClassLoader extends SecureClassLoader implements BaseClassLoade
          log.trace(this + " load class locally " + name);
 
       // This is really a double check but the request may not have entered through loadClass on this classloader
-      Class<?> result = findLoadedClass(name);
+      Class<?> result = isLoadedClass(name, trace);
       if (result != null)
-      {
-         if (trace)
-            log.trace(this + " already loaded " + ClassLoaderUtils.classToString(result));
          return result;
-      }
 
       // Look for the resource
       final String resourcePath = ClassLoaderUtils.classNameToPath(name);
       
-      return AccessController.doPrivileged(new PrivilegedAction<Class<?>>()
+      result = AccessController.doPrivileged(new PrivilegedAction<Class<?>>()
       {
          public Class<?> run()
          {
@@ -383,6 +506,10 @@ public class BaseClassLoader extends SecureClassLoader implements BaseClassLoade
             return result;
          }
       }, policy.getAccessControlContext());
+      
+      loadedClasses.add(name);
+      
+      return result;
    }
 
    /**
@@ -624,6 +751,15 @@ public class BaseClassLoader extends SecureClassLoader implements BaseClassLoade
    {
       // TODO look in global and/or local cache
       return null;
+   }
+
+   public void clearBlackList()
+   {
+      if (blackList != null)
+      {
+         for (String name : blackList)
+            clearBlackList(name);
+      }
    }
 
    public void clearBlackList(String name)

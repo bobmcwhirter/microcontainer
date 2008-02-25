@@ -26,6 +26,8 @@ import java.security.AccessController;
 import java.security.ProtectionDomain;
 import java.util.List;
 
+import javax.management.ObjectName;
+
 import org.jboss.classloader.spi.ClassLoaderDomain;
 import org.jboss.classloader.spi.DelegateLoader;
 import org.jboss.logging.Logger;
@@ -164,6 +166,13 @@ public abstract class BaseClassLoaderPolicy
     * @return true to cache misses
     */
    protected abstract boolean isBlackListable();
+
+   /**
+    * Get the object name the classloader is registered in the MBeanServer with
+    * 
+    * @return the object name
+    */
+   public abstract ObjectName getObjectName();
 
    /**
     * Check whether this a request from the jdk if it is return the relevant classloader

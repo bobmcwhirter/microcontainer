@@ -223,15 +223,14 @@ public abstract class ClassLoaderPolicy extends BaseClassLoaderPolicy
       return null;
    }
 
-   /**
-    * Get the object name the classloader is registered in the MBeanServer with
-    * 
-    * @return the object name
-    */
+   @Override
    public ObjectName getObjectName()
    {
       try
       {
+         String name = getName();
+         if (name != null && name.trim().length() > 0)
+            return ObjectName.getInstance("jboss.classloader", "id", "'" + name + "'");
          return ObjectName.getInstance("jboss.classloader", "id", "" + System.identityHashCode(this));
       }
       catch (MalformedObjectNameException e)

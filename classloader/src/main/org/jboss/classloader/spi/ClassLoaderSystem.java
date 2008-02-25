@@ -24,9 +24,17 @@ package org.jboss.classloader.spi;
 import java.security.ProtectionDomain;
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.HashSet;
+import java.util.Hashtable;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
+
+import javax.management.MBeanRegistration;
+import javax.management.MBeanServer;
+import javax.management.MalformedObjectNameException;
+import javax.management.ObjectName;
 
 import org.jboss.classloader.plugins.system.ClassLoaderSystemBuilder;
 import org.jboss.classloader.spi.base.BaseClassLoaderSystem;
@@ -39,7 +47,7 @@ import org.jboss.util.loading.Translator;
  * @author <a href="adrian@jboss.com">Adrian Brock</a>
  * @version $Revision: 1.1 $
  */
-public abstract class ClassLoaderSystem extends BaseClassLoaderSystem
+public abstract class ClassLoaderSystem extends BaseClassLoaderSystem implements ClassLoaderSystemMBean, MBeanRegistration
 {
    /** The log */
    private static final Logger log = Logger.getLogger(ClassLoaderSystem.class);
@@ -61,6 +69,12 @@ public abstract class ClassLoaderSystem extends BaseClassLoaderSystem
    
    /** Whether the system is shutdown */
    private boolean shutdown = false;
+   
+   /** The MBeanServer */
+   private MBeanServer mbeanServer;
+   
+   /** The object name */
+   private ObjectName objectName;
    
    /**
     * Get the classloading system instance
@@ -253,6 +267,8 @@ public abstract class ClassLoaderSystem extends BaseClassLoaderSystem
 
       registeredDomains.put(name, domain);
       super.registerDomain(domain);
+
+      registerDomainMBean(domain);
       
       log.debug(this + " registered domain=" + domain.toLongString());
    }
@@ -284,6 +300,8 @@ public abstract class ClassLoaderSystem extends BaseClassLoaderSystem
     */
    private synchronized void internalUnregisterDomain(ClassLoaderDomain domain)
    {
+      unregisterDomainMBean(domain);
+      
       registeredDomains.remove(domain.getName());
       super.unregisterDomain(domain);
       
@@ -496,6 +514,127 @@ public abstract class ClassLoaderSystem extends BaseClassLoaderSystem
       catch (Throwable t)
       {
          log.warn("Error unregistering classloader from translator " + classLoader, t);
+      }
+   }
+   
+   /**
+    * Get the object name
+    * 
+    * @return the object name
+    */
+   public ObjectName getObjectName()
+   {
+      return objectName;
+   }
+
+   public ObjectName preRegister(MBeanServer server, ObjectName name) throws Exception
+   {
+      this.mbeanServer = server;
+      this.objectName = name;
+      return name;
+   }
+
+   public void postRegister(Boolean registrationDone)
+   {
+      if (registrationDone.booleanValue())
+      {
+         for (ClassLoaderDomain domain : registeredDomains.values())
+            registerDomainMBean(domain);
+      }
+      else
+      {
+         postDeregister();
+      }
+   }
+
+   public void preDeregister() throws Exception
+   {
+      for (ClassLoaderDomain domain : registeredDomains.values())
+         unregisterDomainMBean(domain);
+   }
+   
+   public void postDeregister()
+   {
+      this.mbeanServer = null;
+      this.objectName = null;
+   }
+
+   public Set<String> getDomainNames()
+   {
+      return registeredDomains.keySet();
+   }
+
+   public Set<ObjectName> getDomains()
+   {
+      Set<ObjectName> names = new HashSet<ObjectName>();
+      for (ClassLoaderDomain domain : registeredDomains.values())
+         names.add(domain.getObjectName());
+      return names;
+   }
+
+   /**
+    * Get an object name for the domain
+    * 
+    * @param domain the domain
+    * @return the object name
+    */
+   protected ObjectName getObjectName(ClassLoaderDomain domain)
+   {
+      if (domain == null)
+         throw new IllegalArgumentException("Null domain");
+      
+      Hashtable<String, String> properties = new Hashtable<String, String>();
+      properties.put("domain", "'" + domain.getName() + "'");
+      properties.put("system", "" + System.identityHashCode(this));
+      try
+      {
+         return ObjectName.getInstance("jboss.classloader", properties);
+      }
+      catch (MalformedObjectNameException e)
+      {
+         throw new RuntimeException("Unexpected error", e);
+      }
+   }
+   
+   /**
+    * Register a domain with the MBeanServer
+    * 
+    * @param domain the domain
+    */
+   protected void registerDomainMBean(ClassLoaderDomain domain)
+   {
+      if (mbeanServer == null)
+         return;
+
+      try
+      {
+         ObjectName name = getObjectName(domain);
+         mbeanServer.registerMBean(domain, name);
+      }
+      catch (Exception e)
+      {
+         log.warn("Error registering domain: " + domain, e);
+      }
+   }
+
+   /**
+    * Unregister a domain from the MBeanServer
+    * 
+    * @param domain the domain
+    */
+   protected void unregisterDomainMBean(ClassLoaderDomain domain)
+   {
+      if (mbeanServer == null)
+         return;
+
+      try
+      {
+         ObjectName name = getObjectName(domain);
+         mbeanServer.unregisterMBean(name);
+      }
+      catch (Exception e)
+      {
+         log.warn("Error unregistering domain: " + domain, e);
       }
    }
 

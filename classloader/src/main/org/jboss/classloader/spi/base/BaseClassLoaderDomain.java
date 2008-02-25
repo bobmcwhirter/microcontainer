@@ -24,10 +24,13 @@ package org.jboss.classloader.spi.base;
 import java.io.IOException;
 import java.net.URL;
 import java.security.ProtectionDomain;
+import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
+import java.util.Map.Entry;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.CopyOnWriteArrayList;
 import java.util.concurrent.CopyOnWriteArraySet;
@@ -95,7 +98,7 @@ public abstract class BaseClassLoaderDomain implements Loader
     * 
     * @return the classloader system
     */
-   synchronized BaseClassLoaderSystem getClassLoaderSystem()
+   protected synchronized BaseClassLoaderSystem getClassLoaderSystem()
    {
       return system;
    }
@@ -168,7 +171,7 @@ public abstract class BaseClassLoaderDomain implements Loader
          return system.transform(classLoader, className, byteCode, protectionDomain);
       return byteCode;
    }
-   
+
    /**
     * Load a class from the domain
     * 
@@ -178,7 +181,7 @@ public abstract class BaseClassLoaderDomain implements Loader
     * @return the class
     * @throws ClassNotFoundException for any error
     */
-   Class<?> loadClass(BaseClassLoader classLoader, String name, boolean allExports) throws ClassNotFoundException
+   protected Class<?> loadClass(BaseClassLoader classLoader, String name, boolean allExports) throws ClassNotFoundException
    {
       boolean trace = log.isTraceEnabled();
       
@@ -1270,7 +1273,53 @@ public abstract class BaseClassLoaderDomain implements Loader
          log.warn("Error in afterUnegisterClassLoader: " + this + " classLoader=" + classLoader.toLongString(), t);
       }
    }
-   
+
+   /**
+    * Get all the classloaders
+    * 
+    * @return the list of classloaders
+    */
+   protected List<ClassLoader> getAllClassLoaders()
+   {
+      List<ClassLoader> result = new ArrayList<ClassLoader>();
+      for (ClassLoaderInformation info : classLoaders)
+         result.add(info.getClassLoader());
+      return result;
+   }
+
+   /**
+    * Get a map of packages to classloader
+    * 
+    * @return a map of packages to a list of classloaders for that package
+    */
+   protected Map<String, List<ClassLoader>> getClassLoadersByPackage()
+   {
+      HashMap<String, List<ClassLoader>> result = new HashMap<String, List<ClassLoader>>();
+      for (Entry<String, List<ClassLoaderInformation>> entry : classLoadersByPackageName.entrySet())
+      {
+         List<ClassLoader> cls = new ArrayList<ClassLoader>();
+         for (ClassLoaderInformation info : entry.getValue())
+            cls.add(info.getClassLoader());
+         result.put(entry.getKey(), cls);
+      }
+      return result;
+   }
+
+   protected List<ClassLoader> getClassLoaders(String packageName)
+   {
+      if (packageName == null)
+         throw new IllegalArgumentException("Null package name");
+      
+      List<ClassLoader> result = new ArrayList<ClassLoader>();
+      List<ClassLoaderInformation> infos = classLoadersByPackageName.get(packageName);
+      if (infos != null)
+      {
+         for (ClassLoaderInformation info : infos)
+            result.add(info.getClassLoader());
+      }
+      return result;
+   }
+
    /**
     * Cleans the entry with the given name from the blackList
     *

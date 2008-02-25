@@ -25,12 +25,22 @@ import java.io.IOException;
 import java.net.URL;
 import java.security.AccessController;
 import java.security.PrivilegedAction;
+import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.HashSet;
+import java.util.List;
+import java.util.Map;
 import java.util.Set;
+import java.util.Map.Entry;
+
+import javax.management.MBeanRegistration;
+import javax.management.MBeanServer;
+import javax.management.ObjectName;
 
 import org.jboss.classloader.plugins.loader.ClassLoaderToLoaderAdapter;
 import org.jboss.classloader.spi.base.BaseClassLoaderDomain;
 import org.jboss.classloader.spi.filter.ClassFilter;
+import org.jboss.classloading.spi.RealClassLoader;
 import org.jboss.logging.Logger;
 
 /**
@@ -39,7 +49,7 @@ import org.jboss.logging.Logger;
  * @author <a href="adrian@jboss.com">Adrian Brock</a>
  * @version $Revision: 1.1 $
  */
-public class ClassLoaderDomain extends BaseClassLoaderDomain implements Loader
+public class ClassLoaderDomain extends BaseClassLoaderDomain implements Loader, ClassLoaderDomainMBean, MBeanRegistration
 {
    /** The log */
    private static final Logger log = Logger.getLogger(ClassLoaderDomain.class);
@@ -52,6 +62,12 @@ public class ClassLoaderDomain extends BaseClassLoaderDomain implements Loader
    
    /** The parent */
    private Loader parent;
+   
+   /** The MBeanServer */
+   private MBeanServer mbeanServer;
+   
+   /** The object name */
+   private ObjectName objectName;
    
    /**
     * Create a new ClassLoaderDomain with the {@link ParentPolicy#BEFORE} loading rules.
@@ -78,6 +94,16 @@ public class ClassLoaderDomain extends BaseClassLoaderDomain implements Loader
    }
    
    /**
+    * Get the object name
+    * 
+    * @return the object name
+    */
+   public ObjectName getObjectName()
+   {
+      return objectName;
+   }
+   
+   /**
     * Get the parent policy
     * 
     * @return the parent policy.
@@ -100,6 +126,11 @@ public class ClassLoaderDomain extends BaseClassLoaderDomain implements Loader
       this.parentPolicy = parentPolicy;
    }
 
+   public String getParentPolicyName()
+   {
+      return parentPolicy.toString();
+   }
+
    /**
     * Get the parent
     * 
@@ -120,7 +151,100 @@ public class ClassLoaderDomain extends BaseClassLoaderDomain implements Loader
       this.parent = parent;
       fixUpParent();
    }
-   
+
+   public ObjectName getParentDomain()
+   {
+      if (parent == null || parent instanceof ClassLoaderDomain == false)
+         return null;
+      ClassLoaderDomain parentDomain = (ClassLoaderDomain) parent;
+      return parentDomain.getObjectName();
+   }
+
+   public String getParentDomainName()
+   {
+      if (parent == null || parent instanceof ClassLoaderDomain == false)
+         return null;
+      ClassLoaderDomain parentDomain = (ClassLoaderDomain) parent;
+      return parentDomain.getName();
+   }
+
+   public ObjectName getSystem()
+   {
+      ClassLoaderSystem system = (ClassLoaderSystem) getClassLoaderSystem();
+      if (system == null)
+         return null;
+      return system.getObjectName();
+   }
+
+   public List<ObjectName> getClassLoaders()
+   {
+      List<ObjectName> result = new ArrayList<ObjectName>();
+      for (ClassLoader cl : super.getAllClassLoaders())
+      {
+         if (cl instanceof RealClassLoader)
+            result.add(((RealClassLoader) cl).getObjectName());
+      }
+      return result;
+   }
+
+   public Map<String, List<ObjectName>> getExportingClassLoaders()
+   {
+      HashMap<String, List<ObjectName>> result = new HashMap<String, List<ObjectName>>();
+      for (Entry<String, List<ClassLoader>> entry : getClassLoadersByPackage().entrySet())
+      {
+         List<ObjectName> names = new ArrayList<ObjectName>();
+         for (ClassLoader cl : entry.getValue())
+         {
+            if (cl instanceof RealClassLoader)
+               names.add(((RealClassLoader) cl).getObjectName());
+            
+         }
+         result.put(entry.getKey(), names);
+      }
+      return result;
+   }
+
+   public List<ObjectName> getExportingClassLoaders(String packageName)
+   {
+      if (packageName == null)
+         throw new IllegalArgumentException("Null package name");
+      
+      List<ObjectName> result = new ArrayList<ObjectName>();
+      for (ClassLoader cl : getClassLoaders(packageName))
+      {
+         if (cl instanceof RealClassLoader)
+            result.add(((RealClassLoader) cl).getObjectName());
+      }
+      return result;
+   }
+
+   public ObjectName findClassLoaderForClass(String name) throws ClassNotFoundException
+   {
+      final Class<?> clazz = loadClass(null, name, true);
+      if (clazz == null)
+         return null;
+      
+      ClassLoader cl = AccessController.doPrivileged(new PrivilegedAction<ClassLoader>()
+      {
+         public ClassLoader run()
+         {
+            return clazz.getClassLoader(); 
+         }
+      });
+      
+      if (cl != null && cl instanceof RealClassLoader)
+         return ((RealClassLoader) cl).getObjectName();
+      
+      return null;
+   }
+
+   public Set<URL> loadResources(String name) throws IOException
+   {
+      HashSet<URL> result = new HashSet<URL>();
+      getResources(name, result);
+      return result;
+   }
+
    /**
     * For subclasses to add information for toLongString()
     * 
@@ -469,6 +593,100 @@ public class ClassLoaderDomain extends BaseClassLoaderDomain implements Loader
                   return new ClassLoaderToLoaderAdapter(classLoader);
                }
             });
+         }
+      }
+   }
+
+   public ObjectName preRegister(MBeanServer server, ObjectName name) throws Exception
+   {
+      this.mbeanServer = server;
+      this.objectName = name;
+      return name;
+   }
+   
+   public void postRegister(Boolean registrationDone)
+   {
+      if (registrationDone.booleanValue())
+      {
+         // Register any classloaders that were added before we were registered in the MBeanServer
+         for (ClassLoader cl : getAllClassLoaders())
+            registerClassLoaderMBean(cl);
+      }
+      else
+      {
+         postDeregister();
+      }
+   }
+
+   public void preDeregister() throws Exception
+   {
+      // Unregister any remaining classloaders from the MBeanServer
+      for (ClassLoader cl : getAllClassLoaders())
+         unregisterClassLoaderMBean(cl);
+   }
+   
+   public void postDeregister()
+   {
+      this.mbeanServer = null;
+      this.objectName = null;
+   }
+
+   @Override
+   protected void afterRegisterClassLoader(ClassLoader classLoader, ClassLoaderPolicy policy)
+   {
+      registerClassLoaderMBean(classLoader);
+   }
+
+   @Override
+   protected void beforeUnregisterClassLoader(ClassLoader classLoader, ClassLoaderPolicy policy)
+   {
+      unregisterClassLoaderMBean(classLoader);
+   }
+
+   /**
+    * Register a classloader with the MBeanServer
+    * 
+    * @param cl the classloader
+    */
+   protected void registerClassLoaderMBean(ClassLoader cl)
+   {
+      if (mbeanServer == null)
+         return;
+      
+      if (cl instanceof RealClassLoader)
+      {
+         ObjectName name = ((RealClassLoader) cl).getObjectName();
+         try
+         {
+            mbeanServer.registerMBean(cl, name);
+         }
+         catch (Exception e)
+         {
+            log.warn("Error registering classloader: " + cl, e);
+         }
+      }
+   }
+
+   /**
+    * Unregister a classloader from the MBeanServer
+    * 
+    * @param cl the classloader
+    */
+   protected void unregisterClassLoaderMBean(ClassLoader cl)
+   {
+      if (mbeanServer == null)
+         return;
+      
+      if (cl instanceof RealClassLoader)
+      {
+         ObjectName name = ((RealClassLoader) cl).getObjectName();
+         try
+         {
+            mbeanServer.unregisterMBean(name);
+         }
+         catch (Exception e)
+         {
+            log.warn("Error unregistering classloader: " + cl, e);
          }
       }
    }

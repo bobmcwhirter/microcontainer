@@ -23,11 +23,13 @@ package org.jboss.test.classloader.domain.test;
 
 import java.util.HashSet;
 import java.util.Set;
+import javax.management.MBeanRegistration;
 
 import junit.framework.Test;
 
 import org.jboss.classloader.plugins.ClassLoaderUtils;
 import org.jboss.classloader.spi.ClassLoaderDomain;
+import org.jboss.classloader.spi.ClassLoaderDomainMBean;
 import org.jboss.classloader.spi.ClassLoaderSystem;
 import org.jboss.classloader.spi.Loader;
 import org.jboss.classloader.spi.ParentPolicy;
@@ -82,7 +84,7 @@ public class CustomParentLoaderUnitTestCase extends AbstractClassLoaderTestWithS
       ClassLoader classLoader = system.registerClassLoaderPolicy(domain, policy);
       
       assertLoadClass(ClassLoaderDomain.class, classLoader);
-      checkGetResource(loader, ClassLoaderDomain.class, BaseClassLoaderDomain.class, Loader.class, Object.class);
+      checkGetResource(loader, ClassLoaderDomain.class, BaseClassLoaderDomain.class, ClassLoaderDomainMBean.class, MBeanRegistration.class, Loader.class, Object.class);
       checkLoadClass(loader);
    }
    
