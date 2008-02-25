@@ -36,6 +36,7 @@ import org.jboss.test.deployers.vfs.matchers.support.ExposedFileStructure;
 import org.jboss.test.deployers.vfs.matchers.support.FeedbackDeployer;
 import org.jboss.test.deployers.vfs.matchers.support.TestBeanDeployer;
 import org.jboss.test.deployers.vfs.matchers.support.TestBshDeployer;
+import org.jboss.test.deployers.vfs.matchers.support.TestNameDeployer;
 
 /**
  * File matchers tests.
@@ -90,28 +91,32 @@ public class FileMatchersTestCase extends KernelHolderDeployersTest
       controller.install(builder.getBeanMetaData());
       assertEquals(2, matchers.size());
 
+      builder = BeanMetaDataBuilder.createBuilder("ExactNameDeployer", TestNameDeployer.class.getName());
+      builder.addConstructorParameter(String.class.getName(), "some.bsh");
+      controller.install(builder.getBeanMetaData());
+      assertEquals(3, matchers.size());
+
       Deployers deployers = createDeployers();
       main.setDeployers(deployers);
-      ControllerContext bdContext = controller.getInstalledContext("BeanDeployer");
-      assertNotNull(bdContext);
-      FeedbackDeployer beanDeployer = (FeedbackDeployer)bdContext.getTarget();
-      assertNotNull(beanDeployer);
-      addDeployer(main, beanDeployer);
-      ControllerContext bsContext = controller.getInstalledContext("BshDeployer");
-      assertNotNull(bsContext);
-      FeedbackDeployer shellDeployer = (FeedbackDeployer)bsContext.getTarget();
-      assertNotNull(shellDeployer);
-      addDeployer(main, shellDeployer);
 
-      Deployment deploymentBean = createDeployment("/matchers", "qwert.beans");
-      assertDeploy(main, deploymentBean);
+      FeedbackDeployer beanDeployer = addDeployer(main, "BeanDeployer");
+      FeedbackDeployer shellDeployer = addDeployer(main, "BshDeployer");
+      FeedbackDeployer nameDeployer = addDeployer(main, "ExactNameDeployer");
 
-      Deployment deploymentShell = createDeployment("/matchers", "beanshell.jar");
-      assertDeploy(main, deploymentShell);
+      Deployment deploymentBeans = createDeployment("/matchers", "qwert.beans");
+      assertDeploy(main, deploymentBeans);
+      Deployment deploymentShells = createDeployment("/matchers", "beanshell.jar");
+      assertDeploy(main, deploymentShells);
+      Deployment deploymentTopLevel = createDeployment("/matchers", "toplevel");
+      assertDeploy(main, deploymentTopLevel);
 
       assertNotNull(beanDeployer.getFiles());
-      assertEquals(new String[]{"some-beans.xml"}, beanDeployer.getFiles().toArray());
+      assertEquals(new String[]{"my-beans.xml", "some-beans.xml"}, beanDeployer.getFiles().toArray());
+
       assertNotNull(shellDeployer.getFiles());
-      assertEquals(new String[]{"some.bsh"}, shellDeployer.getFiles().toArray());
+      assertEquals(new String[]{"script.bsh", "some.bsh"}, shellDeployer.getFiles().toArray());
+
+      assertNotNull(nameDeployer.getFiles());
+      assertEquals(new String[]{"some.bsh"}, nameDeployer.getFiles().toArray());
    }
 }

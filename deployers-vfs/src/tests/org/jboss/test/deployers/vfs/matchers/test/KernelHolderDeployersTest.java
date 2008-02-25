@@ -21,10 +21,14 @@
 */
 package org.jboss.test.deployers.vfs.matchers.test;
 
+import org.jboss.dependency.spi.ControllerContext;
+import org.jboss.dependency.spi.ControllerState;
+import org.jboss.deployers.client.spi.DeployerClient;
 import org.jboss.kernel.Kernel;
 import org.jboss.kernel.plugins.bootstrap.basic.BasicBootstrap;
 import org.jboss.kernel.spi.dependency.KernelController;
 import org.jboss.test.deployers.BaseDeployersVFSTest;
+import org.jboss.test.deployers.vfs.matchers.support.FeedbackDeployer;
 
 /**
  * Holds a Kernel instance
@@ -71,5 +75,18 @@ public abstract class KernelHolderDeployersTest extends BaseDeployersVFSTest
       {
          super.tearDown();
       }
+   }
+
+   protected FeedbackDeployer addDeployer(DeployerClient main, String name)
+   {
+      ControllerContext context = controller.getInstalledContext(name);
+      assertNotNull("Missing deployer: " + name, context);
+      assertEquals(ControllerState.INSTALLED, context.getState());
+      Object target = context.getTarget();
+      assertNotNull(target);
+      assertInstanceOf(target, FeedbackDeployer.class);
+      FeedbackDeployer deployer = (FeedbackDeployer)target;
+      addDeployer(main, deployer);
+      return deployer;
    }
 }

@@ -97,16 +97,9 @@ public class JarExtensionsTestCase extends KernelHolderDeployersTest
 
       Deployers deployers = createDeployers();
       main.setDeployers(deployers);
-      ControllerContext rhtContext = controller.getInstalledContext("RhtDeployer");
-      assertNotNull(rhtContext);
-      FeedbackDeployer rhtDeployer = (FeedbackDeployer)rhtContext.getTarget();
-      assertNotNull(rhtDeployer);
-      addDeployer(main, rhtDeployer);
-      ControllerContext jbsContext = controller.getInstalledContext("JbsDeployer");
-      assertNotNull(jbsContext);
-      FeedbackDeployer jbsDeployer = (FeedbackDeployer)jbsContext.getTarget();
-      assertNotNull(jbsDeployer);
-      addDeployer(main, jbsDeployer);
+
+      FeedbackDeployer rhtDeployer = addDeployer(main, "RhtDeployer");
+      FeedbackDeployer jbsDeployer = addDeployer(main, "JbsDeployer");
 
       Deployment deploymentRHT = createDeployment("/matchers", "some.rhts");
       assertDeploy(main, deploymentRHT);

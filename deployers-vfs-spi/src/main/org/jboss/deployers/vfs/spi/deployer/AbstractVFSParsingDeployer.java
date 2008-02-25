@@ -51,8 +51,12 @@ public abstract class AbstractVFSParsingDeployer<T> extends AbstractParsingDeplo
 
    public boolean isDeployable(VirtualFile file)
    {
+      String fileName = file.getName();
       String suffix = getSuffix();
-      return suffix != null && file.getName().endsWith(suffix);
+      if (suffix == null)
+         return fileName.equals(getName());
+      else
+         return fileName.endsWith(suffix);
    }
 
    /**
