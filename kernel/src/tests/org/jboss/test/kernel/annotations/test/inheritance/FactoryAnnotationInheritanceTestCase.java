@@ -22,6 +22,8 @@
 package org.jboss.test.kernel.annotations.test.inheritance;
 
 import junit.framework.Test;
+import org.jboss.test.kernel.annotations.support.FactoryAnnotationTester;
+import org.jboss.test.kernel.annotations.support.SubFactoryAnnotationTester;
 
 /**
  * Factory annotation inheritance test.
@@ -42,6 +44,8 @@ public class FactoryAnnotationInheritanceTestCase extends AbstractAnnotationInhe
 
    public void testInheritance() throws Throwable
    {
-      //TODO
+      FactoryAnnotationTester tester = new SubFactoryAnnotationTester();
+      runAnnotationsOnTarget(tester);
+      assertNull(tester.getValue());
    }
 }

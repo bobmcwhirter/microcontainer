@@ -22,9 +22,7 @@
 package org.jboss.test.kernel.annotations.test.inheritance;
 
 import junit.framework.Test;
-import org.jboss.beans.metadata.plugins.AbstractBeanMetaData;
 import org.jboss.dependency.spi.ControllerContext;
-import org.jboss.kernel.spi.dependency.KernelController;
 import org.jboss.test.kernel.annotations.support.ConstructorInheritanceTester;
 import org.jboss.test.kernel.annotations.support.SubConstructorInheritanceTester;
 
@@ -47,12 +45,10 @@ public class ConstructorAnnotationInheritanceTestCase extends AbstractAnnotation
 
    public void testInheritance() throws Throwable
    {
-      KernelController controller = getController();
-      controller.install(new AbstractBeanMetaData("somebean", Object.class.getName()));
-      SubConstructorInheritanceTester tester = new SubConstructorInheritanceTester();
-      runAnnotationsOnTarget(tester);
+      install("somebean", Object.class);
+      runAnnotationsOnTarget(new SubConstructorInheritanceTester());
 
-      ControllerContext kcc = controller.install(new AbstractBeanMetaData("cit", ConstructorInheritanceTester.class.getName()));
+      ControllerContext kcc = install("cit", ConstructorInheritanceTester.class);
       assertNotNull(kcc);
       assertNotNull(kcc.getTarget());
       assertInstanceOf(kcc.getTarget(), ConstructorInheritanceTester.class);

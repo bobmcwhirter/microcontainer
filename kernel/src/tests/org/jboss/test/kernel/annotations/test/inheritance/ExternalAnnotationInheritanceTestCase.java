@@ -22,6 +22,7 @@
 package org.jboss.test.kernel.annotations.test.inheritance;
 
 import junit.framework.Test;
+import org.jboss.test.kernel.annotations.support.SubExternalAnnotationTester;
 
 /**
  * External annotation inheritance test.
@@ -42,6 +43,6 @@ public class ExternalAnnotationInheritanceTestCase extends AbstractAnnotationInh
 
    public void testInheritance() throws Throwable
    {
-      //TODO
+      runAnnotationsOnTarget(new SubExternalAnnotationTester());
    }
 }

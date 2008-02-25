@@ -22,6 +22,9 @@
 package org.jboss.test.kernel.annotations.test.inheritance;
 
 import junit.framework.Test;
+import org.jboss.test.kernel.annotations.support.InstallationAnnotationTester;
+import org.jboss.test.kernel.annotations.support.MyDeployer;
+import org.jboss.test.kernel.annotations.support.SubInstallationAnnotationTester;
 
 /**
  * Installation annotation inheritance test.
@@ -42,6 +45,15 @@ public class InstallationAnnotationInheritanceTestCase extends AbstractAnnotatio
 
    public void testInheritance() throws Throwable
    {
-      //TODO
+      install("deployer", MyDeployer.class);
+      InstallationAnnotationTester tester = new SubInstallationAnnotationTester();
+      runAnnotationsOnTarget(tester);
+      assertTrue(0 == tester.getValue());
+   }
+
+   protected void doTestAfterInstall(Object target)
+   {
+      InstallationAnnotationTester tester = (InstallationAnnotationTester)target;
+      assertTrue(1 == tester.getValue());
    }
 }

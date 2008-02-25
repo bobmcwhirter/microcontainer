@@ -22,6 +22,9 @@
 package org.jboss.test.kernel.annotations.test.inheritance;
 
 import org.jboss.test.kernel.annotations.test.AbstractRunAnnotationsTest;
+import org.jboss.kernel.spi.dependency.KernelController;
+import org.jboss.kernel.spi.dependency.KernelControllerContext;
+import org.jboss.beans.metadata.plugins.AbstractBeanMetaData;
 
 /**
  * Testing annotations inheritance.
@@ -33,6 +36,12 @@ public abstract class AbstractAnnotationInheritanceTest extends AbstractRunAnnot
    protected AbstractAnnotationInheritanceTest(String name)
    {
       super(name);
+   }
+
+   protected KernelControllerContext install(String name, Class<?> clazz) throws Throwable
+   {
+      KernelController controller = getController();
+      return controller.install(new AbstractBeanMetaData(name, clazz.getName()));
    }
 
    protected void doTestAfterInstall(Class<?> clazz, Object target)

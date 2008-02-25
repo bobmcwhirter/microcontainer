@@ -21,30 +21,9 @@
 */
 package org.jboss.test.kernel.annotations.support;
 
-import org.jboss.beans.metadata.api.annotations.Install;
-import org.jboss.beans.metadata.api.annotations.Uninstall;
-
 /**
  * @author <a href="mailto:ales.justin@jboss.com">Ales Justin</a>
  */
-public class CallbackAnnotationTester implements AnnotationTester
+public class SubFactoryAnnotationTester extends FactoryAnnotationTester
 {
-   private int counter;
-
-   @Install
-   public void addMyDeployer(MyDeployer deployer)
-   {
-      counter++;
-   }
-
-   @Uninstall
-   public void removeMyDeployer(MyDeployer deployer)
-   {
-      counter--;      
-   }
-
-   public Integer getValue()
-   {
-      return counter;
-   }
 }

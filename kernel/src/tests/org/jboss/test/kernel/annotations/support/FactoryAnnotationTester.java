@@ -31,6 +31,10 @@ public class FactoryAnnotationTester implements AnnotationTester
 {
    private Object value;
 
+   public FactoryAnnotationTester()
+   {
+   }
+
    public FactoryAnnotationTester(Object value)
    {
       this.value = value;

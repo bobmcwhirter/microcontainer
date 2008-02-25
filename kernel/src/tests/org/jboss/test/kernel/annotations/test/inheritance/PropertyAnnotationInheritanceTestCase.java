@@ -22,8 +22,6 @@
 package org.jboss.test.kernel.annotations.test.inheritance;
 
 import junit.framework.Test;
-import org.jboss.kernel.spi.dependency.KernelController;
-import org.jboss.beans.metadata.plugins.AbstractBeanMetaData;
 import org.jboss.test.kernel.annotations.support.SubPropertyInheritanceTester;
 
 /**
@@ -45,10 +43,10 @@ public class PropertyAnnotationInheritanceTestCase extends AbstractAnnotationInh
 
    public void testInheritance() throws Throwable
    {
-      KernelController controller = getController();
-      controller.install(new AbstractBeanMetaData("somebean", Object.class.getName()));
+      install("somebean", Object.class);
       SubPropertyInheritanceTester tester = new SubPropertyInheritanceTester();
-      runAnnotationsOnTarget(tester);
+      runAnnotationsOnTarget(new SubPropertyInheritanceTester());
+      assertNull(tester.getValue());
    }
 
    protected void doTestAfterInstall(Object target)

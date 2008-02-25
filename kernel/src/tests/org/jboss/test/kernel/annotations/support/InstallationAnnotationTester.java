@@ -43,7 +43,7 @@ public class InstallationAnnotationTester implements AnnotationTester
       counter--;
    }
 
-   public Object getValue()
+   public Integer getValue()
    {
       return counter;
    }
