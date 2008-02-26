@@ -41,20 +41,20 @@ import org.jboss.xb.builder.JBossXBBuilder;
  * @author <a href="kabir.khan@jboss.com">Kabir Khan</a>
  * @version $Revision: 1.1 $
  */
-public class JAXBDeployer extends BasicXMLDeployer
+public class JBossXBDeployer extends BasicXMLDeployer
 {
    /** The log */
    private static final Logger log = Logger.getLogger(BasicXMLDeployer.class);
    
    JBossXBTestDelegate jbossXbTestDelegate;
 
-   public JAXBDeployer(Kernel kernel, ControllerMode mode, Class<?> clazz)
+   public JBossXBDeployer(Kernel kernel, ControllerMode mode, Class<?> clazz)
    {
       super(kernel, mode);
       setupJaxbDelegate(clazz);
    }
 
-   public JAXBDeployer(Kernel kernel, Class<?> clazz)
+   public JBossXBDeployer(Kernel kernel, Class<?> clazz)
    {
       super(kernel);
       setupJaxbDelegate(clazz);

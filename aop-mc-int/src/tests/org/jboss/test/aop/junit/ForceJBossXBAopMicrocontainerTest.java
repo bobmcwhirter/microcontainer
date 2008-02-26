@@ -31,9 +31,9 @@ import org.jboss.test.AbstractTestDelegate;
  * @author <a href="kabir.khan@jboss.com">Kabir Khan</a>
  * @version $Revision: 1.1 $
  */
-public class ForceJAXBAOPMicrocontainerTest extends AOPMicrocontainerTest
+public class ForceJBossXBAopMicrocontainerTest extends AOPMicrocontainerTest
 {
-   public ForceJAXBAOPMicrocontainerTest(String name)
+   public ForceJBossXBAopMicrocontainerTest(String name)
    {
       super(name);
    }

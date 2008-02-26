@@ -41,7 +41,7 @@ import org.jboss.beans.metadata.plugins.factory.GenericBeanFactory;
 import org.jboss.beans.metadata.spi.BeanMetaData;
 import org.jboss.beans.metadata.spi.PropertyMetaData;
 import org.jboss.kernel.spi.deployment.KernelDeployment;
-import org.jboss.test.aop.junit.ForceJAXBAOPMicrocontainerTest;
+import org.jboss.test.aop.junit.ForceJBossXBAopMicrocontainerTest;
 import org.jboss.test.microcontainer.beans.TestAspect;
 import org.jboss.test.microcontainer.beans.TestAspectWithDependency;
 import org.jboss.test.microcontainer.beans.TestInterceptorWithDependency;
@@ -51,7 +51,7 @@ import org.jboss.test.microcontainer.beans.TestInterceptorWithDependency;
  * @author <a href="kabir.khan@jboss.com">Kabir Khan</a>
  * @version $Revision: 1.1 $
  */
-public class JAXBAnnotationSanityTestCase  extends ForceJAXBAOPMicrocontainerTest
+public class JAXBAnnotationSanityTestCase  extends ForceJBossXBAopMicrocontainerTest
 {
    public static Test suite()
    {

@@ -124,7 +124,7 @@ public class AOPMicrocontainerTestDelegate extends MicrocontainerTestDelegate
    {
       if (useJaxbDeployer)
       {
-         return new JAXBDeployer(kernel, defaultMode, clazz);
+         return new JBossXBDeployer(kernel, defaultMode, clazz);
       }
       return super.createDeployer();
    }
@@ -135,6 +135,6 @@ public class AOPMicrocontainerTestDelegate extends MicrocontainerTestDelegate
       {
          throw new IllegalStateException("useJaxbDeployer needs to be true");
       }
-      return ((JAXBDeployer)deployer).unmarshal(url);
+      return ((JBossXBDeployer)deployer).unmarshal(url);
    }
 }
