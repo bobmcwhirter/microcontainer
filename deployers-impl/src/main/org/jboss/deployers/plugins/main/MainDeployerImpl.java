@@ -497,6 +497,9 @@ public class MainDeployerImpl implements MainDeployer, MainDeployerStructure
 
    public void process()
    {
+      if (deployers == null)
+         throw new IllegalStateException("No deployers");
+
       lockRead();
       try
       {
@@ -505,9 +508,6 @@ public class MainDeployerImpl implements MainDeployer, MainDeployerStructure
 
          List<DeploymentContext> undeployContexts = null;
          List<DeploymentContext> deployContexts = null;
-
-         if (deployers == null)
-            throw new IllegalStateException("No deployers");
 
          if (undeploy.isEmpty() == false)
          {
@@ -558,6 +558,9 @@ public class MainDeployerImpl implements MainDeployer, MainDeployerStructure
 
    public void change(String deploymentName, DeploymentStage stage) throws DeploymentException
    {
+      if (deployers == null)
+         throw new IllegalStateException("No deployers");
+
       lockRead();
       try
       {
