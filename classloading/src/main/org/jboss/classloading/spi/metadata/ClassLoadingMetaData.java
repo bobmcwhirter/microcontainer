@@ -22,7 +22,6 @@
 package org.jboss.classloading.spi.metadata;
 
 import java.util.List;
-
 import javax.xml.bind.annotation.XmlAttribute;
 import javax.xml.bind.annotation.XmlTransient;
 
@@ -510,10 +509,10 @@ public class ClassLoadingMetaData extends NameAndVersionSupport
          builder.append(" NO-BLACK-LIST");
       List<Capability> capabilities = getCapabilities().getCapabilities();
       if (capabilities != null)
-         builder.append(" capabilities=" + capabilities);
+         builder.append(" capabilities=").append(capabilities);
       List<Requirement> requirements = getRequirements().getRequirements();
       if (requirements != null)
-         builder.append(" requirements=" + requirements);
+         builder.append(" requirements=").append(requirements);
    }
    
    @Override
