@@ -26,6 +26,7 @@ import java.util.Map;
 
 import org.jboss.deployers.spi.DeploymentException;
 import org.jboss.deployers.spi.DeploymentState;
+import org.jboss.deployers.spi.deployer.DeploymentStage;
 import org.jboss.managed.api.ManagedDeployment;
 import org.jboss.managed.api.ManagedObject;
 import org.jboss.util.graph.Graph;
@@ -99,6 +100,15 @@ public interface DeployerClient
     * @throws DeploymentException for any error
     */
    void undeploy(Deployment... deployments) throws DeploymentException;
+
+   /**
+    * Change the state of a deployment
+    * 
+    * @param deploymentName the deployment name
+    * @param stage the stage
+    * @throws DeploymentException for any error
+    */
+   void change(String deploymentName, DeploymentStage stage) throws DeploymentException;
 
    /**
     * Check all the deployments are complete

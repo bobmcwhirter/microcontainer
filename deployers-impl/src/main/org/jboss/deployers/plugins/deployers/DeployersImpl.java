@@ -384,8 +384,38 @@ public class DeployersImpl implements Deployers, ControllerContextActions
       }
    }
 
+   public void change(DeploymentContext context, DeploymentStage stage) throws DeploymentException
+   {
+      if (context == null)
+         throw new DeploymentException("Null context");
+      if (stage == null)
+         throw new DeploymentException("Null stage");
+      
+      String stageName = stage.getName();
+      if (stages.containsKey(stage.getName()) == false)
+         throw new DeploymentException("Unknown deployment stage: " + stage);
+      
+      DeploymentControllerContext deploymentControllerContext = context.getTransientAttachments().getAttachment(ControllerContext.class.getName(), DeploymentControllerContext.class);
+      if (deploymentControllerContext == null)
+         throw new DeploymentException("Deployment " + context.getName() + " has no deployment controller context");
+      
+      ControllerState state = new ControllerState(stageName);
+      try
+      {
+         controller.change(deploymentControllerContext, state);
+      }
+      catch (Throwable t)
+      {
+         context.setState(DeploymentState.ERROR);
+         context.setProblem(t);
+         throw DeploymentException.rethrowAsDeploymentException("Error changing to stage " + stage + " for " + context.getName(), t);
+      }
+   }
+   
    public void process(List<DeploymentContext> deploy, List<DeploymentContext> undeploy)
    {
+      boolean trace = log.isTraceEnabled();
+      
       // There is something to undeploy
       if (undeploy != null && undeploy.isEmpty() == false)
       {
@@ -415,8 +445,10 @@ public class DeployersImpl implements Deployers, ControllerContextActions
             ControllerState state = states.get(i);
             for (DeploymentControllerContext deploymentControllerContext : toUndeploy)
             {
+               ControllerState current = deploymentControllerContext.getState();
+               int currentIdx = states.indexOf(current);
                DeploymentContext context = deploymentControllerContext.getDeploymentContext();
-               if (ControllerState.ERROR.equals(context.getState()) == false)
+               if (currentIdx != -1 && currentIdx > i)
                {
                   try
                   {
@@ -428,6 +460,11 @@ public class DeployersImpl implements Deployers, ControllerContextActions
                      context.setState(DeploymentState.ERROR);
                      context.setProblem(t);
                   }
+               }
+               else
+               {
+                  if (trace)
+                     log.trace("Not moving " + deploymentControllerContext + " to state " + state + " it is at " + current);
                }
             }
          }
@@ -486,13 +523,16 @@ public class DeployersImpl implements Deployers, ControllerContextActions
 
          // Go through the states in order
          List<ControllerState> states = controller.getStates();
-         for (ControllerState state : states)
+         for (int i = 0; i < states.size(); ++i)
          {
+            ControllerState state = states.get(i);
             for (DeploymentContext context : deploy)
             {
-               if (DeploymentState.ERROR.equals(context.getState()) == false)
+               DeploymentControllerContext deploymentControllerContext = context.getTransientAttachments().getAttachment(ControllerContext.class.getName(), DeploymentControllerContext.class);
+               ControllerState current = deploymentControllerContext.getState();
+               int currentIdx = states.indexOf(current);
+               if (currentIdx != -1 && currentIdx < i)
                {
-                  DeploymentControllerContext deploymentControllerContext = context.getTransientAttachments().getAttachment(ControllerContext.class.getName(), DeploymentControllerContext.class);
                   try
                   {
                      controller.change(deploymentControllerContext, state);
@@ -502,6 +542,11 @@ public class DeployersImpl implements Deployers, ControllerContextActions
                      context.setState(DeploymentState.ERROR);
                      context.setProblem(t);
                   }
+               }
+               else
+               {
+                  if (trace)
+                     log.trace("Not moving " + deploymentControllerContext + " to state " + state + " it is at " + current);
                }
             }
          }

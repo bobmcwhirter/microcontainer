@@ -56,6 +56,15 @@ public interface Deployers
    void process(List<DeploymentContext> deploy, List<DeploymentContext> undeploy);
 
    /**
+    * Change the state of a deployment
+    * 
+    * @param context the context
+    * @param stage the stage
+    * @throws DeploymentException for any error
+    */
+   void change(DeploymentContext context, DeploymentStage stage) throws DeploymentException;
+
+   /**
     * Check all the deployments are complete
     *
     * @param errors the contexts in error

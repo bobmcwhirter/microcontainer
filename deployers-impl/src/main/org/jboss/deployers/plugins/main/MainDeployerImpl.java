@@ -38,6 +38,7 @@ import org.jboss.deployers.client.spi.main.MainDeployer;
 import org.jboss.deployers.spi.DeploymentException;
 import org.jboss.deployers.spi.DeploymentState;
 import org.jboss.deployers.spi.deployer.Deployers;
+import org.jboss.deployers.spi.deployer.DeploymentStage;
 import org.jboss.deployers.spi.deployer.managed.ManagedDeploymentCreator;
 import org.jboss.deployers.structure.spi.DeploymentContext;
 import org.jboss.deployers.structure.spi.DeploymentUnit;
@@ -547,6 +548,33 @@ public class MainDeployerImpl implements MainDeployer, MainDeployerStructure
          catch (Throwable t)
          {
             throw new RuntimeException("Unexpected error in process()", t);
+         }
+      }
+      finally
+      {
+         unlockRead();
+      }
+   }
+
+   public void change(String deploymentName, DeploymentStage stage) throws DeploymentException
+   {
+      lockRead();
+      try
+      {
+         DeploymentContext context = getTopLevelDeploymentContext(deploymentName);
+         if (context == null)
+            throw new DeploymentException("Top level deployment " + deploymentName + " not found");
+         try
+         {
+            deployers.change(context, stage);
+         }
+         catch (Error e)
+         {
+            throw e;
+         }
+         catch (Throwable t)
+         {
+            throw DeploymentException.rethrowAsDeploymentException("Error changing context " + deploymentName + " to stage " + stage, t);
          }
       }
       finally

@@ -21,6 +21,7 @@
  */
 package org.jboss.deployers.spi.deployer;
 
+import java.io.Serializable;
 
 /**
  * DeploymentStage.
@@ -28,8 +29,11 @@ package org.jboss.deployers.spi.deployer;
  * @author <a href="adrian@jboss.org">Adrian Brock</a>
  * @version $Revision: 1.1 $
  */
-public class DeploymentStage
+public class DeploymentStage implements Serializable
 {
+   /** The serialVersionUID */
+   private static final long serialVersionUID = 3302613286025012191L;
+
    /** Our stage */
    private String name;
    

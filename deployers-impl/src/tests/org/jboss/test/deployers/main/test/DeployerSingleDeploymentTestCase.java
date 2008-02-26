@@ -37,7 +37,6 @@ import org.jboss.deployers.plugins.main.MainDeployerImpl;
 import org.jboss.deployers.spi.DeploymentException;
 import org.jboss.deployers.spi.structure.StructureMetaDataFactory;
 import org.jboss.deployers.structure.spi.DeploymentContext;
-import org.jboss.deployers.structure.spi.DeploymentUnit;
 import org.jboss.deployers.structure.spi.StructuralDeployers;
 import org.jboss.deployers.structure.spi.StructureBuilder;
 import org.jboss.deployers.structure.spi.helpers.AbstractStructureBuilder;
@@ -325,22 +324,5 @@ public class DeployerSingleDeploymentTestCase extends AbstractMainDeployerTest
          assertTrue(runnables[i].toString(), runnables[i].isValid());
       }
       log.info("Names: " + names.size() + " - " + names);
-   }
-
-   public void testMainDeployerInUnit() throws Throwable
-   {
-      DeployerClient main = getMainDeployer();
-
-      Deployment single = createSimpleDeployment("single");
-      main.deploy(single);
-      List<String> expected = new ArrayList<String>();
-      expected.add(single.getName());
-      assertEquals(expected, deployer.getDeployedUnits());
-
-      DeploymentUnit unit = assertDeploymentUnit(main, single.getName());
-      assertEquals(main, unit.getMainDeployer());
-      
-      main.undeploy(single);
-      assertNull(unit.getMainDeployer());
    }
 }
