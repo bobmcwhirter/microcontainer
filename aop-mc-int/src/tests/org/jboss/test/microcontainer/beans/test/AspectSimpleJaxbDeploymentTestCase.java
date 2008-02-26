@@ -19,20 +19,27 @@
 * Software Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA
 * 02110-1301 USA, or see the FSF site: http://www.fsf.org.
 */ 
-package org.jboss.aop.microcontainer.beans.beanmetadatafactory;
+package org.jboss.test.microcontainer.beans.test;
 
-import org.jboss.aop.microcontainer.beans.StackEntry;
+import junit.framework.Test;
 
 /**
  * 
  * @author <a href="kabir.khan@jboss.com">Kabir Khan</a>
  * @version $Revision: 1.1 $
  */
-public class StackRefData extends BaseInterceptorData
+public class AspectSimpleJaxbDeploymentTestCase extends AspectSimpleTest
 {
-   @Override
-   public String getBeanClassName()
+
+   public static Test suite()
    {
-      return StackEntry.class.getName();
+      System.setProperty("jboss.mc.jaxb", "true");
+      return suite(AspectSimpleJaxbDeploymentTestCase.class);
    }
+
+   public AspectSimpleJaxbDeploymentTestCase(String name)
+   {
+      super(name);
+   }
+
 }

@@ -35,6 +35,7 @@ import org.jboss.aop.microcontainer.beans.NamedPointcut;
 import org.jboss.aop.microcontainer.beans.Prepare;
 import org.jboss.aop.microcontainer.beans.TypeDef;
 import org.jboss.aop.microcontainer.beans.beanmetadatafactory.AdviceData;
+import org.jboss.aop.microcontainer.beans.beanmetadatafactory.AdviceOrInterceptorData;
 import org.jboss.aop.microcontainer.beans.beanmetadatafactory.ArrayBindBeanMetaDataFactory;
 import org.jboss.aop.microcontainer.beans.beanmetadatafactory.AspectBeanMetaDataFactory;
 import org.jboss.aop.microcontainer.beans.beanmetadatafactory.BeanMetaDataUtil;
@@ -929,7 +930,7 @@ public class AOPBeansSchemaInitializer implements SchemaBindingInitializer
       public void attributes(Object o, QName elementName, ElementBinding element, Attributes attrs, NamespaceContext nsCtx)
       {
          super.attributes(o, elementName, element, attrs, nsCtx);
-         AdviceData advice = (AdviceData)o;
+         AdviceOrInterceptorData advice = (AdviceOrInterceptorData)o;
          advice.setType(AdviceType.BEFORE);
       }
    }
@@ -942,7 +943,7 @@ public class AOPBeansSchemaInitializer implements SchemaBindingInitializer
       public void attributes(Object o, QName elementName, ElementBinding element, Attributes attrs, NamespaceContext nsCtx)
       {
          super.attributes(o, elementName, element, attrs, nsCtx);
-         AdviceData advice = (AdviceData)o;
+         AdviceOrInterceptorData advice = (AdviceOrInterceptorData)o;
          advice.setType(AdviceType.AFTER);
       }
    }
@@ -955,7 +956,7 @@ public class AOPBeansSchemaInitializer implements SchemaBindingInitializer
       public void attributes(Object o, QName elementName, ElementBinding element, Attributes attrs, NamespaceContext nsCtx)
       {
          super.attributes(o, elementName, element, attrs, nsCtx);
-         AdviceData advice = (AdviceData)o;
+         AdviceOrInterceptorData advice = (AdviceOrInterceptorData)o;
          advice.setType(AdviceType.THROWING);
       }
    }
@@ -968,7 +969,7 @@ public class AOPBeansSchemaInitializer implements SchemaBindingInitializer
       public void attributes(Object o, QName elementName, ElementBinding element, Attributes attrs, NamespaceContext nsCtx)
       {
          super.attributes(o, elementName, element, attrs, nsCtx);
-         AdviceData advice = (AdviceData)o;
+         AdviceOrInterceptorData advice = (AdviceOrInterceptorData)o;
          advice.setType(AdviceType.FINALLY);
       }
    }

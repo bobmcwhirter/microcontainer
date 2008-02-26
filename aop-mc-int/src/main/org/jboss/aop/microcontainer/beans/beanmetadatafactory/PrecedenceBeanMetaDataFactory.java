@@ -75,9 +75,9 @@ public class PrecedenceBeanMetaDataFactory extends AspectManagerAwareBeanMetaDat
          AbstractBeanMetaData entryBean = new AbstractBeanMetaData(PrecedenceDefEntry.class.getName());
          entryBean.setName(entryName);
          BeanMetaDataUtil.setSimpleProperty(entryBean, "aspectName", entry.getRefName());
-         if (entry instanceof AdviceData)
+         if (entry instanceof AdviceOrInterceptorData)
          {
-            BeanMetaDataUtil.setSimpleProperty(entryBean, "aspectMethod", ((AdviceData)entry).getAdviceMethod());
+            BeanMetaDataUtil.setSimpleProperty(entryBean, "aspectMethod", ((AdviceOrInterceptorData)entry).getAdviceMethod());
          }
          lmd.add(new AbstractInjectionValueMetaData(entryName));
          result.add(entryBean);

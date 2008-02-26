@@ -21,18 +21,25 @@
 */ 
 package org.jboss.aop.microcontainer.beans.beanmetadatafactory;
 
-import org.jboss.aop.microcontainer.beans.StackEntry;
+import javax.xml.bind.annotation.XmlAttribute;
 
 /**
  * 
  * @author <a href="kabir.khan@jboss.com">Kabir Khan</a>
  * @version $Revision: 1.1 $
  */
-public class StackRefData extends BaseInterceptorData
+public class InterceptorRefData extends AdviceOrInterceptorData
 {
-   @Override
-   public String getBeanClassName()
+   public InterceptorRefData()
    {
-      return StackEntry.class.getName();
+      // FIXME InterceptorRefData constructor
+      super();
    }
+
+   @XmlAttribute(name="name")
+   public void setRefName(String name)
+   {
+      super.refName = name;
+   }
+
 }

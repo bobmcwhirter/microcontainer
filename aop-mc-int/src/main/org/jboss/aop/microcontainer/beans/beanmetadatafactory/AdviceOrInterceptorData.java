@@ -21,18 +21,49 @@
 */ 
 package org.jboss.aop.microcontainer.beans.beanmetadatafactory;
 
-import org.jboss.aop.microcontainer.beans.StackEntry;
+import javax.xml.bind.annotation.XmlAttribute;
+import javax.xml.bind.annotation.XmlTransient;
+
+import org.jboss.aop.advice.AdviceType;
+import org.jboss.aop.microcontainer.beans.InterceptorEntry;
 
 /**
  * 
  * @author <a href="kabir.khan@jboss.com">Kabir Khan</a>
  * @version $Revision: 1.1 $
  */
-public class StackRefData extends BaseInterceptorData
+public abstract class AdviceOrInterceptorData extends BaseInterceptorData
 {
+
+   AdviceType type = AdviceType.AROUND;
+
+   @XmlAttribute(name = "aspect")
+   public void setRefName(String name)
+   {
+      super.setRefName(name);
+   }
+
+   public AdviceType getType()
+   {
+      return type;
+   }
+
+   @XmlTransient
+   public void setType(AdviceType type)
+   {
+      this.type = type;
+   }
+
    @Override
    public String getBeanClassName()
    {
-      return StackEntry.class.getName();
+      return InterceptorEntry.class.getName();
    }
+
+   public String getAdviceMethod()
+   {
+      return null;
+   }
+
+
 }

@@ -24,12 +24,18 @@ package org.jboss.aop.microcontainer.beans.beanmetadatafactory;
 import java.util.ArrayList;
 import java.util.List;
 
+import javax.xml.bind.annotation.XmlElement;
+import javax.xml.bind.annotation.XmlElements;
+import javax.xml.bind.annotation.XmlNsForm;
+import javax.xml.bind.annotation.XmlRootElement;
+
 import org.jboss.aop.microcontainer.beans.CFlowStack;
 import org.jboss.beans.metadata.plugins.AbstractBeanMetaData;
 import org.jboss.beans.metadata.plugins.AbstractInjectionValueMetaData;
 import org.jboss.beans.metadata.plugins.AbstractListMetaData;
 import org.jboss.beans.metadata.spi.BeanMetaData;
 import org.jboss.beans.metadata.spi.BeanMetaDataFactory;
+import org.jboss.xb.annotations.JBossXmlSchema;
 
 /**
  * AspectBeanMetaDataFactory.
@@ -37,11 +43,16 @@ import org.jboss.beans.metadata.spi.BeanMetaDataFactory;
  * @author <a href="adrian@jboss.com">Adrian Brock</a>
  * @version $Revision: 61194 $
  */
+@JBossXmlSchema(namespace="urn:jboss:aop-beans:1.0", elementFormDefault=XmlNsForm.QUALIFIED)
+@XmlRootElement(name="cflow")
 public class CFlowStackBeanMetaDataFactory extends AspectManagerAwareBeanMetaDataFactory
    implements BeanMetaDataFactory
 {
    private static final long serialVersionUID = 1L;
+   /** For use when using the old handlers */
    private ArrayList<AbstractBeanMetaData> entries = new ArrayList<AbstractBeanMetaData>();
+   
+   private List<CFlowCalled> calledEntries = new ArrayList<CFlowCalled>();
 
    public CFlowStackBeanMetaDataFactory()
    {
@@ -64,12 +75,26 @@ public class CFlowStackBeanMetaDataFactory extends AspectManagerAwareBeanMetaDat
       lmd.setType(ArrayList.class.getName());
       BeanMetaDataUtil.setSimpleProperty(cflowStack, "entries", lmd);
       int i = 0;
-      for (AbstractBeanMetaData entry : entries)
+      if (entries != null)
       {
-         String entryName = cflowStack.getName() + "$" + i++;
-         entry.setName(entryName);
-         lmd.add(new AbstractInjectionValueMetaData(entryName));
-         result.add(entry);
+         for (AbstractBeanMetaData entry : entries)
+         {
+            String entryName = cflowStack.getName() + "$" + i++;
+            entry.setName(entryName);
+            lmd.add(new AbstractInjectionValueMetaData(entryName));
+            result.add(entry);
+         }
+      }
+      if (calledEntries != null)
+      {
+         for (CFlowCalled called : calledEntries)
+         {
+            AbstractBeanMetaData bmd = new AbstractBeanMetaData();
+            String entryName = cflowStack.getName() + "$" + i++;
+            bmd.setName(name);
+            BeanMetaDataUtil.setSimpleProperty(bmd, "called", called);
+            lmd.add(new AbstractInjectionValueMetaData(entryName));
+         }
       }
 
       return result;
@@ -79,4 +104,19 @@ public class CFlowStackBeanMetaDataFactory extends AspectManagerAwareBeanMetaDat
    {
       entries.add(entry);
    }
+
+   public List<CFlowCalled> getCalledEntries()
+   {
+      return calledEntries;
+   }
+
+   @XmlElements({
+      @XmlElement(name="called", type=CFlowCalled.class),
+      @XmlElement(name="not-called", type=CFlowNotCalled.class)
+   })
+   public void setCalledEntries(List<CFlowCalled> calledEntries)
+   {
+      this.calledEntries = calledEntries;
+   }
+   
 }

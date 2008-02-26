@@ -21,18 +21,19 @@
 */ 
 package org.jboss.aop.microcontainer.beans.beanmetadatafactory;
 
-import org.jboss.aop.microcontainer.beans.StackEntry;
+import javax.xml.bind.annotation.XmlNsForm;
+import javax.xml.bind.annotation.XmlRootElement;
+
+import org.jboss.xb.annotations.JBossXmlSchema;
 
 /**
  * 
  * @author <a href="kabir.khan@jboss.com">Kabir Khan</a>
  * @version $Revision: 1.1 $
  */
-public class StackRefData extends BaseInterceptorData
+@JBossXmlSchema(namespace="urn:jboss:aop-beans:1.0", elementFormDefault=XmlNsForm.QUALIFIED)
+@XmlRootElement(name="interceptor")
+public class InterceptorBeanMetaDataFactory extends AspectBeanMetaDataFactory
 {
-   @Override
-   public String getBeanClassName()
-   {
-      return StackEntry.class.getName();
-   }
+   private static final long serialVersionUID = 1L;
 }

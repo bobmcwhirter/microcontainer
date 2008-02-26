@@ -93,15 +93,15 @@ public class ArrayBindBeanMetaDataFactory extends AspectManagerAwareBeanMetaData
             BeanMetaDataUtil.DependencyBuilder builder = new BeanMetaDataUtil.DependencyBuilder(bmd, "binding", name).setState("Instantiated");
             BeanMetaDataUtil.setDependencyProperty(builder);
             
-            if (interceptor instanceof AdviceData)
+            if (interceptor instanceof AdviceOrInterceptorData)
             {
                BeanMetaDataUtil.DependencyBuilder db = new BeanMetaDataUtil.DependencyBuilder(bmd, "aspect", interceptor.getRefName()); 
                BeanMetaDataUtil.setDependencyProperty(db);
-               if (((AdviceData)interceptor).getAdviceMethod() != null)
+               if (((AdviceOrInterceptorData)interceptor).getAdviceMethod() != null)
                {
-                  BeanMetaDataUtil.setSimpleProperty(bmd, "aspectMethod", ((AdviceData)interceptor).getAdviceMethod());
+                  BeanMetaDataUtil.setSimpleProperty(bmd, "aspectMethod", ((AdviceOrInterceptorData)interceptor).getAdviceMethod());
                }
-               BeanMetaDataUtil.setSimpleProperty(bmd, "type", ((AdviceData)interceptor).getType());
+               BeanMetaDataUtil.setSimpleProperty(bmd, "type", ((AdviceOrInterceptorData)interceptor).getType());
             }
             else
             {

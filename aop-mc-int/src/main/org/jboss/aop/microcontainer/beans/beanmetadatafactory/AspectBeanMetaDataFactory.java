@@ -25,6 +25,10 @@ import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
 
+import javax.xml.bind.annotation.XmlAttribute;
+import javax.xml.bind.annotation.XmlNsForm;
+import javax.xml.bind.annotation.XmlRootElement;
+
 import org.jboss.aop.microcontainer.beans.Aspect;
 import org.jboss.beans.metadata.plugins.AbstractBeanMetaData;
 import org.jboss.beans.metadata.plugins.AbstractDependencyValueMetaData;
@@ -37,6 +41,7 @@ import org.jboss.beans.metadata.spi.BeanMetaDataFactory;
 import org.jboss.beans.metadata.spi.InstallMetaData;
 import org.jboss.beans.metadata.spi.MetaDataVisitorNode;
 import org.jboss.beans.metadata.spi.ParameterMetaData;
+import org.jboss.xb.annotations.JBossXmlSchema;
 
 /**
  * AspectBeanMetaDataFactory.
@@ -44,6 +49,8 @@ import org.jboss.beans.metadata.spi.ParameterMetaData;
  * @author <a href="adrian@jboss.com">Adrian Brock</a>
  * @version $Revision: 61194 $
  */
+@JBossXmlSchema(namespace="urn:jboss:aop-beans:1.0", elementFormDefault=XmlNsForm.QUALIFIED)
+@XmlRootElement(name="aspect")
 public class AspectBeanMetaDataFactory extends AspectManagerAwareBeanMetaDataFactory
    implements BeanMetaDataFactory
 {
@@ -52,12 +59,23 @@ public class AspectBeanMetaDataFactory extends AspectManagerAwareBeanMetaDataFac
    private String scope = "PER_VM";
 
    private String factory;
+
+   String aspectName;
    
+   boolean initialisedName;
+   
+   @XmlAttribute
    public void setScope(String scope)
    {
       this.scope = scope;
    }
-
+   
+   public String getScope()
+   {
+      return scope;
+   }
+   
+   @XmlAttribute
    public void setFactory(String clazz)
    {
       this.factory = clazz;
@@ -69,7 +87,13 @@ public class AspectBeanMetaDataFactory extends AspectManagerAwareBeanMetaDataFac
       super.setBeanClass(clazz);
    }
    
+   public String getFactory()
+   {
+      return factory;
+   }
+   
    @Override
+   @XmlAttribute(name="class")
    public void setBeanClass(String bean)
    {
       if (factory != null)
@@ -89,11 +113,14 @@ public class AspectBeanMetaDataFactory extends AspectManagerAwareBeanMetaDataFac
          this.name = super.getBeanClass();
       }
       
-      String aspectName = this.name;
       //Add the bean factory
-      this.name = "Factory$" + name;
+      if (!initialisedName)
+      {
+         aspectName = this.name;
+         this.name = "Factory$" + name;
+         initialisedName = true;
+      }
       result.add(this);
-      //TODO dependencies and properties for aspect/interceptor
       
       //Add the Aspect
       AbstractBeanMetaData aspect = new AbstractBeanMetaData();

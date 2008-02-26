@@ -21,18 +21,17 @@
 */ 
 package org.jboss.aop.microcontainer.beans.beanmetadatafactory;
 
-import org.jboss.aop.microcontainer.beans.StackEntry;
+import org.jboss.aop.advice.AdviceType;
 
 /**
  * 
  * @author <a href="kabir.khan@jboss.com">Kabir Khan</a>
  * @version $Revision: 1.1 $
  */
-public class StackRefData extends BaseInterceptorData
+public class BeforeAdviceData extends AdviceData
 {
-   @Override
-   public String getBeanClassName()
+   public BeforeAdviceData()
    {
-      return StackEntry.class.getName();
+      setType(AdviceType.BEFORE);
    }
 }

@@ -21,39 +21,58 @@
 */ 
 package org.jboss.aop.microcontainer.beans.beanmetadatafactory;
 
-import javax.xml.bind.annotation.XmlAttribute;
+import java.util.ArrayList;
+import java.util.List;
 
-import org.jboss.beans.metadata.plugins.factory.GenericBeanFactoryMetaData;
+import javax.xml.bind.annotation.XmlAttribute;
+import javax.xml.bind.annotation.XmlNsForm;
+import javax.xml.bind.annotation.XmlRootElement;
+
+import org.jboss.aop.microcontainer.beans.TypeDef;
+import org.jboss.beans.metadata.plugins.AbstractBeanMetaData;
+import org.jboss.beans.metadata.spi.BeanMetaData;
+import org.jboss.xb.annotations.JBossXmlSchema;
+
 /**
  * 
  * @author <a href="kabir.khan@jboss.com">Kabir Khan</a>
  * @version $Revision: 1.1 $
  */
-public class AspectManagerAwareBeanMetaDataFactory extends GenericBeanFactoryMetaData
+@JBossXmlSchema(namespace="urn:jboss:aop-beans:1.0", elementFormDefault=XmlNsForm.QUALIFIED)
+@XmlRootElement(name="typedef")
+public class TypeDefBeanMetaDataFactory extends AspectManagerAwareBeanMetaDataFactory
 {
    private static final long serialVersionUID = 1L;
+   private String expr;
 
-   protected BeanMetaDataUtil util = new BeanMetaDataUtil();
-
-   @XmlAttribute(name="manager-bean")
-   public void setManagerBean(String managerBean)
+   public String getExpr()
    {
-      util.setManagerBean(managerBean);
+      return expr;
+   }
+
+   @XmlAttribute
+   public void setExpr(String expr)
+   {
+      this.expr = expr;
+   }
+
+   @Override
+   public List<BeanMetaData> getBeans()
+   {
+      ArrayList<BeanMetaData> beans = new ArrayList<BeanMetaData>();
+      
+      AbstractBeanMetaData typedef = new AbstractBeanMetaData();
+
+      typedef.setName(getName());
+      typedef.setBean(TypeDef.class.getName());
+      BeanMetaDataUtil.setSimpleProperty(typedef, "name", getName());
+      BeanMetaDataUtil.setSimpleProperty(typedef, "expr", expr);
+      
+      util.setAspectManagerProperty(typedef, "manager");
+      
+      beans.add(typedef);
+      
+      return beans;
    }
    
-   public String getManagerBean()
-   {
-      return util.getManagerBean();
-   }
-
-   @XmlAttribute(name="manager-property")
-   public void setManagerProperty(String aspectManagerProperty)
-   {
-      util.setManagerProperty(aspectManagerProperty);
-   }
-   
-   public String getManagerProperty()
-   {
-      return util.getManagerProperty();
-   }
 }

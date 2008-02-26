@@ -24,17 +24,25 @@ package org.jboss.aop.microcontainer.beans.beanmetadatafactory;
 import java.util.ArrayList;
 import java.util.List;
 
+import javax.xml.bind.annotation.XmlElement;
+import javax.xml.bind.annotation.XmlElements;
+import javax.xml.bind.annotation.XmlNsForm;
+import javax.xml.bind.annotation.XmlRootElement;
+
 import org.jboss.aop.microcontainer.beans.Stack;
 import org.jboss.beans.metadata.plugins.AbstractBeanMetaData;
 import org.jboss.beans.metadata.plugins.AbstractInjectionValueMetaData;
 import org.jboss.beans.metadata.plugins.AbstractListMetaData;
 import org.jboss.beans.metadata.spi.BeanMetaData;
+import org.jboss.xb.annotations.JBossXmlSchema;
 
 /**
  * 
  * @author <a href="kabir.khan@jboss.com">Kabir Khan</a>
  * @version $Revision: 1.1 $
  */
+@JBossXmlSchema(namespace="urn:jboss:aop-beans:1.0", elementFormDefault=XmlNsForm.QUALIFIED)
+@XmlRootElement(name="stack")
 public class StackBeanMetaDataFactory extends AspectManagerAwareBeanMetaDataFactory
 {
    private static final long serialVersionUID = 1L;
@@ -72,15 +80,15 @@ public class StackBeanMetaDataFactory extends AspectManagerAwareBeanMetaDataFact
             util.setAspectManagerProperty(bmd, "manager");
             BeanMetaDataUtil.setSimpleProperty(bmd, "forStack", Boolean.TRUE);
             
-            if (interceptor instanceof AdviceData)
+            if (interceptor instanceof AdviceOrInterceptorData)
             {
                BeanMetaDataUtil.DependencyBuilder db = new BeanMetaDataUtil.DependencyBuilder(bmd, "aspect", interceptor.getRefName());
                BeanMetaDataUtil.setDependencyProperty(db);
-               if (((AdviceData)interceptor).getAdviceMethod() != null)
+               if (((AdviceOrInterceptorData)interceptor).getAdviceMethod() != null)
                {
-                  BeanMetaDataUtil.setSimpleProperty(bmd, "aspectMethod", ((AdviceData)interceptor).getAdviceMethod());
+                  BeanMetaDataUtil.setSimpleProperty(bmd, "aspectMethod", ((AdviceOrInterceptorData)interceptor).getAdviceMethod());
                }
-               BeanMetaDataUtil.setSimpleProperty(bmd, "type", ((AdviceData)interceptor).getType());
+               BeanMetaDataUtil.setSimpleProperty(bmd, "type", ((AdviceOrInterceptorData)interceptor).getType());
                
             }
             else
@@ -102,4 +110,25 @@ public class StackBeanMetaDataFactory extends AspectManagerAwareBeanMetaDataFact
       interceptors.add(interceptorData);
    }
 
+   @XmlElements
+   ({
+      @XmlElement(name="advice", type=AdviceData.class),
+      @XmlElement(name="around", type=AdviceData.class),
+      @XmlElement(name="before", type=BeforeAdviceData.class),
+      @XmlElement(name="after", type=AfterAdviceData.class),
+      @XmlElement(name="throwing", type=ThrowingAdviceData.class),
+      @XmlElement(name="finally", type=FinallyAdviceData.class),
+      @XmlElement(name="interceptor-ref", type=InterceptorRefData.class),
+      @XmlElement(name="stack-ref", type=StackRefData.class)
+   })
+   public List<BaseInterceptorData> getInterceptors()
+   {
+      return interceptors;
+   }
+
+   public void setInterceptors(List<BaseInterceptorData> interceptors)
+   {
+      this.interceptors = interceptors;
+   }
+   
 }

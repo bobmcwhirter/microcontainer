@@ -49,7 +49,7 @@ public class BeanMetaDataUtil implements Serializable
    protected String managerProperty;
 
 
-   public String getManager()
+   public String getManagerBean()
    {
       return managerBean;
    }
@@ -78,21 +78,6 @@ public class BeanMetaDataUtil implements Serializable
    {
       bean.addProperty(new AbstractPropertyMetaData(propertyName, value));
    }
-
-//   public static void setDependencyProperty(AbstractBeanMetaData bean, String propertyName, Object dependencyBean)
-//   {
-//      setDependencyProperty(bean, propertyName, dependencyBean, null, null);
-//   }
-
-//   public static void setDependencyProperty(AbstractBeanMetaData bean, String propertyName, Object dependencyBean, String state)
-//   {
-//      setDependencyProperty(bean, propertyName, dependencyBean, propertyName, state);
-//   }
-
-//   public static void setDependencyProperty(AbstractBeanMetaData bean, String propertyName, Object dependencyBean, String dependencyProperty, String state)
-//   {
-//   }
-   
    
    public static void setDependencyProperty(DependencyBuilder builder)
    {

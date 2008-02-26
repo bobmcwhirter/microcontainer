@@ -19,20 +19,34 @@
 * Software Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA
 * 02110-1301 USA, or see the FSF site: http://www.fsf.org.
 */ 
-package org.jboss.aop.microcontainer.beans.beanmetadatafactory;
+package org.jboss.test.aop.junit;
 
-import org.jboss.aop.microcontainer.beans.StackEntry;
+import java.net.URL;
+
+import org.jboss.kernel.spi.deployment.KernelDeployment;
+import org.jboss.test.AbstractTestDelegate;
 
 /**
  * 
  * @author <a href="kabir.khan@jboss.com">Kabir Khan</a>
  * @version $Revision: 1.1 $
  */
-public class StackRefData extends BaseInterceptorData
+public class ForceJAXBAOPMicrocontainerTest extends AOPMicrocontainerTest
 {
-   @Override
-   public String getBeanClassName()
+   public ForceJAXBAOPMicrocontainerTest(String name)
    {
-      return StackEntry.class.getName();
+      super(name);
+   }
+
+   public static AbstractTestDelegate getDelegate(Class<?> clazz) throws Exception
+   {
+      AOPMicrocontainerTestDelegate delegate = (AOPMicrocontainerTestDelegate)AOPMicrocontainerTest.getDelegate(clazz);
+      delegate.useJaxbDeployer = true;
+      return delegate;
+   }
+
+   protected KernelDeployment unmarshal(final URL url) throws Exception 
+   {
+      return ((AOPMicrocontainerTestDelegate)getDelegate()).unmarshal(url);
    }
 }

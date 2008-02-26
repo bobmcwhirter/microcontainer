@@ -1,0 +1,6 @@
+<aop xmlns="urn:jboss:aop-beans:1.0">
+   <aspect name="aspect" class="org.jboss.test.microcontainer.beans.TestAspect"/>
+   <bean name="bean1" class="Bean1"/>
+   <bean xmlns="urn:jboss:bean-deployer:2.0" name="bean2" class="Bean2"/>
+   <bean:bean xmlns:bean="urn:jboss:bean-deployer:2.0" name="bean3" class="Bean3"/>
+</aop>

@@ -1,0 +1,12 @@
+<deployment xmlns="urn:jboss:bean-deployer:2.0">
+   <bind xmlns="urn:jboss:aop-beans:1.0" name="binding" pointcut="all(Blah)"  cflow="hello" manager-bean="ManagerBean" manager-property="ManagerProperty">
+      <stack-ref name="TestStack"/>
+      <advice name="advice" aspect="AdviceAspect"/>
+      <around name="around" aspect="AroundAspect"/>
+      <before name="before" aspect="BeforeAspect"/>
+      <after name="after" aspect="AfterAspect"/>
+      <throwing name="throwing" aspect="ThrowingAspect"/>
+      <finally name="finally" aspect="FinallyAspect"/>
+      <interceptor-ref name="Interceptor"/>
+   </bind>   
+</deployment>

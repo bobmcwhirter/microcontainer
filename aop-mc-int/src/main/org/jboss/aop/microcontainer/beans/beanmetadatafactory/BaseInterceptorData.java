@@ -21,6 +21,8 @@
 */
 package org.jboss.aop.microcontainer.beans.beanmetadatafactory;
 
+import javax.xml.bind.annotation.XmlAttribute;
+
 /**
  * 
  * @author <a href="kabir.khan@jboss.com">Kabir Khan</a>
@@ -41,6 +43,7 @@ public abstract class BaseInterceptorData
       return refName;
    }
 
+   @XmlAttribute(name="name")
    public void setRefName(String name)
    {
       this.refName = name;

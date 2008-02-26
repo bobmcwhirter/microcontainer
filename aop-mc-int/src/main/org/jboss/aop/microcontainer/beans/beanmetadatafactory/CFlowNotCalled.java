@@ -21,18 +21,16 @@
 */ 
 package org.jboss.aop.microcontainer.beans.beanmetadatafactory;
 
-import org.jboss.aop.microcontainer.beans.StackEntry;
-
 /**
  * 
  * @author <a href="kabir.khan@jboss.com">Kabir Khan</a>
  * @version $Revision: 1.1 $
  */
-public class StackRefData extends BaseInterceptorData
+public class CFlowNotCalled
 {
-   @Override
-   public String getBeanClassName()
+   public boolean getCalled()
    {
-      return StackEntry.class.getName();
+      return false;
    }
+
 }

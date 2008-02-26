@@ -21,17 +21,16 @@
 */ 
 package org.jboss.aop.microcontainer.beans.beanmetadatafactory;
 
-import org.jboss.aop.advice.AdviceType;
-import org.jboss.aop.microcontainer.beans.InterceptorEntry;
+import javax.xml.bind.annotation.XmlAttribute;
+
 
 /**
  * 
  * @author <a href="kabir.khan@jboss.com">Kabir Khan</a>
  * @version $Revision: 1.1 $
  */
-public class AdviceData extends BaseInterceptorData
+public class AdviceData extends AdviceOrInterceptorData
 {
-   AdviceType type = AdviceType.AROUND;
    String adviceMethod;
    
    public String getAdviceMethod()
@@ -39,24 +38,9 @@ public class AdviceData extends BaseInterceptorData
       return adviceMethod;
    }
 
+   @XmlAttribute(name="name")
    public void setAdviceMethod(String method)
    {
       this.adviceMethod = method;
-   }
-
-   public AdviceType getType()
-   {
-      return type;
-   }
-
-   public void setType(AdviceType type)
-   {
-      this.type = type;
-   }
-
-   @Override
-   public String getBeanClassName()
-   {
-      return InterceptorEntry.class.getName();
    }
 }

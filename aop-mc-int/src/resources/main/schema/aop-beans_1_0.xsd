@@ -21,6 +21,49 @@ $Id$
       </xsd:documentation>
    </xsd:annotation>
 
+   <xsd:element name="aop" type="aopType">
+      <xsd:annotation>
+         <xsd:documentation>
+           <![CDATA[
+           A domain
+           ]]>
+         </xsd:documentation>
+      </xsd:annotation>
+   </xsd:element>
+
+   <xsd:complexType name="aopType">
+      <xsd:annotation>
+         <xsd:documentation>
+           <![CDATA[
+           aspects or interceptors
+           ]]>
+         </xsd:documentation>
+      </xsd:annotation>
+      <xsd:choice minOccurs="0" maxOccurs="unbounded">
+	      <xsd:element name="domain" type="domainType" minOccurs="0" maxOccurs="unbounded"/>
+	      <xsd:element name="interceptor" type="aspectOrInterceptorType" minOccurs="0" maxOccurs="unbounded"/>
+	      <xsd:element name="aspect" type="aspectOrInterceptorType" minOccurs="0" maxOccurs="unbounded"/>
+	      <xsd:element name="bind" type="bindType" minOccurs="0" maxOccurs="unbounded"/>
+	      <xsd:element name="stack" type="stackType" minOccurs="0" maxOccurs="unbounded"/>
+	      <xsd:element name="typedef" type="typedefType" minOccurs="0" maxOccurs="unbounded"/>
+	      <xsd:element name="cflow-stack" type="cflowStackType" minOccurs="0" maxOccurs="unbounded"/>
+	      <xsd:element name="dynamic-cflow" type="dynamicCflowStackType" minOccurs="0" maxOccurs="unbounded"/>
+	      <xsd:element name="prepare" type="prepareType" minOccurs="0" maxOccurs="unbounded"/>
+	      <xsd:element name="pointcut" type="pointcutType" minOccurs="0" maxOccurs="unbounded"/>
+	      <xsd:element name="annotation-introduction" type="annotationIntroductionType" minOccurs="0" maxOccurs="unbounded"/>
+	      <xsd:element name="annotation" type="annotationType" minOccurs="0" maxOccurs="unbounded"/>
+	      <xsd:element name="precedence" type="precedenceType" minOccurs="0" maxOccurs="unbounded"/>
+	      <xsd:element name="introduction" type="introductionType" minOccurs="0" maxOccurs="unbounded"/>
+	      <xsd:element name="arrayreplacement" type="arrayreplacementType" minOccurs="0" maxOccurs="unbounded"/>
+	      <xsd:element name="arraybind" type="arraybindType" minOccurs="0" maxOccurs="unbounded"/>
+         <xsd:any namespace="##other" processContents="strict" minOccurs="0">
+            <xsd:annotation>
+               <xsd:documentation>An extension value</xsd:documentation>
+            </xsd:annotation>
+         </xsd:any>
+      </xsd:choice>
+   </xsd:complexType>
+
 	<xsd:element name="domain" type="domainType">
       <xsd:annotation>
          <xsd:documentation>

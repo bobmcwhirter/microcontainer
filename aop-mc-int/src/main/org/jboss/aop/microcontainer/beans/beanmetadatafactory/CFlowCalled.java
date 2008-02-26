@@ -21,18 +21,30 @@
 */ 
 package org.jboss.aop.microcontainer.beans.beanmetadatafactory;
 
-import org.jboss.aop.microcontainer.beans.StackEntry;
+import javax.xml.bind.annotation.XmlAttribute;
 
 /**
  * 
  * @author <a href="kabir.khan@jboss.com">Kabir Khan</a>
  * @version $Revision: 1.1 $
  */
-public class StackRefData extends BaseInterceptorData
+public class CFlowCalled
 {
-   @Override
-   public String getBeanClassName()
+   String expr;
+
+   public String getExpr()
    {
-      return StackEntry.class.getName();
+      return expr;
+   }
+
+   @XmlAttribute
+   public void setExpr(String expr)
+   {
+      this.expr = expr;
+   }
+   
+   public boolean getCalled()
+   {
+      return true;
    }
 }
