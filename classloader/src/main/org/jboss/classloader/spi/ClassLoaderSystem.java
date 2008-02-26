@@ -334,7 +334,7 @@ public abstract class ClassLoaderSystem extends BaseClassLoaderSystem implements
     */
    public ClassLoader registerClassLoaderPolicy(String domainName, ClassLoaderPolicy policy)
    {
-      return registerClassLoaderPolicy(domainName, ParentPolicy.BEFORE, null, policy);
+      return registerClassLoaderPolicy(domainName, ParentPolicy.BEFORE, (Loader) null, policy);
    }
 
    /**
@@ -348,7 +348,7 @@ public abstract class ClassLoaderSystem extends BaseClassLoaderSystem implements
     */
    public ClassLoader registerClassLoaderPolicy(String domainName, ParentPolicy parentPolicy, ClassLoaderPolicy policy)
    {
-      return registerClassLoaderPolicy(domainName, parentPolicy, null, policy);
+      return registerClassLoaderPolicy(domainName, parentPolicy, (Loader) null, policy);
    }
 
    /**
@@ -393,6 +393,42 @@ public abstract class ClassLoaderSystem extends BaseClassLoaderSystem implements
                // Create a domain without a parent
                domain = createAndRegisterDomain(domainName, parentPolicy);
             }
+         }
+      }
+      
+      // Register the classloader policy in the domain
+      return registerClassLoaderPolicy(domain, policy);
+   }
+
+   /**
+    * Register a classloader policy, possibly constructing the domain
+    * 
+    * @param domainName the domain name
+    * @param parentPolicy the parent policy
+    * @param parent the parent
+    * @param policy the classloader policy
+    * @return the policy
+    * @throws IllegalArgumentException for a null parameter
+    * @throws IllegalStateException if the parent domain does not exist
+    */
+   public ClassLoader registerClassLoaderPolicy(String domainName, ParentPolicy parentPolicy, Loader parent, ClassLoaderPolicy policy)
+   {
+      if (domainName == null)
+         throw new IllegalArgumentException("Null domain name");
+      if (parentPolicy == null)
+         throw new IllegalArgumentException("Null parent policy");
+      if (policy == null)
+         throw new IllegalArgumentException("Null classloader policy");
+      
+      ClassLoaderDomain domain;
+      synchronized (this)
+      {
+         // See whether the domain already exists
+         domain = getDomain(domainName);
+         if (domain == null)
+         {
+            // Create a domain without a parent
+            domain = createAndRegisterDomain(domainName, parentPolicy, parent);
          }
       }
       
