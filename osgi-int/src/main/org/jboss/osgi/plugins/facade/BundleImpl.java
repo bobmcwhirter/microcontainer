@@ -283,7 +283,7 @@ public class BundleImpl implements Bundle
       Set<? extends OSGiMetaData> metaDatas = unit.getAllMetaData(OSGiMetaData.class);
       if (metaDatas != null && metaDatas.isEmpty() == false)
       {
-         metaData = (OSGiMetaData) metaDatas.iterator().next();
+         metaData = metaDatas.iterator().next();
       }
       return metaData;
    }

@@ -71,7 +71,7 @@ public abstract class AbstractRunAnnotationsTest extends BaseTestCase
       runAnnotations(clazz, null);
    }
 
-   protected void runAnnotations(Class clazz, Object target) throws Throwable
+   protected void runAnnotations(Class<?> clazz, Object target) throws Throwable
    {
       KernelController controller = getController();
       String className = clazz.getName();

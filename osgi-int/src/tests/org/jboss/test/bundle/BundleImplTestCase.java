@@ -4,7 +4,6 @@ import java.util.jar.Manifest;
 
 import junit.framework.Test;
 
-import org.jboss.dependency.plugins.AbstractController;
 import org.jboss.dependency.spi.ControllerContext;
 import org.jboss.dependency.spi.ControllerState;
 import org.jboss.deployers.plugins.deployers.DeployersImpl;
@@ -47,7 +46,7 @@ public class BundleImplTestCase extends AbstractManifestTestCase
       
       DeploymentContext deploymentContext = new AbstractDeploymentContext("deployment", "/");
       deploymentUnit = new AbstractDeploymentUnit(deploymentContext);
-      controllerContext = new DeploymentControllerContext(deploymentContext, new DeployersImpl((AbstractController) bootstrap.getKernel().getController()));
+      controllerContext = new DeploymentControllerContext(deploymentContext, new DeployersImpl(bootstrap.getKernel().getController()));
       deploymentUnit.addAttachment(ControllerContext.class.getName(), controllerContext);
       bundle = new BundleImpl(deploymentUnit);
       
