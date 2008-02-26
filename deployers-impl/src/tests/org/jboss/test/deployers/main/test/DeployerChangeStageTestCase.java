@@ -29,7 +29,9 @@ import junit.framework.Test;
 import org.jboss.deployers.client.spi.DeployerClient;
 import org.jboss.deployers.client.spi.Deployment;
 import org.jboss.deployers.spi.DeploymentException;
+import org.jboss.deployers.spi.DeploymentState;
 import org.jboss.deployers.spi.deployer.DeploymentStages;
+import org.jboss.deployers.structure.spi.DeploymentContext;
 import org.jboss.deployers.structure.spi.DeploymentUnit;
 
 /**
@@ -86,6 +88,7 @@ public class DeployerChangeStageTestCase extends AbstractMainDeployerTest
       try
       {
          main.change(single.getName(), DeploymentStages.REAL);
+         fail("Should not be here");
       }
       catch (Throwable t)
       {
@@ -99,5 +102,35 @@ public class DeployerChangeStageTestCase extends AbstractMainDeployerTest
       deployer.clear();
       main.change(single.getName(), DeploymentStages.REAL);
       assertEquals(expected, deployer.getDeployedUnits());
+   }
+
+   public void testChangeStageFail() throws Throwable
+   {
+      DeployerClient main = getMainDeployer();
+
+      Deployment single = createSimpleDeployment("single");
+      main.deploy(single);
+      List<String> expected = new ArrayList<String>();
+      expected.add(single.getName());
+      assertEquals(expected, deployer.getDeployedUnits());
+
+      main.change(single.getName(), DeploymentStages.CLASSLOADER);
+      DeploymentUnit unit = assertDeploymentUnit(main, single.getName());
+      DeploymentContext context = assertDeploymentContext(main, single.getName());
+      unit.addAttachment("fail", deployer);
+      
+      deployer.clear();
+      try
+      {
+         main.change(single.getName(), DeploymentStages.REAL);
+         fail("Should not be here");
+      }
+      catch (Throwable t)
+      {
+         checkThrowable(DeploymentException.class, t);
+      }
+      assertEquals(expected, deployer.getFailed());
+      assertEquals(DeploymentState.ERROR, context.getState());
+      checkThrowable(DeploymentException.class, context.getProblem());
    }
 }

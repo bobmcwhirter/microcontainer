@@ -408,8 +408,10 @@ public class DeployersImpl implements Deployers, ControllerContextActions
       {
          context.setState(DeploymentState.ERROR);
          context.setProblem(t);
-         throw DeploymentException.rethrowAsDeploymentException("Error changing to stage " + stage + " for " + context.getName(), t);
       }
+      Throwable problem = context.getProblem();
+      if (problem != null)
+         throw DeploymentException.rethrowAsDeploymentException("Error changing to stage " + stage + " for " + context.getName(), problem);
    }
    
    public void process(List<DeploymentContext> deploy, List<DeploymentContext> undeploy)
