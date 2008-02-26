@@ -21,7 +21,7 @@
 */ 
 package org.jboss.test.microcontainer.test;
 
-import org.jboss.aop.microcontainer.junit.AOPMicrocontainerTest;
+import org.jboss.test.aop.junit.AOPMicrocontainerTest;
 import org.jboss.test.microcontainer.support.BeanCallingMethodInCtor;
 import org.jboss.test.microcontainer.support.CalledInterceptor;
 

@@ -19,13 +19,15 @@
 * Software Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA
 * 02110-1301 USA, or see the FSF site: http://www.fsf.org.
 */
-package org.jboss.aop.microcontainer.junit;
+package org.jboss.test.aop.junit;
 
 import java.net.URL;
 import java.util.Iterator;
 import java.util.concurrent.CopyOnWriteArrayList;
 
 import org.jboss.aop.AspectXmlLoader;
+import org.jboss.kernel.plugins.deployment.xml.BasicXMLDeployer;
+import org.jboss.kernel.spi.deployment.KernelDeployment;
 import org.jboss.test.kernel.junit.MicrocontainerTestDelegate;
 
 /**
@@ -39,6 +41,8 @@ public class AOPMicrocontainerTestDelegate extends MicrocontainerTestDelegate
 {
    /** The deployed urls */
    private static final CopyOnWriteArrayList<URL> urls = new CopyOnWriteArrayList<URL>();
+   
+   boolean useJaxbDeployer;
 
    /**
     * Create a new AOPMicrocontainerTestDelegate.
@@ -113,5 +117,24 @@ public class AOPMicrocontainerTestDelegate extends MicrocontainerTestDelegate
       {
          log.warn("Ignored error undeploying " + url, e);
       }
+   }
+
+   @Override
+   protected BasicXMLDeployer createDeployer()
+   {
+      if (useJaxbDeployer)
+      {
+         return new JAXBDeployer(kernel, defaultMode, clazz);
+      }
+      return super.createDeployer();
+   }
+   
+   protected KernelDeployment unmarshal(final URL url) throws Exception
+   {
+      if (!useJaxbDeployer)
+      {
+         throw new IllegalStateException("useJaxbDeployer needs to be true");
+      }
+      return ((JAXBDeployer)deployer).unmarshal(url);
    }
 }

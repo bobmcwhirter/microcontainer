@@ -19,7 +19,7 @@
 * Software Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA
 * 02110-1301 USA, or see the FSF site: http://www.fsf.org.
 */
-package org.jboss.aop.microcontainer.junit;
+package org.jboss.test.aop.junit;
 
 import org.jboss.test.AbstractTestDelegate;
 import org.jboss.test.kernel.junit.MicrocontainerTest;
@@ -43,8 +43,11 @@ public class AOPMicrocontainerTest extends MicrocontainerTest
    {
       String property = System.getProperty("jboss.mc.secure", "false");
       boolean enableSecurity = Boolean.valueOf(property).booleanValue();
+      property = System.getProperty("jboss.mc.jaxb", "false");
+      boolean useJaxbDeployer = Boolean.valueOf(property).booleanValue();
       AOPMicrocontainerTestDelegate delegate = new AOPMicrocontainerTestDelegate(clazz);
       delegate.enableSecurity = enableSecurity;
+      delegate.useJaxbDeployer = useJaxbDeployer;
       return delegate;
    }
    

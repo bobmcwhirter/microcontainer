@@ -23,7 +23,6 @@ package org.jboss.test.aop.junit;
 
 import junit.framework.Test;
 
-import org.jboss.aop.microcontainer.junit.AOPMicrocontainerTest;
 
 /**
  * MicrocontainerJunitSmokeTestCase.

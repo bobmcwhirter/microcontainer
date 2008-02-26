@@ -22,10 +22,10 @@
 package org.jboss.test.microcontainer.test;
 
 import junit.framework.Test;
-import org.jboss.aop.microcontainer.junit.AOPMicrocontainerTest;
-import org.jboss.aop.microcontainer.junit.AOPMicrocontainerTestDelegate;
-import org.jboss.aop.microcontainer.junit.ScopingAOPMicrocontainerTestDelegate;
 import org.jboss.test.AbstractTestDelegate;
+import org.jboss.test.aop.junit.AOPMicrocontainerTest;
+import org.jboss.test.aop.junit.AOPMicrocontainerTestDelegate;
+import org.jboss.test.aop.junit.ScopingAOPMicrocontainerTestDelegate;
 import org.jboss.test.microcontainer.support.CalledInterceptor;
 import org.jboss.test.microcontainer.support.SimpleBean;
 

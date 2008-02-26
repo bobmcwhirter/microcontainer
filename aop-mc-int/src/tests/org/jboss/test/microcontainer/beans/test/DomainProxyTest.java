@@ -23,10 +23,10 @@ package org.jboss.test.microcontainer.beans.test;
 
 import org.jboss.aop.AspectManager;
 import org.jboss.aop.DomainDefinition;
-import org.jboss.aop.microcontainer.junit.AOPMicrocontainerTest;
 import org.jboss.aop.proxy.container.AOPProxyFactoryParameters;
 import org.jboss.aop.proxy.container.ContainerCache;
 import org.jboss.aop.proxy.container.GeneratedAOPProxyFactory;
+import org.jboss.test.aop.junit.AOPMicrocontainerTest;
 
 /**
  * 

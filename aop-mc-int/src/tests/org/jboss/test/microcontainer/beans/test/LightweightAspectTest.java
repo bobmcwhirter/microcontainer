@@ -27,7 +27,7 @@ import org.jboss.aop.advice.AdviceType;
 import org.jboss.aop.microcontainer.beans.AspectBinding;
 import org.jboss.aop.microcontainer.beans.BindingEntry;
 import org.jboss.aop.microcontainer.beans.InterceptorEntry;
-import org.jboss.aop.microcontainer.junit.AOPMicrocontainerTest;
+import org.jboss.test.aop.junit.AOPMicrocontainerTest;
 
 /**
  * 

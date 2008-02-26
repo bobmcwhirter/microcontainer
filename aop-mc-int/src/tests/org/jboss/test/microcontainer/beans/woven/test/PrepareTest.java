@@ -22,7 +22,7 @@
 package org.jboss.test.microcontainer.beans.woven.test;
 
 import org.jboss.aop.Advised;
-import org.jboss.aop.microcontainer.junit.AOPMicrocontainerTest;
+import org.jboss.test.aop.junit.AOPMicrocontainerTest;
 import org.jboss.test.microcontainer.beans.POJO;
 
 /**

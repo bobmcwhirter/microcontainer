@@ -29,7 +29,7 @@ import javax.management.ObjectName;
 
 import junit.framework.Test;
 
-import org.jboss.aop.microcontainer.junit.AOPMicrocontainerTest;
+import org.jboss.test.aop.junit.AOPMicrocontainerTest;
 import org.jboss.test.microcontainer.support.JmxRegistrant;
 
 public class JMXLifecycleTestCase extends AOPMicrocontainerTest

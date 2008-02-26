@@ -21,9 +21,9 @@
 */
 package org.jboss.test.microcontainer.beans.test;
 
-import org.jboss.aop.microcontainer.junit.AOPMicrocontainerTest;
 import org.jboss.dependency.spi.ControllerState;
 import org.jboss.kernel.spi.dependency.KernelControllerContext;
+import org.jboss.test.aop.junit.AOPMicrocontainerTest;
 import org.jboss.test.microcontainer.beans.Dependency;
 import org.jboss.test.microcontainer.beans.POJO;
 import org.jboss.test.microcontainer.beans.TestAspectWithDependency;

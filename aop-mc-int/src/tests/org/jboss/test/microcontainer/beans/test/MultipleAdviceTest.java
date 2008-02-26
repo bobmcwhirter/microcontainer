@@ -21,7 +21,7 @@
 */
 package org.jboss.test.microcontainer.beans.test;
 
-import org.jboss.aop.microcontainer.junit.AOPMicrocontainerTest;
+import org.jboss.test.aop.junit.AOPMicrocontainerTest;
 import org.jboss.test.microcontainer.beans.POJO;
 import org.jboss.test.microcontainer.beans.TestAspect;
 import org.jboss.test.microcontainer.beans.TestInterceptor;

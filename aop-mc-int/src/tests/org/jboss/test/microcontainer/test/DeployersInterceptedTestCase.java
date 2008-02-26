@@ -25,7 +25,7 @@ import java.util.HashSet;
 
 import junit.framework.Test;
 
-import org.jboss.aop.microcontainer.junit.AOPMicrocontainerTest;
+import org.jboss.test.aop.junit.AOPMicrocontainerTest;
 import org.jboss.test.microcontainer.support.deployers.DeployerAspects;
 import org.jboss.test.microcontainer.support.deployers.IMainDeployer;
 import org.jboss.test.microcontainer.support.deployers.SampleDeployer;

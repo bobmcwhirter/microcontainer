@@ -23,7 +23,7 @@ package org.jboss.test.microcontainer.beans.test;
 
 import java.util.List;
 
-import org.jboss.aop.microcontainer.junit.AOPMicrocontainerTest;
+import org.jboss.test.aop.junit.AOPMicrocontainerTest;
 import org.jboss.test.microcontainer.beans.Interceptions;
 import org.jboss.test.microcontainer.beans.POJO;
 import org.jboss.test.microcontainer.beans.TestAspect;

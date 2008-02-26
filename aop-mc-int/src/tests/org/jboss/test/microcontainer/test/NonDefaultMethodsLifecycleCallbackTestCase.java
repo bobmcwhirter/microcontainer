@@ -23,7 +23,7 @@ package org.jboss.test.microcontainer.test;
 
 import junit.framework.Test;
 
-import org.jboss.aop.microcontainer.junit.AOPMicrocontainerTest;
+import org.jboss.test.aop.junit.AOPMicrocontainerTest;
 import org.jboss.test.microcontainer.support.NonDefaultMethodsLifecycleCallback;
 
 /**

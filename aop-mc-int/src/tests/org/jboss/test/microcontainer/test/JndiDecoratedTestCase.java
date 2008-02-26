@@ -28,7 +28,7 @@ import javax.naming.InitialContext;
 
 import junit.framework.Test;
 
-import org.jboss.aop.microcontainer.junit.AOPMicrocontainerTest;
+import org.jboss.test.aop.junit.AOPMicrocontainerTest;
 import org.jboss.test.microcontainer.support.jndi.SimpleBean;
 import org.jboss.test.microcontainer.support.jndi.SimpleBeanAnnotatedImpl;
 

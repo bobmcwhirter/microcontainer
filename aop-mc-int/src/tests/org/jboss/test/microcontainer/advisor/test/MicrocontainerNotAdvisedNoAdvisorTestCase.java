@@ -24,8 +24,8 @@ package org.jboss.test.microcontainer.advisor.test;
 import junit.framework.Test;
 
 import org.jboss.aop.Advised;
-import org.jboss.aop.microcontainer.junit.AOPMicrocontainerTest;
 import org.jboss.aop.proxy.container.AspectManaged;
+import org.jboss.test.aop.junit.AOPMicrocontainerTest;
 
 /**
  * MicrocontainerNotAdvisedNoAdvisorTestCase.

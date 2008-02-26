@@ -21,9 +21,9 @@
   */
 package org.jboss.test.microcontainer.test;
 
-import org.jboss.aop.microcontainer.junit.AOPMicrocontainerTest;
 import org.jboss.dependency.spi.ControllerState;
 import org.jboss.kernel.spi.dependency.KernelControllerContext;
+import org.jboss.test.aop.junit.AOPMicrocontainerTest;
 import org.jboss.test.microcontainer.support.InterceptorWithAnnotationDependency;
 import org.jboss.test.microcontainer.support.OverriddenPropertyAnnotatedBean;
 import org.jboss.test.microcontainer.support.SimpleBean;
