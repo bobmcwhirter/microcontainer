@@ -29,16 +29,18 @@ import java.util.Random;
 import java.util.Set;
 
 import junit.framework.Test;
+
 import org.jboss.deployers.client.spi.DeployerClient;
 import org.jboss.deployers.client.spi.Deployment;
 import org.jboss.deployers.client.spi.main.MainDeployer;
+import org.jboss.deployers.plugins.main.MainDeployerImpl;
 import org.jboss.deployers.spi.DeploymentException;
 import org.jboss.deployers.spi.structure.StructureMetaDataFactory;
 import org.jboss.deployers.structure.spi.DeploymentContext;
+import org.jboss.deployers.structure.spi.DeploymentUnit;
 import org.jboss.deployers.structure.spi.StructuralDeployers;
 import org.jboss.deployers.structure.spi.StructureBuilder;
 import org.jboss.deployers.structure.spi.helpers.AbstractStructureBuilder;
-import org.jboss.deployers.plugins.main.MainDeployerImpl;
 import org.jboss.test.deployers.main.support.AddDeploymentRunnable;
 import org.jboss.test.deployers.main.support.AddProcessRemoveProcessRunnable;
 import org.jboss.test.deployers.main.support.DeployRunnable;
@@ -323,5 +325,22 @@ public class DeployerSingleDeploymentTestCase extends AbstractMainDeployerTest
          assertTrue(runnables[i].toString(), runnables[i].isValid());
       }
       log.info("Names: " + names.size() + " - " + names);
+   }
+
+   public void testMainDeployerInUnit() throws Throwable
+   {
+      DeployerClient main = getMainDeployer();
+
+      Deployment single = createSimpleDeployment("single");
+      main.deploy(single);
+      List<String> expected = new ArrayList<String>();
+      expected.add(single.getName());
+      assertEquals(expected, deployer.getDeployedUnits());
+
+      DeploymentUnit unit = assertDeploymentUnit(main, single.getName());
+      assertEquals(main, unit.getMainDeployer());
+      
+      main.undeploy(single);
+      assertNull(unit.getMainDeployer());
    }
 }

@@ -34,6 +34,7 @@ import java.util.Set;
 
 import org.jboss.dependency.spi.DependencyInfo;
 import org.jboss.dependency.spi.DependencyItem;
+import org.jboss.deployers.client.spi.main.MainDeployer;
 import org.jboss.deployers.spi.DeploymentException;
 import org.jboss.deployers.spi.attachments.MutableAttachments;
 import org.jboss.deployers.spi.attachments.helpers.AbstractMutableAttachments;
@@ -289,39 +290,44 @@ public class AbstractDeploymentUnit extends AbstractMutableAttachments implement
 
    public MutableAttachments getTransientManagedObjects()
    {
-      return deploymentContext.getTransientManagedObjects();
+      return getDeploymentContext().getTransientManagedObjects();
    }
 
    public Object addAttachment(String name, Object attachment)
    {
+      DeploymentContext deploymentContext = getDeploymentContext();
       deploymentContext.deployed();
       return deploymentContext.getTransientAttachments().addAttachment(name, attachment);
    }
 
    public void clear()
    {
+      DeploymentContext deploymentContext = getDeploymentContext();
       deploymentContext.getTransientAttachments().clear();
       deploymentContext.getTransientManagedObjects().clear();
    }
 
    public void clearChangeCount()
    {
+      DeploymentContext deploymentContext = getDeploymentContext();
       deploymentContext.getTransientAttachments().clearChangeCount();
       deploymentContext.getTransientManagedObjects().clearChangeCount();
    }
 
    public int getChangeCount()
    {
+      DeploymentContext deploymentContext = getDeploymentContext();
       return deploymentContext.getTransientAttachments().getChangeCount() + deploymentContext.getTransientManagedObjects().getChangeCount();
    }
 
    public Object removeAttachment(String name)
    {
-      return deploymentContext.getTransientAttachments().removeAttachment(name);
+      return getDeploymentContext().getTransientAttachments().removeAttachment(name);
    }
 
    public Object getAttachment(String name)
    {
+      DeploymentContext deploymentContext = getDeploymentContext();
       DeploymentContext parent = deploymentContext.getParent();
       if (deploymentContext.isComponent() == false)
          parent = null;
@@ -375,6 +381,7 @@ public class AbstractDeploymentUnit extends AbstractMutableAttachments implement
 
    public Map<String, Object> getAttachments()
    {
+      DeploymentContext deploymentContext = getDeploymentContext();
       DeploymentContext parent = deploymentContext.getParent();
       if (deploymentContext.isComponent() == false)
          parent = null;
@@ -395,6 +402,7 @@ public class AbstractDeploymentUnit extends AbstractMutableAttachments implement
 
    public boolean hasAttachments()
    {
+      DeploymentContext deploymentContext = getDeploymentContext();
       if (deploymentContext.getTransientAttachments().hasAttachments())
          return true;
       else if (deploymentContext.getTransientManagedObjects().hasAttachments())
@@ -414,12 +422,12 @@ public class AbstractDeploymentUnit extends AbstractMutableAttachments implement
    
    public ClassLoader getResourceClassLoader()
    {
-      return deploymentContext.getResourceClassLoader();
+      return getDeploymentContext().getResourceClassLoader();
    }
 
    public DeploymentResourceLoader getResourceLoader()
    {
-      return deploymentContext.getResourceLoader();
+      return getDeploymentContext().getResourceLoader();
    }
 
    public void addIDependOn(DependencyItem dependency)
@@ -430,17 +438,22 @@ public class AbstractDeploymentUnit extends AbstractMutableAttachments implement
    public void visit(DeploymentUnitVisitor visitor) throws DeploymentException
    {
       UnitVisitorToContextVisitor contextVisitor = new UnitVisitorToContextVisitor(visitor); 
-      deploymentContext.visit(contextVisitor);
+      getDeploymentContext().visit(contextVisitor);
    }
 
    public DependencyInfo getDependencyInfo()
    {
-      return deploymentContext.getDependencyInfo();
+      return getDeploymentContext().getDependencyInfo();
    }
 
    public void removeIDependOn(DependencyItem dependency)
    {
       getDependencyInfo().removeIDependOn(dependency);
+   }
+
+   public MainDeployer getMainDeployer()
+   {
+      return getTopLevel().getAttachment(MainDeployer.class);
    }
 
    /**

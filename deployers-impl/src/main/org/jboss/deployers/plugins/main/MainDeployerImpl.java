@@ -300,6 +300,7 @@ public class MainDeployerImpl implements MainDeployer, MainDeployerStructure
             if (DeploymentState.ERROR.equals(context.getState()))
                errorDeployments.put(name, context);
 
+            context.getTransientAttachments().addAttachment(MainDeployer.class, this);
             topLevelDeployments.put(name, context);
             addContext(context, addToDeploy);
          }
@@ -374,6 +375,7 @@ public class MainDeployerImpl implements MainDeployer, MainDeployerStructure
          if (context == null)
             return false;
 
+         context.getTransientAttachments().removeAttachment(MainDeployer.class);
          removeContext(context, addToUndeploy);
 
          return true;

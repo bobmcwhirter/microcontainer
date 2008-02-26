@@ -26,6 +26,7 @@ import java.util.Set;
 
 import org.jboss.dependency.spi.DependencyInfo;
 import org.jboss.dependency.spi.DependencyItem;
+import org.jboss.deployers.client.spi.main.MainDeployer;
 import org.jboss.deployers.spi.DeploymentException;
 import org.jboss.deployers.spi.attachments.MutableAttachments;
 import org.jboss.metadata.spi.MetaData;
@@ -50,27 +51,6 @@ public interface DeploymentUnit extends MutableAttachments
     *  @return the name;
     */
    String getName();
-
-   /**
-    * Get the controller context names.
-    *
-    * @return the names
-    */
-   Set<Object> getControllerContextNames();
-
-   /**
-    * Add controller context name.
-    *
-    * @param name the controller context name
-    */
-   void addControllerContextName(Object name);
-
-   /**
-    * Remove controller context name.
-    *
-    * @param name the controller context name
-    */
-   void removeControllerContextName(Object name);
 
    /**
     * Get the simple vfs name of the deployment unit. This is the simple
@@ -274,6 +254,13 @@ public interface DeploymentUnit extends MutableAttachments
    void visit(DeploymentUnitVisitor visitor) throws DeploymentException;
 
    /**
+    * Get the main deployer
+    * 
+    * @return the deployer or null if not associated with a main deployer
+    */
+   MainDeployer getMainDeployer();
+   
+   /**
     * Get the dependency info
     * 
     * @return the dependency
@@ -293,4 +280,25 @@ public interface DeploymentUnit extends MutableAttachments
     * @param dependency the dependency to remove
     */
    void removeIDependOn(DependencyItem dependency);
+
+   /**
+    * Get the controller context names.
+    *
+    * @return the names
+    */
+   Set<Object> getControllerContextNames();
+
+   /**
+    * Add controller context name.
+    *
+    * @param name the controller context name
+    */
+   void addControllerContextName(Object name);
+
+   /**
+    * Remove controller context name.
+    *
+    * @param name the controller context name
+    */
+   void removeControllerContextName(Object name);
 }
