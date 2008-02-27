@@ -25,6 +25,7 @@ import java.io.IOException;
 import java.net.URL;
 import java.util.Set;
 
+import org.jboss.classloader.spi.ClassLoaderPolicy;
 import org.jboss.classloader.spi.ClassLoaderPolicyFactory;
 import org.jboss.classloader.spi.Loader;
 import org.jboss.logging.Logger;
@@ -80,17 +81,35 @@ public class BaseDelegateLoader implements Loader
          try
          {
             delegate = factory.createClassLoaderPolicy();
+            if (delegate == null)
+            {
+               log.trace("Factory did not create a delegate: " + factory);
+            }
+            else
+            {
+               ClassLoaderPolicy policy = (ClassLoaderPolicy) delegate;
+               initialise(policy);
+               this.delegate = delegate;
+            }
          }
          catch (Throwable t)
          {
             log.warn("Unexpected error creating policy from factory: " + factory, t);
          }
       }
-      if (delegate == null)
-         log.trace("Factory did not create a delegate: " + factory);
       return delegate;
    }
 
+   /**
+    * Callback to initialise policy
+    * 
+    * @param policy the policy
+    */
+   protected void initialise(ClassLoaderPolicy policy)
+   {
+      // Nothing by default
+   }
+   
    BaseClassLoader getBaseClassLoader(String context)
    {
       BaseClassLoader result = null;

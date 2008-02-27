@@ -107,6 +107,19 @@ public class FilteredDelegateLoader extends DelegateLoader
       return filter;
    }
 
+   /**
+    * Set the filter
+    * 
+    * @param filter the filter
+    */
+   protected void setFilter(ClassFilter filter)
+   {
+      if (filter == null)
+         filter = ClassFilter.EVERYTHING;
+      else
+         this.filter = filter;
+   }
+   
    @Override
    public Class<?> loadClass(String className)
    {
