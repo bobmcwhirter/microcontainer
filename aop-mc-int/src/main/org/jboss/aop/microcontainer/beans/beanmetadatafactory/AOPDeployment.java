@@ -56,11 +56,8 @@ public class AOPDeployment extends AbstractKernelDeployment
    @XmlElements
    ({
       @XmlElement(name="bean", type=AbstractBeanMetaData.class),
-      @XmlElement(name="bean", namespace="urn:jboss:bean-deployer:2.0", type=AbstractBeanMetaData.class),
       @XmlElement(name="beanfactory", type=GenericBeanFactoryMetaData2.class),
-      @XmlElement(name="beanfactory", namespace="urn:jboss:bean-deployer:2.0", type=GenericBeanFactoryMetaData2.class),
       @XmlElement(name="lazy", type=AbstractLazyMetaData.class),
-      @XmlElement(name="lazy", namespace="urn:jboss:bean-deployer:2.0", type=AbstractLazyMetaData.class),
       @XmlElement(name="aspect", type=AspectBeanMetaDataFactory.class),
       @XmlElement(name="interceptor", type=InterceptorBeanMetaDataFactory.class),
       @XmlElement(name="bind", type=BindBeanMetaDataFactory.class),
