@@ -63,6 +63,7 @@ import org.jboss.xb.annotations.JBossXmlSchema;
 @JBossXmlSchema(namespace="urn:jboss:bean-deployer:2.0", elementFormDefault= XmlNsForm.QUALIFIED)
 @XmlRootElement(name="beanfactory")
 @XmlType(propOrder={"aliases", "annotations", "classLoader", "constructor", "properties", "create", "start", "depends", "demands", "supplies", "installs", "uninstalls"})
+@Deprecated
 public class GenericBeanFactoryMetaData extends AbstractBeanMetaData
 {
    private static final long serialVersionUID = 2L;
