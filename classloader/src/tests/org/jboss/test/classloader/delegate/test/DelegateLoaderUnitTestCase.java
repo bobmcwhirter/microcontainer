@@ -28,9 +28,12 @@ import org.jboss.classloader.spi.ClassLoaderSystem;
 import org.jboss.classloader.spi.DelegateLoader;
 import org.jboss.classloader.spi.filter.ClassFilter;
 import org.jboss.classloader.spi.filter.FilteredDelegateLoader;
+import org.jboss.classloader.spi.filter.LazyFilteredDelegateLoader;
 import org.jboss.classloader.test.support.MockClassLoaderPolicy;
 import org.jboss.test.classloader.AbstractClassLoaderTestWithSecurity;
 import org.jboss.test.classloader.delegate.support.a.TestA1;
+import org.jboss.test.classloader.delegate.support.b.TestB1;
+import org.jboss.test.classloader.policy.support.TestClassLoaderPolicyFactory;
 
 /**
  * DelegateUnitTestCase
@@ -83,10 +86,31 @@ public class DelegateLoaderUnitTestCase extends AbstractClassLoaderTestWithSecur
       assertLoadClassFail(TestA1.class, delegate);
    }
    
+   public void testLazyLoadClass() throws Exception
+   {
+      ClassLoaderSystem system = createClassLoaderSystemWithModifiedBootstrap();
+
+      MockClassLoaderPolicy policy = createMockClassLoaderPolicy("a");
+      policy.setPaths(TestA1.class, TestB1.class);
+      policy.setPackageNames(TestA1.class);
+      ClassLoader cl = system.registerClassLoaderPolicy(policy);
+      assertLoadClass(TestA1.class, cl);
+      assertLoadClass(TestB1.class, cl);
+
+      TestClassLoaderPolicyFactory factory = new TestClassLoaderPolicyFactory(policy, false);
+      LazyFilteredDelegateLoader delegate = new LazyFilteredDelegateLoader(factory);
+      assertLoadClassFail(TestA1.class, delegate);
+      assertLoadClassFail(TestB1.class, delegate);
+      
+      factory.setCanCreate(true);
+      assertLoadClass(TestA1.class, delegate);
+      assertLoadClassFail(TestB1.class, delegate);
+   }
+   
    protected Class<?> assertLoadClass(Class<?> reference, DelegateLoader delegate) throws Exception
    {
       Class<?> result = delegate.loadClass(reference.getName());
-      assertNotNull("Should have loaded " + reference.getName() + " from " + delegate);
+      assertNotNull("Should have loaded " + reference.getName() + " from " + delegate, result);
       getLog().debug("Loaded " + ClassLoaderUtils.classToString(result) + " from " + delegate);
       return result;
    }
@@ -95,7 +119,6 @@ public class DelegateLoaderUnitTestCase extends AbstractClassLoaderTestWithSecur
    {
       Class<?> result = delegate.loadClass(reference.getName());
       String message = "Should not have loaded " + ClassLoaderUtils.classToString(result) + " from " + delegate;
-      getLog().error(message);
       assertNull(message, result);
    }
 }
