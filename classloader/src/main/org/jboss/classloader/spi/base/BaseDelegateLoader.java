@@ -76,7 +76,16 @@ public class BaseDelegateLoader implements Loader
    {
       BaseClassLoaderPolicy delegate = this.delegate;
       if (delegate == null)
-         delegate = factory.createClassLoaderPolicy();
+      {
+         try
+         {
+            delegate = factory.createClassLoaderPolicy();
+         }
+         catch (Throwable t)
+         {
+            log.warn("Unexpected error creating policy from factory: " + factory, t);
+         }
+      }
       if (delegate == null)
          log.trace("Factory did not create a delegate: " + factory);
       return delegate;
