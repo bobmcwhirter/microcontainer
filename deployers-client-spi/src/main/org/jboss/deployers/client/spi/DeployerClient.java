@@ -111,6 +111,15 @@ public interface DeployerClient
    void change(String deploymentName, DeploymentStage stage) throws DeploymentException;
 
    /**
+    * Get the deployment stage for a deployment
+    * 
+    * @param deploymentName the deployment name
+    * @return the stage
+    * @throws DeploymentException for any error
+    */
+   DeploymentStage getDeploymentStage(String deploymentName) throws DeploymentException;
+
+   /**
     * Check all the deployments are complete
     * 
     * @throws DeploymentException when some deployment is not complete

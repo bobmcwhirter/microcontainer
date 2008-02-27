@@ -65,6 +65,15 @@ public interface Deployers
    void change(DeploymentContext context, DeploymentStage stage) throws DeploymentException;
 
    /**
+    * Get the deployment stage for a deployment
+    * 
+    * @param context the context
+    * @return the stage or null if not deployed
+    * @throws DeploymentException for any error
+    */
+   DeploymentStage getDeploymentStage(DeploymentContext context) throws DeploymentException;
+
+   /**
     * Check all the deployments are complete
     *
     * @param errors the contexts in error

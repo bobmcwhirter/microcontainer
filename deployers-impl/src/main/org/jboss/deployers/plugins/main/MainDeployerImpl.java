@@ -39,6 +39,7 @@ import org.jboss.deployers.spi.DeploymentException;
 import org.jboss.deployers.spi.DeploymentState;
 import org.jboss.deployers.spi.deployer.Deployers;
 import org.jboss.deployers.spi.deployer.DeploymentStage;
+import org.jboss.deployers.spi.deployer.DeploymentStages;
 import org.jboss.deployers.spi.deployer.managed.ManagedDeploymentCreator;
 import org.jboss.deployers.structure.spi.DeploymentContext;
 import org.jboss.deployers.structure.spi.DeploymentUnit;
@@ -549,6 +550,37 @@ public class MainDeployerImpl implements MainDeployer, MainDeployerStructure
          {
             throw new RuntimeException("Unexpected error in process()", t);
          }
+      }
+      finally
+      {
+         unlockRead();
+      }
+   }
+
+   public DeploymentStage getDeploymentStage(String deploymentName) throws DeploymentException
+   {
+      if (deployers == null)
+         throw new IllegalStateException("No deployers");
+
+      lockRead();
+      try
+      {
+         DeploymentContext context = getTopLevelDeploymentContext(deploymentName);
+         if (context == null)
+            return DeploymentStages.NOT_INSTALLED;
+         DeploymentStage result = deployers.getDeploymentStage(context);
+         if (result != null)
+            return result;
+         else
+            return DeploymentStages.NOT_INSTALLED;
+      }
+      catch (Error e)
+      {
+         throw e;
+      }
+      catch (Throwable t)
+      {
+         throw DeploymentException.rethrowAsDeploymentException("Error getting stage for " + deploymentName, t);
       }
       finally
       {

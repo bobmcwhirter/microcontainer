@@ -61,7 +61,7 @@ public class DeployerChangeStageTestCase extends AbstractMainDeployerTest
       List<String> expected = new ArrayList<String>();
       expected.add(single.getName());
       assertEquals(expected, deployer.getDeployedUnits());
-
+      
       DeploymentUnit unit = assertDeploymentUnit(main, single.getName());
       assertEquals(main, unit.getMainDeployer());
       
@@ -74,15 +74,19 @@ public class DeployerChangeStageTestCase extends AbstractMainDeployerTest
       DeployerClient main = getMainDeployer();
 
       Deployment single = createSimpleDeployment("single");
+      assertEquals(DeploymentStages.NOT_INSTALLED, main.getDeploymentStage(single.getName()));
       main.deploy(single);
       List<String> expected = new ArrayList<String>();
       expected.add(single.getName());
       assertEquals(expected, deployer.getDeployedUnits());
+      assertEquals(DeploymentStages.INSTALLED, main.getDeploymentStage(single.getName()));
 
       main.change(single.getName(), DeploymentStages.CLASSLOADER);
       assertEquals(expected, deployer.getUndeployedUnits());
+      assertEquals(DeploymentStages.CLASSLOADER, main.getDeploymentStage(single.getName()));
       
       main.undeploy(single);
+      assertEquals(DeploymentStages.NOT_INSTALLED, main.getDeploymentStage(single.getName()));
       assertEquals(expected, deployer.getDeployedUnits());
       assertEquals(expected, deployer.getUndeployedUnits());
       try
@@ -96,12 +100,16 @@ public class DeployerChangeStageTestCase extends AbstractMainDeployerTest
       }
       
       deployer.clear();
+      assertEquals(DeploymentStages.NOT_INSTALLED, main.getDeploymentStage(single.getName()));
       main.deploy(single);
       assertEquals(expected, deployer.getDeployedUnits());
+      assertEquals(DeploymentStages.INSTALLED, main.getDeploymentStage(single.getName()));
       main.change(single.getName(), DeploymentStages.CLASSLOADER);
+      assertEquals(DeploymentStages.CLASSLOADER, main.getDeploymentStage(single.getName()));
       deployer.clear();
       main.change(single.getName(), DeploymentStages.REAL);
       assertEquals(expected, deployer.getDeployedUnits());
+      assertEquals(DeploymentStages.REAL, main.getDeploymentStage(single.getName()));
    }
 
    public void testChangeStageFail() throws Throwable
@@ -109,12 +117,15 @@ public class DeployerChangeStageTestCase extends AbstractMainDeployerTest
       DeployerClient main = getMainDeployer();
 
       Deployment single = createSimpleDeployment("single");
+      assertEquals(DeploymentStages.NOT_INSTALLED, main.getDeploymentStage(single.getName()));
       main.deploy(single);
       List<String> expected = new ArrayList<String>();
       expected.add(single.getName());
       assertEquals(expected, deployer.getDeployedUnits());
+      assertEquals(DeploymentStages.INSTALLED, main.getDeploymentStage(single.getName()));
 
       main.change(single.getName(), DeploymentStages.CLASSLOADER);
+      assertEquals(DeploymentStages.CLASSLOADER, main.getDeploymentStage(single.getName()));
       DeploymentUnit unit = assertDeploymentUnit(main, single.getName());
       DeploymentContext context = assertDeploymentContext(main, single.getName());
       unit.addAttachment("fail", deployer);
@@ -132,5 +143,6 @@ public class DeployerChangeStageTestCase extends AbstractMainDeployerTest
       assertEquals(expected, deployer.getFailed());
       assertEquals(DeploymentState.ERROR, context.getState());
       checkThrowable(DeploymentException.class, context.getProblem());
+      assertEquals(DeploymentStages.NOT_INSTALLED, main.getDeploymentStage(single.getName()));
    }
 }

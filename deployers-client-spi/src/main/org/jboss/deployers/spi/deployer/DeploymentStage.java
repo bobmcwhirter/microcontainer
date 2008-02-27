@@ -153,6 +153,24 @@ public class DeploymentStage implements Serializable
    }
    
    @Override
+   public boolean equals(Object obj)
+   {
+      if (obj == this)
+         return true;
+      if (obj == null || obj instanceof DeploymentStage == false)
+         return false;
+      
+      DeploymentStage other = (DeploymentStage) obj;
+      return getName().equals(other.getName());
+   }
+
+   @Override
+   public int hashCode()
+   {
+      return getName().hashCode();
+   }
+   
+   @Override
    public String toString()
    {
       return getName();
