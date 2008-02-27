@@ -116,9 +116,12 @@ public class DeployersImpl implements Deployers, ControllerContextActions
       // Add the standard stages
       addDeploymentStage(DeploymentStages.NOT_INSTALLED);
       addDeploymentStage(DeploymentStages.PARSE);
+      addDeploymentStage(DeploymentStages.POST_PARSE);
+      addDeploymentStage(DeploymentStages.PRE_DESCRIBE);
       addDeploymentStage(DeploymentStages.DESCRIBE);
       addDeploymentStage(DeploymentStages.CLASSLOADER);
       addDeploymentStage(DeploymentStages.POST_CLASSLOADER);
+      addDeploymentStage(DeploymentStages.PRE_REAL);
       addDeploymentStage(DeploymentStages.REAL);
       addDeploymentStage(DeploymentStages.INSTALLED);
       

@@ -21,33 +21,26 @@
  */
 package org.jboss.deployers.plugins.classloading;
 
-import javax.management.MBeanServer;
-import javax.management.ObjectName;
-
 import org.jboss.classloader.spi.ClassLoaderSystem;
-import org.jboss.classloading.spi.RealClassLoader;
 import org.jboss.classloading.spi.dependency.ClassLoading;
 import org.jboss.classloading.spi.dependency.Module;
 import org.jboss.classloading.spi.dependency.policy.ClassLoaderPolicyModule;
-import org.jboss.deployers.spi.deployer.helpers.AbstractTopLevelClassLoaderDeployer;
+import org.jboss.deployers.spi.deployer.helpers.AbstractClassLoaderDeployer;
 import org.jboss.deployers.structure.spi.DeploymentUnit;
 
 /**
- * AbstractTopLevelClassLoaderSystemDeployer.
+ * AbstractLevelClassLoaderSystemDeployer.
  * 
- * @author <a href="adrian@jboss.org">Adrian Brock</a>
+ * @author <a href="adrian@jboss.com">Adrian Brock</a>
  * @version $Revision: 1.1 $
  */
-public class AbstractTopLevelClassLoaderSystemDeployer extends AbstractTopLevelClassLoaderDeployer
+public class AbstractLevelClassLoaderSystemDeployer extends AbstractClassLoaderDeployer
 {
    /** The classloading */
    private ClassLoading classLoading;
    
    /** The classloader system */
    private ClassLoaderSystem system;
-   
-   /** The MBeanServer */
-   private MBeanServer mbeanServer;
    
    /**
     * Get the classLoading.
@@ -90,72 +83,57 @@ public class AbstractTopLevelClassLoaderSystemDeployer extends AbstractTopLevelC
    }
 
    /**
-    * Get the mbeanServer.
-    * 
-    * @return the mbeanServer.
+    * Validate the config
     */
-   public MBeanServer getMbeanServer()
+   public void create()
    {
-      return mbeanServer;
-   }
-
-   /**
-    * Set the mbeanServer.
-    * 
-    * @param mbeanServer the mbeanServer.
-    */
-   public void setMbeanServer(MBeanServer mbeanServer)
-   {
-      this.mbeanServer = mbeanServer;
+      if (classLoading == null)
+         throw new IllegalStateException("The classLoading has not been set");
+      if (system == null)
+         throw new IllegalStateException("The system has not been set");
    }
    
-   @Override
-   protected ClassLoader createTopLevelClassLoader(DeploymentUnit unit) throws Exception
+   public ClassLoader createClassLoader(DeploymentUnit unit) throws Exception
    {
       if (classLoading == null)
          throw new IllegalStateException("The classLoading has not been set");
       if (system == null)
          throw new IllegalStateException("The system has not been set");
 
-      // No module means no classloader for the deployment, use the deployer's classloader
       Module module = unit.getAttachment(Module.class);
       if (module == null)
-         return null;
+      {
+         if (isTopLevelOnly())
+            throw new IllegalStateException("No module for top level deployment " + unit.getName());
+         else
+            return unit.getParent().getClassLoader();
+      }
 
       if (module instanceof ClassLoaderPolicyModule == false)
          throw new IllegalStateException("Module is not an instance of " + ClassLoaderPolicyModule.class.getName() + " actual=" + module.getClass().getName());
       ClassLoaderPolicyModule classLoaderPolicyModule = (ClassLoaderPolicyModule) module;
-      
-      ClassLoader classLoader = classLoaderPolicyModule.registerClassLoaderPolicy(system);
-      try
+
+      if (unit.isTopLevel())
       {
-         registerClassLoaderWithMBeanServer(classLoader);
+         // Top level, just create the classloader
+         return classLoaderPolicyModule.registerClassLoaderPolicy(system);
       }
-      catch (Throwable t)
+      else
       {
-         log.warn("Unable to register classloader with mbeanserver: " + classLoader, t);
+         // Subdeployment that wants a classloader
+         ClassLoader parentClassLoader = unit.getParent().getClassLoader();
+         return classLoaderPolicyModule.registerClassLoaderPolicy(system, parentClassLoader);
       }
-      return classLoader;
    }
-   
+
    @Override
-   protected void removeTopLevelClassLoader(DeploymentUnit unit) throws Exception
+   public void removeClassLoader(DeploymentUnit unit) throws Exception
    {
-      // No module means no for the deployment classloader
       Module module = unit.getAttachment(Module.class);
       if (module == null)
          return;
 
       ClassLoader classLoader = unit.getClassLoader();
-      try
-      {
-         unregisterClassLoaderFromMBeanServer(classLoader);
-      }
-      catch (Throwable t)
-      {
-         log.warn("Unable to unregister classloader from mbeanserver: " + classLoader, t);
-      }
-      
       try
       {
          // Remove the classloader
@@ -166,50 +144,7 @@ public class AbstractTopLevelClassLoaderSystemDeployer extends AbstractTopLevelC
          cleanup(unit, module);
          module.reset();
       }
-   }
-
-   /**
-    * Register the classloader with the mbeanserver
-    * 
-    * @param classLoader the classloader
-    * @throws Exception for any error
-    */
-   protected void registerClassLoaderWithMBeanServer(ClassLoader classLoader) throws Exception
-   {
-      if (mbeanServer == null)
-         return;
-      
-      if (classLoader instanceof RealClassLoader == false)
-         return;
-      
-      RealClassLoader jmxClassLoader = (RealClassLoader) classLoader;
-      ObjectName name = jmxClassLoader.getObjectName();
-      if (mbeanServer.isRegistered(name))
-         return;
-      
-      mbeanServer.registerMBean(classLoader, name);
-   }
-
-   /**
-    * Unregister the classloader from the mbeanserver
-    * 
-    * @param classLoader the classloader
-    * @throws Exception for any error
-    */
-   protected void unregisterClassLoaderFromMBeanServer(ClassLoader classLoader) throws Exception
-   {
-      if (mbeanServer == null)
-         return;
-      
-      if (classLoader instanceof RealClassLoader == false)
-         return;
-      
-      RealClassLoader jmxClassLoader = (RealClassLoader) classLoader;
-      ObjectName name = jmxClassLoader.getObjectName();
-      if (mbeanServer.isRegistered(name) == false)
-         return;
-      mbeanServer.unregisterMBean(name);
-   }
+  }
    
    /**
     * Hook to perform cleanup on destruction of classloaader

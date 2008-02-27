@@ -35,8 +35,14 @@ public interface DeploymentStages
    /** The parse stage - where metadata is read */
    DeploymentStage PARSE = new DeploymentStage("Parse", NOT_INSTALLED);
 
+   /** The post parse stage - where metadata can be fixed up */
+   DeploymentStage POST_PARSE = new DeploymentStage("PostParse", PARSE);
+
+   /** The pre describe stage - where default dependencies metadata can be created */
+   DeploymentStage PRE_DESCRIBE = new DeploymentStage("PreDescribe", POST_PARSE);
+
    /** The describe stage - where dependencies are established */
-   DeploymentStage DESCRIBE = new DeploymentStage("Describe", PARSE);
+   DeploymentStage DESCRIBE = new DeploymentStage("Describe", PRE_DESCRIBE);
 
    /** The classloader stage - where classloaders are created */
    DeploymentStage CLASSLOADER = new DeploymentStage("ClassLoader", DESCRIBE);
@@ -44,8 +50,11 @@ public interface DeploymentStages
    /** The post classloader stage - e.g. aop */
    DeploymentStage POST_CLASSLOADER = new DeploymentStage("PostClassLoader", CLASSLOADER);
 
+   /** The pre real stage - where before real deployments are done */
+   DeploymentStage PRE_REAL = new DeploymentStage("PreReal", POST_CLASSLOADER);
+
    /** The real stage - where real deployment processing is done */
-   DeploymentStage REAL = new DeploymentStage("Real", POST_CLASSLOADER);
+   DeploymentStage REAL = new DeploymentStage("Real", PRE_REAL);
 
    /** The installed stage - could be used to provide valve in future? */
    DeploymentStage INSTALLED = new DeploymentStage("Installed", REAL);

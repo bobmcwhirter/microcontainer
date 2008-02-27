@@ -26,7 +26,6 @@ import org.jboss.classloading.spi.metadata.ClassLoadingMetaData;
 import org.jboss.deployers.plugins.classloading.AbstractClassLoaderDescribeDeployer;
 import org.jboss.deployers.spi.DeploymentException;
 import org.jboss.deployers.structure.spi.DeploymentUnit;
-import org.jboss.deployers.vfs.spi.structure.VFSDeploymentUnit;
 
 /**
  * VFSClassLoaderDescribeDeployer.
@@ -38,8 +37,6 @@ public class VFSClassLoaderDescribeDeployer extends AbstractClassLoaderDescribeD
 {
    protected ClassLoaderPolicyModule createModule(DeploymentUnit unit, ClassLoadingMetaData metaData) throws DeploymentException
    {
-      if (unit instanceof VFSDeploymentUnit == false)
-         return null;
-      return new VFSDeploymentClassLoaderPolicyModule((VFSDeploymentUnit) unit);
+      return new VFSDeploymentClassLoaderPolicyModule(unit);
    }
 }

@@ -33,7 +33,7 @@ import org.jboss.classloading.spi.metadata.ExportAll;
 import org.jboss.classloading.spi.vfs.policy.VFSClassLoaderPolicy;
 import org.jboss.deployers.plugins.classloading.AbstractDeploymentClassLoaderPolicyModule;
 import org.jboss.deployers.spi.DeploymentException;
-import org.jboss.deployers.vfs.spi.structure.VFSDeploymentUnit;
+import org.jboss.deployers.structure.spi.DeploymentUnit;
 import org.jboss.deployers.vfs.spi.structure.helpers.ClassPathVisitor;
 import org.jboss.virtual.VirtualFile;
 
@@ -57,15 +57,9 @@ public class VFSDeploymentClassLoaderPolicyModule extends AbstractDeploymentClas
     * @param unit the deployment unit
     * @throws IllegalArgumentException for a null deployment unit
     */
-   public VFSDeploymentClassLoaderPolicyModule(VFSDeploymentUnit unit)
+   public VFSDeploymentClassLoaderPolicyModule(DeploymentUnit unit)
    {
       super(unit);
-   }
- 
-   @Override
-   public VFSDeploymentUnit getDeploymentUnit()
-   {
-      return (VFSDeploymentUnit) super.getDeploymentUnit();
    }
 
    @Override
@@ -115,7 +109,7 @@ public class VFSDeploymentClassLoaderPolicyModule extends AbstractDeploymentClas
       if (vfsRoots != null)
          return vfsRoots;
 
-      ClassPathVisitor visitor = new ClassPathVisitor();
+      ClassPathVisitor visitor = new ClassPathVisitor(getDeploymentUnit());
       try
       {
          getDeploymentUnit().visit(visitor);

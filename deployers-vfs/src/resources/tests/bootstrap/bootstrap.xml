@@ -119,7 +119,7 @@
    <bean name="ClassLoaderDescribeDeployer" class="org.jboss.deployers.vfs.plugins.classloader.VFSClassLoaderDescribeDeployer">
       <property name="classLoading"><inject bean="ClassLoading"/></property>
    </bean>
-   <bean name="ClassLoaderDeployer" class="org.jboss.deployers.plugins.classloading.AbstractTopLevelClassLoaderSystemDeployer">
+   <bean name="ClassLoaderDeployer" class="org.jboss.deployers.plugins.classloading.AbstractLevelClassLoaderSystemDeployer">
       <property name="classLoading"><inject bean="ClassLoading"/></property>
       <property name="system"><inject bean="ClassLoaderSystem"/></property>
    </bean>

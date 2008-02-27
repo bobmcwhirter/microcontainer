@@ -39,19 +39,19 @@ import org.jboss.classloading.spi.metadata.RequirementsMetaData;
 import org.jboss.classloading.spi.version.Version;
 import org.jboss.classloading.spi.version.VersionRange;
 import org.jboss.deployers.client.spi.DeployerClient;
-import org.jboss.deployers.client.spi.Deployment;
 import org.jboss.deployers.plugins.classloading.AbstractClassLoaderDescribeDeployer;
 import org.jboss.deployers.spi.attachments.MutableAttachments;
 import org.jboss.deployers.spi.attachments.PredeterminedManagedObjectAttachments;
 import org.jboss.deployers.structure.spi.DeploymentUnit;
 import org.jboss.test.deployers.AbstractDeployerTest;
 import org.jboss.test.deployers.classloading.support.MockClassLoaderDescribeDeployer;
-import org.jboss.test.deployers.classloading.support.MockTopLevelClassLoaderSystemDeployer;
+import org.jboss.test.deployers.classloading.support.MockLevelClassLoaderSystemDeployer;
 
 /**
- * ClassLoadersDependencies test.
- *
- * @author <a href="ales.justin@jboss.com">Ales Justin</a>
+ * ClassLoaderDependenciesTest.
+ * 
+ * @author <a href="adrian@jboss.com">Adrian Brock</a>
+ * @version $Revision: 1.1 $
  */
 public abstract class ClassLoaderDependenciesTest extends AbstractDeployerTest
 {
@@ -78,7 +78,7 @@ public abstract class ClassLoaderDependenciesTest extends AbstractDeployerTest
    }
 
    protected AbstractClassLoaderDescribeDeployer deployer1;
-   protected MockTopLevelClassLoaderSystemDeployer deployer2;
+   protected MockLevelClassLoaderSystemDeployer deployer2;
 
    protected ClassLoaderDependenciesTest(String name)
    {
@@ -137,26 +137,25 @@ public abstract class ClassLoaderDependenciesTest extends AbstractDeployerTest
       }
    }
 
-   protected static ClassLoadingMetaData addClassLoadingMetaData(Deployment deployment, Version version, Class<?>... packages)
+   protected static ClassLoadingMetaData addClassLoadingMetaData(PredeterminedManagedObjectAttachments deployment, String name, Version version, Class<?>... packages)
    {
-      return addClassLoadingMetaData(deployment, version, false, packages);
+      return addClassLoadingMetaData(deployment, name, version, false, packages);
    }
 
-   protected static ClassLoadingMetaData addClassLoadingMetaData(Deployment deployment, Version version, boolean useVersionOnPackages, Class<?>... packages)
+   protected static ClassLoadingMetaData addClassLoadingMetaData(PredeterminedManagedObjectAttachments deployment, String name, Version version, boolean useVersionOnPackages, Class<?>... packages)
    {
-      ClassLoadingMetaData classLoadingMetaData = createMetaData(deployment, version, useVersionOnPackages, packages);
+      ClassLoadingMetaData classLoadingMetaData = createMetaData(deployment, name, version, useVersionOnPackages, packages);
       addMetaData(deployment, classLoadingMetaData);
       return classLoadingMetaData;
    }
 
-   protected static ClassLoadingMetaData createMetaData(Deployment deployment, Version version, Class<?>... packages)
+   protected static ClassLoadingMetaData createMetaData(PredeterminedManagedObjectAttachments deployment, String name, Version version, Class<?>... packages)
    {
-      return createMetaData(deployment, version, false, packages);
+      return createMetaData(deployment, name, version, false, packages);
    }
 
-   protected static ClassLoadingMetaData createMetaData(Deployment deployment, Version version, boolean useVersionOnPackages, Class<?>... packages)
+   protected static ClassLoadingMetaData createMetaData(PredeterminedManagedObjectAttachments deployment, String name, Version version, boolean useVersionOnPackages, Class<?>... packages)
    {
-      String name = deployment.getName();
       MockClassLoadingMetaData classLoadingMetaData = new MockClassLoadingMetaData(name, version);
 
       classLoadingMetaData.setPaths(packages);
@@ -212,7 +211,7 @@ public abstract class ClassLoaderDependenciesTest extends AbstractDeployerTest
       deployer1 = new MockClassLoaderDescribeDeployer();
       deployer1.setClassLoading(classLoading);
 
-      deployer2 = new MockTopLevelClassLoaderSystemDeployer();
+      deployer2 = new MockLevelClassLoaderSystemDeployer();
       deployer2.setClassLoading(classLoading);
       deployer2.setSystem(system);
 

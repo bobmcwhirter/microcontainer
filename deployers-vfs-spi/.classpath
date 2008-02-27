@@ -30,4 +30,5 @@
   <classpathentry kind="src" path="/jboss-deployers-structure-spi"/>
   <classpathentry kind="src" path="/jboss-dependency"/>
   <classpathentry kind="src" path="/jboss-deployers-core"/>
+  <classpathentry kind="src" path="/jboss-classloading"/>
 </classpath>

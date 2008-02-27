@@ -48,7 +48,6 @@ public abstract class AbstractClassLoaderDescribeDeployer extends AbstractOption
    {
       super(ClassLoadingMetaData.class);
       setStage(DeploymentStages.DESCRIBE);
-      setTopLevelOnly(true);
    }
 
    /**
@@ -84,6 +83,18 @@ public abstract class AbstractClassLoaderDescribeDeployer extends AbstractOption
 
    public void deploy(DeploymentUnit unit, ClassLoadingMetaData deployment) throws DeploymentException
    {
+      // We only look at non top level deployments that have classloading metadata
+      if (unit.isTopLevel() == false)
+      {
+         if (deployment == null)
+            return;
+         
+         // For non top level classloaders, we need to control the domain
+         // since the parent is the deployment classloader
+         deployment.setDomain(unit.getName());
+      }
+      
+      // Create the module
       ClassLoaderPolicyModule module = createModule(unit, deployment);
       if (module != null)
       {

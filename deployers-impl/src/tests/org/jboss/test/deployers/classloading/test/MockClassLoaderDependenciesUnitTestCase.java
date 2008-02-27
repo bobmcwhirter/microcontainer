@@ -54,7 +54,7 @@ public class MockClassLoaderDependenciesUnitTestCase extends ClassLoaderDependen
       DeployerClient deployer = getMainDeployer();
 
       Deployment deployment = createSimpleDeployment(NameA);
-      addClassLoadingMetaData(deployment, null, A.class);
+      addClassLoadingMetaData(deployment, deployment.getName(), null, A.class);
       
       DeploymentUnit unit = assertDeploy(deployer, deployment);
 
@@ -77,7 +77,7 @@ public class MockClassLoaderDependenciesUnitTestCase extends ClassLoaderDependen
       DeployerClient deployer = getMainDeployer();
 
       Deployment deploymentB = createSimpleDeployment(NameB);
-      addClassLoadingMetaData(deploymentB, null, B.class);
+      addClassLoadingMetaData(deploymentB, deploymentB.getName(), null, B.class);
       DeploymentUnit unitB = assertDeploy(deployer, deploymentB);
       
       ClassLoader clB = unitB.getClassLoader();
@@ -87,7 +87,7 @@ public class MockClassLoaderDependenciesUnitTestCase extends ClassLoaderDependen
       assertEquals(NONE, deployer2.undeployed);
 
       Deployment deploymentA = createSimpleDeployment(NameA);
-      ClassLoadingMetaData classLoadingMetaData = addClassLoadingMetaData(deploymentA, null, A.class);
+      ClassLoadingMetaData classLoadingMetaData = addClassLoadingMetaData(deploymentA, deploymentA.getName(), null, A.class);
       addRequireModule(classLoadingMetaData, "B", null);
       DeploymentUnit unitA = assertDeploy(deployer, deploymentA);
       
@@ -115,7 +115,7 @@ public class MockClassLoaderDependenciesUnitTestCase extends ClassLoaderDependen
       DeployerClient deployer = getMainDeployer();
 
       Deployment deploymentA = createSimpleDeployment(NameA);
-      ClassLoadingMetaData classLoaderMetaData = addClassLoadingMetaData(deploymentA, null, A.class);
+      ClassLoadingMetaData classLoaderMetaData = addClassLoadingMetaData(deploymentA, deploymentA.getName(), null, A.class);
       addRequireModule(classLoaderMetaData, "B", null);
       DeploymentUnit unitA = addDeployment(deployer, deploymentA);
       
@@ -125,7 +125,7 @@ public class MockClassLoaderDependenciesUnitTestCase extends ClassLoaderDependen
       assertEquals(NONE, deployer2.undeployed);
 
       Deployment deploymentB = createSimpleDeployment(NameB);
-      addClassLoadingMetaData(deploymentB, null, B.class);
+      addClassLoadingMetaData(deploymentB, deploymentB.getName(), null, B.class);
       DeploymentUnit unitB = assertDeploy(deployer, deploymentB);
       
       ClassLoader clB = unitB.getClassLoader();
@@ -155,7 +155,7 @@ public class MockClassLoaderDependenciesUnitTestCase extends ClassLoaderDependen
       DeployerClient deployer = getMainDeployer();
 
       Deployment deploymentA = createSimpleDeployment(NameA);
-      ClassLoadingMetaData classLoaderMetaData = addClassLoadingMetaData(deploymentA, null, A.class);
+      ClassLoadingMetaData classLoaderMetaData = addClassLoadingMetaData(deploymentA, deploymentA.getName(), null, A.class);
       addRequireModule(classLoaderMetaData, "B", null);
       DeploymentUnit unitA = addDeployment(deployer, deploymentA);
       
@@ -165,7 +165,7 @@ public class MockClassLoaderDependenciesUnitTestCase extends ClassLoaderDependen
       assertEquals(NONE, deployer2.undeployed);
 
       Deployment deploymentB = createSimpleDeployment(NameB);
-      addClassLoadingMetaData(deploymentB, null, B.class);
+      addClassLoadingMetaData(deploymentB, deploymentB.getName(), null, B.class);
       DeploymentUnit unitB = assertDeploy(deployer, deploymentB);
       
       ClassLoader clB = unitB.getClassLoader();
@@ -196,7 +196,7 @@ public class MockClassLoaderDependenciesUnitTestCase extends ClassLoaderDependen
       DeployerClient deployer = getMainDeployer();
 
       Deployment deploymentA = createSimpleDeployment(NameA);
-      ClassLoadingMetaData classLoaderMetaData = addClassLoadingMetaData(deploymentA, null, A.class);
+      ClassLoadingMetaData classLoaderMetaData = addClassLoadingMetaData(deploymentA, deploymentA.getName(), null, A.class);
       addRequireModule(classLoaderMetaData, "B", null);
       DeploymentUnit unitA = addDeployment(deployer, deploymentA);
       
@@ -206,7 +206,7 @@ public class MockClassLoaderDependenciesUnitTestCase extends ClassLoaderDependen
       assertEquals(NONE, deployer2.undeployed);
 
       Deployment deploymentB = createSimpleDeployment(NameB);
-      addClassLoadingMetaData(deploymentB, null, B.class);
+      addClassLoadingMetaData(deploymentB, deploymentB.getName(), null, B.class);
       DeploymentUnit unitB = assertDeploy(deployer, deploymentB);
       
       ClassLoader clB = unitB.getClassLoader();

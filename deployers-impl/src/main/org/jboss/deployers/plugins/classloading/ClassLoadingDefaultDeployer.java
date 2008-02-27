@@ -45,7 +45,7 @@ public class ClassLoadingDefaultDeployer extends AbstractOptionalRealDeployer<Cl
    {
       super(ClassLoadingMetaData.class);
       setOutput(ClassLoadingMetaData.class);
-      setStage(DeploymentStages.DESCRIBE);
+      setStage(DeploymentStages.PRE_DESCRIBE);
       setTopLevelOnly(true);
    }
 

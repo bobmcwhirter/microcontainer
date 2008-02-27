@@ -1,6 +1,6 @@
 /*
  * JBoss, Home of Professional Open Source.
- * Copyright 2008, Red Hat Middleware LLC, and individual contributors
+ * Copyright 2007, Red Hat Middleware LLC, and individual contributors
  * as indicated by the @author tags. See the copyright.txt file in the
  * distribution for a full listing of individual contributors.
  *
@@ -19,22 +19,22 @@
  * Software Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA
  * 02110-1301 USA, or see the FSF site: http://www.fsf.org.
  */
-package org.jboss.test.deployers.vfs.classloader.support;
+package org.jboss.test.deployers.classloading.support;
 
 import java.util.ArrayList;
 import java.util.List;
 
-import org.jboss.deployers.plugins.classloading.AbstractTopLevelClassLoaderSystemDeployer;
+import org.jboss.deployers.plugins.classloading.AbstractLevelClassLoaderSystemDeployer;
 import org.jboss.deployers.spi.DeploymentException;
 import org.jboss.deployers.structure.spi.DeploymentUnit;
 
 /**
- * TestTopLevelClassLoaderSystemDeployer.
+ * MockLevelClassLoaderSystemDeployer.
  * 
  * @author <a href="adrian@jboss.com">Adrian Brock</a>
  * @version $Revision: 1.1 $
  */
-public class TestTopLevelClassLoaderSystemDeployer extends AbstractTopLevelClassLoaderSystemDeployer
+public class MockLevelClassLoaderSystemDeployer extends AbstractLevelClassLoaderSystemDeployer
 {
    public List<String> deployed = new ArrayList<String>();
    public List<String> undeployed = new ArrayList<String>();

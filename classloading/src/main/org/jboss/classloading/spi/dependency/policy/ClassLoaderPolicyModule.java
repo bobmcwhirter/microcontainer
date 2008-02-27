@@ -21,9 +21,11 @@
 */
 package org.jboss.classloading.spi.dependency.policy;
 
+import org.jboss.classloader.plugins.loader.ClassLoaderToLoaderAdapter;
 import org.jboss.classloader.spi.ClassLoaderPolicy;
 import org.jboss.classloader.spi.ClassLoaderSystem;
 import org.jboss.classloader.spi.DelegateLoader;
+import org.jboss.classloader.spi.Loader;
 import org.jboss.classloader.spi.ParentPolicy;
 import org.jboss.classloading.spi.dependency.Module;
 import org.jboss.classloading.spi.dependency.helpers.ClassLoadingMetaDataModule;
@@ -73,6 +75,43 @@ public abstract class ClassLoaderPolicyModule extends ClassLoadingMetaDataModule
       ParentPolicy parentPolicy = getDeterminedParentPolicy();
       String parentName = getDeterminedParentDomainName();
       ClassLoader result = system.registerClassLoaderPolicy(domainName, parentPolicy, parentName, getPolicy());
+      this.system = system;
+      return result;
+   }
+   
+   /**
+    * Register the classloader policy with a classloader system
+    *
+    * @param system the classloader system
+    * @param parent the parent classloader
+    * @return the classloader
+    */
+   public ClassLoader registerClassLoaderPolicy(ClassLoaderSystem system, ClassLoader parent)
+   {
+      if (system == null)
+         throw new IllegalArgumentException("Null classloader system");
+      if (parent == null)
+         throw new IllegalArgumentException("Null parent");
+
+      Loader loader = new ClassLoaderToLoaderAdapter(parent);
+      return registerClassLoaderPolicy(system, loader);
+   }
+   
+   /**
+    * Register the classloader policy with a classloader system
+    *
+    * @param system the classloader system
+    * @param loader the parent loader
+    * @return the classloader
+    */
+   public ClassLoader registerClassLoaderPolicy(ClassLoaderSystem system, Loader loader)
+   {
+      if (system == null)
+         throw new IllegalArgumentException("Null classloader system");
+      
+      String domainName = getDeterminedDomainName();
+      ParentPolicy parentPolicy = getDeterminedParentPolicy();
+      ClassLoader result = system.registerClassLoaderPolicy(domainName, parentPolicy, loader, getPolicy());
       this.system = system;
       return result;
    }

@@ -25,6 +25,7 @@ import java.util.LinkedHashSet;
 import java.util.List;
 import java.util.Set;
 
+import org.jboss.classloading.spi.metadata.ClassLoadingMetaData;
 import org.jboss.deployers.spi.DeploymentException;
 import org.jboss.deployers.structure.spi.DeploymentUnit;
 import org.jboss.deployers.structure.spi.DeploymentUnitVisitor;
@@ -39,8 +40,32 @@ import org.jboss.virtual.VirtualFile;
  */
 public class ClassPathVisitor implements DeploymentUnitVisitor
 {
+   /** The initial deployment unit */
+   private DeploymentUnit initial;
+   
    /** The full classpath */
    private Set<VirtualFile> classPath = new LinkedHashSet<VirtualFile>();
+   
+   /**
+    * Create a new ClassPathVisitor.
+    */
+   @Deprecated // pass the initial unit to weed subdeployments with their own classloader
+   public ClassPathVisitor()
+   {
+      
+   }
+   
+   /**
+    * Create a new ClassPathVisitor.
+    * 
+    * @param initial the initial unit
+    */
+   public ClassPathVisitor(DeploymentUnit initial)
+   {
+      if (initial == null)
+         throw new IllegalArgumentException("Null initial");
+      this.initial = initial;
+   }
    
    /**
     * Get the full classpath after the visit
@@ -56,6 +81,11 @@ public class ClassPathVisitor implements DeploymentUnitVisitor
    {
       if (unit instanceof VFSDeploymentUnit == false)
          return;
+      
+      // This part of the deployment wants its own classloader
+      if (unit != initial && unit.getAttachment(ClassLoadingMetaData.class) != null)
+         return;
+      
       VFSDeploymentUnit vfsUnit = (VFSDeploymentUnit) unit;
       List<VirtualFile> paths = vfsUnit.getClassPath();
       if (paths != null)

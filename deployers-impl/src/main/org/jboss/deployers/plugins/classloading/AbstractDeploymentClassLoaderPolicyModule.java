@@ -21,6 +21,8 @@
 */
 package org.jboss.deployers.plugins.classloading;
 
+import java.util.Set;
+
 import org.jboss.classloading.spi.dependency.policy.ClassLoaderPolicyModule;
 import org.jboss.classloading.spi.metadata.ClassLoadingMetaData;
 import org.jboss.dependency.spi.ControllerContext;
@@ -68,10 +70,31 @@ public abstract class AbstractDeploymentClassLoaderPolicyModule extends ClassLoa
    {
       if (unit == null)
          throw new IllegalArgumentException("Null unit");
-      ControllerContext context = unit.getAttachment(ControllerContext.class);
+      ControllerContext context = unit.getTopLevel().getAttachment(ControllerContext.class);
       if (context == null)
          throw new IllegalStateException("Deployment has no controller context");
-      return (String) context.getName();
+      
+      // We use the deployment name
+      String contextName = unit.getName();
+
+      // Check to see whether we need to add our name as an alias
+      if (contextName.equals(context.getName()) == false)
+      {
+         Set<Object> aliases = context.getAliases();
+         if (aliases != null && aliases.contains(contextName) == false)
+         {
+            try
+            {
+               context.getController().addAlias(contextName, context.getName());
+            }
+            catch (Throwable t)
+            {
+               throw new RuntimeException("Error adding deployment alias " + contextName + " to " + context, t);
+            }
+         }
+      }
+      
+      return contextName;
    }
    
    /**
@@ -84,7 +107,7 @@ public abstract class AbstractDeploymentClassLoaderPolicyModule extends ClassLoa
    {
       super(determineClassLoadingMetaData(unit), determineContextName(unit));
       this.unit = unit;
-      ControllerContext context = unit.getAttachment(ControllerContext.class);
+      ControllerContext context = unit.getTopLevel().getAttachment(ControllerContext.class);
       setControllerContext(context);
    }
 

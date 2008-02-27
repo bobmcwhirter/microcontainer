@@ -57,16 +57,16 @@ public class UndeployOrderClassLoaderUnitTestCase extends ClassLoaderDependencie
       Version v2 = Version.parseVersion("2");
 
       Deployment ad = createSimpleDeployment("A");
-      addClassLoadingMetaData(ad, v1, true, A.class);
+      addClassLoadingMetaData(ad, ad.getName(), v1, true, A.class);
       assertDeploy(mainDeployer, ad);
 
       Deployment bd = createSimpleDeployment("B");
-      addClassLoadingMetaData(bd, v2, true, B.class);
+      addClassLoadingMetaData(bd, bd.getName(), v2, true, B.class);
       assertDeploy(mainDeployer, bd);
       mainDeployer.checkComplete(bd);
 
       Deployment cd = createSimpleDeployment("C");
-      ClassLoadingMetaData clmd = addClassLoadingMetaData(cd, null);
+      ClassLoadingMetaData clmd = addClassLoadingMetaData(cd, cd.getName(), null);
       addRequirePackage(clmd, A.class, new VersionRange(v1, true, v2, true));
       addRequirePackage(clmd, B.class, new VersionRange(v1, true, v2, true));
       assertDeploy(mainDeployer, cd);

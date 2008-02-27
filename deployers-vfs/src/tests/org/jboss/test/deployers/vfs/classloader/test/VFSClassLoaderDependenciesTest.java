@@ -51,7 +51,7 @@ import org.jboss.deployers.vfs.plugins.classloader.VFSClassLoaderDescribeDeploye
 import org.jboss.deployers.vfs.spi.client.VFSDeployment;
 import org.jboss.deployers.vfs.spi.client.VFSDeploymentFactory;
 import org.jboss.test.deployers.BaseDeployersVFSTest;
-import org.jboss.test.deployers.vfs.classloader.support.TestTopLevelClassLoaderSystemDeployer;
+import org.jboss.test.deployers.vfs.classloader.support.TestLevelClassLoaderSystemDeployer;
 import org.jboss.virtual.VFS;
 import org.jboss.virtual.VirtualFile;
 
@@ -85,7 +85,7 @@ public abstract class VFSClassLoaderDependenciesTest extends BaseDeployersVFSTes
    }
 
    protected AbstractClassLoaderDescribeDeployer deployer1;
-   protected TestTopLevelClassLoaderSystemDeployer deployer2;
+   protected TestLevelClassLoaderSystemDeployer deployer2;
 
    protected VFSClassLoaderDependenciesTest(String name)
    {
@@ -251,7 +251,7 @@ public abstract class VFSClassLoaderDependenciesTest extends BaseDeployersVFSTes
       deployer1 = new VFSClassLoaderDescribeDeployer();
       deployer1.setClassLoading(classLoading);
 
-      deployer2 = new TestTopLevelClassLoaderSystemDeployer();
+      deployer2 = new TestLevelClassLoaderSystemDeployer();
       deployer2.setClassLoading(classLoading);
       deployer2.setSystem(system);
 
