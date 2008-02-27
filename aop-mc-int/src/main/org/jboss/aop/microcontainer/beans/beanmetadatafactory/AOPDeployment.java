@@ -30,9 +30,6 @@ import javax.xml.bind.annotation.XmlNsForm;
 import javax.xml.bind.annotation.XmlRootElement;
 import javax.xml.bind.annotation.XmlType;
 
-import org.jboss.beans.metadata.plugins.AbstractBeanMetaData;
-import org.jboss.beans.metadata.plugins.AbstractLazyMetaData;
-import org.jboss.beans.metadata.plugins.factory.GenericBeanFactoryMetaData2;
 import org.jboss.beans.metadata.spi.BeanMetaDataFactory;
 import org.jboss.kernel.plugins.deployment.AbstractKernelDeployment;
 import org.jboss.managed.api.annotation.ManagementObject;
