@@ -112,8 +112,10 @@ public class Domain
     * @param name the context name
     * @return the module
     */
-   protected Module getModule(String name)
+   public Module getModule(String name)
    {
+      if (name == null)
+         throw new IllegalArgumentException("Null module name");
       return modulesByName.get(name);
    }
    

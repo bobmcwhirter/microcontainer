@@ -41,6 +41,9 @@ public class AbstractRequirement extends NameAndVersionRangeSupport implements R
    /** Whether the requirement is optional */
    private boolean optional = false;
 
+   /** Whether the requirement is dynamic */
+   private boolean dynamic = false;
+
    /** Whether to re-export */
    private boolean reExport = false;
    
@@ -88,6 +91,22 @@ public class AbstractRequirement extends NameAndVersionRangeSupport implements R
    public void setOptional(boolean optional)
    {
       this.optional = optional;
+   }
+
+   public boolean isDynamic()
+   {
+      return dynamic;
+   }
+
+   /**
+    * Set the dynamic.
+    * 
+    * @param dynamic the dynamic.
+    */
+   @XmlAttribute(name="dynamic")
+   public void setDynamic(boolean dynamic)
+   {
+      this.dynamic = dynamic;
    }
 
    public boolean wantReExports()

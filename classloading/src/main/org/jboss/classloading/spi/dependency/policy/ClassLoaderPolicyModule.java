@@ -27,10 +27,15 @@ import org.jboss.classloader.spi.ClassLoaderSystem;
 import org.jboss.classloader.spi.DelegateLoader;
 import org.jboss.classloader.spi.Loader;
 import org.jboss.classloader.spi.ParentPolicy;
+import org.jboss.classloader.spi.filter.LazyFilteredDelegateLoader;
+import org.jboss.classloading.spi.dependency.Domain;
 import org.jboss.classloading.spi.dependency.Module;
+import org.jboss.classloading.spi.dependency.RequirementDependencyItem;
 import org.jboss.classloading.spi.dependency.helpers.ClassLoadingMetaDataModule;
 import org.jboss.classloading.spi.metadata.ClassLoadingMetaData;
 import org.jboss.classloading.spi.metadata.Requirement;
+import org.jboss.dependency.spi.Controller;
+import org.jboss.dependency.spi.ControllerContext;
 
 /**
  * ClassLoaderPolicyModule.
@@ -144,6 +149,18 @@ public abstract class ClassLoaderPolicyModule extends ClassLoadingMetaDataModule
     */
    protected abstract ClassLoaderPolicy determinePolicy();
    
+   @Override
+   public DelegateLoader createLazyDelegateLoader(Domain domain, RequirementDependencyItem item)
+   {
+      ControllerContext context = getControllerContext();
+      if (context == null)
+         throw new IllegalStateException("No controller context");
+      Controller controller = context.getController();
+         
+      DynamicClassLoaderPolicyFactory factory = new DynamicClassLoaderPolicyFactory(controller, domain, item);
+      return new LazyFilteredDelegateLoader(factory);
+   }
+
    @Override
    public DelegateLoader getDelegateLoader(Module requiringModule, Requirement requirement)
    {

@@ -339,6 +339,16 @@
             </xsd:documentation>
          </xsd:annotation>
       </xsd:attribute>
+      <xsd:attribute name="dynamic" type="xsd:boolean" optional="true">
+         <xsd:annotation>
+            <xsd:documentation>
+               <![CDATA[
+               Whether this requirement is a dynamic import that can
+               be resolved at runtime.
+               ]]>
+            </xsd:documentation>
+         </xsd:annotation>
+      </xsd:attribute>
       <xsd:attribute name="optional" type="xsd:boolean" optional="true">
          <xsd:annotation>
             <xsd:documentation>

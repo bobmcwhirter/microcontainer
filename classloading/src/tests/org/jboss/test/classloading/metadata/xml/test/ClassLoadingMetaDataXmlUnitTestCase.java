@@ -283,8 +283,16 @@ public class ClassLoadingMetaDataXmlUnitTestCase extends AbstractJBossXBTest
    {
       ClassLoadingMetaData result = unmarshal(TestRequirement.class);
       ClassLoadingMetaDataFactory factory = ClassLoadingMetaDataFactory.getInstance();
-      assertRequirements(result, factory.createRequireModule("test1", new VersionRange("1.0.0"), true, false), 
-                                 factory.createRequirePackage("test1", new VersionRange("1.0.0"), true, false));
+      assertRequirements(result, factory.createRequireModule("test1", new VersionRange("1.0.0"), true, false, false), 
+                                 factory.createRequirePackage("test1", new VersionRange("1.0.0"), true, false, false));
+   }
+
+   public void testDynamicRequirement() throws Exception
+   {
+      ClassLoadingMetaData result = unmarshal(TestRequirement.class);
+      ClassLoadingMetaDataFactory factory = ClassLoadingMetaDataFactory.getInstance();
+      assertRequirements(result, factory.createRequireModule("test1", new VersionRange("1.0.0"), false, false, true), 
+                                 factory.createRequirePackage("test1", new VersionRange("1.0.0"), false, false, true));
    }
 
    public void testReExportRequirement() throws Exception

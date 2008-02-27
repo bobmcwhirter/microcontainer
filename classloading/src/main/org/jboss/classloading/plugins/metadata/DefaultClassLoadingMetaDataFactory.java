@@ -39,11 +39,12 @@ public class DefaultClassLoadingMetaDataFactory extends ClassLoadingMetaDataFact
       return new ModuleCapability(name, version);
    }
 
-   public Requirement createRequireModule(String name, VersionRange versionRange, boolean optional, boolean reExport)
+   public Requirement createRequireModule(String name, VersionRange versionRange, boolean optional, boolean reExport, boolean dynamic)
    {
       ModuleRequirement result = new ModuleRequirement(name, versionRange);
       result.setOptional(optional);
       result.setReExport(reExport);
+      result.setDynamic(dynamic);
       return result;
    }
 
@@ -52,11 +53,12 @@ public class DefaultClassLoadingMetaDataFactory extends ClassLoadingMetaDataFact
       return new PackageCapability(name, version);
    }
 
-   public Requirement createRequirePackage(String name, VersionRange versionRange, boolean optional, boolean reExport)
+   public Requirement createRequirePackage(String name, VersionRange versionRange, boolean optional, boolean reExport, boolean dynamic)
    {
       PackageRequirement result = new PackageRequirement(name, versionRange);
       result.setOptional(optional);
       result.setReExport(reExport);
+      result.setDynamic(dynamic);
       return result;
    }
 

@@ -85,7 +85,7 @@ public abstract class ClassLoadingMetaDataFactory
     */
    public Requirement createRequireModule(String name, VersionRange versionRange)
    {
-      return createRequireModule(name, versionRange, false, false);
+      return createRequireModule(name, versionRange, false, false, false);
    }
 
    /**
@@ -95,10 +95,11 @@ public abstract class ClassLoadingMetaDataFactory
     * @param versionRange the version range
     * @param optional whether the requirement is optional
     * @param reExport whether the requirement is a re-export
+    * @param dynamic whether the requirement is dynamic
     * @return the module requirement
     * @throws IllegalArgumentException for a null name
     */
-   public abstract Requirement createRequireModule(String name, VersionRange versionRange, boolean optional, boolean reExport);
+   public abstract Requirement createRequireModule(String name, VersionRange versionRange, boolean optional, boolean reExport, boolean dynamic);
 
    /**
     * Create a new re-export module requirement with no version constraint
@@ -136,7 +137,7 @@ public abstract class ClassLoadingMetaDataFactory
     */
    public Requirement createReExportModule(String name, VersionRange versionRange, boolean optional)
    {
-      return createRequireModule(name, versionRange, optional, true);
+      return createRequireModule(name, versionRange, optional, true, false);
    }
 
    /**
@@ -183,7 +184,7 @@ public abstract class ClassLoadingMetaDataFactory
     */
    public Requirement createRequirePackage(String name, VersionRange versionRange)
    {
-      return createRequirePackage(name, versionRange, false, false);
+      return createRequirePackage(name, versionRange, false, false, false);
    }
 
    /**
@@ -193,10 +194,11 @@ public abstract class ClassLoadingMetaDataFactory
     * @param versionRange the version range
     * @param optional whether the requirement is optional
     * @param reExport whether the requirement is a re-export
+    * @param dynamic whether the requirement is dynamic
     * @return the package requirement
     * @throws IllegalArgumentException for a null name
     */
-   public abstract Requirement createRequirePackage(String name, VersionRange versionRange, boolean optional, boolean reExport);
+   public abstract Requirement createRequirePackage(String name, VersionRange versionRange, boolean optional, boolean reExport, boolean dynamic);
 
    /**
     * Create a new re-export package requirement with no version constraint
@@ -234,7 +236,7 @@ public abstract class ClassLoadingMetaDataFactory
     */
    public Requirement createReExportPackage(String name, VersionRange versionRange, boolean optional)
    {
-      return createRequirePackage(name, versionRange, optional, true);
+      return createRequirePackage(name, versionRange, optional, true, false);
    }
 
    /**

@@ -285,8 +285,13 @@ public abstract class Module extends NameAndVersionSupport
          return null;
 
       List<DelegateLoader> result = new CopyOnWriteArrayList<DelegateLoader>();
+      List<DelegateLoader> dynamic = new CopyOnWriteArrayList<DelegateLoader>();
       Set<Module> visited = new HashSet<Module>();
-      addDelegates(this, result, visited, false);
+      addDelegates(this, result, dynamic, visited, false);
+      
+      // Make sure the dynamic delegates are last
+      result.addAll(dynamic);
+      
       return result;
    }
    
@@ -305,10 +310,11 @@ public abstract class Module extends NameAndVersionSupport
     * 
     * @param module the module to add delegates from
     * @param delegates the current list of delegates
+    * @param dynamic the dynamic delegates
     * @param visited the visited modules
     * @param reExport whether to only add re-exports
     */
-   protected void addDelegates(Module module, List<DelegateLoader> delegates, Set<Module> visited, boolean reExport)
+   protected void addDelegates(Module module, List<DelegateLoader> delegates, List<DelegateLoader> dynamic, Set<Module> visited, boolean reExport)
    {
       // Check whether we already did this module
       if (visited.contains(module))
@@ -329,6 +335,15 @@ public abstract class Module extends NameAndVersionSupport
             // Sanity checks
             if (item.isResolved() == false)
                throw new IllegalStateException("Item not resolved: " + item);
+            
+            // Dynamic requirement, create it lazily
+            if (requirement.isDynamic())
+            {
+               DelegateLoader delegate = createLazyDelegateLoader(checkDomain(), item);
+               dynamic.add(delegate);
+               continue;
+            }
+
             String name = (String) item.getIDependOn();
             if (name == null)
             {
@@ -348,7 +363,7 @@ public abstract class Module extends NameAndVersionSupport
 
             // Check for re-export by the module
             if (requirement.wantReExports())
-               addDelegates(iDependOnModule, delegates, visited, true);
+               addDelegates(iDependOnModule, delegates, dynamic, visited, true);
             
             // We want a module's re-exports (i.e. part of its imports) before the module itself
             if (delegate != null)
@@ -356,7 +371,16 @@ public abstract class Module extends NameAndVersionSupport
          }
       }
    }
-   
+
+   /**
+    * Create a lazy delegate loader
+    * 
+    * @param domain the domain
+    * @param item the dependency item
+    * @return the delegate loader
+    */
+   public abstract DelegateLoader createLazyDelegateLoader(Domain domain, RequirementDependencyItem item);
+
    /**
     * Get the delegate loader
     * 
@@ -508,6 +532,16 @@ public abstract class Module extends NameAndVersionSupport
             removeIDependOn(item);
       }
       requirementDependencies = null;
+   }
+
+   /**
+    * Get the controller context.
+    * 
+    * @return the controller context.
+    */
+   protected ControllerContext getControllerContext()
+   {
+      return context;
    }
 
    /**

@@ -95,14 +95,15 @@ public class ClassLoadingMetaDataFactoryUnitTestCase extends AbstractClassLoadin
       assertEquals(new ModuleRequirement("test", range), test);
    }
    
-   public void testCreateRequireModuleVersionedOptionalReExport() throws Exception
+   public void testCreateRequireModuleVersionedOptionalReExportDynamic() throws Exception
    {
       ClassLoadingMetaDataFactory factory = ClassLoadingMetaDataFactory.getInstance();
       VersionRange range = new VersionRange("1.0.0", "2.0.0");
-      Requirement test = factory.createRequireModule("test", range, true, true);
+      Requirement test = factory.createRequireModule("test", range, true, true, true);
       ModuleRequirement expected = new ModuleRequirement("test", range);
       expected.setOptional(true);
       expected.setReExport(true);
+      expected.setDynamic(true);
       assertEquals(expected, test);
    }
    
@@ -151,14 +152,15 @@ public class ClassLoadingMetaDataFactoryUnitTestCase extends AbstractClassLoadin
       assertEquals(new PackageRequirement("test", range), test);
    }
    
-   public void testCreateRequirePackageVersionedOptionalReExport() throws Exception
+   public void testCreateRequirePackageVersionedOptionalReExportDynamic() throws Exception
    {
       ClassLoadingMetaDataFactory factory = ClassLoadingMetaDataFactory.getInstance();
       VersionRange range = new VersionRange("1.0.0", "2.0.0");
-      Requirement test = factory.createRequirePackage("test", range, true, true);
+      Requirement test = factory.createRequirePackage("test", range, true, true, true);
       PackageRequirement expected = new PackageRequirement("test", range);
       expected.setOptional(true);
       expected.setReExport(true);
+      expected.setDynamic(true);
       assertEquals(expected, test);
    }
    

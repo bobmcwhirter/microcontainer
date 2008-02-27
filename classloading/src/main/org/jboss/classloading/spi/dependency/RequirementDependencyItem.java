@@ -102,7 +102,7 @@ public class RequirementDependencyItem extends AbstractDependencyItem
       else
       {
          // Optional requirement
-         if (requirement.isOptional())
+         if (requirement.isOptional() || requirement.isDynamic())
             setResolved(true);
       }
       return isResolved();

@@ -305,8 +305,8 @@ public class VFSClassLoaderFactoryXMLUnitTestCase extends AbstractJBossXBTest
    {
       VFSClassLoaderFactory result = unmarshal(TestRequirement.class);
       ClassLoadingMetaDataFactory factory = ClassLoadingMetaDataFactory.getInstance();
-      assertRequirements(result, factory.createRequireModule("test1", new VersionRange("1.0.0"), true, false), 
-                                 factory.createRequirePackage("test1", new VersionRange("1.0.0"), true, false));
+      assertRequirements(result, factory.createRequireModule("test1", new VersionRange("1.0.0"), true, false, false), 
+                                 factory.createRequirePackage("test1", new VersionRange("1.0.0"), true, false, false));
    }
 
    public void testReExportRequirement() throws Exception
@@ -315,6 +315,14 @@ public class VFSClassLoaderFactoryXMLUnitTestCase extends AbstractJBossXBTest
       ClassLoadingMetaDataFactory factory = ClassLoadingMetaDataFactory.getInstance();
       assertRequirements(result, factory.createReExportModule("test1", new VersionRange("1.0.0")), 
                                  factory.createReExportPackage("test1", new VersionRange("1.0.0")));
+   }
+
+   public void testDynamicRequirement() throws Exception
+   {
+      VFSClassLoaderFactory result = unmarshal(TestRequirement.class);
+      ClassLoadingMetaDataFactory factory = ClassLoadingMetaDataFactory.getInstance();
+      assertRequirements(result, factory.createRequireModule("test1", new VersionRange("1.0.0"), false, false, true), 
+                                 factory.createRequirePackage("test1", new VersionRange("1.0.0"), false, false, true));
    }
 
    public void testUsesRequirement() throws Exception

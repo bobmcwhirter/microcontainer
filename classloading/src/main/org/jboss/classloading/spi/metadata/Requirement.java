@@ -51,4 +51,11 @@ public interface Requirement extends Serializable
     * @return true if the requirement is optional
     */
    boolean isOptional();
+   
+   /**
+    * Whether the requirement is dynamic
+    * 
+    * @return true if the requirement is dynamic
+    */
+   boolean isDynamic();
 }
