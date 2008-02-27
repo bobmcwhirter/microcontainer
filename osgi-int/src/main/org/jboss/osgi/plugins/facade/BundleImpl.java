@@ -28,15 +28,15 @@ import java.security.Permission;
 import java.util.Dictionary;
 import java.util.Enumeration;
 import java.util.Locale;
-import java.util.Set;
 
 import org.jboss.dependency.spi.ControllerContext;
 import org.jboss.dependency.spi.ControllerState;
-import org.jboss.deployers.plugins.deployers.DeploymentControllerContext;
-import org.jboss.deployers.spi.DeploymentState;
-import org.jboss.deployers.structure.spi.DeploymentContext;
+import org.jboss.deployers.client.spi.DeployerClient;
+import org.jboss.deployers.spi.DeploymentException;
+import org.jboss.deployers.spi.deployer.DeploymentStages;
 import org.jboss.deployers.structure.spi.DeploymentUnit;
-import org.jboss.osgi.spi.metadata.OSGiMetaData;
+import org.jboss.osgi.plugins.facade.helpers.BundleHeaders;
+import org.jboss.osgi.plugins.facade.helpers.ControllerState2BundleStateMapper;
 import org.osgi.framework.AdminPermission;
 import org.osgi.framework.Bundle;
 import org.osgi.framework.BundleException;
@@ -55,65 +55,31 @@ public class BundleImpl implements Bundle
    protected BundleHeaders bundleHeaders;
 
    private long lastModified = -1;
-
+   
    public BundleImpl(DeploymentUnit unit)
    {
       this.unit = unit;
+      
    }
 
    public int getState()
    {
-      int bundleState = Bundle.UNINSTALLED;
-      if (getControllerContext() != null)
-      {
-         ControllerState controllerState = getControllerContext().getState();
-         if (ControllerState.ERROR.equals(controllerState))
-         {
-            bundleState = Bundle.INSTALLED; // Seems strange, but see javadoc 
-         }
-         else if (ControllerState.NOT_INSTALLED.equals(controllerState))
-         {
-            bundleState = Bundle.UNINSTALLED;
-         }
-         else if (ControllerState.PRE_INSTALL.equals(controllerState)
-               || ControllerState.DESCRIBED.equals(controllerState))
-         {
-            bundleState = Bundle.INSTALLED;
-         }
-         else if (ControllerState.INSTANTIATED.equals(controllerState)
-               || ControllerState.CONFIGURED.equals(controllerState) || ControllerState.CREATE.equals(controllerState))
-         {
-            bundleState = Bundle.RESOLVED;
-         }
-         else if (ControllerState.START.equals(controllerState))
-         {
-            bundleState = Bundle.STARTING;
-         }
-         else if (ControllerState.INSTALLED.equals(controllerState))
-         {
-            bundleState = Bundle.ACTIVE;
-         }
-      }
-      return bundleState;
+      return ControllerState2BundleStateMapper.mapBundleState(getControllerContext().getState()).getState();
    }
 
    public void start() throws BundleException
    {
       checkPermission(AdminPermission.EXECUTE);
 
-      DeploymentControllerContext deploymentControllerContext = getControllerContext();
-      DeploymentContext deploymentContext = deploymentControllerContext.getDeploymentContext();
-
       try
       {
-         deploymentControllerContext.getController().change(getControllerContext(), ControllerState.INSTALLED);
+         DeployerClient main = unit.getMainDeployer();
+         main.change(unit.getName(), DeploymentStages.INSTALLED);
       }
-      catch (Throwable t)
+      catch (DeploymentException e)
       {
-         deploymentContext.setState(DeploymentState.ERROR);
-         deploymentContext.setProblem(t);
+         throw new BundleException("Failed to start Bundle", e);
       }
-
    }
 
    public void stop() throws BundleException
@@ -184,16 +150,16 @@ public class BundleImpl implements Bundle
    public Dictionary getHeaders(String locale)
    {
       checkPermission(AdminPermission.METADATA);
-      return getBundleHeaders().getHeaders(locale);
+      if (bundleHeaders == null)
+      {
+         bundleHeaders = new BundleHeaders(unit);
+      }
+      return bundleHeaders.toDictionary();
    }
 
    public String getSymbolicName()
    {
-      if (getOSGIMetaData() != null)
-      {
-         return getOSGIMetaData().getBundleSymbolicName();
-      }
-      return null;
+      return (String) getControllerContext().getName();
    }
 
    public Class<?> loadClass(String name) throws ClassNotFoundException
@@ -204,7 +170,7 @@ public class BundleImpl implements Bundle
          //  Verify ControllerState required to load CL resources
          if (ControllerState.INSTANTIATED.equals(getControllerContext().getState()))
          {
-            return getClassLoader().loadClass(name);
+            return unit.getClassLoader().loadClass(name);
          }
       }
       return null;
@@ -219,7 +185,7 @@ public class BundleImpl implements Bundle
          //  Verify ControllerState required to load CL resources
          if (ControllerState.INSTANTIATED.equals(getControllerContext().getState()))
          {
-            return getClassLoader().getResource(name);
+            return unit.getClassLoader().getResource(name);
          }
       }
       return null;
@@ -235,7 +201,7 @@ public class BundleImpl implements Bundle
          //  Verify ControllerState required to load CL resources
          if (ControllerState.INSTANTIATED.equals(getControllerContext().getState()))
          {
-            return getClassLoader().getResources(name);
+            return unit.getClassLoader().getResources(name);
          }
       }
       return null;
@@ -272,39 +238,9 @@ public class BundleImpl implements Bundle
       return null;
    }
 
-   private DeploymentControllerContext getControllerContext()
+   private ControllerContext getControllerContext()
    {
-      return unit.getAttachment(ControllerContext.class.getName(), DeploymentControllerContext.class);
-   }
-
-   private OSGiMetaData getOSGIMetaData()
-   {
-      OSGiMetaData metaData = null;
-      Set<? extends OSGiMetaData> metaDatas = unit.getAllMetaData(OSGiMetaData.class);
-      if (metaDatas != null && metaDatas.isEmpty() == false)
-      {
-         metaData = metaDatas.iterator().next();
-      }
-      return metaData;
-   }
-
-   private BundleHeaders getBundleHeaders()
-   {
-      if (bundleHeaders == null)
-      {
-         bundleHeaders = new BundleHeaders(getOSGIMetaData());
-      }
-      return bundleHeaders;
-   }
-
-   private ClassLoader getClassLoader()
-   {
-      ClassLoader classLoader = null;
-      if (getControllerContext() != null)
-      {
-         classLoader = getControllerContext().getDeploymentContext().getClassLoader();
-      }
-      return classLoader;
+      return unit.getAttachment(ControllerContext.class.getName(), ControllerContext.class);
    }
 
    private void checkPermission(String adminPermission)
@@ -314,5 +250,4 @@ public class BundleImpl implements Bundle
          System.getSecurityManager().checkPermission(new AdminPermission(this, adminPermission));
       }
    }
-
 }
