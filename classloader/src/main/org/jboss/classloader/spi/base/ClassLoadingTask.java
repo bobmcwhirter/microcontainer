@@ -402,7 +402,10 @@ class ClassLoadingTask
          if (loader instanceof BaseDelegateLoader)
          {
             BaseDelegateLoader delegateLoader = (BaseDelegateLoader) loader;
-            return delegateLoader.getPolicy().getClassLoader();
+            BaseClassLoaderPolicy policy = delegateLoader.getPolicy();
+            if (policy == null)
+               throw new IllegalStateException("Null classloader policy for " + loader);
+            return policy.getClassLoader();
          }
          return null;
       }

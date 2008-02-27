@@ -41,4 +41,15 @@ public class DelegateLoader extends BaseDelegateLoader implements Loader
    {
       super(delegate);
    }
+
+   /**
+    * Create a new DelegateLoader.
+    * 
+    * @param factory the factory
+    * @throws IllegalArgumentException for a null delegate
+    */
+   public DelegateLoader(ClassLoaderPolicyFactory factory)
+   {
+      super(factory);
+   }
 }

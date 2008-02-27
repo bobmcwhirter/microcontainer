@@ -42,6 +42,7 @@ import org.jboss.classloader.test.support.MockClassLoaderPolicy;
 import org.jboss.test.classloader.AbstractClassLoaderTest;
 import org.jboss.test.classloader.policy.support.TestClass;
 import org.jboss.test.classloader.policy.support.TestClassLoaderPolicy;
+import org.jboss.test.classloader.policy.support.TestClassLoaderPolicyFactory;
 import org.jboss.test.classloader.policy.support.TestDelegateLoader;
 
 /**
@@ -257,5 +258,142 @@ public class ClassLoaderPolicyUnitTestCase extends AbstractClassLoaderTest
       assertNotNull("Should have tried to the export delegate ", exported.getResourceInvoked);
       assertNotNull("Should have tried to the export delegate to load the class ", exported.loadClassInvoked);
       assertNull("Should NOT have tried to load through us ", policy.getResourceInvoked);
+   }
+   
+   public void testFactoryInvoked() throws Exception
+   {
+      ClassLoaderSystem system = createClassLoaderSystemWithModifiedBootstrap();
+
+      TestClassLoaderPolicy policy1 = new TestClassLoaderPolicy();
+      TestClassLoaderPolicy policy2 = new TestClassLoaderPolicy();
+      TestClassLoaderPolicyFactory factory2 = new TestClassLoaderPolicyFactory(policy2, true);
+      policy1.delegates = Collections.singletonList(new FilteredDelegateLoader(factory2));
+      ClassLoader classLoader = system.registerClassLoaderPolicy(policy1);
+      system.registerClassLoaderPolicy(policy2);
+      
+      assertLoadClassFail(ClassLoaderDomain.class, classLoader);
+      assertNotNull("Should have tried policy1 ", policy1.getResourceInvoked);
+      assertNotNull("Should have tried policy2 ", policy2.getResourceInvoked);
+   }
+   
+   public void testFactoryInvokedSuccessfully() throws Exception
+   {
+      ClassLoaderSystem system = createClassLoaderSystemWithModifiedBootstrap();
+
+      TestClassLoaderPolicy policy1 = new TestClassLoaderPolicy();
+      TestClassLoaderPolicy policy2 = new TestClassLoaderPolicy();
+      TestClassLoaderPolicyFactory factory2 = new TestClassLoaderPolicyFactory(policy2, true);
+      policy1.delegates = Collections.singletonList(new FilteredDelegateLoader(factory2));
+      ClassLoader classLoader1 = system.registerClassLoaderPolicy(policy1);
+      ClassLoader classLoader2 = system.registerClassLoaderPolicy(policy2);
+      
+      assertLoadClass(TestClass.class, classLoader1, classLoader2);
+      assertNull("Should NOT have tried policy1 ", policy1.getResourceInvoked);
+      assertNotNull("Should have tried policy2 ", policy2.getResourceInvoked);
+   }
+   
+   public void testLazyFactoryInvoked() throws Exception
+   {
+      ClassLoaderSystem system = createClassLoaderSystemWithModifiedBootstrap();
+
+      TestClassLoaderPolicy policy1 = new TestClassLoaderPolicy();
+      TestClassLoaderPolicy policy2 = new TestClassLoaderPolicy();
+      TestClassLoaderPolicyFactory factory2 = new TestClassLoaderPolicyFactory(policy2, false);
+      policy1.delegates = Collections.singletonList(new FilteredDelegateLoader(factory2));
+      ClassLoader classLoader = system.registerClassLoaderPolicy(policy1);
+      system.registerClassLoaderPolicy(policy2);
+      
+      assertLoadClassFail(ClassLoaderDomain.class, classLoader);
+      assertNotNull("Should have tried policy1 ", policy1.getResourceInvoked);
+      assertNull("Should have tried policy2 ", policy2.getResourceInvoked);
+
+      factory2.setCanCreate(true);
+      policy1.getResourceInvoked = null;
+      assertLoadClassFail(ClassLoaderDomain.class, classLoader);
+      assertNull("Should NOT have tried policy1 ", policy1.getResourceInvoked);
+      assertNotNull("Should have tried policy2 ", policy2.getResourceInvoked);
+   }
+   
+   public void testLazyFactoryInvokedSuccessfully() throws Exception
+   {
+      ClassLoaderSystem system = createClassLoaderSystemWithModifiedBootstrap();
+
+      MockClassLoaderPolicy policy1 = createMockClassLoaderPolicy();
+      TestClassLoaderPolicy policy2 = new TestClassLoaderPolicy();
+      TestClassLoaderPolicyFactory factory2 = new TestClassLoaderPolicyFactory(policy2, false);
+      policy1.setDelegates(Collections.singletonList(new FilteredDelegateLoader(factory2)));
+      ClassLoader classLoader1 = system.registerClassLoaderPolicy(policy1);
+      ClassLoader classLoader2 = system.registerClassLoaderPolicy(policy2);
+
+      assertLoadClassFail(TestClass.class, classLoader1);
+      assertNull("Should NOT have tried policy2 ", policy2.getResourceInvoked);
+      
+      factory2.setCanCreate(true);
+      assertLoadClass(TestClass.class, classLoader1, classLoader2);
+      assertNotNull("Should have tried policy2 ", policy2.getResourceInvoked);
+   }
+   
+   public void testExportFactoryInvoked() throws Exception
+   {
+      ClassLoaderSystem system = createClassLoaderSystemWithModifiedBootstrap();
+
+      MockClassLoaderPolicy mock = createMockClassLoaderPolicy();
+      mock.setImportAll(true);
+      ClassLoader mockClassLoader = system.registerClassLoaderPolicy(mock);
+
+      TestClassLoaderPolicy policy = new TestClassLoaderPolicy();
+      TestClassLoaderPolicyFactory factory = new TestClassLoaderPolicyFactory(policy, true);
+      policy.packageNames = new String[] { ClassLoaderUtils.getClassPackageName(ClassLoaderDomain.class.getName())};
+      TestDelegateLoader exported = new TestDelegateLoader(factory);
+      policy.exported = exported;
+      system.registerClassLoaderPolicy(policy);
+      
+      assertLoadClassFail(ClassLoaderDomain.class, mockClassLoader);
+      assertNotNull("Should have tried to the export delegate ", exported.getResourceInvoked);
+      assertNotNull("Should have tried to the export delegate to load the class ", exported.loadClassInvoked);
+      assertNull("Should NOT have tried to load through us ", policy.getResourceInvoked);
+   }
+   
+   public void testLazyExportNotAllowed() throws Exception
+   {
+      ClassLoaderSystem system = createClassLoaderSystemWithModifiedBootstrap();
+
+      TestClassLoaderPolicy policy = new TestClassLoaderPolicy();
+      TestClassLoaderPolicyFactory factory = new TestClassLoaderPolicyFactory(policy, false);
+      policy.packageNames = new String[] { ClassLoaderUtils.getClassPackageName(ClassLoaderDomain.class.getName())};
+      TestDelegateLoader exported = new TestDelegateLoader(factory);
+      policy.exported = exported;
+      try
+      {
+         system.registerClassLoaderPolicy(policy);
+         fail("Should not be here!");
+      }
+      catch (Throwable t)
+      {
+         checkThrowable(IllegalStateException.class, t);
+      }
+   }
+   
+   public void testCircularFactoryInDelegates() throws Exception
+   {
+      ClassLoaderSystem system = createClassLoaderSystemWithModifiedBootstrap();
+
+      TestClassLoaderPolicy policy1 = new TestClassLoaderPolicy();
+      TestClassLoaderPolicy policy2 = new TestClassLoaderPolicy();
+      TestClassLoaderPolicyFactory factory1 = new TestClassLoaderPolicyFactory(policy1, true);
+      TestClassLoaderPolicyFactory factory2 = new TestClassLoaderPolicyFactory(policy2, true);
+      policy1.setDelegates(Collections.singletonList(new FilteredDelegateLoader(factory2)));
+      policy2.setDelegates(Collections.singletonList(new FilteredDelegateLoader(factory1)));
+      ClassLoader classLoader1 = system.registerClassLoaderPolicy(policy1);
+      ClassLoader classLoader2 = system.registerClassLoaderPolicy(policy2);
+
+      assertLoadClass(TestClass.class, classLoader1, classLoader2);
+      assertNull("Should NOT have tried policy1 ", policy1.getResourceInvoked);
+      assertNotNull("Should have tried policy2 ", policy2.getResourceInvoked);
+
+      policy1.getResourceInvoked = null;
+      assertLoadClass(TestClass.class, classLoader2);
+      assertNull("Should NOT have tried policy1 ", policy1.getResourceInvoked);
+      assertNotNull("Should have tried policy2 ", policy2.getResourceInvoked);
    }
 }

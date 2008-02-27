@@ -27,6 +27,7 @@ import java.util.HashSet;
 import java.util.Set;
 
 import org.jboss.classloader.spi.ClassLoaderPolicy;
+import org.jboss.classloader.spi.ClassLoaderPolicyFactory;
 import org.jboss.classloader.spi.DelegateLoader;
 import org.jboss.logging.Logger;
 
@@ -65,6 +66,32 @@ public class FilteredDelegateLoader extends DelegateLoader
    public FilteredDelegateLoader(ClassLoaderPolicy delegate, ClassFilter filter)
    {
       super(delegate);
+      if (filter == null)
+         throw new IllegalArgumentException("Null filter");
+      this.filter = filter;
+   }
+
+   /**
+    * Create a new FilteredDelegateLoader that does not filter
+    * 
+    * @param factory the factory
+    * @throws IllegalArgumentException for a null parameter
+    */
+   public FilteredDelegateLoader(ClassLoaderPolicyFactory factory)
+   {
+      this(factory, ClassFilter.EVERYTHING);
+   }
+
+   /**
+    * Create a new FilteredDelegateLoader.
+    * 
+    * @param factory the factory
+    * @param filter the filter
+    * @throws IllegalArgumentException for a null parameter
+    */
+   public FilteredDelegateLoader(ClassLoaderPolicyFactory factory, ClassFilter filter)
+   {
+      super(factory);
       if (filter == null)
          throw new IllegalArgumentException("Null filter");
       this.filter = filter;

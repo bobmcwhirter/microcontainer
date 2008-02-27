@@ -79,6 +79,11 @@ public class TestClassLoaderPolicy extends ClassLoaderPolicy
    {
       return delegates;
    }
+   
+   public void setDelegates(List<? extends DelegateLoader> delegates)
+   {
+      this.delegates = delegates;
+   }
 
    @Override
    public String[] getPackageNames()

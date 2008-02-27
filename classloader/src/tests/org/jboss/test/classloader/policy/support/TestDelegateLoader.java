@@ -24,6 +24,7 @@ package org.jboss.test.classloader.policy.support;
 import java.net.URL;
 
 import org.jboss.classloader.spi.ClassLoaderPolicy;
+import org.jboss.classloader.spi.ClassLoaderPolicyFactory;
 import org.jboss.classloader.spi.DelegateLoader;
 
 /**
@@ -40,6 +41,11 @@ public class TestDelegateLoader extends DelegateLoader
    public TestDelegateLoader(ClassLoaderPolicy delegate)
    {
       super(delegate);
+   }
+   
+   public TestDelegateLoader(ClassLoaderPolicyFactory factory)
+   {
+      super(factory);
    }
 
    @Override

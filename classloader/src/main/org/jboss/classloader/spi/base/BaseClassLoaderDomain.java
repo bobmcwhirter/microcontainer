@@ -580,9 +580,9 @@ public abstract class BaseClassLoaderDomain implements Loader
             
             // See whether the policies allow caching/blacklisting
             BaseClassLoaderPolicy loaderPolicy = exported.getPolicy();
-            if (loaderPolicy.isCacheable() == false)
+            if (loaderPolicy == null || loaderPolicy.isCacheable() == false)
                canCache = false;
-            if (loaderPolicy.isBlackListable() == false)
+            if (loaderPolicy == null || loaderPolicy.isBlackListable() == false)
                canBlackList = false;
 
             if (exported.getResource(name) != null)
@@ -638,9 +638,9 @@ public abstract class BaseClassLoaderDomain implements Loader
             
             // See whether the policies allow caching/blacklisting
             BaseClassLoaderPolicy loaderPolicy = loader.getPolicy();
-            if (loaderPolicy.isCacheable() == false)
+            if (loaderPolicy == null || loaderPolicy.isCacheable() == false)
                canCache = false;
-            if (loaderPolicy.isBlackListable() == false)
+            if (loaderPolicy == null || loaderPolicy.isBlackListable() == false)
                canBlackList = false;
 
             result = loader.getResource(name);
@@ -1168,17 +1168,22 @@ public abstract class BaseClassLoaderDomain implements Loader
       if (getClassLoaderSystem() == null)
          throw new IllegalStateException("Domain is not registered with a classloader system: " + toLongString());
       
+      ClassLoaderPolicy policy = classLoader.getPolicy();
+      BaseDelegateLoader exported = policy.getExported();
+      if (exported != null && exported.getPolicy() == null)
+         throw new IllegalStateException("The exported delegate " + exported + " is too lazy for " + policy.toLongString());
+      
       try
       {
-         beforeRegisterClassLoader(classLoader, classLoader.getPolicy());
+         beforeRegisterClassLoader(classLoader, policy);
       }
       catch (Throwable t)
       {
          log.warn("Error in beforeRegisterClassLoader: " + this + " classLoader=" + classLoader.toLongString(), t);
       }
       
-      BaseClassLoaderPolicy policy = classLoader.getPolicy();
-      policy.setClassLoaderDomain(this);
+      BaseClassLoaderPolicy basePolicy = classLoader.getPolicy();
+      basePolicy.setClassLoaderDomain(this);
 
       synchronized (classLoaders)
       {

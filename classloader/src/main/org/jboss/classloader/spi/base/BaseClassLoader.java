@@ -166,7 +166,8 @@ public class BaseClassLoader extends SecureClassLoader implements BaseClassLoade
          {
             BaseDelegateLoader baseDelegate = delegate;
             BaseClassLoaderPolicy otherPolicy = baseDelegate.getPolicy();
-            result.add(otherPolicy.getObjectName());
+            if (otherPolicy != null)
+               result.add(otherPolicy.getObjectName());
          }
       }
       return result;

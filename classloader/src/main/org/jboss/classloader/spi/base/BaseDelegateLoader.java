@@ -25,6 +25,7 @@ import java.io.IOException;
 import java.net.URL;
 import java.util.Set;
 
+import org.jboss.classloader.spi.ClassLoaderPolicyFactory;
 import org.jboss.classloader.spi.Loader;
 import org.jboss.logging.Logger;
 
@@ -40,8 +41,11 @@ public class BaseDelegateLoader implements Loader
    private static final Logger log = Logger.getLogger(BaseDelegateLoader.class);
    
    /** The delegate loader policy */
-   private BaseClassLoaderPolicy delegate;
+   private volatile BaseClassLoaderPolicy delegate;
 
+   /** The policy factory */
+   private ClassLoaderPolicyFactory factory;
+   
    /**
     * Create a new BaseDelegateLoader.
     * 
@@ -55,69 +59,75 @@ public class BaseDelegateLoader implements Loader
       this.delegate = delegate;
    }
    
+   /**
+    * Create a new BaseDelegateLoader.
+    * 
+    * @param factory the factory
+    * @throws IllegalArgumentException for a null factory
+    */
+   public BaseDelegateLoader(ClassLoaderPolicyFactory factory)
+   {
+      if (factory == null)
+         throw new IllegalArgumentException("Null factory");
+      this.factory = factory;
+   }
+   
    BaseClassLoaderPolicy getPolicy()
    {
+      BaseClassLoaderPolicy delegate = this.delegate;
+      if (delegate == null)
+         delegate = factory.createClassLoaderPolicy();
+      if (delegate == null)
+         log.trace("Factory did not create a delegate: " + factory);
       return delegate;
+   }
+
+   BaseClassLoader getBaseClassLoader(String context)
+   {
+      BaseClassLoader result = null;
+      try
+      {
+         BaseClassLoaderPolicy policy = getPolicy();
+         if (policy != null)
+            result = policy.getClassLoader();
+      }
+      catch (IllegalStateException ignored)
+      {
+      }
+      if (result == null)
+         log.warn("Not " + context + " from policy that has no classLoader: " + toLongString());
+      return result;
    }
    
    public Class<?> loadClass(String className)
    {
-      BaseClassLoader classLoader;
-      try
-      {
-         classLoader = delegate.getClassLoader();
-      }
-      catch (IllegalStateException e)
-      {
-         log.warn("Not loading from policy that has no classLoader: " + toLongString());
-         return null;
-      }
-      return classLoader.loadClassLocally(className);
+      BaseClassLoader classLoader = getBaseClassLoader("loading class " + className);
+      if (classLoader != null)
+         return classLoader.loadClassLocally(className);
+      return null;
    }
    
    public URL getResource(String name)
    {
-      BaseClassLoader classLoader;
-      try
-      {
-         classLoader = delegate.getClassLoader();
-      }
-      catch (IllegalStateException e)
-      {
-         log.warn("Not loading from policy that has no classLoader: " + toLongString());
-         return null;
-      }
-      return classLoader.getResourceLocally(name);
+      BaseClassLoader classLoader = getBaseClassLoader("getting resource " + name);
+      if (classLoader != null)
+         return classLoader.getResourceLocally(name);
+      return null;
    }
 
    public void getResources(String name, Set<URL> urls) throws IOException
    {
-      BaseClassLoader classLoader;
-      try
-      {
-         classLoader = delegate.getClassLoader();
-      }
-      catch (IllegalStateException e)
-      {
-         log.warn("Not loading from policy that has no classLoader: " + toLongString());
-         return;
-      }
-      classLoader.getResourcesLocally(name, urls);
+      BaseClassLoader classLoader = getBaseClassLoader("getting resources " + name);
+      if (classLoader != null)
+         classLoader.getResourcesLocally(name, urls);
    }
 
    public Package getPackage(String name)
    {
-      BaseClassLoader classLoader;
-      try
-      {
-         classLoader = delegate.getClassLoader();
-      }
-      catch (IllegalStateException e)
-      {
-         log.warn("Not getting package from policy that has no classLoader: " + toLongString());
-         return null;
-      }
-      return classLoader.getPackageLocally(name);
+      BaseClassLoader classLoader = getBaseClassLoader("getting package " + name);
+      if (classLoader != null)
+         return classLoader.getPackageLocally(name);
+      return null;
    }
 
    public void getPackages(Set<Package> packages)
@@ -145,7 +155,10 @@ public class BaseDelegateLoader implements Loader
       StringBuilder builder = new StringBuilder();
       builder.append(getClass().getSimpleName());
       builder.append("@").append(Integer.toHexString(System.identityHashCode(this)));
-      builder.append("{delegate=").append(delegate.toLongString());
+      if (delegate != null)
+         builder.append("{delegate=").append(delegate.toLongString());
+      else
+         builder.append("{factory=").append(factory);
       toLongString(builder);
       builder.append('}');
       return builder.toString();
@@ -166,7 +179,10 @@ public class BaseDelegateLoader implements Loader
       StringBuilder builder = new StringBuilder();
       builder.append(getClass().getSimpleName());
       builder.append("@").append(Integer.toHexString(System.identityHashCode(this)));
-      builder.append("{delegate=").append(delegate);
+      if (delegate != null)
+         builder.append("{delegate=").append(delegate);
+      else
+         builder.append("{factory=").append(factory);
       builder.append('}');
       return builder.toString();
    }

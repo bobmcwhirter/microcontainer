@@ -96,9 +96,9 @@ public class ClassLoaderInformation
                throw new IllegalStateException(policy + " null delegate in " + delegates);
             BaseDelegateLoader baseDelegate = delegate;
             BaseClassLoaderPolicy delegatePolicy = baseDelegate.getPolicy();
-            if (delegatePolicy.isCacheable() == false)
+            if (delegatePolicy == null || delegatePolicy.isCacheable() == false)
                canCache = false;
-            if (delegatePolicy.isBlackListable() == false)
+            if (delegatePolicy == null || delegatePolicy.isBlackListable() == false)
                canBlackList = false;
          }
       }

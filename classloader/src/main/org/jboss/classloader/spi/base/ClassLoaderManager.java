@@ -329,6 +329,8 @@ public class ClassLoaderManager
       {
          BaseDelegateLoader delegateLoader = (BaseDelegateLoader) loader;
          BaseClassLoaderPolicy policy = delegateLoader.getPolicy();
+         if (policy == null)
+            throw new IllegalStateException("Null policy for " + delegateLoader);
          classLoader = policy.getClassLoader();
       }
       
