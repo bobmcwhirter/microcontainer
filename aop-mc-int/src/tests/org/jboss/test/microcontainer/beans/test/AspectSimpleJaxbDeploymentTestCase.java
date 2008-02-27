@@ -33,7 +33,7 @@ public class AspectSimpleJaxbDeploymentTestCase extends AspectSimpleTest
 
    public static Test suite()
    {
-      System.setProperty("jboss.mc.jaxb", "true");
+      setUseJaxb(true);
       return suite(AspectSimpleJaxbDeploymentTestCase.class);
    }
 

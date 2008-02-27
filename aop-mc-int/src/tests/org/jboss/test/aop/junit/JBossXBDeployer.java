@@ -32,6 +32,7 @@ import org.jboss.kernel.plugins.deployment.xml.BasicXMLDeployer;
 import org.jboss.kernel.spi.deployment.KernelDeployment;
 import org.jboss.logging.Logger;
 import org.jboss.test.xb.builder.JBossXBTestDelegate;
+import org.jboss.test.xb.builder.SchemaPrinter;
 import org.jboss.test.xb.builder.TestSchemaResolver;
 import org.jboss.xb.binding.sunday.unmarshalling.SchemaBinding;
 import org.jboss.xb.builder.JBossXBBuilder;
