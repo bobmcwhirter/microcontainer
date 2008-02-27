@@ -1,24 +1,24 @@
 /*
- * JBoss, Home of Professional Open Source
- * Copyright 2006, JBoss Inc., and individual contributors as indicated
- * by the @authors tag. See the copyright.txt in the distribution for a
- * full listing of individual contributors.
- *
- * This is free software; you can redistribute it and/or modify it
- * under the terms of the GNU Lesser General Public License as
- * published by the Free Software Foundation; either version 2.1 of
- * the License, or (at your option) any later version.
- *
- * This software is distributed in the hope that it will be useful,
- * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU
- * Lesser General Public License for more details.
- *
- * You should have received a copy of the GNU Lesser General Public
- * License along with this software; if not, write to the Free
- * Software Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA
- * 02110-1301 USA, or see the FSF site: http://www.fsf.org.
- */
+* JBoss, Home of Professional Open Source
+* Copyright 2008, JBoss Inc., and individual contributors as indicated
+* by the @authors tag. See the copyright.txt in the distribution for a
+* full listing of individual contributors.
+*
+* This is free software; you can redistribute it and/or modify it
+* under the terms of the GNU Lesser General Public License as
+* published by the Free Software Foundation; either version 2.1 of
+* the License, or (at your option) any later version.
+*
+* This software is distributed in the hope that it will be useful,
+* but WITHOUT ANY WARRANTY; without even the implied warranty of
+* MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU
+* Lesser General Public License for more details.
+*
+* You should have received a copy of the GNU Lesser General Public
+* License along with this software; if not, write to the Free
+* Software Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA
+* 02110-1301 USA, or see the FSF site: http://www.fsf.org.
+*/
 package org.jboss.osgi.plugins.facade;
 
 import java.io.IOException;
@@ -35,8 +35,9 @@ import org.jboss.deployers.client.spi.DeployerClient;
 import org.jboss.deployers.spi.DeploymentException;
 import org.jboss.deployers.spi.deployer.DeploymentStages;
 import org.jboss.deployers.structure.spi.DeploymentUnit;
+import org.jboss.logging.Logger;
 import org.jboss.osgi.plugins.facade.helpers.BundleHeaders;
-import org.jboss.osgi.plugins.facade.helpers.ControllerState2BundleStateMapper;
+import org.jboss.osgi.plugins.facade.helpers.DeploymentStage2BundleStateMapper;
 import org.osgi.framework.AdminPermission;
 import org.osgi.framework.Bundle;
 import org.osgi.framework.BundleException;
@@ -50,23 +51,48 @@ import org.osgi.framework.ServiceReference;
  */
 public class BundleImpl implements Bundle
 {
+
+   /** The log */
+   private static final Logger log = Logger.getLogger(BundleImpl.class);
+
    protected DeploymentUnit unit;
 
    protected BundleHeaders bundleHeaders;
 
    private long lastModified = -1;
-   
+
+   /**
+    * 
+    * Create a new BundleImpl.
+    * 
+    * @param unit
+    */
    public BundleImpl(DeploymentUnit unit)
    {
       this.unit = unit;
-      
+
    }
 
+   /**
+    *   Get Bundle state based on the current DeployentStage
+    */
    public int getState()
    {
-      return ControllerState2BundleStateMapper.mapBundleState(getControllerContext().getState()).getState();
+      try
+      {
+         return DeploymentStage2BundleStateMapper.mapBundleState(
+               unit.getMainDeployer().getDeploymentStage(unit.getName())).getState();
+      }
+      catch (DeploymentException e)
+      {
+         log.error("Unable to get DeploymentStage for DeploymentUnit " + unit.getName(), e);
+         return Bundle.INSTALLED;
+      }
    }
 
+   /**
+    * Deligate to the MainDeployer to start the Bundle
+    */
    public void start() throws BundleException
    {
       checkPermission(AdminPermission.EXECUTE);

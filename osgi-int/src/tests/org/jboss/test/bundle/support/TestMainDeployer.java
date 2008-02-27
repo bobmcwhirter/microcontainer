@@ -43,14 +43,15 @@ import org.jboss.util.graph.Graph;
  */
 public class TestMainDeployer implements MainDeployer
 {
+   private DeploymentStage currentStage;
+   private Map<String, DeploymentStage> changesRequested = new HashMap<String, DeploymentStage>();
 
    /** Create a new TestMainDeployer.
     */
-   public TestMainDeployer()
+   public TestMainDeployer() 
    {
+      
    }
-
-   private Map<String, DeploymentStage> changesRequested = new HashMap<String, DeploymentStage>();
 
    public void shutdown()
    {
@@ -62,14 +63,18 @@ public class TestMainDeployer implements MainDeployer
 
    }
 
+   /** 
+    * Add requested stage to map, and hold on as the current stage 
+    */
    public void change(String deploymentName, DeploymentStage stage) throws DeploymentException
    {
+      currentStage = stage;
       changesRequested.put(deploymentName, stage);
    }
 
    public DeploymentStage getDeploymentStage(String deploymentName) throws DeploymentException
    {
-      return changesRequested.get(deploymentName);
+      return currentStage;
    }
 
    public void checkComplete() throws DeploymentException
@@ -165,5 +170,7 @@ public class TestMainDeployer implements MainDeployer
       }
       return false;
    }
+   
+   
 
 }

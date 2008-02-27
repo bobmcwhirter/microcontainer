@@ -1,6 +1,6 @@
 /*
  * JBoss, Home of Professional Open Source
- * Copyright 2006, JBoss Inc., and individual contributors as indicated
+ * Copyright 2008, JBoss Inc., and individual contributors as indicated
  * by the @authors tag. See the copyright.txt in the distribution for a
  * full listing of individual contributors.
  *
@@ -18,22 +18,22 @@
  * License along with this software; if not, write to the Free
  * Software Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA
  * 02110-1301 USA, or see the FSF site: http://www.fsf.org.
- */
+*/
 package org.jboss.osgi.plugins.facade.helpers;
 
-import org.jboss.dependency.spi.ControllerState;
+import org.jboss.deployers.spi.deployer.DeploymentStage;
 import org.jboss.osgi.plugins.facade.BundleState;
 
 /**
  * 
- * A BundleState2DeploymentStage - Maps a DeploymentStage to BundleState
+ * A DeploymentStage2BundleState - Maps a DeploymentStage to BundleState
  * 
  * @author <a href="baileyje@gmail.com">John Bailey</a>
  * @version $Revision: 1.1 $
  */
-public class ControllerState2BundleState
+public class DeploymentStage2BundleState
 {
-   private final ControllerState controllerState;
+   private final DeploymentStage deploymentStage;
    private final BundleState bundleState;
    
    /**
@@ -43,21 +43,20 @@ public class ControllerState2BundleState
     * @param deploymentStage
     * @param bundleState
     */
-   public ControllerState2BundleState(ControllerState controllerState, BundleState bundleState)
+   public DeploymentStage2BundleState(DeploymentStage deploymentStage, BundleState bundleState)
    {
-      super();
-      this.controllerState = controllerState;
+      this.deploymentStage = deploymentStage;
       this.bundleState = bundleState;
    }
    
    /**
-    * Get controllerState
+    * Get deploymentStage
     * 
     * @return
     */
-   public ControllerState getControllerState()
+   public DeploymentStage getDeploymentStage()
    {
-      return controllerState;
+      return deploymentStage;
    }
    
    /**
