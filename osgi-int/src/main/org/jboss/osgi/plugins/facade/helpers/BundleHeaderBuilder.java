@@ -23,7 +23,6 @@ package org.jboss.osgi.plugins.facade.helpers;
 
 
 /**
- * 
  * Builds OSGI headers.
  * 
  * @author <a href="baileyje@gmail.com">John Bailey</a>
@@ -33,8 +32,8 @@ public interface BundleHeaderBuilder<T>
 {
    /**
     * Builds the BundleHeader from a metadata object.  
-    * @param 
-    * @return  BundleHeader
+    * @param metaData to build bundle header from
+    * @return BundleHeader the bundle header
     */
    BundleHeader buildHeader(T metaData);
 }

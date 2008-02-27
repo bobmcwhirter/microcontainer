@@ -31,7 +31,6 @@ import org.jboss.classloading.spi.metadata.ClassLoadingMetaData;
 import org.jboss.deployers.structure.spi.DeploymentUnit;
 
 /**
- * 
  * Container for Bundle headers providing localization for Manifest headers.
  * 
  * @author <a href="baileyje@gmail.com">John Bailey</a>
@@ -53,8 +52,7 @@ public class BundleHeaders
           * REQUIRE_BUNDLE
           * DYNAMICIMPORT_PACKAGE
           * 
-          */
-         
+          */         
       }
       /* TODO
        * 

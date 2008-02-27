@@ -29,16 +29,16 @@ import org.jboss.deployers.spi.deployer.DeploymentStages;
 import org.jboss.osgi.plugins.facade.BundleState;
 
 /**
- * 
- * A DeploymentStage2BundleStateMapper - Maps a DeploymentStage to a BundleState
+ * A DeploymentStage2BundleStateMapper.
+ * Maps a DeploymentStage to a BundleState
  * 
  * @author <a href="baileyje@gmail.com">John Bailey</a>
  * @version $Revision: 1.1 $
  */
 public class DeploymentStage2BundleStateMapper
 {
-
    private static List<DeploymentStage2BundleState> deploymentStage2BundleStates = new ArrayList<DeploymentStage2BundleState>();
+
    static
    {
       deploymentStage2BundleStates.add(new DeploymentStage2BundleState(DeploymentStages.NOT_INSTALLED, BundleState.UNINSTALLED));
@@ -50,8 +50,8 @@ public class DeploymentStage2BundleStateMapper
    /**
     * Given a DeploymentStage returns corresponding BundleState
     * 
-    * @param controllerState
-    * @return BundleState
+    * @param controllerState the controller state
+    * @return BundleState the bundle state
     */
    public static BundleState mapBundleState(final DeploymentStage controllerState)
    {

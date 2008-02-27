@@ -32,8 +32,8 @@ import org.jboss.util.Strings;
 import org.osgi.framework.Constants;
 
 /**
- * 
- * A ExportPackageHeaderBuilder - Builds the Export-Package BundleHeader from CLassLoadingMetaData
+ * A ExportPackageHeaderBuilder.
+ * Builds the Export-Package BundleHeader from CLassLoadingMetaData
  * 
  * @author <a href="baileyje@gmail.com">John Bailey</a>
  * @version $Revision: 1.1 $
@@ -42,7 +42,6 @@ public class ExportPackageHeaderBuilder implements BundleHeaderBuilder<ClassLoad
 {
    /**
     * Create a new ExportPackageHeaderRetriever.
-    * 
     */
    public ExportPackageHeaderBuilder()
    {
@@ -51,7 +50,7 @@ public class ExportPackageHeaderBuilder implements BundleHeaderBuilder<ClassLoad
    /**
     * Iterate through the ClassLoadingMetaData to check for a PackageCapabilities and create Export-Package BundleHeader.
     * 
-    * @param classLoadingMetaData
+    * @param metaData the classloading meta data
     */
    public BundleHeader buildHeader(ClassLoadingMetaData metaData)
    {

@@ -32,8 +32,8 @@ import org.jboss.util.Strings;
 import org.osgi.framework.Constants;
 
 /**
- * 
- * A ImportPackageHeaderRetriever - Builds Import-Package BundleHeader from ClassLoadingMetaData
+ * A ImportPackageHeaderRetriever.
+ * Builds Import-Package BundleHeader from ClassLoadingMetaData
  * 
  * @author <a href="baileyje@gmail.com">John Bailey</a>
  * @version $Revision: 1.1 $
@@ -42,7 +42,6 @@ public class ImportPackageHeaderBuilder implements BundleHeaderBuilder<ClassLoad
 {
    /**
     * Create a new ImportPackageHeaderBuilder.
-    * 
     */
    public ImportPackageHeaderBuilder()
    {
@@ -51,7 +50,7 @@ public class ImportPackageHeaderBuilder implements BundleHeaderBuilder<ClassLoad
    /**
     * Iterate through the ClassLoadingMetaData to check for a PackageRequirements and build Import-Package header.
     * 
-    * @param classLoadingMetaData
+    * @param metaData the classloading meta data
     */
    public BundleHeader buildHeader(ClassLoadingMetaData metaData)
    {

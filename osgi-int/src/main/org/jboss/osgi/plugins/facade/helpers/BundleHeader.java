@@ -22,8 +22,7 @@
 package org.jboss.osgi.plugins.facade.helpers;
 
 /**
- * 
- * BundleHeader representing a Header value for teh Bundle
+ * BundleHeader representing a Header value for the Bundle
  * 
  * @author <a href="baileyje@gmail.com">John Bailey</a>
  * @version $Revision: 1.1 $
@@ -35,11 +34,10 @@ public class BundleHeader
    private final Object value;
 
    /**
-    * 
     * Create a new BundleHeader.
     * 
-    * @param key
-    * @param value
+    * @param key the key
+    * @param value the value
     */
    public BundleHeader(String key, Object value)
    {

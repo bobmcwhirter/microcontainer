@@ -24,15 +24,19 @@ package org.jboss.osgi.plugins.facade;
 import org.osgi.framework.Bundle;
 
 /**
- * 
  * A BundleState enum to wrap the non-type-safe Bundle state constants
  * 
  * @author <a href="baileyje@gmail.com">John Bailey</a>
  * @version $Revision: 1.1 $
  */
 public enum BundleState {
-   UNINSTALLED(Bundle.UNINSTALLED), INSTALLED(Bundle.INSTALLED), RESOLVED(Bundle.RESOLVED), STARTING(Bundle.STARTING), STOPPING(
-         Bundle.STOPPING), ACTIVE(Bundle.ACTIVE);
+
+   UNINSTALLED(Bundle.UNINSTALLED),
+   INSTALLED(Bundle.INSTALLED),
+   RESOLVED(Bundle.RESOLVED),
+   STARTING(Bundle.STARTING),
+   STOPPING(Bundle.STOPPING),
+   ACTIVE(Bundle.ACTIVE);
 
    private final int state;
 
@@ -40,7 +44,7 @@ public enum BundleState {
     * 
     * Create a new BundleState.
     * 
-    * @param state
+    * @param state the state number
     */
    private BundleState(final int state)
    {
@@ -50,11 +54,10 @@ public enum BundleState {
    /** 
     * Get Bundle state
     * 
-    * @return
+    * @return the state
     */
    public int getState()
    {
       return state;
    }
-
 }

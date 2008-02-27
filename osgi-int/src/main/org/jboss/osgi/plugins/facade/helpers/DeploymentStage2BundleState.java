@@ -25,8 +25,8 @@ import org.jboss.deployers.spi.deployer.DeploymentStage;
 import org.jboss.osgi.plugins.facade.BundleState;
 
 /**
- * 
- * A DeploymentStage2BundleState - Maps a DeploymentStage to BundleState
+ * A DeploymentStage2BundleState.
+ * Maps a DeploymentStage to BundleState
  * 
  * @author <a href="baileyje@gmail.com">John Bailey</a>
  * @version $Revision: 1.1 $
@@ -40,8 +40,8 @@ public class DeploymentStage2BundleState
     * 
     * Create a new DeploymentStage2BundleState.
     * 
-    * @param deploymentStage
-    * @param bundleState
+    * @param deploymentStage the deployment stage
+    * @param bundleState the bundle state
     */
    public DeploymentStage2BundleState(DeploymentStage deploymentStage, BundleState bundleState)
    {

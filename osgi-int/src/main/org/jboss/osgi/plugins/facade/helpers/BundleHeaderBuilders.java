@@ -22,8 +22,8 @@
 package org.jboss.osgi.plugins.facade.helpers;
 
 /**
- * 
- * A BundleHeaderBuilders - Creates a default set of BundleHeaderBuilders
+ * A BundleHeaderBuilders.
+ * Creates a default set of BundleHeaderBuilders.
  * 
  * @author <a href="baileyje@gmail.com">John Bailey</a>
  * @version $Revision: 1.1 $
@@ -32,5 +32,4 @@ public class BundleHeaderBuilders
 {
    public static ExportPackageHeaderBuilder EXPORT_PACKAGE_BUILDER = new ExportPackageHeaderBuilder();
    public static ImportPackageHeaderBuilder IMPORT_PACKAGE_BUILDER = new ImportPackageHeaderBuilder();
-   
 }
