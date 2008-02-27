@@ -299,7 +299,15 @@ public abstract class Module extends NameAndVersionSupport
    {
       return requirementDependencies;
    }
-   
+
+   /**
+    * Add delegates
+    * 
+    * @param module the module to add delegates from
+    * @param delegates the current list of delegates
+    * @param visited the visited modules
+    * @param reExport whether to only add re-exports
+    */
    protected void addDelegates(Module module, List<DelegateLoader> delegates, Set<Module> visited, boolean reExport)
    {
       // Check whether we already did this module
