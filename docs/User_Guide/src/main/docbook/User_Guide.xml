@@ -2656,8 +2656,8 @@ public class MyBean {
     <title>The Deployment Framework</title>
     <chapter>
       <title>Introduction</title>
-      <para>JBoss Microcontainer allows POJO-based services to be deployed into a runtime environment but that is not all it can do. Thanks to an innovative deployment framework you can easily deploy other components such as MBeans and OSGi bundles. In addition the framework is highly customizable thanks to its  &quot;chain of responsibility&quot; design pattern where each deployment is processed by a series of deployment actions that are linked together to perform the necessary work. For example one action could take care of parsing the deployment metadata and another could take care of creating a classloader. This separation of concerns allows actions to be reused in order to process different kinds of deployments. Behaviour can also be easily added or removed   by inserting custom actions or removing actions that are not applicable.</para>
-      <para>Let&apos;s see how this approach compares to the BasicXMLDeployer that we used in Chapter 4.2 Deploying the service:</para>
+      <para>JBoss Microcontainer at its core allows POJOs to be deployed into a runtime environment to create services. It  does this using a state machine to ensure that any dependencies on classloaders or other POJOs are satisfied  before progressing through the various stages of creation and configuration.  By design the state machine and dependency mechanisms are generic which means that we can also use them to deploy other types of runtime components such as MBeans or OSGi bundles. However this means that we also need a generic deployment framework that is capable of creating the relevant metadata and classloader information in addition to handling nested deployments.</para>
+      <para>To understand why we cannot simply reuse the  BasicXMLDeployer that we are already familiar with let&apos;s take a closer look at what it actually does:</para>
       <programlisting>public class BasicXMLDeployer extends BasicKernelDeployer
 {
    ...
@@ -2701,30 +2701,136 @@ public class MyBean {
 
    ...
 }</programlisting>
-      <para>During deployment the first thing we do is create an unmarshaller to convert the XML deployment descriptor identified in the url into an object representation called a KernelDeployment. We then set the name of the KernelDeployment object to the string representation of the url. This represents the parsing stage of the deployment. However, what if the deployment descriptor was not an XML file but a java property file instead? We could create another subclass of BasicKernelDeployer called BasicPropertyDeployer to parse a property file but we would still need to determine which class to call at runtime depending on the file suffix.</para>
-      <para>The deployment framework takes care of  such issues by  allowing multiple parsing actions, e.g. one for an XML file and another for  a property file, to  be called during the parsing stage of the deployment process. Each action checks the file suffix of the deployment (-beans.xml or -beans.properties) before deciding whether or not to parse it. Using this design it now becomes easy to parse other, possible custom, file formats simply by creating additional parsing actions and adding them to the parsing stage:</para>
+      <para>Once the deploy() method is called with a URL the first thing we do is create an unmarshaller to convert the XML deployment descriptor into an object representation of type KernelDeployment. We then process the KernelDeployment using the deploy() method of the superclass BasicKernelDeployer: </para>
+      <programlisting>public class BasicKernelDeployer extends AbstractKernelDeployer
+{
+    ...
+
+   public void deploy(KernelDeployment deployment) throws Throwable
+   {
+      ...
+      super.deploy(deployment);
+      deployments.add(deployment);
+      ...
+   }
+
+    ...
+
+   public void shutdown()
+   {
+      ListIterator iterator = deployments.listIterator(deployments.size());
+      while (iterator.hasPrevious())
+      {
+         KernelDeployment deployment = (KernelDeployment) iterator.previous();
+         undeploy(deployment);
+      }
+   }
+}</programlisting>
+      <para>As you can see the BasicKernelDeployer simply calls the deploy() method of its superclass AbstractKernelDeployer before adding the deployment to a list.</para>
+      <note>
+        <para>The reason for having  BasicKernelDeployer is that it contains a shutdown() method which undeploys all the deployments in reverse order. This allows the microcontainer to shutdown gracefully.</para>
+      </note>
+      <programlisting>public class AbstractKernelDeployer
+{
+    ...
+   public void deploy(final KernelDeployment deployment) throws Throwable
+   {
+      if (deployment.isInstalled())
+         throw new IllegalArgumentException(&quot;Already installed &quot; + deployment.getName());
+
+      try
+      {
+         deployBeans(controller, deployment);
+         deployment.setInstalled(true);
+      }
+      catch (Throwable t)
+      {
+         undeploy(deployment);
+         throw t;
+      }
+   }
+
+   ...
+
+   protected void deployBeans(KernelController controller, KernelDeployment deployment) throws Throwable
+   {
+      List&lt;BeanMetaData&gt; beans = deployment.getBeans();
+      if (beans != null)
+      {
+         for (BeanMetaData metaData : beans)
+         {
+            KernelControllerContext context = deployBean(controller, deployment, metaData);
+            deployment.addInstalledContext(context);
+         }
+      }
+   }
+
+   protected KernelControllerContext deployBean(KernelController controller, KernelDeployment deployment, BeanMetaData bean) throws Throwable
+   {
+      KernelControllerContext context = new AbstractKernelControllerContext(null, bean, null);
+      if (requiredState != null)
+         context.setRequiredState(requiredState);
+      if (mode != null)
+         context.setMode(mode);
+      // Use any deployment classloader if present and the bean doesn&apos;t have one
+      ClassLoaderMetaData beanClassLoader = bean.getClassLoader();
+      if (beanClassLoader == null &amp;&amp; deployment != null)
+      {
+         ClassLoaderMetaData deploymentClassLoader = deployment.getClassLoader();
+         if (deploymentClassLoader != null)
+            bean.setClassLoader(deploymentClassLoader);
+      }
+      controller.install(context);
+      return context;
+   }
+
+    ...
+}</programlisting>
+      <para>The deploy() method in AbstractKernelDeployer performs a check to see if the deployment has already been installed before calling deployBeans() to split it up into the individual BeanMetaData instances. These are then deployed into the runtime environment using the deployBean() method which creates a KernelControllerContext for each BeanMetaData and installs it into the controller. It also takes care of deciding which classloader to use based on information  contained in the KernelDeployment object.</para>
+      <para>You should hopefully see from this breakdown that  the type hierarchy of BasicXMLDeployer  means that its only suitable for processing deployments of beans. Each deployment is represented  as a KernelDeployment that contains multiple BeanMetaData instances; one per bean. If we want to deploy other components such as MBeans or OSGi bundles then we need to deal with other types of metadata and we need a generic way to represent deployments containing them. Furthermore we need to find a flexibile way to process these deployments since each would have its own set of actions that need to take place. For example MBeans need to be registered with an MBean server before they can be considered &apos;deployed&apos;.</para>
+      <para>It turns out that we can use the state machine to meet these requirements by creating a DeploymentControllerContext to represent a deployment in the same way that a KernelControllerContext represents a POJO. This allows us to associate a number of deployment actions to different stages of the deployment process:</para>
       <itemizedlist>
         <listitem>
-          <para>PARSE - convert one or more  deployment descriptors into an object representation</para>
+          <para>PARSE - convert one or more  deployment descriptors into object representations</para>
+        </listitem>
+        <listitem>
+          <para>DESCRIBE - discover any dependencies</para>
+        </listitem>
+        <listitem>
+          <para>CLASSLOADER - create classloaders</para>
+        </listitem>
+        <listitem>
+          <para>POST_CLASSLOADER - apply AOP changes together with any other bytecode manipulations</para>
+        </listitem>
+        <listitem>
+          <para>REAL - deploy components (POJO, MBeans or OSGi bundles) into the runtime environment</para>
         </listitem>
       </itemizedlist>
-      <para>The remainder of the work carried out by the deploy() method of BasicKernelDeployer can also be divided up into a series of deployment actions that relate to different stages of deployment:</para>
-      <itemizedlist>
-        <listitem>
-          <para>DESCRIBE - dependencies are discovered</para>
-        </listitem>
-        <listitem>
-          <para>CLASSLOADER - classloaders are created</para>
-        </listitem>
-        <listitem>
-          <para>POST_CLASSLOADER - AOP changes are applied together with other bytecode manipulations</para>
-        </listitem>
-        <listitem>
-          <para>REAL - components (POJOs or MBeans)  are deployed into the microcontainer</para>
-        </listitem>
-      </itemizedlist>
-      <para>This means that  it&apos;s possible to use the deployment framework instead of the BasicXMLDeployer to deploy POJO-based services specified with XML deployment descriptors. So why then do we need a BasicXMLDeployer? The answer is because the deployment framework itself a POJO-based service specified with  an XML deployment descriptor (usually called bootstrap-beans.xml). We therefore need the BasicXMLDeployer to deploy it  when the microcontainer is booted up. Once deployed then it is used to deploy everything else including any other POJO-based services.</para>
-      <para>Now that you understand the reasoning for the deployment framework and how it relates to the BasicXMLDeployer  the following sections go on the cover the various parts of the framework in more detail.</para>
+      <para>As the state machine controller takes a DeploymentControllerContext through each of these stages it calls the associated actions to perform the relevant work. For example we could create multiple parsing actions; one to parse XML files and another to parse Java property files. Depending on the file suffix of the deployment descriptor; .xml or .property we can then choose which one to use during the PARSE stage.</para>
+      <para>As deployments can often be nested within one another we actually describe the details of each deployment using a DeploymentContext type. The DeploymentControllerContext therefore contains a reference to the top-level DeploymentContext:</para>
+      <programlisting>public class DeploymentControllerContext extends AbstractControllerContext
+{
+   /** The deployment context */
+   private DeploymentContext deploymentContext;
+   
+   public DeploymentControllerContext(DeploymentContext context, DeployersImpl deployers)
+   {
+      super(context.getName(), deployers);
+      this.deploymentContext = context;
+      setMode(ControllerMode.MANUAL);
+   }
+
+   public DeploymentContext getDeploymentContext()
+   {
+      return deploymentContext;
+   }
+}</programlisting>
+      <warning>
+        <para>Be careful not to get confused with the names of these types; DeploymentControllerContext and DeploymentContext, as they are very similar. </para>
+      </warning>
+      <para>The deployment framework is therefore a collection of packages and classes that provides a generic way to represent deployments containing components. Deployments can be  nested within one another and the components can be anything from POJOs to MBeans and OSGi bundles.</para>
+      <para>Consequently this means that  it&apos;s possible to use the deployment framework instead of the BasicXMLDeployer to deploy POJO-based services specified with XML deployment descriptors. So why then do we need a BasicXMLDeployer? The answer is because the deployment framework itself a POJO-based service specified with  an XML deployment descriptor (usually called <emphasis>bootstrap-beans.xml</emphasis>). We therefore need the BasicXMLDeployer to deploy it  when the microcontainer is booted up. Once deployed then the framework is used to deploy everything else including any other POJO-based services.</para>
+      <para>Now that you understand the reasoning for the deployment framework and how it relates to the BasicXMLDeployer  the following sections go on the cover the various parts in more detail.</para>
     </chapter>
     <chapter>
       <title>The Virtual File System</title>
@@ -2734,16 +2840,16 @@ public class MyBean {
           <para>Deployment descriptors - contain configuration information</para>
         </listitem>
         <listitem>
-          <para>Java classes - compiled Java code</para>
+          <para>Java classes - contain compiled Java bytecode</para>
         </listitem>
         <listitem>
           <para>Resources - any other files that are required at runtime</para>
         </listitem>
       </itemizedlist>
-      <para>Sometimes only a single deployment descriptor is required although more often you create a deployment archive containing one or more descriptors together with a number of classes. In the case of a Web Archive (WAR)  resources are also included to be hosted by the web server.</para>
-      <para>During development it is convenient to be able to deploy such archives in an unpackaged, rather than a packaged,  state. This means that files can be edited in their respective directories  and the deployment processed again without having to re-archive everything each time. Archiving is usually more appropriate during the  test phase or when going to production as a way of keeping everything together.</para>
-      <para>Depending on the layout of the development, test or production systems  it&apos;s helpful to allow the deployment of packaged or unpackaged archives both locally, on the computer&apos;s hard drive, or remotely over a network. Support for nested deployments is also important so that related items can be deployed together.</para>
-      <para>To allow all of these concerns to be addressed in a maintainable and extendable way the deployment framework uses a Virtual File System (VFS).  This provides a way to represent a deployment as a read-only hierarchical file system regardless of whether it is packaged in an archive or not. It also allows deployments to be accessed both locally and remotely using a pluggable  design so that new protocols can easily be added to those supplied by default:</para>
+      <para>Sometimes only a single deployment descriptor is required although more often you create a deployment archive containing one or more descriptors together with a number of classes. In the case of a Web Archive (WAR) we also include any  resources that are to be hosted by the web server.</para>
+      <para>During development it is convenient to be able to deploy such archives in an unpackaged rather than a packaged  state. This means that files can be freely edited in their  directories  and the deployment processed again without having to re-package everything each time. Packaging is usually more appropriate during the  test phase or when going to production as a way of keeping everything together.</para>
+      <para>Depending on the layout of the development, test or production system it&apos;s helpful to allow the deployment of packaged or unpackaged archives both locally, on the computer&apos;s hard drive, or remotely over a network. Support for nested deployments is also important so that related items can be deployed together.</para>
+      <para>To allow all of these concerns to be addressed in a maintainable and extendable way the deployment framework uses a Virtual File System (VFS).  This provides a way to represent a deployment as a read-only hierarchical file system regardless of whether it is packaged or not. It also allows deployments to be accessed both locally and remotely using a pluggable  design so that new protocols can easily be added to those supplied by default:</para>
       <itemizedlist>
         <listitem>
           <para>File - </para>
@@ -2759,7 +2865,7 @@ public class MyBean {
     </chapter>
     <chapter>
       <title>Identifying a deployment type</title>
-      <para>Before we can begin to process a deployment we must first determine its structure. This means finding out if it contains any deployment descriptors and/or classes, and if so where they are located relative to the deployment&apos;s root. Nested deployments must also be detected and their structures determined in the same way. The purpose of this is to help the parsing  actions locate the deployment descriptors in a standard way and to assist in the creation of classloaders. As we wish to  use the Virtual File System (VFS), for the reasons outlined earlier, we must first create a VFSDeployment using the deployment URI or URL:</para>
+      <para>Before we can begin to process a deployment we must first determine its structure. This means finding out if it contains any deployment descriptors and/or classes, and if so where they are located relative to the deployment&apos;s root. Nested deployments must also be detected and their structures determined in the same way. The purpose of this is to help the parsing  actions locate the deployment descriptors in a standard way and to assist in the creation of classloaders. Since we wish to  use the Virtual File System (VFS) to represent our deployment (for reasons outlined earlier) we must first create a VFSDeployment using the deployment URI or URL:</para>
       <programlisting>VirtualFile root = VFS.getRoot(deploymentURL);     
 VFSDeploymentFactory deploymentFactory = VFSDeploymentFactory.getInstance();
 Deployment deployment = deploymentFactory.createVFSDeployment(root);</programlisting>
@@ -2768,7 +2874,7 @@ Deployment deployment = deploymentFactory.createVFSDeployment(root);</programlis
 {
 boolean determineStructure(VirtualFile root, VirtualFile parent, VirtualFile file, StructureMetaData metaData, VFSStructuralDeployers deployers) throws DeploymentException;
 }</programlisting>
-      <para>As a deployment can contain nested deployments the determineStructure() method is meant to be called recursively. As such the <emphasis>root</emphasis> parameter represents the root of the top-level deployment and the <emphasis>file</emphasis> parameter represents the root of the current nested deployment being analyzed. The <emphasis>deployers</emphasis> parameter contains a list of all the StructureDeployer implementations and is needed in order to process any nested deployments. As the locations of  deployment descriptors and/or classes in each deployment are determined this information is added to the <emphasis>metaData</emphasis> parameter so that the structure of the entire deployment is recorded. </para>
+      <para>As a deployment can contain nested deployments the determineStructure() method is meant to be called recursively. The <emphasis>root</emphasis> parameter represents the root of the top-level deployment, the <emphasis>file</emphasis> parameter represents the root of the current (possibly nested) deployment being analyzed and the <emphasis>parent</emphasis> parameter its parent (or null if it is the top-level). The <emphasis>deployers</emphasis> parameter contains a list of all the StructureDeployer implementations and is needed in order to process any nested deployments. As the locations of  deployment descriptors and/or classes in each deployment are determined this information is added to the <emphasis>StructureMetaData</emphasis> parameter so that the structure of the entire deployment is recorded. </para>
       <section>
         <title>Descriptor Files</title>
       </section>
@@ -2786,7 +2892,7 @@ boolean determineStructure(VirtualFile root, VirtualFile parent, VirtualFile fil
       </section>
     </chapter>
     <chapter>
-      <title>Creating a deployment unit</title>
+      <title>Accessing a deployment</title>
       <para/>
       <section>
         <title>Standard information</title>
@@ -2799,7 +2905,7 @@ boolean determineStructure(VirtualFile root, VirtualFile parent, VirtualFile fil
       </section>
     </chapter>
     <chapter>
-      <title>Processing a deployment unit</title>
+      <title>Processing a deployment</title>
       <section>
         <title>Deployment stages</title>
         <para>  </para>
