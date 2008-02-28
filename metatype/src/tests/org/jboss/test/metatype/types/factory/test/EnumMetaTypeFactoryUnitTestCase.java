@@ -64,7 +64,7 @@ public class EnumMetaTypeFactoryUnitTestCase extends AbstractMetaTypeFactoryTest
     */
    public void testEnumType() throws Exception
    {
-      MetaType<?> result = resolve(TestEnum.class);
+      MetaType result = resolve(TestEnum.class);
       EnumMetaType actual = assertInstanceOf(result, EnumMetaType.class);
       ArrayList<String> expectedValues = new ArrayList<String>(3);
       expectedValues.add("ONE");

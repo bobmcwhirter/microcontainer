@@ -21,18 +21,15 @@
 */
 package org.jboss.test.metatype.types.support;
 
-import java.io.Serializable;
-
 import org.jboss.metatype.api.types.AbstractMetaType;
 
 /**
  * MockMetaType.
  * 
- * @param <T> the underlying type
  * @author <a href="adrian@jboss.com">Adrian Brock</a>
  * @version $Revision: 1.1 $
  */
-public class MockMetaType<T extends Serializable> extends AbstractMetaType<T>
+public class MockMetaType extends AbstractMetaType
 {
    private static final long serialVersionUID = -1;
 

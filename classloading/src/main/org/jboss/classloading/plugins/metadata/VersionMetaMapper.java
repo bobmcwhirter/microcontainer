@@ -44,7 +44,7 @@ public class VersionMetaMapper extends MetaMapper<Version>
       return String.class;
    }
 
-   public MetaValue createMetaValue(MetaType<?> metaType, Version object)
+   public MetaValue createMetaValue(MetaType metaType, Version object)
    {
       return SimpleValueSupport.wrap(object.toString());
    }
@@ -54,7 +54,7 @@ public class VersionMetaMapper extends MetaMapper<Version>
       if (SimpleMetaType.STRING.equals(metaValue.getMetaType()) == false)
          throw new IllegalArgumentException("Not a string: " + metaValue);
       
-      SimpleValue<?> simple = (SimpleValue<?>) metaValue;
+      SimpleValue simple = (SimpleValue) metaValue;
       String value = (String) simple.getValue();
       return Version.parseVersion(value);
    }

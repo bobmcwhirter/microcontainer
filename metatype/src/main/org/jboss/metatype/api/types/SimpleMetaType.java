@@ -22,7 +22,6 @@
 package org.jboss.metatype.api.types;
 
 import java.io.ObjectStreamException;
-import java.io.Serializable;
 import java.math.BigDecimal;
 import java.math.BigInteger;
 import java.util.Date;
@@ -32,11 +31,10 @@ import org.jboss.metatype.api.values.SimpleValue;
 /**
  * SimpleMetaType.
  *
- * @param <T> the underlying type
  * @author <a href="adrian@jboss.com">Adrian Brock</a>
  * @version $Revision: 1.1 $
  */
-public class SimpleMetaType<T extends Serializable> extends AbstractMetaType<T>
+public class SimpleMetaType extends AbstractMetaType
 {
    /** The serialVersionUID */
    private static final long serialVersionUID = 6786422588217893696L;
@@ -48,69 +46,63 @@ public class SimpleMetaType<T extends Serializable> extends AbstractMetaType<T>
    private transient String cachedToString;
 
    /** The simple type for java.math.BigDecimal */
-   public static final SimpleMetaType<BigDecimal> BIGDECIMAL;
+   public static final SimpleMetaType BIGDECIMAL;
 
    /** The simple type for java.math.BigInteger */
-   public static final SimpleMetaType<BigInteger> BIGINTEGER;
+   public static final SimpleMetaType BIGINTEGER;
 
    /** The simple type for java.lang.Boolean */
-   public static final SimpleMetaType<Boolean> BOOLEAN;
+   public static final SimpleMetaType BOOLEAN;
 
    /** The simple type for java.lang.Byte */
-   public static final SimpleMetaType<Byte> BYTE;
+   public static final SimpleMetaType BYTE;
 
    /** The simple type for java.lang.Character */
-   public static final SimpleMetaType<Character> CHARACTER;
+   public static final SimpleMetaType CHARACTER;
 
    /** The simple type for java.lang.Date */
-   public static final SimpleMetaType<Date> DATE;
+   public static final SimpleMetaType DATE;
 
    /** The simple type for java.lang.Double */
-   public static final SimpleMetaType<Double> DOUBLE;
+   public static final SimpleMetaType DOUBLE;
 
    /** The simple type for java.lang.Float */
-   public static final SimpleMetaType<Float> FLOAT;
+   public static final SimpleMetaType FLOAT;
 
    /** The simple type for java.lang.Integer */
-   public static final SimpleMetaType<Integer> INTEGER;
+   public static final SimpleMetaType INTEGER;
 
    /** The simple type for java.lang.Long */
-   public static final SimpleMetaType<Long> LONG;
+   public static final SimpleMetaType LONG;
 
    /** The simple type for java.lang.Short */
-   public static final SimpleMetaType<Short> SHORT;
+   public static final SimpleMetaType SHORT;
 
    /** The simple type for java.lang.String */
-   public static final SimpleMetaType<String> STRING;
+   public static final SimpleMetaType STRING;
 
    /** The simple type for an object name */
-   public static final SimpleMetaType<Name> NAMEDOBJECT;
+   public static final SimpleMetaType NAMEDOBJECT;
 
    /** The simple type for java.lang.Void */
-   public static final SimpleMetaType<?> VOID;
+   public static final SimpleMetaType VOID;
 
    static
    {
-      BIGDECIMAL = new SimpleMetaType<BigDecimal>(BigDecimal.class.getName());
-      BIGINTEGER = new SimpleMetaType<BigInteger>(BigInteger.class.getName());
-      BOOLEAN = new SimpleMetaType<Boolean>(Boolean.class.getName());
-      BYTE = new SimpleMetaType<Byte>(Byte.class.getName());
-      CHARACTER = new SimpleMetaType<Character>(Character.class.getName());
-      DATE = new SimpleMetaType<Date>(Date.class.getName());
-      DOUBLE = new SimpleMetaType<Double>(Double.class.getName());
-      FLOAT = new SimpleMetaType<Float>(Float.class.getName());
-      INTEGER = new SimpleMetaType<Integer>(Integer.class.getName());
-      LONG = new SimpleMetaType<Long>(Long.class.getName());
-      SHORT = new SimpleMetaType<Short>(Short.class.getName());
-      STRING = new SimpleMetaType<String>(String.class.getName());
-      NAMEDOBJECT = new SimpleMetaType<Name>(Name.class.getName());
-      VOID = createVoid();
-   }
-   
-   @SuppressWarnings("unchecked")
-   private static SimpleMetaType<?> createVoid()
-   {
-      return new SimpleMetaType(Void.class.getName());
+      BIGDECIMAL = new SimpleMetaType(BigDecimal.class.getName());
+      BIGINTEGER = new SimpleMetaType(BigInteger.class.getName());
+      BOOLEAN = new SimpleMetaType(Boolean.class.getName());
+      BYTE = new SimpleMetaType(Byte.class.getName());
+      CHARACTER = new SimpleMetaType(Character.class.getName());
+      DATE = new SimpleMetaType(Date.class.getName());
+      DOUBLE = new SimpleMetaType(Double.class.getName());
+      FLOAT = new SimpleMetaType(Float.class.getName());
+      INTEGER = new SimpleMetaType(Integer.class.getName());
+      LONG = new SimpleMetaType(Long.class.getName());
+      SHORT = new SimpleMetaType(Short.class.getName());
+      STRING = new SimpleMetaType(String.class.getName());
+      NAMEDOBJECT = new SimpleMetaType(Name.class.getName());
+      VOID = new SimpleMetaType(Void.class.getName());
    }
 
    /**
@@ -120,9 +112,9 @@ public class SimpleMetaType<T extends Serializable> extends AbstractMetaType<T>
     * @return the simple type
     * @throws IllegalArgumentException for a null className or if it is not a simple type
     */
-   public static SimpleMetaType<?> resolve(String className)
+   public static SimpleMetaType resolve(String className)
    {
-      SimpleMetaType<?> result = isSimpleType(className);
+      SimpleMetaType result = isSimpleType(className);
       if (result != null)
          return result;
       throw new IllegalArgumentException("Class is not a simple type: " + className);
@@ -136,7 +128,7 @@ public class SimpleMetaType<T extends Serializable> extends AbstractMetaType<T>
     * @return the simple type
     * @throws IllegalArgumentException for a null className
     */
-   public static SimpleMetaType<?> isSimpleType(String className)
+   public static SimpleMetaType isSimpleType(String className)
    {
       if (className == null)
          throw new IllegalArgumentException("Null class name");
@@ -200,7 +192,7 @@ public class SimpleMetaType<T extends Serializable> extends AbstractMetaType<T>
       if (obj == null || obj instanceof SimpleValue == false)
          return false;
 
-      SimpleValue<?> value = (SimpleValue<?>) obj;
+      SimpleValue value = (SimpleValue) obj;
       return equals(value.getMetaType());
    }
 
@@ -211,7 +203,7 @@ public class SimpleMetaType<T extends Serializable> extends AbstractMetaType<T>
          return true;
       if (obj == null || obj instanceof SimpleMetaType == false)
          return false;
-      SimpleMetaType<?> other = (SimpleMetaType<?>) obj;
+      SimpleMetaType other = (SimpleMetaType) obj;
       return getClassName().equals(other.getClassName());
    }
 

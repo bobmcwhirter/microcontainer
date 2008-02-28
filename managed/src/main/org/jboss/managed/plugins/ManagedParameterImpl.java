@@ -157,7 +157,7 @@ public class ManagedParameterImpl implements ManagedParameter
       setField(Fields.ANNOTATIONS, (Serializable) annotations);      
    }
 
-   public MetaType<?> getMetaType()
+   public MetaType getMetaType()
    {
       return getField(Fields.META_TYPE, MetaType.class);
    }
@@ -167,7 +167,7 @@ public class ManagedParameterImpl implements ManagedParameter
     * 
     * @param type the meta type
     */
-   public void setMetaType(MetaType<?> type)
+   public void setMetaType(MetaType type)
    {
       setField(Fields.META_TYPE, type);
    }

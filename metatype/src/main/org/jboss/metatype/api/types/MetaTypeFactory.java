@@ -55,7 +55,7 @@ public abstract class MetaTypeFactory
     * @return the metatype
     * @throws IllegalArgumentException for a null type
     */
-   public abstract MetaType<?> resolve(Type type);
+   public abstract MetaType resolve(Type type);
    
    /**
     * Resolve a metatype
@@ -64,7 +64,7 @@ public abstract class MetaTypeFactory
     * @return the metatype
     * @throws IllegalArgumentException for a null type
     */
-   public abstract MetaType<?> resolve(TypeInfo type);
+   public abstract MetaType resolve(TypeInfo type);
    
    /**
     * Resolve a metatype
@@ -75,7 +75,7 @@ public abstract class MetaTypeFactory
     * @throws IllegalArgumentException for a null className or classloader
     * @throws ClassNotFoundException when the class is not found 
     */
-   public MetaType<?> resolve(String className, ClassLoader classLoader) throws ClassNotFoundException
+   public MetaType resolve(String className, ClassLoader classLoader) throws ClassNotFoundException
    {
       if (className == null)
          throw new IllegalArgumentException("Null className");

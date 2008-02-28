@@ -39,7 +39,7 @@ import org.jboss.metatype.spi.values.MetaValueBuilder;
  */
 public class TestOverrideCompositeBuilder implements MetaTypeBuilder, MetaValueBuilder<TestOverrideComposite>
 {
-   public MetaType<?> buildMetaType()
+   public MetaType buildMetaType()
    {
       MutableCompositeMetaType result = new MutableCompositeMetaType(TestOverrideComposite.class.getName(), TestOverrideComposite.class.getName());
       result.addItem("somethingElse", "somethingElse", SimpleMetaType.STRING);
@@ -47,7 +47,7 @@ public class TestOverrideCompositeBuilder implements MetaTypeBuilder, MetaValueB
       return result;
    }
 
-   public MetaValue buildMetaValue(MetaType<?> metaType, TestOverrideComposite object)
+   public MetaValue buildMetaValue(MetaType metaType, TestOverrideComposite object)
    {
       CompositeMetaType compositeType = (CompositeMetaType) metaType;
       CompositeValueSupport result = new CompositeValueSupport(compositeType);

@@ -106,7 +106,7 @@ public class MetaTypeUnitTestCase extends AbstractMetaTypeTest
    @SuppressWarnings("unchecked")
    public void testConstructorSimple() throws Exception
    {
-      MetaType<?> test = new MockMetaType("java.lang.Void", "type", "description");
+      MetaType test = new MockMetaType("java.lang.Void", "type", "description");
       assertEquals("java.lang.Void", test.getClassName());
       assertEquals("type", test.getTypeName());
       assertEquals("description", test.getDescription());

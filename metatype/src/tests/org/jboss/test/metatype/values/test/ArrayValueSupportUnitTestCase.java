@@ -73,9 +73,9 @@ public class ArrayValueSupportUnitTestCase extends AbstractMetaTypeTest
 
    public void testCharArray() throws Exception
    {
-      ArrayMetaType<Character> type = new ArrayMetaType<Character>(1, SimpleMetaType.CHARACTER);
+      ArrayMetaType type = new ArrayMetaType(1, SimpleMetaType.CHARACTER);
       char[] value = {'h', 'e', 'l', 'l', 'o'};
-      ArrayValueSupport<Character> avs = new ArrayValueSupport<Character>(type, value);
+      ArrayValueSupport avs = new ArrayValueSupport(type, value);
       // Use getValue(int) accessor
       for(int n = 0; n < avs.getLength(); n ++)
       {
@@ -84,9 +84,9 @@ public class ArrayValueSupportUnitTestCase extends AbstractMetaTypeTest
       }
       // Use typesafe foreach Iterable
       int i = 0;
-      for(Character c : avs)
+      for(Object c : avs)
       {
-         assertEquals("["+i+"]", (Character) value[i++], c);         
+         assertEquals("["+i+"]", value[i++], c);         
       }
       // Validate the primative array
       char[] raw = (char[]) avs.getValue();
@@ -117,9 +117,9 @@ public class ArrayValueSupportUnitTestCase extends AbstractMetaTypeTest
 
    public void test2DCharArray() throws Exception
    {
-      ArrayMetaType<Character[]> type = new ArrayMetaType<Character[]>(2, SimpleMetaType.CHARACTER, true);
+      ArrayMetaType type = new ArrayMetaType(2, SimpleMetaType.CHARACTER, true);
       char[][] value = {{'h', 'e'}, {'l', 'l', 'o'}};
-      ArrayValueSupport<Character[]> avs = new ArrayValueSupport<Character[]>(type, value);
+      ArrayValueSupport avs = new ArrayValueSupport(type, value);
       assertEquals(value.length, avs.getLength());
       for(int m = 0; m < value.length; m ++)
       {

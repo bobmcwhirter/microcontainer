@@ -85,7 +85,7 @@ public class ManagedObjectVFSClassLoaderFactoryUnitTestCase extends BaseTestCase
       return result;
    }
    
-   protected ManagedProperty assertManagedProperty(ManagedObject mo, String name, MetaType<?> metaType, MetaValue metaValue)
+   protected ManagedProperty assertManagedProperty(ManagedObject mo, String name, MetaType metaType, MetaValue metaValue)
    {
       ManagedProperty property = mo.getProperty(name);
       assertNotNull("No property " + name, property);
@@ -96,7 +96,7 @@ public class ManagedObjectVFSClassLoaderFactoryUnitTestCase extends BaseTestCase
    
    protected ManagedProperty assertManagedProperty(ManagedObject mo, String name, Type type, Object value)
    {
-      MetaType<?> metaType = mtFactory.resolve(type);
+      MetaType metaType = mtFactory.resolve(type);
 
       MetaValue metaValue = null;
       if (value != null)

@@ -21,7 +21,6 @@
 */
 package org.jboss.metatype.api.values;
 
-import java.io.Serializable;
 import java.lang.reflect.Array;
 import java.util.Arrays;
 import java.util.Iterator;
@@ -32,18 +31,16 @@ import org.jboss.metatype.api.types.ArrayMetaType;
  * ArrayValue.
  * 
  * TODO tests
- * @param <T> the array type
  * @author <a href="adrian@jboss.com">Adrian Brock</a>
  * @version $Revision: 1.1 $
  */
-public class ArrayValueSupport<T extends Serializable> extends AbstractMetaValue
-   implements ArrayValue<T>
+public class ArrayValueSupport extends AbstractMetaValue implements ArrayValue
 {
    /** The serialVersionUID */
    private static final long serialVersionUID = 1131827130033538066L;
 
    /** The array meta type */
-   private ArrayMetaType<T> metaType;
+   private ArrayMetaType metaType;
    
    /** The value */
    private Object value;
@@ -54,7 +51,7 @@ public class ArrayValueSupport<T extends Serializable> extends AbstractMetaValue
     * @param metaType the array meta type
     * @throws IllegalArgumentException for a null array MetaType
     */
-   public ArrayValueSupport(ArrayMetaType<T> metaType)
+   public ArrayValueSupport(ArrayMetaType metaType)
    {
       if (metaType == null)
          throw new IllegalArgumentException("Null array meta type");
@@ -68,13 +65,13 @@ public class ArrayValueSupport<T extends Serializable> extends AbstractMetaValue
     * @param value the value
     * @throws IllegalArgumentException for a null array MetaType
     */
-   public ArrayValueSupport(ArrayMetaType<T> metaType, Object value)
+   public ArrayValueSupport(ArrayMetaType metaType, Object value)
    {
       this(metaType);
       this.value = value;
    }
 
-   public ArrayMetaType<T> getMetaType()
+   public ArrayMetaType getMetaType()
    {
       return metaType;
    }
@@ -103,9 +100,9 @@ public class ArrayValueSupport<T extends Serializable> extends AbstractMetaValue
       return Array.get(value, index);
    }
 
-   public Iterator<T> iterator()
+   public Iterator<Object> iterator()
    {
-      return new ArrayValueIterator<T>(value);
+      return new ArrayValueIterator(value);
    }
 
    /**
@@ -127,7 +124,7 @@ public class ArrayValueSupport<T extends Serializable> extends AbstractMetaValue
       if (obj == null || obj instanceof ArrayValue == false)
          return false;
 
-      ArrayValue<?> other = (ArrayValue<?>) obj;
+      ArrayValue other = (ArrayValue) obj;
       if (metaType.equals(other.getMetaType()) == false)
          return false;
 
@@ -179,7 +176,7 @@ public class ArrayValueSupport<T extends Serializable> extends AbstractMetaValue
    @Override
    public MetaValue clone()
    {
-      ArrayValueSupport<?> result = (ArrayValueSupport<?>) super.clone();
+      ArrayValueSupport result = (ArrayValueSupport) super.clone();
       int length = getLength();
       if (value != null && length > 0)
       {
@@ -222,7 +219,7 @@ public class ArrayValueSupport<T extends Serializable> extends AbstractMetaValue
       return deepToString;
    }
 
-   private static class ArrayValueIterator<T> implements Iterator<T>
+   private static class ArrayValueIterator implements Iterator<Object>
    {
       private int index;
       private int length;
@@ -240,10 +237,9 @@ public class ArrayValueSupport<T extends Serializable> extends AbstractMetaValue
          return index < length;
       }
 
-      @SuppressWarnings("unchecked")
-      public T next()
+      public Object next()
       {
-         return (T) Array.get(array, index ++);
+         return Array.get(array, index ++);
       }
 
       public void remove()

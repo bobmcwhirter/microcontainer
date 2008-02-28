@@ -224,7 +224,7 @@ public class MockProfileService
             MetaType etype = amt.getElementType();
             if (etype == AbstractManagedObjectFactory.MANAGED_OBJECT_META_TYPE)
             {
-               ArrayValue<GenericValue> avalue = (ArrayValue<GenericValue>) prop.getValue();
+               ArrayValue avalue = (ArrayValue) prop.getValue();
                for(int n = 0; n < avalue.getLength(); n ++)
                {
                   GenericValue gv = (GenericValue) avalue.getValue(n);

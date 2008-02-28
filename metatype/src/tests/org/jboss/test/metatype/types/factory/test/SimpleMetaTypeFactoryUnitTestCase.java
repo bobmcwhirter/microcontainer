@@ -58,7 +58,7 @@ public class SimpleMetaTypeFactoryUnitTestCase extends AbstractMetaTypeFactoryTe
       super(name);
    }
 
-   SimpleMetaType<?>[] expected = new SimpleMetaType[]
+   SimpleMetaType[] expected = new SimpleMetaType[]
    {
       SimpleMetaType.BIGDECIMAL,
       SimpleMetaType.BIGINTEGER,
@@ -118,7 +118,7 @@ public class SimpleMetaTypeFactoryUnitTestCase extends AbstractMetaTypeFactoryTe
       for (int i = 0; i < expected.length; ++i)
       {
          String className = classes[i].getName();
-         MetaType<?> actual = resolve(classes[i]);
+         MetaType actual = resolve(classes[i]);
          getLog().debug("SimpleMetaType: " + className + " className=" + actual.getClassName() + " typeName=" + actual.getTypeName() + " description=" + actual.getDescription());
          assertEquals(expected[i], actual);
       }

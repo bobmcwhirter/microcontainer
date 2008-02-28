@@ -39,11 +39,10 @@ import org.jboss.metatype.api.values.TableValue;
 /**
  * MetaType.
  * 
- * @param <T> the underlying type
  * @author <a href="adrian@jboss.com">Adrian Brock</a>
  * @version $Revision: 1.1 $
  */
-public interface MetaType<T extends Serializable> extends Serializable
+public interface MetaType extends Serializable
 {
    /**
     * The allowed classnames.<p>

@@ -21,18 +21,15 @@
 */
 package org.jboss.metatype.api.types;
 
-import java.io.Serializable;
-
 import org.jboss.metatype.api.values.ArrayValue;
 
 /**
  * ArrayMetaType.
  *
- * @param <T> exact type
  * @author <a href="adrian@jboss.com">Adrian Brock</a>
  * @version $Revision: 1.1 $
  */
-public class ArrayMetaType<T extends Serializable> extends AbstractMetaType<T>
+public class ArrayMetaType extends AbstractMetaType
 {
    /** The serialVersionUID */
    private static final long serialVersionUID = -2062790692152055156L;
@@ -41,7 +38,7 @@ public class ArrayMetaType<T extends Serializable> extends AbstractMetaType<T>
    private int dimension = 0;
 
    /** The element type for the array */
-   private MetaType<?> elementType;
+   private MetaType elementType;
 
    /** Is elementType a primative array */
    private boolean primitiveArray;
@@ -92,12 +89,12 @@ public class ArrayMetaType<T extends Serializable> extends AbstractMetaType<T>
     * @param primitiveTypeName primitive type name
     * @return primitive meta type or null if param is not primitive
     */
-   public static SimpleMetaType<?> getPrimitiveMetaType(String primitiveTypeName)
+   public static SimpleMetaType getPrimitiveMetaType(String primitiveTypeName)
    {
       for (Object[] typeDescr : PRIMITIVE_ARRAY_TYPES)
       {
          if (primitiveTypeName.equals(typeDescr[PRIMITIVE_TYPE_NAME_INDEX]))
-              return (SimpleMetaType<?>) typeDescr[PRIMITIVE_OPEN_TYPE_INDEX];
+              return (SimpleMetaType) typeDescr[PRIMITIVE_OPEN_TYPE_INDEX];
       }
       return null;
    }
@@ -137,24 +134,22 @@ public class ArrayMetaType<T extends Serializable> extends AbstractMetaType<T>
    /**
     * Get array meta type.
     *
-    * @param <E> the element type
     * @param elementType the element meta type
     * @return array meta type
     */
-   public static <E extends Serializable> ArrayMetaType<E[]> getArrayType(MetaType<E> elementType)
+   public static ArrayMetaType getArrayType(MetaType elementType)
    {
-      return new ArrayMetaType<E[]>(1, elementType);
+      return new ArrayMetaType(1, elementType);
    }
 
    /**
     * Get primitive array meta type.
     *
-    * @param <T> the array type
     * @param arrayClass array class
     * @return array meta type
     */
    @SuppressWarnings("unchecked")
-   public static <T extends Serializable> ArrayMetaType<T> getPrimitiveArrayType(Class<T> arrayClass)
+   public static ArrayMetaType getPrimitiveArrayType(Class<?> arrayClass)
    {
       if (!arrayClass.isArray())
       {
@@ -176,13 +171,13 @@ public class ArrayMetaType<T extends Serializable> extends AbstractMetaType<T>
               "component type of the array must be a primitive type");
       }
 
-      SimpleMetaType<?> simpleType = getPrimitiveMetaType(componentTypeName);
+      SimpleMetaType simpleType = getPrimitiveMetaType(componentTypeName);
 
       // Build primitive array
       //
        ArrayMetaType at = new ArrayMetaType(simpleType, true);
        if (n > 1)
-           at = new ArrayMetaType<T>(n - 1, at);
+           at = new ArrayMetaType(n - 1, at);
        return at;
    }
 
@@ -194,7 +189,7 @@ public class ArrayMetaType<T extends Serializable> extends AbstractMetaType<T>
     * @param isPrimitive is this a primitive type
     * @return the class name
     */
-   private static String genName(int dimension, MetaType<?> elementType, boolean isPrimitive)
+   private static String genName(int dimension, MetaType elementType, boolean isPrimitive)
    {
       if (dimension < 1)
          throw new IllegalArgumentException("negative dimension");
@@ -226,7 +221,7 @@ public class ArrayMetaType<T extends Serializable> extends AbstractMetaType<T>
     * @param isPrimitive is this a primitive type
     * @return the type name
     */
-   private static String genType(int dimension, MetaType<?> elementType, boolean isPrimitive)
+   private static String genType(int dimension, MetaType elementType, boolean isPrimitive)
    {
       if (dimension < 1)
          throw new IllegalArgumentException("negative dimension");
@@ -258,7 +253,7 @@ public class ArrayMetaType<T extends Serializable> extends AbstractMetaType<T>
     * @param isPrimitive is this a primitive type
     * @return the description
     */
-   private static String genDesc(int dimension, MetaType<?> elementType, boolean isPrimitive)
+   private static String genDesc(int dimension, MetaType elementType, boolean isPrimitive)
    {
       StringBuilder buffer = new StringBuilder();
       buffer.append(new Integer(dimension));
@@ -277,7 +272,7 @@ public class ArrayMetaType<T extends Serializable> extends AbstractMetaType<T>
     * @param elementType the open type of the array elements
     * @throws IllegalArgumentException for a null argument or non-negative dimension or when meta type is an ArrayMetaType
     */
-   public ArrayMetaType(int dimension, MetaType<?> elementType)
+   public ArrayMetaType(int dimension, MetaType elementType)
    {
       super(genName(dimension, elementType, false),
             genType(dimension, elementType, false),
@@ -293,7 +288,7 @@ public class ArrayMetaType<T extends Serializable> extends AbstractMetaType<T>
     * @param elementType the element type
     * @param primitiveArray is primitive array
     */
-   public ArrayMetaType(SimpleMetaType<?> elementType, boolean primitiveArray)
+   public ArrayMetaType(SimpleMetaType elementType, boolean primitiveArray)
    {
       this(1, elementType, primitiveArray);
    }
@@ -306,7 +301,7 @@ public class ArrayMetaType<T extends Serializable> extends AbstractMetaType<T>
     * @param primitiveArray is primitive array
     * @throws IllegalArgumentException for a null argument or non-negative dimension or when meta type is an ArrayMetaType
     */
-   public ArrayMetaType(int dimension, MetaType<?> elementType, boolean primitiveArray)
+   public ArrayMetaType(int dimension, MetaType elementType, boolean primitiveArray)
    {
       super(genName(dimension, elementType, primitiveArray),
             genType(dimension, elementType, primitiveArray),
@@ -331,7 +326,7 @@ public class ArrayMetaType<T extends Serializable> extends AbstractMetaType<T>
     *
     * @return the element type
     */
-   public MetaType<?> getElementType()
+   public MetaType getElementType()
    {
       return elementType;
    }
@@ -393,7 +388,7 @@ public class ArrayMetaType<T extends Serializable> extends AbstractMetaType<T>
          return true;
       if (obj == null || obj instanceof ArrayMetaType == false)
          return false;
-      ArrayMetaType<?> other = (ArrayMetaType<?>) obj;
+      ArrayMetaType other = (ArrayMetaType) obj;
       return getDimension() == other.getDimension() && getElementType().equals(other.getElementType());
    }
 

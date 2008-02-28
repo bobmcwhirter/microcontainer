@@ -217,7 +217,7 @@ public class ManagedPropertyImpl implements ManagedProperty
       setField(Fields.ANNOTATIONS, (Serializable) annotations);      
    }
 
-   public MetaType<?> getMetaType()
+   public MetaType getMetaType()
    {
       return getField(Fields.META_TYPE, MetaType.class);
    }
@@ -227,7 +227,7 @@ public class ManagedPropertyImpl implements ManagedProperty
     * 
     * @param type the meta type
     */
-   public void setMetaType(MetaType<?> type)
+   public void setMetaType(MetaType type)
    {
       setField(Fields.META_TYPE, type);
    }

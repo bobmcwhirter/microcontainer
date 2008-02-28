@@ -111,7 +111,7 @@ public class DefaultFieldsImpl
     * 
     * @return the meta type
     */
-   public MetaType<?> getMetaType()
+   public MetaType getMetaType()
    {
       return getField(META_TYPE, MetaType.class);
    }
@@ -121,7 +121,7 @@ public class DefaultFieldsImpl
     * 
     * @param type the meta type
     */
-   public void setMetaType(MetaType<?> type)
+   public void setMetaType(MetaType type)
    {
       setField(META_TYPE, type);
    }

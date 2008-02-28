@@ -721,13 +721,13 @@ public class AbstractManagedObjectFactory extends ManagedObjectFactory
       }
       else if (propertyType.isArray())
       {
-         ArrayMetaType<?> arrayType = ArrayMetaType.class.cast(propertyType);
+         ArrayMetaType arrayType = ArrayMetaType.class.cast(propertyType);
          if (MANAGED_OBJECT_META_TYPE == arrayType.getElementType())
          {
             Collection<?> cvalue = getAsCollection(value);
             // todo - AJ: changed some generics by best guess
-            ArrayMetaType<GenericValueSupport> moType = new ArrayMetaType<GenericValueSupport>(1, MANAGED_OBJECT_META_TYPE);
-            ArrayValueSupport<GenericValueSupport> moArrayValue = new ArrayValueSupport<GenericValueSupport>(moType);
+            ArrayMetaType moType = new ArrayMetaType(1, MANAGED_OBJECT_META_TYPE);
+            ArrayValueSupport moArrayValue = new ArrayValueSupport(moType);
             List<GenericValueSupport> tmp = new ArrayList<GenericValueSupport>();
             for(Object element : cvalue)
             {
@@ -798,7 +798,7 @@ public class AbstractManagedObjectFactory extends ManagedObjectFactory
       ManagementParameter[] params = opAnnotation.params();
       ParameterInfo[] paramInfo = methodInfo.getParameters();
       TypeInfo returnInfo = methodInfo.getReturnType();
-      MetaType<?> returnType = metaTypeFactory.resolve(returnInfo);
+      MetaType returnType = metaTypeFactory.resolve(returnInfo);
       ArrayList<ManagedParameter> mparams = new ArrayList<ManagedParameter>();
       Class<? extends ManagedParameterConstraintsPopulatorFactory> opConstraintsFactor = opAnnotation.constraintsFactory();
 
@@ -825,7 +825,7 @@ public class AbstractManagedObjectFactory extends ManagedObjectFactory
             Fields fields =  new DefaultFieldsImpl(pname);
             if (pdescription != null)
                fields.setField(Fields.DESCRIPTION, pdescription);
-            MetaType<?> metaType = metaTypeFactory.resolve(pinfo.getParameterType());
+            MetaType metaType = metaTypeFactory.resolve(pinfo.getParameterType());
             fields.setField(Fields.META_TYPE, metaType);
             // Delegate others (legal values, min/max etc.) to the constraints factory
             try

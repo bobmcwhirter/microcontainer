@@ -68,7 +68,7 @@ public class ImmutableCompositeMetaType extends AbstractCompositeMetaType
     *            The names are case sensitive, leading and trailing whitespace
     *            is ignored.
     */
-   public ImmutableCompositeMetaType(String typeName, String description, String[] itemNames, String[] itemDescriptions, MetaType<?>[] itemTypes)
+   public ImmutableCompositeMetaType(String typeName, String description, String[] itemNames, String[] itemDescriptions, MetaType[] itemTypes)
    {
       super(typeName, description, itemNames, itemDescriptions, itemTypes, false);
    }

@@ -79,7 +79,7 @@ public interface ManagedParameter extends Serializable
     * 
     * @return the type
     */
-   MetaType<?> getMetaType();
+   MetaType getMetaType();
 
    /**
     * Get the value

@@ -37,7 +37,7 @@ public class CollectionValueSupport extends AbstractMetaValue implements Collect
    private static final long serialVersionUID = 1131827130033538066L;
 
    /** The collection meta type */
-   private CollectionMetaType<?> metaType;
+   private CollectionMetaType metaType;
 
    /** The elements */
    private MetaValue[] elements;
@@ -48,7 +48,7 @@ public class CollectionValueSupport extends AbstractMetaValue implements Collect
     * @param metaType the collection meta type
     * @throws IllegalArgumentException for a null array MetaType
     */
-   public CollectionValueSupport(CollectionMetaType<?> metaType)
+   public CollectionValueSupport(CollectionMetaType metaType)
    {
       if (metaType == null)
          throw new IllegalArgumentException("Null collection meta type");
@@ -62,13 +62,13 @@ public class CollectionValueSupport extends AbstractMetaValue implements Collect
     * @param elements the elements
     * @throws IllegalArgumentException for a null array MetaType
     */
-   public CollectionValueSupport(CollectionMetaType<?> metaType, MetaValue[] elements)
+   public CollectionValueSupport(CollectionMetaType metaType, MetaValue[] elements)
    {
       this(metaType);
       this.elements = elements;
    }
 
-   public CollectionMetaType<?> getMetaType()
+   public CollectionMetaType getMetaType()
    {
       return metaType;
    }

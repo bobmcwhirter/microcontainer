@@ -70,12 +70,12 @@ public class ArrayValueFactoryUnitTestCase extends AbstractMetaValueFactoryTest
    public void testSimpleArray() throws Exception
    {
       String[] array = { "Hello", "Goodbye" };
-      ArrayMetaType<String> arrayType = assertInstanceOf(resolve(array.getClass()), ArrayMetaType.class);
+      ArrayMetaType arrayType = assertInstanceOf(resolve(array.getClass()), ArrayMetaType.class);
       MetaValue[] metaArray = { SimpleValueSupport.wrap("Hello"), SimpleValueSupport.wrap("Goodbye") };
-      ArrayValueSupport<String> expected = new ArrayValueSupport<String>(arrayType, metaArray);
+      ArrayValueSupport expected = new ArrayValueSupport(arrayType, metaArray);
       
       MetaValue result = createMetaValue(array);
-      ArrayValue<String> actual = assertInstanceOf(result, ArrayValue.class);
+      ArrayValue actual = assertInstanceOf(result, ArrayValue.class);
       getLog().debug("Array Value: " + actual);
       assertEquals(expected, actual);
    }

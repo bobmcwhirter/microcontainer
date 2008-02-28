@@ -62,7 +62,7 @@ public class SimpleMetaTypeUnitTestCase extends AbstractMetaTypeTest
       super(name);
    }
 
-   SimpleMetaType<?>[] types = new SimpleMetaType<?>[]
+   SimpleMetaType[] types = new SimpleMetaType[]
    {
       SimpleMetaType.BIGDECIMAL,
       SimpleMetaType.BIGINTEGER,
@@ -101,39 +101,39 @@ public class SimpleMetaTypeUnitTestCase extends AbstractMetaTypeTest
    @SuppressWarnings("unchecked")
    SimpleValue[] values = new SimpleValue[]
    {
-      new SimpleValueSupport<BigDecimal>(SimpleMetaType.BIGDECIMAL, new BigDecimal(1)),
-      new SimpleValueSupport<BigInteger>(SimpleMetaType.BIGINTEGER, BigInteger.ONE),
-      new SimpleValueSupport<Boolean>(SimpleMetaType.BOOLEAN, new Boolean(false)),
-      new SimpleValueSupport<Byte>(SimpleMetaType.BYTE, new Byte(Byte.MAX_VALUE)),
-      new SimpleValueSupport<Character>(SimpleMetaType.CHARACTER, new Character('a')),
-      new SimpleValueSupport<Date>(SimpleMetaType.DATE, new Date(System.currentTimeMillis())),
-      new SimpleValueSupport<Double>(SimpleMetaType.DOUBLE, new Double(1)),
-      new SimpleValueSupport<Float>(SimpleMetaType.FLOAT, new Float(1)),
-      new SimpleValueSupport<Integer>(SimpleMetaType.INTEGER, new Integer(1)),
-      new SimpleValueSupport<Long>(SimpleMetaType.LONG, new Long(1)),
-      new SimpleValueSupport<Short>(SimpleMetaType.SHORT, new Short(Short.MAX_VALUE)),
-      new SimpleValueSupport<String>(SimpleMetaType.STRING, new String("hello")),
+      new SimpleValueSupport(SimpleMetaType.BIGDECIMAL, new BigDecimal(1)),
+      new SimpleValueSupport(SimpleMetaType.BIGINTEGER, BigInteger.ONE),
+      new SimpleValueSupport(SimpleMetaType.BOOLEAN, new Boolean(false)),
+      new SimpleValueSupport(SimpleMetaType.BYTE, new Byte(Byte.MAX_VALUE)),
+      new SimpleValueSupport(SimpleMetaType.CHARACTER, new Character('a')),
+      new SimpleValueSupport(SimpleMetaType.DATE, new Date(System.currentTimeMillis())),
+      new SimpleValueSupport(SimpleMetaType.DOUBLE, new Double(1)),
+      new SimpleValueSupport(SimpleMetaType.FLOAT, new Float(1)),
+      new SimpleValueSupport(SimpleMetaType.INTEGER, new Integer(1)),
+      new SimpleValueSupport(SimpleMetaType.LONG, new Long(1)),
+      new SimpleValueSupport(SimpleMetaType.SHORT, new Short(Short.MAX_VALUE)),
+      new SimpleValueSupport(SimpleMetaType.STRING, new String("hello")),
       new SimpleValueSupport(SimpleMetaType.VOID, null),
-      new SimpleValueSupport<Name>(SimpleMetaType.NAMEDOBJECT, new StringName("objectref"))
+      new SimpleValueSupport(SimpleMetaType.NAMEDOBJECT, new StringName("objectref"))
    };
 
    @SuppressWarnings("unchecked")
    SimpleValue[] nullValues = new SimpleValue[]
    {
-      new SimpleValueSupport<BigDecimal>(SimpleMetaType.BIGDECIMAL, null),
-      new SimpleValueSupport<BigInteger>(SimpleMetaType.BIGINTEGER, null),
-      new SimpleValueSupport<Boolean>(SimpleMetaType.BOOLEAN, null),
-      new SimpleValueSupport<Byte>(SimpleMetaType.BYTE, null),
-      new SimpleValueSupport<Character>(SimpleMetaType.CHARACTER, null),
-      new SimpleValueSupport<Date>(SimpleMetaType.DATE, null),
-      new SimpleValueSupport<Double>(SimpleMetaType.DOUBLE, null),
-      new SimpleValueSupport<Float>(SimpleMetaType.FLOAT, null),
-      new SimpleValueSupport<Integer>(SimpleMetaType.INTEGER, null),
-      new SimpleValueSupport<Long>(SimpleMetaType.LONG, null),
-      new SimpleValueSupport<Short>(SimpleMetaType.SHORT, null),
-      new SimpleValueSupport<String>(SimpleMetaType.STRING, null),
+      new SimpleValueSupport(SimpleMetaType.BIGDECIMAL, null),
+      new SimpleValueSupport(SimpleMetaType.BIGINTEGER, null),
+      new SimpleValueSupport(SimpleMetaType.BOOLEAN, null),
+      new SimpleValueSupport(SimpleMetaType.BYTE, null),
+      new SimpleValueSupport(SimpleMetaType.CHARACTER, null),
+      new SimpleValueSupport(SimpleMetaType.DATE, null),
+      new SimpleValueSupport(SimpleMetaType.DOUBLE, null),
+      new SimpleValueSupport(SimpleMetaType.FLOAT, null),
+      new SimpleValueSupport(SimpleMetaType.INTEGER, null),
+      new SimpleValueSupport(SimpleMetaType.LONG, null),
+      new SimpleValueSupport(SimpleMetaType.SHORT, null),
+      new SimpleValueSupport(SimpleMetaType.STRING, null),
       new SimpleValueSupport(SimpleMetaType.VOID, null),
-      new SimpleValueSupport<Name>(SimpleMetaType.NAMEDOBJECT, null)
+      new SimpleValueSupport(SimpleMetaType.NAMEDOBJECT, null)
    };
 
    /**
@@ -261,7 +261,7 @@ public class SimpleMetaTypeUnitTestCase extends AbstractMetaTypeTest
       {
          getLog().debug("serialization: " + types[i].getClassName() + " original=" + types[i]);
          byte[] bytes = serialize(types[i]);
-         SimpleMetaType<?> result = (SimpleMetaType<?>) deserialize(bytes);
+         SimpleMetaType result = (SimpleMetaType) deserialize(bytes);
          getLog().debug("serialization: " + types[i].getClassName() + " result  =" + types[i]);
 
          assertTrue("Should resolve to same object after serialization " + types[i], types[i] == result);

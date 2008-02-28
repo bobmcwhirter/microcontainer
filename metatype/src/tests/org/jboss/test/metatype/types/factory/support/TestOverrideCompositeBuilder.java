@@ -34,7 +34,7 @@ import org.jboss.metatype.spi.types.MetaTypeBuilder;
  */
 public class TestOverrideCompositeBuilder implements MetaTypeBuilder
 {
-   public MetaType<?> buildMetaType()
+   public MetaType buildMetaType()
    {
       MutableCompositeMetaType result = new MutableCompositeMetaType(TestOverrideComposite.class.getName(), TestOverrideComposite.class.getName());
       result.addItem("somethingElse", "somethingElse", SimpleMetaType.STRING);

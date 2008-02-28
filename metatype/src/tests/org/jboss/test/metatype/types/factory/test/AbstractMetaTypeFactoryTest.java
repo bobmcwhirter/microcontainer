@@ -66,7 +66,7 @@ public abstract class AbstractMetaTypeFactoryTest extends AbstractMetaTypeTest
     * @param type the type
     * @return the meta type
     */
-   protected MetaType<?> resolve(Type type)
+   protected MetaType resolve(Type type)
    {
       return metaTypeFactory.resolve(type);
    }

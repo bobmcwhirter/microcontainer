@@ -112,8 +112,8 @@ public class CompositeValueSupportUnitTestCase extends AbstractMetaTypeTest
     */
    public void testGetAll() throws Exception
    {
-      SimpleValue<String> value1 = initStringValue1();
-      SimpleValue<Integer> integer2 = initInteger2();
+      SimpleValue value1 = initStringValue1();
+      SimpleValue integer2 = initInteger2();
       CompositeMetaType compositeMetaType = initCompositeMetaType();
       Map<String, MetaValue> map = initMapValues();
       CompositeValue v = new CompositeValueSupport(compositeMetaType, map);
@@ -154,12 +154,12 @@ public class CompositeValueSupportUnitTestCase extends AbstractMetaTypeTest
     */
    public void testContainsValue() throws Exception
    {
-      SimpleValue<String> value1 = initStringValue1();
-      SimpleValue<Integer> integer2 = initInteger2();
-      SimpleValue<String> name1 = initStringName1();
-      SimpleValue<String> nullString = initStringNull();
-      SimpleValue<String> emptyString = initStringEmpty();
-      SimpleValue<Integer> nullInteger = initIntegerNull();
+      SimpleValue value1 = initStringValue1();
+      SimpleValue integer2 = initInteger2();
+      SimpleValue name1 = initStringName1();
+      SimpleValue nullString = initStringNull();
+      SimpleValue emptyString = initStringEmpty();
+      SimpleValue nullInteger = initIntegerNull();
       CompositeMetaType compositeMetaType = initCompositeMetaType();
       Map<String, MetaValue> map = initMapValues();
       CompositeValue v = new CompositeValueSupport(compositeMetaType, map);
@@ -193,12 +193,12 @@ public class CompositeValueSupportUnitTestCase extends AbstractMetaTypeTest
     */
    public void testValues() throws Exception
    {
-      SimpleValue<String> value1 = initStringValue1();
-      SimpleValue<Integer> integer2 = initInteger2();
-      SimpleValue<String> name1 = initStringName1();
-      SimpleValue<String> nullString = initStringNull();
-      SimpleValue<String> emptyString = initStringEmpty();
-      SimpleValue<Integer> nullInteger = initIntegerNull();
+      SimpleValue value1 = initStringValue1();
+      SimpleValue integer2 = initInteger2();
+      SimpleValue name1 = initStringName1();
+      SimpleValue nullString = initStringNull();
+      SimpleValue emptyString = initStringEmpty();
+      SimpleValue nullInteger = initIntegerNull();
 
       CompositeMetaType compositeMetaType = initCompositeMetaType();
       Map<String, MetaValue> map = initMapValues();

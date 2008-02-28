@@ -29,11 +29,10 @@ import org.jboss.metatype.api.values.SimpleValue;
 /**
  * MockSimpleValue.
  * 
- * @param <T> the underlying type
  * @author <a href="adrian@jboss.com">Adrian Brock</a>
  * @version $Revision: 1.1 $
  */
-public class MockSimpleValue<T extends Serializable> extends MockMetaValue implements SimpleValue<T>
+public class MockSimpleValue extends MockMetaValue implements SimpleValue
 {
    /** The serialVersionUID */
    private static final long serialVersionUID = 1L;
@@ -43,18 +42,18 @@ public class MockSimpleValue<T extends Serializable> extends MockMetaValue imple
     * 
     * @param metaType the meta type
     */
-   public MockSimpleValue(SimpleMetaType<T> metaType)
+   public MockSimpleValue(SimpleMetaType metaType)
    {
       super(metaType);
    }
 
    @SuppressWarnings("unchecked")
-   public SimpleMetaType<T> getMetaType()
+   public SimpleMetaType getMetaType()
    {
       return (SimpleMetaType) super.getMetaType();
    }
 
-   public T getValue()
+   public Serializable getValue()
    {
       throw new org.jboss.util.NotImplementedException("getValue");
    }

@@ -21,8 +21,6 @@
 */
 package org.jboss.metatype.api.types;
 
-import java.io.Serializable;
-
 import org.jboss.metatype.api.values.GenericValue;
 
 /**
@@ -35,7 +33,7 @@ import org.jboss.metatype.api.values.GenericValue;
  * @author <a href="adrian@jboss.com">Adrian Brock</a>
  * @version $Revision: 1.1 $
  */
-public class GenericMetaType extends AbstractMetaType<Serializable>
+public class GenericMetaType extends AbstractMetaType
 {
    /** The serialVersionUID */
    private static final long serialVersionUID = 6783554622082477064L;

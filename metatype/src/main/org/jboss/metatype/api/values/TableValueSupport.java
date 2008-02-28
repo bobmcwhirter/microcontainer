@@ -293,7 +293,7 @@ public class TableValueSupport extends AbstractMetaValue implements TableValue
          throw new IllegalArgumentException("key has " + key.length + " elements, " + "should be " + indexNames.length);
       for (int i = 0; i < key.length; i++)
       {
-         MetaType<?> metaType = tableType.getRowType().getType(indexNames[i]);
+         MetaType metaType = tableType.getRowType().getType(indexNames[i]);
          if (key[i] != null && metaType.isValue(key[i]) == false)
             throw new IllegalArgumentException("key element " + i + " " + key + " is not a value for " + metaType);
       }

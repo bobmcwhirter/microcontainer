@@ -24,16 +24,14 @@ package org.jboss.metatype.api.types;
 import java.io.IOException;
 import java.io.ObjectInputStream;
 import java.io.ObjectStreamField;
-import java.io.Serializable;
 
 /**
  * AbstractMetaType.
  * 
- * @param <T> the underlying type
  * @author <a href="adrian@jboss.com">Adrian Brock</a>
  * @version $Revision: 1.1 $
  */
-public abstract class AbstractMetaType<T extends Serializable> implements MetaType<T>
+public abstract class AbstractMetaType implements MetaType
 {
    /** The serialVersionUID */
    private static final long serialVersionUID = 5786422588217893696L;

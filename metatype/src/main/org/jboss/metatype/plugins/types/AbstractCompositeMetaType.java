@@ -21,7 +21,6 @@
 */
 package org.jboss.metatype.plugins.types;
 
-import java.io.Serializable;
 import java.util.Collections;
 import java.util.Iterator;
 import java.util.Set;
@@ -38,7 +37,7 @@ import org.jboss.metatype.api.values.CompositeValue;
  * @author <a href="adrian@jboss.com">Adrian Brock</a>
  * @version $Revision: 1.1 $
  */
-public abstract class AbstractCompositeMetaType extends AbstractMetaType<Serializable> implements CompositeMetaType
+public abstract class AbstractCompositeMetaType extends AbstractMetaType implements CompositeMetaType
 {
    /** The serialVersionUID */
    private static final long serialVersionUID = -7421421680257307598L;
@@ -47,7 +46,7 @@ public abstract class AbstractCompositeMetaType extends AbstractMetaType<Seriali
    private TreeMap<String, String> nameToDescription;
 
    /** Item names to meta types */
-   private TreeMap<String, MetaType<?>> nameToType;
+   private TreeMap<String, MetaType> nameToType;
    
    /** The keys */
    private Set<String> keys;
@@ -80,13 +79,13 @@ public abstract class AbstractCompositeMetaType extends AbstractMetaType<Seriali
     *            The names are case sensitive, leading and trailing whitespace
     *            is ignored.
     */
-   protected AbstractCompositeMetaType(String typeName, String description, String[] itemNames, String[] itemDescriptions, MetaType<?>[] itemTypes, boolean ignoreItems)
+   protected AbstractCompositeMetaType(String typeName, String description, String[] itemNames, String[] itemDescriptions, MetaType[] itemTypes, boolean ignoreItems)
    {
       super(CompositeValue.class.getName(), typeName, description);
       if (ignoreItems)
       {
          nameToDescription = new TreeMap<String, String>();
-         nameToType = new TreeMap<String, MetaType<?>>();
+         nameToType = new TreeMap<String, MetaType>();
          return;
       }
       if (itemNames == null || itemNames.length == 0)
@@ -100,7 +99,7 @@ public abstract class AbstractCompositeMetaType extends AbstractMetaType<Seriali
       if (itemNames.length != itemTypes.length)
          throw new IllegalArgumentException("wrong number of itemTypes");
       nameToDescription = new TreeMap<String, String>();
-      nameToType = new TreeMap<String, MetaType<?>>();
+      nameToType = new TreeMap<String, MetaType>();
       for (int i = 0; i < itemNames.length; ++i)
       {
          try
@@ -154,7 +153,7 @@ public abstract class AbstractCompositeMetaType extends AbstractMetaType<Seriali
     * @param itemType the item type
     * @throws IllegalArgumentException for a null or empty item name, description or type or duplicate item
     */
-   protected void addItem(String itemName, String itemDescription, MetaType<?> itemType)
+   protected void addItem(String itemName, String itemDescription, MetaType itemType)
    {
       if (itemName == null)
          throw new IllegalArgumentException("null item name");
@@ -194,7 +193,7 @@ public abstract class AbstractCompositeMetaType extends AbstractMetaType<Seriali
       return true;
    }
 
-   public MetaType<?> getType(String itemName)
+   public MetaType getType(String itemName)
    {
       if (itemName == null)
          return null;

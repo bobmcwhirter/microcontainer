@@ -21,7 +21,6 @@
 */
 package org.jboss.metatype.api.types;
 
-import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Iterator;
@@ -35,7 +34,7 @@ import org.jboss.metatype.api.values.TableValue;
  * @author <a href="adrian@jboss.com">Adrian Brock</a>
  * @version $Revision: 1.1 $
  */
-public class ImmutableTableMetaType extends AbstractMetaType<Serializable> implements TableMetaType
+public class ImmutableTableMetaType extends AbstractMetaType implements TableMetaType
 {
    /** The serialVersionUID */
    private static final long serialVersionUID = 5791103660662775558L;

@@ -44,7 +44,7 @@ public class TestMetaMapper extends MetaMapper<TestMetaMapped>
       return String.class;
    }
 
-   public MetaValue createMetaValue(MetaType<?> metaType, TestMetaMapped object)
+   public MetaValue createMetaValue(MetaType metaType, TestMetaMapped object)
    {
       return SimpleValueSupport.wrap(object.getValue());
    }
@@ -54,7 +54,7 @@ public class TestMetaMapper extends MetaMapper<TestMetaMapped>
       if (SimpleMetaType.STRING.equals(metaValue.getMetaType()) == false)
          throw new IllegalArgumentException("Not a string: " + metaValue);
       
-      SimpleValue<?> simple = (SimpleValue<?>) metaValue;
+      SimpleValue simple = (SimpleValue) metaValue;
       String value = (String) simple.getValue();
       return new TestMetaMapped(value);
    }

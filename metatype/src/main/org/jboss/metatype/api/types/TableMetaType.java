@@ -21,7 +21,6 @@
 */
 package org.jboss.metatype.api.types;
 
-import java.io.Serializable;
 import java.util.List;
 
 /**
@@ -30,7 +29,7 @@ import java.util.List;
  * @author <a href="adrian@jboss.com">Adrian Brock</a>
  * @version $Revision: 1.1 $
  */
-public interface TableMetaType extends MetaType<Serializable>
+public interface TableMetaType extends MetaType
 {
    /**
     * Retrieve the row type

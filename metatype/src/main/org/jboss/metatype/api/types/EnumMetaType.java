@@ -33,7 +33,7 @@ import org.jboss.metatype.api.values.SimpleValue;
  * @author <a href="adrian@jboss.com">Adrian Brock</a>
  * @version $Revision: 1.1 $
  */
-public class EnumMetaType extends AbstractMetaType<String>
+public class EnumMetaType extends AbstractMetaType
 {
    /** The serialVersionUID */
    private static final long serialVersionUID = 6786422588217893696L;
@@ -107,7 +107,7 @@ public class EnumMetaType extends AbstractMetaType<String>
       if (obj == null || obj instanceof SimpleValue == false)
          return false;
 
-      SimpleValue<?> value = (SimpleValue<?>) obj;
+      SimpleValue value = (SimpleValue) obj;
       if (SimpleMetaType.STRING == value.getMetaType() == false)
          return false;
       return validValues.contains(value.getValue());

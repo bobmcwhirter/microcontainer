@@ -59,7 +59,7 @@ public abstract class AbstractMetaTypeTest extends BaseTestCase
     * 
     * @return the value
     */
-   protected SimpleValue<String> initStringValue1()
+   protected SimpleValue initStringValue1()
    {
       return SimpleValueSupport.wrap("value1");
    }
@@ -69,7 +69,7 @@ public abstract class AbstractMetaTypeTest extends BaseTestCase
     * 
     * @return the value
     */
-   protected SimpleValue<String> initStringValue2()
+   protected SimpleValue initStringValue2()
    {
       return SimpleValueSupport.wrap("value2");
    }
@@ -79,7 +79,7 @@ public abstract class AbstractMetaTypeTest extends BaseTestCase
     * 
     * @return the name
     */
-   protected SimpleValue<String> initStringName1()
+   protected SimpleValue initStringName1()
    {
       return SimpleValueSupport.wrap("name1");
    }
@@ -89,7 +89,7 @@ public abstract class AbstractMetaTypeTest extends BaseTestCase
     * 
     * @return the empty string
     */
-   protected SimpleValue<String> initStringEmpty()
+   protected SimpleValue initStringEmpty()
    {
       return SimpleValueSupport.wrap("");
    }
@@ -99,9 +99,9 @@ public abstract class AbstractMetaTypeTest extends BaseTestCase
     * 
     * @return the null string
     */
-   protected SimpleValue<String> initStringNull()
+   protected SimpleValue initStringNull()
    {
-      return new SimpleValueSupport<String>(SimpleMetaType.STRING, null);
+      return new SimpleValueSupport(SimpleMetaType.STRING, null);
    }
 
    /**
@@ -109,7 +109,7 @@ public abstract class AbstractMetaTypeTest extends BaseTestCase
     * 
     * @return the wrong string
     */
-   protected SimpleValue<String> initStringWrong()
+   protected SimpleValue initStringWrong()
    {
       return SimpleValueSupport.wrap("wrong");
    }
@@ -119,7 +119,7 @@ public abstract class AbstractMetaTypeTest extends BaseTestCase
     * 
     * @return the value
     */
-   protected SimpleValue<Integer> initInteger2()
+   protected SimpleValue initInteger2()
    {
       return SimpleValueSupport.wrap(new Integer(2));
    }
@@ -129,7 +129,7 @@ public abstract class AbstractMetaTypeTest extends BaseTestCase
     * 
     * @return the value
     */
-   protected SimpleValue<Integer> initInteger3()
+   protected SimpleValue initInteger3()
    {
       return SimpleValueSupport.wrap(new Integer(3));
    }
@@ -139,7 +139,7 @@ public abstract class AbstractMetaTypeTest extends BaseTestCase
     * 
     * @return the value
     */
-   protected SimpleValue<Integer> initInteger4()
+   protected SimpleValue initInteger4()
    {
       return SimpleValueSupport.wrap(new Integer(4));
    }
@@ -149,9 +149,9 @@ public abstract class AbstractMetaTypeTest extends BaseTestCase
     * 
     * @return the value
     */
-   protected SimpleValue<Integer> initIntegerNull()
+   protected SimpleValue initIntegerNull()
    {
-      return new SimpleValueSupport<Integer>(SimpleMetaType.INTEGER, null);
+      return new SimpleValueSupport(SimpleMetaType.INTEGER, null);
    }
 
    /**
@@ -255,7 +255,7 @@ public abstract class AbstractMetaTypeTest extends BaseTestCase
    {
       String[] itemNames = new String[] { "name1", "name2" };
       String[] itemDescriptions = new String[] { "desc1", "desc2" };
-      MetaType<?>[] itemTypes = new MetaType[] { SimpleMetaType.STRING, SimpleMetaType.INTEGER };
+      MetaType[] itemTypes = new MetaType[] { SimpleMetaType.STRING, SimpleMetaType.INTEGER };
       CompositeMetaType compositeMetaType = new ImmutableCompositeMetaType("typeName", "description", itemNames, itemDescriptions, itemTypes);
       return compositeMetaType;
    }
@@ -269,7 +269,7 @@ public abstract class AbstractMetaTypeTest extends BaseTestCase
    {
       String[] itemNames = new String[] { "name1", "name2" };
       String[] itemDescriptions = new String[] { "desc1", "desc2" };
-      MetaType<?>[] itemTypes = new MetaType[] { SimpleMetaType.STRING, SimpleMetaType.INTEGER };
+      MetaType[] itemTypes = new MetaType[] { SimpleMetaType.STRING, SimpleMetaType.INTEGER };
       CompositeMetaType compositeMetaType = new ImmutableCompositeMetaType("typeName2", "description", itemNames, itemDescriptions, itemTypes);
       return compositeMetaType;
    }
@@ -292,7 +292,7 @@ public abstract class AbstractMetaTypeTest extends BaseTestCase
     * @param actual the actual
     * @throws Exception for any problem
     */
-   protected void testArray(ArrayMetaType<?> expected, ArrayMetaType<?> actual) throws Exception
+   protected void testArray(ArrayMetaType expected, ArrayMetaType actual) throws Exception
    {
       getLog().debug("Array MetaType: className=" + actual.getClassName() + " typeName=" + actual.getTypeName() + " description=" + actual.getDescription() + " dim=" + actual.getDimension());
       assertEquals(expected, actual);
@@ -305,7 +305,7 @@ public abstract class AbstractMetaTypeTest extends BaseTestCase
     * @param actual the actual
     * @throws Exception for any problem
     */
-   protected void testCollection(CollectionMetaType<?> expected, CollectionMetaType<?> actual) throws Exception
+   protected void testCollection(CollectionMetaType expected, CollectionMetaType actual) throws Exception
    {
       getLog().debug("Collection MetaType: className=" + actual.getClassName() + " typeName=" + actual.getTypeName() + " description=" + actual.getDescription());
       assertEquals(expected, actual);

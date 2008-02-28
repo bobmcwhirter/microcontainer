@@ -35,19 +35,19 @@ public class MockMetaValue implements MetaValue
    /** The serialVersionUID */
    private static final long serialVersionUID = 1L;
    
-   private MetaType<?> metaType;
+   private MetaType metaType;
 
    /**
     * Create a new MockMetaValue.
     * 
     * @param metaType the meta type
     */
-   public MockMetaValue(MetaType<?> metaType)
+   public MockMetaValue(MetaType metaType)
    {
       this.metaType = metaType;
    }
    
-   public MetaType<?> getMetaType()
+   public MetaType getMetaType()
    {
       return metaType;
    }

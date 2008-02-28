@@ -28,18 +28,17 @@ import org.jboss.metatype.api.types.SimpleMetaType;
 /**
  * SimpleValue.
  * 
- * @param <T> the underlying type 
  * @author <a href="adrian@jboss.com">Adrian Brock</a>
  * @version $Revision: 1.1 $
  */
-public interface SimpleValue<T extends Serializable> extends MetaValue
+public interface SimpleValue extends MetaValue
 {
-   SimpleMetaType<T> getMetaType();
+   SimpleMetaType getMetaType();
    
    /**
     * Get the underlying value
     * 
     * @return the underlying value
     */
-   public T getValue();
+   Serializable getValue();
 }

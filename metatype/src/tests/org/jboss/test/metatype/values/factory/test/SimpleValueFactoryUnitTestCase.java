@@ -92,18 +92,18 @@ public class SimpleValueFactoryUnitTestCase extends AbstractMetaValueFactoryTest
    @SuppressWarnings("unchecked")
    SimpleValue[] metaValues = new SimpleValue[]
    {
-      new SimpleValueSupport<BigDecimal>(SimpleMetaType.BIGDECIMAL, BIG_DECIMAL),
-      new SimpleValueSupport<BigInteger>(SimpleMetaType.BIGINTEGER, BIG_INTEGER),
-      new SimpleValueSupport<Boolean>(SimpleMetaType.BOOLEAN, BOOLEAN),
-      new SimpleValueSupport<Byte>(SimpleMetaType.BYTE, BYTE),
-      new SimpleValueSupport<Character>(SimpleMetaType.CHARACTER, CHARACTER),
-      new SimpleValueSupport<Date>(SimpleMetaType.DATE, DATE),
-      new SimpleValueSupport<Double>(SimpleMetaType.DOUBLE, DOUBLE),
-      new SimpleValueSupport<Float>(SimpleMetaType.FLOAT, FLOAT),
-      new SimpleValueSupport<Integer>(SimpleMetaType.INTEGER, INTEGER),
-      new SimpleValueSupport<Long>(SimpleMetaType.LONG, LONG),
-      new SimpleValueSupport<Short>(SimpleMetaType.SHORT, SHORT),
-      new SimpleValueSupport<String>(SimpleMetaType.STRING, STRING),
+      new SimpleValueSupport(SimpleMetaType.BIGDECIMAL, BIG_DECIMAL),
+      new SimpleValueSupport(SimpleMetaType.BIGINTEGER, BIG_INTEGER),
+      new SimpleValueSupport(SimpleMetaType.BOOLEAN, BOOLEAN),
+      new SimpleValueSupport(SimpleMetaType.BYTE, BYTE),
+      new SimpleValueSupport(SimpleMetaType.CHARACTER, CHARACTER),
+      new SimpleValueSupport(SimpleMetaType.DATE, DATE),
+      new SimpleValueSupport(SimpleMetaType.DOUBLE, DOUBLE),
+      new SimpleValueSupport(SimpleMetaType.FLOAT, FLOAT),
+      new SimpleValueSupport(SimpleMetaType.INTEGER, INTEGER),
+      new SimpleValueSupport(SimpleMetaType.LONG, LONG),
+      new SimpleValueSupport(SimpleMetaType.SHORT, SHORT),
+      new SimpleValueSupport(SimpleMetaType.STRING, STRING),
    };
 
    /**
@@ -117,8 +117,8 @@ public class SimpleValueFactoryUnitTestCase extends AbstractMetaValueFactoryTest
       {
          Object value = values[i];
          MetaValue result = createMetaValue(value);
-         SimpleValue<?> actual = assertInstanceOf(result, SimpleValue.class);
-         SimpleValue<?> expected = metaValues[i]; 
+         SimpleValue actual = assertInstanceOf(result, SimpleValue.class);
+         SimpleValue expected = metaValues[i]; 
          getLog().debug("Simple Value: expected=" + expected + " actual=" + actual);
          assertEquals(expected, actual);
       }

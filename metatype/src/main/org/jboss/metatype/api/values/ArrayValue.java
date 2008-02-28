@@ -21,22 +21,18 @@
 */
 package org.jboss.metatype.api.values;
 
-import java.io.Serializable;
-
 import org.jboss.metatype.api.types.ArrayMetaType;
 
 /**
  * ArrayValue.
  * 
- * @param <T> the array type
  * @author <a href="adrian@jboss.com">Adrian Brock</a>
  * @author Scott.Stark@jboss.org
  * @version $Revision: 1.1 $
  */
-public interface ArrayValue<T extends Serializable>
-   extends MetaValue, Iterable<T>
+public interface ArrayValue  extends MetaValue, Iterable<Object>
 {
-   ArrayMetaType<T> getMetaType();
+   ArrayMetaType getMetaType();
    
    /**
     * Get the underlying array value. This will not be an

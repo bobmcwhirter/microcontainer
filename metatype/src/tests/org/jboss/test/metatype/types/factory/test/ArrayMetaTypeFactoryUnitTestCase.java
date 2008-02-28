@@ -65,9 +65,9 @@ public class ArrayMetaTypeFactoryUnitTestCase extends AbstractMetaTypeFactoryTes
    public void testSimpleArray() throws Exception
    {
       String[] array = new String[0];
-      MetaType<?> result = resolve(array.getClass());
-      ArrayMetaType<String> actual = assertInstanceOf(result, ArrayMetaType.class);
-      ArrayMetaType<String> expected = new ArrayMetaType<String>(1, SimpleMetaType.STRING);
+      MetaType result = resolve(array.getClass());
+      ArrayMetaType actual = assertInstanceOf(result, ArrayMetaType.class);
+      ArrayMetaType expected = new ArrayMetaType(1, SimpleMetaType.STRING);
       testArray(expected, actual);
    }
 

@@ -76,7 +76,7 @@ public class CompositeMetaTypeFactoryUnitTestCase extends AbstractMetaTypeFactor
     */
    public void testSimpleComposite() throws Exception
    {
-      MetaType<?> result = resolve(TestSimpleComposite.class);
+      MetaType result = resolve(TestSimpleComposite.class);
       CompositeMetaType actual = assertInstanceOf(result, CompositeMetaType.class);
       
       MutableCompositeMetaType expected = new MutableCompositeMetaType(TestSimpleComposite.class.getName(), TestSimpleComposite.class.getName());
@@ -93,7 +93,7 @@ public class CompositeMetaTypeFactoryUnitTestCase extends AbstractMetaTypeFactor
     */
    public void testRecursiveComposite() throws Exception
    {
-      MetaType<?> result = resolve(TestRecursiveComposite.class);
+      MetaType result = resolve(TestRecursiveComposite.class);
       CompositeMetaType actual = assertInstanceOf(result, CompositeMetaType.class);
       
       MutableCompositeMetaType expected = new MutableCompositeMetaType(TestRecursiveComposite.class.getName(), TestRecursiveComposite.class.getName());
@@ -108,7 +108,7 @@ public class CompositeMetaTypeFactoryUnitTestCase extends AbstractMetaTypeFactor
    
    public void testIgnoredItem() throws Exception
    {
-      MetaType<?> result = resolve(TestIgnoredCompositeItem.class);
+      MetaType result = resolve(TestIgnoredCompositeItem.class);
       CompositeMetaType actual = assertInstanceOf(result, CompositeMetaType.class);
 
       MutableCompositeMetaType expected = new MutableCompositeMetaType(TestIgnoredCompositeItem.class.getName(), TestIgnoredCompositeItem.class.getName());
@@ -122,7 +122,7 @@ public class CompositeMetaTypeFactoryUnitTestCase extends AbstractMetaTypeFactor
    
    public void testRenamedItem() throws Exception
    {
-      MetaType<?> result = resolve(TestRenamedCompositeItem.class);
+      MetaType result = resolve(TestRenamedCompositeItem.class);
       CompositeMetaType actual = assertInstanceOf(result, CompositeMetaType.class);
       
       MutableCompositeMetaType expected = new MutableCompositeMetaType(TestRenamedCompositeItem.class.getName(), TestRenamedCompositeItem.class.getName());

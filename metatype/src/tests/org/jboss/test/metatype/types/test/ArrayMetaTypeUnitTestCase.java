@@ -121,21 +121,21 @@ public class ArrayMetaTypeUnitTestCase extends AbstractMetaTypeTest
     */
    public void testIsValueSimpleValue() throws Exception
    {
-      SimpleMetaType<String> simpleType = SimpleMetaType.STRING;
-      MockSimpleValue<?> sv = new MockSimpleValue<String>(simpleType);
-      MockSimpleValue<?>[][] compData1 = new MockSimpleValue[][]
+      SimpleMetaType simpleType = SimpleMetaType.STRING;
+      MockSimpleValue sv = new MockSimpleValue(simpleType);
+      MockSimpleValue[][] compData1 = new MockSimpleValue[][]
       {
          { sv, null }, { sv, sv }
       };
             
-      ArrayMetaType<String> compArrayType1 = new ArrayMetaType<String>(2, SimpleMetaType.STRING);
+      ArrayMetaType compArrayType1 = new ArrayMetaType(2, SimpleMetaType.STRING);
       assertTrue("compData1 should be a value of array type", compArrayType1.isValue(compData1));
 
-      ArrayMetaType<String> compArrayType2 = new ArrayMetaType<String>(1, SimpleMetaType.STRING);
+      ArrayMetaType compArrayType2 = new ArrayMetaType(1, SimpleMetaType.STRING);
       assertFalse("compData1 should not be a value of array type, wrong dimension", compArrayType2.isValue(compData1));
 
-      SimpleMetaType<Integer> simpleType2 = SimpleMetaType.INTEGER;
-      ArrayMetaType<Integer> compArrayType3 = new ArrayMetaType<Integer>(2, simpleType2);
+      SimpleMetaType simpleType2 = SimpleMetaType.INTEGER;
+      ArrayMetaType compArrayType3 = new ArrayMetaType(2, simpleType2);
       assertFalse("compData1 should not be a value of array type, wrong element type", compArrayType3.isValue(compData1));
    }
 
@@ -149,7 +149,7 @@ public class ArrayMetaTypeUnitTestCase extends AbstractMetaTypeTest
    {
       String[] itemNames = new String[] { "name1", "name2" };
       String[] itemDescriptions = new String[] { "desc1", "desc2" };
-      MetaType<?>[] itemTypes = new MetaType<?>[] { SimpleMetaType.STRING, SimpleMetaType.INTEGER };
+      MetaType[] itemTypes = new MetaType[] { SimpleMetaType.STRING, SimpleMetaType.INTEGER };
       CompositeMetaType compositeType = new ImmutableCompositeMetaType("typeName", "description", itemNames, itemDescriptions, itemTypes);
       MockCompositeValue cv = new MockCompositeValue(compositeType);
       MockCompositeValue[][] compData1 = new MockCompositeValue[][]

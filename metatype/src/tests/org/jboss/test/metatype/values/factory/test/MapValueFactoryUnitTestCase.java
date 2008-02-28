@@ -122,9 +122,9 @@ public class MapValueFactoryUnitTestCase extends AbstractMetaValueFactoryTest
       Type collectionType = method.getGenericReturnType();
       Map<String, Integer> map = simpleMap();
       
-      MetaType<?> keyType = resolve(String.class);
-      MetaType<?> valueType = resolve(Integer.class);
-      MetaType<?>[] itemTypes = { keyType, valueType };
+      MetaType keyType = resolve(String.class);
+      MetaType valueType = resolve(Integer.class);
+      MetaType[] itemTypes = { keyType, valueType };
       String entryName = Map.Entry.class.getName();
       CompositeMetaType entryType = new ImmutableCompositeMetaType(entryName, entryName, DefaultMetaTypeFactory.MAP_ITEM_NAMES, DefaultMetaTypeFactory.MAP_ITEM_NAMES, itemTypes);
       TableMetaType tableType = new ImmutableTableMetaType(Map.class.getName(), Map.class.getName(), entryType, DefaultMetaTypeFactory.MAP_INDEX_NAMES);
@@ -156,9 +156,9 @@ public class MapValueFactoryUnitTestCase extends AbstractMetaValueFactoryTest
       Type collectionType = method.getGenericReturnType();
       Map<TestSimpleComposite, Integer> map = compositeKeyMap();
       
-      MetaType<?> keyType = resolve(TestSimpleComposite.class);
-      MetaType<?> valueType = resolve(Integer.class);
-      MetaType<?>[] itemTypes = { keyType, valueType };
+      MetaType keyType = resolve(TestSimpleComposite.class);
+      MetaType valueType = resolve(Integer.class);
+      MetaType[] itemTypes = { keyType, valueType };
       String entryName = Map.Entry.class.getName();
       CompositeMetaType entryType = new ImmutableCompositeMetaType(entryName, entryName, DefaultMetaTypeFactory.MAP_ITEM_NAMES, DefaultMetaTypeFactory.MAP_ITEM_NAMES, itemTypes);
       TableMetaType tableType = new ImmutableTableMetaType(Map.class.getName(), Map.class.getName(), entryType, DefaultMetaTypeFactory.MAP_INDEX_NAMES);
@@ -198,9 +198,9 @@ public class MapValueFactoryUnitTestCase extends AbstractMetaValueFactoryTest
       Type collectionType = method.getGenericReturnType();
       Map<String, TestSimpleComposite> map = compositeValueMap();
       
-      MetaType<?> keyType = resolve(String.class);
-      MetaType<?> valueType = resolve(TestSimpleComposite.class);
-      MetaType<?>[] itemTypes = { keyType, valueType };
+      MetaType keyType = resolve(String.class);
+      MetaType valueType = resolve(TestSimpleComposite.class);
+      MetaType[] itemTypes = { keyType, valueType };
       String entryName = Map.Entry.class.getName();
       CompositeMetaType entryType = new ImmutableCompositeMetaType(entryName, entryName, DefaultMetaTypeFactory.MAP_ITEM_NAMES, DefaultMetaTypeFactory.MAP_ITEM_NAMES, itemTypes);
       TableMetaType tableType = new ImmutableTableMetaType(Map.class.getName(), Map.class.getName(), entryType, DefaultMetaTypeFactory.MAP_INDEX_NAMES);

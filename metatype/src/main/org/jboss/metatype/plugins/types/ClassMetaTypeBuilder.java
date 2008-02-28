@@ -38,7 +38,7 @@ public class ClassMetaTypeBuilder implements MetaTypeBuilder
    public static final ClassMetaTypeBuilder INSTANCE = new ClassMetaTypeBuilder();
    
    /** The MetaType for Class */
-   public static final MetaType<?> CLASS_META_TYPE = new ImmutableCompositeMetaType(
+   public static final MetaType CLASS_META_TYPE = new ImmutableCompositeMetaType(
        Class.class.getName(), 
        Class.class.getName(), 
        new String[] { "name" }, 
@@ -46,7 +46,7 @@ public class ClassMetaTypeBuilder implements MetaTypeBuilder
        new MetaType[] { SimpleMetaType.STRING }
    );
 
-   public MetaType<?> buildMetaType()
+   public MetaType buildMetaType()
    {
       return CLASS_META_TYPE;
    }

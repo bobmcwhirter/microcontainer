@@ -60,7 +60,7 @@ public class MutableCompositeMetaType extends AbstractCompositeMetaType
    }
 
    @Override
-   public void addItem(String itemName, String itemDescription, MetaType<?> itemType)
+   public void addItem(String itemName, String itemDescription, MetaType itemType)
    {
       if (frozen)
          throw new IllegalStateException("The type is frozen");

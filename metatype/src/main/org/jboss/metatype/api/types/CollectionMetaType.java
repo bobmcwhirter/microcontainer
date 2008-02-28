@@ -21,7 +21,6 @@
 */
 package org.jboss.metatype.api.types;
 
-import java.io.Serializable;
 import java.util.Collection;
 
 import org.jboss.metatype.api.values.CollectionValue;
@@ -29,16 +28,16 @@ import org.jboss.metatype.api.values.CollectionValue;
 /**
  * CollectionMetaType.
  *
- * @param <T> exact type
  * @author <a href="ales.justin@jboss.com">Ales Justin</a>
+ * @author <a href="adrian@jboss.com">Adrian Brock</a>
  */
-public class CollectionMetaType<T extends Serializable> extends AbstractMetaType<T>
+public class CollectionMetaType extends AbstractMetaType
 {
    /** The serialVersionUID */
    private static final long serialVersionUID = -2062790692152055156L;
 
    /** The element type for the array */
-   private MetaType<?> elementType;
+   private MetaType elementType;
 
    /** Cached hash code */
    private transient int cachedHashCode = Integer.MIN_VALUE;
@@ -46,7 +45,7 @@ public class CollectionMetaType<T extends Serializable> extends AbstractMetaType
    /** Cached string representation */
    private transient String cachedToString = null;
 
-   public CollectionMetaType(String className, MetaType<T> elementType)
+   public CollectionMetaType(String className, MetaType elementType)
    {
       super(className);
       if (elementType == null)
@@ -54,7 +53,7 @@ public class CollectionMetaType<T extends Serializable> extends AbstractMetaType
       this.elementType = elementType;
    }
 
-   public CollectionMetaType(String className, String description, MetaType<T> elementType)
+   public CollectionMetaType(String className, String description, MetaType elementType)
    {
       super(className, description);
       if (elementType == null)
@@ -62,7 +61,7 @@ public class CollectionMetaType<T extends Serializable> extends AbstractMetaType
       this.elementType = elementType;
    }
 
-   public CollectionMetaType(String className, String typeName, String description, MetaType<T> elementType)
+   public CollectionMetaType(String className, String typeName, String description, MetaType elementType)
    {
       super(className, typeName, description);
       if (elementType == null)
@@ -78,14 +77,13 @@ public class CollectionMetaType<T extends Serializable> extends AbstractMetaType
    /**
     * Get collection meta type.
     *
-    * @param <E> the element type
     * @param collectionType the element meta type
     * @param elementType the element meta type
     * @return collection meta type
     */
-   public static <E extends Serializable> CollectionMetaType<E> getCollectionType(String collectionType, MetaType<E> elementType)
+   public static CollectionMetaType getCollectionType(String collectionType, MetaType elementType)
    {
-      return new CollectionMetaType<E>(collectionType, elementType);
+      return new CollectionMetaType(collectionType, elementType);
    }
 
    /**
@@ -93,7 +91,7 @@ public class CollectionMetaType<T extends Serializable> extends AbstractMetaType
     *
     * @return the element type
     */
-   public MetaType<?> getElementType()
+   public MetaType getElementType()
    {
       return elementType;
    }
@@ -131,7 +129,7 @@ public class CollectionMetaType<T extends Serializable> extends AbstractMetaType
          return true;
       if (obj == null || obj instanceof CollectionMetaType == false)
          return false;
-      CollectionMetaType<?> other = (CollectionMetaType<?>) obj;
+      CollectionMetaType other = (CollectionMetaType) obj;
       return getTypeName().equals(other.getTypeName()) && getElementType().equals(other.getElementType());
    }
 

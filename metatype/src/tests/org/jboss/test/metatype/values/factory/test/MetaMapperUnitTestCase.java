@@ -48,7 +48,7 @@ public class MetaMapperUnitTestCase extends AbstractMetaValueFactoryTest
 
    public void testMetaMapper() throws Exception
    {
-      MetaType<?> metaType = resolve(TestMetaMapped.class);
+      MetaType metaType = resolve(TestMetaMapped.class);
       assertEquals(SimpleMetaType.STRING, metaType);
       
       TestMetaMapped test = new TestMetaMapped("Hello");

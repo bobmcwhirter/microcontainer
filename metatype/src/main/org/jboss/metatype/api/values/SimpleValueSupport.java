@@ -28,36 +28,33 @@ import org.jboss.metatype.api.types.SimpleMetaType;
 /**
  * SimpleValue.
  * 
- * @param <T> the underlying type 
  * @author <a href="adrian@jboss.com">Adrian Brock</a>
  * @version $Revision: 1.1 $
  */
-public class SimpleValueSupport<T extends Serializable> extends AbstractMetaValue implements SimpleValue<T>
+public class SimpleValueSupport extends AbstractMetaValue implements SimpleValue
 {
    /** The serialVersionUID */
    private static final long serialVersionUID = 8473043036261557127L;
    
    /** The simple meta type */
-   private SimpleMetaType<T> metaType;
+   private SimpleMetaType metaType;
    
    /** The value */
-   private T value;
+   private Serializable value;
 
    /**
     * Wrap a simple object in simple value
     * 
-    * @param <T> the underlying type
     * @param object the simple object
     * @return the simple value
     */
-   @SuppressWarnings("unchecked")
-   public static <T extends Serializable> SimpleValue<T> wrap(T object)
+   public static SimpleValue wrap(Serializable object)
    {
       if (object == null)
          return null;
       String className = object.getClass().getName();
-      SimpleMetaType<T> metaType = (SimpleMetaType) SimpleMetaType.resolve(className);
-      return new SimpleValueSupport<T>(metaType, object);
+      SimpleMetaType metaType = SimpleMetaType.resolve(className);
+      return new SimpleValueSupport(metaType, object);
    }
    
    /**
@@ -67,7 +64,7 @@ public class SimpleValueSupport<T extends Serializable> extends AbstractMetaValu
     * @param value the value
     * @throws IllegalArgumentException for a null simpleMetaType
     */
-   public SimpleValueSupport(SimpleMetaType<T> metaType, T value)
+   public SimpleValueSupport(SimpleMetaType metaType, Serializable value)
    {
       if (metaType == null)
          throw new IllegalArgumentException("Null simple meta type");
@@ -75,7 +72,7 @@ public class SimpleValueSupport<T extends Serializable> extends AbstractMetaValu
       setValue(value);
    }
 
-   public SimpleMetaType<T> getMetaType()
+   public SimpleMetaType getMetaType()
    {
       return metaType;
    }
@@ -85,7 +82,7 @@ public class SimpleValueSupport<T extends Serializable> extends AbstractMetaValu
     * 
     * @return the value.
     */
-   public T getValue()
+   public Serializable getValue()
    {
       return value;
    }
@@ -95,7 +92,7 @@ public class SimpleValueSupport<T extends Serializable> extends AbstractMetaValu
     * 
     * @param value the value.
     */
-   public void setValue(T value)
+   public void setValue(Serializable value)
    {
       this.value = value;
    }
@@ -109,7 +106,7 @@ public class SimpleValueSupport<T extends Serializable> extends AbstractMetaValu
       if (obj == null || obj instanceof SimpleValue == false)
          return false;
 
-      SimpleValue<?> other = (SimpleValue<?>) obj;
+      SimpleValue other = (SimpleValue) obj;
       if (metaType.equals(other.getMetaType()) == false)
          return false;
 

@@ -110,7 +110,7 @@ public interface ManagedProperty extends Serializable
     * 
     * @return the type
     */
-   MetaType<?> getMetaType();
+   MetaType getMetaType();
 
    /**
     * Get the annotations associated with the property

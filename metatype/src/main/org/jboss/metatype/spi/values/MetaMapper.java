@@ -102,7 +102,7 @@ public abstract class MetaMapper<T>
     * 
     * @return the metatype
     */
-   public MetaType<?> getMetaType()
+   public MetaType getMetaType()
    {
       Type type = mapToType();
       if (type == null)
@@ -117,7 +117,7 @@ public abstract class MetaMapper<T>
     * @param object the object
     * @return the meta value
     */
-   public abstract MetaValue createMetaValue(MetaType<?> metaType, T object);
+   public abstract MetaValue createMetaValue(MetaType metaType, T object);
    
    /**
     * Unwrap the metavalue

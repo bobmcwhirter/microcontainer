@@ -30,7 +30,7 @@ import org.jboss.metatype.api.types.CollectionMetaType;
  */
 public interface CollectionValue extends MetaValue, Iterable<MetaValue>
 {
-   CollectionMetaType<?> getMetaType();
+   CollectionMetaType getMetaType();
 
    /**
     * Get the underlying elements.

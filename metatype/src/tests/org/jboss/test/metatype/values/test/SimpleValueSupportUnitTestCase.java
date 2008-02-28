@@ -73,7 +73,7 @@ public class SimpleValueSupportUnitTestCase extends AbstractMetaTypeTest
     */
    public void testGetSimpleMetaType() throws Exception
    {
-      SimpleValue<String> value = initStringValue1();
+      SimpleValue value = initStringValue1();
       assertEquals(SimpleMetaType.STRING, value.getMetaType());
    }
 
@@ -84,7 +84,7 @@ public class SimpleValueSupportUnitTestCase extends AbstractMetaTypeTest
     */
    public void testGetValue()throws Exception
    {
-      SimpleValue<String> value = initStringValue1();
+      SimpleValue value = initStringValue1();
       assertEquals("value1", value.getValue());
    }
 
@@ -95,7 +95,7 @@ public class SimpleValueSupportUnitTestCase extends AbstractMetaTypeTest
     */
    public void testSetValue()throws Exception
    {
-      SimpleValueSupport<String> value = (SimpleValueSupport<String>) initStringValue1();
+      SimpleValueSupport value = (SimpleValueSupport) initStringValue1();
       value.setValue("value2");
       assertEquals("value2", value.getValue());
    }
@@ -107,7 +107,7 @@ public class SimpleValueSupportUnitTestCase extends AbstractMetaTypeTest
     */
    public void testEquals() throws Exception
    {
-      SimpleValue<String> v = initStringValue1();
+      SimpleValue v = initStringValue1();
 
       assertEquals("data should equal itself", v, v);
       assertNotSame("data should not equal null", v, null);
@@ -115,7 +115,7 @@ public class SimpleValueSupportUnitTestCase extends AbstractMetaTypeTest
       assertNotSame("data should not equal empty value", v, initStringEmpty());
       assertNotSame("data should not equal non SimpleValue", v, new Object());
 
-      SimpleValue<?> v2 = initStringValue1();
+      SimpleValue v2 = initStringValue1();
 
       assertEquals("data should equal with data2 with different instance of the same simple type", v, v2);
       assertEquals("data should equal with data2 with different instance of the same simple type", v2, v);
@@ -138,7 +138,7 @@ public class SimpleValueSupportUnitTestCase extends AbstractMetaTypeTest
     */
    public void testHashCode() throws Exception
    {
-      SimpleValue<String> v = initStringValue1();
+      SimpleValue v = initStringValue1();
 
       int myHashCode = "value1".hashCode();
       assertEquals("Wrong hash code generated", myHashCode, v.hashCode());
@@ -151,7 +151,7 @@ public class SimpleValueSupportUnitTestCase extends AbstractMetaTypeTest
     */
    public void testToString() throws Exception
    {
-      SimpleValue<String> v = initStringValue1();
+      SimpleValue v = initStringValue1();
 
       String toString = v.toString();
 
@@ -166,7 +166,7 @@ public class SimpleValueSupportUnitTestCase extends AbstractMetaTypeTest
     */
    public void testSerialization() throws Exception
    {
-      SimpleValue<String> v = initStringValue1();
+      SimpleValue v = initStringValue1();
       byte[] bytes = serialize(v);
       Object result = deserialize(bytes);
       assertEquals(v, result);
@@ -181,7 +181,7 @@ public class SimpleValueSupportUnitTestCase extends AbstractMetaTypeTest
    {
       try
       {
-         new SimpleValueSupport<String>(null, "value1");
+         new SimpleValueSupport(null, "value1");
          fail("Excepted IllegalArgumentException for null simple type");
       }
       catch (Throwable t)
@@ -189,6 +189,6 @@ public class SimpleValueSupportUnitTestCase extends AbstractMetaTypeTest
          checkThrowable(IllegalArgumentException.class, t);
       }
 
-      new SimpleValueSupport<String>(SimpleMetaType.STRING, null);
+      new SimpleValueSupport(SimpleMetaType.STRING, null);
    }
 }

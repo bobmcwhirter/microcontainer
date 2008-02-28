@@ -155,17 +155,16 @@ public class DefaultMetaValueFactory extends MetaValueFactory
    /**
     * Create a simple value
     * 
-    * @param <T> the simple type
     * @param type the type
     * @param value the value
     * @return the simple value
     */
-   public static <T extends Serializable> SimpleValue<T> createSimpleValue(SimpleMetaType<T> type, T value)
+   public static SimpleValue createSimpleValue(SimpleMetaType type, Serializable value)
    {
       if (value == null)
          return null;
 
-      return new SimpleValueSupport<T>(type, value);
+      return new SimpleValueSupport(type, value);
    }
 
    /**
@@ -213,7 +212,7 @@ public class DefaultMetaValueFactory extends MetaValueFactory
     * @param mapping the mapping
     * @return the generic value
     */
-   public CollectionValue createCollectionValue(CollectionMetaType<?> type, Object value, Map<Object, MetaValue> mapping)
+   public CollectionValue createCollectionValue(CollectionMetaType type, Object value, Map<Object, MetaValue> mapping)
    {
       if (value == null)
          return null;
@@ -225,7 +224,7 @@ public class DefaultMetaValueFactory extends MetaValueFactory
       {
          // recalculate element info, since usually more deterministic
          TypeInfo typeInfo = configuration.getTypeInfo(ce.getClass());
-         MetaType<?> metaType = metaTypeFactory.resolve(typeInfo);
+         MetaType metaType = metaTypeFactory.resolve(typeInfo);
          elements[i++] = internalCreate(ce, typeInfo, metaType);             
       }
       CollectionValue result = new CollectionValueSupport(type, elements);
@@ -296,17 +295,17 @@ public class DefaultMetaValueFactory extends MetaValueFactory
     * @return the composite value
     */
    @SuppressWarnings("unchecked")
-   public ArrayValue<?> createArrayValue(ArrayMetaType<?> type, Object value, Map<Object, MetaValue> mapping)
+   public ArrayValue createArrayValue(ArrayMetaType type, Object value, Map<Object, MetaValue> mapping)
    {
       if (value == null)
          return null;
 
-      ArrayValueSupport<?> result = new ArrayValueSupport(type);
+      ArrayValueSupport result = new ArrayValueSupport(type);
       mapping.put(value, result);
       
       Object[] array;
       
-      MetaType<?> elementType = type.getElementType();
+      MetaType elementType = type.getElementType();
       int dimension = type.getDimension();
       
       Object[] oldArray;
@@ -354,7 +353,7 @@ public class DefaultMetaValueFactory extends MetaValueFactory
     * @param oldArray the old array
     * @return the array
     */
-   protected Object[] createArray(MetaType<?> elementType, Class<?> componentType, int dimension, Object[] oldArray)
+   protected Object[] createArray(MetaType elementType, Class<?> componentType, int dimension, Object[] oldArray)
    {
       if (oldArray == null)
          return null;
@@ -415,7 +414,7 @@ public class DefaultMetaValueFactory extends MetaValueFactory
 
       for (String name : type.itemSet())
       {
-         MetaType<?> itemType = type.getType(name);
+         MetaType itemType = type.getType(name);
          Object itemValue;
          try
          {
@@ -528,11 +527,11 @@ public class DefaultMetaValueFactory extends MetaValueFactory
       if (mapper != null)
          return mapper.unwrapMetaValue(metaValue);
       
-      MetaType<?> metaType = metaValue.getMetaType();
+      MetaType metaType = metaValue.getMetaType();
 
       if (metaType.isSimple())
       {
-         Serializable value = ((SimpleValue<?>)metaValue).getValue();
+         Serializable value = ((SimpleValue)metaValue).getValue();
          return getValue(metaType, type, value);
       }
       else if (metaType.isEnum())
@@ -547,7 +546,7 @@ public class DefaultMetaValueFactory extends MetaValueFactory
       }
       else if (metaType.isArray())
       {
-         ArrayValue<?> arrayValue = (ArrayValue<?>)metaValue;
+         ArrayValue arrayValue = (ArrayValue)metaValue;
          if (type == null)
             type= getTypeInfo(metaType, arrayValue.getValue());
          Object array = newArrayInstance(type, arrayValue.getLength());
@@ -593,7 +592,7 @@ public class DefaultMetaValueFactory extends MetaValueFactory
     * @param metaType the meta type
     * @return type info
     */
-   protected TypeInfo checkTypeInfo(TypeInfo type, Object value, MetaType<?> metaType)
+   protected TypeInfo checkTypeInfo(TypeInfo type, Object value, MetaType metaType)
    {
       if (type == null && value != null)
          type = getTypeInfo(metaType, value);
@@ -609,7 +608,7 @@ public class DefaultMetaValueFactory extends MetaValueFactory
     * @param value the value
     * @return the converted value
     */
-   protected Object getValue(MetaType<?> metaType, TypeInfo typeInfo, Object value)
+   protected Object getValue(MetaType metaType, TypeInfo typeInfo, Object value)
    {
       typeInfo = checkTypeInfo(typeInfo, value, metaType);
       return convertValue(value, typeInfo);
@@ -852,7 +851,7 @@ public class DefaultMetaValueFactory extends MetaValueFactory
     * @param value the value which can provide classloader
     * @return type info
     */
-   protected TypeInfo getTypeInfo(MetaType<?> metaType, Object value)
+   protected TypeInfo getTypeInfo(MetaType metaType, Object value)
    {
       if (metaType == null)
          throw new IllegalArgumentException("Null meta type, cannot determine class name.");
@@ -871,7 +870,7 @@ public class DefaultMetaValueFactory extends MetaValueFactory
     * @param cl the classloader
     * @return class info
     */
-   protected TypeInfo getTypeInfo(MetaType<?> metaType, ClassLoader cl)
+   protected TypeInfo getTypeInfo(MetaType metaType, ClassLoader cl)
    {
       if (cl == null)
          cl = Thread.currentThread().getContextClassLoader();
@@ -881,8 +880,8 @@ public class DefaultMetaValueFactory extends MetaValueFactory
          TypeInfoFactory tif = configuration.getTypeInfoFactory();
          if (metaType.isArray())
          {
-            ArrayMetaType<?> arrayMetaType = (ArrayMetaType<?>)metaType;
-            MetaType<?> elementMetaType = arrayMetaType.getElementType();
+            ArrayMetaType arrayMetaType = (ArrayMetaType)metaType;
+            MetaType elementMetaType = arrayMetaType.getElementType();
             String elementTypeName = elementMetaType.getTypeName();
             if (arrayMetaType.isPrimitiveArray())
                elementTypeName = ArrayMetaType.getPrimitiveName(elementTypeName);
@@ -913,7 +912,7 @@ public class DefaultMetaValueFactory extends MetaValueFactory
     * @return the meta value
     */
    @SuppressWarnings("unchecked")
-   protected MetaValue internalCreate(Object value, TypeInfo type, MetaType<?> metaType)
+   protected MetaValue internalCreate(Object value, TypeInfo type, MetaType metaType)
    {
       if (value == null)
          return null;
@@ -963,11 +962,11 @@ public class DefaultMetaValueFactory extends MetaValueFactory
          if (result == null)
          {
             if (metaType.isSimple())
-               result = createSimpleValue((SimpleMetaType<Serializable>) metaType, (Serializable) value);
+               result = createSimpleValue((SimpleMetaType) metaType, (Serializable) value);
             else if (metaType.isEnum())
                result = createEnumValue((EnumMetaType) metaType, (Enum<?>) value);
             else if (metaType.isArray())
-               result = createArrayValue((ArrayMetaType<?>) metaType, value, mapping);
+               result = createArrayValue((ArrayMetaType) metaType, value, mapping);
             else if (metaType.isComposite())
                result = createCompositeValue((CompositeMetaType) metaType, value, mapping);
             else if (metaType.isTable())
@@ -975,7 +974,7 @@ public class DefaultMetaValueFactory extends MetaValueFactory
             else if (metaType.isGeneric())
                result = createGenericValue((GenericMetaType) metaType, value, mapping);
             else if (metaType.isCollection())
-               result = createCollectionValue((CollectionMetaType<?>) metaType, value, mapping);
+               result = createCollectionValue((CollectionMetaType) metaType, value, mapping);
             else
                throw new IllegalStateException("Unknown metaType: " + metaType);
          }
