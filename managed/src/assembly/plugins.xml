@@ -8,7 +8,7 @@
     <fileSet>
       <directory>target/classes</directory>
         <excludes>
-          <eclude>org/jboss/managed/plugins/**</eclude>
+          <exclude>org/jboss/managed/plugins/**</exclude>
         </excludes>
       <outputDirectory></outputDirectory>
     </fileSet>
