@@ -55,7 +55,12 @@ public class AbstractNamedAliasMetaData extends AbstractAliasMetaData implements
       return name;
    }
 
-   @XmlAttribute(required = true)
+   @XmlAttribute(name = "name", required = true)
+   public void setNameString(String name)
+   {
+      setName(name);
+   }
+
    public void setName(Object name)
    {
       this.name = name;

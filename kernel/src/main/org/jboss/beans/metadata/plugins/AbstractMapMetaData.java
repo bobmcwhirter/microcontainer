@@ -30,15 +30,14 @@ import java.util.Map;
 import java.util.Set;
 import javax.xml.bind.annotation.XmlAttribute;
 import javax.xml.bind.annotation.XmlType;
+import javax.xml.bind.annotation.XmlTransient;
 
 import org.jboss.beans.metadata.spi.MetaDataVisitor;
 import org.jboss.beans.metadata.spi.MetaDataVisitorNode;
 import org.jboss.beans.metadata.spi.ValueMetaData;
 import org.jboss.reflect.spi.ClassInfo;
 import org.jboss.reflect.spi.TypeInfo;
-import org.jboss.xb.annotations.JBossXmlChild;
-import org.jboss.xb.annotations.JBossXmlChildren;
-import org.jboss.xb.annotations.JBossXmlNoElements;
+import org.jboss.xb.annotations.JBossXmlMapEntry;
 
 /**
  * Map metadata.
@@ -48,11 +47,7 @@ import org.jboss.xb.annotations.JBossXmlNoElements;
  * @version $Revision$
  */
 @XmlType
-@JBossXmlNoElements
-@JBossXmlChildren
-({
-   @JBossXmlChild(name="entry", type=MapEntry.class)
-})
+@JBossXmlMapEntry(name = "entry", type = MapEntry.class)
 public class AbstractMapMetaData extends AbstractTypeMetaData
    implements Map<MetaDataVisitorNode, MetaDataVisitorNode>, Serializable
 {
@@ -199,6 +194,7 @@ public class AbstractMapMetaData extends AbstractTypeMetaData
       return map.values();
    }
 
+   @XmlTransient
    public Iterator<? extends MetaDataVisitorNode> getChildren()
    {
       ArrayList<MetaDataVisitorNode> children = new ArrayList<MetaDataVisitorNode>(keySet());
@@ -236,12 +232,14 @@ public class AbstractMapMetaData extends AbstractTypeMetaData
     * 
     * @return the class instance
     */
+   @XmlTransient
    protected Object getDefaultInstance()
    {
       return new HashMap<Object, Object>();
    }
 
    @SuppressWarnings("unchecked")
+   @XmlTransient
    protected Class<? extends Map> getExpectedClass()
    {
       return Map.class;

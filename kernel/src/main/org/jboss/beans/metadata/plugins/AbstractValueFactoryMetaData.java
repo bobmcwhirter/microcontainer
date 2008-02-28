@@ -133,9 +133,9 @@ public class AbstractValueFactoryMetaData extends AbstractValueMetaData implemen
    }
 
    @XmlAttribute(name="bean", required = true)
-   public void setValue(Object value)
+   public void setBean(String bean)
    {
-      super.setValue(value);
+      setValue(bean);
    }
 
    /**

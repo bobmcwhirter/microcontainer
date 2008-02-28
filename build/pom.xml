@@ -33,7 +33,7 @@
 
   <properties>
     <version.jboss.common.core>2.2.3.GA</version.jboss.common.core>
-    <version.jbossxb>2.0.0.CR5</version.jbossxb>
+    <version.jbossxb>2.0.0.CR6</version.jbossxb>
     <version.osgi.r4.core>1.0</version.osgi.r4.core>
     <version.jboss.vfs>2.0.0.Beta7</version.jboss.vfs>
     <version.javassist>3.6.0.GA</version.javassist>

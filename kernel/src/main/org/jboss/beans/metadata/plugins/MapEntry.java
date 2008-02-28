@@ -24,6 +24,8 @@ package org.jboss.beans.metadata.plugins;
 import javax.xml.bind.annotation.XmlType;
 
 import org.jboss.beans.metadata.spi.ValueMetaData;
+import org.jboss.xb.annotations.JBossXmlMapKey;
+import org.jboss.xb.annotations.JBossXmlMapValue;
 
 
 /**
@@ -41,6 +43,7 @@ public class MapEntry
    /** The value */
    private ValueMetaData value;
 
+   @JBossXmlMapKey
    public ValueMetaData getKey()
    {
       return key;
@@ -51,6 +54,7 @@ public class MapEntry
       this.key = key;
    }
 
+   @JBossXmlMapValue
    public ValueMetaData getValue()
    {
       return value;
