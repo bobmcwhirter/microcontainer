@@ -26,7 +26,6 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
-import org.jboss.beans.metadata.plugins.AbstractBeanMetaData;
 import org.jboss.beans.metadata.plugins.builder.BeanMetaDataBuilderFactory;
 import org.jboss.beans.metadata.spi.BeanMetaData;
 import org.jboss.beans.metadata.spi.ValueMetaData;
@@ -62,17 +61,6 @@ public abstract class BeanMetaDataBuilder
    public static BeanMetaDataBuilder createBuilder(String name, String bean)
    {
       return BeanMetaDataBuilderFactory.createBuilder(name, bean);
-   }
-
-   /**
-    * Create builder from BeanMetaData.
-    *
-    * @param beanMetaData bean meta data
-    * @return new builder
-    */
-   public static BeanMetaDataBuilder createBuilder(AbstractBeanMetaData beanMetaData)
-   {
-      return BeanMetaDataBuilderFactory.createBuilder(beanMetaData);
    }
 
    /**
