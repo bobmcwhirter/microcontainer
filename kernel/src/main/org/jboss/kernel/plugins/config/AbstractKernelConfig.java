@@ -22,11 +22,16 @@
 package org.jboss.kernel.plugins.config;
 
 import org.jboss.beans.info.spi.BeanInfo;
+import org.jboss.beans.info.spi.BeanInfoFactory;
+import org.jboss.classadapter.spi.ClassAdapterFactory;
+import org.jboss.classadapter.spi.DependencyBuilder;
 import org.jboss.config.spi.Configuration;
+import org.jboss.joinpoint.spi.JoinpointFactoryBuilder;
 import org.jboss.kernel.plugins.AbstractKernelObject;
 import org.jboss.kernel.spi.config.KernelConfig;
 import org.jboss.reflect.spi.ClassInfo;
 import org.jboss.reflect.spi.TypeInfo;
+import org.jboss.reflect.spi.TypeInfoFactory;
 
 /**
  * Abstract Kernel configuration.
@@ -73,5 +78,60 @@ public abstract class AbstractKernelConfig extends AbstractKernelObject implemen
    public ClassInfo getClassInfo(Class<?> clazz) throws Throwable
    {
       return configuration.getClassInfo(clazz);
+   }
+
+   /**
+    * Set the beanInfoFactory.
+    * 
+    * @param beanInfoFactory the beanInfoFactory.
+    * @throws SecurityException if you don't have the ConfigurationPermission
+    */
+   public void setBeanInfoFactory(BeanInfoFactory beanInfoFactory)
+   {
+      configuration.setBeanInfoFactory(beanInfoFactory);
+   }
+
+   /**
+    * Set the classAdapterFactory.
+    * 
+    * @param classAdapterFactory the classAdapterFactory.
+    * @throws SecurityException if you don't have the ConfigurationPermission
+    */
+   public void setClassAdapterFactory(ClassAdapterFactory classAdapterFactory)
+   {
+      configuration.setClassAdapterFactory(classAdapterFactory);
+   }
+
+   /**
+    * Set the typeInfoFactory.
+    * 
+    * @param typeInfoFactory the typeInfoFactory.
+    * @throws SecurityException if you don't have the ConfigurationPermission
+    */
+   public void setTypeInfoFactory(TypeInfoFactory typeInfoFactory)
+   {
+      configuration.setTypeInfoFactory(typeInfoFactory);
+   }
+
+   /**
+    * Set the joinpointFactoryBuilder.
+    * 
+    * @param joinpointFactoryBuilder the joinpointFactoryBuilder.
+    * @throws SecurityException if you don't have the ConfigurationPermission
+    */
+   public void setJoinpointFactoryBuilder(JoinpointFactoryBuilder joinpointFactoryBuilder)
+   {
+      configuration.setJoinpointFactoryBuilder(joinpointFactoryBuilder);
+   }
+
+   /**
+    * Set the dependencyBuilder.
+    * 
+    * @param dependencyBuilder the dependencyBuilder.
+    * @throws SecurityException if you don't have the ConfigurationPermission
+    */
+   public void setDependencyBuilder(DependencyBuilder dependencyBuilder)
+   {
+      configuration.setDependencyBuilder(dependencyBuilder);
    }
 }
