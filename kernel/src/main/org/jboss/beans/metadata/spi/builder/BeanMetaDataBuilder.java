@@ -26,6 +26,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
+import org.jboss.beans.metadata.plugins.AbstractBeanMetaData;
 import org.jboss.beans.metadata.plugins.builder.BeanMetaDataBuilderFactory;
 import org.jboss.beans.metadata.spi.BeanMetaData;
 import org.jboss.beans.metadata.spi.ValueMetaData;
@@ -61,6 +62,21 @@ public abstract class BeanMetaDataBuilder
    public static BeanMetaDataBuilder createBuilder(String name, String bean)
    {
       return BeanMetaDataBuilderFactory.createBuilder(name, bean);
+   }
+   
+   /**
+    * Create builder from BeanMetaData
+    * 
+    * @param the bean metadata
+    * @return new Builder()
+    */
+   public static BeanMetaDataBuilder createBuilder(BeanMetaData beanMetaData)
+   {
+      if (beanMetaData instanceof AbstractBeanMetaData)
+      {
+         return BeanMetaDataBuilderFactory.createBuilder((AbstractBeanMetaData)beanMetaData);
+      }
+      else throw new IllegalArgumentException("Invalid type of bean metadata");
    }
 
    /**
@@ -273,6 +289,24 @@ public abstract class BeanMetaDataBuilder
     */
    public abstract BeanMetaDataBuilder addPropertyMetaData(String name, ValueMetaData value);
 
+   /**
+    * Add a property
+    * 
+    * @param name the property name
+    * @param value the value
+    * @return the builder
+    */
+   public abstract BeanMetaDataBuilder addPropertyMetaData(String name, Collection<ValueMetaData> value);
+
+   /**
+    * Add a property
+    * 
+    * @param name the property name
+    * @param value the value
+    * @return the builder
+    */
+   public abstract BeanMetaDataBuilder addPropertyMetaData(String name, Map<ValueMetaData, ValueMetaData> value);
+   
    /**
     * Set the create method
     * 
