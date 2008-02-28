@@ -23,10 +23,15 @@ package org.jboss.test.kernel.config.test;
 
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Collection;
+import java.util.List;
+import java.util.Map;
+import java.util.Set;
 
 import junit.framework.Test;
 import org.jboss.beans.metadata.plugins.builder.BeanMetaDataBuilderFactory;
 import org.jboss.beans.metadata.spi.BeanMetaData;
+import org.jboss.beans.metadata.spi.ValueMetaData;
 import org.jboss.beans.metadata.spi.builder.BeanMetaDataBuilder;
 import org.jboss.kernel.Kernel;
 import org.jboss.kernel.plugins.deployment.AbstractKernelDeployer;
@@ -35,7 +40,6 @@ import org.jboss.kernel.spi.dependency.KernelController;
 import org.jboss.kernel.spi.dependency.KernelControllerContext;
 import org.jboss.test.kernel.config.support.SimpleBean;
 import org.jboss.test.kernel.config.support.SimpleLifecycleBean;
-
 /**
  * Builder TestCase.
  *
@@ -184,4 +188,72 @@ public class BeanMetaDataBuilderTestCase extends AbstractKernelConfigTest
       deployer.undeploy(deployment);
    }
 
+   public void testCollectionProperties() throws Throwable
+   {
+      BeanMetaDataBuilder builder = BeanMetaDataBuilderFactory.createBuilder("CollectionBean", SimpleBean.class.getName());
+      
+      List<ValueMetaData> array =  builder.createArray();
+      array.add(builder.createValue(new Integer(5)));
+      array.add(builder.createValue(new Integer(10)));
+      builder.addPropertyMetaData("array", array);
+      
+      List<ValueMetaData> list = builder.createList();
+      list.add(builder.createValue("One"));
+      list.add(builder.createValue("Two"));
+      builder.addPropertyMetaData("list", list);
+      
+      Set<ValueMetaData> set = builder.createSet();
+      set.add(builder.createValue("En"));
+      set.add(builder.createValue("To"));
+      builder.addPropertyMetaData("set", set);
+      
+      Collection<ValueMetaData> collection = builder.createCollection();
+      collection.add(builder.createValue("Eins"));
+      collection.add(builder.createValue("Zwei"));
+      builder.addPropertyMetaData("collection", collection);
+      
+      Map<ValueMetaData, ValueMetaData> map = builder.createMap();
+      map.put(builder.createValue("One"), builder.createValue("Uno"));
+      map.put(builder.createValue("Two"), builder.createValue("Dos"));
+      builder.addPropertyMetaData("map", map);
+      
+      AbstractKernelDeployment deployment = new AbstractKernelDeployment();
+      deployment.setBeans(Arrays.asList(builder.getBeanMetaData()));
+
+      Kernel kernel = bootstrap();
+      KernelController controller = kernel.getController();
+      AbstractKernelDeployer deployer = new AbstractKernelDeployer(kernel);
+
+      deployer.deploy(deployment);
+      
+      Object o = controller.getInstalledContext("CollectionBean").getTarget();
+      assertNotNull(o);
+      assertInstanceOf(o, SimpleBean.class);
+      SimpleBean bean = (SimpleBean)o;
+      
+      Object[] arr = bean.getArray();
+      assertEquals(2, arr.length);
+      assertEquals(5, arr[0]);
+      assertEquals(10, arr[1]);
+      
+      List<?> lst = bean.getList();
+      assertEquals(2, lst.size());
+      assertEquals("One", lst.get(0));
+      assertEquals("Two", lst.get(1));
+      
+      Set<?> st = bean.getSet();
+      assertEquals(2, lst.size());
+      assertTrue(st.contains("En"));
+      assertTrue(st.contains("To"));
+      
+      Collection<?> coll = bean.getCollection();
+      assertEquals(2, lst.size());
+      assertTrue(coll.contains("Eins"));
+      assertTrue(coll.contains("Zwei"));
+      
+      Map<?, ?> mp = bean.getMap();
+      assertEquals(2, lst.size());
+      assertEquals("Uno", mp.get("One"));
+      assertEquals("Dos", mp.get("Two"));
+   }
 }

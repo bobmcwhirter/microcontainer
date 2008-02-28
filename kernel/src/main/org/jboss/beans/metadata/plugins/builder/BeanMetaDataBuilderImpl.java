@@ -254,7 +254,14 @@ class BeanMetaDataBuilderImpl extends BeanMetaDataBuilder
    public BeanMetaDataBuilder addPropertyMetaData(String name, Map<ValueMetaData, ValueMetaData> value)
    {
       Set<PropertyMetaData> properties = getProperties();
-      properties.add(new AbstractPropertyMetaData(name, value));
+      if (value instanceof ValueMetaData)
+      {
+         properties.add(new AbstractPropertyMetaData(name, (ValueMetaData)value));
+      }
+      else
+      {
+         properties.add(new AbstractPropertyMetaData(name, value));
+      }
       return this;
    }
    
