@@ -4,9 +4,9 @@
 ]>
 <book>
   <bookinfo>
-    <title>JBoss Microcontainer 2.0.0</title>
+    <title>JBoss Microcontainer 2.0.0 Beta9</title>
     <subtitle>User Guide</subtitle>
-    <issuenum>2.0</issuenum>
+    <issuenum> 2.0</issuenum>
     <productnumber>2</productnumber>
     <xi:include xmlns:xi="http://www.w3.org/2001/XInclude" href="Author_Group.xml"/>
     <xi:include xmlns:xi="http://www.w3.org/2001/XInclude" href="Legal_Notice.xml"/>
@@ -2794,7 +2794,7 @@ public class MyBean {
           <para>PARSE - convert one or more  deployment descriptors into object representations</para>
         </listitem>
         <listitem>
-          <para>DESCRIBE - discover any dependencies</para>
+          <para>DESCRIBE - determine any dependencies</para>
         </listitem>
         <listitem>
           <para>CLASSLOADER - create classloaders</para>
@@ -2864,31 +2864,194 @@ public class MyBean {
       <para>Finally the VFS takes care of generating physical URLs for classloading and debugging. Logical URLs can also be generated for configuration purposes, or codebase protection domains.</para>
     </chapter>
     <chapter>
-      <title>Identifying a deployment type</title>
-      <para>Before we can begin to process a deployment we must first determine its structure. This means finding out if it contains any deployment descriptors and/or classes, and if so where they are located relative to the deployment&apos;s root. Nested deployments must also be detected and their structures determined in the same way. The purpose of this is to help the parsing  actions locate the deployment descriptors in a standard way and to assist in the creation of classloaders. Since we wish to  use the Virtual File System (VFS) to represent our deployment (for reasons outlined earlier) we must first create a VFSDeployment using the deployment URI or URL:</para>
+      <title>Identifying the deployment structure</title>
+      <para>Before we can begin to process a deployment we must first determine its structure. This means finding out if it contains any deployment descriptors and/or classes, and if so where they are located relative to the deployment&apos;s root. Nested deployments must also be detected and their structures determined in the same way. The purpose of this is to help the parsing  actions locate the deployment descriptors in a standard way and to assist in the creation of classloaders. Since we wish to  use the Virtual File System (VFS) to represent our deployment we must first create a VFSDeployment using the deployment URI or URL:</para>
       <programlisting>VirtualFile root = VFS.getRoot(deploymentURL);     
 VFSDeploymentFactory deploymentFactory = VFSDeploymentFactory.getInstance();
 Deployment deployment = deploymentFactory.createVFSDeployment(root);</programlisting>
-      <para>The deployment framework then determines the structure of the VFSDeployment using classes that implement the StructureDeployer interface:</para>
+      <para>The deployment framework then determines the structure of the VFSDeployment using classes that implement the <emphasis>StructureDeployer</emphasis> interface:</para>
       <programlisting>public interface StructureDeployer extends Ordered
 {
 boolean determineStructure(VirtualFile root, VirtualFile parent, VirtualFile file, StructureMetaData metaData, VFSStructuralDeployers deployers) throws DeploymentException;
 }</programlisting>
-      <para>As a deployment can contain nested deployments the determineStructure() method is meant to be called recursively. The <emphasis>root</emphasis> parameter represents the root of the top-level deployment, the <emphasis>file</emphasis> parameter represents the root of the current (possibly nested) deployment being analyzed and the <emphasis>parent</emphasis> parameter its parent (or null if it is the top-level). The <emphasis>deployers</emphasis> parameter contains a list of all the StructureDeployer implementations and is needed in order to process any nested deployments. As the locations of  deployment descriptors and/or classes in each deployment are determined this information is added to the <emphasis>StructureMetaData</emphasis> parameter so that the structure of the entire deployment is recorded. </para>
+      <para>As a deployment can contain nested deployments the determineStructure() method is meant to be called recursively. The <emphasis>root</emphasis> parameter represents the root of the top-level deployment, the <emphasis>file</emphasis> parameter represents the root of the current (possibly nested) deployment being analyzed and the <emphasis>parent</emphasis> parameter its parent (or null if it is the top-level). The <emphasis>deployers</emphasis> parameter represents a class containing a list of all the <emphasis>StructureDeployer</emphasis> implementations and is needed in order to process any nested deployments.</para>
+      <para>As each deployment is found  a <emphasis>ContextInfo</emphasis> object is created to store the paths to any  deployment descriptors and/or classes. These are then added to the <emphasis>StructureMetaData</emphasis> parameter so that the structure of the entire deployment is recorded. For example if we had a top-level deployment containing 2 nested deployments then we would create 3 <emphasis>ContextInfo</emphasis> objects, one for each deployment, and add these to the <emphasis>StructureMetaData</emphasis> object.</para>
       <section>
-        <title>Descriptor Files</title>
+        <title>Deployment Descriptors</title>
+        <para>Deployment descriptors are files containing  configuration information for deployments. They are detected using the <emphasis>FileStructure</emphasis> class by matching the file suffix or using a <emphasis>FileMatcher</emphasis>. Default files suffixes include:</para>
+        <itemizedlist>
+          <listitem>
+            <para>-beans.xml - contains  bean definitions</para>
+          </listitem>
+          <listitem>
+            <para>-aop.xml - contains  aspect definitions</para>
+          </listitem>
+          <listitem>
+            <para>-service.xml - contains mbean definitions</para>
+          </listitem>
+          <listitem>
+            <para>-ds.xml - contains JCA datasource definitions</para>
+          </listitem>
+        </itemizedlist>
+        <para>Each <emphasis>FileMatcher</emphasis> must implement the following interface:</para>
+        <programlisting>public interface FileMatcher
+{
+   boolean isDeployable(VirtualFile file);
+}</programlisting>
+        <para>Default implementations are:</para>
+        <itemizedlist>
+          <listitem>
+            <para>BshFileMatcher - checks whether the filename ends with .bsh (Bean Shell)</para>
+          </listitem>
+        </itemizedlist>
+        <para>The purpose of the <emphasis>FileStructure</emphasis> class is to detect deployments that consist  of a single deployment descriptor.  As such it creates a single <emphasis>ContextInfo</emphasis> object when a known file is found and adds this to the <emphasis>StructureMetaData</emphasis>. Since no classes are present the list of classpaths within the <emphasis>ContextInfo</emphasis> is set to null.</para>
+        <warning>
+          <para>Currently any top-level deployment that consists of a single file is always identified as a known deployment descriptor. This is done to avoid having to specify all of the known file suffixes in a configuration file. The file suffix and FileMatcher checks are only performed for nested deployments.</para>
+        </warning>
+        <para>Deployment descriptors that form part of a deployment together with other files, such as classes or resources are detected by other implementations of <emphasis>StructureDeployer</emphasis> such as<emphasis>JARStructure</emphasis> which is described next.</para>
       </section>
       <section>
         <title>Java Archives (JARs)</title>
+        <para>The <emphasis>JARStructure</emphasis> class determines whether a deployment, in the form of a file or a directory, represents a packaged or unpackaged JAR archive. If the deployment is a single file then the filename suffix is checked against a list contained in the <emphasis>JarUtils</emphasis> class:</para>
+        <itemizedlist>
+          <listitem>
+            <para>.zip - a standard archive</para>
+          </listitem>
+          <listitem>
+            <para>.jar - a java archive (defined by the Java SE specification)</para>
+          </listitem>
+          <listitem>
+            <para>.ear - an enterprise archive (defined by the Java EE specification)</para>
+          </listitem>
+          <listitem>
+            <para>.rar - a resource archive (defined by the Java EE specification)</para>
+          </listitem>
+          <listitem>
+            <para>.war - a web archive (defined by the Java EE specification)</para>
+          </listitem>
+          <listitem>
+            <para>.sar - a service archive (defined by JBoss)</para>
+          </listitem>
+          <listitem>
+            <para>.har - a hibernate archive (defined by JBoss)</para>
+          </listitem>
+          <listitem>
+            <para>.aop - an aspect archive (defined by JBoss)</para>
+          </listitem>
+        </itemizedlist>
+        <para>If the deployment is a directory then the same checked is performed using the directory name. If a match is found in either case then the deployment is determined to represent a JAR archive.</para>
+        <note>
+          <para>A top-level directory whose name doesn&apos;t match any of the file suffixes is still considered  an unpackaged JAR archive as this allows it to be used as a container for multiple nested deployments.</para>
+        </note>
+        <para>In order to detect nested JAR deployments we iterate through all subdirectories checking whether their names end in a known suffix or if they contain META-INF directories. The check for a META-INF directory is required otherwise every subdirectory without a known filename would be classified as a nested deployment.</para>
+        <para>For each JAR deployment found we create a new <emphasis>ContextInfo</emphasis> object with its metadata path set to META-INF and the classpath set to the deployment root.</para>
       </section>
       <section>
         <title>Nested deployments</title>
+        <para>Nested deployments are found by calling the addAllChildren() method in <emphasis>AbstractStructureDeployer</emphasis> and passing in a reference to the deployment root and the current nested deployment along with the <emphasis>StructureMetaData</emphasis> and  <emphasis>VFSStructuralDeployers</emphasis> references: </para>
+        <programlisting>public abstract class AbstractStructureDeployer implements StructureDeployer
+{
+    ...
+
+       protected void addAllChildren(VirtualFile root, VirtualFile parent, StructureMetaData metaData, VFSStructuralDeployers deployers) throws Exception
+   {
+      addChildren(root, parent, metaData, deployers, null);
+   }
+
+   protected void addChildren(VirtualFile root, VirtualFile parent, StructureMetaData metaData, VFSStructuralDeployers deployers, VisitorAttributes attributes) throws Exception
+   {
+      if (parent == null)
+         throw new IllegalArgumentException(&quot;Null parent&quot;);
+      
+      VirtualFileVisitor visitor = candidateStructureVisitorFactory.createVisitor(root, parent, metaData, deployers, attributes);
+      parent.visit(visitor);
+   }
+
+    ...
+}</programlisting>
+        <para>This in turn calls the addChildren() method which creates a <emphasis>VirtualFileVisitor</emphasis> that is passed to the virtual file representing the current deployment. Each child file or directory of the current deploment is then visited using the visitor which use the <emphasis>VFSStructuralDeployers</emphasis> object to iterate through the list of <emphasis>StructureDeployers</emphasis>. These then  determine whether the child represents a nested deployment. If a nested deployment is found then the process is repeated in order to recurse through the entire directory structure. This happens regardless of whether the deployment is packaged or unpackaged as the Virtual File System takes care of accessing the actual files.</para>
+        <para>Due to this recursive algorithm, implemented using the Visitor design pattern, you can freely nest any type of deployment within any other type of deployment to any level. All you need to ensure is that you have defined a <emphasis>StructureDeployer</emphasis> implementation capable of recognising your deployment. How to define your own StructureDeployer is the subject of the following sections.</para>
       </section>
       <section>
-        <title>Declaring a custom archive</title>
+        <title>Declaring a custom deployment structure</title>
+        <para>JBoss Microcontainer provides two <emphasis>StructureDeployer</emphasis> implementations out-of-the-box to recognise the most common forms of deployments; standalone deployment descriptors and packaged/unpackaged JAR archives. In addition it also includes a third implementation called <emphasis>DeclaredStructure</emphasis>.</para>
+        <para><emphasis>DeclaredStructure</emphasis> allows you to specify the structure of a deployment, including any nested deployments, using an XML file called <emphasis>jboss-structure.xml</emphasis> placed in the  deployment&apos;s META-INF directory. The contents of this file are:</para>
+        <programlisting>&lt;structure&gt;
+    &lt;context&gt;
+        &lt;path name=&quot;&quot;/&gt;
+        &lt;metaDataPath&gt;
+            &lt;path name=&quot;OTHER-DIR&quot;/&gt;
+        &lt;/metaDataPath&gt;
+        &lt;classpath&gt;
+            &lt;path name=&quot;&quot;/&gt;
+        &lt;/classpath&gt;
+    &lt;/context&gt;
+&lt;/structure&gt;</programlisting>
+        <para>This describes a top-level deployment and specifies that deployment descriptors can be found in the <emphasis>OTHER-DIR</emphasis> directory and classes in the root directory. If you want to describe nested deployments then you simply need to create additional &lt;context&gt; elements and specify their  paths relative to the root deployment:</para>
+        <programlisting>&lt;structure&gt;
+    &lt;context&gt;
+        &lt;path name=&quot;&quot;/&gt;
+        &lt;metaDataPath&gt;
+            &lt;path name=&quot;OTHER-DIR&quot;/&gt;
+        &lt;/metaDataPath&gt;
+        &lt;classpath&gt;
+            &lt;path name=&quot;&quot;/&gt;
+        &lt;/classpath&gt;
+    &lt;/context&gt;
+    &lt;context&gt;
+        &lt;path name=&quot;nestedDeployment1&quot;/&gt;
+        &lt;metaDataPath&gt;
+            &lt;path name=&quot;descriptors/xml/&quot;/&gt;
+        &lt;/metaDataPath&gt;
+        &lt;classpath&gt;
+            &lt;path name=&quot;classes&quot;/&gt;
+            &lt;path name=&quot;thirdParty/classes&quot;/&gt;
+        &lt;/classpath&gt;
+    &lt;/context
+    &lt;context&gt;
+        &lt;path name=&quot;utils/nestedDeployment2&quot;/&gt;
+        &lt;metaDataPath&gt;
+            &lt;path name=&quot;META-INF&quot;/&gt;
+            &lt;path name=&quot;config/descs/&quot;/&gt;
+        &lt;/metaDataPath&gt;
+        &lt;classpath&gt;
+            &lt;path name=&quot;lib&quot;/&gt;
+        &lt;/classpath&gt;
+    &lt;/context
+&lt;/structure&gt;</programlisting>
+        <para>Here we&apos;ve added two nested deployments, one directly underneath the top-level deployment and another in a subdirectory called utils. The first nested deployment has deployment descriptors located in its <emphasis>descriptors/xml</emphasis> directory and classes  in either the <emphasis>classes</emphasis> or <emphasis>thirdParty/classes</emphasis> directories. The second nested deployment has deployment descriptors in either the <emphasis>META-INF</emphasis> or <emphasis>config/descs</emphasis> directories and classes in the <emphasis>lib</emphasis> directory.</para>
+        <note>
+          <para>In order to ensure that any JAR files that you add META-INF/jboss-structure.xml to are correctly recognised by  <emphasis>DeclaredStructure</emphasis>  instead of  <emphasis>JARStructure</emphasis> the DeclaredStructure  has a relativeOrder of 0 and the JARStructure a relativeOrder of 10000. This means that the DeclaredStructure class will be consulted first when determining the structure of a deployment.</para>
+        </note>
+        <para>If you use the <emphasis>DeclaredStructure</emphasis> approach then you must specify all nested deployments in the <emphasis>META-INF/jboss-structure.xml</emphasis> file. This is because no recursion takes place once the structure has been determined. If you want the ability to nest other kinds of deployments within your custom deployment structure then it may be easier to create your own <emphasis>StructureDeployer</emphasis> implementation. Doing so will allow you to call the addAllChildren() method to perform the recursion. </para>
       </section>
       <section>
-        <title>Adding a new deployment type</title>
+        <title>Determining the deployment structure programmatically</title>
+        <para>Using the <emphasis>DeclaredStructure</emphasis> approach is convenient if you have an unusual deployment structure and don&apos;t mind adding the <emphasis>META-INF/jboss-structure.xml</emphasis> file to your deployment. However, if you have many deployments and want to avoid adding this file each time, or  you want to nest arbitrary deployments inside your custom structure then you are better off creating your own <emphasis>StructureDeployer</emphasis> implementation.</para>
+        <para>The easiest way to do this is by extending the <emphasis>AbstractStructureDeployer</emphasis> class which already implements the <emphasis>StructureDeployer</emphasis> interface:</para>
+        <programlisting>public abstract class AbstractStructureDeployer implements StructureDeployer
+{
+   ...
+}</programlisting>
+        <para>This includes helper methods to see if a VirtualFile represents a file or a directory and whether it corresponds to a top-level deployment. It also has methods to recurse through all of the files within a deployment to find nested deployments and to create <emphasis>ContextInfo</emphasis> objects for each one found. The only method that you need to implement is the one defined by the <emphasis>StructureDeployer</emphasis> interface:</para>
+        <programlisting>public interface StructureDeployer extends Ordered
+{
+   boolean determineStructure(VirtualFile root, VirtualFile parent, VirtualFile file, StructureMetaData metaData, VFSStructuralDeployers deployers) throws DeploymentException;
+}</programlisting>
+        <para>If you recognise the structure of the deployment then you must create a <emphasis>ContextInfo</emphasis> object containing the details and add it to the <emphasis>StructureMetaData</emphasis>. If you extend AbstractStructureDeployer then you can use the createContext() and addClassPath() helper methods to help do this. You must then return true to prevent any other <emphasis>StructureDeployer</emphasis> from analysing the deployment again.</para>
+        <para>If you want to control when your <emphasis>StructureDeployer</emphasis> is called you can use the <emphasis>relativeOrder</emphasis> property. By default this is set to <code>Integer.MAX_VALUE</code> in <emphasis>AbstractStructureDeployer</emphasis>. Implementations with a lower value are called before those with a higher value. If two values are the same then the return values of each implementation&apos;s toString() method are compared.  The relativeOrder values for the out-of-the-box <emphasis>StructureDeployer</emphasis> implementations are:</para>
+        <itemizedlist>
+          <listitem>
+            <para>DeclaredStructure - 0</para>
+          </listitem>
+          <listitem>
+            <para>JARStructure - 10000</para>
+          </listitem>
+          <listitem>
+            <para>FileStructure - Integer.MAX_VALUE</para>
+          </listitem>
+        </itemizedlist>
+        <para>This means that DeclaredStructure is always called first followed by JARStructure and finally FileStructure.</para>
       </section>
     </chapter>
     <chapter>
