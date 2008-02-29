@@ -19,7 +19,7 @@
   <classpathentry kind="var" path="M2_REPO/javax/xml/bind/jaxb-api/2.0/jaxb-api-2.0.jar"/>
   <classpathentry kind="var" path="M2_REPO/javax/xml/bind/jsr173_api/1.0/jsr173_api-1.0.jar"/>
   <classpathentry kind="var" path="M2_REPO/javax/activation/activation/1.0.2/activation-1.0.2.jar"/>
-  <classpathentry kind="var" path="M2_REPO/org/jboss/jbossxb/2.0.0.CR5/jbossxb-2.0.0.CR5.jar"/>
+  <classpathentry kind="var" path="M2_REPO/org/jboss/jbossxb/2.0.0.CR6/jbossxb-2.0.0.CR6.jar"/>
   <classpathentry kind="var" path="M2_REPO/org/jboss/jboss-test/1.0.4.GA/jboss-test-1.0.4.GA.jar" sourcepath="M2_REPO/org/jboss/jboss-test/1.0.4.GA/jboss-test-1.0.4.GA-sources.jar"/>
   <classpathentry kind="var" path="M2_REPO/ant/ant/1.6.5/ant-1.6.5.jar" sourcepath="M2_REPO/ant/ant/1.6.5/ant-1.6.5-sources.jar"/>
   <classpathentry kind="var" path="M2_REPO/ant/ant-junit/1.6.5/ant-junit-1.6.5.jar"/>

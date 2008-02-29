@@ -33,6 +33,6 @@
 	<classpathentry kind="src" path="/jboss-kernel"/>
 	<classpathentry kind="src" path="/jboss-managed"/>
 	<classpathentry kind="src" path="/jboss-metatype"/>
-	<classpathentry kind="var" path="M2_REPO/org/jboss/jbossxb/2.0.0.CR5/jbossxb-2.0.0.CR5.jar"/>
+   <classpathentry kind="var" path="M2_REPO/org/jboss/jbossxb/2.0.0.CR6/jbossxb-2.0.0.CR6.jar"/>
 	<classpathentry kind="output" path="target/classes"/>
 </classpath>

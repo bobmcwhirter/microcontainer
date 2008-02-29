@@ -20,7 +20,7 @@
   <classpathentry kind="var" path="M2_REPO/jboss/profiler/jvmti/jboss-profiler-jvmti/1.0.0.CR5/jboss-profiler-jvmti-1.0.0.CR5.jar"/>
   <classpathentry kind="var" path="M2_REPO/org/jboss/jboss-vfs/2.0.0.Beta7/jboss-vfs-2.0.0.Beta7.jar"/>
   <classpathentry kind="var" path="M2_REPO/org/jboss/jboss-common-core/2.2.3.GA/jboss-common-core-2.2.3.GA.jar"/>
-  <classpathentry kind="var" path="M2_REPO/org/jboss/jbossxb/2.0.0.CR5/jbossxb-2.0.0.CR5.jar"/>
+  <classpathentry kind="var" path="M2_REPO/org/jboss/jbossxb/2.0.0.CR6/jbossxb-2.0.0.CR6.jar"/>
   <classpathentry kind="src" path="/jboss-container"/>
   <classpathentry kind="var" path="M2_REPO/org/jboss/javassist/3.6.0.GA/javassist-3.6.0.GA.jar" sourcepath="M2_REPO/org/jboss/javassist/3.6.0.GA/javassist-3.6.0.GA-sources.jar"/>
   <classpathentry kind="var" path="M2_REPO/apache-xerces/xercesImpl/2.7.1/xercesImpl-2.7.1.jar"/>
