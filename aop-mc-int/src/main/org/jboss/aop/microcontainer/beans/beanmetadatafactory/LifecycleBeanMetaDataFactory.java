@@ -23,16 +23,15 @@ package org.jboss.aop.microcontainer.beans.beanmetadatafactory;
 
 import java.util.ArrayList;
 import java.util.HashSet;
-import java.util.Iterator;
 import java.util.List;
+import java.util.Set;
 
 import org.jboss.aop.microcontainer.beans.LifecycleBinding;
-import org.jboss.beans.metadata.plugins.AbstractBeanMetaData;
-import org.jboss.beans.metadata.plugins.AbstractDependencyValueMetaData;
 import org.jboss.beans.metadata.spi.BeanMetaData;
 import org.jboss.beans.metadata.spi.BeanMetaDataFactory;
-import org.jboss.beans.metadata.spi.MetaDataVisitorNode;
+import org.jboss.beans.metadata.spi.DependencyMetaData;
 import org.jboss.beans.metadata.spi.PropertyMetaData;
+import org.jboss.beans.metadata.spi.builder.BeanMetaDataBuilder;
 import org.jboss.dependency.spi.ControllerState;
 
 /**
@@ -78,79 +77,48 @@ public abstract class LifecycleBeanMetaDataFactory extends AspectManagerAwareBea
    {
       ArrayList<BeanMetaData> result = new ArrayList<BeanMetaData>();
 
-      //Do not include the bean factory here, just install the bean directly and the binding 
-      AbstractBeanMetaData lifecycle = new AbstractBeanMetaData();
-      lifecycle.setName(name);
-      lifecycle.setBean(getBeanClass());
+      //Do not include the bean factory here, just install the bean directly and the binding
+      BeanMetaDataBuilder lifecycleBuilder = BeanMetaDataBuilder.createBuilder(name, getBeanClass());
       for (PropertyMetaData pmd : properties)
       {
-         lifecycle.addProperty(pmd);   
+         lifecycleBuilder.addPropertyMetaData(pmd.getName(), pmd.getValue());   
       }
-      lifecycle.setDepends(getDepends());
-      result.add(lifecycle);
+      Set<DependencyMetaData> depends = getDepends();
+      if (depends != null)
+      {
+         for (DependencyMetaData depend : depends)
+         {
+            lifecycleBuilder.addDependency(depend.getDependency());
+         }
+      }
+      
+      result.add(lifecycleBuilder.getBeanMetaData());
       
       
       String aspectBindingName = name + "$AspectBinding";
-      AbstractBeanMetaData aspectBinding = new AbstractBeanMetaData();
-      aspectBinding.setName(aspectBindingName);
-      aspectBinding.setBean(LifecycleBinding.class.getName());
-
-      BeanMetaDataUtil.setSimpleProperty(aspectBinding, "callbackBean", name);
-      util.setAspectManagerProperty(aspectBinding, "manager");
+      BeanMetaDataBuilder bindingBuilder = BeanMetaDataBuilder.createBuilder(aspectBindingName, LifecycleBinding.class.getName());
+      bindingBuilder.addPropertyMetaData("callbackBean", name);
+      util.setAspectManagerProperty(bindingBuilder, "manager");
       if (expr != null)
       {
-         BeanMetaDataUtil.setSimpleProperty(aspectBinding, "expr", expr);
+         bindingBuilder.addPropertyMetaData("expr", expr);
       }
       else if (classes != null) 
       {
-         BeanMetaDataUtil.setSimpleProperty(aspectBinding, "classes", classes);         
+         bindingBuilder.addPropertyMetaData("classes", classes);         
       }
-      BeanMetaDataUtil.setSimpleProperty(aspectBinding, "state", getState());
+      bindingBuilder.addPropertyMetaData("state", getState());
       if (installMethod != null)
       {
-         BeanMetaDataUtil.setSimpleProperty(aspectBinding, "installMethod", installMethod);
+         bindingBuilder.addPropertyMetaData("installMethod", installMethod);
       }
       if (uninstallMethod != null)
       {
-         BeanMetaDataUtil.setSimpleProperty(aspectBinding, "uninstallMethod", uninstallMethod);
+         bindingBuilder.addPropertyMetaData("uninstallMethod", uninstallMethod);
       }
-      result.add(aspectBinding);
+      result.add(bindingBuilder.getBeanMetaData());
       
       return result;
-   }
-
-
-   protected boolean hasInjectedBeans()
-   {
-      ArrayList<AbstractDependencyValueMetaData> dependencies = new ArrayList<AbstractDependencyValueMetaData>();
-      getDependencies(dependencies, this);
-      
-      for (AbstractDependencyValueMetaData dep : dependencies)
-      {
-         if(!((String)dep.getValue()).startsWith("jboss.kernel:service="))
-         {
-            return true;
-         }
-      }
-      return false;
-   }
-
-   private void getDependencies(ArrayList<AbstractDependencyValueMetaData> dependencies, MetaDataVisitorNode node)
-   {
-      Iterator<? extends MetaDataVisitorNode> children = node.getChildren();
-      
-      if (children != null)
-      {
-         while (children.hasNext())
-         {
-            MetaDataVisitorNode child = children.next();
-            if (child instanceof AbstractDependencyValueMetaData)
-            {
-               dependencies.add((AbstractDependencyValueMetaData)child);
-            }
-            getDependencies(dependencies, child);
-         }
-      }
    }
 
    @Override
@@ -158,5 +126,4 @@ public abstract class LifecycleBeanMetaDataFactory extends AspectManagerAwareBea
    {
       properties.add(property);
    }
-
 }

@@ -31,10 +31,10 @@ import javax.xml.bind.annotation.XmlNsForm;
 import javax.xml.bind.annotation.XmlRootElement;
 
 import org.jboss.aop.microcontainer.beans.AspectBinding;
-import org.jboss.beans.metadata.plugins.AbstractBeanMetaData;
-import org.jboss.beans.metadata.plugins.AbstractInjectionValueMetaData;
-import org.jboss.beans.metadata.plugins.AbstractListMetaData;
 import org.jboss.beans.metadata.spi.BeanMetaData;
+import org.jboss.beans.metadata.spi.ValueMetaData;
+import org.jboss.beans.metadata.spi.builder.BeanMetaDataBuilder;
+import org.jboss.dependency.spi.ControllerState;
 import org.jboss.util.id.GUID;
 import org.jboss.xb.annotations.JBossXmlSchema;
 
@@ -76,56 +76,52 @@ public class BindBeanMetaDataFactory extends AspectManagerAwareBeanMetaDataFacto
       ArrayList<BeanMetaData> result = new ArrayList<BeanMetaData>();
 
       //Create AspectBinding
-      AbstractBeanMetaData binding = new AbstractBeanMetaData();
       if (name == null)
       {
          name = GUID.asString();
       }
-      binding.setName(name);
-      BeanMetaDataUtil.setSimpleProperty(binding, "name", name);
-      binding.setBean(AspectBinding.class.getName());
-
-      BeanMetaDataUtil.setSimpleProperty(binding, "pointcut", pointcut);
-      
+      BeanMetaDataBuilder bindingBuilder = BeanMetaDataBuilder.createBuilder(name, AspectBinding.class.getName());
+      bindingBuilder.addPropertyMetaData("name", name);
       if (cflow != null)
       {
-         BeanMetaDataUtil.setSimpleProperty(binding, "cflow", cflow);
+         bindingBuilder.addPropertyMetaData("cflow", cflow);
       }
-      util.setAspectManagerProperty(binding, "manager");
-      result.add(binding);
+      bindingBuilder.addPropertyMetaData("pointcut", pointcut);
+      util.setAspectManagerProperty(bindingBuilder, "manager");
+      result.add(bindingBuilder.getBeanMetaData());
       
       if (interceptors.size() > 0)
       {
-         AbstractListMetaData almd = new AbstractListMetaData();
+         List<ValueMetaData> bindingInterceptors = bindingBuilder.createList();
          int i = 0;
          for (BaseInterceptorData interceptor : interceptors)
          {
-            AbstractBeanMetaData bmd = new AbstractBeanMetaData(interceptor.getBeanClassName());
             String intName = name + "$" + i++; 
-            bmd.setName(intName);
-            util.setAspectManagerProperty(bmd, "manager");
-            BeanMetaDataUtil.DependencyBuilder builder = new BeanMetaDataUtil.DependencyBuilder(bmd, "binding", name).setState("Instantiated");
-            BeanMetaDataUtil.setDependencyProperty(builder);
+            BeanMetaDataBuilder interceptorBuilder = BeanMetaDataBuilder.createBuilder(intName, interceptor.getBeanClassName());
+            util.setAspectManagerProperty(interceptorBuilder, "manager");
+            ValueMetaData injectBinding = interceptorBuilder.createInject(name, null, null, ControllerState.INSTANTIATED);
+            interceptorBuilder.addPropertyMetaData("binding", injectBinding);
             
             if (interceptor instanceof AdviceOrInterceptorData)
             {
-               BeanMetaDataUtil.DependencyBuilder db = new BeanMetaDataUtil.DependencyBuilder(bmd, "aspect", interceptor.getRefName()); 
-               BeanMetaDataUtil.setDependencyProperty(db);
+               ValueMetaData injectAspect = interceptorBuilder.createInject(interceptor.getRefName());
+               interceptorBuilder.addPropertyMetaData("aspect", injectAspect);
                if (((AdviceOrInterceptorData)interceptor).getAdviceMethod() != null)
                {
-                  BeanMetaDataUtil.setSimpleProperty(bmd, "aspectMethod", ((AdviceOrInterceptorData)interceptor).getAdviceMethod());
+                  interceptorBuilder.addPropertyMetaData("aspectMethod", ((AdviceOrInterceptorData)interceptor).getAdviceMethod());
                }
-               BeanMetaDataUtil.setSimpleProperty(bmd, "type", ((AdviceOrInterceptorData)interceptor).getType());
+               interceptorBuilder.addPropertyMetaData("type", ((AdviceOrInterceptorData)interceptor).getType());
             }
             else
             {
-               BeanMetaDataUtil.DependencyBuilder db = new BeanMetaDataUtil.DependencyBuilder(bmd, "stack", interceptor.getRefName());
-               BeanMetaDataUtil.setDependencyProperty(db);
+               ValueMetaData injectStack = interceptorBuilder.createInject(interceptor.getRefName());
+               interceptorBuilder.addPropertyMetaData("stack", injectStack);
             }
-            result.add(bmd);
-            almd.add(new AbstractInjectionValueMetaData(intName));
+            result.add(interceptorBuilder.getBeanMetaData());
+            ValueMetaData injectInterceptor = bindingBuilder.createInject(intName);
+            bindingInterceptors.add(injectInterceptor);
          }         
-         BeanMetaDataUtil.setSimpleProperty(binding, "advices", almd);
+         bindingBuilder.addPropertyMetaData("advices", bindingInterceptors);
       }
       
       return result;

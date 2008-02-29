@@ -26,9 +26,9 @@ import java.util.List;
 
 
 import org.jboss.aop.microcontainer.beans.AOPDomain;
-import org.jboss.beans.metadata.plugins.AbstractBeanMetaData;
 import org.jboss.beans.metadata.spi.BeanMetaData;
 import org.jboss.beans.metadata.spi.BeanMetaDataFactory;
+import org.jboss.beans.metadata.spi.builder.BeanMetaDataBuilder;
 
 /**
  * 
@@ -80,28 +80,27 @@ public class DomainBeanMetaDataFactory extends AspectManagerAwareBeanMetaDataFac
    {
       ArrayList<BeanMetaData> result = new ArrayList<BeanMetaData>();
       
-      AbstractBeanMetaData domain = new AbstractBeanMetaData(AOPDomain.class.getName());
-      BeanMetaDataUtil.setSimpleProperty(domain, "name", getName());
-      domain.setName(getName());
+      BeanMetaDataBuilder domainBuilder = BeanMetaDataBuilder.createBuilder(getName(), AOPDomain.class.getName());
+      domainBuilder.addPropertyMetaData("name", getName());
       
       if (parentFirst != null)
       {
-         BeanMetaDataUtil.setSimpleProperty(domain, "parentFirst", parentFirst);
+         domainBuilder.addPropertyMetaData("parentFirst", parentFirst);
       }
       if (inheritDefinitions != null)
       {
-         BeanMetaDataUtil.setSimpleProperty(domain, "inheritDefinitions", inheritDefinitions);
+         domainBuilder.addPropertyMetaData("inheritDefinitions", inheritDefinitions);
       }
       if (inheritBindings != null)
       {
-         BeanMetaDataUtil.setSimpleProperty(domain, "inheritBindings", inheritBindings);
+         domainBuilder.addPropertyMetaData("inheritBindings", inheritBindings);
       }
       if (extendz != null)
       {
-         BeanMetaDataUtil.setSimpleProperty(domain, "extends", extendz);
+         domainBuilder.addPropertyMetaData("extends", extendz);
       }
-      util.setAspectManagerProperty(domain, "manager");
-      result.add(domain);
+      util.setAspectManagerProperty(domainBuilder, "manager");
+      result.add(domainBuilder.getBeanMetaData());
       
       for (BeanMetaData child : childBeans)
       {

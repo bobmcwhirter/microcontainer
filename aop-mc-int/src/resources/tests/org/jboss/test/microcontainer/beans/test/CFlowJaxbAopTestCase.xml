@@ -1,0 +1,22 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<aop xmlns="urn:jboss:aop-beans:1.0">
+
+   <bean xmlns="urn:jboss:bean-deployer:2.0" name="AspectManager" class="org.jboss.aop.AspectManager">
+      <constructor factoryClass="org.jboss.aop.AspectManager" factoryMethod="instance"/>
+   </bean>
+
+	<aspect class="org.jboss.test.microcontainer.beans.TestAspect"/>
+	
+	<cflow-stack name="CFlow">
+		<not-called expr="void org.jboss.test.microcontainer.beans.test.CFlowTest->notCallPOJO(..)"/>
+		<called expr="void org.jboss.test.microcontainer.beans.test.CFlowTest->callPOJO(..)"/>
+	</cflow-stack>
+
+	<bind pointcut="execution(* org.jboss.test.microcontainer.beans.POJO->*(..))" cflow="CFlow">
+		<advice aspect="org.jboss.test.microcontainer.beans.TestAspect" name="advice"/>
+	</bind>
+	   
+   <bean xmlns="urn:jboss:bean-deployer:2.0" name="Bean" class="org.jboss.test.microcontainer.beans.POJO"/>
+   
+</deployment>

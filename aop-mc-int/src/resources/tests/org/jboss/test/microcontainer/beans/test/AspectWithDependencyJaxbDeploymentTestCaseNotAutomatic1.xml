@@ -7,7 +7,7 @@
    </bean>
 
 	<aop:aspect xmlns:aop="urn:jboss:aop-beans:1.0" class="org.jboss.test.microcontainer.beans.TestAspectWithDependency">
-   	<property xmlns="urn:jboss:bean-deployer:2.0" name="dependency"><inject bean="Dependency"/></property>
+   	<property name="dependency"><inject bean="Dependency"/></property>
    </aop:aspect>
 
 	<aop:bind xmlns:aop="urn:jboss:aop-beans:1.0" pointcut="execution(* org.jboss.test.microcontainer.beans.POJO->*(..))">

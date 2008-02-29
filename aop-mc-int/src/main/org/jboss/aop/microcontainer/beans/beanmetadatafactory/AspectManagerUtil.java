@@ -21,60 +21,54 @@
 */ 
 package org.jboss.aop.microcontainer.beans.beanmetadatafactory;
 
-import java.util.ArrayList;
-import java.util.List;
 
-import javax.xml.bind.annotation.XmlAttribute;
-import javax.xml.bind.annotation.XmlNsForm;
-import javax.xml.bind.annotation.XmlRootElement;
+import java.io.Serializable;
 
-import org.jboss.aop.microcontainer.beans.TypeDef;
-import org.jboss.beans.metadata.spi.BeanMetaData;
+import org.jboss.beans.metadata.spi.ValueMetaData;
 import org.jboss.beans.metadata.spi.builder.BeanMetaDataBuilder;
-import org.jboss.xb.annotations.JBossXmlSchema;
 
 /**
  * 
  * @author <a href="kabir.khan@jboss.com">Kabir Khan</a>
  * @version $Revision: 1.1 $
  */
-@JBossXmlSchema(namespace="urn:jboss:aop-beans:1.0", elementFormDefault=XmlNsForm.QUALIFIED)
-@XmlRootElement(name="typedef")
-public class TypeDefBeanMetaDataFactory extends AspectManagerAwareBeanMetaDataFactory
+public class AspectManagerUtil implements Serializable
 {
    private static final long serialVersionUID = 1L;
-   private String expr;
 
-   public TypeDefBeanMetaDataFactory()
-   {
-      setBeanClass("IGNORED");
-   }
+   /** Unless specified use the bean with this name as the aspect manager */
+   protected final static String DEFAULT_ASPECT_MANAGER = "AspectManager";
    
-   public String getExpr()
+   /** The bean name of the aspect manager to use */
+   protected String managerBean = DEFAULT_ASPECT_MANAGER;
+
+   /** The property of the aspect manager bean, if any, containing the aspect manager */
+   protected String managerProperty;
+
+
+   public String getManagerBean()
    {
-      return expr;
+      return managerBean;
    }
 
-   @XmlAttribute
-   public void setExpr(String expr)
+   public void setManagerBean(String managerBean)
    {
-      this.expr = expr;
+      this.managerBean = managerBean;
    }
 
-   @Override
-   public List<BeanMetaData> getBeans()
+   public String getManagerProperty()
    {
-      ArrayList<BeanMetaData> beans = new ArrayList<BeanMetaData>();
-      
-      BeanMetaDataBuilder typedefBuilder = BeanMetaDataBuilder.createBuilder(getName(), TypeDef.class.getName());
-      typedefBuilder.addPropertyMetaData("name", getName());
-      typedefBuilder.addPropertyMetaData("expr", expr);
-      
-      util.setAspectManagerProperty(typedefBuilder, "manager");
-      
-      beans.add(typedefBuilder.getBeanMetaData());
-      
-      return beans;
+      return managerProperty;
    }
-   
+
+   public void setManagerProperty(String aspectManagerProperty)
+   {
+      this.managerProperty = aspectManagerProperty;
+   }
+
+   public void setAspectManagerProperty(BeanMetaDataBuilder builder, String propertyName)
+   {
+      ValueMetaData value = builder.createInject(managerBean, managerProperty);
+      builder.addPropertyMetaData(propertyName, value);
+   }
 }

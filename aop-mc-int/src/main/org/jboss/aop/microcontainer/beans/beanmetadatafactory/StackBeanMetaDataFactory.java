@@ -30,10 +30,9 @@ import javax.xml.bind.annotation.XmlNsForm;
 import javax.xml.bind.annotation.XmlRootElement;
 
 import org.jboss.aop.microcontainer.beans.Stack;
-import org.jboss.beans.metadata.plugins.AbstractBeanMetaData;
-import org.jboss.beans.metadata.plugins.AbstractInjectionValueMetaData;
-import org.jboss.beans.metadata.plugins.AbstractListMetaData;
 import org.jboss.beans.metadata.spi.BeanMetaData;
+import org.jboss.beans.metadata.spi.ValueMetaData;
+import org.jboss.beans.metadata.spi.builder.BeanMetaDataBuilder;
 import org.jboss.xb.annotations.JBossXmlSchema;
 
 /**
@@ -59,47 +58,43 @@ public class StackBeanMetaDataFactory extends AspectManagerAwareBeanMetaDataFact
    {
       ArrayList<BeanMetaData> result = new ArrayList<BeanMetaData>();
 
-      //Create AspectBinding
-      AbstractBeanMetaData stack = new AbstractBeanMetaData();
-      stack.setName(name);
-      BeanMetaDataUtil.setSimpleProperty(stack, "name", name);
-      stack.setBean(Stack.class.getName());
-
-      util.setAspectManagerProperty(stack, "manager");
-      result.add(stack);
+      //Create Stack
+      BeanMetaDataBuilder stackBuilder = BeanMetaDataBuilder.createBuilder(name, Stack.class.getName());
+      stackBuilder.addPropertyMetaData("name", name);
+      util.setAspectManagerProperty(stackBuilder, "manager");
+      result.add(stackBuilder.getBeanMetaData());
       
       if (interceptors.size() > 0)
       {
-         AbstractListMetaData almd = new AbstractListMetaData();
+         List<ValueMetaData> advices = stackBuilder.createList();
          int i = 0;
          for (BaseInterceptorData interceptor : interceptors)
          {
-            AbstractBeanMetaData bmd = new AbstractBeanMetaData(interceptor.getBeanClassName());
             String intName = name + "$" + i++; 
-            bmd.setName(intName);
-            util.setAspectManagerProperty(bmd, "manager");
-            BeanMetaDataUtil.setSimpleProperty(bmd, "forStack", Boolean.TRUE);
+            BeanMetaDataBuilder interceptorBuilder = BeanMetaDataBuilder.createBuilder(intName, interceptor.getBeanClassName());
+            util.setAspectManagerProperty(interceptorBuilder, "manager");
+            interceptorBuilder.addPropertyMetaData("forStack", Boolean.TRUE);
             
             if (interceptor instanceof AdviceOrInterceptorData)
             {
-               BeanMetaDataUtil.DependencyBuilder db = new BeanMetaDataUtil.DependencyBuilder(bmd, "aspect", interceptor.getRefName());
-               BeanMetaDataUtil.setDependencyProperty(db);
+               ValueMetaData injectAspect = interceptorBuilder.createInject(interceptor.getRefName());
+               interceptorBuilder.addPropertyMetaData("aspect", injectAspect);
                if (((AdviceOrInterceptorData)interceptor).getAdviceMethod() != null)
                {
-                  BeanMetaDataUtil.setSimpleProperty(bmd, "aspectMethod", ((AdviceOrInterceptorData)interceptor).getAdviceMethod());
+                  interceptorBuilder.addPropertyMetaData("aspectMethod", ((AdviceOrInterceptorData)interceptor).getAdviceMethod());
                }
-               BeanMetaDataUtil.setSimpleProperty(bmd, "type", ((AdviceOrInterceptorData)interceptor).getType());
-               
+               interceptorBuilder.addPropertyMetaData("type", ((AdviceOrInterceptorData)interceptor).getType());
             }
             else
             {
-               BeanMetaDataUtil.DependencyBuilder db = new BeanMetaDataUtil.DependencyBuilder(bmd, "stack", interceptor.getRefName());
-               BeanMetaDataUtil.setDependencyProperty(db);
+               ValueMetaData injectStack = interceptorBuilder.createInject(interceptor.getRefName());
+               interceptorBuilder.addPropertyMetaData("stack", injectStack);
             }
-            result.add(bmd);
-            almd.add(new AbstractInjectionValueMetaData(intName));
+            result.add(interceptorBuilder.getBeanMetaData());
+            ValueMetaData injectAdvice = stackBuilder.createInject(intName);
+            advices.add(injectAdvice);
          }         
-         BeanMetaDataUtil.setSimpleProperty(stack, "advices", almd);
+         stackBuilder.addPropertyMetaData("advices", advices);
       }
       
       return result;

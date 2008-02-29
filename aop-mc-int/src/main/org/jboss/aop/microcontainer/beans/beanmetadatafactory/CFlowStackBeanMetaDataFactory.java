@@ -30,11 +30,11 @@ import javax.xml.bind.annotation.XmlNsForm;
 import javax.xml.bind.annotation.XmlRootElement;
 
 import org.jboss.aop.microcontainer.beans.CFlowStack;
-import org.jboss.beans.metadata.plugins.AbstractBeanMetaData;
-import org.jboss.beans.metadata.plugins.AbstractInjectionValueMetaData;
-import org.jboss.beans.metadata.plugins.AbstractListMetaData;
+import org.jboss.aop.microcontainer.beans.CFlowStackEntry;
 import org.jboss.beans.metadata.spi.BeanMetaData;
 import org.jboss.beans.metadata.spi.BeanMetaDataFactory;
+import org.jboss.beans.metadata.spi.ValueMetaData;
+import org.jboss.beans.metadata.spi.builder.BeanMetaDataBuilder;
 import org.jboss.xb.annotations.JBossXmlSchema;
 
 /**
@@ -49,10 +49,8 @@ public class CFlowStackBeanMetaDataFactory extends AspectManagerAwareBeanMetaDat
    implements BeanMetaDataFactory
 {
    private static final long serialVersionUID = 1L;
-   /** For use when using the old handlers */
-   private ArrayList<AbstractBeanMetaData> entries = new ArrayList<AbstractBeanMetaData>();
    
-   private List<CFlowCalled> calledEntries = new ArrayList<CFlowCalled>();
+   private List<CFlowEntry> calledEntries = new ArrayList<CFlowEntry>();
 
    public CFlowStackBeanMetaDataFactory()
    {
@@ -65,56 +63,46 @@ public class CFlowStackBeanMetaDataFactory extends AspectManagerAwareBeanMetaDat
       ArrayList<BeanMetaData> result = new ArrayList<BeanMetaData>();
       
       //Add the Aspect
-      AbstractBeanMetaData cflowStack = new AbstractBeanMetaData(CFlowStack.class.getName());
-      cflowStack.setName(getName());
-      BeanMetaDataUtil.setSimpleProperty(cflowStack, "name", getName());
-      util.setAspectManagerProperty(cflowStack, "manager");
-      result.add(cflowStack);
+      BeanMetaDataBuilder cflowStackBuilder = BeanMetaDataBuilder.createBuilder(getName(), CFlowStack.class.getName());
+      cflowStackBuilder.addPropertyMetaData("name", getName());
+      util.setAspectManagerProperty(cflowStackBuilder, "manager");
+      result.add(cflowStackBuilder.getBeanMetaData());
       
-      AbstractListMetaData lmd = new AbstractListMetaData();
-      lmd.setType(ArrayList.class.getName());
-      BeanMetaDataUtil.setSimpleProperty(cflowStack, "entries", lmd);
+      List<ValueMetaData> entryList = cflowStackBuilder.createList(null, ArrayList.class.getName());
+      cflowStackBuilder.addPropertyMetaData("entries", entryList);
       int i = 0;
-      if (entries != null)
-      {
-         for (AbstractBeanMetaData entry : entries)
-         {
-            String entryName = cflowStack.getName() + "$" + i++;
-            entry.setName(entryName);
-            lmd.add(new AbstractInjectionValueMetaData(entryName));
-            result.add(entry);
-         }
-      }
       if (calledEntries != null)
       {
-         for (CFlowCalled called : calledEntries)
+         for (CFlowEntry entry : calledEntries)
          {
-            AbstractBeanMetaData bmd = new AbstractBeanMetaData();
-            String entryName = cflowStack.getName() + "$" + i++;
-            bmd.setName(name);
-            BeanMetaDataUtil.setSimpleProperty(bmd, "called", called);
-            lmd.add(new AbstractInjectionValueMetaData(entryName));
+            String entryName = getName() + "$" + i++;
+            BeanMetaDataBuilder entryBuilder = BeanMetaDataBuilder.createBuilder(entryName, CFlowStackEntry.class.getName());
+            entryBuilder.addPropertyMetaData("called", entry.getCalled());
+            entryBuilder.addPropertyMetaData("expr", entry.getExpr());
+            ValueMetaData injectEntry = entryBuilder.createInject(entryName);
+            entryList.add(injectEntry);
+            result.add(entryBuilder.getBeanMetaData());
          }
       }
 
       return result;
    }
 
-   public void addEntry(AbstractBeanMetaData entry)
+   public void addEntry(CFlowEntry entry)
    {
-      entries.add(entry);
+      calledEntries.add(entry);
    }
 
-   public List<CFlowCalled> getCalledEntries()
+   public List<CFlowEntry> getCalledEntries()
    {
       return calledEntries;
    }
 
    @XmlElements({
-      @XmlElement(name="called", type=CFlowCalled.class),
+      @XmlElement(name="called", type=CFlowEntry.class),
       @XmlElement(name="not-called", type=CFlowNotCalled.class)
    })
-   public void setCalledEntries(List<CFlowCalled> calledEntries)
+   public void setCalledEntries(List<CFlowEntry> calledEntries)
    {
       this.calledEntries = calledEntries;
    }

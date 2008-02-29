@@ -26,10 +26,9 @@ import java.util.List;
 
 import org.jboss.aop.microcontainer.beans.PrecedenceDef;
 import org.jboss.aop.microcontainer.beans.PrecedenceDefEntry;
-import org.jboss.beans.metadata.plugins.AbstractBeanMetaData;
-import org.jboss.beans.metadata.plugins.AbstractInjectionValueMetaData;
-import org.jboss.beans.metadata.plugins.AbstractListMetaData;
 import org.jboss.beans.metadata.spi.BeanMetaData;
+import org.jboss.beans.metadata.spi.ValueMetaData;
+import org.jboss.beans.metadata.spi.builder.BeanMetaDataBuilder;
 import org.jboss.util.id.GUID;
 
 /**
@@ -54,33 +53,33 @@ public class PrecedenceBeanMetaDataFactory extends AspectManagerAwareBeanMetaDat
       ArrayList<BeanMetaData> result = new ArrayList<BeanMetaData>();
       
       //Add the PrecedenceDef
-      AbstractBeanMetaData precedence = new AbstractBeanMetaData(PrecedenceDef.class.getName());
       String name = getName();
       if (name == null)
       {
          name = GUID.asString();
       }
-      precedence.setName(name);
-      BeanMetaDataUtil.setSimpleProperty(precedence, "name", getName());
-      util.setAspectManagerProperty(precedence, "manager");
-      result.add(precedence);
+      BeanMetaDataBuilder precedenceBuilder = BeanMetaDataBuilder.createBuilder(name, PrecedenceDef.class.getName());
+      precedenceBuilder.addPropertyMetaData("name", getName());
+      util.setAspectManagerProperty(precedenceBuilder, "manager");
+      result.add(precedenceBuilder.getBeanMetaData());
       
-      AbstractListMetaData lmd = new AbstractListMetaData();
-      lmd.setType(ArrayList.class.getName());
-      BeanMetaDataUtil.setSimpleProperty(precedence, "entries", lmd);
+      List<ValueMetaData> entryList = precedenceBuilder.createList(ArrayList.class.getName(), null);
+      precedenceBuilder.addPropertyMetaData("entries", entryList);
       int i = 0;
       for (BaseInterceptorData entry : entries)
       {
          String entryName = name + "$" + i++;
-         AbstractBeanMetaData entryBean = new AbstractBeanMetaData(PrecedenceDefEntry.class.getName());
-         entryBean.setName(entryName);
-         BeanMetaDataUtil.setSimpleProperty(entryBean, "aspectName", entry.getRefName());
+         BeanMetaDataBuilder entryBuilder = BeanMetaDataBuilder.createBuilder(entryName, PrecedenceDefEntry.class.getName());
+         
+         entryBuilder.addPropertyMetaData("aspectName", entry.getRefName());
          if (entry instanceof AdviceOrInterceptorData)
          {
-            BeanMetaDataUtil.setSimpleProperty(entryBean, "aspectMethod", ((AdviceOrInterceptorData)entry).getAdviceMethod());
+            entryBuilder.addPropertyMetaData("aspectMethod", ((AdviceOrInterceptorData)entry).getAdviceMethod());
          }
-         lmd.add(new AbstractInjectionValueMetaData(entryName));
-         result.add(entryBean);
+         
+         ValueMetaData injectEntry = precedenceBuilder.createInject(entryName);
+         entryList.add(injectEntry);
+         result.add(entryBuilder.getBeanMetaData());
       }
 
       return result;

@@ -33,7 +33,7 @@ public class AspectManagerAwareBeanMetaDataFactory extends GenericBeanFactoryMet
 {
    private static final long serialVersionUID = 1L;
 
-   protected BeanMetaDataUtil util = new BeanMetaDataUtil();
+   protected AspectManagerUtil util = new AspectManagerUtil();
 
    @XmlAttribute(name="manager-bean")
    public void setManagerBean(String managerBean)

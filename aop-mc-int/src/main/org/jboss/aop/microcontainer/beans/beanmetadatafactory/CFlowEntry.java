@@ -21,35 +21,18 @@
 */ 
 package org.jboss.aop.microcontainer.beans.beanmetadatafactory;
 
-import java.util.ArrayList;
-import java.util.List;
-
 import javax.xml.bind.annotation.XmlAttribute;
-import javax.xml.bind.annotation.XmlNsForm;
-import javax.xml.bind.annotation.XmlRootElement;
-
-import org.jboss.aop.microcontainer.beans.TypeDef;
-import org.jboss.beans.metadata.spi.BeanMetaData;
-import org.jboss.beans.metadata.spi.builder.BeanMetaDataBuilder;
-import org.jboss.xb.annotations.JBossXmlSchema;
 
 /**
  * 
  * @author <a href="kabir.khan@jboss.com">Kabir Khan</a>
  * @version $Revision: 1.1 $
  */
-@JBossXmlSchema(namespace="urn:jboss:aop-beans:1.0", elementFormDefault=XmlNsForm.QUALIFIED)
-@XmlRootElement(name="typedef")
-public class TypeDefBeanMetaDataFactory extends AspectManagerAwareBeanMetaDataFactory
+public class CFlowEntry
 {
-   private static final long serialVersionUID = 1L;
    private String expr;
+   private boolean called;
 
-   public TypeDefBeanMetaDataFactory()
-   {
-      setBeanClass("IGNORED");
-   }
-   
    public String getExpr()
    {
       return expr;
@@ -60,21 +43,14 @@ public class TypeDefBeanMetaDataFactory extends AspectManagerAwareBeanMetaDataFa
    {
       this.expr = expr;
    }
-
-   @Override
-   public List<BeanMetaData> getBeans()
+   
+   public boolean getCalled()
    {
-      ArrayList<BeanMetaData> beans = new ArrayList<BeanMetaData>();
-      
-      BeanMetaDataBuilder typedefBuilder = BeanMetaDataBuilder.createBuilder(getName(), TypeDef.class.getName());
-      typedefBuilder.addPropertyMetaData("name", getName());
-      typedefBuilder.addPropertyMetaData("expr", expr);
-      
-      util.setAspectManagerProperty(typedefBuilder, "manager");
-      
-      beans.add(typedefBuilder.getBeanMetaData());
-      
-      return beans;
+      return called;
    }
    
+   public void setCalled(boolean called)
+   {
+      this.called = called;
+   }
 }

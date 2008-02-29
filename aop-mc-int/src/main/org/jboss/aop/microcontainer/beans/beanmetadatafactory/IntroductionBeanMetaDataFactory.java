@@ -23,15 +23,13 @@ package org.jboss.aop.microcontainer.beans.beanmetadatafactory;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.StringTokenizer;
 
 import org.jboss.aop.microcontainer.beans.IntroductionBinding;
-import org.jboss.beans.metadata.plugins.AbstractBeanMetaData;
-import org.jboss.beans.metadata.plugins.AbstractInjectionValueMetaData;
-import org.jboss.beans.metadata.plugins.AbstractListMetaData;
-import org.jboss.beans.metadata.plugins.StringValueMetaData;
+import org.jboss.aop.microcontainer.beans.MixinEntry;
 import org.jboss.beans.metadata.spi.BeanMetaData;
 import org.jboss.beans.metadata.spi.BeanMetaDataFactory;
+import org.jboss.beans.metadata.spi.ValueMetaData;
+import org.jboss.beans.metadata.spi.builder.BeanMetaDataBuilder;
 import org.jboss.util.id.GUID;
 
 /**
@@ -48,7 +46,7 @@ public class IntroductionBeanMetaDataFactory extends AspectManagerAwareBeanMetaD
    private String clazz;
    private String expr;
    private String interfaces;
-   private ArrayList<AbstractBeanMetaData> mixins = new ArrayList<AbstractBeanMetaData>();
+   private ArrayList<MixinData> mixins = new ArrayList<MixinData>();
    
    public IntroductionBeanMetaDataFactory()
    {
@@ -86,7 +84,7 @@ public class IntroductionBeanMetaDataFactory extends AspectManagerAwareBeanMetaD
       this.interfaces = interfaces;
    }
 
-   public void addMixinEntry(AbstractBeanMetaData mixin)
+   public void addMixinEntry(MixinData mixin)
    {
       mixins.add(mixin);
    }
@@ -96,67 +94,78 @@ public class IntroductionBeanMetaDataFactory extends AspectManagerAwareBeanMetaD
    {
       ArrayList<BeanMetaData> result = new ArrayList<BeanMetaData>();
       
-      //Add the Aspect
-      AbstractBeanMetaData introduction = new AbstractBeanMetaData(IntroductionBinding.class.getName());
+      //Add the Introduction
       String name = getName();
       if (name == null)
       {
          name = GUID.asString();
       }
-      introduction.setName(name);
-      BeanMetaDataUtil.setSimpleProperty(introduction, "name", name);
-      util.setAspectManagerProperty(introduction, "manager");
+     
+      BeanMetaDataBuilder introductionBuilder = BeanMetaDataBuilder.createBuilder(name, IntroductionBinding.class.getName());
+      introductionBuilder.addPropertyMetaData("name", name);
+      util.setAspectManagerProperty(introductionBuilder, "manager");
       if (clazz != null)
       {
-         BeanMetaDataUtil.setSimpleProperty(introduction, "classes", clazz);
+         introductionBuilder.addPropertyMetaData("classes", clazz);
       }
       if (expr != null)
       {
-         BeanMetaDataUtil.setSimpleProperty(introduction, "expr", expr);
+         introductionBuilder.addPropertyMetaData("expr", expr);
       }
 
-      result.add(introduction);
-
+      result.add(introductionBuilder.getBeanMetaData());
+      
       if (interfaces != null)
       {
-         addInterfaces(introduction, "interfaces", interfaces);
+         addInterfaces(introductionBuilder, interfaces);
       }
       if (mixins != null)
       {
-         addMixins(introduction, result);
+         addMixins(introductionBuilder, result);
       }
       
       return result;
    }
-   
-   public static void addInterfaces(AbstractBeanMetaData introduction, String propertyName, String interfaces)
+
+   public static void addInterfaces(BeanMetaDataBuilder introductionBuilder, String interfaces)
    {
-      AbstractListMetaData lmd = new AbstractListMetaData();
-      lmd.setType(ArrayList.class.getName());
-      lmd.setElementType(String.class.getName());
-      BeanMetaDataUtil.setSimpleProperty(introduction, propertyName, lmd);
-      
-      StringTokenizer tok = new StringTokenizer(interfaces, ",");
-      while (tok.hasMoreTokens())
+      addInterfaces(introductionBuilder, "interfaces", interfaces);
+   }
+   
+   public static void addInterfaces(BeanMetaDataBuilder introductionBuilder, String propertyName, String interfaces)
+   {
+      List<ValueMetaData> ifs = introductionBuilder.createList(ArrayList.class.getName(), String.class.getName());
+      introductionBuilder.addPropertyMetaData(propertyName, ifs);
+      for (String token : interfaces.split(","))
       {
-         String token = tok.nextToken();
-         lmd.add(new StringValueMetaData(token.trim()));
+         ifs.add(introductionBuilder.createValue(token.trim()));
       }
    }
    
-   private void addMixins(AbstractBeanMetaData introduction, List<BeanMetaData> result)
+   private void addMixins(BeanMetaDataBuilder introductionBuilder, List<BeanMetaData> result)
    {
-      AbstractListMetaData lmd = new AbstractListMetaData();
-      lmd.setType(ArrayList.class.getName());
-      BeanMetaDataUtil.setSimpleProperty(introduction, "mixins", lmd);
+      List<ValueMetaData> mixinList = introductionBuilder.createList(ArrayList.class.getName(), null);
+      introductionBuilder.addPropertyMetaData("mixins", mixinList);
       int i = 0;
-      for (AbstractBeanMetaData mixin : mixins)
+      for (MixinData mixin : mixins)
       {
-         String name = introduction.getName() + "$" + i++;
-         mixin.setName(name);
-         result.add(mixin);
-
-         lmd.add(new AbstractInjectionValueMetaData(name));
+         String name = introductionBuilder.getBeanMetaData().getName() + "$" + i++;
+         BeanMetaDataBuilder mixinBuilder = BeanMetaDataBuilder.createBuilder(name, MixinEntry.class.getName());
+         mixinBuilder.addPropertyMetaData("mixin", mixin.getMixin());
+         addInterfaces(mixinBuilder, "interfaces", mixin.getInterfaces());
+         if (mixin.getTransient() != null)
+         {
+            mixinBuilder.addPropertyMetaData("transient", mixin.getTransient());
+         }
+         if (mixin.getConstruction() != null)
+         {
+            mixinBuilder.addPropertyMetaData("construction", mixin.getConstruction());
+         }
+         
+         result.add(mixinBuilder.getBeanMetaData());
+         
+         ValueMetaData injectMixin = introductionBuilder.createInject(name);
+         mixinList.add(injectMixin);
       }
    }
 }

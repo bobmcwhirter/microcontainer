@@ -31,17 +31,12 @@ import javax.xml.bind.annotation.XmlRootElement;
 import javax.xml.bind.annotation.XmlType;
 
 import org.jboss.aop.microcontainer.beans.Aspect;
-import org.jboss.beans.metadata.plugins.AbstractBeanMetaData;
 import org.jboss.beans.metadata.plugins.AbstractDependencyValueMetaData;
-import org.jboss.beans.metadata.plugins.AbstractInstallMetaData;
-import org.jboss.beans.metadata.plugins.AbstractParameterMetaData;
-import org.jboss.beans.metadata.plugins.AbstractPropertyMetaData;
-import org.jboss.beans.metadata.plugins.ThisValueMetaData;
 import org.jboss.beans.metadata.spi.BeanMetaData;
 import org.jboss.beans.metadata.spi.BeanMetaDataFactory;
-import org.jboss.beans.metadata.spi.InstallMetaData;
 import org.jboss.beans.metadata.spi.MetaDataVisitorNode;
-import org.jboss.beans.metadata.spi.ParameterMetaData;
+import org.jboss.beans.metadata.spi.ValueMetaData;
+import org.jboss.beans.metadata.spi.builder.BeanMetaDataBuilder;
 import org.jboss.xb.annotations.JBossXmlSchema;
 
 /**
@@ -125,72 +120,52 @@ public class AspectBeanMetaDataFactory extends AspectManagerAwareBeanMetaDataFac
       result.add(this);
       
       //Add the Aspect
-      AbstractBeanMetaData aspect = new AbstractBeanMetaData();
-      aspect.setName(aspectName);
-      aspect.setBean(Aspect.class.getName());
-      BeanMetaDataUtil.setSimpleProperty(aspect, "scope", scope);
-      util.setAspectManagerProperty(aspect, "manager");
+      BeanMetaDataBuilder aspectBuilder = BeanMetaDataBuilder.createBuilder(aspectName, Aspect.class.getName());
+      aspectBuilder.addPropertyMetaData("scope", scope);
+      util.setAspectManagerProperty(aspectBuilder, "manager");
+      
       if (factory != null)
       {
-         BeanMetaDataUtil.setSimpleProperty(aspect, "factory", Boolean.TRUE);
+         aspectBuilder.addPropertyMetaData("factory", Boolean.TRUE);
       }
-      result.add(aspect);
+      result.add(aspectBuilder.getBeanMetaData());
       
       if (hasInjectedBeans())
       {
-         configureWithDependencies(aspect);
+         configureWithDependencies(aspectBuilder);
       }
       else
       {
-         configureNoDependencies(aspect);
+         configureNoDependencies(aspectBuilder);
       }
 
       return result;
    }
 
-   private void configureWithDependencies(AbstractBeanMetaData aspect)
+   private void configureWithDependencies(BeanMetaDataBuilder aspectBuilder)
    {
-      aspect.addProperty(new AbstractPropertyMetaData("adviceBean", name));
+      aspectBuilder.addPropertyMetaData("adviceBean", name);
       
-      AbstractInstallMetaData installAspect = new AbstractInstallMetaData();
-      installAspect.setBean(aspect.getName());
-      installAspect.setMethodName("install");
-      ArrayList<ParameterMetaData> parameters = new ArrayList<ParameterMetaData>();
-      parameters.add(new AbstractParameterMetaData(new ThisValueMetaData()));
-      installAspect.setParameters(parameters);
-      
-      List<InstallMetaData> installs = getInstalls();
-      if (installs == null)
-         installs = new ArrayList<InstallMetaData>();
-      installs.add(installAspect);
-      setInstalls(installs);
-      
-      AbstractInstallMetaData uninstallAspect = new AbstractInstallMetaData();
-      uninstallAspect.setBean(aspect.getName());
-      uninstallAspect.setMethodName("uninstall");
-
-      List<InstallMetaData> uninstalls = getUninstalls();
-      if (uninstalls == null)
-         uninstalls = new ArrayList<InstallMetaData>();
-      uninstalls.add(uninstallAspect);
-      setUninstalls(uninstalls);
-      
+      BeanMetaDataBuilder thisBuilder = BeanMetaDataBuilder.createBuilder(this);
+      thisBuilder.addInstallWithThis("install", aspectBuilder.getBeanMetaData().getName());
+      thisBuilder.addUninstall("uninstall", aspectBuilder.getBeanMetaData().getName());
    }
    
-   private void configureNoDependencies(AbstractBeanMetaData aspect/*, AbstractBeanMetaData aspectBinding*/)
+   private void configureNoDependencies(BeanMetaDataBuilder aspectBuilder)
    {
-      aspect.addProperty(new AbstractPropertyMetaData("advice", new AbstractDependencyValueMetaData(name)));
+      ValueMetaData inject = aspectBuilder.createInject(name);
+      aspectBuilder.addPropertyMetaData("advice", inject);
    }
    
    
    private boolean hasInjectedBeans()
    {
-      ArrayList<AbstractDependencyValueMetaData> dependencies = new ArrayList<AbstractDependencyValueMetaData>();
+      ArrayList<ValueMetaData> dependencies = new ArrayList<ValueMetaData>();
       getDependencies(dependencies, this);
       
-      for (AbstractDependencyValueMetaData dep : dependencies)
+      for (ValueMetaData dep : dependencies)
       {
-         if(!((String)dep.getValue()).startsWith("jboss.kernel:service="))
+         if(!((String)dep.getUnderlyingValue()).startsWith("jboss.kernel:service="))
          {
             return true;
          }
@@ -198,7 +173,7 @@ public class AspectBeanMetaDataFactory extends AspectManagerAwareBeanMetaDataFac
       return false;
    }
    
-   private void getDependencies(ArrayList<AbstractDependencyValueMetaData> dependencies, MetaDataVisitorNode node)
+   private void getDependencies(ArrayList<ValueMetaData> dependencies, MetaDataVisitorNode node)
    {
       Iterator<? extends MetaDataVisitorNode> children = node.getChildren();
       

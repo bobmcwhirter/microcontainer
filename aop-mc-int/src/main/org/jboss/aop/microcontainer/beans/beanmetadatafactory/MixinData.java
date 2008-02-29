@@ -26,10 +26,50 @@ package org.jboss.aop.microcontainer.beans.beanmetadatafactory;
  * @author <a href="kabir.khan@jboss.com">Kabir Khan</a>
  * @version $Revision: 1.1 $
  */
-public class CFlowCalled extends CFlowEntry
+public class MixinData
 {
-   public boolean getCalled()
+   String mixin;
+   String isTransient;
+   String construction;
+   String interfaces;
+
+   public String getTransient()
    {
-      return true;
+      return isTransient;
    }
+
+   public void setTransient(String isTransient)
+   {
+      this.isTransient = isTransient;
+   }
+
+   public String getMixin()
+   {
+      return mixin;
+   }
+
+   public void setMixin(String mixin)
+   {
+      this.mixin = mixin;
+   }
+
+   public String getConstruction()
+   {
+      return construction;
+   }
+
+   public void setConstruction(String construction)
+   {
+      this.construction = construction;
+   }
+
+   public String getInterfaces()
+   {
+      return interfaces;
+   }
+
+   public void setInterfaces(String interfaces)
+   {
+      this.interfaces = interfaces;
+   }   
 }

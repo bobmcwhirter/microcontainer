@@ -28,20 +28,17 @@ import org.jboss.aop.advice.AdviceType;
 import org.jboss.aop.microcontainer.beans.AnnotationIntroduction;
 import org.jboss.aop.microcontainer.beans.AnnotationOverride;
 import org.jboss.aop.microcontainer.beans.ArrayReplacement;
-import org.jboss.aop.microcontainer.beans.CFlowStackEntry;
 import org.jboss.aop.microcontainer.beans.DynamicCFlowDef;
-import org.jboss.aop.microcontainer.beans.MixinEntry;
-import org.jboss.aop.microcontainer.beans.NamedPointcut;
-import org.jboss.aop.microcontainer.beans.Prepare;
-import org.jboss.aop.microcontainer.beans.TypeDef;
+import org.jboss.aop.microcontainer.beans.NamedPointcut;import org.jboss.aop.microcontainer.beans.Prepare;
 import org.jboss.aop.microcontainer.beans.beanmetadatafactory.AdviceData;
 import org.jboss.aop.microcontainer.beans.beanmetadatafactory.AdviceOrInterceptorData;
 import org.jboss.aop.microcontainer.beans.beanmetadatafactory.ArrayBindBeanMetaDataFactory;
 import org.jboss.aop.microcontainer.beans.beanmetadatafactory.AspectBeanMetaDataFactory;
-import org.jboss.aop.microcontainer.beans.beanmetadatafactory.BeanMetaDataUtil;
+import org.jboss.aop.microcontainer.beans.beanmetadatafactory.AspectManagerUtil;
 import org.jboss.aop.microcontainer.beans.beanmetadatafactory.AspectManagerAwareBeanMetaDataFactory;
 import org.jboss.aop.microcontainer.beans.beanmetadatafactory.BaseInterceptorData;
 import org.jboss.aop.microcontainer.beans.beanmetadatafactory.BindBeanMetaDataFactory;
+import org.jboss.aop.microcontainer.beans.beanmetadatafactory.CFlowEntry;
 import org.jboss.aop.microcontainer.beans.beanmetadatafactory.CFlowStackBeanMetaDataFactory;
 import org.jboss.aop.microcontainer.beans.beanmetadatafactory.ConfigureLifecycleBeanMetaDataFactory;
 import org.jboss.aop.microcontainer.beans.beanmetadatafactory.CreateLifecycleBeanMetaDataFactory;
@@ -51,12 +48,16 @@ import org.jboss.aop.microcontainer.beans.beanmetadatafactory.InstallLifecycleBe
 import org.jboss.aop.microcontainer.beans.beanmetadatafactory.InstantiateLifecycleBeanMetaDataFactory;
 import org.jboss.aop.microcontainer.beans.beanmetadatafactory.IntroductionBeanMetaDataFactory;
 import org.jboss.aop.microcontainer.beans.beanmetadatafactory.LifecycleBeanMetaDataFactory;
+import org.jboss.aop.microcontainer.beans.beanmetadatafactory.MixinData;
 import org.jboss.aop.microcontainer.beans.beanmetadatafactory.PreInstallLifecycleBeanMetaDataFactory;
 import org.jboss.aop.microcontainer.beans.beanmetadatafactory.PrecedenceBeanMetaDataFactory;
 import org.jboss.aop.microcontainer.beans.beanmetadatafactory.StackBeanMetaDataFactory;
 import org.jboss.aop.microcontainer.beans.beanmetadatafactory.StackRefData;
 import org.jboss.aop.microcontainer.beans.beanmetadatafactory.StartLifecycleBeanMetaDataFactory;
+import org.jboss.aop.microcontainer.beans.beanmetadatafactory.TypeDefBeanMetaDataFactory;
 import org.jboss.beans.metadata.plugins.AbstractBeanMetaData;
+import org.jboss.beans.metadata.spi.BeanMetaData;
+import org.jboss.beans.metadata.spi.builder.BeanMetaDataBuilder;
 import org.jboss.kernel.plugins.deployment.xml.BeanFactoryHandler;
 import org.jboss.kernel.plugins.deployment.xml.BeanSchemaBinding20;
 import org.jboss.kernel.plugins.deployment.xml.BeanSchemaBindingHelper;
@@ -271,7 +272,7 @@ public class AOPBeansSchemaInitializer implements SchemaBindingInitializer
       type.pushInterceptor(aspectQName, DomainAspectManagerAwareBeanMetaDataFactoryInterceptor.INTERCEPTOR);
       type.pushInterceptor(bindQName, DomainAspectManagerAwareBeanMetaDataFactoryInterceptor.INTERCEPTOR);
       type.pushInterceptor(stackQName, DomainAspectManagerAwareBeanMetaDataFactoryInterceptor.INTERCEPTOR);
-      type.pushInterceptor(typedefQName, DomainBeanMetaDataInterceptor.INTERCEPTOR);
+      type.pushInterceptor(typedefQName, DomainAspectManagerAwareBeanMetaDataFactoryInterceptor.INTERCEPTOR);
       type.pushInterceptor(cflowStackQName, DomainAspectManagerAwareBeanMetaDataFactoryInterceptor.INTERCEPTOR);
       type.pushInterceptor(dynamicCflowQName, DomainBeanMetaDataInterceptor.INTERCEPTOR);
       type.pushInterceptor(prepareQName, DomainBeanMetaDataInterceptor.INTERCEPTOR);
@@ -546,11 +547,11 @@ public class AOPBeansSchemaInitializer implements SchemaBindingInitializer
             }
             else if ("inheritBindings".equals(localName))
             {
-               BeanMetaDataUtil.setSimpleProperty(bean, "inheritBindings", attrs.getValue(i));
+               bean.setInheritBindings(attrs.getValue(i));
             }
             else if ("extends".equals(localName))
             {
-               BeanMetaDataUtil.setSimpleProperty(bean, "extends", attrs.getValue(i));
+               bean.setExtends(attrs.getValue(i));
             }
          }
 
@@ -828,7 +829,8 @@ public class AOPBeansSchemaInitializer implements SchemaBindingInitializer
       public void attributes(Object o, QName elementName, ElementBinding element, Attributes attrs, NamespaceContext nsCtx)
       {
          AbstractBeanMetaData arrayReplacement = (AbstractBeanMetaData)o;
-         BeanMetaDataUtil util = new BeanMetaDataUtil();
+         BeanMetaDataBuilder builder = BeanMetaDataBuilder.createBuilder(arrayReplacement);
+         AspectManagerUtil util = new AspectManagerUtil();
          String name = null;
          for (int i = 0; i < attrs.getLength(); ++i)
          {
@@ -837,13 +839,13 @@ public class AOPBeansSchemaInitializer implements SchemaBindingInitializer
             {
                name = attrs.getValue(i);
             }
-            else if ("class".equals(localName))
+            if ("class".equals(localName))
             {
-               BeanMetaDataUtil.setSimpleProperty(arrayReplacement, "classes", attrs.getValue(i));
+               builder.addPropertyMetaData("classes", attrs.getValue(i));
             }
             else if ("expr".equals(localName))
             {
-               BeanMetaDataUtil.setSimpleProperty(arrayReplacement, "expr", attrs.getValue(i));
+               builder.addPropertyMetaData("expr", attrs.getValue(i));
             }
             else if (MANAGER_BEAN_NAME.equals(localName))
             {
@@ -854,14 +856,14 @@ public class AOPBeansSchemaInitializer implements SchemaBindingInitializer
                util.setManagerProperty(attrs.getValue(i));
             }
          }
-         util.setAspectManagerProperty(arrayReplacement, "manager");
+         util.setAspectManagerProperty(builder, "manager");
          
          if (name == null)
          {
             name = GUID.asString();
          }
          arrayReplacement.setName(name);
-         BeanMetaDataUtil.setSimpleProperty(arrayReplacement, "name", name);
+         builder.addPropertyMetaData("name", name);
       }
    }
 
@@ -974,44 +976,36 @@ public class AOPBeansSchemaInitializer implements SchemaBindingInitializer
       }
    }
       
-   private static class TypeDefHandler  extends DefaultElementHandler
+   private static class TypeDefHandler extends AspectManagerAwareBeanFactoryHandler
    {
       public static final TypeDefHandler HANDLER = new TypeDefHandler();
 
       @Override
       public Object startElement(Object parent, QName name, ElementBinding element)
       {
-         return new AbstractBeanMetaData(TypeDef.class.getName());
+         return new TypeDefBeanMetaDataFactory();
       }
 
       @Override
       public void attributes(Object o, QName elementName, ElementBinding element, Attributes attrs, NamespaceContext nsCtx)
       {
-         BeanMetaDataUtil util = new BeanMetaDataUtil();
-         AbstractBeanMetaData typedef = (AbstractBeanMetaData)o;
+         super.attributes(o, elementName, element, attrs, nsCtx);
+
+         AspectManagerUtil util = new AspectManagerUtil();
+         TypeDefBeanMetaDataFactory factory = (TypeDefBeanMetaDataFactory)o;
 
          for (int i = 0; i < attrs.getLength(); ++i)
          {
             String localName = attrs.getLocalName(i);
             if ("name".equals(localName))
             {
-               typedef.setName(attrs.getValue(i));
-               BeanMetaDataUtil.setSimpleProperty(typedef, "name", attrs.getValue(i));
+               factory.setName(attrs.getValue(i));
             }
             else if ("expr".equals(localName))
             {
-               BeanMetaDataUtil.setSimpleProperty(typedef, "expr", attrs.getValue(i));
-            }
-            else if (MANAGER_BEAN_NAME.equals(localName))
-            {
-               util.setManagerBean(attrs.getValue(i));
-            }
-            else if (MANAGER_PROPERTY_NAME.equals(localName))
-            {
-               util.setManagerProperty(attrs.getValue(i));
+               factory.setExpr(attrs.getValue(i));
             }
          }
-         util.setAspectManagerProperty(typedef, "manager");
       }
    }
       
@@ -1022,19 +1016,19 @@ public class AOPBeansSchemaInitializer implements SchemaBindingInitializer
       @Override
       public Object startElement(Object parent, QName name, ElementBinding element)
       {
-         return new AbstractBeanMetaData(CFlowStackEntry.class.getName());
+         return new CFlowEntry();
       }
 
       @Override
       public void attributes(Object o, QName elementName, ElementBinding element, Attributes attrs, NamespaceContext nsCtx)
       {
-         AbstractBeanMetaData entry = (AbstractBeanMetaData)o;
+         CFlowEntry entry = (CFlowEntry)o;
          for (int i = 0; i < attrs.getLength(); ++i)
          {
             String localName = attrs.getLocalName(i);
             if ("expr".equals(localName))
             {
-               BeanMetaDataUtil.setSimpleProperty(entry, "expr", attrs.getValue(i));
+               entry.setExpr(attrs.getValue(i));
             }
          }
       }
@@ -1053,20 +1047,20 @@ public class AOPBeansSchemaInitializer implements SchemaBindingInitializer
       @Override
       public void attributes(Object o, QName elementName, ElementBinding element, Attributes attrs, NamespaceContext nsCtx)
       {
-         BeanMetaDataUtil util = new BeanMetaDataUtil();
+         AspectManagerUtil util = new AspectManagerUtil();
          AbstractBeanMetaData dynamicCFlow = (AbstractBeanMetaData)o;
-
+         BeanMetaDataBuilder builder = BeanMetaDataBuilder.createBuilder(dynamicCFlow);
          for (int i = 0; i < attrs.getLength(); ++i)
          {
             String localName = attrs.getLocalName(i);
             if ("name".equals(localName))
             {
                dynamicCFlow.setName(attrs.getValue(i));
-               BeanMetaDataUtil.setSimpleProperty(dynamicCFlow, "name", attrs.getValue(i));
+               builder.addPropertyMetaData("name", attrs.getValue(i));
             }
             else if ("class".equals(localName))
             {
-               BeanMetaDataUtil.setSimpleProperty(dynamicCFlow, "className", attrs.getValue(i));
+               builder.addPropertyMetaData("className", attrs.getValue(i));
             }
             else if (MANAGER_BEAN_NAME.equals(localName))
             {
@@ -1077,7 +1071,7 @@ public class AOPBeansSchemaInitializer implements SchemaBindingInitializer
                util.setManagerProperty(attrs.getValue(i));
             }
          }
-         util.setAspectManagerProperty(dynamicCFlow, "manager");
+         util.setAspectManagerProperty(builder, "manager");
       }
    }
    
@@ -1094,8 +1088,9 @@ public class AOPBeansSchemaInitializer implements SchemaBindingInitializer
       @Override
       public void attributes(Object o, QName elementName, ElementBinding element, Attributes attrs, NamespaceContext nsCtx)
       {
-         BeanMetaDataUtil util = new BeanMetaDataUtil();
+         AspectManagerUtil util = new AspectManagerUtil();
          AbstractBeanMetaData pointcut = (AbstractBeanMetaData)o;
+         BeanMetaDataBuilder builder = BeanMetaDataBuilder.createBuilder(pointcut);
          String name = null;
          for (int i = 0; i < attrs.getLength(); ++i)
          {
@@ -1106,7 +1101,7 @@ public class AOPBeansSchemaInitializer implements SchemaBindingInitializer
             }
             else if ("expr".equals(localName))
             {
-               BeanMetaDataUtil.setSimpleProperty(pointcut, "expr", attrs.getValue(i));
+               builder.addPropertyMetaData("expr", attrs.getValue(i));
             }
             else if (MANAGER_BEAN_NAME.equals(localName))
             {
@@ -1117,14 +1112,14 @@ public class AOPBeansSchemaInitializer implements SchemaBindingInitializer
                util.setManagerProperty(attrs.getValue(i));
             }
          }
-         util.setAspectManagerProperty(pointcut, "manager");
+         util.setAspectManagerProperty(builder, "manager");
          
          if (name == null)
          {
             name = GUID.asString();
          }
          pointcut.setName(name);
-         BeanMetaDataUtil.setSimpleProperty(pointcut, "name", name);
+         builder.addPropertyMetaData("name", name);
       }
    }
    
@@ -1152,19 +1147,20 @@ public class AOPBeansSchemaInitializer implements SchemaBindingInitializer
       @Override
       public void attributes(Object o, QName elementName, ElementBinding element, Attributes attrs, NamespaceContext nsCtx)
       {
-         BeanMetaDataUtil util = new BeanMetaDataUtil();
+         AspectManagerUtil util = new AspectManagerUtil();
          AbstractBeanMetaData annotation = (AbstractBeanMetaData)o;
-
+         BeanMetaDataBuilder builder = BeanMetaDataBuilder.createBuilder(annotation);
+         
          for (int i = 0; i < attrs.getLength(); ++i)
          {
             String localName = attrs.getLocalName(i);
             if ("invisible".equals(localName))
             {
-               BeanMetaDataUtil.setSimpleProperty(annotation, "invisible", attrs.getValue(i));
+               builder.addPropertyMetaData("invisible", attrs.getValue(i));
             }
             else if ("expr".equals(localName))
             {
-               BeanMetaDataUtil.setSimpleProperty(annotation, "expr", attrs.getValue(i));
+               builder.addPropertyMetaData("expr", attrs.getValue(i));
             }
             else if (MANAGER_BEAN_NAME.equals(localName))
             {
@@ -1175,7 +1171,7 @@ public class AOPBeansSchemaInitializer implements SchemaBindingInitializer
                util.setManagerProperty(attrs.getValue(i));
             }
          }
-         util.setAspectManagerProperty(annotation, "manager");
+         util.setAspectManagerProperty(builder, "manager");
          annotation.setName(GUID.asString());
       }
 
@@ -1218,7 +1214,7 @@ public class AOPBeansSchemaInitializer implements SchemaBindingInitializer
       @Override
       public Object startElement(Object parent, QName name, ElementBinding element)
       {
-         return new AbstractBeanMetaData(MixinEntry.class.getName());
+         return new MixinData();
       }
    }
       
@@ -1280,8 +1276,8 @@ public class AOPBeansSchemaInitializer implements SchemaBindingInitializer
       public void addEntry(Object parent, Object child, QName name, boolean called)
       {
          CFlowStackBeanMetaDataFactory cflowStack = (CFlowStackBeanMetaDataFactory)parent;
-         AbstractBeanMetaData entry = (AbstractBeanMetaData)child;
-         BeanMetaDataUtil.setSimpleProperty(entry, "called", called);
+         CFlowEntry entry = (CFlowEntry)child;
+         entry.setCalled(called);
          cflowStack.addEntry(entry);
       }
    }
@@ -1341,7 +1337,7 @@ public class AOPBeansSchemaInitializer implements SchemaBindingInitializer
       public void add(Object parent, Object child, QName name)
       {
          IntroductionBeanMetaDataFactory intro = (IntroductionBeanMetaDataFactory)parent;
-         intro.addMixinEntry((AbstractBeanMetaData)child);
+         intro.addMixinEntry((MixinData)child);
       }      
    }
    
@@ -1352,8 +1348,8 @@ public class AOPBeansSchemaInitializer implements SchemaBindingInitializer
       @Override
       public void add(Object parent, Object child, QName name)
       {
-         AbstractBeanMetaData mixin = (AbstractBeanMetaData)parent;
-         BeanMetaDataUtil.setSimpleProperty(mixin, "mixin", ((StringBuffer)child).toString());
+         MixinData mixin = (MixinData)parent;
+         mixin.setMixin(((StringBuffer)child).toString());
       }      
    }
    
@@ -1364,8 +1360,8 @@ public class AOPBeansSchemaInitializer implements SchemaBindingInitializer
       @Override
       public void add(Object parent, Object child, QName name)
       {
-         AbstractBeanMetaData mixin = (AbstractBeanMetaData)parent;
-         BeanMetaDataUtil.setSimpleProperty(mixin, "transient", ((StringBuffer)child).toString());
+         MixinData mixin = (MixinData)parent;
+         mixin.setTransient(((StringBuffer)child).toString());
       }      
    }
    
@@ -1376,8 +1372,8 @@ public class AOPBeansSchemaInitializer implements SchemaBindingInitializer
       @Override
       public void add(Object parent, Object child, QName name)
       {
-         AbstractBeanMetaData mixin = (AbstractBeanMetaData)parent;
-         BeanMetaDataUtil.setSimpleProperty(mixin, "construction", ((StringBuffer)child).toString());
+         MixinData mixin = (MixinData)parent;
+         mixin.setConstruction(((StringBuffer)child).toString());
       }      
    }
    
@@ -1388,8 +1384,8 @@ public class AOPBeansSchemaInitializer implements SchemaBindingInitializer
       @Override
       public void add(Object parent, Object child, QName name)
       {
-         AbstractBeanMetaData mixin = (AbstractBeanMetaData)parent;
-         IntroductionBeanMetaDataFactory.addInterfaces(mixin, "interfaces", ((StringBuffer)child).toString());
+         MixinData mixin = (MixinData)parent;
+         mixin.setInterfaces(((StringBuffer)child).toString());
       }      
    }
 
@@ -1419,10 +1415,10 @@ public class AOPBeansSchemaInitializer implements SchemaBindingInitializer
          DomainBeanMetaDataFactory domain = (DomainBeanMetaDataFactory)parent;
          AbstractBeanMetaData bean = (AbstractBeanMetaData)child;
          //Overwrite the manager property
-         BeanMetaDataUtil util = new BeanMetaDataUtil();
+         AspectManagerUtil util = new AspectManagerUtil();
          util.setManagerBean(domain.getName());
          util.setManagerProperty("domain");
-         util.setAspectManagerProperty(bean, "manager");
+         util.setAspectManagerProperty(BeanMetaDataBuilder.createBuilder(bean), "manager");
          
          domain.addChildBean(bean);
       }      
@@ -1443,7 +1439,8 @@ public class AOPBeansSchemaInitializer implements SchemaBindingInitializer
       @Override
       public void setValue(QName qname, ElementBinding element, Object owner, Object value)
       {
-         BeanMetaDataUtil.setSimpleProperty((AbstractBeanMetaData)owner, "annotation", ((String)value).trim());
+         BeanMetaDataBuilder builder = BeanMetaDataBuilder.createBuilder((BeanMetaData)owner);
+         builder.addPropertyMetaData("annotation", ((String)value).trim());
       }
    }
    
