@@ -44,13 +44,13 @@ import org.jboss.beans.metadata.plugins.AbstractLazyMetaData;
 import org.jboss.beans.metadata.plugins.AbstractLifecycleMetaData;
 import org.jboss.beans.metadata.plugins.AbstractNamedAliasMetaData;
 import org.jboss.beans.metadata.plugins.MutableLifecycleHolder;
-import org.jboss.beans.metadata.plugins.factory.GenericBeanFactoryMetaData2;
 import org.jboss.beans.metadata.spi.AnnotationMetaData;
 import org.jboss.beans.metadata.spi.BeanMetaData;
 import org.jboss.beans.metadata.spi.BeanMetaDataFactory;
 import org.jboss.beans.metadata.spi.ClassLoaderMetaData;
 import org.jboss.beans.metadata.spi.LifecycleMetaData;
 import org.jboss.beans.metadata.spi.NamedAliasMetaData;
+import org.jboss.beans.metadata.spi.factory.GenericBeanFactoryMetaData;
 import org.jboss.dependency.spi.ControllerMode;
 import org.jboss.dependency.spi.ControllerState;
 import org.jboss.kernel.spi.dependency.KernelControllerContext;
@@ -72,7 +72,7 @@ import org.jboss.xb.annotations.JBossXmlSchema;
 @ManagementObject(properties = ManagementProperties.EXPLICIT) // TODO - explicitly add props we want to manage 
 @JBossXmlSchema(namespace="urn:jboss:bean-deployer:2.0", elementFormDefault=XmlNsForm.QUALIFIED)
 @XmlRootElement(name="deployment")
-@XmlType(propOrder={"annotations", "classLoader", "beanFactories", "create", "start", "stop", "destroy", "aliases"})
+@XmlType(name="deploymentType", propOrder={"annotations", "classLoader", "beanFactories", "create", "start", "stop", "destroy", "aliases"})
 public class AbstractKernelDeployment extends JBossObject
    implements KernelDeployment, MutableLifecycleHolder, Serializable
 {
@@ -146,7 +146,7 @@ public class AbstractKernelDeployment extends JBossObject
    @XmlElements
    ({
       @XmlElement(name="bean", type=AbstractBeanMetaData.class),
-      @XmlElement(name="beanfactory", type=GenericBeanFactoryMetaData2.class),
+      @XmlElement(name="beanfactory", type=GenericBeanFactoryMetaData.class),
       @XmlElement(name="lazy", type=AbstractLazyMetaData.class)
    })
    @XmlAnyElement

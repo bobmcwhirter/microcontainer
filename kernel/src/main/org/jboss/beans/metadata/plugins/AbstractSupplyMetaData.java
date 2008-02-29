@@ -46,7 +46,7 @@ import org.jboss.util.propertyeditor.PropertyEditors;
  * @author <a href="adrian@jboss.com">Adrian Brock</a>
  * @version $Revision$
  */
-@XmlType
+@XmlType(name="supplyType")
 public class AbstractSupplyMetaData extends JBossObject
    implements SupplyMetaData, Serializable
 {

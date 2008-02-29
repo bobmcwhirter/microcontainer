@@ -36,7 +36,7 @@ import org.jboss.reflect.spi.TypeInfo;
  * @author <a href="adrian@jboss.com">Adrian Brock</a>
  * @version $Revision$
  */
-@XmlType
+@XmlType(name="plainValueType")
 public class StringValueMetaData extends AbstractTypeMetaData
 {
    private static final long serialVersionUID = 2L;

@@ -50,7 +50,7 @@ import org.jboss.util.JBossStringBuilder;
  * @author <a href="adrian@jboss.com">Adrian Brock</a>
  * @version $Revision$
  */
-@XmlType(propOrder={"annotations", "parameters"})
+@XmlType(name="lifecycleType", propOrder={"annotations", "parameters"})
 public class AbstractLifecycleMetaData extends AbstractFeatureMetaData
    implements LifecycleMetaData, MutableParameterizedMetaData, Serializable
 {

@@ -50,7 +50,7 @@ import org.jboss.managed.api.annotation.ManagementProperty;
  * @author <a href="adrian@jboss.com">Adrian Brock</a>
  * @version $Revision$
  */
-@XmlType(propOrder="classLoader")
+@XmlType(name="classloaderType", propOrder="classLoader")
 public class AbstractClassLoaderMetaData extends JBossObject
    implements ClassLoaderMetaData, BeanMetaDataFactory, Serializable
 {

@@ -26,7 +26,8 @@ import java.util.HashSet;
 import java.util.List;
 
 import junit.framework.Test;
-import org.jboss.beans.metadata.plugins.factory.GenericBeanFactoryMetaData2;
+
+import org.jboss.beans.metadata.spi.factory.GenericBeanFactoryMetaData;
 import org.jboss.dependency.spi.ControllerMode;
 
 /**
@@ -39,7 +40,7 @@ public class BeanFactoryJaxbTestCase extends AbstractMCTest
 {
    public void testBeanFactoryWithName() throws Exception
    {
-      GenericBeanFactoryMetaData2 factory = unmarshalBeanFactory();
+      GenericBeanFactoryMetaData factory = unmarshalBeanFactory();
       assertEquals("Name1", factory.getName());
       assertEquals("Dummy", factory.getBean());
       assertNull(factory.getMode());
@@ -60,7 +61,7 @@ public class BeanFactoryJaxbTestCase extends AbstractMCTest
 
    public void testBeanFactoryWithClass() throws Exception
    {
-      GenericBeanFactoryMetaData2 factory = unmarshalBeanFactory();
+      GenericBeanFactoryMetaData factory = unmarshalBeanFactory();
       assertNull(factory.getName());
       assertEquals(Object.class.getName(), factory.getBean());
       assertNull(factory.getMode());
@@ -81,7 +82,7 @@ public class BeanFactoryJaxbTestCase extends AbstractMCTest
 
    public void testBeanFactoryWithMode() throws Exception
    {
-      GenericBeanFactoryMetaData2 factory = unmarshalBeanFactory();
+      GenericBeanFactoryMetaData factory = unmarshalBeanFactory();
       assertNull(factory.getName());
       assertEquals("Dummy", factory.getBean());
       assertEquals(ControllerMode.MANUAL, factory.getMode());
@@ -102,7 +103,7 @@ public class BeanFactoryJaxbTestCase extends AbstractMCTest
 
    public void testBeanFactoryWithClassLoader() throws Exception
    {
-      GenericBeanFactoryMetaData2 factory = unmarshalBeanFactory();
+      GenericBeanFactoryMetaData factory = unmarshalBeanFactory();
       assertNull(factory.getName());
       assertEquals("Dummy", factory.getBean());
       assertNull(factory.getMode());
@@ -123,7 +124,7 @@ public class BeanFactoryJaxbTestCase extends AbstractMCTest
 
    public void testBeanFactoryWithConstructor() throws Exception
    {
-      GenericBeanFactoryMetaData2 factory = unmarshalBeanFactory();
+      GenericBeanFactoryMetaData factory = unmarshalBeanFactory();
       assertNull(factory.getName());
       assertEquals("Dummy", factory.getBean());
       assertNull(factory.getMode());
@@ -144,7 +145,7 @@ public class BeanFactoryJaxbTestCase extends AbstractMCTest
 
    public void testBeanFactoryWithProperty() throws Exception
    {
-      GenericBeanFactoryMetaData2 factory = unmarshalBeanFactory();
+      GenericBeanFactoryMetaData factory = unmarshalBeanFactory();
       assertNull(factory.getName());
       assertEquals("Dummy", factory.getBean());
       assertNull(factory.getMode());
@@ -168,7 +169,7 @@ public class BeanFactoryJaxbTestCase extends AbstractMCTest
 
    public void testBeanFactoryWithProperties() throws Exception
    {
-      GenericBeanFactoryMetaData2 factory = unmarshalBeanFactory();
+      GenericBeanFactoryMetaData factory = unmarshalBeanFactory();
       assertNull(factory.getName());
       assertEquals("Dummy", factory.getBean());
       assertNull(factory.getMode());
@@ -194,7 +195,7 @@ public class BeanFactoryJaxbTestCase extends AbstractMCTest
 
    public void testBeanFactoryWithCreate() throws Exception
    {
-      GenericBeanFactoryMetaData2 factory = unmarshalBeanFactory();
+      GenericBeanFactoryMetaData factory = unmarshalBeanFactory();
       assertNull(factory.getName());
       assertEquals("Dummy", factory.getBean());
       assertNull(factory.getMode());
@@ -215,7 +216,7 @@ public class BeanFactoryJaxbTestCase extends AbstractMCTest
 
    public void testBeanFactoryWithStart() throws Exception
    {
-      GenericBeanFactoryMetaData2 factory = unmarshalBeanFactory();
+      GenericBeanFactoryMetaData factory = unmarshalBeanFactory();
       assertNull(factory.getName());
       assertEquals("Dummy", factory.getBean());
       assertNull(factory.getMode());
@@ -236,7 +237,7 @@ public class BeanFactoryJaxbTestCase extends AbstractMCTest
 
    public void testBeanFactoryWithDependency() throws Exception
    {
-      GenericBeanFactoryMetaData2 factory = unmarshalBeanFactory();
+      GenericBeanFactoryMetaData factory = unmarshalBeanFactory();
       assertNull(factory.getName());
       assertEquals("Dummy", factory.getBean());
       assertNull(factory.getMode());
@@ -259,7 +260,7 @@ public class BeanFactoryJaxbTestCase extends AbstractMCTest
 
    public void testBeanFactoryWithDependencies() throws Exception
    {
-      GenericBeanFactoryMetaData2 factory = unmarshalBeanFactory();
+      GenericBeanFactoryMetaData factory = unmarshalBeanFactory();
       assertNull(factory.getName());
       assertEquals("Dummy", factory.getBean());
       assertNull(factory.getMode());
@@ -284,7 +285,7 @@ public class BeanFactoryJaxbTestCase extends AbstractMCTest
 
    public void testBeanFactoryWithDemand() throws Exception
    {
-      GenericBeanFactoryMetaData2 factory = unmarshalBeanFactory();
+      GenericBeanFactoryMetaData factory = unmarshalBeanFactory();
       assertNull(factory.getName());
       assertEquals("Dummy", factory.getBean());
       assertNull(factory.getMode());
@@ -307,7 +308,7 @@ public class BeanFactoryJaxbTestCase extends AbstractMCTest
 
    public void testBeanFactoryWithDemands() throws Exception
    {
-      GenericBeanFactoryMetaData2 factory = unmarshalBeanFactory();
+      GenericBeanFactoryMetaData factory = unmarshalBeanFactory();
       assertNull(factory.getName());
       assertEquals("Dummy", factory.getBean());
       assertNull(factory.getMode());
@@ -332,7 +333,7 @@ public class BeanFactoryJaxbTestCase extends AbstractMCTest
 
    public void testBeanFactoryWithSupply() throws Exception
    {
-      GenericBeanFactoryMetaData2 factory = unmarshalBeanFactory();
+      GenericBeanFactoryMetaData factory = unmarshalBeanFactory();
       assertNull(factory.getName());
       assertEquals("Dummy", factory.getBean());
       assertNull(factory.getMode());
@@ -355,7 +356,7 @@ public class BeanFactoryJaxbTestCase extends AbstractMCTest
 
    public void testBeanFactoryWithSupplies() throws Exception
    {
-      GenericBeanFactoryMetaData2 factory = unmarshalBeanFactory();
+      GenericBeanFactoryMetaData factory = unmarshalBeanFactory();
       assertNull(factory.getName());
       assertEquals("Dummy", factory.getBean());
       assertNull(factory.getMode());
@@ -380,7 +381,7 @@ public class BeanFactoryJaxbTestCase extends AbstractMCTest
 
    public void testBeanFactoryWithInstall() throws Exception
    {
-      GenericBeanFactoryMetaData2 factory = unmarshalBeanFactory();
+      GenericBeanFactoryMetaData factory = unmarshalBeanFactory();
       assertNull(factory.getName());
       assertEquals("Dummy", factory.getBean());
       assertNull(factory.getMode());
@@ -403,7 +404,7 @@ public class BeanFactoryJaxbTestCase extends AbstractMCTest
 
    public void testBeanFactoryWithInstalls() throws Exception
    {
-      GenericBeanFactoryMetaData2 factory = unmarshalBeanFactory();
+      GenericBeanFactoryMetaData factory = unmarshalBeanFactory();
       assertNull(factory.getName());
       assertEquals("Dummy", factory.getBean());
       assertNull(factory.getMode());
@@ -428,7 +429,7 @@ public class BeanFactoryJaxbTestCase extends AbstractMCTest
 
    public void testBeanFactoryWithUninstall() throws Exception
    {
-      GenericBeanFactoryMetaData2 factory = unmarshalBeanFactory();
+      GenericBeanFactoryMetaData factory = unmarshalBeanFactory();
       assertNull(factory.getName());
       assertEquals("Dummy", factory.getBean());
       assertNull(factory.getMode());
@@ -451,7 +452,7 @@ public class BeanFactoryJaxbTestCase extends AbstractMCTest
 
    public void testBeanFactoryWithUninstalls() throws Exception
    {
-      GenericBeanFactoryMetaData2 factory = unmarshalBeanFactory();
+      GenericBeanFactoryMetaData factory = unmarshalBeanFactory();
       assertNull(factory.getName());
       assertEquals("Dummy", factory.getBean());
       assertNull(factory.getMode());
@@ -476,7 +477,7 @@ public class BeanFactoryJaxbTestCase extends AbstractMCTest
 
    public void testBeanFactoryWithInstallCallback() throws Exception
    {
-      GenericBeanFactoryMetaData2 factory = unmarshalBeanFactory();
+      GenericBeanFactoryMetaData factory = unmarshalBeanFactory();
       assertNull(factory.getName());
       assertEquals("Dummy", factory.getBean());
       assertNull(factory.getMode());
@@ -499,7 +500,7 @@ public class BeanFactoryJaxbTestCase extends AbstractMCTest
 
    public void testBeanFactoryWithInstallCallbacks() throws Exception
    {
-      GenericBeanFactoryMetaData2 factory = unmarshalBeanFactory();
+      GenericBeanFactoryMetaData factory = unmarshalBeanFactory();
       assertNull(factory.getName());
       assertEquals("Dummy", factory.getBean());
       assertNull(factory.getMode());
@@ -524,7 +525,7 @@ public class BeanFactoryJaxbTestCase extends AbstractMCTest
 
    public void testBeanFactoryWithUninstallCallback() throws Exception
    {
-      GenericBeanFactoryMetaData2 factory = unmarshalBeanFactory();
+      GenericBeanFactoryMetaData factory = unmarshalBeanFactory();
       assertNull(factory.getName());
       assertEquals("Dummy", factory.getBean());
       assertNull(factory.getMode());
@@ -547,7 +548,7 @@ public class BeanFactoryJaxbTestCase extends AbstractMCTest
 
    public void testBeanFactoryWithUninstallCallbacks() throws Exception
    {
-      GenericBeanFactoryMetaData2 factory = unmarshalBeanFactory();
+      GenericBeanFactoryMetaData factory = unmarshalBeanFactory();
       assertNull(factory.getName());
       assertEquals("Dummy", factory.getBean());
       assertNull(factory.getMode());

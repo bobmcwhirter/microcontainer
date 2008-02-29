@@ -26,18 +26,10 @@ import java.util.HashSet;
 import java.util.Iterator;
 import java.util.Map;
 import java.util.Set;
-import javax.xml.bind.annotation.XmlAttribute;
-import javax.xml.bind.annotation.XmlElement;
-import javax.xml.bind.annotation.XmlNsForm;
-import javax.xml.bind.annotation.XmlRootElement;
-import javax.xml.bind.annotation.XmlTransient;
-import javax.xml.bind.annotation.XmlType;
 
 import org.jboss.beans.metadata.plugins.AbstractBeanMetaData;
-import org.jboss.beans.metadata.plugins.AbstractClassLoaderMetaData;
 import org.jboss.beans.metadata.plugins.AbstractConstructorMetaData;
 import org.jboss.beans.metadata.plugins.AbstractDependencyValueMetaData;
-import org.jboss.beans.metadata.plugins.AbstractLifecycleMetaData;
 import org.jboss.beans.metadata.plugins.AbstractMapMetaData;
 import org.jboss.beans.metadata.plugins.AbstractParameterMetaData;
 import org.jboss.beans.metadata.plugins.AbstractPropertyMetaData;
@@ -51,7 +43,6 @@ import org.jboss.beans.metadata.spi.PropertyMetaData;
 import org.jboss.beans.metadata.spi.ValueMetaData;
 import org.jboss.kernel.plugins.bootstrap.basic.KernelConstants;
 import org.jboss.kernel.spi.config.KernelConfigurator;
-import org.jboss.xb.annotations.JBossXmlSchema;
 
 /**
  * GenericBeanFactoryMetaData.
@@ -60,9 +51,6 @@ import org.jboss.xb.annotations.JBossXmlSchema;
  * @author <a href="adrian@jboss.com">Adrian Brock</a>
  * @version $Revision$
  */
-@JBossXmlSchema(namespace="urn:jboss:bean-deployer:2.0", elementFormDefault= XmlNsForm.QUALIFIED)
-@XmlRootElement(name="beanfactory")
-@XmlType(propOrder={"aliases", "annotations", "classLoader", "constructor", "properties", "create", "start", "depends", "demands", "supplies", "installs", "uninstalls"})
 @Deprecated
 public class GenericBeanFactoryMetaData extends AbstractBeanMetaData
 {
@@ -127,14 +115,12 @@ public class GenericBeanFactoryMetaData extends AbstractBeanMetaData
     * 
     * @param beanClass the class
     */
-   @XmlAttribute(name="class")
    public void setBeanClass(String beanClass)
    {
       Set<PropertyMetaData> properties = getProperties();
       properties.add(new AbstractPropertyMetaData("bean", new AbstractValueMetaData(beanClass)));
    }
 
-   @XmlElement(name="classloader", type=AbstractClassLoaderMetaData.class)
    public void setClassLoader(ClassLoaderMetaData classLoader)
    {
       super.setClassLoader(classLoader);
@@ -147,7 +133,6 @@ public class GenericBeanFactoryMetaData extends AbstractBeanMetaData
     * 
     * @param constructor the constructor
     */
-   @XmlElement(name="constructor", type=AbstractConstructorMetaData.class)
    public void setBeanConstructor(ConstructorMetaData constructor)
    {
       Set<PropertyMetaData> properties = getProperties();
@@ -207,21 +192,18 @@ public class GenericBeanFactoryMetaData extends AbstractBeanMetaData
       map.put(new AbstractValueMetaData(property.getName()), valueMetaData);
    }
 
-   @XmlElement(name="create", type= AbstractLifecycleMetaData.class)
    public void setBeanCreate(LifecycleMetaData lifecycle)
    {
       Set<PropertyMetaData> properties = getProperties();
       properties.add(new AbstractPropertyMetaData("create", new AbstractValueMetaData(lifecycle)));
    }
 
-   @XmlElement(name="start", type=AbstractLifecycleMetaData.class)
    public void setBeanStart(LifecycleMetaData lifecycle)
    {
       Set<PropertyMetaData> properties = getProperties();
       properties.add(new AbstractPropertyMetaData("start", new AbstractValueMetaData(lifecycle)));
    }
 
-   @XmlTransient
    public void setBean(String bean)
    {
       super.setBean(bean);

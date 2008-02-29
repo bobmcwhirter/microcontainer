@@ -34,7 +34,7 @@ import org.jboss.xb.annotations.JBossXmlMapValue;
  * @author <a href="ales.justin@jboss.com">Ales Justin</a>
  * @author <a href="adrian@jboss.com">Adrian Brock</a>
  */
-@XmlType(propOrder= {"key", "value"})
+@XmlType(name="entryType", propOrder= {"key", "value"})
 public class MapEntry
 {
    /** The key */

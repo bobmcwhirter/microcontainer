@@ -51,7 +51,7 @@ import org.jboss.managed.api.annotation.ManagementProperty;
  * @author <a href="adrian@jboss.com">Adrian Brock</a>
  * @version $Revision$
  */
-@XmlType(propOrder={"annotations", "value"})
+@XmlType(name="propertyType", propOrder={"annotations", "value"})
 public class AbstractPropertyMetaData extends AbstractFeatureMetaData
    implements PropertyMetaData, ValueMetaDataAware, TypeProvider, Serializable
 {

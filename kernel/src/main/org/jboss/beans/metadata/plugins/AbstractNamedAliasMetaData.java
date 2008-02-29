@@ -33,7 +33,7 @@ import org.jboss.util.JBossStringBuilder;
  *
  * @author <a href="ales.justin@jboss.com">Ales Justin</a>
  */
-@XmlType
+@XmlType(name="namedAliasType")
 public class AbstractNamedAliasMetaData extends AbstractAliasMetaData implements NamedAliasMetaData
 {
    /** The serialVersionUID */

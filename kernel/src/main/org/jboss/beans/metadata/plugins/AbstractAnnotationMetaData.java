@@ -45,7 +45,7 @@ import org.jboss.util.StringPropertyReplacer;
  * @author <a href="adrian@jboss.com">Adrian Brock</a>
  * @version $Revision$
  */
-@XmlType(propOrder={"annotation"})
+@XmlType(name="annotationType", propOrder={"annotation"})
 public class AbstractAnnotationMetaData extends JBossObject
    implements AnnotationMetaData, Serializable
 {

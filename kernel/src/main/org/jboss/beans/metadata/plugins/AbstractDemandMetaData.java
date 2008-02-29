@@ -51,7 +51,7 @@ import org.jboss.util.HashCode;
  * @author <a href="adrian@jboss.com">Adrian Brock</a>
  * @version $Revision$
  */
-@XmlType
+@XmlType(name="demandsType")
 public class AbstractDemandMetaData extends JBossObject
    implements DemandMetaData, Serializable
 {

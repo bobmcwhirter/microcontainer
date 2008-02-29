@@ -45,7 +45,7 @@ import org.jboss.util.JBossStringBuilder;
  * @author <a href="adrian@jboss.com">Adrian Brock</a>
  * @version $Revision$
  */
-@XmlType(propOrder={"annotations", "parameters"})
+@XmlType(name="installType", propOrder={"annotations", "parameters"})
 public class AbstractInstallMetaData extends AbstractLifecycleMetaData
    implements InstallMetaData, Serializable
 {

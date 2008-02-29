@@ -50,7 +50,7 @@ import org.jboss.xb.annotations.JBossXmlSchema;
  */
 @JBossXmlSchema(namespace="urn:jboss:bean-deployer:2.0", elementFormDefault=XmlNsForm.QUALIFIED)
 @XmlRootElement(name="lazy")
-@XmlType(propOrder={"interfaces"})
+@XmlType(name="lazyType", propOrder={"interfaces"})
 public class AbstractLazyMetaData extends AbstractBeanMetaData implements LazyMetaData
 {
    private static final long serialVersionUID = 2L;

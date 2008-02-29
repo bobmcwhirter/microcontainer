@@ -101,8 +101,8 @@ $Id$
          <xsd:element name="supply" type="supplyType" minOccurs="0" maxOccurs="unbounded"/>
          <xsd:element name="install" type="installType" minOccurs="0" maxOccurs="unbounded"/>
          <xsd:element name="uninstall" type="installType" minOccurs="0" maxOccurs="unbounded"/>
-         <xsd:element name="incallback" type="callbackType" minOccurs="0" maxOccurs="unbounded"/>
-         <xsd:element name="uncallback" type="callbackType" minOccurs="0" maxOccurs="unbounded"/>
+         <xsd:element name="incallback" type="installCallbackType" minOccurs="0" maxOccurs="unbounded"/>
+         <xsd:element name="uncallback" type="uninstallCallbackType" minOccurs="0" maxOccurs="unbounded"/>
       </xsd:sequence>
       <xsd:attribute name="name" type="xsd:string" use="optional"/>
       <xsd:attribute name="class" type="xsd:token" use="optional"/>
@@ -154,8 +154,8 @@ $Id$
          <xsd:element name="install" type="installType" minOccurs="0" maxOccurs="unbounded"/>
          <xsd:element name="uninstall" type="installType" minOccurs="0" maxOccurs="unbounded"/>
 <!--
-         <xsd:element name="incallback" type="callbackType" minOccurs="0" maxOccurs="unbounded"/>
-         <xsd:element name="uncallback" type="callbackType" minOccurs="0" maxOccurs="unbounded"/>
+         <xsd:element name="incallback" type="intallCallbackType" minOccurs="0" maxOccurs="unbounded"/>
+         <xsd:element name="uncallback" type="uninstallCallbackType" minOccurs="0" maxOccurs="unbounded"/>
 -->
       </xsd:sequence>
       <xsd:attribute name="name" type="xsd:string" use="optional"/>
@@ -342,7 +342,7 @@ $Id$
       <xsd:attribute name="whenRequired" type="controllerStateType" use="optional"/>
    </xsd:complexType>
 
-   <xsd:complexType name="callbackType">
+   <xsd:complexType name="uninstallCallbackType">
       <xsd:annotation>
          <xsd:documentation>
            <![CDATA[
@@ -351,9 +351,36 @@ $Id$
 
            e.g.
            <bean>
-              <callback method="addSomething" />
-              <callback property="items" cardinality="2..n" />
-              <callback property="info" signature="org.jboss.test.Info"/>
+              <uncallback method="addSomething" />
+              <uncallback property="items" cardinality="2..n" />
+              <uncallback property="info" signature="org.jboss.test.Info"/>
+           </bean>
+           ]]>
+         </xsd:documentation>
+      </xsd:annotation>
+      <xsd:sequence>
+         <xsd:element name="annotation" type="annotationType" minOccurs="0" maxOccurs="unbounded"/>
+      </xsd:sequence>
+      <xsd:attribute name="method" type="xsd:token" use="optional"/>
+      <xsd:attribute name="property" type="xsd:token" use="optional"/>
+      <xsd:attribute name="cardinality" type="xsd:token" use="optional"/>
+      <xsd:attribute name="whenRequired" type="controllerStateType" use="optional"/>
+      <xsd:attribute name="state" type="controllerStateType" use="optional"/>
+      <xsd:attribute name="signature" type="xsd:token" use="optional"/>
+   </xsd:complexType>
+
+   <xsd:complexType name="installCallbackType">
+      <xsd:annotation>
+         <xsd:documentation>
+           <![CDATA[
+           Callback item description.
+           Define you methods for callback invocation.
+
+           e.g.
+           <bean>
+              <incallback method="addSomething" />
+              <incallback property="items" cardinality="2..n" />
+              <incallback property="info" signature="org.jboss.test.Info"/>
            </bean>
            ]]>
          </xsd:documentation>

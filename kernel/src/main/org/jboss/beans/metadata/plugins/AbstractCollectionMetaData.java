@@ -47,7 +47,7 @@ import org.jboss.xb.annotations.JBossXmlNoElements;
  * @author <a href="adrian@jboss.com">Adrian Brock</a>
  * @version $Revision$
  */
-@XmlType
+@XmlType(name="collectionType")
 @JBossXmlNoElements
 @JBossXmlChildren
 ({

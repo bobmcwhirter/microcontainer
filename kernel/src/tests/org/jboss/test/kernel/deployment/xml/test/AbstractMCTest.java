@@ -37,7 +37,6 @@ import org.jboss.beans.metadata.plugins.AbstractSetMetaData;
 import org.jboss.beans.metadata.plugins.AbstractValueMetaData;
 import org.jboss.beans.metadata.plugins.StringValueMetaData;
 import org.jboss.beans.metadata.plugins.ThisValueMetaData;
-import org.jboss.beans.metadata.plugins.factory.GenericBeanFactoryMetaData2;
 import org.jboss.beans.metadata.spi.AnnotationMetaData;
 import org.jboss.beans.metadata.spi.BeanMetaData;
 import org.jboss.beans.metadata.spi.CallbackMetaData;
@@ -48,6 +47,7 @@ import org.jboss.beans.metadata.spi.ParameterMetaData;
 import org.jboss.beans.metadata.spi.PropertyMetaData;
 import org.jboss.beans.metadata.spi.SupplyMetaData;
 import org.jboss.beans.metadata.spi.ValueMetaData;
+import org.jboss.beans.metadata.spi.factory.GenericBeanFactoryMetaData;
 import org.jboss.javabean.plugins.jaxb.JavaBean10;
 import org.jboss.kernel.plugins.deployment.AbstractKernelDeployment;
 import org.jboss.test.xb.builder.AbstractBuilderTest;
@@ -77,9 +77,9 @@ public class AbstractMCTest extends AbstractBuilderTest
       return unmarshalObject(AbstractBeanMetaData.class, AbstractKernelDeployment.class, JavaBean10.class);
    }
 
-   protected GenericBeanFactoryMetaData2 unmarshalBeanFactory() throws Exception
+   protected GenericBeanFactoryMetaData unmarshalBeanFactory() throws Exception
    {
-      return unmarshalObject(GenericBeanFactoryMetaData2.class, AbstractKernelDeployment.class, JavaBean10.class);
+      return unmarshalObject(GenericBeanFactoryMetaData.class, AbstractKernelDeployment.class, JavaBean10.class);
    }
 
    protected void assertAnnotations(Set<String> expected, Set<AnnotationMetaData> annotations)

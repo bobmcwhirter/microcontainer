@@ -28,9 +28,9 @@ import java.util.HashSet;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Set;
+
 import javax.xml.bind.annotation.XmlAttribute;
 import javax.xml.bind.annotation.XmlElement;
-import javax.xml.bind.annotation.XmlNsForm;
 import javax.xml.bind.annotation.XmlRootElement;
 import javax.xml.bind.annotation.XmlType;
 
@@ -61,7 +61,6 @@ import org.jboss.managed.api.annotation.ManagementProperty;
 import org.jboss.reflect.spi.TypeInfo;
 import org.jboss.util.JBossObject;
 import org.jboss.util.JBossStringBuilder;
-import org.jboss.xb.annotations.JBossXmlSchema;
 
 /**
  * Metadata for a bean.
@@ -71,9 +70,8 @@ import org.jboss.xb.annotations.JBossXmlSchema;
  * @version $Revision$
  */
 @ManagementObject(properties = ManagementProperties.EXPLICIT) // TODO - explicitly add props we want to manage
-@JBossXmlSchema(namespace="urn:jboss:bean-deployer:2.0", elementFormDefault=XmlNsForm.QUALIFIED)
 @XmlRootElement(name="bean")
-@XmlType(propOrder={"aliases", "annotations", "classLoader", "constructor", "properties", "create", "start", "stop", "destroy", "depends", "demands", "supplies", "installs", "uninstalls", "installCallbacks", "uninstallCallbacks"})
+@XmlType(name="beanType", propOrder={"aliases", "annotations", "classLoader", "constructor", "properties", "create", "start", "stop", "destroy", "depends", "demands", "supplies", "installs", "uninstalls", "installCallbacks", "uninstallCallbacks"})
 public class AbstractBeanMetaData extends AbstractFeatureMetaData
    implements BeanMetaData, BeanMetaDataFactory, MutableLifecycleHolder, Serializable
 {

@@ -46,7 +46,7 @@ import org.jboss.util.HashCode;
  * @author <a href="adrian@jboss.com">Adrian Brock</a>
  * @version $Revision$
  */
-@XmlType
+@XmlType(name="dependsType")
 public class AbstractDependencyMetaData extends JBossObject
    implements DependencyMetaData, Serializable
 {

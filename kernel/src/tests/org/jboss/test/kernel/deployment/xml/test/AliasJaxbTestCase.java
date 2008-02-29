@@ -26,7 +26,7 @@ import java.util.Set;
 import junit.framework.Test;
 
 import org.jboss.beans.metadata.plugins.AbstractBeanMetaData;
-import org.jboss.beans.metadata.plugins.factory.GenericBeanFactoryMetaData2;
+import org.jboss.beans.metadata.spi.factory.GenericBeanFactoryMetaData;
 
 /**
  * AliasJaxbTestCase.
@@ -116,7 +116,7 @@ public class AliasJaxbTestCase extends AbstractMCTest
 
    public void testAliasWithBeanFactory() throws Exception
    {
-      GenericBeanFactoryMetaData2 bean = unmarshalBeanFactory();
+      GenericBeanFactoryMetaData bean = unmarshalBeanFactory();
       Set<Object> aliases = bean.getAliases();
       assertNotNull(aliases);
       assertFalse(aliases.isEmpty());

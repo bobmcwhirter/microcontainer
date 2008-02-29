@@ -19,16 +19,16 @@
 * Software Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA
 * 02110-1301 USA, or see the FSF site: http://www.fsf.org.
 */
-package org.jboss.beans.metadata.plugins.factory;
+package org.jboss.beans.metadata.spi.factory;
 
 import java.io.Serializable;
 import java.util.Collections;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
+
 import javax.xml.bind.annotation.XmlAttribute;
 import javax.xml.bind.annotation.XmlElement;
-import javax.xml.bind.annotation.XmlNsForm;
 import javax.xml.bind.annotation.XmlRootElement;
 import javax.xml.bind.annotation.XmlType;
 
@@ -46,6 +46,7 @@ import org.jboss.beans.metadata.plugins.AbstractSupplyMetaData;
 import org.jboss.beans.metadata.plugins.AbstractValueMetaData;
 import org.jboss.beans.metadata.plugins.InstallCallbackMetaData;
 import org.jboss.beans.metadata.plugins.UninstallCallbackMetaData;
+import org.jboss.beans.metadata.plugins.factory.GenericBeanFactory;
 import org.jboss.beans.metadata.spi.AnnotationMetaData;
 import org.jboss.beans.metadata.spi.BeanMetaData;
 import org.jboss.beans.metadata.spi.BeanMetaDataFactory;
@@ -60,7 +61,6 @@ import org.jboss.beans.metadata.spi.PropertyMetaData;
 import org.jboss.beans.metadata.spi.SupplyMetaData;
 import org.jboss.dependency.spi.ControllerMode;
 import org.jboss.util.JBossObject;
-import org.jboss.xb.annotations.JBossXmlSchema;
 
 /**
  * GenericBeanFactoryMetaData.
@@ -68,10 +68,9 @@ import org.jboss.xb.annotations.JBossXmlSchema;
  * @author <a href="adrian@jboss.com">Adrian Brock</a>
  * @version $Revision: 59429 $
  */
-@JBossXmlSchema(namespace="urn:jboss:bean-deployer:2.0", elementFormDefault=XmlNsForm.QUALIFIED)
 @XmlRootElement(name="beanfactory")
-@XmlType(propOrder={"aliases", "annotations", "classLoader", "constructor", "properties", "create", "start", "depends", "demands", "supplies", "installs", "uninstalls", "installCallbacks", "uninstallCallbacks"})
-public class GenericBeanFactoryMetaData2 extends JBossObject implements BeanMetaDataFactory, Serializable
+@XmlType(name="beanfactoryType", propOrder={"aliases", "annotations", "classLoader", "constructor", "properties", "create", "start", "depends", "demands", "supplies", "installs", "uninstalls", "installCallbacks", "uninstallCallbacks"})
+public class GenericBeanFactoryMetaData extends JBossObject implements BeanMetaDataFactory, Serializable
 {
    private static final long serialVersionUID = 1L;
    
@@ -105,201 +104,378 @@ public class GenericBeanFactoryMetaData2 extends JBossObject implements BeanMeta
    /** The start lifecycle method */
    protected LifecycleMetaData start;
 
+   /** The depends */
    protected Set<DependencyMetaData> depends;
 
+   /** The demands */
    protected Set<DemandMetaData> demands;
    
+   /** The supplies */
    protected Set<SupplyMetaData> supplies;
    
+   /** The installs */
    protected List<InstallMetaData> installs;
    
+   /** The uninstalls */
    protected List<InstallMetaData> uninstalls;
    
+   /** The install callbacks */
    protected List<CallbackMetaData> installCallbacks;
    
+   /** The uninstall callbacks */
    protected List<CallbackMetaData> uninstallCallbacks;
-   
+
+   /**
+    * Get the name
+    * 
+    * @return the name
+    */
    public String getName()
    {
       return name;
    }
 
+   /**
+    * Set the bean name
+    * 
+    * @param name the name
+    */
    @XmlAttribute
    public void setName(String name)
    {
       this.name = name;
    }
 
+   /**
+    * Get the bean class
+    * 
+    * @return the bean class
+    */
    public String getBean()
    {
       return bean;
    }
 
+   /**
+    * Set the bean class
+    * 
+    * @param bean the bean class
+    */
    @XmlAttribute(name="class")
    public void setBean(String bean)
    {
       this.bean = bean;
    }
 
+   /**
+    * Get the aliases
+    * 
+    * @return the aliases
+    */
    public Set<Object> getAliases()
    {
       return aliases;
    }
 
+   /**
+    * Set the aliases
+    * 
+    * @param aliases the aliases
+    */
    @XmlElement(name="alias", type=String.class)
    public void setAliases(Set<Object> aliases)
    {
       this.aliases = aliases;
    }
 
+   /**
+    * Get the mode
+    * 
+    * @return the mode
+    */
    public ControllerMode getMode()
    {
       return mode;
    }
 
+   /**
+    * Set the mode
+    * 
+    * @param mode the mode
+    */
    @XmlAttribute
    public void setMode(ControllerMode mode)
    {
       this.mode = mode;
    }
 
+   /**
+    * Get the annotations
+    * 
+    * @return the annotations
+    */
    public Set<AnnotationMetaData> getAnnotations()
    {
       return annotations;
    }
 
+   /**
+    * Set the annotations
+    * 
+    * @param annotations the annotations
+    */
    @XmlElement(name="annotation", type=AbstractAnnotationMetaData.class)
    public void setAnnotations(Set<AnnotationMetaData> annotations)
    {
       this.annotations = annotations;
    }
 
+   /**
+    * Get the classloader
+    * 
+    * @return the classloader
+    */
    public ClassLoaderMetaData getClassLoader()
    {
       return classLoader;
    }
 
+   /**
+    * Set the classloader
+    * 
+    * @param classLoader the classloader
+    */
    @XmlElement(name="classloader", type=AbstractClassLoaderMetaData.class)
    public void setClassLoader(ClassLoaderMetaData classLoader)
    {
       this.classLoader = classLoader;
    }
 
+   /**
+    * Get the constructor
+    * 
+    * @return the constructor
+    */
    public ConstructorMetaData getConstructor()
    {
       return constructor;
    }
 
+   /**
+    * Set the constructor
+    * 
+    * @param constructor the constructor
+    */
    @XmlElement(name="constructor", type=AbstractConstructorMetaData.class)
    public void setConstructor(ConstructorMetaData constructor)
    {
       this.constructor = constructor;
    }
 
+   /**
+    * Get the create
+    * 
+    * @return the create
+    */
    public LifecycleMetaData getCreate()
    {
       return create;
    }
 
+   /**
+    * Set the create
+    * 
+    * @param create the create
+    */
    @XmlElement(name="create", type=AbstractLifecycleMetaData.class)
    public void setCreate(LifecycleMetaData create)
    {
       this.create = create;
    }
 
+   /**
+    * Get the properties
+    * 
+    * @return the properties
+    */
    public Set<PropertyMetaData> getProperties()
    {
       return properties;
    }
 
+   /**
+    * Set the properties
+    * 
+    * @param properties the properties
+    */
    @XmlElement(name="property", type=AbstractPropertyMetaData.class)
    public void setProperties(Set<PropertyMetaData> properties)
    {
       this.properties = properties;
    }
 
+   /**
+    * Get the start
+    * 
+    * @return the start
+    */
    public LifecycleMetaData getStart()
    {
       return start;
    }
 
+   /**
+    * Set the start
+    * 
+    * @param start the start
+    */
    @XmlElement(name="start", type=AbstractLifecycleMetaData.class)
    public void setStart(LifecycleMetaData start)
    {
       this.start = start;
    }
 
+   /**
+    * Get the demans
+    * 
+    * @return the demands
+    */
    @XmlElement(name="demand", type=AbstractDemandMetaData.class)
    public Set<DemandMetaData> getDemands()
    {
       return demands;
    }
 
+   /**
+    * Set the demands
+    * 
+    * @param demands the demands
+    */
    public void setDemands(Set<DemandMetaData> demands)
    {
       this.demands = demands;
    }
 
+   /**
+    * Get the dependencies
+    * 
+    * @return the dependencies
+    */
    public Set<DependencyMetaData> getDepends()
    {
       return depends;
    }
 
+   /**
+    * Set the dependencies
+    * 
+    * @param depends the dependencies
+    */
    @XmlElement(name="depends", type=AbstractDependencyMetaData.class)
    public void setDepends(Set<DependencyMetaData> depends)
    {
       this.depends = depends;
    }
 
+   /**
+    * Get the install callbacks
+    * 
+    * @return the install callbacks
+    */
    public List<CallbackMetaData> getInstallCallbacks()
    {
       return installCallbacks;
    }
 
+   /**
+    * Set the install callbacks
+    * 
+    * @param installCallbacks the install callbacks
+    */
    @XmlElement(name="incallback", type=InstallCallbackMetaData.class)
    public void setInstallCallbacks(List<CallbackMetaData> installCallbacks)
    {
       this.installCallbacks = installCallbacks;
    }
 
+   /**
+    * Get the installs
+    * 
+    * @return the installs
+    */
    public List<InstallMetaData> getInstalls()
    {
       return installs;
    }
 
+   /**
+    * Set the installs
+    * 
+    * @param installs the installs
+    */
    @XmlElement(name="install", type=AbstractInstallMetaData.class)
    public void setInstalls(List<InstallMetaData> installs)
    {
       this.installs = installs;
    }
 
+   /**
+    * Get the supples
+    * 
+    * @return the supplies
+    */
    public Set<SupplyMetaData> getSupplies()
    {
       return supplies;
    }
 
+   /**
+    * Set the supplies
+    * 
+    * @param supplies the supplies
+    */
    @XmlElement(name="supply", type=AbstractSupplyMetaData.class)
    public void setSupplies(Set<SupplyMetaData> supplies)
    {
       this.supplies = supplies;
    }
 
+   /**
+    * Get the uninstall callbacks
+    * 
+    * @return the uninstall callbacks
+    */
    public List<CallbackMetaData> getUninstallCallbacks()
    {
       return uninstallCallbacks;
    }
 
+   /**
+    * Set the uninstall callbacks
+    * 
+    * @param uninstallCallbacks the uninstall callbacls
+    */
    @XmlElement(name="uncallback", type=UninstallCallbackMetaData.class)
    public void setUninstallCallbacks(List<CallbackMetaData> uninstallCallbacks)
    {
       this.uninstallCallbacks = uninstallCallbacks;
    }
 
+   /**
+    * Get the uninstalls
+    * 
+    * @return the uninstalls
+    */
    public List<InstallMetaData> getUninstalls()
    {
       return uninstalls;
    }
 
+   /**
+    * Set the uninstalls
+    * 
+    * @param uninstalls the uninstalls
+    */
    @XmlElement(name="uninstall", type=AbstractInstallMetaData.class)
    public void setUninstalls(List<InstallMetaData> uninstalls)
    {

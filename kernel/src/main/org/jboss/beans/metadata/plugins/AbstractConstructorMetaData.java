@@ -56,7 +56,7 @@ import org.jboss.managed.api.annotation.ManagementProperty;
  * @author <a href="adrian@jboss.com">Adrian Brock</a>
  * @version $Revision$
  */
-@XmlType(propOrder={"annotations", "factory", "parameters", "value"})
+@XmlType(name="constructorType", propOrder={"annotations", "factory", "parameters", "value"})
 public class AbstractConstructorMetaData extends AbstractFeatureMetaData
    implements ConstructorMetaData, MutableParameterizedMetaData, ValueMetaDataAware, Serializable
 {

@@ -30,8 +30,9 @@ import org.jboss.dependency.spi.CallbackItem;
  * Metadata for uninstall callback.
  *
  * @author <a href="ales.justin@jboss.com">Ales Justin</a>
+ * @author <a href="adrian@jboss.com">Adrian Brock</a>
  */
-@XmlType
+@XmlType(name="uninstallCallbackType")
 public class UninstallCallbackMetaData extends AbstractCallbackMetaData
 {
    /** The serialVersionUID */

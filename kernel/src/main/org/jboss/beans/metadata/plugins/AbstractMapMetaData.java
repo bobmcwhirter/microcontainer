@@ -46,7 +46,7 @@ import org.jboss.xb.annotations.JBossXmlMapEntry;
  * @author <a href="adrian@jboss.com">Adrian Brock</a>
  * @version $Revision$
  */
-@XmlType
+@XmlType(name="mapType")
 @JBossXmlMapEntry(name = "entry", type = MapEntry.class)
 public class AbstractMapMetaData extends AbstractTypeMetaData
    implements Map<MetaDataVisitorNode, MetaDataVisitorNode>, Serializable

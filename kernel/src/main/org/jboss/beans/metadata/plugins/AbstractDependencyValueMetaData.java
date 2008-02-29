@@ -46,7 +46,7 @@ import org.jboss.managed.api.annotation.ManagementProperty;
  * @author <a href="adrian@jboss.com">Adrian Brock</a>
  * @version $Revision$
  */
-@XmlType
+@XmlType(name="injectionType")
 public class AbstractDependencyValueMetaData extends AbstractValueMetaData
 {
    private static final long serialVersionUID = 3L;
