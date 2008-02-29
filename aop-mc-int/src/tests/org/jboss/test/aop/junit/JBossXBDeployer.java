@@ -26,6 +26,8 @@ import java.net.URL;
 import org.jboss.aop.microcontainer.beans.beanmetadatafactory.AOPDeployment;
 import org.jboss.dependency.spi.ControllerMode;
 import org.jboss.javabean.plugins.jaxb.JavaBean;
+import org.jboss.javabean.plugins.jaxb.JavaBean10;
+import org.jboss.javabean.plugins.jaxb.JavaBean20;
 import org.jboss.kernel.Kernel;
 import org.jboss.kernel.plugins.deployment.AbstractKernelDeployment;
 import org.jboss.kernel.plugins.deployment.xml.BasicXMLDeployer;
@@ -90,7 +92,8 @@ public class JBossXBDeployer extends BasicXMLDeployer
       
       addSchemaBinding(resolver, AbstractKernelDeployment.class);
       addSchemaBinding(resolver, AOPDeployment.class);
-      addSchemaBinding(resolver, JavaBean.class);
+      addSchemaBinding(resolver, JavaBean10.class);
+      addSchemaBinding(resolver, JavaBean20.class);
       
       return resolver;
    }
