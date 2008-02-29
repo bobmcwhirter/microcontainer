@@ -263,7 +263,7 @@ public abstract class BeanMetaDataBuilder
    public abstract BeanMetaDataBuilder addConstructorParameter(String type, ValueMetaData value);
 
    /**
-    * Add a property
+    * Add a property, replace it if it already exists
     * 
     * @param name the property name
     * @param value the value
@@ -272,7 +272,7 @@ public abstract class BeanMetaDataBuilder
    public abstract BeanMetaDataBuilder addPropertyMetaData(String name, Object value);
 
    /**
-    * Add a property
+    * Add a property, replace it if it already exists
     * 
     * @param name the property name
     * @param value the value
@@ -281,7 +281,7 @@ public abstract class BeanMetaDataBuilder
    public abstract BeanMetaDataBuilder addPropertyMetaData(String name, String value);
 
    /**
-    * Add a property
+    * Add a property, replace it if it already exists
     * 
     * @param name the property name
     * @param value the value
@@ -290,7 +290,7 @@ public abstract class BeanMetaDataBuilder
    public abstract BeanMetaDataBuilder addPropertyMetaData(String name, ValueMetaData value);
 
    /**
-    * Add a property
+    * Add a property, replace it if it already exists
     * 
     * @param name the property name
     * @param value the value
@@ -299,7 +299,7 @@ public abstract class BeanMetaDataBuilder
    public abstract BeanMetaDataBuilder addPropertyMetaData(String name, Collection<ValueMetaData> value);
 
    /**
-    * Add a property
+    * Add a property, replace it if it already exists
     * 
     * @param name the property name
     * @param value the value

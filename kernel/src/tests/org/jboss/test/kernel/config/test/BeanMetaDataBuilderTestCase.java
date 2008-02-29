@@ -252,8 +252,74 @@ public class BeanMetaDataBuilderTestCase extends AbstractKernelConfigTest
       assertTrue(coll.contains("Zwei"));
       
       Map<?, ?> mp = bean.getMap();
-      assertEquals(2, lst.size());
+      assertEquals(2, mp.size());
       assertEquals("Uno", mp.get("One"));
       assertEquals("Dos", mp.get("Two"));
    }
+   
+   public void testReplacePropertyMetaData() throws Throwable
+   {
+      BeanMetaDataBuilder builder = BeanMetaDataBuilderFactory.createBuilder("ReplaceBean", SimpleBean.class.getName());
+      
+      builder.addPropertyMetaData("anInt", new Integer(1));
+      builder.addPropertyMetaData("anInt", new Integer(5));
+      
+      builder.addPropertyMetaData("AString", "One");
+      builder.addPropertyMetaData("AString", "Two");
+      
+      ValueMetaData value = builder.createValue("Three");
+      builder.addPropertyMetaData("anObject", value);
+      value = builder.createValue("Four");
+      builder.addPropertyMetaData("anObject", value);
+      
+      List<ValueMetaData> array =  builder.createArray();
+      builder.addPropertyMetaData("array", array);
+      
+      array =  builder.createArray();
+      array.add(builder.createValue(new Integer(5)));
+      array.add(builder.createValue(new Integer(10)));
+      builder.addPropertyMetaData("array", array);
+      
+      Map<ValueMetaData, ValueMetaData> map = builder.createMap();
+      builder.addPropertyMetaData("map", map);
+      
+      map = builder.createMap();
+      map.put(builder.createValue("One"), builder.createValue("Uno"));
+      map.put(builder.createValue("Two"), builder.createValue("Dos"));
+      builder.addPropertyMetaData("map", map);
+
+      AbstractKernelDeployment deployment = new AbstractKernelDeployment();
+      deployment.setBeans(Arrays.asList(builder.getBeanMetaData()));
+
+      Kernel kernel = bootstrap();
+      KernelController controller = kernel.getController();
+      AbstractKernelDeployer deployer = new AbstractKernelDeployer(kernel);
+
+      deployer.deploy(deployment);
+      
+      Object o = controller.getInstalledContext("ReplaceBean").getTarget();
+      assertNotNull(o);
+      assertInstanceOf(o, SimpleBean.class);
+      SimpleBean bean = (SimpleBean)o;
+      
+      Integer integer = bean.getAnInt();
+      assertEquals(new Integer(5), integer);
+      
+      String string = bean.getAString();
+      assertEquals("Two", string);
+      
+      Object obj = bean.getAnObject();
+      assertEquals("Four", obj);
+      
+      Object[] arr = bean.getArray();
+      assertEquals(2, arr.length);
+      assertEquals(5, arr[0]);
+      assertEquals(10, arr[1]);
+      
+      Map<?, ?> mp = bean.getMap();
+      assertEquals(2, mp.size());
+      assertEquals("Uno", mp.get("One"));
+      assertEquals("Dos", mp.get("Two"));
+   }
+
 }

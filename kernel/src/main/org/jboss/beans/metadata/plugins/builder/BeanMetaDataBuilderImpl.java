@@ -23,6 +23,7 @@ package org.jboss.beans.metadata.plugins.builder;
 
 import java.util.Collection;
 import java.util.HashSet;
+import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
@@ -219,6 +220,7 @@ class BeanMetaDataBuilderImpl extends BeanMetaDataBuilder
    public BeanMetaDataBuilder addPropertyMetaData(String name, Object value)
    {
       Set<PropertyMetaData> properties = getProperties();
+      removeProperty(properties, name);
       properties.add(new AbstractPropertyMetaData(name, value));
       return this;
    }
@@ -226,6 +228,7 @@ class BeanMetaDataBuilderImpl extends BeanMetaDataBuilder
    public BeanMetaDataBuilder addPropertyMetaData(String name, String value)
    {
       Set<PropertyMetaData> properties = getProperties();
+      removeProperty(properties, name);
       properties.add(new AbstractPropertyMetaData(name, value));
       return this;
    }
@@ -233,6 +236,7 @@ class BeanMetaDataBuilderImpl extends BeanMetaDataBuilder
    public BeanMetaDataBuilder addPropertyMetaData(String name, ValueMetaData value)
    {
       Set<PropertyMetaData> properties = getProperties();
+      removeProperty(properties, name);
       properties.add(new AbstractPropertyMetaData(name, value));
       return this;
    }
@@ -240,6 +244,8 @@ class BeanMetaDataBuilderImpl extends BeanMetaDataBuilder
    public BeanMetaDataBuilder addPropertyMetaData(String name, Collection<ValueMetaData> value)
    {
       Set<PropertyMetaData> properties = getProperties();
+      removeProperty(properties, name);
+      
       if (value instanceof ValueMetaData)
       {
          properties.add(new AbstractPropertyMetaData(name, (ValueMetaData)value));
@@ -254,6 +260,8 @@ class BeanMetaDataBuilderImpl extends BeanMetaDataBuilder
    public BeanMetaDataBuilder addPropertyMetaData(String name, Map<ValueMetaData, ValueMetaData> value)
    {
       Set<PropertyMetaData> properties = getProperties();
+      removeProperty(properties, name);
+
       if (value instanceof ValueMetaData)
       {
          properties.add(new AbstractPropertyMetaData(name, (ValueMetaData)value));
@@ -263,6 +271,19 @@ class BeanMetaDataBuilderImpl extends BeanMetaDataBuilder
          properties.add(new AbstractPropertyMetaData(name, value));
       }
       return this;
+   }
+   
+   private Set<PropertyMetaData> removeProperty(Set<PropertyMetaData> properties, String name)
+   {
+      for (Iterator<PropertyMetaData> it = properties.iterator() ; it.hasNext() ; )
+      {
+         PropertyMetaData property = it.next();
+         if (name.equals(property.getName()))
+         {
+            it.remove();
+         }
+      }
+      return properties;
    }
    
    private Set<PropertyMetaData> getProperties()
