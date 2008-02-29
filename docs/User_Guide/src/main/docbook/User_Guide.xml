@@ -2869,7 +2869,7 @@ public class MyBean {
       <programlisting>VirtualFile root = VFS.getRoot(deploymentURL);     
 VFSDeploymentFactory deploymentFactory = VFSDeploymentFactory.getInstance();
 Deployment deployment = deploymentFactory.createVFSDeployment(root);</programlisting>
-      <para>The deployment framework then determines the structure of the VFSDeployment using classes that implement the <emphasis>StructureDeployer</emphasis> interface:</para>
+      <para>The deployment framework then determines the structure of the <emphasis>Deployment</emphasis> using classes that implement the <emphasis>StructureDeployer</emphasis> interface:</para>
       <programlisting>public interface StructureDeployer extends Ordered
 {
 boolean determineStructure(VirtualFile root, VirtualFile parent, VirtualFile file, StructureMetaData metaData, VFSStructuralDeployers deployers) throws DeploymentException;
@@ -2878,7 +2878,7 @@ boolean determineStructure(VirtualFile root, VirtualFile parent, VirtualFile fil
       <para>As each deployment is found  a <emphasis>ContextInfo</emphasis> object is created to store the paths to any  deployment descriptors and/or classes. These are then added to the <emphasis>StructureMetaData</emphasis> parameter so that the structure of the entire deployment is recorded. For example if we had a top-level deployment containing 2 nested deployments then we would create 3 <emphasis>ContextInfo</emphasis> objects, one for each deployment, and add these to the <emphasis>StructureMetaData</emphasis> object.</para>
       <section>
         <title>Deployment Descriptors</title>
-        <para>Deployment descriptors are files containing  configuration information for deployments. They are detected using the <emphasis>FileStructure</emphasis> class by matching the file suffix or using a <emphasis>FileMatcher</emphasis>. Default files suffixes include:</para>
+        <para>Deployment descriptors are files containing  configuration information for deployments. They are detected using the <emphasis>FileStructure</emphasis> class by matching the file suffix or using a <emphasis>FileMatcher</emphasis>. Default file suffixes include:</para>
         <itemizedlist>
           <listitem>
             <para>-beans.xml - contains  bean definitions</para>
@@ -2907,6 +2907,7 @@ boolean determineStructure(VirtualFile root, VirtualFile parent, VirtualFile fil
         <para>The purpose of the <emphasis>FileStructure</emphasis> class is to detect deployments that consist  of a single deployment descriptor.  As such it creates a single <emphasis>ContextInfo</emphasis> object when a known file is found and adds this to the <emphasis>StructureMetaData</emphasis>. Since no classes are present the list of classpaths within the <emphasis>ContextInfo</emphasis> is set to null.</para>
         <warning>
           <para>Currently any top-level deployment that consists of a single file is always identified as a known deployment descriptor. This is done to avoid having to specify all of the known file suffixes in a configuration file. The file suffix and FileMatcher checks are only performed for nested deployments.</para>
+          <para>As the FileStructure class has a relative order of Integer.MAX_VALUE it is always called after any other <emphasis>StructureDeployer</emphasis> implementations such as JARStructure. This means that a deployment  consisting of a single JAR file will be detected correctly. </para>
         </warning>
         <para>Deployment descriptors that form part of a deployment together with other files, such as classes or resources are detected by other implementations of <emphasis>StructureDeployer</emphasis> such as<emphasis>JARStructure</emphasis> which is described next.</para>
       </section>
@@ -2939,7 +2940,7 @@ boolean determineStructure(VirtualFile root, VirtualFile parent, VirtualFile fil
             <para>.aop - an aspect archive (defined by JBoss)</para>
           </listitem>
         </itemizedlist>
-        <para>If the deployment is a directory then the same checked is performed using the directory name. If a match is found in either case then the deployment is determined to represent a JAR archive.</para>
+        <para>If the deployment is a directory then the same check is performed using the directory name. If a match is found in either case then the deployment is determined to represent a JAR archive.</para>
         <note>
           <para>A top-level directory whose name doesn&apos;t match any of the file suffixes is still considered  an unpackaged JAR archive as this allows it to be used as a container for multiple nested deployments.</para>
         </note>
@@ -2953,7 +2954,7 @@ boolean determineStructure(VirtualFile root, VirtualFile parent, VirtualFile fil
 {
     ...
 
-       protected void addAllChildren(VirtualFile root, VirtualFile parent, StructureMetaData metaData, VFSStructuralDeployers deployers) throws Exception
+   protected void addAllChildren(VirtualFile root, VirtualFile parent, StructureMetaData metaData, VFSStructuralDeployers deployers) throws Exception
    {
       addChildren(root, parent, metaData, deployers, null);
    }
@@ -2970,7 +2971,7 @@ boolean determineStructure(VirtualFile root, VirtualFile parent, VirtualFile fil
     ...
 }</programlisting>
         <para>This in turn calls the addChildren() method which creates a <emphasis>VirtualFileVisitor</emphasis> that is passed to the virtual file representing the current deployment. Each child file or directory of the current deploment is then visited using the visitor which use the <emphasis>VFSStructuralDeployers</emphasis> object to iterate through the list of <emphasis>StructureDeployers</emphasis>. These then  determine whether the child represents a nested deployment. If a nested deployment is found then the process is repeated in order to recurse through the entire directory structure. This happens regardless of whether the deployment is packaged or unpackaged as the Virtual File System takes care of accessing the actual files.</para>
-        <para>Due to this recursive algorithm, implemented using the Visitor design pattern, you can freely nest any type of deployment within any other type of deployment to any level. All you need to ensure is that you have defined a <emphasis>StructureDeployer</emphasis> implementation capable of recognising your deployment. How to define your own StructureDeployer is the subject of the following sections.</para>
+        <para>Due to this recursive algorithm you can freely nest any type of deployment within any other type of deployment to any level. There is one exection to this with WAR archives which cannot contain nested deployments. All you need to ensure is that you have defined a <emphasis>StructureDeployer</emphasis> implementation capable of recognising your deployment.</para>
       </section>
       <section>
         <title>Declaring a custom deployment structure</title>
@@ -3055,20 +3056,196 @@ boolean determineStructure(VirtualFile root, VirtualFile parent, VirtualFile fil
       </section>
     </chapter>
     <chapter>
-      <title>Accessing a deployment</title>
-      <para/>
+      <title>Creating Deployment Contexts</title>
       <section>
-        <title>Standard information</title>
+        <title>Introduction</title>
+        <para>Once the structure of a deployment has been determined then the next step is to create a number of <emphasis>DeploymentContext</emphasis> objects. A <emphasis>DeploymentContext</emphasis> is required for each top-level deployment and each nested deployment in order to store information such as:</para>
+        <itemizedlist>
+          <listitem>
+            <para>the location of any deployment descriptors - the metadata path</para>
+          </listitem>
+          <listitem>
+            <para>the location of any classes - the classpath</para>
+          </listitem>
+          <listitem>
+            <para>the relative path to the top-level deployment - the relative path</para>
+          </listitem>
+          <listitem>
+            <para>the deployment name</para>
+          </listitem>
+          <listitem>
+            <para>the order it should be deployed in relative to other  deployments - the relative order</para>
+          </listitem>
+          <listitem>
+            <para>a list of deployments types that it represents (including nested deployments) - the types</para>
+          </listitem>
+          <listitem>
+            <para>the state of the deployment - whether it is deployed or not</para>
+          </listitem>
+          <listitem>
+            <para>the deployment class loader</para>
+          </listitem>
+          <listitem>
+            <para>the deployment resource loader</para>
+          </listitem>
+          <listitem>
+            <para>dependencies on other deployments</para>
+          </listitem>
+          <listitem>
+            <para>references to any components that the deployment deploys - POJOs, MBeans etc...</para>
+          </listitem>
+          <listitem>
+            <para>references to any nested deployments or the parent deployment</para>
+          </listitem>
+        </itemizedlist>
+        <para>Since the <emphasis>StructureMetaData</emphasis> object created using the <emphasis>StructureDeployer</emphasis> implementations already contains some of this information we subsequently pass it to  a <emphasis>StructureBuilder</emphasis> together with a reference to the original <emphasis>Deployment</emphasis> to populate the Deployment with a tree of DeploymentContexts:</para>
+        <programlisting>public interface StructureBuilder
+{
+   DeploymentContext populateContext(Deployment deployment, StructureMetaData metaData) throws DeploymentException;
+}</programlisting>
+        <para>During this method call the information contained with the <emphasis>ContextInfo</emphasis> objects, found within the <emphasis>StructureMetaData</emphasis>, is transferred to new instances of <emphasis>DeploymentContext</emphasis> that are joined together into a hierarchy. A  reference to the top-level DeploymentContext is then returned.</para>
+      </section>
+      <section>
+        <title>Accessing a deployment</title>
+        <para>The deployment framework uses  <emphasis>DeploymentContext</emphasis> objects to access the internal details of a deployment during processing. However, if you wish to access a deployment yourself then you should use a wrapper called <emphasis>DeploymentUnit</emphasis>.</para>
+        <para>This prevents  you from getting or setting  the deployment state, changing the deployment classloader if it already exists,  changing any parent/child relationships between nested deployments and  accessing any exceptions that have occurred during deployment. You are also prevented from calling the visit() method that allows you to visit all of the contexts in the hierarchy or the cleanup() method that removes deployment metadata from the metadata repository.</para>
       </section>
       <section>
         <title>Attaching extra information</title>
+        <para>Since each instance of <emphasis>DeploymentContext</emphasis> contains generic deployment information we need a way to store and retrieve additional information generated during the deployment process. This is done using the <emphasis>DeploymentUnit</emphasis> wrapper which extends the <emphasis>MutableAttachments</emphasis> interface:</para>
+        <programlisting>public interface DeploymentUnit extends MutableAttachments
+{
+    ...
+}</programlisting>
+        <programlisting>public interface MutableAttachments extends Attachments
+{
+   Object addAttachment(String name, Object attachment);
+   &lt;T&gt; T addAttachment(String name, T attachment, Class&lt;T&gt; expectedType);
+   &lt;T&gt; T addAttachment(Class&lt;T&gt; type, T attachment);
+
+   Object removeAttachment(String name);
+   &lt;T&gt; T removeAttachment(String name, Class&lt;T&gt; expectedType);
+   &lt;T&gt; T removeAttachment(Class&lt;T&gt; type);
+
+   void setAttachments(Map&lt;String, Object&gt; map);
+
+   void clear();
+
+   int getChangeCount();
+   void clearChangeCount();
+}</programlisting>
+        <para>As you can see the <emphasis>MutableAttachments</emphasis> operations allow you to store arbitrary objects (referred to as attachments) inside a map using a <emphasis>String</emphasis> for the key.  For convenience you can pass in the type of the object instead of a string and the return value of type.getName()   will be used as the key. If you pass in a type for the key, or you specify an expectedType argument, then the return value will be cast to an object of that type.</para>
+        <para>If you wish to retrieve any objects then you can use operations from the <emphasis>Attachments</emphasis> interface:</para>
+        <programlisting>public interface Attachments extends Serializable
+{
+   Map&lt;String, Object&gt; getAttachments();
+
+   Object getAttachment(String name);
+   &lt;T&gt; T getAttachment(String name, Class&lt;T&gt; expectedType);
+   &lt;T&gt; T getAttachment(Class&lt;T&gt; type);
+   
+   boolean isAttachmentPresent(String name);
+   boolean isAttachmentPresent(String name, Class&lt;?&gt; expectedType);   
+   boolean isAttachmentPresent(Class&lt;?&gt; type);
+
+   boolean hasAttachments();
+}</programlisting>
+        <para>Again if you pass a type for the key, or specify an expectedType argument, then the return value will be cast to an object of that type. In the case of the isAttachmentPresent() methods the return value is only true if both the object can be located using the key and it can be cast to the specified type.</para>
+        <para><emphasis>DeploymentUnit</emphasis> also contains a convenience method that allows you to retrieve all objects of a particular type from the map of attachments:</para>
+        <programlisting>public interface DeploymentUnit extends MutableAttachments
+{
+    ...
+   &lt;T&gt; Set&lt;? extends T&gt; getAllMetaData(Class&lt;T&gt; type);
+    ...
+}</programlisting>
       </section>
       <section>
-        <title>Nested deployments</title>
+        <title>Deployment components</title>
+        <para>Deployments usually contain one or more runtime components in addition to configuration information and resource files. By runtime component we mean any class that requires a container in which to run. Containers take care of controlling the component&apos;s lifecycle in addition to providing additional behaviours so that the component developer does not have to do this themselves. By leveraging the work of the container the idea is that component development reduces the time needed to develop systems with advanced behaviour.</para>
+        <para>The simplest example of a component is  a POJO. In this case the container controls when the POJO is created based on when a client performs a lookup using a name. It can also take care of wiring different POJOs together based on information in a deployment descriptor so that the POJO developer doesn&apos;t have to hard-code the relationships themselves. This makes the configuration of the runtime environment easier to change.</para>
+        <para>Another example is an MBean. Here the container (an MBeanServer) takes care of routing all method calls through a bus so that clients never reference the MBean directly. This allows MBeans to be replaced at runtime without impacting any clients.</para>
+        <para>A further example is an OSGi service bundle. Here the container ensures that the classes required by the bundle are available in the runtime before the service is started. It also takes care of making classes within the bundles available to others if required. This makes the runtime environment easier to construct and maintain with fewer classloading issues.</para>
+        <para>In order to provide support for deploying different types of runtime components, JBoss Microcontainer requires that each one is represented by its own <emphasis>ComponentDeploymentContext</emphasis>:</para>
+        <programlisting>public class ComponentDeploymentContext implements DeploymentContext
+{
+    ...
+}</programlisting>
+        <para>This is similer to a normal DeploymentContext but with some important differences:</para>
+        <itemizedlist>
+          <listitem>
+            <para>Components do not have a relative order</para>
+          </listitem>
+          <listitem>
+            <para>Components do not have a metadata path</para>
+          </listitem>
+          <listitem>
+            <para>Components use the classloader of the containing deployment</para>
+          </listitem>
+          <listitem>
+            <para>ComponentDeploymentContexts can not have parent or child relationships to other ComponentDeploymentContexts. </para>
+          </listitem>
+        </itemizedlist>
+        <para>In addition ComponentDeploymentContexts delegate to their parent DeploymentContext for information such as:</para>
+        <itemizedlist>
+          <listitem>
+            <para>relative path</para>
+          </listitem>
+          <listitem>
+            <para>deployment types</para>
+          </listitem>
+          <listitem>
+            <para>deployment state</para>
+          </listitem>
+          <listitem>
+            <para>Resource class loader</para>
+          </listitem>
+          <listitem>
+            <para>Resource Loader</para>
+          </listitem>
+          <listitem>
+            <para>get/setProblem</para>
+          </listitem>
+          <listitem>
+            <para>Dependency Info</para>
+          </listitem>
+        </itemizedlist>
+        <para>The reason we use the DeploymentContext interface is so that ...</para>
+        <para>We need to distinguish components within a deployment from the deployment itself in order to allow the microcontainer to manage individual components at runtime.</para>
+        <para>ComponentDeploymentContexts are added to a <emphasis>DeploymentUnit</emphasis> using the addComponent() method whenever a component is discovered during the deployment process:</para>
+        <programlisting>public class AbstractDeploymentUnit extends AbstractMutableAttachments implements DeploymentUnit
+{
+    ...
+
+   public DeploymentUnit addComponent(String name)
+   {
+      DeploymentContext component = createComponentDeploymentContext(name, deploymentContext);
+      DeploymentUnit unit = createComponentDeploymentUnit(component);
+      component.setDeploymentUnit(unit);
+      deploymentContext.addComponent(component);
+      return unit;
+   }
+
+   ...
+
+   protected DeploymentContext createComponentDeploymentContext(String name, DeploymentContext parent)
+   {
+      return new ComponentDeploymentContext(name, parent);
+   }
+
+    ...
+}</programlisting>
+      </section>
+      <section>
+        <title>Deployment dependencies</title>
+        <para>addIDependOn, removeIDependOn() are only in DeploymentUnit</para>
       </section>
     </chapter>
     <chapter>
       <title>Processing a deployment</title>
+      <section>
+        <title>Introduction</title>
+        <para>Explain how the controller is used in DeployersImpl.</para>
+      </section>
       <section>
         <title>Deployment stages</title>
         <para>  </para>
@@ -3081,22 +3258,22 @@ boolean determineStructure(VirtualFile root, VirtualFile parent, VirtualFile fil
         <title>Ordering (Inputs and outputs)</title>
       </section>
       <section>
-        <title>Adding a new deployment action</title>
-      </section>
-      <section>
-        <title>Deployment components</title>
+        <title>Deploying components</title>
       </section>
     </chapter>
     <chapter>
       <title>Putting it all together</title>
       <section>
-        <title>Defining the Main Deployer</title>
+        <title>Introduction</title>
       </section>
       <section>
-        <title>Adding deployment types</title>
+        <title>Defining the deployment framework</title>
       </section>
       <section>
-        <title>Adding deployment actions</title>
+        <title>Defining deployment structures</title>
+      </section>
+      <section>
+        <title>Defining deployment actions</title>
       </section>
     </chapter>
   </part>
