@@ -67,7 +67,7 @@ public abstract class BeanMetaDataBuilder
    /**
     * Create builder from BeanMetaData
     * 
-    * @param the bean metadata
+    * @param beanMetaData the bean metadata
     * @return new Builder()
     */
    public static BeanMetaDataBuilder createBuilder(BeanMetaData beanMetaData)
