@@ -19,7 +19,7 @@
  * Software Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA
  * 02110-1301 USA, or see the FSF site: http://www.fsf.org.
 */
-package org.jboss.test.bundle;
+package org.jboss.test.bundle.helper;
 
 import java.util.Dictionary;
 
@@ -35,22 +35,20 @@ import org.jboss.deployers.structure.spi.DeploymentUnit;
 import org.jboss.deployers.structure.spi.helpers.AbstractDeploymentContext;
 import org.jboss.deployers.structure.spi.helpers.AbstractDeploymentUnit;
 import org.jboss.osgi.plugins.facade.helpers.BundleHeaders;
-import org.jboss.test.bundle.metadata.AbstractManifestTestCase;
+import org.jboss.test.BaseTestCase;
 import org.osgi.framework.Constants;
 
 /**
- * 
  * A BundleHeaderTestCase.
  * 
  * @author <a href="baileyje@gmail.com">John Bailey</a>
  * @version $Revision: 1.1 $
  */
-public class BundleHeaderTestCase extends AbstractManifestTestCase
+public class BundleHeaderTestCase extends BaseTestCase
 {
    private BundleHeaders bundleHeaders;
 
    /**
-    * 
     * Create a new BundleHeaderTestCase.
     * 
     * @param name
@@ -60,11 +58,19 @@ public class BundleHeaderTestCase extends AbstractManifestTestCase
       super(name);
    }
 
+   /**
+    * Get test suite
+    * 
+    * @return
+    */
    public static Test suite()
    {
       return suite(BundleHeaderTestCase.class);
    }
 
+   /**
+    * Setup test
+    */
    @Override
    protected void setUp() throws Exception
    {

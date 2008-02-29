@@ -24,12 +24,15 @@ package org.jboss.test.bundle;
 import junit.framework.Test;
 import junit.framework.TestSuite;
 import junit.textui.TestRunner;
+
+import org.jboss.test.bundle.helper.BundleHelperTestSuite;
 import org.jboss.test.bundle.metadata.MetaDataTestSuite;
 
 /**
  * Bundle Test Suite.
  *
  * @author <a href="mailto:ales.justin@jboss.com">Ales Justin</a>
+ * @author <a href="mailto:baileyje@gmail.com">John Bailey</a>
  */
 public class BundleTestSuite extends TestSuite
 {
@@ -43,8 +46,8 @@ public class BundleTestSuite extends TestSuite
       TestSuite suite = new TestSuite("Bundle Tests");
 
       suite.addTest(BundleImplTestCase.suite());
-      suite.addTest(BundleHeaderTestCase.suite());
       suite.addTest(MetaDataTestSuite.suite());
+      suite.addTest(BundleHelperTestSuite.suite());
 
       return suite;
    }

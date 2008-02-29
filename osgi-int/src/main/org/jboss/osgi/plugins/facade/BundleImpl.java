@@ -30,14 +30,16 @@ import java.util.Enumeration;
 import java.util.Locale;
 
 import org.jboss.dependency.spi.ControllerContext;
-import org.jboss.dependency.spi.ControllerState;
 import org.jboss.deployers.client.spi.DeployerClient;
 import org.jboss.deployers.spi.DeploymentException;
 import org.jboss.deployers.spi.deployer.DeploymentStages;
 import org.jboss.deployers.structure.spi.DeploymentUnit;
+import org.jboss.deployers.vfs.spi.structure.VFSDeploymentUnit;
 import org.jboss.logging.Logger;
+import org.jboss.osgi.plugins.facade.helpers.BundleEntryHelper;
 import org.jboss.osgi.plugins.facade.helpers.BundleHeaders;
 import org.jboss.osgi.plugins.facade.helpers.DeploymentStage2BundleStateMapper;
+import org.jboss.virtual.VirtualFile;
 import org.osgi.framework.AdminPermission;
 import org.osgi.framework.Bundle;
 import org.osgi.framework.BundleException;
@@ -51,7 +53,6 @@ import org.osgi.framework.ServiceReference;
  */
 public class BundleImpl implements Bundle
 {
-
    /** The log */
    private static final Logger log = Logger.getLogger(BundleImpl.class);
 
@@ -59,13 +60,12 @@ public class BundleImpl implements Bundle
 
    protected BundleHeaders bundleHeaders;
 
-   private long lastModified = -1;
+   private long lastModified = System.currentTimeMillis();
 
    /**
-    * 
     * Create a new BundleImpl.
     * 
-    * @param unit
+    * @param unit the DeploymentUnit
     */
    public BundleImpl(DeploymentUnit unit)
    {
@@ -75,6 +75,8 @@ public class BundleImpl implements Bundle
 
    /**
     *   Get Bundle state based on the current DeployentStage
+    *   
+    *   @return the Bundle's state
     */
    public int getState()
    {
@@ -91,12 +93,11 @@ public class BundleImpl implements Bundle
    }
 
    /**
-    * Deligate to the MainDeployer to start the Bundle
+    * Start the Bundle
     */
    public void start() throws BundleException
    {
       checkPermission(AdminPermission.EXECUTE);
-
       try
       {
          DeployerClient main = unit.getMainDeployer();
@@ -111,6 +112,15 @@ public class BundleImpl implements Bundle
    public void stop() throws BundleException
    {
       checkPermission(AdminPermission.EXECUTE);
+      try
+      {
+         DeployerClient main = unit.getMainDeployer();
+         main.change(unit.getName(), DeploymentStages.DESCRIBE);
+      }
+      catch (DeploymentException e)
+      {
+         throw new BundleException("Failed to stop Bundle", e);
+      }
    }
 
    public void update() throws BundleException
@@ -131,12 +141,18 @@ public class BundleImpl implements Bundle
    public long getBundleId()
    {
       checkPermission(AdminPermission.METADATA);
-      return 1L;
+      return unit.getName().hashCode();
    }
 
    public String getLocation()
    {
       checkPermission(AdminPermission.METADATA);
+      if (unit instanceof VFSDeploymentUnit)
+      {
+         VFSDeploymentUnit vfsUnit = VFSDeploymentUnit.class.cast(unit);
+         VirtualFile file = vfsUnit.getRoot();
+         return file.getPathName();
+      }
       return null;
    }
 
@@ -166,6 +182,11 @@ public class BundleImpl implements Bundle
       return true;
    }
 
+   /**
+    * Get the Bundle's headers
+    * 
+    * @return the Bundle's headers
+    */
    @SuppressWarnings("unchecked")
    public Dictionary getHeaders()
    {
@@ -183,92 +204,120 @@ public class BundleImpl implements Bundle
       return bundleHeaders.toDictionary();
    }
 
+   /**
+    * Get the Bundle's symbolic name
+    * 
+    * @return the Bundle's symbolic name
+    */
    public String getSymbolicName()
    {
       return (String) getControllerContext().getName();
    }
 
+   /**
+    * Load class from Bundles classloader
+    * 
+    * @param name a class name
+    * @return the class
+    */
    public Class<?> loadClass(String name) throws ClassNotFoundException
    {
       checkPermission(AdminPermission.CLASS);
-      if (getControllerContext() != null)
+      try
       {
-         //  Verify ControllerState required to load CL resources
-         if (ControllerState.INSTANTIATED.equals(getControllerContext().getState()))
-         {
-            return unit.getClassLoader().loadClass(name);
-         }
+         return unit.getClassLoader().loadClass(name);
       }
-      return null;
+      catch (IllegalStateException exception) // ClassLoader not set on context
+      {
+         throw new ClassNotFoundException("No classloader found for class: " + name, exception);
+      }
    }
 
+   /**
+    * Get resource from Bundle classloader
+    * 
+    * @param name a resource name
+    * @return URL URL to resource
+    */
    public URL getResource(String name)
    {
       checkPermission(AdminPermission.RESOURCE);
-
-      if (getControllerContext() != null)
-      {
-         //  Verify ControllerState required to load CL resources
-         if (ControllerState.INSTANTIATED.equals(getControllerContext().getState()))
-         {
-            return unit.getClassLoader().getResource(name);
-         }
-      }
-      return null;
+      return unit.getClassLoader().getResource(name); // TODO Should it propagate the IllegalStateException or trap and return null?
    }
 
+   /**
+    * Get resources from bundle classloader
+    * 
+    * @param name a resource name
+    * @return Enumeration of URLs to resources
+    */
    @SuppressWarnings("unchecked")
    public Enumeration getResources(String name) throws IOException
    {
       checkPermission(AdminPermission.RESOURCE);
-
-      if (getControllerContext() != null)
-      {
-         //  Verify ControllerState required to load CL resources
-         if (ControllerState.INSTANTIATED.equals(getControllerContext().getState()))
-         {
-            return unit.getClassLoader().getResources(name);
-         }
-      }
-      return null;
+      return unit.getClassLoader().getResources(name); // TODO Should it propagate the IllegalStateException or trap and return null?
    }
 
+   /**
+    *  Get paths to entries in Bundle for a given directory
+    *  
+    *  @param name name of entry
+    *  @return Enumeration of URLs to entries in Bundle
+    */
    @SuppressWarnings("unchecked")
-   public Enumeration getEntryPaths(String string)
+   public Enumeration getEntryPaths(String dirPath)
    {
       checkPermission(AdminPermission.RESOURCE);
-      return null;
+      return BundleEntryHelper.getEntryPaths(unit, dirPath);
    }
 
-   public URL getEntry(String string)
+   /**
+    * Get an entry from the bundle
+    * 
+    * @param path path to entry
+    * @return URL to entry
+    */
+   public URL getEntry(String path)
    {
       checkPermission(AdminPermission.RESOURCE);
-      return null;
+      return BundleEntryHelper.getEntry(unit, path);
    }
 
    public long getLastModified()
    {
-      //  TODO - Get a better scheme for this..   This should be set at INSTALL, UPDATE, UNSTALL
-      if (lastModified == -1)
-      {
-         lastModified = System.currentTimeMillis();
-      }
       return lastModified;
    }
 
+   /**
+    * Search Bundle for entries 
+    * 
+    * @param path base path in Bundle
+    * @param filePattern pattern used to select files
+    * @param recurse should search recurse directories
+    * @return Enumeration of URLs to matched entries
+    */
    @SuppressWarnings("unchecked")
-   public Enumeration findEntries(String string, String string1, boolean b)
+   public Enumeration findEntries(String path, String filePattern, boolean recurse)
    {
       checkPermission(AdminPermission.RESOURCE);
-
-      return null;
+      return BundleEntryHelper.findEntries(unit, path, filePattern, recurse);
    }
 
+   /**
+    * Returns the ControllerContext for the DeploymentUnit
+    * 
+    * @return the ControllerContext
+    */
    private ControllerContext getControllerContext()
    {
       return unit.getAttachment(ControllerContext.class.getName(), ControllerContext.class);
    }
 
+   /** 
+    * Checks administrative permissions
+    * 
+    * @param adminPermission the permission to check
+    */
    private void checkPermission(String adminPermission)
    {
       if (System.getSecurityManager() != null)
