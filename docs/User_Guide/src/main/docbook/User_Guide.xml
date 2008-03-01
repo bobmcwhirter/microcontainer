@@ -3161,7 +3161,7 @@ boolean determineStructure(VirtualFile root, VirtualFile parent, VirtualFile fil
       </section>
       <section>
         <title>Deployment components</title>
-        <para>Deployments usually contain one or more runtime components in addition to configuration information and resource files. By runtime component we mean any class that requires a container in which to run. Containers take care of controlling the component&apos;s lifecycle in addition to providing additional behaviours so that the component developer does not have to do this themselves. By leveraging the work of the container the idea is that component development reduces the time needed to develop systems with advanced behaviour.</para>
+        <para>Deployments usually contain one or more runtime components in addition to configuration information and resource files. By runtime component we mean any class that uses a container in which to run. Containers take care of controlling the component&apos;s lifecycle in addition to providing additional behaviours so that the component developer does not have to do this themselves. By leveraging the work of the container the idea is that component development reduces the time needed to develop systems with advanced behaviour.</para>
         <para>The simplest example of a component is  a POJO. In this case the container controls when the POJO is created based on when a client performs a lookup using a name. It can also take care of wiring different POJOs together based on information in a deployment descriptor so that the POJO developer doesn&apos;t have to hard-code the relationships themselves. This makes the configuration of the runtime environment easier to change.</para>
         <para>Another example is an MBean. Here the container (an MBeanServer) takes care of routing all method calls through a bus so that clients never reference the MBean directly. This allows MBeans to be replaced at runtime without impacting any clients.</para>
         <para>A further example is an OSGi service bundle. Here the container ensures that the classes required by the bundle are available in the runtime before the service is started. It also takes care of making classes within the bundles available to others if required. This makes the runtime environment easier to construct and maintain with fewer classloading issues.</para>
@@ -3170,23 +3170,32 @@ boolean determineStructure(VirtualFile root, VirtualFile parent, VirtualFile fil
 {
     ...
 }</programlisting>
-        <para>This is similer to a normal DeploymentContext but with some important differences:</para>
+        <para>This is similer to a normal <emphasis>DeploymentContext</emphasis> but with some important differences:</para>
         <itemizedlist>
           <listitem>
-            <para>Components do not have a relative order</para>
+            <para>Components always have a relative order of 0</para>
           </listitem>
           <listitem>
             <para>Components do not have a metadata path</para>
           </listitem>
           <listitem>
-            <para>Components use the classloader of the containing deployment</para>
+            <para>Components always use the classloader of the containing deployment</para>
           </listitem>
           <listitem>
-            <para>ComponentDeploymentContexts can not have parent or child relationships to other ComponentDeploymentContexts. </para>
+            <para>Components can not change their  parent once constructed.</para>
+          </listitem>
+          <listitem>
+            <para>Components do not have any children. </para>
+          </listitem>
+          <listitem>
+            <para>Components are never top-level deployments</para>
           </listitem>
         </itemizedlist>
-        <para>In addition ComponentDeploymentContexts delegate to their parent DeploymentContext for information such as:</para>
+        <para>In addition ComponentDeploymentContexts delegate to their parent <emphasis>DeploymentContext</emphasis> for information such as:</para>
         <itemizedlist>
+          <listitem>
+            <para>simple name</para>
+          </listitem>
           <listitem>
             <para>relative path</para>
           </listitem>
@@ -3197,19 +3206,22 @@ boolean determineStructure(VirtualFile root, VirtualFile parent, VirtualFile fil
             <para>deployment state</para>
           </listitem>
           <listitem>
+            <para>class loader</para>
+          </listitem>
+          <listitem>
             <para>Resource class loader</para>
           </listitem>
           <listitem>
-            <para>Resource Loader</para>
-          </listitem>
-          <listitem>
-            <para>get/setProblem</para>
+            <para>Deployment Resource Loader</para>
           </listitem>
           <listitem>
             <para>Dependency Info</para>
           </listitem>
+          <listitem>
+            <para>get/setProblem</para>
+          </listitem>
         </itemizedlist>
-        <para>The reason we use the DeploymentContext interface is so that ...</para>
+        <para>The reason we use the <emphasis>DeploymentContext</emphasis> interface is so that we can treat  components as  nested deployments. This ensures that when a deployment is deployed any components that it contains are deployed  with it. Similarly undeploying a deployment causes its components to be undeployed at the same time.</para>
         <para>We need to distinguish components within a deployment from the deployment itself in order to allow the microcontainer to manage individual components at runtime.</para>
         <para>ComponentDeploymentContexts are added to a <emphasis>DeploymentUnit</emphasis> using the addComponent() method whenever a component is discovered during the deployment process:</para>
         <programlisting>public class AbstractDeploymentUnit extends AbstractMutableAttachments implements DeploymentUnit
