@@ -29,8 +29,7 @@ import junit.framework.Test;
 import junit.framework.TestCase;
 import junit.framework.TestSuite;
 
-import org.jboss.test.BaseTestCase;
-import org.jboss.virtual.VFS;
+import org.jboss.test.OSGiTestCase;
 import org.jboss.virtual.VirtualFile;
 
 /**
@@ -39,7 +38,7 @@ import org.jboss.virtual.VirtualFile;
  * @author <a href="baileyje@gmail.com">John Bailey</a>
  * @version $Revision: 1.1 $
  */
-public abstract class AbstractBundleEntryTestCase extends BaseTestCase
+public abstract class AbstractBundleEntryTestCase extends OSGiTestCase
 {
 
    /**
@@ -55,20 +54,6 @@ public abstract class AbstractBundleEntryTestCase extends BaseTestCase
    public static Test suite(Class<? extends TestCase> clazz)
    {
       return new TestSuite(clazz);
-   }
-
-   /**
-    * Get virtual file instance
-    * 
-    * @param root
-    * @param path
-    * @return Virtual file instance
-    * @throws Exception
-    */
-   protected VirtualFile getVirtualFile(String root, String path) throws Exception
-   {
-      URL url = getResource(root);
-      return VFS.getVirtualFile(url, path);
    }
 
    /**

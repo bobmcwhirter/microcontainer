@@ -72,7 +72,10 @@ public class BundleEntryHelper
          }
          catch (IOException e)
          {
-            log.error("Failed to get entry paths", e);
+            if (log.isTraceEnabled())
+            {
+               log.trace("Error getting entry paths", e);
+            }
          }
       }
       return null;
@@ -93,7 +96,10 @@ public class BundleEntryHelper
       }
       catch (Exception e)
       {
-         log.error("Unable to get entry " + path + " from " + unit.getName(), e);
+         if (log.isTraceEnabled())
+         {
+            log.trace("Error getting entry", e);
+         }
       }
       return null;
    }
@@ -125,13 +131,15 @@ public class BundleEntryHelper
          }
          catch (IOException e)
          {
-            log.error("Failed to find entries for path " + path + " with filepattern " + filePattern
-                  + " DeploymentUnit" + unit.getName(), e);
+            if(log.isTraceEnabled())
+            {            
+               log.trace("Error finding entries", e);
+            }
          }
       }
       return null;
    }
-   
+
    /**
     * Get the root VirtualFile from the DeploymentUnit
     * 

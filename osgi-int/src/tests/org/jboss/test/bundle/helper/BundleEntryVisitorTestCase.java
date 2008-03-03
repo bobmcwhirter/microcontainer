@@ -23,6 +23,8 @@ package org.jboss.test.bundle.helper;
 
 import junit.framework.Test;
 
+import org.jboss.deployers.structure.spi.DeploymentUnit;
+import org.jboss.deployers.vfs.spi.structure.VFSDeploymentUnit;
 import org.jboss.osgi.plugins.facade.helpers.BundleEntryVisitor;
 import org.jboss.virtual.VirtualFile;
 
@@ -63,7 +65,8 @@ public class BundleEntryVisitorTestCase extends AbstractBundleEntryTestCase
    protected void setUp() throws Exception
    {
       super.setUp();
-      root = getVirtualFile("/org/jboss/test/bundle/helper", "simple.jar");
+      DeploymentUnit deploymentUnit = addDeployment("/bundle", "simple.jar");
+      root = VFSDeploymentUnit.class.cast(deploymentUnit).getRoot();
    }
 
    /**
@@ -74,11 +77,11 @@ public class BundleEntryVisitorTestCase extends AbstractBundleEntryTestCase
    public void testFindEntriesNoWildCard() throws Exception
    {
 
-      BundleEntryVisitor visitor = new BundleEntryVisitor("manifest.mf", true);
+      BundleEntryVisitor visitor = new BundleEntryVisitor("Manifest.mf", true);
       root.visit(visitor);
       assertEquals(1, visitor.getEntries().size());
 
-      assertEntry(root, "/META-INF/manifest.mf", visitor.getEntries().get(0));
+      assertEntry(root, "/META-INF/Manifest.mf", visitor.getEntries().get(0));
 
       visitor = new BundleEntryVisitor("custom.properties", true);
       root.visit(visitor);
@@ -112,7 +115,7 @@ public class BundleEntryVisitorTestCase extends AbstractBundleEntryTestCase
    public void testFindEntriesNoWildCardOrRecurse() throws Exception
    {
 
-      BundleEntryVisitor visitor = new BundleEntryVisitor("manifest.mf", false);
+      BundleEntryVisitor visitor = new BundleEntryVisitor("Manifest.mf", false);
       root.visit(visitor);
       assertEquals(0, visitor.getEntries().size());
 
@@ -138,7 +141,7 @@ public class BundleEntryVisitorTestCase extends AbstractBundleEntryTestCase
       BundleEntryVisitor visitor = new BundleEntryVisitor("*.mf", true);
       root.visit(visitor);
       assertEquals(1, visitor.getEntries().size());
-      assertEntry(root, "/META-INF/manifest.mf", visitor.getEntries().get(0));
+      assertEntry(root, "/META-INF/Manifest.mf", visitor.getEntries().get(0));
 
       visitor = new BundleEntryVisitor("*.properties", true);
       root.visit(visitor);
@@ -149,8 +152,8 @@ public class BundleEntryVisitorTestCase extends AbstractBundleEntryTestCase
       visitor = new BundleEntryVisitor("*.xml", true);
       root.visit(visitor);
       assertEquals(4, visitor.getEntries().size());
-      assertEntry(root, "/fromroot.xml", visitor.getEntries().get(0));
-      assertEntry(root, "/META-INF/jboss-service.xml", visitor.getEntries().get(1));
+      assertEntry(root, "/META-INF/jboss-service.xml", visitor.getEntries().get(0));
+      assertEntry(root, "/fromroot.xml", visitor.getEntries().get(1));
       assertEntry(root, "/org/jboss/osgi/custom.xml", visitor.getEntries().get(2));
       assertEntry(root, "/org/jboss/osgi/test/custom.xml", visitor.getEntries().get(3));
 
@@ -166,8 +169,8 @@ public class BundleEntryVisitorTestCase extends AbstractBundleEntryTestCase
       visitor = new BundleEntryVisitor("*xml*", true);
       root.visit(visitor);
       assertEquals(5, visitor.getEntries().size());
-      assertEntry(root, "/fromroot.xml", visitor.getEntries().get(0));
-      assertEntry(root, "/META-INF/jboss-service.xml", visitor.getEntries().get(1));
+      assertEntry(root, "/META-INF/jboss-service.xml", visitor.getEntries().get(0));
+      assertEntry(root, "/fromroot.xml", visitor.getEntries().get(1));
       assertEntry(root, "/org/jboss/osgi/custom.xml", visitor.getEntries().get(2));
       assertEntry(root, "/org/jboss/osgi/notanxmlfile.txt", visitor.getEntries().get(3));
       assertEntry(root, "/org/jboss/osgi/test/custom.xml", visitor.getEntries().get(4));

@@ -26,18 +26,10 @@ import java.util.Enumeration;
 
 import junit.framework.Test;
 
-import org.jboss.dependency.spi.ControllerContext;
-import org.jboss.deployers.client.spi.main.MainDeployer;
-import org.jboss.deployers.spi.deployer.DeploymentStage;
 import org.jboss.deployers.spi.deployer.DeploymentStages;
-import org.jboss.deployers.structure.spi.DeploymentContext;
 import org.jboss.deployers.structure.spi.DeploymentUnit;
-import org.jboss.deployers.structure.spi.helpers.AbstractDeploymentContext;
-import org.jboss.deployers.structure.spi.helpers.AbstractDeploymentUnit;
 import org.jboss.osgi.plugins.facade.BundleImpl;
-import org.jboss.test.BaseTestCase;
-import org.jboss.test.bundle.support.TestControllerContext;
-import org.jboss.test.bundle.support.TestMainDeployer;
+import org.jboss.test.OSGiTestCase;
 import org.osgi.framework.Bundle;
 
 /**
@@ -46,17 +38,11 @@ import org.osgi.framework.Bundle;
  * @author <a href="baileyje@gmail.com">John Bailey</a>
  * @version $Revision: 1.1 $
  */
-public class BundleImplTestCase extends BaseTestCase
+public class BundleImplTestCase extends OSGiTestCase
 {
    private Bundle bundle;
    
-   private DeploymentContext deploymentContext;
-
    private DeploymentUnit deploymentUnit;
-
-   private ControllerContext controllerContext;
-
-   private TestMainDeployer mainDeployer;
 
    /**
     * 
@@ -87,13 +73,7 @@ public class BundleImplTestCase extends BaseTestCase
    {
       super.setUp();
 
-      deploymentContext = new AbstractDeploymentContext("UniqueName", "/simple.jar");
-      deploymentContext.setClassLoader(BundleImplTestCase.class.getClassLoader());
-      deploymentUnit = new AbstractDeploymentUnit(deploymentContext);
-      controllerContext = new TestControllerContext(deploymentContext);
-      deploymentUnit.addAttachment(ControllerContext.class.getName(), controllerContext);
-      mainDeployer = new TestMainDeployer();
-      deploymentUnit.addAttachment(MainDeployer.class.getName(), mainDeployer);
+      deploymentUnit = addDeployment("/bundle", "simple.jar");
       bundle = new BundleImpl(deploymentUnit);
    }
 
@@ -104,16 +84,16 @@ public class BundleImplTestCase extends BaseTestCase
     */
    public void testGetBundleState() throws Exception
    {
-      mainDeployer.change(deploymentUnit.getName(), DeploymentStages.NOT_INSTALLED);
+      getDeployerClient().change(deploymentUnit.getName(), DeploymentStages.NOT_INSTALLED);
       assertEquals(Bundle.UNINSTALLED, bundle.getState());
 
-      mainDeployer.change(deploymentUnit.getName(), DeploymentStages.CLASSLOADER);
+      getDeployerClient().change(deploymentUnit.getName(), DeploymentStages.CLASSLOADER);
       assertEquals(Bundle.RESOLVED, bundle.getState());
 
-      mainDeployer.change(deploymentUnit.getName(), DeploymentStages.REAL);
+      getDeployerClient().change(deploymentUnit.getName(), DeploymentStages.REAL);
       assertEquals(Bundle.STARTING, bundle.getState());
 
-      mainDeployer.change(deploymentUnit.getName(), DeploymentStages.INSTALLED);
+      getDeployerClient().change(deploymentUnit.getName(), DeploymentStages.INSTALLED);
       assertEquals(Bundle.ACTIVE, bundle.getState());
    }
 
@@ -124,7 +104,7 @@ public class BundleImplTestCase extends BaseTestCase
     */
    public void testGetSymbolicName() throws Exception
    {
-      assertEquals("UniqueName", bundle.getSymbolicName());
+      assertEquals(deploymentUnit.getName(), bundle.getSymbolicName());
    }
 
    /**
@@ -134,7 +114,7 @@ public class BundleImplTestCase extends BaseTestCase
     */
    public void testGetBundleId() throws Exception
    {
-      assertEquals("UniqueName".hashCode(), bundle.getBundleId());
+      assertEquals(deploymentUnit.getName().hashCode(), bundle.getBundleId());
    }
 
    /**
@@ -144,8 +124,10 @@ public class BundleImplTestCase extends BaseTestCase
     */
    public void testStartBundle() throws Exception
    {
+      getDeployerClient().change(deploymentUnit.getName(), DeploymentStages.NOT_INSTALLED);
+      assertStage(deploymentUnit, DeploymentStages.NOT_INSTALLED); // Sanity Check...
       bundle.start();
-      assertChangeRequested(deploymentUnit.getName(), DeploymentStages.INSTALLED);
+      assertStage(deploymentUnit, DeploymentStages.INSTALLED);
    }
 
    /**
@@ -155,8 +137,23 @@ public class BundleImplTestCase extends BaseTestCase
     */
    public void testStopBundle() throws Exception
    {
+      getDeployerClient().change(deploymentUnit.getName(), DeploymentStages.INSTALLED);
+      assertStage(deploymentUnit, DeploymentStages.INSTALLED); // Sanity Check...
       bundle.stop();
-      assertChangeRequested(deploymentUnit.getName(), DeploymentStages.DESCRIBE);
+      assertStage(deploymentUnit, DeploymentStages.DESCRIBE);
+   }
+   
+   /**
+    * Verifies the Bundle.uninstall method calls the MainDeployer.change method with the NOT_INSTALLED DeploymentStage
+    * 
+    * @throws Exception
+    */
+   public void testUninstallBundle() throws Exception
+   {
+      getDeployerClient().change(deploymentUnit.getName(), DeploymentStages.INSTALLED);
+      assertStage(deploymentUnit, DeploymentStages.INSTALLED); // Sanity Check...
+      bundle.uninstall();
+      assertStage(deploymentUnit, DeploymentStages.NOT_INSTALLED);
    }
 
    /**
@@ -193,17 +190,36 @@ public class BundleImplTestCase extends BaseTestCase
     * 
     * @throws Exception
     */
-   public void testLoadClassNoClassLoader() throws Exception
+   public void testLoadClassNoClassLoaderForDeployment() throws Exception
    {
-      deploymentContext.setClassLoader(null);
+      getDeployerClient().change(deploymentUnit.getName(), DeploymentStages.DESCRIBE);
       try
       {
          bundle.loadClass("org.jboss.test.bundle.support.MissingClass");
          fail("Should have thrown ClassNotFoundException");
       }
-      catch (ClassNotFoundException expectedException)
+      catch (IllegalStateException expectedException)
       {
-         assertEquals("No classloader found for class: org.jboss.test.bundle.support.MissingClass", expectedException.getMessage());
+         assertEquals("ClassLoader has not been set", expectedException.getMessage());
+      }
+   }
+   
+   /**
+    * Test Bundle.loadClass with a DeploymentUnit that is in the NOT_INSTALLED stage, should throw IllegalStateException.
+    * 
+    * @throws Exception
+    */
+   public void testLoadClassBundleUninstalled() throws Exception
+   {
+      getDeployerClient().change(deploymentUnit.getName(), DeploymentStages.NOT_INSTALLED);
+      try
+      {
+         bundle.loadClass("org.jboss.test.bundle.support.MissingClass");
+         fail("Should have thrown ClassNotFoundException");
+      }
+      catch (IllegalStateException expectedException)
+      {
+         assertEquals("Bundle has been uninstalled", expectedException.getMessage());
       }
    }
    
@@ -234,14 +250,30 @@ public class BundleImplTestCase extends BaseTestCase
     * 
     * @throws Exception
     */
-   public void testGetResourceMissingClassLoader() throws Exception
+   public void testGetResourceNoClassLoaderForDeploymentUnit() throws Exception
    {
-      deploymentContext.setClassLoader(null);
+      getDeployerClient().change(deploymentUnit.getName(), DeploymentStages.DESCRIBE);
       try {
          bundle.getResource("org/jboss/test/bundle/metadata/Manifest.mf");
          fail("Should have thrown IllegalStateException");
       } catch (IllegalStateException expectedException) {
          assertEquals("ClassLoader has not been set", expectedException.getMessage());
+      }
+   }
+   
+   /**
+    * Test the Bundle.getResource method for an uninstalled Bundle
+    * 
+    * @throws Exception
+    */
+   public void testGetResourceBundleUnintalled() throws Exception
+   {
+      getDeployerClient().change(deploymentUnit.getName(), DeploymentStages.NOT_INSTALLED);
+      try {
+         bundle.getResource("org/jboss/test/bundle/metadata/Manifest.mf");
+         fail("Should have thrown IllegalStateException");
+      } catch (IllegalStateException expectedException) {
+         assertEquals("Bundle has been uninstalled", expectedException.getMessage());
       }
    }
 
@@ -276,9 +308,9 @@ public class BundleImplTestCase extends BaseTestCase
     * 
     * @throws Exception
     */
-   public void testGetResourcesMissingClassLoader() throws Exception
+   public void testGetResourcesNoClassLoaderForDeploymentUnit() throws Exception
    {
-      deploymentContext.setClassLoader(null);
+      getDeployerClient().change(deploymentUnit.getName(), DeploymentStages.DESCRIBE);
       try {
          bundle.getResources("org/jboss/test/bundle/metadata/Manifest.mf");
          fail("Should have thrown IllegalStateException");
@@ -287,16 +319,19 @@ public class BundleImplTestCase extends BaseTestCase
       }
    }
    
-   
    /**
-    * Assert the correct change was requested of the MainDeployer
+    * Test the Bundle.getResources method with missing DeploymentUnit ClassLoader
     * 
-    * @param deploymentName
-    * @param stage
+    * @throws Exception
     */
-   public void assertChangeRequested(String deploymentName, DeploymentStage stage)
+   public void testGetResourcesUninstalled() throws Exception
    {
-      assertTrue(mainDeployer.changeCalled(deploymentName, stage));
+      getDeployerClient().change(deploymentUnit.getName(), DeploymentStages.NOT_INSTALLED);
+      try {
+         bundle.getResources("org/jboss/test/bundle/metadata/Manifest.mf");
+         fail("Should have thrown IllegalStateException");
+      } catch (IllegalStateException expectedException) {
+         assertEquals("Bundle has been uninstalled", expectedException.getMessage());
+      }
    }
-
 }

@@ -82,8 +82,7 @@ public class BundleImpl implements Bundle
    {
       try
       {
-         return DeploymentStage2BundleStateMapper.mapBundleState(
-               unit.getMainDeployer().getDeploymentStage(unit.getName())).getState();
+         return DeploymentStage2BundleStateMapper.mapBundleState(unit.getMainDeployer().getDeploymentStage(unit.getName())).getState();
       }
       catch (DeploymentException e)
       {
@@ -136,6 +135,15 @@ public class BundleImpl implements Bundle
    public void uninstall() throws BundleException
    {
       checkPermission(AdminPermission.LIFECYCLE);
+      try
+      {
+         DeployerClient main = unit.getMainDeployer();
+         main.change(unit.getName(), DeploymentStages.NOT_INSTALLED);
+      }
+      catch (DeploymentException e)
+      {
+         throw new BundleException("Failed to uninstall Bundle", e);
+      }
    }
 
    public long getBundleId()
@@ -153,7 +161,7 @@ public class BundleImpl implements Bundle
          VirtualFile file = vfsUnit.getRoot();
          return file.getPathName();
       }
-      return null;
+      return null;  // TODO What if the DeploymentUnit is not VFS
    }
 
    public ServiceReference[] getRegisteredServices()
@@ -219,18 +227,16 @@ public class BundleImpl implements Bundle
     * 
     * @param name a class name
     * @return the class
+    * @throws ClassNotFoundException If the class can not be loaded by DeploymentUnit ClassLoader
+    * @throws IllegalStateException If the DeploymentUnit is NOT_INSTALLED
+    * @throws IllegalStateException If the DeploymentUnit classloader is not set
     */
    public Class<?> loadClass(String name) throws ClassNotFoundException
    {
       checkPermission(AdminPermission.CLASS);
-      try
-      {
-         return unit.getClassLoader().loadClass(name);
-      }
-      catch (IllegalStateException exception) // ClassLoader not set on context
-      {
-         throw new ClassNotFoundException("No classloader found for class: " + name, exception);
-      }
+      checkForUninstalledDeploymentUnit();
+      return unit.getClassLoader().loadClass(name);
+
    }
 
    /**
@@ -242,6 +248,7 @@ public class BundleImpl implements Bundle
    public URL getResource(String name)
    {
       checkPermission(AdminPermission.RESOURCE);
+      checkForUninstalledDeploymentUnit();
       return unit.getClassLoader().getResource(name); // TODO Should it propagate the IllegalStateException or trap and return null?
    }
 
@@ -255,6 +262,7 @@ public class BundleImpl implements Bundle
    public Enumeration getResources(String name) throws IOException
    {
       checkPermission(AdminPermission.RESOURCE);
+      checkForUninstalledDeploymentUnit();
       return unit.getClassLoader().getResources(name); // TODO Should it propagate the IllegalStateException or trap and return null?
    }
 
@@ -323,6 +331,27 @@ public class BundleImpl implements Bundle
       if (System.getSecurityManager() != null)
       {
          System.getSecurityManager().checkPermission(new AdminPermission(this, adminPermission));
+      }
+   }
+
+   /**
+    * Checks to see if the DeploymentUnit has been uninstalled.  
+    *
+    * @throws IllegalStateException If there is a problem determining the DeploymentUnitState
+    */
+   private void checkForUninstalledDeploymentUnit()
+   {
+      try
+      {
+         if (DeploymentStages.NOT_INSTALLED.equals(unit.getMainDeployer().getDeploymentStage(unit.getName())))
+         {
+            throw new IllegalStateException("Bundle has been uninstalled");
+         }
+      }
+      catch (DeploymentException e)
+      {
+         throw new IllegalStateException("Failed to determine current DeploymentStage for Deployment: "
+               + unit.getName(), e);
       }
    }
 }
