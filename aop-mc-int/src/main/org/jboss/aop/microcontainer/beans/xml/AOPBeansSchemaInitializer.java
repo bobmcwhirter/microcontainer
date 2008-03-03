@@ -335,7 +335,7 @@ public class AOPBeansSchemaInitializer implements SchemaBindingInitializer
    private void initTypedefType(SchemaBinding schema)
    {
       TypeBinding type = schema.getType(typedefTypeQName);
-      type.setHandler(new TypeDefHandler());
+      type.setHandler(TypeDefHandler.TYPEDEF_HANDLER);
    }
    
    private void initCFlowStackType(SchemaBinding schema)
@@ -978,7 +978,7 @@ public class AOPBeansSchemaInitializer implements SchemaBindingInitializer
       
    private static class TypeDefHandler extends AspectManagerAwareBeanFactoryHandler
    {
-      public static final TypeDefHandler HANDLER = new TypeDefHandler();
+      public static final TypeDefHandler TYPEDEF_HANDLER = new TypeDefHandler();
 
       @Override
       public Object startElement(Object parent, QName name, ElementBinding element)
@@ -991,7 +991,6 @@ public class AOPBeansSchemaInitializer implements SchemaBindingInitializer
       {
          super.attributes(o, elementName, element, attrs, nsCtx);
 
-         AspectManagerUtil util = new AspectManagerUtil();
          TypeDefBeanMetaDataFactory factory = (TypeDefBeanMetaDataFactory)o;
 
          for (int i = 0; i < attrs.getLength(); ++i)
