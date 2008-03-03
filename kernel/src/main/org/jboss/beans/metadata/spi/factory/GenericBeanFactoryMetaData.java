@@ -491,6 +491,10 @@ public class GenericBeanFactoryMetaData extends JBossObject implements BeanMetaD
       gbf.setMode(mode);
       Set<PropertyMetaData> properties = new HashSet<PropertyMetaData>();
       gbf.setProperties(properties);
+      if (this.properties != null)
+      {
+         properties.addAll(this.properties);
+      }
       properties.add(createProperty("bean", bean));
       properties.add(createProperty("classLoader", classLoader));
       properties.add(createProperty("constructor", constructor));
