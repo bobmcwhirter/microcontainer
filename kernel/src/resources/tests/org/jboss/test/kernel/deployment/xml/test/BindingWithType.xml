@@ -1,0 +1,5 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<policy xmlns="urn:jboss:policy:1.0">
+   <binding name="somename" class="java.lang.Integer">42</binding>
+</policy>

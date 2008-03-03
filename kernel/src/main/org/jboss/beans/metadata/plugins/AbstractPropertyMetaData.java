@@ -213,11 +213,13 @@ public class AbstractPropertyMetaData extends AbstractFeatureMetaData
          if (valueMetaData instanceof StringValueMetaData)
          {
             ((StringValueMetaData) valueMetaData).setValue(value);
-            return;
          }
-         StringValueMetaData stringValue = new StringValueMetaData(value);
-         stringValue.setType(getType());
-         setValue(stringValue);
+         else
+         {
+            StringValueMetaData stringValue = new StringValueMetaData(value);
+            stringValue.setType(getType());
+            setValue(stringValue);
+         }
       }
    }
 

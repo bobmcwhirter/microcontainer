@@ -19,35 +19,40 @@
 * Software Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA
 * 02110-1301 USA, or see the FSF site: http://www.fsf.org.
 */
-package org.jboss.beans.metadata.spi.policy;
+package org.jboss.test.kernel.deployment.xml.test;
 
-import org.jboss.beans.metadata.spi.ValueMetaData;
+import org.jboss.beans.metadata.plugins.policy.AbstractBindingMetaData;
+import org.jboss.beans.metadata.plugins.policy.AbstractPolicyMetaData;
+import org.jboss.beans.metadata.plugins.policy.AbstractScopeMetaData;
+import org.jboss.kernel.plugins.deployment.AbstractKernelDeployment;
 
 /**
- * Bindings.
- *
  * @author <a href="mailto:ales.justin@jboss.com">Ales Justin</a>
  */
-public interface BindingMetaData
+public abstract class AbstractPolicyTest extends AbstractMCTest
 {
-   /**
-    * Get the name
-    *
-    * @return binding name
-    */
-   String getName();
+   protected AbstractPolicyTest(String name)
+   {
+      super(name);
+   }
 
-   /**
-    * Get the type
-    *
-    * @return binding type
-    */
-   String getType();
+   private <T> T unmarshal(Class<T> expected) throws Exception
+   {
+      return unmarshalObject(expected, AbstractPolicyMetaData.class, AbstractKernelDeployment.class);
+   }
 
-   /**
-    * Get the value
-    *
-    * @return binding value
-    */
-   ValueMetaData getValue();
+   protected AbstractPolicyMetaData unmarshalPolicy() throws Exception
+   {
+      return unmarshal(AbstractPolicyMetaData.class);
+   }
+
+   protected AbstractScopeMetaData unmarshalScope() throws Exception
+   {
+      return unmarshal(AbstractScopeMetaData.class);
+   }
+
+   protected AbstractBindingMetaData unmarshalBinding() throws Exception
+   {
+      return unmarshal(AbstractBindingMetaData.class);
+   }
 }

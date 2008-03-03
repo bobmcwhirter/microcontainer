@@ -63,12 +63,14 @@ public class XMLTestSuite extends TestSuite
       suite.addTest(ArrayTestCase.suite());
       suite.addTest(MapTestCase.suite());
       suite.addTest(AnnotationTestCase.suite());
-      suite.addTest(ScopeTestCase.suite());
-      suite.addTest(BindingTestCase.suite());
-      suite.addTest(PolicyTestCase.suite());
       suite.addTest(AliasTestCase.suite());
       suite.addTest(CallbackTestCase.suite());
       suite.addTest(ValueFactoryTestCase.suite());
+      // policy
+      suite.addTest(ScopeTestCase.suite());
+      suite.addTest(BindingTestCase.suite());
+      suite.addTest(PolicyTestCase.suite());
+
       // jaxb
       suite.addTest(DeploymentJaxbTestCase.suite());
       suite.addTest(BeanJaxbTestCase.suite());
@@ -94,6 +96,10 @@ public class XMLTestSuite extends TestSuite
       suite.addTest(AliasJaxbTestCase.suite());
       suite.addTest(CallbackJaxbTestCase.suite());
       suite.addTest(ValueFactoryJaxbTestCase.suite());
+      // policy
+      suite.addTest(ScopeJaxbTestCase.suite());
+      suite.addTest(BindingJaxbTestCase.suite());
+      suite.addTest(PolicyJaxbTestCase.suite());
 
       return suite;
    }

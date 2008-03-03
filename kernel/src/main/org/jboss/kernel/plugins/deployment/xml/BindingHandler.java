@@ -52,6 +52,8 @@ public class BindingHandler extends DefaultElementHandler
          String localName = attrs.getLocalName(i);
          if ("name".equals(localName))
             binding.setName(attrs.getValue(i));
+         else if ("class".equals(localName))
+            binding.setType(attrs.getValue(i));
       }
    }
 

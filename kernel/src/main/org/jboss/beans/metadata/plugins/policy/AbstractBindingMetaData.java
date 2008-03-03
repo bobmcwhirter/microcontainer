@@ -22,8 +22,16 @@
 package org.jboss.beans.metadata.plugins.policy;
 
 import java.io.Serializable;
+import javax.xml.bind.annotation.XmlAttribute;
+import javax.xml.bind.annotation.XmlRootElement;
+import javax.xml.bind.annotation.XmlType;
+import javax.xml.bind.annotation.XmlValue;
+import javax.xml.bind.annotation.XmlTransient;
+import javax.xml.bind.annotation.XmlAnyElement;
 
+import org.jboss.beans.metadata.plugins.StringValueMetaData;
 import org.jboss.beans.metadata.plugins.ValueMetaDataAware;
+import org.jboss.beans.metadata.plugins.AbstractValueMetaData;
 import org.jboss.beans.metadata.spi.ValueMetaData;
 import org.jboss.beans.metadata.spi.policy.BindingMetaData;
 import org.jboss.util.JBossObject;
@@ -34,11 +42,14 @@ import org.jboss.util.JBossStringBuilder;
  *
  * @author <a href="mailto:ales.justin@jboss.com">Ales Justin</a>
  */
+@XmlRootElement(name="binding")
+@XmlType(name="bindingType")
 public class AbstractBindingMetaData extends JBossObject implements BindingMetaData, ValueMetaDataAware, Serializable
 {
-   private static final long serialVersionUID = 1;
+   private static final long serialVersionUID = 2;
 
    private String name;
+   private String type;
    private ValueMetaData value;
 
    public String getName()
@@ -46,19 +57,64 @@ public class AbstractBindingMetaData extends JBossObject implements BindingMetaD
       return name;
    }
 
+   public String getType()
+   {
+      return type;
+   }
+
    public ValueMetaData getValue()
    {
       return value;
    }
 
+   @XmlAttribute
    public void setName(String name)
    {
       this.name = name;
    }
 
+   @XmlAttribute(name = "class")
+   public void setType(String type)
+   {
+      this.type = type;
+   }
+
+   @XmlTransient
    public void setValue(ValueMetaData value)
    {
       this.value = value;
+   }
+
+   @XmlAnyElement
+   public void setValueObject(Object value)
+   {
+      if (value == null)
+         setValue(null);
+      else if (value instanceof ValueMetaData)
+         setValue((ValueMetaData) value);
+      else
+         setValue(new AbstractValueMetaData(value));
+   }
+
+   @XmlValue
+   public void setValueString(String value)
+   {
+      if (value == null)
+         setValue(null);
+      else
+      {
+         ValueMetaData valueMetaData = getValue();
+         if (valueMetaData instanceof StringValueMetaData)
+         {
+            ((StringValueMetaData) valueMetaData).setValue(value);
+         }
+         else
+         {
+            StringValueMetaData stringValue = new StringValueMetaData(value);
+            stringValue.setType(getType());
+            setValue(stringValue);
+         }
+      }
    }
 
    public void toString(JBossStringBuilder buffer)
@@ -73,5 +129,4 @@ public class AbstractBindingMetaData extends JBossObject implements BindingMetaD
       buffer.append('/');
       buffer.append(value);
    }
-
 }

@@ -25,6 +25,11 @@ import java.io.Serializable;
 import java.lang.annotation.Annotation;
 import java.util.Iterator;
 
+import javax.xml.bind.annotation.XmlRootElement;
+import javax.xml.bind.annotation.XmlType;
+import javax.xml.bind.annotation.XmlTransient;
+import javax.xml.bind.annotation.XmlAttribute;
+
 import org.jboss.annotation.factory.AnnotationCreator;
 import org.jboss.beans.metadata.spi.MetaDataVisitor;
 import org.jboss.beans.metadata.spi.MetaDataVisitorNode;
@@ -42,14 +47,17 @@ import org.jboss.util.JBossStringBuilder;
  *
  * @author <a href="mailto:ales.justin@jboss.com">Ales Justin</a>
  */
+@XmlRootElement(name="scope")
+@XmlType(name="scopeType")
 public class AbstractScopeMetaData extends JBossObject implements ScopeMetaData, Serializable
 {
-   private static final long serialVersionUID = 1;
+   private static final long serialVersionUID = 2;
 
    private String scope;
    private String level;
    private String qualifier;
 
+   @XmlTransient
    public Object getUnderlyingValue()
    {
       return scope;
@@ -102,11 +110,13 @@ public class AbstractScopeMetaData extends JBossObject implements ScopeMetaData,
       vistor.describeVisit(this);
    }
 
+   @XmlTransient
    public Iterator<? extends MetaDataVisitorNode> getChildren()
    {
       return null;
    }
 
+   @XmlTransient
    public String getScope()
    {
       return scope;
@@ -127,11 +137,13 @@ public class AbstractScopeMetaData extends JBossObject implements ScopeMetaData,
       this.scope = scope;
    }
 
+   @XmlAttribute
    public void setLevel(String level)
    {
       this.level = level;
    }
 
+   @XmlAttribute
    public void setQualifier(String qualifier)
    {
       this.qualifier = qualifier;
@@ -152,5 +164,4 @@ public class AbstractScopeMetaData extends JBossObject implements ScopeMetaData,
       buffer.append('/');
       buffer.append(qualifier);
    }
-
 }

@@ -25,22 +25,34 @@ import java.io.Serializable;
 import java.util.List;
 import java.util.Set;
 
+import javax.xml.bind.annotation.XmlElement;
+import javax.xml.bind.annotation.XmlNsForm;
+import javax.xml.bind.annotation.XmlRootElement;
+import javax.xml.bind.annotation.XmlType;
+import javax.xml.bind.annotation.XmlAttribute;
+import javax.xml.bind.annotation.XmlTransient;
+
 import org.jboss.beans.metadata.spi.AnnotationMetaData;
 import org.jboss.beans.metadata.spi.BeanMetaData;
 import org.jboss.beans.metadata.spi.policy.BindingMetaData;
 import org.jboss.beans.metadata.spi.policy.PolicyMetaData;
 import org.jboss.beans.metadata.spi.policy.ScopeMetaData;
+import org.jboss.beans.metadata.plugins.AbstractAnnotationMetaData;
 import org.jboss.util.JBossObject;
 import org.jboss.util.JBossStringBuilder;
+import org.jboss.xb.annotations.JBossXmlSchema;
 
 /**
  * Meta data for policy.
  *
  * @author <a href="mailto:ales.justin@jboss.com">Ales Justin</a>
  */
+@JBossXmlSchema(namespace="urn:jboss:policy:1.0", elementFormDefault= XmlNsForm.QUALIFIED)
+@XmlRootElement(name="policy")
+@XmlType(name="policyType")
 public class AbstractPolicyMetaData extends JBossObject implements PolicyMetaData, Serializable
 {
-   private static final long serialVersionUID = 1;
+   private static final long serialVersionUID = 2;
 
    protected String name;
    protected String ext;
@@ -73,31 +85,37 @@ public class AbstractPolicyMetaData extends JBossObject implements PolicyMetaDat
       return bindings;
    }
 
+   @XmlTransient
    public List<BeanMetaData> getBeans()
    {
       return null; // todo
    }
 
+   @XmlAttribute   
    public void setName(String name)
    {
       this.name = name;
    }
 
+   @XmlAttribute
    public void setExtends(String ext)
    {
       this.ext = ext;
    }
 
+   @XmlElement(name="scope", type=AbstractScopeMetaData.class)
    public void setScope(ScopeMetaData scope)
    {
       this.scope = scope;
    }
 
+   @XmlElement(name="annotation", type=AbstractAnnotationMetaData.class)
    public void setAnnotations(Set<AnnotationMetaData> annotations)
    {
       this.annotations = annotations;
    }
 
+   @XmlElement(name="binding", type=AbstractBindingMetaData.class)
    public void setBindings(Set<BindingMetaData> bindings)
    {
       this.bindings = bindings;
@@ -124,5 +142,4 @@ public class AbstractPolicyMetaData extends JBossObject implements PolicyMetaDat
       buffer.append('/');
       buffer.append(bindings);
    }
-
 }
