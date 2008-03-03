@@ -73,6 +73,27 @@ public class BundleEntryHelperTestCase extends AbstractBundleEntryTestCase
       root = VFSDeploymentUnit.class.cast(deploymentUnit).getRoot();
    }
 
+   protected void tearDown() throws Exception
+   {
+      if (deploymentUnit != null)
+      {
+         try
+         {
+            removeDeployment(deploymentUnit);
+         }
+         catch (Exception ignored)
+         {
+            getLog().warn("Ignored undeployment error", ignored);
+         }
+         finally
+         {
+            deploymentUnit = null;
+            root = null;
+         }
+      }
+      super.tearDown();
+   }
+
    /**
     * Test findEntryMethod
     * 

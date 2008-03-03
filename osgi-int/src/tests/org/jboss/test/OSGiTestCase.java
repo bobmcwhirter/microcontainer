@@ -145,6 +145,17 @@ public abstract class OSGiTestCase extends MicrocontainerTest
    }
 
    /**
+    * Remove a deployment
+    * 
+    * @param unit the deployment unit
+    * @throws Exception for any error
+    */
+   protected void removeDeployment(DeploymentUnit unit) throws Exception
+   {
+      getDeployerClient().undeploy(unit.getName());
+   }
+   
+   /**
     * Get MainDeployerStructure from Delegate
     * 
     * @return MainDeployerStructure

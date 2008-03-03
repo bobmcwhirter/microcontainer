@@ -25,10 +25,6 @@ import java.io.IOException;
 import java.net.URISyntaxException;
 import java.net.URL;
 
-import junit.framework.Test;
-import junit.framework.TestCase;
-import junit.framework.TestSuite;
-
 import org.jboss.test.OSGiTestCase;
 import org.jboss.virtual.VirtualFile;
 
@@ -49,11 +45,6 @@ public abstract class AbstractBundleEntryTestCase extends OSGiTestCase
    public AbstractBundleEntryTestCase(String name)
    {
       super(name);
-   }
-
-   public static Test suite(Class<? extends TestCase> clazz)
-   {
-      return new TestSuite(clazz);
    }
 
    /**
