@@ -19,4 +19,4 @@
 	   
    <bean xmlns="urn:jboss:bean-deployer:2.0" name="Bean" class="org.jboss.test.microcontainer.beans.POJO"/>
    
-</deployment>
+</aop>

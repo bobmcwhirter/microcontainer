@@ -23,7 +23,7 @@ package org.jboss.test.aop.junit;
 
 import java.net.URL;
 
-import org.jboss.aop.microcontainer.beans.beanmetadatafactory.AOPDeployment;
+import org.jboss.aop.microcontainer.beans.metadata.AOPDeployment;
 import org.jboss.dependency.spi.ControllerMode;
 import org.jboss.javabean.plugins.jaxb.JavaBean10;
 import org.jboss.javabean.plugins.jaxb.JavaBean20;
