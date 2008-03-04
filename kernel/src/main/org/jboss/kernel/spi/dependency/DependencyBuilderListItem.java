@@ -22,11 +22,17 @@
 package org.jboss.kernel.spi.dependency;
 
 /**
+ * DependencyBuilderListItem.
  *
  * @author <a href="kabir.khan@jboss.com">Kabir Khan</a>
  * @version $Revision: 1.1 $
  */
 public interface DependencyBuilderListItem
 {
+   /**
+    * Add the dependency.
+    *
+    * @param ctx the kernel controller context
+    */
    void addDependency(KernelControllerContext ctx);
 }

@@ -39,6 +39,5 @@ public class AbstractDependencyBuilder implements DependencyBuilder
    public List<DependencyBuilderListItem> getDependencies(BeanInfo beanInfo, MetaData metaData)
    {
       return null;
-   }
-   
+   }   
 }
