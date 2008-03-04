@@ -22,7 +22,9 @@
 package org.jboss.beans.metadata.spi.factory;
 
 import java.io.Serializable;
+import java.util.ArrayList;
 import java.util.Collections;
+import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
@@ -38,9 +40,11 @@ import org.jboss.beans.metadata.plugins.AbstractClassLoaderMetaData;
 import org.jboss.beans.metadata.plugins.AbstractConstructorMetaData;
 import org.jboss.beans.metadata.plugins.AbstractDemandMetaData;
 import org.jboss.beans.metadata.plugins.AbstractDependencyMetaData;
+import org.jboss.beans.metadata.plugins.AbstractDependencyValueMetaData;
 import org.jboss.beans.metadata.plugins.AbstractInstallMetaData;
 import org.jboss.beans.metadata.plugins.AbstractLifecycleMetaData;
 import org.jboss.beans.metadata.plugins.AbstractMapMetaData;
+import org.jboss.beans.metadata.plugins.AbstractParameterMetaData;
 import org.jboss.beans.metadata.plugins.AbstractPropertyMetaData;
 import org.jboss.beans.metadata.plugins.AbstractSupplyMetaData;
 import org.jboss.beans.metadata.plugins.AbstractValueMetaData;
@@ -57,9 +61,16 @@ import org.jboss.beans.metadata.spi.DemandMetaData;
 import org.jboss.beans.metadata.spi.DependencyMetaData;
 import org.jboss.beans.metadata.spi.InstallMetaData;
 import org.jboss.beans.metadata.spi.LifecycleMetaData;
+import org.jboss.beans.metadata.spi.ParameterMetaData;
+import org.jboss.beans.metadata.spi.ParameterizedMetaData;
 import org.jboss.beans.metadata.spi.PropertyMetaData;
 import org.jboss.beans.metadata.spi.SupplyMetaData;
+import org.jboss.beans.metadata.spi.ValueMetaData;
+import org.jboss.beans.metadata.spi.builder.BeanMetaDataBuilder;
+import org.jboss.beans.metadata.spi.builder.ParameterMetaDataBuilder;
 import org.jboss.dependency.spi.ControllerMode;
+import org.jboss.kernel.plugins.bootstrap.basic.KernelConstants;
+import org.jboss.kernel.spi.config.KernelConfigurator;
 import org.jboss.util.JBossObject;
 
 /**
@@ -484,33 +495,108 @@ public class GenericBeanFactoryMetaData extends JBossObject implements BeanMetaD
 
    public List<BeanMetaData> getBeans()
    {
-      AbstractBeanMetaData gbf = new AbstractBeanMetaData();
-      gbf.setName(name);
-      gbf.setAliases(aliases);
-      gbf.setBean(GenericBeanFactory.class.getName());
-      gbf.setMode(mode);
-      Set<PropertyMetaData> properties = new HashSet<PropertyMetaData>();
-      gbf.setProperties(properties);
-      if (this.properties != null)
+      BeanMetaDataBuilder builder = BeanMetaDataBuilder.createBuilder(name, GenericBeanFactory.class.getName());
+      builder.setAliases(aliases);
+      builder.setMode(mode);
+      ValueMetaData injectKernelConfigurator = builder.createInject(KernelConstants.KERNEL_CONFIGURATOR_NAME);
+      builder.addConstructorParameter(KernelConfigurator.class.getName(), injectKernelConfigurator);
+      builder.addPropertyMetaData("bean", bean);
+      builder.addPropertyMetaData("constructor", constructor);
+      builder.addPropertyMetaData("start", start);
+      builder.addPropertyMetaData("create", create);
+      if (demands != null && demands.size() > 0)
       {
-         properties.addAll(this.properties);
+         for (DemandMetaData demand : demands)
+         {
+            builder.addDemand(demand.getDemand());
+         }
       }
-      properties.add(createProperty("bean", bean));
-      properties.add(createProperty("classLoader", classLoader));
-      properties.add(createProperty("constructor", constructor));
-      properties.add(createMapProperty("properties", properties));
-      properties.add(createProperty("start", start));
-      properties.add(createProperty("create", create));
-      gbf.setDemands(demands);
-      gbf.setDepends(depends);
-      gbf.setSupplies(supplies);
-      gbf.setInstalls(installs);
-      gbf.setUninstalls(uninstalls);
-      gbf.setInstallCallbacks(installCallbacks);
-      gbf.setUninstallCallbacks(uninstallCallbacks);
-      return Collections.singletonList((BeanMetaData) gbf);
+      if (depends != null && depends.size() > 0)
+      {
+         for (DependencyMetaData dependency : depends)
+         {
+            builder.addDependency(dependency.getDependency());
+         }
+      }
+      if (supplies != null && supplies.size() > 0)
+      {
+         for (SupplyMetaData supply : supplies)
+         {
+            builder.addSupply(supply.getSupply());
+         }
+      }
+      if (installs != null && installs.size() > 0)
+      {
+         for (InstallMetaData install : installs)
+         {
+            ParameterMetaDataBuilder paramBuilder = builder.addInstallWithParameters(install.getMethodName(), install.getBean(), install.getState(), install.getDependentState());
+            setParameters(paramBuilder, install);
+         }
+      }
+      if (uninstalls != null && uninstalls.size() > 0)
+      {
+         for (InstallMetaData uninstall : uninstalls)
+         {
+            ParameterMetaDataBuilder paramBuilder = builder.addUninstallWithParameters(uninstall.getMethodName(), uninstall.getBean(), uninstall.getState(), uninstall.getDependentState());
+            setParameters(paramBuilder, uninstall);
+         }
+      }
+      if (properties != null && properties.size() > 0)
+      {
+         HashMap<String, ValueMetaData> propertyMap = new HashMap<String, ValueMetaData>(); 
+         for (PropertyMetaData property : properties)
+         {
+            propertyMap.put(property.getName(), property.getValue());
+         }
+      }
+      //TODO: installCallbacks and uninstallCallbacks
+      
+      return Collections.singletonList(builder.getBeanMetaData());
    }
+   
+//   public List<BeanMetaData> newGetBeans()
+//   {
+//      AbstractBeanMetaData gbf = new AbstractBeanMetaData();
+//      gbf.setName(name);
+//      gbf.setAliases(aliases);
+//      gbf.setBean(GenericBeanFactory.class.getName());
+//      gbf.setMode(mode);
+//      Set<PropertyMetaData> properties = new HashSet<PropertyMetaData>();
+//      gbf.setProperties(properties);
+//      if (this.properties != null)
+//      {
+//         properties.addAll(this.properties);
+//      }
+//      properties.add(createProperty("bean", bean));
+//      properties.add(createProperty("classLoader", classLoader));
+//      properties.add(createProperty("constructor", constructor));
+//      properties.add(createMapProperty("properties", properties));
+//      properties.add(createProperty("start", start));
+//      properties.add(createProperty("create", create));
+//      gbf.setDemands(demands);
+//      gbf.setDepends(depends);
+//      gbf.setSupplies(supplies);
+//      gbf.setInstalls(installs);
+//      gbf.setUninstalls(uninstalls);
+//      gbf.setInstallCallbacks(installCallbacks);
+//      gbf.setUninstallCallbacks(uninstallCallbacks);
+//      return Collections.singletonList((BeanMetaData) gbf);
+//   }
 
+   /**
+    * Add the parameters
+    */
+   private void setParameters(ParameterMetaDataBuilder builder, ParameterizedMetaData metadata)
+   {
+      List<ParameterMetaData> params = metadata.getParameters();
+      if (params != null && params.size() > 0)
+      {
+         for (ParameterMetaData param : params)
+         {
+            builder.addParameterMetaData(param.getType(), param.getValue());
+         }
+      }
+   }
    /**
     * Create property.
     *
