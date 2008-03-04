@@ -22,12 +22,14 @@
 package org.jboss.test.kernel.metadata.test;
 
 import org.jboss.kernel.spi.deployment.KernelDeployment;
+import org.jboss.kernel.spi.dependency.KernelControllerContext;
 import org.jboss.metadata.spi.MetaData;
 import org.jboss.metadata.spi.scope.ScopeKey;
 import org.jboss.metadata.spi.signature.MethodSignature;
 import org.jboss.test.kernel.metadata.support.TestAnnotationA;
 import org.jboss.test.kernel.metadata.support.TestAnnotationB;
 import org.jboss.test.kernel.metadata.support.TestAnnotationC;
+import org.jboss.dependency.spi.ScopeInfo;
 
 import junit.framework.Test;
 
@@ -49,6 +51,22 @@ public class ClassAnnotationTestCase extends AbstractMetaDataTest
       super(name);
    }
 
+   protected MetaData assertMetaData()
+   {
+      return assertMetaData("Name1");
+   }
+
+   protected MetaData assertMetaData(String name)
+   {
+      KernelControllerContext context = getControllerContext(name);
+      assertNotNull(context);
+      ScopeInfo scopeInfo = context.getScopeInfo();
+      assertNotNull(scopeInfo);
+      MetaData metaData = scopeInfo.getMetaData();
+      assertNotNull(metaData);
+      return metaData;
+   }
+
    public void testClassAnnotationNoOverride() throws Throwable
    {
       ScopeKey scope = null;
@@ -56,7 +74,7 @@ public class ClassAnnotationTestCase extends AbstractMetaDataTest
       try
       {
          scope = assertRetrievals("Name1");
-         MetaData metaData = assertPeekedMetaData();
+         MetaData metaData = assertMetaData();
          TestAnnotationA a = assertAnnotation(metaData, TestAnnotationA.class);
          assertEquals("NotOverridden", a.value());
          TestAnnotationB b = assertAnnotation(metaData, TestAnnotationB.class);
@@ -78,7 +96,7 @@ public class ClassAnnotationTestCase extends AbstractMetaDataTest
       try
       {
          scope = assertRetrievals("Name1");
-         MetaData metaData = assertPeekedMetaData();
+         MetaData metaData = assertMetaData();
          TestAnnotationA a = assertAnnotation(metaData, TestAnnotationA.class);
          assertEquals("Overridden", a.value());
          TestAnnotationB b = assertAnnotation(metaData, TestAnnotationB.class);
@@ -100,7 +118,7 @@ public class ClassAnnotationTestCase extends AbstractMetaDataTest
       try
       {
          scope = assertRetrievals("Name1");
-         MetaData metaData = assertPeekedMetaData();
+         MetaData metaData = assertMetaData();
          TestAnnotationA a = assertAnnotation(metaData, TestAnnotationA.class);
          assertEquals("NotOverridden", a.value());
          TestAnnotationB b = assertAnnotation(metaData, TestAnnotationB.class);
@@ -122,7 +140,7 @@ public class ClassAnnotationTestCase extends AbstractMetaDataTest
       try
       {
          scope = assertRetrievals("Name1");
-         MetaData classMetaData = assertPeekedMetaData();
+         MetaData classMetaData = assertMetaData();
          MetaData metaData = classMetaData.getComponentMetaData(new MethodSignature("getSomething"));
          TestAnnotationA a = assertAnnotation(metaData, TestAnnotationA.class);
          assertEquals("NotOverridden", a.value());
@@ -151,7 +169,7 @@ public class ClassAnnotationTestCase extends AbstractMetaDataTest
       try
       {
          scope = assertRetrievals("Name1");
-         MetaData classMetaData = assertPeekedMetaData();
+         MetaData classMetaData = assertMetaData();
          MetaData metaData = classMetaData.getComponentMetaData(new MethodSignature("getSomething"));
          TestAnnotationA a = assertAnnotation(metaData, TestAnnotationA.class);
          assertEquals("Overridden", a.value());
@@ -180,7 +198,7 @@ public class ClassAnnotationTestCase extends AbstractMetaDataTest
       try
       {
          scope = assertRetrievals("Name1");
-         MetaData classMetaData = assertPeekedMetaData();
+         MetaData classMetaData = assertMetaData();
          MetaData metaData = classMetaData.getComponentMetaData(new MethodSignature("getSomething"));
          TestAnnotationA a = assertAnnotation(metaData, TestAnnotationA.class);
          assertEquals("NotOverridden", a.value());

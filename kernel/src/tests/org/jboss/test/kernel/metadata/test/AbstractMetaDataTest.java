@@ -28,7 +28,6 @@ import org.jboss.metadata.spi.MetaData;
 import org.jboss.metadata.spi.repository.MetaDataRepository;
 import org.jboss.metadata.spi.scope.CommonLevels;
 import org.jboss.metadata.spi.scope.ScopeKey;
-import org.jboss.metadata.spi.stack.MetaDataStack;
 import org.jboss.test.AbstractTestDelegate;
 import org.jboss.test.kernel.junit.MicrocontainerTest;
 
@@ -45,25 +44,11 @@ public class AbstractMetaDataTest extends MicrocontainerTest
       super(name);
    }
    
-   private static MetaData peekedMetaData;
-
-   public static void peekMetaData()
-   {
-      peekedMetaData = MetaDataStack.peek();
-   }
-   
    protected void setUp() throws Exception
    {
       super.setUp();
-      peekedMetaData = null;
    }
 
-   protected MetaData assertPeekedMetaData()
-   {
-      assertNotNull(peekedMetaData);
-      return peekedMetaData;
-   }
-   
    protected ScopeKey assertRetrievals(String name)
    {
       KernelControllerContext context = getControllerContext(name);

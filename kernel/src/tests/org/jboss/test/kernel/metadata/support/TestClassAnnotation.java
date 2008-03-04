@@ -21,8 +21,6 @@
 */
 package org.jboss.test.kernel.metadata.support;
 
-import org.jboss.test.kernel.metadata.test.AbstractMetaDataTest;
-
 /**
  * TestClassAnnotation.
  * 
@@ -35,7 +33,6 @@ public class TestClassAnnotation
 {
    public TestClassAnnotation()
    {
-      AbstractMetaDataTest.peekMetaData();
    }
    
    @TestAnnotationA("NotOverridden")
