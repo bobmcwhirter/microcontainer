@@ -24,9 +24,11 @@ package org.jboss.kernel.plugins.dependency;
 import java.util.List;
 
 import org.jboss.beans.info.spi.BeanInfo;
-import org.jboss.classadapter.spi.DependencyBuilderListItem;
 import org.jboss.kernel.plugins.annotations.BeanAnnotationAdapterFactory;
 import org.jboss.kernel.plugins.annotations.BeanAnnotationAdapter;
+import org.jboss.kernel.spi.config.KernelConfig;
+import org.jboss.kernel.spi.dependency.DependencyBuilder;
+import org.jboss.kernel.spi.dependency.DependencyBuilderListItem;
 import org.jboss.kernel.spi.dependency.KernelController;
 import org.jboss.kernel.spi.dependency.KernelControllerContext;
 import org.jboss.kernel.spi.metadata.KernelMetaDataRepository;
@@ -48,10 +50,12 @@ public class DescribeAction extends InstallsAwareAction
       if (info != null)
       {
          KernelController controller = (KernelController)context.getController();
+         KernelConfig config = controller.getKernel().getConfig();
+         DependencyBuilder dependencyBuilder = config.getDependencyBuilder();
          KernelMetaDataRepository repository = controller.getKernel().getMetaDataRepository();
          MetaData md = repository.getMetaData(context);
          // add custom dependencies (e.g. AOP layer).
-         List<DependencyBuilderListItem> dependencies = (List) info.getDependencies(md);
+         List<DependencyBuilderListItem> dependencies = dependencyBuilder.getDependencies(info, md);
          log.trace("Extra dependencies for " + context.getName() + " " + dependencies);
          if (dependencies != null && dependencies.isEmpty() == false)
          {

@@ -1,6 +1,6 @@
 /*
 * JBoss, Home of Professional Open Source
-* Copyright 2005, JBoss Inc., and individual contributors as indicated
+* Copyright 2006, JBoss Inc., and individual contributors as indicated
 * by the @authors tag. See the copyright.txt in the distribution for a
 * full listing of individual contributors.
 *
@@ -18,22 +18,23 @@
 * License along with this software; if not, write to the Free
 * Software Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA
 * 02110-1301 USA, or see the FSF site: http://www.fsf.org.
-*/ 
-package org.jboss.test.microcontainer.support;
+*/
+package org.jboss.beans.metadata.api.annotations;
 
+import java.lang.annotation.ElementType;
 import java.lang.annotation.Retention;
 import java.lang.annotation.RetentionPolicy;
-
-import org.jboss.beans.metadata.api.annotations.Dependency;
+import java.lang.annotation.Target;
 
 /**
+ * Dependency.
  * 
- * @author <a href="kabir.khan@jboss.com">Kabir Khan</a>
- * @version $Revision$
+ * @author <a href="adrian@jboss.com">Adrian Brock</a>
+ * @version $Revision: 44529 $
  */
 @Retention(RetentionPolicy.RUNTIME)
-@Dependency(name="data")
-public @interface TestAnnotationDependency
+@Target(ElementType.ANNOTATION_TYPE)
+public @interface Dependency
 {
-   String data();
+   String name();
 }

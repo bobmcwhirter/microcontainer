@@ -24,11 +24,12 @@ package org.jboss.kernel.plugins.config;
 import org.jboss.beans.info.spi.BeanInfo;
 import org.jboss.beans.info.spi.BeanInfoFactory;
 import org.jboss.classadapter.spi.ClassAdapterFactory;
-import org.jboss.classadapter.spi.DependencyBuilder;
 import org.jboss.config.spi.Configuration;
+import org.jboss.config.spi.ConfigurationPermission;
 import org.jboss.joinpoint.spi.JoinpointFactoryBuilder;
 import org.jboss.kernel.plugins.AbstractKernelObject;
 import org.jboss.kernel.spi.config.KernelConfig;
+import org.jboss.kernel.spi.dependency.DependencyBuilder;
 import org.jboss.reflect.spi.ClassInfo;
 import org.jboss.reflect.spi.TypeInfo;
 import org.jboss.reflect.spi.TypeInfoFactory;
@@ -44,6 +45,9 @@ public abstract class AbstractKernelConfig extends AbstractKernelObject implemen
 {
    /** The configuration */
    protected Configuration configuration;
+
+   /** The dependency builder */
+   private DependencyBuilder dependencyBuilder;
    
    /**
     * Create an abstract kernel configuration
@@ -125,6 +129,35 @@ public abstract class AbstractKernelConfig extends AbstractKernelObject implemen
    }
 
    /**
+    * Get the dependency builder
+    * 
+    * @return the dependency builder
+    */
+   public DependencyBuilder getDependencyBuilder()
+   {
+      if (dependencyBuilder == null)
+      {
+         try
+         {
+            dependencyBuilder = createDefaultDependencyBuilder();
+         }
+         catch (RuntimeException e)
+         {
+            throw e;
+         }
+         catch (Error e)
+         {
+            throw e;
+         }
+         catch (Throwable t)
+         {
+            throw new RuntimeException("Error creating dependency builder", t);
+         }
+      }
+      return dependencyBuilder;
+   }
+   
+   /**
     * Set the dependencyBuilder.
     * 
     * @param dependencyBuilder the dependencyBuilder.
@@ -132,6 +165,28 @@ public abstract class AbstractKernelConfig extends AbstractKernelObject implemen
     */
    public void setDependencyBuilder(DependencyBuilder dependencyBuilder)
    {
-      configuration.setDependencyBuilder(dependencyBuilder);
+      checkPermissionName("dependencyBuilder");
+      this.dependencyBuilder = dependencyBuilder;
+   }
+
+   /**
+    * Create the default dependency builder
+    * 
+    * @return the type info factory
+    * @throws Throwable for any error
+    */
+   protected abstract DependencyBuilder createDefaultDependencyBuilder() throws Throwable;
+
+   /**
+    * Check a permission
+    * 
+    * @param name the name of the permission
+    */
+   private void checkPermissionName(String name)
+   {
+      SecurityManager sm = System.getSecurityManager();
+      if (sm != null)
+         sm.checkPermission(new ConfigurationPermission(name));
+      
    }
 }

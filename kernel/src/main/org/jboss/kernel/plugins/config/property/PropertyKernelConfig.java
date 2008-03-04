@@ -23,6 +23,7 @@ package org.jboss.kernel.plugins.config.property;
 
 import java.util.Iterator;
 import java.util.Properties;
+import java.util.StringTokenizer;
 import java.util.TreeSet;
 
 import org.jboss.beans.info.spi.BeanInfo;
@@ -33,6 +34,7 @@ import org.jboss.kernel.plugins.config.AbstractKernelConfig;
 import org.jboss.kernel.plugins.config.Configurator;
 import org.jboss.kernel.spi.bootstrap.KernelInitializer;
 import org.jboss.kernel.spi.config.KernelConfigurator;
+import org.jboss.kernel.spi.dependency.DependencyBuilder;
 import org.jboss.kernel.spi.dependency.KernelController;
 import org.jboss.kernel.spi.event.KernelEventManager;
 import org.jboss.kernel.spi.metadata.KernelMetaDataRepository;
@@ -136,6 +138,14 @@ public class PropertyKernelConfig extends AbstractKernelConfig
          KernelConstants.KERNEL_METADATA_REPOSITORY_CLASS
       );
    }
+   
+   public DependencyBuilder createDefaultDependencyBuilder() throws Throwable
+   {
+      return (DependencyBuilder) getImplementation(
+         KernelConstants.DEPENDENCY_BUILDER_NAME,
+         KernelConstants.DEPENDENCY_BUILDER_DEFAULT
+      );
+   }
 
    /**
     * Get the implementation for a type
@@ -149,14 +159,32 @@ public class PropertyKernelConfig extends AbstractKernelConfig
    {
       Properties properties = getProperties();
 
-      String className = properties.getProperty(type, defaultType);
+      String value = properties.getProperty(type, defaultType);
       if (log.isTraceEnabled())
-         log.trace(type + " using implementation " + className); 
+         log.trace(type + " using property " + value); 
 
-      ClassLoader cl = Configurator.getClassLoader((BeanMetaData) null);
-      BeanInfo info = getBeanInfo(className, cl);
-      BeanMetaData metaData = getBeanMetaData(info, className);
-      return Configurator.instantiateAndConfigure(this, info, metaData);
+      StringTokenizer tokenizer = new StringTokenizer(value, ":");
+      ClassNotFoundException error = null;
+      while (tokenizer.hasMoreTokens())
+      {
+         String className = tokenizer.nextToken();
+
+         ClassLoader cl = Configurator.getClassLoader((BeanMetaData) null);
+         try
+         {
+            BeanInfo info = getBeanInfo(className, cl);
+            BeanMetaData metaData = getBeanMetaData(info, className);
+            return Configurator.instantiateAndConfigure(this, info, metaData);
+         }
+         catch (ClassNotFoundException ignored)
+         {
+            log.trace(className + " not found: " + ignored.getMessage());
+            error = ignored;
+         }
+      }
+      if (error != null)
+         throw error;
+      throw new RuntimeException("Invalid configuration for property " + type + " expected a class name that implements " + type);
    }
    
    /**

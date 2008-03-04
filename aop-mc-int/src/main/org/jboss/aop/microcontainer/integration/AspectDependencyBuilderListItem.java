@@ -22,10 +22,10 @@
 package org.jboss.aop.microcontainer.integration;
 
 import org.jboss.beans.metadata.spi.BeanMetaData;
-import org.jboss.classadapter.spi.DependencyBuilderListItem;
 import org.jboss.dependency.plugins.AbstractDependencyItem;
 import org.jboss.dependency.spi.ControllerState;
 import org.jboss.dependency.spi.DependencyInfo;
+import org.jboss.kernel.spi.dependency.DependencyBuilderListItem;
 import org.jboss.kernel.spi.dependency.KernelControllerContext;
 
 /**
@@ -33,7 +33,7 @@ import org.jboss.kernel.spi.dependency.KernelControllerContext;
  * @author <a href="kabir.khan@jboss.com">Kabir Khan</a>
  * @version $Revision: 1.1 $
  */
-class AspectDependencyBuilderListItem implements DependencyBuilderListItem<KernelControllerContext>
+class AspectDependencyBuilderListItem implements DependencyBuilderListItem
 {
    String dependencyName;
    AspectDependencyBuilderListItem(String name)

@@ -23,6 +23,7 @@ package org.jboss.kernel.plugins.bootstrap.basic;
 
 import org.jboss.kernel.spi.bootstrap.KernelInitializer;
 import org.jboss.kernel.spi.config.KernelConfigurator;
+import org.jboss.kernel.spi.dependency.DependencyBuilder;
 import org.jboss.kernel.spi.dependency.KernelController;
 import org.jboss.kernel.spi.event.KernelEventManager;
 import org.jboss.kernel.spi.metadata.KernelMetaDataRepository;
@@ -106,4 +107,10 @@ public interface KernelConstants
    
    /** The default meta data repository implementation */
    static final String KERNEL_METADATA_REPOSITORY_CLASS = "org.jboss.kernel.plugins.metadata.basic.BasicKernelMetaDataRepository"; 
+
+   /** The DependencyBuilder property name */
+   static final String DEPENDENCY_BUILDER_NAME = DependencyBuilder.class.getName();
+   
+   /** The DependencyBuilder default value */
+   static final String DEPENDENCY_BUILDER_DEFAULT="org.jboss.aop.microcontainer.integration.AOPDependencyBuilder:org.jboss.kernel.spi.dependency.helpers.AbstractDependencyBuilder";
 }

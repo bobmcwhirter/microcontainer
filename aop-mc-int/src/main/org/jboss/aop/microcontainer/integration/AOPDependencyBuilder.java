@@ -29,8 +29,8 @@ import java.util.LinkedHashMap;
 import java.util.LinkedHashSet;
 import java.util.List;
 import java.util.Map;
-import java.util.Map.Entry;
 import java.util.Set;
+import java.util.Map.Entry;
 
 import org.jboss.aop.Advisor;
 import org.jboss.aop.AspectManager;
@@ -42,11 +42,11 @@ import org.jboss.aop.microcontainer.lifecycle.LifecycleCallbackDefinition;
 import org.jboss.aop.proxy.container.ContainerCache;
 import org.jboss.aop.util.Advisable;
 import org.jboss.aop.util.ClassInfoMethodHashing;
-import org.jboss.classadapter.plugins.dependency.AbstractDependencyBuilder;
-import org.jboss.classadapter.spi.ClassAdapter;
-import org.jboss.classadapter.spi.Dependency;
-import org.jboss.classadapter.spi.DependencyBuilderListItem;
+import org.jboss.beans.info.spi.BeanInfo;
+import org.jboss.beans.metadata.api.annotations.Dependency;
 import org.jboss.dependency.spi.ControllerState;
+import org.jboss.kernel.spi.dependency.DependencyBuilderListItem;
+import org.jboss.kernel.spi.dependency.helpers.AbstractDependencyBuilder;
 import org.jboss.metadata.spi.MetaData;
 import org.jboss.metadata.spi.signature.MethodSignature;
 import org.jboss.reflect.plugins.AnnotationValueFactory;
@@ -76,16 +76,17 @@ public class AOPDependencyBuilder extends AbstractDependencyBuilder
    private static final IntrospectionAnnotationHelper helper = new IntrospectionAnnotationHelper();
 
    @SuppressWarnings("unchecked")
-   public List<DependencyBuilderListItem<?>> getDependencies(ClassAdapter classAdapter, MetaData metaData)
+   @Override
+   public List<DependencyBuilderListItem> getDependencies(BeanInfo beanInfo, MetaData metaData)
    {
       AspectManager manager = AspectManagerFactory.getAspectManager(metaData);
       try
       {
-         ClassInfo classInfo = classAdapter.getClassInfo();
+         ClassInfo classInfo = beanInfo.getClassInfo();
          String className = classInfo.getName();
          if (className != null)
          {
-            ClassLoader loader = classAdapter.getClassLoader();
+            ClassLoader loader = classInfo.getType().getClassLoader();
             if (loader == null)
             {
                loader = Thread.currentThread().getContextClassLoader();
@@ -101,7 +102,7 @@ public class AOPDependencyBuilder extends AbstractDependencyBuilder
             ReflectiveAspectBinder binder = new ReflectiveAspectBinder(clazz, advisor);
             Set aspects = binder.getAspects();
 
-            ArrayList<DependencyBuilderListItem<?>> depends = new ArrayList<DependencyBuilderListItem<?>>();
+            ArrayList<DependencyBuilderListItem> depends = new ArrayList<DependencyBuilderListItem>();
             if (aspects != null && aspects.size() > 0)
             {
                Iterator it = aspects.iterator();

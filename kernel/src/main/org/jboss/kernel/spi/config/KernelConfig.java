@@ -24,6 +24,7 @@ package org.jboss.kernel.spi.config;
 import org.jboss.beans.info.spi.BeanInfo;
 import org.jboss.kernel.spi.KernelObject;
 import org.jboss.kernel.spi.bootstrap.KernelInitializer;
+import org.jboss.kernel.spi.dependency.DependencyBuilder;
 import org.jboss.kernel.spi.dependency.KernelController;
 import org.jboss.kernel.spi.event.KernelEventManager;
 import org.jboss.kernel.spi.metadata.KernelMetaDataRepository;
@@ -145,4 +146,12 @@ public interface KernelConfig extends KernelObject
     * @throws Throwable for any error
     */
    KernelMetaDataRepository createKernelMetaDataRepository() throws Throwable;
+   
+   /**
+    * Get the dependency builder
+    * 
+    * @return the dependency builder
+    * @throws Throwable for any error
+    */
+   DependencyBuilder getDependencyBuilder() throws Throwable;
 }
