@@ -33,6 +33,11 @@ public class MapCompositeMetaType extends AbstractCompositeMetaType
 {
    private static final long serialVersionUID = 1;
    private MetaType valueType;
+   /** Cached hash code */
+   private transient int cachedHashCode = Integer.MIN_VALUE;
+
+   /** Cached string representation */
+   private transient String cachedToString = null;
 
    /**
     * Create a MapCompositeMetaType with the given value metatype.
@@ -40,16 +45,39 @@ public class MapCompositeMetaType extends AbstractCompositeMetaType
     */
    public MapCompositeMetaType(MetaType valueType)
    {
-      super("java.lang.Map", "Map<String,MetaValue>");
+      super("java.util.Map", "Map<String,MetaValue>");
       this.valueType = valueType;
    }
 
    /**
-    * Add a new key/item to the type
-    * @param itemName the item name
+    * 
+    * @param itemName
     */
    public void addItem(String itemName)
    {
-      addItem(itemName, itemName, valueType);
+      super.addItem(itemName, itemName, valueType);
+   }
+
+   @Override
+   public boolean equals(Object obj)
+   {
+      return equalsImpl(obj);
+   }
+
+   @Override
+   public int hashCode()
+   {
+      if (cachedHashCode != Integer.MIN_VALUE)
+         return cachedHashCode;
+      cachedHashCode = hashCodeImpl();
+      return cachedHashCode;
+   }
+
+   @Override
+   public String toString()
+   {
+      if (cachedToString == null)
+         cachedToString = super.toString();
+      return cachedToString;
    }
 }
