@@ -141,6 +141,7 @@ public class BeanFactoryJaxbTestCase extends AbstractMCTest
       assertNull(factory.getUninstalls());
       assertNull(factory.getInstallCallbacks());
       assertNull(factory.getUninstallCallbacks());
+      factory.getBeans();
    }
 
    public void testBeanFactoryWithProperty() throws Exception

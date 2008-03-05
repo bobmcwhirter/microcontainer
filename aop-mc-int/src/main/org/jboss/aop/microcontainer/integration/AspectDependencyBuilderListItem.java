@@ -21,12 +21,16 @@
 */ 
 package org.jboss.aop.microcontainer.integration;
 
+import java.util.Set;
+
 import org.jboss.beans.metadata.spi.BeanMetaData;
 import org.jboss.dependency.plugins.AbstractDependencyItem;
 import org.jboss.dependency.spi.ControllerState;
 import org.jboss.dependency.spi.DependencyInfo;
+import org.jboss.dependency.spi.DependencyItem;
 import org.jboss.kernel.spi.dependency.DependencyBuilderListItem;
 import org.jboss.kernel.spi.dependency.KernelControllerContext;
+import org.jboss.logging.Logger;
 
 /**
  * 
@@ -35,7 +39,13 @@ import org.jboss.kernel.spi.dependency.KernelControllerContext;
  */
 class AspectDependencyBuilderListItem implements DependencyBuilderListItem
 {
-   String dependencyName;
+   protected static Logger log = Logger.getLogger(AspectDependencyBuilderListItem.class);
+   
+   /**
+    * The name of our dependency
+    */
+   protected String dependencyName;
+   
    AspectDependencyBuilderListItem(String name)
    {
       this.dependencyName = name; 
@@ -44,11 +54,35 @@ class AspectDependencyBuilderListItem implements DependencyBuilderListItem
    public void addDependency(KernelControllerContext context)
    {
       BeanMetaData metaData = context.getBeanMetaData();
-      AbstractDependencyItem dependency = new AbstractDependencyItem(metaData.getName(), dependencyName, ControllerState.INSTANTIATED, ControllerState.INSTALLED);
+      DependencyItem dependencyItem = new AbstractDependencyItem(metaData.getName(), dependencyName, ControllerState.INSTANTIATED, ControllerState.INSTALLED);
       DependencyInfo depends = context.getDependencyInfo();
-      depends.addIDependOn(dependency);
+      depends.addIDependOn(dependencyItem);
    }
    
+   public void removeDependency(KernelControllerContext context)
+   {
+      DependencyInfo depends = context.getDependencyInfo();
+
+      Set<DependencyItem> items = depends.getIDependOn(null);
+      if (items.size() > 0)
+      {
+         for (DependencyItem item : items)
+         {
+            try
+            {
+               if (item.getIDependOn().equals(dependencyName))
+               {
+                  depends.removeIDependOn(item);
+               }
+            }
+            catch (RuntimeException e)
+            {
+               log.warn("Problem uninstalling dependency " + dependencyName + " for " + context, e);
+            }
+         }
+      }
+   }
+
    public boolean equals(Object o)
    {
       if (o instanceof AspectDependencyBuilderListItem)

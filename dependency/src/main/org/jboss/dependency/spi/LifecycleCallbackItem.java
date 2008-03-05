@@ -29,6 +29,12 @@ package org.jboss.dependency.spi;
 public interface LifecycleCallbackItem
 {
    /**
+    * Gets the target bean implementing this callback
+    * @return the target bean name
+    */
+   Object getBean();
+   
+   /**
     * Get the target state of the bean this callback applies to indicating when this callback should trigger
     * @return the state 
     */

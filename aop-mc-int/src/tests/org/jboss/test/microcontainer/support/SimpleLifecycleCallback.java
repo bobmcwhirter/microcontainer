@@ -55,6 +55,11 @@ public class SimpleLifecycleCallback
       this.testProperty = testProperty;
    }
    
+   public static void clear()
+   {
+      interceptions.clear();
+   }
+   
    public static class Handled
    {
       public String contextName;

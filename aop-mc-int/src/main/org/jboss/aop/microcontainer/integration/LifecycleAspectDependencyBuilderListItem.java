@@ -21,9 +21,13 @@
 */ 
 package org.jboss.aop.microcontainer.integration;
 
+import java.util.Iterator;
+import java.util.List;
+
 import org.jboss.dependency.plugins.AbstractLifecycleCallbackItem;
 import org.jboss.dependency.spi.ControllerState;
 import org.jboss.dependency.spi.DependencyInfo;
+import org.jboss.dependency.spi.LifecycleCallbackItem;
 import org.jboss.kernel.spi.dependency.KernelControllerContext;
 
 /**
@@ -62,6 +66,7 @@ class LifecycleAspectDependencyBuilderListItem extends AspectDependencyBuilderLi
       return dependencyName.hashCode();
    }
 
+   @Override
    public void addDependency(KernelControllerContext context)
    {
       AbstractLifecycleCallbackItem callback = new AbstractLifecycleCallbackItem(dependencyName, state, ControllerState.INSTALLED, installMethod, uninstallMethod);
@@ -69,5 +74,29 @@ class LifecycleAspectDependencyBuilderListItem extends AspectDependencyBuilderLi
       di.addLifecycleCallback(callback);
 
       super.addDependency(context);
+   }
+   
+   @Override
+   public void removeDependency(KernelControllerContext context)
+   {
+      DependencyInfo di = context.getDependencyInfo();
+      
+      List<LifecycleCallbackItem> items = di.getLifecycleCallbacks();
+      for (int i = 0 ; i < items.size(); i++)
+      {
+         try
+         {
+            if (items.get(i).getBean().equals(dependencyName))
+            {
+               items.remove(i);
+            }
+         }
+         catch (RuntimeException e)
+         {
+            log.warn("Problem uninstalling dependency " + dependencyName + " for " + context, e);
+         }
+      }
+
+      super.removeDependency(context);
    }
 }

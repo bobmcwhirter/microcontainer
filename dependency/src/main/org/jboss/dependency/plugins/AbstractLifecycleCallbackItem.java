@@ -42,11 +42,11 @@ public class AbstractLifecycleCallbackItem implements LifecycleCallbackItem
    ControllerState whenRequired;
    String installMethod;
    String uninstallMethod;
-   String bean;
+   Object bean;
    boolean installed;
    
    public AbstractLifecycleCallbackItem(
-         String bean, 
+         Object bean, 
          ControllerState whenRequired, 
          ControllerState dependentState, 
          String installMethod, 
@@ -59,6 +59,11 @@ public class AbstractLifecycleCallbackItem implements LifecycleCallbackItem
       this.uninstallMethod = uninstallMethod;
    }
    
+   public Object getBean()
+   {
+      return bean;
+   }
+
    public ControllerState getDependentState()
    {
       return dependentState;

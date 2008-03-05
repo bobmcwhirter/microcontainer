@@ -95,6 +95,35 @@ public class DescribeAction extends InstallsAwareAction
       {
          annotationsVisitor.after();
       }
+      
+      BeanInfo info = context.getBeanInfo();
+      if (info != null)
+      {
+         KernelController controller = (KernelController)context.getController();
+         KernelConfig config = controller.getKernel().getConfig();
+         DependencyBuilder dependencyBuilder;
+         try
+         {
+            dependencyBuilder = config.getDependencyBuilder();
+         }
+         catch (Throwable e)
+         {
+            log.debug("Error while cleaning the annotations: " + e);
+            return;
+         }
+         KernelMetaDataRepository repository = controller.getKernel().getMetaDataRepository();
+         MetaData md = repository.getMetaData(context);
+         // add custom dependencies (e.g. AOP layer).
+         List<DependencyBuilderListItem> dependencies = dependencyBuilder.getDependencies(info, md);
+         log.trace("Unwind extra dependencies for " + context.getName() + " " + dependencies);
+         if (dependencies != null && dependencies.isEmpty() == false)
+         {
+            for (DependencyBuilderListItem dependencyItem : dependencies)
+            {
+               dependencyItem.removeDependency(context);
+            }
+         }
+      }      
    }
 
    protected BeanAnnotationAdapter getBeanAnnotationAdapter()

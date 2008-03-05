@@ -1,0 +1,13 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<deployment xmlns="urn:jboss:bean-deployer:2.0">
+            
+   <aop:interceptor xmlns:aop="urn:jboss:aop-beans:1.0" name="InterceptedAdvice2" class="org.jboss.test.microcontainer.support.SimpleInterceptor2"/>
+   
+   <aop:lifecycle-start xmlns:aop="urn:jboss:aop-beans:1.0"
+               name="LifecycleCallbackStart"
+               class="org.jboss.test.microcontainer.support.SimpleLifecycleCallback"
+               classes="@org.jboss.test.microcontainer.support.Test">
+   </aop:lifecycle-start>
+
+</deployment>

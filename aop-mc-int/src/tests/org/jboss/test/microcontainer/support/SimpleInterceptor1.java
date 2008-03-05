@@ -19,27 +19,22 @@
 * Software Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA
 * 02110-1301 USA, or see the FSF site: http://www.fsf.org.
 */ 
-package org.jboss.kernel.spi.dependency;
+package org.jboss.test.microcontainer.support;
+
+import org.jboss.aop.joinpoint.Invocation;
 
 /**
- * DependencyBuilderListItem.
- *
+ * 
  * @author <a href="kabir.khan@jboss.com">Kabir Khan</a>
  * @version $Revision: 1.1 $
  */
-public interface DependencyBuilderListItem
+public class SimpleInterceptor1 extends AbstractInterceptor
 {
-   /**
-    * Add the dependency.
-    *
-    * @param ctx the kernel controller context
-    */
-   void addDependency(KernelControllerContext ctx);
-   
-   /**
-    * Remove the dependency
-    * 
-    * @param ctx the kernel controller context
-    */
-   void removeDependency(KernelControllerContext ctx);
+   public static boolean invoked; 
+
+   public Object invoke(Invocation invocation) throws Throwable
+   {
+      invoked = true;
+      return invocation.invokeNext();
+   }
 }
