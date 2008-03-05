@@ -53,7 +53,8 @@ import org.jboss.metatype.api.values.MetaValueFactory;
 import org.jboss.reflect.spi.TypeInfo;
 
 /**
- * TODO: this needs to move to the mc managed project.
+ * A base InstanceClassFactory implementation that 
+ * 
  * @author Scott.Stark@jboss.org
  * @version $Revision$
  */
@@ -197,9 +198,8 @@ public class AbstractInstanceClassFactory<T extends Serializable>
          if (AbstractManagedObjectFactory.MANAGED_OBJECT_META_TYPE == arrayType.getElementType())
          {
             Collection cvalue = getAsCollection(value);
-            // todo - AJ: changed some generics by best guess
-            ArrayMetaType<GenericValueSupport> moType = new ArrayMetaType<GenericValueSupport>(1, AbstractManagedObjectFactory.MANAGED_OBJECT_META_TYPE);
-            ArrayValueSupport<GenericValueSupport> moArrayValue = new ArrayValueSupport<GenericValueSupport>(moType);
+            ArrayMetaType moType = new ArrayMetaType(1, AbstractManagedObjectFactory.MANAGED_OBJECT_META_TYPE);
+            ArrayValueSupport moArrayValue = new ArrayValueSupport(moType);
             List<GenericValueSupport> tmp = new ArrayList<GenericValueSupport>();
             for(Object element : cvalue)
             {
