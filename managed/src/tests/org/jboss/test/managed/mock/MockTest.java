@@ -29,7 +29,6 @@ import junit.framework.Test;
 import org.jboss.managed.api.Fields;
 import org.jboss.managed.api.ManagedObject;
 import org.jboss.managed.api.ManagedProperty;
-import org.jboss.managed.plugins.advice.WrapperAdvice;
 import org.jboss.test.managed.ManagedTest;
 
 /**
@@ -69,7 +68,7 @@ public class MockTest extends ManagedTest
    {
       MockDataSourceManagedObject mock = new MockDataSourceManagedObject();
 
-      ManagedObject mo = WrapperAdvice.wrapManagedObject(mock);
+      ManagedObject mo = mock;
       
       getLog().debug("MockDataSourceManagedObject, available propertes...");
       getLog().debug(mock.getPropertyNames());
@@ -116,7 +115,7 @@ public class MockTest extends ManagedTest
       throws Exception
    {
       MockDataSourceManagedObject mock = new MockDataSourceManagedObject();
-      ManagedObject mo = WrapperAdvice.wrapManagedObject(mock);
+      ManagedObject mo = mock;
 
       mo.getProperty("jndi-name").setValue("DefaultDS");
       mo.getProperty("user").setValue("Scott");
@@ -143,7 +142,7 @@ public class MockTest extends ManagedTest
       throws Exception
    {
       MockDataSourceManagedObject mock = new MockDataSourceManagedObject();
-      ManagedObject mo = WrapperAdvice.wrapManagedObject(mock);
+      ManagedObject mo = mock;
 
       ManagedProperty jndiName = mo.getProperty("jndi-name");
       jndiName.setValue("DefaultDS");

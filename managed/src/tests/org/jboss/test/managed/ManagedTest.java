@@ -21,8 +21,7 @@
 */
 package org.jboss.test.managed;
 
-import org.jboss.test.AbstractTestCaseWithSetup;
-import org.jboss.test.AbstractTestDelegate;
+import org.jboss.test.BaseTestCase;
 
 /**
  * ManagedTest base class that extends AbstractTestCaseWithSetup
@@ -35,22 +34,8 @@ import org.jboss.test.AbstractTestDelegate;
  * @author Scott.Stark@jboss.org
  * @version $Revision$
  */
-public abstract class ManagedTest extends AbstractTestCaseWithSetup
+public abstract class ManagedTest extends BaseTestCase
 {
-   /**
-    * A static getDelegate method that is called by the AbstractTestDelegate
-    * getDelegate logic to obtain the test specific delegate. This sets the
-    * default delegate for ManagedTests to ManagedTestDelegate.
-    * 
-    * @param clazz the test class
-    * @return the delegate
-    * @throws Exception for any error
-    */
-   public static AbstractTestDelegate getDelegate(Class<?> clazz) throws Exception
-   {
-      return new ManagedTestDelegate(clazz);
-   }
-   
    /**
     * Create a new Managed test
     * 
@@ -59,14 +44,5 @@ public abstract class ManagedTest extends AbstractTestCaseWithSetup
    public ManagedTest(String name)
    {
       super(name);
-   }
-
-   /**
-    * Adds a call to configureLogging after super.setUp.
-    */
-   protected void setUp() throws Exception
-   {
-      super.setUp();
-      configureLogging();
    }
 }
