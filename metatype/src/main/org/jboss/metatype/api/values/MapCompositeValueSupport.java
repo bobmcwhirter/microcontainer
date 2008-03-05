@@ -116,4 +116,34 @@ public class MapCompositeValueSupport extends AbstractMetaValue implements Compo
    {
       return map.values();
    }
+   @Override
+   public boolean equals(Object obj)
+   {
+      if (obj == this)
+         return true;
+      
+      if (obj == null || obj instanceof MapCompositeValueSupport == false)
+         return false;
+
+      MapCompositeValueSupport other = (MapCompositeValueSupport) obj;
+      if (mapType.equals(other.getMetaType()) == false)
+         return false;
+
+      Map<String, MetaValue> otherMap = other.map;
+      if (map == null && otherMap == null)
+         return true;
+      if (map == null && otherMap != null)
+         return false;
+      return map.equals(otherMap);
+   }
+   @Override
+   public int hashCode()
+   {
+      return map.hashCode();
+   }
+   @Override
+   public String toString()
+   {
+      return mapType + ":" + map;
+   }
 }
