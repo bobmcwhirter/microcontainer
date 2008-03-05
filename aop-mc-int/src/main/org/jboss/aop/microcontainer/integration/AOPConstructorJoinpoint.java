@@ -99,11 +99,11 @@ public class AOPConstructorJoinpoint extends BasicConstructorJoinPoint
          return false;
       }
 
-      MetaData instanceMetaData = metaData.getScopeMetaData(CommonLevels.INSTANCE);
-      if (instanceMetaData != null && instanceMetaData.isEmpty() == false)
+      if (hasMetaDataAtInstanceLevel(metaData))
       {
-         return true;  
+         return true;
       }
+      
       //Check for method annotations
       return hasMethodMetaData(metaData);
    }
@@ -135,9 +135,23 @@ public class AOPConstructorJoinpoint extends BasicConstructorJoinPoint
    {
       MethodSignature sig = new MethodSignature(mi);
       MetaData methodMD = metaData.getComponentMetaData(sig);
-      if (methodMD != null)
+
+      if (hasMetaDataAtInstanceLevel(methodMD))
       {
-         return methodMD.getAnnotations() != MetaData.NO_ANNOTATIONS;
+         return true;
+      }
+      return false;
+   }
+   
+   private boolean hasMetaDataAtInstanceLevel(MetaData metaData)
+   {
+      if (metaData != null)
+      {
+         MetaData instanceMetaData = metaData.getScopeMetaData(CommonLevels.INSTANCE);
+         if (instanceMetaData != null && instanceMetaData.isEmpty() == false)
+         {
+            return true;  
+         }
       }
       return false;
    }
