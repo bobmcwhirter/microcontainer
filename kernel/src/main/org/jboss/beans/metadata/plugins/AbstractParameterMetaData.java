@@ -25,11 +25,11 @@ import java.io.Serializable;
 import java.util.Set;
 import java.util.Stack;
 
-import javax.xml.bind.annotation.XmlType;
-import javax.xml.bind.annotation.XmlAttribute;
-import javax.xml.bind.annotation.XmlElements;
-import javax.xml.bind.annotation.XmlElement;
 import javax.xml.bind.annotation.XmlAnyElement;
+import javax.xml.bind.annotation.XmlAttribute;
+import javax.xml.bind.annotation.XmlElement;
+import javax.xml.bind.annotation.XmlElements;
+import javax.xml.bind.annotation.XmlType;
 import javax.xml.bind.annotation.XmlValue;
 
 import org.jboss.beans.metadata.spi.MetaDataVisitor;
@@ -40,9 +40,9 @@ import org.jboss.kernel.plugins.config.Configurator;
 import org.jboss.kernel.spi.config.KernelConfigurator;
 import org.jboss.kernel.spi.dependency.KernelController;
 import org.jboss.kernel.spi.dependency.KernelControllerContext;
-import org.jboss.util.JBossStringBuilder;
-import org.jboss.reflect.spi.TypeInfo;
 import org.jboss.managed.api.annotation.ManagementProperty;
+import org.jboss.reflect.spi.TypeInfo;
+import org.jboss.util.JBossStringBuilder;
 
 /**
  * Metadata for a parameter.
@@ -170,6 +170,7 @@ public class AbstractParameterMetaData extends AbstractFeatureMetaData
       @XmlElement(name="inject", type=AbstractInjectionValueMetaData.class),
       @XmlElement(name="list", type=AbstractListMetaData.class),
       @XmlElement(name="map", type=AbstractMapMetaData.class),
+      @XmlElement(name="null", type=AbstractValueMetaData.class),
       @XmlElement(name="set", type=AbstractSetMetaData.class),
       @XmlElement(name="this", type=ThisValueMetaData.class),
       @XmlElement(name="value", type=StringValueMetaData.class),
