@@ -50,7 +50,6 @@ import org.jboss.beans.metadata.spi.ValueMetaData;
 import org.jboss.beans.metadata.spi.factory.GenericBeanFactoryMetaData;
 import org.jboss.javabean.plugins.jaxb.JavaBean10;
 import org.jboss.kernel.plugins.deployment.AbstractKernelDeployment;
-import org.jboss.test.xb.builder.AbstractBuilderTest;
 import org.jboss.xb.binding.JBossXBException;
 
 /**
