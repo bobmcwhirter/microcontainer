@@ -425,7 +425,7 @@ public class MicrocontainerTest extends AbstractTestCaseWithSetup
     *
     * @param autowireCandidate the autowire flag
     */
-   public void setAutowireCandidate(boolean autowireCandidate)
+   protected void setAutowireCandidate(boolean autowireCandidate)
    {
       this.autowireCandidate = autowireCandidate;
    }
