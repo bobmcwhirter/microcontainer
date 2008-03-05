@@ -112,7 +112,18 @@ public class AbstractCollectionMetaData extends AbstractTypeMetaData
       for (int i = 0; i < collection.size(); ++i)
       {
          ValueMetaData vmd = (ValueMetaData) collection.get(i);
-         result.add(vmd.getValue(elementTypeInfo, cl));
+         Object value = vmd.getValue(elementTypeInfo, cl);
+         try
+         {
+            result.add(value);
+         }
+         catch (UnsupportedOperationException e)
+         {
+            if (i != 0)
+               throw e;
+            result = getTypeInstance(info, cl, Collection.class, false);
+            result.add(value);
+         }
       }
       return result;
    }

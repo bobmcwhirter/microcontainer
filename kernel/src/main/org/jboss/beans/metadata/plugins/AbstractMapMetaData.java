@@ -121,6 +121,7 @@ public class AbstractMapMetaData extends AbstractTypeMetaData
 
       if (map.size() > 0)
       {
+         boolean first = true;
          for (Iterator i = map.entrySet().iterator(); i.hasNext();)
          {
             Map.Entry entry = (Map.Entry) i.next();
@@ -128,7 +129,18 @@ public class AbstractMapMetaData extends AbstractTypeMetaData
             ValueMetaData value = (ValueMetaData) entry.getValue();
             Object keyValue = key.getValue(keyTypeInfo, cl);
             Object valueValue = value.getValue(valueTypeInfo, cl);
-            result.put(keyValue, valueValue);
+            try
+            {
+               result.put(keyValue, valueValue);
+            }
+            catch (UnsupportedOperationException e)
+            {
+               if (first == false)
+                  throw e;
+               result = getTypeInstance(info, cl, getExpectedClass(), false);
+               result.put(keyValue, valueValue);
+            }
+            first = false;
          }
       }
       return result;

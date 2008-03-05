@@ -268,6 +268,22 @@ public abstract class AbstractTypeMetaData extends AbstractValueMetaData
     */
    protected <T> T getTypeInstance(TypeInfo info, ClassLoader cl, Class<T> expected) throws Throwable
    {
+      return getTypeInstance(info, cl, expected, true);
+   }
+
+   /**
+    * Create the class instance
+    *
+    * @param <T> expected type
+    * @param info the request type
+    * @param cl the classloader
+    * @param expected the expected class
+    * @param preInstantiatedLookup  whether to do the preinstantiated lookup
+    * @return the class instance
+    * @throws Throwable for any error
+    */
+   protected <T> T getTypeInstance(TypeInfo info, ClassLoader cl, Class<T> expected, boolean preInstantiatedLookup) throws Throwable
+   {
       T result = null;
 
       TypeInfo typeInfo = getClassInfo(cl);
@@ -277,7 +293,8 @@ public abstract class AbstractTypeMetaData extends AbstractValueMetaData
 
       if (result == null)
       {
-         result = preinstantiatedLookup(cl, expected);
+         if (preInstantiatedLookup)
+            result = preinstantiatedLookup(cl, expected);
          // try info param
          if (result == null)
          {
