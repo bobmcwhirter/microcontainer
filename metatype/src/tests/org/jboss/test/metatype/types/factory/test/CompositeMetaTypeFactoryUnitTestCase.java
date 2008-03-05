@@ -25,14 +25,17 @@ import java.lang.reflect.Field;
 import java.lang.reflect.Type;
 import java.util.Collections;
 import java.util.HashMap;
+import java.util.Map;
 import java.util.Set;
 
 import junit.framework.Test;
 
 import org.jboss.metatype.api.types.CompositeMetaType;
+import org.jboss.metatype.api.types.MapCompositeMetaType;
 import org.jboss.metatype.api.types.MetaType;
 import org.jboss.metatype.api.types.SimpleMetaType;
 import org.jboss.metatype.api.values.CompositeValueSupport;
+import org.jboss.metatype.api.values.MapCompositeValueSupport;
 import org.jboss.metatype.api.values.MetaValue;
 import org.jboss.metatype.api.values.SimpleValueSupport;
 import org.jboss.metatype.plugins.types.MutableCompositeMetaType;
@@ -136,24 +139,29 @@ public class CompositeMetaTypeFactoryUnitTestCase extends AbstractMetaTypeFactor
    }
 
    public HashMap<String, String> compositeSignature;
-   
+   /**
+    * JBMICROCONT-238
+    * TODO: Fixing this breaks other Map<String,?> tests expecting
+    * TableMetaType/TableValues
+    * @throws Exception
+    */
    public void testMapComposite() throws Exception
    {
       Field field = getClass().getField("compositeSignature");
       Type mapSignature = field.getGenericType();
       CompositeMetaType result = assertInstanceOf(resolve(mapSignature), CompositeMetaType.class);
-      MutableCompositeMetaType expected = new MutableCompositeMetaType(HashMap.class.getName(), "HashMap<String,String>");
-      expected.addItem("key1", "key1", SimpleMetaType.STRING);
-      expected.addItem("key2", "key2", SimpleMetaType.STRING);
-      expected.addItem("key3", "key3", SimpleMetaType.STRING);
-      expected.freeze();
+      MapCompositeMetaType expected = new MapCompositeMetaType(SimpleMetaType.STRING);
       
       testComposite(expected, result);
 
-      String[] itemNames = {"key1", "key2", "key3"};
-      MetaValue[] itemValues = {SimpleValueSupport.wrap("value1"), SimpleValueSupport.wrap("value3"), SimpleValueSupport.wrap("value3")};
-      CompositeValueSupport mapValue = new CompositeValueSupport(expected, itemNames, itemValues);
-      assertEquals("value1", mapValue.get("key1"));
+      Map<String, MetaValue> itemValues = new HashMap<String, MetaValue>();
+      itemValues.put("key1", SimpleValueSupport.wrap("value1"));
+      itemValues.put("key2", SimpleValueSupport.wrap("value2"));
+      itemValues.put("key3", SimpleValueSupport.wrap("value3"));
+      MapCompositeValueSupport mapValue = new MapCompositeValueSupport(itemValues, expected);
+      assertEquals(SimpleValueSupport.wrap("value1"), mapValue.get("key1"));
+      assertEquals(SimpleValueSupport.wrap("value2"), mapValue.get("key2"));
+      assertEquals(SimpleValueSupport.wrap("value3"), mapValue.get("key3"));
    }
 
 }
