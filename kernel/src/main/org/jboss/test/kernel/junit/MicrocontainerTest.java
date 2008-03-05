@@ -22,12 +22,16 @@
 package org.jboss.test.kernel.junit;
 
 import java.net.URL;
+import java.util.UUID;
 
 import org.jboss.beans.metadata.spi.BeanMetaData;
+import org.jboss.beans.metadata.plugins.AbstractBeanMetaData;
 import org.jboss.dependency.spi.ControllerState;
 import org.jboss.kernel.spi.dependency.KernelControllerContext;
+import org.jboss.kernel.spi.dependency.KernelController;
 import org.jboss.kernel.spi.deployment.KernelDeployment;
 import org.jboss.kernel.spi.metadata.KernelMetaDataRepository;
+import org.jboss.kernel.Kernel;
 import org.jboss.test.AbstractTestCaseWithSetup;
 import org.jboss.test.AbstractTestDelegate;
 
@@ -39,6 +43,12 @@ import org.jboss.test.AbstractTestDelegate;
  */
 public class MicrocontainerTest extends AbstractTestCaseWithSetup
 {
+   /** Should we wire this bean */
+   private boolean autowireCandidate;
+
+   /** The test bean name */
+   private String testBeanName;
+
    /**
     * Get the test delegate
     * 
@@ -61,6 +71,12 @@ public class MicrocontainerTest extends AbstractTestCaseWithSetup
       super(name);
    }
    
+   public MicrocontainerTest(String name, boolean autowireCandidate)
+   {
+      super(name);
+      this.autowireCandidate = autowireCandidate;
+   }
+
    protected void setUp() throws Exception
    {
       super.setUp();
@@ -74,9 +90,85 @@ public class MicrocontainerTest extends AbstractTestCaseWithSetup
     */
    protected void afterSetUp() throws Exception
    {
+      if (autowireCandidate)
+         autowireThis();
+
       configureLogging();
       // Validate everything deployed
       getMCDelegate().validate();
+   }
+
+   @Override
+   protected void tearDown() throws Exception
+   {
+      if (autowireCandidate)
+         clearAutowire();
+
+      super.tearDown();
+   }
+
+   /**
+    * Autowire this test instance.
+    * Registering it into underlying controller.
+    *
+    * @throws Exception for any error
+    */
+   protected void autowireThis() throws Exception
+   {
+      String beanName = createTestBeanName();
+      KernelController controller = getController();
+      try
+      {
+         controller.install(new AbstractBeanMetaData(beanName, getClass().getName()), this);
+         // we're installed
+         testBeanName = beanName;
+      }
+      catch (Throwable t)
+      {
+         throw new Exception(t);
+      }
+   }
+
+   /**
+    * Get the test's bean name.
+    * By default it's random uuid.
+    *
+    * @return test's bean name
+    */
+   protected String createTestBeanName()
+   {
+      return UUID.randomUUID().toString();
+   }
+
+   /**
+    * Clear things after autowiring.
+    */
+   protected void clearAutowire()
+   {
+      if (testBeanName != null)
+      {
+         try
+         {
+            KernelController controller = getController();
+            controller.uninstall(testBeanName);
+         }
+         catch (Exception e)
+         {
+            getLog().warn("Exception while uninstalling test instance: " + e);  
+         }
+      }
+   }
+
+   /**
+    * Get the underlying controller.
+    *
+    * @return the controller
+    */
+   private KernelController getController()
+   {
+      MicrocontainerTestDelegate delegate = getMCDelegate();
+      Kernel kernel = delegate.kernel;
+      return kernel.getController();
    }
 
    /**
@@ -326,5 +418,15 @@ public class MicrocontainerTest extends AbstractTestCaseWithSetup
    protected MicrocontainerTestDelegate getMCDelegate()
    {
       return (MicrocontainerTestDelegate) getDelegate();
+   }
+
+   /**
+    * Set the autowire flag.
+    *
+    * @param autowireCandidate the autowire flag
+    */
+   public void setAutowireCandidate(boolean autowireCandidate)
+   {
+      this.autowireCandidate = autowireCandidate;
    }
 }

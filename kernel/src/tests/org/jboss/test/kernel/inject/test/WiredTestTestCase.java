@@ -21,18 +21,18 @@
 */
 package org.jboss.test.kernel.inject.test;
 
-import org.jboss.test.kernel.junit.WiredMicrocontainerTest;
-import org.jboss.test.kernel.inject.support.TesterInterface;
-import org.jboss.test.kernel.inject.support.StringValueObject;
-import org.jboss.beans.metadata.api.annotations.Inject;
 import junit.framework.Test;
+import org.jboss.beans.metadata.api.annotations.Inject;
+import org.jboss.test.kernel.inject.support.StringValueObject;
+import org.jboss.test.kernel.inject.support.TesterInterface;
+import org.jboss.test.kernel.junit.MicrocontainerTest;
 
 /**
  * Test wired test. :-)
  *
  * @author <a href="mailto:ales.justin@jboss.com">Ales Justin</a>
  */
-public class WiredTestTestCase extends WiredMicrocontainerTest
+public class WiredTestTestCase extends MicrocontainerTest
 {
    private TesterInterface tester;
    private StringValueObject valueObject;
@@ -40,7 +40,7 @@ public class WiredTestTestCase extends WiredMicrocontainerTest
 
    public WiredTestTestCase(String name)
    {
-      super(name);
+      super(name, true);
    }
 
    public static Test suite()
