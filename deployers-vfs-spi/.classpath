@@ -17,7 +17,6 @@
   <classpathentry kind="var" path="M2_REPO/org/jboss/javassist/3.6.0.GA/javassist-3.6.0.GA.jar" sourcepath="M2_REPO/org/jboss/javassist/3.6.0.GA/javassist-3.6.0.GA-sources.jar"/>
   <classpathentry kind="var" path="M2_REPO/apache-xerces/xercesImpl/2.7.1/xercesImpl-2.7.1.jar"/>
   <classpathentry kind="var" path="M2_REPO/wutka-dtdparser/dtdparser121/1.2.1/dtdparser121-1.2.1.jar"/>
-  <classpathentry kind="var" path="M2_REPO/sun-jaxb/jaxb-api/2.0.5/jaxb-api-2.0.5.jar"/>
   <classpathentry kind="src" path="/jboss-deployers-client-spi"/>
   <classpathentry kind="src" path="/jboss-deployers-core-spi"/>
   <classpathentry kind="src" path="/jboss-managed"/>

@@ -28,7 +28,6 @@
   <classpathentry kind="var" path="M2_REPO/javax/xml/bind/jsr173_api/1.0/jsr173_api-1.0.jar"/>
   <classpathentry kind="var" path="M2_REPO/javax/activation/activation/1.0.2/activation-1.0.2.jar"/>
   <classpathentry kind="var" path="M2_REPO/wutka-dtdparser/dtdparser121/1.2.1/dtdparser121-1.2.1.jar"/>
-  <classpathentry kind="var" path="M2_REPO/sun-jaxb/jaxb-api/2.0.5/jaxb-api-2.0.5.jar"/>
   <classpathentry kind="src" path="/jboss-classloader"/>
   <classpathentry kind="src" path="/jboss-classloading"/>
   <classpathentry kind="src" path="/jboss-classloading-vfs"/>
