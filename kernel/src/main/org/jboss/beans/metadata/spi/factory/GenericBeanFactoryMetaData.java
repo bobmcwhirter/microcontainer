@@ -22,10 +22,8 @@
 package org.jboss.beans.metadata.spi.factory;
 
 import java.io.Serializable;
-import java.util.ArrayList;
 import java.util.Collections;
 import java.util.HashMap;
-import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 
@@ -35,16 +33,13 @@ import javax.xml.bind.annotation.XmlRootElement;
 import javax.xml.bind.annotation.XmlType;
 
 import org.jboss.beans.metadata.plugins.AbstractAnnotationMetaData;
-import org.jboss.beans.metadata.plugins.AbstractBeanMetaData;
 import org.jboss.beans.metadata.plugins.AbstractClassLoaderMetaData;
 import org.jboss.beans.metadata.plugins.AbstractConstructorMetaData;
 import org.jboss.beans.metadata.plugins.AbstractDemandMetaData;
 import org.jboss.beans.metadata.plugins.AbstractDependencyMetaData;
-import org.jboss.beans.metadata.plugins.AbstractDependencyValueMetaData;
 import org.jboss.beans.metadata.plugins.AbstractInstallMetaData;
 import org.jboss.beans.metadata.plugins.AbstractLifecycleMetaData;
 import org.jboss.beans.metadata.plugins.AbstractMapMetaData;
-import org.jboss.beans.metadata.plugins.AbstractParameterMetaData;
 import org.jboss.beans.metadata.plugins.AbstractPropertyMetaData;
 import org.jboss.beans.metadata.plugins.AbstractSupplyMetaData;
 import org.jboss.beans.metadata.plugins.AbstractValueMetaData;

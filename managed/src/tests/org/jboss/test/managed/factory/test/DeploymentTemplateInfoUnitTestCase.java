@@ -27,7 +27,6 @@ import org.jboss.managed.api.DeploymentTemplateInfo;
 import org.jboss.managed.api.ManagedObject;
 import org.jboss.managed.plugins.factory.DeploymentTemplateInfoFactory;
 import org.jboss.test.managed.factory.AbstractManagedObjectFactoryTest;
-import org.jboss.test.managed.factory.support.ManagementObjectAll;
 import org.jboss.test.managed.factory.support.template.ManagementObjectExplicit;
 
 
