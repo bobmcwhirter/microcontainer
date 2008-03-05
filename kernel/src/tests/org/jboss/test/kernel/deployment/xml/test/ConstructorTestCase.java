@@ -66,6 +66,17 @@ public class ConstructorTestCase extends AbstractXMLTest
       assertBean(constructor.getValue());
    }
 
+   public void testConstructorWithLazy() throws Exception
+   {
+      ConstructorMetaData constructor = getConstructor("ConstructorWithLazy.xml");
+      assertNull(constructor.getFactoryClass());
+      assertNull(constructor.getFactoryMethod());
+      assertNull(constructor.getAnnotations());
+      assertNull(constructor.getFactory());
+      assertNull(constructor.getParameters());
+      assertLazy(constructor.getValue());
+   }
+
    public void testConstructorWithFactoryClass() throws Exception
    {
       ConstructorMetaData constructor = getConstructor("ConstructorWithFactoryClass.xml");
@@ -164,6 +175,17 @@ public class ConstructorTestCase extends AbstractXMLTest
       assertNull(constructor.getFactory());
       assertNull(constructor.getParameters());
       assertValue("Value", constructor.getValue());
+   }
+
+   public void testConstructorWithInject() throws Exception
+   {
+      ConstructorMetaData constructor = getConstructor("ConstructorWithInject.xml");
+      assertNull(constructor.getFactoryClass());
+      assertNull(constructor.getFactoryMethod());
+      assertNull(constructor.getAnnotations());
+      assertNull(constructor.getFactory());
+      assertNull(constructor.getParameters());
+      assertInjection(constructor.getValue());
    }
 
    public void testConstructorWithCollection() throws Exception

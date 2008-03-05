@@ -69,6 +69,17 @@ public class ConstructorJaxbTestCase extends AbstractMCTest
       assertBean(constructor.getValue());
    }
 
+   public void testConstructorWithLazy() throws Exception
+   {
+      ConstructorMetaData constructor = getConstructor();
+      assertNull(constructor.getFactoryClass());
+      assertNull(constructor.getFactoryMethod());
+      assertNull(constructor.getAnnotations());
+      assertNull(constructor.getFactory());
+      assertNull(constructor.getParameters());
+      assertLazy(constructor.getValue());
+   }
+
    public void testConstructorWithFactoryClass() throws Exception
    {
       ConstructorMetaData constructor = getConstructor();
@@ -167,6 +178,17 @@ public class ConstructorJaxbTestCase extends AbstractMCTest
       assertNull(constructor.getFactory());
       assertNull(constructor.getParameters());
       assertValue("Value", constructor.getValue());
+   }
+
+   public void testConstructorWithInject() throws Exception
+   {
+      ConstructorMetaData constructor = getConstructor();
+      assertNull(constructor.getFactoryClass());
+      assertNull(constructor.getFactoryMethod());
+      assertNull(constructor.getAnnotations());
+      assertNull(constructor.getFactory());
+      assertNull(constructor.getParameters());
+      assertInjection(constructor.getValue());
    }
 
    public void testConstructorWithCollection() throws Exception

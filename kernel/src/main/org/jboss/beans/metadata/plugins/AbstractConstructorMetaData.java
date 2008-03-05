@@ -113,12 +113,15 @@ public class AbstractConstructorMetaData extends AbstractFeatureMetaData
     */
    @XmlElements
    ({
+      @XmlElement(name="bean", type=AbstractBeanMetaData.class),
+      @XmlElement(name="lazy", type=AbstractLazyMetaData.class),
       @XmlElement(name="array", type=AbstractArrayMetaData.class),
       @XmlElement(name="collection", type=AbstractCollectionMetaData.class),
       @XmlElement(name="list", type=AbstractListMetaData.class),
       @XmlElement(name="map", type=AbstractMapMetaData.class),
       @XmlElement(name="set", type=AbstractSetMetaData.class),
       @XmlElement(name="value", type=StringValueMetaData.class),
+      @XmlElement(name="inject", type=AbstractInjectionValueMetaData.class),
       @XmlElement(name="value-factory", type=AbstractValueFactoryMetaData.class)
    })
    public void setValue(ValueMetaData value)

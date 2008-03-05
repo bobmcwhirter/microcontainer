@@ -47,6 +47,7 @@ import org.jboss.beans.metadata.spi.ParameterMetaData;
 import org.jboss.beans.metadata.spi.PropertyMetaData;
 import org.jboss.beans.metadata.spi.SupplyMetaData;
 import org.jboss.beans.metadata.spi.ValueMetaData;
+import org.jboss.beans.metadata.spi.LazyMetaData;
 import org.jboss.beans.metadata.spi.factory.GenericBeanFactoryMetaData;
 import org.jboss.javabean.plugins.jaxb.JavaBean10;
 import org.jboss.kernel.plugins.deployment.AbstractKernelDeployment;
@@ -264,6 +265,12 @@ public class AbstractMCTest extends AbstractBuilderTest
    {
       assertNotNull(value);
       assertTrue(value instanceof BeanMetaData);
+   }
+
+   protected void assertLazy(ValueMetaData value)
+   {
+      assertNotNull(value);
+      assertTrue(value instanceof LazyMetaData);
    }
 
    protected void checkJBossXBException(Class<? extends Throwable> expected, Throwable throwable)

@@ -181,6 +181,14 @@ public class PropertyTestCase extends AbstractXMLTest
       assertThis(property.getValue());
    }
    
+   public void testPropertyWithNull() throws Exception
+   {
+      PropertyMetaData property = getProperty("PropertyWithNull.xml");
+      assertNotNull("PropertyName", property.getName());
+      assertNull(property.getAnnotations());
+      assertNullValue(property.getValue());
+   }
+
    public void testPropertyWithWildcard() throws Exception
    {
       PropertyMetaData property = getProperty("PropertyWithWildcard.xml");

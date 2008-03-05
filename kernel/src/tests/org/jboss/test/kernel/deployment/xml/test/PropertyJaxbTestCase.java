@@ -175,6 +175,14 @@ public class PropertyJaxbTestCase extends AbstractMCTest
       assertThis(property.getValue());
    }
    
+   public void testPropertyWithNull() throws Exception
+   {
+      PropertyMetaData property = getProperty();
+      assertNotNull("PropertyName", property.getName());
+      assertNull(property.getAnnotations());
+      assertNullValue(property.getValue());
+   }
+
    public void testPropertyWithWildcard() throws Exception
    {
       PropertyMetaData property = getProperty();

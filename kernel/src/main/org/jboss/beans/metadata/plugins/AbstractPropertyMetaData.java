@@ -179,6 +179,7 @@ public class AbstractPropertyMetaData extends AbstractFeatureMetaData
       @XmlElement(name="list", type=AbstractListMetaData.class),
       @XmlElement(name="map", type=AbstractMapMetaData.class),
       @XmlElement(name="set", type=AbstractSetMetaData.class),
+      @XmlElement(name="null", type=AbstractValueMetaData.class),
       @XmlElement(name="this", type=ThisValueMetaData.class),
       @XmlElement(name="value", type=StringValueMetaData.class),
       @XmlElement(name="value-factory", type=AbstractValueFactoryMetaData.class)

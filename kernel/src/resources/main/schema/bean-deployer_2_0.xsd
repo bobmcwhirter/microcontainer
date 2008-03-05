@@ -203,7 +203,7 @@ $Id$
       <xsd:annotation>
          <xsd:documentation>
            <![CDATA[
-           Wrap the exisgin bean into lazy proxy.
+           Wrap the existing bean into lazy proxy.
            Expose the full class or just interfaces.
            Name is optional, and if no name is provided bean+'Proxy' will be used.
 

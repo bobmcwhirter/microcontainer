@@ -49,6 +49,7 @@ import org.jboss.beans.metadata.spi.ParameterMetaData;
 import org.jboss.beans.metadata.spi.PropertyMetaData;
 import org.jboss.beans.metadata.spi.SupplyMetaData;
 import org.jboss.beans.metadata.spi.ValueMetaData;
+import org.jboss.beans.metadata.spi.LazyMetaData;
 import org.jboss.kernel.plugins.deployment.AbstractKernelDeployment;
 import org.jboss.test.AbstractTestCaseWithSetup;
 import org.jboss.test.AbstractTestDelegate;
@@ -353,6 +354,12 @@ public class AbstractXMLTest extends AbstractTestCaseWithSetup
    {
       assertNotNull(value);
       assertTrue(value instanceof BeanMetaData);
+   }
+
+   protected void assertLazy(ValueMetaData value)
+   {
+      assertNotNull(value);
+      assertTrue(value instanceof LazyMetaData);
    }
 
    protected void checkJBossXBException(Class<? extends Throwable> expected, Throwable throwable)

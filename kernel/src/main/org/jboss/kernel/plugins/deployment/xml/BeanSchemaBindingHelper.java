@@ -531,6 +531,9 @@ public class BeanSchemaBindingHelper
       // type has bean
       typeBinding.pushInterceptor(BeanSchemaBinding20.beanQName, ValueMetaDataElementInterceptor.VALUES);
 
+      // type has lazy
+      typeBinding.pushInterceptor(BeanSchemaBinding20.lazyQName, ValueMetaDataElementInterceptor.VALUES);
+
       // type has values
       typeBinding.pushInterceptor(BeanSchemaBinding20.valueQName, ValueMetaDataElementInterceptor.VALUES);
 
