@@ -211,6 +211,17 @@ public class AbstractConstructorMetaData extends AbstractFeatureMetaData
       return factoryMethod;
    }
 
+   @Override
+   public void initialVisit(MetaDataVisitor visitor)
+   {
+      if (parameters != null)
+      {
+         for (int i = 0; i < parameters.size(); ++i)
+            parameters.get(i).setIndex(i);
+      }
+      super.initialVisit(visitor);
+   }
+
    protected void addChildren(Set<MetaDataVisitorNode> children)
    {
       super.addChildren(children);

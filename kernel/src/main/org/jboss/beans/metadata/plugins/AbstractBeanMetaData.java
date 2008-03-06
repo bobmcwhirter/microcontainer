@@ -608,6 +608,14 @@ public class AbstractBeanMetaData extends AbstractFeatureMetaData
          DependencyItem di = new AbstractDependencyItem(name, iDependOn, whenRequired, ControllerState.INSTALLED);
          visitor.addDependency(di);
       }
+      if (create != null && create.getMethodName() == null)
+         create.setMethodName("create");
+      if (start != null && start.getMethodName() == null)
+         start.setMethodName("start");
+      if (stop != null && stop.getMethodName() == null)
+         stop.setMethodName("stop");
+      if (destroy != null && destroy.getMethodName() == null)
+         destroy.setMethodName("destroy");
       super.initialVisit(visitor);
    }
 

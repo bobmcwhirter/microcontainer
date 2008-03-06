@@ -266,6 +266,7 @@ public class AbstractValueFactoryMetaData extends AbstractValueMetaData implemen
       this.parameters = parameters;
    }
 
+   @Override
    public void initialVisit(MetaDataVisitor visitor)
    {
       if (getParameter() != null && getParameters() != null)
@@ -276,6 +277,12 @@ public class AbstractValueFactoryMetaData extends AbstractValueMetaData implemen
          parameters.add(new AbstractParameterMetaData(String.class.getName(), getParameter()));
          setParameters(parameters);
          setParameter(null);
+      }
+
+      if (parameters != null)
+      {
+         for (int i = 0; i < parameters.size(); ++i)
+            parameters.get(i).setIndex(i);
       }
 
       context = visitor.getControllerContext();

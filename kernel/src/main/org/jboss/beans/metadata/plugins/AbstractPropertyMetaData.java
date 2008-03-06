@@ -271,6 +271,10 @@ public class AbstractPropertyMetaData extends AbstractFeatureMetaData
 
    public void initialVisit(MetaDataVisitor visitor)
    {
+      ValueMetaData vmd = getValue();
+      if (vmd != null && vmd instanceof AbstractInjectionValueMetaData)
+         ((AbstractInjectionValueMetaData) vmd).setPropertyMetaData(this);
+      
       visitor.setContextState(ControllerState.CONFIGURED);
       super.initialVisit(visitor);
    }

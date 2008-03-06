@@ -291,7 +291,7 @@ public class AbstractInjectionValueMetaData extends AbstractDependencyValueMetaD
                   {
                      TypeProvider typeProvider = (TypeProvider)node;
                      Class<?> injectionClass = typeProvider.getType(visitor, this).getType();
-                     log.debug("Contextual injection usage (class -> classloader): " + injectionClass + " -> " + injectionClass.getClassLoader());
+                     log.debug(context.getName() + ": Contextual injection usage (class -> classloader): " + injectionClass + " -> " + injectionClass.getClassLoader() + " defined by " + node);
                      // set when required
                      ControllerState whenRequired = whenRequiredState;
                      if (whenRequired == null)

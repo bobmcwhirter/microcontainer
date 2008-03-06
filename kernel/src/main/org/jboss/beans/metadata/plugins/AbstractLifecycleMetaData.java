@@ -160,8 +160,14 @@ public class AbstractLifecycleMetaData extends AbstractFeatureMetaData
       this.type = type;
    }
 
+   @Override
    public void initialVisit(MetaDataVisitor visitor)
    {
+      if (parameters != null)
+      {
+         for (int i = 0; i < parameters.size(); ++i)
+            parameters.get(i).setIndex(i);
+      }
       visitor.setContextState(state);
       super.initialVisit(visitor);
    }

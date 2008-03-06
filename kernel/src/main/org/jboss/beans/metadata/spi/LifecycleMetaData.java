@@ -53,6 +53,13 @@ public interface LifecycleMetaData extends ParameterizedMetaData, FeatureMetaDat
    String getMethodName();
 
    /**
+    * Set the method name
+    * 
+    * @param methodName the method name
+    */
+   void setMethodName(String methodName);
+   
+   /**
     * Is default ignored.
     *
     * @return should we ignore default

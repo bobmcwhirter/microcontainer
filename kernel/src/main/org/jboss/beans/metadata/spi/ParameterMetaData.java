@@ -50,4 +50,10 @@ public interface ParameterMetaData extends FeatureMetaData
     */
    int getIndex();
 
+   /**
+    * Set the index
+    * 
+    * @param index the index
+    */
+   void setIndex(int index);
 }
