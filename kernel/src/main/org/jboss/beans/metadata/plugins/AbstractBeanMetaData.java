@@ -596,6 +596,20 @@ public class AbstractBeanMetaData extends AbstractFeatureMetaData
 
    public void initialVisit(MetaDataVisitor visitor)
    {
+      if (getBean() == null && isAbstract() == false && getParent() == null)
+      {
+         ConstructorMetaData constructor = getConstructor();
+         if (constructor == null)
+            throw new IllegalArgumentException("Bean should have a class attribute or a constructor element.");
+         if (constructor.getFactoryMethod() == null)
+         {
+            if (constructor.getValue() == null)
+               throw new IllegalArgumentException("Bean should have a class attribute or the constructor element should have either a factoryMethod attribute or embedded value.");
+         }
+         else if (constructor.getFactory() == null && constructor.getFactoryClass() == null)
+            throw new IllegalArgumentException("Bean should have a class attribute or the constructor element should have one of a factoryClass attribute or a factory element, or embedded value.");
+      }
+
       KernelControllerContext ctx = visitor.getControllerContext();
       if (ctx.getBeanMetaData() == this)
          context = ctx;

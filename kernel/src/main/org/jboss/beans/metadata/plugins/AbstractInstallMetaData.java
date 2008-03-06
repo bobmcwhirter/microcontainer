@@ -100,6 +100,9 @@ public class AbstractInstallMetaData extends AbstractLifecycleMetaData
 
    public void initialVisit(MetaDataVisitor visitor)
    {
+      if (getMethodName() == null)
+         throw new IllegalArgumentException("Install/uninstall should have method attribute.");
+
       KernelControllerContext context = visitor.getControllerContext();
       if (bean != null)
       {

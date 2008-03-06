@@ -108,6 +108,9 @@ public class AbstractClassLoaderMetaData extends JBossObject
 
    public void initialVisit(MetaDataVisitor visitor)
    {
+      if (getClassLoader() == null)
+         throw new IllegalArgumentException("ClassLoader should have a nested value.");
+
       visitor.setContextState(ControllerState.PRE_INSTALL);
       visitor.initialVisit(this);
    }

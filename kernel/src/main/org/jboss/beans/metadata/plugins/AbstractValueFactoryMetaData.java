@@ -269,6 +269,8 @@ public class AbstractValueFactoryMetaData extends AbstractValueMetaData implemen
    @Override
    public void initialVisit(MetaDataVisitor visitor)
    {
+      if (getUnderlyingValue() == null || getMethod() == null)
+         throw new IllegalArgumentException("Bean or method cannot null: " + this);
       if (getParameter() != null && getParameters() != null)
          throw new IllegalArgumentException("Both parameter and parameters cannot be set: " + this);
       if (getParameter() != null)

@@ -491,6 +491,17 @@ public class GenericBeanFactoryMetaData extends JBossObject implements BeanMetaD
 
    public List<BeanMetaData> getBeans()
    {
+      if (getBean() == null)
+      {
+         ConstructorMetaData constructor = getConstructor();
+         if (constructor == null)
+            throw new IllegalArgumentException("BeanFactory should have a class attribute or a constructor element.");
+         if (constructor.getFactoryMethod() == null)
+            throw new IllegalArgumentException("BeanFactory should have a class attribute or the constructor element should have a factoryMethod attribute.");
+         if (constructor.getFactory() == null && constructor.getFactoryClass() == null)
+            throw new IllegalArgumentException("BeanFactory should have a class attribute or the constructor element should have a either a factoryClass attribute or a factory element.");
+      }
+
       BeanMetaDataBuilder builder = BeanMetaDataBuilder.createBuilder(name, GenericBeanFactory.class.getName());
       builder.setAliases(aliases);
       builder.setMode(mode);

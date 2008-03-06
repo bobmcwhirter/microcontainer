@@ -271,6 +271,10 @@ public class AbstractPropertyMetaData extends AbstractFeatureMetaData
 
    public void initialVisit(MetaDataVisitor visitor)
    {
+      String name = getName();
+      if (name == null || name.trim().length() == 0)
+         throw new IllegalArgumentException("Null or empty property name.");
+
       ValueMetaData vmd = getValue();
       if (vmd != null && vmd instanceof AbstractInjectionValueMetaData)
          ((AbstractInjectionValueMetaData) vmd).setPropertyMetaData(this);

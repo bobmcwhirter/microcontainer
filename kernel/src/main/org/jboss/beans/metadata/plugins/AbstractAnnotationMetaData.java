@@ -123,6 +123,12 @@ public class AbstractAnnotationMetaData extends JBossObject
 
    public void initialVisit(MetaDataVisitor visitor)
    {
+      String ann = getAnnotation().trim();
+      if (ann == null || ann.length() == 0)
+         throw new IllegalArgumentException("Empty annotation content");
+      if (ann.startsWith("@") == false)
+         throw new IllegalArgumentException("Annotation content must be a fully qualified annotation type name prefixed with '@'");
+
       visitor.initialVisit(this);
    }
 

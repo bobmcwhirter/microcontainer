@@ -214,6 +214,18 @@ public class AbstractConstructorMetaData extends AbstractFeatureMetaData
    @Override
    public void initialVisit(MetaDataVisitor visitor)
    {
+      ValueMetaData factory = getFactory();
+      if (factory != null || getFactoryClass() != null)
+      {
+         if (getFactoryMethod() == null)
+            throw new IllegalArgumentException("Constructor needs a factoryMethod attribute when there is a factoryClass attribute or factory element.");
+      }
+      if (factory != null)
+      {
+         if (factory.getUnderlyingValue() == null)
+            throw new IllegalArgumentException("Factory should have a bean attribute or nested element.");
+      }
+
       if (parameters != null)
       {
          for (int i = 0; i < parameters.size(); ++i)

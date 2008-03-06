@@ -91,6 +91,10 @@ public class AbstractDependencyMetaData extends JBossObject
 
    public void initialVisit(MetaDataVisitor visitor)
    {
+      String name = (String) getDependency();
+      if (name == null || name.trim().length() == 0)
+         throw new IllegalArgumentException("Null or empty dependency.");
+
       KernelControllerContext context = visitor.getControllerContext();
       DependencyItem item = new LifecycleDependencyItem(context.getName(), ControllerState.CREATE);
       visitor.addDependency(item);

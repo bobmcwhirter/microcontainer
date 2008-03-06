@@ -147,6 +147,10 @@ public class AbstractSupplyMetaData extends JBossObject
 
    public void initialVisit(MetaDataVisitor visitor)
    {
+      Object supply = getSupply();
+      if (supply == null || supply.toString().length() == 0)
+         throw new IllegalArgumentException("Null or empty supply.");
+
       visitor.initialVisit(this);
    }
 

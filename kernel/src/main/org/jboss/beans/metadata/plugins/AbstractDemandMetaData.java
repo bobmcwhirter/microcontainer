@@ -140,6 +140,10 @@ public class AbstractDemandMetaData extends JBossObject
 
    public void initialVisit(MetaDataVisitor visitor)
    {
+      String name = (String) getDemand();
+      if (name == null || name.trim().length() == 0)
+         throw new IllegalArgumentException("Null or empty demand.");
+
       KernelControllerContext context = visitor.getControllerContext();
       DependencyItem item = new DemandDependencyItem(context.getName());
       visitor.addDependency(item);
