@@ -63,7 +63,7 @@ public class CallbackHandler extends DefaultElementHandler
          else if ("state".equals(localName))
             callbackMetaData.setDependentState(new ControllerState(attrs.getValue(i)));
          else if ("whenRequired".equals(localName))
-            callbackMetaData.setWhenRequired(new ControllerState(attrs.getValue(i)));
+            callbackMetaData.setState(new ControllerState(attrs.getValue(i)));
          else if ("signature".equals(localName))
             callbackMetaData.setSignature(attrs.getValue(i));
          else if ("cardinality".equals(localName))

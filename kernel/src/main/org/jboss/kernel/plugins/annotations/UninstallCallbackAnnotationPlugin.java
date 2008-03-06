@@ -57,7 +57,7 @@ public abstract class UninstallCallbackAnnotationPlugin<T extends AnnotatedInfo>
    protected AbstractCallbackMetaData createCallback(T info, Uninstall annotation)
    {
       UninstallCallbackMetaData callback = new UninstallCallbackMetaData();
-      callback.setWhenRequired(new ControllerState(annotation.whenRequired()));
+      callback.setState(new ControllerState(annotation.whenRequired()));
       callback.setDependentState(new ControllerState(annotation.dependentState()));
       if (isAttributePresent(annotation.cardinality()))
          callback.setCardinality(Cardinality.fromString(annotation.cardinality()));

@@ -55,9 +55,6 @@ public abstract class AbstractCallbackMetaData extends AbstractLifecycleMetaData
    protected String property;
 
    /** The required state of the dependency */
-   protected ControllerState whenRequired = ControllerState.INSTALLED;
-
-   /** The required state of the dependency */
    protected ControllerState dependentState = ControllerState.INSTALLED;
 
    /** The signature */
@@ -105,23 +102,6 @@ public abstract class AbstractCallbackMetaData extends AbstractLifecycleMetaData
    public void setCardinality(Cardinality cardinality)
    {
       this.cardinality = cardinality;
-      flushJBossObjectCache();
-   }
-
-   public ControllerState getWhenRequired()
-   {
-      return whenRequired;
-   }
-
-   /**
-    * Set when required state.
-    *
-    * @param whenRequired when is this call back required (default Configured)
-    */
-   @XmlAttribute(name="whenRequired")
-   public void setWhenRequired(ControllerState whenRequired)
-   {
-      this.whenRequired = whenRequired;
       flushJBossObjectCache();
    }
 
@@ -183,6 +163,7 @@ public abstract class AbstractCallbackMetaData extends AbstractLifecycleMetaData
 
    public void describeVisit(MetaDataVisitor vistor)
    {
+      ControllerState whenRequired = getState();
       try
       {
          KernelControllerContext context = vistor.getControllerContext();
@@ -232,8 +213,6 @@ public abstract class AbstractCallbackMetaData extends AbstractLifecycleMetaData
          buffer.append(" signature=").append(signature);
       if (ControllerState.INSTALLED.equals(dependentState) == false)
          buffer.append(" dependentState=" + dependentState);
-      if (ControllerState.INSTALLED.equals(whenRequired) == false)
-         buffer.append(" whenRequired=" + whenRequired);
    }
 
    public void toShortString(JBossStringBuilder buffer)

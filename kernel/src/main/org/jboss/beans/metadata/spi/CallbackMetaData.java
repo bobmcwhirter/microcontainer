@@ -53,13 +53,6 @@ public interface CallbackMetaData extends LifecycleMetaData
    ControllerState getDependentState();
 
    /**
-    * Get the when required state
-    *
-    * @return the required state
-    */
-   ControllerState getWhenRequired();
-
-   /**
     * Get signature.
     *
     * @return method / property parameter signature

@@ -57,7 +57,7 @@ public abstract class InstallCallbackAnnotationPlugin<T extends AnnotatedInfo> e
    protected AbstractCallbackMetaData createCallback(T info, Install annotation)
    {
       InstallCallbackMetaData callback = new InstallCallbackMetaData();
-      callback.setWhenRequired(new ControllerState(annotation.whenRequired()));
+      callback.setState(new ControllerState(annotation.whenRequired()));
       callback.setDependentState(new ControllerState(annotation.dependentState()));
       if (isAttributePresent(annotation.cardinality()))
          callback.setCardinality(Cardinality.fromString(annotation.cardinality()));
