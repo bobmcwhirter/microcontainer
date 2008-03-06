@@ -55,6 +55,7 @@ import org.jboss.reflect.spi.TypeInfo;
 /**
  * A base InstanceClassFactory implementation that 
  * 
+ * @param <T> the instance type
  * @author Scott.Stark@jboss.org
  * @version $Revision$
  */
@@ -147,6 +148,9 @@ public class AbstractInstanceClassFactory<T extends Serializable>
    /**
     * Default InstanceClassFactory implementation simply returns the
     * instance class. 
+    * 
+    * @param instance the instance
+    * @return the class
     */
    public Class<? extends Serializable> getManagedObjectClass(Object instance)
    {
@@ -197,7 +201,7 @@ public class AbstractInstanceClassFactory<T extends Serializable>
          ArrayMetaType arrayType = ArrayMetaType.class.cast(propertyType);
          if (AbstractManagedObjectFactory.MANAGED_OBJECT_META_TYPE == arrayType.getElementType())
          {
-            Collection cvalue = getAsCollection(value);
+            Collection<?> cvalue = getAsCollection(value);
             ArrayMetaType moType = new ArrayMetaType(1, AbstractManagedObjectFactory.MANAGED_OBJECT_META_TYPE);
             ArrayValueSupport moArrayValue = new ArrayValueSupport(moType);
             List<GenericValueSupport> tmp = new ArrayList<GenericValueSupport>();
@@ -216,7 +220,7 @@ public class AbstractInstanceClassFactory<T extends Serializable>
          CollectionMetaType collectionType = CollectionMetaType.class.cast(propertyType);
          if (AbstractManagedObjectFactory.MANAGED_OBJECT_META_TYPE == collectionType.getElementType())
          {
-            Collection cvalue = getAsCollection(value);
+            Collection<?> cvalue = getAsCollection(value);
             List<GenericValueSupport> tmp = new ArrayList<GenericValueSupport>();
             for(Object element : cvalue)
             {
@@ -239,7 +243,7 @@ public class AbstractInstanceClassFactory<T extends Serializable>
     * @param beanInfo the bean info
     * @param property the property
     * @param object the object
-    * @param the meta value
+    * @param value the meta value
     */
    public void setValue(BeanInfo beanInfo, ManagedProperty property, T object, MetaValue value)
    {
@@ -262,7 +266,7 @@ public class AbstractInstanceClassFactory<T extends Serializable>
     *
     * @param type the type info
     * @return transformer instance
-    * @throws Exception for any error
+    * @throws Throwable for any error
     */
    protected RuntimeComponentNameTransformer getComponentNameTransformer(TypeInfo type) throws Throwable
    {
@@ -299,7 +303,7 @@ public class AbstractInstanceClassFactory<T extends Serializable>
       propertyInfo.set(object, unwrapValue);
    }
 
-   protected Collection getAsCollection(Object value)
+   protected Collection<?> getAsCollection(Object value)
    {
       if( value.getClass().isArray() )
          return Arrays.asList(value);

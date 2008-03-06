@@ -37,10 +37,7 @@ import org.jboss.managed.api.Fields;
 import org.jboss.managed.api.ManagedObject;
 import org.jboss.managed.api.ManagedProperty;
 import org.jboss.managed.api.annotation.ManagementConstants;
-import org.jboss.managed.api.annotation.ManagementObjectID;
-import org.jboss.managed.api.annotation.ManagementObjectRef;
 import org.jboss.managed.api.annotation.ManagementProperty;
-import org.jboss.managed.api.annotation.ManagementRuntimeRef;
 import org.jboss.managed.plugins.BasicDeploymentTemplateInfo;
 import org.jboss.managed.plugins.DefaultFieldsImpl;
 import org.jboss.managed.plugins.WritethroughManagedPropertyImpl;
@@ -166,7 +163,7 @@ public class DeploymentTemplateInfoFactory
             }
          }
       }
-      Class[] parameterTypes = {String.class, String.class, Map.class};
+      Class<?>[] parameterTypes = {String.class, String.class, Map.class};
       Constructor<? extends DeploymentTemplateInfo> ctor = infoClass.getConstructor(parameterTypes);
       DeploymentTemplateInfo info = ctor.newInstance(name, description, infoProps);
       return info;
@@ -180,9 +177,6 @@ public class DeploymentTemplateInfoFactory
       boolean includeProperty = (managementProperty.ignored() == false);
       if (includeProperty)
       {
-         ManagementObjectID id = propertyInfo.getUnderlyingAnnotation(ManagementObjectID.class);
-         ManagementObjectRef ref = propertyInfo.getUnderlyingAnnotation(ManagementObjectRef.class);
-         ManagementRuntimeRef runtimeRef = propertyInfo.getUnderlyingAnnotation(ManagementRuntimeRef.class);
          HashMap<String, Annotation> propAnnotations = new HashMap<String, Annotation>();
          propAnnotations.put(ManagementProperty.class.getName(), managementProperty);
 
@@ -277,7 +271,7 @@ public class DeploymentTemplateInfoFactory
             ManagedPropertyConstraintsPopulator populator = factory.newInstance();
             if (populator != null)
             {
-               Class clazz = propertyInfo.getBeanInfo().getClassInfo().getType();
+               Class<?> clazz = propertyInfo.getBeanInfo().getClassInfo().getType();
                populator.populateManagedProperty(clazz, propertyInfo, fields);
             }
          }
