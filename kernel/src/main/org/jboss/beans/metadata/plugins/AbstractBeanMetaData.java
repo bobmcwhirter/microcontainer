@@ -657,6 +657,8 @@ public class AbstractBeanMetaData extends AbstractFeatureMetaData
    @SuppressWarnings("unchecked")
    public Object getValue(TypeInfo info, ClassLoader cl) throws Throwable
    {
+      if (context == null)
+         throw new IllegalStateException("Context has not been set: " + this);
       Controller controller = context.getController();
       ControllerContext lookup = controller.getInstalledContext(name);
       if (lookup == null || lookup.getTarget() == null)
