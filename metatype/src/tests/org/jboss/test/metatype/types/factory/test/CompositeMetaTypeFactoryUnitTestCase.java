@@ -25,15 +25,20 @@ import java.lang.reflect.Field;
 import java.lang.reflect.Type;
 import java.util.Collections;
 import java.util.HashMap;
+import java.util.Map;
 import java.util.Properties;
 import java.util.Set;
 
 import junit.framework.Test;
 
 import org.jboss.metatype.api.types.CompositeMetaType;
+import org.jboss.metatype.api.types.ImmutableCompositeMetaType;
+import org.jboss.metatype.api.types.ImmutableTableMetaType;
 import org.jboss.metatype.api.types.MapCompositeMetaType;
 import org.jboss.metatype.api.types.MetaType;
 import org.jboss.metatype.api.types.SimpleMetaType;
+import org.jboss.metatype.api.types.TableMetaType;
+import org.jboss.metatype.plugins.types.DefaultMetaTypeFactory;
 import org.jboss.metatype.plugins.types.MutableCompositeMetaType;
 import org.jboss.test.metatype.types.factory.support.TestIgnoredCompositeItem;
 import org.jboss.test.metatype.types.factory.support.TestRecursiveComposite;
@@ -163,4 +168,24 @@ public class CompositeMetaTypeFactoryUnitTestCase extends AbstractMetaTypeFactor
       
    }
 
+   /**
+    * Illustrate the expected type when type does not contain the
+    * generic parameter type information.
+    */
+   public void testMapWithStringKeyErasure()
+      throws Exception
+   {
+      Map<String,String> map = new HashMap<String,String>();
+      Type mapSignature = map.getClass();
+      TableMetaType result = assertInstanceOf(resolve(mapSignature), TableMetaType.class);
+
+      MetaType keyType = resolve(Object.class);
+      MetaType valueType = resolve(Object.class);
+      MetaType[] itemTypes = { keyType, valueType };
+      String entryName = Map.Entry.class.getName();
+      CompositeMetaType entryType = new ImmutableCompositeMetaType(entryName, entryName, DefaultMetaTypeFactory.MAP_ITEM_NAMES, DefaultMetaTypeFactory.MAP_ITEM_NAMES, itemTypes);
+      TableMetaType expected = new ImmutableTableMetaType(Map.class.getName(), Map.class.getName(), entryType, DefaultMetaTypeFactory.MAP_INDEX_NAMES);
+      
+      assertEquals(expected, result);  
+   }
 }
