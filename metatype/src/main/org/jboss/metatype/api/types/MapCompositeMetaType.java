@@ -50,6 +50,15 @@ public class MapCompositeMetaType extends AbstractCompositeMetaType
    }
 
    /**
+    * Access the map value type.
+    * @return the map value type.
+    */
+   public MetaType getValueType()
+   {
+      return valueType;
+   }
+
+   /**
     * 
     * @param itemName
     */

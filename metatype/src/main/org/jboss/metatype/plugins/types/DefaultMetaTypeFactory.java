@@ -29,6 +29,7 @@ import java.util.ArrayList;
 import java.util.LinkedHashSet;
 import java.util.List;
 import java.util.Map;
+import java.util.Properties;
 import java.util.Set;
 import java.util.WeakHashMap;
 
@@ -47,6 +48,7 @@ import org.jboss.metatype.api.types.EnumMetaType;
 import org.jboss.metatype.api.types.GenericMetaType;
 import org.jboss.metatype.api.types.ImmutableCompositeMetaType;
 import org.jboss.metatype.api.types.ImmutableTableMetaType;
+import org.jboss.metatype.api.types.MapCompositeMetaType;
 import org.jboss.metatype.api.types.MetaType;
 import org.jboss.metatype.api.types.MetaTypeFactory;
 import org.jboss.metatype.api.types.SimpleMetaType;
@@ -64,7 +66,8 @@ import org.jboss.reflect.spi.TypeInfo;
  * DefaultMetaTypeFactory.
  * 
  * @author <a href="adrian@jboss.com">Adrian Brock</a>
- * @version $Revision: 1.1 $
+ * @author Scott.Stark@jboss.org
+ * @version $Revision$
  */
 public class DefaultMetaTypeFactory extends MetaTypeFactory
 {
@@ -183,7 +186,29 @@ public class DefaultMetaTypeFactory extends MetaTypeFactory
          return generateCollection((ClassInfo) typeInfo);
       
       if (typeInfo.isMap())
-         return generateMap((ClassInfo) typeInfo);
+      {
+         // See if this is a Map<String,?> type
+         ClassInfo classInfo = (ClassInfo) typeInfo;
+         TypeInfo[] types = classInfo.getActualTypeArguments();
+         if (types != null)
+         {
+            TypeInfo keyType = types[0];
+            TypeInfo valueType = types[1];
+            if(keyType.getName().equals(String.class.getName()))
+            {
+               // Use MapCompositeMetaType
+               MetaType valueMetaType = resolve(valueType);
+               return new MapCompositeMetaType(valueMetaType);
+            }
+         }
+         // Map java.util.Properties to MapCompositeMetaType(SimpleMetaType.STRING)
+         else if(typeInfo.getName().equals(Properties.class.getName()))
+         {
+            return new MapCompositeMetaType(SimpleMetaType.STRING);
+         }
+         // No, return the general map type
+         return generateMap(classInfo);
+      }
       
       result = SimpleMetaType.isSimpleType(typeInfo.getName());
       if (result != null)

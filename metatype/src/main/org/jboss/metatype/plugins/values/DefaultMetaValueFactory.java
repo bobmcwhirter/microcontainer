@@ -35,10 +35,12 @@ import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
+import java.util.Properties;
 import java.util.Set;
 import java.util.SortedSet;
 import java.util.Stack;
 import java.util.WeakHashMap;
+import java.util.Map.Entry;
 
 import org.jboss.beans.info.spi.BeanInfo;
 import org.jboss.beans.info.spi.PropertyInfo;
@@ -49,6 +51,7 @@ import org.jboss.metatype.api.types.CollectionMetaType;
 import org.jboss.metatype.api.types.CompositeMetaType;
 import org.jboss.metatype.api.types.EnumMetaType;
 import org.jboss.metatype.api.types.GenericMetaType;
+import org.jboss.metatype.api.types.MapCompositeMetaType;
 import org.jboss.metatype.api.types.MetaType;
 import org.jboss.metatype.api.types.MetaTypeFactory;
 import org.jboss.metatype.api.types.SimpleMetaType;
@@ -64,6 +67,7 @@ import org.jboss.metatype.api.values.EnumValueSupport;
 import org.jboss.metatype.api.values.GenericValue;
 import org.jboss.metatype.api.values.GenericValueSupport;
 import org.jboss.metatype.api.values.InstanceFactory;
+import org.jboss.metatype.api.values.MapCompositeValueSupport;
 import org.jboss.metatype.api.values.MetaValue;
 import org.jboss.metatype.api.values.MetaValueFactory;
 import org.jboss.metatype.api.values.SimpleValue;
@@ -395,6 +399,25 @@ public class DefaultMetaValueFactory extends MetaValueFactory
       if (value == null)
          return null;
       
+      // See if this is a Map<String,?> type
+      if(type instanceof MapCompositeMetaType)
+      {
+         if((value instanceof Map) == false)
+            throw new RuntimeException("Expected Map value for: " + type+", was: "+(value != null ? value.getClass() : "null"));
+         Map<String,?> map = (Map<String,?>) value;
+         MapCompositeMetaType mapType = (MapCompositeMetaType) type;
+         MetaType mapValueType = mapType.getValueType();
+         MapCompositeValueSupport result = new MapCompositeValueSupport(mapValueType);
+         for(Entry<String,?> entry : map.entrySet())
+         {
+            Object entryValue = entry.getValue();
+            MetaValue entryMetaValue = internalCreate(entryValue, null, mapValueType);
+            result.put(entry.getKey(), entryMetaValue);
+         }
+         mapping.put(value, result);
+         return result;
+      }
+
       CompositeValueSupport result = new CompositeValueSupport(type);
       mapping.put(value, result);
 

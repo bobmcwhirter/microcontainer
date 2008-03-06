@@ -34,12 +34,15 @@ import org.jboss.metatype.api.types.MetaType;
 import org.jboss.metatype.api.types.TableMetaType;
 import org.jboss.metatype.plugins.types.DefaultMetaTypeFactory;
 import org.jboss.test.metatype.types.factory.support.TestSimpleComposite;
+import org.jboss.test.metatype.values.factory.support.StringKey;
 
 /**
- * MapMetaTypeFactoryUnitTestCase.
+ * Test of Maps with non-String keys as TableMetaType/TableMetaValue.
+ * Map<String,?> uses MapCompositeMetaType(MetaValue<?>).
  * 
  * @author <a href="adrian@jboss.com">Adrian Brock</a>
- * @version $Revision: 1.1 $
+ * @author Scott.Stark@jboss.org
+ * @version $Revision$
  */
 public class MapMetaTypeFactoryUnitTestCase extends AbstractMetaTypeFactoryTest
 {
@@ -68,7 +71,7 @@ public class MapMetaTypeFactoryUnitTestCase extends AbstractMetaTypeFactoryTest
     * 
     * @return the signature
     */
-   public Map<String, Integer> simpleMap()
+   public Map<StringKey, Integer> simpleMap()
    {
       return null;
    }
@@ -88,7 +91,7 @@ public class MapMetaTypeFactoryUnitTestCase extends AbstractMetaTypeFactoryTest
     * 
     * @return the signature
     */
-   public Map<String, TestSimpleComposite> compositeValueMap()
+   public Map<StringKey, TestSimpleComposite> compositeValueMap()
    {
       return null;
    }
@@ -100,7 +103,7 @@ public class MapMetaTypeFactoryUnitTestCase extends AbstractMetaTypeFactoryTest
     */
    public void testSimpleMap() throws Exception
    {
-      testMap("simpleMap", String.class, Integer.class);
+      testMap("simpleMap", StringKey.class, Integer.class);
    }
 
    /**
@@ -120,7 +123,7 @@ public class MapMetaTypeFactoryUnitTestCase extends AbstractMetaTypeFactoryTest
     */
    public void testCompositeValueMap() throws Exception
    {
-      testMap("compositeValueMap", String.class, TestSimpleComposite.class);
+      testMap("compositeValueMap", StringKey.class, TestSimpleComposite.class);
    }
    
    /**

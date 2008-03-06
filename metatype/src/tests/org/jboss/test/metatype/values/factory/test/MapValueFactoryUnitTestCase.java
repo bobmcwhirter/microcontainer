@@ -42,12 +42,15 @@ import org.jboss.metatype.api.values.TableValue;
 import org.jboss.metatype.api.values.TableValueSupport;
 import org.jboss.metatype.plugins.types.DefaultMetaTypeFactory;
 import org.jboss.metatype.plugins.types.MutableCompositeMetaType;
+import org.jboss.test.metatype.values.factory.support.StringKey;
 import org.jboss.test.metatype.values.factory.support.TestSimpleComposite;
 
 /**
- * MapValueFactoryUnitTestCase.
+ * Test of Maps with non-String keys as TableMetaType/TableMetaValue.
+ * Map<String,?> uses MapCompositeMetaType(MetaValue<?>).
  * 
  * @author <a href="adrian@jboss.com">Adrian Brock</a>
+ * @author Scott.Stark@jboss.org
  * @version $Revision: 1.1 $
  */
 public class MapValueFactoryUnitTestCase extends AbstractMetaValueFactoryTest
@@ -77,11 +80,11 @@ public class MapValueFactoryUnitTestCase extends AbstractMetaValueFactoryTest
     * 
     * @return the value
     */
-   public Map<String, Integer> simpleMap()
+   public Map<StringKey, Integer> simpleMap()
    {
-      Map<String, Integer> result = new LinkedHashMap<String, Integer>();
-      result.put("Hello", new Integer(1));
-      result.put("Goodbye", new Integer(2));
+      Map<StringKey, Integer> result = new LinkedHashMap<StringKey, Integer>();
+      result.put(new StringKey("Hello"), new Integer(1));
+      result.put(new StringKey("Goodbye"), new Integer(2));
       return result;
    }
 
@@ -103,11 +106,11 @@ public class MapValueFactoryUnitTestCase extends AbstractMetaValueFactoryTest
     * 
     * @return the value
     */
-   public Map<String, TestSimpleComposite> compositeValueMap()
+   public Map<StringKey, TestSimpleComposite> compositeValueMap()
    {
-      Map<String, TestSimpleComposite> result = new LinkedHashMap<String, TestSimpleComposite>();
-      result.put("Hello", new TestSimpleComposite("Hello"));
-      result.put("Goodbye", new TestSimpleComposite("Goodbye"));
+      Map<StringKey, TestSimpleComposite> result = new LinkedHashMap<StringKey, TestSimpleComposite>();
+      result.put(new StringKey("Hello"), new TestSimpleComposite("Hello"));
+      result.put(new StringKey("Goodbye"), new TestSimpleComposite("Goodbye"));
       return result;
    }
 
@@ -120,9 +123,9 @@ public class MapValueFactoryUnitTestCase extends AbstractMetaValueFactoryTest
    {
       Method method = getClass().getMethod("simpleMap", null);
       Type collectionType = method.getGenericReturnType();
-      Map<String, Integer> map = simpleMap();
+      Map<StringKey, Integer> map = simpleMap();
       
-      MetaType keyType = resolve(String.class);
+      CompositeMetaType keyType = (CompositeMetaType) resolve(StringKey.class);
       MetaType valueType = resolve(Integer.class);
       MetaType[] itemTypes = { keyType, valueType };
       String entryName = Map.Entry.class.getName();
@@ -132,10 +135,14 @@ public class MapValueFactoryUnitTestCase extends AbstractMetaValueFactoryTest
       TableValue expected = new TableValueSupport(tableType);
       String[] itemNames = DefaultMetaTypeFactory.MAP_ITEM_NAMES;
       
-      MetaValue[] itemValues = new MetaValue[] { SimpleValueSupport.wrap("Hello"), SimpleValueSupport.wrap(new Integer(1)) };
+      MetaValue[] keyValues1 = {SimpleValueSupport.wrap("Hello")};
+      CompositeValueSupport key1 = new CompositeValueSupport(keyType, new String[]{"key"}, keyValues1);
+      MetaValue[] itemValues = new MetaValue[] {key1, SimpleValueSupport.wrap(new Integer(1)) };
       expected.put(new CompositeValueSupport(entryType, itemNames, itemValues));
 
-      itemValues = new MetaValue[] { SimpleValueSupport.wrap("Goodbye"), SimpleValueSupport.wrap(new Integer(2)) };
+      MetaValue[] keyValues2 = {SimpleValueSupport.wrap("Goodbye")};
+      CompositeValueSupport key2 = new CompositeValueSupport(keyType, new String[]{"key"}, keyValues2);
+      itemValues = new MetaValue[] { key2, SimpleValueSupport.wrap(new Integer(2)) };
       expected.put(new CompositeValueSupport(entryType, itemNames, itemValues));
 
       MetaValue result = createMetaValue(map, collectionType);
@@ -196,9 +203,9 @@ public class MapValueFactoryUnitTestCase extends AbstractMetaValueFactoryTest
    {
       Method method = getClass().getMethod("compositeValueMap", null);
       Type collectionType = method.getGenericReturnType();
-      Map<String, TestSimpleComposite> map = compositeValueMap();
+      Map<StringKey, TestSimpleComposite> map = compositeValueMap();
       
-      MetaType keyType = resolve(String.class);
+      CompositeMetaType keyType = (CompositeMetaType) resolve(StringKey.class);
       MetaType valueType = resolve(TestSimpleComposite.class);
       MetaType[] itemTypes = { keyType, valueType };
       String entryName = Map.Entry.class.getName();
@@ -215,11 +222,15 @@ public class MapValueFactoryUnitTestCase extends AbstractMetaValueFactoryTest
       String[] compositeNames = { "something" };
       CompositeValue compositeValue = new CompositeValueSupport(compositeType, compositeNames, new MetaValue[] { SimpleValueSupport.wrap("Hello") });
       
-      MetaValue[] itemValues = new MetaValue[] { SimpleValueSupport.wrap("Hello"), compositeValue };
+      MetaValue[] keyValues1 = {SimpleValueSupport.wrap("Hello")};
+      CompositeValueSupport key1 = new CompositeValueSupport(keyType, new String[]{"key"}, keyValues1);
+      MetaValue[] itemValues = new MetaValue[] { key1, compositeValue };
       expected.put(new CompositeValueSupport(entryType, itemNames, itemValues));
 
+      MetaValue[] keyValues2 = {SimpleValueSupport.wrap("Goodbye")};
+      CompositeValueSupport key2 = new CompositeValueSupport(keyType, new String[]{"key"}, keyValues2);
       compositeValue = new CompositeValueSupport(compositeType, compositeNames, new MetaValue[] { SimpleValueSupport.wrap("Goodbye") });
-      itemValues = new MetaValue[] { SimpleValueSupport.wrap("Goodbye"), compositeValue };
+      itemValues = new MetaValue[] { key2, compositeValue };
       expected.put(new CompositeValueSupport(entryType, itemNames, itemValues));
 
       MetaValue result = createMetaValue(map, collectionType);
