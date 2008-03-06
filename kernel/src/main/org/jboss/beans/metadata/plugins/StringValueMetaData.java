@@ -21,6 +21,7 @@
 */
 package org.jboss.beans.metadata.plugins;
 
+import javax.xml.bind.annotation.XmlAttribute;
 import javax.xml.bind.annotation.XmlType;
 import javax.xml.bind.annotation.XmlValue;
 
@@ -138,6 +139,7 @@ public class StringValueMetaData extends AbstractTypeMetaData
       return replace;
    }
 
+   @XmlAttribute(name="replace")
    public void setReplace(boolean replace)
    {
       this.replace = replace;

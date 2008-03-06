@@ -70,7 +70,7 @@ import org.jboss.xb.annotations.JBossXmlSchema;
  * @version $Revision$
  */
 @ManagementObject(properties = ManagementProperties.EXPLICIT) // TODO - explicitly add props we want to manage 
-@JBossXmlSchema(namespace="urn:jboss:bean-deployer:2.0", elementFormDefault=XmlNsForm.QUALIFIED)
+@JBossXmlSchema(namespace="urn:jboss:bean-deployer:2.0", elementFormDefault=XmlNsForm.QUALIFIED, replacePropertyRefs=false)
 @XmlRootElement(name="deployment")
 @XmlType(name="deploymentType", propOrder={"annotations", "classLoader", "beanFactories", "create", "start", "stop", "destroy", "aliases"})
 public class AbstractKernelDeployment extends JBossObject

@@ -25,6 +25,7 @@ import java.io.Serializable;
 import java.lang.annotation.Annotation;
 import java.util.Iterator;
 
+import javax.xml.bind.annotation.XmlAttribute;
 import javax.xml.bind.annotation.XmlType;
 import javax.xml.bind.annotation.XmlValue;
 import javax.xml.bind.annotation.XmlTransient;
@@ -81,6 +82,7 @@ public class AbstractAnnotationMetaData extends JBossObject
       return replace;
    }
 
+   @XmlAttribute(name="replace")
    public void setReplace(boolean replace)
    {
       this.replace = replace;
