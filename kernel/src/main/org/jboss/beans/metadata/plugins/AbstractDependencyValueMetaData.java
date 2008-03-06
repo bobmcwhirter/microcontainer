@@ -184,6 +184,8 @@ public class AbstractDependencyValueMetaData extends AbstractValueMetaData
       ControllerState state = dependentState;
       if (state == null)
          state = ControllerState.INSTALLED;
+      if (context == null)
+         throw new IllegalStateException("No context for " + this);
       Controller controller = context.getController();
       ControllerContext lookup = controller.getContext(getUnderlyingValue(), state);
 
