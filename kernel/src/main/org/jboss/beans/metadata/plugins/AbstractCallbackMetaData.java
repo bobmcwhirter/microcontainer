@@ -108,7 +108,7 @@ public abstract class AbstractCallbackMetaData extends AbstractLifecycleMetaData
       flushJBossObjectCache();
    }
 
-   public ControllerState getWhenRequiredState()
+   public ControllerState getWhenRequired()
    {
       return whenRequired;
    }
@@ -232,8 +232,8 @@ public abstract class AbstractCallbackMetaData extends AbstractLifecycleMetaData
          buffer.append(" signature=").append(signature);
       if (ControllerState.INSTALLED.equals(dependentState) == false)
          buffer.append(" dependentState=" + dependentState);
-      if (ControllerState.CONFIGURED.equals(whenRequired) == false)
-         buffer.append(" whenRequiredState=" + dependentState);
+      if (ControllerState.INSTALLED.equals(whenRequired) == false)
+         buffer.append(" whenRequired=" + whenRequired);
    }
 
    public void toShortString(JBossStringBuilder buffer)
