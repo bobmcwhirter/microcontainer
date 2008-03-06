@@ -27,7 +27,6 @@
   <classpathentry kind="var" path="M2_REPO/log4j/log4j/1.2.14/log4j-1.2.14.jar" sourcepath="M2_REPO/log4j/log4j/1.2.14/log4j-1.2.14-sources.jar"/>
   <classpathentry kind="var" path="M2_REPO/jboss/profiler/jvmti/jboss-profiler-jvmti/1.0.0.CR5/jboss-profiler-jvmti-1.0.0.CR5.jar"/>
   <classpathentry kind="var" path="M2_REPO/wutka-dtdparser/dtdparser121/1.2.1/dtdparser121-1.2.1.jar"/>
-  <classpathentry kind="var" path="M2_REPO/sun-jaxb/jaxb-api/2.0.5/jaxb-api-2.0.5.jar"/>
   <classpathentry kind="src" path="/jboss-managed"/>
   <classpathentry kind="var" path="M2_REPO/org/jboss/aop/jboss-aop/2.0.0.CR3/jboss-aop-2.0.0.CR3.jar"/>
   <classpathentry kind="var" path="M2_REPO/jboss/jboss-common-logging-spi/2.0.4.GA/jboss-common-logging-spi-2.0.4.GA.jar" sourcepath="M2_REPO/jboss/jboss-common-logging-spi/2.0.4.GA/jboss-common-logging-spi-2.0.4.GA-sources.jar"/>
