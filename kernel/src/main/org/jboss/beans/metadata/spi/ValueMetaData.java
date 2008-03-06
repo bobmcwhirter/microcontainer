@@ -23,7 +23,7 @@ package org.jboss.beans.metadata.spi;
 
 import org.jboss.beans.metadata.plugins.AbstractArrayMetaData;
 import org.jboss.beans.metadata.plugins.AbstractCollectionMetaData;
-import org.jboss.beans.metadata.plugins.AbstractDependencyValueMetaData;
+import org.jboss.beans.metadata.plugins.AbstractInjectionValueMetaData;
 import org.jboss.beans.metadata.plugins.AbstractListMetaData;
 import org.jboss.beans.metadata.plugins.AbstractMapMetaData;
 import org.jboss.beans.metadata.plugins.AbstractSetMetaData;
@@ -48,7 +48,7 @@ import org.jboss.xb.annotations.JBossXmlGroupWildcard;
 ({
    @JBossXmlChild(name="array", type=AbstractArrayMetaData.class),
    @JBossXmlChild(name="collection", type=AbstractCollectionMetaData.class),
-   @JBossXmlChild(name="inject", type=AbstractDependencyValueMetaData.class),
+   @JBossXmlChild(name="inject", type=AbstractInjectionValueMetaData.class),
    @JBossXmlChild(name="list", type=AbstractListMetaData.class),
    @JBossXmlChild(name="map", type=AbstractMapMetaData.class),
    @JBossXmlChild(name="null", type=AbstractValueMetaData.class),

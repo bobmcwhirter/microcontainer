@@ -115,7 +115,7 @@ public class AbstractInjectionValueMetaData extends AbstractDependencyValueMetaD
       return fromContext;
    }
 
-   @XmlAttribute
+   @XmlAttribute(name="fromContext")
    public void setFromContext(FromContext<? extends ControllerContext> fromContext)
    {
       this.fromContext = fromContext;
