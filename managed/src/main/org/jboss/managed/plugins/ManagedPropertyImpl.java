@@ -33,6 +33,8 @@ import java.util.Set;
 import org.jboss.managed.api.Fields;
 import org.jboss.managed.api.ManagedObject;
 import org.jboss.managed.api.ManagedProperty;
+import org.jboss.managed.api.annotation.ManagementProperty;
+import org.jboss.managed.api.annotation.ViewUse;
 import org.jboss.metatype.api.types.MetaType;
 import org.jboss.metatype.api.values.MetaValue;
 import org.jboss.metatype.api.values.SimpleValue;
@@ -215,6 +217,29 @@ public class ManagedPropertyImpl implements ManagedProperty
    public void setAnnotations(Map<String, Annotation> annotations)
    {
       setField(Fields.ANNOTATIONS, (Serializable) annotations);      
+   }
+
+   /**
+    * See if the property has the indicated ViewUse among its
+    * @ManagementProperty annotation uses.
+    * 
+    * @param use - the ViewUse to check for
+    * @return true if the ViewUse exists in the property uses, false otherwise
+    */
+   public boolean hasViewUse(ViewUse use)
+   {
+      boolean hasViewUse = false;
+      Map<String, Annotation> annotations = getAnnotations();
+      if(annotations != null)
+      {
+         ManagementProperty mp = (ManagementProperty) annotations.get(ManagementProperty.class.getName());
+         if(mp != null)
+         {
+            for(ViewUse vu : mp.use())
+               hasViewUse |= vu == use;
+         }
+      }
+      return hasViewUse;
    }
 
    public MetaType getMetaType()

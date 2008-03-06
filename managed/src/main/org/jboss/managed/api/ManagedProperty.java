@@ -27,6 +27,7 @@ import java.util.Map;
 import java.util.Set;
 
 import org.jboss.managed.api.annotation.ManagementObjectRef;
+import org.jboss.managed.api.annotation.ViewUse;
 import org.jboss.metatype.api.types.MetaType;
 import org.jboss.metatype.api.values.MetaValue;
 
@@ -117,6 +118,15 @@ public interface ManagedProperty extends Serializable
     * @return the annotations associated with the property
     */
    Map<String, Annotation> getAnnotations();
+
+   /**
+    * See if the property has the indicated ViewUse among its
+    * @ManagementProperty annotation uses.
+    * 
+    * @param use - the ViewUse to check for
+    * @return true if the ViewUse exists in the property uses, false otherwise
+    */
+   boolean hasViewUse(ViewUse use);
 
    /**
     * Get the value

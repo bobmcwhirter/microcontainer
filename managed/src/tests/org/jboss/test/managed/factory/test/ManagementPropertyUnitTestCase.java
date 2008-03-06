@@ -21,10 +21,18 @@
 */
 package org.jboss.test.managed.factory.test;
 
+import java.lang.annotation.Annotation;
+import java.util.Map;
+
 import junit.framework.Test;
 
 import org.jboss.managed.api.ManagedObject;
+import org.jboss.managed.api.ManagedProperty;
+import org.jboss.managed.api.annotation.ManagementObjectID;
+import org.jboss.managed.api.annotation.ManagementProperty;
+import org.jboss.managed.api.annotation.ViewUse;
 import org.jboss.test.managed.factory.AbstractManagedObjectFactoryTest;
+import org.jboss.test.managed.factory.support.ManagementPropertyAnnotations;
 import org.jboss.test.managed.factory.support.ManagementPropertyDescription;
 import org.jboss.test.managed.factory.support.ManagementPropertyMandatory;
 import org.jboss.test.managed.factory.support.ManagementPropertySimpleManaged;
@@ -83,5 +91,38 @@ public class ManagementPropertyUnitTestCase extends AbstractManagedObjectFactory
       ManagementPropertySimpleManaged test = new ManagementPropertySimpleManaged();
       ManagedObject managedObject = checkManagedObject(test);
       checkPropertyIsManagedObject(managedObject, "property", "property", false, test.getProperty());
+   }
+
+   /**
+    * Test property annotations
+    */
+   public void testAnnotations()
+   {
+      ManagedObject managedObject = createAndCheckDefaultManagedObject(ManagementPropertyAnnotations.class);
+      ManagedProperty managedProperty = managedObject.getProperty("runtime");
+      assertNotNull(managedProperty);
+      Map<String, Annotation> annotations = managedProperty.getAnnotations();
+      assertEquals(2, annotations.size());
+      assertTrue(annotations.containsKey(ManagementProperty.class.getName()));
+      assertTrue(annotations.containsKey(ManagementObjectID.class.getName()));
+   }
+
+   /**
+    * Test property ViewUse
+    */
+   public void testViewUse()
+   {
+      ManagedObject managedObject = createAndCheckDefaultManagedObject(ManagementPropertyAnnotations.class);
+      ManagedProperty runtime = managedObject.getProperty("runtime");
+      assertNotNull(runtime);
+      assertTrue("has ViewUse.RUNTIME", runtime.hasViewUse(ViewUse.RUNTIME));
+      assertTrue("!has ViewUse.CONFIGURATION", !runtime.hasViewUse(ViewUse.CONFIGURATION));
+      assertTrue("!has ViewUse.STATISTIC", !runtime.hasViewUse(ViewUse.STATISTIC));
+
+      ManagedProperty configuration = managedObject.getProperty("configuration");
+      assertTrue("has ViewUse.CONFIGURATION", configuration.hasViewUse(ViewUse.CONFIGURATION));
+
+      ManagedProperty stat = managedObject.getProperty("stat");
+      assertTrue("has ViewUse.STATISTIC", stat.hasViewUse(ViewUse.STATISTIC));
    }
 }
