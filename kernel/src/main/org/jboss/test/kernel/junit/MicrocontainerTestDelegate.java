@@ -82,20 +82,19 @@ public class MicrocontainerTestDelegate extends AbstractTestDelegate
          // Deploy
          deploy();
       }
-      catch (RuntimeException e)
-      {
-         throw e;
-      }
       catch (Exception e)
       {
+         super.tearDown();
          throw e;
       }
       catch (Error e)
       {
+         super.tearDown();
          throw e;
       }
       catch (Throwable e)
       {
+         super.tearDown();
          throw new RuntimeException(e);
       }
    }
