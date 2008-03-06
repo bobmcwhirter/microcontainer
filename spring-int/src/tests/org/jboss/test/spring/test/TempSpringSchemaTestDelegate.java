@@ -22,14 +22,23 @@
 package org.jboss.test.spring.test;
 
 import org.jboss.spring.deployment.xml.SpringSchemaInitializer;
-import org.jboss.test.ioc.test.IoCTestDelegate;
+import org.jboss.test.AbstractTestDelegate;
+import org.jboss.xb.binding.Unmarshaller;
+import org.jboss.xb.binding.UnmarshallerFactory;
 import org.jboss.xb.binding.sunday.unmarshalling.DefaultSchemaResolver;
+import org.jboss.xb.binding.sunday.unmarshalling.SchemaBindingResolver;
+import org.jboss.xb.binding.sunday.unmarshalling.SingletonSchemaResolverFactory;
 
 /**
  * @author <a href="mailto:ales.justin@jboss.com">Ales Justin</a>
  */
-public class TempSpringSchemaTestDelegate extends IoCTestDelegate
+public class TempSpringSchemaTestDelegate extends AbstractTestDelegate
 {
+   /** The unmarshaller factory */
+   protected UnmarshallerFactory unmarshallerFactory;
+
+   /** The resolver */
+   protected SchemaBindingResolver resolver;
 
    public TempSpringSchemaTestDelegate(Class<?> clazz)
    {
@@ -39,10 +48,37 @@ public class TempSpringSchemaTestDelegate extends IoCTestDelegate
    public void setUp() throws Exception
    {
       super.setUp();
+      unmarshallerFactory = UnmarshallerFactory.newInstance();
+      resolver = SingletonSchemaResolverFactory.getInstance().getSchemaBindingResolver();
       DefaultSchemaResolver defaultSchemaResolver = (DefaultSchemaResolver) resolver;
       defaultSchemaResolver.addSchemaInitializer("urn:jboss:spring-beans:2.0", new SpringSchemaInitializer());
       defaultSchemaResolver.addSchemaLocation("urn:jboss:spring-beans:2.0", "mc-spring-beans_2_0.xsd");
       defaultSchemaResolver.addSchemaParseAnnotations("urn:jboss:spring-beans:2.0", Boolean.FALSE);
    }
 
+
+   /**
+    * Unmarshal an object
+    *
+    * @param url the url
+    * @return the object
+    * @throws Exception for any error
+    */
+   public Object unmarshal(String url) throws Exception
+   {
+      long start = System.currentTimeMillis();
+      Unmarshaller unmarshaller = unmarshallerFactory.newUnmarshaller();
+      log.debug("Initialized parsing in " + (System.currentTimeMillis() - start) + "ms");
+      try
+      {
+         Object result = unmarshaller.unmarshal(url, resolver);
+         log.debug("Total parse for " + url + " took " + (System.currentTimeMillis() - start) + "ms");
+         return result;
+      }
+      catch (Exception e)
+      {
+         log.debug("Error during parsing: " + url, e);
+         throw e;
+      }
+   }
 }
