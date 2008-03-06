@@ -26,7 +26,7 @@ public class UndeployAspectDependencyTestCase extends AOPMicrocontainerTest
 
    /**
     * Validate that the 
-    * @throws Exception
+    * @throws Throwable for any error
     */
    public void testUndeployAndRedeploy() throws Throwable
    {

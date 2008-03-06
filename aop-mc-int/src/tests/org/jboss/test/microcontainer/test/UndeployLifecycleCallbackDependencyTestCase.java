@@ -1,9 +1,6 @@
 package org.jboss.test.microcontainer.test;
 
 
-import java.util.ArrayList;
-import java.util.List;
-
 import junit.framework.Test;
 
 import org.jboss.dependency.spi.Controller;
@@ -11,8 +8,6 @@ import org.jboss.dependency.spi.ControllerContext;
 import org.jboss.dependency.spi.ControllerState;
 import org.jboss.test.aop.junit.AOPMicrocontainerTest;
 import org.jboss.test.microcontainer.support.SimpleBeanImpl;
-import org.jboss.test.microcontainer.support.SimpleInterceptor1;
-import org.jboss.test.microcontainer.support.SimpleInterceptor2;
 import org.jboss.test.microcontainer.support.SimpleLifecycleCallback;
 import org.jboss.test.microcontainer.support.SimpleLifecycleCallback.Handled;
 
@@ -31,7 +26,7 @@ public class UndeployLifecycleCallbackDependencyTestCase extends AOPMicrocontain
 
    /**
     * Validate that the 
-    * @throws Exception
+    * @throws Throwable for any error
     */
    public void testUndeployAndRedeploy() throws Throwable
    {
@@ -53,7 +48,6 @@ public class UndeployLifecycleCallbackDependencyTestCase extends AOPMicrocontain
                SimpleBeanImpl bean = (SimpleBeanImpl)getBean("Intercepted");
                assertNotNull(bean);
                assertEquals(2, SimpleLifecycleCallback.interceptions.size());
-               List list = SimpleLifecycleCallback.interceptions;
                assertTrue(hasExpectedInterception("Intercepted", ControllerState.CONFIGURED));
                assertTrue(hasExpectedInterception("Intercepted", ControllerState.START));
 
@@ -66,7 +60,6 @@ public class UndeployLifecycleCallbackDependencyTestCase extends AOPMicrocontain
                controller.change(ctx, ControllerState.PRE_INSTALL);
 
                assertEquals(2, SimpleLifecycleCallback.interceptions.size());
-               list = SimpleLifecycleCallback.interceptions;
                assertTrue(hasExpectedInterception("Intercepted", ControllerState.CONFIGURED));
                assertTrue(hasExpectedInterception("Intercepted", ControllerState.START));
                
