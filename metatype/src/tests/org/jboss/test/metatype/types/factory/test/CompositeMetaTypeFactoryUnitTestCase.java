@@ -34,7 +34,6 @@ import org.jboss.metatype.api.types.CompositeMetaType;
 import org.jboss.metatype.api.types.MapCompositeMetaType;
 import org.jboss.metatype.api.types.MetaType;
 import org.jboss.metatype.api.types.SimpleMetaType;
-import org.jboss.metatype.api.values.CompositeValueSupport;
 import org.jboss.metatype.api.values.MapCompositeValueSupport;
 import org.jboss.metatype.api.values.MetaValue;
 import org.jboss.metatype.api.values.SimpleValueSupport;
