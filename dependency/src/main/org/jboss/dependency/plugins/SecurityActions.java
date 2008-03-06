@@ -23,11 +23,10 @@ package org.jboss.dependency.plugins;
 
 import java.security.AccessController;
 import java.security.PrivilegedAction;
-import java.security.PrivilegedActionException;
-import java.security.PrivilegedExceptionAction;
 
 import org.jboss.dependency.spi.ControllerContext;
 import org.jboss.dependency.spi.dispatch.InvokeDispatchContext;
+import org.jboss.logging.Logger;
 
 /**
  * SecurityActions.
@@ -37,49 +36,46 @@ import org.jboss.dependency.spi.dispatch.InvokeDispatchContext;
  */
 class SecurityActions
 {
-   static ClassLoader setContextClassLoader(final ControllerContext context) throws Throwable
+   /** The logger */
+   private static final Logger log = Logger.getLogger(SecurityActions.class); 
+   
+   private static ClassLoader setContextClassLoaderInternal(final ControllerContext context)
+   {
+      ClassLoader result = Thread.currentThread().getContextClassLoader();
+      if (context instanceof InvokeDispatchContext)
+      {
+         ClassLoader cl = null;
+         InvokeDispatchContext invokeContext = (InvokeDispatchContext) context;
+         try
+         {
+            cl = invokeContext.getClassLoader();
+         }
+         catch (Throwable t)
+         {
+            if (log.isTraceEnabled())
+               log.trace("Not setting classloader for " + context.getName() + " reason:" + context);
+         }
+         if (cl != null)
+            Thread.currentThread().setContextClassLoader(cl);
+      }
+      return result;
+   }
+   
+   static ClassLoader setContextClassLoader(final ControllerContext context)
    {
       if (System.getSecurityManager() == null)
       {
-         ClassLoader result = Thread.currentThread().getContextClassLoader();
-         if (context instanceof InvokeDispatchContext)
-            Thread.currentThread().setContextClassLoader(((InvokeDispatchContext) context).getClassLoader());
-         return result;
+         return setContextClassLoaderInternal(context);
       }
       else
       {
-         try
+         return AccessController.doPrivileged(new PrivilegedAction<ClassLoader>()
          {
-            return AccessController.doPrivileged(new PrivilegedExceptionAction<ClassLoader>()
-            {
-                public ClassLoader run() throws Exception
-                {
-                   try
-                   {
-                      ClassLoader result = Thread.currentThread().getContextClassLoader();
-                      if (context instanceof InvokeDispatchContext)
-                         Thread.currentThread().setContextClassLoader(((InvokeDispatchContext) context).getClassLoader());
-                      return result;
-                   }
-                   catch (Exception e)
-                   {
-                      throw e;
-                   }
-                   catch (Error e)
-                   {
-                      throw e;
-                   }
-                   catch (Throwable e)
-                   {
-                      throw new RuntimeException("Error setting context classloader", e);
-                   }
-                }
-            });
-         }
-         catch (PrivilegedActionException e)
-         {
-            throw e.getCause();
-         }
+             public ClassLoader run()
+             {
+                return setContextClassLoaderInternal(context);
+             }
+         });
       }
    }
 
