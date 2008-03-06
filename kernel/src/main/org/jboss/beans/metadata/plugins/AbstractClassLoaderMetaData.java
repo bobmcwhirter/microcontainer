@@ -22,26 +22,22 @@
 package org.jboss.beans.metadata.plugins;
 
 import java.io.Serializable;
-import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Iterator;
-import java.util.List;
 
-import javax.xml.bind.annotation.XmlType;
-import javax.xml.bind.annotation.XmlElements;
-import javax.xml.bind.annotation.XmlElement;
 import javax.xml.bind.annotation.XmlAnyElement;
+import javax.xml.bind.annotation.XmlElement;
+import javax.xml.bind.annotation.XmlElements;
+import javax.xml.bind.annotation.XmlType;
 
-import org.jboss.beans.metadata.spi.BeanMetaData;
-import org.jboss.beans.metadata.spi.BeanMetaDataFactory;
 import org.jboss.beans.metadata.spi.ClassLoaderMetaData;
 import org.jboss.beans.metadata.spi.MetaDataVisitor;
 import org.jboss.beans.metadata.spi.MetaDataVisitorNode;
 import org.jboss.beans.metadata.spi.ValueMetaData;
 import org.jboss.dependency.spi.ControllerState;
+import org.jboss.managed.api.annotation.ManagementProperty;
 import org.jboss.util.JBossObject;
 import org.jboss.util.JBossStringBuilder;
-import org.jboss.managed.api.annotation.ManagementProperty;
 
 /**
  * A classloader.
@@ -52,7 +48,7 @@ import org.jboss.managed.api.annotation.ManagementProperty;
  */
 @XmlType(name="classloaderType", propOrder="classLoader")
 public class AbstractClassLoaderMetaData extends JBossObject
-   implements ClassLoaderMetaData, BeanMetaDataFactory, Serializable
+   implements ClassLoaderMetaData, Serializable
 {
    private static final long serialVersionUID = 2L;
 
@@ -108,19 +104,6 @@ public class AbstractClassLoaderMetaData extends JBossObject
          setClassLoader((ValueMetaData) classloader);
       else
          setClassLoader(new AbstractValueMetaData(classloader));
-   }
-
-   public List<BeanMetaData> getBeans()
-   {
-      if (classloader instanceof BeanMetaDataFactory)
-      {
-         return ((BeanMetaDataFactory)classloader).getBeans();
-      }
-      else if (classloader instanceof BeanMetaData)
-      {
-         return Collections.singletonList((BeanMetaData)classloader);
-      }
-      return new ArrayList<BeanMetaData>();
    }
 
    public void initialVisit(MetaDataVisitor visitor)

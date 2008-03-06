@@ -46,6 +46,7 @@ import org.jboss.beans.metadata.plugins.AbstractValueMetaData;
 import org.jboss.beans.metadata.plugins.StringValueMetaData;
 import org.jboss.beans.metadata.plugins.ThisValueMetaData;
 import org.jboss.beans.metadata.spi.BeanMetaData;
+import org.jboss.beans.metadata.spi.ClassLoaderMetaData;
 import org.jboss.beans.metadata.spi.DemandMetaData;
 import org.jboss.beans.metadata.spi.DependencyMetaData;
 import org.jboss.beans.metadata.spi.PropertyMetaData;
@@ -150,6 +151,12 @@ class BeanMetaDataBuilderImpl extends BeanMetaDataBuilder
    public BeanMetaDataBuilder setClassLoader(ValueMetaData classLoader)
    {
       beanMetaData.setClassLoader(new AbstractClassLoaderMetaData(classLoader));
+      return this;
+   }
+
+   public BeanMetaDataBuilder setClassLoader(ClassLoaderMetaData classLoader)
+   {
+      beanMetaData.setClassLoader(classLoader);
       return this;
    }
 

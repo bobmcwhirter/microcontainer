@@ -29,8 +29,11 @@ import java.util.List;
 import java.util.ListIterator;
 import java.util.Set;
 
+import org.jboss.beans.metadata.plugins.AbstractClassLoaderMetaData;
+import org.jboss.beans.metadata.plugins.AbstractDependencyValueMetaData;
 import org.jboss.beans.metadata.spi.BeanMetaData;
 import org.jboss.beans.metadata.spi.ClassLoaderMetaData;
+import org.jboss.beans.metadata.spi.ValueMetaData;
 import org.jboss.dependency.spi.ControllerContext;
 import org.jboss.dependency.spi.ControllerMode;
 import org.jboss.dependency.spi.ControllerState;
@@ -331,7 +334,20 @@ public class AbstractKernelDeployer
       {
          ClassLoaderMetaData deploymentClassLoader = deployment.getClassLoader();
          if (deploymentClassLoader != null)
-            bean.setClassLoader(deploymentClassLoader);
+         {
+            // If the deployment classloader is a bean, replace it with an injection
+            ValueMetaData classLoader = deploymentClassLoader.getClassLoader();
+            if (classLoader instanceof BeanMetaData)
+            {
+               classLoader = new AbstractDependencyValueMetaData(((BeanMetaData) classLoader).getName());
+               beanClassLoader = new AbstractClassLoaderMetaData(classLoader);
+            }
+            else
+            {
+               beanClassLoader = deploymentClassLoader;
+            }
+            bean.setClassLoader(beanClassLoader);
+         }
       }
       controller.install(context);
       return context;

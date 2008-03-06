@@ -497,9 +497,18 @@ public class GenericBeanFactoryMetaData extends JBossObject implements BeanMetaD
       ValueMetaData injectKernelConfigurator = builder.createInject(KernelConstants.KERNEL_CONFIGURATOR_NAME);
       builder.addConstructorParameter(KernelConfigurator.class.getName(), injectKernelConfigurator);
       builder.addPropertyMetaData("bean", bean);
-      builder.addPropertyMetaData("constructor", constructor);
-      builder.addPropertyMetaData("start", start);
-      builder.addPropertyMetaData("create", create);
+      if (classLoader != null)
+      {
+         builder.setClassLoader(classLoader);
+         if (classLoader == null)
+         builder.addPropertyMetaData("classLoader", builder.createValue(classLoader));
+      }
+      if (constructor != null)
+         builder.addPropertyMetaData("constructor", constructor);
+      if (create != null)
+         builder.addPropertyMetaData("create", create);
+      if (start != null)
+         builder.addPropertyMetaData("start", start);
       if (demands != null && demands.size() > 0)
       {
          for (DemandMetaData demand : demands)

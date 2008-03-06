@@ -53,6 +53,5 @@ public class DeploymentClassLoaderInterceptor extends DefaultElementInterceptor
          beans = new ArrayList<BeanMetaDataFactory>();
          deployment.setBeanFactories(beans);
       }
-      beans.add(classloader);
    }
 }

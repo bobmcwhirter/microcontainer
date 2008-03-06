@@ -21,27 +21,28 @@
 */
 package org.jboss.test.kernel.deployment.xml.test;
 
+import java.lang.annotation.Annotation;
+import java.util.ArrayList;
+import java.util.Iterator;
 import java.util.List;
 import java.util.Set;
-import java.util.ArrayList;
 import java.util.TreeSet;
-import java.util.Iterator;
-import java.lang.annotation.Annotation;
 
 import junit.framework.Test;
+
 import org.jboss.beans.metadata.plugins.factory.GenericBeanFactory;
+import org.jboss.beans.metadata.spi.AnnotationMetaData;
 import org.jboss.beans.metadata.spi.BeanMetaData;
 import org.jboss.beans.metadata.spi.BeanMetaDataFactory;
 import org.jboss.beans.metadata.spi.LifecycleMetaData;
-import org.jboss.beans.metadata.spi.AnnotationMetaData;
 import org.jboss.beans.metadata.spi.NamedAliasMetaData;
 import org.jboss.dependency.spi.ControllerMode;
 import org.jboss.kernel.plugins.deployment.AbstractKernelDeployment;
+import org.jboss.test.kernel.deployment.xml.support.Annotation1;
+import org.jboss.test.kernel.deployment.xml.support.AnnotationWithAttributes;
 import org.jboss.test.kernel.deployment.xml.support.TestBeanMetaDataFactory;
 import org.jboss.test.kernel.deployment.xml.support.TestBeanMetaDataFactory1;
 import org.jboss.test.kernel.deployment.xml.support.TestBeanMetaDataFactory2;
-import org.jboss.test.kernel.deployment.xml.support.Annotation1;
-import org.jboss.test.kernel.deployment.xml.support.AnnotationWithAttributes;
 
 /**
  * DeploymentTestCase.
@@ -72,7 +73,7 @@ public class DeploymentTestCase extends AbstractXMLTest
       AbstractKernelDeployment deployment = unmarshalDeployment("DeploymentWithClassLoader.xml");
       assertEquals("SimpleDeployment", deployment.getName());
       assertNotNull(deployment.getClassLoader());
-      assertEmpty(deployment.getBeans());
+      assertNull(deployment.getBeans());
    }
 
    public void testDeploymentWithBean() throws Exception

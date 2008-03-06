@@ -43,6 +43,7 @@ import org.jboss.beans.metadata.plugins.AbstractClassLoaderMetaData;
 import org.jboss.beans.metadata.plugins.AbstractLazyMetaData;
 import org.jboss.beans.metadata.plugins.AbstractLifecycleMetaData;
 import org.jboss.beans.metadata.plugins.AbstractNamedAliasMetaData;
+import org.jboss.beans.metadata.plugins.AbstractValueMetaData;
 import org.jboss.beans.metadata.plugins.MutableLifecycleHolder;
 import org.jboss.beans.metadata.spi.AnnotationMetaData;
 import org.jboss.beans.metadata.spi.BeanMetaData;
@@ -50,6 +51,7 @@ import org.jboss.beans.metadata.spi.BeanMetaDataFactory;
 import org.jboss.beans.metadata.spi.ClassLoaderMetaData;
 import org.jboss.beans.metadata.spi.LifecycleMetaData;
 import org.jboss.beans.metadata.spi.NamedAliasMetaData;
+import org.jboss.beans.metadata.spi.ValueMetaData;
 import org.jboss.beans.metadata.spi.factory.GenericBeanFactoryMetaData;
 import org.jboss.dependency.spi.ControllerMode;
 import org.jboss.dependency.spi.ControllerState;
@@ -198,57 +200,79 @@ public class AbstractKernelDeployment extends JBossObject
 
    public List<BeanMetaData> getBeans()
    {
-      List<BeanMetaDataFactory> factories = getBeanFactories();
-      if (factories == null || factories.size() == 0)
-         return null;
-      List<BeanMetaData> result = new ArrayList<BeanMetaData>(factories.size());
-      for (BeanMetaDataFactory factory : factories)
+      List<BeanMetaData> result = new ArrayList<BeanMetaData>();
+      
+      // Include the classloader if it is a bean
+      ClassLoaderMetaData classLoaderMetaData = getClassLoader();
+      if (classLoaderMetaData != null)
       {
-         List<BeanMetaData> beans = factory.getBeans();
-         for (BeanMetaData bmd : beans)
+         ValueMetaData classLoader = classLoaderMetaData.getClassLoader();
+         if (classLoader instanceof BeanMetaData)
          {
-            // check annotations
-            if (annotations != null && annotations.isEmpty() == false)
-            {
-               Set<AnnotationMetaData> annotationsBMD = bmd.getAnnotations();
-               if (annotationsBMD == null)
-               {
-                  annotationsBMD = new HashSet<AnnotationMetaData>();
-                  bmd.setAnnotations(annotationsBMD);
-               }
-               annotationsBMD.addAll(annotations);
-            }
-            // impl specific
-            if (bmd instanceof AbstractBeanMetaData)
-            {
-               AbstractBeanMetaData bean = (AbstractBeanMetaData)bmd;
-               // set deployment defaults, if not already set per bean
-               if (bean.getCreate() == null && getCreate() != null)
-               {
-                  bean.setCreate(getCreate());
-               }
-               if (bean.getStart() == null && getStart() != null)
-               {
-                  bean.setStart(getStart());
-               }
-               if (bean.getStop() == null && getStop() != null)
-               {
-                  bean.setStop(getStop());
-               }
-               if (bean.getDestroy() == null && getDestroy() != null)
-               {
-                  bean.setDestroy(getDestroy());
-               }
-
-               // controller mode
-               if (bean.getMode() == null && getMode() != null)
-               {
-                  bean.setMode(getMode());
-               }
-            }
+            // Hack, if it doesn't have a classloader use the "null" classloader
+            // we don't want it to gain itself as the classloader
+            BeanMetaData classLoaderBean = (BeanMetaData) classLoader;
+            if (classLoaderBean.getClassLoader() == null)
+               classLoaderBean.setClassLoader(new AbstractClassLoaderMetaData(new AbstractValueMetaData()));
+            result.add((BeanMetaData) classLoader);
          }
-         result.addAll(beans);
       }
+
+      List<BeanMetaDataFactory> factories = getBeanFactories();
+
+      if (factories != null && factories.isEmpty() == false)
+      {
+         for (BeanMetaDataFactory factory : factories)
+         {
+            List<BeanMetaData> beans = factory.getBeans();
+            for (BeanMetaData bmd : beans)
+            {
+               // check annotations
+               if (annotations != null && annotations.isEmpty() == false)
+               {
+                  Set<AnnotationMetaData> annotationsBMD = bmd.getAnnotations();
+                  if (annotationsBMD == null)
+                  {
+                     annotationsBMD = new HashSet<AnnotationMetaData>();
+                     bmd.setAnnotations(annotationsBMD);
+                  }
+                  annotationsBMD.addAll(annotations);
+               }
+               // impl specific
+               if (bmd instanceof AbstractBeanMetaData)
+               {
+                  AbstractBeanMetaData bean = (AbstractBeanMetaData)bmd;
+                  // set deployment defaults, if not already set per bean
+                  if (bean.getCreate() == null && getCreate() != null)
+                  {
+                     bean.setCreate(getCreate());
+                  }
+                  if (bean.getStart() == null && getStart() != null)
+                  {
+                     bean.setStart(getStart());
+                  }
+                  if (bean.getStop() == null && getStop() != null)
+                  {
+                     bean.setStop(getStop());
+                  }
+                  if (bean.getDestroy() == null && getDestroy() != null)
+                  {
+                     bean.setDestroy(getDestroy());
+                  }
+
+                  // controller mode
+                  if (bean.getMode() == null && getMode() != null)
+                  {
+                     bean.setMode(getMode());
+                  }
+               }
+            }
+            result.addAll(beans);
+         }
+      }
+      // For backwards compatibility
+      if (result.isEmpty())
+         return null;
       return result;
    }
 

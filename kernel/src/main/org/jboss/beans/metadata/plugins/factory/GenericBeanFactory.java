@@ -37,6 +37,9 @@ import org.jboss.joinpoint.spi.MethodJoinpoint;
 import org.jboss.joinpoint.spi.TargettedJoinpoint;
 import org.jboss.kernel.plugins.config.Configurator;
 import org.jboss.kernel.spi.config.KernelConfigurator;
+import org.jboss.kernel.spi.dependency.KernelControllerContext;
+import org.jboss.kernel.spi.dependency.KernelControllerContextAware;
+import org.jboss.logging.Logger;
 
 /**
  * Bean factory metadata.
@@ -44,10 +47,16 @@ import org.jboss.kernel.spi.config.KernelConfigurator;
  * @author <a href="adrian@jboss.com">Adrian Brock</a>
  * @version $Revision$
  */
-public class GenericBeanFactory implements BeanFactory
+public class GenericBeanFactory implements BeanFactory, KernelControllerContextAware
 {
+   /** The log */
+   private static final Logger log = Logger.getLogger(GenericBeanFactory.class);
+   
    /** The configurator */
    protected KernelConfigurator configurator;
+   
+   /** Our context */
+   protected KernelControllerContext context;
    
    /** The bean class name */
    protected String bean;
@@ -85,7 +94,21 @@ public class GenericBeanFactory implements BeanFactory
     */
    public Object createBean() throws Throwable
    {
-      ClassLoader cl = Configurator.getClassLoader(classLoader);
+      ClassLoader cl = null;
+      if (classLoader == null && context != null)
+      {
+         try
+         {
+            cl = context.getClassLoader();
+         }
+         catch (Throwable t)
+         {
+            log.trace("Unable to retrieve classloader from " + context);
+         }
+      }
+      
+      if (cl == null)
+         cl = Configurator.getClassLoader(classLoader);
       BeanInfo info = null;
       if (bean != null)
          info = configurator.getBeanInfo(bean, cl);
@@ -111,6 +134,16 @@ public class GenericBeanFactory implements BeanFactory
       return result;
    }
    
+   public void setKernelControllerContext(KernelControllerContext context) throws Exception
+   {
+      this.context = context;
+   }
+
+   public void unsetKernelControllerContext(KernelControllerContext context) throws Exception
+   {
+      this.context = null;
+   }
+
    /**
     * Get the bean name
     * 

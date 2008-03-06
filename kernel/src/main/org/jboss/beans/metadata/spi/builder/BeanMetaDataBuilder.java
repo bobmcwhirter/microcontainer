@@ -29,6 +29,7 @@ import java.util.Set;
 import org.jboss.beans.metadata.plugins.AbstractBeanMetaData;
 import org.jboss.beans.metadata.plugins.builder.BeanMetaDataBuilderFactory;
 import org.jboss.beans.metadata.spi.BeanMetaData;
+import org.jboss.beans.metadata.spi.ClassLoaderMetaData;
 import org.jboss.beans.metadata.spi.ValueMetaData;
 import org.jboss.dependency.spi.ControllerMode;
 import org.jboss.dependency.spi.ControllerState;
@@ -130,7 +131,6 @@ public abstract class BeanMetaDataBuilder
     * @param classLoader the classloader
     * @return the builder
     */
-
    public BeanMetaDataBuilder setClassLoader(Object classLoader)
    {
       return setClassLoader(createValue(classLoader));
@@ -143,6 +143,14 @@ public abstract class BeanMetaDataBuilder
     * @return the builder
     */
    public abstract BeanMetaDataBuilder setClassLoader(ValueMetaData classLoader);
+
+   /**
+    * Set the classloader
+    * 
+    * @param classLoader the classloader
+    * @return the builder
+    */
+   public abstract BeanMetaDataBuilder setClassLoader(ClassLoaderMetaData classLoader);
 
    /**
     * Set the factory

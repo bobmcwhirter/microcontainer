@@ -269,7 +269,6 @@ public class BeanSchemaBinding
                beans = new ArrayList<BeanMetaDataFactory>();
                deployment.setBeanFactories(beans);
             }
-            beans.add(classloader);
          }
       });
 
