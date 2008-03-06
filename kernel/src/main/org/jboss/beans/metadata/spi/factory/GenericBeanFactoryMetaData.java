@@ -39,10 +39,8 @@ import org.jboss.beans.metadata.plugins.AbstractDemandMetaData;
 import org.jboss.beans.metadata.plugins.AbstractDependencyMetaData;
 import org.jboss.beans.metadata.plugins.AbstractInstallMetaData;
 import org.jboss.beans.metadata.plugins.AbstractLifecycleMetaData;
-import org.jboss.beans.metadata.plugins.AbstractMapMetaData;
 import org.jboss.beans.metadata.plugins.AbstractPropertyMetaData;
 import org.jboss.beans.metadata.plugins.AbstractSupplyMetaData;
-import org.jboss.beans.metadata.plugins.AbstractValueMetaData;
 import org.jboss.beans.metadata.plugins.InstallCallbackMetaData;
 import org.jboss.beans.metadata.plugins.UninstallCallbackMetaData;
 import org.jboss.beans.metadata.plugins.factory.GenericBeanFactory;
@@ -543,40 +541,12 @@ public class GenericBeanFactoryMetaData extends JBossObject implements BeanMetaD
          {
             propertyMap.put(property.getName(), property.getValue());
          }
+         builder.addPropertyMetaData("properties", propertyMap);
       }
       //TODO: installCallbacks and uninstallCallbacks
       
       return Collections.singletonList(builder.getBeanMetaData());
    }
-   
-//   public List<BeanMetaData> newGetBeans()
-//   {
-//      AbstractBeanMetaData gbf = new AbstractBeanMetaData();
-//      gbf.setName(name);
-//      gbf.setAliases(aliases);
-//      gbf.setBean(GenericBeanFactory.class.getName());
-//      gbf.setMode(mode);
-//      Set<PropertyMetaData> properties = new HashSet<PropertyMetaData>();
-//      gbf.setProperties(properties);
-//      if (this.properties != null)
-//      {
-//         properties.addAll(this.properties);
-//      }
-//      properties.add(createProperty("bean", bean));
-//      properties.add(createProperty("classLoader", classLoader));
-//      properties.add(createProperty("constructor", constructor));
-//      properties.add(createMapProperty("properties", properties));
-//      properties.add(createProperty("start", start));
-//      properties.add(createProperty("create", create));
-//      gbf.setDemands(demands);
-//      gbf.setDepends(depends);
-//      gbf.setSupplies(supplies);
-//      gbf.setInstalls(installs);
-//      gbf.setUninstalls(uninstalls);
-//      gbf.setInstallCallbacks(installCallbacks);
-//      gbf.setUninstallCallbacks(uninstallCallbacks);
-//      return Collections.singletonList((BeanMetaData) gbf);
-//   }
 
    /**
     * Add the parameters
@@ -591,34 +561,5 @@ public class GenericBeanFactoryMetaData extends JBossObject implements BeanMetaD
             builder.addParameterMetaData(param.getType(), param.getValue());
          }
       }
-   }
-   /**
-    * Create property.
-    *
-    * @param name the property name
-    * @param value the value
-    * @return property meta data
-    */
-   protected PropertyMetaData createProperty(String name, Object value)
-   {
-      return new AbstractPropertyMetaData(name, value);
-   }
-
-   /**
-    * Create property with map value.
-    *
-    * @param name the property name
-    * @param properties the properties
-    * @return property meta data
-    */
-   protected PropertyMetaData createMapProperty(String name, Set<PropertyMetaData> properties)
-   {
-      AbstractMapMetaData map = new AbstractMapMetaData();
-      if (properties != null)
-      {
-         for (PropertyMetaData property : properties)
-            map.put(new AbstractValueMetaData(property.getName()), new AbstractValueMetaData(property));
-      }
-      return new AbstractPropertyMetaData(name, map);
    }
 }
