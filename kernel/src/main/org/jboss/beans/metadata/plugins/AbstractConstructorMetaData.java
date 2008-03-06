@@ -262,28 +262,8 @@ public class AbstractConstructorMetaData extends AbstractFeatureMetaData
             // currently value constructor supports only values that are instances of class itself
             // this will add another instance with the same class to context
             ClassInfo type = beanInfo.getClassInfo();
-            log.warn("Constructing bean from injection value: results in multiple beans with same class type - " + type);
+            log.debug("Constructing bean from injection value: results in multiple beans with same class type - " + type);
             return type;
-/*
-            // find all constructors with single value
-            Set<ConstructorInfo> constructors = beanInfo.getConstructors();
-            Set<ConstructorInfo> matchingConstructorInfos = new HashSet<ConstructorInfo>();
-            if (constructors != null)
-            {
-               for (ConstructorInfo ci : constructors)
-               {
-                  if (ci.getParameters() != null && ci.getParameters().length == 1)
-                  {
-                     matchingConstructorInfos.add(ci);
-                  }
-               }
-            }
-            if (matchingConstructorInfos.size() != 1)
-            {
-               throw new IllegalArgumentException("Should not be here - illegal size of matching constructors: " + this);
-            }
-            return applyCollectionOrMapCheck(matchingConstructorInfos.iterator().next().getParameterTypes()[0].getType());
-*/
          }
       }
    }
