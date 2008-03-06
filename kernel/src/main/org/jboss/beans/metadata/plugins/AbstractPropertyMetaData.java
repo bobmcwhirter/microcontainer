@@ -155,7 +155,7 @@ public class AbstractPropertyMetaData extends AbstractFeatureMetaData
       return preInstantiate;
    }
 
-   @XmlAttribute
+   @XmlAttribute(name="preinstantiate")
    public void setPreInstantiate(boolean preInstantiate)
    {
       this.preInstantiate = preInstantiate;
