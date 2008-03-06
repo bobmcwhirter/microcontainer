@@ -102,7 +102,7 @@ public class AbstractManagedObjectFactory extends ManagedObjectFactory
    private static final Logger log = Logger.getLogger(AbstractManagedObjectFactory.class);
 
    /** The configuration */
-   private static final Configuration configuration;
+   private static final Configuration configuration = PropertyConfigurationAccess.getConfiguration();
 
    /** The managed object meta type */
    public static final GenericMetaType MANAGED_OBJECT_META_TYPE = new GenericMetaType(ManagedObject.class.getName(), ManagedObject.class.getName());
@@ -122,17 +122,29 @@ public class AbstractManagedObjectFactory extends ManagedObjectFactory
    /** The instance to name transformers */
    private Map<TypeInfo, RuntimeComponentNameTransformer> transformers = new WeakHashMap<TypeInfo, RuntimeComponentNameTransformer>();
 
-   static
+   /**
+    * Create a ManagedProperty by looking to the factory for ctor(Fields)
+    * @param factory - the ManagedProperty implementation class
+    * @param fields - the fields to pass to the ctor
+    * @return the managed property if successful, null otherwise
+    */
+   public static ManagedProperty createManagedProperty(Class<? extends ManagedProperty> factory, Fields fields)
    {
-      configuration = AccessController.doPrivileged(new PrivilegedAction<Configuration>()
+      ManagedProperty property = null;
+      try
       {
-         public Configuration run()
-         {
-            return new PropertyConfiguration();
-         }
-      });
+         Class<?>[] sig = {Fields.class};
+         Constructor<? extends ManagedProperty> ctor = factory.getConstructor(sig);
+         Object[] args = {fields};
+         property = ctor.newInstance(args);
+      }
+      catch(Exception e)
+      {
+         log.debug("Failed to create ManagedProperty", e);
+      }
+      return property;
    }
-   
+
    @Override
    public <T extends Serializable> ManagedObject createManagedObject(Class<T> clazz)
    {
@@ -951,18 +963,6 @@ public class AbstractManagedObjectFactory extends ManagedObjectFactory
     */
    protected ManagedProperty getManagedProperty(Class<? extends ManagedProperty> factory, Fields fields)
    {
-      ManagedProperty property = null;
-      try
-      {
-         Class<?>[] sig = {Fields.class};
-         Constructor<? extends ManagedProperty> ctor = factory.getConstructor(sig);
-         Object[] args = {fields};
-         property = ctor.newInstance(args);
-      }
-      catch(Exception e)
-      {
-         log.debug("Failed to create ManagedProperty", e);
-      }
-      return property;
+      return createManagedProperty(factory, fields);
    }
 }

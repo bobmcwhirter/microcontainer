@@ -73,6 +73,15 @@ public class DeploymentTemplateInfoUnitTestCase extends AbstractManagedObjectFac
       assertEquals("testExplicit", info.getDescription());
       assertTrue("property1 is in template info", info.getProperties().containsKey("property1"));
    }
-   
+   public void testReflectionOfExplicit()
+      throws Exception
+   {
+      DeploymentTemplateInfoFactory factory = new DeploymentTemplateInfoFactory();
+      DeploymentTemplateInfo info = factory.createTemplateInfo(ManagementObjectExplicit.class, "testReflectionOfExplicit", "testReflectionOfExplicit");
+      log.info(info);
+      assertEquals("testReflectionOfExplicit", info.getName());
+      assertEquals("testReflectionOfExplicit", info.getDescription());
+      assertTrue("property1 is in template info", info.getProperties().containsKey("property1"));      
+   }
 
 }
