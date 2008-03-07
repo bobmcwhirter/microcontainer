@@ -40,14 +40,14 @@ public @interface CollectionValue
     *
     * @return the collection class
     */
-   String clazz() default "";
+   Class<?> clazz() default void.class;
 
    /**
     * Get element class.
     *
     * @return the element class
     */
-   String elementClass() default "";
+   Class<?> elementClass() default void.class;
 
    /**
     * Get values.

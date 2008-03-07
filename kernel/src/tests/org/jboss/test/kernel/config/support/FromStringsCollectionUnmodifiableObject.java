@@ -44,8 +44,8 @@ public class FromStringsCollectionUnmodifiableObject extends UnmodifiableGetterB
             @Value(string = @StringValue("string2")),
             @Value(string = @StringValue("string1"))
          },
-         elementClass = "java.lang.String",
-         clazz = "java.util.ArrayList"
+         elementClass = String.class,
+         clazz = java.util.ArrayList.class
    )
    public void setCollection(Collection<?> collection)
    {

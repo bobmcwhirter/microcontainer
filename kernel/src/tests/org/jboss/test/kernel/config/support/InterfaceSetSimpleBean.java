@@ -44,8 +44,8 @@ public class InterfaceSetSimpleBean extends SimpleBean
             @Value(string = @StringValue("string2")),
             @Value(string = @StringValue("string1"))
          },
-         elementClass = "java.lang.String",
-         clazz = "java.util.Set"
+         elementClass = String.class,
+         clazz = java.util.Set.class
    )
    public void setSet(Set<?> collection)
    {

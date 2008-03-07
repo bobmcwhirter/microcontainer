@@ -43,7 +43,7 @@ public class StringValueAnnotationPlugin extends PropertyAnnotationPlugin<String
    {
       StringValueMetaData value = new StringValueMetaData(annotation.value());
       if (isAttributePresent(annotation.type()))
-         value.setType(annotation.type());
+         value.setType(annotation.type().getName());
       value.setReplace(annotation.replace());
       value.setTrim(annotation.trim());
       return value;

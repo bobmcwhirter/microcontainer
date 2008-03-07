@@ -21,7 +21,7 @@
 */
 package org.jboss.test.kernel.dependency.support;
 
-import org.jboss.beans.metadata.api.enums.FromContext;
+import org.jboss.beans.metadata.api.model.FromContext;
 import org.jboss.beans.metadata.api.annotations.Inject;
 import org.jboss.beans.metadata.api.annotations.InstallMethod;
 import org.jboss.beans.metadata.api.annotations.UninstallMethod;

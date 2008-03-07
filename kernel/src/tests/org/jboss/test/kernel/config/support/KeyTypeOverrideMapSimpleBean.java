@@ -49,12 +49,12 @@ public class KeyTypeOverrideMapSimpleBean extends SimpleBean
                   value=@Value(string = @StringValue("string1"))
             ),
             @EntryValue(
-                  key=@Value(string = @StringValue(value = "1", type="java.lang.Integer")),
+                  key=@Value(string = @StringValue(value = "1", type=Integer.class)),
                   value=@Value(string = @StringValue("integer"))
             )
          },
-         keyClass = "java.lang.String", valueClass = "java.lang.String",
-         clazz = "org.jboss.test.kernel.config.support.CustomMap"
+         keyClass = String.class, valueClass = String.class,
+         clazz = org.jboss.test.kernel.config.support.CustomMap.class
    )
    public void setMap(Map<?,?> collection)
    {

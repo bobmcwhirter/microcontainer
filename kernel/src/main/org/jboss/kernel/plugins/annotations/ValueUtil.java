@@ -61,6 +61,17 @@ final class ValueUtil
    }
 
    /**
+    * Is attribute present.
+    *
+    * @param value the attribute value
+    * @return true if not void.class
+    */
+   static boolean isAttributePresent(Class<?> value)
+   {
+      return value != null && (void.class.equals(value) == false);
+   }
+
+   /**
     * Create value meta data from @Value annotation.
     *
     * @param value the @Value annotation

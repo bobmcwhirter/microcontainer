@@ -60,7 +60,7 @@ public class SupplysAnnotationPlugin extends ClassAnnotationPlugin<Supplys>
       {
          AbstractSupplyMetaData asmd = new AbstractSupplyMetaData(supply.value());
          if (isAttributePresent(supply.type()))
-            asmd.setType(supply.type());
+            asmd.setType(supply.type().getName());
          
          if (supplies.add(asmd))
             nodes.add(asmd);

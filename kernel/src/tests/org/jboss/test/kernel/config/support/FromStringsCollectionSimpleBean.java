@@ -44,7 +44,7 @@ public class FromStringsCollectionSimpleBean extends SimpleBean
             @Value(string = @StringValue("string2")),
             @Value(string = @StringValue("string1"))
          },
-         elementClass = "java.lang.String"
+         elementClass = String.class
    )
    public void setCollection(Collection<?> collection)
    {

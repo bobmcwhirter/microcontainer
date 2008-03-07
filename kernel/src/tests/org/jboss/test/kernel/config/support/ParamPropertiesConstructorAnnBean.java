@@ -46,9 +46,9 @@ public class ParamPropertiesConstructorAnnBean extends SimpleBean
    @Constructor
    public ParamPropertiesConstructorAnnBean(
          @MapValue(
-               clazz="java.util.Properties",
-               keyClass = "java.lang.String",
-               valueClass = "java.lang.String",
+               clazz=java.util.Properties.class,
+               keyClass = String.class,
+               valueClass = String.class,
                value = {
                @EntryValue(
                      key = @Value(string = @StringValue("1")),

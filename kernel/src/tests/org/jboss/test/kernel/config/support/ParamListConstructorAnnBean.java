@@ -45,7 +45,7 @@ public class ParamListConstructorAnnBean extends SimpleBean
    @Constructor
    public ParamListConstructorAnnBean(
          @ListValue(
-               elementClass = "java.lang.String",
+               elementClass = String.class,
                value={
                   @Value(string = @StringValue("1")),
                   @Value(string = @StringValue("2"))

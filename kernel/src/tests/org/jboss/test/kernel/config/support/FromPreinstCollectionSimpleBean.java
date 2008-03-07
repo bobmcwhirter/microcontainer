@@ -44,7 +44,7 @@ public class FromPreinstCollectionSimpleBean extends SimpleBean
             @Value(string = @StringValue("string2")),
             @Value(string = @StringValue("string1"))
          },
-         elementClass = "java.lang.String"
+         elementClass = java.lang.String.class
    )
    public void setPreInstantiatedCollection(CustomCollection preInstantiatedCollection)
    {
@@ -55,7 +55,7 @@ public class FromPreinstCollectionSimpleBean extends SimpleBean
          value = {
             @Value(string = @StringValue("element"))
          },
-         elementClass = "java.lang.String"
+         elementClass = String.class
    )
    public void setSetterCollection(Collection<?> setterCollection)
    {

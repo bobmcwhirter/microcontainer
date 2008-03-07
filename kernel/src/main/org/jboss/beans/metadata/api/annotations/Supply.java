@@ -47,5 +47,5 @@ public @interface Supply
     *
     * @return the class type
     */
-   String type() default "";
+   Class<?> type() default void.class;
 }

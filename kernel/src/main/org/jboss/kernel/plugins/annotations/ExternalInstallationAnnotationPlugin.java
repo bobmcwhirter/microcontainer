@@ -108,7 +108,7 @@ public abstract class ExternalInstallationAnnotationPlugin<C extends Annotation>
          }
          AbstractParameterMetaData parameter = new AbstractParameterMetaData(ValueUtil.createValueMetaData(value));
          if (isAttributePresent(value.type()))
-            parameter.setType(value.type());
+            parameter.setType(value.type().getName());
          parameters.add(parameter);
       }
       return installMetaData;

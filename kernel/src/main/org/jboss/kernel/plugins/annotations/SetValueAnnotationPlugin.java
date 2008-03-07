@@ -44,9 +44,9 @@ public class SetValueAnnotationPlugin extends CollectionsAnnotationPlugin<SetVal
    {
       AbstractSetMetaData set = new AbstractSetMetaData();
       if (isAttributePresent(annotation.clazz()))
-         set.setType(annotation.clazz());
+         set.setType(annotation.clazz().getName());
       if (isAttributePresent(annotation.elementClass()))
-         set.setElementType(annotation.elementClass());
+         set.setElementType(annotation.elementClass().getName());
       for(Value value : annotation.value())
          set.add(createValueMetaData(value));
       return set;

@@ -92,6 +92,18 @@ public abstract class AbstractAnnotationPlugin<T extends AnnotatedInfo, C extend
    }
 
    /**
+    * Does attribute have value.
+    * Helper method.
+    *
+    * @param value the value
+    * @return true if atribute not void.class
+    */
+   protected static boolean isAttributePresent(Class<?> value)
+   {
+      return ValueUtil.isAttributePresent(value);
+   }
+
+   /**
     * Is type supported by plugin.
     *
     * @param type the annotation element type

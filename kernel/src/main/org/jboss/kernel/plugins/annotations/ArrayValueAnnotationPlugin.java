@@ -44,9 +44,9 @@ public class ArrayValueAnnotationPlugin extends CollectionsAnnotationPlugin<Arra
    {
       AbstractArrayMetaData array = new AbstractArrayMetaData();
       if (isAttributePresent(annotation.clazz()))
-         array.setType(annotation.clazz());
+         array.setType(annotation.clazz().getName());
       if (isAttributePresent(annotation.elementClass()))
-         array.setElementType(annotation.elementClass());
+         array.setElementType(annotation.elementClass().getName());
       for(Value value : annotation.value())
          array.add(createValueMetaData(value));
       return array;

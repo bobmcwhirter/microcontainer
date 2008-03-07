@@ -33,7 +33,7 @@ public class ProgressionSimpleBean extends SimpleBean
    /** The serialVersionUID */
    private static final long serialVersionUID = 1L;
 
-   @StringValue(value = "123.456", type="java.lang.Double")
+   @StringValue(value = "123.456", type=Double.class)
    public void setAnint(int anint)
    {
       super.setAnint(anint);
@@ -45,7 +45,7 @@ public class ProgressionSimpleBean extends SimpleBean
       super.setAFloat(float1);
    }
 
-   @StringValue(value = "987.6543", type="java.lang.Float")
+   @StringValue(value = "987.6543", type=Float.class)
    public void setAShort(Short short1)
    {
       super.setAShort(short1);

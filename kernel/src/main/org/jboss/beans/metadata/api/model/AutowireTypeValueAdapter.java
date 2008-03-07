@@ -19,21 +19,21 @@
 * Software Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA
 * 02110-1301 USA, or see the FSF site: http://www.fsf.org.
 */
-package org.jboss.beans.metadata.api.enums;
+package org.jboss.beans.metadata.api.model;
 
 import org.jboss.xb.binding.sunday.unmarshalling.ValueAdapter;
 
 /**
- * InjectionOptionValueAdapter.
+ * AutowireTypeValueAdapter.
  *
  * @author <a href="mailto:ales.justin@jboss.com">Ales Justin</a>
  * @version $Revision: 1.1 $
  */
-public class InjectionOptionValueAdapter implements ValueAdapter
+public class AutowireTypeValueAdapter implements ValueAdapter
 {
    @SuppressWarnings("unchecked")
    public Object cast(Object o, Class c)
    {
-      return InjectOption.getInstance((String)o);
+      return AutowireType.getInstance((String)o);
    }
 }

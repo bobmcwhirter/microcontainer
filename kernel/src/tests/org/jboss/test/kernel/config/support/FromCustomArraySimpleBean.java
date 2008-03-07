@@ -42,8 +42,8 @@ public class FromCustomArraySimpleBean extends SimpleBean
             @Value(string = @StringValue("string2")),
             @Value(string = @StringValue("string1"))
          },
-         elementClass = "java.lang.String",
-         clazz = "[Ljava.lang.String;"
+         elementClass = java.lang.String.class,
+         clazz = String[].class
    )
    public void setArray(Object[] collection)
    {

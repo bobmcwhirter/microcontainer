@@ -152,7 +152,7 @@ public class FromStringSimpleBean extends SimpleBean
       super.setAbyte(abyte);
    }
 
-   @StringValue(value="12345", type="java.lang.Long")
+   @StringValue(value="12345", type=Long.class)
    public void setANumber(Number number)
    {
       super.setANumber(number);

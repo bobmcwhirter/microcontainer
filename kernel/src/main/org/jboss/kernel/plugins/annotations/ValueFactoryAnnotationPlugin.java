@@ -62,7 +62,7 @@ public class ValueFactoryAnnotationPlugin extends PropertyAnnotationPlugin<Value
          {
             AbstractParameterMetaData apmd = new AbstractParameterMetaData(ValueUtil.createValueMetaData(parameter));
             if (isAttributePresent(parameter.type()))
-               apmd.setType(parameter.type());
+               apmd.setType(parameter.type().getName());
             parameters.add(apmd);
          }
       }

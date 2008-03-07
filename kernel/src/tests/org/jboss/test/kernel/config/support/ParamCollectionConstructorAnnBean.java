@@ -45,7 +45,7 @@ public class ParamCollectionConstructorAnnBean extends SimpleBean
    @Constructor
    public ParamCollectionConstructorAnnBean(
          @CollectionValue(
-               elementClass = "java.lang.String",
+               elementClass = String.class,
                value={
                   @Value(string = @StringValue("1")),
                   @Value(string = @StringValue("2"))

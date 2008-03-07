@@ -41,9 +41,9 @@ public class TypeOverrideArraySimpleBean extends SimpleBean
             @Value(string = @StringValue("string2")),
             @Value(string = @StringValue("string2")),
             @Value(string = @StringValue("string1")),
-            @Value(string = @StringValue(value = "1", type = "java.lang.Integer"))
+            @Value(string = @StringValue(value = "1", type = Integer.class))
          },
-         elementClass = "java.lang.String"
+         elementClass = String.class
    )
    public void setArray(Object[] array)
    {

@@ -26,11 +26,11 @@ import javax.xml.bind.annotation.XmlAttribute;
 import javax.xml.bind.annotation.XmlTransient;
 import javax.xml.bind.annotation.XmlType;
 
-import org.jboss.beans.metadata.api.enums.AutowireType;
+import org.jboss.beans.metadata.api.model.AutowireType;
 import org.jboss.beans.metadata.spi.MetaDataVisitor;
 import org.jboss.beans.metadata.spi.MetaDataVisitorNode;
-import org.jboss.beans.metadata.api.enums.InjectOption;
-import org.jboss.beans.metadata.api.enums.FromContext;
+import org.jboss.beans.metadata.api.model.InjectOption;
+import org.jboss.beans.metadata.api.model.FromContext;
 import org.jboss.dependency.plugins.AttributeCallbackItem;
 import org.jboss.dependency.spi.Controller;
 import org.jboss.dependency.spi.ControllerContext;

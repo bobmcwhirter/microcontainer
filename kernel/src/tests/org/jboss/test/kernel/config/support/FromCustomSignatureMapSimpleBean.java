@@ -47,8 +47,8 @@ public class FromCustomSignatureMapSimpleBean extends SimpleBean
                   value=@Value(string = @StringValue("string1"))
             )
          },
-         keyClass = "java.lang.String",
-         valueClass = "java.lang.String"
+         keyClass = String.class,
+         valueClass = String.class
    )
    public void setCustomMap(CustomMap collection)
    {

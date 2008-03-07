@@ -44,8 +44,8 @@ public class InterfaceListSimpleBean extends SimpleBean
             @Value(string = @StringValue("string2")),
             @Value(string = @StringValue("string1"))
          },
-         elementClass = "java.lang.String",
-         clazz = "java.util.List"
+         elementClass = String.class,
+         clazz = java.util.List.class
    )
    public void setList(List<?> collection)
    {

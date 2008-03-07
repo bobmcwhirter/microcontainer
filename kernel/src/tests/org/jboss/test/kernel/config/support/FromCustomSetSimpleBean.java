@@ -44,8 +44,8 @@ public class FromCustomSetSimpleBean extends SimpleBean
             @Value(string = @StringValue("string2")),
             @Value(string = @StringValue("string1"))
          },
-         elementClass = "java.lang.String",
-         clazz = "org.jboss.test.kernel.config.support.CustomSet"
+         elementClass = String.class,
+         clazz = org.jboss.test.kernel.config.support.CustomSet.class
    )
    public void setSet(Set<?> collection)
    {

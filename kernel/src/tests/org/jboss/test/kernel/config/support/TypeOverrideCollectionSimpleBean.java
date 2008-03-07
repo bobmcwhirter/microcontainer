@@ -43,10 +43,10 @@ public class TypeOverrideCollectionSimpleBean extends SimpleBean
             @Value(string = @StringValue("string2")),
             @Value(string = @StringValue("string2")),
             @Value(string = @StringValue("string1")),
-            @Value(string = @StringValue(value = "1", type = "java.lang.Integer"))
+            @Value(string = @StringValue(value = "1", type = Integer.class))
          },
-         elementClass = "java.lang.String",
-         clazz = "org.jboss.test.kernel.config.support.CustomCollection"
+         elementClass = String.class,
+         clazz = org.jboss.test.kernel.config.support.CustomCollection.class
    )
    public void setCollection(Collection<?> collection)
    {

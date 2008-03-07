@@ -35,7 +35,7 @@ import org.jboss.beans.metadata.api.annotations.Factory;
  * @author <a href="ales.justin@jboss.com">Ales Justin</a>
  */
 @Factory(
-      factoryClass = "org.jboss.test.kernel.config.support.SimpleBeanFactory",
+      factoryClass = org.jboss.test.kernel.config.support.SimpleBeanFactory.class,
       factoryMethod = "staticCreateSimpleBean"
 )
 public class FromStaticFactorySimpleBean extends SimpleBean

@@ -49,8 +49,8 @@ public class FromPreinstMapSimpleBean extends SimpleBean
                   value=@Value(string = @StringValue("string1"))
             )
          },
-         keyClass = "java.lang.String",
-         valueClass = "java.lang.String"
+         keyClass = String.class,
+         valueClass = String.class
    )
    public void setPreInstantiatedMap(CustomMap preInstantiatedMap)
    {
@@ -64,8 +64,8 @@ public class FromPreinstMapSimpleBean extends SimpleBean
                   value=@Value(string = @StringValue("justValue"))
             )
          },
-         keyClass = "java.lang.String",
-         valueClass = "java.lang.String"
+         keyClass = String.class,
+         valueClass = String.class
    )
    public void setSetterMap(Map<?,?> setterMap)
    {

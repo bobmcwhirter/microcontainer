@@ -36,18 +36,18 @@ import java.lang.annotation.Target;
 public @interface ListValue
 {
    /**
-    * Get list class name.
+    * Get list class.
     *
-    * @return the list class name
+    * @return the list class
     */
-   String clazz() default "";
+   Class<?> clazz() default void.class;
 
    /**
-    * Get the element class name.
+    * Get the element class.
     *
-    * @return the element class name
+    * @return the element class
     */
-   String elementClass() default "";
+   Class<?> elementClass() default void.class;
 
    /**
     * Get the values.

@@ -39,7 +39,7 @@ public class ParamCompConstructorAnnBean extends SimpleBean
    }
 
    @Constructor
-   public ParamCompConstructorAnnBean(@StringValue(value = "12", type="java.lang.Integer") Comparable<?> comparable)
+   public ParamCompConstructorAnnBean(@StringValue(value = "12", type=Integer.class) Comparable<?> comparable)
    {
       super(comparable);
    }

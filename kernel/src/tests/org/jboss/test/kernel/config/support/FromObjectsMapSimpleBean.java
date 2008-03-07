@@ -41,16 +41,16 @@ public class FromObjectsMapSimpleBean extends SimpleBean
    @MapValue(
          value = {
             @EntryValue(
-                  key=@Value(javabean = @JavaBeanValue("org.jboss.test.kernel.config.support.MyObject1")),
-                  value=@Value(javabean = @JavaBeanValue("org.jboss.test.kernel.config.support.MyObject2"))
+                  key=@Value(javabean = @JavaBeanValue(org.jboss.test.kernel.config.support.MyObject1.class)),
+                  value=@Value(javabean = @JavaBeanValue(org.jboss.test.kernel.config.support.MyObject2.class))
             ),
             @EntryValue(
-                  key=@Value(javabean = @JavaBeanValue("org.jboss.test.kernel.config.support.MyObject2")),
-                  value=@Value(javabean = @JavaBeanValue("org.jboss.test.kernel.config.support.MyObject1"))
+                  key=@Value(javabean = @JavaBeanValue(org.jboss.test.kernel.config.support.MyObject2.class)),
+                  value=@Value(javabean = @JavaBeanValue(org.jboss.test.kernel.config.support.MyObject1.class))
             )
          },
-         keyClass = "java.lang.Object",
-         valueClass = "java.lang.Object"
+         keyClass = Object.class,
+         valueClass = Object.class
    )
    public void setMap(Map<?,?> collection)
    {

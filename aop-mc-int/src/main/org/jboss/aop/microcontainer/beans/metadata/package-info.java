@@ -30,15 +30,15 @@
 })
 package org.jboss.aop.microcontainer.beans.metadata;
 
-import org.jboss.beans.metadata.api.enums.AutowireTypeValueAdapter;
+import org.jboss.beans.metadata.api.model.AutowireTypeValueAdapter;
 import org.jboss.beans.metadata.plugins.CardinalityValueAdapter;
 import org.jboss.beans.metadata.plugins.ControllerModeValueAdapter;
 import org.jboss.beans.metadata.plugins.ControllerStateValueAdapter;
-import org.jboss.beans.metadata.api.enums.FromContext;
-import org.jboss.beans.metadata.api.enums.FromContextValueAdapter;
-import org.jboss.beans.metadata.api.enums.InjectOption;
-import org.jboss.beans.metadata.api.enums.InjectionOptionValueAdapter;
-import org.jboss.beans.metadata.api.enums.AutowireType;
+import org.jboss.beans.metadata.api.model.FromContext;
+import org.jboss.beans.metadata.api.model.FromContextValueAdapter;
+import org.jboss.beans.metadata.api.model.InjectOption;
+import org.jboss.beans.metadata.api.model.InjectionOptionValueAdapter;
+import org.jboss.beans.metadata.api.model.AutowireType;
 import org.jboss.dependency.spi.Cardinality;
 import org.jboss.dependency.spi.ControllerMode;
 import org.jboss.dependency.spi.ControllerState;

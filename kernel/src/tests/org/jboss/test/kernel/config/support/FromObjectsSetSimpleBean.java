@@ -23,8 +23,8 @@ package org.jboss.test.kernel.config.support;
 
 import java.util.Set;
 
-import org.jboss.beans.metadata.api.annotations.SetValue;
 import org.jboss.beans.metadata.api.annotations.JavaBeanValue;
+import org.jboss.beans.metadata.api.annotations.SetValue;
 import org.jboss.beans.metadata.api.annotations.Value;
 
 /**
@@ -39,12 +39,12 @@ public class FromObjectsSetSimpleBean extends SimpleBean
 
    @SetValue(
          value = {
-            @Value(javabean = @JavaBeanValue("org.jboss.test.kernel.config.support.MyObject1")),
-            @Value(javabean = @JavaBeanValue("org.jboss.test.kernel.config.support.MyObject2")),
-            @Value(javabean = @JavaBeanValue("org.jboss.test.kernel.config.support.MyObject2")),
-            @Value(javabean = @JavaBeanValue("org.jboss.test.kernel.config.support.MyObject1"))
+            @Value(javabean = @JavaBeanValue(org.jboss.test.kernel.config.support.MyObject1.class)),
+            @Value(javabean = @JavaBeanValue(org.jboss.test.kernel.config.support.MyObject2.class)),
+            @Value(javabean = @JavaBeanValue(org.jboss.test.kernel.config.support.MyObject2.class)),
+            @Value(javabean = @JavaBeanValue(org.jboss.test.kernel.config.support.MyObject1.class))
          },
-         elementClass = "java.lang.Object"
+         elementClass = Object.class
    )
    public void setSet(Set<?> collection)
    {

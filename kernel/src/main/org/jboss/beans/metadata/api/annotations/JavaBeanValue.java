@@ -36,10 +36,10 @@ import java.lang.annotation.ElementType;
 public @interface JavaBeanValue
 {
    /**
-    * Get java bean class name.
+    * Get java bean class.
     * Must have default constructor.
     *
-    * @return the class name
+    * @return the class
     */
-   String value() default "";
+   Class<?> value() default void.class;
 }

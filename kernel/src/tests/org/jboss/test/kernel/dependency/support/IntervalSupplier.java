@@ -27,7 +27,7 @@ import org.jboss.beans.metadata.api.annotations.Supply;
 /**
  * @author <a href="mailto:ales.justin@jboss.com">Ales Justin</a>
  */
-@Supplys({@Supply(value = "5", type = "java.lang.Integer")})
+@Supplys({@Supply(value = "5", type = Integer.class)})
 public class IntervalSupplier
 {
 }

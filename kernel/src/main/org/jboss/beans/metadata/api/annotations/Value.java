@@ -41,7 +41,7 @@ public @interface Value
     *
     * @return the type
     */
-   String type() default "";
+   Class<?> type() default void.class;
 
    /**
     * Get the string value.

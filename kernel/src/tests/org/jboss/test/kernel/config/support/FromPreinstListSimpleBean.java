@@ -44,7 +44,7 @@ public class FromPreinstListSimpleBean extends SimpleBean
             @Value(string = @StringValue("string2")),
             @Value(string = @StringValue("string1"))
          },
-         elementClass = "java.lang.String"
+         elementClass = String.class
    )
    public void setPreInstantiatedList(CustomList preInstantiatedList)
    {
@@ -55,7 +55,7 @@ public class FromPreinstListSimpleBean extends SimpleBean
          value = {
             @Value(string = @StringValue("element"))
          },
-         elementClass = "java.lang.String"
+         elementClass = String.class
    )
    public void setSetterList(List<?> setterList)
    {

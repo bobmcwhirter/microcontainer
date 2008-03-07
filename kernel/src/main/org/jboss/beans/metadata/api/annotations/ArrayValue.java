@@ -38,16 +38,16 @@ public @interface ArrayValue
    /**
     * Set the array class.
     *
-    * @return array class name
+    * @return array class
     */
-   String clazz() default "";
+   Class<?> clazz() default void.class;
 
    /**
     * Array's element class.
     *
-    * @return element class name
+    * @return element class
     */
-   String elementClass() default "";
+   Class<?> elementClass() default void.class;
 
    /**
     * Get the values.

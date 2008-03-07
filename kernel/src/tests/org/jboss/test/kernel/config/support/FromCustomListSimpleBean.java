@@ -44,8 +44,8 @@ public class FromCustomListSimpleBean extends SimpleBean
             @Value(string = @StringValue("string2")),
             @Value(string = @StringValue("string1"))
          },
-         elementClass = "java.lang.String",
-         clazz = "org.jboss.test.kernel.config.support.CustomList"
+         elementClass = String.class,
+         clazz = org.jboss.test.kernel.config.support.CustomList.class
    )
    public void setList(List<?> collection)
    {

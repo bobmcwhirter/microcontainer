@@ -44,7 +44,7 @@ public class FromPreinstSetSimpleBean extends SimpleBean
             @Value(string = @StringValue("string2")),
             @Value(string = @StringValue("string1"))
          },
-         elementClass = "java.lang.String"
+         elementClass = String.class
    )
    public void setPreInstantiatedSet(CustomSet preInstantiatedSet)
    {
@@ -55,7 +55,7 @@ public class FromPreinstSetSimpleBean extends SimpleBean
          value = {
             @Value(string = @StringValue("element"))
          },
-         elementClass = "java.lang.String"
+         elementClass = String.class
    )
    public void setSetterSet(Set<?> setterSet)
    {

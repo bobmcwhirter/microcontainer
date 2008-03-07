@@ -26,7 +26,7 @@ import org.jboss.beans.metadata.api.annotations.Factory;
 /**
  * @author <a href="mailto:ales.justin@jboss.com">Ales Justin</a>
  */
-@Factory(factoryClass = "org.jboss.test.kernel.annotations.support.FactoryTesterCreator", factoryMethod = "fromAnnotations")
+@Factory(factoryClass = org.jboss.test.kernel.annotations.support.FactoryTesterCreator.class, factoryMethod = "fromAnnotations")
 public class FactoryAnnotationTester implements AnnotationTester
 {
    private Object value;

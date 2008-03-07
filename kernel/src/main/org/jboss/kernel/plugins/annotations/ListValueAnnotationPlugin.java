@@ -44,9 +44,9 @@ public class ListValueAnnotationPlugin extends CollectionsAnnotationPlugin<ListV
    {
       AbstractListMetaData list = new AbstractListMetaData();
       if (isAttributePresent(annotation.clazz()))
-         list.setType(annotation.clazz());
+         list.setType(annotation.clazz().getName());
       if (isAttributePresent(annotation.elementClass()))
-         list.setElementType(annotation.elementClass());
+         list.setElementType(annotation.elementClass().getName());
       for(Value value : annotation.value())
          list.add(createValueMetaData(value));
       return list;

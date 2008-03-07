@@ -36,25 +36,25 @@ import java.lang.annotation.ElementType;
 public @interface MapValue
 {
    /**
-    * Get the map class name.
+    * Get the map class.
     *
-    * @return the map class name
+    * @return the map class
     */
-   String clazz() default "";
+   Class<?> clazz() default void.class;
 
    /**
-    * Get the key class name.
+    * Get the key class.
     *
-    * @return the key class name
+    * @return the key class
     */
-   String keyClass() default "";
+   Class<?> keyClass() default void.class;
 
    /**
     * Get the value class name.
     *
     * @return the value class name
     */
-   String valueClass() default "";
+   Class<?> valueClass() default void.class;
 
    /**
     * Get the entries.

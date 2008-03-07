@@ -46,8 +46,8 @@ public class ParamMapConstructorAnnBean extends SimpleBean
    @Constructor
    public ParamMapConstructorAnnBean(
          @MapValue(
-               keyClass = "java.lang.String",
-               valueClass = "java.lang.String",
+               keyClass = String.class,
+               valueClass = String.class,
                value = {
                @EntryValue(
                      key = @Value(string = @StringValue("1")),

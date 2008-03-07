@@ -44,8 +44,8 @@ public class FromCustomCollectionSimpleBean extends SimpleBean
             @Value(string = @StringValue("string2")),
             @Value(string = @StringValue("string1"))
          },
-         elementClass = "java.lang.String",
-         clazz = "org.jboss.test.kernel.config.support.CustomCollection"
+         elementClass = String.class,
+         clazz = org.jboss.test.kernel.config.support.CustomCollection.class
    )
    public void setCollection(Collection<?> collection)
    {

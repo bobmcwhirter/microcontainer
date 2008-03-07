@@ -62,13 +62,13 @@ public class JavaBeanValueAnnotationPlugin extends PropertyAnnotationPlugin<Java
 
    public ValueMetaData createValueMetaData(JavaBeanValue annotation)
    {
-      String className = annotation.value();
+      Class<?> className = annotation.value();
       if (isAttributePresent(className) == false)
          throw new IllegalArgumentException("Javabean class must be set: " + annotation);
 
       try
       {
-         BeanInfo beanInfo = configuration.getBeanInfo(className, null);
+         BeanInfo beanInfo = configuration.getBeanInfo(className.getName(), null);
          return new AbstractValueMetaData(beanInfo.newInstance());
       }
       catch (Throwable t)

@@ -43,7 +43,7 @@ public class FromPreinstArraySimpleBean extends SimpleBean
             @Value(string = @StringValue("string2")),
             @Value(string = @StringValue("string1"))
          },
-         elementClass = "java.lang.String"
+         elementClass = String.class
    )
    public void setPreInstantiatedArray(Object[] preInstantiatedArray)
    {
@@ -54,7 +54,7 @@ public class FromPreinstArraySimpleBean extends SimpleBean
          value = {
             @Value(string = @StringValue("element"))
          },
-         elementClass = "java.lang.String"
+         elementClass = String.class
    )
    public void setSetterArray(Object[] setterArray)
    {

@@ -49,9 +49,9 @@ public class FromStringsMapUnmodifiableObject extends UnmodifiableGetterBean
                   value=@Value(string = @StringValue("string1"))
             )
          },
-         keyClass = "java.lang.String",
-         valueClass = "java.lang.String",
-         clazz = "java.util.HashMap"
+         keyClass = String.class,
+         valueClass = String.class,
+         clazz = java.util.HashMap.class
    )
    public void setMap(Map<?,?> map)
    {

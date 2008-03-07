@@ -37,8 +37,8 @@ public class AnnotatedLDAPFactory extends LDAPFactory
    @Constructor
    public AnnotatedLDAPFactory(
          @MapValue(
-               keyClass = "java.lang.String",
-               valueClass = "java.lang.String",
+               keyClass = String.class,
+               valueClass = String.class,
                value = {
                   @EntryValue(
                      key = @Value(string = @StringValue("foo.bar.key")),

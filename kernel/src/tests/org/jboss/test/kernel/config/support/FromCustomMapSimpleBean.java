@@ -49,8 +49,8 @@ public class FromCustomMapSimpleBean extends SimpleBean
                   value=@Value(string = @StringValue("string1"))
             )
          },
-         keyClass = "java.lang.String", valueClass = "java.lang.String",
-         clazz = "org.jboss.test.kernel.config.support.CustomMap"
+         keyClass = String.class, valueClass = String.class,
+         clazz = org.jboss.test.kernel.config.support.CustomMap.class
    )
    public void setMap(Map<?,?> collection)
    {

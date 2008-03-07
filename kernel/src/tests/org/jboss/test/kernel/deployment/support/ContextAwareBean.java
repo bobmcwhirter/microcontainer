@@ -23,7 +23,7 @@ package org.jboss.test.kernel.deployment.support;
 
 import org.jboss.dependency.spi.ControllerContext;
 import org.jboss.beans.metadata.api.annotations.Inject;
-import org.jboss.beans.metadata.api.enums.FromContext;
+import org.jboss.beans.metadata.api.model.FromContext;
 
 /**
  * A simple bean with awareness

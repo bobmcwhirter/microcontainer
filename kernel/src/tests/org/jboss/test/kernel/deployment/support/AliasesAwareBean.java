@@ -24,7 +24,7 @@ package org.jboss.test.kernel.deployment.support;
 import java.util.Set;
 
 import org.jboss.beans.metadata.api.annotations.Inject;
-import org.jboss.beans.metadata.api.enums.FromContext;
+import org.jboss.beans.metadata.api.model.FromContext;
 import org.jboss.beans.metadata.api.annotations.Aliases;
 
 /**

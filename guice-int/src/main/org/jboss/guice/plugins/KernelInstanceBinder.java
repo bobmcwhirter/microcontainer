@@ -52,27 +52,27 @@ public class KernelInstanceBinder extends InstanceBinder
    @MapValue(
          value = {
                   @EntryValue(
-                        key = @Value(type = "java.lang.Class", string = @StringValue(value="org.jboss.dependency.spi.Controller", type = "java.lang.Class")),
+                        key = @Value(type = Class.class, string = @StringValue(value="org.jboss.dependency.spi.Controller", type = Class.class)),
                         value = @Value(inject = @Inject(bean = KernelConstants.KERNEL_CONTROLLER_NAME))
                   ),
                   @EntryValue(
-                        key = @Value(type = "java.lang.Class", string = @StringValue(value="org.jboss.kernel.Kernel", type = "java.lang.Class")),
+                        key = @Value(type = Class.class, string = @StringValue(value="org.jboss.kernel.Kernel", type = Class.class)),
                         value = @Value(inject = @Inject(bean = KernelConstants.KERNEL_NAME))
                   ),
                   @EntryValue(
-                        key = @Value(type = "java.lang.Class", string = @StringValue(value="org.jboss.kernel.spi.dependency.KernelController", type = "java.lang.Class")),
+                        key = @Value(type = Class.class, string = @StringValue(value="org.jboss.kernel.spi.dependency.KernelController", type = Class.class)),
                         value = @Value(inject = @Inject(bean = KernelConstants.KERNEL_CONTROLLER_NAME))
                   ),
                   @EntryValue(
-                        key = @Value(type = "java.lang.Class", string = @StringValue(value="org.jboss.kernel.spi.registry.KernelBus", type = "java.lang.Class")),
+                        key = @Value(type = Class.class, string = @StringValue(value="org.jboss.kernel.spi.registry.KernelBus", type = Class.class)),
                         value = @Value(inject = @Inject(bean = KernelConstants.KERNEL_BUS_NAME))
                   ),
                   @EntryValue(
-                        key = @Value(type = "java.lang.Class", string = @StringValue(value="org.jboss.kernel.spi.registry.KernelRegistry", type = "java.lang.Class")),
+                        key = @Value(type = Class.class, string = @StringValue(value="org.jboss.kernel.spi.registry.KernelRegistry", type = Class.class)),
                         value = @Value(inject = @Inject(bean = KernelConstants.KERNEL_REGISTRY_NAME))
                   ),
                   @EntryValue(
-                        key = @Value(type = "java.lang.Class", string = @StringValue(value="org.jboss.kernel.spi.config.KernelConfigurator", type = "java.lang.Class")),
+                        key = @Value(type = Class.class, string = @StringValue(value="org.jboss.kernel.spi.config.KernelConfigurator", type = Class.class)),
                         value = @Value(inject = @Inject(bean = KernelConstants.KERNEL_CONFIGURATOR_NAME))
                   )
                }

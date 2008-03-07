@@ -44,9 +44,9 @@ public class CollectionValueAnnotationPlugin extends CollectionsAnnotationPlugin
    {
       AbstractCollectionMetaData collection = new AbstractCollectionMetaData();
       if (isAttributePresent(annotation.clazz()))
-         collection.setType(annotation.clazz());
+         collection.setType(annotation.clazz().getName());
       if (isAttributePresent(annotation.elementClass()))
-         collection.setElementType(annotation.elementClass());
+         collection.setElementType(annotation.elementClass().getName());
       for(Value value : annotation.value())
          collection.add(createValueMetaData(value));
       return collection;

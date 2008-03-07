@@ -23,9 +23,9 @@ package org.jboss.test.kernel.config.support;
 
 import java.util.Set;
 
+import org.jboss.beans.metadata.api.annotations.SetValue;
 import org.jboss.beans.metadata.api.annotations.StringValue;
 import org.jboss.beans.metadata.api.annotations.Value;
-import org.jboss.beans.metadata.api.annotations.SetValue;
 
 /**
  * A simple bean
@@ -44,8 +44,8 @@ public class FromStringsSetUnmodifiableObject extends UnmodifiableGetterBean
             @Value(string = @StringValue("string2")),
             @Value(string = @StringValue("string1"))
          },
-         elementClass = "java.lang.String",
-         clazz = "java.util.HashSet"
+         elementClass = String.class,
+         clazz = java.util.HashSet.class
    )
    public void setSet(Set<?> set)
    {

@@ -37,9 +37,9 @@ import org.jboss.beans.metadata.api.annotations.Value;
  * @author <a href="ales.justin@jboss.com">Ales Justin</a>
  */
 @Factory(
-      factoryClass = "org.jboss.test.kernel.config.support.SimpleBeanFactory",
+      factoryClass = org.jboss.test.kernel.config.support.SimpleBeanFactory.class,
       factoryMethod = "staticCreateSimpleBean",
-      parameters = {@Value(type="java.lang.String", string = @StringValue("Static Factory Value"))}
+      parameters = {@Value(type=String.class, string = @StringValue("Static Factory Value"))}
 )
 public class FromStaticFactoryWithParamSimpleBean extends SimpleBean
 {

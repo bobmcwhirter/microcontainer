@@ -26,9 +26,9 @@ import java.lang.annotation.Retention;
 import java.lang.annotation.RetentionPolicy;
 import java.lang.annotation.Target;
 
-import org.jboss.beans.metadata.api.enums.FromContext;
-import org.jboss.beans.metadata.api.enums.InjectOption;
-import org.jboss.beans.metadata.api.enums.AutowireType;
+import org.jboss.beans.metadata.api.model.FromContext;
+import org.jboss.beans.metadata.api.model.InjectOption;
+import org.jboss.beans.metadata.api.model.AutowireType;
 
 /**
  * Beans when injected by class type are by default changed to configured

@@ -47,7 +47,7 @@ public @interface Factory
     *
     * @return the factory class
     */
-   String factoryClass() default "";
+   Class<?> factoryClass() default void.class;
 
    /**
     * Get the factory method.

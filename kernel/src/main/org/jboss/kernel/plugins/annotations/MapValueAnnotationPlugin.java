@@ -44,11 +44,11 @@ public class MapValueAnnotationPlugin extends CollectionsAnnotationPlugin<MapVal
    {
       AbstractMapMetaData map = new AbstractMapMetaData();
       if (isAttributePresent(annotation.clazz()))
-         map.setType(annotation.clazz());
+         map.setType(annotation.clazz().getName());
       if (isAttributePresent(annotation.keyClass()))
-         map.setKeyType(annotation.keyClass());
+         map.setKeyType(annotation.keyClass().getName());
       if (isAttributePresent(annotation.valueClass()))
-         map.setValueType(annotation.valueClass());
+         map.setValueType(annotation.valueClass().getName());
       for(EntryValue entry : annotation.value())
       {
          map.put(createValueMetaData(entry.key()), createValueMetaData(entry.value()));

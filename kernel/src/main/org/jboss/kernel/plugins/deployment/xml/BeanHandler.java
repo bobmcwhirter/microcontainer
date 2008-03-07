@@ -25,7 +25,7 @@ import javax.xml.namespace.NamespaceContext;
 import javax.xml.namespace.QName;
 
 import org.jboss.beans.metadata.plugins.AbstractBeanMetaData;
-import org.jboss.beans.metadata.api.enums.AutowireType;
+import org.jboss.beans.metadata.api.model.AutowireType;
 import org.jboss.beans.metadata.spi.ConstructorMetaData;
 import org.jboss.dependency.spi.ControllerMode;
 import org.jboss.xb.binding.sunday.unmarshalling.DefaultElementHandler;

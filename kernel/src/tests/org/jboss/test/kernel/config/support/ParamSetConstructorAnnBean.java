@@ -45,7 +45,7 @@ public class ParamSetConstructorAnnBean extends SimpleBean
    @Constructor
    public ParamSetConstructorAnnBean(
          @SetValue(
-               elementClass = "java.lang.String",
+               elementClass = String.class,
                value={
                   @Value(string = @StringValue("1"))
                      }

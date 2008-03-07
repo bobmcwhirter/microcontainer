@@ -36,18 +36,18 @@ import java.lang.annotation.ElementType;
 public @interface SetValue
 {
    /**
-    * Get the set class name.
+    * Get the set class.
     *
-    * @return the set class name
+    * @return the set class
     */
-   String clazz() default "";
+   Class<?> clazz() default void.class;
 
    /**
-    * Get the element class name.
+    * Get the element class.
     *
-    * @return the element class name
+    * @return the element class
     */
-   String elementClass() default "";
+   Class<?> elementClass() default void.class;
 
    /**
     * Get the values.

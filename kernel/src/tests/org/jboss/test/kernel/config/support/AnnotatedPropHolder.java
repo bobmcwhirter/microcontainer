@@ -51,7 +51,7 @@ public class AnnotatedPropHolder extends PropHolder
    }
 
    @ListValue(
-         elementClass = "java.lang.String",
+         elementClass = String.class,
          value = {
             @Value(valueFactory = @ValueFactory(bean = "ldap", method = "getValue", parameter = "foo.bar.key")),
             @Value(valueFactory = @ValueFactory(bean = "ldap", method = "getValue", parameters = {@Parameter(string = @StringValue("foo.bar.key")), @Parameter(string = @StringValue("qaz"))})),

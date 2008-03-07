@@ -66,7 +66,7 @@ public class ClassFactoryAnnotationPlugin extends AbstractAdaptersAnnotationPlug
       AbstractConstructorMetaData constructor = new AbstractConstructorMetaData();
       if (isAttributePresent(annotation.factoryClass()))
       {
-         constructor.setFactoryClass(annotation.factoryClass());
+         constructor.setFactoryClass(annotation.factoryClass().getName());
       }
       else
       {
@@ -80,7 +80,7 @@ public class ClassFactoryAnnotationPlugin extends AbstractAdaptersAnnotationPlug
          {
             AbstractParameterMetaData apmd = new AbstractParameterMetaData(ValueUtil.createValueMetaData(parameter));
             if (isAttributePresent(parameter.type()))
-               apmd.setType(parameter.type());
+               apmd.setType(parameter.type().getName());
             parameters.add(apmd);
          }
          constructor.setParameters(parameters);

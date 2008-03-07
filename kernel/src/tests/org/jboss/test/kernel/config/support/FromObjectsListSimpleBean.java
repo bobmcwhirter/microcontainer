@@ -39,12 +39,12 @@ public class FromObjectsListSimpleBean extends SimpleBean
 
    @ListValue(
          value = {
-            @Value(javabean = @JavaBeanValue("org.jboss.test.kernel.config.support.MyObject1")),
-            @Value(javabean = @JavaBeanValue("org.jboss.test.kernel.config.support.MyObject2")),
-            @Value(javabean = @JavaBeanValue("org.jboss.test.kernel.config.support.MyObject2")),
-            @Value(javabean = @JavaBeanValue("org.jboss.test.kernel.config.support.MyObject1"))
+            @Value(javabean = @JavaBeanValue(org.jboss.test.kernel.config.support.MyObject1.class)),
+            @Value(javabean = @JavaBeanValue(org.jboss.test.kernel.config.support.MyObject2.class)),
+            @Value(javabean = @JavaBeanValue(org.jboss.test.kernel.config.support.MyObject2.class)),
+            @Value(javabean = @JavaBeanValue(org.jboss.test.kernel.config.support.MyObject1.class))
          },
-         elementClass = "java.lang.Object"
+         elementClass = Object.class
    )
    public void setList(List<?> collection)
    {

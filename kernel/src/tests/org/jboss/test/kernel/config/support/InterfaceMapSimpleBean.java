@@ -49,8 +49,8 @@ public class InterfaceMapSimpleBean extends SimpleBean
                   value=@Value(string = @StringValue("string1"))
             )
          },
-         keyClass = "java.lang.String", valueClass = "java.lang.String",
-         clazz = "java.util.Map"
+         keyClass = String.class, valueClass = String.class,
+         clazz = java.util.Map.class
    )
    public void setMap(Map<?,?> collection)
    {

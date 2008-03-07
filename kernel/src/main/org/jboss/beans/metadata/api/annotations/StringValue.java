@@ -47,7 +47,7 @@ public @interface StringValue
     *
     * @return the type
     */
-   String type() default "";
+   Class<?> type() default void.class;
 
    /**
     * Do replace with system properties.
