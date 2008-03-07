@@ -171,6 +171,8 @@ public class CompositeMetaTypeFactoryUnitTestCase extends AbstractMetaTypeFactor
    /**
     * Illustrate the expected type when type does not contain the
     * generic parameter type information.
+    * 
+    * @throws Exception for any error
     */
    public void testMapWithStringKeyErasure()
       throws Exception

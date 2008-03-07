@@ -35,7 +35,6 @@ import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
-import java.util.Properties;
 import java.util.Set;
 import java.util.SortedSet;
 import java.util.Stack;
@@ -394,6 +393,7 @@ public class DefaultMetaValueFactory extends MetaValueFactory
     * @param mapping the mapping
     * @return the composite value
     */
+   @SuppressWarnings("unchecked")
    public CompositeValue createCompositeValue(CompositeMetaType type, Object value, Map<Object, MetaValue> mapping)
    {
       if (value == null)
@@ -404,7 +404,7 @@ public class DefaultMetaValueFactory extends MetaValueFactory
       {
          if((value instanceof Map) == false)
             throw new RuntimeException("Expected Map value for: " + type+", was: "+(value != null ? value.getClass() : "null"));
-         Map<String,?> map = (Map<String,?>) value;
+         Map<String,?> map = (Map) value;
          MapCompositeMetaType mapType = (MapCompositeMetaType) type;
          MetaType mapValueType = mapType.getValueType();
          MapCompositeValueSupport result = new MapCompositeValueSupport(mapValueType);

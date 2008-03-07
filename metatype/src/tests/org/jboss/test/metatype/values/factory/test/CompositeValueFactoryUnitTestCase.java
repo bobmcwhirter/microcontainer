@@ -29,8 +29,8 @@ import java.util.Map;
 import java.util.Properties;
 import java.util.Set;
 
-import org.jboss.metatype.api.types.CompositeMetaType;
-import org.jboss.metatype.api.types.MapCompositeMetaType;
+import junit.framework.Test;
+
 import org.jboss.metatype.api.types.SimpleMetaType;
 import org.jboss.metatype.api.values.CompositeValue;
 import org.jboss.metatype.api.values.CompositeValueSupport;
@@ -42,8 +42,6 @@ import org.jboss.test.metatype.values.factory.support.TestIgnoredCompositeItem;
 import org.jboss.test.metatype.values.factory.support.TestRecursiveComposite;
 import org.jboss.test.metatype.values.factory.support.TestRenamedCompositeItem;
 import org.jboss.test.metatype.values.factory.support.TestSimpleComposite;
-
-import junit.framework.Test;
 
 /**
  * CompositeValueFactoryUnitTestCase.
