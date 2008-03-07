@@ -19,36 +19,21 @@
 * Software Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA
 * 02110-1301 USA, or see the FSF site: http://www.fsf.org.
 */
-package org.jboss.beans.metadata.api.annotations;
+package org.jboss.beans.metadata.api.enums;
+
+import org.jboss.xb.binding.sunday.unmarshalling.ValueAdapter;
 
 /**
- * FromContext.
- * @see org.jboss.beans.metadata.plugins.FromContext
+ * InjectionOptionValueAdapter.
  *
- * @author <a href="mailto:ales.justin@gmail.com">Ales Justin</a>
+ * @author <a href="mailto:ales.justin@jboss.com">Ales Justin</a>
+ * @version $Revision: 1.1 $
  */
-public enum FromContext
+public class InjectionOptionValueAdapter implements ValueAdapter
 {
-   NONE("[blank]"),
-   NAME("name"),
-   ALIASES("aliases"),
-   METADATA("metadata"),
-   BEANINFO("beaninfo"),
-   SCOPE("scope"),
-   STATE("state"),
-   ID("id"),
-   CONTEXT("context");
-
-   private String typeString;
-
-   FromContext(String optionString)
+   @SuppressWarnings("unchecked")
+   public Object cast(Object o, Class c)
    {
-      this.typeString = optionString;
+      return InjectOption.getInstance((String)o);
    }
-
-   public String toString()
-   {
-      return typeString;
-   }
-
 }

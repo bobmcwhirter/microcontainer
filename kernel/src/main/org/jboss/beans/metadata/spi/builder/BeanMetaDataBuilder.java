@@ -103,7 +103,7 @@ public abstract class BeanMetaDataBuilder
     */
    public BeanMetaDataBuilder setMode(String modeString)
    {
-      return setMode(new ControllerMode(modeString));
+      return setMode(ControllerMode.getInstance(modeString));
    }
 
    /**

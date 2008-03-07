@@ -36,7 +36,7 @@ import org.jboss.beans.metadata.plugins.AbstractDemandMetaData;
 import org.jboss.beans.metadata.plugins.AbstractDependencyValueMetaData;
 import org.jboss.beans.metadata.plugins.AbstractLifecycleMetaData;
 import org.jboss.beans.metadata.spi.AnnotationMetaData;
-import org.jboss.beans.metadata.spi.AutowireType;
+import org.jboss.beans.metadata.api.enums.AutowireType;
 import org.jboss.beans.metadata.spi.ConstructorMetaData;
 import org.jboss.beans.metadata.spi.DemandMetaData;
 import org.jboss.beans.metadata.spi.ParameterMetaData;

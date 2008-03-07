@@ -1,6 +1,6 @@
 /*
 * JBoss, Home of Professional Open Source
-* Copyright 2005, JBoss Inc., and individual contributors as indicated
+* Copyright 2006, JBoss Inc., and individual contributors as indicated
 * by the @authors tag. See the copyright.txt in the distribution for a
 * full listing of individual contributors.
 *
@@ -19,28 +19,21 @@
 * Software Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA
 * 02110-1301 USA, or see the FSF site: http://www.fsf.org.
 */
-package org.jboss.beans.metadata.api.annotations;
+package org.jboss.beans.metadata.api.enums;
+
+import org.jboss.xb.binding.sunday.unmarshalling.ValueAdapter;
 
 /**
- * Injection type - by class or by property name.
+ * AutowireTypeValueAdapter.
  *
- * @author <a href="mailto:ales.justin@gmail.com">Ales Justin</a>
+ * @author <a href="mailto:ales.justin@jboss.com">Ales Justin</a>
+ * @version $Revision: 1.1 $
  */
-public enum InjectType
+public class AutowireTypeValueAdapter implements ValueAdapter
 {
-   BY_CLASS("ByClass"),
-   BY_NAME("ByName");
-
-   private String typeString;
-
-   InjectType(String modeString)
+   @SuppressWarnings("unchecked")
+   public Object cast(Object o, Class c)
    {
-      this.typeString = modeString;
+      return AutowireType.getInstance((String)o);
    }
-
-   public String toString()
-   {
-      return typeString;
-   }
-
 }

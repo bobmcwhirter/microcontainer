@@ -45,11 +45,11 @@ import org.jboss.beans.metadata.plugins.AbstractPropertyMetaData;
 import org.jboss.beans.metadata.plugins.AbstractSetMetaData;
 import org.jboss.beans.metadata.plugins.AbstractSupplyMetaData;
 import org.jboss.beans.metadata.plugins.AbstractValueMetaData;
-import org.jboss.beans.metadata.plugins.InjectionOption;
+import org.jboss.beans.metadata.api.enums.InjectOption;
+import org.jboss.beans.metadata.api.enums.FromContext;
+import org.jboss.beans.metadata.api.enums.AutowireType;
 import org.jboss.beans.metadata.plugins.StringValueMetaData;
-import org.jboss.beans.metadata.plugins.FromContext;
 import org.jboss.beans.metadata.plugins.factory.GenericBeanFactoryMetaData;
-import org.jboss.beans.metadata.spi.AutowireType;
 import org.jboss.beans.metadata.spi.BeanMetaDataFactory;
 import org.jboss.beans.metadata.spi.DemandMetaData;
 import org.jboss.beans.metadata.spi.DependencyMetaData;
@@ -351,7 +351,7 @@ public class BeanSchemaBinding
                else if ("class".equals(localName))
                   bean.setBean(attrs.getValue(i));
                else if ("mode".equals(localName))
-                  bean.setMode(new ControllerMode(attrs.getValue(i)));
+                  bean.setMode(ControllerMode.getInstance(attrs.getValue(i)));
             }
          }
       });
@@ -376,7 +376,7 @@ public class BeanSchemaBinding
                else if ("class".equals(localName))
                   bean.setBeanClass(attrs.getValue(i));
                else if ("mode".equals(localName))
-                  bean.setMode(new ControllerMode(attrs.getValue(i)));
+                  bean.setMode(ControllerMode.getInstance(attrs.getValue(i)));
             }
          }
       });
@@ -1062,7 +1062,7 @@ public class BeanSchemaBinding
                else if ("type".equals(localName))
                   injection.setInjectionType(AutowireType.getInstance(attrs.getValue(i)));
                else if ("option".equals(localName))
-                  injection.setInjectionOption(InjectionOption.getInstance(attrs.getValue(i)));
+                  injection.setInjectionOption(InjectOption.getInstance(attrs.getValue(i)));
                else if ("fromContext".equals(localName))
                   injection.setFromContext(FromContext.getInstance(attrs.getValue(i)));
             }

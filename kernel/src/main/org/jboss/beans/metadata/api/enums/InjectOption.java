@@ -19,7 +19,7 @@
 * Software Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA
 * 02110-1301 USA, or see the FSF site: http://www.fsf.org.
 */
-package org.jboss.beans.metadata.api.annotations;
+package org.jboss.beans.metadata.api.enums;
 
 /**
  * Injection option - strict or optional / callback.
@@ -28,8 +28,8 @@ package org.jboss.beans.metadata.api.annotations;
  */
 public enum InjectOption
 {
-   STRICT("Strict"),
-   CALLBACK("Callback");
+   STRICT(MicrocontainerConstants.STRICT),
+   CALLBACK(MicrocontainerConstants.CALLBACK);
 
    private String optionString;
 
@@ -43,4 +43,23 @@ public enum InjectOption
       return optionString;
    }
 
+   /**
+    * Get the option enum.
+    *
+    * @param optionString the option string
+    * @return the inject option enum instance
+    */
+   // TODO - remove this once JBMICROCONT-219 is done
+   public static InjectOption getInstance(String optionString)
+   {
+      if (optionString == null)
+         throw new IllegalArgumentException("Null option string.");
+
+      for (InjectOption io : values())
+      {
+         if (optionString.equalsIgnoreCase(io.optionString))
+            return io;
+      }
+      throw new IllegalArgumentException("No such option string: " + optionString);
+   }
 }

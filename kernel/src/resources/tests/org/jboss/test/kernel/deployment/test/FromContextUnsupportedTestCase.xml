@@ -21,10 +21,6 @@
       <property name="scopeKey"><inject fromContext="scope"/></property>
    </bean>
 
-   <bean name="dynamic" class="org.jboss.test.kernel.deployment.support.NameAwareBean">
-      <property name="dynamic"><inject fromContext="getBeanMetaData"/></property>
-   </bean>
-
    <bean name="context" class="org.jboss.test.kernel.deployment.support.NameAwareBean">
       <property name="context"><inject fromContext="context"/></property>
    </bean>

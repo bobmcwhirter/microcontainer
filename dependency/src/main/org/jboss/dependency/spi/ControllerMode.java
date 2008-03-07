@@ -21,13 +21,7 @@
 */
 package org.jboss.dependency.spi;
 
-import org.jboss.util.JBossObject;
 import org.jboss.util.JBossStringBuilder;
-
-import java.util.Map;
-import java.util.HashMap;
-import java.io.ObjectStreamException;
-import java.io.Serializable;
 
 /**
  * Mode of the context.
@@ -35,47 +29,42 @@ import java.io.Serializable;
  * @author <a href="adrian@jboss.com">Adrian Brock</a>
  * @version $Revision$
  */
-public class ControllerMode extends JBossObject implements Serializable
+public enum ControllerMode
 {
-   private static final long serialVersionUID = 1L;
-   
-   /** Automatic */
-   public static final ControllerMode AUTOMATIC = new ControllerMode("Automatic");
-
-   /** On demand */
-   public static final ControllerMode ON_DEMAND = new ControllerMode("On Demand");
-
-   /** Manual */
-   public static final ControllerMode MANUAL = new ControllerMode("Manual");
-
-   /** Disabled */
-   public static final ControllerMode DISABLED = new ControllerMode("Disabled");
+   AUTOMATIC("Automatic"),
+   ON_DEMAND("On Demand"),
+   MANUAL("Manual"),
+   DISABLED("Disabled");
 
    /** The mode string */
-   protected final String modeString;
-   
-   private static Map<String, ControllerMode> values = new HashMap<String, ControllerMode>();
-
-   static
-   {
-      values.put(AUTOMATIC.getModeString(), AUTOMATIC);
-      values.put(ON_DEMAND.getModeString(), ON_DEMAND);
-      values.put(MANUAL.getModeString(), MANUAL);
-      values.put(DISABLED.getModeString(), DISABLED);
-   }
+   private final String modeString;
 
    /**
     * Create a new mode
     * 
     * @param modeString the mode representation
     */
-   public ControllerMode(String modeString)
+   private ControllerMode(String modeString)
    {
       if (modeString == null)
          throw new IllegalArgumentException("Null mode string");
       this.modeString = modeString;
    }
-   
+
+   // TODO - remove this once JBMICROCONT-219 is done
+   public static ControllerMode getInstance(String modeString)
+   {
+      if (modeString == null)
+         throw new IllegalArgumentException("Null mode string.");
+
+      for(ControllerMode cm : values())
+      {
+         if (modeString.equalsIgnoreCase(cm.getModeString()))
+            return cm;
+      }
+      throw new IllegalArgumentException("No such controller mode: " + modeString);
+   }
+
    /**
     * Get the mode string
     * 
@@ -85,28 +74,9 @@ public class ControllerMode extends JBossObject implements Serializable
    {
       return modeString;
    }
-   
-   public boolean equals(Object object)
-   {
-      if (object == null || object instanceof ControllerMode == false)
-         return false;
-      ControllerMode other = (ControllerMode) object;
-      return modeString.equals(other.modeString);
-   }
-   
+
    public void toString(JBossStringBuilder buffer)
    {
       buffer.append(modeString);
    }
-
-   protected int getHashCode()
-   {
-      return modeString.hashCode();
-   }
-
-   protected Object readResolve() throws ObjectStreamException
-   {
-      return values.get(modeString);   
-   }
-
 }

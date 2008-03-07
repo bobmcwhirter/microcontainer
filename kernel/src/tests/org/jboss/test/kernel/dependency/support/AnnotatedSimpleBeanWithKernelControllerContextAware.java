@@ -23,7 +23,7 @@ package org.jboss.test.kernel.dependency.support;
 
 import org.jboss.kernel.spi.dependency.KernelControllerContext;
 import org.jboss.beans.metadata.api.annotations.Inject;
-import org.jboss.beans.metadata.api.annotations.FromContext;
+import org.jboss.beans.metadata.api.enums.FromContext;
 
 /**
  * A simple bean that is kernel controllercontext aware

@@ -57,7 +57,7 @@ public class DeploymentHandler extends DefaultElementHandler
          else if ("scoped".equals(localName))                       
             deployment.setScoped(Boolean.parseBoolean(attrs.getValue(i)));
          else if ("mode".equals(localName))
-            deployment.setMode(new ControllerMode(attrs.getValue(i)));
+            deployment.setMode(ControllerMode.getInstance(attrs.getValue(i)));
       }
    }
 

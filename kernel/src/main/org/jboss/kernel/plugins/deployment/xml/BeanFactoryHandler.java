@@ -60,7 +60,7 @@ public class BeanFactoryHandler extends DefaultElementHandler
          else if ("class".equals(localName))
             bean.setBeanClass(attrs.getValue(i));
          else if ("mode".equals(localName))
-            bean.setMode(new ControllerMode(attrs.getValue(i)));
+            bean.setMode(ControllerMode.getInstance(attrs.getValue(i)));
       }
    }
 

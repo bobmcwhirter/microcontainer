@@ -32,7 +32,7 @@ import org.jboss.beans.metadata.plugins.AbstractBeanMetaData;
 import org.jboss.beans.metadata.plugins.AbstractInstallMetaData;
 import org.jboss.beans.metadata.plugins.AbstractParameterMetaData;
 import org.jboss.beans.metadata.plugins.AbstractInjectionValueMetaData;
-import org.jboss.beans.metadata.plugins.FromContext;
+import org.jboss.beans.metadata.api.enums.FromContext;
 import org.jboss.beans.metadata.spi.BeanMetaData;
 import org.jboss.beans.metadata.spi.InstallMetaData;
 import org.jboss.beans.metadata.spi.ParameterMetaData;

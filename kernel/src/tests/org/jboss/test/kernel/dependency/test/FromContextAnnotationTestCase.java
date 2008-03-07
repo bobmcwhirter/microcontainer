@@ -26,7 +26,7 @@ import java.util.Set;
 import junit.framework.Test;
 import org.jboss.beans.metadata.plugins.AbstractInjectionValueMetaData;
 import org.jboss.beans.metadata.plugins.AbstractPropertyMetaData;
-import org.jboss.beans.metadata.plugins.FromContext;
+import org.jboss.beans.metadata.api.enums.FromContext;
 import org.jboss.beans.metadata.plugins.builder.BeanMetaDataBuilderFactory;
 import org.jboss.beans.metadata.plugins.factory.GenericBeanFactoryMetaData;
 import org.jboss.beans.metadata.spi.BeanMetaData;
@@ -82,11 +82,6 @@ public class FromContextAnnotationTestCase extends FromContextTestCase
       BeanMetaDataBuilder b5 = BeanMetaDataBuilderFactory.createBuilder("beaninfo", BeanInfoAwareBean.class.getName());
       BeanMetaDataBuilder b6 = BeanMetaDataBuilderFactory.createBuilder("scopekey", ScopeAwareBean.class.getName());
 
-      BeanMetaDataBuilder b7 = BeanMetaDataBuilderFactory.createBuilder("dynamic", NameAwareBean.class.getName());
-      AbstractInjectionValueMetaData v7 = new AbstractInjectionValueMetaData();
-      v7.setFromContext(FromContext.getInstance("getBeanMetaData"));
-      b7.addPropertyMetaData("dynamic", v7);
-
       BeanMetaDataBuilder b8 = BeanMetaDataBuilderFactory.createBuilder("other", OtherAwareBean.class.getName());
       BeanMetaDataBuilder b9 = BeanMetaDataBuilderFactory.createBuilder("context", ContextAwareBean.class.getName());
       BeanMetaDataBuilder b10 = BeanMetaDataBuilderFactory.createBuilder("state", StateAwareBean.class.getName());
@@ -99,7 +94,6 @@ public class FromContextAnnotationTestCase extends FromContextTestCase
                b4.getBeanMetaData(),
                b5.getBeanMetaData(),
                b6.getBeanMetaData(),
-               b7.getBeanMetaData(),
                b8.getBeanMetaData(),
                b9.getBeanMetaData(),
                b10.getBeanMetaData(),

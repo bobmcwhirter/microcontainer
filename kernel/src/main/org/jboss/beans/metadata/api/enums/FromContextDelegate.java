@@ -19,15 +19,14 @@
 * Software Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA
 * 02110-1301 USA, or see the FSF site: http://www.fsf.org.
 */
-package org.jboss.beans.metadata.plugins;
+package org.jboss.beans.metadata.api.enums;
 
 import java.io.Serializable;
-import java.lang.reflect.InvocationHandler;
-import java.lang.reflect.Method;
-import java.lang.reflect.Proxy;
+import java.io.ObjectStreamException;
 import java.util.Collections;
-import java.util.HashSet;
 import java.util.Set;
+import java.util.Map;
+import java.util.HashMap;
 
 import org.jboss.beans.info.spi.BeanInfo;
 import org.jboss.beans.info.spi.helpers.UnmodifiableBeanInfo;
@@ -38,7 +37,6 @@ import org.jboss.kernel.spi.dependency.KernelControllerContext;
 import org.jboss.kernel.spi.dependency.helpers.UnmodifiableKernelControllerContext;
 import org.jboss.metadata.spi.MetaData;
 import org.jboss.metadata.spi.scope.ScopeKey;
-import org.jboss.reflect.plugins.introspection.ReflectionUtils;
 import org.jboss.util.JBossObject;
 import org.jboss.util.JBossStringBuilder;
 
@@ -53,79 +51,68 @@ import org.jboss.util.JBossStringBuilder;
  *  * dynamic - method specific
  *  * ...
  *
- * @param <T> exact controller context type
  * @author <a href="mailto:ales.justin@jboss.com">Ales Justin</a>
  */
-public abstract class FromContext<T extends ControllerContext> extends JBossObject
-      implements Serializable
+abstract class FromContextDelegate extends JBossObject implements Serializable
 {
    private static final long serialVersionUID = 1L;
 
    /** name */
-   public static final FromContext<? extends ControllerContext> NAME = new NameFromContext("name");
+   static final FromContextDelegate NOOP = new NoopFromContext("noop");
+
+   /** name */
+   static final FromContextDelegate NAME = new NameFromContext(MicrocontainerConstants.NAME);
 
    /** alias */
-   public static final FromContext<? extends ControllerContext> ALIASES = new AliasesFromContext("aliases");
+   static final FromContextDelegate ALIASES = new AliasesFromContext(MicrocontainerConstants.ALIASES);
 
    /** metadata */
-   public static final FromContext<? extends ControllerContext> METADATA = new MetaDataFromContext("metadata");
+   static final FromContextDelegate METADATA = new MetaDataFromContext(MicrocontainerConstants.METADATA);
 
    /** beaninfo */
-   public static final FromContext<? extends ControllerContext> BEANINFO = new BeanInfoFromContext("beaninfo");
+   static final FromContextDelegate BEANINFO = new BeanInfoFromContext(MicrocontainerConstants.BEANINFO);
 
    /** scope */
-   public static final FromContext<? extends ControllerContext> SCOPE = new ScopeFromContext("scope");
+   static final FromContextDelegate SCOPE = new ScopeFromContext(MicrocontainerConstants.SCOPE);
 
    /** state */
-   public static final FromContext<? extends ControllerContext> STATE = new StateFromContext("state");
+   static final FromContextDelegate STATE = new StateFromContext(MicrocontainerConstants.STATE);
 
    /** id */
-   public static final FromContext<? extends ControllerContext> ID = new IdFromContext("id");
+   static final FromContextDelegate ID = new IdFromContext(MicrocontainerConstants.ID);
 
    /** context */
-   public static final FromContext<? extends ControllerContext> CONTEXT = new ThisContext("context");
+   static final FromContextDelegate CONTEXT = new ThisContext(MicrocontainerConstants.CONTEXT);
 
    /** The type string */
    protected final String fromString;
+
+   /** The values */
+   private static Map<String, FromContextDelegate> values = new HashMap<String, FromContextDelegate>();
+
+   static
+   {
+      values.put(NOOP.getFromString(), NOOP);
+      values.put(NAME.getFromString(), NAME);
+      values.put(ALIASES.getFromString(), ALIASES);
+      values.put(METADATA.getFromString(), METADATA);
+      values.put(BEANINFO.getFromString(), BEANINFO);
+      values.put(SCOPE.getFromString(), SCOPE);
+      values.put(STATE.getFromString(), STATE);
+      values.put(ID.getFromString(), ID);
+      values.put(CONTEXT.getFromString(), CONTEXT);
+   }
 
    /**
     * Create a new state
     *
     * @param fromString the string representation
     */
-   protected FromContext(String fromString)
+   protected FromContextDelegate(String fromString)
    {
       if (fromString == null)
          throw new IllegalArgumentException("Null from string");
       this.fromString = fromString;
-   }
-
-   /**
-    * Return from type.
-    *
-    * @param fromString type
-    * @return FromContext instance
-    */
-   public static FromContext<? extends ControllerContext> getInstance(String fromString)
-   {
-      if (NAME.getFromString().equalsIgnoreCase(fromString))
-         return NAME;
-      else if (ALIASES.getFromString().equalsIgnoreCase(fromString))
-         return ALIASES;
-      else if (METADATA.getFromString().equalsIgnoreCase(fromString))
-         return METADATA;
-      else if (BEANINFO.getFromString().equalsIgnoreCase(fromString))
-         return BEANINFO;
-      else if (SCOPE.getFromString().equalsIgnoreCase(fromString))
-         return SCOPE;
-      else if (STATE.getFromString().equalsIgnoreCase(fromString))
-         return STATE;
-      else if (ID.getFromString().equalsIgnoreCase(fromString))
-         return ID;
-      else if (CONTEXT.getFromString().equalsIgnoreCase(fromString))
-         return CONTEXT;
-      else
-         return new DynamicFromContext(fromString);
    }
 
    /**
@@ -149,7 +136,7 @@ public abstract class FromContext<T extends ControllerContext> extends JBossObje
    public Object executeLookup(ControllerContext context) throws Throwable
    {
       validate(context);
-      return internalExecute((T)context);
+      return internalExecute(context);
    }
 
    /**
@@ -159,7 +146,7 @@ public abstract class FromContext<T extends ControllerContext> extends JBossObje
     * @return lookup value
     * @throws Throwable for any error
     */
-   public abstract Object internalExecute(T context) throws Throwable;
+   public abstract Object internalExecute(ControllerContext context) throws Throwable;
 
    /**
     * Get the from string
@@ -174,9 +161,9 @@ public abstract class FromContext<T extends ControllerContext> extends JBossObje
    @SuppressWarnings("unchecked")
    public boolean equals(Object object)
    {
-      if (object == null || object instanceof FromContext == false)
+      if (object == null || object instanceof FromContextDelegate == false)
          return false;
-      FromContext other = (FromContext) object;
+      FromContextDelegate other = (FromContextDelegate) object;
       return fromString.equals(other.getFromString());
    }
 
@@ -190,11 +177,16 @@ public abstract class FromContext<T extends ControllerContext> extends JBossObje
       return fromString.hashCode();
    }
 
-   private static abstract class KernelFromContext extends FromContext<KernelControllerContext>
+   protected Object readResolve() throws ObjectStreamException
+   {
+      return values.get(fromString);
+   }
+
+   private static abstract class KernelFromContextDelegate extends FromContextDelegate
    {
       private static final long serialVersionUID = 1L;
 
-      protected KernelFromContext(String fromString)
+      protected KernelFromContextDelegate(String fromString)
       {
          super(fromString);
       }
@@ -206,7 +198,22 @@ public abstract class FromContext<T extends ControllerContext> extends JBossObje
       }
    }
 
-   private static class NameFromContext extends FromContext<ControllerContext>
+   private static class NoopFromContext extends FromContextDelegate
+   {
+      private static final long serialVersionUID = 1L;
+
+      public NoopFromContext(String fromString)
+      {
+         super(fromString);
+      }
+
+      public Object internalExecute(ControllerContext context)
+      {
+         throw new UnsupportedOperationException("Noop from context.");
+      }
+   }
+
+   private static class NameFromContext extends FromContextDelegate
    {
       private static final long serialVersionUID = 1L;
 
@@ -221,7 +228,7 @@ public abstract class FromContext<T extends ControllerContext> extends JBossObje
       }
    }
 
-   private static class AliasesFromContext extends FromContext<ControllerContext>
+   private static class AliasesFromContext extends FromContextDelegate
    {
       private static final long serialVersionUID = 1L;
 
@@ -237,7 +244,7 @@ public abstract class FromContext<T extends ControllerContext> extends JBossObje
       }
    }
 
-   private static class MetaDataFromContext extends KernelFromContext
+   private static class MetaDataFromContext extends FromContextDelegate
    {
       private static final long serialVersionUID = 1L;
 
@@ -246,13 +253,13 @@ public abstract class FromContext<T extends ControllerContext> extends JBossObje
          super(fromString);
       }
 
-      public MetaData internalExecute(KernelControllerContext context)
+      public MetaData internalExecute(ControllerContext context)
       {
          return context.getScopeInfo().getMetaData();
       }
    }
 
-   private static class BeanInfoFromContext extends KernelFromContext
+   private static class BeanInfoFromContext extends KernelFromContextDelegate
    {
       private static final long serialVersionUID = 1L;
 
@@ -261,14 +268,14 @@ public abstract class FromContext<T extends ControllerContext> extends JBossObje
          super(fromString);
       }
 
-      public BeanInfo internalExecute(KernelControllerContext context)
+      public BeanInfo internalExecute(ControllerContext context)
       {
-         BeanInfo info = context.getBeanInfo();
+         BeanInfo info = ((KernelControllerContext)context).getBeanInfo();
          return info != null ? new UnmodifiableBeanInfo(info) : null;
       }
    }
 
-   private static class ScopeFromContext extends KernelFromContext
+   private static class ScopeFromContext extends FromContextDelegate
    {
       private static final long serialVersionUID = 1L;
 
@@ -277,13 +284,13 @@ public abstract class FromContext<T extends ControllerContext> extends JBossObje
          super(fromString);
       }
 
-      public ScopeKey internalExecute(KernelControllerContext context)
+      public ScopeKey internalExecute(ControllerContext context)
       {
          return context.getScopeInfo().getScope();
       }
    }
 
-   private static class StateFromContext extends FromContext<ControllerContext>
+   private static class StateFromContext extends FromContextDelegate
    {
       private static final long serialVersionUID = 1L;
 
@@ -298,7 +305,7 @@ public abstract class FromContext<T extends ControllerContext> extends JBossObje
       }
    }
 
-   private static class IdFromContext extends FromContext<ControllerContext>
+   private static class IdFromContext extends FromContextDelegate
    {
       private static final long serialVersionUID = 1L;
 
@@ -314,7 +321,7 @@ public abstract class FromContext<T extends ControllerContext> extends JBossObje
       }
    }
 
-   private static class ThisContext extends FromContext<ControllerContext>
+   private static class ThisContext extends FromContextDelegate
    {
       private static final long serialVersionUID = 1L;
 
@@ -330,101 +337,4 @@ public abstract class FromContext<T extends ControllerContext> extends JBossObje
          return new UnmodifiableControllerContext<ControllerContext>(context);
       }
    }
-
-   private static class DynamicFromContext extends FromContext<ControllerContext>
-   {
-      private static final long serialVersionUID = 1L;
-
-      public DynamicFromContext(String fromString)
-      {
-         super(fromString);
-      }
-
-      protected Method findMethod(Class<?> clazz)
-      {
-         if (clazz == null || clazz == Object.class)
-            return null;
-
-         Method[] methods = clazz.getDeclaredMethods();
-         for(Method m : methods)
-         {
-            if (m.getName().equals(getFromString()) && m.getParameterTypes().length == 0)
-            {
-               return m;
-            }
-         }
-
-         Method method = findMethod(clazz.getSuperclass());
-         if (method != null)
-            return method;
-
-         for(Class<?> infc : clazz.getInterfaces())
-         {
-            Method m = findMethod(infc);
-            if (m != null)
-               return m;
-         }
-         return null;
-      }
-
-      protected void getInterfaces(Class<?> clazz, Set<Class<?>> interfaces)
-      {
-         if (clazz == Object.class || clazz == null)
-            return;
-         for (Class<?>  iface : clazz.getInterfaces())
-            interfaces.add(iface);
-         getInterfaces(clazz.getSuperclass(), interfaces);         
-      }
-
-      public Object internalExecute(ControllerContext context) throws Throwable
-      {
-         Method method = findMethod(context.getClass());
-         if (method == null)
-            throw new IllegalArgumentException("No such getter on context class or mistyped fromContext string: " + getFromString());
-         Object result = ReflectionUtils.invoke(method, context, new Object[]{});
-         if (result != null)
-         {
-            Set<Class<?>> interfaces = new HashSet<Class<?>>();
-            getInterfaces(result.getClass(), interfaces);
-            return Proxy.newProxyInstance(
-                     ControllerContext.class.getClassLoader(),
-                     interfaces.toArray(new Class[interfaces.size()]),
-                     new DynamicWrapper(result));
-         }
-         return null;
-      }
-
-      /**
-       * This warpper throws error on methods that start with set or add.
-       */
-      private class DynamicWrapper implements InvocationHandler
-      {
-         private Object target;
-
-         public DynamicWrapper(Object target)
-         {
-            this.target = target;
-         }
-
-         /**
-          * Check if the method is unsupported.
-          *
-          * @param method the executed method.
-          * @return true if unsupported, false otherwise
-          */
-         protected boolean isUnsupported(Method method)
-         {
-            String name = method.getName();
-            return (name.startsWith("set") || name.startsWith("add"));
-         }
-
-         public Object invoke(Object proxy, Method method, Object[] args) throws Throwable
-         {
-            if (isUnsupported(method))
-               throw new UnsupportedOperationException();
-            return ReflectionUtils.invoke(method, target, args);
-         }
-      }
-   }
-
 }

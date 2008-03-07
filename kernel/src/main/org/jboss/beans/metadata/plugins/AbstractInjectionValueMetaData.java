@@ -26,9 +26,11 @@ import javax.xml.bind.annotation.XmlAttribute;
 import javax.xml.bind.annotation.XmlTransient;
 import javax.xml.bind.annotation.XmlType;
 
-import org.jboss.beans.metadata.spi.AutowireType;
+import org.jboss.beans.metadata.api.enums.AutowireType;
 import org.jboss.beans.metadata.spi.MetaDataVisitor;
 import org.jboss.beans.metadata.spi.MetaDataVisitorNode;
+import org.jboss.beans.metadata.api.enums.InjectOption;
+import org.jboss.beans.metadata.api.enums.FromContext;
 import org.jboss.dependency.plugins.AttributeCallbackItem;
 import org.jboss.dependency.spi.Controller;
 import org.jboss.dependency.spi.ControllerContext;
@@ -51,9 +53,9 @@ public class AbstractInjectionValueMetaData extends AbstractDependencyValueMetaD
 
    protected AutowireType injectionType = AutowireType.BY_CLASS;
 
-   protected InjectionOption injectionOption = InjectionOption.STRICT;
+   protected InjectOption injectionOption = InjectOption.STRICT;
 
-   protected FromContext<? extends ControllerContext> fromContext;
+   protected FromContext fromContext;
 
    /**
     * Simplyifies things with AutowireType.BY_NAME
@@ -99,24 +101,24 @@ public class AbstractInjectionValueMetaData extends AbstractDependencyValueMetaD
       this.injectionType = injectionType;
    }
 
-   public InjectionOption getInjectionOption()
+   public InjectOption getInjectionOption()
    {
       return injectionOption;
    }
 
    @XmlAttribute(name="option")
-   public void setInjectionOption(InjectionOption injectionOption)
+   public void setInjectionOption(InjectOption injectionOption)
    {
       this.injectionOption = injectionOption;
    }
 
-   public FromContext<? extends ControllerContext> getFromContext()
+   public FromContext getFromContext()
    {
       return fromContext;
    }
 
    @XmlAttribute(name="fromContext")
-   public void setFromContext(FromContext<? extends ControllerContext> fromContext)
+   public void setFromContext(FromContext fromContext)
    {
       this.fromContext = fromContext;
    }
@@ -142,7 +144,7 @@ public class AbstractInjectionValueMetaData extends AbstractDependencyValueMetaD
    protected boolean isLookupValid(ControllerContext lookup)
    {
       boolean lookupExists = super.isLookupValid(lookup);
-      boolean isCallback = InjectionOption.CALLBACK.equals(injectionOption);
+      boolean isCallback = InjectOption.CALLBACK.equals(injectionOption);
       if (lookupExists == false && isCallback)
       {
          addInstallItem(getUnderlyingValue());
@@ -173,7 +175,7 @@ public class AbstractInjectionValueMetaData extends AbstractDependencyValueMetaD
          ControllerContext lookup = controller.getInstalledContext(info.getType());
          if (lookup == null)
          {
-            if (InjectionOption.STRICT.equals(injectionOption))
+            if (InjectOption.STRICT.equals(injectionOption))
             {
                throw new IllegalArgumentException("Possible multiple matching beans, see log for info.");
             }
@@ -191,7 +193,7 @@ public class AbstractInjectionValueMetaData extends AbstractDependencyValueMetaD
 
    protected boolean addDependencyItem()
    {
-      return InjectionOption.STRICT.equals(injectionOption) || fromContext != null;
+      return InjectOption.STRICT.equals(injectionOption) || fromContext != null;
    }
 
    public Object getUnderlyingValue()
@@ -275,7 +277,7 @@ public class AbstractInjectionValueMetaData extends AbstractDependencyValueMetaD
             context = visitor.getControllerContext();
 
             // dependency item or install item
-            if (InjectionOption.STRICT.equals(injectionOption))
+            if (InjectOption.STRICT.equals(injectionOption))
             {
                // add dependency item only for strict inject behaviour
                // we pop it so that parent node has the same semantics as this one

@@ -22,23 +22,23 @@
 @JBossXmlAdaptedTypes
 ({
    @JBossXmlAdaptedType(type=Cardinality.class, valueAdapter=CardinalityValueAdapter.class),
-   @JBossXmlAdaptedType(type=ControllerMode.class, valueAdapter=ControllerModeValueAdapter.class),
+   @JBossXmlAdaptedType(type=ControllerMode.class, valueAdapter= ControllerModeValueAdapter.class),
    @JBossXmlAdaptedType(type=ControllerState.class, valueAdapter=ControllerStateValueAdapter.class),
-   @JBossXmlAdaptedType(type=FromContext.class, valueAdapter=FromContextValueAdapter.class),
-   @JBossXmlAdaptedType(type=InjectionOption.class, valueAdapter=InjectionOptionValueAdapter.class),
-   @JBossXmlAdaptedType(type=AutowireType.class, valueAdapter=AutowireTypeValueAdapter.class)
+   @JBossXmlAdaptedType(type= FromContext.class, valueAdapter=FromContextValueAdapter.class),
+   @JBossXmlAdaptedType(type= InjectOption.class, valueAdapter=InjectionOptionValueAdapter.class),
+   @JBossXmlAdaptedType(type= AutowireType.class, valueAdapter= AutowireTypeValueAdapter.class)
 })
 package org.jboss.kernel.plugins.deployment;
 
-import org.jboss.beans.metadata.plugins.AutowireTypeValueAdapter;
+import org.jboss.beans.metadata.api.enums.AutowireTypeValueAdapter;
 import org.jboss.beans.metadata.plugins.CardinalityValueAdapter;
 import org.jboss.beans.metadata.plugins.ControllerModeValueAdapter;
 import org.jboss.beans.metadata.plugins.ControllerStateValueAdapter;
-import org.jboss.beans.metadata.plugins.FromContext;
-import org.jboss.beans.metadata.plugins.FromContextValueAdapter;
-import org.jboss.beans.metadata.plugins.InjectionOption;
-import org.jboss.beans.metadata.plugins.InjectionOptionValueAdapter;
-import org.jboss.beans.metadata.spi.AutowireType;
+import org.jboss.beans.metadata.api.enums.FromContext;
+import org.jboss.beans.metadata.api.enums.FromContextValueAdapter;
+import org.jboss.beans.metadata.api.enums.InjectOption;
+import org.jboss.beans.metadata.api.enums.InjectionOptionValueAdapter;
+import org.jboss.beans.metadata.api.enums.AutowireType;
 import org.jboss.dependency.spi.Cardinality;
 import org.jboss.dependency.spi.ControllerMode;
 import org.jboss.dependency.spi.ControllerState;

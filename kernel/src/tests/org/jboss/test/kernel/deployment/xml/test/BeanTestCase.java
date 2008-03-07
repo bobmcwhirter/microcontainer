@@ -26,7 +26,7 @@ import java.util.HashSet;
 
 import junit.framework.Test;
 import org.jboss.beans.metadata.plugins.AbstractBeanMetaData;
-import org.jboss.beans.metadata.spi.AutowireType;
+import org.jboss.beans.metadata.api.enums.AutowireType;
 import org.jboss.dependency.spi.ControllerMode;
 
 /**

@@ -21,7 +21,7 @@
 */
 package org.jboss.test.kernel.deployment.support;
 
-import org.jboss.beans.metadata.api.annotations.FromContext;
+import org.jboss.beans.metadata.api.enums.FromContext;
 import org.jboss.beans.metadata.api.annotations.Inject;
 import org.jboss.dependency.spi.ControllerState;
 

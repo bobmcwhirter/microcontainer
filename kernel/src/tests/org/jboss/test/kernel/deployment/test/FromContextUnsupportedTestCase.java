@@ -21,22 +21,21 @@
 */
 package org.jboss.test.kernel.deployment.test;
 
-import java.util.Set;
 import java.util.HashSet;
+import java.util.Set;
 
 import junit.framework.Test;
 import org.jboss.beans.info.spi.BeanInfo;
-import org.jboss.beans.metadata.spi.BeanMetaData;
-import org.jboss.metadata.spi.MetaData;
-import org.jboss.metadata.spi.MutableMetaData;
-import org.jboss.metadata.spi.scope.ScopeKey;
-import org.jboss.test.kernel.deployment.support.NameAwareBean;
-import org.jboss.kernel.spi.dependency.KernelControllerContext;
-import org.jboss.reflect.spi.MethodInfo;
+import org.jboss.dependency.plugins.AbstractDependencyItem;
 import org.jboss.dependency.spi.ControllerContext;
 import org.jboss.dependency.spi.ControllerMode;
 import org.jboss.dependency.spi.DependencyInfo;
-import org.jboss.dependency.plugins.AbstractDependencyItem;
+import org.jboss.kernel.spi.dependency.KernelControllerContext;
+import org.jboss.metadata.spi.MetaData;
+import org.jboss.metadata.spi.MutableMetaData;
+import org.jboss.metadata.spi.scope.ScopeKey;
+import org.jboss.reflect.spi.MethodInfo;
+import org.jboss.test.kernel.deployment.support.NameAwareBean;
 
 /**
  * @author <a href="mailto:ales.justin@jboss.com">Ales Justin</a>
@@ -99,21 +98,6 @@ public class FromContextUnsupportedTestCase extends AbstractDeploymentTest
       assertInstanceOf(key, ScopeKey.class);
       KernelControllerContext context = getControllerContext("scopekey");
       assertEquals(key, context.getScopeInfo().getScope());
-
-      NameAwareBean dynamic = (NameAwareBean)getBean("dynamic");
-      assertNotNull(dynamic);
-      Object dyna = dynamic.getDynamic();
-      assertNotNull(dyna);
-      assertInstanceOf(dyna, BeanMetaData.class);
-      BeanMetaData bmd = (BeanMetaData)dyna;
-      try
-      {
-         bmd.setName("failedName");   
-      }
-      catch(Throwable t)
-      {
-         assertUnsupported(t);
-      }
 
       NameAwareBean ctx = (NameAwareBean)getBean("context");
       assertNotNull(ctx);

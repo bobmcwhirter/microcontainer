@@ -56,7 +56,8 @@ public class DescribeAction extends InstallsAwareAction
          MetaData md = repository.getMetaData(context);
          // add custom dependencies (e.g. AOP layer).
          List<DependencyBuilderListItem> dependencies = dependencyBuilder.getDependencies(info, md);
-         log.trace("Extra dependencies for " + context.getName() + " " + dependencies);
+         if (log.isTraceEnabled())
+            log.trace("Extra dependencies for " + context.getName() + " " + dependencies);
          if (dependencies != null && dependencies.isEmpty() == false)
          {
             for (DependencyBuilderListItem dependencyItem : dependencies)
@@ -115,7 +116,8 @@ public class DescribeAction extends InstallsAwareAction
          MetaData md = repository.getMetaData(context);
          // add custom dependencies (e.g. AOP layer).
          List<DependencyBuilderListItem> dependencies = dependencyBuilder.getDependencies(info, md);
-         log.trace("Unwind extra dependencies for " + context.getName() + " " + dependencies);
+         if (log.isTraceEnabled())
+            log.trace("Unwind extra dependencies for " + context.getName() + " " + dependencies);
          if (dependencies != null && dependencies.isEmpty() == false)
          {
             for (DependencyBuilderListItem dependencyItem : dependencies)

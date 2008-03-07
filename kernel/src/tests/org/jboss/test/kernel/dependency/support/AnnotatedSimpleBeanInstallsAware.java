@@ -21,7 +21,7 @@
 */
 package org.jboss.test.kernel.dependency.support;
 
-import org.jboss.beans.metadata.api.annotations.FromContext;
+import org.jboss.beans.metadata.api.enums.FromContext;
 import org.jboss.beans.metadata.api.annotations.Inject;
 import org.jboss.beans.metadata.api.annotations.InstallMethod;
 import org.jboss.beans.metadata.api.annotations.UninstallMethod;
@@ -71,7 +71,7 @@ public class AnnotatedSimpleBeanInstallsAware extends SimpleBeanInstallsAware
    }
 
    @UninstallMethod(whenRequired = "Create")
-   public void removeCreate(@Inject(fromContext=FromContext.STATE) ControllerState state)
+   public void removeCreate(@Inject(fromContext= FromContext.STATE) ControllerState state)
    {
       states.remove(state);
    }

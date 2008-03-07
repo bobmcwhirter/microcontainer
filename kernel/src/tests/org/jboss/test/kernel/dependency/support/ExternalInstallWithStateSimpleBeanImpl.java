@@ -26,7 +26,7 @@ import java.io.Serializable;
 import org.jboss.beans.metadata.api.annotations.ExternalInstall;
 import org.jboss.beans.metadata.api.annotations.ExternalInstalls;
 import org.jboss.beans.metadata.api.annotations.ExternalUninstalls;
-import org.jboss.beans.metadata.api.annotations.FromContext;
+import org.jboss.beans.metadata.api.enums.FromContext;
 import org.jboss.beans.metadata.api.annotations.Inject;
 import org.jboss.beans.metadata.api.annotations.Value;
 

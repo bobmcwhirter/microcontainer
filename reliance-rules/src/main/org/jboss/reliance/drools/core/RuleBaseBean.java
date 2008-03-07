@@ -31,7 +31,7 @@ import org.drools.StatefulSession;
 import org.drools.StatelessSession;
 import org.drools.rule.Package;
 import org.jboss.beans.metadata.api.annotations.Constructor;
-import org.jboss.beans.metadata.api.annotations.FromContext;
+import org.jboss.beans.metadata.api.enums.FromContext;
 import org.jboss.beans.metadata.api.annotations.Inject;
 import org.jboss.beans.metadata.api.annotations.Install;
 import org.jboss.beans.metadata.api.annotations.Uninstall;

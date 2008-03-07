@@ -25,7 +25,7 @@ import javax.xml.namespace.NamespaceContext;
 import javax.xml.namespace.QName;
 
 import org.jboss.beans.metadata.plugins.AbstractBeanMetaData;
-import org.jboss.beans.metadata.spi.AutowireType;
+import org.jboss.beans.metadata.api.enums.AutowireType;
 import org.jboss.beans.metadata.spi.ConstructorMetaData;
 import org.jboss.dependency.spi.ControllerMode;
 import org.jboss.xb.binding.sunday.unmarshalling.DefaultElementHandler;
@@ -59,7 +59,7 @@ public class BeanHandler extends DefaultElementHandler
          else if ("class".equals(localName))
             bean.setBean(attrs.getValue(i));
          else if ("mode".equals(localName))
-            bean.setMode(new ControllerMode(attrs.getValue(i)));
+            bean.setMode(ControllerMode.getInstance(attrs.getValue(i)));
          else if ("parent".equals(localName))
             bean.setParent(attrs.getValue(i));
          else if ("abstract".equals(localName))

@@ -25,6 +25,7 @@ import java.util.List;
 import java.util.Set;
 
 import org.jboss.dependency.spi.ControllerMode;
+import org.jboss.beans.metadata.api.enums.AutowireType;
 
 /**
  * Metadata about a bean.

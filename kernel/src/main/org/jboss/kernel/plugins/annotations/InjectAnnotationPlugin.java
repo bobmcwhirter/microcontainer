@@ -22,11 +22,9 @@
 package org.jboss.kernel.plugins.annotations;
 
 import org.jboss.beans.metadata.api.annotations.Inject;
-import org.jboss.beans.metadata.api.annotations.FromContext;
+import org.jboss.beans.metadata.api.enums.FromContext;
 import org.jboss.beans.metadata.plugins.AbstractInjectionValueMetaData;
-import org.jboss.beans.metadata.plugins.InjectionOption;
 import org.jboss.beans.metadata.spi.ValueMetaData;
-import org.jboss.beans.metadata.spi.AutowireType;
 import org.jboss.dependency.spi.ControllerState;
 
 /**
@@ -53,10 +51,10 @@ public class InjectAnnotationPlugin extends PropertyAnnotationPlugin<Inject>
       injection.setDependentState(new ControllerState(annotation.dependentState()));
       if (isAttributePresent(annotation.whenRequired()))
          injection.setWhenRequiredState(new ControllerState(annotation.whenRequired()));
-      injection.setInjectionOption(InjectionOption.getInstance(annotation.option().toString()));
-      injection.setInjectionType(AutowireType.getInstance(annotation.type().toString()));
-      if (FromContext.NONE.equals(annotation.fromContext()) == false)
-         injection.setFromContext(org.jboss.beans.metadata.plugins.FromContext.getInstance(annotation.fromContext().toString()));
+      injection.setInjectionOption(annotation.option());
+      injection.setInjectionType(annotation.type());
+      if (FromContext.NOOP.equals(annotation.fromContext()) == false)
+         injection.setFromContext(annotation.fromContext());
       return injection;
    }
 }

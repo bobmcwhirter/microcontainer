@@ -27,7 +27,7 @@ import java.util.Arrays;
 
 import junit.framework.Test;
 import org.jboss.beans.metadata.plugins.AbstractInjectionValueMetaData;
-import org.jboss.beans.metadata.plugins.FromContext;
+import org.jboss.beans.metadata.api.enums.FromContext;
 import org.jboss.beans.metadata.plugins.AbstractPropertyMetaData;
 import org.jboss.beans.metadata.plugins.factory.GenericBeanFactoryMetaData;
 import org.jboss.beans.metadata.plugins.builder.BeanMetaDataBuilderFactory;
@@ -108,20 +108,15 @@ public class FromContextTestCase extends AbstractKernelDependencyTest
       assertNotNull(scopekey);
       assertNotNull(scopekey.getScopeKey());
 
-      NameAwareBean dynamic = (NameAwareBean)getBean(6, "dynamic");
-      assertNotNull(dynamic);
-      assertNotNull(dynamic.getDynamic());
-      assertInstanceOf(dynamic.getDynamic(), BeanMetaData.class);
-
-      NameAwareBean other = (NameAwareBean)getBean(7, "other");
+      NameAwareBean other = (NameAwareBean)getBean(6, "other");
       assertNotNull(other);
       assertEquals("set_name_bean", other.getName());
 
-      NameAwareBean context = (NameAwareBean)getBean(8, "context");
+      NameAwareBean context = (NameAwareBean)getBean(7, "context");
       assertNotNull(context);
       assertNotNull(context.getContext());
 
-      NameAwareBean state = (NameAwareBean)getBean(9, "state");
+      NameAwareBean state = (NameAwareBean)getBean(8, "state");
       assertNotNull(state);
       assertEquals(ControllerState.INSTANTIATED, state.getState());
    }
@@ -170,11 +165,6 @@ public class FromContextTestCase extends AbstractKernelDependencyTest
       v6.setFromContext(FromContext.SCOPE);
       b6.addPropertyMetaData("scopeKey", v6);
 
-      BeanMetaDataBuilder b7 = BeanMetaDataBuilderFactory.createBuilder("dynamic", NameAwareBean.class.getName());
-      AbstractInjectionValueMetaData v7 = new AbstractInjectionValueMetaData();
-      v7.setFromContext(FromContext.getInstance("getBeanMetaData"));
-      b7.addPropertyMetaData("dynamic", v7);
-
       BeanMetaDataBuilder b8 = BeanMetaDataBuilderFactory.createBuilder("other", NameAwareBean.class.getName());
       AbstractInjectionValueMetaData v8 = new AbstractInjectionValueMetaData();
       v8.setValue("set_name_bean");
@@ -199,7 +189,6 @@ public class FromContextTestCase extends AbstractKernelDependencyTest
                b4.getBeanMetaData(),
                b5.getBeanMetaData(),
                b6.getBeanMetaData(),
-               b7.getBeanMetaData(),
                b8.getBeanMetaData(),
                b9.getBeanMetaData(),
                b10.getBeanMetaData(),

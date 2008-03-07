@@ -26,6 +26,10 @@ import java.lang.annotation.Retention;
 import java.lang.annotation.RetentionPolicy;
 import java.lang.annotation.Target;
 
+import org.jboss.beans.metadata.api.enums.FromContext;
+import org.jboss.beans.metadata.api.enums.InjectOption;
+import org.jboss.beans.metadata.api.enums.AutowireType;
+
 /**
  * Beans when injected by class type are by default changed to configured
  * state - if not yet configured.
@@ -69,12 +73,12 @@ public @interface Inject
    String dependentState() default "Installed";
 
    /**
-    * Get injection type.
+    * Get autowire type.
     * Default is by class.
     *
     * @return injection type
     */
-   InjectType type() default InjectType.BY_CLASS;
+   AutowireType type() default AutowireType.BY_CLASS;
 
    /**
     * Get injection option.
@@ -89,7 +93,7 @@ public @interface Inject
     *
     * @return from context type
     */
-   FromContext fromContext() default FromContext.NONE;
+   FromContext fromContext() default FromContext.NOOP;
 
    /**
     * Is this @Inject valid.

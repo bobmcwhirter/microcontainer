@@ -19,11 +19,8 @@
 * Software Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA
 * 02110-1301 USA, or see the FSF site: http://www.fsf.org.
 */
-package org.jboss.beans.metadata.spi;
+package org.jboss.beans.metadata.api.enums;
 
-import java.io.Serializable;
-
-import org.jboss.util.JBossObject;
 import org.jboss.util.JBossStringBuilder;
 
 /**
@@ -36,37 +33,16 @@ import org.jboss.util.JBossStringBuilder;
  *
  * @author <a href="mailto:ales.justin@jboss.com">Ales Justin</a>
  */
-public class AutowireType extends JBossObject
-   implements Serializable
+public enum AutowireType
 {
-   private static final long serialVersionUID = 1L;
-
-   /** None */
-   public static final AutowireType NONE = new AutowireType("None");
-
-   /** Strict */
-   public static final AutowireType BY_CLASS = new AutowireType("ByClass");
-
-   /** Loose */
-   public static final AutowireType BY_NAME = new AutowireType("ByName");
-
-   /** Constructor */
-   public static final AutowireType CONSTRUCTOR = new AutowireType("Constructor");
-
-   /** Auto */
-   public static final AutowireType AUTO = new AutowireType("Auto");
-
-   /** Array */
-   public static final AutowireType[] TYPES = new AutowireType[]{
-         NONE,
-         BY_CLASS,
-         BY_NAME,
-         CONSTRUCTOR,
-         AUTO,
-   };
+   NONE(MicrocontainerConstants.NONE),
+   BY_CLASS(MicrocontainerConstants.BY_CLASS),
+   BY_NAME(MicrocontainerConstants.BY_NAME),
+   CONSTRUCTOR(MicrocontainerConstants.CONSTRUCTOR),
+   AUTO(MicrocontainerConstants.AUTO);
 
    /** The type string */
-   protected final String typeString;
+   private final String typeString;
 
    /**
     * Create a new state
@@ -87,11 +63,15 @@ public class AutowireType extends JBossObject
     * @param typeString type
     * @return AutowireType instance
     */
+   // TODO - remove this once JBMICROCONT-219 is done
    public static AutowireType getInstance(String typeString)
    {
-      for(AutowireType type : TYPES)
+      if (typeString == null)
+         throw new IllegalArgumentException("Null type string.");
+
+      for(AutowireType type : values())
       {
-         if (type.getTypeString().equalsIgnoreCase(typeString))
+         if (typeString.equalsIgnoreCase(type.getTypeString()))
             return type;
       }
       return NONE;
@@ -107,22 +87,8 @@ public class AutowireType extends JBossObject
       return typeString;
    }
 
-   public boolean equals(Object object)
-   {
-      if (object == null || object instanceof AutowireType == false)
-         return false;
-      AutowireType other = (AutowireType) object;
-      return typeString.equals(other.getTypeString());
-   }
-
    public void toString(JBossStringBuilder buffer)
    {
       buffer.append(typeString);
    }
-
-   protected int getHashCode()
-   {
-      return typeString.hashCode();
-   }
-
 }
