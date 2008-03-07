@@ -104,7 +104,7 @@ public class StringValueMetaData extends AbstractTypeMetaData
       if (trace)
          log.trace("getValue value=" + getUnderlyingValue() + " type=" + type + " info=" + info);
 
-      TypeInfo typeInfo = getClassInfo(cl);
+      TypeInfo typeInfo = getTypeInfo(cl);
       if (typeInfo == null)
          typeInfo = info;
       if (typeInfo == null)

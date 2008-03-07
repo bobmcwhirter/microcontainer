@@ -66,6 +66,15 @@ public class AbstractPropertyMetaData extends AbstractFeatureMetaData
    /** The property value */
    protected ValueMetaData value;
 
+   /** The property type */
+   protected String type;
+   
+   /** The property replace */
+   private Boolean replace;
+   
+   /** Whether to trim */
+   private Boolean trim;
+   
    /**
     * Create a new property meta data
     */
@@ -224,49 +233,30 @@ public class AbstractPropertyMetaData extends AbstractFeatureMetaData
       }
    }
 
+   public String getPropertyType()
+   {
+      return type;
+   }
+   
    @XmlAttribute(name="class")
    @ManagementProperty(ignored = true)
    public void setPropertyType(String type)
    {
-      ValueMetaData valueMetaData = getValue();
-      if (valueMetaData != null && valueMetaData instanceof StringValueMetaData == false)
-         throw new IllegalArgumentException("Property is not a string");
-      if (valueMetaData == null)
-      {
-         valueMetaData = new StringValueMetaData();
-         setValue(valueMetaData);
-      }
-      ((StringValueMetaData) valueMetaData).setType(type);
+      this.type = type;
    }
 
    @XmlAttribute(name="replace")
    @ManagementProperty(ignored = true)
    public void setPropertyReplace(boolean replace)
    {
-      ValueMetaData valueMetaData = getValue();
-      if (valueMetaData != null && valueMetaData instanceof StringValueMetaData == false)
-         throw new IllegalArgumentException("Property is not a string");
-      if (valueMetaData == null)
-      {
-         valueMetaData = new StringValueMetaData();
-         setValue(valueMetaData);
-      }
-      ((StringValueMetaData) valueMetaData).setReplace(replace);
+      this.replace = replace;
    }
 
    @XmlAttribute(name="trim")
    @ManagementProperty(ignored = true)
    public void setPropertyTrim(boolean trim)
    {
-      ValueMetaData valueMetaData = getValue();
-      if (valueMetaData != null && valueMetaData instanceof StringValueMetaData == false)
-         throw new IllegalArgumentException("Property is not a string");
-      if (valueMetaData == null)
-      {
-         valueMetaData = new StringValueMetaData();
-         setValue(valueMetaData);
-      }
-      ((StringValueMetaData) valueMetaData).setTrim(trim);
+      this.trim = trim;
    }
 
    public void initialVisit(MetaDataVisitor visitor)
@@ -278,6 +268,17 @@ public class AbstractPropertyMetaData extends AbstractFeatureMetaData
       ValueMetaData vmd = getValue();
       if (vmd != null && vmd instanceof AbstractInjectionValueMetaData)
          ((AbstractInjectionValueMetaData) vmd).setPropertyMetaData(this);
+
+      if (vmd != null && vmd instanceof StringValueMetaData)
+      {
+         StringValueMetaData svmd = (StringValueMetaData) vmd;
+         if (type != null)
+            svmd.setType(type);
+         if (replace != null)
+            svmd.setReplace(replace);
+         if (trim != null)
+            svmd.setTrim(trim);
+      }
       
       visitor.setContextState(ControllerState.CONFIGURED);
       super.initialVisit(visitor);

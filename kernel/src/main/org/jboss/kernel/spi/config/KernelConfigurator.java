@@ -87,6 +87,25 @@ public interface KernelConfigurator extends KernelObject
    BeanInfo getBeanInfo(BeanMetaData metaData) throws Throwable;
    
    /**
+    * Get the type info for a class
+    * 
+    * @param className the class name
+    * @param cl the classloader
+    * @return the type info
+    * @throws Throwable for any error
+    */
+   TypeInfo getTypeInfo(String className, ClassLoader cl) throws Throwable;
+   
+   /**
+    * Get the type info for a class
+    * 
+    * @param clazz the class
+    * @return the type info
+    * @throws Throwable for any error
+    */
+   TypeInfo getTypeInfo(Class<?> clazz) throws Throwable;
+   
+   /**
     * Get the class info for a class
     * 
     * @param className the class name

@@ -74,6 +74,16 @@ public abstract class AbstractKernelConfig extends AbstractKernelObject implemen
       return configuration.getBeanInfo(typeInfo);
    }
    
+   public TypeInfo getTypeInfo(String className, ClassLoader cl) throws Throwable
+   {
+      return configuration.getTypeInfo(className, cl);
+   }
+   
+   public TypeInfo getTypeInfo(Class<?> clazz) throws Throwable
+   {
+      return configuration.getTypeInfo(clazz);
+   }
+   
    public ClassInfo getClassInfo(String className, ClassLoader cl) throws Throwable
    {
       return configuration.getClassInfo(className, cl);

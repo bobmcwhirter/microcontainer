@@ -26,6 +26,7 @@ import java.util.Set;
 
 import junit.framework.Test;
 import org.jboss.beans.metadata.plugins.AbstractBeanMetaData;
+import org.jboss.beans.metadata.plugins.AbstractPropertyMetaData;
 import org.jboss.beans.metadata.plugins.StringValueMetaData;
 import org.jboss.beans.metadata.spi.PropertyMetaData;
 import org.jboss.beans.metadata.spi.ValueMetaData;
@@ -74,11 +75,8 @@ public class PropertyJaxbTestCase extends AbstractMCTest
       PropertyMetaData property = getProperty();
       assertNotNull("PropertyName", property.getName());
       assertNull(property.getAnnotations());
-      ValueMetaData value = property.getValue();
-      assertNotNull(value);
-      assertTrue(value instanceof StringValueMetaData);
-      StringValueMetaData string = (StringValueMetaData) value;
-      assertEquals("PropertyClass", string.getType());
+      AbstractPropertyMetaData apmd = assertInstanceOf(property, AbstractPropertyMetaData.class);
+      assertEquals("PropertyClass", apmd.getPropertyType());
    }
 
    public void testPropertyWithAnnotation() throws Exception

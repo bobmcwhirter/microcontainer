@@ -353,6 +353,26 @@ public abstract class AbstractTypeMetaData extends AbstractValueMetaData
       return configurator.getClassInfo(classType, cl);
    }
 
+   /**
+    * Get the type info for this type
+    *
+    * @param cl classloader
+    * @return the type info
+    * @throws Throwable for any error
+    */
+   protected TypeInfo getTypeInfo(ClassLoader cl) throws Throwable
+   {
+      return getTypeInfo(type, cl);
+   }
+
+   protected TypeInfo getTypeInfo(String classType, ClassLoader cl) throws Throwable
+   {
+      if (classType == null)
+         return null;
+
+      return configurator.getTypeInfo(classType, cl);
+   }
+
    protected ClassInfo getClass(MetaDataVisitor visitor, String classType) throws Throwable
    {
       KernelControllerContext context = visitor.getControllerContext();

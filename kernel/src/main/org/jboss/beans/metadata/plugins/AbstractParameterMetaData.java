@@ -72,6 +72,12 @@ public class AbstractParameterMetaData extends AbstractFeatureMetaData
     */
    protected int index;
 
+   /** Whether to replace */
+   protected Boolean replace;
+
+   /** Whether to trim */
+   protected Boolean trim;
+   
    /**
     * Create a new parameter meta data
     */
@@ -206,6 +212,36 @@ public class AbstractParameterMetaData extends AbstractFeatureMetaData
          stringValue.setType(getType());
          setValue(stringValue);
       }
+   }
+
+   @XmlAttribute(name="replace")
+   @ManagementProperty(ignored = true)
+   public void setPropertyReplace(boolean replace)
+   {
+      this.replace = replace;
+   }
+
+   @XmlAttribute(name="trim")
+   @ManagementProperty(ignored = true)
+   public void setPropertyTrim(boolean trim)
+   {
+      this.trim = trim;
+   }
+
+   @Override
+   public void initialVisit(MetaDataVisitor visitor)
+   {
+      ValueMetaData vmd = getValue();
+      if (vmd != null && vmd instanceof StringValueMetaData)
+      {
+         StringValueMetaData svmd = (StringValueMetaData) vmd;
+         if (replace != null)
+            svmd.setReplace(replace);
+         if (trim != null)
+            svmd.setTrim(trim);
+      }
+      
+      super.initialVisit(visitor);
    }
 
    protected void addChildren(Set<MetaDataVisitorNode> children)
