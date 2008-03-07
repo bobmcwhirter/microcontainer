@@ -36,6 +36,6 @@ public class ControllerModeValueAdapter implements ValueAdapter
    @SuppressWarnings("unchecked")
    public Object cast(Object o, Class c)
    {
-      return new ControllerMode((String)o);
+      return ControllerMode.getInstance((String)o);
    }
 }
