@@ -77,7 +77,7 @@ public class KernelInstanceBinder extends InstanceBinder
                   )
                }
    )
-   public void setBindings(Map<Class, Object> bindings)
+   public void setBindings(Map<Class<?>, Object> bindings)
    {
       super.setBindings(bindings);
    }

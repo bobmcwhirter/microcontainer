@@ -39,7 +39,7 @@ public class InstanceBinder extends BinderHolder
       SourceProviders.skip(InstanceBinder.class);
    }
 
-   private Map<Class, Object> bindings;
+   private Map<Class<?>, Object> bindings;
 
    public InstanceBinder(Binder binder)
    {
@@ -51,7 +51,7 @@ public class InstanceBinder extends BinderHolder
    {
       if (bindings != null && bindings.isEmpty() == false)
       {
-         for(Map.Entry<Class, Object> entry : bindings.entrySet())
+         for(Map.Entry<Class<?>, Object> entry : bindings.entrySet())
          {
             Object value = entry.getValue();
             if (value == null)
@@ -71,7 +71,7 @@ public class InstanceBinder extends BinderHolder
       // todo - unbind all
    }
 
-   public void setBindings(Map<Class, Object> bindings)
+   public void setBindings(Map<Class<?>, Object> bindings)
    {
       this.bindings = bindings;
    }

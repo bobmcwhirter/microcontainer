@@ -85,6 +85,7 @@ public abstract class GuiceIntegration extends BinderHolder
     * bind(DataSource.class).toProvider(fromMicrocontainer(DataSource.class, "dataSource"));
     * </pre>
     *
+    * @param <T> the class type
     * @param type the class type
     * @param name the bean name
     * @return Provider instance
