@@ -301,10 +301,10 @@ public class Identity
       {
          if (ROLES_GROUP.equals(sg.getName()))
          {
-            Enumeration e = sg.members();
+            Enumeration<? extends Principal> e = sg.members();
             while (e.hasMoreElements())
             {
-               Principal member = (Principal)e.nextElement();
+               Principal member = e.nextElement();
                if (member.getName().equals(role))
                {
                   sg.removeMember(member);
