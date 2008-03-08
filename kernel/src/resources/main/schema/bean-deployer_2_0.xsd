@@ -50,7 +50,7 @@ $Id$
       <xsd:choice minOccurs="0" maxOccurs="unbounded">
          <xsd:element name="annotation" type="annotationType" minOccurs="0" maxOccurs="unbounded"/>
          <xsd:element name="classloader" type="classloaderType" minOccurs="0"/>
-         <xsd:element name="alias" type="aliasType" minOccurs="0"/>
+         <xsd:element name="alias" type="namedAliasType" minOccurs="0"/>
          <xsd:element name="create" type="lifecycleType" minOccurs="0"/>
          <xsd:element name="start" type="lifecycleType" minOccurs="0"/>
          <xsd:element name="stop" type="lifecycleType" minOccurs="0"/>
@@ -570,6 +570,21 @@ $Id$
       </xsd:choice>
    </xsd:complexType>
 
+   <xsd:complexType name="namedAliasType">
+      <xsd:annotation>
+         <xsd:documentation>
+           <![CDATA[
+           An alias that has a name attribute.
+           ]]>
+         </xsd:documentation>
+      </xsd:annotation>
+      <xsd:complexContent>
+         <xsd:extension base="aliasType">
+            <xsd:attribute name="name" type="xsd:string" use="required"/>
+         </xsd:extension>
+      </xsd:complexContent>
+   </xsd:complexType>
+   
    <xsd:complexType name="parameterType" mixed="true">
       <xsd:annotation>
          <xsd:documentation>
