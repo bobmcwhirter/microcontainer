@@ -21,11 +21,15 @@
 */
 package org.jboss.test.kernel.deployment.xml.test;
 
+import java.util.ArrayList;
 import java.util.Set;
 
 import junit.framework.Test;
+
 import org.jboss.beans.metadata.plugins.AbstractBeanMetaData;
+import org.jboss.beans.metadata.spi.AliasMetaData;
 import org.jboss.beans.metadata.spi.NamedAliasMetaData;
+import org.jboss.beans.metadata.spi.factory.GenericBeanFactoryMetaData;
 import org.jboss.kernel.plugins.deployment.AbstractKernelDeployment;
 
 /**
@@ -48,12 +52,14 @@ public class AliasTestCase extends AbstractXMLTest
    protected Object getAlias(String name) throws Exception
    {
       AbstractBeanMetaData bean = unmarshalBean(name);
-      Set<Object> aliases = bean.getAliases();
+      Set<AliasMetaData> aliases = bean.getAliasMetaData();
       assertNotNull(aliases);
       assertEquals(1, aliases.size());
-      Object alias = aliases.iterator().next();
+      AliasMetaData alias = aliases.iterator().next();
       assertNotNull(alias);
-      return alias;
+      Object theAlias = alias.getAliasValue();
+      assertNotNull(theAlias);
+      return theAlias;
    }
 
    public void testAlias() throws Exception
@@ -62,59 +68,42 @@ public class AliasTestCase extends AbstractXMLTest
       assertEquals("SimpleAlias", alias);
    }
 
-   public void testAliasWithClass() throws Exception
+   public void testAliasWithjavaBean() throws Exception
    {
-      Object alias = getAlias("AliasWithClass.xml");
-      assertEquals(12345, alias);
-   }
-
-   public void testAliasWithReplace() throws Exception
-   {
-      SecurityManager sm = suspendSecurity();
-      try
-      {
-         System.setProperty("alias.test.name", "SimpleAlias");
-         Object alias = getAlias("AliasWithReplace.xml");
-         assertEquals("XSimpleAliasX", alias);
-      }
-      finally
-      {
-         resumeSecurity(sm);
-      }
-   }
-
-   public void testAliasWithNoReplace() throws Exception
-   {
-      SecurityManager sm = suspendSecurity();
-      try
-      {
-         System.setProperty("alias.test.name", "SimpleAlias");
-         Object alias = getAlias("AliasWithNoReplace.xml");
-         assertEquals("X${alias.test.name}X", alias);
-      }
-      finally
-      {
-         resumeSecurity(sm);
-      }
+      Object alias = getAlias("AliasWithJavaBean.xml");
+      assertInstanceOf(alias, ArrayList.class);
    }
 
    public void testMultipleAliases() throws Exception
    {
       AbstractBeanMetaData bean = unmarshalBean("MultipleAlias.xml");
-      Set<Object> aliases = bean.getAliases();
+      Set<AliasMetaData> aliases = bean.getAliasMetaData();
       assertNotNull(aliases);
       int size = aliases.size();
       assertTrue(size > 1);
-      for(Object alias : aliases)
+      for(AliasMetaData alias : aliases)
+      {
          assertNotNull(alias);
+         assertNotNull(alias.getAliasValue());
+      }
    }
 
    public void testAliasAndBeanFactory() throws Exception
    {
-      AbstractBeanMetaData bean = unmarshalBean("AliasWithBeanFactory.xml");
-      Set<Object> aliases = bean.getAliases();
+      GenericBeanFactoryMetaData bean = unmarshalBeanFactory("AliasWithBeanFactory.xml");
+      Set<AliasMetaData> aliases = bean.getAliases();
       assertNotNull(aliases);
       assertFalse(aliases.isEmpty());
+      assertEquals("SimpleAliasWithBF", aliases.iterator().next().getAliasValue());
+   }
+
+   public void testAliasAndBeanFactoryJavaBean() throws Exception
+   {
+      GenericBeanFactoryMetaData bean = unmarshalBeanFactory("AliasWithBeanFactoryJavaBean.xml");
+      Set<AliasMetaData> aliases = bean.getAliases();
+      assertNotNull(aliases);
+      assertFalse(aliases.isEmpty());
+      assertInstanceOf(aliases.iterator().next().getAliasValue(), ArrayList.class);
    }
 
    protected NamedAliasMetaData getNamedAlias(String name) throws Exception
@@ -126,51 +115,5 @@ public class AliasTestCase extends AbstractXMLTest
       NamedAliasMetaData alias = aliases.iterator().next();
       assertNotNull(alias);
       return alias;
-   }
-
-   public void testNamedAlias() throws Exception
-   {
-      NamedAliasMetaData alias = getNamedAlias("NamedAlias.xml");
-      assertEquals("TestName", alias.getName());
-      assertEquals("SimpleAlias", alias.getAliasValue());
-   }
-
-   public void testNamedAliasWithClass() throws Exception
-   {
-      NamedAliasMetaData alias = getNamedAlias("NamedAliasWithClass.xml");
-      assertEquals("TestName", alias.getName());
-      assertEquals(12345, alias.getAliasValue());
-   }
-
-   public void testNamedAliasWithReplace() throws Exception
-   {
-      SecurityManager sm = suspendSecurity();
-      try
-      {
-         System.setProperty("alias.test.name", "SimpleAlias");
-         NamedAliasMetaData alias = getNamedAlias("NamedAliasWithReplace.xml");
-         assertEquals("TestName", alias.getName());
-         assertEquals("XSimpleAliasX", alias.getAliasValue());
-      }
-      finally
-      {
-         resumeSecurity(sm);
-      }
-   }
-
-   public void testNamedAliasWithNoReplace() throws Exception
-   {
-      SecurityManager sm = suspendSecurity();
-      try
-      {
-         System.setProperty("alias.test.name", "SimpleAlias");
-         NamedAliasMetaData alias = getNamedAlias("NamedAliasWithNoReplace.xml");
-         assertEquals("TestName", alias.getName());
-         assertEquals("X${alias.test.name}X", alias.getAliasValue());
-      }
-      finally
-      {
-         resumeSecurity(sm);
-      }
    }
 }

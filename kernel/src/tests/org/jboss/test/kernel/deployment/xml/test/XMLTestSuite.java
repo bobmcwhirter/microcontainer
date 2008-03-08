@@ -93,7 +93,6 @@ public class XMLTestSuite extends TestSuite
       suite.addTest(ArrayJaxbTestCase.suite());
       suite.addTest(MapJaxbTestCase.suite());
       suite.addTest(AnnotationJaxbTestCase.suite());
-      suite.addTest(AliasJaxbTestCase.suite());
       suite.addTest(CallbackJaxbTestCase.suite());
       suite.addTest(ValueFactoryJaxbTestCase.suite());
       // policy

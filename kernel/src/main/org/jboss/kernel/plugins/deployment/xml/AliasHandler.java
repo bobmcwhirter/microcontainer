@@ -46,22 +46,12 @@ public class AliasHandler extends DefaultElementHandler
 
    public void attributes(Object o, QName elementName, ElementBinding element, Attributes attrs, NamespaceContext nsCtx)
    {
-      AbstractAliasMetaData aliasMetaData = (AbstractAliasMetaData) o;
-      for (int i = 0; i < attrs.getLength(); ++i)
-      {
-         String localName = attrs.getLocalName(i);
-         if ("replace".equals(localName))
-            aliasMetaData.setReplace(Boolean.parseBoolean(attrs.getValue(i)));
-         else if ("class".equals(localName))
-            aliasMetaData.setClazz(attrs.getValue(i));
-      }
-
    }
 
    public Object endElement(Object o, QName qName, ElementBinding element)
    {
       AbstractAliasMetaData alias = (AbstractAliasMetaData) o;
-      if (alias.getAlias() == null)
+      if (alias.getAliasValue() == null)
       {
          throw new IllegalArgumentException("Empty <alias/> content");
       }

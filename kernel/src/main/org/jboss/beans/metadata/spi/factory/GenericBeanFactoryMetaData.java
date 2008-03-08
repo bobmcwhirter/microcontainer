@@ -24,6 +24,7 @@ package org.jboss.beans.metadata.spi.factory;
 import java.io.Serializable;
 import java.util.Collections;
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Set;
@@ -33,6 +34,7 @@ import javax.xml.bind.annotation.XmlElement;
 import javax.xml.bind.annotation.XmlRootElement;
 import javax.xml.bind.annotation.XmlType;
 
+import org.jboss.beans.metadata.plugins.AbstractAliasMetaData;
 import org.jboss.beans.metadata.plugins.AbstractAnnotationMetaData;
 import org.jboss.beans.metadata.plugins.AbstractClassLoaderMetaData;
 import org.jboss.beans.metadata.plugins.AbstractConstructorMetaData;
@@ -45,6 +47,7 @@ import org.jboss.beans.metadata.plugins.AbstractSupplyMetaData;
 import org.jboss.beans.metadata.plugins.InstallCallbackMetaData;
 import org.jboss.beans.metadata.plugins.UninstallCallbackMetaData;
 import org.jboss.beans.metadata.plugins.factory.GenericBeanFactory;
+import org.jboss.beans.metadata.spi.AliasMetaData;
 import org.jboss.beans.metadata.spi.AnnotationMetaData;
 import org.jboss.beans.metadata.spi.BeanMetaData;
 import org.jboss.beans.metadata.spi.BeanMetaDataFactory;
@@ -94,7 +97,7 @@ public class GenericBeanFactoryMetaData extends JBossObject implements BeanMetaD
    protected Set<AnnotationMetaData> annotations;
    
    /** The aliases */
-   protected Set<Object> aliases;
+   protected Set<AliasMetaData> aliases;
 
    /** The classloader */
    protected ClassLoaderMetaData classLoader;
@@ -179,7 +182,7 @@ public class GenericBeanFactoryMetaData extends JBossObject implements BeanMetaD
     * 
     * @return the aliases
     */
-   public Set<Object> getAliases()
+   public Set<AliasMetaData> getAliases()
    {
       return aliases;
    }
@@ -189,8 +192,8 @@ public class GenericBeanFactoryMetaData extends JBossObject implements BeanMetaD
     * 
     * @param aliases the aliases
     */
-   @XmlElement(name="alias", type=String.class)
-   public void setAliases(Set<Object> aliases)
+   @XmlElement(name="alias", type=AbstractAliasMetaData.class)
+   public void setAliases(Set<AliasMetaData> aliases)
    {
       this.aliases = aliases;
    }
@@ -503,7 +506,13 @@ public class GenericBeanFactoryMetaData extends JBossObject implements BeanMetaD
       }
 
       BeanMetaDataBuilder builder = BeanMetaDataBuilder.createBuilder(name, GenericBeanFactory.class.getName());
-      builder.setAliases(aliases);
+      if (aliases != null)
+      {
+         Set<Object> theAliases = new HashSet<Object>();
+         for (AliasMetaData alias : aliases)
+            theAliases.add(alias.getAliasValue());
+         builder.setAliases(theAliases);
+      }
       builder.setMode(mode);
       ValueMetaData injectKernelConfigurator = builder.createInject(KernelConstants.KERNEL_CONFIGURATOR_NAME);
       builder.addConstructorParameter(KernelConfigurator.class.getName(), injectKernelConfigurator);

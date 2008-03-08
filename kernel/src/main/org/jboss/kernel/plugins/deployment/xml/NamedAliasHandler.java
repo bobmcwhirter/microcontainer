@@ -54,7 +54,7 @@ public class NamedAliasHandler extends AliasHandler
          if ("name".equals(localName))
             alias.setName(attrs.getValue(i));
          else if ("alias".equals(localName))
-            alias.setAlias(attrs.getValue(i));
+            alias.setAliasValue(attrs.getValue(i));
       }
       super.attributes(o, elementName, element, attrs, nsCtx);
    }

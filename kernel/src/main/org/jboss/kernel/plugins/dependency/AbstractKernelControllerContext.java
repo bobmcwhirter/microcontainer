@@ -23,9 +23,12 @@ package org.jboss.kernel.plugins.dependency;
 
 import java.security.AccessControlContext;
 import java.security.AccessController;
+import java.util.HashSet;
 import java.util.Set;
 
 import org.jboss.beans.info.spi.BeanInfo;
+import org.jboss.beans.metadata.plugins.AbstractBeanMetaData;
+import org.jboss.beans.metadata.spi.AliasMetaData;
 import org.jboss.beans.metadata.spi.BeanMetaData;
 import org.jboss.dependency.plugins.AbstractControllerContext;
 import org.jboss.dependency.plugins.AbstractDependencyInfo;
@@ -70,6 +73,36 @@ public class AbstractKernelControllerContext extends AbstractControllerContext i
    protected boolean isDescribeProcessed;
 
    /**
+    * Determine the aliases
+    * 
+    * @return the aliases
+    */
+   private static Set<Object> determineAliases(BeanMetaData metaData)
+   {
+      if (metaData == null)
+         return null;
+      
+      // FIXME THIS IS HACK
+      if (metaData instanceof AbstractBeanMetaData)
+      {
+         AbstractBeanMetaData abmd = (AbstractBeanMetaData) metaData;
+         Set<AliasMetaData> aliasMetaDatas = abmd.getAliasMetaData();
+         if (aliasMetaDatas != null && aliasMetaDatas.isEmpty() == false)
+         {
+            Set<Object> aliases = abmd.getAliases();
+            if (aliases == null)
+            {
+               aliases = new HashSet<Object>();
+               abmd.setAliases(aliases);
+            }
+            for (AliasMetaData aliasMetaData : aliasMetaDatas)
+               aliases.add(aliasMetaData.getAliasValue());
+         }
+      }
+      return metaData.getAliases();
+   }
+   
+   /**
     * Create an abstract controller context
     *
     * @param info     the bean info
@@ -78,7 +111,7 @@ public class AbstractKernelControllerContext extends AbstractControllerContext i
     */
    public AbstractKernelControllerContext(BeanInfo info, BeanMetaData metaData, Object target)
    {
-      super(metaData.getName(), metaData.getAliases(), target == null ? actions : noInstantiate, new AbstractDependencyInfo(), target);
+      super(metaData.getName(), determineAliases(metaData), target == null ? actions : noInstantiate, new AbstractDependencyInfo(), target);
       this.info = info;
       this.metaData = metaData;
       ControllerMode mode = metaData.getMode();

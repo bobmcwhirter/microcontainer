@@ -24,101 +24,45 @@ package org.jboss.beans.metadata.plugins;
 import java.io.Serializable;
 import java.util.Iterator;
 
+import javax.xml.bind.annotation.XmlAnyElement;
+import javax.xml.bind.annotation.XmlTransient;
 import javax.xml.bind.annotation.XmlType;
 import javax.xml.bind.annotation.XmlValue;
-import javax.xml.bind.annotation.XmlAttribute;
-import javax.xml.bind.annotation.XmlTransient;
 
 import org.jboss.beans.metadata.spi.AliasMetaData;
 import org.jboss.beans.metadata.spi.MetaDataVisitor;
 import org.jboss.beans.metadata.spi.MetaDataVisitorNode;
-import org.jboss.reflect.plugins.introspection.IntrospectionTypeInfoFactory;
-import org.jboss.reflect.spi.TypeInfo;
-import org.jboss.reflect.spi.TypeInfoFactory;
 import org.jboss.util.JBossObject;
 import org.jboss.util.JBossStringBuilder;
-import org.jboss.util.StringPropertyReplacer;
 
 /**
  * Metadata for an alias.
  *
  * @author <a href="ales.justin@jboss.com">Ales Justin</a>
  */
-@XmlType
+@XmlType(name="aliasType", propOrder="alias")
 public class AbstractAliasMetaData extends JBossObject
       implements AliasMetaData, Serializable
 {
    private static final long serialVersionUID = 2L;
-   private static TypeInfoFactory typeInfoFactory = new IntrospectionTypeInfoFactory();
 
-   public String alias;
+   private Object alias;
 
-   protected boolean replace = true;
-   protected String clazz;
-
-   /**
-    * Create a new alias meta data
-    */
-   public AbstractAliasMetaData()
-   {
-      super();
-   }
-
-   public String getAlias()
+   public Object getAliasValue()
    {
       return alias;
    }
 
    @XmlValue
-   public void setAlias(String alias)
+   public void setAliasValue(Object alias)
    {
       this.alias = alias;
    }
 
-   public boolean isReplace()
+   @XmlAnyElement
+   public void setAlias(Object alias)
    {
-      return replace;
-   }
-
-   @XmlAttribute
-   public void setReplace(boolean replace)
-   {
-      this.replace = replace;
-   }
-
-   public String getClazz()
-   {
-      return clazz;
-   }
-
-   @XmlAttribute(name="class")
-   public void setClazz(String clazz)
-   {
-      this.clazz = clazz;
-   }
-
-   @XmlTransient
-   public Object getAliasValue()
-   {
-      try
-      {
-         if (clazz != null)
-         {
-            ClassLoader cl = Thread.currentThread().getContextClassLoader();
-            TypeInfo info = typeInfoFactory.getTypeInfo(clazz, cl);
-            return info.convertValue(alias, replace);
-         }
-         String aliasString = alias;
-         if (replace)
-         {
-            aliasString = StringPropertyReplacer.replaceProperties(aliasString);
-         }
-         return aliasString;
-      }
-      catch (Throwable t)
-      {
-         throw new RuntimeException("Error creating alias for " + alias, t);
-      }
+      setAliasValue(alias);
    }
 
    public void initialVisit(MetaDataVisitor visitor)
@@ -140,9 +84,6 @@ public class AbstractAliasMetaData extends JBossObject
    public void toString(JBossStringBuilder buffer)
    {
       buffer.append("alias=").append(alias);
-      buffer.append(" replace=").append(replace);
-      if (clazz != null)
-         buffer.append(" class=").append(clazz);
    }
 
    public void toShortString(JBossStringBuilder buffer)
@@ -162,6 +103,6 @@ public class AbstractAliasMetaData extends JBossObject
 
       AbstractAliasMetaData amd = (AbstractAliasMetaData)object;
       // this is what we probably want? - never saw duplicate annotation on a bean/prop/...
-      return alias.equals(amd.alias) && (replace == amd.replace) && (clazz != null && clazz.equals(amd.clazz));
+      return alias.equals(amd.alias);
    }
 }

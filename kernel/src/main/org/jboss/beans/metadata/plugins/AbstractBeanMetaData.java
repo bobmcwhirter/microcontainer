@@ -31,9 +31,11 @@ import java.util.Set;
 import javax.xml.bind.annotation.XmlAttribute;
 import javax.xml.bind.annotation.XmlElement;
 import javax.xml.bind.annotation.XmlRootElement;
+import javax.xml.bind.annotation.XmlTransient;
 import javax.xml.bind.annotation.XmlType;
 
 import org.jboss.beans.metadata.api.model.AutowireType;
+import org.jboss.beans.metadata.spi.AliasMetaData;
 import org.jboss.beans.metadata.spi.BeanMetaData;
 import org.jboss.beans.metadata.spi.BeanMetaDataFactory;
 import org.jboss.beans.metadata.spi.CallbackMetaData;
@@ -70,7 +72,7 @@ import org.jboss.util.JBossStringBuilder;
  */
 @ManagementObject(properties = ManagementProperties.EXPLICIT) // TODO - explicitly add props we want to manage
 @XmlRootElement(name="bean")
-@XmlType(name="beanType", propOrder={"aliases", "annotations", "classLoader", "constructor", "properties", "create", "start", "stop", "destroy", "depends", "demands", "supplies", "installs", "uninstalls", "installCallbacks", "uninstallCallbacks"})
+@XmlType(name="beanType", propOrder={"aliasMetaData", "annotations", "classLoader", "constructor", "properties", "create", "start", "stop", "destroy", "depends", "demands", "supplies", "installs", "uninstalls", "installCallbacks", "uninstallCallbacks"})
 public class AbstractBeanMetaData extends AbstractFeatureMetaData
    implements BeanMetaData, BeanMetaDataFactory, MutableLifecycleHolder, Serializable
 {
@@ -84,6 +86,9 @@ public class AbstractBeanMetaData extends AbstractFeatureMetaData
 
    /** The aliases */
    protected Set<Object> aliases;
+
+   /** The alias metadata */
+   protected Set<AliasMetaData> aliasMetaData;
 
    /** The parent */
    protected String parent;
@@ -365,12 +370,23 @@ public class AbstractBeanMetaData extends AbstractFeatureMetaData
       return aliases;
    }
 
-   @XmlElement(name="alias", type=String.class)
+   @XmlTransient
    public void setAliases(Set<Object> aliases)
    {
       this.aliases = aliases;
    }
 
+   public Set<AliasMetaData> getAliasMetaData()
+   {
+      return aliasMetaData;
+   }
+   
+   @XmlElement(name="alias", type=AbstractAliasMetaData.class)
+   public void setAliasMetaData(Set<AliasMetaData> aliases)
+   {
+      this.aliasMetaData = aliases;
+   }
+   
    public String getParent()
    {
       return parent;

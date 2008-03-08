@@ -47,7 +47,7 @@ public class AliasCharactersHandler extends CharactersHandler
    public void setValue(QName qname, ElementBinding element, Object owner, Object value)
    {
       AbstractAliasMetaData alias = (AbstractAliasMetaData) owner;
-      alias.setAlias((String)value);
+      alias.setAliasValue(value);
    }
 
 }

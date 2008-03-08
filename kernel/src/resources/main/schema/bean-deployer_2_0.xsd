@@ -50,7 +50,7 @@ $Id$
       <xsd:choice minOccurs="0" maxOccurs="unbounded">
          <xsd:element name="annotation" type="annotationType" minOccurs="0" maxOccurs="unbounded"/>
          <xsd:element name="classloader" type="classloaderType" minOccurs="0"/>
-         <xsd:element name="alias" type="namedAliasType" minOccurs="0"/>
+         <xsd:element name="alias" type="aliasType" minOccurs="0"/>
          <xsd:element name="create" type="lifecycleType" minOccurs="0"/>
          <xsd:element name="start" type="lifecycleType" minOccurs="0"/>
          <xsd:element name="stop" type="lifecycleType" minOccurs="0"/>
@@ -560,33 +560,14 @@ $Id$
             e.g.
             <bean name="MyName" class="com.acme.POJO">
                <alias>YourName</alias>
-               <alias><value class="java.lang.Class">com.acme.POJO</value></alias>
-               <alias><value class="java.lang.Integer">1234</value></alias>
+               <alias><javabean xmlns="urn:jboss:javabean:2.0" class="whatevever"/></alias>
             </bean>
             ]]>
          </xsd:documentation>
       </xsd:annotation>
-      <xsd:simpleContent>
-         <xsd:extension base="xsd:string">
-            <xsd:attribute name="class" type="classNameType" use="optional"/>
-            <xsd:attribute name="replace" type="xsd:boolean"/>
-         </xsd:extension>
-      </xsd:simpleContent>
-   </xsd:complexType>
-
-   <xsd:complexType name="namedAliasType">
-      <xsd:annotation>
-         <xsd:documentation>
-           <![CDATA[
-           An alias that has a name attribute.
-           ]]>
-         </xsd:documentation>
-      </xsd:annotation>
-      <xsd:complexContent>
-         <xsd:extension base="aliasType">
-            <xsd:attribute name="name" type="xsd:string" use="required"/>
-         </xsd:extension>
-      </xsd:complexContent>
+      <xsd:choice minOccurs="0">
+         <xsd:any namespace="##other" processContents="strict"/>
+      </xsd:choice>
    </xsd:complexType>
 
    <xsd:complexType name="parameterType" mixed="true">
