@@ -22,16 +22,26 @@
 package org.jboss.beans.metadata.plugins.policy;
 
 import java.io.Serializable;
+
+import javax.xml.bind.annotation.XmlAnyElement;
 import javax.xml.bind.annotation.XmlAttribute;
+import javax.xml.bind.annotation.XmlElement;
+import javax.xml.bind.annotation.XmlElements;
 import javax.xml.bind.annotation.XmlRootElement;
 import javax.xml.bind.annotation.XmlType;
 import javax.xml.bind.annotation.XmlValue;
-import javax.xml.bind.annotation.XmlTransient;
-import javax.xml.bind.annotation.XmlAnyElement;
 
-import org.jboss.beans.metadata.plugins.StringValueMetaData;
-import org.jboss.beans.metadata.plugins.ValueMetaDataAware;
+import org.jboss.beans.metadata.plugins.AbstractArrayMetaData;
+import org.jboss.beans.metadata.plugins.AbstractCollectionMetaData;
+import org.jboss.beans.metadata.plugins.AbstractInjectionValueMetaData;
+import org.jboss.beans.metadata.plugins.AbstractListMetaData;
+import org.jboss.beans.metadata.plugins.AbstractMapMetaData;
+import org.jboss.beans.metadata.plugins.AbstractSetMetaData;
+import org.jboss.beans.metadata.plugins.AbstractValueFactoryMetaData;
 import org.jboss.beans.metadata.plugins.AbstractValueMetaData;
+import org.jboss.beans.metadata.plugins.StringValueMetaData;
+import org.jboss.beans.metadata.plugins.ThisValueMetaData;
+import org.jboss.beans.metadata.plugins.ValueMetaDataAware;
 import org.jboss.beans.metadata.spi.ValueMetaData;
 import org.jboss.beans.metadata.spi.policy.BindingMetaData;
 import org.jboss.util.JBossObject;
@@ -79,7 +89,19 @@ public class AbstractBindingMetaData extends JBossObject implements BindingMetaD
       this.type = type;
    }
 
-   @XmlTransient
+   @XmlElements
+   ({
+      @XmlElement(name="array", type=AbstractArrayMetaData.class),
+      @XmlElement(name="collection", type=AbstractCollectionMetaData.class),
+      @XmlElement(name="inject", type=AbstractInjectionValueMetaData.class),
+      @XmlElement(name="list", type=AbstractListMetaData.class),
+      @XmlElement(name="map", type=AbstractMapMetaData.class),
+      @XmlElement(name="null", type=AbstractValueMetaData.class),
+      @XmlElement(name="set", type=AbstractSetMetaData.class),
+      @XmlElement(name="this", type=ThisValueMetaData.class),
+      @XmlElement(name="value", type=StringValueMetaData.class),
+      @XmlElement(name="value-factory", type=AbstractValueFactoryMetaData.class)
+   })
    public void setValue(ValueMetaData value)
    {
       this.value = value;

@@ -2,6 +2,6 @@
 
 <policy xmlns="urn:jboss:policy:1.0">
    <binding name="somename">
-      <value xmlns="urn:jboss:bean-deployer:2.0" class="java.lang.Integer">42</value>
+      <value class="java.lang.Integer">42</value>
    </binding>
 </policy>
