@@ -106,8 +106,14 @@ public class MicrocontainerTestDelegate extends AbstractTestDelegate
 
    public void tearDown() throws Exception
    {
-      super.tearDown();
-      undeploy();
+      try
+      {
+         undeploy();
+      }
+      finally
+      {
+         super.tearDown();
+      }
    }
    
    /**
