@@ -32,6 +32,9 @@ import org.jboss.dependency.spi.ControllerContext;
  */
 public class KernelGlobalResolver implements GlobalResolver
 {
+   /** The serialVersionUID */
+   private static final long serialVersionUID = 8717911664770177777L
+   ;
    private GlobalResolver delegate;
    private Controller controller;
 

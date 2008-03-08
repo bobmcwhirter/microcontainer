@@ -33,6 +33,8 @@ import org.jboss.reliance.drools.core.rules.Nameable;
  */
 public class PermissionCheck extends Nameable
 {
+   /** The serialVersionUID */
+   private static final long serialVersionUID = 2080492214831785015L;
    private Object action;
    private boolean granted;
 

@@ -23,7 +23,6 @@ package org.jboss.reliance.drools.core.aspects;
 
 import java.lang.reflect.Method;
 
-import org.drools.Agenda;
 import org.drools.WorkingMemory;
 import org.drools.spi.AgendaFilter;
 import org.jboss.aop.joinpoint.MethodInvocation;
@@ -84,7 +83,7 @@ public class FireAllRulesAspect
          {
             delegate.fireAllRules();
          }
-         Agenda agenda = delegate.getAgenda();
+         delegate.getAgenda();
       }
       return result;
    }

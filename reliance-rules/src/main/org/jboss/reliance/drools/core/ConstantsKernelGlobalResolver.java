@@ -35,6 +35,9 @@ import org.jboss.kernel.plugins.bootstrap.basic.KernelConstants;
  */
 public class ConstantsKernelGlobalResolver extends NamingKernelGlobalResolver
 {
+   /** The serialVersionUID */
+   private static final long serialVersionUID = 7961923417779473095L;
+
    public ConstantsKernelGlobalResolver(GlobalResolver delegate, Controller controller)
    {
       super(delegate, controller);

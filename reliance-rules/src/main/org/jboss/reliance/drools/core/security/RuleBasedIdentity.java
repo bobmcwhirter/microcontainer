@@ -82,10 +82,10 @@ public class RuleBasedIdentity extends Identity implements RuleDependencyCheck
          {
             if ((p instanceof Group) && ROLES_GROUP.equals(p.getName()))
             {
-               Enumeration e = ((Group)p).members();
+               Enumeration<? extends Principal> e = ((Group)p).members();
                while (e.hasMoreElements())
                {
-                  Principal role = (Principal)e.nextElement();
+                  Principal role = e.nextElement();
                   securityContext.insert(new Role(role.getName()));
                }
             }
@@ -114,7 +114,7 @@ public class RuleBasedIdentity extends Identity implements RuleDependencyCheck
             {
                if (i == 0 && arg[0] instanceof Collection)
                {
-                  for (Object value : (Collection)arg[i])
+                  for (Object value : (Collection<?>)arg[i])
                   {
                      if (securityContext.getFactHandle(value) == null)
                      {

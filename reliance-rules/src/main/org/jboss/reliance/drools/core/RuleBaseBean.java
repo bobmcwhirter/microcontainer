@@ -44,6 +44,9 @@ import org.jboss.logging.Logger;
  */
 public class RuleBaseBean implements RuleBase
 {
+   /** The serialVersionUID */
+   private static final long serialVersionUID = -6327683478694393346L;
+
    protected Logger log = Logger.getLogger(getClass());
 
    private String name;

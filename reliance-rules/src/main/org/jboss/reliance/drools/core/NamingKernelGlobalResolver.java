@@ -34,6 +34,9 @@ import org.jboss.dependency.spi.Controller;
  */
 public class NamingKernelGlobalResolver extends KernelGlobalResolver
 {
+   /** The serialVersionUID */
+   private static final long serialVersionUID = 647237007123208771L
+   ;
    private Map<String, String> names = Collections.emptyMap();
 
    public NamingKernelGlobalResolver(GlobalResolver delegate, Controller controller)

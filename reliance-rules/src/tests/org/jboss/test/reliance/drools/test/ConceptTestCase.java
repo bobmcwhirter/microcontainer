@@ -70,14 +70,14 @@ public class ConceptTestCase extends MicrocontainerTest
       assertEquals(ControllerState.NOT_INSTALLED, testerContext.getState());
    }
 
-   public static AbstractTestDelegate getDelegate(Class clazz) throws Exception
+   public static AbstractTestDelegate getDelegate(Class<?> clazz) throws Exception
    {
       return new NonValidatingDelegate(clazz);
    }
 
    private static class NonValidatingDelegate extends MicrocontainerTestDelegate
    {
-      public NonValidatingDelegate(Class clazz) throws Exception
+      public NonValidatingDelegate(Class<?> clazz) throws Exception
       {
          super(clazz);
       }
