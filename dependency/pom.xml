@@ -44,27 +44,14 @@
   <dependencies>
     <!-- Global dependencies -->
     <dependency>
-      <groupId>org.jboss.microcontainer</groupId>
-      <artifactId>jboss-container</artifactId>
-    </dependency>
-    <dependency>
       <groupId>org.jboss</groupId>
-      <artifactId>jboss-common-core</artifactId>
-      <exclusions>
-        <exclusion>
-          <groupId>jboss</groupId>
-          <artifactId>jboss-common-logging-spi</artifactId>
-        </exclusion>
-      </exclusions>
-    </dependency>
-    <dependency>
-      <groupId>jboss</groupId>
-      <artifactId>jboss-logging-spi</artifactId>
+      <artifactId>jboss-mdr</artifactId>
     </dependency>
     <!-- Test dependencies -->
     <dependency>
       <groupId>org.jboss</groupId>
       <artifactId>jboss-test</artifactId>
+      <scope>test</scope>
       <exclusions>
         <exclusion>
           <groupId>jboss</groupId>
@@ -80,5 +67,6 @@
       <groupId>junit</groupId>
 	    <artifactId>junit</artifactId>
 	  </dependency>
+     <scope>test</scope>
   </dependencies>
 </project>

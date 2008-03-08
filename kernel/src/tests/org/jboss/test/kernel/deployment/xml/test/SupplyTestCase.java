@@ -60,19 +60,6 @@ public class SupplyTestCase extends AbstractXMLTest
       assertEquals(123, supply.getSupply());
       assertEquals("java.lang.Integer", supply.getType());
    }
-
-   public void testSupplyBadNoValue() throws Exception
-   {
-      try
-      {
-         unmarshalBean("SupplyBadNoValue.xml");
-         fail("Should not be here");
-      }
-      catch (Exception expected)
-      {
-         checkJBossXBException(IllegalArgumentException.class, expected);
-      }
-   }
    
    public static Test suite()
    {

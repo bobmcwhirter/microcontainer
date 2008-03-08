@@ -28,14 +28,10 @@ import org.jboss.test.AbstractTestCaseWithSetup;
 import org.jboss.test.AbstractTestDelegate;
 import org.jboss.util.UnreachableStatementException;
 import org.jboss.xb.binding.sunday.unmarshalling.DefaultHandlers;
-import org.jboss.xb.binding.sunday.unmarshalling.DefaultSchemaResolver;
 import org.jboss.xb.binding.sunday.unmarshalling.ParticleBinding;
-import org.jboss.xb.binding.sunday.unmarshalling.SchemaBinding;
-import org.jboss.xb.binding.sunday.unmarshalling.SchemaBindingResolver;
+import org.jboss.xb.binding.sunday.unmarshalling.ParticleHandler;
 import org.jboss.xb.binding.sunday.unmarshalling.SequenceBinding;
 import org.jboss.xb.binding.sunday.unmarshalling.TermBinding;
-import org.jboss.xb.binding.sunday.unmarshalling.ParticleHandler;
-import org.jboss.xb.builder.JBossXBBuilder;
 
 /**
  * AbstractBuilderTest.
@@ -96,48 +92,10 @@ public class AbstractBuilderTest extends AbstractTestCaseWithSetup
       simpleHandler = null;
    }
 
-   protected <T> T unmarshalObjectFromSchema(Class<T> expected) throws Exception
+   protected <T> T unmarshalObject(Class<T> expected) throws Exception
    {
-      DefaultSchemaResolver resolver = new DefaultSchemaResolver();
-      // TODO this is a mess
-      String nsURI = "http://www.jboss.org/test/xml/" + rootName;
-      String packageName = getClass().getPackage().getName();
-      packageName = packageName.replace(".", "/");
-      String name = getClass().getName();
-      int dot = name.lastIndexOf('.');
-      if (dot != -1)
-         name = name.substring(dot + 1);
-      dot = name.lastIndexOf("UnitTestCase");
-      if (dot != -1)
-         name = name.substring(0, dot);
-      String testXsd = packageName + '/' + name + ".xsd";
-      resolver.addSchemaLocation(nsURI, testXsd);
-      resolver.addSchemaInitializer(nsURI, JBossXBBuilder.newInitializer(expected));
-
       String testXml = findTestXml();
-      Object o = unmarshal(testXml, expected, resolver);
-      assertNotNull(o);
-      getLog().debug("Unmarshalled " + o + " of type " + o.getClass().getName());
-      return expected.cast(o);
-   }
-
-   protected <T, U> T unmarshalObject(Class<T> expected, Class<U> reference, Class<?>... others) throws Exception
-   {
-      TestSchemaResolver resolver = new TestSchemaResolver();
-
-      SchemaBinding schemaBinding = JBossXBBuilder.build(reference);
-      resolver.addSchemaBinding(schemaBinding);
-      if (others != null)
-      {
-         for (Class<?> other : others)
-         {
-            SchemaBinding otherBinding = JBossXBBuilder.build(other);
-            resolver.addSchemaBinding(otherBinding);
-         }
-      }
-
-      String testXml = findTestXml();
-      Object o = unmarshal(testXml, schemaBinding);
+      Object o = unmarshal(testXml);
       assertNotNull(o);
       getLog().debug("Unmarshalled " + o + " of type " + o.getClass().getName());
       try
@@ -155,38 +113,13 @@ public class AbstractBuilderTest extends AbstractTestCaseWithSetup
     * Unmarshal some xml
     *
     * @param name the name
-    * @param schema the schema
-    * @return the unmarshalled object
-    * @throws Exception for any error
-    */
-   protected Object unmarshal(String name, SchemaBinding schema) throws Exception
-   {
-      String url = findXML(name);
-      return getJBossXBDelegate().unmarshal(url, schema);
-   }
-
-   protected <T, U> T unmarshalObject(Class<T> expected, Class<U> reference) throws Exception
-   {
-      return unmarshalObject(expected, reference, null);
-   }
-
-   protected <T> T unmarshalObject(Class<T> expected) throws Exception
-   {
-      return unmarshalObject(expected, expected, null);
-   }
-
-   /**
-    * Unmarshal some xml
-    *
-    * @param name the name
     * @param expected the expected type
-    * @param resolver the resolver
     * @return the unmarshalled object
     * @throws Exception for any error
     */
-   protected Object unmarshal(String name, Class<?> expected, SchemaBindingResolver resolver) throws Exception
+   protected Object unmarshal(String name, Class<?> expected) throws Exception
    {
-      Object object = unmarshal(name, resolver);
+      Object object = unmarshal(name);
       if (object == null)
          fail("No object from " + name);
       assertTrue("Object '" + object + "' cannot be assigned to " + expected.getName(), expected.isAssignableFrom(object.getClass()));
@@ -197,14 +130,13 @@ public class AbstractBuilderTest extends AbstractTestCaseWithSetup
     * Unmarshal some xml
     *
     * @param name the name
-    * @param resolver the resolver
     * @return the unmarshalled object
     * @throws Exception for any error
     */
-   protected Object unmarshal(String name, SchemaBindingResolver resolver) throws Exception
+   protected Object unmarshal(String name) throws Exception
    {
       String url = findXML(name);
-      return getJBossXBDelegate().unmarshal(url, resolver);
+      return getJBossXBDelegate().unmarshal(url);
    }
 
    protected String findTestXml()

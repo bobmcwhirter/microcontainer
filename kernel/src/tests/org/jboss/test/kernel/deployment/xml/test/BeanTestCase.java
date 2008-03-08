@@ -685,45 +685,6 @@ public class BeanTestCase extends AbstractXMLTest
       assertCallbacks(expected, bean.getUninstallCallbacks());
    }
 
-   public void testBeanBadNoClassOrConstructor() throws Exception
-   {
-      try
-      {
-         unmarshalBean("BeanBadNoClassOrConstructor.xml");
-         fail("Should not be here");
-      }
-      catch (Exception expected)
-      {
-         checkJBossXBException(IllegalArgumentException.class, expected);
-      }
-   }
-
-   public void testBeanBadNoClassOrFactoryMethod() throws Exception
-   {
-      try
-      {
-         unmarshalBean("BeanBadNoClassOrFactoryMethod.xml");
-         fail("Should not be here");
-      }
-      catch (Exception expected)
-      {
-         checkJBossXBException(IllegalArgumentException.class, expected);
-      }
-   }
-
-   public void testBeanBadNoClassOrFactory() throws Exception
-   {
-      try
-      {
-         unmarshalBean("BeanBadNoClassOrFactory.xml");
-         fail("Should not be here");
-      }
-      catch (Exception expected)
-      {
-         checkJBossXBException(IllegalArgumentException.class, expected);
-      }
-   }
-
    public void testBeanWithCandidate() throws Exception
    {
       AbstractBeanMetaData bean = unmarshalBean("BeanWithCandidate.xml");

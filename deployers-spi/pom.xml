@@ -17,9 +17,5 @@
       <groupId>org.jboss.microcontainer</groupId>
       <artifactId>jboss-deployers-structure-spi</artifactId>
     </dependency>
-    <dependency>
-      <groupId>jboss</groupId>
-      <artifactId>jboss-logging-spi</artifactId>
-    </dependency>
   </dependencies>  
 </project>

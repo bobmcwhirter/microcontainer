@@ -29,10 +29,6 @@
       <groupId>org.jboss.microcontainer</groupId>
       <artifactId>jboss-kernel</artifactId>
     </dependency>
-    <dependency>
-      <groupId>jboss</groupId>
-      <artifactId>jboss-logging-spi</artifactId>
-    </dependency>
     <!-- Test dependencies -->
   </dependencies>
 </project>

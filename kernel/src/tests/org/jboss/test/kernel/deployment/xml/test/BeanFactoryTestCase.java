@@ -25,8 +25,8 @@ import java.util.ArrayList;
 import java.util.HashSet;
 
 import junit.framework.Test;
-import org.jboss.beans.metadata.plugins.factory.GenericBeanFactory;
-import org.jboss.beans.metadata.plugins.factory.GenericBeanFactoryMetaData;
+
+import org.jboss.beans.metadata.spi.factory.GenericBeanFactoryMetaData;
 import org.jboss.dependency.spi.ControllerMode;
 
 /**
@@ -41,21 +41,14 @@ public class BeanFactoryTestCase extends AbstractXMLTest
    {
       GenericBeanFactoryMetaData factory = unmarshalBeanFactory("BeanFactoryWithName.xml");
       assertEquals("Name1", factory.getName());
-      assertEquals(GenericBeanFactory.class.getName(), factory.getBean());
-      assertEquals("Dummy", factory.getBeanClass());
+      assertEquals("Dummy", factory.getBean());
       assertNull(factory.getMode());
       assertNull(factory.getAnnotations());
       assertNull(factory.getClassLoader());
-      assertNotNull(factory.getConstructor());
-      assertNull(factory.getProperty("constructor"));
-      assertNotNull(factory.getProperties());
-      assertNull(factory.getProperty("properties"));
+      assertNull(factory.getConstructor());
+      assertNull(factory.getProperties());
       assertNull(factory.getCreate());
-      assertNull(factory.getProperty("create"));
       assertNull(factory.getStart());
-      assertNull(factory.getProperty("start"));
-      assertNull(factory.getStop());
-      assertNull(factory.getDestroy());
       assertNull(factory.getDemands());
       assertNull(factory.getSupplies());
       assertNull(factory.getInstalls());
@@ -68,21 +61,14 @@ public class BeanFactoryTestCase extends AbstractXMLTest
    {
       GenericBeanFactoryMetaData factory = unmarshalBeanFactory("BeanFactoryWithClass.xml");
       assertNull(factory.getName());
-      assertEquals(GenericBeanFactory.class.getName(), factory.getBean());
-      assertEquals(Object.class.getName(), factory.getBeanClass());
+      assertEquals(Object.class.getName(), factory.getBean());
       assertNull(factory.getMode());
       assertNull(factory.getAnnotations());
       assertNull(factory.getClassLoader());
-      assertNotNull(factory.getConstructor());
-      assertNull(factory.getProperty("constructor"));
-      assertNotNull(factory.getProperties());
-      assertNull(factory.getProperty("properties"));
+      assertNull(factory.getConstructor());
+      assertNull(factory.getProperties());
       assertNull(factory.getCreate());
-      assertNull(factory.getProperty("create"));
       assertNull(factory.getStart());
-      assertNull(factory.getProperty("start"));
-      assertNull(factory.getStop());
-      assertNull(factory.getDestroy());
       assertNull(factory.getDemands());
       assertNull(factory.getSupplies());
       assertNull(factory.getInstalls());
@@ -95,21 +81,14 @@ public class BeanFactoryTestCase extends AbstractXMLTest
    {
       GenericBeanFactoryMetaData factory = unmarshalBeanFactory("BeanFactoryWithMode.xml");
       assertNull(factory.getName());
-      assertEquals(GenericBeanFactory.class.getName(), factory.getBean());
-      assertEquals("Dummy", factory.getBeanClass());
+      assertEquals("Dummy", factory.getBean());
       assertEquals(ControllerMode.MANUAL, factory.getMode());
       assertNull(factory.getAnnotations());
       assertNull(factory.getClassLoader());
-      assertNotNull(factory.getConstructor());
-      assertNull(factory.getProperty("constructor"));
-      assertNotNull(factory.getProperties());
-      assertNull(factory.getProperty("properties"));
+      assertNull(factory.getConstructor());
+      assertNull(factory.getProperties());
       assertNull(factory.getCreate());
-      assertNull(factory.getProperty("create"));
       assertNull(factory.getStart());
-      assertNull(factory.getProperty("start"));
-      assertNull(factory.getStop());
-      assertNull(factory.getDestroy());
       assertNull(factory.getDemands());
       assertNull(factory.getSupplies());
       assertNull(factory.getInstalls());
@@ -122,21 +101,14 @@ public class BeanFactoryTestCase extends AbstractXMLTest
    {
       GenericBeanFactoryMetaData factory = unmarshalBeanFactory("BeanFactoryWithClassLoader.xml");
       assertNull(factory.getName());
-      assertEquals(GenericBeanFactory.class.getName(), factory.getBean());
-      assertEquals("Dummy", factory.getBeanClass());
+      assertEquals("Dummy", factory.getBean());
       assertNull(factory.getMode());
       assertNull(factory.getAnnotations());
       assertNotNull(factory.getClassLoader());
-      assertNotNull(factory.getConstructor());
-      assertNull(factory.getProperty("constructor"));
-      assertNotNull(factory.getProperties());
-      assertNull(factory.getProperty("properties"));
+      assertNull(factory.getConstructor());
+      assertNull(factory.getProperties());
       assertNull(factory.getCreate());
-      assertNull(factory.getProperty("create"));
       assertNull(factory.getStart());
-      assertNull(factory.getProperty("start"));
-      assertNull(factory.getStop());
-      assertNull(factory.getDestroy());
       assertNull(factory.getDemands());
       assertNull(factory.getSupplies());
       assertNull(factory.getInstalls());
@@ -149,21 +121,14 @@ public class BeanFactoryTestCase extends AbstractXMLTest
    {
       GenericBeanFactoryMetaData factory = unmarshalBeanFactory("BeanFactoryWithConstructor.xml");
       assertNull(factory.getName());
-      assertEquals(GenericBeanFactory.class.getName(), factory.getBean());
-      assertEquals("Dummy", factory.getBeanClass());
+      assertEquals("Dummy", factory.getBean());
       assertNull(factory.getMode());
       assertNull(factory.getAnnotations());
       assertNull(factory.getClassLoader());
       assertNotNull(factory.getConstructor());
-      assertNotNull(factory.getProperty("constructor"));
-      assertNotNull(factory.getProperties());
-      assertNull(factory.getProperty("properties"));
+      assertNull(factory.getProperties());
       assertNull(factory.getCreate());
-      assertNull(factory.getProperty("create"));
       assertNull(factory.getStart());
-      assertNull(factory.getProperty("start"));
-      assertNull(factory.getStop());
-      assertNull(factory.getDestroy());
       assertNull(factory.getDemands());
       assertNull(factory.getSupplies());
       assertNull(factory.getInstalls());
@@ -176,23 +141,16 @@ public class BeanFactoryTestCase extends AbstractXMLTest
    {
       GenericBeanFactoryMetaData factory = unmarshalBeanFactory("BeanFactoryWithProperty.xml");
       assertNull(factory.getName());
-      assertEquals(GenericBeanFactory.class.getName(), factory.getBean());
-      assertEquals("Dummy", factory.getBeanClass());
+      assertEquals("Dummy", factory.getBean());
       assertNull(factory.getMode());
       assertNull(factory.getAnnotations());
       assertNull(factory.getClassLoader());
-      assertNotNull(factory.getConstructor());
-      assertNull(factory.getProperty("constructor"));
-      assertNotNull(factory.getProperties());
+      assertNull(factory.getConstructor());
       HashSet<String> expected = new HashSet<String>();
       expected.add("Property1");
       assertBeanFactoryProperties(expected, factory);
       assertNull(factory.getCreate());
-      assertNull(factory.getProperty("create"));
       assertNull(factory.getStart());
-      assertNull(factory.getProperty("start"));
-      assertNull(factory.getStop());
-      assertNull(factory.getDestroy());
       assertNull(factory.getDemands());
       assertNull(factory.getSupplies());
       assertNull(factory.getInstalls());
@@ -205,24 +163,18 @@ public class BeanFactoryTestCase extends AbstractXMLTest
    {
       GenericBeanFactoryMetaData factory = unmarshalBeanFactory("BeanFactoryWithProperties.xml");
       assertNull(factory.getName());
-      assertEquals(GenericBeanFactory.class.getName(), factory.getBean());
-      assertEquals("Dummy", factory.getBeanClass());
+      assertEquals("Dummy", factory.getBean());
       assertNull(factory.getMode());
       assertNull(factory.getAnnotations());
       assertNull(factory.getClassLoader());
-      assertNotNull(factory.getConstructor());
-      assertNull(factory.getProperty("constructor"));
+      assertNull(factory.getConstructor());
       HashSet<String> expected = new HashSet<String>();
       expected.add("Property1");
       expected.add("Property2");
       expected.add("Property3");
-      assertBeanFactoryProperties(expected, factory);
+      assertProperties(expected, factory.getProperties());
       assertNull(factory.getCreate());
-      assertNull(factory.getProperty("create"));
       assertNull(factory.getStart());
-      assertNull(factory.getProperty("start"));
-      assertNull(factory.getStop());
-      assertNull(factory.getDestroy());
       assertNull(factory.getDemands());
       assertNull(factory.getSupplies());
       assertNull(factory.getInstalls());
@@ -235,20 +187,14 @@ public class BeanFactoryTestCase extends AbstractXMLTest
    {
       GenericBeanFactoryMetaData factory = unmarshalBeanFactory("BeanFactoryWithCreate.xml");
       assertNull(factory.getName());
-      assertEquals(GenericBeanFactory.class.getName(), factory.getBean());
-      assertEquals("Dummy", factory.getBeanClass());
+      assertEquals("Dummy", factory.getBean());
       assertNull(factory.getMode());
       assertNull(factory.getAnnotations());
       assertNull(factory.getClassLoader());
-      assertNotNull(factory.getConstructor());
-      assertNull(factory.getProperty("constructor"));
-      assertNotNull(factory.getProperties());
-      assertNull(factory.getProperty("properties"));
-      assertNull(factory.getCreate());
-      assertNotNull(factory.getProperty("create"));
+      assertNull(factory.getConstructor());
+      assertNull(factory.getProperties());
+      assertNotNull(factory.getCreate());
       assertNull(factory.getStart());
-      assertNull(factory.getStop());
-      assertNull(factory.getDestroy());
       assertNull(factory.getDemands());
       assertNull(factory.getSupplies());
       assertNull(factory.getInstalls());
@@ -261,20 +207,14 @@ public class BeanFactoryTestCase extends AbstractXMLTest
    {
       GenericBeanFactoryMetaData factory = unmarshalBeanFactory("BeanFactoryWithStart.xml");
       assertNull(factory.getName());
-      assertEquals(GenericBeanFactory.class.getName(), factory.getBean());
-      assertEquals("Dummy", factory.getBeanClass());
+      assertEquals("Dummy", factory.getBean());
       assertNull(factory.getMode());
       assertNull(factory.getAnnotations());
       assertNull(factory.getClassLoader());
-      assertNotNull(factory.getConstructor());
-      assertNull(factory.getProperty("constructor"));
-      assertNotNull(factory.getProperties());
-      assertNull(factory.getProperty("properties"));
+      assertNull(factory.getConstructor());
+      assertNull(factory.getProperties());
       assertNull(factory.getCreate());
-      assertNull(factory.getStart());
-      assertNotNull(factory.getProperty("start"));
-      assertNull(factory.getStop());
-      assertNull(factory.getDestroy());
+      assertNotNull(factory.getStart());
       assertNull(factory.getDemands());
       assertNull(factory.getSupplies());
       assertNull(factory.getInstalls());
@@ -287,21 +227,14 @@ public class BeanFactoryTestCase extends AbstractXMLTest
    {
       GenericBeanFactoryMetaData factory = unmarshalBeanFactory("BeanFactoryWithDependency.xml");
       assertNull(factory.getName());
-      assertEquals(GenericBeanFactory.class.getName(), factory.getBean());
-      assertEquals("Dummy", factory.getBeanClass());
+      assertEquals("Dummy", factory.getBean());
       assertNull(factory.getMode());
       assertNull(factory.getAnnotations());
       assertNull(factory.getClassLoader());
-      assertNotNull(factory.getConstructor());
-      assertNull(factory.getProperty("constructor"));
-      assertNotNull(factory.getProperties());
-      assertNull(factory.getProperty("properties"));
+      assertNull(factory.getConstructor());
+      assertNull(factory.getProperties());
       assertNull(factory.getCreate());
-      assertNull(factory.getProperty("create"));
       assertNull(factory.getStart());
-      assertNull(factory.getProperty("start"));
-      assertNull(factory.getStop());
-      assertNull(factory.getDestroy());
       HashSet<String> expected = new HashSet<String>();
       expected.add("Depends1");
       assertDepends(expected, factory.getDepends());
@@ -316,21 +249,14 @@ public class BeanFactoryTestCase extends AbstractXMLTest
    {
       GenericBeanFactoryMetaData factory = unmarshalBeanFactory("BeanFactoryWithDependencies.xml");
       assertNull(factory.getName());
-      assertEquals(GenericBeanFactory.class.getName(), factory.getBean());
-      assertEquals("Dummy", factory.getBeanClass());
+      assertEquals("Dummy", factory.getBean());
       assertNull(factory.getMode());
       assertNull(factory.getAnnotations());
       assertNull(factory.getClassLoader());
-      assertNotNull(factory.getConstructor());
-      assertNull(factory.getProperty("constructor"));
-      assertNotNull(factory.getProperties());
-      assertNull(factory.getProperty("properties"));
+      assertNull(factory.getConstructor());
+      assertNull(factory.getProperties());
       assertNull(factory.getCreate());
-      assertNull(factory.getProperty("create"));
       assertNull(factory.getStart());
-      assertNull(factory.getProperty("start"));
-      assertNull(factory.getStop());
-      assertNull(factory.getDestroy());
       HashSet<String> expected = new HashSet<String>();
       expected.add("Depends1");
       expected.add("Depends2");
@@ -347,21 +273,14 @@ public class BeanFactoryTestCase extends AbstractXMLTest
    {
       GenericBeanFactoryMetaData factory = unmarshalBeanFactory("BeanFactoryWithDemand.xml");
       assertNull(factory.getName());
-      assertEquals(GenericBeanFactory.class.getName(), factory.getBean());
-      assertEquals("Dummy", factory.getBeanClass());
+      assertEquals("Dummy", factory.getBean());
       assertNull(factory.getMode());
       assertNull(factory.getAnnotations());
       assertNull(factory.getClassLoader());
-      assertNotNull(factory.getConstructor());
-      assertNull(factory.getProperty("constructor"));
-      assertNotNull(factory.getProperties());
-      assertNull(factory.getProperty("properties"));
+      assertNull(factory.getConstructor());
+      assertNull(factory.getProperties());
       assertNull(factory.getCreate());
-      assertNull(factory.getProperty("create"));
       assertNull(factory.getStart());
-      assertNull(factory.getProperty("start"));
-      assertNull(factory.getStop());
-      assertNull(factory.getDestroy());
       HashSet<String> expected = new HashSet<String>();
       expected.add("Demand1");
       assertDemands(expected, factory.getDemands());
@@ -376,21 +295,14 @@ public class BeanFactoryTestCase extends AbstractXMLTest
    {
       GenericBeanFactoryMetaData factory = unmarshalBeanFactory("BeanFactoryWithDemands.xml");
       assertNull(factory.getName());
-      assertEquals(GenericBeanFactory.class.getName(), factory.getBean());
-      assertEquals("Dummy", factory.getBeanClass());
+      assertEquals("Dummy", factory.getBean());
       assertNull(factory.getMode());
       assertNull(factory.getAnnotations());
       assertNull(factory.getClassLoader());
-      assertNotNull(factory.getConstructor());
-      assertNull(factory.getProperty("constructor"));
-      assertNotNull(factory.getProperties());
-      assertNull(factory.getProperty("properties"));
+      assertNull(factory.getConstructor());
+      assertNull(factory.getProperties());
       assertNull(factory.getCreate());
-      assertNull(factory.getProperty("create"));
       assertNull(factory.getStart());
-      assertNull(factory.getProperty("start"));
-      assertNull(factory.getStop());
-      assertNull(factory.getDestroy());
       HashSet<String> expected = new HashSet<String>();
       expected.add("Demand1");
       expected.add("Demand2");
@@ -407,21 +319,14 @@ public class BeanFactoryTestCase extends AbstractXMLTest
    {
       GenericBeanFactoryMetaData factory = unmarshalBeanFactory("BeanFactoryWithSupply.xml");
       assertNull(factory.getName());
-      assertEquals(GenericBeanFactory.class.getName(), factory.getBean());
-      assertEquals("Dummy", factory.getBeanClass());
+      assertEquals("Dummy", factory.getBean());
       assertNull(factory.getMode());
       assertNull(factory.getAnnotations());
       assertNull(factory.getClassLoader());
-      assertNotNull(factory.getConstructor());
-      assertNull(factory.getProperty("constructor"));
-      assertNotNull(factory.getProperties());
-      assertNull(factory.getProperty("properties"));
+      assertNull(factory.getConstructor());
+      assertNull(factory.getProperties());
       assertNull(factory.getCreate());
-      assertNull(factory.getProperty("create"));
       assertNull(factory.getStart());
-      assertNull(factory.getProperty("start"));
-      assertNull(factory.getStop());
-      assertNull(factory.getDestroy());
       assertNull(factory.getDemands());
       HashSet<String> expected = new HashSet<String>();
       expected.add("Supply1");
@@ -436,21 +341,14 @@ public class BeanFactoryTestCase extends AbstractXMLTest
    {
       GenericBeanFactoryMetaData factory = unmarshalBeanFactory("BeanFactoryWithSupplies.xml");
       assertNull(factory.getName());
-      assertEquals(GenericBeanFactory.class.getName(), factory.getBean());
-      assertEquals("Dummy", factory.getBeanClass());
+      assertEquals("Dummy", factory.getBean());
       assertNull(factory.getMode());
       assertNull(factory.getAnnotations());
       assertNull(factory.getClassLoader());
-      assertNotNull(factory.getConstructor());
-      assertNull(factory.getProperty("constructor"));
-      assertNotNull(factory.getProperties());
-      assertNull(factory.getProperty("properties"));
+      assertNull(factory.getConstructor());
+      assertNull(factory.getProperties());
       assertNull(factory.getCreate());
-      assertNull(factory.getProperty("create"));
       assertNull(factory.getStart());
-      assertNull(factory.getProperty("start"));
-      assertNull(factory.getStop());
-      assertNull(factory.getDestroy());
       assertNull(factory.getDemands());
       HashSet<String> expected = new HashSet<String>();
       expected.add("Supply1");
@@ -467,21 +365,14 @@ public class BeanFactoryTestCase extends AbstractXMLTest
    {
       GenericBeanFactoryMetaData factory = unmarshalBeanFactory("BeanFactoryWithInstall.xml");
       assertNull(factory.getName());
-      assertEquals(GenericBeanFactory.class.getName(), factory.getBean());
-      assertEquals("Dummy", factory.getBeanClass());
+      assertEquals("Dummy", factory.getBean());
       assertNull(factory.getMode());
       assertNull(factory.getAnnotations());
       assertNull(factory.getClassLoader());
-      assertNotNull(factory.getConstructor());
-      assertNull(factory.getProperty("constructor"));
-      assertNotNull(factory.getProperties());
-      assertNull(factory.getProperty("properties"));
+      assertNull(factory.getConstructor());
+      assertNull(factory.getProperties());
       assertNull(factory.getCreate());
-      assertNull(factory.getProperty("create"));
       assertNull(factory.getStart());
-      assertNull(factory.getProperty("start"));
-      assertNull(factory.getStop());
-      assertNull(factory.getDestroy());
       assertNull(factory.getDemands());
       assertNull(factory.getSupplies());
       ArrayList<String> expected = new ArrayList<String>();
@@ -496,21 +387,14 @@ public class BeanFactoryTestCase extends AbstractXMLTest
    {
       GenericBeanFactoryMetaData factory = unmarshalBeanFactory("BeanFactoryWithInstalls.xml");
       assertNull(factory.getName());
-      assertEquals(GenericBeanFactory.class.getName(), factory.getBean());
-      assertEquals("Dummy", factory.getBeanClass());
+      assertEquals("Dummy", factory.getBean());
       assertNull(factory.getMode());
       assertNull(factory.getAnnotations());
       assertNull(factory.getClassLoader());
-      assertNotNull(factory.getConstructor());
-      assertNull(factory.getProperty("constructor"));
-      assertNotNull(factory.getProperties());
-      assertNull(factory.getProperty("properties"));
+      assertNull(factory.getConstructor());
+      assertNull(factory.getProperties());
       assertNull(factory.getCreate());
-      assertNull(factory.getProperty("create"));
       assertNull(factory.getStart());
-      assertNull(factory.getProperty("start"));
-      assertNull(factory.getStop());
-      assertNull(factory.getDestroy());
       assertNull(factory.getDemands());
       assertNull(factory.getSupplies());
       ArrayList<String> expected = new ArrayList<String>();
@@ -527,21 +411,14 @@ public class BeanFactoryTestCase extends AbstractXMLTest
    {
       GenericBeanFactoryMetaData factory = unmarshalBeanFactory("BeanFactoryWithUninstall.xml");
       assertNull(factory.getName());
-      assertEquals(GenericBeanFactory.class.getName(), factory.getBean());
-      assertEquals("Dummy", factory.getBeanClass());
+      assertEquals("Dummy", factory.getBean());
       assertNull(factory.getMode());
       assertNull(factory.getAnnotations());
       assertNull(factory.getClassLoader());
-      assertNotNull(factory.getConstructor());
-      assertNull(factory.getProperty("constructor"));
-      assertNotNull(factory.getProperties());
-      assertNull(factory.getProperty("properties"));
+      assertNull(factory.getConstructor());
+      assertNull(factory.getProperties());
       assertNull(factory.getCreate());
-      assertNull(factory.getProperty("create"));
       assertNull(factory.getStart());
-      assertNull(factory.getProperty("start"));
-      assertNull(factory.getStop());
-      assertNull(factory.getDestroy());
       assertNull(factory.getDemands());
       assertNull(factory.getSupplies());
       assertNull(factory.getInstalls());
@@ -556,21 +433,14 @@ public class BeanFactoryTestCase extends AbstractXMLTest
    {
       GenericBeanFactoryMetaData factory = unmarshalBeanFactory("BeanFactoryWithUninstalls.xml");
       assertNull(factory.getName());
-      assertEquals(GenericBeanFactory.class.getName(), factory.getBean());
-      assertEquals("Dummy", factory.getBeanClass());
+      assertEquals("Dummy", factory.getBean());
       assertNull(factory.getMode());
       assertNull(factory.getAnnotations());
       assertNull(factory.getClassLoader());
-      assertNotNull(factory.getConstructor());
-      assertNull(factory.getProperty("constructor"));
-      assertNotNull(factory.getProperties());
-      assertNull(factory.getProperty("properties"));
+      assertNull(factory.getConstructor());
+      assertNull(factory.getProperties());
       assertNull(factory.getCreate());
-      assertNull(factory.getProperty("create"));
       assertNull(factory.getStart());
-      assertNull(factory.getProperty("start"));
-      assertNull(factory.getStop());
-      assertNull(factory.getDestroy());
       assertNull(factory.getDemands());
       assertNull(factory.getSupplies());
       assertNull(factory.getInstalls());
@@ -588,21 +458,14 @@ public class BeanFactoryTestCase extends AbstractXMLTest
    {
       GenericBeanFactoryMetaData factory = unmarshalBeanFactory("BeanFactoryWithInstallCallback.xml");
       assertNull(factory.getName());
-      assertEquals(GenericBeanFactory.class.getName(), factory.getBean());
-      assertEquals("Dummy", factory.getBeanClass());
+      assertEquals("Dummy", factory.getBean());
       assertNull(factory.getMode());
       assertNull(factory.getAnnotations());
       assertNull(factory.getClassLoader());
-      assertNotNull(factory.getConstructor());
-      assertNull(factory.getProperty("constructor"));
-      assertNotNull(factory.getProperties());
-      assertNull(factory.getProperty("properties"));
+      assertNull(factory.getConstructor());
+      assertNull(factory.getProperties());
       assertNull(factory.getCreate());
-      assertNull(factory.getProperty("create"));
       assertNull(factory.getStart());
-      assertNull(factory.getProperty("start"));
-      assertNull(factory.getStop());
-      assertNull(factory.getDestroy());
       assertNull(factory.getDemands());
       assertNull(factory.getSupplies());
       assertNull(factory.getInstalls());
@@ -617,21 +480,14 @@ public class BeanFactoryTestCase extends AbstractXMLTest
    {
       GenericBeanFactoryMetaData factory = unmarshalBeanFactory("BeanFactoryWithInstallCallbacks.xml");
       assertNull(factory.getName());
-      assertEquals(GenericBeanFactory.class.getName(), factory.getBean());
-      assertEquals("Dummy", factory.getBeanClass());
+      assertEquals("Dummy", factory.getBean());
       assertNull(factory.getMode());
       assertNull(factory.getAnnotations());
       assertNull(factory.getClassLoader());
-      assertNotNull(factory.getConstructor());
-      assertNull(factory.getProperty("constructor"));
-      assertNotNull(factory.getProperties());
-      assertNull(factory.getProperty("properties"));
+      assertNull(factory.getConstructor());
+      assertNull(factory.getProperties());
       assertNull(factory.getCreate());
-      assertNull(factory.getProperty("create"));
       assertNull(factory.getStart());
-      assertNull(factory.getProperty("start"));
-      assertNull(factory.getStop());
-      assertNull(factory.getDestroy());
       assertNull(factory.getDemands());
       assertNull(factory.getSupplies());
       assertNull(factory.getInstalls());
@@ -648,21 +504,14 @@ public class BeanFactoryTestCase extends AbstractXMLTest
    {
       GenericBeanFactoryMetaData factory = unmarshalBeanFactory("BeanFactoryWithUninstallCallback.xml");
       assertNull(factory.getName());
-      assertEquals(GenericBeanFactory.class.getName(), factory.getBean());
-      assertEquals("Dummy", factory.getBeanClass());
+      assertEquals("Dummy", factory.getBean());
       assertNull(factory.getMode());
       assertNull(factory.getAnnotations());
       assertNull(factory.getClassLoader());
-      assertNotNull(factory.getConstructor());
-      assertNull(factory.getProperty("constructor"));
-      assertNotNull(factory.getProperties());
-      assertNull(factory.getProperty("properties"));
+      assertNull(factory.getConstructor());
+      assertNull(factory.getProperties());
       assertNull(factory.getCreate());
-      assertNull(factory.getProperty("create"));
       assertNull(factory.getStart());
-      assertNull(factory.getProperty("start"));
-      assertNull(factory.getStop());
-      assertNull(factory.getDestroy());
       assertNull(factory.getDemands());
       assertNull(factory.getSupplies());
       assertNull(factory.getInstalls());
@@ -677,21 +526,16 @@ public class BeanFactoryTestCase extends AbstractXMLTest
    {
       GenericBeanFactoryMetaData factory = unmarshalBeanFactory("BeanFactoryWithUninstallCallbacks.xml");
       assertNull(factory.getName());
-      assertEquals(GenericBeanFactory.class.getName(), factory.getBean());
-      assertEquals("Dummy", factory.getBeanClass());
+      assertEquals("Dummy", factory.getBean());
       assertNull(factory.getMode());
       assertNull(factory.getAnnotations());
       assertNull(factory.getClassLoader());
       assertNotNull(factory.getConstructor());
-      assertNull(factory.getProperty("constructor"));
+      assertNull(factory.getConstructor());
       assertNotNull(factory.getProperties());
-      assertNull(factory.getProperty("properties"));
+      assertNull(factory.getProperties());
       assertNull(factory.getCreate());
-      assertNull(factory.getProperty("create"));
       assertNull(factory.getStart());
-      assertNull(factory.getProperty("start"));
-      assertNull(factory.getStop());
-      assertNull(factory.getDestroy());
       assertNull(factory.getDemands());
       assertNull(factory.getSupplies());
       assertNull(factory.getInstalls());
@@ -704,45 +548,6 @@ public class BeanFactoryTestCase extends AbstractXMLTest
       assertCallbacks(expected, factory.getUninstallCallbacks());
    }
 */
-
-   public void testBeanFactoryBadNoClassOrConstructor() throws Exception
-   {
-      try
-      {
-         unmarshalBeanFactory("BeanFactoryBadNoClassOrConstructor.xml");
-         fail("Should not be here");
-      }
-      catch (Exception expected)
-      {
-         checkJBossXBException(IllegalArgumentException.class, expected);
-      }
-   }
-
-   public void testBeanFactoryBadNoClassOrFactoryMethod() throws Exception
-   {
-      try
-      {
-         unmarshalBeanFactory("BeanFactoryBadNoClassOrFactoryMethod.xml");
-         fail("Should not be here");
-      }
-      catch (Exception expected)
-      {
-         checkJBossXBException(IllegalArgumentException.class, expected);
-      }
-   }
-
-   public void testBeanFactoryBadNoClassOrFactory() throws Exception
-   {
-      try
-      {
-         unmarshalBeanFactory("BeanFactoryBadNoClassOrFactory.xml");
-         fail("Should not be here");
-      }
-      catch (Exception expected)
-      {
-         checkJBossXBException(IllegalArgumentException.class, expected);
-      }
-   }
    
    public static Test suite()
    {

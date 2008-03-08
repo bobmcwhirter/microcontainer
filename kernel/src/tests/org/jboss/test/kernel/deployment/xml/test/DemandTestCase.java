@@ -70,19 +70,6 @@ public class DemandTestCase extends AbstractXMLTest
       assertEquals("default", demand.getTransformer());
    }
 
-   public void testDemandBadNoValue() throws Exception
-   {
-      try
-      {
-         unmarshalBean("DemandBadNoValue.xml");
-         fail("Should not be here");
-      }
-      catch (Exception expected)
-      {
-         checkJBossXBException(IllegalArgumentException.class, expected);
-      }
-   }
-
    public static Test suite()
    {
       return suite(DemandTestCase.class);

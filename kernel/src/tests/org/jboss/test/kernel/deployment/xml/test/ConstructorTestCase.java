@@ -254,32 +254,6 @@ public class ConstructorTestCase extends AbstractXMLTest
       assertWildcard(constructor.getValue());
    }
 
-   public void testConstructorBadFactoryClassNoFactoryMethod() throws Exception
-   {
-      try
-      {
-         unmarshalBean("ConstructorBadFactoryClassNoFactoryMethod.xml");
-         fail("Should not be here");
-      }
-      catch (Exception expected)
-      {
-         checkJBossXBException(IllegalArgumentException.class, expected);
-      }
-   }
-
-   public void testConstructorBadFactoryNoFactoryMethod() throws Exception
-   {
-      try
-      {
-         unmarshalBean("ConstructorBadFactoryNoFactoryMethod.xml");
-         fail("Should not be here");
-      }
-      catch (Exception expected)
-      {
-         checkJBossXBException(IllegalArgumentException.class, expected);
-      }
-   }
-
    public static Test suite()
    {
       return suite(ConstructorTestCase.class);

@@ -25,8 +25,9 @@ import java.util.HashSet;
 import java.util.Set;
 
 import junit.framework.Test;
+
 import org.jboss.beans.metadata.plugins.AbstractBeanMetaData;
-import org.jboss.beans.metadata.plugins.StringValueMetaData;
+import org.jboss.beans.metadata.plugins.AbstractPropertyMetaData;
 import org.jboss.beans.metadata.spi.PropertyMetaData;
 import org.jboss.beans.metadata.spi.ValueMetaData;
 
@@ -71,11 +72,8 @@ public class PropertyTestCase extends AbstractXMLTest
       PropertyMetaData property = getProperty("PropertyWithClass.xml");
       assertNotNull("PropertyName", property.getName());
       assertNull(property.getAnnotations());
-      ValueMetaData value = property.getValue();
-      assertNotNull(value);
-      assertTrue(value instanceof StringValueMetaData);
-      StringValueMetaData string = (StringValueMetaData) value;
-      assertEquals("PropertyClass", string.getType());
+      AbstractPropertyMetaData apmd = assertInstanceOf(property, AbstractPropertyMetaData.class);
+      assertEquals("PropertyClass", apmd.getPropertyType());
    }
 
    public void testPropertyWithAnnotation() throws Exception
@@ -195,19 +193,6 @@ public class PropertyTestCase extends AbstractXMLTest
       assertNotNull("PropertyName", property.getName());
       assertNull(property.getAnnotations());
       assertWildcard(property.getValue());
-   }
-
-   public void testPropertyBadNoName() throws Exception
-   {
-      try
-      {
-         unmarshalBean("PropertyBadNoName.xml");
-         fail("Should not be here");
-      }
-      catch (Exception expected)
-      {
-         checkJBossXBException(IllegalArgumentException.class, expected);
-      }
    }
 
    public static Test suite()

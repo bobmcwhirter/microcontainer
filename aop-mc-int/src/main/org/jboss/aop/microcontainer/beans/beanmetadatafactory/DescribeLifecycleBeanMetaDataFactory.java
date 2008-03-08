@@ -21,6 +21,8 @@
 */ 
 package org.jboss.aop.microcontainer.beans.beanmetadatafactory;
 
+import javax.xml.bind.annotation.XmlRootElement;
+
 import org.jboss.dependency.spi.ControllerState;
 
 /**
@@ -28,6 +30,7 @@ import org.jboss.dependency.spi.ControllerState;
  * @author <a href="kabir.khan@jboss.com">Kabir Khan</a>
  * @version $Revision: 1.1 $
  */
+@XmlRootElement(name="lifecycle-describe")
 public class DescribeLifecycleBeanMetaDataFactory extends LifecycleBeanMetaDataFactory
 {
    private static final long serialVersionUID = 1L;

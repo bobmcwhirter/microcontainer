@@ -134,7 +134,7 @@ public class AbstractLazyMetaData extends AbstractBeanMetaData implements LazyMe
       return exposeClass;
    }
 
-   @XmlAttribute
+   @XmlAttribute(name="exposeClass")
    public void setExposeClass(boolean exposeClass)
    {
       this.exposeClass = exposeClass;

@@ -54,19 +54,6 @@ public class DependencyTestCase extends AbstractXMLTest
       assertEquals("Dependency", dependency.getDependency());
    }
 
-   public void testDependencyBadNoValue() throws Exception
-   {
-      try
-      {
-         unmarshalBean("DependencyBadNoValue.xml");
-         fail("Should not be here");
-      }
-      catch (Exception expected)
-      {
-         checkJBossXBException(IllegalArgumentException.class, expected);
-      }
-   }
-
    public static Test suite()
    {
       return suite(DependencyTestCase.class);

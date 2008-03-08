@@ -21,17 +21,12 @@
 */
 package org.jboss.test.kernel.deployment.xml.test;
 
-import java.lang.reflect.Method;
-import java.net.URL;
-
-import org.jboss.net.protocol.URLStreamHandlerFactory;
 import org.jboss.test.AbstractTestDelegate;
 import org.jboss.xb.binding.Unmarshaller;
 import org.jboss.xb.binding.UnmarshallerFactory;
-import org.jboss.xb.binding.sunday.unmarshalling.DefaultSchemaResolver;
 import org.jboss.xb.binding.sunday.unmarshalling.SchemaBinding;
 import org.jboss.xb.binding.sunday.unmarshalling.SchemaBindingResolver;
-import org.jboss.xb.binding.sunday.unmarshalling.XsdBinder;
+import org.jboss.xb.binding.sunday.unmarshalling.SingletonSchemaResolverFactory;
 
 /**
  * JBossXBTestDelegate.
@@ -42,32 +37,11 @@ import org.jboss.xb.binding.sunday.unmarshalling.XsdBinder;
  */
 public class JBossXBTestDelegate extends AbstractTestDelegate
 {
-   /** Whether initialization has been done */
-   private static boolean done = false;
-
    /** The unmarshaller factory */
    protected UnmarshallerFactory unmarshallerFactory;
 
    /** The resolver */
-   protected SchemaBindingResolver defaultResolver;
-
-   /**
-    * Initialize
-    */
-   public synchronized static void init()
-   {
-      if (done)
-         return;
-      done = true;
-      URL.setURLStreamHandlerFactory(new URLStreamHandlerFactory());
-      URLStreamHandlerFactory.preload();
-      String handlerPkgs = System.getProperty("java.protocol.handler.pkgs");
-      if (handlerPkgs != null)
-         handlerPkgs += "|org.jboss.net.protocol";
-      else
-         handlerPkgs = "org.jboss.net.protocol";
-      System.setProperty("java.protocol.handler.pkgs", handlerPkgs);
-   }
+   protected SchemaBindingResolver resolver = SingletonSchemaResolverFactory.getInstance().getSchemaBindingResolver();
 
    /**
     * Create a new JBossXBTestDelegate.
@@ -83,37 +57,18 @@ public class JBossXBTestDelegate extends AbstractTestDelegate
    public void setUp() throws Exception
    {
       super.setUp();
-      init();
       unmarshallerFactory = UnmarshallerFactory.newInstance();
-      initResolver();
-   }
-
-   protected void initResolver() throws Exception
-   {
-      try
-      {
-         Method method = clazz.getMethod("initResolver", null);
-         defaultResolver = (SchemaBindingResolver) method.invoke(null, null);
-      }
-      catch (NoSuchMethodException ignored)
-      {
-         defaultResolver = new DefaultSchemaResolver();
-      }
    }
 
    /**
     * Unmarshal an object
     *
     * @param url the url
-    * @param resolver the resolver
     * @return the object
     * @throws Exception for any error
     */
-   public Object unmarshal(String url, SchemaBindingResolver resolver) throws Exception
+   public Object unmarshal(String url) throws Exception
    {
-      if (resolver == null)
-         resolver = defaultResolver;
-
       long start = System.currentTimeMillis();
       Unmarshaller unmarshaller = unmarshallerFactory.newUnmarshaller();
       log.debug("Initialized parsing in " + (System.currentTimeMillis() - start) + "ms");
@@ -154,18 +109,5 @@ public class JBossXBTestDelegate extends AbstractTestDelegate
          log.debug("Error during parsing: " + url, e);
          throw e;
       }
-   }
-
-   /**
-    * Bind a schema
-    *
-    * @param url the url
-    * @param resolver the resolver
-    * @return the object
-    * @throws Exception for any error
-    */
-   public SchemaBinding bind(String url, SchemaBindingResolver resolver) throws Exception
-   {
-      return XsdBinder.bind(url, resolver);
    }
 }

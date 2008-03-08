@@ -41,27 +41,37 @@
 	    <artifactId>jboss-classloading-spi</artifactId>
      </dependency>
     <dependency>
+	    <groupId>jboss</groupId>
+	    <artifactId>jboss-common-logging-spi</artifactId>
+     </dependency>
+    <dependency>
       <groupId>org.jboss</groupId>
       <artifactId>jboss-common-core</artifactId>
+      <version>2.2.3.GA</version>
       <exclusions>
         <exclusion>
           <groupId>jboss</groupId>
           <artifactId>jboss-common-logging-spi</artifactId>
         </exclusion>
+        <exclusion>
+          <groupId>apache-httpclient</groupId>
+          <artifactId>commons-httpclient</artifactId>
+        </exclusion>
+        <exclusion>
+          <groupId>apache-slide</groupId>
+          <artifactId>webdavlib</artifactId>
+        </exclusion>
+        <exclusion>
+          <groupId>apache-xerces</groupId>
+          <artifactId>xml-apis</artifactId>
+        </exclusion>
       </exclusions>
-    </dependency>
-    <dependency>
-      <groupId>jboss</groupId>
-      <artifactId>jboss-logging-spi</artifactId>
-    </dependency>
-    <dependency>
-      <groupId>jboss</groupId>
-      <artifactId>jboss-logging-spi</artifactId>
     </dependency>
 	  <!-- Test dependencies -->
     <dependency>
       <groupId>org.jboss</groupId>
       <artifactId>jboss-test</artifactId>
+      <optional>true</optional>
       <exclusions>
         <exclusion>
           <groupId>jboss</groupId>
@@ -71,11 +81,28 @@
           <groupId>jboss</groupId>
           <artifactId>jboss-common-logging-spi</artifactId>
         </exclusion>
+        <exclusion>
+          <groupId>jboss</groupId>
+          <artifactId>jboss-common-logging-log4j</artifactId>
+        </exclusion>
+        <exclusion>
+          <groupId>ant</groupId>
+          <artifactId>ant</artifactId>
+        </exclusion>
+        <exclusion>
+          <groupId>ant</groupId>
+          <artifactId>ant-junit</artifactId>
+        </exclusion>
+        <exclusion>
+          <groupId>log4j</groupId>
+          <artifactId>log4j</artifactId>
+        </exclusion>
       </exclusions>
     </dependency>
     <dependency>
-	    <groupId>junit</groupId>
-	    <artifactId>junit</artifactId>
+      <groupId>junit</groupId>
+      <artifactId>junit</artifactId>
+      <optional>true</optional>
     </dependency>
   </dependencies>  
 </project>

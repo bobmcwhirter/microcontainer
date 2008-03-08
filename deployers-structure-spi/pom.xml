@@ -36,10 +36,6 @@
       <groupId>org.jboss.microcontainer</groupId>
       <artifactId>jboss-deployers-client-spi</artifactId>
     </dependency>
-    <dependency>
-      <groupId>jboss</groupId>
-      <artifactId>jboss-logging-spi</artifactId>
-    </dependency>
 	  <!-- Test dependencies -->
     <dependency>
       <groupId>org.jboss</groupId>
@@ -56,20 +52,13 @@
       </exclusions>
     </dependency>
     <dependency>
-      <groupId>org.jboss.microcontainer</groupId>
-      <artifactId>jboss-container</artifactId>
-    </dependency>
-    <dependency>
-      <groupId>org.jboss.microcontainer</groupId>
-      <artifactId>jboss-deployers-core-spi</artifactId>
-    </dependency>
-    <dependency>
 	    <groupId>junit</groupId>
 	    <artifactId>junit</artifactId>
     </dependency>
     <dependency>
       <groupId>org.jboss.microcontainer</groupId>
       <artifactId>jboss-deployers-core</artifactId>
+      <scope>test</scope>
     </dependency>
     <dependency>
       <groupId>org.jboss.microcontainer</groupId>

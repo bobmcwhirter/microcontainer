@@ -38,7 +38,6 @@ import org.jboss.beans.metadata.plugins.AbstractSetMetaData;
 import org.jboss.beans.metadata.plugins.AbstractValueMetaData;
 import org.jboss.beans.metadata.plugins.StringValueMetaData;
 import org.jboss.beans.metadata.plugins.ThisValueMetaData;
-import org.jboss.beans.metadata.plugins.factory.GenericBeanFactoryMetaData;
 import org.jboss.beans.metadata.spi.AnnotationMetaData;
 import org.jboss.beans.metadata.spi.BeanMetaData;
 import org.jboss.beans.metadata.spi.CallbackMetaData;
@@ -50,6 +49,7 @@ import org.jboss.beans.metadata.spi.PropertyMetaData;
 import org.jboss.beans.metadata.spi.SupplyMetaData;
 import org.jboss.beans.metadata.spi.ValueMetaData;
 import org.jboss.beans.metadata.spi.LazyMetaData;
+import org.jboss.beans.metadata.spi.factory.GenericBeanFactoryMetaData;
 import org.jboss.kernel.plugins.deployment.AbstractKernelDeployment;
 import org.jboss.test.AbstractTestCaseWithSetup;
 import org.jboss.test.AbstractTestDelegate;
@@ -184,17 +184,12 @@ public class AbstractXMLTest extends AbstractTestCaseWithSetup
    protected void assertBeanFactoryProperties(Set<String> expected, GenericBeanFactoryMetaData factory)
    {
       assertNotNull(factory);
-      PropertyMetaData propertiesProperty = factory.getProperty("properties");
-      assertNotNull(propertiesProperty);
-      AbstractMapMetaData map = (AbstractMapMetaData) propertiesProperty.getValue();
-      assertNotNull(map);
-      Set<AbstractValueMetaData> properties = (Set) map.keySet();
+      Set<PropertyMetaData> properties = factory.getProperties();
       assertEquals(expected.size(), properties.size());
       HashSet<String> clonedExpected = new HashSet<String>(expected);
-      for (Iterator<AbstractValueMetaData> i = properties.iterator(); i.hasNext();)
+      for (PropertyMetaData property : properties)
       {
-         AbstractValueMetaData property = i.next();
-         if (clonedExpected.remove(property.getUnderlyingValue()) == false)
+         if (clonedExpected.remove(property.getName()) == false)
             fail("Did not expect " + property + " expected " + expected);
       }
       if (clonedExpected.size() != 0)

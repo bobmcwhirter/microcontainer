@@ -73,10 +73,6 @@
     <!-- Global dependencies -->
     <dependency>
       <groupId>org.jboss.microcontainer</groupId>
-      <artifactId>jboss-container</artifactId>
-    </dependency>
-    <dependency>
-      <groupId>org.jboss.microcontainer</groupId>
       <artifactId>jboss-dependency</artifactId>
     </dependency>
     <dependency>
@@ -85,42 +81,17 @@
     </dependency>
     <dependency>
       <groupId>org.jboss</groupId>
-      <artifactId>jboss-common-core</artifactId>
-      <exclusions>
-        <exclusion>
-          <groupId>jboss</groupId>
-          <artifactId>jboss-common-logging-spi</artifactId>
-        </exclusion>
-      </exclusions>
-    </dependency>
-    <dependency>
-      <groupId>jboss</groupId>
-      <artifactId>jboss-logging-spi</artifactId>
-    </dependency>
-    <!-- Jaxb builder tests -->
-    <dependency>
-      <groupId>org.jboss.microcontainer</groupId>
-      <artifactId>jboss-container</artifactId>
-      <type>test-jar</type>
-      <scope>test</scope>
-    </dependency>
-    <dependency>
-      <groupId>org.jboss</groupId>
-      <artifactId>jboss-test</artifactId>
-      <exclusions>
-        <exclusion>
-          <groupId>jboss</groupId>
-          <artifactId>jboss-common-core</artifactId>
-        </exclusion>
-        <exclusion>
-          <groupId>jboss</groupId>
-          <artifactId>jboss-common-logging-spi</artifactId>
-        </exclusion>
-      </exclusions>
+      <artifactId>javassist</artifactId>
+      <optional>true</optional>
     </dependency>
     <dependency>
       <groupId>org.jboss</groupId>
       <artifactId>jbossxb</artifactId>
+    </dependency>
+    <dependency>
+      <groupId>org.jboss</groupId>
+      <artifactId>jboss-test</artifactId>
+      <optional>true</optional>
       <exclusions>
         <exclusion>
           <groupId>jboss</groupId>
@@ -129,20 +100,29 @@
         <exclusion>
           <groupId>jboss</groupId>
           <artifactId>jboss-common-logging-spi</artifactId>
+        </exclusion>
+        <exclusion>
+          <groupId>jboss</groupId>
+          <artifactId>jboss-common-logging-log4j</artifactId>
+        </exclusion>
+        <exclusion>
+          <groupId>ant</groupId>
+          <artifactId>ant</artifactId>
+        </exclusion>
+        <exclusion>
+          <groupId>ant</groupId>
+          <artifactId>ant-junit</artifactId>
+        </exclusion>
+        <exclusion>
+          <groupId>log4j</groupId>
+          <artifactId>log4j</artifactId>
         </exclusion>
       </exclusions>
     </dependency>
     <dependency>
       <groupId>junit</groupId>
       <artifactId>junit</artifactId>
-    </dependency>
-    <dependency>
-      <groupId>org.jboss</groupId>
-      <artifactId>javassist</artifactId>
-    </dependency>
-    <dependency>
-      <groupId>apache-xerces</groupId>
-      <artifactId>xml-apis</artifactId>
+      <optional>true</optional>
     </dependency>
     <!-- Test dependencies -->
   </dependencies>

@@ -37,6 +37,8 @@
     <version.jbossxb>2.0.0.CR3</version.jbossxb>
     <version.osgi.r4.core>1.0</version.osgi.r4.core>
     <version.jboss.vfs>2.0.4.snapshot</version.jboss.vfs>
+    <version.org.jboss.reflect>2.0.0.Beta11</version.org.jboss.reflect>
+    <version.org.jboss.mdr>2.0.0.Beta11</version.org.jboss.mdr>
     <version.javassist>3.6-beta</version.javassist>
     <version.jaxb.api>2.0</version.jaxb.api>
     <version.jboss.aop>2.0.0-SNAPSHOT</version.jboss.aop>
@@ -185,18 +187,6 @@
       </dependency>
       <dependency>
         <groupId>org.jboss.microcontainer-jdk14</groupId>
-        <artifactId>jboss-container-jdk14</artifactId>
-        <version>${project.version}</version>
-      </dependency>
-      <dependency>
-        <groupId>org.jboss.microcontainer-jdk14</groupId>
-        <artifactId>jboss-container-jdk14</artifactId>
-        <version>${project.version}</version>
-        <type>test-jar</type>
-        <scope>test</scope>
-      </dependency>
-      <dependency>
-        <groupId>org.jboss.microcontainer-jdk14</groupId>
         <artifactId>jboss-dependency-jdk14</artifactId>
         <version>${project.version}</version>
       </dependency>
@@ -334,6 +324,16 @@
             <artifactId>jboss-common-core</artifactId>
           </exclusion>
         </exclusions>
+      </dependency>
+      <dependency>
+        <groupId>org.jboss</groupId>
+        <artifactId>jboss-reflect-jdk14</artifactId>
+        <version>${version.org.jboss.reflect}</version>
+      </dependency>
+      <dependency>
+        <groupId>org.jboss</groupId>
+        <artifactId>jboss-mdr-jdk14</artifactId>
+        <version>${version.org.jboss.mdr}</version>
       </dependency>
       <dependency>
         <groupId>org.osgi</groupId>

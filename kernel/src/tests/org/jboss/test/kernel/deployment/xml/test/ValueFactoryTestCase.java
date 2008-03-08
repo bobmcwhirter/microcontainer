@@ -66,16 +66,8 @@ public class ValueFactoryTestCase extends AbstractXMLTest
       AbstractValueFactoryMetaData dependency = getValueFactory("ValueFactoryWithParameter.xml");
       assertEquals("Dummy", dependency.getValue());
       assertEquals("getValue", dependency.getMethod());
-      List<ParameterMetaData> parameters = dependency.getParameters();
-      assertNotNull(parameters);
-      assertFalse(parameters.isEmpty());
-      assertTrue(parameters.size() == 1);
-      ParameterMetaData pmd = parameters.get(0);
-      assertNotNull(pmd);
-      ValueMetaData value = pmd.getValue();
-      assertNotNull(value);
-      assertEquals("foo.bar.key", value.getUnderlyingValue());
-      assertNull(dependency.getDependentState());
+      assertNull(dependency.getParameters());
+      assertEquals("foo.bar.key", dependency.getParameter());
    }
 
    public void testValueFactoryWithParameters() throws Exception
@@ -123,32 +115,6 @@ public class ValueFactoryTestCase extends AbstractXMLTest
       assertEquals("Dummy", dependency.getValue());
       assertEquals("getValue", dependency.getMethod());
       assertEquals(ControllerState.CREATE, dependency.getWhenRequiredState());
-   }
-
-   public void testValueFactoryBadNoBean() throws Exception
-   {
-      try
-      {
-         AbstractValueFactoryMetaData dependency = getValueFactory("ValueFactoryBadNoBean.xml");
-         assertNull(dependency.getValue());
-      }
-      catch (Exception expected)
-      {
-         checkJBossXBException(IllegalArgumentException.class, expected);
-      }
-   }
-
-   public void testValueFactoryBadNoMethod() throws Exception
-   {
-      try
-      {
-         AbstractValueFactoryMetaData dependency = getValueFactory("ValueFactoryBadNoMethod.xml");
-         assertNull(dependency.getValue());
-      }
-      catch (Exception expected)
-      {
-         checkJBossXBException(IllegalArgumentException.class, expected);
-      }
    }
 
    public static Test suite()

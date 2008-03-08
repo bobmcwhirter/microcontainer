@@ -28,30 +28,13 @@
     <!-- Global dependencies -->
     <dependency>
       <groupId>org.jboss.microcontainer</groupId>
-      <artifactId>jboss-container</artifactId>
-    </dependency>
-    <dependency>
-      <groupId>org.jboss.microcontainer</groupId>
       <artifactId>jboss-metatype</artifactId>
-    </dependency>
-    <dependency>
-      <groupId>org.jboss</groupId>
-      <artifactId>jboss-common-core</artifactId>
-      <exclusions>
-        <exclusion>
-          <groupId>jboss</groupId>
-          <artifactId>jboss-common-logging-spi</artifactId>
-        </exclusion>
-      </exclusions>
-    </dependency>
-    <dependency>
-      <groupId>jboss</groupId>
-      <artifactId>jboss-logging-spi</artifactId>
     </dependency>
     <!-- Test dependencies -->
     <dependency>
       <groupId>org.jboss</groupId>
       <artifactId>jboss-test</artifactId>
+      <scope>test</scope>
       <exclusions>
         <exclusion>
           <groupId>jboss</groupId>
@@ -64,12 +47,9 @@
       </exclusions>
     </dependency>
     <dependency>
-      <groupId>apache-xerces</groupId>
-      <artifactId>xml-apis</artifactId>
-    </dependency>
-    <dependency>
       <groupId>junit</groupId>
       <artifactId>junit</artifactId>
+      <scope>test</scope>
     </dependency>
   </dependencies>
 </project>

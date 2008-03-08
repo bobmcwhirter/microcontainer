@@ -150,19 +150,6 @@ public class InstallTestCase extends AbstractXMLTest
       assertParameters(expected, install.getParameters());
    }
 
-   public void testInstallBadNoMethod() throws Exception
-   {
-      try
-      {
-         unmarshalBean("InstallBadNoMethod.xml");
-         fail("Should not be here");
-      }
-      catch (Exception expected)
-      {
-         checkJBossXBException(IllegalArgumentException.class, expected);
-      }
-   }
-
    public static Test suite()
    {
       return suite(InstallTestCase.class);

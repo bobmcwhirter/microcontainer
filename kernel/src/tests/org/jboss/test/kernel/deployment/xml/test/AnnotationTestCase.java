@@ -88,45 +88,6 @@ public class AnnotationTestCase extends AbstractXMLTest
       assertEquals("Annotations are nice", ann1.str());
    }
 
-   public void testAnnotationBadNoContent() throws Exception
-   {
-      try
-      {
-         unmarshalBean("AnnotationBadNoContent.xml");
-         fail("Should not be here");
-      }
-      catch (Exception expected)
-      {
-         checkJBossXBException(IllegalArgumentException.class, expected);
-      }
-   }
-
-   public void testAnnotationBadNoContent2() throws Exception
-   {
-      try
-      {
-         unmarshalBean("AnnotationBadNoContent2.xml");
-         fail("Should not be here");
-      }
-      catch (Exception expected)
-      {
-         checkJBossXBException(IllegalArgumentException.class, expected);
-      }
-   }
-
-   public void testAnnotationBadNoLeadingAt() throws Exception
-   {
-      try
-      {
-         unmarshalBean("AnnotationBadNoLeadingAt.xml");
-         fail("Should not be here");
-      }
-      catch (Exception expected)
-      {
-         checkJBossXBException(IllegalArgumentException.class, expected);
-      }
-   }
-
    public static Test suite()
    {
       return suite(AnnotationTestCase.class);

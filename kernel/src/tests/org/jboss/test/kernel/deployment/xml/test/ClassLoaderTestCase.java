@@ -65,19 +65,6 @@ public class ClassLoaderTestCase extends AbstractXMLTest
       assertWildcard(classLoader.getClassLoader());
    }
 
-   public void testClassLoaderBadNoValue() throws Exception
-   {
-      try
-      {
-         unmarshalDeployment("ClassLoaderBadNoValue.xml");
-         fail("Should not be here");
-      }
-      catch (Exception expected)
-      {
-         checkJBossXBException(IllegalArgumentException.class, expected);
-      }
-   }
-
    public static Test suite()
    {
       return suite(ClassLoaderTestCase.class);

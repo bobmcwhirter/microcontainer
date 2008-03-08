@@ -136,8 +136,8 @@
   <dependencies>
     <!-- Global dependencies -->
     <dependency>
-      <groupId>org.jboss.microcontainer-jdk14</groupId>
-      <artifactId>jboss-container-jdk14</artifactId>
+      <groupId>org.jboss</groupId>
+      <artifactId>jboss-reflect-jdk14</artifactId>
     </dependency>
     <dependency>
 	    <groupId>org.jboss</groupId>
@@ -147,10 +147,12 @@
     <dependency>
       <groupId>org.jboss</groupId>
       <artifactId>jboss-test-jdk14</artifactId>
+      <scope>test</scope>
     </dependency>
     <dependency>
 	    <groupId>junit</groupId>
 	    <artifactId>junit</artifactId>
+	    <scope>test</scope>
     </dependency>
   </dependencies>  
 </project>

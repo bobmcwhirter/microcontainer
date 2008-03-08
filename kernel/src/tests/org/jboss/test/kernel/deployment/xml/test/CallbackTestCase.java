@@ -146,19 +146,6 @@ public class CallbackTestCase extends AbstractXMLTest
       assertEquals(install.getCardinality(), Cardinality.ONE_TO_MANY);
    }
 
-   public void testInstallBothMethodProperty() throws Exception
-   {
-      try
-      {
-         unmarshalBean("CallbackInstallBadMethodProperty.xml");
-         fail("Should not be here");
-      }
-      catch (Exception expected)
-      {
-         checkJBossXBException(IllegalArgumentException.class, expected);
-      }
-   }
-
    // --- Uninstall
 
    public void testUninstallWithProperty() throws Exception
@@ -237,18 +224,4 @@ public class CallbackTestCase extends AbstractXMLTest
       assertNotNull(install.getCardinality());
       assertEquals(install.getCardinality(), Cardinality.fromString("2..10"));
    }
-
-   public void testUninstallBothMethodProperty() throws Exception
-   {
-      try
-      {
-         unmarshalBean("CallbackUninstallBadMethodProperty.xml");
-         fail("Should not be here");
-      }
-      catch (Exception expected)
-      {
-         checkJBossXBException(IllegalArgumentException.class, expected);
-      }
-   }
-
 }

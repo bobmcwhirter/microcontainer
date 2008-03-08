@@ -83,19 +83,6 @@ public class FactoryTestCase extends AbstractXMLTest
       assertWildcard(getFactory("FactoryWithWildcard.xml"));
    }
 
-   public void testFactoryBadNoBeanOrWildcard() throws Exception
-   {
-      try
-      {
-         unmarshalBean("FactoryBadNoBeanOrWildcard.xml");
-         fail("Should not be here");
-      }
-      catch (Exception expected)
-      {
-         checkJBossXBException(IllegalArgumentException.class, expected);
-      }
-   }
-
    public static Test suite()
    {
       return suite(FactoryTestCase.class);

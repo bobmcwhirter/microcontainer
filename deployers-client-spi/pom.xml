@@ -21,9 +21,5 @@
       <groupId>org.jboss.microcontainer</groupId>
       <artifactId>jboss-managed</artifactId>
     </dependency>
-    <dependency>
-      <groupId>org.jboss</groupId>
-      <artifactId>jboss-common-core</artifactId>
-    </dependency>
   </dependencies>  
 </project>

@@ -24,7 +24,6 @@ package org.jboss.test.kernel.deployment.xml.test;
 import org.jboss.beans.metadata.plugins.policy.AbstractBindingMetaData;
 import org.jboss.beans.metadata.plugins.policy.AbstractPolicyMetaData;
 import org.jboss.beans.metadata.plugins.policy.AbstractScopeMetaData;
-import org.jboss.kernel.plugins.deployment.AbstractKernelDeployment;
 
 /**
  * @author <a href="mailto:ales.justin@jboss.com">Ales Justin</a>
@@ -38,7 +37,7 @@ public abstract class AbstractPolicyTest extends AbstractMCTest
 
    private <T> T unmarshal(Class<T> expected) throws Exception
    {
-      return unmarshalObject(expected, AbstractPolicyMetaData.class, AbstractKernelDeployment.class);
+      return unmarshalObject(expected);
    }
 
    protected AbstractPolicyMetaData unmarshalPolicy() throws Exception
