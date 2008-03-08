@@ -29,11 +29,11 @@ import org.jboss.reliance.jbpm.server.spi.ConsoleServer;
  */
 public class AbstractConsolerServer implements ConsoleServer
 {
-   private JbpmContextContainer container;
+   //private JbpmContextContainer container;
 
    public AbstractConsolerServer(JbpmContextContainer container)
    {
-      this.container = container;
+      //this.container = container;
    }
 
    // --- signaling processes/tokens

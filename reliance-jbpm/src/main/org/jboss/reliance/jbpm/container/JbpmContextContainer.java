@@ -21,15 +21,9 @@
 */
 package org.jboss.reliance.jbpm.container;
 
-import org.jbpm.JbpmContext;
-
 /**
  * @author <a href="mailto:ales.justin@jboss.com">Ales Justin</a>
  */
 public class JbpmContextContainer
 {
-   private JbpmContext jbpmContext;
-   private boolean synchronizationRegistered;
-
-         
 }
