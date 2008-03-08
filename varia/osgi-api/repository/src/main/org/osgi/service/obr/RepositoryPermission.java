@@ -32,8 +32,10 @@ import java.security.BasicPermission;
  */
 public class RepositoryPermission extends BasicPermission
 {
+    /** The serialVersionUID */
+   private static final long serialVersionUID = -8884127090084200926L;
 
-    public RepositoryPermission(String name)
+   public RepositoryPermission(String name)
     {
         super(name);
 

@@ -47,5 +47,6 @@ public interface Capability
      * 
      * @return a Map<String,List>
      */
+    @SuppressWarnings("unchecked")
     Map getProperties();
 }

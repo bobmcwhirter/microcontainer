@@ -71,6 +71,7 @@ public interface Resource
     *
     * @return proipersties as map
     */
+    @SuppressWarnings("unchecked")
     Map getProperties();
 
    /**
