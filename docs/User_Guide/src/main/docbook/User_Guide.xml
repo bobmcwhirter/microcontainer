@@ -49,7 +49,7 @@
       <note>
         <para>To build and run the examples you first need to install and configure Maven 2.0.7 available from <ulink url="http://maven.apache.org/">http://maven.apache.org/</ulink></para>
         <para>Installation is performed by downloading and unzipping the  maven-2.0.7-bin.zip file to a convenient location on your local disk. Configuration  consists of adding $MAVEN_HOME/bin to your path and adding the following profile to your ~/.m2/settings.xml file:</para>
-        <para><programlisting>&lt;settings&gt;
+        <programlisting role="XML">&lt;settings&gt;
   &lt;profiles&gt;
     &lt;profile&gt;
       &lt;id&gt;jboss.repository&lt;/id&gt;
@@ -92,7 +92,7 @@
       &lt;/pluginRepositories&gt;
     &lt;/profile&gt;
   &lt;/profiles&gt;
-&lt;/settings&gt;</programlisting></para>
+&lt;/settings&gt;</programlisting>
         <para>This profile informs maven of the two JBoss repositories (snapshots and releases) that are needed to download the JBoss Microcontainer and dependant JARs.</para>
       </note>
       <para>Once you have configured Maven and downloaded the examples then you can go to one of the following subdirectories in the <code>examples/User_Guide</code> directory and enter <code>mvn install</code> to perform a build:</para>
@@ -203,7 +203,7 @@ org/jboss/example/service/util/SalaryStrategy.java
         <para>The Human Resources Service is therefore composed of a handful of classes which work together to allow a list of employees, together with details of their addresses and salaries, to be maintained by an HRManger. Thanks to the SalaryStrategy interface it is possible to configure the HRManager so that different salary strategy implementations are used. These place minimum and maximum limits on the salaries that can be awarded to employees depending on various rules.</para>
         <para>To compile the source code you simply need to enter <code>mvn compile</code> from the <code>humanResourcesService/</code> directory. This will create a new directory  called <code>target/classes</code>  containing the compiled code. To clean up the project and remove the <code>target</code> directory simply enter <code>mvn clean</code>. </para>
         <para>Now that we  have compiled our classes we  need to create instances of them. This is done by creating an XML deployment descriptor  that contains a list of beans representing individual instances. Each bean is given a name so that the instance can be looked up at runtime by clients.</para>
-        <programlisting>&lt;?xml version=&quot;1.0&quot; encoding=&quot;UTF-8&quot;?&gt;
+        <programlisting role="XML">&lt;?xml version=&quot;1.0&quot; encoding=&quot;UTF-8&quot;?&gt;
 
 &lt;deployment xmlns:xsi=&quot;http://www.w3.org/2001/XMLSchema-instance&quot;
             xsi:schemaLocation=&quot;urn:jboss:bean-deployer:2.0 bean-deployer_2_0.xsd&quot;
@@ -218,7 +218,7 @@ org/jboss/example/service/util/SalaryStrategy.java
         <title>Wiring POJOs together </title>
         <para>So far we have seen how to  create POJOs and declare instances of them together with names in an XML deployment descriptor. However, individual POJO instances  can only provide relatively simple behaviour. Things really get interesting when we combine POJOs together to perform more complex tasks. In our example we know that we can choose different salary strategy implementations for the HRManager so how do we go about wiring the POJOs together?</para>
         <para>The answer is to use the XML deployment descriptor again as follows:</para>
-        <programlisting>&lt;?xml version=&quot;1.0&quot; encoding=&quot;UTF-8&quot;?&gt;
+        <programlisting role="XML">&lt;?xml version=&quot;1.0&quot; encoding=&quot;UTF-8&quot;?&gt;
 
 &lt;deployment xmlns:xsi=&quot;http://www.w3.org/2001/XMLSchema-instance&quot;
             xsi:schemaLocation=&quot;urn:jboss:bean-deployer:2.0 bean-deployer_2_0.xsd&quot;
@@ -234,7 +234,7 @@ org/jboss/example/service/util/SalaryStrategy.java
 &lt;/deployment&gt;</programlisting>
         <para>We first need to create an instance of our chosen salary strategy implementation by including an additional &lt;bean&gt; element. Here we have chosen the AgeBasedSalaryStrategy. Next we need to inject a reference to this bean into the instance of HRManager created using the HRService bean. Injection is possible  as the HRManager class contains a <code>setSalaryStrategy(SalaryStrategy strategy)</code> method. Behind the scenes JBoss Microcontainer will call this method on the newly created HRManager instance and pass in a reference to the AgeBasedSalaryStrategy instance.</para>
         <para>In other words the XML deployment descriptor causes the same sequence of events to occur as if you had written the following code:</para>
-        <programlisting>HRManager hrService = new HRManager();
+        <programlisting role="JAVA">HRManager hrService = new HRManager();
 AgeBasedSalaryStrategy ageBasedSalary = new AgeBasedSalaryStrategy();
 hrService.setSalaryStrategy(ageBasedSalary);</programlisting>
         <para>In addition to performing injection via property setter methods JBoss Microcontainer can also perform injection via constructor parameters if necessary. For more details please see the &apos;Injection&apos; chapter in Part II &apos;POJO Development&apos;. </para>
@@ -248,7 +248,7 @@ hrService.setSalaryStrategy(ageBasedSalary);</programlisting>
       <section>
         <title>Configuring a service</title>
         <para>Injecting references between POJO instances is one way of configuring a service however we can also inject values into POJO properties. The following deployment descriptor shows how we can configure the HRManager instance to have a hiring freeze and the AgeBasedSalaryStrategy to have new minimum and maximum salary values:</para>
-        <programlisting>&lt;?xml version=&quot;1.0&quot; encoding=&quot;UTF-8&quot;?&gt;
+        <programlisting role="XML">&lt;?xml version=&quot;1.0&quot; encoding=&quot;UTF-8&quot;?&gt;
 
 &lt;deployment xmlns:xsi=&quot;http://www.w3.org/2001/XMLSchema-instance&quot;
             xsi:schemaLocation=&quot;urn:jboss:bean-deployer:2.0 bean-deployer_2_0.xsd&quot;
@@ -381,7 +381,7 @@ lib/concurrent-1.3.4.jar
       <section>
         <title>Bootstrapping the microcontainer</title>
         <para>Before we use the client to deploy and call our service, lets take a closer look at what  happened during its construction:</para>
-        <programlisting>public Client(final boolean useBus) throws Exception {
+        <programlisting role="JAVA">public Client(final boolean useBus) throws Exception {
     this.useBus = useBus;
 
     ClassLoader cl = Thread.currentThread().getContextClassLoader();
@@ -397,7 +397,7 @@ lib/concurrent-1.3.4.jar
  }</programlisting>
         <para>First of all a url representing the jboss-beans.xml deployment descriptor was created. This is required later on by the XML deployer so that we can deploy and undeploy beans declared in the file. Here we have chosen to use the getResource() method of the application classloader as we deliberately placed the jboss-beans.xml file  on the classpath.  However, this is not a requirement  and you are free to call the deployment descriptor anything you like and place it anywhere you want provided that the URL is valid and reachable.</para>
         <para>Next we created an instance of JBoss Microcontainer together with an XML deployer. This process  is called bootstrapping and for convenience a  BasicBootstrap class is provided  as part of the microcontainer to allow for configuration via system properties. To add an XML deployer we simply extend BasicBootstrap to create an EmbeddedBootstrap class  and override the protected bootstrap() method as follows:</para>
-        <programlisting>public class EmbeddedBootstrap extends BasicBootstrap {
+        <programlisting role="JAVA">public class EmbeddedBootstrap extends BasicBootstrap {
 
     protected BasicXMLDeployer deployer;
 
@@ -435,7 +435,9 @@ lib/concurrent-1.3.4.jar
       </section>
       <section>
         <title>Deploying the service</title>
-        <para>Once the client has been created we can proceed to deploy the Human Resources service. This is done by entering the &apos;d&apos; option. You should see the following log output indicating that the BasicXMLDeployer has parsed the jboss-beans.xml file using the url and instantiated the beans found within.</para>
+        <para>Once the client has been created we can proceed to deploy the Human Resources service. This is done by entering the &apos;d&apos; option. You should see the following log output indicating that the BasicXMLDeployer has parsed the <emphasis>
+            <property>jboss-beans.xml</property>
+          </emphasis> file using the url and instantiated the beans found within.</para>
         <mediaobject>
           <imageobject>
             <imagedata align="center" fileref="images/deployOutput.png"/>
@@ -445,8 +447,10 @@ lib/concurrent-1.3.4.jar
           <para>The microcontainer is able to instantiate the beans as their classes are available in the extension classpath inside the <code>lib/humanResourcesService.jar</code> file. We could have equally placed these classes in an exploded directory structure and added this to the application classpath but in general you will package them in a JAR for convenience. </para>
         </note>
         <para>Notice that our deployment descriptor is entirely separate from the humanResourcesService.jar file. This is done on purpose so that you can easily edit it and test your changes by redeploying the service. The jboss-beans.xml file in the example contains some commented out fragments of XML that you can uncomment to configure it  in different ways:</para>
-        <programlisting>&lt;?xml version=&quot;1.0&quot; encoding=&quot;UTF-8&quot;?&gt;
-&lt;deployment xmlns:xsi=&quot;http://www.w3.org/2001/XMLSchema-instance&quot;            xsi:schemaLocation=&quot;urn:jboss:bean-deployer:2.0 bean-deployer_2_0.xsd&quot;            xmlns=&quot;urn:jboss:bean-deployer:2.0&quot;&gt;
+        <programlisting role="XML">&lt;?xml version=&quot;1.0&quot; encoding=&quot;UTF-8&quot;?&gt;
+&lt;deployment xmlns:xsi=&quot;http://www.w3.org/2001/XMLSchema-instance&quot;
+            xsi:schemaLocation=&quot;urn:jboss:bean-deployer:2.0 bean-deployer_2_0.xsd&quot;
+            xmlns=&quot;urn:jboss:bean-deployer:2.0&quot;&gt;
 
     &lt;bean name=&quot;HRService&quot; class=&quot;org.jboss.example.service.HRManager&quot;&gt;
         &lt;!-- &lt;property name=&quot;hiringFreeze&quot;&gt;true&lt;/property&gt;
@@ -472,7 +476,7 @@ class=&quot;org.jboss.example.service.util.LocationBasedSalaryStrategy&quot;&gt;
       <section>
         <title>Direct access</title>
         <para>If no parameter is given to the <code>run.sh</code> script when  the client is started then a reference to the HRService bean is looked up using the microcontainer controller once the service is deployed:</para>
-        <programlisting>private HRManager manager;
+        <programlisting role="JAVA">private HRManager manager;
 ...
 private final static String HRSERVICE = &quot;HRService&quot;;
 
@@ -487,7 +491,7 @@ void deploy() {
 }</programlisting>
         <para>Rather than immediately looking up a reference to the bean instance we first lookup a reference to a <code>ControllerContext</code>. We then obtain a reference to the bean instance from the context using the <code>getTarget()</code> method.  The reason for this is because the bean can exist in many states within the microcontainer e.g. NOT_INSTALLED, DESCRIBED, INSTANTIATED, CONFIGURED, INSTALLED. In order to keep track of which state the bean is in we need to wrap it in another object called a context that describes the current state. The name of the context is the same as the bean name. Once a context reaches the INSTALLED state then the bean it represents is considered to be deployed.</para>
         <para>Now that we have a reference to the bean instance representing our service entry point we can call methods on it to perform work:</para>
-        <programlisting>@SuppressWarnings(&quot;unchecked&quot;)
+        <programlisting role="JAVA">@SuppressWarnings(&quot;unchecked&quot;)
 Set&lt;Employee&gt; listEmployees() {
     if (useBus)
         ...
@@ -510,7 +514,7 @@ Set&lt;Employee&gt; listEmployees() {
         <para>The <code>run.sh</code> script can be called with an optional parameter &apos;bus&apos; to specify that calls to the Human Resources service should take place using the microcontainer bus:</para>
         <programlisting>./run.sh bus</programlisting>
         <para>Instead of using a direct reference to the bean instance obtained from the microcontainer controller we now call an invoke() method on the bus passing in the bean name, method name, method arguments and method types. The bus takes this information and uses it to call the bean on the client&apos;s behalf.</para>
-        <programlisting>private final static String HRSERVICE = &quot;HRService&quot;;
+        <programlisting role="JAVA">private final static String HRSERVICE = &quot;HRService&quot;;
 
 ...
 
@@ -567,7 +571,7 @@ otherLib/humanResourcesService-1.0.0.jar</programlisting>
         <para>As you can see the humanResourcesService.jar file has been moved to a new subdirectory called <code>otherLib</code>. In this location it is no longer available to either the extension or application classloaders whose classpaths are setup in the <code>run.sh</code> script:</para>
         <programlisting>java -Djava.ext.dirs=`pwd`/lib -cp .:client-1.0.0.jar org.jboss.example.client.Client $1</programlisting>
         <para>We must therefore create a new classloader during the deployment of the service so that we can load in the service classes and create instances of the beans. You can see how this is done by looking at the contents of the jboss-beans.xml file:</para>
-        <programlisting>&lt;?xml version=&quot;1.0&quot; encoding=&quot;UTF-8&quot;?&gt;
+        <programlisting role="XML">&lt;?xml version=&quot;1.0&quot; encoding=&quot;UTF-8&quot;?&gt;
 
 &lt;deployment xmlns:xsi=&quot;http://www.w3.org/2001/XMLSchema-instance&quot;            
                               xsi:schemaLocation=&quot;urn:jboss:bean-deployer:2.0 bean-deployer_2_0.xsd&quot;
@@ -609,7 +613,7 @@ otherLib/humanResourcesService-1.0.0.jar</programlisting>
         <para>First of all we create an instance of  java.net.URL called URL using  parameter injection in the constructor to specify the location of the humanResourcesService.jar file on our local filesystem. Then we create an instance of a URLClassLoader by  injecting the URL bean into the constructor as the only element in an array. Once this is done then we simply include a &lt;classloader&gt; element in our HRService bean definition and inject the customCL bean. This specifies that the HRManager class needs to be loaded by the customCL classloader.</para>
         <para>But how do we know which classloader to use for the other beans in the deployment?</para>
         <para>The answer is that all beans in the deployment use the current thread&apos;s context classloader. In our case the thread that handles deployment is the main thread of the application which has its context classloader set to the application classloader on startup. If you wish, you can choose to specify a different classloader for the entire deployment using a  &lt;classloader&gt; element as follows:</para>
-        <programlisting>&lt;?xml version=&quot;1.0&quot; encoding=&quot;UTF-8&quot;?&gt;
+        <programlisting role="XML">&lt;?xml version=&quot;1.0&quot; encoding=&quot;UTF-8&quot;?&gt;
 
 &lt;deployment xmlns:xsi=&quot;http://www.w3.org/2001/XMLSchema-instance&quot;            
                               xsi:schemaLocation=&quot;urn:jboss:bean-deployer:2.0 bean-deployer_2_0.xsd&quot;
@@ -637,7 +641,7 @@ otherLib/humanResourcesService-1.0.0.jar</programlisting>
 
 &lt;/deployment&gt;</programlisting>
         <para>This would be necessary for example if you wished to reconfigure the service by uncommenting the AgeBasedSalary or LocationBasedSalary beans. As you might expect, classloaders specified at the bean level override the deployment level classloader and if you wish to ignore the deployment level classloader altogether, and use the default classloader for a bean, then you can use the &lt;null/&gt; value as follows:</para>
-        <programlisting>  &lt;bean name=&quot;HRService&quot; class=&quot;org.jboss.example.service.HRManager&quot;&gt;
+        <programlisting role="XML">  &lt;bean name=&quot;HRService&quot; class=&quot;org.jboss.example.service.HRManager&quot;&gt;
     &lt;classloader&gt;&lt;null/&gt;&lt;/classloader&gt;
   &lt;/bean&gt;</programlisting>
         <warning>
@@ -659,7 +663,7 @@ otherLib/humanResourcesService-1.0.0.jar</programlisting>
         <programlisting>auditAspect/pom.xml
            /src/main/java/org/jboss/example/aspect/AuditAspect.java</programlisting>
         <para>As you can see from the source code below all we need is a simple POJO.</para>
-        <programlisting>public class AuditAspect {
+        <programlisting role="JAVA">public class AuditAspect {
 
     private String logDir;
     private BufferedWriter out;
@@ -748,7 +752,7 @@ lib/<code>auditAspect-1.0.0.jar</code>
       <section>
         <title>Applying an aspect</title>
         <para>Now that we have a valid distribution containing everything we need we can configure our jboss-beans.xml file to apply the audit aspect. This can be found in the <code>examples/User_Guide/gettingStarted/commandLineClient/target/client-aop.dir</code> directory:</para>
-        <programlisting>&lt;?xml version=&quot;1.0&quot; encoding=&quot;UTF-8&quot;?&gt;
+        <programlisting role="XML">&lt;?xml version=&quot;1.0&quot; encoding=&quot;UTF-8&quot;?&gt;
 
 &lt;deployment xmlns:xsi=&quot;http://www.w3.org/2001/XMLSchema-instance&quot;
             xsi:schemaLocation=&quot;urn:jboss:bean-deployer:2.0 bean-deployer_2_0.xsd&quot;
@@ -822,14 +826,14 @@ Method: getSalaryStrategy</programlisting>
 &lt;aop:lifecycle-start&gt; - applied when entering/leaving the START state
 &lt;aop:lifecycle-install&gt; - applied when entering/leaving the INSTALLED state</programlisting>
         <para>Just like the &lt;bean&gt; element and the &lt;aop:aspect&gt; element the &lt;aop:lifecycle-&gt; elements contain <code>name</code> and <code>class</code> attributes. These allow the microcontainer to create an instance of the callback class and give it a name so that it can be used as beans enter/leave the relevant state during deployment and undeployment. You can specify which beans are affected by the callback using the <code>classes</code> attribute:</para>
-        <programlisting>&lt;aop:lifecycle-install xmlns:aop=&quot;urn:jboss:aop-beans:1.0&quot;
+        <programlisting role="XML">&lt;aop:lifecycle-install xmlns:aop=&quot;urn:jboss:aop-beans:1.0&quot;
     name=&quot;InstallAdvice&quot;
     class=&quot;org.jboss.test.microcontainer.support.LifecycleCallback&quot;
     classes=&quot;@org.jboss.test.microcontainer.support.Install&quot;&gt;
 &lt;/aop:lifecycle-install&gt;</programlisting>
         <para>Here we have specified that additional logic in the LifecycleCallback class should be applied  to any bean classes that are annotated with @org.jboss.test.microcontainer.support.Install before they enter and after they leave the INSTALLED state. </para>
         <para>In order for the callback class to work it must contain <code>install</code> and <code>uninstall</code> methods  that take ControllerContext as a parameter:</para>
-        <programlisting>import org.jboss.dependency.spi.ControllerContext;
+        <programlisting role="JAVA">import org.jboss.dependency.spi.ControllerContext;
 
 public class LifecycleCallback {
 
@@ -849,7 +853,7 @@ public class LifecycleCallback {
       <section>
         <title>Adding service lookup through JNDI</title>
         <para>Until now we have looked up references to bean instances representing services through the microcontainer controller. Whilst there is nothing wrong with this it is not ideal since we must first have a reference to the microcontainer kernel before we can access the controller: </para>
-        <programlisting>private HRManager manager;
+        <programlisting role="JAVA">private HRManager manager;
 
 private EmbeddedBootstrap bootstrap;
 private Kernel kernel;
@@ -979,7 +983,7 @@ Class-Path: .
         <para>Once we have fixed  the  pom.xml files in the projects that the microcontainer depends on then this filtering will no longer be necessary. </para>
       </note>
       <para>The Main-Class attribute contains the name of a StandaloneBootstrap class that is provided with the microcontainer. This class is very similar to the EmbeddedBootstrap class that we used in Part I with the addition of a main() method so that it can be called from the command line:</para>
-      <programlisting>public class StandaloneBootstrap extends BasicBootstrap
+      <programlisting role="JAVA">public class StandaloneBootstrap extends BasicBootstrap
 {
    protected BasicXMLDeployer deployer;
    protected String[] args;
@@ -1055,7 +1059,7 @@ Class-Path: .
         </listitem>
       </orderedlist>
       <para>If you would like to use the StandaloneBootstrap class within your own applications to deploy beans on startup then you can do so as follows:</para>
-      <programlisting>import org.jboss.kernel.plugins.bootstrap.standalone.StandaloneBootstrap;
+      <programlisting role="JAVA">import org.jboss.kernel.plugins.bootstrap.standalone.StandaloneBootstrap;
 
 public class MyApp {
     public static void main(String[] args) throws Exception
@@ -1087,20 +1091,20 @@ public class MyApp {
         <itemizedlist>
           <listitem>
             <para>&lt;deployment&gt; -all beans in the deployment inherit this annotation </para>
-            <programlisting>&lt;deployment name=&quot;SimpleDeployment&quot; xmlns=&quot;urn:jboss:bean-deployer:2.0&quot;&gt;
+            <programlisting role="XML">&lt;deployment name=&quot;SimpleDeployment&quot; xmlns=&quot;urn:jboss:bean-deployer:2.0&quot;&gt;
     &lt;annotation&gt;@org.jboss.test.TestAnnotation&lt;/annotation&gt;
 &lt;/deployment&gt;</programlisting>
           </listitem>
           <listitem>
             <para>&lt;bean&gt;</para>
-            <programlisting>&lt;bean name=&quot;example&quot; class=&quot;org.jboss.test.Example&quot;&gt;
+            <programlisting role="XML">&lt;bean name=&quot;example&quot; class=&quot;org.jboss.test.Example&quot;&gt;
     &lt;annotation&gt;@org.jboss.test.TestAnnotation1&lt;/annotation&gt;
     &lt;annotation&gt;@org.jboss.test.TestAnnotation2&lt;/annotation&gt;
 &lt;/bean&gt;</programlisting>
           </listitem>
           <listitem>
             <para>&lt;constructor&gt;</para>
-            <programlisting>&lt;bean name=&quot;example&quot; class=&quot;org.jboss.test.Example&quot;&gt;
+            <programlisting role="XML">&lt;bean name=&quot;example&quot; class=&quot;org.jboss.test.Example&quot;&gt;
     &lt;constructor&gt;
         &lt;annotation&gt;@org.jboss.test.TestAnnotation&lt;/annotation&gt;
     &lt;/constructor&gt;
@@ -1108,7 +1112,7 @@ public class MyApp {
           </listitem>
           <listitem>
             <para>&lt;create&gt;, &lt;start&gt;, &lt;stop&gt;, &lt;destroy&gt;</para>
-            <programlisting>&lt;bean name=&quot;example&quot; class=&quot;org.jboss.test.Example&quot;&gt;
+            <programlisting role="XML">&lt;bean name=&quot;example&quot; class=&quot;org.jboss.test.Example&quot;&gt;
     &lt;create&gt;
         &lt;annotation&gt;@org.jboss.test.TestAnnotation&lt;/annotation&gt;
     &lt;/create&gt;
@@ -1116,7 +1120,7 @@ public class MyApp {
           </listitem>
           <listitem>
             <para>&lt;install&gt;, &lt;uninstall&gt;</para>
-            <programlisting>&lt;bean name=&quot;example&quot; class=&quot;org.jboss.test.Example&quot;&gt;
+            <programlisting role="XML">&lt;bean name=&quot;example&quot; class=&quot;org.jboss.test.Example&quot;&gt;
     &lt;install method=&quot;someMethod&quot;&gt;
         &lt;annotation&gt;@org.jboss.test.TestAnnotation&lt;/annotation&gt;
     &lt;/install&gt;
@@ -1124,11 +1128,11 @@ public class MyApp {
           </listitem>
           <listitem>
             <para>&lt;incallback&gt;, &lt;uncallback&gt;</para>
-            <programlisting/>
+            <programlisting role="XML"/>
           </listitem>
           <listitem>
             <para>&lt;value&gt;</para>
-            <programlisting>&lt;bean name=&quot;example&quot; class=&quot;org.jboss.test.Example&quot;&gt;
+            <programlisting role="XML">&lt;bean name=&quot;example&quot; class=&quot;org.jboss.test.Example&quot;&gt;
     &lt;property name=&quot;PropertyName&quot;&gt;
         &lt;annotation&gt;@org.jboss.test.TestAnnotation&lt;/annotation&gt;
         &lt;value&gt;123&lt;/value&gt;
@@ -1144,7 +1148,7 @@ public class MyApp {
       <section>
         <title>Writing deployment descriptors</title>
         <para>Deployment descriptors externalize the configuration of POJOs into one or more files that are separate from the source code. This means that changes can be made without having to recompile any classes. The usual way to define a deployment descriptor is using the bean-deployer XML schema whose root element is &lt;deployment&gt;. This is used to group multiple beans together so that they are deployed as a unit:</para>
-        <programlisting>&lt;deployment xmlns:xsi=&quot;http://www.w3.org/2001/XMLSchema-instance&quot;
+        <programlisting role="XML">&lt;deployment xmlns:xsi=&quot;http://www.w3.org/2001/XMLSchema-instance&quot;
                     xsi:schemaLocation=&quot;urn:jboss:bean-deployer bean-deployer_2_0.xsd&quot;
                     xmlns=&quot;urn:jboss:bean-deployer:2.0&quot;&gt;
 
@@ -1152,7 +1156,7 @@ public class MyApp {
 
 &lt;/deployment&gt;</programlisting>
         <para>The bean definitions are created using &lt;bean&gt; elements that each describe a single POJO instance. Each bean is given a name so that it can be referenced elsewhere in the deployment descriptor or looked up by a client at runtime.</para>
-        <programlisting>&lt;deployment xmlns:xsi=&quot;http://www.w3.org/2001/XMLSchema-instance&quot;
+        <programlisting role="XML">&lt;deployment xmlns:xsi=&quot;http://www.w3.org/2001/XMLSchema-instance&quot;
                     xsi:schemaLocation=&quot;urn:jboss:bean-deployer bean-deployer_2_0.xsd&quot;
                     xmlns=&quot;urn:jboss:bean-deployer:2.0&quot;&gt;
 
@@ -1173,11 +1177,11 @@ public class MyApp {
         <itemizedlist>
           <listitem>
             <para>Default constructor</para>
-            <programlisting>&lt;javabean xmlns=&quot;urn:jboss:javabean:2.0&quot; class=&quot;org.jboss.test.javabean.support.SimpleBean&quot;/&gt;</programlisting>
+            <programlisting role="XML">&lt;javabean xmlns=&quot;urn:jboss:javabean:2.0&quot; class=&quot;org.jboss.test.javabean.support.SimpleBean&quot;/&gt;</programlisting>
           </listitem>
           <listitem>
             <para>Contructor with parameters</para>
-            <programlisting>&lt;javabean xmlns=&quot;urn:jboss:javabean:2.0&quot; class=&quot;org.jboss.test.javabean.support.SimpleBean&quot;&gt;
+            <programlisting role="XML">&lt;javabean xmlns=&quot;urn:jboss:javabean:2.0&quot; class=&quot;org.jboss.test.javabean.support.SimpleBean&quot;&gt;
     &lt;constructor&gt;
         &lt;property name=&quot;ABoolean&quot;&gt;true&lt;/property&gt;
         &lt;property name=&quot;ACharacter&quot;&gt;x&lt;/property&gt;
@@ -1187,14 +1191,14 @@ public class MyApp {
           </listitem>
           <listitem>
             <para>Static factory method</para>
-            <programlisting>&lt;javabean xmlns=&quot;urn:jboss:javabean:2.0&quot; class=&quot;org.jboss.test.javabean.support.SimpleBean&quot;&gt;
+            <programlisting role="XML">&lt;javabean xmlns=&quot;urn:jboss:javabean:2.0&quot; class=&quot;org.jboss.test.javabean.support.SimpleBean&quot;&gt;
     &lt;constructor factoryClass=&quot;org.jboss.test.javabean.support.SimpleBeanFactory&quot;
                  factoryMethod=&quot;newInstance&quot;/&gt;
 &lt;/javabean&gt;</programlisting>
           </listitem>
           <listitem>
             <para>Static factory method with parameters</para>
-            <programlisting>&lt;javabean xmlns=&quot;urn:jboss:javabean:2.0&quot; class=&quot;org.jboss.test.javabean.support.SimpleBean&quot;&gt;
+            <programlisting role="XML">&lt;javabean xmlns=&quot;urn:jboss:javabean:2.0&quot; class=&quot;org.jboss.test.javabean.support.SimpleBean&quot;&gt;
     &lt;constructor factoryClass=&quot;org.jboss.test.javabean.support.SimpleBeanFactory&quot;
                  factoryMethod=&quot;newInstance&quot;&gt;
         &lt;property name=&quot;AString&quot;&gt;StringValue&lt;/property&gt;
@@ -1207,7 +1211,7 @@ public class MyApp {
           <para>JavaBean declarations do not include a <code>name</code> attribute which means that you cannot inject references into other JavaBeans or lookup a reference to a JavaBean instance from a client at runtime.</para>
         </note>
         <para>Once a JavaBean has been constructed then simple injection of property values is possible using the &lt;property&gt; element: </para>
-        <programlisting>&lt;javabean xmlns=&quot;urn:jboss:javabean:2.0&quot; class=&quot;org.jboss.test.javabean.support.SimpleBean&quot;&gt;
+        <programlisting role="XML">&lt;javabean xmlns=&quot;urn:jboss:javabean:2.0&quot; class=&quot;org.jboss.test.javabean.support.SimpleBean&quot;&gt;
     &lt;property name=&quot;ADouble&quot;&gt;3.14e12&lt;/property&gt;
     &lt;property name=&quot;ADate&quot;&gt;Jan 01 00:00:00 CET 2001&lt;/property&gt;
     &lt;property name=&quot;ABigDecimal&quot;&gt;12e4&lt;/property&gt;
@@ -1215,12 +1219,12 @@ public class MyApp {
     &lt;property name=&quot;abyte&quot;&gt;12&lt;/property&gt; 
 &lt;/javabean&gt;</programlisting>
         <para>As with properties defined using the bean-deployer XML schema the string values are converted into objects of the correct type using JavaBean <ulink url="http://java.sun.com/j2se/1.5.0/docs/api/java/beans/PropertyEditor.html">PropertyEditors</ulink>. For cases where the type is ambiguous, e.g. when defining numbers, you can specify the required type by including a <code>class</code> attribute: </para>
-        <programlisting>&lt;javabean xmlns=&quot;urn:jboss:javabean:2.0&quot; class=&quot;org.jboss.test.javabean.support.SimpleBean&quot;&gt;
+        <programlisting role="XML">&lt;javabean xmlns=&quot;urn:jboss:javabean:2.0&quot; class=&quot;org.jboss.test.javabean.support.SimpleBean&quot;&gt;
     &lt;property name=&quot;ANumber&quot; class=&quot;java.lang.Long&quot;&gt;12345&lt;/property&gt; 
 &lt;/javabean&gt;</programlisting>
         <important>
           <para>Beans created using the bean-deployer XML schema  can include JavaBeans  created using the javabean XML schema instead of string values. This provides a simple way to inject objects composed of multiple values into a bean property without having to write a complicated property editor:</para>
-          <programlisting>&lt;bean name=&quot;example&quot; class=&quot;org.jboss.acme.Example&quot;&gt;
+          <programlisting role="XML">&lt;bean name=&quot;example&quot; class=&quot;org.jboss.acme.Example&quot;&gt;
     &lt;property name=&quot;myProperty&quot;&gt;
         &lt;javabean xmlns=&quot;urn:jboss:javabean:1.0&quot; class=&quot;org.jboss.test.javabean.support.SimpleBean&quot;&gt;
             &lt;property name=&quot;ADate&quot;&gt;Jan 01 00:00:00 CET 2001&lt;/property&gt;
@@ -1234,7 +1238,7 @@ public class MyApp {
         <title>Using Spring XML</title>
         <para>Spring like JBoss Microcontainer allows POJOs to be created and configured using an XML schema. As the microcontainer largely supports the same set of features as Spring it is possible to  use the spring-beans  schema to define beans instead of the bean-deployer schema. This makes migrating services built and tested using Spring to JBoss Microcontainer very straightforward.</para>
         <para>To define beans using the spring-beans schema you need to include <code>spring-int.jar</code> on the microcontainer classpath. You can then create a deployment descriptor containing a &lt;beans&gt; element at the root instead of the usual &lt;deployment&gt; element:</para>
-        <programlisting>&lt;beans xmlns=&quot;urn:jboss:spring-beans:2.0&quot;&gt;
+        <programlisting role="XML">&lt;beans xmlns=&quot;urn:jboss:spring-beans:2.0&quot;&gt;
     &lt;bean id=&quot;testBean&quot; class=&quot;org.jboss.test.spring.support.SimpleBean&quot;&gt;
         &lt;constructor-arg index=&quot;2&quot;&gt;
             &lt;value&gt;SpringBean&lt;/value&gt;
@@ -1279,7 +1283,7 @@ public class MyApp {
         <itemizedlist>
           <listitem>
             <para>JBoss Microcontainer deployment containing Spring defined beans</para>
-            <programlisting>&lt;deployment xmlns=&quot;urn:jboss:bean-deployer:2.0&quot;&gt;
+            <programlisting role="XML">&lt;deployment xmlns=&quot;urn:jboss:bean-deployer:2.0&quot;&gt;
 
     &lt;bean name=&quot;oldBean&quot; class=&quot;org.jboss.test.spring.support.OldBean&quot;&gt;
         &lt;property name=&quot;testBean&quot;&gt;
@@ -1301,7 +1305,7 @@ public class MyApp {
           </listitem>
           <listitem>
             <para>Spring defined deployment containing JBoss Microcontainer beans</para>
-            <programlisting>&lt;beans xmlns=&quot;urn:jboss:spring-beans:2.0&quot;&gt;
+            <programlisting role="XML">&lt;beans xmlns=&quot;urn:jboss:spring-beans:2.0&quot;&gt;
 
     &lt;bean id=&quot;testBean&quot; class=&quot;org.jboss.test.spring.support.SimpleBean&quot;&gt;
         &lt;property name=&quot;refBean&quot;&gt;
@@ -1331,9 +1335,9 @@ public class MyApp {
         <title>Defining classloaders</title>
         <para>In order to create POJO instances we must first load the corresponding POJO classes into the JVM using a classloader. JBoss Microcontainer does this by using  the classloader associated with the current thread of execution, i.e. the thread context classloader. But what do we mean by the current thread of execution and who sets its context  classloader?</para>
         <para>In all of our examples so far we have created applications that only use a  single thread. This is the &apos;primordial&apos; thread created by the main() function:</para>
-        <programlisting>public static void main(String[] args) {}</programlisting>
+        <programlisting role="JAVA">public static void main(String[] args) {}</programlisting>
         <para>As the only thread in the application (other than the garbage collecton thread which is created for every Java application) this executes all of the code including calling the deploy()  method of our BasicXMLDeployer:</para>
-        <programlisting>public class BasicXMLDeployer extends BasicKernelDeployer
+        <programlisting role="JAVA">public class BasicXMLDeployer extends BasicKernelDeployer
 {
     ...
     public KernelDeployment deploy(final URL url) throws Throwable
@@ -1379,7 +1383,7 @@ public class MyApp {
         </note>
         <para>Now that we know the default classloader comes from the current thread of execution, which if not set explicitly is set on startup to be the application classloader, how can we change it to load bean classes from other locations?</para>
         <para>If you are using the BasicXMLDeployer or its equivalent aspectized deployer then you can define classloaders for entire deployments or individual beans by including &lt;classloader&gt; elements within the XML deployment descriptor. To specify a different classloader for all the beans in a deployment you need to include a &lt;classloader&gt; element above all of the &lt;bean&gt; elements:</para>
-        <programlisting>&lt;deployment&gt;
+        <programlisting role="XML">&lt;deployment&gt;
     &lt;classloader&gt;&lt;inject bean=&quot;deploymentCL&quot;/&gt;&lt;/classloader&gt;
 
     &lt;bean name=&quot;Bean1&quot; ... &gt;
@@ -1392,7 +1396,7 @@ public class MyApp {
 
 &lt;/deployment&gt;</programlisting>
         <para>If instead you wish to override either the default classloader or a deployment classloader for a particular bean then you need to include a &lt;classloader&gt; element within the &lt;bean&gt; definition itself:</para>
-        <programlisting>&lt;deployment&gt;
+        <programlisting role="XML">&lt;deployment&gt;
     &lt;classloader&gt;&lt;inject bean=&quot;deploymentCL&quot;/&gt;&lt;/classloader&gt;
 
     &lt;bean name=&quot;Bean1&quot; ... &gt;
@@ -1406,7 +1410,7 @@ public class MyApp {
 
 &lt;/deployment&gt;</programlisting>
         <para>Finally you can choose to use the default classloader for  a bean instead of the deployment classloader, if one is defined, by including a &lt;classloader&gt; element with a &lt;/null&gt; value:</para>
-        <programlisting>&lt;deployment&gt;
+        <programlisting role="XML">&lt;deployment&gt;
     &lt;classloader&gt;&lt;inject bean=&quot;deploymentCL&quot;/&gt;&lt;/classloader&gt;
 
     &lt;bean name=&quot;Bean1&quot; ... &gt;
@@ -1421,12 +1425,13 @@ public class MyApp {
 
 &lt;/deployment&gt;</programlisting>
         <para>The classloader beans that you inject must be deployed in the runtime environment before bean classes can be loaded. Typically this is done by also declaring them in the XML deployment descriptor:</para>
-        <programlisting>&lt;deployment xmlns:xsi=&quot;http://www.w3.org/2001/XMLSchema-instance&quot;
+        <programlisting role="XML">&lt;deployment xmlns:xsi=&quot;http://www.w3.org/2001/XMLSchema-instance&quot;
             xsi:schemaLocation=&quot;urn:jboss:bean-deployer:2.0 bean-deployer_2_0.xsd&quot;
             xmlns=&quot;urn:jboss:bean-deployer:2.0&quot;&gt;
 
     &lt;bean name=&quot;URL&quot; class=&quot;java.net.URL&quot;&gt;
-        &lt;constructor&gt;       &lt;parameter&gt;file:/Users/newtonm/jbossmc/microcontainer/trunk/docs/examples/User_Guide/gettingStarted/commandLineClient/target/client-cl.dir/otherLib/humanResourcesService-1.0.0.jar&lt;/parameter&gt;
+        &lt;constructor&gt;
+       &lt;parameter&gt;file:/Users/newtonm/jbossmc/microcontainer/trunk/docs/examples/User_Guide/gettingStarted/commandLineClient/target/client-cl.dir/otherLib/humanResourcesService-1.0.0.jar&lt;/parameter&gt;
         &lt;/constructor&gt;
     &lt;/bean&gt;
 
@@ -1454,24 +1459,24 @@ public class MyApp {
         <para>Creating POJO instances is performed either by calling a constructor or using a factory method. The &lt;constructor&gt; element is used in both cases and parameters can be passed if necessary using nested &lt;parameter&gt; elements. Annotations also exist for either case with parameter values represented as annotations of the constructor parameters themselves.</para>
         <important>
           <para>At present it is not possible to create a POJO instance only using annotations. This is because classes are not automatically loaded and scanned whenever they are added to the classpath. Doing so would significantly reduce the performance of the deployment process as all classes would need to be loaded, even if they were not yet required. Instead you must always define beans using a deployment descriptor as  this tells the  microcontainer which classes to load. These classes are subsequently scanned for annotations such as @Constructor and @Factory to discover how to create  instances.</para>
-          <programlisting>&lt;bean name=&quot;SimpleBean&quot; class=&quot;org.jboss.example.SimpleBean&quot;/&gt;</programlisting>
+          <programlisting role="XML">&lt;bean name=&quot;SimpleBean&quot; class=&quot;org.jboss.example.SimpleBean&quot;/&gt;</programlisting>
         </important>
         <itemizedlist>
           <listitem>
             <para>Default constructor</para>
-            <programlisting>@Constructor
+            <programlisting role="JAVA">@Constructor
 public TestConstructorBean() {
  ...
 }</programlisting>
-            <programlisting>&lt;bean name=&quot;Test&quot; class=&quot;org.jboss.example.constructor.TestConstructorBean&quot;/&gt;       </programlisting>
+            <programlisting role="XML">&lt;bean name=&quot;Test&quot; class=&quot;org.jboss.example.constructor.TestConstructorBean&quot;/&gt;       </programlisting>
           </listitem>
           <listitem>
             <para>Constructor with parameters</para>
-            <programlisting>@Constructor
+            <programlisting role="JAVA">@Constructor
 public TestConstructorBean(@StringValue(&quot;this is a test contructor&quot;) String testString, @StringValue(&quot;25&quot;) int testNumber) {
  ...
 }</programlisting>
-            <programlisting>&lt;bean name=&quot;Test&quot; class=&quot;org.jboss.example.constructor.TestConstructorBean&quot;&gt;
+            <programlisting role="XML">&lt;bean name=&quot;Test&quot; class=&quot;org.jboss.example.constructor.TestConstructorBean&quot;&gt;
     &lt;constructor&gt;
         &lt;parameter&gt;this is a test constructor&lt;/parameter&gt;
         &lt;parameter&gt;25&lt;/parameter&gt;
@@ -1480,7 +1485,7 @@ public TestConstructorBean(@StringValue(&quot;this is a test contructor&quot;) S
           </listitem>
           <listitem>
             <para>Choosing between two constructors with the same number of parameters</para>
-            <programlisting>public TestConstructorBean(String testString, int testNumber) {
+            <programlisting role="JAVA">public TestConstructorBean(String testString, int testNumber) {
     ...
 }
 
@@ -1488,7 +1493,7 @@ public TestConstructorBean(@StringValue(&quot;this is a test contructor&quot;) S
 public TestConstructorBean(@StringValue(&quot;this is a test constructor&quot;) String testString, @StringValue(value=&quot;25&quot;, type=&quot;long&quot;) long testNumber) {
     ...
 }</programlisting>
-            <programlisting>&lt;bean name=&quot;Test&quot; class=&quot;org.jboss.example.constructor.TestConstructorBean&quot;&gt;
+            <programlisting role="XML">&lt;bean name=&quot;Test&quot; class=&quot;org.jboss.example.constructor.TestConstructorBean&quot;&gt;
     &lt;constructor&gt;
         &lt;parameter&gt;this is a test constructor&lt;/parameter&gt;
         &lt;parameter class=&quot;long&quot;&gt;25&lt;/parameter&gt;
@@ -1500,11 +1505,11 @@ public TestConstructorBean(@StringValue(&quot;this is a test constructor&quot;) 
           </listitem>
         </itemizedlist>
         <para>You can also specify javabeans as parameters if required using the @JavaBeanValue annotation or &lt;javabean&gt; element. In this particular case the annotation is not very useful as it can only call the default constructor of the javabean class to create an instance. If you want to use a different constructor or inject properties then you should use the XML element instead.</para>
-        <programlisting>@Constructor
+        <programlisting role="JAVA">@Constructor
 public TestConstructorBean(@StringValue(&quot;this is a test constructor&quot;) String testString, @JavaBeanValue(&quot;org.jboss.test.Person&quot;) Person testPerson) {
     ...
 }</programlisting>
-        <programlisting>&lt;bean name=&quot;Test&quot; class=&quot;org.jboss.example.constructor.TestConstructorBean&quot;&gt;
+        <programlisting role="XML">&lt;bean name=&quot;Test&quot; class=&quot;org.jboss.example.constructor.TestConstructorBean&quot;&gt;
     &lt;constructor&gt;
         &lt;parameter&gt;this is a test constructor&lt;/parameter&gt;
         &lt;parameter&gt;
@@ -1519,11 +1524,11 @@ public TestConstructorBean(@StringValue(&quot;this is a test constructor&quot;) 
     &lt;/constructor&gt;
 &lt;/bean&gt;</programlisting>
         <para>Finally you can inject references to other beans or their properties into constructor parameters giving you complete control of the construction of your POJOs.</para>
-        <programlisting>@Constructor
+        <programlisting role="JAVA">@Constructor
 public TestConstructorBean(@Inject(bean=&quot;TestPerson&quot;) Person testPerson, @Inject(bean=&quot;TestAddress&quot;, property=&quot;street&quot;) String street) {
     ...
 }</programlisting>
-        <programlisting>&lt;bean name=&quot;Test&quot; class=&quot;org.jboss.example.constructor.TestConstructorBean&quot;&gt;
+        <programlisting role="XML">&lt;bean name=&quot;Test&quot; class=&quot;org.jboss.example.constructor.TestConstructorBean&quot;&gt;
     &lt;constructor&gt;
         &lt;parameter&gt;
             &lt;inject bean=&quot;TestPerson&quot;/&gt;
@@ -1540,25 +1545,25 @@ public TestConstructorBean(@Inject(bean=&quot;TestPerson&quot;) Person testPerso
         <itemizedlist>
           <listitem>
             <para>Static factory method</para>
-            <programlisting>@Factory (factoryClass=&quot;org.jboss.example.MyFactory&quot;,
+            <programlisting role="JAVA">@Factory (factoryClass=&quot;org.jboss.example.MyFactory&quot;,
           factoryMethod=&quot;newInstance&quot;)
 public class SimpleBean {
    ...
 }</programlisting>
-            <programlisting>&lt;bean name=&quot;SimpleBean&quot; class=&quot;org.jboss.example.SimpleBean&quot;&gt;
+            <programlisting role="XML">&lt;bean name=&quot;SimpleBean&quot; class=&quot;org.jboss.example.SimpleBean&quot;&gt;
     &lt;constructor factoryClass=&quot;org.jboss.example.MyFactory&quot;
                  factoryMethod=&quot;newInstance&quot;/&gt;
 &lt;/bean&gt; </programlisting>
           </listitem>
           <listitem>
             <para>Static factory method with parameters</para>
-            <programlisting>@Factory (factoryClass=&quot;org.jboss.example.MyFactory&quot;,
+            <programlisting role="JAVA">@Factory (factoryClass=&quot;org.jboss.example.MyFactory&quot;,
           factoryMethod=&quot;newInstance&quot;,
           parameters={@Value(string=@StringValue(&quot;a string&quot;)),@Value(string=@StringValue(&quot;7&quot;))})
 public class SimpleBean {
    ...
 }</programlisting>
-            <programlisting>&lt;bean name=&quot;SimpleBean&quot; class=&quot;org.jboss.example.SimpleBean&quot;&gt;
+            <programlisting role="XML">&lt;bean name=&quot;SimpleBean&quot; class=&quot;org.jboss.example.SimpleBean&quot;&gt;
     &lt;constructor factoryClass=&quot;org.jboss.example.MyFactory&quot;
                  factoryMethod=&quot;newInstance&quot;&gt;
         &lt;parameter&gt;a string&lt;/parameter&gt;
@@ -1568,12 +1573,12 @@ public class SimpleBean {
           </listitem>
           <listitem>
             <para>Non-static factory method</para>
-            <programlisting>@Factory (factory=@Value(javabean=@JavaBeanValue(&quot;org.jboss.example.MyOtherFactory&quot;)),
+            <programlisting role="JAVA">@Factory (factory=@Value(javabean=@JavaBeanValue(&quot;org.jboss.example.MyOtherFactory&quot;)),
           factoryMethod=&quot;createBean&quot;)
 public class SimpleBean {
     ...
 }</programlisting>
-            <programlisting>&lt;bean name=&quot;MyOtherFactory&quot; class=&quot;org.jboss.example.MyOtherFactory&quot;/&gt;
+            <programlisting role="XML">&lt;bean name=&quot;MyOtherFactory&quot; class=&quot;org.jboss.example.MyOtherFactory&quot;/&gt;
 
 &lt;bean name=&quot;SimpleBean&quot; class=&quot;org.jboss.example.SimpleBean&quot;&gt;
     &lt;constructor factoryMethod=&quot;createBean&quot;&gt;
@@ -1583,13 +1588,13 @@ public class SimpleBean {
           </listitem>
           <listitem>
             <para>Non-static factory method with parameters</para>
-            <programlisting>@Factory (factory=@Value(javabean=@JavaBeanValue(&quot;org.jboss.example.MyOtherFactory&quot;)),
+            <programlisting role="JAVA">@Factory (factory=@Value(javabean=@JavaBeanValue(&quot;org.jboss.example.MyOtherFactory&quot;)),
           factoryMethod=&quot;createBean&quot;,
           parameters={@Value(string=@StringValue(&quot;a string&quot;)),@Value(string=@StringValue(&quot;7&quot;))})
 public class SimpleBean {
     ...
 }</programlisting>
-            <programlisting>&lt;bean name=&quot;MyOtherFactory&quot; class=&quot;org.jboss.example.MyOtherFactory&quot;/&gt;
+            <programlisting role="XML">&lt;bean name=&quot;MyOtherFactory&quot; class=&quot;org.jboss.example.MyOtherFactory&quot;/&gt;
 
 &lt;bean name=&quot;SimpleBean&quot; class=&quot;org.jboss.example.SimpleBean&quot;&gt;
     &lt;constructor factoryMethod=&quot;createBean&quot;&gt;
@@ -1604,14 +1609,14 @@ public class SimpleBean {
         <itemizedlist>
           <listitem>
             <para>Bean implementing its own static factory method</para>
-            <programlisting>public class SimpleBean {
+            <programlisting role="JAVA">public class SimpleBean {
 
     @FactoryMethod
     public static newInstance(@StringValue(&quot;a string&quot;) String name, @StringValue(&quot;5&quot;) int level) {
         ...
     }
 }</programlisting>
-            <programlisting>&lt;bean name=&quot;SimpleBean&quot; class=&quot;org.jboss.example.SimpleBean&quot;&gt;
+            <programlisting role="XML">&lt;bean name=&quot;SimpleBean&quot; class=&quot;org.jboss.example.SimpleBean&quot;&gt;
     &lt;constructor factoryMethod=&quot;newInstance&quot;&gt;
         &lt;parameter&gt;a string&lt;/parameter&gt;
         &lt;parameter&gt;5&lt;/parameter&gt;
@@ -1630,22 +1635,22 @@ public class SimpleBean {
         <itemizedlist>
           <listitem>
             <para>Defining extra bean names</para>
-            <programlisting>@Aliases({&quot;MyAlias&quot;, &quot;Test: ${test.name}&quot;})
+            <programlisting role="JAVA">@Aliases({&quot;MyAlias&quot;, &quot;Test: ${test.name}&quot;})
 public class SimpleBean {
     ...
 }</programlisting>
-            <programlisting>&lt;bean name=&quot;MyBean&quot; class=&quot;org.acme.SimpleBean&quot;&gt;
+            <programlisting role="XML">&lt;bean name=&quot;MyBean&quot; class=&quot;org.acme.SimpleBean&quot;&gt;
     &lt;alias&gt;MyAlias&lt;/alias&gt;
     &lt;alias&gt;Test: ${test.name}&lt;/alias&gt;
 &lt;/bean&gt;</programlisting>
           </listitem>
           <listitem>
             <para>Disabling System property replacement</para>
-            <programlisting>@Aliases({&quot;MyAlias&quot;, &quot;Test: ${test.name}&quot;} replace=&quot;false&quot;)
+            <programlisting role="JAVA">@Aliases({&quot;MyAlias&quot;, &quot;Test: ${test.name}&quot;} replace=&quot;false&quot;)
 public class SimpleBean {
     ...
 }</programlisting>
-            <programlisting>&lt;bean name=&quot;MyBean&quot; class=&quot;org.acme.SimpleBean&quot;&gt;
+            <programlisting role="XML">&lt;bean name=&quot;MyBean&quot; class=&quot;org.acme.SimpleBean&quot;&gt;
     &lt;alias&gt;MyAlias&lt;/alias&gt;
     &lt;alias replace=&quot;false&quot;&gt;Test: ${test.name}&lt;/alias&gt;
 &lt;/bean&gt;</programlisting>
@@ -1655,7 +1660,7 @@ public class SimpleBean {
         <itemizedlist>
           <listitem>
             <para>Choosing a different alias type</para>
-            <programlisting>&lt;bean name=&quot;MyBean&quot; class=&quot;org.acme.SimpleBean&quot;&gt;
+            <programlisting role="XML">&lt;bean name=&quot;MyBean&quot; class=&quot;org.acme.SimpleBean&quot;&gt;
     &lt;alias class=&quot;java.lang.Integer&quot;&gt;12345&lt;/alias&gt; 
 &lt;/bean&gt;</programlisting>
           </listitem>
@@ -1664,7 +1669,7 @@ public class SimpleBean {
         <itemizedlist>
           <listitem>
             <para>Defining a standalone alias</para>
-            <programlisting>&lt;deployment name=&quot;FirstDeployment&quot; xmlns=&quot;urn:jboss:bean-deployer:2.0&quot;&gt;
+            <programlisting role="XML">&lt;deployment name=&quot;FirstDeployment&quot; xmlns=&quot;urn:jboss:bean-deployer:2.0&quot;&gt;
 
     &lt;bean name=&quot;Bean1&quot; class=&quot;java.lang.Object&quot;/&gt;
     &lt;bean name=&quot;Bean2&quot; class=&quot;java.lang.Object&quot;/&gt;
@@ -1695,7 +1700,7 @@ public class SimpleBean {
       <section>
         <title>Using values</title>
         <para>Once a POJO instance has been created then it can be configured by injecting property values. Like most other features this can be done using either annotations or a deployment descriptor. For each property that you wish to inject the bean must define an appropriate setter method for the microcontainer to call.</para>
-        <programlisting>public class PropertiesBean {
+        <programlisting role="JAVA">public class PropertiesBean {
 
     public void setTitle(@StringValue(&quot;JBoss Microcontainer&quot;) String title) {
         ...
@@ -1709,22 +1714,22 @@ public class SimpleBean {
         ...
     }
 }</programlisting>
-        <programlisting>&lt;bean name=&quot;PropertiesBean&quot; class=&quot;org.jboss.example.microcontainer.properties.PropertiesBean&quot;&gt;
+        <programlisting role="XML">&lt;bean name=&quot;PropertiesBean&quot; class=&quot;org.jboss.example.microcontainer.properties.PropertiesBean&quot;&gt;
     &lt;property name=&quot;title&quot;&gt;JBoss Microcontainer&lt;/property&gt;
     &lt;property name=&quot;link&quot;&gt;http://www.jboss.org&lt;/property&gt;
     &lt;property name=&quot;number&quot;&gt;4&lt;/property&gt;
 &lt;/bean&gt; </programlisting>
         <para>As you have probably noticed we are required to enter all of our values as strings since we are dealing with text files. These strings are converted into objects of the correct type using JavaBean <ulink url="http://java.sun.com/j2se/1.5.0/docs/api/java/beans/PropertyEditor.html">PropertyEditors</ulink>. If the property takes an interface or abstract class then you can pass a specific implementation using a <code>type</code> or  <code>class</code> attribute depending on whether you&apos;re using annotations or XML.</para>
-        <programlisting>public class PropertiesBean {
+        <programlisting role="JAVA">public class PropertiesBean {
     public void setNumber(@StringValue(value=&quot;4&quot;, type=&quot;java.lang.Long&quot;) Number number) {
         ...
    }
 }</programlisting>
-        <programlisting>&lt;bean name=&quot;PropertiesBean&quot; class=&quot;org.jboss.example.microcontainer.properties.PropertiesBean&quot;&gt;
+        <programlisting role="XML">&lt;bean name=&quot;PropertiesBean&quot; class=&quot;org.jboss.example.microcontainer.properties.PropertiesBean&quot;&gt;
     &lt;property name=&quot;number&quot; class=&quot;java.lang.Long&quot;&gt;4&lt;/property&gt;
 &lt;/bean&gt; </programlisting>
         <para>Sometimes you may want to pass in a value that isn&apos;t of the same type as the property but can be progressed into it. Progression is typically used for converting numbers from one type to another, e.g. Short to Int or Float to Double. JBoss Microcontainer by default will automatically perform progression using a <code>SimpleProgressionConverter</code> implementation.</para>
-        <programlisting>&lt;bean name=&quot;SimpleBean&quot; class=&quot;org.jboss.test.SimpleBean&quot;&gt;
+        <programlisting role="XML">&lt;bean name=&quot;SimpleBean&quot; class=&quot;org.jboss.test.SimpleBean&quot;&gt;
     &lt;property name=&quot;anInt&quot;&gt;
         &lt;javabean xmlns=&quot;urn:jboss:javabean:2.0&quot; class=&quot;java.lang.Double&quot;&gt;
             &lt;constructor&gt;
@@ -1750,27 +1755,27 @@ public class SimpleBean {
         <para>You can replace  the default progression converter implementation with one of your own by setting the <code>org.jboss.reflect.plugins.progressionConverter</code> system property using a fully-qualified class name. If you want to prevent progression from occuring altogether then you can use the <code>NullProgressionConverter</code> which is also provided.</para>
         <programlisting>-Dorg.jboss.reflect.plugins.progressionConverter=org.jboss.reflect.plugins.NullProgressionConvertor</programlisting>
         <para>If you want to use a null value then you need to use the @NullValue annotation or &lt;null/&gt; element. This is so we can differentiate it from the string &apos;null&apos;.</para>
-        <programlisting>public void setTitle(@NullValue String title) {
+        <programlisting role="JAVA">public void setTitle(@NullValue String title) {
     ...
 } </programlisting>
-        <programlisting>&lt;bean name=&quot;PropertiesBean&quot; class=&quot;org.jboss.example.microcontainer.properties.PropertiesBean&quot;&gt;
+        <programlisting role="XML">&lt;bean name=&quot;PropertiesBean&quot; class=&quot;org.jboss.example.microcontainer.properties.PropertiesBean&quot;&gt;
     &lt;property name=&quot;title&quot;&gt;&lt;null/&gt;&lt;/property&gt;
 &lt;/bean&gt; </programlisting>
         <para>Similarly if you want to refer to the current object then you  should use the @ThisValue annotation or &lt;this/&gt; element.</para>
-        <programlisting>public void setObject(@ThisValue Object target) {
+        <programlisting role="JAVA">public void setObject(@ThisValue Object target) {
     ...
 } </programlisting>
-        <programlisting>&lt;bean name=&quot;PropertiesBean&quot; class=&quot;org.jboss.example.microcontainer.properties.PropertiesBean&quot;&gt;
+        <programlisting role="XML">&lt;bean name=&quot;PropertiesBean&quot; class=&quot;org.jboss.example.microcontainer.properties.PropertiesBean&quot;&gt;
     &lt;property name=&quot;target&quot;&gt;&lt;this/&gt;&lt;/property&gt;
 &lt;/bean&gt; </programlisting>
         <para>Property values can also be defined using a longer form of XML if you prefer.</para>
-        <programlisting>&lt;bean name=&quot;PropertiesBean&quot; class=&quot;org.jboss.example.microcontainer.properties.PropertiesBean&quot;&gt;
+        <programlisting role="XML">&lt;bean name=&quot;PropertiesBean&quot; class=&quot;org.jboss.example.microcontainer.properties.PropertiesBean&quot;&gt;
     &lt;property name=&quot;number&quot;&gt;
         &lt;value class=&quot;java.lang.Long&quot;&gt;4&lt;/value&gt;
     &lt;/property&gt;
 &lt;/bean&gt; </programlisting>
         <para>This is primarily used when configuring values representing collections such as lists, sets and arrays. Elements of a collection are defined by listing annotations or nesting &lt;value&gt; elements as follows:</para>
-        <programlisting>@CollectionValue(elementClass=&quot;java.lang.String&quot;,
+        <programlisting role="JAVA">@CollectionValue(elementClass=&quot;java.lang.String&quot;,
                  {@Value(string=@StringValue(&quot;string1&quot;)),
                   @Value(string=@StringValue(&quot;string2&quot;)),
                   @Value(string=@StringValue(&quot;string3&quot;)),
@@ -1778,7 +1783,7 @@ public class SimpleBean {
 public void setCollection(Collection collection) {
     ...
 } </programlisting>
-        <programlisting>&lt;bean name=&quot;SimpleBean&quot; class=&quot;org.jboss.example.SimpleBean&quot;&gt;
+        <programlisting role="XML">&lt;bean name=&quot;SimpleBean&quot; class=&quot;org.jboss.example.SimpleBean&quot;&gt;
     &lt;property name=&quot;collection&quot;&gt;
         &lt;collection elementClass=&quot;java.lang.String&quot;&gt;
             &lt;value&gt;string1&lt;/value&gt;
@@ -1789,7 +1794,7 @@ public void setCollection(Collection collection) {
     &lt;/property&gt;
 &lt;/bean&gt; </programlisting>
         <para>The <code>elementClass</code> attribute specifies the default class for the values. This can be overriden for individual values using the <code>type</code> or <code>class</code> attributes.</para>
-        <programlisting>@CollectionValue(elementClass=&quot;java.lang.String&quot;,
+        <programlisting role="JAVA">@CollectionValue(elementClass=&quot;java.lang.String&quot;,
                  {@Value(string=@StringValue(&quot;string1&quot;)),
                   @Value(string=@StringValue(&quot;string2&quot;)),
                   @Value(string=@StringValue(value=&quot;3.0&quot;, type=&quot;java.lang.Float&quot;)),
@@ -1797,7 +1802,7 @@ public void setCollection(Collection collection) {
 public void setCollection(Collection collection) {
     ...
 } </programlisting>
-        <programlisting>&lt;bean name=&quot;SimpleBean&quot; class=&quot;org.jboss.example.SimpleBean&quot;&gt;
+        <programlisting role="XML">&lt;bean name=&quot;SimpleBean&quot; class=&quot;org.jboss.example.SimpleBean&quot;&gt;
     &lt;property name=&quot;collection&quot;&gt;
         &lt;collection elementClass=&quot;java.lang.String&quot;&gt;
             &lt;value&gt;string1&lt;/value&gt;
@@ -1811,7 +1816,7 @@ public void setCollection(Collection collection) {
           <para>The type of each value must be specified using either the <code>elementClass</code> or <code>type/class</code> attribute in order for the collection to be created.</para>
         </warning>
         <para>Lists, sets and arrays take the same form as the collection annotation and XML element. </para>
-        <programlisting>@ListValue(elementClass=&quot;java.lang.String&quot;,
+        <programlisting role="JAVA">@ListValue(elementClass=&quot;java.lang.String&quot;,
            {@Value(string=@StringValue(&quot;my first string&quot;)),
             @Value(string=@StringValue(&quot;my second string&quot;))})
 public void setList(List list) {
@@ -1831,7 +1836,7 @@ public void setSet(Set set) {
 public void setArray(Object[] array) {
     ...
 } </programlisting>
-        <programlisting>&lt;bean name=&quot;SimpleBean&quot; class=&quot;org.jboss.example.SimpleBean&quot;&gt;
+        <programlisting role="XML">&lt;bean name=&quot;SimpleBean&quot; class=&quot;org.jboss.example.SimpleBean&quot;&gt;
     &lt;property name=&quot;list&quot;&gt;
         &lt;list elementClass=&quot;java.lang.String&quot;&gt;
             &lt;value&gt;my first string&lt;/value&gt;
@@ -1854,7 +1859,7 @@ public void setArray(Object[] array) {
     &lt;/array&gt;
 &lt;/bean&gt; </programlisting>
         <para>They can even be nested within one another if required. </para>
-        <programlisting>@ListValue(elementClass=&quot;java.lang.String&quot;,
+        <programlisting role="JAVA">@ListValue(elementClass=&quot;java.lang.String&quot;,
            {@Value(string=@StringValue(&quot;my first string&quot;)),
             @Value(string=@SetValue(elementClass=&quot;java.lang.Integer&quot;,
                                     {@Value(string=@StringValue(&quot;1&quot;)),
@@ -1863,7 +1868,7 @@ public void setArray(Object[] array) {
 public void setList(List list) {
     ...
 }</programlisting>
-        <programlisting>&lt;bean name=&quot;SimpleBean&quot; class=&quot;org.jboss.example.SimpleBean&quot;&gt;
+        <programlisting role="XML">&lt;bean name=&quot;SimpleBean&quot; class=&quot;org.jboss.example.SimpleBean&quot;&gt;
     &lt;property name=&quot;list&quot;&gt;
         &lt;list elementClass=&quot;java.lang.String&quot;&gt;
             &lt;value&gt;my first string&lt;/value&gt;
@@ -1877,7 +1882,7 @@ public void setList(List list) {
     &lt;/property&gt;
 &lt;/bean&gt;</programlisting>
         <para>Maps can also be created using multiple entries of key/value pairs. As we now have two types to consider we must use the <code>keyClass</code> and <code>valueClass</code> attributes to specify the default classes for each entry. Again these can be overriden for individual entries if necessary.</para>
-        <programlisting>@MapValue(keyClass=&quot;java.lang.String&quot;,
+        <programlisting role="JAVA">@MapValue(keyClass=&quot;java.lang.String&quot;,
           valueClass=&quot;java.lang.String&quot;,
           {@EntryValue(key=@Value(string=@StringValue(&quot;foo.bar.key&quot;)),
                        value=@Value(string=@StringValue(&quot;QWERT&quot;))),
@@ -1887,7 +1892,7 @@ public void setList(List list) {
 public void setMap(Map&lt;String, String&gt; map) {
     ...
 } </programlisting>
-        <programlisting>&lt;bean name=&quot;SimpleBean&quot; class=&quot;org.jboss.example.SimpleBean&quot;&gt;
+        <programlisting role="XML">&lt;bean name=&quot;SimpleBean&quot; class=&quot;org.jboss.example.SimpleBean&quot;&gt;
     &lt;property name=&quot;map&quot;&gt;
         &lt;map keyClass=&quot;java.lang.String&quot; valueClass=&quot;java.lang.String&quot;&gt;
             &lt;entry&gt;
@@ -1920,14 +1925,14 @@ public void setMap(Map&lt;String, String&gt; map) {
           </listitem>
         </itemizedlist>
         <para>If you want to override this behaviour and specify your own class then you can simply add a <code>clazz</code> attribute to your annotation or <code>class</code> attribute to your XML element containing the fully-qualified class name. This causes the microcontainer to create a new instance using the specified class.</para>
-        <programlisting>@SetValue(clazz=&quot;java.util.TreeSet&quot;,
+        <programlisting role="JAVA">@SetValue(clazz=&quot;java.util.TreeSet&quot;,
           elementClass=&quot;java.lang.Integer&quot;,
           {@Value(string=@StringValue(&quot;50&quot;)),
            @Value(string=@StringValue(&quot;55&quot;))})
 public void setSet(Set set) {
     ...
 }</programlisting>
-        <programlisting>&lt;bean name=&quot;SimpleBean&quot;
+        <programlisting role="XML">&lt;bean name=&quot;SimpleBean&quot;
  class=&quot;org.jboss.example.SimpleBean&quot;&gt;
     &lt;property name=&quot;set&quot;&gt;
         &lt;set class=&quot;java.util.TreeSet&quot; elementClass=&quot;java.lang.Integer&quot;&gt;
@@ -1938,7 +1943,7 @@ public void setSet(Set set) {
 &lt;/bean&gt; </programlisting>
         <note>
           <para>If you don&apos;t specify a <code>clazz</code><code>/class</code> attribute but you want to ensure that a new instance is created then you can prevent the microcontainer from looking for a existing instance by specifying a <code>preinstantiate</code> attribute in the &lt;property&gt; element. Currently this cannot be achieved using annotations.</para>
-          <programlisting>&lt;bean name=&quot;SimpleBean&quot; class=&quot;org.jboss.example.SimpleBean&quot;&gt;
+          <programlisting role="XML">&lt;bean name=&quot;SimpleBean&quot; class=&quot;org.jboss.example.SimpleBean&quot;&gt;
     &lt;property name=&quot;list&quot; preinstantiate=&quot;false&quot;&gt;
         &lt;list elementClass=&quot;java.lang.String&quot;&gt;
             &lt;value&gt;string1&lt;/value&gt;
@@ -1957,25 +1962,25 @@ public void setSet(Set set) {
       <section>
         <title>Calling methods</title>
         <para>Using PropertyEditors to create instances of objects from strings is fine in many situations but sometimes you need to inject a return value from a method call. As the method is responsible for creating the value we refer to it as a value factory. Hence the @ValueFactory annotation or &lt;value-factory&gt; element can be used in place of @StringValue or &lt;value&gt; to call a method and inject the returned value during deployment.</para>
-        <programlisting>@ValueFactory(bean=&quot;SimpleBean&quot;,
+        <programlisting role="JAVA">@ValueFactory(bean=&quot;SimpleBean&quot;,
               method=&quot;getFullName&quot;)
 public void setName(String name) {
     ...
 } </programlisting>
-        <programlisting>&lt;bean name=&quot;PropHolder&quot; class=&quot;org.jboss.test.kernel.config.support.PropHolder&quot;&gt;
+        <programlisting role="XML">&lt;bean name=&quot;PropHolder&quot; class=&quot;org.jboss.test.kernel.config.support.PropHolder&quot;&gt;
     &lt;property name=&quot;name&quot;&gt;
         &lt;value-factory bean=&quot;SimpleBean&quot; method=&quot;getFullName&quot;/&gt;
     &lt;/property&gt;
 &lt;/bean&gt; </programlisting>
         <para>If you need to pass any parameters to the method then you can use multiple  @Parameter annotations or nested &lt;parameter&gt; elements. </para>
-        <programlisting>@ValueFactory(bean=&quot;SimpleBean&quot;,
+        <programlisting role="JAVA">@ValueFactory(bean=&quot;SimpleBean&quot;,
               method=&quot;getFullName&quot;,
               parameters=&quot;{@Parameter(string=@StringValue(&quot;Bob&quot;)),
                            @Parameter(string=@StringValue(&quot;Smith&quot;))}&quot;)
 public void setName(String name) {
     ...
 } </programlisting>
-        <programlisting>&lt;bean name=&quot;PropHolder&quot; class=&quot;org.jboss.test.kernel.config.support.PropHolder&quot;&gt;
+        <programlisting role="XML">&lt;bean name=&quot;PropHolder&quot; class=&quot;org.jboss.test.kernel.config.support.PropHolder&quot;&gt;
     &lt;property name=&quot;name&quot;&gt;
         &lt;value-factory bean=&quot;SimpleBean&quot; method=&quot;getFullName&quot;&gt;
             &lt;parameter&gt;Bob&lt;/parameter&gt;
@@ -1984,25 +1989,25 @@ public void setName(String name) {
     &lt;/property&gt;
 &lt;/bean&gt; </programlisting>
         <para>Alternatively if only one parameter is required then you can use the <code>parameter</code> attribute to create a shorthand version. However this only works for values that can be created from strings.</para>
-        <programlisting>@ValueFactory(bean=&quot;SimpleBean&quot;,
+        <programlisting role="JAVA">@ValueFactory(bean=&quot;SimpleBean&quot;,
               method=&quot;getFullName&quot;,
               parameter=&quot;@Parameter(string=@StringValue(&quot;Bob&quot;))&quot;)
 public void setName(String name) {
     ...
 } </programlisting>
-        <programlisting>&lt;bean name=&quot;PropHolder&quot; class=&quot;org.jboss.test.kernel.config.support.PropHolder&quot;&gt;
+        <programlisting role="XML">&lt;bean name=&quot;PropHolder&quot; class=&quot;org.jboss.test.kernel.config.support.PropHolder&quot;&gt;
     &lt;property name=&quot;name&quot;&gt;
         &lt;value-factory bean=&quot;SimpleBean&quot; method=&quot;getFullName&quot; parameter=&quot;Bob&quot;/&gt;
     &lt;/property&gt;
 &lt;/bean&gt; </programlisting>
         <para>It is also possible to specify a default value to use in case the method returns null. This is done using the <code>defaultValue</code>/<code>default</code> attribute which like the <code>parameter</code> attribute  only accepts values created using strings. </para>
-        <programlisting>@ValueFactory(bean=&quot;SimpleBean&quot;,
+        <programlisting role="JAVA">@ValueFactory(bean=&quot;SimpleBean&quot;,
               method=&quot;getFullName&quot;,
               defaultValue=&quot;Mark Newton&quot;)
 public void setName(String name) {
     ...
 } </programlisting>
-        <programlisting>&lt;bean name=&quot;PropHolder&quot; class=&quot;org.jboss.test.kernel.config.support.PropHolder&quot;&gt;
+        <programlisting role="XML">&lt;bean name=&quot;PropHolder&quot; class=&quot;org.jboss.test.kernel.config.support.PropHolder&quot;&gt;
     &lt;property name=&quot;name&quot;&gt;
         &lt;value-factory bean=&quot;SimpleBean&quot; method=&quot;getFullName&quot; default=&quot;Mark Newton&quot;/&gt;
     &lt;/property&gt;
@@ -2011,21 +2016,21 @@ public void setName(String name) {
       <section>
         <title>Using bean references</title>
         <para>Injecting string-based properties or the return values of method calls into individual beans allows us to perform simple configurations. To create more complex configurations we need to wire beans together by injecting references using the @Inject annotation or &lt;inject&gt; element. </para>
-        <programlisting>@Inject(bean = &quot;Name1&quot;)
+        <programlisting role="JAVA">@Inject(bean = &quot;Name1&quot;)
 public void setSimpleBean(SimpleBean bean) {
     ...
 } </programlisting>
-        <programlisting>&lt;bean name=&quot;SimpleBean&quot; class=&quot;org.jboss.test.SimpleBean&quot;&gt;
+        <programlisting role="XML">&lt;bean name=&quot;SimpleBean&quot; class=&quot;org.jboss.test.SimpleBean&quot;&gt;
     &lt;property name=&quot;simpleBean&quot;&gt;
         &lt;inject bean=&quot;Name1&quot;/&gt;
     &lt;/property&gt;
 &lt;/bean&gt;</programlisting>
         <para>Bean injections can be used anywhere a string value is used but you must ensure that the type of bean being injected is compatible with the type of property being set. It is also possible to inject a property from  one bean into another  using the <code>property</code> attribute.</para>
-        <programlisting>@Inject(bean = &quot;Name1&quot;, property=&quot;age&quot;)
+        <programlisting role="JAVA">@Inject(bean = &quot;Name1&quot;, property=&quot;age&quot;)
 public void setAge(Integer age) {
     ...
 } </programlisting>
-        <programlisting>&lt;bean name=&quot;SimpleBean&quot; class=&quot;org.jboss.test.SimpleBean&quot;&gt;
+        <programlisting role="XML">&lt;bean name=&quot;SimpleBean&quot; class=&quot;org.jboss.test.SimpleBean&quot;&gt;
     &lt;property name=&quot;age&quot;&gt;
         &lt;inject bean=&quot;Name1&quot; property=&quot;age&quot;/&gt;
     &lt;/property&gt;
@@ -2033,7 +2038,7 @@ public void setAge(Integer age) {
         <para>Although injection is simple to use it provides a very powerful way to create  arbitrary relationships between POJO instances. The dependencies that are formed by these relationships are discussed in the next chapter &apos;Defining Dependencies&apos;.</para>
         <note>
           <para>Sometimes you may wish to declare a bean simply so that you can inject it into a single property. In this case you can replace the &lt;inject&gt; element with the bean declaration itself to reduce the amount of XML required. This is not possible using annotations as there is no annotation to declare a bean.</para>
-          <programlisting>&lt;bean name=&quot;SimpleBean&quot; class=&quot;org.jboss.test.SimpleBean&quot;&gt;
+          <programlisting role="XML">&lt;bean name=&quot;SimpleBean&quot; class=&quot;org.jboss.test.SimpleBean&quot;&gt;
     &lt;property name=&quot;testBean&quot;&gt;
         &lt;bean=&quot;TestBean&quot; class=&quot;org.jboss.test.TestBean&quot;&gt;
             &lt;property name=&quot;age&quot;&gt;25&lt;/property&gt;
@@ -2045,22 +2050,22 @@ public void setAge(Integer age) {
       <section>
         <title>Injecting context information</title>
         <para>You may recall that inside the microcontainer each bean is represented by a context which holds amongst other things the bean&apos;s current state. This context information can be injected into bean properties or constructor/factory-method parameters using the @Inject annotation or &lt;inject&gt; element together with a <code>fromContext</code> attribute.</para>
-        <programlisting>@Inject(bean=&quot;otherBean&quot;,
+        <programlisting role="JAVA">@Inject(bean=&quot;otherBean&quot;,
         fromContext=&quot;beanInfo&quot;)
 public void setBeanInfo(BeanInfo beanInfo) {
     ...
 }</programlisting>
-        <programlisting>&lt;bean name=&quot;sndBean&quot; class=&quot;org.jboss.test.NameAwareBean&quot;&gt;
+        <programlisting role="XML">&lt;bean name=&quot;sndBean&quot; class=&quot;org.jboss.test.NameAwareBean&quot;&gt;
     &lt;property name=&quot;beaninfo&quot;&gt;
         &lt;inject bean=&quot;otherBean&quot; fromContext=&quot;beaninfo&quot;/&gt;
     &lt;/property&gt;
 &lt;/bean&gt;</programlisting>
         <para>If you want to inject information about the current bean&apos;s context then you can simply omit the <code>bean</code> attribute.</para>
-        <programlisting>@Inject(fromContext=&quot;beanInfo&quot;)
+        <programlisting role="JAVA">@Inject(fromContext=&quot;beanInfo&quot;)
 public void setBeanInfo(BeanInfo beanInfo) {
     ...
 }</programlisting>
-        <programlisting>&lt;bean name=&quot;sndBean&quot; class=&quot;org.jboss.test.NameAwareBean&quot;&gt;
+        <programlisting role="XML">&lt;bean name=&quot;sndBean&quot; class=&quot;org.jboss.test.NameAwareBean&quot;&gt;
     &lt;property name=&quot;beaninfo&quot;&gt;
         &lt;inject fromContext=&quot;beaninfo&quot;/&gt;
     &lt;/property&gt;
@@ -2097,40 +2102,40 @@ public void setBeanInfo(BeanInfo beanInfo) {
         <title>Auto-wiring</title>
         <para>Having to write large amounts of configuration information just to wire together sometimes trivial beans can often be frustrating. For this reason JBoss Microcontainer provides the ability to autowire beans. Auto-wiring means that a bean&apos;s properties or constructor/factory-method parameters are set by automatically searching for matching beans. The benefit is that you don&apos;t have to specify the names of the beans  to inject yourself but the drawback is that this only works reliably for small environments. If you have an environment where more than one bean matches the property or parameter being set then it becomes unclear from the configuration information which one will be chosen during deployment. </para>
         <para>To use auto-wiring you simply need to specify an @Inject annotation or &lt;inject&gt; element without a <code>bean</code> attribute for the parameter or property that you wish to set.</para>
-        <programlisting>@Inject
+        <programlisting role="JAVA">@Inject
 public class Example(ThreadPool pool) {
     ...
 }</programlisting>
-        <programlisting>&lt;bean name=&quot;paramInj&quot; class=&quot;com.acme.Example&quot;&gt;
+        <programlisting role="XML">&lt;bean name=&quot;paramInj&quot; class=&quot;com.acme.Example&quot;&gt;
     &lt;constructor&gt;
         &lt;parameter name=&quot;threadPool&quot;&gt;&lt;inject/&gt;&lt;/parameter&gt;
     &lt;/constructor&gt;
 &lt;/bean&gt; </programlisting>
-        <programlisting>@Inject
+        <programlisting role="JAVA">@Inject
 public void setThreadPool(ThreadPool pool) {
     ...
 }</programlisting>
-        <programlisting>&lt;bean name=&quot;propInj&quot; class=&quot;com.acme.Example&quot;&gt;
+        <programlisting role="XML">&lt;bean name=&quot;propInj&quot; class=&quot;com.acme.Example&quot;&gt;
     &lt;property name=&quot;threadPool&quot;&gt;&lt;inject/&gt;&lt;/property&gt;
 &lt;/bean&gt; </programlisting>
         <para>By default the microcontainer will search for a bean whose class matches that of the parameter/property. However you can change this behaviour when auto-wiring properties so that the microcontainer searches for a bean whose name matches the property name. This is done using the <code>type</code> attribute of the &lt;inject&gt; element.</para>
-        <programlisting>@Inject(type=&quot;ByName&quot;)
+        <programlisting role="JAVA">@Inject(type=&quot;ByName&quot;)
 public void setThreadPool(ThreadPool pool) {
     ...
 }</programlisting>
-        <programlisting>&lt;bean name=&quot;propInj&quot; class=&quot;com.acme.Example&quot;&gt;
+        <programlisting role="XML">&lt;bean name=&quot;propInj&quot; class=&quot;com.acme.Example&quot;&gt;
     &lt;property name=&quot;threadPool&quot;&gt;&lt;inject type=&quot;ByName&quot;/&gt;&lt;/property&gt;
 &lt;/bean&gt; </programlisting>
         <para>If no match is found then by default the deployment will fail but for certain properties it may be acceptable for injection to occur after deployment. In these cases you can specify that a property should be set using a callback mechanism whenever a suitable bean becomes available. This is done using the <code>option</code> attribute.</para>
-        <programlisting>@Inject(type=&quot;ByName&quot;, option=&quot;Callback&quot;)
+        <programlisting role="JAVA">@Inject(type=&quot;ByName&quot;, option=&quot;Callback&quot;)
 public void setThreadPool(ThreadPool pool) {
     ...
 }</programlisting>
-        <programlisting>&lt;bean name=&quot;propInj&quot; class=&quot;com.acme.Example&quot;&gt;
+        <programlisting role="XML">&lt;bean name=&quot;propInj&quot; class=&quot;com.acme.Example&quot;&gt;
     &lt;property name=&quot;threadPool&quot;&gt;&lt;inject type=&quot;ByName&quot; option=&quot;Callback&quot;/&gt;&lt;/property&gt;
 &lt;/bean&gt; </programlisting>
         <para>Sometimes you may want to prevent a bean from being injected automatically using auto-wiring. In these situations you can set its <code>autowire-candidate</code> attribute to false so that it&apos;s not included in the search for matching beans. This is not currently possible using annotations as there is no annotation to declare a bean.</para>
-        <programlisting>&lt;bean name=&quot;ignored&quot; class=&quot;com.acme.Example&quot; autowire-candidate=&quot;false&quot; /&gt;</programlisting>
+        <programlisting role="XML">&lt;bean name=&quot;ignored&quot; class=&quot;com.acme.Example&quot; autowire-candidate=&quot;false&quot; /&gt;</programlisting>
       </section>
     </chapter>
     <chapter>
@@ -2138,13 +2143,13 @@ public void setThreadPool(ThreadPool pool) {
       <section>
         <title>POJO dependencies</title>
         <para>Dependencies between beans (POJO instances) are created when they are wired together through the use of the @Inject annotation or &lt;inject&gt; element. Specifically a bean which has another bean injected into it is said to be dependent on the other bean. For example here we have a Person bean that is dependent on an Address bean.</para>
-        <programlisting>public class Person {
+        <programlisting role="JAVA">public class Person {
     @Inject(bean=&quot;AddressBean&quot;)
     public void setAddress(Address address) {
         ...
     }
 }</programlisting>
-        <programlisting>&lt;bean name=&quot;Person&quot; class=&quot;org.jboss.test.Person&quot;&gt;
+        <programlisting role="XML">&lt;bean name=&quot;Person&quot; class=&quot;org.jboss.test.Person&quot;&gt;
     &lt;property name=&quot;address&quot;&gt;
         &lt;inject bean=&quot;AddressBean&quot;/&gt;
     &lt;/property&gt;
@@ -2178,14 +2183,14 @@ public void setThreadPool(ThreadPool pool) {
           </listitem>
         </itemizedlist>
         <para>You may notice that we refer to injections being resolved in the above list. This is a shorthand way of saying that an injected bean has reached a certain state. In our simple example we can say that the injected Address bean has been resolved when it reaches the INSTALLED state. If necessary you can change the state that an injected bean must reach before being considered resolved by using the <code>dependentState</code>/<code>state</code> attribute.</para>
-        <programlisting>public class Person {
+        <programlisting role="JAVA">public class Person {
     @Inject(bean=&quot;OtherBean&quot;,
             dependentState=&quot;Instantiated&quot;)
     public void setAddress(Address address) {
         ...
     }
 }</programlisting>
-        <programlisting>&lt;bean name=&quot;Person&quot; class=&quot;org.jboss.test.Person&quot;&gt;
+        <programlisting role="XML">&lt;bean name=&quot;Person&quot; class=&quot;org.jboss.test.Person&quot;&gt;
     &lt;property name=&quot;address&quot;&gt;
         &lt;inject bean=&quot;Address&quot; state=&quot;Instantiated&quot;/&gt;
     &lt;/property&gt;
@@ -2215,7 +2220,7 @@ public void setThreadPool(ThreadPool pool) {
           </itemizedlist>
         </note>
         <para>The ability to control when injection occurs is especially useful when dealing with circular dependencies. A circular dependency happens when one bean depends on another which in turn depends on the first bean:</para>
-        <programlisting>&lt;bean name=&quot;Circular1&quot; class=&quot;org.jboss.example.InjectionBean&quot;&gt;
+        <programlisting role="XML">&lt;bean name=&quot;Circular1&quot; class=&quot;org.jboss.example.InjectionBean&quot;&gt;
     &lt;constructor&gt;
         &lt;parameter&gt;Circular1&lt;/parameter&gt;
     &lt;/constructor&gt;
@@ -2235,7 +2240,7 @@ public void setThreadPool(ThreadPool pool) {
     &lt;/property&gt;
 &lt;/bean&gt; </programlisting>
         <para>In this configuration the microcontainer is unable to deploy either bean since each one is waiting in the INSTANTIATED state waiting for the other to reach the INSTALLED state. To solve this we can use the <code>state</code> attribute to  specify that Circular1 can be injected into Circular2 as soon as it reaches the INSTANTIATED state. </para>
-        <programlisting>&lt;bean name=&quot;Circular1&quot; class=&quot;org.jboss.example.InjectionBean&quot;&gt;
+        <programlisting role="XML">&lt;bean name=&quot;Circular1&quot; class=&quot;org.jboss.example.InjectionBean&quot;&gt;
     &lt;constructor&gt;
         &lt;parameter&gt;Circular1&lt;/parameter&gt;
     &lt;/constructor&gt;
@@ -2259,32 +2264,32 @@ public void setThreadPool(ThreadPool pool) {
       <section>
         <title>Supply and Demand</title>
         <para>Sometimes dependencies may exist between beans that are not wired together using injections. One example would be a bean representing a service that requires a transaction manager to be present in JNDI before it can  start. In these situations we can use a @Demand annotation or &lt;demand&gt; element to specify that we need another bean to be deployed before we can reach a certain state.</para>
-        <programlisting>@Demands(@Demand(&quot;TransactionManager&quot;))
+        <programlisting role="JAVA">@Demands(@Demand(&quot;TransactionManager&quot;))
 public class Example {
     ...
 }</programlisting>
-        <programlisting>&lt;bean name=&quot;TransactionManager&quot; class=&quot;com.acme.TransactionManager&quot;/&gt;
+        <programlisting role="XML">&lt;bean name=&quot;TransactionManager&quot; class=&quot;com.acme.TransactionManager&quot;/&gt;
 
 &lt;bean name=&quot;Name2&quot; class=&quot;com.acme.Example&quot;&gt;
     &lt;demand&gt;TransactionManager&lt;/demand&gt;
 &lt;/bean&gt;</programlisting>
         <para>By default the bean declaring the demand will wait until the beans it requires have been deployed before it moves to the INSTANTIATED state. However you can change this using the <code>whenRequired</code>/<code>state</code> attribute to specify a different state that can only be reached once all the beans listed as demands have been deployed.</para>
-        <programlisting>@Demands(@Demand(&quot;TransactionManager&quot;, whenRequired=&quot;Start&quot;))
+        <programlisting role="JAVA">@Demands(@Demand(&quot;TransactionManager&quot;, whenRequired=&quot;Start&quot;))
 public class Example {
     ...
 }</programlisting>
-        <programlisting>&lt;bean name=&quot;TransactionManager&quot; class=&quot;com.acme.TransactionManager&quot;/&gt;
+        <programlisting role="XML">&lt;bean name=&quot;TransactionManager&quot; class=&quot;com.acme.TransactionManager&quot;/&gt;
 
 &lt;bean name=&quot;Name2&quot; class=&quot;com.acme.Example&quot;&gt;
     &lt;demand state=&quot;Start&quot;&gt;TransactionManager&lt;/demand&gt;
 &lt;/bean&gt;</programlisting>
         <para>Here we are stating that the TransactionManager bean must be deployed before the Name2 bean can reach the Start state. To specify multiple dependencies on other beans you simply need to list @Demand annotations or nest &lt;demand&gt; elements:</para>
-        <programlisting>@Demands(@Demand(&quot;TransactionManager&quot;, whenRequired=&quot;Start&quot;),
+        <programlisting role="JAVA">@Demands(@Demand(&quot;TransactionManager&quot;, whenRequired=&quot;Start&quot;),
          @Demand(&quot;OtherBean&quot;))
 public class Example {
     ...
 }</programlisting>
-        <programlisting>&lt;bean name=&quot;TransactionManager&quot; class=&quot;com.acme.SomeSingleton&quot;&gt;
+        <programlisting role="XML">&lt;bean name=&quot;TransactionManager&quot; class=&quot;com.acme.SomeSingleton&quot;&gt;
     &lt;property name=&quot;host&quot;&gt;http://www.jboss.org&lt;/property&gt;
 &lt;/bean&gt;
 
@@ -2293,7 +2298,7 @@ public class Example {
     &lt;demand&gt;OtherBean&lt;/demand&gt;
 &lt;/bean&gt;</programlisting>
         <para>In addition to specifying dependencies on other beans you can also specify dependencies on arbitrary objects that other beans supply. This can be useful if a bean depends on something  that is provided by multiple beans but doesn&apos;t necessarily care which one provides it. To create these arbitrary objects you need to use the @Supply annotation or &lt;supply&gt; element.</para>
-        <programlisting>@Supplies(@Supply(&quot;SomethingUseful&quot;))
+        <programlisting role="JAVA">@Supplies(@Supply(&quot;SomethingUseful&quot;))
 public class Provider {
     ...
 }
@@ -2302,7 +2307,7 @@ public class Provider {
 public class Consumer {
     ...
 }</programlisting>
-        <programlisting>&lt;bean name=&quot;Provider&quot; class=&quot;com.acme.Provider&quot;&gt;
+        <programlisting role="XML">&lt;bean name=&quot;Provider&quot; class=&quot;com.acme.Provider&quot;&gt;
     &lt;supply&gt;SomethingUseful&lt;/supply&gt;
 &lt;/bean&gt;
 
@@ -2310,7 +2315,7 @@ public class Consumer {
     &lt;demand&gt;SomethingUseful&lt;/demand&gt;
 &lt;/bean&gt; </programlisting>
         <para>A bean can also supply multiple objects if necessary:</para>
-        <programlisting>@Supplies(@Supply(&quot;SomethingUseful&quot;),
+        <programlisting role="JAVA">@Supplies(@Supply(&quot;SomethingUseful&quot;),
           @Supply(&quot;SomethingElse&quot;))
 public class Provider {
     ...
@@ -2325,7 +2330,7 @@ public class Consumer {
 public class OtherConsumer {
     ...
 }</programlisting>
-        <programlisting>&lt;bean name=&quot;Provider&quot; class=&quot;com.acme.Provider&quot;&gt;
+        <programlisting role="XML">&lt;bean name=&quot;Provider&quot; class=&quot;com.acme.Provider&quot;&gt;
     &lt;supply&gt;SomethingUseful&lt;/supply&gt;
     &lt;supply&gt;SomethingElse&lt;/supply&gt;
 &lt;/bean&gt;
@@ -2358,21 +2363,21 @@ public class OtherConsumer {
           </listitem>
         </itemizedlist>
         <para>If one service depends on another then we need someway to ensure that they are created and started in the correct order. Similarly we also need to ensure that they are stopped and destroyed correctly. This is done by adding a @Depends annotation or &lt;depends&gt; element to the POJO that defines a service&apos;s public methods and specifying the name of the bean that represents the other service.</para>
-        <programlisting>@Depends(&quot;AnotherBean&quot;)
+        <programlisting role="JAVA">@Depends(&quot;AnotherBean&quot;)
 public class MyBean {
     ...
 }</programlisting>
-        <programlisting>&lt;bean name=&quot;AnotherBean&quot; class=&quot;org.jboss.test.Example&quot;/&gt;
+        <programlisting role="XML">&lt;bean name=&quot;AnotherBean&quot; class=&quot;org.jboss.test.Example&quot;/&gt;
 
 &lt;bean name=&quot;MyBean&quot; class=&quot;org.jboss.test.Example&quot;&gt;
     &lt;depends&gt;AnotherBean&lt;/depends&gt;
 &lt;/bean&gt;</programlisting>
         <para>The microcontainer will then ensure that the beans, representing the two services, are deployed in the correct order. Specifically the beans named in the @Depends or &lt;depends&gt; values will reach their CREATE states before the bean declaring the dependencies reaches its CREATE state. The same is true for the START, STOP and DESTROY states. It&apos;s possible to define multiple dependencies on other services simply by listing names or nesting &lt;depends&gt; elements:</para>
-        <programlisting>@Depends(&quot;AnotherBean&quot;, &quot;YetAnotherBean&quot;)
+        <programlisting role="JAVA">@Depends(&quot;AnotherBean&quot;, &quot;YetAnotherBean&quot;)
 public class MyBean {
     ...
 }</programlisting>
-        <programlisting>&lt;bean name=&quot;AnotherBean&quot; class=&quot;org.jboss.test.Example&quot;/&gt;
+        <programlisting role="XML">&lt;bean name=&quot;AnotherBean&quot; class=&quot;org.jboss.test.Example&quot;/&gt;
 
 &lt;bean name=&quot;MyBean&quot; class=&quot;org.jboss.test.Example&quot;&gt;
     &lt;depends&gt;AnotherBean&lt;/depends&gt;
@@ -2386,26 +2391,26 @@ public class MyBean {
         <title>Deployment actions</title>
         <para>In Part I - Getting Started we covered how to add behaviour to beans during the deployment and undeployment process using AOP lifecycle callbacks. This gave us a powerful way to apply common logic to a number of beans, identified using pointcut expressions, at various points in their lifecycles. However setting up AOP lifecycle callbacks for occasions when an individual bean needs to call arbitrary methods  before deployment or after undeployment can be time consuming. Fortunately JBoss Microcontainer provides an alternative way to do this using deployment/undeployment actions.</para>
         <para>To specify a method within a bean that should be called after the bean reaches the START state you should use the @InstallMethod annotation or &lt;install&gt; element as follows:</para>
-        <programlisting>@InstallMethod
+        <programlisting role="JAVA">@InstallMethod
 public String doSomething() {
     ...
 }</programlisting>
-        <programlisting>&lt;bean name=&quot;SimpleBean&quot; class=&quot;org.jboss.example.SimpleBean&quot;&gt;
+        <programlisting role="XML">&lt;bean name=&quot;SimpleBean&quot; class=&quot;org.jboss.example.SimpleBean&quot;&gt;
     &lt;install method=&quot;doSomething&quot;/&gt;
 &lt;/bean&gt;</programlisting>
         <para>Parameters can also be passed in using nested &lt;parameter&gt; elements or by defining values with annotations.</para>
-        <programlisting>@InstallMethod
+        <programlisting role="JAVA">@InstallMethod
 public String doSomething(@StringValue(&quot;10&quot;) Integer integer, @StringValue(&quot;my string&quot;) String string) {
     ...
 }</programlisting>
-        <programlisting>&lt;bean name=&quot;SimpleBean&quot; class=&quot;org.jboss.example.SimpleBean&quot;&gt;
+        <programlisting role="XML">&lt;bean name=&quot;SimpleBean&quot; class=&quot;org.jboss.example.SimpleBean&quot;&gt;
     &lt;install method=&quot;doSomething&quot;&gt;
         &lt;parameter&gt;10&lt;/parameter&gt;
         &lt;parameter&gt;my string&lt;/parameter&gt;
     &lt;/install&gt;
 &lt;/bean&gt;</programlisting>
         <para>If necessary multiple install methods can be defined. They will be called in the order in which they appear as annotations or in the deployment descriptor.</para>
-        <programlisting>@InstallMethod
+        <programlisting role="JAVA">@InstallMethod
 public String doSomething() {
     ...
 }
@@ -2414,12 +2419,12 @@ public String doSomething() {
 public String doSomethingElse() {
     ...
 }</programlisting>
-        <programlisting>&lt;bean name=&quot;SimpleBean&quot; class=&quot;org.jboss.example.SimpleBean&quot;&gt;
+        <programlisting role="XML">&lt;bean name=&quot;SimpleBean&quot; class=&quot;org.jboss.example.SimpleBean&quot;&gt;
     &lt;install method=&quot;doSomething&quot;/&gt;
     &lt;install method=&quot;doSomethingElse&quot;/&gt;
 &lt;/bean&gt;</programlisting>
         <para>During undeployment uninstall methods can also be defined which will be called before the bean reaches the STOP state.</para>
-        <programlisting>@UninstallMethod
+        <programlisting role="JAVA">@UninstallMethod
 public String doSomething() {
     ...
 }
@@ -2428,17 +2433,17 @@ public String doSomething() {
 public String doSomethingElse() {
     ...
 }</programlisting>
-        <programlisting>&lt;bean name=&quot;SimpleBean&quot; class=&quot;org.jboss.example.SimpleBean&quot;&gt;
+        <programlisting role="XML">&lt;bean name=&quot;SimpleBean&quot; class=&quot;org.jboss.example.SimpleBean&quot;&gt;
     &lt;uninstall method=&quot;doSomething&quot;/&gt;
     &lt;uninstall method=&quot;doSomethingElse&quot;/&gt;
 &lt;/bean&gt;</programlisting>
         <para>If you want a bean to call a method on another bean during deployment or undeployment then you can use the @ExternalInstalls/@ExternalUninstalls annotations or the  <code>bean</code> attribute of the &lt;install&gt;/&lt;uninstall&gt; elements. You can also define parameters to pass in if necessary.</para>
-        <programlisting>@ExternalInstalls(@ExternalInstall(bean=&quot;OtherBean&quot;, method=&quot;doWork&quot;)
+        <programlisting role="JAVA">@ExternalInstalls(@ExternalInstall(bean=&quot;OtherBean&quot;, method=&quot;doWork&quot;)
 @ExternalUninstalls(@ExternalInstall(bean=&quot;OtherBean&quot;, method=&quot;doBye&quot;, parameters=&quot;{@Value(string=@StringValue(&quot;Goodbye&quot;)),@Value(string=@StringValue(&quot;Saturday&quot;))}&quot;))
 public class MyBean {
     ...
 }</programlisting>
-        <programlisting>&lt;bean name=&quot;SimpleBean&quot; class=&quot;org.jboss.example.SimpleBean&quot;&gt;
+        <programlisting role="XML">&lt;bean name=&quot;SimpleBean&quot; class=&quot;org.jboss.example.SimpleBean&quot;&gt;
     &lt;install bean=&quot;OtherBean&quot; method=&quot;doWork&quot;/&gt;
     &lt;uninstall bean=&quot;OtherBean&quot; method=&quot;doBye&quot;&gt;
         &lt;parameter name=&quot;message&quot;&gt;Goodbye&lt;/parameter&gt;
@@ -2449,11 +2454,11 @@ public class MyBean {
           <para>Currently both the @ExternalInstalls and @ExternalUninstalls annotations take a list of @ExternalInstall annotations. </para>
         </note>
         <para>By default the other bean must have reached the INSTALLED state before its method will be called. This can be changed by using the <code>dependentState</code>/<code>state</code> attribute.</para>
-        <programlisting>@ExternalInstalls(@ExternalInstall(bean=&quot;OtherBean&quot;, method=&quot;doWork&quot;, dependentState=&quot;Configured&quot;)
+        <programlisting role="JAVA">@ExternalInstalls(@ExternalInstall(bean=&quot;OtherBean&quot;, method=&quot;doWork&quot;, dependentState=&quot;Configured&quot;)
 public class MyBean {
     ...
 }</programlisting>
-        <programlisting>&lt;bean name=&quot;SimpleBean&quot; class=&quot;org.jboss.example.SimpleBean&quot;&gt;
+        <programlisting role="XML">&lt;bean name=&quot;SimpleBean&quot; class=&quot;org.jboss.example.SimpleBean&quot;&gt;
     &lt;install bean=&quot;OtherBean&quot; method=&quot;doWork&quot; state=&quot;Configured&quot;/&gt;
 &lt;/bean&gt;</programlisting>
       </section>
@@ -2463,7 +2468,7 @@ public class MyBean {
         <note>
           <para>&lt;incallback&gt; is an abbreviation of installCallback and &lt;uncallback&gt; is an abbreviation of uninstallCallback.</para>
         </note>
-        <programlisting>public class Example {
+        <programlisting role="JAVA">public class Example {
     @Install
     public void addEditor(Editor editor) {
         ...
@@ -2474,12 +2479,12 @@ public class MyBean {
         ...
     }
 }</programlisting>
-        <programlisting>&lt;bean name=&quot;editorHolder&quot; class=&quot;com.acme.Example&quot;&gt;
+        <programlisting role="XML">&lt;bean name=&quot;editorHolder&quot; class=&quot;com.acme.Example&quot;&gt;
     &lt;incallback method=&quot;addEditor&quot;/&gt;
     &lt;uncallback method=&quot;removeEditor&quot;/&gt;
 &lt;/bean&gt; </programlisting>
         <para>In the above example the addEditor method of the editorHolder bean will be called each time a bean of class Editor is deployed. Similarly the removeEditor method will be called each time a bean of class Editor is undeployed. By default the bean class to look for is determined by the class of the parameter in the callback method. If there are multiple methods with the same name but different parameter types then you can  add a <code>signature</code> attribute to the &lt;incallback&gt;/&lt;uncallback&gt; element to specify the correct one. This is not required when using annotations as we simply annotate the method we want.</para>
-        <programlisting>public class Example {
+        <programlisting role="JAVA">public class Example {
     public void addEditor(Editor editor) {
         ...
     }
@@ -2489,11 +2494,11 @@ public class MyBean {
         ...
     }
 }</programlisting>
-        <programlisting>&lt;bean name=&quot;editorHolder&quot; class=&quot;com.acme.Example&quot;&gt;
+        <programlisting role="XML">&lt;bean name=&quot;editorHolder&quot; class=&quot;com.acme.Example&quot;&gt;
     &lt;incallback method=&quot;addEditor&quot; signature=&quot;org.jboss.example.DifferentEditor&quot;/&gt;
 &lt;/bean&gt; </programlisting>
         <para>Multiple callback methods can be defined per bean. They will be called in the order that they appear as annotations or in the deployment descriptor.</para>
-        <programlisting>public class Example {
+        <programlisting role="JAVA">public class Example {
     @Install
     public void addEditor(Editor editor) {
         ...
@@ -2514,42 +2519,42 @@ public class MyBean {
         ...
     }
 }</programlisting>
-        <programlisting>&lt;bean name=&quot;editorHolder&quot; class=&quot;com.acme.Example&quot;&gt;
+        <programlisting role="XML">&lt;bean name=&quot;editorHolder&quot; class=&quot;com.acme.Example&quot;&gt;
     &lt;incallback method=&quot;addEditor&quot;/&gt;
     &lt;incallback method=&quot;addViewer&quot;/&gt;
     &lt;uncallback method=&quot;removeEditor&quot;/&gt;
     &lt;uncallback method=&quot;removeViewer&quot;/&gt;
 &lt;/bean&gt; </programlisting>
         <para>By default each callback will be executed when beans matching the parameter types reach the INSTALLED state. This can be changed if necessary using the <code>dependentState</code>/<code>state</code> attribute.</para>
-        <programlisting>public class Example {
+        <programlisting role="JAVA">public class Example {
     @Install(dependentState=&quot;Configured&quot;)
     public void addEditor(Editor editor) {
         ...
     }
 }</programlisting>
-        <programlisting>&lt;bean name=&quot;editorHolder&quot; class=&quot;com.acme.Example&quot;&gt;
+        <programlisting role="XML">&lt;bean name=&quot;editorHolder&quot; class=&quot;com.acme.Example&quot;&gt;
     &lt;incallback method=&quot;addEditor&quot; state=&quot;Configured&quot;/&gt;
 &lt;/bean&gt; </programlisting>
         <para>Here we are declaring that the addEditor method of the editorHolder bean should be called when any beans of class Editor reach the CONFIGURED state.</para>
         <para>It is also possible to  configure when the callback methods are executed during the deployment of the bean using the <code>whenRequired</code> attribute.</para>
-        <programlisting>public class Example {
+        <programlisting role="JAVA">public class Example {
     @Install(whenRequired=&quot;Installed&quot;)
     public void addEditor(Editor editor) {
         ...
     }
 }</programlisting>
-        <programlisting>&lt;bean name=&quot;editorHolder&quot; class=&quot;com.acme.Example&quot;&gt;
+        <programlisting role="XML">&lt;bean name=&quot;editorHolder&quot; class=&quot;com.acme.Example&quot;&gt;
     &lt;incallback method=&quot;addEditor&quot; whenRequired=&quot;Installed&quot;/&gt;
 &lt;/bean&gt; </programlisting>
         <para>Here we are declaring that the addEditor method will be called before the editorHolder bean reaches the INSTALLED state. By default the callbacks are exceuted before the bean reaches the CONFIGURED state.</para>
         <para>Finally we can also control when the callback methods are executed depending on how many beans matching the parameter class have been deployed. This is done using the <code>cardinality</code> attribute.</para>
-        <programlisting>public class Example {
+        <programlisting role="JAVA">public class Example {
     @Install(cardinality=&quot;2..n&quot;)
     public void addEditor(Editor editor) {
         ...
     }
 }</programlisting>
-        <programlisting>&lt;bean name=&quot;editorHolder&quot; class=&quot;com.acme.Example&quot;&gt;
+        <programlisting role="XML">&lt;bean name=&quot;editorHolder&quot; class=&quot;com.acme.Example&quot;&gt;
     &lt;incallback method=&quot;addEditor&quot; cardinality=&quot;2..n&quot;/&gt;
 &lt;/bean&gt; </programlisting>
         <para>Here we are declaring that the addEditor method of the editorHolder bean will only be called when two or more  beans of class Editor have been deployed.</para>
@@ -2561,7 +2566,7 @@ public class MyBean {
         <title>Service lifecycle</title>
         <para>So far we have discussed how to define deployment/undeployment actions for beans together with callback methods for notification when other beans have been deployed/undeployed. These features are useful for adding behaviours to POJOs but what about adding behaviour to services?</para>
         <para>As explained in the previous chapter services have a lifecycle consisting of 4 stages; create, start, stop and destroy. The reason for this is because we want the ability to start and stop a deployed service repeatably at runtime to make best use of valuable resources such as CPU and memory. At each point in this lifecycle the microcontainer will look for a method to call in order to perform appropriate actions. For example starting a service may require that an object is bound into JNDI. By default these methods are named after the lifecycle stage that they represent.</para>
-        <programlisting>public class LifecycleBean {
+        <programlisting role="JAVA">public class LifecycleBean {
     public void create() {
         ...
     }
@@ -2580,7 +2585,7 @@ public class MyBean {
 } </programlisting>
         <para>If methods like these are defined in your bean then they will be called as the bean is deployed and undeployed. Specifically the create and start methods are called as the bean reaches the CREATE and START states during deployment. The stop and destroy methods are called when the bean passes through the START and CREATE states during undeployment. Only those methods that are defined will be called. For example if you omit the start method then the bean will move to the START state without anything happening.</para>
         <para>If you want a different method to be called for any of the  stages then you can provide an annotation or XML element to specify which one to use.</para>
-        <programlisting>public class Example {
+        <programlisting role="JAVA">public class Example {
     @Create
     public void initialize() {
         ...
@@ -2601,34 +2606,34 @@ public class MyBean {
         ...
     }
 }</programlisting>
-        <programlisting>&lt;bean name=&quot;Name1&quot; class=&quot;com.acme.Example&quot;&gt;
+        <programlisting role="XML">&lt;bean name=&quot;Name1&quot; class=&quot;com.acme.Example&quot;&gt;
     &lt;create method=&quot;initialize&quot;/&gt;
     &lt;start method=&quot;go&quot;/&gt;
     &lt;stop method=&quot;halt&quot;/&gt;
     &lt;destroy method=&quot;remove&quot;/&gt;
 &lt;/bean&gt; </programlisting>
         <para>You can also specify parameters if necessary.</para>
-        <programlisting>public class Example {
+        <programlisting role="JAVA">public class Example {
     @Start
     public void go(@StringValue(&quot;MyService&quot;) String serviceName,
                    @StringValue(&quot;5&quot;) Integer priority) {
         ...
     }
 }</programlisting>
-        <programlisting>&lt;bean name=&quot;Name1&quot; class=&quot;com.acme.Example&quot;&gt;
+        <programlisting role="XML">&lt;bean name=&quot;Name1&quot; class=&quot;com.acme.Example&quot;&gt;
     &lt;start method=&quot;go&quot;&gt;
         &lt;parameter&gt;MyService&lt;/parameter&gt;
         &lt;parameter&gt;5&lt;/parameter&gt;
     &lt;/start&gt;
 &lt;/bean&gt; </programlisting>
         <para>Sometimes you may want lifecycle methods to be ignored. This can be done using the <code>ignore</code> attribute which if set to true prevents the microcontainer from calling the method when the corresponding lifecycle stage is reached.</para>
-        <programlisting>public class Example {
+        <programlisting role="JAVA">public class Example {
     @Stop(ignored=&quot;true&quot;)
     public void halt() {
         ...
     }
 }</programlisting>
-        <programlisting>&lt;bean name=&quot;Name1&quot; class=&quot;com.acme.Example&quot;&gt;
+        <programlisting role="XML">&lt;bean name=&quot;Name1&quot; class=&quot;com.acme.Example&quot;&gt;
     &lt;start method=&quot;stop&quot; ignored=&quot;true&quot;/&gt;
 &lt;/bean&gt; </programlisting>
       </section>
@@ -2658,7 +2663,7 @@ public class MyBean {
       <title>Introduction</title>
       <para>JBoss Microcontainer at its core allows POJOs to be deployed into a runtime environment to create services. It  does this using a state machine to ensure that any dependencies on classloaders or other POJOs are satisfied  before progressing through the various stages of creation and configuration.  By design the state machine and dependency mechanisms are generic which means that we can also use them to deploy other types of runtime components such as MBeans or OSGi bundles. However this means that we also need a generic deployment framework that is capable of creating the relevant metadata and classloader information in addition to handling nested deployments.</para>
       <para>To understand why we cannot simply reuse the  BasicXMLDeployer that we are already familiar with let&apos;s take a closer look at what it actually does:</para>
-      <programlisting>public class BasicXMLDeployer extends BasicKernelDeployer
+      <programlisting role="JAVA">public class BasicXMLDeployer extends BasicKernelDeployer
 {
    ...
 
@@ -2702,7 +2707,7 @@ public class MyBean {
    ...
 }</programlisting>
       <para>Once the deploy() method is called with a URL the first thing we do is create an unmarshaller to convert the XML deployment descriptor into an object representation of type KernelDeployment. We then process the KernelDeployment using the deploy() method of the superclass BasicKernelDeployer: </para>
-      <programlisting>public class BasicKernelDeployer extends AbstractKernelDeployer
+      <programlisting role="JAVA">public class BasicKernelDeployer extends AbstractKernelDeployer
 {
     ...
 
@@ -2730,7 +2735,7 @@ public class MyBean {
       <note>
         <para>The reason for having  BasicKernelDeployer is that it contains a shutdown() method which undeploys all the deployments in reverse order. This allows the microcontainer to shutdown gracefully.</para>
       </note>
-      <programlisting>public class AbstractKernelDeployer
+      <programlisting role="JAVA">public class AbstractKernelDeployer
 {
     ...
    public void deploy(final KernelDeployment deployment) throws Throwable
@@ -2808,7 +2813,7 @@ public class MyBean {
       </itemizedlist>
       <para>As the state machine controller takes a DeploymentControllerContext through each of these stages it calls the associated actions to perform the relevant work. For example we could create multiple parsing actions; one to parse XML files and another to parse Java property files. Depending on the file suffix of the deployment descriptor; .xml or .property we can then choose which one to use during the PARSE stage.</para>
       <para>As deployments can often be nested within one another we actually describe the details of each deployment using a DeploymentContext type. The DeploymentControllerContext therefore contains a reference to the top-level DeploymentContext:</para>
-      <programlisting>public class DeploymentControllerContext extends AbstractControllerContext
+      <programlisting role="JAVA">public class DeploymentControllerContext extends AbstractControllerContext
 {
    /** The deployment context */
    private DeploymentContext deploymentContext;
@@ -2866,11 +2871,11 @@ public class MyBean {
     <chapter>
       <title>Identifying the deployment structure</title>
       <para>Before we can begin to process a deployment we must first determine its structure. This means finding out if it contains any deployment descriptors and/or classes, and if so where they are located relative to the deployment&apos;s root. Nested deployments must also be detected and their structures determined in the same way. The purpose of this is to help the parsing  actions locate the deployment descriptors in a standard way and to assist in the creation of classloaders. Since we wish to  use the Virtual File System (VFS) to represent our deployment we must first create a VFSDeployment using the deployment URI or URL:</para>
-      <programlisting>VirtualFile root = VFS.getRoot(deploymentURL);     
+      <programlisting role="JAVA">VirtualFile root = VFS.getRoot(deploymentURL);     
 VFSDeploymentFactory deploymentFactory = VFSDeploymentFactory.getInstance();
 Deployment deployment = deploymentFactory.createVFSDeployment(root);</programlisting>
       <para>The deployment framework then determines the structure of the <emphasis>Deployment</emphasis> using classes that implement the <emphasis>StructureDeployer</emphasis> interface:</para>
-      <programlisting>public interface StructureDeployer extends Ordered
+      <programlisting role="JAVA">public interface StructureDeployer extends Ordered
 {
 boolean determineStructure(VirtualFile root, VirtualFile parent, VirtualFile file, StructureMetaData metaData, VFSStructuralDeployers deployers) throws DeploymentException;
 }</programlisting>
@@ -2894,7 +2899,7 @@ boolean determineStructure(VirtualFile root, VirtualFile parent, VirtualFile fil
           </listitem>
         </itemizedlist>
         <para>Each <emphasis>FileMatcher</emphasis> must implement the following interface:</para>
-        <programlisting>public interface FileMatcher
+        <programlisting role="JAVA">public interface FileMatcher
 {
    boolean isDeployable(VirtualFile file);
 }</programlisting>
@@ -2950,7 +2955,7 @@ boolean determineStructure(VirtualFile root, VirtualFile parent, VirtualFile fil
       <section>
         <title>Nested deployments</title>
         <para>Nested deployments are found by calling the addAllChildren() method in <emphasis>AbstractStructureDeployer</emphasis> and passing in a reference to the deployment root and the current nested deployment along with the <emphasis>StructureMetaData</emphasis> and  <emphasis>VFSStructuralDeployers</emphasis> references: </para>
-        <programlisting>public abstract class AbstractStructureDeployer implements StructureDeployer
+        <programlisting role="JAVA">public abstract class AbstractStructureDeployer implements StructureDeployer
 {
     ...
 
@@ -2977,7 +2982,7 @@ boolean determineStructure(VirtualFile root, VirtualFile parent, VirtualFile fil
         <title>Declaring a custom deployment structure</title>
         <para>JBoss Microcontainer provides two <emphasis>StructureDeployer</emphasis> implementations out-of-the-box to recognise the most common forms of deployments; standalone deployment descriptors and packaged/unpackaged JAR archives. In addition it also includes a third implementation called <emphasis>DeclaredStructure</emphasis>.</para>
         <para><emphasis>DeclaredStructure</emphasis> allows you to specify the structure of a deployment, including any nested deployments, using an XML file called <emphasis>jboss-structure.xml</emphasis> placed in the  deployment&apos;s META-INF directory. The contents of this file are:</para>
-        <programlisting>&lt;structure&gt;
+        <programlisting role="XML">&lt;structure&gt;
     &lt;context&gt;
         &lt;path name=&quot;&quot;/&gt;
         &lt;metaDataPath&gt;
@@ -2989,7 +2994,7 @@ boolean determineStructure(VirtualFile root, VirtualFile parent, VirtualFile fil
     &lt;/context&gt;
 &lt;/structure&gt;</programlisting>
         <para>This describes a top-level deployment and specifies that deployment descriptors can be found in the <emphasis>OTHER-DIR</emphasis> directory and classes in the root directory. If you want to describe nested deployments then you simply need to create additional &lt;context&gt; elements and specify their  paths relative to the root deployment:</para>
-        <programlisting>&lt;structure&gt;
+        <programlisting role="XML">&lt;structure&gt;
     &lt;context&gt;
         &lt;path name=&quot;&quot;/&gt;
         &lt;metaDataPath&gt;
@@ -3030,12 +3035,12 @@ boolean determineStructure(VirtualFile root, VirtualFile parent, VirtualFile fil
         <title>Determining the deployment structure programmatically</title>
         <para>Using the <emphasis>DeclaredStructure</emphasis> approach is convenient if you have an unusual deployment structure and don&apos;t mind adding the <emphasis>META-INF/jboss-structure.xml</emphasis> file to your deployment. However, if you have many deployments and want to avoid adding this file each time, or  you want to nest arbitrary deployments inside your custom structure then you are better off creating your own <emphasis>StructureDeployer</emphasis> implementation.</para>
         <para>The easiest way to do this is by extending the <emphasis>AbstractStructureDeployer</emphasis> class which already implements the <emphasis>StructureDeployer</emphasis> interface:</para>
-        <programlisting>public abstract class AbstractStructureDeployer implements StructureDeployer
+        <programlisting role="JAVA">public abstract class AbstractStructureDeployer implements StructureDeployer
 {
    ...
 }</programlisting>
         <para>This includes helper methods to see if a VirtualFile represents a file or a directory and whether it corresponds to a top-level deployment. It also has methods to recurse through all of the files within a deployment to find nested deployments and to create <emphasis>ContextInfo</emphasis> objects for each one found. The only method that you need to implement is the one defined by the <emphasis>StructureDeployer</emphasis> interface:</para>
-        <programlisting>public interface StructureDeployer extends Ordered
+        <programlisting role="JAVA">public interface StructureDeployer extends Ordered
 {
    boolean determineStructure(VirtualFile root, VirtualFile parent, VirtualFile file, StructureMetaData metaData, VFSStructuralDeployers deployers) throws DeploymentException;
 }</programlisting>
@@ -3059,7 +3064,7 @@ boolean determineStructure(VirtualFile root, VirtualFile parent, VirtualFile fil
       <title>Creating Deployment Contexts</title>
       <section>
         <title>Introduction</title>
-        <para>Once the structure of a deployment has been determined then the next step is to create a number of <emphasis>DeploymentContext</emphasis> objects. A <emphasis>DeploymentContext</emphasis> is required for each top-level deployment and each nested deployment in order to store information such as:</para>
+        <para>Once the structure of a deployment has been determined then the next step is to create a number of <emphasis>DeploymentContext</emphasis> objects. A <emphasis>DeploymentContext</emphasis> is required for each deployment, whether top-level or nested, in order to store information such as:</para>
         <itemizedlist>
           <listitem>
             <para>the location of any deployment descriptors - the metadata path</para>
@@ -3077,7 +3082,7 @@ boolean determineStructure(VirtualFile root, VirtualFile parent, VirtualFile fil
             <para>the order it should be deployed in relative to other  deployments - the relative order</para>
           </listitem>
           <listitem>
-            <para>a list of deployments types that it represents (including nested deployments) - the types</para>
+            <para>a list of deployment types that it represents (including nested deployments) - the types</para>
           </listitem>
           <listitem>
             <para>the state of the deployment - whether it is deployed or not</para>
@@ -3089,21 +3094,21 @@ boolean determineStructure(VirtualFile root, VirtualFile parent, VirtualFile fil
             <para>the deployment resource loader</para>
           </listitem>
           <listitem>
-            <para>dependencies on other deployments</para>
+            <para>dependencies on other deployments or runtime components</para>
           </listitem>
           <listitem>
-            <para>references to any components that the deployment deploys - POJOs, MBeans etc...</para>
+            <para>references to any components that it deploys - POJOs, MBeans etc...</para>
           </listitem>
           <listitem>
-            <para>references to any nested deployments or the parent deployment</para>
+            <para>references to any nested (child) deployments or the parent deployment</para>
           </listitem>
         </itemizedlist>
-        <para>Since the <emphasis>StructureMetaData</emphasis> object created using the <emphasis>StructureDeployer</emphasis> implementations already contains some of this information we subsequently pass it to  a <emphasis>StructureBuilder</emphasis> together with a reference to the original <emphasis>Deployment</emphasis> to populate the Deployment with a tree of DeploymentContexts:</para>
-        <programlisting>public interface StructureBuilder
+        <para>Since the <emphasis>StructureMetaData</emphasis> object created using the <emphasis>StructureDeployer</emphasis> implementations already contains some of this information we subsequently pass it to  a <emphasis>StructureBuilder</emphasis> together with a reference to the original <emphasis>Deployment</emphasis> to populate the deployment with a tree of DeploymentContexts:</para>
+        <programlisting role="JAVA">public interface StructureBuilder
 {
    DeploymentContext populateContext(Deployment deployment, StructureMetaData metaData) throws DeploymentException;
 }</programlisting>
-        <para>During this method call the information contained with the <emphasis>ContextInfo</emphasis> objects, found within the <emphasis>StructureMetaData</emphasis>, is transferred to new instances of <emphasis>DeploymentContext</emphasis> that are joined together into a hierarchy. A  reference to the top-level DeploymentContext is then returned.</para>
+        <para>During this method call the information contained within the <emphasis>ContextInfo</emphasis> objects, found inside the <emphasis>StructureMetaData</emphasis>, is transferred to new instances of <emphasis>DeploymentContext</emphasis> that are assembled into a hierarchy. A  reference to the top-level <emphasis>DeploymentContext</emphasis> is then returned.</para>
       </section>
       <section>
         <title>Accessing a deployment</title>
@@ -3113,11 +3118,11 @@ boolean determineStructure(VirtualFile root, VirtualFile parent, VirtualFile fil
       <section>
         <title>Attaching extra information</title>
         <para>Since each instance of <emphasis>DeploymentContext</emphasis> contains generic deployment information we need a way to store and retrieve additional information generated during the deployment process. This is done using the <emphasis>DeploymentUnit</emphasis> wrapper which extends the <emphasis>MutableAttachments</emphasis> interface:</para>
-        <programlisting>public interface DeploymentUnit extends MutableAttachments
+        <programlisting role="JAVA">public interface DeploymentUnit extends MutableAttachments
 {
     ...
 }</programlisting>
-        <programlisting>public interface MutableAttachments extends Attachments
+        <programlisting role="JAVA">public interface MutableAttachments extends Attachments
 {
    Object addAttachment(String name, Object attachment);
    &lt;T&gt; T addAttachment(String name, T attachment, Class&lt;T&gt; expectedType);
@@ -3136,7 +3141,7 @@ boolean determineStructure(VirtualFile root, VirtualFile parent, VirtualFile fil
 }</programlisting>
         <para>As you can see the <emphasis>MutableAttachments</emphasis> operations allow you to store arbitrary objects (referred to as attachments) inside a map using a <emphasis>String</emphasis> for the key.  For convenience you can pass in the type of the object instead of a string and the return value of type.getName()   will be used as the key. If you pass in a type for the key, or you specify an expectedType argument, then the return value will be cast to an object of that type.</para>
         <para>If you wish to retrieve any objects then you can use operations from the <emphasis>Attachments</emphasis> interface:</para>
-        <programlisting>public interface Attachments extends Serializable
+        <programlisting role="JAVA">public interface Attachments extends Serializable
 {
    Map&lt;String, Object&gt; getAttachments();
 
@@ -3152,7 +3157,7 @@ boolean determineStructure(VirtualFile root, VirtualFile parent, VirtualFile fil
 }</programlisting>
         <para>Again if you pass a type for the key, or specify an expectedType argument, then the return value will be cast to an object of that type. In the case of the isAttachmentPresent() methods the return value is only true if both the object can be located using the key and it can be cast to the specified type.</para>
         <para><emphasis>DeploymentUnit</emphasis> also contains a convenience method that allows you to retrieve all objects of a particular type from the map of attachments:</para>
-        <programlisting>public interface DeploymentUnit extends MutableAttachments
+        <programlisting role="JAVA">public interface DeploymentUnit extends MutableAttachments
 {
     ...
    &lt;T&gt; Set&lt;? extends T&gt; getAllMetaData(Class&lt;T&gt; type);
@@ -3161,16 +3166,16 @@ boolean determineStructure(VirtualFile root, VirtualFile parent, VirtualFile fil
       </section>
       <section>
         <title>Deployment components</title>
-        <para>Deployments usually contain one or more runtime components in addition to configuration information and resource files. By runtime component we mean any class that uses a container in which to run. Containers take care of controlling the component&apos;s lifecycle in addition to providing additional behaviours so that the component developer does not have to do this themselves. By leveraging the work of the container the idea is that component development reduces the time needed to develop systems with advanced behaviour.</para>
-        <para>The simplest example of a component is  a POJO. In this case the container controls when the POJO is created based on when a client performs a lookup using a name. It can also take care of wiring different POJOs together based on information in a deployment descriptor so that the POJO developer doesn&apos;t have to hard-code the relationships themselves. This makes the configuration of the runtime environment easier to change.</para>
-        <para>Another example is an MBean. Here the container (an MBeanServer) takes care of routing all method calls through a bus so that clients never reference the MBean directly. This allows MBeans to be replaced at runtime without impacting any clients.</para>
-        <para>A further example is an OSGi service bundle. Here the container ensures that the classes required by the bundle are available in the runtime before the service is started. It also takes care of making classes within the bundles available to others if required. This makes the runtime environment easier to construct and maintain with fewer classloading issues.</para>
+        <para>Deployments usually contain one or more runtime components in addition to configuration information and resource files. By runtime components we mean any classes that require a container in which to run. Containers take care of controlling a component&apos;s lifecycle in addition to providing  common behaviours so that  component developers do not have to do this themselves. By leveraging the work of the container,  components allow you to concentrate on developing the business logic of your application without having to continually write code for common tasks. This typically  reduces the time needed to develop systems with advanced behaviour.</para>
+        <para>The simplest example of a component is  a POJO. In this case the container controls when the POJO is created based on when a client performs a lookup. It can also take care of wiring different POJOs together based on information in a deployment descriptor so that the developer doesn&apos;t have to hard-code any relationships. This makes configuration of the runtime environment easier to change.</para>
+        <para>Another example is an MBean. Here the container (an MBeanServer) takes care of routing all method calls through a bus so that clients never reference the MBean directly. This allows MBeans to be replaced at runtime without impacting any clients. It also allows the management interface of an MBean, the attributes and operations exposed to clients, to change at runtime without needing to redeploy it.</para>
+        <para>A further example is an OSGi service bundle. Here the container ensures that the classes required by the bundle are available in the runtime before the service is started. It also takes care of making classes within the bundle available to others when deployed and removing them again when undeployed. This makes the runtime environment easier to construct and maintain with fewer classloading issues.</para>
         <para>In order to provide support for deploying different types of runtime components, JBoss Microcontainer requires that each one is represented by its own <emphasis>ComponentDeploymentContext</emphasis>:</para>
-        <programlisting>public class ComponentDeploymentContext implements DeploymentContext
+        <programlisting role="JAVA">public class ComponentDeploymentContext implements DeploymentContext
 {
     ...
 }</programlisting>
-        <para>This is similer to a normal <emphasis>DeploymentContext</emphasis> but with some important differences:</para>
+        <para>This is similer to a normal <emphasis>DeploymentContext</emphasis> implementation but with some important differences:</para>
         <itemizedlist>
           <listitem>
             <para>Components always have a relative order of 0</para>
@@ -3182,13 +3187,13 @@ boolean determineStructure(VirtualFile root, VirtualFile parent, VirtualFile fil
             <para>Components always use the classloader of the containing deployment</para>
           </listitem>
           <listitem>
-            <para>Components can not change their  parent once constructed.</para>
+            <para>Components cannot change their  parent once constructed</para>
           </listitem>
           <listitem>
-            <para>Components do not have any children. </para>
+            <para>Components can contain other components</para>
           </listitem>
           <listitem>
-            <para>Components are never top-level deployments</para>
+            <para>Components are never considered top-level deployments</para>
           </listitem>
         </itemizedlist>
         <para>In addition ComponentDeploymentContexts delegate to their parent <emphasis>DeploymentContext</emphasis> for information such as:</para>
@@ -3221,10 +3226,13 @@ boolean determineStructure(VirtualFile root, VirtualFile parent, VirtualFile fil
             <para>get/setProblem</para>
           </listitem>
         </itemizedlist>
-        <para>The reason we use the <emphasis>DeploymentContext</emphasis> interface is so that we can treat  components as  nested deployments. This ensures that when a deployment is deployed any components that it contains are deployed  with it. Similarly undeploying a deployment causes its components to be undeployed at the same time.</para>
-        <para>We need to distinguish components within a deployment from the deployment itself in order to allow the microcontainer to manage individual components at runtime.</para>
+        <para>The reason we use the <emphasis>DeploymentContext</emphasis> interface is so that we can process  components together with normal deployments. This ensures that when a deployment is deployed any components that it contains are deployed  with it. Similarly undeploying a deployment causes its components to be undeployed at the same time.</para>
+        <important>
+          <para>An additional motivation is that we can easily create separate ControllerContexts for each component which we can then process using the state machine. This allows us to perform a well-defined set of deployment actions to deploy/undeploy each component in and out of the runtime.</para>
+          <para>Having separate ControllerContexts for each component also allows you to manage the components individually, possibly via an Admin console. Furthermore each component can have its own dependencies allowing fine-grained control of how the runtime is constructed and destructed. </para>
+        </important>
         <para>ComponentDeploymentContexts are added to a <emphasis>DeploymentUnit</emphasis> using the addComponent() method whenever a component is discovered during the deployment process:</para>
-        <programlisting>public class AbstractDeploymentUnit extends AbstractMutableAttachments implements DeploymentUnit
+        <programlisting role="JAVA">public class AbstractDeploymentUnit extends AbstractMutableAttachments implements DeploymentUnit
 {
     ...
 
@@ -3246,21 +3254,351 @@ boolean determineStructure(VirtualFile root, VirtualFile parent, VirtualFile fil
 
     ...
 }</programlisting>
+        <para>As components are usually accessed with the <emphasis>DeploymentUnit</emphasis> interface they can also have attachments just like any other deployment:</para>
+        <programlisting role="JAVA">public interface DeploymentUnit extends MutableAttachments
+{
+    ...
+}
+
+public interface MutableAttachments extends Attachments
+{
+    ...
+
+   Object addAttachment(String name, Object attachment);
+
+    ...
+}</programlisting>
+        <para>An attachment may well be metadata associated with the component. In this way the metadata can be processed using deployment actions as the component&apos;s <emphasis>ControllerContext</emphasis> passes through the state machine.</para>
       </section>
       <section>
         <title>Deployment dependencies</title>
-        <para>addIDependOn, removeIDependOn() are only in DeploymentUnit</para>
+        <para>Sometimes a deployment may have dependencies on other deployments or on a runtime component such as a classloader. In these cases we need to be able to define the dependencies so that the state machine can decide whether or not to progress the deployment to the next stage. This is done using the following methods of the <emphasis>DeploymentUnit</emphasis> interface:</para>
+        <programlisting role="JAVA">public interface DeploymentUnit extends MutableAttachments
+{
+    ...
+
+   DependencyInfo getDependencyInfo();
+   void addIDependOn(DependencyItem dependency);
+   void removeIDependOn(DependencyItem dependency);
+}</programlisting>
+        <para><emphasis>AbstractDeploymentUnit</emphasis> delegates these calls to the <emphasis>DeploymentContext</emphasis> implementation that it wraps:</para>
+        <programlisting role="JAVA">public class AbstractDeploymentUnit extends AbstractMutableAttachments implements DeploymentUnit
+{
+   ...
+
+   public void addIDependOn(DependencyItem dependency)
+   {
+      getDependencyInfo().addIDependOn(dependency);
+   }
+
+   public DependencyInfo getDependencyInfo()
+   {
+      return deploymentContext.getDependencyInfo();
+   }
+
+   public void removeIDependOn(DependencyItem dependency)
+   {
+      getDependencyInfo().removeIDependOn(dependency);
+   }
+
+   ...
+}</programlisting>
+        <para>This in turn delegates them to the corresponding <emphasis>ControllerContext</emphasis> implementation which is stored as an attachment:</para>
+        <programlisting role="JAVA">public class AbstractDeploymentContext extends ManagedObjectsWithTransientAttachmentsImpl implements DeploymentContext
+{
+   ...
+
+   public DependencyInfo getDependencyInfo()
+   {
+      ControllerContext controllerContext = getTransientAttachments().getAttachment(ControllerContext.class);
+      if (controllerContext != null)
+         return controllerContext.getDependencyInfo();
+      else
+      {
+         DeploymentContext parent = getParent();
+         if (parent == null)
+            throw new IllegalStateException(&quot;Deployment ControllerContext has not been set&quot;);
+         return parent.getDependencyInfo();
+      }
+   }
+
+   ...
+}</programlisting>
+        <para>If a <emphasis>ControllerContext</emphasis> object is not found within the deployment&apos;s attachments then the parent deployment is tried. In this way  DependencyItems  are added/removed to the  underlying <emphasis>ControllerContext</emphasis> implementation for the deployment. </para>
       </section>
     </chapter>
     <chapter>
       <title>Processing a deployment</title>
       <section>
         <title>Introduction</title>
-        <para>Explain how the controller is used in DeployersImpl.</para>
+        <para>So far we have established the structure of a deployment using <emphasis>StructureDeployer</emphasis> classes and created a corresponding <emphasis>DeploymentContext</emphasis> using a <emphasis>StructureBuilder</emphasis>.  Nested deployments have been dealt with by creating additional DeploymentContexts and adding these as children of the parent <emphasis>DeploymentContext</emphasis>.</para>
+        <para>The next step in the deployment framework is to process the deployment. The objective being to extract any metadata from the deployment descriptors and create a classloader. Components must also be identified during this process and  a <emphasis>ComponentDeploymentContext</emphasis> created for each one  so that they can be deployed into the runtime.</para>
+        <para>The <emphasis>Deployers</emphasis> interface defines the operations that need to take place:</para>
+        <programlisting role="JAVA">public interface Deployers
+{
+   ...
+   
+   void process(List&lt;DeploymentContext&gt; deploy, List&lt;DeploymentContext&gt; undeploy);
+
+   void checkComplete(Collection&lt;DeploymentContext&gt; errors, Collection&lt;Deployment&gt; missingDeployer) throws DeploymentException;
+
+   void checkComplete(DeploymentContext... contexts) throws DeploymentException;
+
+   void checkStructureComplete(DeploymentContext... contexts) throws DeploymentException;
+}</programlisting>
+        <para>In the default implementation <emphasis>DeployersImpl</emphasis> the process() method creates new DeploymentControllerContexts for each <emphasis>DeploymentContext</emphasis> in the deploy list and installs them into the microcontainer controller:</para>
+        <programlisting role="JAVA">public class DeployersImpl implements Deployers, ControllerContextActions
+{
+    ...
+
+   public void process(List&lt;DeploymentContext&gt; deploy, List&lt;DeploymentContext&gt; undeploy)
+   {
+        ...
+
+      // There is something to deploy
+      if (deploy != null &amp;&amp; deploy.isEmpty() == false)
+      {
+         // Create the controller contexts
+         for (DeploymentContext context : deploy)
+         {
+            DeploymentControllerContext deploymentControllerContext = new DeploymentControllerContext(context, this);
+            try
+            {
+               controller.install(deploymentControllerContext);
+               context.setState(DeploymentState.DEPLOYING);
+               ...
+               context.getTransientAttachments().addAttachment(ControllerContext.class, deploymentControllerContext);
+               ...
+            }
+            catch (Throwable t)
+            {
+               // Set the error on the parent
+               context.setState(DeploymentState.ERROR);
+               context.setProblem(t);
+               // Set the children to not deployed
+               setState(context, DeploymentState.UNDEPLOYED, DeploymentState.DEPLOYING);
+            }
+         }
+
+         // Go through the states in order
+         List&lt;ControllerState&gt; states = controller.getStates();
+         for (ControllerState state : states)
+         {
+            for (DeploymentContext context : deploy)
+            {
+               if (DeploymentState.ERROR.equals(context.getState()) == false)
+               {
+                  DeploymentControllerContext deploymentControllerContext = context.getTransientAttachments().getAttachment(ControllerContext.class.getName(), DeploymentControllerContext.class);
+                  try
+                  {
+                     controller.change(deploymentControllerContext, state);
+                  }
+                  catch (Throwable t)
+                  {
+                     context.setState(DeploymentState.ERROR);
+                     context.setProblem(t);
+                  }
+               }
+            }
+         }
+       }
+    }
+
+    ...
+}</programlisting>
+        <para>Notice that a reference to the <emphasis>DeploymentControllerContext</emphasis> is stored as an attachment to the <emphasis>DeploymentContext</emphasis> so that it can be retrieved later and passed to the controller.install() method.</para>
+        <para>Undeployment happens in a similar way. First of all the DeploymentControllerContexts associated with the DeploymentContexts in the undeploy list are extracted into a separate list. The microcontainer controller is then used again to push them through  the deployment states in reverse order. Finally the DeploymentControllerContexts are removed from the <emphasis>DeploymentContext</emphasis> attachments where they were initially stored and uninstalled from the controller:</para>
+        <programlisting role="JAVA">public class DeployersImpl implements Deployers, ControllerContextActions
+{
+    ...
+
+   public void process(List&lt;DeploymentContext&gt; deploy, List&lt;DeploymentContext&gt; undeploy)
+   {
+      // There is something to undeploy
+      if (undeploy != null &amp;&amp; undeploy.isEmpty() == false)
+      {
+         // Build a list in reverse order
+         List&lt;DeploymentControllerContext&gt; toUndeploy = new ArrayList&lt;DeploymentControllerContext&gt;();
+         for (int i = undeploy.size()-1; i &gt;= 0; --i)
+         {
+            DeploymentContext context = undeploy.get(i);
+            if (DeploymentState.ERROR.equals(context.getState()) == false)
+               context.setState(DeploymentState.UNDEPLOYING);
+            ...
+            DeploymentControllerContext deploymentControllerContext = context.getTransientAttachments().getAttachment(ControllerContext.class.getName(), DeploymentControllerContext.class);
+            if (deploymentControllerContext == null)
+            {
+               log.debug(&quot;DeploymentContext has no DeploymentControllerContext during undeploy request, ignoring: &quot; + context);
+            }
+            else
+            {
+               toUndeploy.add(deploymentControllerContext);
+            }
+         }
+
+         // Go through the states in reverse order
+         List&lt;ControllerState&gt; states = controller.getStates();
+         for (int i = states.size()-1; i &gt;= 0; --i)
+         {
+            ControllerState state = states.get(i);
+            for (DeploymentControllerContext deploymentControllerContext : toUndeploy)
+            {
+               DeploymentContext context = deploymentControllerContext.getDeploymentContext();
+               if (ControllerState.ERROR.equals(context.getState()) == false)
+               {
+                  try
+                  {
+                     controller.change(deploymentControllerContext, state);
+                  }
+                  catch (Throwable t)
+                  {
+                     ...
+                     context.setState(DeploymentState.ERROR);
+                     context.setProblem(t);
+                  }
+               }
+            }
+         }
+
+         // Uninstall the contexts
+         for (DeploymentControllerContext deploymentControllerContext : toUndeploy)
+         {
+            DeploymentContext context = deploymentControllerContext.getDeploymentContext();
+            context.getTransientAttachments().removeAttachment(ControllerContext.class);
+            try
+            {
+               controller.uninstall(deploymentControllerContext.getName());
+               setState(context, DeploymentState.UNDEPLOYED, null);
+               ...
+               cleanup(context);
+              ...
+            }
+            catch (Throwable t)
+            {
+               ...
+               context.setState(DeploymentState.ERROR);
+               context.setProblem(t);
+            }
+         }
+      }
+
+      ...
+   }
+
+   ...
+}
+</programlisting>
+        <note>
+          <para>Undeployments are actually processed before deployments to ensure that we don&apos;t end up in a situation where a deployment that depends on a subsequently undeployed deployment has to be undeployed again straight away.</para>
+        </note>
+        <para>You should hopefully see from this breakdown that each deployment is processed by creating a <emphasis>DeploymentControllerContext</emphasis> that is then installed into the microcontainer controller and pushed through a series of deployment stages. What these stages are and how they are created is the subject of the next section.</para>
       </section>
       <section>
         <title>Deployment stages</title>
-        <para>  </para>
+        <para>  By default the <emphasis>DeployersImpl</emphasis> class creates the following deployment stages on construction:</para>
+        <itemizedlist>
+          <listitem>
+            <para>NOT_INSTALLED - the deployment is ready to be installed or has been uninstalled</para>
+          </listitem>
+          <listitem>
+            <para>PARSE -  deployment descriptors are parsed into deployment metadata</para>
+          </listitem>
+          <listitem>
+            <para>DESCRIBE - dependencies on other deployments or runtime components are determined</para>
+          </listitem>
+          <listitem>
+            <para>CLASSLOADER - a classloader for the deployment is created</para>
+          </listitem>
+          <listitem>
+            <para>POST_CLASSLOADER - </para>
+          </listitem>
+          <listitem>
+            <para>REAL - components are deployed into the runtime</para>
+          </listitem>
+          <listitem>
+            <para>INSTALLED - the deployment is fully deployed</para>
+          </listitem>
+        </itemizedlist>
+        <para>Each <emphasis>DeploymentStage</emphasis> has a name and indicates which stages it comes before and after: </para>
+        <programlisting role="JAVA">public class DeploymentStage
+{
+   private String name;
+   
+   private String after;
+   
+   private String before;
+
+   ...
+}</programlisting>
+        <para>This allows a new <emphasis>ControllerState</emphasis> to be created for each <emphasis>DeploymentStage</emphasis> which can then be added in the correct place to the list of ControllerStates associated with the controller:</para>
+        <programlisting role="JAVA">public class DeployersImpl implements Deployers, ControllerContextActions
+{
+    ...
+
+   public DeployersImpl(AbstractController controller, Set&lt;Deployer&gt; deployers)
+   {
+      if (controller == null)
+         throw new IllegalArgumentException(&quot;Null controller&quot;);
+      this.controller = controller;
+      
+      // Add the standard stages
+      addDeploymentStage(DeploymentStages.NOT_INSTALLED);
+      addDeploymentStage(DeploymentStages.PARSE);
+      addDeploymentStage(DeploymentStages.DESCRIBE);
+      addDeploymentStage(DeploymentStages.CLASSLOADER);
+      addDeploymentStage(DeploymentStages.POST_CLASSLOADER);
+      addDeploymentStage(DeploymentStages.REAL);
+      addDeploymentStage(DeploymentStages.INSTALLED);
+
+      ...
+   }
+
+   ...
+
+   protected synchronized void addDeploymentStage(DeploymentStage stage)
+   {
+      if (stage == null)
+         throw new IllegalArgumentException(&quot;Null stage&quot;);
+            // Already done?
+      String stageName = stage.getName();
+      if (stages.containsKey(stageName))
+         return;
+
+      ControllerState preceeds = null;
+      String before = stage.getBefore();
+      String after = stage.getAfter();
+      if (before != null || after != null)
+      {
+         // Determine where to put the stage
+         List&lt;ControllerState&gt; states = controller.getStates();
+         for (int i = 0; i &lt; states.size(); ++i)
+         {
+            ControllerState state = states.get(i);
+            String stateName = state.getStateString();
+            if (before != null &amp;&amp; before.equals(stateName))
+            {
+               preceeds = state;
+               break;
+            }
+            if (after != null &amp;&amp; after.equals(stateName))
+            {
+               if (i &lt; states.size()-1)
+               {
+                  preceeds = states.get(i+1);
+                  break;
+               }
+            }
+         }
+      }
+
+      controller.addState(new ControllerState(stageName), preceeds);
+      stages.put(stageName, stage);
+      ...
+   }
+
+   ...
+}</programlisting>
+        <para>The DeploymentStages are also stored in a map, using the stage name as a key, to prevent duplicate stages from being added.</para>
       </section>
       <section>
         <title>Deployment actions</title>
@@ -3268,9 +3606,11 @@ boolean determineStructure(VirtualFile root, VirtualFile parent, VirtualFile fil
       </section>
       <section>
         <title>Ordering (Inputs and outputs)</title>
+        <para/>
       </section>
       <section>
         <title>Deploying components</title>
+        <para/>
       </section>
     </chapter>
     <chapter>
