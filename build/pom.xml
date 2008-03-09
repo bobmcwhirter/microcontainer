@@ -32,7 +32,7 @@
   </scm>
 
   <properties>
-    <version.jboss.man>2.0.0-SNAPSHOT</version.jboss.man>
+    <version.jboss.man>2.0.0.Beta11</version.jboss.man>
     <version.jboss.common.core>2.2.3.GA</version.jboss.common.core>
     <version.jboss.common.logging.spi>2.0.4.GA</version.jboss.common.logging.spi>
     <version.jbossxb>2.0.0-SNAPSHOT</version.jbossxb>
