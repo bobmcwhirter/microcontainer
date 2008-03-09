@@ -1,11 +1,12 @@
+<?xml version="1.0" encoding="UTF-8"?>
 <classpath>
-  <classpathentry kind="src" path="src/main"/>
-  <classpathentry kind="output" path="target/classes"/>
-  <classpathentry kind="con" path="org.eclipse.jdt.launching.JRE_CONTAINER"/>
-  <classpathentry kind="src" path="/jboss-deployers-spi"/>
-  <classpathentry kind="src" path="/jboss-deployers-core"/>
-  <classpathentry kind="src" path="/jboss-classloading"/>
-  <classpathentry exported="true" kind="var" path="M2_REPO/org/jboss/jboss-vfs/2.0.0.Beta7/jboss-vfs-2.0.0.Beta7.jar"/>
-  <classpathentry exported="true" kind="var" path="M2_REPO/org/jboss/jbossxb/2.0.0-SNAPSHOT/jbossxb-2.0.0-SNAPSHOT.jar"/>
-  <classpathentry exported="true" kind="var" path="M2_REPO/javax/xml/bind/jaxb-api/2.1/jaxb-api-2.1.jar"/>
+	<classpathentry kind="src" path="src/main"/>
+	<classpathentry kind="con" path="org.eclipse.jdt.launching.JRE_CONTAINER"/>
+	<classpathentry exported="true" kind="src" path="/jboss-deployers-spi"/>
+	<classpathentry exported="true" kind="src" path="/jboss-deployers-core"/>
+	<classpathentry exported="true" kind="src" path="/jboss-classloading"/>
+	<classpathentry exported="true" kind="var" path="M2_REPO/org/jboss/jboss-vfs/2.0.0.Beta7/jboss-vfs-2.0.0.Beta7.jar"/>
+	<classpathentry exported="true" kind="var" path="M2_REPO/org/jboss/jbossxb/2.0.0-SNAPSHOT/jbossxb-2.0.0-SNAPSHOT.jar"/>
+	<classpathentry exported="true" kind="var" path="M2_REPO/javax/xml/bind/jaxb-api/2.1/jaxb-api-2.1.jar"/>
+	<classpathentry kind="output" path="target/classes"/>
 </classpath>
