@@ -76,8 +76,9 @@
       <artifactId>jboss-dependency</artifactId>
     </dependency>
     <dependency>
-      <groupId>org.jboss.microcontainer</groupId>
+      <groupId>org.jboss.man</groupId>
       <artifactId>jboss-managed</artifactId>
+      <optional>true</optional>
     </dependency>
     <dependency>
       <groupId>org.jboss</groupId>

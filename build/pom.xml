@@ -32,6 +32,7 @@
   </scm>
 
   <properties>
+    <version.jboss.man>2.0.0-SNAPSHOT</version.jboss.man>
     <version.jboss.common.core>2.2.3.GA</version.jboss.common.core>
     <version.jboss.common.logging.spi>2.0.4.GA</version.jboss.common.logging.spi>
     <version.jbossxb>2.0.0-SNAPSHOT</version.jbossxb>
@@ -290,14 +291,14 @@
         <scope>test</scope>
       </dependency>
       <dependency>
-        <groupId>org.jboss.microcontainer</groupId>
+        <groupId>org.jboss.man</groupId>
         <artifactId>jboss-managed</artifactId>
-        <version>${project.version}</version>
+        <version>${version.jboss.man}</version>
       </dependency>
       <dependency>
-        <groupId>org.jboss.microcontainer</groupId>
+        <groupId>org.jboss.man</groupId>
         <artifactId>jboss-metatype</artifactId>
-        <version>${project.version}</version>
+        <version>${version.jboss.man}</version>
       </dependency>
       <dependency>
         <groupId>org.jboss.microcontainer</groupId>

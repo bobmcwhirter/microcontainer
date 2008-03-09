@@ -32,8 +32,6 @@
   <modules>
     <module>build</module>
     <module>dependency</module>
-    <module>metatype</module>
-    <module>managed</module>
     <module>kernel</module>
     <module>aop-mc-int</module>
     <module>deployers-core-spi</module>
