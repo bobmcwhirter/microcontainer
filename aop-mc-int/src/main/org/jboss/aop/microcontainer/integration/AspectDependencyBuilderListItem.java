@@ -70,7 +70,8 @@ class AspectDependencyBuilderListItem implements DependencyBuilderListItem
          {
             try
             {
-               if (item.getIDependOn().equals(dependencyName))
+               Object iDependOn = item.getIDependOn();
+               if (iDependOn != null && iDependOn.equals(dependencyName))
                {
                   depends.removeIDependOn(item);
                }

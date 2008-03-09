@@ -9,5 +9,6 @@
 	<classpathentry exported="true" kind="var" path="M2_REPO/org/jboss/aop/jboss-aop/2.0.0.CR3/jboss-aop-2.0.0.CR3.jar" sourcepath="/M2_REPO/org/jboss/aop/jboss-aop/2.0.0.CR3/jboss-aop-2.0.0.CR3-sources.jar"/>
 	<classpathentry exported="true" kind="var" path="M2_REPO/qdox/qdox/1.6/qdox-1.6.jar" sourcepath="M2_REPO/qdox/qdox/1.6/qdox-1.6-sources.jar"/>
 	<classpathentry exported="true" kind="var" path="M2_REPO/trove/trove/2.1.1/trove-2.1.1.jar"/>
+	<classpathentry exported="true" kind="var" path="M2_REPO/apache-xerces/xercesImpl/2.9.1/xercesImpl-2.9.1.jar"/>
 	<classpathentry kind="output" path="target/classes"/>
 </classpath>
