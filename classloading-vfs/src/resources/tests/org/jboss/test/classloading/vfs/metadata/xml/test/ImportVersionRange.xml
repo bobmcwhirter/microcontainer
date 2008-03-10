@@ -1,0 +1,15 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<classloader xmlns="urn:jboss:classloader:1.0"
+              name="test">
+   <requirements>
+      <module name="export1"/>
+      <module name="export2" from="1.0.0"/>
+      <module name="export3" to="1.0.0"/>
+      <module name="export4" from="1.0.0" to="2.0.0"/>
+      <module name="export5" from="1.0.0" from-inclusive="false" to="2.0.0" to-inclusive="false"/>
+      <module name="export6" from="1.0.0" from-inclusive="false" to="2.0.0" to-inclusive="true"/>
+      <module name="export7" from="1.0.0" from-inclusive="true" to="2.0.0" to-inclusive="false"/>
+      <module name="export8" from="1.0.0" from-inclusive="true" to="2.0.0" to-inclusive="true"/>
+   </requirements>
+</classloader>

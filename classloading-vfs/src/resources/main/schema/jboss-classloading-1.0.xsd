@@ -1,0 +1,341 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<xsd:schema xmlns:xsd="http://www.w3.org/2001/XMLSchema"
+            targetNamespace="urn:jboss:classloading:1.0"
+            xmlns="urn:jboss:classloading:1.0"
+            elementFormDefault="qualified"
+            attributeFormDefault="unqualified"
+            version="1.0">
+
+   <xsd:annotation>
+      <xsd:documentation>
+         <![CDATA[
+         An xml schema for the META-INF/jboss-classloading.xml
+         ]]>
+      </xsd:documentation>
+   </xsd:annotation>
+
+   <xsd:element name="classloading" type="classloadingType">
+      <xsd:annotation>
+         <xsd:documentation>
+            <![CDATA[
+            The root classloading element
+            ]]>
+         </xsd:documentation>
+      </xsd:annotation>
+   </xsd:element>
+
+   <xsd:complexType name="classloadingType">
+      <xsd:annotation>
+         <xsd:documentation>
+            <![CDATA[
+            The classloading is made up of a number of attributes
+            and a list of requirements and capabilities.
+            
+            If there are no explicit capabilities, then the name
+            and version attribute are used to create a module capability
+            and the export-all/filters are used to create package capabilities. 
+            ]]>
+         </xsd:documentation>
+      </xsd:annotation>
+      <xsd:choice minOccurs="0" maxOccurs="unbounded">
+         <xsd:element name="requirements" type="requirements"/>
+         <xsd:element name="capabilities" type="capabilties"/>
+      </xsd:choice>
+      <xsd:attribute name="name" type="xsd:string" optional="true">
+         <xsd:annotation>
+            <xsd:documentation>
+               <![CDATA[
+               The name of the classloader
+               ]]>
+            </xsd:documentation>
+         </xsd:annotation>
+      </xsd:attribute>
+      <xsd:attribute name="version" type="version" optional="true">
+         <xsd:annotation>
+            <xsd:documentation>
+               <![CDATA[
+               The version of the classloader
+               ]]>
+            </xsd:documentation>
+         </xsd:annotation>
+      </xsd:attribute>
+      <xsd:attribute name="domain" type="xsd:string" optional="true">
+         <xsd:annotation>
+            <xsd:documentation>
+               <![CDATA[
+               The name of the domain into which the classloader is registered.
+               It will use the default domain when not specified.
+               ]]>
+            </xsd:documentation>
+         </xsd:annotation>
+      </xsd:attribute>
+      <xsd:attribute name="parent-domain" type="xsd:string" optional="true">
+         <xsd:annotation>
+            <xsd:documentation>
+               <![CDATA[
+               The name of the parent domain used to construct the specified domain.
+               It will use the default domain when not specified and the domain
+               is not the default domain.
+               ]]>
+            </xsd:documentation>
+         </xsd:annotation>
+      </xsd:attribute>
+      <xsd:attribute name="parent-first" type="xsd:boolean" optional="true">
+         <xsd:annotation>
+            <xsd:documentation>
+               <![CDATA[
+               Whether it should use parent first (standard java rules)
+               or parent last (servlet style isolation) classloading
+               on the parent domain.
+               ]]>
+            </xsd:documentation>
+         </xsd:annotation>
+      </xsd:attribute>
+      <xsd:attribute name="import-all" type="xsd:boolean" optional="true">
+         <xsd:annotation>
+            <xsd:documentation>
+               <![CDATA[
+               Whether to import all exported classes from other
+               classloaders in the same domain and any parent domain.
+               ]]>
+            </xsd:documentation>
+         </xsd:annotation>
+      </xsd:attribute>
+      <xsd:attribute name="export-all" type="export-all" optional="true">
+         <xsd:annotation>
+            <xsd:documentation>
+               <![CDATA[
+               Whether to export all packages. This is constrainted by the filters
+               and ignored altogether if there are explicit capabilities. 
+               ]]>
+            </xsd:documentation>
+         </xsd:annotation>
+      </xsd:attribute>
+      <xsd:attribute name="included" type="xsd:string" optional="true">
+         <xsd:annotation>
+            <xsd:documentation>
+               <![CDATA[
+               A comma seperated list of packages to include in the classloader.
+               ]]>
+            </xsd:documentation>
+         </xsd:annotation>
+      </xsd:attribute>
+      <xsd:attribute name="excluded" type="xsd:string" optional="true">
+         <xsd:annotation>
+            <xsd:documentation>
+               <![CDATA[
+               A comma seperated list of packages to exclude from the classloader.
+               ]]>
+            </xsd:documentation>
+         </xsd:annotation>
+      </xsd:attribute>
+      <xsd:attribute name="excludedExport" type="xsd:string" optional="true">
+         <xsd:annotation>
+            <xsd:documentation>
+               <![CDATA[
+               A comma seperated list of packages to exclude from the classloader's exports.
+               This is only used when export-all is specified.
+               ]]>
+            </xsd:documentation>
+         </xsd:annotation>
+      </xsd:attribute>
+      <xsd:attribute name="cache" type="xsd:boolean" optional="true">
+         <xsd:annotation>
+            <xsd:documentation>
+               <![CDATA[
+               Whether to loaded classes and resources can be cached
+               ]]>
+            </xsd:documentation>
+         </xsd:annotation>
+      </xsd:attribute>
+      <xsd:attribute name="blackList" type="xsd:boolean" optional="true">
+         <xsd:annotation>
+            <xsd:documentation>
+               <![CDATA[
+               Whether unfound classes and resources can be cached as misses.
+               ]]>
+            </xsd:documentation>
+         </xsd:annotation>
+      </xsd:attribute>
+   </xsd:complexType>
+   
+   <xsd:complexType name="capabilities">
+      <xsd:annotation>
+         <xsd:documentation>
+            <![CDATA[
+            The capabilities are an optional list of "exports" from this classloader.
+            They can be either the built in capbility types or user defined.
+            ]]>
+         </xsd:documentation>
+      </xsd:annotation>
+      <xsd:choice minOccurs="0" maxOccurs="unbounded">
+         <xsd:element name="module" type="capability"/>
+         <xsd:element name="package" type="capability"/>
+         <xsd:element name="uses" type="capability"/>
+         <xsd:any namespace="##other" processContents="strict"/>
+      </xsd:choice>
+   </xsd:complexType>
+
+   <xsd:complexType name="capability">
+      <xsd:annotation>
+         <xsd:documentation>
+            <![CDATA[
+            The built in capabilities share similar attributes.
+            ]]>
+         </xsd:documentation>
+      </xsd:annotation>
+      <xsd:attribute name="name" type="xsd:string" optional="true">
+         <xsd:annotation>
+            <xsd:documentation>
+               <![CDATA[
+               The name of the capability.
+               ]]>
+            </xsd:documentation>
+         </xsd:annotation>
+      </xsd:attribute>
+      <xsd:attribute name="version" type="version" optional="true">
+         <xsd:annotation>
+            <xsd:documentation>
+               <![CDATA[
+               The version of the capability.
+               ]]>
+            </xsd:documentation>
+         </xsd:annotation>
+      </xsd:attribute>
+   </xsd:complexType>
+   
+   <xsd:complexType name="requirements">
+      <xsd:annotation>
+         <xsd:documentation>
+            <![CDATA[
+            The requirements are an optional list of "imports" from other classloader.
+            They can be either the built in requirement types or user defined.
+            ]]>
+         </xsd:documentation>
+      </xsd:annotation>
+      <xsd:choice minOccurs="0" maxOccurs="unbounded">
+         <xsd:element name="module" type="requirement"/>
+         <xsd:element name="package" type="requirement"/>
+         <xsd:element name="uses" type="requirement"/>
+         <xsd:any namespace="##other" processContents="strict"/>
+      </xsd:choice>
+   </xsd:complexType>
+
+   <xsd:complexType name="requirement">
+      <xsd:annotation>
+         <xsd:documentation>
+            <![CDATA[
+            The built in requirements share similar attributes.
+            ]]>
+         </xsd:documentation>
+      </xsd:annotation>
+      <xsd:attribute name="name" type="xsd:string" optional="true">
+         <xsd:annotation>
+            <xsd:documentation>
+               <![CDATA[
+               The name of the requirement.
+               ]]>
+            </xsd:documentation>
+         </xsd:annotation>
+      </xsd:attribute>
+      <xsd:attribute name="version" type="version" optional="true">
+         <xsd:annotation>
+            <xsd:documentation>
+               <![CDATA[
+               Use this to require a specific version.
+               ]]>
+            </xsd:documentation>
+         </xsd:annotation>
+      </xsd:attribute>
+      <xsd:attribute name="from" type="version" optional="true">
+         <xsd:annotation>
+            <xsd:documentation>
+               <![CDATA[
+               The from version constraint
+               ]]>
+            </xsd:documentation>
+         </xsd:annotation>
+      </xsd:attribute>
+      <xsd:attribute name="from-inclusive" type="xsd:boolean" optional="true">
+         <xsd:annotation>
+            <xsd:documentation>
+               <![CDATA[
+               Whether the constraint includes the from version or those
+               greater than it.
+               ]]>
+            </xsd:documentation>
+         </xsd:annotation>
+      </xsd:attribute>
+      <xsd:attribute name="to" type="version" optional="true">
+         <xsd:annotation>
+            <xsd:documentation>
+               <![CDATA[
+               The to version constraint.
+               ]]>
+            </xsd:documentation>
+         </xsd:annotation>
+      </xsd:attribute>
+      <xsd:attribute name="to-inclusive" type="xsd:boolean" optional="true">
+         <xsd:annotation>
+            <xsd:documentation>
+               <![CDATA[
+               Whether the constraint includes the to version or those
+               less than it.
+               ]]>
+            </xsd:documentation>
+         </xsd:annotation>
+      </xsd:attribute>
+      <xsd:attribute name="reExport" type="xsd:boolean" optional="true">
+         <xsd:annotation>
+            <xsd:documentation>
+               <![CDATA[
+               Whether this requirement should become a requirement
+               of other classloaders requiring one of our module capabilities.
+               ]]>
+            </xsd:documentation>
+         </xsd:annotation>
+      </xsd:attribute>
+      <xsd:attribute name="dynamic" type="xsd:boolean" optional="true">
+         <xsd:annotation>
+            <xsd:documentation>
+               <![CDATA[
+               Whether this requirement is a dynamic import that can
+               be resolved at runtime.
+               ]]>
+            </xsd:documentation>
+         </xsd:annotation>
+      </xsd:attribute>
+      <xsd:attribute name="optional" type="xsd:boolean" optional="true">
+         <xsd:annotation>
+            <xsd:documentation>
+               <![CDATA[
+               Whether the requirement is optional.
+               ]]>
+            </xsd:documentation>
+         </xsd:annotation>
+      </xsd:attribute>
+   </xsd:complexType>
+
+   <xsd:simpleType name="version" base="xsd:string">
+      <xsd:annotation>
+         <xsd:documentation>
+            <![CDATA[
+            A version.
+            ]]>
+         </xsd:documentation>
+      </xsd:annotation>
+   </xsd:simpleType>
+
+   <xsd:simpleType name="export-all" base="xsd:string">
+      <xsd:annotation>
+         <xsd:documentation>
+            <![CDATA[
+            Whether to export all, valid values are:
+            ALL = export every package
+            NON_EMPTY = only export packages that have contents
+            ]]>
+         </xsd:documentation>
+      </xsd:annotation>
+   </xsd:simpleType>
+</xsd:schema>

@@ -1,0 +1,6 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<classloader xmlns="urn:jboss:classloader:1.0"
+              name="test"
+              system="System">
+</classloader>

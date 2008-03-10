@@ -1,0 +1,8 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<classloader xmlns="urn:jboss:classloader:1.0"
+              name="test">
+   <root>root1</root>
+   <root>root2</root>
+   <root>root3</root>
+</classloader>
