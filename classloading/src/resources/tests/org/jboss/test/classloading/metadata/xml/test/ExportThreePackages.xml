@@ -1,0 +1,10 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<classloading xmlns="urn:jboss:classloading:1.0"
+              name="test">
+   <capabilities>
+      <package name="export1" version="1.0.0"/>
+      <package name="export2" version="2.0.0"/>
+      <package name="export3" version="3.0.0"/>
+   </capabilities>
+</classloading>
