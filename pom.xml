@@ -34,22 +34,8 @@
     <module>dependency</module>
     <module>kernel</module>
     <module>aop-mc-int</module>
-    <module>deployers-core-spi</module>
-    <module>deployers-core</module>
-    <module>deployers-client-spi</module>
-    <module>deployers-client</module>
-    <module>deployers-structure-spi</module>
-    <module>deployers-spi</module>
-    <module>deployers-impl</module>
-    <module>deployers-vfs-spi</module>
-    <module>deployers-vfs</module>
     <module>spring-int</module>
     <module>guice-int</module>
-    <module>osgi-int</module>
-    <module>varia</module>
-    <module>reliance-identity</module>
-    <module>reliance-rules</module>
-    <module>reliance-jbpm</module>
   </modules>
 
   <build>
