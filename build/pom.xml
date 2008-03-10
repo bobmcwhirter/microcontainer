@@ -33,9 +33,10 @@
 
   <properties>
     <version.jboss.man>2.0.0.Beta11</version.jboss.man>
+    <version.jboss.classloader>2.0.0-SNAPSHOT</version.jboss.classloader>
     <version.jboss.common.core>2.2.3.GA</version.jboss.common.core>
     <version.jboss.common.logging.spi>2.0.4.GA</version.jboss.common.logging.spi>
-    <version.jbossxb>2.0.0-SNAPSHOT</version.jbossxb>
+    <version.jbossxb>2.0.0.CR7</version.jbossxb>
     <version.osgi.r4.core>1.0</version.osgi.r4.core>
     <version.jboss.vfs>2.0.0.Beta7</version.jboss.vfs>
     <version.javassist>3.6.0.GA</version.javassist>
@@ -182,21 +183,6 @@
       </dependency>
       <dependency>
         <groupId>org.jboss.microcontainer</groupId>
-        <artifactId>jboss-classloader</artifactId>
-        <version>${project.version}</version>
-      </dependency>
-      <dependency>
-        <groupId>org.jboss.microcontainer</groupId>
-        <artifactId>jboss-classloading</artifactId>
-        <version>${project.version}</version>
-      </dependency>
-      <dependency>
-        <groupId>org.jboss.microcontainer</groupId>
-        <artifactId>jboss-classloading-vfs</artifactId>
-        <version>${project.version}</version>
-      </dependency>
-      <dependency>
-        <groupId>org.jboss.microcontainer</groupId>
         <artifactId>jboss-dependency</artifactId>
         <version>${project.version}</version>
       </dependency>
@@ -289,6 +275,21 @@
         <version>${project.version}</version>
         <type>test-jar</type>
         <scope>test</scope>
+      </dependency>
+      <dependency>
+        <groupId>org.jboss.cl</groupId>
+        <artifactId>jboss-classloader</artifactId>
+        <version>${version.jboss.classloader}</version>
+      </dependency>
+      <dependency>
+        <groupId>org.jboss.cl</groupId>
+        <artifactId>jboss-classloading</artifactId>
+        <version>${version.jboss.classloader}</version>
+      </dependency>
+      <dependency>
+        <groupId>org.jboss.cl</groupId>
+        <artifactId>jboss-classloading-vfs</artifactId>
+        <version>${version.jboss.classloader}</version>
       </dependency>
       <dependency>
         <groupId>org.jboss.man</groupId>

@@ -40,9 +40,6 @@
     <module>deployers-client</module>
     <module>deployers-structure-spi</module>
     <module>deployers-spi</module>
-    <module>classloader</module>
-    <module>classloading</module>
-    <module>classloading-vfs</module>
     <module>deployers-impl</module>
     <module>deployers-vfs-spi</module>
     <module>deployers-vfs</module>

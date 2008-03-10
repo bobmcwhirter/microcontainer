@@ -8,7 +8,7 @@
 	<classpathentry exported="true" kind="src" path="/jboss-dependency"/>
 	<classpathentry exported="true" kind="var" path="M2_REPO/org/jboss/jboss-reflect/2.0.0.Beta11/jboss-reflect-2.0.0.Beta11.jar"/>
 	<classpathentry exported="true" kind="var" path="M2_REPO/org/jboss/man/jboss-managed/2.0.0.Beta11/jboss-managed-2.0.0.Beta11.jar"/>
-	<classpathentry exported="true" kind="var" path="M2_REPO/org/jboss/jbossxb/2.0.0-SNAPSHOT/jbossxb-2.0.0-SNAPSHOT.jar"/>
+	<classpathentry exported="true" kind="var" path="M2_REPO/org/jboss/jbossxb/2.0.0.CR7/jbossxb-2.0.0.CR7.jar"/>
 	<classpathentry exported="true" kind="var" path="M2_REPO/javax/xml/bind/jaxb-api/2.1/jaxb-api-2.1.jar"/>
 	<classpathentry exported="true" kind="var" path="M2_REPO/org/jboss/javassist/3.6.0.GA/javassist-3.6.0.GA.jar" sourcepath="M2_REPO/org/jboss/javassist/3.6.0.GA/javassist-3.6.0.GA-sources.jar"/>
 	<classpathentry kind="output" path="target/classes"/>

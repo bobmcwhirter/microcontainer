@@ -8,6 +8,6 @@
 	<classpathentry exported="true" kind="src" path="/jboss-deployers-core"/>
 	<classpathentry exported="true" kind="src" path="/jboss-deployers-impl"/>
 	<classpathentry exported="true" kind="src" path="/jboss-deployers-vfs-spi"/>
-	<classpathentry exported="true" kind="src" path="/jboss-classloading-vfs"/>
+	<classpathentry exported="true" kind="var" path="M2_REPO/org/jboss/cl/jboss-classloading-vfs/2.0.0-SNAPSHOT/jboss-classloading-vfs-2.0.0-SNAPSHOT.jar"/>
 	<classpathentry kind="output" path="target/classes"/>
 </classpath>
