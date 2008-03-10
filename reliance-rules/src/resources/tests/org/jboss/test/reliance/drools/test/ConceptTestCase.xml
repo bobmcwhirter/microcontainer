@@ -1,0 +1,146 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<deployment xmlns="urn:jboss:bean-deployer:2.0">
+
+   <!-- aspects -->
+
+   <bean name="AspectManager" class="org.jboss.aop.AspectManager">
+      <constructor factoryClass="org.jboss.aop.AspectManager" factoryMethod="instance"/>
+   </bean>
+
+   <!-- intercepts any StatefulSession creation from our RuleBase bean -->
+   <interceptor xmlns="urn:jboss:aop-beans:1.0"
+               name="WrapStatefulSessionAdvice"
+               class="org.jboss.reliance.drools.core.aspects.StatefulSessionCreationInterceptor"/>
+   <bind xmlns="urn:jboss:aop-beans:1.0" pointcut="execution(* org.jboss.reliance.drools.core.RuleBaseBean->newStatefulSession(..))">
+      <interceptor-ref name="WrapStatefulSessionAdvice"/>
+   </bind>
+
+   <!-- invokes fireAllRules after any CRUD method invocation on WorkingMemory instance -->
+   <aspect xmlns="urn:jboss:aop-beans:1.0"
+               name="FireAllRulesCheckAdvice"
+               class="org.jboss.reliance.drools.core.aspects.CRUDAwareAspect"/>
+   <bind xmlns="urn:jboss:aop-beans:1.0" pointcut="execution(* $instanceof{org.drools.StatefulSession}->$implements{org.drools.WorkingMemory}(..))">
+      <advice aspect="FireAllRulesCheckAdvice" name="invoke"/>
+   </bind>
+
+   <!-- disables fireAllRules if @DisableFireAllRules is present -->
+   <interceptor xmlns="urn:jboss:aop-beans:1.0"
+               name="DisableFireAllRulesAdvice"
+               class="org.jboss.reliance.drools.core.aspects.DisableFireAllRulesInterceptor"/>
+   <bind xmlns="urn:jboss:aop-beans:1.0" pointcut="execution(* @org.jboss.reliance.drools.core.aspects.DisableFireAllRules->*(..)) OR execution(* *->@org.jboss.reliance.drools.core.aspects.DisableFireAllRulesAllRules(..))">
+      <interceptor-ref name="DisableFireAllRulesAdvice"/>
+   </bind>
+
+   <!-- only invokes fireAllRules at the end of invocation -->
+   <interceptor xmlns="urn:jboss:aop-beans:1.0"
+               name="FireAllRulesAfterInvocationAdvice"
+               class="org.jboss.reliance.drools.core.aspects.FireAllRulesAfterInvocationInterceptor">
+      <constructor xmlns="urn:jboss:bean-deployer:2.0">
+         <parameter><inject bean="WorkingMemory" property="statefulSession"/></parameter>
+      </constructor>
+   </interceptor>
+   <bind xmlns="urn:jboss:aop-beans:1.0" pointcut="execution(* @org.jboss.reliance.drools.core.aspects.FireAllRulesAfter->*(..)) OR execution(* *->@org.jboss.reliance.drools.core.aspects.FireAllRulesAfterlesAfter(..))">
+      <interceptor-ref name="FireAllRulesAfterInvocationAdvice"/>
+   </bind>
+   <!-- applies RuleBasedDependencyItem to all @RulesAware beans -->
+   <lifecycle-describe xmlns="urn:jboss:aop-beans:1.0"
+               name="RulesMapper"
+               class="org.jboss.reliance.drools.dependency.RuleDependencyMapper"
+               classes="@org.jboss.reliance.drools.dependency.RulesAware">
+      <property name="factory" xmlns="urn:jboss:bean-deployer:2.0"><inject bean="RuleBasedDependencyFactory"/></property>
+   </lifecycle-describe>
+
+   <bean name="RuleBasedDependencyFactory" class="org.jboss.reliance.drools.dependency.RuleBasedDependencyItemFactory">
+      <property name="whenRequired">Create</property>
+   </bean>
+
+   <!-- drools beans -->
+
+   <bean name="WorkingMemory" class="org.jboss.reliance.drools.core.ManagedWorkingMemory">
+      <constructor>
+         <parameter><inject bean="RuleBase"/></parameter>
+         <parameter><inject bean="jboss.kernel:service=KernelController"/></parameter>
+      </constructor>
+      <incallback method="addEventListener" signature="org.drools.event.AgendaEventListener"/>
+      <incallback method="addEventListener" signature="org.drools.event.WorkingMemoryEventListener"/>
+      <uncallback method="removeEventListener" signature="org.drools.event.AgendaEventListener"/>
+      <uncallback method="removeEventListener" signature="org.drools.event.WorkingMemoryEventListener"/>
+   </bean>
+
+   <bean name="debugAgendaEventListener" class="org.drools.event.DebugAgendaEventListener"/>
+   <bean name="debugWorkingMemoryEventListener" class="org.drools.event.DebugWorkingMemoryEventListener"/>
+
+   <bean name="RuleBase" class="org.jboss.reliance.drools.core.RuleBaseBean">
+      <demand>packageGenerator</demand>
+   </bean>
+
+   <bean name="packageGenerator" class="org.jboss.reliance.drools.core.PackageGenerator">
+      <property name="fromDRL">
+         <value>
+            package SimplePermissions;
+
+            import org.jboss.reliance.drools.core.security.PermissionCheck;
+            import org.jboss.reliance.drools.core.security.RoleTracker;
+            import org.jboss.reliance.drools.core.security.Role;
+            import org.jboss.reliance.drools.core.rules.Flag;
+
+            global org.jboss.dependency.spi.Controller controller;
+
+            rule TesterCanBeCreated
+               when
+                 c: PermissionCheck(name == "tester", action == "Create")
+                 Role(name == "admin")
+               then
+                 c.grant();
+               end;
+
+            rule RoleTrackerAddition
+               salience 10
+               when
+                 Role(name == "admin")
+               then
+                 insert( new Flag("admin_flag") );
+                 insertLogical( new RoleTracker("admin") );
+               end;
+
+            rule RoleTrackerRemovalTrigger
+               when
+                 f : Flag(name == "admin_flag")
+                 not( RoleTracker(name == "admin") )
+               then
+                 retract( f );
+                 RoleTracker.change(controller, "tester", "Configured");
+               end;
+         </value>
+      </property>
+   </bean>
+
+   <bean name="configuration" class="org.jboss.reliance.identity.Configuration"/>
+
+   <bean name="identity" class="org.jboss.reliance.drools.core.security.RuleBasedIdentity">
+      <property name="securityContext"><inject bean="WorkingMemory" property="statefulSession"/></property>
+      <property name="configuration"><inject bean="configuration"/></property>
+   </bean>
+
+   <!-- user beans -->
+
+   <bean name="roles" class="org.jboss.test.reliance.drools.support.RolesAdapter">
+      <constructor>
+         <parameter><inject bean="identity"/></parameter>
+      </constructor>
+      <property name="username">alesj</property>
+      <property name="password">qwert</property>
+      <property name="roles">
+         <set elementClass="java.lang.String">
+            <value>guest</value>
+         </set>
+      </property>
+   </bean>
+
+   <bean name="tester" class="org.jboss.test.reliance.drools.support.Tester">
+      <annotation>@org.jboss.reliance.drools.dependency.RulesAware</annotation>
+      <demand state="PreInstall">roles</demand>
+   </bean>
+
+</deployment>

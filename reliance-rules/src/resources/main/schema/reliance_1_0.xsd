@@ -1,0 +1,16 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!-- A prototype xsd schema for rules
+$Id: rules-beans_1_0.xsd 61194 2007-08-31 14:36:24Z ales.justin@jboss.com $
+ -->
+<xsd:schema xmlns:xsd="http://www.w3.org/2001/XMLSchema"
+   targetNamespace="urn:jboss:aop-beans:1.0"
+   xmlns="urn:jboss:rules-beans:1.0"
+   xmlns:mc="urn:jboss:bean-deployer:2.0"
+   elementFormDefault="qualified"
+   attributeFormDefault="unqualified"
+   version="1.0"
+>
+
+   <xsd:import namespace="urn:jboss:bean-deployer:2.0"/>
+
+</xsd:schema>
