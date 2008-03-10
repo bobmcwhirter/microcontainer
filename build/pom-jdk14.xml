@@ -8,7 +8,7 @@
   - add a dependency in the dependencyManagement section which refers to
     the property
 -->
-<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"  
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
     xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
   <parent>
     <groupId>org.jboss</groupId>
@@ -23,7 +23,7 @@
   <name>JBoss Microcontainer Build</name>
   <url>http://www.jboss.com/products/jbossmc</url>
   <description>
-    The JBoss Microcontainer provides a lightweight container for managing POJOs, their deployment 
+    The JBoss Microcontainer provides a lightweight container for managing POJOs, their deployment
     and configuration.
   </description>
   <scm>
@@ -31,7 +31,7 @@
     <developerConnection>scm:svn:https://svn.jboss.org/repos/jbossas/projects/microcontainer/trunk/</developerConnection>
     <url>http://viewvc.jboss.org/cgi-bin/viewvc.cgi/jbossas/projects/microcontainer/trunk/</url>
   </scm>
-  
+
   <properties>
     <version.jboss.common.core>2.2.1-SNAPSHOT</version.jboss.common.core>
     <version.jbossxb>2.0.0.CR3</version.jbossxb>
@@ -39,7 +39,7 @@
     <version.jboss.vfs>2.0.4.snapshot</version.jboss.vfs>
     <version.org.jboss.reflect>2.0.0.Beta11</version.org.jboss.reflect>
     <version.org.jboss.mdr>2.0.0.Beta11</version.org.jboss.mdr>
-    <version.javassist>3.6-beta</version.javassist>
+    <version.javassist>3.7.1.GA</version.javassist>
     <version.jaxb.api>2.0</version.jaxb.api>
     <version.jboss.aop>2.0.0-SNAPSHOT</version.jboss.aop>
     <version.jboss.common.logging.spi>2.0.5-SNAPSHOT</version.jboss.common.logging.spi>
@@ -422,7 +422,7 @@
       </dependency>
     </dependencies>
   </dependencyManagement>
-  
+
   <profiles>
     <profile>
       <id>default</id>

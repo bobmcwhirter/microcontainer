@@ -39,7 +39,7 @@
     <version.jbossxb>2.0.0.CR7</version.jbossxb>
     <version.osgi.r4.core>1.0</version.osgi.r4.core>
     <version.jboss.vfs>2.0.0.Beta7</version.jboss.vfs>
-    <version.javassist>3.6.0.GA</version.javassist>
+    <version.javassist>3.7.1.GA</version.javassist>
     <version.jboss.aop>2.0.0.CR3</version.jboss.aop>
     <version.jboss.classloading.spi>5.0.0.Beta3</version.jboss.classloading.spi>
     <version.org.jboss.reflect>2.0.0.Beta11</version.org.jboss.reflect>
