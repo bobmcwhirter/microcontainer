@@ -1,0 +1,10 @@
+<classpath>
+  <classpathentry kind="src" path="src/main"/>
+  <classpathentry kind="src" path="src/resources/main" excluding="**/*.java"/>
+  <classpathentry kind="src" path="src/resources/tests" output="target/tests-classes" excluding="**/*.java"/>
+  <classpathentry kind="src" path="src/tests" output="target/tests-classes"/>
+  <classpathentry kind="output" path="target/classes"/>
+  <classpathentry kind="con" path="org.eclipse.jdt.launching.JRE_CONTAINER"/>
+  <classpathentry kind="src" path="/jboss-kernel"/>
+  <classpathentry kind="var" path="M2_REPO/jboss/jbpm/3.1.1/jbpm-3.1.1.jar"/>
+</classpath>
