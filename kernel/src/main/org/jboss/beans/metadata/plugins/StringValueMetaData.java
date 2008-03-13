@@ -110,14 +110,24 @@ public class StringValueMetaData extends AbstractTypeMetaData
       if (typeInfo == null)
          throw new IllegalArgumentException("Unable to determine type for value: " + getUnderlyingValue());
 
-      // we convert it with more precise type
-      // and then check for progression, ...
-      if (typeInfo != info && info != null)
+      // We need to set the context classloader
+      // because some property editors use the context classloader
+      ClassLoader oldCl = SecurityActions.setContextClassLoader(cl);
+      try
       {
-         Object typeValue = typeInfo.convertValue(getUnderlyingValue());
-         return info.convertValue(typeValue, replace, trim);
+         // we convert it with more precise type
+         // and then check for progression, ...
+         if (typeInfo != info && info != null)
+         {
+            Object typeValue = typeInfo.convertValue(getUnderlyingValue());
+            return info.convertValue(typeValue, replace, trim);
+         }
+         return typeInfo.convertValue(getUnderlyingValue(), replace, trim);
       }
-      return typeInfo.convertValue(getUnderlyingValue(), replace, trim);
+      finally
+      {
+         SecurityActions.resetContextClassLoader(oldCl);
+      }
    }
 
    protected Object getDefaultInstance()
