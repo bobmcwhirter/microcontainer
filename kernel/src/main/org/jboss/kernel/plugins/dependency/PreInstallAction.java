@@ -65,7 +65,15 @@ public class PreInstallAction extends InstallsAwareAction
          context.setBeanInfo(info);
 
          KernelMetaDataRepository repository = controller.getKernel().getMetaDataRepository();
-         repository.addMetaData(context);
+         ClassLoader oldCL = SecurityActions.setContextClassLoader(context);
+         try
+         {
+            repository.addMetaData(context);
+         }
+         finally
+         {
+            SecurityActions.resetContextClassLoader(oldCL);
+         }
          try
          {
             applyScoping(context);
