@@ -2,9 +2,8 @@
 <!-- A prototype xsd schema for the pojoserver xml deployer
 $Id: bean-deployer_2_0.xsd 70437 2008-03-05 17:13:04Z alesj $
  -->
+
 <xsd:schema xmlns:xsd="http://www.w3.org/2001/XMLSchema"
-   targetNamespace="urn:jboss:beans-common:2.0"
-   xmlns="urn:jboss:beans-common:2.0"
    elementFormDefault="qualified"
    attributeFormDefault="unqualified"
    version="1.0">
@@ -20,7 +19,7 @@ $Id: bean-deployer_2_0.xsd 70437 2008-03-05 17:13:04Z alesj $
          ...
          ]]>
       </xsd:documentation>
-   </xsd:annotation>
+   </xsd:annotation> 
 
    <xsd:complexType name="beanType">
       <xsd:annotation>
