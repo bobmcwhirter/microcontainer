@@ -19,21 +19,18 @@
 * Software Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA
 * 02110-1301 USA, or see the FSF site: http://www.fsf.org.
 */
-package org.jboss.test.kernel.annotations.test;
+package org.jboss.test.kernel.annotations.test.field;
 
-import junit.framework.TestSuite;
-import junit.framework.Test;
 import junit.textui.TestRunner;
-import org.jboss.test.kernel.annotations.test.override.AnnotationsOverrideTestSuite;
-import org.jboss.test.kernel.annotations.test.inheritance.AnnotationsInheritanceTestSuite;
-import org.jboss.test.kernel.annotations.test.field.AnnotationFieldTestSuite;
+import junit.framework.Test;
+import junit.framework.TestSuite;
 
 /**
- * Annotations tests.
- *
+ * Field annotation tests.
+ * 
  * @author <a href="mailto:ales.justin@jboss.com">Ales Justin</a>
  */
-public class AnnotationsTestSuite extends TestSuite
+public class AnnotationFieldTestSuite extends TestSuite
 {
    public static void main(String[] args)
    {
@@ -42,12 +39,9 @@ public class AnnotationsTestSuite extends TestSuite
 
    public static Test suite()
    {
-      TestSuite suite = new TestSuite("Annotations Tests");
+      TestSuite suite = new TestSuite("Fields Tests");
 
-      suite.addTest(AnnotationSupportTestSuite.suite());
-      suite.addTest(AnnotationsOverrideTestSuite.suite());
-      suite.addTest(AnnotationsInheritanceTestSuite.suite());
-      suite.addTest(AnnotationFieldTestSuite.suite());
+      suite.addTest(SimpleFieldTestCase.suite());
 
       return suite;
    }

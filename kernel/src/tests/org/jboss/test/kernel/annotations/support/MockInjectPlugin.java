@@ -19,36 +19,44 @@
 * Software Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA
 * 02110-1301 USA, or see the FSF site: http://www.fsf.org.
 */
-package org.jboss.test.kernel.annotations.test;
+package org.jboss.test.kernel.annotations.support;
 
-import junit.framework.TestSuite;
-import junit.framework.Test;
-import junit.textui.TestRunner;
-import org.jboss.test.kernel.annotations.test.override.AnnotationsOverrideTestSuite;
-import org.jboss.test.kernel.annotations.test.inheritance.AnnotationsInheritanceTestSuite;
-import org.jboss.test.kernel.annotations.test.field.AnnotationFieldTestSuite;
+import java.util.HashSet;
+import java.util.List;
+import java.util.Set;
+
+import org.jboss.beans.metadata.spi.BeanMetaData;
+import org.jboss.beans.metadata.spi.MetaDataVisitorNode;
+import org.jboss.kernel.plugins.annotations.FieldAnnotationPlugin;
+import org.jboss.reflect.spi.FieldInfo;
 
 /**
- * Annotations tests.
- *
  * @author <a href="mailto:ales.justin@jboss.com">Ales Justin</a>
  */
-public class AnnotationsTestSuite extends TestSuite
+public class MockInjectPlugin extends FieldAnnotationPlugin<MockInject>
 {
-   public static void main(String[] args)
+   public static MockInjectPlugin INSTANCE = new MockInjectPlugin();
+
+   private Set<String> fieldNames = new HashSet<String>();
+
+   private MockInjectPlugin()
    {
-      TestRunner.run(suite());
+      super(MockInject.class);
    }
 
-   public static Test suite()
+   protected List<? extends MetaDataVisitorNode> internalApplyAnnotation(FieldInfo info, MockInject annotation, BeanMetaData beanMetaData) throws Throwable
    {
-      TestSuite suite = new TestSuite("Annotations Tests");
+      fieldNames.add(info.getName());
+      return null;
+   }
 
-      suite.addTest(AnnotationSupportTestSuite.suite());
-      suite.addTest(AnnotationsOverrideTestSuite.suite());
-      suite.addTest(AnnotationsInheritanceTestSuite.suite());
-      suite.addTest(AnnotationFieldTestSuite.suite());
+   public Set<String> getFieldNames()
+   {
+      return fieldNames;
+   }
 
-      return suite;
+   public void clear()
+   {
+      fieldNames.clear();
    }
 }

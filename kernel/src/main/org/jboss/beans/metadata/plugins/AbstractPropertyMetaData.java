@@ -32,6 +32,7 @@ import javax.xml.bind.annotation.XmlAnyElement;
 import javax.xml.bind.annotation.XmlValue;
 
 import org.jboss.beans.info.spi.PropertyInfo;
+import org.jboss.beans.info.spi.BeanInfo;
 import org.jboss.beans.metadata.spi.MetaDataVisitor;
 import org.jboss.beans.metadata.spi.MetaDataVisitorNode;
 import org.jboss.beans.metadata.spi.PropertyMetaData;
@@ -302,18 +303,9 @@ public class AbstractPropertyMetaData extends AbstractFeatureMetaData
       }
       // check properties
       KernelControllerContext context = visitor.getControllerContext();
-      Set<PropertyInfo> propertyInfos = context.getBeanInfo().getProperties();
-      if (propertyInfos != null && propertyInfos.isEmpty() == false)
-      {
-         for (PropertyInfo pi : propertyInfos)
-         {
-            if (getName().equals(pi.getName()))
-            {
-               return applyCollectionOrMapCheck(pi.getType());
-            }
-         }
-      }
-      throw new IllegalArgumentException("Should not be here - no matching propertyInfo: " + this);
+      BeanInfo beanInfo = context.getBeanInfo();
+      PropertyInfo pi = beanInfo.getProperty(getName());
+      return applyCollectionOrMapCheck(pi.getType());
    }
 
    public void toString(JBossStringBuilder buffer)

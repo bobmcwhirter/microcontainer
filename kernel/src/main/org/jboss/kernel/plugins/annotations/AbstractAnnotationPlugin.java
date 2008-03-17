@@ -188,7 +188,7 @@ public abstract class AbstractAnnotationPlugin<T extends AnnotatedInfo, C extend
    protected List<? extends MetaDataVisitorNode> internalApplyAnnotation(T info, C annotation, BeanMetaData beanMetaData) throws Throwable
    {
       log.warn("Probably missing annotation apply implementation: " + this);
-      return Collections.emptyList();
+      return null;
    }
 
    public final void applyAnnotation(T info, MetaData retrieval, MetaDataVisitor visitor) throws Throwable

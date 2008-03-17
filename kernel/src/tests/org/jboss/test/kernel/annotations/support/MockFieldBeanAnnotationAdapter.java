@@ -19,36 +19,17 @@
 * Software Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA
 * 02110-1301 USA, or see the FSF site: http://www.fsf.org.
 */
-package org.jboss.test.kernel.annotations.test;
+package org.jboss.test.kernel.annotations.support;
 
-import junit.framework.TestSuite;
-import junit.framework.Test;
-import junit.textui.TestRunner;
-import org.jboss.test.kernel.annotations.test.override.AnnotationsOverrideTestSuite;
-import org.jboss.test.kernel.annotations.test.inheritance.AnnotationsInheritanceTestSuite;
-import org.jboss.test.kernel.annotations.test.field.AnnotationFieldTestSuite;
+import org.jboss.kernel.plugins.annotations.AbstractBeanAnnotationAdapter;
 
 /**
- * Annotations tests.
- *
  * @author <a href="mailto:ales.justin@jboss.com">Ales Justin</a>
  */
-public class AnnotationsTestSuite extends TestSuite
+public class MockFieldBeanAnnotationAdapter extends AbstractBeanAnnotationAdapter
 {
-   public static void main(String[] args)
+   public MockFieldBeanAnnotationAdapter()
    {
-      TestRunner.run(suite());
-   }
-
-   public static Test suite()
-   {
-      TestSuite suite = new TestSuite("Annotations Tests");
-
-      suite.addTest(AnnotationSupportTestSuite.suite());
-      suite.addTest(AnnotationsOverrideTestSuite.suite());
-      suite.addTest(AnnotationsInheritanceTestSuite.suite());
-      suite.addTest(AnnotationFieldTestSuite.suite());
-
-      return suite;
+      addAnnotationPlugin(MockInjectPlugin.INSTANCE);
    }
 }
