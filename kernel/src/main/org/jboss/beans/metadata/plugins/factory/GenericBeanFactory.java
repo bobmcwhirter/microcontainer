@@ -25,6 +25,7 @@ import java.util.List;
 import java.util.Map;
 
 import org.jboss.beans.info.spi.BeanInfo;
+import org.jboss.beans.info.spi.BeanAccessMode;
 import org.jboss.beans.metadata.spi.ClassLoaderMetaData;
 import org.jboss.beans.metadata.spi.ConstructorMetaData;
 import org.jboss.beans.metadata.spi.LifecycleMetaData;
@@ -60,7 +61,10 @@ public class GenericBeanFactory implements BeanFactory, KernelControllerContextA
    
    /** The bean class name */
    protected String bean;
-   
+
+   /** The access mode */
+   protected BeanAccessMode accessMode;
+
    /** The classloader */
    protected ClassLoaderMetaData classLoader;
    
@@ -111,12 +115,12 @@ public class GenericBeanFactory implements BeanFactory, KernelControllerContextA
          cl = Configurator.getClassLoader(classLoader);
       BeanInfo info = null;
       if (bean != null)
-         info = configurator.getBeanInfo(bean, cl);
+         info = configurator.getBeanInfo(bean, cl, accessMode);
 
       Joinpoint joinpoint = configurator.getConstructorJoinPoint(info, constructor, null);
       Object result = joinpoint.dispatch();
       if (info == null && result != null)
-         info = configurator.getBeanInfo(result.getClass());
+         info = configurator.getBeanInfo(result.getClass(), accessMode);
 
       if (properties != null && properties.size() > 0)
       {
@@ -163,7 +167,27 @@ public class GenericBeanFactory implements BeanFactory, KernelControllerContextA
    {
       this.bean = bean;
    }
-   
+
+   /**
+    * Get the access mode.
+    *
+    * @return the access mode
+    */
+   public BeanAccessMode getAccessMode()
+   {
+      return accessMode;
+   }
+
+   /**
+    * Set the access mode.
+    *
+    * @param accessMode the access mode.
+    */
+   public void setAccessMode(BeanAccessMode accessMode)
+   {
+      this.accessMode = accessMode;
+   }
+
    /**
     * Get the classLoader.
     * 

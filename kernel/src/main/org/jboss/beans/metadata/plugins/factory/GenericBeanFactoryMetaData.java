@@ -27,6 +27,7 @@ import java.util.Iterator;
 import java.util.Map;
 import java.util.Set;
 
+import org.jboss.beans.info.spi.BeanAccessMode;
 import org.jboss.beans.metadata.plugins.AbstractBeanMetaData;
 import org.jboss.beans.metadata.plugins.AbstractConstructorMetaData;
 import org.jboss.beans.metadata.plugins.AbstractDependencyValueMetaData;
@@ -126,6 +127,12 @@ public class GenericBeanFactoryMetaData extends AbstractBeanMetaData
       super.setClassLoader(classLoader);
       Set<PropertyMetaData> properties = getProperties();
       properties.add(new AbstractPropertyMetaData("classLoader", new AbstractValueMetaData(classLoader)));
+   }
+
+   public void setAccessMode(BeanAccessMode accessMode)
+   {
+      Set<PropertyMetaData> properties = getProperties();
+      properties.add(new AbstractPropertyMetaData("accessMode", new AbstractValueMetaData(accessMode)));
    }
 
    /**

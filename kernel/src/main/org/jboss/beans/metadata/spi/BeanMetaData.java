@@ -26,6 +26,7 @@ import java.util.Set;
 
 import org.jboss.dependency.spi.ControllerMode;
 import org.jboss.beans.metadata.api.model.AutowireType;
+import org.jboss.beans.info.spi.BeanAccessMode;
 
 /**
  * Metadata about a bean.
@@ -91,6 +92,13 @@ public interface BeanMetaData extends FeatureMetaData, ValueMetaData
     */
    ControllerMode getMode();
    
+   /**
+    * Get the access mode
+    *
+    * @return the mode
+    */
+   BeanAccessMode getAccessMode();
+
    /**
     * Set the name
     * 

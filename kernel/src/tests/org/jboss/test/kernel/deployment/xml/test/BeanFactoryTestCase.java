@@ -27,6 +27,7 @@ import java.util.HashSet;
 import junit.framework.Test;
 
 import org.jboss.beans.metadata.spi.factory.GenericBeanFactoryMetaData;
+import org.jboss.beans.info.spi.BeanAccessMode;
 import org.jboss.dependency.spi.ControllerMode;
 
 /**
@@ -43,6 +44,7 @@ public class BeanFactoryTestCase extends AbstractXMLTest
       assertEquals("Name1", factory.getName());
       assertEquals("Dummy", factory.getBean());
       assertNull(factory.getMode());
+      assertNull(factory.getAccessMode());
       assertNull(factory.getAnnotations());
       assertNull(factory.getClassLoader());
       assertNull(factory.getConstructor());
@@ -63,6 +65,7 @@ public class BeanFactoryTestCase extends AbstractXMLTest
       assertNull(factory.getName());
       assertEquals(Object.class.getName(), factory.getBean());
       assertNull(factory.getMode());
+      assertNull(factory.getAccessMode());
       assertNull(factory.getAnnotations());
       assertNull(factory.getClassLoader());
       assertNull(factory.getConstructor());
@@ -83,6 +86,28 @@ public class BeanFactoryTestCase extends AbstractXMLTest
       assertNull(factory.getName());
       assertEquals("Dummy", factory.getBean());
       assertEquals(ControllerMode.MANUAL, factory.getMode());
+      assertNull(factory.getAccessMode());
+      assertNull(factory.getAnnotations());
+      assertNull(factory.getClassLoader());
+      assertNull(factory.getConstructor());
+      assertNull(factory.getProperties());
+      assertNull(factory.getCreate());
+      assertNull(factory.getStart());
+      assertNull(factory.getDemands());
+      assertNull(factory.getSupplies());
+      assertNull(factory.getInstalls());
+      assertNull(factory.getUninstalls());
+      assertNull(factory.getInstallCallbacks());
+      assertNull(factory.getUninstallCallbacks());
+   }
+
+   public void testBeanFactoryWithAccessMode() throws Exception
+   {
+      GenericBeanFactoryMetaData factory = unmarshalBeanFactory("BeanFactoryWithAccessMode.xml");
+      assertNull(factory.getName());
+      assertEquals("Dummy", factory.getBean());
+      assertNull(factory.getMode());
+      assertEquals(BeanAccessMode.FIELDS, factory.getAccessMode());
       assertNull(factory.getAnnotations());
       assertNull(factory.getClassLoader());
       assertNull(factory.getConstructor());
@@ -103,6 +128,7 @@ public class BeanFactoryTestCase extends AbstractXMLTest
       assertNull(factory.getName());
       assertEquals("Dummy", factory.getBean());
       assertNull(factory.getMode());
+      assertNull(factory.getAccessMode());
       assertNull(factory.getAnnotations());
       assertNotNull(factory.getClassLoader());
       assertNull(factory.getConstructor());
@@ -123,6 +149,7 @@ public class BeanFactoryTestCase extends AbstractXMLTest
       assertNull(factory.getName());
       assertEquals("Dummy", factory.getBean());
       assertNull(factory.getMode());
+      assertNull(factory.getAccessMode());
       assertNull(factory.getAnnotations());
       assertNull(factory.getClassLoader());
       assertNotNull(factory.getConstructor());
@@ -143,6 +170,7 @@ public class BeanFactoryTestCase extends AbstractXMLTest
       assertNull(factory.getName());
       assertEquals("Dummy", factory.getBean());
       assertNull(factory.getMode());
+      assertNull(factory.getAccessMode());
       assertNull(factory.getAnnotations());
       assertNull(factory.getClassLoader());
       assertNull(factory.getConstructor());
@@ -165,6 +193,7 @@ public class BeanFactoryTestCase extends AbstractXMLTest
       assertNull(factory.getName());
       assertEquals("Dummy", factory.getBean());
       assertNull(factory.getMode());
+      assertNull(factory.getAccessMode());
       assertNull(factory.getAnnotations());
       assertNull(factory.getClassLoader());
       assertNull(factory.getConstructor());
@@ -189,6 +218,7 @@ public class BeanFactoryTestCase extends AbstractXMLTest
       assertNull(factory.getName());
       assertEquals("Dummy", factory.getBean());
       assertNull(factory.getMode());
+      assertNull(factory.getAccessMode());
       assertNull(factory.getAnnotations());
       assertNull(factory.getClassLoader());
       assertNull(factory.getConstructor());
@@ -209,6 +239,7 @@ public class BeanFactoryTestCase extends AbstractXMLTest
       assertNull(factory.getName());
       assertEquals("Dummy", factory.getBean());
       assertNull(factory.getMode());
+      assertNull(factory.getAccessMode());
       assertNull(factory.getAnnotations());
       assertNull(factory.getClassLoader());
       assertNull(factory.getConstructor());
@@ -229,6 +260,7 @@ public class BeanFactoryTestCase extends AbstractXMLTest
       assertNull(factory.getName());
       assertEquals("Dummy", factory.getBean());
       assertNull(factory.getMode());
+      assertNull(factory.getAccessMode());
       assertNull(factory.getAnnotations());
       assertNull(factory.getClassLoader());
       assertNull(factory.getConstructor());
@@ -251,6 +283,7 @@ public class BeanFactoryTestCase extends AbstractXMLTest
       assertNull(factory.getName());
       assertEquals("Dummy", factory.getBean());
       assertNull(factory.getMode());
+      assertNull(factory.getAccessMode());
       assertNull(factory.getAnnotations());
       assertNull(factory.getClassLoader());
       assertNull(factory.getConstructor());
@@ -275,6 +308,7 @@ public class BeanFactoryTestCase extends AbstractXMLTest
       assertNull(factory.getName());
       assertEquals("Dummy", factory.getBean());
       assertNull(factory.getMode());
+      assertNull(factory.getAccessMode());
       assertNull(factory.getAnnotations());
       assertNull(factory.getClassLoader());
       assertNull(factory.getConstructor());
@@ -297,6 +331,7 @@ public class BeanFactoryTestCase extends AbstractXMLTest
       assertNull(factory.getName());
       assertEquals("Dummy", factory.getBean());
       assertNull(factory.getMode());
+      assertNull(factory.getAccessMode());
       assertNull(factory.getAnnotations());
       assertNull(factory.getClassLoader());
       assertNull(factory.getConstructor());
@@ -321,6 +356,7 @@ public class BeanFactoryTestCase extends AbstractXMLTest
       assertNull(factory.getName());
       assertEquals("Dummy", factory.getBean());
       assertNull(factory.getMode());
+      assertNull(factory.getAccessMode());
       assertNull(factory.getAnnotations());
       assertNull(factory.getClassLoader());
       assertNull(factory.getConstructor());
@@ -343,6 +379,7 @@ public class BeanFactoryTestCase extends AbstractXMLTest
       assertNull(factory.getName());
       assertEquals("Dummy", factory.getBean());
       assertNull(factory.getMode());
+      assertNull(factory.getAccessMode());
       assertNull(factory.getAnnotations());
       assertNull(factory.getClassLoader());
       assertNull(factory.getConstructor());
@@ -367,6 +404,7 @@ public class BeanFactoryTestCase extends AbstractXMLTest
       assertNull(factory.getName());
       assertEquals("Dummy", factory.getBean());
       assertNull(factory.getMode());
+      assertNull(factory.getAccessMode());
       assertNull(factory.getAnnotations());
       assertNull(factory.getClassLoader());
       assertNull(factory.getConstructor());
@@ -389,6 +427,7 @@ public class BeanFactoryTestCase extends AbstractXMLTest
       assertNull(factory.getName());
       assertEquals("Dummy", factory.getBean());
       assertNull(factory.getMode());
+      assertNull(factory.getAccessMode());
       assertNull(factory.getAnnotations());
       assertNull(factory.getClassLoader());
       assertNull(factory.getConstructor());
@@ -413,6 +452,7 @@ public class BeanFactoryTestCase extends AbstractXMLTest
       assertNull(factory.getName());
       assertEquals("Dummy", factory.getBean());
       assertNull(factory.getMode());
+      assertNull(factory.getAccessMode());
       assertNull(factory.getAnnotations());
       assertNull(factory.getClassLoader());
       assertNull(factory.getConstructor());
@@ -435,6 +475,7 @@ public class BeanFactoryTestCase extends AbstractXMLTest
       assertNull(factory.getName());
       assertEquals("Dummy", factory.getBean());
       assertNull(factory.getMode());
+      assertNull(factory.getAccessMode());
       assertNull(factory.getAnnotations());
       assertNull(factory.getClassLoader());
       assertNull(factory.getConstructor());

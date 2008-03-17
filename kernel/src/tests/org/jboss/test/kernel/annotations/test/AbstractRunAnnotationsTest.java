@@ -22,6 +22,7 @@
 package org.jboss.test.kernel.annotations.test;
 
 import org.jboss.beans.metadata.plugins.AbstractBeanMetaData;
+import org.jboss.beans.info.spi.BeanAccessMode;
 import org.jboss.kernel.Kernel;
 import org.jboss.kernel.plugins.bootstrap.basic.BasicBootstrap;
 import org.jboss.kernel.spi.config.KernelConfig;
@@ -62,21 +63,37 @@ public abstract class AbstractRunAnnotationsTest extends BaseTestCase
 
    protected void runAnnotationsOnTarget(Object target) throws Throwable
    {
+      runAnnotationsOnTarget(target, BeanAccessMode.STANDARD);
+   }
+
+   protected void runAnnotationsOnTarget(Object target, BeanAccessMode mode) throws Throwable
+   {
       assertNotNull("Target is null", target);
-      runAnnotations(target.getClass(), target);
+      runAnnotations(target.getClass(), target, mode);
    }
 
    protected void runAnnotationsOnClass(Class<?> clazz) throws Throwable
+   {
+      runAnnotationsOnClass(clazz, BeanAccessMode.STANDARD);      
+   }
+
+   protected void runAnnotationsOnClass(Class<?> clazz, BeanAccessMode mode) throws Throwable
    {
       runAnnotations(clazz, null);
    }
 
    protected void runAnnotations(Class<?> clazz, Object target) throws Throwable
    {
+      runAnnotations(clazz, target, BeanAccessMode.STANDARD);
+   }
+
+   protected void runAnnotations(Class<?> clazz, Object target, BeanAccessMode mode) throws Throwable
+   {
       KernelController controller = getController();
       String className = clazz.getName();
       String name = target != null ? target.toString() : (className + System.currentTimeMillis());
       AbstractBeanMetaData beanMetaData = new AbstractBeanMetaData(name, className);
+      beanMetaData.setAccessMode(mode);
       try
       {
          KernelControllerContext context = controller.install(beanMetaData, target);

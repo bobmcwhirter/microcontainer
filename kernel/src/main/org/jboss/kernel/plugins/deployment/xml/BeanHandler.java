@@ -27,6 +27,7 @@ import javax.xml.namespace.QName;
 import org.jboss.beans.metadata.plugins.AbstractBeanMetaData;
 import org.jboss.beans.metadata.api.model.AutowireType;
 import org.jboss.beans.metadata.spi.ConstructorMetaData;
+import org.jboss.beans.info.spi.BeanAccessMode;
 import org.jboss.dependency.spi.ControllerMode;
 import org.jboss.xb.binding.sunday.unmarshalling.DefaultElementHandler;
 import org.jboss.xb.binding.sunday.unmarshalling.ElementBinding;
@@ -60,6 +61,15 @@ public class BeanHandler extends DefaultElementHandler
             bean.setBean(attrs.getValue(i));
          else if ("mode".equals(localName))
             bean.setMode(ControllerMode.getInstance(attrs.getValue(i)));
+         else if ("access-mode".equals(localName))
+         {
+            BeanAccessMode mode = BeanAccessMode.STANDARD;
+            if ("fields".equalsIgnoreCase(localName))
+               mode = BeanAccessMode.FIELDS;
+            else if ("all".equals(localName))
+               mode = BeanAccessMode.ALL;
+            bean.setAccessMode(mode);
+         }
          else if ("parent".equals(localName))
             bean.setParent(attrs.getValue(i));
          else if ("abstract".equals(localName))

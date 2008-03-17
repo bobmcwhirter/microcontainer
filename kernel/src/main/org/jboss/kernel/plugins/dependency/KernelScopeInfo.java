@@ -38,7 +38,9 @@ import org.jboss.metadata.spi.scope.CommonLevels;
 import org.jboss.metadata.spi.scope.Scope;
 import org.jboss.metadata.spi.scope.ScopeKey;
 import org.jboss.metadata.spi.signature.MethodSignature;
+import org.jboss.metadata.spi.signature.FieldSignature;
 import org.jboss.reflect.spi.MethodInfo;
+import org.jboss.reflect.spi.FieldInfo;
 
 /**
  * KernelScopeInfo.
@@ -181,22 +183,18 @@ public class KernelScopeInfo extends AbstractScopeInfo
       if (propertyAnnotations == null || propertyAnnotations.size() == 0)
          return;
 
-      Set<PropertyInfo> propertyInfos = beanInfo.getProperties();
-      if (propertyInfos != null && propertyInfos.size() > 0)
-      {
-         for (PropertyInfo propertyInfo : propertyInfos)
-         {
-            if (propertyInfo.getName().equals(propertyMetaData.getName()))
-            {
-               MethodInfo methodInfo = propertyInfo.getGetter();
-               if (methodInfo != null)
-                  addAnnotations(classloader, mutable, methodInfo, propertyAnnotations);
-               methodInfo = propertyInfo.getSetter();
-               if (methodInfo != null)
-                  addAnnotations(classloader, mutable, methodInfo, propertyAnnotations);
-            }
-         }
-      }
+      PropertyInfo propertyInfo = beanInfo.getProperty(propertyMetaData.getName());
+      // method annotations
+      MethodInfo methodInfo = propertyInfo.getGetter();
+      if (methodInfo != null)
+         addAnnotations(classloader, mutable, methodInfo, propertyAnnotations);
+      methodInfo = propertyInfo.getSetter();
+      if (methodInfo != null)
+         addAnnotations(classloader, mutable, methodInfo, propertyAnnotations);
+      // field annotations
+      FieldInfo fieldInfo = propertyInfo.getFieldInfo();
+      if (fieldInfo != null)
+         addAnnotations(classloader, mutable, fieldInfo, propertyAnnotations);
    }
    
    /**
@@ -215,6 +213,22 @@ public class KernelScopeInfo extends AbstractScopeInfo
       mutable.addComponentMetaDataRetrieval(new MethodSignature(methodInfo), loader);
    }
    
+   /**
+    * Add annotations for a field
+    *
+    * @param classloader the classloader
+    * @param mutable the mutable metadata
+    * @param fieldInfo the field info
+    * @param annotations the annotations
+    */
+   private void addAnnotations(ClassLoader classloader, MemoryMetaDataLoader mutable, FieldInfo fieldInfo, Set<AnnotationMetaData> annotations)
+   {
+      ScopeKey scope = new ScopeKey(CommonLevels.JOINPOINT_OVERRIDE, fieldInfo.getName());
+      MemoryMetaDataLoader loader = new MemoryMetaDataLoader(scope);
+      addAnnotations(classloader, loader, annotations);
+      mutable.addComponentMetaDataRetrieval(new FieldSignature(fieldInfo), loader);
+   }
+
    /**
     * Add annotations to a mutable metadata
     *

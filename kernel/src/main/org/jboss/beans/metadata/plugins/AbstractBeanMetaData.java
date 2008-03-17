@@ -49,6 +49,7 @@ import org.jboss.beans.metadata.spi.MetaDataVisitor;
 import org.jboss.beans.metadata.spi.MetaDataVisitorNode;
 import org.jboss.beans.metadata.spi.PropertyMetaData;
 import org.jboss.beans.metadata.spi.SupplyMetaData;
+import org.jboss.beans.info.spi.BeanAccessMode;
 import org.jboss.dependency.plugins.AbstractDependencyItem;
 import org.jboss.dependency.spi.Controller;
 import org.jboss.dependency.spi.ControllerContext;
@@ -76,7 +77,7 @@ import org.jboss.util.JBossStringBuilder;
 public class AbstractBeanMetaData extends AbstractFeatureMetaData
    implements BeanMetaData, BeanMetaDataFactory, MutableLifecycleHolder, Serializable
 {
-   private static final long serialVersionUID = 3L;
+   private static final long serialVersionUID = 4L;
 
    /** The bean fully qualified class name */
    protected String bean;
@@ -101,6 +102,9 @@ public class AbstractBeanMetaData extends AbstractFeatureMetaData
 
    /** The mode */
    protected ControllerMode mode;
+
+   /** The access mode */
+   protected BeanAccessMode accessMode;
 
    /** Is contextual injection candidate */
    protected boolean autowireCandidate = true;
@@ -445,6 +449,17 @@ public class AbstractBeanMetaData extends AbstractFeatureMetaData
    {
       this.mode = mode;
       flushJBossObjectCache();
+   }
+
+   public BeanAccessMode getAccessMode()
+   {
+      return accessMode;
+   }
+
+   @XmlAttribute(name="access-mode")
+   public void setAccessMode(BeanAccessMode accessMode)
+   {
+      this.accessMode = accessMode;
    }
 
    public boolean isAutowireCandidate()

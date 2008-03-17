@@ -26,6 +26,7 @@ import java.util.Set;
 
 import org.jboss.beans.info.spi.BeanInfo;
 import org.jboss.beans.info.spi.PropertyInfo;
+import org.jboss.beans.info.spi.BeanAccessMode;
 import org.jboss.beans.metadata.spi.BeanMetaData;
 import org.jboss.beans.metadata.spi.ConstructorMetaData;
 import org.jboss.beans.metadata.spi.ParameterMetaData;
@@ -76,13 +77,28 @@ public class AbstractKernelConfigurator extends AbstractKernelObject implements 
       return config.getBeanInfo(type);
    }
 
+   public BeanInfo getBeanInfo(String className, ClassLoader cl, BeanAccessMode mode) throws Throwable
+   {
+      return config.getBeanInfo(className, cl, mode);
+   }
+
+   public BeanInfo getBeanInfo(Class<?> clazz, BeanAccessMode mode) throws Throwable
+   {
+      return config.getBeanInfo(clazz, mode);
+   }
+
+   public BeanInfo getBeanInfo(TypeInfo type, BeanAccessMode mode) throws Throwable
+   {
+      return config.getBeanInfo(type, mode);
+   }
+
    public BeanInfo getBeanInfo(BeanMetaData metaData) throws Throwable
    {
       ClassLoader cl = Configurator.getClassLoader(metaData);
       String className = metaData.getBean();
       if (className == null)
          return null;
-      return getBeanInfo(className, cl);
+      return getBeanInfo(className, cl, metaData.getAccessMode());
    }
 
    public TypeInfo getTypeInfo(String className, ClassLoader cl) throws Throwable

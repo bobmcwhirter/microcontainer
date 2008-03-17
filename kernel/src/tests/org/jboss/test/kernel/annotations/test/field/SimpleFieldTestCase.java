@@ -31,6 +31,7 @@ import org.jboss.test.kernel.annotations.test.AbstractBeanAnnotationAdapterTest;
 import org.jboss.test.kernel.annotations.support.MockFieldBeanAnnotationAdapter;
 import org.jboss.test.kernel.annotations.support.MockFieldTester;
 import org.jboss.test.kernel.annotations.support.MockInjectPlugin;
+import org.jboss.beans.info.spi.BeanAccessMode;
 
 /**
  * Simple field test.
@@ -59,8 +60,8 @@ public class SimpleFieldTestCase extends AbstractBeanAnnotationAdapterTest
       MockFieldTester tester = new MockFieldTester();
       try
       {
-         runAnnotationsOnTarget(tester);
-         Set<String> expected = new HashSet<String>(Arrays.asList("date"));//, "time", "string"));
+         runAnnotationsOnTarget(tester, BeanAccessMode.ALL);
+         Set<String> expected = new HashSet<String>(Arrays.asList("date", "time", "string"));
          assertEquals(expected, MockInjectPlugin.INSTANCE.getFieldNames());
       }
       finally

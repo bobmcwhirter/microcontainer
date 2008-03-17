@@ -54,6 +54,7 @@ import org.jboss.beans.metadata.spi.SupplyMetaData;
 import org.jboss.beans.metadata.spi.ValueMetaData;
 import org.jboss.beans.metadata.spi.builder.BeanMetaDataBuilder;
 import org.jboss.beans.metadata.spi.builder.ParameterMetaDataBuilder;
+import org.jboss.beans.info.spi.BeanAccessMode;
 import org.jboss.dependency.spi.ControllerMode;
 import org.jboss.dependency.spi.ControllerState;
 
@@ -145,6 +146,12 @@ class BeanMetaDataBuilderImpl extends BeanMetaDataBuilder
    public BeanMetaDataBuilder setMode(ControllerMode mode)
    {
       beanMetaData.setMode(mode);
+      return this;
+   }
+
+   public BeanMetaDataBuilder setAccessMode(BeanAccessMode mode)
+   {
+      beanMetaData.setAccessMode(mode);
       return this;
    }
 

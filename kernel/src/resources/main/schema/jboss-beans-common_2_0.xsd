@@ -62,6 +62,7 @@ $Id: bean-deployer_2_0.xsd 70437 2008-03-05 17:13:04Z alesj $
       <xsd:attribute name="parent" type="xsd:string" use="optional"/>
       <xsd:attribute name="abstract" type="xsd:boolean" use="optional"/>
       <xsd:attribute name="autowire-type" type="autowireTypeType" use="optional"/>
+      <xsd:attribute name="access-mode" type="accessModeType" use="optional"/>
       <xsd:attribute name="autowire-candidate" type="xsd:boolean" use="optional"/>
    </xsd:complexType>
 
@@ -147,6 +148,7 @@ $Id: bean-deployer_2_0.xsd 70437 2008-03-05 17:13:04Z alesj $
       <xsd:complexContent>
          <xsd:extension base="abstractBeanfactoryType">
             <xsd:attribute name="class" type="xsd:token" use="required"/>
+            <xsd:attribute name="access-mode" type="accessModeType" use="optional"/>
          </xsd:extension>
       </xsd:complexContent>
    </xsd:complexType>
@@ -1040,6 +1042,22 @@ $Id: bean-deployer_2_0.xsd 70437 2008-03-05 17:13:04Z alesj $
             ByName
             Constructor
             Auto
+            ]]>
+         </xsd:documentation>
+      </xsd:annotation>
+      <xsd:restriction base="xsd:string">
+         <xsd:whiteSpace value="collapse"/>
+      </xsd:restriction>
+   </xsd:simpleType>
+
+   <xsd:simpleType name="accessModeType">
+      <xsd:annotation>
+         <xsd:documentation>
+            <![CDATA[
+            Access type, valid values include:
+            property (default)
+            field
+            public_member
             ]]>
          </xsd:documentation>
       </xsd:annotation>

@@ -220,6 +220,8 @@ public abstract class AbstractBeanAnnotationAdapter implements BeanAnnotationAda
          for(PropertyInfo pi : properties)
          {
             MethodInfo setter = pi.getSetter();
+            FieldInfo field = pi.getFieldInfo();
+
             if (setter != null)
             {
                visitedMethods.add(setter);
@@ -237,6 +239,23 @@ public abstract class AbstractBeanAnnotationAdapter implements BeanAnnotationAda
                }
                else if (trace)
                   log.trace("No annotations for property " + pi.getName());
+            }
+            else if (field != null)
+            {
+               Signature sis = new FieldSignature(field);
+               MetaData cmdr = retrieval.getComponentMetaData(sis);
+               if (cmdr != null)
+               {
+                  for(AnnotationPlugin plugin : fieldAnnotationPlugins)
+                  {
+                     if (isApplyPhase)
+                        plugin.applyAnnotation(field, cmdr, visitor);
+                     else
+                        plugin.cleanAnnotation(field, cmdr, visitor);
+                  }
+               }
+               else if (trace)
+                  log.trace("No annotations for field " + field.getName());
             }
          }
       }
@@ -299,29 +318,6 @@ public abstract class AbstractBeanAnnotationAdapter implements BeanAnnotationAda
       else if (trace)
          log.trace("No static methods");
 
-      // fields
-      FieldInfo[] fields = classInfo.getDeclaredFields();
-      if (fields != null && fields.length > 0)
-      {
-         for(FieldInfo fi : fields)
-         {
-            Signature fis = new FieldSignature(fi.getName());
-            MetaData cmdr = retrieval.getComponentMetaData(fis);
-            if (cmdr != null)
-            {
-               for(AnnotationPlugin plugin : fieldAnnotationPlugins)
-               {
-                  if (isApplyPhase)
-                     plugin.applyAnnotation(fi, cmdr, visitor);
-                  else
-                     plugin.cleanAnnotation(fi, cmdr, visitor);
-               }
-            }
-            else if (trace)
-               log.trace("No annotations for field " + fi.getName());
-         }
-      }
-      else if (trace)
-         log.trace("No fields");
+      // fields - if accessible - are already handled with propertys
    }
 }

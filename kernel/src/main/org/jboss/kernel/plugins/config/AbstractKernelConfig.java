@@ -23,6 +23,7 @@ package org.jboss.kernel.plugins.config;
 
 import org.jboss.beans.info.spi.BeanInfo;
 import org.jboss.beans.info.spi.BeanInfoFactory;
+import org.jboss.beans.info.spi.BeanAccessMode;
 import org.jboss.classadapter.spi.ClassAdapterFactory;
 import org.jboss.config.spi.Configuration;
 import org.jboss.config.spi.ConfigurationPermission;
@@ -73,7 +74,22 @@ public abstract class AbstractKernelConfig extends AbstractKernelObject implemen
    {
       return configuration.getBeanInfo(typeInfo);
    }
-   
+
+   public BeanInfo getBeanInfo(String className, ClassLoader cl, BeanAccessMode mode) throws Throwable
+   {
+      return configuration.getBeanInfo(className, cl, mode);
+   }
+
+   public BeanInfo getBeanInfo(Class<?> clazz, BeanAccessMode mode) throws Throwable
+   {
+      return configuration.getBeanInfo(clazz, mode);
+   }
+
+   public BeanInfo getBeanInfo(TypeInfo type, BeanAccessMode mode) throws Throwable
+   {
+      return configuration.getBeanInfo(type, mode);
+   }
+
    public TypeInfo getTypeInfo(String className, ClassLoader cl) throws Throwable
    {
       return configuration.getTypeInfo(className, cl);

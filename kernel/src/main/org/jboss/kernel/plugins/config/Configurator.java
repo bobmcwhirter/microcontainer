@@ -98,7 +98,7 @@ public class Configurator extends Config
     * @param config the kernel config
     * @param info the bean info
     * @param metaData the constructor metadata
-    * @param beanMetaData
+    * @param beanMetaData the bean metadata
     * @return the joinpoint
     * @throws Throwable for any error
     */
@@ -706,8 +706,6 @@ public class Configurator extends Config
       if (trace)
          log.trace("Resolving property on bean info=" + info + " name=" + name);
 
-      // FIXME the isAssignable and isProgression currently needs a classloader
-      //       to work properly, use the bean's classloader if there isn't one provided
       if (cl == null)
          cl = info.getClassInfo().getType().getClassLoader();
 

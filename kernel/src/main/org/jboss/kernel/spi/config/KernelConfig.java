@@ -22,6 +22,7 @@
 package org.jboss.kernel.spi.config;
 
 import org.jboss.beans.info.spi.BeanInfo;
+import org.jboss.beans.info.spi.BeanAccessMode;
 import org.jboss.kernel.spi.KernelObject;
 import org.jboss.kernel.spi.bootstrap.KernelInitializer;
 import org.jboss.kernel.spi.dependency.DependencyBuilder;
@@ -72,6 +73,37 @@ public interface KernelConfig extends KernelObject
     */
    BeanInfo getBeanInfo(TypeInfo type) throws Throwable;
    
+   /**
+    * Get the bean info
+    *
+    * @param className the class name
+    * @param cl the classloader
+    * @param mode the access mode
+    * @return the bean info
+    * @throws Throwable for any error
+    */
+   BeanInfo getBeanInfo(String className, ClassLoader cl, BeanAccessMode mode) throws Throwable;
+
+   /**
+    * Get the bean info
+    *
+    * @param clazz the class
+    * @param mode the access mode
+    * @return the bean info
+    * @throws Throwable for any error
+    */
+   BeanInfo getBeanInfo(Class<?> clazz, BeanAccessMode mode) throws Throwable;
+
+   /**
+    * Get the bean info
+    *
+    * @param type the type info
+    * @param mode the access mode
+    * @return the bean info
+    * @throws Throwable for any error
+    */
+   BeanInfo getBeanInfo(TypeInfo type, BeanAccessMode mode) throws Throwable;
+
    /**
     * Get the type info for a class
     * 

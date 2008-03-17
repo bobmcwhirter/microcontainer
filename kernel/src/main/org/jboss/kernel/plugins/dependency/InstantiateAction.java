@@ -60,7 +60,7 @@ public class InstantiateAction extends InstallsAwareAction
       {
          if (info == null)
          {
-            info = configurator.getBeanInfo(object.getClass());
+            info = configurator.getBeanInfo(object.getClass(), metaData.getAccessMode());
             context.setBeanInfo(info);
          }
 

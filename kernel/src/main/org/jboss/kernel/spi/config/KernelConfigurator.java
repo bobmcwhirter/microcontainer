@@ -26,6 +26,7 @@ import java.util.Set;
 
 import org.jboss.beans.info.spi.PropertyInfo;
 import org.jboss.beans.info.spi.BeanInfo;
+import org.jboss.beans.info.spi.BeanAccessMode;
 import org.jboss.beans.metadata.spi.ConstructorMetaData;
 import org.jboss.beans.metadata.spi.ParameterMetaData;
 import org.jboss.beans.metadata.spi.PropertyMetaData;
@@ -77,6 +78,37 @@ public interface KernelConfigurator extends KernelObject
     */
    BeanInfo getBeanInfo(TypeInfo type) throws Throwable;
    
+   /**
+    * Get the BeanInfo
+    *
+    * @param className the class name
+    * @param cl the classloader
+    * @param mode the access mode
+    * @return the bean info
+    * @throws Throwable for any error
+    */
+   BeanInfo getBeanInfo(String className, ClassLoader cl, BeanAccessMode mode) throws Throwable;
+
+   /**
+    * Get the BeanInfo
+    *
+    * @param clazz the class
+    * @return the bean info
+    * @param mode the access mode
+    * @throws Throwable for any error
+    */
+   BeanInfo getBeanInfo(Class<?> clazz, BeanAccessMode mode) throws Throwable;
+
+   /**
+    * Get the BeanInfo
+    *
+    * @param type the type info
+    * @param mode the access mode
+    * @return the bean info
+    * @throws Throwable for any error
+    */
+   BeanInfo getBeanInfo(TypeInfo type, BeanAccessMode mode) throws Throwable;
+
    /**
     * Get the BeanInfo for some metadata
     * 

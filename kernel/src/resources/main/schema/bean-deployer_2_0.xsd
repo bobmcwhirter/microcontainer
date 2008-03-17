@@ -111,6 +111,7 @@ $Id$
       <xsd:attribute name="abstract" type="xsd:boolean" use="optional"/>
       <xsd:attribute name="autowire-type" type="autowireTypeType" use="optional"/>
       <xsd:attribute name="autowire-candidate" type="xsd:boolean" use="optional"/>
+      <xsd:attribute name="access-mode" type="accessModeType" use="optional"/>
    </xsd:complexType>
 
    <xsd:complexType name="classloaderType" mixed="true">
@@ -159,6 +160,7 @@ $Id$
 -->
       </xsd:sequence>
       <xsd:attribute name="name" type="xsd:string" use="optional"/>
+      <xsd:attribute name="access-mode" type="accessModeType" use="optional"/>
    </xsd:complexType>
 
    <xsd:complexType name="beanfactoryType">
@@ -1068,6 +1070,22 @@ $Id$
             Manual - the user must tell the controller the required state
             On Demand - the controller takes the bean to "Installed" when another bean depends on it
             Disabled - the controller or user cannot change the state
+            ]]>
+         </xsd:documentation>
+      </xsd:annotation>
+      <xsd:restriction base="xsd:string">
+         <xsd:whiteSpace value="collapse"/>
+      </xsd:restriction>
+   </xsd:simpleType>
+
+   <xsd:simpleType name="accessModeType">
+      <xsd:annotation>
+         <xsd:documentation>
+            <![CDATA[
+            Access type, valid values include:
+            property (default)
+            field
+            public_member
             ]]>
          </xsd:documentation>
       </xsd:annotation>

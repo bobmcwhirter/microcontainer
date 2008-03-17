@@ -67,6 +67,7 @@ import org.jboss.beans.metadata.spi.SupplyMetaData;
 import org.jboss.beans.metadata.spi.ValueMetaData;
 import org.jboss.beans.metadata.spi.builder.BeanMetaDataBuilder;
 import org.jboss.beans.metadata.spi.builder.ParameterMetaDataBuilder;
+import org.jboss.beans.info.spi.BeanAccessMode;
 import org.jboss.dependency.spi.ControllerMode;
 import org.jboss.kernel.plugins.bootstrap.basic.KernelConstants;
 import org.jboss.kernel.spi.config.KernelConfigurator;
@@ -89,6 +90,9 @@ public class GenericBeanFactoryMetaData extends JBossObject implements BeanMetaD
    
    /** The bean class name */
    protected String bean;
+
+   /** The access mode */
+   protected BeanAccessMode accessMode;
 
    /** The controller mode */
    protected ControllerMode mode;
@@ -196,6 +200,27 @@ public class GenericBeanFactoryMetaData extends JBossObject implements BeanMetaD
    public void setAliases(Set<AliasMetaData> aliases)
    {
       this.aliases = aliases;
+   }
+
+   /**
+    * Get the access mode.
+    *
+    * @return the access mode
+    */
+   public BeanAccessMode getAccessMode()
+   {
+      return accessMode;
+   }
+
+   /**
+    * Set the access mode.
+    *
+    * @param accessMode the access mode
+    */
+   @XmlAttribute(name = "access-mode")
+   public void setAccessMode(BeanAccessMode accessMode)
+   {
+      this.accessMode = accessMode;
    }
 
    /**
@@ -514,6 +539,7 @@ public class GenericBeanFactoryMetaData extends JBossObject implements BeanMetaD
          builder.setAliases(theAliases);
       }
       builder.setMode(mode);
+      builder.setAccessMode(accessMode);
       ValueMetaData injectKernelConfigurator = builder.createInject(KernelConstants.KERNEL_CONFIGURATOR_NAME);
       builder.addConstructorParameter(KernelConfigurator.class.getName(), injectKernelConfigurator);
       builder.addPropertyMetaData("bean", bean);

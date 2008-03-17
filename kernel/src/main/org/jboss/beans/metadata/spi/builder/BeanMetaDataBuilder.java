@@ -31,6 +31,7 @@ import org.jboss.beans.metadata.plugins.builder.BeanMetaDataBuilderFactory;
 import org.jboss.beans.metadata.spi.BeanMetaData;
 import org.jboss.beans.metadata.spi.ClassLoaderMetaData;
 import org.jboss.beans.metadata.spi.ValueMetaData;
+import org.jboss.beans.info.spi.BeanAccessMode;
 import org.jboss.dependency.spi.ControllerMode;
 import org.jboss.dependency.spi.ControllerState;
 
@@ -113,6 +114,14 @@ public abstract class BeanMetaDataBuilder
     * @return the builder
     */
    public abstract BeanMetaDataBuilder setMode(ControllerMode mode);
+
+   /**
+    * Set the access mode
+    *
+    * @param mode the access mode
+    * @return the builder
+    */
+   public abstract BeanMetaDataBuilder setAccessMode(BeanAccessMode mode);
 
    /**
     * Set that we don't want to use the deployment classloader
