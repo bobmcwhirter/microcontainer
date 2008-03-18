@@ -27,15 +27,13 @@ package org.jboss.test.kernel.dependency.support;
  * @author <a href="adrian@jboss.com">Adrian Brock</a>
  * @version $Revision$
  */
-public interface SimpleBean
+public interface SimpleBean extends SimplerBean
 {
    // Constants -----------------------------------------------------
 
    // Public --------------------------------------------------------
    
    String getConstructorString();
-
-   String getString();
 
    void setString(String string);
 

@@ -19,40 +19,11 @@
 * Software Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA
 * 02110-1301 USA, or see the FSF site: http://www.fsf.org.
 */
-package org.jboss.kernel.plugins.dependency;
+package org.jboss.test.kernel.dependency.support;
 
-import org.jboss.beans.info.spi.PropertyInfo;
-import org.jboss.reflect.spi.TypeInfo;
+import java.util.List;
 
-/**
- * Property attribute info.
- *
- * @author <a href="mailto:ales.justin@jboss.com">Ales Justin</a>
- */
-public class PropertyAttributeInfo extends AbstractAttributeInfo<PropertyInfo>
+public interface BeanRepository
 {
-   public PropertyAttributeInfo(PropertyInfo propertyInfo)
-   {
-      super(propertyInfo);
-   }
-
-   public boolean isProperty()
-   {
-      return true;
-   }
-
-   public String getName()
-   {
-      return info.getName();
-   }
-
-   public TypeInfo getType()
-   {
-      return info.getType();
-   }
-
-   public boolean isValid()
-   {
-      return (info.isWritable() && super.isValid());
-   }
+   List<SimpleBean> getBeans();
 }

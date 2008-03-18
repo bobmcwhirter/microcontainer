@@ -28,7 +28,7 @@ import java.util.HashSet;
 
 import org.jboss.dependency.spi.ControllerState;
 
-public class SimpleBeanRepository
+public class SimpleBeanRepository implements StatesAndBeanRepository
 {
    List<SimpleBean> beans = new ArrayList<SimpleBean>();
    Set<ControllerState> states = new HashSet<ControllerState>();

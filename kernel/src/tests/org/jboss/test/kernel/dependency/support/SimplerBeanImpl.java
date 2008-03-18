@@ -19,40 +19,23 @@
 * Software Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA
 * 02110-1301 USA, or see the FSF site: http://www.fsf.org.
 */
-package org.jboss.kernel.plugins.dependency;
+package org.jboss.test.kernel.dependency.support;
 
-import org.jboss.beans.info.spi.PropertyInfo;
-import org.jboss.reflect.spi.TypeInfo;
+import java.io.Serializable;
 
 /**
- * Property attribute info.
+ * A simpler bean
  *
- * @author <a href="mailto:ales.justin@jboss.com">Ales Justin</a>
+ * @author <a href="ales.justin@jboss.com">Ales Justin</a>
  */
-public class PropertyAttributeInfo extends AbstractAttributeInfo<PropertyInfo>
+public class SimplerBeanImpl implements Serializable, SimplerBean
 {
-   public PropertyAttributeInfo(PropertyInfo propertyInfo)
-   {
-      super(propertyInfo);
-   }
+   private static final long serialVersionUID = 3258132440433243443L;
 
-   public boolean isProperty()
-   {
-      return true;
-   }
+   public String string;
 
-   public String getName()
+   public String getString()
    {
-      return info.getName();
-   }
-
-   public TypeInfo getType()
-   {
-      return info.getType();
-   }
-
-   public boolean isValid()
-   {
-      return (info.isWritable() && super.isValid());
+      return string;
    }
 }

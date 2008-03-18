@@ -33,7 +33,6 @@ import org.jboss.kernel.plugins.dependency.AttributeInfo;
 import org.jboss.kernel.plugins.dependency.BasicCollectionCallbackItemFactory;
 import org.jboss.kernel.plugins.dependency.ClassAttributeCallbackItem;
 import org.jboss.kernel.plugins.dependency.ClassSingleCallbackItem;
-import org.jboss.kernel.plugins.dependency.CollectionCallbackItem;
 import org.jboss.kernel.plugins.dependency.CollectionCallbackItemFactory;
 import org.jboss.kernel.plugins.dependency.MethodAttributeInfo;
 import org.jboss.kernel.plugins.dependency.PropertyAttributeInfo;
@@ -93,8 +92,7 @@ public class CallbackCreatorUtil
             throw new IllegalArgumentException("Component type too general - equals Object: " + info);
          Class<? extends Collection<Object>> collectionType = (Class) info.getType();
          CollectionCallbackItemFactory factory = getCollectionFactory();
-         CollectionCallbackItem collectionCallback = factory.createCollectionCallbackItem(collectionType, clazz, whenRequired, dependentState, cardinality, context, attribute);
-         return collectionCallback;
+         return factory.createCollectionCallbackItem(collectionType, clazz, whenRequired, dependentState, cardinality, context, attribute);
       }
       else
          throw new IllegalArgumentException("Unable to determine collection element class type: " + info);

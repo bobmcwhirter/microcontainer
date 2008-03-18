@@ -22,14 +22,14 @@
 package org.jboss.kernel.plugins.registry;
 
 import org.jboss.beans.info.spi.BeanInfo;
-import org.jboss.dependency.spi.dispatch.AttributeDispatchContext;
+import org.jboss.dependency.spi.dispatch.InvokeDispatchContext;
 
 /**
  * Bean Kernel registry entry.
  *
  * @author <a href="ales.justin@jboss.com">Ales Justin</a>
  */
-public class BeanKernelRegistryEntry extends AbstractKernelRegistryEntry implements AttributeDispatchContext
+public class BeanKernelRegistryEntry extends AbstractKernelRegistryEntry implements InvokeDispatchContext
 {
    private BeanInfo beanInfo;
 
@@ -55,5 +55,19 @@ public class BeanKernelRegistryEntry extends AbstractKernelRegistryEntry impleme
    public void set(String name, Object value) throws Throwable
    {
       beanInfo.setProperty(target, name, value);
+   }
+
+   public Object invoke(String name, Object parameters[], String[] signature) throws Throwable
+   {
+      return beanInfo.invoke(target, name, signature, parameters);
+   }
+
+   public ClassLoader getClassLoader() throws Throwable
+   {
+      if (target == null)
+         throw new IllegalArgumentException("Cannot get classloader, target is null.");
+
+      // this already checks for permission
+      return target.getClass().getClassLoader();
    }
 }

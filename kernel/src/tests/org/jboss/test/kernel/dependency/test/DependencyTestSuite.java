@@ -54,8 +54,12 @@ public class DependencyTestSuite extends TestSuite
       suite.addTest(PropertyDependencyTestCase.suite());
       suite.addTest(PropertyDependencyXMLTestCase.suite());
       suite.addTest(PropertyDependencyAnnotationTestCase.suite());
+      suite.addTest(PropertyFieldDependencyTestCase.suite());
+      suite.addTest(PropertyField2DependencyTestCase.suite());
       suite.addTest(GenericBeanFactoryPropertyDependencyTestCase.suite());
       suite.addTest(GenericBeanFactoryPropertyDependencyXMLTestCase.suite());
+      suite.addTest(GenericBeanFactoryFieldPropertyDependencyTestCase.suite());
+      suite.addTest(GenericBeanFactoryField2PropertyDependencyTestCase.suite());
       suite.addTest(ConstructorDependencyTestCase.suite());
       suite.addTest(ConstructorDependencyXMLTestCase.suite());
       suite.addTest(ConstructorDependencyAnnotationTestCase.suite());
@@ -97,6 +101,8 @@ public class DependencyTestSuite extends TestSuite
       suite.addTest(CallbackCollectionTestCase.suite());
       suite.addTest(CallbackCollectionXMLTestCase.suite());
       suite.addTest(CallbackCollectionAnnotationTestCase.suite());
+      suite.addTest(CallbackCollectionFieldsTestCase.suite());
+      suite.addTest(CallbackCollectionFields2TestCase.suite());
       suite.addTest(MatcherDemandSupplyTestCase.suite());
       suite.addTest(MatcherDemandSupplyXMLTestCase.suite());
       suite.addTest(MatcherDemandSupplyAnnotationTestCase.suite());

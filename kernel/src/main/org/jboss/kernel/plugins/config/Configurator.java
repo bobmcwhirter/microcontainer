@@ -387,9 +387,13 @@ public class Configurator extends Config
 
       JoinpointFactory jpf = info.getBeanInfo().getJoinpointFactory();
       MethodInfo minfo = info.getGetter();
-      if (minfo == null)
+      FieldInfo finfo = info.getFieldInfo();
+      if (minfo != null)
+         return getMethodJoinpoint(null, jpf, minfo.getName(), null, null);
+      else if (finfo != null)
+         return getFieldGetJoinpoint(null, jpf, finfo.getName());
+      else
          throw new IllegalArgumentException("Property is write only: " + info);
-      return getMethodJoinpoint(null, jpf, minfo.getName(), null, null);
    }
 
    /**
@@ -513,10 +517,16 @@ public class Configurator extends Config
       Object value = metaData.getValue(type, cl);
       JoinpointFactory jpf = info.getBeanInfo().getJoinpointFactory();
       MethodInfo minfo = info.getSetter();
-      if (minfo == null)
-         throw new IllegalArgumentException("No setter configured for property: " + info);
-      String[] parameterTypes = getParameterTypes(trace, minfo.getParameterTypes());
-      return getMethodJoinpoint(null, jpf, minfo.getName(), parameterTypes, new Object[] { value });
+      FieldInfo finfo = info.getFieldInfo();
+      if (minfo != null)
+      {
+         String[] parameterTypes = getParameterTypes(trace, minfo.getParameterTypes());
+         return getMethodJoinpoint(null, jpf, minfo.getName(), parameterTypes, new Object[] { value });
+      }
+      else if (finfo != null)
+         return getFieldSetJoinpoint(null, jpf, finfo.getName(), value);
+      else
+         throw new IllegalArgumentException("Property is read only: " + info);
    }
 
    /**
@@ -665,10 +675,16 @@ public class Configurator extends Config
 
       JoinpointFactory jpf = info.getBeanInfo().getJoinpointFactory();
       MethodInfo minfo = info.getSetter();
-      if (minfo == null)
+      FieldInfo finfo = info.getFieldInfo();
+      if (minfo != null)
+      {
+         String[] parameterTypes = getParameterTypes(trace, minfo.getParameterTypes());
+         return getMethodJoinpoint(null, jpf, minfo.getName(), parameterTypes, new Object[] { null });
+      }
+      else if (finfo != null)
+         return getFieldSetJoinpoint(null, jpf, finfo.getName(), null);
+      else
          throw new IllegalArgumentException("Property is read only: " + info);
-      String[] parameterTypes = getParameterTypes(trace, minfo.getParameterTypes());
-      return getMethodJoinpoint(null, jpf, minfo.getName(), parameterTypes, new Object[] { null });
    }
 
    /**

@@ -19,40 +19,41 @@
 * Software Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA
 * 02110-1301 USA, or see the FSF site: http://www.fsf.org.
 */
-package org.jboss.kernel.plugins.dependency;
+package org.jboss.test.kernel.dependency.test;
 
-import org.jboss.beans.info.spi.PropertyInfo;
-import org.jboss.reflect.spi.TypeInfo;
+import junit.framework.Test;
+import org.jboss.beans.metadata.plugins.AbstractBeanMetaData;
+import org.jboss.beans.info.spi.BeanAccessMode;
+import org.jboss.test.kernel.dependency.support.SimplerBeanImpl;
 
 /**
- * Property attribute info.
+ * Property Field Dependency Test Case.
  *
- * @author <a href="mailto:ales.justin@jboss.com">Ales Justin</a>
+ * @author <a href="ales.justin@jboss.com">Ales Justin</a>
  */
-public class PropertyAttributeInfo extends AbstractAttributeInfo<PropertyInfo>
+public class PropertyFieldDependencyTestCase extends PropertyDependencyTestCase
 {
-   public PropertyAttributeInfo(PropertyInfo propertyInfo)
+   public static Test suite()
    {
-      super(propertyInfo);
+      return suite(PropertyFieldDependencyTestCase.class);
    }
 
-   public boolean isProperty()
+   public PropertyFieldDependencyTestCase(String name) throws Throwable
    {
-      return true;
+      super(name);
    }
 
-   public String getName()
+   protected AbstractBeanMetaData createName1()
    {
-      return info.getName();
+      AbstractBeanMetaData metaData = new AbstractBeanMetaData("Name1", SimplerBeanImpl.class.getName());
+      metaData.setAccessMode(BeanAccessMode.FIELDS);
+      return metaData;
    }
 
-   public TypeInfo getType()
+   protected AbstractBeanMetaData createName2()
    {
-      return info.getType();
-   }
-
-   public boolean isValid()
-   {
-      return (info.isWritable() && super.isValid());
+      AbstractBeanMetaData metaData = new AbstractBeanMetaData("Name2", SimplerBeanImpl.class.getName());
+      metaData.setAccessMode(BeanAccessMode.FIELDS);
+      return metaData;
    }
 }

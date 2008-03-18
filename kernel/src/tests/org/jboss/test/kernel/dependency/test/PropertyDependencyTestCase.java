@@ -32,7 +32,7 @@ import org.jboss.beans.metadata.spi.BeanMetaData;
 import org.jboss.beans.metadata.spi.PropertyMetaData;
 import org.jboss.dependency.spi.ControllerContext;
 import org.jboss.dependency.spi.ControllerState;
-import org.jboss.test.kernel.dependency.support.SimpleBean;
+import org.jboss.test.kernel.dependency.support.SimplerBean;
 import org.jboss.test.kernel.dependency.support.SimpleBeanImpl;
 
 /**
@@ -65,11 +65,11 @@ public class PropertyDependencyTestCase extends OldAbstractKernelDependencyTest
       ControllerContext context1 = assertInstall(0, "Name1");
       ControllerContext context2 = assertInstall(1, "Name2");
       
-      SimpleBean bean1 = (SimpleBean) context1.getTarget();
+      SimplerBean bean1 = (SimplerBean) context1.getTarget();
       assertNotNull(bean1);
       assertEquals("String1", bean1.getString());
       
-      SimpleBean bean2 = (SimpleBean) context2.getTarget();
+      SimplerBean bean2 = (SimplerBean) context2.getTarget();
       assertNotNull(bean2);
       assertEquals("String1", bean2.getString());
    }
@@ -87,11 +87,11 @@ public class PropertyDependencyTestCase extends OldAbstractKernelDependencyTest
       ControllerContext context1 = assertInstall(0, "Name1");
       assertEquals(ControllerState.INSTALLED, context2.getState());
       
-      SimpleBean bean1 = (SimpleBean) context1.getTarget();
+      SimplerBean bean1 = (SimplerBean) context1.getTarget();
       assertNotNull(bean1);
       assertEquals("String1", bean1.getString());
       
-      SimpleBean bean2 = (SimpleBean) context2.getTarget();
+      SimplerBean bean2 = (SimplerBean) context2.getTarget();
       assertNotNull(bean2);
       assertEquals("String1", bean2.getString());
    }
@@ -108,11 +108,11 @@ public class PropertyDependencyTestCase extends OldAbstractKernelDependencyTest
       ControllerContext context1 = assertInstall(0, "Name1");
       ControllerContext context2 = assertInstall(1, "Name2");
       
-      SimpleBean bean1 = (SimpleBean) context1.getTarget();
+      SimplerBean bean1 = (SimplerBean) context1.getTarget();
       assertNotNull(bean1);
       assertEquals("String1", bean1.getString());
       
-      SimpleBean bean2 = (SimpleBean) context2.getTarget();
+      SimplerBean bean2 = (SimplerBean) context2.getTarget();
       assertNotNull(bean2);
       assertEquals("String1", bean2.getString());
 
@@ -127,28 +127,28 @@ public class PropertyDependencyTestCase extends OldAbstractKernelDependencyTest
       context1 = assertInstall(0, "Name1");
       assertEquals(ControllerState.INSTALLED, context2.getState());
 
-      bean1 = (SimpleBean) context1.getTarget();
+      bean1 = (SimplerBean) context1.getTarget();
       assertNotNull(bean1);
       assertEquals("String1", bean1.getString());
       
-      bean2 = (SimpleBean) context2.getTarget();
+      bean2 = (SimplerBean) context2.getTarget();
       assertNotNull(bean2);
       assertEquals("String1", bean2.getString());
       
       assertUninstall("Name2");
       
       context1 = assertContext("Name1");
-      bean1 = (SimpleBean) context1.getTarget();
+      bean1 = (SimplerBean) context1.getTarget();
       assertNotNull(bean1);
       assertEquals("String1", bean1.getString());
       
       context2 = assertInstall(1, "Name2");
       
-      bean1 = (SimpleBean) context1.getTarget();
+      bean1 = (SimplerBean) context1.getTarget();
       assertNotNull(bean1);
       assertEquals("String1", bean1.getString());
       
-      bean2 = (SimpleBean) context2.getTarget();
+      bean2 = (SimplerBean) context2.getTarget();
       assertNotNull(bean2);
       assertEquals("String1", bean2.getString());
    }
@@ -160,16 +160,26 @@ public class PropertyDependencyTestCase extends OldAbstractKernelDependencyTest
 
    protected void buildMetaData()
    {
-      AbstractBeanMetaData metaData1 = new AbstractBeanMetaData("Name1", SimpleBeanImpl.class.getName());
+      AbstractBeanMetaData metaData1 = createName1();
       HashSet<PropertyMetaData> attributes1 = new HashSet<PropertyMetaData>();
       attributes1.add(new AbstractPropertyMetaData("string", "String1"));
       metaData1.setProperties(attributes1);
 
-      AbstractBeanMetaData metaData2 = new AbstractBeanMetaData("Name2", SimpleBeanImpl.class.getName());
+      AbstractBeanMetaData metaData2 = createName2();
       HashSet<PropertyMetaData> attributes2 = new HashSet<PropertyMetaData>();
       attributes2.add(new AbstractPropertyMetaData("string", new AbstractDependencyValueMetaData("Name1", "string")));
       metaData2.setProperties(attributes2);
 
       setBeanMetaDatas(new BeanMetaData[] { metaData1, metaData2 });
+   }
+
+   protected AbstractBeanMetaData createName1()
+   {
+      return new AbstractBeanMetaData("Name1", SimpleBeanImpl.class.getName());
+   }
+
+   protected AbstractBeanMetaData createName2()
+   {
+      return new AbstractBeanMetaData("Name2", SimpleBeanImpl.class.getName());
    }
 }

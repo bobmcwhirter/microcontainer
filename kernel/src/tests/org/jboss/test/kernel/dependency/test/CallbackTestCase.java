@@ -28,9 +28,10 @@ import junit.framework.Test;
 import org.jboss.dependency.spi.ControllerContext;
 import org.jboss.dependency.spi.Cardinality;
 import org.jboss.dependency.spi.ControllerState;
-import org.jboss.test.kernel.dependency.support.SimpleBeanRepository;
 import org.jboss.test.kernel.dependency.support.SimpleBean;
 import org.jboss.test.kernel.dependency.support.SimpleBeanImpl;
+import org.jboss.test.kernel.dependency.support.BeanRepository;
+import org.jboss.test.kernel.dependency.support.SimpleBeanRepository;
 import org.jboss.beans.metadata.plugins.AbstractBeanMetaData;
 import org.jboss.beans.metadata.plugins.InstallCallbackMetaData;
 import org.jboss.beans.metadata.plugins.UninstallCallbackMetaData;
@@ -66,7 +67,7 @@ public class CallbackTestCase extends OldAbstractKernelDependencyTest
       callbackCorrectOrder();
 
       ControllerContext context1 = assertInstall(0, "Name1");
-      SimpleBeanRepository repository = (SimpleBeanRepository)context1.getTarget();
+      BeanRepository repository = (BeanRepository)context1.getTarget();
       assertNotNull(repository);
       assertEmpty(repository.getBeans());
 
@@ -93,7 +94,7 @@ public class CallbackTestCase extends OldAbstractKernelDependencyTest
       assertNotNull(bean);
 
       ControllerContext context1 = assertInstall(0, "Name1");
-      SimpleBeanRepository repository = (SimpleBeanRepository)context1.getTarget();
+      BeanRepository repository = (BeanRepository)context1.getTarget();
       assertNotNull(repository);
       List<SimpleBean> beans = repository.getBeans();
       assertFalse(beans.isEmpty());
@@ -111,7 +112,7 @@ public class CallbackTestCase extends OldAbstractKernelDependencyTest
       callbackReinstall();
 
       ControllerContext context1 = assertInstall(0, "Name1");
-      SimpleBeanRepository repository = (SimpleBeanRepository)context1.getTarget();
+      BeanRepository repository = (BeanRepository)context1.getTarget();
       assertNotNull(repository);
       assertEmpty(repository.getBeans());
 
@@ -128,7 +129,7 @@ public class CallbackTestCase extends OldAbstractKernelDependencyTest
       assertEmpty(repository.getBeans());
 
       context1 = assertInstall(0, "Name1");
-      repository = (SimpleBeanRepository)context1.getTarget();
+      repository = (BeanRepository)context1.getTarget();
       assertNotNull(repository);
       assertFalse(repository.getBeans().isEmpty());
       assertEquals(1, repository.getBeans().size());
@@ -149,7 +150,7 @@ public class CallbackTestCase extends OldAbstractKernelDependencyTest
       callbackCardinalityCorrectOrder();
 
       ControllerContext context1 = assertInstall(0, "Name1", ControllerState.START);
-      SimpleBeanRepository repository = (SimpleBeanRepository)context1.getTarget();
+      BeanRepository repository = (BeanRepository)context1.getTarget();
       assertNotNull(repository);
       assertEmpty(repository.getBeans());
 
@@ -190,7 +191,7 @@ public class CallbackTestCase extends OldAbstractKernelDependencyTest
       SimpleBean bean2 = (SimpleBean)context3.getTarget();
 
       ControllerContext context1 = assertInstall(0, "Name1");
-      SimpleBeanRepository repository = (SimpleBeanRepository)context1.getTarget();
+      BeanRepository repository = (BeanRepository)context1.getTarget();
       assertNotNull(repository);
 
       assertFalse(repository.getBeans().isEmpty());
@@ -213,7 +214,7 @@ public class CallbackTestCase extends OldAbstractKernelDependencyTest
       callbackCardinalityReinstall();
 
       ControllerContext context1 = assertInstall(0, "Name1", ControllerState.START);
-      SimpleBeanRepository repository = (SimpleBeanRepository)context1.getTarget();
+      BeanRepository repository = (BeanRepository)context1.getTarget();
       assertNotNull(repository);
       assertEmpty(repository.getBeans());
 
@@ -234,7 +235,7 @@ public class CallbackTestCase extends OldAbstractKernelDependencyTest
       assertEmpty(repository.getBeans());
 
       context1 = assertInstall(0, "Name1");
-      repository = (SimpleBeanRepository)context1.getTarget();
+      repository = (BeanRepository)context1.getTarget();
       assertNotNull(repository);
       assertFalse(repository.getBeans().isEmpty());
       assertEquals(2, repository.getBeans().size());

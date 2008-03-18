@@ -22,7 +22,6 @@
 package org.jboss.test.kernel.dependency.test;
 
 import junit.framework.Test;
-
 import org.jboss.beans.metadata.plugins.AbstractBeanMetaData;
 import org.jboss.beans.metadata.plugins.AbstractDependencyValueMetaData;
 import org.jboss.beans.metadata.plugins.AbstractPropertyMetaData;
@@ -31,8 +30,8 @@ import org.jboss.beans.metadata.plugins.factory.GenericBeanFactoryMetaData;
 import org.jboss.beans.metadata.spi.BeanMetaData;
 import org.jboss.dependency.spi.ControllerContext;
 import org.jboss.dependency.spi.ControllerState;
-import org.jboss.test.kernel.dependency.support.SimpleBean;
 import org.jboss.test.kernel.dependency.support.SimpleBeanImpl;
+import org.jboss.test.kernel.dependency.support.SimplerBean;
 
 /**
  * Property Dependency Test Case.
@@ -64,12 +63,12 @@ public class GenericBeanFactoryPropertyDependencyTestCase extends OldAbstractKer
       ControllerContext context1 = assertInstall(0, "Name1");
       ControllerContext context2 = assertInstall(1, "Name2");
       
-      SimpleBean bean1 = (SimpleBean) context1.getTarget();
+      SimplerBean bean1 = (SimplerBean) context1.getTarget();
       assertNotNull(bean1);
       assertEquals("String1", bean1.getString());
       
       GenericBeanFactory factory = (GenericBeanFactory) context2.getTarget(); 
-      SimpleBean bean2 = (SimpleBean) factory.createBean();
+      SimplerBean bean2 = (SimplerBean) factory.createBean();
       assertNotNull(bean2);
       assertEquals("String1", bean2.getString());
    }
@@ -87,12 +86,12 @@ public class GenericBeanFactoryPropertyDependencyTestCase extends OldAbstractKer
       ControllerContext context1 = assertInstall(0, "Name1");
       assertEquals(ControllerState.INSTALLED, context2.getState());
       
-      SimpleBean bean1 = (SimpleBean) context1.getTarget();
+      SimplerBean bean1 = (SimplerBean) context1.getTarget();
       assertNotNull(bean1);
       assertEquals("String1", bean1.getString());
       
       GenericBeanFactory factory = (GenericBeanFactory) context2.getTarget(); 
-      SimpleBean bean2 = (SimpleBean) factory.createBean();
+      SimplerBean bean2 = (SimplerBean) factory.createBean();
       assertNotNull(bean2);
       assertEquals("String1", bean2.getString());
    }
@@ -109,12 +108,12 @@ public class GenericBeanFactoryPropertyDependencyTestCase extends OldAbstractKer
       ControllerContext context1 = assertInstall(0, "Name1");
       ControllerContext context2 = assertInstall(1, "Name2");
       
-      SimpleBean bean1 = (SimpleBean) context1.getTarget();
+      SimplerBean bean1 = (SimplerBean) context1.getTarget();
       assertNotNull(bean1);
       assertEquals("String1", bean1.getString());
       
       GenericBeanFactory factory = (GenericBeanFactory) context2.getTarget(); 
-      SimpleBean bean2 = (SimpleBean) factory.createBean();
+      SimplerBean bean2 = (SimplerBean) factory.createBean();
       assertNotNull(bean2);
       assertEquals("String1", bean2.getString());
 
@@ -129,30 +128,30 @@ public class GenericBeanFactoryPropertyDependencyTestCase extends OldAbstractKer
       context1 = assertInstall(0, "Name1");
       assertEquals(ControllerState.INSTALLED, context2.getState());
 
-      bean1 = (SimpleBean) context1.getTarget();
+      bean1 = (SimplerBean) context1.getTarget();
       assertNotNull(bean1);
       assertEquals("String1", bean1.getString());
       
       factory = (GenericBeanFactory) context2.getTarget(); 
-      bean2 = (SimpleBean) factory.createBean();
+      bean2 = (SimplerBean) factory.createBean();
       assertNotNull(bean2);
       assertEquals("String1", bean2.getString());
       
       assertUninstall("Name2");
       
       context1 = assertContext("Name1");
-      bean1 = (SimpleBean) context1.getTarget();
+      bean1 = (SimplerBean) context1.getTarget();
       assertNotNull(bean1);
       assertEquals("String1", bean1.getString());
       
       context2 = assertInstall(1, "Name2");
       
-      bean1 = (SimpleBean) context1.getTarget();
+      bean1 = (SimplerBean) context1.getTarget();
       assertNotNull(bean1);
       assertEquals("String1", bean1.getString());
       
       factory = (GenericBeanFactory) context2.getTarget(); 
-      bean2 = (SimpleBean) factory.createBean();
+      bean2 = (SimplerBean) factory.createBean();
       assertNotNull(bean2);
       assertEquals("String1", bean2.getString());
    }
@@ -167,9 +166,14 @@ public class GenericBeanFactoryPropertyDependencyTestCase extends OldAbstractKer
       AbstractBeanMetaData metaData1 = new AbstractBeanMetaData("Name1", SimpleBeanImpl.class.getName());
       metaData1.addProperty(new AbstractPropertyMetaData("string", "String1"));
 
-      GenericBeanFactoryMetaData metaData2 = new GenericBeanFactoryMetaData("Name2", SimpleBeanImpl.class.getName());
+      GenericBeanFactoryMetaData metaData2 = createBeanFactory();
       metaData2.addBeanProperty(new AbstractPropertyMetaData("string", new AbstractDependencyValueMetaData("Name1", "string")));
 
       setBeanMetaDatas(new BeanMetaData[] { metaData1, metaData2 });
+   }
+
+   protected GenericBeanFactoryMetaData createBeanFactory()
+   {
+      return new GenericBeanFactoryMetaData("Name2", SimpleBeanImpl.class.getName());
    }
 }
