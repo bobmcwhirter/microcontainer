@@ -28,6 +28,7 @@ import java.util.Date;
  */
 public class MockFieldTester
 {
+   @SuppressWarnings("unused")
    @MockInject
    private String string;
 
