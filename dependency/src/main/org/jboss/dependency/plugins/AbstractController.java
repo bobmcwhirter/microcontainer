@@ -991,10 +991,18 @@ public class AbstractController extends JBossObject implements Controller
          }
       }
 
+      // The state could have changed while calling out to dependents
+      fromState = context.getState();
+      if (ControllerState.ERROR.equals(fromState))
+         return;
+      
+      // Calculate the previous state
+      currentIndex = states.indexOf(fromState);
       int toIndex = currentIndex - 1;
-      if (toIndex == -1)
+      if (toIndex < 0)
       {
-         context.setError(new IllegalStateException("Cannot uninstall from " + fromState));
+         // This is hack, we signal true uninstalled status by putting it in the error state
+         context.setState(ControllerState.ERROR);
          return;
       }
 
