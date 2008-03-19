@@ -48,6 +48,8 @@ import org.jboss.kernel.spi.config.KernelConfigurator;
 /**
  * GenericBeanFactoryMetaData.
  * 
+ * @deprecated see org.jboss.beans.metadata.spi.factory.GenericBeanFactoryMetaData
+ * 
  * @author <a href="ales.justin@jboss.com">Ales Justin</a>
  * @author <a href="adrian@jboss.com">Adrian Brock</a>
  * @version $Revision$
