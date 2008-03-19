@@ -44,6 +44,7 @@ public class GenericBeanFactoryFieldPropertyDependencyTestCase extends GenericBe
       super(name);
    }
 
+   @SuppressWarnings("deprecation")
    protected GenericBeanFactoryMetaData createBeanFactory()
    {
       GenericBeanFactoryMetaData beanFactoryMetaData = new GenericBeanFactoryMetaData("Name2", SimplerBeanImpl.class.getName());
