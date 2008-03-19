@@ -32,6 +32,7 @@ import org.jboss.kernel.spi.config.KernelConfig;
 import org.jboss.kernel.spi.dependency.KernelController;
 import org.jboss.kernel.spi.dependency.KernelControllerContext;
 import org.jboss.test.BaseTestCase;
+import org.jboss.test.kernel.annotations.support.AfterInstallVerifier;
 import org.jboss.dependency.spi.ControllerState;
 
 /**
@@ -42,7 +43,7 @@ import org.jboss.dependency.spi.ControllerState;
 public abstract class AbstractRunAnnotationsTest extends BaseTestCase
 {
    private KernelController controller;
-   private Map<Class<?>, AfterInstallVerifier> verifiers = new HashMap<Class<?>, AfterInstallVerifier>();
+   private Map<Class<?>, AfterInstallVerifier<?>> verifiers = new HashMap<Class<?>, AfterInstallVerifier<?>>();
    
    protected AbstractRunAnnotationsTest(String name)
    {
@@ -131,13 +132,14 @@ public abstract class AbstractRunAnnotationsTest extends BaseTestCase
     * Useful for single tests.
     * Else determine the test by parameters.
     *
+    * @param <T> the type
     * @param clazz the class
     * @param target the target
     */
    @SuppressWarnings("unchecked")
    protected <T> void doTestAfterInstall(Class<T> clazz, T target)
    {
-      AfterInstallVerifier<T> verifier = verifiers.get(clazz);
+      AfterInstallVerifier<T> verifier = (AfterInstallVerifier) verifiers.get(clazz);
       if (verifier != null)
          verifier.verify(target);
       else

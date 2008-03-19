@@ -38,6 +38,7 @@ import org.jboss.reflect.spi.AnnotatedInfo;
 /**
  * Injectable member annotation plugin.
  *
+ * @param <T> the annotated info
  * @param <C> annotation type
  * @author <a href="mailto:ales.justin@jboss.com">Ales Justin</a>
  */

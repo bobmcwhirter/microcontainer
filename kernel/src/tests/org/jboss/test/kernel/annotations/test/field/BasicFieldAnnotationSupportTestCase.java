@@ -22,7 +22,7 @@
 package org.jboss.test.kernel.annotations.test.field;
 
 import org.jboss.test.kernel.annotations.test.AbstractBeanAnnotationAdapterTest;
-import org.jboss.test.kernel.annotations.test.AfterInstallVerifier;
+import org.jboss.test.kernel.annotations.support.AfterInstallVerifier;
 import org.jboss.test.kernel.annotations.support.TestBean;
 import org.jboss.test.kernel.annotations.support.MyDeployer;
 import org.jboss.test.kernel.annotations.support.InjectTester;
