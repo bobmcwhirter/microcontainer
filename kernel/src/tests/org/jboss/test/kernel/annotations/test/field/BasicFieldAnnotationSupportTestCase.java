@@ -78,8 +78,22 @@ public class BasicFieldAnnotationSupportTestCase extends AbstractBeanAnnotationA
       controller.install(new AbstractBeanMetaData("pb3", TestBean.class.getName()));
       controller.install(new AbstractBeanMetaData("deployer", MyDeployer.class.getName()));
       InjectTester tester = new InjectTester();
+
       testFields(tester, new InjectTesterVerifier(), BeanAccessMode.FIELDS);
+      assertTesterAfterUninstall(tester);
+
       testFields(tester, new AllInjectTesterVerifier(), BeanAccessMode.ALL);
+      assertTesterAfterUninstall(tester);
+   }
+
+   protected void assertTesterAfterUninstall(InjectTester tester)
+   {
+      assertNull(tester.getPrivateBean());
+      assertNull(tester.getProtectedBean());
+      assertNull(tester.publicBean);
+      assertNull(tester.getPrivateDeployer());
+      assertNull(tester.getProtectedDeployer());
+      assertNull(tester.publicDeployer);
    }
 
    public void testValueFactory() throws Throwable
@@ -89,8 +103,19 @@ public class BasicFieldAnnotationSupportTestCase extends AbstractBeanAnnotationA
       controller.install(new AbstractBeanMetaData("pb2", TestBean.class.getName()));
       controller.install(new AbstractBeanMetaData("pb3", TestBean.class.getName()));
       ValueFactoryTester tester = new ValueFactoryTester();
+
       testFields(tester, new VFTesterVerifier(), BeanAccessMode.FIELDS);
+      assertTesterAfterInstall(tester);
+
       testFields(tester, new AllVFTesterVerifier(), BeanAccessMode.ALL);
+      assertTesterAfterInstall(tester);
+   }
+
+   protected void assertTesterAfterInstall(ValueFactoryTester tester)
+   {
+      assertNull(tester.getPrivateBean());
+      assertNull(tester.getProtectedBean());
+      assertNull(tester.publicBean);
    }
 
    public void testInstalls() throws Throwable
@@ -100,8 +125,20 @@ public class BasicFieldAnnotationSupportTestCase extends AbstractBeanAnnotationA
       controller.install(new AbstractBeanMetaData("pb2", TestBean.class.getName()));
       controller.install(new AbstractBeanMetaData("pb3", TestBean.class.getName()));
       CallbacksTester tester = new CallbacksTester();
+
       testFields(tester, new CallbacksTesterVerifier(), BeanAccessMode.FIELDS);
+      assertTesterAfterInstall(tester);
+
       testFields(tester, new AllCallbacksTesterVerifier(), BeanAccessMode.ALL);
+      assertTesterAfterInstall(tester);
+   }
+
+   protected void assertTesterAfterInstall(CallbacksTester tester)
+   {
+      // both - null or empty are acceptable
+      assertTrue(tester.getPrivateBeans() == null || tester.getPrivateBeans().isEmpty());
+      assertTrue(tester.getProtectedBeans() == null || tester.getProtectedBeans().isEmpty());
+      assertTrue(tester.publicBeans == null || tester.publicBeans.isEmpty());
    }
 
    private class InjectTesterVerifier implements AfterInstallVerifier<InjectTester>
