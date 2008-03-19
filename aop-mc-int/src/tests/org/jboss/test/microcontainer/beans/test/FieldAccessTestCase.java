@@ -66,8 +66,8 @@ public class FieldAccessTestCase extends AbstractTypeTest
          string += bean.getPriString();
       if (bean.getProtString() != null)
          string += bean.getProtString();
-      if (bean.pubString != null)
-         string += bean.pubString;
+      if (bean.getPubString() != null)
+         string += bean.getPubString();
       return string;
    }
 
