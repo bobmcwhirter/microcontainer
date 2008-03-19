@@ -43,19 +43,4 @@ public abstract class AbstractAnnotationInheritanceTest extends AbstractRunAnnot
       KernelController controller = getController();
       return controller.install(new AbstractBeanMetaData(name, clazz.getName()));
    }
-
-   protected void doTestAfterInstall(Class<?> clazz, Object target)
-   {
-      assertInstanceOf(target, clazz);
-      doTestAfterInstall(clazz.cast(target));
-   }
-
-   protected void doTestAfterInstall(Object target)
-   {
-      doTestAfterInstall();
-   }
-
-   protected void doTestAfterInstall()
-   {
-   }
 }

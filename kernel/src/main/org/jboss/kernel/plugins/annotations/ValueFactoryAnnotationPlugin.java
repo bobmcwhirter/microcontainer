@@ -21,16 +21,8 @@
 */
 package org.jboss.kernel.plugins.annotations;
 
-import java.util.ArrayList;
-import java.util.List;
-
-import org.jboss.beans.metadata.plugins.AbstractParameterMetaData;
-import org.jboss.beans.metadata.plugins.AbstractValueFactoryMetaData;
-import org.jboss.beans.metadata.api.annotations.Parameter;
 import org.jboss.beans.metadata.api.annotations.ValueFactory;
-import org.jboss.beans.metadata.spi.ParameterMetaData;
 import org.jboss.beans.metadata.spi.ValueMetaData;
-import org.jboss.dependency.spi.ControllerState;
 
 /**
  * Value factory annotation plugin.
@@ -48,27 +40,6 @@ public class ValueFactoryAnnotationPlugin extends PropertyAnnotationPlugin<Value
 
    public ValueMetaData createValueMetaData(ValueFactory annotation)
    {
-      AbstractValueFactoryMetaData factory = new AbstractValueFactoryMetaData(annotation.bean(), annotation.method());
-      if (isAttributePresent(annotation.defaultValue()))
-         factory.setDefaultValue(annotation.defaultValue());
-      List<ParameterMetaData> parameters = new ArrayList<ParameterMetaData>();
-      if (isAttributePresent(annotation.parameter()))
-         parameters.add(new AbstractParameterMetaData(String.class.getName(), annotation.parameter()));
-      if (annotation.parameters().length > 0)
-      {
-         if (parameters.size() > 0)
-            throw new IllegalArgumentException("Cannot set both parameter and parameters!");
-         for(Parameter parameter : annotation.parameters())
-         {
-            AbstractParameterMetaData apmd = new AbstractParameterMetaData(ValueUtil.createValueMetaData(parameter));
-            if (isAttributePresent(parameter.type()))
-               apmd.setType(parameter.type().getName());
-            parameters.add(apmd);
-         }
-      }
-      factory.setParameters(parameters);
-      factory.setDependentState(new ControllerState(annotation.dependantState()));
-      factory.setWhenRequiredState(new ControllerState(annotation.whenRequiredState()));
-      return factory;
+      return ValueUtil.createValueMetaData(annotation);
    }
 }

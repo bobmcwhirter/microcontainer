@@ -19,33 +19,17 @@
 * Software Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA
 * 02110-1301 USA, or see the FSF site: http://www.fsf.org.
 */
-package org.jboss.kernel.plugins.annotations;
-
-import java.lang.annotation.Annotation;
-import java.lang.annotation.ElementType;
-
-import org.jboss.reflect.spi.FieldInfo;
+package org.jboss.test.kernel.annotations.test;
 
 /**
- * Field annotation plugin.
+ * Abstract annotation runner test.
  *
- * @param <C> annotation type
+ * @param <T> exact type
  * @author <a href="mailto:ales.justin@jboss.com">Ales Justin</a>
  */
-public abstract class FieldAnnotationPlugin<C extends Annotation> extends InjectableMemberAnnotationPlugin<FieldInfo, C>
+public interface AfterInstallVerifier<T>
 {
-   protected FieldAnnotationPlugin(Class<C> annotation)
-   {
-      super(annotation);
-   }
+   void verify(T target);
 
-   protected boolean isElementTypeSupported(ElementType type)
-   {
-      return ElementType.FIELD == type;
-   }
-
-   protected String getName(FieldInfo info)
-   {
-      return info.getName();
-   }
+   Class<T> getTargetClass();
 }

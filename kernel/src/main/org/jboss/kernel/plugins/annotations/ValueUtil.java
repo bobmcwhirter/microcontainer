@@ -21,6 +21,9 @@
 */
 package org.jboss.kernel.plugins.annotations;
 
+import java.util.List;
+import java.util.ArrayList;
+
 import org.jboss.beans.metadata.api.annotations.Inject;
 import org.jboss.beans.metadata.api.annotations.NullValue;
 import org.jboss.beans.metadata.api.annotations.Parameter;
@@ -29,7 +32,13 @@ import org.jboss.beans.metadata.api.annotations.ThisValue;
 import org.jboss.beans.metadata.api.annotations.Value;
 import org.jboss.beans.metadata.api.annotations.ValueFactory;
 import org.jboss.beans.metadata.api.annotations.JavaBeanValue;
+import org.jboss.beans.metadata.api.model.FromContext;
 import org.jboss.beans.metadata.spi.ValueMetaData;
+import org.jboss.beans.metadata.spi.ParameterMetaData;
+import org.jboss.beans.metadata.plugins.AbstractInjectionValueMetaData;
+import org.jboss.beans.metadata.plugins.AbstractValueFactoryMetaData;
+import org.jboss.beans.metadata.plugins.AbstractParameterMetaData;
+import org.jboss.dependency.spi.ControllerState;
 
 /**
  * Simple util class.
@@ -176,5 +185,60 @@ final class ValueUtil
          throw new IllegalArgumentException("No value set on @Value annotation!");
 
       return vmd;
+   }
+
+   /**
+    * Create injection value meta data.
+    *
+    * @param annotation the annotation
+    * @return injection value meta data
+    */
+   static ValueMetaData createValueMetaData(Inject annotation)
+   {
+      AbstractInjectionValueMetaData injection = new AbstractInjectionValueMetaData();
+      if (isAttributePresent(annotation.bean()))
+         injection.setValue(annotation.bean());
+      if (isAttributePresent(annotation.property()))
+         injection.setProperty(annotation.property());
+      injection.setDependentState(new ControllerState(annotation.dependentState()));
+      if (isAttributePresent(annotation.whenRequired()))
+         injection.setWhenRequiredState(new ControllerState(annotation.whenRequired()));
+      injection.setInjectionOption(annotation.option());
+      injection.setInjectionType(annotation.type());
+      if (FromContext.NOOP.equals(annotation.fromContext()) == false)
+         injection.setFromContext(annotation.fromContext());
+      return injection;
+   }
+
+   /**
+    * Create value factory value meta data.
+    *
+    * @param annotation the annotation
+    * @return value factory meta data
+    */
+   static ValueMetaData createValueMetaData(ValueFactory annotation)
+   {
+      AbstractValueFactoryMetaData factory = new AbstractValueFactoryMetaData(annotation.bean(), annotation.method());
+      if (isAttributePresent(annotation.defaultValue()))
+         factory.setDefaultValue(annotation.defaultValue());
+      List<ParameterMetaData> parameters = new ArrayList<ParameterMetaData>();
+      if (isAttributePresent(annotation.parameter()))
+         parameters.add(new AbstractParameterMetaData(String.class.getName(), annotation.parameter()));
+      if (annotation.parameters().length > 0)
+      {
+         if (parameters.size() > 0)
+            throw new IllegalArgumentException("Cannot set both parameter and parameters!");
+         for(Parameter parameter : annotation.parameters())
+         {
+            AbstractParameterMetaData apmd = new AbstractParameterMetaData(createValueMetaData(parameter));
+            if (isAttributePresent(parameter.type()))
+               apmd.setType(parameter.type().getName());
+            parameters.add(apmd);
+         }
+      }
+      factory.setParameters(parameters);
+      factory.setDependentState(new ControllerState(annotation.dependantState()));
+      factory.setWhenRequiredState(new ControllerState(annotation.whenRequiredState()));
+      return factory;
    }
 }

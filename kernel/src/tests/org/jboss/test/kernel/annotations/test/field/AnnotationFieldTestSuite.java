@@ -42,6 +42,7 @@ public class AnnotationFieldTestSuite extends TestSuite
       TestSuite suite = new TestSuite("Fields Tests");
 
       suite.addTest(SimpleFieldTestCase.suite());
+      suite.addTest(BasicFieldAnnotationSupportTestCase.suite());
 
       return suite;
    }

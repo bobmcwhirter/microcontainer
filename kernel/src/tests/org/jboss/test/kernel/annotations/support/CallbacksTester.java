@@ -19,33 +19,36 @@
 * Software Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA
 * 02110-1301 USA, or see the FSF site: http://www.fsf.org.
 */
-package org.jboss.kernel.plugins.annotations;
+package org.jboss.test.kernel.annotations.support;
 
-import java.lang.annotation.Annotation;
-import java.lang.annotation.ElementType;
+import java.util.Set;
 
-import org.jboss.reflect.spi.FieldInfo;
+import org.jboss.beans.metadata.api.annotations.Install;
+import org.jboss.beans.metadata.api.annotations.Uninstall;
 
 /**
- * Field annotation plugin.
- *
- * @param <C> annotation type
  * @author <a href="mailto:ales.justin@jboss.com">Ales Justin</a>
  */
-public abstract class FieldAnnotationPlugin<C extends Annotation> extends InjectableMemberAnnotationPlugin<FieldInfo, C>
+public class CallbacksTester
 {
-   protected FieldAnnotationPlugin(Class<C> annotation)
+   @SuppressWarnings("unused")
+   @Install
+   @Uninstall
+   private Set<TestBean> privateBeans;
+   @Install
+   @Uninstall
+   protected Set<TestBean> protectedBeans;
+   @Install
+   @Uninstall
+   public Set<TestBean> publicBeans;
+
+   public Set<TestBean> getPrivateBeans()
    {
-      super(annotation);
+      return privateBeans;
    }
 
-   protected boolean isElementTypeSupported(ElementType type)
+   public Set<TestBean> getProtectedBeans()
    {
-      return ElementType.FIELD == type;
-   }
-
-   protected String getName(FieldInfo info)
-   {
-      return info.getName();
+      return protectedBeans;
    }
 }

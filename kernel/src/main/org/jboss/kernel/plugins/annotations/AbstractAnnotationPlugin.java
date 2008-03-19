@@ -71,8 +71,6 @@ public abstract class AbstractAnnotationPlugin<T extends AnnotatedInfo, C extend
             {
                types.add(type);
             }
-            else
-               log.warn("Unsupported type " + type + " on annotation " + annotation);
          }
       }
       isCleanupOnly = annotation.isAnnotationPresent(CleanupOnly.class);

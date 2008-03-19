@@ -21,6 +21,9 @@
 */
 package org.jboss.test.kernel.annotations.test;
 
+import java.util.Map;
+import java.util.HashMap;
+
 import org.jboss.beans.metadata.plugins.AbstractBeanMetaData;
 import org.jboss.beans.info.spi.BeanAccessMode;
 import org.jboss.kernel.Kernel;
@@ -39,7 +42,8 @@ import org.jboss.dependency.spi.ControllerState;
 public abstract class AbstractRunAnnotationsTest extends BaseTestCase
 {
    private KernelController controller;
-
+   private Map<Class<?>, AfterInstallVerifier> verifiers = new HashMap<Class<?>, AfterInstallVerifier>();
+   
    protected AbstractRunAnnotationsTest(String name)
    {
       super(name);
@@ -66,10 +70,12 @@ public abstract class AbstractRunAnnotationsTest extends BaseTestCase
       runAnnotationsOnTarget(target, BeanAccessMode.STANDARD);
    }
 
+   @SuppressWarnings("unchecked")
    protected void runAnnotationsOnTarget(Object target, BeanAccessMode mode) throws Throwable
    {
       assertNotNull("Target is null", target);
-      runAnnotations(target.getClass(), target, mode);
+      Class clazz = target.getClass();
+      runAnnotations(clazz, target, mode);
    }
 
    protected void runAnnotationsOnClass(Class<?> clazz) throws Throwable
@@ -82,12 +88,12 @@ public abstract class AbstractRunAnnotationsTest extends BaseTestCase
       runAnnotations(clazz, null);
    }
 
-   protected void runAnnotations(Class<?> clazz, Object target) throws Throwable
+   protected <T> void runAnnotations(Class<T> clazz, T target) throws Throwable
    {
       runAnnotations(clazz, target, BeanAccessMode.STANDARD);
    }
 
-   protected void runAnnotations(Class<?> clazz, Object target, BeanAccessMode mode) throws Throwable
+   protected <T> void runAnnotations(Class<T> clazz, T target, BeanAccessMode mode) throws Throwable
    {
       KernelController controller = getController();
       String className = clazz.getName();
@@ -111,6 +117,16 @@ public abstract class AbstractRunAnnotationsTest extends BaseTestCase
       assertEquals(ControllerState.INSTALLED, context.getState());
    }
 
+   protected <T> void addVerifier(AfterInstallVerifier<T> verifier)
+   {
+      verifiers.put(verifier.getTargetClass(), verifier);
+   }
+
+   protected void removeVerifier(Class<?> clazz)
+   {
+      verifiers.remove(clazz);
+   }
+
    /**
     * Useful for single tests.
     * Else determine the test by parameters.
@@ -118,7 +134,22 @@ public abstract class AbstractRunAnnotationsTest extends BaseTestCase
     * @param clazz the class
     * @param target the target
     */
-   protected void doTestAfterInstall(Class<?> clazz, Object target)
+   @SuppressWarnings("unchecked")
+   protected <T> void doTestAfterInstall(Class<T> clazz, T target)
+   {
+      AfterInstallVerifier<T> verifier = verifiers.get(clazz);
+      if (verifier != null)
+         verifier.verify(target);
+      else
+         doTestAfterInstall(target);
+   }
+
+   protected void doTestAfterInstall(Object target)
+   {
+      doTestAfterInstall();
+   }
+
+   protected void doTestAfterInstall()
    {
    }
 

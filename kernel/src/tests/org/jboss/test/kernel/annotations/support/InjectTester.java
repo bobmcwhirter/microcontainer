@@ -19,33 +19,48 @@
 * Software Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA
 * 02110-1301 USA, or see the FSF site: http://www.fsf.org.
 */
-package org.jboss.kernel.plugins.annotations;
+package org.jboss.test.kernel.annotations.support;
 
-import java.lang.annotation.Annotation;
-import java.lang.annotation.ElementType;
-
-import org.jboss.reflect.spi.FieldInfo;
+import org.jboss.beans.metadata.api.annotations.Inject;
 
 /**
- * Field annotation plugin.
- *
- * @param <C> annotation type
  * @author <a href="mailto:ales.justin@jboss.com">Ales Justin</a>
  */
-public abstract class FieldAnnotationPlugin<C extends Annotation> extends InjectableMemberAnnotationPlugin<FieldInfo, C>
+public class InjectTester
 {
-   protected FieldAnnotationPlugin(Class<C> annotation)
+   @SuppressWarnings("unused")
+   @Inject(bean = "pb1")
+   private TestBean privateBean;
+   @Inject(bean = "pb2")
+   protected TestBean protectedBean;
+   @Inject(bean = "pb3")
+   public TestBean publicBean;
+
+   @SuppressWarnings("unused")
+   @Inject
+   private MyDeployer privateDeployer;
+   @Inject
+   protected MyDeployer protectedDeployer;
+   @Inject
+   public MyDeployer publicDeployer;
+
+   public TestBean getPrivateBean()
    {
-      super(annotation);
+      return privateBean;
    }
 
-   protected boolean isElementTypeSupported(ElementType type)
+   public TestBean getProtectedBean()
    {
-      return ElementType.FIELD == type;
+      return protectedBean;
    }
 
-   protected String getName(FieldInfo info)
+   public MyDeployer getPrivateDeployer()
    {
-      return info.getName();
+      return privateDeployer;
+   }
+
+   public MyDeployer getProtectedDeployer()
+   {
+      return protectedDeployer;
    }
 }

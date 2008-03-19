@@ -33,7 +33,7 @@ public class MockFieldTester
    private String string;
 
    @MockInject
-   protected long time;
+   protected Long time;
 
    @MockInject
    public Date date;

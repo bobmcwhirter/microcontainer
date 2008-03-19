@@ -27,6 +27,8 @@ import java.util.Set;
 
 import org.jboss.beans.metadata.spi.BeanMetaData;
 import org.jboss.beans.metadata.spi.MetaDataVisitorNode;
+import org.jboss.beans.metadata.spi.ValueMetaData;
+import org.jboss.beans.metadata.plugins.AbstractValueMetaData;
 import org.jboss.kernel.plugins.annotations.FieldAnnotationPlugin;
 import org.jboss.reflect.spi.FieldInfo;
 
@@ -42,6 +44,11 @@ public class MockInjectPlugin extends FieldAnnotationPlugin<MockInject>
    private MockInjectPlugin()
    {
       super(MockInject.class);
+   }
+
+   public ValueMetaData createValueMetaData(MockInject annotation)
+   {
+      return new AbstractValueMetaData();
    }
 
    protected List<? extends MetaDataVisitorNode> internalApplyAnnotation(FieldInfo info, MockInject annotation, BeanMetaData beanMetaData) throws Throwable

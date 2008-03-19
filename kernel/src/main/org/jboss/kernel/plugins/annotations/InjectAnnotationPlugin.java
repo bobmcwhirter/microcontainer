@@ -22,10 +22,7 @@
 package org.jboss.kernel.plugins.annotations;
 
 import org.jboss.beans.metadata.api.annotations.Inject;
-import org.jboss.beans.metadata.api.model.FromContext;
-import org.jboss.beans.metadata.plugins.AbstractInjectionValueMetaData;
 import org.jboss.beans.metadata.spi.ValueMetaData;
-import org.jboss.dependency.spi.ControllerState;
 
 /**
  * Inject value annotation plugin.
@@ -43,18 +40,6 @@ public class InjectAnnotationPlugin extends PropertyAnnotationPlugin<Inject>
 
    public ValueMetaData createValueMetaData(Inject annotation)
    {
-      AbstractInjectionValueMetaData injection = new AbstractInjectionValueMetaData();
-      if (isAttributePresent(annotation.bean()))
-         injection.setValue(annotation.bean());
-      if (isAttributePresent(annotation.property()))
-         injection.setProperty(annotation.property());
-      injection.setDependentState(new ControllerState(annotation.dependentState()));
-      if (isAttributePresent(annotation.whenRequired()))
-         injection.setWhenRequiredState(new ControllerState(annotation.whenRequired()));
-      injection.setInjectionOption(annotation.option());
-      injection.setInjectionType(annotation.type());
-      if (FromContext.NOOP.equals(annotation.fromContext()) == false)
-         injection.setFromContext(annotation.fromContext());
-      return injection;
+      return ValueUtil.createValueMetaData(annotation);
    }
 }

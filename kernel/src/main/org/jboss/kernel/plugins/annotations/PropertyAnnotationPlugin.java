@@ -23,19 +23,8 @@ package org.jboss.kernel.plugins.annotations;
 
 import java.lang.annotation.Annotation;
 import java.lang.annotation.ElementType;
-import java.util.Collections;
-import java.util.HashSet;
-import java.util.List;
-import java.util.Set;
 
 import org.jboss.beans.info.spi.PropertyInfo;
-import org.jboss.beans.metadata.plugins.AbstractBeanMetaData;
-import org.jboss.beans.metadata.plugins.AbstractPropertyMetaData;
-import org.jboss.beans.metadata.spi.BeanMetaData;
-import org.jboss.beans.metadata.spi.MetaDataVisitorNode;
-import org.jboss.beans.metadata.spi.PropertyMetaData;
-import org.jboss.beans.metadata.spi.ValueMetaData;
-import org.jboss.kernel.spi.dependency.KernelControllerContext;
 
 /**
  * Abstract property annotation plugin.
@@ -43,7 +32,7 @@ import org.jboss.kernel.spi.dependency.KernelControllerContext;
  * @param <C> annotation type
  * @author <a href="mailto:ales.justin@jboss.com">Ales Justin</a>
  */
-public abstract class PropertyAnnotationPlugin<C extends Annotation> extends AbstractAnnotationPlugin<PropertyInfo, C>
+public abstract class PropertyAnnotationPlugin<C extends Annotation> extends InjectableMemberAnnotationPlugin<PropertyInfo, C>
    implements PropertyAware, Annotation2ValueMetaDataAdapter<C>
 {
    protected PropertyAnnotationPlugin(Class<C> annotation)
@@ -56,83 +45,8 @@ public abstract class PropertyAnnotationPlugin<C extends Annotation> extends Abs
       return ElementType.METHOD == type || ElementType.PARAMETER == type;
    }
 
-   protected boolean isMetaDataAlreadyPresent(PropertyInfo info, C annotation, BeanMetaData beanMetaData)
+   protected String getName(PropertyInfo info)
    {
-      Set<PropertyMetaData> properties = beanMetaData.getProperties();
-      if (properties != null && properties.isEmpty() == false)
-      {
-         for(PropertyMetaData pmd : properties)
-         {
-            if (pmd.getName().equals(info.getName()))
-               return true;
-         }
-      }
-      return false;
-   }
-
-   protected List<? extends MetaDataVisitorNode> internalApplyAnnotation(PropertyInfo info, C annotation, KernelControllerContext context)
-   {
-      Set<PropertyMetaData> properties = getProperties(context);
-      PropertyMetaData property = getPropertyMetaData(info, annotation, context);
-      properties.add(property);
-      return Collections.singletonList(property);
-   }
-
-   /**
-    * Get PropertyMetaData instance.
-    *
-    * @param info the info
-    * @param annotation the annotation
-    * @param context the context
-    * @return get new PropertyMetaData instance
-    */
-   protected PropertyMetaData getPropertyMetaData(PropertyInfo info, C annotation, KernelControllerContext context)
-   {
-      return getPropertyMetaData(info, annotation, context.getBeanMetaData());
-   }
-
-   /**
-    * Get PropertyMetaData instance.
-    *
-    * @param info the info
-    * @param annotation the annotation
-    * @param beanMetaData the bean metadata
-    * @return get new PropertyMetaData instance
-    */
-   protected PropertyMetaData getPropertyMetaData(PropertyInfo info, C annotation, BeanMetaData beanMetaData)
-   {
-      return getPropertyMetaData(info, annotation);
-   }
-
-   /**
-    * Get PropertyMetaData instance.
-    *
-    * @param info the info
-    * @param annotation the annotation
-    * @return get new PropertyMetaData instance
-    */
-   protected PropertyMetaData getPropertyMetaData(PropertyInfo info, C annotation)
-   {
-      ValueMetaData value = createValueMetaData(annotation);
-      return new AbstractPropertyMetaData(info.getName(), value);
-   }
-
-   /**
-    * Get the PropertyMetaData set.
-    *
-    * @param context the context
-    * @return set of existing PropertyMetaData
-    */
-   protected Set<PropertyMetaData> getProperties(KernelControllerContext context)
-   {
-      BeanMetaData beanMetaData = context.getBeanMetaData();
-      Set<PropertyMetaData> properties = beanMetaData.getProperties();
-      if (properties == null)
-      {
-         properties = new HashSet<PropertyMetaData>();
-         AbstractBeanMetaData bean = (AbstractBeanMetaData)beanMetaData;
-         bean.setProperties(properties);
-      }
-      return properties;
+      return info.getName();
    }
 }

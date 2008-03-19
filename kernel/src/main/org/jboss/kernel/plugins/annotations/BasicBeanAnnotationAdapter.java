@@ -93,5 +93,9 @@ public class BasicBeanAnnotationAdapter extends AbstractBeanAnnotationAdapter
       addAnnotationPlugin(new InstallMethodParameterAnnotationPlugin(adapters));
       addAnnotationPlugin(new UninstallMethodParameterAnnotationPlugin(adapters));
       // field
+      addAnnotationPlugin(new InjectFieldAnnotationPlugin());
+      addAnnotationPlugin(new ValueFactoryFieldAnnotationPlugin());
+      addAnnotationPlugin(new InstallFieldCallbackAnnotationPlugin());
+      addAnnotationPlugin(new UninstallFieldCallbackAnnotationPlugin());
    }
 }

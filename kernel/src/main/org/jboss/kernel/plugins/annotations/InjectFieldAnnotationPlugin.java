@@ -21,31 +21,23 @@
 */
 package org.jboss.kernel.plugins.annotations;
 
-import java.lang.annotation.Annotation;
-import java.lang.annotation.ElementType;
-
-import org.jboss.reflect.spi.FieldInfo;
+import org.jboss.beans.metadata.api.annotations.Inject;
+import org.jboss.beans.metadata.spi.ValueMetaData;
 
 /**
- * Field annotation plugin.
+ * Value factory field annotation plugin.
  *
- * @param <C> annotation type
  * @author <a href="mailto:ales.justin@jboss.com">Ales Justin</a>
  */
-public abstract class FieldAnnotationPlugin<C extends Annotation> extends InjectableMemberAnnotationPlugin<FieldInfo, C>
+public class InjectFieldAnnotationPlugin extends FieldAnnotationPlugin<Inject>
 {
-   protected FieldAnnotationPlugin(Class<C> annotation)
+   public InjectFieldAnnotationPlugin()
    {
-      super(annotation);
+      super(Inject.class);
    }
 
-   protected boolean isElementTypeSupported(ElementType type)
+   public ValueMetaData createValueMetaData(Inject annotation)
    {
-      return ElementType.FIELD == type;
-   }
-
-   protected String getName(FieldInfo info)
-   {
-      return info.getName();
+      return ValueUtil.createValueMetaData(annotation);
    }
 }

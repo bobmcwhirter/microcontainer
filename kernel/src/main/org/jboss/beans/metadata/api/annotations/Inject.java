@@ -38,7 +38,7 @@ import org.jboss.beans.metadata.api.model.AutowireType;
  * @author <a href="mailto:ales.justin@jboss.com">Ales Justin</a>
  */
 @Retention(RetentionPolicy.RUNTIME)
-@Target({ElementType.METHOD, ElementType.PARAMETER})
+@Target({ElementType.METHOD, ElementType.PARAMETER, ElementType.FIELD})
 public @interface Inject
 {
    /**
