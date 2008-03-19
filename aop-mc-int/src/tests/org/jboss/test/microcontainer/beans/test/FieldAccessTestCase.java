@@ -77,8 +77,10 @@ public class FieldAccessTestCase extends AbstractTypeTest
       testAccessBean("protected");
       testAccessBean("public");
 
-      AccessBean pb = getBean("public", AccessBean.class);
       // this should fail or something :-) on proxy
+      AccessBean pb = getBean("public", AccessBean.class);
       assertEquals("foobar", pb.pubString);
+      AbstractTypeTestDelegate.Type type = getType("public");
+      assertTrue(pb.getPubString() == null || type != AbstractTypeTestDelegate.Type.PROXY);
    }
 }
