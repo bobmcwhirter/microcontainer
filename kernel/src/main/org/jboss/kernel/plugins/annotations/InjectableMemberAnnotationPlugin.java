@@ -22,7 +22,6 @@
 package org.jboss.kernel.plugins.annotations;
 
 import java.lang.annotation.Annotation;
-import java.lang.annotation.ElementType;
 import java.util.Collections;
 import java.util.HashSet;
 import java.util.List;
@@ -47,11 +46,6 @@ public abstract class InjectableMemberAnnotationPlugin<T extends AnnotatedInfo, 
    protected InjectableMemberAnnotationPlugin(Class<C> annotation)
    {
       super(annotation);
-   }
-
-   protected boolean isElementTypeSupported(ElementType type)
-   {
-      return ElementType.METHOD == type || ElementType.PARAMETER == type;
    }
 
    /**
