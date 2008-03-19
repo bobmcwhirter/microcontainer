@@ -67,7 +67,7 @@ public class BeanFactoryHandler extends DefaultElementHandler
             BeanAccessMode mode = BeanAccessMode.STANDARD;
             if ("fields".equalsIgnoreCase(localName))
                mode = BeanAccessMode.FIELDS;
-            else if ("all".equals(localName))
+            else if ("all".equalsIgnoreCase(localName))
                mode = BeanAccessMode.ALL;
             bean.setAccessMode(mode);
          }

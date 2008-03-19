@@ -1,0 +1,9 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<deployment xmlns="urn:jboss:bean-deployer:2.0">
+
+   <bean name="private" class="org.jboss.test.kernel.deployment.support.AccessBean" access-mode="ALL">
+      <property name="priString">foobar</property>
+   </bean>
+
+</deployment>
