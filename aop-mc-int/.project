@@ -2,8 +2,8 @@
   <name>jboss-aop-mc-int</name>
   <comment>JBoss Microcontainer</comment>
   <projects>
-    <project>jboss-kernel</project>
     <project>jboss-dependency</project>
+    <project>jboss-kernel</project>
   </projects>
   <buildSpec>
     <buildCommand>
