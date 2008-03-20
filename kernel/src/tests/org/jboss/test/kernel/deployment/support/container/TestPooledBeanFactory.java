@@ -21,8 +21,6 @@
  */
 package org.jboss.test.kernel.deployment.support.container;
 
-import java.util.concurrent.ArrayBlockingQueue;
-
 import org.jboss.beans.metadata.plugins.factory.GenericBeanFactory;
 import org.jboss.kernel.spi.config.KernelConfigurator;
 
@@ -32,30 +30,8 @@ import org.jboss.kernel.spi.config.KernelConfigurator;
  */
 public class TestPooledBeanFactory extends GenericBeanFactory
 {
-   /** The pooling policy */
-   private ArrayBlockingQueue<Object> pool;
-
    public TestPooledBeanFactory(KernelConfigurator configurator, int size)
    {
       super(configurator);
-      pool = new ArrayBlockingQueue<Object>(size);
-   }
-
-   @Override
-   public synchronized Object createBean()
-      throws Throwable
-   {
-      if(pool.size() == 0)
-      {
-         // Fill the pool
-         for(int n = 0; n < pool.size(); n ++)
-            pool.put(super.createBean());
-      }
-      return pool.take();
-   }
-   public void destroyBean(Object bean)
-      throws Exception
-   {
-      pool.put(bean);
    }
 }

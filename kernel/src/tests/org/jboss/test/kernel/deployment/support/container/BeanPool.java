@@ -21,25 +21,47 @@
  */
 package org.jboss.test.kernel.deployment.support.container;
 
+import java.util.concurrent.ArrayBlockingQueue;
+
+import org.jboss.beans.metadata.spi.factory.BeanFactory;
+
 /**
- * @param <T> the type
  * @author Scott.Stark@jboss.org
  * @version $Revision$
  */
-public class BeanContainer<T>
+public class BeanPool<T>
 {
-   private BeanPool<T> pool;
+   /** The pooling policy */
+   private ArrayBlockingQueue<T> pool;
+   private BeanFactory factory;
+   
+   public BeanFactory getFactory()
+   {
+      return factory;
+   }
 
-   @SuppressWarnings("unchecked")
-   public T getBean()
+   public void setFactory(BeanFactory factory)
+   {
+      this.factory = factory;
+   }
+
+   public synchronized T createBean()
       throws Throwable
    {
-      T bean = pool.createBean();
-      return bean;
+      if(pool.size() == 0)
+      {
+         // Fill the pool
+         for(int n = 0; n < pool.size(); n ++)
+         {
+            T bean = (T) factory.createBean();
+            pool.put(bean);
+         }
+      }
+      return pool.take();
    }
    public void destroyBean(T bean)
       throws Throwable
    {
-      pool.destroyBean(bean);
+      pool.put(bean);
    }
 }
