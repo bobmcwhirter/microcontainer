@@ -2,13 +2,6 @@
 <!-- A prototype xsd schema for javabeans
 $Id$
  -->
-<!-- xsd:schema xmlns:xsd="http://www.w3.org/2001/XMLSchema"
-   targetNamespace="urn:jboss:aop-beans:1.0"
-   xmlns="urn:jboss:aop-beans:1.0"
-   elementFormDefault="qualified"
-   attributeFormDefault="unqualified"
-   version="1.0"
--->
 <xsd:schema xmlns:xsd="http://www.w3.org/2001/XMLSchema"
    targetNamespace="urn:jboss:aop-beans:1.0"
    xmlns="urn:jboss:aop-beans:1.0"
@@ -16,6 +9,14 @@ $Id$
    attributeFormDefault="unqualified"
    version="1.0"
 >   
+   <xsd:annotation>
+      <xsd:documentation>
+         <![CDATA[
+         A schema for constructing aop beans.
+         ]]>
+      </xsd:documentation>
+   </xsd:annotation>
+
    <xsd:redefine schemaLocation="jboss-beans-common_2_0.xsd">
       <xsd:complexType name="beanType">
          <xsd:complexContent>
@@ -212,14 +213,6 @@ $Id$
          <xsd:restriction base="contextType"></xsd:restriction>
       </xsd:simpleType>
    </xsd:redefine>
-
-   <xsd:annotation>
-      <xsd:documentation>
-         <![CDATA[
-         A schema for constructing aop beans.
-         ]]>
-      </xsd:documentation>
-   </xsd:annotation>
 
    <xsd:element name="aop" type="aopType">
       <xsd:annotation>
