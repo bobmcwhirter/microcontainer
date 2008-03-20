@@ -141,6 +141,7 @@ public abstract class GuiceIntegration extends BinderHolder
     * @param controller the controller
     * @param context    the context
     */
+   @SuppressWarnings("deprecation")
    protected static void bindContext(Binder binder, Controller controller, ControllerContext context)
    {
       Class<?> targetClass = null;
