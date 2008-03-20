@@ -1,0 +1,56 @@
+/*
+* JBoss, Home of Professional Open Source.
+* Copyright 2006, Red Hat Middleware LLC, and individual contributors
+* as indicated by the @author tags. See the copyright.txt file in the
+* distribution for a full listing of individual contributors. 
+*
+* This is free software; you can redistribute it and/or modify it
+* under the terms of the GNU Lesser General Public License as
+* published by the Free Software Foundation; either version 2.1 of
+* the License, or (at your option) any later version.
+*
+* This software is distributed in the hope that it will be useful,
+* but WITHOUT ANY WARRANTY; without even the implied warranty of
+* MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU
+* Lesser General Public License for more details.
+*
+* You should have received a copy of the GNU Lesser General Public
+* License along with this software; if not, write to the Free
+* Software Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA
+* 02110-1301 USA, or see the FSF site: http://www.fsf.org.
+*/ 
+package org.jboss.test.aop.junit.tempforjbossxb;
+
+
+import java.io.IOException;
+
+import org.jboss.util.xml.JBossEntityResolver;
+import org.xml.sax.InputSource;
+import org.xml.sax.SAXException;
+
+/**
+ * Override the behaviour of the main JBossEntityResolver so that we can get hold of the redefined
+ * schema while waiting for this bug fix
+ * http://www.jboss.com/index.html?module=bb&op=viewtopic&p=4136648#4136648
+ * 
+ * @author <a href="kabir.khan@jboss.com">Kabir Khan</a>
+ * @version $Revision: 1.1 $
+ */
+public class TempJBossEntityResolver extends JBossEntityResolver
+{
+
+   @Override
+   public InputSource resolveEntity(String publicId, String systemId) throws SAXException, IOException
+   {
+      if (systemId != null && systemId.equals("jboss-beans-common_2_0.xsd"))
+      {
+         InputSource source = resolveSystemID(systemId, true);
+         if (source != null)
+         {
+            return source;
+         }
+      }
+      return super.resolveEntity(publicId, systemId);
+   }
+   
+}

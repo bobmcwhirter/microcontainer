@@ -21,54 +21,55 @@
 */ 
 package org.jboss.aop.microcontainer.beans.metadata;
 
+import java.util.ArrayList;
+import java.util.List;
 
-import java.io.Serializable;
+import javax.xml.bind.annotation.XmlAttribute;
+import javax.xml.bind.annotation.XmlNsForm;
+import javax.xml.bind.annotation.XmlRootElement;
 
-import org.jboss.beans.metadata.spi.ValueMetaData;
+import org.jboss.aop.microcontainer.beans.DynamicCFlowDef;
+import org.jboss.beans.metadata.spi.BeanMetaData;
 import org.jboss.beans.metadata.spi.builder.BeanMetaDataBuilder;
+import org.jboss.xb.annotations.JBossXmlSchema;
 
 /**
  * 
  * @author <a href="kabir.khan@jboss.com">Kabir Khan</a>
  * @version $Revision: 1.1 $
  */
-public class AspectManagerUtil implements Serializable
+@JBossXmlSchema(namespace="urn:jboss:aop-beans:1.0", elementFormDefault=XmlNsForm.QUALIFIED)
+@XmlRootElement(name="dynamic-cflow")
+public class DynamicCflowBeanMetaDataFactory extends AspectManagerAwareBeanMetaDataFactory
 {
    private static final long serialVersionUID = 1L;
 
-   /** Unless specified use the bean with this name as the aspect manager */
-   protected final static String DEFAULT_ASPECT_MANAGER = "AspectManager";
+   String clazz;
+
+   public String getClazz()
+   {
+      return clazz;
+   }
+
+   @XmlAttribute(name="class")
+   public void setClazz(String clazz)
+   {
+      this.clazz = clazz;
+   }
+
+   @Override
+   public List<BeanMetaData> getBeans()
+   {
+      ArrayList<BeanMetaData> result = new ArrayList<BeanMetaData>();
+      
+      BeanMetaDataBuilder builder = BeanMetaDataBuilder.createBuilder(name, DynamicCFlowDef.class.getName());
+      builder.addPropertyMetaData("name", name);
+      builder.addPropertyMetaData("className", clazz);
+      setAspectManagerProperty(builder);
+      
+      result.add(builder.getBeanMetaData());
+
+      return result;
+   }
    
-   /** The bean name of the aspect manager to use */
-   protected String managerBean = DEFAULT_ASPECT_MANAGER;
-
-   /** The property of the aspect manager bean, if any, containing the aspect manager */
-   protected String managerProperty;
-
-
-   public String getManagerBean()
-   {
-      return managerBean;
-   }
-
-   public void setManagerBean(String managerBean)
-   {
-      this.managerBean = managerBean;
-   }
-
-   public String getManagerProperty()
-   {
-      return managerProperty;
-   }
-
-   public void setManagerProperty(String aspectManagerProperty)
-   {
-      this.managerProperty = aspectManagerProperty;
-   }
-
-   public void setAspectManagerProperty(BeanMetaDataBuilder builder, String propertyName)
-   {
-      ValueMetaData value = builder.createInject(managerBean, managerProperty);
-      builder.addPropertyMetaData(propertyName, value);
-   }
 }

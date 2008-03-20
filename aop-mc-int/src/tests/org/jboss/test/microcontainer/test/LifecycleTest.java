@@ -23,8 +23,6 @@ package org.jboss.test.microcontainer.test;
 
 import java.util.ArrayList;
 
-import junit.framework.Test;
-
 import org.jboss.test.aop.junit.AOPMicrocontainerTest;
 import org.jboss.test.microcontainer.support.Configure;
 import org.jboss.test.microcontainer.support.Create;
@@ -34,14 +32,9 @@ import org.jboss.test.microcontainer.support.Instantiate;
 import org.jboss.test.microcontainer.support.LifecycleCallback;
 import org.jboss.test.microcontainer.support.Start;
 
-public class LifecycleTestCase extends AOPMicrocontainerTest
+public abstract class LifecycleTest extends AOPMicrocontainerTest
 {
-   public static Test suite()
-   {
-      return suite(LifecycleTestCase.class);
-   }
-   
-   public LifecycleTestCase(String name)
+   public LifecycleTest(String name)
    {
       super(name);
    }
@@ -52,7 +45,7 @@ public class LifecycleTestCase extends AOPMicrocontainerTest
       try
       {
          LifecycleCallback.interceptions.clear();
-         deploy("LifecycleTestCaseNotAutomatic.xml");
+         deploy(getFile());
          
          //Verify the beans exist
          checkBeanExists("ConfigureBean");
@@ -73,7 +66,7 @@ public class LifecycleTestCase extends AOPMicrocontainerTest
          
          LifecycleCallback.interceptions.clear();
          
-         undeploy("LifecycleTestCaseNotAutomatic.xml");
+         undeploy(getFile());
          undeployed = true;
          
          checkExpectedAnnotations("ConfigureBean", Configure.class);
@@ -88,7 +81,7 @@ public class LifecycleTestCase extends AOPMicrocontainerTest
       {
          if (!undeployed)
          {
-            undeploy("LifecycleTestCaseNotAutomatic.xml");
+            undeploy(getFile());
          }
       }
    }
@@ -107,4 +100,6 @@ public class LifecycleTestCase extends AOPMicrocontainerTest
       Class<?> actualAnnotation = events.get(0);
       assertEquals(annotation, actualAnnotation);
    }
+   
+   protected abstract String getFile();
 }

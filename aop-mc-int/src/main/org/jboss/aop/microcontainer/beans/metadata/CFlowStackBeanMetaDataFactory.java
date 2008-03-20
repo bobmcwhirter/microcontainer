@@ -64,7 +64,7 @@ public class CFlowStackBeanMetaDataFactory extends AspectManagerAwareBeanMetaDat
       //Add the Aspect
       BeanMetaDataBuilder cflowStackBuilder = BeanMetaDataBuilder.createBuilder(getName(), CFlowStack.class.getName());
       cflowStackBuilder.addPropertyMetaData("name", getName());
-      util.setAspectManagerProperty(cflowStackBuilder, "manager");
+      setAspectManagerProperty(cflowStackBuilder);
       result.add(cflowStackBuilder.getBeanMetaData());
       
       List<ValueMetaData> entryList = cflowStackBuilder.createList(null, ArrayList.class.getName());

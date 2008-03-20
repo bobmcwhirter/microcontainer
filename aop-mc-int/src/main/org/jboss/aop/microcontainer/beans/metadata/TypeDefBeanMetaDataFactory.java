@@ -69,7 +69,7 @@ public class TypeDefBeanMetaDataFactory extends AspectManagerAwareBeanMetaDataFa
       typedefBuilder.addPropertyMetaData("name", getName());
       typedefBuilder.addPropertyMetaData("expr", expr);
       
-      util.setAspectManagerProperty(typedefBuilder, "manager");
+      setAspectManagerProperty(typedefBuilder);
       
       beans.add(typedefBuilder.getBeanMetaData());
       

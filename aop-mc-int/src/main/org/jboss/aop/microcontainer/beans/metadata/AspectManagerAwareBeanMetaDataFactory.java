@@ -23,6 +23,8 @@ package org.jboss.aop.microcontainer.beans.metadata;
 
 import javax.xml.bind.annotation.XmlAttribute;
 
+import org.jboss.beans.metadata.spi.ValueMetaData;
+import org.jboss.beans.metadata.spi.builder.BeanMetaDataBuilder;
 import org.jboss.beans.metadata.spi.factory.GenericBeanFactoryMetaData;
 
 /**
@@ -30,31 +32,57 @@ import org.jboss.beans.metadata.spi.factory.GenericBeanFactoryMetaData;
  * @author <a href="kabir.khan@jboss.com">Kabir Khan</a>
  * @version $Revision: 1.1 $
  */
-public class AspectManagerAwareBeanMetaDataFactory extends GenericBeanFactoryMetaData
+public abstract class AspectManagerAwareBeanMetaDataFactory extends GenericBeanFactoryMetaData
 {
-   private static final long serialVersionUID = 1L;
+   /** Unless specified use the bean with this name as the aspect manager */
+   protected final static String DEFAULT_ASPECT_MANAGER = "AspectManager";
+   
+   /** The bean name of the aspect manager to use */
+   protected String managerBean = DEFAULT_ASPECT_MANAGER;
 
-   protected AspectManagerUtil util = new AspectManagerUtil();
+   /** The property of the aspect manager bean, if any, containing the aspect manager */
+   protected String managerProperty;
 
    @XmlAttribute(name="manager-bean")
    public void setManagerBean(String managerBean)
    {
-      util.setManagerBean(managerBean);
+      this.managerBean = managerBean;
    }
-   
+
    public String getManagerBean()
    {
-      return util.getManagerBean();
+      return managerBean;
    }
 
    @XmlAttribute(name="manager-property")
    public void setManagerProperty(String aspectManagerProperty)
    {
-      util.setManagerProperty(aspectManagerProperty);
+      this.managerProperty = aspectManagerProperty;
    }
    
    public String getManagerProperty()
    {
-      return util.getManagerProperty();
+      return managerProperty;
+   }
+
+   protected void setAspectManagerProperty(BeanMetaDataBuilder builder)
+   {
+      setAspectManagerProperty(builder, "manager");
+   }
+
+   protected void setAspectManagerProperty(BeanMetaDataBuilder builder, String propertyName)
+   {
+      setAspectManagerProperty(builder, propertyName, managerBean, managerProperty);
+   }
+
+   protected void setAspectManagerProperty(BeanMetaDataBuilder builder, String managerBean, String managerProperty)
+   {
+      setAspectManagerProperty(builder, "manager", managerBean, managerProperty);
+   }
+
+   protected void setAspectManagerProperty(BeanMetaDataBuilder builder, String propertyName, String managerBean, String managerProperty)
+   {
+      ValueMetaData value = builder.createInject(managerBean, managerProperty);
+      builder.addPropertyMetaData(propertyName, value);
    }
 }

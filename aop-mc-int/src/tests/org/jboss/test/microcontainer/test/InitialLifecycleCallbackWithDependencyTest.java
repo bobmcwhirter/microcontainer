@@ -21,8 +21,6 @@
 */ 
 package org.jboss.test.microcontainer.test;
 
-import junit.framework.Test;
-
 import org.jboss.dependency.spi.ControllerState;
 import org.jboss.kernel.spi.dependency.KernelControllerContext;
 import org.jboss.test.aop.junit.AOPMicrocontainerTest;
@@ -34,21 +32,16 @@ import org.jboss.test.microcontainer.support.SimpleBean;
  * @author <a href="kabir.khan@jboss.com">Kabir Khan</a>
  * @version $Revision: 1.1 $
  */
-public class InitialLifecycleCallbackWithDependencyTestCase extends AOPMicrocontainerTest
+public abstract class InitialLifecycleCallbackWithDependencyTest extends AOPMicrocontainerTest
 {
-   public static Test suite()
-   {
-      return suite(InitialLifecycleCallbackWithDependencyTestCase.class);
-   }
-   
-   public InitialLifecycleCallbackWithDependencyTestCase(String name)
+   public InitialLifecycleCallbackWithDependencyTest(String name)
    {
       super(name);
    }
 
    public void testLifecycleInterceptionsWithDependencyCorrectOrder() throws Exception
    {
-      deploy("InitialLifecycleCallbackWithDependencyTestCaseNotAutomatic0.xml");
+      deploy(getFile0());
       try
       {
          Object dependency = getCheckBeanExists("Dependency");
@@ -56,7 +49,7 @@ public class InitialLifecycleCallbackWithDependencyTestCase extends AOPMicrocont
          boolean itworked = false;
 
          LifecycleCallbackWithBeanDependency.interceptions.clear();
-         deploy("InitialLifecycleCallbackWithDependencyTestCaseNotAutomatic1.xml");
+         deploy(getFile1());
          try
          {
             validate();
@@ -73,7 +66,7 @@ public class InitialLifecycleCallbackWithDependencyTestCase extends AOPMicrocont
          finally
          {
             LifecycleCallbackWithBeanDependency.interceptions.clear();
-            undeploy("InitialLifecycleCallbackWithDependencyTestCaseNotAutomatic1.xml");
+            undeploy(getFile1());
             if (itworked)
             {
                assertEquals(1, LifecycleCallbackWithBeanDependency.interceptions.size());
@@ -85,13 +78,13 @@ public class InitialLifecycleCallbackWithDependencyTestCase extends AOPMicrocont
       }
       finally
       {
-         undeploy("InitialLifecycleCallbackWithDependencyTestCaseNotAutomatic0.xml");
+         undeploy(getFile0());
       }
    }
    
    public void testLifecycleInterceptionsWithDependencyWrongOrder() throws Exception
    {
-      deploy("InitialLifecycleCallbackWithDependencyTestCaseNotAutomatic1.xml");
+      deploy(getFile1());
       try
       {
          SimpleBean bean;
@@ -109,7 +102,7 @@ public class InitialLifecycleCallbackWithDependencyTestCase extends AOPMicrocont
 
          boolean itworked = false;
          LifecycleCallbackWithBeanDependency.interceptions.clear();
-         deploy("InitialLifecycleCallbackWithDependencyTestCaseNotAutomatic0.xml");
+         deploy(getFile0());
          try
          {
             validate();
@@ -129,7 +122,7 @@ public class InitialLifecycleCallbackWithDependencyTestCase extends AOPMicrocont
          finally
          {
             LifecycleCallbackWithBeanDependency.interceptions.clear();
-            undeploy("InitialLifecycleCallbackWithDependencyTestCaseNotAutomatic0.xml");
+            undeploy(getFile0());
             if (itworked)
             {
                assertEquals(1, LifecycleCallbackWithBeanDependency.interceptions.size());
@@ -153,13 +146,13 @@ public class InitialLifecycleCallbackWithDependencyTestCase extends AOPMicrocont
       }
       finally
       {
-         undeploy("InitialLifecycleCallbackWithDependencyTestCaseNotAutomatic1.xml");
+         undeploy(getFile1());
       }
    }
    
    public void testLifecycleInterceptionsWithDependencyRedeploy() throws Exception
    {
-      deploy("InitialLifecycleCallbackWithDependencyTestCaseNotAutomatic1.xml");
+      deploy(getFile1());
       try
       {
          SimpleBean bean;
@@ -177,7 +170,7 @@ public class InitialLifecycleCallbackWithDependencyTestCase extends AOPMicrocont
 
          boolean itworked = false;
          LifecycleCallbackWithBeanDependency.interceptions.clear();
-         deploy("InitialLifecycleCallbackWithDependencyTestCaseNotAutomatic0.xml");
+         deploy(getFile0());
          try
          {
             validate();
@@ -197,7 +190,7 @@ public class InitialLifecycleCallbackWithDependencyTestCase extends AOPMicrocont
          finally
          {
             LifecycleCallbackWithBeanDependency.interceptions.clear();
-            undeploy("InitialLifecycleCallbackWithDependencyTestCaseNotAutomatic0.xml");
+            undeploy(getFile0());
             if (itworked)
             {
                assertEquals(1, LifecycleCallbackWithBeanDependency.interceptions.size());
@@ -232,7 +225,7 @@ public class InitialLifecycleCallbackWithDependencyTestCase extends AOPMicrocont
 
          itworked = false;
          LifecycleCallbackWithBeanDependency.interceptions.clear();
-         deploy("InitialLifecycleCallbackWithDependencyTestCaseNotAutomatic0.xml");
+         deploy(getFile0());
          try
          {
             validate();
@@ -251,7 +244,7 @@ public class InitialLifecycleCallbackWithDependencyTestCase extends AOPMicrocont
          finally
          {
             LifecycleCallbackWithBeanDependency.interceptions.clear();
-            undeploy("InitialLifecycleCallbackWithDependencyTestCaseNotAutomatic0.xml");
+            undeploy(getFile0());
             if (itworked)
             {
                assertEquals(1, LifecycleCallbackWithBeanDependency.interceptions.size());
@@ -275,20 +268,20 @@ public class InitialLifecycleCallbackWithDependencyTestCase extends AOPMicrocont
       }
       finally
       {
-         undeploy("InitialLifecycleCallbackWithDependencyTestCaseNotAutomatic1.xml");
+         undeploy(getFile1());
       }
    }
 
    public void testLifecycleInterceptionsWithDependencyRedeploy2() throws Exception
    {
-      deploy("InitialLifecycleCallbackWithDependencyTestCaseNotAutomatic0.xml");
+      deploy(getFile0());
       try
       {
          Object dependency = getCheckBeanExists("Dependency");
          boolean itworked = false;
 
          LifecycleCallbackWithBeanDependency.interceptions.clear();
-         deploy("InitialLifecycleCallbackWithDependencyTestCaseNotAutomatic1.xml");
+         deploy(getFile1());
          try
          {
             validate();
@@ -305,7 +298,7 @@ public class InitialLifecycleCallbackWithDependencyTestCase extends AOPMicrocont
          finally
          {
             LifecycleCallbackWithBeanDependency.interceptions.clear();
-            undeploy("InitialLifecycleCallbackWithDependencyTestCaseNotAutomatic1.xml");
+            undeploy(getFile1());
             if (itworked)
             {
                assertEquals(1, LifecycleCallbackWithBeanDependency.interceptions.size());
@@ -318,7 +311,7 @@ public class InitialLifecycleCallbackWithDependencyTestCase extends AOPMicrocont
          Object dependency2 = getCheckBeanExists("Dependency");
          assertTrue(dependency == dependency2);
          LifecycleCallbackWithBeanDependency.interceptions.clear();
-         deploy("InitialLifecycleCallbackWithDependencyTestCaseNotAutomatic1.xml");
+         deploy(getFile1());
          try
          {
             validate();
@@ -335,7 +328,7 @@ public class InitialLifecycleCallbackWithDependencyTestCase extends AOPMicrocont
          finally
          {
             LifecycleCallbackWithBeanDependency.interceptions.clear();
-            undeploy("InitialLifecycleCallbackWithDependencyTestCaseNotAutomatic1.xml");
+            undeploy(getFile1());
             if (itworked)
             {
                assertEquals(1, LifecycleCallbackWithBeanDependency.interceptions.size());
@@ -347,7 +340,7 @@ public class InitialLifecycleCallbackWithDependencyTestCase extends AOPMicrocont
       }
       finally
       {
-         undeploy("InitialLifecycleCallbackWithDependencyTestCaseNotAutomatic0.xml");
+         undeploy(getFile0());
       }
    }
    
@@ -357,4 +350,8 @@ public class InitialLifecycleCallbackWithDependencyTestCase extends AOPMicrocont
       assertNotNull(bean);
       return bean;
    }
+   
+   protected abstract String getFile0();
+   
+   protected abstract String getFile1();
 }

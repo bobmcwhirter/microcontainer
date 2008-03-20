@@ -28,7 +28,6 @@ import java.util.List;
 import javax.xml.bind.annotation.XmlAttribute;
 import javax.xml.bind.annotation.XmlNsForm;
 import javax.xml.bind.annotation.XmlRootElement;
-import javax.xml.bind.annotation.XmlType;
 
 import org.jboss.aop.microcontainer.beans.Aspect;
 import org.jboss.beans.metadata.plugins.AbstractDependencyValueMetaData;
@@ -47,7 +46,6 @@ import org.jboss.xb.annotations.JBossXmlSchema;
  */
 @JBossXmlSchema(namespace="urn:jboss:aop-beans:1.0", elementFormDefault=XmlNsForm.QUALIFIED)
 @XmlRootElement(name="aspect")
-@XmlType(propOrder={"aliases", "annotations", "classLoader", "constructor", "properties", "create", "start", "depends", "demands", "supplies", "installs", "uninstalls"})
 public class AspectBeanMetaDataFactory extends AspectManagerAwareBeanMetaDataFactory
    implements BeanMetaDataFactory
 {
@@ -129,7 +127,7 @@ public class AspectBeanMetaDataFactory extends AspectManagerAwareBeanMetaDataFac
       //Add the Aspect
       BeanMetaDataBuilder aspectBuilder = BeanMetaDataBuilder.createBuilder(aspectName, Aspect.class.getName());
       aspectBuilder.addPropertyMetaData("scope", scope);
-      util.setAspectManagerProperty(aspectBuilder, "manager");
+      setAspectManagerProperty(aspectBuilder);
       
       if (this.factory != null)
       {

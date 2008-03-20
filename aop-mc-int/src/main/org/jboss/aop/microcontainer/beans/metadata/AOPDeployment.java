@@ -52,12 +52,29 @@ public class AOPDeployment extends AbstractKernelDeployment
    
    @XmlElements
    ({
+      @XmlElement(name="annotation", type=AnnotationOverrideBeanMetaDataFactory.class),
+      @XmlElement(name="annotation-introduction", type=AnnotationIntroductionBeanMetaDataFactory.class),
+      @XmlElement(name="arrayreplacement", type=ArrayReplacementBeanMetaDataFactory.class),
+      @XmlElement(name="arraybind", type=ArrayBindBeanMetaDataFactory.class),
       @XmlElement(name="aspect", type=AspectBeanMetaDataFactory.class),
-      @XmlElement(name="interceptor", type=InterceptorBeanMetaDataFactory.class),
       @XmlElement(name="bind", type=BindBeanMetaDataFactory.class),
+      @XmlElement(name="cflow-stack", type=CFlowStackBeanMetaDataFactory.class),
+      @XmlElement(name="dynamic-cflow", type=DynamicCflowBeanMetaDataFactory.class),
+      @XmlElement(name="domain", type=DomainBeanMetaDataFactory.class),
+      @XmlElement(name="interceptor", type=InterceptorBeanMetaDataFactory.class),
+      @XmlElement(name="introduction", type=IntroductionBeanMetaDataFactory.class),
+      @XmlElement(name="lifecycle-configure", type=ConfigureLifecycleBeanMetaDataFactory.class),
+      @XmlElement(name="lifecycle-create", type=CreateLifecycleBeanMetaDataFactory.class),
+      @XmlElement(name="lifecycle-describe", type=DescribeLifecycleBeanMetaDataFactory.class),
+      @XmlElement(name="lifecycle-install", type=InstallLifecycleBeanMetaDataFactory.class),
+      @XmlElement(name="lifecycle-instantiate", type=InstantiateLifecycleBeanMetaDataFactory.class),
+      @XmlElement(name="lifecycle-preinstall", type=PreInstallLifecycleBeanMetaDataFactory.class),
+      @XmlElement(name="lifecycle-start", type=StartLifecycleBeanMetaDataFactory.class),
+      @XmlElement(name="pointcut", type=NamedPointcutBeanMetaDataFactory.class),
+      @XmlElement(name="precedence", type=PrecedenceBeanMetaDataFactory.class),
+      @XmlElement(name="prepare", type=PrepareMetaDataFactory.class),
       @XmlElement(name="stack", type=StackBeanMetaDataFactory.class),
-      @XmlElement(name="typedef", type=TypeDefBeanMetaDataFactory.class),
-      @XmlElement(name="cflow-stack", type=CFlowStackBeanMetaDataFactory.class)
+      @XmlElement(name="typedef", type=TypeDefBeanMetaDataFactory.class)
    })
    @XmlAnyElement
    public void setBeanFactories(List<BeanMetaDataFactory> beanFactories)

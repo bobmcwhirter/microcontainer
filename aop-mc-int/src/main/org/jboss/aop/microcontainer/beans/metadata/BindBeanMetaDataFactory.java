@@ -85,7 +85,7 @@ public class BindBeanMetaDataFactory extends AspectManagerAwareBeanMetaDataFacto
          bindingBuilder.addPropertyMetaData("cflow", cflow);
       }
       bindingBuilder.addPropertyMetaData("pointcut", pointcut);
-      util.setAspectManagerProperty(bindingBuilder, "manager");
+      setAspectManagerProperty(bindingBuilder);
       result.add(bindingBuilder.getBeanMetaData());
       
       if (interceptors.size() > 0)
@@ -96,7 +96,7 @@ public class BindBeanMetaDataFactory extends AspectManagerAwareBeanMetaDataFacto
          {
             String intName = name + "$" + i++; 
             BeanMetaDataBuilder interceptorBuilder = BeanMetaDataBuilder.createBuilder(intName, interceptor.getBeanClassName());
-            util.setAspectManagerProperty(interceptorBuilder, "manager");
+            setAspectManagerProperty(interceptorBuilder);
             ValueMetaData injectBinding = interceptorBuilder.createInject(name, null, null, ControllerState.INSTANTIATED);
             interceptorBuilder.addPropertyMetaData("binding", injectBinding);
             
@@ -125,12 +125,6 @@ public class BindBeanMetaDataFactory extends AspectManagerAwareBeanMetaDataFacto
       return result;
    }
    
-   public void addInterceptor(BaseInterceptorData interceptorData)
-   {
-      interceptors.add(interceptorData);
-   }
-
-   
    @XmlElements
    ({
       @XmlElement(name="advice", type=AdviceData.class),
@@ -151,6 +145,4 @@ public class BindBeanMetaDataFactory extends AspectManagerAwareBeanMetaDataFacto
    {
       this.interceptors = interceptors;
    }
-   
-   
 }

@@ -54,7 +54,7 @@ public class AspectMCAllTestSuite extends TestSuite
       suite.addTest(InterceptorWithOverriddenMethodAnnotationDependencyForChildTestCase.suite());
       suite.addTest(InterceptorWithOverriddenMethodAnnotationDependencyTestCase.suite());
       suite.addTest(IntroductionDependencyTestCase.suite());
-      suite.addTest(LifecycleTestCase.suite());
+      suite.addTest(LifecycleAopTestCase.suite());
       suite.addTest(JMXDecoratedTestCase.suite());
       suite.addTest(JMXLifecycleTestCase.suite());
       suite.addTest(JndiDecoratedTestCase.suite());

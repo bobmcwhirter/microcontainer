@@ -21,6 +21,8 @@
 */ 
 package org.jboss.test.microcontainer.support;
 
+import java.lang.annotation.Annotation;
+
 import org.jboss.aop.advice.Interceptor;
 import org.jboss.aop.joinpoint.Invocation;
 
@@ -34,7 +36,7 @@ public class MetaDataContextInterceptor implements Interceptor
    public static Object classAnnotation;
    public static Object joinpointAnnotation;
    
-   private Class<?> annotationType;
+   private Class<? extends Annotation> annotationType;
    
    public static void reset()
    {
@@ -46,7 +48,7 @@ public class MetaDataContextInterceptor implements Interceptor
    {
       try
       {
-         this.annotationType = Thread.currentThread().getContextClassLoader().loadClass(annotationType);
+         this.annotationType = (Class<? extends Annotation>)Thread.currentThread().getContextClassLoader().loadClass(annotationType);
       }
       catch (ClassNotFoundException e)
       {
