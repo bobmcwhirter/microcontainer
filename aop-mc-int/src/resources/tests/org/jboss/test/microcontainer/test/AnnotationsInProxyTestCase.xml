@@ -1,0 +1,9 @@
+<deployment xmlns="urn:jboss:bean-deployer:2.0">
+   <bean name="AspectManager" class="org.jboss.aop.AspectManager">
+      <constructor factoryClass="org.jboss.aop.AspectManager" factoryMethod="instance"/>
+   </bean>
+
+   <bean name="Bean" class="org.jboss.test.microcontainer.support.AnnotatedBean">
+      <annotation>@org.jboss.test.microcontainer.support.Marker</annotation>
+   </bean>
+</deployment>
