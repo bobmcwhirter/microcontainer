@@ -19,37 +19,16 @@
 * Software Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA
 * 02110-1301 USA, or see the FSF site: http://www.fsf.org.
 */ 
-package org.jboss.test.microcontainer.test;
-
-import junit.framework.Test;
+package org.jboss.test.microcontainer.support;
 
 /**
  * 
  * @author <a href="kabir.khan@jboss.com">Kabir Khan</a>
  * @version $Revision: 1.1 $
  */
-public class InitialLifecycleCallbackWithDependencyDeploymentTestCase extends InitialLifecycleCallbackWithDependencyTest
+@Test
+public class AnnotatedBean
 {
-
-   public InitialLifecycleCallbackWithDependencyDeploymentTestCase(String name)
-   {
-      super(name);
-   }
-
-   public static Test suite()
-   {
-      return suite(InitialLifecycleCallbackWithDependencyDeploymentTestCase.class);
-   }
-
-   @Override
-   protected String getFile0()
-   {
-      return "InitialLifecycleCallbackWithDependencyDeploymentTestCaseNotAutomatic0.xml";
-   }
-
-   @Override
-   protected String getFile1()
-   {
-      return "InitialLifecycleCallbackWithDependencyDeploymentTestCaseNotAutomatic1.xml";
-   }
+   @Test
+   public void method() {}
 }
