@@ -5,12 +5,12 @@
       <constructor factoryClass="org.jboss.aop.AspectManager" factoryMethod="instance"/>
    </bean>
 
-   <lifecycle-configure xmlns="urn:jboss:aop-beans:1.0"
+   <aop:lifecycle-configure xmlns:aop="urn:jboss:aop-beans:1.0"
                name="LifecycleCallback"
                class="org.jboss.test.microcontainer.support.SimpleLifecycleCallback"
                classes="org.jboss.test.microcontainer.support.SimpleBeanImpl">
 		<property name="testProperty">Test123</property>               
-   </lifecycle-configure>
+   </aop:lifecycle-configure>
             
    <bean name="Intercepted" class="org.jboss.test.microcontainer.support.SimpleBeanImpl"/>
    

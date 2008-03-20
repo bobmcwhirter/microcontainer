@@ -1,12 +1,12 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
-<aop xmlns="urn:jboss:aop-beans:1.0">
+<deployment xmlns="urn:jboss:bean-deployer:2.0">
 
    <bean name="AspectManager" class="org.jboss.aop.AspectManager">
       <constructor factoryClass="org.jboss.aop.AspectManager" factoryMethod="instance"/>
    </bean>
 
-	<introduction class="org.jboss.test.microcontainer.beans.POJO">
+	<introduction xmlns="urn:jboss:aop-beans:1.0" class="org.jboss.test.microcontainer.beans.POJO">
 		<mixin>
 			<interfaces>org.jboss.test.microcontainer.beans.MixinInterface</interfaces>
 			<class>org.jboss.test.microcontainer.beans.MixinImpl</class>
@@ -14,12 +14,12 @@
 		</mixin>
 	</introduction>
 
-	<aspect class="org.jboss.test.microcontainer.beans.TestAspect"/>
+	<aspect xmlns="urn:jboss:aop-beans:1.0" class="org.jboss.test.microcontainer.beans.TestAspect"/>
 
-	<bind pointcut="execution(* $instanceof{org.jboss.test.microcontainer.beans.MixinInterface}->*(..))">
+	<bind xmlns="urn:jboss:aop-beans:1.0" pointcut="execution(* $instanceof{org.jboss.test.microcontainer.beans.MixinInterface}->*(..))">
       <advice aspect="org.jboss.test.microcontainer.beans.TestAspect" name="advice"/>
    </bind>
    
    <bean name="Bean" class="org.jboss.test.microcontainer.beans.POJO"/>
    
-</aop>
+</deployment>

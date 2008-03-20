@@ -47,6 +47,6 @@ public class ForceJBossXBAopMicrocontainerTest extends AOPMicrocontainerTest
 
    protected KernelDeployment unmarshal(final URL url) throws Exception 
    {
-      return ((AOPMicrocontainerTestDelegate)getDelegate()).unmarshal(url);
+      return null;//((AOPMicrocontainerTestDelegate)getDelegate()).unmarshal(url);
    }
 }

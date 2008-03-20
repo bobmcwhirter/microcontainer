@@ -1,24 +1,24 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
-<aop xmlns="urn:jboss:aop-beans:1.0">
+<deployment xmlns="urn:jboss:bean-deployer:2.0">
 
    <bean name="AspectManager" class="org.jboss.aop.AspectManager">
       <constructor factoryClass="org.jboss.aop.AspectManager" factoryMethod="instance"/>
    </bean>
 
-   <aspect class="org.jboss.test.microcontainer.beans.woven.test.TestArrayAspect"/>
+   <aspect xmlns="urn:jboss:aop-beans:1.0" class="org.jboss.test.microcontainer.beans.woven.test.TestArrayAspect"/>
 
-   <interceptor class="org.jboss.test.microcontainer.beans.TestInterceptor"/>
+   <interceptor xmlns="urn:jboss:aop-beans:1.0" class="org.jboss.test.microcontainer.beans.TestInterceptor"/>
 
-   <prepare expr="field(* org.jboss.test.microcontainer.beans.woven.test.ClassWithArray->*)"/>
+   <prepare xmlns="urn:jboss:aop-beans:1.0" expr="field(* org.jboss.test.microcontainer.beans.woven.test.ClassWithArray->*)"/>
 
-   <arrayreplacement class="org.jboss.test.microcontainer.beans.woven.test.ClassWithArray"/>
+   <arrayreplacement xmlns="urn:jboss:aop-beans:1.0" class="org.jboss.test.microcontainer.beans.woven.test.ClassWithArray"/>
 
-   <arraybind type="READ_WRITE">
+   <arraybind xmlns="urn:jboss:aop-beans:1.0" type="READ_WRITE">
       <advice aspect="org.jboss.test.microcontainer.beans.woven.test.TestArrayAspect" name="advice"/>
       <interceptor-ref name="org.jboss.test.microcontainer.beans.TestInterceptor"/> 
    </arraybind>
   
    <bean name="Bean" class="org.jboss.test.microcontainer.beans.woven.test.ClassWithArray"/>
 
-</aop>
+</deployment>

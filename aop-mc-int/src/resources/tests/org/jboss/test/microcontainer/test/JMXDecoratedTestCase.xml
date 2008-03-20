@@ -10,13 +10,13 @@
       <constructor factoryClass="org.jboss.aop.AspectManager" factoryMethod="instance"/>
    </bean>
 
-   <interceptor xmlns="urn:jboss:aop-beans:1.0" name="JMXAspect" class="org.jboss.aop.microcontainer.aspects.jmx.JMXIntroduction">
+   <aop:interceptor xmlns:aop="urn:jboss:aop-beans:1.0" name="JMXAspect" class="org.jboss.aop.microcontainer.aspects.jmx.JMXIntroduction">
       <property name="mbeanServer"><inject bean="MBeanServer"/></property>
-   </interceptor>
+   </aop:interceptor>
    
-   <interceptor xmlns="urn:jboss:aop-beans:1.0" name="MetaDataContextAspect" class="org.jboss.test.microcontainer.support.MetaDataContextInterceptor">
+   <aop:interceptor xmlns:aop="urn:jboss:aop-beans:1.0" name="MetaDataContextAspect" class="org.jboss.test.microcontainer.support.MetaDataContextInterceptor">
       <property name="annotation">org.jboss.aop.microcontainer.aspects.jmx.JMX</property>
-   </interceptor>
+   </aop:interceptor>
    
    <introduction xmlns="urn:jboss:aop-beans:1.0" class="@org.jboss.aop.microcontainer.aspects.jmx.JMX">
       <interfaces>org.jboss.kernel.spi.dependency.KernelControllerContextAware</interfaces>

@@ -1,40 +1,40 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
-<aop xmlns="urn:jboss:aop-beans:1.0">
+<deployment xmlns="urn:jboss:bean-deployer:2.0">
 
    <bean name="AspectManager" class="org.jboss.aop.AspectManager">
       <constructor factoryClass="org.jboss.aop.AspectManager" factoryMethod="instance"/>
    </bean>
 
-   <aspect class="org.jboss.test.microcontainer.beans.TestAspectWithDependency">
+   <aop:aspect xmlns:aop="urn:jboss:aop-beans:1.0" class="org.jboss.test.microcontainer.beans.TestAspectWithDependency">
       <property name="dependency"><inject bean="Dependency1"/></property>
-   </aspect>
+   </aop:aspect>
 
-   <aspect class="org.jboss.test.microcontainer.beans.TestAspect"/>
+   <aop:aspect xmlns:aop="urn:jboss:aop-beans:1.0" class="org.jboss.test.microcontainer.beans.TestAspect"/>
 
-   <interceptor class="org.jboss.test.microcontainer.beans.TestInterceptorWithDependency">
+   <aop:interceptor xmlns:aop="urn:jboss:aop-beans:1.0" class="org.jboss.test.microcontainer.beans.TestInterceptorWithDependency">
       <property name="dependency"><inject bean="Dependency2"/></property>
-   </interceptor>
+   </aop:interceptor>
 
-   <interceptor class="org.jboss.test.microcontainer.beans.TestInterceptor"/>
+   <aop:interceptor xmlns:aop="urn:jboss:aop-beans:1.0" class="org.jboss.test.microcontainer.beans.TestInterceptor"/>
 
-   <stack name="AspectStack">
+   <stack xmlns="urn:jboss:aop-beans:1.0" name="AspectStack">
       <advice aspect="org.jboss.test.microcontainer.beans.TestAspectWithDependency" name="advice"/>
       <advice aspect="org.jboss.test.microcontainer.beans.TestAspect" name="advice"/>
    </stack>
 
-   <stack name="InterceptorStack">
+   <stack xmlns="urn:jboss:aop-beans:1.0" name="InterceptorStack">
       <interceptor-ref name="org.jboss.test.microcontainer.beans.TestInterceptorWithDependency"/>
       <interceptor-ref name="org.jboss.test.microcontainer.beans.TestInterceptor"/>
    </stack>
 
-   <bind pointcut="execution(* @org.jboss.test.microcontainer.beans.Annotation1->*(..))">
-      <stack-ref name="AspectStack"/>
-   </bind>
+   <aop:bind xmlns:aop="urn:jboss:aop-beans:1.0" pointcut="execution(* @org.jboss.test.microcontainer.beans.Annotation1->*(..))">
+      <aop:stack-ref name="AspectStack"/>
+   </aop:bind>
    
-   <bind pointcut="execution(* @org.jboss.test.microcontainer.beans.Annotation2->*(..))">
-      <stack-ref name="InterceptorStack"/>
-   </bind>
+   <aop:bind xmlns:aop="urn:jboss:aop-beans:1.0" pointcut="execution(* @org.jboss.test.microcontainer.beans.Annotation2->*(..))">
+      <aop:stack-ref name="InterceptorStack"/>
+   </aop:bind>
    
    <bean name="Intercepted1" class="org.jboss.test.microcontainer.beans.POJO">
    	<annotation>@org.jboss.test.microcontainer.beans.Annotation1</annotation>
@@ -49,4 +49,4 @@
    	<annotation>@org.jboss.test.microcontainer.beans.Annotation2</annotation>
    </bean>
    
-</aop>
+</deployment>

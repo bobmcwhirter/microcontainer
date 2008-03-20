@@ -1,13 +1,13 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
-<aop xmlns="urn:jboss:aop-beans:1.0">
+<deployment xmlns="urn:jboss:bean-deployer:2.0">
 
    <bean name="AspectManager" class="org.jboss.aop.AspectManager">
       <constructor factoryClass="org.jboss.aop.AspectManager" factoryMethod="instance"/>
    </bean>
 
-   <prepare expr="all(org.jboss.test.microcontainer.beans.POJO)"/>
+   <prepare xmlns="urn:jboss:aop-beans:1.0" expr="all(org.jboss.test.microcontainer.beans.POJO)"/>
    
    <bean name="Bean" class="org.jboss.test.microcontainer.beans.POJO"/>
    
-</aop>
+</deployment>

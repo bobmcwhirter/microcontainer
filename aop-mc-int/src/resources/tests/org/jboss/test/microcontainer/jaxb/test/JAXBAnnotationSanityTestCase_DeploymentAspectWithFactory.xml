@@ -1,3 +1,0 @@
-<deployment xmlns="urn:jboss:bean-deployer:2.0">
-   <aspect xmlns="urn:jboss:aop-beans:1.0" name="withfactory" factory="org.jboss.test.microcontainer.beans.TestAspect"/>
-</deployment>

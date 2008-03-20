@@ -1,6 +1,0 @@
-<deployment xmlns="urn:jboss:bean-deployer:2.0">
-   <aspect xmlns="urn:jboss:aop-beans:1.0" name="aspect" class="org.jboss.test.microcontainer.beans.TestAspect"/>
-   <bean name="bean1" class="Bean1"/>
-   <bean name="bean2" class="Bean2"/>
-   <bean name="bean3" class="Bean3"/>
-</deployment>

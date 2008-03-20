@@ -1,5 +1,0 @@
-<aop xmlns="urn:jboss:aop-beans:1.0">
-   <interceptor name="withdependency" class="org.jboss.test.microcontainer.beans.TestInterceptorWithDependency">
-      <property name="dependency"><inject bean="Dependency"/></property>
-   </interceptor>   
-</aop>

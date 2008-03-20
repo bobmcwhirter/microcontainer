@@ -4,7 +4,7 @@
    <bean name="TheAspectManager" class="org.jboss.test.microcontainer.support.AspectManagerBean">
    </bean>
 
-   <lifecycle-configure xmlns="urn:jboss:aop-beans:1.0"
+   <aop:lifecycle-configure xmlns:aop="urn:jboss:aop-beans:1.0"
                name="LifecycleCallback"
                class="org.jboss.test.microcontainer.support.NonDefaultMethodsLifecycleCallback"
                classes="org.jboss.test.microcontainer.support.SimpleBeanImpl"
@@ -12,7 +12,7 @@
                uninstall="uninit"
                manager-bean="TheAspectManager"
                manager-property="manager">
-   </lifecycle-configure>
+   </aop:lifecycle-configure>
    
 
    <bean name="Intercepted" class="org.jboss.test.microcontainer.support.SimpleBeanImpl"/>

@@ -26,8 +26,6 @@ import java.util.Iterator;
 import java.util.concurrent.CopyOnWriteArrayList;
 
 import org.jboss.aop.AspectXmlLoader;
-import org.jboss.kernel.plugins.deployment.xml.BasicXMLDeployer;
-import org.jboss.kernel.spi.deployment.KernelDeployment;
 import org.jboss.test.kernel.junit.MicrocontainerTestDelegate;
 
 /**
@@ -119,22 +117,22 @@ public class AOPMicrocontainerTestDelegate extends MicrocontainerTestDelegate
       }
    }
 
-   @Override
-   protected BasicXMLDeployer createDeployer()
-   {
-      if (useJaxbDeployer)
-      {
-         return new JBossXBDeployer(kernel, defaultMode, clazz);
-      }
-      return super.createDeployer();
-   }
-   
-   protected KernelDeployment unmarshal(final URL url) throws Exception
-   {
-      if (!useJaxbDeployer)
-      {
-         throw new IllegalStateException("useJaxbDeployer needs to be true");
-      }
-      return ((JBossXBDeployer)deployer).unmarshal(url);
-   }
+//   @Override
+//   protected BasicXMLDeployer createDeployer()
+//   {
+//      if (useJaxbDeployer)
+//      {
+//         return new JBossXBDeployer(kernel, defaultMode, clazz);
+//      }
+//      return super.createDeployer();
+//   }
+//   
+//   protected KernelDeployment unmarshal(final URL url) throws Exception
+//   {
+//      if (!useJaxbDeployer)
+//      {
+//         throw new IllegalStateException("useJaxbDeployer needs to be true");
+//      }
+//      return ((JBossXBDeployer)deployer).unmarshal(url);
+//   }
 }

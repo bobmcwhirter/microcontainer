@@ -1,19 +1,19 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
-<aop xmlns="urn:jboss:aop-beans:1.0">
+<deployment xmlns="urn:jboss:bean-deployer:2.0">
 
    <bean name="AspectManager" class="org.jboss.aop.AspectManager">
       <constructor factoryClass="org.jboss.aop.AspectManager" factoryMethod="instance"/>
    </bean>
 
-   <interceptor class="org.jboss.test.microcontainer.beans.TestInterceptorWithDependency">
+   <aop:interceptor xmlns:aop="urn:jboss:aop-beans:1.0" class="org.jboss.test.microcontainer.beans.TestInterceptorWithDependency">
       <property name="dependency"><inject bean="Dependency"/></property>
-   </interceptor>
+   </aop:interceptor>
 
-   <bind pointcut="execution(* org.jboss.test.microcontainer.beans.POJO->*(..))">
-      <interceptor-ref name="org.jboss.test.microcontainer.beans.TestInterceptorWithDependency"/>
-   </bind>
+   <aop:bind xmlns:aop="urn:jboss:aop-beans:1.0" pointcut="execution(* org.jboss.test.microcontainer.beans.POJO->*(..))">
+      <aop:interceptor-ref name="org.jboss.test.microcontainer.beans.TestInterceptorWithDependency"/>
+   </aop:bind>
 
    <bean name="Intercepted" class="org.jboss.test.microcontainer.beans.POJO"/>
    
-</aop>
+</deployment>

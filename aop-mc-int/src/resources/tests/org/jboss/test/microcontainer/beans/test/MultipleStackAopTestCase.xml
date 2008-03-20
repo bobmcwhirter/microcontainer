@@ -1,34 +1,34 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
-<aop xmlns="urn:jboss:aop-beans:1.0">
+<deployment xmlns="urn:jboss:bean-deployer:2.0">
 
    <bean name="AspectManager" class="org.jboss.aop.AspectManager">
       <constructor factoryClass="org.jboss.aop.AspectManager" factoryMethod="instance"/>
    </bean>
 
-	<aspect factory="org.jboss.test.microcontainer.beans.SimpleAspectFactory"/>
+	<aspect xmlns="urn:jboss:aop-beans:1.0" factory="org.jboss.test.microcontainer.beans.SimpleAspectFactory"/>
 
-   <aspect class="org.jboss.test.microcontainer.beans.TestAspect"/>
+   <aspect xmlns="urn:jboss:aop-beans:1.0" class="org.jboss.test.microcontainer.beans.TestAspect"/>
 
-   <aspect factory="org.jboss.test.microcontainer.beans.SimpleInterceptorFactory"/>
+   <aspect xmlns="urn:jboss:aop-beans:1.0" factory="org.jboss.test.microcontainer.beans.SimpleInterceptorFactory"/>
 
-   <aspect class="org.jboss.test.microcontainer.beans.TestInterceptor"/>
+   <aspect xmlns="urn:jboss:aop-beans:1.0" class="org.jboss.test.microcontainer.beans.TestInterceptor"/>
 
-   <stack name="TestStackA">
+   <stack xmlns="urn:jboss:aop-beans:1.0" name="TestStackA">
       <advice aspect="org.jboss.test.microcontainer.beans.SimpleAspectFactory" name="advice"/>
       <advice aspect="org.jboss.test.microcontainer.beans.TestAspect" name="advice"/>
    </stack>
 
-   <stack name="TestStackB">
+   <stack xmlns="urn:jboss:aop-beans:1.0" name="TestStackB">
       <interceptor-ref name="org.jboss.test.microcontainer.beans.SimpleInterceptorFactory"/>
       <interceptor-ref name="org.jboss.test.microcontainer.beans.TestInterceptor"/>
    </stack>
 
-	<bind pointcut="execution(* org.jboss.test.microcontainer.beans.POJO->*(..))">
+	<bind xmlns="urn:jboss:aop-beans:1.0" pointcut="execution(* org.jboss.test.microcontainer.beans.POJO->*(..))">
 		<stack-ref name="TestStackA"/>
 		<stack-ref name="TestStackB"/>
 	</bind>
 
    <bean name="Bean" class="org.jboss.test.microcontainer.beans.POJO"/>
 
-</aop>
+</deployment>

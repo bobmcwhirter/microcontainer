@@ -6,9 +6,9 @@
       <constructor factoryClass="org.jboss.aop.AspectManager" factoryMethod="instance"/>
    </bean>
 
-   <interceptor xmlns="urn:jboss:aop-beans:1.0" name="MetaDataContextAspect" class="org.jboss.test.microcontainer.support.MetaDataContextInterceptor">
+   <aop:interceptor xmlns:aop="urn:jboss:aop-beans:1.0" name="MetaDataContextAspect" class="org.jboss.test.microcontainer.support.MetaDataContextInterceptor">
       <property name="annotation">org.jboss.test.microcontainer.support.Test</property>
-   </interceptor>
+   </aop:interceptor>
 
    <bind xmlns="urn:jboss:aop-beans:1.0" pointcut="execution(* org.jboss.test.microcontainer.support.PropertyBean->*(..))">
       <interceptor-ref name="MetaDataContextAspect"/>

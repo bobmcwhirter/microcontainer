@@ -1,22 +1,22 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
-<aop xmlns="urn:jboss:aop-beans:1.0">
+<deployment xmlns="urn:jboss:bean-deployer:2.0">
 
    <bean name="AspectManager" class="org.jboss.aop.AspectManager">
       <constructor factoryClass="org.jboss.aop.AspectManager" factoryMethod="instance"/>
    </bean>
 	
-	<introduction expr="has(* *->method())">
+	<introduction xmlns="urn:jboss:aop-beans:1.0" expr="has(* *->method())">
 		<interfaces>org.jboss.test.microcontainer.beans.IntroductionInterface</interfaces>
 	</introduction>
 
-	<aspect class="org.jboss.test.microcontainer.beans.TestAspect"/>
+	<aspect xmlns="urn:jboss:aop-beans:1.0" class="org.jboss.test.microcontainer.beans.TestAspect"/>
 
-	<bind pointcut="execution(* $instanceof{org.jboss.test.microcontainer.beans.IntroductionInterface}->*(..))">
+	<bind xmlns="urn:jboss:aop-beans:1.0" pointcut="execution(* $instanceof{org.jboss.test.microcontainer.beans.IntroductionInterface}->*(..))">
       <advice aspect="org.jboss.test.microcontainer.beans.TestAspect" name="advice"/>
    </bind>
    
    <bean name="Bean" class="org.jboss.test.microcontainer.beans.POJO"/>
    
-</aop>
+</deployment>
 

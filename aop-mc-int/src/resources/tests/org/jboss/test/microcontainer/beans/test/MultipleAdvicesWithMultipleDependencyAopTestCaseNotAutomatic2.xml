@@ -1,26 +1,26 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
-<aop xmlns="urn:jboss:aop-beans:1.0">
+<deployment xmlns="urn:jboss:bean-deployer:2.0">
 
    <bean name="AspectManager" class="org.jboss.aop.AspectManager">
       <constructor factoryClass="org.jboss.aop.AspectManager" factoryMethod="instance"/>
    </bean>
 
-   <aspect class="org.jboss.test.microcontainer.beans.TestAspectWithDependency">
+   <aop:aspect xmlns:aop="urn:jboss:aop-beans:1.0" class="org.jboss.test.microcontainer.beans.TestAspectWithDependency">
       <property name="dependency"><inject bean="Dependency1"/></property>
-   </aspect>
+   </aop:aspect>
 
-   <interceptor class="org.jboss.test.microcontainer.beans.TestInterceptorWithDependency">
+   <aop:interceptor xmlns:aop="urn:jboss:aop-beans:1.0" class="org.jboss.test.microcontainer.beans.TestInterceptorWithDependency">
       <property name="dependency"><inject bean="Dependency2"/></property>
-   </interceptor>
+   </aop:interceptor>
  
-   <bind pointcut="execution(* @org.jboss.test.microcontainer.beans.Annotation1->*(..))">
-      <advice aspect="org.jboss.test.microcontainer.beans.TestAspectWithDependency" name="advice"/>
-   </bind>
+   <aop:bind xmlns:aop="urn:jboss:aop-beans:1.0" pointcut="execution(* @org.jboss.test.microcontainer.beans.Annotation1->*(..))">
+      <aop:advice aspect="org.jboss.test.microcontainer.beans.TestAspectWithDependency" name="advice"/>
+   </aop:bind>
 	
-   <bind pointcut="execution(* @org.jboss.test.microcontainer.beans.Annotation2->*(..))">
-      <interceptor-ref name="org.jboss.test.microcontainer.beans.TestInterceptorWithDependency"/>
-   </bind>
+   <aop:bind xmlns:aop="urn:jboss:aop-beans:1.0" pointcut="execution(* @org.jboss.test.microcontainer.beans.Annotation2->*(..))">
+      <aop:interceptor-ref name="org.jboss.test.microcontainer.beans.TestInterceptorWithDependency"/>
+   </aop:bind>
    
    <bean name="Intercepted1" class="org.jboss.test.microcontainer.beans.POJO">
    	<annotation>@org.jboss.test.microcontainer.beans.Annotation1</annotation>
@@ -35,4 +35,4 @@
    	<annotation>@org.jboss.test.microcontainer.beans.Annotation2</annotation>
    </bean>
    
-</aop>
+</deployment>
