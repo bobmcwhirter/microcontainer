@@ -41,7 +41,6 @@ import org.jboss.kernel.plugins.config.Configurator;
 import org.jboss.kernel.spi.dependency.KernelController;
 import org.jboss.kernel.spi.dependency.KernelControllerContext;
 import org.jboss.util.JBossStringBuilder;
-import sun.security.util.SecurityConstants;
 
 /**
  * Controller context.
@@ -57,6 +56,9 @@ public class AbstractKernelControllerContext extends AbstractControllerContext i
    /** The no instantiate actions */
    private static final KernelControllerContextActions noInstantiate = KernelControllerContextActions.getNoInstantiate();
 
+   /** The get classloader permission */
+   private static final RuntimePermission GET_CLASSLOADER_PERMISSION = new RuntimePermission("getClassLoader");
+   
    /** The BeanInfo */
    protected BeanInfo info;
 
@@ -274,7 +276,7 @@ public class AbstractKernelControllerContext extends AbstractControllerContext i
    {
       SecurityManager sm = System.getSecurityManager();
       if (sm != null)
-         sm.checkPermission(SecurityConstants.GET_CLASSLOADER_PERMISSION);
+         sm.checkPermission(GET_CLASSLOADER_PERMISSION);
       return Configurator.getClassLoader(getBeanMetaData());
    }
 }
