@@ -21,15 +21,14 @@
 */
 package org.jboss.kernel.plugins.dependency;
 
+import org.jboss.dependency.spi.ControllerState;
 import org.jboss.kernel.spi.dependency.ConfigureKernelControllerContextAware;
 import org.jboss.kernel.spi.dependency.CreateKernelControllerContextAware;
-import org.jboss.kernel.spi.dependency.DescribeKernelControllerContextAware;
 import org.jboss.kernel.spi.dependency.InstallKernelControllerContextAware;
 import org.jboss.kernel.spi.dependency.InstantiateKernelControllerContextAware;
+import org.jboss.kernel.spi.dependency.KernelControllerContext;
 import org.jboss.kernel.spi.dependency.KernelControllerContextAware;
 import org.jboss.kernel.spi.dependency.StartKernelControllerContextAware;
-import org.jboss.kernel.spi.dependency.KernelControllerContext;
-import org.jboss.dependency.spi.ControllerState;
 
 /**
  * AbstractConfigureAction.
@@ -88,13 +87,14 @@ public abstract class AbstractConfigureAction extends InstallsAwareAction
     * @param o the target to test
     * @return true if exact match
     */
+   @SuppressWarnings("deprecation")
    protected boolean isExactlyKernelControllerContextAware(Object o)
    {
       Class<?> clazz = o.getClass();
       return KernelControllerContextAware.class.isAssignableFrom(clazz) &&
                (!ConfigureKernelControllerContextAware.class.isAssignableFrom(clazz) &&
                !CreateKernelControllerContextAware.class.isAssignableFrom(clazz) &&
-               !DescribeKernelControllerContextAware.class.isAssignableFrom(clazz) &&
+               !org.jboss.kernel.spi.dependency.DescribeKernelControllerContextAware.class.isAssignableFrom(clazz) &&
                !InstallKernelControllerContextAware.class.isAssignableFrom(clazz) &&
                !InstantiateKernelControllerContextAware.class.isAssignableFrom(clazz) &&
                !StartKernelControllerContextAware.class.isAssignableFrom(clazz));

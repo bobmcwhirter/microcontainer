@@ -24,7 +24,6 @@ package org.jboss.kernel.plugins.deployment.xml;
 import javax.xml.namespace.QName;
 
 import org.jboss.beans.metadata.plugins.AbstractConstructorMetaData;
-import org.jboss.beans.metadata.plugins.factory.GenericBeanFactoryMetaData;
 import org.jboss.xb.binding.sunday.unmarshalling.DefaultElementInterceptor;
 
 /**
@@ -38,9 +37,10 @@ public class BeanFactoryConstructorInterceptor extends DefaultElementInterceptor
    /** The interceptor */
    public static final BeanFactoryConstructorInterceptor INTERCEPTOR = new BeanFactoryConstructorInterceptor();
 
+   @SuppressWarnings("deprecation")
    public void add(Object parent, Object child, QName name)
    {
-      GenericBeanFactoryMetaData bean = (GenericBeanFactoryMetaData) parent;
+      org.jboss.beans.metadata.plugins.factory.GenericBeanFactoryMetaData bean = (org.jboss.beans.metadata.plugins.factory.GenericBeanFactoryMetaData) parent;
       AbstractConstructorMetaData constructor = (AbstractConstructorMetaData) child;
       bean.setBeanConstructor(constructor);
    }

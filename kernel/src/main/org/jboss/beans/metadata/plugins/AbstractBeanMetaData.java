@@ -706,7 +706,7 @@ public class AbstractBeanMetaData extends AbstractFeatureMetaData
       return name;
    }
 
-   @SuppressWarnings("unchecked")
+   @SuppressWarnings({"unchecked", "deprecation"})
    public Object getValue(TypeInfo info, ClassLoader cl) throws Throwable
    {
       if (context == null)

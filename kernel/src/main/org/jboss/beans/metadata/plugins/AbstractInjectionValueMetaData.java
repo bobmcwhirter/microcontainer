@@ -152,7 +152,7 @@ public class AbstractInjectionValueMetaData extends AbstractDependencyValueMetaD
       return lookupExists || isCallback;
    }
 
-   @SuppressWarnings("unchecked")
+   @SuppressWarnings({"unchecked", "deprecation"})
    public Object getValue(TypeInfo info, ClassLoader cl) throws Throwable
    {
       // controller context property injection
@@ -267,6 +267,7 @@ public class AbstractInjectionValueMetaData extends AbstractDependencyValueMetaD
       }
    }
 
+   @SuppressWarnings("deprecation")
    public void describeVisit(MetaDataVisitor visitor)
    {
       // no bean and not by_name

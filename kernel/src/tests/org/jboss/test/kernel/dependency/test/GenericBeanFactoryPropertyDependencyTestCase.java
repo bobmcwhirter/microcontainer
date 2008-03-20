@@ -26,7 +26,6 @@ import org.jboss.beans.metadata.plugins.AbstractBeanMetaData;
 import org.jboss.beans.metadata.plugins.AbstractDependencyValueMetaData;
 import org.jboss.beans.metadata.plugins.AbstractPropertyMetaData;
 import org.jboss.beans.metadata.plugins.factory.GenericBeanFactory;
-import org.jboss.beans.metadata.plugins.factory.GenericBeanFactoryMetaData;
 import org.jboss.beans.metadata.spi.BeanMetaData;
 import org.jboss.dependency.spi.ControllerContext;
 import org.jboss.dependency.spi.ControllerState;
@@ -39,6 +38,7 @@ import org.jboss.test.kernel.dependency.support.SimplerBean;
  * @author <a href="adrian@jboss.com">Adrian Brock</a>
  * @version $Revision$
  */
+@SuppressWarnings("deprecation")
 public class GenericBeanFactoryPropertyDependencyTestCase extends OldAbstractKernelDependencyTest
 {
    public static Test suite()
@@ -166,14 +166,14 @@ public class GenericBeanFactoryPropertyDependencyTestCase extends OldAbstractKer
       AbstractBeanMetaData metaData1 = new AbstractBeanMetaData("Name1", SimpleBeanImpl.class.getName());
       metaData1.addProperty(new AbstractPropertyMetaData("string", "String1"));
 
-      GenericBeanFactoryMetaData metaData2 = createBeanFactory();
+      org.jboss.beans.metadata.plugins.factory.GenericBeanFactoryMetaData metaData2 = createBeanFactory();
       metaData2.addBeanProperty(new AbstractPropertyMetaData("string", new AbstractDependencyValueMetaData("Name1", "string")));
 
       setBeanMetaDatas(new BeanMetaData[] { metaData1, metaData2 });
    }
 
-   protected GenericBeanFactoryMetaData createBeanFactory()
+   protected org.jboss.beans.metadata.plugins.factory.GenericBeanFactoryMetaData createBeanFactory()
    {
-      return new GenericBeanFactoryMetaData("Name2", SimpleBeanImpl.class.getName());
+      return new org.jboss.beans.metadata.plugins.factory.GenericBeanFactoryMetaData("Name2", SimpleBeanImpl.class.getName());
    }
 }

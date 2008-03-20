@@ -28,7 +28,6 @@ import junit.framework.Test;
 import org.jboss.beans.metadata.plugins.AbstractBeanMetaData;
 import org.jboss.beans.metadata.plugins.AbstractDependencyMetaData;
 import org.jboss.beans.metadata.plugins.factory.GenericBeanFactory;
-import org.jboss.beans.metadata.plugins.factory.GenericBeanFactoryMetaData;
 import org.jboss.beans.metadata.spi.BeanMetaData;
 import org.jboss.beans.metadata.spi.DependencyMetaData;
 import org.jboss.dependency.spi.ControllerContext;
@@ -167,11 +166,12 @@ public class GenericBeanFactoryPlainLifecycleDependencyTestCase extends OldAbstr
       buildMetaData();
    }
 
+   @SuppressWarnings("deprecation")
    protected void buildMetaData()
    {
       AbstractBeanMetaData metaData1 = new AbstractBeanMetaData("Name1", SimpleBeanWithLifecycle.class.getName());
 
-      GenericBeanFactoryMetaData metaData2 = new GenericBeanFactoryMetaData("Name2", SimpleBeanWithLifecycle.class.getName());
+      org.jboss.beans.metadata.plugins.factory.GenericBeanFactoryMetaData metaData2 = new org.jboss.beans.metadata.plugins.factory.GenericBeanFactoryMetaData("Name2", SimpleBeanWithLifecycle.class.getName());
       HashSet<DependencyMetaData> depends = new HashSet<DependencyMetaData>();
       depends.add(new AbstractDependencyMetaData("Name1"));
       metaData2.setDepends(depends);

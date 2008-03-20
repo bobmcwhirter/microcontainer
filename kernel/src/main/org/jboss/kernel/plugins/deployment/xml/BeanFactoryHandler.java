@@ -24,11 +24,10 @@ package org.jboss.kernel.plugins.deployment.xml;
 import javax.xml.namespace.NamespaceContext;
 import javax.xml.namespace.QName;
 
-import org.jboss.beans.metadata.plugins.factory.GenericBeanFactoryMetaData;
+import org.jboss.beans.info.spi.BeanAccessMode;
 import org.jboss.beans.metadata.spi.ConstructorMetaData;
 import org.jboss.beans.metadata.spi.PropertyMetaData;
 import org.jboss.beans.metadata.spi.ValueMetaData;
-import org.jboss.beans.info.spi.BeanAccessMode;
 import org.jboss.dependency.spi.ControllerMode;
 import org.jboss.xb.binding.sunday.unmarshalling.DefaultElementHandler;
 import org.jboss.xb.binding.sunday.unmarshalling.ElementBinding;
@@ -45,14 +44,16 @@ public class BeanFactoryHandler extends DefaultElementHandler
    /** The handler */
    public static final BeanFactoryHandler HANDLER = new BeanFactoryHandler();
    
+   @SuppressWarnings("deprecation")
    public Object startElement(Object parent, QName name, ElementBinding element)
    {
-      return new GenericBeanFactoryMetaData();
+      return new org.jboss.beans.metadata.plugins.factory.GenericBeanFactoryMetaData();
    }
 
+   @SuppressWarnings("deprecation")
    public void attributes(Object o, QName elementName, ElementBinding element, Attributes attrs, NamespaceContext nsCtx)
    {
-      GenericBeanFactoryMetaData bean = (GenericBeanFactoryMetaData) o;
+      org.jboss.beans.metadata.plugins.factory.GenericBeanFactoryMetaData bean = (org.jboss.beans.metadata.plugins.factory.GenericBeanFactoryMetaData) o;
       for (int i = 0; i < attrs.getLength(); ++i)
       {
          String localName = attrs.getLocalName(i);
@@ -76,9 +77,10 @@ public class BeanFactoryHandler extends DefaultElementHandler
       }
    }
 
+   @SuppressWarnings("deprecation")
    public Object endElement(Object o, QName qName, ElementBinding element)
    {
-      GenericBeanFactoryMetaData bean = (GenericBeanFactoryMetaData) o;
+      org.jboss.beans.metadata.plugins.factory.GenericBeanFactoryMetaData bean = (org.jboss.beans.metadata.plugins.factory.GenericBeanFactoryMetaData) o;
       if (bean.getBeanClass() == null)
       {
          PropertyMetaData property = bean.getProperty("constructor");

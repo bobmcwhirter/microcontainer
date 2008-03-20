@@ -209,6 +209,7 @@ public abstract class AbstractLazyInitializer implements LazyInitializer
     * @return  array of classes
     * @throws Throwable for any error
     */
+   @SuppressWarnings("deprecation")
    protected static Class<?>[] getClasses(KernelConfigurator configurator, Set<String> classNames, ClassLoader cl)
          throws Throwable
    {

@@ -31,7 +31,6 @@ import org.jboss.beans.metadata.plugins.AbstractDependencyValueMetaData;
 import org.jboss.beans.metadata.plugins.AbstractPropertyMetaData;
 import org.jboss.beans.metadata.plugins.AbstractValueMetaData;
 import org.jboss.beans.metadata.plugins.factory.GenericBeanFactory;
-import org.jboss.beans.metadata.plugins.factory.GenericBeanFactoryMetaData;
 import org.jboss.beans.metadata.spi.BeanMetaData;
 import org.jboss.beans.metadata.spi.PropertyMetaData;
 import org.jboss.dependency.spi.ControllerContext;
@@ -142,6 +141,7 @@ public class GenericBeanFactoryPlainDependencyTestCase extends OldAbstractKernel
       buildMetaData();
    }
 
+   @SuppressWarnings("deprecation")
    protected void buildMetaData()
    {
       AbstractBeanMetaData metaData1 = new AbstractBeanMetaData("simple", SimpleBeanImpl.class.getName());
@@ -149,7 +149,7 @@ public class GenericBeanFactoryPlainDependencyTestCase extends OldAbstractKernel
       attributes1.add(new AbstractPropertyMetaData("string", "String1"));
       metaData1.setProperties(attributes1);
 
-      GenericBeanFactoryMetaData metaData2 = new GenericBeanFactoryMetaData("aspect");
+      org.jboss.beans.metadata.plugins.factory.GenericBeanFactoryMetaData metaData2 = new org.jboss.beans.metadata.plugins.factory.GenericBeanFactoryMetaData("aspect");
       metaData2.addProperty(new AbstractPropertyMetaData("bean", SimpleBeanWithDependencyImpl.class.getName()));
       metaData2.addProperty(new AbstractPropertyMetaData("constructor", new AbstractConstructorMetaData()));
       metaData2.addBeanProperty(new AbstractPropertyMetaData("simpleBean", new AbstractDependencyValueMetaData("simple")));

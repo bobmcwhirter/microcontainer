@@ -29,7 +29,6 @@ import junit.framework.Test;
 import org.jboss.beans.metadata.plugins.AbstractInjectionValueMetaData;
 import org.jboss.beans.metadata.api.model.FromContext;
 import org.jboss.beans.metadata.plugins.AbstractPropertyMetaData;
-import org.jboss.beans.metadata.plugins.factory.GenericBeanFactoryMetaData;
 import org.jboss.beans.metadata.plugins.builder.BeanMetaDataBuilderFactory;
 import org.jboss.beans.metadata.spi.BeanMetaData;
 import org.jboss.beans.metadata.spi.builder.BeanMetaDataBuilder;
@@ -130,6 +129,7 @@ public class FromContextTestCase extends AbstractKernelDependencyTest
       assertTrue(aliases.contains("a3"));
    }
 
+   @SuppressWarnings("deprecation")
    protected void setBeanMetaDatas() throws Throwable
    {
       BeanMetaDataBuilder b1 = BeanMetaDataBuilderFactory.createBuilder("set_name_bean", NameAwareBean.class.getName());
@@ -137,7 +137,7 @@ public class FromContextTestCase extends AbstractKernelDependencyTest
       v1.setFromContext(FromContext.NAME);
       b1.addPropertyMetaData("name", v1);
 
-      GenericBeanFactoryMetaData b2 = new GenericBeanFactoryMetaData("set_name_factory", NameAwareBean.class.getName());
+      org.jboss.beans.metadata.plugins.factory.GenericBeanFactoryMetaData b2 = new org.jboss.beans.metadata.plugins.factory.GenericBeanFactoryMetaData("set_name_factory", NameAwareBean.class.getName());
       AbstractInjectionValueMetaData v2 = new AbstractInjectionValueMetaData();
       v2.setFromContext(FromContext.NAME);
       b2.addBeanProperty(new AbstractPropertyMetaData("name", v2));

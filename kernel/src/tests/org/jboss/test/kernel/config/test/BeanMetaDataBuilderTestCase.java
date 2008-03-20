@@ -135,6 +135,7 @@ public class BeanMetaDataBuilderTestCase extends AbstractKernelConfigTest
       assertEquals("Uninstall", slb.getInstall());
    }
 
+   @SuppressWarnings("deprecation")
    public void testDemandSupply() throws Throwable
    {
       BeanMetaDataBuilder demand = BeanMetaDataBuilderFactory.createBuilder("DemandBean", SimpleBean.class.getName());
@@ -162,7 +163,8 @@ public class BeanMetaDataBuilderTestCase extends AbstractKernelConfigTest
       deployer.undeploy(deployment);
    }
 
-   public void testDependency() throws Throwable
+   @SuppressWarnings("deprecation")
+      public void testDependency() throws Throwable
    {
       BeanMetaDataBuilder dependOn = BeanMetaDataBuilderFactory.createBuilder("DependOnBean", SimpleBean.class.getName());
       dependOn.addDependency("DependencyResolver");
@@ -188,7 +190,8 @@ public class BeanMetaDataBuilderTestCase extends AbstractKernelConfigTest
       deployer.undeploy(deployment);
    }
 
-   public void testCollectionProperties() throws Throwable
+   @SuppressWarnings("deprecation")
+      public void testCollectionProperties() throws Throwable
    {
       BeanMetaDataBuilder builder = BeanMetaDataBuilderFactory.createBuilder("CollectionBean", SimpleBean.class.getName());
       
@@ -257,7 +260,8 @@ public class BeanMetaDataBuilderTestCase extends AbstractKernelConfigTest
       assertEquals("Dos", mp.get("Two"));
    }
    
-   public void testReplacePropertyMetaData() throws Throwable
+   @SuppressWarnings("deprecation")
+      public void testReplacePropertyMetaData() throws Throwable
    {
       BeanMetaDataBuilder builder = BeanMetaDataBuilderFactory.createBuilder("ReplaceBean", SimpleBean.class.getName());
       

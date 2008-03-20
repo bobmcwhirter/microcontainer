@@ -49,7 +49,6 @@ import org.jboss.beans.metadata.api.model.InjectOption;
 import org.jboss.beans.metadata.api.model.FromContext;
 import org.jboss.beans.metadata.api.model.AutowireType;
 import org.jboss.beans.metadata.plugins.StringValueMetaData;
-import org.jboss.beans.metadata.plugins.factory.GenericBeanFactoryMetaData;
 import org.jboss.beans.metadata.spi.BeanMetaDataFactory;
 import org.jboss.beans.metadata.spi.DemandMetaData;
 import org.jboss.beans.metadata.spi.DependencyMetaData;
@@ -77,6 +76,7 @@ import org.xml.sax.Attributes;
  * @author <a href="mailto:adrian@jboss.com">Adrian Brock</a>
  * @version $Revision$
  */
+@SuppressWarnings("deprecation")
 public class BeanSchemaBinding
 {
    /** The log */
@@ -362,12 +362,12 @@ public class BeanSchemaBinding
       {
          public Object startElement(Object parent, QName name, ElementBinding element)
          {
-            return new GenericBeanFactoryMetaData();
+            return new org.jboss.beans.metadata.plugins.factory.GenericBeanFactoryMetaData();
          }
 
          public void attributes(Object o, QName elementName, ElementBinding element, Attributes attrs, NamespaceContext nsCtx)
          {
-            GenericBeanFactoryMetaData bean = (GenericBeanFactoryMetaData) o;
+            org.jboss.beans.metadata.plugins.factory.GenericBeanFactoryMetaData bean = (org.jboss.beans.metadata.plugins.factory.GenericBeanFactoryMetaData) o;
             for (int i = 0; i < attrs.getLength(); ++i)
             {
                String localName = attrs.getLocalName(i);
@@ -399,7 +399,7 @@ public class BeanSchemaBinding
       {
          public void add(Object parent, Object child, QName name)
          {
-            GenericBeanFactoryMetaData bean = (GenericBeanFactoryMetaData) parent;
+            org.jboss.beans.metadata.plugins.factory.GenericBeanFactoryMetaData bean = (org.jboss.beans.metadata.plugins.factory.GenericBeanFactoryMetaData) parent;
             AbstractClassLoaderMetaData classloader = (AbstractClassLoaderMetaData) child;
             bean.setClassLoader(classloader);
          }
@@ -421,7 +421,7 @@ public class BeanSchemaBinding
       {
          public void add(Object parent, Object child, QName name)
          {
-            GenericBeanFactoryMetaData bean = (GenericBeanFactoryMetaData) parent;
+            org.jboss.beans.metadata.plugins.factory.GenericBeanFactoryMetaData bean = (org.jboss.beans.metadata.plugins.factory.GenericBeanFactoryMetaData) parent;
             AbstractConstructorMetaData constructor = (AbstractConstructorMetaData) child;
             bean.setBeanConstructor(constructor);
          }
@@ -574,7 +574,7 @@ public class BeanSchemaBinding
       {
          public void add(Object parent, Object child, QName name)
          {
-            GenericBeanFactoryMetaData bean = (GenericBeanFactoryMetaData) parent;
+            org.jboss.beans.metadata.plugins.factory.GenericBeanFactoryMetaData bean = (org.jboss.beans.metadata.plugins.factory.GenericBeanFactoryMetaData) parent;
             AbstractLifecycleMetaData lifecycle = (AbstractLifecycleMetaData) child;
             lifecycle.setType("create");
             bean.setBeanCreate(lifecycle);
@@ -598,7 +598,7 @@ public class BeanSchemaBinding
       {
          public void add(Object parent, Object child, QName name)
          {
-            GenericBeanFactoryMetaData bean = (GenericBeanFactoryMetaData) parent;
+            org.jboss.beans.metadata.plugins.factory.GenericBeanFactoryMetaData bean = (org.jboss.beans.metadata.plugins.factory.GenericBeanFactoryMetaData) parent;
             AbstractLifecycleMetaData lifecycle = (AbstractLifecycleMetaData) child;
             lifecycle.setType("start");
             bean.setBeanStart(lifecycle);
@@ -692,7 +692,7 @@ public class BeanSchemaBinding
       {
          public void add(Object parent, Object child, QName name)
          {
-            GenericBeanFactoryMetaData bean = (GenericBeanFactoryMetaData) parent;
+            org.jboss.beans.metadata.plugins.factory.GenericBeanFactoryMetaData bean = (org.jboss.beans.metadata.plugins.factory.GenericBeanFactoryMetaData) parent;
             AbstractPropertyMetaData property = (AbstractPropertyMetaData) child;
             bean.addBeanProperty(property);
          }
@@ -720,7 +720,7 @@ public class BeanSchemaBinding
       {
          public void add(Object parent, Object child, QName name)
          {
-            GenericBeanFactoryMetaData bean = (GenericBeanFactoryMetaData) parent;
+            org.jboss.beans.metadata.plugins.factory.GenericBeanFactoryMetaData bean = (org.jboss.beans.metadata.plugins.factory.GenericBeanFactoryMetaData) parent;
             AbstractDependencyMetaData dependency = (AbstractDependencyMetaData) child;
             Set<DependencyMetaData> depends = bean.getDepends();
             if (depends == null)

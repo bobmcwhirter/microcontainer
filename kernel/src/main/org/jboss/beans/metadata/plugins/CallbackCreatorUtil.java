@@ -72,7 +72,7 @@ public class CallbackCreatorUtil
     * @param cardinality cardinality
     * @return collection callback item
     */
-   @SuppressWarnings("unchecked")
+   @SuppressWarnings({"unchecked", "deprecation"})
    private static CallbackItem<Class<?>> createCollectionCallback(
          TypeInfo info,
          KernelControllerContext context,
@@ -108,7 +108,7 @@ public class CallbackCreatorUtil
     * @param cardinality cardinality
     * @return callback item
     */
-   @SuppressWarnings("unchecked")
+   @SuppressWarnings({"unchecked", "deprecation"})
    public static CallbackItem<Class<?>> createCallback(
          KernelControllerContext context,
          AttributeInfo ai,

@@ -23,7 +23,6 @@ package org.jboss.test.kernel.dependency.test;
 
 import junit.framework.Test;
 import org.jboss.beans.info.spi.BeanAccessMode;
-import org.jboss.beans.metadata.plugins.factory.GenericBeanFactoryMetaData;
 import org.jboss.test.kernel.dependency.support.SimplerBeanImpl2;
 import org.jboss.test.AbstractTestDelegate;
 
@@ -32,6 +31,7 @@ import org.jboss.test.AbstractTestDelegate;
  *
  * @author <a href="ales.justin@jboss.com">Ales Justin</a>
  */
+@SuppressWarnings("deprecation")
 public class GenericBeanFactoryField2PropertyDependencyTestCase extends GenericBeanFactoryPropertyDependencyTestCase
 {
    public static Test suite()
@@ -44,9 +44,9 @@ public class GenericBeanFactoryField2PropertyDependencyTestCase extends GenericB
       super(name);
    }
 
-   protected GenericBeanFactoryMetaData createBeanFactory()
+   protected org.jboss.beans.metadata.plugins.factory.GenericBeanFactoryMetaData createBeanFactory()
    {
-      GenericBeanFactoryMetaData beanFactoryMetaData = new GenericBeanFactoryMetaData("Name2", SimplerBeanImpl2.class.getName());
+      org.jboss.beans.metadata.plugins.factory.GenericBeanFactoryMetaData beanFactoryMetaData = new org.jboss.beans.metadata.plugins.factory.GenericBeanFactoryMetaData("Name2", SimplerBeanImpl2.class.getName());
       beanFactoryMetaData.setAccessMode(BeanAccessMode.ALL);
       return beanFactoryMetaData;
    }

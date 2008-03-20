@@ -712,6 +712,7 @@ public class Configurator extends Config
     * @return the property info
     * @throws Throwable for any error
     */
+   @SuppressWarnings("deprecation")
    public static PropertyInfo resolveProperty(boolean trace, BeanInfo info, ClassLoader cl, String name, String type) throws Throwable
    {
       if (info == null)

@@ -22,14 +22,14 @@
 package org.jboss.test.kernel.config.test;
 
 import junit.framework.Test;
+
 import org.jboss.beans.metadata.plugins.AbstractConstructorMetaData;
 import org.jboss.beans.metadata.plugins.AbstractPropertyMetaData;
 import org.jboss.beans.metadata.plugins.AbstractValueMetaData;
-import org.jboss.beans.metadata.plugins.factory.GenericBeanFactoryMetaData;
 import org.jboss.beans.metadata.spi.factory.BeanFactory;
+import org.jboss.test.kernel.config.support.MyBeanFactory;
 import org.jboss.test.kernel.config.support.SimpleBean;
 import org.jboss.test.kernel.config.support.SimpleBeanFactory;
-import org.jboss.test.kernel.config.support.MyBeanFactory;
 
 /**
  * GenericFactory Instantiation Test Case.
@@ -71,9 +71,10 @@ public class GenericFactoryInstantiateTestCase extends AbstractKernelConfigTest
       assertFactory(factory);
    }
 
+   @SuppressWarnings("deprecation")
    protected BeanFactory configureFromBean() throws Throwable
    {
-      GenericBeanFactoryMetaData factory = new GenericBeanFactoryMetaData("Factory", SimpleBean.class.getName());
+      org.jboss.beans.metadata.plugins.factory.GenericBeanFactoryMetaData factory = new org.jboss.beans.metadata.plugins.factory.GenericBeanFactoryMetaData("Factory", SimpleBean.class.getName());
       factory.addBeanProperty(new AbstractPropertyMetaData("anint", 123));
       return (BeanFactory)instantiate(factory);
    }
@@ -84,9 +85,10 @@ public class GenericFactoryInstantiateTestCase extends AbstractKernelConfigTest
       assertFactory(factory);
    }
 
+   @SuppressWarnings("deprecation")
    protected BeanFactory configureFromFactory() throws Throwable
    {
-      GenericBeanFactoryMetaData factory = new GenericBeanFactoryMetaData("Factory");
+      org.jboss.beans.metadata.plugins.factory.GenericBeanFactoryMetaData factory = new org.jboss.beans.metadata.plugins.factory.GenericBeanFactoryMetaData("Factory");
       AbstractConstructorMetaData constructor = new AbstractConstructorMetaData();
       factory.setBeanConstructor(constructor);
       constructor.setFactory(new AbstractValueMetaData(new SimpleBeanFactory()));
@@ -101,9 +103,10 @@ public class GenericFactoryInstantiateTestCase extends AbstractKernelConfigTest
       assertFactory(factory);
    }
 
+   @SuppressWarnings("deprecation")
    protected BeanFactory configureFromStaticFactory() throws Throwable
    {
-      GenericBeanFactoryMetaData factory = new GenericBeanFactoryMetaData("Factory");
+      org.jboss.beans.metadata.plugins.factory.GenericBeanFactoryMetaData factory = new org.jboss.beans.metadata.plugins.factory.GenericBeanFactoryMetaData("Factory");
       AbstractConstructorMetaData constructor = new AbstractConstructorMetaData();
       factory.setBeanConstructor(constructor);
       constructor.setFactoryClass(SimpleBeanFactory.class.getName());
@@ -126,9 +129,10 @@ public class GenericFactoryInstantiateTestCase extends AbstractKernelConfigTest
       }
    }
 
+   @SuppressWarnings("deprecation")
    protected BeanFactory configureFromIllegalClass() throws Throwable
    {
-      GenericBeanFactoryMetaData factory = new GenericBeanFactoryMetaData("Factory", "org.jboss.test.NoSuchClass");
+      org.jboss.beans.metadata.plugins.factory.GenericBeanFactoryMetaData factory = new org.jboss.beans.metadata.plugins.factory.GenericBeanFactoryMetaData("Factory", "org.jboss.test.NoSuchClass");
       return (BeanFactory)instantiate(factory);
    }
 
@@ -140,9 +144,10 @@ public class GenericFactoryInstantiateTestCase extends AbstractKernelConfigTest
       assertEquals("foobar", factory.createBean());
    }
 
+   @SuppressWarnings("deprecation")
    protected BeanFactory configureFromDefinedFactoryClass() throws Throwable
    {
-      GenericBeanFactoryMetaData factory = new GenericBeanFactoryMetaData("Factory", SimpleBean.class.getName());
+      org.jboss.beans.metadata.plugins.factory.GenericBeanFactoryMetaData factory = new org.jboss.beans.metadata.plugins.factory.GenericBeanFactoryMetaData("Factory", SimpleBean.class.getName());
       factory.setFactoryClass(MyBeanFactory.class.getName());
       return (BeanFactory)instantiate(factory);
    }

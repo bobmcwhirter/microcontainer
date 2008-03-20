@@ -39,6 +39,7 @@ import org.jboss.kernel.spi.registry.KernelBus;
  */
 public class JDKLazyInitializer extends AbstractLazyInitializer
 {
+   @SuppressWarnings("deprecation")
    public Object initializeProxy(Kernel kernel, String bean, boolean exposeClass, Set<String> interfaces) throws Throwable
    {
       if (exposeClass)

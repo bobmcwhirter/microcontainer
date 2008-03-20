@@ -43,6 +43,7 @@ import org.jboss.kernel.spi.registry.KernelBus;
  */
 public class JavassistLazyInitializer extends AbstractLazyInitializer
 {
+   @SuppressWarnings("deprecation")
    public Object initializeProxy(Kernel kernel, String bean, boolean exposeClass, Set<String> interfaces) throws Throwable
    {
       KernelControllerContext context = getKernelControllerContext(kernel, bean);

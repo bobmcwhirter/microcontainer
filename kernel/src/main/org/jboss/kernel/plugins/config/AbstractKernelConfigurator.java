@@ -167,6 +167,7 @@ public class AbstractKernelConfigurator extends AbstractKernelObject implements 
       return Configurator.getPropertyNullerJoinPoints(info, metaData);
    }
 
+   @Deprecated
    public TargettedJoinpoint getPropertyNullerJoinPoint(BeanInfo info, PropertyMetaData metaData) throws Throwable
    {
       return Configurator.getPropertyNullerJoinPoint(info, metaData);

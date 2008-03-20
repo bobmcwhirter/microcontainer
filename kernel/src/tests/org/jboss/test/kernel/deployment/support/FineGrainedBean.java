@@ -21,13 +21,19 @@
 */
 package org.jboss.test.kernel.deployment.support;
 
-import org.jboss.kernel.spi.dependency.*;
+import org.jboss.kernel.spi.dependency.ConfigureKernelControllerContextAware;
+import org.jboss.kernel.spi.dependency.CreateKernelControllerContextAware;
+import org.jboss.kernel.spi.dependency.InstallKernelControllerContextAware;
+import org.jboss.kernel.spi.dependency.InstantiateKernelControllerContextAware;
+import org.jboss.kernel.spi.dependency.KernelControllerContext;
+import org.jboss.kernel.spi.dependency.StartKernelControllerContextAware;
 
 /**
  * @author <a href="mailto:ales.justin@gmail.com">Ales Justin</a>
  */
+@SuppressWarnings("deprecation")
 public class FineGrainedBean implements
-      DescribeKernelControllerContextAware, InstantiateKernelControllerContextAware,
+      org.jboss.kernel.spi.dependency.DescribeKernelControllerContextAware, InstantiateKernelControllerContextAware,
       ConfigureKernelControllerContextAware, CreateKernelControllerContextAware,
       StartKernelControllerContextAware, InstallKernelControllerContextAware
 {
