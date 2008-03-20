@@ -1,9 +1,7 @@
 <projectDescription>
   <name>jboss-dependency</name>
   <comment>JBoss Microcontainer Dependency</comment>
-  <projects>
-    <project>jboss-container</project>
-  </projects>
+  <projects/>
   <buildSpec>
     <buildCommand>
       <name>org.eclipse.jdt.core.javabuilder</name>

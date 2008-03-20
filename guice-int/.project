@@ -2,11 +2,8 @@
   <name>jboss-guice-int</name>
   <comment>JBoss Microcontainer Guice Int</comment>
   <projects>
-    <project>jboss-container</project>
-    <project>jboss-dependency</project>
     <project>jboss-kernel</project>
-    <project>jboss-managed</project>
-    <project>jboss-metatype</project>
+    <project>jboss-dependency</project>
   </projects>
   <buildSpec>
     <buildCommand>
