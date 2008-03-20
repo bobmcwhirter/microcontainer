@@ -59,7 +59,7 @@ public class TestDelegate extends Ordering
    
    public TestDelegate(Object name)
    {
-      this(name, null);
+      this(name, (Object[]) null);
    }
    
    public TestDelegate(Object name, Object... aliases)
