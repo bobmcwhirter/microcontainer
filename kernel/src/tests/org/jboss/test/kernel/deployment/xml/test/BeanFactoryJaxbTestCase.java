@@ -45,6 +45,7 @@ public class BeanFactoryJaxbTestCase extends AbstractMCTest
       assertEquals("Name1", factory.getName());
       assertEquals("Dummy", factory.getBean());
       assertNull(factory.getMode());
+      assertNull(factory.getFactoryClass());
       assertNull(factory.getAccessMode());
       assertNull(factory.getAnnotations());
       assertNull(factory.getClassLoader());
@@ -67,6 +68,30 @@ public class BeanFactoryJaxbTestCase extends AbstractMCTest
       assertNull(factory.getName());
       assertEquals(Object.class.getName(), factory.getBean());
       assertNull(factory.getMode());
+      assertNull(factory.getFactoryClass());
+      assertNull(factory.getAccessMode());
+      assertNull(factory.getAnnotations());
+      assertNull(factory.getClassLoader());
+      assertNull(factory.getConstructor());
+      assertNull(factory.getProperties());
+      assertNull(factory.getCreate());
+      assertNull(factory.getStart());
+      assertNull(factory.getDepends());
+      assertNull(factory.getDemands());
+      assertNull(factory.getSupplies());
+      assertNull(factory.getInstalls());
+      assertNull(factory.getUninstalls());
+      assertNull(factory.getInstallCallbacks());
+      assertNull(factory.getUninstallCallbacks());
+   }
+
+   public void testBeanFactoryWithFactoryClass() throws Exception
+   {
+      GenericBeanFactoryMetaData factory = unmarshalBeanFactory();
+      assertNull(factory.getName());
+      assertEquals("Dummy", factory.getBean());
+      assertNull(factory.getMode());
+      assertEquals("MyFactory", factory.getFactoryClass());
       assertNull(factory.getAccessMode());
       assertNull(factory.getAnnotations());
       assertNull(factory.getClassLoader());
@@ -90,6 +115,7 @@ public class BeanFactoryJaxbTestCase extends AbstractMCTest
       assertEquals("Dummy", factory.getBean());
       assertEquals(ControllerMode.MANUAL, factory.getMode());
       assertNull(factory.getAccessMode());
+      assertNull(factory.getFactoryClass());
       assertNull(factory.getAnnotations());
       assertNull(factory.getClassLoader());
       assertNull(factory.getConstructor());
@@ -111,6 +137,7 @@ public class BeanFactoryJaxbTestCase extends AbstractMCTest
       assertNull(factory.getName());
       assertEquals("Dummy", factory.getBean());
       assertNull(factory.getMode());
+      assertNull(factory.getFactoryClass());
       assertEquals(BeanAccessMode.FIELDS, factory.getAccessMode());
       assertNull(factory.getAnnotations());
       assertNull(factory.getClassLoader());
@@ -133,6 +160,7 @@ public class BeanFactoryJaxbTestCase extends AbstractMCTest
       assertNull(factory.getName());
       assertEquals("Dummy", factory.getBean());
       assertNull(factory.getMode());
+      assertNull(factory.getFactoryClass());
       assertNull(factory.getAccessMode());
       assertNull(factory.getAnnotations());
       assertNotNull(factory.getClassLoader());
@@ -155,6 +183,7 @@ public class BeanFactoryJaxbTestCase extends AbstractMCTest
       assertNull(factory.getName());
       assertEquals("Dummy", factory.getBean());
       assertNull(factory.getMode());
+      assertNull(factory.getFactoryClass());
       assertNull(factory.getAccessMode());
       assertNull(factory.getAnnotations());
       assertNull(factory.getClassLoader());
@@ -178,6 +207,7 @@ public class BeanFactoryJaxbTestCase extends AbstractMCTest
       assertNull(factory.getName());
       assertEquals("Dummy", factory.getBean());
       assertNull(factory.getMode());
+      assertNull(factory.getFactoryClass());
       assertNull(factory.getAccessMode());
       assertNull(factory.getAnnotations());
       assertNull(factory.getClassLoader());
@@ -203,6 +233,7 @@ public class BeanFactoryJaxbTestCase extends AbstractMCTest
       assertNull(factory.getName());
       assertEquals("Dummy", factory.getBean());
       assertNull(factory.getMode());
+      assertNull(factory.getFactoryClass());
       assertNull(factory.getAccessMode());
       assertNull(factory.getAnnotations());
       assertNull(factory.getClassLoader());
@@ -230,6 +261,7 @@ public class BeanFactoryJaxbTestCase extends AbstractMCTest
       assertNull(factory.getName());
       assertEquals("Dummy", factory.getBean());
       assertNull(factory.getMode());
+      assertNull(factory.getFactoryClass());
       assertNull(factory.getAccessMode());
       assertNull(factory.getAnnotations());
       assertNull(factory.getClassLoader());
@@ -252,6 +284,7 @@ public class BeanFactoryJaxbTestCase extends AbstractMCTest
       assertNull(factory.getName());
       assertEquals("Dummy", factory.getBean());
       assertNull(factory.getMode());
+      assertNull(factory.getFactoryClass());
       assertNull(factory.getAccessMode());
       assertNull(factory.getAnnotations());
       assertNull(factory.getClassLoader());
@@ -274,6 +307,7 @@ public class BeanFactoryJaxbTestCase extends AbstractMCTest
       assertNull(factory.getName());
       assertEquals("Dummy", factory.getBean());
       assertNull(factory.getMode());
+      assertNull(factory.getFactoryClass());
       assertNull(factory.getAccessMode());
       assertNull(factory.getAnnotations());
       assertNull(factory.getClassLoader());
@@ -298,6 +332,7 @@ public class BeanFactoryJaxbTestCase extends AbstractMCTest
       assertNull(factory.getName());
       assertEquals("Dummy", factory.getBean());
       assertNull(factory.getMode());
+      assertNull(factory.getFactoryClass());
       assertNull(factory.getAccessMode());
       assertNull(factory.getAnnotations());
       assertNull(factory.getClassLoader());
@@ -324,6 +359,7 @@ public class BeanFactoryJaxbTestCase extends AbstractMCTest
       assertNull(factory.getName());
       assertEquals("Dummy", factory.getBean());
       assertNull(factory.getMode());
+      assertNull(factory.getFactoryClass());
       assertNull(factory.getAccessMode());
       assertNull(factory.getAnnotations());
       assertNull(factory.getClassLoader());
@@ -348,6 +384,7 @@ public class BeanFactoryJaxbTestCase extends AbstractMCTest
       assertNull(factory.getName());
       assertEquals("Dummy", factory.getBean());
       assertNull(factory.getMode());
+      assertNull(factory.getFactoryClass());
       assertNull(factory.getAccessMode());
       assertNull(factory.getAnnotations());
       assertNull(factory.getClassLoader());
@@ -374,6 +411,7 @@ public class BeanFactoryJaxbTestCase extends AbstractMCTest
       assertNull(factory.getName());
       assertEquals("Dummy", factory.getBean());
       assertNull(factory.getMode());
+      assertNull(factory.getFactoryClass());
       assertNull(factory.getAccessMode());
       assertNull(factory.getAnnotations());
       assertNull(factory.getClassLoader());
@@ -398,6 +436,7 @@ public class BeanFactoryJaxbTestCase extends AbstractMCTest
       assertNull(factory.getName());
       assertEquals("Dummy", factory.getBean());
       assertNull(factory.getMode());
+      assertNull(factory.getFactoryClass());
       assertNull(factory.getAccessMode());
       assertNull(factory.getAnnotations());
       assertNull(factory.getClassLoader());
@@ -424,6 +463,7 @@ public class BeanFactoryJaxbTestCase extends AbstractMCTest
       assertNull(factory.getName());
       assertEquals("Dummy", factory.getBean());
       assertNull(factory.getMode());
+      assertNull(factory.getFactoryClass());
       assertNull(factory.getAccessMode());
       assertNull(factory.getAnnotations());
       assertNull(factory.getClassLoader());
@@ -448,6 +488,7 @@ public class BeanFactoryJaxbTestCase extends AbstractMCTest
       assertNull(factory.getName());
       assertEquals("Dummy", factory.getBean());
       assertNull(factory.getMode());
+      assertNull(factory.getFactoryClass());
       assertNull(factory.getAccessMode());
       assertNull(factory.getAnnotations());
       assertNull(factory.getClassLoader());
@@ -474,6 +515,7 @@ public class BeanFactoryJaxbTestCase extends AbstractMCTest
       assertNull(factory.getName());
       assertEquals("Dummy", factory.getBean());
       assertNull(factory.getMode());
+      assertNull(factory.getFactoryClass());
       assertNull(factory.getAccessMode());
       assertNull(factory.getAnnotations());
       assertNull(factory.getClassLoader());
@@ -498,6 +540,7 @@ public class BeanFactoryJaxbTestCase extends AbstractMCTest
       assertNull(factory.getName());
       assertEquals("Dummy", factory.getBean());
       assertNull(factory.getMode());
+      assertNull(factory.getFactoryClass());
       assertNull(factory.getAccessMode());
       assertNull(factory.getAnnotations());
       assertNull(factory.getClassLoader());
@@ -524,6 +567,7 @@ public class BeanFactoryJaxbTestCase extends AbstractMCTest
       assertNull(factory.getName());
       assertEquals("Dummy", factory.getBean());
       assertNull(factory.getMode());
+      assertNull(factory.getFactoryClass());
       assertNull(factory.getAccessMode());
       assertNull(factory.getAnnotations());
       assertNull(factory.getClassLoader());
@@ -548,6 +592,7 @@ public class BeanFactoryJaxbTestCase extends AbstractMCTest
       assertNull(factory.getName());
       assertEquals("Dummy", factory.getBean());
       assertNull(factory.getMode());
+      assertNull(factory.getFactoryClass());
       assertNull(factory.getAccessMode());
       assertNull(factory.getAnnotations());
       assertNull(factory.getClassLoader());
@@ -574,6 +619,7 @@ public class BeanFactoryJaxbTestCase extends AbstractMCTest
       assertNull(factory.getName());
       assertEquals("Dummy", factory.getBean());
       assertNull(factory.getMode());
+      assertNull(factory.getFactoryClass());
       assertNull(factory.getAccessMode());
       assertNull(factory.getAnnotations());
       assertNull(factory.getClassLoader());
@@ -598,6 +644,7 @@ public class BeanFactoryJaxbTestCase extends AbstractMCTest
       assertNull(factory.getName());
       assertEquals("Dummy", factory.getBean());
       assertNull(factory.getMode());
+      assertNull(factory.getFactoryClass());
       assertNull(factory.getAccessMode());
       assertNull(factory.getAnnotations());
       assertNull(factory.getClassLoader());

@@ -29,6 +29,7 @@ import org.jboss.beans.metadata.plugins.factory.GenericBeanFactoryMetaData;
 import org.jboss.beans.metadata.spi.factory.BeanFactory;
 import org.jboss.test.kernel.config.support.SimpleBean;
 import org.jboss.test.kernel.config.support.SimpleBeanFactory;
+import org.jboss.test.kernel.config.support.MyBeanFactory;
 
 /**
  * GenericFactory Instantiation Test Case.
@@ -128,6 +129,21 @@ public class GenericFactoryInstantiateTestCase extends AbstractKernelConfigTest
    protected BeanFactory configureFromIllegalClass() throws Throwable
    {
       GenericBeanFactoryMetaData factory = new GenericBeanFactoryMetaData("Factory", "org.jboss.test.NoSuchClass");
+      return (BeanFactory)instantiate(factory);
+   }
+
+   public void testBeanFactoryDefinedFactoryClass() throws Throwable
+   {
+      BeanFactory factory = configureFromDefinedFactoryClass();
+      assertNotNull(factory);
+      assertInstanceOf(factory, MyBeanFactory.class);
+      assertEquals("foobar", factory.createBean());
+   }
+
+   protected BeanFactory configureFromDefinedFactoryClass() throws Throwable
+   {
+      GenericBeanFactoryMetaData factory = new GenericBeanFactoryMetaData("Factory", SimpleBean.class.getName());
+      factory.setFactoryClass(MyBeanFactory.class.getName());
       return (BeanFactory)instantiate(factory);
    }
 }

@@ -375,6 +375,8 @@ public class BeanSchemaBinding
                   bean.setName(attrs.getValue(i));
                else if ("class".equals(localName))
                   bean.setBeanClass(attrs.getValue(i));
+               else if ("factoryClass".equals(localName))
+                  bean.setFactoryClass(attrs.getValue(i));
                else if ("mode".equals(localName))
                   bean.setMode(ControllerMode.getInstance(attrs.getValue(i)));
             }

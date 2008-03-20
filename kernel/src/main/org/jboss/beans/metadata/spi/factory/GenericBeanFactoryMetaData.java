@@ -28,12 +28,12 @@ import java.util.HashSet;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Set;
-
 import javax.xml.bind.annotation.XmlAttribute;
 import javax.xml.bind.annotation.XmlElement;
 import javax.xml.bind.annotation.XmlRootElement;
 import javax.xml.bind.annotation.XmlType;
 
+import org.jboss.beans.info.spi.BeanAccessMode;
 import org.jboss.beans.metadata.plugins.AbstractAliasMetaData;
 import org.jboss.beans.metadata.plugins.AbstractAnnotationMetaData;
 import org.jboss.beans.metadata.plugins.AbstractClassLoaderMetaData;
@@ -67,7 +67,6 @@ import org.jboss.beans.metadata.spi.SupplyMetaData;
 import org.jboss.beans.metadata.spi.ValueMetaData;
 import org.jboss.beans.metadata.spi.builder.BeanMetaDataBuilder;
 import org.jboss.beans.metadata.spi.builder.ParameterMetaDataBuilder;
-import org.jboss.beans.info.spi.BeanAccessMode;
 import org.jboss.dependency.spi.ControllerMode;
 import org.jboss.kernel.plugins.bootstrap.basic.KernelConstants;
 import org.jboss.kernel.spi.config.KernelConfigurator;
@@ -90,6 +89,9 @@ public class GenericBeanFactoryMetaData extends JBossObject implements BeanMetaD
    
    /** The bean class name */
    protected String bean;
+
+   /** The bean factory class name */
+   protected String factoryClass;
 
    /** The access mode */
    protected BeanAccessMode accessMode;
@@ -179,6 +181,30 @@ public class GenericBeanFactoryMetaData extends JBossObject implements BeanMetaD
    public void setBean(String bean)
    {
       this.bean = bean;
+   }
+
+   /**
+    * Get the factory class.
+    *
+    * @return the factory class
+    */
+   public String getFactoryClass()
+   {
+      return factoryClass;
+   }
+
+   /**
+    * Set the factory class.
+
+    * Note: this class param must either extend GenericBeanFactory
+    * or have the same constructor and properties aka 'callbacks'.
+    *
+    * @param factoryClass the factory class
+    */
+   @XmlAttribute(name="factoryClass")
+   public void setFactoryClass(String factoryClass)
+   {
+      this.factoryClass = factoryClass;
    }
 
    /**
@@ -530,7 +556,10 @@ public class GenericBeanFactoryMetaData extends JBossObject implements BeanMetaD
             throw new IllegalArgumentException("BeanFactory should have a class attribute or the constructor element should have a either a factoryClass attribute or a factory element.");
       }
 
-      BeanMetaDataBuilder builder = BeanMetaDataBuilder.createBuilder(name, GenericBeanFactory.class.getName());
+      if (getFactoryClass() == null)
+         setFactoryClass(GenericBeanFactory.class.getName());
+
+      BeanMetaDataBuilder builder = BeanMetaDataBuilder.createBuilder(name, getFactoryClass());
       if (aliases != null)
       {
          Set<Object> theAliases = new HashSet<Object>();
@@ -608,6 +637,9 @@ public class GenericBeanFactoryMetaData extends JBossObject implements BeanMetaD
 
    /**
     * Add the parameters
+    *
+    * @param builder parameter builder
+    * @param metadata parameter metadata
     */
    private void setParameters(ParameterMetaDataBuilder builder, ParameterizedMetaData metadata)
    {

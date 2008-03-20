@@ -44,26 +44,30 @@ public class GenericFactoryInstantiateXMLTestCase extends GenericFactoryInstanti
 
    protected BeanFactory configureFromBean() throws Throwable
    {
-      return configurefactory();
+      return configureFactory();
    }
 
    protected BeanFactory configureFromFactory() throws Throwable
    {
-      return configurefactory();
+      return configureFactory();
    }
 
    protected BeanFactory configureFromStaticFactory() throws Throwable
    {
-      return configurefactory();
+      return configureFactory();
    }
 
    protected BeanFactory configureFromIllegalClass() throws Throwable
    {
-      return configurefactory();
+      return configureFactory();
    }
 
-   protected BeanFactory configurefactory()
-         throws Throwable
+   protected BeanFactory configureFromDefinedFactoryClass() throws Throwable
+   {
+      return configureFactory();
+   }
+
+   protected BeanFactory configureFactory() throws Throwable
    {
       XMLUtil util = bootstrapXML(true);
       return (BeanFactory) util.getBean("Factory");

@@ -213,8 +213,16 @@ public class GenericBeanFactoryMetaData extends AbstractBeanMetaData
       properties.add(new AbstractPropertyMetaData("start", new AbstractValueMetaData(lifecycle)));
    }
 
-   public void setBean(String bean)
+   /**
+    * Set the bean factory class.
+    *
+    * Note: this class param must either extend GenericBeanFactory
+    * or have the same constructor and properties aka 'callbacks'.
+    *
+    * @param factoryClass the factory class
+    */
+   public void setFactoryClass(String factoryClass)
    {
-      super.setBean(bean);
+      setBean(factoryClass);
    }
 }

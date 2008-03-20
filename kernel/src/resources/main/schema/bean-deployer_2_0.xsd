@@ -160,7 +160,6 @@ $Id$
 -->
       </xsd:sequence>
       <xsd:attribute name="name" type="xsd:string" use="optional"/>
-      <xsd:attribute name="access-mode" type="accessModeType" use="optional"/>
    </xsd:complexType>
 
    <xsd:complexType name="beanfactoryType">
@@ -191,12 +190,13 @@ $Id$
               }
            }
            ]]>
-           
          </xsd:documentation>
       </xsd:annotation>
       <xsd:complexContent>
          <xsd:extension base="abstractBeanfactoryType">
             <xsd:attribute name="class" type="xsd:token" use="required"/>
+            <xsd:attribute name="access-mode" type="accessModeType" use="optional"/>
+            <xsd:attribute name="factoryClass" type="xsd:token" use="optional"/>
          </xsd:extension>
       </xsd:complexContent>
    </xsd:complexType>
