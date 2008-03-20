@@ -44,11 +44,12 @@ public class MetaDataContextInterceptor implements Interceptor
       joinpointAnnotation = null;
    }
    
+   @SuppressWarnings("unchecked")
    public void setAnnotation(String annotationType)
    {
       try
       {
-         this.annotationType = (Class<? extends Annotation>)Thread.currentThread().getContextClassLoader().loadClass(annotationType);
+         this.annotationType = (Class) Thread.currentThread().getContextClassLoader().loadClass(annotationType);
       }
       catch (ClassNotFoundException e)
       {

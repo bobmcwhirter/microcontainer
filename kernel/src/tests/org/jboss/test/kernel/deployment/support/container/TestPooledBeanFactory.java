@@ -33,12 +33,12 @@ import org.jboss.kernel.spi.config.KernelConfigurator;
 public class TestPooledBeanFactory extends GenericBeanFactory
 {
    /** The pooling policy */
-   private ArrayBlockingQueue pool;
+   private ArrayBlockingQueue<Object> pool;
 
    public TestPooledBeanFactory(KernelConfigurator configurator, int size)
    {
       super(configurator);
-      pool = new ArrayBlockingQueue(size);
+      pool = new ArrayBlockingQueue<Object>(size);
    }
 
    @Override

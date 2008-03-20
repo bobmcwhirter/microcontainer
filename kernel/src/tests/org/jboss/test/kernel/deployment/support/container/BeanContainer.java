@@ -24,6 +24,7 @@ package org.jboss.test.kernel.deployment.support.container;
 import org.jboss.beans.metadata.spi.factory.BeanFactory;
 
 /**
+ * @param <T> the type
  * @author Scott.Stark@jboss.org
  * @version $Revision$
  */
@@ -44,8 +45,8 @@ public class BeanContainer<T>
    }
 
 
-   public T getBean()
-      throws Throwable
+   @SuppressWarnings("unchecked")
+   public T getBean() throws Throwable
    {
       T bean = (T) factory.createBean();
       return bean;
