@@ -6,9 +6,9 @@
       <constructor factoryClass="org.jboss.aop.AspectManager" factoryMethod="instance"/>
    </bean>
 
-   <aop:interceptor xmlns:aop="urn:jboss:aop-beans:1.0" name="InterceptedAdvice" class="org.jboss.test.microcontainer.support.InterceptorWithDependency">
+   <interceptor xmlns="urn:jboss:aop-beans:1.0" name="InterceptedAdvice" class="org.jboss.test.microcontainer.support.InterceptorWithDependency">
       <property name="simpleBean"><inject bean="Dependency"/></property>
-   </aop:interceptor>
+   </interceptor>
    
    <bind xmlns="urn:jboss:aop-beans:1.0" pointcut="execution(* $instanceof{org.jboss.test.microcontainer.support.MarkerInterface}->*(..))">
       <interceptor-ref name="InterceptedAdvice"/>

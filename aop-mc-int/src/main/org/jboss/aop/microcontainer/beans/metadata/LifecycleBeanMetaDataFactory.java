@@ -62,13 +62,13 @@ public abstract class LifecycleBeanMetaDataFactory extends AspectManagerAwareBea
       this.expr = classes;
    }
    
-   @XmlAttribute
+   @XmlAttribute(name="install")
    public void setInstallMethod(String installMethod)
    {
       this.installMethod = installMethod;
    }
 
-   @XmlAttribute
+   @XmlAttribute(name="uninstall")
    public void setUninstallMethod(String uninstallMethod)
    {
       this.uninstallMethod = uninstallMethod;
@@ -82,12 +82,15 @@ public abstract class LifecycleBeanMetaDataFactory extends AspectManagerAwareBea
 
       //Do not include the bean factory here, just install the bean directly and the binding
       BeanMetaDataBuilder lifecycleBuilder = BeanMetaDataBuilder.createBuilder(name, getBean());
-      for (PropertyMetaData pmd : properties)
+      if (properties != null && properties.size() > 0)
       {
-         lifecycleBuilder.addPropertyMetaData(pmd.getName(), pmd.getValue());   
+         for (PropertyMetaData pmd : properties)
+         {
+            lifecycleBuilder.addPropertyMetaData(pmd.getName(), pmd.getValue());   
+         }
       }
       Set<DependencyMetaData> depends = getDepends();
-      if (depends != null)
+      if (depends != null && depends.size() > 0)
       {
          for (DependencyMetaData depend : depends)
          {

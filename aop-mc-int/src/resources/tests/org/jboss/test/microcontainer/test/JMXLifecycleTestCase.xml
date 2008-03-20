@@ -10,12 +10,12 @@
       <constructor factoryClass="org.jboss.aop.AspectManager" factoryMethod="instance"/>
    </bean>
 
-   <aop:lifecycle-configure xmlns:aop="urn:jboss:aop-beans:1.0"
+   <lifecycle-configure xmlns="urn:jboss:aop-beans:1.0"
                name="DependencyAdvice"
                class="org.jboss.aop.microcontainer.aspects.jmx.JMXLifecycleCallback"
                classes="@org.jboss.aop.microcontainer.aspects.jmx.JMX">
       <property name="mbeanServer"><inject bean="MBeanServer"/></property>
-   </aop:lifecycle-configure>
+   </lifecycle-configure>
 
    <bean name="Bean" class="org.jboss.test.microcontainer.support.SimpleBeanImpl">
       <annotation>@org.jboss.aop.microcontainer.aspects.jmx.JMX(name="", exposedInterface=org.jboss.test.microcontainer.support.SimpleBean.class)</annotation>

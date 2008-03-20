@@ -43,7 +43,7 @@
       <typedef name="TypeDef" expr="class(org.jboss.test.microcontainer.beans.POJO)"/>
    
       <aspect class="org.jboss.test.microcontainer.beans.TestAspectWithProperty">
-         <mc:property xmlns:mc="urn:jboss:bean-deployer:2.0" name="someProperty">This is only a test</mc:property>
+         <property xmlns:mc="urn:jboss:bean-deployer:2.0" name="someProperty">This is only a test</property>
       </aspect>
 
       <interceptor class="org.jboss.test.microcontainer.beans.TestInterceptor"/>

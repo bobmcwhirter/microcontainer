@@ -10,41 +10,41 @@
       <constructor factoryClass="org.jboss.aop.AspectManager" factoryMethod="instance"/>
    </bean>
 
-   <aop:lifecycle-configure
+   <lifecycle-configure
                name="ConfigureAdvice"
                class="org.jboss.test.microcontainer.support.LifecycleCallback"
                classes="@org.jboss.test.microcontainer.support.Configure">
-   </aop:lifecycle-configure>
+   </lifecycle-configure>
 
-   <aop:lifecycle-create
+   <lifecycle-create
                name="CreateAdvice"
                class="org.jboss.test.microcontainer.support.LifecycleCallback"
                classes="@org.jboss.test.microcontainer.support.Create">
-   </aop:lifecycle-create>
+   </lifecycle-create>
 
-   <aop:lifecycle-describe
+   <lifecycle-describe
                name="DescribeAdvice"
                class="org.jboss.test.microcontainer.support.LifecycleCallback"
                classes="@org.jboss.test.microcontainer.support.Describe">
-   </aop:lifecycle-describe>
+   </lifecycle-describe>
 
-   <aop:lifecycle-install
+   <lifecycle-install
                name="InstallAdvice"
                class="org.jboss.test.microcontainer.support.LifecycleCallback"
                classes="@org.jboss.test.microcontainer.support.Install">
-   </aop:lifecycle-install>
+   </lifecycle-install>
 
-   <aop:lifecycle-instantiate
+   <lifecycle-instantiate
                name="InstantiateAdvice"
                class="org.jboss.test.microcontainer.support.LifecycleCallback"
                classes="@org.jboss.test.microcontainer.support.Instantiate">
-   </aop:lifecycle-instantiate>
+   </lifecycle-instantiate>
 
-   <aop:lifecycle-start
+   <lifecycle-start
                name="StartAdvice"
                class="org.jboss.test.microcontainer.support.LifecycleCallback"
                classes="@org.jboss.test.microcontainer.support.Start">
-   </aop:lifecycle-start>
+   </lifecycle-start>
 
    <bean name="ConfigureBean" class="org.jboss.test.microcontainer.support.SimpleBeanImpl">
       <annotation>@org.jboss.test.microcontainer.support.Configure</annotation>
