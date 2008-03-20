@@ -38,9 +38,9 @@ import java.util.Set;
  * @author <a href="adrian@jboss.com">Adrian Brock</a>
  * @version $Revision$
  */
-public class SimpleBean implements Serializable
+public class SimpleBean extends SimplerBean implements Serializable
 {
-   public enum Alphabet {A, B, C, D, E, F, G, H, I, J, K, L, M, N, O, P, Q, R, S, T, U, V, X, Y, Z};
+   public enum Alphabet {A, B, C, D, E, F, G, H, I, J, K, L, M, N, O, P, Q, R, S, T, U, V, X, Y, Z}
 
    // Constants -----------------------------------------------------
 
@@ -120,20 +120,11 @@ public class SimpleBean implements Serializable
    /** collection */
    private Collection<?> collection;
 
-   /** preInstantiated */
-   private CustomCollection preInstantiatedCollection = new CustomCollection(true);
-
    /** set */
    private Set<?> set;
 
-   /** preInstantiated */
-   private CustomSet preInstantiatedSet = new CustomSet(true);
-
    /** list */
    private List<?> list;
-
-   /** preInstantiated */
-   private CustomList preInstantiatedList = new CustomList(true);
 
    /** array */
    private Object[] array;
@@ -144,9 +135,6 @@ public class SimpleBean implements Serializable
    /** map */
    private Map<?,?> map;
 
-   /** preInstantiated */
-   private CustomMap preInstantiatedMap = new CustomMap(true);
-   
    /** Overloaded property */
    private String overloadedProperty;
 
@@ -177,17 +165,15 @@ public class SimpleBean implements Serializable
 
    public SimpleBean(String string)
    {
+      super(string);
       constructorUsed = string;
       aString = string;
-      preInstantiatedCollection.add(string);
-      preInstantiatedList.add(string);
-      preInstantiatedSet.add(string);
       preInstantiatedArray = new Object[]{string};
    }
 
    public SimpleBean(String string1, String string2)
    {
-      preInstantiatedMap.put(string1,  string2);
+      super(string1, string2);
    }
 
    public SimpleBean(Integer integer)
@@ -485,11 +471,6 @@ public class SimpleBean implements Serializable
       this.set = set;
    }
 
-   public CustomSet getPreInstantiatedSet()
-   {
-      return preInstantiatedSet;
-   }
-   
    public void setPreInstantiatedSet(CustomSet preInstantiatedSet)
    {
       this.preInstantiatedSet = preInstantiatedSet;
@@ -515,11 +496,6 @@ public class SimpleBean implements Serializable
       this.collection = collection;
    }
 
-   public CustomCollection getPreInstantiatedCollection()
-   {
-      return preInstantiatedCollection;
-   }
-   
    public void setPreInstantiatedCollection(CustomCollection preInstantiatedCollection)
    {
       this.preInstantiatedCollection = preInstantiatedCollection;
@@ -545,11 +521,6 @@ public class SimpleBean implements Serializable
       this.list = list;
    }
 
-   public CustomList getPreInstantiatedList()
-   {
-      return preInstantiatedList;
-   }
-   
    public void setPreInstantiatedList(CustomList preInstantiatedList)
    {
       this.preInstantiatedList = preInstantiatedList;
@@ -605,11 +576,6 @@ public class SimpleBean implements Serializable
       this.map = map;
    }
 
-   public CustomMap getPreInstantiatedMap()
-   {
-      return preInstantiatedMap;
-   }
-   
    public void setPreInstantiatedMap(CustomMap preInstantiatedMap)
    {
       this.preInstantiatedMap = preInstantiatedMap;

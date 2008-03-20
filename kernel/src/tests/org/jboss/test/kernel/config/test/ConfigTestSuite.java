@@ -87,6 +87,8 @@ public class ConfigTestSuite extends TestSuite
       suite.addTest(ValueTrimTestCase.suite());
       suite.addTest(ValueTrimXMLTestCase.suite());
       suite.addTest(ValueTrimAnnotationTestCase.suite());
+      suite.addTest(PreInstantiatedFieldsTestCase.suite());
+      suite.addTest(PreInstantiatedFieldsXMLTestCase.suite());
 
       return suite;
    }
