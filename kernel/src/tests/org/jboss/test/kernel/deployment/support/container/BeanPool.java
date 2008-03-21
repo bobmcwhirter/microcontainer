@@ -26,6 +26,8 @@ import java.util.concurrent.ArrayBlockingQueue;
 import org.jboss.beans.metadata.spi.factory.BeanFactory;
 
 /**
+ * 
+ * @param <T> the type
  * @author Scott.Stark@jboss.org
  * @version $Revision$
  */
@@ -45,6 +47,7 @@ public class BeanPool<T>
       this.factory = factory;
    }
 
+   @SuppressWarnings("unchecked")
    public synchronized T createBean()
       throws Throwable
    {
