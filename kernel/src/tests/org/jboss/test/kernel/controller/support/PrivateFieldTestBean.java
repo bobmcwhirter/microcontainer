@@ -29,6 +29,7 @@ package org.jboss.test.kernel.controller.support;
  */
 public class PrivateFieldTestBean
 {
+   @SuppressWarnings("unused")
    private String privateString;
 
    public String getPrivateStringNotGetter()

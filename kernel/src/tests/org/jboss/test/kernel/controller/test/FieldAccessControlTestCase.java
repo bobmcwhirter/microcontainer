@@ -31,7 +31,7 @@ import org.jboss.kernel.spi.deployment.KernelDeployment;
 import org.jboss.test.kernel.controller.support.PrivateFieldTestBean;
 
 /**
- * AccessControl Test Case.
+ * FieldAccessControl Test Case.
  * 
  * @author <a href="adrian@jboss.com">Adrian Brock</a>
  * @version $Revision: 38046 $
