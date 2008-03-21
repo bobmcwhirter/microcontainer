@@ -32,7 +32,6 @@ import junit.framework.Test;
  */
 public class GuiceTestSuite extends TestSuite
 {
-
    public static void main(String[] args)
    {
       TestRunner.run(suite());
@@ -48,5 +47,4 @@ public class GuiceTestSuite extends TestSuite
 
       return suite;
    }
-
 }

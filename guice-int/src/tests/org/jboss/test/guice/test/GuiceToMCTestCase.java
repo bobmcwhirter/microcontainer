@@ -49,7 +49,7 @@ import org.jboss.test.kernel.junit.MicrocontainerTest;
  *
  * @author <a href="mailto:ales.justin@jboss.com">Ales Justin</a>
  */
-public class GuiceToMCTestCase extends MicrocontainerTest
+public class GuiceToMCTestCase extends AbstractGuiceTest
 {
    public GuiceToMCTestCase(String name)
    {
@@ -64,13 +64,6 @@ public class GuiceToMCTestCase extends MicrocontainerTest
    public static Test suite()
    {
       return suite(GuiceToMCTestCase.class);
-   }
-
-   private KernelController getController()
-   {
-      BasicBootstrap bootstrap = new BasicBootstrap();
-      bootstrap.run();
-      return bootstrap.getKernel().getController();
    }
 
    public void testGuice2MC() throws Throwable

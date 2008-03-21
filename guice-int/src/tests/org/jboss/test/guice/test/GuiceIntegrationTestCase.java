@@ -21,29 +21,26 @@
 */
 package org.jboss.test.guice.test;
 
-import org.jboss.test.kernel.junit.MicrocontainerTest;
-import org.jboss.test.guice.support.Singleton;
-import org.jboss.test.guice.support.Prototype;
-import org.jboss.kernel.spi.dependency.KernelController;
-import org.jboss.kernel.plugins.bootstrap.basic.BasicBootstrap;
-import org.jboss.beans.metadata.spi.BeanMetaData;
-import org.jboss.beans.metadata.plugins.AbstractBeanMetaData;
-import org.jboss.beans.metadata.plugins.factory.GenericBeanFactoryMetaData;
-import org.jboss.dependency.spi.Controller;
-import org.jboss.guice.spi.GuiceIntegration;
-import junit.framework.Test;
-import com.google.inject.Injector;
-import com.google.inject.Guice;
 import com.google.inject.AbstractModule;
+import com.google.inject.Guice;
+import com.google.inject.Injector;
 import com.google.inject.Key;
 import com.google.inject.name.Names;
+import junit.framework.Test;
+import org.jboss.beans.metadata.plugins.AbstractBeanMetaData;
+import org.jboss.beans.metadata.spi.BeanMetaData;
+import org.jboss.dependency.spi.Controller;
+import org.jboss.guice.spi.GuiceIntegration;
+import org.jboss.kernel.spi.dependency.KernelController;
+import org.jboss.test.guice.support.Prototype;
+import org.jboss.test.guice.support.Singleton;
 
 /**
  * Guice integration test case.
  *
  * @author <a href="mailto:ales.justin@jboss.com">Ales Justin</a>
  */
-public class GuiceIntegrationTestCase extends MicrocontainerTest
+public class GuiceIntegrationTestCase extends AbstractGuiceTest
 {
    public GuiceIntegrationTestCase(String name)
    {
@@ -60,21 +57,13 @@ public class GuiceIntegrationTestCase extends MicrocontainerTest
       return suite(GuiceIntegrationTestCase.class);
    }
 
-   protected KernelController getController()
-   {
-      BasicBootstrap bootstrap = new BasicBootstrap();
-      bootstrap.run();
-      return bootstrap.getKernel().getController();
-   }
-
    protected void installBeans(KernelController controller)
          throws Throwable
    {
       BeanMetaData singleton = new AbstractBeanMetaData("singleton", Singleton.class.getName());
       controller.install(singleton);
 
-      BeanMetaData prototype = new GenericBeanFactoryMetaData("prototype", Prototype.class.getName());
-      controller.install(prototype);
+      installFactory(controller, "prototype", Prototype.class);
    }
 
    public void testBindFromMicrocontainer() throws Throwable

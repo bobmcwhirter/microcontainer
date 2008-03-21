@@ -21,38 +21,35 @@
 */
 package org.jboss.test.guice.test;
 
-import java.util.List;
 import java.util.ArrayList;
+import java.util.List;
 
-import junit.framework.Test;
-import org.jboss.kernel.plugins.bootstrap.basic.BasicBootstrap;
-import org.jboss.kernel.plugins.bootstrap.basic.KernelConstants;
-import org.jboss.kernel.spi.dependency.KernelController;
-import org.jboss.test.kernel.junit.MicrocontainerTest;
-import org.jboss.test.guice.support.Prototype;
-import org.jboss.test.guice.support.Singleton;
-import org.jboss.guice.plugins.GuiceInjectorFactory;
-import org.jboss.guice.plugins.GuiceObject;
-import org.jboss.beans.metadata.spi.ParameterMetaData;
-import org.jboss.beans.metadata.spi.BeanMetaData;
-import org.jboss.beans.metadata.plugins.AbstractBeanMetaData;
-import org.jboss.beans.metadata.plugins.AbstractConstructorMetaData;
-import org.jboss.beans.metadata.plugins.AbstractParameterMetaData;
-import org.jboss.beans.metadata.plugins.AbstractValueMetaData;
-import org.jboss.beans.metadata.plugins.AbstractArrayMetaData;
-import org.jboss.beans.metadata.plugins.AbstractDependencyValueMetaData;
-import org.jboss.beans.metadata.plugins.factory.GenericBeanFactoryMetaData;
-import org.jboss.dependency.spi.ControllerContext;
 import com.google.inject.Injector;
 import com.google.inject.Key;
 import com.google.inject.name.Names;
+import junit.framework.Test;
+import org.jboss.beans.metadata.plugins.AbstractArrayMetaData;
+import org.jboss.beans.metadata.plugins.AbstractBeanMetaData;
+import org.jboss.beans.metadata.plugins.AbstractConstructorMetaData;
+import org.jboss.beans.metadata.plugins.AbstractDependencyValueMetaData;
+import org.jboss.beans.metadata.plugins.AbstractParameterMetaData;
+import org.jboss.beans.metadata.plugins.AbstractValueMetaData;
+import org.jboss.beans.metadata.spi.BeanMetaData;
+import org.jboss.beans.metadata.spi.ParameterMetaData;
+import org.jboss.dependency.spi.ControllerContext;
+import org.jboss.guice.plugins.GuiceInjectorFactory;
+import org.jboss.guice.plugins.GuiceObject;
+import org.jboss.kernel.plugins.bootstrap.basic.KernelConstants;
+import org.jboss.kernel.spi.dependency.KernelController;
+import org.jboss.test.guice.support.Prototype;
+import org.jboss.test.guice.support.Singleton;
 
 /**
  * Guice test case via installed objects.
  * 
  * @author <a href="mailto:ales.justin@jboss.com">Ales Justin</a>
  */
-public class GuiceObjectsTestCase extends MicrocontainerTest
+public class GuiceObjectsTestCase extends AbstractGuiceTest
 {
    public GuiceObjectsTestCase(String name)
    {
@@ -67,13 +64,6 @@ public class GuiceObjectsTestCase extends MicrocontainerTest
    public static Test suite()
    {
       return suite(GuiceObjectsTestCase.class);
-   }
-
-   private KernelController getController()
-   {
-      BasicBootstrap bootstrap = new BasicBootstrap();
-      bootstrap.run();
-      return bootstrap.getKernel().getController();
    }
 
 /*
@@ -128,8 +118,7 @@ public class GuiceObjectsTestCase extends MicrocontainerTest
          BeanMetaData singleton = new AbstractBeanMetaData("singleton", Singleton.class.getName());
          controller.install(singleton);
 
-         BeanMetaData prototype = new GenericBeanFactoryMetaData("prototype", Prototype.class.getName());
-         controller.install(prototype);
+         installFactory(controller, "prototype", Prototype.class);
 
          AbstractBeanMetaData injectorBean = new AbstractBeanMetaData("injector", GuiceInjectorFactory.class.getName());
          AbstractConstructorMetaData constructor = new AbstractConstructorMetaData();
