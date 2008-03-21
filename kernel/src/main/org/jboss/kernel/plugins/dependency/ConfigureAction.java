@@ -105,6 +105,16 @@ public class ConfigureAction extends AbstractConfigureAction
          throws Throwable
    {
       ExecutionWrapper wrapper = new PropertyDispatchWrapper(property, nullify, info, target, cl);
-      dispatchExecutionWrapper(context, wrapper);
+      try
+      {
+          dispatchExecutionWrapper(context, wrapper);
+      }
+      catch (Throwable t)
+      {
+         if (nullify == false)
+            throw new RuntimeException("Error configuring property: " + property.getName() + " for " + context.getName(), t);
+         else
+            throw t;
+      }
    }
 }
