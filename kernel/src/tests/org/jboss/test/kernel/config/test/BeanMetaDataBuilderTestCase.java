@@ -29,13 +29,15 @@ import java.util.Map;
 import java.util.Set;
 
 import junit.framework.Test;
-import org.jboss.beans.metadata.plugins.builder.BeanMetaDataBuilderFactory;
 import org.jboss.beans.metadata.plugins.InstallCallbackMetaData;
 import org.jboss.beans.metadata.plugins.UninstallCallbackMetaData;
+import org.jboss.beans.metadata.plugins.builder.BeanMetaDataBuilderFactory;
 import org.jboss.beans.metadata.spi.BeanMetaData;
-import org.jboss.beans.metadata.spi.ValueMetaData;
 import org.jboss.beans.metadata.spi.CallbackMetaData;
+import org.jboss.beans.metadata.spi.ValueMetaData;
 import org.jboss.beans.metadata.spi.builder.BeanMetaDataBuilder;
+import org.jboss.dependency.spi.Cardinality;
+import org.jboss.dependency.spi.ControllerState;
 import org.jboss.kernel.Kernel;
 import org.jboss.kernel.plugins.deployment.AbstractKernelDeployer;
 import org.jboss.kernel.plugins.deployment.AbstractKernelDeployment;
@@ -44,10 +46,8 @@ import org.jboss.kernel.spi.dependency.KernelControllerContext;
 import org.jboss.test.kernel.config.support.SimpleBean;
 import org.jboss.test.kernel.config.support.SimpleCallbackBean;
 import org.jboss.test.kernel.config.support.SimpleLifecycleBean;
-import org.jboss.test.kernel.config.support.TrimTransformer;
 import org.jboss.test.kernel.config.support.Transformer;
-import org.jboss.dependency.spi.ControllerState;
-import org.jboss.dependency.spi.Cardinality;
+import org.jboss.test.kernel.config.support.TrimTransformer;
 
 /**
  * Builder TestCase.
@@ -99,12 +99,12 @@ public class BeanMetaDataBuilderTestCase extends AbstractKernelConfigTest
       Kernel kernel = bootstrap();
 
       BeanMetaDataBuilder builder = BeanMetaDataBuilderFactory.createBuilder("SLB", SimpleLifecycleBean.class.getName())
-         .addCreateParameter(String.class.getName(), "ParamCreate")
-         .setStart("doStart")
-         .addStartParameter(String.class.getName(), "ParamStart")
-         .setStop("doStop")
-         .addStopParameter(String.class.getName(), "ParamStop")
-         .addDestroyParameter(String.class.getName(), "ParamDestroy");
+            .addCreateParameter(String.class.getName(), "ParamCreate")
+            .setStart("doStart")
+            .addStartParameter(String.class.getName(), "ParamStart")
+            .setStop("doStop")
+            .addStopParameter(String.class.getName(), "ParamStop")
+            .addDestroyParameter(String.class.getName(), "ParamDestroy");
       BeanMetaData beanMetaData = builder.getBeanMetaData();
 
       KernelController controller = kernel.getController();
@@ -127,8 +127,8 @@ public class BeanMetaDataBuilderTestCase extends AbstractKernelConfigTest
       Kernel kernel = bootstrap();
 
       BeanMetaDataBuilder builder = BeanMetaDataBuilderFactory.createBuilder("SLB", SimpleLifecycleBean.class.getName())
-         .addInstall("installParam", String.class.getName(), "Install")
-         .addUninstall("uninstallParam", String.class.getName(), "Uninstall");
+            .addInstall("installParam", String.class.getName(), "Install")
+            .addUninstall("uninstallParam", String.class.getName(), "Uninstall");
       BeanMetaData beanMetaData = builder.getBeanMetaData();
 
       KernelController controller = kernel.getController();
@@ -177,7 +177,7 @@ public class BeanMetaDataBuilderTestCase extends AbstractKernelConfigTest
    }
 
    @SuppressWarnings("deprecation")
-      public void testDependency() throws Throwable
+   public void testDependency() throws Throwable
    {
       BeanMetaDataBuilder dependOn = BeanMetaDataBuilderFactory.createBuilder("DependOnBean", SimpleBean.class.getName());
       dependOn.addDependency("DependencyResolver");
@@ -208,35 +208,35 @@ public class BeanMetaDataBuilderTestCase extends AbstractKernelConfigTest
    }
 
    @SuppressWarnings("deprecation")
-      public void testCollectionProperties() throws Throwable
+   public void testCollectionProperties() throws Throwable
    {
       BeanMetaDataBuilder builder = BeanMetaDataBuilderFactory.createBuilder("CollectionBean", SimpleBean.class.getName());
-      
-      List<ValueMetaData> array =  builder.createArray();
+
+      List<ValueMetaData> array = builder.createArray();
       array.add(builder.createValue(new Integer(5)));
       array.add(builder.createValue(new Integer(10)));
       builder.addPropertyMetaData("array", array);
-      
+
       List<ValueMetaData> list = builder.createList();
       list.add(builder.createValue("One"));
       list.add(builder.createValue("Two"));
       builder.addPropertyMetaData("list", list);
-      
+
       Set<ValueMetaData> set = builder.createSet();
       set.add(builder.createValue("En"));
       set.add(builder.createValue("To"));
       builder.addPropertyMetaData("set", set);
-      
+
       Collection<ValueMetaData> collection = builder.createCollection();
       collection.add(builder.createValue("Eins"));
       collection.add(builder.createValue("Zwei"));
       builder.addPropertyMetaData("collection", collection);
-      
+
       Map<ValueMetaData, ValueMetaData> map = builder.createMap();
       map.put(builder.createValue("One"), builder.createValue("Uno"));
       map.put(builder.createValue("Two"), builder.createValue("Dos"));
       builder.addPropertyMetaData("map", map);
-      
+
       AbstractKernelDeployment deployment = new AbstractKernelDeployment();
       deployment.setBeans(Arrays.asList(builder.getBeanMetaData()));
 
@@ -282,34 +282,34 @@ public class BeanMetaDataBuilderTestCase extends AbstractKernelConfigTest
          deployer.undeploy(deployment);
       }
    }
-   
+
    @SuppressWarnings("deprecation")
-      public void testReplacePropertyMetaData() throws Throwable
+   public void testReplacePropertyMetaData() throws Throwable
    {
       BeanMetaDataBuilder builder = BeanMetaDataBuilderFactory.createBuilder("ReplaceBean", SimpleBean.class.getName());
-      
+
       builder.addPropertyMetaData("anInt", new Integer(1));
       builder.addPropertyMetaData("anInt", new Integer(5));
-      
+
       builder.addPropertyMetaData("AString", "One");
       builder.addPropertyMetaData("AString", "Two");
-      
+
       ValueMetaData value = builder.createValue("Three");
       builder.addPropertyMetaData("anObject", value);
       value = builder.createValue("Four");
       builder.addPropertyMetaData("anObject", value);
-      
-      List<ValueMetaData> array =  builder.createArray();
+
+      List<ValueMetaData> array = builder.createArray();
       builder.addPropertyMetaData("array", array);
-      
-      array =  builder.createArray();
+
+      array = builder.createArray();
       array.add(builder.createValue(new Integer(5)));
       array.add(builder.createValue(new Integer(10)));
       builder.addPropertyMetaData("array", array);
-      
+
       Map<ValueMetaData, ValueMetaData> map = builder.createMap();
       builder.addPropertyMetaData("map", map);
-      
+
       map = builder.createMap();
       map.put(builder.createValue("One"), builder.createValue("Uno"));
       map.put(builder.createValue("Two"), builder.createValue("Dos"));
