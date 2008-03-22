@@ -19,31 +19,35 @@
 * Software Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA
 * 02110-1301 USA, or see the FSF site: http://www.fsf.org.
 */
-package org.jboss.beans.metadata.plugins.builder;
+package org.jboss.test.kernel.config.support;
 
-import org.jboss.beans.metadata.plugins.AbstractBeanMetaData;
-import org.jboss.beans.metadata.plugins.AbstractInstallMetaData;
+import java.util.Set;
+import java.util.HashSet;
 
 /**
- * AbstractInstallMetaDataBuilder.
- *
- * @author <a href="ales.justin@jboss.com">Ales Justin</a>
- * @author <a href="adrian@jboss.com">Adrian Brock</a>
+ * @author <a href="mailto:ales.justin@jboss.com">Ales Justin</a>
  */
-public abstract class AbstractInstallMetaDataBuilder extends StateMetaDataBuilder<AbstractInstallMetaData>
+public class SimpleCallbackBean
 {
-   protected AbstractInstallMetaDataBuilder(AbstractBeanMetaData beanMetaData)
+   private Set<Transformer<?>> transformers = new HashSet<Transformer<?>>();
+
+   public Set<Transformer<?>> getTransformers()
    {
-      super(beanMetaData);
+      return transformers;
    }
 
-   protected AbstractInstallMetaData createLifecycleMetaData()
+   public void setTransformers(Set<Transformer<?>> transformers)
    {
-      return new AbstractInstallMetaData();
+      this.transformers = transformers;
    }
 
-   protected void applyAfterSet(AbstractInstallMetaData lifecycle)
+   public void addTransformer(Transformer<?> transformer)
    {
-      // do nothing
+      transformers.add(transformer);
+   }
+
+   public void removeTransformer(Transformer<?> transformer)
+   {
+      transformers.remove(transformer);
    }
 }

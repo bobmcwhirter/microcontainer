@@ -28,8 +28,10 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
+import org.jboss.beans.info.spi.BeanAccessMode;
 import org.jboss.beans.metadata.plugins.AbstractArrayMetaData;
 import org.jboss.beans.metadata.plugins.AbstractBeanMetaData;
+import org.jboss.beans.metadata.plugins.AbstractCallbackMetaData;
 import org.jboss.beans.metadata.plugins.AbstractClassLoaderMetaData;
 import org.jboss.beans.metadata.plugins.AbstractCollectionMetaData;
 import org.jboss.beans.metadata.plugins.AbstractConstructorMetaData;
@@ -54,15 +56,13 @@ import org.jboss.beans.metadata.spi.SupplyMetaData;
 import org.jboss.beans.metadata.spi.ValueMetaData;
 import org.jboss.beans.metadata.spi.builder.BeanMetaDataBuilder;
 import org.jboss.beans.metadata.spi.builder.ParameterMetaDataBuilder;
-import org.jboss.beans.info.spi.BeanAccessMode;
+import org.jboss.dependency.spi.Cardinality;
 import org.jboss.dependency.spi.ControllerMode;
 import org.jboss.dependency.spi.ControllerState;
 
 /**
  * Helper class.
  * Similar to StringBuffer, methods return current instance of BeanMetaDataBuilder.
- *
- * TODO - add on demand, when building OSGi, Spring, ...
  *
  * @author <a href="mailto:ales.justin@jboss.com">Ales Justin</a>
  * @author <a href="mailto:adrian@jboss.org">Adrian Brock</a>
@@ -92,6 +92,18 @@ class BeanMetaDataBuilderImpl extends BeanMetaDataBuilder
    
    /** The uninstall builder */
    private AbstractInstallMetaDataBuilder uninstallBuilder;
+
+   /** The incallback builder */
+   private AbstractCallbackMetaDataBuilder propIncallbackBuilder;
+
+   /** The uncallback builder */
+   private AbstractCallbackMetaDataBuilder propUncallbackBuilder;
+
+   /** The incallback builder */
+   private AbstractCallbackMetaDataBuilder incallbackBuilder;
+
+   /** The uncallback builder */
+   private AbstractCallbackMetaDataBuilder uncallbackBuilder;
 
    /**
     * Create a new BeanMetaDataBuilderImpl.
@@ -130,6 +142,11 @@ class BeanMetaDataBuilderImpl extends BeanMetaDataBuilder
       // install
       installBuilder = new InstallMetaDataBuilder(beanMetaData);
       uninstallBuilder = new UninstallMetaDataBuilder(beanMetaData);
+      // callback
+      propIncallbackBuilder = new PropertyInstallCallbackMetaDataBuilder(beanMetaData);
+      propUncallbackBuilder = new PropertyUninstallCallbackMetaDataBuilder(beanMetaData);
+      incallbackBuilder = new InstallCallbackMetaDataBuilder(beanMetaData);
+      uncallbackBuilder = new UninstallCallbackMetaDataBuilder(beanMetaData);
    }
 
    public BeanMetaData getBeanMetaData()
@@ -453,7 +470,7 @@ class BeanMetaDataBuilderImpl extends BeanMetaDataBuilder
 
    public ParameterMetaDataBuilder addInstallWithParameters(String methodName, String bean, ControllerState state, ControllerState whenRequired)
    {
-      AbstractInstallMetaData install = (AbstractInstallMetaData) installBuilder.createLifecycleMetaData(methodName);
+      AbstractInstallMetaData install = installBuilder.createLifecycleMetaData(methodName);
       install.setBean(bean);
       if (state != null)
          install.setDependentState(state);
@@ -464,7 +481,7 @@ class BeanMetaDataBuilderImpl extends BeanMetaDataBuilder
 
    public ParameterMetaDataBuilder addUninstallWithParameters(String methodName, String bean, ControllerState state, ControllerState whenRequired)
    {
-      AbstractInstallMetaData uninstall = (AbstractInstallMetaData) uninstallBuilder.createLifecycleMetaData(methodName);
+      AbstractInstallMetaData uninstall = uninstallBuilder.createLifecycleMetaData(methodName);
       uninstall.setBean(bean);
       if (state != null)
          uninstall.setDependentState(state);
@@ -473,28 +490,72 @@ class BeanMetaDataBuilderImpl extends BeanMetaDataBuilder
       return new ParameterMetaDataBuilderImpl<AbstractInstallMetaData>(uninstall);
    }
 
+   public BeanMetaDataBuilder addPropertyInstallCallback(String property, String signature, ControllerState whenRequired, ControllerState dependentState, Cardinality cardinality)
+   {
+      AbstractCallbackMetaData callback = propIncallbackBuilder.createLifecycleMetaData(property);
+      callback.setSignature(signature);
+      callback.setState(whenRequired);
+      if (dependentState != null)
+         callback.setDependentState(dependentState);
+      callback.setCardinality(cardinality);
+      return this;
+   }
+
+   public BeanMetaDataBuilder addPropertyUninstallCallback(String property, String signature, ControllerState whenRequired, ControllerState dependentState, Cardinality cardinality)
+   {
+      AbstractCallbackMetaData callback = propUncallbackBuilder.createLifecycleMetaData(property);
+      callback.setSignature(signature);
+      callback.setState(whenRequired);
+      if (dependentState != null)
+         callback.setDependentState(dependentState);
+      callback.setCardinality(cardinality);
+      return this;
+   }
+
+   public BeanMetaDataBuilder addMethodInstallCallback(String method, String signature, ControllerState whenRequired, ControllerState dependentState, Cardinality cardinality)
+   {
+      AbstractCallbackMetaData callback = incallbackBuilder.createLifecycleMetaData(method);
+      callback.setSignature(signature);
+      callback.setState(whenRequired);
+      if (dependentState != null)
+         callback.setDependentState(dependentState);
+      callback.setCardinality(cardinality);
+      return this;
+   }
+
+   public BeanMetaDataBuilder addMethodUninstallCallback(String method, String signature, ControllerState whenRequired, ControllerState dependentState, Cardinality cardinality)
+   {
+      AbstractCallbackMetaData callback = uncallbackBuilder.createLifecycleMetaData(method);
+      callback.setSignature(signature);
+      callback.setState(whenRequired);
+      if (dependentState != null)
+         callback.setDependentState(dependentState);
+      callback.setCardinality(cardinality);
+      return this;
+   }
+
    public ValueMetaData createNull()
    {
       return new AbstractValueMetaData();
    }
-   
+
    public ValueMetaData createThis()
    {
       return new ThisValueMetaData();
    }
-   
+
    public ValueMetaData createValue(Object value)
    {
       return new AbstractValueMetaData(value);
    }
-   
+
    public ValueMetaData createString(String type, String value)
    {
       StringValueMetaData result = new StringValueMetaData(value);
       result.setType(type);
       return result;
    }
-   
+
    public ValueMetaData createInject(Object bean, String property, ControllerState whenRequired, ControllerState dependentState)
    {
       AbstractDependencyValueMetaData result = new AbstractDependencyValueMetaData(bean, property);
@@ -504,7 +565,7 @@ class BeanMetaDataBuilderImpl extends BeanMetaDataBuilder
          result.setDependentState(dependentState);
       return result;
    }
-   
+
    @SuppressWarnings("unchecked")
    public Collection<ValueMetaData> createCollection(String collectionType, String elementType)
    {
@@ -515,7 +576,7 @@ class BeanMetaDataBuilderImpl extends BeanMetaDataBuilder
          collection.setElementType(elementType);
       return (Collection) collection;
    }
-   
+
    @SuppressWarnings("unchecked")
    public List<ValueMetaData> createList(String listType, String elementType)
    {
@@ -526,7 +587,7 @@ class BeanMetaDataBuilderImpl extends BeanMetaDataBuilder
          collection.setElementType(elementType);
       return (List) collection;
    }
-   
+
    @SuppressWarnings("unchecked")
    public Set<ValueMetaData> createSet(String setType, String elementType)
    {

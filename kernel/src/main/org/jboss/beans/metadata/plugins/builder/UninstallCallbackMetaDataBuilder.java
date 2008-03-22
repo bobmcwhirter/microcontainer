@@ -25,35 +25,35 @@ import java.util.ArrayList;
 import java.util.List;
 
 import org.jboss.beans.metadata.plugins.AbstractBeanMetaData;
-import org.jboss.beans.metadata.plugins.AbstractInstallMetaData;
-import org.jboss.beans.metadata.spi.InstallMetaData;
+import org.jboss.beans.metadata.plugins.UninstallCallbackMetaData;
+import org.jboss.beans.metadata.plugins.AbstractCallbackMetaData;
+import org.jboss.beans.metadata.spi.CallbackMetaData;
 
 /**
- * InstallMetaDataBuilder.
+ * UninstallCallbackMetaDataBuilder.
  *
  * @author <a href="ales.justin@jboss.com">Ales Justin</a>
  */
-public class InstallMetaDataBuilder extends AbstractInstallMetaDataBuilder
+public class UninstallCallbackMetaDataBuilder extends AbstractCallbackMetaDataBuilder
 {
-   /**
-    * Create a new StartLifecycleMetaDataBuilder.
-    *
-    * @param beanMetaData the bean meta data
-    * @throws IllegalArgumentException
-    */
-   public InstallMetaDataBuilder(AbstractBeanMetaData beanMetaData)
+   public UninstallCallbackMetaDataBuilder(AbstractBeanMetaData beanMetaData)
    {
       super(beanMetaData);
    }
 
-   protected void setLifecycle(AbstractBeanMetaData beanMetaData, AbstractInstallMetaData lifecycle)
+   protected void setLifecycle(AbstractBeanMetaData beanMetaData, AbstractCallbackMetaData lifecycle)
    {
-      List<InstallMetaData> installs = beanMetaData.getInstalls();
-      if (installs == null)
+      List<CallbackMetaData> callbacks = beanMetaData.getUninstallCallbacks();
+      if (callbacks == null)
       {
-         installs = new ArrayList<InstallMetaData>();
-         beanMetaData.setInstalls(installs);
+         callbacks = new ArrayList<CallbackMetaData>();
+         beanMetaData.setUninstallCallbacks(callbacks);
       }
-      installs.add(lifecycle);
+      callbacks.add(lifecycle);
+   }
+
+   protected AbstractCallbackMetaData createLifecycleMetaData()
+   {
+      return new UninstallCallbackMetaData();
    }
 }

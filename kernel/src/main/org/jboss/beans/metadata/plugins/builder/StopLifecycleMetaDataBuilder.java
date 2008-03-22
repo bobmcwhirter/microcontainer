@@ -22,6 +22,7 @@
 package org.jboss.beans.metadata.plugins.builder;
 
 import org.jboss.beans.metadata.plugins.AbstractBeanMetaData;
+import org.jboss.beans.metadata.plugins.AbstractLifecycleMetaData;
 import org.jboss.beans.metadata.spi.LifecycleMetaData;
 
 /**

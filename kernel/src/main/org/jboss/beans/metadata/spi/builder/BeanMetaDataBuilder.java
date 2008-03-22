@@ -34,6 +34,7 @@ import org.jboss.beans.metadata.spi.ValueMetaData;
 import org.jboss.beans.info.spi.BeanAccessMode;
 import org.jboss.dependency.spi.ControllerMode;
 import org.jboss.dependency.spi.ControllerState;
+import org.jboss.dependency.spi.Cardinality;
 
 /**
  * BeanMetaDataBuilder contract.
@@ -1106,6 +1107,266 @@ public abstract class BeanMetaDataBuilder
     * @return the parameter builder
     */
    public abstract ParameterMetaDataBuilder addUninstallWithParameters(String methodName, String bean, ControllerState state, ControllerState whenRequired);
+
+   /**
+    * Add property install callback.
+    *
+    * @param property the property name
+    * @return the builder
+    */
+   public BeanMetaDataBuilder addPropertyInstallCallback(String property)
+   {
+      return addPropertyInstallCallback(property, null, null);
+   }
+
+   /**
+    * Add property install callback.
+    *
+    * @param property the property name
+    * @param whenRequired the when required state
+    * @return the builder
+    */
+   public BeanMetaDataBuilder addPropertyInstallCallback(String property, ControllerState whenRequired)
+   {
+      return addPropertyInstallCallback(property, whenRequired, null);
+   }
+         
+   /**
+    * Add property install callback.
+    *
+    * @param property the property name
+    * @param cardinality the cardinality
+    * @return the builder
+    */
+   public BeanMetaDataBuilder addPropertyInstallCallback(String property, Cardinality cardinality)
+   {
+      return addPropertyInstallCallback(property, null, cardinality);
+   }
+
+   /**
+    * Add property install callback.
+    *
+    * @param property the property name
+    * @param whenRequired the when required state
+    * @param cardinality the cardinality
+    * @return the builder
+    */
+   public BeanMetaDataBuilder addPropertyInstallCallback(String property, ControllerState whenRequired, Cardinality cardinality)
+   {
+      return addPropertyInstallCallback(property, null, whenRequired, null, cardinality);
+   }
+
+   /**
+    * Add property install callback.
+    *
+    * @param property the property name
+    * @param signature the property signature
+    * @param whenRequired the when required state
+    * @param dependentState the dependant state
+    * @param cardinality the cardinality
+    * @return the builder
+    */
+   public abstract BeanMetaDataBuilder addPropertyInstallCallback(
+         String property,
+         String signature,
+         ControllerState whenRequired,
+         ControllerState dependentState,
+         Cardinality cardinality);
+
+   /**
+    * Add property uninstall callback.
+    *
+    * @param property the property name
+    * @return the builder
+    */
+   public BeanMetaDataBuilder addPropertyUninstallCallback(String property)
+   {
+      return addPropertyUninstallCallback(property, null, null);
+   }
+
+   /**
+    * Add property uninstall callback.
+    *
+    * @param property the property name
+    * @param whenRequired the when required state
+    * @return the builder
+    */
+   public BeanMetaDataBuilder addPropertyUninstallCallback(String property, ControllerState whenRequired)
+   {
+      return addPropertyUninstallCallback(property, whenRequired, null);
+   }
+
+   /**
+    * Add property uninstall callback.
+    *
+    * @param property the property name
+    * @param cardinality the cardinality
+    * @return the builder
+    */
+   public BeanMetaDataBuilder addPropertyUninstallCallback(String property, Cardinality cardinality)
+   {
+      return addPropertyUninstallCallback(property, null, cardinality);
+   }
+
+   /**
+    * Add property uninstall callback.
+    *
+    * @param property the property name
+    * @param whenRequired the when required state
+    * @param cardinality the cardinality
+    * @return the builder
+    */
+   public BeanMetaDataBuilder addPropertyUninstallCallback(String property, ControllerState whenRequired, Cardinality cardinality)
+   {
+      return addPropertyUninstallCallback(property, null, whenRequired, null, cardinality);
+   }
+
+   /**
+    * Add property uninstall callback.
+    *
+    * @param property the property name
+    * @param signature the property signature
+    * @param whenRequired the when required state
+    * @param dependentState the dependant state
+    * @param cardinality the cardinality
+    * @return the builder
+    */
+   public abstract BeanMetaDataBuilder addPropertyUninstallCallback(
+         String property,
+         String signature,
+         ControllerState whenRequired,
+         ControllerState dependentState,
+         Cardinality cardinality);
+
+   /**
+    * Add method install callback.
+    *
+    * @param method the method name
+    * @return the builder
+    */
+   public BeanMetaDataBuilder addMethodInstallCallback(String method)
+   {
+      return addMethodInstallCallback(method, null, null);
+   }
+
+   /**
+    * Add method install callback.
+    *
+    * @param method the method name
+    * @param whenRequired the when required state
+    * @return the builder
+    */
+   public BeanMetaDataBuilder addMethodInstallCallback(String method, ControllerState whenRequired)
+   {
+      return addMethodInstallCallback(method, whenRequired, null);
+   }
+
+   /**
+    * Add method install callback.
+    *
+    * @param method the method name
+    * @param cardinality the cardinality
+    * @return the builder
+    */
+   public BeanMetaDataBuilder addMethodInstallCallback(String method, Cardinality cardinality)
+   {
+      return addMethodInstallCallback(method, null, cardinality);
+   }
+
+   /**
+    * Add method install callback.
+    *
+    * @param method the method name
+    * @param whenRequired the when required state
+    * @param cardinality the cardinality
+    * @return the builder
+    */
+   public BeanMetaDataBuilder addMethodInstallCallback(String method, ControllerState whenRequired, Cardinality cardinality)
+   {
+      return addMethodInstallCallback(method, null, whenRequired, null, cardinality);
+   }
+
+   /**
+    * Add method install callback.
+    *
+    * @param method the method name
+    * @param signature the method signature
+    * @param whenRequired the when required state
+    * @param dependentState the dependant state
+    * @param cardinality the cardinality
+    * @return the builder
+    */
+   public abstract BeanMetaDataBuilder addMethodInstallCallback(
+         String method,
+         String signature,
+         ControllerState whenRequired,
+         ControllerState dependentState,
+         Cardinality cardinality);
+
+   /**
+    * Add method uninstall callback.
+    *
+    * @param method the method name
+    * @return the builder
+    */
+   public BeanMetaDataBuilder addMethodUninstallCallback(String method)
+   {
+      return addMethodUninstallCallback(method, null, null);
+   }
+
+   /**
+    * Add method uninstall callback.
+    *
+    * @param method the method name
+    * @param whenRequired the when required state
+    * @return the builder
+    */
+   public BeanMetaDataBuilder addMethodUninstallCallback(String method, ControllerState whenRequired)
+   {
+      return addMethodUninstallCallback(method, whenRequired, null);
+   }
+
+   /**
+    * Add method uninstall callback.
+    *
+    * @param method the method name
+    * @param cardinality the cardinality
+    * @return the builder
+    */
+   public BeanMetaDataBuilder addMethodUninstallCallback(String method, Cardinality cardinality)
+   {
+      return addMethodUninstallCallback(method, null, cardinality);
+   }
+
+   /**
+    * Add method uninstall callback.
+    *
+    * @param method the method name
+    * @param whenRequired the when required state
+    * @param cardinality the cardinality
+    * @return the builder
+    */
+   public BeanMetaDataBuilder addMethodUninstallCallback(String method, ControllerState whenRequired, Cardinality cardinality)
+   {
+      return addMethodUninstallCallback(method, null, whenRequired, null, cardinality);
+   }
+
+   /**
+    * Add method uninstall callback.
+    *
+    * @param method the method name
+    * @param signature the method signature
+    * @param whenRequired the when required state
+    * @param dependentState the dependant state
+    * @param cardinality the cardinality
+    * @return the builder
+    */
+   public abstract BeanMetaDataBuilder addMethodUninstallCallback(
+         String method,
+         String signature,
+         ControllerState whenRequired,
+         ControllerState dependentState,
+         Cardinality cardinality);
 
    /**
     * Create a null value

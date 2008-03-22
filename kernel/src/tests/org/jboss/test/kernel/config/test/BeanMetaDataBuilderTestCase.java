@@ -30,8 +30,11 @@ import java.util.Set;
 
 import junit.framework.Test;
 import org.jboss.beans.metadata.plugins.builder.BeanMetaDataBuilderFactory;
+import org.jboss.beans.metadata.plugins.InstallCallbackMetaData;
+import org.jboss.beans.metadata.plugins.UninstallCallbackMetaData;
 import org.jboss.beans.metadata.spi.BeanMetaData;
 import org.jboss.beans.metadata.spi.ValueMetaData;
+import org.jboss.beans.metadata.spi.CallbackMetaData;
 import org.jboss.beans.metadata.spi.builder.BeanMetaDataBuilder;
 import org.jboss.kernel.Kernel;
 import org.jboss.kernel.plugins.deployment.AbstractKernelDeployer;
@@ -39,7 +42,13 @@ import org.jboss.kernel.plugins.deployment.AbstractKernelDeployment;
 import org.jboss.kernel.spi.dependency.KernelController;
 import org.jboss.kernel.spi.dependency.KernelControllerContext;
 import org.jboss.test.kernel.config.support.SimpleBean;
+import org.jboss.test.kernel.config.support.SimpleCallbackBean;
 import org.jboss.test.kernel.config.support.SimpleLifecycleBean;
+import org.jboss.test.kernel.config.support.TrimTransformer;
+import org.jboss.test.kernel.config.support.Transformer;
+import org.jboss.dependency.spi.ControllerState;
+import org.jboss.dependency.spi.Cardinality;
+
 /**
  * Builder TestCase.
  *
@@ -154,13 +163,17 @@ public class BeanMetaDataBuilderTestCase extends AbstractKernelConfigTest
       AbstractKernelDeployer deployer = new AbstractKernelDeployer(kernel);
 
       deployer.deploy(deployment);
-
-      Object db = controller.getInstalledContext("DemandBean").getTarget();
-      assertNotNull(db);
-      Object sb = controller.getInstalledContext("SupplyBean").getTarget();
-      assertNotNull(sb);
-
-      deployer.undeploy(deployment);
+      try
+      {
+         Object db = controller.getInstalledContext("DemandBean").getTarget();
+         assertNotNull(db);
+         Object sb = controller.getInstalledContext("SupplyBean").getTarget();
+         assertNotNull(sb);
+      }
+      finally
+      {
+         deployer.undeploy(deployment);
+      }
    }
 
    @SuppressWarnings("deprecation")
@@ -181,13 +194,17 @@ public class BeanMetaDataBuilderTestCase extends AbstractKernelConfigTest
       AbstractKernelDeployer deployer = new AbstractKernelDeployer(kernel);
 
       deployer.deploy(deployment);
-
-      Object db = controller.getInstalledContext("DependOnBean").getTarget();
-      assertNotNull(db);
-      Object rb = controller.getInstalledContext("DependencyResolver").getTarget();
-      assertNotNull(rb);
-
-      deployer.undeploy(deployment);
+      try
+      {
+         Object db = controller.getInstalledContext("DependOnBean").getTarget();
+         assertNotNull(db);
+         Object rb = controller.getInstalledContext("DependencyResolver").getTarget();
+         assertNotNull(rb);
+      }
+      finally
+      {
+         deployer.undeploy(deployment);
+      }
    }
 
    @SuppressWarnings("deprecation")
@@ -228,36 +245,42 @@ public class BeanMetaDataBuilderTestCase extends AbstractKernelConfigTest
       AbstractKernelDeployer deployer = new AbstractKernelDeployer(kernel);
 
       deployer.deploy(deployment);
-      
-      Object o = controller.getInstalledContext("CollectionBean").getTarget();
-      assertNotNull(o);
-      assertInstanceOf(o, SimpleBean.class);
-      SimpleBean bean = (SimpleBean)o;
-      
-      Object[] arr = bean.getArray();
-      assertEquals(2, arr.length);
-      assertEquals(5, arr[0]);
-      assertEquals(10, arr[1]);
-      
-      List<?> lst = bean.getList();
-      assertEquals(2, lst.size());
-      assertEquals("One", lst.get(0));
-      assertEquals("Two", lst.get(1));
-      
-      Set<?> st = bean.getSet();
-      assertEquals(2, lst.size());
-      assertTrue(st.contains("En"));
-      assertTrue(st.contains("To"));
-      
-      Collection<?> coll = bean.getCollection();
-      assertEquals(2, lst.size());
-      assertTrue(coll.contains("Eins"));
-      assertTrue(coll.contains("Zwei"));
-      
-      Map<?, ?> mp = bean.getMap();
-      assertEquals(2, mp.size());
-      assertEquals("Uno", mp.get("One"));
-      assertEquals("Dos", mp.get("Two"));
+      try
+      {
+         Object o = controller.getInstalledContext("CollectionBean").getTarget();
+         assertNotNull(o);
+         assertInstanceOf(o, SimpleBean.class);
+         SimpleBean bean = (SimpleBean)o;
+
+         Object[] arr = bean.getArray();
+         assertEquals(2, arr.length);
+         assertEquals(5, arr[0]);
+         assertEquals(10, arr[1]);
+
+         List<?> lst = bean.getList();
+         assertEquals(2, lst.size());
+         assertEquals("One", lst.get(0));
+         assertEquals("Two", lst.get(1));
+
+         Set<?> st = bean.getSet();
+         assertEquals(2, lst.size());
+         assertTrue(st.contains("En"));
+         assertTrue(st.contains("To"));
+
+         Collection<?> coll = bean.getCollection();
+         assertEquals(2, lst.size());
+         assertTrue(coll.contains("Eins"));
+         assertTrue(coll.contains("Zwei"));
+
+         Map<?, ?> mp = bean.getMap();
+         assertEquals(2, mp.size());
+         assertEquals("Uno", mp.get("One"));
+         assertEquals("Dos", mp.get("Two"));
+      }
+      finally
+      {
+         deployer.undeploy(deployment);
+      }
    }
    
    @SuppressWarnings("deprecation")
@@ -300,30 +323,424 @@ public class BeanMetaDataBuilderTestCase extends AbstractKernelConfigTest
       AbstractKernelDeployer deployer = new AbstractKernelDeployer(kernel);
 
       deployer.deploy(deployment);
-      
-      Object o = controller.getInstalledContext("ReplaceBean").getTarget();
-      assertNotNull(o);
-      assertInstanceOf(o, SimpleBean.class);
-      SimpleBean bean = (SimpleBean)o;
-      
-      Integer integer = bean.getAnInt();
-      assertEquals(new Integer(5), integer);
-      
-      String string = bean.getAString();
-      assertEquals("Two", string);
-      
-      Object obj = bean.getAnObject();
-      assertEquals("Four", obj);
-      
-      Object[] arr = bean.getArray();
-      assertEquals(2, arr.length);
-      assertEquals(5, arr[0]);
-      assertEquals(10, arr[1]);
-      
-      Map<?, ?> mp = bean.getMap();
-      assertEquals(2, mp.size());
-      assertEquals("Uno", mp.get("One"));
-      assertEquals("Dos", mp.get("Two"));
+      try
+      {
+         Object o = controller.getInstalledContext("ReplaceBean").getTarget();
+         assertNotNull(o);
+         assertInstanceOf(o, SimpleBean.class);
+         SimpleBean bean = (SimpleBean)o;
+
+         Integer integer = bean.getAnInt();
+         assertEquals(new Integer(5), integer);
+
+         String string = bean.getAString();
+         assertEquals("Two", string);
+
+         Object obj = bean.getAnObject();
+         assertEquals("Four", obj);
+
+         Object[] arr = bean.getArray();
+         assertEquals(2, arr.length);
+         assertEquals(5, arr[0]);
+         assertEquals(10, arr[1]);
+
+         Map<?, ?> mp = bean.getMap();
+         assertEquals(2, mp.size());
+         assertEquals("Uno", mp.get("One"));
+         assertEquals("Dos", mp.get("Two"));
+      }
+      finally
+      {
+         deployer.undeploy(deployment);
+      }
    }
 
+   public void testCallbacks() throws Throwable
+   {
+      BeanMetaDataBuilder builder;
+      BeanMetaData beanMetaData;
+      List<CallbackMetaData> callbacks;
+      CallbackMetaData callback;
+      KernelControllerContext cc;
+      Object target;
+      Transformer<?> transformer;
+      SimpleCallbackBean bean;
+
+      Kernel kernel = bootstrap();
+      KernelController controller = kernel.getController();
+      try
+      {
+         beanMetaData = BeanMetaDataBuilder.createBuilder("t", TrimTransformer.class.getName()).getBeanMetaData();
+         cc = controller.install(beanMetaData);
+         assertNotNull(cc);
+         assertEquals(ControllerState.INSTALLED, cc.getState());
+         target = cc.getTarget();
+         assertNotNull(target);
+         transformer = assertInstanceOf(target, Transformer.class);
+
+         // ct1
+
+         builder = BeanMetaDataBuilder.createBuilder("ct1", SimpleCallbackBean.class.getName());
+         builder.addPropertyInstallCallback("transformers");
+         builder.addPropertyUninstallCallback("transformers");
+         beanMetaData = builder.getBeanMetaData();
+
+         callbacks = beanMetaData.getInstallCallbacks();
+         assertNotNull(callbacks);
+         assertEquals(1, callbacks.size());
+         callback = callbacks.get(0);
+         assertNotNull(callback);
+         assertInstanceOf(callback, InstallCallbackMetaData.class, false);
+         assertEquals("transformers", callback.getProperty());
+         assertEquals(ControllerState.INSTALLED, callback.getDependentState());
+         assertNull(callback.getState());
+         assertNull(callback.getSignature());
+         assertNull(callback.getMethodName());
+         assertNull(callback.getCardinality());
+         assertNull(callback.getParameters());
+
+         callbacks = beanMetaData.getUninstallCallbacks();
+         assertNotNull(callbacks);
+         assertEquals(1, callbacks.size());
+         callback = callbacks.get(0);
+         assertNotNull(callback);
+         assertInstanceOf(callback, UninstallCallbackMetaData.class, false);
+         assertEquals("transformers", callback.getProperty());
+         assertEquals(ControllerState.INSTALLED, callback.getDependentState());
+         assertNull(callback.getState());
+         assertNull(callback.getSignature());
+         assertNull(callback.getMethodName());
+         assertNull(callback.getCardinality());
+         assertNull(callback.getParameters());
+
+         cc = controller.install(beanMetaData);
+         assertNotNull(cc);
+         assertEquals(ControllerState.INSTALLED, cc.getState());
+         target = cc.getTarget();
+         assertNotNull(target);
+         bean = assertInstanceOf(target, SimpleCallbackBean.class);
+         assertNotNull(bean.getTransformers());
+         assertEquals(1, bean.getTransformers().size());
+         assertSame(transformer, bean.getTransformers().iterator().next());
+
+         // ct2
+
+         builder = BeanMetaDataBuilder.createBuilder("ct2", SimpleCallbackBean.class.getName());
+         builder.addPropertyInstallCallback("transformers", Cardinality.ONE_TO_MANY);
+         builder.addPropertyUninstallCallback("transformers", Cardinality.ONE_TO_MANY);
+         beanMetaData = builder.getBeanMetaData();
+
+         callbacks = beanMetaData.getInstallCallbacks();
+         assertNotNull(callbacks);
+         assertEquals(1, callbacks.size());
+         callback = callbacks.get(0);
+         assertNotNull(callback);
+         assertInstanceOf(callback, InstallCallbackMetaData.class, false);
+         assertEquals("transformers", callback.getProperty());
+         assertEquals(ControllerState.INSTALLED, callback.getDependentState());
+         assertNull(callback.getState());
+         assertNull(callback.getSignature());
+         assertNull(callback.getMethodName());
+         assertEquals(Cardinality.ONE_TO_MANY, callback.getCardinality());
+         assertNull(callback.getParameters());
+
+         callbacks = beanMetaData.getUninstallCallbacks();
+         assertNotNull(callbacks);
+         assertEquals(1, callbacks.size());
+         callback = callbacks.get(0);
+         assertNotNull(callback);
+         assertInstanceOf(callback, UninstallCallbackMetaData.class, false);
+         assertEquals("transformers", callback.getProperty());
+         assertEquals(ControllerState.INSTALLED, callback.getDependentState());
+         assertNull(callback.getState());
+         assertNull(callback.getSignature());
+         assertNull(callback.getMethodName());
+         assertEquals(Cardinality.ONE_TO_MANY, callback.getCardinality());
+         assertNull(callback.getParameters());
+
+         cc = controller.install(beanMetaData);
+         assertNotNull(cc);
+         assertEquals(ControllerState.INSTALLED, cc.getState());
+         target = cc.getTarget();
+         assertNotNull(target);
+         bean = assertInstanceOf(target, SimpleCallbackBean.class);
+         assertNotNull(bean.getTransformers());
+         assertEquals(1, bean.getTransformers().size());
+         assertSame(transformer, bean.getTransformers().iterator().next());
+
+         // ct3
+
+         builder = BeanMetaDataBuilder.createBuilder("ct3", SimpleCallbackBean.class.getName());
+         builder.addPropertyInstallCallback("transformers", ControllerState.CREATE);
+         builder.addPropertyUninstallCallback("transformers", ControllerState.CREATE);
+         beanMetaData = builder.getBeanMetaData();
+
+         callbacks = beanMetaData.getInstallCallbacks();
+         assertNotNull(callbacks);
+         assertEquals(1, callbacks.size());
+         callback = callbacks.get(0);
+         assertNotNull(callback);
+         assertInstanceOf(callback, InstallCallbackMetaData.class, false);
+         assertEquals("transformers", callback.getProperty());
+         assertEquals(ControllerState.INSTALLED, callback.getDependentState());
+         assertEquals(ControllerState.CREATE, callback.getState());
+         assertNull(callback.getSignature());
+         assertNull(callback.getMethodName());
+         assertNull(callback.getCardinality());
+         assertNull(callback.getParameters());
+
+         callbacks = beanMetaData.getUninstallCallbacks();
+         assertNotNull(callbacks);
+         assertEquals(1, callbacks.size());
+         callback = callbacks.get(0);
+         assertNotNull(callback);
+         assertInstanceOf(callback, UninstallCallbackMetaData.class, false);
+         assertEquals("transformers", callback.getProperty());
+         assertEquals(ControllerState.INSTALLED, callback.getDependentState());
+         assertEquals(ControllerState.CREATE, callback.getState());
+         assertNull(callback.getSignature());
+         assertNull(callback.getMethodName());
+         assertNull(callback.getCardinality());
+         assertNull(callback.getParameters());
+
+         cc = controller.install(beanMetaData);
+         assertNotNull(cc);
+         assertEquals(ControllerState.INSTALLED, cc.getState());
+         target = cc.getTarget();
+         assertNotNull(target);
+         bean = assertInstanceOf(target, SimpleCallbackBean.class);
+         assertNotNull(bean.getTransformers());
+         assertEquals(1, bean.getTransformers().size());
+         assertSame(transformer, bean.getTransformers().iterator().next());
+
+         // ct4
+
+         builder = BeanMetaDataBuilder.createBuilder("ct4", SimpleCallbackBean.class.getName());
+         builder.addPropertyInstallCallback("transformers", Set.class.getName(), ControllerState.CREATE, ControllerState.START, Cardinality.ZERO_TO_ONE);
+         builder.addPropertyUninstallCallback("transformers", Set.class.getName(), ControllerState.CREATE, ControllerState.START, Cardinality.ZERO_TO_ONE);
+         beanMetaData = builder.getBeanMetaData();
+
+         callbacks = beanMetaData.getInstallCallbacks();
+         assertNotNull(callbacks);
+         assertEquals(1, callbacks.size());
+         callback = callbacks.get(0);
+         assertNotNull(callback);
+         assertInstanceOf(callback, InstallCallbackMetaData.class, false);
+         assertEquals("transformers", callback.getProperty());
+         assertEquals(ControllerState.START, callback.getDependentState());
+         assertEquals(ControllerState.CREATE, callback.getState());
+         assertEquals(Set.class.getName(), callback.getSignature());
+         assertEquals(Cardinality.ZERO_TO_ONE, callback.getCardinality());
+         assertNull(callback.getMethodName());
+         assertNull(callback.getParameters());
+
+         callbacks = beanMetaData.getUninstallCallbacks();
+         assertNotNull(callbacks);
+         assertEquals(1, callbacks.size());
+         callback = callbacks.get(0);
+         assertNotNull(callback);
+         assertInstanceOf(callback, UninstallCallbackMetaData.class, false);
+         assertEquals("transformers", callback.getProperty());
+         assertEquals(ControllerState.START, callback.getDependentState());
+         assertEquals(ControllerState.CREATE, callback.getState());
+         assertEquals(Set.class.getName(), callback.getSignature());
+         assertEquals(Cardinality.ZERO_TO_ONE, callback.getCardinality());
+         assertNull(callback.getMethodName());
+         assertNull(callback.getParameters());
+
+         cc = controller.install(beanMetaData);
+         assertNotNull(cc);
+         assertEquals(ControllerState.INSTALLED, cc.getState());
+         target = cc.getTarget();
+         assertNotNull(target);
+         bean = assertInstanceOf(target, SimpleCallbackBean.class);
+         assertNotNull(bean.getTransformers());
+         assertEquals(1, bean.getTransformers().size());
+         assertSame(transformer, bean.getTransformers().iterator().next());
+
+         // ct1
+
+         builder = BeanMetaDataBuilder.createBuilder("mct1", SimpleCallbackBean.class.getName());
+         builder.addMethodInstallCallback("addTransformer");
+         builder.addMethodUninstallCallback("removeTransformer");
+         beanMetaData = builder.getBeanMetaData();
+
+         callbacks = beanMetaData.getInstallCallbacks();
+         assertNotNull(callbacks);
+         assertEquals(1, callbacks.size());
+         callback = callbacks.get(0);
+         assertNotNull(callback);
+         assertInstanceOf(callback, InstallCallbackMetaData.class, false);
+         assertEquals("addTransformer", callback.getMethodName());
+         assertEquals(ControllerState.INSTALLED, callback.getDependentState());
+         assertNull(callback.getState());
+         assertNull(callback.getSignature());
+         assertNull(callback.getProperty());
+         assertNull(callback.getCardinality());
+         assertNull(callback.getParameters());
+
+         callbacks = beanMetaData.getUninstallCallbacks();
+         assertNotNull(callbacks);
+         assertEquals(1, callbacks.size());
+         callback = callbacks.get(0);
+         assertNotNull(callback);
+         assertInstanceOf(callback, UninstallCallbackMetaData.class, false);
+         assertEquals("removeTransformer", callback.getMethodName());
+         assertEquals(ControllerState.INSTALLED, callback.getDependentState());
+         assertNull(callback.getState());
+         assertNull(callback.getSignature());
+         assertNull(callback.getProperty());
+         assertNull(callback.getCardinality());
+         assertNull(callback.getParameters());
+
+         cc = controller.install(beanMetaData);
+         assertNotNull(cc);
+         assertEquals(ControllerState.INSTALLED, cc.getState());
+         target = cc.getTarget();
+         assertNotNull(target);
+         bean = assertInstanceOf(target, SimpleCallbackBean.class);
+         assertNotNull(bean.getTransformers());
+         assertEquals(1, bean.getTransformers().size());
+         assertSame(transformer, bean.getTransformers().iterator().next());
+
+         // ct2
+
+         builder = BeanMetaDataBuilder.createBuilder("mct2", SimpleCallbackBean.class.getName());
+         builder.addMethodInstallCallback("addTransformer", Cardinality.ONE_TO_MANY);
+         builder.addMethodUninstallCallback("removeTransformer", Cardinality.ONE_TO_MANY);
+         beanMetaData = builder.getBeanMetaData();
+
+         callbacks = beanMetaData.getInstallCallbacks();
+         assertNotNull(callbacks);
+         assertEquals(1, callbacks.size());
+         callback = callbacks.get(0);
+         assertNotNull(callback);
+         assertInstanceOf(callback, InstallCallbackMetaData.class, false);
+         assertEquals("addTransformer", callback.getMethodName());
+         assertEquals(ControllerState.INSTALLED, callback.getDependentState());
+         assertNull(callback.getState());
+         assertNull(callback.getSignature());
+         assertNull(callback.getProperty());
+         assertEquals(Cardinality.ONE_TO_MANY, callback.getCardinality());
+         assertNull(callback.getParameters());
+
+         callbacks = beanMetaData.getUninstallCallbacks();
+         assertNotNull(callbacks);
+         assertEquals(1, callbacks.size());
+         callback = callbacks.get(0);
+         assertNotNull(callback);
+         assertInstanceOf(callback, UninstallCallbackMetaData.class, false);
+         assertEquals("removeTransformer", callback.getMethodName());
+         assertEquals(ControllerState.INSTALLED, callback.getDependentState());
+         assertNull(callback.getState());
+         assertNull(callback.getSignature());
+         assertNull(callback.getProperty());
+         assertEquals(Cardinality.ONE_TO_MANY, callback.getCardinality());
+         assertNull(callback.getParameters());
+
+         cc = controller.install(beanMetaData);
+         assertNotNull(cc);
+         assertEquals(ControllerState.INSTALLED, cc.getState());
+         target = cc.getTarget();
+         assertNotNull(target);
+         bean = assertInstanceOf(target, SimpleCallbackBean.class);
+         assertNotNull(bean.getTransformers());
+         assertEquals(1, bean.getTransformers().size());
+         assertSame(transformer, bean.getTransformers().iterator().next());
+
+         // ct3
+
+         builder = BeanMetaDataBuilder.createBuilder("mct3", SimpleCallbackBean.class.getName());
+         builder.addMethodInstallCallback("addTransformer", ControllerState.CREATE);
+         builder.addMethodUninstallCallback("removeTransformer", ControllerState.CREATE);
+         beanMetaData = builder.getBeanMetaData();
+
+         callbacks = beanMetaData.getInstallCallbacks();
+         assertNotNull(callbacks);
+         assertEquals(1, callbacks.size());
+         callback = callbacks.get(0);
+         assertNotNull(callback);
+         assertInstanceOf(callback, InstallCallbackMetaData.class, false);
+         assertEquals("addTransformer", callback.getMethodName());
+         assertEquals(ControllerState.INSTALLED, callback.getDependentState());
+         assertEquals(ControllerState.CREATE, callback.getState());
+         assertNull(callback.getSignature());
+         assertNull(callback.getProperty());
+         assertNull(callback.getCardinality());
+         assertNull(callback.getParameters());
+
+         callbacks = beanMetaData.getUninstallCallbacks();
+         assertNotNull(callbacks);
+         assertEquals(1, callbacks.size());
+         callback = callbacks.get(0);
+         assertNotNull(callback);
+         assertInstanceOf(callback, UninstallCallbackMetaData.class, false);
+         assertEquals("removeTransformer", callback.getMethodName());
+         assertEquals(ControllerState.INSTALLED, callback.getDependentState());
+         assertEquals(ControllerState.CREATE, callback.getState());
+         assertNull(callback.getSignature());
+         assertNull(callback.getProperty());
+         assertNull(callback.getCardinality());
+         assertNull(callback.getParameters());
+
+         cc = controller.install(beanMetaData);
+         assertNotNull(cc);
+         assertEquals(ControllerState.INSTALLED, cc.getState());
+         target = cc.getTarget();
+         assertNotNull(target);
+         bean = assertInstanceOf(target, SimpleCallbackBean.class);
+         assertNotNull(bean.getTransformers());
+         assertEquals(1, bean.getTransformers().size());
+         assertSame(transformer, bean.getTransformers().iterator().next());
+
+         // ct4
+
+         builder = BeanMetaDataBuilder.createBuilder("mct4", SimpleCallbackBean.class.getName());
+         builder.addMethodInstallCallback("addTransformer", Transformer.class.getName(), ControllerState.CREATE, ControllerState.START, Cardinality.ZERO_TO_ONE);
+         builder.addMethodUninstallCallback("removeTransformer", Transformer.class.getName(), ControllerState.CREATE, ControllerState.START, Cardinality.ZERO_TO_ONE);
+         beanMetaData = builder.getBeanMetaData();
+
+         callbacks = beanMetaData.getInstallCallbacks();
+         assertNotNull(callbacks);
+         assertEquals(1, callbacks.size());
+         callback = callbacks.get(0);
+         assertNotNull(callback);
+         assertInstanceOf(callback, InstallCallbackMetaData.class, false);
+         assertEquals("addTransformer", callback.getMethodName());
+         assertEquals(ControllerState.START, callback.getDependentState());
+         assertEquals(ControllerState.CREATE, callback.getState());
+         assertEquals(Transformer.class.getName(), callback.getSignature());
+         assertEquals(Cardinality.ZERO_TO_ONE, callback.getCardinality());
+         assertNull(callback.getProperty());
+         assertNull(callback.getParameters());
+
+         callbacks = beanMetaData.getUninstallCallbacks();
+         assertNotNull(callbacks);
+         assertEquals(1, callbacks.size());
+         callback = callbacks.get(0);
+         assertNotNull(callback);
+         assertInstanceOf(callback, UninstallCallbackMetaData.class, false);
+         assertEquals("removeTransformer", callback.getMethodName());
+         assertEquals(ControllerState.START, callback.getDependentState());
+         assertEquals(ControllerState.CREATE, callback.getState());
+         assertEquals(Transformer.class.getName(), callback.getSignature());
+         assertEquals(Cardinality.ZERO_TO_ONE, callback.getCardinality());
+         assertNull(callback.getProperty());
+         assertNull(callback.getParameters());
+
+         cc = controller.install(beanMetaData);
+         assertNotNull(cc);
+         assertEquals(ControllerState.INSTALLED, cc.getState());
+         target = cc.getTarget();
+         assertNotNull(target);
+         bean = assertInstanceOf(target, SimpleCallbackBean.class);
+         assertNotNull(bean.getTransformers());
+         assertEquals(1, bean.getTransformers().size());
+         assertSame(transformer, bean.getTransformers().iterator().next());
+      }
+      finally
+      {
+         controller.shutdown();
+      }
+   }
 }

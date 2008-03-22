@@ -21,39 +21,23 @@
 */
 package org.jboss.beans.metadata.plugins.builder;
 
-import java.util.ArrayList;
-import java.util.List;
-
 import org.jboss.beans.metadata.plugins.AbstractBeanMetaData;
-import org.jboss.beans.metadata.plugins.AbstractInstallMetaData;
-import org.jboss.beans.metadata.spi.InstallMetaData;
+import org.jboss.beans.metadata.plugins.AbstractCallbackMetaData;
 
 /**
- * InstallMetaDataBuilder.
+ * AbstractCallbackMetaDataBuilder.
  *
  * @author <a href="ales.justin@jboss.com">Ales Justin</a>
  */
-public class InstallMetaDataBuilder extends AbstractInstallMetaDataBuilder
+public abstract class AbstractCallbackMetaDataBuilder extends StateMetaDataBuilder<AbstractCallbackMetaData>
 {
-   /**
-    * Create a new StartLifecycleMetaDataBuilder.
-    *
-    * @param beanMetaData the bean meta data
-    * @throws IllegalArgumentException
-    */
-   public InstallMetaDataBuilder(AbstractBeanMetaData beanMetaData)
+   protected AbstractCallbackMetaDataBuilder(AbstractBeanMetaData beanMetaData)
    {
       super(beanMetaData);
    }
 
-   protected void setLifecycle(AbstractBeanMetaData beanMetaData, AbstractInstallMetaData lifecycle)
+   protected void applyAfterSet(AbstractCallbackMetaData lifecycle)
    {
-      List<InstallMetaData> installs = beanMetaData.getInstalls();
-      if (installs == null)
-      {
-         installs = new ArrayList<InstallMetaData>();
-         beanMetaData.setInstalls(installs);
-      }
-      installs.add(lifecycle);
+      // do nothing
    }
 }

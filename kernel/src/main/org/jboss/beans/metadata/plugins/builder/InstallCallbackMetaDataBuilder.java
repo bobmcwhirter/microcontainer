@@ -21,39 +21,39 @@
 */
 package org.jboss.beans.metadata.plugins.builder;
 
-import java.util.ArrayList;
 import java.util.List;
+import java.util.ArrayList;
 
+import org.jboss.beans.metadata.spi.CallbackMetaData;
 import org.jboss.beans.metadata.plugins.AbstractBeanMetaData;
-import org.jboss.beans.metadata.plugins.AbstractInstallMetaData;
-import org.jboss.beans.metadata.spi.InstallMetaData;
+import org.jboss.beans.metadata.plugins.InstallCallbackMetaData;
+import org.jboss.beans.metadata.plugins.AbstractCallbackMetaData;
 
 /**
- * InstallMetaDataBuilder.
+ * InstallCallbackMetaDataBuilder.
  *
  * @author <a href="ales.justin@jboss.com">Ales Justin</a>
  */
-public class InstallMetaDataBuilder extends AbstractInstallMetaDataBuilder
+public class InstallCallbackMetaDataBuilder extends AbstractCallbackMetaDataBuilder
 {
-   /**
-    * Create a new StartLifecycleMetaDataBuilder.
-    *
-    * @param beanMetaData the bean meta data
-    * @throws IllegalArgumentException
-    */
-   public InstallMetaDataBuilder(AbstractBeanMetaData beanMetaData)
+   public InstallCallbackMetaDataBuilder(AbstractBeanMetaData beanMetaData)
    {
       super(beanMetaData);
    }
 
-   protected void setLifecycle(AbstractBeanMetaData beanMetaData, AbstractInstallMetaData lifecycle)
+   protected void setLifecycle(AbstractBeanMetaData beanMetaData, AbstractCallbackMetaData lifecycle)
    {
-      List<InstallMetaData> installs = beanMetaData.getInstalls();
-      if (installs == null)
+      List<CallbackMetaData> callbacks = beanMetaData.getInstallCallbacks();
+      if (callbacks == null)
       {
-         installs = new ArrayList<InstallMetaData>();
-         beanMetaData.setInstalls(installs);
+         callbacks = new ArrayList<CallbackMetaData>();
+         beanMetaData.setInstallCallbacks(callbacks);
       }
-      installs.add(lifecycle);
+      callbacks.add(lifecycle);
+   }
+
+   protected AbstractCallbackMetaData createLifecycleMetaData()
+   {
+      return new InstallCallbackMetaData();
    }
 }

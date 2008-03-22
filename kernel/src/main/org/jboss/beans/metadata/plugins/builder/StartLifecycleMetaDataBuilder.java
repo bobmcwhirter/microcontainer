@@ -35,7 +35,7 @@ public class StartLifecycleMetaDataBuilder extends LifecycleMetaDataBuilder
    /**
     * Create a new StartLifecycleMetaDataBuilder.
     * 
-    * @param beanMetaData
+    * @param beanMetaData the bean meta data
     */
    public StartLifecycleMetaDataBuilder(AbstractBeanMetaData beanMetaData)
    {
@@ -51,5 +51,4 @@ public class StartLifecycleMetaDataBuilder extends LifecycleMetaDataBuilder
    {
       beanMetaData.setStart(lifecycle);
    }
-
 }

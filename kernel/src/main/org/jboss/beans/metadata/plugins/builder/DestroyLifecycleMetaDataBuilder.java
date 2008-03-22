@@ -35,7 +35,7 @@ public class DestroyLifecycleMetaDataBuilder extends LifecycleMetaDataBuilder
    /**
     * Create a new DestroyLifecycleMetaDataBuilder.
     * 
-    * @param beanMetaData
+    * @param beanMetaData the bean meta data
     */
    public DestroyLifecycleMetaDataBuilder(AbstractBeanMetaData beanMetaData)
    {
@@ -51,5 +51,4 @@ public class DestroyLifecycleMetaDataBuilder extends LifecycleMetaDataBuilder
    {
       beanMetaData.setDestroy(lifecycle);
    }
-
 }

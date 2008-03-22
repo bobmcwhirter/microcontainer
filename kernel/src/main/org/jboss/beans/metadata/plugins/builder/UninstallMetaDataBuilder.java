@@ -21,11 +21,11 @@
 */
 package org.jboss.beans.metadata.plugins.builder;
 
-import java.util.List;
 import java.util.ArrayList;
+import java.util.List;
 
 import org.jboss.beans.metadata.plugins.AbstractBeanMetaData;
-import org.jboss.beans.metadata.spi.LifecycleMetaData;
+import org.jboss.beans.metadata.plugins.AbstractInstallMetaData;
 import org.jboss.beans.metadata.spi.InstallMetaData;
 
 /**
@@ -38,14 +38,14 @@ public class UninstallMetaDataBuilder extends AbstractInstallMetaDataBuilder
    /**
     * Create a new StartLifecycleMetaDataBuilder.
     *
-    * @param beanMetaData
+    * @param beanMetaData the bean meta data
     */
    public UninstallMetaDataBuilder(AbstractBeanMetaData beanMetaData)
    {
       super(beanMetaData);
    }
 
-   protected void setLifecycle(AbstractBeanMetaData beanMetaData, LifecycleMetaData lifecycle)
+   protected void setLifecycle(AbstractBeanMetaData beanMetaData, AbstractInstallMetaData lifecycle)
    {
       List<InstallMetaData> uninstalls = beanMetaData.getUninstalls();
       if (uninstalls == null)
@@ -53,7 +53,6 @@ public class UninstallMetaDataBuilder extends AbstractInstallMetaDataBuilder
          uninstalls = new ArrayList<InstallMetaData>();
          beanMetaData.setUninstalls(uninstalls);
       }
-      uninstalls.add((InstallMetaData) lifecycle);
+      uninstalls.add(lifecycle);
    }
-
 }

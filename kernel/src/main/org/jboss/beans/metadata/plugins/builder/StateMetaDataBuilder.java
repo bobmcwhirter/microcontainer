@@ -22,7 +22,6 @@
 package org.jboss.beans.metadata.plugins.builder;
 
 import org.jboss.beans.metadata.plugins.AbstractBeanMetaData;
-import org.jboss.beans.metadata.plugins.AbstractLifecycleMetaData;
 import org.jboss.beans.metadata.spi.LifecycleMetaData;
 import org.jboss.beans.metadata.spi.builder.BeanMetaDataBuilder;
 
@@ -31,10 +30,12 @@ import org.jboss.beans.metadata.spi.builder.BeanMetaDataBuilder;
  * @see BeanMetaDataBuilder
  * @see org.jboss.beans.metadata.plugins.builder.ParameterMetaDataBuilderImpl
  *
+ * @param <T> exact type
  * @author <a href="mailto:ales.justin@jboss.com">Ales Justin</a>
  */
-public abstract class StateMetaDataBuilder
+public abstract class StateMetaDataBuilder<T extends LifecycleMetaData>
 {
+   /** The bean meta data */
    protected AbstractBeanMetaData beanMetaData;
 
    public StateMetaDataBuilder(AbstractBeanMetaData beanMetaData)
@@ -42,22 +43,54 @@ public abstract class StateMetaDataBuilder
       this.beanMetaData = beanMetaData;
    }
 
-   protected abstract void setLifecycle(AbstractBeanMetaData beanMetaData, LifecycleMetaData lifecycle);
+   /**
+    * Set lifecycle metadata to bean metadata.
+    *
+    * @param beanMetaData the bean metadata
+    * @param lifecycle the lifecycle
+    */
+   protected abstract void setLifecycle(AbstractBeanMetaData beanMetaData, T lifecycle);
 
-   protected abstract AbstractLifecycleMetaData createLifecycleMetaData();
+   /**
+    * Create lifecycle meta data.
+    *
+    * @return lifecycle metadata instance
+    */
+   protected abstract T createLifecycleMetaData();
 
-   protected abstract void applyAfterSet(AbstractLifecycleMetaData lifecycle);
+   /**
+    * Invoke after set.
+    *
+    * @param lifecycle the lifecycle
+    */
+   protected abstract void applyAfterSet(T lifecycle);
 
-   public LifecycleMetaData createLifecycleMetaData(String methodName)
+   /**
+    * Create lifecycle meta data.
+    *
+    * @param methodInfo the method info
+    * @return lifecycle meta data
+    */
+   public T createLifecycleMetaData(String methodInfo)
    {
-      AbstractLifecycleMetaData lifecycle = createLifecycleMetaData();
-      if (methodName != null)
+      T lifecycle = createLifecycleMetaData();
+      if (methodInfo != null)
       {
-         lifecycle.setMethodName(methodName);
+         setMethodInfo(lifecycle, methodInfo);
       }
       setLifecycle(beanMetaData, lifecycle);
       applyAfterSet(lifecycle);
       return lifecycle;
    }
 
+   /**
+    * Set the methid info.
+    *
+    * @param lifecycle the lifecycle
+    * @param methodInfo the method info
+    */
+   protected void setMethodInfo(T lifecycle, String methodInfo)
+   {
+      lifecycle.setMethodName(methodInfo);
+   }
 }

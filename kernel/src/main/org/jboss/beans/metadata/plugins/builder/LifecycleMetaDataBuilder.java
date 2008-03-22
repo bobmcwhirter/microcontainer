@@ -35,27 +35,30 @@ import org.jboss.beans.metadata.spi.builder.ParameterMetaDataBuilder;
  *
  * @author <a href="mailto:ales.justin@jboss.com">Ales Justin</a>
  */
-public abstract class LifecycleMetaDataBuilder extends StateMetaDataBuilder
+public abstract class LifecycleMetaDataBuilder extends StateMetaDataBuilder<LifecycleMetaData>
 {
    protected ParameterMetaDataBuilderImpl<AbstractLifecycleMetaData> builder;
 
-   public LifecycleMetaDataBuilder(AbstractBeanMetaData beanMetaData)
+   protected LifecycleMetaDataBuilder(AbstractBeanMetaData beanMetaData)
    {
       super(beanMetaData);
    }
 
    abstract LifecycleMetaData getLifecycle(AbstractBeanMetaData beanMetaData);
 
-   protected AbstractLifecycleMetaData createLifecycleMetaData()
+   protected LifecycleMetaData createLifecycleMetaData()
    {
       return new AbstractLifecycleMetaData();
    }
 
-   protected void applyAfterSet(AbstractLifecycleMetaData lifecycle)
+   protected void applyAfterSet(LifecycleMetaData lifecycle)
    {
-      builder = new ParameterMetaDataBuilderImpl<AbstractLifecycleMetaData>(lifecycle);
+      builder = new ParameterMetaDataBuilderImpl<AbstractLifecycleMetaData>((AbstractLifecycleMetaData)lifecycle);
    }
 
+   /**
+    * Check lifecycle.
+    */
    protected void checkLlifecycle()
    {
       LifecycleMetaData lifecycle = getLifecycle(beanMetaData);
@@ -65,16 +68,29 @@ public abstract class LifecycleMetaDataBuilder extends StateMetaDataBuilder
       }
    }
 
+   /**
+    * Add parameter.
+    *
+    * @param type the type
+    * @param value the value
+    * @return parameter builder
+    */
    public ParameterMetaDataBuilder addParameterMetaData(String type, Object value)
    {
       checkLlifecycle();
       return builder.addParameterMetaData(type, value);
    }
 
+   /**
+    * Add parameter.
+    *
+    * @param type the type
+    * @param value the value
+    * @return parameter builder
+    */
    public ParameterMetaDataBuilder addParameterMetaData(String type, ValueMetaData value)
    {
       checkLlifecycle();
       return builder.addParameterMetaData(type, value);
    }
-
 }
