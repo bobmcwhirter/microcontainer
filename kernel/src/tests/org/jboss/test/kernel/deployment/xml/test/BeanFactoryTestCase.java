@@ -536,7 +536,6 @@ public class BeanFactoryTestCase extends AbstractXMLTest
       assertNull(factory.getUninstallCallbacks());
    }
 
-/*
    public void testBeanFactoryWithInstallCallback() throws Exception
    {
       GenericBeanFactoryMetaData factory = unmarshalBeanFactory("BeanFactoryWithInstallCallback.xml");
@@ -613,9 +612,9 @@ public class BeanFactoryTestCase extends AbstractXMLTest
       assertNull(factory.getMode());
       assertNull(factory.getAnnotations());
       assertNull(factory.getClassLoader());
-      assertNotNull(factory.getConstructor());
       assertNull(factory.getConstructor());
-      assertNotNull(factory.getProperties());
+      assertNull(factory.getConstructor());
+      assertNull(factory.getProperties());
       assertNull(factory.getProperties());
       assertNull(factory.getCreate());
       assertNull(factory.getStart());
@@ -630,8 +629,7 @@ public class BeanFactoryTestCase extends AbstractXMLTest
       expected.add("Uninstall3");
       assertCallbacks(expected, factory.getUninstallCallbacks());
    }
-*/
-   
+
    public static Test suite()
    {
       return suite(BeanFactoryTestCase.class);

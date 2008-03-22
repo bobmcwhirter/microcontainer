@@ -24,7 +24,6 @@ package org.jboss.test.kernel.dependency.test;
 import java.util.ArrayList;
 
 import junit.framework.Test;
-
 import org.jboss.beans.metadata.plugins.AbstractBeanMetaData;
 import org.jboss.beans.metadata.plugins.AbstractInstallMetaData;
 import org.jboss.beans.metadata.plugins.AbstractParameterMetaData;
@@ -33,6 +32,7 @@ import org.jboss.beans.metadata.plugins.factory.GenericBeanFactory;
 import org.jboss.beans.metadata.spi.BeanMetaData;
 import org.jboss.beans.metadata.spi.InstallMetaData;
 import org.jboss.beans.metadata.spi.ParameterMetaData;
+import org.jboss.beans.metadata.spi.factory.GenericBeanFactoryMetaData;
 import org.jboss.dependency.spi.ControllerContext;
 import org.jboss.dependency.spi.ControllerState;
 import org.jboss.test.kernel.dependency.support.GenericBeanFactoryRepository;
@@ -147,12 +147,10 @@ public class GenericBeanFactoryInstallDependencyTestCase extends AbstractKernelD
       assertEquals(expected, bean1.getBeans());
    }
 
-   @SuppressWarnings("deprecation")
    protected void setupBeanMetaDatas() throws Throwable
    {
       AbstractBeanMetaData metaData1 = new AbstractBeanMetaData("Name1", GenericBeanFactoryRepository.class.getName());
-      
-      org.jboss.beans.metadata.plugins.factory.GenericBeanFactoryMetaData metaData2 = new org.jboss.beans.metadata.plugins.factory.GenericBeanFactoryMetaData("Name2", SimpleBeanImpl.class.getName());
+      GenericBeanFactoryMetaData metaData2 = new GenericBeanFactoryMetaData("Name2", SimpleBeanImpl.class.getName());
 
       ArrayList<InstallMetaData> installs = new ArrayList<InstallMetaData>();
       AbstractInstallMetaData install = new AbstractInstallMetaData();
@@ -174,6 +172,6 @@ public class GenericBeanFactoryInstallDependencyTestCase extends AbstractKernelD
       uninstalls.add(uninstall);
       metaData2.setUninstalls(uninstalls);
 
-      setBeanMetaDatas(new BeanMetaData[] { metaData1, metaData2 });
+      setBeanMetaDatas(new BeanMetaData[] { metaData1, getBeanMetaData(metaData2) });
    }
 }

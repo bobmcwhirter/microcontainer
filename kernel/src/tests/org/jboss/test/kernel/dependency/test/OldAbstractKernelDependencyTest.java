@@ -22,8 +22,13 @@
 package org.jboss.test.kernel.dependency.test;
 
 import java.net.URL;
+import java.util.Set;
+import java.util.HashSet;
+import java.util.List;
 
 import org.jboss.beans.metadata.spi.BeanMetaData;
+import org.jboss.beans.metadata.spi.PropertyMetaData;
+import org.jboss.beans.metadata.spi.factory.GenericBeanFactoryMetaData;
 import org.jboss.dependency.spi.ControllerContext;
 import org.jboss.dependency.spi.ControllerState;
 import org.jboss.kernel.Kernel;
@@ -151,6 +156,25 @@ public class OldAbstractKernelDependencyTest extends AbstractKernelTest
       this.beanMetaDatas = beanMetaDatas;
    }
    
+   protected void addBeanProperty(GenericBeanFactoryMetaData factory, PropertyMetaData property)
+   {
+      Set<PropertyMetaData> propertys = factory.getProperties();
+      if (propertys == null)
+      {
+         propertys = new HashSet<PropertyMetaData>();
+         factory.setProperties(propertys);
+      }
+      propertys.add(property);
+   }
+
+   protected BeanMetaData getBeanMetaData(GenericBeanFactoryMetaData factory)
+   {
+      List<BeanMetaData> beans = factory.getBeans();
+      assertNotNull(beans);
+      assertEquals(1, beans.size());
+      return beans.get(0);
+   }
+
    protected String createName(int number)
    {
       String packageName = Classes.getPackageName(getClass());

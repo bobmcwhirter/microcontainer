@@ -30,6 +30,7 @@ import org.jboss.beans.metadata.plugins.AbstractDependencyMetaData;
 import org.jboss.beans.metadata.plugins.factory.GenericBeanFactory;
 import org.jboss.beans.metadata.spi.BeanMetaData;
 import org.jboss.beans.metadata.spi.DependencyMetaData;
+import org.jboss.beans.metadata.spi.factory.GenericBeanFactoryMetaData;
 import org.jboss.dependency.spi.ControllerContext;
 import org.jboss.dependency.spi.ControllerState;
 import org.jboss.test.kernel.dependency.support.SimpleBeanWithLifecycle;
@@ -166,17 +167,16 @@ public class GenericBeanFactoryPlainLifecycleDependencyTestCase extends OldAbstr
       buildMetaData();
    }
 
-   @SuppressWarnings("deprecation")
    protected void buildMetaData()
    {
       AbstractBeanMetaData metaData1 = new AbstractBeanMetaData("Name1", SimpleBeanWithLifecycle.class.getName());
 
-      org.jboss.beans.metadata.plugins.factory.GenericBeanFactoryMetaData metaData2 = new org.jboss.beans.metadata.plugins.factory.GenericBeanFactoryMetaData("Name2", SimpleBeanWithLifecycle.class.getName());
+      GenericBeanFactoryMetaData metaData2 = new GenericBeanFactoryMetaData("Name2", SimpleBeanWithLifecycle.class.getName());
       HashSet<DependencyMetaData> depends = new HashSet<DependencyMetaData>();
       depends.add(new AbstractDependencyMetaData("Name1"));
       metaData2.setDepends(depends);
 
-      setBeanMetaDatas(new BeanMetaData[] { metaData1, metaData2 });
+      setBeanMetaDatas(new BeanMetaData[] { metaData1, getBeanMetaData(metaData2) });
    }
 
    protected void setUp() throws Exception

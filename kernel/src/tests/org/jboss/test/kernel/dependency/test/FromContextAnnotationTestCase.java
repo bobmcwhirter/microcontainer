@@ -29,6 +29,7 @@ import org.jboss.beans.metadata.plugins.AbstractPropertyMetaData;
 import org.jboss.beans.metadata.api.model.FromContext;
 import org.jboss.beans.metadata.plugins.builder.BeanMetaDataBuilderFactory;
 import org.jboss.beans.metadata.spi.BeanMetaData;
+import org.jboss.beans.metadata.spi.factory.GenericBeanFactoryMetaData;
 import org.jboss.beans.metadata.spi.builder.BeanMetaDataBuilder;
 import org.jboss.test.kernel.deployment.support.NameAwareBean;
 import org.jboss.test.kernel.deployment.support.BeanNameAwareBean;
@@ -67,15 +68,14 @@ public class FromContextAnnotationTestCase extends FromContextTestCase
       assertEquals(c2, c3);
    }
 
-   @SuppressWarnings("deprecation")
    protected void setBeanMetaDatas() throws Throwable
    {
       BeanMetaDataBuilder b1 = BeanMetaDataBuilderFactory.createBuilder("set_name_bean", BeanNameAwareBean.class.getName());
 
-      org.jboss.beans.metadata.plugins.factory.GenericBeanFactoryMetaData b2 = new org.jboss.beans.metadata.plugins.factory.GenericBeanFactoryMetaData("set_name_factory", NameAwareBean.class.getName());
+      GenericBeanFactoryMetaData b2 = new GenericBeanFactoryMetaData("set_name_factory", NameAwareBean.class.getName());
       AbstractInjectionValueMetaData v2 = new AbstractInjectionValueMetaData();
       v2.setFromContext(FromContext.NAME);
-      b2.addBeanProperty(new AbstractPropertyMetaData("name", v2));
+      addBeanProperty(b2, new AbstractPropertyMetaData("name", v2));
 
       BeanMetaDataBuilder b3 = BeanMetaDataBuilderFactory.createBuilder("aliases", AliasesAwareBean.class.getName());
       BeanMetaDataBuilder b4 = BeanMetaDataBuilderFactory.createBuilder("metadata", MetaDataAwareBean.class.getName());
@@ -89,7 +89,7 @@ public class FromContextAnnotationTestCase extends FromContextTestCase
       setBeanMetaDatas(new BeanMetaData[]
             {
                b1.getBeanMetaData(),
-               b2,
+               getBeanMetaData(b2),
                b3.getBeanMetaData(),
                b4.getBeanMetaData(),
                b5.getBeanMetaData(),

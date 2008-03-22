@@ -21,18 +21,19 @@
 */
 package org.jboss.test.kernel.dependency.test;
 
-import java.util.Set;
-import java.util.HashSet;
 import java.util.Arrays;
+import java.util.HashSet;
+import java.util.Set;
 
 import junit.framework.Test;
-import org.jboss.beans.metadata.plugins.AbstractInjectionValueMetaData;
 import org.jboss.beans.metadata.api.model.FromContext;
+import org.jboss.beans.metadata.plugins.AbstractInjectionValueMetaData;
 import org.jboss.beans.metadata.plugins.AbstractPropertyMetaData;
 import org.jboss.beans.metadata.plugins.builder.BeanMetaDataBuilderFactory;
 import org.jboss.beans.metadata.spi.BeanMetaData;
 import org.jboss.beans.metadata.spi.builder.BeanMetaDataBuilder;
 import org.jboss.beans.metadata.spi.factory.BeanFactory;
+import org.jboss.beans.metadata.spi.factory.GenericBeanFactoryMetaData;
 import org.jboss.dependency.spi.ControllerContext;
 import org.jboss.dependency.spi.ControllerState;
 import org.jboss.test.kernel.deployment.support.NameAwareBean;
@@ -129,7 +130,6 @@ public class FromContextTestCase extends AbstractKernelDependencyTest
       assertTrue(aliases.contains("a3"));
    }
 
-   @SuppressWarnings("deprecation")
    protected void setBeanMetaDatas() throws Throwable
    {
       BeanMetaDataBuilder b1 = BeanMetaDataBuilderFactory.createBuilder("set_name_bean", NameAwareBean.class.getName());
@@ -137,10 +137,10 @@ public class FromContextTestCase extends AbstractKernelDependencyTest
       v1.setFromContext(FromContext.NAME);
       b1.addPropertyMetaData("name", v1);
 
-      org.jboss.beans.metadata.plugins.factory.GenericBeanFactoryMetaData b2 = new org.jboss.beans.metadata.plugins.factory.GenericBeanFactoryMetaData("set_name_factory", NameAwareBean.class.getName());
+      GenericBeanFactoryMetaData b2 = new GenericBeanFactoryMetaData("set_name_factory", NameAwareBean.class.getName());
       AbstractInjectionValueMetaData v2 = new AbstractInjectionValueMetaData();
       v2.setFromContext(FromContext.NAME);
-      b2.addBeanProperty(new AbstractPropertyMetaData("name", v2));
+      addBeanProperty(b2, new AbstractPropertyMetaData("name", v2));
 
       BeanMetaDataBuilder b3 = BeanMetaDataBuilderFactory.createBuilder("aliases", NameAwareBean.class.getName());
       Set<Object> aliases = new HashSet<Object>();
@@ -184,7 +184,7 @@ public class FromContextTestCase extends AbstractKernelDependencyTest
       setBeanMetaDatas(new BeanMetaData[]
             {
                b1.getBeanMetaData(),
-               b2,
+               getBeanMetaData(b2),
                b3.getBeanMetaData(),
                b4.getBeanMetaData(),
                b5.getBeanMetaData(),

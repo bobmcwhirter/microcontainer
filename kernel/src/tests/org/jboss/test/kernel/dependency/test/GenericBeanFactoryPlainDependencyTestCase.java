@@ -33,6 +33,7 @@ import org.jboss.beans.metadata.plugins.AbstractValueMetaData;
 import org.jboss.beans.metadata.plugins.factory.GenericBeanFactory;
 import org.jboss.beans.metadata.spi.BeanMetaData;
 import org.jboss.beans.metadata.spi.PropertyMetaData;
+import org.jboss.beans.metadata.spi.factory.GenericBeanFactoryMetaData;
 import org.jboss.dependency.spi.ControllerContext;
 import org.jboss.dependency.spi.ControllerState;
 import org.jboss.test.kernel.dependency.support.SimpleBeanImpl;
@@ -141,7 +142,6 @@ public class GenericBeanFactoryPlainDependencyTestCase extends OldAbstractKernel
       buildMetaData();
    }
 
-   @SuppressWarnings("deprecation")
    protected void buildMetaData()
    {
       AbstractBeanMetaData metaData1 = new AbstractBeanMetaData("simple", SimpleBeanImpl.class.getName());
@@ -149,12 +149,13 @@ public class GenericBeanFactoryPlainDependencyTestCase extends OldAbstractKernel
       attributes1.add(new AbstractPropertyMetaData("string", "String1"));
       metaData1.setProperties(attributes1);
 
-      org.jboss.beans.metadata.plugins.factory.GenericBeanFactoryMetaData metaData2 = new org.jboss.beans.metadata.plugins.factory.GenericBeanFactoryMetaData("aspect");
-      metaData2.addProperty(new AbstractPropertyMetaData("bean", SimpleBeanWithDependencyImpl.class.getName()));
-      metaData2.addProperty(new AbstractPropertyMetaData("constructor", new AbstractConstructorMetaData()));
-      metaData2.addBeanProperty(new AbstractPropertyMetaData("simpleBean", new AbstractDependencyValueMetaData("simple")));
-      metaData2.addBeanProperty(new AbstractPropertyMetaData("string", new AbstractValueMetaData("factory")));
+      GenericBeanFactoryMetaData metaData2 = new GenericBeanFactoryMetaData();
+      metaData2.setName("aspect");
+      metaData2.setBean(SimpleBeanWithDependencyImpl.class.getName());
+      metaData2.setConstructor(new AbstractConstructorMetaData());
+      addBeanProperty(metaData2, new AbstractPropertyMetaData("simpleBean", new AbstractDependencyValueMetaData("simple")));
+      addBeanProperty(metaData2, new AbstractPropertyMetaData("string", new AbstractValueMetaData("factory")));
 
-      setBeanMetaDatas(new BeanMetaData[] { metaData1, metaData2 });
+      setBeanMetaDatas(new BeanMetaData[] { metaData1, getBeanMetaData(metaData2) });
    }
 }

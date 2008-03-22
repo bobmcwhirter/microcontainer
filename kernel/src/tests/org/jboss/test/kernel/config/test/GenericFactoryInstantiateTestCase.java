@@ -21,12 +21,19 @@
 */
 package org.jboss.test.kernel.config.test;
 
+import java.util.List;
+import java.util.Set;
+import java.util.HashSet;
+
 import junit.framework.Test;
 
 import org.jboss.beans.metadata.plugins.AbstractConstructorMetaData;
 import org.jboss.beans.metadata.plugins.AbstractPropertyMetaData;
 import org.jboss.beans.metadata.plugins.AbstractValueMetaData;
 import org.jboss.beans.metadata.spi.factory.BeanFactory;
+import org.jboss.beans.metadata.spi.factory.GenericBeanFactoryMetaData;
+import org.jboss.beans.metadata.spi.BeanMetaData;
+import org.jboss.beans.metadata.spi.PropertyMetaData;
 import org.jboss.test.kernel.config.support.MyBeanFactory;
 import org.jboss.test.kernel.config.support.SimpleBean;
 import org.jboss.test.kernel.config.support.SimpleBeanFactory;
@@ -74,9 +81,9 @@ public class GenericFactoryInstantiateTestCase extends AbstractKernelConfigTest
    @SuppressWarnings("deprecation")
    protected BeanFactory configureFromBean() throws Throwable
    {
-      org.jboss.beans.metadata.plugins.factory.GenericBeanFactoryMetaData factory = new org.jboss.beans.metadata.plugins.factory.GenericBeanFactoryMetaData("Factory", SimpleBean.class.getName());
-      factory.addBeanProperty(new AbstractPropertyMetaData("anint", 123));
-      return (BeanFactory)instantiate(factory);
+      GenericBeanFactoryMetaData factory = new GenericBeanFactoryMetaData("Factory", SimpleBean.class.getName());
+      addBeanProperty(factory, new AbstractPropertyMetaData("anint", 123));
+      return instantiate(factory);
    }
 
    public void testBeanFactoryFromFactory() throws Throwable
@@ -88,13 +95,14 @@ public class GenericFactoryInstantiateTestCase extends AbstractKernelConfigTest
    @SuppressWarnings("deprecation")
    protected BeanFactory configureFromFactory() throws Throwable
    {
-      org.jboss.beans.metadata.plugins.factory.GenericBeanFactoryMetaData factory = new org.jboss.beans.metadata.plugins.factory.GenericBeanFactoryMetaData("Factory");
+      GenericBeanFactoryMetaData factory = new GenericBeanFactoryMetaData();
+      factory.setName("Factory");
       AbstractConstructorMetaData constructor = new AbstractConstructorMetaData();
-      factory.setBeanConstructor(constructor);
+      factory.setConstructor(constructor);
       constructor.setFactory(new AbstractValueMetaData(new SimpleBeanFactory()));
       constructor.setFactoryMethod("createSimpleBean");
-      factory.addBeanProperty(new AbstractPropertyMetaData("anint", 123));
-      return (BeanFactory)instantiate(factory);
+      addBeanProperty(factory, new AbstractPropertyMetaData("anint", 123));
+      return instantiate(factory);
    }
 
    public void testBeanFactoryFromStaticFactory() throws Throwable
@@ -106,13 +114,14 @@ public class GenericFactoryInstantiateTestCase extends AbstractKernelConfigTest
    @SuppressWarnings("deprecation")
    protected BeanFactory configureFromStaticFactory() throws Throwable
    {
-      org.jboss.beans.metadata.plugins.factory.GenericBeanFactoryMetaData factory = new org.jboss.beans.metadata.plugins.factory.GenericBeanFactoryMetaData("Factory");
+      GenericBeanFactoryMetaData factory = new GenericBeanFactoryMetaData();
+      factory.setName("Factory");
       AbstractConstructorMetaData constructor = new AbstractConstructorMetaData();
-      factory.setBeanConstructor(constructor);
+      factory.setConstructor(constructor);
       constructor.setFactoryClass(SimpleBeanFactory.class.getName());
       constructor.setFactoryMethod("staticCreateSimpleBean");
-      factory.addBeanProperty(new AbstractPropertyMetaData("anint", 123));
-      return (BeanFactory)instantiate(factory);
+      addBeanProperty(factory, new AbstractPropertyMetaData("anint", 123));
+      return instantiate(factory);
    }
 
    public void testBeanFactoryWithNonExistingClass() throws Throwable
@@ -132,8 +141,8 @@ public class GenericFactoryInstantiateTestCase extends AbstractKernelConfigTest
    @SuppressWarnings("deprecation")
    protected BeanFactory configureFromIllegalClass() throws Throwable
    {
-      org.jboss.beans.metadata.plugins.factory.GenericBeanFactoryMetaData factory = new org.jboss.beans.metadata.plugins.factory.GenericBeanFactoryMetaData("Factory", "org.jboss.test.NoSuchClass");
-      return (BeanFactory)instantiate(factory);
+      GenericBeanFactoryMetaData factory = new GenericBeanFactoryMetaData("Factory", "org.jboss.test.NoSuchClass");
+      return instantiate(factory);
    }
 
    public void testBeanFactoryDefinedFactoryClass() throws Throwable
@@ -147,8 +156,27 @@ public class GenericFactoryInstantiateTestCase extends AbstractKernelConfigTest
    @SuppressWarnings("deprecation")
    protected BeanFactory configureFromDefinedFactoryClass() throws Throwable
    {
-      org.jboss.beans.metadata.plugins.factory.GenericBeanFactoryMetaData factory = new org.jboss.beans.metadata.plugins.factory.GenericBeanFactoryMetaData("Factory", SimpleBean.class.getName());
+      GenericBeanFactoryMetaData factory = new GenericBeanFactoryMetaData("Factory", SimpleBean.class.getName());
       factory.setFactoryClass(MyBeanFactory.class.getName());
-      return (BeanFactory)instantiate(factory);
+      return instantiate(factory);
+   }
+
+   protected BeanFactory instantiate(GenericBeanFactoryMetaData factory) throws Throwable
+   {
+      List<BeanMetaData> beans = factory.getBeans();
+      assertNotNull(beans);
+      assertEquals(1, beans.size());
+      return (BeanFactory)instantiate(beans.get(0));
+   }
+
+   protected void addBeanProperty(GenericBeanFactoryMetaData factory, PropertyMetaData property)
+   {
+      Set<PropertyMetaData> propertys = factory.getProperties();
+      if (propertys == null)
+      {
+         propertys = new HashSet<PropertyMetaData>();
+         factory.setProperties(propertys);
+      }
+      propertys.add(property);
    }
 }

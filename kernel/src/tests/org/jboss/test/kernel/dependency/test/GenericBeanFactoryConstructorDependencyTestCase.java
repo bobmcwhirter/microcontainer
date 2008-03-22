@@ -32,6 +32,7 @@ import org.jboss.beans.metadata.plugins.AbstractPropertyMetaData;
 import org.jboss.beans.metadata.plugins.factory.GenericBeanFactory;
 import org.jboss.beans.metadata.spi.BeanMetaData;
 import org.jboss.beans.metadata.spi.ParameterMetaData;
+import org.jboss.beans.metadata.spi.factory.GenericBeanFactoryMetaData;
 import org.jboss.dependency.spi.ControllerContext;
 import org.jboss.dependency.spi.ControllerState;
 import org.jboss.test.kernel.dependency.support.SimpleBean;
@@ -179,20 +180,19 @@ public class GenericBeanFactoryConstructorDependencyTestCase extends OldAbstract
       buildMetaData();
    }
 
-   @SuppressWarnings("deprecation")
    protected void buildMetaData()
    {
-      org.jboss.beans.metadata.plugins.factory.GenericBeanFactoryMetaData metaData1 = new org.jboss.beans.metadata.plugins.factory.GenericBeanFactoryMetaData("Name1", SimpleBeanImpl.class.getName());
-      metaData1.addBeanProperty(new AbstractPropertyMetaData("string", "String1"));
+      GenericBeanFactoryMetaData metaData1 = new GenericBeanFactoryMetaData("Name1", SimpleBeanImpl.class.getName());
+      addBeanProperty(metaData1, new AbstractPropertyMetaData("string", "String1"));
 
-      org.jboss.beans.metadata.plugins.factory.GenericBeanFactoryMetaData metaData2 = new org.jboss.beans.metadata.plugins.factory.GenericBeanFactoryMetaData("Name2", SimpleBeanWithConstructorDependencyImpl.class.getName());
-      metaData2.addBeanProperty(new AbstractPropertyMetaData("string", "String2"));
+      GenericBeanFactoryMetaData metaData2 = new GenericBeanFactoryMetaData("Name2", SimpleBeanWithConstructorDependencyImpl.class.getName());
+      addBeanProperty(metaData2, new AbstractPropertyMetaData("string", "String2"));
       AbstractConstructorMetaData cmd = new AbstractConstructorMetaData();
       ArrayList<ParameterMetaData> constructor2 = new ArrayList<ParameterMetaData>();
       constructor2.add(new AbstractParameterMetaData(GenericBeanFactory.class.getName(), new AbstractDependencyValueMetaData("Name1")));
       cmd.setParameters(constructor2);
-      metaData2.setBeanConstructor(cmd);
+      metaData2.setConstructor(cmd);
 
-      setBeanMetaDatas(new BeanMetaData[] { metaData1, metaData2 });
+      setBeanMetaDatas(new BeanMetaData[] { getBeanMetaData(metaData1), getBeanMetaData(metaData2) });
    }
 }

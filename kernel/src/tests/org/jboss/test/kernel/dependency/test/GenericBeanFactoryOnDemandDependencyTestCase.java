@@ -27,6 +27,7 @@ import org.jboss.beans.metadata.plugins.AbstractDependencyValueMetaData;
 import org.jboss.beans.metadata.plugins.AbstractPropertyMetaData;
 import org.jboss.beans.metadata.plugins.factory.GenericBeanFactory;
 import org.jboss.beans.metadata.spi.BeanMetaData;
+import org.jboss.beans.metadata.spi.factory.GenericBeanFactoryMetaData;
 import org.jboss.dependency.spi.ControllerContext;
 import org.jboss.dependency.spi.ControllerMode;
 import org.jboss.dependency.spi.ControllerState;
@@ -176,17 +177,16 @@ public class GenericBeanFactoryOnDemandDependencyTestCase extends OldAbstractKer
       buildMetaData();
    }
 
-   @SuppressWarnings("deprecation")
    protected void buildMetaData()
    {
-      org.jboss.beans.metadata.plugins.factory.GenericBeanFactoryMetaData metaData1 = new org.jboss.beans.metadata.plugins.factory.GenericBeanFactoryMetaData("Name1", SimpleBeanImpl.class.getName());
+      GenericBeanFactoryMetaData metaData1 = new GenericBeanFactoryMetaData("Name1", SimpleBeanImpl.class.getName());
       metaData1.setMode(ControllerMode.ON_DEMAND);
-      metaData1.addBeanProperty(new AbstractPropertyMetaData("string", "String1"));
+      addBeanProperty(metaData1, new AbstractPropertyMetaData("string", "String1"));
 
-      org.jboss.beans.metadata.plugins.factory.GenericBeanFactoryMetaData metaData2 = new org.jboss.beans.metadata.plugins.factory.GenericBeanFactoryMetaData("Name2", SimpleBeanWithDependencyImpl.class.getName());
-      metaData2.addBeanProperty(new AbstractPropertyMetaData("string", "String2"));
-      metaData2.addBeanProperty(new AbstractPropertyMetaData("factory", new AbstractDependencyValueMetaData("Name1")));
+      GenericBeanFactoryMetaData metaData2 = new GenericBeanFactoryMetaData("Name2", SimpleBeanWithDependencyImpl.class.getName());
+      addBeanProperty(metaData2, new AbstractPropertyMetaData("string", "String2"));
+      addBeanProperty(metaData2, new AbstractPropertyMetaData("factory", new AbstractDependencyValueMetaData("Name1")));
 
-      setBeanMetaDatas(new BeanMetaData[] { metaData1, metaData2 });
+      setBeanMetaDatas(new BeanMetaData[] { getBeanMetaData(metaData1), getBeanMetaData(metaData2) });
    }
 }

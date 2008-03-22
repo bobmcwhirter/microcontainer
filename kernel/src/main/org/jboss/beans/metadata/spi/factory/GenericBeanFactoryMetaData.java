@@ -36,6 +36,7 @@ import javax.xml.bind.annotation.XmlType;
 import org.jboss.beans.info.spi.BeanAccessMode;
 import org.jboss.beans.metadata.plugins.AbstractAliasMetaData;
 import org.jboss.beans.metadata.plugins.AbstractAnnotationMetaData;
+import org.jboss.beans.metadata.plugins.AbstractBeanMetaData;
 import org.jboss.beans.metadata.plugins.AbstractClassLoaderMetaData;
 import org.jboss.beans.metadata.plugins.AbstractConstructorMetaData;
 import org.jboss.beans.metadata.plugins.AbstractDemandMetaData;
@@ -60,13 +61,10 @@ import org.jboss.beans.metadata.spi.InstallMetaData;
 import org.jboss.beans.metadata.spi.LifecycleMetaData;
 import org.jboss.beans.metadata.spi.MetaDataVisitor;
 import org.jboss.beans.metadata.spi.MetaDataVisitorNode;
-import org.jboss.beans.metadata.spi.ParameterMetaData;
-import org.jboss.beans.metadata.spi.ParameterizedMetaData;
 import org.jboss.beans.metadata.spi.PropertyMetaData;
 import org.jboss.beans.metadata.spi.SupplyMetaData;
 import org.jboss.beans.metadata.spi.ValueMetaData;
 import org.jboss.beans.metadata.spi.builder.BeanMetaDataBuilder;
-import org.jboss.beans.metadata.spi.builder.ParameterMetaDataBuilder;
 import org.jboss.dependency.spi.ControllerMode;
 import org.jboss.kernel.plugins.bootstrap.basic.KernelConstants;
 import org.jboss.kernel.spi.config.KernelConfigurator;
@@ -140,6 +138,16 @@ public class GenericBeanFactoryMetaData extends JBossObject implements BeanMetaD
    
    /** The uninstall callbacks */
    protected List<CallbackMetaData> uninstallCallbacks;
+
+   public GenericBeanFactoryMetaData()
+   {
+   }
+
+   public GenericBeanFactoryMetaData(String name, String bean)
+   {
+      this.name = name;
+      this.bean = bean;
+   }
 
    /**
     * Get the name
@@ -559,7 +567,16 @@ public class GenericBeanFactoryMetaData extends JBossObject implements BeanMetaD
       if (getFactoryClass() == null)
          setFactoryClass(GenericBeanFactory.class.getName());
 
-      BeanMetaDataBuilder builder = BeanMetaDataBuilder.createBuilder(name, getFactoryClass());
+      AbstractBeanMetaData beanMetaData = new AbstractBeanMetaData(name, getFactoryClass());
+      beanMetaData.setDemands(getDemands());
+      beanMetaData.setDepends(getDepends());
+      beanMetaData.setSupplies(getSupplies());
+      beanMetaData.setInstalls(getInstalls());
+      beanMetaData.setUninstalls(getUninstalls());
+      beanMetaData.setInstallCallbacks(getInstallCallbacks());
+      beanMetaData.setUninstallCallbacks(getUninstallCallbacks());
+      // builder util
+      BeanMetaDataBuilder builder = BeanMetaDataBuilder.createBuilder(beanMetaData);
       if (aliases != null)
       {
          Set<Object> theAliases = new HashSet<Object>();
@@ -568,59 +585,23 @@ public class GenericBeanFactoryMetaData extends JBossObject implements BeanMetaD
          builder.setAliases(theAliases);
       }
       builder.setMode(mode);
-      builder.setAccessMode(accessMode);
       ValueMetaData injectKernelConfigurator = builder.createInject(KernelConstants.KERNEL_CONFIGURATOR_NAME);
       builder.addConstructorParameter(KernelConfigurator.class.getName(), injectKernelConfigurator);
-      builder.addPropertyMetaData("bean", bean);
+      if (bean != null)
+         builder.addPropertyMetaData("bean", bean);
       if (classLoader != null)
       {
          builder.setClassLoader(classLoader);
-         if (classLoader == null)
          builder.addPropertyMetaData("classLoader", builder.createValue(classLoader));
       }
+      if (accessMode != null)
+         builder.addPropertyMetaData("accessMode", accessMode);
       if (constructor != null)
          builder.addPropertyMetaData("constructor", constructor);
       if (create != null)
          builder.addPropertyMetaData("create", create);
       if (start != null)
          builder.addPropertyMetaData("start", start);
-      if (demands != null && demands.size() > 0)
-      {
-         for (DemandMetaData demand : demands)
-         {
-            builder.addDemand(demand.getDemand());
-         }
-      }
-      if (depends != null && depends.size() > 0)
-      {
-         for (DependencyMetaData dependency : depends)
-         {
-            builder.addDependency(dependency.getDependency());
-         }
-      }
-      if (supplies != null && supplies.size() > 0)
-      {
-         for (SupplyMetaData supply : supplies)
-         {
-            builder.addSupply(supply.getSupply());
-         }
-      }
-      if (installs != null && installs.size() > 0)
-      {
-         for (InstallMetaData install : installs)
-         {
-            ParameterMetaDataBuilder paramBuilder = builder.addInstallWithParameters(install.getMethodName(), install.getBean(), install.getState(), install.getDependentState());
-            setParameters(paramBuilder, install);
-         }
-      }
-      if (uninstalls != null && uninstalls.size() > 0)
-      {
-         for (InstallMetaData uninstall : uninstalls)
-         {
-            ParameterMetaDataBuilder paramBuilder = builder.addUninstallWithParameters(uninstall.getMethodName(), uninstall.getBean(), uninstall.getState(), uninstall.getDependentState());
-            setParameters(paramBuilder, uninstall);
-         }
-      }
       if (properties != null && properties.size() > 0)
       {
          PropertyMap propertyMap = new PropertyMap(); 
@@ -630,29 +611,9 @@ public class GenericBeanFactoryMetaData extends JBossObject implements BeanMetaD
          }
          builder.addPropertyMetaData("properties", propertyMap);
       }
-      //TODO: installCallbacks and uninstallCallbacks
-      
       return Collections.singletonList(builder.getBeanMetaData());
    }
 
-   /**
-    * Add the parameters
-    *
-    * @param builder parameter builder
-    * @param metadata parameter metadata
-    */
-   private void setParameters(ParameterMetaDataBuilder builder, ParameterizedMetaData metadata)
-   {
-      List<ParameterMetaData> params = metadata.getParameters();
-      if (params != null && params.size() > 0)
-      {
-         for (ParameterMetaData param : params)
-         {
-            builder.addParameterMetaData(param.getType(), param.getValue());
-         }
-      }
-   }
-   
    /**
     * PropertyMap.
     */
