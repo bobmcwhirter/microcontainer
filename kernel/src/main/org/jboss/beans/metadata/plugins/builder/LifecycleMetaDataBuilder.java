@@ -64,7 +64,7 @@ public abstract class LifecycleMetaDataBuilder extends StateMetaDataBuilder<Life
       LifecycleMetaData lifecycle = getLifecycle(beanMetaData);
       if (lifecycle == null)
       {
-         createLifecycleMetaData(null);
+         createStateActionMetaData(null);
       }
    }
 

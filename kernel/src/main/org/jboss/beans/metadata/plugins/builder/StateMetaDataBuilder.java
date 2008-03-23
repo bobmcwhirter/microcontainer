@@ -33,7 +33,7 @@ import org.jboss.beans.metadata.spi.builder.BeanMetaDataBuilder;
  * @param <T> exact type
  * @author <a href="mailto:ales.justin@jboss.com">Ales Justin</a>
  */
-public abstract class StateMetaDataBuilder<T extends LifecycleMetaData>
+public abstract class StateMetaDataBuilder<T extends LifecycleMetaData> implements StateActionBuilder<T>
 {
    /** The bean meta data */
    protected AbstractBeanMetaData beanMetaData;
@@ -65,13 +65,7 @@ public abstract class StateMetaDataBuilder<T extends LifecycleMetaData>
     */
    protected abstract void applyAfterSet(T lifecycle);
 
-   /**
-    * Create lifecycle meta data.
-    *
-    * @param methodInfo the method info
-    * @return lifecycle meta data
-    */
-   public T createLifecycleMetaData(String methodInfo)
+   public T createStateActionMetaData(String methodInfo)
    {
       T lifecycle = createLifecycleMetaData();
       if (methodInfo != null)
@@ -84,7 +78,7 @@ public abstract class StateMetaDataBuilder<T extends LifecycleMetaData>
    }
 
    /**
-    * Set the methid info.
+    * Set the method info.
     *
     * @param lifecycle the lifecycle
     * @param methodInfo the method info

@@ -88,22 +88,22 @@ class BeanMetaDataBuilderImpl extends BeanMetaDataBuilder
    private LifecycleMetaDataBuilder destroyBuilder;
 
    /** The install builder */
-   private AbstractInstallMetaDataBuilder installBuilder;
+   private StateActionBuilder<AbstractInstallMetaData> installBuilder;
    
    /** The uninstall builder */
-   private AbstractInstallMetaDataBuilder uninstallBuilder;
+   private StateActionBuilder<AbstractInstallMetaData> uninstallBuilder;
 
    /** The incallback builder */
-   private AbstractCallbackMetaDataBuilder propIncallbackBuilder;
+   private StateActionBuilder<AbstractCallbackMetaData> propIncallbackBuilder;
 
    /** The uncallback builder */
-   private AbstractCallbackMetaDataBuilder propUncallbackBuilder;
+   private StateActionBuilder<AbstractCallbackMetaData> propUncallbackBuilder;
 
    /** The incallback builder */
-   private AbstractCallbackMetaDataBuilder incallbackBuilder;
+   private StateActionBuilder<AbstractCallbackMetaData> incallbackBuilder;
 
    /** The uncallback builder */
-   private AbstractCallbackMetaDataBuilder uncallbackBuilder;
+   private StateActionBuilder<AbstractCallbackMetaData> uncallbackBuilder;
 
    /**
     * Create a new BeanMetaDataBuilderImpl.
@@ -330,7 +330,7 @@ class BeanMetaDataBuilderImpl extends BeanMetaDataBuilder
 
    public BeanMetaDataBuilder setCreate(String methodName)
    {
-      createBuilder.createLifecycleMetaData(methodName);
+      createBuilder.createStateActionMetaData(methodName);
       return this;
    }
 
@@ -354,7 +354,7 @@ class BeanMetaDataBuilderImpl extends BeanMetaDataBuilder
 
    public BeanMetaDataBuilder setStart(String methodName)
    {
-      startBuilder.createLifecycleMetaData(methodName);
+      startBuilder.createStateActionMetaData(methodName);
       return this;
    }
 
@@ -378,7 +378,7 @@ class BeanMetaDataBuilderImpl extends BeanMetaDataBuilder
 
    public BeanMetaDataBuilder setStop(String methodName)
    {
-      stopBuilder.createLifecycleMetaData(methodName);
+      stopBuilder.createStateActionMetaData(methodName);
       return this;
    }
 
@@ -402,7 +402,7 @@ class BeanMetaDataBuilderImpl extends BeanMetaDataBuilder
 
    public BeanMetaDataBuilder setDestroy(String methodName)
    {
-      destroyBuilder.createLifecycleMetaData(methodName);
+      destroyBuilder.createStateActionMetaData(methodName);
       return this;
    }
 
@@ -470,7 +470,7 @@ class BeanMetaDataBuilderImpl extends BeanMetaDataBuilder
 
    public ParameterMetaDataBuilder addInstallWithParameters(String methodName, String bean, ControllerState state, ControllerState whenRequired)
    {
-      AbstractInstallMetaData install = installBuilder.createLifecycleMetaData(methodName);
+      AbstractInstallMetaData install = installBuilder.createStateActionMetaData(methodName);
       install.setBean(bean);
       if (state != null)
          install.setDependentState(state);
@@ -481,7 +481,7 @@ class BeanMetaDataBuilderImpl extends BeanMetaDataBuilder
 
    public ParameterMetaDataBuilder addUninstallWithParameters(String methodName, String bean, ControllerState state, ControllerState whenRequired)
    {
-      AbstractInstallMetaData uninstall = uninstallBuilder.createLifecycleMetaData(methodName);
+      AbstractInstallMetaData uninstall = uninstallBuilder.createStateActionMetaData(methodName);
       uninstall.setBean(bean);
       if (state != null)
          uninstall.setDependentState(state);
@@ -492,7 +492,7 @@ class BeanMetaDataBuilderImpl extends BeanMetaDataBuilder
 
    public BeanMetaDataBuilder addPropertyInstallCallback(String property, String signature, ControllerState whenRequired, ControllerState dependentState, Cardinality cardinality)
    {
-      AbstractCallbackMetaData callback = propIncallbackBuilder.createLifecycleMetaData(property);
+      AbstractCallbackMetaData callback = propIncallbackBuilder.createStateActionMetaData(property);
       callback.setSignature(signature);
       callback.setState(whenRequired);
       if (dependentState != null)
@@ -503,7 +503,7 @@ class BeanMetaDataBuilderImpl extends BeanMetaDataBuilder
 
    public BeanMetaDataBuilder addPropertyUninstallCallback(String property, String signature, ControllerState whenRequired, ControllerState dependentState, Cardinality cardinality)
    {
-      AbstractCallbackMetaData callback = propUncallbackBuilder.createLifecycleMetaData(property);
+      AbstractCallbackMetaData callback = propUncallbackBuilder.createStateActionMetaData(property);
       callback.setSignature(signature);
       callback.setState(whenRequired);
       if (dependentState != null)
@@ -514,7 +514,7 @@ class BeanMetaDataBuilderImpl extends BeanMetaDataBuilder
 
    public BeanMetaDataBuilder addMethodInstallCallback(String method, String signature, ControllerState whenRequired, ControllerState dependentState, Cardinality cardinality)
    {
-      AbstractCallbackMetaData callback = incallbackBuilder.createLifecycleMetaData(method);
+      AbstractCallbackMetaData callback = incallbackBuilder.createStateActionMetaData(method);
       callback.setSignature(signature);
       callback.setState(whenRequired);
       if (dependentState != null)
@@ -525,7 +525,7 @@ class BeanMetaDataBuilderImpl extends BeanMetaDataBuilder
 
    public BeanMetaDataBuilder addMethodUninstallCallback(String method, String signature, ControllerState whenRequired, ControllerState dependentState, Cardinality cardinality)
    {
-      AbstractCallbackMetaData callback = uncallbackBuilder.createLifecycleMetaData(method);
+      AbstractCallbackMetaData callback = uncallbackBuilder.createStateActionMetaData(method);
       callback.setSignature(signature);
       callback.setState(whenRequired);
       if (dependentState != null)
