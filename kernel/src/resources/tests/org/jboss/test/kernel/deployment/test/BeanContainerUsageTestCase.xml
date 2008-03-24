@@ -1,0 +1,24 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<deployment xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+            xsi:schemaLocation="urn:jboss:bean-deployer bean-deployer_1_0.xsd"
+            xmlns="urn:jboss:bean-deployer">
+
+   <beanfactory name="Bean1TypeFactory" class="org.jboss.test.kernel.deployment.support.container.Bean1Type"/>
+   <bean name="Bean1TypePool" class="org.jboss.test.kernel.deployment.support.container.BeanPool">
+      <property name="factory"><inject name="Bean1TypeFactory"/></property>
+   </bean>
+   <bean name="BeanContainer1Type" class="org.jboss.test.kernel.deployment.support.container.BeanContainer">
+      <property name="pool"><inject name="Bean1TypePool"/></property>
+   </bean>
+   <beanfactory name="Bean2TypeFactory" class="org.jboss.test.kernel.deployment.support.container.Bean2Type">
+      <property name="bean1"><value-factory bean="Bean1TypeFactory" method="createBean" /></property>
+   </beanfactory>
+   <bean name="Bean2TypePool" class="org.jboss.test.kernel.deployment.support.container.BeanPool">
+      <property name="factory"><inject name="Bean2TypeFactory"/></property>
+   </bean>
+   <bean name="BeanContainer2Type" class="org.jboss.test.kernel.deployment.support.container.BeanContainer">
+      <property name="pool"><inject name="Bean2TypePool"/></property>
+   </bean>
+
+</deployment>

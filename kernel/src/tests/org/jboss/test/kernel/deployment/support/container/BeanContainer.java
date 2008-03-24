@@ -30,6 +30,16 @@ public class BeanContainer<T>
 {
    private BeanPool<T> pool;
 
+   
+   public BeanPool<T> getPool()
+   {
+      return pool;
+   }
+   public void setPool(BeanPool<T> pool)
+   {
+      this.pool = pool;
+   }
+
    @SuppressWarnings("unchecked")
    public T getBean()
       throws Throwable
