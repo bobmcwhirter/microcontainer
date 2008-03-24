@@ -22,17 +22,14 @@
 package org.jboss.test.kernel.deployment.test;
 
 import junit.framework.Test;
-import org.jboss.beans.metadata.spi.factory.BeanFactory;
-import org.jboss.test.kernel.deployment.support.SimpleBeanWithLifecycle;
 import org.jboss.test.kernel.deployment.support.container.Bean1Type;
 import org.jboss.test.kernel.deployment.support.container.Bean2Type;
 import org.jboss.test.kernel.deployment.support.container.BeanContainer;
 
 /**
- * GenericBeanFactory lifecycle Test Case.
+ * Bean Container Test Case.
  * 
- * @author <a href="adrian@jboss.com">Adrian Brock</a>
- * @version $Revision: 61978 $
+ * @author <a href="scott.stark@jboss.com">Scott Stark</a>
  */
 public class BeanContainerUsageTestCase extends AbstractDeploymentTest
 {
@@ -46,6 +43,7 @@ public class BeanContainerUsageTestCase extends AbstractDeploymentTest
       super(name);
    }
 
+   @SuppressWarnings("unchecked")
    public void testDependencyInjectionOfBean() throws Throwable
    {
       BeanContainer<Bean1Type> container1 = (BeanContainer<Bean1Type>) getBean("BeanContainer1Type");

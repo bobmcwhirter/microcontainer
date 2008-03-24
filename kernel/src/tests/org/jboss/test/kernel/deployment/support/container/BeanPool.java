@@ -34,7 +34,7 @@ import org.jboss.beans.metadata.spi.factory.BeanFactory;
 public class BeanPool<T>
 {
    /** The pooling policy */
-   private ArrayBlockingQueue<T> pool;
+   private ArrayBlockingQueue<T> pool = new ArrayBlockingQueue<T>(2);
    private BeanFactory factory;
    
    public BeanFactory getFactory()
@@ -54,7 +54,7 @@ public class BeanPool<T>
       if(pool.size() == 0)
       {
          // Fill the pool
-         for(int n = 0; n < pool.size(); n ++)
+         for(int n = 0; n < pool.remainingCapacity(); n ++)
          {
             T bean = (T) factory.createBean();
             pool.put(bean);

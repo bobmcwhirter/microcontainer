@@ -6,19 +6,19 @@
 
    <beanfactory name="Bean1TypeFactory" class="org.jboss.test.kernel.deployment.support.container.Bean1Type"/>
    <bean name="Bean1TypePool" class="org.jboss.test.kernel.deployment.support.container.BeanPool">
-      <property name="factory"><inject name="Bean1TypeFactory"/></property>
+      <property name="factory"><inject bean="Bean1TypeFactory"/></property>
    </bean>
    <bean name="BeanContainer1Type" class="org.jboss.test.kernel.deployment.support.container.BeanContainer">
-      <property name="pool"><inject name="Bean1TypePool"/></property>
+      <property name="pool"><inject bean="Bean1TypePool"/></property>
    </bean>
    <beanfactory name="Bean2TypeFactory" class="org.jboss.test.kernel.deployment.support.container.Bean2Type">
       <property name="bean1"><value-factory bean="Bean1TypeFactory" method="createBean" /></property>
    </beanfactory>
    <bean name="Bean2TypePool" class="org.jboss.test.kernel.deployment.support.container.BeanPool">
-      <property name="factory"><inject name="Bean2TypeFactory"/></property>
+      <property name="factory"><inject bean="Bean2TypeFactory"/></property>
    </bean>
    <bean name="BeanContainer2Type" class="org.jboss.test.kernel.deployment.support.container.BeanContainer">
-      <property name="pool"><inject name="Bean2TypePool"/></property>
+      <property name="pool"><inject bean="Bean2TypePool"/></property>
    </bean>
 
 </deployment>
