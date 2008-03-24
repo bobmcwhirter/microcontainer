@@ -53,8 +53,9 @@ public class BeanPool<T>
    {
       if(pool.size() == 0)
       {
+         int capacity = pool.remainingCapacity();
          // Fill the pool
-         for(int n = 0; n < pool.remainingCapacity(); n ++)
+         for(int n = 0; n < capacity; n ++)
          {
             T bean = (T) factory.createBean();
             pool.put(bean);
