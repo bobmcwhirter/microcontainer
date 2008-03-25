@@ -32,6 +32,7 @@ import org.jboss.kernel.plugins.config.property.PropertyKernelConfig;
 import org.jboss.kernel.plugins.dependency.AbstractKernelController;
 import org.jboss.kernel.plugins.dependency.DescribeAction;
 import org.jboss.kernel.spi.dependency.KernelController;
+import org.jboss.kernel.spi.dependency.KernelControllerContext;
 import org.jboss.kernel.spi.config.KernelConfig;
 
 /**
@@ -81,7 +82,7 @@ public abstract class AbstractBeanAnnotationAdapterTest extends AbstractRunAnnot
 
       protected void install(ControllerContext context, ControllerState fromState, ControllerState toState) throws Throwable
       {
-         if (ControllerState.DESCRIBED.equals(toState))
+         if (ControllerState.DESCRIBED.equals(toState) && (context instanceof KernelControllerContext))
             describe.install(context);
          else
             super.install(context, fromState, toState);
@@ -89,7 +90,7 @@ public abstract class AbstractBeanAnnotationAdapterTest extends AbstractRunAnnot
 
       protected void uninstall(ControllerContext context, ControllerState fromState, ControllerState toState)
       {
-         if (ControllerState.DESCRIBED.equals(fromState))
+         if (ControllerState.DESCRIBED.equals(fromState) && (context instanceof KernelControllerContext))
             describe.uninstall(context);
          else
             super.uninstall(context, fromState, toState);

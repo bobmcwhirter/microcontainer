@@ -24,8 +24,6 @@ package org.jboss.kernel.plugins.dependency;
 import java.util.List;
 
 import org.jboss.beans.info.spi.BeanInfo;
-import org.jboss.kernel.plugins.annotations.BeanAnnotationAdapterFactory;
-import org.jboss.kernel.plugins.annotations.BeanAnnotationAdapter;
 import org.jboss.kernel.spi.config.KernelConfig;
 import org.jboss.kernel.spi.dependency.DependencyBuilder;
 import org.jboss.kernel.spi.dependency.DependencyBuilderListItem;
@@ -41,7 +39,7 @@ import org.jboss.dependency.spi.ControllerState;
  * @author <a href="adrian@jboss.com">Adrian Brock</a>
  * @version $Revision$
  */
-public class DescribeAction extends InstallsAwareAction
+public class DescribeAction extends AnnotationsAction
 {
    @SuppressWarnings("unchecked")
    protected void installActionInternal(KernelControllerContext context) throws Throwable
@@ -66,40 +64,18 @@ public class DescribeAction extends InstallsAwareAction
             }
          }
          // handle custom annotations
-         AnnotationMetaDataVisitor annotationsVisitor = new AnnotationMetaDataVisitor(context);
-         annotationsVisitor.before();
-         try
-         {
-            getBeanAnnotationAdapter().applyAnnotations(annotationsVisitor);
-         }
-         finally
-         {
-            annotationsVisitor.after();
-         }
+         applyAnnotations(context);
       }
    }
 
    protected void uninstallActionInternal(KernelControllerContext context)
    {
-      // handle custom annotations
-      AnnotationMetaDataVisitor annotationsVisitor = new AnnotationMetaDataVisitor(context);
-      annotationsVisitor.before();
-      try
-      {
-         getBeanAnnotationAdapter().cleanAnnotations(annotationsVisitor);
-      }
-      catch(Throwable t)
-      {
-         log.debug("Error while cleaning the annotations: " + t);
-      }
-      finally
-      {
-         annotationsVisitor.after();
-      }
-      
       BeanInfo info = context.getBeanInfo();
       if (info != null)
       {
+         // handle custom annotations
+         cleanAnnotations(context);
+
          KernelController controller = (KernelController)context.getController();
          KernelConfig config = controller.getKernel().getConfig();
          DependencyBuilder dependencyBuilder;
@@ -126,12 +102,6 @@ public class DescribeAction extends InstallsAwareAction
             }
          }
       }      
-   }
-
-   protected BeanAnnotationAdapter getBeanAnnotationAdapter()
-   {
-      BeanAnnotationAdapterFactory factory = BeanAnnotationAdapterFactory.getInstance();
-      return factory.getBeanAnnotationAdapter();
    }
 
    protected ControllerState getState()

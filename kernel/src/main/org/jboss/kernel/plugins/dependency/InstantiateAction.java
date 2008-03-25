@@ -25,6 +25,7 @@ import org.jboss.beans.info.spi.BeanInfo;
 import org.jboss.beans.metadata.spi.BeanMetaData;
 import org.jboss.dependency.spi.ControllerState;
 import org.jboss.dependency.spi.DependencyInfo;
+import org.jboss.dependency.spi.ScopeInfo;
 import org.jboss.joinpoint.spi.Joinpoint;
 import org.jboss.kernel.Kernel;
 import org.jboss.kernel.spi.config.KernelConfigurator;
@@ -32,6 +33,9 @@ import org.jboss.kernel.spi.dependency.KernelController;
 import org.jboss.kernel.spi.dependency.KernelControllerContext;
 import org.jboss.kernel.spi.dependency.KernelControllerContextAware;
 import org.jboss.kernel.spi.dependency.InstantiateKernelControllerContextAware;
+import org.jboss.kernel.spi.metadata.KernelMetaDataRepository;
+import org.jboss.metadata.spi.scope.ScopeKey;
+import org.jboss.metadata.spi.scope.CommonLevels;
 
 /**
  * InstantiateAction.
@@ -39,8 +43,9 @@ import org.jboss.kernel.spi.dependency.InstantiateKernelControllerContextAware;
  * @author <a href="adrian@jboss.com">Adrian Brock</a>
  * @version $Revision$
  */
-public class InstantiateAction extends InstallsAwareAction
+public class InstantiateAction extends AnnotationsAction
 {
+   @SuppressWarnings("deprecation")
    protected void installActionInternal(KernelControllerContext context) throws Throwable
    {
       KernelController controller = (KernelController) context.getController();
@@ -62,6 +67,21 @@ public class InstantiateAction extends InstallsAwareAction
          {
             info = configurator.getBeanInfo(object.getClass(), metaData.getAccessMode());
             context.setBeanInfo(info);
+
+            // update class scope with class info
+            ScopeInfo scopeInfo = context.getScopeInfo();
+            KernelMetaDataRepository repository = kernel.getMetaDataRepository();
+            // remove old context
+            repository.removeMetaData(context);
+            // create new scope key
+            ScopeKey scopeKey = new ScopeKey(scopeInfo.getScope().getScopes());
+            scopeKey.addScope(CommonLevels.CLASS, info.getClassInfo().getType());
+            scopeInfo.setScope(scopeKey);
+            // re-register
+            repository.addMetaData(context);
+
+            // handle custom annotations
+            applyAnnotations(context);
          }
 
          DependencyInfo dependencyInfo = context.getDependencyInfo();
@@ -82,15 +102,11 @@ public class InstantiateAction extends InstallsAwareAction
          Object object = context.getTarget();
          if (object != null)
          {
-//            if (object instanceof KernelControllerContextAware)
-//               ((KernelControllerContextAware) object).unsetKernelControllerContext(context);
-
             KernelController controller = (KernelController) context.getController();
             DependencyInfo dependencyInfo = context.getDependencyInfo();
             if (dependencyInfo != null && dependencyInfo.isAutowireCandidate())
                controller.removeInstantiatedContext(context);
          }
-
       }
       catch (Throwable ignored)
       {

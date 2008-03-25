@@ -52,7 +52,6 @@ public class ClassContextDependencyItem extends ClassDependencyItem
       }
       return isResolved();
    }
-
 }
 
 

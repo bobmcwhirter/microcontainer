@@ -568,6 +568,7 @@ public class GenericBeanFactoryMetaData extends JBossObject implements BeanMetaD
          setFactoryClass(GenericBeanFactory.class.getName());
 
       AbstractBeanMetaData beanMetaData = new AbstractBeanMetaData(name, getFactoryClass());
+      beanMetaData.setAnnotations(getAnnotations());
       beanMetaData.setDemands(getDemands());
       beanMetaData.setDepends(getDepends());
       beanMetaData.setSupplies(getSupplies());

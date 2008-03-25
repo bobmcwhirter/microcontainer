@@ -154,6 +154,18 @@ class BeanMetaDataBuilderImpl extends BeanMetaDataBuilder
       return beanMetaData;
    }
 
+   public BeanMetaDataBuilder setName(String name)
+   {
+      beanMetaData.setName(name);
+      return this;
+   }
+
+   public BeanMetaDataBuilder setBean(String bean)
+   {
+      beanMetaData.setBean(bean);
+      return this;
+   }
+
    public BeanMetaDataBuilder setAliases(Set<Object> aliases)
    {
       beanMetaData.setAliases(aliases);

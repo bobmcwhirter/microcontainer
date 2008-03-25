@@ -45,6 +45,7 @@ public class AnnotationSupportTestSuite extends TestSuite
       suite.addTest(FactoryMethodXMLTestCase.suite());
       suite.addTest(FactoryMethodBadTestCase.suite());
       suite.addTest(CleanupAnnotationTestCase.suite());
+      suite.addTest(AfterInstantiateAnnotationsTestCase.suite());
 
       return suite;
    }

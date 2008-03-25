@@ -62,7 +62,11 @@ public abstract class ClassDependencyItem extends AbstractDependencyItem
 
    public void toShortString(JBossStringBuilder buffer)
    {
-      buffer.append(getName()).append(" demands ").append(getIDependOn());
+      buffer.append(getName()).append(" demandsClass ").append(getIDependOn());
    }
 
+   public String toHumanReadableString()
+   {
+      return getIDependOn() + " (NOTE: using autowiring to resolve this dependency)";
+   }
 }

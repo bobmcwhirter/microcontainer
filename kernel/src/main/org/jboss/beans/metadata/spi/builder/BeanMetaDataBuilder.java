@@ -79,7 +79,8 @@ public abstract class BeanMetaDataBuilder
       {
          return BeanMetaDataBuilderFactory.createBuilder((AbstractBeanMetaData)beanMetaData);
       }
-      else throw new IllegalArgumentException("Invalid type of bean metadata");
+      else
+         throw new IllegalArgumentException("Invalid type of bean metadata");
    }
 
    /**
@@ -88,6 +89,22 @@ public abstract class BeanMetaDataBuilder
     * @return the bean metadata
     */
    public abstract BeanMetaData getBeanMetaData();
+
+   /**
+    * Set the bean name.
+    *
+    * @param name the name
+    * @return the builder
+    */
+   public abstract BeanMetaDataBuilder setName(String name);
+
+   /**
+    * Set the bean.
+    *
+    * @param bean the bean class name
+    * @return the builder
+    */
+   public abstract BeanMetaDataBuilder setBean(String bean);
 
    /**
     * Set the aliases

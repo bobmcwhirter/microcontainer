@@ -131,6 +131,7 @@ public class CallbackDependencyItem extends ClassDependencyItem
          return first.equals(second) == false;
    }
 
+   @Override
    public void toString(JBossStringBuilder buffer)
    {
       super.toString(buffer);
@@ -140,7 +141,6 @@ public class CallbackDependencyItem extends ClassDependencyItem
    @Override
    public String toHumanReadableString()
    {
-      // TODO toHumanReadableString
-      return super.toString();
+      return "Cardinality usage: '" + cardinality + "' and " + super.toHumanReadableString();
    }
 }
