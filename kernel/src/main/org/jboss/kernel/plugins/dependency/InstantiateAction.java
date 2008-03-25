@@ -69,11 +69,11 @@ public class InstantiateAction extends AnnotationsAction
             context.setBeanInfo(info);
 
             // update class scope with class info
-            ScopeInfo scopeInfo = context.getScopeInfo();
             KernelMetaDataRepository repository = kernel.getMetaDataRepository();
             // remove old context
             repository.removeMetaData(context);
             // create new scope key
+            ScopeInfo scopeInfo = context.getScopeInfo();
             ScopeKey scopeKey = new ScopeKey(scopeInfo.getScope().getScopes());
             scopeKey.addScope(CommonLevels.CLASS, info.getClassInfo().getType());
             scopeInfo.setScope(scopeKey);
