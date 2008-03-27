@@ -6,6 +6,9 @@
 
    <beanfactory name="Bean1TypeFactory" class="org.jboss.test.kernel.deployment.support.container.Bean1Type"/>
    <bean name="Bean1TypePool" class="org.jboss.test.kernel.deployment.support.container.BeanPool">
+      <constructor>
+         <parameter>3</parameter>
+      </constructor>
       <property name="factory"><inject bean="Bean1TypeFactory"/></property>
    </bean>
    <bean name="BeanContainer1Type" class="org.jboss.test.kernel.deployment.support.container.BeanContainer">
@@ -15,6 +18,9 @@
       <property name="bean1"><value-factory bean="Bean1TypePool" method="createBean" /></property>
    </beanfactory>
    <bean name="Bean2TypePool" class="org.jboss.test.kernel.deployment.support.container.BeanPool">
+      <constructor>
+         <parameter>4</parameter>
+      </constructor>
       <property name="factory"><inject bean="Bean2TypeFactory"/></property>
    </bean>
    <bean name="BeanContainer2Type" class="org.jboss.test.kernel.deployment.support.container.BeanContainer">

@@ -23,15 +23,19 @@ package org.jboss.test.kernel.deployment.test;
 
 import java.util.ArrayList;
 import java.util.HashSet;
+import java.util.List;
 import java.util.Set;
 
 import junit.framework.Test;
 
 import org.jboss.beans.metadata.plugins.AbstractBeanMetaData;
+import org.jboss.beans.metadata.plugins.AbstractConstructorMetaData;
 import org.jboss.beans.metadata.plugins.AbstractDependencyValueMetaData;
+import org.jboss.beans.metadata.plugins.AbstractParameterMetaData;
 import org.jboss.beans.metadata.plugins.AbstractPropertyMetaData;
 import org.jboss.beans.metadata.plugins.AbstractValueFactoryMetaData;
 import org.jboss.beans.metadata.spi.BeanMetaDataFactory;
+import org.jboss.beans.metadata.spi.ParameterMetaData;
 import org.jboss.beans.metadata.spi.PropertyMetaData;
 import org.jboss.beans.metadata.spi.factory.GenericBeanFactoryMetaData;
 import org.jboss.kernel.plugins.deployment.AbstractKernelDeployment;
@@ -64,7 +68,7 @@ public class BeanContainerUsageMDTestCase extends BeanContainerUsageTestCase
       <property name="pool"><inject bean="Bean1TypePool"/></property>
    </bean>
    <beanfactory name="Bean2TypeFactory" class="org.jboss.test.kernel.deployment.support.container.Bean2Type">
-      <property name="bean1"><value-factory bean="Bean1TypeFactory" method="createBean" /></property>
+      <property name="bean1"><value-factory bean="Bean1TypePool" method="createBean" /></property>
    </beanfactory>
    <bean name="Bean2TypePool" class="org.jboss.test.kernel.deployment.support.container.BeanPool">
       <property name="factory"><inject bean="Bean2TypeFactory"/></property>
@@ -103,7 +107,7 @@ public class BeanContainerUsageMDTestCase extends BeanContainerUsageTestCase
       GenericBeanFactoryMetaData Bean2TypeFactory = new GenericBeanFactoryMetaData("Bean2TypeFactory",
       "org.jboss.test.kernel.deployment.support.container.Bean2Type");
       Set<PropertyMetaData> Bean2TypeFactory_propertys = new HashSet<PropertyMetaData>();
-      AbstractValueFactoryMetaData bean1CreateMethod = new AbstractValueFactoryMetaData("Bean1TypeFactory", "createBean"); 
+      AbstractValueFactoryMetaData bean1CreateMethod = new AbstractValueFactoryMetaData("Bean1TypePool", "createBean"); 
       Bean2TypeFactory_propertys.add(new AbstractPropertyMetaData("bean1", bean1CreateMethod));
       Bean2TypeFactory.setProperties(Bean2TypeFactory_propertys);
       beanFactories.add(Bean2TypeFactory);
@@ -126,6 +130,60 @@ public class BeanContainerUsageMDTestCase extends BeanContainerUsageTestCase
 
       deployment.setBeanFactories(beanFactories);
 
+      return deployment;
+   }
+   /*
+   <beanfactory name="Bean1TypeFactory" class="org.jboss.test.kernel.deployment.support.container.Bean1Type"/>
+   <bean name="Bean1TypePool" class="org.jboss.test.kernel.deployment.support.container.BeanPool">
+      <constructor>
+         <parameter>3</parameter>
+      </constructor>
+      <property name="factory"><inject bean="Bean1TypeFactory"/></property>
+   </bean>
+   <bean name="BeanContainer1Type" class="org.jboss.test.kernel.deployment.support.container.BeanContainer">
+      <property name="pool"><inject bean="Bean1TypePool"/></property>
+   </bean>
+   <beanfactory name="Bean2TypeFactory" class="org.jboss.test.kernel.deployment.support.container.Bean2Type">
+      <property name="bean1"><value-factory bean="Bean1TypePool" method="createBean" /></property>
+   </beanfactory>
+   <bean name="Bean2TypePool" class="org.jboss.test.kernel.deployment.support.container.BeanPool">
+      <constructor>
+         <parameter>4</parameter>
+      </constructor>
+      <property name="factory"><inject bean="Bean2TypeFactory"/></property>
+   </bean>
+   <bean name="BeanContainer2Type" class="org.jboss.test.kernel.deployment.support.container.BeanContainer">
+      <property name="pool"><inject bean="Bean2TypePool"/></property>
+   </bean>
+   */
+   protected KernelDeployment getDeploymentForDependencyInjectionOfBeanWithMismatchedPoolSizes()
+   {
+      KernelDeployment deployment = getDeploymentForDependencyInjectionOfBean();
+      // Update the pool ctors
+      List<BeanMetaDataFactory> beanFactories = deployment.getBeanFactories();
+      for(BeanMetaDataFactory bmdf : beanFactories)
+      {
+         if(bmdf instanceof AbstractBeanMetaData)
+         {
+            AbstractBeanMetaData abmd = (AbstractBeanMetaData) bmdf;
+            if(abmd.getName().equals("Bean1TypePool"))
+            {
+               AbstractConstructorMetaData ctor = new AbstractConstructorMetaData();
+               ArrayList<ParameterMetaData> params = new ArrayList<ParameterMetaData>();
+               params.add(new AbstractParameterMetaData(int.class.getName(), "3"));
+               ctor.setParameters(params);
+               abmd.setConstructor(ctor);
+            }
+            else if(abmd.getName().equals("Bean2TypePool"))
+            {
+               AbstractConstructorMetaData ctor = new AbstractConstructorMetaData();
+               ArrayList<ParameterMetaData> params = new ArrayList<ParameterMetaData>();
+               params.add(new AbstractParameterMetaData(int.class.getName(), "4"));
+               ctor.setParameters(params);
+               abmd.setConstructor(ctor);
+            }
+         }
+      }
       return deployment;
    }
 }

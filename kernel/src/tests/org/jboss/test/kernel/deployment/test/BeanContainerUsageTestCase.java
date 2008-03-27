@@ -23,6 +23,7 @@ package org.jboss.test.kernel.deployment.test;
 
 import java.lang.reflect.Method;
 import java.net.URL;
+import java.util.ArrayList;
 
 import junit.framework.Test;
 
@@ -33,22 +34,22 @@ import org.jboss.kernel.plugins.deployment.xml.BasicXMLDeployer;
 import org.jboss.kernel.spi.dependency.KernelController;
 import org.jboss.kernel.spi.dependency.KernelControllerContext;
 import org.jboss.kernel.spi.deployment.KernelDeployment;
-import org.jboss.test.AbstractTestDelegate;
 import org.jboss.test.kernel.AbstractKernelTest;
-import org.jboss.test.kernel.config.support.XMLUtil;
 import org.jboss.test.kernel.deployment.support.container.Bean1Type;
 import org.jboss.test.kernel.deployment.support.container.Bean2Type;
 import org.jboss.test.kernel.deployment.support.container.BeanContainer;
+import org.jboss.test.kernel.deployment.support.container.BeanPool;
 
 /**
  * Bean Container Test Case.
  * 
  * @author <a href="scott.stark@jboss.com">Scott Stark</a>
- * @version $Revision:$
+ * @version $Revision$
  */
 public class BeanContainerUsageTestCase extends AbstractKernelTest
 {
    private Kernel kernel;
+   private BasicXMLDeployer deployer;
 
    public static Test suite()
    {
@@ -65,17 +66,47 @@ public class BeanContainerUsageTestCase extends AbstractKernelTest
    {
       bootstrap();
       BeanContainer<Bean1Type> container1 = (BeanContainer<Bean1Type>) getBean("BeanContainer1Type");
+      BeanPool<Bean1Type> pool1 = (BeanPool<Bean1Type>) getBean("Bean1TypePool");
       BeanContainer<Bean2Type> container2 = (BeanContainer<Bean2Type>) getBean("BeanContainer2Type");
       Bean2Type bean21 = container2.getBean();
+      getLog().debug("bean21: "+bean21);
       Bean1Type bean11 = bean21.getBean1();
+      assertEquals(0, pool1.size());
+      getLog().debug("bean11: "+bean11);
       assertNotNull(bean11);
       // Create another Bean2Type instance
       Bean2Type bean22 = container2.getBean();
+      getLog().debug("bean22: "+bean22);
       assertTrue(bean22 != bean21);
       // The injected bean should not be the same as injected into bean21
       Bean1Type bean12 = bean22.getBean1();
+      getLog().debug("bean12: "+bean12);
       assertNotNull(bean12);
       assertTrue(bean12 != bean11);
+
+      // Create another bean 2 type, should fail
+      Bean2Type bean23 = container2.getBean();
+      getLog().debug("bean23: "+bean23);
+      Bean1Type bean13Injected = bean23.getBean1();
+      getLog().debug("bean13Injected: "+bean13Injected);
+      assertNotNull(bean13Injected);
+      deployer.shutdown();
+   }
+   public void testDependencyInjectionOfBeanWithMismatchedPoolSizes()
+      throws Throwable
+   {
+      bootstrap();
+      BeanContainer<Bean2Type> container2 = (BeanContainer<Bean2Type>) getBean("BeanContainer2Type");
+      try
+      {
+         Bean2Type bean21 = container2.getBean();
+         fail("Should not have been able to create a Bean2Type");
+      }
+      catch(IllegalStateException e)
+      {
+         getLog().info("Saw expected IllegalStateException");
+      }
+      deployer.shutdown();
    }
 
    protected KernelDeployment getDeploymentForDependencyInjectionOfBean()
@@ -91,10 +122,19 @@ public class BeanContainerUsageTestCase extends AbstractKernelTest
    protected Kernel bootstrap() throws Throwable
    {
       kernel = super.bootstrap();
-      BasicXMLDeployer deployer = new BasicXMLDeployer(kernel, ControllerMode.AUTOMATIC);
+      deployer = new BasicXMLDeployer(kernel, ControllerMode.AUTOMATIC);
       String testName = "getDeploymentFor"+ getName().substring(4);
-      Method getDeployment = getClass().getDeclaredMethod(testName, null);
-      KernelDeployment deployment = (KernelDeployment) getDeployment.invoke(this, null);
+      KernelDeployment deployment = null;
+      try
+      {
+         Method getDeployment = getClass().getDeclaredMethod(testName, null);
+         deployment = (KernelDeployment) getDeployment.invoke(this, null);
+      }
+      catch(NoSuchMethodException e)
+      {
+         getLog().debug("Ignoring: "+e);
+      }
+
       if(deployment == null)
       {
          String xmlName = getClass().getName() + "_" + super.getName();

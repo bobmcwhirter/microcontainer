@@ -21,13 +21,21 @@
  */
 package org.jboss.test.kernel.deployment.support.container;
 
+import org.jboss.logging.Logger;
+
 /**
  * @author Scott.Stark@jboss.org
  * @version $Revision$
  */
 public class Bean1Type
 {
+   private static Logger log = Logger.getLogger(Bean1Type.class);
    private String prop1;
+
+   public Bean1Type()
+   {
+      log.debug("Bean1Type.ctor, this="+this);
+   }
 
    public String getProp1()
    {
