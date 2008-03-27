@@ -1,6 +1,6 @@
 /*
 * JBoss, Home of Professional Open Source
-* Copyright 2006, JBoss Inc., and individual contributors as indicated
+* Copyright 2005, JBoss Inc., and individual contributors as indicated
 * by the @authors tag. See the copyright.txt in the distribution for a
 * full listing of individual contributors.
 *
@@ -19,22 +19,28 @@
 * Software Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA
 * 02110-1301 USA, or see the FSF site: http://www.fsf.org.
 */
-package org.jboss.kernel.plugins.deployment.xml;
-
-import org.jboss.xb.binding.sunday.unmarshalling.SchemaBinding;
-import org.jboss.xb.binding.sunday.unmarshalling.SchemaBindingInitializer;
+package org.jboss.dependency.spi;
 
 /**
- * BeanSchemaInitializer.
- * 
- * @author <a href="adrian@jboss.com">Adrian Brock</a>
- * @version $Revision$
+ * Error handling mode.
+ *
+ * @author <a href="ales.justin@jboss.com">Ales Justin</a>
  */
-public class BeanSchemaInitializer implements SchemaBindingInitializer
+//@JBossXmlEnum(ignoreCase=true)
+public enum ErrorHandlingMode
 {
-   public SchemaBinding init(SchemaBinding schema)
+   DISCARD, // The default as before
+   MANUAL, // Handle contexts in error yourself
+   CHECKED; // As MANUAL but RuntimeExceptions, Errors lead to a DISCARD
+
+   // TODO - remove after 219
+   public static ErrorHandlingMode getInstance(String type)
    {
-      BeanSchemaBinding.init(schema);
-      return schema;
+      for(ErrorHandlingMode mode : values())
+      {
+         if (mode.toString().equalsIgnoreCase(type))
+            return mode;
+      }
+      throw new IllegalArgumentException("No such error handling mode: " + type);
    }
 }

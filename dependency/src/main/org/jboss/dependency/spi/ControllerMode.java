@@ -29,12 +29,14 @@ import org.jboss.util.JBossStringBuilder;
  * @author <a href="adrian@jboss.com">Adrian Brock</a>
  * @version $Revision$
  */
+//@JBossXmlEnum(ignoreCase=true)
 public enum ControllerMode
 {
    AUTOMATIC("Automatic"),
    ON_DEMAND("On Demand"),
    MANUAL("Manual"),
-   DISABLED("Disabled");
+   DISABLED("Disabled"),
+   ASYNCHRONOUS("Asynchronous");
 
    /** The mode string */
    private final String modeString;

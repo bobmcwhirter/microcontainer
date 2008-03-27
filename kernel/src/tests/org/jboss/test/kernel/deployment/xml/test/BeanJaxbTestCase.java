@@ -28,6 +28,7 @@ import junit.framework.Test;
 import org.jboss.beans.metadata.plugins.AbstractBeanMetaData;
 import org.jboss.beans.info.spi.BeanAccessMode;
 import org.jboss.dependency.spi.ControllerMode;
+import org.jboss.dependency.spi.ErrorHandlingMode;
 import org.jboss.test.kernel.deployment.xml.support.Annotation1;
 import org.jboss.test.kernel.deployment.xml.support.Annotation2;
 import org.jboss.test.kernel.deployment.xml.support.Annotation3;
@@ -46,6 +47,7 @@ public class BeanJaxbTestCase extends AbstractMCTest
       assertEquals("Name1", bean.getName());
       assertEquals("Dummy", bean.getBean());
       assertNull(bean.getMode());
+      assertNull(bean.getErrorHandlingMode());
       assertNull(bean.getAccessMode());
       assertNull(bean.getAnnotations());
       assertNull(bean.getClassLoader());
@@ -69,6 +71,7 @@ public class BeanJaxbTestCase extends AbstractMCTest
       assertNull(bean.getName());
       assertEquals(Object.class.getName(), bean.getBean());
       assertNull(bean.getMode());
+      assertNull(bean.getErrorHandlingMode());
       assertNull(bean.getAccessMode());
       assertNull(bean.getAnnotations());
       assertNull(bean.getClassLoader());
@@ -92,6 +95,31 @@ public class BeanJaxbTestCase extends AbstractMCTest
       assertNull(bean.getName());
       assertEquals("Dummy", bean.getBean());
       assertEquals(ControllerMode.MANUAL, bean.getMode());
+      assertNull(bean.getErrorHandlingMode());
+      assertNull(bean.getAccessMode());
+      assertNull(bean.getAnnotations());
+      assertNull(bean.getClassLoader());
+      assertNull(bean.getConstructor());
+      assertNull(bean.getProperties());
+      assertNull(bean.getCreate());
+      assertNull(bean.getStart());
+      assertNull(bean.getStop());
+      assertNull(bean.getDestroy());
+      assertNull(bean.getDemands());
+      assertNull(bean.getSupplies());
+      assertNull(bean.getInstalls());
+      assertNull(bean.getUninstalls());
+      assertNull(bean.getInstallCallbacks());
+      assertNull(bean.getUninstallCallbacks());
+   }
+
+   public void testBeanWithErrorHandlingMode() throws Exception
+   {
+      AbstractBeanMetaData bean = unmarshalBean();
+      assertNull(bean.getName());
+      assertEquals("Dummy", bean.getBean());
+      assertNull(bean.getMode());
+      assertEquals(ErrorHandlingMode.MANUAL, bean.getErrorHandlingMode());
       assertNull(bean.getAccessMode());
       assertNull(bean.getAnnotations());
       assertNull(bean.getClassLoader());
@@ -138,6 +166,7 @@ public class BeanJaxbTestCase extends AbstractMCTest
       assertNull(bean.getName());
       assertEquals("Dummy", bean.getBean());
       assertNull(bean.getMode());
+      assertNull(bean.getErrorHandlingMode());
       assertNull(bean.getAccessMode());
       HashSet<String> expected = new HashSet<String>();
       expected.add(Annotation1.class.getName());
@@ -163,6 +192,7 @@ public class BeanJaxbTestCase extends AbstractMCTest
       assertNull(bean.getName());
       assertEquals("Dummy", bean.getBean());
       assertNull(bean.getMode());
+      assertNull(bean.getErrorHandlingMode());
       assertNull(bean.getAccessMode());
       HashSet<String> expected = new HashSet<String>();
       expected.add(Annotation1.class.getName());
@@ -190,6 +220,7 @@ public class BeanJaxbTestCase extends AbstractMCTest
       assertNull(bean.getName());
       assertEquals("Dummy", bean.getBean());
       assertNull(bean.getMode());
+      assertNull(bean.getErrorHandlingMode());
       assertNull(bean.getAccessMode());
       assertNull(bean.getAnnotations());
       assertNotNull(bean.getClassLoader());
@@ -213,6 +244,7 @@ public class BeanJaxbTestCase extends AbstractMCTest
       assertNull(bean.getName());
       assertEquals("Dummy", bean.getBean());
       assertNull(bean.getMode());
+      assertNull(bean.getErrorHandlingMode());
       assertNull(bean.getAccessMode());
       assertNull(bean.getAnnotations());
       assertNull(bean.getClassLoader());
@@ -236,6 +268,7 @@ public class BeanJaxbTestCase extends AbstractMCTest
       assertNull(bean.getName());
       assertEquals("Dummy", bean.getBean());
       assertNull(bean.getMode());
+      assertNull(bean.getErrorHandlingMode());
       assertNull(bean.getAccessMode());
       assertNull(bean.getAnnotations());
       assertNull(bean.getClassLoader());
@@ -261,6 +294,7 @@ public class BeanJaxbTestCase extends AbstractMCTest
       assertNull(bean.getName());
       assertEquals("Dummy", bean.getBean());
       assertNull(bean.getMode());
+      assertNull(bean.getErrorHandlingMode());
       assertNull(bean.getAccessMode());
       assertNull(bean.getAnnotations());
       assertNull(bean.getClassLoader());
@@ -288,6 +322,7 @@ public class BeanJaxbTestCase extends AbstractMCTest
       assertNull(bean.getName());
       assertEquals("Dummy", bean.getBean());
       assertNull(bean.getMode());
+      assertNull(bean.getErrorHandlingMode());
       assertNull(bean.getAccessMode());
       assertNull(bean.getAnnotations());
       assertNull(bean.getClassLoader());
@@ -311,6 +346,7 @@ public class BeanJaxbTestCase extends AbstractMCTest
       assertNull(bean.getName());
       assertEquals("Dummy", bean.getBean());
       assertNull(bean.getMode());
+      assertNull(bean.getErrorHandlingMode());
       assertNull(bean.getAccessMode());
       assertNull(bean.getAnnotations());
       assertNull(bean.getClassLoader());
@@ -334,6 +370,7 @@ public class BeanJaxbTestCase extends AbstractMCTest
       assertNull(bean.getName());
       assertEquals("Dummy", bean.getBean());
       assertNull(bean.getMode());
+      assertNull(bean.getErrorHandlingMode());
       assertNull(bean.getAccessMode());
       assertNull(bean.getAnnotations());
       assertNull(bean.getClassLoader());
@@ -357,6 +394,7 @@ public class BeanJaxbTestCase extends AbstractMCTest
       assertNull(bean.getName());
       assertEquals("Dummy", bean.getBean());
       assertNull(bean.getMode());
+      assertNull(bean.getErrorHandlingMode());
       assertNull(bean.getAccessMode());
       assertNull(bean.getAnnotations());
       assertNull(bean.getClassLoader());
@@ -380,6 +418,7 @@ public class BeanJaxbTestCase extends AbstractMCTest
       assertNull(bean.getName());
       assertEquals("Dummy", bean.getBean());
       assertNull(bean.getMode());
+      assertNull(bean.getErrorHandlingMode());
       assertNull(bean.getAccessMode());
       assertNull(bean.getAnnotations());
       assertNull(bean.getClassLoader());
@@ -405,6 +444,7 @@ public class BeanJaxbTestCase extends AbstractMCTest
       assertNull(bean.getName());
       assertEquals("Dummy", bean.getBean());
       assertNull(bean.getMode());
+      assertNull(bean.getErrorHandlingMode());
       assertNull(bean.getAccessMode());
       assertNull(bean.getAnnotations());
       assertNull(bean.getClassLoader());
@@ -432,6 +472,7 @@ public class BeanJaxbTestCase extends AbstractMCTest
       assertNull(bean.getName());
       assertEquals("Dummy", bean.getBean());
       assertNull(bean.getMode());
+      assertNull(bean.getErrorHandlingMode());
       assertNull(bean.getAccessMode());
       assertNull(bean.getAnnotations());
       assertNull(bean.getClassLoader());
@@ -457,6 +498,7 @@ public class BeanJaxbTestCase extends AbstractMCTest
       assertNull(bean.getName());
       assertEquals("Dummy", bean.getBean());
       assertNull(bean.getMode());
+      assertNull(bean.getErrorHandlingMode());
       assertNull(bean.getAccessMode());
       assertNull(bean.getAnnotations());
       assertNull(bean.getClassLoader());
@@ -484,6 +526,7 @@ public class BeanJaxbTestCase extends AbstractMCTest
       assertNull(bean.getName());
       assertEquals("Dummy", bean.getBean());
       assertNull(bean.getMode());
+      assertNull(bean.getErrorHandlingMode());
       assertNull(bean.getAccessMode());
       assertNull(bean.getAnnotations());
       assertNull(bean.getClassLoader());
@@ -509,6 +552,7 @@ public class BeanJaxbTestCase extends AbstractMCTest
       assertNull(bean.getName());
       assertEquals("Dummy", bean.getBean());
       assertNull(bean.getMode());
+      assertNull(bean.getErrorHandlingMode());
       assertNull(bean.getAccessMode());
       assertNull(bean.getAnnotations());
       assertNull(bean.getClassLoader());
@@ -536,6 +580,7 @@ public class BeanJaxbTestCase extends AbstractMCTest
       assertNull(bean.getName());
       assertEquals("Dummy", bean.getBean());
       assertNull(bean.getMode());
+      assertNull(bean.getErrorHandlingMode());
       assertNull(bean.getAccessMode());
       assertNull(bean.getAnnotations());
       assertNull(bean.getClassLoader());
@@ -561,6 +606,7 @@ public class BeanJaxbTestCase extends AbstractMCTest
       assertNull(bean.getName());
       assertEquals("Dummy", bean.getBean());
       assertNull(bean.getMode());
+      assertNull(bean.getErrorHandlingMode());
       assertNull(bean.getAccessMode());
       assertNull(bean.getAnnotations());
       assertNull(bean.getClassLoader());
@@ -588,6 +634,7 @@ public class BeanJaxbTestCase extends AbstractMCTest
       assertNull(bean.getName());
       assertEquals("Dummy", bean.getBean());
       assertNull(bean.getMode());
+      assertNull(bean.getErrorHandlingMode());
       assertNull(bean.getAccessMode());
       assertNull(bean.getAnnotations());
       assertNull(bean.getClassLoader());
@@ -613,6 +660,7 @@ public class BeanJaxbTestCase extends AbstractMCTest
       assertNull(bean.getName());
       assertEquals("Dummy", bean.getBean());
       assertNull(bean.getMode());
+      assertNull(bean.getErrorHandlingMode());
       assertNull(bean.getAccessMode());
       assertNull(bean.getAnnotations());
       assertNull(bean.getClassLoader());
@@ -640,6 +688,7 @@ public class BeanJaxbTestCase extends AbstractMCTest
       assertNull(bean.getName());
       assertEquals("Dummy", bean.getBean());
       assertNull(bean.getMode());
+      assertNull(bean.getErrorHandlingMode());
       assertNull(bean.getAccessMode());
       assertNull(bean.getAnnotations());
       assertNull(bean.getClassLoader());
@@ -665,6 +714,7 @@ public class BeanJaxbTestCase extends AbstractMCTest
       assertNull(bean.getName());
       assertEquals("Dummy", bean.getBean());
       assertNull(bean.getMode());
+      assertNull(bean.getErrorHandlingMode());
       assertNull(bean.getAccessMode());
       assertNull(bean.getAnnotations());
       assertNull(bean.getClassLoader());
@@ -692,6 +742,7 @@ public class BeanJaxbTestCase extends AbstractMCTest
       assertNull(bean.getName());
       assertEquals("Dummy", bean.getBean());
       assertNull(bean.getMode());
+      assertNull(bean.getErrorHandlingMode());
       assertNull(bean.getAccessMode());
       assertNull(bean.getAnnotations());
       assertNull(bean.getClassLoader());
@@ -717,6 +768,7 @@ public class BeanJaxbTestCase extends AbstractMCTest
       assertNull(bean.getName());
       assertEquals("Dummy", bean.getBean());
       assertNull(bean.getMode());
+      assertNull(bean.getErrorHandlingMode());
       assertNull(bean.getAccessMode());
       assertNull(bean.getAnnotations());
       assertNull(bean.getClassLoader());

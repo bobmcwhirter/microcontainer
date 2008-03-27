@@ -29,6 +29,7 @@ import org.jboss.beans.metadata.api.model.AutowireType;
 import org.jboss.beans.metadata.spi.ConstructorMetaData;
 import org.jboss.beans.info.spi.BeanAccessMode;
 import org.jboss.dependency.spi.ControllerMode;
+import org.jboss.dependency.spi.ErrorHandlingMode;
 import org.jboss.xb.binding.sunday.unmarshalling.DefaultElementHandler;
 import org.jboss.xb.binding.sunday.unmarshalling.ElementBinding;
 import org.xml.sax.Attributes;
@@ -70,6 +71,8 @@ public class BeanHandler extends DefaultElementHandler
                mode = BeanAccessMode.ALL;
             bean.setAccessMode(mode);
          }
+         else if ("error-handling".equals(localName))
+            bean.setErrorHandlingMode(ErrorHandlingMode.getInstance(localName));
          else if ("parent".equals(localName))
             bean.setParent(attrs.getValue(i));
          else if ("abstract".equals(localName))

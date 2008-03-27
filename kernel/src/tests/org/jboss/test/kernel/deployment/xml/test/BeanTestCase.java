@@ -29,6 +29,7 @@ import org.jboss.beans.metadata.plugins.AbstractBeanMetaData;
 import org.jboss.beans.metadata.api.model.AutowireType;
 import org.jboss.beans.info.spi.BeanAccessMode;
 import org.jboss.dependency.spi.ControllerMode;
+import org.jboss.dependency.spi.ErrorHandlingMode;
 
 /**
  * BeanTestCase.
@@ -44,6 +45,7 @@ public class BeanTestCase extends AbstractXMLTest
       assertEquals("Name1", bean.getName());
       assertEquals("Dummy", bean.getBean());
       assertNull(bean.getMode());
+      assertNull(bean.getErrorHandlingMode());
       assertNull(bean.getAccessMode());
       assertNull(bean.getAnnotations());
       assertNull(bean.getClassLoader());
@@ -67,6 +69,7 @@ public class BeanTestCase extends AbstractXMLTest
       assertNull(bean.getName());
       assertEquals(Object.class.getName(), bean.getBean());
       assertNull(bean.getMode());
+      assertNull(bean.getErrorHandlingMode());
       assertNull(bean.getAccessMode());
       assertNull(bean.getAnnotations());
       assertNull(bean.getClassLoader());
@@ -90,6 +93,31 @@ public class BeanTestCase extends AbstractXMLTest
       assertNull(bean.getName());
       assertEquals("Dummy", bean.getBean());
       assertEquals(ControllerMode.MANUAL, bean.getMode());
+      assertNull(bean.getErrorHandlingMode());
+      assertNull(bean.getAccessMode());
+      assertNull(bean.getAnnotations());
+      assertNull(bean.getClassLoader());
+      assertNull(bean.getConstructor());
+      assertNull(bean.getProperties());
+      assertNull(bean.getCreate());
+      assertNull(bean.getStart());
+      assertNull(bean.getStop());
+      assertNull(bean.getDestroy());
+      assertNull(bean.getDemands());
+      assertNull(bean.getSupplies());
+      assertNull(bean.getInstalls());
+      assertNull(bean.getUninstalls());
+      assertNull(bean.getInstallCallbacks());
+      assertNull(bean.getUninstallCallbacks());
+   }
+
+   public void testBeanWithErrorHandlingMode() throws Exception
+   {
+      AbstractBeanMetaData bean = unmarshalBean("BeanWithErrorHandlingMode.xml");
+      assertNull(bean.getName());
+      assertEquals("Dummy", bean.getBean());
+      assertNull(bean.getMode());
+      assertEquals(ErrorHandlingMode.MANUAL, bean.getErrorHandlingMode());
       assertNull(bean.getAccessMode());
       assertNull(bean.getAnnotations());
       assertNull(bean.getClassLoader());
@@ -136,6 +164,7 @@ public class BeanTestCase extends AbstractXMLTest
       assertNull(bean.getName());
       assertEquals("Dummy", bean.getBean());
       assertNull(bean.getMode());
+      assertNull(bean.getErrorHandlingMode());
       assertNull(bean.getAccessMode());
       HashSet<String> expected = new HashSet<String>();
       expected.add("org.jboss.test.kernel.deployment.xml.support.Annotation1");
@@ -161,6 +190,7 @@ public class BeanTestCase extends AbstractXMLTest
       assertNull(bean.getName());
       assertEquals("Dummy", bean.getBean());
       assertNull(bean.getMode());
+      assertNull(bean.getErrorHandlingMode());
       assertNull(bean.getAccessMode());
       HashSet<String> expected = new HashSet<String>();
       expected.add("org.jboss.test.kernel.deployment.xml.support.Annotation1");
@@ -188,6 +218,7 @@ public class BeanTestCase extends AbstractXMLTest
       assertNull(bean.getName());
       assertEquals("Dummy", bean.getBean());
       assertNull(bean.getMode());
+      assertNull(bean.getErrorHandlingMode());
       assertNull(bean.getAccessMode());
       assertNull(bean.getAnnotations());
       assertNotNull(bean.getClassLoader());
@@ -211,6 +242,7 @@ public class BeanTestCase extends AbstractXMLTest
       assertNull(bean.getName());
       assertEquals("Dummy", bean.getBean());
       assertNull(bean.getMode());
+      assertNull(bean.getErrorHandlingMode());
       assertNull(bean.getAccessMode());
       assertNull(bean.getAnnotations());
       assertNull(bean.getClassLoader());
@@ -234,6 +266,7 @@ public class BeanTestCase extends AbstractXMLTest
       assertNull(bean.getName());
       assertEquals("Dummy", bean.getBean());
       assertNull(bean.getMode());
+      assertNull(bean.getErrorHandlingMode());
       assertNull(bean.getAccessMode());
       assertNull(bean.getAnnotations());
       assertNull(bean.getClassLoader());
@@ -259,6 +292,7 @@ public class BeanTestCase extends AbstractXMLTest
       assertNull(bean.getName());
       assertEquals("Dummy", bean.getBean());
       assertNull(bean.getMode());
+      assertNull(bean.getErrorHandlingMode());
       assertNull(bean.getAccessMode());
       assertNull(bean.getAnnotations());
       assertNull(bean.getClassLoader());
@@ -286,6 +320,7 @@ public class BeanTestCase extends AbstractXMLTest
       assertNull(bean.getName());
       assertEquals("Dummy", bean.getBean());
       assertNull(bean.getMode());
+      assertNull(bean.getErrorHandlingMode());
       assertNull(bean.getAccessMode());
       assertNull(bean.getAnnotations());
       assertNull(bean.getClassLoader());
@@ -309,6 +344,7 @@ public class BeanTestCase extends AbstractXMLTest
       assertNull(bean.getName());
       assertEquals("Dummy", bean.getBean());
       assertNull(bean.getMode());
+      assertNull(bean.getErrorHandlingMode());
       assertNull(bean.getAccessMode());
       assertNull(bean.getAnnotations());
       assertNull(bean.getClassLoader());
@@ -332,6 +368,7 @@ public class BeanTestCase extends AbstractXMLTest
       assertNull(bean.getName());
       assertEquals("Dummy", bean.getBean());
       assertNull(bean.getMode());
+      assertNull(bean.getErrorHandlingMode());
       assertNull(bean.getAccessMode());
       assertNull(bean.getAnnotations());
       assertNull(bean.getClassLoader());
@@ -355,6 +392,7 @@ public class BeanTestCase extends AbstractXMLTest
       assertNull(bean.getName());
       assertEquals("Dummy", bean.getBean());
       assertNull(bean.getMode());
+      assertNull(bean.getErrorHandlingMode());
       assertNull(bean.getAccessMode());
       assertNull(bean.getAnnotations());
       assertNull(bean.getClassLoader());
@@ -378,6 +416,7 @@ public class BeanTestCase extends AbstractXMLTest
       assertNull(bean.getName());
       assertEquals("Dummy", bean.getBean());
       assertNull(bean.getMode());
+      assertNull(bean.getErrorHandlingMode());
       assertNull(bean.getAccessMode());
       assertNull(bean.getAnnotations());
       assertNull(bean.getClassLoader());
@@ -403,6 +442,7 @@ public class BeanTestCase extends AbstractXMLTest
       assertNull(bean.getName());
       assertEquals("Dummy", bean.getBean());
       assertNull(bean.getMode());
+      assertNull(bean.getErrorHandlingMode());
       assertNull(bean.getAccessMode());
       assertNull(bean.getAnnotations());
       assertNull(bean.getClassLoader());
@@ -430,6 +470,7 @@ public class BeanTestCase extends AbstractXMLTest
       assertNull(bean.getName());
       assertEquals("Dummy", bean.getBean());
       assertNull(bean.getMode());
+      assertNull(bean.getErrorHandlingMode());
       assertNull(bean.getAccessMode());
       assertNull(bean.getAnnotations());
       assertNull(bean.getClassLoader());
@@ -455,6 +496,7 @@ public class BeanTestCase extends AbstractXMLTest
       assertNull(bean.getName());
       assertEquals("Dummy", bean.getBean());
       assertNull(bean.getMode());
+      assertNull(bean.getErrorHandlingMode());
       assertNull(bean.getAccessMode());
       assertNull(bean.getAnnotations());
       assertNull(bean.getClassLoader());
@@ -482,6 +524,7 @@ public class BeanTestCase extends AbstractXMLTest
       assertNull(bean.getName());
       assertEquals("Dummy", bean.getBean());
       assertNull(bean.getMode());
+      assertNull(bean.getErrorHandlingMode());
       assertNull(bean.getAccessMode());
       assertNull(bean.getAnnotations());
       assertNull(bean.getClassLoader());
@@ -507,6 +550,7 @@ public class BeanTestCase extends AbstractXMLTest
       assertNull(bean.getName());
       assertEquals("Dummy", bean.getBean());
       assertNull(bean.getMode());
+      assertNull(bean.getErrorHandlingMode());
       assertNull(bean.getAccessMode());
       assertNull(bean.getAnnotations());
       assertNull(bean.getClassLoader());
@@ -534,6 +578,7 @@ public class BeanTestCase extends AbstractXMLTest
       assertNull(bean.getName());
       assertEquals("Dummy", bean.getBean());
       assertNull(bean.getMode());
+      assertNull(bean.getErrorHandlingMode());
       assertNull(bean.getAccessMode());
       assertNull(bean.getAnnotations());
       assertNull(bean.getClassLoader());
@@ -559,6 +604,7 @@ public class BeanTestCase extends AbstractXMLTest
       assertNull(bean.getName());
       assertEquals("Dummy", bean.getBean());
       assertNull(bean.getMode());
+      assertNull(bean.getErrorHandlingMode());
       assertNull(bean.getAccessMode());
       assertNull(bean.getAnnotations());
       assertNull(bean.getClassLoader());
@@ -586,6 +632,7 @@ public class BeanTestCase extends AbstractXMLTest
       assertNull(bean.getName());
       assertEquals("Dummy", bean.getBean());
       assertNull(bean.getMode());
+      assertNull(bean.getErrorHandlingMode());
       assertNull(bean.getAccessMode());
       assertNull(bean.getAnnotations());
       assertNull(bean.getClassLoader());
@@ -611,6 +658,7 @@ public class BeanTestCase extends AbstractXMLTest
       assertNull(bean.getName());
       assertEquals("Dummy", bean.getBean());
       assertNull(bean.getMode());
+      assertNull(bean.getErrorHandlingMode());
       assertNull(bean.getAccessMode());
       assertNull(bean.getAnnotations());
       assertNull(bean.getClassLoader());
@@ -638,6 +686,7 @@ public class BeanTestCase extends AbstractXMLTest
       assertNull(bean.getName());
       assertEquals("Dummy", bean.getBean());
       assertNull(bean.getMode());
+      assertNull(bean.getErrorHandlingMode());
       assertNull(bean.getAccessMode());
       assertNull(bean.getAnnotations());
       assertNull(bean.getClassLoader());
@@ -663,6 +712,7 @@ public class BeanTestCase extends AbstractXMLTest
       assertNull(bean.getName());
       assertEquals("Dummy", bean.getBean());
       assertNull(bean.getMode());
+      assertNull(bean.getErrorHandlingMode());
       assertNull(bean.getAccessMode());
       assertNull(bean.getAnnotations());
       assertNull(bean.getClassLoader());
@@ -690,6 +740,7 @@ public class BeanTestCase extends AbstractXMLTest
       assertNull(bean.getName());
       assertEquals("Dummy", bean.getBean());
       assertNull(bean.getMode());
+      assertNull(bean.getErrorHandlingMode());
       assertNull(bean.getAccessMode());
       assertNull(bean.getAnnotations());
       assertNull(bean.getClassLoader());
@@ -715,6 +766,7 @@ public class BeanTestCase extends AbstractXMLTest
       assertNull(bean.getName());
       assertEquals("Dummy", bean.getBean());
       assertNull(bean.getMode());
+      assertNull(bean.getErrorHandlingMode());
       assertNull(bean.getAccessMode());
       assertNull(bean.getAnnotations());
       assertNull(bean.getClassLoader());
@@ -743,6 +795,7 @@ public class BeanTestCase extends AbstractXMLTest
       assertNull(bean.getName());
       assertEquals("Dummy", bean.getBean());
       assertNull(bean.getMode());
+      assertNull(bean.getErrorHandlingMode());
       assertNull(bean.getAccessMode());
       assertNull(bean.getAnnotations());
       assertNull(bean.getClassLoader());
@@ -767,6 +820,7 @@ public class BeanTestCase extends AbstractXMLTest
       assertNull(bean.getName());
       assertNull(bean.getBean());
       assertNull(bean.getMode());
+      assertNull(bean.getErrorHandlingMode());
       assertNull(bean.getAccessMode());
       assertNull(bean.getAnnotations());
       assertNull(bean.getClassLoader());
@@ -791,6 +845,7 @@ public class BeanTestCase extends AbstractXMLTest
       assertNull(bean.getName());
       assertNull(bean.getBean());
       assertNull(bean.getMode());
+      assertNull(bean.getErrorHandlingMode());
       assertNull(bean.getAccessMode());
       assertNull(bean.getAnnotations());
       assertNull(bean.getClassLoader());
@@ -815,6 +870,7 @@ public class BeanTestCase extends AbstractXMLTest
       assertNull(bean.getName());
       assertEquals("Dummy", bean.getBean());
       assertNull(bean.getMode());
+      assertNull(bean.getErrorHandlingMode());
       assertNull(bean.getAccessMode());
       assertNull(bean.getAnnotations());
       assertNull(bean.getClassLoader());

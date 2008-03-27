@@ -30,6 +30,7 @@ import org.jboss.dependency.spi.ControllerMode;
 import org.jboss.dependency.spi.ControllerState;
 import org.jboss.dependency.spi.DependencyInfo;
 import org.jboss.dependency.spi.ScopeInfo;
+import org.jboss.dependency.spi.ErrorHandlingMode;
 import org.jboss.util.JBossObject;
 
 /**
@@ -125,6 +126,11 @@ public class UnmodifiableControllerContext<T extends ControllerContext> extends 
    public void setMode(ControllerMode mode)
    {
       throw new UnsupportedOperationException("Cannot invoke set on unmodifiable wrapper.");
+   }
+
+   public ErrorHandlingMode getErrorHandlingMode()
+   {
+      return delegate.getErrorHandlingMode();
    }
 
    public Throwable getError()

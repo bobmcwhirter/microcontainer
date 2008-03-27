@@ -29,6 +29,7 @@ import org.jboss.dependency.spi.ControllerMode;
 import org.jboss.dependency.spi.ControllerState;
 import org.jboss.dependency.spi.DependencyInfo;
 import org.jboss.dependency.spi.ScopeInfo;
+import org.jboss.dependency.spi.ErrorHandlingMode;
 import org.jboss.kernel.spi.registry.KernelRegistryEntry;
 import org.jboss.util.JBossObject;
 import org.jboss.util.JBossStringBuilder;
@@ -145,6 +146,11 @@ public class AbstractKernelRegistryEntry extends JBossObject implements KernelRe
    public void setMode(ControllerMode mode)
    {
       throw new NotImplementedException("setMode");
+   }
+
+   public ErrorHandlingMode getErrorHandlingMode()
+   {
+      return ErrorHandlingMode.DISCARD;
    }
 
    public void install(ControllerState fromState, ControllerState toState) throws Throwable

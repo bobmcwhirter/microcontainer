@@ -25,6 +25,7 @@ import java.util.List;
 import java.util.Set;
 
 import org.jboss.dependency.spi.ControllerMode;
+import org.jboss.dependency.spi.ErrorHandlingMode;
 import org.jboss.beans.metadata.api.model.AutowireType;
 import org.jboss.beans.info.spi.BeanAccessMode;
 
@@ -93,18 +94,25 @@ public interface BeanMetaData extends FeatureMetaData, ValueMetaData
    ControllerMode getMode();
    
    /**
-    * Get the access mode
-    *
-    * @return the mode
-    */
-   BeanAccessMode getAccessMode();
-
-   /**
     * Set the name
-    * 
+    *
     * @param mode the mode
     */
    void setMode(ControllerMode mode);
+
+   /**
+    * Get error handling mode
+    *
+    * @return the error handling mode
+    */
+   ErrorHandlingMode getErrorHandlingMode();
+
+   /**
+    * Get the access mode
+    *
+    * @return the access mode
+    */
+   BeanAccessMode getAccessMode();
 
    /**
     * Is this bean is a candidate for

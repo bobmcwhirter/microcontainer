@@ -140,7 +140,14 @@ public interface ControllerContext extends JBossInterface
     * @param mode the mode
     */
    void setMode(ControllerMode mode);
-   
+
+   /**
+    * Get the error handling mode.
+    *
+    * @return the error handling mode
+    */
+   ErrorHandlingMode getErrorHandlingMode();
+
    /**
     * Get the error
     * 

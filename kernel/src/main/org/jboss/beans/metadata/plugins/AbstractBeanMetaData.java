@@ -34,6 +34,7 @@ import javax.xml.bind.annotation.XmlRootElement;
 import javax.xml.bind.annotation.XmlTransient;
 import javax.xml.bind.annotation.XmlType;
 
+import org.jboss.beans.info.spi.BeanAccessMode;
 import org.jboss.beans.metadata.api.model.AutowireType;
 import org.jboss.beans.metadata.spi.AliasMetaData;
 import org.jboss.beans.metadata.spi.BeanMetaData;
@@ -49,13 +50,13 @@ import org.jboss.beans.metadata.spi.MetaDataVisitor;
 import org.jboss.beans.metadata.spi.MetaDataVisitorNode;
 import org.jboss.beans.metadata.spi.PropertyMetaData;
 import org.jboss.beans.metadata.spi.SupplyMetaData;
-import org.jboss.beans.info.spi.BeanAccessMode;
 import org.jboss.dependency.plugins.AbstractDependencyItem;
 import org.jboss.dependency.spi.Controller;
 import org.jboss.dependency.spi.ControllerContext;
 import org.jboss.dependency.spi.ControllerMode;
 import org.jboss.dependency.spi.ControllerState;
 import org.jboss.dependency.spi.DependencyItem;
+import org.jboss.dependency.spi.ErrorHandlingMode;
 import org.jboss.kernel.spi.dependency.KernelControllerContext;
 import org.jboss.managed.api.annotation.ManagementObject;
 import org.jboss.managed.api.annotation.ManagementProperties;
@@ -102,6 +103,9 @@ public class AbstractBeanMetaData extends AbstractFeatureMetaData
 
    /** The mode */
    protected ControllerMode mode;
+
+   /** The error handling mode */
+   protected ErrorHandlingMode errorHandlingMode;
 
    /** The access mode */
    protected BeanAccessMode accessMode;
@@ -449,6 +453,17 @@ public class AbstractBeanMetaData extends AbstractFeatureMetaData
    {
       this.mode = mode;
       flushJBossObjectCache();
+   }
+
+   public ErrorHandlingMode getErrorHandlingMode()
+   {
+      return errorHandlingMode;
+   }
+
+   @XmlAttribute(name="error-handling")
+   public void setErrorHandlingMode(ErrorHandlingMode errorHandlingMode)
+   {
+      this.errorHandlingMode = errorHandlingMode;
    }
 
    public BeanAccessMode getAccessMode()

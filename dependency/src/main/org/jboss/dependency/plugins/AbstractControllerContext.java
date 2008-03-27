@@ -33,6 +33,7 @@ import org.jboss.dependency.spi.ControllerContextActions;
 import org.jboss.dependency.spi.ControllerMode;
 import org.jboss.dependency.spi.ControllerState;
 import org.jboss.dependency.spi.DependencyInfo;
+import org.jboss.dependency.spi.ErrorHandlingMode;
 import org.jboss.dependency.spi.ScopeInfo;
 import org.jboss.util.JBossObject;
 import org.jboss.util.JBossStringBuilder;
@@ -63,9 +64,12 @@ public class AbstractControllerContext extends JBossObject implements Controller
    /** The required state */
    private ControllerState requiredState = ControllerState.NOT_INSTALLED;
 
-   /** The mdoe */
+   /** The mode */
    private ControllerMode mode = ControllerMode.AUTOMATIC;
    
+   /** The error handling mode */
+   private ErrorHandlingMode errorHandlingMode = ErrorHandlingMode.DISCARD;
+
    /** The actions */
    private ControllerContextActions actions;
    
@@ -244,15 +248,32 @@ public class AbstractControllerContext extends JBossObject implements Controller
    
    public void setMode(ControllerMode mode)
    {
+      if (ControllerMode.ASYNCHRONOUS.equals(mode))
+         throw new IllegalArgumentException("Not yet implemented, asynchronouse mode.");
+
       this.mode = mode;
       flushJBossObjectCache();
    }
 
+   public ErrorHandlingMode getErrorHandlingMode()
+   {
+      return errorHandlingMode;
+   }
+
    /**
-    * Get the controller
-    * 
-    * @return the controller
+    * Set the error handling mode.
+    *
+    * @param errorHandlingMode the error handling mode
     */
+   public void setErrorHandlingMode(ErrorHandlingMode errorHandlingMode)
+   {
+      if (errorHandlingMode != null && ErrorHandlingMode.DISCARD.equals(errorHandlingMode) == false)
+         throw new IllegalArgumentException("Not yet implemented, manual or checked error handling mode.");
+
+      this.errorHandlingMode = errorHandlingMode;
+      flushJBossObjectCache();
+   }
+
    public Controller getController()
    {
       return controller;
@@ -346,6 +367,8 @@ public class AbstractControllerContext extends JBossObject implements Controller
          buffer.append(" mode=").append(mode.getModeString());
          buffer.append(" requiredState=").append(requiredState.getStateString());
       }
+      if (ErrorHandlingMode.DISCARD.equals(errorHandlingMode) == false)
+         buffer.append(" error-handling=").append(errorHandlingMode);
       if (dependencies != null)
          buffer.append(" depends=").append(dependencies);
       if (error != null)
@@ -370,6 +393,8 @@ public class AbstractControllerContext extends JBossObject implements Controller
          buffer.append(" mode=").append(mode.getModeString());
          buffer.append(" requiredState=").append(requiredState.getStateString());
       }
+      if (ErrorHandlingMode.DISCARD.equals(errorHandlingMode) == false)
+         buffer.append(" error-handling=").append(errorHandlingMode);
       if (error != null)
          buffer.append(" error=").append(error.getClass().getName()).append(": ").append(error.getMessage());
    }

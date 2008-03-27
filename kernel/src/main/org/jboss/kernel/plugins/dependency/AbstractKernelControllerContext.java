@@ -36,6 +36,7 @@ import org.jboss.dependency.spi.Controller;
 import org.jboss.dependency.spi.ControllerMode;
 import org.jboss.dependency.spi.DependencyInfo;
 import org.jboss.dependency.spi.DependencyItem;
+import org.jboss.dependency.spi.ErrorHandlingMode;
 import org.jboss.kernel.Kernel;
 import org.jboss.kernel.plugins.config.Configurator;
 import org.jboss.kernel.spi.dependency.KernelController;
@@ -60,23 +61,24 @@ public class AbstractKernelControllerContext extends AbstractControllerContext i
    private static final RuntimePermission GET_CLASSLOADER_PERMISSION = new RuntimePermission("getClassLoader");
    
    /** The BeanInfo */
-   protected BeanInfo info;
+   private BeanInfo info;
 
    /** The meta data */
-   protected BeanMetaData metaData;
+   private BeanMetaData metaData;
 
    /** The access control context */
-   protected AccessControlContext accessContext;
+   private AccessControlContext accessContext;
 
    /** Did we do a initialVisit */
-   protected boolean isInitialProcessed;
+   private boolean isInitialProcessed;
 
    /** Did we do a describeVisit */
-   protected boolean isDescribeProcessed;
+   private boolean isDescribeProcessed;
 
    /**
     * Determine the aliases
-    * 
+    *
+    * @param metaData the bean meta data
     * @return the aliases
     */
    private static Set<Object> determineAliases(BeanMetaData metaData)
@@ -119,6 +121,9 @@ public class AbstractKernelControllerContext extends AbstractControllerContext i
       ControllerMode mode = metaData.getMode();
       if (mode != null)
          setMode(mode);
+      ErrorHandlingMode errorHandlingMode = metaData.getErrorHandlingMode();
+      if (errorHandlingMode != null)
+         setErrorHandlingMode(errorHandlingMode);
       boolean autowireCandidate = metaData.isAutowireCandidate();
       getDependencyInfo().setAutowireCandidate(autowireCandidate);
       if (System.getSecurityManager() != null)
