@@ -84,6 +84,7 @@ public class PropertyReplaceTestCase extends AbstractKernelConfigTest
       SecurityManager sm = suspendSecurity();
       try
       {
+         replaceProperty();
          SimpleAnnotation replAnn = instantiateAnnotation(true);
          assertEquals("test." + CONST + ".Name", replAnn.name());
 
@@ -109,13 +110,18 @@ public class PropertyReplaceTestCase extends AbstractKernelConfigTest
       return singlePropertyCreator(false);
    }
 
+   private void replaceProperty()
+   {
+      // set property to be replaced
+      System.setProperty(PROP_NAME, CONST);
+      getLog().debug("Set "+PROP_NAME+" to: "+System.getProperty(PROP_NAME));      
+   }
    private void doTestProperty(boolean replace, List<PropertyReplaceTestCase.ObjectCreator> ocs) throws Throwable
    {
       SecurityManager sm = suspendSecurity();
       try
       {
-         // set property to be replaced
-         System.setProperty(PROP_NAME, CONST);
+         replaceProperty();
          for(PropertyReplaceTestCase.ObjectCreator oc : ocs)
          {
             // get property
