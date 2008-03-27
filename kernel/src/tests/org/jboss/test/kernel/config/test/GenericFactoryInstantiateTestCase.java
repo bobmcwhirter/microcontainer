@@ -138,7 +138,6 @@ public class GenericFactoryInstantiateTestCase extends AbstractKernelConfigTest
       }
    }
 
-   @SuppressWarnings("deprecation")
    protected BeanFactory configureFromIllegalClass() throws Throwable
    {
       GenericBeanFactoryMetaData factory = new GenericBeanFactoryMetaData("Factory", "org.jboss.test.NoSuchClass");
@@ -153,7 +152,6 @@ public class GenericFactoryInstantiateTestCase extends AbstractKernelConfigTest
       assertEquals("foobar", factory.createBean());
    }
 
-   @SuppressWarnings("deprecation")
    protected BeanFactory configureFromDefinedFactoryClass() throws Throwable
    {
       GenericBeanFactoryMetaData factory = new GenericBeanFactoryMetaData("Factory", SimpleBean.class.getName());

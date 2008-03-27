@@ -52,7 +52,7 @@ public class ConfigureFromStringTestCase extends AbstractKernelConfigTest
    
    AbstractBeanMetaData metaData;
    
-   String stringValue =  new String("StringValue");
+   String stringValue =  "StringValue";
    Byte byteValue = new Byte("12");
    Boolean booleanValue = Boolean.TRUE;
    // TODO character
@@ -152,7 +152,7 @@ public class ConfigureFromStringTestCase extends AbstractKernelConfigTest
 
       metaData = new AbstractBeanMetaData();
       HashSet<PropertyMetaData> attributes = new HashSet<PropertyMetaData>();
-      attributes.add(new AbstractPropertyMetaData("AString", stringValue.toString()));
+      attributes.add(new AbstractPropertyMetaData("AString", stringValue));
       attributes.add(new AbstractPropertyMetaData("AByte", byteValue.toString()));
       attributes.add(new AbstractPropertyMetaData("ABoolean", booleanValue.toString()));
       // TODO character 

@@ -21,13 +21,13 @@
 */
 package org.jboss.test.kernel.config.support;
 
-import org.jboss.beans.metadata.plugins.factory.GenericBeanFactory;
+import org.jboss.beans.metadata.spi.factory.AbstractBeanFactory;
 import org.jboss.kernel.spi.config.KernelConfigurator;
 
 /**
  * @author <a href="mailto:ales.justin@jboss.com">Ales Justin</a>
  */
-public class MyBeanFactory extends GenericBeanFactory
+public class MyBeanFactory extends AbstractBeanFactory
 {
    public MyBeanFactory(KernelConfigurator configurator)
    {

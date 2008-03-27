@@ -25,6 +25,7 @@ import java.text.DateFormat;
 import java.text.SimpleDateFormat;
 import java.util.Calendar;
 import java.util.Date;
+import java.util.Locale;
 
 import org.jboss.kernel.Kernel;
 import org.jboss.kernel.plugins.bootstrap.basic.BasicBootstrap;
@@ -42,13 +43,45 @@ import org.jboss.util.NestedRuntimeException;
  */
 public class AbstractKernelTest extends AbstractTestCaseWithSetup
 {
-   private static DateFormat dateFormat = new SimpleDateFormat("EEE MMM d HH:mm:ss z yyyy");
-   
+   private static DateFormat dateFormat = new SimpleDateFormat("EEE MMM d HH:mm:ss z yyyy", Locale.US);
+   private Locale locale;
+
    public AbstractKernelTest(String name)
    {
       super(name);
    }
-   
+
+   protected void setUp() throws Exception
+   {
+      // set locales
+      locale = Locale.getDefault();
+      setLocale(Locale.US);
+
+      super.setUp();
+   }
+
+   protected void setLocale(Locale locale)
+   {
+      SecurityManager sm = suspendSecurity();
+      try
+      {
+         Locale.setDefault(locale);
+      }
+      finally
+      {
+         resumeSecurity(sm);
+      }
+   }
+
+   protected void tearDown() throws Exception
+   {
+      super.tearDown();
+
+      // reset locale
+      setLocale(locale);
+      locale = null;
+   }
+
    protected Kernel bootstrap() throws Throwable
    {
       BasicBootstrap bootstrap = new BasicBootstrap();
@@ -69,13 +102,19 @@ public class AbstractKernelTest extends AbstractTestCaseWithSetup
 
    protected Date createDate(String date)
    {
+      Locale locale = Locale.getDefault();
       try
       {
+         setLocale(Locale.US);
          return dateFormat.parse(date);
       }
       catch (Exception e)
       {
          throw new NestedRuntimeException(e);
+      }
+      finally
+      {
+         setLocale(locale);   
       }
    }
 
