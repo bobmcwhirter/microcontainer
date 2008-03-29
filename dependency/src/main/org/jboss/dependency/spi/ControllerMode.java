@@ -22,6 +22,7 @@
 package org.jboss.dependency.spi;
 
 import org.jboss.util.JBossStringBuilder;
+import org.jboss.xb.annotations.JBossXmlEnum;
 
 /**
  * Mode of the context.
@@ -29,7 +30,7 @@ import org.jboss.util.JBossStringBuilder;
  * @author <a href="adrian@jboss.com">Adrian Brock</a>
  * @version $Revision$
  */
-//@JBossXmlEnum(ignoreCase=true)
+@JBossXmlEnum(ignoreCase=true)
 public enum ControllerMode
 {
    AUTOMATIC("Automatic"),

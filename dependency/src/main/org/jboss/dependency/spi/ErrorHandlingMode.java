@@ -21,12 +21,14 @@
 */
 package org.jboss.dependency.spi;
 
+import org.jboss.xb.annotations.JBossXmlEnum;
+
 /**
  * Error handling mode.
  *
  * @author <a href="ales.justin@jboss.com">Ales Justin</a>
  */
-//@JBossXmlEnum(ignoreCase=true)
+@JBossXmlEnum(ignoreCase=true)
 public enum ErrorHandlingMode
 {
    DISCARD, // The default as before
