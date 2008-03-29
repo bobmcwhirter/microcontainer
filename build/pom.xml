@@ -37,7 +37,7 @@
     <version.jboss.common.logging.spi>2.0.4.GA</version.jboss.common.logging.spi>
     <version.jboss.common.logging.log4j>2.0.4.GA</version.jboss.common.logging.log4j>
     <version.jbossxb>2.0.0.CR8</version.jbossxb>
-    <version.jboss.vfs>2.0.0.Beta7</version.jboss.vfs>
+    <version.jboss.vfs>2.0.0.Beta10</version.jboss.vfs>
     <version.javassist>3.7.1.GA</version.javassist>
     <version.jboss.aop>2.0.0.CR8</version.jboss.aop>
     <version.org.jboss.reflect>2.0.0.Beta12</version.org.jboss.reflect>
