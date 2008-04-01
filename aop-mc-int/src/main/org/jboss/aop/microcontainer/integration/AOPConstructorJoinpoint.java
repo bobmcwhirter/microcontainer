@@ -23,10 +23,7 @@ package org.jboss.aop.microcontainer.integration;
 
 import java.lang.annotation.Annotation;
 import java.lang.reflect.Constructor;
-import java.util.Arrays;
-import java.util.HashSet;
 import java.util.List;
-import java.util.Set;
 
 import org.jboss.aop.Advisor;
 import org.jboss.aop.AspectManager;
@@ -205,17 +202,18 @@ public class AOPConstructorJoinpoint extends BasicConstructorJoinPoint
       MetaData levelMetaData = metaData.getScopeMetaData(level);
       if (levelMetaData != null && levelMetaData.isEmpty() == false)
       {
-         Set<Object> checkSet = new HashSet<Object>();
          Object[] allMetaData = levelMetaData.getMetaData();
          Annotation[] annotations = levelMetaData.getAnnotations();
-         // all meta data is not null, since instance metadata is not empty
-         checkSet.addAll(Arrays.asList(allMetaData));
-         checkSet.removeAll(Arrays.asList(annotations));
+         // all meta data is not null, since level metadata is not empty
+         int allSize = allMetaData.length;
+         int annotationsSize = annotations != null ? annotations.length : 0;
 
          // do we have something else than annotations
-         if (checkSet.isEmpty() == false)
+         if (allSize > annotationsSize)
+         {
             return true;
-         else
+         }
+         else if (annotationsSize > 0)
          {
             // do we have an annotation that's not marked with IA
             for (Annotation annotation : annotations)
