@@ -28,7 +28,6 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 import java.util.concurrent.CopyOnWriteArrayList;
-
 import javax.xml.bind.annotation.XmlAnyElement;
 import javax.xml.bind.annotation.XmlAttribute;
 import javax.xml.bind.annotation.XmlElement;
@@ -45,6 +44,7 @@ import org.jboss.beans.metadata.plugins.AbstractLifecycleMetaData;
 import org.jboss.beans.metadata.plugins.AbstractNamedAliasMetaData;
 import org.jboss.beans.metadata.plugins.AbstractValueMetaData;
 import org.jboss.beans.metadata.plugins.MutableLifecycleHolder;
+import org.jboss.beans.metadata.plugins.AbstractDependencyValueMetaData;
 import org.jboss.beans.metadata.spi.AnnotationMetaData;
 import org.jboss.beans.metadata.spi.BeanMetaData;
 import org.jboss.beans.metadata.spi.BeanMetaDataFactory;
@@ -219,55 +219,86 @@ public class AbstractKernelDeployment extends JBossObject
       }
 
       List<BeanMetaDataFactory> factories = getBeanFactories();
-
       if (factories != null && factories.isEmpty() == false)
       {
          for (BeanMetaDataFactory factory : factories)
          {
+            if (factory == null)
+               throw new IllegalArgumentException("BeanMetaDataFactory cannot be null.");
+
             List<BeanMetaData> beans = factory.getBeans();
-            for (BeanMetaData bmd : beans)
+            if (beans != null && beans.isEmpty() == false)
             {
-               // check annotations
-               if (annotations != null && annotations.isEmpty() == false)
+               for (BeanMetaData bmd : beans)
                {
-                  Set<AnnotationMetaData> annotationsBMD = bmd.getAnnotations();
-                  if (annotationsBMD == null)
+                  if (bmd == null)
+                     throw new IllegalArgumentException("Bean meta data cannot be null.");
+
+                  // check annotations
+                  if (annotations != null && annotations.isEmpty() == false)
                   {
-                     annotationsBMD = new HashSet<AnnotationMetaData>();
-                     bmd.setAnnotations(annotationsBMD);
-                  }
-                  annotationsBMD.addAll(annotations);
-               }
-               // impl specific
-               if (bmd instanceof AbstractBeanMetaData)
-               {
-                  AbstractBeanMetaData bean = (AbstractBeanMetaData)bmd;
-                  // set deployment defaults, if not already set per bean
-                  if (bean.getCreate() == null && getCreate() != null)
-                  {
-                     bean.setCreate(getCreate());
-                  }
-                  if (bean.getStart() == null && getStart() != null)
-                  {
-                     bean.setStart(getStart());
-                  }
-                  if (bean.getStop() == null && getStop() != null)
-                  {
-                     bean.setStop(getStop());
-                  }
-                  if (bean.getDestroy() == null && getDestroy() != null)
-                  {
-                     bean.setDestroy(getDestroy());
+                     Set<AnnotationMetaData> annotationsBMD = bmd.getAnnotations();
+                     if (annotationsBMD == null)
+                     {
+                        annotationsBMD = new HashSet<AnnotationMetaData>();
+                        bmd.setAnnotations(annotationsBMD);
+                     }
+                     annotationsBMD.addAll(annotations);
                   }
 
-                  // controller mode
-                  if (bean.getMode() == null && getMode() != null)
+                  // impl specific
+                  if (bmd instanceof AbstractBeanMetaData)
                   {
-                     bean.setMode(getMode());
+                     AbstractBeanMetaData bean = (AbstractBeanMetaData)bmd;
+                     // set deployment defaults, if not already set per bean
+                     if (bean.getCreate() == null && getCreate() != null)
+                     {
+                        bean.setCreate(getCreate());
+                     }
+                     if (bean.getStart() == null && getStart() != null)
+                     {
+                        bean.setStart(getStart());
+                     }
+                     if (bean.getStop() == null && getStop() != null)
+                     {
+                        bean.setStop(getStop());
+                     }
+                     if (bean.getDestroy() == null && getDestroy() != null)
+                     {
+                        bean.setDestroy(getDestroy());
+                     }
+
+                     // controller mode
+                     if (bean.getMode() == null && getMode() != null)
+                     {
+                        bean.setMode(getMode());
+                     }
+                  }
+
+                  // Use any deployment classloader if present and the bean doesn't have one
+                  ClassLoaderMetaData beanClassLoader = bmd.getClassLoader();
+                  if (beanClassLoader == null)
+                  {
+                     ClassLoaderMetaData deploymentClassLoader = getClassLoader();
+                     if (deploymentClassLoader != null)
+                     {
+                        // If the deployment classloader is a bean, replace it with an injection
+                        ValueMetaData classLoader = deploymentClassLoader.getClassLoader();
+                        if (classLoader instanceof BeanMetaData)
+                        {
+                           classLoader = new AbstractDependencyValueMetaData(((BeanMetaData) classLoader).getName());
+                           beanClassLoader = new AbstractClassLoaderMetaData(classLoader);
+                        }
+                        else
+                        {
+                           beanClassLoader = deploymentClassLoader;
+                        }
+                        bmd.setClassLoader(beanClassLoader);
+                     }
                   }
                }
+               result.addAll(beans);
             }
-            result.addAll(beans);
          }
       }
       // For backwards compatibility

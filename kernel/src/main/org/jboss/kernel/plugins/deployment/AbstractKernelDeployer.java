@@ -29,11 +29,7 @@ import java.util.List;
 import java.util.ListIterator;
 import java.util.Set;
 
-import org.jboss.beans.metadata.plugins.AbstractClassLoaderMetaData;
-import org.jboss.beans.metadata.plugins.AbstractDependencyValueMetaData;
 import org.jboss.beans.metadata.spi.BeanMetaData;
-import org.jboss.beans.metadata.spi.ClassLoaderMetaData;
-import org.jboss.beans.metadata.spi.ValueMetaData;
 import org.jboss.dependency.spi.ControllerContext;
 import org.jboss.dependency.spi.ControllerMode;
 import org.jboss.dependency.spi.ControllerState;
@@ -306,7 +302,7 @@ public class AbstractKernelDeployer
       {
          for (BeanMetaData metaData : beans)
          {
-            KernelControllerContext context = deployBean(controller, deployment, metaData);
+            KernelControllerContext context = deployBean(controller, metaData);
             deployment.addInstalledContext(context);
          }
       }
@@ -316,39 +312,18 @@ public class AbstractKernelDeployer
     * Deploy a bean
     * 
     * @param controller the controller
-    * @param deployment the deployment
     * @param bean the bean metadata
     * @return the KernelControllerContext
     * @throws Throwable for any error
     */
-   protected KernelControllerContext deployBean(KernelController controller, KernelDeployment deployment, BeanMetaData bean) throws Throwable
+   protected KernelControllerContext deployBean(KernelController controller, BeanMetaData bean) throws Throwable
    {
       KernelControllerContext context = new AbstractKernelControllerContext(null, bean, null);
       if (requiredState != null)
          context.setRequiredState(requiredState);
       if (mode != null)
          context.setMode(mode);
-      // Use any deployment classloader if present and the bean doesn't have one
-      ClassLoaderMetaData beanClassLoader = bean.getClassLoader();
-      if (beanClassLoader == null && deployment != null)
-      {
-         ClassLoaderMetaData deploymentClassLoader = deployment.getClassLoader();
-         if (deploymentClassLoader != null)
-         {
-            // If the deployment classloader is a bean, replace it with an injection
-            ValueMetaData classLoader = deploymentClassLoader.getClassLoader();
-            if (classLoader instanceof BeanMetaData)
-            {
-               classLoader = new AbstractDependencyValueMetaData(((BeanMetaData) classLoader).getName());
-               beanClassLoader = new AbstractClassLoaderMetaData(classLoader);
-            }
-            else
-            {
-               beanClassLoader = deploymentClassLoader;
-            }
-            bean.setClassLoader(beanClassLoader);
-         }
-      }
+
       controller.install(context);
       return context;
    }
