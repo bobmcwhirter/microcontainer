@@ -1,0 +1,40 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<deployment xmlns="urn:jboss:bean-deployer:2.0">
+
+  <bean name="Bean1" class="org.jboss.test.microcontainer.support.SimpleBeanImpl">
+    <annotation>@org.jboss.aop.microcontainer.aspects.jmx.JMX(name="",exposedInterface=org.jboss.test.microcontainer.support.SimpleBean.class)</annotation>
+  </bean>
+
+  <bean name="Bean2" class="org.jboss.test.microcontainer.support.SimpleBeanImpl">
+    <property name="property">
+      <annotation>@org.jboss.test.microcontainer.support.ContainsIA</annotation>
+      <value>123</value>
+    </property>
+  </bean>
+
+  <bean name="Bean3" class="org.jboss.test.microcontainer.support.SimpleBeanImpl">
+    <annotation>@org.jboss.test.microcontainer.support.SomeNonIA</annotation>
+  </bean>
+
+  <bean name="Bean4" class="org.jboss.test.microcontainer.support.SimpleBeanImpl">
+    <property name="property">
+      <annotation>@org.jboss.test.microcontainer.support.SomeNonIA</annotation>
+      <value>123</value>
+    </property>
+  </bean>
+
+  <bean name="Bean5" class="org.jboss.test.microcontainer.support.SimpleBeanImpl">
+    <annotation>@org.jboss.test.microcontainer.support.ContainsIA</annotation>
+    <annotation>@org.jboss.test.microcontainer.support.SomeNonIA</annotation>
+  </bean>
+
+  <bean name="Bean6" class="org.jboss.test.microcontainer.support.SimpleBeanImpl">
+    <property name="property">
+      <annotation>@org.jboss.test.microcontainer.support.SomeNonIA</annotation>
+      <annotation>@org.jboss.test.microcontainer.support.ContainsIA</annotation>
+      <value>123</value>
+    </property>
+  </bean>
+
+</deployment>

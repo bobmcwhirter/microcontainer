@@ -21,11 +21,11 @@
 */
 package org.jboss.test.aop.junit;
 
-import org.jboss.test.AbstractTestCaseWithSetup;
-import org.jboss.test.AbstractTestDelegate;
-import org.jboss.kernel.spi.dependency.KernelController;
 import org.jboss.dependency.spi.ControllerContext;
 import org.jboss.dependency.spi.ControllerState;
+import org.jboss.kernel.spi.dependency.KernelController;
+import org.jboss.test.AbstractTestCaseWithSetup;
+import org.jboss.test.AbstractTestDelegate;
 
 /**
  * AbstractTypeTest.
@@ -71,10 +71,16 @@ public abstract class AbstractTypeTest extends AbstractTestCaseWithSetup
       return getController().getContext(name, state);
    }
 
+   protected ControllerContext assertControllerContext(String name, ControllerState state) throws Throwable
+   {
+      ControllerContext context = getControllerContext(name, state);
+      assertNotNull(context);
+      return context;
+   }
+
    protected <T> T getBean(String name, Class<T> expectedType) throws Throwable
    {
-      ControllerContext context = getControllerContext(name);
-      assertNotNull(context);
+      ControllerContext context = assertControllerContext(name, null);
       Object target = context.getTarget();
       assertNotNull(target);
       return assertInstanceOf(target, expectedType);
@@ -87,5 +93,26 @@ public abstract class AbstractTypeTest extends AbstractTestCaseWithSetup
       if (type == null)
          throw new IllegalArgumentException("No such context installed by name: " + name);
       return type;
+   }
+
+   protected void assertIsProxy(Object name)
+   {
+      assertEquals(name + " is not proxy.", AbstractTypeTestDelegate.Type.PROXY, getType(name));
+   }
+
+   protected void assertIsPojo(Object name)
+   {
+      assertEquals(name + " is not pojo.", AbstractTypeTestDelegate.Type.POJO, getType(name));
+   }
+
+   protected void assertIsWoven(Object name)
+   {
+      assertEquals(name + " is not woven.", AbstractTypeTestDelegate.Type.WOVEN, getType(name));
+   }
+
+   protected void assertIsAspectized(Object name)
+   {
+      AbstractTypeTestDelegate.Type type = getType(name);
+      assertTrue(name + " is not aspectized.", AbstractTypeTestDelegate.Type.WOVEN == type || AbstractTypeTestDelegate.Type.PROXY == type);
    }
 }

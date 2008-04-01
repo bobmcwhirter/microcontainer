@@ -26,6 +26,8 @@ import java.lang.annotation.Retention;
 import java.lang.annotation.RetentionPolicy;
 import java.lang.annotation.Target;
 
+import org.jboss.metadata.spi.annotation.InstanceAnnotation;
+
 /**
  * A temporary home for this annotation interface
  * 
@@ -36,6 +38,7 @@ import java.lang.annotation.Target;
  */
 @Retention(RetentionPolicy.RUNTIME)
 @Target(ElementType.TYPE)
+@InstanceAnnotation(false)
 public @interface JMX 
 {
    /**

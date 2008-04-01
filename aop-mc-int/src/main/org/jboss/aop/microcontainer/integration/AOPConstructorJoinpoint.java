@@ -21,7 +21,12 @@
 */
 package org.jboss.aop.microcontainer.integration;
 
+import java.lang.annotation.Annotation;
 import java.lang.reflect.Constructor;
+import java.util.Arrays;
+import java.util.HashSet;
+import java.util.List;
+import java.util.Set;
 
 import org.jboss.aop.Advisor;
 import org.jboss.aop.AspectManager;
@@ -34,7 +39,10 @@ import org.jboss.aop.proxy.container.ContainerCache;
 import org.jboss.aop.proxy.container.GeneratedAOPProxyFactory;
 import org.jboss.joinpoint.plugins.BasicConstructorJoinPoint;
 import org.jboss.metadata.spi.MetaData;
+import org.jboss.metadata.spi.annotation.InstanceAnnotation;
 import org.jboss.metadata.spi.scope.CommonLevels;
+import org.jboss.metadata.spi.scope.CommonLevelsUtil;
+import org.jboss.metadata.spi.scope.ScopeLevel;
 import org.jboss.metadata.spi.signature.MethodSignature;
 import org.jboss.metadata.spi.stack.MetaDataStack;
 import org.jboss.reflect.spi.ClassInfo;
@@ -74,7 +82,7 @@ public class AOPConstructorJoinpoint extends BasicConstructorJoinPoint
       MetaDataStack.mask();
       try
       {
-         boolean hasInstanceMetaData = hasInstanceOrJoinpointMetaData(metaData);
+         boolean hasInstanceMetaData = rootHasSubInstanceMetaData(metaData);
          ContainerCache cache = ContainerCache.initialise(manager, clazz, metaData, hasInstanceMetaData);
          AOPProxyFactoryParameters params = new AOPProxyFactoryParameters();
          Object target = createTarget(cache, params);
@@ -92,23 +100,35 @@ public class AOPConstructorJoinpoint extends BasicConstructorJoinPoint
       }
    }
 
-   private boolean hasInstanceOrJoinpointMetaData(MetaData metaData)
+   /**
+    * Check for metadata at INSTANCE level and below.
+    *
+    * @param metaData the metadata
+    * @return true if there is some metadata that needs to be considered
+    */
+   private boolean rootHasSubInstanceMetaData(MetaData metaData)
    {
       if (metaData == null)
       {
          return false;
       }
 
-      if (hasMetaDataAtInstanceLevel(metaData))
+      if (checkForMetaDataAtSubInstanceLevel(metaData))
       {
          return true;
       }
       
       //Check for method annotations
-      return hasMethodMetaData(metaData);
+      return rootHasMethodWithSubInstanceMetaData(metaData);
    }
-   
-   private boolean hasMethodMetaData(MetaData metaData)
+      
+   /**
+    * Check for metadata at INSTANCE level and below for methods.
+    *
+    * @param metaData the metadata
+    * @return true if there is some metadata that needs to be considered
+    */
+   private boolean rootHasMethodWithSubInstanceMetaData(MetaData metaData)
    {
       //Check for method annotations
       ClassInfo info = constructorInfo.getDeclaringClass();
@@ -119,7 +139,7 @@ public class AOPConstructorJoinpoint extends BasicConstructorJoinPoint
          {
             for (MethodInfo mi : methods)
             {
-               if (methodHasAnnotations(metaData, mi))
+               if (methodHasSubInstanceMetaData(metaData, mi))
                {
                   return true;
                }
@@ -130,32 +150,93 @@ public class AOPConstructorJoinpoint extends BasicConstructorJoinPoint
       
       return false;
    }
-   
-   private boolean methodHasAnnotations(MetaData metaData, MethodInfo mi)
+
+   /**
+    * Check for metadata at INSTANCE level and below for methods.
+    *
+    * @param metaData the metadata
+    * @param mi the method to check
+    * @return true if there is some metadata that needs to be considered
+    */
+   private boolean methodHasSubInstanceMetaData(MetaData metaData, MethodInfo mi)
    {
       MethodSignature sig = new MethodSignature(mi);
       MetaData methodMD = metaData.getComponentMetaData(sig);
 
-      if (hasMetaDataAtInstanceLevel(methodMD))
+      if (checkForMetaDataAtSubInstanceLevel(methodMD))
       {
          return true;
       }
       return false;
    }
-   
-   private boolean hasMetaDataAtInstanceLevel(MetaData metaData)
+
+   /**
+    * Check for metadata at INSTANCE level and below.
+    *
+    * @param metaData the metadata
+    * @return true if there is some metadata that needs to be considered
+    */
+   private boolean checkForMetaDataAtSubInstanceLevel(MetaData metaData)
    {
       if (metaData != null)
       {
-         MetaData instanceMetaData = metaData.getScopeMetaData(CommonLevels.INSTANCE);
-         if (instanceMetaData != null && instanceMetaData.isEmpty() == false)
+         // TODO - remove this after making tests work again
+         // uncomment this for previous behavior
+         // List<ScopeLevel> levels = Collections.singletonList(CommonLevels.INSTANCE);
+         List<ScopeLevel> levels = CommonLevelsUtil.getSubLevels(CommonLevels.INSTANCE);
+         for (ScopeLevel level : levels)
          {
-            return true;  
+            if (hasMetaDataAtLevel(metaData, level))
+               return true;
          }
       }
       return false;
    }
-   
+
+   /**
+    * Check for metadata at level param.
+    *
+    * @param metaData the metadata
+    * @param level the scope level
+    * @return true if there is some metadata that needs to be considered
+    */
+   protected boolean hasMetaDataAtLevel(MetaData metaData, ScopeLevel level)
+   {
+      MetaData levelMetaData = metaData.getScopeMetaData(level);
+      if (levelMetaData != null && levelMetaData.isEmpty() == false)
+      {
+         Set<Object> checkSet = new HashSet<Object>();
+         Object[] allMetaData = levelMetaData.getMetaData();
+         Annotation[] annotations = levelMetaData.getAnnotations();
+         // all meta data is not null, since instance metadata is not empty
+         checkSet.addAll(Arrays.asList(allMetaData));
+         checkSet.removeAll(Arrays.asList(annotations));
+
+         // do we have something else than annotations
+         if (checkSet.isEmpty() == false)
+            return true;
+         else
+         {
+            // do we have an annotation that's not marked with IA
+            for (Annotation annotation : annotations)
+            {
+               InstanceAnnotation ia = annotation.annotationType().getAnnotation(InstanceAnnotation.class);
+               if (ia == null || ia.value())
+                  return true;
+            }
+         }
+      }
+      return false;
+   }
+
+   /**
+    * Create the target.
+    *
+    * @param cache the cache
+    * @param params the parameters
+    * @return target instance
+    * @throws Throwable for any error
+    */
    private Object createTarget(ContainerCache cache, AOPProxyFactoryParameters params) throws Throwable
    {
       Advisor advisor = cache.getAdvisor();
@@ -200,6 +281,12 @@ public class AOPConstructorJoinpoint extends BasicConstructorJoinPoint
       return super.dispatch();
    }
 
+   /**
+    * Find constructor info.
+    *
+    * @param advisor the advisor
+    * @return matched constructor or null if no match
+    */
    private org.jboss.aop.ConstructorInfo findAopConstructorInfo(Advisor advisor)
    {
       org.jboss.aop.ConstructorInfo[] infos = advisor.getConstructorInfos();
@@ -212,7 +299,13 @@ public class AOPConstructorJoinpoint extends BasicConstructorJoinPoint
       }
       return null;
    }
-   
+
+   /**
+    * Match constructor.
+    *
+    * @param ctor the constructor
+    * @return true if we have a match
+    */
    private boolean matchConstructor(Constructor<?> ctor)
    {
       TypeInfo[] params = constructorInfo.getParameterTypes();
@@ -236,5 +329,4 @@ public class AOPConstructorJoinpoint extends BasicConstructorJoinPoint
       }
       return false;
    }
-
 }
