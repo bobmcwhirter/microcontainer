@@ -239,45 +239,47 @@ public class AbstractKernelDeployer
                      ControllerState otherState = null;
                      ControllerContext other = null; 
                      Object iDependOn = item.getIDependOn();
-                     if (iDependOn != null)
-                     {
-                        other = controller.getContext(iDependOn, null);
-                        if (other != null)
-                           otherState = other.getState();
-                     }
 
-                     boolean print = true;
-                     if (name.equals(iDependOn))
-                        print = false;
-                     if (otherState != null && otherState.equals(ControllerState.ERROR) == false)
+                     if (name.equals(iDependOn) == false)
                      {
-                        int index1 = states.indexOf(dependentState);
-                        int index2 = states.indexOf(otherState);
-                        if (index2 >= index1)
-                           print = false;
-                     }
-                      
-                     if (print)
-                     {
-                        if (first)
-                           first = false;
-                        else
-                           buffer.append(", ");
-                        
-                        buffer.append(iDependOn).append('{').append(dependentState.getStateString());
-                        buffer.append(':');
-                        if (iDependOn == null)
+                        if (iDependOn != null)
                         {
-                           buffer.append("** UNRESOLVED " + item.toHumanReadableString() + " **");
+                           other = controller.getContext(iDependOn, null);
+                           if (other != null)
+                              otherState = other.getState();
                         }
-                        else
+
+                        boolean print = true;
+                        if (otherState != null && otherState.equals(ControllerState.ERROR) == false)
                         {
-                           if (other == null)
-                              buffer.append("** NOT FOUND **");
+                           int index1 = states.indexOf(dependentState);
+                           int index2 = states.indexOf(otherState);
+                           if (index2 >= index1)
+                              print = false;
+                        }
+
+                        if (print)
+                        {
+                           if (first)
+                              first = false;
                            else
-                              buffer.append(otherState.getStateString());
+                              buffer.append(", ");
+
+                           buffer.append(iDependOn).append('{').append(dependentState.getStateString());
+                           buffer.append(':');
+                           if (iDependOn == null)
+                           {
+                              buffer.append("** UNRESOLVED " + item.toHumanReadableString() + " **");
+                           }
+                           else
+                           {
+                              if (other == null)
+                                 buffer.append("** NOT FOUND **");
+                              else
+                                 buffer.append(otherState.getStateString());
+                           }
+                           buffer.append('}');
                         }
-                        buffer.append('}');
                      }
                   }
                   buffer.append('\n');
