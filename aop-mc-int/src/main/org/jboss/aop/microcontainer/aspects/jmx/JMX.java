@@ -38,6 +38,7 @@ import org.jboss.metadata.spi.annotation.InstanceAnnotation;
  */
 @Retention(RetentionPolicy.RUNTIME)
 @Target(ElementType.TYPE)
+@InstanceAnnotation(false)
 public @interface JMX 
 {
    /**
