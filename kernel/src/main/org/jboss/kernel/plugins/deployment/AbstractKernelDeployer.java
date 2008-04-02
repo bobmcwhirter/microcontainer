@@ -236,6 +236,9 @@ public class AbstractKernelDeployer
                   for (DependencyItem item : depends)
                   {
                      ControllerState dependentState = item.getDependentState();
+                     if (dependentState == null)
+                        dependentState = ControllerState.INSTALLED;
+                     
                      ControllerState otherState = null;
                      ControllerContext other = null; 
                      Object iDependOn = item.getIDependOn();
