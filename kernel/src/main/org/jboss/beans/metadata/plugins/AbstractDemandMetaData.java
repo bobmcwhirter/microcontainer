@@ -200,7 +200,7 @@ public class AbstractDemandMetaData extends JBossObject
        */
       public DemandDependencyItem(Object name)
       {
-         super(name, null, whenRequired, null);
+         super(name, getDemand(), whenRequired, null);
          if (getTransformer() != null)
             matcher = MatcherFactory.getInstance().createMatcher(getTransformer(), getDemand());
       }
@@ -232,19 +232,19 @@ public class AbstractDemandMetaData extends JBossObject
       public void toString(JBossStringBuilder buffer)
       {
          super.toString(buffer);
-         buffer.append(" demand=").append(demand);
+         buffer.append(" demand=").append(getDemand());
       }
       
       public void toShortString(JBossStringBuilder buffer)
       {
-         buffer.append(getName()).append(" demands ").append(demand);
+         buffer.append(getName()).append(" demands ").append(getDemand());
       }
 
       @Override
       public String toHumanReadableString()
       {
          StringBuilder builder = new StringBuilder();
-         builder.append("Demands '").append(getDemand());
+         builder.append("Demands '").append(getDemand()).append("'");
          return builder.toString();
       }
    }
