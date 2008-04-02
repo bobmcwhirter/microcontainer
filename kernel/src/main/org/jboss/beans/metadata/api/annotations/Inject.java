@@ -29,6 +29,7 @@ import java.lang.annotation.Target;
 import org.jboss.beans.metadata.api.model.FromContext;
 import org.jboss.beans.metadata.api.model.InjectOption;
 import org.jboss.beans.metadata.api.model.AutowireType;
+import org.jboss.metadata.spi.annotation.InstanceAnnotation;
 
 /**
  * Beans when injected by class type are by default changed to configured
@@ -39,6 +40,7 @@ import org.jboss.beans.metadata.api.model.AutowireType;
  */
 @Retention(RetentionPolicy.RUNTIME)
 @Target({ElementType.METHOD, ElementType.PARAMETER, ElementType.FIELD})
+@InstanceAnnotation(false)
 public @interface Inject
 {
    /**

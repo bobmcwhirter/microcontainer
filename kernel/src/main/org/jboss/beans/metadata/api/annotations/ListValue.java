@@ -26,6 +26,8 @@ import java.lang.annotation.Retention;
 import java.lang.annotation.RetentionPolicy;
 import java.lang.annotation.Target;
 
+import org.jboss.metadata.spi.annotation.InstanceAnnotation;
+
 /**
  * List value injection.
  *
@@ -33,6 +35,7 @@ import java.lang.annotation.Target;
  */
 @Retention(RetentionPolicy.RUNTIME)
 @Target({ElementType.METHOD, ElementType.PARAMETER})
+@InstanceAnnotation(false)
 public @interface ListValue
 {
    /**

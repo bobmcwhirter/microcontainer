@@ -21,10 +21,10 @@
 */
 package org.jboss.beans.metadata.api.annotations;
 
+import java.lang.annotation.ElementType;
 import java.lang.annotation.Retention;
 import java.lang.annotation.RetentionPolicy;
 import java.lang.annotation.Target;
-import java.lang.annotation.ElementType;
 
 /**
  * The supplys.
@@ -32,7 +32,7 @@ import java.lang.annotation.ElementType;
  * @author <a href="mailto:ales.justin@jboss.com">Ales Justin</a>
  */
 @Retention(RetentionPolicy.RUNTIME)
-@Target({ElementType.TYPE})
+@Target({ElementType.ANNOTATION_TYPE})
 public @interface Supply
 {
    /**

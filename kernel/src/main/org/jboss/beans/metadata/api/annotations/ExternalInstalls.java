@@ -26,6 +26,8 @@ import java.lang.annotation.RetentionPolicy;
 import java.lang.annotation.Target;
 import java.lang.annotation.ElementType;
 
+import org.jboss.metadata.spi.annotation.InstanceAnnotation;
+
 /**
  * Array of external installs.
  *
@@ -33,6 +35,7 @@ import java.lang.annotation.ElementType;
  */
 @Retention(RetentionPolicy.RUNTIME)
 @Target({ElementType.TYPE})
+@InstanceAnnotation(false)
 public @interface ExternalInstalls
 {
    /**

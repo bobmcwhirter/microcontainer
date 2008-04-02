@@ -26,6 +26,8 @@ import java.lang.annotation.ElementType;
 import java.lang.annotation.Retention;
 import java.lang.annotation.RetentionPolicy;
 
+import org.jboss.metadata.spi.annotation.InstanceAnnotation;
+
 /**
  * The aliases.
  * Equivalent to deployment's alias element.
@@ -35,6 +37,7 @@ import java.lang.annotation.RetentionPolicy;
 @Retention(RetentionPolicy.RUNTIME)
 @Target({ElementType.TYPE})
 @Cleanup
+@InstanceAnnotation(false)
 public @interface Aliases
 {
    /**

@@ -21,27 +21,7 @@
 */
 package org.jboss.test.kernel.annotations.support;
 
-import java.util.Set;
 import java.io.PrintStream;
-
-import org.jboss.beans.metadata.api.annotations.Aliases;
-import org.jboss.beans.metadata.api.annotations.Demands;
-import org.jboss.beans.metadata.api.annotations.Demand;
-import org.jboss.beans.metadata.api.annotations.Supply;
-import org.jboss.beans.metadata.api.annotations.Depends;
-import org.jboss.beans.metadata.api.annotations.ExternalInstalls;
-import org.jboss.beans.metadata.api.annotations.ExternalInstall;
-import org.jboss.beans.metadata.api.annotations.ExternalUninstalls;
-import org.jboss.beans.metadata.api.annotations.Inject;
-import org.jboss.beans.metadata.api.annotations.Create;
-import org.jboss.beans.metadata.api.annotations.Start;
-import org.jboss.beans.metadata.api.annotations.Stop;
-import org.jboss.beans.metadata.api.annotations.Destroy;
-import org.jboss.beans.metadata.api.annotations.ValueFactory;
-import org.jboss.beans.metadata.api.annotations.Install;
-import org.jboss.beans.metadata.api.annotations.Uninstall;
-import org.jboss.beans.metadata.api.annotations.InstallMethod;
-import org.jboss.beans.metadata.api.annotations.UninstallMethod;
 
 /**
  * @author <a href="mailto:ales.justin@jboss.com">Ales Justin</a>

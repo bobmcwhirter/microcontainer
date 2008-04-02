@@ -26,6 +26,8 @@ import java.lang.annotation.RetentionPolicy;
 import java.lang.annotation.Target;
 import java.lang.annotation.ElementType;
 
+import org.jboss.metadata.spi.annotation.InstanceAnnotation;
+
 /**
  * This value.
  * Get the underlying target.
@@ -34,6 +36,7 @@ import java.lang.annotation.ElementType;
  */
 @Retention(RetentionPolicy.RUNTIME)
 @Target({ElementType.METHOD, ElementType.PARAMETER})
+@InstanceAnnotation(false)
 public @interface ThisValue
 {
    /**
