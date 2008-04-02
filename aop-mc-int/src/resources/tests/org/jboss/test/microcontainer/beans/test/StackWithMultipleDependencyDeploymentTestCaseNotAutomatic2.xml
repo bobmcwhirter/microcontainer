@@ -1,0 +1,52 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<deployment xmlns="urn:jboss:bean-deployer:2.0">
+
+   <bean name="AspectManager" class="org.jboss.aop.AspectManager">
+      <constructor factoryClass="org.jboss.aop.AspectManager" factoryMethod="instance"/>
+   </bean>
+
+   <aspect xmlns="urn:jboss:aop-beans:1.0" class="org.jboss.test.microcontainer.beans.TestAspectWithDependency">
+      <property name="dependency"><inject bean="Dependency1"/></property>
+   </aspect>
+
+   <aspect xmlns="urn:jboss:aop-beans:1.0" class="org.jboss.test.microcontainer.beans.TestAspect"/>
+
+   <interceptor xmlns="urn:jboss:aop-beans:1.0" class="org.jboss.test.microcontainer.beans.TestInterceptorWithDependency">
+      <property name="dependency"><inject bean="Dependency2"/></property>
+   </interceptor>
+
+   <interceptor xmlns="urn:jboss:aop-beans:1.0" class="org.jboss.test.microcontainer.beans.TestInterceptor"/>
+
+   <stack xmlns="urn:jboss:aop-beans:1.0" name="AspectStack">
+      <advice aspect="org.jboss.test.microcontainer.beans.TestAspectWithDependency" name="advice"/>
+      <advice aspect="org.jboss.test.microcontainer.beans.TestAspect" name="advice"/>
+   </stack>
+
+   <stack xmlns="urn:jboss:aop-beans:1.0" name="InterceptorStack">
+      <interceptor-ref name="org.jboss.test.microcontainer.beans.TestInterceptorWithDependency"/>
+      <interceptor-ref name="org.jboss.test.microcontainer.beans.TestInterceptor"/>
+   </stack>
+
+   <bind xmlns="urn:jboss:aop-beans:1.0" pointcut="execution(* @org.jboss.test.microcontainer.beans.Annotation1->*(..))">
+      <stack-ref name="AspectStack"/>
+   </bind>
+   
+   <bind xmlns="urn:jboss:aop-beans:1.0" pointcut="execution(* @org.jboss.test.microcontainer.beans.Annotation2->*(..))">
+      <stack-ref name="InterceptorStack"/>
+   </bind>
+   
+   <bean name="Intercepted1" class="org.jboss.test.microcontainer.beans.POJO">
+   	<annotation>@org.jboss.test.microcontainer.beans.Annotation1</annotation>
+   </bean>
+   
+   <bean name="Intercepted2" class="org.jboss.test.microcontainer.beans.POJO">
+   	<annotation>@org.jboss.test.microcontainer.beans.Annotation2</annotation>
+   </bean>
+   
+   <bean name="Intercepted3" class="org.jboss.test.microcontainer.beans.POJO">
+   	<annotation>@org.jboss.test.microcontainer.beans.Annotation1</annotation>
+   	<annotation>@org.jboss.test.microcontainer.beans.Annotation2</annotation>
+   </bean>
+   
+</deployment>

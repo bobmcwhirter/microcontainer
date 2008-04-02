@@ -1,0 +1,33 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<deployment xmlns="urn:jboss:bean-deployer:2.0">
+
+   <bean name="AspectManager" class="org.jboss.aop.AspectManager">
+      <constructor factoryClass="org.jboss.aop.AspectManager" factoryMethod="instance"/>
+   </bean>
+
+   <bean name="DeclareError" class="org.jboss.aop.microcontainer.beans.DeclareDefinition">
+      <property name="manager"><inject bean="AspectManager"/></property>
+      <property name="name">DeclareError</property>
+      <property name="expr">call(* org.acme.Foo->error(..))</property>
+      <property name="message">Error!!!</property>
+      <property name="warning">false</property>
+   </bean>
+
+   <bean name="DeclareWarning" class="org.jboss.aop.microcontainer.beans.DeclareDefinition">
+      <property name="manager"><inject bean="AspectManager"/></property>
+      <property name="name">DeclareWarning</property>
+      <property name="expr">call(* org.acme.Foo->warning(..))</property>
+      <property name="message">Warning!!!</property>
+      <property name="warning">true</property>
+   </bean>
+
+   <bean name="DeclareErrorAnynomous" class="org.jboss.aop.microcontainer.beans.DeclareDefinition">
+      <property name="manager"><inject bean="AspectManager"/></property>
+      <property name="name">Some-GUID-Generated-by-xml-layer</property>
+      <property name="expr">call(* org.acme.Foo->anonymous(..))</property>
+      <property name="message">Anon!!!</property>
+      <property name="warning">false</property>
+   </bean>
+
+</deployment>

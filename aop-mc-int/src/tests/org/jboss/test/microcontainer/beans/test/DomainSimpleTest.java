@@ -22,10 +22,12 @@
 package org.jboss.test.microcontainer.beans.test;
 
 import java.util.Collection;
+import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 
 import org.jboss.aop.AspectManager;
+import org.jboss.aop.pointcut.DeclareDef;
 import org.jboss.test.microcontainer.beans.POJO;
 import org.jboss.test.microcontainer.beans.TestAspect;
 import org.jboss.test.microcontainer.beans.TestAspectWithProperty;
@@ -112,6 +114,16 @@ public abstract class DomainSimpleTest extends DomainProxyTest
 
       o = manager.getArrayBinding("TestArrayBinding");
       checkShouldBeThere(o, shouldBeThere);
+      
+      Iterator<DeclareDef> it = manager.getDeclares();
+      if (shouldBeThere)
+      {
+         assertTrue(it.hasNext());
+         o = it.next();
+         assertNotNull(o);
+      }
+      assertFalse(it.hasNext());
+      
    }
 
    private void checkShouldBeThere(Object o, boolean shouldBeThere)

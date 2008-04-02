@@ -1,19 +1,19 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
-<deployment xmlns="urn:jboss:bean-deployer:2.0">
+<aop xmlns="urn:jboss:aop-beans:1.0">
 
    <bean name="AspectManager" class="org.jboss.aop.AspectManager">
       <constructor factoryClass="org.jboss.aop.AspectManager" factoryMethod="instance"/>
    </bean>
 
-	<aspect xmlns="urn:jboss:aop-beans:1.0" class="org.jboss.test.microcontainer.beans.TestAspect"/>
+	<aspect class="org.jboss.test.microcontainer.beans.TestAspect"/>
 
-	<dynamic-cflow xmlns="urn:jboss:aop-beans:1.0" name="DynamicCFlow" class="org.jboss.test.microcontainer.beans.DynamicCFlowImpl"/>
+	<dynamic-cflow name="DynamicCFlow" class="org.jboss.test.microcontainer.beans.DynamicCFlowImpl"/>
 
-	<bind xmlns="urn:jboss:aop-beans:1.0" pointcut="execution(* org.jboss.test.microcontainer.beans.POJO->*(..))" cflow="DynamicCFlow">
+	<bind pointcut="execution(* org.jboss.test.microcontainer.beans.POJO->*(..))" cflow="DynamicCFlow">
 		<advice aspect="org.jboss.test.microcontainer.beans.TestAspect" name="advice"/>
 	</bind>
    
    <bean name="Bean" class="org.jboss.test.microcontainer.beans.POJO"/>
    
-</deployment>
+</aop>

@@ -1,0 +1,72 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<aop xmlns="urn:jboss:aop-beans:1.0">
+
+   <bean name="MBeanServer" class="java.lang.Object">
+      <constructor factoryClass="javax.management.MBeanServerFactory" factoryMethod="createMBeanServer"/>
+   </bean>
+
+   <bean name="AspectManager" class="org.jboss.aop.AspectManager">
+      <constructor factoryClass="org.jboss.aop.AspectManager" factoryMethod="instance"/>
+   </bean>
+
+   <lifecycle-configure
+               name="ConfigureAdvice"
+               class="org.jboss.test.microcontainer.support.LifecycleCallback"
+               classes="@org.jboss.test.microcontainer.support.Configure">
+   </lifecycle-configure>
+
+   <lifecycle-create
+               name="CreateAdvice"
+               class="org.jboss.test.microcontainer.support.LifecycleCallback"
+               classes="@org.jboss.test.microcontainer.support.Create">
+   </lifecycle-create>
+
+   <lifecycle-describe
+               name="DescribeAdvice"
+               class="org.jboss.test.microcontainer.support.LifecycleCallback"
+               classes="@org.jboss.test.microcontainer.support.Describe">
+   </lifecycle-describe>
+
+   <lifecycle-install
+               name="InstallAdvice"
+               class="org.jboss.test.microcontainer.support.LifecycleCallback"
+               classes="@org.jboss.test.microcontainer.support.Install">
+   </lifecycle-install>
+
+   <lifecycle-instantiate
+               name="InstantiateAdvice"
+               class="org.jboss.test.microcontainer.support.LifecycleCallback"
+               classes="@org.jboss.test.microcontainer.support.Instantiate">
+   </lifecycle-instantiate>
+
+   <lifecycle-start
+               name="StartAdvice"
+               class="org.jboss.test.microcontainer.support.LifecycleCallback"
+               classes="@org.jboss.test.microcontainer.support.Start">
+   </lifecycle-start>
+
+   <bean name="ConfigureBean" class="org.jboss.test.microcontainer.support.SimpleBeanImpl">
+      <annotation>@org.jboss.test.microcontainer.support.Configure</annotation>
+   </bean>
+
+   <bean name="CreateBean" class="org.jboss.test.microcontainer.support.SimpleBeanImpl">
+      <annotation>@org.jboss.test.microcontainer.support.Create</annotation>
+   </bean>
+
+   <bean name="DescribeBean" class="org.jboss.test.microcontainer.support.SimpleBeanImpl">
+      <annotation>@org.jboss.test.microcontainer.support.Describe</annotation>
+   </bean>
+
+   <bean name="InstallBean" class="org.jboss.test.microcontainer.support.SimpleBeanImpl">
+      <annotation>@org.jboss.test.microcontainer.support.Install</annotation>
+   </bean>
+
+   <bean name="InstantiateBean" class="org.jboss.test.microcontainer.support.SimpleBeanImpl">
+      <annotation>@org.jboss.test.microcontainer.support.Instantiate</annotation>
+   </bean>
+
+   <bean name="StartBean" class="org.jboss.test.microcontainer.support.SimpleBeanImpl">
+      <annotation>@org.jboss.test.microcontainer.support.Start</annotation>
+   </bean>
+</aop>

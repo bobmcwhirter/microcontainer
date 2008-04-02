@@ -1,0 +1,15 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<deployment xmlns="urn:jboss:bean-deployer:2.0">
+
+   <bean name="AspectManager" class="org.jboss.aop.AspectManager">
+      <constructor factoryClass="org.jboss.aop.AspectManager" factoryMethod="instance"/>
+   </bean>
+
+   <declare-error xmlns="urn:jboss:aop-beans:1.0" name="DeclareError" expr="call(* org.acme.Foo->error(..))">Error!!!</declare-error>
+
+   <declare-warning xmlns="urn:jboss:aop-beans:1.0" name="DeclareWarning" expr="call(* org.acme.Foo->warning(..))">Warning!!!</declare-warning>
+
+   <declare-error xmlns="urn:jboss:aop-beans:1.0" expr="call(* org.acme.Foo->anonymous(..))">Anon!!!</declare-error>
+
+</deployment>

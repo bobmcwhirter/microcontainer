@@ -4,9 +4,9 @@
       <constructor factoryClass="org.jboss.aop.AspectManager" factoryMethod="instance"/>
    </bean>
    
-   <aop:interceptor xmlns:aop="urn:jboss:aop-beans:1.0" name="InterceptedAdvice" class="org.jboss.test.microcontainer.support.MetaDataContextInterceptor">
+   <interceptor xmlns="urn:jboss:aop-beans:1.0" name="InterceptedAdvice" class="org.jboss.test.microcontainer.support.MetaDataContextInterceptor">
       <property name="annotation">org.jboss.test.microcontainer.advisor.test.AnnotationWithValue</property>
-   </aop:interceptor>
+   </interceptor>
    
    <bind xmlns="urn:jboss:aop-beans:1.0" pointcut="execution(* @org.jboss.test.microcontainer.advisor.test.AnnotationWithValue->doSomething(..)) OR execution(* @org.jboss.test.microcontainer.advisor.test.AnnotationWithValue->@org.jboss.test.microcontainer.advisor.test.AnnotationWithValue(..))">
       <interceptor-ref name="InterceptedAdvice"/>

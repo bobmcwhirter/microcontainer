@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
 <deployment xmlns="urn:jboss:bean-deployer:2.0">
-
+<!--
   <bean name="Bean1" class="org.jboss.test.microcontainer.support.SimpleBeanImpl">
     <annotation>@org.jboss.aop.microcontainer.aspects.jmx.JMX(name="",exposedInterface=org.jboss.test.microcontainer.support.SimpleBean.class)</annotation>
   </bean>
@@ -35,6 +35,16 @@
       <annotation>@org.jboss.test.microcontainer.support.ContainsIA</annotation>
       <value>123</value>
     </property>
+  </bean>
+  -->
+  <interceptor xmlns="urn:jboss:aop-beans:1.0" class="org.jboss.test.microcontainer.beans.TestAspect"/>
+  
+  <bind xmlns="urn:jboss:aop-beans:1.0" pointcut="all(@org.jboss.test.microcontainer.support.ContainsIA2)">
+    <advice aspect="org.jboss.test.microcontainer.beans.TestAspect" name="advice"/>
+  </bind>
+
+  <bean name="Bean7" class="org.jboss.test.microcontainer.support.SimpleBeanImpl">
+    <annotation>@org.jboss.test.microcontainer.support.ContainsIA2</annotation>
   </bean>
 
 </deployment>

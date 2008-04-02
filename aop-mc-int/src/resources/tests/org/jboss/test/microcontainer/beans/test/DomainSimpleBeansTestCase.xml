@@ -191,4 +191,12 @@
       <property name="binding"><inject bean="TestArrayBinding" state="Instantiated"/></property>
    </bean>
 
+   <bean name="DeclareError" class="org.jboss.aop.microcontainer.beans.DeclareDefinition">
+      <property name="manager"><inject bean="AOPDomain" property="domain"/></property>
+      <property name="name">DeclareError</property>
+      <property name="expr">call(* org.acme.Foo->error(..))</property>
+      <property name="message">Error!!!</property>
+      <property name="warning">false</property>
+   </bean>
+
 </deployment>
