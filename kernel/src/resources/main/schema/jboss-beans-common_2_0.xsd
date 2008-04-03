@@ -8,19 +8,6 @@ $Id: bean-deployer_2_0.xsd 70437 2008-03-05 17:13:04Z alesj $
    attributeFormDefault="unqualified"
    version="1.0">
 
-   <xsd:annotation>
-      <xsd:documentation>
-         <![CDATA[
-         The xml deployer schema. The deployment document instance
-         root element should reference the schema in the root
-         deployment element using something like:
-
-         <deployment xmlns="urn:jboss:bean-deployer:2.0">
-         ...
-         ]]>
-      </xsd:documentation>
-   </xsd:annotation> 
-
    <xsd:complexType name="beanType">
       <xsd:annotation>
          <xsd:documentation>
@@ -62,8 +49,8 @@ $Id: bean-deployer_2_0.xsd 70437 2008-03-05 17:13:04Z alesj $
       <xsd:attribute name="parent" type="xsd:string" use="optional"/>
       <xsd:attribute name="abstract" type="xsd:boolean" use="optional"/>
       <xsd:attribute name="autowire-type" type="autowireTypeType" use="optional"/>
-      <xsd:attribute name="access-mode" type="accessModeType" use="optional"/>
       <xsd:attribute name="autowire-candidate" type="xsd:boolean" use="optional"/>
+      <xsd:attribute name="access-mode" type="accessModeType" use="optional"/>
    </xsd:complexType>
 
    <xsd:complexType name="classloaderType" mixed="true">
@@ -142,13 +129,13 @@ $Id: bean-deployer_2_0.xsd 70437 2008-03-05 17:13:04Z alesj $
               }
            }
            ]]>
-           
          </xsd:documentation>
       </xsd:annotation>
       <xsd:complexContent>
          <xsd:extension base="abstractBeanfactoryType">
             <xsd:attribute name="class" type="xsd:token" use="required"/>
             <xsd:attribute name="access-mode" type="accessModeType" use="optional"/>
+            <xsd:attribute name="factoryClass" type="xsd:token" use="optional"/>
          </xsd:extension>
       </xsd:complexContent>
    </xsd:complexType>
@@ -515,7 +502,6 @@ $Id: bean-deployer_2_0.xsd 70437 2008-03-05 17:13:04Z alesj $
             <bean name="MyName" class="com.acme.POJO">
                <alias>YourName</alias>
                <alias><javabean xmlns="urn:jboss:javabean:2.0" class="whatevever"/></alias>
-
             </bean>
             ]]>
          </xsd:documentation>
@@ -524,7 +510,7 @@ $Id: bean-deployer_2_0.xsd 70437 2008-03-05 17:13:04Z alesj $
          <xsd:any namespace="##other" processContents="strict"/>
       </xsd:choice>
    </xsd:complexType>
-   
+
    <xsd:complexType name="namedAliasType">
       <xsd:annotation>
          <xsd:documentation>
@@ -539,7 +525,7 @@ $Id: bean-deployer_2_0.xsd 70437 2008-03-05 17:13:04Z alesj $
          </xsd:extension>
       </xsd:complexContent>
    </xsd:complexType>
-
+   
    <xsd:complexType name="parameterType" mixed="true">
       <xsd:annotation>
          <xsd:documentation>
@@ -1031,6 +1017,22 @@ $Id: bean-deployer_2_0.xsd 70437 2008-03-05 17:13:04Z alesj $
       </xsd:restriction>
    </xsd:simpleType>
 
+   <xsd:simpleType name="accessModeType">
+      <xsd:annotation>
+         <xsd:documentation>
+            <![CDATA[
+            Access type, valid values include:
+            property (default)
+            field
+            public_member
+            ]]>
+         </xsd:documentation>
+      </xsd:annotation>
+      <xsd:restriction base="xsd:string">
+         <xsd:whiteSpace value="collapse"/>
+      </xsd:restriction>
+   </xsd:simpleType>
+
    <xsd:simpleType name="autowireTypeType">
       <xsd:annotation>
          <xsd:documentation>
@@ -1042,22 +1044,6 @@ $Id: bean-deployer_2_0.xsd 70437 2008-03-05 17:13:04Z alesj $
             ByName
             Constructor
             Auto
-            ]]>
-         </xsd:documentation>
-      </xsd:annotation>
-      <xsd:restriction base="xsd:string">
-         <xsd:whiteSpace value="collapse"/>
-      </xsd:restriction>
-   </xsd:simpleType>
-
-   <xsd:simpleType name="accessModeType">
-      <xsd:annotation>
-         <xsd:documentation>
-            <![CDATA[
-            Access type, valid values include:
-            property (default)
-            field
-            public_member
             ]]>
          </xsd:documentation>
       </xsd:annotation>
