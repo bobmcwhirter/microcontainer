@@ -228,6 +228,9 @@ $Id$
       <xsd:simpleType name="autowireTypeType">
          <xsd:restriction base="autowireTypeType"></xsd:restriction>
       </xsd:simpleType>
+      <xsd:simpleType name="accessModeType">
+         <xsd:restriction base="accessModeType"></xsd:restriction>
+      </xsd:simpleType>
       <xsd:simpleType name="optionType">
          <xsd:restriction base="optionType"></xsd:restriction>
       </xsd:simpleType>
