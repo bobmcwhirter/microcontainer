@@ -202,12 +202,25 @@ public class AbstractDemandMetaData extends JBossObject
       {
          super(name, getDemand(), whenRequired, null);
          if (getTransformer() != null)
+         {
             matcher = MatcherFactory.getInstance().createMatcher(getTransformer(), getDemand());
+            setIDependOn(matcher);
+         }
       }
-      
+
+      /**
+       * Get the demand or matcher if set.
+       *
+       * @return more exact demand object
+       */
+      protected Object getDemandObject()
+      {
+         return (matcher != null) ? matcher : getDemand();
+      }
+
       public boolean resolve(Controller controller)
       {
-         Object name = (matcher != null) ? matcher : getDemand();
+         Object name = getDemandObject();
          ControllerContext context = controller.getInstalledContext(name);
          if (context != null)
          {
@@ -232,19 +245,19 @@ public class AbstractDemandMetaData extends JBossObject
       public void toString(JBossStringBuilder buffer)
       {
          super.toString(buffer);
-         buffer.append(" demand=").append(getDemand());
+         buffer.append(" demand=").append(getDemandObject());
       }
       
       public void toShortString(JBossStringBuilder buffer)
       {
-         buffer.append(getName()).append(" demands ").append(getDemand());
+         buffer.append(getName()).append(" demands ").append(getDemandObject());
       }
 
       @Override
       public String toHumanReadableString()
       {
          StringBuilder builder = new StringBuilder();
-         builder.append("Demands '").append(getDemand()).append("'");
+         builder.append("Demands '").append(getDemandObject()).append("'");
          return builder.toString();
       }
    }

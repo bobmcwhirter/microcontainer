@@ -41,12 +41,20 @@ public class CustomMatcherTransfomer extends NonNullMatcherTransformer
 
       public FragmentMatcher(String string)
       {
+         if (string == null)
+            throw new IllegalArgumentException("Null fragment");
+         
          this.fragment = string;
       }
 
       protected boolean matchByType(String other)
       {
          return other.contains(fragment);
+      }
+
+      public String toString()
+      {
+         return fragment;
       }
    }
 }

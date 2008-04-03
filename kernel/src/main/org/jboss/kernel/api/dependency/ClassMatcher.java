@@ -40,7 +40,7 @@ public abstract class ClassMatcher<T> extends NonNullMatcher
 
    protected boolean internalMatch(Object other)
    {
-      return clazz.isAssignableFrom(other.getClass()) != false && matchByType(clazz.cast(other));
+      return clazz.isInstance(other) && matchByType(clazz.cast(other));
    }
 
    /**

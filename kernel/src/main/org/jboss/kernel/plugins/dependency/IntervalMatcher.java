@@ -100,4 +100,13 @@ public class IntervalMatcher extends NumberMatcher implements Serializable
       }
       return isInRange;
    }
+
+   public String toString()
+   {
+      StringBuilder builder = new StringBuilder();
+      builder.append(floorIsGreaterThan ? "(" : "[");
+      builder.append(floor).append(",").append(ceiling);
+      builder.append(ceilingIsLessThan ? ")" : "]");
+      return builder.toString();
+   }
 }

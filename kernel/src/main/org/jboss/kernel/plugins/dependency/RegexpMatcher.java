@@ -39,12 +39,18 @@ public class RegexpMatcher extends StringMatcher implements Serializable
 
    public RegexpMatcher(String regexp)
    {
+      if (regexp == null)
+         throw new IllegalArgumentException("Null regexp");
       pattern = Pattern.compile(regexp);
    }
 
    protected boolean matchByType(String other)
    {
-      boolean b = pattern.matcher(other).matches();
-      return b;
+      return pattern.matcher(other).matches();
+   }
+
+   public String toString()
+   {
+      return pattern.toString();
    }
 }
