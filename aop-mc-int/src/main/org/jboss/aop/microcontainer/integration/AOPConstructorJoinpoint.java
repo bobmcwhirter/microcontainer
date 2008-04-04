@@ -24,6 +24,7 @@ package org.jboss.aop.microcontainer.integration;
 import java.lang.annotation.Annotation;
 import java.lang.reflect.Constructor;
 import java.util.List;
+import java.util.ArrayList;
 
 import org.jboss.aop.Advisor;
 import org.jboss.aop.AspectManager;
@@ -58,7 +59,16 @@ import org.jboss.reflect.spi.TypeInfo;
  */
 public class AOPConstructorJoinpoint extends BasicConstructorJoinPoint
 {
-   AOPProxyFactory proxyFactory = new GeneratedAOPProxyFactory();
+   private static final List<ScopeLevel> levels;
+   private AOPProxyFactory proxyFactory = new GeneratedAOPProxyFactory();
+
+   static
+   {
+      // get all sub INSTANCE levels
+      levels = new ArrayList<ScopeLevel>(CommonLevelsUtil.getSubLevels(CommonLevels.INSTANCE));
+      // remove class joinpoint, we're only interested in instance/joinpoint_override
+      levels.remove(CommonLevels.JOINPOINT);
+   }
 
    /**
     * Create a new AOPConstructorJoinpoint.
@@ -177,10 +187,6 @@ public class AOPConstructorJoinpoint extends BasicConstructorJoinPoint
    {
       if (metaData != null)
       {
-         // TODO - remove this after making tests work again
-         // uncomment this for previous behavior
-         // List<ScopeLevel> levels = Collections.singletonList(CommonLevels.INSTANCE);
-         List<ScopeLevel> levels = CommonLevelsUtil.getSubLevels(CommonLevels.INSTANCE);
          for (ScopeLevel level : levels)
          {
             if (hasMetaDataAtLevel(metaData, level))

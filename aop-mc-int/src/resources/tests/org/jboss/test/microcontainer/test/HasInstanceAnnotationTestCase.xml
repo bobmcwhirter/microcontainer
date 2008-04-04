@@ -36,4 +36,9 @@
       <value>123</value>
     </property>
   </bean>
+
+  <bean name="Bean7" class="org.jboss.test.microcontainer.support.JustClassAnnotatedBean"/>
+  <bean name="Bean8" class="org.jboss.test.microcontainer.support.JustMethodAnnotatedBean"/>
+  <bean name="Bean9" class="org.jboss.test.microcontainer.support.AnnotatedBean"/>
+
 </deployment>

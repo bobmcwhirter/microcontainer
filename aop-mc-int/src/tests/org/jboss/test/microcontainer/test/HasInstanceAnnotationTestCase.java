@@ -51,5 +51,9 @@ public class HasInstanceAnnotationTestCase extends AbstractTypeTest
 
       assertIsAspectized("Bean5");
       assertIsAspectized("Bean6");
+
+      assertIsPojo("Bean7");
+      assertIsPojo("Bean8");
+      assertIsPojo("Bean9");
    }
 }
