@@ -66,11 +66,24 @@ public class ScopedKernelController extends AbstractKernelController
       getParentController().addController(this);
    }
 
+   /**
+    * Is parent controller a kernel controller.
+    *
+    * @return true if parent controller in kernel controller
+    */
    private boolean isParentKernelController()
    {
       return (getParentController() instanceof KernelController);
    }
 
+   /**
+    * Get parent kernel controller.
+    *
+    * Exception is thrown if the underlying controller
+    * is not kernel controller.
+    *
+    * @return kernel controller
+    */
    private KernelController getParentKernelController()
    {
       if (isParentKernelController() == false)
@@ -90,6 +103,9 @@ public class ScopedKernelController extends AbstractKernelController
       super.removeControllerContext(context);
    }
 
+   /**
+    * Perform release of resources.
+    */
    void release()
    {
       getParentController().removeController(this);
@@ -212,8 +228,6 @@ public class ScopedKernelController extends AbstractKernelController
       }
    }
 
-   
-
    // KernelRegistry plugin method
 
    public KernelRegistryEntry getEntry(Object name)
@@ -270,5 +284,4 @@ public class ScopedKernelController extends AbstractKernelController
          return parentKernel.getMetaDataRepository();
       }
    }
-
 }

@@ -211,6 +211,14 @@ public class AbstractController extends JBossObject implements Controller
       }
    }
 
+   /**
+    * Add controller context.
+    *
+    * This is normally used when switching from top
+    * level controller to a scoped one.
+    *
+    * @param context the controller context
+    */
    void addControllerContext(ControllerContext context)
    {
       lockWrite();
@@ -224,6 +232,14 @@ public class AbstractController extends JBossObject implements Controller
       }
    }
 
+   /**
+    * Remove controller context.
+    *
+    * This is normally used when switching from scoped
+    * level controller to a top one.
+    *
+    * @param context the controller context
+    */
    void removeControllerContext(ControllerContext context)
    {
       lockWrite();
@@ -237,16 +253,31 @@ public class AbstractController extends JBossObject implements Controller
       }
    }
 
+   /**
+    * Get the parent controller.
+    *
+    * @return the parent controller
+    */
    protected AbstractController getParentController()
    {
       return parentController;
    }
 
+   /**
+    * Set the parent controller.
+    *
+    * @param parentController the parent controller
+    */
    protected void setParentController(AbstractController parentController)
    {
       this.parentController = parentController;
    }
 
+   /**
+    * Get child controllers.
+    *
+     * @return the child controllers
+    */
    public Set<AbstractController> getControllers()
    {
       lockRead();
@@ -260,6 +291,12 @@ public class AbstractController extends JBossObject implements Controller
       }
    }
 
+   /**
+    * Add child controller.
+    *
+    * @param controller the child controller
+    * @return true if equal controller has been already added, see Set.add usage 
+    */
    public boolean addController(AbstractController controller)
    {
       lockWrite();
@@ -273,6 +310,12 @@ public class AbstractController extends JBossObject implements Controller
       }
    }
 
+   /**
+    * Remove child controller.
+    *
+    * @param controller the child controller
+    * @return true if equal controller was present, see Set.remove usage
+    */
    public boolean removeController(AbstractController controller)
    {
       lockWrite();
@@ -304,6 +347,12 @@ public class AbstractController extends JBossObject implements Controller
       }
    }
 
+   /**
+    * Get all the contexts.
+    * In state decending order.
+    *
+    * @return all contexts
+    */
    public Set<ControllerContext> getAllContexts()
    {
       lockRead();
@@ -439,6 +488,13 @@ public class AbstractController extends JBossObject implements Controller
       uninstall(alias + "_Alias");
    }
 
+   /**
+    * Uninstall the context.
+    *
+    * @param name the context name
+    * @param level the controller level
+    * @return uninstalled controller context
+    */
    // todo - some better way to find context's by name
    // currently the first one found is used
    protected ControllerContext uninstall(Object name, int level)
@@ -1234,11 +1290,25 @@ public class AbstractController extends JBossObject implements Controller
       }
    }
 
+   /**
+    * Handle install lifecycle callbacks.
+    *
+    * @param context the context
+    * @param state the state
+    * @throws Throwable for any error
+    */
    protected void handleInstallLifecycleCallbacks(ControllerContext context, ControllerState state) throws Throwable
    {
       handleLifecycleCallbacks(context, state, true);
    }
 
+   /**
+    * Handle uninstall lifecycle callbacks.
+    *
+    * @param context the context
+    * @param state the state
+    * @throws Throwable for any error
+    */
    protected void handleUninstallLifecycleCallbacks(ControllerContext context, ControllerState state) throws Throwable
    {
       int index = states.indexOf(state);
@@ -1246,6 +1316,14 @@ public class AbstractController extends JBossObject implements Controller
       handleLifecycleCallbacks(context, oldState, false);
    }
 
+   /**
+    * Handle lifecycle callbacks.
+    *
+    * @param context the context
+    * @param state the state
+    * @param install is it install or uninstall
+    * @throws Throwable for any error
+    */
    protected void handleLifecycleCallbacks(ControllerContext context, ControllerState state, boolean install) throws Throwable
    {
       DependencyInfo di = context.getDependencyInfo();
