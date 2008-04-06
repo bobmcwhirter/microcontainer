@@ -1,0 +1,33 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<deployment xmlns="urn:jboss:bean-deployer:2.0">
+
+   <bean name="AspectManager" class="org.jboss.aop.AspectManager">
+      <constructor factoryClass="org.jboss.aop.AspectManager" factoryMethod="instance"/>
+   </bean>
+
+   <metadata xmlns="urn:jboss:aop-beans:1.0" tag="Simple" class="Whatever">
+      <default>
+          <d1>One</d1>
+          <d2>Two</d2>
+      </default>
+      <clazz>
+          <cl1>One</cl1>
+          <cl2>Two</cl2>
+      </clazz>
+      <clazz>
+          <cl3>Three</cl3>
+      </clazz>
+   </metadata>
+
+<!--
+      <class>
+          <cl1>One</cl1>
+          <cl2>Two</cl2>
+      </class>
+      <class>
+          <cl3>Three</cl3>
+      </class>
+-->   
+   
+</deployment>

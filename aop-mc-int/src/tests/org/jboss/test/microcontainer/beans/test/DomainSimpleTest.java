@@ -115,6 +115,9 @@ public abstract class DomainSimpleTest extends DomainProxyTest
       o = manager.getArrayBinding("TestArrayBinding");
       checkShouldBeThere(o, shouldBeThere);
       
+      checkShouldBeThere(manager.getClassMetaData().keySet(), shouldBeThere);
+      checkShouldBeThere(manager.getClassMetaDataLoaders().keySet(), shouldBeThere);
+      
       Iterator<DeclareDef> it = manager.getDeclares();
       if (shouldBeThere)
       {

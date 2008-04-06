@@ -271,6 +271,8 @@ $Id$
          <xsd:element name="dynamic-cflow" type="dynamicCflowStackType" minOccurs="0" maxOccurs="unbounded"/>
          <xsd:element name="interceptor" type="aspectOrInterceptorType" minOccurs="0" maxOccurs="unbounded"/>
          <xsd:element name="introduction" type="introductionType" minOccurs="0" maxOccurs="unbounded"/>
+         <xsd:element name="metadata" type="metadataType" minOccurs="0" maxOccurs="unbounded"/>
+         <xsd:element name="metadata-loader" type="metadataLoaderType" minOccurs="0" maxOccurs="unbounded"/>
          <xsd:element name="pointcut" type="pointcutType" minOccurs="0" maxOccurs="unbounded"/>
          <xsd:element name="precedence" type="precedenceType" minOccurs="0" maxOccurs="unbounded"/>
          <xsd:element name="prepare" type="prepareType" minOccurs="0" maxOccurs="unbounded"/>
@@ -315,6 +317,8 @@ $Id$
          <xsd:element name="dynamic-cflow" type="dynamicCflowStackType" minOccurs="0" maxOccurs="unbounded"/>
          <xsd:element name="interceptor" type="aspectOrInterceptorType" minOccurs="0" maxOccurs="unbounded"/>
          <xsd:element name="introduction" type="introductionType" minOccurs="0" maxOccurs="unbounded"/>
+         <xsd:element name="metadata" type="metadataType" minOccurs="0" maxOccurs="unbounded"/>
+         <xsd:element name="metadata-loader" type="metadataLoaderType" minOccurs="0" maxOccurs="unbounded"/>
          <xsd:element name="pointcut" type="pointcutType" minOccurs="0" maxOccurs="unbounded"/>
          <xsd:element name="precedence" type="precedenceType" minOccurs="0" maxOccurs="unbounded"/>
          <xsd:element name="prepare" type="prepareType" minOccurs="0" maxOccurs="unbounded"/>
@@ -897,6 +901,54 @@ $Id$
       <xsd:simpleContent>
          <xsd:extension base="xsd:string"/>
       </xsd:simpleContent>
+   </xsd:complexType>
+
+   <xsd:element name="metadata" type="metadataType">
+      <xsd:annotation>
+         <xsd:documentation>
+           <![CDATA[
+           A metadata
+           ]]>
+         </xsd:documentation>
+      </xsd:annotation>
+   </xsd:element>
+   
+   <xsd:complexType name="metadataType">
+      <xsd:annotation>
+         <xsd:documentation>
+           <![CDATA[
+           A metadata
+           ]]>
+         </xsd:documentation>
+      </xsd:annotation>
+      <xsd:choice minOccurs="0" maxOccurs="1">
+         <xsd:any namespace="##other" processContents="strict" minOccurs="0">
+         </xsd:any>
+      </xsd:choice>
+      <xsd:attribute name="tag" type="xsd:string" use="required"></xsd:attribute>
+      <xsd:attribute name="class" type="xsd:string" use="required"></xsd:attribute>
+   </xsd:complexType>
+
+   <xsd:element name="metadata-loader" type="metadataLoaderType">
+      <xsd:annotation>
+         <xsd:documentation>
+           <![CDATA[
+           A metadata
+           ]]>
+         </xsd:documentation>
+      </xsd:annotation>
+   </xsd:element>
+   
+   <xsd:complexType name="metadataLoaderType">
+      <xsd:annotation>
+         <xsd:documentation>
+           <![CDATA[
+           A metadata
+           ]]>
+         </xsd:documentation>
+      </xsd:annotation>
+      <xsd:attribute name="tag" type="xsd:string" use="required"></xsd:attribute>
+      <xsd:attribute name="class" type="xsd:string" use="required"></xsd:attribute>
    </xsd:complexType>
 
    <xsd:element name="arrayreplacement" type="arrayreplacementType">

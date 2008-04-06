@@ -1,0 +1,36 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<aop xmlns="urn:jboss:aop-beans:1.0">
+
+   <bean name="AspectManager" class="org.jboss.aop.AspectManager">
+      <constructor factoryClass="org.jboss.aop.AspectManager" factoryMethod="instance"/>
+   </bean>
+
+   <metadata tag="SomeTag" class="org.jboss.test.microcontainer.beans.POJO">
+      <class>
+         <clazz1>clazz1</clazz1>
+         <clazz2>clazz2</clazz2>
+      </class>
+      <default>
+         <data>default</data>
+      </default>
+      <constructor expr="POJO()">
+         <data>ctor</data>
+      </constructor>
+      <method expr="int method(..)">
+         <data>method1</data>
+      </method>
+      <method expr="void method()">
+         <data>method2</data>
+      </method>
+   </metadata>
+
+   <aspect class="org.jboss.test.microcontainer.beans.TestClassMetaDataAspect"/>
+   
+   <bind pointcut="execution(org.jboss.test.microcontainer.beans.POJO->new(..)) OR execution(* org.jboss.test.microcontainer.beans.POJO->*(..))">
+      <advice aspect="org.jboss.test.microcontainer.beans.TestClassMetaDataAspect" name="advice"/>
+   </bind>
+
+   <bean name="Bean" class="org.jboss.test.microcontainer.beans.POJO"/>
+
+</aop>

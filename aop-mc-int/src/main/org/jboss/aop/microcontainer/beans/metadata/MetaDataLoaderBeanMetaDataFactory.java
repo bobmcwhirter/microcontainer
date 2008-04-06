@@ -21,25 +21,18 @@
 */ 
 package org.jboss.aop.microcontainer.beans.metadata;
 
-import java.io.BufferedWriter;
-import java.io.StringWriter;
 import java.util.ArrayList;
 import java.util.List;
 
-import javax.xml.bind.annotation.XmlAnyElement;
 import javax.xml.bind.annotation.XmlAttribute;
 import javax.xml.bind.annotation.XmlNsForm;
 import javax.xml.bind.annotation.XmlRootElement;
-import javax.xml.bind.annotation.XmlType;
 
-import org.jboss.aop.microcontainer.beans.ClassMetaData;
+import org.jboss.aop.microcontainer.beans.ClassMetaDataLoader;
 import org.jboss.beans.metadata.spi.BeanMetaData;
 import org.jboss.beans.metadata.spi.builder.BeanMetaDataBuilder;
 import org.jboss.util.id.GUID;
-import org.jboss.util.xml.DOMWriter;
 import org.jboss.xb.annotations.JBossXmlSchema;
-import org.w3c.dom.DOMException;
-import org.w3c.dom.Element;
 
 /**
  * 
@@ -48,22 +41,13 @@ import org.w3c.dom.Element;
  */
 @JBossXmlSchema(namespace="urn:jboss:aop-beans:1.0", elementFormDefault=XmlNsForm.QUALIFIED)
 @XmlRootElement(name="metadata")
-//Set a random proporder since we don't want to set any of the properties in GenericBeanFactoryMetaData in the
-//freeform xml contained in this element
-@XmlType(name="metaDataType", propOrder={"non$$existant$$property"})
-public class MetaDataBeanMetaDataFactory extends AspectManagerAwareBeanMetaDataFactory
+public class MetaDataLoaderBeanMetaDataFactory extends AspectManagerAwareBeanMetaDataFactory
 {
    private static final long serialVersionUID = 1L;
 
    String tag;
    
    String clazz;
-
-   //It would have been nice to handle the normal metadata elements handled by the SimpleMetaDataElements in a typed
-   //way, but what if we have a custom metadata loader that expects elements with the same names?
-   List<Element> elements;
-   
-   String fullDocument;
 
    public String getTag()
    {
@@ -87,17 +71,6 @@ public class MetaDataBeanMetaDataFactory extends AspectManagerAwareBeanMetaDataF
       this.clazz = clazz;
    }
 
-   public List<Element> getElements()
-   {
-      return elements;
-   }
-
-   @XmlAnyElement(lax=true)
-   public void setElements(List<Element> elements)
-   {
-      this.elements = elements;
-   }
-
    @Override
    public List<BeanMetaData> getBeans()
    {
@@ -106,50 +79,12 @@ public class MetaDataBeanMetaDataFactory extends AspectManagerAwareBeanMetaDataF
       {
          name = GUID.asString();
       }
-      BeanMetaDataBuilder builder = BeanMetaDataBuilder.createBuilder(name, ClassMetaData.class.getName());
+      BeanMetaDataBuilder builder = BeanMetaDataBuilder.createBuilder(name, ClassMetaDataLoader.class.getName());
       builder.addPropertyMetaData("tag", tag);
       builder.addPropertyMetaData("className", clazz);
-      builder.addPropertyMetaData("element", getRootElement());
       
       setAspectManagerProperty(builder);
       beans.add(builder.getBeanMetaData());
       return beans;
-   }
-   
-   private String getRootElement()
-   {
-      try
-      {
-         StringWriter writer = new StringWriter();
-         StringBuffer contents = writer.getBuffer();
-         contents.append("<metadata "); 
-         contents.append("tag=\"" + tag + "\" ");
-         contents.append("class=\"" + clazz + "\"");
-         contents.append(">");
-         
-         DOMWriter domWriter = new DOMWriter(new BufferedWriter(writer));
-         for (Element child : elements)
-         {
-            domWriter.print(child);
-         }
-         
-         contents.append("</metadata>");
-         
-         fullDocument = writer.getBuffer().toString();
-         System.out.println(fullDocument);
-         return fullDocument;
-      }
-      catch (DOMException e)
-      {
-         e.printStackTrace();
-         throw e;
-      }
-   }
-   
-   /**
-    * Here to match the @XMLType.propOrder
-    */
-   public void setNon$$existant$$property(String ignored)
-   {
    }
 }

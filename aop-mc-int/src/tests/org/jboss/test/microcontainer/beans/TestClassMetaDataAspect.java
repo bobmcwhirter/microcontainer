@@ -32,12 +32,23 @@ public class TestClassMetaDataAspect
 {
    public static boolean invoked;
    public static String last;
+   public static String clazz1;
+   public static String clazz2;
    
    public Object advice(Invocation inv) throws Throwable
    {
       Interceptions.add(this);
       invoked = true;
       last = (String)inv.getMetaData("SomeTag", "data");
+      clazz1 = (String)inv.resolveClassMetaData("SomeTag", "clazz1");
+      clazz2 = (String)inv.resolveClassMetaData("SomeTag", "clazz2");
+      
       return inv.invokeNext();
+   }
+   
+   public static void reset()
+   {
+      invoked = false;
+      last = clazz1 = clazz2 = null;
    }
 }

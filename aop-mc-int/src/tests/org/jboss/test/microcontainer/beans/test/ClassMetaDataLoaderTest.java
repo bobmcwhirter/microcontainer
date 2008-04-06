@@ -19,27 +19,45 @@
 * Software Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA
 * 02110-1301 USA, or see the FSF site: http://www.fsf.org.
 */ 
-package org.jboss.test.microcontainer.beans;
+package org.jboss.test.microcontainer.beans.test;
+
+import org.jboss.test.aop.junit.AOPMicrocontainerTest;
+import org.jboss.test.microcontainer.beans.POJO;
+import org.jboss.test.microcontainer.beans.TestClassMetaDataAspect;
 
 /**
  * 
  * @author <a href="kabir.khan@jboss.com">Kabir Khan</a>
  * @version $Revision: 1.1 $
  */
-public class POJO
+public abstract class ClassMetaDataLoaderTest extends AOPMicrocontainerTest
 {
-   public int method(int i)
+   public void testMetaData() throws Exception
    {
-      return i * 2;
+      POJO pojo = (POJO)getBean("Bean");
+      assertNotNull(pojo);
+      
+      assertTrue(TestClassMetaDataAspect.invoked);
+      assertEquals("Ccustom1", TestClassMetaDataAspect.last);
+      
+      TestClassMetaDataAspect.invoked = false;
+      TestClassMetaDataAspect.last = null;
+      pojo.method(2);
+      assertTrue(TestClassMetaDataAspect.invoked);
+      assertEquals("Mcustom1", TestClassMetaDataAspect.last);
+      
+      TestClassMetaDataAspect.invoked = false;
+      TestClassMetaDataAspect.last = null;
+      pojo.method();
+      assertTrue(TestClassMetaDataAspect.invoked);
+      assertEquals("Mcustom1", TestClassMetaDataAspect.last);
    }
    
-   public void method()
+
+   public ClassMetaDataLoaderTest(String name)
    {
-      
+      // FIXME ClassMetaDataLoaderTest constructor
+      super(name);
    }
-   
-   public void defaultMethod()
-   {
-      
-   }
+
 }

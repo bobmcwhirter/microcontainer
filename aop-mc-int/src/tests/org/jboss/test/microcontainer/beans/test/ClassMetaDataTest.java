@@ -19,27 +19,51 @@
 * Software Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA
 * 02110-1301 USA, or see the FSF site: http://www.fsf.org.
 */ 
-package org.jboss.test.microcontainer.beans;
+package org.jboss.test.microcontainer.beans.test;
+
+import org.jboss.test.aop.junit.AOPMicrocontainerTest;
+import org.jboss.test.microcontainer.beans.POJO;
+import org.jboss.test.microcontainer.beans.TestClassMetaDataAspect;
 
 /**
  * 
  * @author <a href="kabir.khan@jboss.com">Kabir Khan</a>
  * @version $Revision: 1.1 $
  */
-public class POJO
+public abstract class ClassMetaDataTest extends AOPMicrocontainerTest
 {
-   public int method(int i)
+   public void testMetaData() throws Exception
    {
-      return i * 2;
-   }
-   
-   public void method()
-   {
+      POJO pojo = (POJO)getBean("Bean");
+      assertNotNull(pojo);
+      
+      assertInvokedLastAndClass("ctor");
+      
+      TestClassMetaDataAspect.reset();
+      pojo.method(2);
+      assertInvokedLastAndClass("method1");
+      
+      TestClassMetaDataAspect.reset();
+      pojo.method();
+      assertInvokedLastAndClass("method2");
+      
+      TestClassMetaDataAspect.reset();
+      pojo.defaultMethod();
+      assertInvokedLastAndClass("default");
       
    }
    
-   public void defaultMethod()
+   private void assertInvokedLastAndClass(String last)
    {
-      
+      assertTrue(TestClassMetaDataAspect.invoked);
+      assertEquals(last, TestClassMetaDataAspect.last);
+      assertEquals("clazz1", TestClassMetaDataAspect.clazz1);
+      assertEquals("clazz2", TestClassMetaDataAspect.clazz2);
    }
+
+   public ClassMetaDataTest(String name)
+   {
+      super(name);
+   }
+
 }

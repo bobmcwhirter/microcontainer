@@ -191,6 +191,25 @@
       <property name="binding"><inject bean="TestArrayBinding" state="Instantiated"/></property>
    </bean>
 
+   <bean name="custom$loader" class="org.jboss.aop.microcontainer.beans.ClassMetaDataLoader">
+      <property name="manager"><inject bean="AOPDomain" property="domain"/></property>
+      <property name="tag">custom</property>
+      <property name="className">org.jboss.test.microcontainer.beans.TestMetaDataLoader</property>
+   </bean>
+
+   <bean name="ClassMetaData" class="org.jboss.aop.microcontainer.beans.ClassMetaData">
+      <property name="manager"><inject bean="AOPDomain" property="domain"/></property>
+      <property name="tag">custom</property>
+      <property name="className">org.jboss.test.microcontainer.beans.POJO</property>
+      <property name="element">
+      <![CDATA[
+         <metadata>
+            <data>custom1</data>
+         </metadata>
+      ]]>
+      </property>
+   </bean>
+   
    <bean name="DeclareError" class="org.jboss.aop.microcontainer.beans.DeclareDefinition">
       <property name="manager"><inject bean="AOPDomain" property="domain"/></property>
       <property name="name">DeclareError</property>
@@ -198,5 +217,4 @@
       <property name="message">Error!!!</property>
       <property name="warning">false</property>
    </bean>
-
 </deployment>

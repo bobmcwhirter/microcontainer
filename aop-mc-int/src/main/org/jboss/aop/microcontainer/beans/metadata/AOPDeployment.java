@@ -35,6 +35,7 @@ import org.jboss.kernel.plugins.deployment.AbstractKernelDeployment;
 import org.jboss.managed.api.annotation.ManagementObject;
 import org.jboss.managed.api.annotation.ManagementProperties;
 import org.jboss.xb.annotations.JBossXmlSchema;
+import org.w3c.dom.Element;
 
 /**
  * 
@@ -72,6 +73,8 @@ public class AOPDeployment extends AbstractKernelDeployment
       @XmlElement(name="lifecycle-instantiate", type=InstantiateLifecycleBeanMetaDataFactory.class),
       @XmlElement(name="lifecycle-preinstall", type=PreInstallLifecycleBeanMetaDataFactory.class),
       @XmlElement(name="lifecycle-start", type=StartLifecycleBeanMetaDataFactory.class),
+      @XmlElement(name="metadata", type=MetaDataBeanMetaDataFactory.class),
+      @XmlElement(name="metadata-loader", type=MetaDataLoaderBeanMetaDataFactory.class),
       @XmlElement(name="pointcut", type=NamedPointcutBeanMetaDataFactory.class),
       @XmlElement(name="precedence", type=PrecedenceBeanMetaDataFactory.class),
       @XmlElement(name="prepare", type=PrepareMetaDataFactory.class),
@@ -83,4 +86,17 @@ public class AOPDeployment extends AbstractKernelDeployment
    {
       super.setBeanFactories(beanFactories);
    }
+   
+//   Element metadata;
+//   
+//   public Element getMetadata()
+//   {
+//      return metadata;
+//   }
+//   
+//   public void setMetadata(Element elements)
+//   {
+//      System.out.println("Hello");
+//      this.metadata = elements;
+//   }
 }

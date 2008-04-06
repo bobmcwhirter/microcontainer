@@ -13,13 +13,20 @@
 		<property name="element">
       <![CDATA[
          <metadata>
+            <class>
+               <clazz1>clazz1</clazz1>
+               <clazz2>clazz2</clazz2>
+            </class>
+            <default>
+               <data>default</data>
+            </default>
             <constructor expr="POJO()">
                <data>ctor</data>
             </constructor>
-            <method expr="int *(..)">
+            <method expr="int method(..)">
                <data>method1</data>
             </method>
-            <method expr="void *()">
+            <method expr="void method()">
                <data>method2</data>
             </method>
          </metadata>

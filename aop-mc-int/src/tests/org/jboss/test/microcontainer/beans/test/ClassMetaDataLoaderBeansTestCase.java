@@ -23,38 +23,13 @@ package org.jboss.test.microcontainer.beans.test;
 
 import junit.framework.Test;
 
-import org.jboss.test.aop.junit.AOPMicrocontainerTest;
-import org.jboss.test.microcontainer.beans.POJO;
-import org.jboss.test.microcontainer.beans.TestClassMetaDataAspect;
-
 /**
  * 
  * @author <a href="kabir.khan@jboss.com">Kabir Khan</a>
  * @version $Revision: 1.1 $
  */
-public class ClassMetaDataLoaderBeansTestCase extends AOPMicrocontainerTest
+public class ClassMetaDataLoaderBeansTestCase extends ClassMetaDataLoaderTest
 {
-   public void testMetaData() throws Exception
-   {
-      POJO pojo = (POJO)getBean("Bean");
-      assertNotNull(pojo);
-      
-      assertTrue(TestClassMetaDataAspect.invoked);
-      assertEquals("Ccustom1", TestClassMetaDataAspect.last);
-      
-      TestClassMetaDataAspect.invoked = false;
-      TestClassMetaDataAspect.last = null;
-      pojo.method(2);
-      assertTrue(TestClassMetaDataAspect.invoked);
-      assertEquals("Mcustom1", TestClassMetaDataAspect.last);
-      
-      TestClassMetaDataAspect.invoked = false;
-      TestClassMetaDataAspect.last = null;
-      pojo.method();
-      assertTrue(TestClassMetaDataAspect.invoked);
-      assertEquals("Mcustom1", TestClassMetaDataAspect.last);
-   }
-   
    public static Test suite()
    {
       return suite(ClassMetaDataLoaderBeansTestCase.class);

@@ -66,6 +66,12 @@
          <interceptor-ref name="org.jboss.test.microcontainer.beans.TestInterceptor"/>
       </arraybind>
 
+      <metadata-loader tag="custom" class="org.jboss.test.microcontainer.beans.TestMetaDataLoader"/>
+
+      <metadata tag="custom" class="org.jboss.test.microcontainer.beans.POJO">
+         <data>custom1</data>
+      </metadata>
+
       <declare-error name="DeclareError" expr="call(* org.acme.Foo->error(..))">Error!!!</declare-error>
    </domain>   
    
