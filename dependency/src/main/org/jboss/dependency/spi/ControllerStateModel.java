@@ -21,6 +21,8 @@
 */
 package org.jboss.dependency.spi;
 
+import java.util.ListIterator;
+
 /**
  * ControllerState model.
  * Helper/util methods.
@@ -29,6 +31,13 @@ package org.jboss.dependency.spi;
  */
 public interface ControllerStateModel extends Iterable<ControllerState>
 {
+   /**
+    * Get the list iterator.
+    *
+    * @return list iterator
+    */
+   ListIterator<ControllerState> listIteraror();
+
    /**
     * Get previous state from state param
     * or null if state param is the first.

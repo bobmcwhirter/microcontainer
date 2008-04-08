@@ -30,6 +30,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 import java.util.Iterator;
+import java.util.ListIterator;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.CopyOnWriteArrayList;
 import java.util.concurrent.CopyOnWriteArraySet;
@@ -1726,6 +1727,11 @@ public class AbstractController extends JBossObject implements Controller, Contr
             unlockWrite();
          }
       }
+   }
+
+   public ListIterator<ControllerState> listIteraror()
+   {
+      return states.listIterator();
    }
 
    public ControllerState getPreviousState(ControllerState state)
