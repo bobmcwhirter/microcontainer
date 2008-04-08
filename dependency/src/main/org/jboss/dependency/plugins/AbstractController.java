@@ -1731,7 +1731,7 @@ public class AbstractController extends JBossObject implements Controller, Contr
 
    public ListIterator<ControllerState> listIteraror()
    {
-      return states.listIterator();
+      return states.listIterator(states.size() - 1);
    }
 
    public ControllerState getPreviousState(ControllerState state)
