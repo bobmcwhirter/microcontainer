@@ -22,12 +22,12 @@
 package org.jboss.beans.metadata.plugins;
 
 import java.io.Serializable;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Set;
-
-import javax.xml.bind.annotation.XmlType;
 import javax.xml.bind.annotation.XmlAttribute;
 import javax.xml.bind.annotation.XmlElement;
+import javax.xml.bind.annotation.XmlType;
 
 import org.jboss.beans.metadata.plugins.builder.MutableParameterizedMetaData;
 import org.jboss.beans.metadata.spi.LifecycleMetaData;
@@ -208,5 +208,23 @@ public class AbstractLifecycleMetaData extends AbstractFeatureMetaData
    public void toShortString(JBossStringBuilder buffer)
    {
       buffer.append(methodName);
+   }
+
+   public AbstractLifecycleMetaData clone()
+   {
+      AbstractLifecycleMetaData clone = (AbstractLifecycleMetaData)super.clone();
+      doClone(clone);
+      return clone;
+   }
+
+   @SuppressWarnings("unchecked")
+   protected void doClone(AbstractLifecycleMetaData clone)
+   {
+      super.doClone(clone);
+      clone.setIgnored(ignored);
+      clone.setMethodName(methodName);
+      clone.setParameters(CloneUtil.cloneCollection(parameters, ArrayList.class, ParameterMetaData.class));
+      clone.setState(state);
+      clone.setType(type);
    }
 }

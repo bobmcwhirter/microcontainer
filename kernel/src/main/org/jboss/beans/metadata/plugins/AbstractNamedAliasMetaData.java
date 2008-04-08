@@ -91,4 +91,9 @@ public class AbstractNamedAliasMetaData extends AbstractAliasMetaData implements
       AbstractNamedAliasMetaData amd = (AbstractNamedAliasMetaData)object;
       return name.equals(amd.name);
    }
+
+   public AbstractNamedAliasMetaData clone()
+   {
+      return (AbstractNamedAliasMetaData)super.clone();
+   }
 }

@@ -93,8 +93,13 @@ public class AbstractSetMetaData extends AbstractCollectionMetaData
       return changed;
    }
 
-   protected Object getDefaultInstance()
+   protected Set<Object> getDefaultInstance()
    {
       return new HashSet<Object>();
+   }
+
+   public AbstractSetMetaData clone()
+   {
+      return (AbstractSetMetaData)super.clone();
    }
 }

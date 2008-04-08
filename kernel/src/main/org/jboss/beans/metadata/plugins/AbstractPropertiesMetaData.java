@@ -64,4 +64,8 @@ public class AbstractPropertiesMetaData extends AbstractMapMetaData
       throw new IllegalArgumentException("Illegal call to set properties value type!");
    }
 
+   public AbstractPropertiesMetaData clone()
+   {
+      return (AbstractPropertiesMetaData)super.clone();
+   }
 }

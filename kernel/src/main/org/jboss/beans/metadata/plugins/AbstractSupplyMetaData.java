@@ -188,4 +188,9 @@ public class AbstractSupplyMetaData extends JBossObject
    {
       return HashCode.generate(supply);
    }
+
+   public AbstractSupplyMetaData clone()
+   {
+      return (AbstractSupplyMetaData)super.clone();
+   }
 }

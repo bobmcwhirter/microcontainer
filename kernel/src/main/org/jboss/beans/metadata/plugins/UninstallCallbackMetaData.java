@@ -48,4 +48,11 @@ public class UninstallCallbackMetaData extends AbstractCallbackMetaData
    {
       visitor.addUninstallCallback(callback);
    }
+
+   public UninstallCallbackMetaData clone()
+   {
+      UninstallCallbackMetaData clone = (UninstallCallbackMetaData)super.clone();
+      doClone(clone);
+      return clone;
+   }
 }

@@ -83,9 +83,9 @@ public class UnmodifiableDependencyInfo extends JBossObject implements Dependenc
       return delegate.resolveDependencies(controller, state);
    }
 
-   public Set<DependencyItem> getUnresolvedDependencies()
+   public Set<DependencyItem> getUnresolvedDependencies(ControllerState state)
    {
-      return delegate.getUnresolvedDependencies();
+      return delegate.getUnresolvedDependencies(state);
    }
 
    public <T> void addInstallItem(CallbackItem<T> callbackItem)

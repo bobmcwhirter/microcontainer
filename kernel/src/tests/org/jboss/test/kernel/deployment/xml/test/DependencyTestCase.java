@@ -63,4 +63,9 @@ public class DependencyTestCase extends AbstractXMLTest
    {
       super(name);
    }
+
+   protected DependencyTestCase(String name, boolean useClone)
+   {
+      super(name, useClone);
+   }
 }

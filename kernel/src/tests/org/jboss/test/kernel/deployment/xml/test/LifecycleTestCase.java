@@ -122,4 +122,9 @@ public class LifecycleTestCase extends AbstractXMLTest
    {
       super(name);
    }
+
+   protected LifecycleTestCase(String name, boolean useClone)
+   {
+      super(name, useClone);
+   }
 }

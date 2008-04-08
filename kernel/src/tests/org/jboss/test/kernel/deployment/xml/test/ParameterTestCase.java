@@ -184,4 +184,9 @@ public class ParameterTestCase extends AbstractXMLTest
    {
       super(name);
    }
+
+   protected ParameterTestCase(String name, boolean useClone)
+   {
+      super(name, useClone);
+   }
 }

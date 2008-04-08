@@ -89,10 +89,11 @@ public interface DependencyInfo extends JBossInterface
    
    /**
     * Return the unresolved dependencies
-    * 
+    *
+    * @param state the controller state
     * @return our unresolved dependencies
     */
-   Set<DependencyItem> getUnresolvedDependencies();
+   Set<DependencyItem> getUnresolvedDependencies(ControllerState state);
 
    /**
     * Add a callback reference

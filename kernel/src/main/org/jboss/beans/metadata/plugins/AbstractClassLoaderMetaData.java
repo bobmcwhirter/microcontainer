@@ -137,4 +137,16 @@ public class AbstractClassLoaderMetaData extends JBossObject
    {
       buffer.append(classloader);
    }
+
+   public AbstractClassLoaderMetaData clone()
+   {
+      AbstractClassLoaderMetaData clone = (AbstractClassLoaderMetaData)super.clone();
+      doClone(clone);
+      return clone;
+   }
+
+   protected void doClone(AbstractClassLoaderMetaData clone)
+   {
+      clone.setClassLoader(CloneUtil.cloneObject(classloader, ValueMetaData.class));
+   }
 }

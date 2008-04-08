@@ -95,6 +95,30 @@ public class XMLTestSuite extends TestSuite
       suite.addTest(AnnotationJaxbTestCase.suite());
       suite.addTest(CallbackJaxbTestCase.suite());
       suite.addTest(ValueFactoryJaxbTestCase.suite());
+
+      // clone
+      suite.addTest(BeanCloneTestCase.suite());
+      suite.addTest(ClassLoaderCloneTestCase.suite());
+      suite.addTest(ConstructorCloneTestCase.suite());
+      suite.addTest(FactoryCloneTestCase.suite());
+      suite.addTest(ParameterCloneTestCase.suite());
+      suite.addTest(PropertyCloneTestCase.suite());
+      suite.addTest(LifecycleCloneTestCase.suite());
+      suite.addTest(DependencyCloneTestCase.suite());
+      suite.addTest(DemandCloneTestCase.suite());
+      suite.addTest(SupplyCloneTestCase.suite());
+      suite.addTest(InstallCloneTestCase.suite());
+      suite.addTest(ValueCloneTestCase.suite());
+      suite.addTest(InjectionCloneTestCase.suite());
+      suite.addTest(CollectionCloneTestCase.suite());
+      suite.addTest(ListCloneTestCase.suite());
+      suite.addTest(SetCloneTestCase.suite());
+      suite.addTest(ArrayCloneTestCase.suite());
+      suite.addTest(MapCloneTestCase.suite());
+      suite.addTest(AnnotationCloneTestCase.suite());
+      suite.addTest(CallbackCloneTestCase.suite());
+      suite.addTest(ValueFactoryCloneTestCase.suite());
+
       // policy
       suite.addTest(ScopeJaxbTestCase.suite());
       suite.addTest(BindingJaxbTestCase.suite());

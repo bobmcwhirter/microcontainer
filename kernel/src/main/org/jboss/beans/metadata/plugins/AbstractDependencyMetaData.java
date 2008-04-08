@@ -153,4 +153,9 @@ public class AbstractDependencyMetaData extends JBossObject
          super(name, dependency, state, state);
       }
    }
+
+   public AbstractDependencyMetaData clone()
+   {
+      return (AbstractDependencyMetaData)super.clone();
+   }
 }

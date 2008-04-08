@@ -26,6 +26,7 @@ import java.util.Collections;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Set;
+import java.util.HashSet;
 import javax.xml.bind.annotation.XmlAttribute;
 import javax.xml.bind.annotation.XmlElement;
 import javax.xml.bind.annotation.XmlNsForm;
@@ -149,5 +150,13 @@ public class AbstractLazyMetaData extends AbstractBeanMetaData implements LazyMe
    public void setInterfaces(Set<String> interfaces)
    {
       this.interfaces = interfaces;
+   }
+
+   public AbstractLazyMetaData clone()
+   {
+      AbstractLazyMetaData clone = (AbstractLazyMetaData)super.clone();
+      if (interfaces != null)
+         clone.setInterfaces(new HashSet<String>(interfaces));
+      return clone;
    }
 }

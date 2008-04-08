@@ -148,4 +148,12 @@ public class AbstractValueMetaData extends JBossObject
    {
       buffer.append(value);
    }
+
+   public AbstractValueMetaData clone()
+   {
+      AbstractValueMetaData clone = (AbstractValueMetaData)super.clone();
+      if (value instanceof MetaDataVisitorNode)
+         clone.setValue(CloneUtil.cloneObject((MetaDataVisitorNode)value, MetaDataVisitorNode.class));
+      return clone;
+   }
 }

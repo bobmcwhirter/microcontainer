@@ -109,4 +109,9 @@ public class InjectionTestCase extends AbstractXMLTest
    {
       super(name);
    }
+
+   protected InjectionTestCase(String name, boolean useClone)
+   {
+      super(name, useClone);
+   }
 }

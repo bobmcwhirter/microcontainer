@@ -219,7 +219,7 @@ public class AbstractCollectionMetaData extends AbstractTypeMetaData
     * 
     * @return the class instance
     */
-   protected Object getDefaultInstance()
+   protected Collection<Object> getDefaultInstance()
    {
       return new ArrayList<Object>();
    }
@@ -245,5 +245,13 @@ public class AbstractCollectionMetaData extends AbstractTypeMetaData
       }
 
       return null;
+   }
+
+   @SuppressWarnings("unchecked")
+   public AbstractCollectionMetaData clone()
+   {
+      AbstractCollectionMetaData clone = (AbstractCollectionMetaData)super.clone();
+      clone.collection = CloneUtil.cloneCollection(collection, ArrayList.class, MetaDataVisitorNode.class);
+      return clone;
    }
 }

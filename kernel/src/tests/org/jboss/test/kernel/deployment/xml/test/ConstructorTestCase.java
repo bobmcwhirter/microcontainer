@@ -263,4 +263,9 @@ public class ConstructorTestCase extends AbstractXMLTest
    {
       super(name);
    }
+
+   protected ConstructorTestCase(String name, boolean useClone)
+   {
+      super(name, useClone);
+   }
 }

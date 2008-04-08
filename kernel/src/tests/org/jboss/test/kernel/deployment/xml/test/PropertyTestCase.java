@@ -204,4 +204,9 @@ public class PropertyTestCase extends AbstractXMLTest
    {
       super(name);
    }
+
+   protected PropertyTestCase(String name, boolean useClone)
+   {
+      super(name, useClone);
+   }
 }

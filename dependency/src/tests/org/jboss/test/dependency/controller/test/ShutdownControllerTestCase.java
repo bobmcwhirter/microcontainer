@@ -21,12 +21,12 @@
 */
 package org.jboss.test.dependency.controller.test;
 
-import java.util.List;
 import java.util.Set;
 
 import junit.framework.Test;
 import org.jboss.dependency.spi.ControllerContext;
 import org.jboss.dependency.spi.ControllerState;
+import org.jboss.dependency.spi.ControllerStateModel;
 
 /**
  * @author <a href="mailto:ales.justin@jboss.com">Ales Justin</a>
@@ -45,7 +45,7 @@ public class ShutdownControllerTestCase extends AbstractDependencyTest
 
    protected void validateEmptyContexts()
    {
-      List<ControllerState> states = controller.getStates();
+      ControllerStateModel states = controller.getStates();
       for(ControllerState state : states)
       {
          Set<ControllerContext> contexts = controller.getContextsByState(state);

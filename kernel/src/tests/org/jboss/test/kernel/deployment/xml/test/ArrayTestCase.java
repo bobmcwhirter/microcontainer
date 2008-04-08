@@ -175,4 +175,9 @@ public class ArrayTestCase extends AbstractXMLTest
    {
       super(name);
    }
+
+   protected ArrayTestCase(String name, boolean useClone)
+   {
+      super(name, useClone);
+   }
 }

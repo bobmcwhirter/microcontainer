@@ -76,4 +76,9 @@ public class ThisValueMetaData extends AbstractValueMetaData
 
       super.initialVisit(visitor);
    }
+
+   public ThisValueMetaData clone()
+   {
+      return (ThisValueMetaData)super.clone();
+   }
 }

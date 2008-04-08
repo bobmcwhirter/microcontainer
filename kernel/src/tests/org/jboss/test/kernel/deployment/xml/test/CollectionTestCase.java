@@ -175,4 +175,9 @@ public class CollectionTestCase extends AbstractXMLTest
    {
       super(name);
    }
+
+   protected CollectionTestCase(String name, boolean useClone)
+   {
+      super(name, useClone);
+   }
 }

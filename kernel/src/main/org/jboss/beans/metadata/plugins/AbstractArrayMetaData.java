@@ -132,4 +132,9 @@ public class AbstractArrayMetaData extends AbstractListMetaData
       }
       return expected.cast(result);
    }
+
+   public AbstractArrayMetaData clone()
+   {
+      return (AbstractArrayMetaData)super.clone();
+   }
 }

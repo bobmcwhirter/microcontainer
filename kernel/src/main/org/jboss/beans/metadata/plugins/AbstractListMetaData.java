@@ -118,4 +118,9 @@ public class AbstractListMetaData extends AbstractCollectionMetaData
    {
       return collection.subList(fromIndex, toIndex);
    }
+
+   public AbstractListMetaData clone()
+   {
+      return (AbstractListMetaData)super.clone();
+   }
 }

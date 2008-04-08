@@ -200,12 +200,9 @@ public class AbstractDemandMetaData extends JBossObject
        */
       public DemandDependencyItem(Object name)
       {
-         super(name, getDemand(), whenRequired, null);
+         super(name, null, whenRequired, null);
          if (getTransformer() != null)
-         {
             matcher = MatcherFactory.getInstance().createMatcher(getTransformer(), getDemand());
-            setIDependOn(matcher);
-         }
       }
 
       /**
@@ -260,5 +257,10 @@ public class AbstractDemandMetaData extends JBossObject
          builder.append("Demands '").append(getDemandObject()).append("'");
          return builder.toString();
       }
+   }
+
+   public AbstractDemandMetaData clone()
+   {
+      return (AbstractDemandMetaData)super.clone();
    }
 }

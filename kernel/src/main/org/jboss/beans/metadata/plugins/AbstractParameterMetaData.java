@@ -296,4 +296,12 @@ public class AbstractParameterMetaData extends AbstractFeatureMetaData
    {
       buffer.append(type);
    }
+
+   public AbstractParameterMetaData clone()
+   {
+      AbstractParameterMetaData clone = (AbstractParameterMetaData)super.clone();
+      doClone(clone);
+      clone.setValue(CloneUtil.cloneObject(value, ValueMetaData.class));
+      return clone;
+   }
 }

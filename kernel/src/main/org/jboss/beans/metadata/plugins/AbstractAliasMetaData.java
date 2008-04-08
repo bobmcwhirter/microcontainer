@@ -105,4 +105,9 @@ public class AbstractAliasMetaData extends JBossObject
       // this is what we probably want? - never saw duplicate annotation on a bean/prop/...
       return alias.equals(amd.alias);
    }
+
+   public AbstractAliasMetaData clone()
+   {
+      return (AbstractAliasMetaData)super.clone();
+   }
 }

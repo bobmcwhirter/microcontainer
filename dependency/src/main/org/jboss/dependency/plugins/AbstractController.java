@@ -29,6 +29,7 @@ import java.util.LinkedHashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
+import java.util.Iterator;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.CopyOnWriteArrayList;
 import java.util.concurrent.CopyOnWriteArraySet;
@@ -42,6 +43,7 @@ import org.jboss.dependency.spi.ControllerContext;
 import org.jboss.dependency.spi.ControllerContextActions;
 import org.jboss.dependency.spi.ControllerMode;
 import org.jboss.dependency.spi.ControllerState;
+import org.jboss.dependency.spi.ControllerStateModel;
 import org.jboss.dependency.spi.DependencyInfo;
 import org.jboss.dependency.spi.DependencyItem;
 import org.jboss.dependency.spi.LifecycleCallbackItem;
@@ -52,9 +54,10 @@ import org.jboss.util.JBossStringBuilder;
  * Abstract controller.
  *
  * @author <a href="adrian@jboss.com">Adrian Brock</a>
+ * @author <a href="ales.justin@jboss.com">Ales Justin</a>
  * @version $Revision$
  */
-public class AbstractController extends JBossObject implements Controller
+public class AbstractController extends JBossObject implements Controller, ControllerStateModel
 {
    /** The lock */
    private ReentrantReadWriteLock lock = new ReentrantReadWriteLock();
@@ -196,10 +199,7 @@ public class AbstractController extends JBossObject implements Controller
          }
          else
          {
-            int index = states.indexOf(before);
-            if (index == -1)
-               throw new IllegalStateException(before + " is not a state in the controller.");
-            states.add(index, state);
+            states.add(getStateIndex(before), state);
          }
 
          Set<ControllerContext> contexts =  new CopyOnWriteArraySet<ControllerContext>();
@@ -382,14 +382,9 @@ public class AbstractController extends JBossObject implements Controller
       try
       {
          ControllerContext result = getRegisteredControllerContext(name, false);
-         if (result != null && state != null)
+         if (result != null && state != null && isBeforeState(result.getState(), state))
          {
-            int required = states.indexOf(state);
-            if (required == -1)
-               throw new IllegalArgumentException("Unknown state " + state + " states=" + states);
-            int current = states.indexOf(result.getState());
-            if (current < required)
-               return null;
+            return null;
          }
          return result;
       }
@@ -423,9 +418,9 @@ public class AbstractController extends JBossObject implements Controller
       }
    }
 
-   public List<ControllerState> getStates()
+   public ControllerStateModel getStates()
    {
-      return states;
+      return this;
    }
 
    public Set<ControllerContext> getContextsByState(ControllerState state)
@@ -1006,7 +1001,6 @@ public class AbstractController extends JBossObject implements Controller
       Object name = context.getName();
 
       ControllerState fromState = context.getState();
-      int currentIndex = states.indexOf(fromState);
 
       if (trace)
          log.trace("Uninstalling " + name + " from " + fromState.getStateString());
@@ -1036,9 +1030,7 @@ public class AbstractController extends JBossObject implements Controller
                         ControllerState whenRequired = item.getWhenRequired();
                         if (whenRequired == null)
                            whenRequired = ControllerState.NOT_INSTALLED;
-                        int proposed = states.indexOf(whenRequired);
-                        int actual = states.indexOf(dependent.getState());
-                        if (proposed <= actual)
+                        if (isBeforeState(dependent.getState(), whenRequired) == false)
                            uninstallContext(dependent, whenRequired, trace);
                      }
                   }
@@ -1053,7 +1045,7 @@ public class AbstractController extends JBossObject implements Controller
          return;
       
       // Calculate the previous state
-      currentIndex = states.indexOf(fromState);
+      int currentIndex = states.indexOf(fromState);
       int toIndex = currentIndex - 1;
       if (toIndex < 0)
       {
@@ -1311,8 +1303,7 @@ public class AbstractController extends JBossObject implements Controller
     */
    protected void handleUninstallLifecycleCallbacks(ControllerContext context, ControllerState state) throws Throwable
    {
-      int index = states.indexOf(state);
-      ControllerState oldState = states.get(index + 1);
+      ControllerState oldState = getNextState(state);
       handleLifecycleCallbacks(context, oldState, false);
    }
 
@@ -1432,12 +1423,7 @@ public class AbstractController extends JBossObject implements Controller
       if (ControllerMode.DISABLED.equals(mode))
          return false;
 
-      ControllerState fromState = context.getState();
-      int fromIndex = states.indexOf(fromState);
-      ControllerState requiredState = context.getRequiredState();
-      int requiredIndex = states.indexOf(requiredState);
-
-      return fromIndex < requiredIndex;
+      return isBeforeState(context.getState(), context.getRequiredState());
    }
 
    /**
@@ -1740,5 +1726,83 @@ public class AbstractController extends JBossObject implements Controller
             unlockWrite();
          }
       }
+   }
+
+   public ControllerState getPreviousState(ControllerState state)
+   {
+      return getState(getStateIndex(state) - 1);
+   }
+
+   public ControllerState getNextState(ControllerState state)
+   {
+      return getState(getStateIndex(state) + 1);
+   }
+
+   public boolean isBeforeState(ControllerState state, ControllerState reference)
+   {
+      int stateIndex = getStateIndex(state, true);
+      int referenceIndex = getStateIndex(reference, true);
+      return stateIndex < referenceIndex;
+   }
+
+   public boolean isAfterState(ControllerState state, ControllerState reference)
+   {
+      int stateIndex = getStateIndex(state, true);
+      int referenceIndex = getStateIndex(reference, true);
+      return stateIndex > referenceIndex;
+   }
+
+   public Iterator<ControllerState> iterator()
+   {
+      return states.iterator();
+   }
+
+   /**
+    * Get the state index.
+    *
+    * @param state the state
+    * @return state index
+    */
+   protected int getStateIndex(ControllerState state)
+   {
+      return getStateIndex(state, false);
+   }
+
+   /**
+    * Get the state index.
+    *
+    * You have allow not found flag in case
+    * error state is passed in, which is legal.
+    *
+    * @param state the state
+    * @param allowNotFound allow not found state
+    * @return state index
+    */
+   protected int getStateIndex(ControllerState state, boolean allowNotFound)
+   {
+      if (state == null)
+         throw new IllegalArgumentException("Null state");
+
+      int stateIndex = states.indexOf(state);
+      if (stateIndex < 0 && allowNotFound == false)
+         throw new IllegalArgumentException("No such state " + state + " in states " + states);
+
+      return stateIndex;
+   }
+
+   /**
+    * Get the controller state form index.
+    *
+    * @param index the state index
+    * @return controller state
+    */
+   protected ControllerState getState(int index)
+   {
+      if (index < 0)
+         return null;
+      else if (index >= states.size())
+         return null;
+      else
+         return states.get(index);
    }
 }

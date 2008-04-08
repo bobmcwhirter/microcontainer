@@ -214,4 +214,9 @@ public class MapTestCase extends AbstractXMLTest
    {
       super(name);
    }
+
+   protected MapTestCase(String name, boolean useClone)
+   {
+      super(name, useClone);
+   }
 }

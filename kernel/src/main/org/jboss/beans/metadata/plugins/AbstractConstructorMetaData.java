@@ -24,6 +24,7 @@ package org.jboss.beans.metadata.plugins;
 import java.io.Serializable;
 import java.util.List;
 import java.util.Set;
+import java.util.ArrayList;
 
 import javax.xml.bind.annotation.XmlType;
 import javax.xml.bind.annotation.XmlElement;
@@ -304,5 +305,21 @@ public class AbstractConstructorMetaData extends AbstractFeatureMetaData
       if (factoryMethod != null)
          buffer.append(" factoryMethod=").append(factoryMethod);
       super.toString(buffer);
+   }
+
+   public AbstractConstructorMetaData clone()
+   {
+      AbstractConstructorMetaData clone = (AbstractConstructorMetaData)super.clone();
+      doClone(clone);
+      return clone;
+   }
+
+   @SuppressWarnings("unchecked")
+   protected void doClone(AbstractConstructorMetaData clone)
+   {
+      super.doClone(clone);
+      clone.setFactory(CloneUtil.cloneObject(factory, ValueMetaData.class));
+      clone.setValue(CloneUtil.cloneObject(value, ValueMetaData.class));
+      clone.setParameters(CloneUtil.cloneCollection(parameters, ArrayList.class, ParameterMetaData.class));
    }
 }

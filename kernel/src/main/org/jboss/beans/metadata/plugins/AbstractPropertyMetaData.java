@@ -320,4 +320,12 @@ public class AbstractPropertyMetaData extends AbstractFeatureMetaData
    {
       buffer.append(name);
    }
+
+   public AbstractPropertyMetaData clone()
+   {
+      AbstractPropertyMetaData clone = (AbstractPropertyMetaData)super.clone();
+      doClone(clone);
+      clone.setValue(CloneUtil.cloneObject(value, ValueMetaData.class));
+      return clone;
+   }
 }

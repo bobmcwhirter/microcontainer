@@ -21,6 +21,7 @@
 */
 package org.jboss.dependency.plugins;
 
+import java.util.Collections;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
@@ -133,23 +134,30 @@ public class AbstractDependencyInfo extends JBossObject implements DependencyInf
    public boolean resolveDependencies(Controller controller, ControllerState state)
    {
       boolean resolved = true;
-      if (unresolved.isEmpty() == false)
+      Set<DependencyItem> items = getUnresolvedDependencies(state);
+      if (items.isEmpty() == false)
       {
-         for (DependencyItem item : unresolved)
+         for (DependencyItem item : items)
          {
-            if (state.equals(item.getWhenRequired()) && item.resolve(controller) == false)
-            {
+            if (item.resolve(controller) == false)
                resolved = false;
-               break;
-            }
          }
       }
       return resolved;
    }
 
-   public Set<DependencyItem> getUnresolvedDependencies()
+   public Set<DependencyItem> getUnresolvedDependencies(ControllerState state)
    {
-      return unresolved;
+      if (unresolved.isEmpty())
+         return Collections.emptySet();
+
+      Set<DependencyItem> result = new HashSet<DependencyItem>();
+      for (DependencyItem item : unresolved)
+      {
+         if (state == null || state.equals(item.getWhenRequired()))
+            result.add(item);
+      }
+      return result;
    }
 
    public <T> void addInstallItem(CallbackItem<T> callbackItem)

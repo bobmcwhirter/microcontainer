@@ -74,4 +74,9 @@ public class ClassLoaderTestCase extends AbstractXMLTest
    {
       super(name);
    }
+
+   protected ClassLoaderTestCase(String name, boolean useClone)
+   {
+      super(name, useClone);
+   }
 }

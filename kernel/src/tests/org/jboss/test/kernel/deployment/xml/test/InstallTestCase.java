@@ -159,4 +159,9 @@ public class InstallTestCase extends AbstractXMLTest
    {
       super(name);
    }
+
+   protected InstallTestCase(String name, boolean useClone)
+   {
+      super(name, useClone);
+   }
 }

@@ -126,4 +126,9 @@ public class ValueFactoryTestCase extends AbstractXMLTest
    {
       super(name);
    }
+
+   protected ValueFactoryTestCase(String name, boolean useClone)
+   {
+      super(name, useClone);
+   }
 }

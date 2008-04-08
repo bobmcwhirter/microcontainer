@@ -164,4 +164,9 @@ public class StringValueMetaData extends AbstractTypeMetaData
    {
       this.trim = trim;
    }
+
+   public StringValueMetaData clone()
+   {
+      return (StringValueMetaData)super.clone();
+   }
 }

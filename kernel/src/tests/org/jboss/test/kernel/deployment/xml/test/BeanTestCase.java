@@ -897,4 +897,9 @@ public class BeanTestCase extends AbstractXMLTest
    {
       super(name);
    }
+
+   protected BeanTestCase(String name, boolean useClone)
+   {
+      super(name, useClone);
+   }
 }

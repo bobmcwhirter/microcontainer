@@ -42,6 +42,11 @@ public class CallbackTestCase extends AbstractXMLTest
       super(name);
    }
 
+   protected CallbackTestCase(String name, boolean useClone)
+   {
+      super(name, useClone);
+   }
+
    public static Test suite()
    {
       return suite(CallbackTestCase.class);

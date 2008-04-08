@@ -167,4 +167,9 @@ public class AbstractInstallMetaData extends AbstractLifecycleMetaData
          super(name, bean, state, dependentState);
       }
    }
+
+   public AbstractInstallMetaData clone()
+   {
+      return (AbstractInstallMetaData)super.clone();
+   }
 }

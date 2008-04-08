@@ -21,7 +21,6 @@
 */
 package org.jboss.dependency.spi;
 
-import java.util.List;
 import java.util.Set;
 
 import org.jboss.util.JBossInterface;
@@ -121,11 +120,11 @@ public interface Controller extends JBossInterface
    void addState(ControllerState state, ControllerState before);
    
    /**
-    * Get the states.
+    * Get the states model.
     * 
     * @return the states in order
     */
-   List<ControllerState> getStates();
+   ControllerStateModel getStates();
 
    /**
     * Get the contexts in certain state

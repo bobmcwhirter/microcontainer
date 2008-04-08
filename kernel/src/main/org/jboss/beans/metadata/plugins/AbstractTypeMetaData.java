@@ -379,5 +379,4 @@ public abstract class AbstractTypeMetaData extends AbstractValueMetaData
       ClassLoader cl = Configurator.getClassLoader(context.getBeanMetaData());
       return getClassInfo(classType, cl);
    }
-
 }

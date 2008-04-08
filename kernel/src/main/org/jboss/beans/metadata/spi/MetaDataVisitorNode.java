@@ -27,7 +27,7 @@ import java.util.Iterator;
  * A metadata vistor node.
  * 
  * @author <a href="adrian@jboss.com">Adrian Brock</a>
- * @version $Revision$
+ * @author <a href="ales.justin@jboss.com">Ales Justin</a>
  */
 public interface MetaDataVisitorNode
 {
@@ -51,4 +51,11 @@ public interface MetaDataVisitorNode
     * @return Iterator<MetaDataVisitorNode> or null if there aren't any
     */
    public Iterator<? extends MetaDataVisitorNode> getChildren();
+
+   /**
+    * Clone the object
+    *
+    * @return a clone of the object
+    */
+   Object clone();
 }

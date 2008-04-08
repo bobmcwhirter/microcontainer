@@ -48,4 +48,11 @@ public class InstallCallbackMetaData extends AbstractCallbackMetaData
    {
       visitor.addInstallCallback(callback);
    }
+
+   public InstallCallbackMetaData clone()
+   {
+      InstallCallbackMetaData clone = (InstallCallbackMetaData)super.clone();
+      doClone(clone);
+      return clone;
+   }
 }

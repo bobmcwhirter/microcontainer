@@ -21,20 +21,20 @@
 */
 package org.jboss.beans.metadata.plugins;
 
-import java.util.List;
 import javax.xml.bind.annotation.XmlAttribute;
 import javax.xml.bind.annotation.XmlTransient;
 import javax.xml.bind.annotation.XmlType;
 
 import org.jboss.beans.metadata.api.model.AutowireType;
+import org.jboss.beans.metadata.api.model.FromContext;
+import org.jboss.beans.metadata.api.model.InjectOption;
 import org.jboss.beans.metadata.spi.MetaDataVisitor;
 import org.jboss.beans.metadata.spi.MetaDataVisitorNode;
-import org.jboss.beans.metadata.api.model.InjectOption;
-import org.jboss.beans.metadata.api.model.FromContext;
 import org.jboss.dependency.plugins.AttributeCallbackItem;
 import org.jboss.dependency.spi.Controller;
 import org.jboss.dependency.spi.ControllerContext;
 import org.jboss.dependency.spi.ControllerState;
+import org.jboss.dependency.spi.ControllerStateModel;
 import org.jboss.dependency.spi.DependencyItem;
 import org.jboss.kernel.plugins.dependency.ClassContextDependencyItem;
 import org.jboss.kernel.spi.dependency.KernelControllerContext;
@@ -217,19 +217,17 @@ public class AbstractInjectionValueMetaData extends AbstractDependencyValueMetaD
 
             KernelControllerContext kcc = visitor.getControllerContext();
             Controller controller = kcc.getController();
-            List<ControllerState> states = controller.getStates();
-            int whenIndex = states.indexOf(when);
+            ControllerStateModel states = controller.getStates();
 
             if (dependentState == null)
             {
-               dependentState = states.get(whenIndex - 1);
+               dependentState = states.getPreviousState(when);
             }
             else
             {
-               int dependentIndex = states.indexOf(dependentState);
-               if (whenIndex <= dependentIndex)
+               if (states.isBeforeState(when, dependentState))
                {
-                  dependentState = states.get(whenIndex - 1);
+                  dependentState = states.getPreviousState(when);
                   if (log.isTraceEnabled())
                     log.trace("Cannot set demand state to more/equal than when required state, changing it to : " + dependentState);
                }
@@ -346,4 +344,8 @@ public class AbstractInjectionValueMetaData extends AbstractDependencyValueMetaD
          buffer.append(" fromContext=").append(fromContext);
    }
 
+   public AbstractInjectionValueMetaData clone()
+   {
+      return (AbstractInjectionValueMetaData)super.clone();
+   }
 }

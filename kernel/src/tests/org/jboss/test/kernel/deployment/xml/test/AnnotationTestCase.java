@@ -97,4 +97,9 @@ public class AnnotationTestCase extends AbstractXMLTest
    {
       super(name);
    }
+
+   protected AnnotationTestCase(String name, boolean useClone)
+   {
+      super(name, useClone);
+   }
 }

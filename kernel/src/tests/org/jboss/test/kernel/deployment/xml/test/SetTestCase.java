@@ -175,4 +175,9 @@ public class SetTestCase extends AbstractXMLTest
    {
       super(name);
    }
+
+   protected SetTestCase(String name, boolean useClone)
+   {
+      super(name, useClone);
+   }
 }

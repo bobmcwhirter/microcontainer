@@ -247,4 +247,9 @@ public class AbstractDependencyValueMetaData extends AbstractValueMetaData
       if (dependentState != null)
          buffer.append(" dependentState=").append(dependentState.getStateString());
    }
+
+   public AbstractDependencyValueMetaData clone()
+   {
+      return (AbstractDependencyValueMetaData)super.clone();
+   }
 }

@@ -44,11 +44,11 @@ import org.jboss.beans.metadata.spi.CallbackMetaData;
 import org.jboss.beans.metadata.spi.DemandMetaData;
 import org.jboss.beans.metadata.spi.DependencyMetaData;
 import org.jboss.beans.metadata.spi.InstallMetaData;
+import org.jboss.beans.metadata.spi.LazyMetaData;
 import org.jboss.beans.metadata.spi.ParameterMetaData;
 import org.jboss.beans.metadata.spi.PropertyMetaData;
 import org.jboss.beans.metadata.spi.SupplyMetaData;
 import org.jboss.beans.metadata.spi.ValueMetaData;
-import org.jboss.beans.metadata.spi.LazyMetaData;
 import org.jboss.beans.metadata.spi.factory.GenericBeanFactoryMetaData;
 import org.jboss.kernel.plugins.deployment.AbstractKernelDeployment;
 import org.jboss.test.AbstractTestCaseWithSetup;
@@ -59,12 +59,14 @@ import org.jboss.xb.binding.JBossXBException;
  * AbstractXMLTest.
  * 
  * @author <a href="adrian@jboss.com">Adrian Brock</a>
+ * @author <a href="ales.justin@jboss.com">Ales Justin</a>
  * @version $Revision$
  */
 public class AbstractXMLTest extends AbstractTestCaseWithSetup
 {
    protected String rootName = getRootName();
-   
+   protected boolean useClone;
+
    /**
     * Create a new AbstractXMLTest.
     * 
@@ -72,7 +74,19 @@ public class AbstractXMLTest extends AbstractTestCaseWithSetup
     */
    public AbstractXMLTest(String name)
    {
+      this(name, false);
+   }
+
+   /**
+    * Create a new AbstractXMLTest.
+    *
+    * @param name the name of the test
+    * @param useClone use clone when testing
+    */
+   public AbstractXMLTest(String name, boolean useClone)
+   {
       super(name);
+      this.useClone = useClone;
    }
 
    /**
@@ -96,7 +110,25 @@ public class AbstractXMLTest extends AbstractTestCaseWithSetup
     */
    protected AbstractBeanMetaData unmarshalBean(String name) throws Exception
    {
-      return unmarshal(name, AbstractBeanMetaData.class);
+      return unmarshalBean(name, useClone);
+   }
+
+   /**
+    * Unmarshal a bean
+    *
+    * @param name the name
+    * @param useClone should we return the clone
+    * @return the unmarshalled object
+    * @throws Exception for any error
+    */
+   protected AbstractBeanMetaData unmarshalBean(String name, boolean useClone) throws Exception
+   {
+      AbstractBeanMetaData bmd = unmarshal(name, AbstractBeanMetaData.class);
+
+      if (useClone)
+         return bmd.clone();
+
+      return bmd;
    }
 
    /**
@@ -127,9 +159,8 @@ public class AbstractXMLTest extends AbstractTestCaseWithSetup
       if (object == null)
          fail("No object from " + name);
 
-      Serializable serializable = assertInstanceOf(object, Serializable.class, false);
-
       // Test that serialize/deserialize works accurately reproduces the object
+      Serializable serializable = assertInstanceOf(object, Serializable.class, false);
       object = deserialize(serialize(serializable));
 
       assertTrue("Object '" + object + "' cannot be assigned to " + expected.getName(), expected.isAssignableFrom(object.getClass()));

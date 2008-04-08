@@ -79,4 +79,9 @@ public class DemandTestCase extends AbstractXMLTest
    {
       super(name);
    }
+
+   protected DemandTestCase(String name, boolean useClone)
+   {
+      super(name, useClone);
+   }
 }

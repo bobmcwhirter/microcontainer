@@ -286,4 +286,11 @@ public class AbstractMapMetaData extends AbstractTypeMetaData
 
       return configurator.getClassInfo(valueType, cl);
    }
+
+   public AbstractMapMetaData clone()
+   {
+      AbstractMapMetaData clone = (AbstractMapMetaData)super.clone();
+      clone.map = CloneUtil.cloneMap(map, MetaDataVisitorNode.class, MetaDataVisitorNode.class);
+      return clone;
+   }
 }

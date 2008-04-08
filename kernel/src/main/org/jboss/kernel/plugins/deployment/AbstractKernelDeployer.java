@@ -33,6 +33,7 @@ import org.jboss.beans.metadata.spi.BeanMetaData;
 import org.jboss.dependency.spi.ControllerContext;
 import org.jboss.dependency.spi.ControllerMode;
 import org.jboss.dependency.spi.ControllerState;
+import org.jboss.dependency.spi.ControllerStateModel;
 import org.jboss.dependency.spi.DependencyInfo;
 import org.jboss.dependency.spi.DependencyItem;
 import org.jboss.kernel.Kernel;
@@ -193,7 +194,6 @@ public class AbstractKernelDeployer
     */
    protected void internalValidate(Set<ControllerContext> notInstalled) throws Throwable
    {
-      List<ControllerState> states = controller.getStates();
       if (notInstalled.isEmpty() == false)
       {
          for (Iterator<ControllerContext> i = notInstalled.iterator(); i.hasNext();)
@@ -255,9 +255,8 @@ public class AbstractKernelDeployer
                         boolean print = true;
                         if (otherState != null && otherState.equals(ControllerState.ERROR) == false)
                         {
-                           int index1 = states.indexOf(dependentState);
-                           int index2 = states.indexOf(otherState);
-                           if (index2 >= index1)
+                           ControllerStateModel states = controller.getStates();
+                           if (states.isBeforeState(otherState, dependentState) == false)
                               print = false;
                         }
 

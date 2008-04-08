@@ -53,10 +53,8 @@ public class AbstractAnnotationMetaData extends JBossObject
    private static final long serialVersionUID = 2L;
 
    public String annotation;
-
-   protected Annotation ann;
-
-   protected boolean replace = true;
+   private Annotation ann;
+   private boolean replace = true;
 
    /**
     * Create a new annotation meta data
@@ -165,5 +163,10 @@ public class AbstractAnnotationMetaData extends JBossObject
       AbstractAnnotationMetaData amd = (AbstractAnnotationMetaData)object;
       // this is what we probably want? - never saw duplicate annotation on a bean/prop/...
       return (replace == amd.replace) && annotation.equals(amd.annotation);
+   }
+
+   public AbstractAnnotationMetaData clone()
+   {
+      return (AbstractAnnotationMetaData)super.clone();
    }
 }

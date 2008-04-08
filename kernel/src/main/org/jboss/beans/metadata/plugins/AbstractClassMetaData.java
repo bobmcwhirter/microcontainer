@@ -55,4 +55,9 @@ public class AbstractClassMetaData extends JBossObject implements ClassMetaData,
    {
       this.className = className;
    }
+
+   public AbstractClassMetaData clone()
+   {
+      return (AbstractClassMetaData)super.clone();
+   }
 }

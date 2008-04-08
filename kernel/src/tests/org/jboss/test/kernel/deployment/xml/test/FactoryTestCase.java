@@ -92,4 +92,9 @@ public class FactoryTestCase extends AbstractXMLTest
    {
       super(name);
    }
+
+   protected FactoryTestCase(String name, boolean useClone)
+   {
+      super(name, useClone);
+   }
 }

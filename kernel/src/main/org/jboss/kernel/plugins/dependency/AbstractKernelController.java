@@ -104,6 +104,7 @@ public class AbstractKernelController extends ScopedController implements Kernel
          list = matchSupplies((Matcher)name);
       else
          list = suppliers.get(name);
+
       if (list != null && list.isEmpty() == false)
          return list.get(0);
       else if (name instanceof Class)
@@ -292,12 +293,9 @@ public class AbstractKernelController extends ScopedController implements Kernel
          if (contexts != null && contexts.isEmpty() == false)
          {
             Set<KernelControllerContext> kccs = new HashSet<KernelControllerContext>();
-            List<ControllerState> states = getStates();
-            int stateIndex = states.indexOf(state);
             for(KernelControllerContext context : contexts)
             {
-               int contextStateIndex = states.indexOf(context.getState());
-               if (contextStateIndex >= stateIndex)
+               if (isBeforeState(context.getState(), state) == false)
                   kccs.add(context);
             }
             return Collections.unmodifiableSet(kccs);

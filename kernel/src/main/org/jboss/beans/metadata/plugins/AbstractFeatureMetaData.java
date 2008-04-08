@@ -22,11 +22,13 @@
 package org.jboss.beans.metadata.plugins;
 
 import java.io.Serializable;
+import java.util.HashSet;
 import java.util.Iterator;
 import java.util.Set;
 import javax.xml.bind.annotation.XmlElement;
 import javax.xml.bind.annotation.XmlTransient;
 
+import static org.jboss.beans.metadata.plugins.CloneUtil.cloneCollection;
 import org.jboss.beans.metadata.spi.AnnotationMetaData;
 import org.jboss.beans.metadata.spi.FeatureMetaData;
 import org.jboss.beans.metadata.spi.MetaDataVisitor;
@@ -149,5 +151,11 @@ public abstract class AbstractFeatureMetaData extends JBossObject
    public void toShortString(JBossStringBuilder buffer)
    {
       buffer.append(description);
+   }
+
+   @SuppressWarnings("unchecked")
+   protected void doClone(AbstractFeatureMetaData clone)
+   {
+      clone.setAnnotations(cloneCollection(annotations, HashSet.class, AnnotationMetaData.class));
    }
 }

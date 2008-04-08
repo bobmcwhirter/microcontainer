@@ -50,6 +50,7 @@ import org.jboss.beans.metadata.spi.MetaDataVisitor;
 import org.jboss.beans.metadata.spi.MetaDataVisitorNode;
 import org.jboss.beans.metadata.spi.PropertyMetaData;
 import org.jboss.beans.metadata.spi.SupplyMetaData;
+import static org.jboss.beans.metadata.plugins.CloneUtil.*;
 import org.jboss.dependency.plugins.AbstractDependencyItem;
 import org.jboss.dependency.spi.Controller;
 import org.jboss.dependency.spi.ControllerContext;
@@ -192,15 +193,30 @@ public class AbstractBeanMetaData extends AbstractFeatureMetaData
       List<BeanMetaData> nestedBeans = findNestedBeans();
       if (nestedBeans.isEmpty())
       {
-         return Collections.singletonList((BeanMetaData)this);
+         return Collections.singletonList(prepareThis());
       }
       else
       {
-         nestedBeans.add(this);
+         nestedBeans.add(prepareThis());
          return nestedBeans;
       }
    }
 
+   /**
+    * Prepare / check if this needs a name, etc.
+    *
+    * @return this instance or a clone
+    */
+   protected BeanMetaData prepareThis()
+   {
+      return this;
+   }
+
+   /**
+    * Fins the nested beans.
+    *
+    * @return list of nested beans
+    */
    protected List<BeanMetaData> findNestedBeans()
    {
       List<BeanMetaData> allBeans = new ArrayList<BeanMetaData>();
@@ -208,6 +224,12 @@ public class AbstractBeanMetaData extends AbstractFeatureMetaData
       return allBeans;
    }
 
+   /**
+    * Add all nested beans to the list.
+    *
+    * @param current the current meta data visitor node child
+    * @param list the nested beans list
+    */
    protected void addBeans(MetaDataVisitorNode current, List<BeanMetaData> list)
    {
       for(Iterator<? extends MetaDataVisitorNode> children = current.getChildren(); children != null && children.hasNext();)
@@ -222,7 +244,7 @@ public class AbstractBeanMetaData extends AbstractFeatureMetaData
             addBeans(next, list);
             if (next instanceof BeanMetaData)
             {
-               list.add((BeanMetaData) current);
+               list.add((BeanMetaData) next);
             }
          }
       }
@@ -511,7 +533,8 @@ public class AbstractBeanMetaData extends AbstractFeatureMetaData
    @XmlElement(name="create", type=AbstractLifecycleMetaData.class)
    public void setCreate(LifecycleMetaData lifecycle)
    {
-      lifecycle.setState(ControllerState.CREATE);
+      if (lifecycle != null)
+         lifecycle.setState(ControllerState.CREATE);
       this.create = lifecycle;
    }
 
@@ -528,7 +551,8 @@ public class AbstractBeanMetaData extends AbstractFeatureMetaData
    @XmlElement(name="start", type=AbstractLifecycleMetaData.class)
    public void setStart(LifecycleMetaData lifecycle)
    {
-      lifecycle.setState(ControllerState.START);
+      if (lifecycle != null)
+         lifecycle.setState(ControllerState.START);
       this.start = lifecycle;
    }
 
@@ -545,7 +569,8 @@ public class AbstractBeanMetaData extends AbstractFeatureMetaData
    @XmlElement(name="stop", type=AbstractLifecycleMetaData.class)
    public void setStop(LifecycleMetaData lifecycle)
    {
-      lifecycle.setState(ControllerState.START);
+      if (lifecycle != null)
+         lifecycle.setState(ControllerState.START);
       this.stop = lifecycle;
    }
 
@@ -562,7 +587,8 @@ public class AbstractBeanMetaData extends AbstractFeatureMetaData
    @XmlElement(name="destroy", type=AbstractLifecycleMetaData.class)
    public void setDestroy(LifecycleMetaData lifecycle)
    {
-      lifecycle.setState(ControllerState.CREATE);
+      if (lifecycle != null)
+         lifecycle.setState(ControllerState.CREATE);
       this.destroy = lifecycle;
    }
 
@@ -809,5 +835,35 @@ public class AbstractBeanMetaData extends AbstractFeatureMetaData
       buffer.append(bean);
       buffer.append('/');
       buffer.append(name);
+   }
+
+   public AbstractBeanMetaData clone()
+   {
+      AbstractBeanMetaData clone = (AbstractBeanMetaData)super.clone();
+      doClone(clone);
+      return clone;
+   }
+
+   @SuppressWarnings("unchecked")
+   protected void doClone(AbstractBeanMetaData clone)
+   {
+      super.doClone(clone);
+      if (aliases != null)
+         clone.setAliases(new HashSet<Object>(aliases));
+      clone.setAliasMetaData(cloneCollection(aliasMetaData, HashSet.class, AliasMetaData.class));
+      clone.setClassLoader(cloneObject(classLoader, ClassLoaderMetaData.class));
+      clone.setConstructor(cloneObject(constructor, ConstructorMetaData.class));
+      clone.setCreate(cloneObject(create, LifecycleMetaData.class));
+      clone.setDemands(cloneCollection(demands, HashSet.class, DemandMetaData.class));
+      clone.setDepends(cloneCollection(depends, HashSet.class, DependencyMetaData.class));
+      clone.setDestroy(cloneObject(destroy, LifecycleMetaData.class));
+      clone.setInstallCallbacks(cloneCollection(installCallbacks, ArrayList.class, CallbackMetaData.class));
+      clone.setInstalls(cloneCollection(installs, ArrayList.class, InstallMetaData.class));
+      clone.setProperties(cloneCollection(properties, HashSet.class, PropertyMetaData.class));
+      clone.setStart(cloneObject(start, LifecycleMetaData.class));
+      clone.setStop(cloneObject(stop, LifecycleMetaData.class));
+      clone.setSupplies(cloneCollection(supplies, HashSet.class, SupplyMetaData.class));
+      clone.setUninstallCallbacks(cloneCollection(uninstallCallbacks, ArrayList.class, CallbackMetaData.class));
+      clone.setUninstalls(cloneCollection(uninstalls, ArrayList.class, InstallMetaData.class));
    }
 }

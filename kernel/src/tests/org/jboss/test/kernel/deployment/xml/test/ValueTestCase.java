@@ -82,4 +82,9 @@ public class ValueTestCase extends AbstractXMLTest
    {
       super(name);
    }
+
+   protected ValueTestCase(String name, boolean useClone)
+   {
+      super(name, useClone);
+   }
 }

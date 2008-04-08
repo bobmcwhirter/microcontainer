@@ -70,4 +70,9 @@ public class SupplyTestCase extends AbstractXMLTest
    {
       super(name);
    }
+
+   protected SupplyTestCase(String name, boolean useClone)
+   {
+      super(name, useClone);
+   }
 }

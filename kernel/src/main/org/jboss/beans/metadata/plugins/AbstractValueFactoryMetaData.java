@@ -355,4 +355,12 @@ public class AbstractValueFactoryMetaData extends AbstractValueMetaData implemen
       if (parameters != null && parameters.isEmpty() == false)
          buffer.append(" parameters=").append(parameters);
    }
+
+   @SuppressWarnings("unchecked")
+   public AbstractValueFactoryMetaData clone()
+   {
+      AbstractValueFactoryMetaData clone = (AbstractValueFactoryMetaData)super.clone();
+      clone.setParameters(CloneUtil.cloneCollection(parameters, ArrayList.class, ParameterMetaData.class));
+      return clone;
+   }
 }

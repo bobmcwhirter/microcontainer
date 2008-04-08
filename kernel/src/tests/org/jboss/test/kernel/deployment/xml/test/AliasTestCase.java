@@ -44,6 +44,11 @@ public class AliasTestCase extends AbstractXMLTest
       super(name);
    }
 
+   protected AliasTestCase(String name, boolean useClone)
+   {
+      super(name, useClone);
+   }
+
    public static Test suite()
    {
       return suite(AliasTestCase.class);
