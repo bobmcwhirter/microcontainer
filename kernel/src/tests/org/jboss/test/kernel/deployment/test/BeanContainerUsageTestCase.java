@@ -23,18 +23,13 @@ package org.jboss.test.kernel.deployment.test;
 
 import java.lang.reflect.Method;
 import java.net.URL;
-import java.util.ArrayList;
 import java.util.HashMap;
-import java.util.List;
 
 import junit.framework.Test;
-
-import org.jboss.beans.metadata.plugins.AbstractBeanMetaData;
-import org.jboss.beans.metadata.plugins.AbstractConstructorMetaData;
-import org.jboss.beans.metadata.plugins.AbstractValueMetaData;
 import org.jboss.beans.metadata.spi.factory.BeanFactory;
 import org.jboss.dependency.spi.ControllerMode;
 import org.jboss.dependency.spi.ControllerState;
+import org.jboss.dependency.spi.ControllerStateModel;
 import org.jboss.kernel.Kernel;
 import org.jboss.kernel.plugins.deployment.xml.BasicXMLDeployer;
 import org.jboss.kernel.spi.dependency.KernelController;
@@ -45,7 +40,6 @@ import org.jboss.test.kernel.deployment.support.container.BaseContext;
 import org.jboss.test.kernel.deployment.support.container.Bean1Type;
 import org.jboss.test.kernel.deployment.support.container.Bean2Type;
 import org.jboss.test.kernel.deployment.support.container.BeanContainer;
-import org.jboss.test.kernel.deployment.support.container.BeanContextFactory;
 import org.jboss.test.kernel.deployment.support.container.BeanPool;
 
 /**
@@ -214,7 +208,7 @@ public class BeanContainerUsageTestCase extends AbstractKernelTest
       if (context == null)
       {
          getLog().error("Bean not found " + name + " at state " + state);
-         List<ControllerState> states = controller.getStates();
+         ControllerStateModel states = controller.getStates();
          for(ControllerState s : states)
          {
             getLog().info(s+": "+controller.getContextsByState(s));
