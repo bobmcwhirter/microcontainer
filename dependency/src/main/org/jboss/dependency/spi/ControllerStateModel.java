@@ -33,6 +33,12 @@ public interface ControllerStateModel extends Iterable<ControllerState>
 {
    /**
     * Get the list iterator.
+    * 
+    * The list iterator cursor should be
+    * pointing to the last state.
+    * Since the usage of this list iterator
+    * is mostly to iterate over the states in
+    * reverted order.
     *
     * @return list iterator
     */
