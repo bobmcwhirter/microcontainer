@@ -43,8 +43,8 @@ public class NestedBeanHandler
 {
    private static Logger log = Logger.getLogger(NestedBeanHandler.class);
 
-   private BeanMetaData root;
-   private int counter = 1;
+   protected BeanMetaData root;
+   protected int counter = 1;
 
    public NestedBeanHandler(BeanMetaData root)
    {
