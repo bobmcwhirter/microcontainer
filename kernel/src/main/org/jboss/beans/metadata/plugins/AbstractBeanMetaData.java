@@ -23,9 +23,7 @@ package org.jboss.beans.metadata.plugins;
 
 import java.io.Serializable;
 import java.util.ArrayList;
-import java.util.Collections;
 import java.util.HashSet;
-import java.util.Iterator;
 import java.util.List;
 import java.util.Set;
 import javax.xml.bind.annotation.XmlAttribute;
@@ -36,6 +34,8 @@ import javax.xml.bind.annotation.XmlType;
 
 import org.jboss.beans.info.spi.BeanAccessMode;
 import org.jboss.beans.metadata.api.model.AutowireType;
+import static org.jboss.beans.metadata.plugins.CloneUtil.cloneCollection;
+import static org.jboss.beans.metadata.plugins.CloneUtil.cloneObject;
 import org.jboss.beans.metadata.spi.AliasMetaData;
 import org.jboss.beans.metadata.spi.BeanMetaData;
 import org.jboss.beans.metadata.spi.BeanMetaDataFactory;
@@ -50,7 +50,6 @@ import org.jboss.beans.metadata.spi.MetaDataVisitor;
 import org.jboss.beans.metadata.spi.MetaDataVisitorNode;
 import org.jboss.beans.metadata.spi.PropertyMetaData;
 import org.jboss.beans.metadata.spi.SupplyMetaData;
-import static org.jboss.beans.metadata.plugins.CloneUtil.*;
 import org.jboss.dependency.plugins.AbstractDependencyItem;
 import org.jboss.dependency.spi.Controller;
 import org.jboss.dependency.spi.ControllerContext;
@@ -190,64 +189,19 @@ public class AbstractBeanMetaData extends AbstractFeatureMetaData
 
    public List<BeanMetaData> getBeans()
    {
-      List<BeanMetaData> nestedBeans = findNestedBeans();
-      if (nestedBeans.isEmpty())
-      {
-         return Collections.singletonList(prepareThis());
-      }
-      else
-      {
-         nestedBeans.add(prepareThis());
-         return nestedBeans;
-      }
+      NestedBeanHandler handler = createNestedBeanHandler();
+      return handler.checkForNestedBeans();
    }
 
    /**
-    * Prepare / check if this needs a name, etc.
+    * Create nested bean handler.
+    * Can be overridden to change generateName policy.
     *
-    * @return this instance or a clone
+    * @return nested bean handler
     */
-   protected BeanMetaData prepareThis()
+   protected NestedBeanHandler createNestedBeanHandler()
    {
-      return this;
-   }
-
-   /**
-    * Fins the nested beans.
-    *
-    * @return list of nested beans
-    */
-   protected List<BeanMetaData> findNestedBeans()
-   {
-      List<BeanMetaData> allBeans = new ArrayList<BeanMetaData>();
-      addBeans(this, allBeans);
-      return allBeans;
-   }
-
-   /**
-    * Add all nested beans to the list.
-    *
-    * @param current the current meta data visitor node child
-    * @param list the nested beans list
-    */
-   protected void addBeans(MetaDataVisitorNode current, List<BeanMetaData> list)
-   {
-      for(Iterator<? extends MetaDataVisitorNode> children = current.getChildren(); children != null && children.hasNext();)
-      {
-         MetaDataVisitorNode next = children.next();
-         if (next instanceof BeanMetaDataFactory)
-         {
-            list.addAll(((BeanMetaDataFactory) next).getBeans());
-         }
-         else
-         {
-            addBeans(next, list);
-            if (next instanceof BeanMetaData)
-            {
-               list.add((BeanMetaData) next);
-            }
-         }
-      }
+      return new NestedBeanHandler(this);
    }
 
    /**

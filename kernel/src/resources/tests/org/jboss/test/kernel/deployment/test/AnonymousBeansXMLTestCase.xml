@@ -1,0 +1,68 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<deployment xmlns="urn:jboss:bean-deployer:2.0">
+
+   <bean name="const_value" class="org.jboss.test.kernel.deployment.support.SimpleObjectWithBeans">
+      <constructor>
+         <bean class="org.jboss.test.kernel.deployment.support.SimpleObjectWithBeans" />
+      </constructor>
+   </bean>
+
+   <bean name="const_param" class="org.jboss.test.kernel.deployment.support.SimpleObjectWithBeans">
+      <constructor>
+         <parameter>
+            <bean class="org.jboss.test.kernel.deployment.support.SimpleBeanImpl" />
+         </parameter>
+      </constructor>
+   </bean>
+
+   <bean name="prop" class="org.jboss.test.kernel.deployment.support.SimpleObjectWithBeans">
+      <property name="simpleBean">
+         <bean class="org.jboss.test.kernel.deployment.support.SimpleBeanImpl"/>
+      </property>
+   </bean>
+
+   <bean name="cl" class="org.jboss.test.kernel.deployment.support.SimpleObjectWithBeans">
+      <classloader><bean class="org.jboss.test.kernel.deployment.support.NullClassLoader"/></classloader>
+   </bean>
+
+   <bean name="list" class="org.jboss.test.kernel.deployment.support.SimpleObjectWithBeans">
+      <property name="list">
+         <list>
+            <bean class="org.jboss.test.kernel.deployment.support.SimpleBeanImpl"/>
+         </list>
+      </property>
+   </bean>
+
+   <bean name="set" class="org.jboss.test.kernel.deployment.support.SimpleObjectWithBeans">
+      <property name="set">
+         <set>
+            <bean class="org.jboss.test.kernel.deployment.support.SimpleBeanImpl"/>
+         </set>
+      </property>
+   </bean>
+
+   <bean name="map" class="org.jboss.test.kernel.deployment.support.SimpleObjectWithBeans">
+      <property name="map">
+         <map>
+           <entry>
+             <key><bean class="org.jboss.test.kernel.deployment.support.SimpleBeanImpl"/></key>
+             <value><bean class="org.jboss.test.kernel.deployment.support.SimpleBeanImpl"/></value>
+           </entry>
+         </map>
+      </property>
+   </bean>
+
+  <bean name="nested" class="org.jboss.test.kernel.deployment.support.SimpleObjectWithBeans">
+     <property name="nested">
+       <bean class="org.jboss.test.kernel.deployment.support.SimpleObjectWithBeans">
+          <constructor>
+             <parameter>
+                <bean class="org.jboss.test.kernel.deployment.support.SimpleBeanImpl" />
+             </parameter>
+          </constructor>
+       </bean>
+     </property>
+  </bean>
+
+</deployment>

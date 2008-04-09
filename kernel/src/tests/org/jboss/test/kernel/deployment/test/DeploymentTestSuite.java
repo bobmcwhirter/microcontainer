@@ -63,6 +63,8 @@ public class DeploymentTestSuite extends TestSuite
       suite.addTest(ScopingShutdownTestCase.suite());
       suite.addTest(FromContextUnsupportedTestCase.suite());
       suite.addTest(InCallbackInstantiatedTestCase.suite());
+      suite.addTest(AnonymousBeansTestCase.suite());
+      suite.addTest(AnonymousBeansXMLTestCase.suite());
 
       return suite;
    }
