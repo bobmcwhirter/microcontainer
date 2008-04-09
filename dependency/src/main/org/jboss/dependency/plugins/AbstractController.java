@@ -1804,9 +1804,7 @@ public class AbstractController extends JBossObject implements Controller, Contr
     */
    protected ControllerState getState(int index)
    {
-      if (index < 0)
-         return null;
-      else if (index >= states.size())
+      if (index < 0 || index >= states.size())
          return null;
       else
          return states.get(index);
