@@ -24,9 +24,15 @@ package org.jboss.test.kernel.deployment.test;
 import java.lang.reflect.Method;
 import java.net.URL;
 import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
 
 import junit.framework.Test;
 
+import org.jboss.beans.metadata.plugins.AbstractBeanMetaData;
+import org.jboss.beans.metadata.plugins.AbstractConstructorMetaData;
+import org.jboss.beans.metadata.plugins.AbstractValueMetaData;
+import org.jboss.beans.metadata.spi.factory.BeanFactory;
 import org.jboss.dependency.spi.ControllerMode;
 import org.jboss.dependency.spi.ControllerState;
 import org.jboss.kernel.Kernel;
@@ -35,9 +41,11 @@ import org.jboss.kernel.spi.dependency.KernelController;
 import org.jboss.kernel.spi.dependency.KernelControllerContext;
 import org.jboss.kernel.spi.deployment.KernelDeployment;
 import org.jboss.test.kernel.AbstractKernelTest;
+import org.jboss.test.kernel.deployment.support.container.BaseContext;
 import org.jboss.test.kernel.deployment.support.container.Bean1Type;
 import org.jboss.test.kernel.deployment.support.container.Bean2Type;
 import org.jboss.test.kernel.deployment.support.container.BeanContainer;
+import org.jboss.test.kernel.deployment.support.container.BeanContextFactory;
 import org.jboss.test.kernel.deployment.support.container.BeanPool;
 
 /**
@@ -109,7 +117,49 @@ public class BeanContainerUsageTestCase extends AbstractKernelTest
       deployer.shutdown();
    }
 
+   public void testComponentBeanFactory()
+      throws Throwable
+   {
+      bootstrap();
+      /*BeanContextFactory<Bean1Type> contextFactory = (BeanContextFactory<Bean1Type>) bean;
+      assertEquals(Bean1Type.class.getName(), contextFactory.getBeanClass());
+      assertNotNull(bean);
+      contextFactory.
+      */
+      BeanFactory factory = (BeanFactory) getBean("ComponentBeanFactory#ContextFactory");
+      getLog().info("ComponentBeanFactory#ContextFactory bean: "+factory);
+      assertNotNull(factory);
+
+      BaseContext <Bean1Type, BeanContainer<Bean1Type>> context =
+         (BaseContext <Bean1Type, BeanContainer<Bean1Type>>) factory.createBean();
+      getLog().info("ComponentBeanFactory#ContextFactory.createBean result: "+context);
+      assertNotNull(context);
+      Bean1Type bean1 = context.getInstance();
+      getLog().info("BeanContext.instance: "+bean1);
+      HashMap<Class, Object> interceptors1 = context.getInterceptorInstances();
+      getLog().info("BeanContext.interceptorInstances: "+interceptors1);
+
+      Bean1Type bean11 = (Bean1Type) getBean("ComponentBeanFactory#BeanInstance");
+      getLog().info("ComponentBeanFactory#BeanInstance bean: "+bean11);
+      assertNotNull(bean11);
+      assertTrue(bean1 == bean11);
+
+      deployer.shutdown();
+   }
+
+   /**
+    * There is no xml version of ?
+    * @return
+    */
    protected KernelDeployment getDeploymentForDependencyInjectionOfBean()
+   {
+      return null;
+   }
+   /**
+    * There is no xml based version of testComponentBeanFactory
+    * @return
+    */
+   protected KernelDeployment getComponentBeanFactory()
    {
       return null;
    }
@@ -162,7 +212,15 @@ public class BeanContainerUsageTestCase extends AbstractKernelTest
       KernelController controller = kernel.getController();
       KernelControllerContext context = (KernelControllerContext) controller.getContext(name, state);
       if (context == null)
+      {
+         getLog().error("Bean not found " + name + " at state " + state);
+         List<ControllerState> states = controller.getStates();
+         for(ControllerState s : states)
+         {
+            getLog().info(s+": "+controller.getContextsByState(s));
+         }
          throw new IllegalStateException("Bean not found " + name + " at state " + state);
+      }
       return context;
    }
 

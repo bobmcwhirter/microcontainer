@@ -22,6 +22,7 @@
 package org.jboss.test.kernel.deployment.test;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
@@ -34,12 +35,18 @@ import org.jboss.beans.metadata.plugins.AbstractDependencyValueMetaData;
 import org.jboss.beans.metadata.plugins.AbstractParameterMetaData;
 import org.jboss.beans.metadata.plugins.AbstractPropertyMetaData;
 import org.jboss.beans.metadata.plugins.AbstractValueFactoryMetaData;
+import org.jboss.beans.metadata.plugins.AbstractValueMetaData;
+import org.jboss.beans.metadata.spi.BeanMetaData;
 import org.jboss.beans.metadata.spi.BeanMetaDataFactory;
 import org.jboss.beans.metadata.spi.ParameterMetaData;
 import org.jboss.beans.metadata.spi.PropertyMetaData;
 import org.jboss.beans.metadata.spi.factory.GenericBeanFactoryMetaData;
 import org.jboss.kernel.plugins.deployment.AbstractKernelDeployment;
 import org.jboss.kernel.spi.deployment.KernelDeployment;
+import org.jboss.test.kernel.deployment.support.container.Bean1Type;
+import org.jboss.test.kernel.deployment.support.container.BeanContainer;
+import org.jboss.test.kernel.deployment.support.container.BeanContextFactory;
+import org.jboss.test.kernel.deployment.support.container.InstanceInterceptor;
 
 /**
  * Programatic version of the BeanContainerUsageTestCase tests
@@ -185,5 +192,63 @@ public class BeanContainerUsageMDTestCase extends BeanContainerUsageTestCase
          }
       }
       return deployment;
+   }
+   /**
+    * MetaData version of testComponentBeanFactory
+    * 
+    * @return
+    */
+   protected KernelDeployment getDeploymentForComponentBeanFactory()
+   {
+      AbstractKernelDeployment deployment = new AbstractKernelDeployment();
+      deployment.setName("ComponentBeanFactory");
+      ArrayList<BeanMetaDataFactory> beanFactories = new ArrayList<BeanMetaDataFactory>();
+      // Bean context factory for Bean1Type
+      BeanContainer<Bean1Type> container = new BeanContainer<Bean1Type>();
+      BeanContextFactory<Bean1Type> contextFactory = new BeanContextFactory<Bean1Type>();
+      contextFactory.setBaseName("ComponentBeanFactory");
+      contextFactory.setBeanClass(Bean1Type.class.getName());
+      contextFactory.setContainer(container);
+      String[] interceptorNames = {InstanceInterceptor.class.getName()};
+      contextFactory.setInterceptorNames(Arrays.asList(interceptorNames));
+      /*
+      BeanMetaDataFactory contextFactoryMD = installBeanInstance("ComponentBeanFactory", contextFactory);
+      beanFactories.add(contextFactoryMD);
+      */
+      beanFactories.add(contextFactory);
+      deployment.setBeanFactories(beanFactories);
+
+      return deployment;
+   }
+
+   protected BeanMetaDataFactory installBeanInstance(String name, Object bean)
+   {
+      AbstractBeanMetaData beanMD = new AbstractBeanMetaData(name, bean.getClass().getName());
+      beanMD.setConstructor(new AlreadyInstantiated(bean));
+      return beanMD;
+   }
+
+   public static class AlreadyInstantiated extends AbstractConstructorMetaData
+   {
+      private static final long serialVersionUID = 1L;
+      
+      private Object bean;
+
+      public class Factory
+      {
+
+         public Object create()
+         {
+            return bean;
+         }
+      }
+
+      public AlreadyInstantiated(Object bean)
+      {
+         this.bean = bean;
+         this.setFactory(new AbstractValueMetaData(new Factory()));
+         this.setFactoryClass(Factory.class.getName());
+         this.setFactoryMethod("create");
+      }
    }
 }

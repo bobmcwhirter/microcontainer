@@ -97,6 +97,12 @@ public class BeanPool<T>
    public void destroyBean(T bean)
       throws Throwable
    {
+      bean = (T) factory.createBean();
+      pool.put(bean);
+   }
+   public void releaseBean(T bean)
+      throws Throwable
+   {
       pool.put(bean);
    }
 }
