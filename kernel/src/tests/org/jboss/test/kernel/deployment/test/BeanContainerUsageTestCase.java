@@ -114,40 +114,11 @@ public class BeanContainerUsageTestCase extends AbstractKernelTest
       deployer.shutdown();
    }
 
-   public void testComponentBeanFactory()
-      throws Throwable
-   {
-      bootstrap();
-      ComponentFactory<BaseContext<Bean1Type, BeanContainer<Bean1Type>>> factory =
-         (ComponentFactory<BaseContext<Bean1Type, BeanContainer<Bean1Type>>>) getBean("ComponentBeanFactory");
-      getLog().info("ComponentBeanFactory bean: "+factory);
-
-      ComponentInstance<BaseContext<Bean1Type, BeanContainer<Bean1Type>>> contextInstance =
-         factory.createComponents("ComponentBeanFactory");
-      List<String> beanNames = contextInstance.getComponentNames();
-      getLog().info("createComponents(ComponentBeanFactory): "+beanNames);
-      long compID = contextInstance.getComponentID();
-      BaseContext<Bean1Type, BeanContainer<Bean1Type>> context = contextInstance.getContext();
-      String contextName = contextInstance.getContextName();
-
-      Object interceptor = getBean("ComponentBeanFactory@Interceptor:0#1");
-      assertNotNull(interceptor);
-      deployer.shutdown();
-   }
-
    /**
     * There is no xml version of ?
     * @return
     */
    protected KernelDeployment getDeploymentForDependencyInjectionOfBean()
-   {
-      return null;
-   }
-   /**
-    * There is no xml based version of testComponentBeanFactory
-    * @return
-    */
-   protected KernelDeployment getComponentBeanFactory()
    {
       return null;
    }
@@ -189,6 +160,10 @@ public class BeanContainerUsageTestCase extends AbstractKernelTest
       }
       deployer.validate();
       return kernel;
+   }
+   protected void shutdown()
+   {
+      deployer.shutdown();
    }
    protected Object getBean(final Object name)
    {

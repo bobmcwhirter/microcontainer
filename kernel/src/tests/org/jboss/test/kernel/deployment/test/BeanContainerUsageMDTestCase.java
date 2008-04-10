@@ -42,11 +42,14 @@ import org.jboss.beans.metadata.spi.PropertyMetaData;
 import org.jboss.beans.metadata.spi.factory.GenericBeanFactoryMetaData;
 import org.jboss.kernel.plugins.deployment.AbstractKernelDeployment;
 import org.jboss.kernel.spi.deployment.KernelDeployment;
+import org.jboss.test.kernel.deployment.support.container.BaseContext;
 import org.jboss.test.kernel.deployment.support.container.Bean1Type;
 import org.jboss.test.kernel.deployment.support.container.BeanContainer;
 import org.jboss.test.kernel.deployment.support.container.BeanContextFactory;
 import org.jboss.test.kernel.deployment.support.container.InstanceInterceptor;
 import org.jboss.test.kernel.deployment.support.container.plugin.GenericComponentFactory;
+import org.jboss.test.kernel.deployment.support.container.spi.ComponentFactory;
+import org.jboss.test.kernel.deployment.support.container.spi.ComponentInstance;
 import org.jboss.test.kernel.deployment.support.container.spi.ComponentVisitor;
 
 /**
@@ -65,6 +68,27 @@ public class BeanContainerUsageMDTestCase extends BeanContainerUsageTestCase
    public BeanContainerUsageMDTestCase(String name)
    {
       super(name);
+   }
+
+   public void testComponentBeanFactory()
+      throws Throwable
+   {
+      bootstrap();
+      ComponentFactory<BaseContext<Bean1Type, BeanContainer<Bean1Type>>> factory =
+         (ComponentFactory<BaseContext<Bean1Type, BeanContainer<Bean1Type>>>) getBean("ComponentBeanFactory");
+      getLog().info("ComponentBeanFactory bean: "+factory);
+   
+      ComponentInstance<BaseContext<Bean1Type, BeanContainer<Bean1Type>>> contextInstance =
+         factory.createComponents("ComponentBeanFactory");
+      List<String> beanNames = contextInstance.getComponentNames();
+      getLog().info("createComponents(ComponentBeanFactory): "+beanNames);
+      long compID = contextInstance.getComponentID();
+      BaseContext<Bean1Type, BeanContainer<Bean1Type>> context = contextInstance.getContext();
+      String contextName = contextInstance.getContextName();
+   
+      Object interceptor = getBean("ComponentBeanFactory@Interceptor:0#1");
+      assertNotNull(interceptor);
+      shutdown();
    }
 
    /*
