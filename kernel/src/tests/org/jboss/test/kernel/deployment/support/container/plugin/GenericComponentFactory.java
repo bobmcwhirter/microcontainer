@@ -71,9 +71,8 @@ public class GenericComponentFactory<T>
       T t = null;
       for(BeanMetaData bmd : compBeans)
       {
-         String beanName = buildName(baseName, bmd.getName(), nextID);
-         BeanMetaDataName nbmd = new BeanMetaDataName(beanName, bmd);
-         KernelControllerContext kcc = controller.install(nbmd);
+         String beanName = bmd.getName();
+         KernelControllerContext kcc = controller.install(bmd);
          if(t == null)
             t = (T) kcc.getTarget();
          compNames.add(beanName);
@@ -97,7 +96,7 @@ public class GenericComponentFactory<T>
     */
    public long getComponentID(String name) throws NumberFormatException
    {
-      int poundSign = name.indexOf('#');
+      int poundSign = name.lastIndexOf('#');
       if(poundSign < 0)
          throw new NumberFormatException(name+" has no #compID suffix");
       long id = Long.parseLong(name.substring(poundSign+1));
