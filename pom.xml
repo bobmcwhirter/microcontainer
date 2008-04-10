@@ -54,7 +54,7 @@
       <id>docs</id>
       <activation>
         <property>
-          <name>!maven.skip.docs</name>
+          <name>generate.docs</name>
         </property>
       </activation>
       <modules>
