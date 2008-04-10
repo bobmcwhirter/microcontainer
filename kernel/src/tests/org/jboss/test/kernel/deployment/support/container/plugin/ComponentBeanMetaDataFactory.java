@@ -19,53 +19,17 @@
  * Software Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA
  * 02110-1301 USA, or see the FSF site: http://www.fsf.org.
  */
-package org.jboss.test.kernel.deployment.support.container;
+package org.jboss.test.kernel.deployment.support.container.plugin;
 
-import java.lang.reflect.Method;
+import java.util.List;
 
-import org.jboss.logging.Logger;
+import org.jboss.beans.metadata.spi.BeanMetaData;
 
 /**
  * @author Scott.Stark@jboss.org
  * @version $Revision:$
  */
-public class InstanceInterceptor
+public interface ComponentBeanMetaDataFactory
 {
-   private static Logger log = Logger.getLogger(InstanceInterceptor.class);
-   private BeanPool<BeanContext<?>> pool;
-
-   public InstanceInterceptor()
-   {
-      log.info("ctor");
-   }
-
-   public Object invoke(Object...args)
-      throws Throwable
-   {
-      BeanContext<?> ctx = pool.createBean();
-      Object bean = ctx.getInstance();
-
-      boolean discard = false;
-      Object value = null;
-
-      try
-      {
-         String name = (String) args[0];
-         Class<?>[] paramTypes = {};
-         Method m = bean.getClass().getMethod(name, paramTypes);
-         Object[] empty = {};
-         value = m.invoke(bean, empty);
-         return value;
-      }
-      catch (Exception ex)
-      {
-         throw ex;
-      }
-      finally
-      {
-         if (discard)
-            pool.destroyBean(ctx);
-         else pool.releaseBean(ctx);
-      }
-   }
+   public List<BeanMetaData> getBeans(String baseName, long compID, ComponentNameBuilder nameBuilder);
 }

@@ -19,53 +19,14 @@
  * Software Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA
  * 02110-1301 USA, or see the FSF site: http://www.fsf.org.
  */
-package org.jboss.test.kernel.deployment.support.container;
-
-import java.lang.reflect.Method;
-
-import org.jboss.logging.Logger;
+package org.jboss.test.kernel.deployment.support.container.plugin;
 
 /**
  * @author Scott.Stark@jboss.org
  * @version $Revision:$
  */
-public class InstanceInterceptor
+public interface ComponentNameBuilder
 {
-   private static Logger log = Logger.getLogger(InstanceInterceptor.class);
-   private BeanPool<BeanContext<?>> pool;
-
-   public InstanceInterceptor()
-   {
-      log.info("ctor");
-   }
-
-   public Object invoke(Object...args)
-      throws Throwable
-   {
-      BeanContext<?> ctx = pool.createBean();
-      Object bean = ctx.getInstance();
-
-      boolean discard = false;
-      Object value = null;
-
-      try
-      {
-         String name = (String) args[0];
-         Class<?>[] paramTypes = {};
-         Method m = bean.getClass().getMethod(name, paramTypes);
-         Object[] empty = {};
-         value = m.invoke(bean, empty);
-         return value;
-      }
-      catch (Exception ex)
-      {
-         throw ex;
-      }
-      finally
-      {
-         if (discard)
-            pool.destroyBean(ctx);
-         else pool.releaseBean(ctx);
-      }
-   }
+   public String buildName(String baseName, String compName, long compID);
+   public long getCompID(String name) throws NumberFormatException;
 }

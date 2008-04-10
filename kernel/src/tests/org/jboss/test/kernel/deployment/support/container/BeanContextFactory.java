@@ -57,7 +57,6 @@ import org.jboss.logging.Logger;
 public class BeanContextFactory<T> implements BeanMetaDataFactory, KernelControllerContextAware
 {
    private static final Logger log = Logger.getLogger(BeanContextFactory.class);
-   private String baseName;
    private String beanClass;
    private BeanContainer<T> container;
    private Set<TestInjectionMetaData> beanInjectionMD;
@@ -65,16 +64,6 @@ public class BeanContextFactory<T> implements BeanMetaDataFactory, KernelControl
    private Map<String, Set<TestInjectionMetaData>> interceptorInjectionMD =
       new HashMap<String, Set<TestInjectionMetaData>>();
    private List<String> interceptorNames;
-   private List<Object> interceptors = new ArrayList<Object>();
-
-   public String getBaseName()
-   {
-      return baseName;
-   }
-   public void setBaseName(String baseName)
-   {
-      this.baseName = baseName;
-   }
 
    public String getBeanClass()
    {
@@ -141,32 +130,17 @@ public class BeanContextFactory<T> implements BeanMetaDataFactory, KernelControl
       try
       {         
          // Create the BeanContext factory
-         String contextName = baseName +"#ContextFactory";
-         AbstractBeanMetaData contextMetaData = new AbstractBeanMetaData(contextName, GenericBeanFactory.class.getName());
-         BeanMetaDataBuilder contextBuilder = BeanMetaDataBuilder.createBuilder(contextMetaData);
+         String contextName = "ContextFactory";
+         BeanMetaDataBuilder contextBuilder = BeanMetaDataBuilder.createBuilder(contextName, BaseContext.class.getName());
          contextBuilder.setAccessMode(BeanAccessMode.ALL);
-         ValueMetaData injectKernelConfigurator = contextBuilder.createInject(KernelConstants.KERNEL_CONFIGURATOR_NAME);
-         contextBuilder.addConstructorParameter(KernelConfigurator.class.getName(), injectKernelConfigurator);
-         contextBuilder.addPropertyMetaData("bean", BaseContext.class.getName());
          // The BaseContext ctor
-         AbstractConstructorMetaData constructor = new AbstractConstructorMetaData();
-         ParameterMetaDataBuilderImpl<AbstractConstructorMetaData> constructorBuilder = new ParameterMetaDataBuilderImpl<AbstractConstructorMetaData>(constructor);
-         constructorBuilder.addParameterMetaData(BeanContainer.class.getName(), container);
-         contextBuilder.addPropertyMetaData("constructor", constructor);
+         contextBuilder.addConstructorParameter(BeanContainer.class.getName(), container);
          // BaseContext properties
-         Set<PropertyMetaData> contextProperties = new HashSet<PropertyMetaData>();
          // BaseContext.instance
-         String beanName = baseName+"#BeanInstance";
+         String beanName = "BeanInstance";
          ValueMetaData beanInstance = contextBuilder.createInject(beanName);
-         PropertyMetaData instancePMD = new AbstractPropertyMetaData("instance", beanInstance);
-         contextProperties.add(instancePMD);
+         contextBuilder.addPropertyMetaData("instance", beanInstance);
 
-         PropertyMap propertyMap = new PropertyMap(); 
-         for (PropertyMetaData property : contextProperties)
-         {
-            propertyMap.put(property.getName(), property.getValue());
-         }
-         contextBuilder.addPropertyMetaData("properties", propertyMap);
          BeanMetaData beanContext = contextBuilder.getBeanMetaData();
          beans.add(beanContext);
    
@@ -184,7 +158,7 @@ public class BeanContextFactory<T> implements BeanMetaDataFactory, KernelControl
          int count = interceptorNames != null ? interceptorNames.size() : 0;
          for(int n = 0; n < count; n ++)
          {
-            String name = baseName + "#Interceptor:"+n;
+            String name = "Interceptor:"+n;
             String iclass = interceptorNames.get(n);
             BeanMetaDataBuilder ibuilder = BeanMetaDataBuilder.createBuilder(name, iclass);
             ibuilder.addInstall("addInterceptor", contextName);

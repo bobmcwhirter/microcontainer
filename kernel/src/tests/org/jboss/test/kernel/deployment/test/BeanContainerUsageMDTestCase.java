@@ -47,6 +47,7 @@ import org.jboss.test.kernel.deployment.support.container.Bean1Type;
 import org.jboss.test.kernel.deployment.support.container.BeanContainer;
 import org.jboss.test.kernel.deployment.support.container.BeanContextFactory;
 import org.jboss.test.kernel.deployment.support.container.InstanceInterceptor;
+import org.jboss.test.kernel.deployment.support.container.spi.GenericComponentFactory;
 
 /**
  * Programatic version of the BeanContainerUsageTestCase tests
@@ -206,7 +207,6 @@ public class BeanContainerUsageMDTestCase extends BeanContainerUsageTestCase
       // Bean context factory for Bean1Type
       BeanContainer<Bean1Type> container = new BeanContainer<Bean1Type>();
       BeanContextFactory<Bean1Type> contextFactory = new BeanContextFactory<Bean1Type>();
-      contextFactory.setBaseName("ComponentBeanFactory");
       contextFactory.setBeanClass(Bean1Type.class.getName());
       contextFactory.setContainer(container);
       String[] interceptorNames = {InstanceInterceptor.class.getName()};
@@ -215,7 +215,9 @@ public class BeanContainerUsageMDTestCase extends BeanContainerUsageTestCase
       BeanMetaDataFactory contextFactoryMD = installBeanInstance("ComponentBeanFactory", contextFactory);
       beanFactories.add(contextFactoryMD);
       */
-      beanFactories.add(contextFactory);
+      GenericComponentFactory componentFactory = new GenericComponentFactory(contextFactory);
+      BeanMetaDataFactory componentFactoryMD = installBeanInstance("ComponentBeanFactory", componentFactory);
+      beanFactories.add(componentFactoryMD);
       deployment.setBeanFactories(beanFactories);
 
       return deployment;

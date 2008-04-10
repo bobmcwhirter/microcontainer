@@ -24,6 +24,7 @@ package org.jboss.test.kernel.deployment.test;
 import java.lang.reflect.Method;
 import java.net.URL;
 import java.util.HashMap;
+import java.util.List;
 
 import junit.framework.Test;
 import org.jboss.beans.metadata.spi.factory.BeanFactory;
@@ -41,6 +42,7 @@ import org.jboss.test.kernel.deployment.support.container.Bean1Type;
 import org.jboss.test.kernel.deployment.support.container.Bean2Type;
 import org.jboss.test.kernel.deployment.support.container.BeanContainer;
 import org.jboss.test.kernel.deployment.support.container.BeanPool;
+import org.jboss.test.kernel.deployment.support.container.plugin.ComponentFactory;
 
 /**
  * Bean Container Test Case.
@@ -111,35 +113,23 @@ public class BeanContainerUsageTestCase extends AbstractKernelTest
       deployer.shutdown();
    }
 
+   /*
    public void testComponentBeanFactory()
       throws Throwable
    {
       bootstrap();
-      /*BeanContextFactory<Bean1Type> contextFactory = (BeanContextFactory<Bean1Type>) bean;
-      assertEquals(Bean1Type.class.getName(), contextFactory.getBeanClass());
-      assertNotNull(bean);
-      contextFactory.
-      */
-      BeanFactory factory = (BeanFactory) getBean("ComponentBeanFactory#ContextFactory");
-      getLog().info("ComponentBeanFactory#ContextFactory bean: "+factory);
+      ComponentFactory factory = (ComponentFactory) getBean("ComponentBeanFactory");
+      getLog().info("ComponentBeanFactory bean: "+factory);
       assertNotNull(factory);
 
-      BaseContext <Bean1Type, BeanContainer<Bean1Type>> context =
-         (BaseContext <Bean1Type, BeanContainer<Bean1Type>>) factory.createBean();
-      getLog().info("ComponentBeanFactory#ContextFactory.createBean result: "+context);
-      assertNotNull(context);
-      Bean1Type bean1 = context.getInstance();
-      getLog().info("BeanContext.instance: "+bean1);
-      HashMap<Class, Object> interceptors1 = context.getInterceptorInstances();
-      getLog().info("BeanContext.interceptorInstances: "+interceptors1);
+      List<String> beanNames = factory.createComponents("ComponentBeanFactory");
+      getLog().info("createComponents(ComponentBeanFactory): "+beanNames);
 
-      Bean1Type bean11 = (Bean1Type) getBean("ComponentBeanFactory#BeanInstance");
-      getLog().info("ComponentBeanFactory#BeanInstance bean: "+bean11);
-      assertNotNull(bean11);
-      assertTrue(bean1 == bean11);
-
+      Object interceptor = getBean("ComponentBeanFactory@Interceptor:0#1");
+      assertNotNull(interceptor);
       deployer.shutdown();
    }
+   */
 
    /**
     * There is no xml version of ?
