@@ -47,6 +47,7 @@ import org.jboss.beans.metadata.plugins.AbstractSupplyMetaData;
 import org.jboss.beans.metadata.plugins.AbstractValueMetaData;
 import org.jboss.beans.metadata.plugins.StringValueMetaData;
 import org.jboss.beans.metadata.plugins.ThisValueMetaData;
+import org.jboss.beans.metadata.plugins.AbstractAnnotationMetaData;
 import org.jboss.beans.metadata.spi.BeanMetaData;
 import org.jboss.beans.metadata.spi.ClassLoaderMetaData;
 import org.jboss.beans.metadata.spi.DemandMetaData;
@@ -54,6 +55,7 @@ import org.jboss.beans.metadata.spi.DependencyMetaData;
 import org.jboss.beans.metadata.spi.PropertyMetaData;
 import org.jboss.beans.metadata.spi.SupplyMetaData;
 import org.jboss.beans.metadata.spi.ValueMetaData;
+import org.jboss.beans.metadata.spi.AnnotationMetaData;
 import org.jboss.beans.metadata.spi.builder.BeanMetaDataBuilder;
 import org.jboss.beans.metadata.spi.builder.ParameterMetaDataBuilder;
 import org.jboss.dependency.spi.Cardinality;
@@ -169,6 +171,47 @@ class BeanMetaDataBuilderImpl extends BeanMetaDataBuilder
    public BeanMetaDataBuilder setAliases(Set<Object> aliases)
    {
       beanMetaData.setAliases(aliases);
+      return this;
+   }
+
+   public BeanMetaDataBuilder addAlias(Object alias)
+   {
+      Set<Object> aliases = beanMetaData.getAliases();
+      if (aliases == null)
+      {
+         aliases = new HashSet<Object>();
+         beanMetaData.setAliases(aliases);
+      }
+      aliases.add(alias);
+      return this;
+   }
+
+   public BeanMetaDataBuilder setAnnotations(Set<String> annotations)
+   {
+      if (annotations != null && annotations.isEmpty() == false)
+      {
+         Set<AnnotationMetaData> amds = new HashSet<AnnotationMetaData>();
+         for (String annotation : annotations)
+         {
+            AbstractAnnotationMetaData amd = new AbstractAnnotationMetaData();
+            amd.setAnnotation(annotation);
+         }
+         beanMetaData.setAnnotations(amds);
+      }
+      return this;
+   }
+
+   public BeanMetaDataBuilder addAnnotation(String annotation)
+   {
+      Set<AnnotationMetaData> annotations = beanMetaData.getAnnotations();
+      if (annotations == null)
+      {
+         annotations = new HashSet<AnnotationMetaData>();
+         beanMetaData.setAnnotations(annotations);
+      }
+      AbstractAnnotationMetaData amd = new AbstractAnnotationMetaData();
+      amd.setAnnotation(annotation);
+      annotations.add(amd);
       return this;
    }
 

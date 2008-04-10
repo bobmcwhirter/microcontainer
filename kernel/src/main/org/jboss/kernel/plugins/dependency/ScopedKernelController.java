@@ -135,7 +135,8 @@ public class ScopedKernelController extends AbstractKernelController
 
    protected void install(ControllerContext context, boolean trace) throws Throwable
    {
-      throw new IllegalArgumentException("Should not be called!");
+      // we only allow install at top level
+      getParentController().install(context);
    }
 
    // KernelController methods

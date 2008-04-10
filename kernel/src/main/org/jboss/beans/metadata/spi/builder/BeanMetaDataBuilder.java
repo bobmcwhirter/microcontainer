@@ -115,6 +115,30 @@ public abstract class BeanMetaDataBuilder
    public abstract BeanMetaDataBuilder setAliases(Set<Object> aliases);
 
    /**
+    * Add alias.
+    *
+    * @param alias the alias
+    * @return the builder
+    */
+   public abstract BeanMetaDataBuilder addAlias(Object alias);
+
+   /**
+    * Set the annotations
+    *
+    * @param annotations the annotations
+    * @return the builder
+    */
+   public abstract BeanMetaDataBuilder setAnnotations(Set<String> annotations);
+
+   /**
+    * Add alias.
+    *
+    * @param annotation the annotation
+    * @return the builder
+    */
+   public abstract BeanMetaDataBuilder addAnnotation(String annotation);
+
+   /**
     * Set the mode
     * 
     * @param modeString the mode

@@ -1,0 +1,17 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<deployment xmlns="urn:jboss:bean-deployer:2.0">
+
+  <bean name="CF1" class="org.jboss.test.kernel.deployment.support.container.ScopedContainer">
+    <annotation>@org.jboss.metadata.plugins.scope.InstanceScope("cf1")</annotation>
+    <constructor><parameter><inject bean="jboss.kernel:service=Kernel"/></parameter></constructor>
+    <property name="metaData"><inject fromContext="metadata"/></property>
+  </bean>
+
+  <bean name="CF2" class="org.jboss.test.kernel.deployment.support.container.ScopedContainer">
+    <annotation>@org.jboss.metadata.plugins.scope.InstanceScope("cf2")</annotation>     
+    <constructor><parameter><inject bean="jboss.kernel:service=Kernel"/></parameter></constructor>
+    <property name="metaData"><inject fromContext="metadata"/></property>
+  </bean>
+
+</deployment>

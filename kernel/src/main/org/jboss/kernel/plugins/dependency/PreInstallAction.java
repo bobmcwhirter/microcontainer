@@ -22,8 +22,11 @@
 package org.jboss.kernel.plugins.dependency;
 
 import java.lang.annotation.Annotation;
+import java.lang.ref.WeakReference;
 import java.util.Collection;
 import java.util.HashSet;
+import java.util.Map;
+import java.util.WeakHashMap;
 
 import org.jboss.beans.info.spi.BeanInfo;
 import org.jboss.beans.metadata.spi.BeanMetaData;
@@ -52,6 +55,33 @@ import org.jboss.metadata.spi.scope.ScopeKey;
  */
 public class PreInstallAction extends InstallsAwareAction
 {
+   private Map<Class<? extends ScopeFactory<? extends Annotation>>, WeakReference<ScopeFactory>> factories = new WeakHashMap<Class<? extends ScopeFactory<? extends Annotation>>, WeakReference<ScopeFactory>>();
+
+   /**
+    * Get the scope factory.
+    *
+    * @param clazz the class key
+    * @return scope factory
+    * @throws Throwable for any error
+    */
+   protected ScopeFactory getScopeFactory(Class<? extends ScopeFactory<? extends Annotation>> clazz) throws Throwable
+   {
+      ScopeFactory factory = null;
+      WeakReference<ScopeFactory> weak = factories.get(clazz);
+      if (weak != null)
+      {
+         factory = weak.get();
+         if (factory != null)
+            return factory;
+      }
+      if (factory == null)
+      {
+         factory = clazz.newInstance();
+         factories.put(clazz, new WeakReference<ScopeFactory>(factory));
+      }
+      return factory;
+   }
+
    protected void installActionInternal(KernelControllerContext context) throws Throwable
    {
       KernelController controller = (KernelController)context.getController();
@@ -89,7 +119,6 @@ public class PreInstallAction extends InstallsAwareAction
    @SuppressWarnings("unchecked")
    protected ScopeKey getInstallScopeKey(
          KernelControllerContext context,
-         KernelController controller,
          KernelMetaDataRepository repository) throws Throwable
    {
       MetaData retrieval = repository.getMetaData(context);
@@ -104,7 +133,7 @@ public class PreInstallAction extends InstallsAwareAction
                if (annotation.annotationType().isAnnotationPresent(ScopeFactoryLookup.class))
                {
                   ScopeFactoryLookup sfl = annotation.annotationType().getAnnotation(ScopeFactoryLookup.class);
-                  ScopeFactory<Annotation> scf = (ScopeFactory) sfl.value().newInstance();
+                  ScopeFactory<Annotation> scf = getScopeFactory(sfl.value()); 
                   Scope scope = scf.create(annotation);
                   scopes.add(scope);
                }
@@ -122,19 +151,12 @@ public class PreInstallAction extends InstallsAwareAction
    {
       KernelController controller = (KernelController)context.getController();
       KernelMetaDataRepository repository = controller.getKernel().getMetaDataRepository();
-      ScopeKey scopeKey = getInstallScopeKey(context, controller, repository);
+      ScopeKey scopeKey = getInstallScopeKey(context, repository);
       if (scopeKey != null)
       {
          scopeKey.freeze();
          context.getScopeInfo().setInstallScope(scopeKey);
-         // todo - should this be done (repare the current context scope key)
-         //        or where to store this 'deployment' key?
-/*
-                  ScopeKey contextScopeKey = context.getScope();
-                  for (Scope s : scopes)
-                     contextScopeKey.addScope(s);
-*/
-         // find scoped controller
+
          MutableMetaDataRepository mmdr = repository.getMetaDataRepository();
          MetaDataRetrieval mdr = mmdr.getMetaDataRetrieval(scopeKey);
          if (mdr == null)
