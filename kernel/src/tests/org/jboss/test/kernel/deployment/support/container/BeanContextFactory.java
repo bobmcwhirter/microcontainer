@@ -168,7 +168,7 @@ public class BeanContextFactory<T> implements ComponentBeanMetaDataFactory, Kern
             String iname = nameBuilder.buildName(baseName, iCompName, compID);
             String iclass = interceptorNames.get(n);
             BeanMetaDataBuilder ibuilder = BeanMetaDataBuilder.createBuilder(iname, iclass);
-            ibuilder.addInstall("addInterceptor", contextName);
+            ibuilder.addInstallWithThis("addInterceptor", contextName);
             ibuilder.addUninstall("removeInterceptor", contextName);
             // Call the visitor to augment the metadata
             if(visitor != null)
