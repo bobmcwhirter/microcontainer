@@ -201,7 +201,12 @@ class BeanMetaDataBuilderImpl extends BeanMetaDataBuilder
       return this;
    }
 
-   public BeanMetaDataBuilder addAnnotation(String annotation)
+   /**
+    * Get the annotations.
+    *
+    * @return the annotations
+    */
+   protected Set<AnnotationMetaData> getAnnotations()
    {
       Set<AnnotationMetaData> annotations = beanMetaData.getAnnotations();
       if (annotations == null)
@@ -209,8 +214,24 @@ class BeanMetaDataBuilderImpl extends BeanMetaDataBuilder
          annotations = new HashSet<AnnotationMetaData>();
          beanMetaData.setAnnotations(annotations);
       }
+      return annotations;
+   }
+
+   public BeanMetaDataBuilder addAnnotation(String annotation)
+   {
+      Set<AnnotationMetaData> annotations = getAnnotations();
       AbstractAnnotationMetaData amd = new AbstractAnnotationMetaData();
       amd.setAnnotation(annotation);
+      annotations.add(amd);
+      return this;
+   }
+
+   public BeanMetaDataBuilder addAnnotation(String annotation, boolean replace)
+   {
+      Set<AnnotationMetaData> annotations = getAnnotations();
+      AbstractAnnotationMetaData amd = new AbstractAnnotationMetaData();
+      amd.setAnnotation(annotation);
+      amd.setReplace(replace);
       annotations.add(amd);
       return this;
    }

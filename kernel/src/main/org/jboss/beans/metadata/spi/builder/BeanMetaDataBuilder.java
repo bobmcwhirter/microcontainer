@@ -131,12 +131,21 @@ public abstract class BeanMetaDataBuilder
    public abstract BeanMetaDataBuilder setAnnotations(Set<String> annotations);
 
    /**
-    * Add alias.
+    * Add annotation.
     *
     * @param annotation the annotation
     * @return the builder
     */
    public abstract BeanMetaDataBuilder addAnnotation(String annotation);
+
+   /**
+    * Add annotation.
+    *
+    * @param annotation the annotation
+    * @param replace the replace flag
+    * @return the builder
+    */
+   public abstract BeanMetaDataBuilder addAnnotation(String annotation, boolean replace);
 
    /**
     * Set the mode
