@@ -414,6 +414,9 @@ class BeanMetaDataBuilderImpl extends BeanMetaDataBuilder
       return new AbstractConstructorMetaData();
    }
 
+   /**
+    * Create constructor metadata on demand.
+    */
    protected void checkConstructorBuilder()
    {
       AbstractConstructorMetaData constructor = (AbstractConstructorMetaData) beanMetaData.getConstructor();
@@ -759,6 +762,12 @@ class BeanMetaDataBuilderImpl extends BeanMetaDataBuilder
       return this;
    }
 
+   /**
+    * Create dependency metadata.
+    *
+    * @param dependency the dependency
+    * @return the dependency metadata
+    */
    protected DependencyMetaData createDependencyMetaData(Object dependency)
    {
       return new AbstractDependencyMetaData(dependency);
