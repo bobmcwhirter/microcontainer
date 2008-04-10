@@ -35,7 +35,6 @@ import org.jboss.kernel.plugins.deployment.AbstractKernelDeployment;
 import org.jboss.managed.api.annotation.ManagementObject;
 import org.jboss.managed.api.annotation.ManagementProperties;
 import org.jboss.xb.annotations.JBossXmlSchema;
-import org.w3c.dom.Element;
 
 /**
  * 

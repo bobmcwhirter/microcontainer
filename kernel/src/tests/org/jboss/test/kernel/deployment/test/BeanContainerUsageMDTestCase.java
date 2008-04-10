@@ -70,6 +70,7 @@ public class BeanContainerUsageMDTestCase extends BeanContainerUsageTestCase
       super(name);
    }
 
+   @SuppressWarnings("unchecked")
    public void testComponentBeanFactory()
       throws Throwable
    {
@@ -82,9 +83,9 @@ public class BeanContainerUsageMDTestCase extends BeanContainerUsageTestCase
          factory.createComponents("ComponentBeanFactory");
       List<String> beanNames = contextInstance.getComponentNames();
       getLog().info("createComponents(ComponentBeanFactory): "+beanNames);
-      long compID = contextInstance.getComponentID();
-      BaseContext<Bean1Type, BeanContainer<Bean1Type>> context = contextInstance.getContext();
-      String contextName = contextInstance.getContextName();
+      // ??? long compID = contextInstance.getComponentID();
+      // ??? BaseContext<Bean1Type, BeanContainer<Bean1Type>> context = contextInstance.getContext();
+      // ??? String contextName = contextInstance.getContextName();
    
       Object interceptor = getBean("ComponentBeanFactory@Interceptor:0#1");
       assertNotNull(interceptor);
@@ -221,8 +222,9 @@ public class BeanContainerUsageMDTestCase extends BeanContainerUsageTestCase
    /**
     * MetaData version of testComponentBeanFactory
     * 
-    * @return
+    * @return the kernel deployment
     */
+   @SuppressWarnings("unchecked")
    protected KernelDeployment getDeploymentForComponentBeanFactory()
    {
       AbstractKernelDeployment deployment = new AbstractKernelDeployment();

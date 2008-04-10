@@ -23,11 +23,9 @@ package org.jboss.test.kernel.deployment.test;
 
 import java.lang.reflect.Method;
 import java.net.URL;
-import java.util.HashMap;
-import java.util.List;
 
 import junit.framework.Test;
-import org.jboss.beans.metadata.spi.factory.BeanFactory;
+
 import org.jboss.dependency.spi.ControllerMode;
 import org.jboss.dependency.spi.ControllerState;
 import org.jboss.dependency.spi.ControllerStateModel;
@@ -37,13 +35,10 @@ import org.jboss.kernel.spi.dependency.KernelController;
 import org.jboss.kernel.spi.dependency.KernelControllerContext;
 import org.jboss.kernel.spi.deployment.KernelDeployment;
 import org.jboss.test.kernel.AbstractKernelTest;
-import org.jboss.test.kernel.deployment.support.container.BaseContext;
 import org.jboss.test.kernel.deployment.support.container.Bean1Type;
 import org.jboss.test.kernel.deployment.support.container.Bean2Type;
 import org.jboss.test.kernel.deployment.support.container.BeanContainer;
 import org.jboss.test.kernel.deployment.support.container.BeanPool;
-import org.jboss.test.kernel.deployment.support.container.spi.ComponentFactory;
-import org.jboss.test.kernel.deployment.support.container.spi.ComponentInstance;
 
 /**
  * Bean Container Test Case.
@@ -70,7 +65,8 @@ public class BeanContainerUsageTestCase extends AbstractKernelTest
    public void testDependencyInjectionOfBean() throws Throwable
    {
       bootstrap();
-      BeanContainer<Bean1Type> container1 = (BeanContainer<Bean1Type>) getBean("BeanContainer1Type");
+      // ???? BeanContainer<Bean1Type> container1 = (BeanContainer<Bean1Type>) getBean("BeanContainer1Type");
+      getBean("BeanContainer1Type");
       BeanPool<Bean1Type> pool1 = (BeanPool<Bean1Type>) getBean("Bean1TypePool");
       BeanContainer<Bean2Type> container2 = (BeanContainer<Bean2Type>) getBean("BeanContainer2Type");
       Bean2Type bean21 = container2.getBean();
@@ -97,6 +93,7 @@ public class BeanContainerUsageTestCase extends AbstractKernelTest
       assertNotNull(bean13Injected);
       deployer.shutdown();
    }
+   @SuppressWarnings("unchecked")
    public void testDependencyInjectionOfBeanWithMismatchedPoolSizes()
       throws Throwable
    {
@@ -104,8 +101,7 @@ public class BeanContainerUsageTestCase extends AbstractKernelTest
       BeanContainer<Bean2Type> container2 = (BeanContainer<Bean2Type>) getBean("BeanContainer2Type");
       try
       {
-         Bean2Type bean21 = container2.getBean();
-         fail("Should not have been able to create a Bean2Type");
+         fail("Should not have been able to create a Bean2Type: " + container2.getBean());
       }
       catch(IllegalStateException e)
       {
@@ -116,7 +112,7 @@ public class BeanContainerUsageTestCase extends AbstractKernelTest
 
    /**
     * There is no xml version of ?
-    * @return
+    * @return ???
     */
    protected KernelDeployment getDeploymentForDependencyInjectionOfBean()
    {

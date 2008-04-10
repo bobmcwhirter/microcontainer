@@ -26,6 +26,7 @@ import java.util.List;
 import org.jboss.test.kernel.deployment.support.container.spi.ComponentInstance;
 
 /**
+ * @param <T> the instance type
  * @author Scott.Stark@jboss.org
  * @version $Revision:$
  */

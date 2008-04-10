@@ -93,7 +93,7 @@ public class TestInjectionMetaData
     * An unmanaged runtime jndi name for the resource. Used by deployers to
     * propagate resolved resource location.
     * 
-    * @return
+    * @return the resolved jndi name
     */
    public String getResolvedJndiName()
    {
@@ -140,7 +140,7 @@ public class TestInjectionMetaData
    /**
     * Set the ignoreDependency.
     * 
-    * @param ignoreDependency the ignoreDependency.
+    * @param flag the ignoreDependency.
     * @throws IllegalArgumentException for a null ignoreDependency
     */
    public void setIgnoreDependency(boolean flag)

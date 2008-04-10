@@ -94,6 +94,7 @@ public class BeanPool<T>
       log.debug("End createBean, size: "+pool.size()+", bean: "+bean);
       return bean;
    }
+   @SuppressWarnings("unchecked")
    public void destroyBean(T bean)
       throws Throwable
    {

@@ -37,6 +37,7 @@ class CloneUtil
    /**
     * Simple clone object.
     *
+    * @param <T> the type
     * @param original the original
     * @param expectedClass the expected class
     * @return clone
@@ -57,6 +58,8 @@ class CloneUtil
    /**
     * Simple collection clone.
     *
+    * @param <T> the collection type
+    * @param <U> the component type
     * @param collection the collection to be cloned
     * @param expectedClass expected collection class
     * @param componentType expected component class
@@ -84,6 +87,8 @@ class CloneUtil
    /**
     * Simple map clone.
     *
+    * @param <T> the collection type
+    * @param <U> the component type
     * @param map the map to clone
     * @param keyClass the key class
     * @param valueClass the value class

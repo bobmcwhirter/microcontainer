@@ -21,14 +21,12 @@
  */
 package org.jboss.test.kernel.deployment.support.container.spi;
 
-import java.util.List;
-
-import org.jboss.beans.metadata.spi.BeanMetaDataFactory;
 
 /**
  * A factory for creating a collection of related mc beans based on a
  * template of BeanMetaData[] from a BeanMetaDataFactory.
  * 
+ * @param <T> the instance type
  * @author Scott.Stark@jboss.org
  * @version $Revision:$
  */

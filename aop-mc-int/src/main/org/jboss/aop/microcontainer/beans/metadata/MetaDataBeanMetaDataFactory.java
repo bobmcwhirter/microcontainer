@@ -148,6 +148,7 @@ public class MetaDataBeanMetaDataFactory extends AspectManagerAwareBeanMetaDataF
    
    /**
     * Here to match the @XMLType.propOrder
+    * @param ignored ???
     */
    public void setNon$$existant$$property(String ignored)
    {

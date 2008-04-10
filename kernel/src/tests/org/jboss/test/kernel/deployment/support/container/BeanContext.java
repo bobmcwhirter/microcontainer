@@ -22,10 +22,11 @@
 package org.jboss.test.kernel.deployment.support.container;
 
 /**
+ * @param <C> the container type
  * @author Scott.Stark@jboss.org
  * @version $Revision:$
  */
-public interface BeanContext<C extends BeanContainer>
+public interface BeanContext<C extends BeanContainer<?>>
 {
    Object getInstance();
 

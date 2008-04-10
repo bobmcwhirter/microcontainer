@@ -23,11 +23,8 @@ package org.jboss.test.guice.test;
 
 import java.util.Collections;
 
-import com.google.inject.AbstractModule;
-import com.google.inject.Module;
-import com.google.inject.Key;
-import com.google.inject.name.Names;
 import junit.framework.Test;
+
 import org.jboss.beans.metadata.plugins.AbstractArrayMetaData;
 import org.jboss.beans.metadata.plugins.AbstractBeanMetaData;
 import org.jboss.beans.metadata.plugins.AbstractConstructorMetaData;
@@ -37,12 +34,15 @@ import org.jboss.beans.metadata.spi.BeanMetaData;
 import org.jboss.beans.metadata.spi.ParameterMetaData;
 import org.jboss.dependency.spi.ControllerContext;
 import org.jboss.guice.spi.GuiceKernelRegistryEntryPlugin;
-import org.jboss.kernel.plugins.bootstrap.basic.BasicBootstrap;
 import org.jboss.kernel.spi.dependency.KernelController;
+import org.jboss.test.guice.support.Prototype;
 import org.jboss.test.guice.support.Singleton;
 import org.jboss.test.guice.support.SingletonHolder;
-import org.jboss.test.guice.support.Prototype;
-import org.jboss.test.kernel.junit.MicrocontainerTest;
+
+import com.google.inject.AbstractModule;
+import com.google.inject.Key;
+import com.google.inject.Module;
+import com.google.inject.name.Names;
 
 /**
  * Inject Guice objects into MC test.

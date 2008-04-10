@@ -28,6 +28,8 @@ import java.util.List;
 import org.jboss.logging.Logger;
 
 /**
+ * @param <B> the bean type
+ * @param <C> the container type
  * @author Scott.Stark@jboss.org
  * @version $Revision:$
  */
@@ -38,7 +40,7 @@ public class BaseContext <B, C extends BeanContainer<B>>
    protected C container;
    protected B bean;
    
-   protected List<Object> interceptorInstances = new ArrayList();
+   protected List<Object> interceptorInstances = new ArrayList<Object>();
 
    public BaseContext(C container)
    {
@@ -62,11 +64,11 @@ public class BaseContext <B, C extends BeanContainer<B>>
    }
 
    
-   public HashMap<Class, Object> getInterceptorInstances()
+   public HashMap<Class<?>, Object> getInterceptorInstances()
    {
       return null;
    }
-   public List getInterceptors()
+   public List<Object> getInterceptors()
    {
       return interceptorInstances;
    }

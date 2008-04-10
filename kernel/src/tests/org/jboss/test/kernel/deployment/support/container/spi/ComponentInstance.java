@@ -27,6 +27,7 @@ import java.util.List;
  * The component context instance. This is the bean that acts as the container
  * for the component bean instances.
  * 
+ * @param <T> the context type
  * @author Scott.Stark@jboss.org
  * @version $Revision:$
  */
@@ -34,22 +35,22 @@ public interface ComponentInstance<T>
 {
    /**
     * Get the name of the bean for the component context instance
-    * @return
+    * @return the context name
     */
    public String getContextName();
    /**
     * Get the component bean names
-    * @return
+    * @return the component names
     */
    public List<String> getComponentNames();
    /**
     * Get the id associated with this component
-    * @return
+    * @return the component id
     */
    public long getComponentID();
    /**
     * Get the component context instance
-    * @return
+    * @return the context
     */
    public T getContext();
 

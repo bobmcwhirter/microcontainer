@@ -10,7 +10,6 @@ import org.jboss.beans.info.spi.BeanAccessMode;
 import org.jboss.beans.metadata.api.model.AutowireType;
 import org.jboss.beans.metadata.spi.AnnotationMetaData;
 import org.jboss.beans.metadata.spi.BeanMetaData;
-import org.jboss.beans.metadata.spi.BeanMetaDataFactory;
 import org.jboss.beans.metadata.spi.CallbackMetaData;
 import org.jboss.beans.metadata.spi.ClassLoaderMetaData;
 import org.jboss.beans.metadata.spi.ConstructorMetaData;
@@ -61,6 +60,7 @@ public class GenericComponentFactory<T>
       factoryContext = null;
    }
 
+   @SuppressWarnings("unchecked")
    public ComponentInstance<T> createComponents(String baseName)
       throws Throwable
    {
