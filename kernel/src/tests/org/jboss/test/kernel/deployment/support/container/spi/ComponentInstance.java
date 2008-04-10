@@ -19,17 +19,38 @@
  * Software Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA
  * 02110-1301 USA, or see the FSF site: http://www.fsf.org.
  */
-package org.jboss.test.kernel.deployment.support.container.plugin;
+package org.jboss.test.kernel.deployment.support.container.spi;
 
 import java.util.List;
 
-import org.jboss.beans.metadata.spi.BeanMetaData;
-
 /**
+ * The component context instance. This is the bean that acts as the container
+ * for the component bean instances.
+ * 
  * @author Scott.Stark@jboss.org
  * @version $Revision:$
  */
-public interface ComponentBeanMetaDataFactory
+public interface ComponentInstance<T>
 {
-   public List<BeanMetaData> getBeans(String baseName, long compID, ComponentNameBuilder nameBuilder);
+   /**
+    * Get the name of the bean for the component context instance
+    * @return
+    */
+   public String getContextName();
+   /**
+    * Get the component bean names
+    * @return
+    */
+   public List<String> getComponentNames();
+   /**
+    * Get the id associated with this component
+    * @return
+    */
+   public long getComponentID();
+   /**
+    * Get the component context instance
+    * @return
+    */
+   public T getContext();
+
 }

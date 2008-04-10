@@ -19,14 +19,29 @@
  * Software Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA
  * 02110-1301 USA, or see the FSF site: http://www.fsf.org.
  */
-package org.jboss.test.kernel.deployment.support.container.plugin;
+package org.jboss.test.kernel.deployment.support.container.spi;
 
 /**
+ * Abstraction for building/parsing component names
+ * 
  * @author Scott.Stark@jboss.org
  * @version $Revision:$
  */
 public interface ComponentNameBuilder
 {
+   /**
+    * Create a globally unique mc bean name
+    * @param baseName - base name used to derive unique bean name
+    * @param compName - the component name used to derive unique bean name
+    * @param compID - component id used to derive unique bean name
+    * @return the unique mc bean name
+    */
    public String buildName(String baseName, String compName, long compID);
-   public long getCompID(String name) throws NumberFormatException;
+   /**
+    * Parse a mc bean name for the component id
+    * @param name - the mc bean name
+    * @return the component id
+    * @throws NumberFormatException
+    */
+   public long getComponentID(String name) throws NumberFormatException;
 }

@@ -1,4 +1,4 @@
-package org.jboss.test.kernel.deployment.support.container.spi;
+package org.jboss.test.kernel.deployment.support.container.plugin;
 
 import java.util.ArrayList;
 import java.util.Iterator;
@@ -29,19 +29,25 @@ import org.jboss.kernel.spi.dependency.KernelController;
 import org.jboss.kernel.spi.dependency.KernelControllerContext;
 import org.jboss.kernel.spi.dependency.KernelControllerContextAware;
 import org.jboss.reflect.spi.TypeInfo;
-import org.jboss.test.kernel.deployment.support.container.plugin.ComponentFactory;
+import org.jboss.test.kernel.deployment.support.container.spi.ComponentBeanMetaDataFactory;
+import org.jboss.test.kernel.deployment.support.container.spi.ComponentFactory;
+import org.jboss.test.kernel.deployment.support.container.spi.ComponentInstance;
+import org.jboss.test.kernel.deployment.support.container.spi.ComponentNameBuilder;
+import org.jboss.test.kernel.deployment.support.container.spi.ComponentVisitor;
 import org.jboss.util.JBossStringBuilder;
 
-public class GenericComponentFactory
-   implements ComponentFactory, KernelControllerContextAware
+public class GenericComponentFactory<T>
+   implements ComponentFactory<T>, ComponentNameBuilder, KernelControllerContextAware
 {
-   private BeanMetaDataFactory componentsFactory;
+   private ComponentBeanMetaDataFactory componentsFactory;
    private AtomicLong compID = new AtomicLong(0);
    private KernelControllerContext factoryContext;
+   private ComponentVisitor visitor;
 
-   public GenericComponentFactory(BeanMetaDataFactory factory)
+   public GenericComponentFactory(ComponentBeanMetaDataFactory factory, ComponentVisitor visitor)
    {
       this.componentsFactory = factory;
+      this.visitor = visitor;
    }
 
    public void setKernelControllerContext(KernelControllerContext context)
@@ -55,33 +61,33 @@ public class GenericComponentFactory
       factoryContext = null;
    }
 
-   public List<String> createComponents(String baseName)
+   public ComponentInstance<T> createComponents(String baseName)
       throws Throwable
    {
       ArrayList<String> compNames = new ArrayList<String>();
       long nextID = compID.incrementAndGet();
       KernelController controller = (KernelController) factoryContext.getController();
-      List<BeanMetaData> compBeans = componentsFactory.getBeans();
+      List<BeanMetaData> compBeans = componentsFactory.getBeans(baseName, nextID, this, visitor);
+      T t = null;
       for(BeanMetaData bmd : compBeans)
       {
-         String beanName = buildComponentName(baseName, bmd.getName(), nextID);
+         String beanName = buildName(baseName, bmd.getName(), nextID);
          BeanMetaDataName nbmd = new BeanMetaDataName(beanName, bmd);
-         controller.install(nbmd);
+         KernelControllerContext kcc = controller.install(nbmd);
+         if(t == null)
+            t = (T) kcc.getTarget();
          compNames.add(beanName);
       }
-      Set<ControllerContext> notInstalled = controller.getNotInstalled();
-      if(notInstalled.size() != 0)
-         throw new IllegalStateException(notInstalled.toString());
-     return compNames;
+      GenericComponentInstance<T> instance = new GenericComponentInstance<T>(t, compNames, nextID);
+      return instance;
    }
 
-   public void destroyComponents(String baseName, long compID) throws Exception
+   public void destroyComponents(ComponentInstance<T> instance) throws Exception
    {
       KernelController controller = (KernelController) factoryContext.getController();
-      List<BeanMetaData> compBeans = componentsFactory.getBeans();
-      for(BeanMetaData bmd : compBeans)
+      List<String> compBeans = instance.getComponentNames();
+      for(String beanName : compBeans)
       {
-         String beanName = buildComponentName(baseName, bmd.getName(), compID);
          controller.uninstall(beanName);
       }
    }
@@ -98,15 +104,23 @@ public class GenericComponentFactory
       return id;
    }
 
-   public BeanMetaDataFactory getFactory()
+   public String buildName(String baseName, String compName, long compID)
+   {
+      String beanName = baseName + "@" + compName + "#" + compID;
+      return beanName;
+   }
+
+   public ComponentBeanMetaDataFactory getFactory()
    {
       return componentsFactory;
    }
 
-   protected String buildComponentName(String baseName, String compName, long compID)
+   public void validate()
    {
-      String beanName = baseName + "@" + compName + "#" + compID;
-      return beanName;
+      KernelController controller = (KernelController) factoryContext.getController();
+      Set<ControllerContext> notInstalled = controller.getNotInstalled();
+      if(notInstalled.size() != 0)
+         throw new IllegalStateException(notInstalled.toString());
    }
 
    static class BeanMetaDataName implements BeanMetaData

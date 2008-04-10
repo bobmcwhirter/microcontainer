@@ -19,7 +19,7 @@
  * Software Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA
  * 02110-1301 USA, or see the FSF site: http://www.fsf.org.
  */
-package org.jboss.test.kernel.deployment.support.container.plugin;
+package org.jboss.test.kernel.deployment.support.container.spi;
 
 import java.util.List;
 
@@ -32,13 +32,13 @@ import org.jboss.beans.metadata.spi.BeanMetaDataFactory;
  * @author Scott.Stark@jboss.org
  * @version $Revision:$
  */
-public interface ComponentFactory
+public interface ComponentFactory<T>
 {
    /**
     * the factory which defines template BeanMetaData[] for the components
     * @return the BeanMetaDataFactory defining the component beans
     */
-   public BeanMetaDataFactory getFactory();
+   public ComponentBeanMetaDataFactory getFactory();
 
    /**
     * Install a collection of mc beans based on the factory metadata.
@@ -46,10 +46,10 @@ public interface ComponentFactory
     * @param baseName - the base bean name used in conjuction wth the factory.getBeans()
     *    BeanMetaData instances getName() to build the unique bean name:
     *    baseName + bmd.getName() + "#" + compID;
-    * @return the list of mc bean names installed.
+    * @return the component context instance information.
     * @throws Throwable - on failure to install the component beans
     */
-   public List<String> createComponents(String baseName)
+   public ComponentInstance<T> createComponents(String baseName)
       throws Throwable;
 
    /**
@@ -62,10 +62,10 @@ public interface ComponentFactory
    public long getComponentID(String name) throws NumberFormatException;
 
    /**
-    * Uninstall the component beans for the given base name, component id
-    * @param baseName - the baseName previously passed to createComponents
+    * Uninstall the component beans for the given instance
+    * @param instance - the ComponentInstance previously returned from createComponents
     * @throws Exception - on failure to uninstall the component beans
     */
-   public void destroyComponents(String baseName, long compID)
+   public void destroyComponents(ComponentInstance<T> instance)
       throws Exception;
 }

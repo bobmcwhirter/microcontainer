@@ -49,12 +49,15 @@ import org.jboss.kernel.spi.config.KernelConfigurator;
 import org.jboss.kernel.spi.dependency.KernelControllerContext;
 import org.jboss.kernel.spi.dependency.KernelControllerContextAware;
 import org.jboss.logging.Logger;
+import org.jboss.test.kernel.deployment.support.container.spi.ComponentBeanMetaDataFactory;
+import org.jboss.test.kernel.deployment.support.container.spi.ComponentNameBuilder;
+import org.jboss.test.kernel.deployment.support.container.spi.ComponentVisitor;
 
 /**
  * @author Scott.Stark@jboss.org
  * @version $Revision:$
  */
-public class BeanContextFactory<T> implements BeanMetaDataFactory, KernelControllerContextAware
+public class BeanContextFactory<T> implements ComponentBeanMetaDataFactory, KernelControllerContextAware
 {
    private static final Logger log = Logger.getLogger(BeanContextFactory.class);
    private String beanClass;
@@ -124,23 +127,26 @@ public class BeanContextFactory<T> implements BeanMetaDataFactory, KernelControl
    /**
     * Create the beans that make up the bean component
     */
-   public List<BeanMetaData> getBeans()
+   public List<BeanMetaData> getBeans(String baseName, long compID,
+         ComponentNameBuilder nameBuilder, ComponentVisitor visitor)
    {
       ArrayList<BeanMetaData> beans = new ArrayList<BeanMetaData>();
       try
       {         
          // Create the BeanContext factory
-         String contextName = "ContextFactory";
+         String contextName = nameBuilder.buildName(baseName, "ContextFactory", compID);
          BeanMetaDataBuilder contextBuilder = BeanMetaDataBuilder.createBuilder(contextName, BaseContext.class.getName());
          contextBuilder.setAccessMode(BeanAccessMode.ALL);
          // The BaseContext ctor
          contextBuilder.addConstructorParameter(BeanContainer.class.getName(), container);
          // BaseContext properties
          // BaseContext.instance
-         String beanName = "BeanInstance";
+         String beanName = nameBuilder.buildName(baseName, "BeanInstance", compID);
          ValueMetaData beanInstance = contextBuilder.createInject(beanName);
          contextBuilder.addPropertyMetaData("instance", beanInstance);
-
+         // Call the visitor to augment the metadata
+         if(visitor != null)
+            visitor.visit(contextBuilder, baseName, "ContextFactory", compID);
          BeanMetaData beanContext = contextBuilder.getBeanMetaData();
          beans.add(beanContext);
    
@@ -158,11 +164,15 @@ public class BeanContextFactory<T> implements BeanMetaDataFactory, KernelControl
          int count = interceptorNames != null ? interceptorNames.size() : 0;
          for(int n = 0; n < count; n ++)
          {
-            String name = "Interceptor:"+n;
+            String iCompName = "Interceptor:"+n;
+            String iname = nameBuilder.buildName(baseName, iCompName, compID);
             String iclass = interceptorNames.get(n);
-            BeanMetaDataBuilder ibuilder = BeanMetaDataBuilder.createBuilder(name, iclass);
+            BeanMetaDataBuilder ibuilder = BeanMetaDataBuilder.createBuilder(iname, iclass);
             ibuilder.addInstall("addInterceptor", contextName);
             ibuilder.addUninstall("removeInterceptor", contextName);
+            // Call the visitor to augment the metadata
+            if(visitor != null)
+               visitor.visit(contextBuilder, baseName, iCompName, compID);
             Set<TestInjectionMetaData> injectMDs = interceptorInjectionMD.get(iclass);
             if(injectMDs != null)
                addDependencyInjection(beanClass, injectMDs, beanBuilder);
@@ -205,26 +215,6 @@ public class BeanContextFactory<T> implements BeanMetaDataFactory, KernelControl
                }
             }
          }
-      }
-   }
-   private class PropertyMap extends HashMap<String, ValueMetaData> implements MetaDataVisitorNode
-   {
-      /** The serialVersionUID */
-      private static final long serialVersionUID = -4295725682462294630L;
-
-      public void initialVisit(MetaDataVisitor visitor)
-      {
-         visitor.initialVisit(this);
-      }
-
-      public void describeVisit(MetaDataVisitor vistor)
-      {
-         vistor.describeVisit(this);
-      }
-
-      public Iterator<? extends MetaDataVisitorNode> getChildren()
-      {
-         return values().iterator();
       }
    }
 }

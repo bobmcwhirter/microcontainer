@@ -36,7 +36,6 @@ import org.jboss.beans.metadata.plugins.AbstractParameterMetaData;
 import org.jboss.beans.metadata.plugins.AbstractPropertyMetaData;
 import org.jboss.beans.metadata.plugins.AbstractValueFactoryMetaData;
 import org.jboss.beans.metadata.plugins.AbstractValueMetaData;
-import org.jboss.beans.metadata.spi.BeanMetaData;
 import org.jboss.beans.metadata.spi.BeanMetaDataFactory;
 import org.jboss.beans.metadata.spi.ParameterMetaData;
 import org.jboss.beans.metadata.spi.PropertyMetaData;
@@ -47,7 +46,8 @@ import org.jboss.test.kernel.deployment.support.container.Bean1Type;
 import org.jboss.test.kernel.deployment.support.container.BeanContainer;
 import org.jboss.test.kernel.deployment.support.container.BeanContextFactory;
 import org.jboss.test.kernel.deployment.support.container.InstanceInterceptor;
-import org.jboss.test.kernel.deployment.support.container.spi.GenericComponentFactory;
+import org.jboss.test.kernel.deployment.support.container.plugin.GenericComponentFactory;
+import org.jboss.test.kernel.deployment.support.container.spi.ComponentVisitor;
 
 /**
  * Programatic version of the BeanContainerUsageTestCase tests
@@ -215,7 +215,8 @@ public class BeanContainerUsageMDTestCase extends BeanContainerUsageTestCase
       BeanMetaDataFactory contextFactoryMD = installBeanInstance("ComponentBeanFactory", contextFactory);
       beanFactories.add(contextFactoryMD);
       */
-      GenericComponentFactory componentFactory = new GenericComponentFactory(contextFactory);
+      ComponentVisitor visitor = null;
+      GenericComponentFactory componentFactory = new GenericComponentFactory(contextFactory, visitor);
       BeanMetaDataFactory componentFactoryMD = installBeanInstance("ComponentBeanFactory", componentFactory);
       beanFactories.add(componentFactoryMD);
       deployment.setBeanFactories(beanFactories);

@@ -42,7 +42,8 @@ import org.jboss.test.kernel.deployment.support.container.Bean1Type;
 import org.jboss.test.kernel.deployment.support.container.Bean2Type;
 import org.jboss.test.kernel.deployment.support.container.BeanContainer;
 import org.jboss.test.kernel.deployment.support.container.BeanPool;
-import org.jboss.test.kernel.deployment.support.container.plugin.ComponentFactory;
+import org.jboss.test.kernel.deployment.support.container.spi.ComponentFactory;
+import org.jboss.test.kernel.deployment.support.container.spi.ComponentInstance;
 
 /**
  * Bean Container Test Case.
@@ -113,23 +114,26 @@ public class BeanContainerUsageTestCase extends AbstractKernelTest
       deployer.shutdown();
    }
 
-   /*
    public void testComponentBeanFactory()
       throws Throwable
    {
       bootstrap();
-      ComponentFactory factory = (ComponentFactory) getBean("ComponentBeanFactory");
+      ComponentFactory<BaseContext<Bean1Type, BeanContainer<Bean1Type>>> factory =
+         (ComponentFactory<BaseContext<Bean1Type, BeanContainer<Bean1Type>>>) getBean("ComponentBeanFactory");
       getLog().info("ComponentBeanFactory bean: "+factory);
-      assertNotNull(factory);
 
-      List<String> beanNames = factory.createComponents("ComponentBeanFactory");
+      ComponentInstance<BaseContext<Bean1Type, BeanContainer<Bean1Type>>> contextInstance =
+         factory.createComponents("ComponentBeanFactory");
+      List<String> beanNames = contextInstance.getComponentNames();
       getLog().info("createComponents(ComponentBeanFactory): "+beanNames);
+      long compID = contextInstance.getComponentID();
+      BaseContext<Bean1Type, BeanContainer<Bean1Type>> context = contextInstance.getContext();
+      String contextName = contextInstance.getContextName();
 
       Object interceptor = getBean("ComponentBeanFactory@Interceptor:0#1");
       assertNotNull(interceptor);
       deployer.shutdown();
    }
-   */
 
    /**
     * There is no xml version of ?
