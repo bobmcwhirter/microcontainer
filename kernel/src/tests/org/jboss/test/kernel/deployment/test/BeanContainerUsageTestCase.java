@@ -23,9 +23,13 @@ package org.jboss.test.kernel.deployment.test;
 
 import java.lang.reflect.Method;
 import java.net.URL;
+import java.util.Collections;
+import java.util.HashSet;
+import java.util.Set;
 
 import junit.framework.Test;
 
+import org.jboss.dependency.spi.ControllerContext;
 import org.jboss.dependency.spi.ControllerMode;
 import org.jboss.dependency.spi.ControllerState;
 import org.jboss.dependency.spi.ControllerStateModel;
@@ -160,6 +164,35 @@ public class BeanContainerUsageTestCase extends AbstractKernelTest
    protected void shutdown()
    {
       deployer.shutdown();
+   }
+   protected void assertNoBeansExist()
+   {
+      KernelController controller = kernel.getController();
+      ControllerStateModel states = controller.getStates();
+      int beanCount = 0;
+      for(ControllerState s : states)
+      {
+         Set<ControllerContext> ctxs = controller.getContextsByState(s);
+         beanCount += ctxs.size();
+      }
+      assertEquals(0, beanCount);
+   }
+   protected void assertBeansExist(Set<String> names)
+   {
+      HashSet<String> unexpectedBeanNames = new HashSet<String>();
+      KernelController controller = kernel.getController();
+      ControllerStateModel states = controller.getStates();
+      for(ControllerState s : states)
+      {
+         Set<ControllerContext> ctxs = controller.getContextsByState(s);
+         for(ControllerContext ctx : ctxs)
+         {
+            String name = ctx.getName().toString();
+            if(names.contains(name) == false)
+               unexpectedBeanNames.add(name);
+         }
+      }
+      assertEquals(Collections.emptySet(), unexpectedBeanNames);
    }
    protected Object getBean(final Object name)
    {

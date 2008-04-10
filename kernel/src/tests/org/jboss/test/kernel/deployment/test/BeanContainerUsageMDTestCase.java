@@ -70,25 +70,95 @@ public class BeanContainerUsageMDTestCase extends BeanContainerUsageTestCase
       super(name);
    }
 
+   /**
+    * Test of the ComponentFactory usecase
+    * 
+    * @see {@link GenericComponentFactory}
+    * @see {@link ComponentFactory}
+    * @throws Throwable
+    */
    @SuppressWarnings("unchecked")
    public void testComponentBeanFactory()
       throws Throwable
    {
       bootstrap();
+      // Lookup the ComponentFactory implementation
       ComponentFactory<BaseContext<Bean1Type, BeanContainer<Bean1Type>>> factory =
          (ComponentFactory<BaseContext<Bean1Type, BeanContainer<Bean1Type>>>) getBean("ComponentBeanFactory");
       getLog().info("ComponentBeanFactory bean: "+factory);
-   
+      // Create a component instance
       ComponentInstance<BaseContext<Bean1Type, BeanContainer<Bean1Type>>> contextInstance =
          factory.createComponents("ComponentBeanFactory");
+      // Validate the component bean names
       List<String> beanNames = contextInstance.getComponentNames();
       getLog().info("createComponents(ComponentBeanFactory): "+beanNames);
-      // ??? long compID = contextInstance.getComponentID();
-      // ??? BaseContext<Bean1Type, BeanContainer<Bean1Type>> context = contextInstance.getContext();
-      // ??? String contextName = contextInstance.getContextName();
+
+      HashSet<String> expectedBeanNames = new HashSet<String>();
+      expectedBeanNames.add("ComponentBeanFactory@ContextFactory#1");
+      expectedBeanNames.add("ComponentBeanFactory@BeanInstance#1");
+      expectedBeanNames.add("ComponentBeanFactory@Interceptor:0#1");
+      assertEquals(expectedBeanNames, new HashSet<String>(beanNames));
+      long compID = contextInstance.getComponentID();
+      assertEquals(1, compID);
+      BaseContext<Bean1Type, BeanContainer<Bean1Type>> context = contextInstance.getContext();
+      assertNotNull(context);
+      String contextName = contextInstance.getContextName();
+      assertEquals("ComponentBeanFactory@ContextFactory#1", contextName);
+      Object contextBean = getBean("ComponentBeanFactory@ContextFactory#1");
+      assertTrue(contextBean == context);
+      Bean1Type bean1 = (Bean1Type) getBean("ComponentBeanFactory@BeanInstance#1");
+      assertTrue(bean1 == context.getInstance());
    
       Object interceptor = getBean("ComponentBeanFactory@Interceptor:0#1");
       assertNotNull(interceptor);
+      List expectedInterceptors = new ArrayList();
+      expectedInterceptors.add(interceptor);
+      List interceptors = context.getInterceptors();
+      assertEquals(interceptors, expectedInterceptors);
+
+      factory.destroyComponents(contextInstance);
+      expectedBeanNames.clear();
+      expectedBeanNames.add("ComponentBeanFactory");
+      // Only the ComponentBeanFactory should exist
+      assertBeansExist(expectedBeanNames);
+      contextInstance = null;
+
+      // Create a second component instance
+      ComponentInstance<BaseContext<Bean1Type, BeanContainer<Bean1Type>>> contextInstance2 =
+         factory.createComponents("ComponentBeanFactory");
+      // Validate the component bean names
+      List<String> beanNames2 = contextInstance2.getComponentNames();
+      getLog().info("createComponents(ComponentBeanFactory): "+beanNames2);
+      expectedBeanNames = new HashSet<String>();
+      expectedBeanNames.add("ComponentBeanFactory@ContextFactory#2");
+      expectedBeanNames.add("ComponentBeanFactory@BeanInstance#2");
+      expectedBeanNames.add("ComponentBeanFactory@Interceptor:0#2");
+      assertEquals(expectedBeanNames, new HashSet<String>(beanNames2));
+      compID = contextInstance2.getComponentID();
+      assertEquals(2, compID);
+      BaseContext<Bean1Type, BeanContainer<Bean1Type>> context2 = contextInstance2.getContext();
+      assertNotNull(context2);
+      String contextName2 = contextInstance2.getContextName();
+      assertEquals("ComponentBeanFactory@ContextFactory#2", contextName2);
+      Object contextBean2 = getBean("ComponentBeanFactory@ContextFactory#2");
+      assertTrue(contextBean2 == context2);
+      Bean1Type bean2 = (Bean1Type) getBean("ComponentBeanFactory@BeanInstance#2");
+      assertTrue(bean2 == context2.getInstance());
+      assertTrue(bean2 != bean1);
+ 
+      Object interceptor2 = getBean("ComponentBeanFactory@Interceptor:0#2");
+      assertNotNull(interceptor2);
+      List expectedInterceptors2 = new ArrayList();
+      expectedInterceptors2.add(interceptor2);
+      List interceptors2 = context2.getInterceptors();
+      assertEquals(interceptors2, expectedInterceptors2);
+
+      factory.destroyComponents(contextInstance2);
+      expectedBeanNames.clear();
+      expectedBeanNames.add("ComponentBeanFactory");
+      // Only the ComponentBeanFactory should exist
+      assertBeansExist(expectedBeanNames);
+
       shutdown();
    }
 
