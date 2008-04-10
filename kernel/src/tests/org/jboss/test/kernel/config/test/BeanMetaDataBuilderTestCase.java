@@ -24,6 +24,7 @@ package org.jboss.test.kernel.config.test;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collection;
+import java.util.Collections;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
@@ -37,12 +38,15 @@ import org.jboss.beans.metadata.spi.CallbackMetaData;
 import org.jboss.beans.metadata.spi.ValueMetaData;
 import org.jboss.beans.metadata.spi.builder.BeanMetaDataBuilder;
 import org.jboss.dependency.spi.Cardinality;
+import org.jboss.dependency.spi.ControllerContext;
 import org.jboss.dependency.spi.ControllerState;
 import org.jboss.kernel.Kernel;
 import org.jboss.kernel.plugins.deployment.AbstractKernelDeployer;
 import org.jboss.kernel.plugins.deployment.AbstractKernelDeployment;
 import org.jboss.kernel.spi.dependency.KernelController;
 import org.jboss.kernel.spi.dependency.KernelControllerContext;
+import org.jboss.metadata.spi.MetaData;
+import org.jboss.test.kernel.config.support.SimpleAnnotation;
 import org.jboss.test.kernel.config.support.SimpleBean;
 import org.jboss.test.kernel.config.support.SimpleCallbackBean;
 import org.jboss.test.kernel.config.support.SimpleLifecycleBean;
@@ -737,6 +741,60 @@ public class BeanMetaDataBuilderTestCase extends AbstractKernelConfigTest
          assertNotNull(bean.getTransformers());
          assertEquals(1, bean.getTransformers().size());
          assertSame(transformer, bean.getTransformers().iterator().next());
+      }
+      finally
+      {
+         controller.shutdown();
+      }
+   }
+
+   public void testAliases() throws Throwable
+   {
+      Kernel kernel = bootstrap();
+      KernelController controller = kernel.getController();
+      try
+      {
+         BeanMetaDataBuilder builder = BeanMetaDataBuilderFactory.createBuilder("bean", SimpleBean.class.getName());
+         builder.addAlias("alias");
+         controller.install(builder.getBeanMetaData());
+         assertNotNull(controller.getInstalledContext("alias"));
+
+         builder = BeanMetaDataBuilderFactory.createBuilder("other", SimpleBean.class.getName());
+         Object foobar = "foobar";
+         builder.setAliases(Collections.singleton(foobar));
+         controller.install(builder.getBeanMetaData());
+         assertNotNull(controller.getInstalledContext("foobar"));
+      }
+      finally
+      {
+         controller.shutdown();
+      }
+   }
+
+   public void testAnnotations() throws Throwable
+   {
+      Kernel kernel = bootstrap();
+      KernelController controller = kernel.getController();
+      try
+      {
+         BeanMetaDataBuilder builder = BeanMetaDataBuilderFactory.createBuilder("bean", SimpleBean.class.getName());
+         builder.addAnnotation("@" + SimpleAnnotation.class.getName() + "(name=\"foobar\")");
+         controller.install(builder.getBeanMetaData());
+         ControllerContext cc = controller.getInstalledContext("bean");
+         assertNotNull(cc);
+         MetaData metaData = cc.getScopeInfo().getMetaData();
+         assertNotNull(metaData);
+         assertNotNull(metaData.getAnnotation(SimpleAnnotation.class));
+
+         builder = BeanMetaDataBuilderFactory.createBuilder("other", SimpleBean.class.getName());
+         builder.setAnnotations(Collections.singleton("@" + SimpleAnnotation.class.getName() + "(name=\"foobar\")"));
+         controller.install(builder.getBeanMetaData());
+         assertNotNull(controller.getInstalledContext("other"));
+         cc = controller.getInstalledContext("bean");
+         assertNotNull(cc);
+         metaData = cc.getScopeInfo().getMetaData();
+         assertNotNull(metaData);
+         assertNotNull(metaData.getAnnotation(SimpleAnnotation.class));
       }
       finally
       {
