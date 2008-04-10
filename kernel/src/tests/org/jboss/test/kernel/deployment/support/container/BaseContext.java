@@ -22,7 +22,6 @@
 package org.jboss.test.kernel.deployment.support.container;
 
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.List;
 
 import org.jboss.logging.Logger;
@@ -63,11 +62,6 @@ public class BaseContext <B, C extends BeanContainer<B>>
       log.info("setInstance, bean: "+bean);
    }
 
-   
-   public HashMap<Class<?>, Object> getInterceptorInstances()
-   {
-      return null;
-   }
    public List<Object> getInterceptors()
    {
       return interceptorInstances;
