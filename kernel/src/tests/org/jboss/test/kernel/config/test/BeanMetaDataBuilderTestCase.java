@@ -789,8 +789,7 @@ public class BeanMetaDataBuilderTestCase extends AbstractKernelConfigTest
          builder = BeanMetaDataBuilderFactory.createBuilder("other", SimpleBean.class.getName());
          builder.setAnnotations(Collections.singleton("@" + SimpleAnnotation.class.getName() + "(name=\"foobar\")"));
          controller.install(builder.getBeanMetaData());
-         assertNotNull(controller.getInstalledContext("other"));
-         cc = controller.getInstalledContext("bean");
+         cc = controller.getInstalledContext("other");
          assertNotNull(cc);
          metaData = cc.getScopeInfo().getMetaData();
          assertNotNull(metaData);

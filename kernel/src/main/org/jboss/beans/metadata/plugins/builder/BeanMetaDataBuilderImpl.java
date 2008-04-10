@@ -137,18 +137,128 @@ class BeanMetaDataBuilderImpl extends BeanMetaDataBuilder
    {
       this.beanMetaData = beanMetaData;
       // lifecycle builders
-      createBuilder = new CreateLifecycleMetaDataBuilder(beanMetaData);
-      startBuilder = new StartLifecycleMetaDataBuilder(beanMetaData);
-      stopBuilder = new StopLifecycleMetaDataBuilder(beanMetaData);
-      destroyBuilder = new DestroyLifecycleMetaDataBuilder(beanMetaData);
+      createBuilder = createCreateLifecycleMetaDataBuilder(beanMetaData);
+      startBuilder = createStartLifecycleMetaDataBuilder(beanMetaData);
+      stopBuilder = createStopLifecycleMetaDataBuilder(beanMetaData);
+      destroyBuilder = createDestroyLifecycleMetaDataBuilder(beanMetaData);
       // install
-      installBuilder = new InstallMetaDataBuilder(beanMetaData);
-      uninstallBuilder = new UninstallMetaDataBuilder(beanMetaData);
+      installBuilder = createInstallMetaDataBuilder(beanMetaData);
+      uninstallBuilder = createUninstallMetaDataBuilder(beanMetaData);
       // callback
-      propIncallbackBuilder = new PropertyInstallCallbackMetaDataBuilder(beanMetaData);
-      propUncallbackBuilder = new PropertyUninstallCallbackMetaDataBuilder(beanMetaData);
-      incallbackBuilder = new InstallCallbackMetaDataBuilder(beanMetaData);
-      uncallbackBuilder = new UninstallCallbackMetaDataBuilder(beanMetaData);
+      propIncallbackBuilder = createPropertyInstallCallbackMetaDataBuilder(beanMetaData);
+      propUncallbackBuilder = createPropertyUninstallCallbackMetaDataBuilder(beanMetaData);
+      incallbackBuilder = createInstallCallbackMetaDataBuilder(beanMetaData);
+      uncallbackBuilder = createUninstallCallbackMetaDataBuilder(beanMetaData);
+   }
+
+   /**
+    * Create lifecycle metadata builder.
+    *
+    * @param beanMetaData the bean metadata
+    * @return the lifecycle metadata builder
+    */
+   protected LifecycleMetaDataBuilder createCreateLifecycleMetaDataBuilder(AbstractBeanMetaData beanMetaData)
+   {
+      return new CreateLifecycleMetaDataBuilder(beanMetaData);
+   }
+
+   /**
+    * Create lifecycle metadata builder.
+    *
+    * @param beanMetaData the bean metadata
+    * @return the lifecycle metadata builder
+    */
+   protected LifecycleMetaDataBuilder createStartLifecycleMetaDataBuilder(AbstractBeanMetaData beanMetaData)
+   {
+      return new StartLifecycleMetaDataBuilder(beanMetaData);
+   }
+
+   /**
+    * Create lifecycle metadata builder.
+    *
+    * @param beanMetaData the bean metadata
+    * @return the lifecycle metadata builder
+    */
+   protected LifecycleMetaDataBuilder createStopLifecycleMetaDataBuilder(AbstractBeanMetaData beanMetaData)
+   {
+      return new StopLifecycleMetaDataBuilder(beanMetaData);
+   }
+
+   /**
+    * Create lifecycle metadata builder.
+    *
+    * @param beanMetaData the bean metadata
+    * @return the lifecycle metadata builder
+    */
+   protected LifecycleMetaDataBuilder createDestroyLifecycleMetaDataBuilder(AbstractBeanMetaData beanMetaData)
+   {
+      return new DestroyLifecycleMetaDataBuilder(beanMetaData);
+   }
+
+   /**
+    * Create install metadata builder.
+    *
+    * @param beanMetaData the bean metadata
+    * @return the install builder
+    */
+   protected StateActionBuilder<AbstractInstallMetaData> createInstallMetaDataBuilder(AbstractBeanMetaData beanMetaData)
+   {
+      return new InstallMetaDataBuilder(beanMetaData);
+   }
+
+   /**
+    * Create install metadata builder.
+    *
+    * @param beanMetaData the bean metadata
+    * @return the install builder
+    */
+   protected StateActionBuilder<AbstractInstallMetaData> createUninstallMetaDataBuilder(AbstractBeanMetaData beanMetaData)
+   {
+      return new UninstallMetaDataBuilder(beanMetaData);
+   }
+
+   /**
+    * Create callback metadata builder.
+    *
+    * @param beanMetaData the bean metadata
+    * @return the callback metadata builder
+    */
+   private StateActionBuilder<AbstractCallbackMetaData> createPropertyInstallCallbackMetaDataBuilder(AbstractBeanMetaData beanMetaData)
+   {
+      return new PropertyInstallCallbackMetaDataBuilder(beanMetaData);
+   }
+
+   /**
+    * Create callback metadata builder.
+    *
+    * @param beanMetaData the bean metadata
+    * @return the callback metadata builder
+    */
+   private StateActionBuilder<AbstractCallbackMetaData> createPropertyUninstallCallbackMetaDataBuilder(AbstractBeanMetaData beanMetaData)
+   {
+      return new PropertyUninstallCallbackMetaDataBuilder(beanMetaData);
+   }
+
+   /**
+    * Create callback metadata builder.
+    *
+    * @param beanMetaData the bean metadata
+    * @return the callback metadata builder
+    */
+   private StateActionBuilder<AbstractCallbackMetaData> createInstallCallbackMetaDataBuilder(AbstractBeanMetaData beanMetaData)
+   {
+      return new InstallCallbackMetaDataBuilder(beanMetaData);
+   }
+
+   /**
+    * Create callback metadata builder.
+    *
+    * @param beanMetaData the bean metadata
+    * @return the callback metadata builder
+    */
+   private StateActionBuilder<AbstractCallbackMetaData> createUninstallCallbackMetaDataBuilder(AbstractBeanMetaData beanMetaData)
+   {
+      return new UninstallCallbackMetaDataBuilder(beanMetaData);
    }
 
    public BeanMetaData getBeanMetaData()
@@ -186,6 +296,31 @@ class BeanMetaDataBuilderImpl extends BeanMetaDataBuilder
       return this;
    }
 
+   /**
+    * Create annotation metadata.
+    *
+    * @param annotation the string annotation
+    * @return the annotation metadata
+    */
+   protected AnnotationMetaData createAnnotationMetaData(String annotation)
+   {
+      return new AbstractAnnotationMetaData(annotation);
+   }
+
+   /**
+    * Create annotation metadata.
+    *
+    * @param annotation the string annotation
+    * @param replace the replace flag
+    * @return the annotation metadata
+    */
+   protected AnnotationMetaData createAnnotationMetaData(String annotation, boolean replace)
+   {
+      AbstractAnnotationMetaData amd = new AbstractAnnotationMetaData(annotation);
+      amd.setReplace(replace);
+      return amd;
+   }
+
    public BeanMetaDataBuilder setAnnotations(Set<String> annotations)
    {
       if (annotations != null && annotations.isEmpty() == false)
@@ -193,8 +328,8 @@ class BeanMetaDataBuilderImpl extends BeanMetaDataBuilder
          Set<AnnotationMetaData> amds = new HashSet<AnnotationMetaData>();
          for (String annotation : annotations)
          {
-            AbstractAnnotationMetaData amd = new AbstractAnnotationMetaData();
-            amd.setAnnotation(annotation);
+            AnnotationMetaData amd = createAnnotationMetaData(annotation);
+            amds.add(amd);
          }
          beanMetaData.setAnnotations(amds);
       }
@@ -220,8 +355,7 @@ class BeanMetaDataBuilderImpl extends BeanMetaDataBuilder
    public BeanMetaDataBuilder addAnnotation(String annotation)
    {
       Set<AnnotationMetaData> annotations = getAnnotations();
-      AbstractAnnotationMetaData amd = new AbstractAnnotationMetaData();
-      amd.setAnnotation(annotation);
+      AnnotationMetaData amd = createAnnotationMetaData(annotation);
       annotations.add(amd);
       return this;
    }
@@ -229,9 +363,7 @@ class BeanMetaDataBuilderImpl extends BeanMetaDataBuilder
    public BeanMetaDataBuilder addAnnotation(String annotation, boolean replace)
    {
       Set<AnnotationMetaData> annotations = getAnnotations();
-      AbstractAnnotationMetaData amd = new AbstractAnnotationMetaData();
-      amd.setAnnotation(annotation);
-      amd.setReplace(replace);
+      AnnotationMetaData amd = createAnnotationMetaData(annotation, replace);
       annotations.add(amd);
       return this;
    }
@@ -248,9 +380,21 @@ class BeanMetaDataBuilderImpl extends BeanMetaDataBuilder
       return this;
    }
 
+   /**
+    * Create class loader metadata.
+    *
+    * @param classLoader the classloader value
+    * @return the classloader metadata
+    */
+   protected ClassLoaderMetaData createClassLoaderMetaData(ValueMetaData classLoader)
+   {
+      return new AbstractClassLoaderMetaData(classLoader);
+   }
+
    public BeanMetaDataBuilder setClassLoader(ValueMetaData classLoader)
    {
-      beanMetaData.setClassLoader(new AbstractClassLoaderMetaData(classLoader));
+      ClassLoaderMetaData clvmd = createClassLoaderMetaData(classLoader);
+      beanMetaData.setClassLoader(clvmd);
       return this;
    }
 
@@ -260,12 +404,22 @@ class BeanMetaDataBuilderImpl extends BeanMetaDataBuilder
       return this;
    }
 
+   /**
+    * Create abstract constructor metadata.
+    *
+    * @return abstract constructor metadata
+    */
+   protected AbstractConstructorMetaData createAbstractConstructorMetaData()
+   {
+      return new AbstractConstructorMetaData();
+   }
+
    protected void checkConstructorBuilder()
    {
       AbstractConstructorMetaData constructor = (AbstractConstructorMetaData) beanMetaData.getConstructor();
       if (constructor == null)
       {
-         constructor = new AbstractConstructorMetaData();
+         constructor = createAbstractConstructorMetaData();
          beanMetaData.setConstructor(constructor);
          constructorBuilder = new ParameterMetaDataBuilderImpl<AbstractConstructorMetaData>(constructor);
       }
@@ -324,27 +478,63 @@ class BeanMetaDataBuilderImpl extends BeanMetaDataBuilder
       return this;
    }
 
+   /**
+    * Create property metadata.
+    *
+    * @param name the name
+    * @param value the value
+    * @return property metadata
+    */
+   protected PropertyMetaData createPropertyMetaData(String name, Object value)
+   {
+      return new AbstractPropertyMetaData(name, value);
+   }
+
    public BeanMetaDataBuilder addPropertyMetaData(String name, Object value)
    {
       Set<PropertyMetaData> properties = getProperties();
       removeProperty(properties, name);
-      properties.add(new AbstractPropertyMetaData(name, value));
+      properties.add(createPropertyMetaData(name, value));
       return this;
+   }
+
+   /**
+    * Create property metadata.
+    *
+    * @param name the name
+    * @param value the value
+    * @return property metadata
+    */
+   protected PropertyMetaData createPropertyMetaData(String name, String value)
+   {
+      return new AbstractPropertyMetaData(name, value);
    }
 
    public BeanMetaDataBuilder addPropertyMetaData(String name, String value)
    {
       Set<PropertyMetaData> properties = getProperties();
       removeProperty(properties, name);
-      properties.add(new AbstractPropertyMetaData(name, value));
+      properties.add(createPropertyMetaData(name, value));
       return this;
+   }
+
+   /**
+    * Create property metadata.
+    *
+    * @param name the name
+    * @param value the value
+    * @return property metadata
+    */
+   protected PropertyMetaData createPropertyMetaData(String name, ValueMetaData value)
+   {
+      return new AbstractPropertyMetaData(name, value);
    }
 
    public BeanMetaDataBuilder addPropertyMetaData(String name, ValueMetaData value)
    {
       Set<PropertyMetaData> properties = getProperties();
       removeProperty(properties, name);
-      properties.add(new AbstractPropertyMetaData(name, value));
+      properties.add(createPropertyMetaData(name, value));
       return this;
    }
 
@@ -355,11 +545,11 @@ class BeanMetaDataBuilderImpl extends BeanMetaDataBuilder
       
       if (value instanceof ValueMetaData)
       {
-         properties.add(new AbstractPropertyMetaData(name, (ValueMetaData)value));
+         properties.add(createPropertyMetaData(name, (ValueMetaData)value));
       }
       else
       {
-         properties.add(new AbstractPropertyMetaData(name, value));
+         properties.add(createPropertyMetaData(name, value));
       }
       return this;
    }
@@ -371,15 +561,22 @@ class BeanMetaDataBuilderImpl extends BeanMetaDataBuilder
 
       if (value instanceof ValueMetaData)
       {
-         properties.add(new AbstractPropertyMetaData(name, (ValueMetaData)value));
+         properties.add(createPropertyMetaData(name, (ValueMetaData)value));
       }
       else
       {
-         properties.add(new AbstractPropertyMetaData(name, value));
+         properties.add(createPropertyMetaData(name, value));
       }
       return this;
    }
-   
+
+   /**
+    * Remove previous matching property.
+    *
+    * @param properties the properties
+    * @param name the name
+    * @return modified set of properties
+    */
    private Set<PropertyMetaData> removeProperty(Set<PropertyMetaData> properties, String name)
    {
       for (Iterator<PropertyMetaData> it = properties.iterator() ; it.hasNext() ; )
@@ -392,7 +589,12 @@ class BeanMetaDataBuilderImpl extends BeanMetaDataBuilder
       }
       return properties;
    }
-   
+
+   /**
+    * Get the properties.
+    *
+    * @return the properties
+    */
    private Set<PropertyMetaData> getProperties()
    {
       Set<PropertyMetaData> properties = beanMetaData.getProperties();
@@ -500,6 +702,21 @@ class BeanMetaDataBuilderImpl extends BeanMetaDataBuilder
       return this;
    }
 
+   /**
+    * Create supply metadata.
+    *
+    * @param supply the supply
+    * @param type the type
+    * @return supply metadata
+    */
+   protected SupplyMetaData createSupplyMetaData(Object supply, String type)
+   {
+      AbstractSupplyMetaData asmd = new AbstractSupplyMetaData(supply);
+      if (type != null)
+         asmd.setType(type);
+      return asmd;
+   }
+
    public BeanMetaDataBuilder addSupply(Object supply, String type)
    {
       Set<SupplyMetaData> supplies = beanMetaData.getSupplies();
@@ -508,11 +725,26 @@ class BeanMetaDataBuilderImpl extends BeanMetaDataBuilder
          supplies = new HashSet<SupplyMetaData>();
          beanMetaData.setSupplies(supplies);
       }
-      AbstractSupplyMetaData asmd = new AbstractSupplyMetaData(supply);
-      if (type != null)
-         asmd.setType(type);
-      supplies.add(asmd);
+      supplies.add(createSupplyMetaData(supply, type));
       return this;
+   }
+
+   /**
+    * Create demand metadata.
+    *
+    * @param demand the demand
+    * @param whenRequired the when required
+    * @param transformer the transformer
+    * @return the demand metadata
+    */
+   protected DemandMetaData createDemandMetaData(Object demand, ControllerState whenRequired, String transformer)
+   {
+      AbstractDemandMetaData admd = new AbstractDemandMetaData(demand);
+      if (whenRequired != null)
+         admd.setWhenRequired(whenRequired);
+      if (transformer != null)
+         admd.setTransformer(transformer);
+      return admd;
    }
 
    public BeanMetaDataBuilder addDemand(Object demand, ControllerState whenRequired, String transformer)
@@ -523,13 +755,13 @@ class BeanMetaDataBuilderImpl extends BeanMetaDataBuilder
          demands = new HashSet<DemandMetaData>();
          beanMetaData.setDemands(demands);
       }
-      AbstractDemandMetaData admd = new AbstractDemandMetaData(demand);
-      if (whenRequired != null)
-         admd.setWhenRequired(whenRequired);
-      if (transformer != null)
-         admd.setTransformer(transformer);
-      demands.add(admd);
+      demands.add(createDemandMetaData(demand, whenRequired, transformer));
       return this;
+   }
+
+   protected DependencyMetaData createDependencyMetaData(Object dependency)
+   {
+      return new AbstractDependencyMetaData(dependency);
    }
 
    public BeanMetaDataBuilder addDependency(Object dependency)
@@ -540,7 +772,7 @@ class BeanMetaDataBuilderImpl extends BeanMetaDataBuilder
          dependencies = new HashSet<DependencyMetaData>();
          beanMetaData.setDepends(dependencies);
       }
-      dependencies.add(new AbstractDependencyMetaData(dependency));
+      dependencies.add(createDependencyMetaData(dependency));
       return this;
    }
 
@@ -632,9 +864,21 @@ class BeanMetaDataBuilderImpl extends BeanMetaDataBuilder
       return result;
    }
 
+   /**
+    * Create abstract dependency metadata.
+    *
+    * @param bean the bean
+    * @param property the property
+    * @return abstract dependency value metadata
+    */
+   protected AbstractDependencyValueMetaData createAbstractDependencyValueMetaData(Object bean, String property)
+   {
+      return new AbstractDependencyValueMetaData(bean, property);
+   }
+
    public ValueMetaData createInject(Object bean, String property, ControllerState whenRequired, ControllerState dependentState)
    {
-      AbstractDependencyValueMetaData result = new AbstractDependencyValueMetaData(bean, property);
+      AbstractDependencyValueMetaData result = createAbstractDependencyValueMetaData(bean, property);
       if (whenRequired != null)
          result.setWhenRequiredState(whenRequired);
       if (dependentState != null)

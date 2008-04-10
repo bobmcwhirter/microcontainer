@@ -64,6 +64,11 @@ public class AbstractAnnotationMetaData extends JBossObject
       super();
    }
 
+   public AbstractAnnotationMetaData(String annotation)
+   {
+      this.annotation = annotation;
+   }
+
    public String getAnnotation()
    {
       return annotation;
