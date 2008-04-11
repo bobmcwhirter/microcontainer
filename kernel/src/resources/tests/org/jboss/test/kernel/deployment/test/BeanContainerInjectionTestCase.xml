@@ -1,0 +1,19 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<deployment xmlns="urn:jboss:bean-deployer:2.0">
+
+  <bean name="InjectPlugin" class="org.jboss.test.kernel.deployment.support.container.InjectWrapperFieldAnnotationPlugin"/>
+
+  <bean name="EJBPlugin" class="org.jboss.test.kernel.deployment.support.container.EJBAnnotationPlugin">
+    <property name="prefix">java:env/comp</property>
+  </bean>
+
+  <bean name="BMDAdapter" class="org.jboss.kernel.plugins.annotations.AbstractMetaDataAnnotationAdapter">
+    <incallback method="addAnnotationPlugin"/>
+    <uncallback method="removeAnnotationPlugin"/>
+  </bean>
+
+  <!-- mock jndi bean -->
+  <bean name="java:env/comp/other" class="org.jboss.test.kernel.deployment.support.container.OtherSessionBean"/>
+
+</deployment>

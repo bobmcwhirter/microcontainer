@@ -101,7 +101,7 @@ public abstract class InjectableMemberAnnotationPlugin<T extends AnnotatedInfo, 
     */
    protected PropertyMetaData getPropertyMetaData(T info, C annotation)
    {
-      ValueMetaData value = createValueMetaData(annotation);
+      ValueMetaData value = createValueMetaData(info, annotation);
       if (value == null)
          throw new IllegalArgumentException("Should not return null value, " + this);
 
@@ -129,8 +129,23 @@ public abstract class InjectableMemberAnnotationPlugin<T extends AnnotatedInfo, 
    /**
     * Create value meta data.
     *
+    * @param info the info
+    * @param annotation the annotation
+    * @return value metadata
+    */
+   protected ValueMetaData createValueMetaData(T info, C annotation)
+   {
+      return createValueMetaData(annotation);
+   }
+
+   /**
+    * Create value meta data.
+    *
     * @param annotation the annotation
     * @return value meta data
     */
-   public abstract ValueMetaData createValueMetaData(C annotation);
+   public ValueMetaData createValueMetaData(C annotation)
+   {
+      throw new IllegalArgumentException("Missing createValueMetaData(" + getAnnotation() + ") implementation!");  
+   }
 }

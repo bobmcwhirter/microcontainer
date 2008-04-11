@@ -23,9 +23,10 @@ package org.jboss.test.kernel.deployment.test;
 
 import java.util.List;
 
+import junit.framework.Test;
 import org.jboss.test.kernel.deployment.support.container.BaseContext;
-import org.jboss.test.kernel.deployment.support.container.ScopedContainer;
 import org.jboss.test.kernel.deployment.support.container.InstanceInterceptor;
+import org.jboss.test.kernel.deployment.support.container.ScopedContainer;
 
 /**
  * Test controller scopes.
@@ -37,6 +38,11 @@ public class BeanContainerScopingTestCase extends ScopingDeploymentTest
    public BeanContainerScopingTestCase(String name) throws Throwable
    {
       super(name);
+   }
+
+   public static Test suite()
+   {
+      return suite(BeanContainerScopingTestCase.class);
    }
 
    public void testControllerScopes() throws Throwable
