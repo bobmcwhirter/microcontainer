@@ -30,7 +30,6 @@ import java.util.Set;
 
 import org.jboss.beans.info.spi.BeanInfo;
 import org.jboss.beans.info.spi.PropertyInfo;
-import org.jboss.kernel.plugins.config.Configurator;
 import org.jboss.logging.Logger;
 import org.jboss.metadata.spi.MetaData;
 import org.jboss.metadata.spi.signature.ConstructorSignature;
@@ -210,7 +209,7 @@ public abstract class CommonAnnotationAdapter<T extends MetaDataAnnotationPlugin
       {
          for(ConstructorInfo ci : constructors)
          {
-            Signature cis = new ConstructorSignature(Configurator.getParameterTypes(trace, ci.getParameterTypes()));
+            Signature cis = new ConstructorSignature(ci);
             MetaData cmdr = retrieval.getComponentMetaData(cis);
             if (cmdr != null)
             {
