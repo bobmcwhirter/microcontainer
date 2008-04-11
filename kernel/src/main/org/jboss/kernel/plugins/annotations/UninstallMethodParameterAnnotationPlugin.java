@@ -63,7 +63,7 @@ public class UninstallMethodParameterAnnotationPlugin extends InstallationParame
 
    protected void setParameterizedMetaData(AbstractInstallMetaData parameterizedMetaData, BeanMetaData beanMetaData)
    {
-      AbstractBeanMetaData abmd = (AbstractBeanMetaData)beanMetaData;
+      AbstractBeanMetaData abmd = checkIfNotAbstractBeanMetaDataSpecific(beanMetaData);
       List<InstallMetaData> uninstalls = beanMetaData.getUninstalls();
       if (uninstalls == null)
       {

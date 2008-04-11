@@ -94,7 +94,7 @@ public abstract class LifecycleParameterAnnotationPlugin<C extends Annotation> e
 
    protected List<? extends MetaDataVisitorNode> handleParameterlessInfo(MethodInfo info, C annotation, BeanMetaData beanMetaData)
    {
-      AbstractBeanMetaData abmd = (AbstractBeanMetaData)beanMetaData;
+      AbstractBeanMetaData abmd = checkIfNotAbstractBeanMetaDataSpecific(beanMetaData);
       AbstractLifecycleMetaData lifecycle = createLifecycleMetaData(info.getName(), annotation);
       setLifecycleMetaData(abmd, lifecycle);
       return Collections.singletonList(lifecycle);
@@ -107,7 +107,7 @@ public abstract class LifecycleParameterAnnotationPlugin<C extends Annotation> e
 
    protected void setParameterizedMetaData(AbstractLifecycleMetaData parameterizedMetaData, BeanMetaData beanMetaData)
    {
-      AbstractBeanMetaData abmd = (AbstractBeanMetaData)beanMetaData;
+      AbstractBeanMetaData abmd = checkIfNotAbstractBeanMetaDataSpecific(beanMetaData);
       setLifecycleMetaData(abmd, parameterizedMetaData);
    }
 }

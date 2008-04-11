@@ -27,6 +27,7 @@ import junit.textui.TestRunner;
 import org.jboss.test.kernel.annotations.test.override.AnnotationsOverrideTestSuite;
 import org.jboss.test.kernel.annotations.test.inheritance.AnnotationsInheritanceTestSuite;
 import org.jboss.test.kernel.annotations.test.field.AnnotationFieldTestSuite;
+import org.jboss.test.kernel.annotations.test.factory.AnnotationFactoryTestSuite;
 
 /**
  * Annotations tests.
@@ -48,6 +49,7 @@ public class AnnotationsTestSuite extends TestSuite
       suite.addTest(AnnotationsOverrideTestSuite.suite());
       suite.addTest(AnnotationsInheritanceTestSuite.suite());
       suite.addTest(AnnotationFieldTestSuite.suite());
+      suite.addTest(AnnotationFactoryTestSuite.suite());
 
       return suite;
    }

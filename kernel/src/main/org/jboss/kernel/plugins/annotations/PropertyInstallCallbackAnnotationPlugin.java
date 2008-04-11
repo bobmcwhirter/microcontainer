@@ -32,7 +32,9 @@ import org.jboss.dependency.spi.CallbackItem;
  */
 public class PropertyInstallCallbackAnnotationPlugin extends InstallCallbackAnnotationPlugin<PropertyInfo> implements PropertyAware
 {
-   public PropertyInstallCallbackAnnotationPlugin()
+   public static final PropertyInstallCallbackAnnotationPlugin INSTANCE = new PropertyInstallCallbackAnnotationPlugin();
+
+   protected PropertyInstallCallbackAnnotationPlugin()
    {
       super();
    }

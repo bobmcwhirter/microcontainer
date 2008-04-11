@@ -81,7 +81,7 @@ public class BeanAnnotationAdapterFactory
          catch (Throwable t)
          {
             log.warn("Exception while creating bean annotation adapter instance: " + t);
-            return new BasicBeanAnnotationAdapter();
+            return BasicBeanAnnotationAdapter.INSTANCE;
          }
       }
    }

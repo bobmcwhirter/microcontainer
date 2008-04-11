@@ -63,7 +63,7 @@ public class InstallMethodParameterAnnotationPlugin extends InstallationParamete
 
    protected void setParameterizedMetaData(AbstractInstallMetaData parameterizedMetaData, BeanMetaData beanMetaData)
    {
-      AbstractBeanMetaData abmd = (AbstractBeanMetaData)beanMetaData;
+      AbstractBeanMetaData abmd = checkIfNotAbstractBeanMetaDataSpecific(beanMetaData);
       List<InstallMetaData> installs = beanMetaData.getInstalls();
       if (installs == null)
       {

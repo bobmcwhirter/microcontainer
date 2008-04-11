@@ -29,6 +29,7 @@ import java.util.Set;
 
 import org.jboss.beans.metadata.plugins.AbstractBeanMetaData;
 import org.jboss.beans.metadata.plugins.AbstractCallbackMetaData;
+import org.jboss.beans.metadata.spi.BeanMetaData;
 import org.jboss.beans.metadata.spi.CallbackMetaData;
 import org.jboss.beans.metadata.spi.MetaDataVisitorNode;
 import org.jboss.dependency.spi.CallbackItem;
@@ -87,9 +88,9 @@ public abstract class CallbackAnnotationPlugin<T extends AnnotatedInfo, C extend
     */
    protected abstract Set<CallbackItem<?>> getCallbacks(DependencyInfo dependency);
 
-   protected List<? extends MetaDataVisitorNode> internalApplyAnnotation(T info, C annotation, KernelControllerContext context)
+   protected List<? extends MetaDataVisitorNode> internalApplyAnnotation(T info, C annotation, BeanMetaData bmd)
    {
-      AbstractBeanMetaData beanMetaData = (AbstractBeanMetaData)context.getBeanMetaData();
+      AbstractBeanMetaData beanMetaData = checkIfNotAbstractBeanMetaDataSpecific(bmd);
       List<CallbackMetaData> callbacks = getCallbacks(beanMetaData);
       AbstractCallbackMetaData callback = createCallback(info, annotation);
       callbacks.add(callback);

@@ -22,36 +22,21 @@
 package org.jboss.kernel.plugins.annotations;
 
 import java.lang.annotation.Annotation;
-import java.lang.annotation.ElementType;
-import java.util.Set;
 
 import org.jboss.beans.metadata.spi.MetaDataVisitor;
+import org.jboss.kernel.plugins.annotations.MetaDataAnnotationPlugin;
 import org.jboss.metadata.spi.MetaData;
 import org.jboss.reflect.spi.AnnotatedInfo;
 
 /**
- * Annotation plugin contract.
+ * Annotation plugin contract based on MeteDataVistor.
  *
  * @param <T> info type
  * @param <C> annotation type
  * @author <a href="mailto:ales.justin@jboss.com">Ales Justin</a>
  */
-public interface AnnotationPlugin<T extends AnnotatedInfo, C extends Annotation>
+public interface AnnotationPlugin<T extends AnnotatedInfo, C extends Annotation> extends MetaDataAnnotationPlugin<T, C>
 {
-   /**
-    * Get the annotation class we are handling.
-    *
-    * @return annotation class
-    */
-   Class<C> getAnnotation();
-
-   /**
-    * Get all supported types.
-    *
-    * @return set of supported types
-    */
-   Set<ElementType> getSupportedTypes();
-
    /**
     * Apply the check for annotation.
     *

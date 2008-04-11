@@ -37,6 +37,8 @@ import org.jboss.beans.metadata.spi.InstallMetaData;
  */
 public class ExternalInstallAnnotationPlugin extends ExternalInstallationAnnotationPlugin<ExternalInstalls>
 {
+   public static final ExternalInstallAnnotationPlugin INSTANCE = new ExternalInstallAnnotationPlugin();
+
    protected ExternalInstallAnnotationPlugin()
    {
       super(ExternalInstalls.class);
@@ -47,8 +49,9 @@ public class ExternalInstallAnnotationPlugin extends ExternalInstallationAnnotat
       List<InstallMetaData> list = beanMetaData.getInstalls();
       if (list == null)
       {
+         AbstractBeanMetaData abmd = checkIfNotAbstractBeanMetaDataSpecific(beanMetaData);
          list = new ArrayList<InstallMetaData>();
-         ((AbstractBeanMetaData)beanMetaData).setInstalls(list);
+         abmd.setInstalls(list);
       }
       return list;
    }

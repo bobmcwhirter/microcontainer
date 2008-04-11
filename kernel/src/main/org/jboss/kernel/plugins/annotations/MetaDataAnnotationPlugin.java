@@ -21,32 +21,42 @@
 */
 package org.jboss.kernel.plugins.annotations;
 
-import org.jboss.beans.info.spi.PropertyInfo;
-import org.jboss.beans.metadata.plugins.AbstractCallbackMetaData;
-import org.jboss.dependency.spi.CallbackItem;
+import java.lang.annotation.Annotation;
+import java.lang.annotation.ElementType;
+import java.util.Set;
+
+import org.jboss.beans.metadata.spi.BeanMetaData;
+import org.jboss.metadata.spi.MetaData;
+import org.jboss.reflect.spi.AnnotatedInfo;
 
 /**
- * Property uninstall annotation plugin.
- *
+ * Annotation plugin based on bean metadata.
+ * 
  * @author <a href="mailto:ales.justin@jboss.com">Ales Justin</a>
  */
-public class PropertyUninstallCallbackAnnotationPlugin extends UninstallCallbackAnnotationPlugin<PropertyInfo> implements PropertyAware
+public interface MetaDataAnnotationPlugin<T extends AnnotatedInfo, C extends Annotation>
 {
-   public static final PropertyUninstallCallbackAnnotationPlugin INSTANCE = new PropertyUninstallCallbackAnnotationPlugin();
+   /**
+    * Get the annotation class we are handling.
+    *
+    * @return annotation class
+    */
+   Class<C> getAnnotation();
 
-   protected PropertyUninstallCallbackAnnotationPlugin()
-   {
-      super();
-   }
+   /**
+    * Get all supported types.
+    *
+    * @return set of supported types
+    */
+   Set<ElementType> getSupportedTypes();
 
-   protected boolean isEqual(PropertyInfo info, CallbackItem<?> ci)
-   {
-      // todo - param matching
-      return info.getName().equals(ci.getAttributeName());
-   }
-
-   protected void applyInfo(AbstractCallbackMetaData callback, PropertyInfo info)
-   {
-      callback.setPropertyInfo(info);
-   }
+   /**
+    * Apply annotations to bean metadata.
+    *
+    * @param info the annotated info we are checking
+    * @param retrieval the metadata retrieval
+    * @param beanMetaData the bean metadata
+    * @throws Throwable for any error
+    */
+   void applyAnnotation(T info, MetaData retrieval, BeanMetaData beanMetaData) throws Throwable;
 }

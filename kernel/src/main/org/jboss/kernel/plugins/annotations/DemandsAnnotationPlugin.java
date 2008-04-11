@@ -26,15 +26,14 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 
-import org.jboss.beans.metadata.plugins.AbstractBeanMetaData;
-import org.jboss.beans.metadata.plugins.AbstractDemandMetaData;
 import org.jboss.beans.metadata.api.annotations.Demand;
 import org.jboss.beans.metadata.api.annotations.Demands;
+import org.jboss.beans.metadata.plugins.AbstractBeanMetaData;
+import org.jboss.beans.metadata.plugins.AbstractDemandMetaData;
 import org.jboss.beans.metadata.spi.BeanMetaData;
 import org.jboss.beans.metadata.spi.DemandMetaData;
 import org.jboss.beans.metadata.spi.MetaDataVisitorNode;
 import org.jboss.dependency.spi.ControllerState;
-import org.jboss.kernel.spi.dependency.KernelControllerContext;
 import org.jboss.reflect.spi.ClassInfo;
 
 /**
@@ -44,19 +43,21 @@ import org.jboss.reflect.spi.ClassInfo;
  */
 public class DemandsAnnotationPlugin extends ClassAnnotationPlugin<Demands>
 {
-   public DemandsAnnotationPlugin()
+   public static final DemandsAnnotationPlugin INSTANCE = new DemandsAnnotationPlugin();
+
+   protected DemandsAnnotationPlugin()
    {
       super(Demands.class);
    }
 
-   protected List<? extends MetaDataVisitorNode> internalApplyAnnotation(ClassInfo info, Demands annotation, KernelControllerContext context)
+   protected List<? extends MetaDataVisitorNode> internalApplyAnnotation(ClassInfo info, Demands annotation, BeanMetaData beanMetaData)
    {
-      BeanMetaData beanMetaData = context.getBeanMetaData();
       Set<DemandMetaData> demands = beanMetaData.getDemands();
       if (demands == null)
       {
+         AbstractBeanMetaData abmd = checkIfNotAbstractBeanMetaDataSpecific(beanMetaData);
          demands = new HashSet<DemandMetaData>();
-         ((AbstractBeanMetaData)beanMetaData).setDemands(demands);
+         abmd.setDemands(demands);
       }
       List<MetaDataVisitorNode> nodes = new ArrayList<MetaDataVisitorNode>();
       for(Demand demand : annotation.value())

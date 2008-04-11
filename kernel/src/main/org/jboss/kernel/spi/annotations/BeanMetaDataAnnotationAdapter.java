@@ -19,34 +19,26 @@
 * Software Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA
 * 02110-1301 USA, or see the FSF site: http://www.fsf.org.
 */
-package org.jboss.kernel.plugins.annotations;
+package org.jboss.kernel.spi.annotations;
 
-import org.jboss.beans.info.spi.PropertyInfo;
-import org.jboss.beans.metadata.plugins.AbstractCallbackMetaData;
-import org.jboss.dependency.spi.CallbackItem;
+import org.jboss.beans.info.spi.BeanInfo;
+import org.jboss.beans.metadata.spi.BeanMetaData;
+import org.jboss.metadata.spi.MetaData;
 
 /**
- * Property uninstall annotation plugin.
+ * Annotations adapter contract based on metadata.
  *
  * @author <a href="mailto:ales.justin@jboss.com">Ales Justin</a>
  */
-public class PropertyUninstallCallbackAnnotationPlugin extends UninstallCallbackAnnotationPlugin<PropertyInfo> implements PropertyAware
+public interface BeanMetaDataAnnotationAdapter
 {
-   public static final PropertyUninstallCallbackAnnotationPlugin INSTANCE = new PropertyUninstallCallbackAnnotationPlugin();
-
-   protected PropertyUninstallCallbackAnnotationPlugin()
-   {
-      super();
-   }
-
-   protected boolean isEqual(PropertyInfo info, CallbackItem<?> ci)
-   {
-      // todo - param matching
-      return info.getName().equals(ci.getAttributeName());
-   }
-
-   protected void applyInfo(AbstractCallbackMetaData callback, PropertyInfo info)
-   {
-      callback.setPropertyInfo(info);
-   }
+   /**
+    * Apply the annotations on bean metadata.
+    *
+    * @param beanInfo the bean info
+    * @param metaData the metadata
+    * @param beanMetaData the bean meta data
+    * @throws Throwable for any error
+    */
+   void applyAnnotations(BeanInfo beanInfo, MetaData metaData, BeanMetaData beanMetaData) throws Throwable;
 }

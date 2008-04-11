@@ -34,7 +34,6 @@ import org.jboss.beans.metadata.spi.MetaDataVisitorNode;
 import org.jboss.beans.metadata.spi.ParameterMetaData;
 import org.jboss.beans.metadata.spi.ValueMetaData;
 import org.jboss.kernel.plugins.config.Configurator;
-import org.jboss.kernel.spi.dependency.KernelControllerContext;
 import org.jboss.metadata.spi.MetaData;
 import org.jboss.metadata.spi.signature.MethodParametersSignature;
 import org.jboss.metadata.spi.signature.Signature;
@@ -84,36 +83,10 @@ public abstract class AbstractParameterAnnotationPlugin<T extends AnnotatedInfo,
     *
     * @param info the info
     * @param annotation the annotation
-    * @param context the context
-    * @return list of added meta data visitor nodes
-    */
-   protected List<? extends MetaDataVisitorNode> handleParameterlessInfo(T info, C annotation, KernelControllerContext context)
-   {
-      return handleParameterlessInfo(info, annotation, context.getBeanMetaData());
-   }
-
-   /**
-    * Handle info which has zero parameters.
-    *
-    * @param info the info
-    * @param annotation the annotation
     * @param beanMetaData the bean metadata
     * @return list of added meta data visitor nodes
     */
    protected abstract List<? extends MetaDataVisitorNode> handleParameterlessInfo(T info, C annotation, BeanMetaData beanMetaData);
-
-   /**
-    * Create new Parametrized metadata.
-    *
-    * @param info the info
-    * @param annotation the annotation
-    * @param context the context
-    * @return new ParameterizedMetaData instance
-    */
-   protected P createParametrizedMetaData(T info, C annotation, KernelControllerContext context)
-   {
-      return createParametrizedMetaData(info, annotation, context.getBeanMetaData());
-   }
 
    /**
     * Create new Parametrized metadata.
@@ -153,24 +126,13 @@ public abstract class AbstractParameterAnnotationPlugin<T extends AnnotatedInfo,
 
    /**
     * Set the ParameterizedMetaData instance.
-    *
-    * @param parameterizedMetaData the parameterized metadata
-    * @param context the context
-    */
-   protected void setParameterizedMetaData(P parameterizedMetaData, KernelControllerContext context)
-   {
-      setParameterizedMetaData(parameterizedMetaData, context.getBeanMetaData());
-   }
-
-   /**
-    * Set the ParameterizedMetaData instance.
     * @param parameterizedMetaData the parameterized metadata
     * @param beanMetaData the bean metadata
     */
    protected abstract void setParameterizedMetaData(P parameterizedMetaData, BeanMetaData beanMetaData);
 
    @SuppressWarnings("unchecked")
-   protected List<? extends MetaDataVisitorNode> internalApplyAnnotation(T info, MetaData retrieval, C annotation, KernelControllerContext context) throws Throwable
+   protected List<? extends MetaDataVisitorNode> internalApplyAnnotation(T info, MetaData retrieval, C annotation, BeanMetaData beanMetaData) throws Throwable
    {
       boolean trace = log.isTraceEnabled();
 
@@ -179,7 +141,7 @@ public abstract class AbstractParameterAnnotationPlugin<T extends AnnotatedInfo,
       {
          if (trace)
             log.trace("Info " + info + " has zero parameters.");
-         return handleParameterlessInfo(info, annotation, context);
+         return handleParameterlessInfo(info, annotation, beanMetaData);
       }
 
       TypeInfo[] typeInfos = new TypeInfo[parameters.length];
@@ -220,12 +182,11 @@ public abstract class AbstractParameterAnnotationPlugin<T extends AnnotatedInfo,
             throw new IllegalArgumentException("MetaData for parameter must exist: " + pi);
          }
       }
-      P parameterizedMetaData = createParametrizedMetaData(info, annotation, context);
-      setParameterizedMetaData(parameterizedMetaData, context);
+      P parameterizedMetaData = createParametrizedMetaData(info, annotation, beanMetaData);
+      setParameterizedMetaData(parameterizedMetaData, beanMetaData);
       parameterizedMetaData.setParameters(pmds);
       if (parameterizedMetaData instanceof MetaDataVisitorNode == false)
          throw new IllegalArgumentException("ParameterizedMetaData not MetaDataVisitor: " + parameterizedMetaData);
       return Collections.singletonList((MetaDataVisitorNode)parameterizedMetaData);
    }
-
 }

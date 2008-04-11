@@ -22,24 +22,15 @@
 package org.jboss.kernel.plugins.annotations;
 
 import java.lang.annotation.Annotation;
-import java.lang.annotation.ElementType;
-import java.lang.annotation.Target;
-import java.util.Arrays;
-import java.util.Collections;
-import java.util.HashSet;
 import java.util.List;
-import java.util.Set;
 
-import org.jboss.beans.metadata.spi.BeanMetaData;
 import org.jboss.beans.metadata.spi.MetaDataVisitor;
 import org.jboss.beans.metadata.spi.MetaDataVisitorNode;
-import org.jboss.beans.metadata.api.annotations.Cleanup;
-import org.jboss.beans.metadata.api.annotations.CleanupOnly;
+import org.jboss.beans.metadata.spi.BeanMetaData;
+import org.jboss.beans.metadata.plugins.AbstractBeanMetaData;
 import org.jboss.kernel.spi.dependency.KernelControllerContext;
 import org.jboss.metadata.spi.MetaData;
 import org.jboss.reflect.spi.AnnotatedInfo;
-import org.jboss.util.JBossObject;
-import org.jboss.util.JBossStringBuilder;
 
 /**
  * Abstract annotation plugin.
@@ -48,75 +39,11 @@ import org.jboss.util.JBossStringBuilder;
  * @param <C> annotation type
  * @author <a href="mailto:ales.justin@jboss.com">Ales Justin</a>
  */
-public abstract class AbstractAnnotationPlugin<T extends AnnotatedInfo, C extends Annotation> extends JBossObject implements AnnotationPlugin<T, C>
+public abstract class AbstractAnnotationPlugin<T extends AnnotatedInfo, C extends Annotation> extends BaseMetaDataAnnotationPlugin<T, C> implements AnnotationPlugin<T, C>
 {
-   private Class<C> annotation;
-   private Set<ElementType> types;
-   private boolean isCleanup;
-   private boolean isCleanupOnly;
-
    protected AbstractAnnotationPlugin(Class<C> annotation)
    {
-      if (annotation == null)
-         throw new IllegalArgumentException("Null annotation!");
-      this.annotation = annotation;
-      this.types = new HashSet<ElementType>();
-      Target target = annotation.getAnnotation(Target.class);
-      if (target != null)
-      {
-         List<ElementType> list = Arrays.asList(target.value());
-         for(ElementType type : list)
-         {
-            if (isElementTypeSupported(type))
-            {
-               types.add(type);
-            }
-         }
-      }
-      isCleanupOnly = annotation.isAnnotationPresent(CleanupOnly.class);
-      isCleanup = isCleanupOnly || annotation.isAnnotationPresent(Cleanup.class);
-   }
-
-   /**
-    * Does attribute have value.
-    * Helper method.
-    *
-    * @param value the value
-    * @return true if atribute not null or non-empty
-    */
-   protected static boolean isAttributePresent(String value)
-   {
-      return ValueUtil.isAttributePresent(value);
-   }
-
-   /**
-    * Does attribute have value.
-    * Helper method.
-    *
-    * @param value the value
-    * @return true if atribute not void.class
-    */
-   protected static boolean isAttributePresent(Class<?> value)
-   {
-      return ValueUtil.isAttributePresent(value);
-   }
-
-   /**
-    * Is type supported by plugin.
-    *
-    * @param type the annotation element type
-    * @return true if element supported
-    */
-   protected abstract boolean isElementTypeSupported(ElementType type);
-
-   public Set<ElementType> getSupportedTypes()
-   {
-      return Collections.unmodifiableSet(types);
-   }
-
-   public Class<C> getAnnotation()
-   {
-      return annotation;
+      super(annotation);
    }
 
    /**
@@ -133,19 +60,6 @@ public abstract class AbstractAnnotationPlugin<T extends AnnotatedInfo, C extend
    }
 
    /**
-    * Is meta data already present.
-    *
-    * @param info the info
-    * @param annotation the annotation
-    * @param beanMetaData the bean meta data
-    * @return true if meta data already present
-    */
-   protected boolean isMetaDataAlreadyPresent(T info, C annotation, BeanMetaData beanMetaData)
-   {
-      return false;
-   }
-
-   /**
     * Apply annotation since it's not present.
     *
     * @param info the info
@@ -157,31 +71,26 @@ public abstract class AbstractAnnotationPlugin<T extends AnnotatedInfo, C extend
     */
    protected List<? extends MetaDataVisitorNode> internalApplyAnnotation(T info, MetaData retrieval, C annotation, KernelControllerContext context) throws Throwable
    {
-      return internalApplyAnnotation(info, annotation, context);
+      return internalApplyAnnotation(info, retrieval, annotation, context.getBeanMetaData());
    }
 
    /**
     * Apply annotation since it's not present.
     *
     * @param info the info
+    * @param retrieval the metadata
     * @param annotation the annotation
-    * @param context the context
+    * @param beanMetaData the bean metadata
     * @return list of added meta data visitor nodes
     * @throws Throwable for any error
     */
-   protected List<? extends MetaDataVisitorNode> internalApplyAnnotation(T info, C annotation, KernelControllerContext context) throws Throwable
+   protected List<? extends MetaDataVisitorNode> internalApplyAnnotation(T info, MetaData retrieval, C annotation, BeanMetaData beanMetaData) throws Throwable
    {
-      return internalApplyAnnotation(info, annotation, context.getBeanMetaData());
+      return internalApplyAnnotation(info, annotation, beanMetaData);
    }
 
    /**
-    * Apply annotation since it's not present.
-    *
-    * @param info the info
-    * @param annotation the annotation
-    * @param beanMetaData the bean meta data
-    * @return list of added meta data visitor nodes
-    * @throws Throwable for any error
+    * Covariant override. 
     */
    protected List<? extends MetaDataVisitorNode> internalApplyAnnotation(T info, C annotation, BeanMetaData beanMetaData) throws Throwable
    {
@@ -193,7 +102,7 @@ public abstract class AbstractAnnotationPlugin<T extends AnnotatedInfo, C extend
    {
       boolean trace = log.isTraceEnabled();
       
-      if (isCleanupOnly == false)
+      if (isCleanupOnly() == false)
       {
          Class<C> annotationClass = getAnnotation();
          C annotation = retrieval.getAnnotation(annotationClass);
@@ -222,14 +131,14 @@ public abstract class AbstractAnnotationPlugin<T extends AnnotatedInfo, C extend
          }
       }
       else if (trace)
-         log.trace("Annotation " + annotation + " is @CleanupOnly, nothing to apply on install.");
+         log.trace("Annotation " + getAnnotation() + " is @CleanupOnly, nothing to apply on install.");
    }
 
    public void cleanAnnotation(T info, MetaData retrieval, MetaDataVisitor visitor) throws Throwable
    {
       boolean trace = log.isTraceEnabled();
 
-      if (isCleanup)
+      if (isCleanup())
       {
          Class<C> annotationClass = getAnnotation();
          C annotation = retrieval.getAnnotation(annotationClass);
@@ -246,7 +155,7 @@ public abstract class AbstractAnnotationPlugin<T extends AnnotatedInfo, C extend
          }
       }
       else if (trace)
-         log.trace("Annotation " + annotation + " is not a @Cleanup annotation.");
+         log.trace("Annotation " + getAnnotation() + " is not a @Cleanup annotation.");
    }
 
    /**
@@ -263,16 +172,17 @@ public abstract class AbstractAnnotationPlugin<T extends AnnotatedInfo, C extend
       // empty      
    }
 
-   protected void toString(JBossStringBuilder buffer)
+   /**
+    * Check if we require impl detail on BeanMetaData.
+    *
+    * @param beanMetaData the bean metadata
+    * @return abstract bean metadata instance
+    */
+   protected AbstractBeanMetaData checkIfNotAbstractBeanMetaDataSpecific(BeanMetaData beanMetaData)
    {
-      buffer.append("@annotation=").append(annotation);
-      buffer.append(" ,types=").append(types);
-      buffer.append(" ,cleanup=").append(isCleanup);
-      buffer.append(" ,cleanupOnly=").append(isCleanupOnly);
-   }
+      if (beanMetaData instanceof AbstractBeanMetaData == false)
+         throw new IllegalArgumentException("Can only handle AbstractBeanMetaData: " + beanMetaData);
 
-   public void toShortString(JBossStringBuilder buffer)
-   {
-      buffer.append("@annotation=").append(annotation);
+      return AbstractBeanMetaData.class.cast(beanMetaData);
    }
 }

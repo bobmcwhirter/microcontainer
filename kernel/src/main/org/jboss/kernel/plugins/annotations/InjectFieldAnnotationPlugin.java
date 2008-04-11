@@ -31,7 +31,9 @@ import org.jboss.beans.metadata.spi.ValueMetaData;
  */
 public class InjectFieldAnnotationPlugin extends FieldAnnotationPlugin<Inject>
 {
-   public InjectFieldAnnotationPlugin()
+   public static final InjectFieldAnnotationPlugin INSTANCE = new InjectFieldAnnotationPlugin();
+
+   protected InjectFieldAnnotationPlugin()
    {
       super(Inject.class);
    }

@@ -114,7 +114,7 @@ public class AnonymousBeansTestCase extends AbstractDeploymentTest
       assertSame(const_param.getSimpleBean(), const_param_1);
 
       SimpleObjectWithBeans prop = assertBean("prop", SimpleObjectWithBeans.class);
-      SimpleBean prop_bean = assertBean("prop$simpleBean", SimpleBean.class);
+      SimpleBean prop_bean = assertBean("prop$simpleBean#1", SimpleBean.class);
       assertSame(prop.getSimpleBean(), prop_bean);
 
       SimpleObjectWithBeans list = assertBean("list", SimpleObjectWithBeans.class);
@@ -138,7 +138,7 @@ public class AnonymousBeansTestCase extends AbstractDeploymentTest
       assertSame(map.getMap().values().iterator().next(), map_bean_2);
 
       SimpleObjectWithBeans nested = assertBean("nested", SimpleObjectWithBeans.class);
-      SimpleObjectWithBeans nested_nested = assertBean("nested$nested", SimpleObjectWithBeans.class);
+      SimpleObjectWithBeans nested_nested = assertBean("nested$nested#2", SimpleObjectWithBeans.class);
       SimpleBean nested_1 = assertBean("nested#1", SimpleBean.class);
       assertSame(nested.getNested(), nested_nested);
       assertSame(nested_nested.getSimpleBean(), nested_1);

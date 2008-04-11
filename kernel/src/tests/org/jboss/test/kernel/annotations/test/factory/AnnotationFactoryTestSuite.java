@@ -19,34 +19,30 @@
 * Software Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA
 * 02110-1301 USA, or see the FSF site: http://www.fsf.org.
 */
-package org.jboss.kernel.plugins.annotations;
+package org.jboss.test.kernel.annotations.test.factory;
 
-import org.jboss.beans.info.spi.PropertyInfo;
-import org.jboss.beans.metadata.plugins.AbstractCallbackMetaData;
-import org.jboss.dependency.spi.CallbackItem;
+import junit.framework.Test;
+import junit.framework.TestSuite;
+import junit.textui.TestRunner;
 
 /**
- * Property uninstall annotation plugin.
+ * Annotation factory tests.
  *
  * @author <a href="mailto:ales.justin@jboss.com">Ales Justin</a>
  */
-public class PropertyUninstallCallbackAnnotationPlugin extends UninstallCallbackAnnotationPlugin<PropertyInfo> implements PropertyAware
+public class AnnotationFactoryTestSuite extends TestSuite
 {
-   public static final PropertyUninstallCallbackAnnotationPlugin INSTANCE = new PropertyUninstallCallbackAnnotationPlugin();
-
-   protected PropertyUninstallCallbackAnnotationPlugin()
+   public static void main(String[] args)
    {
-      super();
+      TestRunner.run(suite());
    }
 
-   protected boolean isEqual(PropertyInfo info, CallbackItem<?> ci)
+   public static Test suite()
    {
-      // todo - param matching
-      return info.getName().equals(ci.getAttributeName());
-   }
+      TestSuite suite = new TestSuite("Annotation factory Tests");
 
-   protected void applyInfo(AbstractCallbackMetaData callback, PropertyInfo info)
-   {
-      callback.setPropertyInfo(info);
+      suite.addTest(AnnotationToBeanMetaDataFactoryTestCase.suite());
+
+      return suite;
    }
 }

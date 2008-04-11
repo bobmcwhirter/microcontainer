@@ -44,6 +44,8 @@ import org.jboss.reflect.spi.FieldInfo;
  */
 public class UninstallFieldCallbackAnnotationPlugin extends CallbackAnnotationPlugin<FieldInfo, Uninstall>
 {
+   public static final UninstallFieldCallbackAnnotationPlugin INSTANCE = new UninstallFieldCallbackAnnotationPlugin();
+
    protected UninstallFieldCallbackAnnotationPlugin()
    {
       super(Uninstall.class);

@@ -44,7 +44,7 @@ public class NestedBeanHandler
    private static Logger log = Logger.getLogger(NestedBeanHandler.class);
 
    protected BeanMetaData root;
-   protected int counter = 1;
+   protected int counter;
 
    public NestedBeanHandler(BeanMetaData root)
    {
@@ -156,17 +156,19 @@ public class NestedBeanHandler
     */
    protected String generateName(MetaDataVisitorNode previous)
    {
+      ++counter;
       String name;
+
       if (previous instanceof PropertyMetaData)
       {
          PropertyMetaData pmd = (PropertyMetaData)previous;
-         name = root.getName() + "$" + pmd.getName();
+         name = root.getName() + "$" + pmd.getName() + "#" + counter;
       }
       else
       {
          name = root.getName() + "#" + counter;
-         counter++;
       }
+      
       return name;
    }
 

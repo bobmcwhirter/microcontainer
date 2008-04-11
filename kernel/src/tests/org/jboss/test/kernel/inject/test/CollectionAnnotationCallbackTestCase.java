@@ -21,8 +21,11 @@
 */
 package org.jboss.test.kernel.inject.test;
 
+import java.util.Set;
+
 import junit.framework.Test;
 import org.jboss.test.kernel.inject.support.CallbackTestObject;
+import org.jboss.test.kernel.inject.support.TesterInterface;
 
 /**
  * Callback tests.
@@ -43,6 +46,8 @@ public class CollectionAnnotationCallbackTestCase extends SimpleCallbackTestCase
 
    protected void afterInstall(CallbackTestObject testObject)
    {
-      assertTrue(testObject.getTesterInterfaces().isEmpty());
+      Set<TesterInterface> interfaces = testObject.getTesterInterfaces();
+      assertNotNull(interfaces);
+      assertTrue(interfaces.isEmpty());
    }
 }

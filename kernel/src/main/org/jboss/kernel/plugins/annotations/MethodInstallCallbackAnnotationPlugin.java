@@ -32,7 +32,9 @@ import org.jboss.dependency.spi.CallbackItem;
  */
 public class MethodInstallCallbackAnnotationPlugin extends InstallCallbackAnnotationPlugin<MethodInfo>
 {
-   public MethodInstallCallbackAnnotationPlugin()
+   public static final MethodInstallCallbackAnnotationPlugin INSTANCE = new MethodInstallCallbackAnnotationPlugin();
+
+   protected MethodInstallCallbackAnnotationPlugin()
    {
       super();
    }

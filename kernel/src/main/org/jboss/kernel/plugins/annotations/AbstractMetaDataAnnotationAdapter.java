@@ -21,43 +21,37 @@
 */
 package org.jboss.kernel.plugins.annotations;
 
-import java.util.ArrayList;
-import java.util.List;
-
-import org.jboss.beans.metadata.api.annotations.ExternalInstall;
-import org.jboss.beans.metadata.api.annotations.ExternalUninstalls;
-import org.jboss.beans.metadata.plugins.AbstractBeanMetaData;
+import org.jboss.beans.info.spi.BeanInfo;
 import org.jboss.beans.metadata.spi.BeanMetaData;
-import org.jboss.beans.metadata.spi.InstallMetaData;
+import org.jboss.metadata.spi.MetaData;
+import org.jboss.reflect.spi.AnnotatedInfo;
+import org.jboss.kernel.spi.annotations.BeanMetaDataAnnotationAdapter;
 
 /**
- * External uninstalls annotation plugin.
- * 
+ * Abstract metadata annotation handler.
+ *
  * @author <a href="mailto:ales.justin@jboss.com">Ales Justin</a>
  */
-public class ExternalUninstallAnnotationPlugin extends ExternalInstallationAnnotationPlugin<ExternalUninstalls>
+public class AbstractMetaDataAnnotationAdapter extends CommonAnnotationAdapter<MetaDataAnnotationPlugin, BeanMetaData> implements BeanMetaDataAnnotationAdapter
 {
-   public static final ExternalUninstallAnnotationPlugin INSTANCE = new ExternalUninstallAnnotationPlugin();
-
-   protected ExternalUninstallAnnotationPlugin()
+   public void applyAnnotations(BeanInfo beanInfo, MetaData metaData, BeanMetaData beanMetaData) throws Throwable
    {
-      super(ExternalUninstalls.class);
+      handleAnnotations(beanInfo, metaData, beanMetaData, true);
    }
 
-   protected List<InstallMetaData> getExistingInstallMetaData(BeanMetaData beanMetaData)
+   @SuppressWarnings("unchecked")
+   protected void applyPlugin(MetaDataAnnotationPlugin plugin, AnnotatedInfo info, MetaData retrieval, BeanMetaData handle) throws Throwable
    {
-      List<InstallMetaData> list = beanMetaData.getUninstalls();
-      if (list == null)
-      {
-         AbstractBeanMetaData abmd = checkIfNotAbstractBeanMetaDataSpecific(beanMetaData);
-         list = new ArrayList<InstallMetaData>();
-         abmd.setUninstalls(list);
-      }
-      return list;
+      plugin.applyAnnotation(info, retrieval, handle);
    }
 
-   protected ExternalInstall[] getExternalInstalls(ExternalUninstalls annotation)
+   protected void cleanPlugin(MetaDataAnnotationPlugin plugin, AnnotatedInfo info, MetaData retrieval, BeanMetaData handle) throws Throwable
    {
-      return annotation.value();
+      throw new UnsupportedOperationException("Cleanup is not supported on metadata annotation adapter.");
+   }
+
+   protected Object getName(BeanMetaData handle)
+   {
+      return handle.getName();
    }
 }

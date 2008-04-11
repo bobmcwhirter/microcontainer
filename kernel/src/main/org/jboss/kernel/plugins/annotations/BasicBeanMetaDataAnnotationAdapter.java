@@ -24,15 +24,15 @@ package org.jboss.kernel.plugins.annotations;
 import java.lang.annotation.Annotation;
 
 /**
- * Basic bean annotation handler.
+ * Basic bean metadata annotation handler.
  *
  * @author <a href="mailto:ales.justin@jboss.com">Ales Justin</a>
  */
-public class BasicBeanAnnotationAdapter extends AbstractBeanAnnotationAdapter
+public class BasicBeanMetaDataAnnotationAdapter extends AbstractMetaDataAnnotationAdapter
 {
-   public static BasicBeanAnnotationAdapter INSTANCE = new BasicBeanAnnotationAdapter();
+   public static BasicBeanMetaDataAnnotationAdapter INSTANCE = new BasicBeanMetaDataAnnotationAdapter();
 
-   private BasicBeanAnnotationAdapter()
+   private BasicBeanMetaDataAnnotationAdapter()
    {
       // -- adapters
       @SuppressWarnings("unchecked")
@@ -51,23 +51,13 @@ public class BasicBeanAnnotationAdapter extends AbstractBeanAnnotationAdapter
       };
       // -- plugins
       // class
-      addAnnotationPlugin(AliasesAnnotationPlugin.INSTANCE);
+      addAnnotationPlugin(AliasMetaDataAnnotationPlugin.INSTANCE);
       addAnnotationPlugin(DemandsAnnotationPlugin.INSTANCE);
       addAnnotationPlugin(DependsAnnotationPlugin.INSTANCE);
       addAnnotationPlugin(SupplysAnnotationPlugin.INSTANCE);
       addAnnotationPlugin(new ClassFactoryAnnotationPlugin(adapters));
       addAnnotationPlugin(ExternalInstallAnnotationPlugin.INSTANCE);
       addAnnotationPlugin(ExternalUninstallAnnotationPlugin.INSTANCE);
-/*
-      addAnnotationPlugin(new InjectConstructorValueAnnotationPlugin());
-      addAnnotationPlugin(new StringValueConstructorValueAnnotationPlugin());
-      addAnnotationPlugin(new ValueFactoryConstructorValueAnnotationPlugin());
-      addAnnotationPlugin(new CollectionConstructorValueAnnotationPlugin());
-      addAnnotationPlugin(new ListConstructorValueAnnotationPlugin());
-      addAnnotationPlugin(new SetConstructorValueAnnotationPlugin());
-      addAnnotationPlugin(new ArrayConstructorValueAnnotationPlugin());
-      addAnnotationPlugin(new MapConstructorValueAnnotationPlugin());
-*/
       // constructor
       addAnnotationPlugin(new ConstructorParameterAnnotationPlugin(adapters));
       // property
@@ -90,8 +80,8 @@ public class BasicBeanAnnotationAdapter extends AbstractBeanAnnotationAdapter
       addAnnotationPlugin(new StartLifecycleAnnotationPlugin(adapters));
       addAnnotationPlugin(new StopLifecycleAnnotationPlugin(adapters));
       addAnnotationPlugin(new DestroyLifecycleAnnotationPlugin(adapters));
-      addAnnotationPlugin(new MethodInstallCallbackAnnotationPlugin());
-      addAnnotationPlugin(new MethodUninstallCallbackAnnotationPlugin());
+      addAnnotationPlugin(MethodInstallCallbackAnnotationPlugin.INSTANCE);
+      addAnnotationPlugin(MethodUninstallCallbackAnnotationPlugin.INSTANCE);
       addAnnotationPlugin(new InstallMethodParameterAnnotationPlugin(adapters));
       addAnnotationPlugin(new UninstallMethodParameterAnnotationPlugin(adapters));
       // field

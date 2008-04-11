@@ -42,7 +42,9 @@ import org.jboss.reflect.spi.ClassInfo;
  */
 public class SupplysAnnotationPlugin extends ClassAnnotationPlugin<Supplys>
 {
-   public SupplysAnnotationPlugin()
+   public static final SupplysAnnotationPlugin INSTANCE = new SupplysAnnotationPlugin();
+
+   protected SupplysAnnotationPlugin()
    {
       super(Supplys.class);
    }
@@ -52,8 +54,9 @@ public class SupplysAnnotationPlugin extends ClassAnnotationPlugin<Supplys>
       Set<SupplyMetaData> supplies = beanMetaData.getSupplies();
       if (supplies == null)
       {
+         AbstractBeanMetaData abmd = checkIfNotAbstractBeanMetaDataSpecific(beanMetaData);
          supplies = new HashSet<SupplyMetaData>();
-         ((AbstractBeanMetaData)beanMetaData).setSupplies(supplies);
+         abmd.setSupplies(supplies);
       }
       List<MetaDataVisitorNode> nodes = new ArrayList<MetaDataVisitorNode>();
       for(Supply supply : annotation.value())

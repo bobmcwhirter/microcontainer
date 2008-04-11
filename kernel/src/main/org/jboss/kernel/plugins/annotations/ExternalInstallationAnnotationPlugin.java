@@ -25,17 +25,16 @@ import java.lang.annotation.Annotation;
 import java.util.ArrayList;
 import java.util.List;
 
-import org.jboss.beans.metadata.plugins.AbstractInstallMetaData;
-import org.jboss.beans.metadata.plugins.AbstractParameterMetaData;
 import org.jboss.beans.metadata.api.annotations.ExternalInstall;
 import org.jboss.beans.metadata.api.annotations.Value;
+import org.jboss.beans.metadata.plugins.AbstractInstallMetaData;
+import org.jboss.beans.metadata.plugins.AbstractParameterMetaData;
 import org.jboss.beans.metadata.spi.BeanMetaData;
 import org.jboss.beans.metadata.spi.InstallMetaData;
 import org.jboss.beans.metadata.spi.MetaDataVisitorNode;
 import org.jboss.beans.metadata.spi.ParameterMetaData;
 import org.jboss.beans.metadata.spi.ValueMetaData;
 import org.jboss.dependency.spi.ControllerState;
-import org.jboss.kernel.spi.dependency.KernelControllerContext;
 import org.jboss.reflect.spi.ClassInfo;
 
 /**
@@ -114,9 +113,8 @@ public abstract class ExternalInstallationAnnotationPlugin<C extends Annotation>
       return installMetaData;
    }
 
-   protected List<? extends MetaDataVisitorNode> internalApplyAnnotation(ClassInfo info, C annotation, KernelControllerContext context) throws Throwable
+   protected List<? extends MetaDataVisitorNode> internalApplyAnnotation(ClassInfo info, C annotation, BeanMetaData beanMetaData) throws Throwable
    {
-      BeanMetaData beanMetaData = context.getBeanMetaData();
       List<InstallMetaData> existing = getExistingInstallMetaData(beanMetaData);
       if (existing == null)
          throw new IllegalArgumentException("Must set empty Set to installs/uninstalls!");
@@ -203,5 +201,4 @@ public abstract class ExternalInstallationAnnotationPlugin<C extends Annotation>
 
       return false;
    }
-
 }

@@ -41,12 +41,14 @@ import org.jboss.metadata.spi.MetaData;
  */
 public class AliasesAnnotationPlugin extends ClassAnnotationPlugin<Aliases>
 {
-   public AliasesAnnotationPlugin()
+   public static final AliasesAnnotationPlugin INSTANCE = new AliasesAnnotationPlugin();
+   
+   protected AliasesAnnotationPlugin()
    {
       super(Aliases.class);
    }
 
-   protected List<? extends MetaDataVisitorNode> internalApplyAnnotation(ClassInfo info, Aliases annotation, KernelControllerContext context) throws Throwable
+   protected List<? extends MetaDataVisitorNode> internalApplyAnnotation(ClassInfo info, MetaData retrieval, Aliases annotation, KernelControllerContext context) throws Throwable
    {
       BeanMetaData beanMetaData = context.getBeanMetaData();
       Set<Object> aliases = beanMetaData.getAliases();

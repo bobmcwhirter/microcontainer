@@ -44,6 +44,8 @@ import org.jboss.reflect.spi.FieldInfo;
  */
 public class InstallFieldCallbackAnnotationPlugin extends CallbackAnnotationPlugin<FieldInfo, Install>
 {
+   public static final InstallFieldCallbackAnnotationPlugin INSTANCE = new InstallFieldCallbackAnnotationPlugin();
+
    protected InstallFieldCallbackAnnotationPlugin()
    {
       super(Install.class);

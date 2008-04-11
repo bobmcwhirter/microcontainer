@@ -27,15 +27,14 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 
+import org.jboss.beans.metadata.api.annotations.Factory;
+import org.jboss.beans.metadata.api.annotations.Value;
 import org.jboss.beans.metadata.plugins.AbstractBeanMetaData;
 import org.jboss.beans.metadata.plugins.AbstractConstructorMetaData;
 import org.jboss.beans.metadata.plugins.AbstractParameterMetaData;
-import org.jboss.beans.metadata.api.annotations.Factory;
-import org.jboss.beans.metadata.api.annotations.Value;
 import org.jboss.beans.metadata.spi.BeanMetaData;
 import org.jboss.beans.metadata.spi.MetaDataVisitorNode;
 import org.jboss.beans.metadata.spi.ParameterMetaData;
-import org.jboss.kernel.spi.dependency.KernelControllerContext;
 import org.jboss.reflect.spi.ClassInfo;
 
 /**
@@ -60,9 +59,9 @@ public class ClassFactoryAnnotationPlugin extends AbstractAdaptersAnnotationPlug
       return beanMetaData.getConstructor() != null;
    }
 
-   protected List<? extends MetaDataVisitorNode> internalApplyAnnotation(ClassInfo info, Factory annotation, KernelControllerContext context) throws Throwable
+   protected List<? extends MetaDataVisitorNode> internalApplyAnnotation(ClassInfo info, Factory annotation, BeanMetaData beanMetaData) throws Throwable
    {
-      AbstractBeanMetaData bean = (AbstractBeanMetaData)context.getBeanMetaData();
+      AbstractBeanMetaData bean = checkIfNotAbstractBeanMetaDataSpecific(beanMetaData);
       AbstractConstructorMetaData constructor = new AbstractConstructorMetaData();
       if (isAttributePresent(annotation.factoryClass()))
       {

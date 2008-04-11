@@ -21,49 +21,45 @@
 */
 package org.jboss.kernel.plugins.annotations;
 
-import java.util.ArrayList;
-import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
+import java.util.HashSet;
+import java.util.Arrays;
 
-import org.jboss.beans.metadata.api.annotations.Depends;
+import org.jboss.beans.metadata.api.annotations.Aliases;
 import org.jboss.beans.metadata.plugins.AbstractBeanMetaData;
-import org.jboss.beans.metadata.plugins.AbstractDependencyMetaData;
 import org.jboss.beans.metadata.spi.BeanMetaData;
-import org.jboss.beans.metadata.spi.DependencyMetaData;
 import org.jboss.beans.metadata.spi.MetaDataVisitorNode;
 import org.jboss.reflect.spi.ClassInfo;
 
 /**
- * Depends annotation plugin.
+ * Aliases annotation plugin.
  *
  * @author <a href="mailto:ales.justin@jboss.com">Ales Justin</a>
  */
-public class DependsAnnotationPlugin extends ClassAnnotationPlugin<Depends>
+public class AliasMetaDataAnnotationPlugin extends ClassAnnotationPlugin<Aliases>
 {
-   public static final DependsAnnotationPlugin INSTANCE = new DependsAnnotationPlugin();
+   public static final AliasMetaDataAnnotationPlugin INSTANCE = new AliasMetaDataAnnotationPlugin();
 
-   protected DependsAnnotationPlugin()
+   protected AliasMetaDataAnnotationPlugin()
    {
-      super(Depends.class);
+      super(Aliases.class);
    }
 
-   protected List<? extends MetaDataVisitorNode> internalApplyAnnotation(ClassInfo info, Depends annotation, BeanMetaData beanMetaData)
+   protected List<? extends MetaDataVisitorNode> internalApplyAnnotation(ClassInfo info, Aliases annotation, BeanMetaData beanMetaData) throws Throwable
    {
-      Set<DependencyMetaData> dependencies = beanMetaData.getDepends();
-      if (dependencies == null)
+      String[] strings = annotation.value();
+      if (strings != null && strings.length > 0)
       {
-         AbstractBeanMetaData abmd = checkIfNotAbstractBeanMetaDataSpecific(beanMetaData);
-         dependencies = new HashSet<DependencyMetaData>();
-         abmd.setDepends(dependencies);
+         Set<Object> aliases = beanMetaData.getAliases();
+         if (aliases == null)
+         {
+            AbstractBeanMetaData abmd = checkIfNotAbstractBeanMetaDataSpecific(beanMetaData);
+            aliases = new HashSet<Object>();
+            abmd.setAliases(aliases);
+         }
+         aliases.addAll(Arrays.asList(strings));
       }
-      List<MetaDataVisitorNode> nodes = new ArrayList<MetaDataVisitorNode>();
-      for(String depends : annotation.value())
-      {
-         AbstractDependencyMetaData dependency = new AbstractDependencyMetaData(depends);
-         if (dependencies.add(dependency))
-            nodes.add(dependency);
-      }
-      return nodes;
+      return null;
    }
 }

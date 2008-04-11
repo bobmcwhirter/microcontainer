@@ -19,34 +19,21 @@
 * Software Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA
 * 02110-1301 USA, or see the FSF site: http://www.fsf.org.
 */
-package org.jboss.kernel.plugins.annotations;
+package org.jboss.test.kernel.annotations.support;
 
-import org.jboss.beans.info.spi.PropertyInfo;
-import org.jboss.beans.metadata.plugins.AbstractCallbackMetaData;
-import org.jboss.dependency.spi.CallbackItem;
+import org.jboss.kernel.spi.annotations.BeanMetaDataAnnotationAdapter;
+import org.jboss.beans.info.spi.BeanInfo;
+import org.jboss.beans.metadata.spi.BeanMetaData;
+import org.jboss.metadata.spi.MetaData;
+import org.jboss.dependency.spi.ControllerMode;
 
 /**
- * Property uninstall annotation plugin.
- *
  * @author <a href="mailto:ales.justin@jboss.com">Ales Justin</a>
  */
-public class PropertyUninstallCallbackAnnotationPlugin extends UninstallCallbackAnnotationPlugin<PropertyInfo> implements PropertyAware
+public class SimpleBeanMetaDataAnnotationAdapter implements BeanMetaDataAnnotationAdapter
 {
-   public static final PropertyUninstallCallbackAnnotationPlugin INSTANCE = new PropertyUninstallCallbackAnnotationPlugin();
-
-   protected PropertyUninstallCallbackAnnotationPlugin()
+   public void applyAnnotations(BeanInfo beanInfo, MetaData metaData, BeanMetaData beanMetaData) throws Throwable
    {
-      super();
-   }
-
-   protected boolean isEqual(PropertyInfo info, CallbackItem<?> ci)
-   {
-      // todo - param matching
-      return info.getName().equals(ci.getAttributeName());
-   }
-
-   protected void applyInfo(AbstractCallbackMetaData callback, PropertyInfo info)
-   {
-      callback.setPropertyInfo(info);
+      beanMetaData.setMode(ControllerMode.ASYNCHRONOUS);
    }
 }

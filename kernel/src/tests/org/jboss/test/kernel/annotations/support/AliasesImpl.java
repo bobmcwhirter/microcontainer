@@ -19,34 +19,36 @@
 * Software Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA
 * 02110-1301 USA, or see the FSF site: http://www.fsf.org.
 */
-package org.jboss.kernel.plugins.annotations;
+package org.jboss.test.kernel.annotations.support;
 
-import org.jboss.beans.info.spi.PropertyInfo;
-import org.jboss.beans.metadata.plugins.AbstractCallbackMetaData;
-import org.jboss.dependency.spi.CallbackItem;
+import java.lang.annotation.Annotation;
+
+import org.jboss.beans.metadata.api.annotations.Aliases;
 
 /**
- * Property uninstall annotation plugin.
- *
  * @author <a href="mailto:ales.justin@jboss.com">Ales Justin</a>
  */
-public class PropertyUninstallCallbackAnnotationPlugin extends UninstallCallbackAnnotationPlugin<PropertyInfo> implements PropertyAware
+public class AliasesImpl implements Aliases
 {
-   public static final PropertyUninstallCallbackAnnotationPlugin INSTANCE = new PropertyUninstallCallbackAnnotationPlugin();
+   private String[] aliases;
 
-   protected PropertyUninstallCallbackAnnotationPlugin()
+   public AliasesImpl(String... aliases)
    {
-      super();
+      this.aliases = aliases;
    }
 
-   protected boolean isEqual(PropertyInfo info, CallbackItem<?> ci)
+   public String[] value()
    {
-      // todo - param matching
-      return info.getName().equals(ci.getAttributeName());
+      return aliases;
    }
 
-   protected void applyInfo(AbstractCallbackMetaData callback, PropertyInfo info)
+   public boolean replace()
    {
-      callback.setPropertyInfo(info);
+      return true;
+   }
+
+   public Class<? extends Annotation> annotationType()
+   {
+      return Aliases.class;
    }
 }

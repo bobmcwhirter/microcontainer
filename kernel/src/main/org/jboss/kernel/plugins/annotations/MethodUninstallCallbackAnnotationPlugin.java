@@ -32,7 +32,9 @@ import org.jboss.dependency.spi.CallbackItem;
  */
 public class MethodUninstallCallbackAnnotationPlugin extends UninstallCallbackAnnotationPlugin<MethodInfo>
 {
-   public MethodUninstallCallbackAnnotationPlugin()
+   public static final MethodUninstallCallbackAnnotationPlugin INSTANCE = new MethodUninstallCallbackAnnotationPlugin();
+
+   protected MethodUninstallCallbackAnnotationPlugin()
    {
       super();
    }

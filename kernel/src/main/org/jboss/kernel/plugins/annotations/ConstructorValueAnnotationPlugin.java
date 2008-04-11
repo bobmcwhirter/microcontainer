@@ -31,6 +31,7 @@ import org.jboss.beans.metadata.spi.BeanMetaData;
 import org.jboss.beans.metadata.spi.MetaDataVisitorNode;
 import org.jboss.kernel.spi.dependency.KernelControllerContext;
 import org.jboss.reflect.spi.ClassInfo;
+import org.jboss.metadata.spi.MetaData;
 
 /**
  * Constructor value annotation plugin.
@@ -50,9 +51,10 @@ public abstract class ConstructorValueAnnotationPlugin<C extends Annotation> ext
       return beanMetaData.getConstructor() != null;
    }
 
-   protected List<? extends MetaDataVisitorNode> internalApplyAnnotation(ClassInfo info, C annotation, KernelControllerContext context) throws Throwable
+   protected List<? extends MetaDataVisitorNode> internalApplyAnnotation(ClassInfo info, MetaData retrieval, C annotation, KernelControllerContext context) throws Throwable
    {
-      AbstractBeanMetaData beanMetaData = (AbstractBeanMetaData)context.getBeanMetaData();
+      BeanMetaData bmd = context.getBeanMetaData();
+      AbstractBeanMetaData beanMetaData = checkIfNotAbstractBeanMetaDataSpecific(bmd);
       AbstractConstructorMetaData constructor = new AbstractConstructorMetaData();
       constructor.setValue(createValueMetaData(annotation));
       beanMetaData.setConstructor(constructor);

@@ -80,8 +80,7 @@ public class FactoryMethodAnnotationPlugin extends AbstractParameterAnnotationPl
 
    protected void setParameterizedMetaData(AbstractConstructorMetaData parameterizedMetaData, BeanMetaData beanMetaData)
    {
-      AbstractBeanMetaData abmd = (AbstractBeanMetaData)beanMetaData;
+      AbstractBeanMetaData abmd = checkIfNotAbstractBeanMetaDataSpecific(beanMetaData);
       abmd.setConstructor(parameterizedMetaData);
    }
-
 }

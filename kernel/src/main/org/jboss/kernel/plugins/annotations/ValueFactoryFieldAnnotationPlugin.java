@@ -31,7 +31,9 @@ import org.jboss.beans.metadata.spi.ValueMetaData;
  */
 public class ValueFactoryFieldAnnotationPlugin extends FieldAnnotationPlugin<ValueFactory>
 {
-   public ValueFactoryFieldAnnotationPlugin()
+   public static final ValueFactoryFieldAnnotationPlugin INSTANCE = new ValueFactoryFieldAnnotationPlugin();
+
+   protected ValueFactoryFieldAnnotationPlugin()
    {
       super(ValueFactory.class);
    }
