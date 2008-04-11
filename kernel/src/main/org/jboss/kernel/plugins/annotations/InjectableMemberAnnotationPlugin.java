@@ -146,6 +146,6 @@ public abstract class InjectableMemberAnnotationPlugin<T extends AnnotatedInfo, 
     */
    public ValueMetaData createValueMetaData(C annotation)
    {
-      throw new IllegalArgumentException("Missing createValueMetaData(" + getAnnotation() + ") implementation!");  
+      throw new IllegalArgumentException("Missing createValueMetaData(" + annotation + ") implementation!");  
    }
 }
