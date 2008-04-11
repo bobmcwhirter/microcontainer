@@ -308,7 +308,7 @@ public abstract class CommonAnnotationAdapter<T extends MetaDataAnnotationPlugin
          log.trace("No methods");
 
       // static methods
-      MethodInfo[] staticMethods = classInfo.getDeclaredMethods();
+      MethodInfo[] staticMethods = getStaticMethods(classInfo);
       if (staticMethods != null && staticMethods.length != 0)
       {
          for(MethodInfo smi : staticMethods)
@@ -336,5 +336,16 @@ public abstract class CommonAnnotationAdapter<T extends MetaDataAnnotationPlugin
          log.trace("No static methods");
 
       // fields - if accessible - are already handled with propertys
+   }
+
+   /**
+    * Get the static methods of class info.
+    *
+    * @param classInfo the class info
+    * @return the static methods
+    */
+   protected MethodInfo[] getStaticMethods(ClassInfo classInfo)
+   {
+      return classInfo.getDeclaredMethods();
    }
 }
