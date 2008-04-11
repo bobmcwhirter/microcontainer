@@ -32,7 +32,7 @@ public class BasicBeanAnnotationAdapter extends AbstractBeanAnnotationAdapter
 {
    public static BasicBeanAnnotationAdapter INSTANCE = new BasicBeanAnnotationAdapter();
 
-   private BasicBeanAnnotationAdapter()
+   protected BasicBeanAnnotationAdapter()
    {
       // -- adapters
       @SuppressWarnings("unchecked")

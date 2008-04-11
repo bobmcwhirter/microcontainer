@@ -32,7 +32,7 @@ public class BasicBeanMetaDataAnnotationAdapter extends AbstractMetaDataAnnotati
 {
    public static BasicBeanMetaDataAnnotationAdapter INSTANCE = new BasicBeanMetaDataAnnotationAdapter();
 
-   private BasicBeanMetaDataAnnotationAdapter()
+   protected BasicBeanMetaDataAnnotationAdapter()
    {
       // -- adapters
       @SuppressWarnings("unchecked")
