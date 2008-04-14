@@ -25,9 +25,11 @@ import java.util.List;
 
 import org.jboss.beans.metadata.api.annotations.Dependency;
 import org.jboss.beans.metadata.spi.MetaDataVisitorNode;
+import org.jboss.dependency.spi.ControllerContext;
 import org.jboss.dependency.spi.DependencyInfo;
 import org.jboss.dependency.spi.DependencyItem;
 import org.jboss.kernel.plugins.annotations.ClassAnnotationPlugin;
+import org.jboss.kernel.spi.dependency.KernelController;
 import org.jboss.kernel.spi.dependency.KernelControllerContext;
 import org.jboss.metadata.spi.MetaData;
 import org.jboss.reflect.spi.ClassInfo;
@@ -49,7 +51,22 @@ public class SecurityDomainAnnotationPlugin extends ClassAnnotationPlugin<Securi
          throw new IllegalArgumentException("Null @Dependency.");
 
       DependencyInfo dependencies = context.getDependencyInfo();
-      SecurityDomainDependencyFactory factory = (SecurityDomainDependencyFactory)dependency.factory().newInstance();
+
+      SecurityDomainDependencyFactory factory = null;
+      // try to find existing security domain dependency factory
+      // or what ever kind of lookup
+      KernelController controller = context.getKernel().getController();
+      ControllerContext smCC = controller.getInstalledContext(annotation.securityManagerName());
+      if (smCC != null)
+      {
+         Object target = smCC.getTarget();
+         if (target != null && target instanceof SecurityDomainDependencyFactory)
+            factory = SecurityDomainDependencyFactory.class.cast(target);
+      }
+
+      if (factory == null)
+         factory = (SecurityDomainDependencyFactory)dependency.factory().newInstance();
+
       DependencyItem item = factory.createDependencyItem(annotation, dependency);
       dependencies.addIDependOn(item);
 
