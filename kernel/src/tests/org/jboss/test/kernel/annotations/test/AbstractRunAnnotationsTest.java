@@ -104,7 +104,9 @@ public abstract class AbstractRunAnnotationsTest extends BaseTestCase
       try
       {
          KernelControllerContext context = controller.install(beanMetaData, target);
-         checkContextState(context);         
+         checkContextState(context);
+         if (target == null)
+            target = clazz.cast(context.getTarget());
          doTestAfterInstall(clazz, target);
       }
       finally

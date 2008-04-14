@@ -30,11 +30,24 @@ import java.lang.annotation.Target;
  * Dependency.
  * 
  * @author <a href="adrian@jboss.com">Adrian Brock</a>
+ * @author <a href="ales.justin@jboss.com">Ales Justin</a>
  * @version $Revision: 44529 $
  */
 @Retention(RetentionPolicy.RUNTIME)
 @Target(ElementType.ANNOTATION_TYPE)
 public @interface Dependency
 {
+   /**
+    * Get the name.
+    *
+    * @return the name
+    */
    String name();
+
+   /**
+    * Get the helper factory class.
+    *
+    * @return the factory class
+    */
+   Class<?> factory() default void.class;
 }
