@@ -21,17 +21,20 @@
 */
 package org.jboss.test.kernel.config.test;
 
-import java.util.Iterator;
+import java.util.HashMap;
+import java.util.Map;
 import java.util.Set;
 
 import org.jboss.beans.info.spi.BeanInfo;
+import org.jboss.beans.info.spi.PropertyInfo;
 import org.jboss.beans.metadata.spi.BeanMetaData;
 import org.jboss.beans.metadata.spi.PropertyMetaData;
+import org.jboss.beans.metadata.spi.ValueMetaData;
 import org.jboss.dependency.spi.ControllerMode;
 import org.jboss.dependency.spi.ControllerState;
 import org.jboss.joinpoint.spi.Joinpoint;
-import org.jboss.joinpoint.spi.TargettedJoinpoint;
 import org.jboss.kernel.Kernel;
+import org.jboss.kernel.plugins.config.Configurator;
 import org.jboss.kernel.spi.config.KernelConfigurator;
 import org.jboss.kernel.spi.dependency.KernelController;
 import org.jboss.kernel.spi.dependency.KernelControllerContext;
@@ -131,38 +134,50 @@ public class AbstractKernelConfigTest extends AbstractKernelTest
    protected void configure(KernelConfigurator configurator, Object bean, BeanMetaData metaData) throws Throwable
    {
       BeanInfo info = configurator.getBeanInfo(metaData);
-      configure(configurator, bean, info, metaData);
+      configure(bean, info, metaData);
    }
 
-   protected void configure(KernelConfigurator configurator, Object bean, BeanInfo info, BeanMetaData metaData) throws Throwable
+   protected static Map<String, ValueMetaData> getPropertyValueMap(BeanMetaData beanMetaData)
    {
-      Set<TargettedJoinpoint> joinPoints = configurator.getPropertySetterJoinPoints(info, metaData);
-      for (Iterator<TargettedJoinpoint> i = joinPoints.iterator(); i.hasNext();)
+      Map<String, ValueMetaData> map = new HashMap<String, ValueMetaData>();
+      Set<PropertyMetaData> properties = beanMetaData.getProperties();
+      if (properties != null && properties.size() > 0)
       {
-         TargettedJoinpoint joinPoint = i.next();
-         joinPoint.setTarget(bean);
-         joinPoint.dispatch();
+         for (PropertyMetaData prop : properties)
+         {
+            map.put(prop.getName(), prop.getValue());
+         }
+      }
+      return map;
+   }
+
+   protected void configure(Object bean, BeanInfo info, BeanMetaData metaData) throws Throwable
+   {
+      Map<String, ValueMetaData> map = getPropertyValueMap(metaData);
+      Set<PropertyInfo> properties = info.getProperties();
+      for (PropertyInfo pi : properties)
+      {
+         ValueMetaData value = map.get(pi.getName());
+         if (value != null)
+            pi.set(bean, value.getValue(pi.getType(), Configurator.getClassLoader(metaData)));
       }
    }
 
-   protected void configure(KernelConfigurator configurator, Object bean, BeanInfo info, PropertyMetaData metaData) throws Throwable
+   protected void configure(Object bean, BeanInfo info, PropertyMetaData metaData) throws Throwable
    {
       ClassLoader cl = getClass().getClassLoader();
-      TargettedJoinpoint joinPoint = configurator.getPropertySetterJoinPoint(info, cl, metaData);
-      joinPoint.setTarget(bean);
-      joinPoint.dispatch();
+      PropertyInfo pi = info.getProperty(metaData.getName());
+      pi.set(bean, metaData.getValue().getValue(pi.getType(), cl));
    }
 
-   protected void unconfigure(KernelConfigurator configurator, Object bean, BeanInfo info, BeanMetaData metaData) throws Throwable
+   protected void unconfigure(Object bean, BeanInfo info) throws Throwable
    {
-      Set<TargettedJoinpoint> joinPoints = configurator.getPropertyNullerJoinPoints(info, metaData);
-      for (Iterator<TargettedJoinpoint> i = joinPoints.iterator(); i.hasNext();)
+      Set<PropertyInfo> properties = info.getProperties();
+      for (PropertyInfo pi : properties)
       {
-         TargettedJoinpoint joinPoint = i.next();
-         joinPoint.setTarget(bean);
          try
          {
-            joinPoint.dispatch();
+            pi.set(bean, null);
          }
          catch (Throwable ignored)
          {

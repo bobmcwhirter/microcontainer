@@ -180,10 +180,10 @@ public abstract class AbstractTypeMetaData extends AbstractValueMetaData
                if (target != null)
                {
                   BeanInfo beanInfo = configurator.getBeanInfo(target.getClass());
-                  PropertyInfo pi = Configurator.resolveProperty(log.isTraceEnabled(), beanInfo, cl, propertyName, null);
+                  PropertyInfo pi = beanInfo.getProperty(propertyName);
                   if (pi.isReadable())
                   {
-                     result = ((AttributeDispatchContext)context).get(propertyName);
+                     result = pi.get(target);
                   }
                }
             }

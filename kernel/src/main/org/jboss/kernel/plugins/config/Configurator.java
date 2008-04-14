@@ -22,7 +22,6 @@
 package org.jboss.kernel.plugins.config;
 
 import java.util.Collections;
-import java.util.HashSet;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Set;
@@ -41,9 +40,12 @@ import org.jboss.joinpoint.spi.Joinpoint;
 import org.jboss.joinpoint.spi.JoinpointException;
 import org.jboss.joinpoint.spi.JoinpointFactory;
 import org.jboss.joinpoint.spi.MethodJoinpoint;
-import org.jboss.joinpoint.spi.TargettedJoinpoint;
 import org.jboss.kernel.spi.config.KernelConfig;
-import org.jboss.reflect.spi.*;
+import org.jboss.reflect.spi.ClassInfo;
+import org.jboss.reflect.spi.ConstructorInfo;
+import org.jboss.reflect.spi.MethodInfo;
+import org.jboss.reflect.spi.TypeInfo;
+import org.jboss.reflect.spi.TypeInfoFactory;
 
 /**
  * Configuration utilities.
@@ -345,188 +347,9 @@ public class Configurator extends Config
       if (trace)
          log.trace("Configuring info=" + info + " metaData=" + metaData);
 
-      TargettedJoinpoint joinPoint = getPropertySetterJoinPoint(trace, info, cl, metaData.getValue());
-      joinPoint.setTarget(object);
-
       if (trace)
-         log.trace("Setting property " + joinPoint);
-
-      joinPoint.dispatch();
-   }
-
-   /**
-    * Get property getter for an property
-    *
-    * @param info the bean info
-    * @param property the property name
-    * @return the joinpoint
-    * @throws Throwable for any error
-    */
-   public static TargettedJoinpoint getPropertyGetterJoinPoint(BeanInfo info, String property) throws Throwable
-   {
-      boolean trace = log.isTraceEnabled();
-      PropertyInfo ainfo = resolveProperty(trace, info, property);
-      return getPropertyGetterJoinPoint(trace, ainfo);
-   }
-
-   /**
-    * Get an property getter joinpoint
-    *
-    * @param trace whether trace is enabled
-    * @param info the property info
-    * @return the joinpoint
-    * @throws Throwable for any error
-    */
-   public static TargettedJoinpoint getPropertyGetterJoinPoint(boolean trace, PropertyInfo info) throws Throwable
-   {
-      if (trace)
-         log.trace("Get property setter join point info=" + info);
-
-      if (info == null)
-         throw new IllegalArgumentException("Null property info");
-
-      JoinpointFactory jpf = info.getBeanInfo().getJoinpointFactory();
-      MethodInfo minfo = info.getGetter();
-      FieldInfo finfo = info.getFieldInfo();
-      if (minfo != null)
-         return getMethodJoinpoint(null, jpf, minfo.getName(), null, null);
-      else if (finfo != null)
-         return getFieldGetJoinpoint(null, jpf, finfo.getName());
-      else
-         throw new IllegalArgumentException("Property is write only: " + info);
-   }
-
-   /**
-    * Get the property setters for a bean
-    *
-    * @param info the bean info
-    * @param metaData the bean metadata
-    * @return the property setters
-    * @throws Throwable for any error
-    */
-   public static Set<TargettedJoinpoint> getPropertySetterJoinPoints(BeanInfo info, BeanMetaData metaData) throws Throwable
-   {
-      boolean trace = log.isTraceEnabled();
-
-      if (info == null)
-         throw new IllegalArgumentException("Null bean info");
-      if (metaData == null)
-         throw new IllegalArgumentException("Null bean metadata");
-
-      Set<TargettedJoinpoint> result = new HashSet<TargettedJoinpoint>();
-      Set<PropertyMetaData> propertys = metaData.getProperties();
-      if (propertys != null && propertys.isEmpty() == false)
-      {
-         ClassLoader cl = getClassLoader(metaData);
-
-         for (Iterator<PropertyMetaData> i = metaData.getProperties().iterator(); i.hasNext();)
-         {
-            PropertyMetaData property = i.next();
-            TargettedJoinpoint joinPoint = getPropertySetterJoinPoint(trace, info, cl, property);
-            result.add(joinPoint);
-         }
-      }
-
-      return result;
-   }
-
-   /**
-    * Get property setter for an property
-    *
-    * @param info the bean info
-    * @param cl the classloader
-    * @param metaData the property metadata
-    * @return the joinpoint
-    * @throws Throwable for any error
-    */
-   public static TargettedJoinpoint getPropertySetterJoinPoint(BeanInfo info, ClassLoader cl, PropertyMetaData metaData) throws Throwable
-   {
-      boolean trace = log.isTraceEnabled();
-      return getPropertySetterJoinPoint(trace, info, cl, metaData);
-   }
-
-   /**
-    * Get property setter for an property
-    *
-    * @param trace whether trace is enabled
-    * @param info the bean info
-    * @param cl the classloader
-    * @param metaData the property metadata
-    * @return the joinpoint
-    * @throws Throwable for any error
-    */
-   public static TargettedJoinpoint getPropertySetterJoinPoint(boolean trace, BeanInfo info, ClassLoader cl, PropertyMetaData metaData) throws Throwable
-   {
-      PropertyInfo ainfo = resolveProperty(trace, info, cl, metaData.getName(), metaData.getType());
-      return getPropertySetterJoinPoint(trace, ainfo, cl, metaData.getValue());
-   }
-
-   /**
-    * Get property setter for an property
-    *
-    * @param info the property info
-    * @param cl the classloader
-    * @param metaData the property metadata
-    * @return the joinpoint
-    * @throws Throwable for any error
-    */
-   public static TargettedJoinpoint getPropertySetterJoinPoint(PropertyInfo info, ClassLoader cl, PropertyMetaData metaData) throws Throwable
-   {
-      boolean trace = log.isTraceEnabled();
-      return getPropertySetterJoinPoint(trace, info, cl, metaData.getValue());
-   }
-
-   /**
-    * Get property setter for an property
-    *
-    * @param info the bean info
-    * @param property the property name
-    * @param cl the classloader
-    * @param vmd the value meta data
-    * @return the joinpoint
-    * @throws Throwable for any error
-    */
-   public static TargettedJoinpoint getPropertySetterJoinPoint(BeanInfo info, String property, ClassLoader cl, ValueMetaData vmd) throws Throwable
-   {
-      boolean trace = log.isTraceEnabled();
-      PropertyInfo ainfo = resolveProperty(trace, info, property);
-      return getPropertySetterJoinPoint(trace, ainfo, cl, vmd);
-   }
-
-   /**
-    * Get an property setter joinpoint
-    *
-    * @param trace whether trace is enabled
-    * @param info the property info
-    * @param cl the classloader
-    * @param metaData the value metadata
-    * @return the joinpoint
-    * @throws Throwable for any error
-    */
-   public static TargettedJoinpoint getPropertySetterJoinPoint(boolean trace, PropertyInfo info, ClassLoader cl, ValueMetaData metaData) throws Throwable
-   {
-      if (trace)
-         log.trace("Get property setter join point info=" + info + " metaData=" + metaData);
-
-      if (info == null)
-         throw new IllegalArgumentException("Null property info");
-      if (metaData == null)
-         throw new IllegalArgumentException("Null value metadata");
-
-      TypeInfo type = info.getType();
-      Object value = metaData.getValue(type, cl);
-      JoinpointFactory jpf = info.getBeanInfo().getJoinpointFactory();
-      MethodInfo minfo = info.getSetter();
-      FieldInfo finfo = info.getFieldInfo();
-      if (minfo != null)
-      {
-         String[] parameterTypes = getParameterTypes(trace, minfo.getParameterTypes());
-         return getMethodJoinpoint(null, jpf, minfo.getName(), parameterTypes, new Object[] { value });
-      }
-      else if (finfo != null)
-         return getFieldSetJoinpoint(null, jpf, finfo.getName(), value);
-      else
-         throw new IllegalArgumentException("Property is read only: " + info);
+         log.trace("Setting property " + info);
+      info.set(object, metaData.getValue().getValue(info.getType(), cl));
    }
 
    /**
@@ -588,103 +411,9 @@ public class Configurator extends Config
       if (trace)
          log.trace("Unconfiguring info=" + info + " metaData=" + metaData);
 
-      TargettedJoinpoint joinPoint = getPropertyNullerJoinPoint(info, metaData);
-      joinPoint.setTarget(object);
-
       if (trace)
-         log.trace("Unsetting property " + joinPoint);
-
-      joinPoint.dispatch();
-   }
-
-   /**
-    * Get property nuller joinpoints for a bean
-    *
-    * @param info the bean info
-    * @param metaData the bean metadata
-    * @return the join points
-    * @throws Throwable for any error
-    */
-   public static Set<TargettedJoinpoint> getPropertyNullerJoinPoints(BeanInfo info, BeanMetaData metaData) throws Throwable
-   {
-      if (info == null)
-         throw new IllegalArgumentException("Null bean info");
-      if (metaData == null)
-         throw new IllegalArgumentException("Null bean metadata");
-
-      Set<TargettedJoinpoint> result = new HashSet<TargettedJoinpoint>();
-      Set<PropertyMetaData> propertys = metaData.getProperties();
-      if (propertys != null && propertys.isEmpty() == false)
-      {
-         for (Iterator<PropertyMetaData> i = metaData.getProperties().iterator(); i.hasNext();)
-         {
-            PropertyMetaData property = i.next();
-            TargettedJoinpoint joinPoint = getPropertyNullerJoinPoint(info, property);
-            result.add(joinPoint);
-         }
-      }
-      return result;
-   }
-
-   /**
-    * Get property nuller joinpoint for a property
-    *
-    * @param info the bean info
-    * @param metaData the property metadata
-    * @return the join point
-    * @throws Throwable for any error
-    * @deprecated must use ClassLoader when determinig PropertyInfo
-    */
-   public static TargettedJoinpoint getPropertyNullerJoinPoint(BeanInfo info, PropertyMetaData metaData) throws Throwable
-   {
-      return getPropertyNullerJoinPoint(null, info, metaData);
-   }
-
-   /**
-    * Get property nuller joinpoint for a property
-    *
-    * @param cl the bean classloader
-    * @param info the bean info
-    * @param metaData the property metadata
-    * @return the join point
-    * @throws Throwable for any error
-    */
-   public static TargettedJoinpoint getPropertyNullerJoinPoint(ClassLoader cl, BeanInfo info, PropertyMetaData metaData) throws Throwable
-   {
-      boolean trace = log.isTraceEnabled();
-      PropertyInfo ainfo = resolveProperty(trace, info, cl, metaData.getName(), metaData.getType());
-      return getPropertyNullerJoinPoint(ainfo, metaData);
-   }
-
-   /**
-    * Get property nuller joinpoint for a property
-    *
-    * @param info the property info
-    * @param metaData the property metadata
-    * @return the join point
-    * @throws Throwable for any error
-    */
-   public static TargettedJoinpoint getPropertyNullerJoinPoint(PropertyInfo info, PropertyMetaData metaData) throws Throwable
-   {
-      boolean trace = log.isTraceEnabled();
-      if (trace)
-         log.trace("Get property nuller join point info=" + info + " metaData=" + metaData);
-
-      if (info == null)
-         throw new IllegalArgumentException("Null property info");
-
-      JoinpointFactory jpf = info.getBeanInfo().getJoinpointFactory();
-      MethodInfo minfo = info.getSetter();
-      FieldInfo finfo = info.getFieldInfo();
-      if (minfo != null)
-      {
-         String[] parameterTypes = getParameterTypes(trace, minfo.getParameterTypes());
-         return getMethodJoinpoint(null, jpf, minfo.getName(), parameterTypes, new Object[] { null });
-      }
-      else if (finfo != null)
-         return getFieldSetJoinpoint(null, jpf, finfo.getName(), null);
-      else
-         throw new IllegalArgumentException("Property is read only: " + info);
+         log.trace("Unsetting property " + info);
+      info.set(object, null);
    }
 
    /**
@@ -726,26 +455,18 @@ public class Configurator extends Config
       if (cl == null)
          cl = info.getClassInfo().getType().getClassLoader();
 
-      Set<PropertyInfo> properties = info.getProperties();
-      if (properties != null && properties.size() > 0)
-      {
-         ClassInfo classInfo = info.getClassInfo();
-         TypeInfoFactory tif = classInfo.getTypeInfoFactory();
-         if (tif == null)
-            throw new IllegalArgumentException("TypeInfoFactory is null: " + classInfo);
+      PropertyInfo ainfo = info.getProperty(name);
+      ClassInfo classInfo = info.getClassInfo();
+      TypeInfoFactory tif = classInfo.getTypeInfoFactory();
+      if (tif == null)
+         throw new IllegalArgumentException("TypeInfoFactory is null: " + classInfo);
 
-         for (PropertyInfo ainfo : properties)
-         {
-            if (name.equals(ainfo.getName()))
-            {
-               String[] typeNames = {type};
-               TypeInfo[] typeInfos = {ainfo.getType()};
-               if (equals(typeNames, typeInfos) || isAssignable(tif, cl, typeNames, typeInfos))
-               {
-                  return ainfo;
-               }
-            }
-         }
+      // check for possible progression
+      String[] typeNames = {type};
+      TypeInfo[] typeInfos = {ainfo.getType()};
+      if (equals(typeNames, typeInfos) || isAssignable(tif, cl, typeNames, typeInfos))
+      {
+         return ainfo;
       }
 
       throw new JoinpointException("Property " + name + " not found for " + info);

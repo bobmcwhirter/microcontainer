@@ -24,10 +24,10 @@ package org.jboss.beans.metadata.plugins.factory;
 import java.util.Map;
 
 import org.jboss.beans.info.spi.BeanInfo;
+import org.jboss.beans.info.spi.PropertyInfo;
 import org.jboss.beans.metadata.spi.ValueMetaData;
 import org.jboss.beans.metadata.spi.factory.AbstractBeanFactory;
 import org.jboss.joinpoint.spi.Joinpoint;
-import org.jboss.joinpoint.spi.TargettedJoinpoint;
 import org.jboss.kernel.plugins.config.Configurator;
 import org.jboss.kernel.spi.config.KernelConfigurator;
 import org.jboss.kernel.spi.dependency.KernelControllerContext;
@@ -97,9 +97,8 @@ public class GenericBeanFactory extends AbstractBeanFactory implements KernelCon
          {
             String property = entry.getKey();
             ValueMetaData vmd = entry.getValue();
-            TargettedJoinpoint jp = configurator.getPropertySetterJoinPoint(info, property, cl, vmd);
-            jp.setTarget(result);
-            jp.dispatch();
+            PropertyInfo pi = info.getProperty(property);
+            pi.set(result, vmd.getValue(pi.getType(), cl));
          }
       }
       invokeLifecycle("create", create, info, cl, result);

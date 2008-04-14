@@ -220,7 +220,7 @@ public class ConfigureAttributeFromStringTestCase extends AbstractKernelConfigTe
 
       AbstractPropertyMetaData metaData = new AbstractPropertyMetaData(name, value.toString());
       
-      configure(configurator, bean, info, metaData);
+      configure(bean, info, metaData);
       
       return bean;
    }
@@ -235,7 +235,7 @@ public class ConfigureAttributeFromStringTestCase extends AbstractKernelConfigTe
       AbstractPropertyMetaData metaData = new AbstractPropertyMetaData(name, value.toString(), type);
       ((StringValueMetaData) metaData.getValue()).setConfigurator(configurator);
       
-      configure(configurator, bean, info, metaData);
+      configure(bean, info, metaData);
       
       return bean;
    }

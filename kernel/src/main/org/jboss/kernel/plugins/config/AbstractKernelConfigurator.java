@@ -22,19 +22,14 @@
 package org.jboss.kernel.plugins.config;
 
 import java.util.List;
-import java.util.Set;
 
-import org.jboss.beans.info.spi.BeanInfo;
-import org.jboss.beans.info.spi.PropertyInfo;
 import org.jboss.beans.info.spi.BeanAccessMode;
+import org.jboss.beans.info.spi.BeanInfo;
 import org.jboss.beans.metadata.spi.BeanMetaData;
 import org.jboss.beans.metadata.spi.ConstructorMetaData;
 import org.jboss.beans.metadata.spi.ParameterMetaData;
-import org.jboss.beans.metadata.spi.PropertyMetaData;
-import org.jboss.beans.metadata.spi.ValueMetaData;
 import org.jboss.joinpoint.spi.Joinpoint;
 import org.jboss.joinpoint.spi.MethodJoinpoint;
-import org.jboss.joinpoint.spi.TargettedJoinpoint;
 import org.jboss.kernel.Kernel;
 import org.jboss.kernel.plugins.AbstractKernelObject;
 import org.jboss.kernel.spi.config.KernelConfig;
@@ -137,47 +132,6 @@ public class AbstractKernelConfigurator extends AbstractKernelObject implements 
       return Configurator.getConstructorJoinPoint(config, info, metaData, beanMetaData);
    }
 
-   public TargettedJoinpoint getPropertyGetterJoinPoint(BeanInfo info, String property) throws Throwable
-   {
-      return Configurator.getPropertyGetterJoinPoint(info, property);
-   }
-
-   public Set<TargettedJoinpoint> getPropertySetterJoinPoints(BeanInfo info, BeanMetaData metaData) throws Throwable
-   {
-      return Configurator.getPropertySetterJoinPoints(info, metaData);
-   }
-
-   public TargettedJoinpoint getPropertySetterJoinPoint(BeanInfo info, ClassLoader cl, PropertyMetaData metaData) throws Throwable
-   {
-      return Configurator.getPropertySetterJoinPoint(info, cl, metaData);
-   }
-
-   public TargettedJoinpoint getPropertySetterJoinPoint(PropertyInfo info, ClassLoader cl, PropertyMetaData metaData) throws Throwable
-   {
-      return Configurator.getPropertySetterJoinPoint(info, cl,  metaData);
-   }
-
-   public TargettedJoinpoint getPropertySetterJoinPoint(BeanInfo info, String property, ClassLoader cl, ValueMetaData vmd) throws Throwable
-   {
-      return Configurator.getPropertySetterJoinPoint(info, property, cl, vmd);
-   }
-
-   public Set<TargettedJoinpoint> getPropertyNullerJoinPoints(BeanInfo info, BeanMetaData metaData) throws Throwable
-   {
-      return Configurator.getPropertyNullerJoinPoints(info, metaData);
-   }
-
-   @Deprecated
-   public TargettedJoinpoint getPropertyNullerJoinPoint(BeanInfo info, PropertyMetaData metaData) throws Throwable
-   {
-      return Configurator.getPropertyNullerJoinPoint(info, metaData);
-   }
-
-   public TargettedJoinpoint getPropertyNullerJoinPoint(PropertyInfo info, PropertyMetaData metaData) throws Throwable
-   {
-      return Configurator.getPropertyNullerJoinPoint(info, metaData);
-   }
-   
    public MethodJoinpoint getMethodJoinPoint(BeanInfo info, ClassLoader cl, String name, List<ParameterMetaData> parameters, boolean isStatic, boolean isPublic) throws Throwable
    {
       return Configurator.findMethod(info, cl, name, parameters, isStatic, isPublic);

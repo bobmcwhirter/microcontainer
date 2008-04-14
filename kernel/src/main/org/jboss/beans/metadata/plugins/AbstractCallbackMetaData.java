@@ -22,7 +22,6 @@
 package org.jboss.beans.metadata.plugins;
 
 import java.io.Serializable;
-
 import javax.xml.bind.annotation.XmlAttribute;
 import javax.xml.bind.annotation.XmlTransient;
 

@@ -22,19 +22,14 @@
 package org.jboss.kernel.spi.config;
 
 import java.util.List;
-import java.util.Set;
 
-import org.jboss.beans.info.spi.PropertyInfo;
-import org.jboss.beans.info.spi.BeanInfo;
 import org.jboss.beans.info.spi.BeanAccessMode;
+import org.jboss.beans.info.spi.BeanInfo;
+import org.jboss.beans.metadata.spi.BeanMetaData;
 import org.jboss.beans.metadata.spi.ConstructorMetaData;
 import org.jboss.beans.metadata.spi.ParameterMetaData;
-import org.jboss.beans.metadata.spi.PropertyMetaData;
-import org.jboss.beans.metadata.spi.BeanMetaData;
-import org.jboss.beans.metadata.spi.ValueMetaData;
 import org.jboss.joinpoint.spi.Joinpoint;
 import org.jboss.joinpoint.spi.MethodJoinpoint;
-import org.jboss.joinpoint.spi.TargettedJoinpoint;
 import org.jboss.kernel.spi.KernelObject;
 import org.jboss.reflect.spi.ClassInfo;
 import org.jboss.reflect.spi.TypeInfo;
@@ -179,97 +174,12 @@ public interface KernelConfigurator extends KernelObject
     * 
     * @param info the bean info
     * @param metaData the constructor metadata
-    * @param beanMetaData
+    * @param beanMetaData the bean metadata
     * @return the join point
     * @throws Throwable for any error
     */
    Joinpoint getConstructorJoinPoint(BeanInfo info, ConstructorMetaData metaData, BeanMetaData beanMetaData) throws Throwable;
 
-   /**
-    * Get property getter join point
-    * 
-    * @param info the bean info
-    * @param property the property name
-    * @return the join point
-    * @throws Throwable for any error
-    */
-   TargettedJoinpoint getPropertyGetterJoinPoint(BeanInfo info, String property) throws Throwable;
-
-   /**
-    * Get property setter join points
-    * 
-    * @param info the bean info
-    * @param metaData the bean metadata
-    * @return the join points
-    * @throws Throwable for any error
-    */
-   Set<TargettedJoinpoint> getPropertySetterJoinPoints(BeanInfo info, BeanMetaData metaData) throws Throwable;
-
-   /**
-    * Get property setter join point
-    * 
-    * @param info the bean info
-    * @param cl the classloader
-    * @param metaData the property metadata
-    * @return the join point
-    * @throws Throwable for any error
-    */
-   TargettedJoinpoint getPropertySetterJoinPoint(BeanInfo info, ClassLoader cl, PropertyMetaData metaData) throws Throwable;
-
-   /**
-    * Get property setter join point
-    * 
-    * @param info the bean info
-    * @param property the property name
-    * @param cl the classloader
-    * @param vmd the value metadata
-    * @return the join point
-    * @throws Throwable for any error
-    */
-   TargettedJoinpoint getPropertySetterJoinPoint(BeanInfo info, String property, ClassLoader cl, ValueMetaData vmd) throws Throwable;
-   
-   /**
-    * Get property setter join point
-    * 
-    * @param info the property info
-    * @param cl the classloader
-    * @param metaData the property metadata
-    * @return the join point
-    * @throws Throwable for any error
-    */
-   TargettedJoinpoint getPropertySetterJoinPoint(PropertyInfo info, ClassLoader cl, PropertyMetaData metaData) throws Throwable;
-
-   /**
-    * Get property nuller join points
-    * 
-    * @param info the bean info
-    * @param metaData the bean metadata
-    * @return the join points
-    * @throws Throwable for any error
-    */
-   Set<TargettedJoinpoint> getPropertyNullerJoinPoints(BeanInfo info, BeanMetaData metaData) throws Throwable;
-
-   /**
-    * Get property nuller join point
-    * 
-    * @param info the bean info
-    * @param metaData the property metadata
-    * @return the join point
-    * @throws Throwable for any error
-    * @deprecated must use ClassLoader when determining PropertyInfo
-    */
-   TargettedJoinpoint getPropertyNullerJoinPoint(BeanInfo info, PropertyMetaData metaData) throws Throwable;
-
-   /**
-    * Get property nuller join point
-    * 
-    * @param info the property info
-    * @param metaData the property metadata
-    * @return the join point
-    * @throws Throwable for any error
-    */
-   TargettedJoinpoint getPropertyNullerJoinPoint(PropertyInfo info, PropertyMetaData metaData) throws Throwable;
-   
    /**
     * Get a method joinpoint
     * 

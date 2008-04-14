@@ -208,7 +208,7 @@ public class ConfigureAttributeFromObjectTestCase extends AbstractKernelConfigTe
 
       AbstractPropertyMetaData metaData = new AbstractPropertyMetaData(name, value);
       
-      configure(configurator, bean, info, metaData);
+      configure(bean, info, metaData);
       
       return bean;
    }

@@ -31,7 +31,6 @@ import org.jboss.kernel.spi.dependency.KernelControllerContext;
 
 /**
  * New ConfigureAction.
- * @see org.jboss.kernel.plugins.dependency.OldConfigureAction
  *
  * @author <a href="ales.justin@jboss.com">Ales Justin</a>
  */

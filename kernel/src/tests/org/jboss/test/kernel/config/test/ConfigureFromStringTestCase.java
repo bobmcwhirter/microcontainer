@@ -182,12 +182,12 @@ public class ConfigureFromStringTestCase extends AbstractKernelConfigTest
 
       metaData.setProperties(attributes);
       
-      configure(configurator, bean, info, metaData);
+      configure(bean, info, metaData);
       return bean;
    }
 
    protected void unconfigure(SimpleBean bean) throws Throwable
    {
-      unconfigure(configurator, bean, info, metaData);
+      unconfigure(bean, info);
    }
 }
