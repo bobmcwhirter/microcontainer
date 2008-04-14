@@ -154,7 +154,7 @@ public class ContextClassLoaderTestCase extends AbstractControllerTest
    
    public void testStart() throws Throwable
    {
-      KernelDeployment deployment = deploy("ContextClassLoaderTestCase_Create.xml");
+      KernelDeployment deployment = deploy("ContextClassLoaderTestCase_Start.xml");
       try
       {
          validate();
