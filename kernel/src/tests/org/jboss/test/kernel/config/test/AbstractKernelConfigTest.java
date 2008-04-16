@@ -21,8 +21,6 @@
 */
 package org.jboss.test.kernel.config.test;
 
-import java.util.HashMap;
-import java.util.Map;
 import java.util.Set;
 
 import org.jboss.beans.info.spi.BeanInfo;
@@ -137,29 +135,22 @@ public class AbstractKernelConfigTest extends AbstractKernelTest
       configure(bean, info, metaData);
    }
 
-   protected static Map<String, ValueMetaData> getPropertyValueMap(BeanMetaData beanMetaData)
-   {
-      Map<String, ValueMetaData> map = new HashMap<String, ValueMetaData>();
-      Set<PropertyMetaData> properties = beanMetaData.getProperties();
-      if (properties != null && properties.size() > 0)
-      {
-         for (PropertyMetaData prop : properties)
-         {
-            map.put(prop.getName(), prop.getValue());
-         }
-      }
-      return map;
-   }
-
    protected void configure(Object bean, BeanInfo info, BeanMetaData metaData) throws Throwable
    {
-      Map<String, ValueMetaData> map = getPropertyValueMap(metaData);
-      Set<PropertyInfo> properties = info.getProperties();
-      for (PropertyInfo pi : properties)
+      if (info == null)
+         throw new IllegalArgumentException("Null bean info");
+      if (metaData == null)
+         throw new IllegalArgumentException("Null bean meta data");
+
+      Set<PropertyMetaData> propertys = metaData.getProperties();
+      if (propertys != null && propertys.isEmpty() == false)
       {
-         ValueMetaData value = map.get(pi.getName());
-         if (value != null)
+         for (PropertyMetaData pmd : propertys)
+         {
+            PropertyInfo pi = info.getProperty(pmd.getName());
+            ValueMetaData value = pmd.getValue();
             pi.set(bean, value.getValue(pi.getType(), Configurator.getClassLoader(metaData)));
+         }
       }
    }
 
