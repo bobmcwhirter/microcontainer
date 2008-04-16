@@ -70,6 +70,7 @@ public class DeploymentTestSuite extends TestSuite
       suite.addTest(BeanContainerUsageMDTestCase.suite());
       suite.addTest(BeanContainerScopingTestCase.suite());
       suite.addTest(BeanContainerInjectionTestCase.suite());
+      suite.addTest(BeanContainerStaticTestCase.suite());
 
       return suite;
    }
