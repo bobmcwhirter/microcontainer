@@ -34,7 +34,7 @@ import org.jboss.reflect.spi.AnnotatedInfo;
  *
  * @author <a href="mailto:ales.justin@jboss.com">Ales Justin</a>
  */
-public class AbstractBeanAnnotationAdapter extends CommonAnnotationAdapter<AnnotationPlugin, MetaDataVisitor> implements BeanAnnotationAdapter
+public class AbstractBeanAnnotationAdapter extends CommonAnnotationAdapter<AnnotationPlugin<?, ?>, MetaDataVisitor> implements BeanAnnotationAdapter
 {
    public void applyAnnotations(MetaDataVisitor visitor) throws Throwable
    {

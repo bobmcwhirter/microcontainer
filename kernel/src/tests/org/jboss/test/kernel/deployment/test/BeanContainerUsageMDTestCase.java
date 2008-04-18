@@ -73,8 +73,8 @@ public class BeanContainerUsageMDTestCase extends BeanContainerUsageTestCase
    /**
     * Test of the ComponentFactory usecase
     * 
-    * @see {@link GenericComponentFactory}
-    * @see {@link ComponentFactory}
+    * @see GenericComponentFactory
+    * @see ComponentFactory
     * @throws Throwable
     */
    @SuppressWarnings("unchecked")

@@ -32,6 +32,8 @@ import org.jboss.reflect.spi.AnnotatedInfo;
 /**
  * Annotation plugin based on bean metadata.
  * 
+ * @param <T> the annotated info
+ * @param <C> the annotation type
  * @author <a href="mailto:ales.justin@jboss.com">Ales Justin</a>
  */
 public interface MetaDataAnnotationPlugin<T extends AnnotatedInfo, C extends Annotation>

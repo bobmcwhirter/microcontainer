@@ -49,7 +49,7 @@ import org.jboss.reflect.spi.MethodInfo;
  * @param <U> exact handle type
  * @author <a href="mailto:ales.justin@jboss.com">Ales Justin</a>
  */
-public abstract class CommonAnnotationAdapter<T extends MetaDataAnnotationPlugin, U>
+public abstract class CommonAnnotationAdapter<T extends MetaDataAnnotationPlugin<?, ?>, U>
 {
    protected Logger log = Logger.getLogger(getClass());
 
@@ -116,7 +116,7 @@ public abstract class CommonAnnotationAdapter<T extends MetaDataAnnotationPlugin
       if (plugin == null)
          return;
 
-      Set supported = plugin.getSupportedTypes();
+      Set<ElementType> supported = plugin.getSupportedTypes();
       if (supported == null || supported.isEmpty())
          throw new IllegalArgumentException("Null or empty support types: " + plugin);
 

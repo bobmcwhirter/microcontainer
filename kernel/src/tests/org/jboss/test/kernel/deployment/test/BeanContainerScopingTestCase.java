@@ -51,7 +51,7 @@ public class BeanContainerScopingTestCase extends ScopingDeploymentTest
       List<Object> beans1 = sc1.createBeans("cf_base_1");
       assertNotNull(beans1);
       assertEquals(2, beans1.size());
-      BaseContext bc1 = assertBean("cf_base_1$BeanContext", BaseContext.class);
+      BaseContext<?, ?> bc1 = assertBean("cf_base_1$BeanContext", BaseContext.class);
       InstanceInterceptor ii1 = assertBean("cf_base_1$InstanceInterceptor", InstanceInterceptor.class);
       assertNotNull(bc1.getInterceptors());
       assertEquals(1, bc1.getInterceptors().size());
@@ -61,7 +61,7 @@ public class BeanContainerScopingTestCase extends ScopingDeploymentTest
       List<Object> beans2 = sc2.createBeans("cf_base_2");
       assertNotNull(beans2);
       assertEquals(2, beans2.size());
-      BaseContext bc2 = assertBean("cf_base_2$BeanContext", BaseContext.class);
+      BaseContext<?, ?> bc2 = assertBean("cf_base_2$BeanContext", BaseContext.class);
       InstanceInterceptor ii2 = assertBean("cf_base_2$InstanceInterceptor", InstanceInterceptor.class);
       assertNotNull(bc2.getInterceptors());
       assertEquals(1, bc2.getInterceptors().size());

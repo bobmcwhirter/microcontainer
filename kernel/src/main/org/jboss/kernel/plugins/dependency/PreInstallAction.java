@@ -55,7 +55,7 @@ import org.jboss.metadata.spi.scope.ScopeKey;
  */
 public class PreInstallAction extends InstallsAwareAction
 {
-   private Map<Class<? extends ScopeFactory<? extends Annotation>>, WeakReference<ScopeFactory>> factories = new WeakHashMap<Class<? extends ScopeFactory<? extends Annotation>>, WeakReference<ScopeFactory>>();
+   private Map<Class<? extends ScopeFactory<? extends Annotation>>, WeakReference<ScopeFactory<? extends Annotation>>> factories = new WeakHashMap<Class<? extends ScopeFactory<? extends Annotation>>, WeakReference<ScopeFactory<? extends Annotation>>>();
 
    /**
     * Get the scope factory.
@@ -64,10 +64,10 @@ public class PreInstallAction extends InstallsAwareAction
     * @return scope factory
     * @throws Throwable for any error
     */
-   protected ScopeFactory getScopeFactory(Class<? extends ScopeFactory<? extends Annotation>> clazz) throws Throwable
+   protected ScopeFactory<? extends Annotation> getScopeFactory(Class<? extends ScopeFactory<? extends Annotation>> clazz) throws Throwable
    {
-      ScopeFactory factory = null;
-      WeakReference<ScopeFactory> weak = factories.get(clazz);
+      ScopeFactory<? extends Annotation> factory = null;
+      WeakReference<ScopeFactory<? extends Annotation>> weak = factories.get(clazz);
       if (weak != null)
       {
          factory = weak.get();
@@ -77,7 +77,7 @@ public class PreInstallAction extends InstallsAwareAction
       if (factory == null)
       {
          factory = clazz.newInstance();
-         factories.put(clazz, new WeakReference<ScopeFactory>(factory));
+         factories.put(clazz, new WeakReference<ScopeFactory<? extends Annotation>>(factory));
       }
       return factory;
    }
@@ -133,7 +133,7 @@ public class PreInstallAction extends InstallsAwareAction
                if (annotation.annotationType().isAnnotationPresent(ScopeFactoryLookup.class))
                {
                   ScopeFactoryLookup sfl = annotation.annotationType().getAnnotation(ScopeFactoryLookup.class);
-                  ScopeFactory<Annotation> scf = getScopeFactory(sfl.value()); 
+                  ScopeFactory scf = getScopeFactory(sfl.value()); 
                   Scope scope = scf.create(annotation);
                   scopes.add(scope);
                }

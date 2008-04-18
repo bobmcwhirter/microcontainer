@@ -56,6 +56,7 @@ import org.jboss.beans.metadata.api.annotations.UninstallMethod;
 public class AllIoCAnnotations
 {
    @Inject
+   @SuppressWarnings("unused")
    private int time;
 
    @Inject

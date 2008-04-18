@@ -32,7 +32,7 @@ import org.jboss.kernel.spi.annotations.BeanMetaDataAnnotationAdapter;
  *
  * @author <a href="mailto:ales.justin@jboss.com">Ales Justin</a>
  */
-public class AbstractMetaDataAnnotationAdapter extends CommonAnnotationAdapter<MetaDataAnnotationPlugin, BeanMetaData> implements BeanMetaDataAnnotationAdapter
+public class AbstractMetaDataAnnotationAdapter extends CommonAnnotationAdapter<MetaDataAnnotationPlugin<?, ?>, BeanMetaData> implements BeanMetaDataAnnotationAdapter
 {
    public void applyAnnotations(BeanInfo beanInfo, MetaData metaData, BeanMetaData beanMetaData) throws Throwable
    {
@@ -45,7 +45,7 @@ public class AbstractMetaDataAnnotationAdapter extends CommonAnnotationAdapter<M
       plugin.applyAnnotation(info, retrieval, handle);
    }
 
-   protected void cleanPlugin(MetaDataAnnotationPlugin plugin, AnnotatedInfo info, MetaData retrieval, BeanMetaData handle) throws Throwable
+   protected void cleanPlugin(MetaDataAnnotationPlugin<?, ?> plugin, AnnotatedInfo info, MetaData retrieval, BeanMetaData handle) throws Throwable
    {
       throw new UnsupportedOperationException("Cleanup is not supported on metadata annotation adapter.");
    }
