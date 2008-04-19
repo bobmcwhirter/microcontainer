@@ -33,21 +33,26 @@ import org.jboss.kernel.spi.dependency.KernelControllerContext;
  * 
  * @author <a href="mailto:ales.justin@jboss.com">Ales Justin</a>
  */
-public class UnmodifiableKernelControllerContext extends UnmodifiableControllerContext<KernelControllerContext> implements KernelControllerContext
+public class UnmodifiableKernelControllerContext extends UnmodifiableControllerContext implements KernelControllerContext
 {
    public UnmodifiableKernelControllerContext(KernelControllerContext delegate)
    {
       super(delegate);
    }
 
+   protected KernelControllerContext getDelegate()
+   {
+      return KernelControllerContext.class.cast(super.getDelegate());
+   }
+
    public Kernel getKernel()
    {
-      return delegate.getKernel();
+      return getDelegate().getKernel();
    }
 
    public BeanInfo getBeanInfo()
    {
-      BeanInfo beanInfo = delegate.getBeanInfo();
+      BeanInfo beanInfo = getDelegate().getBeanInfo();
       return beanInfo != null ? new UnmodifiableBeanInfo(beanInfo) : null;
    }
 
@@ -58,7 +63,7 @@ public class UnmodifiableKernelControllerContext extends UnmodifiableControllerC
 
    public BeanMetaData getBeanMetaData()
    {
-      return delegate.getBeanMetaData();
+      return getDelegate().getBeanMetaData();
    }
 
    public void setTarget(Object target)
@@ -73,21 +78,21 @@ public class UnmodifiableKernelControllerContext extends UnmodifiableControllerC
 
    public Object invoke(String name, Object parameters[], String[] signature) throws Throwable
    {
-      return delegate.invoke(name, parameters, signature);
+      throw new UnsupportedOperationException("Cannot execute invoke on unmodifiable wrapper.");
    }
 
    public ClassLoader getClassLoader() throws Throwable
    {
-      return delegate.getClassLoader();
+      return getDelegate().getClassLoader();
    }
 
    public Object get(String name) throws Throwable
    {
-      return delegate.get(name);
+      return getDelegate().get(name);
    }
 
    public void set(String name, Object value) throws Throwable
    {
-      delegate.set(name, value);
+      throw new UnsupportedOperationException("Cannot execute set on unmodifiable wrapper.");
    }
 }

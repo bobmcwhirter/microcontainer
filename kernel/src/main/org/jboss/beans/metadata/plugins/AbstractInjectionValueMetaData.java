@@ -221,16 +221,14 @@ public class AbstractInjectionValueMetaData extends AbstractDependencyValueMetaD
 
             if (dependentState == null)
             {
-               dependentState = states.getPreviousState(when);
+               dependentState = fromContext.getWhenValid();
             }
-            else
+
+            if (states.isAfterState(dependentState, when) == false)
             {
-               if (states.isBeforeState(when, dependentState))
-               {
-                  dependentState = states.getPreviousState(when);
-                  if (log.isTraceEnabled())
-                    log.trace("Cannot set demand state to more/equal than when required state, changing it to : " + dependentState);
-               }
+               dependentState = states.getPreviousState(when);
+               if (log.isTraceEnabled())
+                  log.trace("Cannot set demand state to more/equal than when required state, changing it to : " + dependentState);
             }
          }
          super.initialVisit(visitor);

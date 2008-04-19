@@ -69,7 +69,7 @@ public class AbstractDependencyValueMetaData extends AbstractValueMetaData
    /**
     * The required state of the dependency or null to look in the registry
     */
-   protected ControllerState dependentState = ControllerState.INSTALLED;
+   protected ControllerState dependentState;
 
    /**
     * Create a new dependency value

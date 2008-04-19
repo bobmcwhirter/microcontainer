@@ -36,18 +36,27 @@ import org.jboss.util.JBossObject;
 /**
  * Unmodifiable delegate instance.
  *
- * @param <T> exact context type
  * @author <a href="mailto:ales.justin@jboss.com">Ales Justin</a>
  */
-public class UnmodifiableControllerContext<T extends ControllerContext> extends JBossObject implements ControllerContext
+public class UnmodifiableControllerContext extends JBossObject implements ControllerContext
 {
-   protected T delegate;
+   private ControllerContext delegate;
 
-   public UnmodifiableControllerContext(T delegate)
+   public UnmodifiableControllerContext(ControllerContext delegate)
    {
       if (delegate == null)
          throw new IllegalArgumentException("Null delegate");
       this.delegate = delegate;
+   }
+
+   /**
+    * Get the delegate.
+    *
+    * @return the delegate
+    */
+   protected ControllerContext getDelegate()
+   {
+      return delegate;
    }
 
    public Object getName()
@@ -142,5 +151,4 @@ public class UnmodifiableControllerContext<T extends ControllerContext> extends 
    {
       throw new UnsupportedOperationException("Cannot invoke set on unmodifiable wrapper.");
    }
-
 }

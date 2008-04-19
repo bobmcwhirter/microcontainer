@@ -22,6 +22,7 @@
 package org.jboss.beans.metadata.api.model;
 
 import org.jboss.dependency.spi.ControllerContext;
+import org.jboss.dependency.spi.ControllerState;
 
 /**
  * Inject from controller context:
@@ -61,6 +62,16 @@ public enum FromContext
       if (delegate == null)
          throw new IllegalArgumentException("Null delegate");
       this.delegate = delegate;
+   }
+
+   /**
+    * When valid state.
+    *
+    * @return the when valid state
+    */
+   public ControllerState getWhenValid()
+   {
+      return delegate.getWhenValid();
    }
 
    /**

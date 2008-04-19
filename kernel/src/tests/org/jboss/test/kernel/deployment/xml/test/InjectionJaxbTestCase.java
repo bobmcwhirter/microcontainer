@@ -57,7 +57,7 @@ public class InjectionJaxbTestCase extends AbstractMCTest
       AbstractDependencyValueMetaData dependency = getInjection();
       assertEquals("Bean1", dependency.getValue());
       assertNull(dependency.getProperty());
-      assertEquals(ControllerState.INSTALLED, dependency.getDependentState());
+      assertNull(dependency.getDependentState());
    }
 
    public void testInjectionWithProperty() throws Exception
@@ -65,7 +65,7 @@ public class InjectionJaxbTestCase extends AbstractMCTest
       AbstractDependencyValueMetaData dependency = getInjection();
       assertEquals("Dummy", dependency.getValue());
       assertEquals("Property1", dependency.getProperty());
-      assertEquals(ControllerState.INSTALLED, dependency.getDependentState());
+      assertNull(dependency.getDependentState());
    }
 
    public void testInjectionWithState() throws Exception

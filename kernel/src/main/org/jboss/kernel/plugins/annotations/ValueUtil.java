@@ -200,7 +200,8 @@ final class ValueUtil
          injection.setValue(annotation.bean());
       if (isAttributePresent(annotation.property()))
          injection.setProperty(annotation.property());
-      injection.setDependentState(new ControllerState(annotation.dependentState()));
+      if (isAttributePresent(annotation.dependentState()))
+         injection.setDependentState(new ControllerState(annotation.dependentState()));
       if (isAttributePresent(annotation.whenRequired()))
          injection.setWhenRequiredState(new ControllerState(annotation.whenRequired()));
       injection.setInjectionOption(annotation.option());

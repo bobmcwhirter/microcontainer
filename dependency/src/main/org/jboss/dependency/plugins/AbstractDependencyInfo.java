@@ -41,6 +41,7 @@ import org.jboss.util.JBossStringBuilder;
  * A DependencyInfo.
  * 
  * @author <a href="adrian@jboss.com">Adrian Brock</a>
+ * @author <a href="ales.justin@jboss.com">Ales Justin</a>
  * @version $Revision$
  */
 public class AbstractDependencyInfo extends JBossObject implements DependencyInfo

@@ -59,7 +59,7 @@ public class FactoryTestCase extends AbstractXMLTest
       AbstractDependencyValueMetaData dependency = getFactoryDependency("FactoryWithBean.xml");
       assertEquals("Bean1", dependency.getValue());
       assertNull(dependency.getProperty());
-      assertEquals(ControllerState.INSTALLED, dependency.getDependentState());
+      assertNull(dependency.getDependentState());
    }
 
    public void testFactoryWithProperty() throws Exception
@@ -67,7 +67,7 @@ public class FactoryTestCase extends AbstractXMLTest
       AbstractDependencyValueMetaData dependency = getFactoryDependency("FactoryWithProperty.xml");
       assertEquals("Dummy", dependency.getValue());
       assertEquals("Property1", dependency.getProperty());
-      assertEquals(ControllerState.INSTALLED, dependency.getDependentState());
+      assertNull(dependency.getDependentState());
    }
 
    public void testFactoryWithState() throws Exception

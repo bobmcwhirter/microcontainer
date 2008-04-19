@@ -87,6 +87,9 @@ abstract class FromContextDelegate extends JBossObject implements Serializable
    /** The type string */
    protected final String fromString;
 
+   /** The when valid state */
+   protected ControllerState whenValid;
+
    /** The values */
    private static Map<String, FromContextDelegate> values = new HashMap<String, FromContextDelegate>();
 
@@ -110,9 +113,33 @@ abstract class FromContextDelegate extends JBossObject implements Serializable
     */
    protected FromContextDelegate(String fromString)
    {
+      this(fromString, null);
+   }
+
+   /**
+    * Create new state
+    *
+    * @param fromString the string representation
+    * @param whenValid the when valid state
+    */
+   protected FromContextDelegate(String fromString, ControllerState whenValid)
+   {
       if (fromString == null)
          throw new IllegalArgumentException("Null from string");
       this.fromString = fromString;
+      if (whenValid == null)
+         whenValid = ControllerState.PRE_INSTALL;
+      this.whenValid = whenValid;
+   }
+
+   /**
+    * Get when valid state.
+    *
+    * @return the when required state
+    */
+   public ControllerState getWhenValid()
+   {
+      return whenValid;
    }
 
    /**
@@ -191,6 +218,11 @@ abstract class FromContextDelegate extends JBossObject implements Serializable
          super(fromString);
       }
 
+      protected KernelFromContextDelegate(String fromString, ControllerState whenRequired)
+      {
+         super(fromString, whenRequired);
+      }
+
       protected void validate(ControllerContext context)
       {
          if (context instanceof KernelControllerContext == false)
@@ -265,7 +297,7 @@ abstract class FromContextDelegate extends JBossObject implements Serializable
 
       public BeanInfoFromContext(String fromString)
       {
-         super(fromString);
+         super(fromString, ControllerState.INSTANTIATED);
       }
 
       public BeanInfo internalExecute(ControllerContext context)
@@ -334,7 +366,7 @@ abstract class FromContextDelegate extends JBossObject implements Serializable
       {
          if (context instanceof KernelControllerContext)
             return new UnmodifiableKernelControllerContext((KernelControllerContext)context);
-         return new UnmodifiableControllerContext<ControllerContext>(context);
+         return new UnmodifiableControllerContext(context);
       }
    }
 }

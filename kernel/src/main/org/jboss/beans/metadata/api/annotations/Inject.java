@@ -72,7 +72,7 @@ public @interface Inject
     *
     * @return dependent state.
     */
-   String dependentState() default "Installed";
+   String dependentState() default "";
 
    /**
     * Get autowire type.
