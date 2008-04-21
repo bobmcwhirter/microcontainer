@@ -36,4 +36,12 @@ public interface Matcher
     * @return true if we match the other param, false otherwise
     */
    boolean match(Object other);
+
+   /**
+    * Do we need an exact match.
+    * No match or single match is acceptable.
+    *
+    * @return true if matcher accepts only exact matches 
+    */
+   boolean needExactMatch();
 }

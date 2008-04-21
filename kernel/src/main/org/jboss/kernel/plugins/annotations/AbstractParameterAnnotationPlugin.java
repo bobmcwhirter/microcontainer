@@ -26,6 +26,7 @@ import java.lang.annotation.ElementType;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
+import java.util.Set;
 
 import org.jboss.beans.metadata.plugins.AbstractParameterMetaData;
 import org.jboss.beans.metadata.plugins.builder.MutableParameterizedMetaData;
@@ -51,7 +52,7 @@ import org.jboss.reflect.spi.TypeInfo;
  */
 public abstract class AbstractParameterAnnotationPlugin<T extends AnnotatedInfo, C extends Annotation, P extends MutableParameterizedMetaData> extends AbstractAdaptersAnnotationPlugin<T, C>
 {
-   protected AbstractParameterAnnotationPlugin(Class<C> annotation, Annotation2ValueMetaDataAdapter<? extends Annotation>... adapters)
+   protected AbstractParameterAnnotationPlugin(Class<C> annotation, Set<Annotation2ValueMetaDataAdapter<? extends Annotation>> adapters)
    {
       super(annotation, adapters);
    }
@@ -163,12 +164,10 @@ public abstract class AbstractParameterAnnotationPlugin<T extends AnnotatedInfo,
             ValueMetaData value = null;
             for(Annotation2ValueMetaDataAdapter adapter : adapters)
             {
-               // todo - match multiple annotations?
                Annotation adapterAnnotation = mdr.getAnnotation(adapter.getAnnotation());
                if (adapterAnnotation != null)
                {
-                  value = adapter.createValueMetaData(adapterAnnotation);
-                  break;
+                  value = adapter.createValueMetaData(adapterAnnotation, value);
                }
             }
             if (value == null)

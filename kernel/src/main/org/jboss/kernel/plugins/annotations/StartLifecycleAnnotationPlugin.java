@@ -22,6 +22,7 @@
 package org.jboss.kernel.plugins.annotations;
 
 import java.lang.annotation.Annotation;
+import java.util.Set;
 
 import org.jboss.beans.metadata.plugins.AbstractBeanMetaData;
 import org.jboss.beans.metadata.plugins.AbstractLifecycleMetaData;
@@ -35,7 +36,7 @@ import org.jboss.beans.metadata.spi.BeanMetaData;
  */
 public class StartLifecycleAnnotationPlugin extends LifecycleParameterAnnotationPlugin<Start>
 {
-   protected StartLifecycleAnnotationPlugin(Annotation2ValueMetaDataAdapter<? extends Annotation>... adapters)
+   protected StartLifecycleAnnotationPlugin(Set<Annotation2ValueMetaDataAdapter<? extends Annotation>> adapters)
    {
       super(Start.class, adapters);
    }

@@ -48,6 +48,11 @@ class DefaultMatcher implements Matcher, Serializable
       return JBossObject.equals(value, other);
    }
 
+   public boolean needExactMatch()
+   {
+      return false;
+   }
+
    public String toString()
    {
       return value != null ? value.toString() : "<null>";

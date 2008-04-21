@@ -86,7 +86,7 @@ public abstract class AbstractRunAnnotationsTest extends BaseTestCase
 
    protected void runAnnotationsOnClass(Class<?> clazz, BeanAccessMode mode) throws Throwable
    {
-      runAnnotations(clazz, null);
+      runAnnotations(clazz, null, mode);
    }
 
    protected <T> void runAnnotations(Class<T> clazz, T target) throws Throwable

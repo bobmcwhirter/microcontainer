@@ -25,6 +25,7 @@ import java.lang.annotation.Annotation;
 import java.lang.annotation.ElementType;
 import java.util.List;
 import java.util.Collections;
+import java.util.Set;
 
 import org.jboss.beans.metadata.plugins.AbstractBeanMetaData;
 import org.jboss.beans.metadata.plugins.AbstractLifecycleMetaData;
@@ -41,7 +42,7 @@ import org.jboss.reflect.spi.ParameterInfo;
  */
 public abstract class LifecycleParameterAnnotationPlugin<C extends Annotation> extends AbstractParameterAnnotationPlugin<MethodInfo, C, AbstractLifecycleMetaData>
 {
-   protected LifecycleParameterAnnotationPlugin(Class<C> annotation, Annotation2ValueMetaDataAdapter<? extends Annotation>... adapters)
+   protected LifecycleParameterAnnotationPlugin(Class<C> annotation, Set<Annotation2ValueMetaDataAdapter<? extends Annotation>> adapters)
    {
       super(annotation, adapters);
    }

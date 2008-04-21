@@ -57,7 +57,14 @@ public abstract class InjectableMemberAnnotationPlugin<T extends AnnotatedInfo, 
     */
    protected abstract String getName(T info);
 
-   protected boolean isMetaDataAlreadyPresent(T info, C annotation, BeanMetaData beanMetaData)
+   /**
+    * Find matching property metadata.
+    *
+    * @param info the property info
+    * @param beanMetaData the bean metadata
+    * @return matching property metadata or null
+    */
+   protected PropertyMetaData findPropertyMetaData(T info, BeanMetaData beanMetaData)
    {
       Set<PropertyMetaData> properties = beanMetaData.getProperties();
       if (properties != null && properties.isEmpty() == false)
@@ -65,10 +72,27 @@ public abstract class InjectableMemberAnnotationPlugin<T extends AnnotatedInfo, 
          for(PropertyMetaData pmd : properties)
          {
             if (pmd.getName().equals(getName(info)))
-               return true;
+               return pmd;
          }
       }
-      return false;
+      return null;
+   }
+
+   protected boolean isMetaDataAlreadyPresent(T info, C annotation, BeanMetaData beanMetaData)
+   {
+      PropertyMetaData pmd = findPropertyMetaData(info, beanMetaData);
+      return isMetaDataComplete(pmd);
+   }
+
+   /**
+    * Is property metadata complete.
+    *
+    * @param pmd the property meta data
+    * @return true if metadata is complete
+    */
+   protected boolean isMetaDataComplete(PropertyMetaData pmd)
+   {
+      return (pmd != null);
    }
 
    protected List<? extends MetaDataVisitorNode> internalApplyAnnotation(T info, C annotation, BeanMetaData beanMetaData) throws Throwable
@@ -120,7 +144,7 @@ public abstract class InjectableMemberAnnotationPlugin<T extends AnnotatedInfo, 
       if (properties == null)
       {
          properties = new HashSet<PropertyMetaData>();
-         AbstractBeanMetaData bean = (AbstractBeanMetaData)beanMetaData;
+         AbstractBeanMetaData bean = checkIfNotAbstractBeanMetaDataSpecific(beanMetaData);
          bean.setProperties(properties);
       }
       return properties;
@@ -135,6 +159,18 @@ public abstract class InjectableMemberAnnotationPlugin<T extends AnnotatedInfo, 
     */
    protected ValueMetaData createValueMetaData(T info, C annotation)
    {
+      return createValueMetaData(annotation, null);
+   }
+
+   /**
+    * Create value meta data.
+    *
+    * @param annotation the annotation
+    * @param previousValue previous value
+    * @return value meta data
+    */
+   public ValueMetaData createValueMetaData(C annotation, ValueMetaData previousValue)
+   {
       return createValueMetaData(annotation);
    }
 
@@ -146,6 +182,6 @@ public abstract class InjectableMemberAnnotationPlugin<T extends AnnotatedInfo, 
     */
    public ValueMetaData createValueMetaData(C annotation)
    {
-      throw new IllegalArgumentException("Missing createValueMetaData(" + annotation + ") implementation!");  
+      throw new IllegalArgumentException("Missing createValueMetaData(" + annotation + ") implementation: " + toString());
    }
 }

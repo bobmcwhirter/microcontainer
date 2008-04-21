@@ -19,41 +19,30 @@
 * Software Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA
 * 02110-1301 USA, or see the FSF site: http://www.fsf.org.
 */
-package org.jboss.kernel.plugins.annotations;
+package org.jboss.test.kernel.annotations.test.wb;
 
-import java.lang.annotation.Annotation;
-import java.util.Set;
-
-import org.jboss.beans.metadata.plugins.AbstractBeanMetaData;
-import org.jboss.beans.metadata.plugins.AbstractLifecycleMetaData;
-import org.jboss.beans.metadata.api.annotations.Stop;
-import org.jboss.beans.metadata.spi.BeanMetaData;
+import junit.framework.Test;
+import junit.framework.TestSuite;
+import junit.textui.TestRunner;
 
 /**
- * Stop annotation plugin.
- * 
+ * WB annotations tests.
+ *
  * @author <a href="mailto:ales.justin@jboss.com">Ales Justin</a>
  */
-public class StopLifecycleAnnotationPlugin extends LifecycleParameterAnnotationPlugin<Stop>
+public class WBTestSuite extends TestSuite
 {
-   protected StopLifecycleAnnotationPlugin(Set<Annotation2ValueMetaDataAdapter<? extends Annotation>> adapters)
+   public static void main(String[] args)
    {
-      super(Stop.class, adapters);
+      TestRunner.run(suite());
    }
 
-   protected boolean isLifecyclePresent(BeanMetaData beanMetaData)
+   public static Test suite()
    {
-      return beanMetaData.getStop() != null;
-   }
+      TestSuite suite = new TestSuite("WB Tests");
 
-   protected void applyLifecycleAnnotation(AbstractLifecycleMetaData lifecycle, Stop annotation)
-   {
-      lifecycle.setIgnored(annotation.ignored());
-   }
+      suite.addTest(AnnotationsMatchingTestCase.suite());
 
-   protected void setLifecycleMetaData(AbstractBeanMetaData beanMetaData, AbstractLifecycleMetaData lifecycle)
-   {
-      lifecycle.setType("stop");
-      beanMetaData.setStop(lifecycle);
+      return suite;
    }
 }

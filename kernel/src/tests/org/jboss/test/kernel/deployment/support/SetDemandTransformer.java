@@ -54,5 +54,10 @@ public class SetDemandTransformer implements MatcherTransformer
       {
          return set.contains(other);
       }
+
+      public boolean needExactMatch()
+      {
+         return false;
+      }
    }
 }

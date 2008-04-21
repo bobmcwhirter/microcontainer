@@ -24,6 +24,7 @@ package org.jboss.kernel.plugins.annotations;
 import java.lang.annotation.Annotation;
 import java.lang.annotation.ElementType;
 import java.util.List;
+import java.util.Set;
 
 import org.jboss.beans.metadata.plugins.AbstractBeanMetaData;
 import org.jboss.beans.metadata.plugins.AbstractConstructorMetaData;
@@ -40,7 +41,7 @@ import org.jboss.reflect.spi.ParameterInfo;
  */
 public class ConstructorParameterAnnotationPlugin extends AbstractParameterAnnotationPlugin<ConstructorInfo, Constructor, AbstractConstructorMetaData>
 {
-   protected ConstructorParameterAnnotationPlugin(Annotation2ValueMetaDataAdapter<? extends Annotation>... adapters)
+   protected ConstructorParameterAnnotationPlugin(Set<Annotation2ValueMetaDataAdapter<? extends Annotation>> adapters)
    {
       super(Constructor.class, adapters);
    }

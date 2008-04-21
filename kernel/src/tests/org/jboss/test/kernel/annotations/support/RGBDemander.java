@@ -19,41 +19,61 @@
 * Software Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA
 * 02110-1301 USA, or see the FSF site: http://www.fsf.org.
 */
-package org.jboss.kernel.plugins.annotations;
+package org.jboss.test.kernel.annotations.support;
 
-import java.lang.annotation.Annotation;
-import java.util.Set;
-
-import org.jboss.beans.metadata.plugins.AbstractBeanMetaData;
-import org.jboss.beans.metadata.plugins.AbstractLifecycleMetaData;
-import org.jboss.beans.metadata.api.annotations.Stop;
-import org.jboss.beans.metadata.spi.BeanMetaData;
+import org.jboss.beans.metadata.api.annotations.Constructor;
+import org.jboss.beans.metadata.api.annotations.InstallMethod;
 
 /**
- * Stop annotation plugin.
- * 
  * @author <a href="mailto:ales.justin@jboss.com">Ales Justin</a>
  */
-public class StopLifecycleAnnotationPlugin extends LifecycleParameterAnnotationPlugin<Stop>
+public class RGBDemander
 {
-   protected StopLifecycleAnnotationPlugin(Set<Annotation2ValueMetaDataAdapter<? extends Annotation>> adapters)
+   @Red @Green private RGBSupplier rg;
+   private RGBSupplier rb;
+   private RGBSupplier gb;
+   private RGBSupplier rgb;
+
+   @Constructor
+   public RGBDemander(@Green @Blue RGBSupplier gb)
    {
-      super(Stop.class, adapters);
+      this.gb = gb;
    }
 
-   protected boolean isLifecyclePresent(BeanMetaData beanMetaData)
+   public RGBSupplier getRb()
    {
-      return beanMetaData.getStop() != null;
+      return rb;
    }
 
-   protected void applyLifecycleAnnotation(AbstractLifecycleMetaData lifecycle, Stop annotation)
+   @Red @Blue
+   public void setRb(RGBSupplier rb)
    {
-      lifecycle.setIgnored(annotation.ignored());
+      this.rb = rb;
    }
 
-   protected void setLifecycleMetaData(AbstractBeanMetaData beanMetaData, AbstractLifecycleMetaData lifecycle)
+   public RGBSupplier getGb()
    {
-      lifecycle.setType("stop");
-      beanMetaData.setStop(lifecycle);
+      return gb;
+   }
+
+   public void setGb(RGBSupplier gb)
+   {
+      this.gb = gb;
+   }
+
+   @InstallMethod
+   public void install(@Red @Green @Blue RGBSupplier rgb)
+   {
+      this.rgb = rgb;
+   }
+
+   public RGBSupplier getRgb()
+   {
+      return rgb;
+   }
+
+   public RGBSupplier getRg()
+   {
+      return rg;
    }
 }

@@ -24,6 +24,7 @@ package org.jboss.kernel.plugins.annotations;
 import java.lang.annotation.Annotation;
 import java.util.List;
 import java.util.ArrayList;
+import java.util.Set;
 
 import org.jboss.beans.metadata.plugins.AbstractInstallMetaData;
 import org.jboss.beans.metadata.plugins.AbstractBeanMetaData;
@@ -40,7 +41,7 @@ import org.jboss.dependency.spi.ControllerState;
  */
 public class InstallMethodParameterAnnotationPlugin extends InstallationParameterAnnotationPlugin<InstallMethod>
 {
-   protected InstallMethodParameterAnnotationPlugin(Annotation2ValueMetaDataAdapter<? extends Annotation>... adapters)
+   protected InstallMethodParameterAnnotationPlugin(Set<Annotation2ValueMetaDataAdapter<? extends Annotation>> adapters)
    {
       super(InstallMethod.class, adapters);
    }

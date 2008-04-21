@@ -19,41 +19,58 @@
 * Software Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA
 * 02110-1301 USA, or see the FSF site: http://www.fsf.org.
 */
-package org.jboss.kernel.plugins.annotations;
+package org.jboss.kernel.plugins.annotations.wb;
 
+import java.io.Serializable;
 import java.lang.annotation.Annotation;
+import java.util.HashSet;
 import java.util.Set;
 
-import org.jboss.beans.metadata.plugins.AbstractBeanMetaData;
-import org.jboss.beans.metadata.plugins.AbstractLifecycleMetaData;
-import org.jboss.beans.metadata.api.annotations.Stop;
-import org.jboss.beans.metadata.spi.BeanMetaData;
+import org.jboss.kernel.api.dependency.ClassMatcher;
 
 /**
- * Stop annotation plugin.
- * 
+ * Annotations matcher.
+ *
  * @author <a href="mailto:ales.justin@jboss.com">Ales Justin</a>
  */
-public class StopLifecycleAnnotationPlugin extends LifecycleParameterAnnotationPlugin<Stop>
+public class AnnotationsMatcher extends ClassMatcher<AnnotationsSupply> implements Serializable
 {
-   protected StopLifecycleAnnotationPlugin(Set<Annotation2ValueMetaDataAdapter<? extends Annotation>> adapters)
+   private static final long serialVersionUID = 1l;
+
+   private Set<Annotation> annotations = new HashSet<Annotation>();
+   private int size;
+
+   public AnnotationsMatcher(Annotation annotation)
    {
-      super(Stop.class, adapters);
+      super(AnnotationsSupply.class);
+      addAnnotation(annotation);
    }
 
-   protected boolean isLifecyclePresent(BeanMetaData beanMetaData)
+   /**
+    * Add the annotation.
+    *
+    * @param annotation the annotation
+    */
+   public void addAnnotation(Annotation annotation)
    {
-      return beanMetaData.getStop() != null;
+      annotations.add(annotation);
+      size = annotations.size();
    }
 
-   protected void applyLifecycleAnnotation(AbstractLifecycleMetaData lifecycle, Stop annotation)
+   protected boolean matchByType(AnnotationsSupply other)
    {
-      lifecycle.setIgnored(annotation.ignored());
+      Set<Annotation> otherAnnotations = other.getAnnotations();
+      if (otherAnnotations.size() >= size)
+      {
+         otherAnnotations = new HashSet<Annotation>(otherAnnotations);
+         otherAnnotations.retainAll(annotations);
+         return (otherAnnotations.size() == size);
+      }
+      return false;
    }
 
-   protected void setLifecycleMetaData(AbstractBeanMetaData beanMetaData, AbstractLifecycleMetaData lifecycle)
+   public boolean needExactMatch()
    {
-      lifecycle.setType("stop");
-      beanMetaData.setStop(lifecycle);
+      return true;
    }
 }

@@ -121,12 +121,23 @@ public class AbstractKernelController extends ScopedController implements Kernel
     */
    protected List<KernelControllerContext> matchSupplies(Matcher matcher)
    {
+      List<KernelControllerContext> list = null;
       for(Map.Entry<Object, List<KernelControllerContext>> entry : suppliers.entrySet())
       {
          if (matcher.match(entry.getKey()))
-            return entry.getValue();
+         {
+            if (matcher.needExactMatch() == false)
+               return entry.getValue();
+            else
+            {
+               if (list != null)
+                  throw new IllegalArgumentException("Matcher " + matcher + " only takes exact match, but found second matching supplier.");
+               else
+                  list = entry.getValue();
+            }
+         }
       }
-      return null;
+      return list;
    }
 
    public ControllerContext getContext(Object name, ControllerState state)

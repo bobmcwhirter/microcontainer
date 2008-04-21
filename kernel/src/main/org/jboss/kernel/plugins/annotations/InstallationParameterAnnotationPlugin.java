@@ -25,6 +25,7 @@ import java.lang.annotation.Annotation;
 import java.lang.annotation.ElementType;
 import java.util.List;
 import java.util.Collections;
+import java.util.Set;
 
 import org.jboss.beans.metadata.plugins.AbstractInstallMetaData;
 import org.jboss.beans.metadata.spi.BeanMetaData;
@@ -44,7 +45,7 @@ import org.jboss.kernel.plugins.config.Configurator;
  */
 public abstract class InstallationParameterAnnotationPlugin<C extends Annotation> extends AbstractParameterAnnotationPlugin<MethodInfo, C, AbstractInstallMetaData>
 {
-   protected InstallationParameterAnnotationPlugin(Class<C> annotation, Annotation2ValueMetaDataAdapter<? extends Annotation>... adapters)
+   protected InstallationParameterAnnotationPlugin(Class<C> annotation, Set<Annotation2ValueMetaDataAdapter<? extends Annotation>> adapters)
    {
       super(annotation, adapters);
    }

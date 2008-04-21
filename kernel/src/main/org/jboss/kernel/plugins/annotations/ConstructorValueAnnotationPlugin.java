@@ -29,6 +29,7 @@ import org.jboss.beans.metadata.plugins.AbstractBeanMetaData;
 import org.jboss.beans.metadata.plugins.AbstractConstructorMetaData;
 import org.jboss.beans.metadata.spi.BeanMetaData;
 import org.jboss.beans.metadata.spi.MetaDataVisitorNode;
+import org.jboss.beans.metadata.spi.ValueMetaData;
 import org.jboss.kernel.spi.dependency.KernelControllerContext;
 import org.jboss.reflect.spi.ClassInfo;
 import org.jboss.metadata.spi.MetaData;
@@ -63,4 +64,17 @@ public abstract class ConstructorValueAnnotationPlugin<C extends Annotation> ext
       context.setBeanInfo(null);
       return Collections.singletonList(constructor);
    }
+
+   public ValueMetaData createValueMetaData(C annotation, ValueMetaData previousValue)
+   {
+      return createValueMetaData(annotation);
+   }
+
+   /**
+    * Create the value metadata from annotation.
+    *
+    * @param annotation the annotation
+    * @return new value metadata
+    */
+   protected abstract ValueMetaData createValueMetaData(C annotation);
 }

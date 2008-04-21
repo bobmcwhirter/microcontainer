@@ -22,9 +22,7 @@
 package org.jboss.kernel.plugins.annotations;
 
 import java.lang.annotation.Annotation;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.List;
+import java.util.Set;
 
 import org.jboss.reflect.spi.AnnotatedInfo;
 
@@ -37,14 +35,13 @@ import org.jboss.reflect.spi.AnnotatedInfo;
  */
 public abstract class AbstractAdaptersAnnotationPlugin<T extends AnnotatedInfo, C extends Annotation> extends AbstractAnnotationPlugin<T, C>
 {
-   protected List<Annotation2ValueMetaDataAdapter<? extends Annotation>> adapters;
+   protected Set<Annotation2ValueMetaDataAdapter<? extends Annotation>> adapters;
 
-   protected AbstractAdaptersAnnotationPlugin(Class<C> annotation, Annotation2ValueMetaDataAdapter<? extends Annotation>... adapters)
+   protected AbstractAdaptersAnnotationPlugin(Class<C> annotation, Set<Annotation2ValueMetaDataAdapter<? extends Annotation>> adapters)
    {
       super(annotation);
-      this.adapters = new ArrayList<Annotation2ValueMetaDataAdapter<? extends Annotation>>();
-      if (adapters == null || adapters.length == 0)
-         throw new IllegalArgumentException("Annotation adapters are empty!");
-      this.adapters.addAll(Arrays.asList(adapters));
+      if (adapters == null)
+         throw new IllegalArgumentException("Null annotation adapters.");
+      this.adapters = adapters;
    }
 }

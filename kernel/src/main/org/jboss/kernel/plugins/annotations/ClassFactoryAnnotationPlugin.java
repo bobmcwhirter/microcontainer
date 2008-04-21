@@ -26,6 +26,7 @@ import java.lang.annotation.ElementType;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
+import java.util.Set;
 
 import org.jboss.beans.metadata.api.annotations.Factory;
 import org.jboss.beans.metadata.api.annotations.Value;
@@ -44,7 +45,7 @@ import org.jboss.reflect.spi.ClassInfo;
  */
 public class ClassFactoryAnnotationPlugin extends AbstractAdaptersAnnotationPlugin<ClassInfo, Factory>
 {
-   protected ClassFactoryAnnotationPlugin(Annotation2ValueMetaDataAdapter<? extends Annotation>... adapters)
+   protected ClassFactoryAnnotationPlugin(Set<Annotation2ValueMetaDataAdapter<? extends Annotation>> adapters)
    {
       super(Factory.class, adapters);
    }

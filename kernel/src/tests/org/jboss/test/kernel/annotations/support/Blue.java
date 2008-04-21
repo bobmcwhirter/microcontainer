@@ -19,28 +19,18 @@
 * Software Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA
 * 02110-1301 USA, or see the FSF site: http://www.fsf.org.
 */
-package org.jboss.kernel.api.dependency;
+package org.jboss.test.kernel.annotations.support;
+
+import java.lang.annotation.Retention;
+import java.lang.annotation.RetentionPolicy;
+import java.lang.annotation.Target;
+import java.lang.annotation.ElementType;
 
 /**
  * @author <a href="mailto:ales.justin@jboss.com">Ales Justin</a>
  */
-public abstract class NonNullMatcher implements Matcher
+@Retention(RetentionPolicy.RUNTIME)
+@Target({ElementType.TYPE, ElementType.METHOD, ElementType.FIELD, ElementType.PARAMETER})
+public @interface Blue
 {
-   public boolean match(Object other)
-   {
-      return other != null && internalMatch(other);
-   }
-
-   public boolean needExactMatch()
-   {
-      return false;
-   }
-
-   /**
-    * Do internal match.
-    *
-    * @param other the other param to match
-    * @return true if matched, false otherwise
-    */
-   protected abstract boolean internalMatch(Object other);
 }

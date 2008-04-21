@@ -22,6 +22,8 @@
 package org.jboss.kernel.plugins.annotations;
 
 import java.lang.annotation.Annotation;
+import java.util.Set;
+import java.util.concurrent.CopyOnWriteArraySet;
 
 /**
  * Basic bean annotation handler.
@@ -32,23 +34,14 @@ public class BasicBeanAnnotationAdapter extends AbstractBeanAnnotationAdapter
 {
    public static BasicBeanAnnotationAdapter INSTANCE = new BasicBeanAnnotationAdapter();
 
+   /** The parameter annotation adapters */
+   private Set<Annotation2ValueMetaDataAdapter<? extends Annotation>> adapters;
+
    protected BasicBeanAnnotationAdapter()
    {
       // -- adapters
-      @SuppressWarnings("unchecked")
-      Annotation2ValueMetaDataAdapter<? extends Annotation>[] adapters = new Annotation2ValueMetaDataAdapter[]{
-         InjectAnnotationPlugin.INSTANCE,
-         StringValueAnnotationPlugin.INSTANCE,
-         ValueFactoryAnnotationPlugin.INSTANCE,
-         ThisValueAnnotationPlugin.INSTANCE,
-         NullValueAnnotationPlugin.INSTANCE,
-         JavaBeanValueAnnotationPlugin.INSTANCE,
-         CollectionValueAnnotationPlugin.INSTANCE,
-         ListValueAnnotationPlugin.INSTANCE,
-         SetValueAnnotationPlugin.INSTANCE,
-         ArrayValueAnnotationPlugin.INSTANCE,
-         MapValueAnnotationPlugin.INSTANCE,
-      };
+      adapters = new CopyOnWriteArraySet<Annotation2ValueMetaDataAdapter<? extends Annotation>>();
+
       // -- plugins
       // class
       addAnnotationPlugin(AliasesAnnotationPlugin.INSTANCE);
@@ -99,5 +92,44 @@ public class BasicBeanAnnotationAdapter extends AbstractBeanAnnotationAdapter
       addAnnotationPlugin(ValueFactoryFieldAnnotationPlugin.INSTANCE);
       addAnnotationPlugin(InstallFieldCallbackAnnotationPlugin.INSTANCE);
       addAnnotationPlugin(UninstallFieldCallbackAnnotationPlugin.INSTANCE);
+   }
+
+   @SuppressWarnings("unchecked")
+   public void addAnnotationPlugin(AnnotationPlugin<?, ?> plugin)
+   {
+      super.addAnnotationPlugin(plugin);
+      if (plugin instanceof Annotation2ValueMetaDataAdapter)
+         addAnnotation2ValueMetaDataAdapter((Annotation2ValueMetaDataAdapter<? extends Annotation>)plugin);
+   }
+
+   @SuppressWarnings("unchecked")
+   public void removeAnnotationPlugin(AnnotationPlugin<?, ?> plugin)
+   {
+      if (plugin instanceof Annotation2ValueMetaDataAdapter)
+         removeAnnotation2ValueMetaDataAdapter((Annotation2ValueMetaDataAdapter<? extends Annotation>)plugin);
+      super.removeAnnotationPlugin(plugin);
+   }
+
+   /**
+    * Add Annotation2ValueMetaDataAdapter adapter.
+    *
+    * @param adapter the Annotation2ValueMetaDataAdapter adapter
+    */
+   public void addAnnotation2ValueMetaDataAdapter(Annotation2ValueMetaDataAdapter<? extends Annotation> adapter)
+   {
+      if (adapter == null)
+         throw new IllegalArgumentException("Null Annotation2ValueMetaDataAdapter");
+      adapters.add(adapter);
+   }
+
+   /**
+    * Remove Annotation2ValueMetaDataAdapter adapter.
+    *
+    * @param adapter the Annotation2ValueMetaDataAdapter adapter
+    */
+   public void removeAnnotation2ValueMetaDataAdapter(Annotation2ValueMetaDataAdapter<? extends Annotation> adapter)
+   {
+      if (adapter != null)
+         adapters.remove(adapter);
    }
 }

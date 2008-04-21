@@ -24,6 +24,7 @@ package org.jboss.kernel.plugins.annotations;
 import java.lang.annotation.Annotation;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Set;
 
 import org.jboss.beans.metadata.plugins.AbstractBeanMetaData;
 import org.jboss.beans.metadata.plugins.AbstractInstallMetaData;
@@ -40,7 +41,7 @@ import org.jboss.reflect.spi.MethodInfo;
  */
 public class UninstallMethodParameterAnnotationPlugin extends InstallationParameterAnnotationPlugin<UninstallMethod>
 {
-   protected UninstallMethodParameterAnnotationPlugin(Annotation2ValueMetaDataAdapter<? extends Annotation>... adapters)
+   protected UninstallMethodParameterAnnotationPlugin(Set<Annotation2ValueMetaDataAdapter<? extends Annotation>> adapters)
    {
       super(UninstallMethod.class, adapters);
    }

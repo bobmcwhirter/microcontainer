@@ -19,41 +19,46 @@
 * Software Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA
 * 02110-1301 USA, or see the FSF site: http://www.fsf.org.
 */
-package org.jboss.kernel.plugins.annotations;
+package org.jboss.kernel.plugins.annotations.wb;
 
+import java.io.Serializable;
 import java.lang.annotation.Annotation;
+import java.util.HashSet;
 import java.util.Set;
 
-import org.jboss.beans.metadata.plugins.AbstractBeanMetaData;
-import org.jboss.beans.metadata.plugins.AbstractLifecycleMetaData;
-import org.jboss.beans.metadata.api.annotations.Stop;
-import org.jboss.beans.metadata.spi.BeanMetaData;
-
 /**
- * Stop annotation plugin.
+ * Annotation supply.
  * 
  * @author <a href="mailto:ales.justin@jboss.com">Ales Justin</a>
  */
-public class StopLifecycleAnnotationPlugin extends LifecycleParameterAnnotationPlugin<Stop>
+public class AnnotationsSupply implements Serializable
 {
-   protected StopLifecycleAnnotationPlugin(Set<Annotation2ValueMetaDataAdapter<? extends Annotation>> adapters)
+   private static final long serialVersionUID = 1l;
+
+   private Set<Annotation> annotations = new HashSet<Annotation>();
+
+   public AnnotationsSupply(Annotation annotation)
    {
-      super(Stop.class, adapters);
+      addAnnotation(annotation);
    }
 
-   protected boolean isLifecyclePresent(BeanMetaData beanMetaData)
+   /**
+    * Add the annotation.
+    *
+    * @param annotation the annotation
+    */
+   public void addAnnotation(Annotation annotation)
    {
-      return beanMetaData.getStop() != null;
+      annotations.add(annotation);
    }
 
-   protected void applyLifecycleAnnotation(AbstractLifecycleMetaData lifecycle, Stop annotation)
+   /**
+    * Get the annotations.
+    *
+    * @return the annotations
+    */
+   public Set<Annotation> getAnnotations()
    {
-      lifecycle.setIgnored(annotation.ignored());
-   }
-
-   protected void setLifecycleMetaData(AbstractBeanMetaData beanMetaData, AbstractLifecycleMetaData lifecycle)
-   {
-      lifecycle.setType("stop");
-      beanMetaData.setStop(lifecycle);
+      return annotations;
    }
 }

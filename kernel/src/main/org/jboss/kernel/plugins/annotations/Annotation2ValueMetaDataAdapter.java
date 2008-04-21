@@ -44,7 +44,8 @@ public interface Annotation2ValueMetaDataAdapter<C extends Annotation>
     * Create ValueMetaData instance.
     *
     * @param annotation the annotation instance
+    * @param previousValue previous value
     * @return new ValueMetaData instance
     */
-   ValueMetaData createValueMetaData(C annotation);
+   ValueMetaData createValueMetaData(C annotation, ValueMetaData previousValue);
 }

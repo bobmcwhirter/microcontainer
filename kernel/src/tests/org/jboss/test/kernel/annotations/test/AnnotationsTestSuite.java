@@ -21,13 +21,14 @@
 */
 package org.jboss.test.kernel.annotations.test;
 
-import junit.framework.TestSuite;
 import junit.framework.Test;
+import junit.framework.TestSuite;
 import junit.textui.TestRunner;
-import org.jboss.test.kernel.annotations.test.override.AnnotationsOverrideTestSuite;
-import org.jboss.test.kernel.annotations.test.inheritance.AnnotationsInheritanceTestSuite;
-import org.jboss.test.kernel.annotations.test.field.AnnotationFieldTestSuite;
 import org.jboss.test.kernel.annotations.test.factory.AnnotationFactoryTestSuite;
+import org.jboss.test.kernel.annotations.test.field.AnnotationFieldTestSuite;
+import org.jboss.test.kernel.annotations.test.inheritance.AnnotationsInheritanceTestSuite;
+import org.jboss.test.kernel.annotations.test.override.AnnotationsOverrideTestSuite;
+import org.jboss.test.kernel.annotations.test.wb.WBTestSuite;
 
 /**
  * Annotations tests.
@@ -50,6 +51,7 @@ public class AnnotationsTestSuite extends TestSuite
       suite.addTest(AnnotationsInheritanceTestSuite.suite());
       suite.addTest(AnnotationFieldTestSuite.suite());
       suite.addTest(AnnotationFactoryTestSuite.suite());
+      suite.addTest(WBTestSuite.suite());
 
       return suite;
    }
