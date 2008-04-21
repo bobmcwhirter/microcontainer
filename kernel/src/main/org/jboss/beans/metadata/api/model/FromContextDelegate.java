@@ -328,7 +328,7 @@ abstract class FromContextDelegate extends JBossObject implements Serializable
 
       public StateFromContext(String fromString)
       {
-         super(fromString);
+         super(fromString, ControllerState.NOT_INSTALLED);
       }
 
       public ControllerState internalExecute(ControllerContext context)

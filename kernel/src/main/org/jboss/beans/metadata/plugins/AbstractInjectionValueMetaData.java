@@ -34,10 +34,8 @@ import org.jboss.dependency.plugins.AttributeCallbackItem;
 import org.jboss.dependency.spi.Controller;
 import org.jboss.dependency.spi.ControllerContext;
 import org.jboss.dependency.spi.ControllerState;
-import org.jboss.dependency.spi.ControllerStateModel;
 import org.jboss.dependency.spi.DependencyItem;
 import org.jboss.kernel.plugins.dependency.ClassContextDependencyItem;
-import org.jboss.kernel.spi.dependency.KernelControllerContext;
 import org.jboss.reflect.spi.TypeInfo;
 import org.jboss.util.JBossStringBuilder;
 
@@ -208,29 +206,10 @@ public class AbstractInjectionValueMetaData extends AbstractDependencyValueMetaD
       // controller context property injection
       if (fromContext != null)
       {
-         // check if whenRequired > dependent when used on itself
-         if (super.getUnderlyingValue() == null)
-         {
-            ControllerState when = whenRequiredState;
-            if (when == null)
-               when = visitor.getContextState();
-
-            KernelControllerContext kcc = visitor.getControllerContext();
-            Controller controller = kcc.getController();
-            ControllerStateModel states = controller.getStates();
-
-            if (dependentState == null)
-            {
+         // check if dependent is not set when used on itself
+         if (super.getUnderlyingValue() == null && dependentState == null)
                dependentState = fromContext.getWhenValid();
-            }
 
-            if (states.isAfterState(dependentState, when) == false)
-            {
-               dependentState = states.getPreviousState(when);
-               if (log.isTraceEnabled())
-                  log.trace("Cannot set demand state to more/equal than when required state, changing it to : " + dependentState);
-            }
-         }
          super.initialVisit(visitor);
          return;
       }
