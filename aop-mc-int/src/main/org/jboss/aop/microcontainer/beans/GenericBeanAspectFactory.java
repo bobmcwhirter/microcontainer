@@ -24,10 +24,13 @@ package org.jboss.aop.microcontainer.beans;
 import org.jboss.aop.Advisor;
 import org.jboss.aop.InstanceAdvisor;
 import org.jboss.aop.advice.AspectFactory;
+import org.jboss.aop.advice.GenericAspectFactory;
 import org.jboss.aop.joinpoint.Joinpoint;
 import org.jboss.beans.metadata.plugins.factory.GenericBeanFactory;
 import org.jboss.beans.metadata.spi.factory.BeanFactory;
 import org.jboss.logging.Logger;
+import org.jboss.util.xml.XmlLoadable;
+import org.w3c.dom.Element;
 
 /**
  * A GenericBeanAspectFactory.
@@ -35,7 +38,7 @@ import org.jboss.logging.Logger;
  * @author <a href="adrian@jboss.com">Adrian Brock</a>
  * @version $Revision$
  */
-public class GenericBeanAspectFactory implements AspectFactory
+public class GenericBeanAspectFactory extends GenericAspectFactory
 {
    private static final Logger log = Logger.getLogger(GenericBeanAspectFactory.class); 
 
@@ -43,10 +46,14 @@ public class GenericBeanAspectFactory implements AspectFactory
 
    protected String name;
    
-   public GenericBeanAspectFactory(String name, BeanFactory factory)
+   protected Element element;
+   
+   public GenericBeanAspectFactory(String name, BeanFactory factory, Element element)
    {
+      super(null, element);
       this.name = name;
       this.factory = factory;
+      this.element = element;
    }
 
    public void setBeanFactory(GenericBeanFactory factory)
@@ -61,35 +68,41 @@ public class GenericBeanAspectFactory implements AspectFactory
 
    public Object createPerVM()
    {
-      return doCreate();
+      return doCreate(null, null, null);
    }
 
    public Object createPerClass(Advisor advisor)
    {
-      return doCreate();
+      return doCreate(advisor, null, null);
    }
 
    public Object createPerInstance(Advisor advisor, InstanceAdvisor instanceAdvisor)
    {
-      return doCreate();
+      return doCreate(advisor, instanceAdvisor, null);
    }
 
    public Object createPerJoinpoint(Advisor advisor, Joinpoint jp)
    {
-      return doCreate();
+      return doCreate(advisor, null, jp);
    }
 
    public Object createPerJoinpoint(Advisor advisor, InstanceAdvisor instanceAdvisor, Joinpoint jp)
    {
-      return doCreate();
+      return doCreate(advisor, instanceAdvisor, jp);
    }
 
-   protected Object doCreate()
+   protected Object doCreate(Advisor advisor, InstanceAdvisor instanceAdvisor, Joinpoint jp)
    {
       try
       {
          log.debug("Creating advice " + name);
-         return factory.createBean();
+         Object object = factory.createBean();
+         if (object instanceof XmlLoadable)
+         {
+            ((XmlLoadable)object).importXml(element);
+         }
+         configureInstance(object, advisor, instanceAdvisor, jp);
+         return object;
       }
       catch (Throwable throwable)
       {

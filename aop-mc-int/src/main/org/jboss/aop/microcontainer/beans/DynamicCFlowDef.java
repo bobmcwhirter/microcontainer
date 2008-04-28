@@ -23,6 +23,7 @@ package org.jboss.aop.microcontainer.beans;
 
 import org.jboss.aop.AspectManager;
 import org.jboss.aop.advice.DynamicCFlowDefinition;
+import org.w3c.dom.Element;
 
 /**
  * Bean to install a DynamicCFlow
@@ -46,6 +47,13 @@ public class DynamicCFlowDef
     * The name of the class implementing the dynamic cflow 
     */
    private String className;
+   
+   Element element;
+
+   public void setElement(Element element)
+   {
+      this.element = element;
+   }
 
    public AspectManager getManager()
    {
@@ -86,7 +94,7 @@ public class DynamicCFlowDef
       if (manager == null)
          throw new IllegalArgumentException("Null manager");
       
-      DynamicCFlowDefinition dynamic = new DynamicCFlowDefinition(null, className, name);
+      DynamicCFlowDefinition dynamic = new DynamicCFlowDefinition(element, className, name);
       manager.addDynamicCFlow(name, dynamic);
    }
    

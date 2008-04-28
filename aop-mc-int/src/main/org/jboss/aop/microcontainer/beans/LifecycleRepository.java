@@ -19,27 +19,38 @@
 * Software Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA
 * 02110-1301 USA, or see the FSF site: http://www.fsf.org.
 */ 
-package org.jboss.aop.microcontainer.beans.metadata;
-
-import javax.xml.bind.annotation.XmlNsForm;
-import javax.xml.bind.annotation.XmlRootElement;
-
-import org.jboss.xb.annotations.JBossXmlSchema;
+package org.jboss.aop.microcontainer.beans;
 
 /**
+ * This does not interact with the AspectManager. It is picked up by the deployers in AS
  * 
  * @author <a href="kabir.khan@jboss.com">Kabir Khan</a>
  * @version $Revision: 1.1 $
  */
-@JBossXmlSchema(namespace="urn:jboss:aop-beans:1.0", elementFormDefault=XmlNsForm.QUALIFIED)
-@XmlRootElement(name="interceptor")
-public class InterceptorBeanMetaDataFactory extends AspectBeanMetaDataFactory
+public class LifecycleRepository
 {
-   private static final long serialVersionUID = 1L;
+   private String name;
+   private String repositoryName;
 
-   @Override
-   protected String getTagName()
+   public String getName()
    {
-      return "interceptor";
+      return name;
    }
+
+   public void setName(String name)
+   {
+      this.name = name;
+   }
+
+   public String getRepositoryName()
+   {
+      return repositoryName;
+   }
+
+   public void setRepositoryName(String repositoryName)
+   {
+      this.repositoryName = repositoryName;
+   }
+   
+   
 }

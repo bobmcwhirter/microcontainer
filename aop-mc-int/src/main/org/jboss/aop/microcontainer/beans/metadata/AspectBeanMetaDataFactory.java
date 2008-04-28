@@ -22,9 +22,11 @@
 package org.jboss.aop.microcontainer.beans.metadata;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
 
+import javax.xml.bind.annotation.XmlAnyElement;
 import javax.xml.bind.annotation.XmlAttribute;
 import javax.xml.bind.annotation.XmlNsForm;
 import javax.xml.bind.annotation.XmlRootElement;
@@ -37,6 +39,7 @@ import org.jboss.beans.metadata.spi.MetaDataVisitorNode;
 import org.jboss.beans.metadata.spi.ValueMetaData;
 import org.jboss.beans.metadata.spi.builder.BeanMetaDataBuilder;
 import org.jboss.xb.annotations.JBossXmlSchema;
+import org.w3c.dom.Element;
 
 /**
  * AspectBeanMetaDataFactory.
@@ -55,10 +58,12 @@ public class AspectBeanMetaDataFactory extends AspectManagerAwareBeanMetaDataFac
 
    private String factory;
 
-   String aspectName;
+   private String aspectName;
    
-   boolean initialisedName;
+   private boolean initialisedName;
    
+   private List<Element> elements;
+
    @XmlAttribute
    public void setScope(String scope)
    {
@@ -98,6 +103,17 @@ public class AspectBeanMetaDataFactory extends AspectManagerAwareBeanMetaDataFac
       super.setBean(bean);
    }
    
+   public List<Element> getElements()
+   {
+      return elements;
+   }
+
+   @XmlAnyElement(lax=true)
+   public void setElements(List<Element> elements)
+   {
+      this.elements = elements;
+   }
+
    @Override
    public List<BeanMetaData> getBeans()
    {
@@ -127,6 +143,22 @@ public class AspectBeanMetaDataFactory extends AspectManagerAwareBeanMetaDataFac
       //Add the Aspect
       BeanMetaDataBuilder aspectBuilder = BeanMetaDataBuilder.createBuilder(aspectName, Aspect.class.getName());
       aspectBuilder.addPropertyMetaData("scope", scope);
+      HashMap<String, String> attributes = new HashMap<String, String>();
+      attributes.put("name", name);
+      if (factory != null)
+      {
+         attributes.put("factory", this.factory);
+      }
+      else
+      {
+         attributes.put("class", bean);
+      }
+      attributes.put("scope", scope);
+      if (elements != null && elements.size() > 0)
+      {
+         aspectBuilder.addPropertyMetaData("element", XmlLoadableRootElementUtil.getRootElementString(elements, getTagName(), attributes));
+      }
+         
       setAspectManagerProperty(aspectBuilder);
       
       if (this.factory != null)
@@ -193,5 +225,10 @@ public class AspectBeanMetaDataFactory extends AspectManagerAwareBeanMetaDataFac
             getDependencies(dependencies, child);
          }
       }
+   }
+   
+   protected String getTagName()
+   {
+      return "aspect";
    }
 }

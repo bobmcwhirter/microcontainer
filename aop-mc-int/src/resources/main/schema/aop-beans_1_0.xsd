@@ -271,6 +271,7 @@ $Id$
          <xsd:element name="dynamic-cflow" type="dynamicCflowStackType" minOccurs="0" maxOccurs="unbounded"/>
          <xsd:element name="interceptor" type="aspectOrInterceptorType" minOccurs="0" maxOccurs="unbounded"/>
          <xsd:element name="introduction" type="introductionType" minOccurs="0" maxOccurs="unbounded"/>
+         <xsd:element name="loader-repository" type="loaderRepositoryType" minOccurs="0" maxOccurs="unbounded"/>
          <xsd:element name="metadata" type="metadataType" minOccurs="0" maxOccurs="unbounded"/>
          <xsd:element name="metadata-loader" type="metadataLoaderType" minOccurs="0" maxOccurs="unbounded"/>
          <xsd:element name="pointcut" type="pointcutType" minOccurs="0" maxOccurs="unbounded"/>
@@ -370,7 +371,7 @@ $Id$
       </xsd:complexContent>
    </xsd:complexType>
    
-   <xsd:complexType name="aspectOrInterceptorType">
+   <xsd:complexType name="aspectOrInterceptorType" mixed="true">
       <xsd:annotation>
          <xsd:documentation>
            <![CDATA[
@@ -380,6 +381,10 @@ $Id$
       </xsd:annotation>
       <xsd:complexContent>
          <xsd:extension base="aopBeanfactoryType">
+            <xsd:choice minOccurs="0" maxOccurs="1">
+               <xsd:any namespace="##other" processContents="strict" minOccurs="0">
+               </xsd:any>
+            </xsd:choice>          
             <xsd:attribute name="scope" type="xsd:string" use="optional"/>
             <xsd:attribute name="factory" type="xsd:string" use="optional"/>
             <xsd:attribute name="manager-bean" type="xsd:string" use="optional"/>
@@ -947,6 +952,10 @@ $Id$
            ]]>
          </xsd:documentation>
       </xsd:annotation>
+      <xsd:choice minOccurs="0" maxOccurs="1">
+         <xsd:any namespace="##other" processContents="strict" minOccurs="0">
+         </xsd:any>
+      </xsd:choice>
       <xsd:attribute name="tag" type="xsd:string" use="required"></xsd:attribute>
       <xsd:attribute name="class" type="xsd:string" use="required"></xsd:attribute>
    </xsd:complexType>
@@ -1098,4 +1107,26 @@ $Id$
          </xsd:documentation>
       </xsd:annotation>
    </xsd:element>
+   
+   <xsd:element name="loader-repository">
+      <xsd:annotation>
+         <xsd:documentation>
+           <![CDATA[
+           Which loader repository to attach to
+           ]]>
+         </xsd:documentation>
+      </xsd:annotation>
+   </xsd:element>
+   
+   <xsd:simpleType name="loaderRepositoryType">
+      <xsd:annotation>
+         <xsd:documentation>
+           <![CDATA[
+           The name of the loader repository to attach to
+           ]]>
+         </xsd:documentation>
+      </xsd:annotation>
+      <xsd:restriction base="xsd:string">
+      </xsd:restriction>
+   </xsd:simpleType>
 </xsd:schema>

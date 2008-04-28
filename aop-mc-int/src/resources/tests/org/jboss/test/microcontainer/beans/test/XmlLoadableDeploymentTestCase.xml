@@ -1,0 +1,47 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<deployment xmlns="urn:jboss:bean-deployer:2.0">
+
+   <bean name="AspectManager" class="org.jboss.aop.AspectManager">
+      <constructor factoryClass="org.jboss.aop.AspectManager" factoryMethod="instance"/>
+   </bean>
+   
+   <loader-repository xmlns="urn:jboss:aop-beans:1.0">Here to check the parser still works</loader-repository>
+   
+   <metadata-loader xmlns="urn:jboss:aop-beans:1.0" tag="xxx" class="org.jboss.test.microcontainer.beans.XmlLoadableClassMetaDataLoader">
+      <somexml>hello</somexml>
+   </metadata-loader>
+
+   <dynamic-cflow xmlns="urn:jboss:aop-beans:1.0" name="DynamicCFlow" class="org.jboss.test.microcontainer.beans.XmlLoadableDynamicCflow">
+      <shouldinvoke>true</shouldinvoke>
+   </dynamic-cflow>
+
+   <aspect xmlns="urn:jboss:aop-beans:1.0" class="org.jboss.test.microcontainer.beans.XmlLoadableAspect">
+      <somexml>hello</somexml>
+      <attribute name="IntAttr">12</attribute>
+      <!-- <property name="property">Test1</property> -->
+   </aspect>
+ 
+   <interceptor xmlns="urn:jboss:aop-beans:1.0" class="org.jboss.test.microcontainer.beans.XmlLoadableInterceptor">
+      <somexml>hello</somexml>
+      <attribute name="IntAttr">13</attribute>
+      <!-- <property name="property">Test2</property> -->
+   </interceptor>
+   
+   <aspect xmlns="urn:jboss:aop-beans:1.0" factory="org.jboss.test.microcontainer.beans.XmlLoadableAspectFactory">
+      <somexml>hi</somexml>
+   </aspect>
+   
+   <interceptor xmlns="urn:jboss:aop-beans:1.0" factory="org.jboss.test.microcontainer.beans.XmlLoadableInterceptorFactory">
+      <somexml>hi</somexml>
+   </interceptor>
+   
+   <bind xmlns="urn:jboss:aop-beans:1.0" pointcut="execution(* org.jboss.test.microcontainer.beans.POJO->*())" cflow="DynamicCFlow">
+      <advice aspect="org.jboss.test.microcontainer.beans.XmlLoadableAspect" name="invoke"/>
+      <interceptor-ref name="org.jboss.test.microcontainer.beans.XmlLoadableInterceptor"/>
+      <advice aspect="org.jboss.test.microcontainer.beans.XmlLoadableAspectFactory" name="invoke"/>
+      <interceptor-ref name="org.jboss.test.microcontainer.beans.XmlLoadableInterceptorFactory"/>
+   </bind>
+   
+   <bean name="Bean" class="org.jboss.test.microcontainer.beans.POJO"/>
+
+</deployment>

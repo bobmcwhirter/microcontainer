@@ -28,6 +28,8 @@ import org.jboss.aop.joinpoint.Joinpoint;
 import org.jboss.beans.metadata.plugins.factory.GenericBeanFactory;
 import org.jboss.beans.metadata.spi.factory.BeanFactory;
 import org.jboss.logging.Logger;
+import org.jboss.util.xml.XmlLoadable;
+import org.w3c.dom.Element;
 
 /**
  * 
@@ -42,10 +44,13 @@ public class DelegatingBeanAspectFactory implements AspectFactory
 
    protected String name;
    
-   public DelegatingBeanAspectFactory(String name, BeanFactory factory)
+   protected Element element;
+   
+   public DelegatingBeanAspectFactory(String name, BeanFactory factory, Element element)
    {
       this.name = name;
       this.factory = factory;
+      this.element = element;
    }
 
    public void setBeanFactory(GenericBeanFactory factory)
@@ -93,12 +98,16 @@ public class DelegatingBeanAspectFactory implements AspectFactory
       try
       {
          log.debug("Creating advice " + name);
-         return (AspectFactory)factory.createBean();
+         AspectFactory fac = (AspectFactory)factory.createBean();
+         if (fac instanceof XmlLoadable)
+         {
+            ((XmlLoadable)fac).importXml(element);
+         }
+         return fac;
       }
       catch (Throwable throwable)
       {
          throw new RuntimeException(throwable);
       }
    }
-
 }

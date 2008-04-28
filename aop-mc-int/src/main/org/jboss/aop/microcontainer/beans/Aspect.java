@@ -38,6 +38,7 @@ import org.jboss.dependency.spi.ControllerContext;
 import org.jboss.kernel.spi.dependency.ConfigureKernelControllerContextAware;
 import org.jboss.kernel.spi.dependency.KernelControllerContext;
 import org.jboss.logging.Logger;
+import org.w3c.dom.Element;
 
 /**
  * An Aspect.
@@ -77,7 +78,7 @@ public class Aspect implements ConfigureKernelControllerContextAware, Untransfor
    /**
     * The name of the beanfactory representing the advice. This should be used if the advice has dependencies,
     * in which case we have no real dependency on the beanfactory. If the advice has no dependencies we need
-    * to use advice instead;
+    * to use advice instead;    
     */
    protected String adviceBean;
 
@@ -98,6 +99,11 @@ public class Aspect implements ConfigureKernelControllerContextAware, Untransfor
     */
    protected Map<String, Binding> bindings = new LinkedHashMap<String, Binding>();
    
+   /**
+    * The element representing the interceptor in case we need to load xml
+    */
+   private   Element element;
+
    /**
     * Get the adviceName.
     *
@@ -229,6 +235,11 @@ public class Aspect implements ConfigureKernelControllerContextAware, Untransfor
       this.context = null;
    }
 
+   public void setElement(Element element)
+   {
+      this.element = element;
+   }
+
    public void install(GenericBeanFactory factory) throws Exception
    {
       this.advice = factory;
@@ -283,21 +294,21 @@ public class Aspect implements ConfigureKernelControllerContextAware, Untransfor
    protected ManagedAspectDefinition getAspectDefinitionNoDependencies()
    {
       AspectFactory factory = this.factory ?  
-            new DelegatingBeanAspectFactory(myname, advice) : new GenericBeanAspectFactory(myname, advice);
+            new DelegatingBeanAspectFactory(myname, advice, element) : new GenericBeanAspectFactory(myname, advice, element);
       return new ManagedAspectDefinition(aspectDefName, scope, factory);
    }
 
    protected ManagedAspectDefinition getAspectDefintionDependencies()
    {
       AspectFactory factory = this.factory ?  
-            new DelegatingBeanAspectFactory(aspectDefName, advice) : new GenericBeanAspectFactory(aspectDefName, advice);
+            new DelegatingBeanAspectFactory(aspectDefName, advice, element) : new GenericBeanAspectFactory(aspectDefName, advice, element);
       return new ManagedAspectDefinition(aspectDefName, scope, factory, false);
    }
 
    protected ManagedAspectDefinition getAspectDefinitionPlainAspectFactory()
    {
       AspectFactory factory = this.factory ?  
-            new AspectFactoryDelegator(myname, null) : new GenericAspectFactory(myname, null);
+            new AspectFactoryDelegator(myname, null) : new GenericAspectFactory(myname, element);
       return new ManagedAspectDefinition(aspectDefName, scope, factory);
    }
 

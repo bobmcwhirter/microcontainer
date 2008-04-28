@@ -22,8 +22,10 @@
 package org.jboss.aop.microcontainer.beans.metadata;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
 
+import javax.xml.bind.annotation.XmlAnyElement;
 import javax.xml.bind.annotation.XmlAttribute;
 import javax.xml.bind.annotation.XmlNsForm;
 import javax.xml.bind.annotation.XmlRootElement;
@@ -33,6 +35,7 @@ import org.jboss.beans.metadata.spi.BeanMetaData;
 import org.jboss.beans.metadata.spi.builder.BeanMetaDataBuilder;
 import org.jboss.util.id.GUID;
 import org.jboss.xb.annotations.JBossXmlSchema;
+import org.w3c.dom.Element;
 
 /**
  * 
@@ -45,9 +48,11 @@ public class MetaDataLoaderBeanMetaDataFactory extends AspectManagerAwareBeanMet
 {
    private static final long serialVersionUID = 1L;
 
-   String tag;
+   private String tag;
    
-   String clazz;
+   private String clazz;
+
+   private List<Element> elements;
 
    public String getTag()
    {
@@ -70,6 +75,17 @@ public class MetaDataLoaderBeanMetaDataFactory extends AspectManagerAwareBeanMet
    {
       this.clazz = clazz;
    }
+   
+   public List<Element> getElements()
+   {
+      return elements;
+   }
+
+   @XmlAnyElement(lax=true)
+   public void setElements(List<Element> elements)
+   {
+      this.elements = elements;
+   }
 
    @Override
    public List<BeanMetaData> getBeans()
@@ -82,7 +98,14 @@ public class MetaDataLoaderBeanMetaDataFactory extends AspectManagerAwareBeanMet
       BeanMetaDataBuilder builder = BeanMetaDataBuilder.createBuilder(name, ClassMetaDataLoader.class.getName());
       builder.addPropertyMetaData("tag", tag);
       builder.addPropertyMetaData("className", clazz);
-      
+      HashMap<String, String> attributes = new HashMap<String, String>();
+      attributes.put("tag", tag);
+      attributes.put("name", name);
+      if (elements != null && elements.size() > 0)
+      {
+         builder.addPropertyMetaData("element", XmlLoadableRootElementUtil.getRootElementString(elements, "metadata-loader", attributes));
+      }
+
       setAspectManagerProperty(builder);
       beans.add(builder.getBeanMetaData());
       return beans;

@@ -21,9 +21,8 @@
 */ 
 package org.jboss.aop.microcontainer.beans.metadata;
 
-import java.io.BufferedWriter;
-import java.io.StringWriter;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
 
 import javax.xml.bind.annotation.XmlAnyElement;
@@ -36,9 +35,7 @@ import org.jboss.aop.microcontainer.beans.ClassMetaData;
 import org.jboss.beans.metadata.spi.BeanMetaData;
 import org.jboss.beans.metadata.spi.builder.BeanMetaDataBuilder;
 import org.jboss.util.id.GUID;
-import org.jboss.util.xml.DOMWriter;
 import org.jboss.xb.annotations.JBossXmlSchema;
-import org.w3c.dom.DOMException;
 import org.w3c.dom.Element;
 
 /**
@@ -63,8 +60,6 @@ public class MetaDataBeanMetaDataFactory extends AspectManagerAwareBeanMetaDataF
    //way, but what if we have a custom metadata loader that expects elements with the same names?
    List<Element> elements;
    
-   String fullDocument;
-
    public String getTag()
    {
       return tag;
@@ -109,43 +104,16 @@ public class MetaDataBeanMetaDataFactory extends AspectManagerAwareBeanMetaDataF
       BeanMetaDataBuilder builder = BeanMetaDataBuilder.createBuilder(name, ClassMetaData.class.getName());
       builder.addPropertyMetaData("tag", tag);
       builder.addPropertyMetaData("className", clazz);
-      builder.addPropertyMetaData("element", getRootElement());
+      HashMap<String, String> attributes = new HashMap<String, String>();
+      attributes.put("tag", tag);
+      attributes.put("class", clazz);
+      builder.addPropertyMetaData("element", XmlLoadableRootElementUtil.getRootElementString(elements, "metadata", attributes));
       
       setAspectManagerProperty(builder);
       beans.add(builder.getBeanMetaData());
       return beans;
    }
-   
-   private String getRootElement()
-   {
-      try
-      {
-         StringWriter writer = new StringWriter();
-         StringBuffer contents = writer.getBuffer();
-         contents.append("<metadata "); 
-         contents.append("tag=\"" + tag + "\" ");
-         contents.append("class=\"" + clazz + "\"");
-         contents.append(">");
-         
-         DOMWriter domWriter = new DOMWriter(new BufferedWriter(writer));
-         for (Element child : elements)
-         {
-            domWriter.print(child);
-         }
-         
-         contents.append("</metadata>");
-         
-         fullDocument = writer.getBuffer().toString();
-         System.out.println(fullDocument);
-         return fullDocument;
-      }
-      catch (DOMException e)
-      {
-         e.printStackTrace();
-         throw e;
-      }
-   }
-   
+
    /**
     * Here to match the @XMLType.propOrder
     * @param ignored ???

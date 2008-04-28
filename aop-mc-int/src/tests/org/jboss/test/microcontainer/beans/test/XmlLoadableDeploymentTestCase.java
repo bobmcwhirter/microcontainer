@@ -19,27 +19,26 @@
 * Software Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA
 * 02110-1301 USA, or see the FSF site: http://www.fsf.org.
 */ 
-package org.jboss.aop.microcontainer.beans.metadata;
+package org.jboss.test.microcontainer.beans.test;
 
-import javax.xml.bind.annotation.XmlNsForm;
-import javax.xml.bind.annotation.XmlRootElement;
-
-import org.jboss.xb.annotations.JBossXmlSchema;
+import junit.framework.Test;
 
 /**
  * 
  * @author <a href="kabir.khan@jboss.com">Kabir Khan</a>
  * @version $Revision: 1.1 $
  */
-@JBossXmlSchema(namespace="urn:jboss:aop-beans:1.0", elementFormDefault=XmlNsForm.QUALIFIED)
-@XmlRootElement(name="interceptor")
-public class InterceptorBeanMetaDataFactory extends AspectBeanMetaDataFactory
+public class XmlLoadableDeploymentTestCase extends XmlLoadableTest
 {
-   private static final long serialVersionUID = 1L;
 
-   @Override
-   protected String getTagName()
+   public XmlLoadableDeploymentTestCase(String name)
    {
-      return "interceptor";
+      super(name);
    }
+
+   public static Test suite()
+   {
+      return suite(XmlLoadableDeploymentTestCase.class);
+   }
+
 }

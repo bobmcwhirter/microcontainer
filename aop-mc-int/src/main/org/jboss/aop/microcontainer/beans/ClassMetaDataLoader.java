@@ -22,6 +22,8 @@
 package org.jboss.aop.microcontainer.beans;
 
 import org.jboss.aop.AspectManager;
+import org.jboss.util.xml.XmlLoadable;
+import org.w3c.dom.Element;
 
 /**
  * 
@@ -33,6 +35,7 @@ public class ClassMetaDataLoader
    AspectManager manager;
    String tag;
    String className;
+   Element element;
 
    public AspectManager getManager()
    {
@@ -64,6 +67,16 @@ public class ClassMetaDataLoader
       this.className = className;
    }
 
+   public Element getElement()
+   {
+      return element;
+   }
+
+   public void setElement(Element element)
+   {
+      this.element = element;
+   }
+
    public void start()
    {
       if (manager == null)
@@ -79,6 +92,11 @@ public class ClassMetaDataLoader
          ClassLoader cl = SecurityActions.getContextClassLoader();
          Class<?> clazz = cl.loadClass(className);
          org.jboss.aop.metadata.ClassMetaDataLoader loader = (org.jboss.aop.metadata.ClassMetaDataLoader)clazz.newInstance();
+         
+         if (loader instanceof XmlLoadable)
+         {
+            ((XmlLoadable) loader).importXml(element);
+         }
          
          manager.addClassMetaDataLoader(tag, loader);
       }

@@ -19,27 +19,49 @@
 * Software Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA
 * 02110-1301 USA, or see the FSF site: http://www.fsf.org.
 */ 
-package org.jboss.aop.microcontainer.beans.metadata;
+package org.jboss.test.microcontainer.beans;
 
-import javax.xml.bind.annotation.XmlNsForm;
-import javax.xml.bind.annotation.XmlRootElement;
-
-import org.jboss.xb.annotations.JBossXmlSchema;
+import org.jboss.aop.joinpoint.Invocation;
+import org.jboss.util.xml.XmlLoadable;
+import org.w3c.dom.Element;
 
 /**
  * 
  * @author <a href="kabir.khan@jboss.com">Kabir Khan</a>
  * @version $Revision: 1.1 $
  */
-@JBossXmlSchema(namespace="urn:jboss:aop-beans:1.0", elementFormDefault=XmlNsForm.QUALIFIED)
-@XmlRootElement(name="interceptor")
-public class InterceptorBeanMetaDataFactory extends AspectBeanMetaDataFactory
+public class XmlLoadableAspect implements XmlLoadable
 {
-   private static final long serialVersionUID = 1L;
-
-   @Override
-   protected String getTagName()
+   private Element element;
+   public static boolean intercepted;
+   public static Element interceptedElement;
+   public static int intAttr;
+   public static String mcProperty;
+   
+   public void setIntAttr(int i)
    {
-      return "interceptor";
+      intAttr = i;
+   }
+   
+   public void setProperty(String property)
+   {
+      mcProperty = property;
+   }
+   
+   public Object invoke(Invocation invocation) throws Throwable
+   {
+      intercepted = true;
+      interceptedElement = element;
+      return invocation.invokeNext();
+   }
+
+   public void importXml(Element element)
+   {
+      this.element = element;
+   }
+
+   public Element getElement()
+   {
+      return element;
    }
 }

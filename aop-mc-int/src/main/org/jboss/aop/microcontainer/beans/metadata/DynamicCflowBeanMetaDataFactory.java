@@ -22,8 +22,10 @@
 package org.jboss.aop.microcontainer.beans.metadata;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
 
+import javax.xml.bind.annotation.XmlAnyElement;
 import javax.xml.bind.annotation.XmlAttribute;
 import javax.xml.bind.annotation.XmlNsForm;
 import javax.xml.bind.annotation.XmlRootElement;
@@ -32,6 +34,7 @@ import org.jboss.aop.microcontainer.beans.DynamicCFlowDef;
 import org.jboss.beans.metadata.spi.BeanMetaData;
 import org.jboss.beans.metadata.spi.builder.BeanMetaDataBuilder;
 import org.jboss.xb.annotations.JBossXmlSchema;
+import org.w3c.dom.Element;
 
 /**
  * 
@@ -44,7 +47,9 @@ public class DynamicCflowBeanMetaDataFactory extends AspectManagerAwareBeanMetaD
 {
    private static final long serialVersionUID = 1L;
 
-   String clazz;
+   private String clazz;
+   
+   private List<Element> elements;
 
    public String getClazz()
    {
@@ -57,6 +62,17 @@ public class DynamicCflowBeanMetaDataFactory extends AspectManagerAwareBeanMetaD
       this.clazz = clazz;
    }
 
+   public List<Element> getElements()
+   {
+      return elements;
+   }
+
+   @XmlAnyElement(lax=true)
+   public void setElements(List<Element> elements)
+   {
+      this.elements = elements;
+   }
+
    @Override
    public List<BeanMetaData> getBeans()
    {
@@ -65,6 +81,15 @@ public class DynamicCflowBeanMetaDataFactory extends AspectManagerAwareBeanMetaD
       BeanMetaDataBuilder builder = BeanMetaDataBuilder.createBuilder(name, DynamicCFlowDef.class.getName());
       builder.addPropertyMetaData("name", name);
       builder.addPropertyMetaData("className", clazz);
+      HashMap<String, String> attributes = new HashMap<String, String>();
+      attributes.put("name", name);
+      attributes.put("class", clazz);
+      if (elements != null && elements.size() > 0)
+      {
+         builder.addPropertyMetaData("element", XmlLoadableRootElementUtil.getRootElementString(elements, "dynamic-cflow", attributes));
+      }
+      
+      
       setAspectManagerProperty(builder);
       
       result.add(builder.getBeanMetaData());

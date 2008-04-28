@@ -72,6 +72,7 @@ public class AOPDeployment extends AbstractKernelDeployment
       @XmlElement(name="lifecycle-instantiate", type=InstantiateLifecycleBeanMetaDataFactory.class),
       @XmlElement(name="lifecycle-preinstall", type=PreInstallLifecycleBeanMetaDataFactory.class),
       @XmlElement(name="lifecycle-start", type=StartLifecycleBeanMetaDataFactory.class),
+      @XmlElement(name="loader-repository", type=LoaderRepositoryBeanMetaDataFactory.class),
       @XmlElement(name="metadata", type=MetaDataBeanMetaDataFactory.class),
       @XmlElement(name="metadata-loader", type=MetaDataLoaderBeanMetaDataFactory.class),
       @XmlElement(name="pointcut", type=NamedPointcutBeanMetaDataFactory.class),
