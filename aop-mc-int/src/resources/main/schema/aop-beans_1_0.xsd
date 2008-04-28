@@ -279,7 +279,7 @@ $Id$
          <xsd:element name="prepare" type="prepareType" minOccurs="0" maxOccurs="unbounded"/>
          <xsd:element name="stack" type="stackType" minOccurs="0" maxOccurs="unbounded"/>
          <xsd:element name="typedef" type="typedefType" minOccurs="0" maxOccurs="unbounded"/>
-         <xsd:any namespace="##other" processContents="strict" minOccurs="0">
+         <xsd:any namespace="##other" processContents="lax" minOccurs="0" maxOccurs="unbounded">
             <xsd:annotation>
                <xsd:documentation>An extension value</xsd:documentation>
             </xsd:annotation>
@@ -325,7 +325,7 @@ $Id$
          <xsd:element name="prepare" type="prepareType" minOccurs="0" maxOccurs="unbounded"/>
          <xsd:element name="stack" type="stackType" minOccurs="0" maxOccurs="unbounded"/>
          <xsd:element name="typedef" type="typedefType" minOccurs="0" maxOccurs="unbounded"/>
-         <xsd:any namespace="##other" processContents="strict" minOccurs="0">
+         <xsd:any namespace="##other" processContents="lax" minOccurs="0" maxOccurs="unbounded">
             <xsd:annotation>
                <xsd:documentation>An extension value</xsd:documentation>
             </xsd:annotation>
@@ -382,7 +382,7 @@ $Id$
       <xsd:complexContent>
          <xsd:extension base="aopBeanfactoryType">
             <xsd:choice minOccurs="0" maxOccurs="1">
-               <xsd:any namespace="##other" processContents="strict" minOccurs="0">
+               <xsd:any namespace="##other" processContents="lax" minOccurs="0" maxOccurs="unbounded">
                </xsd:any>
             </xsd:choice>          
             <xsd:attribute name="scope" type="xsd:string" use="optional"/>
@@ -684,7 +684,7 @@ $Id$
       </xsd:annotation>
       <xsd:simpleContent>
          <xsd:extension base="xsd:string">
-            <xsd:attribute name="name" type="xsd:string" use="required"/>
+            <xsd:attribute name="name" type="xsd:string" use="optional"/>
             <xsd:attribute name="expr" type="xsd:string" use="required"/>
          </xsd:extension>
       </xsd:simpleContent>
@@ -756,10 +756,14 @@ $Id$
            ]]>
          </xsd:documentation>
       </xsd:annotation>
-      <xsd:attribute name="expr" type="xsd:string" use="required"/>
-      <xsd:attribute name="invisible" type="xsd:boolean" use="required"/>
-      <xsd:attribute name="manager-bean" type="xsd:string" use="optional"/>
-      <xsd:attribute name="manager-property" type="xsd:string" use="optional"/>
+      <xsd:simpleContent>
+         <xsd:extension base="xsd:string">
+            <xsd:attribute name="expr" type="xsd:string" use="required"/>
+            <xsd:attribute name="invisible" type="xsd:boolean" use="optional"/>
+            <xsd:attribute name="manager-bean" type="xsd:string" use="optional"/>
+            <xsd:attribute name="manager-property" type="xsd:string" use="optional"/>
+         </xsd:extension>
+      </xsd:simpleContent>
    </xsd:complexType>
 
    <xsd:element name="annotation" type="aopAnnotationType">
@@ -830,8 +834,8 @@ $Id$
            ]]>
          </xsd:documentation>
       </xsd:annotation>
-      <xsd:choice minOccurs="1" maxOccurs="1">
-         <xsd:element name="interfaces" type="interfacesType" minOccurs="0" maxOccurs="1" />
+      <xsd:choice minOccurs="1" maxOccurs="unbounded">
+         <xsd:element name="interfaces" type="xsd:string" minOccurs="0" maxOccurs="1" />
          <xsd:element name="mixin" type="mixinType" minOccurs="0" maxOccurs="unbounded" />
       </xsd:choice>
       <xsd:attribute name="class" type="xsd:string" use="optional"></xsd:attribute>
@@ -848,12 +852,12 @@ $Id$
            ]]>
          </xsd:documentation>
       </xsd:annotation>
-      <xsd:choice minOccurs="1" maxOccurs="1">
-         <xsd:element name="interfaces" type="interfacesType" minOccurs="1" maxOccurs="1" />
-         <xsd:element name="class" type="classType" minOccurs="1" maxOccurs="1" />
-         <xsd:element name="construction" type="constructionType" minOccurs="0" maxOccurs="1" />
-         <xsd:element name="transient" type="transientType" minOccurs="0" maxOccurs="1" />
-      </xsd:choice>
+      <xsd:all minOccurs="1" maxOccurs="1">
+         <xsd:element name="interfaces" type="xsd:string" minOccurs="1" maxOccurs="1" />
+         <xsd:element name="class" type="xsd:string" minOccurs="1" maxOccurs="1" />
+         <xsd:element name="construction" type="xsd:string" minOccurs="0" maxOccurs="1" />
+      </xsd:all>
+      <xsd:attribute name="transient" type="xsd:string" use="optional"/>
    </xsd:complexType>
 
    <xsd:complexType name="interfacesType">
@@ -927,7 +931,7 @@ $Id$
          </xsd:documentation>
       </xsd:annotation>
       <xsd:choice minOccurs="0" maxOccurs="1">
-         <xsd:any namespace="##other" processContents="strict" minOccurs="0">
+         <xsd:any namespace="##other" processContents="lax" minOccurs="0" maxOccurs="unbounded">
          </xsd:any>
       </xsd:choice>
       <xsd:attribute name="tag" type="xsd:string" use="required"></xsd:attribute>
@@ -953,7 +957,7 @@ $Id$
          </xsd:documentation>
       </xsd:annotation>
       <xsd:choice minOccurs="0" maxOccurs="1">
-         <xsd:any namespace="##other" processContents="strict" minOccurs="0">
+         <xsd:any namespace="##other" processContents="lax" minOccurs="0" maxOccurs="unbounded">
          </xsd:any>
       </xsd:choice>
       <xsd:attribute name="tag" type="xsd:string" use="required"></xsd:attribute>
