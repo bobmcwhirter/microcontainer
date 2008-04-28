@@ -168,10 +168,7 @@ public class IntroductionBeanMetaDataFactory extends AspectManagerAwareBeanMetaD
          BeanMetaDataBuilder mixinBuilder = BeanMetaDataBuilder.createBuilder(name, MixinEntry.class.getName());
          mixinBuilder.addPropertyMetaData("mixin", mixin.getMixin());
          addInterfaces(mixinBuilder, "interfaces", mixin.getInterfaces());
-         if (mixin.getTransient() != null)
-         {
-            mixinBuilder.addPropertyMetaData("transient", mixin.getTransient());
-         }
+         mixinBuilder.addPropertyMetaData("transient", mixin.getTransient());
          if (mixin.getConstruction() != null)
          {
             mixinBuilder.addPropertyMetaData("construction", mixin.getConstruction());

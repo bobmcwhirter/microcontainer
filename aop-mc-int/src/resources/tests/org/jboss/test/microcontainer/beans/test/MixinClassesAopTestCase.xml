@@ -7,10 +7,9 @@
    </bean>
 
 	<introduction class="org.jboss.test.microcontainer.beans.POJO">
-		<mixin>
+      <mixin transient="true">
 			<interfaces>org.jboss.test.microcontainer.beans.MixinInterface</interfaces>
 			<class>org.jboss.test.microcontainer.beans.MixinImpl</class>
-			<transient>true</transient>
 		</mixin>
 	</introduction>
 
@@ -19,7 +18,7 @@
 	<bind pointcut="execution(* $instanceof{org.jboss.test.microcontainer.beans.MixinInterface}->*(..))">
       <advice aspect="org.jboss.test.microcontainer.beans.TestAspect" name="advice"/>
    </bind>
-   
+
    <bean name="Bean" class="org.jboss.test.microcontainer.beans.POJO"/>
-   
+
 </aop>

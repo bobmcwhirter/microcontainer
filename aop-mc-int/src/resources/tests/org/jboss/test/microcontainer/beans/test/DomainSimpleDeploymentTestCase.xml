@@ -22,26 +22,25 @@
       </precedence>
 
       <introduction xmlns="urn:jboss:aop-beans:1.0" name="MixinBinding" class="org.jboss.test.microcontainer.beans.POJO">
-         <mixin>
+         <mixin transient="true">
             <interfaces>org.jboss.test.microcontainer.beans.MixinInterface</interfaces>
             <class>org.jboss.test.microcontainer.beans.MixinImpl</class>
-            <transient>true</transient>
          </mixin>
       </introduction>
 
       <pointcut xmlns="urn:jboss:aop-beans:1.0" name="NamedPointcut" expr="all(org.acme.POJO)"/>
 
       <prepare xmlns="urn:jboss:aop-beans:1.0" name="Prepare" expr="all(org.acme.POJO)"/>
-      
+
       <dynamic-cflow xmlns="urn:jboss:aop-beans:1.0" name="DynamicCFlow" class="org.jboss.test.microcontainer.beans.DynamicCFlowImpl"/>
-      
+
       <cflow-stack xmlns="urn:jboss:aop-beans:1.0" name="CFlow">
          <not-called expr="void org.jboss.test.microcontainer.beans.test.CFlowTest->notCallPOJO(..)"/>
          <called expr="void org.jboss.test.microcontainer.beans.test.CFlowTest->callPOJO(..)"/>
       </cflow-stack>
 
       <typedef name="TypeDef" expr="class(org.jboss.test.microcontainer.beans.POJO)"/>
-   
+
       <aspect class="org.jboss.test.microcontainer.beans.TestAspectWithProperty">
          <property xmlns:mc="urn:jboss:bean-deployer:2.0" name="someProperty">This is only a test</property>
       </aspect>
@@ -53,7 +52,7 @@
       <stack name="TestStack">
          <advice aspect="org.jboss.test.microcontainer.beans.TestAspect" name="advice"/>
       </stack>
-      
+
       <bind pointcut="execution(* org.jboss.test.microcontainer.beans.POJO->*(..))">
          <advice aspect="org.jboss.test.microcontainer.beans.TestAspectWithProperty" name="advice"/>
          <interceptor-ref name="org.jboss.test.microcontainer.beans.TestInterceptor"/>
@@ -61,11 +60,11 @@
       </bind>
 
       <arrayreplacement class="org.jboss.test.microcontainer.beans.woven.test.ClassWithArray"/>
-      
+
       <arraybind name="TestArrayBinding" type="READ_WRITE">
          <interceptor-ref name="org.jboss.test.microcontainer.beans.TestInterceptor"/>
       </arraybind>
-      
+
       <metadata-loader xmlns="urn:jboss:aop-beans:1.0" tag="custom" class="org.jboss.test.microcontainer.beans.TestMetaDataLoader"/>
 
       <metadata xmlns="urn:jboss:aop-beans:1.0" tag="custom" class="org.jboss.test.microcontainer.beans.POJO">
@@ -73,6 +72,6 @@
       </metadata>
 
       <declare-error name="DeclareError" expr="call(* org.acme.Foo->error(..))">Error!!!</declare-error>
-   </domain>   
-   
+   </domain>
+
 </deployment>

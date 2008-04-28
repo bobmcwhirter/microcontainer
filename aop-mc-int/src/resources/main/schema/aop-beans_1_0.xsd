@@ -857,59 +857,7 @@ $Id$
          <xsd:element name="class" type="xsd:string" minOccurs="1" maxOccurs="1" />
          <xsd:element name="construction" type="xsd:string" minOccurs="0" maxOccurs="1" />
       </xsd:all>
-      <xsd:attribute name="transient" type="xsd:string" use="optional"/>
-   </xsd:complexType>
-
-   <xsd:complexType name="interfacesType">
-      <xsd:annotation>
-         <xsd:documentation>
-            <![CDATA[
-           A interfaces within an introduction or an introduction/mixin
-           ]]>
-         </xsd:documentation>
-      </xsd:annotation>
-      <xsd:simpleContent>
-         <xsd:extension base="xsd:string"/>
-      </xsd:simpleContent>
-   </xsd:complexType>
-
-   <xsd:complexType name="classType">
-      <xsd:annotation>
-         <xsd:documentation>
-            <![CDATA[
-           A class within an interface/mixin
-           ]]>
-         </xsd:documentation>
-      </xsd:annotation>
-      <xsd:simpleContent>
-         <xsd:extension base="xsd:string"/>
-      </xsd:simpleContent>
-   </xsd:complexType>
-
-   <xsd:complexType name="constructionType">
-      <xsd:annotation>
-         <xsd:documentation>
-            <![CDATA[
-           How to construct an interface/mixin
-           ]]>
-         </xsd:documentation>
-      </xsd:annotation>
-      <xsd:simpleContent>
-         <xsd:extension base="xsd:string"/>
-      </xsd:simpleContent>
-   </xsd:complexType>
-
-   <xsd:complexType name="transientType">
-      <xsd:annotation>
-         <xsd:documentation>
-            <![CDATA[
-           Whether an interface/mixin should be transient
-           ]]>
-         </xsd:documentation>
-      </xsd:annotation>
-      <xsd:simpleContent>
-         <xsd:extension base="xsd:string"/>
-      </xsd:simpleContent>
+      <xsd:attribute name="transient" type="xsd:boolean" use="optional"/>
    </xsd:complexType>
 
    <xsd:element name="metadata" type="metadataType">

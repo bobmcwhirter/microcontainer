@@ -21,6 +21,7 @@
 */ 
 package org.jboss.aop.microcontainer.beans.metadata;
 
+import javax.xml.bind.annotation.XmlAttribute;
 import javax.xml.bind.annotation.XmlElement;
 
 /**
@@ -31,16 +32,17 @@ import javax.xml.bind.annotation.XmlElement;
 public class MixinData
 {
    String mixin;
-   String isTransient;
+   boolean isTransient = true;
    String construction;
    String interfaces;
 
-   public String getTransient()
+   public boolean getTransient()
    {
       return isTransient;
    }
 
-   public void setTransient(String isTransient)
+   @XmlAttribute
+   public void setTransient(boolean isTransient)
    {
       this.isTransient = isTransient;
    }
