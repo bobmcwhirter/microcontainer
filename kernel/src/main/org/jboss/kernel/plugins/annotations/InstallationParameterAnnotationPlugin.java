@@ -43,7 +43,7 @@ import org.jboss.kernel.plugins.config.Configurator;
  * @param <C> annotation type
  * @author <a href="mailto:ales.justin@jboss.com">Ales Justin</a>
  */
-public abstract class InstallationParameterAnnotationPlugin<C extends Annotation> extends AbstractParameterAnnotationPlugin<MethodInfo, C, AbstractInstallMetaData>
+public abstract class InstallationParameterAnnotationPlugin<C extends Annotation> extends AbstractMethodParameterAnnotationPlugin<C, AbstractInstallMetaData>
 {
    protected InstallationParameterAnnotationPlugin(Class<C> annotation, Set<Annotation2ValueMetaDataAdapter<? extends Annotation>> adapters)
    {

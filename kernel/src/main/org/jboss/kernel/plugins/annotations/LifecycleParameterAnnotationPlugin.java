@@ -40,7 +40,7 @@ import org.jboss.reflect.spi.ParameterInfo;
  * @param <C> annotation type
  * @author <a href="mailto:ales.justin@jboss.com">Ales Justin</a>
  */
-public abstract class LifecycleParameterAnnotationPlugin<C extends Annotation> extends AbstractParameterAnnotationPlugin<MethodInfo, C, AbstractLifecycleMetaData>
+public abstract class LifecycleParameterAnnotationPlugin<C extends Annotation> extends AbstractMethodParameterAnnotationPlugin<C, AbstractLifecycleMetaData>
 {
    protected LifecycleParameterAnnotationPlugin(Class<C> annotation, Set<Annotation2ValueMetaDataAdapter<? extends Annotation>> adapters)
    {

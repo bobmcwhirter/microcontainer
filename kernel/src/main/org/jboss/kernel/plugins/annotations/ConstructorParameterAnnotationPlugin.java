@@ -26,9 +26,9 @@ import java.lang.annotation.ElementType;
 import java.util.List;
 import java.util.Set;
 
+import org.jboss.beans.metadata.api.annotations.Constructor;
 import org.jboss.beans.metadata.plugins.AbstractBeanMetaData;
 import org.jboss.beans.metadata.plugins.AbstractConstructorMetaData;
-import org.jboss.beans.metadata.api.annotations.Constructor;
 import org.jboss.beans.metadata.spi.BeanMetaData;
 import org.jboss.beans.metadata.spi.MetaDataVisitorNode;
 import org.jboss.reflect.spi.ConstructorInfo;
@@ -39,7 +39,7 @@ import org.jboss.reflect.spi.ParameterInfo;
  *
  * @author <a href="mailto:ales.justin@jboss.com">Ales Justin</a>
  */
-public class ConstructorParameterAnnotationPlugin extends AbstractParameterAnnotationPlugin<ConstructorInfo, Constructor, AbstractConstructorMetaData>
+public class ConstructorParameterAnnotationPlugin extends AbstractConstructorParameterAnnotationPlugin<Constructor, AbstractConstructorMetaData>
 {
    protected ConstructorParameterAnnotationPlugin(Set<Annotation2ValueMetaDataAdapter<? extends Annotation>> adapters)
    {

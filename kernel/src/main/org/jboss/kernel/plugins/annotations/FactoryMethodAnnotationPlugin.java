@@ -40,7 +40,7 @@ import org.jboss.reflect.spi.ParameterInfo;
  *
  * @author <a href="mailto:ales.justin@jboss.com">Ales Justin</a>
  */
-public class FactoryMethodAnnotationPlugin extends AbstractParameterAnnotationPlugin<MethodInfo, FactoryMethod, AbstractConstructorMetaData>
+public class FactoryMethodAnnotationPlugin extends AbstractMethodParameterAnnotationPlugin<FactoryMethod, AbstractConstructorMetaData>
 {
    public FactoryMethodAnnotationPlugin(Set<Annotation2ValueMetaDataAdapter<? extends Annotation>> adapters)
    {

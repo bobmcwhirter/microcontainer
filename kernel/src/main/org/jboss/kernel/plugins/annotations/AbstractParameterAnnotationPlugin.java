@@ -36,7 +36,6 @@ import org.jboss.beans.metadata.spi.ParameterMetaData;
 import org.jboss.beans.metadata.spi.ValueMetaData;
 import org.jboss.kernel.plugins.config.Configurator;
 import org.jboss.metadata.spi.MetaData;
-import org.jboss.metadata.spi.signature.MethodParametersSignature;
 import org.jboss.metadata.spi.signature.Signature;
 import org.jboss.reflect.spi.AnnotatedInfo;
 import org.jboss.reflect.spi.ParameterInfo;
@@ -153,7 +152,7 @@ public abstract class AbstractParameterAnnotationPlugin<T extends AnnotatedInfo,
       for(int i=0; i < parameters.length; i++)
       {
          ParameterInfo pi = parameters[i];
-         Signature pis = new MethodParametersSignature(
+         Signature pis = createParametersSignature(
                pi.getName(),
                Configurator.getParameterTypes(log.isTraceEnabled(), typeInfos),
                i
@@ -188,4 +187,14 @@ public abstract class AbstractParameterAnnotationPlugin<T extends AnnotatedInfo,
          throw new IllegalArgumentException("ParameterizedMetaData not MetaDataVisitor: " + parameterizedMetaData);
       return Collections.singletonList((MetaDataVisitorNode)parameterizedMetaData);
    }
+
+   /**
+    * Create parameters signature.
+    *
+    * @param name the name
+    * @param parameters the parameters
+    * @param index the index
+    * @return new signature
+    */
+   protected abstract Signature createParametersSignature(String name, String[] parameters, int index);
 }
