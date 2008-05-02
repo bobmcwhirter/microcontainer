@@ -39,7 +39,7 @@
     <version.jbossxb>2.0.0.CR8</version.jbossxb>
     <version.jboss.vfs>2.0.0.Beta11</version.jboss.vfs>
     <version.javassist>3.7.1.GA</version.javassist>
-    <version.jboss.aop>2.0.0.CR8</version.jboss.aop>
+    <version.jboss.aop>2.0.0.CR9</version.jboss.aop>
     <version.org.jboss.reflect>2.0.0.Beta12</version.org.jboss.reflect>
     <version.org.jboss.mdr>2.0.0.Beta15</version.org.jboss.mdr>
     <version.org.jboss.test>1.0.5.GA</version.org.jboss.test>
