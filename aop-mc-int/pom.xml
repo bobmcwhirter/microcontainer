@@ -334,6 +334,7 @@
     <dependency>
       <groupId>org.jboss.microcontainer</groupId>
       <artifactId>jboss-kernel</artifactId>
+      <type>test-jar</type>
       <scope>test</scope>
       <exclusions>
         <exclusion>
