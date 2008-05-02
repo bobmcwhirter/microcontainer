@@ -3,7 +3,7 @@
   <parent>
     <groupId>org.jboss</groupId>
     <artifactId>jboss-parent</artifactId>
-    <version>4-beta-2</version>
+    <version>4-beta-1</version>
   </parent>
   <groupId>org.jboss.microcontainer</groupId>
   <artifactId>jboss-microcontainer-aggregator</artifactId>
@@ -28,6 +28,7 @@
     <module>guice-int</module>
   </modules>
 
+<!--
   <build>
     <plugins>
       <plugin>
@@ -42,6 +43,7 @@
       </plugin>
     </plugins>
   </build>
+-->
   
   <profiles>
     <profile>
