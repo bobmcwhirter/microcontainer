@@ -28,13 +28,12 @@
     <module>guice-int</module>
   </modules>
 
-<!--
   <build>
     <plugins>
       <plugin>
         <groupId>org.apache.maven.plugins</groupId>
         <artifactId>maven-release-plugin</artifactId>
-        <version>2.0-beta-7</version>
+        <version>2.0-beta-6</version>
         <configuration>
           <generateReleasePoms>true</generateReleasePoms>
           <tagBase>https://svn.jboss.org/repos/jbossas/projects/microcontainer/tags</tagBase>
@@ -43,7 +42,6 @@
       </plugin>
     </plugins>
   </build>
--->
   
   <profiles>
     <profile>
