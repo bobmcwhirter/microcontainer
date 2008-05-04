@@ -37,7 +37,7 @@ public class BeanAnnotationAdapterFactory
    private static Logger log = Logger.getLogger(BeanAnnotationAdapterFactory.class);
    private static final BeanAnnotationAdapterFactory factory = new BeanAnnotationAdapterFactory();
 
-   private String adapterClassName = BasicBeanAnnotationAdapter.class.getName();
+   private String adapterClassName;
    private BeanAnnotationAdapter adapter;
 
    private BeanAnnotationAdapterFactory()
@@ -73,16 +73,19 @@ public class BeanAnnotationAdapterFactory
          try
          {
             String adapterClass = System.getProperty("org.jboss.kernel.plugins.annotations.BeanAnnotationAdapter", adapterClassName);
-            if (log.isTraceEnabled())
-               log.trace("Instantiating bean annotation adapter: " + adapterClass);
-            Object result = ReflectionUtils.newInstance(adapterClass);
-            return BeanAnnotationAdapter.class.cast(result);
+            if (adapterClass != null)
+            {
+               if (log.isTraceEnabled())
+                  log.trace("Instantiating bean annotation adapter: " + adapterClass);
+               Object result = ReflectionUtils.newInstance(adapterClass);
+               return BeanAnnotationAdapter.class.cast(result);
+            }
          }
          catch (Throwable t)
          {
             log.warn("Exception while creating bean annotation adapter instance: " + t);
-            return BasicBeanAnnotationAdapter.INSTANCE;
          }
+         return BasicBeanAnnotationAdapter.INSTANCE;
       }
    }
 
