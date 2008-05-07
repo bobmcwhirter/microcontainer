@@ -124,7 +124,7 @@ $Id$
          </xsd:complexContent>
       </xsd:complexType>
       <xsd:simpleType name="classNameType">
-         <xsd:restriction base="classNameType"></xsd:restriction>
+         <xsd:restriction base="classNameType"/>
       </xsd:simpleType>
       <xsd:group name="valueGroup">
          <xsd:choice>
@@ -225,22 +225,22 @@ $Id$
          </xsd:complexContent>
       </xsd:complexType>
       <xsd:simpleType name="controllerStateType">
-         <xsd:restriction base="controllerStateType"></xsd:restriction>
+         <xsd:restriction base="controllerStateType"/>
       </xsd:simpleType>
       <xsd:simpleType name="controllerModeType">
-         <xsd:restriction base="controllerModeType"></xsd:restriction>
+         <xsd:restriction base="controllerModeType"/>
       </xsd:simpleType>
       <xsd:simpleType name="autowireTypeType">
-         <xsd:restriction base="autowireTypeType"></xsd:restriction>
+         <xsd:restriction base="autowireTypeType"/>
       </xsd:simpleType>
       <xsd:simpleType name="accessModeType">
-         <xsd:restriction base="accessModeType"></xsd:restriction>
+         <xsd:restriction base="accessModeType"/>
       </xsd:simpleType>
       <xsd:simpleType name="optionType">
-         <xsd:restriction base="optionType"></xsd:restriction>
+         <xsd:restriction base="optionType"/>
       </xsd:simpleType>
       <xsd:simpleType name="contextType">
-         <xsd:restriction base="contextType"></xsd:restriction>
+         <xsd:restriction base="contextType"/>
       </xsd:simpleType>
    </xsd:redefine>
 
