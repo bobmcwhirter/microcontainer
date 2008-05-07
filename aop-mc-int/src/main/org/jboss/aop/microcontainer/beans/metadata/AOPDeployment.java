@@ -87,16 +87,4 @@ public class AOPDeployment extends AbstractKernelDeployment
       super.setBeanFactories(beanFactories);
    }
    
-//   Element metadata;
-//   
-//   public Element getMetadata()
-//   {
-//      return metadata;
-//   }
-//   
-//   public void setMetadata(Element elements)
-//   {
-//      System.out.println("Hello");
-//      this.metadata = elements;
-//   }
 }
