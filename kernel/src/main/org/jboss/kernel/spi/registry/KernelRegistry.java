@@ -32,7 +32,10 @@ import org.jboss.kernel.spi.KernelObject;
  * @author <a href="adrian@jboss.com">Adrian Brock</a>
  * @author <a href="mailto:les.hazlewood@jboss.org">Les A. Hazlewood</a>
  * @version $Revision$
+ * @deprecated use the KernelBus for ad hoc invocations.
+ *             use injection / Controller for anything else
  */
+@Deprecated
 public interface KernelRegistry extends KernelObject
 {
    /** Event type for registered event */
@@ -81,5 +84,5 @@ public interface KernelRegistry extends KernelObject
     * @return true if there exists a KernelRegistryEntry with the given name,
     *         false otherwise.
     */
-   boolean containsEntry( Object name );
+   boolean containsEntry(Object name);
 }
