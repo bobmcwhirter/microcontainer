@@ -32,8 +32,7 @@ import org.jboss.kernel.spi.KernelObject;
  * @author <a href="adrian@jboss.com">Adrian Brock</a>
  * @author <a href="mailto:les.hazlewood@jboss.org">Les A. Hazlewood</a>
  * @version $Revision$
- * @deprecated use the KernelBus for ad hoc invocations.
- *             use injection / Controller for anything else
+ * @deprecated use the KernelBus for ad hoc invocations, and injection / Controller for anything else
  */
 @Deprecated
 public interface KernelRegistry extends KernelObject
