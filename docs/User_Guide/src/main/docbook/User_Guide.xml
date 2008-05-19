@@ -2661,8 +2661,8 @@ public class MyBean {
     <title>The Deployment Framework</title>
     <chapter>
       <title>Introduction</title>
-      <para>JBoss Microcontainer at its core allows POJOs to be deployed into a runtime environment to create services. It  does this using a state machine to ensure that any dependencies on classloaders or other POJOs are satisfied  before progressing through the various stages of creation and configuration.  By design the state machine and dependency mechanisms are generic which means that we can also use them to deploy other types of runtime components such as MBeans or OSGi bundles. However this means that we also need a generic deployment framework that is capable of creating the relevant metadata and classloader information in addition to handling nested deployments.</para>
-      <para>To understand why we cannot simply reuse the  BasicXMLDeployer that we are already familiar with let&apos;s take a closer look at what it actually does:</para>
+      <para>JBoss Microcontainer at its core allows POJOs to be deployed into a runtime environment. It  does this using a state machine to ensure that any dependencies on classloaders or other POJOs are satisfied  before progressing through the various stages of creation and configuration.  By design the state machine and dependency mechanisms are generic which means that we can also use them to deploy other types of runtime components such as MBeans or OSGi bundles. In order to do this we need a generic deployment framework to  create the relevant metadata, handle different kinds of deployable components, and deal with any nested deployments.</para>
+      <para>To understand why we cannot achieve this using the  BasicXMLDeployer let&apos;s take a closer look at what it actually does:</para>
       <programlisting role="JAVA">public class BasicXMLDeployer extends BasicKernelDeployer
 {
    ...
@@ -2706,7 +2706,7 @@ public class MyBean {
 
    ...
 }</programlisting>
-      <para>Once the deploy() method is called with a URL the first thing we do is create an unmarshaller to convert the XML deployment descriptor into an object representation of type KernelDeployment. We then process the KernelDeployment using the deploy() method of the superclass BasicKernelDeployer: </para>
+      <para>Once we call the deploy() method with a URL to the XML deployment descriptor an unmarshaller is created to convert the XML into an object representation of type KernelDeployment. We then process the KernelDeployment using the deploy() method of the superclass BasicKernelDeployer: </para>
       <programlisting role="JAVA">public class BasicKernelDeployer extends AbstractKernelDeployer
 {
     ...
@@ -2791,12 +2791,12 @@ public class MyBean {
 
     ...
 }</programlisting>
-      <para>The deploy() method in AbstractKernelDeployer performs a check to see if the deployment has already been installed before calling deployBeans() to split it up into the individual BeanMetaData instances. These are then deployed into the runtime environment using the deployBean() method which creates a KernelControllerContext for each BeanMetaData and installs it into the controller. It also takes care of deciding which classloader to use based on information  contained in the KernelDeployment object.</para>
-      <para>You should hopefully see from this breakdown that  the type hierarchy of BasicXMLDeployer  means that its only suitable for processing deployments of beans. Each deployment is represented  as a KernelDeployment that contains multiple BeanMetaData instances; one per bean. If we want to deploy other components such as MBeans or OSGi bundles then we need to deal with other types of metadata and we need a generic way to represent deployments containing them. Furthermore we need to find a flexibile way to process these deployments since each would have its own set of actions that need to take place. For example MBeans need to be registered with an MBean server before they can be considered &apos;deployed&apos;.</para>
+      <para>The deploy() method in AbstractKernelDeployer performs a check to see if the deployment has already been installed before calling deployBeans() to split it up into the individual BeanMetaData instances. These are then deployed into the runtime environment using the deployBean() method which creates a KernelControllerContext for each BeanMetaData and installs it into the controller. It also takes care of deciding which classloader to use based on information  contained in the KernelDeployment object. For example if the bean doesn&apos;t declare a classloader of its own then the deployment classloader (if defined) is used instead.</para>
+      <para>The type hierarchy of BasicXMLDeployer  restricts it to processing bean deployments of type KernelDeployment where each bean is represented by an instance of BeanMetaData. If we want to deploy other runtime components such as MBeans or OSGi bundles then we need to deal with other types of metadata and find a generic way to represent deployments containing them. Furthermore we need to find a flexibile way to process these deployments since each would have its own set of actions that need to take place. For example MBeans need to be registered with an MBean server before they can be considered &apos;deployed&apos;.</para>
       <para>It turns out that we can use the state machine to meet these requirements by creating a DeploymentControllerContext to represent a deployment in the same way that a KernelControllerContext represents a POJO. This allows us to associate a number of deployment actions to different stages of the deployment process:</para>
       <itemizedlist>
         <listitem>
-          <para>PARSE - convert one or more  deployment descriptors into object representations</para>
+          <para>PARSE - convert one or more  deployment descriptors into object representations containing metadata</para>
         </listitem>
         <listitem>
           <para>DESCRIBE - determine any dependencies</para>
@@ -2808,11 +2808,11 @@ public class MyBean {
           <para>POST_CLASSLOADER - apply AOP changes together with any other bytecode manipulations</para>
         </listitem>
         <listitem>
-          <para>REAL - deploy components (POJO, MBeans or OSGi bundles) into the runtime environment</para>
+          <para>REAL - process the deployment components</para>
         </listitem>
       </itemizedlist>
       <para>As the state machine controller takes a DeploymentControllerContext through each of these stages it calls the associated actions to perform the relevant work. For example we could create multiple parsing actions; one to parse XML files and another to parse Java property files. Depending on the file suffix of the deployment descriptor; .xml or .property we can then choose which one to use during the PARSE stage.</para>
-      <para>As deployments can often be nested within one another we actually describe the details of each deployment using a DeploymentContext type. The DeploymentControllerContext therefore contains a reference to the top-level DeploymentContext:</para>
+      <para>Deployments are represented by  DeploymentContexts  which can be formed into  a hierarchy to represent  nested deployments of any depth. A reference to the top-level DeploymentContext is contained in the DeploymentControllerContext:</para>
       <programlisting role="JAVA">public class DeploymentControllerContext extends AbstractControllerContext
 {
    /** The deployment context */
@@ -2833,8 +2833,36 @@ public class MyBean {
       <warning>
         <para>Be careful not to get confused with the names of these types; DeploymentControllerContext and DeploymentContext, as they are very similar. </para>
       </warning>
-      <para>The deployment framework is therefore a collection of packages and classes that provides a generic way to represent deployments containing components. Deployments can be  nested within one another and the components can be anything from POJOs to MBeans and OSGi bundles.</para>
-      <para>Consequently this means that  it&apos;s possible to use the deployment framework instead of the BasicXMLDeployer to deploy POJO-based services specified with XML deployment descriptors. So why then do we need a BasicXMLDeployer? The answer is because the deployment framework itself a POJO-based service specified with  an XML deployment descriptor (usually called <emphasis>bootstrap-beans.xml</emphasis>). We therefore need the BasicXMLDeployer to deploy it  when the microcontainer is booted up. Once deployed then the framework is used to deploy everything else including any other POJO-based services.</para>
+      <para>As deployment descriptors do not always describe runtime components directly, the notion of a deployment component is defined. For example an EJB deployment descriptor may describe a number of EJB containers from which individual EJBs are created. Here we refer to both the EJB containers and EJBs as  <emphasis>deployment components</emphasis> but   only the EJBs are thought of as  <emphasis>runtime components</emphasis>. Deployment components are represented by an implementation of DeploymentContext called ComponentDeploymentContext which allows  them to be hierarchical to any depth. For example an EJB container ComponentDeploymentContext could have multiple child ComponentDeploymentContexts representing its EJBs. Deployment components are added/removed to and from  their containing deployment or parent deployment component and retrieved for processing using the following methods:</para>
+      <programlisting role="JAVA">public class ComponentDeploymentContext implements DeploymentContext
+{
+   ...
+
+   boolean isComponent() {
+      return true;
+   }
+   
+   List&lt;DeploymentContext&gt; getComponents() {
+      return Collections.unmodifiableList(components);
+   }
+
+   void addComponent(DeploymentContext component) {
+      ...
+      components.add(component);
+   }
+
+
+   boolean removeComponent(DeploymentContext component) {
+      ...
+      boolean result = components.remove(component);
+      component.cleanup();
+      return result;
+   }
+
+   ...
+}</programlisting>
+      <para>The deployment framework is therefore a collection of packages and classes that provides a generic way to represent deployments containing arbitrary <emphasis>deployment components</emphasis>. These  could be  runtime components such as POJOs, MBeans, and EJBs or non-runtime components such as EJB containers which act as factories for the EJBs. Deployments and deployment components can be  nested within one another to any depth providing maximum flexibility during deployment.</para>
+      <para>Consequently it&apos;s possible to use the deployment framework instead of the BasicXMLDeployer to deploy POJO-based services specified with XML deployment descriptors. So why then do we need a BasicXMLDeployer? The answer is because the deployment framework itself a POJO-based service specified with  an XML deployment descriptor (usually called <emphasis>bootstrap-beans.xml</emphasis>). We therefore need the BasicXMLDeployer to deploy it  when the microcontainer is booted up. Once deployed then the framework is used to deploy everything else including any other POJO-based services.</para>
       <para>Now that you understand the reasoning for the deployment framework and how it relates to the BasicXMLDeployer  the following sections go on the cover the various parts in more detail.</para>
     </chapter>
     <chapter>
