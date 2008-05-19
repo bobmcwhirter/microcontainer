@@ -44,6 +44,7 @@ public class BasicBeanAnnotationAdapter extends AbstractBeanAnnotationAdapter
 
       // -- plugins
       // class
+      addAnnotationPlugin(BeanAnnotationPlugin.INSTANCE);
       addAnnotationPlugin(AliasesAnnotationPlugin.INSTANCE);
       addAnnotationPlugin(DemandsAnnotationPlugin.INSTANCE);
       addAnnotationPlugin(DependsAnnotationPlugin.INSTANCE);

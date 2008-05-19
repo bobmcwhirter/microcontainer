@@ -43,6 +43,7 @@ public class BasicBeanMetaDataAnnotationAdapter extends AbstractMetaDataAnnotati
       adapters = new CopyOnWriteArraySet<Annotation2ValueMetaDataAdapter<? extends Annotation>>();
 
       // class
+      addAnnotationPlugin(BeanAnnotationPlugin.INSTANCE);
       addAnnotationPlugin(AliasMetaDataAnnotationPlugin.INSTANCE);
       addAnnotationPlugin(DemandsAnnotationPlugin.INSTANCE);
       addAnnotationPlugin(DependsAnnotationPlugin.INSTANCE);

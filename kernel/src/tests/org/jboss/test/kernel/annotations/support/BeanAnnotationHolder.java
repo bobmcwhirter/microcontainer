@@ -19,35 +19,23 @@
 * Software Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA
 * 02110-1301 USA, or see the FSF site: http://www.fsf.org.
 */
-package org.jboss.test.kernel.annotations.test;
+package org.jboss.test.kernel.annotations.support;
 
-import junit.framework.Test;
-import junit.framework.TestSuite;
-import junit.textui.TestRunner;
+import org.jboss.beans.metadata.api.annotations.Bean;
+import org.jboss.beans.metadata.api.model.AutowireType;
+import org.jboss.beans.info.spi.BeanAccessMode;
+import org.jboss.dependency.spi.ControllerMode;
+import org.jboss.dependency.spi.ErrorHandlingMode;
 
 /**
- * Additional annotation features tests.
- *
  * @author <a href="mailto:ales.justin@jboss.com">Ales Justin</a>
  */
-public class AnnotationSupportTestSuite extends TestSuite
+@Bean(
+      autowireType = AutowireType.CONSTRUCTOR,
+      mode = ControllerMode.ASYNCHRONOUS,
+      errorHandlingMode = ErrorHandlingMode.MANUAL,
+      accessMode = BeanAccessMode.ALL
+)
+public class BeanAnnotationHolder
 {
-   public static void main(String[] args)
-   {
-      TestRunner.run(suite());
-   }
-
-   public static Test suite()
-   {
-      TestSuite suite = new TestSuite("Annotation Support Tests");
-
-      suite.addTest(FactoryMethodTestCase.suite());
-      suite.addTest(FactoryMethodXMLTestCase.suite());
-      suite.addTest(FactoryMethodBadTestCase.suite());
-      suite.addTest(CleanupAnnotationTestCase.suite());
-      suite.addTest(AfterInstantiateAnnotationsTestCase.suite());
-      suite.addTest(BeanAnnotationTestCase.suite());
-
-      return suite;
-   }
 }
