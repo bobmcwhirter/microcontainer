@@ -34,6 +34,8 @@ import org.jboss.beans.metadata.spi.MetaDataVisitorNode;
 import org.jboss.beans.metadata.spi.PropertyMetaData;
 import org.jboss.beans.metadata.spi.ValueMetaData;
 import org.jboss.reflect.spi.AnnotatedInfo;
+import org.jboss.reflect.spi.ParameterInfo;
+import org.jboss.reflect.spi.TypeInfo;
 
 /**
  * Injectable member annotation plugin.
@@ -153,6 +155,44 @@ public abstract class InjectableMemberAnnotationPlugin<T extends AnnotatedInfo, 
    /**
     * Create value meta data.
     *
+    * @param parameterInfo the parameter ifo
+    * @param annotation the annotation
+    * @param previousValue previous value
+    * @return value meta data
+    */
+   public ValueMetaData createValueMetaData(ParameterInfo parameterInfo, C annotation, ValueMetaData previousValue)
+   {
+      return createValueMetaData(parameterInfo.getParameterType(), annotation, previousValue);
+   }
+
+   /**
+    * Create value metadata.
+    *
+    * @param type the type info
+    * @param annotation the annotation
+    * @param previousValue the previous value
+    * @return value metadata instance
+    */
+   protected ValueMetaData createValueMetaData(TypeInfo type, C annotation, ValueMetaData previousValue)
+   {
+      return createValueMetaData(type, annotation);
+   }
+
+   /**
+    * Create value metadata.
+    *
+    * @param type the type info
+    * @param annotation the annotation
+    * @return value metadata instance
+    */
+   protected ValueMetaData createValueMetaData(TypeInfo type, C annotation)
+   {
+      return createValueMetaData(annotation, null);
+   }
+
+   /**
+    * Create value meta data.
+    *
     * @param info the info
     * @param annotation the annotation
     * @return value metadata
@@ -169,7 +209,7 @@ public abstract class InjectableMemberAnnotationPlugin<T extends AnnotatedInfo, 
     * @param previousValue previous value
     * @return value meta data
     */
-   public ValueMetaData createValueMetaData(C annotation, ValueMetaData previousValue)
+   protected ValueMetaData createValueMetaData(C annotation, ValueMetaData previousValue)
    {
       return createValueMetaData(annotation);
    }

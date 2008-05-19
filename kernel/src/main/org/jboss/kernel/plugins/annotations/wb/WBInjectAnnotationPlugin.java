@@ -22,15 +22,16 @@
 package org.jboss.kernel.plugins.annotations.wb;
 
 import java.lang.annotation.Annotation;
+import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
-import java.util.ArrayList;
 
 import org.jboss.beans.info.spi.PropertyInfo;
 import org.jboss.beans.metadata.api.annotations.Inject;
 import org.jboss.beans.metadata.spi.ValueMetaData;
 import org.jboss.kernel.plugins.annotations.PropertyAnnotationPlugin;
+import org.jboss.reflect.spi.ParameterInfo;
 
 /**
  * Web beans kind of inject.
@@ -50,14 +51,31 @@ public class WBInjectAnnotationPlugin extends PropertyAnnotationPlugin<Inject>
    @SuppressWarnings("deprecation")
    protected ValueMetaData createValueMetaData(PropertyInfo info, Inject inject)
    {
+      return createValueMetaData(info.getType().getType(), info.getUnderlyingAnnotations());
+   }
+
+   @SuppressWarnings("deprecation")
+   public ValueMetaData createValueMetaData(ParameterInfo info, Inject inject, ValueMetaData previousValue)
+   {
+      return createValueMetaData(info.getParameterType().getType(), info.getUnderlyingAnnotations());
+   }
+
+   /**
+    * Create wb injection value.
+    *
+    * @param type the matching type
+    * @param underlyingAnnotations underlying annotations
+    * @return injection value metadata
+    */
+   private ValueMetaData createValueMetaData(Class<?> type, Annotation[] underlyingAnnotations)
+   {
       List<Annotation> annotations = new ArrayList<Annotation>();
-      Annotation[] underlyingAnnotations = info.getUnderlyingAnnotations();
       for (Annotation annotation : underlyingAnnotations)
       {
          if (excludedAnnotations.contains(annotation.annotationType()) == false)
             annotations.add(annotation);
       }
-      return new WBInjectionValueMetaData(info.getType().getType(), annotations.toArray(new Annotation[annotations.size()]));
+      return new WBInjectionValueMetaData(type, annotations.toArray(new Annotation[annotations.size()]));
    }
 
    /**

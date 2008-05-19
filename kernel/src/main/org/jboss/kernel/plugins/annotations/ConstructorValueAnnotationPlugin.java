@@ -31,8 +31,10 @@ import org.jboss.beans.metadata.spi.BeanMetaData;
 import org.jboss.beans.metadata.spi.MetaDataVisitorNode;
 import org.jboss.beans.metadata.spi.ValueMetaData;
 import org.jboss.kernel.spi.dependency.KernelControllerContext;
-import org.jboss.reflect.spi.ClassInfo;
 import org.jboss.metadata.spi.MetaData;
+import org.jboss.reflect.spi.ClassInfo;
+import org.jboss.reflect.spi.ParameterInfo;
+import org.jboss.reflect.spi.TypeInfo;
 
 /**
  * Constructor value annotation plugin.
@@ -65,6 +67,43 @@ public abstract class ConstructorValueAnnotationPlugin<C extends Annotation> ext
       return Collections.singletonList(constructor);
    }
 
+   public ValueMetaData createValueMetaData(ParameterInfo parameterInfo, C annotation, ValueMetaData previousValue)
+   {
+      return createValueMetaData(parameterInfo.getParameterType(), annotation, previousValue);
+   }
+
+   /**
+    * Create value metadata.
+    *
+    * @param type the type info
+    * @param annotation the annotation
+    * @param previousValue the previous value
+    * @return value metadata instance
+    */
+   public ValueMetaData createValueMetaData(TypeInfo type, C annotation, ValueMetaData previousValue)
+   {
+      return createValueMetaData(type, annotation);
+   }
+
+   /**
+    * Create value metadata.
+    *
+    * @param type the type info
+    * @param annotation the annotation
+    * @return value metadata instance
+    */
+   public ValueMetaData createValueMetaData(TypeInfo type, C annotation)
+   {
+      return createValueMetaData(annotation, null);
+   }
+
+   /**
+    * Create value metadata.
+    *
+    * @param annotation the annotation
+    * @param previousValue the previous value
+    * @return value metadata instance
+    */
    public ValueMetaData createValueMetaData(C annotation, ValueMetaData previousValue)
    {
       return createValueMetaData(annotation);

@@ -166,7 +166,7 @@ public abstract class AbstractParameterAnnotationPlugin<T extends AnnotatedInfo,
                Annotation adapterAnnotation = mdr.getAnnotation(adapter.getAnnotation());
                if (adapterAnnotation != null)
                {
-                  value = adapter.createValueMetaData(adapterAnnotation, value);
+                  value = adapter.createValueMetaData(pi, adapterAnnotation, value);
                }
             }
             if (value == null)

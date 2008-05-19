@@ -24,6 +24,7 @@ package org.jboss.kernel.plugins.annotations;
 import java.lang.annotation.Annotation;
 
 import org.jboss.beans.metadata.spi.ValueMetaData;
+import org.jboss.reflect.spi.ParameterInfo;
 
 /**
  * Create ValueMetaData from Annotation.
@@ -43,9 +44,10 @@ public interface Annotation2ValueMetaDataAdapter<C extends Annotation>
    /**
     * Create ValueMetaData instance.
     *
+    * @param parameterInfo the parameter info
     * @param annotation the annotation instance
     * @param previousValue previous value
     * @return new ValueMetaData instance
     */
-   ValueMetaData createValueMetaData(C annotation, ValueMetaData previousValue);
+   ValueMetaData createValueMetaData(ParameterInfo parameterInfo, C annotation, ValueMetaData previousValue);
 }
