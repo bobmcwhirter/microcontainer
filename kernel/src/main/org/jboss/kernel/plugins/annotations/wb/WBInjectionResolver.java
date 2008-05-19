@@ -23,11 +23,14 @@ package org.jboss.kernel.plugins.annotations.wb;
 
 import java.lang.annotation.Annotation;
 import java.util.HashSet;
+import java.util.Map;
 import java.util.Set;
+import java.util.WeakHashMap;
 
 import org.jboss.dependency.spi.ControllerState;
 import org.jboss.kernel.spi.dependency.KernelController;
 import org.jboss.kernel.spi.dependency.KernelControllerContext;
+import org.jboss.logging.Logger;
 import org.jboss.metadata.spi.MetaData;
 
 /**
@@ -37,6 +40,12 @@ import org.jboss.metadata.spi.MetaData;
  */
 public class WBInjectionResolver
 {
+   /** The log */
+   private static Logger log = Logger.getLogger(WBInjectionResolver.class);
+
+   /** The cache */
+   private static Map<Class<?>, Map<KernelControllerContext, Boolean>> cache = new WeakHashMap<Class<?>, Map<KernelControllerContext, Boolean>>();
+
    /**
     * Find matching controller context.
     *
@@ -57,26 +66,47 @@ public class WBInjectionResolver
       Set<KernelControllerContext> contexts = controller.getContexts(type, ControllerState.INSTALLED);
       if (contexts != null && contexts.isEmpty() == false)
       {
+         Map<KernelControllerContext, Boolean> cachedResults = cache.get(type);
+         if (cachedResults == null)
+         {
+            cachedResults = new WeakHashMap<KernelControllerContext, Boolean>();
+            cache.put(type, cachedResults);
+         }
+
          Set<KernelControllerContext> matchingContexts = new HashSet<KernelControllerContext>();
          for(KernelControllerContext context : contexts)
          {
-            boolean match = true;
-            MetaData metaData = context.getScopeInfo().getMetaData();
-            for(Annotation annotation : annotations)
+            Boolean match = cachedResults.get(context);
+            if (match == null)
             {
-               Annotation mdAnnotation = metaData.getAnnotation(annotation.annotationType());
-               if (mdAnnotation == null)
+               match = true;
+               MetaData metaData = context.getScopeInfo().getMetaData();
+               for(Annotation annotation : annotations)
                {
-                  match = false;
-                  break;
+                  Annotation mdAnnotation = metaData.getAnnotation(annotation.annotationType());
+                  if (mdAnnotation == null)
+                  {
+                     match = false;
+                     break;
+                  }
                }
             }
+
             if (match)
                matchingContexts.add(context);
+
+            cachedResults.put(context, match);
          }
          int size = matchingContexts.size();
-         if (size != 1)
+         if (size == 0)
             return null;
+         else if (size > 1)
+         {
+            if (log.isTraceEnabled())
+               log.trace("Too many matching contexts: " + matchingContexts);
+
+            return null;
+         }
          else
             return matchingContexts.iterator().next();
       }
