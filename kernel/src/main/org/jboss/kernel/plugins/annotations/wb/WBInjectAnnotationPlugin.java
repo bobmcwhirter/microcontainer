@@ -46,6 +46,10 @@ public class WBInjectAnnotationPlugin extends PropertyAnnotationPlugin<Inject>
    {
       super(Inject.class);
       addExcludedAnnotation(Inject.class);
+      // exclude jdk annotations
+      addExcludedAnnotation(SuppressWarnings.class);
+      addExcludedAnnotation(Deprecated.class);
+      addExcludedAnnotation(Override.class);
    }
 
    @SuppressWarnings("deprecation")
