@@ -27,7 +27,6 @@ import java.util.ListIterator;
 import java.util.concurrent.CopyOnWriteArrayList;
 
 import org.jboss.kernel.plugins.AbstractKernelObject;
-import org.jboss.kernel.spi.registry.KernelRegistry;
 import org.jboss.kernel.spi.registry.KernelRegistryEntry;
 import org.jboss.kernel.spi.registry.KernelRegistryEntryNotFoundException;
 import org.jboss.kernel.spi.registry.KernelRegistryPlugin;
@@ -40,7 +39,7 @@ import org.jboss.kernel.spi.registry.KernelRegistryPlugin;
  * @version $Revision$
  */
 @SuppressWarnings("deprecation")
-public abstract class AbstractKernelRegistry extends AbstractKernelObject implements KernelRegistry
+public abstract class AbstractKernelRegistry extends AbstractKernelObject implements org.jboss.kernel.spi.registry.KernelRegistry
 {
    /** The registry factories */
    protected List<KernelRegistryPlugin> factories = new CopyOnWriteArrayList<KernelRegistryPlugin>();

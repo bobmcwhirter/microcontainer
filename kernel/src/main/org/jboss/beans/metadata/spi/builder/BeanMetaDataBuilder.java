@@ -31,10 +31,12 @@ import org.jboss.beans.metadata.plugins.builder.BeanMetaDataBuilderFactory;
 import org.jboss.beans.metadata.spi.BeanMetaData;
 import org.jboss.beans.metadata.spi.ClassLoaderMetaData;
 import org.jboss.beans.metadata.spi.ValueMetaData;
+import org.jboss.beans.metadata.api.model.AutowireType;
 import org.jboss.beans.info.spi.BeanAccessMode;
 import org.jboss.dependency.spi.ControllerMode;
 import org.jboss.dependency.spi.ControllerState;
 import org.jboss.dependency.spi.Cardinality;
+import org.jboss.dependency.spi.ErrorHandlingMode;
 
 /**
  * BeanMetaDataBuilder contract.
@@ -173,6 +175,30 @@ public abstract class BeanMetaDataBuilder
     * @return the builder
     */
    public abstract BeanMetaDataBuilder setAccessMode(BeanAccessMode mode);
+
+   /**
+    * Set the error handling mode
+    *
+    * @param mode the error handling mode
+    * @return the builder
+    */
+   public abstract BeanMetaDataBuilder setErrorHandlingMode(ErrorHandlingMode mode);
+
+   /**
+    * Set the autowire type
+    *
+    * @param type the autowire type
+    * @return the builder
+    */
+   public abstract BeanMetaDataBuilder setAutowireType(AutowireType type);
+
+   /**
+    * Is bean autowire candidate.
+    *
+    * @param candidate the candidate flag
+    * @return the builder
+    */
+   public abstract BeanMetaDataBuilder setAutowireCandidate(boolean candidate);
 
    /**
     * Set that we don't want to use the deployment classloader

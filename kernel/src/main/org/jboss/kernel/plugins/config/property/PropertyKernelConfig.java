@@ -39,7 +39,6 @@ import org.jboss.kernel.spi.dependency.KernelController;
 import org.jboss.kernel.spi.event.KernelEventManager;
 import org.jboss.kernel.spi.metadata.KernelMetaDataRepository;
 import org.jboss.kernel.spi.registry.KernelBus;
-import org.jboss.kernel.spi.registry.KernelRegistry;
 
 /**
  * Kernel configuration using properties.
@@ -124,9 +123,9 @@ public class PropertyKernelConfig extends AbstractKernelConfig
       );
    }
    
-   public KernelRegistry createKernelRegistry() throws Throwable
+   public org.jboss.kernel.spi.registry.KernelRegistry createKernelRegistry() throws Throwable
    {
-      return (KernelRegistry) getImplementation(
+      return (org.jboss.kernel.spi.registry.KernelRegistry) getImplementation(
          KernelConstants.KERNEL_REGISTRY_PROPERTY,
          KernelConstants.KERNEL_REGISTRY_CLASS
       );

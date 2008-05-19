@@ -26,7 +26,6 @@ import org.jboss.beans.metadata.plugins.AbstractBeanMetaData;
 import org.jboss.kernel.Kernel;
 import org.jboss.kernel.plugins.dependency.AbstractKernelControllerContext;
 import org.jboss.kernel.spi.registry.KernelBus;
-import org.jboss.kernel.spi.registry.KernelRegistry;
 import org.jboss.kernel.spi.registry.KernelRegistryEntry;
 import org.jboss.kernel.spi.config.KernelConfigurator;
 import org.jboss.test.kernel.AbstractKernelTest;
@@ -54,7 +53,7 @@ public class BusTestCase extends AbstractKernelTest
    public void testSetAndGet() throws Throwable
    {
       Kernel kernel = bootstrap();
-      KernelRegistry registry = kernel.getRegistry();
+      org.jboss.kernel.spi.registry.KernelRegistry registry = kernel.getRegistry();
       KernelConfigurator configurator = kernel.getConfigurator();
       registry.registerEntry("Bus", makeContext(configurator, "Name1", new BusBean()));
       KernelBus bus = kernel.getBus();
@@ -68,7 +67,7 @@ public class BusTestCase extends AbstractKernelTest
    public void testInvoke() throws Throwable
    {
       Kernel kernel = bootstrap();
-      KernelRegistry registry = kernel.getRegistry();
+      org.jboss.kernel.spi.registry.KernelRegistry registry = kernel.getRegistry();
       KernelConfigurator configurator = kernel.getConfigurator();
       registry.registerEntry("Name1", makeContext(configurator, "Name1", "A string"));
       registry.registerEntry("Name2", makeContext(configurator, "Name2", "B string"));

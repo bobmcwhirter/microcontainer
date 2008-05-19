@@ -28,7 +28,6 @@ import junit.framework.Test;
 import org.jboss.kernel.Kernel;
 import org.jboss.kernel.spi.event.KernelEvent;
 import org.jboss.kernel.spi.event.KernelEventManager;
-import org.jboss.kernel.spi.registry.KernelRegistry;
 import org.jboss.kernel.spi.registry.KernelRegistryEntry;
 import org.jboss.kernel.spi.registry.KernelRegistryEntryNotFoundException;
 import org.jboss.test.kernel.AbstractKernelTest;
@@ -59,7 +58,7 @@ public class EventManagerTestCase extends AbstractKernelTest
    public void testSimpleFireEvent() throws Throwable
    {
       Kernel kernel = bootstrap();
-      KernelRegistry registry = kernel.getRegistry();
+      org.jboss.kernel.spi.registry.KernelRegistry registry = kernel.getRegistry();
       KernelEventManager eventManager = kernel.getEventManager();
       TestEmitter emitter = new TestEmitter();
       KernelRegistryEntry entry = makeEntry(emitter);
@@ -75,7 +74,7 @@ public class EventManagerTestCase extends AbstractKernelTest
    public void testDoubleFireEvent() throws Throwable
    {
       Kernel kernel = bootstrap();
-      KernelRegistry registry = kernel.getRegistry();
+      org.jboss.kernel.spi.registry.KernelRegistry registry = kernel.getRegistry();
       KernelEventManager eventManager = kernel.getEventManager();
       TestEmitter emitter = new TestEmitter();
       KernelRegistryEntry entry = makeEntry(emitter);
@@ -93,7 +92,7 @@ public class EventManagerTestCase extends AbstractKernelTest
    public void testFilter() throws Throwable
    {
       Kernel kernel = bootstrap();
-      KernelRegistry registry = kernel.getRegistry();
+      org.jboss.kernel.spi.registry.KernelRegistry registry = kernel.getRegistry();
       KernelEventManager eventManager = kernel.getEventManager();
       TestEmitter emitter = new TestEmitter();
       KernelRegistryEntry entry = makeEntry(emitter);
@@ -114,7 +113,7 @@ public class EventManagerTestCase extends AbstractKernelTest
    public void testHandback() throws Throwable
    {
       Kernel kernel = bootstrap();
-      KernelRegistry registry = kernel.getRegistry();
+      org.jboss.kernel.spi.registry.KernelRegistry registry = kernel.getRegistry();
       KernelEventManager eventManager = kernel.getEventManager();
       TestEmitter emitter = new TestEmitter();
       KernelRegistryEntry entry = makeEntry(emitter);
@@ -148,7 +147,7 @@ public class EventManagerTestCase extends AbstractKernelTest
    public void testNotAnEmitter() throws Throwable
    {
       Kernel kernel = bootstrap();
-      KernelRegistry registry = kernel.getRegistry();
+      org.jboss.kernel.spi.registry.KernelRegistry registry = kernel.getRegistry();
       KernelEventManager eventManager = kernel.getEventManager();
       Object notAnEmitter = new Object();
       KernelRegistryEntry entry = makeEntry(notAnEmitter);

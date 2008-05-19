@@ -27,7 +27,6 @@ import org.jboss.kernel.spi.event.KernelEventEmitter;
 import org.jboss.kernel.spi.event.KernelEventFilter;
 import org.jboss.kernel.spi.event.KernelEventListener;
 import org.jboss.kernel.spi.event.KernelEventManager;
-import org.jboss.kernel.spi.registry.KernelRegistry;
 import org.jboss.kernel.spi.registry.KernelRegistryEntry;
 
 /**
@@ -40,7 +39,7 @@ import org.jboss.kernel.spi.registry.KernelRegistryEntry;
 public class AbstractEventManager extends AbstractKernelObject implements KernelEventManager
 {
    /** The registry */
-   protected KernelRegistry registry;
+   protected org.jboss.kernel.spi.registry.KernelRegistry registry;
 
    /**
     * Create a new abstract kernel manager

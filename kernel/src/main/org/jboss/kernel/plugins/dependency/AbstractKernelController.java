@@ -42,7 +42,6 @@ import org.jboss.kernel.spi.dependency.KernelControllerContext;
 import org.jboss.kernel.spi.event.KernelEvent;
 import org.jboss.kernel.spi.event.KernelEventFilter;
 import org.jboss.kernel.spi.event.KernelEventListener;
-import org.jboss.kernel.spi.registry.KernelRegistry;
 import org.jboss.kernel.spi.registry.KernelRegistryEntry;
 import org.jboss.kernel.spi.registry.KernelRegistryPlugin;
 
@@ -149,7 +148,7 @@ public class AbstractKernelController extends ScopedController implements Kernel
          return context;
       if (state == null || ControllerState.INSTALLED.equals(state))
       {
-         KernelRegistry registry = kernel.getRegistry();
+         org.jboss.kernel.spi.registry.KernelRegistry registry = kernel.getRegistry();
          try
          {
             return registry.getEntry(name);

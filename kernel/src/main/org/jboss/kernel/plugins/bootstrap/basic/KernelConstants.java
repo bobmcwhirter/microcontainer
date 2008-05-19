@@ -28,7 +28,6 @@ import org.jboss.kernel.spi.dependency.KernelController;
 import org.jboss.kernel.spi.event.KernelEventManager;
 import org.jboss.kernel.spi.metadata.KernelMetaDataRepository;
 import org.jboss.kernel.spi.registry.KernelBus;
-import org.jboss.kernel.spi.registry.KernelRegistry;
 
 /**
  * Constants.<p>
@@ -95,7 +94,7 @@ public interface KernelConstants
    static final String KERNEL_REGISTRY_NAME = "jboss.kernel:service=KernelRegistry"; 
    
    /** The kernel registry property */
-   static final String KERNEL_REGISTRY_PROPERTY = KernelRegistry.class.getName(); 
+   static final String KERNEL_REGISTRY_PROPERTY = org.jboss.kernel.spi.registry.KernelRegistry.class.getName(); 
    
    /** The default kernel registry implementation */
    static final String KERNEL_REGISTRY_CLASS = "org.jboss.kernel.plugins.registry.basic.BasicKernelRegistry"; 

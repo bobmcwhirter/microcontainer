@@ -31,7 +31,6 @@ import org.jboss.kernel.spi.dependency.KernelController;
 import org.jboss.kernel.spi.event.KernelEventManager;
 import org.jboss.kernel.spi.metadata.KernelMetaDataRepository;
 import org.jboss.kernel.spi.registry.KernelBus;
-import org.jboss.kernel.spi.registry.KernelRegistry;
 import org.jboss.kernel.spi.registry.KernelRegistryEntry;
 
 /**
@@ -59,7 +58,7 @@ public class BasicKernelInitializer extends AbstractKernelInitializer
          log.trace("Using MetaDataRepository: " + metaDataRepository);
       kernel.setMetaDataRepository(metaDataRepository);
 
-      KernelRegistry registry = createKernelRegistry(kernel);
+      org.jboss.kernel.spi.registry.KernelRegistry registry = createKernelRegistry(kernel);
       if (trace)
          log.trace("Using Registry: " + registry);
       registry.setKernel(kernel);
@@ -156,7 +155,7 @@ public class BasicKernelInitializer extends AbstractKernelInitializer
     * @return the kernel registry
     * @throws Throwable for any error
     */
-   protected KernelRegistry createKernelRegistry(Kernel kernel) throws Throwable
+   protected org.jboss.kernel.spi.registry.KernelRegistry createKernelRegistry(Kernel kernel) throws Throwable
    {
       return kernel.getConfig().createKernelRegistry();
    }
@@ -197,7 +196,7 @@ public class BasicKernelInitializer extends AbstractKernelInitializer
    protected void register(Kernel kernel, Object name, Object object) throws Throwable
    {
       KernelRegistryEntry entry = createKernelRegistryEntry(kernel, object);
-      KernelRegistry registry = kernel.getRegistry();
+      org.jboss.kernel.spi.registry.KernelRegistry registry = kernel.getRegistry();
       registry.registerEntry(name, entry);
    }
    

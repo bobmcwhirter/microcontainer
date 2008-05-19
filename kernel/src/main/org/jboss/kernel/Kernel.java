@@ -27,7 +27,6 @@ import org.jboss.kernel.spi.dependency.KernelController;
 import org.jboss.kernel.spi.event.KernelEventManager;
 import org.jboss.kernel.spi.metadata.KernelMetaDataRepository;
 import org.jboss.kernel.spi.registry.KernelBus;
-import org.jboss.kernel.spi.registry.KernelRegistry;
 
 /**
  * The kernel.<p>
@@ -69,7 +68,7 @@ public class Kernel
    protected KernelMetaDataRepository metaDataRepository;
    
    /** The kernel registry */
-   protected KernelRegistry registry;
+   protected org.jboss.kernel.spi.registry.KernelRegistry registry;
 
    static
    {
@@ -241,7 +240,7 @@ public class Kernel
     * @return the kernel registry
     * @throws SecurityException if the you don't have KernelPermission('access')
     */
-   public KernelRegistry getRegistry()
+   public org.jboss.kernel.spi.registry.KernelRegistry getRegistry()
    {
       checkAccess();
       return registry;
@@ -253,7 +252,7 @@ public class Kernel
     * @param registry the kernel registry 
     * @throws SecurityException if the you don't have KernelPermission('configure')
     */
-   public void setRegistry(KernelRegistry registry)
+   public void setRegistry(org.jboss.kernel.spi.registry.KernelRegistry registry)
    {
       checkConfigure();
       this.registry = registry;

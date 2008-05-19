@@ -30,7 +30,6 @@ import org.jboss.kernel.spi.dependency.KernelController;
 import org.jboss.kernel.spi.event.KernelEventManager;
 import org.jboss.kernel.spi.metadata.KernelMetaDataRepository;
 import org.jboss.kernel.spi.registry.KernelBus;
-import org.jboss.kernel.spi.registry.KernelRegistry;
 import org.jboss.reflect.spi.ClassInfo;
 import org.jboss.reflect.spi.TypeInfo;
 
@@ -189,7 +188,7 @@ public interface KernelConfig extends KernelObject
     * @return the kernel registry
     * @throws Throwable for any error
     */
-   KernelRegistry createKernelRegistry() throws Throwable;
+   org.jboss.kernel.spi.registry.KernelRegistry createKernelRegistry() throws Throwable;
 
    /**
     * Create a meta data repository

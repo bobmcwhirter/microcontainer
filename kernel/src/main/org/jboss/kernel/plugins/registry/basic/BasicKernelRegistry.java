@@ -33,6 +33,7 @@ import org.jboss.kernel.spi.registry.KernelRegistryPlugin;
  * @author <a href="adrian@jboss.com">Adrian Brock</a>
  * @version $Revision$
  */
+@SuppressWarnings("deprecation")
 public class BasicKernelRegistry extends AbstractKernelRegistry
 {
    /** The default registry factory */
@@ -63,7 +64,7 @@ public class BasicKernelRegistry extends AbstractKernelRegistry
       
       if (hasListeners())
       {
-         KernelEvent event = createEvent(KERNEL_REGISTRY_REGISTERED, name);
+         KernelEvent event = createEvent(org.jboss.kernel.spi.registry.KernelRegistry.KERNEL_REGISTRY_REGISTERED, name);
          fireKernelEvent(event);
       }
    }
@@ -83,7 +84,7 @@ public class BasicKernelRegistry extends AbstractKernelRegistry
 
       if (hasListeners())
       {
-         KernelEvent event = createEvent(KERNEL_REGISTRY_UNREGISTERED, name);
+         KernelEvent event = createEvent(org.jboss.kernel.spi.registry.KernelRegistry.KERNEL_REGISTRY_UNREGISTERED, name);
          fireKernelEvent(event);
       }
       

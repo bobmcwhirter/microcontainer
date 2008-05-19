@@ -58,9 +58,11 @@ import org.jboss.beans.metadata.spi.ValueMetaData;
 import org.jboss.beans.metadata.spi.AnnotationMetaData;
 import org.jboss.beans.metadata.spi.builder.BeanMetaDataBuilder;
 import org.jboss.beans.metadata.spi.builder.ParameterMetaDataBuilder;
+import org.jboss.beans.metadata.api.model.AutowireType;
 import org.jboss.dependency.spi.Cardinality;
 import org.jboss.dependency.spi.ControllerMode;
 import org.jboss.dependency.spi.ControllerState;
+import org.jboss.dependency.spi.ErrorHandlingMode;
 
 /**
  * Helper class.
@@ -378,6 +380,24 @@ class BeanMetaDataBuilderImpl extends BeanMetaDataBuilder
    {
       beanMetaData.setAccessMode(mode);
       return this;
+   }
+
+   public BeanMetaDataBuilder setErrorHandlingMode(ErrorHandlingMode mode)
+   {
+      beanMetaData.setErrorHandlingMode(mode);
+      return this;
+   }
+
+   public BeanMetaDataBuilder setAutowireType(AutowireType type)
+   {
+      beanMetaData.setAutowireType(type);
+      return this;
+   }
+
+   public BeanMetaDataBuilder setAutowireCandidate(boolean candidate)
+   {
+      beanMetaData.setAutowireCandidate(candidate);
+      return null;
    }
 
    /**

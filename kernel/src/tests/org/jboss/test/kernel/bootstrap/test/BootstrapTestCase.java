@@ -33,7 +33,6 @@ import org.jboss.kernel.spi.dependency.KernelController;
 import org.jboss.kernel.spi.event.KernelEventManager;
 import org.jboss.kernel.spi.metadata.KernelMetaDataRepository;
 import org.jboss.kernel.spi.registry.KernelBus;
-import org.jboss.kernel.spi.registry.KernelRegistry;
 import org.jboss.kernel.spi.registry.KernelRegistryEntry;
 import org.jboss.test.AbstractTestCaseWithSetup;
 import org.jboss.test.AbstractTestDelegate;
@@ -79,7 +78,7 @@ public class BootstrapTestCase extends AbstractTestCaseWithSetup
       getLog().debug("Got kernel: " + kernel);
       assertNotNull(kernel);
       
-      KernelRegistry registry = kernel.getRegistry();
+      org.jboss.kernel.spi.registry.KernelRegistry registry = kernel.getRegistry();
       assertNotNull(registry);
 
       check("Kernel", registry, kernel, KernelConstants.KERNEL_NAME, Kernel.class.getName());
@@ -105,7 +104,7 @@ public class BootstrapTestCase extends AbstractTestCaseWithSetup
       check("KernelMetaDataRepository", registry, metaDataRepository, KernelConstants.KERNEL_METADATA_REPOSITORY_NAME, KernelConstants.KERNEL_METADATA_REPOSITORY_CLASS);
    }
 
-   protected void check(String context, KernelRegistry registry, Object object, Object name, String className) throws Exception
+   protected void check(String context, org.jboss.kernel.spi.registry.KernelRegistry registry, Object object, Object name, String className) throws Exception
    {
       getLog().debug("Checking " + context + ": " + object);
 

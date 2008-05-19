@@ -23,7 +23,6 @@ package org.jboss.test.kernel.registry.test;
 
 import junit.framework.Test;
 
-import org.jboss.kernel.spi.registry.KernelRegistry;
 import org.jboss.kernel.spi.registry.KernelRegistryEntry;
 import org.jboss.kernel.spi.registry.KernelRegistryEntryAlreadyRegisteredException;
 import org.jboss.kernel.spi.registry.KernelRegistryEntryNotFoundException;
@@ -50,13 +49,13 @@ public class RegistryTestCase extends AbstractKernelTest
 
    public void testGotRegistry() throws Throwable
    {
-      KernelRegistry registry = bootstrap().getRegistry();
+      org.jboss.kernel.spi.registry.KernelRegistry registry = bootstrap().getRegistry();
       assertNotNull(registry);
    }
 
    public void testRegister() throws Throwable
    {
-      KernelRegistry registry = bootstrap().getRegistry();
+      org.jboss.kernel.spi.registry.KernelRegistry registry = bootstrap().getRegistry();
       KernelRegistryEntry test1 = makeEntry(new Object());
       registry.registerEntry("Name1", test1);
       assertEqualsRegistryTarget(test1, registry.getEntry("Name1"));
@@ -64,7 +63,7 @@ public class RegistryTestCase extends AbstractKernelTest
 
    public void testDuplicateRegisterError() throws Throwable
    {
-      KernelRegistry registry = bootstrap().getRegistry();
+      org.jboss.kernel.spi.registry.KernelRegistry registry = bootstrap().getRegistry();
       KernelRegistryEntry test1 = makeEntry(new Object());
       registry.registerEntry("Name1", test1);
       KernelRegistryEntry test2 = makeEntry(new Object());
@@ -82,7 +81,7 @@ public class RegistryTestCase extends AbstractKernelTest
 
    public void testRegisterTwice() throws Throwable
    {
-      KernelRegistry registry = bootstrap().getRegistry();
+      org.jboss.kernel.spi.registry.KernelRegistry registry = bootstrap().getRegistry();
       Object object = new Object();
       KernelRegistryEntry test1 = makeEntry(object);
       registry.registerEntry("Name1", test1);
@@ -93,7 +92,7 @@ public class RegistryTestCase extends AbstractKernelTest
 
    public void testUnregister() throws Throwable
    {
-      KernelRegistry registry = bootstrap().getRegistry();
+      org.jboss.kernel.spi.registry.KernelRegistry registry = bootstrap().getRegistry();
       try
       {
          registry.getEntry("Name1");
@@ -139,7 +138,7 @@ public class RegistryTestCase extends AbstractKernelTest
 
    public void testNull() throws Throwable
    {
-      KernelRegistry registry = bootstrap().getRegistry();
+      org.jboss.kernel.spi.registry.KernelRegistry registry = bootstrap().getRegistry();
       try
       {
          registry.getEntry(null);

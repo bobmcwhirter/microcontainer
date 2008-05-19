@@ -229,7 +229,7 @@ public class ScopedKernelController extends AbstractKernelController
       }
    }
 
-   // KernelRegistry plugin method
+   // org.jboss.kernel.spi.registry.KernelRegistry plugin method
 
    public KernelRegistryEntry getEntry(Object name)
    {

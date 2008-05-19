@@ -37,9 +37,11 @@ import org.jboss.beans.metadata.spi.BeanMetaData;
 import org.jboss.beans.metadata.spi.CallbackMetaData;
 import org.jboss.beans.metadata.spi.ValueMetaData;
 import org.jboss.beans.metadata.spi.builder.BeanMetaDataBuilder;
+import org.jboss.beans.metadata.api.model.AutowireType;
 import org.jboss.dependency.spi.Cardinality;
 import org.jboss.dependency.spi.ControllerContext;
 import org.jboss.dependency.spi.ControllerState;
+import org.jboss.dependency.spi.ErrorHandlingMode;
 import org.jboss.kernel.Kernel;
 import org.jboss.kernel.plugins.deployment.AbstractKernelDeployer;
 import org.jboss.kernel.plugins.deployment.AbstractKernelDeployment;
@@ -799,5 +801,18 @@ public class BeanMetaDataBuilderTestCase extends AbstractKernelConfigTest
       {
          controller.shutdown();
       }
+   }
+
+   public void testNewEnums() throws Throwable
+   {
+      BeanMetaDataBuilder builder = BeanMetaDataBuilder.createBuilder(Object.class.getName());
+      builder.setErrorHandlingMode(ErrorHandlingMode.MANUAL);
+      builder.setAutowireType(AutowireType.CONSTRUCTOR);
+      builder.setAutowireCandidate(false);
+
+      BeanMetaData bmd = builder.getBeanMetaData();
+      assertEquals(ErrorHandlingMode.MANUAL, bmd.getErrorHandlingMode());
+      assertEquals(AutowireType.CONSTRUCTOR, bmd.getAutowireType());
+      assertFalse(bmd.isAutowireCandidate());
    }
 }

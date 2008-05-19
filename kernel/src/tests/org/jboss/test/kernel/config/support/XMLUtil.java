@@ -26,7 +26,6 @@ import java.net.URL;
 import org.jboss.kernel.Kernel;
 import org.jboss.kernel.plugins.deployment.xml.BasicXMLDeployer;
 import org.jboss.kernel.spi.deployment.KernelDeployment;
-import org.jboss.kernel.spi.registry.KernelRegistry;
 import org.jboss.kernel.spi.registry.KernelRegistryEntry;
 import org.jboss.test.kernel.AbstractKernelTest;
 import org.jboss.util.Classes;
@@ -118,7 +117,7 @@ public class XMLUtil
     */
    public Object getBean(String name) throws Throwable
    {
-      KernelRegistry registry = kernel.getRegistry();
+      org.jboss.kernel.spi.registry.KernelRegistry registry = kernel.getRegistry();
       KernelRegistryEntry entry = registry.getEntry(name);
       return entry.getTarget();
    }

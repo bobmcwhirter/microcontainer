@@ -28,7 +28,6 @@ import org.jboss.guice.spi.GuiceIntegration;
 import org.jboss.kernel.Kernel;
 import org.jboss.kernel.spi.event.KernelEvent;
 import org.jboss.kernel.spi.event.KernelEventListener;
-import org.jboss.kernel.spi.registry.KernelRegistry;
 import org.jboss.kernel.spi.registry.KernelRegistryEntry;
 
 /**
@@ -45,7 +44,7 @@ public class GuiceListener extends GuiceIntegration implements KernelEventListen
       SourceProviders.skip(GuiceListener.class);
    }
 
-   private KernelRegistry registry;
+   private org.jboss.kernel.spi.registry.KernelRegistry registry;
    private ControllerContextBindFilter filter;
 
    public GuiceListener(Kernel kernel, Binder binder)
@@ -68,18 +67,18 @@ public class GuiceListener extends GuiceIntegration implements KernelEventListen
    {
       Object name = event.getContext();
       String type = event.getType();
-      if (KernelRegistry.KERNEL_REGISTRY_REGISTERED.equals(type))
+      if (org.jboss.kernel.spi.registry.KernelRegistry.KERNEL_REGISTRY_REGISTERED.equals(type))
       {
          Object source = event.getSource();
-         if (source instanceof KernelRegistry)
+         if (source instanceof org.jboss.kernel.spi.registry.KernelRegistry)
          {
-            KernelRegistry registry = (KernelRegistry)source;
+            org.jboss.kernel.spi.registry.KernelRegistry registry = (org.jboss.kernel.spi.registry.KernelRegistry)source;
             KernelRegistryEntry entry = registry.getEntry(name);
             if (filter == null || filter.bind(entry))
                bindContext(getBinder(), getController(), entry);
          }
       }
-      else if (KernelRegistry.KERNEL_REGISTRY_UNREGISTERED.equals(type))
+      else if (org.jboss.kernel.spi.registry.KernelRegistry.KERNEL_REGISTRY_UNREGISTERED.equals(type))
       {
          // todo - can we unbind from binder?
       }

@@ -28,7 +28,6 @@ import org.jboss.kernel.spi.dependency.InstallKernelControllerContextAware;
 import org.jboss.kernel.spi.dependency.KernelController;
 import org.jboss.kernel.spi.dependency.KernelControllerContext;
 import org.jboss.kernel.spi.dependency.KernelControllerContextAware;
-import org.jboss.kernel.spi.registry.KernelRegistry;
 
 /**
  * InstallAction.
@@ -43,7 +42,7 @@ public class InstallAction extends InstallsAwareAction
    {
       KernelController controller = (KernelController) context.getController();
       Kernel kernel = controller.getKernel();
-      KernelRegistry registry = kernel.getRegistry();
+      org.jboss.kernel.spi.registry.KernelRegistry registry = kernel.getRegistry();
 
       BeanMetaData metaData = context.getBeanMetaData();
       Object name = metaData.getName();
@@ -75,7 +74,7 @@ public class InstallAction extends InstallsAwareAction
    {
       KernelController controller = (KernelController) context.getController();
       Kernel kernel = controller.getKernel();
-      KernelRegistry registry = kernel.getRegistry();
+      org.jboss.kernel.spi.registry.KernelRegistry registry = kernel.getRegistry();
       Object name = context.getName();
 
       try

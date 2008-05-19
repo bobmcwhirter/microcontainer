@@ -23,7 +23,6 @@ package org.jboss.test.kernel.registry.test;
 
 import junit.framework.Test;
 
-import org.jboss.kernel.spi.registry.KernelRegistry;
 import org.jboss.kernel.spi.registry.KernelRegistryEntry;
 import org.jboss.kernel.spi.registry.KernelRegistryEntryNotFoundException;
 import org.jboss.test.kernel.AbstractKernelTest;
@@ -35,6 +34,7 @@ import org.jboss.test.kernel.registry.support.SimpleRegistryFactory;
  * @author <a href="adrian@jboss.com">Adrian Brock</a>
  * @version $Revision$
  */
+@SuppressWarnings("deprecation")
 public class RegistryFactoryTestCase extends AbstractKernelTest
 {
    public static Test suite()
@@ -50,7 +50,7 @@ public class RegistryFactoryTestCase extends AbstractKernelTest
    @SuppressWarnings("deprecation")
    public void testAddRegistryFactory() throws Throwable
    {
-      KernelRegistry registry = bootstrap().getRegistry();
+      org.jboss.kernel.spi.registry.KernelRegistry registry = bootstrap().getRegistry();
 
       SimpleRegistryFactory factory = new SimpleRegistryFactory();
       Object testObject = new Object();
@@ -67,7 +67,7 @@ public class RegistryFactoryTestCase extends AbstractKernelTest
 
    public void testRemoveRegistryFactory() throws Throwable
    {
-      KernelRegistry registry = bootstrap().getRegistry();
+      org.jboss.kernel.spi.registry.KernelRegistry registry = bootstrap().getRegistry();
 
       SimpleRegistryFactory factory = new SimpleRegistryFactory();
       Object testObject = new Object();
@@ -89,7 +89,7 @@ public class RegistryFactoryTestCase extends AbstractKernelTest
 
    public void testAddRemoveAddRegistryFactory() throws Throwable
    {
-      KernelRegistry registry = bootstrap().getRegistry();
+      org.jboss.kernel.spi.registry.KernelRegistry registry = bootstrap().getRegistry();
 
       SimpleRegistryFactory factory = new SimpleRegistryFactory();
       Object testObject = new Object();
@@ -108,7 +108,7 @@ public class RegistryFactoryTestCase extends AbstractKernelTest
 
    public void testDuplicateRegistryFactory() throws Throwable
    {
-      KernelRegistry registry = bootstrap().getRegistry();
+      org.jboss.kernel.spi.registry.KernelRegistry registry = bootstrap().getRegistry();
 
       SimpleRegistryFactory factory1 = new SimpleRegistryFactory();
       Object testObject1 = new Object();
