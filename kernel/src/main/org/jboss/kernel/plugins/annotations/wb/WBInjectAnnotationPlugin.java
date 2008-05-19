@@ -76,10 +76,21 @@ public class WBInjectAnnotationPlugin extends PropertyAnnotationPlugin<Inject>
       List<Annotation> annotations = new ArrayList<Annotation>();
       for (Annotation annotation : underlyingAnnotations)
       {
-         if (excludedAnnotations.contains(annotation.annotationType()) == false)
+         if (isFilterAnnotation(annotation))
             annotations.add(annotation);
       }
       return new WBInjectionValueMetaData(type, annotations.toArray(new Annotation[annotations.size()]));
+   }
+
+   /**
+    * Is this 'filter' candidate annotation.
+    *
+    * @param annotation the annotation
+    * @return true if we should include this in filter annotations
+    */
+   protected boolean isFilterAnnotation(Annotation annotation)
+   {
+      return excludedAnnotations.contains(annotation.annotationType()) == false;
    }
 
    /**
