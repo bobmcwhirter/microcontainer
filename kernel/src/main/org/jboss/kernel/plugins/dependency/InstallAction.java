@@ -36,6 +36,7 @@ import org.jboss.kernel.spi.registry.KernelRegistry;
  * @author <a href="adrian@jboss.com">Adrian Brock</a>
  * @version $Revision$
  */
+@SuppressWarnings("deprecation")
 public class InstallAction extends InstallsAwareAction
 {
    protected void installActionInternal(KernelControllerContext context) throws Throwable

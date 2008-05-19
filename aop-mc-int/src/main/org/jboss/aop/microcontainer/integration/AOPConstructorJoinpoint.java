@@ -80,6 +80,7 @@ public class AOPConstructorJoinpoint extends BasicConstructorJoinPoint
       super(constructorInfo);
    }
 
+   @SuppressWarnings("deprecation")
    public Object dispatch() throws Throwable
    {
       Class<?> clazz = constructorInfo.getDeclaringClass().getType();

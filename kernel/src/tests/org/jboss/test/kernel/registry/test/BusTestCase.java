@@ -38,6 +38,7 @@ import org.jboss.test.kernel.registry.support.BusBean;
  * @author <a href="adrian@jboss.com">Adrian Brock</a>
  * @version $Revision$
  */
+@SuppressWarnings("deprecation")
 public class BusTestCase extends AbstractKernelTest
 {
    public static Test suite()

@@ -47,6 +47,7 @@ public class RegistryFactoryTestCase extends AbstractKernelTest
       super(name);
    }
 
+   @SuppressWarnings("deprecation")
    public void testAddRegistryFactory() throws Throwable
    {
       KernelRegistry registry = bootstrap().getRegistry();

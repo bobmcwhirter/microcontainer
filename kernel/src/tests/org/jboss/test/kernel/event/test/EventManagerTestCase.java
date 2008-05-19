@@ -43,6 +43,7 @@ import org.jboss.test.kernel.event.support.TestListener;
  * @author <a href="adrian@jboss.com">Adrian Brock</a>
  * @version $Revision$
  */
+@SuppressWarnings("deprecation")
 public class EventManagerTestCase extends AbstractKernelTest
 {
    public static Test suite()

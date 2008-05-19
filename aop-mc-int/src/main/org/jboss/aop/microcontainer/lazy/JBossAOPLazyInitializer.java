@@ -40,6 +40,7 @@ import org.jboss.metadata.spi.stack.MetaDataStack;
  */
 public class JBossAOPLazyInitializer extends AbstractLazyInitializer
 {
+   @SuppressWarnings("deprecation")
    public Object initializeProxy(Kernel kernel, String bean, boolean exposeClass, Set<String> interfaces) throws Throwable
    {
       KernelControllerContext context = getKernelControllerContext(kernel, bean);

@@ -40,6 +40,7 @@ import org.jboss.kernel.spi.registry.KernelRegistryEntry;
  * @author <a href="adrian@jboss.com">Adrian Brock</a>
  * @version $Revision$
  */
+@SuppressWarnings("deprecation")
 public class BasicKernelInitializer extends AbstractKernelInitializer
 {
    /**

@@ -39,6 +39,7 @@ import org.jboss.kernel.spi.registry.KernelRegistryPlugin;
  * @author <a href="mailto:les.hazlewood@jboss.org">Les A. Hazlewood</a>
  * @version $Revision$
  */
+@SuppressWarnings("deprecation")
 public abstract class AbstractKernelRegistry extends AbstractKernelObject implements KernelRegistry
 {
    /** The registry factories */

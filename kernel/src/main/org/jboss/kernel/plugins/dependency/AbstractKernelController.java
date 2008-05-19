@@ -50,8 +50,10 @@ import org.jboss.kernel.spi.registry.KernelRegistryPlugin;
  * Abstract Kernel controller.
  * 
  * @author <a href="adrian@jboss.com">Adrian Brock</a>
+ * @author <a href="ales.justin@jboss.com">Ales Justin</a>
  * @version $Revision$
  */
+@SuppressWarnings("deprecation")
 public class AbstractKernelController extends ScopedController implements KernelController, KernelRegistryPlugin
 {
    /** The kernel */

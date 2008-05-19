@@ -92,8 +92,8 @@ public class JBossXBTestDelegate extends AbstractTestDelegate
    {
       try
       {
-         Method method = clazz.getMethod("initResolver", null);
-         defaultResolver = (SchemaBindingResolver) method.invoke(null, null);
+         Method method = clazz.getMethod("initResolver");
+         defaultResolver = (SchemaBindingResolver) method.invoke(null);
       }
       catch (NoSuchMethodException ignored)
       {

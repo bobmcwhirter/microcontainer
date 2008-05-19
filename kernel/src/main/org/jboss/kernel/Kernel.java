@@ -38,6 +38,7 @@ import org.jboss.kernel.spi.registry.KernelRegistry;
  * @author <a href="mailto:les.hazlewood@jboss.org">Les A. Hazlewood</a>
  * @version $Revision$
  */
+@SuppressWarnings("deprecation")
 public class Kernel
 {
    /** The permission required to access the kernel */

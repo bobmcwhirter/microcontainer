@@ -37,6 +37,7 @@ import org.jboss.kernel.spi.registry.KernelRegistryEntry;
  *
  * @author <a href="mailto:ales.justin@jboss.com">Ales Justin</a>
  */
+@SuppressWarnings("deprecation")
 public class GuiceListener extends GuiceIntegration implements KernelEventListener
 {
    static

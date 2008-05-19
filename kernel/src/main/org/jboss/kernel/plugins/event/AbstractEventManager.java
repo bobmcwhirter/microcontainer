@@ -36,6 +36,7 @@ import org.jboss.kernel.spi.registry.KernelRegistryEntry;
  * @author <a href="adrian@jboss.com">Adrian Brock</a>
  * @version $Revision$
  */
+@SuppressWarnings("deprecation")
 public class AbstractEventManager extends AbstractKernelObject implements KernelEventManager
 {
    /** The registry */

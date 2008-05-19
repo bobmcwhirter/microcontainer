@@ -136,8 +136,8 @@ public class BeanContainerUsageTestCase extends AbstractKernelTest
       KernelDeployment deployment = null;
       try
       {
-         Method getDeployment = getClass().getDeclaredMethod(testName, null);
-         deployment = (KernelDeployment) getDeployment.invoke(this, null);
+         Method getDeployment = getClass().getDeclaredMethod(testName);
+         deployment = (KernelDeployment) getDeployment.invoke(this);
       }
       catch(NoSuchMethodException e)
       {

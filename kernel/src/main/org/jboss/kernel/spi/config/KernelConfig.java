@@ -43,6 +43,7 @@ import org.jboss.reflect.spi.TypeInfo;
  * @author <a href="mailto:les.hazlewood@jboss.org">Les A. Hazlewood</a>
  * @version $Revision$
  */
+@SuppressWarnings("deprecation")
 public interface KernelConfig extends KernelObject
 {
    /**

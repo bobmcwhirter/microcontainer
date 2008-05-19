@@ -44,6 +44,7 @@ import org.jboss.test.AbstractTestDelegate;
  * @author <a href="adrian@jboss.com">Adrian Brock</a>
  * @version $Revision$
  */
+@SuppressWarnings("deprecation")
 public class BootstrapTestCase extends AbstractTestCaseWithSetup
 {
    public static Test suite()

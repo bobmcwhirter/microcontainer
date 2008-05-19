@@ -35,6 +35,7 @@ import org.jboss.test.kernel.AbstractKernelTest;
  * @author <a href="adrian@jboss.com">Adrian Brock</a>
  * @version $Revision$
  */
+@SuppressWarnings("deprecation")
 public class RegistryTestCase extends AbstractKernelTest
 {
    public static Test suite()

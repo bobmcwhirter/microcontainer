@@ -75,7 +75,7 @@ public class AOPDependencyBuilder extends AbstractDependencyBuilder
    private static final String DEPENDENCY_NAME_ATTRIBUTE = "name";
    private static final IntrospectionAnnotationHelper helper = new IntrospectionAnnotationHelper();
 
-   @SuppressWarnings("unchecked")
+   @SuppressWarnings({"unchecked", "deprecation"})
    @Override
    public List<DependencyBuilderListItem> getDependencies(BeanInfo beanInfo, MetaData metaData)
    {
