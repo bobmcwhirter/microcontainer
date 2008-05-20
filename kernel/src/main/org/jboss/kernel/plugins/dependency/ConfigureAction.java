@@ -103,7 +103,7 @@ public class ConfigureAction extends AbstractConfigureAction
    protected void dispatchSetProperty(KernelControllerContext context, PropertyMetaData property, boolean nullify, BeanInfo info, Object target, ClassLoader cl)
          throws Throwable
    {
-      ExecutionWrapper wrapper = new PropertyDispatchWrapper(property, nullify, info, target, cl);
+      ExecutionWrapper wrapper = new PropertyDispatchWrapper(context, property, nullify, info, target, cl);
       try
       {
           dispatchExecutionWrapper(context, wrapper);

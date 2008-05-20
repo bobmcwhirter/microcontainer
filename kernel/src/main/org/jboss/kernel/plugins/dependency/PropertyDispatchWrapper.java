@@ -23,12 +23,13 @@ package org.jboss.kernel.plugins.dependency;
 
 import java.security.PrivilegedExceptionAction;
 
-import org.jboss.logging.Logger;
-import org.jboss.beans.metadata.spi.PropertyMetaData;
-import org.jboss.beans.metadata.spi.ValueMetaData;
+import org.jboss.beans.info.plugins.BeanInfoUtil;
 import org.jboss.beans.info.spi.BeanInfo;
 import org.jboss.beans.info.spi.PropertyInfo;
-import org.jboss.beans.info.plugins.BeanInfoUtil;
+import org.jboss.beans.metadata.spi.PropertyMetaData;
+import org.jboss.beans.metadata.spi.ValueMetaData;
+import org.jboss.kernel.spi.dependency.KernelControllerContext;
+import org.jboss.logging.Logger;
 
 /**
  * PropertyDispatchWrapper.
@@ -39,14 +40,18 @@ class PropertyDispatchWrapper extends ExecutionWrapper
 {
    private static Logger log = Logger.getLogger(ConfigureAction.class);
 
+   private KernelControllerContext context;
    private PropertyMetaData property;
    private boolean nullify;
    private BeanInfo beanInfo;
    private Object target;
    private ClassLoader cl;
 
-   public PropertyDispatchWrapper(PropertyMetaData property, boolean nullify, BeanInfo beanInfo, Object target, ClassLoader cl)
+   public PropertyDispatchWrapper(KernelControllerContext context, PropertyMetaData property, boolean nullify, BeanInfo beanInfo, Object target, ClassLoader cl)
    {
+      if (context == null)
+         throw new IllegalArgumentException("Null context");
+      this.context = context;
       if (property == null)
          throw new IllegalArgumentException("Null property");
       this.property = property;
@@ -80,9 +85,27 @@ class PropertyDispatchWrapper extends ExecutionWrapper
          PropertyInfo propertyInfo = BeanInfoUtil.getPropertyInfo(beanInfo, target, name);
          ValueMetaData valueMetaData = property.getValue();
          Object value = valueMetaData.getValue(propertyInfo.getType(), cl);
+         validatePropertyValue(context, target, propertyInfo, value);
          beanInfo.setProperty(target, name, value);
       }
       return null;
+   }
+
+   /**
+    * Validate value injection.
+    * Use jsr303 constraints.
+    *
+    * @param context the owner context
+    * @param target the target
+    * @param pi the property info
+    * @param value the new value
+    * @throws Throwable for any error
+    */
+   protected void validatePropertyValue(KernelControllerContext context, Object target, PropertyInfo pi, Object value) throws Throwable
+   {
+      BeanValidatorBridge bridge = KernelControllerContextAction.getBeanValidatorBridge(context);
+      if (bridge != null)
+         bridge.validatePropertyValue(context, target, pi, value);
    }
 
    protected PrivilegedExceptionAction<Object> getAction()

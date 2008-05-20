@@ -41,12 +41,14 @@ import org.jboss.kernel.Kernel;
 import org.jboss.kernel.plugins.config.Configurator;
 import org.jboss.kernel.spi.dependency.KernelController;
 import org.jboss.kernel.spi.dependency.KernelControllerContext;
+import org.jboss.reflect.spi.MethodInfo;
 import org.jboss.util.JBossStringBuilder;
 
 /**
  * Controller context.
  *
  * @author <a href="adrian@jboss.com">Adrian Brock</a>
+ * @author <a href="ales.justin@jboss.com">Ales Justin</a>
  * @version $Revision$
  */
 public class AbstractKernelControllerContext extends AbstractControllerContext implements KernelControllerContext
@@ -273,6 +275,7 @@ public class AbstractKernelControllerContext extends AbstractControllerContext i
 
    public Object invoke(final String name, final Object[] parameters, final String[] signature) throws Throwable
    {
+      validateMethodValues(name, signature, parameters);
       return getInfo().invoke(getTarget(), name, signature, parameters);
    }
 
@@ -283,5 +286,24 @@ public class AbstractKernelControllerContext extends AbstractControllerContext i
       if (sm != null)
          sm.checkPermission(GET_CLASSLOADER_PERMISSION);
       return Configurator.getClassLoader(getBeanMetaData());
+   }
+
+   /**
+    * Validate method invocation.
+    * Use jsr303 constraints.
+    *
+    * @param name the method name
+    * @param signature the method signature
+    * @param paramaters the parameter values
+    * @throws Throwable for any error
+    */
+   protected void validateMethodValues(String name, String[] signature, Object[] paramaters) throws Throwable
+   {
+      BeanValidatorBridge bridge = KernelControllerContextAction.getBeanValidatorBridge(this);
+      if (bridge != null)
+      {
+         MethodInfo methodInfo = Configurator.findMethodInfo(getInfo().getClassInfo(), name, signature);
+         bridge.validateMethodValues(this, getTarget(), methodInfo, paramaters);
+      }
    }
 }

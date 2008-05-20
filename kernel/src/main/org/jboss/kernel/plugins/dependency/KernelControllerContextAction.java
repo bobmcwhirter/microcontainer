@@ -26,6 +26,7 @@ import java.security.PrivilegedExceptionAction;
 
 import org.jboss.beans.metadata.spi.BeanMetaData;
 import org.jboss.dependency.plugins.action.SimpleControllerContextAction;
+import org.jboss.dependency.spi.Controller;
 import org.jboss.dependency.spi.ControllerContext;
 import org.jboss.joinpoint.spi.Joinpoint;
 import org.jboss.kernel.plugins.config.Configurator;
@@ -244,5 +245,21 @@ public class KernelControllerContextAction extends SimpleControllerContextAction
       {
          return new DispatchJoinPoint(joinpoint);
       }
+   }
+
+   /**
+    * Get bean validator bridge.
+    *
+    * @param context the owner context
+    * @return bean validator bridge instance if exists, null otherwise
+    */
+   static BeanValidatorBridge getBeanValidatorBridge(KernelControllerContext context)
+   {
+      Controller controller = context.getController();
+      if (controller == null)
+         return null;
+
+      ControllerContext bridge = controller.getInstalledContext(BeanValidatorBridge.class);
+      return bridge != null ? BeanValidatorBridge.class.cast(bridge.getTarget()) : null;
    }
 }

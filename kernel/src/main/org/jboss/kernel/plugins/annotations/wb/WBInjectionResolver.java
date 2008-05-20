@@ -129,7 +129,7 @@ public class WBInjectionResolver
                for(Annotation annotation : annotations)
                {
                   Annotation mdAnnotation = metaData.getAnnotation(annotation.annotationType());
-                  if (mdAnnotation == null)
+                  if (mdAnnotation == null || annotation.equals(mdAnnotation) == false)
                   {
                      match = false;
                      break;

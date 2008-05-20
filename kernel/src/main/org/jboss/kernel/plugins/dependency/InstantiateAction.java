@@ -54,11 +54,17 @@ public class InstantiateAction extends AnnotationsAction
 
       BeanMetaData metaData = context.getBeanMetaData();
       BeanInfo info = context.getBeanInfo();
-      final Joinpoint joinPoint = configurator.getConstructorJoinPoint(info, metaData.getConstructor(), metaData);
+      Joinpoint joinPoint = configurator.getConstructorJoinPoint(info, metaData.getConstructor(), metaData);
 
+      BeanValidatorBridge bridge = getBeanValidatorBridge(context);
+      if (bridge != null)
+         bridge.validateConstructorValues(context, joinPoint);
       Object object = dispatchJoinPoint(context, joinPoint);
       if (object == null)
          throw new IllegalStateException("Instantiate joinpoint returned a null object: " + joinPoint);
+      if (bridge != null)
+         bridge.validateInstance(context, object);
+
       context.setTarget(object);
 
       try
