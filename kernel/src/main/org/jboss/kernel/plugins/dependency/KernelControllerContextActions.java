@@ -81,6 +81,7 @@ public class KernelControllerContextActions extends AbstractControllerContextAct
          Map<ControllerState, ControllerContextAction> actions = new HashMap<ControllerState, ControllerContextAction>();
          actions.put(ControllerState.PRE_INSTALL, new PreInstallAction());
          actions.put(ControllerState.DESCRIBED, new DescribeAction());
+         actions.put(ControllerState.INSTANTIATED, new AutowireAction());
          actions.put(ControllerState.CONFIGURED, new ConfigureAction());
          actions.put(ControllerState.CREATE, new CreateDestroyLifecycleAction());
          actions.put(ControllerState.START, new StartStopLifecycleAction());

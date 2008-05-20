@@ -105,14 +105,10 @@ public class InstantiateAction extends AnnotationsAction
    {
       try
       {
-         Object object = context.getTarget();
-         if (object != null)
-         {
-            KernelController controller = (KernelController) context.getController();
-            DependencyInfo dependencyInfo = context.getDependencyInfo();
-            if (dependencyInfo != null && dependencyInfo.isAutowireCandidate())
-               controller.removeInstantiatedContext(context);
-         }
+         KernelController controller = (KernelController)context.getController();
+         DependencyInfo dependencyInfo = context.getDependencyInfo();
+         if (dependencyInfo != null && dependencyInfo.isAutowireCandidate())
+            controller.removeInstantiatedContext(context);
       }
       catch (Throwable ignored)
       {
