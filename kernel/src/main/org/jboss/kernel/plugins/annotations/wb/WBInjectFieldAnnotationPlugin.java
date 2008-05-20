@@ -19,41 +19,30 @@
 * Software Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA
 * 02110-1301 USA, or see the FSF site: http://www.fsf.org.
 */
-package org.jboss.kernel.plugins.annotations;
+package org.jboss.kernel.plugins.annotations.wb;
 
-import java.lang.annotation.Annotation;
-import java.util.Set;
-
-import org.jboss.beans.metadata.plugins.AbstractBeanMetaData;
-import org.jboss.beans.metadata.plugins.AbstractLifecycleMetaData;
-import org.jboss.beans.metadata.api.annotations.Destroy;
-import org.jboss.beans.metadata.spi.BeanMetaData;
+import org.jboss.beans.metadata.api.annotations.Inject;
+import org.jboss.beans.metadata.spi.ValueMetaData;
+import org.jboss.kernel.plugins.annotations.FieldAnnotationPlugin;
+import org.jboss.reflect.spi.FieldInfo;
 
 /**
- * Destroy annoattion plugin.
+ * Web beans kind of inject.
  *
  * @author <a href="mailto:ales.justin@jboss.com">Ales Justin</a>
  */
-public class DestroyLifecycleAnnotationPlugin extends LifecycleParameterAnnotationPlugin<Destroy>
+public class WBInjectFieldAnnotationPlugin extends FieldAnnotationPlugin<Inject>
 {
-   public DestroyLifecycleAnnotationPlugin(Set<Annotation2ValueMetaDataAdapter<? extends Annotation>> adapters)
+   public static final WBInjectFieldAnnotationPlugin INSTANCE = new WBInjectFieldAnnotationPlugin();
+
+   protected WBInjectFieldAnnotationPlugin()
    {
-      super(Destroy.class, adapters);
+      super(Inject.class);
    }
 
-   protected boolean isLifecyclePresent(BeanMetaData beanMetaData)
+   @SuppressWarnings("deprecation")
+   protected ValueMetaData createValueMetaData(FieldInfo info, Inject inject)
    {
-      return beanMetaData.getDestroy() != null;
-   }
-
-   protected void applyLifecycleAnnotation(AbstractLifecycleMetaData lifecycle, Destroy annotation)
-   {
-      lifecycle.setIgnored(annotation.ignored());
-   }
-
-   protected void setLifecycleMetaData(AbstractBeanMetaData beanMetaData, AbstractLifecycleMetaData lifecycle)
-   {
-      lifecycle.setType("destroy");
-      beanMetaData.setDestroy(lifecycle);
+      return WBInjectionResolver.createValueMetaData(info.getType().getType(), info.getUnderlyingAnnotations());
    }
 }

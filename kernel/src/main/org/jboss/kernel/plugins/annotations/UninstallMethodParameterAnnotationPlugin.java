@@ -41,7 +41,7 @@ import org.jboss.reflect.spi.MethodInfo;
  */
 public class UninstallMethodParameterAnnotationPlugin extends InstallationParameterAnnotationPlugin<UninstallMethod>
 {
-   protected UninstallMethodParameterAnnotationPlugin(Set<Annotation2ValueMetaDataAdapter<? extends Annotation>> adapters)
+   public UninstallMethodParameterAnnotationPlugin(Set<Annotation2ValueMetaDataAdapter<? extends Annotation>> adapters)
    {
       super(UninstallMethod.class, adapters);
    }

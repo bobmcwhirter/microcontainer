@@ -33,9 +33,9 @@ import org.jboss.beans.metadata.spi.ValueMetaData;
  */
 public class SetValueAnnotationPlugin extends CollectionsAnnotationPlugin<SetValue>
 {
-   static SetValueAnnotationPlugin INSTANCE = new SetValueAnnotationPlugin();
+   public static final SetValueAnnotationPlugin INSTANCE = new SetValueAnnotationPlugin();
 
-   public SetValueAnnotationPlugin()
+   protected SetValueAnnotationPlugin()
    {
       super(SetValue.class);
    }

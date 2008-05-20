@@ -38,7 +38,7 @@ import org.jboss.config.spi.Configuration;
  */
 public class JavaBeanValueAnnotationPlugin extends PropertyAnnotationPlugin<JavaBeanValue>
 {
-   static JavaBeanValueAnnotationPlugin INSTANCE = new JavaBeanValueAnnotationPlugin();
+   public static final JavaBeanValueAnnotationPlugin INSTANCE = new JavaBeanValueAnnotationPlugin();
 
    /** The configuration */
    private static Configuration configuration;
@@ -55,7 +55,7 @@ public class JavaBeanValueAnnotationPlugin extends PropertyAnnotationPlugin<Java
       });
    }
 
-   public JavaBeanValueAnnotationPlugin()
+   protected JavaBeanValueAnnotationPlugin()
    {
       super(JavaBeanValue.class);
    }

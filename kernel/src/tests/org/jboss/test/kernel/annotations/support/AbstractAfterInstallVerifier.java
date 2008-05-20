@@ -19,28 +19,22 @@
 * Software Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA
 * 02110-1301 USA, or see the FSF site: http://www.fsf.org.
 */
-package org.jboss.kernel.plugins.annotations;
+package org.jboss.test.kernel.annotations.support;
 
-import org.jboss.beans.metadata.plugins.ThisValueMetaData;
-import org.jboss.beans.metadata.api.annotations.ThisValue;
-import org.jboss.beans.metadata.spi.ValueMetaData;
+import org.jboss.dependency.spi.ControllerState;
+import org.jboss.kernel.spi.dependency.KernelControllerContext;
 
 /**
- * This value annotation plugin.
- * 
+ * Abstract annotation runner test.
+ *
+ * @param <T> exact type
  * @author <a href="mailto:ales.justin@jboss.com">Ales Justin</a>
  */
-public class ThisValueAnnotationPlugin extends PropertyAnnotationPlugin<ThisValue>
-{
-   public static final ThisValueAnnotationPlugin INSTANCE = new ThisValueAnnotationPlugin();
+public abstract class AbstractAfterInstallVerifier<T> implements AfterInstallVerifier<T> {
 
-   protected ThisValueAnnotationPlugin()
+   public void verifyContext(KernelControllerContext context)
    {
-      super(ThisValue.class);
-   }
-
-   public ValueMetaData createValueMetaData(ThisValue annotation)
-   {
-      return new ThisValueMetaData();
+      if (ControllerState.INSTALLED.equals(context.getState()) == false)
+         throw new IllegalArgumentException("Expecting INSTALLED state, but is " + context.getState());
    }
 }

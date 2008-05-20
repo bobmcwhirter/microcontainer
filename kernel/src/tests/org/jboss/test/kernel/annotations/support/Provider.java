@@ -19,41 +19,22 @@
 * Software Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA
 * 02110-1301 USA, or see the FSF site: http://www.fsf.org.
 */
-package org.jboss.kernel.plugins.annotations;
-
-import java.lang.annotation.Annotation;
-import java.util.Set;
-
-import org.jboss.beans.metadata.plugins.AbstractBeanMetaData;
-import org.jboss.beans.metadata.plugins.AbstractLifecycleMetaData;
-import org.jboss.beans.metadata.api.annotations.Start;
-import org.jboss.beans.metadata.spi.BeanMetaData;
+package org.jboss.test.kernel.annotations.support;
 
 /**
- * Start annotation plugin.
- * 
  * @author <a href="mailto:ales.justin@jboss.com">Ales Justin</a>
  */
-public class StartLifecycleAnnotationPlugin extends LifecycleParameterAnnotationPlugin<Start>
+public class Provider
 {
-   public StartLifecycleAnnotationPlugin(Set<Annotation2ValueMetaDataAdapter<? extends Annotation>> adapters)
+   private String type;
+
+   public Provider(String type)
    {
-      super(Start.class, adapters);
+      this.type = type;
    }
 
-   protected boolean isLifecyclePresent(BeanMetaData beanMetaData)
+   public String toString()
    {
-      return beanMetaData.getStart() != null;
-   }
-
-   protected void applyLifecycleAnnotation(AbstractLifecycleMetaData lifecycle, Start annotation)
-   {
-      lifecycle.setIgnored(annotation.ignored());
-   }
-
-   protected void setLifecycleMetaData(AbstractBeanMetaData beanMetaData, AbstractLifecycleMetaData lifecycle)
-   {
-      lifecycle.setType("start");
-      beanMetaData.setStart(lifecycle);
+      return type;
    }
 }

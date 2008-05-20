@@ -19,28 +19,17 @@
 * Software Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA
 * 02110-1301 USA, or see the FSF site: http://www.fsf.org.
 */
-package org.jboss.kernel.plugins.annotations;
-
-import org.jboss.beans.metadata.plugins.ThisValueMetaData;
-import org.jboss.beans.metadata.api.annotations.ThisValue;
-import org.jboss.beans.metadata.spi.ValueMetaData;
+package org.jboss.test.kernel.annotations.support;
 
 /**
- * This value annotation plugin.
- * 
  * @author <a href="mailto:ales.justin@jboss.com">Ales Justin</a>
  */
-public class ThisValueAnnotationPlugin extends PropertyAnnotationPlugin<ThisValue>
+@Red
+@Green
+public class RGProvider extends Provider
 {
-   public static final ThisValueAnnotationPlugin INSTANCE = new ThisValueAnnotationPlugin();
-
-   protected ThisValueAnnotationPlugin()
+   public RGProvider()
    {
-      super(ThisValue.class);
-   }
-
-   public ValueMetaData createValueMetaData(ThisValue annotation)
-   {
-      return new ThisValueMetaData();
+      super("RG");
    }
 }

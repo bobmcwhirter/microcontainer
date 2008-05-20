@@ -42,6 +42,7 @@ public class WBTestSuite extends TestSuite
       TestSuite suite = new TestSuite("WB Tests");
 
       suite.addTest(AnnotationsMatchingTestCase.suite());
+      suite.addTest(WBInjectionTestCase.suite());
 
       return suite;
    }

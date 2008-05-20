@@ -45,7 +45,7 @@ import org.jboss.reflect.spi.ClassInfo;
  */
 public class ClassFactoryAnnotationPlugin extends AbstractAdaptersAnnotationPlugin<ClassInfo, Factory>
 {
-   protected ClassFactoryAnnotationPlugin(Set<Annotation2ValueMetaDataAdapter<? extends Annotation>> adapters)
+   public ClassFactoryAnnotationPlugin(Set<Annotation2ValueMetaDataAdapter<? extends Annotation>> adapters)
    {
       super(Factory.class, adapters);
    }

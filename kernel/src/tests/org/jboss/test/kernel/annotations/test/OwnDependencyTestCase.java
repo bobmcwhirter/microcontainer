@@ -50,7 +50,7 @@ public class OwnDependencyTestCase extends AbstractBeanAnnotationAdapterTest
       runAnnotationsOnTarget(new MyOwnDependency());
    }
 
-   protected void checkContextState(KernelControllerContext context)
+   protected void checkContextState(Class<?> clazz, KernelControllerContext context)
    {
       assertEquals(ControllerState.DESCRIBED, context.getState());
    }

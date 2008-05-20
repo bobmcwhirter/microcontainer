@@ -21,35 +21,59 @@
 */
 package org.jboss.kernel.plugins.annotations.wb;
 
-import org.jboss.beans.info.spi.PropertyInfo;
-import org.jboss.beans.metadata.api.annotations.Inject;
-import org.jboss.beans.metadata.spi.ValueMetaData;
-import org.jboss.kernel.plugins.annotations.PropertyAnnotationPlugin;
-import org.jboss.reflect.spi.ParameterInfo;
+import java.lang.annotation.Annotation;
 
 /**
- * Web beans kind of inject.
+ * Contexts cache key.
  *
  * @author <a href="mailto:ales.justin@jboss.com">Ales Justin</a>
  */
-public class WBInjectAnnotationPlugin extends PropertyAnnotationPlugin<Inject>
+// TODO - fix this key to have weak notion
+class CacheKey
 {
-   public static final WBInjectAnnotationPlugin INSTANCE = new WBInjectAnnotationPlugin();
+   private Class<?> clazz;
+   private Annotation[] annotations;
 
-   protected WBInjectAnnotationPlugin()
+   CacheKey(Class<?> clazz, Annotation[] annotations)
    {
-      super(Inject.class);
+      this.clazz = clazz;
+      this.annotations = annotations;
    }
 
-   @SuppressWarnings("deprecation")
-   protected ValueMetaData createValueMetaData(PropertyInfo info, Inject inject)
+   public int hashCode()
    {
-      return WBInjectionResolver.createValueMetaData(info.getType().getType(), info.getUnderlyingAnnotations());
+      int hash = clazz.hashCode();
+      for (Annotation annotation : annotations)
+         hash += (3 * annotation.hashCode());
+      return hash;
    }
 
-   @SuppressWarnings("deprecation")
-   public ValueMetaData createValueMetaData(ParameterInfo info, Inject inject, ValueMetaData previousValue)
+   public boolean equals(Object obj)
    {
-      return WBInjectionResolver.createValueMetaData(info.getParameterType().getType(), info.getUnderlyingAnnotations());
+      if (obj instanceof CacheKey == false)
+         return false;
+
+      CacheKey ck = (CacheKey)obj;
+      if (clazz.equals(ck.clazz) == false)
+         return false;
+      if (annotations.length != ck.annotations.length)
+         return false;
+
+      for (Annotation annotation : annotations)
+      {
+         boolean match = false;
+         for (Annotation ckAnnotation : ck.annotations)
+         {
+            if (annotation.equals(ckAnnotation))
+            {
+               match = true;
+               break;
+            }
+         }
+         if (match == false)
+            return false;
+      }
+
+      return true;
    }
 }

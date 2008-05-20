@@ -31,9 +31,9 @@ import org.jboss.beans.metadata.spi.ValueMetaData;
  */
 public class InjectAnnotationPlugin extends PropertyAnnotationPlugin<Inject>
 {
-   static InjectAnnotationPlugin INSTANCE = new InjectAnnotationPlugin();
+   public final static InjectAnnotationPlugin INSTANCE = new InjectAnnotationPlugin();
 
-   public InjectAnnotationPlugin()
+   protected InjectAnnotationPlugin()
    {
       super(Inject.class);
    }

@@ -32,9 +32,9 @@ import org.jboss.beans.metadata.spi.ValueMetaData;
  */
 public class StringValueAnnotationPlugin extends PropertyAnnotationPlugin<StringValue>
 {
-   static StringValueAnnotationPlugin INSTANCE = new StringValueAnnotationPlugin();
+   public static final StringValueAnnotationPlugin INSTANCE = new StringValueAnnotationPlugin();
 
-   public StringValueAnnotationPlugin()
+   protected StringValueAnnotationPlugin()
    {
       super(StringValue.class);
    }

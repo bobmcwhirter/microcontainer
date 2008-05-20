@@ -33,9 +33,9 @@ import org.jboss.beans.metadata.spi.ValueMetaData;
  */
 public class CollectionValueAnnotationPlugin extends CollectionsAnnotationPlugin<CollectionValue>
 {
-   static CollectionValueAnnotationPlugin INSTANCE = new CollectionValueAnnotationPlugin();
+   public static final CollectionValueAnnotationPlugin INSTANCE = new CollectionValueAnnotationPlugin();
 
-   public CollectionValueAnnotationPlugin()
+   protected CollectionValueAnnotationPlugin()
    {
       super(CollectionValue.class);
    }

@@ -21,19 +21,20 @@
 */
 package org.jboss.test.kernel.annotations.test.field;
 
-import org.jboss.test.kernel.annotations.test.AbstractBeanAnnotationAdapterTest;
-import org.jboss.test.kernel.annotations.support.AfterInstallVerifier;
-import org.jboss.test.kernel.annotations.support.TestBean;
-import org.jboss.test.kernel.annotations.support.MyDeployer;
-import org.jboss.test.kernel.annotations.support.InjectTester;
-import org.jboss.test.kernel.annotations.support.ValueFactoryTester;
-import org.jboss.test.kernel.annotations.support.CallbacksTester;
+import junit.framework.Test;
+import org.jboss.beans.info.spi.BeanAccessMode;
+import org.jboss.beans.metadata.plugins.AbstractBeanMetaData;
 import org.jboss.kernel.plugins.annotations.BeanAnnotationAdapter;
 import org.jboss.kernel.plugins.annotations.BeanAnnotationAdapterFactory;
 import org.jboss.kernel.spi.dependency.KernelController;
-import org.jboss.beans.metadata.plugins.AbstractBeanMetaData;
-import org.jboss.beans.info.spi.BeanAccessMode;
-import junit.framework.Test;
+import org.jboss.test.kernel.annotations.support.AbstractAfterInstallVerifier;
+import org.jboss.test.kernel.annotations.support.AfterInstallVerifier;
+import org.jboss.test.kernel.annotations.support.CallbacksTester;
+import org.jboss.test.kernel.annotations.support.InjectTester;
+import org.jboss.test.kernel.annotations.support.MyDeployer;
+import org.jboss.test.kernel.annotations.support.TestBean;
+import org.jboss.test.kernel.annotations.support.ValueFactoryTester;
+import org.jboss.test.kernel.annotations.test.AbstractBeanAnnotationAdapterTest;
 
 /**
  * Basic field annotation IoC support
@@ -141,7 +142,7 @@ public class BasicFieldAnnotationSupportTestCase extends AbstractBeanAnnotationA
       assertTrue(tester.publicBeans == null || tester.publicBeans.isEmpty());
    }
 
-   private class InjectTesterVerifier implements AfterInstallVerifier<InjectTester>
+   private class InjectTesterVerifier extends AbstractAfterInstallVerifier<InjectTester>
    {
       public void verify(InjectTester target)
       {
@@ -167,7 +168,7 @@ public class BasicFieldAnnotationSupportTestCase extends AbstractBeanAnnotationA
       }
    }
 
-   private class VFTesterVerifier implements AfterInstallVerifier<ValueFactoryTester>
+   private class VFTesterVerifier extends AbstractAfterInstallVerifier<ValueFactoryTester>
    {
       public void verify(ValueFactoryTester target)
       {
@@ -190,7 +191,7 @@ public class BasicFieldAnnotationSupportTestCase extends AbstractBeanAnnotationA
       }
    }
 
-   private class CallbacksTesterVerifier implements AfterInstallVerifier<CallbacksTester>
+   private class CallbacksTesterVerifier extends AbstractAfterInstallVerifier<CallbacksTester>
    {
       public void verify(CallbacksTester target)
       {

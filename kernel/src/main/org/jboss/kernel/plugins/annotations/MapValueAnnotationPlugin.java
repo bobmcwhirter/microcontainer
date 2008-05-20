@@ -33,9 +33,9 @@ import org.jboss.beans.metadata.spi.ValueMetaData;
  */
 public class MapValueAnnotationPlugin extends CollectionsAnnotationPlugin<MapValue>
 {
-   static MapValueAnnotationPlugin INSTANCE = new MapValueAnnotationPlugin();
+   public static final MapValueAnnotationPlugin INSTANCE = new MapValueAnnotationPlugin();
 
-   public MapValueAnnotationPlugin()
+   protected MapValueAnnotationPlugin()
    {
       super(MapValue.class);
    }

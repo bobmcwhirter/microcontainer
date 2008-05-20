@@ -32,9 +32,9 @@ import org.jboss.beans.metadata.spi.ValueMetaData;
  */
 public class NullValueAnnotationPlugin extends PropertyAnnotationPlugin<NullValue>
 {
-   static NullValueAnnotationPlugin INSTANCE = new NullValueAnnotationPlugin();
+   public static final NullValueAnnotationPlugin INSTANCE = new NullValueAnnotationPlugin();
 
-   public NullValueAnnotationPlugin()
+   protected NullValueAnnotationPlugin()
    {
       super(NullValue.class);
    }

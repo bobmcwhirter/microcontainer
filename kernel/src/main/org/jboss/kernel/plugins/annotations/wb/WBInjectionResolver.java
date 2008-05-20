@@ -26,12 +26,16 @@ import java.util.HashSet;
 import java.util.Map;
 import java.util.Set;
 import java.util.WeakHashMap;
+import java.util.List;
+import java.util.ArrayList;
 
 import org.jboss.dependency.spi.ControllerState;
 import org.jboss.kernel.spi.dependency.KernelController;
 import org.jboss.kernel.spi.dependency.KernelControllerContext;
 import org.jboss.logging.Logger;
 import org.jboss.metadata.spi.MetaData;
+import org.jboss.beans.metadata.spi.ValueMetaData;
+import org.jboss.beans.metadata.api.annotations.Inject;
 
 /**
  * Web beans injection resolver.
@@ -41,10 +45,50 @@ import org.jboss.metadata.spi.MetaData;
 public class WBInjectionResolver
 {
    /** The log */
-   private static Logger log = Logger.getLogger(WBInjectionResolver.class);
+   private static final Logger log = Logger.getLogger(WBInjectionResolver.class);
 
    /** The cache */
-   private static Map<Class<?>, Map<KernelControllerContext, Boolean>> cache = new WeakHashMap<Class<?>, Map<KernelControllerContext, Boolean>>();
+   private static final Map<CacheKey, Map<KernelControllerContext, Boolean>> cache = new WeakHashMap<CacheKey, Map<KernelControllerContext, Boolean>>();
+
+   /** The excluded annotation */
+   private static final Set<Class<? extends Annotation>> excludedAnnotations = new HashSet<Class<? extends Annotation>>();
+
+   static
+   {
+      addExcludedAnnotation(Inject.class);
+      // exclude jdk annotations
+      addExcludedAnnotation(SuppressWarnings.class);
+      addExcludedAnnotation(Deprecated.class);
+      addExcludedAnnotation(Override.class);
+   }
+
+   /**
+    * Create wb injection value.
+    *
+    * @param type the matching type
+    * @param underlyingAnnotations underlying annotations
+    * @return injection value metadata
+    */
+   static ValueMetaData createValueMetaData(Class<?> type, Annotation[] underlyingAnnotations)
+   {
+      List<Annotation> annotations = new ArrayList<Annotation>();
+      for (Annotation annotation : underlyingAnnotations)
+      {
+         if (excludedAnnotations.contains(annotation.annotationType()) == false)
+            annotations.add(annotation);
+      }
+      return new WBInjectionValueMetaData(type, annotations.toArray(new Annotation[annotations.size()]));
+   }
+
+   /**
+    * Add excluded annotations.
+    *
+    * @param annotationClass the excluded annotation's class.
+    */
+   public static void addExcludedAnnotation(Class<? extends Annotation> annotationClass)
+   {
+      excludedAnnotations.add(annotationClass);
+   }
 
    /**
     * Find matching controller context.
@@ -66,11 +110,12 @@ public class WBInjectionResolver
       Set<KernelControllerContext> contexts = controller.getContexts(type, ControllerState.INSTALLED);
       if (contexts != null && contexts.isEmpty() == false)
       {
-         Map<KernelControllerContext, Boolean> cachedResults = cache.get(type);
+         CacheKey key = new CacheKey(type, annotations);
+         Map<KernelControllerContext, Boolean> cachedResults = cache.get(key);
          if (cachedResults == null)
          {
             cachedResults = new WeakHashMap<KernelControllerContext, Boolean>();
-            cache.put(type, cachedResults);
+            cache.put(key, cachedResults);
          }
 
          Set<KernelControllerContext> matchingContexts = new HashSet<KernelControllerContext>();

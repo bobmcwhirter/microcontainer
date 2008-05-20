@@ -26,7 +26,7 @@ import java.io.PrintStream;
 /**
  * @author <a href="mailto:ales.justin@jboss.com">Ales Justin</a>
  */
-public class OtherVerifier implements AfterInstallVerifier<Object>
+public class OtherVerifier extends AbstractAfterInstallVerifier<Object>
 {
    public void verify(Object target)
    {

@@ -41,7 +41,7 @@ import org.jboss.reflect.spi.ParameterInfo;
  */
 public class ConstructorParameterAnnotationPlugin extends AbstractConstructorParameterAnnotationPlugin<Constructor, AbstractConstructorMetaData>
 {
-   protected ConstructorParameterAnnotationPlugin(Set<Annotation2ValueMetaDataAdapter<? extends Annotation>> adapters)
+   public ConstructorParameterAnnotationPlugin(Set<Annotation2ValueMetaDataAdapter<? extends Annotation>> adapters)
    {
       super(Constructor.class, adapters);
    }

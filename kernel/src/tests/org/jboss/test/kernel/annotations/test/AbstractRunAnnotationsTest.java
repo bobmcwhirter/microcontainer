@@ -104,7 +104,7 @@ public abstract class AbstractRunAnnotationsTest extends BaseTestCase
       try
       {
          KernelControllerContext context = controller.install(beanMetaData, target);
-         checkContextState(context);
+         checkContextState(clazz, context);
          if (target == null)
             target = clazz.cast(context.getTarget());
          doTestAfterInstall(clazz, target);
@@ -115,9 +115,13 @@ public abstract class AbstractRunAnnotationsTest extends BaseTestCase
       }
    }
 
-   protected void checkContextState(KernelControllerContext context)
+   protected void checkContextState(Class<?> clazz, KernelControllerContext context)
    {
-      assertEquals(ControllerState.INSTALLED, context.getState());
+      AfterInstallVerifier verifier = (AfterInstallVerifier) verifiers.get(clazz);
+      if (verifier != null)
+         verifier.verifyContext(context);
+      else
+         assertEquals(ControllerState.INSTALLED, context.getState());
    }
 
    protected <T> void addVerifier(AfterInstallVerifier<T> verifier)

@@ -36,7 +36,7 @@ import org.jboss.beans.metadata.api.annotations.Create;
  */
 public class CreateLifecycleAnnotationPlugin extends LifecycleParameterAnnotationPlugin<Create>
 {
-   protected CreateLifecycleAnnotationPlugin(Set<Annotation2ValueMetaDataAdapter<? extends Annotation>> adapters)
+   public CreateLifecycleAnnotationPlugin(Set<Annotation2ValueMetaDataAdapter<? extends Annotation>> adapters)
    {
       super(Create.class, adapters);
    }

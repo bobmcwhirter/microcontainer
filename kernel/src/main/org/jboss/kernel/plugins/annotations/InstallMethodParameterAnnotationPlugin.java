@@ -41,7 +41,7 @@ import org.jboss.dependency.spi.ControllerState;
  */
 public class InstallMethodParameterAnnotationPlugin extends InstallationParameterAnnotationPlugin<InstallMethod>
 {
-   protected InstallMethodParameterAnnotationPlugin(Set<Annotation2ValueMetaDataAdapter<? extends Annotation>> adapters)
+   public InstallMethodParameterAnnotationPlugin(Set<Annotation2ValueMetaDataAdapter<? extends Annotation>> adapters)
    {
       super(InstallMethod.class, adapters);
    }

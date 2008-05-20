@@ -21,6 +21,8 @@
 */
 package org.jboss.test.kernel.annotations.support;
 
+import org.jboss.kernel.spi.dependency.KernelControllerContext;
+
 /**
  * Abstract annotation runner test.
  *
@@ -29,6 +31,8 @@ package org.jboss.test.kernel.annotations.support;
  */
 public interface AfterInstallVerifier<T>
 {
+   void verifyContext(KernelControllerContext context);
+
    void verify(T target);
 
    Class<T> getTargetClass();

@@ -36,7 +36,7 @@ import org.jboss.beans.metadata.spi.BeanMetaData;
  */
 public class StopLifecycleAnnotationPlugin extends LifecycleParameterAnnotationPlugin<Stop>
 {
-   protected StopLifecycleAnnotationPlugin(Set<Annotation2ValueMetaDataAdapter<? extends Annotation>> adapters)
+   public StopLifecycleAnnotationPlugin(Set<Annotation2ValueMetaDataAdapter<? extends Annotation>> adapters)
    {
       super(Stop.class, adapters);
    }

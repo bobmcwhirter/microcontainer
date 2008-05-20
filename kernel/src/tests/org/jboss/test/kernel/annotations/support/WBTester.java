@@ -19,41 +19,62 @@
 * Software Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA
 * 02110-1301 USA, or see the FSF site: http://www.fsf.org.
 */
-package org.jboss.kernel.plugins.annotations;
+package org.jboss.test.kernel.annotations.support;
 
-import java.lang.annotation.Annotation;
-import java.util.Set;
-
-import org.jboss.beans.metadata.plugins.AbstractBeanMetaData;
-import org.jboss.beans.metadata.plugins.AbstractLifecycleMetaData;
-import org.jboss.beans.metadata.api.annotations.Destroy;
-import org.jboss.beans.metadata.spi.BeanMetaData;
+import org.jboss.beans.metadata.api.annotations.Constructor;
+import org.jboss.beans.metadata.api.annotations.Inject;
+import org.jboss.beans.metadata.api.annotations.Start;
 
 /**
- * Destroy annoattion plugin.
- *
  * @author <a href="mailto:ales.justin@jboss.com">Ales Justin</a>
  */
-public class DestroyLifecycleAnnotationPlugin extends LifecycleParameterAnnotationPlugin<Destroy>
+public class WBTester
 {
-   public DestroyLifecycleAnnotationPlugin(Set<Annotation2ValueMetaDataAdapter<? extends Annotation>> adapters)
+   @Red
+   @Green
+   @Inject
+   private Provider rg_provider;
+   private Provider rb_provider;
+   private Provider gb_provider1;
+   private Provider gb_provider2;
+
+   @Constructor
+   public WBTester(@Green @Blue @Inject Provider gb_provider1)
    {
-      super(Destroy.class, adapters);
+      this.gb_provider1 = gb_provider1;
    }
 
-   protected boolean isLifecyclePresent(BeanMetaData beanMetaData)
+   public Provider getRg_provider()
    {
-      return beanMetaData.getDestroy() != null;
+      return rg_provider;
    }
 
-   protected void applyLifecycleAnnotation(AbstractLifecycleMetaData lifecycle, Destroy annotation)
+   public Provider getRb_provider()
    {
-      lifecycle.setIgnored(annotation.ignored());
+      return rb_provider;
    }
 
-   protected void setLifecycleMetaData(AbstractBeanMetaData beanMetaData, AbstractLifecycleMetaData lifecycle)
+   @Red
+   @Blue
+   @Inject
+   public void setRb_provider(Provider rb_provider)
    {
-      lifecycle.setType("destroy");
-      beanMetaData.setDestroy(lifecycle);
+      this.rb_provider = rb_provider;
+   }
+
+   public Provider getGb_provider1()
+   {
+      return gb_provider1;
+   }
+
+   public Provider getGb_provider2()
+   {
+      return gb_provider2;
+   }
+
+   @Start
+   public void doStart(@Green @Blue @Inject Provider gb_provider2)
+   {
+      this.gb_provider2 = gb_provider2;
    }
 }
