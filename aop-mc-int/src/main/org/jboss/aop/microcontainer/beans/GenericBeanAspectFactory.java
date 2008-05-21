@@ -23,7 +23,6 @@ package org.jboss.aop.microcontainer.beans;
 
 import org.jboss.aop.Advisor;
 import org.jboss.aop.InstanceAdvisor;
-import org.jboss.aop.advice.AspectFactory;
 import org.jboss.aop.advice.GenericAspectFactory;
 import org.jboss.aop.joinpoint.Joinpoint;
 import org.jboss.beans.metadata.plugins.factory.GenericBeanFactory;
@@ -45,25 +44,36 @@ public class GenericBeanAspectFactory extends GenericAspectFactory
    protected BeanFactory factory;
 
    protected String name;
+   protected String classname;
    
    protected Element element;
    
-   public GenericBeanAspectFactory(String name, BeanFactory factory, Element element)
+   public GenericBeanAspectFactory(String name, GenericBeanFactory factory, Element element)
    {
       super(null, element);
       this.name = name;
-      this.factory = factory;
       this.element = element;
+      setBeanFactory(factory);
    }
 
    public void setBeanFactory(GenericBeanFactory factory)
    {
+      if (factory != null)
+      {
+         classname = factory.getBean();
+      }
       this.factory = factory;
+   }
+   
+   public String getAspectName()
+   {
+      return name;
    }
    
    public String getName()
    {
-      return name;
+      //This must return the classname of the aspect, aop depends on that
+      return classname;
    }
 
    public Object createPerVM()
