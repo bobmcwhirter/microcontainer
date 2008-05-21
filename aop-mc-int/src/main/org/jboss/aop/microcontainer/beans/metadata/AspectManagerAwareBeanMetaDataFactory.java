@@ -38,7 +38,7 @@ public abstract class AspectManagerAwareBeanMetaDataFactory extends GenericBeanF
    protected final static String DEFAULT_ASPECT_MANAGER = "AspectManager";
    
    /** The bean name of the aspect manager to use */
-   protected String managerBean = DEFAULT_ASPECT_MANAGER;
+   protected String managerBean;
 
    /** The property of the aspect manager bean, if any, containing the aspect manager */
    protected String managerProperty;
@@ -72,7 +72,9 @@ public abstract class AspectManagerAwareBeanMetaDataFactory extends GenericBeanF
 
    protected void setAspectManagerProperty(BeanMetaDataBuilder builder, String propertyName)
    {
-      setAspectManagerProperty(builder, propertyName, managerBean, managerProperty);
+      String bean = (managerBean != null && managerBean.length() > 0) ? managerBean : DefaultAspectManager.getManagerBeanName();
+      String property = (managerProperty != null && managerProperty.length() > 0) ? managerProperty : DefaultAspectManager.getManagerPropertyName();
+      setAspectManagerProperty(builder, propertyName, bean, property);
    }
 
    protected void setAspectManagerProperty(BeanMetaDataBuilder builder, String managerBean, String managerProperty)
