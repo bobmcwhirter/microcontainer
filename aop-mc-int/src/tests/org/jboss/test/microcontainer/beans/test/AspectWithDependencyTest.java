@@ -168,7 +168,7 @@ public abstract class AspectWithDependencyTest extends AOPMicrocontainerTest
             assertNotNull(pojo);
             int called = TestAspectWithDependency.called;
             pojo.method(2);
-            assertTrue("Interceptor was not rebound", called + 1 == TestAspectWithDependency.called);
+            assertEquals("Interceptor was not rebound", called + 1, TestAspectWithDependency.called);
             assertTrue("Should not be caching the interceptor/dependency across rebinding", dependency == TestAspectWithDependency.invoked);
          }
          finally
