@@ -933,7 +933,7 @@ $Id: bean-deployer_2_0.xsd 70437 2008-03-05 17:13:04Z alesj $
          <xsd:documentation>
             <![CDATA[
             The demand is used to specify a dependency on a supply
-            and when the demand is should be deplied
+            and when the demand should be supplied
             
             e.g.:
             ISupply must be installed before IDemand is constructed
