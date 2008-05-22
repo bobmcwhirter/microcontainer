@@ -22,58 +22,24 @@
 package org.jboss.kernel.plugins.annotations.wb;
 
 import java.lang.annotation.Annotation;
+import java.lang.ref.ReferenceQueue;
 
 /**
  * Contexts cache key.
  *
  * @author <a href="mailto:ales.justin@jboss.com">Ales Justin</a>
  */
-// TODO - fix this key to have weak notion
-class CacheKey
+class CacheKey extends CompositeKey<Class<?>, Annotation>
 {
-   private Class<?> clazz;
-   private Annotation[] annotations;
+   private static final ReferenceQueue<Class<?>> queue = new ReferenceQueue<Class<?>>();
 
-   CacheKey(Class<?> clazz, Annotation[] annotations)
+   CacheKey(Class<?> weakPart, Annotation[] rest)
    {
-      this.clazz = clazz;
-      this.annotations = annotations;
+      super(weakPart, rest);
    }
 
-   public int hashCode()
+   protected ReferenceQueue<Class<?>> getReferenceQueue()
    {
-      int hash = clazz.hashCode();
-      for (Annotation annotation : annotations)
-         hash += (3 * annotation.hashCode());
-      return hash;
-   }
-
-   public boolean equals(Object obj)
-   {
-      if (obj instanceof CacheKey == false)
-         return false;
-
-      CacheKey ck = (CacheKey)obj;
-      if (clazz.equals(ck.clazz) == false)
-         return false;
-      if (annotations.length != ck.annotations.length)
-         return false;
-
-      for (Annotation annotation : annotations)
-      {
-         boolean match = false;
-         for (Annotation ckAnnotation : ck.annotations)
-         {
-            if (annotation.equals(ckAnnotation))
-            {
-               match = true;
-               break;
-            }
-         }
-         if (match == false)
-            return false;
-      }
-
-      return true;
+      return queue;
    }
 }
