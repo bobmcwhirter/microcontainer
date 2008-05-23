@@ -22,7 +22,10 @@
 package org.jboss.test.microcontainer.test;
 
 import junit.framework.Test;
+
+import org.jboss.test.AbstractTestDelegate;
 import org.jboss.test.aop.junit.AbstractTypeTest;
+import org.jboss.test.aop.junit.AbstractTypeTestDelegate;
 
 /**
  * Test instance annotations, do we require aop proxy for them.
@@ -39,6 +42,13 @@ public class HasInstanceAnnotationTestCase extends AbstractTypeTest
    public static Test suite()
    {
       return suite(HasInstanceAnnotationTestCase.class);
+   }
+   
+   public static AbstractTestDelegate getDelegate(Class<?> clazz) throws Exception
+   {
+      //Don't use security for this test
+      AbstractTypeTestDelegate delegate = new AbstractTypeTestDelegate(clazz);
+      return delegate;
    }
 
    public void testInstanceAnnotation() throws Throwable

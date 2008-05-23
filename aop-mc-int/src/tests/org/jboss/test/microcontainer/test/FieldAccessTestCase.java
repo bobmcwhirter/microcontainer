@@ -22,6 +22,8 @@
 package org.jboss.test.microcontainer.test;
 
 import junit.framework.Test;
+
+import org.jboss.test.AbstractTestDelegate;
 import org.jboss.test.aop.junit.AbstractTypeTest;
 import org.jboss.test.aop.junit.AbstractTypeTestDelegate;
 import org.jboss.test.microcontainer.beans.support.AccessBean;
@@ -41,6 +43,13 @@ public class FieldAccessTestCase extends AbstractTypeTest
    public static Test suite()
    {
       return suite(FieldAccessTestCase.class);
+   }
+
+   public static AbstractTestDelegate getDelegate(Class<?> clazz) throws Exception
+   {
+      //Don't use security for this test
+      AbstractTypeTestDelegate delegate = new AbstractTypeTestDelegate(clazz);
+      return delegate;
    }
 
    protected void testAccessBean(String name) throws Throwable
