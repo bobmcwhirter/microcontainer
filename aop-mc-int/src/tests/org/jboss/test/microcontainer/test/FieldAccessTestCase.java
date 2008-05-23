@@ -73,14 +73,22 @@ public class FieldAccessTestCase extends AbstractTypeTest
 
    public void testFieldAccess() throws Throwable
    {
-      testAccessBean("private");
-      testAccessBean("protected");
-      testAccessBean("public");
+      SecurityManager sm = suspendSecurity();
+      try
+      {
+         testAccessBean("private");
+         testAccessBean("protected");
+         testAccessBean("public");
 
-      // this should fail or something :-) on proxy
-      AccessBean pb = getBean("public", AccessBean.class);
-      assertEquals("foobar", pb.pubString);
-      AbstractTypeTestDelegate.Type type = getType("public");
-      assertTrue(pb.getPubString() == null || type != AbstractTypeTestDelegate.Type.PROXY);
+         // this should fail or something :-) on proxy
+         AccessBean pb = getBean("public", AccessBean.class);
+         assertEquals("foobar", pb.pubString);
+         AbstractTypeTestDelegate.Type type = getType("public");
+         assertTrue(pb.getPubString() == null || type != AbstractTypeTestDelegate.Type.PROXY);
+      }
+      finally
+      {
+         resumeSecurity(sm);
+      }
    }
 }
