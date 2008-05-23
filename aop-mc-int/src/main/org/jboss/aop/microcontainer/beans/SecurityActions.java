@@ -36,7 +36,7 @@ class SecurityActions
 
          public ClassLoader getContextClassLoader()
          {
-            return null;
+            return Thread.currentThread().getContextClassLoader();
          }
       };
 
