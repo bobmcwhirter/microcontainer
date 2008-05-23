@@ -358,17 +358,33 @@ $Id$
       </xsd:annotation>
    </xsd:element>
    
-   <xsd:complexType name="aopBeanfactoryType">
+   <xsd:complexType name="aopBeanfactoryType" mixed="true">
       <xsd:annotation>
          <xsd:documentation>
-            Similar to the beans beanfactoryType, but with an optional class           
+            Similar to the beans beanfactoryType, but with an optional class.    
+            The elements from abstractBeanfactoryType have been duplicated, rather
+            than using a xsd:extension since we need to use mixed=true
          </xsd:documentation>
       </xsd:annotation>
-      <xsd:complexContent>
-         <xsd:extension base="abstractBeanfactoryType">
-            <xsd:attribute name="class" type="xsd:token" use="required"/>
-         </xsd:extension>
-      </xsd:complexContent>
+      <xsd:sequence>
+         <xsd:element name="alias" type="aliasType" minOccurs="0" maxOccurs="unbounded"/>
+         <xsd:element name="classloader" type="classloaderType" minOccurs="0"/>
+         <xsd:element name="constructor" type="constructorType" minOccurs="0"/>
+         <xsd:element name="property" type="propertyType" minOccurs="0" maxOccurs="unbounded"/>
+         <xsd:element name="create" type="lifecycleType" minOccurs="0"/>
+         <xsd:element name="start" type="lifecycleType" minOccurs="0"/>
+         <xsd:element name="depends" type="dependsType" minOccurs="0" maxOccurs="unbounded"/>
+         <xsd:element name="demand" type="demandType" minOccurs="0" maxOccurs="unbounded"/>
+         <xsd:element name="supply" type="supplyType" minOccurs="0" maxOccurs="unbounded"/>
+         <xsd:element name="install" type="installType" minOccurs="0" maxOccurs="unbounded"/>
+         <xsd:element name="uninstall" type="installType" minOccurs="0" maxOccurs="unbounded"/>
+<!--
+         <xsd:element name="incallback" type="intallCallbackType" minOccurs="0" maxOccurs="unbounded"/>
+         <xsd:element name="uncallback" type="uninstallCallbackType" minOccurs="0" maxOccurs="unbounded"/>
+-->
+      </xsd:sequence>
+      <xsd:attribute name="name" type="xsd:string" use="optional"/>
+      <xsd:attribute name="class" type="xsd:token" use="optional"/>
    </xsd:complexType>
    
    <xsd:complexType name="aspectOrInterceptorType" mixed="true">
