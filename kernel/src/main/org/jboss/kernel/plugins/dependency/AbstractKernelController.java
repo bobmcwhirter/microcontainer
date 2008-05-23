@@ -374,7 +374,7 @@ public class AbstractKernelController extends ScopedController implements Kernel
          }
          else if (classContext.used)
          {
-            log.warn("Additional matching bean - contextual injection already used for class: " + clazz);
+            log.debug("Additional matching bean - contextual injection already used for class: " + clazz);
          }
          if (trace)
          {
