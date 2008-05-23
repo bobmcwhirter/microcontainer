@@ -43,17 +43,25 @@ public class HasInstanceAnnotationTestCase extends AbstractTypeTest
 
    public void testInstanceAnnotation() throws Throwable
    {
-      assertIsPojo("Bean1");
-      assertIsPojo("Bean2");
-
-      assertIsAspectized("Bean3");
-      assertIsAspectized("Bean4");
-
-      assertIsAspectized("Bean5");
-      assertIsAspectized("Bean6");
-
-      assertIsPojo("Bean7");
-      assertIsPojo("Bean8");
-      assertIsPojo("Bean9");
+      SecurityManager sm = suspendSecurity();
+      try
+      {
+         assertIsPojo("Bean1");
+         assertIsPojo("Bean2");
+   
+         assertIsAspectized("Bean3");
+         assertIsAspectized("Bean4");
+   
+         assertIsAspectized("Bean5");
+         assertIsAspectized("Bean6");
+   
+         assertIsPojo("Bean7");
+         assertIsPojo("Bean8");
+         assertIsPojo("Bean9");
+      }
+      finally
+      {
+         resumeSecurity(sm);
+      }
    }
 }
