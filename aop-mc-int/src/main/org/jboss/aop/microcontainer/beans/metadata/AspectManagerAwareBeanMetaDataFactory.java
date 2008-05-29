@@ -39,14 +39,21 @@ public abstract class AspectManagerAwareBeanMetaDataFactory extends GenericBeanF
    
    /** The bean name of the aspect manager to use */
    protected String managerBean;
+   
+   /** Whether the managerBean was set using the setManagerBean accessor */
+   protected boolean managerBeanSet;
 
    /** The property of the aspect manager bean, if any, containing the aspect manager */
    protected String managerProperty;
+
+   /** Whether the managerProperty was set using the setManagerBean accessor */
+   protected boolean managerPropertySet;
 
    @XmlAttribute(name="manager-bean")
    public void setManagerBean(String managerBean)
    {
       this.managerBean = managerBean;
+      managerBeanSet = true;
    }
 
    public String getManagerBean()
@@ -58,6 +65,7 @@ public abstract class AspectManagerAwareBeanMetaDataFactory extends GenericBeanF
    public void setManagerProperty(String aspectManagerProperty)
    {
       this.managerProperty = aspectManagerProperty;
+      managerPropertySet = true;
    }
    
    public String getManagerProperty()
@@ -72,8 +80,8 @@ public abstract class AspectManagerAwareBeanMetaDataFactory extends GenericBeanF
 
    protected void setAspectManagerProperty(BeanMetaDataBuilder builder, String propertyName)
    {
-      String bean = (managerBean != null && managerBean.length() > 0) ? managerBean : DefaultAspectManager.getManagerBeanName();
-      String property = (managerProperty != null && managerProperty.length() > 0) ? managerProperty : DefaultAspectManager.getManagerPropertyName();
+      String bean = managerBeanSet ? managerBean : DefaultAspectManager.getManagerBeanName();
+      String property = managerPropertySet ? managerProperty : DefaultAspectManager.getManagerPropertyName();
       setAspectManagerProperty(builder, propertyName, bean, property);
    }
 
