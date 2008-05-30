@@ -23,14 +23,13 @@ package org.jboss.dependency.plugins;
 
 import java.util.Collection;
 import java.util.Collections;
-import java.util.HashMap;
 import java.util.HashSet;
+import java.util.Iterator;
 import java.util.LinkedHashSet;
 import java.util.List;
+import java.util.ListIterator;
 import java.util.Map;
 import java.util.Set;
-import java.util.Iterator;
-import java.util.ListIterator;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.CopyOnWriteArrayList;
 import java.util.concurrent.CopyOnWriteArraySet;
@@ -473,8 +472,7 @@ public class AbstractController extends JBossObject implements Controller, Contr
 
    public void addAlias(Object alias, Object original) throws Throwable
    {
-      Map<ControllerState, ControllerContextAction> map = new HashMap<ControllerState, ControllerContextAction>();
-      map.put(ControllerState.INSTALLED, new AliasControllerContextAction());
+      Map<ControllerState, ControllerContextAction> map = Collections.<ControllerState, ControllerContextAction>singletonMap(ControllerState.INSTALLED, new AliasControllerContextAction());
       ControllerContextActions actions = new AbstractControllerContextActions(map);
       install(new AliasControllerContext(alias, original, actions));
    }
