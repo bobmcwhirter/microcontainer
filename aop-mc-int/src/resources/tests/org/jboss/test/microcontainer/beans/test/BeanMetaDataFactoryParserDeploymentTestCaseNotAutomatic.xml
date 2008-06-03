@@ -1,0 +1,74 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<deployment xmlns="urn:jboss:bean-deployer:2.0">
+
+   <bean name="AspectManager" class="org.jboss.aop.AspectManager">
+      <constructor factoryClass="org.jboss.aop.AspectManager" factoryMethod="instance"/>
+   </bean>
+
+   <annotation xmlns="urn:jboss:aop-beans:1.0" expr="class(org.jboss.test.microcontainer.beans.POJO)" invisible="false">
+      @org.jboss.test.microcontainer.beans.Annotation1
+   </annotation>
+
+   <annotation-introduction xmlns="urn:jboss:aop-beans:1.0" expr="class(org.jboss.test.microcontainer.beans.POJO)" invisible="false">
+      @org.jboss.test.microcontainer.beans.Annotation1
+   </annotation-introduction>
+
+   <precedence xmlns="urn:jboss:aop-beans:1.0">
+      <interceptor-ref name="org.jboss.test.microcontainer.beans.TestInterceptor"/>
+      <advice aspect="org.jboss.test.microcontainer.beans.TestAspect" name="advice"/>
+   </precedence>
+
+   <introduction xmlns="urn:jboss:aop-beans:1.0" class="org.jboss.test.microcontainer.beans.POJO">
+      <mixin transient="true">
+         <interfaces>org.jboss.test.microcontainer.beans.MixinInterface</interfaces>
+         <class>org.jboss.test.microcontainer.beans.MixinImpl</class>
+      </mixin>
+   </introduction>
+
+   <pointcut xmlns="urn:jboss:aop-beans:1.0" name="NamedPointcut" expr="all(org.acme.POJO)"/>
+
+   <prepare xmlns="urn:jboss:aop-beans:1.0" expr="all(org.acme.POJO)"/>
+
+   <dynamic-cflow xmlns="urn:jboss:aop-beans:1.0" name="DynamicCFlow" class="org.jboss.test.microcontainer.beans.DynamicCFlowImpl"/>
+
+   <cflow-stack xmlns="urn:jboss:aop-beans:1.0" name="CFlow">
+      <not-called expr="void org.jboss.test.microcontainer.beans.test.CFlowTest->notCallPOJO(..)"/>
+      <called expr="void org.jboss.test.microcontainer.beans.test.CFlowTest->callPOJO(..)"/>
+   </cflow-stack>
+
+   <typedef xmlns="urn:jboss:aop-beans:1.0" name="TypeDef" expr="class(org.jboss.test.microcontainer.beans.POJO)"/>
+
+   <aspect xmlns="urn:jboss:aop-beans:1.0" class="org.jboss.test.microcontainer.beans.TestAspectWithProperty">
+      <property xmlns:mc="urn:jboss:bean-deployer:2.0" name="someProperty">This is only a test</property>
+   </aspect>
+
+   <interceptor xmlns="urn:jboss:aop-beans:1.0" class="org.jboss.test.microcontainer.beans.TestInterceptor"/>
+
+   <aspect xmlns="urn:jboss:aop-beans:1.0" class="org.jboss.test.microcontainer.beans.TestAspect"/>
+
+   <stack xmlns="urn:jboss:aop-beans:1.0" name="TestStack">
+      <advice aspect="org.jboss.test.microcontainer.beans.TestAspect" name="advice"/>
+   </stack>
+
+   <bind xmlns="urn:jboss:aop-beans:1.0" pointcut="execution(* org.jboss.test.microcontainer.beans.POJO->*(..))">
+      <advice aspect="org.jboss.test.microcontainer.beans.TestAspectWithProperty" name="advice"/>
+      <interceptor-ref name="org.jboss.test.microcontainer.beans.TestInterceptor"/>
+      <stack-ref name="TestStack"/>
+   </bind>
+
+   <arrayreplacement xmlns="urn:jboss:aop-beans:1.0" class="org.jboss.test.microcontainer.beans.woven.test.ClassWithArray"/>
+
+   <arraybind xmlns="urn:jboss:aop-beans:1.0" type="READ_WRITE">
+      <interceptor-ref name="org.jboss.test.microcontainer.beans.TestInterceptor"/>
+   </arraybind>
+
+   <metadata-loader xmlns="urn:jboss:aop-beans:1.0" tag="custom" class="org.jboss.test.microcontainer.beans.TestMetaDataLoader"/>
+
+   <metadata xmlns="urn:jboss:aop-beans:1.0" tag="custom" class="org.jboss.test.microcontainer.beans.POJO">
+      <data>custom1</data>
+   </metadata>
+
+   <declare-error xmlns="urn:jboss:aop-beans:1.0" name="DeclareError" expr="call(* org.acme.Foo->error(..))">Error!!!</declare-error>
+
+</deployment>

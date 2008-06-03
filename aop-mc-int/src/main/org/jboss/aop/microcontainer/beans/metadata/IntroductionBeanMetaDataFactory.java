@@ -110,7 +110,6 @@ public class IntroductionBeanMetaDataFactory extends AspectManagerAwareBeanMetaD
       ArrayList<BeanMetaData> result = new ArrayList<BeanMetaData>();
       
       //Add the Introduction
-      String name = getName();
       if (name == null)
       {
          name = GUID.asString();

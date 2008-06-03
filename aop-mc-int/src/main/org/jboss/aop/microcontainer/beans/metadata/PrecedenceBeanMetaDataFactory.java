@@ -60,7 +60,6 @@ public class PrecedenceBeanMetaDataFactory extends AspectManagerAwareBeanMetaDat
       ArrayList<BeanMetaData> result = new ArrayList<BeanMetaData>();
       
       //Add the PrecedenceDef
-      String name = getName();
       if (name == null)
       {
          name = GUID.asString();
