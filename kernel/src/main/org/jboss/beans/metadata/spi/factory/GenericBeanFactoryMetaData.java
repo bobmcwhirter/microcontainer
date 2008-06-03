@@ -32,6 +32,7 @@ import javax.xml.bind.annotation.XmlAttribute;
 import javax.xml.bind.annotation.XmlElement;
 import javax.xml.bind.annotation.XmlRootElement;
 import javax.xml.bind.annotation.XmlType;
+import javax.xml.bind.annotation.XmlTransient;
 
 import org.jboss.beans.info.spi.BeanAccessMode;
 import org.jboss.beans.metadata.plugins.AbstractAliasMetaData;
@@ -551,7 +552,14 @@ public class GenericBeanFactoryMetaData extends JBossObject implements BeanMetaD
       this.uninstalls = uninstalls;
    }
 
+   @XmlTransient
    public List<BeanMetaData> getBeans()
+   {
+      return Collections.singletonList(getBeanMetaData());
+   }
+
+   @XmlTransient
+   public BeanMetaData getBeanMetaData()
    {
       if (getBean() == null)
       {
@@ -612,7 +620,7 @@ public class GenericBeanFactoryMetaData extends JBossObject implements BeanMetaD
          }
          builder.addPropertyMetaData("properties", propertyMap);
       }
-      return Collections.singletonList(builder.getBeanMetaData());
+      return builder.getBeanMetaData();
    }
 
    /**

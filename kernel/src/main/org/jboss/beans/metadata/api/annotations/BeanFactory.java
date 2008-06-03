@@ -52,6 +52,13 @@ public @interface BeanFactory
    String name() default "";
 
    /**
+    * Get factory class.
+    *
+    * @return factory class
+    */
+   Class<?> getFactoryClass() default void.class;
+
+   /**
     * Get the aliases.
     *
     * @return the aliases
