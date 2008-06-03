@@ -100,6 +100,6 @@ public class DynamicCFlowDef
    
    public void stop()
    {
-      manager.removeCFlowStack(name);
+      manager.removeDynamicCFlow(name);
    }
 }

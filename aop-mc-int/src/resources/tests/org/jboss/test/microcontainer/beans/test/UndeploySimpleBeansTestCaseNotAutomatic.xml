@@ -1,0 +1,215 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<deployment xmlns="urn:jboss:bean-deployer:2.0">
+
+   <bean name="AspectManager" class="org.jboss.aop.AspectManager">
+      <constructor factoryClass="org.jboss.aop.AspectManager" factoryMethod="instance"/>
+   </bean>
+
+   <bean name="ClassAnnotationOverride" class="org.jboss.aop.microcontainer.beans.AnnotationOverride">
+      <property name="manager"><inject bean="AspectManager"/></property>
+      <property name="expr">class(org.jboss.test.microcontainer.beans.POJO)</property>
+      <property name="annotation">@org.jboss.test.microcontainer.beans.Annotation1</property>
+      <property name="invisible">false</property>
+   </bean>
+
+   <bean name="ClassAnnotationIntroduction" class="org.jboss.aop.microcontainer.beans.AnnotationIntroduction">
+      <property name="manager"><inject bean="AspectManager"/></property>
+      <property name="expr">class(org.jboss.test.microcontainer.beans.POJO)</property>
+      <property name="annotation">@org.jboss.test.microcontainer.beans.Annotation2</property>
+      <property name="invisible">false</property>
+   </bean>
+
+   <bean name="MixinBinding" class="org.jboss.aop.microcontainer.beans.IntroductionBinding">
+      <property name="expr">has(* *->method())</property>
+      <property name="name">MixinBinding</property>
+      <property name="manager"><inject bean="AspectManager"/></property>
+      <property name="mixins">
+         <list>
+            <inject bean="MixinBinding$1"/>
+         </list>
+      </property>
+   </bean>
+   <bean name="MixinBinding$1" class="org.jboss.aop.microcontainer.beans.MixinEntry">
+      <property name="construction">new org.jboss.test.microcontainer.beans.MixinImpl(this, "CUSTOM CONSTRUCTION")</property>
+      <property name="interfaces">
+         <list elementClass="java.lang.String">
+            <value>org.jboss.test.microcontainer.beans.MixinInterface</value>
+         </list>
+      </property>
+      <property name="mixin">org.jboss.test.microcontainer.beans.MixinImpl</property>
+   </bean>
+
+   <bean name="PrecedenceBinding" class="org.jboss.aop.microcontainer.beans.PrecedenceDef">
+      <property name="manager"><inject bean="AspectManager"/></property>
+      <property name="entries">
+         <list>
+            <inject bean="PrecedenceBinding$1"/>
+            <inject bean="PrecedenceBinding$2"/>
+         </list>
+      </property>
+   </bean>
+   <bean name="PrecedenceBinding$1" class="org.jboss.aop.microcontainer.beans.PrecedenceDefEntry">
+      <property name="aspectName">org.jboss.test.microcontainer.beans.TestInterceptor</property>
+   </bean>
+   <bean name="PrecedenceBinding$2" class="org.jboss.aop.microcontainer.beans.PrecedenceDefEntry">
+      <property name="aspectName">org.jboss.test.microcontainer.beans.TestAspect</property>
+      <property name="aspectMethod">advice</property>
+   </bean>
+
+   <bean name="NamedPointcut" class="org.jboss.aop.microcontainer.beans.NamedPointcut">
+      <property name="manager"><inject bean="AspectManager"/></property>
+      <property name="name">NamedPointcut</property>
+      <property name="expr">execution(* org.jboss.test.microcontainer.beans.POJO->*())</property>
+   </bean>
+
+   <bean name="Prepare" class="org.jboss.aop.microcontainer.beans.Prepare">
+      <property name="manager"><inject bean="AspectManager"/></property>
+      <property name="name">Prepare</property>
+      <property name="expr">all(org.acme.POJO)</property>
+   </bean>
+
+   <bean name="DynamicCFlow" class="org.jboss.aop.microcontainer.beans.DynamicCFlowDef">
+      <property name="manager"><inject bean="AspectManager"/></property>
+      <property name="name">DynamicCFlow</property>
+      <property name="className">org.jboss.test.microcontainer.beans.DynamicCFlowImpl</property>
+   </bean>
+
+   <bean name="CFlow" class="org.jboss.aop.microcontainer.beans.CFlowStack">
+      <property name="manager"><inject bean="AspectManager"/></property>
+      <property name="name">CFlow</property>
+      <property name="entries">
+         <list>
+            <inject bean="CFlow$1"/>
+            <inject bean="CFlow$2"/>
+         </list>
+      </property>
+   </bean>
+   <bean name="CFlow$1" class="org.jboss.aop.microcontainer.beans.CFlowStackEntry">
+      <property name="called">false</property>
+      <property name="expr">void org.jboss.test.microcontainer.beans.test.CFlowTest->notCallPOJO(..)</property>
+   </bean>
+   <bean name="CFlow$2" class="org.jboss.aop.microcontainer.beans.CFlowStackEntry">
+      <property name="called">true</property>
+      <property name="expr">void org.jboss.test.microcontainer.beans.test.CFlowTest->callPOJO(..)</property>
+   </bean>
+
+
+   <bean name="TypeDef" class="org.jboss.aop.microcontainer.beans.TypeDef">
+      <property name="manager"><inject bean="AspectManager"/></property>
+      <property name="name">TypeDef</property>
+      <property name="expr">class(org.jboss.test.microcontainer.beans.POJO)</property>
+   </bean>
+
+   <beanfactory name="Factory$org.jboss.test.microcontainer.beans.TestAspectWithProperty" class="org.jboss.test.microcontainer.beans.TestAspectWithProperty">
+      <property name="someProperty">This is only a test</property>
+   </beanfactory>
+   <bean name="org.jboss.test.microcontainer.beans.TestAspectWithProperty" class="org.jboss.aop.microcontainer.beans.Aspect">
+      <property name="advice"><inject bean="Factory$org.jboss.test.microcontainer.beans.TestAspectWithProperty"/></property>
+      <property name="manager"><inject bean="AspectManager"/></property>
+   </bean>
+
+   <beanfactory name="Factory$org.jboss.test.microcontainer.beans.TestInterceptor" class="org.jboss.test.microcontainer.beans.TestInterceptor"/>
+   <bean name="org.jboss.test.microcontainer.beans.TestInterceptor" class="org.jboss.aop.microcontainer.beans.Aspect">
+      <property name="advice"><inject bean="Factory$org.jboss.test.microcontainer.beans.TestInterceptor"/></property>
+      <property name="manager"><inject bean="AspectManager"/></property>
+   </bean>
+
+   <beanfactory name="Factory$org.jboss.test.microcontainer.beans.TestAspect" class="org.jboss.test.microcontainer.beans.TestAspect"/>
+   <bean name="org.jboss.test.microcontainer.beans.TestAspect" class="org.jboss.aop.microcontainer.beans.Aspect">
+      <property name="advice"><inject bean="Factory$org.jboss.test.microcontainer.beans.TestAspect"/></property>
+      <property name="manager"><inject bean="AspectManager"/></property>
+   </bean>
+
+   <bean name="TestStack" class="org.jboss.aop.microcontainer.beans.Stack">
+      <property name="manager"><inject bean="AspectManager"/></property>
+      <property name="name">TestStack</property>
+      <property name="advices">
+         <list>
+            <inject bean="TestStack$1"/>
+         </list>
+      </property>
+   </bean>
+   <bean name="TestStack$1" class="org.jboss.aop.microcontainer.beans.InterceptorEntry">
+      <property name="manager"><inject bean="AspectManager"/></property>
+      <property name="aspect"><inject bean="org.jboss.test.microcontainer.beans.TestAspect"/></property>
+      <property name="aspectMethod">advice</property>
+      <property name="forStack">true</property>
+   </bean>
+
+   <bean name="TestAspectBinding" class="org.jboss.aop.microcontainer.beans.AspectBinding">
+      <property name="pointcut">execution(* org.jboss.test.microcontainer.beans.POJO->*(..))</property>
+      <property name="manager"><inject bean="AspectManager"/></property>
+      <property name="advices">
+         <list>
+            <inject bean="TestAspectBinding$1"/>
+            <inject bean="TestAspectBinding$2"/>
+            <inject bean="TestAspectBinding$3"/>
+         </list>
+      </property>
+   </bean>
+   <bean name="TestAspectBinding$1" class="org.jboss.aop.microcontainer.beans.InterceptorEntry">
+      <property name="manager"><inject bean="AspectManager"/></property>
+      <property name="aspect"><inject bean="org.jboss.test.microcontainer.beans.TestAspectWithProperty"/></property>
+      <property name="aspectMethod">advice</property>
+      <property name="binding"><inject bean="TestAspectBinding" state="Instantiated"/></property>
+   </bean>
+   <bean name="TestAspectBinding$2" class="org.jboss.aop.microcontainer.beans.InterceptorEntry">
+      <property name="manager"><inject bean="AspectManager"/></property>
+      <property name="aspect"><inject bean="org.jboss.test.microcontainer.beans.TestInterceptor"/></property>
+      <property name="binding"><inject bean="TestAspectBinding" state="Instantiated"/></property>
+   </bean>
+   <bean name="TestAspectBinding$3" class="org.jboss.aop.microcontainer.beans.StackEntry">
+      <property name="manager"><inject bean="AspectManager"/></property>
+      <property name="stack"><inject bean="TestStack"/></property>
+      <property name="binding"><inject bean="TestAspectBinding" state="Instantiated"/></property>
+   </bean>
+
+   <bean name="TestArrayReplacement" class="org.jboss.aop.microcontainer.beans.ArrayReplacement">
+      <property name="manager"><inject bean="AspectManager"/></property>
+      <property name="classes">org.jboss.test.microcontainer.beans.woven.test.ClassWithArray</property>
+   </bean>
+
+   <bean name="TestArrayBinding" class="org.jboss.aop.microcontainer.beans.ArrayBinding">
+      <property name="name">TestArrayBinding</property>
+      <property name="type">READ_WRITE</property>
+      <property name="manager"><inject bean="AspectManager"/></property>
+      <property name="advices">
+         <list>
+            <inject bean="TestArrayBinding$1"/>
+         </list>
+      </property>
+   </bean>
+   <bean name="TestArrayBinding$1" class="org.jboss.aop.microcontainer.beans.InterceptorEntry">
+      <property name="manager"><inject bean="AspectManager"/></property>
+      <property name="aspect"><inject bean="org.jboss.test.microcontainer.beans.TestInterceptor"/></property>
+      <property name="binding"><inject bean="TestArrayBinding" state="Instantiated"/></property>
+   </bean>
+
+   <bean name="custom$loader" class="org.jboss.aop.microcontainer.beans.ClassMetaDataLoader">
+      <property name="manager"><inject bean="AspectManager"/></property>
+      <property name="tag">custom</property>
+      <property name="className">org.jboss.test.microcontainer.beans.TestMetaDataLoader</property>
+   </bean>
+
+   <bean name="ClassMetaData" class="org.jboss.aop.microcontainer.beans.ClassMetaData">
+      <property name="manager"><inject bean="AspectManager"/></property>
+      <property name="tag">custom</property>
+      <property name="className">org.jboss.test.microcontainer.beans.POJO</property>
+      <property name="element">
+      <![CDATA[
+         <metadata>
+            <data>custom1</data>
+         </metadata>
+      ]]>
+      </property>
+   </bean>
+   
+   <bean name="DeclareError" class="org.jboss.aop.microcontainer.beans.DeclareDefinition">
+      <property name="manager"><inject bean="AspectManager"/></property>
+      <property name="name">DeclareError</property>
+      <property name="expr">call(* org.acme.Foo->error(..))</property>
+      <property name="message">Error!!!</property>
+      <property name="warning">false</property>
+   </bean>
+</deployment>
