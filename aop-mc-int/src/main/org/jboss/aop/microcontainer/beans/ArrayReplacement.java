@@ -37,7 +37,7 @@ import org.jboss.util.id.GUID;
 public class ArrayReplacement
 {
    AspectManager manager;
-   String name = GUID.asString();
+   String name;
    String classes;
    String expr;
 
@@ -94,6 +94,10 @@ public class ArrayReplacement
       if (classes != null && expr != null)
       {
          throw new IllegalArgumentException("Cannot define both expr and classes");
+      }
+      if (name == null)
+      {
+         name = GUID.asString();
       }
 
       org.jboss.aop.array.ArrayReplacement pcut = null;

@@ -42,7 +42,7 @@ public class AspectBinding implements Binding
 
    protected AspectManager manager;
 
-   protected String name = GUID.asString();
+   protected String name;
 
    protected String pointcut;
 
@@ -126,6 +126,9 @@ public class AspectBinding implements Binding
          throw new IllegalArgumentException("Null pointcut");
       if (manager == null)
          throw new IllegalArgumentException("Null manager");
+      if (name == null)
+         name = GUID.asString();
+
       AdviceBinding binding = new AdviceBinding(name, pointcut, cflow);
 
       if (advices != null)

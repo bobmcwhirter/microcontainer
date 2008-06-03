@@ -35,7 +35,7 @@ public class PrecedenceDef
 {
    private AspectManager manager;
    private List<PrecedenceDefEntry> entries;
-   private String name = GUID.asString();
+   private String name;
    
    public AspectManager getManager()
    {
@@ -75,7 +75,9 @@ public class PrecedenceDef
          throw new IllegalArgumentException("Null entries");
       if (entries.size() == 0)
          throw new IllegalArgumentException("No entries");
-      
+      if (name == null)
+         name = GUID.asString();
+
       org.jboss.aop.advice.PrecedenceDefEntry[] pentries = new org.jboss.aop.advice.PrecedenceDefEntry[entries.size()];
       int i = 0;
       for (PrecedenceDefEntry entry : entries)

@@ -35,7 +35,7 @@ import org.w3c.dom.Element;
 public class ClassMetaData
 {
    AspectManager manager;
-   String name = GUID.asString();
+   String name;
    
    //Should we read these from the element instead?
    String tag;
@@ -101,6 +101,8 @@ public class ClassMetaData
          throw new IllegalArgumentException("Null tag");
       if (className == null)
          throw new IllegalArgumentException("Null className");
+      if (name == null)
+         name = GUID.asString();
       
       ClassMetaDataLoader loader = manager.findClassMetaDataLoader(tag);
       try

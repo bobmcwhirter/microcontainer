@@ -39,7 +39,7 @@ public class ArrayBinding implements Binding
 {
    private static final Logger log = Logger.getLogger(ArrayBinding.class);
    AspectManager manager;
-   String name = GUID.asString();
+   String name;
    String type;
    List<BindingEntry> advices;
 
@@ -92,6 +92,10 @@ public class ArrayBinding implements Binding
       if (type == null)
       {
          throw new IllegalArgumentException("Null type");
+      }
+      if (name == null)
+      {
+         name = GUID.asString();
       }
       Type theType = Type.valueOf(type);
 

@@ -39,7 +39,7 @@ import org.jboss.util.id.GUID;
 public class IntroductionBinding 
 {
    protected AspectManager manager;
-   protected String name = GUID.asString();
+   protected String name;
    protected String classes;
    protected String expr;
    protected List<String> interfaces;
@@ -150,6 +150,8 @@ public class IntroductionBinding
          throw new IllegalArgumentException("Cannot set both classes and expr");
       if (interfaces == null && mixins == null)
          throw new IllegalArgumentException("Neither interfaces nor mixins set");
+      if (name == null)
+         name = GUID.asString();
       
       String[] intfs = (interfaces != null) ? interfaces.toArray(new String[interfaces.size()]) : null;
       

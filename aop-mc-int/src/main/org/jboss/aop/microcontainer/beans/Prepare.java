@@ -36,7 +36,7 @@ public class Prepare
 {
    protected AspectManager manager;
 
-   protected String name = GUID.asString();
+   protected String name;
 
    protected String expr;
 
@@ -80,6 +80,11 @@ public class Prepare
       {
          throw new IllegalArgumentException("No pointcut");
       }
+      if (name == null)
+      {
+         name = GUID.asString();
+      }
+
       Pointcut p = null;
       try
       {

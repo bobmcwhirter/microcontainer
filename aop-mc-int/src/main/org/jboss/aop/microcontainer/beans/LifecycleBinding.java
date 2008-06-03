@@ -33,7 +33,7 @@ import org.jboss.util.id.GUID;
  */
 public class LifecycleBinding
 {
-   protected String name = GUID.asString();
+   protected String name;
    protected AspectManager manager;   
    private String classes;
    private String expr;
@@ -94,6 +94,9 @@ public class LifecycleBinding
          throw new IllegalArgumentException("Null callback bean");
       if (state == null)
          throw new IllegalArgumentException("Null controller state");
+      if (name == null)
+         name = GUID.asString();
+
       
       LifecycleCallbackBinding binding = new LifecycleCallbackBinding(name, classes, expr, state);
       binding.addLifecycleCallback(callbackBean, installMethod, uninstallMethod);
