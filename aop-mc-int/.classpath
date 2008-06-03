@@ -9,9 +9,10 @@
   <classpathentry kind="var" path="M2_REPO/org/apache/ant/ant/1.7.0/ant-1.7.0.jar"/>
   <classpathentry kind="var" path="M2_REPO/org/apache/ant/ant-launcher/1.7.0/ant-launcher-1.7.0.jar"/>
   <classpathentry kind="var" path="M2_REPO/wutka-dtdparser/dtdparser121/1.2.1/dtdparser121-1.2.1.jar"/>
+  <classpathentry kind="var" path="M2_REPO/javassist/javassist/3.7.1.GA/javassist-3.7.1.GA.jar" sourcepath="M2_REPO/javassist/javassist/3.7.1.GA/javassist-3.7.1.GA-sources.jar"/>
   <classpathentry kind="var" path="M2_REPO/org/jboss/javassist/3.7.1.GA/javassist-3.7.1.GA.jar" sourcepath="M2_REPO/org/jboss/javassist/3.7.1.GA/javassist-3.7.1.GA-sources.jar"/>
   <classpathentry kind="var" path="M2_REPO/javax/xml/bind/jaxb-api/2.1/jaxb-api-2.1.jar" sourcepath="M2_REPO/javax/xml/bind/jaxb-api/2.1/jaxb-api-2.1-sources.jar"/>
-  <classpathentry kind="var" path="M2_REPO/org/jboss/aop/jboss-aop/2.0.0.CR10/jboss-aop-2.0.0.CR10.jar" sourcepath="M2_REPO/org/jboss/aop/jboss-aop/2.0.0.CR10/jboss-aop-2.0.0.CR10-sources.jar"/>
+  <classpathentry kind="var" path="M2_REPO/org/jboss/aop/jboss-aop/2.0.0.CR11/jboss-aop-2.0.0.CR11.jar" sourcepath="M2_REPO/org/jboss/aop/jboss-aop/2.0.0.CR11/jboss-aop-2.0.0.CR11-sources.jar"/>
   <classpathentry kind="var" path="M2_REPO/org/jboss/jboss-common-core/2.2.4.GA/jboss-common-core-2.2.4.GA.jar"/>
   <classpathentry kind="var" path="M2_REPO/jboss/jboss-common-logging-log4j/2.0.4.GA/jboss-common-logging-log4j-2.0.4.GA.jar" sourcepath="M2_REPO/jboss/jboss-common-logging-log4j/2.0.4.GA/jboss-common-logging-log4j-2.0.4.GA-sources.jar"/>
   <classpathentry kind="var" path="M2_REPO/jboss/jboss-common-logging-spi/2.0.4.GA/jboss-common-logging-spi-2.0.4.GA.jar" sourcepath="M2_REPO/jboss/jboss-common-logging-spi/2.0.4.GA/jboss-common-logging-spi-2.0.4.GA-sources.jar"/>
