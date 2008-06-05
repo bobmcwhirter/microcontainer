@@ -25,7 +25,10 @@ import org.jboss.aop.Advisor;
 import org.jboss.aop.InstanceAdvisor;
 import org.jboss.aop.advice.GenericAspectFactory;
 import org.jboss.aop.joinpoint.Joinpoint;
+import org.jboss.beans.metadata.plugins.AbstractClassLoaderMetaData;
+import org.jboss.beans.metadata.plugins.AbstractValueMetaData;
 import org.jboss.beans.metadata.plugins.factory.GenericBeanFactory;
+import org.jboss.beans.metadata.spi.ValueMetaData;
 import org.jboss.beans.metadata.spi.factory.BeanFactory;
 import org.jboss.logging.Logger;
 import org.jboss.util.xml.XmlLoadable;
@@ -106,6 +109,13 @@ public class GenericBeanAspectFactory extends GenericAspectFactory
       try
       {
          log.debug("Creating advice " + name);
+         
+         //Add the ability to push the scoped classloader into the bean factory
+         if (((GenericBeanFactory)factory).getClassLoader() == null)
+         {
+            ((GenericBeanFactory)factory).setClassLoader(new PushedClassLoaderMetaData());
+         }
+         
          Object object = factory.createBean();
          if (object instanceof XmlLoadable)
          {
@@ -119,4 +129,29 @@ public class GenericBeanAspectFactory extends GenericAspectFactory
          throw new RuntimeException(throwable);
       }
    }
+   
+   /**
+    * Gets any classloaders for the thread
+    */
+   private class PushedClassLoaderMetaData extends AbstractClassLoaderMetaData
+   {
+      /** The serialVersionUID */
+      private static final long serialVersionUID = 1L;
+      
+      @Override
+      public ValueMetaData getClassLoader()
+      {
+         ClassLoader loader = GenericBeanAspectFactory.this.getLoader(); 
+         //GenericBeanAspectFactory.this.peekScopedClassLoader();
+         if (loader == null)
+         {
+            return null;
+         }
+         else
+         {
+            return new AbstractValueMetaData(loader);
+         }
+      }
+   }
+
 }
