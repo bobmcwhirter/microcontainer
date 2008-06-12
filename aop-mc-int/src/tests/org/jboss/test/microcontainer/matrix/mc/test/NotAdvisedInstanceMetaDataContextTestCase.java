@@ -65,44 +65,14 @@ public class NotAdvisedInstanceMetaDataContextTestCase extends AOPMicrocontainer
    {
       Base base = (Base)getBean("ClassAnnotated");
       assertFalse(base instanceof Advised);
-      assertTrue(base instanceof AspectManaged);
-
-      //Not the main purpose of the test but being paranoid never hurt
-      TestInterceptor.reset();
-      base.baseOnly();
-      assertEquals(0, TestInterceptor.interceptions);
-      
-      String name = DynamicAspectDeployer.addBinding("execution(* org.jboss.test.microcontainer.matrix.Base->*(..))", TestInterceptor.class);
-      TestInterceptor.reset();
-      base.baseOnly();
-      assertEquals(1, TestInterceptor.interceptions);
-      
-      DynamicAspectDeployer.removeBinding(name);
-      TestInterceptor.reset();
-      base.baseOnly();
-      assertEquals(0, TestInterceptor.interceptions);      
+      assertFalse(base instanceof AspectManaged);
    }
    
    public void testMethodMetaDataContext() throws Exception
    {
       Base base = (Base)getBean("PropertyAnnotated");
       assertFalse(base instanceof Advised);
-      assertTrue(base instanceof AspectManaged);
-
-      //Not the main purpose of the test but being paranoid never hurt
-      TestInterceptor.reset();
-      base.baseOnly();
-      assertEquals(0, TestInterceptor.interceptions);
-      
-      String name = DynamicAspectDeployer.addBinding("execution(* org.jboss.test.microcontainer.matrix.Base->*(..))", TestInterceptor.class);
-      TestInterceptor.reset();
-      base.baseOnly();
-      assertEquals(1, TestInterceptor.interceptions);
-      
-      DynamicAspectDeployer.removeBinding(name);
-      TestInterceptor.reset();
-      base.baseOnly();
-      assertEquals(0, TestInterceptor.interceptions);      
+      assertFalse(base instanceof AspectManaged);
    }
    
    public static Test suite()

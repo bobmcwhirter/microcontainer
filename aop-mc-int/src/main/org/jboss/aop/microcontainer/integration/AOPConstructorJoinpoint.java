@@ -222,13 +222,7 @@ public class AOPConstructorJoinpoint extends BasicConstructorJoinPoint
          }
          else if (annotationsSize > 0)
          {
-            // do we have an annotation that's not marked with IA
-            for (Annotation annotation : annotations)
-            {
-               InstanceAnnotation ia = annotation.annotationType().getAnnotation(InstanceAnnotation.class);
-               if (ia == null || ia.value())
-                  return true;
-            }
+            return true;
          }
       }
       return false;

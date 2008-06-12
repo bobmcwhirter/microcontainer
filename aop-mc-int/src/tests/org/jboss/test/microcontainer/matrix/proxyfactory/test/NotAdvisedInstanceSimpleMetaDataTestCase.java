@@ -29,8 +29,6 @@ import org.jboss.aop.metadata.SimpleMetaData;
 import org.jboss.aop.proxy.container.AspectManaged;
 import org.jboss.test.aop.junit.AbstractProxyTest;
 import org.jboss.test.microcontainer.matrix.Base;
-import org.jboss.test.microcontainer.matrix.DynamicAspectDeployer;
-import org.jboss.test.microcontainer.matrix.TestInterceptor;
 
 /**
  * No MC counterpart since there is no way to create SimpleMetaData via MC
@@ -47,22 +45,7 @@ public class NotAdvisedInstanceSimpleMetaDataTestCase extends AbstractProxyTest
       metaData.addMetaData("Simple", "MetaData", "Value");
       Object proxy = createProxy(base, null, metaData);
       assertFalse(proxy instanceof Advised);
-      assertTrue(proxy instanceof AspectManaged);
-
-      //Not the main purpose of the test but being paranoid never hurt
-      TestInterceptor.reset();
-      ((Base)proxy).baseOnly();
-      assertEquals(0, TestInterceptor.interceptions);
-      
-      String name = DynamicAspectDeployer.addBinding("execution(* org.jboss.test.microcontainer.matrix.Base->*(..))", TestInterceptor.class);
-      TestInterceptor.reset();
-      ((Base)proxy).baseOnly();
-      assertEquals(1, TestInterceptor.interceptions);
-      
-      DynamicAspectDeployer.removeBinding(name);
-      TestInterceptor.reset();
-      ((Base)proxy).baseOnly();
-      assertEquals(0, TestInterceptor.interceptions);      
+      assertFalse(proxy instanceof AspectManaged);
    }
    
    public static Test suite()
