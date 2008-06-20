@@ -314,7 +314,7 @@ class BeanMetaDataBuilderImpl extends BeanMetaDataBuilder
    /**
     * Create annotation metadata.
     *
-    * @param annotation the string annotation
+    * @param annotation the real annotation
     * @return the annotation metadata
     */
    protected AnnotationMetaData createAnnotationMetaData(Annotation annotation)
