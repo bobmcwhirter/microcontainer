@@ -24,7 +24,6 @@ package org.jboss.beans.metadata.plugins;
 import java.io.Serializable;
 import java.lang.annotation.Annotation;
 import java.util.Iterator;
-import javax.xml.bind.annotation.XmlTransient;
 
 import org.jboss.beans.metadata.spi.AnnotationMetaData;
 import org.jboss.beans.metadata.spi.MetaDataVisitor;
@@ -51,7 +50,6 @@ public class DirectAnnotationMetaData extends JBossObject implements AnnotationM
       this.annotation = annotation;
    }
 
-   @XmlTransient
    public Annotation getAnnotationInstance()
    {
       return annotation;
