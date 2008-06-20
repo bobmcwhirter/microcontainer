@@ -23,6 +23,7 @@ package org.jboss.test.kernel.annotations.test;
 
 import junit.framework.Test;
 import org.jboss.dependency.spi.ControllerState;
+import org.jboss.joinpoint.spi.JoinpointException;
 import org.jboss.kernel.spi.dependency.KernelControllerContext;
 import org.jboss.test.kernel.deployment.test.AbstractOnDemandDeploymentTest;
 
@@ -47,6 +48,6 @@ public class FactoryMethodBadTestCase extends AbstractOnDemandDeploymentTest
       change(context, ControllerState.INSTALLED);
       assertEquals(ControllerState.ERROR, context.getState());
       assertNotNull(context.getError());
-      assertInstanceOf(context.getError(), IllegalArgumentException.class);
+      assertInstanceOf(context.getError(), JoinpointException.class);
    }
 }

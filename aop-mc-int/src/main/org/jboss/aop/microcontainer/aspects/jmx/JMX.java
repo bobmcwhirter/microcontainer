@@ -37,7 +37,7 @@ import org.jboss.metadata.spi.annotation.InstanceAnnotation;
  * @version $Revision$
  */
 @Retention(RetentionPolicy.RUNTIME)
-@Target(ElementType.TYPE)
+@Target({ElementType.TYPE, ElementType.METHOD, ElementType.FIELD})
 @InstanceAnnotation(false)
 public @interface JMX 
 {

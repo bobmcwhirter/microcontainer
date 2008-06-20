@@ -21,21 +21,22 @@
 */
 package org.jboss.test.kernel.annotations.support;
 
-import java.lang.annotation.ElementType;
 import java.lang.annotation.Annotation;
+import java.lang.annotation.ElementType;
 import java.util.List;
 
-import org.jboss.reflect.spi.MethodInfo;
-import org.jboss.kernel.plugins.annotations.AbstractAnnotationPlugin;
-import org.jboss.kernel.spi.dependency.KernelControllerContext;
+import org.jboss.beans.info.spi.PropertyInfo;
 import org.jboss.beans.metadata.spi.MetaDataVisitorNode;
+import org.jboss.kernel.plugins.annotations.AbstractAnnotationPlugin;
+import org.jboss.kernel.plugins.annotations.PropertyAware;
+import org.jboss.kernel.spi.dependency.KernelControllerContext;
 import org.jboss.metadata.spi.MetaData;
 
 /**
  * @param <T> the annotation type
  * @author <a href="mailto:ales.justin@jboss.com">Ales Justin</a>
  */
-public class TestAnnotationPlugin<T extends Annotation> extends AbstractAnnotationPlugin<MethodInfo, T>
+public class TestAnnotationPlugin<T extends Annotation> extends AbstractAnnotationPlugin<PropertyInfo, T> implements PropertyAware
 {
    private boolean applied;
    private boolean cleaned;
@@ -47,16 +48,16 @@ public class TestAnnotationPlugin<T extends Annotation> extends AbstractAnnotati
 
    protected boolean isElementTypeSupported(ElementType type)
    {
-      return true;
+      return ElementType.METHOD == type;
    }
 
-   protected List<? extends MetaDataVisitorNode> internalApplyAnnotation(MethodInfo info, MetaData retrieval, T annotation, KernelControllerContext context) throws Throwable
+   protected List<? extends MetaDataVisitorNode> internalApplyAnnotation(PropertyInfo info, MetaData retrieval, T annotation, KernelControllerContext context) throws Throwable
    {
       applied = true;
       return null;
    }
 
-   protected void internalCleanAnnotation(MethodInfo info, MetaData retrieval, T annotation, KernelControllerContext context) throws Throwable
+   protected void internalCleanAnnotation(PropertyInfo info, MetaData retrieval, T annotation, KernelControllerContext context) throws Throwable
    {
       cleaned = true;
    }

@@ -27,8 +27,7 @@ package org.jboss.test.kernel.annotations.support;
 public class TestCleanupBean
 {
    @TestCleanup
-   public String getName()
+   public void setName(String param)
    {
-      return null;
    }
 }

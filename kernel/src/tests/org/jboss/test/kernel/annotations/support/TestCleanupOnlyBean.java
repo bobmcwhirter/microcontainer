@@ -27,8 +27,7 @@ package org.jboss.test.kernel.annotations.support;
 public class TestCleanupOnlyBean
 {
    @TestCleanupOnly
-   public String getName()
+   public void setName(String name)
    {
-      return null;
    }
 }

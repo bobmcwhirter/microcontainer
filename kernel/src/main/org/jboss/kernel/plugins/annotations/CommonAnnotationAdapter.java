@@ -235,28 +235,8 @@ public abstract class CommonAnnotationAdapter<T extends MetaDataAnnotationPlugin
       {
          for(PropertyInfo pi : properties)
          {
-            MethodInfo setter = pi.getSetter();
             FieldInfo field = pi.getFieldInfo();
-
-            if (setter != null)
-            {
-               visitedMethods.add(setter);
-               Signature sis = new MethodSignature(setter);
-               MetaData cmdr = retrieval.getComponentMetaData(sis);
-               if (cmdr != null)
-               {
-                  for(T plugin : propertyAnnotationPlugins)
-                  {
-                     if (isApplyPhase)
-                        applyPlugin(plugin, pi, cmdr, handle);
-                     else
-                        cleanPlugin(plugin, pi, cmdr, handle);
-                  }
-               }
-               else if (trace)
-                  log.trace("No annotations for property " + pi.getName());
-            }
-            else if (field != null)
+            if (field != null)
             {
                Signature sis = new FieldSignature(field);
                MetaData cmdr = retrieval.getComponentMetaData(sis);
@@ -272,6 +252,11 @@ public abstract class CommonAnnotationAdapter<T extends MetaDataAnnotationPlugin
                }
                else if (trace)
                   log.trace("No annotations for field " + field.getName());
+            }
+            else
+            {
+               handleMethod(retrieval, handle, isApplyPhase, trace, visitedMethods, pi, pi.getSetter(), "setter");
+               handleMethod(retrieval, handle, isApplyPhase, trace, visitedMethods, pi, pi.getGetter(), "getter");
             }
          }
       }
@@ -335,6 +320,50 @@ public abstract class CommonAnnotationAdapter<T extends MetaDataAnnotationPlugin
          log.trace("No static methods");
 
       // fields - if accessible - are already handled with propertys
+   }
+
+   /**
+    * Handle setter or getter on property.
+    *
+    * @param retrieval the metadata
+    * @param handle the handle
+    * @param isApplyPhase is apply phase
+    * @param trace is trace enabled
+    * @param visitedMethods visited methods
+    * @param pi the property info
+    * @param method the method info
+    * @param type method type
+    * @throws Throwable for any error
+    */
+   protected void handleMethod(
+         MetaData retrieval,
+         U handle,
+         boolean isApplyPhase,
+         boolean trace,
+         Set<MethodInfo> visitedMethods,
+         PropertyInfo pi,
+         MethodInfo method,
+         String type)
+         throws Throwable
+   {
+      if (method == null)
+         return;
+      
+      visitedMethods.add(method);
+      Signature sis = new MethodSignature(method);
+      MetaData cmdr = retrieval.getComponentMetaData(sis);
+      if (cmdr != null)
+      {
+         for(T plugin : propertyAnnotationPlugins)
+         {
+            if (isApplyPhase)
+               applyPlugin(plugin, pi, cmdr, handle);
+            else
+               cleanPlugin(plugin, pi, cmdr, handle);
+         }
+      }
+      else if (trace)
+         log.trace("No annotations for " + type + ": " + pi.getName());
    }
 
    /**
