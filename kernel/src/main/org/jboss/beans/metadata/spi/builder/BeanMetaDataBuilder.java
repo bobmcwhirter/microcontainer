@@ -21,21 +21,22 @@
 */
 package org.jboss.beans.metadata.spi.builder;
 
+import java.lang.annotation.Annotation;
 import java.util.Collection;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
+import org.jboss.beans.info.spi.BeanAccessMode;
+import org.jboss.beans.metadata.api.model.AutowireType;
 import org.jboss.beans.metadata.plugins.AbstractBeanMetaData;
 import org.jboss.beans.metadata.plugins.builder.BeanMetaDataBuilderFactory;
 import org.jboss.beans.metadata.spi.BeanMetaData;
 import org.jboss.beans.metadata.spi.ClassLoaderMetaData;
 import org.jboss.beans.metadata.spi.ValueMetaData;
-import org.jboss.beans.metadata.api.model.AutowireType;
-import org.jboss.beans.info.spi.BeanAccessMode;
+import org.jboss.dependency.spi.Cardinality;
 import org.jboss.dependency.spi.ControllerMode;
 import org.jboss.dependency.spi.ControllerState;
-import org.jboss.dependency.spi.Cardinality;
 import org.jboss.dependency.spi.ErrorHandlingMode;
 
 /**
@@ -139,6 +140,14 @@ public abstract class BeanMetaDataBuilder
     * @return the builder
     */
    public abstract BeanMetaDataBuilder addAnnotation(String annotation);
+
+   /**
+    * Add annotation.
+    *
+    * @param annotation the annotation
+    * @return the builder
+    */
+   public abstract BeanMetaDataBuilder addAnnotation(Annotation annotation);
 
    /**
     * Add annotation.

@@ -27,6 +27,7 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
+import java.lang.annotation.Annotation;
 
 import org.jboss.beans.info.spi.BeanAccessMode;
 import org.jboss.beans.metadata.plugins.AbstractArrayMetaData;
@@ -48,6 +49,7 @@ import org.jboss.beans.metadata.plugins.AbstractValueMetaData;
 import org.jboss.beans.metadata.plugins.StringValueMetaData;
 import org.jboss.beans.metadata.plugins.ThisValueMetaData;
 import org.jboss.beans.metadata.plugins.AbstractAnnotationMetaData;
+import org.jboss.beans.metadata.plugins.DirectAnnotationMetaData;
 import org.jboss.beans.metadata.spi.BeanMetaData;
 import org.jboss.beans.metadata.spi.ClassLoaderMetaData;
 import org.jboss.beans.metadata.spi.DemandMetaData;
@@ -313,6 +315,17 @@ class BeanMetaDataBuilderImpl extends BeanMetaDataBuilder
     * Create annotation metadata.
     *
     * @param annotation the string annotation
+    * @return the annotation metadata
+    */
+   protected AnnotationMetaData createAnnotationMetaData(Annotation annotation)
+   {
+      return new DirectAnnotationMetaData(annotation);
+   }
+
+   /**
+    * Create annotation metadata.
+    *
+    * @param annotation the string annotation
     * @param replace the replace flag
     * @return the annotation metadata
     */
@@ -355,6 +368,14 @@ class BeanMetaDataBuilderImpl extends BeanMetaDataBuilder
    }
 
    public BeanMetaDataBuilder addAnnotation(String annotation)
+   {
+      Set<AnnotationMetaData> annotations = getAnnotations();
+      AnnotationMetaData amd = createAnnotationMetaData(annotation);
+      annotations.add(amd);
+      return this;
+   }
+
+   public BeanMetaDataBuilder addAnnotation(Annotation annotation)
    {
       Set<AnnotationMetaData> annotations = getAnnotations();
       AnnotationMetaData amd = createAnnotationMetaData(annotation);
