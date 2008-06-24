@@ -22,6 +22,66 @@
       <dependency>
         <groupId>org.jboss.microcontainer</groupId>
         <artifactId>jboss-kernel</artifactId>
+        <version>${release}</version>
+      </dependency>
+      <dependency>
+        <groupId>org.jboss.microcontainer</groupId>
+        <artifactId>jboss-deployers-client-spi</artifactId>
+        <version>${release}</version>
+      </dependency>
+      <dependency>
+        <groupId>org.jboss.microcontainer</groupId>
+        <artifactId>jboss-deployers-client</artifactId>
+        <version>${release}</version>
+      </dependency>
+      <dependency>
+        <groupId>org.jboss.microcontainer</groupId>
+        <artifactId>jboss-deployers-core-spi</artifactId>
+        <version>${release}</version>
+      </dependency>
+      <dependency>
+        <groupId>org.jboss.microcontainer</groupId>
+        <artifactId>jboss-deployers-core</artifactId>
+        <version>${release}</version>
+      </dependency>
+      <dependency>
+        <groupId>org.jboss.microcontainer</groupId>
+        <artifactId>jboss-deployers-impl</artifactId>
+        <version>${release}</version>
+      </dependency>
+      <dependency>
+        <groupId>org.jboss.microcontainer</groupId>
+        <artifactId>jboss-deployers-spi</artifactId>
+        <version>${release}</version>
+      </dependency>
+      <dependency>
+        <groupId>org.jboss.microcontainer</groupId>
+        <artifactId>jboss-deployers-structure-spi</artifactId>
+        <version>${release}</version>
+      </dependency>
+      <dependency>
+        <groupId>org.jboss.microcontainer</groupId>
+        <artifactId>jboss-deployers-vfs-spi</artifactId>
+        <version>${release}</version>
+      </dependency>
+      <dependency>
+        <groupId>org.jboss.microcontainer</groupId>
+        <artifactId>jboss-deployers-vfs</artifactId>
+        <version>${release}</version>
+      </dependency>
+      <dependency>
+        <groupId>org.jboss.microcontainer</groupId>
+        <artifactId>jboss-managed</artifactId>
+        <version>${release}</version>
+      </dependency>
+      <dependency>
+        <groupId>org.jboss.microcontainer</groupId>
+        <artifactId>jboss-metatype</artifactId>
+        <version>${release}</version>
+      </dependency>
+      <dependency>
+        <groupId>org.jboss</groupId>
+        <artifactId>jboss-vfs</artifactId>
         <version>2.0.0.Beta6</version>
       </dependency>
       <dependency>
@@ -32,7 +92,7 @@
       <dependency>
         <groupId>org.jboss.microcontainer</groupId>
         <artifactId>jboss-aop-mc-int</artifactId>
-        <version>2.0.0.Beta6</version>
+        <version>${release}</version>
         <scope>runtime</scope>
       </dependency>
       <dependency>
@@ -59,5 +119,9 @@
       </plugin>  
     </plugins>
   </build>
+
+    <properties>
+        <release>2.0.0.Beta9</release>
+    </properties>
 
 </project>

@@ -30,7 +30,6 @@ public class Client {
 	private HRManager manager;
 	
 	private EmbeddedBootstrap bootstrap;
-	private Kernel kernel;
 	private KernelController controller;
 	private KernelBus bus;
 
@@ -57,9 +56,8 @@ public class Client {
 		bootstrap = new EmbeddedBootstrap();
 		bootstrap.run();
 		
-		kernel = bootstrap.getKernel();
-		controller = kernel.getController();
-		bus = kernel.getBus();		
+		controller = bootstrap.getKernel().getController();
+		bus = bootstrap.getKernel().getBus();		
  	}
 	
 	public void setUserInterface(UserInterface userInterface) {
