@@ -253,11 +253,9 @@ public abstract class CommonAnnotationAdapter<T extends MetaDataAnnotationPlugin
                else if (trace)
                   log.trace("No annotations for field " + field.getName());
             }
-            else
-            {
-               handleMethod(retrieval, handle, isApplyPhase, trace, visitedMethods, pi, pi.getSetter(), "setter");
-               handleMethod(retrieval, handle, isApplyPhase, trace, visitedMethods, pi, pi.getGetter(), "getter");
-            }
+            // apply setter and getter as well - if they exist
+            handleMethod(retrieval, handle, isApplyPhase, trace, visitedMethods, pi, pi.getSetter(), "setter");
+            handleMethod(retrieval, handle, isApplyPhase, trace, visitedMethods, pi, pi.getGetter(), "getter");
          }
       }
       else if (trace)
