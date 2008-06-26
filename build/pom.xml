@@ -259,7 +259,7 @@
          </exclusions>
       </dependency>
       <dependency>
-        <groupId>org.jboss</groupId>
+        <groupId>javassist</groupId>
         <artifactId>javassist</artifactId>
         <version>${version.javassist}</version>
       </dependency>

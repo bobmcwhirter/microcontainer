@@ -219,7 +219,7 @@
           <artifactId>xml-apis</artifactId>
         </exclusion>
         <exclusion>
-          <groupId>org.jboss</groupId>
+          <groupId>javassist</groupId>
           <artifactId>javassist</artifactId>
         </exclusion>
         <exclusion>
@@ -268,7 +268,7 @@
       </exclusions>
     </dependency>
     <dependency>
-      <groupId>org.jboss</groupId>
+      <groupId>javassist</groupId>
       <artifactId>javassist</artifactId>
     </dependency>
     <!-- Test dependencies -->
