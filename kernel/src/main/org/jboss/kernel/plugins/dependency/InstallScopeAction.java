@@ -34,6 +34,9 @@ import org.jboss.metadata.spi.scope.ScopeKey;
 
 /**
  * Install scope action.
+ * 
+ * It expects scoped controller already to be present
+ * under the right scope key.
  *
  * @author <a href="ales.justin@jboss.com">Ales Justin</a>
  */
