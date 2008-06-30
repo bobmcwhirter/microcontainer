@@ -64,9 +64,13 @@ public class PlainAliasTestCase extends AbstractKernelDependencyTest
       return getUtil().getContext(name);
    }
 
-   protected Controller getController()
+   protected String  getControllerId()
    {
-      return getUtil().getKernel().getController();
+      Controller controller = getUtil().getKernel().getController();
+      StringBuffer buffer = new StringBuffer();
+      buffer.append(controller.getClass().getSimpleName());
+      buffer.append("[").append(System.identityHashCode(controller)).append("]");
+      return buffer.toString();
    }
 
    public void testPlainAliasCorrectOrder() throws Throwable
@@ -75,7 +79,7 @@ public class PlainAliasTestCase extends AbstractKernelDependencyTest
 
       ControllerContext context1 = assertInstall(0, "OriginalBean");
       ControllerContext context2 = getAlias("MyAlias");
-      assertContext("MyAlias_Alias_" + getController());
+      assertContext("MyAlias_Alias_" + getControllerId());
 
       SimpleBean bean1 = (SimpleBean) context1.getTarget();
       assertNotNull(bean1);
@@ -93,12 +97,12 @@ public class PlainAliasTestCase extends AbstractKernelDependencyTest
       ControllerContext context1 = getAlias("MyAlias");
       assertNull(context1);
 
-      checkDirectAlias(getController());
+      checkDirectAlias();
 
       ControllerContext context2 = assertInstall(0, "OriginalBean");
       context1 = assertContext("MyAlias");
       assertEquals(ControllerState.INSTALLED, context1.getState());
-      getDirectAlias(ControllerState.INSTALLED, getController());
+      getDirectAlias(ControllerState.INSTALLED);
 
       SimpleBean bean1 = (SimpleBean) context2.getTarget();
       assertNotNull(bean1);
@@ -108,14 +112,14 @@ public class PlainAliasTestCase extends AbstractKernelDependencyTest
       assertEquals(alias, context1);      
    }
 
-   protected void checkDirectAlias(Controller controller) throws Throwable
+   protected void checkDirectAlias() throws Throwable
    {
-      getDirectAlias(ControllerState.START, controller).getState();
+      getDirectAlias(ControllerState.START).getState();
    }
 
-   protected ControllerContext getDirectAlias(ControllerState state, Controller controller) throws Throwable
+   protected ControllerContext getDirectAlias(ControllerState state) throws Throwable
    {
-      return assertContext("MyAlias_Alias_" + controller, state);
+      return assertContext("MyAlias_Alias_" + getControllerId(), state);
    }
 
    public void testPlainAliasReinstall() throws Throwable
@@ -133,7 +137,7 @@ public class PlainAliasTestCase extends AbstractKernelDependencyTest
       ControllerContext alias = assertContext("MyAlias");
       assertEquals(alias, context1);
 
-      ControllerContext directAlias = assertContext("MyAlias_Alias_" + getController());
+      ControllerContext directAlias = assertContext("MyAlias_Alias_" + getControllerId());
       assertEquals(ControllerState.INSTALLED, directAlias.getState());
 
       assertUninstall("OriginalBean");
@@ -144,11 +148,11 @@ public class PlainAliasTestCase extends AbstractKernelDependencyTest
       assertNull(getUtil().getContext("MyAlias"));
 
       context1 = assertInstall(0, "OriginalBean");
-      directAlias = assertContext("MyAlias_Alias_" + getController());
+      directAlias = assertContext("MyAlias_Alias_" + getControllerId());
       assertEquals(ControllerState.INSTALLED, directAlias.getState());
       assertEquals(context1, assertContext("MyAlias"));
 
-      assertUninstall("MyAlias_Alias_" + getController());
+      assertUninstall("MyAlias_Alias_" + getControllerId());
       assertEquals(ControllerState.ERROR, directAlias.getState());
       assertEquals(ControllerState.INSTALLED, context1.getState());
       assertNull(getUtil().getContext("MyAlias"));

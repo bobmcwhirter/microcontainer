@@ -48,6 +48,20 @@ public class AliasesAnnotationPlugin extends ClassAnnotationPlugin<Aliases>
       super(Aliases.class);
    }
 
+   /**
+    * Get controller id - impl detail.
+    *
+    * @param controller the controller
+    * @return controller's id
+    */
+   protected String getId(Controller controller)
+   {
+      StringBuffer buffer = new StringBuffer();
+      buffer.append(controller.getClass().getSimpleName());
+      buffer.append("[").append(System.identityHashCode(controller)).append("]");
+      return buffer.toString();
+   }
+
    protected List<? extends MetaDataVisitorNode> internalApplyAnnotation(ClassInfo info, MetaData retrieval, Aliases annotation, KernelControllerContext context) throws Throwable
    {
       BeanMetaData beanMetaData = context.getBeanMetaData();
@@ -62,7 +76,7 @@ public class AliasesAnnotationPlugin extends ClassAnnotationPlugin<Aliases>
          if (aliases == null || aliases.contains(alias) == false)
          {
             // impl detail (_Alias_<Controller>)
-            if (controller.getContext(alias + "_Alias_" + controller, null) == null)
+            if (controller.getContext(alias + "_Alias_" + getId(controller), null) == null)
             {
                controller.addAlias(alias, beanMetaData.getName());
             }
@@ -92,7 +106,7 @@ public class AliasesAnnotationPlugin extends ClassAnnotationPlugin<Aliases>
          if (aliases == null || aliases.contains(alias) == false)
          {
             // impl detail (_Alias_<Controller>)
-            if (controller.getContext(alias + "_Alias_" + controller, null) != null)
+            if (controller.getContext(alias + "_Alias_" + getId(controller), null) != null)
             {
                controller.removeAlias(alias);
             }

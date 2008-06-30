@@ -470,6 +470,20 @@ public class AbstractController extends JBossObject implements Controller, Contr
       return uninstall(name, 0);
    }
 
+   /**
+    * Get controller id - impl detail.
+    * It should be unique.
+    *
+    * @return controller's id
+    */
+   protected String getId()
+   {
+      StringBuffer buffer = new StringBuffer();
+      buffer.append(getClass().getSimpleName());
+      buffer.append("[").append(System.identityHashCode(this)).append("]");
+      return buffer.toString();
+   }
+
    public void addAlias(Object alias, Object original) throws Throwable
    {
       Map<ControllerState, ControllerContextAction> map = createAliasActions();
@@ -500,7 +514,7 @@ public class AbstractController extends JBossObject implements Controller, Contr
 
    public void removeAlias(Object alias)
    {
-      uninstall(alias + "_Alias_" + toString());
+      uninstall(alias + "_Alias_" + getId());
    }
 
    /**
@@ -1654,7 +1668,7 @@ public class AbstractController extends JBossObject implements Controller, Contr
 
       public AliasControllerContext(Object alias, Object original, ControllerContextActions actions)
       {
-         super(alias + "_Alias_" + AbstractController.this.toString(), actions);
+         super(alias + "_Alias_" + getId(), actions);
          this.alias = alias;
          this.original = original;
          DependencyInfo info = getDependencyInfo();

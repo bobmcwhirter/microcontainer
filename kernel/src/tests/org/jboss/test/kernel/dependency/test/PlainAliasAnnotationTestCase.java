@@ -24,7 +24,6 @@ package org.jboss.test.kernel.dependency.test;
 import junit.framework.Test;
 import org.jboss.beans.metadata.plugins.AbstractBeanMetaData;
 import org.jboss.beans.metadata.spi.BeanMetaData;
-import org.jboss.dependency.spi.Controller;
 import org.jboss.dependency.spi.ControllerContext;
 import org.jboss.dependency.spi.ControllerState;
 import org.jboss.test.kernel.dependency.support.AliasSimpleBeanImpl;
@@ -57,7 +56,7 @@ public class PlainAliasAnnotationTestCase extends PlainAliasTestCase
       setBeanMetaDatas(new BeanMetaData[]{new AbstractBeanMetaData("OriginalBean", AliasSimpleBeanImpl.class.getName())});
    }
 
-   protected void checkDirectAlias(Controller controller) throws Throwable
+   protected void checkDirectAlias() throws Throwable
    {
       // not yet registered
    }
