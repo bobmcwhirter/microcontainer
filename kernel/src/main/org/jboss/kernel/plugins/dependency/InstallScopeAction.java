@@ -24,6 +24,7 @@ package org.jboss.kernel.plugins.dependency;
 import org.jboss.dependency.plugins.action.SimpleControllerContextAction;
 import org.jboss.dependency.spi.Controller;
 import org.jboss.dependency.spi.ControllerContext;
+import org.jboss.dependency.spi.ScopeInfo;
 import org.jboss.kernel.spi.dependency.KernelController;
 import org.jboss.kernel.spi.metadata.KernelMetaDataRepository;
 import org.jboss.metadata.plugins.loader.memory.MemoryMetaDataLoader;
@@ -33,11 +34,11 @@ import org.jboss.metadata.spi.retrieval.MetaDataRetrieval;
 import org.jboss.metadata.spi.scope.ScopeKey;
 
 /**
- * Alias scope action.
+ * Install scope action.
  *
  * @author <a href="ales.justin@jboss.com">Ales Justin</a>
  */
-public class AliasScopeAction extends SimpleControllerContextAction<ControllerContext>
+public class InstallScopeAction extends SimpleControllerContextAction<ControllerContext>
 {
    protected ControllerContext contextCast(ControllerContext context)
    {
@@ -49,13 +50,32 @@ public class AliasScopeAction extends SimpleControllerContextAction<ControllerCo
       return true;
    }
 
+   /**
+    * Get install scope key.
+    *
+    * @param context the context
+    * @return install scope key
+    */
+   protected ScopeKey getScopeKey(ControllerContext context)
+   {
+      ScopeInfo scopeInfo = context.getScopeInfo();
+      if (scopeInfo != null)
+         return scopeInfo.getInstallScope();
+
+      return null;
+   }
+
    protected void installAction(ControllerContext context) throws Throwable
    {
-      KernelController controller = (KernelController)context.getController();
-      KernelMetaDataRepository repository = controller.getKernel().getMetaDataRepository();
-      ScopeKey scopeKey = context.getScopeInfo().getInstallScope();
+      ScopeKey scopeKey = getScopeKey(context);
       if (scopeKey != null)
       {
+         Controller controller = context.getController();
+         if (controller instanceof KernelController == false)
+            throw new IllegalArgumentException("Can only handle kernel controller: " + controller);
+
+         KernelController kernelController = (KernelController)controller;
+         KernelMetaDataRepository repository = kernelController.getKernel().getMetaDataRepository();
          MutableMetaDataRepository mmdr = repository.getMetaDataRepository();
          MetaDataRetrieval mdr = mmdr.getMetaDataRetrieval(scopeKey);
          if (mdr == null)
@@ -76,11 +96,14 @@ public class AliasScopeAction extends SimpleControllerContextAction<ControllerCo
 
    protected void uninstallAction(ControllerContext context)
    {
-      Controller controller = context.getController();
-      if (controller instanceof ScopedKernelController == false)
-         throw new IllegalArgumentException("Current controller should be scoped: " + controller);
+      if (getScopeKey(context) != null)
+      {
+         Controller controller = context.getController();
+         if (controller instanceof ScopedKernelController == false)
+            throw new IllegalArgumentException("Current controller should be scoped: " + controller);
 
-      ScopedKernelController scopedController = (ScopedKernelController)controller;
-      scopedController.removeScopedControllerContext(context);
+         ScopedKernelController scopedController = (ScopedKernelController)controller;
+         scopedController.removeScopedControllerContext(context);
+      }
    }
 }

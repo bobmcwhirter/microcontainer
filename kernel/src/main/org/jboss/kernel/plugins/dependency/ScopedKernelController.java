@@ -57,7 +57,7 @@ import org.jboss.metadata.spi.scope.ScopeKey;
 public class ScopedKernelController extends AbstractKernelController
 {
    /** Alias scope action instance */
-   private static final AliasScopeAction ALIAS_SCOPE_ACTION = new AliasScopeAction();
+   private static final InstallScopeAction ALIAS_SCOPE_ACTION = new InstallScopeAction();
 
    protected Kernel parentKernel;
    private ScopeKey scopeKey;
