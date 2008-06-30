@@ -27,7 +27,6 @@ import org.jboss.dependency.spi.ControllerContext;
 import org.jboss.dependency.spi.ScopeInfo;
 import org.jboss.kernel.spi.dependency.KernelController;
 import org.jboss.kernel.spi.metadata.KernelMetaDataRepository;
-import org.jboss.metadata.plugins.loader.memory.MemoryMetaDataLoader;
 import org.jboss.metadata.spi.repository.MutableMetaDataRepository;
 import org.jboss.metadata.spi.retrieval.MetaDataItem;
 import org.jboss.metadata.spi.retrieval.MetaDataRetrieval;
@@ -76,13 +75,12 @@ public class InstallScopeAction extends SimpleControllerContextAction<Controller
 
          KernelController kernelController = (KernelController)controller;
          KernelMetaDataRepository repository = kernelController.getKernel().getMetaDataRepository();
+
          MutableMetaDataRepository mmdr = repository.getMetaDataRepository();
          MetaDataRetrieval mdr = mmdr.getMetaDataRetrieval(scopeKey);
          if (mdr == null)
-         {
-            mdr = new MemoryMetaDataLoader(scopeKey);
-            mmdr.addMetaDataRetrieval(mdr);
-         }
+            throw new IllegalArgumentException("No metadata retrieval for scope: " + scopeKey);
+
          MetaDataItem<ScopedKernelController> controllerItem = mdr.retrieveMetaData(ScopedKernelController.class);
          if (controllerItem == null)
             throw new IllegalArgumentException("Scoped controller should exist: " + scopeKey);
