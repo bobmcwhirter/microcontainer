@@ -121,6 +121,10 @@ public class PreInstallAction extends InstallsAwareAction
          KernelControllerContext context,
          KernelMetaDataRepository repository) throws Throwable
    {
+      ScopeKey scopeKey = context.getScopeInfo().getInstallScope();
+      if (scopeKey != null)
+         return scopeKey;
+
       MetaData retrieval = repository.getMetaData(context);
       if (retrieval != null)
       {
@@ -193,10 +197,10 @@ public class PreInstallAction extends InstallsAwareAction
                   throw new IllegalArgumentException("Underlying controller not AbstractController instance!");
                parentController = (AbstractController) controller;
             }
-            scopedController = new ScopedKernelController(controller.getKernel(), parentController);
+            scopedController = new ScopedKernelController(controller.getKernel(), parentController, scopeKey);
             ((MutableMetaData)mdr).addMetaData(scopedController, ScopedKernelController.class);
          }
-         scopedController.addControllerContext(context);
+         scopedController.addScopedControllerContext(context);
       }
    }
 
@@ -220,7 +224,7 @@ public class PreInstallAction extends InstallsAwareAction
             throw new IllegalArgumentException("Expecting ScopedKernelController instance in scope:" + scopeKey);
          }
          ScopedKernelController scopedController = controllerItem.getValue();
-         scopedController.removeControllerContext(context);
+         scopedController.removeScopedControllerContext(context);
          if (scopedController.isActive() == false)
          {
             try

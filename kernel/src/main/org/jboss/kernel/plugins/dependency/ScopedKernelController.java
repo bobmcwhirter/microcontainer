@@ -24,10 +24,14 @@ package org.jboss.kernel.plugins.dependency;
 import java.util.HashSet;
 import java.util.Properties;
 import java.util.Set;
+import java.util.Map;
+import java.util.HashMap;
 
 import org.jboss.dependency.plugins.AbstractController;
+import org.jboss.dependency.plugins.action.ControllerContextAction;
 import org.jboss.dependency.spi.ControllerContext;
 import org.jboss.dependency.spi.ControllerState;
+import org.jboss.dependency.spi.ScopeInfo;
 import org.jboss.kernel.Kernel;
 import org.jboss.kernel.KernelFactory;
 import org.jboss.kernel.plugins.bootstrap.basic.BasicKernelInitializer;
@@ -43,6 +47,7 @@ import org.jboss.kernel.spi.event.KernelEventListener;
 import org.jboss.kernel.spi.metadata.KernelMetaDataRepository;
 import org.jboss.kernel.spi.registry.KernelRegistryEntry;
 import org.jboss.kernel.spi.registry.KernelRegistryPlugin;
+import org.jboss.metadata.spi.scope.ScopeKey;
 
 /**
  * Scoped Kernel controller.
@@ -51,12 +56,17 @@ import org.jboss.kernel.spi.registry.KernelRegistryPlugin;
  */
 public class ScopedKernelController extends AbstractKernelController
 {
-   protected Kernel parentKernel;
+   /** Alias scope action instance */
+   private static final AliasScopeAction ALIAS_SCOPE_ACTION = new AliasScopeAction();
 
-   public ScopedKernelController(Kernel parentKernel, AbstractController parentController) throws Exception
+   protected Kernel parentKernel;
+   private ScopeKey scopeKey;
+
+   public ScopedKernelController(Kernel parentKernel, AbstractController parentController, ScopeKey scopeKey) throws Exception
    {
       super();
       this.parentKernel = parentKernel;
+      this.scopeKey = scopeKey;
       if (parentKernel.getController() instanceof AbstractController == false)
          throw new IllegalArgumentException("Underlying controller not AbstractController instance!");
       setUnderlyingController((AbstractController)parentKernel.getController());
@@ -64,6 +74,16 @@ public class ScopedKernelController extends AbstractKernelController
       KernelConfig config = new ScopedKernelConfig(System.getProperties());
       kernel = KernelFactory.newInstance(config);
       getParentController().addController(this);
+   }
+
+   /**
+    * Get scope key.
+    *
+    * @return the scope key
+    */
+   protected ScopeKey getScopeKey()
+   {
+      return scopeKey;
    }
 
    /**
@@ -93,12 +113,12 @@ public class ScopedKernelController extends AbstractKernelController
 
    // Scoped helper methods 
 
-   void addControllerContext(KernelControllerContext context)
+   void addScopedControllerContext(ControllerContext context)
    {
       super.addControllerContext(context);
    }
 
-   void removeControllerContext(KernelControllerContext context)
+   void removeScopedControllerContext(ControllerContext context)
    {
       super.removeControllerContext(context);
    }
@@ -115,6 +135,19 @@ public class ScopedKernelController extends AbstractKernelController
    }
 
    // Controller methods
+
+   protected Map<ControllerState, ControllerContextAction> createAliasActions()
+   {
+      Map<ControllerState, ControllerContextAction> map = new HashMap<ControllerState, ControllerContextAction>(super.createAliasActions());
+      map.put(ControllerState.PRE_INSTALL, ALIAS_SCOPE_ACTION);
+      return map;
+   }
+
+   protected void preAliasInstall(ControllerContext aliasContext)
+   {
+      ScopeInfo scopeInfo = aliasContext.getScopeInfo();
+      scopeInfo.setInstallScope(scopeKey);
+   }
 
    public ControllerContext getContext(Object name, ControllerState state)
    {

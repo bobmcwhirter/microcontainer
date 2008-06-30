@@ -61,8 +61,8 @@ public class AliasesAnnotationPlugin extends ClassAnnotationPlugin<Aliases>
 
          if (aliases == null || aliases.contains(alias) == false)
          {
-            // impl detail (_Alias)
-            if (controller.getContext(alias + "_Alias", null) == null)
+            // impl detail (_Alias_<Controller>)
+            if (controller.getContext(alias + "_Alias_" + controller, null) == null)
             {
                controller.addAlias(alias, beanMetaData.getName());
             }
@@ -91,8 +91,8 @@ public class AliasesAnnotationPlugin extends ClassAnnotationPlugin<Aliases>
 
          if (aliases == null || aliases.contains(alias) == false)
          {
-            // impl detail (_Alias)
-            if (controller.getContext(alias + "_Alias", null) != null)
+            // impl detail (_Alias_<Controller>)
+            if (controller.getContext(alias + "_Alias_" + controller, null) != null)
             {
                controller.removeAlias(alias);
             }

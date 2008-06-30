@@ -33,13 +33,6 @@
       </constructor>
    </bean>
 
-   <bean name="simple2" class="org.jboss.test.kernel.deployment.support.SimpleBeanImpl">
-      <annotation>@org.jboss.beans.metadata.api.annotations.Aliases(value={"simple"})</annotation>
-      <constructor>
-         <parameter>main</parameter>
-      </constructor>
-   </bean>
-
    <bean name="simple3" class="org.jboss.test.kernel.deployment.support.SimpleBeanImpl">
       <annotation>@org.jboss.beans.metadata.api.annotations.Aliases(value={"simple"})</annotation>
       <annotation>@org.jboss.metadata.plugins.scope.ApplicationScope("testApp")</annotation>
@@ -49,5 +42,11 @@
       </constructor>
    </bean>
 
+  <bean name="simple-main" class="org.jboss.test.kernel.deployment.support.SimpleBeanImpl">
+     <annotation>@org.jboss.beans.metadata.api.annotations.Aliases(value={"simple"})</annotation>
+     <constructor>
+        <parameter>main</parameter>
+     </constructor>
+  </bean>
 
 </deployment>

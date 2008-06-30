@@ -472,14 +472,35 @@ public class AbstractController extends JBossObject implements Controller, Contr
 
    public void addAlias(Object alias, Object original) throws Throwable
    {
-      Map<ControllerState, ControllerContextAction> map = Collections.<ControllerState, ControllerContextAction>singletonMap(ControllerState.INSTALLED, new AliasControllerContextAction());
+      Map<ControllerState, ControllerContextAction> map = createAliasActions();
       ControllerContextActions actions = new AbstractControllerContextActions(map);
-      install(new AliasControllerContext(alias, original, actions));
+      AliasControllerContext context = new AliasControllerContext(alias, original, actions);
+      preAliasInstall(context);
+      install(context);
+   }
+
+   /**
+    * Create alias controller context actions.
+    *
+    * @return the alias controller context actions
+    */
+   protected Map<ControllerState, ControllerContextAction> createAliasActions()
+   {
+      return Collections.<ControllerState, ControllerContextAction>singletonMap(ControllerState.INSTALLED, new AliasControllerContextAction());
+   }
+
+   /**
+    * Apply pre install - e.g. scope key in scoped controller.
+    *
+    * @param aliasContext the new alias context
+    */
+   protected void preAliasInstall(ControllerContext aliasContext)
+   {
    }
 
    public void removeAlias(Object alias)
    {
-      uninstall(alias + "_Alias");
+      uninstall(alias + "_Alias_" + toString());
    }
 
    /**
@@ -1633,7 +1654,7 @@ public class AbstractController extends JBossObject implements Controller, Contr
 
       public AliasControllerContext(Object alias, Object original, ControllerContextActions actions)
       {
-         super(alias + "_Alias", actions);
+         super(alias + "_Alias_" + AbstractController.this.toString(), actions);
          this.alias = alias;
          this.original = original;
          DependencyInfo info = getDependencyInfo();
