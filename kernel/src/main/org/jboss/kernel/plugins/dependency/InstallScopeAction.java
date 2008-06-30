@@ -84,12 +84,10 @@ public class InstallScopeAction extends SimpleControllerContextAction<Controller
             mmdr.addMetaDataRetrieval(mdr);
          }
          MetaDataItem<ScopedKernelController> controllerItem = mdr.retrieveMetaData(ScopedKernelController.class);
-         ScopedKernelController scopedController;
-         if (controllerItem != null)
-            scopedController = controllerItem.getValue();
-         else
+         if (controllerItem == null)
             throw new IllegalArgumentException("Scoped controller should exist: " + scopeKey);
 
+         ScopedKernelController scopedController = controllerItem.getValue();
          scopedController.addScopedControllerContext(context);
       }
    }
