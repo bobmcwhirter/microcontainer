@@ -61,6 +61,17 @@ public abstract class ScopedController extends AbstractController
             context.setController(this);
             registerControllerContext(context);
          }
+         catch (Throwable t)
+         {
+            // put the context back to original
+            context.setController(underlyingController);
+            underlyingController.addControllerContext(context);
+            // rethrow
+            if (t instanceof RuntimeException)
+               throw (RuntimeException)t;
+            else
+               throw new RuntimeException(t);
+         }
          finally
          {
             unlockWrite();

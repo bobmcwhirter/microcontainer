@@ -491,6 +491,12 @@ public class AbstractController extends JBossObject implements Controller, Contr
       AliasControllerContext context = new AliasControllerContext(alias, original, actions);
       preAliasInstall(context);
       install(context);
+      // is alias in error
+      Throwable error = context.getError();
+      if (error != null)
+         throw error;      
+      if (ControllerState.ERROR.equals(context.getState()))
+         throw new IllegalArgumentException("Alias " + context + " is in error.");
    }
 
    /**

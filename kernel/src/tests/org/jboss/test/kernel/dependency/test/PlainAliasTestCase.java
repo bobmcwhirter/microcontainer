@@ -41,14 +41,12 @@ import org.jboss.beans.metadata.spi.BeanMetaData;
  */
 public class PlainAliasTestCase extends AbstractKernelDependencyTest
 {
-   public PlainAliasTestCase(String name)
-         throws Throwable
+   public PlainAliasTestCase(String name) throws Throwable
    {
       super(name);
    }
 
-   public PlainAliasTestCase(String name, boolean xmltest)
-         throws Throwable
+   public PlainAliasTestCase(String name, boolean xmltest) throws Throwable
    {
       super(name, xmltest);
    }
@@ -64,7 +62,7 @@ public class PlainAliasTestCase extends AbstractKernelDependencyTest
       return getUtil().getContext(name);
    }
 
-   protected String  getControllerId()
+   protected String getControllerId()
    {
       Controller controller = getUtil().getKernel().getController();
       StringBuffer buffer = new StringBuffer();

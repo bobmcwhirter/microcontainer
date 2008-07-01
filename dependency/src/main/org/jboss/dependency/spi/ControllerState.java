@@ -119,6 +119,11 @@ public class ControllerState extends JBossObject implements Serializable
       buffer.append(stateString);
    }
 
+   public void toShortString(JBossStringBuilder buffer)
+   {
+      buffer.append(stateString);
+   }
+
    protected int getHashCode()
    {
       return stateString.hashCode();

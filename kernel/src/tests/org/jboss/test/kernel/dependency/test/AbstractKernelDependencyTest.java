@@ -106,9 +106,7 @@ public class AbstractKernelDependencyTest extends AbstractKernelTest
    
    protected ControllerContext assertInstall(int number, String name) throws Throwable
    {
-      ControllerContext result = assertInstall(number, name, ControllerState.INSTALLED);
-      assertContext(name);
-      return result;
+      return assertInstall(number, name, ControllerState.INSTALLED);
    }
 
    protected ControllerContext assertInstall(int number, String name, ControllerState expected) throws Throwable

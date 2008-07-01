@@ -110,7 +110,13 @@ public class DependencyTestSuite extends TestSuite
       suite.addTest(MatcherDemandSupplyAnnotationTestCase.suite());
       suite.addTest(NestedPropertyTestCase.suite());
       suite.addTest(NestedPropertyXMLTestCase.suite());
-      suite.addTest(BeanValidatorBridgeTestCase.suite());      
+      suite.addTest(BeanValidatorBridgeTestCase.suite());
+      suite.addTest(DuplicateAliasTestCase.suite());
+      suite.addTest(DuplicateAliasXMLTestCase.suite());
+      suite.addTest(DuplicateAliasAnnotationTestCase.suite());
+      suite.addTest(ScopedDuplicateAliasTestCase.suite());
+      suite.addTest(ScopedDuplicateAliasXMLTestCase.suite());
+      suite.addTest(ScopedDuplicateAliasAnnotationTestCase.suite());
       return suite;
    }
 }
