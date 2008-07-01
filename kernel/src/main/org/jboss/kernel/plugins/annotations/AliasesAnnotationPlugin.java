@@ -28,11 +28,10 @@ import org.jboss.beans.metadata.api.annotations.Aliases;
 import org.jboss.beans.metadata.spi.BeanMetaData;
 import org.jboss.beans.metadata.spi.MetaDataVisitorNode;
 import org.jboss.dependency.spi.Controller;
-import org.jboss.dependency.spi.ControllerContext;
 import org.jboss.kernel.spi.dependency.KernelControllerContext;
+import org.jboss.metadata.spi.MetaData;
 import org.jboss.reflect.spi.ClassInfo;
 import org.jboss.util.StringPropertyReplacer;
-import org.jboss.metadata.spi.MetaData;
 
 /**
  * Aliases annotation plugin.
@@ -48,20 +47,6 @@ public class AliasesAnnotationPlugin extends ClassAnnotationPlugin<Aliases>
       super(Aliases.class);
    }
 
-   /**
-    * Get controller id - impl detail.
-    *
-    * @param controller the controller
-    * @return controller's id
-    */
-   protected String getId(Controller controller)
-   {
-      StringBuffer buffer = new StringBuffer();
-      buffer.append(controller.getClass().getSimpleName());
-      buffer.append("[").append(System.identityHashCode(controller)).append("]");
-      return buffer.toString();
-   }
-
    protected List<? extends MetaDataVisitorNode> internalApplyAnnotation(ClassInfo info, MetaData retrieval, Aliases annotation, KernelControllerContext context) throws Throwable
    {
       BeanMetaData beanMetaData = context.getBeanMetaData();
@@ -75,17 +60,7 @@ public class AliasesAnnotationPlugin extends ClassAnnotationPlugin<Aliases>
 
          if (aliases == null || aliases.contains(alias) == false)
          {
-            // impl detail (_Alias_<Controller>)
-            if (controller.getContext(alias + "_Alias_" + getId(controller), null) == null)
-            {
-               controller.addAlias(alias, beanMetaData.getName());
-            }
-            else
-            {
-               ControllerContext existingContext = controller.getContext(alias, null);
-               if (existingContext != null && existingContext != context)
-                  throw new IllegalArgumentException("Alias " + alias + " already registered for different bean: " + existingContext);
-            }
+            controller.addAlias(alias, beanMetaData.getName());
          }
       }
       // no metadata added
@@ -105,12 +80,8 @@ public class AliasesAnnotationPlugin extends ClassAnnotationPlugin<Aliases>
 
          if (aliases == null || aliases.contains(alias) == false)
          {
-            // impl detail (_Alias_<Controller>)
-            if (controller.getContext(alias + "_Alias_" + getId(controller), null) != null)
-            {
-               controller.removeAlias(alias);
-            }
-         }         
+            controller.removeAlias(alias);
+         }
       }
    }
 }

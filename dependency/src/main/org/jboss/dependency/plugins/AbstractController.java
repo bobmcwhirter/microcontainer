@@ -1732,8 +1732,6 @@ public class AbstractController extends JBossObject implements Controller, Contr
             registerControllerContext(alias, lookup);
             if (log.isTraceEnabled())
                log.trace("Added alias " + alias + " for context " + context);
-            // try to resolve existing beans with new alias
-            resolveContexts(log.isTraceEnabled());
          }
          finally
          {
