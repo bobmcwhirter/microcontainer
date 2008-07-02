@@ -72,6 +72,9 @@ public class DeploymentTestSuite extends TestSuite
       suite.addTest(BeanContainerInjectionTestCase.suite());
       suite.addTest(BeanContainerStaticTestCase.suite());
       suite.addTest(BeanContainerSetDemandTestCase.suite());
+      // scoping alias tests
+      suite.addTest(ScopingAliasTestCase.suite());
+      suite.addTest(ScopingAliasAPITestCase.suite());
 
       return suite;
    }

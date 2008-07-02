@@ -27,8 +27,6 @@ import org.jboss.dependency.spi.Controller;
 import org.jboss.metadata.spi.scope.CommonLevels;
 import org.jboss.metadata.spi.scope.Scope;
 import org.jboss.metadata.spi.scope.ScopeKey;
-import org.jboss.test.kernel.deployment.support.SimpleBean;
-import org.jboss.test.kernel.deployment.support.SimpleObjectWithBean;
 import org.jboss.test.AbstractTestDelegate;
 
 /**
@@ -36,7 +34,7 @@ import org.jboss.test.AbstractTestDelegate;
  *
  * @author <a href="mailto:ales.justin@jboss.com">Ales Justin</a>
  */
-public class ScopingAliasAPITestCase extends ScopingDeploymentTest
+public class ScopingAliasAPITestCase extends ScopingAliasTestCase
 {
    public ScopingAliasAPITestCase(String name) throws Throwable
    {
@@ -98,34 +96,5 @@ public class ScopingAliasAPITestCase extends ScopingDeploymentTest
       ScopedAliasControllerContext.removeAlias("simple", sk3, controller);
 
       super.tearDown();
-   }
-
-   public void testAliasInMainController() throws Throwable
-   {
-      checkBean("main", "main");
-   }
-
-   public void testAliasInOwnScope() throws Throwable
-   {
-      checkBean("deploy1", "deployment1");
-   }
-
-   public void testAliasInParentScope() throws Throwable
-   {
-      checkBean("deploy2", "main");
-   }
-
-   public void testAliasInOwnScope2() throws Throwable
-   {
-      checkBean("deploy3", "deployment3");
-   }
-
-   private void checkBean(String bean, String ctor)
-   {
-      SimpleObjectWithBean deploy = (SimpleObjectWithBean) getBean(bean);
-      assertNotNull(deploy);
-      SimpleBean simple = deploy.getSimpleBean();
-      assertNotNull(simple);
-      assertEquals(ctor, simple.getConstructorString());
    }
 }
