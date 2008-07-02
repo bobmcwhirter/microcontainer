@@ -27,6 +27,7 @@ import org.jboss.test.kernel.deployment.support.SimpleBean;
 import org.jboss.test.kernel.deployment.support.SimpleObjectWithBean;
 
 /**
+ * Scoping alias tests.
  *
  * @author <a href="mailto:kabir.khan@jboss.com">Kabir Khan</a>
  */
@@ -41,9 +42,6 @@ public class ScopingAliasTestCase extends ScopingDeploymentTest
    {
       return suite(ScopingAliasTestCase.class);
    }
-
-
-   // ---- tests
 
    public void testAliasInMainController() throws Throwable
    {

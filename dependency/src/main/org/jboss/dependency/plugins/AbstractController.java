@@ -1644,7 +1644,7 @@ public class AbstractController extends JBossObject implements Controller, Contr
       if (allContexts.containsKey(name) == false)
          allContexts.put(name, context);
       else
-         throw new IllegalStateException("Unable to register context" + context.toShortString() + " name already exists: " + name);
+         throw new IllegalStateException("Unable to register context " + context.toShortString() + ", name already exists: " + name);
    }
 
    /**
@@ -1698,11 +1698,13 @@ public class AbstractController extends JBossObject implements Controller, Contr
          if (jmxOriginal != null)
             original = jmxOriginal;
 
+         // get the context's controller - not the one we registered with
+         AbstractController controller = (AbstractController)context.getController();
          lockWrite();
          try
          {
-            ControllerContext lookup = getRegisteredControllerContext(original, true);
-            registerControllerContext(alias, lookup);
+            ControllerContext lookup = controller.getRegisteredControllerContext(original, true);
+            controller.registerControllerContext(alias, lookup);
             if (log.isTraceEnabled())
                log.trace("Added alias " + alias + " for context " + context);
          }
@@ -1722,7 +1724,9 @@ public class AbstractController extends JBossObject implements Controller, Contr
             if (jmxAlias != null)
                alias = jmxAlias;
 
-            unregisterControllerContext(alias);
+            // get the context's controller - not the one we registered with
+            AbstractController controller = (AbstractController)context.getController();
+            controller.unregisterControllerContext(alias);
             if (log.isTraceEnabled())
                log.trace("Removed alias " + alias);
          }
