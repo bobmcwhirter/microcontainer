@@ -26,12 +26,14 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
+import java.util.HashMap;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.CopyOnWriteArrayList;
 
 import org.jboss.beans.metadata.spi.BeanMetaData;
 import org.jboss.beans.metadata.spi.SupplyMetaData;
 import org.jboss.dependency.plugins.ScopedController;
+import org.jboss.dependency.plugins.action.ControllerContextAction;
 import org.jboss.dependency.spi.ControllerContext;
 import org.jboss.dependency.spi.ControllerState;
 import org.jboss.kernel.Kernel;
@@ -74,6 +76,13 @@ public class AbstractKernelController extends ScopedController implements Kernel
     */
    public AbstractKernelController() throws Exception
    {
+   }
+
+   protected Map<ControllerState, ControllerContextAction> createAliasActions()
+   {
+      Map<ControllerState, ControllerContextAction> map = new HashMap<ControllerState, ControllerContextAction>(super.createAliasActions());
+      map.put(ControllerState.PRE_INSTALL, InstallScopeAction.INSTANCE);
+      return map;
    }
 
    /**

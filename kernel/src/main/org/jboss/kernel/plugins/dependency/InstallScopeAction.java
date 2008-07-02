@@ -21,12 +21,13 @@
 */
 package org.jboss.kernel.plugins.dependency;
 
-import org.jboss.dependency.plugins.action.SimpleControllerContextAction;
+import org.jboss.dependency.plugins.AbstractController;
 import org.jboss.dependency.spi.Controller;
 import org.jboss.dependency.spi.ControllerContext;
-import org.jboss.dependency.spi.ScopeInfo;
 import org.jboss.kernel.spi.dependency.KernelController;
 import org.jboss.kernel.spi.metadata.KernelMetaDataRepository;
+import org.jboss.metadata.plugins.loader.memory.MemoryMetaDataLoader;
+import org.jboss.metadata.spi.MutableMetaData;
 import org.jboss.metadata.spi.repository.MutableMetaDataRepository;
 import org.jboss.metadata.spi.retrieval.MetaDataItem;
 import org.jboss.metadata.spi.retrieval.MetaDataRetrieval;
@@ -34,38 +35,12 @@ import org.jboss.metadata.spi.scope.ScopeKey;
 
 /**
  * Install scope action.
- * 
- * It expects scoped controller already to be present
- * under the right scope key.
  *
  * @author <a href="ales.justin@jboss.com">Ales Justin</a>
  */
-public class InstallScopeAction extends SimpleControllerContextAction<ControllerContext>
+public class InstallScopeAction extends AbstractScopeAction
 {
-   protected ControllerContext contextCast(ControllerContext context)
-   {
-      return context;
-   }
-
-   protected boolean validateContext(ControllerContext context)
-   {
-      return true;
-   }
-
-   /**
-    * Get install scope key.
-    *
-    * @param context the context
-    * @return install scope key
-    */
-   protected ScopeKey getScopeKey(ControllerContext context)
-   {
-      ScopeInfo scopeInfo = context.getScopeInfo();
-      if (scopeInfo != null)
-         return scopeInfo.getInstallScope();
-
-      return null;
-   }
+   public static final InstallScopeAction INSTANCE = new InstallScopeAction();
 
    protected void installAction(ControllerContext context) throws Throwable
    {
@@ -82,27 +57,83 @@ public class InstallScopeAction extends SimpleControllerContextAction<Controller
          MutableMetaDataRepository mmdr = repository.getMetaDataRepository();
          MetaDataRetrieval mdr = mmdr.getMetaDataRetrieval(scopeKey);
          if (mdr == null)
-            throw new IllegalArgumentException("No metadata retrieval for scope: " + scopeKey);
-
+         {
+            mdr = new MemoryMetaDataLoader(scopeKey);
+            mmdr.addMetaDataRetrieval(mdr);
+         }
          MetaDataItem<ScopedKernelController> controllerItem = mdr.retrieveMetaData(ScopedKernelController.class);
-         if (controllerItem == null)
-            throw new IllegalArgumentException("Scoped controller should exist: " + scopeKey);
-
-         ScopedKernelController scopedController = controllerItem.getValue();
+         ScopedKernelController scopedController;
+         if (controllerItem != null)
+         {
+            scopedController = controllerItem.getValue();
+         }
+         else
+         {
+            AbstractController parentController = null;
+            ScopeKey parentKey = scopeKey.getParent();
+            while (parentController == null && parentKey != null)
+            {
+               MetaDataRetrieval pmdr = mmdr.getMetaDataRetrieval(parentKey);
+               if (pmdr != null)
+               {
+                  MetaDataItem<ScopedKernelController> pci = pmdr.retrieveMetaData(ScopedKernelController.class);
+                  if (pci != null)
+                  {
+                     parentController = pci.getValue();
+                  }
+               }
+               parentKey = parentKey.getParent();
+            }
+            if (parentController == null)
+            {
+               if (kernelController instanceof AbstractController == false)
+                  throw new IllegalArgumentException("Underlying controller not AbstractController instance!");
+               parentController = (AbstractController)kernelController;
+            }
+            scopedController = new ScopedKernelController(kernelController.getKernel(), parentController, scopeKey);
+            ((MutableMetaData)mdr).addMetaData(scopedController, ScopedKernelController.class);
+         }
          scopedController.addScopedControllerContext(context);
       }
    }
 
    protected void uninstallAction(ControllerContext context)
    {
-      if (getScopeKey(context) != null)
+      ScopeKey scopeKey = getScopeKey(context);
+      if (scopeKey != null)
       {
          Controller controller = context.getController();
-         if (controller instanceof ScopedKernelController == false)
-            throw new IllegalArgumentException("Current controller should be scoped: " + controller);
+         if (controller instanceof KernelController == false)
+            throw new IllegalArgumentException("Can only handle kernel controller: " + controller);
 
-         ScopedKernelController scopedController = (ScopedKernelController)controller;
+         KernelController kernelController = (KernelController)controller;
+         KernelMetaDataRepository repository = kernelController.getKernel().getMetaDataRepository();
+
+         // find scoped controller
+         MutableMetaDataRepository mmdr = repository.getMetaDataRepository();
+         MetaDataRetrieval mdr = mmdr.getMetaDataRetrieval(scopeKey);
+         if (mdr == null)
+         {
+            throw new IllegalArgumentException("Expecting MetaDataRetrieval instance in scope: " + scopeKey);
+         }
+         MetaDataItem<ScopedKernelController> controllerItem = mdr.retrieveMetaData(ScopedKernelController.class);
+         if (controllerItem == null)
+         {
+            throw new IllegalArgumentException("Expecting ScopedKernelController instance in scope:" + scopeKey);
+         }
+         ScopedKernelController scopedController = controllerItem.getValue();
          scopedController.removeScopedControllerContext(context);
+         if (scopedController.isActive() == false)
+         {
+            try
+            {
+               ((MutableMetaData)mdr).removeMetaData(ScopedKernelController.class);
+            }
+            finally
+            {
+               scopedController.release();
+            }
+         }
       }
    }
 }

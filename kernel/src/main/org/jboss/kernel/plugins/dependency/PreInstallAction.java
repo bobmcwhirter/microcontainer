@@ -206,11 +206,11 @@ public class PreInstallAction extends InstallsAwareAction
 
    protected void removeScoping(KernelControllerContext context) throws Throwable
    {
-      KernelController controller = (KernelController)context.getController();
-      KernelMetaDataRepository repository = controller.getKernel().getMetaDataRepository();
       ScopeKey scopeKey = context.getScopeInfo().getInstallScope();
       if (scopeKey != null)
       {
+         KernelController controller = (KernelController)context.getController();
+         KernelMetaDataRepository repository = controller.getKernel().getMetaDataRepository();
          // find scoped controller
          MutableMetaDataRepository mmdr = repository.getMetaDataRepository();
          MetaDataRetrieval mdr = mmdr.getMetaDataRetrieval(scopeKey);

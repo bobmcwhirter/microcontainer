@@ -56,9 +56,6 @@ import org.jboss.metadata.spi.scope.ScopeKey;
  */
 public class ScopedKernelController extends AbstractKernelController
 {
-   /** Alias scope action instance */
-   private static final InstallScopeAction ALIAS_SCOPE_ACTION = new InstallScopeAction();
-
    protected Kernel parentKernel;
    private ScopeKey scopeKey;
 
@@ -139,7 +136,7 @@ public class ScopedKernelController extends AbstractKernelController
    protected Map<ControllerState, ControllerContextAction> createAliasActions()
    {
       Map<ControllerState, ControllerContextAction> map = new HashMap<ControllerState, ControllerContextAction>(super.createAliasActions());
-      map.put(ControllerState.PRE_INSTALL, ALIAS_SCOPE_ACTION);
+      map.put(ControllerState.PRE_INSTALL, InstallExistingScopeAction.INSTANCE);
       return map;
    }
 

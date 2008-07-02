@@ -48,7 +48,6 @@ import org.jboss.dependency.spi.DependencyInfo;
 import org.jboss.dependency.spi.DependencyItem;
 import org.jboss.dependency.spi.LifecycleCallbackItem;
 import org.jboss.util.JBossObject;
-import org.jboss.util.JBossStringBuilder;
 
 /**
  * Abstract controller.
@@ -488,7 +487,7 @@ public class AbstractController extends JBossObject implements Controller, Contr
    {
       Map<ControllerState, ControllerContextAction> map = createAliasActions();
       ControllerContextActions actions = new AbstractControllerContextActions(map);
-      AliasControllerContext context = new AliasControllerContext(alias, original, actions);
+      AliasControllerContext context = new InnerAliasControllerContext(alias, original, actions);
       preAliasInstall(context);
       install(context);
       // is alias in error
@@ -1667,42 +1666,11 @@ public class AbstractController extends JBossObject implements Controller, Contr
 
    // --- alias dependency
 
-   private class AliasControllerContext extends AbstractControllerContext
+   private class InnerAliasControllerContext extends AbstractAliasControllerContext
    {
-      private Object alias;
-      private Object original;
-
-      public AliasControllerContext(Object alias, Object original, ControllerContextActions actions)
+      private InnerAliasControllerContext(Object alias, Object original, ControllerContextActions actions)
       {
-         super(alias + "_Alias_" + getId(), actions);
-         this.alias = alias;
-         this.original = original;
-         DependencyInfo info = getDependencyInfo();
-         info.addIDependOn(new AbstractDependencyItem(getName(), original, ControllerState.INSTALLED, ControllerState.INSTANTIATED));
-      }
-
-      public Object getAlias()
-      {
-         return alias;
-      }
-
-      public Object getOriginal()
-      {
-         return original;
-      }
-
-      public void toString(JBossStringBuilder buffer)
-      {
-         buffer.append("alias=").append(alias);
-         buffer.append(" original=").append(original).append(" ");
-         super.toString(buffer);
-      }
-
-      public void toShortString(JBossStringBuilder buffer)
-      {
-         buffer.append("alias=").append(alias);
-         buffer.append(" original=").append(original).append(" ");
-         super.toShortString(buffer);
+         super(alias, getId(), original, actions);
       }
    }
 
@@ -1734,7 +1702,6 @@ public class AbstractController extends JBossObject implements Controller, Contr
          try
          {
             ControllerContext lookup = getRegisteredControllerContext(original, true);
-            // todo - do we need to add it to context.aliases?
             registerControllerContext(alias, lookup);
             if (log.isTraceEnabled())
                log.trace("Added alias " + alias + " for context " + context);
