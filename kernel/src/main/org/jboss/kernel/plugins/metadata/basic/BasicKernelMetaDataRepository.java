@@ -22,6 +22,7 @@
 package org.jboss.kernel.plugins.metadata.basic;
 
 import java.util.ArrayList;
+import java.util.List;
 
 import org.jboss.dependency.spi.ControllerContext;
 import org.jboss.dependency.spi.ScopeInfo;
@@ -30,6 +31,7 @@ import org.jboss.metadata.plugins.context.AbstractMetaDataContext;
 import org.jboss.metadata.plugins.loader.memory.MemoryMetaDataLoader;
 import org.jboss.metadata.plugins.repository.basic.BasicMetaDataRepository;
 import org.jboss.metadata.spi.MetaData;
+import org.jboss.metadata.spi.context.MetaDataContext;
 import org.jboss.metadata.spi.repository.MutableMetaDataRepository;
 import org.jboss.metadata.spi.retrieval.MetaDataRetrieval;
 import org.jboss.metadata.spi.scope.Scope;
@@ -101,7 +103,7 @@ public class BasicKernelMetaDataRepository extends AbstractKernelMetaDataReposit
       MutableMetaDataRepository repository = getMetaDataRepository();
       ScopeInfo scopeInfo = context.getScopeInfo();
       ScopeKey scopeKey = scopeInfo.getScope();
-      ArrayList<MetaDataRetrieval> retrievals = new ArrayList<MetaDataRetrieval>();
+      List<MetaDataRetrieval> retrievals = new ArrayList<MetaDataRetrieval>();
       for (Scope scope : scopeKey.getScopes())
       {
          ScopeKey thisScope = new ScopeKey(scope);
@@ -117,8 +119,19 @@ public class BasicKernelMetaDataRepository extends AbstractKernelMetaDataReposit
          }
          retrievals.add(0, retrieval);
       }
-      AbstractMetaDataContext metaDataContext = new AbstractMetaDataContext(null, retrievals);
+      MetaDataContext metaDataContext = createMetaDataContext(retrievals);
       repository.addMetaDataRetrieval(metaDataContext);
       return metaDataContext;
+   }
+
+   /**
+    * Create metadata context.
+    *
+    * @param retrievals the retrievals
+    * @return new metadata context instance
+    */
+   protected MetaDataContext createMetaDataContext(List<MetaDataRetrieval> retrievals)
+   {
+      return new AbstractMetaDataContext(null, retrievals);
    }
 }
