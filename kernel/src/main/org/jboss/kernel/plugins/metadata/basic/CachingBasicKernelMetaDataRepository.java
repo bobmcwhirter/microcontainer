@@ -37,12 +37,6 @@ public abstract class CachingBasicKernelMetaDataRepository extends BasicKernelMe
 {
    private CacheFactory factory;
 
-   public CachingBasicKernelMetaDataRepository()
-   {
-      super();
-      factory = createCacheFactory();
-   }
-
    /**
     * Create cache factory.
     *
@@ -50,8 +44,20 @@ public abstract class CachingBasicKernelMetaDataRepository extends BasicKernelMe
     */
    protected abstract CacheFactory createCacheFactory();
 
+   /**
+    * Get cache factory.
+    *
+    * @return the cache factory
+    */
+   protected CacheFactory getFactory()
+   {
+      if (factory == null)
+         factory = createCacheFactory();
+      return factory;
+   }
+
    protected MetaDataContext createMetaDataContext(List<MetaDataRetrieval> retrievals)
    {
-      return new CachingMetaDataContext(null, retrievals, factory);
+      return new CachingMetaDataContext(null, retrievals, getFactory());
    }
 }
