@@ -78,6 +78,12 @@ public class GenericBeanAspectFactory extends GenericAspectFactory
       //This must return the classname of the aspect, aop depends on that
       return classname;
    }
+   
+   @Override
+   public String getClassname()
+   {
+      return classname;
+   }
 
    public Object createPerVM()
    {
