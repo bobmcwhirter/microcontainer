@@ -43,11 +43,8 @@ public class AOPMicrocontainerTest extends MicrocontainerTest
    {
       String property = System.getProperty("jboss.mc.secure", "false");
       boolean enableSecurity = Boolean.valueOf(property).booleanValue();
-      property = System.getProperty("jboss.mc.jaxb", "false");
-      boolean useJaxbDeployer = Boolean.valueOf(property).booleanValue();
       AOPMicrocontainerTestDelegate delegate = new AOPMicrocontainerTestDelegate(clazz);
       delegate.enableSecurity = enableSecurity;
-      delegate.useJaxbDeployer = useJaxbDeployer;
       return delegate;
    }
    

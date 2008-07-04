@@ -40,8 +40,6 @@ public class AOPMicrocontainerTestDelegate extends MicrocontainerTestDelegate
    /** The deployed urls */
    private static final CopyOnWriteArrayList<URL> urls = new CopyOnWriteArrayList<URL>();
    
-   boolean useJaxbDeployer;
-
    /**
     * Create a new AOPMicrocontainerTestDelegate.
     * 
