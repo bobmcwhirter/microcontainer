@@ -21,6 +21,8 @@
 */
 package org.jboss.dependency.spi;
 
+import java.util.Arrays;
+
 import org.jboss.util.JBossStringBuilder;
 import org.jboss.xb.annotations.JBossXmlEnum;
 
@@ -65,7 +67,7 @@ public enum ControllerMode
          if (modeString.equalsIgnoreCase(cm.getModeString()))
             return cm;
       }
-      throw new IllegalArgumentException("No such controller mode: " + modeString);
+      throw new IllegalArgumentException("No such controller mode: " + modeString + ", available: " + Arrays.toString(values()));
    }
 
    /**

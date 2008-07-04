@@ -21,6 +21,8 @@
 */
 package org.jboss.dependency.spi;
 
+import java.util.Arrays;
+
 import org.jboss.xb.annotations.JBossXmlEnum;
 
 /**
@@ -43,6 +45,6 @@ public enum ErrorHandlingMode
          if (mode.toString().equalsIgnoreCase(type))
             return mode;
       }
-      throw new IllegalArgumentException("No such error handling mode: " + type);
+      throw new IllegalArgumentException("No such error handling mode: " + type + ", available: " + Arrays.toString(values()));
    }
 }

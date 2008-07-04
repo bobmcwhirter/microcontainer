@@ -28,6 +28,8 @@ import java.security.PrivilegedExceptionAction;
 
 /**
  * Simple execution wrapper
+ *
+ * @author ales.justin@jboss.org
  */
 abstract class ExecutionWrapper
 {
