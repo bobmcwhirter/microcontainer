@@ -43,7 +43,7 @@ public abstract class AbstractLookupStrategy implements LookupStrategy, SearchIn
       if (type == null)
       {
          String simpleName = getClass().getSimpleName();
-         int p = simpleName.indexOf("Strategy");
+         int p = simpleName.indexOf("LookupStrategy");
          type = simpleName.substring(0, p);
       }
       return type;

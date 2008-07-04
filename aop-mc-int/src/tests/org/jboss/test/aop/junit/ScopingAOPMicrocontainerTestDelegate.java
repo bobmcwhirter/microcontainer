@@ -21,10 +21,10 @@
 */
 package org.jboss.test.aop.junit;
 
-import org.jboss.dependency.plugins.AbstractController;
+import org.jboss.dependency.plugins.graph.Search;
 import org.jboss.dependency.spi.Controller;
-import org.jboss.dependency.spi.ControllerContext;
 import org.jboss.dependency.spi.ControllerState;
+import org.jboss.dependency.spi.graph.GraphController;
 import org.jboss.kernel.spi.dependency.KernelControllerContext;
 
 /**
@@ -45,50 +45,16 @@ public class ScopingAOPMicrocontainerTestDelegate extends AOPMicrocontainerTestD
    {
       try
       {
-         Controller controller = new TestController((AbstractController)kernel.getController());
-         KernelControllerContext context = (KernelControllerContext)controller.getContext(name, state);
+         Controller controller = kernel.getController();
+         GraphController gc = (GraphController)controller;
+         KernelControllerContext context = (KernelControllerContext)gc.getContext(name, state, Search.DEPTH);
          if (context == null)
             throw new IllegalStateException("Bean not found " + name + " at state " + state);
          return context;
       }
-      catch (Exception e)
+      catch (Throwable t)
       {
-         throw new Error(e);
+         throw new Error(t);
       }
    }
-
-   private class TestController extends AbstractController
-   {
-      private AbstractController delegate;
-
-      public TestController(AbstractController controller) throws Exception
-      {
-         this.delegate = controller;
-      }
-
-      public ControllerContext getContext(Object name, ControllerState state)
-      {
-         return findContext(delegate, name, state);
-      }
-
-      private ControllerContext findContext(AbstractController controller, Object name, ControllerState state)
-      {
-         ControllerContext context = controller.getContext(name, state);
-         if (context != null)
-         {
-            return context;
-         }
-         else
-         {
-            for (AbstractController childController : controller.getControllers())
-            {
-               ControllerContext ctx = findContext(childController, name, state);
-               if (ctx != null)
-                  return ctx;
-            }
-         }
-         return null;
-      }
-   }
-
 }
