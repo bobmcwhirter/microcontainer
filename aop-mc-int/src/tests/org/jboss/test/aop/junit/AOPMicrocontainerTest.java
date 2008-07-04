@@ -48,11 +48,6 @@ public class AOPMicrocontainerTest extends MicrocontainerTest
       return delegate;
    }
    
-   public static void setUseJaxb(boolean val)
-   {
-      System.setProperty("jboss.mc.jaxb", String.valueOf(val));
-   }
-   
    /**
     * Create a new AOPMicrocontainer test
     * 
