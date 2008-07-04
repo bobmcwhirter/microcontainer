@@ -22,10 +22,13 @@
 package org.jboss.dependency.plugins;
 
 import org.jboss.dependency.spi.ControllerContext;
+import org.jboss.dependency.spi.ControllerState;
 
 /**
  * Scoped controller.
- * Not other scoping logic except add/remove controller context.
+ *
+ * The only scoping logic is local lookup and
+ * add/remove of controller context.
  * Subclasses should provide parent lookup after looking
  * at the current scoped instance.
  *
@@ -38,6 +41,19 @@ public abstract class ScopedController extends AbstractController
    protected void setUnderlyingController(AbstractController underlyingController)
    {
       this.underlyingController = underlyingController;
+   }
+
+   /**
+    * Get the context only in this scope.
+    * No hierarchy lookup.
+    *
+    * @param name the context name
+    * @param state the controller state
+    * @return found context or null if not available
+    */
+   public ControllerContext getContextLocally(Object name, ControllerState state)
+   {
+      return super.getContext(name, state);
    }
 
    /**

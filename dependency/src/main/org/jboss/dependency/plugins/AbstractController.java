@@ -47,6 +47,9 @@ import org.jboss.dependency.spi.ControllerStateModel;
 import org.jboss.dependency.spi.DependencyInfo;
 import org.jboss.dependency.spi.DependencyItem;
 import org.jboss.dependency.spi.LifecycleCallbackItem;
+import org.jboss.dependency.spi.graph.GraphController;
+import org.jboss.dependency.spi.graph.SearchInfo;
+import org.jboss.dependency.spi.graph.LookupStrategy;
 import org.jboss.util.JBossObject;
 
 /**
@@ -56,7 +59,7 @@ import org.jboss.util.JBossObject;
  * @author <a href="ales.justin@jboss.com">Ales Justin</a>
  * @version $Revision$
  */
-public class AbstractController extends JBossObject implements Controller, ControllerStateModel
+public class AbstractController extends JBossObject implements Controller, ControllerStateModel, GraphController
 {
    /** The lock */
    private ReentrantReadWriteLock lock = new ReentrantReadWriteLock();
@@ -257,7 +260,7 @@ public class AbstractController extends JBossObject implements Controller, Contr
     *
     * @return the parent controller
     */
-   protected AbstractController getParentController()
+   public AbstractController getParentController()
    {
       return parentController;
    }
@@ -344,6 +347,18 @@ public class AbstractController extends JBossObject implements Controller, Contr
       {
          unlockRead();
       }
+   }
+
+   public ControllerContext getContext(Object name, ControllerState state, SearchInfo info) throws Throwable
+   {
+      if (info == null)
+         throw new IllegalArgumentException("Null search info.");
+
+      LookupStrategy strategy = info.getStrategy();
+      if (strategy == null)
+         throw new IllegalArgumentException("AbstractController doesn't implement this search info: " + info);
+
+      return strategy.getContext(this, name, state);
    }
 
    /**
