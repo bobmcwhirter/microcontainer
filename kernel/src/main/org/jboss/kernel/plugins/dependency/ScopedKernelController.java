@@ -146,6 +146,12 @@ public class ScopedKernelController extends AbstractKernelController
       scopeInfo.setInstallScope(scopeKey);
    }
 
+   // override, since kernel's contexts are extended with registry plugin
+   public ControllerContext getContextLocally(Object name, ControllerState state)
+   {
+      return super.getContext(name, state);
+   }
+
    public ControllerContext getContext(Object name, ControllerState state)
    {
       ControllerContext context = super.getContext(name, state);
