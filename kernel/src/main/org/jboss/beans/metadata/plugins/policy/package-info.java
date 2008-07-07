@@ -22,16 +22,13 @@
 @JBossXmlAdaptedTypes
 ({
    @JBossXmlAdaptedType(type=Cardinality.class, valueAdapter=CardinalityValueAdapter.class),
-   @JBossXmlAdaptedType(type=ControllerMode.class, valueAdapter= ControllerModeValueAdapter.class),
    @JBossXmlAdaptedType(type=ControllerState.class, valueAdapter=ControllerStateValueAdapter.class)
 })
 package org.jboss.beans.metadata.plugins.policy;
 
 import org.jboss.beans.metadata.plugins.CardinalityValueAdapter;
-import org.jboss.beans.metadata.plugins.ControllerModeValueAdapter;
 import org.jboss.beans.metadata.plugins.ControllerStateValueAdapter;
 import org.jboss.dependency.spi.Cardinality;
-import org.jboss.dependency.spi.ControllerMode;
 import org.jboss.dependency.spi.ControllerState;
 import org.jboss.xb.annotations.JBossXmlAdaptedType;
 import org.jboss.xb.annotations.JBossXmlAdaptedTypes;

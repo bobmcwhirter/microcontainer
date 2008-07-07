@@ -23,6 +23,8 @@ package org.jboss.dependency.spi;
 
 import java.util.Arrays;
 
+import javax.xml.bind.annotation.XmlEnumValue;
+
 import org.jboss.util.JBossStringBuilder;
 import org.jboss.xb.annotations.JBossXmlEnum;
 
@@ -36,7 +38,7 @@ import org.jboss.xb.annotations.JBossXmlEnum;
 public enum ControllerMode
 {
    AUTOMATIC("Automatic"),
-   ON_DEMAND("On Demand"),
+   @XmlEnumValue("On Demand") ON_DEMAND("On Demand"),
    MANUAL("Manual"),
    DISABLED("Disabled"),
    ASYNCHRONOUS("Asynchronous");

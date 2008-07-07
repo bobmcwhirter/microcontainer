@@ -21,6 +21,8 @@
 */
 package org.jboss.beans.metadata.api.model;
 
+import javax.xml.bind.annotation.XmlEnumValue;
+
 import org.jboss.util.JBossStringBuilder;
 import org.jboss.xb.annotations.JBossXmlEnum;
 
@@ -38,8 +40,8 @@ import org.jboss.xb.annotations.JBossXmlEnum;
 public enum AutowireType
 {
    NONE(MicrocontainerConstants.NONE),
-   BY_CLASS(MicrocontainerConstants.BY_CLASS),
-   BY_NAME(MicrocontainerConstants.BY_NAME),
+   @XmlEnumValue("ByClass") BY_CLASS(MicrocontainerConstants.BY_CLASS),
+   @XmlEnumValue("ByName") BY_NAME(MicrocontainerConstants.BY_NAME),
    CONSTRUCTOR(MicrocontainerConstants.CONSTRUCTOR),
    AUTO(MicrocontainerConstants.AUTO);
 

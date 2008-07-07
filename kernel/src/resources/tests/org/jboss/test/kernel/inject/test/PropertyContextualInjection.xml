@@ -9,7 +9,7 @@
    </bean>
 
    <bean name="testObject2" class="org.jboss.test.kernel.inject.support.PropertyInjectTestObject">
-      <property name="duplicateTester"><inject type="By_Name"/></property>
+      <property name="duplicateTester"><inject type="ByName"/></property>
    </bean>
 
    <bean name="testObject3" class="org.jboss.test.kernel.inject.support.PropertyInjectTestObject">
