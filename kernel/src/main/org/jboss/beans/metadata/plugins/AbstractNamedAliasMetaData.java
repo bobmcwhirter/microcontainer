@@ -21,10 +21,9 @@
 */
 package org.jboss.beans.metadata.plugins;
 
-import javax.xml.bind.annotation.XmlType;
 import javax.xml.bind.annotation.XmlAttribute;
+import javax.xml.bind.annotation.XmlType;
 
-import org.jboss.beans.metadata.spi.MetaDataVisitor;
 import org.jboss.beans.metadata.spi.NamedAliasMetaData;
 import org.jboss.util.JBossStringBuilder;
 
@@ -64,12 +63,6 @@ public class AbstractNamedAliasMetaData extends AbstractAliasMetaData implements
    public void setName(Object name)
    {
       this.name = name;
-   }
-
-   public void initialVisit(MetaDataVisitor visitor)
-   {
-      // todo
-      super.initialVisit(visitor);
    }
 
    public void toString(JBossStringBuilder buffer)

@@ -42,10 +42,6 @@ public abstract class AbstractConfigureAction extends InstallsAwareAction
       return ConfigureKernelControllerContextAware.class;
    }
 
-   //TODO remove this?
-   //In case the class is EXACTLY KernelControllerContextAware, we call it from here,
-   //required for KernelControllerContextAwareTestCase and KernelControllerContextAwareXMLTestCase
-
    /**
     * Execute KCCA install.
     * 

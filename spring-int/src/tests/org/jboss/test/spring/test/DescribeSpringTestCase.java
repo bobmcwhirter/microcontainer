@@ -29,7 +29,6 @@ import org.jboss.beans.metadata.spi.BeanMetaData;
  */
 public class DescribeSpringTestCase extends TempSpringSchemaTest
 {
-
    public DescribeSpringTestCase(String name)
    {
       super(name);
@@ -51,5 +50,4 @@ public class DescribeSpringTestCase extends TempSpringSchemaTest
       // todo - test descriptions
       System.out.println("simpleBean = " + simpleBeanMD);
    }
-
 }

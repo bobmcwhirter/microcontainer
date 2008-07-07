@@ -21,8 +21,6 @@
 */
 package org.jboss.dependency.spi;
 
-import java.util.Arrays;
-
 import org.jboss.xb.annotations.JBossXmlEnum;
 
 /**
@@ -35,16 +33,5 @@ public enum ErrorHandlingMode
 {
    DISCARD, // The default as before
    MANUAL, // Handle contexts in error yourself
-   CHECKED; // As MANUAL but RuntimeExceptions, Errors lead to a DISCARD
-
-   // TODO - remove after 219
-   public static ErrorHandlingMode getInstance(String type)
-   {
-      for(ErrorHandlingMode mode : values())
-      {
-         if (mode.toString().equalsIgnoreCase(type))
-            return mode;
-      }
-      throw new IllegalArgumentException("No such error handling mode: " + type + ", available: " + Arrays.toString(values()));
-   }
+   CHECKED // As MANUAL but RuntimeExceptions, Errors lead to a DISCARD
 }
