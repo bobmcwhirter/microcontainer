@@ -5,7 +5,7 @@
   <classpathentry kind="con" path="org.eclipse.jdt.launching.JRE_CONTAINER"/>
   <classpathentry kind="var" path="M2_REPO/javax/activation/activation/1.0.2/activation-1.0.2.jar"/>
   <classpathentry kind="var" path="M2_REPO/wutka-dtdparser/dtdparser121/1.2.1/dtdparser121-1.2.1.jar"/>
-  <classpathentry kind="var" path="M2_REPO/com/google/code/guice/guice/1.0/guice-1.0.jar"/>
+  <classpathentry kind="var" path="M2_REPO/com/google/code/guice/guice/1.0/guice-1.0.jar" sourcepath="M2_REPO/com/google/code/guice/guice/1.0/guice-1.0-sources.jar"/>
   <classpathentry kind="var" path="M2_REPO/javax/xml/bind/jaxb-api/2.1/jaxb-api-2.1.jar" sourcepath="M2_REPO/javax/xml/bind/jaxb-api/2.1/jaxb-api-2.1-sources.jar"/>
   <classpathentry kind="var" path="M2_REPO/org/jboss/jboss-common-core/2.2.7.GA/jboss-common-core-2.2.7.GA.jar" sourcepath="M2_REPO/org/jboss/jboss-common-core/2.2.7.GA/jboss-common-core-2.2.7.GA-sources.jar"/>
   <classpathentry kind="var" path="M2_REPO/jboss/jboss-common-logging-log4j/2.0.4.GA/jboss-common-logging-log4j-2.0.4.GA.jar" sourcepath="M2_REPO/jboss/jboss-common-logging-log4j/2.0.4.GA/jboss-common-logging-log4j-2.0.4.GA-sources.jar"/>
@@ -14,7 +14,7 @@
   <classpathentry kind="src" path="/jboss-kernel"/>
   <classpathentry kind="var" path="M2_REPO/org/jboss/logging/jboss-logging-spi/2.0.5.GA/jboss-logging-spi-2.0.5.GA.jar" sourcepath="M2_REPO/org/jboss/logging/jboss-logging-spi/2.0.5.GA/jboss-logging-spi-2.0.5.GA-sources.jar"/>
   <classpathentry kind="var" path="M2_REPO/org/jboss/man/jboss-managed/2.0.0.Beta12/jboss-managed-2.0.0.Beta12.jar" sourcepath="M2_REPO/org/jboss/man/jboss-managed/2.0.0.Beta12/jboss-managed-2.0.0.Beta12-sources.jar"/>
-  <classpathentry kind="var" path="M2_REPO/org/jboss/jboss-mdr/2.0.0.Beta15/jboss-mdr-2.0.0.Beta15.jar" sourcepath="M2_REPO/org/jboss/jboss-mdr/2.0.0.Beta15/jboss-mdr-2.0.0.Beta15-sources.jar"/>
+  <classpathentry kind="var" path="M2_REPO/org/jboss/jboss-mdr/2.0.0-SNAPSHOT/jboss-mdr-2.0.0-SNAPSHOT.jar" sourcepath="M2_REPO/org/jboss/jboss-mdr/2.0.0-SNAPSHOT/jboss-mdr-2.0.0-SNAPSHOT-sources.jar"/>
   <classpathentry kind="var" path="M2_REPO/org/jboss/man/jboss-metatype/2.0.0.Beta12/jboss-metatype-2.0.0.Beta12.jar" sourcepath="M2_REPO/org/jboss/man/jboss-metatype/2.0.0.Beta12/jboss-metatype-2.0.0.Beta12-sources.jar"/>
   <classpathentry kind="var" path="M2_REPO/org/jboss/jboss-reflect/2.0.0.Beta12/jboss-reflect-2.0.0.Beta12.jar" sourcepath="M2_REPO/org/jboss/jboss-reflect/2.0.0.Beta12/jboss-reflect-2.0.0.Beta12-sources.jar"/>
   <classpathentry kind="var" path="M2_REPO/org/jboss/jboss-test/1.0.5.GA/jboss-test-1.0.5.GA.jar" sourcepath="M2_REPO/org/jboss/jboss-test/1.0.5.GA/jboss-test-1.0.5.GA-sources.jar"/>
