@@ -56,7 +56,12 @@ public enum ControllerMode
       this.modeString = modeString;
    }
 
-   // TODO - remove this once JBMICROCONT-219 is done
+   /**
+    * Get the right enum instance from mode string.
+    *
+    * @param modeString the mode string param
+    * @return matching enum or exception if no match
+    */
    public static ControllerMode getInstance(String modeString)
    {
       if (modeString == null)
@@ -73,7 +78,7 @@ public enum ControllerMode
    /**
     * Get the mode string
     * 
-    * @return the mdoe string
+    * @return the mode string
     */
    public String getModeString()
    {

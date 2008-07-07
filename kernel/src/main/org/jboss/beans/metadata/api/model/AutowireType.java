@@ -22,6 +22,7 @@
 package org.jboss.beans.metadata.api.model;
 
 import org.jboss.util.JBossStringBuilder;
+import org.jboss.xb.annotations.JBossXmlEnum;
 
 /**
  * Autowire type:
@@ -33,6 +34,7 @@ import org.jboss.util.JBossStringBuilder;
  *
  * @author <a href="mailto:ales.justin@jboss.com">Ales Justin</a>
  */
+@JBossXmlEnum(ignoreCase=true)
 public enum AutowireType
 {
    NONE(MicrocontainerConstants.NONE),
@@ -63,7 +65,6 @@ public enum AutowireType
     * @param typeString type
     * @return AutowireType instance
     */
-   // TODO - remove this once JBMICROCONT-219 is done
    public static AutowireType getInstance(String typeString)
    {
       if (typeString == null)

@@ -21,11 +21,14 @@
 */
 package org.jboss.beans.metadata.api.model;
 
+import org.jboss.xb.annotations.JBossXmlEnum;
+
 /**
  * Injection option - strict or optional / callback.
  *
  * @author <a href="mailto:ales.justin@gmail.com">Ales Justin</a>
  */
+@JBossXmlEnum(ignoreCase=true)
 public enum InjectOption
 {
    STRICT(MicrocontainerConstants.STRICT),
@@ -41,25 +44,5 @@ public enum InjectOption
    public String toString()
    {
       return optionString;
-   }
-
-   /**
-    * Get the option enum.
-    *
-    * @param optionString the option string
-    * @return the inject option enum instance
-    */
-   // TODO - remove this once JBMICROCONT-219 is done
-   public static InjectOption getInstance(String optionString)
-   {
-      if (optionString == null)
-         throw new IllegalArgumentException("Null option string.");
-
-      for (InjectOption io : values())
-      {
-         if (optionString.equalsIgnoreCase(io.optionString))
-            return io;
-      }
-      throw new IllegalArgumentException("No such option string: " + optionString);
    }
 }

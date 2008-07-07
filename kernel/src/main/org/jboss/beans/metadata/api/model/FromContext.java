@@ -21,8 +21,11 @@
 */
 package org.jboss.beans.metadata.api.model;
 
+import java.util.Arrays;
+
 import org.jboss.dependency.spi.ControllerContext;
 import org.jboss.dependency.spi.ControllerState;
+import org.jboss.xb.annotations.JBossXmlEnum;
 
 /**
  * Inject from controller context:
@@ -37,6 +40,7 @@ import org.jboss.dependency.spi.ControllerState;
  *
  * @author <a href="mailto:ales.justin@jboss.com">Ales Justin</a>
  */
+@JBossXmlEnum(ignoreCase=true)
 public enum FromContext
 {
    NOOP(FromContextDelegate.NOOP),
@@ -92,7 +96,6 @@ public enum FromContext
     * @param fromString the type string
     * @return from context enum instance
     */
-   // TODO - remove this once JBMICROCONT-219 is done
    public static FromContext getInstance(String fromString)
    {
       if (fromString == null)
@@ -103,6 +106,6 @@ public enum FromContext
          if (fromString.equalsIgnoreCase(fromContext.delegate.getFromString()))
             return fromContext;
       }
-      throw new IllegalArgumentException("No such FromContext for from string: " + fromString);
+      throw new IllegalArgumentException("No such FromContext for from string: " + fromString + ", available: " + Arrays.toString(values()));
    }
 }
