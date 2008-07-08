@@ -23,13 +23,14 @@ package org.jboss.kernel.plugins.annotations;
 
 import org.jboss.beans.metadata.plugins.AbstractValueMetaData;
 import org.jboss.beans.metadata.spi.MetaDataVisitor;
+import org.jboss.dependency.plugins.AbstractDependencyItem;
+import org.jboss.dependency.plugins.graph.Search;
+import org.jboss.dependency.spi.Controller;
 import org.jboss.dependency.spi.ControllerContext;
 import org.jboss.dependency.spi.ControllerState;
-import org.jboss.dependency.spi.Controller;
 import org.jboss.dependency.spi.DependencyItem;
 import org.jboss.dependency.spi.dispatch.AttributeDispatchContext;
 import org.jboss.dependency.spi.graph.GraphController;
-import org.jboss.dependency.plugins.AbstractDependencyItem;
 import org.jboss.reflect.spi.TypeInfo;
 import org.jboss.util.JBossStringBuilder;
 
@@ -46,7 +47,7 @@ public class SearchValueMetaData extends AbstractValueMetaData
 
    private ControllerContext context;
 
-   public SearchValueMetaData(Object value, ControllerState state, org.jboss.dependency.plugins.graph.Search search, String property)
+   public SearchValueMetaData(Object value, ControllerState state, Search search, String property)
    {
       super(value);
       if (search == null)

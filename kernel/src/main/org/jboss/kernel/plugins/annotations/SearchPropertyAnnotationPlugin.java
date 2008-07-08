@@ -23,6 +23,7 @@ package org.jboss.kernel.plugins.annotations;
 
 import java.util.HashMap;
 import java.util.Map;
+import java.util.Arrays;
 
 import org.jboss.beans.metadata.api.annotations.Search;
 import org.jboss.beans.metadata.spi.ValueMetaData;
@@ -58,7 +59,7 @@ public class SearchPropertyAnnotationPlugin extends PropertyAnnotationPlugin<Sea
       String searchType = search.type();
       org.jboss.dependency.plugins.graph.Search type = types.get(searchType.toUpperCase());
       if (type == null)
-         throw new IllegalArgumentException("No such search type: " + searchType + ", available: " + types.keySet());
+         throw new IllegalArgumentException("No such search type: " + searchType + ", available: " + Arrays.toString(org.jboss.dependency.plugins.graph.Search.values()));
       
       return new SearchValueMetaData(
             search.bean(),
