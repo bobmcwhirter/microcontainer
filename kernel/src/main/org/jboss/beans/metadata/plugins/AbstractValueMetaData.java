@@ -103,9 +103,9 @@ public class AbstractValueMetaData extends JBossObject
       visitor.initialVisit(this);
    }
 
-   public void describeVisit(MetaDataVisitor vistor)
+   public void describeVisit(MetaDataVisitor visitor)
    {
-      vistor.describeVisit(this);
+      visitor.describeVisit(this);
    }
 
    public TypeInfo getType(MetaDataVisitor visitor, MetaDataVisitorNode previous) throws Throwable

@@ -46,7 +46,7 @@ public class WidthLookupStrategy extends AbstractLookupStrategy
       this.checkCurrent = checkCurrent;
    }
 
-   protected ControllerContext getContextInternal(AbstractController controller, Object name, ControllerState state) throws Throwable
+   protected ControllerContext getContextInternal(AbstractController controller, Object name, ControllerState state)
    {
       return getContextInternal(controller, name, state, checkCurrent);
    }
@@ -59,9 +59,8 @@ public class WidthLookupStrategy extends AbstractLookupStrategy
     * @param state the context's state
     * @param check check current
     * @return context or null if not available
-    * @throws Throwable for any error
     */
-   protected ControllerContext getContextInternal(AbstractController controller, Object name, ControllerState state, boolean check) throws Throwable
+   protected ControllerContext getContextInternal(AbstractController controller, Object name, ControllerState state, boolean check)
    {
       ControllerContext context;
       if (check)

@@ -54,7 +54,7 @@ public abstract class AbstractLookupStrategy implements LookupStrategy, SearchIn
       return this;
    }
 
-   public ControllerContext getContext(Controller controller, Object name, ControllerState state) throws Throwable
+   public ControllerContext getContext(Controller controller, Object name, ControllerState state)
    {
       if (controller instanceof AbstractController == false)
          throw new IllegalArgumentException("Can only handle AbstractController: " + controller);
@@ -69,7 +69,6 @@ public abstract class AbstractLookupStrategy implements LookupStrategy, SearchIn
     * @param name the name of the context
     * @param state the context's state
     * @return context or null if not available
-    * @throws Throwable for any error
     */
-   protected abstract ControllerContext getContextInternal(AbstractController controller, Object name, ControllerState state) throws Throwable;
+   protected abstract ControllerContext getContextInternal(AbstractController controller, Object name, ControllerState state);
 }

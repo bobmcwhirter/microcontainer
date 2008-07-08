@@ -349,7 +349,7 @@ public class AbstractController extends JBossObject implements Controller, Contr
       }
    }
 
-   public ControllerContext getContext(Object name, ControllerState state, SearchInfo info) throws Throwable
+   public ControllerContext getContext(Object name, ControllerState state, SearchInfo info)
    {
       if (info == null)
          throw new IllegalArgumentException("Null search info.");

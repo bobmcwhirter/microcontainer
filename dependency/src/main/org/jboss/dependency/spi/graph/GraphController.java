@@ -41,7 +41,6 @@ public interface GraphController
     * @param state the required state
     * @param info the seatch info
     * @return found context or null if not available
-    * @throws Throwable for any error
     */
-   ControllerContext getContext(Object name, ControllerState state, SearchInfo info) throws Throwable;
+   ControllerContext getContext(Object name, ControllerState state, SearchInfo info);
 }

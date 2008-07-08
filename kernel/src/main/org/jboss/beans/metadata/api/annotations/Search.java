@@ -19,27 +19,50 @@
 * Software Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA
 * 02110-1301 USA, or see the FSF site: http://www.fsf.org.
 */
-package org.jboss.dependency.plugins.graph;
+package org.jboss.beans.metadata.api.annotations;
 
-import org.jboss.dependency.spi.ControllerContext;
-import org.jboss.dependency.spi.ControllerState;
-import org.jboss.dependency.plugins.AbstractController;
+import java.lang.annotation.Target;
+import java.lang.annotation.ElementType;
+import java.lang.annotation.Retention;
+import java.lang.annotation.RetentionPolicy;
 
 /**
- * Check only top level.
- * 
+ * Do a search over GraphController for matching context.
+ *
  * @author <a href="mailto:ales.justin@jboss.com">Ales Justin</a>
  */
-public class TopLevelLookupStrategy extends AbstractLookupStrategy
+@Target(ElementType.METHOD)
+@Retention(RetentionPolicy.RUNTIME)
+public @interface Search
 {
-   protected ControllerContext getContextInternal(AbstractController controller, Object name, ControllerState state)
-   {
-      AbstractController parent = controller.getParentController();
-      while (parent != null)
-      {
-         controller = parent;
-         parent = controller.getParentController();
-      }
-      return controller.getContext(name, state);
-   }
+   /**
+    * Get bean.
+    * Default is no bean.
+    *
+    * @return bean name
+    */
+   String bean();
+
+   /**
+    * Get dependent state.
+    * Default is Installed.
+    *
+    * @return dependent state.
+    */
+   String dependentState() default "";
+
+   /**
+    * Get search type.
+    *
+    * @return the search type
+    */
+   String type();
+
+   /**
+    * Get property.
+    * Default is no property.
+    *
+    * @return property name
+    */
+   String property() default "";
 }

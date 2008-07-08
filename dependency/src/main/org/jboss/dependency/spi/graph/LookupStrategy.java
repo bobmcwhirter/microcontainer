@@ -39,7 +39,6 @@ public interface LookupStrategy
     * @param name the name of the context
     * @param state the context's state
     * @return context or null if not available
-    * @throws Throwable for any error
     */
-   ControllerContext getContext(Controller controller, Object name, ControllerState state) throws Throwable;
+   ControllerContext getContext(Controller controller, Object name, ControllerState state);
 }

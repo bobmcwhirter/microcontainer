@@ -19,27 +19,30 @@
 * Software Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA
 * 02110-1301 USA, or see the FSF site: http://www.fsf.org.
 */
-package org.jboss.dependency.plugins.graph;
+package org.jboss.test.kernel.annotations.test.search;
 
-import org.jboss.dependency.spi.ControllerContext;
-import org.jboss.dependency.spi.ControllerState;
-import org.jboss.dependency.plugins.AbstractController;
+import junit.framework.Test;
+import junit.framework.TestSuite;
+import junit.textui.TestRunner;
 
 /**
- * Check only top level.
- * 
+ * Search annotation tests.
+ *
  * @author <a href="mailto:ales.justin@jboss.com">Ales Justin</a>
  */
-public class TopLevelLookupStrategy extends AbstractLookupStrategy
+public class SearchTestSuite extends TestSuite
 {
-   protected ControllerContext getContextInternal(AbstractController controller, Object name, ControllerState state)
+   public static void main(String[] args)
    {
-      AbstractController parent = controller.getParentController();
-      while (parent != null)
-      {
-         controller = parent;
-         parent = controller.getParentController();
-      }
-      return controller.getContext(name, state);
+      TestRunner.run(suite());
+   }
+
+   public static Test suite()
+   {
+      TestSuite suite = new TestSuite("Search Tests");
+
+      suite.addTest(BasicSearchAnnotationSupportTestCase.suite());
+
+      return suite;
    }
 }

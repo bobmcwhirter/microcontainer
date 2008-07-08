@@ -195,7 +195,7 @@ public class AbstractDependencyValueMetaData extends AbstractValueMetaData
       if (lookup == null)
          return null;
 
-      Object result = lookup.getTarget();
+      Object result;
       if (property != null)
       {
          if (lookup instanceof AttributeDispatchContext)
@@ -208,6 +208,11 @@ public class AbstractDependencyValueMetaData extends AbstractValueMetaData
                   "Cannot use property attribute, context is not AttributeDispatchContext: " + lookup +
                   ", metadata: " + this);
       }
+      else
+      {
+         result = lookup.getTarget();
+      }
+      
       return info != null ? info.convertValue(result) : result;
    }
 

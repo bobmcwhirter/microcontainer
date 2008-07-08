@@ -33,7 +33,7 @@ import org.jboss.dependency.spi.ControllerState;
  */
 public class DefaultLookupStrategy implements LookupStrategy
 {
-   public ControllerContext getContext(Controller controller, Object name, ControllerState state) throws Throwable
+   public ControllerContext getContext(Controller controller, Object name, ControllerState state)
    {
       return controller.getContext(name, state);
    }

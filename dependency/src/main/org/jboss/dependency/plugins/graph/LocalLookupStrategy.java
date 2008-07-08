@@ -33,7 +33,7 @@ import org.jboss.dependency.spi.ControllerState;
  */
 public class LocalLookupStrategy extends AbstractLookupStrategy
 {
-   protected ControllerContext getContextInternal(AbstractController controller, Object name, ControllerState state) throws Throwable
+   protected ControllerContext getContextInternal(AbstractController controller, Object name, ControllerState state)
    {
       if (controller instanceof ScopedController)
       {

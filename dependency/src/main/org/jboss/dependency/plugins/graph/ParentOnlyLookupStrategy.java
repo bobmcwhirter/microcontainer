@@ -33,7 +33,7 @@ import org.jboss.dependency.spi.ControllerState;
  */
 public class ParentOnlyLookupStrategy extends AbstractLookupStrategy
 {
-   protected ControllerContext getContextInternal(AbstractController controller, Object name, ControllerState state) throws Throwable
+   protected ControllerContext getContextInternal(AbstractController controller, Object name, ControllerState state)
    {
       AbstractController parent = controller.getParentController();
       if (parent != null)

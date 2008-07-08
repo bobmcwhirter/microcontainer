@@ -19,27 +19,22 @@
 * Software Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA
 * 02110-1301 USA, or see the FSF site: http://www.fsf.org.
 */
-package org.jboss.dependency.plugins.graph;
-
-import org.jboss.dependency.spi.ControllerContext;
-import org.jboss.dependency.spi.ControllerState;
-import org.jboss.dependency.plugins.AbstractController;
+package org.jboss.test.kernel.annotations.support;
 
 /**
- * Check only top level.
- * 
  * @author <a href="mailto:ales.justin@jboss.com">Ales Justin</a>
  */
-public class TopLevelLookupStrategy extends AbstractLookupStrategy
+public class ScopeTester
 {
-   protected ControllerContext getContextInternal(AbstractController controller, Object name, ControllerState state)
+   private String scope;
+
+   public ScopeTester(String scope)
    {
-      AbstractController parent = controller.getParentController();
-      while (parent != null)
-      {
-         controller = parent;
-         parent = controller.getParentController();
-      }
-      return controller.getContext(name, state);
+      this.scope = scope;
+   }
+
+   public String getScope()
+   {
+      return scope;
    }
 }
