@@ -60,10 +60,14 @@ public class SearchValueMetaData extends AbstractValueMetaData
 
    public Object getValue(TypeInfo info, ClassLoader cl) throws Throwable
    {
-      Controller controller = context.getController();
       // we're here, so it must be GraphController instance
+      Controller controller = context.getController();
       GraphController gc = (GraphController)controller;
-      ControllerContext context = gc.getContext(getUnderlyingValue(), state, search);
+
+      ControllerState dependentState = state;
+      if (dependentState == null)
+         dependentState = ControllerState.INSTALLED;
+      ControllerContext context = gc.getContext(getUnderlyingValue(), dependentState, search);
 
       Object result;
       if (property != null && property.length() > 0)
