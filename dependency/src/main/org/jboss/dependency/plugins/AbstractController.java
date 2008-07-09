@@ -341,7 +341,18 @@ public class AbstractController extends JBossObject implements Controller, Contr
       lockRead();
       try
       {
-         return allContexts.isEmpty() == false;
+         // is this active
+         if (allContexts.isEmpty() == false)
+            return true;
+
+         // any of the children still active
+         for (AbstractController child : getControllers())
+         {
+            if (child.isActive())
+               return true;
+         }
+
+         return false;
       }
       finally
       {

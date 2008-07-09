@@ -37,12 +37,8 @@ import org.jboss.kernel.spi.config.KernelConfigurator;
 import org.jboss.kernel.spi.dependency.KernelController;
 import org.jboss.kernel.spi.dependency.KernelControllerContext;
 import org.jboss.kernel.spi.metadata.KernelMetaDataRepository;
-import org.jboss.metadata.plugins.loader.memory.MemoryMetaDataLoader;
 import org.jboss.metadata.spi.MetaData;
-import org.jboss.metadata.spi.MutableMetaData;
 import org.jboss.metadata.spi.repository.MutableMetaDataRepository;
-import org.jboss.metadata.spi.retrieval.MetaDataItem;
-import org.jboss.metadata.spi.retrieval.MetaDataRetrieval;
 import org.jboss.metadata.spi.scope.Scope;
 import org.jboss.metadata.spi.scope.ScopeFactory;
 import org.jboss.metadata.spi.scope.ScopeFactoryLookup;
@@ -161,45 +157,15 @@ public class PreInstallAction extends InstallsAwareAction
          scopeKey.freeze();
          context.getScopeInfo().setInstallScope(scopeKey);
 
+         if (controller instanceof AbstractKernelController == false)
+            throw new IllegalArgumentException("Can only handle AbstractKernelController: " + controller);
+
          MutableMetaDataRepository mmdr = repository.getMetaDataRepository();
-         MetaDataRetrieval mdr = mmdr.getMetaDataRetrieval(scopeKey);
-         if (mdr == null)
-         {
-            mdr = new MemoryMetaDataLoader(scopeKey);
-            mmdr.addMetaDataRetrieval(mdr);
-         }
-         MetaDataItem<ScopedKernelController> controllerItem = mdr.retrieveMetaData(ScopedKernelController.class);
-         ScopedKernelController scopedController;
-         if (controllerItem != null)
-         {
-            scopedController = controllerItem.getValue();
-         }
-         else
-         {
-            AbstractController parentController = null;
-            ScopeKey parentKey = scopeKey.getParent();
-            while (parentController == null && parentKey != null)
-            {
-               MetaDataRetrieval pmdr = mmdr.getMetaDataRetrieval(parentKey);
-               if (pmdr != null)
-               {
-                  MetaDataItem<ScopedKernelController> pci = pmdr.retrieveMetaData(ScopedKernelController.class);
-                  if (pci != null)
-                  {
-                     parentController = pci.getValue();
-                  }
-               }
-               parentKey = parentKey.getParent();
-            }
-            if (parentController == null)
-            {
-               if (controller instanceof AbstractController == false)
-                  throw new IllegalArgumentException("Underlying controller not AbstractController instance!");
-               parentController = (AbstractController) controller;
-            }
-            scopedController = new ScopedKernelController(controller.getKernel(), parentController, scopeKey);
-            ((MutableMetaData)mdr).addMetaData(scopedController, ScopedKernelController.class);
-         }
+         AbstractController abstractController = ScopeHierarchyBuilder.buildControllerHierarchy((AbstractKernelController)controller, mmdr, scopeKey);
+         if (abstractController instanceof ScopedKernelController == false)
+            throw new IllegalArgumentException("Should be ScopedKernelController instance: " + abstractController);
+
+         ScopedKernelController scopedController = (ScopedKernelController)abstractController;
          scopedController.addScopedControllerContext(context);
       }
    }
@@ -213,29 +179,7 @@ public class PreInstallAction extends InstallsAwareAction
          KernelMetaDataRepository repository = controller.getKernel().getMetaDataRepository();
          // find scoped controller
          MutableMetaDataRepository mmdr = repository.getMetaDataRepository();
-         MetaDataRetrieval mdr = mmdr.getMetaDataRetrieval(scopeKey);
-         if (mdr == null)
-         {
-            throw new IllegalArgumentException("Expecting MetaDataRetrieval instance in scope: " + scopeKey);
-         }
-         MetaDataItem<ScopedKernelController> controllerItem = mdr.retrieveMetaData(ScopedKernelController.class);
-         if (controllerItem == null)
-         {
-            throw new IllegalArgumentException("Expecting ScopedKernelController instance in scope:" + scopeKey);
-         }
-         ScopedKernelController scopedController = controllerItem.getValue();
-         scopedController.removeScopedControllerContext(context);
-         if (scopedController.isActive() == false)
-         {
-            try
-            {
-               ((MutableMetaData)mdr).removeMetaData(ScopedKernelController.class);
-            }
-            finally
-            {
-               scopedController.release();
-            }
-         }
+         ScopeHierarchyBuilder.cleanControllerHierarchy(mmdr, scopeKey, context);
       }
    }
 

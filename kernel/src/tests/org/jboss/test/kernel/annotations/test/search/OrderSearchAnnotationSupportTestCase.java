@@ -58,10 +58,11 @@ public class OrderSearchAnnotationSupportTestCase extends AbstractSearchAnnotati
       List<ControllerContext> contexts = new ArrayList<ControllerContext>();
       try
       {
-         contexts.add(install("top", null, null, -1));
-         contexts.add(install("local", "main", "core", -1));
-
          contexts.add(install("child", "main", "core", 1));
+         contexts.add(install("parent", "main", null, -1));
+         contexts.add(install("local", "main", "core", -1));
+         contexts.add(install("top", null, null, -1));
+
          // here we need a little push - since by default we only do parent hierarchy resolution
          controller.change(context, ControllerState.INSTALLED);
 
@@ -73,7 +74,8 @@ public class OrderSearchAnnotationSupportTestCase extends AbstractSearchAnnotati
          ListIterator<ControllerContext> iter = contexts.listIterator(contexts.size());
          while (iter.hasPrevious())
          {
-            getController().uninstall(iter.previous().getName());
+            Object name = iter.previous().getName();
+            getController().uninstall(name);
          }
       }
    }
@@ -83,7 +85,7 @@ public class OrderSearchAnnotationSupportTestCase extends AbstractSearchAnnotati
       SearchInjection si = (SearchInjection)target;
       // ony check exact one's
       assertScopeTester(si.getTop(), "top");
-      assertScopeTester(si.getParent(), "top");
+      assertScopeTester(si.getParent(), "parent");
       assertScopeTester(si.getLocal(), "local");
       assertScopeTester(si.getChildrenOnly(), "child");
       assertScopeTester(si.getLeaves(), "child");

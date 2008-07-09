@@ -26,18 +26,18 @@ import org.jboss.dependency.spi.ControllerContext;
 import org.jboss.dependency.spi.ControllerState;
 
 /**
- * Check only parent.
+ * Check parent.
  * Return null if there is no parent.
  *
  * @author <a href="mailto:ales.justin@jboss.com">Ales Justin</a>
  */
-public class ParentOnlyLookupStrategy extends HierarchyLookupStrategy
+public class ParentLookupStrategy extends AbstractLookupStrategy
 {
    protected ControllerContext getContextInternal(AbstractController controller, Object name, ControllerState state)
    {
       AbstractController parent = controller.getParentController();
       if (parent != null)
-         return getLocalContext(parent, name, state);
+         return parent.getContext(name, state);
       else
          return null;
    }

@@ -21,8 +21,6 @@
 */
 package org.jboss.test.kernel.annotations.test.search;
 
-import java.util.UUID;
-
 import org.jboss.beans.metadata.api.annotations.Aliases;
 import org.jboss.beans.metadata.spi.builder.BeanMetaDataBuilder;
 import org.jboss.dependency.spi.ControllerContext;
@@ -44,6 +42,8 @@ import org.jboss.test.kernel.annotations.test.AbstractBeanAnnotationAdapterTest;
  */
 public abstract class AbstractSearchAnnotationSupportTest extends AbstractBeanAnnotationAdapterTest
 {
+   protected static int counter = 0;
+
    protected AbstractSearchAnnotationSupportTest(String name)
    {
       super(name);
@@ -78,7 +78,7 @@ public abstract class AbstractSearchAnnotationSupportTest extends AbstractBeanAn
 
    protected ControllerContext install(String scope, String app, String deployment, int id) throws Throwable
    {
-      BeanMetaDataBuilder builder = BeanMetaDataBuilder.createBuilder(UUID.randomUUID().toString(), ScopeTester.class.getName());
+      BeanMetaDataBuilder builder = BeanMetaDataBuilder.createBuilder("tester" + (++counter), ScopeTester.class.getName());
       builder.addConstructorParameter(String.class.getName(), scope);
       builder.addAnnotation("@" + Aliases.class.getName() + "({\"bean\"})");
 
