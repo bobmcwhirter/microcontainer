@@ -32,10 +32,8 @@ import org.jboss.dependency.spi.ControllerState;
  *
  * @author <a href="mailto:ales.justin@jboss.com">Ales Justin</a>
  */
-public class WidthLookupStrategy extends AbstractLookupStrategy
+public class WidthLookupStrategy extends HierarchyLookupStrategy
 {
-   private boolean checkCurrent;
-
    public WidthLookupStrategy()
    {
       this(true);
@@ -43,12 +41,12 @@ public class WidthLookupStrategy extends AbstractLookupStrategy
 
    protected WidthLookupStrategy(boolean checkCurrent)
    {
-      this.checkCurrent = checkCurrent;
+      super(checkCurrent);
    }
 
    protected ControllerContext getContextInternal(AbstractController controller, Object name, ControllerState state)
    {
-      return getContextInternal(controller, name, state, checkCurrent);
+      return getContextInternal(controller, name, state, isCheckCurrent());
    }
 
    /**
@@ -65,7 +63,7 @@ public class WidthLookupStrategy extends AbstractLookupStrategy
       ControllerContext context;
       if (check)
       {
-         context = controller.getContext(name, state);
+         context = getLocalContext(controller, name, state);
          if (context != null)
             return context;
       }
@@ -73,7 +71,7 @@ public class WidthLookupStrategy extends AbstractLookupStrategy
       Set<AbstractController> children = controller.getControllers();
       for (AbstractController child : children)
       {
-         context = child.getContext(name, state);
+         context = getLocalContext(child, name, state);
          if (context != null)
             return context;
       }

@@ -26,37 +26,58 @@ import java.util.List;
 import java.util.ListIterator;
 
 import junit.framework.Test;
+import org.jboss.beans.metadata.plugins.AbstractBeanMetaData;
 import org.jboss.dependency.spi.ControllerContext;
+import org.jboss.dependency.spi.ControllerState;
+import org.jboss.kernel.plugins.annotations.AbstractBeanAnnotationAdapter;
+import org.jboss.kernel.plugins.annotations.BasicBeanAnnotationAdapter;
+import org.jboss.kernel.plugins.annotations.SearchPropertyAnnotationPlugin;
+import org.jboss.kernel.spi.dependency.KernelController;
 import org.jboss.test.kernel.annotations.support.SearchInjection;
 
 /**
- * Basic search annotation IoC support
+ * Order search annotation IoC support
  *
  * @author <a href="mailto:ales.justin@jboss.com">Ales Justin</a>
  */
-public class BasicSearchAnnotationSupportTestCase extends AbstractSearchAnnotationSupportTest
+public class OrderSearchAnnotationSupportTestCase extends AbstractSearchAnnotationSupportTest
 {
-   public BasicSearchAnnotationSupportTestCase(String name)
+   public OrderSearchAnnotationSupportTestCase(String name)
    {
       super(name);
    }
 
    public static Test suite()
    {
-      return suite(BasicSearchAnnotationSupportTestCase.class);
+      return suite(OrderSearchAnnotationSupportTestCase.class);
    }
 
-   public void testSearchTypes() throws Throwable
+   protected void setUp() throws Exception
    {
+      super.setUp();
+
+      AbstractBeanAnnotationAdapter adapter = BasicBeanAnnotationAdapter.INSTANCE;
+      adapter.addAnnotationPlugin(SearchPropertyAnnotationPlugin.INSTANCE);
+   }
+
+   public void testWrongOrder() throws Throwable
+   {
+      KernelController controller = getController();
+      ControllerContext context = controller.install(new AbstractBeanMetaData("si", SearchInjection.class.getName()));
+      assertEquals(ControllerState.INSTANTIATED, context.getState());
+
       List<ControllerContext> contexts = new ArrayList<ControllerContext>();
       try
       {
          contexts.add(install("top", null, null, -1));
-         contexts.add(install("parent", "main", null, -1));
          contexts.add(install("local", "main", "core", -1));
-         contexts.add(install("child", "main", "core", 1));
 
-         runAnnotationsOnClass(SearchInjection.class);
+         contexts.add(install("child", "main", "core", 1));
+         // here we need a little push - since by default we only do parent hierarchy resolution
+         controller.change(context, ControllerState.INSTALLED);
+
+         assertEquals(ControllerState.INSTALLED, context.getState());
+         doTestAfterInstall(context.getTarget());
       }
       finally
       {
@@ -71,12 +92,11 @@ public class BasicSearchAnnotationSupportTestCase extends AbstractSearchAnnotati
    protected void doTestAfterInstall(Object target)
    {
       SearchInjection si = (SearchInjection)target;
+      // ony check exact one's
       assertScopeTester(si.getTop(), "top");
-      assertScopeTester(si.getParent(), "parent");
+      assertScopeTester(si.getParent(), "top");
       assertScopeTester(si.getLocal(), "local");
-      assertScopeTester(si.getNormal(), "local");
-      assertScopeTester(si.getWithChildren(), "local");
       assertScopeTester(si.getChildrenOnly(), "child");
-      assertScopeTester(si.getLeaves(), "child");      
+      assertScopeTester(si.getLeaves(), "child");
    }
 }

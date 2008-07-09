@@ -32,10 +32,8 @@ import org.jboss.dependency.spi.ControllerState;
  *
  * @author <a href="mailto:ales.justin@jboss.com">Ales Justin</a>
  */
-public class LeavesFirstLookupStrategy extends AbstractLookupStrategy
+public class LeavesFirstLookupStrategy extends HierarchyLookupStrategy
 {
-   private boolean checkCurrent;
-
    public LeavesFirstLookupStrategy()
    {
       this(true);
@@ -43,12 +41,12 @@ public class LeavesFirstLookupStrategy extends AbstractLookupStrategy
 
    protected LeavesFirstLookupStrategy(boolean checkCurrent)
    {
-      this.checkCurrent = checkCurrent;
+      super(checkCurrent);
    }
 
    protected ControllerContext getContextInternal(AbstractController controller, Object name, ControllerState state)
    {
-      return getContextInternal(controller, name, state, checkCurrent);
+      return getContextInternal(controller, name, state, isCheckCurrent());
    }
 
    /**
@@ -71,7 +69,7 @@ public class LeavesFirstLookupStrategy extends AbstractLookupStrategy
       }
 
       if (check)
-         return controller.getContext(name, state);
+         return getLocalContext(controller, name, state);
 
       return null;
    }

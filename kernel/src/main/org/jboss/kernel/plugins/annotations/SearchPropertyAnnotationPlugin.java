@@ -60,12 +60,19 @@ public class SearchPropertyAnnotationPlugin extends PropertyAnnotationPlugin<Sea
       org.jboss.dependency.plugins.graph.Search type = types.get(searchType.toUpperCase());
       if (type == null)
          throw new IllegalArgumentException("No such search type: " + searchType + ", available: " + Arrays.toString(org.jboss.dependency.plugins.graph.Search.values()));
-      
+
+      ControllerState state = null;
+      if (isAttributePresent(search.dependentState()))
+         state = new ControllerState(search.dependentState());
+      String property= null;
+      if (isAttributePresent(search.property()))
+         property = search.property();
+
       return new SearchValueMetaData(
             search.bean(),
-            new ControllerState(search.dependentState()),
+            state,
             type,
-            search.property()
+            property
       );
    }
 }

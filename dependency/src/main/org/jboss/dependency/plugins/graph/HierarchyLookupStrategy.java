@@ -19,31 +19,34 @@
 * Software Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA
 * 02110-1301 USA, or see the FSF site: http://www.fsf.org.
 */
-package org.jboss.test.kernel.annotations.test.search;
-
-import junit.framework.Test;
-import junit.framework.TestSuite;
-import junit.textui.TestRunner;
+package org.jboss.dependency.plugins.graph;
 
 /**
- * Search annotation tests.
+ * Hierarchy lookup strategy.
+ * Does local lookup on controller - if supported.
  *
  * @author <a href="mailto:ales.justin@jboss.com">Ales Justin</a>
  */
-public class SearchTestSuite extends TestSuite
+public abstract class HierarchyLookupStrategy extends LocalLookupStrategy
 {
-   public static void main(String[] args)
+   private boolean checkCurrent;
+
+   protected HierarchyLookupStrategy()
    {
-      TestRunner.run(suite());
    }
 
-   public static Test suite()
+   protected HierarchyLookupStrategy(boolean checkCurrent)
    {
-      TestSuite suite = new TestSuite("Search Tests");
+      this.checkCurrent = checkCurrent;
+   }
 
-      suite.addTest(BasicSearchAnnotationSupportTestCase.suite());
-      suite.addTest(OrderSearchAnnotationSupportTestCase.suite());
-
-      return suite;
+   /**
+    * Should we check current / top.
+    *
+    * @return true if check surrent / top
+    */
+   protected boolean isCheckCurrent()
+   {
+      return checkCurrent;
    }
 }

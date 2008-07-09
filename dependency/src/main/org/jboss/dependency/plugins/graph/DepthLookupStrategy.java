@@ -32,10 +32,8 @@ import org.jboss.dependency.spi.ControllerState;
  *
  * @author <a href="mailto:ales.justin@jboss.com">Ales Justin</a>
  */
-public class DepthLookupStrategy extends AbstractLookupStrategy
+public class DepthLookupStrategy extends HierarchyLookupStrategy
 {
-   private boolean checkCurrent;
-
    public DepthLookupStrategy()
    {
       this(true);
@@ -43,12 +41,12 @@ public class DepthLookupStrategy extends AbstractLookupStrategy
 
    protected DepthLookupStrategy(boolean checkCurrent)
    {
-      this.checkCurrent = checkCurrent;
+      super(checkCurrent);
    }
 
    protected ControllerContext getContextInternal(AbstractController controller, Object name, ControllerState state)
    {
-      return getContextInternal(controller, name, state, checkCurrent);
+      return getContextInternal(controller, name, state, isCheckCurrent());
    }
 
    /**
@@ -65,7 +63,7 @@ public class DepthLookupStrategy extends AbstractLookupStrategy
       ControllerContext context;
       if (check)
       {
-         context = controller.getContext(name, state);
+         context = getLocalContext(controller, name, state);
          if (context != null)
             return context;
       }
@@ -74,7 +72,7 @@ public class DepthLookupStrategy extends AbstractLookupStrategy
       for (AbstractController child : children)
       {
          // check child first
-         context = child.getContext(name, state);
+         context = getLocalContext(child, name, state);
          if (context != null)
             return context;
 

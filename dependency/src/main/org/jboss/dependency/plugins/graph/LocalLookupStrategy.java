@@ -35,6 +35,19 @@ public class LocalLookupStrategy extends AbstractLookupStrategy
 {
    protected ControllerContext getContextInternal(AbstractController controller, Object name, ControllerState state)
    {
+      return getLocalContext(controller, name, state);
+   }
+
+   /**
+    * Get local context.
+    *
+    * @param controller the controller
+    * @param name the context name
+    * @param state the dependent state
+    * @return found controller context or null
+    */
+   protected ControllerContext getLocalContext(AbstractController controller, Object name, ControllerState state)
+   {
       if (controller instanceof ScopedController)
       {
          ScopedController scopedController = (ScopedController)controller;

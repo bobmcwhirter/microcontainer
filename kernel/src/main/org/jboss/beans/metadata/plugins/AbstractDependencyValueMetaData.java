@@ -196,7 +196,7 @@ public class AbstractDependencyValueMetaData extends AbstractValueMetaData
          return null;
 
       Object result;
-      if (property != null)
+      if (property != null && property.length() > 0)
       {
          if (lookup instanceof AttributeDispatchContext)
          {
