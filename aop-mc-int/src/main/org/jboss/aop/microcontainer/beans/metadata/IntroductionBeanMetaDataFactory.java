@@ -54,7 +54,7 @@ public class IntroductionBeanMetaDataFactory extends AspectManagerAwareBeanMetaD
    private String clazz;
    private String expr;
    private String interfaces;
-   private ArrayList<MixinData> mixins = new ArrayList<MixinData>();
+   private List<MixinData> mixins = new ArrayList<MixinData>();
    
    public IntroductionBeanMetaDataFactory()
    {
@@ -93,13 +93,13 @@ public class IntroductionBeanMetaDataFactory extends AspectManagerAwareBeanMetaD
       this.interfaces = interfaces;
    }
 
-   public ArrayList<MixinData> getMixins()
+   public List<MixinData> getMixins()
    {
       return mixins;
    }
 
    @XmlElement(name="mixin")
-   public void setMixins(ArrayList<MixinData> mixins)
+   public void setMixins(List<MixinData> mixins)
    {
       this.mixins = mixins;
    }
@@ -141,12 +141,12 @@ public class IntroductionBeanMetaDataFactory extends AspectManagerAwareBeanMetaD
       return result;
    }
 
-   public static void addInterfaces(BeanMetaDataBuilder introductionBuilder, String interfaces)
+   private void addInterfaces(BeanMetaDataBuilder introductionBuilder, String interfaces)
    {
       addInterfaces(introductionBuilder, "interfaces", interfaces);
    }
    
-   public static void addInterfaces(BeanMetaDataBuilder introductionBuilder, String propertyName, String interfaces)
+   private void addInterfaces(BeanMetaDataBuilder introductionBuilder, String propertyName, String interfaces)
    {
       List<ValueMetaData> ifs = introductionBuilder.createList(ArrayList.class.getName(), String.class.getName());
       introductionBuilder.addPropertyMetaData(propertyName, ifs);
