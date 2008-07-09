@@ -29,9 +29,6 @@ import junit.framework.Test;
 import org.jboss.beans.metadata.plugins.AbstractBeanMetaData;
 import org.jboss.dependency.spi.ControllerContext;
 import org.jboss.dependency.spi.ControllerState;
-import org.jboss.kernel.plugins.annotations.AbstractBeanAnnotationAdapter;
-import org.jboss.kernel.plugins.annotations.BasicBeanAnnotationAdapter;
-import org.jboss.kernel.plugins.annotations.SearchPropertyAnnotationPlugin;
 import org.jboss.kernel.spi.dependency.KernelController;
 import org.jboss.test.kernel.annotations.support.SearchInjection;
 
@@ -50,14 +47,6 @@ public class OrderSearchAnnotationSupportTestCase extends AbstractSearchAnnotati
    public static Test suite()
    {
       return suite(OrderSearchAnnotationSupportTestCase.class);
-   }
-
-   protected void setUp() throws Exception
-   {
-      super.setUp();
-
-      AbstractBeanAnnotationAdapter adapter = BasicBeanAnnotationAdapter.INSTANCE;
-      adapter.addAnnotationPlugin(SearchPropertyAnnotationPlugin.INSTANCE);
    }
 
    public void testWrongOrder() throws Throwable

@@ -49,11 +49,17 @@ public abstract class AbstractSearchAnnotationSupportTest extends AbstractBeanAn
       super(name);
    }
 
-   protected BeanAnnotationAdapter getBeanAnnotationAdapterClass()
+   protected void setUp() throws Exception
    {
+      super.setUp();
+
       AbstractBeanAnnotationAdapter adapter = BasicBeanAnnotationAdapter.INSTANCE;
       adapter.addAnnotationPlugin(SearchPropertyAnnotationPlugin.INSTANCE);
-      return adapter;
+   }
+
+   protected BeanAnnotationAdapter getBeanAnnotationAdapterClass()
+   {
+      return BasicBeanAnnotationAdapter.INSTANCE;
    }
 
    protected void tearDown() throws Exception
