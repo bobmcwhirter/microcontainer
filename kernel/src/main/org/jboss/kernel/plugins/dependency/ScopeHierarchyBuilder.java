@@ -103,6 +103,8 @@ public final class ScopeHierarchyBuilder
          try
          {
             ((MutableMetaData)mdr).removeMetaData(ScopedKernelController.class);
+            if (mdr.isEmpty())
+               mmdr.removeMetaDataRetrieval(scopeKey);
          }
          finally
          {
