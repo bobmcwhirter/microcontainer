@@ -54,6 +54,8 @@ public class LRUPolicyCachingBasicKernelMetaDataRepository extends PolicyCaching
       if (min == null || max == null)
          throw new IllegalArgumentException("Missing min (" + min + ") or max (" + max + ").");
 
+      log.debug("Creating LRU cache policy, min: " + min + ", max: " + max);
+
       return new ConcurrentLRUCachePolicyFactory(min, max);
    }
 

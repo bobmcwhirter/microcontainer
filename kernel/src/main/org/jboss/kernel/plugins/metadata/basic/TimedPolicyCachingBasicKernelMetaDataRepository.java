@@ -60,6 +60,8 @@ public class TimedPolicyCachingBasicKernelMetaDataRepository extends PolicyCachi
       if (resolution == null)
          resolution = parseInteger(readSystemProperty("TimedPolicyCaching.resolution", null));
 
+      log.debug("Creating timed cache policy, lifetime: " + defaultLifetime + ", threadSafe: " + threadSafe + ", resolution: " + resolution);
+
       if (defaultLifetime == null)
          return new TimedCachePolicyFactory();
       else if (resolution != null)
