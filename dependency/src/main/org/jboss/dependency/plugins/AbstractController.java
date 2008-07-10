@@ -1017,8 +1017,18 @@ public class AbstractController extends JBossObject implements Controller, Contr
             if (advance(ctx))
             {
                DependencyInfo dependencies = ctx.getDependencyInfo();
-               if (dependencies.resolveDependencies(this, state))
-                  result.add(ctx);
+               try
+               {
+                  if (dependencies.resolveDependencies(this, state))
+                     result.add(ctx);
+               }
+               catch (Throwable error)
+               {
+                  log.error("Error resolving dependencies for " + state.getStateString() + ": " + ctx.toShortString(), error);
+                  uninstallContext(ctx, ControllerState.NOT_INSTALLED, trace);
+                  errorContexts.put(ctx.getName(), ctx);
+                  ctx.setError(error);
+               }
             }
          }
       }
