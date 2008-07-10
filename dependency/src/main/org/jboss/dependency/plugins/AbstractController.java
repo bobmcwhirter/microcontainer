@@ -1410,17 +1410,6 @@ public class AbstractController extends JBossObject implements Controller, Contr
    }
 
    /**
-    * Can we use this context for autowiring.
-    *
-    * @param context the context
-    * @return true if context could be used for autowiring
-    */
-   protected boolean isAutowireCandidate(ControllerContext context)
-   {
-      return true;
-   }
-
-   /**
     * Get implemented classes.
     *
     * @param target target value / bean
@@ -1430,6 +1419,7 @@ public class AbstractController extends JBossObject implements Controller, Contr
    {
       if (target == null)
          return null;
+      
       Set<Class<?>> classes = new HashSet<Class<?>>();
       traverseClass(target.getClass(), classes);
       return classes;
