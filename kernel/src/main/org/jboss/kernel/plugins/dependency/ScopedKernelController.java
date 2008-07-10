@@ -21,11 +21,11 @@
 */
 package org.jboss.kernel.plugins.dependency;
 
+import java.util.HashMap;
 import java.util.HashSet;
+import java.util.Map;
 import java.util.Properties;
 import java.util.Set;
-import java.util.Map;
-import java.util.HashMap;
 
 import org.jboss.dependency.plugins.AbstractController;
 import org.jboss.dependency.plugins.action.ControllerContextAction;
@@ -48,6 +48,7 @@ import org.jboss.kernel.spi.metadata.KernelMetaDataRepository;
 import org.jboss.kernel.spi.registry.KernelRegistryEntry;
 import org.jboss.kernel.spi.registry.KernelRegistryPlugin;
 import org.jboss.metadata.spi.scope.ScopeKey;
+import org.jboss.util.JBossStringBuilder;
 
 /**
  * Scoped Kernel controller.
@@ -320,5 +321,16 @@ public class ScopedKernelController extends AbstractKernelController
       {
          return parentKernel.getMetaDataRepository();
       }
+   }
+
+   /**
+    * Add scope key info to toString.
+    *
+    * @param buffer the string buffer
+    */
+   protected void toString(JBossStringBuilder buffer)
+   {
+      super.toString(buffer);
+      buffer.append(getScopeKey());
    }
 }
