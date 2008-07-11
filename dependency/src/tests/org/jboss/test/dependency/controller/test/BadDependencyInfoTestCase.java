@@ -116,6 +116,7 @@ public class BadDependencyInfoTestCase extends AbstractDependencyTest
 
    public void testDependencyItemMethodsOnThemResolved() throws Throwable
    {
+      ControllerContext bean = createControllerContext("bean");
       Method[] methods = DependencyItem.class.getDeclaredMethods();
       for(int i = 5; i >= 0; i--)
       {
@@ -127,7 +128,6 @@ public class BadDependencyInfoTestCase extends AbstractDependencyTest
                DependencyInfo info = context.getDependencyInfo();
                info.addIDependOn(ProxyDependencyItem.createDependencyInfo(method, i, whenRequired));
                install(context);
-               ControllerContext bean = createControllerContext("bean");
                install(bean);
                assertTrue(context.getName().toString(), ControllerState.ERROR.equals(context.getState()) || ControllerState.INSTALLED.equals(context.getState()));
                uninstall(bean);
