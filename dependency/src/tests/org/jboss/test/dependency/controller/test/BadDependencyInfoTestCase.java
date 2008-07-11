@@ -131,6 +131,7 @@ public class BadDependencyInfoTestCase extends AbstractDependencyTest
                info.addIDependOn(ProxyDependencyItem.createDependencyInfo(method, i, whenRequired));
                install(context);
                install(bean);
+               assertEquals(bean.getName().toString(), ControllerState.INSTALLED, bean.getState());
                assertTrue(context.getName().toString(), ControllerState.ERROR.equals(context.getState()) || ControllerState.INSTALLED.equals(context.getState()));
                uninstall(bean);
                uninstall(context);
