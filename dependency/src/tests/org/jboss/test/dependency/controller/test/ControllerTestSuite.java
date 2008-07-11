@@ -56,6 +56,7 @@ public class ControllerTestSuite extends TestSuite
       suite.addTest(AliasDependencyTestCase.suite());
       suite.addTest(AliasUnitTestCase.suite());
       suite.addTest(ShutdownControllerTestCase.suite());
+      suite.addTest(BadDependencyInfoTestCase.suite());
 
       return suite;
    }

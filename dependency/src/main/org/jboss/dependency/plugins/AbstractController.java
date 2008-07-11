@@ -664,14 +664,23 @@ public class AbstractController extends JBossObject implements Controller, Contr
          DependencyInfo dependencies = context.getDependencyInfo();
          if (trace)
          {
-            String dependsOn = null;
+            String dependsOn = "[]";
             if (dependencies != null)
             {
-               Set<DependencyItem> set = dependencies.getIDependOn(null);
-               if (set != null)
-                  dependsOn = set.toString();
+               try
+               {
+                  Set<DependencyItem> set = dependencies.getIDependOn(null);
+                  if (set != null)
+                     dependsOn = set.toString();
+               }
+               catch (Throwable t)
+               {
+                  log.warn("Exception getting dependencies: " + t);
+                  dependsOn = null;
+               }
             }
-            log.trace("Dependencies for " + name + ": " + dependsOn);
+            if (dependsOn != null)
+               log.trace("Dependencies for " + name + ": " + dependsOn);
          }
 
          boolean ok = incrementState(context, trace);
@@ -1019,7 +1028,7 @@ public class AbstractController extends JBossObject implements Controller, Contr
                DependencyInfo dependencies = ctx.getDependencyInfo();
                try
                {
-                  if (dependencies.resolveDependencies(this, state))
+                  if (dependencies != null && dependencies.resolveDependencies(this, state))
                      result.add(ctx);
                }
                catch (Throwable error)
@@ -1090,30 +1099,43 @@ public class AbstractController extends JBossObject implements Controller, Contr
          throw new Error("INTERNAL ERROR: context not found in previous state " + fromState.getStateString() + " context=" + context.toShortString(), new Exception("STACKTRACE"));
 
       DependencyInfo dependencies = context.getDependencyInfo();
-      Set<DependencyItem> dependsOnMe = dependencies.getDependsOnMe(null);
-      if (dependsOnMe.isEmpty() == false)
+      if (dependencies != null)
       {
-         for (DependencyItem item : dependsOnMe)
+         try
          {
-            if (item.isResolved())
+            Set<DependencyItem> dependsOnMe = dependencies.getDependsOnMe(null);
+            if (dependsOnMe.isEmpty() == false)
             {
-               ControllerState dependentState = item.getDependentState();
-               if (dependentState == null || dependentState.equals(fromState))
+               for (DependencyItem item : dependsOnMe)
                {
-                  if (item.unresolved(this))
+                  if (item.isResolved())
                   {
-                     ControllerContext dependent = getContext(item.getName(), null);
-                     if (dependent != null)
+                     ControllerState dependentState = item.getDependentState();
+                     if (dependentState == null || dependentState.equals(fromState))
                      {
-                        ControllerState whenRequired = item.getWhenRequired();
-                        if (whenRequired == null)
-                           whenRequired = ControllerState.NOT_INSTALLED;
-                        if (isBeforeState(dependent.getState(), whenRequired) == false)
-                           uninstallContext(dependent, whenRequired, trace);
+                        if (item.unresolved(this))
+                        {
+                           ControllerContext dependent = getContext(item.getName(), null);
+                           if (dependent != null)
+                           {
+                              ControllerState whenRequired = item.getWhenRequired();
+                              if (whenRequired == null)
+                                 whenRequired = ControllerState.NOT_INSTALLED;
+                              if (isBeforeState(dependent.getState(), whenRequired) == false)
+                                 uninstallContext(dependent, whenRequired, trace);
+                           }
+                        }
                      }
                   }
                }
             }
+         }
+         catch (Throwable error)
+         {
+            log.error("Error resolving dependencies for " + fromState.getStateString() + ": " + context.toShortString(), error);
+            // Not much else we can do - no uninstall, since we are at uninstall ;-)
+            errorContexts.put(context.getName(), context);
+            context.setError(error);
          }
       }
 
@@ -1396,15 +1418,18 @@ public class AbstractController extends JBossObject implements Controller, Contr
    protected void handleLifecycleCallbacks(ControllerContext context, ControllerState state, boolean install) throws Throwable
    {
       DependencyInfo di = context.getDependencyInfo();
-      List<LifecycleCallbackItem> callbacks = di.getLifecycleCallbacks();
-      for (LifecycleCallbackItem callback : callbacks)
+      if (di != null)
       {
-         if (callback.getWhenRequired().equals(state))
+         List<LifecycleCallbackItem> callbacks = di.getLifecycleCallbacks();
+         for (LifecycleCallbackItem callback : callbacks)
          {
-            if (install)
-               callback.install(context);
-            else
-               callback.uninstall(context);
+            if (callback.getWhenRequired().equals(state))
+            {
+               if (install)
+                  callback.install(context);
+               else
+                  callback.uninstall(context);
+            }
          }
       }
    }

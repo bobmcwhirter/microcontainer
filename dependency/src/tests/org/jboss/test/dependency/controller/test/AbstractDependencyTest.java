@@ -23,12 +23,14 @@ package org.jboss.test.dependency.controller.test;
 
 import java.util.HashSet;
 import java.util.Set;
+import java.util.Arrays;
 
 import org.jboss.dependency.plugins.AbstractController;
 import org.jboss.dependency.plugins.AbstractControllerContext;
 import org.jboss.dependency.spi.Controller;
 import org.jboss.dependency.spi.ControllerContext;
 import org.jboss.dependency.spi.ControllerState;
+import org.jboss.dependency.spi.ControllerStateModel;
 import org.jboss.test.AbstractTestCaseWithSetup;
 import org.jboss.test.AbstractTestDelegate;
 import org.jboss.test.dependency.controller.support.MockControllerContextActions;
@@ -90,6 +92,16 @@ public class AbstractDependencyTest extends AbstractTestCaseWithSetup
       controller.install(context);
    }
 
+   protected void uninstall(ControllerContext context) throws Throwable
+   {
+      controller.uninstall(context.getName());
+   }
+
+   protected ControllerStateModel getStateModel()
+   {
+      return controller.getStates();
+   }
+
    protected void assertInstall(ControllerContext context, ControllerState expected) throws Throwable
    {
       controller.install(context);
@@ -145,8 +157,7 @@ public class AbstractDependencyTest extends AbstractTestCaseWithSetup
       if (aliases == null)
          return null;
       HashSet<Object> result = new HashSet<Object>(aliases.length);
-      for (int i = 0; i < aliases.length; ++i)
-         result.add(aliases[i]);
+      result.addAll(Arrays.asList(aliases));
       return result;
    }
    
