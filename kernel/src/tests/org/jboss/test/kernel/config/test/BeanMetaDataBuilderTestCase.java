@@ -30,14 +30,16 @@ import java.util.Map;
 import java.util.Set;
 
 import junit.framework.Test;
+import org.jboss.beans.metadata.api.model.AutowireType;
 import org.jboss.beans.metadata.plugins.InstallCallbackMetaData;
 import org.jboss.beans.metadata.plugins.UninstallCallbackMetaData;
+import org.jboss.beans.metadata.plugins.AbstractBeanMetaData;
 import org.jboss.beans.metadata.plugins.builder.BeanMetaDataBuilderFactory;
 import org.jboss.beans.metadata.spi.BeanMetaData;
+import org.jboss.beans.metadata.spi.BeanMetaDataFactory;
 import org.jboss.beans.metadata.spi.CallbackMetaData;
 import org.jboss.beans.metadata.spi.ValueMetaData;
 import org.jboss.beans.metadata.spi.builder.BeanMetaDataBuilder;
-import org.jboss.beans.metadata.api.model.AutowireType;
 import org.jboss.dependency.spi.Cardinality;
 import org.jboss.dependency.spi.ControllerContext;
 import org.jboss.dependency.spi.ControllerState;
@@ -814,5 +816,29 @@ public class BeanMetaDataBuilderTestCase extends AbstractKernelConfigTest
       assertEquals(ErrorHandlingMode.MANUAL, bmd.getErrorHandlingMode());
       assertEquals(AutowireType.CONSTRUCTOR, bmd.getAutowireType());
       assertFalse(bmd.isAutowireCandidate());
+   }
+
+   public void testBeanMetaDataFactory() throws Throwable
+   {
+      BeanMetaDataBuilder builder = BeanMetaDataBuilder.createBuilder("bean", Object.class.getName());
+      BeanMetaDataFactory f1 = builder.getBeanMetaDataFactory();
+      assertNotNull(f1);
+      BeanMetaDataFactory f2 = builder.asBeanMetaDataFactory();
+      assertNotNull(f2);
+      List<BeanMetaData> b1 = f1.getBeans();
+      assertNotNull(b1);
+      List<BeanMetaData> b2 = f1.getBeans();
+      assertNotNull(b2);
+      assertEquals(b1, b2);
+
+      AbstractBeanMetaData abmd = new AbstractBeanMetaData("bean", Object.class.getName());
+      builder = BeanMetaDataBuilder.createBuilder(abmd);
+      assertSame(abmd, builder.getBeanMetaDataFactory());
+      BeanMetaDataFactory bmdf = builder.asBeanMetaDataFactory();
+      assertNotNull(bmdf);
+      List<BeanMetaData> beans = bmdf.getBeans();
+      assertNotNull(beans);
+      assertFalse(beans.isEmpty());
+      assertSame(abmd, beans.get(0));
    }
 }
