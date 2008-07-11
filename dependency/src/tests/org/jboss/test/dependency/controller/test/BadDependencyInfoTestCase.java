@@ -40,6 +40,8 @@ import org.jboss.test.dependency.controller.support.ProxyDependencyItem;
  */
 public class BadDependencyInfoTestCase extends AbstractDependencyTest
 {
+   private static final int numberOfInvocations = 10;
+
    public BadDependencyInfoTestCase(String name)
    {
       super(name);
@@ -53,7 +55,7 @@ public class BadDependencyInfoTestCase extends AbstractDependencyTest
    public void testDependencyInfoMethods() throws Throwable
    {
       Method[] methods = DependencyInfo.class.getDeclaredMethods();
-      for(int i = 5; i >= 0; i--)
+      for(int i = numberOfInvocations; i >= 0; i--)
       {
          for (Method method : methods)
          {
@@ -76,7 +78,7 @@ public class BadDependencyInfoTestCase extends AbstractDependencyTest
    public void testDependencyItemMethodsOnMe() throws Throwable
    {
       Method[] methods = DependencyItem.class.getDeclaredMethods();
-      for(int i = 5; i >= 0; i--)
+      for(int i = numberOfInvocations; i >= 0; i--)
       {
          for (Method method : methods)
          {
@@ -96,7 +98,7 @@ public class BadDependencyInfoTestCase extends AbstractDependencyTest
    public void testDependencyItemMethodsOnThem() throws Throwable
    {
       Method[] methods = DependencyItem.class.getDeclaredMethods();
-      for(int i = 5; i >= 0; i--)
+      for(int i = numberOfInvocations; i >= 0; i--)
       {
          for (Method method : methods)
          {
@@ -118,7 +120,7 @@ public class BadDependencyInfoTestCase extends AbstractDependencyTest
    {
       ControllerContext bean = createControllerContext("bean");
       Method[] methods = DependencyItem.class.getDeclaredMethods();
-      for(int i = 5; i >= 0; i--)
+      for(int i = numberOfInvocations; i >= 0; i--)
       {
          for (Method method : methods)
          {
