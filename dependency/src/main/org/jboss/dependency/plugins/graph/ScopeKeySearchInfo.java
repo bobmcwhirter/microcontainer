@@ -96,19 +96,45 @@ public class ScopeKeySearchInfo implements SearchInfo
        */
       private AbstractController findMatchingScopedController(AbstractController current)
       {
+         boolean related = true; // by default it's related
+
          if (current instanceof ScopedController)
          {
             ScopedController scopedController = (ScopedController)current;
-            if (scopeKey.equals(scopedController.getScopeKey()))
-               return current;
+            ScopeKey key = scopedController.getScopeKey();
+            // see if this is even related, so that we don't go fwd for nothing
+            if (key != null)
+            {
+               // exact match
+               if (scopeKey.equals(key))
+                  return current;
+
+               related = false; // we have key, should prove that it's related
+               ScopeKey ck = scopeKey;
+               int keySize = key.getScopes().size();
+               int ckSize = ck.getScopes().size();
+               while(ck != null && keySize < ckSize)
+               {
+                  if (key.isParent(ck))
+                  {
+                     related = true;
+                     break;
+                  }
+                  ck = ck.getParent();
+                  ckSize--;
+               }
+            }
          }
 
-         Set<AbstractController> children = current.getControllers();
-         for (AbstractController child : children)
+         if (related)
          {
-            AbstractController found = findMatchingScopedController(child);
-            if (found != null)
-               return found;
+            Set<AbstractController> children = current.getControllers();
+            for (AbstractController child : children)
+            {
+               AbstractController found = findMatchingScopedController(child);
+               if (found != null)
+                  return found;
+            }
          }
 
          return null;
