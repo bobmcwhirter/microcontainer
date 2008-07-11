@@ -45,7 +45,7 @@ public class SearchPropertyAnnotationPlugin extends PropertyAnnotationPlugin<Sea
       types = new HashMap<String,org.jboss.dependency.plugins.graph.Search>();
       for (org.jboss.dependency.plugins.graph.Search search : org.jboss.dependency.plugins.graph.Search.values())
       {
-         types.put(search.type().toUpperCase(), search);
+         types.put(search.getType().toUpperCase(), search);
       }
    }
 

@@ -21,6 +21,8 @@
 */
 package org.jboss.dependency.spi.graph;
 
+import java.util.Map;
+
 /**
  * Search info.
  *
@@ -39,7 +41,15 @@ public interface SearchInfo
     *
     * @return
     */
-   String type();
+   String getType();
+
+   /**
+    * Get the info.
+    * Additional parameters to be used for search.
+    *
+    * @return the additional info
+    */
+   Map<String, ?> getInfo();
 
    /**
     * Get the lookup strategy.

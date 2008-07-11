@@ -31,7 +31,6 @@ import org.jboss.dependency.plugins.AbstractController;
 import org.jboss.dependency.plugins.action.ControllerContextAction;
 import org.jboss.dependency.spi.ControllerContext;
 import org.jboss.dependency.spi.ControllerState;
-import org.jboss.dependency.spi.ScopeInfo;
 import org.jboss.kernel.Kernel;
 import org.jboss.kernel.KernelFactory;
 import org.jboss.kernel.plugins.bootstrap.basic.BasicKernelInitializer;
@@ -58,13 +57,12 @@ import org.jboss.util.JBossStringBuilder;
 public class ScopedKernelController extends AbstractKernelController
 {
    protected Kernel parentKernel;
-   private ScopeKey scopeKey;
 
    public ScopedKernelController(Kernel parentKernel, AbstractController parentController, ScopeKey scopeKey) throws Exception
    {
       super();
       this.parentKernel = parentKernel;
-      this.scopeKey = scopeKey;
+      setScopeKey(scopeKey);
       if (parentKernel.getController() instanceof AbstractController == false)
          throw new IllegalArgumentException("Underlying controller not AbstractController instance!");
       setUnderlyingController((AbstractController)parentKernel.getController());
@@ -72,16 +70,6 @@ public class ScopedKernelController extends AbstractKernelController
       KernelConfig config = new ScopedKernelConfig(System.getProperties());
       kernel = KernelFactory.newInstance(config);
       getParentController().addController(this);
-   }
-
-   /**
-    * Get scope key.
-    *
-    * @return the scope key
-    */
-   protected ScopeKey getScopeKey()
-   {
-      return scopeKey;
    }
 
    /**
@@ -139,12 +127,6 @@ public class ScopedKernelController extends AbstractKernelController
       Map<ControllerState, ControllerContextAction> map = new HashMap<ControllerState, ControllerContextAction>(super.createAliasActions());
       map.put(ControllerState.PRE_INSTALL, InstallExistingScopeAction.INSTANCE);
       return map;
-   }
-
-   protected void preAliasInstall(ControllerContext aliasContext)
-   {
-      ScopeInfo scopeInfo = aliasContext.getScopeInfo();
-      scopeInfo.setInstallScope(scopeKey);
    }
 
    // override, since kernel's contexts are extended with registry plugin

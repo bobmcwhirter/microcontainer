@@ -43,6 +43,7 @@ public class SearchTestSuite extends TestSuite
 
       suite.addTest(BasicSearchAnnotationSupportTestCase.suite());
       suite.addTest(OrderSearchAnnotationSupportTestCase.suite());
+      suite.addTest(ScopeKeySearchTestCase.suite());
 
       return suite;
    }

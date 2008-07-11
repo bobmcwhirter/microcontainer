@@ -21,6 +21,8 @@
 */
 package org.jboss.dependency.plugins.graph;
 
+import java.util.Map;
+
 import org.jboss.dependency.plugins.AbstractController;
 import org.jboss.dependency.spi.Controller;
 import org.jboss.dependency.spi.ControllerContext;
@@ -37,8 +39,18 @@ import org.jboss.dependency.spi.graph.SearchInfo;
 public abstract class AbstractLookupStrategy implements LookupStrategy, SearchInfo
 {
    private String type;
+   private Map<String, ?> info;
 
-   public String type()
+   protected AbstractLookupStrategy()
+   {
+   }
+
+   protected AbstractLookupStrategy(Map<String, ?> info)
+   {
+      this.info = info;
+   }
+
+   public String getType()
    {
       if (type == null)
       {
@@ -47,6 +59,11 @@ public abstract class AbstractLookupStrategy implements LookupStrategy, SearchIn
          type = simpleName.substring(0, p);
       }
       return type;
+   }
+
+   public Map<String, ?> getInfo()
+   {
+      return info;
    }
 
    public LookupStrategy getStrategy()

@@ -23,6 +23,8 @@ package org.jboss.dependency.plugins;
 
 import org.jboss.dependency.spi.ControllerContext;
 import org.jboss.dependency.spi.ControllerState;
+import org.jboss.dependency.spi.ScopeInfo;
+import org.jboss.metadata.spi.scope.ScopeKey;
 
 /**
  * Scoped controller.
@@ -36,11 +38,35 @@ import org.jboss.dependency.spi.ControllerState;
  */
 public abstract class ScopedController extends AbstractController
 {
+   private ScopeKey scopeKey;
    private AbstractController underlyingController;
+
+   /**
+    * Get scope key.
+    *
+    * @return the scope key
+    */
+   public ScopeKey getScopeKey()
+   {
+      return scopeKey;
+   }
+
+   protected void setScopeKey(ScopeKey scopeKey)
+   {
+      // save a clone scope key - so we don't care about modifications
+      this.scopeKey = scopeKey.clone();
+      this.scopeKey.freeze();
+   }
 
    protected void setUnderlyingController(AbstractController underlyingController)
    {
       this.underlyingController = underlyingController;
+   }
+
+   protected void preAliasInstall(ControllerContext aliasContext)
+   {
+      ScopeInfo scopeInfo = aliasContext.getScopeInfo();
+      scopeInfo.setInstallScope(scopeKey);
    }
 
    /**

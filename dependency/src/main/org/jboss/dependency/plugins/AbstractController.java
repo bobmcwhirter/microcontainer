@@ -370,7 +370,7 @@ public class AbstractController extends JBossObject implements Controller, Contr
          throw new IllegalArgumentException("AbstractController doesn't implement this search info: " + info);
 
       if (log.isTraceEnabled())
-         log.trace("Executing search " + info.type());
+         log.trace("Executing search " + info.getType());
 
       return strategy.getContext(this, name, state);
    }

@@ -21,6 +21,8 @@
 */
 package org.jboss.dependency.plugins.graph;
 
+import java.util.Map;
+
 import org.jboss.dependency.spi.graph.LookupStrategy;
 import org.jboss.dependency.spi.graph.SearchInfo;
 
@@ -43,30 +45,40 @@ public enum Search implements SearchInfo
    CHILD_ONLY_LEAVES(new ChildrenOnlyLeavesFirstLookupStrategy()),
    CHILD_ONLY_WIDTH(new ChildrenOnlyWidthLookupStrategy());
 
-   private SearchInfo info;
+   private SearchInfo delegate;
 
-   Search(SearchInfo info)
+   Search(SearchInfo delegate)
    {
-      this.info = info;
+      this.delegate = delegate;
    }
 
-   public String type()
+   public String getType()
    {
-      return info.type();
+      return delegate.getType();
+   }
+
+   public Map<String, ?> getInfo()
+   {
+      return delegate.getInfo();
    }
 
    public LookupStrategy getStrategy()
    {
-      return info.getStrategy();
+      return delegate.getStrategy();
    }
 
    private static class DefaultSearchInfoWrapper implements SearchInfo
    {
       private DefaultLookupStrategy strategy = new DefaultLookupStrategy();
 
-      public String type()
+      public String getType()
       {
          return "<DEFAULT>";
+      }
+
+      public Map<String, ?> getInfo()
+      {
+         return null;
       }
 
       public LookupStrategy getStrategy()
