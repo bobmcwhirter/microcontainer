@@ -58,6 +58,7 @@ import org.jboss.beans.metadata.spi.PropertyMetaData;
 import org.jboss.beans.metadata.spi.SupplyMetaData;
 import org.jboss.beans.metadata.spi.ValueMetaData;
 import org.jboss.beans.metadata.spi.AnnotationMetaData;
+import org.jboss.beans.metadata.spi.BeanMetaDataFactory;
 import org.jboss.beans.metadata.spi.builder.BeanMetaDataBuilder;
 import org.jboss.beans.metadata.spi.builder.ParameterMetaDataBuilder;
 import org.jboss.beans.metadata.api.model.AutowireType;
@@ -266,6 +267,11 @@ class BeanMetaDataBuilderImpl extends BeanMetaDataBuilder
    }
 
    public BeanMetaData getBeanMetaData()
+   {
+      return beanMetaData;
+   }
+
+   public BeanMetaDataFactory getBeanMetaDataFactory()
    {
       return beanMetaData;
    }
