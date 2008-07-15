@@ -61,18 +61,30 @@ public class BadDependencyInfoTestCase extends AbstractDependencyTest
       {
          for (Method method : methods)
          {
-            // Should we suppress this?
-            if ("getLifecycleCallbacks".equals(method.getName()))
-               continue;
-            
             AbstractControllerContext context = new AbstractControllerContext(
                   method.getName(),
                   new MockControllerContextActions(),
                   ProxyDependencyInfo.createDependencyInfo(method, i)
             );
-            install(context);
-            assertTrue(context.getName().toString(), ControllerState.ERROR.equals(context.getState()) || ControllerState.INSTALLED.equals(context.getState()));
-            uninstall(context);            
+            try
+            {
+               install(context);
+               assertTrue(context.getName().toString(), ControllerState.ERROR.equals(context.getState()) || ControllerState.INSTALLED.equals(context.getState()));
+            }
+            catch (Throwable t)
+            {
+               assertEquals("getLifecycleCallbacks", method.getName());
+               assertInstanceOf(t, RuntimeException.class);
+            }
+            try
+            {
+               uninstall(context);
+            }
+            catch (Throwable t)
+            {
+               assertEquals("getLifecycleCallbacks", method.getName());
+               assertInstanceOf(t, Error.class);
+            }
          }
       }
    }
