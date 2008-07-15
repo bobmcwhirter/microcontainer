@@ -47,7 +47,6 @@ import org.jboss.kernel.spi.metadata.KernelMetaDataRepository;
 import org.jboss.kernel.spi.registry.KernelRegistryEntry;
 import org.jboss.kernel.spi.registry.KernelRegistryPlugin;
 import org.jboss.metadata.spi.scope.ScopeKey;
-import org.jboss.util.JBossStringBuilder;
 
 /**
  * Scoped Kernel controller.
@@ -303,16 +302,5 @@ public class ScopedKernelController extends AbstractKernelController
       {
          return parentKernel.getMetaDataRepository();
       }
-   }
-
-   /**
-    * Add scope key info to toString.
-    *
-    * @param buffer the string buffer
-    */
-   protected void toString(JBossStringBuilder buffer)
-   {
-      super.toString(buffer);
-      buffer.append(getScopeKey());
    }
 }

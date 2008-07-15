@@ -25,6 +25,7 @@ import org.jboss.dependency.spi.ControllerContext;
 import org.jboss.dependency.spi.ControllerState;
 import org.jboss.dependency.spi.ScopeInfo;
 import org.jboss.metadata.spi.scope.ScopeKey;
+import org.jboss.util.JBossStringBuilder;
 
 /**
  * Scoped controller.
@@ -143,4 +144,14 @@ public abstract class ScopedController extends AbstractController
          super.removeControllerContext(context);
    }
 
+   /**
+    * Add scope key info to toString.
+    *
+    * @param buffer the string buffer
+    */
+   protected void toString(JBossStringBuilder buffer)
+   {
+      super.toString(buffer);
+      buffer.append(getScopeKey());
+   }
 }
