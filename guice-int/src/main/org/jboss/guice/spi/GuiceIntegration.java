@@ -90,9 +90,26 @@ public abstract class GuiceIntegration extends BinderHolder
     * @param name the bean name
     * @return Provider instance
     */
-   public static <T> Provider<T> fromMicrocontainer(Class<T> type, String name)
+   public static <T> Provider<T> fromMicrocontainer(Class<T> type, Object name)
    {
       return new InjectableMicrocontainerProvider<T>(type, name);
+   }
+
+   /**
+    * Creates a provider which looks up objects from Microcontainer using the given type.
+    * Expects a binding to {@link org.jboss.dependency.spi.Controller}. Example usage:
+    * <p/>
+    * <pre>
+    * bind(DataSource.class).toProvider(fromMicrocontainer(DataSource.class));
+    * </pre>
+    *
+    * @param <T> the class type
+    * @param type the class type
+    * @return Provider instance
+    */
+   public static <T> Provider<T> fromMicrocontainer(Class<T> type)
+   {
+      return fromMicrocontainer(type, type);
    }
 
    /**

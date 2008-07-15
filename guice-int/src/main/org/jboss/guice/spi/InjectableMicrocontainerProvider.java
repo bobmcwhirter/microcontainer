@@ -31,7 +31,7 @@ import org.jboss.dependency.spi.Controller;
  */
 class InjectableMicrocontainerProvider<T> extends MicrocontainerProvider<T>
 {
-   public InjectableMicrocontainerProvider(Class<T> type, String name)
+   public InjectableMicrocontainerProvider(Class<T> type, Object name)
    {
       super(type, name);
    }

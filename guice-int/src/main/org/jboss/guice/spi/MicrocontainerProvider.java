@@ -34,16 +34,17 @@ import org.jboss.beans.metadata.spi.factory.BeanFactory;
 class MicrocontainerProvider<T> implements Provider<T>
 {
    private Class<T> type;
-   private String name;
+   private Object name;
    private Controller controller;
 
-   protected MicrocontainerProvider(Class<T> type, String name)
+   protected MicrocontainerProvider(Class<T> type, Object name)
    {
       if (type == null)
          throw new IllegalArgumentException("Null type.");
-      this.type = type;
       if (name == null)
          throw new IllegalArgumentException("Null name.");
+
+      this.type = type;
       this.name = name;
    }
 
