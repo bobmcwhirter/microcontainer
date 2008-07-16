@@ -21,6 +21,8 @@
 */
 package org.jboss.test.microcontainer.beans.test;
 
+import org.jboss.aop.AspectManager;
+import org.jboss.aop.advice.AdviceStack;
 import org.jboss.test.aop.junit.AOPMicrocontainerTest;
 import org.jboss.test.microcontainer.beans.POJO;
 import org.jboss.test.microcontainer.beans.SimpleFactoryAspect;
@@ -49,6 +51,15 @@ public abstract class StackTest extends AOPMicrocontainerTest
       assertTrue(SimpleFactoryAspect.invoked == 100);
       assertTrue(TestAspect.invoked);
       
+   }
+   
+   public void testStackExistsInManager() throws Exception
+   {
+      AspectManager manager = (AspectManager)getBean("AspectManager");
+      AdviceStack stack = manager.getAdviceStack("TestStack");
+      assertNotNull(stack);
+      assertNotNull(stack.getInterceptorFactories());
+      assertEquals(2, stack.getInterceptorFactories().size());
    }
 
 }

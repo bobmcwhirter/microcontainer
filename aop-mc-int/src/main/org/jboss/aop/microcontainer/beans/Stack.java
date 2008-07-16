@@ -25,6 +25,8 @@ import java.util.ArrayList;
 import java.util.List;
 
 import org.jboss.aop.AspectManager;
+import org.jboss.aop.advice.AdviceStack;
+import org.jboss.aop.advice.InterceptorFactory;
 
 /**
  * Defines an interceptor stack
@@ -82,5 +84,34 @@ public class Stack
       }
       
       return entries;
+   }
+   
+   public void start()
+   {
+      if (manager == null)
+      {
+         throw new IllegalStateException("Null manager");
+      }
+      if (name == null)
+      {
+         throw new IllegalStateException("Null name");
+      }
+      if (advices == null)
+      {
+         throw new IllegalStateException("Null advices");
+      }
+      
+      ArrayList<InterceptorFactory> factories = new ArrayList<InterceptorFactory>();
+      for (InterceptorEntry advice : advices)
+      {
+         factories.add(advice.getInterceptorFactory());
+      }
+      AdviceStack stack = new AdviceStack(name, factories);
+      manager.addAdviceStack(stack);
+   }
+   
+   public void stop()
+   {
+      manager.removeInterceptorStack(name);
    }
 }
