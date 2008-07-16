@@ -37,7 +37,6 @@ import org.jboss.aop.proxy.container.ContainerCache;
 import org.jboss.aop.proxy.container.GeneratedAOPProxyFactory;
 import org.jboss.joinpoint.plugins.BasicConstructorJoinPoint;
 import org.jboss.metadata.spi.MetaData;
-import org.jboss.metadata.spi.annotation.InstanceAnnotation;
 import org.jboss.metadata.spi.scope.CommonLevels;
 import org.jboss.metadata.spi.scope.CommonLevelsUtil;
 import org.jboss.metadata.spi.scope.ScopeLevel;
