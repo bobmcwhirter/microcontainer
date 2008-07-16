@@ -21,12 +21,10 @@
 */
 package org.jboss.beans.metadata.api.annotations;
 
+import java.lang.annotation.ElementType;
 import java.lang.annotation.Retention;
 import java.lang.annotation.RetentionPolicy;
 import java.lang.annotation.Target;
-import java.lang.annotation.ElementType;
-
-import org.jboss.metadata.spi.annotation.InstanceAnnotation;
 
 /**
  * Java bean value.
@@ -35,7 +33,6 @@ import org.jboss.metadata.spi.annotation.InstanceAnnotation;
  */
 @Retention(RetentionPolicy.RUNTIME)
 @Target({ElementType.METHOD, ElementType.PARAMETER})
-@InstanceAnnotation(false)
 public @interface JavaBeanValue
 {
    /**

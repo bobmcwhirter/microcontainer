@@ -26,8 +26,6 @@ import java.lang.annotation.Retention;
 import java.lang.annotation.RetentionPolicy;
 import java.lang.annotation.Target;
 
-import org.jboss.metadata.spi.annotation.InstanceAnnotation;
-
 /**
  * Uninstall callback.
  * 
@@ -35,7 +33,6 @@ import org.jboss.metadata.spi.annotation.InstanceAnnotation;
  */
 @Retention(RetentionPolicy.RUNTIME)
 @Target({ElementType.METHOD, ElementType.FIELD})
-@InstanceAnnotation(false)
 public @interface Uninstall
 {
    /**

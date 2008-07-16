@@ -21,12 +21,10 @@
 */
 package org.jboss.beans.metadata.api.annotations;
 
-import java.lang.annotation.Target;
 import java.lang.annotation.ElementType;
 import java.lang.annotation.Retention;
 import java.lang.annotation.RetentionPolicy;
-
-import org.jboss.metadata.spi.annotation.InstanceAnnotation;
+import java.lang.annotation.Target;
 
 /**
  * The aliases.
@@ -37,7 +35,6 @@ import org.jboss.metadata.spi.annotation.InstanceAnnotation;
 @Retention(RetentionPolicy.RUNTIME)
 @Target({ElementType.TYPE})
 @Cleanup
-@InstanceAnnotation(false)
 public @interface Aliases
 {
    /**

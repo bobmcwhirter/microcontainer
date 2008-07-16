@@ -26,9 +26,8 @@ import java.lang.annotation.Retention;
 import java.lang.annotation.RetentionPolicy;
 import java.lang.annotation.Target;
 
-import org.jboss.metadata.spi.annotation.InstanceAnnotation;
-import org.jboss.beans.metadata.api.model.AutowireType;
 import org.jboss.beans.info.spi.BeanAccessMode;
+import org.jboss.beans.metadata.api.model.AutowireType;
 import org.jboss.dependency.spi.ControllerMode;
 import org.jboss.dependency.spi.ErrorHandlingMode;
 
@@ -39,7 +38,6 @@ import org.jboss.dependency.spi.ErrorHandlingMode;
  */
 @Retention(RetentionPolicy.RUNTIME)
 @Target({ElementType.TYPE})
-@InstanceAnnotation(false)
 public @interface Bean
 {
    /**

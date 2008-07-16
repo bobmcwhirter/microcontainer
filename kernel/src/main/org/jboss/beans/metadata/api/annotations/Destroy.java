@@ -5,8 +5,6 @@ import java.lang.annotation.Retention;
 import java.lang.annotation.RetentionPolicy;
 import java.lang.annotation.Target;
 
-import org.jboss.metadata.spi.annotation.InstanceAnnotation;
-
 /**
  * Mark destroy lifecycle method.
  *
@@ -14,7 +12,6 @@ import org.jboss.metadata.spi.annotation.InstanceAnnotation;
  */
 @Retention(RetentionPolicy.RUNTIME)
 @Target({ElementType.METHOD})
-@InstanceAnnotation(false)
 public @interface Destroy
 {
    /**

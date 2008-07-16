@@ -28,7 +28,6 @@ import java.lang.annotation.Target;
 
 import org.jboss.beans.info.spi.BeanAccessMode;
 import org.jboss.dependency.spi.ControllerMode;
-import org.jboss.metadata.spi.annotation.InstanceAnnotation;
 
 /**
  * Mark the MC bean factory.
@@ -41,7 +40,6 @@ import org.jboss.metadata.spi.annotation.InstanceAnnotation;
  */
 @Retention(RetentionPolicy.RUNTIME)
 @Target({ElementType.TYPE})
-@InstanceAnnotation(false)
 public @interface BeanFactory
 {
    /**
