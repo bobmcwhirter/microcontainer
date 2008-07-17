@@ -25,6 +25,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import javax.xml.bind.annotation.XmlAnyElement;
+import javax.xml.bind.annotation.XmlAttribute;
 import javax.xml.bind.annotation.XmlElement;
 import javax.xml.bind.annotation.XmlElements;
 import javax.xml.bind.annotation.XmlNsForm;
@@ -35,6 +36,7 @@ import javax.xml.bind.annotation.XmlType;
 import org.jboss.aop.microcontainer.beans.AOPDomain;
 import org.jboss.beans.metadata.spi.BeanMetaData;
 import org.jboss.beans.metadata.spi.BeanMetaDataFactory;
+import org.jboss.beans.metadata.spi.ValueMetaData;
 import org.jboss.beans.metadata.spi.builder.BeanMetaDataBuilder;
 import org.jboss.xb.annotations.JBossXmlSchema;
 
@@ -50,35 +52,62 @@ import org.jboss.xb.annotations.JBossXmlSchema;
 public class DomainBeanMetaDataFactory extends AspectManagerAwareBeanMetaDataFactory
 {
    private static final long serialVersionUID = 1L;
-   String parentFirst;
-   String inheritDefinitions;
-   String inheritBindings;
-   String extendz;
    
+   //Same defaults as org.jboss.aop.Domain
+   Boolean parentFirst;
+   Boolean inheritDefinitions = true;
+   Boolean inheritBindings;
+   String extendz;
+
    List<BeanMetaDataFactory> childBeans;
    
    public DomainBeanMetaDataFactory()
    {
    }
+   
 
-   public void setParentFirst(String parentFirst)
+   @XmlAttribute(name="parentFirst")
+   public void setParentFirst(boolean parentFirst)
    {
       this.parentFirst = parentFirst;
    }
+   
+   public boolean getParentFirst()
+   {
+      return parentFirst;
+   }
 
-   public void setInheritDefinitions(String inheritDefinitions)
+   @XmlAttribute(name="inheritDefinitions")
+   public void setInheritDefinitions(boolean  inheritDefinitions)
    {
       this.inheritDefinitions = inheritDefinitions;
    }
 
-   public void setInheritBindings(String inheritBindings)
+   public boolean getInheritDefinitions()
+   {
+      return inheritDefinitions;
+   }
+
+   @XmlAttribute(name="inheritBindings")
+   public void setInheritBindings(boolean  inheritBindings)
    {
       this.inheritBindings = inheritBindings;
    }
 
+   public boolean getInheritBindings()
+   {
+      return inheritBindings;
+   }
+
+   @XmlAttribute
    public void setExtends(String extendz)
    {
       this.extendz = extendz;
+   }
+
+   public String getExtends()
+   {
+      return extendz;
    }
 
    @XmlElements
@@ -128,7 +157,7 @@ public class DomainBeanMetaDataFactory extends AspectManagerAwareBeanMetaDataFac
       
       BeanMetaDataBuilder domainBuilder = BeanMetaDataBuilder.createBuilder(getName(), AOPDomain.class.getName());
       domainBuilder.addPropertyMetaData("name", getName());
-      
+    
       if (parentFirst != null)
       {
          domainBuilder.addPropertyMetaData("parentFirst", parentFirst);
@@ -143,8 +172,10 @@ public class DomainBeanMetaDataFactory extends AspectManagerAwareBeanMetaDataFac
       }
       if (extendz != null)
       {
-         domainBuilder.addPropertyMetaData("extends", extendz);
+         ValueMetaData value = domainBuilder.createInject(extendz);
+         domainBuilder.addPropertyMetaData("parent", value);
       }
+      
       setAspectManagerProperty(domainBuilder);
       result.add(domainBuilder.getBeanMetaData());
       

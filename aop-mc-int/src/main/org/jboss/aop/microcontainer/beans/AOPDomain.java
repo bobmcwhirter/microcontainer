@@ -36,7 +36,7 @@ public class AOPDomain
    boolean parentFirst=false;
    boolean inheritDefinitions=true;
    boolean inheritBindings=false;
-   String extendz;
+   AOPDomain parent;
    DomainDefinition definition;
 
    public AspectManager getManager()
@@ -89,14 +89,14 @@ public class AOPDomain
       this.inheritBindings = inheritBindings;
    }
 
-   public String getExtends()
+   public AOPDomain getParent()
    {
-      return extendz;
+      return parent;
    }
 
-   public void setExtends(String extendz)
+   public void setParent(AOPDomain parent)
    {
-      this.extendz = extendz;
+      this.parent = parent;
    }
 
    public AspectManager getDomain()
@@ -107,14 +107,9 @@ public class AOPDomain
    public void start()
    {
       AspectManager parent = manager;
-      if (extendz != null)
+      if (this.parent != null)
       {
-         DomainDefinition parentDef = manager.getContainer(extendz);
-         if (parentDef == null)
-         {
-            throw new RuntimeException("unable to find parent Domain: " + extendz);
-         }
-         parent = parentDef.getManager();
+         parent = this.parent.getDomain();
       }
          
       definition = new DomainDefinition(name, parent, parentFirst, inheritDefinitions, inheritBindings);
