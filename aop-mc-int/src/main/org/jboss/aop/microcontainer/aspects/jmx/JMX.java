@@ -36,7 +36,7 @@ import java.lang.annotation.Target;
  */
 @Retention(RetentionPolicy.RUNTIME)
 @Target({ElementType.TYPE, ElementType.METHOD, ElementType.FIELD})
-public @interface JMX 
+public @interface JMX
 {
    /**
     * The mbean interface the annotated object should expose. Ignored if 

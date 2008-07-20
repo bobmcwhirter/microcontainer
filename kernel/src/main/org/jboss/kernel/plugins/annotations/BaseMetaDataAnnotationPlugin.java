@@ -209,8 +209,8 @@ public abstract class BaseMetaDataAnnotationPlugin<T extends AnnotatedInfo, C ex
    {
       buffer.append("@annotation=").append(annotation);
       buffer.append(" ,types=").append(types);
-      buffer.append(" ,cleanup=").append(isCleanup);
-      buffer.append(" ,cleanupOnly=").append(isCleanupOnly);
+      buffer.append(" ,cleanup=").append(isCleanup());
+      buffer.append(" ,cleanupOnly=").append(isCleanupOnly());
    }
 
    public void toShortString(JBossStringBuilder buffer)
