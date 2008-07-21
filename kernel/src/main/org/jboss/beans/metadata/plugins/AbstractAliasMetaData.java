@@ -50,6 +50,9 @@ public class AbstractAliasMetaData extends JBossObject
 
    public Object getAliasValue()
    {
+      if (alias == null)
+         throw new IllegalArgumentException("Alias should not be null");
+
       return alias;
    }
 
@@ -83,17 +86,17 @@ public class AbstractAliasMetaData extends JBossObject
 
    public void toString(JBossStringBuilder buffer)
    {
-      buffer.append("alias=").append(alias);
+      buffer.append("alias=").append(getAliasValue());
    }
 
    public void toShortString(JBossStringBuilder buffer)
    {
-      buffer.append(alias);
+      buffer.append(getAliasValue());
    }
 
    protected int getHashCode()
    {
-      return alias.hashCode();
+      return getAliasValue().hashCode();
    }
 
    public boolean equals(Object object)
@@ -102,8 +105,7 @@ public class AbstractAliasMetaData extends JBossObject
          return false;
 
       AbstractAliasMetaData amd = (AbstractAliasMetaData)object;
-      // this is what we probably want? - never saw duplicate annotation on a bean/prop/...
-      return alias.equals(amd.alias);
+      return getAliasValue().equals(amd.getAliasValue());
    }
 
    public AbstractAliasMetaData clone()

@@ -51,6 +51,9 @@ public class AbstractNamedAliasMetaData extends AbstractAliasMetaData implements
 
    public Object getName()
    {
+      if (name == null)
+         throw new IllegalArgumentException("Name should not be null");
+
       return name;
    }
 
@@ -67,13 +70,13 @@ public class AbstractNamedAliasMetaData extends AbstractAliasMetaData implements
 
    public void toString(JBossStringBuilder buffer)
    {
-      buffer.append("name=").append(name).append(" ");
+      buffer.append("name=").append(getName()).append(" ");
       super.toString(buffer);
    }
 
    protected int getHashCode()
    {
-      return name.hashCode() + 7 * super.getHashCode();
+      return getName().hashCode() + 7 * super.getHashCode();
    }
 
    public boolean equals(Object object)
@@ -82,7 +85,7 @@ public class AbstractNamedAliasMetaData extends AbstractAliasMetaData implements
          return false;
       
       AbstractNamedAliasMetaData amd = (AbstractNamedAliasMetaData)object;
-      return name.equals(amd.name);
+      return getName().equals(amd.getName());
    }
 
    public AbstractNamedAliasMetaData clone()

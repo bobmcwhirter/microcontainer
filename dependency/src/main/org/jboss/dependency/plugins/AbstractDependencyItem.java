@@ -246,6 +246,6 @@ public class AbstractDependencyItem extends JBossObject implements DependencyIte
     */
    protected void toHumanReadableString(StringBuilder builder)
    {
-      builder.append("Depends on '").append(getIDependOn());
+      builder.append("Depends on '").append(getIDependOn()).append("'");
    }
 }
