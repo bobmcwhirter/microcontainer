@@ -135,6 +135,7 @@
               <includes>
                 <include>org/jboss/test/microcontainer/test/**/*TestCase.java</include>
                 <include>org/jboss/test/microcontainer/beans/test/**/*TestCase.java</include>
+                <include>org/jboss/test/microcontainer/annotatedaop/test/**/*TestCase.java</include>
               </includes>
               <systemProperties>
                 <property>
@@ -159,6 +160,7 @@
               <includes>
                 <include>org/jboss/test/microcontainer/test/**/*TestCase.java</include>
                 <include>org/jboss/test/microcontainer/beans/test/**/*TestCase.java</include>
+                <include>org/jboss/test/microcontainer/annotatedaop/test/**/*TestCase.java</include>
               </includes>
               <systemProperties>
                 <property>

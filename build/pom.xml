@@ -38,8 +38,8 @@
     <version.jboss.common.logging.log4j>2.0.4.GA</version.jboss.common.logging.log4j>
     <version.jbossxb>2.0.0.CR9</version.jbossxb>
     <version.jboss.vfs>2.0.0.Beta19</version.jboss.vfs>
-    <version.javassist>3.8.0.GA</version.javassist>
-    <version.jboss.aop>2.0.0.CR14</version.jboss.aop>
+    <version.javassist>3.8.1.GA</version.javassist>
+    <version.jboss.aop>2.0.0.CR15</version.jboss.aop>
     <version.org.jboss.reflect>2.0.0.Beta12</version.org.jboss.reflect>
     <version.org.jboss.mdr>2.0.0-SNAPSHOT</version.org.jboss.mdr>
     <version.org.jboss.test>1.0.5.GA</version.org.jboss.test>
