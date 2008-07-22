@@ -33,21 +33,6 @@
       <advice aspect="DeployersAdvice" name="invoke"/>
    </bind>
 
-<!--
-   <beanfactory name="DeployersAdvice" class="org.jboss.test.microcontainer.support.deployers.DeployerAspects">
-   </beanfactory>
-
-   <bean name="DeployersAspect" class="org.jboss.aop.microcontainer.beans.Aspect">
-      <property name="advice"><inject bean="DeployersAdvice"/></property>
-      <property name="manager"><inject bean="AspectManager" property="aspectManager"/></property>
-   </bean>
-   
-   <bean name="DeployersBinding" class="org.jboss.aop.microcontainer.beans.AspectBinding">
-      <property name="pointcut">execution(* $instanceof{org.jboss.test.microcontainer.support.deployers.IDeployer}->$implements{org.jboss.test.microcontainer.support.deployers.IDeployer}(..))</property>
-      <property name="aspect"><inject bean="DeployersAspect" property="definition"/></property>
-      <property name="manager"><inject bean="AspectManager" property="aspectManager"/></property>
-   </bean>
--->   
    <bean name="MainDeployer" class="org.jboss.test.microcontainer.support.deployers.SampleMainDeployer">
       <property name="deployers">
          <list>
