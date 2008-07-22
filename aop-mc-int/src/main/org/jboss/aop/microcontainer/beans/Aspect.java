@@ -263,8 +263,7 @@ public class Aspect implements ConfigureKernelControllerContextAware, Untransfor
          }
          else
          {
-            //Not sure when this would get called???
-            definition = getAspectDefinitionPlainAspectFactory();
+            throw new IllegalStateException("Unknown type of managed aspects");
          }
          addDefinitionToManager();
       }
@@ -303,13 +302,6 @@ public class Aspect implements ConfigureKernelControllerContextAware, Untransfor
       AspectFactory factory = this.factory ?  
             new DelegatingBeanAspectFactory(aspectDefName, advice, element) : new GenericBeanAspectFactory(aspectDefName, advice, element);
       return new ManagedAspectDefinition(aspectDefName, scope, factory, false);
-   }
-
-   protected ManagedAspectDefinition getAspectDefinitionPlainAspectFactory()
-   {
-      AspectFactory factory = this.factory ?  
-            new AspectFactoryDelegator(myname, null) : new GenericAspectFactory(myname, element);
-      return new ManagedAspectDefinition(aspectDefName, scope, factory);
    }
 
    protected void addDefinitionToManager()
