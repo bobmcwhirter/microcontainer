@@ -28,15 +28,10 @@ import java.util.Map;
 import org.jboss.aop.AspectManager;
 import org.jboss.aop.advice.AspectDefinition;
 import org.jboss.aop.advice.AspectFactory;
-import org.jboss.aop.advice.AspectFactoryDelegator;
-import org.jboss.aop.advice.GenericAspectFactory;
 import org.jboss.aop.advice.Scope;
 import org.jboss.aop.advice.ScopeUtil;
 import org.jboss.aop.instrument.Untransformable;
 import org.jboss.beans.metadata.plugins.factory.GenericBeanFactory;
-import org.jboss.dependency.spi.ControllerContext;
-import org.jboss.kernel.spi.dependency.ConfigureKernelControllerContextAware;
-import org.jboss.kernel.spi.dependency.KernelControllerContext;
 import org.jboss.logging.Logger;
 import org.w3c.dom.Element;
 
@@ -47,7 +42,7 @@ import org.w3c.dom.Element;
  * @author <a href="adrian@jboss.com">Adrian Brock</a>
  * @version $Revision$
  */
-public class Aspect implements ConfigureKernelControllerContextAware, Untransformable
+public class Aspect implements Untransformable
 {
    private static final Logger log = Logger.getLogger(Aspect.class);
 
@@ -83,16 +78,10 @@ public class Aspect implements ConfigureKernelControllerContextAware, Untransfor
    protected String adviceBean;
 
    /**
-    * The KernelControllerContext for this Aspect
+    * The name of the aspect definition. This should be the same as the raw form of this bean's name 
+    * (when run in AS, the name is massaged to avoid name clashes)
     */
-   protected ControllerContext context;
-
-   /** The name of this bean */
-   protected String myname;
-
-   /** The name of the AspectDefinition. If not lazy (i.e, bean has no dependencies), use myname.
-    * If lazy (i.e. bean has dependencies), use adviceBean */
-   protected String aspectDefName;
+   protected String name;
 
    /**
     * All the AspectBindings referencing this Aspect
@@ -105,13 +94,13 @@ public class Aspect implements ConfigureKernelControllerContextAware, Untransfor
    private   Element element;
 
    /**
-    * Get the adviceName.
+    * Get the name.
     *
     * @return the adviceName.
     */
-   public String getAdviceName()
+   public String getName()
    {
-      return myname;
+      return name;
    }
 
    /**
@@ -125,13 +114,13 @@ public class Aspect implements ConfigureKernelControllerContextAware, Untransfor
    }
 
    /**
-    * Set the adviceName.
+    * Set the name.
     *
-    * @param adviceName The adviceName to set.
+    * @param name The name to set.
     */
-   public void setAdviceName(String adviceName)
+   public void setName(String name)
    {
-      this.myname = adviceName;
+      this.name = name;
    }
 
    /**
@@ -224,17 +213,6 @@ public class Aspect implements ConfigureKernelControllerContextAware, Untransfor
       this.scope = ScopeUtil.parse(scope);
    }
 
-   public void setKernelControllerContext(KernelControllerContext context) throws Exception
-   {
-      myname = (String)context.getName();
-      this.context = context;
-   }
-
-   public void unsetKernelControllerContext(KernelControllerContext context) throws Exception
-   {
-      this.context = null;
-   }
-
    public void setElement(Element element)
    {
       this.element = element;
@@ -250,14 +228,16 @@ public class Aspect implements ConfigureKernelControllerContextAware, Untransfor
    {
       if (definition == null)
       {
-         aspectDefName = (adviceBean != null) ? adviceBean : myname;
          if (manager == null)
             throw new IllegalArgumentException("Null manager");
+         if (name == null)
+            throw new IllegalArgumentException("Null name");
+         
          if (advice != null)
          {
             definition = getAspectDefinitionNoDependencies();
          }
-         else if (adviceBean != null && context.getController() != null)
+         else if (adviceBean != null)
          {
             definition = getAspectDefintionDependencies();
          }
@@ -287,21 +267,21 @@ public class Aspect implements ConfigureKernelControllerContextAware, Untransfor
          binding.rebind();
       }
          
-      log.debug("Bound aspect " + aspectDefName + "; deployed:" + definition.isDeployed());
+      log.debug("Bound aspect " + name + "; deployed:" + definition.isDeployed());
    }
 
    protected ManagedAspectDefinition getAspectDefinitionNoDependencies()
    {
       AspectFactory factory = this.factory ?  
-            new DelegatingBeanAspectFactory(myname, advice, element) : new GenericBeanAspectFactory(myname, advice, element);
-      return new ManagedAspectDefinition(aspectDefName, scope, factory);
+            new DelegatingBeanAspectFactory(name, advice, element) : new GenericBeanAspectFactory(name, advice, element);
+      return new ManagedAspectDefinition(name, scope, factory);
    }
 
    protected ManagedAspectDefinition getAspectDefintionDependencies()
    {
       AspectFactory factory = this.factory ?  
-            new DelegatingBeanAspectFactory(aspectDefName, advice, element) : new GenericBeanAspectFactory(aspectDefName, advice, element);
-      return new ManagedAspectDefinition(aspectDefName, scope, factory, false);
+            new DelegatingBeanAspectFactory(name, advice, element) : new GenericBeanAspectFactory(name, advice, element);
+      return new ManagedAspectDefinition(name, scope, factory, adviceBean, false);
    }
 
    protected void addDefinitionToManager()
@@ -317,9 +297,8 @@ public class Aspect implements ConfigureKernelControllerContextAware, Untransfor
 
    public void stop()
    {
-      aspectDefName = (adviceBean != null) ? adviceBean : myname;
-      log.debug("Unbinding aspect " + aspectDefName);
-      manager.removeAspectDefinition(aspectDefName);
+      log.debug("Unbinding aspect " + name);
+      manager.removeAspectDefinition(name);
       if (definition != null)
       {
          definition.undeploy();

@@ -17,6 +17,7 @@
       <annotation>@org.jboss.metadata.plugins.scope.DeploymentScope("deployment1")</annotation>
       <property name="advice"><inject bean="InterceptedAdvice"/></property>
       <property name="manager"><inject bean="AspectManagerDeployment1"/></property>
+      <property name="name">InterceptedAspect</property>
    </bean>
 
    <bean name="InterceptedBinding" class="org.jboss.aop.microcontainer.beans.AspectBinding">

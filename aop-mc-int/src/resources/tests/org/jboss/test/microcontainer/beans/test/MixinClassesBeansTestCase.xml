@@ -29,6 +29,7 @@
    <bean name="org.jboss.test.microcontainer.beans.TestAspect" class="org.jboss.aop.microcontainer.beans.Aspect">
       <property name="advice"><inject bean="Factory$org.jboss.test.microcontainer.beans.TestAspect"/></property>
       <property name="manager"><inject bean="AspectManager"/></property>
+      <property name="name">org.jboss.test.microcontainer.beans.TestAspect</property>
    </bean>
 
    <bean name="TestAspectBinding" class="org.jboss.aop.microcontainer.beans.AspectBinding">

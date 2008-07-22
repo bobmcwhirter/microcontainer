@@ -12,6 +12,7 @@
       <property name="advice"><inject bean="Factory$org.jboss.test.microcontainer.beans.SimpleInterceptorFactory"/></property>
       <property name="manager"><inject bean="AspectManager"/></property>
       <property name="factory">true</property>
+      <property name="name">org.jboss.test.microcontainer.beans.SimpleInterceptorFactory</property>
    </bean>
 
    <bean name="TestAspectBinding" class="org.jboss.aop.microcontainer.beans.AspectBinding">

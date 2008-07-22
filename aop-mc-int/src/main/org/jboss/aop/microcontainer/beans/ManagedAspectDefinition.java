@@ -32,7 +32,8 @@ import org.jboss.aop.advice.Scope;
  */
 public class ManagedAspectDefinition extends AspectDefinition
 {
-
+   private String dependentAspectName;
+   
    public ManagedAspectDefinition()
    {
       super();
@@ -40,17 +41,23 @@ public class ManagedAspectDefinition extends AspectDefinition
 
    public ManagedAspectDefinition(String name, Scope scope, AspectFactory factory)
    {
-      this(name, scope, factory, true);
+      this(name, scope, factory, null, true);
    }
 
-   public ManagedAspectDefinition(String name, Scope scope, AspectFactory factory, boolean deployed)
+   public ManagedAspectDefinition(String name, Scope scope, AspectFactory factory, String dependentAdviceName, boolean deployed)
    {
       super(name, scope, factory);
       super.deployed = deployed;
+      this.dependentAspectName = dependentAdviceName;
    }
 
    public void setDeployed(boolean deployed)
    {
       this.deployed = true;
+   }
+   
+   public String getDependentAspectName()
+   {
+      return dependentAspectName;
    }
 }

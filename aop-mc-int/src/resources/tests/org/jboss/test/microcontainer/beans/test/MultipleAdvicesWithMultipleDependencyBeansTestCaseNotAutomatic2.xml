@@ -18,6 +18,7 @@
    <bean name="org.jboss.test.microcontainer.beans.TestAspectWithDependency" class="org.jboss.aop.microcontainer.beans.Aspect">
       <property name="adviceBean">Factory$org.jboss.test.microcontainer.beans.TestAspectWithDependency</property>
       <property name="manager"><inject bean="AspectManager"/></property>
+      <property name="name">org.jboss.test.microcontainer.beans.TestAspectWithDependency"</property>
    </bean>
 
    <beanfactory name="Factory$org.jboss.test.microcontainer.beans.TestInterceptorWithDependency" class="org.jboss.test.microcontainer.beans.TestInterceptorWithDependency">
@@ -31,6 +32,7 @@
    <bean name="org.jboss.test.microcontainer.beans.TestInterceptorWithDependency" class="org.jboss.aop.microcontainer.beans.Aspect">
       <property name="adviceBean">Factory$org.jboss.test.microcontainer.beans.TestInterceptorWithDependency</property>
       <property name="manager"><inject bean="AspectManager"/></property>
+      <property name="name">org.jboss.test.microcontainer.beans.TestInterceptorWithDependency</property>
    </bean>
 
    <bean name="TestAspectBinding" class="org.jboss.aop.microcontainer.beans.AspectBinding">

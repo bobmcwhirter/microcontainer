@@ -11,6 +11,7 @@
    <bean name="org.jboss.test.microcontainer.beans.TestAspect" class="org.jboss.aop.microcontainer.beans.Aspect">
       <property name="advice"><inject bean="Factory$org.jboss.test.microcontainer.beans.TestAspect"/></property>
       <property name="manager"><inject bean="AspectManager"/></property>
+      <property name="name">org.jboss.test.microcontainer.beans.TestAspect</property>
    </bean>
 
    <beanfactory name="Factory$org.jboss.test.microcontainer.beans.TestInterceptor" class="org.jboss.test.microcontainer.beans.TestInterceptor"/>
@@ -18,6 +19,7 @@
    <bean name="org.jboss.test.microcontainer.beans.TestInterceptor" class="org.jboss.aop.microcontainer.beans.Aspect">
       <property name="advice"><inject bean="Factory$org.jboss.test.microcontainer.beans.TestInterceptor"/></property>
       <property name="manager"><inject bean="AspectManager"/></property>
+      <property name="name">org.jboss.test.microcontainer.beans.TestInterceptor</property>
    </bean>
 
 	<bean name="PrecedenceBinding" class="org.jboss.aop.microcontainer.beans.PrecedenceDef">

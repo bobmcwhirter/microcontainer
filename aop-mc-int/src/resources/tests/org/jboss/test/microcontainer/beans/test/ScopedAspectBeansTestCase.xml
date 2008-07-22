@@ -11,6 +11,7 @@
       <property name="advice"><inject bean="Factory$org.jboss.test.microcontainer.beans.PerVmAspect"/></property>
       <property name="manager"><inject bean="AspectManager"/></property>
       <property name="scope">PER_VM</property>
+      <property name="name">org.jboss.test.microcontainer.beans.PerVmAspect</property>
    </bean>
 
    <beanfactory name="Factory$org.jboss.test.microcontainer.beans.PerClassAspect" class="org.jboss.test.microcontainer.beans.PerClassAspect"/>
@@ -18,6 +19,7 @@
       <property name="advice"><inject bean="Factory$org.jboss.test.microcontainer.beans.PerClassAspect"/></property>
       <property name="manager"><inject bean="AspectManager"/></property>
       <property name="scope">PER_CLASS</property>
+      <property name="name">org.jboss.test.microcontainer.beans.PerClassAspect</property>
    </bean>
 
    <beanfactory name="Factory$org.jboss.test.microcontainer.beans.PerInstanceAspect" class="org.jboss.test.microcontainer.beans.PerInstanceAspect"/>
@@ -25,6 +27,7 @@
       <property name="advice"><inject bean="Factory$org.jboss.test.microcontainer.beans.PerInstanceAspect"/></property>
       <property name="manager"><inject bean="AspectManager"/></property>
       <property name="scope">PER_INSTANCE</property>
+      <property name="name">org.jboss.test.microcontainer.beans.PerInstanceAspect</property>
    </bean>
 
    <beanfactory name="Factory$org.jboss.test.microcontainer.beans.PerJoinPointAspect" class="org.jboss.test.microcontainer.beans.PerJoinPointAspect"/>
@@ -32,6 +35,7 @@
       <property name="advice"><inject bean="Factory$org.jboss.test.microcontainer.beans.PerJoinPointAspect"/></property>
       <property name="manager"><inject bean="AspectManager"/></property>
       <property name="scope">PER_JOINPOINT</property>
+      <property name="name">org.jboss.test.microcontainer.beans.PerJoinPointAspect</property>
    </bean>
 
    <beanfactory name="Factory$org.jboss.test.microcontainer.beans.PerClassJoinPointAspect" class="org.jboss.test.microcontainer.beans.PerClassJoinPointAspect"/>
@@ -39,6 +43,7 @@
       <property name="advice"><inject bean="Factory$org.jboss.test.microcontainer.beans.PerClassJoinPointAspect"/></property>
       <property name="manager"><inject bean="AspectManager"/></property>
       <property name="scope">PER_CLASS_JOINPOINT</property>
+      <property name="name">org.jboss.test.microcontainer.beans.PerClassJoinPointAspect</property>
    </bean>
 
    <bean name="TestAspectBinding" class="org.jboss.aop.microcontainer.beans.AspectBinding">

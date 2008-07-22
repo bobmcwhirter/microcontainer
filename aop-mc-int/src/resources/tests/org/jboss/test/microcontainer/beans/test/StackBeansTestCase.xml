@@ -12,6 +12,7 @@
       <property name="advice"><inject bean="Factory$org.jboss.test.microcontainer.beans.SimpleAspectFactory"/></property>
       <property name="manager"><inject bean="AspectManager"/></property>
       <property name="factory">true</property>
+      <property name="name">org.jboss.test.microcontainer.beans.SimpleAspectFactory</property>
    </bean>
 
    <beanfactory name="Factory$org.jboss.test.microcontainer.beans.TestAspect" class="org.jboss.test.microcontainer.beans.TestAspect"/>
@@ -19,6 +20,7 @@
    <bean name="org.jboss.test.microcontainer.beans.TestAspect" class="org.jboss.aop.microcontainer.beans.Aspect">
       <property name="advice"><inject bean="Factory$org.jboss.test.microcontainer.beans.TestAspect"/></property>
       <property name="manager"><inject bean="AspectManager"/></property>
+      <property name="name">org.jboss.test.microcontainer.beans.TestAspect</property>
    </bean>
 
    <bean name="TestStack" class="org.jboss.aop.microcontainer.beans.Stack">

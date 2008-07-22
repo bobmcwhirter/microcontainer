@@ -143,6 +143,7 @@ public class AspectBeanMetaDataFactory extends AspectManagerAwareBeanMetaDataFac
       //Add the Aspect
       BeanMetaDataBuilder aspectBuilder = BeanMetaDataBuilder.createBuilder(aspectName, Aspect.class.getName());
       aspectBuilder.addPropertyMetaData("scope", scope);
+      aspectBuilder.addPropertyMetaData("name", aspectName);
       HashMap<String, String> attributes = new HashMap<String, String>();
       attributes.put("name", name);
       if (factory != null)

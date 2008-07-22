@@ -111,7 +111,11 @@ public class AOPDependencyBuilder extends AbstractDependencyBuilder
                   AspectDefinition def = (AspectDefinition) it.next();
                   if (def instanceof ManagedAspectDefinition)
                   {
-                     depends.add(new AspectDependencyBuilderListItem(def.getName()));
+                     String name = ((ManagedAspectDefinition)def).getDependentAspectName();
+                     if (name != null)
+                     {
+                        depends.add(new AspectDependencyBuilderListItem(name));
+                     }
                   }
                }
             }
