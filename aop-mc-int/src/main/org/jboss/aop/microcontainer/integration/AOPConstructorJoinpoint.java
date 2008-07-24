@@ -82,8 +82,14 @@ public class AOPConstructorJoinpoint extends BasicConstructorJoinPoint
    @SuppressWarnings("deprecation")
    public Object dispatch() throws Throwable
    {
-      Class<?> clazz = constructorInfo.getDeclaringClass().getType();
       MetaData metaData = MetaDataStack.peek();
+      if (metaData == null)
+      {
+         //We are not instantiating a bean, just one of its properties
+         return super.dispatch();
+      }
+
+      Class<?> clazz = constructorInfo.getDeclaringClass().getType();
       AspectManager manager = AspectManagerFactory.getAspectManager(metaData);
 
       MetaDataStack.mask();
