@@ -40,7 +40,6 @@ import org.jboss.dependency.spi.dispatch.AttributeDispatchContext;
 import org.jboss.kernel.plugins.config.Configurator;
 import org.jboss.kernel.spi.config.KernelConfigurator;
 import org.jboss.kernel.spi.dependency.KernelControllerContext;
-import org.jboss.metadata.spi.stack.MetaDataStack;
 import org.jboss.reflect.spi.ClassInfo;
 import org.jboss.reflect.spi.TypeInfo;
 import org.jboss.util.JBossStringBuilder;
@@ -249,17 +248,7 @@ public abstract class AbstractTypeMetaData extends AbstractValueMetaData
 
       BeanInfo beanInfo = configurator.getBeanInfo(info);
       Joinpoint constructor = configurator.getConstructorJoinPoint(beanInfo);
-      
-      MetaDataStack.mask();
-      Object result = null;
-      try
-      {
-         result = constructor.dispatch();
-      }
-      finally
-      {
-         MetaDataStack.unmask();
-      }
+      Object result = constructor.dispatch();
 
       if (expected.isAssignableFrom(result.getClass()) == false)
          throw new ClassCastException(result.getClass() + " is not a " + expected.getName());
