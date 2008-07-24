@@ -21,10 +21,6 @@
 */ 
 package org.jboss.test.microcontainer.beans.test;
 
-import org.jboss.aop.AspectManager;
-import org.jboss.aop.Domain;
-import org.jboss.aop.microcontainer.beans.AOPDomain;
-
 import junit.framework.Test;
 
 /**

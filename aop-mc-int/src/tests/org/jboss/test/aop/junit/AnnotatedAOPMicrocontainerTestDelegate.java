@@ -158,9 +158,9 @@ public class AnnotatedAOPMicrocontainerTestDelegate extends MicrocontainerTestDe
    /**
     * Deploy the aop config
     *
-    * @param url the url
     * @throws Exception for any error
     */
+   @SuppressWarnings("unchecked")
    protected void deployAOP() throws Exception
    {
       log.debug("Deploying annotations from " + tempDir);
@@ -186,8 +186,6 @@ public class AnnotatedAOPMicrocontainerTestDelegate extends MicrocontainerTestDe
 
    /**
     * Undeploy the aop config
-    * 
-    * @param url the url
     */
    protected void undeployAOP()
    {

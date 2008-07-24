@@ -24,7 +24,6 @@ package org.jboss.test.microcontainer.annotatedaop;
 import org.jboss.aop.Aspect;
 import org.jboss.aop.DeclareError;
 import org.jboss.aop.DeclareWarning;
-import org.jboss.aop.Prepare;
 import org.jboss.aop.advice.Scope;
 
 /**

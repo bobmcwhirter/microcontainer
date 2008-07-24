@@ -21,8 +21,6 @@
 */ 
 package org.jboss.test.microcontainer.annotatedaop;
 
-import java.io.Externalizable;
-
 import org.jboss.aop.Aspect;
 import org.jboss.aop.Introduction;
 import org.jboss.aop.Mixin;
