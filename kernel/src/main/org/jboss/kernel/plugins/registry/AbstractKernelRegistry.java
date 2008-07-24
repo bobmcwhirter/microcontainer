@@ -21,7 +21,6 @@
  */
 package org.jboss.kernel.plugins.registry;
 
-import java.util.Iterator;
 import java.util.List;
 import java.util.ListIterator;
 import java.util.concurrent.CopyOnWriteArrayList;
@@ -36,6 +35,7 @@ import org.jboss.kernel.spi.registry.KernelRegistryPlugin;
  * 
  * @author <a href="adrian@jboss.com">Adrian Brock</a>
  * @author <a href="mailto:les.hazlewood@jboss.org">Les A. Hazlewood</a>
+ * @author <a href="mailto:ales.justin@jboss.org">Ales Justin</a>
  * @version $Revision$
  */
 @SuppressWarnings("deprecation")
@@ -100,14 +100,6 @@ public abstract class AbstractKernelRegistry extends AbstractKernelObject implem
 
    public boolean containsEntry(Object name)
    {
-      Iterator<KernelRegistryPlugin> i = factories.iterator();
-      while (i.hasNext())
-      {
-         KernelRegistryPlugin factory = i.next();
-         KernelRegistryEntry entry = factory.getEntry(name);
-         if (entry != null)
-            return true;
-      }
-      return false;
+      return findEntry(name) != null;
    }
 }
