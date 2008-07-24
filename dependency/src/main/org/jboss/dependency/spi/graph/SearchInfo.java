@@ -39,7 +39,7 @@ public interface SearchInfo
     * GraphController implementation might
     * return context on itself.
     *
-    * @return
+    * @return the type
     */
    String getType();
 

@@ -63,6 +63,7 @@ public abstract class CompositeKey<T, U>
     * @param wr the weak reference
     * @return wr's value hash code
     */
+   @SuppressWarnings("unchecked")
    protected static int safeWeakHaskHode(WeakReference wr)
    {
       Object weak = wr.get();
@@ -154,6 +155,7 @@ public abstract class CompositeKey<T, U>
     * reference objects.  This allows the Key to get removed from
     * WeakHashMap.
     */
+   @SuppressWarnings("unchecked")
    private void cleanKeyRefs()
    {
       ReferenceQueue<T> queue = getReferenceQueue();

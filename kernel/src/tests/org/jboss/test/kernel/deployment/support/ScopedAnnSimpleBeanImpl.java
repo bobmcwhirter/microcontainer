@@ -33,4 +33,6 @@ import org.jboss.metadata.plugins.scope.DeploymentScope;
 @DeploymentScope("somedeployment")
 public class ScopedAnnSimpleBeanImpl extends SimpleBeanImpl
 {
+   /** The serialVersionUID */
+   private static final long serialVersionUID = 1L;
 }

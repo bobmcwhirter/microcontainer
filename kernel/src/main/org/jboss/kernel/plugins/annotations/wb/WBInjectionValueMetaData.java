@@ -36,6 +36,9 @@ import org.jboss.reflect.spi.TypeInfo;
  */
 public class WBInjectionValueMetaData extends AbstractValueMetaData
 {
+   /** The serialVersionUID */
+   private static final long serialVersionUID = 1L;
+
    /**
     * The context
     */

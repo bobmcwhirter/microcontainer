@@ -53,6 +53,7 @@ public class AnnotationsMatchingTestCase extends AbstractBeanAnnotationAdapterTe
       return suite(AnnotationsMatchingTestCase.class);
    }
 
+   @SuppressWarnings("unchecked")
    protected BeanAnnotationAdapter getBeanAnnotationAdapterClass()
    {
       BasicBeanAnnotationAdapter basic = BasicBeanAnnotationAdapter.INSTANCE;

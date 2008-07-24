@@ -31,4 +31,6 @@ import org.jboss.beans.metadata.api.annotations.Aliases;
 @Aliases({"alias"})
 public class AnnSimpleBeanImpl extends SimpleBeanImpl
 {
+   /** The serialVersionUID */
+   private static final long serialVersionUID = 1L;
 }

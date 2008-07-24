@@ -41,6 +41,9 @@ import org.jboss.util.JBossStringBuilder;
  */
 public class SearchValueMetaData extends AbstractValueMetaData
 {
+   /** The serialVersionUID */
+   private static final long serialVersionUID = 1L;
+   
    private ControllerState state;
    private org.jboss.dependency.plugins.graph.Search search;
    private String property;

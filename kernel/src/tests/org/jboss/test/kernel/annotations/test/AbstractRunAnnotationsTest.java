@@ -115,9 +115,10 @@ public abstract class AbstractRunAnnotationsTest extends BaseTestCase
       }
    }
 
+   @SuppressWarnings("unchecked")
    protected void checkContextState(Class<?> clazz, KernelControllerContext context)
    {
-      AfterInstallVerifier verifier = (AfterInstallVerifier) verifiers.get(clazz);
+      AfterInstallVerifier verifier = verifiers.get(clazz);
       if (verifier != null)
          verifier.verifyContext(context);
       else

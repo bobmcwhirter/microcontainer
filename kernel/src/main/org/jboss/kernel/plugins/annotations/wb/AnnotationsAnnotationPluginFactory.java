@@ -38,6 +38,7 @@ public class AnnotationsAnnotationPluginFactory
     * @param clazz the annotation class
     * @return new annotations supply plugin
     */
+   @SuppressWarnings("unchecked")
    public static AnnotationPlugin createClassPlugin(Class<? extends Annotation> clazz)
    {
       return new AnnotationsSupplyAnnotationPlugin(clazz);
@@ -49,6 +50,7 @@ public class AnnotationsAnnotationPluginFactory
     * @param clazz the annotation class
     * @return new annotations injection plugin
     */
+   @SuppressWarnings("unchecked")
    public static AnnotationPlugin createPropertyInjectionPlugin(Class<? extends Annotation> clazz)
    {
       return new AnnotationsPropertyInjectionAnnotationPlugin(clazz);
@@ -60,6 +62,7 @@ public class AnnotationsAnnotationPluginFactory
     * @param clazz the annotation class
     * @return new annotations injection plugin
     */
+   @SuppressWarnings("unchecked")
    public static AnnotationPlugin createFieldInjectionPlugin(Class<? extends Annotation> clazz)
    {
       return new AnnotationsFieldInjectionAnnotationPlugin(clazz);
