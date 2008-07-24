@@ -77,7 +77,7 @@ public abstract class AbstractKernelRegistry extends AbstractKernelObject implem
          log.trace("Registry " + this + " removed registry factory " + factory);
    }
 
-   public KernelRegistryEntry getEntry(Object name)
+   public KernelRegistryEntry findEntry(Object name)
    {
       for (ListIterator<KernelRegistryPlugin> i = factories.listIterator(); i.hasNext();)
       {
@@ -86,7 +86,16 @@ public abstract class AbstractKernelRegistry extends AbstractKernelObject implem
          if (entry != null)
             return entry;
       }
-      throw new KernelRegistryEntryNotFoundException("Entry not found with name: " + name);
+      return null;
+   }
+
+   public KernelRegistryEntry getEntry(Object name)
+   {
+      KernelRegistryEntry entry = findEntry(name);
+      if (entry == null)
+         throw new KernelRegistryEntryNotFoundException("Entry not found with name: " + name);
+
+      return entry;
    }
 
    public boolean containsEntry(Object name)

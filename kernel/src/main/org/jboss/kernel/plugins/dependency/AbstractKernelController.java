@@ -160,7 +160,7 @@ public class AbstractKernelController extends ScopedController implements Kernel
          org.jboss.kernel.spi.registry.KernelRegistry registry = kernel.getRegistry();
          try
          {
-            return registry.getEntry(name);
+            return registry.findEntry(name);
          }
          catch (Throwable ignored)
          {
