@@ -23,15 +23,14 @@ package org.jboss.aop.microcontainer.lazy;
 
 import java.util.Set;
 
-import org.jboss.kernel.plugins.lazy.AbstractLazyInitializer;
-import org.jboss.kernel.plugins.config.Configurator;
-import org.jboss.kernel.Kernel;
-import org.jboss.kernel.spi.dependency.KernelControllerContext;
-import org.jboss.beans.info.spi.BeanInfo;
 import org.jboss.aop.proxy.container.AOPProxyFactoryParameters;
 import org.jboss.aop.proxy.container.GeneratedAOPProxyFactory;
+import org.jboss.beans.info.spi.BeanInfo;
+import org.jboss.kernel.Kernel;
+import org.jboss.kernel.plugins.config.Configurator;
+import org.jboss.kernel.plugins.lazy.AbstractLazyInitializer;
+import org.jboss.kernel.spi.dependency.KernelControllerContext;
 import org.jboss.metadata.spi.MetaData;
-import org.jboss.metadata.spi.stack.MetaDataStack;
 
 /**
  * JBossAOP lazy initializer.
@@ -43,32 +42,29 @@ public class JBossAOPLazyInitializer extends AbstractLazyInitializer
    @SuppressWarnings("deprecation")
    public Object initializeProxy(Kernel kernel, String bean, boolean exposeClass, Set<String> interfaces) throws Throwable
    {
+      return initializeProxy(kernel, bean, exposeClass, interfaces, null);
+   }
+   
+   public Object initializeProxy(Kernel kernel, String bean, boolean exposeClass, Set<String> interfaces, MetaData metaData) throws Throwable
+   {
       KernelControllerContext context = getKernelControllerContext(kernel, bean);
       BeanInfo beanInfo = context.getBeanInfo();
       if (beanInfo == null)
          throw new IllegalArgumentException("Cannot proxy factory beans.");
 
-      MetaData metaData = MetaDataStack.peek();
-      MetaDataStack.mask();
-      try
+      AOPProxyFactoryParameters params = new AOPProxyFactoryParameters();
+      params.setMetaData(metaData);
+      if (exposeClass)
       {
-         AOPProxyFactoryParameters params = new AOPProxyFactoryParameters();
-         params.setMetaData(metaData);
-         if (exposeClass)
-         {
-            params.setProxiedClass(beanInfo.getClassInfo().getType());
-         }
-         if (interfaces != null && interfaces.isEmpty() == false)
-         {
-            ClassLoader cl = Configurator.getClassLoader(context.getBeanMetaData());
-            params.setInterfaces(getClasses(kernel.getConfigurator(), interfaces, cl));
-         }
-         GeneratedAOPProxyFactory factory = new GeneratedAOPProxyFactory();
-         return factory.createAdvisedProxy(params);
+         params.setProxiedClass(beanInfo.getClassInfo().getType());
       }
-      finally
+      if (interfaces != null && interfaces.isEmpty() == false)
       {
-         MetaDataStack.unmask();
+         ClassLoader cl = Configurator.getClassLoader(context.getBeanMetaData());
+         params.setInterfaces(getClasses(kernel.getConfigurator(), interfaces, cl));
       }
+
+      GeneratedAOPProxyFactory factory = new GeneratedAOPProxyFactory();
+      return factory.createAdvisedProxy(params);
    }
 }

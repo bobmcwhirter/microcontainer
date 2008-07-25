@@ -33,6 +33,7 @@ import org.jboss.kernel.spi.config.KernelConfigurator;
 import org.jboss.kernel.spi.dependency.KernelControllerContext;
 import org.jboss.kernel.spi.lazy.LazyInitializer;
 import org.jboss.kernel.spi.registry.KernelBus;
+import org.jboss.metadata.spi.MetaData;
 import org.jboss.util.JBossStringBuilder;
 
 /**
@@ -220,5 +221,10 @@ public abstract class AbstractLazyInitializer implements LazyInitializer
          classes[i] = configurator.getClassInfo(className, cl).getType();
       }
       return classes;
+   }
+
+   public Object initializeProxy(Kernel kernel, String bean, boolean exposeClass, Set<String> interfaces, MetaData metaData) throws Throwable
+   {
+      return initializeProxy(kernel, bean, exposeClass, interfaces);
    }
 }

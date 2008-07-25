@@ -23,8 +23,8 @@ package org.jboss.aop.microcontainer.integration;
 
 import java.lang.annotation.Annotation;
 import java.lang.reflect.Constructor;
-import java.util.List;
 import java.util.ArrayList;
+import java.util.List;
 
 import org.jboss.aop.Advisor;
 import org.jboss.aop.AspectManager;
@@ -41,7 +41,6 @@ import org.jboss.metadata.spi.scope.CommonLevels;
 import org.jboss.metadata.spi.scope.CommonLevelsUtil;
 import org.jboss.metadata.spi.scope.ScopeLevel;
 import org.jboss.metadata.spi.signature.MethodSignature;
-import org.jboss.metadata.spi.stack.MetaDataStack;
 import org.jboss.reflect.spi.ClassInfo;
 import org.jboss.reflect.spi.ConstructorInfo;
 import org.jboss.reflect.spi.MethodInfo;
@@ -61,6 +60,8 @@ public class AOPConstructorJoinpoint extends BasicConstructorJoinPoint
    private static final List<ScopeLevel> levels;
    private AOPProxyFactory proxyFactory = new GeneratedAOPProxyFactory();
 
+   private MetaData metaData;
+   
    static
    {
       // get all sub INSTANCE levels
@@ -73,38 +74,34 @@ public class AOPConstructorJoinpoint extends BasicConstructorJoinPoint
     * Create a new AOPConstructorJoinpoint.
     *
     * @param constructorInfo the constructor info
+    * @param metaData the metaData
     */
-   public AOPConstructorJoinpoint(ConstructorInfo constructorInfo)
+   public AOPConstructorJoinpoint(ConstructorInfo constructorInfo, Object metaData)
    {
       super(constructorInfo);
+      if (metaData == null) 
+         throw new IllegalArgumentException("Null metaData");
+      if (metaData instanceof MetaData == false)
+         throw new IllegalArgumentException(metaData + " is not metadata");
+      this.metaData = MetaData.class.cast(metaData);
    }
 
    @SuppressWarnings("deprecation")
    public Object dispatch() throws Throwable
    {
       Class<?> clazz = constructorInfo.getDeclaringClass().getType();
-      MetaData metaData = MetaDataStack.peek();
       AspectManager manager = AspectManagerFactory.getAspectManager(metaData);
-
-      MetaDataStack.mask();
-      try
-      {
-         boolean hasInstanceMetaData = rootHasSubInstanceMetaData(metaData);
-         ContainerCache cache = ContainerCache.initialise(manager, clazz, metaData, hasInstanceMetaData);
-         AOPProxyFactoryParameters params = new AOPProxyFactoryParameters();
-         Object target = createTarget(cache, params);
-         params.setProxiedClass(target.getClass());
-         params.setMetaData(metaData);
-         params.setTarget(target);
-         params.setContainerCache(cache);
-         params.setMetaDataHasInstanceLevelData(hasInstanceMetaData);
-         
-         return proxyFactory.createAdvisedProxy(params);
-      }
-      finally
-      {
-         MetaDataStack.unmask();
-      }
+      boolean hasInstanceMetaData = rootHasSubInstanceMetaData(metaData);
+      ContainerCache cache = ContainerCache.initialise(manager, clazz, metaData, hasInstanceMetaData);
+      AOPProxyFactoryParameters params = new AOPProxyFactoryParameters();
+      Object target = createTarget(cache, params);
+      params.setProxiedClass(target.getClass());
+      params.setMetaData(metaData);
+      params.setTarget(target);
+      params.setContainerCache(cache);
+      params.setMetaDataHasInstanceLevelData(hasInstanceMetaData);
+      
+      return proxyFactory.createAdvisedProxy(params);
    }
 
    /**

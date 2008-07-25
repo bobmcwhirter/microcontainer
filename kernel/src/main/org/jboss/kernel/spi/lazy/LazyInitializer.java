@@ -24,6 +24,7 @@ package org.jboss.kernel.spi.lazy;
 import java.util.Set;
 
 import org.jboss.kernel.Kernel;
+import org.jboss.metadata.spi.MetaData;
 
 /**
  * Lazy initializer.
@@ -33,7 +34,7 @@ import org.jboss.kernel.Kernel;
 public interface LazyInitializer
 {
    /**
-    * Initialize lazy proxy.
+    * Initialize lazy proxy with no metadata.
     *
     * @param kernel the kernel
     * @param bean the bean to wrap
@@ -43,4 +44,17 @@ public interface LazyInitializer
     * @throws Throwable for any error
     */
    Object initializeProxy(Kernel kernel, String bean, boolean exposeClass, Set<String> interfaces) throws Throwable;
+
+   /**
+    * Initialize lazy proxy.
+    *
+    * @param kernel the kernel
+    * @param bean the bean to wrap
+    * @param exposeClass do we expose full class
+    * @param interfaces interfaces to expose
+    * @param metaData the metaData
+    * @return the proxy
+    * @throws Throwable for any error
+    */
+   Object initializeProxy(Kernel kernel, String bean, boolean exposeClass, Set<String> interfaces, MetaData metaData) throws Throwable;
 }

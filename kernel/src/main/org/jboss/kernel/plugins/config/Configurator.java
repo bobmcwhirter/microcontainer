@@ -107,6 +107,23 @@ public class Configurator extends Config
    public static Joinpoint getConstructorJoinPoint(KernelConfig config, BeanInfo info, ConstructorMetaData metaData, BeanMetaData beanMetaData)
       throws Throwable
    {
+      return getConstructorJoinPoint(config, info, metaData, beanMetaData, null);
+   }
+
+   /**
+    * Get a constructor joinpoint
+    *
+    * @param config the kernel config
+    * @param info the bean info
+    * @param metaData the constructor metadata
+    * @param beanMetaData the bean metadata
+    * @param object an opaque object
+    * @return the joinpoint
+    * @throws Throwable for any error
+    */
+   public static Joinpoint getConstructorJoinPoint(KernelConfig config, BeanInfo info, ConstructorMetaData metaData, BeanMetaData beanMetaData, Object object)
+      throws Throwable
+   {
       boolean trace = log.isTraceEnabled();
 
       if (trace)
@@ -178,7 +195,7 @@ public class Configurator extends Config
          }
 
          // Find the constructor
-         ConstructorJoinpoint joinPoint = findConstructor(trace, info, metaData);
+         ConstructorJoinpoint joinPoint = findConstructor(trace, info, metaData, object);
          ConstructorInfo cinfo = joinPoint.getConstructorInfo();
 
          // Set the parameters
@@ -192,7 +209,7 @@ public class Configurator extends Config
       }
 
       // Default constructor
-      return findConstructor(trace, info, metaData);
+      return findConstructor(trace, info, metaData, object);
    }
 
    /**
@@ -220,9 +237,27 @@ public class Configurator extends Config
     */
    public static ConstructorJoinpoint findConstructor(boolean trace, BeanInfo info, ConstructorMetaData metaData) throws Exception
    {
+      return findConstructor(trace, info, metaData, null);
+   }
+
+   /**
+    * Find a constructor
+    *
+    * @param trace whether trace is enabled
+    * @param info the bean info
+    * @param metaData the constructor metadata
+    * @param object an opaque object
+    * @return the constructor join point
+    * @throws Exception for any error
+    */
+   public static ConstructorJoinpoint findConstructor(boolean trace, BeanInfo info, ConstructorMetaData metaData, Object object) throws Exception
+   {
       ConstructorInfo cinfo = resolveConstructor(trace, info, metaData);
       JoinpointFactory jpf = info.getJoinpointFactory();
-      return jpf.getConstructorJoinpoint(cinfo);
+      if (object == null)
+         return jpf.getConstructorJoinpoint(cinfo);
+      else
+         return jpf.getConstructorJoinpoint(cinfo, object);
    }
 
    /**

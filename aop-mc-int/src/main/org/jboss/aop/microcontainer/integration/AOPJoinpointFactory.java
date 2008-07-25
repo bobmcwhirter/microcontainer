@@ -48,8 +48,10 @@ public class AOPJoinpointFactory extends BasicJoinpointFactory
       super(classInfo);
    }
 
-   public ConstructorJoinpoint getConstructorJoinpoint(ConstructorInfo constructorInfo) throws JoinpointException
+   public ConstructorJoinpoint getConstructorJoinpoint(ConstructorInfo constructorInfo, Object metaData) throws JoinpointException
    {
-	   return new AOPConstructorJoinpoint(constructorInfo);
+      if (metaData == null)
+         return super.getConstructorJoinpoint(constructorInfo);
+	   return new AOPConstructorJoinpoint(constructorInfo, metaData);
    }
 }

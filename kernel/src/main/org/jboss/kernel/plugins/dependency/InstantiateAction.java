@@ -34,6 +34,7 @@ import org.jboss.kernel.spi.dependency.KernelControllerContext;
 import org.jboss.kernel.spi.dependency.KernelControllerContextAware;
 import org.jboss.kernel.spi.dependency.InstantiateKernelControllerContextAware;
 import org.jboss.kernel.spi.metadata.KernelMetaDataRepository;
+import org.jboss.metadata.spi.MetaData;
 import org.jboss.metadata.spi.scope.ScopeKey;
 import org.jboss.metadata.spi.scope.CommonLevels;
 
@@ -50,11 +51,14 @@ public class InstantiateAction extends AnnotationsAction
    {
       KernelController controller = (KernelController) context.getController();
       Kernel kernel = controller.getKernel();
+      KernelMetaDataRepository repository = kernel.getMetaDataRepository();
       KernelConfigurator configurator = kernel.getConfigurator();
 
       BeanMetaData metaData = context.getBeanMetaData();
       BeanInfo info = context.getBeanInfo();
-      Joinpoint joinPoint = configurator.getConstructorJoinPoint(info, metaData.getConstructor(), metaData);
+
+      MetaData repositoryMetaData = repository.getMetaData(context);
+      Joinpoint joinPoint = configurator.getConstructorJoinPoint(info, metaData.getConstructor(), metaData, repositoryMetaData);
 
       BeanValidatorBridge bridge = getBeanValidatorBridge(context);
       if (bridge != null)
@@ -75,7 +79,7 @@ public class InstantiateAction extends AnnotationsAction
             context.setBeanInfo(info);
 
             // update class scope with class info
-            KernelMetaDataRepository repository = kernel.getMetaDataRepository();
+            repository = kernel.getMetaDataRepository();
             // remove old context
             repository.removeMetaData(context);
             // create new scope key

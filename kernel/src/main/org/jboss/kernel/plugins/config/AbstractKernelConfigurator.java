@@ -132,6 +132,11 @@ public class AbstractKernelConfigurator extends AbstractKernelObject implements 
       return Configurator.getConstructorJoinPoint(config, info, metaData, beanMetaData);
    }
 
+   public Joinpoint getConstructorJoinPoint(BeanInfo info, ConstructorMetaData metaData, BeanMetaData beanMetaData, Object object) throws Throwable
+   {
+      return Configurator.getConstructorJoinPoint(config, info, metaData, beanMetaData, object);
+   }
+
    public MethodJoinpoint getMethodJoinPoint(BeanInfo info, ClassLoader cl, String name, List<ParameterMetaData> parameters, boolean isStatic, boolean isPublic) throws Throwable
    {
       return Configurator.findMethod(info, cl, name, parameters, isStatic, isPublic);

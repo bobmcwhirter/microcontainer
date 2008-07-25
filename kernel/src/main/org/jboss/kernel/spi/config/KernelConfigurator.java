@@ -179,6 +179,18 @@ public interface KernelConfigurator extends KernelObject
     * @throws Throwable for any error
     */
    Joinpoint getConstructorJoinPoint(BeanInfo info, ConstructorMetaData metaData, BeanMetaData beanMetaData) throws Throwable;
+   
+   /**
+    * Get a constructor join point
+    * 
+    * @param info the bean info
+    * @param metaData the constructor metadata
+    * @param beanMetaData the bean metadata
+    * @param object an opaque object
+    * @return the join point
+    * @throws Throwable for any error
+    */
+   Joinpoint getConstructorJoinPoint(BeanInfo info, ConstructorMetaData metaData, BeanMetaData beanMetaData, Object object) throws Throwable;
 
    /**
     * Get a method joinpoint
