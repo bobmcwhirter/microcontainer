@@ -33,6 +33,7 @@ import org.jboss.beans.info.spi.BeanAccessMode;
  * Metadata about a bean.
  * 
  * @author <a href="adrian@jboss.com">Adrian Brock</a>
+ * @author <a href="ales.justin@jboss.com">Ales Justin</a>
  * @version $Revision$
  */
 public interface BeanMetaData extends FeatureMetaData, ValueMetaData
@@ -50,7 +51,14 @@ public interface BeanMetaData extends FeatureMetaData, ValueMetaData
     * @return the name
     */
    String getName();
-   
+
+   /**
+    * Get the related classes.
+    *
+    * @return the related classes
+    */
+   Set<RelatedClassMetaData> getRelated();
+
    /**
     * Set the name
     * 

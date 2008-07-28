@@ -28,6 +28,7 @@ $Id: bean-deployer_2_0.xsd 70437 2008-03-05 17:13:04Z alesj $
       <xsd:sequence>
          <xsd:element name="annotation" type="annotationType" minOccurs="0" maxOccurs="unbounded"/>
          <xsd:element name="alias" type="aliasType" minOccurs="0" maxOccurs="unbounded"/>
+         <xsd:element name="related-class" type="relatedClassType" minOccurs="0" maxOccurs="unbounded"/>
          <xsd:element name="classloader" type="classloaderType" minOccurs="0"/>
          <xsd:element name="constructor" type="constructorType" minOccurs="0"/>
          <xsd:element name="property" type="propertyType" minOccurs="0" maxOccurs="unbounded"/>
@@ -83,6 +84,7 @@ $Id: bean-deployer_2_0.xsd 70437 2008-03-05 17:13:04Z alesj $
       </xsd:annotation>
       <xsd:sequence>
          <xsd:element name="alias" type="aliasType" minOccurs="0" maxOccurs="unbounded"/>
+         <xsd:element name="related-class" type="relatedClassType" minOccurs="0" maxOccurs="unbounded"/>
          <xsd:element name="classloader" type="classloaderType" minOccurs="0"/>
          <xsd:element name="constructor" type="constructorType" minOccurs="0"/>
          <xsd:element name="property" type="propertyType" minOccurs="0" maxOccurs="unbounded"/>
@@ -526,6 +528,20 @@ $Id: bean-deployer_2_0.xsd 70437 2008-03-05 17:13:04Z alesj $
       </xsd:complexContent>
    </xsd:complexType>
    
+   <xsd:complexType name="relatedClassType" mixed="true">
+      <xsd:annotation>
+         <xsd:documentation>
+           <![CDATA[
+           Related classes.
+           ]]>
+         </xsd:documentation>
+      </xsd:annotation>
+      <xsd:choice minOccurs="0" maxOccurs="unbounded">
+         <xsd:any namespace="##other" processContents="strict"/>
+      </xsd:choice>
+      <xsd:attribute name="name" type="xsd:string" use="required"/>
+   </xsd:complexType>
+
    <xsd:complexType name="parameterType" mixed="true">
       <xsd:annotation>
          <xsd:documentation>

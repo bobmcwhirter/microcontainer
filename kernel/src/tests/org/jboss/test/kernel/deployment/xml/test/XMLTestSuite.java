@@ -50,6 +50,7 @@ public class XMLTestSuite extends TestSuite
       suite.addTest(FactoryTestCase.suite());
       suite.addTest(ParameterTestCase.suite());
       suite.addTest(PropertyTestCase.suite());
+      suite.addTest(RelatedClassTestCase.suite());
       suite.addTest(LifecycleTestCase.suite());
       suite.addTest(DependencyTestCase.suite());
       suite.addTest(DemandTestCase.suite());
@@ -80,6 +81,7 @@ public class XMLTestSuite extends TestSuite
       suite.addTest(FactoryJaxbTestCase.suite());
       suite.addTest(ParameterJaxbTestCase.suite());
       suite.addTest(PropertyJaxbTestCase.suite());
+      suite.addTest(RelatedClassJaxbTestCase.suite());
       suite.addTest(LifecycleJaxbTestCase.suite());
       suite.addTest(DependencyJaxbTestCase.suite());
       suite.addTest(DemandJaxbTestCase.suite());
@@ -103,6 +105,7 @@ public class XMLTestSuite extends TestSuite
       suite.addTest(FactoryCloneTestCase.suite());
       suite.addTest(ParameterCloneTestCase.suite());
       suite.addTest(PropertyCloneTestCase.suite());
+      suite.addTest(RelatedClassCloneTestCase.suite());
       suite.addTest(LifecycleCloneTestCase.suite());
       suite.addTest(DependencyCloneTestCase.suite());
       suite.addTest(DemandCloneTestCase.suite());

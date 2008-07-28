@@ -21,6 +21,7 @@ import org.jboss.beans.metadata.spi.MetaDataVisitor;
 import org.jboss.beans.metadata.spi.MetaDataVisitorNode;
 import org.jboss.beans.metadata.spi.PropertyMetaData;
 import org.jboss.beans.metadata.spi.SupplyMetaData;
+import org.jboss.beans.metadata.spi.RelatedClassMetaData;
 import org.jboss.dependency.spi.ControllerContext;
 import org.jboss.dependency.spi.ControllerMode;
 import org.jboss.dependency.spi.ErrorHandlingMode;
@@ -130,6 +131,10 @@ public class GenericComponentFactory<T>
       {
          this.name = name;
          this.bmd = bmd;
+      }
+      public Set<RelatedClassMetaData> getRelated()
+      {
+         return bmd.getRelated();
       }
       public Object clone()
       {

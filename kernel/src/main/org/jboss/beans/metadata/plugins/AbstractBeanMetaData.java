@@ -50,6 +50,7 @@ import org.jboss.beans.metadata.spi.MetaDataVisitor;
 import org.jboss.beans.metadata.spi.MetaDataVisitorNode;
 import org.jboss.beans.metadata.spi.PropertyMetaData;
 import org.jboss.beans.metadata.spi.SupplyMetaData;
+import org.jboss.beans.metadata.spi.RelatedClassMetaData;
 import org.jboss.dependency.plugins.AbstractDependencyItem;
 import org.jboss.dependency.spi.Controller;
 import org.jboss.dependency.spi.ControllerContext;
@@ -68,13 +69,13 @@ import org.jboss.util.JBossStringBuilder;
 /**
  * Metadata for a bean.
  *
- * @author <a href="ales.justin@jboss.com">Ales Justin</a>
  * @author <a href="adrian@jboss.com">Adrian Brock</a>
+ * @author <a href="ales.justin@jboss.com">Ales Justin</a>
  * @version $Revision$
  */
 @ManagementObject(properties = ManagementProperties.EXPLICIT) // TODO - explicitly add props we want to manage
 @XmlRootElement(name="bean")
-@XmlType(name="beanType", propOrder={"aliasMetaData", "annotations", "classLoader", "constructor", "properties", "create", "start", "stop", "destroy", "depends", "demands", "supplies", "installs", "uninstalls", "installCallbacks", "uninstallCallbacks"})
+@XmlType(name="beanType", propOrder={"aliasMetaData", "related", "annotations", "classLoader", "constructor", "properties", "create", "start", "stop", "destroy", "depends", "demands", "supplies", "installs", "uninstalls", "installCallbacks", "uninstallCallbacks"})
 public class AbstractBeanMetaData extends AbstractFeatureMetaData
    implements BeanMetaData, BeanMetaDataFactory, MutableLifecycleHolder, Serializable
 {
@@ -85,6 +86,9 @@ public class AbstractBeanMetaData extends AbstractFeatureMetaData
 
    /** The name of this instance */
    protected String name;
+
+   /** The related */
+   protected Set<RelatedClassMetaData> related;
 
    /** The aliases */
    protected Set<Object> aliases;
@@ -347,6 +351,17 @@ public class AbstractBeanMetaData extends AbstractFeatureMetaData
    {
       this.name = name;
       flushJBossObjectCache();
+   }
+
+   public Set<RelatedClassMetaData> getRelated()
+   {
+      return related;
+   }
+
+   @XmlElement(name="related-class", type=AbstractRelatedClassMetaData.class)
+   public void setRelated(Set<RelatedClassMetaData> related)
+   {
+      this.related = related;
    }
 
    public Set<Object> getAliases()

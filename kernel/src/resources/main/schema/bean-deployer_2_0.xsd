@@ -113,6 +113,11 @@ $Id$
             <xsd:extension base="propertyType"/>
          </xsd:complexContent>
       </xsd:complexType>
+      <xsd:complexType name="relatedClassType">
+         <xsd:complexContent>
+            <xsd:extension base="relatedClassType"/>
+         </xsd:complexContent>
+      </xsd:complexType>
       <xsd:complexType name="annotationType">
          <xsd:complexContent>
             <xsd:extension base="annotationType"/>
