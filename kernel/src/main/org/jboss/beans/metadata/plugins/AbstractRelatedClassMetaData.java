@@ -146,7 +146,6 @@ public class AbstractRelatedClassMetaData extends JBossObject implements Related
       return clone;
    }
 
-   @SuppressWarnings("unchecked")
    protected void doClone(AbstractRelatedClassMetaData clone)
    {
       if (enabled != null)
