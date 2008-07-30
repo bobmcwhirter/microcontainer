@@ -36,6 +36,7 @@ import org.jboss.beans.metadata.spi.BeanMetaData;
 import org.jboss.beans.metadata.spi.BeanMetaDataFactory;
 import org.jboss.beans.metadata.spi.ClassLoaderMetaData;
 import org.jboss.beans.metadata.spi.ValueMetaData;
+import org.jboss.beans.metadata.spi.RelatedClassMetaData;
 import org.jboss.dependency.spi.Cardinality;
 import org.jboss.dependency.spi.ControllerMode;
 import org.jboss.dependency.spi.ControllerState;
@@ -147,6 +148,31 @@ public abstract class BeanMetaDataBuilder
     * @return the builder
     */
    public abstract BeanMetaDataBuilder setAliases(Set<Object> aliases);
+
+   /**
+    * Add related class.
+    *
+    * @param className the related class name
+    * @param enabled the enabled
+    * @return the builder
+    */
+   public abstract BeanMetaDataBuilder addRelatedClass(String className, Object... enabled);
+
+   /**
+    * Add related class.
+    *
+    * @param related the related class
+    * @return the builder
+    */
+   public abstract BeanMetaDataBuilder addRelatedClass(RelatedClassMetaData related);
+
+   /**
+    * Set the related
+    *
+    * @param related the related
+    * @return the builder
+    */
+   public abstract BeanMetaDataBuilder setRelated(Set<RelatedClassMetaData> related);
 
    /**
     * Add alias.
@@ -1483,6 +1509,15 @@ public abstract class BeanMetaDataBuilder
          ControllerState whenRequired,
          ControllerState dependentState,
          Cardinality cardinality);
+
+   /**
+    * Create related class name.
+    *
+    * @param className the related class name
+    * @param enabled the enabled
+    * @return new related class meta data
+    */
+   public abstract RelatedClassMetaData createRelated(String className, Object... enabled);
 
    /**
     * Create a null value

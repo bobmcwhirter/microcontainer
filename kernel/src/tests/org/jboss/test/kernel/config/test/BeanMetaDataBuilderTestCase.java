@@ -28,17 +28,20 @@ import java.util.Collections;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
+import java.util.HashSet;
 
 import junit.framework.Test;
 import org.jboss.beans.metadata.api.model.AutowireType;
 import org.jboss.beans.metadata.plugins.InstallCallbackMetaData;
 import org.jboss.beans.metadata.plugins.UninstallCallbackMetaData;
 import org.jboss.beans.metadata.plugins.AbstractBeanMetaData;
+import org.jboss.beans.metadata.plugins.AbstractRelatedClassMetaData;
 import org.jboss.beans.metadata.plugins.builder.BeanMetaDataBuilderFactory;
 import org.jboss.beans.metadata.spi.BeanMetaData;
 import org.jboss.beans.metadata.spi.BeanMetaDataFactory;
 import org.jboss.beans.metadata.spi.CallbackMetaData;
 import org.jboss.beans.metadata.spi.ValueMetaData;
+import org.jboss.beans.metadata.spi.RelatedClassMetaData;
 import org.jboss.beans.metadata.spi.builder.BeanMetaDataBuilder;
 import org.jboss.dependency.spi.Cardinality;
 import org.jboss.dependency.spi.ControllerContext;
@@ -840,5 +843,51 @@ public class BeanMetaDataBuilderTestCase extends AbstractKernelConfigTest
       assertNotNull(beans);
       assertFalse(beans.isEmpty());
       assertSame(abmd, beans.get(0));
+   }
+
+   public void testRelatedClassName() throws Throwable
+   {
+      RelatedClassMetaData rcmd = new AbstractRelatedClassMetaData(Object.class.getName());
+      Set<RelatedClassMetaData> related = new HashSet<RelatedClassMetaData>();
+      related.add(rcmd);
+
+      BeanMetaDataBuilder builder = BeanMetaDataBuilder.createBuilder("Bean");
+      builder.addRelatedClass(Object.class.getName());
+      BeanMetaData bmd = builder.getBeanMetaData();
+
+      assertEquals(related, bmd.getRelated());
+   }
+
+   public void testRelatedClassNameWithEnabled() throws Throwable
+   {
+      AbstractRelatedClassMetaData rcmd = new AbstractRelatedClassMetaData(Object.class.getName());
+      rcmd.setEnabledValue("aop");
+      Set<RelatedClassMetaData> related = new HashSet<RelatedClassMetaData>();
+      related.add(rcmd);
+
+      BeanMetaDataBuilder builder = BeanMetaDataBuilder.createBuilder("Bean");
+      builder.addRelatedClass(Object.class.getName(), "aop");
+      BeanMetaData bmd = builder.getBeanMetaData();
+
+      assertEquals(related, bmd.getRelated());
+   }
+
+   public void testMultipleRelatedClassNameWithMultipleEnabled() throws Throwable
+   {
+      AbstractRelatedClassMetaData rcmd1 = new AbstractRelatedClassMetaData(Object.class.getName());
+      rcmd1.setEnabled(new HashSet<Object>(Arrays.asList("aop", "md")));
+      AbstractRelatedClassMetaData rcmd2 = new AbstractRelatedClassMetaData(String.class.getName());
+      rcmd2.setEnabled(new HashSet<Object>(Arrays.asList("qwert", "foobar")));
+
+      Set<RelatedClassMetaData> related = new HashSet<RelatedClassMetaData>();
+      related.add(rcmd1);
+      related.add(rcmd2);
+
+      BeanMetaDataBuilder builder = BeanMetaDataBuilder.createBuilder("Bean");
+      builder.addRelatedClass(Object.class.getName(), "aop", "md");
+      builder.addRelatedClass(String.class.getName(), "qwert", "foobar");
+      BeanMetaData bmd = builder.getBeanMetaData();
+
+      assertEquals(related, bmd.getRelated());
    }
 }

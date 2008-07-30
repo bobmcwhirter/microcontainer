@@ -47,8 +47,20 @@ public class AbstractRelatedClassMetaData extends JBossObject implements Related
    private String className;
    private Set<Object> enabled;
 
+   public AbstractRelatedClassMetaData()
+   {
+   }
+
+   public AbstractRelatedClassMetaData(String className)
+   {
+      this.className = className;
+   }
+
    public String getClassName()
    {
+      if (className == null)
+         throw new IllegalArgumentException("Null class name");
+
       return className;
    }
 
@@ -101,6 +113,26 @@ public class AbstractRelatedClassMetaData extends JBossObject implements Related
    public void toShortString(JBossStringBuilder buffer)
    {
       buffer.append(className);
+   }
+
+   protected int getHashCode()
+   {
+      int hash = getClassName().hashCode();
+      if (enabled != null)
+         hash += 7 * enabled.hashCode();
+      return hash;
+   }
+
+   public boolean equals(Object obj)
+   {
+      if (obj instanceof RelatedClassMetaData == false)
+         return false;
+
+      RelatedClassMetaData rcmd = (RelatedClassMetaData)obj;
+      if (getClassName().equals(rcmd.getClassName()) == false)
+         return false;
+
+      return JBossObject.equals(enabled, rcmd.getEnabled());
    }
 
    public AbstractRelatedClassMetaData clone()

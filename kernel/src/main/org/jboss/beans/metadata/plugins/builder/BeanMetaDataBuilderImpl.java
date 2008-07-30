@@ -21,15 +21,18 @@
 */
 package org.jboss.beans.metadata.plugins.builder;
 
+import java.lang.annotation.Annotation;
+import java.util.Arrays;
 import java.util.Collection;
 import java.util.HashSet;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
-import java.lang.annotation.Annotation;
 
 import org.jboss.beans.info.spi.BeanAccessMode;
+import org.jboss.beans.metadata.api.model.AutowireType;
+import org.jboss.beans.metadata.plugins.AbstractAnnotationMetaData;
 import org.jboss.beans.metadata.plugins.AbstractArrayMetaData;
 import org.jboss.beans.metadata.plugins.AbstractBeanMetaData;
 import org.jboss.beans.metadata.plugins.AbstractCallbackMetaData;
@@ -43,25 +46,25 @@ import org.jboss.beans.metadata.plugins.AbstractInstallMetaData;
 import org.jboss.beans.metadata.plugins.AbstractListMetaData;
 import org.jboss.beans.metadata.plugins.AbstractMapMetaData;
 import org.jboss.beans.metadata.plugins.AbstractPropertyMetaData;
+import org.jboss.beans.metadata.plugins.AbstractRelatedClassMetaData;
 import org.jboss.beans.metadata.plugins.AbstractSetMetaData;
 import org.jboss.beans.metadata.plugins.AbstractSupplyMetaData;
 import org.jboss.beans.metadata.plugins.AbstractValueMetaData;
+import org.jboss.beans.metadata.plugins.DirectAnnotationMetaData;
 import org.jboss.beans.metadata.plugins.StringValueMetaData;
 import org.jboss.beans.metadata.plugins.ThisValueMetaData;
-import org.jboss.beans.metadata.plugins.AbstractAnnotationMetaData;
-import org.jboss.beans.metadata.plugins.DirectAnnotationMetaData;
+import org.jboss.beans.metadata.spi.AnnotationMetaData;
 import org.jboss.beans.metadata.spi.BeanMetaData;
+import org.jboss.beans.metadata.spi.BeanMetaDataFactory;
 import org.jboss.beans.metadata.spi.ClassLoaderMetaData;
 import org.jboss.beans.metadata.spi.DemandMetaData;
 import org.jboss.beans.metadata.spi.DependencyMetaData;
 import org.jboss.beans.metadata.spi.PropertyMetaData;
+import org.jboss.beans.metadata.spi.RelatedClassMetaData;
 import org.jboss.beans.metadata.spi.SupplyMetaData;
 import org.jboss.beans.metadata.spi.ValueMetaData;
-import org.jboss.beans.metadata.spi.AnnotationMetaData;
-import org.jboss.beans.metadata.spi.BeanMetaDataFactory;
 import org.jboss.beans.metadata.spi.builder.BeanMetaDataBuilder;
 import org.jboss.beans.metadata.spi.builder.ParameterMetaDataBuilder;
-import org.jboss.beans.metadata.api.model.AutowireType;
 import org.jboss.dependency.spi.Cardinality;
 import org.jboss.dependency.spi.ControllerMode;
 import org.jboss.dependency.spi.ControllerState;
@@ -285,6 +288,30 @@ class BeanMetaDataBuilderImpl extends BeanMetaDataBuilder
    public BeanMetaDataBuilder setBean(String bean)
    {
       beanMetaData.setBean(bean);
+      return this;
+   }
+
+   public BeanMetaDataBuilder addRelatedClass(String className, Object... enabled)
+   {
+      RelatedClassMetaData related = createRelated(className, enabled);
+      return addRelatedClass(related);
+   }
+
+   public BeanMetaDataBuilder addRelatedClass(RelatedClassMetaData related)
+   {
+      Set<RelatedClassMetaData> relatedSet = beanMetaData.getRelated();
+      if (relatedSet == null)
+      {
+         relatedSet = new HashSet<RelatedClassMetaData>();
+         beanMetaData.setRelated(relatedSet);
+      }
+      relatedSet.add(related);
+      return this;
+   }
+
+   public BeanMetaDataBuilder setRelated(Set<RelatedClassMetaData> related)
+   {
+      beanMetaData.setRelated(related);
       return this;
    }
 
@@ -896,6 +923,15 @@ class BeanMetaDataBuilderImpl extends BeanMetaDataBuilder
          callback.setDependentState(dependentState);
       callback.setCardinality(cardinality);
       return this;
+   }
+
+   public RelatedClassMetaData createRelated(String className, Object... enabled)
+   {
+      AbstractRelatedClassMetaData related = new AbstractRelatedClassMetaData();
+      related.setClassName(className);
+      if (enabled != null && enabled.length > 0)
+         related.setEnabled(new HashSet<Object>(Arrays.asList(enabled)));
+      return related;
    }
 
    public ValueMetaData createNull()

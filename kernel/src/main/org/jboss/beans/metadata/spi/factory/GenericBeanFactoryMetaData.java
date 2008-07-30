@@ -31,8 +31,8 @@ import java.util.Set;
 import javax.xml.bind.annotation.XmlAttribute;
 import javax.xml.bind.annotation.XmlElement;
 import javax.xml.bind.annotation.XmlRootElement;
-import javax.xml.bind.annotation.XmlType;
 import javax.xml.bind.annotation.XmlTransient;
+import javax.xml.bind.annotation.XmlType;
 
 import org.jboss.beans.info.spi.BeanAccessMode;
 import org.jboss.beans.metadata.plugins.AbstractAliasMetaData;
@@ -597,7 +597,11 @@ public class GenericBeanFactoryMetaData extends JBossObject implements BeanMetaD
       ValueMetaData injectKernelConfigurator = builder.createInject(KernelConstants.KERNEL_CONFIGURATOR_NAME);
       builder.addConstructorParameter(KernelConfigurator.class.getName(), injectKernelConfigurator);
       if (bean != null)
+      {
          builder.addPropertyMetaData("bean", bean);
+         // add bean as related class
+         builder.addRelatedClass(bean);
+      }
       if (classLoader != null)
       {
          builder.setClassLoader(classLoader);
