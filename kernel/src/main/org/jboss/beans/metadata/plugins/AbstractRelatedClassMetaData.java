@@ -37,6 +37,7 @@ import org.jboss.beans.metadata.spi.MetaDataVisitorNode;
 import org.jboss.beans.metadata.spi.MetaDataVisitor;
 import org.jboss.util.JBossObject;
 import org.jboss.util.JBossStringBuilder;
+import org.jboss.util.collection.CollectionsFactory;
 
 /**
  * Metadata for a related classes.
@@ -165,6 +166,19 @@ public class AbstractRelatedClassMetaData extends JBossObject implements Related
    @XmlTransient
    public Iterator<? extends MetaDataVisitorNode> getChildren()
    {
+      if (enabled != null && enabled.isEmpty() == false)
+      {
+         Set<MetaDataVisitorNode> children = CollectionsFactory.createLazySet();
+         for (Object element : enabled)
+         {
+            if (element instanceof MetaDataVisitorNode)
+            {
+               children.add(MetaDataVisitorNode.class.cast(element));
+            }
+         }
+         if (children.isEmpty() == false)
+            return children.iterator();
+      }
       return null;
    }
 }

@@ -704,6 +704,10 @@ public class AbstractBeanMetaData extends AbstractFeatureMetaData
          children.addAll(installCallbacks);
       if (uninstallCallbacks != null)
          children.addAll(uninstallCallbacks);
+      if (aliasMetaData != null)
+         children.addAll(aliasMetaData);
+      if (related != null)
+         children.addAll(related);
    }
 
    public TypeInfo getType(MetaDataVisitor visitor, MetaDataVisitorNode previous) throws Throwable
@@ -796,6 +800,16 @@ public class AbstractBeanMetaData extends AbstractFeatureMetaData
       {
          buffer.append(" uninstallCallbacks=");
          JBossObject.list(buffer, uninstallCallbacks);
+      }
+      if (aliasMetaData != null)
+      {
+         buffer.append(" aliasMetaData=");
+         JBossObject.list(buffer, aliasMetaData);
+      }
+      if (related != null)
+      {
+         buffer.append(" related=");
+         JBossObject.list(buffer, related);
       }
    }
 
