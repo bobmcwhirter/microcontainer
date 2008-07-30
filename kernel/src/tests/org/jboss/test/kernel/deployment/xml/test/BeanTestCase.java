@@ -23,11 +23,14 @@ package org.jboss.test.kernel.deployment.xml.test;
 
 import java.util.ArrayList;
 import java.util.HashSet;
+import java.util.Set;
 
 import junit.framework.Test;
-import org.jboss.beans.metadata.plugins.AbstractBeanMetaData;
-import org.jboss.beans.metadata.api.model.AutowireType;
 import org.jboss.beans.info.spi.BeanAccessMode;
+import org.jboss.beans.metadata.api.model.AutowireType;
+import org.jboss.beans.metadata.plugins.AbstractBeanMetaData;
+import org.jboss.beans.metadata.plugins.AbstractRelatedClassMetaData;
+import org.jboss.beans.metadata.spi.RelatedClassMetaData;
 import org.jboss.dependency.spi.ControllerMode;
 import org.jboss.dependency.spi.ErrorHandlingMode;
 
@@ -886,6 +889,65 @@ public class BeanTestCase extends AbstractXMLTest
       assertNull(bean.getUninstalls());
       assertNull(bean.getInstallCallbacks());
       assertNull(bean.getUninstallCallbacks());
+   }
+
+   public void testBeanWithRelated() throws Exception
+   {
+      AbstractBeanMetaData bean = unmarshalBean("BeanWithRelated.xml");
+      assertNull(bean.getAutowireType());
+      assertNull(bean.getName());
+      assertEquals("Dummy", bean.getBean());
+      assertNull(bean.getMode());
+      assertNull(bean.getErrorHandlingMode());
+      assertNull(bean.getAccessMode());
+      assertNull(bean.getAnnotations());
+      assertNull(bean.getClassLoader());
+      assertNull(bean.getConstructor());
+      assertNull(bean.getProperties());
+      assertNull(bean.getCreate());
+      assertNull(bean.getStart());
+      assertNull(bean.getStop());
+      assertNull(bean.getDestroy());
+      assertNull(bean.getDemands());
+      assertNull(bean.getSupplies());
+      assertNull(bean.getInstalls());
+      assertNull(bean.getUninstalls());
+      assertNull(bean.getInstallCallbacks());
+      assertNull(bean.getUninstallCallbacks());
+      Set<RelatedClassMetaData> expected = new HashSet<RelatedClassMetaData>();
+      expected.add(new AbstractRelatedClassMetaData("Dummy"));
+      assertEquals(expected, bean.getRelated());
+   }
+
+   public void testBeanWithRelateds() throws Exception
+   {
+      AbstractBeanMetaData bean = unmarshalBean("BeanWithRelateds.xml");
+      assertNull(bean.getAutowireType());
+      assertNull(bean.getName());
+      assertEquals("Dummy", bean.getBean());
+      assertNull(bean.getMode());
+      assertNull(bean.getErrorHandlingMode());
+      assertNull(bean.getAccessMode());
+      assertNull(bean.getAnnotations());
+      assertNull(bean.getClassLoader());
+      assertNull(bean.getConstructor());
+      assertNull(bean.getProperties());
+      assertNull(bean.getCreate());
+      assertNull(bean.getStart());
+      assertNull(bean.getStop());
+      assertNull(bean.getDestroy());
+      assertNull(bean.getDemands());
+      assertNull(bean.getSupplies());
+      assertNull(bean.getInstalls());
+      assertNull(bean.getUninstalls());
+      assertNull(bean.getInstallCallbacks());
+      assertNull(bean.getUninstallCallbacks());
+      Set<RelatedClassMetaData> expected = new HashSet<RelatedClassMetaData>();
+      expected.add(new AbstractRelatedClassMetaData("Dummy"));
+      AbstractRelatedClassMetaData arcmd = new AbstractRelatedClassMetaData("Dummy");
+      arcmd.setEnabledValue("md");
+      expected.add(arcmd);
+      assertEquals(expected, bean.getRelated());
    }
 
    public static Test suite()

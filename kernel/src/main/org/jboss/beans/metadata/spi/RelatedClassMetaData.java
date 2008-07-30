@@ -28,7 +28,7 @@ import java.util.Set;
  *
  * @author <a href="ales.justin@jboss.com">Ales Justin</a>
  */
-public interface RelatedClassMetaData
+public interface RelatedClassMetaData extends MetaDataVisitorNode
 {
    /**
     * Get the class name.

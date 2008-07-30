@@ -25,12 +25,16 @@ import java.io.Serializable;
 import java.util.Collections;
 import java.util.HashSet;
 import java.util.Set;
+import java.util.Iterator;
 import javax.xml.bind.annotation.XmlAnyElement;
 import javax.xml.bind.annotation.XmlAttribute;
 import javax.xml.bind.annotation.XmlType;
 import javax.xml.bind.annotation.XmlValue;
+import javax.xml.bind.annotation.XmlTransient;
 
 import org.jboss.beans.metadata.spi.RelatedClassMetaData;
+import org.jboss.beans.metadata.spi.MetaDataVisitorNode;
+import org.jboss.beans.metadata.spi.MetaDataVisitor;
 import org.jboss.util.JBossObject;
 import org.jboss.util.JBossStringBuilder;
 
@@ -147,5 +151,21 @@ public class AbstractRelatedClassMetaData extends JBossObject implements Related
    {
       if (enabled != null)
          clone.setEnabled(new HashSet<Object>(enabled));
+   }
+
+   public void initialVisit(MetaDataVisitor vistor)
+   {
+      vistor.initialVisit(this);
+   }
+
+   public void describeVisit(MetaDataVisitor vistor)
+   {
+      vistor.describeVisit(this);
+   }
+
+   @XmlTransient
+   public Iterator<? extends MetaDataVisitorNode> getChildren()
+   {
+      return null;
    }
 }

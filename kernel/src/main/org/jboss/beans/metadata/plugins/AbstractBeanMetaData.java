@@ -820,6 +820,7 @@ public class AbstractBeanMetaData extends AbstractFeatureMetaData
       if (aliases != null)
          clone.setAliases(new HashSet<Object>(aliases));
       clone.setAliasMetaData(cloneCollection(aliasMetaData, HashSet.class, AliasMetaData.class));
+      clone.setRelated(cloneCollection(related, HashSet.class, RelatedClassMetaData.class));
       clone.setClassLoader(cloneObject(classLoader, ClassLoaderMetaData.class));
       clone.setConstructor(cloneObject(constructor, ConstructorMetaData.class));
       clone.setCreate(cloneObject(create, LifecycleMetaData.class));
