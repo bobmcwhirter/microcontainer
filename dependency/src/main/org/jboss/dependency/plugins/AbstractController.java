@@ -33,6 +33,7 @@ import java.util.Set;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.CopyOnWriteArrayList;
 import java.util.concurrent.CopyOnWriteArraySet;
+import java.util.concurrent.Executor;
 import java.util.concurrent.locks.ReentrantReadWriteLock;
 
 import org.jboss.dependency.plugins.action.ControllerContextAction;
@@ -48,8 +49,8 @@ import org.jboss.dependency.spi.DependencyInfo;
 import org.jboss.dependency.spi.DependencyItem;
 import org.jboss.dependency.spi.LifecycleCallbackItem;
 import org.jboss.dependency.spi.graph.GraphController;
-import org.jboss.dependency.spi.graph.SearchInfo;
 import org.jboss.dependency.spi.graph.LookupStrategy;
+import org.jboss.dependency.spi.graph.SearchInfo;
 import org.jboss.util.JBossObject;
 
 /**
@@ -63,6 +64,9 @@ public class AbstractController extends JBossObject implements Controller, Contr
 {
    /** The lock */
    private ReentrantReadWriteLock lock = new ReentrantReadWriteLock();
+
+   /** The executor */
+   private Executor executor;
 
    /** Whether we are shutdown */
    private boolean shutdown = false;
@@ -108,6 +112,28 @@ public class AbstractController extends JBossObject implements Controller, Contr
       addState(ControllerState.CREATE, null);
       addState(ControllerState.START, null);
       addState(ControllerState.INSTALLED, null);
+   }
+
+   /**
+    * Set the executor.
+    *
+    * @param executor the executor
+    */
+   public void setExecutor(Executor executor)
+   {
+      // TODO - security
+      this.executor = executor;
+   }
+
+   /**
+    * Get the executor.
+    *
+    * @return the executor
+    */
+   public Executor getExecutor()
+   {
+      // TODO - security
+      return executor;
    }
 
    public boolean isShutdown()
