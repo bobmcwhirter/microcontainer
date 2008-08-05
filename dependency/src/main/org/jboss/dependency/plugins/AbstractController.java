@@ -133,6 +133,16 @@ public class AbstractController extends JBossObject implements Controller, Contr
    public Executor getExecutor()
    {
       // TODO - security
+      return getExecutionEnvironment();
+   }
+
+   /**
+    * Get the executor internal w/o security check.
+    *
+    * @return the executor
+    */
+   protected Executor getExecutionEnvironment()
+   {
       return executor;
    }
 

@@ -21,6 +21,8 @@
 */
 package org.jboss.dependency.plugins;
 
+import java.util.concurrent.Executor;
+
 import org.jboss.dependency.spi.ControllerContext;
 import org.jboss.dependency.spi.ControllerState;
 import org.jboss.dependency.spi.ScopeInfo;
@@ -41,6 +43,14 @@ public abstract class ScopedController extends AbstractController
 {
    private ScopeKey scopeKey;
    private AbstractController underlyingController;
+
+   protected Executor getExecutionEnvironment()
+   {
+      Executor executor = super.getExecutionEnvironment();
+      if (executor == null)
+         executor = getParentController().getExecutionEnvironment();
+      return executor;
+   }
 
    /**
     * Get scope key.
