@@ -66,7 +66,6 @@ public class DeploymentTestSuite extends TestSuite
       suite.addTest(AnonymousBeansTestCase.suite());
       suite.addTest(AnonymousBeansXMLTestCase.suite());
       suite.addTest(MutableMetaDataTestCase.suite());
-      suite.addTest(ScopingOverrideTestCase.suite());
       // bean container tests
       suite.addTest(BeanContainerUsageTestCase.suite());
       suite.addTest(BeanContainerUsageMDTestCase.suite());
@@ -77,6 +76,7 @@ public class DeploymentTestSuite extends TestSuite
       // scoping alias tests
       suite.addTest(ScopingAliasTestCase.suite());
       suite.addTest(ScopingAliasAPITestCase.suite());
+      suite.addTest(ScopingOverrideTestCase.suite());
 
       return suite;
    }

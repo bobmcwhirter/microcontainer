@@ -27,6 +27,7 @@ import org.jboss.test.kernel.deployment.support.SimpleBean;
 import org.jboss.test.kernel.deployment.support.SimpleObjectWithBean;
 
 /**
+ * ScopingOverrideTestCase
  *
  * @author <a href="mailto:kabir.khan@jboss.com">Kabir Khan</a>
  */
