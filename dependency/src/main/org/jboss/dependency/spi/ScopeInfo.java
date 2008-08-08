@@ -22,6 +22,7 @@
 package org.jboss.dependency.spi;
 
 import org.jboss.metadata.spi.MetaData;
+import org.jboss.metadata.spi.loader.MutableMetaDataLoader;
 import org.jboss.metadata.spi.repository.MutableMetaDataRepository;
 import org.jboss.metadata.spi.retrieval.MetaDataRetrieval;
 import org.jboss.metadata.spi.scope.Scope;
@@ -76,6 +77,16 @@ public interface ScopeInfo
     * @return the retrieval
     */
    MetaDataRetrieval initMetaDataRetrieval(MutableMetaDataRepository repository, ControllerContext context);
+
+   /**
+    * Initialise the main mutable metadata retrieval.
+    *
+    * @param repository the mutable metadata repository
+    * @param context the controller context
+    * @param scopeKey the scope key
+    * @return new mutable metadata loader instance
+    */
+   MutableMetaDataLoader initMutableMetaDataRetrieval(MutableMetaDataRepository repository, ControllerContext context, ScopeKey scopeKey);
 
    /**
     * Get the scope

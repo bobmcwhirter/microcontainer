@@ -24,6 +24,7 @@ package org.jboss.dependency.spi.helpers;
 import org.jboss.dependency.spi.ControllerContext;
 import org.jboss.dependency.spi.ScopeInfo;
 import org.jboss.metadata.spi.MetaData;
+import org.jboss.metadata.spi.loader.MutableMetaDataLoader;
 import org.jboss.metadata.spi.repository.MutableMetaDataRepository;
 import org.jboss.metadata.spi.retrieval.MetaDataRetrieval;
 import org.jboss.metadata.spi.scope.Scope;
@@ -68,6 +69,11 @@ public class UnmodifiableScopeInfo implements ScopeInfo
    }
 
    public MetaDataRetrieval initMetaDataRetrieval(MutableMetaDataRepository repository, ControllerContext context)
+   {
+      throw new UnsupportedOperationException("Cannot modify immutable");
+   }
+
+   public MutableMetaDataLoader initMutableMetaDataRetrieval(MutableMetaDataRepository repository, ControllerContext context, ScopeKey scopeKey)
    {
       throw new UnsupportedOperationException("Cannot modify immutable");
    }

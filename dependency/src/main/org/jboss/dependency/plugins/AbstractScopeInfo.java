@@ -112,6 +112,7 @@ public class AbstractScopeInfo implements ScopeInfo
    {
       if (repository == null)
          return null;
+      
       return repository.getMetaData(getScope());
    }
 
@@ -120,7 +121,7 @@ public class AbstractScopeInfo implements ScopeInfo
       this.repository = repository;
       ScopeKey scope = getMutableScope();
       MetaDataRetrieval retrieval = repository.getMetaDataRetrieval(scope);
-      MutableMetaDataLoader mutable = null;
+      MutableMetaDataLoader mutable;
       if (retrieval == null)
       {
          mutable = initMutableMetaDataRetrieval(repository, context, scope);
@@ -181,6 +182,12 @@ public class AbstractScopeInfo implements ScopeInfo
       
    }
 
+   /**
+    * Get mutable metadata loader.
+    *
+    * @param retrieval current metadata retrieval
+    * @return found mutable metadata loader instance, null otherwise
+    */
    protected MutableMetaDataLoader getMutableMetaDataLoader(MetaDataRetrieval retrieval)
    {
       if (retrieval == null)
@@ -204,11 +211,6 @@ public class AbstractScopeInfo implements ScopeInfo
          }
       }
       return null;
-   }
-
-   public MutableMetaDataLoader initMutableMetaDataRetrieval(MutableMetaDataRepository repository, ControllerContext context, ScopeKey scopeKey)
-   {
-      return new MemoryMetaDataLoader(scopeKey);
    }
 
    public MetaDataRetrieval initMetaDataRetrieval(MutableMetaDataRepository repository, ControllerContext context, Scope scope)
@@ -243,6 +245,11 @@ public class AbstractScopeInfo implements ScopeInfo
       return metaDataRetrieval;
    }
    
+   public MutableMetaDataLoader initMutableMetaDataRetrieval(MutableMetaDataRepository repository, ControllerContext context, ScopeKey scopeKey)
+   {
+      return new MemoryMetaDataLoader(scopeKey);
+   }
+
    public ScopeKey getScope()
    {
       return scopeKey;
@@ -252,6 +259,7 @@ public class AbstractScopeInfo implements ScopeInfo
    {
       if (key == null)
          throw new IllegalArgumentException("Null scope key");
+
       this.scopeKey = key;
    }
 
@@ -264,6 +272,7 @@ public class AbstractScopeInfo implements ScopeInfo
    {
       if (key == null)
          throw new IllegalArgumentException("Null scope key");
+
       this.mutableScopeKey = key;
    }
 
