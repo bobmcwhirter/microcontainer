@@ -28,7 +28,6 @@ import org.jboss.dependency.spi.ScopeInfo;
 import org.jboss.kernel.plugins.metadata.AbstractKernelMetaDataRepository;
 import org.jboss.metadata.plugins.repository.basic.BasicMetaDataRepository;
 import org.jboss.metadata.spi.MetaData;
-import org.jboss.metadata.spi.context.MetaDataContext;
 import org.jboss.metadata.spi.repository.MutableMetaDataRepository;
 import org.jboss.metadata.spi.retrieval.MetaDataRetrieval;
 import org.jboss.metadata.spi.scope.ScopeKey;
@@ -88,12 +87,12 @@ public class BasicKernelMetaDataRepository extends AbstractKernelMetaDataReposit
       return context.getScopeInfo().getMutableScope();
    }
 
-   public MetaDataContext createMetaDataContext(ControllerContext context, List<MetaDataRetrieval> retrievals)
+   public MetaDataRetrieval createMetaDataRetrieval(ControllerContext context, List<MetaDataRetrieval> retrievals)
    {
-      return createMetaDataContext(retrievals);
+      return createMetaDataRetrieval(retrievals);
    }
 
-   protected MetaDataContext createMetaDataContext(List<MetaDataRetrieval> retrievals)
+   protected MetaDataRetrieval createMetaDataRetrieval(List<MetaDataRetrieval> retrievals)
    {
       return null;
    }

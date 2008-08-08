@@ -38,7 +38,6 @@ import org.jboss.kernel.spi.dependency.KernelController;
 import org.jboss.kernel.spi.dependency.KernelControllerContext;
 import org.jboss.logging.Logger;
 import org.jboss.metadata.spi.ComponentMutableMetaData;
-import org.jboss.metadata.spi.context.MetaDataContext;
 import org.jboss.metadata.spi.loader.MutableMetaDataLoader;
 import org.jboss.metadata.spi.repository.MutableMetaDataRepository;
 import org.jboss.metadata.spi.retrieval.MetaDataRetrieval;
@@ -330,16 +329,16 @@ public class KernelScopeInfo extends AbstractScopeInfo
    }
 
    @Override
-   protected MetaDataContext createMetaDataContext(ControllerContext context, List<MetaDataRetrieval> retrievals)
+   protected MetaDataRetrieval createMetaDataRetrieval(ControllerContext context, List<MetaDataRetrieval> retrievals)
    {
       Controller controller = context.getController();
       if (controller instanceof KernelController)
       {
          KernelController kernelController = (KernelController) controller;
-         MetaDataContext result = kernelController.getKernel().getMetaDataRepository().createMetaDataContext(context, retrievals);
+         MetaDataRetrieval result = kernelController.getKernel().getMetaDataRepository().createMetaDataRetrieval(context, retrievals);
          if (result != null)
             return result;
       }
-      return super.createMetaDataContext(context, retrievals);
+      return super.createMetaDataRetrieval(context, retrievals);
    }
 }

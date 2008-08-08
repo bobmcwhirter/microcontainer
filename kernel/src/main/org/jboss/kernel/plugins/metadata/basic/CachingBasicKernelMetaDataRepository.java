@@ -23,9 +23,8 @@ package org.jboss.kernel.plugins.metadata.basic;
 
 import java.util.List;
 
-import org.jboss.metadata.plugins.context.CachingMetaDataContext;
 import org.jboss.metadata.plugins.cache.CacheFactory;
-import org.jboss.metadata.spi.context.MetaDataContext;
+import org.jboss.metadata.plugins.context.CachingMetaDataContext;
 import org.jboss.metadata.spi.retrieval.MetaDataRetrieval;
 
 /**
@@ -56,7 +55,8 @@ public abstract class CachingBasicKernelMetaDataRepository extends BasicKernelMe
       return factory;
    }
 
-   protected MetaDataContext createMetaDataContext(List<MetaDataRetrieval> retrievals)
+   @Override
+   protected MetaDataRetrieval createMetaDataRetrieval(List<MetaDataRetrieval> retrievals)
    {
       return new CachingMetaDataContext(null, retrievals, getFactory());
    }

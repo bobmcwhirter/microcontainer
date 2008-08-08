@@ -26,7 +26,6 @@ import java.util.List;
 import org.jboss.dependency.spi.ControllerContext;
 import org.jboss.kernel.spi.KernelObject;
 import org.jboss.metadata.spi.MetaData;
-import org.jboss.metadata.spi.context.MetaDataContext;
 import org.jboss.metadata.spi.repository.MutableMetaDataRepository;
 import org.jboss.metadata.spi.retrieval.MetaDataRetrieval;
 import org.jboss.metadata.spi.scope.ScopeKey;
@@ -85,11 +84,11 @@ public interface KernelMetaDataRepository extends KernelObject
    ScopeKey getMutableScope(ControllerContext context);
 
    /**
-    * Create a metadata context
+    * Create a metadata retrieval
     * 
-    * @param context the context
+    * @param context the controller context
     * @param retrievals the retrievals
     * @return the metadata context
     */
-   MetaDataContext createMetaDataContext(ControllerContext context, List<MetaDataRetrieval> retrievals);
+   MetaDataRetrieval createMetaDataRetrieval(ControllerContext context, List<MetaDataRetrieval> retrievals);
 }
