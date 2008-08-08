@@ -32,7 +32,10 @@ import org.jboss.dependency.plugins.AbstractScopeInfo;
 import org.jboss.dependency.spi.ControllerContext;
 import org.jboss.kernel.plugins.config.Configurator;
 import org.jboss.kernel.spi.dependency.KernelControllerContext;
+import org.jboss.logging.Logger;
 import org.jboss.metadata.plugins.loader.memory.MemoryMetaDataLoader;
+import org.jboss.metadata.spi.ComponentMutableMetaData;
+import org.jboss.metadata.spi.loader.MutableMetaDataLoader;
 import org.jboss.metadata.spi.repository.MutableMetaDataRepository;
 import org.jboss.metadata.spi.scope.CommonLevels;
 import org.jboss.metadata.spi.scope.Scope;
@@ -50,6 +53,9 @@ import org.jboss.reflect.spi.FieldInfo;
  */
 public class KernelScopeInfo extends AbstractScopeInfo
 {
+   /** The log */
+   private static final Logger log = Logger.getLogger(KernelScopeInfo.class);
+   
    /** The bean metadata */
    private BeanMetaData beanMetaData;
    
@@ -102,13 +108,16 @@ public class KernelScopeInfo extends AbstractScopeInfo
    }
 
    @Override
-   public void addMetaData(MutableMetaDataRepository repository, ControllerContext context, MemoryMetaDataLoader mutable)
+   public void addMetaData(MutableMetaDataRepository repository, ControllerContext context, MutableMetaDataLoader mutable)
    {
       if (context instanceof KernelControllerContext == false)
          return;
       KernelControllerContext theContext = (KernelControllerContext) context;
       addClassAnnotations(mutable, theContext);
-      addPropertyAnnotations(mutable, theContext);
+      if (mutable instanceof ComponentMutableMetaData)
+          addPropertyAnnotations((ComponentMutableMetaData) mutable, theContext);
+      else
+         log.warn("Unable to add properties to mutable metadata that does not support components: " + mutable + " for " + context.toShortString());
    }
    
    /**
@@ -117,7 +126,7 @@ public class KernelScopeInfo extends AbstractScopeInfo
     * @param mutable the mutable metadata
     * @param context the context
     */
-   private void addClassAnnotations(MemoryMetaDataLoader mutable, KernelControllerContext context)
+   private void addClassAnnotations(MutableMetaDataLoader mutable, KernelControllerContext context)
    {
       BeanMetaData beanMetaData = context.getBeanMetaData();
       if (beanMetaData != null)
@@ -141,7 +150,7 @@ public class KernelScopeInfo extends AbstractScopeInfo
     * @param mutable the mutable
     * @param context the kernel controller contex
     */
-   private void addPropertyAnnotations(MemoryMetaDataLoader mutable, KernelControllerContext context)
+   private void addPropertyAnnotations(ComponentMutableMetaData mutable, KernelControllerContext context)
    {
       BeanMetaData beanMetaData = context.getBeanMetaData();
       if (beanMetaData == null)
@@ -177,7 +186,7 @@ public class KernelScopeInfo extends AbstractScopeInfo
     * @param propertyMetaData the property
     * @param beanInfo the bean info
     */
-   private void addPropertyAnnotations(ClassLoader classloader, MemoryMetaDataLoader mutable, PropertyMetaData propertyMetaData, BeanInfo beanInfo)
+   private void addPropertyAnnotations(ClassLoader classloader, ComponentMutableMetaData mutable, PropertyMetaData propertyMetaData, BeanInfo beanInfo)
    {
       Set<AnnotationMetaData> propertyAnnotations = propertyMetaData.getAnnotations();
       if (propertyAnnotations == null || propertyAnnotations.size() == 0)
@@ -205,7 +214,7 @@ public class KernelScopeInfo extends AbstractScopeInfo
     * @param methodInfo the method info
     * @param annotations the annotations
     */
-   private void addAnnotations(ClassLoader classloader, MemoryMetaDataLoader mutable, MethodInfo methodInfo, Set<AnnotationMetaData> annotations)
+   private void addAnnotations(ClassLoader classloader, ComponentMutableMetaData mutable, MethodInfo methodInfo, Set<AnnotationMetaData> annotations)
    {
       ScopeKey scope = new ScopeKey(CommonLevels.JOINPOINT_OVERRIDE, methodInfo.getName());
       MemoryMetaDataLoader loader = new MemoryMetaDataLoader(scope);
@@ -221,7 +230,7 @@ public class KernelScopeInfo extends AbstractScopeInfo
     * @param fieldInfo the field info
     * @param annotations the annotations
     */
-   private void addAnnotations(ClassLoader classloader, MemoryMetaDataLoader mutable, FieldInfo fieldInfo, Set<AnnotationMetaData> annotations)
+   private void addAnnotations(ClassLoader classloader, ComponentMutableMetaData mutable, FieldInfo fieldInfo, Set<AnnotationMetaData> annotations)
    {
       ScopeKey scope = new ScopeKey(CommonLevels.JOINPOINT_OVERRIDE, fieldInfo.getName());
       MemoryMetaDataLoader loader = new MemoryMetaDataLoader(scope);
@@ -236,7 +245,7 @@ public class KernelScopeInfo extends AbstractScopeInfo
     * @param mutable the mutable metadata
     * @param annotations the annotations
     */
-   private void addAnnotations(ClassLoader classloader, MemoryMetaDataLoader mutable, Set<AnnotationMetaData> annotations)
+   private void addAnnotations(ClassLoader classloader, MutableMetaDataLoader mutable, Set<AnnotationMetaData> annotations)
    {
       if (annotations == null || annotations.size() == 0)
          return;

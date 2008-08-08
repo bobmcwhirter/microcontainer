@@ -69,6 +69,15 @@ public interface ScopeInfo
    MetaDataRetrieval initMetaDataRetrieval(MutableMetaDataRepository repository, ControllerContext context, Scope scope);
 
    /**
+    * Initialise the main metadata retrieval
+    * 
+    * @param repository the repository
+    * @param context the context
+    * @return the retrieval
+    */
+   MetaDataRetrieval initMetaDataRetrieval(MutableMetaDataRepository repository, ControllerContext context);
+
+   /**
     * Get the scope
     * 
     * @return the scope

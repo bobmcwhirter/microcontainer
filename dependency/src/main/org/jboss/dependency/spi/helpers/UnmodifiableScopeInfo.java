@@ -67,6 +67,11 @@ public class UnmodifiableScopeInfo implements ScopeInfo
       throw new UnsupportedOperationException("Cannot modify immutable");
    }
 
+   public MetaDataRetrieval initMetaDataRetrieval(MutableMetaDataRepository repository, ControllerContext context)
+   {
+      throw new UnsupportedOperationException("Cannot modify immutable");
+   }
+
    public MetaData getMetaData()
    {
       return delegate.getMetaData();

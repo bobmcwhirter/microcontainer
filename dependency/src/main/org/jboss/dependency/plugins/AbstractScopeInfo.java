@@ -21,11 +21,18 @@
 */
 package org.jboss.dependency.plugins;
 
+import java.util.ArrayList;
+import java.util.List;
+import java.util.concurrent.CopyOnWriteArraySet;
+
 import org.jboss.dependency.spi.ControllerContext;
 import org.jboss.dependency.spi.ScopeInfo;
 import org.jboss.logging.Logger;
+import org.jboss.metadata.plugins.context.AbstractMetaDataContext;
 import org.jboss.metadata.plugins.loader.memory.MemoryMetaDataLoader;
 import org.jboss.metadata.spi.MetaData;
+import org.jboss.metadata.spi.context.MetaDataContext;
+import org.jboss.metadata.spi.loader.MutableMetaDataLoader;
 import org.jboss.metadata.spi.repository.MutableMetaDataRepository;
 import org.jboss.metadata.spi.retrieval.MetaDataRetrieval;
 import org.jboss.metadata.spi.scope.CommonLevels;
@@ -55,6 +62,9 @@ public class AbstractScopeInfo implements ScopeInfo
    /** The repository */
    private MutableMetaDataRepository repository;
 
+   /** The added scopes */
+   private CopyOnWriteArraySet<ScopeKey> addedScopes = new CopyOnWriteArraySet<ScopeKey>();
+   
    /**
     * Create a new AbstractScopeInfo.
     * 
@@ -109,8 +119,38 @@ public class AbstractScopeInfo implements ScopeInfo
    {
       this.repository = repository;
       ScopeKey scope = getMutableScope();
-      MemoryMetaDataLoader mutable = new MemoryMetaDataLoader(scope);
-      repository.addMetaDataRetrieval(mutable);
+      MetaDataRetrieval retrieval = repository.getMetaDataRetrieval(scope);
+      MutableMetaDataLoader mutable = null;
+      if (retrieval == null)
+      {
+         mutable = initMutableMetaDataRetrieval(repository, context, scope);
+         repository.addMetaDataRetrieval(mutable);
+         addedScopes.add(scope);
+      }
+      else if (retrieval instanceof MutableMetaDataLoader)
+      {
+         mutable = (MutableMetaDataLoader) retrieval;
+      }
+      else if (retrieval instanceof MetaDataContext)
+      {
+         MetaDataContext metaDataContext = (MetaDataContext) retrieval;
+         List<MetaDataRetrieval> locals = metaDataContext.getLocalRetrievals();
+         if (locals != null)
+         {
+            for (MetaDataRetrieval local : locals)
+            {
+               if (local instanceof MutableMetaDataLoader)
+                  mutable = (MutableMetaDataLoader) local;
+            }
+         }
+      }
+      
+      if (mutable == null)
+      {
+         log.warn("MetaData context is not mutable: " + retrieval + " for " + context.toShortString());
+         return;
+      }
+      
       addMetaData(repository, context, mutable);
    }
 
@@ -121,35 +161,32 @@ public class AbstractScopeInfo implements ScopeInfo
     * @param context the context
     * @param mutable the mutable
     */
-   protected void addMetaData(MutableMetaDataRepository repository, ControllerContext context, MemoryMetaDataLoader mutable)
+   protected void addMetaData(MutableMetaDataRepository repository, ControllerContext context, MutableMetaDataLoader mutable)
    {
       // nothing
    }
 
    public void removeMetaData(MutableMetaDataRepository repository, ControllerContext context)
    {
-      // Remove the read only/full scope
-      try
+      for (ScopeKey scope : addedScopes)
       {
-         ScopeKey scope = getScope();
-         repository.removeMetaDataRetrieval(scope);
+         try
+         {
+            repository.removeMetaDataRetrieval(scope);
+         }
+         catch (Exception e)
+         {
+            log.trace("Ignored", e);
+         }
       }
-      catch (Exception e)
-      {
-         log.trace("Ignored", e);
-      }
-      try
-      {
-         // Remove the mutable scope
-         ScopeKey scope = getMutableScope();
-         repository.removeMetaDataRetrieval(scope);
-      }
-      catch (Exception e)
-      {
-         log.trace("Ignored", e);
-      }
+      addedScopes.clear();
       this.repository = null;
       
+   }
+
+   public MutableMetaDataLoader initMutableMetaDataRetrieval(MutableMetaDataRepository repository, ControllerContext context, ScopeKey scopeKey)
+   {
+      return new MemoryMetaDataLoader(scopeKey);
    }
 
    public MetaDataRetrieval initMetaDataRetrieval(MutableMetaDataRepository repository, ControllerContext context, Scope scope)
@@ -158,6 +195,32 @@ public class AbstractScopeInfo implements ScopeInfo
       return null;
    }
 
+   public MetaDataRetrieval initMetaDataRetrieval(MutableMetaDataRepository repository, ControllerContext context)
+   {
+      ScopeKey scopeKey = getScope();
+      List<MetaDataRetrieval> retrievals = new ArrayList<MetaDataRetrieval>();
+      for (Scope scope : scopeKey.getScopes())
+      {
+         ScopeKey thisScope = new ScopeKey(scope);
+         MetaDataRetrieval retrieval = repository.getMetaDataRetrieval(thisScope);
+         if (retrieval == null)
+         {
+            retrieval = initMetaDataRetrieval(repository, context, scope);
+            if (retrieval == null)
+            {
+               retrieval = initMutableMetaDataRetrieval(repository, context, thisScope);
+               repository.addMetaDataRetrieval(retrieval);
+               addedScopes.add(thisScope);
+            }
+         }
+         retrievals.add(0, retrieval);
+      }
+      MetaDataContext metaDataContext = createMetaDataContext(retrievals);
+      repository.addMetaDataRetrieval(metaDataContext);
+      addedScopes.add(metaDataContext.getScope());
+      return metaDataContext;
+   }
+   
    public ScopeKey getScope()
    {
       return scopeKey;
@@ -190,5 +253,16 @@ public class AbstractScopeInfo implements ScopeInfo
    public void setInstallScope(ScopeKey key)
    {
       this.installScope = key;
+   }
+
+   /**
+    * Create metadata context.
+    *
+    * @param retrievals the retrievals
+    * @return new metadata context instance
+    */
+   protected MetaDataContext createMetaDataContext(List<MetaDataRetrieval> retrievals)
+   {
+      return new AbstractMetaDataContext(null, retrievals);
    }
 }

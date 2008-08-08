@@ -21,20 +21,13 @@
 */
 package org.jboss.kernel.plugins.metadata.basic;
 
-import java.util.ArrayList;
-import java.util.List;
-
 import org.jboss.dependency.spi.ControllerContext;
 import org.jboss.dependency.spi.ScopeInfo;
 import org.jboss.kernel.plugins.metadata.AbstractKernelMetaDataRepository;
-import org.jboss.metadata.plugins.context.AbstractMetaDataContext;
-import org.jboss.metadata.plugins.loader.memory.MemoryMetaDataLoader;
 import org.jboss.metadata.plugins.repository.basic.BasicMetaDataRepository;
 import org.jboss.metadata.spi.MetaData;
-import org.jboss.metadata.spi.context.MetaDataContext;
 import org.jboss.metadata.spi.repository.MutableMetaDataRepository;
 import org.jboss.metadata.spi.retrieval.MetaDataRetrieval;
-import org.jboss.metadata.spi.scope.Scope;
 import org.jboss.metadata.spi.scope.ScopeKey;
 
 /**
@@ -102,36 +95,6 @@ public class BasicKernelMetaDataRepository extends AbstractKernelMetaDataReposit
    {
       MutableMetaDataRepository repository = getMetaDataRepository();
       ScopeInfo scopeInfo = context.getScopeInfo();
-      ScopeKey scopeKey = scopeInfo.getScope();
-      List<MetaDataRetrieval> retrievals = new ArrayList<MetaDataRetrieval>();
-      for (Scope scope : scopeKey.getScopes())
-      {
-         ScopeKey thisScope = new ScopeKey(scope);
-         MetaDataRetrieval retrieval = repository.getMetaDataRetrieval(thisScope);
-         if (retrieval == null)
-         {
-            retrieval = scopeInfo.initMetaDataRetrieval(repository, context, scope);
-            if (retrieval == null)
-            {
-               retrieval = new MemoryMetaDataLoader(thisScope);
-               repository.addMetaDataRetrieval(retrieval);
-            }
-         }
-         retrievals.add(0, retrieval);
-      }
-      MetaDataContext metaDataContext = createMetaDataContext(retrievals);
-      repository.addMetaDataRetrieval(metaDataContext);
-      return metaDataContext;
-   }
-
-   /**
-    * Create metadata context.
-    *
-    * @param retrievals the retrievals
-    * @return new metadata context instance
-    */
-   protected MetaDataContext createMetaDataContext(List<MetaDataRetrieval> retrievals)
-   {
-      return new AbstractMetaDataContext(null, retrievals);
+      return scopeInfo.initMetaDataRetrieval(repository, context);
    }
 }
