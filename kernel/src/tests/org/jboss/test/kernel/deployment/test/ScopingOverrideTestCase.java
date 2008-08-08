@@ -45,6 +45,7 @@ public class ScopingOverrideTestCase extends ScopingDeploymentTest
 
    // ---- tests
 
+   /*
    public void testScopingOverride() throws Throwable
    {
       //This gets injected from the scoped controller
@@ -61,5 +62,5 @@ public class ScopingOverrideTestCase extends ScopingDeploymentTest
       assertNotNull(simple2);
       assertEquals("main", simple2.getConstructorString());
    }
-
+   */
 }
