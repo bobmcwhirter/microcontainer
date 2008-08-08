@@ -22,6 +22,7 @@
 package org.jboss.kernel.plugins.dependency;
 
 import java.lang.annotation.Annotation;
+import java.util.List;
 import java.util.Set;
 
 import org.jboss.beans.info.spi.BeanInfo;
@@ -30,11 +31,14 @@ import org.jboss.beans.metadata.spi.AnnotationMetaData;
 import org.jboss.beans.metadata.spi.BeanMetaData;
 import org.jboss.beans.metadata.spi.PropertyMetaData;
 import org.jboss.dependency.plugins.AbstractScopeInfo;
+import org.jboss.dependency.spi.Controller;
 import org.jboss.dependency.spi.ControllerContext;
 import org.jboss.kernel.plugins.config.Configurator;
+import org.jboss.kernel.spi.dependency.KernelController;
 import org.jboss.kernel.spi.dependency.KernelControllerContext;
 import org.jboss.logging.Logger;
 import org.jboss.metadata.spi.ComponentMutableMetaData;
+import org.jboss.metadata.spi.context.MetaDataContext;
 import org.jboss.metadata.spi.loader.MutableMetaDataLoader;
 import org.jboss.metadata.spi.repository.MutableMetaDataRepository;
 import org.jboss.metadata.spi.retrieval.MetaDataRetrieval;
@@ -323,5 +327,19 @@ public class KernelScopeInfo extends AbstractScopeInfo
                mutable.removeAnnotation(annotationInstance.annotationType());
          }
       }
+   }
+
+   @Override
+   protected MetaDataContext createMetaDataContext(ControllerContext context, List<MetaDataRetrieval> retrievals)
+   {
+      Controller controller = context.getController();
+      if (controller instanceof KernelController)
+      {
+         KernelController kernelController = (KernelController) controller;
+         MetaDataContext result = kernelController.getKernel().getMetaDataRepository().createMetaDataContext(context, retrievals);
+         if (result != null)
+            return result;
+      }
+      return super.createMetaDataContext(context, retrievals);
    }
 }

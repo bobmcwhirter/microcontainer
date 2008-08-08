@@ -237,7 +237,7 @@ public class AbstractScopeInfo implements ScopeInfo
          }
          retrievals.add(0, retrieval);
       }
-      MetaDataContext metaDataContext = createMetaDataContext(retrievals);
+      MetaDataContext metaDataContext = createMetaDataContext(context, retrievals);
       repository.addMetaDataRetrieval(metaDataContext);
       addedScopes.add(metaDataContext.getScope());
       return metaDataContext;
@@ -280,10 +280,11 @@ public class AbstractScopeInfo implements ScopeInfo
    /**
     * Create metadata context.
     *
+    * @param context the controller context
     * @param retrievals the retrievals
     * @return new metadata context instance
     */
-   protected MetaDataContext createMetaDataContext(List<MetaDataRetrieval> retrievals)
+   protected MetaDataContext createMetaDataContext(ControllerContext context, List<MetaDataRetrieval> retrievals)
    {
       return new AbstractMetaDataContext(null, retrievals);
    }
