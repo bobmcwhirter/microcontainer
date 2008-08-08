@@ -78,6 +78,7 @@ public class AbstractAnnotationMetaData extends JBossObject
    public void setAnnotation(String annotation)
    {
       this.annotation = annotation;
+      flushJBossObjectCache();
    }
 
    public boolean isReplace()
@@ -111,6 +112,7 @@ public class AbstractAnnotationMetaData extends JBossObject
             cl = Thread.currentThread().getContextClassLoader();
          }
          ann = (Annotation)AnnotationCreator.createAnnotation(annString, cl);
+         flushJBossObjectCache();
       }
       catch(TokenMgrError e)
       {
@@ -147,12 +149,16 @@ public class AbstractAnnotationMetaData extends JBossObject
 
    public void toString(JBossStringBuilder buffer)
    {
-      buffer.append("expr=").append(ann);
+      buffer.append("expr=");
+      toShortString(buffer);
    }
 
    public void toShortString(JBossStringBuilder buffer)
    {
-      buffer.append(ann);
+      if (ann == null)
+         buffer.append(annotation);
+      else
+         buffer.append(ann);
    }
 
    protected int getHashCode()

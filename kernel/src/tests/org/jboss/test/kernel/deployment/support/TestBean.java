@@ -30,5 +30,13 @@ package org.jboss.test.kernel.deployment.support;
 @TestAnnotation3
 public class TestBean
 {
+   public String getString()
+   {
+      return null;
+   }
 
+   @TestAnnotation3
+   public void setString(String string)
+   {
+   }
 }

@@ -31,6 +31,8 @@ import org.jboss.metadata.spi.MetaData;
 import org.jboss.metadata.spi.repository.MutableMetaDataRepository;
 import org.jboss.metadata.spi.scope.CommonLevels;
 import org.jboss.metadata.spi.scope.ScopeKey;
+import org.jboss.metadata.spi.signature.MethodSignature;
+import org.jboss.metadata.spi.signature.Signature;
 import org.jboss.test.kernel.deployment.support.TestAnnotation1;
 import org.jboss.test.kernel.deployment.support.TestAnnotation2;
 import org.jboss.test.kernel.deployment.support.TestAnnotation3;
@@ -61,6 +63,11 @@ public class MutableMetaDataTestCase extends AbstractDeploymentTest
       TestAnnotation2 annotation = (TestAnnotation2) AnnotationCreator.createAnnotation("@org.jboss.test.kernel.deployment.support.TestAnnotation2", TestAnnotation2.class);
       loader.addAnnotation(annotation);
       repository.addMetaDataRetrieval(loader);
+      ScopeKey setStringScope = new ScopeKey(CommonLevels.JOINPOINT, "setString");
+      MemoryMetaDataLoader stringProperty = new MemoryMetaDataLoader(setStringScope);
+      stringProperty.addAnnotation(annotation);
+      Signature signature = new MethodSignature("setString", String.class);
+      loader.addComponentMetaDataRetrieval(signature, stringProperty);
       
       KernelDeployment deployment = deploy("MutableMetaDataTestCase_NotAutomatic.xml");
       try
@@ -74,6 +81,11 @@ public class MutableMetaDataTestCase extends AbstractDeploymentTest
          assertNotNull("TestAnnotation1 from xml", metaData.getAnnotation(TestAnnotation1.class));
          assertNotNull("TestAnnotation2 preconfigured", metaData.getAnnotation(TestAnnotation2.class));
          assertNotNull("TestAnnotation3 from class", metaData.getAnnotation(TestAnnotation3.class));
+         
+         MetaData setStringMetaData = metaData.getComponentMetaData(signature);
+         assertNotNull("TestAnnotation1 from xml", setStringMetaData.getAnnotation(TestAnnotation1.class));
+         assertNotNull("TestAnnotation2 preconfigured", setStringMetaData.getAnnotation(TestAnnotation2.class));
+         assertNotNull("TestAnnotation3 from class", setStringMetaData.getAnnotation(TestAnnotation3.class));
       }
       finally
       {
@@ -86,5 +98,9 @@ public class MutableMetaDataTestCase extends AbstractDeploymentTest
       assertNull("TestAnnotation1 from xml", metaData.getAnnotation(TestAnnotation1.class));
       assertNotNull("TestAnnotation2 preconfigured", metaData.getAnnotation(TestAnnotation2.class));
       assertNull("TestAnnotation3 from class", metaData.getAnnotation(TestAnnotation3.class));
+      MetaData setStringMetaData = metaData.getComponentMetaData(signature);
+      assertNull("TestAnnotation1 from xml", setStringMetaData.getAnnotation(TestAnnotation1.class));
+      assertNotNull("TestAnnotation2 preconfigured", setStringMetaData.getAnnotation(TestAnnotation2.class));
+      assertNull("TestAnnotation3 from class", setStringMetaData.getAnnotation(TestAnnotation3.class));
    }
 }

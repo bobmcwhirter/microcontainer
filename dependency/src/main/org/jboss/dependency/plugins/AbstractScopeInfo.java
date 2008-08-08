@@ -127,22 +127,9 @@ public class AbstractScopeInfo implements ScopeInfo
          repository.addMetaDataRetrieval(mutable);
          addedScopes.add(scope);
       }
-      else if (retrieval instanceof MutableMetaDataLoader)
+      else
       {
-         mutable = (MutableMetaDataLoader) retrieval;
-      }
-      else if (retrieval instanceof MetaDataContext)
-      {
-         MetaDataContext metaDataContext = (MetaDataContext) retrieval;
-         List<MetaDataRetrieval> locals = metaDataContext.getLocalRetrievals();
-         if (locals != null)
-         {
-            for (MetaDataRetrieval local : locals)
-            {
-               if (local instanceof MutableMetaDataLoader)
-                  mutable = (MutableMetaDataLoader) local;
-            }
-         }
+         mutable = getMutableMetaDataLoader(retrieval);
       }
       
       if (mutable == null)
@@ -151,23 +138,33 @@ public class AbstractScopeInfo implements ScopeInfo
          return;
       }
       
-      addMetaData(repository, context, mutable);
+      updateMetaData(repository, context, mutable, true);
    }
-
+   
    /**
-    * Add metadata
+    * Update metadata
     * 
     * @param repository the repository
     * @param context the context
     * @param mutable the mutable
+    * @param add true for add, false for remove
     */
-   protected void addMetaData(MutableMetaDataRepository repository, ControllerContext context, MutableMetaDataLoader mutable)
+   protected void updateMetaData(MutableMetaDataRepository repository, ControllerContext context, MutableMetaDataLoader mutable, boolean add)
    {
       // nothing
    }
 
    public void removeMetaData(MutableMetaDataRepository repository, ControllerContext context)
    {
+      ScopeKey mutableScope = getMutableScope();
+      MetaDataRetrieval retrieval = repository.getMetaDataRetrieval(mutableScope);
+      if (retrieval != null)
+      {
+         MutableMetaDataLoader mutable = getMutableMetaDataLoader(retrieval);
+         if (mutable != null)
+            updateMetaData(repository, context, mutable, false);
+      }
+
       for (ScopeKey scope : addedScopes)
       {
          try
@@ -182,6 +179,31 @@ public class AbstractScopeInfo implements ScopeInfo
       addedScopes.clear();
       this.repository = null;
       
+   }
+
+   protected MutableMetaDataLoader getMutableMetaDataLoader(MetaDataRetrieval retrieval)
+   {
+      if (retrieval == null)
+         return null;
+
+      if (retrieval instanceof MutableMetaDataLoader)
+      {
+         return (MutableMetaDataLoader) retrieval;
+      }
+      else if (retrieval instanceof MetaDataContext)
+      {
+         MetaDataContext metaDataContext = (MetaDataContext) retrieval;
+         List<MetaDataRetrieval> locals = metaDataContext.getLocalRetrievals();
+         if (locals != null)
+         {
+            for (MetaDataRetrieval local : locals)
+            {
+               if (local instanceof MutableMetaDataLoader)
+                  return (MutableMetaDataLoader) local;
+            }
+         }
+      }
+      return null;
    }
 
    public MutableMetaDataLoader initMutableMetaDataRetrieval(MutableMetaDataRepository repository, ControllerContext context, ScopeKey scopeKey)

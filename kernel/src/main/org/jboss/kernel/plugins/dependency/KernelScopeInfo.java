@@ -21,6 +21,7 @@
 */
 package org.jboss.kernel.plugins.dependency;
 
+import java.lang.annotation.Annotation;
 import java.util.Set;
 
 import org.jboss.beans.info.spi.BeanInfo;
@@ -33,17 +34,18 @@ import org.jboss.dependency.spi.ControllerContext;
 import org.jboss.kernel.plugins.config.Configurator;
 import org.jboss.kernel.spi.dependency.KernelControllerContext;
 import org.jboss.logging.Logger;
-import org.jboss.metadata.plugins.loader.memory.MemoryMetaDataLoader;
 import org.jboss.metadata.spi.ComponentMutableMetaData;
 import org.jboss.metadata.spi.loader.MutableMetaDataLoader;
 import org.jboss.metadata.spi.repository.MutableMetaDataRepository;
+import org.jboss.metadata.spi.retrieval.MetaDataRetrieval;
 import org.jboss.metadata.spi.scope.CommonLevels;
 import org.jboss.metadata.spi.scope.Scope;
 import org.jboss.metadata.spi.scope.ScopeKey;
-import org.jboss.metadata.spi.signature.MethodSignature;
 import org.jboss.metadata.spi.signature.FieldSignature;
-import org.jboss.reflect.spi.MethodInfo;
+import org.jboss.metadata.spi.signature.MethodSignature;
+import org.jboss.metadata.spi.signature.Signature;
 import org.jboss.reflect.spi.FieldInfo;
+import org.jboss.reflect.spi.MethodInfo;
 
 /**
  * KernelScopeInfo.
@@ -108,25 +110,27 @@ public class KernelScopeInfo extends AbstractScopeInfo
    }
 
    @Override
-   public void addMetaData(MutableMetaDataRepository repository, ControllerContext context, MutableMetaDataLoader mutable)
+   public void updateMetaData(MutableMetaDataRepository repository, ControllerContext context, MutableMetaDataLoader mutable, boolean add)
    {
       if (context instanceof KernelControllerContext == false)
          return;
       KernelControllerContext theContext = (KernelControllerContext) context;
-      addClassAnnotations(mutable, theContext);
+      updateClassAnnotations(repository, mutable, theContext, add);
       if (mutable instanceof ComponentMutableMetaData)
-          addPropertyAnnotations((ComponentMutableMetaData) mutable, theContext);
-      else
+          updatePropertyAnnotations(repository, (ComponentMutableMetaData) mutable, theContext, add);
+      else if (add == true)
          log.warn("Unable to add properties to mutable metadata that does not support components: " + mutable + " for " + context.toShortString());
    }
    
    /**
-    * Add class annotations
+    * Update class annotations
     * 
+    * @param repository the repository
     * @param mutable the mutable metadata
     * @param context the context
+    * @param add true for add, false for remove
     */
-   private void addClassAnnotations(MutableMetaDataLoader mutable, KernelControllerContext context)
+   private void updateClassAnnotations(MutableMetaDataRepository repository, MutableMetaDataLoader mutable, KernelControllerContext context, boolean add)
    {
       BeanMetaData beanMetaData = context.getBeanMetaData();
       if (beanMetaData != null)
@@ -140,17 +144,19 @@ public class KernelScopeInfo extends AbstractScopeInfo
          {
             throw new RuntimeException("Error getting classloader for " + beanMetaData.getName(), t);
          }
-         addAnnotations(cl, mutable, beanMetaData.getAnnotations());
+         updateAnnotations(repository, cl, mutable, context, beanMetaData.getAnnotations(), add);
       }
    }
 
    /**
-    * Add property annotations
+    * Update property annotations
     * 
+    * @param repository the repository
     * @param mutable the mutable
     * @param context the kernel controller contex
+    * @param add true for add, false for remove
     */
-   private void addPropertyAnnotations(ComponentMutableMetaData mutable, KernelControllerContext context)
+   private void updatePropertyAnnotations(MutableMetaDataRepository repository, ComponentMutableMetaData mutable, KernelControllerContext context, boolean add)
    {
       BeanMetaData beanMetaData = context.getBeanMetaData();
       if (beanMetaData == null)
@@ -175,18 +181,21 @@ public class KernelScopeInfo extends AbstractScopeInfo
          throw new RuntimeException("Error getting classloader for metadata");
       }
       for (PropertyMetaData property : properties)
-         addPropertyAnnotations(cl, mutable, property, beanInfo);
+         updatePropertyAnnotations(repository, cl, mutable, context, property, beanInfo, add);
    }
 
    /**
-    * Add property annotations
+    * Update property annotations
     * 
+    * @param repository the repository
     * @param classloader the classloader
     * @param mutable the mutable
+    * @param context the context
     * @param propertyMetaData the property
     * @param beanInfo the bean info
+    * @param add true for add, false for remove
     */
-   private void addPropertyAnnotations(ClassLoader classloader, ComponentMutableMetaData mutable, PropertyMetaData propertyMetaData, BeanInfo beanInfo)
+   private void updatePropertyAnnotations(MutableMetaDataRepository repository, ClassLoader classloader, ComponentMutableMetaData mutable, KernelControllerContext context, PropertyMetaData propertyMetaData, BeanInfo beanInfo, boolean add)
    {
       Set<AnnotationMetaData> propertyAnnotations = propertyMetaData.getAnnotations();
       if (propertyAnnotations == null || propertyAnnotations.size() == 0)
@@ -196,61 +205,123 @@ public class KernelScopeInfo extends AbstractScopeInfo
       // method annotations
       MethodInfo methodInfo = propertyInfo.getGetter();
       if (methodInfo != null)
-         addAnnotations(classloader, mutable, methodInfo, propertyAnnotations);
+         updateAnnotations(repository, classloader, mutable, context, methodInfo, propertyAnnotations, add);
       methodInfo = propertyInfo.getSetter();
       if (methodInfo != null)
-         addAnnotations(classloader, mutable, methodInfo, propertyAnnotations);
+         updateAnnotations(repository, classloader, mutable, context, methodInfo, propertyAnnotations, add);
       // field annotations
       FieldInfo fieldInfo = propertyInfo.getFieldInfo();
       if (fieldInfo != null)
-         addAnnotations(classloader, mutable, fieldInfo, propertyAnnotations);
+         updateAnnotations(repository, classloader, mutable, context, fieldInfo, propertyAnnotations, add);
    }
    
    /**
-    * Add annotations for a method
+    * Update component annotations
     *
+    * @param repository the repository
     * @param classloader the classloader
-    * @param mutable the mutable metadata
+    * @param component the component metadata
+    * @param context the context
+    * @param signature the signature
+    * @param scope the scope
+    * @param annotations the annotations
+    * @param add true for add, false for remove
+    */
+   private void updateAnnotations(MutableMetaDataRepository repository, ClassLoader classloader, ComponentMutableMetaData component, KernelControllerContext context, Signature signature, ScopeKey scope, Set<AnnotationMetaData> annotations, boolean add)
+   {
+      MetaDataRetrieval retrieval = ((MetaDataRetrieval) component).getComponentMetaDataRetrieval(signature);
+      MutableMetaDataLoader mutable = null;
+      if (retrieval != null)
+      {
+         mutable = getMutableMetaDataLoader(retrieval);
+         if (mutable == null)
+         {
+            if (add)
+               log.warn("MetaData is not mutable with signature: " + signature + " for " + context.toShortString());
+            return;
+         }
+      }
+      else if (add)
+      {
+         mutable = initMutableMetaDataRetrieval(repository, context, scope);
+         component.addComponentMetaDataRetrieval(signature, mutable);
+      }
+      else
+      {
+         return;
+      }
+      updateAnnotations(repository, classloader, mutable, context, annotations, add);
+   }
+   
+   /**
+    * Update annotations for a method
+    *
+    * @param repository the repository
+    * @param classloader the classloader
+    * @param component the mutable metadata
+    * @param context the context
     * @param methodInfo the method info
     * @param annotations the annotations
+    * @param add true for add, false for remove
     */
-   private void addAnnotations(ClassLoader classloader, ComponentMutableMetaData mutable, MethodInfo methodInfo, Set<AnnotationMetaData> annotations)
+   private void updateAnnotations(MutableMetaDataRepository repository, ClassLoader classloader, ComponentMutableMetaData component, KernelControllerContext context, MethodInfo methodInfo, Set<AnnotationMetaData> annotations, boolean add)
    {
+      if (annotations == null || annotations.isEmpty())
+         return;
+      Signature signature = new MethodSignature(methodInfo);
       ScopeKey scope = new ScopeKey(CommonLevels.JOINPOINT_OVERRIDE, methodInfo.getName());
-      MemoryMetaDataLoader loader = new MemoryMetaDataLoader(scope);
-      addAnnotations(classloader, loader, annotations);
-      mutable.addComponentMetaDataRetrieval(new MethodSignature(methodInfo), loader);
+      updateAnnotations(repository, classloader, component, context, signature, scope, annotations, add);
    }
    
    /**
     * Add annotations for a field
     *
+    * @param repository the repository
     * @param classloader the classloader
-    * @param mutable the mutable metadata
+    * @param component the mutable metadata
+    * @param context the context
     * @param fieldInfo the field info
     * @param annotations the annotations
+    * @param add true for add, false for remove
     */
-   private void addAnnotations(ClassLoader classloader, ComponentMutableMetaData mutable, FieldInfo fieldInfo, Set<AnnotationMetaData> annotations)
+   private void updateAnnotations(MutableMetaDataRepository repository, ClassLoader classloader, ComponentMutableMetaData component, KernelControllerContext context, FieldInfo fieldInfo, Set<AnnotationMetaData> annotations, boolean add)
    {
+      if (annotations == null || annotations.isEmpty())
+         return;
+      Signature signature = new FieldSignature(fieldInfo);
       ScopeKey scope = new ScopeKey(CommonLevels.JOINPOINT_OVERRIDE, fieldInfo.getName());
-      MemoryMetaDataLoader loader = new MemoryMetaDataLoader(scope);
-      addAnnotations(classloader, loader, annotations);
-      mutable.addComponentMetaDataRetrieval(new FieldSignature(fieldInfo), loader);
+      updateAnnotations(repository, classloader, component, context, signature, scope, annotations, add);
    }
 
    /**
     * Add annotations to a mutable metadata
     *
+    * @param repository the repository
     * @param classloader the classloader
     * @param mutable the mutable metadata
+    * @param context the context
     * @param annotations the annotations
+    * @param add true for add, false for remove
     */
-   private void addAnnotations(ClassLoader classloader, MutableMetaDataLoader mutable, Set<AnnotationMetaData> annotations)
+   private void updateAnnotations(MutableMetaDataRepository repository, ClassLoader classloader, MutableMetaDataLoader mutable, KernelControllerContext context, Set<AnnotationMetaData> annotations, boolean add)
    {
       if (annotations == null || annotations.size() == 0)
          return;
-
       for (AnnotationMetaData annotation : annotations)
-         mutable.addAnnotation(annotation.getAnnotationInstance(classloader));
+      {
+         
+         if (add)
+         {
+            Annotation annotationInstance = annotation.getAnnotationInstance(classloader); 
+            mutable.addAnnotation(annotationInstance);
+         }
+         else
+         {
+            Annotation annotationInstance = annotation.getAnnotationInstance();
+            // Null means we never constructed it in the first place 
+            if (annotationInstance != null)
+               mutable.removeAnnotation(annotationInstance.annotationType());
+         }
+      }
    }
 }

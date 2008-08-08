@@ -4,6 +4,9 @@
 
    <bean name="TestBean" class="org.jboss.test.kernel.deployment.support.TestBean">
       <annotation>@org.jboss.test.kernel.deployment.support.TestAnnotation1</annotation>
+      
+      <property name="string">10<annotation>@org.jboss.test.kernel.deployment.support.TestAnnotation1</annotation></property>
+      
    </bean>
 
 </deployment>
