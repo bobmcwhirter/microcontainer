@@ -43,9 +43,6 @@ public class ScopingOverrideTestCase extends ScopingDeploymentTest
       return suite(ScopingOverrideTestCase.class);
    }
 
-
-   // ---- tests
-
    public void testScopingOverride() throws Throwable
    {
       //This gets injected from the scoped controller
