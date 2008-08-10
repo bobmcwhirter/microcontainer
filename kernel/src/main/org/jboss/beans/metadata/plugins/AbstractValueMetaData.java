@@ -80,17 +80,33 @@ public class AbstractValueMetaData extends JBossObject
 
    public void setValue(Object value)
    {
-      Object jmxHack = JMXObjectNameFix.needsAnAlias(value);
-      if (jmxHack != null)
-         this.value = jmxHack;
-      else
-         this.value = value;
+      if (isUseJMXObjectNameFix())
+      {
+         Object jmxHack = JMXObjectNameFix.needsAnAlias(value);
+         if (jmxHack != null)
+         {
+            this.value = jmxHack;
+            flushJBossObjectCache();
+            return;
+         }
+      }
+      this.value = value;
       flushJBossObjectCache();
    }
 
    public Object getUnderlyingValue()
    {
       return value;
+   }
+
+   /**
+    * Do we use jmx object name fix.
+    *
+    * @return do we use jmx object name fix
+    */
+   protected boolean isUseJMXObjectNameFix()
+   {
+      return true;
    }
 
    public Object getValue(TypeInfo info, ClassLoader cl) throws Throwable

@@ -55,8 +55,7 @@ public class MockServiceBindingTestCase extends AbstractDeploymentTest
    {
       MockServiceBinding binding = (MockServiceBinding)getBean("ServiceBinding");
       assertNotNull(binding);
-      // it's canonicalized due to AbstractValueMetaData::setValue --> JMXObjectNameFix::needsAnAlias
-      assertEquals("jboss.remoting:protocol=rmi,service=JMXConnectorServer", binding.getServiceName());
+      assertEquals("jboss.remoting:service=JMXConnectorServer,protocol=rmi", binding.getServiceName());
       assertEquals("SomeJBossBindAddress", binding.getHostName());
       assertEquals(1090, binding.getPort());
    }

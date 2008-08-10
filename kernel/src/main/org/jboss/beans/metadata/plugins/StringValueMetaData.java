@@ -74,6 +74,11 @@ public class StringValueMetaData extends AbstractTypeMetaData
       super(value);
    }
 
+   protected boolean isUseJMXObjectNameFix()
+   {
+      return false;
+   }
+
    @Override
    public String getValue()
    {
