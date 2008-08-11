@@ -43,6 +43,7 @@ public class MetaDataTestSuite extends TestSuite
       TestSuite suite = new TestSuite("MetaData Tests");
 
       suite.addTest(ClassAnnotationTestCase.suite());
+      suite.addTest(CachingMetaDataRepositoryTestCase.suite());
 
       return suite;
    }
