@@ -30,6 +30,7 @@ import org.jboss.metadata.spi.scope.CommonLevels;
 import org.jboss.metadata.spi.scope.ScopeKey;
 import org.jboss.test.AbstractTestDelegate;
 import org.jboss.test.kernel.junit.MicrocontainerTest;
+import org.jboss.dependency.spi.ScopeInfo;
 
 /**
  * MetaData Test Case.
@@ -47,6 +48,17 @@ public class AbstractMetaDataTest extends MicrocontainerTest
    protected void setUp() throws Exception
    {
       super.setUp();
+   }
+
+   protected MetaData assertMetaData(String name)
+   {
+      KernelControllerContext context = getControllerContext(name);
+      assertNotNull(context);
+      ScopeInfo scopeInfo = context.getScopeInfo();
+      assertNotNull(scopeInfo);
+      MetaData metaData = scopeInfo.getMetaData();
+      assertNotNull(metaData);
+      return metaData;
    }
 
    protected ScopeKey assertRetrievals(String name)

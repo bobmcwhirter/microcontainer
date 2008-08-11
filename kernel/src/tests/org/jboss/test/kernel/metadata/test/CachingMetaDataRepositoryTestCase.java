@@ -22,8 +22,6 @@
 package org.jboss.test.kernel.metadata.test;
 
 import junit.framework.Test;
-import org.jboss.dependency.spi.ScopeInfo;
-import org.jboss.kernel.spi.dependency.KernelControllerContext;
 import org.jboss.kernel.spi.deployment.KernelDeployment;
 import org.jboss.kernel.spi.metadata.KernelMetaDataRepository;
 import org.jboss.metadata.spi.MetaData;
@@ -57,20 +55,16 @@ public class CachingMetaDataRepositoryTestCase extends AbstractMetaDataTest
       return MicrocontainerTest.getDelegate(clazz);
    }
 
+   @Override
+   protected void tearDown() throws Exception
+   {
+      System.clearProperty(KernelMetaDataRepository.class.getName());      
+      super.tearDown();
+   }
+
    protected MetaData assertMetaData()
    {
       return assertMetaData("Name1");
-   }
-
-   protected MetaData assertMetaData(String name)
-   {
-      KernelControllerContext context = getControllerContext(name);
-      assertNotNull(context);
-      ScopeInfo scopeInfo = context.getScopeInfo();
-      assertNotNull(scopeInfo);
-      MetaData metaData = scopeInfo.getMetaData();
-      assertNotNull(metaData);
-      return metaData;
    }
 
    public void testTouchCachingMetaDataRepository() throws Exception
