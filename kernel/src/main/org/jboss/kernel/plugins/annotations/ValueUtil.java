@@ -23,6 +23,9 @@ package org.jboss.kernel.plugins.annotations;
 
 import java.util.List;
 import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Map;
+import java.util.HashMap;
 
 import org.jboss.beans.metadata.api.annotations.Inject;
 import org.jboss.beans.metadata.api.annotations.NullValue;
@@ -32,12 +35,14 @@ import org.jboss.beans.metadata.api.annotations.ThisValue;
 import org.jboss.beans.metadata.api.annotations.Value;
 import org.jboss.beans.metadata.api.annotations.ValueFactory;
 import org.jboss.beans.metadata.api.annotations.JavaBeanValue;
+import org.jboss.beans.metadata.api.annotations.Search;
 import org.jboss.beans.metadata.api.model.FromContext;
 import org.jboss.beans.metadata.spi.ValueMetaData;
 import org.jboss.beans.metadata.spi.ParameterMetaData;
 import org.jboss.beans.metadata.plugins.AbstractInjectionValueMetaData;
 import org.jboss.beans.metadata.plugins.AbstractValueFactoryMetaData;
 import org.jboss.beans.metadata.plugins.AbstractParameterMetaData;
+import org.jboss.beans.metadata.plugins.AbstractSearchValueMetaData;
 import org.jboss.dependency.spi.ControllerState;
 
 /**
@@ -47,6 +52,18 @@ import org.jboss.dependency.spi.ControllerState;
  */
 final class ValueUtil
 {
+   /** The search types */
+   private static final Map<String, org.jboss.dependency.plugins.graph.Search> types;
+
+   static
+   {
+      types = new HashMap<String,org.jboss.dependency.plugins.graph.Search>();
+      for (org.jboss.dependency.plugins.graph.Search search : org.jboss.dependency.plugins.graph.Search.values())
+      {
+         types.put(search.getType().toUpperCase(), search);
+      }
+   }
+
    /**
     * Does value already exist.
     *
@@ -241,5 +258,33 @@ final class ValueUtil
       factory.setDependentState(new ControllerState(annotation.dependantState()));
       factory.setWhenRequiredState(new ControllerState(annotation.whenRequiredState()));
       return factory;
+   }
+
+   /**
+    * Create search value meta data.
+    *
+    * @param annotation the annotation
+    * @return search meta data
+    */
+   static ValueMetaData createValueMetaData(Search annotation)
+   {
+      String searchType = annotation.type();
+      org.jboss.dependency.plugins.graph.Search type = types.get(searchType.toUpperCase());
+      if (type == null)
+         throw new IllegalArgumentException("No such search type: " + searchType + ", available: " + Arrays.toString(org.jboss.dependency.plugins.graph.Search.values()));
+
+      ControllerState state = null;
+      if (isAttributePresent(annotation.dependentState()))
+         state = new ControllerState(annotation.dependentState());
+      String property = null;
+      if (isAttributePresent(annotation.property()))
+         property = annotation.property();
+
+      return new AbstractSearchValueMetaData(
+            annotation.bean(),
+            state,
+            type,
+            property
+      );
    }
 }

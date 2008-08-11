@@ -21,13 +21,8 @@
 */
 package org.jboss.kernel.plugins.annotations;
 
-import java.util.HashMap;
-import java.util.Map;
-import java.util.Arrays;
-
 import org.jboss.beans.metadata.api.annotations.Search;
 import org.jboss.beans.metadata.spi.ValueMetaData;
-import org.jboss.dependency.spi.ControllerState;
 
 /**
  * Search value annotation plugin.
@@ -38,17 +33,6 @@ public class SearchPropertyAnnotationPlugin extends PropertyAnnotationPlugin<Sea
 {
    public final static SearchPropertyAnnotationPlugin INSTANCE = new SearchPropertyAnnotationPlugin();
 
-   private static final Map<String, org.jboss.dependency.plugins.graph.Search> types;
-
-   static
-   {
-      types = new HashMap<String,org.jboss.dependency.plugins.graph.Search>();
-      for (org.jboss.dependency.plugins.graph.Search search : org.jboss.dependency.plugins.graph.Search.values())
-      {
-         types.put(search.getType().toUpperCase(), search);
-      }
-   }
-
    protected SearchPropertyAnnotationPlugin()
    {
       super(Search.class);
@@ -56,23 +40,6 @@ public class SearchPropertyAnnotationPlugin extends PropertyAnnotationPlugin<Sea
 
    public ValueMetaData createValueMetaData(Search search)
    {
-      String searchType = search.type();
-      org.jboss.dependency.plugins.graph.Search type = types.get(searchType.toUpperCase());
-      if (type == null)
-         throw new IllegalArgumentException("No such search type: " + searchType + ", available: " + Arrays.toString(org.jboss.dependency.plugins.graph.Search.values()));
-
-      ControllerState state = null;
-      if (isAttributePresent(search.dependentState()))
-         state = new ControllerState(search.dependentState());
-      String property= null;
-      if (isAttributePresent(search.property()))
-         property = search.property();
-
-      return new SearchValueMetaData(
-            search.bean(),
-            state,
-            type,
-            property
-      );
+      return ValueUtil.createValueMetaData(search);
    }
 }

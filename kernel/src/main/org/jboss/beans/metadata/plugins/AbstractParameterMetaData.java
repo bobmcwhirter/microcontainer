@@ -174,6 +174,7 @@ public class AbstractParameterMetaData extends AbstractFeatureMetaData
       @XmlElement(name="array", type=AbstractArrayMetaData.class),
       @XmlElement(name="collection", type=AbstractCollectionMetaData.class),
       @XmlElement(name="inject", type=AbstractInjectionValueMetaData.class),
+      @XmlElement(name="search", type= AbstractSearchValueMetaData.class),
       @XmlElement(name="list", type=AbstractListMetaData.class),
       @XmlElement(name="map", type=AbstractMapMetaData.class),
       @XmlElement(name="null", type=AbstractValueMetaData.class),

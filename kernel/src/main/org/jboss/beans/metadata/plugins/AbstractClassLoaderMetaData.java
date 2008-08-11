@@ -81,6 +81,7 @@ public class AbstractClassLoaderMetaData extends JBossObject
    ({
       @XmlElement(name="bean", type=AbstractBeanMetaData.class),
       @XmlElement(name="inject", type=AbstractDependencyValueMetaData.class),
+      @XmlElement(name="search", type= AbstractSearchValueMetaData.class),
       @XmlElement(name="null", type=AbstractValueMetaData.class)
    })
    public void setClassLoader(ValueMetaData classloader)

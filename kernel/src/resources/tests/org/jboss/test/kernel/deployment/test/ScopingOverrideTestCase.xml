@@ -6,7 +6,7 @@
    <bean name="deploy1" class="org.jboss.test.kernel.deployment.support.SimpleObjectWithBean">
       <annotation>@org.jboss.metadata.plugins.scope.ApplicationScope("testApp")</annotation>
       <annotation>@org.jboss.metadata.plugins.scope.DeploymentScope("deployment1")</annotation>
-      <property name="simpleBean"><inject bean="simple"/></property>
+      <property name="simpleBean"><search bean="simple" type="local"/></property>
    </bean>
 
    <bean name="deploy2" class="org.jboss.test.kernel.deployment.support.SimpleObjectWithBean">
@@ -15,18 +15,19 @@
       <property name="simpleBean"><inject bean="simple"/></property>
    </bean>
 
+  <bean name="simple2" class="org.jboss.test.kernel.deployment.support.SimpleBeanImpl">
+    <annotation>@org.jboss.beans.metadata.api.annotations.Aliases({"simple"})</annotation>
+     <constructor>
+        <parameter>main</parameter>
+     </constructor>
+  </bean>
 
-   <bean name="simple" class="org.jboss.test.kernel.deployment.support.SimpleBeanImpl">
+   <bean name="simple1" class="org.jboss.test.kernel.deployment.support.SimpleBeanImpl">
+      <annotation>@org.jboss.beans.metadata.api.annotations.Aliases({"simple"})</annotation>
       <annotation>@org.jboss.metadata.plugins.scope.ApplicationScope("testApp")</annotation>
       <annotation>@org.jboss.metadata.plugins.scope.DeploymentScope("deployment1")</annotation>
       <constructor>
          <parameter>deployment1</parameter>
-      </constructor>
-   </bean>
-
-   <bean name="simple" class="org.jboss.test.kernel.deployment.support.SimpleBeanImpl">
-      <constructor>
-         <parameter>main</parameter>
       </constructor>
    </bean>
 

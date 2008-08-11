@@ -19,10 +19,14 @@
 * Software Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA
 * 02110-1301 USA, or see the FSF site: http://www.fsf.org.
 */
-package org.jboss.kernel.plugins.annotations;
+package org.jboss.beans.metadata.plugins;
 
-import org.jboss.beans.metadata.plugins.AbstractValueMetaData;
+import javax.xml.bind.annotation.XmlType;
+import javax.xml.bind.annotation.XmlAttribute;
+import javax.xml.bind.annotation.XmlAnyElement;
+
 import org.jboss.beans.metadata.spi.MetaDataVisitor;
+import org.jboss.beans.metadata.spi.ValueMetaData;
 import org.jboss.dependency.plugins.AbstractDependencyItem;
 import org.jboss.dependency.plugins.graph.Search;
 import org.jboss.dependency.spi.Controller;
@@ -33,13 +37,16 @@ import org.jboss.dependency.spi.dispatch.AttributeDispatchContext;
 import org.jboss.dependency.spi.graph.GraphController;
 import org.jboss.reflect.spi.TypeInfo;
 import org.jboss.util.JBossStringBuilder;
+import org.jboss.xb.annotations.JBossXmlAttribute;
+import org.jboss.managed.api.annotation.ManagementProperty;
 
 /**
- * Search value metadata.
+ * Search value metadata - TODO - still experimental
  *
  * @author <a href="mailto:ales.justin@jboss.com">Ales Justin</a>
  */
-public class SearchValueMetaData extends AbstractValueMetaData
+@XmlType(name="searchType")
+public class AbstractSearchValueMetaData extends AbstractValueMetaData
 {
    /** The serialVersionUID */
    private static final long serialVersionUID = 1L;
@@ -50,7 +57,12 @@ public class SearchValueMetaData extends AbstractValueMetaData
 
    private ControllerContext context;
 
-   public SearchValueMetaData(Object value, ControllerState state, Search search, String property)
+   // Used in JBossXB
+   public AbstractSearchValueMetaData()
+   {
+   }
+
+   public AbstractSearchValueMetaData(Object value, ControllerState state, Search search, String property)
    {
       super(value);
       if (search == null)
@@ -114,6 +126,43 @@ public class SearchValueMetaData extends AbstractValueMetaData
       visitor.addDependency(item);
 
       super.describeVisit(visitor);
+   }
+
+   @XmlAttribute(name="bean")
+   @JBossXmlAttribute(type=String.class)
+   public void setValue(Object value)
+   {
+      super.setValue(value);
+   }
+
+   @XmlAnyElement
+   @ManagementProperty(ignored = true)
+   public void setValueObject(Object value)
+   {
+      if (value == null)
+         setValue(null);
+      else if (value instanceof ValueMetaData)
+         setValue(value);
+      else
+         setValue(new AbstractValueMetaData(value));
+   }
+
+   @XmlAttribute
+   public void setState(ControllerState state)
+   {
+      this.state = state;
+   }
+
+   @XmlAttribute(name = "type")
+   public void setSearch(Search search)
+   {
+      this.search = search;
+   }
+
+   @XmlAttribute
+   public void setProperty(String property)
+   {
+      this.property = property;
    }
 
    public void toString(JBossStringBuilder buffer)

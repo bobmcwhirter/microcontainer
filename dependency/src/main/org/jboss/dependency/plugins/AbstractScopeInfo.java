@@ -90,8 +90,6 @@ public class AbstractScopeInfo implements ScopeInfo
       scopeKey.addScope(CommonLevels.INSTANCE, name.toString());
       if (className != null)
          scopeKey.addScope(CommonLevels.CLASS, className);
-      // todo - some other level
-      scopeKey.addScope(CommonLevels.WORK, String.valueOf(hashCode()));
       setScope(scopeKey);
       setMutableScope(new ScopeKey(CommonLevels.INSTANCE, name.toString()));
    }

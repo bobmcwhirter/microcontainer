@@ -25,12 +25,14 @@ import java.util.Map;
 
 import org.jboss.dependency.spi.graph.LookupStrategy;
 import org.jboss.dependency.spi.graph.SearchInfo;
+import org.jboss.xb.annotations.JBossXmlEnum;
 
 /**
  * Search enum.
  * 
  * @author <a href="mailto:ales.justin@jboss.com">Ales Justin</a>
  */
+@JBossXmlEnum(ignoreCase = true)
 public enum Search implements SearchInfo
 {
    DEFAULT(new DefaultSearchInfoWrapper()),

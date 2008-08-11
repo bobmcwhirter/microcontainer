@@ -123,6 +123,7 @@ public class AbstractConstructorMetaData extends AbstractFeatureMetaData
       @XmlElement(name="set", type=AbstractSetMetaData.class),
       @XmlElement(name="value", type=StringValueMetaData.class),
       @XmlElement(name="inject", type=AbstractInjectionValueMetaData.class),
+      @XmlElement(name="search", type= AbstractSearchValueMetaData.class),
       @XmlElement(name="value-factory", type=AbstractValueFactoryMetaData.class)
    })
    public void setValue(ValueMetaData value)

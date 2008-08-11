@@ -411,6 +411,23 @@ $Id: bean-deployer_2_0.xsd 70437 2008-03-05 17:13:04Z alesj $
       <xsd:attribute name="fromContext" type="contextType" use="optional"/>
    </xsd:complexType>
 
+   <xsd:complexType name="searchType">
+      <xsd:annotation>
+         <xsd:documentation>
+           <![CDATA[
+           e.g. Search injection - by scope.
+           <bean name="InjectedIntoMe" ...>
+              <property name="transactionManager"><search bean="someTMbean" type="top"/></property>
+           </bean>
+           ]]>
+         </xsd:documentation>
+      </xsd:annotation>
+      <xsd:attribute name="bean" type="xsd:string" use="required"/>
+      <xsd:attribute name="property" type="xsd:string" use="optional"/>
+      <xsd:attribute name="state" type="controllerStateType" use="optional"/>
+      <xsd:attribute name="type" type="searchTypeType" use="required"/>
+   </xsd:complexType>
+
    <xsd:complexType name="valueFactoryType">
       <xsd:annotation>
          <xsd:documentation>
@@ -1060,6 +1077,31 @@ $Id: bean-deployer_2_0.xsd 70437 2008-03-05 17:13:04Z alesj $
             ByName
             Constructor
             Auto
+            ]]>
+         </xsd:documentation>
+      </xsd:annotation>
+      <xsd:restriction base="xsd:string">
+         <xsd:whiteSpace value="collapse"/>
+      </xsd:restriction>
+   </xsd:simpleType>
+
+   <xsd:simpleType name="searchTypeType">
+      <xsd:annotation>
+         <xsd:documentation>
+            <![CDATA[
+            You can set the search lookup by type:
+            Valid values include:
+             DEFAULT,
+             LOCAL,
+             TOP,
+             PARENT_ONLY,
+             PARENT,
+             DEPTH,
+             LEAVES,
+             WIDTH,
+             CHILD_ONLY_DEPTH,
+             CHILD_ONLY_LEAVES,
+             CHILD_ONLY_WIDTH
             ]]>
          </xsd:documentation>
       </xsd:annotation>

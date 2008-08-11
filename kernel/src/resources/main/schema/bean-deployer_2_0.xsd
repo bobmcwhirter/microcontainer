@@ -83,6 +83,11 @@ $Id$
             <xsd:extension base="injectionType"/>
          </xsd:complexContent>
       </xsd:complexType>
+      <xsd:complexType name="searchType">
+         <xsd:complexContent>
+            <xsd:extension base="searchType"/>
+         </xsd:complexContent>
+      </xsd:complexType>
       <xsd:complexType name="valueFactoryType">
          <xsd:complexContent>
             <xsd:extension base="valueFactoryType"/>

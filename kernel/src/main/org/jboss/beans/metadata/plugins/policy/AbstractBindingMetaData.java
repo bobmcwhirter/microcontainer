@@ -22,7 +22,6 @@
 package org.jboss.beans.metadata.plugins.policy;
 
 import java.io.Serializable;
-
 import javax.xml.bind.annotation.XmlAnyElement;
 import javax.xml.bind.annotation.XmlAttribute;
 import javax.xml.bind.annotation.XmlElement;
@@ -39,6 +38,7 @@ import org.jboss.beans.metadata.plugins.AbstractMapMetaData;
 import org.jboss.beans.metadata.plugins.AbstractSetMetaData;
 import org.jboss.beans.metadata.plugins.AbstractValueFactoryMetaData;
 import org.jboss.beans.metadata.plugins.AbstractValueMetaData;
+import org.jboss.beans.metadata.plugins.AbstractSearchValueMetaData;
 import org.jboss.beans.metadata.plugins.StringValueMetaData;
 import org.jboss.beans.metadata.plugins.ThisValueMetaData;
 import org.jboss.beans.metadata.plugins.ValueMetaDataAware;
@@ -94,6 +94,7 @@ public class AbstractBindingMetaData extends JBossObject implements BindingMetaD
       @XmlElement(name="array", type=AbstractArrayMetaData.class),
       @XmlElement(name="collection", type=AbstractCollectionMetaData.class),
       @XmlElement(name="inject", type=AbstractInjectionValueMetaData.class),
+      @XmlElement(name="search", type= AbstractSearchValueMetaData.class),
       @XmlElement(name="list", type=AbstractListMetaData.class),
       @XmlElement(name="map", type=AbstractMapMetaData.class),
       @XmlElement(name="null", type=AbstractValueMetaData.class),
