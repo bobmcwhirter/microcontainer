@@ -26,13 +26,13 @@ import java.lang.annotation.Annotation;
 import java.util.Iterator;
 
 import javax.xml.bind.annotation.XmlAttribute;
+import javax.xml.bind.annotation.XmlTransient;
 import javax.xml.bind.annotation.XmlType;
 import javax.xml.bind.annotation.XmlValue;
-import javax.xml.bind.annotation.XmlTransient;
 
 import org.jboss.annotation.factory.AnnotationCreator;
 import org.jboss.annotation.factory.ast.TokenMgrError;
-import org.jboss.beans.metadata.spi.AnnotationMetaData;
+import org.jboss.beans.metadata.spi.CachingAnnotationMetaData;
 import org.jboss.beans.metadata.spi.MetaDataVisitor;
 import org.jboss.beans.metadata.spi.MetaDataVisitorNode;
 import org.jboss.util.JBossObject;
@@ -48,7 +48,7 @@ import org.jboss.util.StringPropertyReplacer;
  */
 @XmlType(name="annotationType", propOrder={"annotation"})
 public class AbstractAnnotationMetaData extends JBossObject
-   implements AnnotationMetaData, Serializable
+   implements CachingAnnotationMetaData, Serializable
 {
    private static final long serialVersionUID = 2L;
 
@@ -100,6 +100,8 @@ public class AbstractAnnotationMetaData extends JBossObject
    
    public Annotation getAnnotationInstance(ClassLoader cl)
    {
+      if (ann != null)
+         return ann;
       try
       {
          String annString = annotation;
@@ -124,6 +126,14 @@ public class AbstractAnnotationMetaData extends JBossObject
       }
 
       return ann;
+   }
+
+   public Annotation removeAnnotation()
+   {
+      Annotation result = ann;
+      ann = null;
+      flushJBossObjectCache();
+      return result;
    }
 
    public void initialVisit(MetaDataVisitor visitor)

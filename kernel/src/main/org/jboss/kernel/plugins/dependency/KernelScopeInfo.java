@@ -29,6 +29,7 @@ import org.jboss.beans.info.spi.BeanInfo;
 import org.jboss.beans.info.spi.PropertyInfo;
 import org.jboss.beans.metadata.spi.AnnotationMetaData;
 import org.jboss.beans.metadata.spi.BeanMetaData;
+import org.jboss.beans.metadata.spi.CachingAnnotationMetaData;
 import org.jboss.beans.metadata.spi.PropertyMetaData;
 import org.jboss.dependency.plugins.AbstractScopeInfo;
 import org.jboss.dependency.spi.Controller;
@@ -320,7 +321,11 @@ public class KernelScopeInfo extends AbstractScopeInfo
          }
          else
          {
-            Annotation annotationInstance = annotation.getAnnotationInstance();
+            Annotation annotationInstance = null;
+            if (annotation instanceof CachingAnnotationMetaData)
+               annotationInstance = ((CachingAnnotationMetaData) annotation).removeAnnotation();
+            if (annotationInstance == null)
+               annotationInstance = annotation.getAnnotationInstance(classloader);
             // Null means we never constructed it in the first place 
             if (annotationInstance != null)
                mutable.removeAnnotation(annotationInstance.annotationType());
