@@ -46,6 +46,14 @@ public class AspectManagerFactory
       AspectManager manager = AspectManager.instance();
       if (md != null)
       {
+         AspectManager metaDataManager = md.getMetaData(AspectManager.class);
+         
+         if (metaDataManager != null)
+         {
+            return metaDataManager;
+         }
+            
+         
          ApplicationScope app = md.getMetaData(ApplicationScope.class);
          DeploymentScope dep = md.getMetaData(DeploymentScope.class);
          if (app != null && dep != null)
