@@ -47,7 +47,12 @@ public class PropertyUsageTestCase extends AbstractDeploymentTest
       try
       {
          System.out.println("deployment = " + deployment);
-         // TODO - validate();
+/*
+         validate();
+         EmptyPropTester tester = assertBean("prop_tester", EmptyPropTester.class);
+         assertEquals("", tester.getString1());
+         assertEquals("", tester.getString2());
+*/
       }
       finally
       {
