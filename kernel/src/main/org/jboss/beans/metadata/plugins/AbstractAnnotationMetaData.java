@@ -42,13 +42,12 @@ import org.jboss.util.StringPropertyReplacer;
 /**
  * Metadata for an annotation.
  * 
- * @author <a href="ales.justin@jboss.com">Ales Justin</a>
  * @author <a href="adrian@jboss.com">Adrian Brock</a>
+ * @author <a href="ales.justin@jboss.com">Ales Justin</a>
  * @version $Revision$
  */
 @XmlType(name="annotationType", propOrder={"annotation"})
-public class AbstractAnnotationMetaData extends JBossObject
-   implements CachingAnnotationMetaData, Serializable
+public class AbstractAnnotationMetaData extends JBossObject implements CachingAnnotationMetaData, Serializable
 {
    private static final long serialVersionUID = 2L;
 
@@ -71,6 +70,9 @@ public class AbstractAnnotationMetaData extends JBossObject
 
    public String getAnnotation()
    {
+      if (annotation == null)
+         throw new IllegalArgumentException("Null string annotation value, illegal xml form?");
+
       return annotation;
    }
 
@@ -102,9 +104,10 @@ public class AbstractAnnotationMetaData extends JBossObject
    {
       if (ann != null)
          return ann;
+
+      String annString = getAnnotation();
       try
       {
-         String annString = annotation;
          if (replace)
          {
             annString = StringPropertyReplacer.replaceProperties(annString);
@@ -173,7 +176,7 @@ public class AbstractAnnotationMetaData extends JBossObject
 
    protected int getHashCode()
    {
-      return annotation.hashCode();
+      return getAnnotation().hashCode();
    }
 
    public boolean equals(Object object)
@@ -183,7 +186,7 @@ public class AbstractAnnotationMetaData extends JBossObject
 
       AbstractAnnotationMetaData amd = (AbstractAnnotationMetaData)object;
       // this is what we probably want? - never saw duplicate annotation on a bean/prop/...
-      return (replace == amd.replace) && annotation.equals(amd.annotation);
+      return (replace == amd.replace) && getAnnotation().equals(amd.getAnnotation());
    }
 
    public AbstractAnnotationMetaData clone()
