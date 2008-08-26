@@ -142,7 +142,7 @@ public class AbstractAnnotationMetaData extends JBossObject implements CachingAn
    public void initialVisit(MetaDataVisitor visitor)
    {
       String ann = getAnnotation().trim();
-      if (ann == null || ann.length() == 0)
+      if (ann.length() == 0)
          throw new IllegalArgumentException("Empty annotation content");
       if (ann.startsWith("@") == false)
          throw new IllegalArgumentException("Annotation content must be a fully qualified annotation type name prefixed with '@'");
