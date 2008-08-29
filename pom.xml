@@ -6,30 +6,82 @@
     <version>4-beta-2</version>
   </parent>
   <groupId>org.jboss.microcontainer</groupId>
-  <artifactId>jboss-microcontainer-aggregator</artifactId>
+  <artifactId>jboss-microcontainer</artifactId>
   <version>2.0.0-SNAPSHOT</version>
   <packaging>pom</packaging>
-  <name>JBoss Microcontainer Aggregator</name>
-  <url>http://www.jboss.com/products/jbossmc</url>
+  <name>JBoss Microcontainer Parent POM</name>
+  <url>http://www.jboss.org/jbossmc/</url>
   <description>
     The JBoss Microcontainer provides a lightweight container for managing POJOs, their deployment 
     and configuration.
   </description>
   <scm>
-    <connection>scm:svn:https://svn.jboss.org/repos/jbossas/projects/microcontainer/trunk</connection>
+    <connection>scm:svn:http://anonsvn.jboss.org/repos/jbossas/projects/microcontainer/trunk/</connection>
+    <developerConnection>scm:svn:https://svn.jboss.org/repos/jbossas/projects/microcontainer/trunk/</developerConnection>
+    <url>http://viewvc.jboss.org/cgi-bin/viewvc.cgi/jbossas/projects/microcontainer/trunk/</url>
   </scm>
 
   <modules>
-    <module>build</module>
     <module>dependency</module>
     <module>kernel</module>
     <module>aop-mc-int</module>
     <module>spring-int</module>
     <module>guice-int</module>
+    <module>build</module>
   </modules>
 
+  <properties>
+    <version.jboss.man>2.0.0.Beta16</version.jboss.man>
+    <version.jboss.common.core>2.2.7.GA</version.jboss.common.core>
+    <version.jboss.logging.spi>2.0.5.GA</version.jboss.logging.spi>
+    <version.jboss.logging.log4j>2.0.5.GA</version.jboss.logging.log4j>
+    <version.jbossxb>2.0.0.CR12</version.jbossxb>
+    <version.jboss.vfs>2.0.0.Beta21</version.jboss.vfs>
+    <version.javassist>3.8.1.GA</version.javassist>
+    <version.jboss.aop>2.0.0.CR16</version.jboss.aop>
+    <version.org.jboss.reflect>2.0.0.Beta13</version.org.jboss.reflect>
+    <version.org.jboss.mdr>2.0.0.Beta16</version.org.jboss.mdr>
+    <version.org.jboss.test>1.0.5.GA</version.org.jboss.test>
+    <version.junit>4.4</version.junit>
+    <version.jboss.profiler.jvmti>1.0.0.CR5</version.jboss.profiler.jvmti>
+    <version.ant.junit>1.6.5</version.ant.junit>
+    <version.jboss.drools>4.0.1</version.jboss.drools>
+    <version.jboss.jbpm>3.1.1</version.jboss.jbpm>
+    <version.google.guice>1.0</version.google.guice>
+  </properties>
+
   <build>
+    <sourceDirectory>src/main</sourceDirectory>
+    <testSourceDirectory>src/tests</testSourceDirectory>
+    <outputDirectory>${microcontainer.outputDirectory}</outputDirectory>
+    <testOutputDirectory>${microcontainer.testOutputDirectory}</testOutputDirectory>
+    <finalName>${artifactId}</finalName>
     <plugins>
+      <plugin>
+        <groupId>org.apache.maven.plugins</groupId>
+        <artifactId>maven-enforcer-plugin</artifactId>
+        <version>1.0-alpha-3</version>
+        <executions>
+          <execution>
+            <id>enforce-versions</id>
+            <goals>
+              <goal>enforce</goal>
+            </goals>
+            <phase>validate</phase>
+            <configuration>
+              <rules>
+                <requireMavenVersion>
+                  <version>2.0.9</version>
+                </requireMavenVersion>
+                <requireJavaVersion>
+                  <version>1.5.0</version>
+                </requireJavaVersion>           
+              </rules>
+            </configuration>
+          </execution>
+        </executions>
+        <inherited>true</inherited>
+      </plugin>
       <plugin>
         <groupId>org.apache.maven.plugins</groupId>
         <artifactId>maven-release-plugin</artifactId>
@@ -40,12 +92,265 @@
           <autoVersionSubmodules>true</autoVersionSubmodules>
         </configuration>
       </plugin>
+      <plugin>
+        <groupId>org.apache.maven.plugins</groupId>
+        <artifactId>maven-compiler-plugin</artifactId>
+        <version>2.0.2</version>
+        <configuration>
+          <source>1.5</source>
+          <target>1.5</target>
+          <showDeprecation>true</showDeprecation>
+          <showWarnings>true</showWarnings>
+          <optimize>true</optimize>
+        </configuration>
+      </plugin>
     </plugins>
+    
+    <pluginManagement>
+      <plugins>
+        <plugin>
+          <groupId>org.apache.maven.plugins</groupId>
+          <artifactId>maven-idea-plugin</artifactId>
+          <version>2.2</version>
+          <configuration>
+            <downloadSources>true</downloadSources>
+          </configuration>
+        </plugin>
+        <plugin>
+          <groupId>org.apache.maven.plugins</groupId>
+          <artifactId>maven-surefire-plugin</artifactId>
+          <version>2.4.3</version>
+          <configuration>
+            <redirectTestOutputToFile>true</redirectTestOutputToFile>
+            <includes>
+              <include>org/jboss/test/**/*TestCase.java</include>
+            </includes>
+          </configuration>
+        </plugin>
+      </plugins>
+    </pluginManagement>
   </build>
+  
+  <repositories>
+    <repository>
+      <id>repository.jboss.org</id>
+      <name>JBoss Repository</name>
+      <layout>default</layout>
+      <url>http://repository.jboss.org/maven2/</url>
+      <snapshots>
+        <enabled>false</enabled>
+      </snapshots>
+    </repository>
+    <repository>
+      <id>snapshots.jboss.org</id>
+      <name>JBoss Snapshots Repository</name>
+      <layout>default</layout>
+      <url>http://snapshots.jboss.org/maven2/</url>
+      <snapshots>
+        <enabled>true</enabled>
+      </snapshots>
+      <releases>
+        <enabled>false</enabled>
+      </releases>
+    </repository>
+  </repositories>
+  
+  <dependencyManagement>
+    <!-- The parent pom manages the inter-dependencies of the modules. -->
+    <dependencies>
+      <dependency>
+        <groupId>org.jboss.microcontainer</groupId>
+        <artifactId>jboss-aop-mc-int</artifactId>
+        <version>${project.version}</version>
+      </dependency>
+      <dependency>
+        <groupId>org.jboss.microcontainer</groupId>
+        <artifactId>jboss-dependency</artifactId>
+        <version>${project.version}</version>
+      </dependency>
+      <dependency>
+        <groupId>org.jboss.microcontainer</groupId>
+        <artifactId>jboss-kernel</artifactId>
+        <version>${project.version}</version>
+      </dependency>
+      <dependency>
+        <groupId>org.jboss.microcontainer</groupId>
+        <artifactId>jboss-kernel</artifactId>
+        <version>${project.version}</version>
+        <type>test-jar</type>
+        <scope>test</scope>
+      </dependency>
+      <dependency>
+        <groupId>org.jboss.man</groupId>
+        <artifactId>jboss-managed</artifactId>
+        <version>${version.jboss.man}</version>
+      </dependency>
+      <dependency>
+        <groupId>org.jboss.man</groupId>
+        <artifactId>jboss-metatype</artifactId>
+        <version>${version.jboss.man}</version>
+      </dependency>
+      <dependency>
+        <groupId>org.jboss.microcontainer</groupId>
+        <artifactId>jboss-spring-int</artifactId>
+        <version>${project.version}</version>
+      </dependency>
+      <dependency>
+        <groupId>org.jboss.microcontainer</groupId>
+        <artifactId>jboss-guice-int</artifactId>
+        <version>${project.version}</version>
+      </dependency>
+      <dependency>
+        <groupId>org.jboss</groupId>
+        <artifactId>jboss-common-core</artifactId>
+        <version>${version.jboss.common.core}</version>
+      </dependency>
+      <dependency>
+        <groupId>org.jboss.logging</groupId>
+        <artifactId>jboss-logging-spi</artifactId>
+        <version>${version.jboss.logging.spi}</version>
+      </dependency>
+      <dependency>
+        <groupId>org.jboss.logging</groupId>
+        <artifactId>jboss-logging-log4j</artifactId>
+        <version>${version.jboss.logging.log4j}</version>
+      </dependency>
+      <dependency>
+        <groupId>org.jboss</groupId>
+        <artifactId>jbossxb</artifactId>
+        <version>${version.jbossxb}</version>
+      </dependency>
+      <dependency>
+        <groupId>org.jboss</groupId>
+        <artifactId>jboss-reflect</artifactId>
+        <version>${version.org.jboss.reflect}</version>
+      </dependency>
+      <dependency>
+        <groupId>org.jboss</groupId>
+        <artifactId>jboss-mdr</artifactId>
+        <version>${version.org.jboss.mdr}</version>
+      </dependency>
+      <dependency>
+        <groupId>org.jboss</groupId>
+        <artifactId>jboss-vfs</artifactId>
+        <version>${version.jboss.vfs}</version>
+         <!-- FIXME http://www.jboss.com/index.html?module=bb&op=viewtopic&p=4077827#4077827 -->
+         <exclusions>
+           <exclusion>
+             <groupId>org.jboss</groupId>
+             <artifactId>jboss-common-core</artifactId>
+           </exclusion>
+         </exclusions>
+      </dependency>
+      <dependency>
+        <groupId>javassist</groupId>
+        <artifactId>javassist</artifactId>
+        <version>${version.javassist}</version>
+      </dependency>
+      <dependency>
+        <groupId>org.jboss.aop</groupId>
+        <artifactId>jboss-aop</artifactId>
+        <version>${version.jboss.aop}</version>
+      </dependency>
+      <dependency>
+        <groupId>ant</groupId>
+        <artifactId>ant-junit</artifactId>
+        <version>${version.ant.junit}</version>
+      </dependency>
+      <!-- test dependencies -->
+      <dependency>
+        <groupId>org.jboss</groupId>
+        <artifactId>jboss-test</artifactId>
+        <version>${version.org.jboss.test}</version>
+        <scope>test</scope>
+      </dependency>
+      <dependency>
+        <groupId>junit</groupId>
+        <artifactId>junit</artifactId>
+        <version>${version.junit}</version>
+        <scope>test</scope>
+      </dependency>
+      <dependency>
+        <groupId>jboss.profiler.jvmti</groupId>
+        <artifactId>jboss-profiler-jvmti</artifactId>
+        <version>${version.jboss.profiler.jvmti}</version>
+        <scope>test</scope>
+      </dependency>
+      <dependency>
+        <groupId>com.google.code.guice</groupId>
+        <artifactId>guice</artifactId>
+        <version>${version.google.guice}</version>
+      </dependency>
+    </dependencies>
+  </dependencyManagement>
+
+  <reporting>
+    <plugins>
+      <plugin>
+        <groupId>org.apache.maven.plugins</groupId>
+        <artifactId>maven-project-info-reports-plugin</artifactId>
+        <version>2.1</version>
+        <reportSets>
+          <reportSet>
+            <reports>
+              <report>dependencies</report>
+              <report>issue-tracking</report>
+              <report>license</report>
+              <report>scm</report>
+            </reports>
+          </reportSet>
+        </reportSets>
+      </plugin>
+      <plugin>
+        <groupId>org.codehaus.mojo</groupId>
+        <artifactId>findbugs-maven-plugin</artifactId>
+        <version>1.0.0</version>
+      </plugin>
+    </plugins>
+  </reporting>
   
   <profiles>
     <profile>
+      <id>default</id>
+      <activation>
+        <activeByDefault>true</activeByDefault>
+      </activation>
+      <properties>
+        <microcontainer.outputDirectory>target/classes</microcontainer.outputDirectory>
+        <microcontainer.testOutputDirectory>target/tests-classes</microcontainer.testOutputDirectory>
+      </properties>
+    </profile>
+    <profile>
       <id>eclipse</id>
+      <build>
+        <defaultGoal>process-test-resources</defaultGoal>
+        <plugins>
+          <plugin>
+            <artifactId>maven-eclipse-plugin</artifactId>
+            <executions>
+              <execution>
+                <id>eclipse</id>
+                <phase>process-test-resources</phase>
+                <goals>
+                  <goal>eclipse</goal>
+                </goals>
+              </execution>
+            </executions>
+            <configuration>
+              <downloadSources>true</downloadSources>
+              <buildOutputDirectory>${microcontainer.outputDirectory}</buildOutputDirectory>
+            </configuration>
+          </plugin>
+        </plugins>
+      </build>
+      <properties>
+        <microcontainer.outputDirectory>eclipse-target/classes</microcontainer.outputDirectory>
+        <microcontainer.testOutputDirectory>eclipse-target/tests-classes</microcontainer.testOutputDirectory>
+      </properties>
+    </profile>
+    
+    <profile>
+      <id>eclipse-1</id>
       <build>
         <defaultGoal>process-test-resources</defaultGoal>
       </build>
