@@ -22,17 +22,8 @@
   <name>JBoss Microcontainer AOP MC INT JDK 1.4</name>
   <url>http://www.jboss.com/products/jbossmc</url>
   <description>JBoss Microcontainer</description>
+  
   <build>
-    <resources>
-      <resource>
-        <directory>src/resources/main</directory>
-      </resource>
-    </resources>
-    <testResources>
-      <testResource>
-        <directory>src/resources/tests</directory>
-      </testResource>
-    </testResources>
     <plugins>      
       <plugin>
         <groupId>org.jboss.maven.plugins</groupId>

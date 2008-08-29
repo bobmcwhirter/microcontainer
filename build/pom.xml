@@ -27,12 +27,7 @@
 
   <profiles>
     <profile>
-      <id>combined-assembly</id>
-      <activation>
-        <property>
-          <name>!skip-assembly</name>
-        </property>
-      </activation>
+      <id>assembly</id>
       <build>
         <plugins>
           <plugin>
@@ -47,6 +42,7 @@
                   <goal>attached</goal>
                 </goals>
                 <configuration>
+                  <finalName>jboss-microcontainer-${project.version}</finalName>
                   <descriptors>
                     <descriptor>src/assembly/dist.xml</descriptor>
                     <descriptor>src/assembly/src.xml</descriptor>
@@ -59,5 +55,5 @@
       </build>
     </profile>
   </profiles>
-  
+
 </project>

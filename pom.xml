@@ -51,8 +51,6 @@
   </properties>
 
   <build>
-    <sourceDirectory>src/main</sourceDirectory>
-    <testSourceDirectory>src/tests</testSourceDirectory>
     <outputDirectory>${microcontainer.outputDirectory}</outputDirectory>
     <testOutputDirectory>${microcontainer.testOutputDirectory}</testOutputDirectory>
     <finalName>${artifactId}</finalName>
@@ -317,7 +315,7 @@
       </activation>
       <properties>
         <microcontainer.outputDirectory>target/classes</microcontainer.outputDirectory>
-        <microcontainer.testOutputDirectory>target/tests-classes</microcontainer.testOutputDirectory>
+        <microcontainer.testOutputDirectory>target/test-classes</microcontainer.testOutputDirectory>
       </properties>
     </profile>
     <profile>
@@ -350,48 +348,7 @@
     </profile>
     
     <profile>
-      <id>eclipse-1</id>
-      <build>
-        <defaultGoal>process-test-resources</defaultGoal>
-      </build>
-    </profile>
-    <profile>
-      <id>docs</id>
-      <activation>
-        <property>
-          <name>generate.docs</name>
-        </property>
-      </activation>
-      <modules>
-        <module>docs</module>
-      </modules>
-    </profile>
-    <profile>
       <id>assembly</id>
-      <build>
-        <plugins>
-          <plugin>
-            <artifactId>maven-assembly-plugin</artifactId>
-            <inherited>false</inherited>
-            <executions>
-              <execution>
-                <id>make-assembly</id>
-                <phase>install</phase>
-                <goals>
-                  <goal>assembly</goal>
-                </goals>
-              </execution>
-            </executions>
-            <configuration>
-              <finalName>jboss-microcontainer-${project.version}</finalName>
-              <descriptors>
-                <descriptor>build/assembly/dist.xml</descriptor>
-                <descriptor>build/assembly/src.xml</descriptor>
-              </descriptors>
-            </configuration>
-          </plugin>
-        </plugins>
-      </build>
       <modules>
         <module>docs</module>
       </modules>
