@@ -10,18 +10,7 @@
   <name>JBoss Microcontainer Spring Int</name>
   <url>http://www.jboss.com/products/jbossmc</url>
   <description>JBoss Microcontainer Spring Integration</description>
-  <build>
-    <resources>
-      <resource>
-        <directory>src/resources/main</directory>
-      </resource>
-    </resources>
-    <testResources>
-      <testResource>
-        <directory>src/resources/tests</directory>
-      </testResource>
-    </testResources>
-  </build>
+
   <!-- Do not add version information here, use ../build/pom.xml instead -->
   <dependencies>
     <!-- Global dependencies -->
