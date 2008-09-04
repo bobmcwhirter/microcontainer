@@ -40,7 +40,8 @@
       </plugin>
     </plugins>
   </build>
-  <!-- Do not add version information here, use ../build/pom.xml instead -->
+  
+  <!-- Do not add version information here, use ../pom.xml instead -->
   <dependencies>
     <!-- Global dependencies -->
     <dependency>
