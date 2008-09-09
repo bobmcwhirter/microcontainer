@@ -60,7 +60,7 @@ import org.jboss.util.JBossObject;
  * @author <a href="ales.justin@jboss.com">Ales Justin</a>
  * @version $Revision$
  */
-public class AbstractController extends JBossObject implements Controller, ControllerStateModel, GraphController
+public class AbstractController extends JBossObject implements Controller, ControllerStateModel, GraphController, AbstractControllerMBean
 {
    /** The lock */
    private ReentrantReadWriteLock lock = new ReentrantReadWriteLock();
@@ -99,6 +99,12 @@ public class AbstractController extends JBossObject implements Controller, Contr
    /** Whether an on demand context has been enabled */
    private boolean onDemandEnabled = true;
 
+   /** Whether stats are enabled */
+   private boolean collectStats = false;
+   
+   /** The install stats */
+   private StateStatistics installStats = null;
+   
    /**
     * Create an abstract controller
     */
@@ -221,6 +227,33 @@ public class AbstractController extends JBossObject implements Controller, Contr
          unlockWrite();
       }
 
+   }
+
+   /**
+    * Get the collectStats.
+    * 
+    * @return the collectStats.
+    */
+   public boolean isCollectStats()
+   {
+      return collectStats;
+   }
+
+   /**
+    * Set the collectStats.
+    * 
+    * @param collectStats the collectStats.
+    */
+   public void setCollectStats(boolean collectStats)
+   {
+      this.collectStats = collectStats;
+   }
+
+   public String listStateTimes(boolean details)
+   {
+      if (installStats == null)
+         return "No statistics available";
+      return installStats.listTimes(details);
    }
 
    public void addState(ControllerState state, ControllerState before)
@@ -1519,7 +1552,32 @@ public class AbstractController extends JBossObject implements Controller, Contr
     */
    protected void install(ControllerContext context, ControllerState fromState, ControllerState toState) throws Throwable
    {
-      context.install(fromState, toState);
+      long time = 0;
+      boolean collectStats = this.collectStats;
+      if (collectStats)
+         time = System.currentTimeMillis();
+      try
+      {
+         context.install(fromState, toState);
+      }
+      finally
+      {
+         if (collectStats)
+         {
+            time = System.currentTimeMillis() - time;
+            if (time > 0)
+            {
+               synchronized (this)
+               {
+                  if (installStats == null)
+                     installStats = new StateStatistics();;
+                  String state = toState.getStateString();
+                  String name = context.getName().toString();
+                  installStats.addStatistic(state, name, time);
+               }
+            }
+         }
+      }
    }
 
    /**
