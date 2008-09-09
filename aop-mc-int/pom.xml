@@ -452,7 +452,7 @@
               
                        <batchtest todir="${project.build.directory}/surefire-reports/ant-weave" haltonerror="false" haltonfailure="false" fork="true">
               
-                          <fileset dir="${project.build.directory}/tests-classes">
+                          <fileset dir="${project.build.directory}/test-classes">
                              <include name="org/jboss/test/**/*TestCase.class" />
                           </fileset>
                        </batchtest>
@@ -601,7 +601,7 @@
               
                        <batchtest todir="${project.build.directory}/surefire-reports/ant-weave-secure" haltonerror="false" haltonfailure="false" fork="true">
               
-                          <fileset dir="${project.build.directory}/tests-classes">
+                          <fileset dir="${project.build.directory}/test-classes">
                              <include name="org/jboss/test/**/*TestCase.class" />
                           </fileset>
                        </batchtest>
