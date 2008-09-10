@@ -52,6 +52,7 @@ import org.jboss.dependency.spi.graph.GraphController;
 import org.jboss.dependency.spi.graph.LookupStrategy;
 import org.jboss.dependency.spi.graph.SearchInfo;
 import org.jboss.util.JBossObject;
+import org.jboss.util.collection.CollectionsFactory;
 
 /**
  * Abstract controller.
@@ -648,6 +649,9 @@ public class AbstractController extends JBossObject implements Controller, Contr
             if (trace)
                log.trace("Uninstalling " + context.toShortString());
 
+            // get a hold on possible parent before its nullified in uninstall
+            AbstractController parent = getParentController();
+
             uninstallContext(context, ControllerState.NOT_INSTALLED, trace);
 
             try
@@ -659,7 +663,6 @@ public class AbstractController extends JBossObject implements Controller, Contr
                log.warn("Error unregistering context: " + context.toShortString() + " with name: " + name);
             }
 
-            AbstractController parent = getParentController();
             while (parent != null)
             {
                try
@@ -1184,14 +1187,19 @@ public class AbstractController extends JBossObject implements Controller, Contr
                      {
                         if (item.unresolved(this))
                         {
-                           ControllerContext dependent = getContext(item.getName(), null);
-                           if (dependent != null)
+                           Set<ControllerContext> dependents = CollectionsFactory.createLazySet();
+                           getContexts(item.getName(), dependents);
+                           if (dependents.isEmpty() == false)
                            {
                               ControllerState whenRequired = item.getWhenRequired();
                               if (whenRequired == null)
                                  whenRequired = ControllerState.NOT_INSTALLED;
-                              if (isBeforeState(dependent.getState(), whenRequired) == false)
-                                 uninstallContext(dependent, whenRequired, trace);
+
+                              for (ControllerContext dependent : dependents)
+                              {
+                                 if (isBeforeState(dependent.getState(), whenRequired) == false)
+                                    uninstallContext(dependent, whenRequired, trace);
+                              }
                            }
                         }
                      }
@@ -1245,6 +1253,34 @@ public class AbstractController extends JBossObject implements Controller, Contr
       finally
       {
          lockWrite();
+      }
+   }
+
+   /**
+    * Get all contexts by name.
+    *
+    * @param name the name of the context
+    * @param contexts found contexts
+    */
+   protected void getContexts(Object name, Set<ControllerContext> contexts)
+   {
+      ControllerContext context = getContext(name, null);
+      if (context != null)
+      {
+         Set<Object> aliases = context.getAliases();
+         // only pick up unique name
+         // TODO also ignore alises from @Aliases?
+         if (aliases == null || aliases.contains(name) == false)
+            contexts.add(context);
+      }
+
+      Set<AbstractController> children = getControllers();
+      if (children != null && children.isEmpty() == false)
+      {
+         for (AbstractController child : children)
+         {
+            child.getContexts(name, contexts);
+         }
       }
    }
 
