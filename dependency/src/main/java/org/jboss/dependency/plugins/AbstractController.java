@@ -1257,7 +1257,8 @@ public class AbstractController extends JBossObject implements Controller, Contr
    }
 
    /**
-    * Get all contexts by name.
+    * Get all contexts by name,
+    * check child controllers as well.
     *
     * @param name the name of the context
     * @param contexts found contexts
