@@ -12,12 +12,12 @@
   <parent>
     <groupId>org.jboss.microcontainer</groupId>
     <artifactId>jboss-microcontainer</artifactId>
-    <version>2.0.0-SNAPSHOT</version>
+    <version>2.2.0-SNAPSHOT</version>
   </parent>
   <modelVersion>4.0.0</modelVersion>
   <groupId>org.jboss.microcontainer</groupId>
   <artifactId>jboss-microcontainer-combined</artifactId>
-  <version>2.0.0-SNAPSHOT</version>
+  <version>2.2.0-SNAPSHOT</version>
   <packaging>pom</packaging>
   <name>JBoss Microcontainer Combined Assembly</name>
   <description>
