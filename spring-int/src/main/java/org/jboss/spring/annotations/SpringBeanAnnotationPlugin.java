@@ -84,7 +84,8 @@ public class SpringBeanAnnotationPlugin extends ClassAnnotationPlugin<SpringBean
                if (properties == null)
                {
                   properties = new HashSet<PropertyMetaData>();
-                  ((AbstractBeanMetaData)metaData).setProperties(properties);
+                  AbstractBeanMetaData abmd = checkIfNotAbstractBeanMetaDataSpecific(metaData);
+                  abmd.setProperties(properties);
                }
                properties.add(beanNameProperty);
                return beanNameProperty;
