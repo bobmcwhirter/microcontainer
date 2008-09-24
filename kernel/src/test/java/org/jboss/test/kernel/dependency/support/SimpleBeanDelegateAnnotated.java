@@ -19,31 +19,16 @@
 * Software Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA
 * 02110-1301 USA, or see the FSF site: http://www.fsf.org.
 */
-package org.jboss.beans.metadata.api.model;
+package org.jboss.test.kernel.dependency.support;
 
-import org.jboss.xb.annotations.JBossXmlEnum;
+import org.jboss.beans.metadata.api.annotations.Inject;
+import org.jboss.beans.metadata.api.model.InjectOption;
 
-/**
- * Injection option - strict or optional / callback.
- *
- * @author <a href="mailto:ales.justin@gmail.com">Ales Justin</a>
- */
-@JBossXmlEnum(ignoreCase=true)
-public enum InjectOption
+public class SimpleBeanDelegateAnnotated extends SimpleBeanDelegate
 {
-   STRICT(MicrocontainerConstants.STRICT),
-   CALLBACK(MicrocontainerConstants.CALLBACK),
-   OPTIONAL(MicrocontainerConstants.OPTIONAL);
-
-   private String optionString;
-
-   InjectOption(String optionString)
+   @Inject(bean = "Name2", option = InjectOption.OPTIONAL)
+   public void setDelegate(SimpleBean delegate)
    {
-      this.optionString = optionString;
-   }
-
-   public String toString()
-   {
-      return optionString;
+      super.setDelegate(delegate);
    }
 }

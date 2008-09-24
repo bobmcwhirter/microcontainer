@@ -117,6 +117,9 @@ public class DependencyTestSuite extends TestSuite
       suite.addTest(ScopedDuplicateAliasTestCase.suite());
       suite.addTest(ScopedDuplicateAliasXMLTestCase.suite());
       suite.addTest(ScopedDuplicateAliasAnnotationTestCase.suite());
+      suite.addTest(OptionalTestCase.suite());
+      suite.addTest(OptionalXMLTestCase.suite());
+      suite.addTest(OptionalAnnotationTestCase.suite());
       return suite;
    }
 }

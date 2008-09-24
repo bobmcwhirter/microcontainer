@@ -143,11 +143,17 @@ public class AbstractInjectionValueMetaData extends AbstractDependencyValueMetaD
    {
       boolean lookupExists = super.isLookupValid(lookup);
       boolean isCallback = InjectOption.CALLBACK.equals(injectionOption);
+      boolean isOptional = InjectOption.OPTIONAL.equals(injectionOption);
       if (lookupExists == false && isCallback)
       {
          addInstallItem(getUnderlyingValue());
       }
-      return lookupExists || isCallback;
+      return lookupExists || isCallback || isOptional;
+   }
+
+   protected boolean isOptional()
+   {
+      return InjectOption.OPTIONAL.equals(injectionOption);
    }
 
    @SuppressWarnings({"unchecked", "deprecation"})
@@ -179,7 +185,9 @@ public class AbstractInjectionValueMetaData extends AbstractDependencyValueMetaD
             }
             else
             {
-               addInstallItem(info.getType());
+               if (InjectOption.CALLBACK.equals(injectionOption))
+                  addInstallItem(info.getType());
+
                return null;
             }
          }

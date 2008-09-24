@@ -50,6 +50,7 @@ public interface MicrocontainerConstants
    // Inject Option
    String STRICT = "Strict";
    String CALLBACK = "Callback";
+   String OPTIONAL = "Optional";
 
    // Autowire
    String NONE = "None";

@@ -19,31 +19,31 @@
 * Software Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA
 * 02110-1301 USA, or see the FSF site: http://www.fsf.org.
 */
-package org.jboss.beans.metadata.api.model;
+package org.jboss.test.kernel.dependency.test;
 
-import org.jboss.xb.annotations.JBossXmlEnum;
+import junit.framework.Test;
+import org.jboss.beans.metadata.plugins.AbstractBeanMetaData;
+import org.jboss.test.kernel.dependency.support.SimpleBeanDelegateAnnotated;
 
 /**
- * Injection option - strict or optional / callback.
+ * Optional tests.
  *
- * @author <a href="mailto:ales.justin@gmail.com">Ales Justin</a>
+ * @author <a href="mailto:ales.justin@jboss.com">Ales Justin</a>
  */
-@JBossXmlEnum(ignoreCase=true)
-public enum InjectOption
+public class OptionalAnnotationTestCase extends OptionalTestCase
 {
-   STRICT(MicrocontainerConstants.STRICT),
-   CALLBACK(MicrocontainerConstants.CALLBACK),
-   OPTIONAL(MicrocontainerConstants.OPTIONAL);
-
-   private String optionString;
-
-   InjectOption(String optionString)
+   public OptionalAnnotationTestCase(String name) throws Throwable
    {
-      this.optionString = optionString;
+      super(name);
    }
 
-   public String toString()
+   public static Test suite()
    {
-      return optionString;
+      return suite(OptionalAnnotationTestCase.class);
+   }
+
+   protected AbstractBeanMetaData buildRepository()
+   {
+      return new AbstractBeanMetaData("Name1", SimpleBeanDelegateAnnotated.class.getName());
    }
 }

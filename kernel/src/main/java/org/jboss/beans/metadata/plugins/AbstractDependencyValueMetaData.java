@@ -57,6 +57,11 @@ public class AbstractDependencyValueMetaData extends AbstractValueMetaData
    protected transient KernelControllerContext context;
 
    /**
+    * The when required, keep it for optional handling
+    */
+   protected transient ControllerState optionalWhenRequired;
+
+   /**
     * The property name
     */
    protected String property;
@@ -179,6 +184,18 @@ public class AbstractDependencyValueMetaData extends AbstractValueMetaData
       return (lookup != null);
    }
 
+   protected boolean isOptional()
+   {
+      return false;
+   }
+
+   protected void addOptionalDependency(Controller controller, ControllerContext lookup)
+   {
+      OptionalDependencyItem dependency = new OptionalDependencyItem(context.getName(), lookup.getName(), lookup.getState());
+      context.getDependencyInfo().addIDependOn(dependency);
+      lookup.getDependencyInfo().addDependsOnMe(dependency);
+   }
+
    public Object getValue(TypeInfo info, ClassLoader cl) throws Throwable
    {
       ControllerState state = dependentState;
@@ -194,6 +211,8 @@ public class AbstractDependencyValueMetaData extends AbstractValueMetaData
 
       if (lookup == null)
          return null;
+      else if (isOptional())
+         addOptionalDependency(controller, lookup);
 
       Object result;
       if (property != null && property.length() > 0)
@@ -224,17 +243,21 @@ public class AbstractDependencyValueMetaData extends AbstractValueMetaData
    public void initialVisit(MetaDataVisitor visitor)
    {
       context = visitor.getControllerContext();
+
+      ControllerState whenRequired = whenRequiredState;
+      if (whenRequired == null)
+      {
+         whenRequired = visitor.getContextState();
+      }
+
+      if (isOptional())
+         optionalWhenRequired = whenRequired;               
+
       // used for sub class optional handling
       if (addDependencyItem())
       {
          Object name = context.getName();
          Object iDependOn = getUnderlyingValue();
-
-         ControllerState whenRequired = whenRequiredState;
-         if (whenRequired == null)
-         {
-            whenRequired = visitor.getContextState();
-         }
 
          DependencyItem item = new AbstractDependencyItem(name, iDependOn, whenRequired, dependentState);
          visitor.addDependency(item);
@@ -256,5 +279,17 @@ public class AbstractDependencyValueMetaData extends AbstractValueMetaData
    public AbstractDependencyValueMetaData clone()
    {
       return (AbstractDependencyValueMetaData)super.clone();
+   }
+
+   /**
+    * Optional depedency item.
+    */
+   protected class OptionalDependencyItem extends AbstractDependencyItem
+   {
+      public OptionalDependencyItem(Object name, Object iDependOn, ControllerState dependentState)
+      {
+         super(name, iDependOn, optionalWhenRequired, dependentState);
+         setResolved(true);
+      }
    }
 }
