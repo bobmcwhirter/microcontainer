@@ -75,6 +75,6 @@ public class JUnitTestCase extends MicrocontainerTest
    
    public void testTwo() throws Exception
    {
-      System.out.println(getBean("TheBean"));
+      System.out.println(getBean("MethodBean"));
    }
 }

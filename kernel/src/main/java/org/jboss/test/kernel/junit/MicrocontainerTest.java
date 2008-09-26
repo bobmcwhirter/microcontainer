@@ -49,6 +49,9 @@ public class MicrocontainerTest extends AbstractTestCaseWithSetup
    /** The test bean name */
    private String testBeanName;
 
+   /** The method specific deployment */
+   private KernelDeployment methodDeployment;
+   
    /**
     * Get the test delegate
     * 
@@ -80,7 +83,23 @@ public class MicrocontainerTest extends AbstractTestCaseWithSetup
    protected void setUp() throws Exception
    {
       super.setUp();
+      URL url = getMethodResource();
+      if (url != null)
+         methodDeployment = deploy(url);
+      else
+         getLog().debug("No method specific deployment " + getMethodDeployment());
       afterSetUp();
+   }
+
+   protected String getMethodDeployment()
+   {
+      String testName = getClass().getName();
+      return "/" + testName.replace('.', '/') + "#" + getName() + ".xml";
+   }
+
+   protected URL getMethodResource()
+   {
+      return getResource(getMethodDeployment());
    }
 
    /**
@@ -101,9 +120,10 @@ public class MicrocontainerTest extends AbstractTestCaseWithSetup
    @Override
    protected void tearDown() throws Exception
    {
+      if (methodDeployment != null)
+         undeploy(methodDeployment);
       if (autowireCandidate)
          clearAutowire();
-
       super.tearDown();
    }
 
