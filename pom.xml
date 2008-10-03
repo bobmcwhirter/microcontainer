@@ -38,7 +38,7 @@
     <version.jboss.man>2.0.0.CR1</version.jboss.man>
     <version.jboss.vfs>2.0.0.CR1</version.jboss.vfs>
     <version.javassist>3.8.1.GA</version.javassist>
-    <version.jboss.aop>2.0.0.CR17</version.jboss.aop>
+    <version.jboss.aop>2.0.0.CR18</version.jboss.aop>
     <version.org.jboss.reflect>2.0.0.CR1</version.org.jboss.reflect>
     <version.org.jboss.mdr>2.0.0.CR1</version.org.jboss.mdr>
     <version.org.jboss.test>1.1.1.GA</version.org.jboss.test>
