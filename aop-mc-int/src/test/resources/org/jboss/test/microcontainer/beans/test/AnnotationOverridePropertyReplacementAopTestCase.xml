@@ -1,0 +1,21 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<aop xmlns="urn:jboss:aop-beans:1.0">
+
+   <bean name="AspectManager" class="org.jboss.aop.AspectManager">
+      <constructor factoryClass="org.jboss.aop.AspectManager" factoryMethod="instance"/>
+   </bean>
+	
+	<annotation expr="class(org.jboss.test.microcontainer.beans.POJO)" invisible="false">
+		@org.jboss.test.microcontainer.beans.AnnotationWithValue(integer=${integer})
+	</annotation>
+
+	<aspect class="org.jboss.test.microcontainer.beans.AnnotationWithValueAspect"/>
+
+	<bind pointcut="execution(* @org.jboss.test.microcontainer.beans.AnnotationWithValue->*())">
+      <advice aspect="org.jboss.test.microcontainer.beans.AnnotationWithValueAspect" name="advice"/>
+   </bind>
+   
+   <bean name="Bean" class="org.jboss.test.microcontainer.beans.POJO"/>
+   
+</aop>
