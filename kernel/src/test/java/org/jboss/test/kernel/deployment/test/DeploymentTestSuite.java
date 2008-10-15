@@ -82,6 +82,9 @@ public class DeploymentTestSuite extends TestSuite
       suite.addTest(ScopingAliasAPITestCase.suite());
       suite.addTest(ScopingOverrideTestCase.suite());
       suite.addTest(ScopingDependencyTestCase.suite());
+      // super-demand
+      suite.addTest(SuperDemandAnnotationTestCase.suite());
+      suite.addTest(SuperDemandInstallTestCase.suite());
 
       return suite;
    }
