@@ -23,10 +23,9 @@ package org.jboss.beans.metadata.plugins;
 
 import java.io.Serializable;
 import java.util.Iterator;
-
+import javax.xml.bind.annotation.XmlAttribute;
 import javax.xml.bind.annotation.XmlTransient;
 import javax.xml.bind.annotation.XmlType;
-import javax.xml.bind.annotation.XmlAttribute;
 import javax.xml.bind.annotation.XmlValue;
 
 import org.jboss.beans.metadata.spi.DemandMetaData;
@@ -38,12 +37,12 @@ import org.jboss.dependency.spi.Controller;
 import org.jboss.dependency.spi.ControllerContext;
 import org.jboss.dependency.spi.ControllerState;
 import org.jboss.dependency.spi.DependencyItem;
-import org.jboss.kernel.spi.dependency.KernelControllerContext;
-import org.jboss.kernel.api.dependency.MatcherFactory;
 import org.jboss.kernel.api.dependency.Matcher;
+import org.jboss.kernel.api.dependency.MatcherFactory;
+import org.jboss.kernel.spi.dependency.KernelControllerContext;
+import org.jboss.util.HashCode;
 import org.jboss.util.JBossObject;
 import org.jboss.util.JBossStringBuilder;
-import org.jboss.util.HashCode;
 
 /**
  * A demand.
@@ -194,6 +193,9 @@ public class AbstractDemandMetaData extends JBossObject
       /** The matcher */
       private Matcher matcher;
 
+      /** Cached demand name */
+      private transient Object demandObject;
+
       /**
        * Create a new demand dependecy
        * 
@@ -213,15 +215,19 @@ public class AbstractDemandMetaData extends JBossObject
        */
       protected Object getDemandObject()
       {
-         if (matcher == null)
+         if (demandObject == null)
          {
-            Object fixup = JMXObjectNameFix.needsAnAlias(getDemand());
-            return (fixup != null) ? fixup : getDemand();
+            if (matcher == null)
+            {
+               Object fixup = JMXObjectNameFix.needsAnAlias(getDemand());
+               demandObject = (fixup != null) ? fixup : getDemand();
+            }
+            else
+            {
+               demandObject = matcher;
+            }
          }
-         else
-         {
-            return matcher;
-         }
+         return demandObject;
       }
 
       public boolean resolve(Controller controller)
