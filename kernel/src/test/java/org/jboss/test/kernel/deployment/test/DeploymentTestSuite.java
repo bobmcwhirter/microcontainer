@@ -71,6 +71,7 @@ public class DeploymentTestSuite extends TestSuite
       suite.addTest(MockEjb3DependsTestCase.suite());
       suite.addTest(AnnotationUsageTestCase.suite());
       suite.addTest(PropertyUsageTestCase.suite());
+      suite.addTest(AliasInjectTestCase.suite());
       // bean container tests
       suite.addTest(BeanContainerUsageTestCase.suite());
       suite.addTest(BeanContainerUsageMDTestCase.suite());
