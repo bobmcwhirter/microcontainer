@@ -212,11 +212,15 @@ public class AbstractDependencyItem extends JBossObject implements DependencyIte
    protected void setIDependOn(Object iDependOn)
    {
       this.iDependOn = iDependOn;
-      
-      // HACK: Try to fixup JMX like ObjectNames to their canonical name
-      Object fixup = JMXObjectNameFix.needsAnAlias(iDependOn);
-      if (fixup != null)
-         this.iDependOn = fixup;
+
+      // only check if not null
+      if (iDependOn != null)
+      {
+         // HACK: Try to fixup JMX like ObjectNames to their canonical name
+         Object fixup = JMXObjectNameFix.needsAnAlias(iDependOn);
+         if (fixup != null)
+            this.iDependOn = fixup;
+      }
 
       flushJBossObjectCache();
    }

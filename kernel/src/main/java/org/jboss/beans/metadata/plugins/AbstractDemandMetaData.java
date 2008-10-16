@@ -33,6 +33,7 @@ import org.jboss.beans.metadata.spi.DemandMetaData;
 import org.jboss.beans.metadata.spi.MetaDataVisitor;
 import org.jboss.beans.metadata.spi.MetaDataVisitorNode;
 import org.jboss.dependency.plugins.AbstractDependencyItem;
+import org.jboss.dependency.plugins.JMXObjectNameFix;
 import org.jboss.dependency.spi.Controller;
 import org.jboss.dependency.spi.ControllerContext;
 import org.jboss.dependency.spi.ControllerState;
@@ -212,7 +213,15 @@ public class AbstractDemandMetaData extends JBossObject
        */
       protected Object getDemandObject()
       {
-         return (matcher != null) ? matcher : getDemand();
+         if (matcher == null)
+         {
+            Object fixup = JMXObjectNameFix.needsAnAlias(getDemand());
+            return (fixup != null) ? fixup : getDemand();
+         }
+         else
+         {
+            return matcher;
+         }
       }
 
       public boolean resolve(Controller controller)
