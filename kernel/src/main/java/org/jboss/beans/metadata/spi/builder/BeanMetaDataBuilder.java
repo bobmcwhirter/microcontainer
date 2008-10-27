@@ -468,6 +468,13 @@ public abstract class BeanMetaDataBuilder
    public abstract BeanMetaDataBuilder addPropertyMetaData(String name, Map<ValueMetaData, ValueMetaData> value);
    
    /**
+    * Should we ignore default create invocation.
+    *
+    * @return the builder
+    */
+   public abstract BeanMetaDataBuilder ignoreCreate();
+
+   /**
     * Set the create method
     * 
     * @param methodName the method name
@@ -501,6 +508,13 @@ public abstract class BeanMetaDataBuilder
     * @return the builder
     */
    public abstract BeanMetaDataBuilder addCreateParameter(String type, ValueMetaData value);
+
+   /**
+    * Should we ignore default start invocation.
+    *
+    * @return the builder
+    */
+   public abstract BeanMetaDataBuilder ignoreStart();
 
    /**
     * Set the start method
@@ -538,6 +552,13 @@ public abstract class BeanMetaDataBuilder
    public abstract BeanMetaDataBuilder addStartParameter(String type, ValueMetaData value);
 
    /**
+    * Should we ignore default stop invocation.
+    *
+    * @return the builder
+    */
+   public abstract BeanMetaDataBuilder ignoreStop();
+
+   /**
     * Set the stop method
     * 
     * @param methodName the method name
@@ -571,6 +592,13 @@ public abstract class BeanMetaDataBuilder
     * @return the builder
     */
    public abstract BeanMetaDataBuilder addStopParameter(String type, ValueMetaData value);
+
+   /**
+    * Should we ignore default destroy invocation.
+    *
+    * @return the builder
+    */
+   public abstract BeanMetaDataBuilder ignoreDestroy();
 
    /**
     * Set the destroy method

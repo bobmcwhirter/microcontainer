@@ -25,23 +25,24 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collection;
 import java.util.Collections;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
-import java.util.HashSet;
 
 import junit.framework.Test;
 import org.jboss.beans.metadata.api.model.AutowireType;
-import org.jboss.beans.metadata.plugins.InstallCallbackMetaData;
-import org.jboss.beans.metadata.plugins.UninstallCallbackMetaData;
 import org.jboss.beans.metadata.plugins.AbstractBeanMetaData;
 import org.jboss.beans.metadata.plugins.AbstractRelatedClassMetaData;
+import org.jboss.beans.metadata.plugins.InstallCallbackMetaData;
+import org.jboss.beans.metadata.plugins.UninstallCallbackMetaData;
 import org.jboss.beans.metadata.plugins.builder.BeanMetaDataBuilderFactory;
 import org.jboss.beans.metadata.spi.BeanMetaData;
 import org.jboss.beans.metadata.spi.BeanMetaDataFactory;
 import org.jboss.beans.metadata.spi.CallbackMetaData;
-import org.jboss.beans.metadata.spi.ValueMetaData;
 import org.jboss.beans.metadata.spi.RelatedClassMetaData;
+import org.jboss.beans.metadata.spi.ValueMetaData;
+import org.jboss.beans.metadata.spi.LifecycleMetaData;
 import org.jboss.beans.metadata.spi.builder.BeanMetaDataBuilder;
 import org.jboss.dependency.spi.Cardinality;
 import org.jboss.dependency.spi.ControllerContext;
@@ -889,5 +890,25 @@ public class BeanMetaDataBuilderTestCase extends AbstractKernelConfigTest
       BeanMetaData bmd = builder.getBeanMetaData();
 
       assertEquals(related, bmd.getRelated());
+   }
+
+   public void testIgnoredLifecycle() throws Throwable
+   {
+      BeanMetaDataBuilder builder = BeanMetaDataBuilder.createBuilder("test");
+      builder.ignoreCreate();
+      builder.ignoreStart();
+      builder.ignoreStop();
+      builder.ignoreDestroy();
+      BeanMetaData bmd = builder.getBeanMetaData();
+      assertIgnoredLifecycle(bmd.getCreate());
+      assertIgnoredLifecycle(bmd.getStart());
+      assertIgnoredLifecycle(bmd.getStop());
+      assertIgnoredLifecycle(bmd.getDestroy());       
+   }
+
+   protected void assertIgnoredLifecycle(LifecycleMetaData lmd)
+   {
+      assertNotNull(lmd);
+      assertTrue(lmd.isIgnored());
    }
 }

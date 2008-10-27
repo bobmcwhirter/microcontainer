@@ -683,6 +683,12 @@ class BeanMetaDataBuilderImpl extends BeanMetaDataBuilder
       return properties;
    }
 
+   public BeanMetaDataBuilder ignoreCreate()
+   {
+      createBuilder.setIgnored();
+      return this;
+   }
+
    public BeanMetaDataBuilder setCreate(String methodName)
    {
       createBuilder.createStateActionMetaData(methodName);
@@ -704,6 +710,12 @@ class BeanMetaDataBuilderImpl extends BeanMetaDataBuilder
    public BeanMetaDataBuilder addCreateParameter(String type, ValueMetaData value)
    {
       createBuilder.addParameterMetaData(type, value);
+      return this;
+   }
+
+   public BeanMetaDataBuilder ignoreStart()
+   {
+      startBuilder.setIgnored();
       return this;
    }
 
@@ -731,6 +743,12 @@ class BeanMetaDataBuilderImpl extends BeanMetaDataBuilder
       return this;
    }
 
+   public BeanMetaDataBuilder ignoreStop()
+   {
+      stopBuilder.setIgnored();
+      return this;
+   }
+
    public BeanMetaDataBuilder setStop(String methodName)
    {
       stopBuilder.createStateActionMetaData(methodName);
@@ -752,6 +770,12 @@ class BeanMetaDataBuilderImpl extends BeanMetaDataBuilder
    public BeanMetaDataBuilder addStopParameter(String type, ValueMetaData value)
    {
       stopBuilder.addParameterMetaData(type, value);
+      return this;
+   }
+
+   public BeanMetaDataBuilder ignoreDestroy()
+   {
+      destroyBuilder.setIgnored();
       return this;
    }
 

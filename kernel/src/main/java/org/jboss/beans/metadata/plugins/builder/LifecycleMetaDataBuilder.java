@@ -57,7 +57,22 @@ public abstract class LifecycleMetaDataBuilder extends StateMetaDataBuilder<Life
    }
 
    /**
+    * Set ignored no lifecycle metadata.
+    */
+   public void setIgnored()
+   {
+      LifecycleMetaData lmd = getCheckedLifecycle();
+      if (lmd instanceof AbstractLifecycleMetaData)
+      {
+         AbstractLifecycleMetaData almd = (AbstractLifecycleMetaData)lmd;
+         almd.setIgnored(true);
+      }
+   }
+
+   /**
     * Check lifecycle.
+    * 
+    * TODO - fix name in 2.2 version!
     */
    protected void checkLlifecycle()
    {
@@ -66,6 +81,20 @@ public abstract class LifecycleMetaDataBuilder extends StateMetaDataBuilder<Life
       {
          createStateActionMetaData(null);
       }
+   }
+
+   /**
+    * Get checked lifecycle.
+    *
+    * @return checked lifecycle
+    */
+   protected LifecycleMetaData getCheckedLifecycle()
+   {
+      LifecycleMetaData lifecycle = getLifecycle(beanMetaData);
+      if (lifecycle == null)
+         lifecycle = createStateActionMetaData(null);
+
+      return lifecycle;
    }
 
    /**
