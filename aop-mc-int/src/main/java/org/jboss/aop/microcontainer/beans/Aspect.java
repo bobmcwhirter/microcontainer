@@ -32,6 +32,8 @@ import org.jboss.aop.advice.Scope;
 import org.jboss.aop.advice.ScopeUtil;
 import org.jboss.aop.instrument.Untransformable;
 import org.jboss.beans.metadata.plugins.factory.GenericBeanFactory;
+import org.jboss.kernel.spi.dependency.KernelControllerContext;
+import org.jboss.kernel.spi.dependency.KernelControllerContextAware;
 import org.jboss.logging.Logger;
 import org.w3c.dom.Element;
 
@@ -42,7 +44,7 @@ import org.w3c.dom.Element;
  * @author <a href="adrian@jboss.com">Adrian Brock</a>
  * @version $Revision$
  */
-public class Aspect implements Untransformable
+public class Aspect implements Untransformable, KernelControllerContextAware
 {
    private static final Logger log = Logger.getLogger(Aspect.class);
 
@@ -93,6 +95,11 @@ public class Aspect implements Untransformable
     */
    private   Element element;
 
+   /**
+    * The KernelControllerContext
+    */
+   private KernelControllerContext context;
+   
    /**
     * Get the name.
     *
@@ -255,6 +262,8 @@ public class Aspect implements Untransformable
          factory.setBeanFactory(advice);
       }
       
+      setDefinitionControllerContext(context);
+      
       //Copy the aspectbindings to avoid ConcurrentModificationExceptions
       ArrayList<Binding> clonedBindings = new ArrayList<Binding>();
       for (Binding aspectBinding : bindings.values())
@@ -301,6 +310,7 @@ public class Aspect implements Untransformable
       manager.removeAspectDefinition(name);
       if (definition != null)
       {
+         setDefinitionControllerContext(null);
          definition.undeploy();
          definition = null;
       }
@@ -314,5 +324,23 @@ public class Aspect implements Untransformable
    void removeBinding(Binding binding)
    {
       bindings.remove(binding.getName());
+   }
+
+   public void setKernelControllerContext(KernelControllerContext context) throws Exception
+   {
+      this.context = context;
+   }
+
+   public void unsetKernelControllerContext(KernelControllerContext context) throws Exception
+   {
+      this.context = null;
+   }
+   
+   protected void setDefinitionControllerContext(KernelControllerContext context)
+   {
+      if (definition != null)
+      {
+         ((GenericBeanAspectFactory)definition.getFactory()).setKernelControllerContext(context);
+      }
    }
 }

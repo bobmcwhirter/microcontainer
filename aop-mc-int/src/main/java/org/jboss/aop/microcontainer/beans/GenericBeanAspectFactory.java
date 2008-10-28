@@ -30,6 +30,8 @@ import org.jboss.beans.metadata.plugins.AbstractValueMetaData;
 import org.jboss.beans.metadata.plugins.factory.GenericBeanFactory;
 import org.jboss.beans.metadata.spi.ValueMetaData;
 import org.jboss.beans.metadata.spi.factory.BeanFactory;
+import org.jboss.kernel.plugins.config.Configurator;
+import org.jboss.kernel.spi.dependency.KernelControllerContext;
 import org.jboss.logging.Logger;
 import org.jboss.util.xml.XmlLoadable;
 import org.w3c.dom.Element;
@@ -50,6 +52,8 @@ public class GenericBeanAspectFactory extends GenericAspectFactory
    protected String classname;
    
    protected Element element;
+   
+   protected KernelControllerContext context;
    
    public GenericBeanAspectFactory(String name, GenericBeanFactory factory, Element element)
    {
@@ -109,6 +113,11 @@ public class GenericBeanAspectFactory extends GenericAspectFactory
    {
       return doCreate(advisor, instanceAdvisor, jp);
    }
+   
+   void setKernelControllerContext(KernelControllerContext context)
+   {
+      this.context = context;
+   }
 
    protected Object doCreate(Advisor advisor, InstanceAdvisor instanceAdvisor, Joinpoint jp)
    {
@@ -147,16 +156,32 @@ public class GenericBeanAspectFactory extends GenericAspectFactory
       @Override
       public ValueMetaData getClassLoader()
       {
-         ClassLoader loader = GenericBeanAspectFactory.this.getLoader(); 
-         //GenericBeanAspectFactory.this.peekScopedClassLoader();
-         if (loader == null)
+         ClassLoader cl = GenericBeanAspectFactory.this.getLoader();
+         if (cl == null && ((GenericBeanFactory)factory).getClassLoader() == this && context != null)
          {
-            return null;
+            try
+            {
+               cl = context.getClassLoader();
+            }
+            catch (Throwable t)
+            {
+               log.trace("Unable to retrieve classloader from " + context);
+            }
          }
-         else
+         
+         if (cl == null)
          {
-            return new AbstractValueMetaData(loader);
+            try
+            {
+               cl = Configurator.getClassLoader(((GenericBeanFactory)factory).getClassLoader());
+            }
+            catch (Throwable e)
+            {
+               log.trace("Unable to retrieve classloader from " + factory);
+            }
          }
+         
+         return new AbstractValueMetaData(cl);
       }
    }
 
