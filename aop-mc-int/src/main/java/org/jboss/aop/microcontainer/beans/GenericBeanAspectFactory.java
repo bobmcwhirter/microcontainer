@@ -132,13 +132,33 @@ public class GenericBeanAspectFactory extends GenericAspectFactory implements Ke
       {
          log.debug("Creating advice " + name);
          
-         //Add the ability to push the scoped classloader into the bean factory
+         
+         PushedClassLoaderMetaData pcmd = null;
          if (((GenericBeanFactory)factory).getClassLoader() == null)
          {
-            ((GenericBeanFactory)factory).setClassLoader(new PushedClassLoaderMetaData());
+            pcmd = new PushedClassLoaderMetaData();
+            ((GenericBeanFactory)factory).setClassLoader(pcmd);
          }
          
-         Object object = factory.createBean();
+         Object object = null;
+         try
+         {
+            //Try without looking at the context first which is what shold be used when running scoped in AS
+            object = factory.createBean();
+         }
+         catch(Throwable t)
+         {
+            if (pcmd != null)
+            {
+               pcmd.setLookAtContext(true);
+            }
+            else
+            {
+               throw new RuntimeException(t);
+            }
+            object = factory.createBean();
+         }
+         
          if (object instanceof XmlLoadable)
          {
             ((XmlLoadable)object).importXml(element);
@@ -160,35 +180,49 @@ public class GenericBeanAspectFactory extends GenericAspectFactory implements Ke
       /** The serialVersionUID */
       private static final long serialVersionUID = 1L;
       
+      boolean lookAtContext;
+      
+      void setLookAtContext(boolean look)
+      {
+         lookAtContext = look;
+      }
+   
       @Override
       public ValueMetaData getClassLoader()
       {
-         ClassLoader cl = GenericBeanAspectFactory.this.getLoader();
-         if (cl == null && ((GenericBeanFactory)factory).getClassLoader() == this && context != null)
+         ClassLoader loader = GenericBeanAspectFactory.this.getLoader(); 
+         //GenericBeanAspectFactory.this.peekScopedClassLoader();
+         if (loader == null)
          {
-            try
+            if (lookAtContext && context != null)
             {
-               cl = context.getClassLoader();
+               try
+               {
+                  loader = context.getClassLoader();
+               }
+               catch (Throwable t)
+               {
+                  log.trace("Unable to retrieve classloader from " + context);
+               }
+               
+               if (loader == null)
+               {
+                  try
+                  {
+                     loader = Configurator.getClassLoader(((GenericBeanFactory)factory).getClassLoader());
+                  }
+                  catch (Throwable e)
+                  {
+                     log.trace("Unable to retrieve classloader from " + factory);
+                  }
+               }
             }
-            catch (Throwable t)
-            {
-               log.trace("Unable to retrieve classloader from " + context);
-            }
+            return loader != null ?  new AbstractValueMetaData(loader) : null;
          }
-         
-         if (cl == null)
+         else
          {
-            try
-            {
-               cl = Configurator.getClassLoader(((GenericBeanFactory)factory).getClassLoader());
-            }
-            catch (Throwable e)
-            {
-               log.trace("Unable to retrieve classloader from " + factory);
-            }
+            return new AbstractValueMetaData(loader);
          }
-         
-         return new AbstractValueMetaData(cl);
       }
    }
 }
