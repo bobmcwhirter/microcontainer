@@ -25,8 +25,14 @@ import org.jboss.aop.Advisor;
 import org.jboss.aop.InstanceAdvisor;
 import org.jboss.aop.advice.AspectFactory;
 import org.jboss.aop.joinpoint.Joinpoint;
+import org.jboss.beans.metadata.plugins.AbstractClassLoaderMetaData;
+import org.jboss.beans.metadata.plugins.AbstractValueMetaData;
 import org.jboss.beans.metadata.plugins.factory.GenericBeanFactory;
+import org.jboss.beans.metadata.spi.ValueMetaData;
 import org.jboss.beans.metadata.spi.factory.BeanFactory;
+import org.jboss.kernel.plugins.config.Configurator;
+import org.jboss.kernel.spi.dependency.KernelControllerContext;
+import org.jboss.kernel.spi.dependency.KernelControllerContextAware;
 import org.jboss.logging.Logger;
 import org.jboss.util.xml.XmlLoadable;
 import org.w3c.dom.Element;
@@ -36,7 +42,7 @@ import org.w3c.dom.Element;
  * @author <a href="kabir.khan@jboss.com">Kabir Khan</a>
  * @version $Revision: 1.1 $
  */
-public class DelegatingBeanAspectFactory implements AspectFactory
+public class DelegatingBeanAspectFactory implements AspectFactory, KernelControllerContextAware
 {
    private static final Logger log = Logger.getLogger(GenericBeanAspectFactory.class); 
 
@@ -46,6 +52,8 @@ public class DelegatingBeanAspectFactory implements AspectFactory
    
    protected Element element;
    
+   protected KernelControllerContext context;
+   
    public DelegatingBeanAspectFactory(String name, BeanFactory factory, Element element)
    {
       this.name = name;
@@ -53,6 +61,17 @@ public class DelegatingBeanAspectFactory implements AspectFactory
       this.element = element;
    }
 
+   public void setKernelControllerContext(KernelControllerContext context)
+   {
+      this.context = context;
+   }
+
+
+   public void unsetKernelControllerContext(KernelControllerContext context) throws Exception
+   {
+      this.context = null;
+   }
+   
    public void setBeanFactory(GenericBeanFactory factory)
    {
       this.factory = factory;
@@ -98,6 +117,13 @@ public class DelegatingBeanAspectFactory implements AspectFactory
       try
       {
          log.debug("Creating advice " + name);
+
+         //Add the ability to push the scoped classloader into the bean factory
+         if (((GenericBeanFactory)factory).getClassLoader() == null)
+         {
+            ((GenericBeanFactory)factory).setClassLoader(new PushedClassLoaderMetaData());
+         }
+         
          AspectFactory fac = (AspectFactory)factory.createBean();
          if (fac instanceof XmlLoadable)
          {
@@ -108,6 +134,47 @@ public class DelegatingBeanAspectFactory implements AspectFactory
       catch (Throwable throwable)
       {
          throw new RuntimeException(throwable);
+      }
+   }
+
+
+   /**
+    * Gets any classloaders for the thread
+    */
+   private class PushedClassLoaderMetaData extends AbstractClassLoaderMetaData
+   {
+      /** The serialVersionUID */
+      private static final long serialVersionUID = 1L;
+      
+      @Override
+      public ValueMetaData getClassLoader()
+      {
+         ClassLoader cl = null;
+         if (((GenericBeanFactory)factory).getClassLoader() == this && context != null)
+         {
+            try
+            {
+               cl = context.getClassLoader();
+            }
+            catch (Throwable t)
+            {
+               log.trace("Unable to retrieve classloader from " + context);
+            }
+         }
+         
+         if (cl == null)
+         {
+            try
+            {
+               cl = Configurator.getClassLoader(((GenericBeanFactory)factory).getClassLoader());
+            }
+            catch (Throwable e)
+            {
+               log.trace("Unable to retrieve classloader from " + factory);
+            }
+         }
+         
+         return new AbstractValueMetaData(cl);
       }
    }
 }

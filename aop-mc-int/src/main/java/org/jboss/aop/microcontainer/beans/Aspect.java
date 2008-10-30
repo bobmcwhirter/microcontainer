@@ -338,9 +338,16 @@ public class Aspect implements Untransformable, KernelControllerContextAware
    
    protected void setDefinitionControllerContext(KernelControllerContext context)
    {
-      if (definition != null)
+      try
       {
-         ((GenericBeanAspectFactory)definition.getFactory()).setKernelControllerContext(context);
+         if (definition != null)
+         {
+            ((KernelControllerContextAware)definition.getFactory()).setKernelControllerContext(context);
+         }
+      }
+      catch (Exception e)
+      {
+         throw new RuntimeException(e);
       }
    }
 }

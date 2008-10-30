@@ -32,6 +32,7 @@ import org.jboss.beans.metadata.spi.ValueMetaData;
 import org.jboss.beans.metadata.spi.factory.BeanFactory;
 import org.jboss.kernel.plugins.config.Configurator;
 import org.jboss.kernel.spi.dependency.KernelControllerContext;
+import org.jboss.kernel.spi.dependency.KernelControllerContextAware;
 import org.jboss.logging.Logger;
 import org.jboss.util.xml.XmlLoadable;
 import org.w3c.dom.Element;
@@ -42,7 +43,7 @@ import org.w3c.dom.Element;
  * @author <a href="adrian@jboss.com">Adrian Brock</a>
  * @version $Revision$
  */
-public class GenericBeanAspectFactory extends GenericAspectFactory
+public class GenericBeanAspectFactory extends GenericAspectFactory implements KernelControllerContextAware
 {
    private static final Logger log = Logger.getLogger(GenericBeanAspectFactory.class); 
 
@@ -114,11 +115,17 @@ public class GenericBeanAspectFactory extends GenericAspectFactory
       return doCreate(advisor, instanceAdvisor, jp);
    }
    
-   void setKernelControllerContext(KernelControllerContext context)
+   public void setKernelControllerContext(KernelControllerContext context)
    {
       this.context = context;
    }
 
+
+   public void unsetKernelControllerContext(KernelControllerContext context) throws Exception
+   {
+      this.context = null;
+   }
+   
    protected Object doCreate(Advisor advisor, InstanceAdvisor instanceAdvisor, Joinpoint jp)
    {
       try
@@ -184,5 +191,4 @@ public class GenericBeanAspectFactory extends GenericAspectFactory
          return new AbstractValueMetaData(cl);
       }
    }
-
 }
