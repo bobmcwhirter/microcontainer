@@ -161,14 +161,14 @@ public class BeanMetaDataBuilderTestCase extends AbstractKernelConfigTest
    {
       BeanMetaDataBuilder demand = BeanMetaDataBuilderFactory.createBuilder("DemandBean", SimpleBean.class.getName());
       demand.addDemand("Barrier");
-      BeanMetaData demandBean = demand.getBeanMetaData();
+      BeanMetaDataFactory demandBean = demand.getBeanMetaDataFactory();
 
       BeanMetaDataBuilder supply = BeanMetaDataBuilderFactory.createBuilder("SupplyBean", SimpleLifecycleBean.class.getName());
       supply.addSupply("Barrier");
-      BeanMetaData supplyBean = supply.getBeanMetaData();
+      BeanMetaDataFactory supplyBean = supply.getBeanMetaDataFactory();
 
       AbstractKernelDeployment deployment = new AbstractKernelDeployment();
-      deployment.setBeans(Arrays.asList(demandBean, supplyBean));
+      deployment.setBeanFactories(Arrays.asList(demandBean, supplyBean));
 
       Kernel kernel = bootstrap();
       KernelController controller = kernel.getController();
@@ -193,13 +193,13 @@ public class BeanMetaDataBuilderTestCase extends AbstractKernelConfigTest
    {
       BeanMetaDataBuilder dependOn = BeanMetaDataBuilderFactory.createBuilder("DependOnBean", SimpleBean.class.getName());
       dependOn.addDependency("DependencyResolver");
-      BeanMetaData dependOnBean = dependOn.getBeanMetaData();
+      BeanMetaDataFactory dependOnBean = dependOn.getBeanMetaDataFactory();
 
       BeanMetaDataBuilder resolver = BeanMetaDataBuilderFactory.createBuilder("DependencyResolver", SimpleLifecycleBean.class.getName());
-      BeanMetaData resolverBean = resolver.getBeanMetaData();
+      BeanMetaDataFactory resolverBean = resolver.getBeanMetaDataFactory();
 
       AbstractKernelDeployment deployment = new AbstractKernelDeployment();
-      deployment.setBeans(Arrays.asList(dependOnBean, resolverBean));
+      deployment.setBeanFactories(Arrays.asList(dependOnBean, resolverBean));
 
       Kernel kernel = bootstrap();
       KernelController controller = kernel.getController();
@@ -250,7 +250,7 @@ public class BeanMetaDataBuilderTestCase extends AbstractKernelConfigTest
       builder.addPropertyMetaData("map", map);
 
       AbstractKernelDeployment deployment = new AbstractKernelDeployment();
-      deployment.setBeans(Arrays.asList(builder.getBeanMetaData()));
+      deployment.setBeanFactories(Arrays.asList(builder.getBeanMetaDataFactory()));
 
       Kernel kernel = bootstrap();
       KernelController controller = kernel.getController();
@@ -328,7 +328,7 @@ public class BeanMetaDataBuilderTestCase extends AbstractKernelConfigTest
       builder.addPropertyMetaData("map", map);
 
       AbstractKernelDeployment deployment = new AbstractKernelDeployment();
-      deployment.setBeans(Arrays.asList(builder.getBeanMetaData()));
+      deployment.setBeanFactories(Arrays.asList(builder.getBeanMetaDataFactory()));
 
       Kernel kernel = bootstrap();
       KernelController controller = kernel.getController();

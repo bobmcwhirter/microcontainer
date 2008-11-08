@@ -26,7 +26,7 @@ import java.util.List;
 
 import junit.framework.Test;
 import org.jboss.beans.metadata.plugins.builder.BeanMetaDataBuilderFactory;
-import org.jboss.beans.metadata.spi.BeanMetaData;
+import org.jboss.beans.metadata.spi.BeanMetaDataFactory;
 import org.jboss.beans.metadata.spi.ValueMetaData;
 import org.jboss.beans.metadata.spi.builder.BeanMetaDataBuilder;
 import org.jboss.dependency.spi.ControllerContext;
@@ -305,8 +305,8 @@ public class ScopingDependencyTestCase extends ScopingDeploymentTest
 
       AbstractKernelDeployment deployment = new AbstractKernelDeployment();
       deployment.setName(deploymentName);
-      List<BeanMetaData> beans = Collections.singletonList(builder.getBeanMetaData());
-      deployment.setBeans(beans);
+      List<BeanMetaDataFactory> beans = Collections.singletonList(builder.getBeanMetaDataFactory());
+      deployment.setBeanFactories(beans);
       return deployment;
    }
 
