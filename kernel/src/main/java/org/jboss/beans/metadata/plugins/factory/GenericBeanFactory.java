@@ -37,8 +37,8 @@ import org.jboss.logging.Logger;
 /**
  * Bean factory metadata.
  * 
- * @author <a href="ales.justin@jboss.com">Ales Justin</a>
  * @author <a href="adrian@jboss.com">Adrian Brock</a>
+ * @author <a href="ales.justin@jboss.com">Ales Justin</a>
  * @version $Revision$
  */
 public class GenericBeanFactory extends AbstractBeanFactory implements KernelControllerContextAware

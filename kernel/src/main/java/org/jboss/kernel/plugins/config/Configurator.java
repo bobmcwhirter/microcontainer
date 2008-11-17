@@ -51,6 +51,7 @@ import org.jboss.reflect.spi.TypeInfoFactory;
  * Configuration utilities.
  *
  * @author <a href="adrian@jboss.com">Adrian Brock</a>
+ * @author <a href="ales.justin@jboss.com">Ales Justin</a>
  * @version $Revision$
  */
 public class Configurator extends Config
@@ -655,22 +656,30 @@ public class Configurator extends Config
     */
    public static ClassLoader getClassLoader(ClassLoaderMetaData metaData) throws Throwable
    {
-      ClassLoader tcl = Thread.currentThread().getContextClassLoader();
+      ClassLoader tcl = null;
       ClassLoader cl = null;
+
       if (metaData != null)
       {
             ValueMetaData clVMD = metaData.getClassLoader();
             if (clVMD != null)
             {
+               tcl = Thread.currentThread().getContextClassLoader();
                Object object = clVMD.getValue(null, tcl);
                if (object != null && object instanceof ClassLoader == false)
                   throw new IllegalArgumentException("Configured object is not a classloader " + metaData);
                cl = (ClassLoader) object;
             }
       }
+
       if (cl == null)
-         cl = tcl;
-      return cl;
+      {
+         return (tcl != null) ? tcl : Thread.currentThread().getContextClassLoader();   
+      }
+      else
+      {
+         return cl;
+      }
    }
 
    /**
