@@ -27,6 +27,7 @@ package org.jboss.test.kernel.deployment.support;
 public class HAPartition
 {
    private boolean started;
+   @SuppressWarnings("unused")
    private HAPartitionCacheHandler handler;
 
    public void start()
