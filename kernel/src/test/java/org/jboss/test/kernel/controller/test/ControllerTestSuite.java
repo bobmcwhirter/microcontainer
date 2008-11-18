@@ -49,6 +49,7 @@ public class ControllerTestSuite extends TestSuite
       suite.addTest(InstallErrorTestCase.suite());
       suite.addTest(InstallWhenRequiredErrorTestCase.suite());
       suite.addTest(FieldAccessControlTestCase.suite());
+      suite.addTest(GenericBeanFactoryAccessControlTestCase.suite());
       
       return suite;
    }

@@ -21,6 +21,11 @@
 */
 package org.jboss.beans.metadata.plugins.factory;
 
+import java.security.AccessControlContext;
+import java.security.AccessController;
+import java.security.PrivilegedAction;
+import java.security.PrivilegedActionException;
+import java.security.PrivilegedExceptionAction;
 import java.util.Map;
 
 import org.jboss.beans.info.spi.BeanInfo;
@@ -29,6 +34,7 @@ import org.jboss.beans.metadata.spi.ValueMetaData;
 import org.jboss.beans.metadata.spi.factory.AbstractBeanFactory;
 import org.jboss.joinpoint.spi.Joinpoint;
 import org.jboss.kernel.plugins.config.Configurator;
+import org.jboss.kernel.plugins.dependency.AbstractKernelControllerContext;
 import org.jboss.kernel.spi.config.KernelConfigurator;
 import org.jboss.kernel.spi.dependency.KernelControllerContext;
 import org.jboss.kernel.spi.dependency.KernelControllerContextAware;
@@ -37,8 +43,8 @@ import org.jboss.logging.Logger;
 /**
  * Bean factory metadata.
  * 
- * @author <a href="adrian@jboss.com">Adrian Brock</a>
  * @author <a href="ales.justin@jboss.com">Ales Justin</a>
+ * @author <a href="adrian@jboss.com">Adrian Brock</a>
  * @version $Revision$
  */
 public class GenericBeanFactory extends AbstractBeanFactory implements KernelControllerContextAware
@@ -67,21 +73,134 @@ public class GenericBeanFactory extends AbstractBeanFactory implements KernelCon
     */
    public Object createBean() throws Throwable
    {
-      ClassLoader cl = null;
-      if (classLoader == null && context != null)
-      {
-         try
-         {
-            cl = context.getClassLoader();
-         }
-         catch (Throwable t)
-         {
-            log.trace("Unable to retrieve classloader from " + context);
-         }
-      }
+      final ClassLoader cl = getControllerContextClassLoader();
       
-      if (cl == null)
-         cl = Configurator.getClassLoader(classLoader);
+      AccessControlContext acc = getAccessControlContext();
+
+      if (acc == null || System.getSecurityManager() == null)
+         return createBean(cl);
+
+      try
+      {
+         return AccessController.doPrivileged(new PrivilegedExceptionAction<Object>() 
+         {
+            public Object run() throws Exception
+            {
+               try
+               {
+                  return createBean(cl);
+               }
+               catch (Error e)
+               {
+                  throw e;
+               }
+               catch (Exception e)
+               {
+                  throw e;
+               }
+               catch (Throwable t)
+               {
+                  throw new RuntimeException("Error creating bean", t);
+               }
+            }
+         }, acc);
+      }
+      catch (PrivilegedActionException e)
+      {
+         throw e.getCause();
+      }
+   }
+   
+   public void setKernelControllerContext(KernelControllerContext context) throws Exception
+   {
+      this.context = context;
+   }
+
+   public void unsetKernelControllerContext(KernelControllerContext context) throws Exception
+   {
+      this.context = null;
+   }
+
+   /**
+    * Get the classloader from the controller context
+    * 
+    * @return the controller context
+    */
+   private ClassLoader getControllerContextClassLoader() throws Throwable
+   {
+      if (context != null)
+      {
+         if (System.getSecurityManager() == null)
+         {
+            try
+            {
+               return context.getClassLoader();
+            }
+            catch (Throwable t)
+            {
+               log.trace("Unable to retrieve classloader from " + context);
+               return null;
+            }
+         }
+
+         return AccessController.doPrivileged(new PrivilegedAction<ClassLoader>() 
+         {
+            public ClassLoader run()
+            {
+               try
+               {
+                  return context.getClassLoader();
+               }
+               catch (Throwable t)
+               {
+                  log.trace("Unable to retrieve classloader from " + context);
+                  return null;
+               }
+            }
+         });
+      }
+      return null;
+   }
+
+   /**
+    * Get the access control context from the controller context
+    * 
+    * @return the access control
+    */
+   private AccessControlContext getAccessControlContext() throws Throwable
+   {
+      if (context != null)
+      {
+         if (context instanceof AbstractKernelControllerContext == false)
+            return null;
+         
+         final AbstractKernelControllerContext akcc = (AbstractKernelControllerContext) context;
+         if (System.getSecurityManager() == null)
+            return akcc.getAccessControlContext();
+
+         return AccessController.doPrivileged(new PrivilegedAction<AccessControlContext>() 
+         {
+            public AccessControlContext run()
+            {
+               return akcc.getAccessControlContext();
+            }
+         });
+      }
+      return null;
+   }
+   
+   /**
+    * Create a new bean
+    *
+    * @param cl the classloader to use
+    * @return the bean
+    * @throws Throwable for any error
+    */
+   private Object createBean(ClassLoader cl) throws Throwable
+   {
+      ClassLoader cl2 = cl;
+      if (cl2 == null)
+         cl2 = Configurator.getClassLoader(classLoader);
       BeanInfo info = null;
       if (bean != null)
          info = configurator.getBeanInfo(bean, cl, accessMode);
@@ -104,15 +223,5 @@ public class GenericBeanFactory extends AbstractBeanFactory implements KernelCon
       invokeLifecycle("create", create, info, cl, result);
       invokeLifecycle("start", start, info, cl, result);
       return result;
-   }
-   
-   public void setKernelControllerContext(KernelControllerContext context) throws Exception
-   {
-      this.context = context;
-   }
-
-   public void unsetKernelControllerContext(KernelControllerContext context) throws Exception
-   {
-      this.context = null;
    }
 }

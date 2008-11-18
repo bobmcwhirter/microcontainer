@@ -23,6 +23,7 @@ package org.jboss.kernel.plugins.dependency;
 
 import java.security.AccessControlContext;
 import java.security.AccessController;
+import java.security.SecurityPermission;
 import java.util.HashSet;
 import java.util.Set;
 
@@ -61,6 +62,9 @@ public class AbstractKernelControllerContext extends AbstractControllerContext i
 
    /** The get classloader permission */
    private static final RuntimePermission GET_CLASSLOADER_PERMISSION = new RuntimePermission("getClassLoader");
+
+   /** The access control context permission */
+   private static final SecurityPermission GET_ACCESS_CONTROL_CONTEXT_PERMISSION = new SecurityPermission("getAccessControlContext");
    
    /** The BeanInfo */
    private BeanInfo info;
@@ -234,8 +238,11 @@ public class AbstractKernelControllerContext extends AbstractControllerContext i
     *
     * @return any access control context
     */
-   protected AccessControlContext getAccessControlContext()
+   public AccessControlContext getAccessControlContext()
    {
+      SecurityManager sm = System.getSecurityManager();
+      if (sm != null)
+         sm.checkPermission(GET_ACCESS_CONTROL_CONTEXT_PERMISSION);
       return accessContext;
    }
 
