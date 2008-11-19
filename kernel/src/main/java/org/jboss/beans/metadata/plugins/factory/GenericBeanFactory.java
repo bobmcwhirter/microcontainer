@@ -125,6 +125,7 @@ public class GenericBeanFactory extends AbstractBeanFactory implements KernelCon
     * Get the classloader from the controller context
     * 
     * @return the controller context
+    * @throws Throwable for any error
     */
    private ClassLoader getControllerContextClassLoader() throws Throwable
    {
@@ -166,11 +167,13 @@ public class GenericBeanFactory extends AbstractBeanFactory implements KernelCon
     * Get the access control context from the controller context
     * 
     * @return the access control
+    * @throws Throwable for any error
     */
    private AccessControlContext getAccessControlContext() throws Throwable
    {
       if (context != null)
       {
+         // TODO: JBMICROCONT-386, introduce interface
          if (context instanceof AbstractKernelControllerContext == false)
             return null;
          
@@ -198,12 +201,12 @@ public class GenericBeanFactory extends AbstractBeanFactory implements KernelCon
     */
    private Object createBean(ClassLoader cl) throws Throwable
    {
-      ClassLoader cl2 = cl;
-      if (cl2 == null)
-         cl2 = Configurator.getClassLoader(classLoader);
+      ClassLoader loader = cl;
+      if (loader == null)
+         loader = Configurator.getClassLoader(classLoader);
       BeanInfo info = null;
       if (bean != null)
-         info = configurator.getBeanInfo(bean, cl, accessMode);
+         info = configurator.getBeanInfo(bean, loader, accessMode);
 
       Joinpoint joinpoint = configurator.getConstructorJoinPoint(info, constructor, null);
       Object result = joinpoint.dispatch();
@@ -217,11 +220,11 @@ public class GenericBeanFactory extends AbstractBeanFactory implements KernelCon
             String property = entry.getKey();
             ValueMetaData vmd = entry.getValue();
             PropertyInfo pi = info.getProperty(property);
-            pi.set(result, vmd.getValue(pi.getType(), cl));
+            pi.set(result, vmd.getValue(pi.getType(), loader));
          }
       }
-      invokeLifecycle("create", create, info, cl, result);
-      invokeLifecycle("start", start, info, cl, result);
+      invokeLifecycle("create", create, info, loader, result);
+      invokeLifecycle("start", start, info, loader, result);
       return result;
    }
 }
