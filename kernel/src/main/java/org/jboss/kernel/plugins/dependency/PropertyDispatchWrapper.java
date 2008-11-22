@@ -30,6 +30,7 @@ import org.jboss.beans.metadata.spi.PropertyMetaData;
 import org.jboss.beans.metadata.spi.ValueMetaData;
 import org.jboss.kernel.spi.dependency.KernelControllerContext;
 import org.jboss.logging.Logger;
+import org.jboss.reflect.spi.TypeInfo;
 
 /**
  * PropertyDispatchWrapper.
@@ -68,23 +69,27 @@ class PropertyDispatchWrapper extends ExecutionWrapper
    public Object execute() throws Throwable
    {
       String name = property.getName();
+      PropertyInfo propertyInfo = BeanInfoUtil.getPropertyInfo(beanInfo, target, name);
+      TypeInfo typeInfo = propertyInfo.getType();
       if (nullify)
       {
-         try
+         if (typeInfo.isPrimitive() == false)
          {
-            beanInfo.setProperty(target, name, null);
-         }
-         catch (Throwable t)
-         {
-            if (log.isTraceEnabled())
-               log.trace("Ignored for " + target + "." + name, t);
+            try
+            {
+               beanInfo.setProperty(target, name, null);
+            }
+            catch (Throwable t)
+            {
+               if (log.isTraceEnabled())
+                  log.trace("Ignored for " + target + "." + name, t);
+            }
          }
       }
       else
       {
-         PropertyInfo propertyInfo = BeanInfoUtil.getPropertyInfo(beanInfo, target, name);
          ValueMetaData valueMetaData = property.getValue();
-         Object value = valueMetaData.getValue(propertyInfo.getType(), cl);
+         Object value = valueMetaData.getValue(typeInfo, cl);
          validatePropertyValue(context, target, propertyInfo, value);
          beanInfo.setProperty(target, name, value);
       }
