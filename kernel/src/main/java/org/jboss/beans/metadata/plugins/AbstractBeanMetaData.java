@@ -636,18 +636,25 @@ public class AbstractBeanMetaData extends AbstractFeatureMetaData
 
    public void initialVisit(MetaDataVisitor visitor)
    {
-      if (getBean() == null && isAbstract() == false && getParent() == null)
+      ConstructorMetaData constructor = getConstructor();
+      if (getBean() == null)
       {
-         ConstructorMetaData constructor = getConstructor();
-         if (constructor == null)
-            throw new IllegalArgumentException("Bean should have a class attribute or a constructor element.");
-         if (constructor.getFactoryMethod() == null)
+         if (isAbstract() == false && getParent() == null)
          {
-            if (constructor.getValue() == null)
-               throw new IllegalArgumentException("Bean should have a class attribute or the constructor element should have either a factoryMethod attribute or embedded value.");
+            if (constructor == null)
+               throw new IllegalArgumentException("Bean should have a class attribute or a constructor element.");
+            if (constructor.getFactoryMethod() == null)
+            {
+               if (constructor.getValue() == null)
+                  throw new IllegalArgumentException("Bean should have a class attribute or the constructor element should have either a factoryMethod attribute or embedded value.");
+            }
+            else if (constructor.getFactory() == null && constructor.getFactoryClass() == null)
+               throw new IllegalArgumentException("Bean should have a class attribute or the constructor element should have one of a factoryClass attribute or a factory element, or embedded value.");
          }
-         else if (constructor.getFactory() == null && constructor.getFactoryClass() == null)
-            throw new IllegalArgumentException("Bean should have a class attribute or the constructor element should have one of a factoryClass attribute or a factory element, or embedded value.");
+      }
+      else
+      {
+         checkConstructorFactoryClass(constructor);
       }
 
       KernelControllerContext ctx = visitor.getControllerContext();
@@ -671,6 +678,30 @@ public class AbstractBeanMetaData extends AbstractFeatureMetaData
       if (destroy != null && destroy.getMethodName() == null)
          destroy.setMethodName("destroy");
       super.initialVisit(visitor);
+   }
+
+   /**
+    * Check constructor factory class.
+    *
+    * @param constructor the constructor meta data
+    */
+   protected void checkConstructorFactoryClass(ConstructorMetaData constructor)
+   {
+      if (constructor == null)
+         return;
+      if (constructor.getFactoryMethod() == null)
+         return;
+      if (constructor.getFactoryClass() != null)
+         return;
+      if (constructor.getValue() != null)
+         return;
+      if (constructor.getFactory() != null)
+         return;
+      if (constructor instanceof AbstractConstructorMetaData == false)
+         return;
+
+      AbstractConstructorMetaData acmd = AbstractConstructorMetaData.class.cast(constructor);
+      acmd.setFactoryClass(getBean());
    }
 
    protected void addChildren(Set<MetaDataVisitorNode> children)

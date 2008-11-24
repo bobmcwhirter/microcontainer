@@ -72,6 +72,7 @@ public class DeploymentTestSuite extends TestSuite
       suite.addTest(AnnotationUsageTestCase.suite());
       suite.addTest(PropertyUsageTestCase.suite());
       suite.addTest(AliasInjectTestCase.suite());
+      suite.addTest(GetInstanceTestCase.suite());
       // bean container tests
       suite.addTest(BeanContainerUsageTestCase.suite());
       suite.addTest(BeanContainerUsageMDTestCase.suite());
