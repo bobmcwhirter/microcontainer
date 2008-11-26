@@ -91,7 +91,7 @@ class PropertyDispatchWrapper extends ExecutionWrapper
                   if (propertyTypeInfo != null)
                      beanInfo.setProperty(target, name, null);
                   else // e.g. NestedPropertyInfo
-                     nullifyByMatchingType(typeInfo);
+                     nullifyByMatchingType(propertyInfo.getUpperName(), typeInfo);
                }
                catch (Throwable t)
                {
@@ -135,12 +135,13 @@ class PropertyDispatchWrapper extends ExecutionWrapper
    /**
     * Nullify by matching type on .
     *
+    * @param name the property name
     * @param typeInfo the type info
     * @throws Throwable for any error
     */
-   protected void nullifyByMatchingType(TypeInfo typeInfo) throws Throwable
+   protected void nullifyByMatchingType(String name, TypeInfo typeInfo) throws Throwable
    {
-      String name = property.getName();
+      // TODO - remove this Character.toUpperCase once Reflect is updated
       String upperName = "set" + Character.toUpperCase(name.charAt(0));
       if (name.length() > 1)
          upperName += name.substring(1);
