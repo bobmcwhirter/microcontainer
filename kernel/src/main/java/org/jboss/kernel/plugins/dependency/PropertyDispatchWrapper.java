@@ -22,15 +22,20 @@
 package org.jboss.kernel.plugins.dependency;
 
 import java.security.PrivilegedExceptionAction;
+import java.util.Set;
 
 import org.jboss.beans.info.plugins.BeanInfoUtil;
 import org.jboss.beans.info.spi.BeanInfo;
 import org.jboss.beans.info.spi.PropertyInfo;
 import org.jboss.beans.metadata.spi.PropertyMetaData;
 import org.jboss.beans.metadata.spi.ValueMetaData;
+import org.jboss.kernel.Kernel;
+import org.jboss.kernel.spi.config.KernelConfigurator;
 import org.jboss.kernel.spi.dependency.KernelControllerContext;
 import org.jboss.logging.Logger;
+import org.jboss.reflect.spi.MethodInfo;
 import org.jboss.reflect.spi.TypeInfo;
+import org.jboss.reflect.spi.PrimitiveInfo;
 
 /**
  * PropertyDispatchWrapper.
@@ -70,21 +75,34 @@ class PropertyDispatchWrapper extends ExecutionWrapper
    {
       String name = property.getName();
       PropertyInfo propertyInfo = BeanInfoUtil.getPropertyInfo(beanInfo, target, name);
-      TypeInfo typeInfo = propertyInfo.getType();
+      TypeInfo propertyTypeInfo = propertyInfo.getType();
+      TypeInfo typeInfo = propertyTypeInfo;
+      if (typeInfo == null)
+         typeInfo = getTypeInfo();
+
       if (nullify)
       {
-         // there might be nested property info
-         if (typeInfo != null && typeInfo.isPrimitive() == false)
+         if (typeInfo != null)
          {
-            try
+            if (typeInfo.isPrimitive() == false)
             {
-               beanInfo.setProperty(target, name, null);
+               try
+               {
+                  if (propertyTypeInfo != null)
+                     beanInfo.setProperty(target, name, null);
+                  else // e.g. NestedPropertyInfo
+                     nullifyByMatchingType(typeInfo);
+               }
+               catch (Throwable t)
+               {
+                  if (log.isTraceEnabled())
+                     log.trace("Ignored for " + target + "." + name, t);
+               }
             }
-            catch (Throwable t)
-            {
-               if (log.isTraceEnabled())
-                  log.trace("Ignored for " + target + "." + name, t);
-            }
+         }
+         else
+         {
+            log.warn("Cannot properly nullify property: " + property + ", beanInfo: " + beanInfo);
          }
       }
       else
@@ -95,6 +113,53 @@ class PropertyDispatchWrapper extends ExecutionWrapper
          beanInfo.setProperty(target, name, value);
       }
       return null;
+   }
+
+   /**
+    * Try to get type info from property's class.
+    *
+    * @return type info
+    * @throws Throwable for any error
+    */
+   protected TypeInfo getTypeInfo() throws Throwable
+   {
+      String className = property.getType();
+      if (className == null)
+         return null;
+
+      Kernel kernel = context.getKernel();
+      KernelConfigurator configurator = kernel.getConfigurator();
+      return configurator.getTypeInfo(className, cl);
+   }
+
+   /**
+    * Nullify by matching type on .
+    *
+    * @param typeInfo the type info
+    * @throws Throwable for any error
+    */
+   protected void nullifyByMatchingType(TypeInfo typeInfo) throws Throwable
+   {
+      String name = property.getName();
+      String upperName = "set" + Character.toUpperCase(name.charAt(0));
+      if (name.length() > 1)
+         upperName += name.substring(1);
+
+      Set<MethodInfo> methods = beanInfo.getMethods();
+      for (MethodInfo minfo : methods)
+      {
+         String miName = minfo.getName();
+         if (upperName.equals(miName))
+         {
+            TypeInfo returnType = minfo.getReturnType();
+            TypeInfo[] parameters = minfo.getParameterTypes();
+            if (parameters.length == 1 && PrimitiveInfo.VOID.equals(returnType) && typeInfo.equals(parameters[0]))
+            {
+               minfo.invoke(target, new Object[]{null});
+               return;
+            }
+         }
+      }
    }
 
    /**

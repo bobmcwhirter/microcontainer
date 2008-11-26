@@ -155,9 +155,11 @@ public class AbstractPropertyMetaData extends AbstractFeatureMetaData
    {
       if (value instanceof AbstractTypeMetaData)
       {
-         return ((AbstractTypeMetaData)value).getType();
+         String valueType = ((AbstractTypeMetaData)value).getType();
+         if (valueType != null)
+            return valueType;
       }
-      return null;
+      return type;
    }
 
    public boolean isPreInstantiate()

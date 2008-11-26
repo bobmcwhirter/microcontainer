@@ -78,10 +78,8 @@ public class ConfigureAction extends AbstractConfigureAction
       Set<PropertyMetaData> propertys = metaData.getProperties();
       if (propertys != null && propertys.isEmpty() == false)
       {
-         ClassLoader cl = null;
-         if (nullify == false)
-            cl = Configurator.getClassLoader(metaData);
-
+         ClassLoader cl = Configurator.getClassLoader(metaData);
+         
          for(PropertyMetaData property : propertys)
          {
             dispatchSetProperty(context, property, nullify, info, target, cl);

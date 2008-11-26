@@ -1,0 +1,16 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<deployment xmlns="urn:jboss:bean-deployer:2.0">
+
+  <bean name="Bean1" class="org.jboss.test.kernel.deployment.support.NullifyTestBean1">
+    <property name="something" class="java.util.Map">
+      <map keyClass="java.lang.String" valueClass="java.lang.String">
+        <entry>
+          <key>1</key>
+          <value>2</value>
+        </entry>
+      </map>
+    </property>
+  </bean>
+
+</deployment>
