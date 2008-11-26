@@ -1,0 +1,22 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<deployment xmlns="urn:jboss:bean-deployer:2.0">
+
+   <bean name="AspectManager" class="org.jboss.aop.AspectManager">
+      <constructor factoryClass="org.jboss.aop.AspectManager" factoryMethod="instance"/>
+   </bean>
+
+   <interceptor xmlns="urn:jboss:aop-beans:1.0" class="org.jboss.test.microcontainer.beans.TestInterceptor"/>
+   <!-- This works -->
+   <bind xmlns="urn:jboss:aop-beans:1.0" pointcut="execution(* $instanceof{org.jboss.test.microcontainer.beans.iPOJO}->*(..))">
+		<interceptor-ref name="org.jboss.test.microcontainer.beans.TestInterceptor"/>
+   </bind>
+   <!-- This does not
+   <bind xmlns="urn:jboss:aop-beans:1.0" pointcut="execution(* $instanceof{org.jboss.test.microcontainer.beans.iPOJO}->$implements(org.jboss.test.microcontainer.beans.iPOJO))">
+      <interceptor-ref name="org.jboss.test.microcontainer.beans.TestInterceptor"/>
+   </bind>
+   -->
+
+   <bean name="Bean" class="org.jboss.test.microcontainer.beans.POJO"/>
+   
+</deployment>

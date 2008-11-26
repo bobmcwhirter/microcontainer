@@ -19,28 +19,25 @@
 * Software Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA
 * 02110-1301 USA, or see the FSF site: http://www.fsf.org.
 */ 
-package org.jboss.test.microcontainer.beans;
+package org.jboss.test.microcontainer.beans.test;
+
+import junit.framework.Test;
 
 /**
  * 
  * @author <a href="kabir.khan@jboss.com">Kabir Khan</a>
  * @version $Revision: 1.1 $
  */
-public class POJO
-   implements iPOJO
+public class InterceptorSimpleIfaceDeploymentTestCase extends InterceptorSimpleTest
 {
-   public int method(int i)
+
+   public static Test suite()
    {
-      return i * 2;
+      return suite(InterceptorSimpleIfaceDeploymentTestCase.class);
    }
    
-   public void method()
+   public InterceptorSimpleIfaceDeploymentTestCase(String name)
    {
-      
-   }
-   
-   public void defaultMethod()
-   {
-      
+      super(name);
    }
 }
