@@ -73,7 +73,8 @@ class PropertyDispatchWrapper extends ExecutionWrapper
       TypeInfo typeInfo = propertyInfo.getType();
       if (nullify)
       {
-         if (typeInfo.isPrimitive() == false)
+         // there might be nested property info
+         if (typeInfo != null && typeInfo.isPrimitive() == false)
          {
             try
             {
