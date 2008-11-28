@@ -21,6 +21,9 @@
 */ 
 package org.jboss.aop.microcontainer.beans;
 
+import java.security.AccessController;
+import java.security.PrivilegedAction;
+
 /**
  * 
  * @author <a href="kabir.khan@jboss.com">Kabir Khan</a>
@@ -36,7 +39,13 @@ class SecurityActions
 
          public ClassLoader getContextClassLoader()
          {
-            return Thread.currentThread().getContextClassLoader();
+            return AccessController.doPrivileged(new PrivilegedAction<ClassLoader>()
+            {
+               public ClassLoader run()
+               {
+                  return Thread.currentThread().getContextClassLoader();
+               }
+            });
          }
       };
 
