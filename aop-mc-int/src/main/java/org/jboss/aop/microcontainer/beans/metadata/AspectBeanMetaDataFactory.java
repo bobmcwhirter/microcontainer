@@ -32,6 +32,7 @@ import javax.xml.bind.annotation.XmlNsForm;
 import javax.xml.bind.annotation.XmlRootElement;
 
 import org.jboss.aop.microcontainer.beans.Aspect;
+import org.jboss.aop.microcontainer.beans.ClassLoaderAwareGenericBeanFactory;
 import org.jboss.beans.metadata.plugins.AbstractDependencyValueMetaData;
 import org.jboss.beans.metadata.spi.BeanMetaData;
 import org.jboss.beans.metadata.spi.BeanMetaDataFactory;
@@ -138,6 +139,7 @@ public class AspectBeanMetaDataFactory extends AspectManagerAwareBeanMetaDataFac
       }
       BeanMetaData factory = beans.get(0);
       BeanMetaDataBuilder factoryBuilder = BeanMetaDataBuilder.createBuilder(factory);
+      factoryBuilder.setBean(ClassLoaderAwareGenericBeanFactory.class.getName());
       result.add(factory);
       
       //Add the Aspect

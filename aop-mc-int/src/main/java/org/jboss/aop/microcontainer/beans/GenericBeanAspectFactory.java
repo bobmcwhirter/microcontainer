@@ -56,7 +56,7 @@ public class GenericBeanAspectFactory extends GenericAspectFactory implements Ke
    
    protected KernelControllerContext context;
    
-   public GenericBeanAspectFactory(String name, GenericBeanFactory factory, Element element)
+   public GenericBeanAspectFactory(String name, BeanFactory factory, Element element)
    {
       super(null, element);
       this.name = name;
@@ -64,11 +64,11 @@ public class GenericBeanAspectFactory extends GenericAspectFactory implements Ke
       setBeanFactory(factory);
    }
 
-   public void setBeanFactory(GenericBeanFactory factory)
+   public void setBeanFactory(BeanFactory factory)
    {
-      if (factory != null)
+      if (factory != null && factory instanceof GenericBeanFactory)
       {
-         classname = factory.getBean();
+         classname = ((GenericBeanFactory)factory).getBean();
       }
       this.factory = factory;
    }
@@ -130,34 +130,14 @@ public class GenericBeanAspectFactory extends GenericAspectFactory implements Ke
    {
       try
       {
-         log.debug("Creating advice " + name);
-         
-         
-         PushedClassLoaderMetaData pcmd = null;
-         if (((GenericBeanFactory)factory).getClassLoader() == null)
+         final ClassLoader loader = getCreatingClassLoader(advisor);
+         log.debug("Creating advice " + name + " with loader " + loader);
+         if (factory instanceof ClassLoaderAwareGenericBeanFactory)
          {
-            pcmd = new PushedClassLoaderMetaData();
-            ((GenericBeanFactory)factory).setClassLoader(pcmd);
+            ((ClassLoaderAwareGenericBeanFactory)factory).pushLoader(loader);
          }
          
-         Object object = null;
-         try
-         {
-            //Try without looking at the context first which is what shold be used when running scoped in AS
-            object = factory.createBean();
-         }
-         catch(Throwable t)
-         {
-            if (pcmd != null)
-            {
-               pcmd.setLookAtContext(true);
-            }
-            else
-            {
-               throw new RuntimeException(t);
-            }
-            object = factory.createBean();
-         }
+         Object object = factory.createBean();
          
          if (object instanceof XmlLoadable)
          {
@@ -170,59 +150,21 @@ public class GenericBeanAspectFactory extends GenericAspectFactory implements Ke
       {
          throw new RuntimeException(throwable);
       }
+      finally
+      {
+         if (factory instanceof ClassLoaderAwareGenericBeanFactory)
+         {
+            ((ClassLoaderAwareGenericBeanFactory)factory).popLoader();
+         }
+      }
    }
    
-   /**
-    * Gets any classloaders for the thread
-    */
-   private class PushedClassLoaderMetaData extends AbstractClassLoaderMetaData
+   private ClassLoader getCreatingClassLoader(Advisor advisor)
    {
-      /** The serialVersionUID */
-      private static final long serialVersionUID = 1L;
-      
-      boolean lookAtContext;
-      
-      void setLookAtContext(boolean look)
+      if (advisor == null)
       {
-         lookAtContext = look;
+         return getLoader();
       }
-   
-      @Override
-      public ValueMetaData getClassLoader()
-      {
-         ClassLoader loader = GenericBeanAspectFactory.this.getLoader(); 
-         //GenericBeanAspectFactory.this.peekScopedClassLoader();
-         if (loader == null)
-         {
-            if (lookAtContext && context != null)
-            {
-               try
-               {
-                  loader = context.getClassLoader();
-               }
-               catch (Throwable t)
-               {
-                  log.trace("Unable to retrieve classloader from " + context);
-               }
-               
-               if (loader == null)
-               {
-                  try
-                  {
-                     loader = Configurator.getClassLoader(((GenericBeanFactory)factory).getClassLoader());
-                  }
-                  catch (Throwable e)
-                  {
-                     log.trace("Unable to retrieve classloader from " + factory);
-                  }
-               }
-            }
-            return loader != null ?  new AbstractValueMetaData(loader) : null;
-         }
-         else
-         {
-            return new AbstractValueMetaData(loader);
-         }
-      }
+      return SecurityActions.getClassLoader(advisor.getClass());
    }
 }
