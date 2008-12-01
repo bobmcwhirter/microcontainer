@@ -199,7 +199,7 @@ public class GenericBeanFactory extends AbstractBeanFactory implements KernelCon
     * @return the bean
     * @throws Throwable for any error
     */
-   private Object createBean(ClassLoader cl) throws Throwable
+   protected Object createBean(ClassLoader cl) throws Throwable
    {
       ClassLoader loader = cl;
       if (loader == null)
