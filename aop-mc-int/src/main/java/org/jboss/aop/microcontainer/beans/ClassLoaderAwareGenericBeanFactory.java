@@ -25,24 +25,33 @@ import org.jboss.beans.metadata.plugins.factory.GenericBeanFactory;
 import org.jboss.kernel.spi.config.KernelConfigurator;
 
 /**
- * 
+ * CL aware GBF.
+ *
  * @author <a href="kabir.khan@jboss.com">Kabir Khan</a>
  * @version $Revision: 1.1 $
  */
 public class ClassLoaderAwareGenericBeanFactory extends GenericBeanFactory
 {
-   ThreadLocal<ClassLoader> pushedLoader = new ThreadLocal<ClassLoader>();
+   private ThreadLocal<ClassLoader> pushedLoader = new ThreadLocal<ClassLoader>();
    
    public ClassLoaderAwareGenericBeanFactory(KernelConfigurator configurator)
    {
       super(configurator);
    }
-   
+
+   /**
+    * Push classloader into thread local.
+    *
+    * @param loader the loader
+    */
    public void pushLoader(ClassLoader loader)
    {
       pushedLoader.set(loader);
    }
-   
+
+   /**
+    * Pop loader from thread local.
+    */
    public void popLoader()
    {
       pushedLoader.set(null);
@@ -61,6 +70,4 @@ public class ClassLoaderAwareGenericBeanFactory extends GenericBeanFactory
          return super.createBean(loader);
       }
    }
- 
-   
 }

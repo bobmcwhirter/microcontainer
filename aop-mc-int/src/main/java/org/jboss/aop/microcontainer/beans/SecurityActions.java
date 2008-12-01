@@ -25,7 +25,8 @@ import java.security.AccessController;
 import java.security.PrivilegedAction;
 
 /**
- * 
+ * CL security actions.
+ *
  * @author <a href="kabir.khan@jboss.com">Kabir Khan</a>
  * @version $Revision: 1.1 $
  */
