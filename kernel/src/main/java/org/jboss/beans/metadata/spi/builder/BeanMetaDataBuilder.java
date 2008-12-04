@@ -30,6 +30,7 @@ import java.util.Set;
 
 import org.jboss.beans.info.spi.BeanAccessMode;
 import org.jboss.beans.metadata.api.model.AutowireType;
+import org.jboss.beans.metadata.api.model.InjectOption;
 import org.jboss.beans.metadata.plugins.AbstractBeanMetaData;
 import org.jboss.beans.metadata.plugins.builder.BeanMetaDataBuilderFactory;
 import org.jboss.beans.metadata.spi.BeanMetaData;
@@ -1611,7 +1612,40 @@ public abstract class BeanMetaDataBuilder
     * @return the injection
     */
    public abstract ValueMetaData createInject(Object bean, String property, ControllerState whenRequired, ControllerState dependentState);
-   
+
+   /**
+    * Create contextual injection.
+    *
+    * @return the contextual injection
+    */
+   public ValueMetaData createContextualInject()
+   {
+      return createContextualInject(null, null);
+   }
+
+   /**
+    * Create contextual injection.
+    *
+    * @param whenRequired when the injection is required
+    * @param dependentState the state of the injected bean
+    * @return the contextual injection
+    */
+   public ValueMetaData createContextualInject(ControllerState whenRequired, ControllerState dependentState)
+   {
+      return createContextualInject(whenRequired, dependentState, null, null);
+   }
+
+   /**
+    * Create contextual injection.
+    *
+    * @param whenRequired when the injection is required
+    * @param dependentState the state of the injected bean
+    * @param autowire the autowire type
+    * @param option the inject option
+    * @return the contextual injection
+    */
+   public abstract ValueMetaData createContextualInject(ControllerState whenRequired, ControllerState dependentState, AutowireType autowire, InjectOption option);
+
    /**
     * Create a new collection
     * 

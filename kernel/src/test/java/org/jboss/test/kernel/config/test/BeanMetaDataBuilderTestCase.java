@@ -43,6 +43,7 @@ import org.jboss.beans.metadata.spi.CallbackMetaData;
 import org.jboss.beans.metadata.spi.RelatedClassMetaData;
 import org.jboss.beans.metadata.spi.ValueMetaData;
 import org.jboss.beans.metadata.spi.LifecycleMetaData;
+import org.jboss.beans.metadata.spi.PropertyMetaData;
 import org.jboss.beans.metadata.spi.builder.BeanMetaDataBuilder;
 import org.jboss.dependency.spi.Cardinality;
 import org.jboss.dependency.spi.ControllerContext;
@@ -910,5 +911,19 @@ public class BeanMetaDataBuilderTestCase extends AbstractKernelConfigTest
    {
       assertNotNull(lmd);
       assertTrue(lmd.isIgnored());
+   }
+
+   public void testContextualInjection() throws Throwable
+   {
+      BeanMetaDataBuilder builder = BeanMetaDataBuilder.createBuilder("test");
+      builder.addPropertyMetaData("ci", builder.createContextualInject());
+      BeanMetaData bmd = builder.getBeanMetaData();
+      Set<PropertyMetaData> properties = bmd.getProperties();
+      assertNotNull(properties);
+      assertEquals(1, properties.size());
+      PropertyMetaData pmd = properties.iterator().next();
+      ValueMetaData vmd = pmd.getValue();
+      assertNotNull(vmd);
+      assertNull(vmd.getUnderlyingValue());
    }
 }

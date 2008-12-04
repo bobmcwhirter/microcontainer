@@ -32,6 +32,7 @@ import java.util.Set;
 
 import org.jboss.beans.info.spi.BeanAccessMode;
 import org.jboss.beans.metadata.api.model.AutowireType;
+import org.jboss.beans.metadata.api.model.InjectOption;
 import org.jboss.beans.metadata.plugins.AbstractAnnotationMetaData;
 import org.jboss.beans.metadata.plugins.AbstractArrayMetaData;
 import org.jboss.beans.metadata.plugins.AbstractBeanMetaData;
@@ -53,6 +54,7 @@ import org.jboss.beans.metadata.plugins.AbstractValueMetaData;
 import org.jboss.beans.metadata.plugins.DirectAnnotationMetaData;
 import org.jboss.beans.metadata.plugins.StringValueMetaData;
 import org.jboss.beans.metadata.plugins.ThisValueMetaData;
+import org.jboss.beans.metadata.plugins.AbstractInjectionValueMetaData;
 import org.jboss.beans.metadata.spi.AnnotationMetaData;
 import org.jboss.beans.metadata.spi.BeanMetaData;
 import org.jboss.beans.metadata.spi.BeanMetaDataFactory;
@@ -999,6 +1001,30 @@ class BeanMetaDataBuilderImpl extends BeanMetaDataBuilder
          result.setWhenRequiredState(whenRequired);
       if (dependentState != null)
          result.setDependentState(dependentState);
+      return result;
+   }
+
+   /**
+    * Create abstract dependency metadata.
+    *
+    * @return abstract dependency value metadata
+    */
+   protected AbstractInjectionValueMetaData createAbstractInjectionValueMetaData()
+   {
+      return new AbstractInjectionValueMetaData();
+   }
+
+   public ValueMetaData createContextualInject(ControllerState whenRequired, ControllerState dependentState, AutowireType autowire, InjectOption option)
+   {
+      AbstractInjectionValueMetaData result = createAbstractInjectionValueMetaData();
+      if (whenRequired != null)
+         result.setWhenRequiredState(whenRequired);
+      if (dependentState != null)
+         result.setDependentState(dependentState);
+      if (autowire != null)
+         result.setInjectionType(autowire);
+      if (option != null)
+         result.setInjectionOption(option);
       return result;
    }
 
