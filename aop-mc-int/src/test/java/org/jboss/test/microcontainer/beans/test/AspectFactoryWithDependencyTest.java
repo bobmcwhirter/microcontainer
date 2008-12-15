@@ -30,7 +30,7 @@ import org.jboss.test.microcontainer.beans.POJO;
  * @author <a href="kabir.khan@jboss.com">Kabir Khan</a>
  * @version $Revision: 1.1 $
  */
-public class AspectFactoryWithDependencyTest extends AOPMicrocontainerTest
+public abstract class AspectFactoryWithDependencyTest extends AOPMicrocontainerTest
 {
 
    public AspectFactoryWithDependencyTest(String name)
@@ -40,13 +40,52 @@ public class AspectFactoryWithDependencyTest extends AOPMicrocontainerTest
 
    public void testIntercepted() throws Exception
    {
-      DependencyFactoryAspect.invoked = null;
-      POJO pojo = (POJO)getBean("Bean");
-      int ret = pojo.method(2);
-      assertEquals(4, ret);
-      POJO dep = (POJO)getBean("Dependency");
-      assertSame(dep, DependencyFactoryAspect.invoked);
+      try
+      {
+         deploy(getFile0());
+         
+         assertCannotFindBean("Bean");
+         assertCannotFindBean("Dependency");
+         
+         try
+         {
+            deploy(getFile1());
+            
+            POJO dependency = (POJO)getBean("Dependency");
+            DependencyFactoryAspect.invoked = null;
+            POJO pojo = (POJO)getBean("Bean");
+            int ret = pojo.method(2);
+            assertEquals(4, ret);
+            POJO dep = (POJO)getBean("Dependency");
+            assertSame(dep, DependencyFactoryAspect.invoked);
+         }
+         finally
+         {
+            undeploy(getFile1());
+         }
+         assertCannotFindBean("Bean");
+         assertCannotFindBean("Dependency");
+      }
+      finally
+      {
+         undeploy(getFile0());
+      }
    }
    
-
+   private void assertCannotFindBean(String name)
+   {
+      try
+      {
+         Object o = getBean(name);
+         fail("Should not have found '" + name + "'");
+      }
+      catch (Exception expected)
+      {
+      }
+   }
+   
+   
+   protected abstract String getFile0();
+   
+   protected abstract String getFile1();
 }

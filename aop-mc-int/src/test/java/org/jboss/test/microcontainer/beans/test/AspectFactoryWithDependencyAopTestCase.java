@@ -40,4 +40,16 @@ public class AspectFactoryWithDependencyAopTestCase extends AspectFactoryWithDep
       super(test);
    }
 
+   @Override
+   protected String getFile0()
+   {
+      return "AspectFactoryWithDependencyAopTestCaseNotAutomatic0.xml";
+   }
+
+   @Override
+   protected String getFile1()
+   {
+      return "AspectFactoryWithDependencyAopTestCaseNotAutomatic1.xml";
+   }
+
 }

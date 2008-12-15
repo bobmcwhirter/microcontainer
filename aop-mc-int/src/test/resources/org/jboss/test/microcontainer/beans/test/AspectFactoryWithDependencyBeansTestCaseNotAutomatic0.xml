@@ -6,8 +6,6 @@
       <constructor factoryClass="org.jboss.aop.AspectManager" factoryMethod="instance"/>
    </bean>
 
-   <bean name="Dependency" class="org.jboss.test.microcontainer.beans.POJO"/>
-
    <beanfactory name="Factory$org.jboss.test.microcontainer.beans.AspectFactoryWithDependency" class="org.jboss.test.microcontainer.beans.AspectFactoryWithDependency">
       <property name="pojo"><inject bean="Dependency"/></property>
       <install bean="org.jboss.test.microcontainer.beans.AspectFactoryWithDependency" method="install">
@@ -24,7 +22,7 @@
    </bean>
 
    <bean name="TestAspectBinding" class="org.jboss.aop.microcontainer.beans.AspectBinding">
-      <property name="pointcut">execution(* org.jboss.test.microcontainer.beans.POJO->*(..))</property>
+      <property name="pointcut">execution(* @org.jboss.test.microcontainer.beans.Annotation1->*(..))</property>
       <property name="manager"><inject bean="AspectManager"/></property>
      	<property name="advices">
          <list>
@@ -40,6 +38,8 @@
    </bean>
 
 
-   <bean name="Bean" class="org.jboss.test.microcontainer.beans.POJO"/>
+   <bean name="Bean" class="org.jboss.test.microcontainer.beans.POJO">
+      <annotation>@org.jboss.test.microcontainer.beans.Annotation1</annotation>
+   </bean>
 
 </deployment>

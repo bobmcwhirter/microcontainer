@@ -39,4 +39,16 @@ public class AspectFactoryWithDependencyBeansTestCase extends AspectFactoryWithD
    {
       super(test);
    }
+
+   @Override
+   protected String getFile0()
+   {
+      return "AspectFactoryWithDependencyBeansTestCaseNotAutomatic0.xml";
+   }
+
+   @Override
+   protected String getFile1()
+   {
+      return "AspectFactoryWithDependencyBeansTestCaseNotAutomatic1.xml";
+   }
 }
