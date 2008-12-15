@@ -1,0 +1,21 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<aop xmlns="urn:jboss:aop-beans:1.0">
+
+   <bean name="AspectManager" class="org.jboss.aop.AspectManager">
+      <constructor factoryClass="org.jboss.aop.AspectManager" factoryMethod="instance"/>
+   </bean>
+
+   <bean name="Dependency" class="org.jboss.test.microcontainer.beans.POJO"/>
+
+   <aspect factory="org.jboss.test.microcontainer.beans.AspectFactoryWithDependency">
+      <property name="pojo"><inject bean="Dependency"/></property>
+   </aspect>
+
+   <bind pointcut="execution(* org.jboss.test.microcontainer.beans.POJO->*(..))">
+      <advice aspect="org.jboss.test.microcontainer.beans.AspectFactoryWithDependency" name="advice"/>
+   </bind>
+   
+   <bean name="Bean" class="org.jboss.test.microcontainer.beans.POJO"/>
+
+</aop>

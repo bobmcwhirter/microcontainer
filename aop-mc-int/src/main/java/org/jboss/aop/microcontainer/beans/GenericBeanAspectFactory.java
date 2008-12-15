@@ -43,7 +43,7 @@ import org.w3c.dom.Element;
  * @author <a href="adrian@jboss.com">Adrian Brock</a>
  * @version $Revision$
  */
-public class GenericBeanAspectFactory extends GenericAspectFactory implements KernelControllerContextAware
+public class GenericBeanAspectFactory extends GenericAspectFactory implements KernelControllerContextAware, BeanFactoryAwareAspectFactory
 {
    private static final Logger log = Logger.getLogger(GenericBeanAspectFactory.class); 
 

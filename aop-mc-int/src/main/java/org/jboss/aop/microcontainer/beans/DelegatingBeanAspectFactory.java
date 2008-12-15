@@ -42,7 +42,7 @@ import org.w3c.dom.Element;
  * @author <a href="kabir.khan@jboss.com">Kabir Khan</a>
  * @version $Revision: 1.1 $
  */
-public class DelegatingBeanAspectFactory implements AspectFactory, KernelControllerContextAware
+public class DelegatingBeanAspectFactory implements AspectFactory, KernelControllerContextAware, BeanFactoryAwareAspectFactory
 {
    private static final Logger log = Logger.getLogger(GenericBeanAspectFactory.class); 
 
@@ -72,7 +72,7 @@ public class DelegatingBeanAspectFactory implements AspectFactory, KernelControl
       this.context = null;
    }
    
-   public void setBeanFactory(GenericBeanFactory factory)
+   public void setBeanFactory(BeanFactory factory)
    {
       this.factory = factory;
    }

@@ -258,7 +258,7 @@ public class Aspect implements Untransformable, KernelControllerContextAware
       if (adviceBean != null && advice != null)
       {
          definition.setDeployed(true);
-         GenericBeanAspectFactory factory = (GenericBeanAspectFactory)definition.getFactory();
+         BeanFactoryAwareAspectFactory factory = (BeanFactoryAwareAspectFactory)definition.getFactory();
          factory.setBeanFactory(advice);
       }
       
