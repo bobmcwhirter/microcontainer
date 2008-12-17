@@ -16,44 +16,63 @@
   </parent>
   <modelVersion>4.0.0</modelVersion>
   <groupId>org.jboss.microcontainer</groupId>
-  <artifactId>jboss-microcontainer-combined</artifactId>
+  <artifactId>jboss-microcontainer-dist</artifactId>
   <version>2.2.0-SNAPSHOT</version>
   <packaging>pom</packaging>
-  <name>JBoss Microcontainer Combined Assembly</name>
+  <name>JBoss Microcontainer Distribution Build</name>
   <description>
     The JBoss Microcontainer provides a lightweight container for managing POJOs, their deployment
     and configuration.
   </description>
 
-  <profiles>
-    <profile>
-      <id>assembly</id>
-      <build>
-        <plugins>
-          <plugin>
-            <groupId>org.apache.maven.plugins</groupId>
-            <artifactId>maven-assembly-plugin</artifactId>
-            <version>2.2-beta-2</version>
-            <executions>
-              <execution>
-                <id>make-assembly</id>
-                <phase>package</phase>
-                <goals>
-                  <goal>attached</goal>
-                </goals>
-                <configuration>
-                  <finalName>jboss-microcontainer-${project.version}</finalName>
-                  <descriptors>
-                    <descriptor>src/assembly/dist.xml</descriptor>
-                    <descriptor>src/assembly/src.xml</descriptor>
-                  </descriptors>
-                </configuration>
-              </execution>
-            </executions>
-          </plugin>
-        </plugins>
-      </build>
-    </profile>
-  </profiles>
+  <build>
+    <plugins>
+      <plugin>
+        <groupId>org.apache.maven.plugins</groupId>
+        <artifactId>maven-assembly-plugin</artifactId>
+        <version>2.2-beta-2</version>
+        <executions>
+          <execution>
+            <id>make-assembly</id>
+            <phase>package</phase>
+            <goals>
+              <goal>attached</goal>
+            </goals>
+            <configuration>
+              <finalName>jboss-microcontainer-${project.version}</finalName>
+              <descriptors>
+                <descriptor>src/assembly/dist.xml</descriptor>
+                <descriptor>src/assembly/src.xml</descriptor>
+              </descriptors>
+            </configuration>
+          </execution>
+        </executions>
+      </plugin>
+    </plugins>
+  </build>
+  
+  <dependencies>
+    <dependency>
+      <groupId>org.jboss.microcontainer</groupId>
+      <artifactId>jboss-aop-mc-int</artifactId>
+    </dependency>
+    <dependency>
+      <groupId>org.jboss.microcontainer</groupId>
+      <artifactId>jboss-dependency</artifactId>
+    </dependency>
+    <dependency>
+      <groupId>org.jboss.microcontainer</groupId>
+      <artifactId>jboss-kernel</artifactId>
+    </dependency>
+    <dependency>
+      <groupId>org.jboss.microcontainer</groupId>
+      <artifactId>jboss-guice-int</artifactId>
+    </dependency>
+    <dependency>
+      <groupId>org.jboss.microcontainer</groupId>
+      <artifactId>jboss-spring-int</artifactId>
+    </dependency>
+    
+  </dependencies>
 
 </project>

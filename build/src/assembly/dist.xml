@@ -3,21 +3,9 @@
     <!--<format>tar.gz</format>-->
     <format>zip</format>
   </formats>
-  <fileSets>
-    <fileSet>
-      <directory>../kernel/docs/release</directory>
-      <outputDirectory></outputDirectory>
-      <includes>
-        <include>*.txt</include>
-      </includes>
-    </fileSet>
-    <fileSet>
-      <directory>../kernel/examples</directory>
-      <outputDirectory>examples</outputDirectory>
-    </fileSet>
-    <fileSet>
-      <directory>../docs/gettingstarted/target/docbkx</directory>
-      <outputDirectory>docs/gettingstarted/en</outputDirectory>
-    </fileSet>
-  </fileSets>
+  <dependencySets>
+    <dependencySet>
+      <outputDirectory>/</outputDirectory>
+    </dependencySet>
+  </dependencySets>
 </assembly>
