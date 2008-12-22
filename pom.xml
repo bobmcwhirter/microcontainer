@@ -352,6 +352,10 @@
       <modules>
         <module>docs</module>
       </modules>
+      <properties>
+        <microcontainer.outputDirectory>target/classes</microcontainer.outputDirectory>
+        <microcontainer.testOutputDirectory>target/test-classes</microcontainer.testOutputDirectory>
+      </properties>
     </profile>
   </profiles>
 
