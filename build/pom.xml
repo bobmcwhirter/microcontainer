@@ -42,6 +42,7 @@
               <finalName>jboss-microcontainer-${project.version}</finalName>
               <descriptors>
                 <descriptor>src/assembly/dist.xml</descriptor>
+                <descriptor>src/assembly/dist-with-deps.xml</descriptor>
                 <descriptor>src/assembly/src.xml</descriptor>
               </descriptors>
             </configuration>
