@@ -28,12 +28,20 @@ import java.security.PrivilegedExceptionAction;
 
 /**
  * SecurityActions.
- * 
+ *
  * @author <a href="adrian@jboss.com">Adrian Brock</a>
+ * @author <a href="ales.justin@jboss.com">Ales Justin</a>
  * @version $Revision: 1.1 $
  */
 class SecurityActions
 {
+   /**
+    * Set context classloader.
+    *
+    * @param cl the classloader
+    * @return previous context classloader
+    * @throws Throwable for any error
+    */
    static ClassLoader setContextClassLoader(final ClassLoader cl) throws Throwable
    {
       if (System.getSecurityManager() == null)
@@ -49,28 +57,28 @@ class SecurityActions
          {
             return AccessController.doPrivileged(new PrivilegedExceptionAction<ClassLoader>()
             {
-                public ClassLoader run() throws Exception
-                {
-                   try
-                   {
-                      ClassLoader result = Thread.currentThread().getContextClassLoader();
-                      if (cl != null)
-                          Thread.currentThread().setContextClassLoader(cl);
-                      return result;
-                   }
-                   catch (Exception e)
-                   {
-                      throw e;
-                   }
-                   catch (Error e)
-                   {
-                      throw e;
-                   }
-                   catch (Throwable e)
-                   {
-                      throw new RuntimeException("Error setting context classloader", e);
-                   }
-                }
+               public ClassLoader run() throws Exception
+               {
+                  try
+                  {
+                     ClassLoader result = Thread.currentThread().getContextClassLoader();
+                     if (cl != null)
+                        Thread.currentThread().setContextClassLoader(cl);
+                     return result;
+                  }
+                  catch (Exception e)
+                  {
+                     throw e;
+                  }
+                  catch (Error e)
+                  {
+                     throw e;
+                  }
+                  catch (Throwable e)
+                  {
+                     throw new RuntimeException("Error setting context classloader", e);
+                  }
+               }
             });
          }
          catch (PrivilegedActionException e)
@@ -80,6 +88,11 @@ class SecurityActions
       }
    }
 
+   /**
+    * Reset context classloader.
+    *
+    * @param classLoader the classloader
+    */
    static void resetContextClassLoader(final ClassLoader classLoader)
    {
       if (System.getSecurityManager() == null)
@@ -90,11 +103,36 @@ class SecurityActions
       {
          AccessController.doPrivileged(new PrivilegedAction<Object>()
          {
-             public Object run()
-             {
-                Thread.currentThread().setContextClassLoader(classLoader);
-                return null;
-             }
+            public Object run()
+            {
+               Thread.currentThread().setContextClassLoader(classLoader);
+               return null;
+            }
+         });
+      }
+   }
+
+   /**
+    * Get classloader from class.
+    *
+    * @param clazz the class
+    * @return class's classloader
+    */
+   static ClassLoader getClassLoader(final Class<?> clazz)
+   {
+      SecurityManager sm = System.getSecurityManager();
+      if (sm == null)
+      {
+         return clazz.getClassLoader();
+      }
+      else
+      {
+         return AccessController.doPrivileged(new PrivilegedAction<ClassLoader>()
+         {
+            public ClassLoader run()
+            {
+               return clazz.getClassLoader();
+            }
          });
       }
    }

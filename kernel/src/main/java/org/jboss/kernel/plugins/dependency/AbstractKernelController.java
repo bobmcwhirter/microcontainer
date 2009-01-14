@@ -442,7 +442,11 @@ public class AbstractKernelController extends ScopedController implements Kernel
       {
          if (numberOfMatchingBeans > 1)
          {
-            log.warn("Multiple beans match class type: " + clazz);
+            log.warn("Multiple beans match class type [enable trace log for details]: " + clazz);
+            if (log.isTraceEnabled())
+            {
+               log.trace("Matching contexts: " + contexts);
+            }
          }
          return null;
       }
