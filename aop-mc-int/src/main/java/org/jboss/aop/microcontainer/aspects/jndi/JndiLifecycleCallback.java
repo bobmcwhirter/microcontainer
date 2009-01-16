@@ -34,7 +34,9 @@ import org.jboss.metadata.spi.MetaData;
 import org.jboss.util.naming.Util;
 
 /**
- * 
+ * The jndi lifecycle callback.
+ * This puts the beans marked with @JndiBinding into jndi.
+ *
  * @author <a href="kabir.khan@jboss.com">Kabir Khan</a>
  * @version $Revision: 1.1 $
  */
