@@ -1,0 +1,16 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<deployment xmlns="urn:jboss:bean-deployer:2.0">
+
+  <bean name="RealTM" class="org.jboss.test.kernel.deployment.support.RealTM"/>
+
+  <bean name="FirstBean" class="org.jboss.test.kernel.deployment.support.FirstBean">
+    <property name="tm"><inject bean="RealTM"/></property>
+  </bean>
+
+  <bean name="SecondBean" class="org.jboss.test.kernel.deployment.support.SecondBean">
+    <property name="firstBean"><inject bean="FirstBean"/></property>
+    <uninstall method="markSecondUninstall" bean="FirstBean"/>
+  </bean>
+
+</deployment>
