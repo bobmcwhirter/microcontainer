@@ -44,7 +44,7 @@ public class FirstBean
       this.tm = tm;
    }
 
-   public void markSecondUninstall()
+   void markSecondUninstall()
    {
       flag = true;
    }

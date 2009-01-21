@@ -10,7 +10,6 @@
 
   <bean name="SecondBean" class="org.jboss.test.kernel.deployment.support.SecondBean">
     <property name="firstBean"><inject bean="FirstBean"/></property>
-    <uninstall method="markSecondUninstall" bean="FirstBean" whenRequired="Configure"/>
   </bean>
 
 </deployment>

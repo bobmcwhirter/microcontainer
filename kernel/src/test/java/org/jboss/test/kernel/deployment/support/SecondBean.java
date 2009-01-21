@@ -35,6 +35,9 @@ public class SecondBean
 
    public void setFirstBean(FirstBean firstBean)
    {
+      if (firstBean == null)
+         this.firstBean.markSecondUninstall();
+      
       this.firstBean = firstBean;
    }
 }
