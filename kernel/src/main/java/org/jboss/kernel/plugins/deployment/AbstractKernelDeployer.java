@@ -217,22 +217,21 @@ public class AbstractKernelDeployer
             buffer.append("Incompletely deployed:\n");
             if (errors.size() != 0)
             {
-               buffer.append("\n*** DEPLOYMENTS IN ERROR: Name -> Error\n");
+               buffer.append("\nDEPLOYMENTS IN ERROR:\n");
                for (ControllerContext ctx : errors)
                {
-                  buffer.append(ctx.getName()).append(" -> ").append(ctx.getError().toString()).append('\n');
+                  buffer.append(String.format("  Deployment \"%s\" is in error due to: %s\n", ctx.getName(), ctx.getError()));
                }
             }
             if (incomplete.size() != 0)
             {
-               buffer.append("\n*** DEPLOYMENTS MISSING DEPENDENCIES: Name -> Dependency{Required State:Actual State}\n");
+               buffer.append("\nDEPLOYMENTS MISSING DEPENDENCIES:\n");
                for (ControllerContext ctx : incomplete)
                {
                   Object name = ctx.getName();
-                  buffer.append(name).append(" -> ");
+                  buffer.append(String.format("  Deployment \"%s\" is missing the following dependencies:\n", name));
                   DependencyInfo dependsInfo = ctx.getDependencyInfo();
                   Set<DependencyItem> depends = dependsInfo.getIDependOn(null);
-                  boolean first = true;
                   for (DependencyItem item : depends)
                   {
                      ControllerState dependentState = item.getDependentState();
@@ -262,29 +261,18 @@ public class AbstractKernelDeployer
 
                         if (print)
                         {
-                           if (first)
-                              first = false;
-                           else
-                              buffer.append(", ");
-
-                           buffer.append(iDependOn).append('{').append(dependentState.getStateString());
-                           buffer.append(':');
-                           if (iDependOn == null)
-                           {
-                              buffer.append("** UNRESOLVED " + item.toHumanReadableString() + " **");
-                           }
-                           else
-                           {
-                              if (other == null)
-                                 buffer.append("** NOT FOUND **");
-                              else
-                                 buffer.append(otherState.getStateString());
-                           }
-                           buffer.append('}');
+                           buffer.append(String.format("    Dependency \"%s\" (should be in state \"%s\", but is actually %s)\n",
+                                   iDependOn,
+                                   dependentState.getStateString(),
+                                   iDependOn == null ?
+                                           String.format("unresolved (%s)",
+                                           item.toHumanReadableString()) :
+                                           other == null ?
+                                                   "not found" :
+                                                   String.format("in state \"%s\"", otherState.getStateString())));
                         }
                      }
                   }
-                  buffer.append('\n');
                }
             }
             throw new IllegalStateException(buffer.toString());
