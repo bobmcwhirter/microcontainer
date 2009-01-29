@@ -983,6 +983,7 @@ $Id: bean-deployer_2_0.xsd 70437 2008-03-05 17:13:04Z alesj $
       <xsd:simpleContent>
          <xsd:extension base="xsd:string">
             <xsd:attribute name="state" type="controllerStateType" use="optional"/>
+            <xsd:attribute name="targetState" type="controllerStateType" use="optional"/>
             <xsd:attribute name="transformer" type="xsd:token" use="optional"/>
          </xsd:extension>
       </xsd:simpleContent>

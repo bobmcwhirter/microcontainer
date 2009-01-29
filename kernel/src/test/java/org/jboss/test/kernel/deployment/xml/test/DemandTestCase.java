@@ -34,6 +34,7 @@ import org.jboss.dependency.spi.ControllerState;
  * Demand TestCase.
  * 
  * @author <a href="adrian@jboss.com">Adrian Brock</a>
+ * @author <a href="ales.justin@jboss.com">Ales Justin</a>
  * @version $Revision$
  */
 public class DemandTestCase extends AbstractXMLTest
@@ -61,6 +62,13 @@ public class DemandTestCase extends AbstractXMLTest
       AbstractDemandMetaData demand = getDemand("DemandWithWhenRequired.xml");
       assertEquals("Demand", demand.getDemand());
       assertEquals(ControllerState.CONFIGURED, demand.getWhenRequired());
+   }
+
+   public void testDemandWithTargetState() throws Exception
+   {
+      AbstractDemandMetaData demand = getDemand("DemandWithTargetState.xml");
+      assertEquals("Demand", demand.getDemand());
+      assertEquals(ControllerState.CREATE, demand.getTargetState());
    }
 
    public void testDemandWithTransformer() throws Exception

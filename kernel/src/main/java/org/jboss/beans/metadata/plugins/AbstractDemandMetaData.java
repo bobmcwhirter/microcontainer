@@ -47,8 +47,8 @@ import org.jboss.util.JBossStringBuilder;
 /**
  * A demand.
  * 
- * @author <a href="ales.justin@jboss.com">Ales Justin</a>
  * @author <a href="adrian@jboss.com">Adrian Brock</a>
+ * @author <a href="ales.justin@jboss.com">Ales Justin</a>
  * @version $Revision$
  */
 @XmlType(name="demandsType")
@@ -62,6 +62,9 @@ public class AbstractDemandMetaData extends JBossObject
    
    /** When the dependency is required */
    protected ControllerState whenRequired = ControllerState.DESCRIBED;
+
+   /** The target/dependency state */
+   protected ControllerState targetState;
 
    /** The transformer */
    protected String transformer;
@@ -107,6 +110,17 @@ public class AbstractDemandMetaData extends JBossObject
       flushJBossObjectCache();
    }
 
+   /**
+    * Set the target/dependency state.
+    *
+    * @param targetState the target state
+    */
+   @XmlAttribute(name="targetState")
+   public void setTargetState(ControllerState targetState)
+   {
+      this.targetState = targetState;
+   }
+
    public Object getDemand()
    {
       return demand;
@@ -115,6 +129,11 @@ public class AbstractDemandMetaData extends JBossObject
    public ControllerState getWhenRequired()
    {
       return whenRequired;
+   }
+
+   public ControllerState getTargetState()
+   {
+      return targetState;
    }
 
    /**
@@ -166,6 +185,8 @@ public class AbstractDemandMetaData extends JBossObject
       buffer.append("demand=").append(demand);
       if (whenRequired != null)
          buffer.append(" whenRequired=").append(whenRequired.getStateString());
+      if (targetState != null)
+         buffer.append(" targetState=").append(targetState.getStateString());
    }
    
    public void toShortString(JBossStringBuilder buffer)
@@ -233,7 +254,13 @@ public class AbstractDemandMetaData extends JBossObject
       public boolean resolve(Controller controller)
       {
          Object name = getDemandObject();
-         ControllerContext context = controller.getInstalledContext(name);
+
+         ControllerContext context;
+         if (targetState == null)
+            context = controller.getInstalledContext(name);
+         else
+            context = controller.getContext(name, targetState);
+
          if (context != null)
          {
             setIDependOn(context.getName());

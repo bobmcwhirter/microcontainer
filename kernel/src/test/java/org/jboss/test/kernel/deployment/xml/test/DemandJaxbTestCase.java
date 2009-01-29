@@ -33,6 +33,7 @@ import org.jboss.dependency.spi.ControllerState;
  * Demand TestCase.
  * 
  * @author <a href="adrian@jboss.com">Adrian Brock</a>
+ * @author <a href="ales.justin@jboss.com">Ales Justin</a>
  * @version $Revision: 40800 $
  */
 public class DemandJaxbTestCase extends AbstractMCTest
@@ -60,6 +61,13 @@ public class DemandJaxbTestCase extends AbstractMCTest
       AbstractDemandMetaData demand = getDemand();
       assertEquals("Demand", demand.getDemand());
       assertEquals(ControllerState.CONFIGURED, demand.getWhenRequired());
+   }
+
+   public void testDemandWithTargetState() throws Exception
+   {
+      AbstractDemandMetaData demand = getDemand();
+      assertEquals("Demand", demand.getDemand());
+      assertEquals(ControllerState.CREATE, demand.getTargetState());
    }
 
    /* TODO
