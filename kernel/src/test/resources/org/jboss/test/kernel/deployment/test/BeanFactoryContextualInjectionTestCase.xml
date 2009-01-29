@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<deployment xmlns="urn:jboss:bean-deployer:2.0">
+
+  <bean name="RealTM" class="org.jboss.test.kernel.deployment.support.RealTM"/>
+
+  <beanfactory name="FirstBean" class="org.jboss.test.kernel.deployment.support.FirstBean2">
+    <property name="tm"><inject/></property>
+  </beanfactory>
+
+</deployment>

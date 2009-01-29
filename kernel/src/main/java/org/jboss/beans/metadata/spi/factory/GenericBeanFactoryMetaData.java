@@ -23,9 +23,7 @@ package org.jboss.beans.metadata.spi.factory;
 
 import java.io.Serializable;
 import java.util.Collections;
-import java.util.HashMap;
 import java.util.HashSet;
-import java.util.Iterator;
 import java.util.List;
 import java.util.Set;
 import javax.xml.bind.annotation.XmlAttribute;
@@ -60,8 +58,6 @@ import org.jboss.beans.metadata.spi.DemandMetaData;
 import org.jboss.beans.metadata.spi.DependencyMetaData;
 import org.jboss.beans.metadata.spi.InstallMetaData;
 import org.jboss.beans.metadata.spi.LifecycleMetaData;
-import org.jboss.beans.metadata.spi.MetaDataVisitor;
-import org.jboss.beans.metadata.spi.MetaDataVisitorNode;
 import org.jboss.beans.metadata.spi.PropertyMetaData;
 import org.jboss.beans.metadata.spi.SupplyMetaData;
 import org.jboss.beans.metadata.spi.ValueMetaData;
@@ -75,6 +71,7 @@ import org.jboss.util.JBossObject;
  * GenericBeanFactoryMetaData.
  * 
  * @author <a href="adrian@jboss.com">Adrian Brock</a>
+ * @author <a href="ales.justin@jboss.com">Ales Justin</a>
  * @version $Revision: 59429 $
  */
 @XmlRootElement(name="beanfactory")
@@ -625,29 +622,5 @@ public class GenericBeanFactoryMetaData extends JBossObject implements BeanMetaD
          builder.addPropertyMetaData("properties", propertyMap);
       }
       return builder.getBeanMetaData();
-   }
-
-   /**
-    * PropertyMap.
-    */
-   private class PropertyMap extends HashMap<String, ValueMetaData> implements MetaDataVisitorNode
-   {
-      /** The serialVersionUID */
-      private static final long serialVersionUID = -4295725682462294630L;
-
-      public void initialVisit(MetaDataVisitor visitor)
-      {
-         visitor.initialVisit(this);
-      }
-
-      public void describeVisit(MetaDataVisitor vistor)
-      {
-         vistor.describeVisit(this);
-      }
-
-      public Iterator<? extends MetaDataVisitorNode> getChildren()
-      {
-         return values().iterator();
-      }
    }
 }
