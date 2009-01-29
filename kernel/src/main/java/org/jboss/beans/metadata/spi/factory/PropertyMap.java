@@ -97,9 +97,10 @@ class PropertyMap extends HashMap<String, ValueMetaData> implements MetaDataVisi
       ValueInfo valueInfo = null;
       for (ValueMetaData value : values())
       {
-         if (value.equals(previous))
+         ValueInfo vi = ValueInfo.class.cast(value);
+         if (vi.value == previous)
          {
-            valueInfo = ValueInfo.class.cast(value);
+            valueInfo = vi;
             break;
          }
       }
