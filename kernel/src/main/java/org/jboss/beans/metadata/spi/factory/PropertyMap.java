@@ -51,6 +51,9 @@ import org.jboss.util.JBossStringBuilder;
  */
 class PropertyMap extends HashMap<String, ValueMetaData> implements MetaDataVisitorNode, TypeProvider
 {
+   /** The serialVersionUID */
+   private static final long serialVersionUID = -4295725682462294630L;
+
    /** The configuration */
    private static Configuration configuration;
 
@@ -65,11 +68,6 @@ class PropertyMap extends HashMap<String, ValueMetaData> implements MetaDataVisi
          }
       });
    }
-
-   /**
-    * The serialVersionUID
-    */
-   private static final long serialVersionUID = -4295725682462294630L;
 
    public void initialVisit(MetaDataVisitor visitor)
    {
