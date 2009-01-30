@@ -22,8 +22,6 @@
 package org.jboss.beans.metadata.spi.factory;
 
 import java.io.Serializable;
-import java.security.AccessController;
-import java.security.PrivilegedAction;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.Set;
@@ -36,8 +34,7 @@ import org.jboss.beans.metadata.spi.MetaDataVisitor;
 import org.jboss.beans.metadata.spi.MetaDataVisitorNode;
 import org.jboss.beans.metadata.spi.RelatedClassMetaData;
 import org.jboss.beans.metadata.spi.ValueMetaData;
-import org.jboss.config.plugins.property.PropertyConfiguration;
-import org.jboss.config.spi.Configuration;
+import org.jboss.kernel.spi.config.KernelConfigurator;
 import org.jboss.kernel.spi.dependency.KernelControllerContext;
 import org.jboss.reflect.spi.TypeInfo;
 import org.jboss.util.JBossObject;
@@ -53,21 +50,6 @@ class PropertyMap extends HashMap<String, ValueMetaData> implements MetaDataVisi
 {
    /** The serialVersionUID */
    private static final long serialVersionUID = -4295725682462294630L;
-
-   /** The configuration */
-   private static Configuration configuration;
-
-   static
-   {
-      // get Configuration instance
-      configuration = AccessController.doPrivileged(new PrivilegedAction<Configuration>()
-      {
-         public Configuration run()
-         {
-            return new PropertyConfiguration();
-         }
-      });
-   }
 
    public void initialVisit(MetaDataVisitor visitor)
    {
@@ -112,7 +94,8 @@ class PropertyMap extends HashMap<String, ValueMetaData> implements MetaDataVisi
          throw new IllegalArgumentException("Invalid information for contextual injection: " + bmd);
       // TODO - perhaps match which related metadata is the right one
       RelatedClassMetaData beanClassMetaData = related.iterator().next();
-      BeanInfo beanInfo = configuration.getBeanInfo(beanClassMetaData.getClassName(), context.getClassLoader());
+      KernelConfigurator configurator = context.getKernel().getConfigurator();
+      BeanInfo beanInfo = configurator.getBeanInfo(beanClassMetaData.getClassName(), context.getClassLoader());
       PropertyInfo pi = beanInfo.getProperty(valueInfo.name);
       TypeInfo typeInfo = pi.getType();
       if (typeInfo.isCollection() || typeInfo.isMap())

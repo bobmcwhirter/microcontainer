@@ -265,6 +265,9 @@ public class AbstractConstructorMetaData extends AbstractFeatureMetaData
             classInfo = configurator.getClassInfo(factoryClassName, cl);
          }
          // should be parameter
+         if (previous instanceof ParameterMetaData == false)
+            throw new IllegalArgumentException("Previous node is not ParameterMetaData as expected: " + previous);
+
          ParameterMetaData parameter = (ParameterMetaData) previous;
          String[] parameterTypes = Configurator.getParameterTypes(false, parameters);
          MethodInfo methodInfo = Configurator.findMethodInfo(classInfo, factoryMethod, parameterTypes, factoryClassName != null, true);

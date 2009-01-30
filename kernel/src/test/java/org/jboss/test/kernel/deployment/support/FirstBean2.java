@@ -26,7 +26,18 @@ package org.jboss.test.kernel.deployment.support;
  */
 public class FirstBean2
 {
+   private FirstBean c;
    private RealTM tm;
+
+   public FirstBean2(FirstBean c)
+   {
+      this.c = c;
+   }
+
+   public FirstBean getC()
+   {
+      return c;
+   }
 
    public RealTM getTm()
    {

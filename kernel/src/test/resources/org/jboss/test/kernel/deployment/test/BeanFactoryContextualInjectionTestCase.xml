@@ -2,10 +2,14 @@
 
 <deployment xmlns="urn:jboss:bean-deployer:2.0">
 
-  <bean name="RealTM" class="org.jboss.test.kernel.deployment.support.RealTM"/>
-
   <beanfactory name="FirstBean" class="org.jboss.test.kernel.deployment.support.FirstBean2">
+    <constructor>
+      <parameter class="org.jboss.test.kernel.deployment.support.FirstBean"><inject/></parameter>
+    </constructor>
     <property name="tm"><inject/></property>
   </beanfactory>
+
+  <bean name="C" class="org.jboss.test.kernel.deployment.support.FirstBean"/>
+  <bean name="RealTM" class="org.jboss.test.kernel.deployment.support.RealTM"/>
 
 </deployment>

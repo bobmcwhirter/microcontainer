@@ -181,6 +181,9 @@ public class AbstractLifecycleMetaData extends AbstractFeatureMetaData
 
    public TypeInfo getType(MetaDataVisitor visitor, MetaDataVisitorNode previous) throws Throwable
    {
+      if (previous instanceof ParameterMetaData == false)
+         throw new IllegalArgumentException("Previous node is not ParameterMetaData as expected: " + previous);
+      
       ParameterMetaData parameter = (ParameterMetaData) previous;
       KernelControllerContext context = visitor.getControllerContext();
       String method = (methodName != null ? methodName : type);

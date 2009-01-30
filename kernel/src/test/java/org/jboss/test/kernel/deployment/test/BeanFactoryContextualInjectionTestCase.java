@@ -46,6 +46,7 @@ public class BeanFactoryContextualInjectionTestCase extends AbstractDeploymentTe
    {
       BeanFactory bf = assertBean("FirstBean", BeanFactory.class);
       FirstBean2 bean = (FirstBean2)bf.createBean();
+      assertNotNull(bean.getC());
       assertNotNull(bean.getTm());
    }
 }
