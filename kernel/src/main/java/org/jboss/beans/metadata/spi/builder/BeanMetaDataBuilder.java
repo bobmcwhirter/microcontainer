@@ -36,12 +36,13 @@ import org.jboss.beans.metadata.plugins.builder.BeanMetaDataBuilderFactory;
 import org.jboss.beans.metadata.spi.BeanMetaData;
 import org.jboss.beans.metadata.spi.BeanMetaDataFactory;
 import org.jboss.beans.metadata.spi.ClassLoaderMetaData;
-import org.jboss.beans.metadata.spi.ValueMetaData;
 import org.jboss.beans.metadata.spi.RelatedClassMetaData;
+import org.jboss.beans.metadata.spi.ValueMetaData;
 import org.jboss.dependency.spi.Cardinality;
 import org.jboss.dependency.spi.ControllerMode;
 import org.jboss.dependency.spi.ControllerState;
 import org.jboss.dependency.spi.ErrorHandlingMode;
+import org.jboss.dependency.spi.graph.SearchInfo;
 
 /**
  * BeanMetaDataBuilder contract.
@@ -458,6 +459,34 @@ public abstract class BeanMetaDataBuilder
     * @return the builder
     */
    public abstract BeanMetaDataBuilder addPropertyMetaData(String name, Collection<ValueMetaData> value);
+
+   /**
+    * Add a property annotation.
+    *
+    * @param name the property name
+    * @param annotation the annotation
+    * @return the builder
+    */
+   public abstract BeanMetaDataBuilder addPropertyAnnotation(String name, String annotation);
+
+   /**
+    * Add a property annotation.
+    *
+    * @param name the property name
+    * @param annotation the annotation
+    * @param replace the replace flag
+    * @return the builder
+    */
+   public abstract BeanMetaDataBuilder addPropertyAnnotation(String name, String annotation, boolean replace);
+
+   /**
+    * Add a property annotation.
+    *
+    * @param name the property name
+    * @param annotation the annotation
+    * @return the builder
+    */
+   public abstract BeanMetaDataBuilder addPropertyAnnotation(String name, Annotation annotation);
 
    /**
     * Add a property, replace it if it already exists
@@ -1611,7 +1640,22 @@ public abstract class BeanMetaDataBuilder
     * @param dependentState the state of the injected bean
     * @return the injection
     */
-   public abstract ValueMetaData createInject(Object bean, String property, ControllerState whenRequired, ControllerState dependentState);
+   public ValueMetaData createInject(Object bean, String property, ControllerState whenRequired, ControllerState dependentState)
+   {
+      return createInject(bean, property, whenRequired, dependentState, null);
+   }
+
+   /**
+    * Create an injection
+    *
+    * @param bean the bean to inject
+    * @param property the property of the bean
+    * @param whenRequired when the injection is required
+    * @param dependentState the state of the injected bean
+    * @param search the search info
+    * @return the injection
+    */
+   public abstract ValueMetaData createInject(Object bean, String property, ControllerState whenRequired, ControllerState dependentState, SearchInfo search);
 
    /**
     * Create contextual injection.
@@ -1644,7 +1688,22 @@ public abstract class BeanMetaDataBuilder
     * @param option the inject option
     * @return the contextual injection
     */
-   public abstract ValueMetaData createContextualInject(ControllerState whenRequired, ControllerState dependentState, AutowireType autowire, InjectOption option);
+   public ValueMetaData createContextualInject(ControllerState whenRequired, ControllerState dependentState, AutowireType autowire, InjectOption option)
+   {
+      return createContextualInject(whenRequired, dependentState, autowire, option, null);
+   }
+
+   /**
+    * Create contextual injection.
+    *
+    * @param whenRequired when the injection is required
+    * @param dependentState the state of the injected bean
+    * @param autowire the autowire type
+    * @param option the inject option
+    * @param search the search info
+    * @return the contextual injection
+    */
+   public abstract ValueMetaData createContextualInject(ControllerState whenRequired, ControllerState dependentState, AutowireType autowire, InjectOption option, SearchInfo search);
 
    /**
     * Create a new collection

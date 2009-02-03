@@ -36,15 +36,18 @@ import org.jboss.beans.metadata.plugins.AbstractBeanMetaData;
 import org.jboss.beans.metadata.plugins.AbstractRelatedClassMetaData;
 import org.jboss.beans.metadata.plugins.InstallCallbackMetaData;
 import org.jboss.beans.metadata.plugins.UninstallCallbackMetaData;
+import org.jboss.beans.metadata.plugins.AbstractDependencyValueMetaData;
 import org.jboss.beans.metadata.plugins.builder.BeanMetaDataBuilderFactory;
+import org.jboss.beans.metadata.spi.AnnotationMetaData;
 import org.jboss.beans.metadata.spi.BeanMetaData;
 import org.jboss.beans.metadata.spi.BeanMetaDataFactory;
 import org.jboss.beans.metadata.spi.CallbackMetaData;
-import org.jboss.beans.metadata.spi.RelatedClassMetaData;
-import org.jboss.beans.metadata.spi.ValueMetaData;
 import org.jboss.beans.metadata.spi.LifecycleMetaData;
 import org.jboss.beans.metadata.spi.PropertyMetaData;
+import org.jboss.beans.metadata.spi.RelatedClassMetaData;
+import org.jboss.beans.metadata.spi.ValueMetaData;
 import org.jboss.beans.metadata.spi.builder.BeanMetaDataBuilder;
+import org.jboss.dependency.plugins.graph.Search;
 import org.jboss.dependency.spi.Cardinality;
 import org.jboss.dependency.spi.ControllerContext;
 import org.jboss.dependency.spi.ControllerState;
@@ -56,6 +59,7 @@ import org.jboss.kernel.spi.dependency.KernelController;
 import org.jboss.kernel.spi.dependency.KernelControllerContext;
 import org.jboss.metadata.spi.MetaData;
 import org.jboss.test.kernel.config.support.SimpleAnnotation;
+import org.jboss.test.kernel.config.support.SimpleAnnotationImpl;
 import org.jboss.test.kernel.config.support.SimpleBean;
 import org.jboss.test.kernel.config.support.SimpleCallbackBean;
 import org.jboss.test.kernel.config.support.SimpleLifecycleBean;
@@ -925,5 +929,36 @@ public class BeanMetaDataBuilderTestCase extends AbstractKernelConfigTest
       ValueMetaData vmd = pmd.getValue();
       assertNotNull(vmd);
       assertNull(vmd.getUnderlyingValue());
+   }
+
+   public void testSearch() throws Throwable
+   {
+      BeanMetaDataBuilder builder = BeanMetaDataBuilder.createBuilder("test");
+      builder.addPropertyMetaData("ci", builder.createContextualInject(null, null, null, null, Search.WIDTH));
+      BeanMetaData bmd = builder.getBeanMetaData();
+      Set<PropertyMetaData> properties = bmd.getProperties();
+      assertNotNull(properties);
+      assertEquals(1, properties.size());
+      PropertyMetaData pmd = properties.iterator().next();
+      ValueMetaData vmd = pmd.getValue();
+      assertNotNull(vmd);
+      AbstractDependencyValueMetaData advmd = assertInstanceOf(vmd, AbstractDependencyValueMetaData.class);
+      assertEquals(Search.WIDTH, advmd.getSearch());
+   }
+
+   public void testPropertyAnnotations() throws Throwable
+   {
+      BeanMetaDataBuilder builder = BeanMetaDataBuilder.createBuilder("test");
+      builder.addPropertyMetaData("ci", builder.createContextualInject());
+      builder.addPropertyAnnotation("ci", new SimpleAnnotationImpl());
+      BeanMetaData bmd = builder.getBeanMetaData();
+
+      Set<PropertyMetaData> properties = bmd.getProperties();
+      assertNotNull(properties);
+      assertEquals(1, properties.size());
+      PropertyMetaData pmd = properties.iterator().next();
+      Set<AnnotationMetaData> annotations = pmd.getAnnotations();
+      assertNotNull(annotations);
+      assertEquals(1, annotations.size());
    }
 }
