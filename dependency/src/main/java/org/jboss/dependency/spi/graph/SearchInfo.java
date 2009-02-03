@@ -22,6 +22,7 @@
 package org.jboss.dependency.spi.graph;
 
 import java.util.Map;
+import javax.xml.bind.annotation.XmlTransient;
 
 /**
  * Search info.
@@ -41,6 +42,7 @@ public interface SearchInfo
     *
     * @return the type
     */
+   @XmlTransient
    String getType();
 
    /**
@@ -49,6 +51,7 @@ public interface SearchInfo
     *
     * @return the additional info
     */
+   @XmlTransient
    Map<String, ?> getInfo();
 
    /**
@@ -60,5 +63,6 @@ public interface SearchInfo
     *
     * @return the strategy or null depending on GraphContorller
     */
+   @XmlTransient
    LookupStrategy getStrategy();
 }

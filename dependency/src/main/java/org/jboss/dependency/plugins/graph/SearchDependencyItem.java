@@ -21,13 +21,14 @@
  */
 package org.jboss.dependency.plugins.graph;
 
-import org.jboss.dependency.spi.ControllerState;
+import org.jboss.dependency.plugins.AbstractDependencyItem;
 import org.jboss.dependency.spi.Controller;
 import org.jboss.dependency.spi.ControllerContext;
 import org.jboss.dependency.spi.ControllerMode;
+import org.jboss.dependency.spi.ControllerState;
 import org.jboss.dependency.spi.graph.GraphController;
 import org.jboss.dependency.spi.graph.LookupStrategy;
-import org.jboss.dependency.plugins.AbstractDependencyItem;
+import org.jboss.dependency.spi.graph.SearchInfo;
 
 /**
  * Search dependency item.
@@ -36,9 +37,9 @@ import org.jboss.dependency.plugins.AbstractDependencyItem;
  */
 public class SearchDependencyItem extends AbstractDependencyItem
 {
-   private Search search;
+   private SearchInfo search;
 
-   public SearchDependencyItem(Object name, Object iDependOn, ControllerState whenRequired, ControllerState dependentState, Search search)
+   public SearchDependencyItem(Object name, Object iDependOn, ControllerState whenRequired, ControllerState dependentState, SearchInfo search)
    {
       super(name, iDependOn, whenRequired, dependentState);
       this.search = search;

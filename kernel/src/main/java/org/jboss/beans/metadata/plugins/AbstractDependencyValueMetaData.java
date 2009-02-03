@@ -34,8 +34,9 @@ import org.jboss.dependency.spi.Controller;
 import org.jboss.dependency.spi.ControllerContext;
 import org.jboss.dependency.spi.ControllerState;
 import org.jboss.dependency.spi.DependencyItem;
-import org.jboss.dependency.spi.graph.LookupStrategy;
 import org.jboss.dependency.spi.dispatch.AttributeDispatchContext;
+import org.jboss.dependency.spi.graph.LookupStrategy;
+import org.jboss.dependency.spi.graph.SearchInfo;
 import org.jboss.kernel.spi.dependency.KernelControllerContext;
 import org.jboss.managed.api.annotation.ManagementProperty;
 import org.jboss.reflect.spi.TypeInfo;
@@ -83,7 +84,7 @@ public class AbstractDependencyValueMetaData extends AbstractValueMetaData
    /**
     * The search type
     */
-   protected Search search = Search.DEFAULT;
+   protected SearchInfo search = Search.DEFAULT;
 
 
    /**
@@ -205,7 +206,7 @@ public class AbstractDependencyValueMetaData extends AbstractValueMetaData
     * @param search the search type
     */
    @XmlAttribute(name = "search")
-   public void setSearch(Search search)
+   public void setSearch(SearchInfo search)
    {
       this.search = search;
    }
@@ -215,7 +216,7 @@ public class AbstractDependencyValueMetaData extends AbstractValueMetaData
     *
     * @return the search type
     */
-   public Search getSearch()
+   public SearchInfo getSearch()
    {
       return search;
    }
@@ -318,6 +319,9 @@ public class AbstractDependencyValueMetaData extends AbstractValueMetaData
 
    public void initialVisit(MetaDataVisitor visitor)
    {
+      if (search == null)
+         throw new IllegalArgumentException("Null search");
+
       context = visitor.getControllerContext();
 
       ControllerState whenRequired = whenRequiredState;

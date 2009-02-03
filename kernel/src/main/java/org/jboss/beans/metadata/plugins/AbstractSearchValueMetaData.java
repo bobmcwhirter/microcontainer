@@ -35,6 +35,7 @@ import org.jboss.dependency.spi.ControllerState;
 import org.jboss.dependency.spi.DependencyItem;
 import org.jboss.dependency.spi.dispatch.AttributeDispatchContext;
 import org.jboss.dependency.spi.graph.GraphController;
+import org.jboss.dependency.spi.graph.SearchInfo;
 import org.jboss.managed.api.annotation.ManagementProperty;
 import org.jboss.reflect.spi.TypeInfo;
 import org.jboss.util.JBossStringBuilder;
@@ -54,7 +55,7 @@ public class AbstractSearchValueMetaData extends AbstractValueMetaData
    private static final long serialVersionUID = 1L;
    
    private ControllerState state;
-   private org.jboss.dependency.plugins.graph.Search search;
+   private SearchInfo search;
    private String property;
 
    private ControllerContext context;
@@ -64,7 +65,7 @@ public class AbstractSearchValueMetaData extends AbstractValueMetaData
    {
    }
 
-   public AbstractSearchValueMetaData(Object value, ControllerState state, Search search, String property)
+   public AbstractSearchValueMetaData(Object value, ControllerState state, SearchInfo search, String property)
    {
       super(value);
       if (search == null)

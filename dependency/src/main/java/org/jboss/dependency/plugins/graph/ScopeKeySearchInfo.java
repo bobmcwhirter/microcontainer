@@ -21,6 +21,7 @@
 */
 package org.jboss.dependency.plugins.graph;
 
+import java.io.Serializable;
 import java.util.Collections;
 import java.util.Map;
 import java.util.Set;
@@ -38,8 +39,10 @@ import org.jboss.metadata.spi.scope.ScopeKey;
  *
  * @author <a href="mailto:ales.justin@jboss.com">Ales Justin</a>
  */
-public class ScopeKeySearchInfo implements SearchInfo
+public class ScopeKeySearchInfo implements SearchInfo, Serializable
 {
+   private static final long serialVersionUID = 1L;
+
    public static final String SCOPE_KEY = "ScopeKey";
    private ScopeKey scopeKey;
    private Map<String, ?> info;

@@ -22,14 +22,17 @@
 @JBossXmlAdaptedTypes
 ({
    @JBossXmlAdaptedType(type=Cardinality.class, valueAdapter=CardinalityValueAdapter.class),
-   @JBossXmlAdaptedType(type=ControllerState.class, valueAdapter=ControllerStateValueAdapter.class)
+   @JBossXmlAdaptedType(type=ControllerState.class, valueAdapter=ControllerStateValueAdapter.class),
+   @JBossXmlAdaptedType(type=SearchInfo.class, valueAdapter=SearchInfoValueAdapter.class)
 })
 package org.jboss.kernel.plugins.deployment;
 
 import org.jboss.beans.metadata.plugins.CardinalityValueAdapter;
 import org.jboss.beans.metadata.plugins.ControllerStateValueAdapter;
+import org.jboss.beans.metadata.plugins.SearchInfoValueAdapter;
 import org.jboss.dependency.spi.Cardinality;
 import org.jboss.dependency.spi.ControllerState;
+import org.jboss.dependency.spi.graph.SearchInfo;
 import org.jboss.xb.annotations.JBossXmlAdaptedType;
 import org.jboss.xb.annotations.JBossXmlAdaptedTypes;
 

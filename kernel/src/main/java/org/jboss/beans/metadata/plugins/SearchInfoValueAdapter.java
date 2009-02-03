@@ -19,20 +19,21 @@
 * Software Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA
 * 02110-1301 USA, or see the FSF site: http://www.fsf.org.
 */
-@JBossXmlAdaptedTypes
-({
-   @JBossXmlAdaptedType(type=Cardinality.class, valueAdapter=CardinalityValueAdapter.class),
-   @JBossXmlAdaptedType(type=ControllerState.class, valueAdapter=ControllerStateValueAdapter.class),
-   @JBossXmlAdaptedType(type=SearchInfo.class, valueAdapter=SearchInfoValueAdapter.class)
-})
-package org.jboss.aop.microcontainer.beans.metadata;
+package org.jboss.beans.metadata.plugins;
 
-import org.jboss.beans.metadata.plugins.CardinalityValueAdapter;
-import org.jboss.beans.metadata.plugins.ControllerStateValueAdapter;
-import org.jboss.beans.metadata.plugins.SearchInfoValueAdapter;
-import org.jboss.dependency.spi.Cardinality;
-import org.jboss.dependency.spi.ControllerState;
-import org.jboss.dependency.spi.graph.SearchInfo;
-import org.jboss.xb.annotations.JBossXmlAdaptedType;
-import org.jboss.xb.annotations.JBossXmlAdaptedTypes;
+import org.jboss.dependency.plugins.graph.Search;
+import org.jboss.xb.binding.sunday.unmarshalling.ValueAdapter;
 
+/**
+ * SearchInfoValueAdapter.
+ *
+ * @author <a href="ales.justin@jboss.com">Ales Justin</a>
+ */
+public class SearchInfoValueAdapter implements ValueAdapter
+{
+   @SuppressWarnings("unchecked")
+   public Object cast(Object o, Class c)
+   {
+      return Search.getInstance((String)o);
+   }
+}

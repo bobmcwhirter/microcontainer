@@ -21,11 +21,11 @@
 */
 package org.jboss.kernel.plugins.dependency;
 
-import org.jboss.dependency.plugins.graph.Search;
 import org.jboss.dependency.spi.Controller;
 import org.jboss.dependency.spi.ControllerContext;
 import org.jboss.dependency.spi.ControllerState;
 import org.jboss.dependency.spi.graph.LookupStrategy;
+import org.jboss.dependency.spi.graph.SearchInfo;
 
 /**
  * A search Class context dependencyItem.
@@ -34,9 +34,9 @@ import org.jboss.dependency.spi.graph.LookupStrategy;
  */
 public class SearchClassContextDependencyItem extends ClassDependencyItem
 {
-   private Search search;
+   private SearchInfo search;
 
-   public SearchClassContextDependencyItem(Object name, Class<?> demandClass, ControllerState whenRequired, ControllerState dependentState, Search search)
+   public SearchClassContextDependencyItem(Object name, Class<?> demandClass, ControllerState whenRequired, ControllerState dependentState, SearchInfo search)
    {
       super(name, demandClass, whenRequired, dependentState);
       if (search == null)

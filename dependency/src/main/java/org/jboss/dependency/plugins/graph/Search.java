@@ -55,19 +55,25 @@ public enum Search implements SearchInfo
    }
 
    /**
-    * Get Search enum instance.
+    * Get SearchInfo instance.
     *
     * @param typeString the type string
-    * @return matching instance, default if none found
+    * @return matching instance, lazy if none found
     */
-   public static Search getInstance(String typeString)
+   public static SearchInfo getInstance(String typeString)
    {
+      if (typeString == null || typeString.length() == 0)
+      {
+         return DEFAULT;
+      }
+
       for(Search search : values())
       {
-         if (search.getType().equalsIgnoreCase(typeString))
+         if (search.getType().equalsIgnoreCase(typeString) || search.name().equalsIgnoreCase(typeString))
             return search;
       }
-      return DEFAULT;
+
+      return new LazySearchInfo(typeString);
    }
 
    public String getType()
