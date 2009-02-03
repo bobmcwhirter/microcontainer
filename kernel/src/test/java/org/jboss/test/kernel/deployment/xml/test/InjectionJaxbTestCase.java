@@ -28,6 +28,7 @@ import org.jboss.beans.metadata.plugins.AbstractBeanMetaData;
 import org.jboss.beans.metadata.plugins.AbstractDependencyValueMetaData;
 import org.jboss.beans.metadata.spi.PropertyMetaData;
 import org.jboss.beans.metadata.spi.ValueMetaData;
+import org.jboss.dependency.plugins.graph.Search;
 import org.jboss.dependency.spi.ControllerState;
 
 /**
@@ -74,6 +75,13 @@ public class InjectionJaxbTestCase extends AbstractMCTest
       assertEquals("Dummy", dependency.getValue());
       assertNull(dependency.getProperty());
       assertEquals(ControllerState.CONFIGURED, dependency.getDependentState());
+   }
+
+   public void testInjectionWithSearch() throws Exception
+   {
+      AbstractDependencyValueMetaData dependency = getInjection();
+      assertEquals("Dummy", dependency.getValue());
+      assertEquals(Search.LEAVES, dependency.getSearch());
    }
 
    /* TODO

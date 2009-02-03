@@ -409,6 +409,7 @@ $Id: bean-deployer_2_0.xsd 70437 2008-03-05 17:13:04Z alesj $
       <xsd:attribute name="type" type="autowireTypeType" use="optional" default="ByClass"/>
       <xsd:attribute name="option" type="optionType" use="optional" default="Strict"/>
       <xsd:attribute name="fromContext" type="contextType" use="optional"/>
+      <xsd:attribute name="search" type="searchTypeType" use="optional" default="default"/>
    </xsd:complexType>
 
    <xsd:complexType name="searchType">

@@ -35,12 +35,13 @@ import org.jboss.util.JBossStringBuilder;
  * A DependencyItem.
  * 
  * @author <a href="adrian@jboss.com">Adrian Brock</a>
+ * @author <a href="ales.justin@jboss.com">Ales Justin</a>
  * @version $Revision$
  */
 public class AbstractDependencyItem extends JBossObject implements DependencyItem
 {
    /** The log */
-   private static final Logger log = Logger.getLogger(AbstractDependencyItem.class);
+   protected static final Logger log = Logger.getLogger(AbstractDependencyItem.class);
    
    /** What I depend on */
    private Object iDependOn;

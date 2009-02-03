@@ -73,6 +73,13 @@ public @interface Inject
    String dependentState() default "";
 
    /**
+    * Get search type.
+    *
+    * @return the search type
+    */
+   String search() default "";
+
+   /**
     * Get autowire type.
     * Default is by class.
     *

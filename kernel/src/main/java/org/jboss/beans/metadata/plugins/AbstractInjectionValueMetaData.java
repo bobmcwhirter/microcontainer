@@ -31,11 +31,10 @@ import org.jboss.beans.metadata.api.model.InjectOption;
 import org.jboss.beans.metadata.spi.MetaDataVisitor;
 import org.jboss.beans.metadata.spi.MetaDataVisitorNode;
 import org.jboss.dependency.plugins.AttributeCallbackItem;
-import org.jboss.dependency.spi.Controller;
 import org.jboss.dependency.spi.ControllerContext;
 import org.jboss.dependency.spi.ControllerState;
 import org.jboss.dependency.spi.DependencyItem;
-import org.jboss.kernel.plugins.dependency.ClassContextDependencyItem;
+import org.jboss.kernel.plugins.dependency.SearchClassContextDependencyItem;
 import org.jboss.reflect.spi.TypeInfo;
 import org.jboss.util.JBossStringBuilder;
 
@@ -132,6 +131,11 @@ public class AbstractInjectionValueMetaData extends AbstractDependencyValueMetaD
       this.propertyMetaData = propertyMetaData;
    }
 
+   /**
+    * Add install/callback item.
+    *
+    * @param name the callback name
+    */
    protected void addInstallItem(Object name)
    {
       if (propertyMetaData == null)
@@ -165,18 +169,18 @@ public class AbstractInjectionValueMetaData extends AbstractDependencyValueMetaD
          ControllerState state = dependentState;
          if (state == null)
             state = ControllerState.INSTANTIATED;
-         Controller controller = context.getController();
-         ControllerContext lookup = controller.getContext(getUnderlyingValue(), state);
+
+         ControllerContext lookup = getControllerContext(getUnderlyingValue(), state);
          if (lookup == null)
             throw new Error("Should not be here - dependency failed - " + this);
+
          return fromContext.executeLookup(lookup);
       }
 
       // by class type
       if (getUnderlyingValue() == null)
       {
-         Controller controller = context.getController();
-         ControllerContext lookup = controller.getInstalledContext(info.getType());
+         ControllerContext lookup = getControllerContext(info.getType(), ControllerState.INSTALLED);
          if (lookup == null)
          {
             if (InjectOption.STRICT.equals(injectionOption))
@@ -216,7 +220,9 @@ public class AbstractInjectionValueMetaData extends AbstractDependencyValueMetaD
       {
          // check if dependent is not set when used on itself
          if (super.getUnderlyingValue() == null && dependentState == null)
-               dependentState = fromContext.getWhenValid();
+         {
+            dependentState = fromContext.getWhenValid();
+         }
 
          super.initialVisit(visitor);
          return;
@@ -284,11 +290,12 @@ public class AbstractInjectionValueMetaData extends AbstractDependencyValueMetaD
                      {
                         whenRequired = visitor.getContextState();
                      }
-                     DependencyItem item = new ClassContextDependencyItem(
+                     DependencyItem item = new SearchClassContextDependencyItem(
                            context.getName(),
                            injectionClass,
                            whenRequired,
-                           dependentState);
+                           dependentState,
+                           search);
                      visitor.addDependency(item);
                   }
                   else

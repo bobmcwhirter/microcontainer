@@ -221,6 +221,8 @@ final class ValueUtil
          injection.setDependentState(new ControllerState(annotation.dependentState()));
       if (isAttributePresent(annotation.whenRequired()))
          injection.setWhenRequiredState(new ControllerState(annotation.whenRequired()));
+      if (isAttributePresent(annotation.search()))
+         injection.setSearch(org.jboss.dependency.plugins.graph.Search.getInstance(annotation.search()));
       injection.setInjectionOption(annotation.option());
       injection.setInjectionType(annotation.type());
       if (FromContext.NOOP.equals(annotation.fromContext()) == false)
@@ -266,6 +268,7 @@ final class ValueUtil
     * @param annotation the annotation
     * @return search meta data
     */
+   @SuppressWarnings("deprecation")
    static ValueMetaData createValueMetaData(Search annotation)
    {
       String searchType = annotation.type();

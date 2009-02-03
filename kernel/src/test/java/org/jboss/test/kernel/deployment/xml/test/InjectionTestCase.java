@@ -24,13 +24,13 @@ package org.jboss.test.kernel.deployment.xml.test;
 import java.util.Set;
 
 import junit.framework.Test;
-
+import org.jboss.beans.metadata.api.model.FromContext;
 import org.jboss.beans.metadata.plugins.AbstractBeanMetaData;
 import org.jboss.beans.metadata.plugins.AbstractDependencyValueMetaData;
-import org.jboss.beans.metadata.api.model.FromContext;
 import org.jboss.beans.metadata.plugins.AbstractInjectionValueMetaData;
 import org.jboss.beans.metadata.spi.PropertyMetaData;
 import org.jboss.beans.metadata.spi.ValueMetaData;
+import org.jboss.dependency.plugins.graph.Search;
 import org.jboss.dependency.spi.ControllerState;
 
 /**
@@ -98,6 +98,13 @@ public class InjectionTestCase extends AbstractXMLTest
       assertEquals("Dummy", dependency.getValue());
       assertNull(dependency.getProperty());
       assertEquals(FromContext.getInstance("name"), dependency.getFromContext());
+   }
+
+   public void testInjectionWithSearch() throws Exception
+   {
+      AbstractInjectionValueMetaData dependency = getInjection("InjectionWithSearch.xml");
+      assertEquals("Dummy", dependency.getValue());
+      assertEquals(Search.LEAVES, dependency.getSearch());
    }
 
    public static Test suite()

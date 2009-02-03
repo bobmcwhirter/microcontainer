@@ -54,6 +54,22 @@ public enum Search implements SearchInfo
       this.delegate = delegate;
    }
 
+   /**
+    * Get Search enum instance.
+    *
+    * @param typeString the type string
+    * @return matching instance, default if none found
+    */
+   public static Search getInstance(String typeString)
+   {
+      for(Search search : values())
+      {
+         if (search.getType().equalsIgnoreCase(typeString))
+            return search;
+      }
+      return DEFAULT;
+   }
+
    public String getType()
    {
       return delegate.getType();
