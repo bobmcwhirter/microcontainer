@@ -22,6 +22,7 @@
 package org.jboss.beans.metadata.spi.factory;
 
 import java.io.Serializable;
+import java.util.Collections;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.Set;
@@ -130,17 +131,17 @@ class PropertyMap extends HashMap<String, ValueMetaData> implements MetaDataVisi
 
       public void initialVisit(MetaDataVisitor vistor)
       {
-         value.initialVisit(vistor);
+         vistor.initialVisit(this);
       }
 
       public void describeVisit(MetaDataVisitor vistor)
       {
-         value.describeVisit(vistor);
+         vistor.describeVisit(this);
       }
 
       public Iterator<? extends MetaDataVisitorNode> getChildren()
       {
-         return value.getChildren();
+         return Collections.singleton(value).iterator();
       }
 
       public void toShortString(JBossStringBuilder buffer)
