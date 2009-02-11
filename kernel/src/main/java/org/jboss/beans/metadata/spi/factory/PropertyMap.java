@@ -26,6 +26,7 @@ import java.util.Collections;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.Set;
+import java.util.Stack;
 
 import org.jboss.beans.info.spi.BeanInfo;
 import org.jboss.beans.info.spi.PropertyInfo;
@@ -79,7 +80,7 @@ class PropertyMap extends HashMap<String, ValueMetaData> implements MetaDataVisi
       for (ValueMetaData value : values())
       {
          ValueInfo vi = ValueInfo.class.cast(value);
-         if (vi.value == previous)
+         if (vi == previous)
          {
             valueInfo = vi;
             break;
@@ -106,7 +107,7 @@ class PropertyMap extends HashMap<String, ValueMetaData> implements MetaDataVisi
       return typeInfo;
    }
 
-   private static class ValueInfo extends JBossObject implements ValueMetaData, Serializable
+   private static class ValueInfo extends JBossObject implements ValueMetaData, Serializable, TypeProvider
    {
       private static final long serialVersionUID = 1L;
 
@@ -117,6 +118,29 @@ class PropertyMap extends HashMap<String, ValueMetaData> implements MetaDataVisi
       {
          this.name = name;
          this.value = value;
+      }
+
+      public TypeInfo getType(MetaDataVisitor visitor, MetaDataVisitorNode previous) throws Throwable
+      {
+         Stack<MetaDataVisitorNode> visitorNodeStack = visitor.visitorNodeStack();
+         // see AbstractInjectionValueMetaData.describeVisit
+         MetaDataVisitorNode node = visitorNodeStack.pop();
+         try
+         {
+            if (node instanceof TypeProvider)
+            {
+               TypeProvider typeProvider = (TypeProvider) node;
+               return typeProvider.getType(visitor, this);
+            }
+            else
+            {
+               throw new IllegalArgumentException(TypeProvider.ERROR_MSG);
+            }
+         }
+         finally
+         {
+            visitorNodeStack.push(node);
+         }
       }
 
       public Object getUnderlyingValue()
