@@ -214,6 +214,11 @@ public class AspectBeanMetaDataFactory extends AspectManagerAwareBeanMetaDataFac
    
    private void getDependencies(ArrayList<ValueMetaData> dependencies, MetaDataVisitorNode node)
    {
+      if (node instanceof AbstractDependencyValueMetaData)
+      {
+         dependencies.add((AbstractDependencyValueMetaData)node);
+      }
+
       Iterator<? extends MetaDataVisitorNode> children = node.getChildren();
       
       if (children != null)
@@ -221,10 +226,6 @@ public class AspectBeanMetaDataFactory extends AspectManagerAwareBeanMetaDataFac
          while (children.hasNext())
          {
             MetaDataVisitorNode child = children.next();
-            if (child instanceof AbstractDependencyValueMetaData)
-            {
-               dependencies.add((AbstractDependencyValueMetaData)child);
-            }
             getDependencies(dependencies, child);
          }
       }
