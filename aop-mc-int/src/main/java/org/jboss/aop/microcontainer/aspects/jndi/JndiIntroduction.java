@@ -21,8 +21,8 @@
  */
 package org.jboss.aop.microcontainer.aspects.jndi;
 
+import java.io.Serializable;
 import java.util.Properties;
-
 import javax.naming.InitialContext;
 
 import org.jboss.aop.advice.Interceptor;
@@ -42,8 +42,10 @@ import org.jboss.util.naming.Util;
  * @version $Revision: 46386 $
  * @deprecated Should use JndiLifecycleCallback instead
  */
-public class JndiIntroduction implements Interceptor
+public class JndiIntroduction implements Interceptor, Serializable
 {
+   private static final long serialVersionUID = 1;
+   
    private static final Logger log = Logger.getLogger(JndiIntroduction.class);
    private Properties env;
 
