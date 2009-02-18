@@ -720,7 +720,21 @@ public abstract class BeanMetaDataBuilder
     * @param transformer the transformer
     * @return the builder
     */
-   public abstract BeanMetaDataBuilder addDemand(Object demand, ControllerState whenRequired, String transformer);
+   public BeanMetaDataBuilder addDemand(Object demand, ControllerState whenRequired, String transformer)
+   {
+      return addDemand(demand, whenRequired, null, transformer);
+   }
+
+   /**
+    * Add a demand
+    *
+    * @param demand the demand
+    * @param whenRequired when the demand is required
+    * @param targetState the target state
+    * @param transformer the transformer
+    * @return the builder
+    */
+   public abstract BeanMetaDataBuilder addDemand(Object demand, ControllerState whenRequired, ControllerState targetState, String transformer);
 
    /**
     * Add a dependency

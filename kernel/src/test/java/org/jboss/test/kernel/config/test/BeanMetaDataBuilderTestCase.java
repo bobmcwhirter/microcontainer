@@ -194,6 +194,37 @@ public class BeanMetaDataBuilderTestCase extends AbstractKernelConfigTest
    }
 
    @SuppressWarnings("deprecation")
+   public void testDemandWithTargetState() throws Throwable
+   {
+      BeanMetaDataBuilder demand = BeanMetaDataBuilderFactory.createBuilder("DemandBean", SimpleBean.class.getName());
+      demand.addDemand("SupplyBean", ControllerState.CREATE, ControllerState.START, null);
+      BeanMetaDataFactory demandBean = demand.getBeanMetaDataFactory();
+
+      BeanMetaDataBuilder supply = BeanMetaDataBuilderFactory.createBuilder("SupplyBean", SimpleLifecycleBean.class.getName());
+      BeanMetaDataFactory supplyBean = supply.getBeanMetaDataFactory();
+
+      AbstractKernelDeployment deployment = new AbstractKernelDeployment();
+      deployment.setBeanFactories(Arrays.asList(demandBean, supplyBean));
+
+      Kernel kernel = bootstrap();
+      KernelController controller = kernel.getController();
+      AbstractKernelDeployer deployer = new AbstractKernelDeployer(kernel);
+
+      deployer.deploy(deployment);
+      try
+      {
+         Object db = controller.getInstalledContext("DemandBean").getTarget();
+         assertNotNull(db);
+         Object sb = controller.getInstalledContext("SupplyBean").getTarget();
+         assertNotNull(sb);
+      }
+      finally
+      {
+         deployer.undeploy(deployment);
+      }
+   }
+
+   @SuppressWarnings("deprecation")
    public void testDependency() throws Throwable
    {
       BeanMetaDataBuilder dependOn = BeanMetaDataBuilderFactory.createBuilder("DependOnBean", SimpleBean.class.getName());

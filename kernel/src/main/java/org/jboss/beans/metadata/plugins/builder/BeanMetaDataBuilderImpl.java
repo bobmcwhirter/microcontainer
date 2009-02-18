@@ -881,20 +881,23 @@ class BeanMetaDataBuilderImpl extends BeanMetaDataBuilder
     *
     * @param demand the demand
     * @param whenRequired the when required
+    * @param targetState the target state
     * @param transformer the transformer
     * @return the demand metadata
     */
-   protected DemandMetaData createDemandMetaData(Object demand, ControllerState whenRequired, String transformer)
+   protected DemandMetaData createDemandMetaData(Object demand, ControllerState whenRequired, ControllerState targetState, String transformer)
    {
       AbstractDemandMetaData admd = new AbstractDemandMetaData(demand);
       if (whenRequired != null)
          admd.setWhenRequired(whenRequired);
+      if (targetState != null)
+         admd.setTargetState(targetState);
       if (transformer != null)
          admd.setTransformer(transformer);
       return admd;
    }
 
-   public BeanMetaDataBuilder addDemand(Object demand, ControllerState whenRequired, String transformer)
+   public BeanMetaDataBuilder addDemand(Object demand, ControllerState whenRequired, ControllerState targetState, String transformer)
    {
       Set<DemandMetaData> demands = beanMetaData.getDemands();
       if (demands == null)
@@ -902,7 +905,7 @@ class BeanMetaDataBuilderImpl extends BeanMetaDataBuilder
          demands = new HashSet<DemandMetaData>();
          beanMetaData.setDemands(demands);
       }
-      demands.add(createDemandMetaData(demand, whenRequired, transformer));
+      demands.add(createDemandMetaData(demand, whenRequired, targetState, transformer));
       return this;
    }
 
