@@ -52,9 +52,6 @@ public class AbstractDependencyInfo extends JBossObject implements DependencyInf
    /** Dependencies referencing me */
    private Set<DependencyItem> dependsOnMe = new CopyOnWriteArraySet<DependencyItem>();
 
-   /** Unresolved dependencies */
-   private Set<DependencyItem> unresolved = new CopyOnWriteArraySet<DependencyItem>();
-
    /** Install callbacks */
    private Set<CallbackItem<?>> installCallbacks = new CopyOnWriteArraySet<CallbackItem<?>>();
 
@@ -93,14 +90,12 @@ public class AbstractDependencyInfo extends JBossObject implements DependencyInf
    public void addIDependOn(DependencyItem dependency)
    {
       iDependOn.add(dependency);
-      unresolved.add(dependency);
       flushJBossObjectCache();
    }
 
    public void removeIDependOn(DependencyItem dependency)
    {
       iDependOn.remove(dependency);
-      unresolved.remove(dependency);
       flushJBossObjectCache();
    }
    
@@ -149,15 +144,24 @@ public class AbstractDependencyInfo extends JBossObject implements DependencyInf
 
    public Set<DependencyItem> getUnresolvedDependencies(ControllerState state)
    {
-      if (unresolved.isEmpty())
+      if (iDependOn.isEmpty())
          return Collections.emptySet();
 
-      Set<DependencyItem> result = new HashSet<DependencyItem>();
-      for (DependencyItem item : unresolved)
+      Set<DependencyItem> result = null;
+      for (DependencyItem item : iDependOn)
       {
          if (state == null || state.equals(item.getWhenRequired()))
-            result.add(item);
+         {
+            if (item.isResolved() == false)
+            {
+               if (result == null)
+                  result = new HashSet<DependencyItem>();
+               result.add(item);
+            }
+         }
       }
+      if (result == null)
+         return Collections.emptySet();
       return result;
    }
 
@@ -218,7 +222,15 @@ public class AbstractDependencyInfo extends JBossObject implements DependencyInf
    public void toString(JBossStringBuilder buffer)
    {
       buffer.append("idependOn=").append(iDependOn);
-      if (unresolved.isEmpty() == false)
-         buffer.append(" unresolved=").append(unresolved);
+      try
+      {
+         Set<DependencyItem> unresolved = getUnresolvedDependencies(null);
+         if (unresolved.isEmpty() == false)
+            buffer.append(" unresolved=").append(unresolved);
+      }
+      catch (Throwable ignored)
+      {
+         buffer.append(" unresolved=" + ignored);
+      }
    }
 }
