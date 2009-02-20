@@ -88,7 +88,9 @@ public abstract class BeanMetaDataBuilder
          return BeanMetaDataBuilderFactory.createBuilder((AbstractBeanMetaData)beanMetaData);
       }
       else
-         throw new IllegalArgumentException("Invalid type of bean metadata");
+      {
+         throw new IllegalArgumentException("Invalid type of bean metadata: " + beanMetaData);
+      }
    }
 
    /**
