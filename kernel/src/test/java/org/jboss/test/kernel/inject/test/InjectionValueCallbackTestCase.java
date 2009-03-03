@@ -49,8 +49,9 @@ public class InjectionValueCallbackTestCase extends AbstractManualInjectTest
       KernelControllerContext context = getControllerContext("testObject", ControllerState.NOT_INSTALLED);
       assertNull(context.getTarget());
       assertEquals(context.getState(), ControllerState.NOT_INSTALLED);
-      
-      change(context, ControllerState.INSTALLED);
+
+      ControllerState state = change(context, ControllerState.INSTALLED);
+      assertEquals(ControllerState.INSTALLED, state);
       PropertyInjectTestObject injectee = (PropertyInjectTestObject)context.getTarget();
       assertNotNull(injectee);
       assertNull(injectee.getTesterInterface());
