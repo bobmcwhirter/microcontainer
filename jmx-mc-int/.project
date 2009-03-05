@@ -1,7 +1,8 @@
 <projectDescription>
-  <name>jmx-mc-int</name>
+  <name>jboss-jmx-mc-int</name>
   <comment>JBoss Microcontainer JMX Integration</comment>
   <projects>
+    <project>jboss-aop-mc-int</project>
     <project>jboss-dependency</project>
     <project>jboss-kernel</project>
   </projects>

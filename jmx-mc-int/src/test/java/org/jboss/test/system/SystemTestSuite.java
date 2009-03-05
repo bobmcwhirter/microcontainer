@@ -27,7 +27,6 @@ import junit.textui.TestRunner;
 
 import org.jboss.test.system.controller.test.ControllerTestSuite;
 import org.jboss.test.system.metadata.test.MetaDataTestSuite;
-import org.jboss.test.system.deployers.test.DeployersTestSuite;
 
 /**
  * System Test Suite.
@@ -48,7 +47,6 @@ public class SystemTestSuite extends TestSuite
 
       suite.addTest(MetaDataTestSuite.suite());
       suite.addTest(ControllerTestSuite.suite());
-      suite.addTest(DeployersTestSuite.suite());
 
       return suite;
    }
