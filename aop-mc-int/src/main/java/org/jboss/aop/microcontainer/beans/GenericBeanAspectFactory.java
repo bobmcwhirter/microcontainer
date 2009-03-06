@@ -165,6 +165,6 @@ public class GenericBeanAspectFactory extends GenericAspectFactory implements Ke
       {
          return getLoader();
       }
-      return SecurityActions.getClassLoader(advisor.getClass());
+      return advisor.getClassLoader();
    }
 }
