@@ -52,8 +52,6 @@ public class IntegrationTestSuite extends TestSuite
       suite.addTest(ConfigureJMXFromMCBadObjectNameUnitTestCase.suite());
       suite.addTest(MCDependsJMXUnitTestCase.suite());
       suite.addTest(JMXDependsMCUnitTestCase.suite());
-      suite.addTest(JMXAnnotationTestCase.suite());
-      suite.addTest(JMXAnnotationPluginTestCase.suite());
 
       return suite;
    }

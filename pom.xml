@@ -26,6 +26,7 @@
     <module>kernel</module>
     <module>jmx-mc-int</module>
     <module>aop-mc-int</module>
+    <module>jmx-aop-mc-int</module>
     <module>spring-int</module>
     <module>guice-int</module>
     <module>build</module>
@@ -197,8 +198,15 @@
       </dependency>
       <dependency>
         <groupId>org.jboss.microcontainer</groupId>
-        <artifactId>jmx-mc-int</artifactId>
+        <artifactId>jboss-jmx-mc-int</artifactId>
         <version>${project.version}</version>
+      </dependency>
+      <dependency>
+        <groupId>org.jboss.microcontainer</groupId>
+        <artifactId>jboss-jmx-mc-int</artifactId>
+        <version>${project.version}</version>
+        <type>test-jar</type>
+        <scope>test</scope>
       </dependency>
       <dependency>
         <groupId>org.jboss.microcontainer</groupId>
