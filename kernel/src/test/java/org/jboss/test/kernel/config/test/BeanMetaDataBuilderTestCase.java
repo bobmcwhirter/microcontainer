@@ -32,11 +32,13 @@ import java.util.Set;
 
 import junit.framework.Test;
 import org.jboss.beans.metadata.api.model.AutowireType;
+import org.jboss.beans.metadata.api.model.FromContext;
 import org.jboss.beans.metadata.plugins.AbstractBeanMetaData;
 import org.jboss.beans.metadata.plugins.AbstractRelatedClassMetaData;
 import org.jboss.beans.metadata.plugins.InstallCallbackMetaData;
 import org.jboss.beans.metadata.plugins.UninstallCallbackMetaData;
 import org.jboss.beans.metadata.plugins.AbstractDependencyValueMetaData;
+import org.jboss.beans.metadata.plugins.AbstractInjectionValueMetaData;
 import org.jboss.beans.metadata.plugins.builder.BeanMetaDataBuilderFactory;
 import org.jboss.beans.metadata.spi.AnnotationMetaData;
 import org.jboss.beans.metadata.spi.BeanMetaData;
@@ -991,5 +993,25 @@ public class BeanMetaDataBuilderTestCase extends AbstractKernelConfigTest
       Set<AnnotationMetaData> annotations = pmd.getAnnotations();
       assertNotNull(annotations);
       assertEquals(1, annotations.size());
+   }
+
+   public void testFromContextInject() throws Throwable
+   {
+      BeanMetaDataBuilder builder = BeanMetaDataBuilder.createBuilder("test");
+      ValueMetaData value = builder.createFromContextInject(FromContext.CONTEXT, "foobar", ControllerState.CREATE, Search.CHILD_ONLY_DEPTH);
+      builder.addPropertyMetaData("someproprerty", value);
+      BeanMetaData bmd = builder.getBeanMetaData();
+
+      Set<PropertyMetaData> properties = bmd.getProperties();
+      assertNotNull(properties);
+      assertEquals(1, properties.size());
+      PropertyMetaData pmd = properties.iterator().next();
+      ValueMetaData vmd = pmd.getValue();
+
+      AbstractInjectionValueMetaData inject = assertInstanceOf(vmd, AbstractInjectionValueMetaData.class);
+      assertEquals(FromContext.CONTEXT, inject.getFromContext());
+      assertEquals("foobar", inject.getUnderlyingValue());
+      assertEquals(ControllerState.CREATE, inject.getDependentState());
+      assertEquals(Search.CHILD_ONLY_DEPTH, inject.getSearch());
    }
 }

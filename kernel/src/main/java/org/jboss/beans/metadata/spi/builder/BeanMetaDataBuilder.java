@@ -30,6 +30,7 @@ import java.util.Set;
 
 import org.jboss.beans.info.spi.BeanAccessMode;
 import org.jboss.beans.metadata.api.model.AutowireType;
+import org.jboss.beans.metadata.api.model.FromContext;
 import org.jboss.beans.metadata.api.model.InjectOption;
 import org.jboss.beans.metadata.plugins.AbstractBeanMetaData;
 import org.jboss.beans.metadata.plugins.builder.BeanMetaDataBuilderFactory;
@@ -1720,6 +1721,53 @@ public abstract class BeanMetaDataBuilder
     * @return the contextual injection
     */
    public abstract ValueMetaData createContextualInject(ControllerState whenRequired, ControllerState dependentState, AutowireType autowire, InjectOption option, SearchInfo search);
+
+   /**
+    * Create from context injection.
+    *
+    * @param fromContext from context enum
+    * @return the from context injection
+    */
+   public ValueMetaData createFromContextInject(FromContext fromContext)
+   {
+      return createFromContextInject(fromContext, null);
+   }
+
+   /**
+    * Create from context injection.
+    *
+    * @param fromContext from context enum
+    * @param contextName the context name
+    * @return the from context injection
+    */
+   public ValueMetaData createFromContextInject(FromContext fromContext, Object contextName)
+   {
+      return createFromContextInject(fromContext, contextName, null);
+   }
+
+   /**
+    * Create from context injection.
+    *
+    * @param fromContext from context enum
+    * @param contextName the context name
+    * @param dependentState the state of the injected context
+    * @return the from context injection
+    */
+   public ValueMetaData createFromContextInject(FromContext fromContext, Object contextName, ControllerState dependentState)
+   {
+      return createFromContextInject(fromContext, contextName, dependentState, null);
+   }
+
+   /**
+    * Create from context injection.
+    *
+    * @param fromContext from context enum
+    * @param contextName the context name
+    * @param dependentState the state of the injected context
+    * @param search the search info
+    * @return the from context injection
+    */
+   public abstract ValueMetaData createFromContextInject(FromContext fromContext, Object contextName, ControllerState dependentState, SearchInfo search);
 
    /**
     * Create a new collection

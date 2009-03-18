@@ -33,6 +33,7 @@ import java.util.Set;
 import org.jboss.beans.info.spi.BeanAccessMode;
 import org.jboss.beans.metadata.api.model.AutowireType;
 import org.jboss.beans.metadata.api.model.InjectOption;
+import org.jboss.beans.metadata.api.model.FromContext;
 import org.jboss.beans.metadata.plugins.AbstractAnnotationMetaData;
 import org.jboss.beans.metadata.plugins.AbstractArrayMetaData;
 import org.jboss.beans.metadata.plugins.AbstractBeanMetaData;
@@ -1063,6 +1064,17 @@ class BeanMetaDataBuilderImpl extends BeanMetaDataBuilder
       return new AbstractInjectionValueMetaData();
    }
 
+   /**
+    * Create abstract dependency metadata.
+    *
+    * @param name the name
+    * @return abstract dependency value metadata
+    */
+   protected AbstractInjectionValueMetaData createAbstractInjectionValueMetaData(Object name)
+   {
+      return new AbstractInjectionValueMetaData(name);
+   }
+
    public ValueMetaData createContextualInject(ControllerState whenRequired, ControllerState dependentState, AutowireType autowire, InjectOption option, SearchInfo search)
    {
       AbstractInjectionValueMetaData result = createAbstractInjectionValueMetaData();
@@ -1074,6 +1086,17 @@ class BeanMetaDataBuilderImpl extends BeanMetaDataBuilder
          result.setInjectionType(autowire);
       if (option != null)
          result.setInjectionOption(option);
+      if (search != null)
+         result.setSearch(search);
+      return result;
+   }
+
+   public ValueMetaData createFromContextInject(FromContext fromContext, Object contextName, ControllerState dependentState, SearchInfo search)
+   {
+      AbstractInjectionValueMetaData result = createAbstractInjectionValueMetaData(contextName);
+      result.setFromContext(fromContext);
+      if (dependentState != null)
+         result.setDependentState(dependentState);
       if (search != null)
          result.setSearch(search);
       return result;
