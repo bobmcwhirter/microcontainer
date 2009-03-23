@@ -115,12 +115,40 @@ public class RecursiveControllerActionTestCase extends AbstractDependencyTest
       assertContext(context.child, ControllerState.INSTALLED);
    }
    
+   public void testInstallMany() throws Throwable
+   {
+      TestDelegate[] delegates = new TestDelegate[3];
+      RecursiveControllerContext[] contexts = new RecursiveControllerContext[delegates.length];
+      TestDelegate other = new TestDelegate("Other ");
+      for (int i = 0; i < delegates.length; ++i)
+      {
+         delegates[i] = new TestDelegate("InstallTestRecursive " + i);
+         contexts[i] = new RecursiveControllerContext(delegates[i], this);
+         DependencyItem item = new AbstractDependencyItem(delegates[i].getName(), other.getName(), ControllerState.CREATE, ControllerState.CONFIGURED);
+         contexts[i].getDependencyInfo().addIDependOn(item);
+         assertInstall(contexts[i], ControllerState.CONFIGURED);
+      }
+      
+      TestControllerContext otherContext = new TestControllerContext(other);
+      assertInstall(otherContext, ControllerState.INSTALLED);
+
+      for (int i = 0; i < delegates.length; ++i)
+      {
+         assertContext(contexts[i], ControllerState.INSTALLED);
+      }
+   }
+   
    public void installChild(RecursiveControllerContext context) throws Throwable
    {
+      if (++depth > 1)
+         throw new IllegalStateException("Should not recurse depth=" + depth);
       TestDelegate delegate = new TestDelegate(context.getName() + "Child");
       context.child = new RecursiveControllerContext(delegate, null);
       assertInstall(context.child, ControllerState.INSTALLED);
+      depth--;
    }
+   
+   int depth = 0;
    
    public void uninstallChild(RecursiveControllerContext context)
    {

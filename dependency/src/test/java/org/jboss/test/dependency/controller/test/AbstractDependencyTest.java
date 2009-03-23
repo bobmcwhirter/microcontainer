@@ -60,7 +60,7 @@ public class AbstractDependencyTest extends AbstractTestCaseWithSetup
       super.setUp();
       controller = new AbstractController();
       Ordering.resetOrder();
-      enableTrace("org.jboss.dependency");
+      //enableTrace("org.jboss.dependency");
    }
    
    protected ControllerContext assertInstall(TestDelegate delegate) throws Throwable

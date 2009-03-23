@@ -1039,6 +1039,7 @@ public class AbstractController extends JBossObject implements Controller, Contr
       Set<ControllerContext> resolved = resolveContexts(unresolved, toState, trace);
       if (resolved.isEmpty() == false)
       {
+         Set<ControllerContext> toProcess = new HashSet<ControllerContext>();
          for (ControllerContext context : resolved)
          {
             Object name = context.getName();
@@ -1054,7 +1055,20 @@ public class AbstractController extends JBossObject implements Controller, Contr
             }
             else
             {
-               try
+               toProcess.add(context);
+            }
+         }
+         for (ControllerContext context : toProcess)
+         {
+            Object name = context.getName();
+            try
+            {
+               if (fromState.equals(context.getState()) == false)
+               {
+                  if (trace)
+                     log.trace("Skipping already installed " + name + " for " + toState.getStateString());
+               }
+               else
                {
                   if (trace)
                      log.trace("Dependencies resolved " + name + " for " + toState.getStateString());
@@ -1065,11 +1079,12 @@ public class AbstractController extends JBossObject implements Controller, Contr
                      if (trace)
                         log.trace(name + " " + toState.getStateString());
                   }
+                  
                }
-               finally
-               {
-                  installing.remove(context);
-               }
+            }
+            finally
+            {
+               installing.remove(context);
             }
          }
       }
