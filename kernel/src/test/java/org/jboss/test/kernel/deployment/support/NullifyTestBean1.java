@@ -27,6 +27,7 @@ import java.util.Set;
 /**
  * @author <a href="mailto:ales.justin@jboss.org">Ales Justin</a>
  */
+@SuppressWarnings("unchecked")
 public class NullifyTestBean1
 {
    public void setSomething(Set set)

@@ -51,7 +51,7 @@ public class SchemaPrinter
    @SuppressWarnings("unchecked")
    public static String printSchema(SchemaBinding schemaBinding)
    {
-      String nsURI = (String) schemaBinding.getNamespaces().iterator().next();
+      String nsURI = schemaBinding.getNamespaces().iterator().next();
       StringBuilder builder = new StringBuilder();
       builder.append("<xsd:schema xmlns:xsd=\"http://www.w3.org/2001/XMLSchema\"\n");
       if (XMLConstants.NULL_NS_URI.equals(nsURI) == false)

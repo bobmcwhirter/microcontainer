@@ -49,7 +49,7 @@ public class TestSchemaResolver implements SchemaBindingResolver
    public void addSchemaBinding(SchemaBinding schemaBinding)
    {
       schemaBinding.setSchemaResolver(this);
-      String nsURI = (String) schemaBinding.getNamespaces().iterator().next();
+      String nsURI = schemaBinding.getNamespaces().iterator().next();
       bindings.put(nsURI, schemaBinding);
       if (log.isTraceEnabled())
       {

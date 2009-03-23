@@ -26,7 +26,6 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.net.URL;
 import java.net.URLClassLoader;
-import java.net.URLConnection;
 
 /**
  * 
@@ -77,7 +76,7 @@ public class ParentLastURLClassLoader extends URLClassLoader
       }
       String resourceName = name.replace('.', '/') + ".class";
       URL mine = delegate.findResource(resourceName);
-      URL parents = parent.getResource(resourceName);
+      parent.getResource(resourceName);
       if (mine == null || mine.equals(parent))
       {
          return delegate.loadClass(name);
@@ -92,7 +91,6 @@ public class ParentLastURLClassLoader extends URLClassLoader
    private byte[] loadBytes(String name, String resourceName)
    {
       InputStream in = delegate.getResourceAsStream(resourceName);
-      byte[] bytes = null;
       try
       {
          ByteArrayOutputStream baos = new ByteArrayOutputStream();

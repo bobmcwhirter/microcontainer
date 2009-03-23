@@ -51,7 +51,6 @@ public abstract class AspectFactoryWithDependencyTest extends AOPMicrocontainerT
          {
             deploy(getFile1());
             
-            POJO dependency = (POJO)getBean("Dependency");
             DependencyFactoryAspect.invoked = null;
             POJO pojo = (POJO)getBean("Bean");
             int ret = pojo.method(2);
@@ -76,7 +75,7 @@ public abstract class AspectFactoryWithDependencyTest extends AOPMicrocontainerT
    {
       try
       {
-         Object o = getBean(name);
+         getBean(name);
          fail("Should not have found '" + name + "'");
       }
       catch (Exception expected)
