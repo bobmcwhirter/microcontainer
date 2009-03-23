@@ -1058,34 +1058,46 @@ public class AbstractController extends JBossObject implements Controller, Contr
                toProcess.add(context);
             }
          }
-         for (ControllerContext context : toProcess)
+         try
          {
-            Object name = context.getName();
-            try
+            for (Iterator<ControllerContext> iter = toProcess.iterator(); iter.hasNext(); )
             {
-               if (fromState.equals(context.getState()) == false)
+               ControllerContext context = iter.next();
+               iter.remove();
+               Object name = context.getName();
+               try
                {
-                  if (trace)
-                     log.trace("Skipping already installed " + name + " for " + toState.getStateString());
-               }
-               else
-               {
-                  if (trace)
-                     log.trace("Dependencies resolved " + name + " for " + toState.getStateString());
-
-                  if (incrementState(context, trace))
+                  if (fromState.equals(context.getState()) == false)
                   {
-                     resolutions = true;
                      if (trace)
-                        log.trace(name + " " + toState.getStateString());
+                        log.trace("Skipping already installed " + name + " for " + toState.getStateString());
                   }
-                  
+                  else
+                  {
+                     if (trace)
+                        log.trace("Dependencies resolved " + name + " for " + toState.getStateString());
+
+                     if (incrementState(context, trace))
+                     {
+                        resolutions = true;
+                        if (trace)
+                           log.trace(name + " " + toState.getStateString());
+                     }
+                     
+                  }
+               }
+               finally
+               {
+                  installing.remove(context);
                }
             }
-            finally
-            {
+         }
+         finally
+         {
+            // If we get here something has gone seriously wrong,
+            // but try to tidyup as much state as possible
+            for (ControllerContext context : toProcess)
                installing.remove(context);
-            }
          }
       }
 
