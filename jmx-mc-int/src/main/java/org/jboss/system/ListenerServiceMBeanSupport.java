@@ -105,6 +105,7 @@ import org.w3c.dom.NodeList;
  *
  * @version $Revision$
 **/
+@SuppressWarnings("unchecked")
 public abstract class ListenerServiceMBeanSupport
    extends ServiceMBeanSupport
    implements ListenerServiceMBean, NotificationListener
@@ -215,6 +216,7 @@ public abstract class ListenerServiceMBeanSupport
     *
     * @param dynamicSubscriptions indicates whether to monitor and subscribe
     *                             to new MBeans that match the specification.
+    * @throws Exception for any error
    **/
    public void subscribe(boolean dynamicSubscriptions)
       throws Exception
@@ -228,6 +230,7 @@ public abstract class ListenerServiceMBeanSupport
     * @param dynamicSubscriptions indicates whether to monitor and subscribe
     *                             to new MBeans that match the specification.
     * @param listener the receiver of the notifications.
+    * @throws Exception for any error
    **/
    public void subscribe(boolean dynamicSubscriptions, ObjectName listener)
       throws Exception
@@ -256,6 +259,7 @@ public abstract class ListenerServiceMBeanSupport
     * @param dynamicSubscriptions indicates whether to monitor and subscribe
     *                             to new MBeans that match the specification.
     * @param listener the receiver of the notifications.
+    * @throws Exception for any error
    **/
    public void subscribe(List subscriptionList, boolean dynamicSubscriptions, ObjectName listener)
       throws Exception
@@ -421,6 +425,8 @@ public abstract class ListenerServiceMBeanSupport
 
    /**
     * Override to add notification handling!
+    * @param notification 
+    * @param handback 
    **/
    public void handleNotification2(Notification notification, Object handback)
    {
@@ -773,9 +779,6 @@ public abstract class ListenerServiceMBeanSupport
       
       // Constructor ------------------------------------------------
       
-      /**
-       * Simple CTOR
-      **/
       public SubscriptionInfo(ObjectName objectName, Object handback, NotificationFilter filter)
       {
          this.objectName = objectName;
@@ -785,7 +788,7 @@ public abstract class ListenerServiceMBeanSupport
       
       // Accessors --------------------------------------------------
       /**
-       * Gets objectname
+       * @return Gets objectname
       **/
       public ObjectName getObjectName()
       {
@@ -793,7 +796,7 @@ public abstract class ListenerServiceMBeanSupport
       }
       
       /**
-       * Gets handback object
+       * @return Gets handback object
       **/
       public Object getHandback()
       {
@@ -801,7 +804,7 @@ public abstract class ListenerServiceMBeanSupport
       }
       
       /**
-       * Gets notification filter
+       * @return Gets notification filter
       **/
       public NotificationFilter getFilter()
       {

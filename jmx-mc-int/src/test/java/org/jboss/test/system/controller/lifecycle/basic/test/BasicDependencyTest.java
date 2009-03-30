@@ -58,6 +58,9 @@ public abstract class BasicDependencyTest extends AbstractControllerTest
       index = resourceName.indexOf("OldUnitTestCase");
       if (index != -1)
          resourceName = resourceName.substring(0, index);
+      index = resourceName.indexOf("PlainUnitTestCase");
+      if (index != -1)
+         resourceName = resourceName.substring(0, index);
       
       resourceName = resourceName + "_NotAutomatic.xml";
    }

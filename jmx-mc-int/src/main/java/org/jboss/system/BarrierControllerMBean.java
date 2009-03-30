@@ -34,26 +34,26 @@ public interface BarrierControllerMBean extends ListenerServiceMBean
 {
    // Attributes ----------------------------------------------------
 
-   /** The controlled barrier StateString */
+   /* The controlled barrier StateString */
    String getBarrierStateString();
    
-   /** The controlled barrier ObjectName */
+   /* The controlled barrier ObjectName */
    void setBarrierObjectName(ObjectName barrierName);
    ObjectName getBarrierObjectName();
    
-   /** The initial state of the barrier */
+   /* The initial state of the barrier */
    void setBarrierEnabledOnStartup(Boolean enableOnStartup);
    Boolean getBarrierEnabledOnStartup();
    
-   /** The notification subscription handback string that starts the barrier */
+   /* The notification subscription handback string that starts the barrier */
    void setStartBarrierHandback(String startHandback);
    String getStartBarrierHandback();
    
-   /** The notification subscription handback string that stops the barrier */
+   /* The notification subscription handback string that stops the barrier */
    void setStopBarrierHandback(String stopHandback);
    String getStopBarrierHandback();
    
-   /** The ability to dynamically subscribe for notifications */
+   /* The ability to dynamically subscribe for notifications */
    void setDynamicSubscriptions(Boolean dynamicSubscriptions);
    Boolean getDynamicSubscriptions();
    

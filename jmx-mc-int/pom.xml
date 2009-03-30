@@ -62,6 +62,10 @@
       <artifactId>jboss-jmx</artifactId>
     </dependency>
     <dependency>
+      <groupId>org.jboss.mx</groupId>
+      <artifactId>jboss-mbeanserver</artifactId>
+    </dependency>
+    <dependency>
       <groupId>org.jboss.man</groupId>
       <artifactId>jboss-managed</artifactId>
       <optional>true</optional>

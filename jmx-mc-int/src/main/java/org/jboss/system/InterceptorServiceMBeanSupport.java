@@ -49,6 +49,7 @@ import org.jboss.mx.server.Invocation;
  * @author <a href="mailto:dimitris@jboss.org">Dimitris Andreadis</a>
  * @version $Revision$
  */
+@SuppressWarnings("unchecked")
 public abstract class InterceptorServiceMBeanSupport extends ServiceMBeanSupport
    implements InterceptorServiceMBean
 {
@@ -227,6 +228,9 @@ public abstract class InterceptorServiceMBeanSupport extends ServiceMBeanSupport
    
    /**
     * Use this to forward the call
+    * @param invocation 
+    * @return the result
+    * @throws Throwable 
     */
    protected Object invokeNext(Invocation invocation) throws Throwable
    {
@@ -245,9 +249,6 @@ public abstract class InterceptorServiceMBeanSupport extends ServiceMBeanSupport
    
    // Override ------------------------------------------------------
    
-   /**
-    * Override
-    */
    protected Object invoke(Invocation invocation) throws Throwable
    {
       return invokeNext(invocation);

@@ -43,7 +43,7 @@ public class ElementValueNewUnitTestCase extends ElementValueTest
       super(name);
    }
 
-   public static AbstractTestDelegate getDelegate(Class clazz) throws Exception
+   public static AbstractTestDelegate getDelegate(Class<?> clazz) throws Exception
    {
       return getNewControllerDelegate(clazz);
    }

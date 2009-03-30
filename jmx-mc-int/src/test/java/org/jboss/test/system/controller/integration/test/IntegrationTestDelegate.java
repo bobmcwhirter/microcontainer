@@ -49,7 +49,7 @@ public class IntegrationTestDelegate extends NewControllerTestDelegate
    /** The deployer */
    protected BasicXMLDeployer beanDeployer;
 
-   public IntegrationTestDelegate(Class clazz)
+   public IntegrationTestDelegate(Class<?> clazz)
    {
       super(clazz);
    }

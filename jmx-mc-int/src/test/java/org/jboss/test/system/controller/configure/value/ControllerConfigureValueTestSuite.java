@@ -23,17 +23,23 @@ package org.jboss.test.system.controller.configure.value;
 
 import org.jboss.test.system.controller.configure.value.depends.test.DependencyValueNewUnitTestCase;
 import org.jboss.test.system.controller.configure.value.depends.test.DependencyValueOldUnitTestCase;
+import org.jboss.test.system.controller.configure.value.depends.test.DependencyValuePlainUnitTestCase;
 import org.jboss.test.system.controller.configure.value.dependslist.test.DependencyListValueNewUnitTestCase;
 import org.jboss.test.system.controller.configure.value.dependslist.test.DependencyListValueOldUnitTestCase;
+import org.jboss.test.system.controller.configure.value.dependslist.test.DependencyListValuePlainUnitTestCase;
 import org.jboss.test.system.controller.configure.value.element.test.ElementValueNewUnitTestCase;
 import org.jboss.test.system.controller.configure.value.element.test.ElementValueOldUnitTestCase;
+import org.jboss.test.system.controller.configure.value.element.test.ElementValuePlainUnitTestCase;
 import org.jboss.test.system.controller.configure.value.inject.test.NewInjectionValueUnitTestCase;
 import org.jboss.test.system.controller.configure.value.javabean.test.JavaBeanValueNewUnitTestCase;
 import org.jboss.test.system.controller.configure.value.javabean.test.JavaBeanValueOldUnitTestCase;
+import org.jboss.test.system.controller.configure.value.javabean.test.JavaBeanValuePlainUnitTestCase;
 import org.jboss.test.system.controller.configure.value.jbxb.test.JBXBValueNewUnitTestCase;
 import org.jboss.test.system.controller.configure.value.jbxb.test.JBXBValueOldUnitTestCase;
+import org.jboss.test.system.controller.configure.value.jbxb.test.JBXBValuePlainUnitTestCase;
 import org.jboss.test.system.controller.configure.value.text.test.TextValueNewUnitTestCase;
 import org.jboss.test.system.controller.configure.value.text.test.TextValueOldUnitTestCase;
+import org.jboss.test.system.controller.configure.value.text.test.TextValuePlainUnitTestCase;
 
 import junit.framework.Test;
 import junit.framework.TestSuite;
@@ -58,16 +64,22 @@ public class ControllerConfigureValueTestSuite extends TestSuite
 
       suite.addTest(TextValueOldUnitTestCase.suite());
       suite.addTest(TextValueNewUnitTestCase.suite());
+      suite.addTest(TextValuePlainUnitTestCase.suite());
       suite.addTest(DependencyValueOldUnitTestCase.suite());
       suite.addTest(DependencyValueNewUnitTestCase.suite());
+      suite.addTest(DependencyValuePlainUnitTestCase.suite());
       suite.addTest(DependencyListValueOldUnitTestCase.suite());
       suite.addTest(DependencyListValueNewUnitTestCase.suite());
+      suite.addTest(DependencyListValuePlainUnitTestCase.suite());
       suite.addTest(ElementValueOldUnitTestCase.suite());
       suite.addTest(ElementValueNewUnitTestCase.suite());
+      suite.addTest(ElementValuePlainUnitTestCase.suite());
       suite.addTest(JavaBeanValueOldUnitTestCase.suite());
       suite.addTest(JavaBeanValueNewUnitTestCase.suite());
+      suite.addTest(JavaBeanValuePlainUnitTestCase.suite());
       suite.addTest(JBXBValueOldUnitTestCase.suite());
       suite.addTest(JBXBValueNewUnitTestCase.suite());
+      suite.addTest(JBXBValuePlainUnitTestCase.suite());
       suite.addTest(NewInjectionValueUnitTestCase.suite());
       
       return suite;

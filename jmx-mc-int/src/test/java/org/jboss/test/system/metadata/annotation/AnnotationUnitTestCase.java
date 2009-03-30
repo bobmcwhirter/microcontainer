@@ -24,8 +24,6 @@ package org.jboss.test.system.metadata.annotation;
 import java.lang.annotation.Annotation;
 import java.util.List;
 
-import javax.management.ObjectName;
-
 import org.jboss.annotation.factory.AnnotationCreator;
 import org.jboss.system.metadata.ServiceAnnotationMetaData;
 import org.jboss.system.metadata.ServiceMetaData;
@@ -55,7 +53,7 @@ public class AnnotationUnitTestCase extends AbstractMetaDataTest
       assertOthers(metaData);
    }
 
-   protected void assertAnnotation(ServiceMetaData metaData, String exp, Class c)
+   protected void assertAnnotation(ServiceMetaData metaData, String exp, Class<?> c)
       throws Exception
    {
       List<ServiceAnnotationMetaData> annotations = metaData.getAnnotations();

@@ -43,7 +43,7 @@ public class TextValueNewUnitTestCase extends TextValueTest
       super(name);
    }
 
-   public static AbstractTestDelegate getDelegate(Class clazz) throws Exception
+   public static AbstractTestDelegate getDelegate(Class<?> clazz) throws Exception
    {
       return getNewControllerDelegate(clazz);
    }

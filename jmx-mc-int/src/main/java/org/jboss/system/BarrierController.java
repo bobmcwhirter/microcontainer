@@ -44,10 +44,6 @@ import javax.management.ObjectName;
  * to apply complex logic in deciding whether to initially start
  * the barrier (e.g. query some other mbean). 
  * 
- * @jmx:mbean
- *    extends="org.jboss.system.ListenerServiceMBean"
- *    name="jboss:service=BarrierController"
- * 
  * @author <a href="dimitris@jboss.org">Dimitris Andreadis</a>
  * @author Scott.Stark@jboss.org
  * @version $Revision$
@@ -247,6 +243,7 @@ public class BarrierController extends ListenerServiceMBeanSupport
     * setBarrierEnabledOnStartup(Boolean) has not been called.
     * 
     * The default implementation is to return false.
+    * @return true to enable at startup
     */
    protected Boolean enableOnStartup()
    {
@@ -338,8 +335,6 @@ public class BarrierController extends ListenerServiceMBeanSupport
 
    /**
     * Manually start the controlled barrier
-    * 
-    * @jmx:managed-operation
     */
    public void startBarrier()
    {
@@ -356,8 +351,6 @@ public class BarrierController extends ListenerServiceMBeanSupport
 
    /**
     * Manually stop the controlled barrier
-    * 
-    * @jmx:managed-operation
     */
    public void stopBarrier()
    {
@@ -394,17 +387,11 @@ public class BarrierController extends ListenerServiceMBeanSupport
    
    // Inner Class ---------------------------------------------------
    
-   /**
-    * The controlled barrier MBean interface
-    */
    public static interface BarrierMBean
    {
-      /** We just want to expose those attributes */
       ObjectName getBarrierController();
       String getStateString();
       int getState();
-      
-      /** Hook up with the ServiceController */
       void jbossInternalLifecycle(String method) throws Exception;
    }   
 
@@ -416,7 +403,6 @@ public class BarrierController extends ListenerServiceMBeanSupport
       /** The parent Controller */
       private ObjectName barrierController;
       
-      /** CTOR */
       public Barrier(ObjectName barrierController)
       {
          this.barrierController = barrierController;

@@ -39,6 +39,7 @@ public interface ServiceFactory
     * @param server    The MBeanServer instance
     * @param name      The name of the MBean that wishes to be managed by
     *                  the JBoss ServiceControl service.
+    * @return the service
     */
    Service createService(MBeanServer server, ObjectName name);
 }

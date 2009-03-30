@@ -50,6 +50,7 @@ import org.w3c.dom.NodeList;
  * @author <a href="mailto:d_jencks@users.sourceforge.net">David Jencks</a>
  * @version $Revision$
  */
+@SuppressWarnings("unchecked")
 public class OldServiceCreator
 {
    // Static --------------------------------------------------------

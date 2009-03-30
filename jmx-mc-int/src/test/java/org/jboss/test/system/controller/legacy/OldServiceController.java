@@ -65,6 +65,7 @@ import org.w3c.dom.Element;
  * @author <a href="mailto:dimitris@jboss.org">Dimitris Andreadis</a>
  * @version $Revision$
  */
+@SuppressWarnings("unchecked")
 public class OldServiceController extends JBossNotificationBroadcasterSupport
    implements OldServiceControllerMBean, MBeanRegistration
 {
@@ -712,7 +713,7 @@ public class OldServiceController extends JBossNotificationBroadcasterSupport
       ClassLoader loader = Thread.currentThread().getContextClassLoader();
       if (serviceFactory != null && serviceFactory.length() > 0)
       {
-         Class clazz = loader.loadClass(serviceFactory);
+         Class<?> clazz = loader.loadClass(serviceFactory);
          ServiceFactory factory = (ServiceFactory) clazz.newInstance();
          service = factory.createService(server, objectName);
       }
@@ -720,7 +721,7 @@ public class OldServiceController extends JBossNotificationBroadcasterSupport
       {
          MBeanInfo info = server.getMBeanInfo(objectName);
          MBeanOperationInfo[] opInfo = info.getOperations();
-         Class[] interfaces = {Service.class};
+         Class<?>[] interfaces = {Service.class};
          InvocationHandler handler = new ServiceProxy(objectName, opInfo);
          service = (Service) Proxy.newProxyInstance(Service.class.getClassLoader(), interfaces, handler);
       }

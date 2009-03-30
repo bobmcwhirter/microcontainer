@@ -27,10 +27,13 @@ import junit.textui.TestRunner;
 
 import org.jboss.test.system.controller.configure.attribute.test.AttributeNewUnitTestCase;
 import org.jboss.test.system.controller.configure.attribute.test.AttributeOldUnitTestCase;
+import org.jboss.test.system.controller.configure.attribute.test.AttributePlainUnitTestCase;
 import org.jboss.test.system.controller.configure.attribute.test.DependsAttributeNewUnitTestCase;
 import org.jboss.test.system.controller.configure.attribute.test.DependsAttributeOldUnitTestCase;
+import org.jboss.test.system.controller.configure.attribute.test.DependsAttributePlainUnitTestCase;
 import org.jboss.test.system.controller.configure.attribute.test.DependsListAttributeNewUnitTestCase;
 import org.jboss.test.system.controller.configure.attribute.test.DependsListAttributeOldUnitTestCase;
+import org.jboss.test.system.controller.configure.attribute.test.DependsListAttributePlainUnitTestCase;
 import org.jboss.test.system.controller.configure.value.ControllerConfigureValueTestSuite;
 
 /**
@@ -52,13 +55,17 @@ public class ControllerConfigureTestSuite extends TestSuite
 
       suite.addTest(AttributeOldUnitTestCase.suite());
       suite.addTest(AttributeNewUnitTestCase.suite());
+      suite.addTest(AttributePlainUnitTestCase.suite());
       suite.addTest(DependsAttributeOldUnitTestCase.suite());
       suite.addTest(DependsAttributeNewUnitTestCase.suite());
+      suite.addTest(DependsAttributePlainUnitTestCase.suite());
       suite.addTest(DependsListAttributeOldUnitTestCase.suite());
       suite.addTest(DependsListAttributeNewUnitTestCase.suite());
+      suite.addTest(DependsListAttributePlainUnitTestCase.suite());
       suite.addTest(ControllerConfigureValueTestSuite.suite());
       suite.addTest(ConfigureRedeployAfterErrorOldUnitTestCase.suite());
       suite.addTest(ConfigureRedeployAfterErrorNewUnitTestCase.suite());
+      suite.addTest(ConfigureRedeployAfterErrorPlainUnitTestCase.suite());
       
       return suite;
    }

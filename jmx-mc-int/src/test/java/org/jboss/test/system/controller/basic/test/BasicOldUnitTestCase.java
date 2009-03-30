@@ -43,7 +43,7 @@ public class BasicOldUnitTestCase extends BasicTest
       super(name);
    }
 
-   public static AbstractTestDelegate getDelegate(Class clazz) throws Exception
+   public static AbstractTestDelegate getDelegate(Class<?> clazz) throws Exception
    {
       return getOldControllerDelegate(clazz);
    }

@@ -29,6 +29,7 @@ import java.util.Iterator;
  * @author <a href="adrian@jboss.com">Adrian Brock</a>
  * @version $Revision$
  */
+@SuppressWarnings("unchecked")
 public class JavaBean
 {
    private String property1;

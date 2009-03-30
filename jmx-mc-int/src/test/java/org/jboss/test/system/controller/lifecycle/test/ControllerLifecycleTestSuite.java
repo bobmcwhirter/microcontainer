@@ -47,6 +47,7 @@ public class ControllerLifecycleTestSuite extends TestSuite
 
       suite.addTest(LifecycleRedeployAfterErrorOldUnitTestCase.suite());
       suite.addTest(LifecycleRedeployAfterErrorNewUnitTestCase.suite());
+      suite.addTest(LifecycleRedeployAfterErrorPlainUnitTestCase.suite());
       suite.addTest(ControllerLifecycleBasicTestSuite.suite());
       suite.addTest(ControllerLifecycleSeperatedTestSuite.suite());
       

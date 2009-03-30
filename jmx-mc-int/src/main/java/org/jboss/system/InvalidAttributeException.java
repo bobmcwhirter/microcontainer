@@ -30,6 +30,9 @@ package org.jboss.system;
 public class InvalidAttributeException
    extends ConfigurationException
 {
+   /** The serialVersionUID */
+   private static final long serialVersionUID = 785817154841571537L;
+
    /**
     * Construct a <tt>InvalidAttributeException</tt> with the 
     * specified detail message.

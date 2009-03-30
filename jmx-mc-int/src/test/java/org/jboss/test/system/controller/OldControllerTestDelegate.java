@@ -42,7 +42,7 @@ import org.jboss.test.system.controller.legacy.OldServiceController;
  */
 public class OldControllerTestDelegate extends ControllerTestDelegate
 {
-   public OldControllerTestDelegate(Class clazz)
+   public OldControllerTestDelegate(Class<?> clazz)
    {
       super(clazz);
    }

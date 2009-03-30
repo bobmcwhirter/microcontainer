@@ -34,6 +34,7 @@ import java.util.Iterator;
  * @author <a href="mailto:dimitris@jboss.org">Dimitris Andreadis</a>
  * @version $Revision: 81033 $
  */
+@SuppressWarnings("unchecked")
 public class IncompleteDeploymentException extends Exception
 {
    /** @since 4.0.2 */

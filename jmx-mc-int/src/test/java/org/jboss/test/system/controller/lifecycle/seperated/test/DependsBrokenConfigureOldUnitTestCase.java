@@ -44,7 +44,7 @@ public class DependsBrokenConfigureOldUnitTestCase extends DependsBrokenConfigur
       super(name);
    }
 
-   public static AbstractTestDelegate getDelegate(Class clazz) throws Exception
+   public static AbstractTestDelegate getDelegate(Class<?> clazz) throws Exception
    {
       return getOldControllerDelegate(clazz);
    }

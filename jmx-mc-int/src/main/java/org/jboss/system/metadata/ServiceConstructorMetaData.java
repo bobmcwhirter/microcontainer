@@ -142,7 +142,7 @@ public class ServiceConstructorMetaData
          if (signature[i] != null)
          {
             // See if it is a primitive type first
-            Class typeClass = Classes.getPrimitiveTypeForName(signature[i]);
+            Class<?> typeClass = Classes.getPrimitiveTypeForName(signature[i]);
             if (typeClass == null)
                typeClass = cl.loadClass(signature[i]);
 
@@ -153,8 +153,8 @@ public class ServiceConstructorMetaData
                try
                {
                   // See if there is a ctor(String) for the type
-                  Class[] sig = {String.class};
-                  Constructor ctor = typeClass.getConstructor(sig);
+                  Class<?>[] sig = {String.class};
+                  Constructor<?> ctor = typeClass.getConstructor(sig);
                   Object[] args = {value};
                   realValue = ctor.newInstance(args);
                }

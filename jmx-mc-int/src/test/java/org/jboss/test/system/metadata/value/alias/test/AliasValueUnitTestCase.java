@@ -22,10 +22,9 @@
 package org.jboss.test.system.metadata.value.alias.test;
 
 import java.util.List;
-import java.util.Iterator;
 
-import org.jboss.test.system.metadata.test.AbstractMetaDataTest;
 import org.jboss.system.metadata.ServiceMetaData;
+import org.jboss.test.system.metadata.test.AbstractMetaDataTest;
 
 /**
  * Test aliases on XMBeans.

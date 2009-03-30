@@ -117,6 +117,7 @@ public interface ListenerServiceMBean
     * @see org.jboss.system.filterfactory.NotificationFilterSupportFactory
     *  
     * See also jboss-subscription.dtd
+    * @param list 
    **/
    public void setSubscriptionList(org.w3c.dom.Element list);
    

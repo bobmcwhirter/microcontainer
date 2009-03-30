@@ -44,14 +44,19 @@ public class ControllerLifecycleSeperatedTestSuite extends TestSuite
 
       suite.addTest(SeperatedDependencyDependsOldUnitTestCase.suite());
       suite.addTest(SeperatedDependencyDependsNewUnitTestCase.suite());
+      suite.addTest(SeperatedDependencyDependsPlainUnitTestCase.suite());
       suite.addTest(DependsBrokenInstantiateOldUnitTestCase.suite());
       suite.addTest(DependsBrokenInstantiateNewUnitTestCase.suite());
+      suite.addTest(DependsBrokenInstantiatePlainUnitTestCase.suite());
       suite.addTest(DependsBrokenConfigureOldUnitTestCase.suite());
       suite.addTest(DependsBrokenConfigureNewUnitTestCase.suite());
+      suite.addTest(DependsBrokenConfigurePlainUnitTestCase.suite());
       suite.addTest(DependsBrokenCreateOldUnitTestCase.suite());
       suite.addTest(DependsBrokenCreateNewUnitTestCase.suite());
+      suite.addTest(DependsBrokenCreatePlainUnitTestCase.suite());
       suite.addTest(DependsBrokenStartOldUnitTestCase.suite());
       suite.addTest(DependsBrokenStartNewUnitTestCase.suite());
+      suite.addTest(DependsBrokenStartPlainUnitTestCase.suite());
       suite.addTest(NewOnDemandDependencyUnitTestCase.suite());
       suite.addTest(NewOnDemandServerDependencyUnitTestCase.suite());
       

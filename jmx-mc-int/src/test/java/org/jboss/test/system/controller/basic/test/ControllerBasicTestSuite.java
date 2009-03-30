@@ -44,8 +44,10 @@ public class ControllerBasicTestSuite extends TestSuite
 
       suite.addTest(BasicOldUnitTestCase.suite());
       suite.addTest(BasicNewUnitTestCase.suite());
+      suite.addTest(BasicPlainUnitTestCase.suite());
       suite.addTest(DoubleInstallOldUnitTestCase.suite());
       suite.addTest(DoubleInstallNewUnitTestCase.suite());
+      suite.addTest(DoubleInstallPlainUnitTestCase.suite());
       
       return suite;
    }

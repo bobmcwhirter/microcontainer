@@ -22,16 +22,19 @@
 package org.jboss.system;
 
 import java.net.URL;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 import javax.management.MBeanServer;
+import javax.management.NotCompliantMBeanException;
 import javax.management.ObjectInstance;
 import javax.management.ObjectName;
+import javax.management.ReflectionException;
 import javax.management.StandardMBean;
 
 import org.jboss.logging.Logger;
 import org.jboss.mx.server.ServerConstants;
-import org.jboss.mx.server.registry.MBeanEntry;
 import org.jboss.mx.service.ServiceConstants;
 import org.jboss.mx.util.JMXExceptionDecoder;
 import org.jboss.mx.util.ObjectNameFactory;
@@ -208,14 +211,26 @@ public class ServiceCreator
       
       // This is a standard or dynamic mbean
       log.debug("About to create bean: " + objectName + " with code: " + code);
-      ObjectInstance instance = server.createMBean(code,
-                                                   objectName,
-                                                   loaderName,
-                                                   constructor.getParameters(loader),
-                                                   constructor.getSignature());
+      Object resource = null;
+      try
+      {
+         resource = server.instantiate(code,
+                                       loaderName,
+                                       constructor.getParameters(loader),
+                                       constructor.getSignature());
+      }
+      catch (ReflectionException e)
+      {
+         // This hack is for backwards compatibility on the error messages
+         Throwable t = e.getCause();
+         if (t instanceof ClassNotFoundException)
+            throw e;
+         throw new NotCompliantMBeanException("Error in constructor for " + code + " " + e.toString());
+      }
 
-      MBeanEntry entry = (MBeanEntry) server.invoke(MBEAN_REGISTRY, "get", new Object[] { objectName }, new String[] { ObjectName.class.getName() });
-      Object resource = entry.getResourceInstance();
+      Map<String, Object> values = new HashMap<String, Object>();
+      values.put(ServerConstants.CLASSLOADER, loader);
+      ObjectInstance instance = (ObjectInstance) server.invoke(MBEAN_REGISTRY, "registerMBean", new Object[] { resource, objectName, values }, new String[] { Object.class.getName(), ObjectName.class.getName(), Map.class.getName() });
       return new ServiceInstance(instance, resource);
    }
 

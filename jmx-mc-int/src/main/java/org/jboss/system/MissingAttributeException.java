@@ -30,6 +30,9 @@ package org.jboss.system;
 public class MissingAttributeException
    extends ConfigurationException
 {
+   /** The serialVersionUID */
+   private static final long serialVersionUID = 2104972080882639099L;
+
    /**
     * Construct a <tt>MissingAttributeException</tt> with the specified detail 
     * message.

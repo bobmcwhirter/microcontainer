@@ -37,6 +37,7 @@ import org.jboss.util.state.Transition;
  * @author <a href="dimitris@jboss.org">Dimitris Andreadis</a>
  * @version $Revision$
 **/
+@SuppressWarnings("unchecked")
 public final class ServiceMBeanState
 {
    // ServiceMBean States

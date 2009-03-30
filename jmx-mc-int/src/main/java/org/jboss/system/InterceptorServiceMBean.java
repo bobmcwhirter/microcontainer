@@ -33,6 +33,7 @@ import java.util.List;
  * @author <a href="mailto:dimitris@jboss.org">Dimitris Andreadis</a>
  * @version $Revision$
 **/
+@SuppressWarnings("unchecked")
 public interface InterceptorServiceMBean extends ServiceMBean
 {
    // Attributes ----------------------------------------------------
@@ -40,6 +41,7 @@ public interface InterceptorServiceMBean extends ServiceMBean
    /**
     * The ObjectNames of the MBeans implementing the operations
     * in the org.jboss.mx.server.Interceptable interface
+    * @param interceptables 
     */
    void setInterceptables(List interceptables);
    List getInterceptables();

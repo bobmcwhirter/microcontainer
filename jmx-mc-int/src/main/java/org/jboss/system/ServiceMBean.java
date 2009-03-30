@@ -73,6 +73,9 @@ public interface ServiceMBean
    int getState();
    String getStateString();
    
-   /** Detyped lifecycle invocation */
+   /** Detyped lifecycle invocation 
+    * @param method the lifecyle method
+    * @throws Exception for any error
+    */
    void jbossInternalLifecycle(String method) throws Exception;
 }

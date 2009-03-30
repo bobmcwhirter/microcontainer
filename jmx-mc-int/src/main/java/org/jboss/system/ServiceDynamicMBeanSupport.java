@@ -21,7 +21,6 @@
  */
 package org.jboss.system;
 
-import java.util.List;
 import javax.management.Attribute;
 import javax.management.AttributeList;
 import javax.management.AttributeNotFoundException;
@@ -40,8 +39,6 @@ import org.jboss.logging.Logger;
 
 /**
  * <description>
- *
- * @see <related>
  *
  * @author  <a href="mailto:sacha.labourey@cogito-info.ch">Sacha Labourey</a>.
  * @version $Revision$
@@ -71,7 +68,7 @@ public class ServiceDynamicMBeanSupport
       super();
    }
 
-   public ServiceDynamicMBeanSupport(Class type)
+   public ServiceDynamicMBeanSupport(Class<?> type)
    {
       super(type);
    }

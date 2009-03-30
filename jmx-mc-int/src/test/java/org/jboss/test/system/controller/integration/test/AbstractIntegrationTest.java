@@ -47,7 +47,7 @@ public abstract class AbstractIntegrationTest extends AbstractControllerTest
       super(name);
    }
    
-   public static AbstractTestDelegate getDelegate(Class clazz) throws Exception
+   public static AbstractTestDelegate getDelegate(Class<?> clazz) throws Exception
    {
       IntegrationTestDelegate delegate = new IntegrationTestDelegate(clazz);
       // @todo delegate.enableSecurity = true;

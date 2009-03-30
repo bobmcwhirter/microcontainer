@@ -50,7 +50,7 @@ public class NewNoMetaDataInstantiateUnitTestCase extends AbstractControllerTest
       super(name);
    }
 
-   public static AbstractTestDelegate getDelegate(Class clazz) throws Exception
+   public static AbstractTestDelegate getDelegate(Class<?> clazz) throws Exception
    {
       return getNewControllerDelegate(clazz);
    }

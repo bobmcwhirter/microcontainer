@@ -56,6 +56,11 @@ public abstract class DependsBrokenTest extends AbstractControllerTest
       index = resourceName.indexOf("OldUnitTestCase");
       if (index != -1)
          resourceName = resourceName.substring(0, index);
+      if (index != -1)
+         resourceName = resourceName.substring(0, index);
+      index = resourceName.indexOf("PlainUnitTestCase");
+      if (index != -1)
+         resourceName = resourceName.substring(0, index);
       
       resourceName1 = resourceName + "_bad.xml";
       resourceName2 = resourceName + "_good.xml";

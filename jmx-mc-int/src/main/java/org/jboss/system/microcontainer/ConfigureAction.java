@@ -23,10 +23,8 @@ package org.jboss.system.microcontainer;
 
 import java.util.List;
 
-import javax.management.MBeanServer;
 import javax.management.ObjectName;
 
-import org.jboss.system.ServiceBinding;
 import org.jboss.system.ServiceConfigurator;
 import org.jboss.system.ServiceContext;
 import org.jboss.system.ServiceController;
@@ -44,7 +42,6 @@ public class ConfigureAction extends ServiceControllerContextAction
    public void installAction(ServiceControllerContext context) throws Throwable
    {
       ServiceController controller = context.getServiceController();
-      MBeanServer server = controller.getMBeanServer();
       ObjectName objectName = context.getObjectName();
 
       // Configure any attributes

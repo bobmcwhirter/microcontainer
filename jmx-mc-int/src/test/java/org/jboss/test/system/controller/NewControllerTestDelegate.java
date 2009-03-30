@@ -37,7 +37,7 @@ import junit.framework.AssertionFailedError;
  */
 public class NewControllerTestDelegate extends ControllerTestDelegate
 {
-   public NewControllerTestDelegate(Class clazz)
+   public NewControllerTestDelegate(Class<?> clazz)
    {
       super(clazz);
    }

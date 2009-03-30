@@ -273,18 +273,18 @@ public class ServiceMetaData extends AbstractMetaDataVisitorNode
 
    /**
     * Add an attribute
-    * @param attribute
+    * @param attributeList
     */
-   public void addAttributes(List<ServiceAttributeMetaData> aAttributeList)
+   public void addAttributes(List<ServiceAttributeMetaData> attributeList)
    {
-      if(aAttributeList == null)
+      if(attributeList == null)
          throw new IllegalArgumentException("Null attribute");
       if(this.attributes.size() == 0)
-         this.attributes = aAttributeList;
+         this.attributes = attributeList;
       else
       {
          //Avoid duplicates
-         for(ServiceAttributeMetaData serviceAttributeMetaData: aAttributeList)
+         for(ServiceAttributeMetaData serviceAttributeMetaData: attributeList)
          {
             addAttribute(serviceAttributeMetaData);
          }   
@@ -293,11 +293,11 @@ public class ServiceMetaData extends AbstractMetaDataVisitorNode
    
    /**
     * Remove a list of Attributes
-    * @param aAttributeList
+    * @param attributeList
     */
-   public void removeAttributes(List<ServiceAttributeMetaData> aAttributeList)
+   public void removeAttributes(List<ServiceAttributeMetaData> attributeList)
    {
-      this.attributes.removeAll(aAttributeList);
+      this.attributes.removeAll(attributeList);
    }
    
    
@@ -335,7 +335,7 @@ public class ServiceMetaData extends AbstractMetaDataVisitorNode
 
    /**
     * Add  dependency
-    * @param dependencyList
+    * @param serviceDependencyMetaData
     */
    public void addDependency(ServiceDependencyMetaData serviceDependencyMetaData)
    {
@@ -398,7 +398,7 @@ public class ServiceMetaData extends AbstractMetaDataVisitorNode
    }
    /**
     * Set the service annotations
-    * @param annotation - the annotations metadata
+    * @param annotations - the annotations metadata
     */
    public void setAnnotations(List<ServiceAnnotationMetaData> annotations)
    {

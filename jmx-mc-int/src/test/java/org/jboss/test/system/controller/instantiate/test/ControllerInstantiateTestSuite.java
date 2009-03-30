@@ -23,12 +23,16 @@ package org.jboss.test.system.controller.instantiate.test;
 
 import org.jboss.test.system.controller.instantiate.plain.test.PlainMBeanNewUnitTestCase;
 import org.jboss.test.system.controller.instantiate.plain.test.PlainMBeanOldUnitTestCase;
+import org.jboss.test.system.controller.instantiate.plain.test.PlainMBeanPlainUnitTestCase;
 import org.jboss.test.system.controller.instantiate.plain.test.PlainMBeanRedeployAfterErrorNewUnitTestCase;
 import org.jboss.test.system.controller.instantiate.plain.test.PlainMBeanRedeployAfterErrorOldUnitTestCase;
+import org.jboss.test.system.controller.instantiate.plain.test.PlainMBeanRedeployAfterErrorPlainUnitTestCase;
 import org.jboss.test.system.controller.instantiate.standard.test.StandardMBeanNewUnitTestCase;
 import org.jboss.test.system.controller.instantiate.standard.test.StandardMBeanOldUnitTestCase;
+import org.jboss.test.system.controller.instantiate.standard.test.StandardMBeanPlainUnitTestCase;
 import org.jboss.test.system.controller.instantiate.standard.test.StandardMBeanRedeployAfterErrorNewUnitTestCase;
 import org.jboss.test.system.controller.instantiate.standard.test.StandardMBeanRedeployAfterErrorOldUnitTestCase;
+import org.jboss.test.system.controller.instantiate.standard.test.StandardMBeanRedeployAfterErrorPlainUnitTestCase;
 
 import junit.framework.Test;
 import junit.framework.TestSuite;
@@ -54,16 +58,22 @@ public class ControllerInstantiateTestSuite extends TestSuite
       suite.addTest(NewNoMetaDataInstantiateUnitTestCase.suite());
       suite.addTest(ConstructorArgsOldUnitTestCase.suite());
       suite.addTest(ConstructorArgsNewUnitTestCase.suite());
+      suite.addTest(ConstructorArgsPlainUnitTestCase.suite());
       suite.addTest(PlainMBeanOldUnitTestCase.suite());
       suite.addTest(PlainMBeanNewUnitTestCase.suite());
+      suite.addTest(PlainMBeanPlainUnitTestCase.suite());
       suite.addTest(PlainMBeanRedeployAfterErrorOldUnitTestCase.suite());
       suite.addTest(PlainMBeanRedeployAfterErrorNewUnitTestCase.suite());
+      suite.addTest(PlainMBeanRedeployAfterErrorPlainUnitTestCase.suite());
       suite.addTest(StandardMBeanOldUnitTestCase.suite());
       suite.addTest(StandardMBeanNewUnitTestCase.suite());
+      suite.addTest(StandardMBeanPlainUnitTestCase.suite());
       suite.addTest(StandardMBeanRedeployAfterErrorOldUnitTestCase.suite());
       suite.addTest(StandardMBeanRedeployAfterErrorNewUnitTestCase.suite());
+      suite.addTest(StandardMBeanRedeployAfterErrorPlainUnitTestCase.suite());
       suite.addTest(ConstructorArgsErrorOldUnitTestCase.suite());
       suite.addTest(ConstructorArgsErrorNewUnitTestCase.suite());
+      suite.addTest(ConstructorArgsErrorPlainUnitTestCase.suite());
       
       return suite;
    }

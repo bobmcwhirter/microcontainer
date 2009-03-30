@@ -43,7 +43,7 @@ public class BasicDependencyDependsListNestedOldUnitTestCase extends BasicDepend
       super(name);
    }
 
-   public static AbstractTestDelegate getDelegate(Class clazz) throws Exception
+   public static AbstractTestDelegate getDelegate(Class<?> clazz) throws Exception
    {
       return getOldControllerDelegate(clazz);
    }

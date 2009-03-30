@@ -44,22 +44,31 @@ public class ControllerLifecycleBasicTestSuite extends TestSuite
 
       suite.addTest(BasicLifecycleOldUnitTestCase.suite());
       suite.addTest(BasicLifecycleNewUnitTestCase.suite());
+      suite.addTest(BasicLifecyclePlainUnitTestCase.suite());
       suite.addTest(BasicDependencyDependsOldUnitTestCase.suite());
       suite.addTest(BasicDependencyDependsNewUnitTestCase.suite());
+      suite.addTest(BasicDependencyDependsPlainUnitTestCase.suite());
       suite.addTest(BasicDependencyDependsNestedOldUnitTestCase.suite());
       suite.addTest(BasicDependencyDependsNestedNewUnitTestCase.suite());
+      suite.addTest(BasicDependencyDependsNestedPlainUnitTestCase.suite());
       suite.addTest(BasicDependencyDependsListOldUnitTestCase.suite());
       suite.addTest(BasicDependencyDependsListNewUnitTestCase.suite());
+      suite.addTest(BasicDependencyDependsListPlainUnitTestCase.suite());
       suite.addTest(BasicDependencyDependsListNestedOldUnitTestCase.suite());
       suite.addTest(BasicDependencyDependsListNestedNewUnitTestCase.suite());
+      suite.addTest(BasicDependencyDependsListNestedPlainUnitTestCase.suite());
       suite.addTest(BasicDependencyDependsOptionalAttributeOldUnitTestCase.suite());
       suite.addTest(BasicDependencyDependsOptionalAttributeNewUnitTestCase.suite());
+      suite.addTest(BasicDependencyDependsOptionalAttributePlainUnitTestCase.suite());
       suite.addTest(BasicDependencyDependsOptionalAttributeNestedOldUnitTestCase.suite());
       suite.addTest(BasicDependencyDependsOptionalAttributeNestedNewUnitTestCase.suite());
+      suite.addTest(BasicDependencyDependsOptionalAttributeNestedPlainUnitTestCase.suite());
       suite.addTest(BasicDependencyDependsOptionalAttributeListOldUnitTestCase.suite());
       suite.addTest(BasicDependencyDependsOptionalAttributeListNewUnitTestCase.suite());
+      suite.addTest(BasicDependencyDependsOptionalAttributeListPlainUnitTestCase.suite());
       suite.addTest(BasicDependencyDependsOptionalAttributeListNestedOldUnitTestCase.suite());
       suite.addTest(BasicDependencyDependsOptionalAttributeListNestedNewUnitTestCase.suite());
+      suite.addTest(BasicDependencyDependsOptionalAttributeListNestedPlainUnitTestCase.suite());
       
       return suite;
    }

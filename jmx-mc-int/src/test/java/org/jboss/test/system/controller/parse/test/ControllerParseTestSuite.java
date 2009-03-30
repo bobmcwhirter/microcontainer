@@ -44,6 +44,7 @@ public class ControllerParseTestSuite extends TestSuite
 
       suite.addTest(ErrorInParseOldUnitTestCase.suite());
       suite.addTest(ErrorInParseNewUnitTestCase.suite());
+      suite.addTest(ErrorInParsePlainUnitTestCase.suite());
       
       return suite;
    }

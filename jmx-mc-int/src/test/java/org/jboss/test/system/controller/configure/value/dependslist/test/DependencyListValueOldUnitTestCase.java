@@ -45,7 +45,7 @@ public class DependencyListValueOldUnitTestCase extends DependencyListValueTest
       super(name);
    }
 
-   public static AbstractTestDelegate getDelegate(Class clazz) throws Exception
+   public static AbstractTestDelegate getDelegate(Class<?> clazz) throws Exception
    {
       return getOldControllerDelegate(clazz);
    }

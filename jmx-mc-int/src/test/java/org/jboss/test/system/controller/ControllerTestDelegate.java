@@ -83,22 +83,35 @@ public abstract class ControllerTestDelegate extends AbstractTestDelegate
    public void setUp() throws Exception
    {
       super.setUp();
-      
-      System.setProperty(ServerConstants.MBEAN_SERVER_BUILDER_CLASS_PROPERTY, ServerConstants.DEFAULT_MBEAN_SERVER_BUILDER_CLASS);
-      server = createMBeanServer();
-      serviceController = createServiceController();
-      server.registerMBean(serviceController, ServiceControllerMBean.OBJECT_NAME);
-      
-      deployer = new SimpleSARDeployer(server, serviceController);
 
-      Order.reset();
-      
-      deploy();
-      
-      if (isValidateAtSetUp())
-         validate();
+      try
+      {
+         setUpMBeanServerBuilder();
+         server = createMBeanServer();
+         serviceController = createServiceController();
+         server.registerMBean(serviceController, ServiceControllerMBean.OBJECT_NAME);
+         
+         deployer = new SimpleSARDeployer(server, serviceController);
+
+         Order.reset();
+         
+         deploy();
+         
+         if (isValidateAtSetUp())
+            validate();
+      }
+      catch (Exception e)
+      {
+         getLog().error("Error in setup", e);
+         throw e;
+      }
    }
 
+   protected void setUpMBeanServerBuilder()
+   {
+      System.setProperty(ServerConstants.MBEAN_SERVER_BUILDER_CLASS_PROPERTY, ServerConstants.DEFAULT_MBEAN_SERVER_BUILDER_CLASS);
+   }
+   
    // TODO Temporary until the IncompleteDeploymentDescription is integrated 
    protected boolean isValidateAtSetUp()
    {
@@ -123,6 +136,7 @@ public abstract class ControllerTestDelegate extends AbstractTestDelegate
       deployer.uninstallTemporary();
    }
    
+   @SuppressWarnings("unchecked")
    protected void validate() throws Exception
    {
       Collection<ServiceContext> waitingForClasses = new HashSet<ServiceContext>();
@@ -180,6 +194,9 @@ public abstract class ControllerTestDelegate extends AbstractTestDelegate
       if (index != -1)
          testName = testName.substring(0, index);
       index = testName.indexOf("OldUnitTestCase");
+      if (index != -1)
+         testName = testName.substring(0, index);
+      index = testName.indexOf("PlainUnitTestCase");
       if (index != -1)
          testName = testName.substring(0, index);
       
@@ -262,6 +279,7 @@ public abstract class ControllerTestDelegate extends AbstractTestDelegate
       assertServiceFailed(name);
    }
    
+   @SuppressWarnings("unchecked")
    protected void checkIncomplete(IncompleteDeploymentException e, ObjectName name, Class<? extends Throwable> expected) throws Exception
    {
       Collection incomplete = e.getMbeansWaitingForDepends();

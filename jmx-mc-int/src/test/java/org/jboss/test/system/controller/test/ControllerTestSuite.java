@@ -26,6 +26,7 @@ import junit.framework.TestSuite;
 import junit.textui.TestRunner;
 
 import org.jboss.test.system.controller.basic.test.ControllerBasicTestSuite;
+import org.jboss.test.system.controller.classloader.test.ControllerClassLoaderTestSuite;
 import org.jboss.test.system.controller.configure.test.ControllerConfigureTestSuite;
 import org.jboss.test.system.controller.instantiate.test.ControllerInstantiateTestSuite;
 import org.jboss.test.system.controller.integration.test.IntegrationTestSuite;
@@ -51,6 +52,7 @@ public class ControllerTestSuite extends TestSuite
 
       suite.addTest(ControllerBasicTestSuite.suite());
       suite.addTest(ControllerParseTestSuite.suite());
+      suite.addTest(ControllerClassLoaderTestSuite.suite());
       suite.addTest(ControllerInstantiateTestSuite.suite());
       suite.addTest(ControllerConfigureTestSuite.suite());
       suite.addTest(ControllerLifecycleTestSuite.suite());

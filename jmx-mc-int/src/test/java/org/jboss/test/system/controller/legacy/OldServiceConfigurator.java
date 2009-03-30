@@ -166,9 +166,9 @@ public class OldServiceConfigurator
       }
       catch (Exception e)
       {
-         for (ListIterator li = mbeans.listIterator(mbeans.size()); li.hasPrevious();)
+         for (ListIterator<ObjectName> li = mbeans.listIterator(mbeans.size()); li.hasPrevious();)
          {
-            ObjectName mbean = (ObjectName) li.previous();
+            ObjectName mbean = li.previous();
             try
             {
                serviceCreator.remove(mbean);
@@ -367,7 +367,7 @@ public class OldServiceConfigurator
                         throw new DeploymentException("No Attribute found with name: " + mbeanRefName);
                      proxyType = attr.getType();
                   }
-                  Class proxyClass = cl.loadClass(proxyType);
+                  Class<?> proxyClass = cl.loadClass(proxyType);
                   attribute = MBeanProxyExt.create(proxyClass, dependsObjectName,
                      server, true);
                }
@@ -475,7 +475,7 @@ public class OldServiceConfigurator
       String typeName = attr.getType();
 
       // see if it is a primitive type first
-      Class typeClass = Classes.getPrimitiveTypeForName(typeName);
+      Class<?> typeClass = Classes.getPrimitiveTypeForName(typeName);
       if (typeClass == null)
       {
          // nope try look up
@@ -573,7 +573,7 @@ public class OldServiceConfigurator
       String attributeClassName = element.getAttribute("attributeClass");
       if( attributeClassName == null || attributeClassName.length() == 0 )
          attributeClassName = attr.getType();
-      Class attributeClass = cl.loadClass(attributeClassName);
+      Class<?> attributeClass = cl.loadClass(attributeClassName);
       // Create the bean instance
       Object bean = attributeClass.newInstance();
       // Get the JavaBean properties
@@ -726,9 +726,9 @@ public class OldServiceConfigurator
       }
 
       ServiceContext sc = serviceController.getServiceContext(name);
-      for (Iterator i = sc.iDependOn.iterator(); i.hasNext();)
+      for (Iterator<ServiceContext> i = sc.iDependOn.iterator(); i.hasNext();)
       {
-         ServiceContext needs = (ServiceContext) i.next();
+         ServiceContext needs = i.next();
          Element dependsElement = doc.createElement("depends");
          dependsElement.appendChild(doc.createTextNode(needs.objectName.toString()));
          mbeanElement.appendChild(dependsElement);

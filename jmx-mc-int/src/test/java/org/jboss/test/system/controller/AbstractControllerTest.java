@@ -58,14 +58,21 @@ public abstract class AbstractControllerTest extends AbstractSystemTest
       super(name);
    }
    
-   public static AbstractTestDelegate getNewControllerDelegate(Class clazz) throws Exception
+   public static AbstractTestDelegate getNewControllerDelegate(Class<?> clazz) throws Exception
    {
       ControllerTestDelegate delegate = new NewControllerTestDelegate(clazz);
       // @todo delegate.enableSecurity = true;
       return delegate;
    }
    
-   public static AbstractTestDelegate getOldControllerDelegate(Class clazz) throws Exception
+   public static AbstractTestDelegate getPlainControllerDelegate(Class<?> clazz) throws Exception
+   {
+      ControllerTestDelegate delegate = new PlainControllerTestDelegate(clazz);
+      // @todo delegate.enableSecurity = true;
+      return delegate;
+   }
+   
+   public static AbstractTestDelegate getOldControllerDelegate(Class<?> clazz) throws Exception
    {
       ControllerTestDelegate delegate = new OldControllerTestDelegate(clazz);
       // @todo delegate.enableSecurity = true;
