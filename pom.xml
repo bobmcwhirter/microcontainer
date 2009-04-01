@@ -132,30 +132,6 @@
     </pluginManagement>
   </build>
 
-  <repositories>
-    <repository>
-      <id>repository.jboss.org</id>
-      <name>JBoss Repository</name>
-      <layout>default</layout>
-      <url>http://repository.jboss.org/maven2/</url>
-      <snapshots>
-        <enabled>false</enabled>
-      </snapshots>
-    </repository>
-    <repository>
-      <id>snapshots.jboss.org</id>
-      <name>JBoss Snapshots Repository</name>
-      <layout>default</layout>
-      <url>http://snapshots.jboss.org/maven2/</url>
-      <snapshots>
-        <enabled>true</enabled>
-      </snapshots>
-      <releases>
-        <enabled>false</enabled>
-      </releases>
-    </repository>
-  </repositories>
-
   <dependencyManagement>
     <!-- The parent pom manages the inter-dependencies of the modules. -->
     <dependencies>
