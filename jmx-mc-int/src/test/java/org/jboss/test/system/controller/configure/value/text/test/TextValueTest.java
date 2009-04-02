@@ -25,7 +25,7 @@ import java.math.BigDecimal;
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
 import java.util.Date;
-
+import java.util.Locale;
 import javax.management.ObjectName;
 
 import org.jboss.system.ConfigurationException;
@@ -44,9 +44,10 @@ import org.jboss.util.NestedRuntimeException;
  */
 public abstract class TextValueTest extends AbstractControllerTest
 {
-   private static final DateFormat dateFormat = new SimpleDateFormat("EEE MMM d HH:mm:ss z yyyy");
+   private Locale locale;
+   private DateFormat dateFormat;
    
-   private static final String stringValue =  new String("StringValue");
+   private static final String stringValue = "StringValue";
    private static final Byte byteValue = new Byte("12");
    private static final Boolean booleanValue = Boolean.TRUE;
    // TODO character
@@ -56,7 +57,7 @@ public abstract class TextValueTest extends AbstractControllerTest
    private static final Long longValue = new Long("12345");
    private static final Float floatValue = new Float("3.14");
    private static final Double doubleValue = new Double("3.14e12");
-   private static final Date dateValue = createDate("Mon Jan 01 00:00:00 CET 2001");
+   private final Date dateValue = createDate("Mon Jan 01 00:00:00 CET 2001");
    private static final BigDecimal bigDecimalValue = new BigDecimal("12e4");
    //private static final BigInteger bigIntegerValue = new BigInteger("123456");
 
@@ -119,15 +120,56 @@ public abstract class TextValueTest extends AbstractControllerTest
       assertDeployFailure(BrokenDynamicMBeanAttributeInfoTypeNotFound.OBJECT_NAME, ClassNotFoundException.class);
    }
 
-   private static Date createDate(String date)
+   protected Date createDate(String date)
    {
+      Locale locale = Locale.getDefault();
       try
       {
+         setLocale(Locale.US);
+
+         if (dateFormat == null)
+            dateFormat = new SimpleDateFormat("EEE MMM d HH:mm:ss z yyyy");
+
          return dateFormat.parse(date);
       }
       catch (Exception e)
       {
          throw new NestedRuntimeException(e);
+      }
+      finally
+      {
+         setLocale(locale);
+      }
+   }
+
+   protected void setUp() throws Exception
+   {
+      // set locales
+      locale = Locale.getDefault();
+      setLocale(Locale.US);
+
+      super.setUp();
+   }
+
+   protected void tearDown() throws Exception
+   {
+      super.tearDown();
+
+      // reset locale
+      setLocale(locale);
+      locale = null;
+   }
+
+   protected void setLocale(Locale locale)
+   {
+      SecurityManager sm = suspendSecurity();
+      try
+      {
+         Locale.setDefault(locale);
+      }
+      finally
+      {
+         resumeSecurity(sm);
       }
    }
 }
