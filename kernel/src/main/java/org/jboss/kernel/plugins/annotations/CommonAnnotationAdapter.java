@@ -322,9 +322,10 @@ public abstract class CommonAnnotationAdapter<T extends MetaDataAnnotationPlugin
       TypeInfoFactory tif = classInfo.getTypeInfoFactory();
       TypeInfo objectTI = tif.getTypeInfo(Object.class);
 
+      // method plugins
+      Iterable<T> methodPlugins = null;
       // methods
       Set<MethodInfo> methods = info.getMethods();
-      Iterable<T> methodPlugins = null;
       if (methods != null && methods.isEmpty() == false)
       {
          for(MethodInfo mi : methods)
