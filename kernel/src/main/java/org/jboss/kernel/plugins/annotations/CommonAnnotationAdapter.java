@@ -73,8 +73,6 @@ public abstract class CommonAnnotationAdapter<T extends MetaDataAnnotationPlugin
    /** The method annotation plugin filter */
    private static final AnnotationPluginFilter METHOD_FILTER = new MethodAnnotationPluginFilter();
 
-
-
    /**
     * Add the annotation plugin.
     * Breaks down the plugin usage into
@@ -324,6 +322,7 @@ public abstract class CommonAnnotationAdapter<T extends MetaDataAnnotationPlugin
 
       // method plugins
       Iterable<T> methodPlugins = null;
+
       // methods
       Set<MethodInfo> methods = info.getMethods();
       if (methods != null && methods.isEmpty() == false)
