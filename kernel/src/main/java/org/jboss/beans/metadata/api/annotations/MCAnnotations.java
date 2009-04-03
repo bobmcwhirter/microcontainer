@@ -41,5 +41,12 @@ public @interface MCAnnotations
     *
     * @return the possible annotation classes
     */
-   Class<? extends Annotation>[] value(); 
+   Class<? extends Annotation>[] value();
+
+   /**
+    * Should we ignore IoC annotations lookup.
+    *
+    * @return true if we should ignore IoC annotations scan,
+    */
+   boolean ignore() default false;
 }

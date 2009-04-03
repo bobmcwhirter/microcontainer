@@ -246,6 +246,14 @@ public abstract class CommonAnnotationAdapter<T extends MetaDataAnnotationPlugin
 
       // limit the annotations
       MCAnnotations annotations = retrieval.getAnnotation(MCAnnotations.class);
+      if (annotations != null && annotations.ignore())
+      {
+         if (trace)
+            log.trace("Ignoring annotations lookup");
+
+         return;
+      }
+
       Collection<Class<? extends Annotation>> annotationClasses = (annotations != null ? Arrays.asList(annotations.value()) : null);
 
       // class
