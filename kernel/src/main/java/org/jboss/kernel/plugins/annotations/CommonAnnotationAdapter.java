@@ -25,11 +25,19 @@ import java.lang.annotation.Annotation;
 import java.lang.annotation.ElementType;
 import java.lang.annotation.Retention;
 import java.lang.annotation.Target;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Collection;
+import java.util.Collections;
+import java.util.HashMap;
 import java.util.HashSet;
+import java.util.List;
+import java.util.Map;
 import java.util.Set;
 
 import org.jboss.beans.info.spi.BeanInfo;
 import org.jboss.beans.info.spi.PropertyInfo;
+import org.jboss.beans.metadata.api.annotations.MCAnnotations;
 import org.jboss.logging.Logger;
 import org.jboss.metadata.spi.MetaData;
 import org.jboss.metadata.spi.signature.ConstructorSignature;
@@ -41,6 +49,8 @@ import org.jboss.reflect.spi.ClassInfo;
 import org.jboss.reflect.spi.ConstructorInfo;
 import org.jboss.reflect.spi.FieldInfo;
 import org.jboss.reflect.spi.MethodInfo;
+import org.jboss.reflect.spi.TypeInfoFactory;
+import org.jboss.reflect.spi.TypeInfo;
 
 /**
  * Common bean annotation handler.
@@ -51,13 +61,19 @@ import org.jboss.reflect.spi.MethodInfo;
  */
 public abstract class CommonAnnotationAdapter<T extends MetaDataAnnotationPlugin<?, ?>, U>
 {
+   /** The log */
    protected Logger log = Logger.getLogger(getClass());
 
-   protected Set<T> classAnnotationPlugins = new HashSet<T>();
-   protected Set<T> constructorAnnotationPlugins = new HashSet<T>();
-   protected Set<T> propertyAnnotationPlugins = new HashSet<T>();
-   protected Set<T> methodAnnotationPlugins = new HashSet<T>();
-   protected Set<T> fieldAnnotationPlugins = new HashSet<T>();
+   /** The annotation plugins */
+   private final Map<ElementType, Set<T>> pluginsMap = new HashMap<ElementType, Set<T>>();
+
+   /** The property annotation plugin filter */
+   private static final AnnotationPluginFilter PROPERTY_FILTER = new PropertyAnnotationPluginFilter();
+
+   /** The method annotation plugin filter */
+   private static final AnnotationPluginFilter METHOD_FILTER = new MethodAnnotationPluginFilter();
+
+
 
    /**
     * Add the annotation plugin.
@@ -66,7 +82,6 @@ public abstract class CommonAnnotationAdapter<T extends MetaDataAnnotationPlugin
     *
     * @param plugin the annotation plugin
     */
-   @SuppressWarnings("unchecked")
    public void addAnnotationPlugin(T plugin)
    {
       if (plugin == null)
@@ -81,28 +96,22 @@ public abstract class CommonAnnotationAdapter<T extends MetaDataAnnotationPlugin
       if (annotation.getAnnotation(Retention.class) == null)
          log.warn("Annotation " + annotation + " missing @Retention annotation!");
 
-      Set supported = plugin.getSupportedTypes();
+      Set<ElementType> supported = plugin.getSupportedTypes();
       if (supported == null || supported.isEmpty())
          throw new IllegalArgumentException("Null or empty support types: " + plugin);
 
-      if (supported.contains(ElementType.TYPE))
+      synchronized (pluginsMap)
       {
-         classAnnotationPlugins.add(plugin);
-      }
-      if (supported.contains(ElementType.CONSTRUCTOR))
-      {
-         constructorAnnotationPlugins.add(plugin);
-      }
-      if (supported.contains(ElementType.METHOD))
-      {
-         if (plugin instanceof PropertyAware)
-            propertyAnnotationPlugins.add(plugin);
-         else
-            methodAnnotationPlugins.add(plugin);
-      }
-      if (supported.contains(ElementType.FIELD))
-      {
-         fieldAnnotationPlugins.add(plugin);
+         for (ElementType type : supported)
+         {
+            Set<T> plugins = pluginsMap.get(type);
+            if (plugins == null)
+            {
+               plugins = new HashSet<T>();
+               pluginsMap.put(type, plugins);
+            }
+            plugins.add(plugin);
+         }
       }
    }
 
@@ -120,24 +129,19 @@ public abstract class CommonAnnotationAdapter<T extends MetaDataAnnotationPlugin
       if (supported == null || supported.isEmpty())
          throw new IllegalArgumentException("Null or empty support types: " + plugin);
 
-      if (supported.contains(ElementType.TYPE))
+      synchronized (pluginsMap)
       {
-         classAnnotationPlugins.remove(plugin);
-      }
-      if (supported.contains(ElementType.CONSTRUCTOR))
-      {
-         constructorAnnotationPlugins.remove(plugin);
-      }
-      if (supported.contains(ElementType.METHOD))
-      {
-         if (plugin instanceof PropertyAware)
-            propertyAnnotationPlugins.remove(plugin);
-         else
-            methodAnnotationPlugins.remove(plugin);
-      }
-      if (supported.contains(ElementType.FIELD))
-      {
-         fieldAnnotationPlugins.remove(plugin);
+         for (ElementType type : supported)
+         {
+            Set<T> plugins = pluginsMap.get(type);
+            if (plugins != null)
+            {
+               plugins.remove(plugin);
+
+               if (plugins.isEmpty())
+                  pluginsMap.remove(type);
+            }
+         }
       }
    }
 
@@ -172,6 +176,55 @@ public abstract class CommonAnnotationAdapter<T extends MetaDataAnnotationPlugin
    protected abstract Object getName(U handle);
 
    /**
+    * Get plugins.
+    *
+    * @param type the element type to match
+    * @param filter possible plugins filter
+    * @param annotationClasses possible annotations
+    * @return iterable matching plugins
+    */
+   protected Iterable<T> getPlugins(ElementType type, AnnotationPluginFilter filter, Collection<Class<? extends Annotation>> annotationClasses)
+   {
+      Set<T> plugins;
+      synchronized (pluginsMap)
+      {
+         plugins = pluginsMap.get(type);
+      }
+      
+      if (plugins == null || plugins.isEmpty())
+         return Collections.emptySet();
+
+      if (filter != null)
+      {
+         List<T> result = new ArrayList<T>();
+         for (T plugin : plugins)
+         {
+            if (filter.accept(plugin) && (annotationClasses == null || annotationClasses.contains(plugin.getAnnotation())))
+            {
+               result.add(plugin);
+            }
+         }
+         return result;
+      }
+      else if (annotationClasses != null)
+      {
+         List<T> result = new ArrayList<T>();
+         for (T plugin : plugins)
+         {
+            if (annotationClasses.contains(plugin.getAnnotation()))
+            {
+               result.add(plugin);
+            }
+         }
+         return result;
+      }
+      else
+      {
+         return plugins;
+      }
+   }
+
+   /**
     * Handle apply or cleanup of annotations.
     *
     * @param info the bean info
@@ -193,9 +246,13 @@ public abstract class CommonAnnotationAdapter<T extends MetaDataAnnotationPlugin
       if (trace)
          log.trace(getName(handle) + " apply annotations");
 
+      // limit the annotations
+      MCAnnotations annotations = retrieval.getAnnotation(MCAnnotations.class);
+      Collection<Class<? extends Annotation>> annotationClasses = (annotations != null ? Arrays.asList(annotations.value()) : null);
+
       // class
       ClassInfo classInfo = info.getClassInfo();
-      for(T plugin : classAnnotationPlugins)
+      for(T plugin : getPlugins(ElementType.TYPE, null, annotationClasses))
       {
          if (isApplyPhase)
             applyPlugin(plugin, classInfo, retrieval, handle);
@@ -213,7 +270,7 @@ public abstract class CommonAnnotationAdapter<T extends MetaDataAnnotationPlugin
             MetaData cmdr = retrieval.getComponentMetaData(cis);
             if (cmdr != null)
             {
-               for(T plugin : constructorAnnotationPlugins)
+               for(T plugin : getPlugins(ElementType.CONSTRUCTOR, null, annotationClasses))
                {
                   if (isApplyPhase)
                      applyPlugin(plugin, ci, cmdr, handle);
@@ -242,7 +299,7 @@ public abstract class CommonAnnotationAdapter<T extends MetaDataAnnotationPlugin
                MetaData cmdr = retrieval.getComponentMetaData(sis);
                if (cmdr != null)
                {
-                  for(T plugin : fieldAnnotationPlugins)
+                  for(T plugin : getPlugins(ElementType.FIELD, null, annotationClasses))
                   {
                      if (isApplyPhase)
                         applyPlugin(plugin, field, cmdr, handle);
@@ -254,26 +311,34 @@ public abstract class CommonAnnotationAdapter<T extends MetaDataAnnotationPlugin
                   log.trace("No annotations for field " + field.getName());
             }
             // apply setter and getter as well - if they exist
-            handleMethod(retrieval, handle, isApplyPhase, trace, visitedMethods, pi, pi.getSetter(), "setter");
-            handleMethod(retrieval, handle, isApplyPhase, trace, visitedMethods, pi, pi.getGetter(), "getter");
+            handleMethod(retrieval, handle, isApplyPhase, trace, visitedMethods, pi, pi.getSetter(), "setter", annotationClasses);
+            handleMethod(retrieval, handle, isApplyPhase, trace, visitedMethods, pi, pi.getGetter(), "getter", annotationClasses);
          }
       }
       else if (trace)
          log.trace("No properties");
 
+      // get Object's class info - it's cached so it shouldn't take much
+      TypeInfoFactory tif = classInfo.getTypeInfoFactory();
+      TypeInfo objectTI = tif.getTypeInfo(Object.class);
+
       // methods
       Set<MethodInfo> methods = info.getMethods();
+      Iterable<T> methodPlugins = null;
       if (methods != null && methods.isEmpty() == false)
       {
          for(MethodInfo mi : methods)
          {
-            if (visitedMethods.contains(mi) == false)
+            ClassInfo declaringCI = mi.getDeclaringClass();
+            // direct == check is OK
+            if (declaringCI != objectTI && visitedMethods.contains(mi) == false)
             {
                Signature mis = new MethodSignature(mi);
                MetaData cmdr = retrieval.getComponentMetaData(mis);
                if (cmdr != null)
                {
-                  for(T plugin : methodAnnotationPlugins)
+                  methodPlugins = getPlugins(ElementType.METHOD, METHOD_FILTER, annotationClasses);
+                  for(T plugin : methodPlugins)
                   {
                      if (isApplyPhase)
                         applyPlugin(plugin, mi, cmdr, handle);
@@ -301,7 +366,10 @@ public abstract class CommonAnnotationAdapter<T extends MetaDataAnnotationPlugin
                MetaData cmdr = retrieval.getComponentMetaData(mis);
                if (cmdr != null)
                {
-                  for(T plugin : methodAnnotationPlugins)
+                  if (methodPlugins == null)
+                     methodPlugins = getPlugins(ElementType.METHOD, METHOD_FILTER, annotationClasses);
+                  
+                  for(T plugin : methodPlugins)
                   {
                      if (isApplyPhase)
                         applyPlugin(plugin, smi, cmdr, handle);
@@ -331,6 +399,7 @@ public abstract class CommonAnnotationAdapter<T extends MetaDataAnnotationPlugin
     * @param pi the property info
     * @param method the method info
     * @param type method type
+    * @param annotationClasses the possible annotation classes
     * @throws Throwable for any error
     */
    protected void handleMethod(
@@ -341,7 +410,8 @@ public abstract class CommonAnnotationAdapter<T extends MetaDataAnnotationPlugin
          Set<MethodInfo> visitedMethods,
          PropertyInfo pi,
          MethodInfo method,
-         String type)
+         String type,
+         Collection<Class<? extends Annotation>> annotationClasses)
          throws Throwable
    {
       if (method == null)
@@ -352,7 +422,7 @@ public abstract class CommonAnnotationAdapter<T extends MetaDataAnnotationPlugin
       MetaData cmdr = retrieval.getComponentMetaData(sis);
       if (cmdr != null)
       {
-         for(T plugin : propertyAnnotationPlugins)
+         for(T plugin : getPlugins(ElementType.METHOD, PROPERTY_FILTER, annotationClasses))
          {
             if (isApplyPhase)
                applyPlugin(plugin, pi, cmdr, handle);
