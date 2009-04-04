@@ -38,7 +38,7 @@
     <version.jboss.logging.log4j>2.0.5.GA</version.jboss.logging.log4j>
     <version.jbossxb>2.0.0.GA</version.jbossxb>
     <version.jboss.man>2.0.0.GA</version.jboss.man>
-    <version.jboss.vfs>2.1.0.GA</version.jboss.vfs>
+    <version.jboss.vfs>2.2.0.M1</version.jboss.vfs>
     <version.javassist>3.9.0.GA</version.javassist>
     <version.jboss.aop>2.0.0.SP1</version.jboss.aop>
     <version.org.jboss.reflect>2.0.2.GA</version.org.jboss.reflect>
