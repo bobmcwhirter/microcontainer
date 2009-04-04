@@ -47,7 +47,7 @@
     <version.org.jboss.test>1.1.1.GA</version.org.jboss.test>
     <version.junit>4.4</version.junit>
     <version.jboss.profiler.jvmti>1.0.0.CR5</version.jboss.profiler.jvmti>
-    <version.junit>1.6.5</version.ant.junit>
+    <version.ant.junit>1.6.5</version.ant.junit>
     <version.jboss.drools>4.0.1</version.jboss.drools>
     <version.jboss.jbpm>3.1.1</version.jboss.jbpm>
     <version.google.guice>1.0</version.google.guice>
