@@ -2,6 +2,10 @@
 
 <deployment xmlns="urn:jboss:bean-deployer:2.0">
 
+   <classloader>
+      <bean name="cl" class="org.jboss.test.kernel.deployment.support.NullClassLoader" />
+   </classloader>
+
    <bean name="SimpleObject1" class="org.jboss.test.kernel.deployment.support.SimpleObjectWithBean">
       <constructor>
          <bean name="simple1" class="org.jboss.test.kernel.deployment.support.SimpleObjectWithBean" />
@@ -21,10 +25,6 @@
          <bean name="simple3" class="org.jboss.test.kernel.deployment.support.SimpleBeanImpl"/>
       </property>
    </bean>
-
-   <classloader>
-      <bean name="cl" class="org.jboss.test.kernel.deployment.support.NullClassLoader" />
-   </classloader>
 
    <bean name="SimpleObject4" class="org.jboss.test.kernel.deployment.support.SimpleObjectWithBean">
       <property name="beans">

@@ -15,8 +15,8 @@
   <bean name="SuperDemandAnnotationPlugin" class="org.jboss.test.kernel.deployment.support.SuperDemandAnnotationPlugin" />
 
   <bean name="Manager" class="org.jboss.test.kernel.deployment.support.SomeCacheTreeManager">
-    <property name="clusteredCache"><inject bean="HAPartitionCacheHandler" property="cache"/></property>
     <annotation>@org.jboss.test.kernel.deployment.support.SuperDemand(demand="Partition", whenRequired="Configured", dependentState="Start")</annotation>
+    <property name="clusteredCache"><inject bean="HAPartitionCacheHandler" property="cache"/></property>
   </bean>
 
   <bean name="HAPartitionCacheHandler" class="org.jboss.test.kernel.deployment.support.HAPartitionCacheHandler"/>

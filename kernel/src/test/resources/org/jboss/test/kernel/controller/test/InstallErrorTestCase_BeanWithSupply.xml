@@ -3,6 +3,7 @@
 <deployment xmlns="urn:jboss:bean-deployer:2.0">
 
    <bean name="Bean" class="org.jboss.test.kernel.controller.support.TestBean">
+      <supply>TestSupply</supply>
       <install bean="Repository1" method="add">
          <parameter><this/></parameter>
       </install>
@@ -15,7 +16,6 @@
       <uninstall bean="Repository2" method="remove">
          <parameter><this/></parameter>
       </uninstall>
-      <supply>TestSupply</supply>
    </bean>
    
 </deployment>

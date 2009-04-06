@@ -3,8 +3,8 @@
 <deployment xmlns="urn:jboss:bean-deployer:2.0">
 
    <bean name="Tester" class="org.jboss.test.kernel.annotations.support.SetsAnnotationTester">
-      <demand>deployer</demand>
       <depends>deployer</depends>
+      <demand>deployer</demand>
       <supply>somesupply</supply>
    </bean>
 

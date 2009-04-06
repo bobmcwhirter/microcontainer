@@ -21,12 +21,12 @@
 */
 package org.jboss.test.spring.test;
 
+import org.jboss.kernel.plugins.deployment.xml.BasicXMLDeployer;
 import org.jboss.spring.deployment.xml.SpringSchemaInitializer;
 import org.jboss.test.kernel.junit.MicrocontainerTestDelegate;
-import org.jboss.xb.binding.sunday.unmarshalling.DefaultSchemaResolver;
-import org.jboss.xb.binding.sunday.unmarshalling.SingletonSchemaResolverFactory;
+import org.jboss.xb.binding.resolver.MutableSchemaResolver;
 import org.jboss.xb.binding.sunday.unmarshalling.SchemaBindingResolver;
-import org.jboss.kernel.plugins.deployment.xml.BasicXMLDeployer;
+import org.jboss.xb.binding.sunday.unmarshalling.SingletonSchemaResolverFactory;
 
 /**
  * @author <a href="mailto:ales.justin@jboss.com">Ales Justin</a>
@@ -41,10 +41,10 @@ public class TempSpringMicrocontainerTestDelegate extends MicrocontainerTestDele
    public void setUp() throws Exception
    {
       SchemaBindingResolver resolver = SingletonSchemaResolverFactory.getInstance().getSchemaBindingResolver();
-      DefaultSchemaResolver defaultSchemaResolver = (DefaultSchemaResolver) resolver;
-      defaultSchemaResolver.addSchemaInitializer("urn:jboss:spring-beans:2.0", new SpringSchemaInitializer());
-      defaultSchemaResolver.addSchemaLocation("urn:jboss:spring-beans:2.0", "mc-spring-beans_2_0.xsd");
-      defaultSchemaResolver.addSchemaParseAnnotations("urn:jboss:spring-beans:2.0", Boolean.FALSE);
+      MutableSchemaResolver defaultSchemaResolver = (MutableSchemaResolver) resolver;
+      defaultSchemaResolver.mapSchemaInitializer("urn:jboss:spring-beans:2.0", new SpringSchemaInitializer());
+      defaultSchemaResolver.mapSchemaLocation("urn:jboss:spring-beans:2.0", "mc-spring-beans_2_0.xsd");
+      defaultSchemaResolver.setParseXSDAnnotations("urn:jboss:spring-beans:2.0", Boolean.FALSE);
       super.setUp();
    }
 

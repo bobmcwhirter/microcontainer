@@ -5,36 +5,36 @@
       <install bean="Name1" method="addState" whenRequired="PreInstall">
          <parameter><inject fromContext="state"/></parameter>
       </install>
-      <uninstall bean="Name1" method="removeState" whenRequired="PreInstall">
-         <parameter><inject fromContext="state"/></parameter>
-      </uninstall>
       <install bean="Name1" method="addState" whenRequired="Described">
          <parameter><inject fromContext="state"/></parameter>
       </install>
-      <uninstall bean="Name1" method="removeState" whenRequired="Described">
-         <parameter><inject fromContext="state"/></parameter>
-      </uninstall>
       <install bean="Name1" method="addState" whenRequired="Instantiated">
          <parameter><inject fromContext="state"/></parameter>
       </install>
-      <uninstall bean="Name1" method="removeState" whenRequired="Instantiated">
-         <parameter><inject fromContext="state"/></parameter>
-      </uninstall>
       <install bean="Name1" method="addState" whenRequired="Configured">
          <parameter><inject fromContext="state"/></parameter>
       </install>
-      <uninstall bean="Name1" method="removeState" whenRequired="Configured">
-         <parameter><inject fromContext="state"/></parameter>
-      </uninstall>
       <install bean="Name1" method="addState" whenRequired="Create">
          <parameter><inject fromContext="state"/></parameter>
       </install>
+      <install bean="Name1" method="addState" whenRequired="Start">
+        <parameter><inject fromContext="state"/></parameter>
+      </install>
+      <uninstall bean="Name1" method="removeState" whenRequired="PreInstall">
+         <parameter><inject fromContext="state"/></parameter>
+      </uninstall>
+      <uninstall bean="Name1" method="removeState" whenRequired="Described">
+         <parameter><inject fromContext="state"/></parameter>
+      </uninstall>
+      <uninstall bean="Name1" method="removeState" whenRequired="Instantiated">
+         <parameter><inject fromContext="state"/></parameter>
+      </uninstall>
+      <uninstall bean="Name1" method="removeState" whenRequired="Configured">
+         <parameter><inject fromContext="state"/></parameter>
+      </uninstall>
       <uninstall bean="Name1" method="removeState" whenRequired="Create">
          <parameter><inject fromContext="state"/></parameter>
       </uninstall>
-      <install bean="Name1" method="addState" whenRequired="Start">
-         <parameter><inject fromContext="state"/></parameter>
-      </install>
       <uninstall bean="Name1" method="removeState" whenRequired="Start">
          <parameter><inject fromContext="state"/></parameter>
       </uninstall>

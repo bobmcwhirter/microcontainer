@@ -25,7 +25,7 @@ import org.jboss.spring.deployment.xml.SpringSchemaInitializer;
 import org.jboss.test.AbstractTestDelegate;
 import org.jboss.xb.binding.Unmarshaller;
 import org.jboss.xb.binding.UnmarshallerFactory;
-import org.jboss.xb.binding.sunday.unmarshalling.DefaultSchemaResolver;
+import org.jboss.xb.binding.resolver.MutableSchemaResolver;
 import org.jboss.xb.binding.sunday.unmarshalling.SchemaBindingResolver;
 import org.jboss.xb.binding.sunday.unmarshalling.SingletonSchemaResolverFactory;
 
@@ -50,10 +50,10 @@ public class TempSpringSchemaTestDelegate extends AbstractTestDelegate
       super.setUp();
       unmarshallerFactory = UnmarshallerFactory.newInstance();
       resolver = SingletonSchemaResolverFactory.getInstance().getSchemaBindingResolver();
-      DefaultSchemaResolver defaultSchemaResolver = (DefaultSchemaResolver) resolver;
-      defaultSchemaResolver.addSchemaInitializer("urn:jboss:spring-beans:2.0", new SpringSchemaInitializer());
-      defaultSchemaResolver.addSchemaLocation("urn:jboss:spring-beans:2.0", "mc-spring-beans_2_0.xsd");
-      defaultSchemaResolver.addSchemaParseAnnotations("urn:jboss:spring-beans:2.0", Boolean.FALSE);
+      MutableSchemaResolver defaultSchemaResolver = (MutableSchemaResolver) resolver;
+      defaultSchemaResolver.mapSchemaInitializer("urn:jboss:spring-beans:2.0", new SpringSchemaInitializer());
+      defaultSchemaResolver.mapSchemaLocation("urn:jboss:spring-beans:2.0", "mc-spring-beans_2_0.xsd");
+      defaultSchemaResolver.setParseXSDAnnotations("urn:jboss:spring-beans:2.0", Boolean.FALSE);
    }
 
 
