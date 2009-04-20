@@ -33,14 +33,14 @@
   </modules>
 
   <properties>
-    <version.jboss.common.core>2.2.10.GA</version.jboss.common.core>
+    <version.jboss.common.core>2.2.12.GA</version.jboss.common.core>
     <version.jboss.logging.spi>2.0.5.GA</version.jboss.logging.spi>
     <version.jboss.logging.log4j>2.0.5.GA</version.jboss.logging.log4j>
     <version.jbossxb>2.0.1.CR1</version.jbossxb>
-    <version.jboss.man>2.0.0.GA</version.jboss.man>
+    <version.jboss.man>2.1.0.CR8</version.jboss.man>
     <version.jboss.vfs>2.2.0.M1</version.jboss.vfs>
-    <version.javassist>3.9.0.GA</version.javassist>
-    <version.jboss.aop>2.0.0.SP1</version.jboss.aop>
+    <version.javassist>3.10.0.GA</version.javassist>
+    <version.jboss.aop>2.1.0.CR3</version.jboss.aop>
     <version.org.jboss.reflect>2.0.2.GA</version.org.jboss.reflect>
     <version.org.jboss.mdr>2.0.1.GA</version.org.jboss.mdr>
     <version.org.jboss.mx>6.0.0.Beta2</version.org.jboss.mx>
