@@ -53,7 +53,7 @@ import org.jboss.util.JBossStringBuilder;
  * @author <a href="mailto:ales.justin@jboss.com">Ales Justin</a>
  */
 @XmlRootElement(name="binding")
-@XmlType(name="bindingType")
+@XmlType(name="bindingType", propOrder = {"value"})
 public class AbstractBindingMetaData extends JBossObject implements BindingMetaData, ValueMetaDataAware, Serializable
 {
    private static final long serialVersionUID = 2;

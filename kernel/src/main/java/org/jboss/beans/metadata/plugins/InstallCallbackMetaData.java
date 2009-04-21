@@ -32,7 +32,7 @@ import org.jboss.dependency.spi.CallbackItem;
  * @author <a href="ales.justin@jboss.com">Ales Justin</a>
  * @author <a href="adrian@jboss.com">Adrian Brock</a>
  */
-@XmlType(name="installCallbackType")
+@XmlType(name="installCallbackType", propOrder={"annotations", "parameters"})
 public class InstallCallbackMetaData extends AbstractCallbackMetaData
 {
    /** The serialVersionUID */

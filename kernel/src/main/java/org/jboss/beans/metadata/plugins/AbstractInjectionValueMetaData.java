@@ -206,6 +206,7 @@ public class AbstractInjectionValueMetaData extends AbstractDependencyValueMetaD
       return InjectOption.STRICT.equals(injectionOption) || fromContext != null;
    }
 
+   @XmlTransient
    public Object getUnderlyingValue()
    {
       Object original = super.getUnderlyingValue();

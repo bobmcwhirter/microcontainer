@@ -73,6 +73,7 @@ public class AbstractValueMetaData extends JBossObject
       setValue(value);
    }
 
+   @XmlTransient
    public Object getValue()
    {
       return value;
@@ -92,6 +93,7 @@ public class AbstractValueMetaData extends JBossObject
       flushJBossObjectCache();
    }
 
+   @XmlTransient
    public Object getUnderlyingValue()
    {
       return value;

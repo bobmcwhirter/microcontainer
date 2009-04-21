@@ -166,6 +166,7 @@ public class StringValueMetaData extends AbstractTypeMetaData
       return trim;
    }
 
+   @XmlAttribute(name="trim")
    public void setTrim(boolean trim)
    {
       this.trim = trim;

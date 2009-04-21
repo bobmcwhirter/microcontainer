@@ -52,7 +52,7 @@ import org.jboss.util.JBossStringBuilder;
  * @author <a href="adrian@jboss.com">Adrian Brock</a>
  * @author <a href="ales.justin@jboss.com">Ales Justin</a>
  */
-@XmlType(name="valueFactoryType")
+@XmlType(name="valueFactoryType", propOrder = {"parameters"})
 public class AbstractValueFactoryMetaData extends AbstractValueMetaData implements MutableParameterizedMetaData
 {
    private static final long serialVersionUID = 2L;

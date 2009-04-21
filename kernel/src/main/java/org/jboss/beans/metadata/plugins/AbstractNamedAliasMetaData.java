@@ -23,6 +23,7 @@ package org.jboss.beans.metadata.plugins;
 
 import javax.xml.bind.annotation.XmlAttribute;
 import javax.xml.bind.annotation.XmlType;
+import javax.xml.bind.annotation.XmlTransient;
 
 import org.jboss.beans.metadata.spi.NamedAliasMetaData;
 import org.jboss.util.JBossStringBuilder;
@@ -49,6 +50,7 @@ public class AbstractNamedAliasMetaData extends AbstractAliasMetaData implements
       super();
    }
 
+   @XmlTransient
    public Object getName()
    {
       if (name == null)

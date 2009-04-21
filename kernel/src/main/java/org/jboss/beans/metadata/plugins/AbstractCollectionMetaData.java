@@ -27,6 +27,7 @@ import java.util.Collection;
 import java.util.Iterator;
 import javax.xml.bind.annotation.XmlAttribute;
 import javax.xml.bind.annotation.XmlType;
+import javax.xml.bind.annotation.XmlTransient;
 
 import org.jboss.beans.metadata.spi.MetaDataVisitor;
 import org.jboss.beans.metadata.spi.MetaDataVisitorNode;
@@ -162,6 +163,7 @@ public class AbstractCollectionMetaData extends AbstractTypeMetaData
       return collection.containsAll(c);
    }
 
+   @XmlTransient
    public boolean isEmpty()
    {
       return collection.isEmpty();

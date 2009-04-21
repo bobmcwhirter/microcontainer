@@ -171,6 +171,7 @@ public class AbstractMapMetaData extends AbstractTypeMetaData
       return map.get(key);
    }
 
+   @XmlTransient
    public boolean isEmpty()
    {
       return map.isEmpty();

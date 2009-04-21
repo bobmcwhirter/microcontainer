@@ -49,7 +49,7 @@ import org.jboss.xb.annotations.JBossXmlSchema;
  */
 @JBossXmlSchema(namespace="urn:jboss:policy:1.0", elementFormDefault= XmlNsForm.QUALIFIED)
 @XmlRootElement(name="policy")
-@XmlType(name="policyType")
+@XmlType(name="policyType", propOrder = {"scope", "annotations", "bindings"})
 public class AbstractPolicyMetaData extends JBossObject implements PolicyMetaData, Serializable
 {
    private static final long serialVersionUID = 2;
