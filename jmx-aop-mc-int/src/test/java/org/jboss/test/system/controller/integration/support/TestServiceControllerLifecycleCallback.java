@@ -80,7 +80,7 @@ public class TestServiceControllerLifecycleCallback
          intfClass = jmx.exposedInterface();
          registerDirectly = jmx.registerDirectly();
       }
-      Object mbean = (registerDirectly ? context.getTarget() : new StandardMBean(context.getTarget(), intfClass));
+      Object mbean = (registerDirectly ? context.getTarget() : new StandardMBean(context.getTarget(), (Class) intfClass));
       mbeanServer.registerMBean(mbean, objectName);
       try
       {
