@@ -54,6 +54,15 @@ public class PlainMBeanRedeployAfterErrorPlainUnitTestCase extends PlainMBeanTes
    // The JDK MBeanServer eats the error message :-(
    public void testPlainMBeanGetMBeanInfoError() throws Exception
    {
-      assertMaybeDeployFailure(BrokenDynamicMBean.OBJECT_NAME, NotCompliantMBeanException.class);
+      try
+      {
+         assertMaybeDeployFailure(BrokenDynamicMBean.OBJECT_NAME, NotCompliantMBeanException.class);
+      }
+      catch (Throwable t)
+      {
+         // in JDK6 we get different expected Throwable == Error
+         assertInstanceOf(t, Error.class, false);
+         assertEquals("BROKEN", t.getMessage());
+      }
    }
 }
