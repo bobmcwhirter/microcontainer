@@ -80,6 +80,7 @@ public class TestServiceControllerLifecycleCallback
          intfClass = jmx.exposedInterface();
          registerDirectly = jmx.registerDirectly();
       }
+      // NOTE: The cast to Class is necessary for compilation under JDK6
       Object mbean = (registerDirectly ? context.getTarget() : new StandardMBean(context.getTarget(), (Class) intfClass));
       mbeanServer.registerMBean(mbean, objectName);
       try
