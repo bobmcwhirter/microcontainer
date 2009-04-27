@@ -24,14 +24,16 @@ package org.jboss.test.system.controller.instantiate.plain.test;
 import javax.management.NotCompliantMBeanException;
 
 import junit.framework.Test;
-
 import org.jboss.test.AbstractTestDelegate;
 import org.jboss.test.system.controller.support.BrokenDynamicMBean;
+import org.jboss.test.system.controller.support.BrokenError;
+import org.jboss.util.platform.Java;
 
 /**
  * PlainMBeanPlainUnitTestCase.
  * 
  * @author <a href="adrian@jboss.com">Adrian Brock</a>
+ * @author <a href="ales.justin@jboss.com">Ales Justin</a>
  * @version $Revision: 82920 $
  */
 public class PlainMBeanRedeployAfterErrorPlainUnitTestCase extends PlainMBeanTest
@@ -54,15 +56,8 @@ public class PlainMBeanRedeployAfterErrorPlainUnitTestCase extends PlainMBeanTes
    // The JDK MBeanServer eats the error message :-(
    public void testPlainMBeanGetMBeanInfoError() throws Exception
    {
-      try
-      {
-         assertMaybeDeployFailure(BrokenDynamicMBean.OBJECT_NAME, NotCompliantMBeanException.class);
-      }
-      catch (Throwable t)
-      {
-         // in JDK6 we get different expected Throwable == Error
-         assertInstanceOf(t, Error.class, false);
-         assertEquals("BROKEN", t.getMessage());
-      }
+      boolean isJDK6OrMore = Java.isCompatible(Java.VERSION_1_6);
+      Class<? extends Throwable> expected = isJDK6OrMore ? BrokenError.class : NotCompliantMBeanException.class;
+      assertMaybeDeployFailure(BrokenDynamicMBean.OBJECT_NAME, expected);
    }
 }

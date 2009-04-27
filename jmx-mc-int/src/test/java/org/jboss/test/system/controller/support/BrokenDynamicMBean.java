@@ -46,7 +46,7 @@ public class BrokenDynamicMBean implements DynamicMBean
    
    public MBeanInfo getMBeanInfo()
    {
-      throw new Error("BROKEN");
+      throw new BrokenError();
    }
 
    public Object getAttribute(String attribute) throws AttributeNotFoundException, MBeanException, ReflectionException
