@@ -29,6 +29,7 @@ import javax.management.ObjectName;
 import org.jboss.system.ConfigurationException;
 import org.jboss.test.system.controller.AbstractControllerTest;
 import org.jboss.test.system.controller.support.BrokenDynamicMBean;
+import org.jboss.test.system.controller.support.BrokenError;
 import org.jboss.test.system.controller.support.PostDeregisterError;
 import org.jboss.test.system.controller.support.PostRegisterError;
 import org.jboss.test.system.controller.support.PreDeregisterError;
@@ -107,7 +108,7 @@ public abstract class PlainMBeanTest extends AbstractControllerTest
    
    public void testPlainMBeanGetMBeanInfoError() throws Exception
    {
-      assertMaybeDeployFailure(BrokenDynamicMBean.OBJECT_NAME, Error.class);
+      assertMaybeDeployFailure(BrokenDynamicMBean.OBJECT_NAME, BrokenError.class);
    }
    
    public void testPlainMBeanPreRegisterError() throws Exception

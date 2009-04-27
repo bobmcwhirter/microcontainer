@@ -28,6 +28,9 @@ package org.jboss.test.system.controller.support;
  */
 public class BrokenError extends Error
 {
+   /** The serialVersionUID */
+   private static final long serialVersionUID = -533021030670261590L;
+
    public BrokenError()
    {
       super("BROKEN");
