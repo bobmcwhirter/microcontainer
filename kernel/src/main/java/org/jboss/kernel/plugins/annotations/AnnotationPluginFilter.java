@@ -21,6 +21,10 @@
  */
 package org.jboss.kernel.plugins.annotations;
 
+import java.lang.annotation.Annotation;
+
+import org.jboss.reflect.spi.AnnotatedInfo;
+
 /**
  * Filter annotation plugins.
  *
@@ -34,5 +38,5 @@ interface AnnotationPluginFilter
     * @param plugin the current plugin
     * @return true if we match the plugin, false otherwise
     */
-   boolean accept(MetaDataAnnotationPlugin plugin);
+   boolean accept(MetaDataAnnotationPlugin<? extends AnnotatedInfo, ? extends Annotation> plugin);
 }

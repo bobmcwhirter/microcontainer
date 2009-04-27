@@ -21,12 +21,16 @@
  */
 package org.jboss.kernel.plugins.annotations;
 
+import java.lang.annotation.Annotation;
+
+import org.jboss.reflect.spi.AnnotatedInfo;
+
 /**
  * Match only true method.
  */
 class MethodAnnotationPluginFilter extends PropertyAnnotationPluginFilter
 {
-   public boolean accept(MetaDataAnnotationPlugin plugin)
+   public boolean accept(MetaDataAnnotationPlugin<? extends AnnotatedInfo, ? extends Annotation> plugin)
    {
       // negate
       return super.accept(plugin) == false;
