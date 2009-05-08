@@ -345,7 +345,9 @@ public abstract class CommonAnnotationAdapter<T extends MetaDataAnnotationPlugin
                MetaData cmdr = retrieval.getComponentMetaData(mis);
                if (cmdr != null)
                {
-                  methodPlugins = getPlugins(ElementType.METHOD, METHOD_FILTER, annotationClasses);
+                  if (methodPlugins == null)
+                     methodPlugins = getPlugins(ElementType.METHOD, METHOD_FILTER, annotationClasses);
+                  
                   for(T plugin : methodPlugins)
                   {
                      if (isApplyPhase)
