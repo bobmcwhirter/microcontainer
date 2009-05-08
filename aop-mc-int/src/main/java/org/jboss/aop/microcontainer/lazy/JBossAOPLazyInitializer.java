@@ -25,10 +25,11 @@ import java.util.Set;
 
 import org.jboss.aop.proxy.container.AOPProxyFactoryParameters;
 import org.jboss.aop.proxy.container.GeneratedAOPProxyFactory;
-import org.jboss.beans.info.spi.BeanInfo;
+import org.jboss.beans.metadata.spi.BeanMetaData;
 import org.jboss.kernel.Kernel;
 import org.jboss.kernel.plugins.config.Configurator;
 import org.jboss.kernel.plugins.lazy.AbstractLazyInitializer;
+import org.jboss.kernel.spi.config.KernelConfigurator;
 import org.jboss.kernel.spi.dependency.KernelControllerContext;
 import org.jboss.metadata.spi.MetaData;
 
@@ -48,20 +49,21 @@ public class JBossAOPLazyInitializer extends AbstractLazyInitializer
    public Object initializeProxy(Kernel kernel, String bean, boolean exposeClass, Set<String> interfaces, MetaData metaData) throws Throwable
    {
       KernelControllerContext context = getKernelControllerContext(kernel, bean);
-      BeanInfo beanInfo = context.getBeanInfo();
-      if (beanInfo == null)
-         throw new IllegalArgumentException("Cannot proxy factory beans.");
+      BeanMetaData bmd = context.getBeanMetaData();
+      KernelConfigurator configurator = kernel.getConfigurator();
+      ClassLoader cl = Configurator.getClassLoader(bmd);
 
+      // TODO - add lazy handler
       AOPProxyFactoryParameters params = new AOPProxyFactoryParameters();
       params.setMetaData(metaData);
       if (exposeClass)
       {
-         params.setProxiedClass(beanInfo.getClassInfo().getType());
+         Class<?> beanClass = getBeanClass(context, configurator, cl);
+         params.setProxiedClass(beanClass);
       }
       if (interfaces != null && interfaces.isEmpty() == false)
       {
-         ClassLoader cl = Configurator.getClassLoader(context.getBeanMetaData());
-         params.setInterfaces(getClasses(kernel.getConfigurator(), interfaces, cl));
+         params.setInterfaces(getClasses(configurator, interfaces, cl));
       }
 
       GeneratedAOPProxyFactory factory = new GeneratedAOPProxyFactory();

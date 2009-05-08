@@ -21,14 +21,15 @@
 */
 package org.jboss.kernel.plugins.lazy;
 
-import java.lang.reflect.Proxy;
 import java.lang.reflect.InvocationHandler;
 import java.lang.reflect.Method;
+import java.lang.reflect.Proxy;
 import java.util.Set;
 
-import org.jboss.beans.info.spi.BeanInfo;
+import org.jboss.beans.metadata.spi.BeanMetaData;
 import org.jboss.kernel.Kernel;
 import org.jboss.kernel.plugins.config.Configurator;
+import org.jboss.kernel.spi.config.KernelConfigurator;
 import org.jboss.kernel.spi.dependency.KernelControllerContext;
 import org.jboss.kernel.spi.registry.KernelBus;
 
@@ -48,12 +49,13 @@ public class JDKLazyInitializer extends AbstractLazyInitializer
          throw new IllegalArgumentException("Null interfaces.");
 
       KernelControllerContext context = getKernelControllerContext(kernel, bean);
-      BeanInfo beanInfo = context.getBeanInfo();
-      if (beanInfo == null)
-         throw new IllegalArgumentException("Cannot proxy factory beans.");
-      LazyHandler lazyHandler = new LazyHandler(bean, kernel.getBus(), beanInfo.getClassInfo().getType());
-      ClassLoader cl = Configurator.getClassLoader(context.getBeanMetaData());
-      return Proxy.newProxyInstance(getClass().getClassLoader(), getClasses(kernel.getConfigurator(), interfaces, cl), lazyHandler);
+      BeanMetaData bmd = context.getBeanMetaData();
+      KernelConfigurator configurator = kernel.getConfigurator();
+      ClassLoader cl = Configurator.getClassLoader(bmd);
+      Class<?> beanClass = getBeanClass(context, configurator, cl);
+
+      LazyHandler lazyHandler = new LazyHandler(bean, kernel.getBus(), beanClass);
+      return Proxy.newProxyInstance(getClass().getClassLoader(), getClasses(configurator, interfaces, cl), lazyHandler);
    }
 
    /**

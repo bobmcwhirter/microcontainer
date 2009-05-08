@@ -24,7 +24,9 @@ package org.jboss.test.kernel.lazy.test;
 import java.util.Collections;
 
 import org.jboss.beans.metadata.plugins.AbstractBeanMetaData;
+import org.jboss.beans.metadata.plugins.AbstractDemandMetaData;
 import org.jboss.beans.metadata.plugins.AbstractLazyMetaData;
+import org.jboss.beans.metadata.spi.DemandMetaData;
 import org.jboss.dependency.spi.ControllerMode;
 import org.jboss.dependency.spi.ControllerState;
 import org.jboss.kernel.Kernel;
@@ -38,9 +40,9 @@ import org.jboss.test.kernel.lazy.support.RareBean;
 /**
  * @author <a href="mailto:ales.justin@jboss.com">Ales Justin</a>
  */
-public abstract class LazyInstantiationTestCase extends AbstractKernelTest
+public abstract class LazyInstantiationTest extends AbstractKernelTest
 {
-   public LazyInstantiationTestCase(String name)
+   public LazyInstantiationTest(String name)
    {
       super(name);
    }
@@ -66,6 +68,9 @@ public abstract class LazyInstantiationTestCase extends AbstractKernelTest
 
       AbstractBeanMetaData bean = new AbstractBeanMetaData("bean", RareBean.class.getName());
       bean.setMode(ControllerMode.MANUAL);
+      DemandMetaData demand = new AbstractDemandMetaData("foobar");
+      ((AbstractDemandMetaData)demand).setWhenRequired(ControllerState.INSTANTIATED);
+      bean.setDemands(Collections.singleton(demand));
 
       KernelControllerContext beanContext = controller.install(bean);
       controller.change(beanContext, ControllerState.NOT_INSTALLED);
@@ -75,7 +80,7 @@ public abstract class LazyInstantiationTestCase extends AbstractKernelTest
       KernelControllerContext lazyContext = controller.install(lazy);
 
       assertNotNull(lazyContext);
-      assertEquals(ControllerState.DESCRIBED, lazyContext.getState());
+      assertEquals(ControllerState.INSTALLED, lazyContext.getState());
 
       controller.change(beanContext, ControllerState.DESCRIBED);
       controller.change(lazyContext, ControllerState.INSTALLED);
@@ -93,13 +98,14 @@ public abstract class LazyInstantiationTestCase extends AbstractKernelTest
          assertInstanceOf(t, IllegalArgumentException.class);
       }
 
+      controller.install(new AbstractBeanMetaData("foobar", Object.class.getName()));
       controller.change(beanContext, ControllerState.INSTALLED);
 
       assertEquals(0, lazyRare.getHits());
       lazyRare.setHits(10);
       assertEquals(5, lazyRare.checkHits(15));
 
-      controller.change(beanContext, ControllerState.PRE_INSTALL);
+      controller.uninstall(beanContext.getName());
       assertEquals(ControllerState.DESCRIBED, lazyContext.getState());
    }
 

@@ -29,7 +29,7 @@ import org.jboss.test.kernel.lazy.support.JavassistLazyFactory;
  * 
  * @author <a href="mailto:ales.justin@jboss.com">Ales Justin</a>
  */
-public class JavassistLazyInstantiationTestCase extends LazyInstantiationTestCase
+public class JavassistLazyInstantiationTestCase extends LazyInstantiationTest
 {
    public JavassistLazyInstantiationTestCase(String name)
    {

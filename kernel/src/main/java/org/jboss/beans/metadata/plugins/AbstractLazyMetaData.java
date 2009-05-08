@@ -98,7 +98,8 @@ public class AbstractLazyMetaData extends AbstractBeanMetaData implements LazyMe
       constructor.setParameters(parameters);
       setConstructor(constructor);
 
-      vistor.addDependency(new AbstractDependencyItem(getName(), beanName, ControllerState.INSTANTIATED, ControllerState.DESCRIBED));
+      // we just need the original bean to be present --> Not_Installed state
+      vistor.addDependency(new AbstractDependencyItem(getName(), beanName, ControllerState.INSTANTIATED, ControllerState.NOT_INSTALLED));
       super.initialVisit(vistor);
    }
 

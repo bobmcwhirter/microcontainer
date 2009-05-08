@@ -22,17 +22,18 @@
 package org.jboss.kernel.plugins.lazy;
 
 import java.lang.reflect.Method;
-import java.util.Set;
-import java.security.PrivilegedAction;
 import java.security.AccessController;
+import java.security.PrivilegedAction;
+import java.util.Set;
 
 import javassist.util.proxy.MethodFilter;
 import javassist.util.proxy.MethodHandler;
 import javassist.util.proxy.ProxyFactory;
 import javassist.util.proxy.ProxyObject;
-import org.jboss.beans.info.spi.BeanInfo;
+import org.jboss.beans.metadata.spi.BeanMetaData;
 import org.jboss.kernel.Kernel;
 import org.jboss.kernel.plugins.config.Configurator;
+import org.jboss.kernel.spi.config.KernelConfigurator;
 import org.jboss.kernel.spi.dependency.KernelControllerContext;
 import org.jboss.kernel.spi.registry.KernelBus;
 
@@ -47,24 +48,24 @@ public class JavassistLazyInitializer extends AbstractLazyInitializer
    public Object initializeProxy(Kernel kernel, String bean, boolean exposeClass, Set<String> interfaces) throws Throwable
    {
       KernelControllerContext context = getKernelControllerContext(kernel, bean);
-      BeanInfo beanInfo = context.getBeanInfo();
-      if (beanInfo == null)
-         throw new IllegalArgumentException("Cannot proxy factory beans.");
+      BeanMetaData bmd = context.getBeanMetaData();
+      KernelConfigurator configurator = kernel.getConfigurator();
+      ClassLoader cl = Configurator.getClassLoader(bmd);
+      Class<?> beanClass = getBeanClass(context, configurator, cl);
 
       ProxyFactory factory = new ProxyFactory();
       factory.setFilter(FINALIZE_FILTER);
       if (exposeClass)
       {
-         factory.setSuperclass(beanInfo.getClassInfo().getType());
+         factory.setSuperclass(beanClass);
       }
       if (interfaces != null && interfaces.size() > 0)
       {
-         ClassLoader cl = Configurator.getClassLoader(context.getBeanMetaData());
-         factory.setInterfaces(getClasses(kernel.getConfigurator(), interfaces, cl));
+         factory.setInterfaces(getClasses(configurator, interfaces, cl));
       }
       Class<?> proxyClass = getProxyClass(factory);
       ProxyObject proxy = (ProxyObject)proxyClass.newInstance();
-      proxy.setHandler(new LazyHandler(bean, kernel.getBus(), beanInfo.getClassInfo().getType()));
+      proxy.setHandler(new LazyHandler(bean, kernel.getBus(), beanClass));
       return proxy;
    }
 

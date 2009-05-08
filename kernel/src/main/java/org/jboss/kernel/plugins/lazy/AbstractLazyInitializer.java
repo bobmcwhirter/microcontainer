@@ -23,13 +23,17 @@ package org.jboss.kernel.plugins.lazy;
 
 import java.lang.reflect.Method;
 import java.util.Set;
+import java.util.concurrent.atomic.AtomicBoolean;
 
 import org.jboss.beans.info.spi.BeanInfo;
+import org.jboss.beans.metadata.spi.BeanMetaData;
 import org.jboss.dependency.spi.Controller;
 import org.jboss.dependency.spi.ControllerContext;
+import org.jboss.dependency.spi.ControllerMode;
 import org.jboss.dependency.spi.ControllerState;
 import org.jboss.kernel.Kernel;
 import org.jboss.kernel.spi.config.KernelConfigurator;
+import org.jboss.kernel.spi.dependency.KernelController;
 import org.jboss.kernel.spi.dependency.KernelControllerContext;
 import org.jboss.kernel.spi.lazy.LazyInitializer;
 import org.jboss.kernel.spi.registry.KernelBus;
@@ -51,6 +55,7 @@ public abstract class AbstractLazyInitializer implements LazyInitializer
       private String bean;
       private KernelBus bus;
       private Class<?> proxyClass;
+      private AtomicBoolean onDemandInitialized = new AtomicBoolean(false);
 
       protected AbstractInvokeHandler(String bean, KernelBus bus, Class<?> proxyClass)
       {
@@ -84,6 +89,32 @@ public abstract class AbstractLazyInitializer implements LazyInitializer
             return proxy == args[0];
          if ("toString".equals(methodName))
             return bean + "Proxy";
+
+         if (onDemandInitialized.getAndSet(true) == false)
+         {
+            Kernel kernel = bus.getKernel();
+            KernelController controller = kernel.getController();
+            ControllerContext context = controller.getContext(bean, null);
+            if (context == null)
+               throw new IllegalArgumentException("No such context: " + bean);
+
+            if (ControllerState.INSTALLED.equals(context.getState()) == false)
+            {
+               ControllerMode mode = context.getMode();
+               if (ControllerMode.ON_DEMAND.equals(mode))
+               {
+                  controller.enableOnDemand(context);
+                  controller.change(context, ControllerState.INSTALLED);
+               }
+               else if (ControllerMode.MANUAL.equals(mode))
+               {
+                  controller.change(context, ControllerState.INSTALLED);
+               }
+            }
+
+            if (ControllerState.INSTALLED.equals(context.getState()) == false)
+               throw new IllegalArgumentException("Bean " + bean + " cannot be fully installed: " + context);
+         }
 
          if (isGetter(method))
          {
@@ -180,12 +211,39 @@ public abstract class AbstractLazyInitializer implements LazyInitializer
    protected KernelControllerContext getKernelControllerContext(Kernel kernel, String bean)
    {
       Controller controller = kernel.getController();
-      ControllerContext context = controller.getContext(bean, ControllerState.DESCRIBED);
+      ControllerContext context = controller.getContext(bean, null);
       if (context == null)
-         throw new IllegalArgumentException("Should not be here, dependency failed.");
+         throw new IllegalArgumentException("Should not be here, dependency failed, no such context: " + bean);
       if (context instanceof KernelControllerContext == false)
          throw new IllegalArgumentException("Context not KernelControllerContext: " + context);
+
       return KernelControllerContext.class.cast(context);
+   }
+
+   /**
+    * Gte bean's class.
+    *
+    * @param context the kernel controller context
+    * @param configurator the configurator
+    * @param cl the classloader
+    * @return bean's class
+    * @throws Throwable for any error
+    */
+   protected Class<?> getBeanClass(KernelControllerContext context, KernelConfigurator configurator, ClassLoader cl) throws Throwable
+   {
+      BeanMetaData bmd = context.getBeanMetaData();
+
+      Class<?> beanClass = null;
+      String beanClassName = bmd.getBean();
+      if (beanClassName != null)
+         beanClass = configurator.getClassInfo(beanClassName, cl).getType();
+      else if (context.getBeanInfo() != null)
+         beanClass = context.getBeanInfo().getClassInfo().getType();
+
+      if (beanClass == null)
+         throw new IllegalArgumentException("Not enough info to get bean class: " + context);
+
+      return beanClass;
    }
 
    /**
@@ -194,7 +252,9 @@ public abstract class AbstractLazyInitializer implements LazyInitializer
     * @param kernel the kernel
     * @param bean the bean name
     * @return bean info instance
+    * @deprecated not used any more
     */
+   @Deprecated
    protected BeanInfo getBeanInfo(Kernel kernel, String bean)
    {
       KernelControllerContext context = getKernelControllerContext(kernel, bean);
