@@ -54,6 +54,8 @@ public class DelegatingBeanAspectFactory implements AspectFactory, KernelControl
    
    protected KernelControllerContext context;
    
+   protected AspectFactory aspectFactory;
+   
    public DelegatingBeanAspectFactory(String name, BeanFactory factory, Element element)
    {
       this.name = name;
@@ -112,44 +114,47 @@ public class DelegatingBeanAspectFactory implements AspectFactory, KernelControl
       return factory.createPerJoinpoint(advisor, instanceAdvisor, jp);
    }
 
-   protected AspectFactory doCreate()
+   protected synchronized AspectFactory doCreate()
    {
       try
       {
-         log.debug("Creating advice " + name);
-
-         PushedClassLoaderMetaData pcmd = null;
-         if (((GenericBeanFactory)factory).getClassLoader() == null)
+         if (aspectFactory == null)
          {
-            pcmd = new PushedClassLoaderMetaData();
-            ((GenericBeanFactory)factory).setClassLoader(pcmd);
-         }
-         
-         Object object = null;
-         try
-         {
-            //Try without looking at the context first which is what shold be used when running scoped in AS
-            object = factory.createBean();
-         }
-         catch(Throwable t)
-         {
-            if (pcmd != null)
+            log.debug("Creating advice " + name);
+   
+            PushedClassLoaderMetaData pcmd = null;
+            if (((GenericBeanFactory)factory).getClassLoader() == null)
             {
-               pcmd.setLookAtContext(true);
+               pcmd = new PushedClassLoaderMetaData();
+               ((GenericBeanFactory)factory).setClassLoader(pcmd);
             }
-            else
+            
+            Object object = null;
+            try
             {
-               throw new RuntimeException(t);
+               //Try without looking at the context first which is what shold be used when running scoped in AS
+               object = factory.createBean();
             }
-            object = factory.createBean();
+            catch(Throwable t)
+            {
+               if (pcmd != null)
+               {
+                  pcmd.setLookAtContext(true);
+               }
+               else
+               {
+                  throw new RuntimeException(t);
+               }
+               object = factory.createBean();
+            }
+   
+            aspectFactory = (AspectFactory)object;
+            if (aspectFactory instanceof XmlLoadable)
+            {
+               ((XmlLoadable)aspectFactory).importXml(element);
+            }
          }
-
-         AspectFactory fac = (AspectFactory)object;
-         if (fac instanceof XmlLoadable)
-         {
-            ((XmlLoadable)fac).importXml(element);
-         }
-         return fac;
+         return aspectFactory;
       }
       catch (Throwable throwable)
       {
