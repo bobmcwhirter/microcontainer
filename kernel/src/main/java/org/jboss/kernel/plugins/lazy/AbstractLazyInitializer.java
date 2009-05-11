@@ -101,12 +101,7 @@ public abstract class AbstractLazyInitializer implements LazyInitializer
             if (ControllerState.INSTALLED.equals(context.getState()) == false)
             {
                ControllerMode mode = context.getMode();
-               if (ControllerMode.ON_DEMAND.equals(mode))
-               {
-                  controller.enableOnDemand(context);
-                  controller.change(context, ControllerState.INSTALLED);
-               }
-               else if (ControllerMode.MANUAL.equals(mode))
+               if (ControllerMode.ON_DEMAND.equals(mode) || ControllerMode.MANUAL.equals(mode))
                {
                   controller.change(context, ControllerState.INSTALLED);
                }
