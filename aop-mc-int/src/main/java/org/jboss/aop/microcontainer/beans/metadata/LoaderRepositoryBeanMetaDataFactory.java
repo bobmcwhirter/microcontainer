@@ -26,6 +26,7 @@ import java.util.List;
 
 import javax.xml.bind.annotation.XmlNsForm;
 import javax.xml.bind.annotation.XmlRootElement;
+import javax.xml.bind.annotation.XmlType;
 import javax.xml.bind.annotation.XmlValue;
 
 import org.jboss.aop.microcontainer.beans.LifecycleRepository;
@@ -42,6 +43,7 @@ import org.jboss.xb.annotations.JBossXmlSchema;
  */
 @JBossXmlSchema(namespace="urn:jboss:aop-beans:1.0", elementFormDefault=XmlNsForm.QUALIFIED)
 @XmlRootElement(name="precedence")
+@XmlType(name="loaderRepositoryType", propOrder={"aliases", "annotations", "classLoader", "constructor", "properties", "create", "start", "depends", "demands", "supplies", "installs", "uninstalls", "installCallbacks", "uninstallCallbacks"})
 public class LoaderRepositoryBeanMetaDataFactory extends GenericBeanFactoryMetaData
 {
    private static final long serialVersionUID = 1L;

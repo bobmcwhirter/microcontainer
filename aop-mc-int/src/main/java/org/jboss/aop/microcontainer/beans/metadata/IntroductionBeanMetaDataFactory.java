@@ -28,6 +28,8 @@ import javax.xml.bind.annotation.XmlAttribute;
 import javax.xml.bind.annotation.XmlElement;
 import javax.xml.bind.annotation.XmlNsForm;
 import javax.xml.bind.annotation.XmlRootElement;
+import javax.xml.bind.annotation.XmlTransient;
+import javax.xml.bind.annotation.XmlType;
 
 import org.jboss.aop.microcontainer.beans.IntroductionBinding;
 import org.jboss.aop.microcontainer.beans.MixinEntry;
@@ -46,6 +48,8 @@ import org.jboss.xb.annotations.JBossXmlSchema;
  */
 @JBossXmlSchema(namespace="urn:jboss:aop-beans:1.0", elementFormDefault=XmlNsForm.QUALIFIED)
 @XmlRootElement(name="introduction")
+//@XmlType(name="introductionType", propOrder={"aliases", "annotations", "classLoader", "constructor", "properties", "create", "start", "depends", "demands", "supplies", "installs", "uninstalls", "installCallbacks", "uninstallCallbacks"})
+@XmlType(name="introductionType", propOrder={})
 public class IntroductionBeanMetaDataFactory extends AspectManagerAwareBeanMetaDataFactory
    implements BeanMetaDataFactory
 {
@@ -105,6 +109,7 @@ public class IntroductionBeanMetaDataFactory extends AspectManagerAwareBeanMetaD
    }
 
    @Override
+   @XmlTransient
    public List<BeanMetaData> getBeans()
    {
       ArrayList<BeanMetaData> result = new ArrayList<BeanMetaData>();

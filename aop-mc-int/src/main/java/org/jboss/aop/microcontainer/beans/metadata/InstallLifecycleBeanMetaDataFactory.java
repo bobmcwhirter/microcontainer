@@ -23,6 +23,7 @@ package org.jboss.aop.microcontainer.beans.metadata;
 
 import javax.xml.bind.annotation.XmlNsForm;
 import javax.xml.bind.annotation.XmlRootElement;
+import javax.xml.bind.annotation.XmlType;
 
 import org.jboss.dependency.spi.ControllerState;
 import org.jboss.xb.annotations.JBossXmlSchema;
@@ -34,6 +35,7 @@ import org.jboss.xb.annotations.JBossXmlSchema;
  */
 @JBossXmlSchema(namespace="urn:jboss:aop-beans:1.0", elementFormDefault=XmlNsForm.QUALIFIED)
 @XmlRootElement(name="lifecycle-install")
+@XmlType(name="installLifeycleType", propOrder={"aliases", "annotations", "classLoader", "constructor", "properties", "create", "start", "depends", "demands", "supplies", "installs", "uninstalls", "installCallbacks", "uninstallCallbacks"})
 public class InstallLifecycleBeanMetaDataFactory extends LifecycleBeanMetaDataFactory
 {
    private static final long serialVersionUID = 1L;

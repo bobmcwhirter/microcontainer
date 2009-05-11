@@ -28,6 +28,7 @@ import javax.xml.bind.annotation.XmlElement;
 import javax.xml.bind.annotation.XmlElements;
 import javax.xml.bind.annotation.XmlNsForm;
 import javax.xml.bind.annotation.XmlRootElement;
+import javax.xml.bind.annotation.XmlType;
 
 import org.jboss.aop.microcontainer.beans.CFlowStack;
 import org.jboss.aop.microcontainer.beans.CFlowStackEntry;
@@ -45,6 +46,7 @@ import org.jboss.xb.annotations.JBossXmlSchema;
  */
 @JBossXmlSchema(namespace="urn:jboss:aop-beans:1.0", elementFormDefault=XmlNsForm.QUALIFIED)
 @XmlRootElement(name="cflow")
+@XmlType(name="cflowStackType", propOrder={"aliases", "annotations", "classLoader", "constructor", "properties", "calledEntries", "create", "start", "depends", "demands", "supplies", "installs", "uninstalls", "installCallbacks", "uninstallCallbacks"})
 public class CFlowStackBeanMetaDataFactory extends AspectManagerAwareBeanMetaDataFactory
    implements BeanMetaDataFactory
 {

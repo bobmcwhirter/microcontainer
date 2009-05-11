@@ -21,6 +21,8 @@
 */ 
 package org.jboss.aop.microcontainer.beans.metadata;
 
+import javax.xml.bind.annotation.XmlType;
+
 import org.jboss.aop.microcontainer.beans.StackEntry;
 
 /**
@@ -28,6 +30,7 @@ import org.jboss.aop.microcontainer.beans.StackEntry;
  * @author <a href="kabir.khan@jboss.com">Kabir Khan</a>
  * @version $Revision: 1.1 $
  */
+@XmlType(name="stackRefType", propOrder={})
 public class StackRefData extends BaseInterceptorData
 {
    @Override

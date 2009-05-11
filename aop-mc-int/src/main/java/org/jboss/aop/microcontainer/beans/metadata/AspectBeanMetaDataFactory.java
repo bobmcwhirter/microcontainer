@@ -30,6 +30,7 @@ import javax.xml.bind.annotation.XmlAnyElement;
 import javax.xml.bind.annotation.XmlAttribute;
 import javax.xml.bind.annotation.XmlNsForm;
 import javax.xml.bind.annotation.XmlRootElement;
+import javax.xml.bind.annotation.XmlType;
 
 import org.jboss.aop.microcontainer.beans.Aspect;
 import org.jboss.aop.microcontainer.beans.ClassLoaderAwareGenericBeanFactory;
@@ -50,6 +51,7 @@ import org.w3c.dom.Element;
  */
 @JBossXmlSchema(namespace="urn:jboss:aop-beans:1.0", elementFormDefault=XmlNsForm.QUALIFIED)
 @XmlRootElement(name="aspect")
+@XmlType(name="aspectType", propOrder={"aliases", "annotations", "classLoader", "constructor", "properties", "create", "start", "depends", "demands", "supplies", "installs", "uninstalls", "installCallbacks", "uninstallCallbacks"})
 public class AspectBeanMetaDataFactory extends AspectManagerAwareBeanMetaDataFactory
    implements BeanMetaDataFactory
 {

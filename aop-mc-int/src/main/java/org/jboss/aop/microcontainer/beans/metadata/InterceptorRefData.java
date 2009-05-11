@@ -22,12 +22,14 @@
 package org.jboss.aop.microcontainer.beans.metadata;
 
 import javax.xml.bind.annotation.XmlAttribute;
+import javax.xml.bind.annotation.XmlType;
 
 /**
  * 
  * @author <a href="kabir.khan@jboss.com">Kabir Khan</a>
  * @version $Revision: 1.1 $
  */
+@XmlType(name="interceptorRefType", propOrder={})
 public class InterceptorRefData extends AdviceOrInterceptorData
 {
    public InterceptorRefData()

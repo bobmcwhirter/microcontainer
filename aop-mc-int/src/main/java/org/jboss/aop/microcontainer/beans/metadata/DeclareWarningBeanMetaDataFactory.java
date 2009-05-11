@@ -23,6 +23,7 @@ package org.jboss.aop.microcontainer.beans.metadata;
 
 import javax.xml.bind.annotation.XmlNsForm;
 import javax.xml.bind.annotation.XmlRootElement;
+import javax.xml.bind.annotation.XmlType;
 
 import org.jboss.xb.annotations.JBossXmlSchema;
 
@@ -33,6 +34,7 @@ import org.jboss.xb.annotations.JBossXmlSchema;
  */
 @JBossXmlSchema(namespace="urn:jboss:aop-beans:1.0", elementFormDefault=XmlNsForm.QUALIFIED)
 @XmlRootElement(name="declare-warning")
+@XmlType(name="declareWarningType", propOrder={"aliases", "annotations", "classLoader", "constructor", "properties", "message", "create", "start", "depends", "demands", "supplies", "installs", "uninstalls", "installCallbacks", "uninstallCallbacks"})
 public class DeclareWarningBeanMetaDataFactory extends AbstractDeclareBeanMetaDataFactory
 {
    private static final long serialVersionUID = 1L;

@@ -69,7 +69,15 @@ public class AOPMicrocontainerTestDelegate extends MicrocontainerTestDelegate
       else
          log.debug("No test specific deployment " + testName);
 
-      super.deploy();
+      try
+      {
+         super.deploy();
+      }
+      catch (Exception e)
+      {
+         e.printStackTrace();
+         throw new RuntimeException(e);
+      }
    }
 
    protected void undeploy()

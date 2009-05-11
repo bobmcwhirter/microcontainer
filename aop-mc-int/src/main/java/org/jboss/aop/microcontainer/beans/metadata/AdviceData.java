@@ -22,6 +22,7 @@
 package org.jboss.aop.microcontainer.beans.metadata;
 
 import javax.xml.bind.annotation.XmlAttribute;
+import javax.xml.bind.annotation.XmlType;
 
 
 /**
@@ -29,6 +30,7 @@ import javax.xml.bind.annotation.XmlAttribute;
  * @author <a href="kabir.khan@jboss.com">Kabir Khan</a>
  * @version $Revision: 1.1 $
  */
+@XmlType(name="aroundAdviceType", propOrder={})
 public class AdviceData extends AdviceOrInterceptorData
 {
    String adviceMethod;
