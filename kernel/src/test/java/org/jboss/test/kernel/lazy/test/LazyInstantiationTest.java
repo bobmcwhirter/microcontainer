@@ -65,48 +65,91 @@ public abstract class LazyInstantiationTest extends AbstractKernelTest
    {
       Kernel kernel = bootstrap();
       KernelController controller = kernel.getController();
-
-      AbstractBeanMetaData bean = new AbstractBeanMetaData("bean", RareBean.class.getName());
-      bean.setMode(ControllerMode.MANUAL);
-      DemandMetaData demand = new AbstractDemandMetaData("foobar");
-      ((AbstractDemandMetaData)demand).setWhenRequired(ControllerState.INSTANTIATED);
-      bean.setDemands(Collections.singleton(demand));
-
-      KernelControllerContext beanContext = controller.install(bean);
-      controller.change(beanContext, ControllerState.NOT_INSTALLED);
-
-      ModifiedLazyMetaData lazy = new ModifiedLazyMetaData("bean", getFactoryClassName());
-      lazy.setInterfaces(Collections.singleton(IRare.class.getName()));
-      KernelControllerContext lazyContext = controller.install(lazy);
-
-      assertNotNull(lazyContext);
-      assertEquals(ControllerState.INSTALLED, lazyContext.getState());
-
-      controller.change(beanContext, ControllerState.DESCRIBED);
-      controller.change(lazyContext, ControllerState.INSTALLED);
-
-      IRare lazyRare = (IRare)lazyContext.getTarget();
-      assertNotNull(lazyRare);
-
       try
       {
-         lazyRare.getHits();
-         throw new RuntimeException("Should not be here.");
+         AbstractBeanMetaData bean = new AbstractBeanMetaData("bean", RareBean.class.getName());
+         bean.setMode(ControllerMode.MANUAL);
+         DemandMetaData demand = new AbstractDemandMetaData("foobar");
+         ((AbstractDemandMetaData)demand).setWhenRequired(ControllerState.INSTANTIATED);
+         bean.setDemands(Collections.singleton(demand));
+
+         KernelControllerContext beanContext = controller.install(bean);
+         controller.change(beanContext, ControllerState.NOT_INSTALLED);
+
+         ModifiedLazyMetaData lazy = new ModifiedLazyMetaData("bean", getFactoryClassName());
+         lazy.setInterfaces(Collections.singleton(IRare.class.getName()));
+         KernelControllerContext lazyContext = controller.install(lazy);
+
+         assertNotNull(lazyContext);
+         assertEquals(ControllerState.INSTALLED, lazyContext.getState());
+
+         controller.change(beanContext, ControllerState.DESCRIBED);
+         controller.change(lazyContext, ControllerState.INSTALLED);
+
+         IRare lazyRare = (IRare)lazyContext.getTarget();
+         assertNotNull(lazyRare);
+
+         try
+         {
+            lazyRare.getHits();
+            throw new RuntimeException("Should not be here.");
+         }
+         catch(Throwable t)
+         {
+            assertInstanceOf(t, IllegalArgumentException.class);
+         }
+
+         controller.install(new AbstractBeanMetaData("foobar", Object.class.getName()));
+         controller.change(beanContext, ControllerState.INSTALLED);
+
+         assertEquals(0, lazyRare.getHits());
+         lazyRare.setHits(10);
+         assertEquals(5, lazyRare.checkHits(15));
+
+         controller.uninstall(beanContext.getName());
+         assertEquals(ControllerState.DESCRIBED, lazyContext.getState());
       }
-      catch(Throwable t)
+      finally
       {
-         assertInstanceOf(t, IllegalArgumentException.class);
+         controller.shutdown();
       }
+   }
 
-      controller.install(new AbstractBeanMetaData("foobar", Object.class.getName()));
-      controller.change(beanContext, ControllerState.INSTALLED);
+   public void testOnDemand() throws Throwable
+   {
+      Kernel kernel = bootstrap();
+      KernelController controller = kernel.getController();
+      try
+      {
+         AbstractBeanMetaData bean = new AbstractBeanMetaData("bean", RareBean.class.getName());
+         bean.setMode(ControllerMode.ON_DEMAND);
+         KernelControllerContext beanContext = controller.install(bean);
 
-      assertEquals(0, lazyRare.getHits());
-      lazyRare.setHits(10);
-      assertEquals(5, lazyRare.checkHits(15));
+         ModifiedLazyMetaData lazy = new ModifiedLazyMetaData("bean", getFactoryClassName());
+         lazy.setInterfaces(Collections.singleton(IRare.class.getName()));
+         KernelControllerContext lazyContext = controller.install(lazy);
+         assertNotNull(lazyContext);
+         assertEquals(ControllerState.INSTALLED, lazyContext.getState());
 
-      controller.uninstall(beanContext.getName());
-      assertEquals(ControllerState.DESCRIBED, lazyContext.getState());
+         IRare lazyRare = (IRare)lazyContext.getTarget();
+         assertNotNull(lazyRare);
+
+         // should not be fully installed yet
+         assertEquals(ControllerState.NOT_INSTALLED, beanContext.getState());
+         assertEquals(0, lazyRare.getHits());
+         // the hit should install it
+         assertEquals(ControllerState.INSTALLED, beanContext.getState());
+
+         lazyRare.setHits(10);
+         assertEquals(5, lazyRare.checkHits(15));
+
+         controller.uninstall(beanContext.getName());
+         assertEquals(ControllerState.DESCRIBED, lazyContext.getState());
+      }
+      finally
+      {
+         controller.shutdown();
+      }
    }
 
    private class ModifiedLazyMetaData extends AbstractLazyMetaData
