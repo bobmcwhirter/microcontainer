@@ -119,7 +119,7 @@ $Id$
          </xsd:complexContent>
       </xsd:complexType>
       <xsd:simpleType name="classNameType">
-         <xsd:restriction base="classNameType"></xsd:restriction>
+         <xsd:restriction base="classNameType"/>
       </xsd:simpleType>
       <xsd:group name="valueGroup">
          <xsd:choice>
@@ -220,22 +220,22 @@ $Id$
          </xsd:complexContent>
       </xsd:complexType>
       <xsd:simpleType name="controllerStateType">
-         <xsd:restriction base="controllerStateType"></xsd:restriction>
+         <xsd:restriction base="controllerStateType"/>
       </xsd:simpleType>
       <xsd:simpleType name="controllerModeType">
-         <xsd:restriction base="controllerModeType"></xsd:restriction>
+         <xsd:restriction base="controllerModeType"/>
       </xsd:simpleType>
       <xsd:simpleType name="autowireTypeType">
-         <xsd:restriction base="autowireTypeType"></xsd:restriction>
+         <xsd:restriction base="autowireTypeType"/>
       </xsd:simpleType>
       <xsd:simpleType name="accessModeType">
-         <xsd:restriction base="accessModeType"></xsd:restriction>
+         <xsd:restriction base="accessModeType"/>
       </xsd:simpleType>
       <xsd:simpleType name="optionType">
-         <xsd:restriction base="optionType"></xsd:restriction>
+         <xsd:restriction base="optionType"/>
       </xsd:simpleType>
       <xsd:simpleType name="contextType">
-         <xsd:restriction base="contextType"></xsd:restriction>
+         <xsd:restriction base="contextType"/>
       </xsd:simpleType>
    </xsd:redefine>
 
@@ -827,7 +827,7 @@ $Id$
          <xsd:element name="interceptor-ref" type="interceptorRefType" minOccurs="0" maxOccurs="unbounded" />
          <xsd:element name="advice" type="adviceType" minOccurs="0" maxOccurs="unbounded" />
       </xsd:choice>
-      <xsd:attribute name="name" type="xsd:string" use="optional"></xsd:attribute>
+      <xsd:attribute name="name" type="xsd:string" use="optional"/>
       <xsd:attribute name="manager-bean" type="xsd:string" use="optional"/>
       <xsd:attribute name="manager-property" type="xsd:string" use="optional"/>
    </xsd:complexType>
@@ -854,8 +854,8 @@ $Id$
          <xsd:element name="interfaces" type="xsd:string" minOccurs="0" maxOccurs="1" />
          <xsd:element name="mixin" type="mixinType" minOccurs="0" maxOccurs="unbounded" />
       </xsd:choice>
-      <xsd:attribute name="class" type="xsd:string" use="optional"></xsd:attribute>
-      <xsd:attribute name="expr" type="xsd:string" use="optional"></xsd:attribute>
+      <xsd:attribute name="class" type="xsd:string" use="optional"/>
+      <xsd:attribute name="expr" type="xsd:string" use="optional"/>
       <xsd:attribute name="manager-bean" type="xsd:string" use="optional"/>
       <xsd:attribute name="manager-property" type="xsd:string" use="optional"/>
    </xsd:complexType>
@@ -898,8 +898,8 @@ $Id$
          <xsd:any namespace="##other" processContents="lax" minOccurs="0" maxOccurs="unbounded">
          </xsd:any>
       </xsd:choice>
-      <xsd:attribute name="tag" type="xsd:string" use="required"></xsd:attribute>
-      <xsd:attribute name="class" type="xsd:string" use="required"></xsd:attribute>
+      <xsd:attribute name="tag" type="xsd:string" use="required"/>
+      <xsd:attribute name="class" type="xsd:string" use="required"/>
    </xsd:complexType>
 
    <xsd:element name="metadata-loader" type="metadataLoaderType">
@@ -924,8 +924,8 @@ $Id$
          <xsd:any namespace="##other" processContents="lax" minOccurs="0" maxOccurs="unbounded">
          </xsd:any>
       </xsd:choice>
-      <xsd:attribute name="tag" type="xsd:string" use="required"></xsd:attribute>
-      <xsd:attribute name="class" type="xsd:string" use="required"></xsd:attribute>
+      <xsd:attribute name="tag" type="xsd:string" use="required"/>
+      <xsd:attribute name="class" type="xsd:string" use="required"/>
    </xsd:complexType>
 
    <xsd:element name="arrayreplacement" type="arrayreplacementType">
@@ -946,9 +946,9 @@ $Id$
            ]]>
          </xsd:documentation>
       </xsd:annotation>
-      <xsd:attribute name="name" type="xsd:string" use="optional"></xsd:attribute>
-      <xsd:attribute name="class" type="xsd:string" use="optional"></xsd:attribute>
-      <xsd:attribute name="expr" type="xsd:string" use="optional"></xsd:attribute>
+      <xsd:attribute name="name" type="xsd:string" use="optional"/>
+      <xsd:attribute name="class" type="xsd:string" use="optional"/>
+      <xsd:attribute name="expr" type="xsd:string" use="optional"/>
    </xsd:complexType>
 
    <xsd:element name="arraybind" type="arraybindType">
@@ -981,8 +981,8 @@ $Id$
          <xsd:element name="finally" type="finallyType" minOccurs="0" maxOccurs="unbounded"/>
          -->
       </xsd:choice>
-      <xsd:attribute name="name" type="xsd:string" use="optional"></xsd:attribute>
-      <xsd:attribute name="type" type="xsd:string" use="required"></xsd:attribute>
+      <xsd:attribute name="name" type="xsd:string" use="optional"/>
+      <xsd:attribute name="type" type="xsd:string" use="required"/>
    </xsd:complexType>
 
    <xsd:complexType name="aopLifecycleType">
