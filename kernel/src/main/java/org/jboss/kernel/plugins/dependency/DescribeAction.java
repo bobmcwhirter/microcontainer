@@ -24,7 +24,6 @@ package org.jboss.kernel.plugins.dependency;
 import java.util.List;
 
 import org.jboss.beans.info.spi.BeanInfo;
-import org.jboss.beans.metadata.api.annotations.DependencyBuilderFactory;
 import org.jboss.dependency.spi.ControllerState;
 import org.jboss.kernel.Kernel;
 import org.jboss.kernel.spi.config.KernelConfig;
@@ -32,7 +31,6 @@ import org.jboss.kernel.spi.dependency.DependencyBuilder;
 import org.jboss.kernel.spi.dependency.DependencyBuilderListItem;
 import org.jboss.kernel.spi.dependency.KernelController;
 import org.jboss.kernel.spi.dependency.KernelControllerContext;
-import org.jboss.kernel.spi.dependency.helpers.AbstractDependencyBuilder;
 import org.jboss.kernel.spi.metadata.KernelMetaDataRepository;
 import org.jboss.metadata.spi.MetaData;
 
@@ -45,61 +43,6 @@ import org.jboss.metadata.spi.MetaData;
  */
 public class DescribeAction extends AnnotationsAction
 {
-   /** Basic dependency builder, no AOP */
-   private DependencyBuilder basicDependencyBuilder = createBasicDependencyBuilder();
-
-   /**
-    * Create basic dependency builder.
-    *
-    * @return the basic dependency builder
-    */
-   protected DependencyBuilder createBasicDependencyBuilder()
-   {
-      return new AbstractDependencyBuilder();
-   }
-
-   /**
-    * Get dependency builder.
-    *
-    * @param md the metadata
-    * @param kernel the kernel
-    * @return dependency builder
-    * @throws Throwable for any error
-    */
-   protected DependencyBuilder getDependencyBuilder(MetaData md, Kernel kernel) throws Throwable
-   {
-      DependencyBuilder dependencyBuilder = null;
-      DependencyBuilderFactory factory = md.getAnnotation(DependencyBuilderFactory.class);
-      if (factory != null)
-      {
-         if (factory.checkMetaDataForBuilderInstance())
-         {
-            // still allow for more configurable DependencyBuilder
-            dependencyBuilder = md.getMetaData(DependencyBuilder.class);
-         }
-         else
-         {
-            Class<? extends DependencyBuilder> value = factory.value();
-            if (basicDependencyBuilder.getClass().equals(value))
-            {
-               dependencyBuilder = basicDependencyBuilder;   
-            }
-            else
-            {
-               dependencyBuilder = value.newInstance();
-            }
-         }
-      }
-
-      if (dependencyBuilder == null)
-      {
-         KernelConfig config = kernel.getConfig();
-         dependencyBuilder = config.getDependencyBuilder();
-      }
-
-      return dependencyBuilder;
-   }
-
    @SuppressWarnings("unchecked")
    protected void installActionInternal(KernelControllerContext context) throws Throwable
    {
@@ -110,7 +53,8 @@ public class DescribeAction extends AnnotationsAction
          Kernel kernel = controller.getKernel();
          KernelMetaDataRepository repository = kernel.getMetaDataRepository();
          MetaData md = repository.getMetaData(context);
-         DependencyBuilder dependencyBuilder = getDependencyBuilder(md, kernel);
+         KernelConfig config = kernel.getConfig();
+         DependencyBuilder dependencyBuilder = config.getDependencyBuilder();
          // add custom dependencies (e.g. AOP layer).
          List<DependencyBuilderListItem> dependencies = dependencyBuilder.getDependencies(info, md);
          if (log.isTraceEnabled())
@@ -143,7 +87,8 @@ public class DescribeAction extends AnnotationsAction
          DependencyBuilder dependencyBuilder;
          try
          {
-            dependencyBuilder = getDependencyBuilder(md, kernel);
+            KernelConfig config = kernel.getConfig();
+            dependencyBuilder = config.getDependencyBuilder(); 
          }
          catch (Throwable e)
          {
