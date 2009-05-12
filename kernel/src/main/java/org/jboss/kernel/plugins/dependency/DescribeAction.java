@@ -24,7 +24,7 @@ package org.jboss.kernel.plugins.dependency;
 import java.util.List;
 
 import org.jboss.beans.info.spi.BeanInfo;
-import org.jboss.beans.metadata.api.annotations.IgnoreAOP;
+import org.jboss.beans.metadata.api.annotations.DependencyBuilderFactory;
 import org.jboss.dependency.spi.ControllerState;
 import org.jboss.kernel.Kernel;
 import org.jboss.kernel.spi.config.KernelConfig;
@@ -68,20 +68,35 @@ public class DescribeAction extends AnnotationsAction
     */
    protected DependencyBuilder getDependencyBuilder(MetaData md, Kernel kernel) throws Throwable
    {
-      DependencyBuilder dependencyBuilder = md.getMetaData(DependencyBuilder.class);
-      if (dependencyBuilder == null)
+      DependencyBuilder dependencyBuilder = null;
+      DependencyBuilderFactory factory = md.getAnnotation(DependencyBuilderFactory.class);
+      if (factory != null)
       {
-         IgnoreAOP ignoreAOP = md.getAnnotation(IgnoreAOP.class);
-         if (ignoreAOP != null)
+         if (factory.checkMetaDataForBuilderInstance())
          {
-            dependencyBuilder = basicDependencyBuilder;
+            // still allow for more configurable DependencyBuilder
+            dependencyBuilder = md.getMetaData(DependencyBuilder.class);
          }
          else
          {
-            KernelConfig config = kernel.getConfig();
-            dependencyBuilder = config.getDependencyBuilder();
+            Class<? extends DependencyBuilder> value = factory.value();
+            if (basicDependencyBuilder.getClass().equals(value))
+            {
+               dependencyBuilder = basicDependencyBuilder;   
+            }
+            else
+            {
+               dependencyBuilder = value.newInstance();
+            }
          }
       }
+
+      if (dependencyBuilder == null)
+      {
+         KernelConfig config = kernel.getConfig();
+         dependencyBuilder = config.getDependencyBuilder();
+      }
+
       return dependencyBuilder;
    }
 

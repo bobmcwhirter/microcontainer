@@ -26,14 +26,31 @@ import java.lang.annotation.Retention;
 import java.lang.annotation.RetentionPolicy;
 import java.lang.annotation.Target;
 
+import org.jboss.kernel.spi.dependency.DependencyBuilder;
+import org.jboss.kernel.spi.dependency.helpers.AbstractDependencyBuilder;
+
 /**
- * Ignore any AOP mechanism on this bean.
+ * Define dependency builder instance.
  *
  * @author <a href="mailto:kabir.khan@jboss.org">Kabir Khan</a>
  * @author <a href="mailto:ales.justin@jboss.org">Ales Justin</a>
  */
 @Target(ElementType.TYPE)
 @Retention(RetentionPolicy.RUNTIME)
-public @interface IgnoreAOP
+public @interface DependencyBuilderFactory
 {
+   /**
+    * The dependency builder class to use.
+    *
+    * @return the dependency builder class
+    */
+   Class<? extends DependencyBuilder> value() default AbstractDependencyBuilder.class;
+
+   /**
+    * Should we check metadata for dependency builder instance.
+    * This allows us for more configurable instance.
+    *
+    * @return true if we should check metadata for dependency builder, false otherwise
+    */
+   boolean checkMetaDataForBuilderInstance() default false;
 }
