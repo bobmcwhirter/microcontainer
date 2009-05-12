@@ -24,6 +24,7 @@ package org.jboss.kernel.plugins.dependency;
 import java.util.List;
 
 import org.jboss.beans.info.spi.BeanInfo;
+import org.jboss.beans.metadata.api.annotations.IgnoreAOP;
 import org.jboss.dependency.spi.ControllerState;
 import org.jboss.kernel.Kernel;
 import org.jboss.kernel.spi.config.KernelConfig;
@@ -31,6 +32,7 @@ import org.jboss.kernel.spi.dependency.DependencyBuilder;
 import org.jboss.kernel.spi.dependency.DependencyBuilderListItem;
 import org.jboss.kernel.spi.dependency.KernelController;
 import org.jboss.kernel.spi.dependency.KernelControllerContext;
+import org.jboss.kernel.spi.dependency.helpers.AbstractDependencyBuilder;
 import org.jboss.kernel.spi.metadata.KernelMetaDataRepository;
 import org.jboss.metadata.spi.MetaData;
 
@@ -43,6 +45,19 @@ import org.jboss.metadata.spi.MetaData;
  */
 public class DescribeAction extends AnnotationsAction
 {
+   /** Basic dependency builder, no AOP */
+   private DependencyBuilder basicDependencyBuilder = createBasicDependencyBuilder();
+
+   /**
+    * Create basic dependency builder.
+    *
+    * @return the basic dependency builder
+    */
+   protected DependencyBuilder createBasicDependencyBuilder()
+   {
+      return new AbstractDependencyBuilder();
+   }
+
    /**
     * Get dependency builder.
     *
@@ -56,8 +71,16 @@ public class DescribeAction extends AnnotationsAction
       DependencyBuilder dependencyBuilder = md.getMetaData(DependencyBuilder.class);
       if (dependencyBuilder == null)
       {
-         KernelConfig config = kernel.getConfig();
-         dependencyBuilder = config.getDependencyBuilder();
+         IgnoreAOP ignoreAOP = md.getAnnotation(IgnoreAOP.class);
+         if (ignoreAOP != null)
+         {
+            return basicDependencyBuilder;
+         }
+         else
+         {
+            KernelConfig config = kernel.getConfig();
+            dependencyBuilder = config.getDependencyBuilder();
+         }
       }
       return dependencyBuilder;
    }
