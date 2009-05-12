@@ -74,7 +74,7 @@ public class DescribeAction extends AnnotationsAction
          IgnoreAOP ignoreAOP = md.getAnnotation(IgnoreAOP.class);
          if (ignoreAOP != null)
          {
-            return basicDependencyBuilder;
+            dependencyBuilder = basicDependencyBuilder;
          }
          else
          {
