@@ -24,6 +24,8 @@ package org.jboss.kernel.plugins.dependency;
 import java.util.List;
 
 import org.jboss.beans.info.spi.BeanInfo;
+import org.jboss.dependency.spi.ControllerState;
+import org.jboss.kernel.Kernel;
 import org.jboss.kernel.spi.config.KernelConfig;
 import org.jboss.kernel.spi.dependency.DependencyBuilder;
 import org.jboss.kernel.spi.dependency.DependencyBuilderListItem;
@@ -31,16 +33,35 @@ import org.jboss.kernel.spi.dependency.KernelController;
 import org.jboss.kernel.spi.dependency.KernelControllerContext;
 import org.jboss.kernel.spi.metadata.KernelMetaDataRepository;
 import org.jboss.metadata.spi.MetaData;
-import org.jboss.dependency.spi.ControllerState;
 
 /**
  * DescribeAction.
  *
  * @author <a href="adrian@jboss.com">Adrian Brock</a>
+ * @author <a href="ales.justin@jboss.com">Ales Justin</a>
  * @version $Revision$
  */
 public class DescribeAction extends AnnotationsAction
 {
+   /**
+    * Get dependency builder.
+    *
+    * @param md the metadata
+    * @param kernel the kernel
+    * @return dependency builder
+    * @throws Throwable for any error
+    */
+   protected DependencyBuilder getDependencyBuilder(MetaData md, Kernel kernel) throws Throwable
+   {
+      DependencyBuilder dependencyBuilder = md.getMetaData(DependencyBuilder.class);
+      if (dependencyBuilder == null)
+      {
+         KernelConfig config = kernel.getConfig();
+         dependencyBuilder = config.getDependencyBuilder();
+      }
+      return dependencyBuilder;
+   }
+
    @SuppressWarnings("unchecked")
    protected void installActionInternal(KernelControllerContext context) throws Throwable
    {
@@ -48,10 +69,10 @@ public class DescribeAction extends AnnotationsAction
       if (info != null)
       {
          KernelController controller = (KernelController)context.getController();
-         KernelConfig config = controller.getKernel().getConfig();
-         DependencyBuilder dependencyBuilder = config.getDependencyBuilder();
-         KernelMetaDataRepository repository = controller.getKernel().getMetaDataRepository();
+         Kernel kernel = controller.getKernel();
+         KernelMetaDataRepository repository = kernel.getMetaDataRepository();
          MetaData md = repository.getMetaData(context);
+         DependencyBuilder dependencyBuilder = getDependencyBuilder(md, kernel);
          // add custom dependencies (e.g. AOP layer).
          List<DependencyBuilderListItem> dependencies = dependencyBuilder.getDependencies(info, md);
          if (log.isTraceEnabled())
@@ -77,20 +98,22 @@ public class DescribeAction extends AnnotationsAction
          cleanAnnotations(context);
 
          KernelController controller = (KernelController)context.getController();
-         KernelConfig config = controller.getKernel().getConfig();
+         Kernel kernel = controller.getKernel();
+         KernelMetaDataRepository repository = kernel.getMetaDataRepository();
+         MetaData md = repository.getMetaData(context);
+
          DependencyBuilder dependencyBuilder;
          try
          {
-            dependencyBuilder = config.getDependencyBuilder();
+            dependencyBuilder = getDependencyBuilder(md, kernel);
          }
          catch (Throwable e)
          {
             log.debug("Error while cleaning the annotations: " + e);
             return;
          }
-         KernelMetaDataRepository repository = controller.getKernel().getMetaDataRepository();
-         MetaData md = repository.getMetaData(context);
-         // add custom dependencies (e.g. AOP layer).
+
+         // remove custom dependencies (e.g. AOP layer).
          List<DependencyBuilderListItem> dependencies = dependencyBuilder.getDependencies(info, md);
          if (log.isTraceEnabled())
             log.trace("Unwind extra dependencies for " + context.getName() + " " + dependencies);
