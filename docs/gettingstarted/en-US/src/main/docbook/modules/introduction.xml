@@ -12,9 +12,9 @@
    <para>As we mention JBoss Application Server, while rewriting its Microkernel to a POJO environment, there were other
       aspects that also needed to be considered while changing the core functionality. New modules or subprojects were
       introduced to the Microcontainer project to tightly integrate those aspects with the new POJO approach and to
-      eventually solve some of the basic problems that arose over the years with the changes application server went
+      eventually solve some of the basic problems that arose over the years with the changes the application server went
       through.
-      We will discuss these modules and subproject later on.
+      We will discuss these modules and subprojects later on.
    </para>
 
    <para>At its core, the JBoss Microcontainer is a generic "dependency injection" framework. Its primary function is
@@ -52,7 +52,7 @@
       <listitem>
          <para>JBoss Microcontainer is used as a replacement for the JMX-based Microkernel in JBoss AS 5.x and above.
             All
-            the existing features of MBeans are thightly integrated into new Microcontainer based ServiceController.
+            the existing features of MBeans are tightly integrated into new Microcontainer based ServiceController.
          </para>
       </listitem>
       <listitem>
@@ -89,7 +89,7 @@
       </listitem>
    </itemizedlist>
 
-   <para>A typical JBoss Microcontainer application or service include a set of POJOs that complete business tasks,
+   <para>A typical JBoss Microcontainer application or service includes a set of POJOs that complete business tasks,
       as
       well as an XML configuration file called
       <varname>META-INF/jboss-beans.xml</varname>

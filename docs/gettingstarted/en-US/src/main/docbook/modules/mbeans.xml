@@ -5,11 +5,11 @@
 <chapter id="mbeans">
    <title>MBeans extensions</title>
 
-   <para>In previous versions (pre 5.x) of JBoss Application Server core services were implemented as MBeans.
+   <para>In previous versions (pre 5.x) of JBoss Application Server, core services were implemented as MBeans.
       To make things a bit easier, not forcing the requrement for a direct implementation of the
       DynamicMBean interface, we introduced
       <ulink url="http://docs.jboss.org/jbossas/jboss4guide/r1/html/ch2.chapter.html#d0e3460">XMBeans</ulink>.
-      But with the change of underlying Kernel, moving away from JMX MBeanServer to plain POJO Controller, we also
+      But with the change of the underlying Kernel, moving away from an JMX MBeanServer to a plain POJO Controller, we also
       let the handling of the existing MBeans to the new Controller.
       Apart from supporting all of the existing XMBean features, we also ported some of the rich features from the new
       Microcontainer IoC model to the XBeans.
@@ -19,7 +19,8 @@
    <programlisting>
       &lt;mbean name="jboss.test:type=BasicMBeanName" code="BasicMBeanCode">
          &lt;attribute name="Attribute">
-            &lt;inject bean="TestName" property="getSomething" state="Instantiated"/>
+            &lt;inject bean="TestName" property="getSomething" 
+               state="Instantiated"/>
          &lt;/attribute>
       &lt;/mbean>
    </programlisting>

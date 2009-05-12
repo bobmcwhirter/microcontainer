@@ -10,17 +10,20 @@
    </para>
 
    <para>We've written a piece of integration code that bridges the two IoC frameworks together.
-      You can inject Guice defined beans into Microcontainer and/or the other way around.
-      See examples for more details.
+      You can inject Guice defined beans into the Microcontainer and/or the other way around.
+      See the examples for more details.
    </para>
 
-   <para>In this example we will define Guice module, binding simple Singleton class to one of it's
-      instances. We will then do a contextual lookup for the Singleton instance in SingletonHolder class.
+   <para>In this example we will define a Guice module, binding a simple Singleton class to one of its
+      instances. We will then do a contextual lookup for the Singleton instance in the SingletonHolder class.
    </para>
 
    <programlisting>
-      AbstractBeanMetaData guicePlugin = new AbstractBeanMetaData("GuicePlugin", GuiceKernelRegistryEntryPlugin.class.getName());
-      AbstractConstructorMetaData constructor = new AbstractConstructorMetaData();
+      AbstractBeanMetaData guicePlugin = 
+            new AbstractBeanMetaData(
+                "GuicePlugin", GuiceKernelRegistryEntryPlugin.class.getName());
+      AbstractConstructorMetaData constructor = 
+        new AbstractConstructorMetaData();
       AbstractArrayMetaData arrayMetaData = new AbstractArrayMetaData();
       final Singleton singleton = new Singleton();
       Module module = new AbstractModule()
@@ -31,7 +34,9 @@
          }
       };
       arrayMetaData.add(new AbstractValueMetaData(module));
-      constructor.setParameters(Collections.singletonList((ParameterMetaData)new AbstractParameterMetaData(arrayMetaData)));
+      constructor.setParameters(
+         Collections.singletonList(
+             (ParameterMetaData)new AbstractParameterMetaData(arrayMetaData)));
       guicePlugin.setConstructor(constructor);
 
       public class SingletonHolder
@@ -58,53 +63,66 @@
    </programlisting>
 
    <para>The detail that is hidden is in GuiceKernelRegistryEntryPlugin, which acts as a intermediate between
-      Microcontainer's registry and Guice Injector. But all you need to do is register GuiceKernelRegistryEntryPlugin
+      the Microcontainer's registry and the Guice Injector. But all you need to do is register GuiceKernelRegistryEntryPlugin
       as a POJO into Microcontainer, providing Guice Modules with its constructor.
    </para>
 
-   <para>We can also go the other way around. Injecting named beans into Guice Injector. There are a couple of ways
+   <para>We can also go the other way around. Injecting named beans into the Guice Injector. There are a couple of ways
       to achieve that. Lets look at them.
    </para>
 
    <programlisting>
-         Injector injector = Guice.createInjector(new AbstractModule()
+      Injector injector = Guice.createInjector(new AbstractModule()
+      {
+         protected void configure()
          {
-            protected void configure()
-            {
-               bind(Controller.class).toInstance(controller);
-               bind(Singleton.class).toProvider(GuiceIntegration.fromMicrocontainer(Singleton.class, "singleton"));
-               bind(Prototype.class).toProvider(GuiceIntegration.fromMicrocontainer(Prototype.class, "prototype"));
-            }
-         });
+            bind(Controller.class).toInstance(controller);
+            bind(Singleton.class).toProvider(
+               GuiceIntegration.fromMicrocontainer(
+                  Singleton.class, "singleton"));
+            bind(Prototype.class).toProvider(
+               GuiceIntegration.fromMicrocontainer(
+                  Prototype.class, "prototype"));
+         }
+      });
    </programlisting>
 
    <programlisting>
-         AbstractBeanMetaData injectorBean = new AbstractBeanMetaData("injector", GuiceInjectorFactory.class.getName());
-         AbstractConstructorMetaData constructor = new AbstractConstructorMetaData();
-         constructor.setFactoryClass(GuiceInjectorFactory.class.getName());
-         constructor.setFactoryMethod("createInjector");
-         List&lt;ParameterMetaData> parameters = new ArrayList&lt;ParameterMetaData>();
-         parameters.add(new AbstractParameterMetaData(new AbstractDependencyValueMetaData(KernelConstants.KERNEL_NAME)));
-         AbstractArrayMetaData array = new AbstractArrayMetaData();
-         array.add(new AbstractValueMetaData(GuiceObject.ALL));
-         parameters.add(new AbstractParameterMetaData(array));
-         constructor.setParameters(parameters);
-         injectorBean.setConstructor(constructor);
-         controller.install(injectorBean);
+     AbstractBeanMetaData injectorBean = 
+        new AbstractBeanMetaData(
+            "injector", GuiceInjectorFactory.class.getName());
+     AbstractConstructorMetaData constructor = new AbstractConstructorMetaData();
+     constructor.setFactoryClass(GuiceInjectorFactory.class.getName());
+     constructor.setFactoryMethod("createInjector");
+     List&lt;ParameterMetaData> parameters = new ArrayList&lt;ParameterMetaData>();
+     parameters.add(new AbstractParameterMetaData(
+            new AbstractDependencyValueMetaData(KernelConstants.KERNEL_NAME)));
+     AbstractArrayMetaData array = new AbstractArrayMetaData();
+     array.add(new AbstractValueMetaData(GuiceObject.ALL));
+     parameters.add(new AbstractParameterMetaData(array));
+     constructor.setParameters(parameters);
+     injectorBean.setConstructor(constructor);
+     controller.install(injectorBean);
 
-         ControllerContext injectorContext = controller.getInstalledContext("injector");
-         assertNotNull(injectorContext);
-         Injector injector = (Injector)injectorContext.getTarget();
+     ControllerContext injectorContext = 
+        controller.getInstalledContext("injector");
+     assertNotNull(injectorContext);
+     Injector injector = (Injector)injectorContext.getTarget();
    </programlisting>
 
    <programlisting>
       &lt;bean name="injector" class="org.jboss.guice.plugins.GuiceInjectorFactory">
-         &lt;constructor factoryClass="org.jboss.guice.plugins.GuiceInjectorFactory" factoryMethod="createInjector">
+         &lt;constructor 
+                factoryClass="org.jboss.guice.plugins.GuiceInjectorFactory" 
+                factoryMethod="createInjector">
             &lt;parameter>jboss.kernel:service=Kernel&lt;/parameter>
             &lt;parameter>
                &lt;array>
-                  &lt;bean name="BindAll" class="org.jboss.guice.plugins.AllGuiceObject">
-                     &lt;constructor factoryClass="org.jboss.guice.plugins.AllGuiceObject" factoryMethod="getInstance"/>
+                  &lt;bean name="BindAll" 
+                        class="org.jboss.guice.plugins.AllGuiceObject">
+                     &lt;constructor 
+                            factoryClass="org.jboss.guice.plugins.AllGuiceObject" 
+                            factoryMethod="getInstance"/>
                   &lt;/bean>
                &lt;/array>
             &lt;/parameter>
@@ -112,10 +130,10 @@
       &lt;/bean>
    </programlisting>
 
-   <para>Here we see three way of usgin Microcontainer beans to do wiring in Guice. The first and second examples are
+   <para>Here we saw three ways of using Microcontainer beans to do wiring in Guice. The first and second examples are
       purely programmatic and you need to provide a Controller instance. The third one is how you would bind all
-      existing installed beans into Guice Injector via -beans.xml. Or you can provide a ControllerContextBindFilter
-      instance to the binding methods to filter those beans you want to bind. See API docs for more details.
+      existing installed beans into the Guice Injector via a -beans.xml. Or you can provide a ControllerContextBindFilter
+      instance to the binding methods to filter the beans you want to bind. See the API docs for more details.
    </para>
 
 </chapter>

@@ -56,7 +56,7 @@
    <para>But things would be too easy if we just let get away with plain Spring XML.
       So what you can do is mix and match Microcontainer beans with Spring beans. It doesn't matter which
       starting element you choose, as long as your beans have the right namespace.
-      Let see this on the next two examples.
+      Let see this in the next two examples.
    </para>
 
    <programlisting>
@@ -68,7 +68,8 @@
             &lt;/property>
          &lt;/bean>
 
-         &lt;bean xmlns="urn:jboss:spring-beans:2.0" id="testBean" class="org.jboss.test.spring.support.SimpleBean">
+         &lt;bean xmlns="urn:jboss:spring-beans:2.0" id="testBean" 
+                 class="org.jboss.test.spring.support.SimpleBean">
             &lt;property name="mylist">
                &lt;list value-type="java.lang.String">
                   &lt;value>onel&lt;/value>
@@ -94,7 +95,8 @@
             &lt;/property>
          &lt;/bean>
 
-         &lt;bean xmlns="urn:jboss:bean-deployer:2.0" name="oldBean" class="org.jboss.test.spring.support.OldBean">
+         &lt;bean xmlns="urn:jboss:bean-deployer:2.0" name="oldBean" 
+                      class="org.jboss.test.spring.support.OldBean">
             &lt;property name="javaBeanString">JavaBean&lt;/property>
          &lt;/bean>
 

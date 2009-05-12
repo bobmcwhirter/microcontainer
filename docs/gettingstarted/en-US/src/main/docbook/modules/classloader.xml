@@ -9,15 +9,15 @@
       Introducing fine grained classloading in Micorcontainer's IoC, better aspect integration, new
       <xref linkend="vfs"/> and <xref linkend="deployers"/> projects, it was all set to also redo the whole
       classloding layer for the new Kernel and transitively JBoss5 application server.
-      Whole new Classloder module was created to somehow fix the old API mistakes and to allow clean and plugable way
-      for existing extensions of default classloading. This extensions range from old concepts of Servlet classloading,
+      A whole new Classloder module was created to somehow fix the old API mistakes and to allow a clean and plugable way
+      for existing extensions of default classloading. These extensions range from old concepts of Servlet classloading,
       runtime AOP weaving, and all the way to new <xref linkend="osgi"/>.
    </para>
 
    <para>
       When designing new API for Classloading, we wanted to expose as little as possible.
       The concept there was to hide all the "nitty gritty" details and reduce the amount of API users need to
-      apply in order to get required behaviour.
+      apply in order to get the required behaviour.
       When you were normally dealing with concrete ClassLoader classes, we reduced the implementation detail to
       only needing to implement your own ClassLoaderPolicy. This includes things like what packages you export,
       what you import, how to get resources and other things related to defining classes.
@@ -43,7 +43,7 @@
    </programlisting>
 
    <para>
-      This is a simple example of what it falls down to, to create your own Classloader instance that will
+      This is a simple example of what it comes down to, to create your own Classloader instance that will
       behave accordingly to the classloader policy.
    </para>
 

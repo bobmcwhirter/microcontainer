@@ -6,7 +6,7 @@
    <title>Starting Examples</title>
 
    <section>
-      <title>A Simple IoC Examples</title>
+      <title>A Simple IoC Example</title>
 
       <para>The best way to learn the Microcontainer is through examples. The Microcontainer distribution is bundled
          with several examples, which we will discuss in later this guide. In this section, let us first have a look at

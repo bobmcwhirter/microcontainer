@@ -5,7 +5,7 @@
 <section>
    <title>Java Beans</title>
 
-   <para>In Container module there is a simple support for
+   <para>In the Container module there is a simple support for
       <ulink url="http://java.sun.com/products/javabeans/">JavaBeans</ulink> configuration. When we have some existing
       JavaBeans XML, we can easily port that bean configuration into Microcontainer beans configuration. Or if all we
       really need is simple configuration, no dependency, JavaBeans configuration is enough. Let see this
@@ -13,7 +13,8 @@
    </para>
 
    <programlisting>
-      &lt;javabean xmlns="urn:jboss:javabean:1.0" class="org.jboss.test.javabean.support.SimpleBean">
+      &lt;javabean xmlns="urn:jboss:javabean:1.0" 
+            class="org.jboss.test.javabean.support.SimpleBean">
          &lt;property name="AString">StringValue&lt;/property>
          &lt;property name="AByte">12&lt;/property>
          &lt;property name="ABoolean">true&lt;/property>
@@ -43,10 +44,12 @@
 
    <programlisting>      
       &lt;javabean xmlns="urn:jboss:javabean:2.0"
-          class="org.jboss.test.javabean.support.SimpleBean">
-          &lt;constructor factoryClass="org.jboss.test.javabean.support.SimpleBeanFactory"
+            class="org.jboss.test.javabean.support.SimpleBean">
+          &lt;constructor 
+            factoryClass="org.jboss.test.javabean.support.SimpleBeanFactory"
               factoryMethod="newInstance">
-              &lt;property name="anObject" class="java.lang.Object">anObjectValue&lt;/property>
+              &lt;property name="anObject" 
+                  class="java.lang.Object">anObjectValue&lt;/property>
               &lt;property name="AString">StringValue&lt;/property>
               &lt;property name="AByte">12&lt;/property>
               &lt;property name="ABoolean">true&lt;/property>
@@ -80,7 +83,8 @@
    <programlisting>      
       &lt;bean xmlns="urn:jboss:bean-deployer:2.0" class="org.jboss.acme.Example">
          &lt;property name="PropertyName">
-            &lt;javabean xmlns="urn:jboss:javabean:1.0" class="org.jboss.test.kernel.deployment.xml.support.SerializableObject"/>
+            &lt;javabean xmlns="urn:jboss:javabean:1.0" 
+               class="org.jboss.test.kernel.deployment.xml.support.SerializableObject"/>
          &lt;/property>
       &lt;/bean>
    </programlisting>

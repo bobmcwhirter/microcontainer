@@ -41,7 +41,7 @@
          <!-- bean part of the deployment -->
          <bean .../>
 
-         </deployment&gt;
+         </deployment>
 
 ]]>
    </programlisting>
@@ -91,7 +91,7 @@
    <sect2>
       <title>Construction</title>
 
-      <para>The example above uses the default constructor. What if you don't want to use some other constructor. The
+      <para>The example above uses the default constructor. What if you want to use some other constructor? The
          simplest mechanism just matches the number of parameters in the constructor. The example below is from the
          <varname>constructor</varname>
          example.
@@ -353,7 +353,7 @@
 
       <para>The configuration creates the
          <varname>PropertiesBean</varname>
-         instance and then use the setter methods to set its properties.
+         instance and then uses the setter methods to set its properties.
       </para>
 
       <programlisting>
@@ -518,9 +518,9 @@
 ]]>
       </programlisting>
 
-      <para>Sometimes it is still usefull to be able to set or inject a value which can be morphed / progressed into
-         needed type althogh existing type is not compatible (normally getting <varname>ClassCastException</varname>). This is mostly true
-         for <varname>java.lang.Number</varname> subclasses. Let's see how <varname>progression</varname> is used on the following example
+      <para>Sometimes it is still useful to be able to set or inject a value which can be morphed / progressed into
+         the needed type although the existing type is not compatible (normally getting <varname>ClassCastException</varname>). This is mostly true
+         for <varname>java.lang.Number</varname> subclasses. Let's see how <varname>progression</varname> is used in the following example
          (here we use <varname><![CDATA[<inject />]]></varname>, which is actually explained in the next chapter).
       </para>
 
@@ -554,10 +554,10 @@
          property name means that a field is of type double. A<varname>Float</varname> corresponds to Float type. Etc.
       </para>
 
-      <para>You can change the progression behavior by setting System property
+      <para>You can change the progression behavior by setting the System property
          <varname>org.jboss.reflect.plugins.progressionConvertor</varname>,
          putting the ProgressionConvertor's implementation fully qualified class name as value.
-         By default SimpleProgressionConvertor implementation is used. Another existing implementation is
+         By default the SimpleProgressionConvertor implementation is used. Another existing implementation is
          NullProgressionConvertor, which doesn't do any actual progression.
       </para>
 
@@ -567,7 +567,7 @@
       <title>Injections</title>
 
       <para>Objects by themself are not very useful. They need to be linked together to form more complicated data
-         structures. We have already seen one form of an injection when using factory instances above. Injections can be
+         structures. We have already seen one form of injection when using factory instances above. Injections can be
          used anywhere a string value is used. All the examples that we have previously seen with strings could also be
          done with injections.
       </para>
@@ -721,13 +721,15 @@
       <programlisting>
 <![CDATA[
 
-   <bean name="PropHolder" class="org.jboss.test.kernel.config.support.PropHolder">
+   <bean name="PropHolder" 
+     class="org.jboss.test.kernel.config.support.PropHolder">
       <property name="value">
          <value-factory bean="ldap" method="getValue">
             <parameter>xyz.key</parameter>
             <parameter>xyz</parameter>
             <parameter>
-               <bean name="t" class="org.jboss.test.kernel.config.support.TrimTransformer"/>
+               <bean name="t" 
+                 class="org.jboss.test.kernel.config.support.TrimTransformer"/>
             </parameter>
          </value-factory>
       </property>
@@ -764,7 +766,8 @@
       <programlisting>
 <![CDATA[
 
-   <bean name="PropHolder" class="org.jboss.test.kernel.config.support.PropHolder">
+   <bean name="PropHolder" 
+     class="org.jboss.test.kernel.config.support.PropHolder">
       <constructor>
          <parameter>
             <value-factory bean="ldap" method="getValue" parameter="foo.bar.key"/>
@@ -781,7 +784,8 @@
       <programlisting>
 <![CDATA[
 
-   <bean name="PropHolder" class="org.jboss.test.kernel.config.support.PropHolder">
+   <bean name="PropHolder" 
+     class="org.jboss.test.kernel.config.support.PropHolder">
       <property name="list">
          <list elementClass="java.lang.String">
             <value-factory bean="ldap" method="getValue" default="QWERT">
@@ -830,11 +834,10 @@
          <varname>list</varname>
          is shown here in those examples. You just need to nest
          <varname>value</varname>
-         elements inside the collection element to specify the contents of the collection. Please note that a
+         elements inside the collection element to specify the contents of the collection. Please note that an
          <varname>"elementClass"</varname>
          attribute is required on the collection element, unless you specify explicit types on all the
-         <varname>value</varname>
-         s.
+         <varname>value</varname>s.
       </para>
 
       <para>Below is a sample configuration from the
@@ -883,13 +886,17 @@
       <property name="list">
          <list class="java.util.LinkedList" elementClass="java.lang.String">
 
-            <value>A string</value> <!-- uses elementClass -->
+            <!-- uses elementClass -->
+            <value>A string</value> 
 
-            <value class="java.lang.URL">http://acme.com/index.html</value> <!-- a URL -->
+            <!-- a URL -->
+            <value class="java.lang.URL">http://acme.com/index.html</value> 
 
-            <value><inject bean="SomeBean"/></value> <!-- inject some other bean -->
+            <!-- inject some other bean -->
+            <value><inject bean="SomeBean"/></value> 
 
-            <value> <!-- a list inside a list -->
+            <!-- a list inside a list -->
+            <value> 
                <list elementClass="java.lang.String">
                   <value>Another string</value>
                </list>
@@ -971,15 +978,15 @@
 ]]>
       </programlisting>
 
-      <para>When using collections in your bean configuration, this is the order Microcontainer will use for new
-         instantiation or using already existing collection instance.
+      <para>When using collections in your bean configuration, this is the order the Microcontainer will use for new
+         instantiation or using an already existing collection instance.
          <itemizedlist mark="bullet">
             <listitem>
-               <para>if collection's class attribute is defined, a new instance of that class will be instantiated</para>
+               <para>if the collection's class attribute is defined, a new instance of that class will be instantiated</para>
             </listitem>
             <listitem>
-               <para>if already instantiated collection exists and is available via getter, this instance will be used -
-                  unless you define preinstantiate attribute on the property to false
+               <para>if an already instantiated collection exists and is available via getter, this instance will be used -
+                  unless you define the preinstantiate attribute on the property to false
                </para>
             </listitem>
             <listitem>
@@ -998,7 +1005,8 @@
       <programlisting>
 <![CDATA[
 
-   <bean name="SimpleBean" class="org.jboss.test.kernel.config.support.UnmodifiableGetterBean">
+   <bean name="SimpleBean" 
+     class="org.jboss.test.kernel.config.support.UnmodifiableGetterBean">
       <property name="list" preinstantiate="false">
          <list elementClass="java.lang.String">
             <value>string1</value>
@@ -1030,7 +1038,7 @@
             <para>Described: The POJO's bean description has been examined and dependencies determined.</para>
          </listitem>
          <listitem>
-            <para>Instantiated: All the dependencies have been resolved to construct the bean, these include, the class
+            <para>Instantiated: All the dependencies have been resolved to construct the bean. These include: the class
                exists, the constructor parameter injections can be resolved, any factory can be resolved.
             </para>
          </listitem>
@@ -1197,7 +1205,7 @@
 
       <para>They can also be ignored. See the
          <varname>jboss-beans.xml</varname>
-         with ignore attribute set to true on the start element.
+         with the <varname>ignore</varname> attribute set to true on the start element.
       </para>
 
       <programlisting>
@@ -1215,8 +1223,8 @@
 ]]>
       </programlisting>
 
-      <para>In this case Microcontainer would not
-         invoke start method when passing over Start state.
+      <para>In this case the Microcontainer would not
+         invoke the start method when passing over Start state.
       </para>
    </sect2>
 
@@ -1249,7 +1257,7 @@
    // Install
    name1 = new Timer();
    name2 = ...;
-   name1.schedule(Name2, 100, 10000);
+   name1.schedule(name2, 100, 10000);
 
    // Uninstall
    name2.cancel();
@@ -1278,12 +1286,12 @@
       </bean>
 
       <!-- bean level will use any deployment level classloader -->
-      <bean name="Name2" ...>
+      <bean name="Name3" ...>
       </bean>
 
       <!-- bean level as null to not use any deployment level classloader -->
-      <bean name="Name2" ...>
-         <classloader&gt;<null/></classloader>
+      <bean name="Name4" ...>
+         <classloader><null/></classloader>
       </bean>
 
    </deployment>
@@ -1296,7 +1304,8 @@
       <title>Annotations via XML</title>
 
       <para>With the new Microcontainer 2.0 we've added support for annotations via XML. Meaning you can have annotation
-         support even in Java 1.4 and before, depending on the retrowoven Microcontainer project.
+<!--         support even in Java 1.4 and before, depending on the retrowoven Microcontainer project. -->
+         support where the annotation is not part of the bean class's bytecode.
          Each annotation is set per bean instance and you can set annotations on the following types:
          <itemizedlist>
             <listitem><simpara>deployment (all beans inherit this annotations)</simpara></listitem>
@@ -1355,7 +1364,7 @@
 
       <para>The only issue with having annotations defined via XML is that they are per instance basis - 
          as already mentioned, not added at compile time. In this case you need an external mechanism in
-         order to do the annotation inspection. In Microcontainer this is its metadata repository.
+         order to do the annotation inspection. In the Microcontainer this is its metadata repository.
          See how this is done in Reference Manual, TODO.
       </para>
 
@@ -1379,8 +1388,8 @@
       </programlisting>
 
       <para>As with all String values you can have System property replacement as part of actual alias value.
-         Additionally you can specify if this replacement is ignored. Or you can even convert final alias String value
-         into any other class supported by PropertyEditors by setting class attribute on alias element. Lets see this
+         Additionally you can specify if this replacement is ignored. Or you can even convert a final alias String value
+         into any other class supported by PropertyEditors by setting the class attribute on an alias element. Lets see this
          configuration on the examples below.
       </para>
 
@@ -1434,11 +1443,11 @@
       </programlisting>
 
       <para>
-         Newly added alias defined as a element on the deployment acts as a full dependency item. Meaning
-         it won't get registered (installed) until the original bean is installed. What this means that you can have
+         A newly added alias defined as a element on the deployment acts as a full dependency item. Meaning
+         it won't get registered (installed) until the original bean is installed. What this means is that you can have
          original beans defined in one deployment and aliases in another, and the order of deployment doesn't matter.
          When the original bean is uninstalled, the alias gets unregistered (uninstalled) as well.
-         When the alias gets unregistered, all beans that depend on the alias get undeployed as well, regardless if
+         When the alias gets unregistered, all beans that depend on the alias get undeployed as well, regardless of if
          the original bean is still present.
       </para>
 
@@ -1492,7 +1501,7 @@
       <para>
          On the other hand each bean can also provide additional information
          what it supplies, apart from it self. The actual supply doesn't need to be
-         binded to Microcontainer in any way.
+         bound to the Microcontainer in any way.
          More about this feature with the actual example.
       </para>
 
@@ -1530,7 +1539,7 @@
    </sect2>
 
    <sect2>
-      <title>Contextual awareness</title>
+      <title>Contextual Awareness</title>
 
       <para>
          With existing annoyance of using huge amounts of xml to sometimes wire up
@@ -1538,7 +1547,7 @@
          Beans, specially singletons, can often be wired with a simple class type knowledge.
          But with huge systems you should use this feature with care, since it can easly get broken
          with addition of another bean that would satisfy contextual dependency.
-         Existing 2.0.0 version supports three ways of autowiring:
+         The existing 2.0.0 version supports three ways of autowiring:
          <itemizedlist spacing="compact">
             <listitem>
                <para>full bean autowiring</para>
@@ -1552,8 +1561,8 @@
          </itemizedlist>
       </para>
 
-      <para>On the other hand, if you don't want for a particular bean to be involved as a candidate for
-         autowiring, you can set bean element's attribute <varname>autowire-candidate</varname> to false.
+      <para>On the other hand, if you don't want a particular bean to be involved as a candidate for
+         autowiring, you can set the bean element's attribute <varname>autowire-candidate</varname> to false.
       </para>
 
       <programlisting>
@@ -1577,9 +1586,9 @@
       </programlisting>
 
       <para>
-         When doing a propery / parameter injection of some existing bean, you can omit the bean attibute, meaning that
+         When doing a propery / parameter injection of some existing bean, you can omit the bean attibute, meaning that the
          Microcontainer will do the injection based on the information from the property / parameter class type.
-         If no such information is available, exception will be thrown. If no such bean is eventually available, you can define
+         If no such information is available, an exception will be thrown. If no such bean is eventually available, you can define
          the behavior after validation. For Strict option the deployment will fail, for Callback see the callback injection below.
          There is also a way of doing contextual injection based on property name. Property name will be matched against
          newly wired bean's name.
@@ -1588,7 +1597,7 @@
       <programlisting>
 <![CDATA[
 
-   <bean name="propInj" class="com.acme.ThreadPoolImpl"/>
+   <bean name="pool" class="com.acme.ThreadPoolImpl"/>
 
    <bean name="propInj" class="com.acme.Example">
       <property name="threadPool"><inject/></property>
@@ -1623,10 +1632,10 @@
 
       <para>
          Sometimes it is useful to be notified of certain beans being installed / uninstalled by
-         inspecting their class type. In Microcontainer we call this callbacks.
-         You can define which methods should be used for callback resolution on a particular bean. Usually method
-         name is sufficient, in the case of having multiple methods with the same name, you can narrow down the
-         exact method by specifying class type to use for contextual lookup.
+         inspecting their class type. In the Microcontainer we call this callbacks.
+         You can define which methods should be used for callback resolution on a particular bean. Usually the method
+         name is sufficient. In the case of having multiple methods with the same name, you can narrow down the
+         exact method by specifying the class type to use for contextual lookup.
       </para>
 
       <programlisting>
@@ -1661,7 +1670,7 @@
 
       <para>
          We can do the same callback injection on a property.
-         And there is also an interesting feature available, though it will be probabaly rarely used.
+         And there is also an interesting feature available, though it will probably rarely be used.
          You can define a Cardinality as a condition when that actual dependency is satisfied and injection
          can take place.
          The following examples shows how we need at least 2 Editor instances to satisfy callback dependency.
@@ -1697,24 +1706,24 @@
       <para>While using callbacks on the Collection subclasses, currently only basic Collection subinterfaces
          are supported: List, Set and Queue. See BasicCollectionCallbackItemFactory for more details.
          But you can change the Collection callback behaviour by providing your own CollectionCallbackItemFactory.
-         You do this by setting System property <varname>org.jboss.dependency.collectionCallbackItemFactory</varname>
-         and putting CollectionCallbackItemFactory implementation fully qualified class name as a value.
+         You do this by setting the System Property <varname>org.jboss.dependency.collectionCallbackItemFactory</varname>
+         and putting the CollectionCallbackItemFactory implementation fully qualified class name as a value.
       </para>
 
    </sect2>
 
    <sect2>
-      <title>Injection from context</title>
+      <title>Injection from Context</title>
 
-      <para>Even though Microcontainer is aimed at POJOs, it doesn't mean you are not able to easily get into
+      <para>Even though the Microcontainer is aimed at POJOs, it doesn't mean you are not able to easily get into
          the underlying architecture of its state machine.
-         Each bean is represented in Microcontainer's state machine (Controller) as a ControllerContext.
-         ControllerContext holds various information in order to consistently move between lifecycle states,
+         Each bean is represented in the Microcontainer's state machine (Controller) as a ControllerContext.
+         The ControllerContext holds various information in order to consistently move between lifecycle states,
          resolve dependencies, apply instance aspects, annotations, metadata ...
       </para>
 
       <para>
-         With already known injection concept (<varname><![CDATA[<inject />]]></varname>), now you can also inject some information from the context.
+         With the already known injection concept (<varname><![CDATA[<inject />]]></varname>), you can also inject some information from the context.
          This is what you can currently get a hold on from the underlying context:
          <itemizedlist>
             <listitem>
@@ -1741,17 +1750,20 @@
          </itemizedlist>
       </para>
 
-      <para>All this information is wrapped into unmodifiable objects, preventing user to add or set additional
-         information outside Microcontainer's Controller.
-         As we already know, <varname><![CDATA[<inject/>]]></varname> element can take bean attribute. In this case, if bean attribute is set,
-         we are not targeting bean's underlying context, but context that coresponds to set bean attribute.
+      <para>All this information is wrapped into unmodifiable objects, preventing the user to add or set additional
+         information outside the Microcontainer's Controller.
+         As we already know, the <varname><![CDATA[<inject/>]]></varname> element can take a 
+		 <varname>bean</varname> attribute. In this case, if the bean attribute is set,
+         we are not obtaining the target bean's underlying context, but the context that coresponds to the bean being injected.
       </para>
 
       <programlisting>
 <![CDATA[
 
-   <bean name="sndBean" class="org.jboss.test.kernel.deployment.support.NameAwareBean">
-      <property name="beaninfo"><inject bean="otherBean" fromContext="beaninfo"/></property>
+   <bean name="sndBean" 
+     class="org.jboss.test.kernel.deployment.support.NameAwareBean">
+      <property 
+	    name="beaninfo"><inject bean="otherBean" fromContext="beaninfo"/></property>
    </bean>
 
 ]]>

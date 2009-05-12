@@ -5,15 +5,15 @@
 <section>
    <title>AOP Configuration and Usage</title>
 
-   <para>When writting new version of Kernel, there was always a need for
+   <para>When writing a new version of the Kernel, there was always a need for
       simple usage of advanced AOP features in the Kernel itself.
-      With the version 2.0.0 of Microcontainer there is an elegant way of
+      With version 2.0.0 of the Microcontainer there is an elegant way of
       binding your aspect to wired POJOs, using all the advantages of full
-      dependency state machine. Meaning that even aspect behave as installed
+      dependency state machine. Meaning that even aspects behave as installed
       services, having full lifecycle and dependency support in the Microcontainer.
-      And it's all a matter of configuration if you want to use aspectized Microcontainer
+      And it's all a matter of configuration if you want to use an aspectized Microcontainer
       or just plain POJO behaviour. To find out more about JBoss AOP, please see the JBoss
-      AOP documentation
+      AOP documentation.
    </para>
 
    <sect2>
@@ -62,10 +62,13 @@
 
    <aop:aspect xmlns:aop="urn:jboss:aop-beans:1.0"
                name="FooAdvice"
-               class="org.jboss.test.microcontainer.support.TestAspect"
-               method="foo"
-               pointcut="execution(* *.SimpleBeanImpl->someMethod(..))">
+               class="org.jboss.test.microcontainer.support.TestAspect">
    </aop:aspect>
+   
+   <aop:bind xmlns:aop="urn:jboss:aop-beans:1.0"
+               pointcut="execution(* *.SimpleBeanImpl->someMethod(..))">
+      <advice aspect="FooAdvice" advice="foo"/>	  
+   </aop:bind>
 
    <bean
       name="Intercepted"
@@ -90,12 +93,15 @@ public class TestAspect
 }
       ]]></programlisting>
 
-      <para>In the above example, whenever we call the method <literal>someMethod()</literal>
+      <para>In the above example, the elements in the <literal>aop</literal>
+         namespace follow the same format as in a <literal>-aop.xml</literal>. 
+         Please see the JBoss AOP documentation for more details.
+      </para>
+      <para>
+         Whenever we call the method <literal>someMethod()</literal>
          in the <literal>Intercepted</literal> bean, we will get intercepted by the
          <literal>FooAdvice</literal> bean's <literal>foo()</literal> method. The aspect
-         methods must have the signature shown. If the <literal>method</literal> attribute
-         is left out for the <literal>aop:aspect</literal> advice, it will look for an advice
-         method called <literal>invoke()</literal>. Please see the JBoss AOP documentation for
+         methods must have the signature shown. The JBoss AOP documentation contains
          more information about advice methods, and the pointcut expressions used to pick out
          methods/constructors/fields that should have aspects applied.
       </para>
@@ -195,18 +201,22 @@ public class LifecycleCallback{
    </bean>
 
    <aop:lifecycle-configure xmlns:aop="urn:jboss:aop-beans:1.0"
-               name="JMXAdvice"
-               class="org.jboss.aop.microcontainer.aspects.jmx.JMXLifecycleCallback"
-               classes="@org.jboss.aop.microcontainer.aspects.jmx.JMX">
+            name="JMXAdvice"
+            class="org.jboss.aop.microcontainer.aspects.jmx.JMXLifecycleCallback"
+            classes="@org.jboss.aop.microcontainer.aspects.jmx.JMX">
       <property name="mbeanServer"><inject bean="MBeanServer"/></property>
    </aop:lifecycle-configure>
 
    <aop:aspect xmlns:aop="urn:jboss:aop-beans:1.0"
-               name="TxAdvice"
-               class="org.acme.aspects.TxAspect"
-               pointcut="execution(* *->@org.acme.Tx(..))">
+            name="TxAdvice"
+            class="org.acme.aspects.TxAspect"
       <property name="txManager"><inject bean="TxManager"/></property>
    </aop:aspect>
+
+   <aop:bind xmlns:aop="urn:jboss:aop-beans:1.0"
+            pointcut="execution(* *->@org.acme.Tx(..))">
+      <advice aspect="TxAdvice" name="invoke"/>
+   </aop:bind>
 
    <bean name="BeanWithAspects"
       class="org.jboss.test.microcontainer.support.SimpleBeanImpl">

@@ -32,7 +32,7 @@
          <!-- bean part of the deployment -->
          <bean .../>
 
-         </deployment&gt;
+         </deployment>
 
 ]]>
    </programlisting>
