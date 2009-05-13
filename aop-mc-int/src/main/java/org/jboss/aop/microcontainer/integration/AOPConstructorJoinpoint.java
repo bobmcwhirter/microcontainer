@@ -53,6 +53,7 @@ import org.jboss.reflect.spi.TypeInfo;
  *       there is no need for the proxy advisor.
  *
  * @author <a href="adrian@jboss.com">Adrian Brock</a>
+ * @author <a href="ales.justin@jboss.com">Ales Justin</a>
  * @version $Revision$
  */
 public class AOPConstructorJoinpoint extends BasicConstructorJoinPoint
@@ -89,6 +90,11 @@ public class AOPConstructorJoinpoint extends BasicConstructorJoinPoint
    @SuppressWarnings("deprecation")
    public Object dispatch() throws Throwable
    {
+      if (DisableAOPHelper.isAOPDisabled(metaData))
+      {
+         return super.dispatch();
+      }
+      
       Class<?> clazz = constructorInfo.getDeclaringClass().getType();
       AspectManager manager = AspectManagerFactory.getAspectManager(metaData);
       boolean hasInstanceMetaData = rootHasSubInstanceMetaData(metaData);

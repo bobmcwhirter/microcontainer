@@ -67,6 +67,7 @@ import org.jboss.reflect.spi.Value;
  *
  * @author <a href="kabir.khan@jboss.com">Kabir Khan</a>
  * @author <a href="adrian@jboss.com">Adrian Brock</a>
+ * @author <a href="ales.justin@jboss.com">Ales Justin</a>
  * @version $Revision$
  */
 public class AOPDependencyBuilder extends AbstractDependencyBuilder
@@ -79,6 +80,11 @@ public class AOPDependencyBuilder extends AbstractDependencyBuilder
    @Override
    public List<DependencyBuilderListItem> getDependencies(BeanInfo beanInfo, MetaData metaData)
    {
+      if (DisableAOPHelper.isAOPDisabled(metaData))
+      {
+         return super.getDependencies(beanInfo, metaData);
+      }
+      
       AspectManager manager = AspectManagerFactory.getAspectManager(metaData);
       try
       {
