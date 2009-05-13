@@ -21,6 +21,7 @@
 */
 package org.jboss.example.microcontainer.aspects;
 
+import org.jboss.aop.proxy.container.AspectManaged;
 import java.util.Properties;
 import javax.naming.Context;
 import javax.naming.InitialContext;
@@ -44,9 +45,32 @@ public class SimpleBeanLookup
 
    public void start() throws Exception
    {
+      System.out.println("======== SimpleBeanLookup: Looking up beans bound in JNDI");
       Context context = new InitialContext(env);
-      System.out.println(context.lookup("beans/SimpleBean"));
-      System.out.println(context.lookup("beans/AnnotatedSimpleBean"));
-      System.out.println(context.lookup("beans/XmlAnnotatedSimpleBean"));
+      lookupAndOutput(context, "beans/SimpleBean");
+      lookupAndOutput(context, "beans/AnnotatedSimpleBean");
+      lookupAndOutput(context, "beans/XmlAnnotatedSimpleBean");
+   }
+   
+   private void lookupAndOutput(Context context, String name) throws Exception
+   {
+      Object o = context.lookup(name);
+      System.out.println("Found bean bound under: " + name);
+      System.out.println("\tType: " + getClassInformation(o.getClass()));
+      System.out.println("\ttoString on found bean: " + o.toString());
+   }
+   
+   private String getClassInformation(Class<?> clazz)
+   {
+      if (AspectManaged.class.isAssignableFrom(clazz))
+      {
+         //Classes with aspects will be an instance of AspectManaged
+         Class<?> superClass = clazz.getSuperclass();
+         return "AOP proxy for " + superClass.getName();
+      }
+      else 
+      {
+         return clazz.getName();
+      }
    }
 }
