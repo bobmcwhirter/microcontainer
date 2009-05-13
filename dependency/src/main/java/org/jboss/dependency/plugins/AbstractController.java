@@ -726,8 +726,9 @@ public class AbstractController extends JBossObject implements Controller, Contr
             }
          }
 
-         if (ControllerMode.AUTOMATIC.equals(context.getMode()))
-            context.setRequiredState(ControllerState.INSTALLED);
+         // set the required state
+         ControllerMode mode = context.getMode();
+         context.setRequiredState(mode.getRequiredState());
 
          if (trace)
             log.trace("Installing " + context.toShortString());

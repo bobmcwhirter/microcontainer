@@ -135,7 +135,7 @@ public abstract class LazyInstantiationTest extends AbstractKernelTest
          assertNotNull(lazyRare);
 
          // should not be fully installed yet
-         assertEquals(ControllerState.NOT_INSTALLED, beanContext.getState());
+         assertEquals(ControllerState.DESCRIBED, beanContext.getState());
          assertEquals(0, lazyRare.getHits());
          // the hit should install it
          assertEquals(ControllerState.INSTALLED, beanContext.getState());

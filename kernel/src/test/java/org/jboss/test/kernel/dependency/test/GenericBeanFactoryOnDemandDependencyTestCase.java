@@ -63,7 +63,7 @@ public class GenericBeanFactoryOnDemandDependencyTestCase extends OldAbstractKer
    {
       onDemandDependencyOnDemandFirst();
 
-      ControllerContext context1 = assertInstall(0, "Name1", ControllerState.NOT_INSTALLED);
+      ControllerContext context1 = assertInstall(0, "Name1", ControllerState.DESCRIBED);
       ControllerContext context2 = assertInstall(1, "Name2");
       assertContext("Name1");
       
@@ -113,7 +113,7 @@ public class GenericBeanFactoryOnDemandDependencyTestCase extends OldAbstractKer
    {
       onDemandDependencyReinstall();
 
-      ControllerContext context1 = assertInstall(0, "Name1", ControllerState.NOT_INSTALLED);
+      ControllerContext context1 = assertInstall(0, "Name1", ControllerState.DESCRIBED);
       ControllerContext context2 = assertInstall(1, "Name2");
       assertContext("Name1");
       

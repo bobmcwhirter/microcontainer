@@ -65,7 +65,7 @@ public class OnDemandDependencyTestCase extends OldAbstractKernelDependencyTest
    {
       onDemandDependencyOnDemandFirst();
 
-      ControllerContext context1 = assertInstall(0, "Name1", ControllerState.NOT_INSTALLED);
+      ControllerContext context1 = assertInstall(0, "Name1", ControllerState.DESCRIBED);
       ControllerContext context2 = assertInstall(1, "Name2");
       assertContext("Name1");
       
@@ -111,7 +111,7 @@ public class OnDemandDependencyTestCase extends OldAbstractKernelDependencyTest
    {
       onDemandDependencyReinstall();
 
-      ControllerContext context1 = assertInstall(0, "Name1", ControllerState.NOT_INSTALLED);
+      ControllerContext context1 = assertInstall(0, "Name1", ControllerState.DESCRIBED);
       ControllerContext context2 = assertInstall(1, "Name2");
       assertContext("Name1");
       

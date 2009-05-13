@@ -50,8 +50,8 @@ public class OnDemandDependencyTestCase extends AbstractDependencyTest
    public void testOnDemandDependencyOnDemandFirst() throws Throwable
    {
       TestDelegate delegate1 = getDelegate1();
-      ControllerContext context1 = assertInstall(delegate1, ControllerState.NOT_INSTALLED);
-      assertEquals(-1, delegate1.describeInstallOrder);
+      ControllerContext context1 = assertInstall(delegate1, ControllerState.DESCRIBED);
+      assertEquals(1, delegate1.describeInstallOrder);
       assertEquals(-1, delegate1.instantiateInstallOrder);
       assertEquals(-1, delegate1.configureInstallOrder);
       assertEquals(-1, delegate1.createInstallOrder);
@@ -65,9 +65,9 @@ public class OnDemandDependencyTestCase extends AbstractDependencyTest
       assertEquals(-1, delegate1.describeUninstallOrder);
       TestDelegate delegate2 = getDelegate2();
       assertInstall(delegate2);
-      assertEquals(1, delegate2.describeInstallOrder);
-      assertEquals(2, delegate2.instantiateInstallOrder);
-      assertEquals(3, delegate2.configureInstallOrder);
+      assertEquals(2, delegate2.describeInstallOrder);
+      assertEquals(3, delegate2.instantiateInstallOrder);
+      assertEquals(4, delegate2.configureInstallOrder);
       assertEquals(10, delegate2.createInstallOrder);
       assertEquals(11, delegate2.startInstallOrder);
       assertEquals(12, delegate2.installInstallOrder);
@@ -78,7 +78,7 @@ public class OnDemandDependencyTestCase extends AbstractDependencyTest
       assertEquals(-1, delegate2.instantiateUninstallOrder);
       assertEquals(-1, delegate2.describeUninstallOrder);
       assertContext(context1);
-      assertEquals(4, delegate1.describeInstallOrder);
+      assertEquals(1, delegate1.describeInstallOrder);
       assertEquals(5, delegate1.instantiateInstallOrder);
       assertEquals(6, delegate1.configureInstallOrder);
       assertEquals(7, delegate1.createInstallOrder);
@@ -153,8 +153,8 @@ public class OnDemandDependencyTestCase extends AbstractDependencyTest
    public void testChangeDependencyReinstall() throws Throwable
    {
       TestDelegate delegate1 = getDelegate1();
-      ControllerContext context1 = assertInstall(delegate1, ControllerState.NOT_INSTALLED);
-      assertEquals(-1, delegate1.describeInstallOrder);
+      ControllerContext context1 = assertInstall(delegate1, ControllerState.DESCRIBED);
+      assertEquals(1, delegate1.describeInstallOrder);
       assertEquals(-1, delegate1.instantiateInstallOrder);
       assertEquals(-1, delegate1.configureInstallOrder);
       assertEquals(-1, delegate1.createInstallOrder);
@@ -168,9 +168,9 @@ public class OnDemandDependencyTestCase extends AbstractDependencyTest
       assertEquals(-1, delegate1.describeUninstallOrder);
       TestDelegate delegate2 = getDelegate2();
       ControllerContext context2 = assertInstall(delegate2);
-      assertEquals(1, delegate2.describeInstallOrder);
-      assertEquals(2, delegate2.instantiateInstallOrder);
-      assertEquals(3, delegate2.configureInstallOrder);
+      assertEquals(2, delegate2.describeInstallOrder);
+      assertEquals(3, delegate2.instantiateInstallOrder);
+      assertEquals(4, delegate2.configureInstallOrder);
       assertEquals(10, delegate2.createInstallOrder);
       assertEquals(11, delegate2.startInstallOrder);
       assertEquals(12, delegate2.installInstallOrder);
@@ -181,7 +181,7 @@ public class OnDemandDependencyTestCase extends AbstractDependencyTest
       assertEquals(-1, delegate2.instantiateUninstallOrder);
       assertEquals(-1, delegate2.describeUninstallOrder);
       assertContext(context1);
-      assertEquals(4, delegate1.describeInstallOrder);
+      assertEquals(1, delegate1.describeInstallOrder);
       assertEquals(5, delegate1.instantiateInstallOrder);
       assertEquals(6, delegate1.configureInstallOrder);
       assertEquals(7, delegate1.createInstallOrder);
@@ -194,9 +194,9 @@ public class OnDemandDependencyTestCase extends AbstractDependencyTest
       assertEquals(-1, delegate1.instantiateUninstallOrder);
       assertEquals(-1, delegate1.describeUninstallOrder);
       assertUninstall(context2);
-      assertEquals(1, delegate2.describeInstallOrder);
-      assertEquals(2, delegate2.instantiateInstallOrder);
-      assertEquals(3, delegate2.configureInstallOrder);
+      assertEquals(2, delegate2.describeInstallOrder);
+      assertEquals(3, delegate2.instantiateInstallOrder);
+      assertEquals(4, delegate2.configureInstallOrder);
       assertEquals(10, delegate2.createInstallOrder);
       assertEquals(11, delegate2.startInstallOrder);
       assertEquals(12, delegate2.installInstallOrder);
@@ -207,7 +207,7 @@ public class OnDemandDependencyTestCase extends AbstractDependencyTest
       assertEquals(17, delegate2.instantiateUninstallOrder);
       assertEquals(18, delegate2.describeUninstallOrder);
       assertContext("Name1", ControllerState.INSTALLED);
-      assertEquals(4, delegate1.describeInstallOrder);
+      assertEquals(1, delegate1.describeInstallOrder);
       assertEquals(5, delegate1.instantiateInstallOrder);
       assertEquals(6, delegate1.configureInstallOrder);
       assertEquals(7, delegate1.createInstallOrder);
@@ -233,7 +233,7 @@ public class OnDemandDependencyTestCase extends AbstractDependencyTest
       assertEquals(17, delegate2.instantiateUninstallOrder);
       assertEquals(18, delegate2.describeUninstallOrder);
       assertUninstall(context1);
-      assertEquals(4, delegate1.describeInstallOrder);
+      assertEquals(1, delegate1.describeInstallOrder);
       assertEquals(5, delegate1.instantiateInstallOrder);
       assertEquals(6, delegate1.configureInstallOrder);
       assertEquals(7, delegate1.createInstallOrder);

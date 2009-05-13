@@ -32,19 +32,23 @@ import org.jboss.xb.annotations.JBossXmlEnum;
  * Mode of the context.
  * 
  * @author <a href="adrian@jboss.com">Adrian Brock</a>
+ * @author <a href="ales.justin@jboss.com">Ales Justin</a>
  * @version $Revision$
  */
 @JBossXmlEnum(ignoreCase=true)
 public enum ControllerMode
 {
-   AUTOMATIC("Automatic"),
-   @XmlEnumValue("On Demand") ON_DEMAND("On Demand"),
+   AUTOMATIC("Automatic", ControllerState.INSTALLED),
+   @XmlEnumValue("On Demand") ON_DEMAND("On Demand", ControllerState.DESCRIBED),
    MANUAL("Manual"),
    DISABLED("Disabled"),
    ASYNCHRONOUS("Asynchronous");
 
    /** The mode string */
    private final String modeString;
+
+   /** The required state */
+   private ControllerState requiredState;
 
    /**
     * Create a new mode
@@ -53,9 +57,18 @@ public enum ControllerMode
     */
    private ControllerMode(String modeString)
    {
+      this(modeString, null);
+   }
+
+   private ControllerMode(String modeString, ControllerState requiredState)
+   {
       if (modeString == null)
          throw new IllegalArgumentException("Null mode string");
+      if (requiredState == null)
+         requiredState = ControllerState.NOT_INSTALLED;
+
       this.modeString = modeString;
+      this.requiredState = requiredState;
    }
 
    /**
@@ -85,6 +98,16 @@ public enum ControllerMode
    public String getModeString()
    {
       return modeString;
+   }
+
+   /**
+    * The required state.
+    *
+    * @return the required state
+    */
+   public ControllerState getRequiredState()
+   {
+      return requiredState;
    }
 
    public void toString(JBossStringBuilder buffer)
