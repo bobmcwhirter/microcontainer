@@ -87,10 +87,21 @@ public class AOPConstructorJoinpoint extends BasicConstructorJoinPoint
       this.metaData = MetaData.class.cast(metaData);
    }
 
+   /**
+    * Should we bypass AOP.
+    *
+    * @param metaData the metadata instance
+    * @return true if we should bypass aop, false otherwise
+    */
+   protected boolean bypassAOP(MetaData metaData)
+   {
+      return DisableAOPHelper.isAOPDisabled(metaData);
+   }
+
    @SuppressWarnings("deprecation")
    public Object dispatch() throws Throwable
    {
-      if (DisableAOPHelper.isAOPDisabled(metaData))
+      if (bypassAOP(metaData))
       {
          return super.dispatch();
       }

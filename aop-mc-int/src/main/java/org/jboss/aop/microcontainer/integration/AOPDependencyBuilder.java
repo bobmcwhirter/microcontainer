@@ -76,11 +76,23 @@ public class AOPDependencyBuilder extends AbstractDependencyBuilder
    private static final String DEPENDENCY_NAME_ATTRIBUTE = "name";
    private static final IntrospectionAnnotationHelper helper = new IntrospectionAnnotationHelper();
 
+   /**
+    * Should we bypass AOP.
+    *
+    * @param beanInfo the bean info
+    * @param metaData the metadata instance
+    * @return true if we should bypass aop, false otherwise
+    */
+   protected boolean bypassAOP(BeanInfo beanInfo, MetaData metaData)
+   {
+      return DisableAOPHelper.isAOPDisabled(metaData);
+   }
+
    @SuppressWarnings({"unchecked", "deprecation"})
    @Override
    public List<DependencyBuilderListItem> getDependencies(BeanInfo beanInfo, MetaData metaData)
    {
-      if (DisableAOPHelper.isAOPDisabled(metaData))
+      if (bypassAOP(beanInfo, metaData))
       {
          return super.getDependencies(beanInfo, metaData);
       }
