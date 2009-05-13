@@ -5,6 +5,7 @@
     <groupId>org.jboss.microcontainer.examples</groupId>
     <artifactId>pojoDev</artifactId>
     <version>1.0.0</version>
+    <relativePath>..</relativePath>
   </parent>
 
   <modelVersion>4.0.0</modelVersion>
@@ -13,9 +14,10 @@
   <packaging>jar</packaging>
   <version>1.0.0</version>
   <name>Injection</name>
-  <description></description>
+  <description>Injection Example</description>
 
   <properties>
-    <parent.relative.dir>..</parent.relative.dir>
+    <parent.relative.dir>${project.parent.relativePath}</parent.relative.dir>
   </properties>
+  
 </project>
