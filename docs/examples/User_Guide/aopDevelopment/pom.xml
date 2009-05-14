@@ -18,17 +18,17 @@
       <dependency>
         <groupId>org.jboss.microcontainer</groupId>
         <artifactId>jboss-kernel</artifactId>
-        <version>2.0.0.Beta6</version>
+        <version>2.2.0-SNAPSHOT</version>
       </dependency>
       <dependency>
         <groupId>org.jboss.aop</groupId>
         <artifactId>jboss-aop</artifactId>
-        <version>2.0.0.beta1</version>
+        <version>${aop.release}</version>
       </dependency>
       <dependency>
         <groupId>org.jboss.microcontainer</groupId>
         <artifactId>jboss-aop-mc-int</artifactId>
-        <version>2.0.0.Beta6</version>
+        <version>2.2.0-SNAPSHOT</version>
       </dependency>
     </dependencies>
   </dependencyManagement>
@@ -125,5 +125,7 @@
 
   <properties>
     <parent.relative.dir>.</parent.relative.dir>
+    <mc.release>2.0.6.GA</mc.release>
+    <aop.release>2.1.1.GA</aop.release>
   </properties>
 </project>
