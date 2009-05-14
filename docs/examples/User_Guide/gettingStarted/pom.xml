@@ -22,79 +22,86 @@
       <dependency>
         <groupId>org.jboss.microcontainer</groupId>
         <artifactId>jboss-kernel</artifactId>
-        <version>${release}</version>
+        <version>${mc.release}</version>
       </dependency>
       <dependency>
         <groupId>org.jboss.microcontainer</groupId>
         <artifactId>jboss-deployers-client-spi</artifactId>
-        <version>${release}</version>
+        <version>${mc.release}</version>
       </dependency>
       <dependency>
         <groupId>org.jboss.microcontainer</groupId>
         <artifactId>jboss-deployers-client</artifactId>
-        <version>${release}</version>
+        <version>${mc.release}</version>
       </dependency>
       <dependency>
         <groupId>org.jboss.microcontainer</groupId>
         <artifactId>jboss-deployers-core-spi</artifactId>
-        <version>${release}</version>
+        <version>${mc.release}</version>
       </dependency>
       <dependency>
         <groupId>org.jboss.microcontainer</groupId>
         <artifactId>jboss-deployers-core</artifactId>
-        <version>${release}</version>
+        <version>${mc.release}</version>
       </dependency>
       <dependency>
         <groupId>org.jboss.microcontainer</groupId>
         <artifactId>jboss-deployers-impl</artifactId>
-        <version>${release}</version>
+        <version>${mc.release}</version>
       </dependency>
       <dependency>
         <groupId>org.jboss.microcontainer</groupId>
         <artifactId>jboss-deployers-spi</artifactId>
-        <version>${release}</version>
+        <version>${mc.release}</version>
       </dependency>
       <dependency>
         <groupId>org.jboss.microcontainer</groupId>
         <artifactId>jboss-deployers-structure-spi</artifactId>
-        <version>${release}</version>
+        <version>${mc.release}</version>
       </dependency>
       <dependency>
         <groupId>org.jboss.microcontainer</groupId>
         <artifactId>jboss-deployers-vfs-spi</artifactId>
-        <version>${release}</version>
+        <version>${mc.release}</version>
       </dependency>
       <dependency>
         <groupId>org.jboss.microcontainer</groupId>
         <artifactId>jboss-deployers-vfs</artifactId>
-        <version>${release}</version>
+        <version>${mc.release}</version>
       </dependency>
       <dependency>
         <groupId>org.jboss.microcontainer</groupId>
         <artifactId>jboss-managed</artifactId>
-        <version>${release}</version>
+        <version>${mc.release}</version>
       </dependency>
       <dependency>
         <groupId>org.jboss.microcontainer</groupId>
         <artifactId>jboss-metatype</artifactId>
-        <version>${release}</version>
+        <version>${mc.release}</version>
       </dependency>
       <dependency>
         <groupId>org.jboss</groupId>
         <artifactId>jboss-vfs</artifactId>
-        <version>2.0.0.Beta6</version>
+        <version>${vfs.release}</version>
       </dependency>
       <dependency>
         <groupId>org.jboss.aop</groupId>
         <artifactId>jboss-aop</artifactId>
-        <version>2.0.0.beta1</version>
+        <version>${aop.release}</version>
       </dependency>
       <dependency>
         <groupId>org.jboss.microcontainer</groupId>
         <artifactId>jboss-aop-mc-int</artifactId>
-        <version>${release}</version>
+        <version>${mc.release}</version>
         <scope>runtime</scope>
       </dependency>
+      <dependency>
+        <groupId>org.jboss.test</groupId>
+        <artifactId>jboss-test</artifactId>
+        <version>${test.release}</version>
+        <scope>test</scope>
+      </dependency>
+
       <dependency>
         <groupId>junit</groupId>
         <artifactId>junit</artifactId>
@@ -121,7 +128,10 @@
   </build>
 
     <properties>
-        <release>2.0.0.Beta9</release>
+        <mc.release>2.0.6.GA</mc.release>
+        <vfs.release>2.1.2.GA</vfs.release>
+        <aop.release>2.1.1.GA</aop.release>
+        <test.release>1.1.4.GA</test.release>
     </properties>
 
 </project>

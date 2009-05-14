@@ -34,12 +34,12 @@
       <dependency>
         <groupId>org.jboss.microcontainer</groupId>
         <artifactId>jboss-kernel</artifactId>
-        <version>2.0.0.Beta6</version>
+        <version>${mc.release}</version>
       </dependency>
       <dependency>
         <groupId>org.jboss.microcontainer</groupId>
         <artifactId>jboss-spring-int</artifactId>
-        <version>2.0.0.Beta6</version>
+        <version>${mc.release}</version>
       </dependency>
     </dependencies>
   </dependencyManagement>
@@ -127,5 +127,6 @@
 
   <properties>
     <parent.relative.dir>.</parent.relative.dir>
+    <mc.release>2.0.6.GA</mc.release>
   </properties>
 </project>
